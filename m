@@ -1,320 +1,197 @@
-Return-Path: <bpf+bounces-37988-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37989-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE96495D640
-	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 21:51:44 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F34595D87C
+	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 23:33:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ACBF828608A
-	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 19:51:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D6A3A1F24722
+	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 21:33:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 294A1192B65;
-	Fri, 23 Aug 2024 19:51:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C040D1C944D;
+	Fri, 23 Aug 2024 21:32:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=jordanrome.com header.i=linux@jordanrome.com header.b="qkrFlBkY"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gHlt+jai"
 X-Original-To: bpf@vger.kernel.org
-Received: from mout.perfora.net (mout.perfora.net [74.208.4.196])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC84013634A
-	for <bpf@vger.kernel.org>; Fri, 23 Aug 2024 19:51:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.208.4.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D72C1C8228
+	for <bpf@vger.kernel.org>; Fri, 23 Aug 2024 21:32:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724442698; cv=none; b=GN13EKLSnrJepEF4fQss3RFt8VrLrb/GaW4EENRGGBZwbRFaJp8txI6rBgQhxSwH0JUq7GmkfPV+ofnZsd9II2Y83z7OR89Q6cbJd9PK9TeAk/DcfIzRLAandsS7gnb1zgckGyEjUWA/BBLIuY9lhMfSdqrkgYPkKVjJR2SZ9r0=
+	t=1724448725; cv=none; b=F5IpX9iqteR1EdvgLvY/hiIx4hzBqe/snUSG9MslbiQB1h2apshfp9mi4egzTNfyzU3aR10nODY6mgl/BgL6vkTwytokWnhooiV/4UZbSlDZ9xa7Nn+h5MDyvPKSM6CwEOH86eHr2Ak9LTMG52bAsc1uJCjR4R5+Z03O1NfFkBs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724442698; c=relaxed/simple;
-	bh=UIWY8CUgR+ChXwgrY8eIrRpag+yHDXMUvGS8TimR7RE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=FHs5ZS4UQ2ptxE2qA4PxHE2nhS3fk8ulXrNOY2z62NHMEjDy/OSSxgpO/H9HnMq0VJ0EAfoGEebwexMFhQjS81BsuzsmUwzFLDwX6/19AzZl4FnSmzmToH3kJzxYn5/E0+UvjPxGzkH9+vPkVbDb6Wm2vr42n+tVlMH4AiNBlII=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jordanrome.com; spf=pass smtp.mailfrom=jordanrome.com; dkim=pass (2048-bit key) header.d=jordanrome.com header.i=linux@jordanrome.com header.b=qkrFlBkY; arc=none smtp.client-ip=74.208.4.196
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jordanrome.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jordanrome.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jordanrome.com;
-	s=s1-ionos; t=1724442670; x=1725047470; i=linux@jordanrome.com;
-	bh=MsewBDRidr7nFmDzwg/oM7KefNCJ0MmdyCwQ7ligWhk=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:Message-ID:In-Reply-To:
-	 References:MIME-Version:Content-Transfer-Encoding:cc:
-	 content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=qkrFlBkY2KdwruJNEJd0s60XoleeHu13j32eCqxaFDAn5h/yzr/gEFV5EetpX4qC
-	 NXP/MDm5zl4AVyM5QJnHxpgIN+wvm/7u9xcdSosBcSIH7eomnE8kjTlPAcA9e9r8y
-	 J4q2lgQayqvSo3cYbyYBGzjFLakFHHgR07ZQDEh5YmjW0QT2/Ah+R8NnEt5pIYGvu
-	 wumkzzW+6peJFQODWeAjhGQv19wMpn3GFl/rRsWJ04F8AfxmjZuHkwOJJiV5Qn8t2
-	 IteJRh2rVvlb5/YwVE5IwP7bxDL+AQhBAtTbv3bFkWVDRFcJpVcID5DEpTfmEHpYS
-	 cMzZ2/1dCy7tZVslLQ==
-X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
-Received: from localhost ([173.252.127.27]) by mrelay.perfora.net (mreueus004
- [74.208.5.2]) with ESMTPSA (Nemesis) id 1Mrgkq-1sMXIf34eC-00owYg; Fri, 23 Aug
- 2024 21:51:09 +0200
-From: Jordan Rome <linux@jordanrome.com>
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
+	s=arc-20240116; t=1724448725; c=relaxed/simple;
+	bh=g/gV2w5HQ7wfx9sxd9JTGaEuGL/nRMkx/hKgPJOb3Qs=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SmFD5SnOzL2XvhRCCcPWOZiU46BmGhoaETjV+CsImDdGdZW9261mEcOtQEGXkS6zvbDi8pTJ+toW8cDZJLZP0O889Iepu50AFPrt3maFZVXme6Dzz9Z4m5FsikNuD0VYAPqVHCxmRB/mRYvZEPUYmmbzSHDTWNLXMfpoyb0jdAc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gHlt+jai; arc=none smtp.client-ip=209.85.221.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-3717ff2358eso1270844f8f.1
+        for <bpf@vger.kernel.org>; Fri, 23 Aug 2024 14:32:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1724448722; x=1725053522; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=pAf5epTzoI3jCagibZrWcBRliAgRptiFRazQidXOONk=;
+        b=gHlt+jai/vrI33t4mPqfBu9I7OM2b0EFhpMl6RWPya9nPVgsCiZoEVnlm0ldhpBEoM
+         /N21DeIqQ8I9/DsBwKWBH/pMWb+oZU5xk1RbxhotmT0jwE+PD1KDx2pFqFXX+v7uKAhO
+         zlYiGIGRjIRVwh7mMOIF8lWL50ZQ6miUBiMWs4FiLlXyDmVwkQfEFZg99z98UlI/bLt6
+         80A/6Ge00eSfNmOHJE++6CPWAc0WknH9prBjAkgdAftr6Ehnq5Dv08tsytGNh5qjdU9d
+         4mXg3RFriWp/uFqcfpSeKo85VcucagI6L36kHMlaDbKzhrCZnsYVQlL88nDCaSXt+IAl
+         BuOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1724448722; x=1725053522;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pAf5epTzoI3jCagibZrWcBRliAgRptiFRazQidXOONk=;
+        b=UNgD93dRfxppe3KXx8GELGZabQfBJ+HRpvh8o+/jFMOIVZnaQMXtxuiOWJap7b62iz
+         2D7O6wOECiZ8GusJtV00lK4Ey1Bph/Qz7aaq7FW8YEXNv+PbFKvkp+1IhtoIbavff5wt
+         H/G6Fiomm4urj2l3Fn6Ym6Q2Oil9ROU0kXN6nw6vNdhmRZTeXuEJX2jYaPjJdy9VN81M
+         L4gW0rXhEB3Ss0Sv5SkJ8udRXhzuIyxTx0LzeiLcSPmK3OjaaeyZpHgxDHRDWUW2PU9X
+         L1COZgIE4lS1t3oUhxhqRWQaaUnJERJ8KEAafQHszwatMYXQYLoIgdmoQ/6x82GoR8Mm
+         pP9A==
+X-Forwarded-Encrypted: i=1; AJvYcCVkpDWx4PLZEjLkNjiopqyBLUqv61ZMp0b4YjJR8tG19gUB/sT5Sv9w3bhnj8vvOSAIt44=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywt4NUO1iB3gtUOFNNhqiONlBmhkF69XwXCU6U7AKdqa1qwmfs6
+	iP0K2UEW9Z685YqyCSjCYhJHryFjLkq0v31vfFuaJ2uo8JOESJ/6
+X-Google-Smtp-Source: AGHT+IHNVZHG3qfJzk7rud8+1+ybP0wF7NGcAKhwb1C5POk5y+JJfoliwcIwQh2Jnu3U1P1iwpx2aA==
+X-Received: by 2002:a05:6000:2c2:b0:368:7583:54c7 with SMTP id ffacd0b85a97d-37311840d4dmr2629181f8f.8.1724448721469;
+        Fri, 23 Aug 2024 14:32:01 -0700 (PDT)
+Received: from krava (85-193-35-108.rib.o2.cz. [85.193.35.108])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5c04a3eb693sm2552119a12.53.2024.08.23.14.31.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Aug 2024 14:32:00 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Fri, 23 Aug 2024 23:31:58 +0200
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+	Oleg Nesterov <oleg@redhat.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Jiri Olsa <olsajiri@gmail.com>, Andrii Nakryiko <andrii@kernel.org>,
+	bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
 	Martin KaFai Lau <martin.lau@kernel.org>,
-	Kernel Team <kernel-team@fb.com>,
-	sinquersw@gmail.com
-Subject: [bpf-next v10 2/2] bpf: Add tests for bpf_copy_from_user_str kfunc
-Date: Fri, 23 Aug 2024 12:51:01 -0700
-Message-ID: <20240823195101.3621028-2-linux@jordanrome.com>
-X-Mailer: git-send-email 2.43.5
-In-Reply-To: <20240823195101.3621028-1-linux@jordanrome.com>
-References: <20240823195101.3621028-1-linux@jordanrome.com>
+	Kernel Team <kernel-team@meta.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: make use of PROCMAP_QUERY ioctl
+ if available
+Message-ID: <Zsj_zl3ODn2JHzYk@krava>
+References: <20240806230319.869734-1-andrii@kernel.org>
+ <ZrM5ZKXwjKiWjRk9@krava>
+ <CAEf4BzZb_-Rw9miDyb8+ABT9siK7eUeigiKaLqch9DDz0EBSbQ@mail.gmail.com>
+ <CAADnVQ+mq48x3dELpAajq+uihfGvfGjV-3kHeSwpDarovAkTKg@mail.gmail.com>
+ <CAEf4Bzb8vSYVYqcoSVicFOVkpeAdd+MmC56m7o7KipnycWbq4w@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:UDiJl+qPbyKDBGs8yLTqkNOHyGuuZdV5rE0uVXIjtF6PEl05dhz
- cFKdFRWLyj/smJEoHGhsmkghY8IZLmctsh9xSuAzvbebQiK3zLpjPBEJL4Z3JwNGwsn6O2G
- su7nL0vJOb8LSaBXswb+6fLs/ZJ1jxFGDM4/TGx+/lHDWdwEhpz/nhQVE9ORPw5pcLd2DQ3
- lhbRYir9TOf7Ey3hi8CmQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:dKgfPvO1PhI=;Hkse0eiHJZIJ+9YIYoeBfupiD4d
- 8FI4EOccmIwK52Os0R+dzU+GcYG8gMGxqNV6nlPVVH5kxAYD6ouHsrTnrULTiugn5a1IYMXeJ
- C8gBRIGPKECiKveOVuLV7GNSeEZ/dhavP2Ih3GDhDMvEUkvQcF3rwf/Fp8B6bk+7+hJXpmLMp
- uMjzTV24aaGzpqQzXFF+zOz9fTBsc1vQzdMmX0wBeUFzmLUHCG4PWNepmY63dbUNncchmT691
- V/yKROXbuwftxVuRqIusUhiw1tHh6uD1csiXcBtI2hKj/WAbTpP6YQa3W5fn+CWu1iMBD1uH6
- KAYDmmT2JcJneUNXt9Gw6vmVanWpO/OzSx4H15WFF2C15Lben9ISJCSjF9M4X1V74VzKigcau
- dWAGyNS5iT5Aeouubj612mRCi/KypuIDS9fVKzJykRhllCLsOV+8/lfNtNX5Vj2Vz4Jlu2XvJ
- mWDvaRCFkwWjYczl4iiA7FTDVeE4RV8ZAvUkN/o4f7oAHuUE+j1PIAfwgUL8kaVBXsfYOOjRP
- bkdZo/UgBMIts8uWTrrUn6BLUiUWocYWUeOxb8jBztXABq+oNjaqcQ9//U1TwR6DlnmI9Sv5e
- ATSaqMZOcqoVy+1wMrXJ1PYfG/VhUcF0OfueXYQJXncUztNAt7ydeZK/TSDZbJlt8WMqLGZct
- 2buXgqCmgWBVELBaZ6NnLZ24RYgkTO7EbTLyiRrH0UneeH5/dVC8lacM42TYocEjrGmS6l+3P
- P754mAjLmY0TRS8wDm4esEnH5kxwDz/tw==
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4Bzb8vSYVYqcoSVicFOVkpeAdd+MmC56m7o7KipnycWbq4w@mail.gmail.com>
 
-This adds tests for both the happy path and
-the error path.
+On Fri, Aug 23, 2024 at 09:53:03AM -0700, Andrii Nakryiko wrote:
+> On Fri, Aug 23, 2024 at 7:48 AM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Wed, Aug 7, 2024 at 8:17 AM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> > >
+> > > On Wed, Aug 7, 2024 at 2:07 AM Jiri Olsa <olsajiri@gmail.com> wrote:
+> > > >
+> > > > On Tue, Aug 06, 2024 at 04:03:19PM -0700, Andrii Nakryiko wrote:
+> > > >
+> > > > SNIP
+> > > >
+> > > > >  ssize_t get_uprobe_offset(const void *addr)
+> > > > >  {
+> > > > > -     size_t start, end, base;
+> > > > > -     char buf[256];
+> > > > > -     bool found = false;
+> > > > > +     size_t start, base, end;
+> > > > >       FILE *f;
+> > > > > +     char buf[256];
+> > > > > +     int err, flags;
+> > > > >
+> > > > >       f = fopen("/proc/self/maps", "r");
+> > > > >       if (!f)
+> > > > >               return -errno;
+> > > > >
+> > > > > -     while (fscanf(f, "%zx-%zx %s %zx %*[^\n]\n", &start, &end, buf, &base) == 4) {
+> > > > > -             if (buf[2] == 'x' && (uintptr_t)addr >= start && (uintptr_t)addr < end) {
+> > > > > -                     found = true;
+> > > > > -                     break;
+> > > > > +     /* requested executable VMA only */
+> > > > > +     err = procmap_query(fileno(f), addr, PROCMAP_QUERY_VMA_EXECUTABLE, &start, &base, &flags);
+> > > > > +     if (err == -EOPNOTSUPP) {
+> > > > > +             bool found = false;
+> > > > > +
+> > > > > +             while (fscanf(f, "%zx-%zx %s %zx %*[^\n]\n", &start, &end, buf, &base) == 4) {
+> > > > > +                     if (buf[2] == 'x' && (uintptr_t)addr >= start && (uintptr_t)addr < end) {
+> > > > > +                             found = true;
+> > > > > +                             break;
+> > > > > +                     }
+> > > > > +             }
+> > > > > +             if (!found) {
+> > > > > +                     fclose(f);
+> > > > > +                     return -ESRCH;
+> > > > >               }
+> > > > > +     } else if (err) {
+> > > > > +             fclose(f);
+> > > > > +             return err;
+> > > >
+> > > > I feel like I commented on this before, so feel free to ignore me,
+> > > > but this seems similar to the code below, could be in one function
+> > >
+> > > Do you mean get_rel_offset()? That one is for data symbols (USDT
+> > > semaphores), so it a) doesn't do arch-specific adjustments and b)
+> > > doesn't filter by executable flag. So while the logic of parsing and
+> > > finding VMA is similar, conditions and adjustments are different. It
+> > > feels not worth combining them, tbh.
+> > >
+> > > >
+> > > > anyway it's good for follow up
+> > > >
+> > > > there was another selftest in the original patchset adding benchmark
+> > > > for the procfs query interface, is it coming in as well?
+> > >
+> > > I didn't plan to send it, given it's not really a test. But I can put
+> > > it on Github somewhere, probably, if it's useful.
+> >
+> > With and without this selftest applied I see:
+> > ./test_progs -t uprobe
+> > #416     uprobe:OK
+> > #417     uprobe_autoattach:OK
+> > [   47.448908] ref_ctr_offset mismatch. inode: 0x16b5f921 offset:
+> > 0x2d4297 ref_ctr_offset(old): 0x45e8b56 ref_ctr_offset(new): 0x45e8b54
+> > #418/1   uprobe_multi_test/skel_api:OK
+> >
+> > Is this a known issue?
+> 
+> Yeah, that's not due to my changes. It's an old warning in uprobe
+> internals, but I think we should remove it, because it can trivially
+> be triggered by a user. Which is what Jiri is doing intentionally in
+> one of selftests to test uprobe failure handling.
+> 
+> Jiri, maybe let's get rid of this warning?
 
-Signed-off-by: Jordan Rome <linux@jordanrome.com>
-=2D--
- .../selftests/bpf/prog_tests/attach_probe.c   |  8 ++-
- .../selftests/bpf/prog_tests/read_vsyscall.c  |  1 +
- .../selftests/bpf/progs/read_vsyscall.c       |  9 ++-
- .../selftests/bpf/progs/test_attach_probe.c   | 64 ++++++++++++++++++-
- 4 files changed, 75 insertions(+), 7 deletions(-)
+fine with me.. or change to pr_debug if that makes sense for anyone,
+Oleg, any idea/preference?
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/attach_probe.c b/tools=
-/testing/selftests/bpf/prog_tests/attach_probe.c
-index 7175af39134f..329c7862b52d 100644
-=2D-- a/tools/testing/selftests/bpf/prog_tests/attach_probe.c
-+++ b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
-@@ -283,9 +283,11 @@ static void test_uprobe_sleepable(struct test_attach_=
-probe *skel)
- 	trigger_func3();
+jirka
 
- 	ASSERT_EQ(skel->bss->uprobe_byname3_sleepable_res, 9, "check_uprobe_byna=
-me3_sleepable_res");
--	ASSERT_EQ(skel->bss->uprobe_byname3_res, 10, "check_uprobe_byname3_res")=
-;
--	ASSERT_EQ(skel->bss->uretprobe_byname3_sleepable_res, 11, "check_uretpro=
-be_byname3_sleepable_res");
--	ASSERT_EQ(skel->bss->uretprobe_byname3_res, 12, "check_uretprobe_byname3=
-_res");
-+	ASSERT_EQ(skel->bss->uprobe_byname3_str_sleepable_res, 10, "check_uprobe=
-_byname3_str_sleepable_res");
-+	ASSERT_EQ(skel->bss->uprobe_byname3_res, 11, "check_uprobe_byname3_res")=
-;
-+	ASSERT_EQ(skel->bss->uretprobe_byname3_sleepable_res, 12, "check_uretpro=
-be_byname3_sleepable_res");
-+	ASSERT_EQ(skel->bss->uretprobe_byname3_str_sleepable_res, 13, "check_ure=
-tprobe_byname3_str_sleepable_res");
-+	ASSERT_EQ(skel->bss->uretprobe_byname3_res, 14, "check_uretprobe_byname3=
-_res");
- }
-
- void test_attach_probe(void)
-diff --git a/tools/testing/selftests/bpf/prog_tests/read_vsyscall.c b/tool=
-s/testing/selftests/bpf/prog_tests/read_vsyscall.c
-index 3405923fe4e6..c7b9ba8b1d06 100644
-=2D-- a/tools/testing/selftests/bpf/prog_tests/read_vsyscall.c
-+++ b/tools/testing/selftests/bpf/prog_tests/read_vsyscall.c
-@@ -23,6 +23,7 @@ struct read_ret_desc {
- 	{ .name =3D "probe_read_user_str", .ret =3D -EFAULT },
- 	{ .name =3D "copy_from_user", .ret =3D -EFAULT },
- 	{ .name =3D "copy_from_user_task", .ret =3D -EFAULT },
-+	{ .name =3D "copy_from_user_str", .ret =3D -EFAULT },
- };
-
- void test_read_vsyscall(void)
-diff --git a/tools/testing/selftests/bpf/progs/read_vsyscall.c b/tools/tes=
-ting/selftests/bpf/progs/read_vsyscall.c
-index 986f96687ae1..39ebef430059 100644
-=2D-- a/tools/testing/selftests/bpf/progs/read_vsyscall.c
-+++ b/tools/testing/selftests/bpf/progs/read_vsyscall.c
-@@ -1,5 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- /* Copyright (C) 2024. Huawei Technologies Co., Ltd */
-+#include "vmlinux.h"
- #include <linux/types.h>
- #include <bpf/bpf_helpers.h>
-
-@@ -7,10 +8,15 @@
-
- int target_pid =3D 0;
- void *user_ptr =3D 0;
--int read_ret[8];
-+int read_ret[9];
-
- char _license[] SEC("license") =3D "GPL";
-
-+/*
-+ * This is the only kfunc, the others are helpers
-+ */
-+int bpf_copy_from_user_str(void *dst, u32, const void *, u64) __weak __ks=
-ym;
-+
- SEC("fentry/" SYS_PREFIX "sys_nanosleep")
- int do_probe_read(void *ctx)
- {
-@@ -40,6 +46,7 @@ int do_copy_from_user(void *ctx)
- 	read_ret[6] =3D bpf_copy_from_user(buf, sizeof(buf), user_ptr);
- 	read_ret[7] =3D bpf_copy_from_user_task(buf, sizeof(buf), user_ptr,
- 					      bpf_get_current_task_btf(), 0);
-+	read_ret[8] =3D bpf_copy_from_user_str((char *)buf, sizeof(buf), user_pt=
-r, 0);
-
- 	return 0;
- }
-diff --git a/tools/testing/selftests/bpf/progs/test_attach_probe.c b/tools=
-/testing/selftests/bpf/progs/test_attach_probe.c
-index 68466a6ad18c..fb79e6cab932 100644
-=2D-- a/tools/testing/selftests/bpf/progs/test_attach_probe.c
-+++ b/tools/testing/selftests/bpf/progs/test_attach_probe.c
-@@ -5,8 +5,10 @@
- #include <bpf/bpf_helpers.h>
- #include <bpf/bpf_tracing.h>
- #include <bpf/bpf_core_read.h>
-+#include <errno.h>
- #include "bpf_misc.h"
-
-+u32 dynamic_sz =3D 1;
- int kprobe2_res =3D 0;
- int kretprobe2_res =3D 0;
- int uprobe_byname_res =3D 0;
-@@ -14,11 +16,15 @@ int uretprobe_byname_res =3D 0;
- int uprobe_byname2_res =3D 0;
- int uretprobe_byname2_res =3D 0;
- int uprobe_byname3_sleepable_res =3D 0;
-+int uprobe_byname3_str_sleepable_res =3D 0;
- int uprobe_byname3_res =3D 0;
- int uretprobe_byname3_sleepable_res =3D 0;
-+int uretprobe_byname3_str_sleepable_res =3D 0;
- int uretprobe_byname3_res =3D 0;
- void *user_ptr =3D 0;
-
-+int bpf_copy_from_user_str(void *dst, u32, const void *, u64) __weak __ks=
-ym;
-+
- SEC("ksyscall/nanosleep")
- int BPF_KSYSCALL(handle_kprobe_auto, struct __kernel_timespec *req, struc=
-t __kernel_timespec *rem)
- {
-@@ -87,11 +93,61 @@ static __always_inline bool verify_sleepable_user_copy=
-(void)
- 	return bpf_strncmp(data, sizeof(data), "test_data") =3D=3D 0;
- }
-
-+static __always_inline bool verify_sleepable_user_copy_str(void)
-+{
-+	int ret;
-+	char data_long[20];
-+	char data_long_pad[20];
-+	char data_long_err[20];
-+	char data_short[4];
-+	char data_short_pad[4];
-+
-+	ret =3D bpf_copy_from_user_str(data_short, sizeof(data_short), user_ptr,=
- 0);
-+
-+	if (bpf_strncmp(data_short, 4, "tes\0") !=3D 0 || ret !=3D 4)
-+		return false;
-+
-+	ret =3D bpf_copy_from_user_str(data_short_pad, sizeof(data_short_pad), u=
-ser_ptr, BPF_F_PAD_ZEROS);
-+
-+	if (bpf_strncmp(data_short, 4, "tes\0") !=3D 0 || ret !=3D 4)
-+		return false;
-+
-+	/* Make sure this passes the verifier */
-+	ret =3D bpf_copy_from_user_str(data_long, dynamic_sz & sizeof(data_long)=
-, user_ptr, 0);
-+
-+	if (ret !=3D 0)
-+		return false;
-+
-+	ret =3D bpf_copy_from_user_str(data_long, sizeof(data_long), user_ptr, 0=
-);
-+
-+	if (bpf_strncmp(data_long, 10, "test_data\0") !=3D 0 || ret !=3D 10)
-+		return false;
-+
-+	ret =3D bpf_copy_from_user_str(data_long_pad, sizeof(data_long_pad), use=
-r_ptr, BPF_F_PAD_ZEROS);
-+
-+	if (bpf_strncmp(data_long_pad, 10, "test_data\0") !=3D 0 || ret !=3D 10 =
-|| data_long_pad[19] !=3D '\0')
-+		return false;
-+
-+	ret =3D bpf_copy_from_user_str(data_long_err, sizeof(data_long_err), (vo=
-id *)data_long, BPF_F_PAD_ZEROS);
-+
-+	if (ret > 0 || data_long_err[19] !=3D '\0')
-+		return false;
-+
-+	ret =3D bpf_copy_from_user_str(data_long, sizeof(data_long), user_ptr, 2=
-);
-+
-+	if (ret !=3D -EINVAL)
-+		return false;
-+
-+	return true;
-+}
-+
- SEC("uprobe.s//proc/self/exe:trigger_func3")
- int handle_uprobe_byname3_sleepable(struct pt_regs *ctx)
- {
- 	if (verify_sleepable_user_copy())
- 		uprobe_byname3_sleepable_res =3D 9;
-+	if (verify_sleepable_user_copy_str())
-+		uprobe_byname3_str_sleepable_res =3D 10;
- 	return 0;
- }
-
-@@ -102,7 +158,7 @@ int handle_uprobe_byname3_sleepable(struct pt_regs *ct=
-x)
- SEC("uprobe//proc/self/exe:trigger_func3")
- int handle_uprobe_byname3(struct pt_regs *ctx)
- {
--	uprobe_byname3_res =3D 10;
-+	uprobe_byname3_res =3D 11;
- 	return 0;
- }
-
-@@ -110,14 +166,16 @@ SEC("uretprobe.s//proc/self/exe:trigger_func3")
- int handle_uretprobe_byname3_sleepable(struct pt_regs *ctx)
- {
- 	if (verify_sleepable_user_copy())
--		uretprobe_byname3_sleepable_res =3D 11;
-+		uretprobe_byname3_sleepable_res =3D 12;
-+	if (verify_sleepable_user_copy_str())
-+		uretprobe_byname3_str_sleepable_res =3D 13;
- 	return 0;
- }
-
- SEC("uretprobe//proc/self/exe:trigger_func3")
- int handle_uretprobe_byname3(struct pt_regs *ctx)
- {
--	uretprobe_byname3_res =3D 12;
-+	uretprobe_byname3_res =3D 14;
- 	return 0;
- }
-
-=2D-
-2.43.5
-
+> 
+> >
+> > Applied anyway.
+> 
+> Thanks! I just found another auto-archived patch of mine, the one
+> adding multi-uprobe benchmarks (see patchworks). Please take a look
+> and maybe apply, when you get a chance.
 
