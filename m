@@ -1,145 +1,127 @@
-Return-Path: <bpf+bounces-37921-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37922-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7041995C64F
-	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 09:12:27 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6904D95C760
+	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 10:07:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C92B28222C
-	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 07:12:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 07F78B2551A
+	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 08:07:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82D044F88C;
-	Fri, 23 Aug 2024 07:12:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 658F113DDC3;
+	Fri, 23 Aug 2024 08:07:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="icCA3zmo"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ul1kOeTB"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9D7955E58
-	for <bpf@vger.kernel.org>; Fri, 23 Aug 2024 07:12:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A04EA6D1B9
+	for <bpf@vger.kernel.org>; Fri, 23 Aug 2024 08:07:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724397137; cv=none; b=VtvuTE66mJZV9i7ddl6FCWmLJHQP+g2iDOGjx58Xcj73SaujdfBNfM89C/+Qs7bGIAKok9PJ8AqQgq+kT5UgIwmF/E7x63km0yiIRFZOC1s2UiN7y0DqjtqvzW4kjjUb5kLUMimiYfpA86PzTtYniQiyKNosoMd8PCOXY3KUWhA=
+	t=1724400421; cv=none; b=HvKtbQybVT/OAh0ffJ1qsqVYTT7Mq5fc20xoGhxOvqGQjiObEdXFVpAxNEAJS3vXH1U2dOWC/G836OCFtVrUzZT6O6mJKPZCXhMhOHjPGbvacqg0fEC6Y2XAzag5fPLHxkV0McGL2wC/Br5sH10Hg1jLmM6EHaTwqROtunopsJw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724397137; c=relaxed/simple;
-	bh=QjcH1BEuWHmNibEMoZBPcc66J96gyQ7uYowHOvFzxO4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QPivfhP4vjjkeuhAZ72KgGJEwfX67l3FOsKwPuedW6sCAk5QtKZJCm9amDRJhNe3o0yN/yswe1G30UDLA/TcNscjK8nReAn852HA2WWR87X0gNdDK4oBV+I9xWYPs6U+/lw0F5iCZ2M/PdofArCEprWCpFczUSPLtFnK5hz8FbQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=icCA3zmo; arc=none smtp.client-ip=95.215.58.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <fd2acc68-ca3f-4d83-554b-a2aa89ad7b5c@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1724397132;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=a6n0wnoPAcJF/7kS5yMq3pmT0HLmPp3tJepFRPvQRNc=;
-	b=icCA3zmoXUMtT3rgGRychKf9R9fXaktHv8p6kd+QscAiQZaezEF9LHbn5fnhxJFbrC4tOM
-	QCYjV/O93mu8Fvq0GGb01ThJ9W8AkBzt+UT1HysrbgAvJRWs/3WEAcRp6SCbB6sCjrT44a
-	OMG5ZQ3m2kiISEwhY6U1CFZNdIUSlSc=
-Date: Fri, 23 Aug 2024 15:12:06 +0800
+	s=arc-20240116; t=1724400421; c=relaxed/simple;
+	bh=v2BVbjGfXlM5y28pnWGwy28vnUBNujOAnWclWkFuGM8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Kwk3YR6MjJLJtYWV5XFG2+KAdT6uvPLF1QrLUu44bwneVXS29ebJVp3OZTEDaG2N8MLoEYptO53Z/StYecFM1bRimLhXdGeN0gLIGZ9+51u6qscAqQ/rFPdj0w5UItceDh4IK6rZ/PycL50bawsHjxaRQpFQYHzK+QrY1rkmfC0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ul1kOeTB; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-202089e57d8so11224795ad.0
+        for <bpf@vger.kernel.org>; Fri, 23 Aug 2024 01:07:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1724400420; x=1725005220; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=kr8iy62BzN0ZuTZUu8/3DjQxrS73CqkVHj7gOYUXISs=;
+        b=Ul1kOeTBovsF5Q7kEbFlwUNqG7yWBom/GksI360OOCtXrZgASQ4ZBiqcHr3+kSJ2kb
+         m/G70K26o6S+6w/8AGi20TiTJMjL1eqrE9xmTYSSry3bpX+3vOLxuvatjJFmDJbrVGG/
+         bgUzziSd8p6xDMg0rbMYpMxPIHIPrv2XzwWtZ3fcXl9PLXT+jHXCXUiwbBLStg7dlEn0
+         MTIqg3uZaYiW8vr8qNHYzN6zth/vCpraJwRLEoW5IpTwOxSXNqazSL3Pd4y4Kb6zIPYr
+         ujxA8EONrCnhOU2WuXrcS4XFzLc6c/5T5iDmxRqIKo0jw+VYgpXsGLf7arDKM92ab6nN
+         19CA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1724400420; x=1725005220;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kr8iy62BzN0ZuTZUu8/3DjQxrS73CqkVHj7gOYUXISs=;
+        b=abYHV4ImzstF8nUTEvmiF0/kK4bAJLRsbT68O4nFuqTRS3Typ8zsVPKW0amRCSB1AT
+         aReFBCyARNaKl8s72sHAJ1XUvZgSGLLX6v3L80mIlCt+dUQi4uAGt9EIWQbp9sJi1c55
+         0cyBK/OfW1bTEFgJdLnxjSAtX5J3U4K5ImlE16+N27h/CG0ncbb+POEJ40i36lKKk/E5
+         p4UH2Hd5I3/70s359BanrWLR81VMQFKsd2oXa96CZQDXsJo5a00OFQ+GRq8rBt9NtZDB
+         kaBNFco8ka7AdBn8tASGTxDYK3I29JzmOu4BA3h488pepX/hlS0UVrvRVDLw0TIfdhHM
+         YN6Q==
+X-Gm-Message-State: AOJu0YxYqZ8p62gYQZgx7VrzRSLmv/1CTbUGXiKTGLKbdKbM3LSOoavj
+	jYHc5NG108CuvkJV59A+y+TzluYMZjAYf78AHyEFGnFEgeV24brXNhn15A==
+X-Google-Smtp-Source: AGHT+IEOVeEq5/Wt+XT/fW3nFNRE/DAnRb5hx3dW7bgneJDRM2XKBA5tqC7+CZ32VhcM1lyBOvtbDw==
+X-Received: by 2002:a17:902:fd48:b0:202:21:eb2a with SMTP id d9443c01a7336-2039c4a1c42mr22557605ad.19.1724400419540;
+        Fri, 23 Aug 2024 01:06:59 -0700 (PDT)
+Received: from honey-badger.. ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20385567f74sm23463925ad.60.2024.08.23.01.06.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Aug 2024 01:06:58 -0700 (PDT)
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: bpf@vger.kernel.org,
+	ast@kernel.org
+Cc: andrii@kernel.org,
+	daniel@iogearbox.net,
+	martin.lau@linux.dev,
+	kernel-team@fb.com,
+	yonghong.song@linux.dev,
+	Eduard Zingerman <eddyz87@gmail.com>
+Subject: [PATCH bpf-next 0/3] follow up for __jited test tag
+Date: Fri, 23 Aug 2024 01:06:41 -0700
+Message-ID: <20240823080644.263943-1-eddyz87@gmail.com>
+X-Mailer: git-send-email 2.46.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] selftests/bpf: Fix incorrect parameters in NULL pointer
- checking
-To: Dan Carpenter <dan.carpenter@linaro.org>,
- Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Yonghong Song <yonghong.song@linux.dev>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, John Fastabend <john.fastabend@gmail.com>,
- KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
- Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
- Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
- bpf <bpf@vger.kernel.org>,
- "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>,
- LKML <linux-kernel@vger.kernel.org>, Hao Ge <gehao@kylinos.cn>
-References: <20240820023447.29002-1-hao.ge@linux.dev>
- <02dd26b5-16a0-4732-80e4-c7bf183e965a@linux.dev>
- <58f57d70-a787-4012-8763-cc6eb642ef8a@stanley.mountain>
- <CAADnVQ+iTrTmbMcjt7fR7uTS=1tFcjv=z2CY6fO-4=kkM4YSMw@mail.gmail.com>
- <cc10c08a-a9aa-48e1-896f-46b566930271@stanley.mountain>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Hao Ge <hao.ge@linux.dev>
-In-Reply-To: <cc10c08a-a9aa-48e1-896f-46b566930271@stanley.mountain>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-Hi Dan and Alexei
+This patch-set is a collection of follow-ups for
+"__jited test tag to check disassembly after jit" series (see [1]).
 
+First patch is most important:
+as it turns out, I broke all test_loader based tests for s390 CI.
+E.g. see log [2] for s390 execution of test_progs,
+note all 'verivier_*' tests being skipped.
+This happens because of incorrect handling of corner case when
+get_current_arch() does not know which architecture to return.
 
-I apologize for any inconvenience my mistake may have caused to both of you.
+Second patch makes matching of function return sequence in
+verifier_tailcall_jit more flexible:
 
+    -__jited("	retq")
+    +__jited("	{{(retq|jmp	0x)}}")
 
-On 8/22/24 06:31, Dan Carpenter wrote:
-> On Wed, Aug 21, 2024 at 03:07:27PM -0700, Alexei Starovoitov wrote:
->> On Wed, Aug 21, 2024 at 2:50 PM Dan Carpenter <dan.carpenter@linaro.org> wrote:
->>> On Wed, Aug 21, 2024 at 02:03:17PM -0700, Yonghong Song wrote:
->>>> On 8/19/24 7:34 PM, Hao Ge wrote:
->>>>> From: Hao Ge <gehao@kylinos.cn>
->>>>>
->>>>> Smatch reported the following warning:
->>>>>       ./tools/testing/selftests/bpf/testing_helpers.c:455 get_xlated_program()
->>>>>       warn: variable dereferenced before check 'buf' (see line 454)
->>>>>
->>>>> It seems correct,so let's modify it based on it's suggestion.
->>>>>
->>>>> Actually,commit b23ed4d74c4d ("selftests/bpf: Fix invalid pointer
->>>>> check in get_xlated_program()") fixed an issue in the test_verifier.c
->>>>> once,but it was reverted this time.
->>>>>
->>>>> Let's solve this issue with the minimal changes possible.
->>>>>
->>>>> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
->>>>> Closes: https://lore.kernel.org/all/1eb3732f-605a-479d-ba64-cd14250cbf91@stanley.mountain/
->>>>> Fixes: b4b7a4099b8c ("selftests/bpf: Factor out get_xlated_program() helper")
->>>>> Signed-off-by: Hao Ge <gehao@kylinos.cn>
->>>> In the future, please change subject '[PATCH] ...' to '[PATCH bpf-next] ...'
->>>> so CI can properly test it.
->>> It feels like there should be a technical solution to this.  The CI system is
->>> something on AWS and it's too expensive to just check every patch that's sent to
->>> the bpf list?  My understanding is that there are only two bpf trees.
->>>
->>>          if [ "$FIXES_HASH" == "" ] ; then
->>>                  TREE=next
->>>          elif git merge-base --is-ancestor $FIXES_HASH origin/master ; then
->>>                  TREE=linus
->>>          else
->>>                  TREE=next
->>>          fi
->>>
->>> These days the zero day bot people are checking around a thousand git trees.
->>> They pull emails off the various lists and apply them to the right places.  It's
->>> a doable thing.
->> Dan,
->>
->> Various people pointed out that you need to use the proper subject in
->> the patches.
->> You clearly knew that rule and yet you ignored it,
->> and worse still you keep coming up with these excuses.
->> Don't be surprised that people who are supposed to review your patches
->> will take a long time to reply or "forget" about them as you "forget"
->> about patch submission rules.
+The difference could be seen with and w/o mitigations=off boot
+parameter for test VM (CI runs with mitigations=off, hence it
+generates retq).
 
+Third patch addresses Alexei's request to add #define and a comment in
+jit_disasm_helpers.c.
 
-Perhaps it was referring to me? Regardless, I will reflect on myself and 
-make improvements.
+[1] https://lore.kernel.org/bpf/20240820102357.3372779-1-eddyz87@gmail.com/
+[2] https://github.com/kernel-patches/bpf/actions/runs/10518445973/job/29144511595
 
+Eduard Zingerman (3):
+  selftests/bpf: test_loader.c:get_current_arch() should not return 0
+  selftests/bpf: match both retq/rethunk in verifier_tailcall_jit
+  selftests/bpf: #define LOCAL_LABEL_LEN for jit_disasm_helpers.c
 
-> You're emailing the wrong person.  This isn't my patch.  I don't send BPF
-> patches.
->
-> regards,
-> dan carpenter
+ .../testing/selftests/bpf/jit_disasm_helpers.c  | 17 ++++++++++++++---
+ .../selftests/bpf/progs/verifier_tailcall_jit.c |  4 ++--
+ tools/testing/selftests/bpf/test_loader.c       |  9 +++++----
+ 3 files changed, 21 insertions(+), 9 deletions(-)
+
+-- 
+2.46.0
+
 
