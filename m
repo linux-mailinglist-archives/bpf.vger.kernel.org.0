@@ -1,109 +1,211 @@
-Return-Path: <bpf+bounces-37969-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37972-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0AAA95D57A
-	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 20:48:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCDD895D584
+	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 20:49:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 29A8A1C22571
-	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 18:48:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EA74E1C2263E
+	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 18:49:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 152FA136982;
-	Fri, 23 Aug 2024 18:48:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D250139D13;
+	Fri, 23 Aug 2024 18:49:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="clVQMXmV"
+	dkim=pass (2048-bit key) header.d=jordanrome.com header.i=linux@jordanrome.com header.b="xo1afidi"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.perfora.net (mout.perfora.net [74.208.4.196])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BCD18F6B;
-	Fri, 23 Aug 2024 18:48:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CB271925BA
+	for <bpf@vger.kernel.org>; Fri, 23 Aug 2024 18:49:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.208.4.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724438888; cv=none; b=PumeXJISjSAtByOt1CpSQ3o5My/N7BqXn8HciZMSwrhzCM20ePF0K9s+ASLW2wDwkScww48+/wlPfX4XWGIQR6ZajHxyJE6ANW+e4BJ/G7eUDJDTV3cqzflhyK0BlQAtRy3TPvLkVKBs4x6Xe+5B/si7/FFFCe0SGlHpu6F4Rio=
+	t=1724438946; cv=none; b=ufsqv+XAxvWaB6wBzehjpAAW98qBUAEDJzmXeIFCeovDutrpBlR51PgW6VVZ2q1RHJ8JFVW1UkulAGTbFkZ6drUcTLOrE8G9fQO6z3b0GPbN0g2MGd1H3vClL4MmWzpsf6PopQWTZwy7vgDEiY+GT/TfKv7Zm0toq4yA8igQKuI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724438888; c=relaxed/simple;
-	bh=POw5n4uPK+5Wgj6bZ8E7UNaTIEwC7nnmx+EmsVvH934=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Qj75PVCELCyH1/9f3JOqLIqIIH+cZF+uurkY+e96absUUNcCnckdFgM78Kz7u7Bi1SSoWFQVxkffuppUhv95VVUnoJ9sOiHUcWGw6FlkEOo1kd2sPfL0UM44jemdhI1jHjr7LA5tXz8qKY4tr8XeYGiLpRJL4HDVB9TiOZOXuZg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=clVQMXmV; arc=none smtp.client-ip=209.85.210.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-7143c9e68a3so112039b3a.0;
-        Fri, 23 Aug 2024 11:48:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1724438885; x=1725043685; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uk0/C1AkOx81lEeJcP/sdwvaYycc+SWwymWZxuohJG4=;
-        b=clVQMXmV5vVjU+NC2+gMp76TTA3xN3S2+dCJhnfgBJAqtjdreG0od8yayRxFNBXZfD
-         kvON9+HlfxUuaO34sYDEwlBBRZOofA01VKt9aHbywNGfUdeItjhUObzylYxOQeRIRecI
-         MjVsrHrVpTHsUO5f6wbTqS0JwdU8C3PPjIMHh4Ea+IMPqocFFWN9gVRcMhvLMF7a9Y0h
-         RcH++ovff7XWtxDHjiH6Y5QM58aKF51I8ex0Xi2pZo7MDFjfLQspFpwEtSt0wWGOalsC
-         crzd31/rtXjdIam8XoVOfsXzQx7nUeD2gEAapmSZ7AUEDUJDsAYAq+EymCPioq1F7N8A
-         LOHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724438885; x=1725043685;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uk0/C1AkOx81lEeJcP/sdwvaYycc+SWwymWZxuohJG4=;
-        b=EfVj6PA007KAB4u2hJudTYTjPCj/f6p61IEDmFtoNQ5Nfuvof5v46uFqJdjv2w64BX
-         i45agn3n4VJldXNykpUDUk/svUnqsapaflXytxsgqBGmN+bh3s8DlTs5ox0I6dcJoCoV
-         WJYgktch/XhlSbp7dRtYO1n8xnoHSRCiBTxYLXrug9XrKYOF54m4MiRTICfQJ53Bg5ym
-         U6nYblZr74nIkKCXGzPCB6vkRLeIO67a7LOJ/sy0FozXhlc75RoNAArSjfdhGg5uNeY2
-         kJvj65kLCFxbDn1L9iXU2eXtTP9Fo1Rs0Z3eSk8gCdNEuSQrdCoHoiKNCkCWEn/j1CRY
-         tkDw==
-X-Forwarded-Encrypted: i=1; AJvYcCVO1IF4MK0/7C2C7mcPzc2wmmQIgM2XraJRXpIXy8jos9cj5IPKnienBtlArvoQGo8Yzh1YImwMyOiuAgj3@vger.kernel.org, AJvYcCVPpsOsuhu2yevFIdKrhTc4H/QQdHG8p+4GZMqULw4vhG+zW2BW4Nqqm8LDtrKExXWaNl1JZGsu3uWFrlux@vger.kernel.org, AJvYcCVpiVvYZXmUpoDMpQCS9cl1p0ttOtVELKHYod+S5ilpbIwvxbbwp6R1lGcTbPRiAPFfrho=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwKRsblVJmbKbPq4dBFv9+PT9UDlVXLSZHBO+9Tp03J6iO9XQ0L
-	vL3Q1qZdbClSV2rll/4E1QriFmUhLVUf0PrtQb4z+Fyun8pvg88Ju/Q5d2E77CMPFg3XNZoL6qh
-	0TbMkcOvOx4V3MJnIYI2qzygmqVQ=
-X-Google-Smtp-Source: AGHT+IHU1bqef0K7taMb7NU7AZLtkpaTLnqF/hx5h78WBNReGSNhGIsYsg5UQYCcuDeEKg1DlAP70nhcV8uXO1TKuAc=
-X-Received: by 2002:a05:6a20:1589:b0:1c6:ecf5:4418 with SMTP id
- adf61e73a8af0-1cc8a01c07bmr2328000637.4.1724438885555; Fri, 23 Aug 2024
- 11:48:05 -0700 (PDT)
+	s=arc-20240116; t=1724438946; c=relaxed/simple;
+	bh=i1SXIuLLVRq0155vBfKjP72yltycjWLUUmrA3n0jb/M=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=HPsouAbdODDbNlVlyJEBIb4hGh8nvQrISx9PesIg5uD6RY8LnB7W+QWkhz6oPFDRWKyTd4pE7sE5CZB6xouThC5wmNdb25sVNuh82FWHdrogDrok1zS0yuLAJAIHs9Fj1HdpEWfKCGomFTLzaY2SlPuOtARAT8hBjLqRHK0KuAA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jordanrome.com; spf=pass smtp.mailfrom=jordanrome.com; dkim=pass (2048-bit key) header.d=jordanrome.com header.i=linux@jordanrome.com header.b=xo1afidi; arc=none smtp.client-ip=74.208.4.196
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jordanrome.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jordanrome.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jordanrome.com;
+	s=s1-ionos; t=1724438923; x=1725043723; i=linux@jordanrome.com;
+	bh=z4MopIk5l/P6pVByP+hVPhniotnTONT4ah0PkETy5iM=;
+	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:Message-ID:
+	 MIME-Version:Content-Transfer-Encoding:cc:
+	 content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=xo1afidiP+STegWw2yFJHaJ8IDJxluQWjGt2FCNRhd89KFtFHNpgQr3tosDKEaEG
+	 42EYKEmgLFbDQYG5Zn+ZCp/2Xq6t3sv18tAe43iHF0npzxnErqx6HVj6Ma0QvxXnP
+	 BAxv3vWITIV4zZ1zv9I1LQIF/KMtfARVn18l7LkbhHDvKmmtz+Iz74JcRnxh3sjIq
+	 YboIk6vNYulpWj6pPoT2jZFgOynEFrVygx8aS4o5pVo3MszVbTXIFCiyxa+DDrrGt
+	 sIQvIDzLF4k0rw2VhatPP3FuxDc2fmv2SKP8uHr2zmQ8Cranztra8RF0bhPGEV78a
+	 o+91LwtzzYu/R1q6Ew==
+X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
+Received: from localhost ([173.252.127.17]) by mrelay.perfora.net (mreueus004
+ [74.208.5.2]) with ESMTPSA (Nemesis) id 1MsIT8-1rouRs3QEM-00sm56; Fri, 23 Aug
+ 2024 20:48:42 +0200
+From: Jordan Rome <linux@jordanrome.com>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Kernel Team <kernel-team@fb.com>,
+	sinquersw@gmail.com
+Subject: [bpf-next v9 1/2] bpf: Add bpf_copy_from_user_str kfunc
+Date: Fri, 23 Aug 2024 11:48:22 -0700
+Message-ID: <20240823184823.3236004-1-linux@jordanrome.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240728125527.690726-1-ojeda@kernel.org> <CAK7LNARhR=GGZ2Vr-SSog1yjnjh6iT7cCEe4mpYg889GhJnO9g@mail.gmail.com>
- <ZsiV0V5-UYFGkxPE@bergen>
-In-Reply-To: <ZsiV0V5-UYFGkxPE@bergen>
-From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date: Fri, 23 Aug 2024 20:47:53 +0200
-Message-ID: <CANiq72khCDjCVbU=t+vpR+EfJucNBpYhZkW2VVjnXbD9S77C0A@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: pahole-version: avoid errors if executing fails
-To: Nicolas Schier <nicolas@fjasle.eu>
-Cc: Masahiro Yamada <masahiroy@kernel.org>, Miguel Ojeda <ojeda@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org, 
-	Nathan Chancellor <nathan@kernel.org>, linux-kbuild@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, patches@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:heUjSv2JVH+t09sUy6OhG6X/w/ByHVdjuwzpbqG9dLGNPOkCiut
+ oHh0Or8qEjqiuj2iuiEKtbaF1ZA2Lin0pSjCqgxm+eyJqD6chL/evcMyhTkoz5hiyU8OBn1
+ KHlrzt+6BgqwBpCJfyL8ooHje4mi+i+jJuyrnLk7IE4FEX2bIUwkyuwPpTHkB4+L3dT4voy
+ Nc/w40eJA1nYfWo9F562g==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:vI/b3hgagaE=;izrbWsvx/YQtvhM1Dq+P+351f1/
+ bzNoWspy1wfBbiE98RHQALzsoU3HCuWVQPA2qjT1LPIVGSlEwFXg9Ifj1LweYYAzPoM5OIoIR
+ 4T5tQjJpIrdHfCieMNK0tFJJ97rz5toqNQ5V5cT5WaQ1rdxa+zF2GPhJGLb6kh6eiPmP5C4Pg
+ iF4xLAYMbhQH8mQGquFh17/cSjhHjwwg0FHppPDpLGT1D4wZZotETF22Zp6SZCoPeHvF0IS+8
+ ASdOMpJlhiKryEUuO3bq+TGuqJ5OaUgVx0WFQzsL7vuUIfBfl6eQBOef9VexyLQHX2+UaA1ml
+ f1fjFIJiZNmItxl5vLV2P/ta2/nMYk8Sw+pIGBZiRNtO1rdC7xu2LJOQpl6P4BMT8BnGDQ5uT
+ 75fN1fZj1s5V1anJgT/W7ESBsUyVcCQwhTRHjFVDY8RErwytE81F6wHOeAdkl0waLe0uzIlHa
+ +Rj4D8YeDofX5rrgDPbk8o1vVSkNV9e0AkAa1o9NZXcghDMDecV+G+JQKtQLNcxRRskwVR1Oa
+ eNTjv+JWZ+pPN3buUxSSs5vVWtAOaxc2FnG1QZEBC8HqiSa3wf1F9HNu+uU9KzcRyb7NwD7DQ
+ 7eJZkScJfIrue3ya7K3yPw9HPzhnrF7tX44Xl6BtcSb+wmauhdADKZRO1tDFvcV/Yycw7Pn0o
+ DaytS7kjVjHK4y0F3xs3DWhCmvFqBJWhGUGOEIHS6JVOtIfz6g/GBlu1IW4DCttHzEAIYIeV1
+ kv/8+3/2GYScwA5TJtawL21pl4mpMPPgA==
 
-On Fri, Aug 23, 2024 at 4:00=E2=80=AFPM Nicolas Schier <nicolas@fjasle.eu> =
-wrote:
->
-> Do we have to catch all possibilities?  Then, what about this:
+This adds a kfunc wrapper around strncpy_from_user,
+which can be called from sleepable BPF programs.
 
-Something like that sounds good to me too -- we do something similar
-in `rust_is_available.sh`. We also have a `1` in the beginning of
-(most of) the `sed` commands there to check only the first line.
+This matches the non-sleepable 'bpf_probe_read_user_str'
+helper except it includes an additional 'flags'
+param, which allows consumers to clear the entire
+destination buffer on success or failure.
 
-I guess it depends on whether Masahiro thinks the extra
-checks/complexity is worth it. Here I was aiming to catch the case he
-reported, i.e. non-successful programs.
+Signed-off-by: Jordan Rome <linux@jordanrome.com>
+=2D--
+ include/uapi/linux/bpf.h       |  9 ++++++++
+ kernel/bpf/helpers.c           | 42 ++++++++++++++++++++++++++++++++++
+ tools/include/uapi/linux/bpf.h |  9 ++++++++
+ 3 files changed, 60 insertions(+)
 
-Cheers,
-Miguel
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index e05b39e39c3f..d015fdcdad3a 100644
+=2D-- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -7513,4 +7513,13 @@ struct bpf_iter_num {
+ 	__u64 __opaque[1];
+ } __attribute__((aligned(8)));
+
++/*
++ * Flags to control bpf_copy_from_user_str() behaviour.
++ *     - BPF_F_PAD_ZEROS: Pad destination buffer with zeros. (See the res=
+pective
++ *       helper documentation for details.)
++ */
++enum bpf_kfunc_flags {
++	BPF_F_PAD_ZEROS =3D (1ULL << 0),
++};
++
+ #endif /* _UAPI__LINUX_BPF_H__ */
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index d02ae323996b..5f065804c096 100644
+=2D-- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -2939,6 +2939,47 @@ __bpf_kfunc void bpf_iter_bits_destroy(struct bpf_i=
+ter_bits *it)
+ 	bpf_mem_free(&bpf_global_ma, kit->bits);
+ }
+
++/**
++ * bpf_copy_from_user_str() - Copy a string from an unsafe user address
++ * @dst:             Destination address, in kernel space.  This buffer m=
+ust be at
++ *                   least @dst__sz bytes long.
++ * @dst__sz:         Maximum number of bytes to copy, including the trail=
+ing NUL.
++ * @unsafe_ptr__ign: Source address, in user space.
++ * @flags:           The only supported flag is BPF_F_PAD_ZEROS
++ *
++ * Copies a NUL-terminated string from userspace to BPF space. If user st=
+ring is
++ * too long this will still ensure zero termination in the dst buffer unl=
+ess
++ * buffer size is 0.
++ *
++ * If BPF_F_PAD_ZEROS flag is set, memset the tail of @dst to 0 on succes=
+s and
++ * memset all of @dst on failure.
++ */
++__bpf_kfunc int bpf_copy_from_user_str(void *dst, u32 dst__sz, const void=
+ __user *unsafe_ptr__ign, u64 flags)
++{
++	int ret;
++
++	if (unlikely(flags & ~BPF_F_PAD_ZEROS))
++		return -EINVAL;
++
++	if (unlikely(!dst__sz))
++		return 0;
++
++	ret =3D strncpy_from_user(dst, unsafe_ptr__ign, dst__sz - 1);
++	if (ret < 0) {
++		if (flags & BPF_F_PAD_ZEROS)
++			memset((char *)dst, 0, dst__sz);
++
++		return ret;
++	}
++
++	if (flags & BPF_F_PAD_ZEROS)
++		memset((char *)dst + ret, 0, dst__sz - ret);
++	else
++		((char *)dst)[ret] =3D '\0';
++
++	return ret + 1;
++}
++
+ __bpf_kfunc_end_defs();
+
+ BTF_KFUNCS_START(generic_btf_ids)
+@@ -3024,6 +3065,7 @@ BTF_ID_FLAGS(func, bpf_preempt_enable)
+ BTF_ID_FLAGS(func, bpf_iter_bits_new, KF_ITER_NEW)
+ BTF_ID_FLAGS(func, bpf_iter_bits_next, KF_ITER_NEXT | KF_RET_NULL)
+ BTF_ID_FLAGS(func, bpf_iter_bits_destroy, KF_ITER_DESTROY)
++BTF_ID_FLAGS(func, bpf_copy_from_user_str, KF_SLEEPABLE)
+ BTF_KFUNCS_END(common_btf_ids)
+
+ static const struct btf_kfunc_id_set common_kfunc_set =3D {
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf=
+.h
+index e05b39e39c3f..d015fdcdad3a 100644
+=2D-- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -7513,4 +7513,13 @@ struct bpf_iter_num {
+ 	__u64 __opaque[1];
+ } __attribute__((aligned(8)));
+
++/*
++ * Flags to control bpf_copy_from_user_str() behaviour.
++ *     - BPF_F_PAD_ZEROS: Pad destination buffer with zeros. (See the res=
+pective
++ *       helper documentation for details.)
++ */
++enum bpf_kfunc_flags {
++	BPF_F_PAD_ZEROS =3D (1ULL << 0),
++};
++
+ #endif /* _UAPI__LINUX_BPF_H__ */
+=2D-
+2.43.5
+
 
