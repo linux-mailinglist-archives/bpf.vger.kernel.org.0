@@ -1,137 +1,105 @@
-Return-Path: <bpf+bounces-37973-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37974-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9586E95D585
-	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 20:49:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5351395D586
+	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 20:50:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5A692285560
-	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 18:49:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 85AE81C22204
+	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 18:50:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C36AB1917EC;
-	Fri, 23 Aug 2024 18:49:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE1AC18BBB7;
+	Fri, 23 Aug 2024 18:50:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aehV1U9x"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I15ZnE1V"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 694C118BB8B
-	for <bpf@vger.kernel.org>; Fri, 23 Aug 2024 18:49:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 365F92D7B8
+	for <bpf@vger.kernel.org>; Fri, 23 Aug 2024 18:50:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724438952; cv=none; b=aaprztiUj8iwXWWuSw4YWLs6/jk372u4Bx+qnJOOfz4ndEERExaqpVOypnEh+FiyQ5rkNCH+Zy9LZuvkcRjJxKqg05essolkuulT8XNITDfR/dvI+ijuubzjgy1W+Q691b3yCep+/Lwv88DVf+iixrcTwOhKjouTTEv0pYO0oBM=
+	t=1724439034; cv=none; b=ZoQcR9i0VOgQSgDFAiwFL6tfyIP58UVi3z1MYQzqUEQQBW5RRZdXVME8T/fgr1COFrKJHgAOxfAu4MM9sRmyVtBhn5ORQOiXHPHgfTeG7UJmudQCBpeIKhxLozmwbN2WwlXmZ2MgghyVVANiS6RStFjWyPWPLlb7BWLNv7X9Pz0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724438952; c=relaxed/simple;
-	bh=E18rTTdMFpNLRCxNJGlGiMukFONqcJvklGS5tgUYreM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=k8nnPKqhKmv9eJer8WZbR/R+8gF/D9t7t6vjUeI93Vra2gd0k3i6bfrCAD3pe0vVrRuE0FRtVbtt0/7kTg74ekfO7o5sShEkikgg4Gj8bF6vAKXUcVZ/OsM447T7MM086MTCjLRbveJspHFirNgV1K56a1Tyz2HumxyVljhAW6E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aehV1U9x; arc=none smtp.client-ip=209.85.128.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-429d2d7be1eso12022205e9.1
-        for <bpf@vger.kernel.org>; Fri, 23 Aug 2024 11:49:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1724438949; x=1725043749; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VjEnIieOGUwavK4pNcXsBSq72pat9RqmmEPTpiExAj4=;
-        b=aehV1U9xgcuQin6CUqD4BhUujg1G9WqiVt1HO+4RfCyZLL+7w5bsGVGwVq58KZmhYU
-         l1zvJG/RsM9KffETZtRG9Yg+4Y4UAkVpRm+JbKgmPKcf7F083d8cAeJwqPZ9btLT1E9/
-         iSWaXq7qaOJAP812mKdK8ZKgta10CQ6GoH9jgdwN3hUNr/laeJTr/JtdEVDFr4rNSgbZ
-         PU0V7mBGJbaX/cz+AZxTKA8m9GSO1M0hEZ9jq68you+mszNGqZBMc/+OekIy9tmVenYV
-         QeKt8megnc5CMUgifrvURRsh8la0WPrmJLmTvws9JqpHo2ObQ4khvvH65JJegmXkz0Tx
-         e6XQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724438949; x=1725043749;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VjEnIieOGUwavK4pNcXsBSq72pat9RqmmEPTpiExAj4=;
-        b=os6ByUcNrLSDFD9Z/7hCOE4xoWKxTXX/BRsH6peojZf/pHtMDocU61Eg8YAZ4evgMr
-         rVFcxOvUGK37x/kZHdeOMuKZ1A60ejHcTbFnVBnH+MU2roma9cAmeynDJ2bBp2mKt5bP
-         6mozcOdAsOeaT6mQO919K68HBu9uzimOqcvByi4085+s9RY0ctZdgRmQa7esHjSMPrUw
-         P5bs/nC3bQondj8kIpTCYt4EBqqF34bto6VXg4C2GUzHrC5Y++FCnMMnvTeQAoZwmXT8
-         /+kA4/lSR/wFD9sKwmYjk+sjjwy2gkDRmbGbj/5YupTy8WCCNKMta5nXj0VfTT7WKq24
-         GtJw==
-X-Gm-Message-State: AOJu0YwBpKg6HMspuq8v24g0uQ40T17nOi3yKsdPVp1Tra9S3o48prXj
-	Zs+MIEUrPc8+pnsPchxNqtmwsNbnjTgsCxxK0TFCQHU379nWYlf56nfkd2LTzhmc8IsUf50r5g7
-	AYbtNm7JxHpR1YQhNBQE2nceM16c=
-X-Google-Smtp-Source: AGHT+IEevkXA6tdPhM8puuk0znOTa5jll+lBCCbXHsZY82RA5sfOwf+V04nYHBVbYGuxgbU4nTAGDDw9HmTMTF7CGnY=
-X-Received: by 2002:a05:600c:4f84:b0:426:6fb1:6b64 with SMTP id
- 5b1f17b1804b1-42ac3899ea5mr44323475e9.7.1724438948421; Fri, 23 Aug 2024
- 11:49:08 -0700 (PDT)
+	s=arc-20240116; t=1724439034; c=relaxed/simple;
+	bh=MgnPC9DwPVh6Qovvgwi8c8md9GXV9aqooPRpAQjtMnk=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=Lz3RAsrm7/cMjMqlGzwq41Y/2NKv/cFk9vW4g75kyIabo2L4e8Qv7qJpOFBjTEmQVWWR9NqghqV+LMFMVcD8uGbXklLZbWSZuUr9XwpfUtL0eD9JeKvqXdVryZJGrlQ9DSXFgbXyfInUme/bie9hwtQUs3d9kkXqh7v712xNKZk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I15ZnE1V; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9309C32786;
+	Fri, 23 Aug 2024 18:50:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1724439033;
+	bh=MgnPC9DwPVh6Qovvgwi8c8md9GXV9aqooPRpAQjtMnk=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=I15ZnE1VBoCQ4uZwrxhaPbVeLEXsEfF21tDBldP30ie5zBK3S9axHy1WNOFJ5n5i8
+	 AwkVZhSXXivXdBXpPbrGUcxKc7XWZJ6qdrojT1qpYnLTOushLAgU+68oIKomJ4taFC
+	 CjSWsqUB6Ew/QXKOlQI3Q8knf58v/2JztxnLMrHfh/JpkmIQdxBlUDVEEu78lOyQYE
+	 k1OUeIZTqQjDPlTJDgKQ94b+ZjQ63NAnKYb1Z74H17oOkpN4cVzUI4Kvt3nrc1zPlf
+	 hix28qNK93M47rosni9LJHg2BV0EMey5URgUToivCU9Rwu0eST3Izp08X6t3imIH6B
+	 ANBDSb8drjakw==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id AE4D13804C86;
+	Fri, 23 Aug 2024 18:50:34 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240813212424.2871455-1-amery.hung@bytedance.com> <20240813212424.2871455-6-amery.hung@bytedance.com>
-In-Reply-To: <20240813212424.2871455-6-amery.hung@bytedance.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 23 Aug 2024 11:48:56 -0700
-Message-ID: <CAADnVQ+JhZMzbioRGQB454i3w+M9P854du=o25-0=47PG2Jbng@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 5/5] selftests/bpf: Test bpf_kptr_xchg
- stashing into local kptr
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v4 bpf-next 0/5] Support bpf_kptr_xchg into local kptr
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <172443903354.3055350.8541667784916946733.git-patchwork-notify@kernel.org>
+Date: Fri, 23 Aug 2024 18:50:33 +0000
+References: <20240813212424.2871455-1-amery.hung@bytedance.com>
+In-Reply-To: <20240813212424.2871455-1-amery.hung@bytedance.com>
 To: Amery Hung <amery.hung@bytedance.com>
-Cc: bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@kernel.org>, 
-	Hou Tao <houtao@huaweicloud.com>, Kui-Feng Lee <sinquersw@gmail.com>, 
-	Dave Marchevsky <davemarchevsky@fb.com>, Amery Hung <ameryhung@gmail.com>, 
-	Hou Tao <houtao1@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Cc: bpf@vger.kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ alexei.starovoitov@gmail.com, martin.lau@kernel.org, houtao@huaweicloud.com,
+ sinquersw@gmail.com, davemarchevsky@fb.com, ameryhung@gmail.com
 
-On Tue, Aug 13, 2024 at 2:24=E2=80=AFPM Amery Hung <amery.hung@bytedance.co=
-m> wrote:
->
-> From: Dave Marchevsky <davemarchevsky@fb.com>
->
-> Test stashing both referenced kptr and local kptr into local kptrs. Then,
-> test unstashing them.
->
-> Acked-by: Martin KaFai Lau <martin.lau@kernel.org>
-> Acked-by: Hou Tao <houtao1@huawei.com>
-> Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
-> Signed-off-by: Amery Hung <amery.hung@bytedance.com>
-> ---
->  .../selftests/bpf/progs/local_kptr_stash.c    | 30 +++++++++++++++++--
->  .../selftests/bpf/progs/task_kfunc_success.c  | 26 +++++++++++++++-
->  2 files changed, 53 insertions(+), 3 deletions(-)
->
-> diff --git a/tools/testing/selftests/bpf/progs/local_kptr_stash.c b/tools=
-/testing/selftests/bpf/progs/local_kptr_stash.c
-> index 75043ffc5dad..b092a72b2c9d 100644
-> --- a/tools/testing/selftests/bpf/progs/local_kptr_stash.c
-> +++ b/tools/testing/selftests/bpf/progs/local_kptr_stash.c
-> @@ -8,9 +8,12 @@
->  #include "../bpf_experimental.h"
->  #include "../bpf_testmod/bpf_testmod_kfunc.h"
->
-> +struct plain_local;
-> +
->  struct node_data {
->         long key;
->         long data;
-> +       struct plain_local __kptr * stashed_in_local_kptr;
->         struct bpf_rb_node node;
->  };
+Hello:
 
-Everything looks correct and I applied the set.
-The selftest sort-of covers the case where stashed_in_local_kptr
-is being freed by rb_root recursive freeing,
-but it doesn't really check for memory leaks.
-It only checks that nothing will crash.
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-Please follow up with an improvement to selftest that
-actually makes sure that recursive freeing of stashed kptr
-correctly calls bpf_obj_free_fields->__bpf_obj_drop_impl.
+On Tue, 13 Aug 2024 21:24:19 +0000 you wrote:
+> This revision adds substaintial changes to patch 2 to support structures
+> with kptr as the only special btf type. The test is split into
+> local_kptr_stash and task_kfunc_success to remove dependencies on
+> bpf_testmod that would break veristat results.
+> 
+> This series allows stashing kptr into local kptr. Currently, kptrs are
+> only allowed to be stashed into map value with bpf_kptr_xchg(). A
+> motivating use case of this series is to enable adding referenced kptr to
+> bpf_rbtree or bpf_list by using allocated object as graph node and the
+> storage of referenced kptr. For example, a bpf qdisc [0] enqueuing a
+> referenced kptr to a struct sk_buff* to a bpf_list serving as a fifo:
+> 
+> [...]
 
-The patches seem to do the right thing in terms of storing
-correct btf/records in the right places,
-but this is tricky, so extra tests are warranted.
+Here is the summary with links:
+  - [v4,bpf-next,1/5] bpf: Let callers of btf_parse_kptr() track life cycle of prog btf
+    https://git.kernel.org/bpf/bpf-next/c/c5ef53420f46
+  - [v4,bpf-next,2/5] bpf: Search for kptrs in prog BTF structs
+    https://git.kernel.org/bpf/bpf-next/c/7a851ecb1806
+  - [v4,bpf-next,3/5] bpf: Rename ARG_PTR_TO_KPTR -> ARG_KPTR_XCHG_DEST
+    https://git.kernel.org/bpf/bpf-next/c/d59232afb034
+  - [v4,bpf-next,4/5] bpf: Support bpf_kptr_xchg into local kptr
+    https://git.kernel.org/bpf/bpf-next/c/b0966c724584
+  - [v4,bpf-next,5/5] selftests/bpf: Test bpf_kptr_xchg stashing into local kptr
+    https://git.kernel.org/bpf/bpf-next/c/91c96842ab1e
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
