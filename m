@@ -1,196 +1,265 @@
-Return-Path: <bpf+bounces-37954-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37955-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 937F295CEE6
-	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 16:08:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C92395CFE5
+	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 16:32:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B5BDE1C2290F
-	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 14:08:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 144ED2816CE
+	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 14:32:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0ED361891B2;
-	Fri, 23 Aug 2024 14:02:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5296418DF7B;
+	Fri, 23 Aug 2024 14:19:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=fjasle.eu header.i=@fjasle.eu header.b="jlaDrOju"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nBStq5YX"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.domeneshop.no (smtp.domeneshop.no [194.63.252.55])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD3FA194125;
-	Fri, 23 Aug 2024 14:02:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.63.252.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1227188900;
+	Fri, 23 Aug 2024 14:19:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724421766; cv=none; b=oZwlgX/hUL86LTfG+ihJ5+h2toyurHJA4Bw25Cu1cwWkamrAPXDDUf76CC3stE1KqJF8B7k0BTogJc99AmRt0EjR1+nrRZNP2fGlbKftmatg9Y4L+qEOVJ4jfQ5VWRMZE4FqOL5qhYBmNhqub8Wq2/mNf777wTQ2jv93aMgikXE=
+	t=1724422754; cv=none; b=DBvew/pwVsMHTlGiHRTA5r+yt2W4tSh6ISYE986ynr5klcxwhZTeNdrc9oGlzA447oRzGGzNXkQ7iAdidJq2q+VG/C26jauj5estuOfzwdNdMcqeFv5DHGSge1/AV7XREAu+cdVB/MffXEe3x0R1o9DoiPdkUYrl1knyblUu0Nc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724421766; c=relaxed/simple;
-	bh=M/+JW3B4fr1FmeAODEX3e/e8p10B2hMp1V9Fr4Rz+m8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gEkKThaWTeQXAxKhrEkn97f3g+gOlXTHUSHQ6ILz9FaFqVqFQvBhZgtqL4wYgNCHEgONhpj1gk6mVhSIumt/xeHx9M/Fo6Cqfp6tjGbfRxqGBgv3gB3Z7A+jbahve2vIu2atD45UJH1OWgTCy8tAy7OHFFVAEOKNySPs1I5SzPs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fjasle.eu; spf=pass smtp.mailfrom=fjasle.eu; dkim=pass (2048-bit key) header.d=fjasle.eu header.i=@fjasle.eu header.b=jlaDrOju; arc=none smtp.client-ip=194.63.252.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fjasle.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fjasle.eu
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=fjasle.eu;
-	s=ds202307; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:
-	MIME-Version:Content-Type:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=GxF+gOMi88g9BBo9JOx0m3wME02pBHhU7ugsa7eOpAg=; b=jlaDrOjuTijwmuVnD8iWgRrncU
-	6yxUlbz5CLacwjZ/oDiZadhRopTWse3LShl6LJNsxsgLSFr0zGrM3Hkq5Zk0hjA4XzEqXkWjWGBHU
-	StiWyIjZnctjVoag7pCR5VuNRVG6gN7Z1nLNe1lakLkpkNfawtrRzvOvFJW6EOJBhzCQDoqM+T6jn
-	DDRX/xlE56lRGtQrcKP/M23Ce9q1hLSNiCoAU8GMrtSw3AQ5pVgNSH//3CrYKjfQqRviXTr972oQA
-	qtclx9AEU/BInPyQEzE88xiZ3RMPMpD2mGWgavURamvAV9llfwL87qE4uXgFx1QlPs79MMA2AsAtY
-	feutIWwQ==;
-Received: from [2001:9e8:9f5:ff01:6f0:21ff:fe91:394] (port=45454 helo=bergen)
-	by smtp.domeneshop.no with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <nicolas@fjasle.eu>)
-	id 1shUpT-000BrH-4G;
-	Fri, 23 Aug 2024 15:59:51 +0200
-Date: Fri, 23 Aug 2024 15:59:46 +0200
-From: Nicolas Schier <nicolas@fjasle.eu>
-To: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Miguel Ojeda <ojeda@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	bpf@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
-	linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-	patches@lists.linux.dev
-Subject: Re: [PATCH] kbuild: pahole-version: avoid errors if executing fails
-Message-ID: <ZsiV0V5-UYFGkxPE@bergen>
-References: <20240728125527.690726-1-ojeda@kernel.org>
- <CAK7LNARhR=GGZ2Vr-SSog1yjnjh6iT7cCEe4mpYg889GhJnO9g@mail.gmail.com>
+	s=arc-20240116; t=1724422754; c=relaxed/simple;
+	bh=RpEEFLQ159mtzxH/6H1MaLPuidhuvO36wTtzFCeFT2g=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=O6VCaLhRGc3QTO+jspWd6j0dfKboMbxr0UHapJ4LPXb1EJbwt0rd5qUocAAqFRzg14fbd9YnbTDsGTpGOre9/oBojuxDkR+KrlV8zkghNxMZn3+Be73Fu8ZCvdVX370gi1RQOUi2ZLJ7Dam+4Jcfov3KP6pKvp4VI08sgLF2V4s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nBStq5YX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E523C32786;
+	Fri, 23 Aug 2024 14:19:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1724422754;
+	bh=RpEEFLQ159mtzxH/6H1MaLPuidhuvO36wTtzFCeFT2g=;
+	h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
+	b=nBStq5YXGZS3IcSjX33591s0+YfJaUGLCBUzCzSQicdSqADMwcQvGt3tFDnkxAtol
+	 bdGbH+eCaphHgOcZdVB9bfSa/RVclary3XVypkUaZpsXrLwD5X/Mp7bruP+kpsn/Ep
+	 BFujFlNZqa6OEPeW274OkkrXyToZJq5nwvgwHAPntmBOwzlJkGpwgERbg7YE56BGVr
+	 uNkiP8hgPgTPBmaNqSWBtCi+hHwUcbAKbe6TLGB2Ug2ADZpwAasiqpBdo+K6v30awd
+	 qzw6BYcYwCzlkNwQJgDMCAPzdG5XE+IKI91foJRUZX4biaGVtXLv2ovDRk35TRiz1G
+	 Wz4ewk+2qH0sQ==
+Message-ID: <ae89be50-9cc0-43a0-8829-dd38a05a377f@kernel.org>
+Date: Fri, 23 Aug 2024 17:19:05 +0300
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="yO3YVrUfbWxrxaQH"
-Content-Disposition: inline
-In-Reply-To: <CAK7LNARhR=GGZ2Vr-SSog1yjnjh6iT7cCEe4mpYg889GhJnO9g@mail.gmail.com>
-X-Operating-System: Debian GNU/Linux 12.6
-Jabber-ID: nicolas@jabber.no
-
-
---yO3YVrUfbWxrxaQH
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Fri 23 Aug 2024 02:28:28 GMT, Masahiro Yamada wrote:
-> Date: Fri, 23 Aug 2024 02:28:28 +0900
-> From: Masahiro Yamada <masahiroy@kernel.org>
-> To: Miguel Ojeda <ojeda@kernel.org>
-> Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
->  <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai
->  Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song L=
-iu
->  <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabe=
-nd
->  <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
->  Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa
->  <jolsa@kernel.org>, bpf@vger.kernel.org, Nathan Chancellor
->  <nathan@kernel.org>, Nicolas Schier <nicolas@fjasle.eu>,
->  linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
->  patches@lists.linux.dev
-> Subject: Re: [PATCH] kbuild: pahole-version: avoid errors if executing fa=
-ils
-> X-Mailing-List: linux-kbuild@vger.kernel.org
-> Message-ID: <CAK7LNARhR=3DGGZ2Vr-SSog1yjnjh6iT7cCEe4mpYg889GhJnO9g@mail.g=
-mail.com>
->=20
-> On Sun, Jul 28, 2024 at 9:55=E2=80=AFPM Miguel Ojeda <ojeda@kernel.org> w=
-rote:
-> >
-> > Like patch "rust: suppress error messages from
-> > CONFIG_{RUSTC,BINDGEN}_VERSION_TEXT" [1], do not assume the file existi=
-ng
-> > and being executable implies executing it will succeed. Instead, bail
-> > out if executing it fails for any reason.
-> >
-> > For instance, `pahole` may be built for another architecture, may be a
-> > program we do not expect or may be completely broken:
-> >
-> >     $ echo 'bad' > bad-pahole
-> >     $ chmod u+x bad-pahole
-> >     $ make PAHOLE=3D./bad-pahole defconfig
-> >     ...
-> >     ./bad-pahole: 1: bad: not found
-> >     init/Kconfig:112: syntax error
-> >     init/Kconfig:112: invalid statement
->=20
->=20
->=20
-> Even with this patch applied, a syntax error can happen.
->=20
-> $ git log --oneline -1
-> dd1c54d77f11 kbuild: pahole-version: avoid errors if executing fails
-> $ echo 'echo' > bad-pahole
-> $ chmod u+x bad-pahole
-> $ make PAHOLE=3D./bad-pahole defconfig
-> *** Default configuration is based on 'x86_64_defconfig'
-> init/Kconfig:114: syntax error
-> init/Kconfig:114: invalid statement
-> make[2]: *** [scripts/kconfig/Makefile:95: defconfig] Error 1
-> make[1]: *** [/home/masahiro/workspace/linux-kbuild/Makefile:680:
-> defconfig] Error 2
-> make: *** [Makefile:224: __sub-make] Error 2
->=20
-
-Do we have to catch all possibilities?  Then, what about this:
-
-
-#!/bin/sh
-trap "echo 0; exit 1" EXIT
-set -e
-
-output=3D$("$@" --version 2>/dev/null)
-
-output=3D$(echo "${output}" |  sed -nE 's/^v([0-9]+)\.([0-9][0-9])$/\1\2/p')
-if [ -z "${output}" ]; then
-	echo "warning: pahole binary '$1' outputs incompatible version number, pah=
-ole will not be used." >&2
-	exit 1
-fi
-
-echo "${output}"
-trap EXIT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v9 0/3] Add minimal XDP support to TI AM65 CPSW
+ Ethernet driver
+From: Roger Quadros <rogerq@kernel.org>
+To: Julien Panis <jpanis@baylibre.com>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Russell King <linux@armlinux.org.uk>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Sumit Semwal <sumit.semwal@linaro.org>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ Simon Horman <horms@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+ Ratheesh Kannoth <rkannoth@marvell.com>,
+ Naveen Mamindlapalli <naveenm@marvell.com>,
+ Jacob Keller <jacob.e.keller@intel.com>
+Cc: danishanwar@ti.com, yuehaibing@huawei.com, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linaro-mm-sig@lists.linaro.org, "Govindarajan, Sriramakrishnan" <srk@ti.com>
+References: <20240223-am65-cpsw-xdp-basic-v9-0-2c194217e325@baylibre.com>
+ <d2e00269-23b8-4a92-84df-959b3c3ae6f1@kernel.org>
+Content-Language: en-US
+In-Reply-To: <d2e00269-23b8-4a92-84df-959b3c3ae6f1@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
 
 
-Kind regards,
-Nicolas
+On 23/08/2024 15:12, Roger Quadros wrote:
+> Hello Julien,
+> 
+> On 12/04/2024 18:38, Julien Panis wrote:
+>> This patch adds XDP support to TI AM65 CPSW Ethernet driver.
+>>
+>> The following features are implemented: NETDEV_XDP_ACT_BASIC,
+>> NETDEV_XDP_ACT_REDIRECT, and NETDEV_XDP_ACT_NDO_XMIT.
+>>
+>> Zero-copy and non-linear XDP buffer supports are NOT implemented.
+>>
+>> Besides, the page pool memory model is used to get better performance.
+>>
+>> Signed-off-by: Julien Panis <jpanis@baylibre.com>
+> 
+> I've been trying to test this since I don't want my RX multi queue series [1]
+> to break AF_XDP feature. However, with 6.10 I don't see AF_XDP working at all
+> and even breaking basic networking on am65-cpsw.
+> 
+> The in kernel XDP tests have been dropped so I've been using xdp-tools [2]
+> 
+> My test is to try XDP_DROP with xdp-bench using skb mode first and then
+> native XDP mode.
+> 
+> Below is the test log. You can see that skb mode works fine. The moment I try
+> native XDP mode the interface seems to go down and up and then just locks up.
+> 
+> I can no longer ping to the remote host.
+> 
+> ----test log starts-----
+> 
+> root@am64xx-evm:~/xdp-tools/xdp-bench# ping 192.168.1.36
+> PING 192.168.1.36 (192.168.1.36) 56(84) bytes of data.
+> 64 bytes from 192.168.1.36: icmp_seq=1 ttl=64 time=0.801 ms
+> 64 bytes from 192.168.1.36: icmp_seq=2 ttl=64 time=0.967 ms
+> 64 bytes from 192.168.1.36: icmp_seq=3 ttl=64 time=0.876 ms
+> ^C
+> --- 192.168.1.36 ping statistics ---
+> 3 packets transmitted, 3 received, 0% packet loss, time 2003ms
+> rtt min/avg/max/mdev = 0.801/0.881/0.967/0.067 ms
+> 
+> 
+> root@am64xx-evm:~/xdp-tools/xdp-bench# ./xdp-bench drop -m skb eth0
+> Dropping packets on eth0 (ifindex 2; driver am65-cpsw-nuss)
+> Summary                     81127 rx/s                  0 err/s        
+> Summary                     81088 rx/s                  0 err/s        
+> Summary                     81089 rx/s                  0 err/s        
+> Summary                     53065 rx/s                  0 err/s        
+> ^C
+>   Packets received    : 296369    
+>   Average packets/s   : 74092     
+>   Rx dropped          : 296369    
+> 
+> root@am64xx-evm:~/xdp-tools/xdp-bench# ping 192.168.1.36
+> PING 192.168.1.36 (192.168.1.36) 56(84) bytes of data.
+> 64 bytes from 192.168.1.36: icmp_seq=1 ttl=64 time=1.02 ms
+> 64 bytes from 192.168.1.36: icmp_seq=2 ttl=64 time=0.756 ms
+> 64 bytes from 192.168.1.36: icmp_seq=3 ttl=64 time=0.963 ms
+> ^C
+> --- 192.168.1.36 ping statistics ---
+> 3 packets transmitted, 3 received, 0% packet loss, time 2003ms
+> rtt min/avg/max/mdev = 0.756/0.914/1.024/0.114 ms
+> 
+> 
+> root@am64xx-evm:~/xdp-tools/xdp-bench# ./xdp-bench drop -m native eth0
+> [  889.096851] am65-cpsw-nuss 8000000.ethernet eth0: Link is Down
+> [  889.110889] am65-cpsw-nuss 8000000.ethernet eth0: PHY [8000f00.mdio:00] driver [TI DP83867] (irq=POLL)
+> [  889.120377] am65-cpsw-nuss 8000000.ethernet eth0: configuring for phy/rgmii-rxid link mode
+> Dropping packets on eth0 (ifindex 2; driver am65-cpsw-nuss)
+> Summary                         0 rx/s                  0 err/s        
+> Summary                         0 rx/s                  0 err/s        
+> [  893.218318] am65-cpsw-nuss 8000000.ethernet eth0: Link is Up - 1Gbps/Full - flow control rx/tx
+> Summary                       250 rx/s                  0 err/s        
+> Summary                         0 rx/s                  0 err/s        
+> Summary                         0 rx/s                  0 err/s        
+> Summary                         0 rx/s                  0 err/s        
+> ^C
+> [  901.898170] am65-cpsw-nuss 8000000.ethernet eth0: Link is Down
+> [  901.910292] am65-cpsw-nuss 8000000.ethernet eth0: PHY [8000f00.mdio:00] driver [TI DP83867] (irq=POLL)
+> [  901.919661] am65-cpsw-nuss 8000000.ethernet eth0: configuring for phy/rgmii-rxid link mode
+>   Packets received    : 250       
+>   Average packets/s   : 42        
+>   Rx dropped          : 250       
+> root@am64xx-evm:~/xdp-tools/xdp-bench# [  906.018296] am65-cpsw-nuss 8000000.ethernet eth0: Link is Up - 1Gbps/Full - flow control rx/tx
+> 
+> root@am64xx-evm:~/xdp-tools/xdp-bench# ping 192.168.1.36
+> PING 192.168.1.36 (192.168.1.36) 56(84) bytes of data.
+> From 192.168.1.100 icmp_seq=1 Destination Host Unreachable
+> From 192.168.1.100 icmp_seq=2 Destination Host Unreachable
+> From 192.168.1.100 icmp_seq=3 Destination Host Unreachable
+> ^C
+> 
+> --- 192.168.1.36 ping statistics ---
+> 5 packets transmitted, 0 received, +3 errors, 100% packet loss, time 4079ms
+> pipe 4
+> 
+> 
+> ---test log ends---
+> 
+> I will try to test with commit 8acacc40f733 ("net: ethernet: ti: am65-cpsw: Add minimal XDP support")
+> to see if it works there. If it does then I can do a bisect.
 
---yO3YVrUfbWxrxaQH
-Content-Type: application/pgp-signature; name="signature.asc"
+XDP_DROP doesn't work here either. I think I have found the issue.
+I will comment about it on patch 3.
 
------BEGIN PGP SIGNATURE-----
+> 
+> If you have better ideas please let me know. Thanks!
+> 
+> [1] https://lore.kernel.org/all/20240703-am65-cpsw-multi-rx-v3-0-f11cd860fd72@kernel.org/
+> [2] https://github.com/xdp-project/xdp-tools
+> 
+>> ---
+>> Changes in v9:
+>> - In k3_cppi_desc_pool_destroy(), free memory allocated for pool.
+>> - In k3_cppi_desc_pool_create_name() function, remove unnecessary
+>> error messages on mem alloc failures.
+>> - In k3_cppi_desc_pool_create_name() function, move desc_infos alloc
+>> forward to leverage pool_name freeing in gen_pool_destroy().
+>> - In k3_cppi_desc_pool_create_name() function, remove unnecessary
+>> 'ret = -ENOMEM' since ret is already initialized with -ENOMEM value.
+>> - For rx, do not build the skb upfront any more, Instead, give the page
+>> to the HW then build the skb once HW sends a completion.
+>> - Link to v8: https://lore.kernel.org/r/20240223-am65-cpsw-xdp-basic-v8-0-f3421b58da09@baylibre.com
+>>
+>> Changes in v8:
+>> - Fix some warnings reported by patchwork.
+>> - Link to v7: https://lore.kernel.org/r/20240223-am65-cpsw-xdp-basic-v7-0-c3857c82dadb@baylibre.com
+>>
+>> Changes in v7:
+>> - Move xdp_do_flush() function call in am65_cpsw_nuss_rx_poll().
+>> - Link to v6: https://lore.kernel.org/r/20240223-am65-cpsw-xdp-basic-v6-0-212eeff5bd5f@baylibre.com
+>>
+>> Changes in v6:
+>> - In k3_cppi_*() functions, use const qualifier when the content of
+>> pool is not modified.
+>> - Add allow_direct bool parameter to am65_cpsw_alloc_skb() function
+>> for direct use by page_pool_put_full_page().
+>> - Link to v5: https://lore.kernel.org/r/20240223-am65-cpsw-xdp-basic-v5-0-bc1739170bc6@baylibre.com
+>>
+>> Changes in v5:
+>> - In k3_cppi_desc_pool_destroy(), free memory allocated for desc_infos.
+>> - Link to v4: https://lore.kernel.org/r/20240223-am65-cpsw-xdp-basic-v4-0-2e45e5dec048@baylibre.com
+>>
+>> Changes in v4:
+>> - Add skb_mark_for_recycle() in am65_cpsw_nuss_rx_packets() function.
+>> - Specify napi page pool parameter in am65_cpsw_create_xdp_rxqs() function.
+>> - Add benchmark numbers (with VS without page pool) in the commit description.
+>> - Add xdp_do_flush() in am65_cpsw_run_xdp() function for XDP_REDIRECT case.
+>> - Link to v3: https://lore.kernel.org/r/20240223-am65-cpsw-xdp-basic-v3-0-5d944a9d84a0@baylibre.com
+>>
+>> Changes in v3:
+>> - Fix a potential issue with TX buffer type, which is now set for each buffer.
+>> - Link to v2: https://lore.kernel.org/r/20240223-am65-cpsw-xdp-basic-v2-0-01c6caacabb6@baylibre.com
+>>
+>> Changes in v2:
+>> - Use page pool memory model instead of MEM_TYPE_PAGE_ORDER0.
+>> - In am65_cpsw_alloc_skb(), release reference on the page pool page
+>> in case of error returned by build_skb().
+>> - [nit] Cleanup am65_cpsw_nuss_common_open/stop() functions.
+>> - [nit] Arrange local variables in reverse xmas tree order.
+>> - Link to v1: https://lore.kernel.org/r/20240223-am65-cpsw-xdp-basic-v1-1-9f0b6cbda310@baylibre.com
+>>
+>> ---
+>> Julien Panis (3):
+>>       net: ethernet: ti: Add accessors for struct k3_cppi_desc_pool members
+>>       net: ethernet: ti: Add desc_infos member to struct k3_cppi_desc_pool
+>>       net: ethernet: ti: am65-cpsw: Add minimal XDP support
+>>
+>>  drivers/net/ethernet/ti/am65-cpsw-nuss.c    | 659 ++++++++++++++++++++++++----
+>>  drivers/net/ethernet/ti/am65-cpsw-nuss.h    |  13 +
+>>  drivers/net/ethernet/ti/k3-cppi-desc-pool.c |  46 +-
+>>  drivers/net/ethernet/ti/k3-cppi-desc-pool.h |   6 +
+>>  4 files changed, 623 insertions(+), 101 deletions(-)
+>> ---
+>> base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
+>> change-id: 20240223-am65-cpsw-xdp-basic-4db828508b48
+>>
+>> Best regards,
+> 
 
-iQIzBAABCAAdFiEEh0E3p4c3JKeBvsLGB1IKcBYmEmkFAmbIlcYACgkQB1IKcBYm
-EmlIXhAAw5al6h44X2UnA31bKgo8H+OA3wzHIF1UTZOMe02NkAtVFidcpkKqxLih
-n5bOp6VjVr5KRcp7O45TAIWJ4Bm3G4PHX52MrohtW5GXABeoVRQTsCTdS1BB1PTh
-9nZZIvKF3ONqHGDSfYXHP72bfW1bVn1pzgMj/FA6GhRkv1n4AQVfO1Ohyacrn4go
-AT+6hu3gWwtj0CqeYJVBJ66GNDBCC9eoc++79WB0BQipZRNr3sHHznb7pOA+3M57
-iRhDdiVDIwmUcQTfj7oS/H/hlTLW5BeYhmXUyLDQaq3yAgcnKyQPCfdftVNmlmyN
-hI+jPJKnhYLGvB8UPj63GJudRqW/RNqE7ewZF2aOvC7+IaZwdRhaduOrCkBU+pNY
-/YYDOkEElGNRKHW9J5zFDuPQwlFDaLfCZ4hezgXYpiZTN7NggYKHa/ba32BgGPjr
-DR7OPk+lR2FArLTbzJa9I0KYmPdrKi6KNE0loghDcnLXySLHCStwahKwg7BZ+/US
-o5hgWMaeeNw9NuuscNYmHryKzKMAhGjtEE5wWJfdpyyOsqyiohCI/Mx0jKSOysGW
-mhgOynT2Tnq8sOPYg3vbIjYECabONecL1Q79TeJGVV5e879B3nTkZVAgV6cX5xP5
-6rZK7XWdqSaR/RxNulPl3wy+eJIEWI1D4j4ogbGfm0xWNmqr1TI=
-=aokD
------END PGP SIGNATURE-----
-
---yO3YVrUfbWxrxaQH--
+-- 
+cheers,
+-roger
 
