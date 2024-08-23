@@ -1,180 +1,120 @@
-Return-Path: <bpf+bounces-37976-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37977-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFC9795D59E
-	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 20:55:19 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37ED695D5A2
+	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 20:56:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 40DB71F23F67
-	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 18:55:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 102481C2284D
+	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 18:56:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F140F1925B2;
-	Fri, 23 Aug 2024 18:54:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6556191F7E;
+	Fri, 23 Aug 2024 18:56:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="VyIDTSfV"
+	dkim=pass (2048-bit key) header.d=jordanrome.com header.i=linux@jordanrome.com header.b="qwNHQyP8"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.perfora.net (mout.perfora.net [74.208.4.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB1E31925A4
-	for <bpf@vger.kernel.org>; Fri, 23 Aug 2024 18:54:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9232142A90
+	for <bpf@vger.kernel.org>; Fri, 23 Aug 2024 18:55:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.208.4.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724439252; cv=none; b=f8jMrlU+kGIvbUs15hjbtnSR57JRYRf8CoRshjznjhdM/gLeNHNw1Ww//ukmKv0FBcPh9inZ+LsyrDzze+uVs22y4jGJ0ZVGWSKUiIMAZTV5e77x1dbpInlLyYhd5Dl3GyrlirP0t1ECtsvu7vr9c5K+dpzMtv9iVRSOj569ql0=
+	t=1724439360; cv=none; b=bBMuRzT+87RdFtN0KLhXarHWaKJoz0teo7SPbgWBIt/2icwO55HPdaj6Ex6HnDDMOw4/i0ilU+uOF5LNbfklX3sk+Nce/gqWTWalTWKtu3mnElhjeHkscG5L2AxqKTFinR9wYHSQJ8pPMZOx5rU5FlAOOoYC+L/XWpdnTPD+fc8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724439252; c=relaxed/simple;
-	bh=Q4vJwaUK8X2ZZMRlnStM040Xb4vDEc/DlTU+8BrJyTU=;
+	s=arc-20240116; t=1724439360; c=relaxed/simple;
+	bh=TJ39QYwSjQ6bLtVpL2SFmG679F0mbwzkLGsvhvnmYpY=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XY8XywA6qp98eJr6+NDyw57zaoTQIyPcfA/siDnNcOfe4IqQsYXp9s/0+JGaiFHi5WTTmyoSjJ5JTh6WsFfvROdtP8tBSeGghEme1BDUnaaW1g3Rc7fIytduhPEQQsxF64rIQnnbuhKoyjcSMVjd03I4GcVf1g6ecPS7mx6Fo4k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=VyIDTSfV; arc=none smtp.client-ip=209.85.167.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-5334b0e1a8eso2959284e87.0
-        for <bpf@vger.kernel.org>; Fri, 23 Aug 2024 11:54:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1724439249; x=1725044049; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0x3ntAitNepK+aZerXk+zKiD6yfO8PQEuPkCGO4jDLY=;
-        b=VyIDTSfV6taE2svIB09H4b9Ifa7jz1hoOXITNkOMXg+kVq3+XDJvoEHjI0yEiHdhWo
-         rvkokjCEElxOahPaaq5bYfnUbRC3PNkqLUiuEF7ytAuDZMsHGgqHRKYIpHihXt3Yxc4C
-         5H4VzqPPgvDV2xdiyK1KghAc5cyrRb2vEpU6UF90R2bnj7QINRtNj/xziAXc+E+G4yQX
-         Z+KYMNfwxqQhuoAWHaS/w+h9cNsa58R8X59F4ObMxP8z7p2jW75ASet9j49FqNEyzL2j
-         Z75v+k/OX9uYdCDy1JBpGA37qQU9Mv7crURnQ7EvJEDsWG3kS4Cti3NvaDq9TYnwy1nP
-         zKAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724439249; x=1725044049;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0x3ntAitNepK+aZerXk+zKiD6yfO8PQEuPkCGO4jDLY=;
-        b=Z6HWjj/HTyBDjrxVM8Clr+5fKM786X1OYXGlw/nA4m/43cJDfhkUROTbohlBjDxUGH
-         Sv5+RvTc3DYjF4KDC+OZETREyPu/yruA69zTZy67AyfaFX0eGtErG8LV9CFMHAPUiWCZ
-         1qGntnzfd3Y17+nWaf61S47wUJn0vjRQSuduVkIjVfuTBY9lGWG/iV/eKTzsZif41aEf
-         7HNmh9cREhShVul4VnMp6/GTwzIUWm4gMe+EoXOAjrWckinRfvQYFQEXSvCRqrcCk+dC
-         QrKCJ2hqm56CAZLhg9QBOQpV0vqhirGdiomb5mMfe0fCy/v0VxcB+naBHx03LzAkUDXA
-         7k9A==
-X-Forwarded-Encrypted: i=1; AJvYcCVoeBJVE5XQS4eGXuNGqEJRm+m4cAG7TmMyEgOpDYxQtH/xXYiIm6SKjdolo8h6yXVDlzM=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxaXUqxmxeF+W4l+ieMdQovFVREw8izEwGIr1S8qVO3b7nX1fnT
-	RuVqi278W1UIB1XWaNr1VgATh6w4ie3sCZOTIOs6RE4N38SKAKPggPKW9q/AH6n+rApu5imqNoM
-	Ykgtz5bYPpB/BeVFeHjWoEuIhH0BbpQ50RTUT
-X-Google-Smtp-Source: AGHT+IG1zw8hURfp0LR7lZDsyuPcmRr5h5qutscfgF+gusOIWKvBV+uK4kVgtgYRCXnQ4TyCtGp1Mgvzdd/hx1T/5PA=
-X-Received: by 2002:a05:6512:308c:b0:52c:dac3:392b with SMTP id
- 2adb3069b0e04-53438785436mr2520694e87.33.1724439248277; Fri, 23 Aug 2024
- 11:54:08 -0700 (PDT)
+	 To:Cc:Content-Type; b=spyJJ03/55X8ZCglFI/sao9wSAodtv07iehtE2+J2z4y1iHnCeNVBZYdMQ1+SrXatsIBv1oWXCzVIoVqnKBftkjKVp4CDL+sR9fvZna6acMDgvPClu8Qhf9RL6FW6Fjonl0MkKt5K2lD99p9FJMSmt38VgNHXyo/4pYIaEfe7qY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jordanrome.com; spf=pass smtp.mailfrom=jordanrome.com; dkim=pass (2048-bit key) header.d=jordanrome.com header.i=linux@jordanrome.com header.b=qwNHQyP8; arc=none smtp.client-ip=74.208.4.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jordanrome.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jordanrome.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jordanrome.com;
+	s=s1-ionos; t=1724439357; x=1725044157; i=linux@jordanrome.com;
+	bh=Dn+cocr/xX7ibhubmp/O9bsc473SzzmSt7HZjuyuK+E=;
+	h=X-UI-Sender-Class:MIME-Version:References:In-Reply-To:From:Date:
+	 Message-ID:Subject:To:Cc:Content-Type:Content-Transfer-Encoding:
+	 cc:content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=qwNHQyP8xnNSRBvjLdE5dkRMaGBW/z1nMMoq/ZMHpYTwkXLXOeUJ3wK+TEG1iKtn
+	 xSvhesju59gthIf68CIl17hw9SpIa13O/sJbCW1kVYosb/Js836QghKjIpjfU05bC
+	 NHA6Laq5pvLcc2L5pSQjS4XTxqLcJvstXTejuYqlji91u4wd8TRfHbYhtx75cwc21
+	 mR8ftGIoT271iJ7eqjyf00AiIs8ZoF5Umm3Hdi3rhjnB4sqEYBz8wEFr7ua0Rc+QB
+	 iNIOX8dRdzdeW/pF7eMszLmHq+vYvlrH/Cp7Xa16ak3RU+G88Vl8YkenGpeOexJgx
+	 i8ybrTa7OBxfTf5TzQ==
+X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
+Received: from mail-io1-f52.google.com ([209.85.166.52]) by mrelay.perfora.net
+ (mreueus003 [74.208.5.2]) with ESMTPSA (Nemesis) id 0Lb44F-1sF8RY1ffV-00aLgw
+ for <bpf@vger.kernel.org>; Fri, 23 Aug 2024 20:55:57 +0200
+Received: by mail-io1-f52.google.com with SMTP id ca18e2360f4ac-81f95052c2cso132777639f.0
+        for <bpf@vger.kernel.org>; Fri, 23 Aug 2024 11:55:57 -0700 (PDT)
+X-Gm-Message-State: AOJu0YzK/g/sSrQOYkdYiGfdL05dkLsnSqKjOa0+tGtdq4doMksL5M0F
+	jwFx2YNyJiBxCqBOFt3c19Pt7kzkH+emjZiDtef6anlZueT3BFO5Sac3ZyyKWOaRbV+gJI813cH
+	3i3D6aSKwjGFC4SsCqfwbbklqgb8=
+X-Google-Smtp-Source: AGHT+IFZF05VnueioLN7XrINsZwDXkQCoo0DQY/Bi3NzXAoLexokuemygqQ9P58biRT1bVZiw+2d6o92NcRUwY2dy6A=
+X-Received: by 2002:a05:6e02:20c5:b0:39d:286c:5b72 with SMTP id
+ e9e14a558f8ab-39e3c9edeb2mr34191625ab.28.1724439357001; Fri, 23 Aug 2024
+ 11:55:57 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240823085313.75419-1-zhoufeng.zf@bytedance.com>
- <CANn89i+ZsktuirATK0nhUmJu+TiqB9Kbozh+HhmCiP3qdnW3Ew@mail.gmail.com> <173d3b06-57ed-4e2e-9034-91b99f41512b@linux.dev>
-In-Reply-To: <173d3b06-57ed-4e2e-9034-91b99f41512b@linux.dev>
-From: Eric Dumazet <edumazet@google.com>
-Date: Fri, 23 Aug 2024 20:53:54 +0200
-Message-ID: <CANn89iLKcOBBHXMSduV-DXYZfDCKAZyySggKFnQMpKH3p_Ureg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2] bpf: Fix bpf_get/setsockopt to tos not take
- effect when TCP over IPv4 via INET6 API
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: Feng zhou <zhoufeng.zf@bytedance.com>, davem@davemloft.net, kuba@kernel.org, 
-	pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev, 
-	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
-	haoluo@google.com, jolsa@kernel.org, dsahern@kernel.org, 
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
-	yangzhenze@bytedance.com, wangdongdong.6@bytedance.com
+References: <20240823184823.3236004-1-linux@jordanrome.com>
+ <20240823184823.3236004-2-linux@jordanrome.com> <CAADnVQLkbkz07OpGkg0v0CYCw6MtOWoSLQT5qtYg82C-3BpN9w@mail.gmail.com>
+In-Reply-To: <CAADnVQLkbkz07OpGkg0v0CYCw6MtOWoSLQT5qtYg82C-3BpN9w@mail.gmail.com>
+From: Jordan Rome <linux@jordanrome.com>
+Date: Fri, 23 Aug 2024 14:55:45 -0400
+X-Gmail-Original-Message-ID: <CA+QiOd5dKW_omDmKkDiFNfKT=5LN8pyG2i3T7FJF8ybWPu1rkQ@mail.gmail.com>
+Message-ID: <CA+QiOd5dKW_omDmKkDiFNfKT=5LN8pyG2i3T7FJF8ybWPu1rkQ@mail.gmail.com>
+Subject: Re: [bpf-next v9 2/2] bpf: Add tests for bpf_copy_from_user_str kfunc
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@fb.com>, 
+	Kui-Feng Lee <sinquersw@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:GUnI9QIg4iAhBqKSdg4U/dtPODYP/zAEQGrd0zU1kYJWwyUFiKh
+ i/QJFfh2tOvsLGD5ISwymIDRWfxBNEOpOUXtRl715RifS1nSpYSVvKWs3ZplaAEJVv1cgfI
+ Mt8RavENbpcPDwTcd4bXZEcx7EFY1bWAqafHReeiZyxeWdD+k3s4Eyl0Ebeb9Jfzkf4FyKU
+ FjruGx3CXPrxE8AeRhLMg==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:IrtrNj2FauA=;NfMzmElH05PAiLn53GthQjpdIBb
+ uT9kSMxGNJxEQp5C83qxS4p6vd+WNpAnKdCVkYzRzJv9SVVIH6vju7FL75o5wfb/+LmhGoPHV
+ /h86XwPrnKgBoVRYz7PA4h0QnY3yvM+8xxJHwcrfT4AiIMLw32aQBwiMc9lz8kCG3pz2MYVYJ
+ MbBBrkichCrH2qEFguZypcqlgAYWalXjSu2gcJuWLgGYDid4WRGeKkEBNt7eFAeC5qNumxahu
+ OUSLRVoYM3KAOTgyox1n5Q4U4utYKoCEal5saam0zZqyNzJG6igDU88b8I9T8wYH2GZcJVNaR
+ h+C/P+koliViYNonykbRpe8QygA4zpmspznj5IPwpXQq/wD3/TtejsnXxH9gRPjiEIXb1mzje
+ 9k2cUFluKkRW1Z9RNbUOCa69yVjqklvsusmnrXZ2OjH6VpsU9YLymM2rep+nrbxVXTOcWs1U0
+ P/7fo/dZ3gWhm+z6mnvTGe6Ysh2Wm5pHigqyx87YxaS5g/rJ8eUrygjuxnqxaP4Ru/p4XjjxA
+ 5G9f0qvxJTyUD6fbZ71M78wgblmC/1ukWaIwE/y1nrwo02nX8nc4KyjQNMhCiTjS3J3q3Qjh1
+ d05bl6b401Y1nZd6mO7z4OrSCVp4ozuHmR3/JcAc4uO3EEhO0yijlTJdVPj2w0t+Ds2+tWAa4
+ 7ST6/EfND21jVkB3/qyTek6cmkQKqy/59ZZaOwpyApKrjFooUWvF/XLpTBeOu6llC6Bt5IyKK
+ Fs8gKFElzBvCsYrlusHun5V0yJx7ccz+g==
 
-On Fri, Aug 23, 2024 at 8:49=E2=80=AFPM Martin KaFai Lau <martin.lau@linux.=
-dev> wrote:
+On Fri, Aug 23, 2024 at 2:52=E2=80=AFPM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> On 8/23/24 6:35 AM, Eric Dumazet wrote:
-> > On Fri, Aug 23, 2024 at 10:53=E2=80=AFAM Feng zhou <zhoufeng.zf@bytedan=
-ce.com> wrote:
-> >>
-> >> From: Feng Zhou <zhoufeng.zf@bytedance.com>
-> >>
-> >> when TCP over IPv4 via INET6 API, bpf_get/setsockopt with ipv4 will
-> >> fail, because sk->sk_family is AF_INET6. With ipv6 will success, not
-> >> take effect, because inet_csk(sk)->icsk_af_ops is ipv6_mapped and
-> >> use ip_queue_xmit, inet_sk(sk)->tos.
-> >>
-> >> So bpf_get/setsockopt needs add the judgment of this case. Just check
-> >> "inet_csk(sk)->icsk_af_ops =3D=3D &ipv6_mapped".
-> >>
-> >> | Reported-by: kernel test robot <lkp@intel.com>
-> >> | Closes: https://lore.kernel.org/oe-kbuild-all/202408152034.lw9Ilsj6-=
-lkp@intel.com/
-> >> Signed-off-by: Feng Zhou <zhoufeng.zf@bytedance.com>
-> >> ---
-> >> Changelog:
-> >> v1->v2: Addressed comments from kernel test robot
-> >> - Fix compilation error
-> >> Details in here:
-> >> https://lore.kernel.org/bpf/202408152058.YXAnhLgZ-lkp@intel.com/T/
-> >>
-> >>   include/net/tcp.h   | 2 ++
-> >>   net/core/filter.c   | 6 +++++-
-> >>   net/ipv6/tcp_ipv6.c | 6 ++++++
-> >>   3 files changed, 13 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/include/net/tcp.h b/include/net/tcp.h
-> >> index 2aac11e7e1cc..ea673f88c900 100644
-> >> --- a/include/net/tcp.h
-> >> +++ b/include/net/tcp.h
-> >> @@ -493,6 +493,8 @@ struct request_sock *cookie_tcp_reqsk_alloc(const =
-struct request_sock_ops *ops,
-> >>                                              struct tcp_options_receiv=
-ed *tcp_opt,
-> >>                                              int mss, u32 tsoff);
-> >>
-> >> +bool is_tcp_sock_ipv6_mapped(struct sock *sk);
-> >> +
-> >>   #if IS_ENABLED(CONFIG_BPF)
-> >>   struct bpf_tcp_req_attrs {
-> >>          u32 rcv_tsval;
-> >> diff --git a/net/core/filter.c b/net/core/filter.c
-> >> index ecf2ddf633bf..02a825e35c4d 100644
-> >> --- a/net/core/filter.c
-> >> +++ b/net/core/filter.c
-> >> @@ -5399,7 +5399,11 @@ static int sol_ip_sockopt(struct sock *sk, int =
-optname,
-> >>                            char *optval, int *optlen,
-> >>                            bool getopt)
-> >>   {
-> >> -       if (sk->sk_family !=3D AF_INET)
-> >> +       if (sk->sk_family !=3D AF_INET
-> >> +#if IS_BUILTIN(CONFIG_IPV6)
-> >> +           && !is_tcp_sock_ipv6_mapped(sk)
-> >> +#endif
-> >> +           )
-> >>                  return -EINVAL;
+> On Fri, Aug 23, 2024 at 11:49=E2=80=AFAM Jordan Rome <linux@jordanrome.co=
+m> wrote:
 > >
-> > This does not look right to me.
-> >
-> > I would remove the test completely.
-> >
-> > SOL_IP socket options are available on AF_INET6 sockets just fine.
+> > +u32 dynamic_sz =3D 1;
 >
-> Good point on the SOL_IP options.
+> ..
 >
-> The sk could be neither AF_INET nor AF_INET6. e.g. the bpf_get/setsockopt
-> calling from the bpf_lsm's socket_post_create). so the AF_INET test is st=
-ill needed.
+> > +
+> > +       // Make sure this passes the verifier
+> > +       ret =3D bpf_copy_from_user_str(data_long, dynamic_sz &=3D sizeo=
+f(data_long), user_ptr, 0);
 >
+> Did you really mean to &=3D into the global variable while passing it as
+> an argument?
+>
+> And the compiler didn't warn?
 
-OK, then I suggest using sk_is_inet() helper.
-
-> Adding "&& sk->sk_family !=3D AF_INET6" should do. From ipv6_setsockopt, =
-I think
-> it also needs to consider the "sk->sk_type !=3D SOCK_RAW".
->
-> Please add a test in the next re-spin.
->
-> pw-bot: cr
+The compiler didn't warn but no, I meant to do just '&' - here comes v10!
 
