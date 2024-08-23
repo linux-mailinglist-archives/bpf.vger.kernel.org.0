@@ -1,246 +1,159 @@
-Return-Path: <bpf+bounces-37952-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37953-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA7CF95CE5E
-	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 15:49:14 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF58195CE63
+	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 15:50:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 492E61F21F09
-	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 13:49:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3B43DB265E6
+	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 13:50:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 173E0188596;
-	Fri, 23 Aug 2024 13:49:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9807E1885BE;
+	Fri, 23 Aug 2024 13:50:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DIunKEcd"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="UHQYuAzz"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DED0518660E;
-	Fri, 23 Aug 2024 13:49:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3E29188599;
+	Fri, 23 Aug 2024 13:50:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724420947; cv=none; b=h3SFvwhiowrPhdb626OFj4c6xSBozOSZIvJbXxW/zcAgm6bvNYQEsZ2KwgXWms8S1QuNyyxZ9qCnwJgMixTMdwfoCDodrobgKqM0au06CZbqc+pVjnFU7Zl07sJl9kf4hyRvjK49sG7OX93NyUEXkvn/7milo7qkumEsMNCRXVU=
+	t=1724421006; cv=none; b=u5244Lq2e25LOS80yuOCHapY4Y6tTI8OImbJ/Hv1fLHAukmvEBMWEhFiUae51yYNzPAXKnrdEKKYfAW6go89i81vqblLakMfHW9asY/N5wpSSbpOO/lXQAyvBU2Oe/MZNgjMH+3naKAHFKF02CRemExVWc3JrreFMX6h4jllzSk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724420947; c=relaxed/simple;
-	bh=YMftd6XZeiGQUSkzplX6UUjBW8Ul0425anmLA1D6RN8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nzgpuKGLGlzRi9pJAYjlKpWLbngLlg3CniZ5UuZhptmHtK3eKbukTkiBjX8pP5yHHvYOyDvV77kdI/LFVXeZQXEOPvtOKBaW56y4kwg9mzF4MhfuARFjBU+ANEoXEFASVSk9LHDkKjXLm8XDXKhWbWfX+/5bqvKhFjfAF80lAB0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DIunKEcd; arc=none smtp.client-ip=209.85.167.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-5334e41c30bso2129126e87.0;
-        Fri, 23 Aug 2024 06:49:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1724420944; x=1725025744; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=j0rAa/Diw1/WxbqtV5SQj80lVWGH9itqJcEAREaEyNk=;
-        b=DIunKEcd1ob5AAb5Nfiz2nS5nPjvi4Y7EqbJkgzqodeEIHWprD74+N19inFWb0sKN1
-         3XoaJoDsu9j2a8mEu17U/sJHoscLcDt5jXFeRIRzGqawSLY4ZwMCDFJOfJAMWzHyYPm3
-         HfhbkNLvvKuF0sCtSNXIivE1i3PM5+Jnq3jn6ThTg01rmHqs3A//Gzwkpb0XG7E4Mr3y
-         NpY+OycSsVN9oHh0Lm4sDYn5FxLzAHgEWkdpZvO3+U1gqio3SEXywaZUhun5kne1e8Cv
-         d/HnqUBgqA2x2iqAe2QxoqVkjK8V5fRMxe+47k5+e6JVwDCNkUMaPrwURzY3kUVNSo7i
-         sOKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724420944; x=1725025744;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=j0rAa/Diw1/WxbqtV5SQj80lVWGH9itqJcEAREaEyNk=;
-        b=ZyvDLfw7t1ym4GZa3x/xfmtUjA9KkW/7neGAeSN9BtbWmvWbw5pzyMQiOUfRyZFKZt
-         xK0TPm55t7KwROx13TwSXuvw4uAodbbw0RrbHeutvEZcvy8PndPVgZ6ThgaklXCMslxG
-         tioMjoO5Mi7FBefo6qjh99HuxIMwuYy/e66THFxSc3k+GOy/3GYwPTaUORiOYYCrtKNa
-         Zl3RGDU4x2X4debpgvtW4tqAUu+hTyQBlUAtCrZr7LqyIkcFJwmePp6qmYj0VWYXglrv
-         wsl13pV2SWeO5TCcsiEZSC3BXj7r+7A8LJv3Q7ssZp0UwrK3duZymqyWmOyWz1tXBb3q
-         6C0g==
-X-Forwarded-Encrypted: i=1; AJvYcCUmzzT5n3yvMXBlWZmCtXuKhmY3pg3PfPPBY9J28fVgSiCfthERI+BQsZL0htv/ZM+rnHk=@vger.kernel.org, AJvYcCVP3j62TB3Dz3UCiUvbTc+n/VpSG86r3B3sIXYrFygTMhG2Gp3loG/QxF6q+2wlXNiEqtqKr8nvciKwOnNV@vger.kernel.org
-X-Gm-Message-State: AOJu0YyO7MqeyWzOs2O0xt5VjdeLWEjE4tOWGm7+XyEqBWsv0X6Az4fk
-	TRHGGubGEUbZz6jKoZfHU4tcQ++LPYTyh5wTo1nIXjBjk6Rxca4o
-X-Google-Smtp-Source: AGHT+IGm6RnZflH6pQQEhkfwEn48Hiaxow66a2JnEtfny/y8K7ryKkohPurdHVQhp41PUetWoXRf4A==
-X-Received: by 2002:a05:6512:39c5:b0:533:46cc:a736 with SMTP id 2adb3069b0e04-534387be65emr1558356e87.37.1724420943446;
-        Fri, 23 Aug 2024 06:49:03 -0700 (PDT)
-Received: from mobilestation ([178.176.56.174])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-5334ea36c0esm544064e87.98.2024.08.23.06.49.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Aug 2024 06:49:03 -0700 (PDT)
-Date: Fri, 23 Aug 2024 16:48:59 +0300
-From: Serge Semin <fancer.lancer@gmail.com>
-To: jitendra.vegiraju@broadcom.com
-Cc: netdev@vger.kernel.org, alexandre.torgue@foss.st.com, 
-	joabreu@synopsys.com, davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
-	pabeni@redhat.com, mcoquelin.stm32@gmail.com, bcm-kernel-feedback-list@broadcom.com, 
-	richardcochran@gmail.com, ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org, 
-	john.fastabend@gmail.com, rmk+kernel@armlinux.org.uk, ahalaney@redhat.com, 
-	xiaolei.wang@windriver.com, rohan.g.thomas@intel.com, Jianheng.Zhang@synopsys.com, 
-	leong.ching.swee@intel.com, linux-kernel@vger.kernel.org, 
-	linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org, 
-	andrew@lunn.ch, linux@armlinux.org.uk, horms@kernel.org, 
-	florian.fainelli@broadcom.com
-Subject: Re: [net-next v4 3/5] net: stmmac: Integrate dw25gmac into stmmac
- hwif handling
-Message-ID: <vxpwwstbvbruaafcatq5zyi257hf25x5levct3y7s7ympcsqvh@b6wmfkd4cxfy>
-References: <20240814221818.2612484-1-jitendra.vegiraju@broadcom.com>
- <20240814221818.2612484-4-jitendra.vegiraju@broadcom.com>
+	s=arc-20240116; t=1724421006; c=relaxed/simple;
+	bh=5GiXg5grCKH9UPEePNehPEjM6L22MBcJ1OYY6wZfU0M=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=fT9fR0soz4G4ZniTkVClAnk8Bfn4epPC40cHZICSAYnxrnPjB9o/e/p8OrlWWFljC8v7WBQSYhQT22MvjlzBXMnIPH20qaZNZMdngQK8fmlgzC8u7AYD3Mi+zIahz8s2kRh6kkTqw0mYvTrfnts7r7xgFxhh669BvCDa8u6ZL+M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=UHQYuAzz; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References;
+	bh=a11LqUG0kCMn8QJAx5ciVGhtCbw78YNzvmbklFMT4gY=; b=UHQYuAzz35IHjhxifroeb5jgMZ
+	vs3twGsitlTHT9LfAP4B46FZ3Ho345LcTcBHGylJZpea51LRuFc1rcfQBjatJpcKDEmyPXKsWUzc0
+	XJgk7OyIy2RgQPRyzAZ9InaO4Ew8mrzmIkKD6zRiLNtvQ1Ox6kRpHrQb1Knk1jVN7q6J0EzL1dHAP
+	dCpstnz+nIc3S3IK8P01GXEpwaaXAqvedpjl7HdCaBmUnoa99tkuqHPGwIg9MJnRwfZDAT5wDGP7b
+	DJedIPgeHiJVlHtQ93Ixewj3CfdZnf7ljseoLYz7br4wLZCIHb8kvBusU6EdoXdnxUWTZExwQSWHB
+	kVSg106w==;
+Received: from 23.248.197.178.dynamic.cust.swisscom.net ([178.197.248.23] helo=localhost)
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1shUfw-000AAK-7p; Fri, 23 Aug 2024 15:50:00 +0200
+From: Daniel Borkmann <daniel@iogearbox.net>
+To: davem@davemloft.net
+Cc: kuba@kernel.org,
+	pabeni@redhat.com,
+	edumazet@google.com,
+	daniel@iogearbox.net,
+	ast@kernel.org,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	netdev@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: pull-request: bpf-next 2024-08-23
+Date: Fri, 23 Aug 2024 15:49:59 +0200
+Message-Id: <20240823134959.1091-1-daniel@iogearbox.net>
+X-Mailer: git-send-email 2.21.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240814221818.2612484-4-jitendra.vegiraju@broadcom.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27376/Fri Aug 23 10:47:45 2024)
 
-Hi Jitendra
+Hi David, hi Jakub, hi Paolo, hi Eric,
 
-On Wed, Aug 14, 2024 at 03:18:16PM -0700, jitendra.vegiraju@broadcom.com wrote:
-> From: Jitendra Vegiraju <jitendra.vegiraju@broadcom.com>
-> 
-> Integrate dw25gmac support into stmmac hardware interface handling.
-> Added a new entry to the stmmac_hw table in hwif.c.
-> Define new macros DW25GMAC_CORE_4_00 and DW25GMAC_ID to identify 25GMAC
-> device.
-> Since BCM8958x is an early adaptor device, the synopsis_id reported in HW
-> is 0x32 and device_id is DWXGMAC_ID. Provide override support by defining
-> synopsys_dev_id member in struct stmmac_priv so that driver specific setup
-> functions can override the hardware reported values.
-> 
-> Signed-off-by: Jitendra Vegiraju <jitendra.vegiraju@broadcom.com>
-> ---
->  drivers/net/ethernet/stmicro/stmmac/common.h |  2 ++
->  drivers/net/ethernet/stmicro/stmmac/hwif.c   | 25 ++++++++++++++++++--
->  drivers/net/ethernet/stmicro/stmmac/stmmac.h |  1 +
->  3 files changed, 26 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/common.h b/drivers/net/ethernet/stmicro/stmmac/common.h
-> index 684489156dce..46edbe73a124 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/common.h
-> +++ b/drivers/net/ethernet/stmicro/stmmac/common.h
-> @@ -38,9 +38,11 @@
->  #define DWXGMAC_CORE_2_10	0x21
->  #define DWXGMAC_CORE_2_20	0x22
->  #define DWXLGMAC_CORE_2_00	0x20
-> +#define DW25GMAC_CORE_4_00	0x40
->  
->  /* Device ID */
->  #define DWXGMAC_ID		0x76
-> +#define DW25GMAC_ID		0x55
->  #define DWXLGMAC_ID		0x27
->  
->  #define STMMAC_CHAN0	0	/* Always supported and default for all chips */
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/hwif.c b/drivers/net/ethernet/stmicro/stmmac/hwif.c
-> index 29367105df54..97e5594ddcda 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/hwif.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/hwif.c
-> @@ -278,6 +278,27 @@ static const struct stmmac_hwif_entry {
->  		.est = &dwmac510_est_ops,
->  		.setup = dwxlgmac2_setup,
->  		.quirks = stmmac_dwxlgmac_quirks,
+The following pull-request contains BPF updates for your *net-next* tree.
 
-> +	}, {
-> +		.gmac = false,
-> +		.gmac4 = false,
-> +		.xgmac = true,
-> +		.min_id = DW25GMAC_CORE_4_00,
-> +		.dev_id = DW25GMAC_ID,
-> +		.regs = {
-> +			.ptp_off = PTP_XGMAC_OFFSET,
-> +			.mmc_off = MMC_XGMAC_OFFSET,
-> +			.est_off = EST_XGMAC_OFFSET,
-> +		},
-> +		.desc = &dwxgmac210_desc_ops,
-> +		.dma = &dw25gmac400_dma_ops,
-> +		.mac = &dwxgmac210_ops,
-> +		.hwtimestamp = &stmmac_ptp,
-> +		.mode = NULL,
-> +		.tc = &dwmac510_tc_ops,
-> +		.mmc = &dwxgmac_mmc_ops,
-> +		.est = &dwmac510_est_ops,
-> +		.setup = dwxgmac2_setup,
-> +		.quirks = NULL,
->  	},
+We've added 10 non-merge commits during the last 15 day(s) which contain
+a total of 10 files changed, 222 insertions(+), 190 deletions(-).
 
-This can be replaced with just:
+The main changes are:
 
-+	}, {
-+		.gmac = false,
-+		.gmac4 = false,
-+		.xgmac = true,
-+		.min_id = DW25GMAC_CORE_4_00,
-+		.dev_id = DWXGMAC_ID, /* Early DW 25GMAC IP-core had XGMAC ID */
-+		.regs = {
-+			.ptp_off = PTP_XGMAC_OFFSET,
-+			.mmc_off = MMC_XGMAC_OFFSET,
-+			.est_off = EST_XGMAC_OFFSET,
-+		},
-+		.desc = &dwxgmac210_desc_ops,
-+		.dma = &dw25gmac400_dma_ops,
-+		.mac = &dwxgmac210_ops,
-+		.hwtimestamp = &stmmac_ptp,
-+		.mode = NULL,
-+		.tc = &dwmac510_tc_ops,
-+		.mmc = &dwxgmac_mmc_ops,
-+		.est = &dwmac510_est_ops,
-+		.setup = dw25gmac_setup,
-+		.quirks = NULL,
-	}
+1) Add TCP_BPF_SOCK_OPS_CB_FLAGS to bpf_*sockopt() to address the case when
+   long-lived sockets miss a chance to set additional callbacks if a sockops
+   program was not attached early in their lifetime, from Alan Maguire.
 
-and you won't need to pre-define the setup() method in the
-glue driver. Instead you can define a new dw25xgmac_setup() method in
-the dwxgmac2_core.c as it's done for the DW XGMAC/LXGMAC IP-cores.
+2) Add a batch of BPF selftest improvements which fix a few bugs and add missing
+   features to improve the test coverage of sockmap/sockhash, from Michal Luczaj.
 
-Note if your device is capable to work with up to 10Gbps speed, then
-just set the plat_stmmacenet_data::max_speed field to SPEED_10000.
-Alternatively if you really need to specify the exact MAC
-capabilities, then you can implement what Russell suggested here
-sometime ago:
-https://lore.kernel.org/netdev/Zf3ifH%2FCjyHtmXE3@shell.armlinux.org.uk/
+3) Fix a false-positive Smatch-reported off-by-one in tcp_validate_cookie() which
+   is part of the test_tcp_custom_syncookie BPF selftest, from Kuniyuki Iwashima.
 
-If you also have a DW 25GMAC-based device with 0x55 device ID, then
-just add another stmmac_hw[] array entry.
+4) Fix the flow_dissector BPF selftest which had a bug in IP header's tot_len
+   calculation doing subtraction after htons() instead of inside htons(), from
+   Asbjørn Sloth Tønnesen.
 
->  };
->  
-> @@ -304,7 +325,7 @@ int stmmac_hwif_init(struct stmmac_priv *priv)
->  
->  	/* Save ID for later use */
->  	priv->synopsys_id = id;
-> -
-> +	priv->synopsys_dev_id = dev_id;
->  	/* Lets assume some safe values first */
->  	priv->ptpaddr = priv->ioaddr +
->  		(needs_gmac4 ? PTP_GMAC4_OFFSET : PTP_GMAC3_X_OFFSET);
-> @@ -339,7 +360,7 @@ int stmmac_hwif_init(struct stmmac_priv *priv)
->  		/* Use synopsys_id var because some setups can override this */
->  		if (priv->synopsys_id < entry->min_id)
->  			continue;
-> -		if (needs_xgmac && (dev_id ^ entry->dev_id))
-> +		if (needs_xgmac && (priv->synopsys_dev_id ^ entry->dev_id))
->  			continue;
->  
->  		/* Only use generic HW helpers if needed */
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac.h b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-> index b23b920eedb1..9784bbaf9a51 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-> @@ -282,6 +282,7 @@ struct stmmac_priv {
->  	struct stmmac_counters mmc;
->  	int hw_cap_support;
->  	int synopsys_id;
+Please consider pulling these changes from:
 
-> +	int synopsys_dev_id;
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git tags/for-netdev
 
-With the suggestion above implemented you won't need this.
+Thanks a lot!
 
--Serge(y)
+Also thanks to reporters, reviewers and testers of commits in this pull-request:
 
->  	u32 msg_enable;
->  	int wolopts;
->  	int wol_irq;
-> -- 
-> 2.34.1
-> 
+Dan Carpenter, Jakub Sitnicki, Toke Høiland-Jørgensen, Yonghong Song
+
+----------------------------------------------------------------
+
+The following changes since commit 91d516d4de48532d967a77967834e00c8c53dfe6:
+
+  net: mvpp2: Increase size of queue_name buffer (2024-08-07 20:21:05 -0700)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git tags/for-netdev
+
+for you to fetch changes up to af8a066f1c473261881a6d8e2b55cca8eda9ce80:
+
+  selftest: bpf: Remove mssind boundary check in test_tcp_custom_syncookie.c. (2024-08-21 23:19:33 -0700)
+
+----------------------------------------------------------------
+bpf-next-for-netdev
+
+----------------------------------------------------------------
+Alan Maguire (2):
+      bpf/bpf_get,set_sockopt: add option to set TCP-BPF sock ops flags
+      selftests/bpf: add sockopt tests for TCP_BPF_SOCK_OPS_CB_FLAGS
+
+Asbjørn Sloth Tønnesen (1):
+      selftests/bpf: Avoid subtraction after htons() in ipip tests
+
+Kuniyuki Iwashima (1):
+      selftest: bpf: Remove mssind boundary check in test_tcp_custom_syncookie.c.
+
+Martin KaFai Lau (2):
+      Merge branch 'add TCP_BPF_SOCK_OPS_CB_FLAGS to bpf_*sockopt()'
+      Merge branch 'selftests/bpf: Various sockmap-related fixes'
+
+Michal Luczaj (6):
+      selftests/bpf: Support more socket types in create_pair()
+      selftests/bpf: Socket pair creation, cleanups
+      selftests/bpf: Simplify inet_socketpair() and vsock_socketpair_connectible()
+      selftests/bpf: Honour the sotype of af_unix redir tests
+      selftests/bpf: Exercise SOCK_STREAM unix_inet_redir_to_connected()
+      selftests/bpf: Introduce __attribute__((cleanup)) in create_pair()
+
+ include/uapi/linux/bpf.h                           |   3 +-
+ net/core/filter.c                                  |  16 +++
+ tools/include/uapi/linux/bpf.h                     |   3 +-
+ .../selftests/bpf/prog_tests/flow_dissector.c      |  12 +-
+ .../selftests/bpf/prog_tests/setget_sockopt.c      |  47 +++++++
+ .../selftests/bpf/prog_tests/sockmap_basic.c       |  28 ++--
+ .../selftests/bpf/prog_tests/sockmap_helpers.h     | 149 ++++++++++++++-------
+ .../selftests/bpf/prog_tests/sockmap_listen.c      | 117 ++--------------
+ tools/testing/selftests/bpf/progs/setget_sockopt.c |  26 +++-
+ .../bpf/progs/test_tcp_custom_syncookie.c          |  11 +-
+ 10 files changed, 222 insertions(+), 190 deletions(-)
 
