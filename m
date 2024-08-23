@@ -1,192 +1,132 @@
-Return-Path: <bpf+bounces-37993-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37995-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E14895D934
-	for <lists+bpf@lfdr.de>; Sat, 24 Aug 2024 00:21:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 48F3895D937
+	for <lists+bpf@lfdr.de>; Sat, 24 Aug 2024 00:22:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 93BE5B215DE
-	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 22:21:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A0372B20B77
+	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 22:22:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8F2419414A;
-	Fri, 23 Aug 2024 22:20:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 671171C871C;
+	Fri, 23 Aug 2024 22:22:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="gooV7xME"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VVIUBaMa"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08B2D193412
-	for <bpf@vger.kernel.org>; Fri, 23 Aug 2024 22:20:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3011139CFC;
+	Fri, 23 Aug 2024 22:22:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724451652; cv=none; b=gf2QeSvdyXeTbjdOzUq9omGhifUAuffZC6jdl1TnxJenq7e7eguKBgjSGTZ0RAwCeHyrHN3IrB7Gz25RNZ5a7d6HDcMA99aCxkHuuYx7M6CMF2pmbp8FyQJhKal9ZP+PnH/HsH0mM+VtsnUqtutt39M4NN/XK82ONSTRD8UGvJ4=
+	t=1724451728; cv=none; b=kESFMM5qDMRfWpYbEQTMztxM4fLXBdV2yDwKoyWWaERxYuYw5cBNn+DVxcjKiFEvqWaTNuWkDuEDCq5vxB/HJNyaty5AlBkaTX9hQBqp6LMEF81iVPiJ/XO0DF1RBGF24cE/e8/iuYmhPBjOz7g2bpnLiijJBSJwp0ke7NzKRB0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724451652; c=relaxed/simple;
-	bh=QK8MK39HiFkZC9IdDGeoH6mRwoWDNkw7grcxl9vDWYY=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=XsYVTM7EwPYNwY2BwUyXYqlbsAUnzn+r/feepfPu1+3yRk54j5vlNFfXhyY7SkvQ/TdpQIf0tPjCpvYlsrBM9eD7gDEXEhH21VOqnnA4bSprGjX9dGvgkYnq1EF1U5wth0yaVb5aT+KLrSYyhhncRPuEjhhLx5xJ3e+cSy18Koo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=gooV7xME; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:MIME-Version:
-	References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-	Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=y0Oj4oQJjwroW1spdDm2zx9giylR4ILGPim9m4wm28g=; b=gooV7xMEj3m44BSokYiPjxaHrO
-	EqXqVNdXKrm5x+OqlrlrXWWEmxeJeP/5lgs5xsFu+br7YOxSQbLYf4FTMwpvIh5Z8UNPGUhQBAIgO
-	0CgjVwcXB/YMsQHfGv/mLtqYLTtwvp7KRhL+lNlP8Lk+nRSwxhyktmQC/awUMUpV5Fhy/HhsXAWSS
-	rqDqHAtqn3w91IMqNCbdZ1Ceijmuut1mQh2obUW55FXNYfoIfjkPqB8G+wlMj+LAPe6DvRy/rVK4d
-	l6oc+PfrEGR0org6sXRejcSY7hzfLCiEjGrNsBU1biZW2i2NRPOXw/fbQgeXVDTkoRMqu9mCsXtJm
-	8/hbj/ig==;
-Received: from 23.248.197.178.dynamic.cust.swisscom.net ([178.197.248.23] helo=localhost)
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1shceF-000FrE-RP; Sat, 24 Aug 2024 00:20:47 +0200
-From: Daniel Borkmann <daniel@iogearbox.net>
-To: bpf@vger.kernel.org
-Cc: kongln9170@gmail.com,
-	Daniel Borkmann <daniel@iogearbox.net>
-Subject: [PATCH bpf 4/4] selftests/bpf: Add a test case to write into .rodata
-Date: Sat, 24 Aug 2024 00:20:33 +0200
-Message-Id: <20240823222033.31006-4-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20240823222033.31006-1-daniel@iogearbox.net>
-References: <20240823222033.31006-1-daniel@iogearbox.net>
+	s=arc-20240116; t=1724451728; c=relaxed/simple;
+	bh=z42+Q8AZanZAyEhdmQQpfFOP7RxuncrUYLIRyjSCh9o=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=C38aPCPHea+nMGaWt+uYWIwqb7/Lu87jkUC7RWgOCC+1+4e9vkgtXjevIwT/bdpqqjMlGEsuvJS5Dyt+opx3e9muSjJDhao7aBq0muBMOaeniM0bhYMPtVwy43mS/wNpUlcmXaSfr9NEtW676Vxj6I+Nnr3S7KNyRqFPBlD8sCU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VVIUBaMa; arc=none smtp.client-ip=209.85.215.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-7cd9e634ea9so1486912a12.0;
+        Fri, 23 Aug 2024 15:22:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1724451726; x=1725056526; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=z42+Q8AZanZAyEhdmQQpfFOP7RxuncrUYLIRyjSCh9o=;
+        b=VVIUBaMaktKP9nz8snJlPUlrdtL0V6tViSNgHLtce/i8hJCHnPiTkMt4jtBDF1Cbza
+         gIChOUxuGFWyMcU5ZHDIll9/Oj3DE2YTGqxkauoD7Ru8PG+Qgjx0sLtOlc26u0Ao4It8
+         QYO/Hims1YqkAvJPh5azVmFjQCVvtAQ1twOIi7za9dbK5e4OQj236JXOVOEVa4xC9U6n
+         NqeYnd4p66poBn7tGELW+uLxqjwcoj7k2eee5kGyTAcartNf1xXRBsfJhvxy94HvJCZ3
+         KkQ6sLDYpigdpFEZbAvm9340eRGPwWw6OBcNujfaxqavx4p5hyaCJlVd4ooIz5cn4ta9
+         bSDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1724451726; x=1725056526;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=z42+Q8AZanZAyEhdmQQpfFOP7RxuncrUYLIRyjSCh9o=;
+        b=E680AjRAVjax+9sMNQs70o/T2qfnaHDyxq4Lpw5gJyEosq01zswm4viFz36GRMhxg5
+         nD+hGvjd2QAoNb4Buupu+cK7ia47jrCupvUJtTgTtss8qdLzENCcOh+CQzfeBx2Mmco8
+         LlgMsprGELCsqz0/FEPd0cdH1XCL3J4ZvoyH94wnqYG8qtOjouUoOBoNq+6oJ5B23NHO
+         e3khFDzU6BIisuGpMcPMY7jLmp4nQO368sY0gRJC88MbsgGmdKZeP22UFfpBwbnTKaS8
+         Io8Yit6NnF1AALc5IZzjhBsMX6idorBFsiqeMKRlUYxL6GmMqQR9mA1B6F1Wjm+5DBgB
+         tQjQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVTWu5y3n9Fr3oBi3bTdpXoChzYQC8I66m/3fimCxHvEh6q2zBxqQxbroiZ0qxfrIXl90A=@vger.kernel.org, AJvYcCVyij9FjGv4GwkxfEtGYJMO/9D/PVOALC1ivmzj1iU/bxvL7Bknr+TJC/hEwk91FLnRZo9UCEa9TMu4COjUSw==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyAB2/dh3nrcr3oOSUz9ApdrRadF/STOyY5GeNRGgsdbgE/zEZs
+	P6ayMpLfVdjhYvgM2y+JAUinps+seC/XhXgup4BYfl57rMrjlc29
+X-Google-Smtp-Source: AGHT+IHe2MZNqfdwKxtjHPiq7/ZoqoBvwMUroZDtf9P1IkJ3Smw4qpWQdX0dyd5EQEp0cv9vlkwxkQ==
+X-Received: by 2002:a05:6a20:c793:b0:1c6:f213:83b with SMTP id adf61e73a8af0-1cc89ed955emr3749733637.37.1724451725696;
+        Fri, 23 Aug 2024 15:22:05 -0700 (PDT)
+Received: from [192.168.0.235] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2d613a420cdsm4691284a91.28.2024.08.23.15.22.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Aug 2024 15:22:04 -0700 (PDT)
+Message-ID: <8fc31d49d4666599cc2ac6815ff3e0b09adc8a94.camel@gmail.com>
+Subject: Re: [PATCH v6 bpf-next 09/10] bpf: wire up sleepable
+ bpf_get_stack() and bpf_get_task_stack() helpers
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org
+Cc: linux-mm@kvack.org, akpm@linux-foundation.org, adobriyan@gmail.com, 
+	shakeel.butt@linux.dev, hannes@cmpxchg.org, ak@linux.intel.com, 
+	osandov@osandov.com, song@kernel.org, jannh@google.com, 
+	linux-fsdevel@vger.kernel.org, willy@infradead.org
+Date: Fri, 23 Aug 2024 15:22:00 -0700
+In-Reply-To: <20240814185417.1171430-10-andrii@kernel.org>
+References: <20240814185417.1171430-1-andrii@kernel.org>
+	 <20240814185417.1171430-10-andrii@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.4 (3.52.4-1.fc40) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27376/Fri Aug 23 10:47:45 2024)
 
-Add a test case which attempts to write into .rodata section of the
-BPF program, and for comparison this adds test cases also for .bss
-and .data section.
+On Wed, 2024-08-14 at 11:54 -0700, Andrii Nakryiko wrote:
+> Add sleepable implementations of bpf_get_stack() and
+> bpf_get_task_stack() helpers and allow them to be used from sleepable
+> BPF program (e.g., sleepable uprobes).
+>=20
+> Note, the stack trace IPs capturing itself is not sleepable (that would
+> need to be a separate project), only build ID fetching is sleepable and
+> thus more reliable, as it will wait for data to be paged in, if
+> necessary. For that we make use of sleepable build_id_parse()
+> implementation.
+>=20
+> Now that build ID related internals in kernel/bpf/stackmap.c can be used
+> both in sleepable and non-sleepable contexts, we need to add additional
+> rcu_read_lock()/rcu_read_unlock() protection around fetching
+> perf_callchain_entry, but with the refactoring in previous commit it's
+> now pretty straightforward. We make sure to do rcu_read_unlock (in
+> sleepable mode only) right before stack_map_get_build_id_offset() call
+> which can sleep. By that time we don't have any more use of
+> perf_callchain_entry.
+>=20
+> Note, bpf_get_task_stack() will fail for user mode if task !=3D current.
+> And for kernel mode build ID are irrelevant. So in that sense adding
+> sleepable bpf_get_task_stack() implementation is a no-op. It feel right
+> to wire this up for symmetry and completeness, but I'm open to just
+> dropping it until we support `user && crosstask` condition.
+>=20
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> ---
 
-Before fix:
+All seems logical.
+You skip wiring up support for sleepable bpf_get_task_stack() in
+tp_prog_func_proto(), pe_prog_func_proto() and
+raw_tp_prog_func_proto(), this is because these are used for programs
+that are never run in sleepable context, right?
 
-  # ./vmtest.sh -- ./test_progs -t verifier_const
-  [...]
-  ./test_progs -t verifier_const
-  tester_init:PASS:tester_log_buf 0 nsec
-  process_subtest:PASS:obj_open_mem 0 nsec
-  process_subtest:PASS:specs_alloc 0 nsec
-  run_subtest:PASS:obj_open_mem 0 nsec
-  run_subtest:FAIL:unexpected_load_success unexpected success: 0
-  #465/1   verifier_const/rodata: write rejected:FAIL
-  #465/2   verifier_const/bss: write accepted:OK
-  #465/3   verifier_const/data: write accepted:OK
-  #465     verifier_const:FAIL
-  [...]
+Reviewed-by: Eduard Zingerman <eddyz87@gmail.com>
 
-After fix:
-
-  # ./vmtest.sh -- ./test_progs -t verifier_const
-  [...]
-  ./test_progs -t verifier_const
-  #465/1   verifier_const/rodata: write rejected:OK
-  #465/2   verifier_const/bss: write accepted:OK
-  #465/3   verifier_const/data: write accepted:OK
-  #465     verifier_const:OK
-  [...]
-
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
----
- .../selftests/bpf/prog_tests/tc_links.c       |  1 +
- .../selftests/bpf/prog_tests/verifier.c       |  2 +
- .../selftests/bpf/progs/verifier_const.c      | 42 +++++++++++++++++++
- 3 files changed, 45 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/verifier_const.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/tc_links.c b/tools/testing/selftests/bpf/prog_tests/tc_links.c
-index 1af9ec1149aa..92c647dfd6f1 100644
---- a/tools/testing/selftests/bpf/prog_tests/tc_links.c
-+++ b/tools/testing/selftests/bpf/prog_tests/tc_links.c
-@@ -9,6 +9,7 @@
- #define ping_cmd "ping -q -c1 -w1 127.0.0.1 > /dev/null"
- 
- #include "test_tc_link.skel.h"
-+#include "test_const.skel.h"
- 
- #include "netlink_helpers.h"
- #include "tc_helpers.h"
-diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/testing/selftests/bpf/prog_tests/verifier.c
-index 9dc3687bc406..c0cb1a145274 100644
---- a/tools/testing/selftests/bpf/prog_tests/verifier.c
-+++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
-@@ -21,6 +21,7 @@
- #include "verifier_cgroup_inv_retcode.skel.h"
- #include "verifier_cgroup_skb.skel.h"
- #include "verifier_cgroup_storage.skel.h"
-+#include "verifier_const.skel.h"
- #include "verifier_const_or.skel.h"
- #include "verifier_ctx.skel.h"
- #include "verifier_ctx_sk_msg.skel.h"
-@@ -140,6 +141,7 @@ void test_verifier_cfg(void)                  { RUN(verifier_cfg); }
- void test_verifier_cgroup_inv_retcode(void)   { RUN(verifier_cgroup_inv_retcode); }
- void test_verifier_cgroup_skb(void)           { RUN(verifier_cgroup_skb); }
- void test_verifier_cgroup_storage(void)       { RUN(verifier_cgroup_storage); }
-+void test_verifier_const(void)                { RUN(verifier_const); }
- void test_verifier_const_or(void)             { RUN(verifier_const_or); }
- void test_verifier_ctx(void)                  { RUN(verifier_ctx); }
- void test_verifier_ctx_sk_msg(void)           { RUN(verifier_ctx_sk_msg); }
-diff --git a/tools/testing/selftests/bpf/progs/verifier_const.c b/tools/testing/selftests/bpf/progs/verifier_const.c
-new file mode 100644
-index 000000000000..81302d9738fa
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/verifier_const.c
-@@ -0,0 +1,42 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2024 Isovalent */
-+
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include "bpf_misc.h"
-+
-+const long foo = 42;
-+long bar;
-+long bart = 96;
-+
-+SEC("tc/ingress")
-+__description("rodata: write rejected")
-+__failure __msg("write into map forbidden")
-+int tcx1(struct __sk_buff *skb)
-+{
-+	char buff[] = { '8', '4', '\0' };
-+	bpf_strtol(buff, sizeof(buff), 0, (long *)&foo);
-+	return TCX_PASS;
-+}
-+
-+SEC("tc/ingress")
-+__description("bss: write accepted")
-+__success
-+int tcx2(struct __sk_buff *skb)
-+{
-+	char buff[] = { '8', '4', '\0' };
-+	bpf_strtol(buff, sizeof(buff), 0, &bar);
-+	return TCX_PASS;
-+}
-+
-+SEC("tc/ingress")
-+__description("data: write accepted")
-+__success
-+int tcx3(struct __sk_buff *skb)
-+{
-+	char buff[] = { '8', '4', '\0' };
-+	bpf_strtol(buff, sizeof(buff), 0, &bart);
-+	return TCX_PASS;
-+}
-+
-+char LICENSE[] SEC("license") = "GPL";
--- 
-2.43.0
+[...]
 
 
