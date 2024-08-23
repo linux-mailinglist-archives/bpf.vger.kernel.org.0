@@ -1,179 +1,111 @@
-Return-Path: <bpf+bounces-37916-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37917-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 394B795C2FE
-	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 03:49:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A7AC95C329
+	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 04:20:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8073EB221A8
-	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 01:49:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 37B0B284704
+	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 02:20:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A8361D530;
-	Fri, 23 Aug 2024 01:48:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 228061C694;
+	Fri, 23 Aug 2024 02:20:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Lsm/MmQO"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="PMLzNK/E"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48C231CD31
-	for <bpf@vger.kernel.org>; Fri, 23 Aug 2024 01:48:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 904821CD00
+	for <bpf@vger.kernel.org>; Fri, 23 Aug 2024 02:19:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724377724; cv=none; b=qT6KoP8c6CCVVFJ3qy9I+YJqfM6pXsStIyzd3bjTJZcVUW61rTVelkRGnqbaxKrXPdXA7f9NPzN1XCEetVV3TE3esGPRCq6fpZ8X/lFv2N9fLUJAV+SJ5HlDBtFpVjuSo3UNJMTskAfukxRKvy28wLTKrhCSbAPJRhlgj2Bzxy4=
+	t=1724379600; cv=none; b=YmUCoNM6uh/jqhlcaekIADir7gEnTWe6qoHU2jnmE+B4Zu3fcAEXIvcZT8IcpjR1+pXj/q5kD/yFm/DdKAJlKyU8Ng9vkW/P4ruZq9HiTnZCJix3DIWACp0/E9UFPH+k89OoOddWjZ39iZL27bbYB7AkM7AfOhO+6tcQVkr/+7o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724377724; c=relaxed/simple;
-	bh=0BbKF++PKaq1i5yYuCZNH2yPvoAqTN3M876SxYRmVWc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=rbOeQu3Zhrn/8/tXkt9jHHKXw4lnBfj9gLDLG4MC3b4e85+E765D7cA6OkQ2bypU8OrDHeNCY394TOQDCVLwP6SHrKYYbo4TNpbWZO03PCM1DhSCj22qwFH3MFtgXkVP3h7gRN/pAcYfocO28asRfF/yIs5ggyP1xBw59vXBYCE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Lsm/MmQO; arc=none smtp.client-ip=209.85.221.45
+	s=arc-20240116; t=1724379600; c=relaxed/simple;
+	bh=kqKGVXaBuMbvE0nOrMIZkXFmNuTFw1QPsV5sRh+9eJA=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=cWUwrzGw8/4rIGzUU3P3O//j+XrDDWfv9E1nT1Jb/l31ot4s3rUNUE1IQgGvwbRq1/vxaTpjW5CpXxFnU2ziwEMnkt29YojtGQYHCq+hPRXlkoc2jD7xvErMQyqdNfIP7ATItFAKKMgQfrcpW+fpXJhSyyAMFM8fUsGaEnScA7E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=PMLzNK/E; arc=none smtp.client-ip=209.85.221.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-371afae614aso696743f8f.0
-        for <bpf@vger.kernel.org>; Thu, 22 Aug 2024 18:48:42 -0700 (PDT)
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-371ba7e46easo682504f8f.0
+        for <bpf@vger.kernel.org>; Thu, 22 Aug 2024 19:19:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1724377721; x=1724982521; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=i4JwmTdEUSSkkUga1FYXioC0KGPP04BzkybNO2RcnDY=;
-        b=Lsm/MmQO7Zp5KTAPPrg/SpHWDyjm1nhlSvoQB2VMA62BlvRXk/BRD57DViL4A+Q26Y
-         82yoQMQyBjX1C0u5OF1La2C3QTG93fkaJ7XnOP84gdP4gZTDPb4a1q+zPSn4KHdfHCmb
-         CGK1jnK8JgTm7ZQ4ZwTL4Jhnt1qdDqLmfXy+WnAw4ryN2fA/o84pmuPpzgE1X3YDaspL
-         V5erJpJAERwO0qs7FZbmaNyMFX6p8uUps5cLWJ86Dxg4s9LJIHRxCEp3sZXalYWaCTvk
-         zyEst1ZnQxnq0Osw+/WnQcJU8qVacOBkZ9glm7zhTaIYZwCMcyAW3E0ispB6BqDY35JA
-         2FZA==
+        d=suse.com; s=google; t=1724379597; x=1724984397; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=XpITzH/ChCJ6L3eyHjuDVZ8jKyXR90GFT16jJ4SePRU=;
+        b=PMLzNK/EGXedNK6V53Ugsp3lsQxL1Q8bcSLlxmWm8SWH119RelqxPXlLRp9G0lJGir
+         rp5e/40qZ3y1WdNBThFu0jNg/sOEj60iP0BDzmYqdcg+BxnZ9vAkPLrVfeUriUkCRRsP
+         ixHbGEc8/SK0CuWwot89onpV8Ms+YH/RcgrQ2MB3BVxo2t1pimXnCy09sNRpQ2/seLZQ
+         0bWbq3L0NlJFb8d+5NrsLkV86wrJCdslFy6Zo5sc24v7OFtgsNNwlNyruPvz+7X8wN+k
+         jZQ1Nmiy72NVSUG1oJeqQm1LC2qx2NSiTu6RbAgLX3MGevaT5fkIkW8B/7MRUuNkVH/S
+         W7BA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724377721; x=1724982521;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=i4JwmTdEUSSkkUga1FYXioC0KGPP04BzkybNO2RcnDY=;
-        b=rXjGlXtH5vGx34Bkw9pwAdSjwCRge8Kl8JgBzZfXHSeIGi4pNM17V0pkki1+XPwvly
-         eSgo5OPGn3mIW8Tznp5+Xivda7Rj3uAzspr3MLrXhEfCbsZZ1QCGK0tcljsraNLoHybe
-         IvGYFCdDIa4A/t+jy7+IBxuvrItJ6tmInZAGC/7UG5KIyVvvZMOhusp5vRxUMB5dckj6
-         X75fbNRlO5tEDFCXtMKViUYGmu2Xp6lXDALygdqdadW0RlNIzMMkUae+F0/tyGsi8XJX
-         4NntJvw34oEVGpGBkNkJ5oWBVXzU2bt4o7+1q4+25jOI1DVXLzzACZiTHMoyokVn1Yge
-         r80A==
-X-Gm-Message-State: AOJu0YxgXEOL1C/GBTL2KvLm93DQqZ6Vd0wb4Ti456yEsv+Rw4zh9+OS
-	UYu/2RZcYr0g2ZK5H2YSbU9vYWzTn/fD8vYebClalVj4BS15FiK95KFoi9yrZAU=
-X-Google-Smtp-Source: AGHT+IFCJDkWLwsDk4+ydS60CisBZYncl8PYxYWq5iTjPTVgqyPIHKblpr7HOlXJA/hk3vkNIYUv5g==
-X-Received: by 2002:adf:b309:0:b0:367:4e05:bb7b with SMTP id ffacd0b85a97d-373118e3c8emr265065f8f.53.1724377720650;
-        Thu, 22 Aug 2024 18:48:40 -0700 (PDT)
-Received: from localhost (27-51-129-77.adsl.fetnet.net. [27.51.129.77])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-714343403b1sm1982337b3a.211.2024.08.22.18.48.39
+        d=1e100.net; s=20230601; t=1724379597; x=1724984397;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=XpITzH/ChCJ6L3eyHjuDVZ8jKyXR90GFT16jJ4SePRU=;
+        b=dkHR7qIyM5tsK9AlXkxBZrBKuYf9eDW0dSEix7j/d4ZAxkBOilbI3BBGIW8T8wVurv
+         cv6l/kio0363SLnzBeE+uPWIiC3gHNS/B9eanBBt9gKSKRaQ3DT9QStKjuJ3ex7qPQDT
+         4OpxBP8WfXyugI/MxpWf3hhBjCo/tyOBrhlDIhMAnW003hMeN4pUaKp0rqFciLitwEw0
+         zw3+xw3tz80s6ZzmlzmU5DucNf9cnnBAROx/VrQILVP/tp0fdpkQw791sJQYhm12vOZ6
+         GPIVxNsOTo9KFRRPAcdXs+0ZQgDWTnaDo49KdgQCnGO8WTfQaWh/Gn7VLaP/ymBDS6KI
+         ceYw==
+X-Gm-Message-State: AOJu0Yxo1aoXS0p2a1MupBmsCVtJ0qvtsddbb/h3yuNv0vh/GSrAfEor
+	mnLHMrf1Ci6YAuOb+3zGSIKDbV+BBYtGIKWnqMd4na3cud+i9mVfDbtGZIFxTAw=
+X-Google-Smtp-Source: AGHT+IEDoPzw03NhboOgRdg27IgdOACMeXwXANCZ8My/LVaHEufViIzTWeOOmFxTsV+/Wt73zw0sZw==
+X-Received: by 2002:a05:6000:1374:b0:366:eade:bfbb with SMTP id ffacd0b85a97d-373118c7bf7mr336842f8f.46.1724379596678;
+        Thu, 22 Aug 2024 19:19:56 -0700 (PDT)
+Received: from u94a (27-51-129-77.adsl.fetnet.net. [27.51.129.77])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2d5eba263f0sm4976429a91.33.2024.08.22.19.19.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Aug 2024 18:48:40 -0700 (PDT)
+        Thu, 22 Aug 2024 19:19:56 -0700 (PDT)
+Date: Fri, 23 Aug 2024 10:19:49 +0800
 From: Shung-Hsi Yu <shung-hsi.yu@suse.com>
-To: stable@vger.kernel.org
-Cc: bpf@vger.kernel.org,
-	Shung-Hsi Yu <shung-hsi.yu@suse.com>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Alexei Starovoitov <ast@kernel.org>
-Subject: [PATCH stable 6.6 2/2] selftests/bpf: Add a test to verify previous stacksafe() fix
-Date: Fri, 23 Aug 2024 09:48:29 +0800
-Message-ID: <20240823014829.115038-2-shung-hsi.yu@suse.com>
-X-Mailer: git-send-email 2.46.0
-In-Reply-To: <20240823014829.115038-1-shung-hsi.yu@suse.com>
-References: <20240823014829.115038-1-shung-hsi.yu@suse.com>
+To: kernel-ci@meta.com
+Cc: bpf@vger.kernel.org, andrii@kernel.org, daniel@iogearbox.net, 
+	martin.lau@linux.dev, Alexei Starovoitov <ast@kernel.org>, 
+	Manu Bretelle <chantra@meta.com>
+Subject: BPF CI and stable backports (was Re: [PATCH stable 6.6 2/2]
+ selftests/bpf: Add a test to verify previous stacksafe() fix)
+Message-ID: <pybgmvfeil5euvdz7vs7ioacncrgiz4lnvy5sj3o4prypgsdd4@tzc2ecsmyt6g>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-From: Yonghong Song <yonghong.song@linux.dev>
+Hi,
 
-[ Upstream commit 662c3e2db00f92e50c26e9dc4fe47c52223d9982 ]
+On Fri, Aug 23, 2024 at 01:53:48AM GMT, bot+bpf-ci@kernel.org wrote:
+[...]
+> CI has tested the following submission:
+> Status:     CONFLICT
+> Name:       [stable,6.6,2/2] selftests/bpf: Add a test to verify previous stacksafe() fix
+> Patchwork:  https://patchwork.kernel.org/project/netdevbpf/list/?series=882411&state=*
+> PR:         https://github.com/kernel-patches/bpf/pull/7584
+> 
+> Please rebase your submission onto the most recent upstream change and resubmit
+> the patch to get it tested again.
 
-A selftest is added such that without the previous patch,
-a crash can happen. With the previous patch, the test can
-run successfully. The new test is written in a way which
-mimics original crash case:
-  main_prog
-    static_prog_1
-      static_prog_2
-where static_prog_1 has different paths to static_prog_2
-and some path has stack allocated and some other path
-does not. A stacksafe() checking in static_prog_2()
-triggered the crash.
+It seems the BPF CI picks up stable patches and tries to apply it on top
+of bpf-next, which fails to due conflict. Could a filter be added to CI
+so these are ignored instead? (Or have BPF CI apply and test against
+stable/linux-*, but that seems too much to ask)
 
-Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
-Link: https://lore.kernel.org/r/20240812214852.214037-1-yonghong.song@linux.dev
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Signed-off-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
----
- tools/testing/selftests/bpf/progs/iters.c | 54 +++++++++++++++++++++++
- 1 file changed, 54 insertions(+)
+OTOH if maintainers and reviewers prefers stable backport not to be sent
+to the BPF mailing list, I will drop the CC to BPF mailing list in the
+future.
 
-diff --git a/tools/testing/selftests/bpf/progs/iters.c b/tools/testing/selftests/bpf/progs/iters.c
-index c20c4e38b71c..5685c2810fe5 100644
---- a/tools/testing/selftests/bpf/progs/iters.c
-+++ b/tools/testing/selftests/bpf/progs/iters.c
-@@ -1411,4 +1411,58 @@ __naked int checkpoint_states_deletion(void)
- 	);
- }
- 
-+__u32 upper, select_n, result;
-+__u64 global;
-+
-+static __noinline bool nest_2(char *str)
-+{
-+	/* some insns (including branch insns) to ensure stacksafe() is triggered
-+	 * in nest_2(). This way, stacksafe() can compare frame associated with nest_1().
-+	 */
-+	if (str[0] == 't')
-+		return true;
-+	if (str[1] == 'e')
-+		return true;
-+	if (str[2] == 's')
-+		return true;
-+	if (str[3] == 't')
-+		return true;
-+	return false;
-+}
-+
-+static __noinline bool nest_1(int n)
-+{
-+	/* case 0: allocate stack, case 1: no allocate stack */
-+	switch (n) {
-+	case 0: {
-+		char comm[16];
-+
-+		if (bpf_get_current_comm(comm, 16))
-+			return false;
-+		return nest_2(comm);
-+	}
-+	case 1:
-+		return nest_2((char *)&global);
-+	default:
-+		return false;
-+	}
-+}
-+
-+SEC("raw_tp")
-+__success
-+int iter_subprog_check_stacksafe(const void *ctx)
-+{
-+	long i;
-+
-+	bpf_for(i, 0, upper) {
-+		if (!nest_1(select_n)) {
-+			result = 1;
-+			return 0;
-+		}
-+	}
-+
-+	result = 2;
-+	return 0;
-+}
-+
- char _license[] SEC("license") = "GPL";
--- 
-2.46.0
+Thanks,
+Shung-Hsi
 
+[...]
 
