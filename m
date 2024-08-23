@@ -1,141 +1,256 @@
-Return-Path: <bpf+bounces-37944-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37945-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94D1395CC13
-	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 14:08:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A94FD95CC2A
+	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 14:12:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3A3571F25970
-	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 12:08:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5CBF22810F2
+	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 12:12:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A780185922;
-	Fri, 23 Aug 2024 12:08:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CB0E185932;
+	Fri, 23 Aug 2024 12:12:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="iPI+BYN3"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j62U1aGt"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF677469D;
-	Fri, 23 Aug 2024 12:08:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B29D461FFC;
+	Fri, 23 Aug 2024 12:12:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724414888; cv=none; b=uiptCs8D7BjkXcj4HJGkc99Ee8HQOH2db5TeSG1M/mnpHeCLVbgHPGdiZaoPZWkfEC18OcU3CGFXzB5Lj3wAkykV3BuNSwqDm9rBAe7agO5la/w2eLvriC8Cx0qiACiPkzsLKgOWQl6pT55wD+IBNLTi08cXA+K2BMvA7LzUWts=
+	t=1724415163; cv=none; b=jnix2EoBBTM1MC4HyNavxixjdF7Rg4B6wLD7EwLHKaqjpv9R4x7BsKH1faayZdS0uddF3kbANkrBr3J22ZqM9JPRECl7vegfAJFAicm0y/dA2wYIRgu1H4jy+uj2uTarf2bYAQ1FYuaO/++GPeb1mlgQEEm93GPWeEdkGfLxKN4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724414888; c=relaxed/simple;
-	bh=ZLHQc0IpZLg9q4x1Zu/43JVc/lyLKGgnVMcNtBKYDlo=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=Ze0/gHYZNZpXqnQ+6vReoAwhDYCjWNrj5rYQYw0gpo/b93DLQqwVyfyM9R/8gxq/q5SJCiuUoFC+ybzMmy+oueP6Lstf6fUM3Mqn45wRl0wCx5HFDOqyGfUW+mMrBaeqsoUIzQsWsXYCBu8qhj0iWI++GN//jDNXcU84vZ2wA94=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=iPI+BYN3; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=qOpiN0yfFcQklO8pw7LWA14dBrUyLAlm9Cq1gHMDPM4=; b=iPI+BYN3dTx2KXVDY5zCqRYwKi
-	ruvtzsvl5jZ+sxjO5pm6nqqHUBZWvm5ArFalVZJnov788BxZ8EkpuL9eBrRPUBIyvPE0kxqWvEzuB
-	QgGLgDNYHNjW8a/+h4eR+D9mPD6+QIJuSLR+BHj4JnOCuSOaa/k3rBrMvpJAv/CN6ncZaSEnmv8lH
-	L8qkawPDP9yukC19xy4oG6OuB0Jmo/DcRMgBlmrLkSGFK0hrYHGRw6RyOKUXOWBfXwv6hD65M1UuE
-	ryOaerXlKBOL422+wR1fmWaqLbnKLgYCjo+KfWMPANzPAjfSKiMss3kMhOaOAsMaoXIyw8DLm/DcT
-	HvBVESQw==;
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1shT51-000N3H-GY; Fri, 23 Aug 2024 14:07:47 +0200
-Received: from [178.197.248.23] (helo=linux-2.home)
-	by sslproxy03.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1shT4z-00076m-3C;
-	Fri, 23 Aug 2024 14:07:46 +0200
-Subject: Re: [PATCH bpf-next v2] net: Don't allow to attach xdp if bond slave
- device's upper already has a program
-To: Jiri Pirko <jiri@resnulli.us>, Feng zhou <zhoufeng.zf@bytedance.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, ast@kernel.org, hawk@kernel.org,
- john.fastabend@gmail.com, bigeasy@linutronix.de, lorenzo@kernel.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
- yangzhenze@bytedance.com, wangdongdong.6@bytedance.com,
- =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>
-References: <20240823084204.67812-1-zhoufeng.zf@bytedance.com>
- <Zsh4vPAPBKdRUq8H@nanopsycho.orion>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <6d38eaf5-0a13-9f85-3a5d-0ca354bc45d5@iogearbox.net>
-Date: Fri, 23 Aug 2024 14:07:45 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+	s=arc-20240116; t=1724415163; c=relaxed/simple;
+	bh=A5QVX7km38nRwv6KqoYsXrhmUmTxpCA+0suYvYmI4cY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Z4TvVQSXxiVzH48nsxb+5xOZVxYWBS2fgWXZuWHnKZP5QDkmhAWuNRFdoshUnWHOBP2L64YgYin+Hg31Pgxe0J0yrBWSI1mO+uBw/MsPboW3x+IsD/0t65HNvmAdA3iGuW8M4deAzhLlVrQWxkdcazEVkkko7ePIU/nMs2K/f5o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j62U1aGt; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD327C32786;
+	Fri, 23 Aug 2024 12:12:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1724415163;
+	bh=A5QVX7km38nRwv6KqoYsXrhmUmTxpCA+0suYvYmI4cY=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=j62U1aGtWvoiRdZ8n071nAOv0BzDl4T62UArEtn4carL7SuuO93e0IVoUgBJJT8CI
+	 nr2559FNsK200UqCICK2pQkKiONDn5DsMvXi9zHWLUwHK5ctwEeLy8UrXbD5ltJETC
+	 d6Ea67j9zn3Bdul+CK3JE/eYAhXEvyapR8rJibIRwyLAdhEQl0qLhs1V1TKhXIDELt
+	 Ro1UBBXWfRCJXjrXErPEGMm8OWaDt38taRIwpDjpXLvMfaYkDziu9td2kya9Kl7i0A
+	 e4WfojTfoF8+V3Go2Ep/67WkA8rmUywZlrT302TT6rmrmugQXkhANqfFb06kfnsxVL
+	 9qPsp8/R0l++w==
+Message-ID: <d2e00269-23b8-4a92-84df-959b3c3ae6f1@kernel.org>
+Date: Fri, 23 Aug 2024 15:12:35 +0300
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <Zsh4vPAPBKdRUq8H@nanopsycho.orion>
-Content-Type: text/plain; charset=utf-8; format=flowed
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v9 0/3] Add minimal XDP support to TI AM65 CPSW
+ Ethernet driver
+To: Julien Panis <jpanis@baylibre.com>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Russell King <linux@armlinux.org.uk>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Sumit Semwal <sumit.semwal@linaro.org>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ Simon Horman <horms@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+ Ratheesh Kannoth <rkannoth@marvell.com>,
+ Naveen Mamindlapalli <naveenm@marvell.com>,
+ Jacob Keller <jacob.e.keller@intel.com>
+Cc: danishanwar@ti.com, yuehaibing@huawei.com, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linaro-mm-sig@lists.linaro.org, "Govindarajan, Sriramakrishnan" <srk@ti.com>
+References: <20240223-am65-cpsw-xdp-basic-v9-0-2c194217e325@baylibre.com>
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27376/Fri Aug 23 10:47:45 2024)
+From: Roger Quadros <rogerq@kernel.org>
+In-Reply-To: <20240223-am65-cpsw-xdp-basic-v9-0-2c194217e325@baylibre.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On 8/23/24 1:55 PM, Jiri Pirko wrote:
-> Fri, Aug 23, 2024 at 10:42:04AM CEST, zhoufeng.zf@bytedance.com wrote:
->> From: Feng Zhou <zhoufeng.zf@bytedance.com>
->>
->> Cannot attach when an upper device already has a program, This
->> restriction is only for bond's slave devices or team port, and
->> should not be accidentally injured for devices like eth0 and vxlan0.
+Hello Julien,
+
+On 12/04/2024 18:38, Julien Panis wrote:
+> This patch adds XDP support to TI AM65 CPSW Ethernet driver.
 > 
-> What if I attach xdp program to solo netdev and then I enslave it
-> to bond/team netdev that already has xdp program attached?
-> What prevents me from doing that?
-
-In that case the enslaving of the device to bond(/team) must fail as
-otherwise the latter won't be able to propagate the XDP prog downwards.
-
-Feng, did you double check if we have net or BPF selftest coverage for
-that? If not might be good to add.
-
->> Reviewed-by: Toke Høiland-Jørgensen <toke@redhat.com>
->> Signed-off-by: Feng Zhou <zhoufeng.zf@bytedance.com>
->> ---
->> Changelog:
->> v1->v2: Addressed comments from Paolo Abeni, Jiri Pirko
->> - Use "netif_is_lag_port" relace of "netif_is_bond_slave"
->> Details in here:
->> https://lore.kernel.org/netdev/3bf84d23-a561-47ae-84a4-e99488fc762b@bytedance.com/T/
->>
->> net/core/dev.c | 10 ++++++----
->> 1 file changed, 6 insertions(+), 4 deletions(-)
->>
->> diff --git a/net/core/dev.c b/net/core/dev.c
->> index f66e61407883..49144e62172e 100644
->> --- a/net/core/dev.c
->> +++ b/net/core/dev.c
->> @@ -9502,10 +9502,12 @@ static int dev_xdp_attach(struct net_device *dev, struct netlink_ext_ack *extack
->> 	}
->>
->> 	/* don't allow if an upper device already has a program */
->> -	netdev_for_each_upper_dev_rcu(dev, upper, iter) {
->> -		if (dev_xdp_prog_count(upper) > 0) {
->> -			NL_SET_ERR_MSG(extack, "Cannot attach when an upper device already has a program");
->> -			return -EEXIST;
->> +	if (netif_is_lag_port(dev)) {
->> +		netdev_for_each_upper_dev_rcu(dev, upper, iter) {
->> +			if (dev_xdp_prog_count(upper) > 0) {
->> +				NL_SET_ERR_MSG(extack, "Cannot attach when an upper device already has a program");
->> +				return -EEXIST;
->> +			}
->> 		}
->> 	}
->>
->> -- 
->> 2.30.2
->>
+> The following features are implemented: NETDEV_XDP_ACT_BASIC,
+> NETDEV_XDP_ACT_REDIRECT, and NETDEV_XDP_ACT_NDO_XMIT.
 > 
+> Zero-copy and non-linear XDP buffer supports are NOT implemented.
+> 
+> Besides, the page pool memory model is used to get better performance.
+> 
+> Signed-off-by: Julien Panis <jpanis@baylibre.com>
 
+I've been trying to test this since I don't want my RX multi queue series [1]
+to break AF_XDP feature. However, with 6.10 I don't see AF_XDP working at all
+and even breaking basic networking on am65-cpsw.
+
+The in kernel XDP tests have been dropped so I've been using xdp-tools [2]
+
+My test is to try XDP_DROP with xdp-bench using skb mode first and then
+native XDP mode.
+
+Below is the test log. You can see that skb mode works fine. The moment I try
+native XDP mode the interface seems to go down and up and then just locks up.
+
+I can no longer ping to the remote host.
+
+----test log starts-----
+
+root@am64xx-evm:~/xdp-tools/xdp-bench# ping 192.168.1.36
+PING 192.168.1.36 (192.168.1.36) 56(84) bytes of data.
+64 bytes from 192.168.1.36: icmp_seq=1 ttl=64 time=0.801 ms
+64 bytes from 192.168.1.36: icmp_seq=2 ttl=64 time=0.967 ms
+64 bytes from 192.168.1.36: icmp_seq=3 ttl=64 time=0.876 ms
+^C
+--- 192.168.1.36 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2003ms
+rtt min/avg/max/mdev = 0.801/0.881/0.967/0.067 ms
+
+
+root@am64xx-evm:~/xdp-tools/xdp-bench# ./xdp-bench drop -m skb eth0
+Dropping packets on eth0 (ifindex 2; driver am65-cpsw-nuss)
+Summary                     81127 rx/s                  0 err/s        
+Summary                     81088 rx/s                  0 err/s        
+Summary                     81089 rx/s                  0 err/s        
+Summary                     53065 rx/s                  0 err/s        
+^C
+  Packets received    : 296369    
+  Average packets/s   : 74092     
+  Rx dropped          : 296369    
+
+root@am64xx-evm:~/xdp-tools/xdp-bench# ping 192.168.1.36
+PING 192.168.1.36 (192.168.1.36) 56(84) bytes of data.
+64 bytes from 192.168.1.36: icmp_seq=1 ttl=64 time=1.02 ms
+64 bytes from 192.168.1.36: icmp_seq=2 ttl=64 time=0.756 ms
+64 bytes from 192.168.1.36: icmp_seq=3 ttl=64 time=0.963 ms
+^C
+--- 192.168.1.36 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2003ms
+rtt min/avg/max/mdev = 0.756/0.914/1.024/0.114 ms
+
+
+root@am64xx-evm:~/xdp-tools/xdp-bench# ./xdp-bench drop -m native eth0
+[  889.096851] am65-cpsw-nuss 8000000.ethernet eth0: Link is Down
+[  889.110889] am65-cpsw-nuss 8000000.ethernet eth0: PHY [8000f00.mdio:00] driver [TI DP83867] (irq=POLL)
+[  889.120377] am65-cpsw-nuss 8000000.ethernet eth0: configuring for phy/rgmii-rxid link mode
+Dropping packets on eth0 (ifindex 2; driver am65-cpsw-nuss)
+Summary                         0 rx/s                  0 err/s        
+Summary                         0 rx/s                  0 err/s        
+[  893.218318] am65-cpsw-nuss 8000000.ethernet eth0: Link is Up - 1Gbps/Full - flow control rx/tx
+Summary                       250 rx/s                  0 err/s        
+Summary                         0 rx/s                  0 err/s        
+Summary                         0 rx/s                  0 err/s        
+Summary                         0 rx/s                  0 err/s        
+^C
+[  901.898170] am65-cpsw-nuss 8000000.ethernet eth0: Link is Down
+[  901.910292] am65-cpsw-nuss 8000000.ethernet eth0: PHY [8000f00.mdio:00] driver [TI DP83867] (irq=POLL)
+[  901.919661] am65-cpsw-nuss 8000000.ethernet eth0: configuring for phy/rgmii-rxid link mode
+  Packets received    : 250       
+  Average packets/s   : 42        
+  Rx dropped          : 250       
+root@am64xx-evm:~/xdp-tools/xdp-bench# [  906.018296] am65-cpsw-nuss 8000000.ethernet eth0: Link is Up - 1Gbps/Full - flow control rx/tx
+
+root@am64xx-evm:~/xdp-tools/xdp-bench# ping 192.168.1.36
+PING 192.168.1.36 (192.168.1.36) 56(84) bytes of data.
+From 192.168.1.100 icmp_seq=1 Destination Host Unreachable
+From 192.168.1.100 icmp_seq=2 Destination Host Unreachable
+From 192.168.1.100 icmp_seq=3 Destination Host Unreachable
+^C
+
+--- 192.168.1.36 ping statistics ---
+5 packets transmitted, 0 received, +3 errors, 100% packet loss, time 4079ms
+pipe 4
+
+
+---test log ends---
+
+I will try to test with commit 8acacc40f733 ("net: ethernet: ti: am65-cpsw: Add minimal XDP support")
+to see if it works there. If it does then I can do a bisect.
+
+If you have better ideas please let me know. Thanks!
+
+[1] https://lore.kernel.org/all/20240703-am65-cpsw-multi-rx-v3-0-f11cd860fd72@kernel.org/
+[2] https://github.com/xdp-project/xdp-tools
+
+> ---
+> Changes in v9:
+> - In k3_cppi_desc_pool_destroy(), free memory allocated for pool.
+> - In k3_cppi_desc_pool_create_name() function, remove unnecessary
+> error messages on mem alloc failures.
+> - In k3_cppi_desc_pool_create_name() function, move desc_infos alloc
+> forward to leverage pool_name freeing in gen_pool_destroy().
+> - In k3_cppi_desc_pool_create_name() function, remove unnecessary
+> 'ret = -ENOMEM' since ret is already initialized with -ENOMEM value.
+> - For rx, do not build the skb upfront any more, Instead, give the page
+> to the HW then build the skb once HW sends a completion.
+> - Link to v8: https://lore.kernel.org/r/20240223-am65-cpsw-xdp-basic-v8-0-f3421b58da09@baylibre.com
+> 
+> Changes in v8:
+> - Fix some warnings reported by patchwork.
+> - Link to v7: https://lore.kernel.org/r/20240223-am65-cpsw-xdp-basic-v7-0-c3857c82dadb@baylibre.com
+> 
+> Changes in v7:
+> - Move xdp_do_flush() function call in am65_cpsw_nuss_rx_poll().
+> - Link to v6: https://lore.kernel.org/r/20240223-am65-cpsw-xdp-basic-v6-0-212eeff5bd5f@baylibre.com
+> 
+> Changes in v6:
+> - In k3_cppi_*() functions, use const qualifier when the content of
+> pool is not modified.
+> - Add allow_direct bool parameter to am65_cpsw_alloc_skb() function
+> for direct use by page_pool_put_full_page().
+> - Link to v5: https://lore.kernel.org/r/20240223-am65-cpsw-xdp-basic-v5-0-bc1739170bc6@baylibre.com
+> 
+> Changes in v5:
+> - In k3_cppi_desc_pool_destroy(), free memory allocated for desc_infos.
+> - Link to v4: https://lore.kernel.org/r/20240223-am65-cpsw-xdp-basic-v4-0-2e45e5dec048@baylibre.com
+> 
+> Changes in v4:
+> - Add skb_mark_for_recycle() in am65_cpsw_nuss_rx_packets() function.
+> - Specify napi page pool parameter in am65_cpsw_create_xdp_rxqs() function.
+> - Add benchmark numbers (with VS without page pool) in the commit description.
+> - Add xdp_do_flush() in am65_cpsw_run_xdp() function for XDP_REDIRECT case.
+> - Link to v3: https://lore.kernel.org/r/20240223-am65-cpsw-xdp-basic-v3-0-5d944a9d84a0@baylibre.com
+> 
+> Changes in v3:
+> - Fix a potential issue with TX buffer type, which is now set for each buffer.
+> - Link to v2: https://lore.kernel.org/r/20240223-am65-cpsw-xdp-basic-v2-0-01c6caacabb6@baylibre.com
+> 
+> Changes in v2:
+> - Use page pool memory model instead of MEM_TYPE_PAGE_ORDER0.
+> - In am65_cpsw_alloc_skb(), release reference on the page pool page
+> in case of error returned by build_skb().
+> - [nit] Cleanup am65_cpsw_nuss_common_open/stop() functions.
+> - [nit] Arrange local variables in reverse xmas tree order.
+> - Link to v1: https://lore.kernel.org/r/20240223-am65-cpsw-xdp-basic-v1-1-9f0b6cbda310@baylibre.com
+> 
+> ---
+> Julien Panis (3):
+>       net: ethernet: ti: Add accessors for struct k3_cppi_desc_pool members
+>       net: ethernet: ti: Add desc_infos member to struct k3_cppi_desc_pool
+>       net: ethernet: ti: am65-cpsw: Add minimal XDP support
+> 
+>  drivers/net/ethernet/ti/am65-cpsw-nuss.c    | 659 ++++++++++++++++++++++++----
+>  drivers/net/ethernet/ti/am65-cpsw-nuss.h    |  13 +
+>  drivers/net/ethernet/ti/k3-cppi-desc-pool.c |  46 +-
+>  drivers/net/ethernet/ti/k3-cppi-desc-pool.h |   6 +
+>  4 files changed, 623 insertions(+), 101 deletions(-)
+> ---
+> base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
+> change-id: 20240223-am65-cpsw-xdp-basic-4db828508b48
+> 
+> Best regards,
+
+-- 
+cheers,
+-roger
 
