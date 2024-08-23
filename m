@@ -1,132 +1,234 @@
-Return-Path: <bpf+bounces-37995-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37996-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48F3895D937
-	for <lists+bpf@lfdr.de>; Sat, 24 Aug 2024 00:22:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C74C95D947
+	for <lists+bpf@lfdr.de>; Sat, 24 Aug 2024 00:29:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A0372B20B77
-	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 22:22:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 28E2528657B
+	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 22:29:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 671171C871C;
-	Fri, 23 Aug 2024 22:22:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7D0C1C8FD3;
+	Fri, 23 Aug 2024 22:28:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VVIUBaMa"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eoGt3Lk5"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3011139CFC;
-	Fri, 23 Aug 2024 22:22:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F88B191F6B;
+	Fri, 23 Aug 2024 22:28:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724451728; cv=none; b=kESFMM5qDMRfWpYbEQTMztxM4fLXBdV2yDwKoyWWaERxYuYw5cBNn+DVxcjKiFEvqWaTNuWkDuEDCq5vxB/HJNyaty5AlBkaTX9hQBqp6LMEF81iVPiJ/XO0DF1RBGF24cE/e8/iuYmhPBjOz7g2bpnLiijJBSJwp0ke7NzKRB0=
+	t=1724452135; cv=none; b=koUNy5jQTW93sKvFkjBz1ohC746nA+v3a/zH2xes70BenaDMhbM+oX/A7iGA9quYr1E5mJD3jNbHVdRwh8LQC3MK+LZDCZ33jrjKLPEjnLZrYHxk5QQPw2lqBY5thmQGxfsllkO8XgAroyyGrn6oGOOoPE/Zoordu0h/S/9yea0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724451728; c=relaxed/simple;
-	bh=z42+Q8AZanZAyEhdmQQpfFOP7RxuncrUYLIRyjSCh9o=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=C38aPCPHea+nMGaWt+uYWIwqb7/Lu87jkUC7RWgOCC+1+4e9vkgtXjevIwT/bdpqqjMlGEsuvJS5Dyt+opx3e9muSjJDhao7aBq0muBMOaeniM0bhYMPtVwy43mS/wNpUlcmXaSfr9NEtW676Vxj6I+Nnr3S7KNyRqFPBlD8sCU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VVIUBaMa; arc=none smtp.client-ip=209.85.215.171
+	s=arc-20240116; t=1724452135; c=relaxed/simple;
+	bh=lhFa9C+TdLA9AgtlhB86iziIxZ2TXHCWtZB1vVjHBhU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=MpZ7qluwTEViuy/zzRbplw7W0h1C7jpzxAYFMl2HVtRfjOw8ce8JC3vnw81/brflFY/biecbvtZRHZiaFblY+XTbx09xwmw0Va+XztxIApXlIGhEckFTee1bE6E+Sjgoc02Wto56yzG2Uz1U0M5hG+TnXxhl43OAJWU7C4AzApM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eoGt3Lk5; arc=none smtp.client-ip=209.85.128.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-7cd9e634ea9so1486912a12.0;
-        Fri, 23 Aug 2024 15:22:06 -0700 (PDT)
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-429da8b5feaso25471125e9.2;
+        Fri, 23 Aug 2024 15:28:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1724451726; x=1725056526; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=z42+Q8AZanZAyEhdmQQpfFOP7RxuncrUYLIRyjSCh9o=;
-        b=VVIUBaMaktKP9nz8snJlPUlrdtL0V6tViSNgHLtce/i8hJCHnPiTkMt4jtBDF1Cbza
-         gIChOUxuGFWyMcU5ZHDIll9/Oj3DE2YTGqxkauoD7Ru8PG+Qgjx0sLtOlc26u0Ao4It8
-         QYO/Hims1YqkAvJPh5azVmFjQCVvtAQ1twOIi7za9dbK5e4OQj236JXOVOEVa4xC9U6n
-         NqeYnd4p66poBn7tGELW+uLxqjwcoj7k2eee5kGyTAcartNf1xXRBsfJhvxy94HvJCZ3
-         KkQ6sLDYpigdpFEZbAvm9340eRGPwWw6OBcNujfaxqavx4p5hyaCJlVd4ooIz5cn4ta9
-         bSDg==
+        d=gmail.com; s=20230601; t=1724452132; x=1725056932; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WWtV3/DOt8P4Xpd14+mqShRwy4l1Z4jup7YrAn/As/k=;
+        b=eoGt3Lk5h8fuUauRSQT+ylePqwjJdA+2xEonafeov1/xrb4ndZB6yKzdENgmmqeYcs
+         +vm/Gi3MJ1ppaJMOzN6MwFbdo2r1/oxV0VMQks6DeYPnuU84yiDxYJUqO68/fB8l+A//
+         dTwMypuos5AJFhEqQaL1D0njyJ6nSnDITUg7IPISvH5m8lqSmnxq7HCYOj07aTwnnPdv
+         bP8HYSP+jtOXNQDzzMcbAVaSWFBX/8Bf++rgGhqf1EsYnF1/Fh9d4W42FI5YsdVX9FnC
+         ifG1eUQ/lE2I2sb9NrjXEDu8jDd6g0sUnkKQ134hfB+k1qezDY9ojEzBINHIrKivkAi0
+         9G9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724451726; x=1725056526;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=z42+Q8AZanZAyEhdmQQpfFOP7RxuncrUYLIRyjSCh9o=;
-        b=E680AjRAVjax+9sMNQs70o/T2qfnaHDyxq4Lpw5gJyEosq01zswm4viFz36GRMhxg5
-         nD+hGvjd2QAoNb4Buupu+cK7ia47jrCupvUJtTgTtss8qdLzENCcOh+CQzfeBx2Mmco8
-         LlgMsprGELCsqz0/FEPd0cdH1XCL3J4ZvoyH94wnqYG8qtOjouUoOBoNq+6oJ5B23NHO
-         e3khFDzU6BIisuGpMcPMY7jLmp4nQO368sY0gRJC88MbsgGmdKZeP22UFfpBwbnTKaS8
-         Io8Yit6NnF1AALc5IZzjhBsMX6idorBFsiqeMKRlUYxL6GmMqQR9mA1B6F1Wjm+5DBgB
-         tQjQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVTWu5y3n9Fr3oBi3bTdpXoChzYQC8I66m/3fimCxHvEh6q2zBxqQxbroiZ0qxfrIXl90A=@vger.kernel.org, AJvYcCVyij9FjGv4GwkxfEtGYJMO/9D/PVOALC1ivmzj1iU/bxvL7Bknr+TJC/hEwk91FLnRZo9UCEa9TMu4COjUSw==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyAB2/dh3nrcr3oOSUz9ApdrRadF/STOyY5GeNRGgsdbgE/zEZs
-	P6ayMpLfVdjhYvgM2y+JAUinps+seC/XhXgup4BYfl57rMrjlc29
-X-Google-Smtp-Source: AGHT+IHe2MZNqfdwKxtjHPiq7/ZoqoBvwMUroZDtf9P1IkJ3Smw4qpWQdX0dyd5EQEp0cv9vlkwxkQ==
-X-Received: by 2002:a05:6a20:c793:b0:1c6:f213:83b with SMTP id adf61e73a8af0-1cc89ed955emr3749733637.37.1724451725696;
-        Fri, 23 Aug 2024 15:22:05 -0700 (PDT)
-Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2d613a420cdsm4691284a91.28.2024.08.23.15.22.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Aug 2024 15:22:04 -0700 (PDT)
-Message-ID: <8fc31d49d4666599cc2ac6815ff3e0b09adc8a94.camel@gmail.com>
-Subject: Re: [PATCH v6 bpf-next 09/10] bpf: wire up sleepable
- bpf_get_stack() and bpf_get_task_stack() helpers
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org
-Cc: linux-mm@kvack.org, akpm@linux-foundation.org, adobriyan@gmail.com, 
-	shakeel.butt@linux.dev, hannes@cmpxchg.org, ak@linux.intel.com, 
-	osandov@osandov.com, song@kernel.org, jannh@google.com, 
-	linux-fsdevel@vger.kernel.org, willy@infradead.org
-Date: Fri, 23 Aug 2024 15:22:00 -0700
-In-Reply-To: <20240814185417.1171430-10-andrii@kernel.org>
-References: <20240814185417.1171430-1-andrii@kernel.org>
-	 <20240814185417.1171430-10-andrii@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.4 (3.52.4-1.fc40) 
+        d=1e100.net; s=20230601; t=1724452132; x=1725056932;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WWtV3/DOt8P4Xpd14+mqShRwy4l1Z4jup7YrAn/As/k=;
+        b=fsoK6IpuVs5gzMm7b5PkTzdHnrMZxZHoxfPJMo3Yt8YSKiDSx+WpuGPYGP4V1yXQqd
+         Od/gtqMMiP8NGeJlt75tAICtWGugkGcabACJxXqA/fT0k+xOXSSpf3EIupz5O1oHw7r1
+         RqnNyi1GBL8f/WGLPewkH36dMPcLK0ic39nzgh9x+wKvKixtiX4yLvI288xOv5zu7jL7
+         mA4ceArKDvAYHsCw6MSHdZ7bir7C1zWhOB1SQ+7yAKjivRZXaSqHDfLkTIatRzKyKfBb
+         nfw5WAepYf0ZgMqA0mFdA/1bsv+KXU6MFwwT+XW0jowpn5JidoTRvc6XY5ihfULFtBMu
+         w/tw==
+X-Forwarded-Encrypted: i=1; AJvYcCVhMvsOMqSjTuFd31iKjUkrCr0xOtVeIbqqlUVbSomQ5WV3vFXCSk+EL2roMAU4JWT0k2uT91NQw0fP6fpE@vger.kernel.org, AJvYcCVj1TAi3gXfhzJGJNvXavmGnPBKnzqxpnJpTkNmCXrQtmTKJYbER7zcP2DUG88OMUee1x9KMP2q@vger.kernel.org, AJvYcCVsdSxxdf1rv5zC2tjQRkNRmVx2BmeZxHaIvdzhHDgZ5bMu/pcVXXECS9GJJ++cURjgtIg=@vger.kernel.org, AJvYcCXkHSMMn5SvPCrV+ovSjnVy0AWWWwTvEWXaphz0kBCRthhdTfHRxMd23OLmmdRWpN8wcot/2nDC4bR5bXhEXzZD@vger.kernel.org
+X-Gm-Message-State: AOJu0YyIPFtcow+VgEnziaHUeNoPzFGIw50r/wzXlBokEepHsQscaEQn
+	EaFL+4JsR3iEpXjlR52o89LVrVSJtsAQ+evAimL/f2eZtRumikCC8SCrh+vdGbsIutJxdEAm4je
+	3cv3T9M6LpiraGMBWB7lgyLX6L+k=
+X-Google-Smtp-Source: AGHT+IHC28T0OxdS5xfWVXMn6jPEmfd/fTwBRe4M2YVY0z1mCKUZOIrmxvOKGo0k/glS1YBPx9wJCuP9gjWxOW50vjk=
+X-Received: by 2002:a5d:58d9:0:b0:368:6564:751b with SMTP id
+ ffacd0b85a97d-37311864454mr2589305f8f.32.1724452131607; Fri, 23 Aug 2024
+ 15:28:51 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20240816-ups-bpf-next-selftests-use-khdr-v1-0-1e19f3d5b17a@kernel.org>
+ <20240816-ups-bpf-next-selftests-use-khdr-v1-1-1e19f3d5b17a@kernel.org>
+ <CAADnVQ+JBq8-6Rhi_LHX470uj2_2xxJAhgdUfg_abUxEDqpdJQ@mail.gmail.com> <6a693ad6-f145-48c1-b3a7-d441d3764e73@kernel.org>
+In-Reply-To: <6a693ad6-f145-48c1-b3a7-d441d3764e73@kernel.org>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 23 Aug 2024 15:28:40 -0700
+Message-ID: <CAADnVQKnEuQ4XZROLWH47mEZNwnJ9TuyTrauOnuobcLgVMrimw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] selftests: bpf: use KHDR_INCLUDES for the
+ UAPI headers
+To: Matthieu Baerts <matttbe@kernel.org>
+Cc: MPTCP Upstream <mptcp@lists.linux.dev>, Andrii Nakryiko <andrii@kernel.org>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>, 
+	"David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
+	Jesper Dangaard Brouer <hawk@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	Network Development <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2024-08-14 at 11:54 -0700, Andrii Nakryiko wrote:
-> Add sleepable implementations of bpf_get_stack() and
-> bpf_get_task_stack() helpers and allow them to be used from sleepable
-> BPF program (e.g., sleepable uprobes).
->=20
-> Note, the stack trace IPs capturing itself is not sleepable (that would
-> need to be a separate project), only build ID fetching is sleepable and
-> thus more reliable, as it will wait for data to be paged in, if
-> necessary. For that we make use of sleepable build_id_parse()
-> implementation.
->=20
-> Now that build ID related internals in kernel/bpf/stackmap.c can be used
-> both in sleepable and non-sleepable contexts, we need to add additional
-> rcu_read_lock()/rcu_read_unlock() protection around fetching
-> perf_callchain_entry, but with the refactoring in previous commit it's
-> now pretty straightforward. We make sure to do rcu_read_unlock (in
-> sleepable mode only) right before stack_map_get_build_id_offset() call
-> which can sleep. By that time we don't have any more use of
-> perf_callchain_entry.
->=20
-> Note, bpf_get_task_stack() will fail for user mode if task !=3D current.
-> And for kernel mode build ID are irrelevant. So in that sense adding
-> sleepable bpf_get_task_stack() implementation is a no-op. It feel right
-> to wire this up for symmetry and completeness, but I'm open to just
-> dropping it until we support `user && crosstask` condition.
->=20
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> ---
+On Sat, Aug 17, 2024 at 7:51=E2=80=AFAM Matthieu Baerts <matttbe@kernel.org=
+> wrote:
+>
+> Hi Alexei,
+>
+> Thank you for the review.
+>
+> On 17/08/2024 09:22, Alexei Starovoitov wrote:
+> > On Fri, Aug 16, 2024 at 7:56=E2=80=AFPM Matthieu Baerts (NGI0)
+> > <matttbe@kernel.org> wrote:
+> >>
+> >> Instead of duplicating UAPI header files in 'tools/include/uapi', the
+> >> BPF selftests can also look at the header files inside the kernel
+> >> source.
+> >>
+> >> To do that, the kernel selftests infrastructure provides the
+> >> 'KHDR_INCLUDES' variable. This is what is being used in most selftests=
+,
+> >> because it is what is recommended in the documentation [1]. If the
+> >> selftests are not executed from the kernel sources, it is possible to
+> >> override the variable, e.g.
+> >>
+> >>   make KHDR_INCLUDES=3D"-I${HDR_DIR}/include" -C "${KSFT_DIR}"
+> >>
+> >> ... where ${HDR_DIR} has been generated by this command:
+> >>
+> >>   make headers_install INSTALL_HDR_PATH=3D"${HDR_DIR}"
+> >>
+> >> Thanks to 'KHDR_INCLUDES', it is no longer needed to duplicate header
+> >> files for userspace test programs, and these programs can include UAPI
+> >> header files without the 'uapi' prefix.
+> >>
+> >> Note that it is still required to use 'tools/include/uapi' -- APIDIR,
+> >> which corresponds to TOOLS_INCLUDES from lib.mk -- for the BPF program=
+s,
+> >> not to conflict with what is already defined in vmlinux.h.
+> >>
+> >> Link: https://docs.kernel.org/dev-tools/kselftest.html#contributing-ne=
+w-tests-details [1]
+> >> Signed-off-by: Matthieu Baerts (NGI0) <matttbe@kernel.org>
+> >> ---
+> >>  tools/testing/selftests/bpf/Makefile                       | 2 +-
+> >>  tools/testing/selftests/bpf/prog_tests/assign_reuse.c      | 2 +-
+> >>  tools/testing/selftests/bpf/prog_tests/tc_links.c          | 4 ++--
+> >>  tools/testing/selftests/bpf/prog_tests/tc_netkit.c         | 2 +-
+> >>  tools/testing/selftests/bpf/prog_tests/tc_opts.c           | 2 +-
+> >>  tools/testing/selftests/bpf/prog_tests/user_ringbuf.c      | 2 +-
+> >>  tools/testing/selftests/bpf/prog_tests/xdp_bonding.c       | 2 +-
+> >>  tools/testing/selftests/bpf/prog_tests/xdp_cpumap_attach.c | 2 +-
+> >>  tools/testing/selftests/bpf/prog_tests/xdp_devmap_attach.c | 2 +-
+> >>  tools/testing/selftests/bpf/prog_tests/xdp_do_redirect.c   | 2 +-
+> >>  tools/testing/selftests/bpf/prog_tests/xdp_link.c          | 2 +-
+> >>  tools/testing/selftests/bpf/xdp_features.c                 | 4 ++--
+> >>  12 files changed, 14 insertions(+), 14 deletions(-)
+> >>
+> >> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/self=
+tests/bpf/Makefile
+> >> index 4eceb491a8ae..6a7aeae7e206 100644
+> >> --- a/tools/testing/selftests/bpf/Makefile
+> >> +++ b/tools/testing/selftests/bpf/Makefile
+> >> @@ -37,7 +37,7 @@ CFLAGS +=3D -g $(OPT_FLAGS) -rdynamic               =
+                    \
+> >>           -Wall -Werror -fno-omit-frame-pointer                       =
+  \
+> >>           $(GENFLAGS) $(SAN_CFLAGS) $(LIBELF_CFLAGS)                  =
+  \
+> >>           -I$(CURDIR) -I$(INCLUDE_DIR) -I$(GENDIR) -I$(LIBDIR)        =
+  \
+> >> -         -I$(TOOLSINCDIR) -I$(APIDIR) -I$(OUTPUT)
+> >> +         -I$(TOOLSINCDIR) $(KHDR_INCLUDES) -I$(OUTPUT)
+> >>  LDFLAGS +=3D $(SAN_LDFLAGS)
+> >>  LDLIBS +=3D $(LIBELF_LIBS) -lz -lrt -lpthread
+> >>
+> >> diff --git a/tools/testing/selftests/bpf/prog_tests/assign_reuse.c b/t=
+ools/testing/selftests/bpf/prog_tests/assign_reuse.c
+> >> index 989ee4d9785b..3d06bf5a1ba4 100644
+> >> --- a/tools/testing/selftests/bpf/prog_tests/assign_reuse.c
+> >> +++ b/tools/testing/selftests/bpf/prog_tests/assign_reuse.c
+> >> @@ -1,6 +1,6 @@
+> >>  // SPDX-License-Identifier: GPL-2.0
+> >>  /* Copyright (c) 2023 Isovalent */
+> >> -#include <uapi/linux/if_link.h>
+> >> +#include <linux/if_link.h>
+> >
+> > No. This is not an option.
+> > User space shouldn't include kernel headers like this.
+> > Long ago tools/include directory was specifically
+> > created to break such dependency.
+> > Back then it was done for perf.
+>
+> I'm sorry, but I think we are not talking about the same thing here:
+> here, I'm only modifying the "normal" userspace programs, not the ones
+> used to generate the BPF objects. Perf is a special case I suppose, it
+> needs to know the kernel internals. It is the same with BPF programs
+> requiring vmlinux.h. But I think "normal" userspace programs in the
+> sefltests can use the UAPI headers, no?
 
-All seems logical.
-You skip wiring up support for sleepable bpf_get_task_stack() in
-tp_prog_func_proto(), pe_prog_func_proto() and
-raw_tp_prog_func_proto(), this is because these are used for programs
-that are never run in sleepable context, right?
+Not really. perf is a normal user space that doesn't look into
+kernel internals.
+It's used to rely on a few .h from kernel src tree for convenience,
+since they're not present in what's installed after 'make headers'.
+Hence the tools/include dir was created.
 
-Reviewed-by: Eduard Zingerman <eddyz87@gmail.com>
+Using KHDR_INCLUDES is fine, but it's not ok to search replace
+s/uapi\/linux/linux/ everywhere.
+Like the example I quoted above.
+tools/.../if_link.h is much older than include/uapi/linux/if_link.h
+and it's ok.
+We're not planning to update it.
+It's like building selftests on the system with older glibc.
+There is no requirement to have every .h in the tools/ dir
+up-to-date with the latest in include/.
+We're doing it for bpf.h because new selftests typically need
+something from bpf.h that was just added in the previous patch.
 
-[...]
+> I understand that I could indeed fix my initial problem by duplicating
+> mptcp.h in tools/include/uapi/linux/, but this doesn't look to be
+> allowed any more by the Netdev maintainers, e.g. recently, 'ethtool.h'
+> has been duplicated there in commit 7effe3fdc049 ("tools: Add ethtool.h
+> header to tooling infra"), but removed quickly after in commit
+> bbe91a9f6889 ("tools: remove redundant ethtool.h from tooling infra").
+> In this case, it was fine to simply drop it, because the linked test
+> doesn't require a recent version. Jakub mentioned [4] that these
+> duplicated headers should be avoided, and the ones generated by 'make
+> headers' should be used instead: what is being suggested here.
 
+This is a different issue. There are very few .h in tools/ that
+needs a sync.
+bpf.h is one of them. ethtool.h is certainly not.
+
+you need something for mpctp.h. Let's talk about it,
+but switching everything to KHDR_INCLUDES is not ok,
+since there are a bunch of things in play.
+Sometimes selftests are built standalone and with non-glibc-s.
+
+Also realize that bpf selftests are not really kselftests.
+We use a few common .mk for convenience. That's about it.
 
