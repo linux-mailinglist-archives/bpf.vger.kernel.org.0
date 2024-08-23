@@ -1,52 +1,53 @@
-Return-Path: <bpf+bounces-37908-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37907-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3DC295C214
-	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 02:12:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8D9095C211
+	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 02:12:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7BD3128531F
-	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 00:12:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7FE8A282BD2
+	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 00:12:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BEAD365;
-	Fri, 23 Aug 2024 00:12:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43A36365;
+	Fri, 23 Aug 2024 00:12:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=jordanrome.com header.i=linux@jordanrome.com header.b="Xc6WIUgy"
+	dkim=pass (2048-bit key) header.d=jordanrome.com header.i=linux@jordanrome.com header.b="BIsz7Qs7"
 X-Original-To: bpf@vger.kernel.org
 Received: from mout.perfora.net (mout.perfora.net [74.208.4.196])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFA4D4A1B
-	for <bpf@vger.kernel.org>; Fri, 23 Aug 2024 00:12:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A5691109
+	for <bpf@vger.kernel.org>; Fri, 23 Aug 2024 00:12:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.208.4.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724371943; cv=none; b=qEmMeraaV6ip7GM0IFr3p0r3MBR2FdN7U0tkpyHOWJNWFq20BQDEost/Fhwbw6YOw61sKqWMahHBAXXOFAtbS6QtQlPv0kTciScbTsCxbvrnGt3BbiTofyte6VG9x0MaOOmMmLcSD+YQtRqLeQKmsiXladSGMVub902sOj2IFqs=
+	t=1724371933; cv=none; b=h+W97a/8Z5N5LxfGo/vEjppyrUjnP7maA9S8VlrU3n9aNfiq3ujQRAvfI5wE8q3I6G9omKsPT6ihwMkIvRLg0cQSzDTjSS/INhx6p2MfmBvkseLgfiBEPpDvEHhmcVh/251CDGenUVFu3YRg7r9kYmo5Z+z+uJesh7xqvJrBANY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724371943; c=relaxed/simple;
-	bh=XhuyOPEHcTUEH0yYSqzU54t04qTH9P2uYdEaMUx4Or8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=tUbLUaOPPP1DNwHLY7AUms0VSXUOQ9d3gyuZyIa0fNnZnvscR1o/8T6dPyQojet4bwtLUOFH1tbacMpoyCGSKJRca+FrATWXDOxb8RVXH+17i+votIIVz7aKCQqQn8qUwN1H6zGcjbN3cmFnNKlkqgQp9oWCLKFQq3xD451HRJI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jordanrome.com; spf=pass smtp.mailfrom=jordanrome.com; dkim=pass (2048-bit key) header.d=jordanrome.com header.i=linux@jordanrome.com header.b=Xc6WIUgy; arc=none smtp.client-ip=74.208.4.196
+	s=arc-20240116; t=1724371933; c=relaxed/simple;
+	bh=ftiCdK+HuM1djLlIQJCHxpKalyNiSzoY+iDHVh2EdEo=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=Sr3m169xI1VwkFBoQJvqYq9kvlnv8glQk3HdXAKowLo+jU1qlWsp20FDQlZVK9fZSgIQOJ0Kbq6YHK0tELSh01nkEdJOsz0L8n6QZfvUsj6CUF//1GBUhmDXwbOx0aDjhttpgtMyrKO696/4DQMoI+epaVkV6FbJzcaFfYM5kJY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jordanrome.com; spf=pass smtp.mailfrom=jordanrome.com; dkim=pass (2048-bit key) header.d=jordanrome.com header.i=linux@jordanrome.com header.b=BIsz7Qs7; arc=none smtp.client-ip=74.208.4.196
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jordanrome.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jordanrome.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jordanrome.com;
-	s=s1-ionos; t=1724371940; x=1724976740; i=linux@jordanrome.com;
-	bh=bwPF1mfnOluGshF2c11rLLHf45wMS2tGmK3lqkwgFGM=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:Message-ID:
-	 MIME-Version:Content-Transfer-Encoding:cc:
+	s=s1-ionos; t=1724371930; x=1724976730; i=linux@jordanrome.com;
+	bh=JAtM5HzXKWoEKkKhlpQuXZ5CfmOI1squcd2mbmSOjBY=;
+	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:Message-ID:In-Reply-To:
+	 References:MIME-Version:Content-Transfer-Encoding:cc:
 	 content-transfer-encoding:content-type:date:from:message-id:
 	 mime-version:reply-to:subject:to;
-	b=Xc6WIUgyo01RjCZlpHTfTy4bBZL1VQ5+YZVeJZ53MiUQgCmveOEd6pMd/feaqo90
-	 8lPm+1eVTo7MrcB9KlI0QpXbLTS4s7bqrOofiPmP7Pu8ogsaPZ08UAwVhbXr9CblX
-	 unmGPb9SE7gCPED8lNegLbcKsQDxqrkZOtJ4iMVDMwrJo0YXa7IJ1tfv0bAOUt3ah
-	 P80YCSLIo+2o0OVTxdzmCAHqQO+wP+D6r4gokzGhBEJqztcp20Yww08oPCTCy7IRs
-	 Ls4hwcn/kqW9ddFMk2UbU7CBW10GJ7JGWy+G9sGaVZHcmJF4GXzCggaf7GLh2YwvQ
-	 S8PHBfnFe6LyIf9MqA==
+	b=BIsz7Qs7qTCkUlzU6nl7dyS2Z0EUDnzP0IOYAC/dq4H9r/trIeo0xRXgM8hzfv8I
+	 wJ/Rotxyx/QgkpNgx80wMlBy80yshE8DVEpMwElP82m3ivUXWnfgvf+rnYeZr3rDb
+	 dNhfeXPkcTgVKk+ZxSquHgDF5vbrIrh3pHALm7xb0JHfKDRekvPKSOWhA3rlA2zNj
+	 RXDdJhE0/klgGBGzMAlaRULBJGHjn58qeneM/EQ/GxcSfgTRA2THcacpj3eaSHX/1
+	 4lmFRN6RyV9bgz/oor5ZybhKuYG0W/YYgIg9hQdTn1w132SAa2Ax8Ia2FTta20Euu
+	 yVZwBBgqhFiV+NMgOQ==
 X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
-Received: from localhost ([173.252.127.114]) by mrelay.perfora.net (mreueus004
- [74.208.5.2]) with ESMTPSA (Nemesis) id 1McYbJ-1s8n4z1avt-00ZKLP; Fri, 23 Aug
- 2024 02:06:12 +0200
+Received: from localhost ([173.252.127.112]) by mrelay.perfora.net (mreueus003
+ [74.208.5.2]) with ESMTPSA (Nemesis) id 0LnQ7c-1sCtXj0OcA-00nEFt; Fri, 23 Aug
+ 2024 02:06:17 +0200
 From: Jordan Rome <linux@jordanrome.com>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
@@ -55,10 +56,12 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Martin KaFai Lau <martin.lau@kernel.org>,
 	Kernel Team <kernel-team@fb.com>,
 	sinquersw@gmail.com
-Subject: [bpf-next v8 1/2] bpf: Add bpf_copy_from_user_str kfunc
-Date: Thu, 22 Aug 2024 17:05:51 -0700
-Message-ID: <20240823000552.2771166-1-linux@jordanrome.com>
+Subject: [bpf-next v8 2/2] bpf: Add tests for bpf_copy_from_user_str kfunc
+Date: Thu, 22 Aug 2024 17:05:52 -0700
+Message-ID: <20240823000552.2771166-2-linux@jordanrome.com>
 X-Mailer: git-send-email 2.43.5
+In-Reply-To: <20240823000552.2771166-1-linux@jordanrome.com>
+References: <20240823000552.2771166-1-linux@jordanrome.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -66,145 +69,241 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:rd+0hpNGVwnyz0Ttco6VMEa4GC6ZbydyhWUQsscApltQZCj+T+L
- Q/n7qPMoRfU+rvba7Kt/3bOFKVAii4MxTf9p2QIn6GEtshp/4Y2lhbtbSRzDHH6q4mzbtae
- bbjEMCBogI17mCBxjIoEehjsLhPCZnPbckQ9G+puRGM2yKdGgUAaNf08HMluU2PlUoMhczw
- 2WQtYwjtQd6nMs29KRRww==
+X-Provags-ID: V03:K1:Odw0u3AGzJZG+MCPT5Pk778v1J17jfGgR8V3rs8toTqfMlnSHuX
+ r2XqyuDOo8a+TSYSN2hXaYhqmPUgWM3Kltj4zqJr8LwYeXnmMIoyJVItMwdgjfiyJWRglS+
+ 2ISwGGhfLgx8LiUFdHzyqtisSPKy6NQwHM/VpebSuEqX+5jTZN2YaHiP/s9CZ9z5AusqO17
+ o3tDXm34soXDY5ppsScBg==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:9DVJ55pdO6I=;6m8Wk80/su1fMzNHVfUzhztakTZ
- 4DZ06GFwL7ttm+AyAso7Ja5Ko3Wdd1ssQigpH37ejrjCb4Kezu75tsiaG+BrR4qZCxzVL7ppr
- MjWBCWyxjGXcosuNTZbE/aFpgoqXshxgUppn0wmKol036eOCYXxxYNQWFbJOTr12uDDASA7xT
- rSlfq6XeysX23xdo/Z5/XQcHlnrg3W1dIuSxRPGuT1Iv88E9W6ZIql7tVM/EKSFGgT/Z9uWLH
- 4GZE7Bg5g1DlV1MloEOOq0LOzWMgeYAJEcQcaYzllw9dNZZd8yIERzTBRFoYebtmos8bbHhmB
- 7gvOTjroX/GagufF+mq0o1sg41ZMN0ALbq85DDJnXwPg7wBtf8CgoKk2beD8eT4XCpcSFJksD
- pdmgkpJSKIESVYDscYz/wl9F8wnRoe2m+jiG8xSmcEE+NPX7yFr6Y3LYVjvG+mP/JzkfE0Or3
- a+UN2jqZljV56kGu5Wrg+oQzcclbLEI8ItHMhoI+xdmYtQdlUJ3YWbDXFTe0PxDjcLTMhoCQP
- 7d41htHbaNE5YXntKHuJntCM9QTG5yVz1lq5uvRfK4Xb6mXkKJWIRvmxMq/1yxKTZ3r1ePu6L
- JNBxtjGQZtX+nOvWIpyBKHUkH/vmzzUf/FQHZxOSKvne5bwcfxtM9vTL6vC2vtjgFz/J2EwEe
- NnwSlq+TorUbxuWDsLI+9lRaaxK1Do1ORGnmBABMw+/wc7x/V5jBew6A8mwuNlVuyJ+4kB+y0
- taZDSDI8ZvlMXt1vI5DW5C5XRbBOzbgeg==
+UI-OutboundReport: notjunk:1;M01:P0:KFFGIzWKDtM=;H3l7M6YXxKjanOUWEr2o8z21Clj
+ M6SQO0AQS5W1JvqtIXoqMTwIDJeRL75ChijQLPL7D8RBUJ4WMRmzTdQuyBbOAGCHeziJvKwv4
+ klifncVO+VST7DYX5qJtttOxk+VknBgCbA/UBpZcfIp/VP5S7a6VpslyJd0K96Jw5bPvSHW6a
+ udVVtnDG4AwDUcIH8KBXySjpRCKBdzWTjZVM4sJ3dGkD6Na/8pbmmqBP/oT3dsTeXDKwtT9TX
+ RYrraVx7gr5RxzQtTUXPg9VygQhquarc3GezR7jKqV+h+pmQwPBMiTMB4tSn1KTG92/cazjDJ
+ 0i/nBEm8Qw6hlpvImePpTFStVGr7DbXTfQQXFhq6Mkney7L8s4uZ6nFNf4ubOWhLtPzpfyHHq
+ VXZFt1a4enwc6bjpZH6HG5mJ74GAFanxZ9EZTaUlz5d73qcRZzmd6JFYl2XS/W/n+fGUFOZVx
+ 36YqDCJG08NGWd5mwn2BxRDEIxzDRqhQV7LmLgwfsP2qPztgKIWTArafQ1ozyXAovep/TFvGr
+ O2dMtiSHW7VQS1C8rrXHeqZb2M+yM6Mkvoi9RsIAtA57fBC2u/6wRenln/nefEpPhW02zC4Wl
+ VLCHT5AVaMyGjvWGwP9/2dCuIz8zUmup6XZqxtAycMsoPZ3yUpjp3rWdwLIeq1GfBxX4O3T8H
+ Dt6f6MU/mjty2ZjrEBuH/c5RAlEQjB6u161cgZfbK6vdiDw4FikubBJrmSDzXMBlWoWi+GTIZ
+ nIGW02ihE5hi+KFBZDcoqlzggSZ1HlNHQ==
 
-This adds a kfunc wrapper around strncpy_from_user,
-which can be called from sleepable BPF programs.
-
-This matches the non-sleepable 'bpf_probe_read_user_str'
-helper except it includes an additional 'flags'
-param, which allows consumers to clear the entire
-destination buffer on success or failure.
+This adds tests for both the happy path and
+the error path.
 
 Signed-off-by: Jordan Rome <linux@jordanrome.com>
 =2D--
- include/uapi/linux/bpf.h       |  9 ++++++++
- kernel/bpf/helpers.c           | 42 ++++++++++++++++++++++++++++++++++
- tools/include/uapi/linux/bpf.h |  9 ++++++++
- 3 files changed, 60 insertions(+)
+ .../selftests/bpf/prog_tests/attach_probe.c   |  8 ++-
+ .../selftests/bpf/prog_tests/read_vsyscall.c  |  1 +
+ .../selftests/bpf/progs/read_vsyscall.c       |  9 ++-
+ .../selftests/bpf/progs/test_attach_probe.c   | 57 ++++++++++++++++++-
+ 4 files changed, 68 insertions(+), 7 deletions(-)
 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index e05b39e39c3f..8556f65da4f8 100644
-=2D-- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -7513,4 +7513,13 @@ struct bpf_iter_num {
- 	__u64 __opaque[1];
- } __attribute__((aligned(8)));
+diff --git a/tools/testing/selftests/bpf/prog_tests/attach_probe.c b/tools=
+/testing/selftests/bpf/prog_tests/attach_probe.c
+index 7175af39134f..329c7862b52d 100644
+=2D-- a/tools/testing/selftests/bpf/prog_tests/attach_probe.c
++++ b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
+@@ -283,9 +283,11 @@ static void test_uprobe_sleepable(struct test_attach_=
+probe *skel)
+ 	trigger_func3();
 
-+/*
-+ * Flags to control bpf_copy_from_user_str() behaviour.
-+ *     - BPF_F_PAD_ZEROS: Pad destination buffer with zeros. (See the res=
-pective
-+ *       helper documentation for details.)
-+ */
-+enum {
-+	BPF_F_PAD_ZEROS =3D (1ULL << 0),
-+};
-+
- #endif /* _UAPI__LINUX_BPF_H__ */
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index d02ae323996b..e5614a980d59 100644
-=2D-- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -2939,6 +2939,47 @@ __bpf_kfunc void bpf_iter_bits_destroy(struct bpf_i=
-ter_bits *it)
- 	bpf_mem_free(&bpf_global_ma, kit->bits);
+ 	ASSERT_EQ(skel->bss->uprobe_byname3_sleepable_res, 9, "check_uprobe_byna=
+me3_sleepable_res");
+-	ASSERT_EQ(skel->bss->uprobe_byname3_res, 10, "check_uprobe_byname3_res")=
+;
+-	ASSERT_EQ(skel->bss->uretprobe_byname3_sleepable_res, 11, "check_uretpro=
+be_byname3_sleepable_res");
+-	ASSERT_EQ(skel->bss->uretprobe_byname3_res, 12, "check_uretprobe_byname3=
+_res");
++	ASSERT_EQ(skel->bss->uprobe_byname3_str_sleepable_res, 10, "check_uprobe=
+_byname3_str_sleepable_res");
++	ASSERT_EQ(skel->bss->uprobe_byname3_res, 11, "check_uprobe_byname3_res")=
+;
++	ASSERT_EQ(skel->bss->uretprobe_byname3_sleepable_res, 12, "check_uretpro=
+be_byname3_sleepable_res");
++	ASSERT_EQ(skel->bss->uretprobe_byname3_str_sleepable_res, 13, "check_ure=
+tprobe_byname3_str_sleepable_res");
++	ASSERT_EQ(skel->bss->uretprobe_byname3_res, 14, "check_uretprobe_byname3=
+_res");
  }
 
-+/**
-+ * bpf_copy_from_user_str() - Copy a string from an unsafe user address
-+ * @dst:             Destination address, in kernel space.  This buffer m=
-ust be at
-+ *                   least @dst__szk bytes long.
-+ * @dst__szk:        Maximum number of bytes to copy, including the trail=
-ing NUL.
-+ * @unsafe_ptr__ign: Source address, in user space.
-+ * @flags:           The only supported flag is BPF_F_PAD_ZEROS
-+ *
-+ * Copies a NUL-terminated string from userspace to BPF space. If user st=
-ring is
-+ * too long this will still ensure zero termination in the dst buffer unl=
-ess
-+ * buffer size is 0.
-+ *
-+ * If BPF_F_PAD_ZEROS flag is set, memset the tail of @dst to 0 on succes=
-s and
-+ * memset all of @dst on failure.
-+ */
-+__bpf_kfunc int bpf_copy_from_user_str(void *dst, u32 dst__szk, const voi=
-d __user *unsafe_ptr__ign, u64 flags)
-+{
-+	int ret;
-+
-+	if (unlikely(flags & ~BPF_F_PAD_ZEROS))
-+		return -EINVAL;
-+
-+	if (unlikely(!dst__szk))
-+		return 0;
-+
-+	ret =3D strncpy_from_user(dst, unsafe_ptr__ign, dst__szk - 1);
-+	if (ret < 0) {
-+		if (flags & BPF_F_PAD_ZEROS)
-+			memset((char *)dst, 0, dst__szk);
-+
-+		return ret;
-+	}
-+
-+	if (flags & BPF_F_PAD_ZEROS)
-+		memset((char *)dst + ret, 0, dst__szk - ret);
-+	else
-+		((char *)dst)[ret] =3D '\0';
-+
-+	return ret + 1;
-+}
-+
- __bpf_kfunc_end_defs();
+ void test_attach_probe(void)
+diff --git a/tools/testing/selftests/bpf/prog_tests/read_vsyscall.c b/tool=
+s/testing/selftests/bpf/prog_tests/read_vsyscall.c
+index 3405923fe4e6..c7b9ba8b1d06 100644
+=2D-- a/tools/testing/selftests/bpf/prog_tests/read_vsyscall.c
++++ b/tools/testing/selftests/bpf/prog_tests/read_vsyscall.c
+@@ -23,6 +23,7 @@ struct read_ret_desc {
+ 	{ .name =3D "probe_read_user_str", .ret =3D -EFAULT },
+ 	{ .name =3D "copy_from_user", .ret =3D -EFAULT },
+ 	{ .name =3D "copy_from_user_task", .ret =3D -EFAULT },
++	{ .name =3D "copy_from_user_str", .ret =3D -EFAULT },
+ };
 
- BTF_KFUNCS_START(generic_btf_ids)
-@@ -3024,6 +3065,7 @@ BTF_ID_FLAGS(func, bpf_preempt_enable)
- BTF_ID_FLAGS(func, bpf_iter_bits_new, KF_ITER_NEW)
- BTF_ID_FLAGS(func, bpf_iter_bits_next, KF_ITER_NEXT | KF_RET_NULL)
- BTF_ID_FLAGS(func, bpf_iter_bits_destroy, KF_ITER_DESTROY)
-+BTF_ID_FLAGS(func, bpf_copy_from_user_str, KF_SLEEPABLE)
- BTF_KFUNCS_END(common_btf_ids)
+ void test_read_vsyscall(void)
+diff --git a/tools/testing/selftests/bpf/progs/read_vsyscall.c b/tools/tes=
+ting/selftests/bpf/progs/read_vsyscall.c
+index 986f96687ae1..39ebef430059 100644
+=2D-- a/tools/testing/selftests/bpf/progs/read_vsyscall.c
++++ b/tools/testing/selftests/bpf/progs/read_vsyscall.c
+@@ -1,5 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /* Copyright (C) 2024. Huawei Technologies Co., Ltd */
++#include "vmlinux.h"
+ #include <linux/types.h>
+ #include <bpf/bpf_helpers.h>
 
- static const struct btf_kfunc_id_set common_kfunc_set =3D {
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf=
-.h
-index e05b39e39c3f..8556f65da4f8 100644
-=2D-- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -7513,4 +7513,13 @@ struct bpf_iter_num {
- 	__u64 __opaque[1];
- } __attribute__((aligned(8)));
+@@ -7,10 +8,15 @@
+
+ int target_pid =3D 0;
+ void *user_ptr =3D 0;
+-int read_ret[8];
++int read_ret[9];
+
+ char _license[] SEC("license") =3D "GPL";
 
 +/*
-+ * Flags to control bpf_copy_from_user_str() behaviour.
-+ *     - BPF_F_PAD_ZEROS: Pad destination buffer with zeros. (See the res=
-pective
-+ *       helper documentation for details.)
++ * This is the only kfunc, the others are helpers
 + */
-+enum {
-+	BPF_F_PAD_ZEROS =3D (1ULL << 0),
-+};
++int bpf_copy_from_user_str(void *dst, u32, const void *, u64) __weak __ks=
+ym;
 +
- #endif /* _UAPI__LINUX_BPF_H__ */
+ SEC("fentry/" SYS_PREFIX "sys_nanosleep")
+ int do_probe_read(void *ctx)
+ {
+@@ -40,6 +46,7 @@ int do_copy_from_user(void *ctx)
+ 	read_ret[6] =3D bpf_copy_from_user(buf, sizeof(buf), user_ptr);
+ 	read_ret[7] =3D bpf_copy_from_user_task(buf, sizeof(buf), user_ptr,
+ 					      bpf_get_current_task_btf(), 0);
++	read_ret[8] =3D bpf_copy_from_user_str((char *)buf, sizeof(buf), user_pt=
+r, 0);
+
+ 	return 0;
+ }
+diff --git a/tools/testing/selftests/bpf/progs/test_attach_probe.c b/tools=
+/testing/selftests/bpf/progs/test_attach_probe.c
+index 68466a6ad18c..4959eda92479 100644
+=2D-- a/tools/testing/selftests/bpf/progs/test_attach_probe.c
++++ b/tools/testing/selftests/bpf/progs/test_attach_probe.c
+@@ -5,6 +5,7 @@
+ #include <bpf/bpf_helpers.h>
+ #include <bpf/bpf_tracing.h>
+ #include <bpf/bpf_core_read.h>
++#include <errno.h>
+ #include "bpf_misc.h"
+
+ int kprobe2_res =3D 0;
+@@ -14,11 +15,15 @@ int uretprobe_byname_res =3D 0;
+ int uprobe_byname2_res =3D 0;
+ int uretprobe_byname2_res =3D 0;
+ int uprobe_byname3_sleepable_res =3D 0;
++int uprobe_byname3_str_sleepable_res =3D 0;
+ int uprobe_byname3_res =3D 0;
+ int uretprobe_byname3_sleepable_res =3D 0;
++int uretprobe_byname3_str_sleepable_res =3D 0;
+ int uretprobe_byname3_res =3D 0;
+ void *user_ptr =3D 0;
+
++int bpf_copy_from_user_str(void *dst, u32, const void *, u64) __weak __ks=
+ym;
++
+ SEC("ksyscall/nanosleep")
+ int BPF_KSYSCALL(handle_kprobe_auto, struct __kernel_timespec *req, struc=
+t __kernel_timespec *rem)
+ {
+@@ -87,11 +92,55 @@ static __always_inline bool verify_sleepable_user_copy=
+(void)
+ 	return bpf_strncmp(data, sizeof(data), "test_data") =3D=3D 0;
+ }
+
++static __always_inline bool verify_sleepable_user_copy_str(void)
++{
++	int ret;
++	char data_long[20];
++	char data_long_pad[20];
++	char data_long_err[20];
++	char data_short[4];
++	char data_short_pad[4];
++
++	ret =3D bpf_copy_from_user_str(data_short, sizeof(data_short), user_ptr,=
+ 0);
++
++	if (bpf_strncmp(data_short, 4, "tes\0") !=3D 0 || ret !=3D 4)
++		return false;
++
++	ret =3D bpf_copy_from_user_str(data_short_pad, sizeof(data_short_pad), u=
+ser_ptr, BPF_F_PAD_ZEROS);
++
++	if (bpf_strncmp(data_short, 4, "tes\0") !=3D 0 || ret !=3D 4)
++		return false;
++
++	ret =3D bpf_copy_from_user_str(data_long, sizeof(data_long), user_ptr, 0=
+);
++
++	if (bpf_strncmp(data_long, 10, "test_data\0") !=3D 0 || ret !=3D 10)
++		return false;
++
++	ret =3D bpf_copy_from_user_str(data_long_pad, sizeof(data_long_pad), use=
+r_ptr, BPF_F_PAD_ZEROS);
++
++	if (bpf_strncmp(data_long_pad, 10, "test_data\0") !=3D 0 || ret !=3D 10 =
+|| data_long_pad[19] !=3D '\0')
++		return false;
++
++	ret =3D bpf_copy_from_user_str(data_long_err, sizeof(data_long_err), (vo=
+id *)data_long, BPF_F_PAD_ZEROS);
++
++	if (ret > 0 || data_long_err[19] !=3D '\0')
++		return false;
++
++	ret =3D bpf_copy_from_user_str(data_long, sizeof(data_long), user_ptr, 2=
+);
++
++	if (ret !=3D -EINVAL)
++		return false;
++
++	return true;
++}
++
+ SEC("uprobe.s//proc/self/exe:trigger_func3")
+ int handle_uprobe_byname3_sleepable(struct pt_regs *ctx)
+ {
+ 	if (verify_sleepable_user_copy())
+ 		uprobe_byname3_sleepable_res =3D 9;
++	if (verify_sleepable_user_copy_str())
++		uprobe_byname3_str_sleepable_res =3D 10;
+ 	return 0;
+ }
+
+@@ -102,7 +151,7 @@ int handle_uprobe_byname3_sleepable(struct pt_regs *ct=
+x)
+ SEC("uprobe//proc/self/exe:trigger_func3")
+ int handle_uprobe_byname3(struct pt_regs *ctx)
+ {
+-	uprobe_byname3_res =3D 10;
++	uprobe_byname3_res =3D 11;
+ 	return 0;
+ }
+
+@@ -110,14 +159,16 @@ SEC("uretprobe.s//proc/self/exe:trigger_func3")
+ int handle_uretprobe_byname3_sleepable(struct pt_regs *ctx)
+ {
+ 	if (verify_sleepable_user_copy())
+-		uretprobe_byname3_sleepable_res =3D 11;
++		uretprobe_byname3_sleepable_res =3D 12;
++	if (verify_sleepable_user_copy_str())
++		uretprobe_byname3_str_sleepable_res =3D 13;
+ 	return 0;
+ }
+
+ SEC("uretprobe//proc/self/exe:trigger_func3")
+ int handle_uretprobe_byname3(struct pt_regs *ctx)
+ {
+-	uretprobe_byname3_res =3D 12;
++	uretprobe_byname3_res =3D 14;
+ 	return 0;
+ }
+
 =2D-
 2.43.5
 
