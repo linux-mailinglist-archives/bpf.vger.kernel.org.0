@@ -1,341 +1,312 @@
-Return-Path: <bpf+bounces-37979-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37980-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6868695D5D0
-	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 21:05:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EACF895D5D9
+	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 21:07:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8DD78B22E62
-	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 19:05:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 292A01C21695
+	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 19:07:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7771B191499;
-	Fri, 23 Aug 2024 19:05:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E281191F7E;
+	Fri, 23 Aug 2024 19:07:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=jordanrome.com header.i=linux@jordanrome.com header.b="P2qwEJ2L"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jemkqWt6"
 X-Original-To: bpf@vger.kernel.org
-Received: from mout.perfora.net (mout.perfora.net [74.208.4.196])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 067518488
-	for <bpf@vger.kernel.org>; Fri, 23 Aug 2024 19:05:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.208.4.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1CE6757F3;
+	Fri, 23 Aug 2024 19:07:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724439944; cv=none; b=XxYfm3cEkcpVS/2oth83GH8Kj1cD9KQbt5NBDwsbo8eEeq9XtAA8uhU2Aul41lQkU6TqR2fxKvnA65f8Y9Qx01GnurGzkmViuS01CVbc9fYpXqdPLKnpJdWKtnPdqcUHPfOgYOFJGJphQiItwElCW7KHBVzJ5KIXLv4LHBQPSPc=
+	t=1724440062; cv=none; b=LRfgp6ebZq/OSy9+pDFtQEq2nDoyzN27p/V07mUNVH2IxJPnD3rmPVdyZPL+mM1zau8qQiqCNkXoYttEU+1SiR3DW9GjTWHAeOPL+2J7AqZUx8QqWIwWjrvvfiCT9znakWlJ9IiOpSoCsja1flokzw4xqWJ1qQF2JL3t3FSeElg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724439944; c=relaxed/simple;
-	bh=6UyxloMPYEuOkLIAhYMsnrjcCLL1KGadihGXavB3Pp8=;
+	s=arc-20240116; t=1724440062; c=relaxed/simple;
+	bh=gy1JqCdO9NsNhfA5CSwY0h/e3UihTKEI7euKjG5EYoQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ciTxcoHW70ypYPGMCBQPa64OWvw62B4nnU9CV17Pips7FJ3Vp9/gqieWdhMXgcMZLa6gpAHQuTa5LtXB+wimnNdY0K/hGZzUF8H8RsXba+1yaNe2Kj+p9KCNgxhMPRCvznjlOEoeifPuKz9dpOamsweDwdNvU6343dWu5m8hpqU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jordanrome.com; spf=pass smtp.mailfrom=jordanrome.com; dkim=pass (2048-bit key) header.d=jordanrome.com header.i=linux@jordanrome.com header.b=P2qwEJ2L; arc=none smtp.client-ip=74.208.4.196
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jordanrome.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jordanrome.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jordanrome.com;
-	s=s1-ionos; t=1724439941; x=1725044741; i=linux@jordanrome.com;
-	bh=LElSnHjuhkwTTPTXkADAaahDuOObTQzQ1vqAxnCniDY=;
-	h=X-UI-Sender-Class:MIME-Version:References:In-Reply-To:From:Date:
-	 Message-ID:Subject:To:Cc:Content-Type:Content-Transfer-Encoding:
-	 cc:content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=P2qwEJ2LrzFrBz3AP4ERNF9r6S3YDY0M0AMqELI/riP4slI+JmKgtNqczYxN78Lc
-	 Tlk/SvWoir9xOooWin60wo0kpFN3pN0vrIjGlIEpETEZeOZ7auqbmyyvdinacWJkO
-	 9BPn95MLBhjmjbW16fBRiKOnu5F/lAKzQYtZouBAaKlux0U9fcj3wfoRH4HGYMjl3
-	 ZrotnaR7r4KQgkGawHEbNjhUOvpsSi8nHiYmvSRZhJU0NOBhgiA8LUYObQbFrtJUo
-	 BZQauQwHvwUlgqeRwIqzQ4MX9SCqrNxsJ+ROAPlQn5ssOTThjmgWUTW+1+pPl9p8Z
-	 6tKE0QjbWzDbgnTLVg==
-X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
-Received: from mail-il1-f181.google.com ([209.85.166.181]) by
- mrelay.perfora.net (mreueus004 [74.208.5.2]) with ESMTPSA (Nemesis) id
- 1Mzh89-1rvE7201eT-00yXAn for <bpf@vger.kernel.org>; Fri, 23 Aug 2024 21:05:41
- +0200
-Received: by mail-il1-f181.google.com with SMTP id e9e14a558f8ab-39d22965434so10962375ab.0
-        for <bpf@vger.kernel.org>; Fri, 23 Aug 2024 12:05:40 -0700 (PDT)
-X-Gm-Message-State: AOJu0YxVPpoco3nsYb4n+RcCwrq5j5lloeReQEdlSFPqwQpqXHUqNrY6
-	Hk6bKm8R92zkHU/kaIFfjOCBKfpdAHlkXaigaRTXIU0eVPTTvIz9J6o3TU6R5EcypBcWVpfWzMR
-	VKL751xmxOmkLyzzjfWaNxYZWaKU=
-X-Google-Smtp-Source: AGHT+IHFW5zU0uH4QjdRvFBpb2G9C16+tNd17BqAN3fO+Q2bd0AP1+j+lexq5uVDgetY+ZheHJdXyqAvOu0RIHG7lnM=
-X-Received: by 2002:a05:6e02:12ea:b0:399:df91:bf57 with SMTP id
- e9e14a558f8ab-39e3bd5d4a8mr27982065ab.0.1724439940529; Fri, 23 Aug 2024
- 12:05:40 -0700 (PDT)
+	 To:Cc:Content-Type; b=TqR0pZvUZkEuExlVuJ7XIEgckZ6OACMWtdxVOXuX+aGJDMjv+0JcpSFToWVTpgKUz45Org6aD2xW0zhRRP1+7lCKmw6LzydKiQdf7TigMfC8KE8exFihk1edvDlFgpPAMxRDJjTenMQzuIccNpmIUT8BGj/RxUb/oFoqp03EVTw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jemkqWt6; arc=none smtp.client-ip=209.85.218.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a8682bb5e79so326516766b.2;
+        Fri, 23 Aug 2024 12:07:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1724440059; x=1725044859; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nhnphg55IC3kyMZ/36YrfXynFLN+Id40TwnrR1ftgjk=;
+        b=jemkqWt6qrfian8mmG+Vgo9bOBl5wPgnrC3Z7UmKTiHnc3gl2SCaGjPekVlY/PD2St
+         DtPp6shIUyKsCTJ1HjFTUHiUFw5aKMXE8vjKEUF0tVw5kahYoXc59plhu70iYVOvqrM2
+         dCFNrl+4IWdcJBAauPC3nI7w0Mf3tVzKvWTNuzCBWAet/sgZXTbw6Iby9kLAe8/4fQ4z
+         AFr8z1hPOpKFr+VNeobqbGVKpDUwoHsfUJ3Pa1d+Zdqkg2YXNjk0rqN0F0EnCQpSDByG
+         Vpv2Rw4QbJtR7zmHV4riyxl/L9oU1xrLqIWXJedsyz0JRId4eCr3KdM4ny/duVMeYc3Q
+         Bmfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1724440059; x=1725044859;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nhnphg55IC3kyMZ/36YrfXynFLN+Id40TwnrR1ftgjk=;
+        b=MUVlSZZIVbA0b3Xos3l4UeUJ6OENtIP6cHXTEftj21VEDn8QO2aDl5wox7xTirEOFM
+         IJQue3dnkJrSazU6HL22Ojb4SHIijnRm+gtu6zi/j5eFYkssOiC/ZMzH9Aib3RC/3Pkp
+         5ZABDFmfnPSH1F9XdtREqh34c7C3FcYmYTOChakmfecmLWKea2MOhwCR/Oa8tuo2mIQw
+         /Mh9AjCY2Em8N/6cmcXa7QVgOUJFXKPijtgrFnP72VBjEYLxVq6OHSE0qctcrL5W5+BT
+         47SoWbbDZuzVKML98B8i951LAkhjujMdbe2CQcgWqf476C83FVGVt9YwBoqV/ai3TjAd
+         9PyQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUZU7cyFbuL6zn1E9MyI1vFrOl+w1j24ITiKcUOuGXfacqflrR/dvLzBOfik6zRkcKeeLs=@vger.kernel.org, AJvYcCXbqTqhKeIYL+P480wBMbkaUzn+sRsj934c55C4oA6fORxF6awyisEjZ+yNBm2P2xqbyYLoqNc1sxeF/qoUoMMS/NHq@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywm8feh5an0bxyy20lsQHHkGDEtVtFxAjcXpnyUb6apnqu+CvF6
+	2bU067iwCkQFipyXlzOWc0tLWmqktdYvOff1/MeZQp4EVUDv38Gv08KFEMrAmoHvU5LoL9z2Wvi
+	hDAGLtt/pJZfUFT2Uqt2qTNLWd5s=
+X-Google-Smtp-Source: AGHT+IEviS6CpJ6oGt7ot2JA73XxZUeBGeyPR+dHU287w5yRbGkn10Ndhlbu9Xk+tuhJFf8IFdinSTCZ8dKcSpnXIOs=
+X-Received: by 2002:a17:907:96ab:b0:a7a:af5d:f312 with SMTP id
+ a640c23a62f3a-a86a54b9e3amr210382266b.46.1724440058747; Fri, 23 Aug 2024
+ 12:07:38 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240823184823.3236004-1-linux@jordanrome.com>
- <20240823184823.3236004-2-linux@jordanrome.com> <CAEf4BzaRRwDCfH7D_BLdxU7j+RZAYE1AQtbGfzRp-3A-q-KiGw@mail.gmail.com>
-In-Reply-To: <CAEf4BzaRRwDCfH7D_BLdxU7j+RZAYE1AQtbGfzRp-3A-q-KiGw@mail.gmail.com>
-From: Jordan Rome <linux@jordanrome.com>
-Date: Fri, 23 Aug 2024 15:05:29 -0400
-X-Gmail-Original-Message-ID: <CA+QiOd5KDFrZkWpWU7m-H8YcxU5TvSkpA4sA24JVLXDCuekW_Q@mail.gmail.com>
-Message-ID: <CA+QiOd5KDFrZkWpWU7m-H8YcxU5TvSkpA4sA24JVLXDCuekW_Q@mail.gmail.com>
-Subject: Re: [bpf-next v9 2/2] bpf: Add tests for bpf_copy_from_user_str kfunc
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@fb.com>, sinquersw@gmail.com
+References: <ME0P300MB0416034322B9915ECD3888649D882@ME0P300MB0416.AUSP300.PROD.OUTLOOK.COM>
+ <20240824024439.a37c41bab87dbdf3d0486846@kernel.org>
+In-Reply-To: <20240824024439.a37c41bab87dbdf3d0486846@kernel.org>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Fri, 23 Aug 2024 12:07:24 -0700
+Message-ID: <CAEf4Bzb29=LUO3fra40XVYN1Lm=PebBFubj-Vb038ojD6To2AA@mail.gmail.com>
+Subject: Re: [PATCH v2] tracing/uprobe: Add missing PID filter for uretprobe
+To: Masami Hiramatsu <mhiramat@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
+	Jordan Rome <linux@jordanrome.com>, ajor@meta.com
+Cc: Tianyi Liu <i.pear@outlook.com>, Oleg Nesterov <oleg@redhat.com>, rostedt@goodmis.org, 
+	mathieu.desnoyers@efficios.com, flaniel@linux.microsoft.com, 
+	albancrequy@linux.microsoft.com, linux-trace-kernel@vger.kernel.org, 
+	bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:hAse/49hLQCj3pFIBF21/WzrEUmnG6kIKNHC6A3+hVBFGZIf2H/
- guSu5M5JANdj7+qu+6+Ak9QSVxE6LIfTYM3Rkz/mOqFB00NQhTthGK3D48u9cHLTJAXcasd
- GboE6r5CHLmE/RmZfMsq5TSoJDeCB5loBLFyGuGT6HwDYsPZRCafF1abrGyoZN6Pd9pm6sd
- yedrLgNgPDKsOOJjOXcSw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:MLiFzzMdPIE=;iFkUKEBiSiJehUTGiJ2ZavN8wjp
- 4XzEjoibIad30C34PLWjotOQpHEYuTdqDN0t5UbPSbzkYBr6tB625FSAuVH2zF/pga8fHXjcf
- 1ed52CsOXJ2p78YAmwC08LebnU/yM3Yod/qp4/ICaMMK2rRb/7wlr99Axas1VK8QThh1DLF71
- 8Ko6wCFA96Tdvo1zuC98YcALexRWPnaBAfDeBqmzM611UTama0gjpmhocvI04zY4r5iZRnjKu
- MLPNg/DAigkFc5px1a5Nbh78bCr1ZAVabfu+6ZGP8JTidb3ldPZvifuFLFQTuvn7bO8LaQxc+
- Uq7eH1orL31EcCeoth/PseIn+qnGNclKbOJHG1c7fvKhU8WInHo1qd2ftKeepqWo4zDQvixRP
- giBfJdUZlKlzPXvxw6EXleRkTNw2kOUuQlia14yVQJpu0huiPPBc9LPBsbl4i1zfo7ZJ0eRxT
- mD8LhSTquA0Dj8m1Nswb9YW+sFRGQo69J9JIpvb82XG2k8otNMJDca55rtHLQCTly9IpMdUOy
- 7A5tkHUyMikAuitwdvhszXfR0Ak07y8knQgEPGwCjM47ei/H2zjYuiD3WWXmC9k4C5r2AJfFC
- lxH3udO8ldG0/sfHC0XhnVYFX8FG8u3dKZr+N5Nxn98df0h6MDofvpaXvDR96t0KiBhB6sGC8
- rm+ko0+OcwgDR0CaDKF6qF6wz2OJKDdDecJKSoypqXk87836LbuV745IMX9FAxhPZ6uV60zO+
- 2XEaFrP72Mhuw7dRHZLVKbNzpy2aZddYA==
 
-On Fri, Aug 23, 2024 at 3:00=E2=80=AFPM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+adding Jiri and bpftrace folks
+
+
+On Fri, Aug 23, 2024 at 10:44=E2=80=AFAM Masami Hiramatsu <mhiramat@kernel.=
+org> wrote:
 >
-> On Fri, Aug 23, 2024 at 11:49=E2=80=AFAM Jordan Rome <linux@jordanrome.co=
-m> wrote:
+> On Fri, 23 Aug 2024 21:53:00 +0800
+> Tianyi Liu <i.pear@outlook.com> wrote:
+>
+> > U(ret)probes are designed to be filterable using the PID, which is the
+> > second parameter in the perf_event_open syscall. Currently, uprobe work=
+s
+> > well with the filtering, but uretprobe is not affected by it. This ofte=
+n
+> > leads to users being disturbed by events from uninterested processes wh=
+ile
+> > using uretprobe.
 > >
-> > This adds tests for both the happy path and
-> > the error path.
+> > We found that the filter function was not invoked when uretprobe was
+> > initially implemented, and this has been existing for ten years. We hav=
+e
+> > tested the patch under our workload, binding eBPF programs to uretprobe
+> > tracepoints, and confirmed that it resolved our problem.
+>
+> Is this eBPF related problem? It seems only perf record is also affected.
+> Let me try.
+>
+>
 > >
-> > Signed-off-by: Jordan Rome <linux@jordanrome.com>
+> > Following are the steps to reproduce the issue:
+> >
+> > Step 1. Compile the following reproducer program:
+> > ```
+> >
+> > int main() {
+> >     printf("pid: %d\n", getpid());
+> >     while (1) {
+> >         sleep(2);
+> >         void *ptr =3D malloc(1024);
+> >         free(ptr);
+> >     }
+> > }
+> > ```
+> > We will then use uretprobe to trace the `malloc` function.
+>
+> OK, and run perf probe to add an event on malloc's return.
+>
+> $ sudo ~/bin/perf probe -x ./malloc-run --add malloc%return
+> Added new event:
+>   probe_malloc:malloc__return (on malloc%return in /home/mhiramat/ksrc/li=
+nux/malloc-run)
+>
+> You can now use it in all perf tools, such as:
+>
+>         perf record -e probe_malloc:malloc__return -aR sleep 1
+>
+> >
+> > Step 2. Run two instances of the reproducer program and record their PI=
+Ds.
+>
+> $ ./malloc-run &  ./malloc-run &
+> [1] 93927
+> [2] 93928
+> pid: 93927
+> pid: 93928
+>
+> And trace one of them;
+>
+> $ sudo ~/bin/perf trace record -e probe_malloc:malloc__return  -p 93928
+> ^C[ perf record: Woken up 1 times to write data ]
+> [ perf record: Captured and wrote 0.031 MB perf.data (9 samples) ]
+>
+> And dump the data;
+>
+> $ sudo ~/bin/perf script
+>       malloc-run   93928 [004] 351736.730649:       raw_syscalls:sys_exit=
+: NR 230 =3D 0
+>       malloc-run   93928 [004] 351736.730694: probe_malloc:malloc__return=
+: (561cfdeb30c0 <- 561cfdeb3204)
+>       malloc-run   93928 [004] 351736.730696:      raw_syscalls:sys_enter=
+: NR 230 (0, 0, 7ffc7a5c5380, 7ffc7a5c5380, 561d2940f6b0,
+>       malloc-run   93928 [004] 351738.730857:       raw_syscalls:sys_exit=
+: NR 230 =3D 0
+>       malloc-run   93928 [004] 351738.730869: probe_malloc:malloc__return=
+: (561cfdeb30c0 <- 561cfdeb3204)
+>       malloc-run   93928 [004] 351738.730883:      raw_syscalls:sys_enter=
+: NR 230 (0, 0, 7ffc7a5c5380, 7ffc7a5c5380, 561d2940f6b0,
+>       malloc-run   93928 [004] 351740.731110:       raw_syscalls:sys_exit=
+: NR 230 =3D 0
+>       malloc-run   93928 [004] 351740.731125: probe_malloc:malloc__return=
+: (561cfdeb30c0 <- 561cfdeb3204)
+>       malloc-run   93928 [004] 351740.731127:      raw_syscalls:sys_enter=
+: NR 230 (0, 0, 7ffc7a5c5380, 7ffc7a5c5380, 561d2940f6b0,
+>
+> Hmm, it seems to trace one pid data. (without this change)
+> If this changes eBPF behavior, I would like to involve eBPF people to ask
+> this is OK. As far as from the viewpoint of perf tool, current code works=
+.
+>
+> But I agree that current code is a bit strange. Oleg, do you know anythin=
+g?
+>
+> Thank you,
+>
+> >
+> > Step 3. Use uretprobe to trace each of the two running reproducers
+> > separately. We use bpftrace to make it easier to reproduce. Please run =
+two
+> > instances of bpftrace simultaneously: the first instance filters events
+> > from PID1, and the second instance filters events from PID2.
+> >
+> > The expected behavior is that each bpftrace instance would only print
+> > events matching its respective PID filter. However, in practice, both
+> > bpftrace instances receive events from both processes, the PID filter i=
+s
+> > ineffective at this moment:
+> >
+> > Before:
+> > ```
+> > PID1=3D55256
+> > bpftrace -p $PID1 -e 'uretprobe:libc:malloc { printf("time=3D%llu pid=
+=3D%d\n", elapsed / 1000000000, pid); }'
+> > Attaching 1 probe...
+> > time=3D0 pid=3D55256
+> > time=3D2 pid=3D55273
+> > time=3D2 pid=3D55256
+> > time=3D4 pid=3D55273
+> > time=3D4 pid=3D55256
+> > time=3D6 pid=3D55273
+> > time=3D6 pid=3D55256
+> >
+> > PID2=3D55273
+> > bpftrace -p $PID2 -e 'uretprobe:libc:malloc { printf("time=3D%llu pid=
+=3D%d\n", elapsed / 1000000000, pid); }'
+> > Attaching 1 probe...
+> > time=3D0 pid=3D55273
+> > time=3D0 pid=3D55256
+> > time=3D2 pid=3D55273
+> > time=3D2 pid=3D55256
+> > time=3D4 pid=3D55273
+> > time=3D4 pid=3D55256
+> > time=3D6 pid=3D55273
+> > time=3D6 pid=3D55256
+> > ```
+
+This is a bit confusing, because even if the kernel-side uretprobe
+handler doesn't do the filtering by itself, uprobe subsystem shouldn't
+install breakpoints on processes which don't have uretprobe requested
+for (unless I'm missing something, of course).
+
+It still needs to be fixed like you do in your patch, though. Even
+more, we probably need a similar UPROBE_HANDLER_REMOVE handling in
+handle_uretprobe_chain() to clean up breakpoint for processes which
+don't have uretprobe attached anymore (but I think that's a separate
+follow up).
+
+Anyways, I think fixing this won't affect BPF in the sense that this
+is clearly a bug and shouldn't happen. Furthermore, in
+multi-uprobe/multi-uretprobe implementation we already filter this out
+correctly, so I don't think anyone does (neither should) rely on this
+buggy behavior.
+
+> >
+> > After: Both bpftrace instances will show the expected behavior, only
+> > printing events from the PID specified by their respective filters:
+> > ```
+> > PID1=3D1621
+> > bpftrace -p $PID1 -e 'uretprobe:libc:malloc { printf("time=3D%llu pid=
+=3D%d\n", elapsed / 1000000000, pid); }'
+> > Attaching 1 probe...
+> > time=3D0 pid=3D1621
+> > time=3D2 pid=3D1621
+> > time=3D4 pid=3D1621
+> > time=3D6 pid=3D1621
+> >
+> > PID2=3D1633
+> > bpftrace -p $PID2 -e 'uretprobe:libc:malloc { printf("time=3D%llu pid=
+=3D%d\n", elapsed / 1000000000, pid); }'
+> > Attaching 1 probe...
+> > time=3D0 pid=3D1633
+> > time=3D2 pid=3D1633
+> > time=3D4 pid=3D1633
+> > time=3D6 pid=3D1633
+> > ```
+> >
+> > Fixes: c1ae5c75e103 ("uprobes/tracing: Introduce is_ret_probe() and ure=
+tprobe_dispatcher()")
+> > Cc: Alban Crequy <albancrequy@linux.microsoft.com>
+> > Signed-off-by: Francis Laniel <flaniel@linux.microsoft.com>
+> > Signed-off-by: Tianyi Liu <i.pear@outlook.com>
 > > ---
-> >  .../selftests/bpf/prog_tests/attach_probe.c   |  8 ++-
-> >  .../selftests/bpf/prog_tests/read_vsyscall.c  |  1 +
-> >  .../selftests/bpf/progs/read_vsyscall.c       |  9 ++-
-> >  .../selftests/bpf/progs/test_attach_probe.c   | 64 ++++++++++++++++++-
-> >  4 files changed, 75 insertions(+), 7 deletions(-)
+> > Changes in v2:
+> > - Drop cover letter and update commit message.
+> > - Link to v1: https://lore.kernel.org/linux-trace-kernel/ME0P300MB04166=
+144CDF92A72B9E1BAEA9D8F2@ME0P300MB0416.AUSP300.PROD.OUTLOOK.COM/
+> > ---
+> >  kernel/trace/trace_uprobe.c | 3 +++
+> >  1 file changed, 3 insertions(+)
 > >
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/attach_probe.c b/to=
-ols/testing/selftests/bpf/prog_tests/attach_probe.c
-> > index 7175af39134f..329c7862b52d 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/attach_probe.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
-> > @@ -283,9 +283,11 @@ static void test_uprobe_sleepable(struct test_atta=
-ch_probe *skel)
-> >         trigger_func3();
-> >
-> >         ASSERT_EQ(skel->bss->uprobe_byname3_sleepable_res, 9, "check_up=
-robe_byname3_sleepable_res");
-> > -       ASSERT_EQ(skel->bss->uprobe_byname3_res, 10, "check_uprobe_byna=
-me3_res");
-> > -       ASSERT_EQ(skel->bss->uretprobe_byname3_sleepable_res, 11, "chec=
-k_uretprobe_byname3_sleepable_res");
-> > -       ASSERT_EQ(skel->bss->uretprobe_byname3_res, 12, "check_uretprob=
-e_byname3_res");
-> > +       ASSERT_EQ(skel->bss->uprobe_byname3_str_sleepable_res, 10, "che=
-ck_uprobe_byname3_str_sleepable_res");
-> > +       ASSERT_EQ(skel->bss->uprobe_byname3_res, 11, "check_uprobe_byna=
-me3_res");
-> > +       ASSERT_EQ(skel->bss->uretprobe_byname3_sleepable_res, 12, "chec=
-k_uretprobe_byname3_sleepable_res");
-> > +       ASSERT_EQ(skel->bss->uretprobe_byname3_str_sleepable_res, 13, "=
-check_uretprobe_byname3_str_sleepable_res");
-> > +       ASSERT_EQ(skel->bss->uretprobe_byname3_res, 14, "check_uretprob=
-e_byname3_res");
-> >  }
-> >
-> >  void test_attach_probe(void)
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/read_vsyscall.c b/t=
-ools/testing/selftests/bpf/prog_tests/read_vsyscall.c
-> > index 3405923fe4e6..c7b9ba8b1d06 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/read_vsyscall.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/read_vsyscall.c
-> > @@ -23,6 +23,7 @@ struct read_ret_desc {
-> >         { .name =3D "probe_read_user_str", .ret =3D -EFAULT },
-> >         { .name =3D "copy_from_user", .ret =3D -EFAULT },
-> >         { .name =3D "copy_from_user_task", .ret =3D -EFAULT },
-> > +       { .name =3D "copy_from_user_str", .ret =3D -EFAULT },
-> >  };
-> >
-> >  void test_read_vsyscall(void)
-> > diff --git a/tools/testing/selftests/bpf/progs/read_vsyscall.c b/tools/=
-testing/selftests/bpf/progs/read_vsyscall.c
-> > index 986f96687ae1..39ebef430059 100644
-> > --- a/tools/testing/selftests/bpf/progs/read_vsyscall.c
-> > +++ b/tools/testing/selftests/bpf/progs/read_vsyscall.c
-> > @@ -1,5 +1,6 @@
-> >  // SPDX-License-Identifier: GPL-2.0
-> >  /* Copyright (C) 2024. Huawei Technologies Co., Ltd */
-> > +#include "vmlinux.h"
-> >  #include <linux/types.h>
-> >  #include <bpf/bpf_helpers.h>
-> >
-> > @@ -7,10 +8,15 @@
-> >
-> >  int target_pid =3D 0;
-> >  void *user_ptr =3D 0;
-> > -int read_ret[8];
-> > +int read_ret[9];
-> >
-> >  char _license[] SEC("license") =3D "GPL";
-> >
-> > +/*
-> > + * This is the only kfunc, the others are helpers
-> > + */
-> > +int bpf_copy_from_user_str(void *dst, u32, const void *, u64) __weak _=
-_ksym;
-> > +
-> >  SEC("fentry/" SYS_PREFIX "sys_nanosleep")
-> >  int do_probe_read(void *ctx)
+> > diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
+> > index c98e3b3386ba..c7e2a0962928 100644
+> > --- a/kernel/trace/trace_uprobe.c
+> > +++ b/kernel/trace/trace_uprobe.c
+> > @@ -1443,6 +1443,9 @@ static void uretprobe_perf_func(struct trace_upro=
+be *tu, unsigned long func,
+> >                               struct pt_regs *regs,
+> >                               struct uprobe_cpu_buffer **ucbp)
 > >  {
-> > @@ -40,6 +46,7 @@ int do_copy_from_user(void *ctx)
-> >         read_ret[6] =3D bpf_copy_from_user(buf, sizeof(buf), user_ptr);
-> >         read_ret[7] =3D bpf_copy_from_user_task(buf, sizeof(buf), user_=
-ptr,
-> >                                               bpf_get_current_task_btf(=
-), 0);
-> > +       read_ret[8] =3D bpf_copy_from_user_str((char *)buf, sizeof(buf)=
-, user_ptr, 0);
-> >
-> >         return 0;
-> >  }
-> > diff --git a/tools/testing/selftests/bpf/progs/test_attach_probe.c b/to=
-ols/testing/selftests/bpf/progs/test_attach_probe.c
-> > index 68466a6ad18c..0b16502726f8 100644
-> > --- a/tools/testing/selftests/bpf/progs/test_attach_probe.c
-> > +++ b/tools/testing/selftests/bpf/progs/test_attach_probe.c
-> > @@ -5,6 +5,7 @@
-> >  #include <bpf/bpf_helpers.h>
-> >  #include <bpf/bpf_tracing.h>
-> >  #include <bpf/bpf_core_read.h>
-> > +#include <errno.h>
-> >  #include "bpf_misc.h"
-> >
-> >  int kprobe2_res =3D 0;
-> > @@ -14,10 +15,15 @@ int uretprobe_byname_res =3D 0;
-> >  int uprobe_byname2_res =3D 0;
-> >  int uretprobe_byname2_res =3D 0;
-> >  int uprobe_byname3_sleepable_res =3D 0;
-> > +int uprobe_byname3_str_sleepable_res =3D 0;
-> >  int uprobe_byname3_res =3D 0;
-> >  int uretprobe_byname3_sleepable_res =3D 0;
-> > +int uretprobe_byname3_str_sleepable_res =3D 0;
-> >  int uretprobe_byname3_res =3D 0;
-> >  void *user_ptr =3D 0;
-> > +u32 dynamic_sz =3D 1;
+> > +     if (!uprobe_perf_filter(&tu->consumer, 0, current->mm))
+> > +             return;
 > > +
-> > +int bpf_copy_from_user_str(void *dst, u32, const void *, u64) __weak _=
-_ksym;
-> >
-> >  SEC("ksyscall/nanosleep")
-> >  int BPF_KSYSCALL(handle_kprobe_auto, struct __kernel_timespec *req, st=
-ruct __kernel_timespec *rem)
-> > @@ -87,11 +93,61 @@ static __always_inline bool verify_sleepable_user_c=
-opy(void)
-> >         return bpf_strncmp(data, sizeof(data), "test_data") =3D=3D 0;
-> >  }
-> >
-> > +static __always_inline bool verify_sleepable_user_copy_str(void)
-> > +{
-> > +       int ret;
-> > +       char data_long[20];
-> > +       char data_long_pad[20];
-> > +       char data_long_err[20];
-> > +       char data_short[4];
-> > +       char data_short_pad[4];
-> > +
-> > +       ret =3D bpf_copy_from_user_str(data_short, sizeof(data_short), =
-user_ptr, 0);
-> > +
-> > +       if (bpf_strncmp(data_short, 4, "tes\0") !=3D 0 || ret !=3D 4)
-> > +               return false;
-> > +
-> > +       ret =3D bpf_copy_from_user_str(data_short_pad, sizeof(data_shor=
-t_pad), user_ptr, BPF_F_PAD_ZEROS);
-> > +
-> > +       if (bpf_strncmp(data_short, 4, "tes\0") !=3D 0 || ret !=3D 4)
-> > +               return false;
-> > +
-> > +       // Make sure this passes the verifier
->
-> also please don't use C++-style comments
->
-
-Good catch. Will fix.
-
-> > +       ret =3D bpf_copy_from_user_str(data_long, dynamic_sz &=3D sizeo=
-f(data_long), user_ptr, 0);
-> > +
-> > +       if (ret !=3D 0)
-> > +               return false;
-> > +
-> > +       ret =3D bpf_copy_from_user_str(data_long, sizeof(data_long), us=
-er_ptr, 0);
-> > +
-> > +       if (bpf_strncmp(data_long, 10, "test_data\0") !=3D 0 || ret !=
-=3D 10)
-> > +               return false;
-> > +
-> > +       ret =3D bpf_copy_from_user_str(data_long_pad, sizeof(data_long_=
-pad), user_ptr, BPF_F_PAD_ZEROS);
-> > +
-> > +       if (bpf_strncmp(data_long_pad, 10, "test_data\0") !=3D 0 || ret=
- !=3D 10 || data_long_pad[19] !=3D '\0')
-> > +               return false;
-> > +
-> > +       ret =3D bpf_copy_from_user_str(data_long_err, sizeof(data_long_=
-err), (void *)data_long, BPF_F_PAD_ZEROS);
-> > +
-> > +       if (ret > 0 || data_long_err[19] !=3D '\0')
-> > +               return false;
-> > +
-> > +       ret =3D bpf_copy_from_user_str(data_long, sizeof(data_long), us=
-er_ptr, 2);
-> > +
-> > +       if (ret !=3D -EINVAL)
-> > +               return false;
-> > +
-> > +       return true;
-> > +}
-> > +
-> >  SEC("uprobe.s//proc/self/exe:trigger_func3")
-> >  int handle_uprobe_byname3_sleepable(struct pt_regs *ctx)
-> >  {
-> >         if (verify_sleepable_user_copy())
-> >                 uprobe_byname3_sleepable_res =3D 9;
-> > +       if (verify_sleepable_user_copy_str())
-> > +               uprobe_byname3_str_sleepable_res =3D 10;
-> >         return 0;
-> >  }
-> >
-> > @@ -102,7 +158,7 @@ int handle_uprobe_byname3_sleepable(struct pt_regs =
-*ctx)
-> >  SEC("uprobe//proc/self/exe:trigger_func3")
-> >  int handle_uprobe_byname3(struct pt_regs *ctx)
-> >  {
-> > -       uprobe_byname3_res =3D 10;
-> > +       uprobe_byname3_res =3D 11;
-> >         return 0;
-> >  }
-> >
-> > @@ -110,14 +166,16 @@ SEC("uretprobe.s//proc/self/exe:trigger_func3")
-> >  int handle_uretprobe_byname3_sleepable(struct pt_regs *ctx)
-> >  {
-> >         if (verify_sleepable_user_copy())
-> > -               uretprobe_byname3_sleepable_res =3D 11;
-> > +               uretprobe_byname3_sleepable_res =3D 12;
-> > +       if (verify_sleepable_user_copy_str())
-> > +               uretprobe_byname3_str_sleepable_res =3D 13;
-> >         return 0;
-> >  }
-> >
-> >  SEC("uretprobe//proc/self/exe:trigger_func3")
-> >  int handle_uretprobe_byname3(struct pt_regs *ctx)
-> >  {
-> > -       uretprobe_byname3_res =3D 12;
-> > +       uretprobe_byname3_res =3D 14;
-> >         return 0;
+> >       __uprobe_perf_func(tu, func, regs, ucbp);
 > >  }
 > >
 > > --
-> > 2.43.5
+> > 2.34.1
 > >
+>
+>
+> --
+> Masami Hiramatsu (Google) <mhiramat@kernel.org>
+>
 
