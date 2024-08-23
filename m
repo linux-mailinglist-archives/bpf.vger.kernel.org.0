@@ -1,162 +1,191 @@
-Return-Path: <bpf+bounces-37990-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37994-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB0F695D8A4
-	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 23:46:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44F2F95D935
+	for <lists+bpf@lfdr.de>; Sat, 24 Aug 2024 00:21:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DBEF91C217BE
-	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 21:46:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EDD3A2847AA
+	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 22:21:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 940FB1C8232;
-	Fri, 23 Aug 2024 21:46:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5526F1C8FBB;
+	Fri, 23 Aug 2024 22:20:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="gtC86pVn"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E8A233985;
-	Fri, 23 Aug 2024 21:46:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3FBC18661A
+	for <bpf@vger.kernel.org>; Fri, 23 Aug 2024 22:20:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724449583; cv=none; b=WET9QQfV8rt0P3bY+WV1hqdplJSl83Tv7ibe0mA7gQp46yLjwvhAsomQyua2atXtmYzPX1unoTzM+kpdiuXmOsqZ/FSpmzPX8/JHdG5ZyQw1Wtuy4R0E8XIG5I3rAi4sSgOp2ED9KKpvx+br7cJ9DXu+EskOCyzwSvI8EZas2Xc=
+	t=1724451652; cv=none; b=kZ46k4O6wkJeslevD1+QUBR0oTtLjtWaWEVPip8JD30EdgWS8sV2UZpTLEQZDxQb8QXhfj6rchlGgTGRHznUSEMHdkyaPOS5blsNNEVGebGYyeKxyPviDwmLSzaCvGwMGkkWnWUeCiltPfrtkXpMFwUxxoumdn2gs2/m/kHK+yI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724449583; c=relaxed/simple;
-	bh=3pfZ1sPmNUvyG7TVwFvR3Rqz69rwliQPJGBAVEOGrUE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pYgCXl/FBVtjxVzMoLPxMXlzDwF2Zg5RZ40DlwII3zJ4133IxyjNsB7bK9pRmCaXe0FOkow/hg3xX+KTTcgORJDtpi7NOYDLWVnG7RzkF9aN51UpWPcEaBuVPf4UzsOgzasM8aPt4dcNd/f2WE1pabGE+FvXOw94DFVsb7pTs4U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=fedoraproject.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=fedoraproject.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-5334879ba28so2992592e87.3;
-        Fri, 23 Aug 2024 14:46:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724449579; x=1725054379;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3pfZ1sPmNUvyG7TVwFvR3Rqz69rwliQPJGBAVEOGrUE=;
-        b=XzeJCuQJ+lGhi5XfWAPChcV8Mv5z16y4rQ8d7KLkdWjafjmcXe21sLmHbXKNkO30Ps
-         rFdNp3mO0X/AqcgAZLGl68P7oXCGixkWIMo/kDbpZsd60acOCA1Mame3YBPkraDvqC24
-         YLMQlTzGaKvHtCGSXwaI2O0slTLl8GFIJdLgbk/NyBQlao3r5FO9kjQsH/TtF6MP0o/G
-         g0xUEM27exrsWpR0jlODalEBlMwBJ/wTsuK0Xs205uS9aM3erhXw6fZyO5yNYhvMepZ/
-         XtEINrZphEacIWtSvV07P6qJ234DFBfzB4h4YDqqD9cs672UuEyNF5VggZoKXarl+sHP
-         MLiQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXbkd3Xv5BMEaFcoVjQLbxBEb3XRK38Vq/exlyL9Fw80dyL2V72YP/w6jUnCLcqLj2QbDI=@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywy/LWL3nt6oOREqvEeJ1hWxQhb0J/Msw0aQR5qAs0nCECBUJBh
-	X4YYZiV+qePGy9rT3OOmsfcKVFhfwXHfLUgLhIzQGeRaXqyL0h6EZkvjqPZIMhs=
-X-Google-Smtp-Source: AGHT+IHXjmSeDpuJ7pXkWmbiIUTSL8yPcJD1cuyf5p6G6WG2Kk5RU15Moeld7ZOwVe9eIsCRStmIZw==
-X-Received: by 2002:a05:6512:118d:b0:533:3268:b959 with SMTP id 2adb3069b0e04-534387c1770mr2370536e87.53.1724449578596;
-        Fri, 23 Aug 2024 14:46:18 -0700 (PDT)
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com. [209.85.208.172])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-5334ea5964fsm687655e87.126.2024.08.23.14.46.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Aug 2024 14:46:18 -0700 (PDT)
-Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2f502086419so2354911fa.3;
-        Fri, 23 Aug 2024 14:46:18 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUWDT2FvvIfhF3x4BpZNPZSuTUSdsPAyzA/8/jMVtZkyyuFj0sKVj2tjbgq+mhgFudYoCM=@vger.kernel.org
-X-Received: by 2002:a2e:bc1b:0:b0:2f5:2ba:2c99 with SMTP id
- 38308e7fff4ca-2f502ba2f21mr1927371fa.9.1724449578174; Fri, 23 Aug 2024
- 14:46:18 -0700 (PDT)
+	s=arc-20240116; t=1724451652; c=relaxed/simple;
+	bh=I0AHQmtu1F98zoUHTpEp0EuFHgd26Lw+GozzVqCYMCM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=lTN8I1Gfox20SixjHGCusb567j8L+E0agk+LidupY/am5FhUGY1RFD8g1SrxpzbguDy0PhpC209FaZIAetm4OlQEIm8KvBCq4+LSEY1Dsf/QZco990YdZEVgilGsU94cGJNTiu75HITIqBqbwlyden/SnFdvcaVYyFcDnxqQyig=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=gtC86pVn; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:MIME-Version:
+	Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References;
+	bh=+8yRMhoousb1OYEQ09N9+qsc3KTlRjIGMm/BHYoKyok=; b=gtC86pVn+//XH4+N3xqXp97X/P
+	mBnv9c/YwzoR4rM+0qjnWqocxEvZl2zxO97NOcNgXk+DLaUW/eIh75v3EteYzYgJPBQ8hlx+Y82Bz
+	26fAuvPO7WfUaRu/Cm5Kd8H/3K0EA65IKftiCDsaoEdycmXdLBgszR2Cwhn79OHtyqlqOg+DCy3nY
+	peVyqTWyWFvx0oXs73Vz8DoYPJR2QAnuDkCIXn37p3xe3T0eM0jNme9x37Ho3B+0uFEIoxk8guPFy
+	Jak0YWPdR6NuwQ4xh2VCH2et77PUIDdxeco57xYnhgnh4XK1V+5AO7/70evBb0KYpWCoEY3U9XLbK
+	CcipmK1w==;
+Received: from 23.248.197.178.dynamic.cust.swisscom.net ([178.197.248.23] helo=localhost)
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1shceE-000FqE-Hc; Sat, 24 Aug 2024 00:20:46 +0200
+From: Daniel Borkmann <daniel@iogearbox.net>
+To: bpf@vger.kernel.org
+Cc: kongln9170@gmail.com,
+	Daniel Borkmann <daniel@iogearbox.net>
+Subject: [PATCH bpf 1/4] bpf: Fix helper writes to read-only maps
+Date: Sat, 24 Aug 2024 00:20:30 +0200
+Message-Id: <20240823222033.31006-1-daniel@iogearbox.net>
+X-Mailer: git-send-email 2.21.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAEg-Je8=t_cXKsWL0XSx3vF1gsArSWpychfbEf+yjM6wVz3Mjw@mail.gmail.com>
- <CAM22NNBrXSUbrpFAKv8jrREKTBYx_aW0cibtDE5AZ_kTijUrPA@mail.gmail.com>
-In-Reply-To: <CAM22NNBrXSUbrpFAKv8jrREKTBYx_aW0cibtDE5AZ_kTijUrPA@mail.gmail.com>
-From: Neal Gompa <ngompa@fedoraproject.org>
-Date: Fri, 23 Aug 2024 17:45:41 -0400
-X-Gmail-Original-Message-ID: <CAEg-Je_9r_96j-un6TS7Dm_kJ3m7Q6y_RDEs9NTvxjNJM-zEvQ@mail.gmail.com>
-Message-ID: <CAEg-Je_9r_96j-un6TS7Dm_kJ3m7Q6y_RDEs9NTvxjNJM-zEvQ@mail.gmail.com>
-Subject: Re: Weird failure with bpftool when building 6.11-rc4 with clang+rust+lto
-To: Matthew Maurer <matthew.r.maurer@gmail.com>
-Cc: rust-for-linux@vger.kernel.org, Miguel Ojeda <ojeda@kernel.org>, 
-	Quentin Monnet <qmo@kernel.org>, bpf@vger.kernel.org, 
-	"Justin M. Forbes" <jforbes@fedoraproject.org>, Davide Cavalca <dcavalca@fedoraproject.org>, 
-	Janne Grunau <jannau@fedoraproject.org>, Hector Martin <marcan@fedoraproject.org>, 
-	Asahi Linux <asahi@lists.linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27376/Fri Aug 23 10:47:45 2024)
 
-Hey Matthew,
+Lonial found an issue that despite user- and BPF-side frozen BPF map
+(like in case of .rodata), it was still possible to write into it from
+a BPF program side through specific helpers having ARG_PTR_TO_{LONG,INT}
+as arguments.
 
-The current thinking is that maybe the culprit is dwarves. We've
-backported a fix in Fedora that may help, I'm waiting to find out if
-it does. Apparently all test runs with Clang+LTO are broken right now
-with dwarves 1.27, so it wasn't just unique to my merge request.
+In check_func_arg() when the argument is as mentioned, the meta->raw_mode
+is never set. Later, check_helper_mem_access(), under the case of
+PTR_TO_MAP_VALUE as register base type, it assumes BPF_READ for the
+subsequent call to check_map_access_type() and given the BPF map is
+read-only it succeeds.
 
+The helpers really need to be annotated as ARG_PTR_TO_{LONG,INT} | MEM_UNINIT
+when results are written into them as opposed to read out of them. The
+latter indicates that it's okay to pass a pointer to uninitialized memory
+as the memory is written to anyway.
 
-On Tue, Aug 20, 2024 at 12:49=E2=80=AFPM Matthew Maurer
-<matthew.r.maurer@gmail.com> wrote:
->
-> Sorry that this isn't a solution, but I can tell you some background:
->
-> Linux currently relies on the `--lang_exclude` flag to `pahole` to
-> filter Rust debugging information out of the output BTF. This is done
-> because various downstream tools (for example, bpftool) do not handle
-> Rust types correctly. The `--lang_exclude` flag works by checking the
-> language flag on the compilation unit the type is referenced in. Once
-> LTO is enabled however, things can migrate from one compilation unit
-> to another, leading to C code having Rust code and types referenced
-> inside them. The resulting type will be considered C-language type by
-> `pahole`, but is actually a Rust type. Even if you fixed bpftool,
-> without additional patches/hacks, once the kernel boots it would
-> likely fail to parse its own BTF debugging information, and disable
-> BPF loading.
->
-> The most confusing part to me here is that I only encountered this
-> issue with x-lang LTO enabled, which is not available in the kernel
-> you're building from. If this is happening without x-lang LTO enabled,
-> it likely means that there's another way for debug symbols to leak
-> across CUs during LTO. That's where I'd start looking - use `pahole`
-> to dump the contents of `vmlinux.o` and see if you can find a
-> C-language CU referencing a Rust type. Then, try to figure out how
-> that's possible. With x-lang LTO it was obvious, inlining caused a
-> bunch of issues.
->
-> The last possibility I can think of is that somehow in your build
-> configuration `pahole` is not being invoked with the `--lang_exclude`
-> flag when building `vmlinux`. I don't know why that would be, but it
-> might be worth double checking.
->
-> On Tue, Aug 20, 2024 at 5:13=E2=80=AFAM Neal Gompa <ngompa@fedoraproject.=
-org> wrote:
-> >
-> > Hey all,
-> >
-> > While working on enabling Rust in the Fedora kernel[1], we've managed
-> > to get the setup almost completely working, but we have a build
-> > failure with the clang+lto build variant[2][3].
-> >
-> > Based on the build failure log[4][5], it looks like there's some
-> > random mixing of Rust inside of C code or something of the sort (which
-> > obviously would be invalid).
-> >
-> > Can someone help with this?
-> >
-> > Thanks in advance and best regards,
-> >
-> > [1]: https://gitlab.com/cki-project/kernel-ark/-/merge_requests/3295
-> > [2]: https://s3.amazonaws.com/arr-cki-prod-trusted-artifacts/index.html=
-?prefix=3Dtrusted-artifacts/1419488480/build_x86_64/7618803903/artifacts/
-> > [3]: https://s3.amazonaws.com/arr-cki-prod-trusted-artifacts/index.html=
-?prefix=3Dtrusted-artifacts/1419488480/build_aarch64/7618803917/artifacts/
-> > [4]: https://s3.amazonaws.com/arr-cki-prod-trusted-artifacts/trusted-ar=
-tifacts/1419488480/build_x86_64/7618803903/artifacts/build-failure.log
-> > [5]: https://s3.amazonaws.com/arr-cki-prod-trusted-artifacts/trusted-ar=
-tifacts/1419488480/build_aarch64/7618803917/artifacts/build-failure.log
-> >
-> >
-> > --
-> > Neal Gompa (FAS: ngompa)
-> >
+Fixes: 57c3bb725a3d ("bpf: Introduce ARG_PTR_TO_{INT,LONG} arg types")
+Reported-by: Lonial Con <kongln9170@gmail.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+---
+ kernel/bpf/helpers.c     | 4 ++--
+ kernel/bpf/syscall.c     | 2 +-
+ kernel/bpf/verifier.c    | 3 ++-
+ kernel/trace/bpf_trace.c | 4 ++--
+ net/core/filter.c        | 4 ++--
+ 5 files changed, 9 insertions(+), 8 deletions(-)
 
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index b5f0adae8293..356a58aeb79b 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -538,7 +538,7 @@ const struct bpf_func_proto bpf_strtol_proto = {
+ 	.arg1_type	= ARG_PTR_TO_MEM | MEM_RDONLY,
+ 	.arg2_type	= ARG_CONST_SIZE,
+ 	.arg3_type	= ARG_ANYTHING,
+-	.arg4_type	= ARG_PTR_TO_LONG,
++	.arg4_type	= ARG_PTR_TO_LONG | MEM_UNINIT,
+ };
+ 
+ BPF_CALL_4(bpf_strtoul, const char *, buf, size_t, buf_len, u64, flags,
+@@ -566,7 +566,7 @@ const struct bpf_func_proto bpf_strtoul_proto = {
+ 	.arg1_type	= ARG_PTR_TO_MEM | MEM_RDONLY,
+ 	.arg2_type	= ARG_CONST_SIZE,
+ 	.arg3_type	= ARG_ANYTHING,
+-	.arg4_type	= ARG_PTR_TO_LONG,
++	.arg4_type	= ARG_PTR_TO_LONG | MEM_UNINIT,
+ };
+ 
+ BPF_CALL_3(bpf_strncmp, const char *, s1, u32, s1_sz, const char *, s2)
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index bf6c5f685ea2..6d5942a6f41f 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -5952,7 +5952,7 @@ static const struct bpf_func_proto bpf_kallsyms_lookup_name_proto = {
+ 	.arg1_type	= ARG_PTR_TO_MEM,
+ 	.arg2_type	= ARG_CONST_SIZE_OR_ZERO,
+ 	.arg3_type	= ARG_ANYTHING,
+-	.arg4_type	= ARG_PTR_TO_LONG,
++	.arg4_type	= ARG_PTR_TO_LONG | MEM_UNINIT,
+ };
+ 
+ static const struct bpf_func_proto *
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index d8520095ca03..70b0474e03a6 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -8877,8 +8877,9 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+ 	case ARG_PTR_TO_INT:
+ 	case ARG_PTR_TO_LONG:
+ 	{
+-		int size = int_ptr_type_to_size(arg_type);
++		int size = int_ptr_type_to_size(base_type(arg_type));
+ 
++		meta->raw_mode = arg_type & MEM_UNINIT;
+ 		err = check_helper_mem_access(env, regno, size, false, meta);
+ 		if (err)
+ 			return err;
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index cd098846e251..95c3409ff374 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -1226,7 +1226,7 @@ static const struct bpf_func_proto bpf_get_func_arg_proto = {
+ 	.ret_type	= RET_INTEGER,
+ 	.arg1_type	= ARG_PTR_TO_CTX,
+ 	.arg2_type	= ARG_ANYTHING,
+-	.arg3_type	= ARG_PTR_TO_LONG,
++	.arg3_type	= ARG_PTR_TO_LONG | MEM_UNINIT,
+ };
+ 
+ BPF_CALL_2(get_func_ret, void *, ctx, u64 *, value)
+@@ -1242,7 +1242,7 @@ static const struct bpf_func_proto bpf_get_func_ret_proto = {
+ 	.func		= get_func_ret,
+ 	.ret_type	= RET_INTEGER,
+ 	.arg1_type	= ARG_PTR_TO_CTX,
+-	.arg2_type	= ARG_PTR_TO_LONG,
++	.arg2_type	= ARG_PTR_TO_LONG | MEM_UNINIT,
+ };
+ 
+ BPF_CALL_1(get_func_arg_cnt, void *, ctx)
+diff --git a/net/core/filter.c b/net/core/filter.c
+index f3c72cf86099..2ff210cb068c 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -6346,7 +6346,7 @@ static const struct bpf_func_proto bpf_skb_check_mtu_proto = {
+ 	.ret_type	= RET_INTEGER,
+ 	.arg1_type      = ARG_PTR_TO_CTX,
+ 	.arg2_type      = ARG_ANYTHING,
+-	.arg3_type      = ARG_PTR_TO_INT,
++	.arg3_type      = ARG_PTR_TO_INT | MEM_UNINIT,
+ 	.arg4_type      = ARG_ANYTHING,
+ 	.arg5_type      = ARG_ANYTHING,
+ };
+@@ -6357,7 +6357,7 @@ static const struct bpf_func_proto bpf_xdp_check_mtu_proto = {
+ 	.ret_type	= RET_INTEGER,
+ 	.arg1_type      = ARG_PTR_TO_CTX,
+ 	.arg2_type      = ARG_ANYTHING,
+-	.arg3_type      = ARG_PTR_TO_INT,
++	.arg3_type      = ARG_PTR_TO_INT | MEM_UNINIT,
+ 	.arg4_type      = ARG_ANYTHING,
+ 	.arg5_type      = ARG_ANYTHING,
+ };
+-- 
+2.43.0
 
-
---
-Neal Gompa (FAS: ngompa)
 
