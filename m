@@ -1,135 +1,127 @@
-Return-Path: <bpf+bounces-38001-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38002-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87E3A95D977
-	for <lists+bpf@lfdr.de>; Sat, 24 Aug 2024 01:06:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34EA995D98E
+	for <lists+bpf@lfdr.de>; Sat, 24 Aug 2024 01:23:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0987028345E
-	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 23:06:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DF22B2828C3
+	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 23:23:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 303411C8228;
-	Fri, 23 Aug 2024 23:06:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F1FD1C8FCD;
+	Fri, 23 Aug 2024 23:23:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b="VCtoP+Cz"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V1on0jeT"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-4316.protonmail.ch (mail-4316.protonmail.ch [185.70.43.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com [209.85.210.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 044F55FBBA
-	for <bpf@vger.kernel.org>; Fri, 23 Aug 2024 23:06:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97227181B83;
+	Fri, 23 Aug 2024 23:23:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724454410; cv=none; b=C3kcmlkbw2On4uL4Z7bzP6J75/wIZjPaLPIbSHUs5+Sx00Km1F0FHL9r5fHDHJy8Cx6UOObaJ9U8SMr6ctcmaz4fhG3wGZVT4gHRvwAs/7SkO50zQQbeEa49PFKW7DH9NU1ulEvAsHJHg/pWqevZcftvh5X1QSi9t3KuxejuW/s=
+	t=1724455383; cv=none; b=IDJdg7e5t11OGa/an1RjwKEHH8P82B/FTpE3MTObstnqC8mgRp/s7ftG7Ae93mOs4M2UvG+ZczZt2+OTn4OrdEpDIxznVbsAdUk6EwiedKyFO/rPmf7GznrWDLL2opwmu5CmrTVVyjqqmVBpifFblUQ3Yuah1GEymgcUPpY9cLI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724454410; c=relaxed/simple;
-	bh=WxVNxIiGANoTUbZp5l7oAcKlEWIEaTrRCB+WpqKBnmI=;
-	h=Date:To:From:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=CCRvlzB494H4wF0+KlnmYHgZK4DLN5KCq8pPcUP3mAUi35IvJM9ohiuFtPd2kNHZyDn8l8uFXBBC3RffQawQ7qZ+dN2s69hCo/NyX8KqkIQt3bjIrG9FzY+5hgwJx+MafECFvLMLPxGKejKLuyO3wdarB1T2+UHdb4Vue5VCHLQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me; spf=pass smtp.mailfrom=pm.me; dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b=VCtoP+Cz; arc=none smtp.client-ip=185.70.43.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pm.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me;
-	s=protonmail3; t=1724454400; x=1724713600;
-	bh=DBjRTH8B+SlGB/0QJow3p0kxri4lryy+00X9ua+lR2I=;
-	h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
-	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
-	b=VCtoP+CzLef4Jzn9846rdLJzzctZPlduh7NxDCbHV1L3s6cFGoaYAIWexTiXhizSP
-	 dHzryjXWbS0jTGbKGd4JCV+8Smy5aEn6pIh9Xus9PSV5lGQRuewfMh6JjPrQxDsjr1
-	 7Cx73czye/0lksviAPZYKQ5ATBKE4+4vzeG0r7pT+c1hEweYGs9/KCi2dnp7MpfkrE
-	 gYw1OWeGh1WvhysDitHOdCBYiM9RTBkmGlR5L8fGPKuBY0TVQ57cMtqpsY7QvtEKmZ
-	 xsvTby5+qZTQSi1To9AmrmDqM0SNzq1Dvrj6FlMuum4E5D7g8+tofWtXOmwGfjbSOr
-	 /EKWLVdsqceuQ==
-Date: Fri, 23 Aug 2024 23:06:35 +0000
-To: bpf <bpf@vger.kernel.org>
-From: Ihor Solodrai <ihor.solodrai@pm.me>
-Cc: "ast@kernel.org" <ast@kernel.org>, "andrii@kernel.org" <andrii@kernel.org>, "daniel@iogearbox.net" <daniel@iogearbox.net>, Eduard Zingerman <eddyz87@gmail.com>, "mykolal@fb.com" <mykolal@fb.com>
-Subject: [PATCH bpf-next] selftests/bpf: compare vmlinux.h checksum when building %.bpf.o
-Message-ID: <TCvb-R45mBUJOpoW3V-tLkH2XppfNXYbkv7Ph0ae8J9MZKWFvQ3nkJw74KKMbMzzpAvbwXBwRuBmhFOtHl0-jLLrIALH-_2_Zp-MZ9pPXPo=@pm.me>
-Feedback-ID: 27520582:user:proton
-X-Pm-Message-ID: 9214dca4a85a1db2969198f45182e5bd7950b7e0
+	s=arc-20240116; t=1724455383; c=relaxed/simple;
+	bh=gVE3Tz5d69/fbL2reCmsdaJOTK2gYrPl8YKsLMC2kqE=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=bQ6cnOmsy1G/ZOULPvjCb0drUJWIZWOU7HZpnKmHqAXXR8eSI37+VGjo9j5i1ZiCFNuSX0ZLqBuaenW1w62fsk1W+zLB29hZYRuUc86acbJ+sSjUopfVUmCPXmTjVkuAwVDMkbRr6c35rHDVg3aPQEJd0Rtmam9NRmzMDn9Z4PI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V1on0jeT; arc=none smtp.client-ip=209.85.210.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f50.google.com with SMTP id 46e09a7af769-7093f3a1af9so2010051a34.1;
+        Fri, 23 Aug 2024 16:23:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1724455380; x=1725060180; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=75Q5HaMSUdu3EU9FymdbNmNLbW48t84b3pHVRNCcZTo=;
+        b=V1on0jeT3kHg27BzUY1VWL0ByQT6GYcjORaaYrTCFsnA1qyA70gD/aNTdzO19ODt6N
+         U48bDgYXMkzozDGtvVOIcxaRA99P9Dpa32dyxp0GSxwpDuS+n89upU1JpsAYkoZ0YST7
+         qkoCm793Brp65brGS5fEghBUXffdiBUB9vsIhH3z387yVlh7g+NfWAMGN87OBJXZ2zy8
+         2/6nyXjVEJiV2NQhKLoD7+FLFgA6eBH7piilugocLF/oxi3PRmnQaigzgmeq6+CLCbX8
+         rNY5j124B4ctmZI43NIx+r2Q1mkFqXP9Kn6d0Z3mVEZPZmNa1PMBZl6mVazUK2Mm5K3C
+         CYfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1724455380; x=1725060180;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=75Q5HaMSUdu3EU9FymdbNmNLbW48t84b3pHVRNCcZTo=;
+        b=dfXTi6ai1gUanHXgVcJzNVgx+sgglZVAAOazYamPtNCyN5uJ3KwE2aHzLVY18FrwJ/
+         ukod1clVJx3UkMiUCW6gus++MRwLrYMWxTYOL2c93HpPCc/kFTaDkeYK6mcwY6qKNxzu
+         mN7mgT/90I1I2Uj/YDLLh/e5hYebzleugC+IoS9Dtz8Tnbs4wBlXN3Ep8hE1h0iBTX9+
+         7BS3n3BiQnlu/3YUCYZyiFHFyAZHIiH0FzNRkSBm/UY9LKJhDbZ+AxyneZbfzkEfOPE/
+         U+BCqhhucDxGKzwRpKldfGJZFyhT0IBsVtPUnftMfqE3zdlU95fhmM24zG3TGl4nTRdV
+         BOPQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV7Gj44nMPYM8Bl7QMTg79KFIYHH1xYVQZDS9L2ePVvyLpy9p6eRRTAhNLdaFJTwuBWEnu+zJKUtCKFc3PVkg==@vger.kernel.org, AJvYcCWhECgrNxA8mvB/gGyZIEgTbUC2rc9N67nC5GQWe2UC21j3OdG9iaIm/1i1aQe9a7mwYi8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyqYQVzdxm5J5ytnXNFFttM7HLmoScZzWWTgqaOuWGjNLvYpq/l
+	nUDXEqKnC/OPL0bSDjJJKO42fOQkD/QqNrdk0tjSvum6GDFbV4oQ
+X-Google-Smtp-Source: AGHT+IGPgZFKvORR0uemPN8WjoadxIopouB2ZymsG1SF5XaMJBA5QA5yWMo7iA+IQ6NsduWa0olgAw==
+X-Received: by 2002:a05:6830:6004:b0:70a:9876:b76b with SMTP id 46e09a7af769-70e0ead89c3mr4800606a34.2.1724455380606;
+        Fri, 23 Aug 2024 16:23:00 -0700 (PDT)
+Received: from [192.168.0.235] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7cd9abfd5b1sm3722097a12.0.2024.08.23.16.22.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Aug 2024 16:23:00 -0700 (PDT)
+Message-ID: <d9a46f4d54df8d5ac57011222ebdf21b0f15f52d.camel@gmail.com>
+Subject: Re: [PATCH v6 bpf-next 00/10] Harden and extend ELF build ID
+ parsing logic
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org
+Cc: linux-mm@kvack.org, akpm@linux-foundation.org, adobriyan@gmail.com, 
+	shakeel.butt@linux.dev, hannes@cmpxchg.org, ak@linux.intel.com, 
+	osandov@osandov.com, song@kernel.org, jannh@google.com, 
+	linux-fsdevel@vger.kernel.org, willy@infradead.org
+Date: Fri, 23 Aug 2024 16:22:55 -0700
+In-Reply-To: <20240814185417.1171430-1-andrii@kernel.org>
+References: <20240814185417.1171430-1-andrii@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.4 (3.52.4-1.fc40) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
 
-%.bpf.o objects depend on vmlinux.h, which makes them transitively
-dependent on unnecessary libbpf headers. However vmlinux.h doesn't
-actually change as often.
+On Wed, 2024-08-14 at 11:54 -0700, Andrii Nakryiko wrote:
 
-Compute and save vmlinux.h checksum, and change $(TRUNNER_BPF_OBJS)
-dependencies so that they are rebuilt only if vmlinux.h contents was
-changed. Also explicitly list libbpf headers required for test progs.
+[...]
 
-Example of build time improvement (after first clean build):
-  $ touch ../../../lib/bpf/bpf.h
-  $ time make -j8
-Before: real  1m37.592s
-After:  real  0m27.310s
+> Andrii Nakryiko (10):
+>   lib/buildid: harden build ID parsing logic
+>   lib/buildid: add single folio-based file reader abstraction
+>   lib/buildid: take into account e_phoff when fetching program headers
+>   lib/buildid: remove single-page limit for PHDR search
+>   lib/buildid: rename build_id_parse() into build_id_parse_nofault()
+>   lib/buildid: implement sleepable build_id_parse() API
+>   lib/buildid: don't limit .note.gnu.build-id to the first page in ELF
 
-You may notice that the speed gain is caused by skipping %.bpf.o gen.
+Never worked with lib/buildid before, so not sure how valuable my input is.
+Anyways:
+- I compared the resulting parser with ELF specification and available
+  documentation for buildid, all seems correct.
+  (with a small caveat that ELF defines Elf{32,64}_Ehdr->e_ehsize field
+   to encode actual size of the elf header, and e_phentsize
+   to encode actual size of the program header.
+   Parser uses sizeof(Elf{32,64}_{Ehdr,Phdr}) instead,
+   and this is how it was before, so probably does not matter).
 
-Link: https://lore.kernel.org/bpf/CAEf4BzY1z5cC7BKye8=3DA8aTVxpsCzD=3Dp1jdT=
-fKC7i0XVuYoHUQ@mail.gmail.com
+- The `freader` abstraction nicely hides away difference between
+  sleepable and non-sleepable contexts.
+  (with a caveat, that freader_get_folio() uses read_cache_folio()
+   which is documented as expecting mapping->invalidate_lock to be held.
+   I assume that this is true for vma's passed to build_id_parse(), right?)
 
-Signed-off-by: Ihor Solodrai <ihor.solodrai@pm.me>
----
- tools/testing/selftests/bpf/Makefile | 19 ++++++++++++++++---
- 1 file changed, 16 insertions(+), 3 deletions(-)
+For what it's worth, full patch-set looks good to me.
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests=
-/bpf/Makefile
-index ec7d425c4022..4f23d9ddc8b8 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -407,6 +407,14 @@ else
- =09$(Q)cp "$(VMLINUX_H)" $@
- endif
-=20
-+VMLINUX_H_CHECKSUM :=3D $(INCLUDE_DIR)/vmlinux.h.md5
-+
-+$(VMLINUX_H_CHECKSUM): $(INCLUDE_DIR)/vmlinux.h
-+=09$(shell md5sum $(INCLUDE_DIR)/vmlinux.h > .tmp.md5)
-+=09$(shell md5sum -c .tmp.md5 $(VMLINUX_H_CHECKSUM) --status \
-+=09=09|| cp -f .tmp.md5 $(VMLINUX_H_CHECKSUM))
-+=09$(shell rm .tmp.md5)
-+
- $(RESOLVE_BTFIDS): $(HOST_BPFOBJ) | $(HOST_BUILD_DIR)/resolve_btfids=09\
- =09=09       $(TOOLSDIR)/bpf/resolve_btfids/main.c=09\
- =09=09       $(TOOLSDIR)/lib/rbtree.c=09=09=09\
-@@ -515,6 +523,12 @@ xdp_features.skel.h-deps :=3D xdp_features.bpf.o
- LINKED_BPF_OBJS :=3D $(foreach skel,$(LINKED_SKELS),$($(skel)-deps))
- LINKED_BPF_SRCS :=3D $(patsubst %.bpf.o,%.c,$(LINKED_BPF_OBJS))
-=20
-+HEADERS_FOR_BPF_OBJS :=3D $(wildcard $(BPFDIR)/*.bpf.h)=09=09\
-+=09=09=09$(addprefix $(BPFDIR)/,=09bpf_core_read.h=09\
-+=09=09=09                        bpf_endian.h=09\
-+=09=09=09=09=09=09bpf_helpers.h=09\
-+=09=09=09                        bpf_tracing.h)
-+
- # Set up extra TRUNNER_XXX "temporary" variables in the environment (relie=
-s on
- # $eval()) and pass control to DEFINE_TEST_RUNNER_RULES.
- # Parameters:
-@@ -564,9 +578,8 @@ $(TRUNNER_BPF_PROGS_DIR)$(if $2,-)$2-bpfobjs :=3D y
- $(TRUNNER_BPF_OBJS): $(TRUNNER_OUTPUT)/%.bpf.o:=09=09=09=09\
- =09=09     $(TRUNNER_BPF_PROGS_DIR)/%.c=09=09=09\
- =09=09     $(TRUNNER_BPF_PROGS_DIR)/*.h=09=09=09\
--=09=09     $$(INCLUDE_DIR)/vmlinux.h=09=09=09=09\
--=09=09     $(wildcard $(BPFDIR)/bpf_*.h)=09=09=09\
--=09=09     $(wildcard $(BPFDIR)/*.bpf.h)=09=09=09\
-+=09=09     $(VMLINUX_H_CHECKSUM)=09=09=09=09\
-+=09=09     $(HEADERS_FOR_BPF_OBJS)=09=09=09=09\
- =09=09     | $(TRUNNER_OUTPUT) $$(BPFOBJ)
- =09$$(call $(TRUNNER_BPF_BUILD_RULE),$$<,$$@,=09=09=09\
- =09=09=09=09=09  $(TRUNNER_BPF_CFLAGS)         \
---=20
-2.34.1
+Reviewed-by: Eduard Zingerman <eddyz87@gmail.com>
 
+[...]
 
 
