@@ -1,145 +1,137 @@
-Return-Path: <bpf+bounces-37970-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37973-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8650B95D57D
-	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 20:49:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9586E95D585
+	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 20:49:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B72D91C2248D
-	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 18:49:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5A692285560
+	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 18:49:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAA31191F62;
-	Fri, 23 Aug 2024 18:49:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C36AB1917EC;
+	Fri, 23 Aug 2024 18:49:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="F2yFm2Qv"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aehV1U9x"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-175.mta1.migadu.com (out-175.mta1.migadu.com [95.215.58.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F295113634A
-	for <bpf@vger.kernel.org>; Fri, 23 Aug 2024 18:48:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 694C118BB8B
+	for <bpf@vger.kernel.org>; Fri, 23 Aug 2024 18:49:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724438942; cv=none; b=oKb4kBTKC8cVNw1s+D74CI5u9DXwqbpSFsHlmq0AVbBpZu/A3ivXRmWJmJoUe+PGQJSnQ78VE2tlMph/TwSyEN8wOT7iw1RWG7Uv3ySO/qwUyVRaBKUE0HKqakKG6EoaqyD+2dCJGVTnU3hYq+7EFPLkYzve33sRgSaUjQHDdc8=
+	t=1724438952; cv=none; b=aaprztiUj8iwXWWuSw4YWLs6/jk372u4Bx+qnJOOfz4ndEERExaqpVOypnEh+FiyQ5rkNCH+Zy9LZuvkcRjJxKqg05essolkuulT8XNITDfR/dvI+ijuubzjgy1W+Q691b3yCep+/Lwv88DVf+iixrcTwOhKjouTTEv0pYO0oBM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724438942; c=relaxed/simple;
-	bh=TWL2MIVefQ12GZaOVVcxANHWJfwsKZKQd+xYbDghpiY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qtBgSOLxnhndHqbsNWUowWLE8wSvqZxVa4nyard63/7+6uNbms2EUUaJXqbAhgu6MUTmOvqxsWAppF7VMiUWFev5iYmYjZE1vpRedylHLsb5SojJmYdqv2AxBpddO9r4LPJ6XfEIr+BvrmQQFYq/uvRDVQvrX7qIlYKSo6u4byM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=F2yFm2Qv; arc=none smtp.client-ip=95.215.58.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <173d3b06-57ed-4e2e-9034-91b99f41512b@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1724438937;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kby6+9RbR1DnjNM7kKUPdGTyp1MYuWl6dZurQYumurk=;
-	b=F2yFm2QvU5rc+5438dpysGUn5wuWo5E6kpKequitYiGHDDAdJf6n3IMxeof1Xb7/zufXQ9
-	U4dvfko5NgzPYBaeVLGPJzjS0ZKaaEjOHRKWWyrHBGEKfxJujlUTxrbMy8JaFNzOAbLASG
-	WaxOrtb0paeYf6nHQR60qaGU/1B/wEc=
-Date: Fri, 23 Aug 2024 11:48:44 -0700
+	s=arc-20240116; t=1724438952; c=relaxed/simple;
+	bh=E18rTTdMFpNLRCxNJGlGiMukFONqcJvklGS5tgUYreM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=k8nnPKqhKmv9eJer8WZbR/R+8gF/D9t7t6vjUeI93Vra2gd0k3i6bfrCAD3pe0vVrRuE0FRtVbtt0/7kTg74ekfO7o5sShEkikgg4Gj8bF6vAKXUcVZ/OsM447T7MM086MTCjLRbveJspHFirNgV1K56a1Tyz2HumxyVljhAW6E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aehV1U9x; arc=none smtp.client-ip=209.85.128.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-429d2d7be1eso12022205e9.1
+        for <bpf@vger.kernel.org>; Fri, 23 Aug 2024 11:49:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1724438949; x=1725043749; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VjEnIieOGUwavK4pNcXsBSq72pat9RqmmEPTpiExAj4=;
+        b=aehV1U9xgcuQin6CUqD4BhUujg1G9WqiVt1HO+4RfCyZLL+7w5bsGVGwVq58KZmhYU
+         l1zvJG/RsM9KffETZtRG9Yg+4Y4UAkVpRm+JbKgmPKcf7F083d8cAeJwqPZ9btLT1E9/
+         iSWaXq7qaOJAP812mKdK8ZKgta10CQ6GoH9jgdwN3hUNr/laeJTr/JtdEVDFr4rNSgbZ
+         PU0V7mBGJbaX/cz+AZxTKA8m9GSO1M0hEZ9jq68you+mszNGqZBMc/+OekIy9tmVenYV
+         QeKt8megnc5CMUgifrvURRsh8la0WPrmJLmTvws9JqpHo2ObQ4khvvH65JJegmXkz0Tx
+         e6XQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1724438949; x=1725043749;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VjEnIieOGUwavK4pNcXsBSq72pat9RqmmEPTpiExAj4=;
+        b=os6ByUcNrLSDFD9Z/7hCOE4xoWKxTXX/BRsH6peojZf/pHtMDocU61Eg8YAZ4evgMr
+         rVFcxOvUGK37x/kZHdeOMuKZ1A60ejHcTbFnVBnH+MU2roma9cAmeynDJ2bBp2mKt5bP
+         6mozcOdAsOeaT6mQO919K68HBu9uzimOqcvByi4085+s9RY0ctZdgRmQa7esHjSMPrUw
+         P5bs/nC3bQondj8kIpTCYt4EBqqF34bto6VXg4C2GUzHrC5Y++FCnMMnvTeQAoZwmXT8
+         /+kA4/lSR/wFD9sKwmYjk+sjjwy2gkDRmbGbj/5YupTy8WCCNKMta5nXj0VfTT7WKq24
+         GtJw==
+X-Gm-Message-State: AOJu0YwBpKg6HMspuq8v24g0uQ40T17nOi3yKsdPVp1Tra9S3o48prXj
+	Zs+MIEUrPc8+pnsPchxNqtmwsNbnjTgsCxxK0TFCQHU379nWYlf56nfkd2LTzhmc8IsUf50r5g7
+	AYbtNm7JxHpR1YQhNBQE2nceM16c=
+X-Google-Smtp-Source: AGHT+IEevkXA6tdPhM8puuk0znOTa5jll+lBCCbXHsZY82RA5sfOwf+V04nYHBVbYGuxgbU4nTAGDDw9HmTMTF7CGnY=
+X-Received: by 2002:a05:600c:4f84:b0:426:6fb1:6b64 with SMTP id
+ 5b1f17b1804b1-42ac3899ea5mr44323475e9.7.1724438948421; Fri, 23 Aug 2024
+ 11:49:08 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v2] bpf: Fix bpf_get/setsockopt to tos not take
- effect when TCP over IPv4 via INET6 API
-To: Eric Dumazet <edumazet@google.com>, Feng zhou <zhoufeng.zf@bytedance.com>
-Cc: davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com, ast@kernel.org,
- daniel@iogearbox.net, andrii@kernel.org, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, dsahern@kernel.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
- yangzhenze@bytedance.com, wangdongdong.6@bytedance.com
-References: <20240823085313.75419-1-zhoufeng.zf@bytedance.com>
- <CANn89i+ZsktuirATK0nhUmJu+TiqB9Kbozh+HhmCiP3qdnW3Ew@mail.gmail.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <CANn89i+ZsktuirATK0nhUmJu+TiqB9Kbozh+HhmCiP3qdnW3Ew@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <20240813212424.2871455-1-amery.hung@bytedance.com> <20240813212424.2871455-6-amery.hung@bytedance.com>
+In-Reply-To: <20240813212424.2871455-6-amery.hung@bytedance.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 23 Aug 2024 11:48:56 -0700
+Message-ID: <CAADnVQ+JhZMzbioRGQB454i3w+M9P854du=o25-0=47PG2Jbng@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 5/5] selftests/bpf: Test bpf_kptr_xchg
+ stashing into local kptr
+To: Amery Hung <amery.hung@bytedance.com>
+Cc: bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@kernel.org>, 
+	Hou Tao <houtao@huaweicloud.com>, Kui-Feng Lee <sinquersw@gmail.com>, 
+	Dave Marchevsky <davemarchevsky@fb.com>, Amery Hung <ameryhung@gmail.com>, 
+	Hou Tao <houtao1@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 8/23/24 6:35 AM, Eric Dumazet wrote:
-> On Fri, Aug 23, 2024 at 10:53 AM Feng zhou <zhoufeng.zf@bytedance.com> wrote:
->>
->> From: Feng Zhou <zhoufeng.zf@bytedance.com>
->>
->> when TCP over IPv4 via INET6 API, bpf_get/setsockopt with ipv4 will
->> fail, because sk->sk_family is AF_INET6. With ipv6 will success, not
->> take effect, because inet_csk(sk)->icsk_af_ops is ipv6_mapped and
->> use ip_queue_xmit, inet_sk(sk)->tos.
->>
->> So bpf_get/setsockopt needs add the judgment of this case. Just check
->> "inet_csk(sk)->icsk_af_ops == &ipv6_mapped".
->>
->> | Reported-by: kernel test robot <lkp@intel.com>
->> | Closes: https://lore.kernel.org/oe-kbuild-all/202408152034.lw9Ilsj6-lkp@intel.com/
->> Signed-off-by: Feng Zhou <zhoufeng.zf@bytedance.com>
->> ---
->> Changelog:
->> v1->v2: Addressed comments from kernel test robot
->> - Fix compilation error
->> Details in here:
->> https://lore.kernel.org/bpf/202408152058.YXAnhLgZ-lkp@intel.com/T/
->>
->>   include/net/tcp.h   | 2 ++
->>   net/core/filter.c   | 6 +++++-
->>   net/ipv6/tcp_ipv6.c | 6 ++++++
->>   3 files changed, 13 insertions(+), 1 deletion(-)
->>
->> diff --git a/include/net/tcp.h b/include/net/tcp.h
->> index 2aac11e7e1cc..ea673f88c900 100644
->> --- a/include/net/tcp.h
->> +++ b/include/net/tcp.h
->> @@ -493,6 +493,8 @@ struct request_sock *cookie_tcp_reqsk_alloc(const struct request_sock_ops *ops,
->>                                              struct tcp_options_received *tcp_opt,
->>                                              int mss, u32 tsoff);
->>
->> +bool is_tcp_sock_ipv6_mapped(struct sock *sk);
->> +
->>   #if IS_ENABLED(CONFIG_BPF)
->>   struct bpf_tcp_req_attrs {
->>          u32 rcv_tsval;
->> diff --git a/net/core/filter.c b/net/core/filter.c
->> index ecf2ddf633bf..02a825e35c4d 100644
->> --- a/net/core/filter.c
->> +++ b/net/core/filter.c
->> @@ -5399,7 +5399,11 @@ static int sol_ip_sockopt(struct sock *sk, int optname,
->>                            char *optval, int *optlen,
->>                            bool getopt)
->>   {
->> -       if (sk->sk_family != AF_INET)
->> +       if (sk->sk_family != AF_INET
->> +#if IS_BUILTIN(CONFIG_IPV6)
->> +           && !is_tcp_sock_ipv6_mapped(sk)
->> +#endif
->> +           )
->>                  return -EINVAL;
-> 
-> This does not look right to me.
-> 
-> I would remove the test completely.
-> 
-> SOL_IP socket options are available on AF_INET6 sockets just fine.
+On Tue, Aug 13, 2024 at 2:24=E2=80=AFPM Amery Hung <amery.hung@bytedance.co=
+m> wrote:
+>
+> From: Dave Marchevsky <davemarchevsky@fb.com>
+>
+> Test stashing both referenced kptr and local kptr into local kptrs. Then,
+> test unstashing them.
+>
+> Acked-by: Martin KaFai Lau <martin.lau@kernel.org>
+> Acked-by: Hou Tao <houtao1@huawei.com>
+> Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
+> Signed-off-by: Amery Hung <amery.hung@bytedance.com>
+> ---
+>  .../selftests/bpf/progs/local_kptr_stash.c    | 30 +++++++++++++++++--
+>  .../selftests/bpf/progs/task_kfunc_success.c  | 26 +++++++++++++++-
+>  2 files changed, 53 insertions(+), 3 deletions(-)
+>
+> diff --git a/tools/testing/selftests/bpf/progs/local_kptr_stash.c b/tools=
+/testing/selftests/bpf/progs/local_kptr_stash.c
+> index 75043ffc5dad..b092a72b2c9d 100644
+> --- a/tools/testing/selftests/bpf/progs/local_kptr_stash.c
+> +++ b/tools/testing/selftests/bpf/progs/local_kptr_stash.c
+> @@ -8,9 +8,12 @@
+>  #include "../bpf_experimental.h"
+>  #include "../bpf_testmod/bpf_testmod_kfunc.h"
+>
+> +struct plain_local;
+> +
+>  struct node_data {
+>         long key;
+>         long data;
+> +       struct plain_local __kptr * stashed_in_local_kptr;
+>         struct bpf_rb_node node;
+>  };
 
-Good point on the SOL_IP options.
+Everything looks correct and I applied the set.
+The selftest sort-of covers the case where stashed_in_local_kptr
+is being freed by rb_root recursive freeing,
+but it doesn't really check for memory leaks.
+It only checks that nothing will crash.
 
-The sk could be neither AF_INET nor AF_INET6. e.g. the bpf_get/setsockopt 
-calling from the bpf_lsm's socket_post_create). so the AF_INET test is still needed.
+Please follow up with an improvement to selftest that
+actually makes sure that recursive freeing of stashed kptr
+correctly calls bpf_obj_free_fields->__bpf_obj_drop_impl.
 
-Adding "&& sk->sk_family != AF_INET6" should do. From ipv6_setsockopt, I think 
-it also needs to consider the "sk->sk_type != SOCK_RAW".
-
-Please add a test in the next re-spin.
-
-pw-bot: cr
+The patches seem to do the right thing in terms of storing
+correct btf/records in the right places,
+but this is tricky, so extra tests are warranted.
 
