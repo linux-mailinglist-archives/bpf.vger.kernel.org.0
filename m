@@ -1,92 +1,97 @@
-Return-Path: <bpf+bounces-37927-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37928-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CE7E95C84F
-	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 10:42:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0E7495C86E
+	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 10:53:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0AB2F283948
-	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 08:42:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 877C8283B02
+	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 08:53:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38253149C50;
-	Fri, 23 Aug 2024 08:42:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75011149C63;
+	Fri, 23 Aug 2024 08:53:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="lYVqsKUO"
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="SUMuf+H/"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EE0136AEC
-	for <bpf@vger.kernel.org>; Fri, 23 Aug 2024 08:42:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEEB444C76
+	for <bpf@vger.kernel.org>; Fri, 23 Aug 2024 08:53:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724402539; cv=none; b=PXTnLUepEv28l551g19hIdGVNG5bOJvJlfg/4PraooVr3GBmJxU+i26iHHMHjUQEsGyHyEd6WzaVv0kB7Z2gM9Dd90XvCaf74BRYfgPDpqUk2BdKSuTshb/KsT1XQllxF0mTN6DdQxC+0o4MyUQAQU1z0HPTw0j+se8TOk67QHM=
+	t=1724403209; cv=none; b=XxNegC41wPylI3NxUsEDD8bnA390EHm+DbLQIb74o6JLubOvTwUtsIMKmz5ZqeCZSh3iWa9Jx/2+0UlM8/90LZPfmgZfN5kJBhtVbopocGiSuFwraWQNBXBysqp9mudXvOTiQL57qNQ9cZSE0kkxj4Lt7CtcPW7JEZ5wXIs9bmM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724402539; c=relaxed/simple;
-	bh=er3ldAacAISiKuIrc+S0Cy7dUbUKLUyxcWVpv8fktw8=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=fAshSOQ7SIsSBu7zx2XfjrLcCGdE01dsowbkb7+yd46AMqmyKtu5bS/L2ndKVtJWBZZJHk4SGu4j21BQN5hYT/7BFy+XpELeJ20TgoSRi7Li3Fx99i9YRRlXyWqvMuzBw0Nm7HaGWCZFcyGEkH5qCOFdSApkQRPNhFADKi9jv7g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=lYVqsKUO; arc=none smtp.client-ip=209.85.215.179
+	s=arc-20240116; t=1724403209; c=relaxed/simple;
+	bh=Czg/K8OYgGDUZKZ32LDsFwF1lH6BFPUIGzT9yRSBDJo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=YRORd1QRisJoo2gdRe0hPay/ad7rC7mwqGEnfOXgQSSsBB0YqiuLWxEFG4KDorbHFeHK18OEuqrvlD27iIBEs3G/+355Tpspl3c0zJPxnL9gKWeX9YuVmS+O1WsgKRtMEYxTApS5JcZvRdJFIu232v3M30xXqVcr5Ye/7DCA6sY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=SUMuf+H/; arc=none smtp.client-ip=209.85.216.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-7cd70404bd5so740562a12.1
-        for <bpf@vger.kernel.org>; Fri, 23 Aug 2024 01:42:16 -0700 (PDT)
+Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-2d3d7a1e45fso1261219a91.3
+        for <bpf@vger.kernel.org>; Fri, 23 Aug 2024 01:53:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1724402536; x=1725007336; darn=vger.kernel.org;
+        d=bytedance.com; s=google; t=1724403206; x=1725008006; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=D0VYKazBHx5RAkPfvbSrtx9Aay+RtLgwI3e64WjTUdE=;
-        b=lYVqsKUOErvoOXMMyaS0kKfN6aHjhkksDJKXFVbEopASRAj+ng6szgH3UszVmkXzJB
-         Ua0fRqPdtG8OcM77QWNA+EgR0h0w5YU0dke2+7fEjdbDvKtTZg/XKiqH75c5HzNUTGNU
-         XYr9gUEp1rnla2LR9HhMygDrO4uNdGZlOBa/v7CClnIqpyQ906AtV0x82MB+R2NHNfWD
-         1tUtZ0J0hh8dZMJl8LG1vWWmnRZHJMHGr+wCaIrBfg0sRZ7pcVDZtOKZkYu9N12dbR7O
-         atgg/Q0Un0FS6bwdE22PvMCIfFAinBjgARUxHvmYROnLc0J85gR/ar1Pl4nuZdUPZ7/R
-         QmDg==
+        bh=ezFQroxpGkaUsSdMcah57ZHaQ9w5KjbUOSox/PwRH50=;
+        b=SUMuf+H/LY7unKIiQ3uFyTTubrpi0/t7bx/ytZuaDRyZFqkf9E2tiBMh31X9H5NYZ0
+         qBnee29k7Th69WqQKu5Ev9nKraQ0BInB/QZJIMpR9WZwRuPfC24DL+1ge8NJdyN/SdhK
+         UtXZIO8KH579RCdKWOstRNNb9+XqB+5Oep+TRFeC78cOeDbMzBCB34DL63DB7ETrv4fw
+         aG6AD3/c6/a5QH5ZrHF4S+tkdTEkO14B1MkDJ7ngCyIiy6ZjA1Vf9eOkMi8GomOlPV15
+         pXlBu2yArknbGKrZAinhdyfLU0bjEPPJwNEZzWjGkCw4rKujChMVT60eSYEEPQ6rGWPW
+         ZYkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724402536; x=1725007336;
+        d=1e100.net; s=20230601; t=1724403206; x=1725008006;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=D0VYKazBHx5RAkPfvbSrtx9Aay+RtLgwI3e64WjTUdE=;
-        b=EWzHgzPyWEy1D6rZclNGKkeHz9h4YTh0Qi+CHx7US5clk3/6Nvwzc94j0EkVJLQ6aZ
-         mkSGLHfbJXT532GMJDzxOaUQC8WYMXaisd15FkldEQrVAp14BK/bovygymW5emYOI2iW
-         6x7cEfkLCRW5ODuWWMmBimp4DM3pfBSGWfzcEJDpQdJYWasFMwKhAEKdj6amt47eizla
-         EecOJ5dXop9fjgiSFLq9QyINGUxO4Az6xDYnzl3Z7AVJDumo2ws4ZggO1j/gAPgQ1c8c
-         bTcA7m0CKfJWQvLDQS3mOB010xXLyzocUuweLIIyv77uc8hBTduZPs92JEDg706rYTQ5
-         Dn+w==
-X-Forwarded-Encrypted: i=1; AJvYcCVOVVb1vxhhCwUwgt6CB04TxY61ubhuo0HE3piK6L2VEqOMIff0GBb/5xuhDkXaIAwMg24=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxHoZv6HeNDGvCVGyTb0BM6QEW2leCnOmhCSBcCV6uPXl0iEKaE
-	7QmBH4bPieuma3C0vlxuvcICoyNVJIrzzxrlDsCnZUMw77shIhTojo28QfjY540=
-X-Google-Smtp-Source: AGHT+IGshkNTIduaJa/lscFaNRfIY72EQHcQ9Wkq3p+g4GdDaJIuRfyI0KI0dQp5V5Up4zxguq22aw==
-X-Received: by 2002:a17:90a:ff17:b0:2c8:2cd1:881b with SMTP id 98e67ed59e1d1-2d60aa0f083mr8560055a91.20.1724402536237;
-        Fri, 23 Aug 2024 01:42:16 -0700 (PDT)
+        bh=ezFQroxpGkaUsSdMcah57ZHaQ9w5KjbUOSox/PwRH50=;
+        b=noEEHFNrpGKzm7Zls1qKtkE1x1dtW/NV1ZLN6b19y8WV2JaektnPWoR4L3J/YwSk7A
+         76fYNncX9e+My7/VcG5u/HtgV2hoFU/vdqyK08QyNaHrWdbPkqMYAKtNME9ByJjdVsQy
+         9O2fD3eOTih+0tLLOjt8iV3QVsxXamNaXCQlzVf5+d1Moq4090hS5Ber8bmB7Gf9edAO
+         nojLxNLZK8t99ASvgCTQbNdsN6pvQWw56Mnx8OjILZ3W6SkEHWDJzCM8aanyXH24pXgQ
+         n9hNh61UWWxqWucAPsDJaT/y0EB5z2WmdonRYH6hFC0Jqw6r8NLfonq3DrLfKvwjpaUV
+         ze2Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUzROUYapy+yhhtllqGAyl24IEObKci7ewLsteUaD33OlhUlq/uzCNbRksdlamnr2KZo1k=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyEmrAPS3CoICGID4SezzGq1MnlRoY9FsNDR9EFfJCdxSLgZIkD
+	wOnaFF6/zVGOjF3dS+X96Hfaa/SY1yRKjS5A0eYYCxGnwagkZrYpzU01j4wWBPc=
+X-Google-Smtp-Source: AGHT+IFaylOAd/toGYXIX2p8c9dCa2PThSma27XXT7LPRvz9cAudRL9wgkqY+ZW7DLfNiPVNny90yw==
+X-Received: by 2002:a17:90a:2ce2:b0:2cb:4b88:2aaf with SMTP id 98e67ed59e1d1-2d646bb512amr1410015a91.12.1724403205819;
+        Fri, 23 Aug 2024 01:53:25 -0700 (PDT)
 Received: from C02F52LSML85.bytedance.net ([63.216.146.178])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2d61391a783sm3457332a91.14.2024.08.23.01.42.10
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2d613b2048fsm3430129a91.54.2024.08.23.01.53.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Aug 2024 01:42:15 -0700 (PDT)
+        Fri, 23 Aug 2024 01:53:25 -0700 (PDT)
 From: Feng zhou <zhoufeng.zf@bytedance.com>
-To: davem@davemloft.net,
-	edumazet@google.com,
+To: edumazet@google.com,
+	davem@davemloft.net,
 	kuba@kernel.org,
 	pabeni@redhat.com,
 	ast@kernel.org,
 	daniel@iogearbox.net,
-	hawk@kernel.org,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
 	john.fastabend@gmail.com,
-	jiri@resnulli.us,
-	bigeasy@linutronix.de,
-	lorenzo@kernel.org
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	dsahern@kernel.org
 Cc: netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	bpf@vger.kernel.org,
 	yangzhenze@bytedance.com,
 	wangdongdong.6@bytedance.com,
-	zhoufeng.zf@bytedance.com,
-	=?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Subject: [PATCH bpf-next v2] net: Don't allow to attach xdp if bond slave device's upper already has a program
-Date: Fri, 23 Aug 2024 16:42:04 +0800
-Message-Id: <20240823084204.67812-1-zhoufeng.zf@bytedance.com>
+	zhoufeng.zf@bytedance.com
+Subject: [PATCH bpf-next v2] bpf: Fix bpf_get/setsockopt to tos not take effect when TCP over IPv4 via INET6 API
+Date: Fri, 23 Aug 2024 16:53:13 +0800
+Message-Id: <20240823085313.75419-1-zhoufeng.zf@bytedance.com>
 X-Mailer: git-send-email 2.39.3 (Apple Git-146)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -94,48 +99,80 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
 From: Feng Zhou <zhoufeng.zf@bytedance.com>
 
-Cannot attach when an upper device already has a program, This
-restriction is only for bond's slave devices or team port, and
-should not be accidentally injured for devices like eth0 and vxlan0.
+when TCP over IPv4 via INET6 API, bpf_get/setsockopt with ipv4 will
+fail, because sk->sk_family is AF_INET6. With ipv6 will success, not
+take effect, because inet_csk(sk)->icsk_af_ops is ipv6_mapped and
+use ip_queue_xmit, inet_sk(sk)->tos.
 
-Reviewed-by: Toke Høiland-Jørgensen <toke@redhat.com>
+So bpf_get/setsockopt needs add the judgment of this case. Just check
+"inet_csk(sk)->icsk_af_ops == &ipv6_mapped".
+
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202408152034.lw9Ilsj6-lkp@intel.com/
 Signed-off-by: Feng Zhou <zhoufeng.zf@bytedance.com>
 ---
 Changelog:
-v1->v2: Addressed comments from Paolo Abeni, Jiri Pirko
-- Use "netif_is_lag_port" relace of "netif_is_bond_slave"
+v1->v2: Addressed comments from kernel test robot
+- Fix compilation error
 Details in here:
-https://lore.kernel.org/netdev/3bf84d23-a561-47ae-84a4-e99488fc762b@bytedance.com/T/
+https://lore.kernel.org/bpf/202408152058.YXAnhLgZ-lkp@intel.com/T/
 
- net/core/dev.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ include/net/tcp.h   | 2 ++
+ net/core/filter.c   | 6 +++++-
+ net/ipv6/tcp_ipv6.c | 6 ++++++
+ 3 files changed, 13 insertions(+), 1 deletion(-)
 
-diff --git a/net/core/dev.c b/net/core/dev.c
-index f66e61407883..49144e62172e 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -9502,10 +9502,12 @@ static int dev_xdp_attach(struct net_device *dev, struct netlink_ext_ack *extack
- 	}
+diff --git a/include/net/tcp.h b/include/net/tcp.h
+index 2aac11e7e1cc..ea673f88c900 100644
+--- a/include/net/tcp.h
++++ b/include/net/tcp.h
+@@ -493,6 +493,8 @@ struct request_sock *cookie_tcp_reqsk_alloc(const struct request_sock_ops *ops,
+ 					    struct tcp_options_received *tcp_opt,
+ 					    int mss, u32 tsoff);
  
- 	/* don't allow if an upper device already has a program */
--	netdev_for_each_upper_dev_rcu(dev, upper, iter) {
--		if (dev_xdp_prog_count(upper) > 0) {
--			NL_SET_ERR_MSG(extack, "Cannot attach when an upper device already has a program");
--			return -EEXIST;
-+	if (netif_is_lag_port(dev)) {
-+		netdev_for_each_upper_dev_rcu(dev, upper, iter) {
-+			if (dev_xdp_prog_count(upper) > 0) {
-+				NL_SET_ERR_MSG(extack, "Cannot attach when an upper device already has a program");
-+				return -EEXIST;
-+			}
- 		}
- 	}
++bool is_tcp_sock_ipv6_mapped(struct sock *sk);
++
+ #if IS_ENABLED(CONFIG_BPF)
+ struct bpf_tcp_req_attrs {
+ 	u32 rcv_tsval;
+diff --git a/net/core/filter.c b/net/core/filter.c
+index ecf2ddf633bf..02a825e35c4d 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -5399,7 +5399,11 @@ static int sol_ip_sockopt(struct sock *sk, int optname,
+ 			  char *optval, int *optlen,
+ 			  bool getopt)
+ {
+-	if (sk->sk_family != AF_INET)
++	if (sk->sk_family != AF_INET
++#if IS_BUILTIN(CONFIG_IPV6)
++	    && !is_tcp_sock_ipv6_mapped(sk)
++#endif
++	    )
+ 		return -EINVAL;
  
+ 	switch (optname) {
+diff --git a/net/ipv6/tcp_ipv6.c b/net/ipv6/tcp_ipv6.c
+index 200fea92f12f..125c69f1d085 100644
+--- a/net/ipv6/tcp_ipv6.c
++++ b/net/ipv6/tcp_ipv6.c
+@@ -92,6 +92,12 @@ static const struct tcp_sock_af_ops tcp_sock_ipv6_mapped_specific;
+ #define tcp_inet6_sk(sk) (&container_of_const(tcp_sk(sk), \
+ 					      struct tcp6_sock, tcp)->inet6)
+ 
++bool is_tcp_sock_ipv6_mapped(struct sock *sk)
++{
++	return (inet_csk(sk)->icsk_af_ops == &ipv6_mapped);
++}
++EXPORT_SYMBOL_GPL(is_tcp_sock_ipv6_mapped);
++
+ static void inet6_sk_rx_dst_set(struct sock *sk, const struct sk_buff *skb)
+ {
+ 	struct dst_entry *dst = skb_dst(skb);
 -- 
 2.30.2
 
