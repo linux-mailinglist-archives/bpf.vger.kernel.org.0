@@ -1,146 +1,162 @@
-Return-Path: <bpf+bounces-38004-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38005-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89FA695DA11
-	for <lists+bpf@lfdr.de>; Sat, 24 Aug 2024 02:00:06 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1629195DA77
+	for <lists+bpf@lfdr.de>; Sat, 24 Aug 2024 04:04:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BAE3D1C239CC
-	for <lists+bpf@lfdr.de>; Sat, 24 Aug 2024 00:00:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5A027B215D4
+	for <lists+bpf@lfdr.de>; Sat, 24 Aug 2024 02:04:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20C9B1C9EB0;
-	Fri, 23 Aug 2024 23:59:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SINN/dY4"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FE55179AA;
+	Sat, 24 Aug 2024 02:04:09 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com [209.85.219.175])
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E4C061FFC
-	for <bpf@vger.kernel.org>; Fri, 23 Aug 2024 23:59:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C0038F6C;
+	Sat, 24 Aug 2024 02:04:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724457578; cv=none; b=jj3QDBxW1g9NYKWGlLlfYY939M05khhAkQmOqqAqqkVMtJfml+u3zUbfG4YoxtuBMchRyOWoFSfyNJBAo24ayunf12vj5Jb+pv2PhLWxJAf8rekx9722ed8g35DLm/hSxB19H05CBxvXZUQkGSYNYa8K2zu9nJpAacRnBALFkPY=
+	t=1724465049; cv=none; b=TEos2uEk5SAdaVMl4EkL58vr2i7DZjc+CvwbFsvpQQjmA1B+hSR3Rj6dyYCSunqHsf2BHjI3opGns4h/WkKbF3CgwO3AQy79/J4XTbNpRXOlvaPfEjcmCYHpJkteiOiqzIaEwf96EGIHTFTSyB3dZt9a3ddQEaAQTQbcnwC1fIU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724457578; c=relaxed/simple;
-	bh=XSb0EnVjubNht4RayriIyV06WQmtolOFi4/BZ+SUhZE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tpWEUJ7Ao0SuVbRzBZPIAIoprSMrFASC0sXk2rVrc2EueN9ASEV4vDMjGsFGvpYCx81TAVDMaQcuZwgkDR85EfrGEN9+ipdr/K0MHEkay8LE5sX/f3dRRjlwyjyg2V5yq4wTar36fNFXDIvO2D4geRenWEm8IFVyOFGEnSeOHLY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SINN/dY4; arc=none smtp.client-ip=209.85.219.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1724465049; c=relaxed/simple;
+	bh=hQUNzjSY7i3l4ldL5C3hNfqZ/vaZV6AK/8n/d+E3nsg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fVpUc9J1dzOMCn4A1EWLUg3vTMKm7TVw5H28/xhiL3UcTCs034P4JXi093+LJTr+N/mNGuu593v26B/IQXjHj4EuXU/P+xoqTqwuMM+FaGs1galfIjo9awdTWefkmRYqAMJqR2mM7LNPgfOGVdg8DIR+CnvW4jdvaWebALmyVog=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fomichev.me; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fomichev.me
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-e162df8bab4so2392888276.0
-        for <bpf@vger.kernel.org>; Fri, 23 Aug 2024 16:59:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1724457576; x=1725062376; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oL8BmtUF4esBCitvVw45YqMhfbkpLe5BtPI9u9di+1k=;
-        b=SINN/dY4xG9lp5OdM/NRviAkS+01CYaJ+srulIqK4s8pfXdaSUJ4Sw5Lgc9fl/ZHXW
-         6v4UzCR4y4uGpKhqpQdx7PG97LH4JQbH09hB8BbqY5r4LYDridbHSfxH232Pf1FFZE/D
-         4slZK1LU9VmsH2OAp+gwjKGAiUF4vlMkaEtv3oKkQe/9Nh3XwBrOV6snaAEOeGwKNtlW
-         KmbbUY9U7/BQgnGrQZwqd9ARcQeEATG22JXGK1CyLAuNsOLQ0YuI6z3EMFSkbbNqzlBR
-         qjsOn7SUW2Iyf2bvwNTw8lUct9YJPMS9aaaMq7qQexG4mSrScoKrjq+5RGxhqXaUIYmt
-         E7sQ==
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-71456acebe8so212933b3a.3;
+        Fri, 23 Aug 2024 19:04:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724457576; x=1725062376;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oL8BmtUF4esBCitvVw45YqMhfbkpLe5BtPI9u9di+1k=;
-        b=tilWAC6UNCk/5dJxLwYR06S7WI+IR512Ziz+r8M/bqUfyFPyDTpJ7K3Y2/iNeBFMZh
-         CG6yfzQta3fDk+mOv4G1sY8bMl1RBkAP0QAPT6QwlLQiT/Ns1DSS5d96csMfRC2ZNto7
-         MhQjP1Gjz+rkHs+nsh+VrXFjH7uzntqHFDssyDzFFzUNyM+douL9Txg/i8NHXkt9IaQX
-         Z86YAyffBV78XY5181DLNA7RO0ej9STuojKI6WNg4w2fIJGQwA3yWXGTPXynynn3BQ8n
-         ydVX7nv3Tio4UcA+ul8Nf53VHuxB+VAeXVYCe8ePwFyN8hPs4CaCwHXEY8MK3UxOGtKD
-         sB/A==
-X-Forwarded-Encrypted: i=1; AJvYcCVJ9iZ8QWWO7cC/ZtPKLzgTzicpEFVxPFWf+6ztYQrakj02je5RoGZcDJ9oHFqbI8MKEqA=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzGZSQr5BMDABG6Dedij13YtTK4wuLYrunQ8hJmT17T+ZNP00Ep
-	JSrb5iKcIzxi/daf+sssfkamSx5wIjMCOBCCSVHAIFnQsKWq41ShUOHzFHHX26BhUWEHbLc0Vo2
-	N3CIOJ3oamaLRSZtdQe7gFAp29XU=
-X-Google-Smtp-Source: AGHT+IHQ1QxCj4shoiFive2+gUGBbzED1hsW9NpUBk5KP3Xr7N+CHJ6n89//TUQBYIidcyGMXnt4+K6EAqHtRclgIQQ=
-X-Received: by 2002:a05:6902:2589:b0:e16:6afb:475a with SMTP id
- 3f1490d57ef6-e17a85d0e65mr4491770276.28.1724457575996; Fri, 23 Aug 2024
- 16:59:35 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1724465046; x=1725069846;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1m+RyyeVq2vKKoA8+4isEUsNBf+vWhzfSvt6LSdw9/k=;
+        b=HSgmx+SZTBd4FFdLXAIhMwndSLYTvug/S5T7XZN5A++XqvGD9s78gDUPwZ+Zi8bfpn
+         OdTiqVaz6IX9lZc+9bE9WI3ern3h+5NekQAJoaSOWI/thVSsg7LBXMB4bjgYlFO4dMWl
+         ne/uPPpoNStsqxVrWNUcQfB2LuySvaDZ8AZaeJ1VgumBkeUXyABP8nf+DnG47KiNFcLL
+         gdpOlGtWNLdlStvkwTKi1vWcRnaPIskUk8PtzTwXXJpjFEQbkdgLa0XGOT9kM7YToRug
+         54UuBOB9bBRWtdz/oDnNn7nLeswX8o2uRu9pI+la10oCSbvK7StTyxR4ZSrHKslptpnl
+         SVlw==
+X-Forwarded-Encrypted: i=1; AJvYcCU74MvjrhFfOFm+anFHtkLzogG2PRJZ5ytYVMvU55my3AUyI1BmUfFCZR9pqg/Bj1AG4zk=@vger.kernel.org, AJvYcCUZ5u8LXP3Aihg0WWCKF4pwaSjaw9Bv1sM96VRQEDQKAmBSfTyNWiZ5RFxz8BVd6ogHG7jxFiC9@vger.kernel.org, AJvYcCXOZSnWISKJXIx0GVPT1WOwafgJXcmL+PMJvQJTEA3E4MaZrUJJs2kmU4xi+ENThkWjtsp9dn7PvT7dPvA2@vger.kernel.org
+X-Gm-Message-State: AOJu0YyQMFrYFmSc7fVjjJS+rwLaty2d8sbbBKWqCkieWIi9aiipadDD
+	NLSIBOuBDBT4Be3hFhmdkX74nj5zFFzBUKZJqdYDq0gsUqOgqmIE79oMW3Y=
+X-Google-Smtp-Source: AGHT+IHIZyeBM3Hl85jWwMdJX+SUb22b92N+zGjq37DFSit0JMCfEm3aWfiRw4k5sOQm4Tu/80NwxQ==
+X-Received: by 2002:a05:6a00:124c:b0:706:61d5:2792 with SMTP id d2e1a72fcca58-7144579d85amr5466242b3a.8.1724465046198;
+        Fri, 23 Aug 2024 19:04:06 -0700 (PDT)
+Received: from localhost ([2601:646:9e00:f56e:73b6:7410:eb24:cba4])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7cd9acdcf7dsm3351501a12.50.2024.08.23.19.04.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Aug 2024 19:04:05 -0700 (PDT)
+Date: Fri, 23 Aug 2024 19:04:04 -0700
+From: Stanislav Fomichev <sdf@fomichev.me>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Tze-nan Wu =?utf-8?B?KOWQs+a+pOWNlyk=?= <Tze-nan.Wu@mediatek.com>,
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+	"kuniyu@amazon.com" <kuniyu@amazon.com>,
+	"linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
+	"ast@kernel.org" <ast@kernel.org>,
+	Cheng-Jui Wang =?utf-8?B?KOeOi+ato+edvyk=?= <Cheng-Jui.Wang@mediatek.com>,
+	wsd_upstream <wsd_upstream@mediatek.com>,
+	"andrii@kernel.org" <andrii@kernel.org>,
+	Bobule Chang =?utf-8?B?KOW8teW8mOe+qSk=?= <bobule.chang@mediatek.com>,
+	"jolsa@kernel.org" <jolsa@kernel.org>,
+	"daniel@iogearbox.net" <daniel@iogearbox.net>,
+	"john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+	"song@kernel.org" <song@kernel.org>,
+	"kuba@kernel.org" <kuba@kernel.org>,
+	"pabeni@redhat.com" <pabeni@redhat.com>,
+	"edumazet@google.com" <edumazet@google.com>,
+	Yanghui Li =?utf-8?B?KOadjumYs+i+iSk=?= <Yanghui.Li@mediatek.com>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"eddyz87@gmail.com" <eddyz87@gmail.com>,
+	"martin.lau@linux.dev" <martin.lau@linux.dev>,
+	"matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+	"davem@davemloft.net" <davem@davemloft.net>,
+	"kpsingh@kernel.org" <kpsingh@kernel.org>,
+	"angelogioacchino.delregno@collabora.com" <angelogioacchino.delregno@collabora.com>,
+	"yonghong.song@linux.dev" <yonghong.song@linux.dev>,
+	"haoluo@google.com" <haoluo@google.com>
+Subject: Re: [PATCH net v4] bpf, net: Check cgroup_bpf_enabled() only once in
+ do_sock_getsockopt()
+Message-ID: <Zsk_lGsZBBqbesqS@mini-arch>
+References: <20240821093016.2533-1-Tze-nan.Wu@mediatek.com>
+ <CAADnVQLLN9hbQ8FQnX_uWFAVBd7L9HhsQpQymLOmB-dHFR4VRw@mail.gmail.com>
+ <3a7864f69b8c1d45a3fe8cda1b1e7a7c85ac9aee.camel@mediatek.com>
+ <49d74e2c74e0e1786b976c0b12cb1cdd680c5f58.camel@mediatek.com>
+ <CAADnVQLvbMRvCg2disV+_AR-154BwRpeB8Zg_8YpO=7gzL=Trg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240813212424.2871455-1-amery.hung@bytedance.com>
- <20240813212424.2871455-6-amery.hung@bytedance.com> <CAADnVQ+JhZMzbioRGQB454i3w+M9P854du=o25-0=47PG2Jbng@mail.gmail.com>
-In-Reply-To: <CAADnVQ+JhZMzbioRGQB454i3w+M9P854du=o25-0=47PG2Jbng@mail.gmail.com>
-From: Amery Hung <ameryhung@gmail.com>
-Date: Fri, 23 Aug 2024 16:59:25 -0700
-Message-ID: <CAMB2axPhDkAv_aeBy3q5xsSh-g7_vM_=TwLCLSQDwkUwKyc2_w@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 5/5] selftests/bpf: Test bpf_kptr_xchg
- stashing into local kptr
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Amery Hung <amery.hung@bytedance.com>, bpf <bpf@vger.kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Hou Tao <houtao@huaweicloud.com>, 
-	Kui-Feng Lee <sinquersw@gmail.com>, Dave Marchevsky <davemarchevsky@fb.com>, 
-	Hou Tao <houtao1@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQLvbMRvCg2disV+_AR-154BwRpeB8Zg_8YpO=7gzL=Trg@mail.gmail.com>
 
-On Fri, Aug 23, 2024 at 11:49=E2=80=AFAM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Tue, Aug 13, 2024 at 2:24=E2=80=AFPM Amery Hung <amery.hung@bytedance.=
-com> wrote:
+On 08/22, Alexei Starovoitov wrote:
+> On Thu, Aug 22, 2024 at 12:02 AM Tze-nan Wu (吳澤南)
+> <Tze-nan.Wu@mediatek.com> wrote:
 > >
-> > From: Dave Marchevsky <davemarchevsky@fb.com>
 > >
-> > Test stashing both referenced kptr and local kptr into local kptrs. The=
-n,
-> > test unstashing them.
+> > BTW, If this should be handled in kernel, modification shown below
+> > could fix the issue without breaking the "static_branch" usage in both
+> > macros:
 > >
-> > Acked-by: Martin KaFai Lau <martin.lau@kernel.org>
-> > Acked-by: Hou Tao <houtao1@huawei.com>
-> > Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
-> > Signed-off-by: Amery Hung <amery.hung@bytedance.com>
-> > ---
-> >  .../selftests/bpf/progs/local_kptr_stash.c    | 30 +++++++++++++++++--
-> >  .../selftests/bpf/progs/task_kfunc_success.c  | 26 +++++++++++++++-
-> >  2 files changed, 53 insertions(+), 3 deletions(-)
 > >
-> > diff --git a/tools/testing/selftests/bpf/progs/local_kptr_stash.c b/too=
-ls/testing/selftests/bpf/progs/local_kptr_stash.c
-> > index 75043ffc5dad..b092a72b2c9d 100644
-> > --- a/tools/testing/selftests/bpf/progs/local_kptr_stash.c
-> > +++ b/tools/testing/selftests/bpf/progs/local_kptr_stash.c
-> > @@ -8,9 +8,12 @@
-> >  #include "../bpf_experimental.h"
-> >  #include "../bpf_testmod/bpf_testmod_kfunc.h"
+> > +++ /include/linux/bpf-cgroup.h:
+> >     -#define BPF_CGROUP_GETSOCKOPT_MAX_OPTLEN(optlen)
+> >     +#define BPF_CGROUP_GETSOCKOPT_MAX_OPTLEN(optlen, compat)
+> >      ({
+> >             int __ret = 0;
+> >             if (cgroup_bpf_enabled(CGROUP_GETSOCKOPT))
+> >                 copy_from_sockptr(&__ret, optlen, sizeof(int));
+> >      +      else
+> >      +          *compat = true;
+> >             __ret;
+> >      })
 > >
-> > +struct plain_local;
-> > +
-> >  struct node_data {
-> >         long key;
-> >         long data;
-> > +       struct plain_local __kptr * stashed_in_local_kptr;
-> >         struct bpf_rb_node node;
-> >  };
->
-> Everything looks correct and I applied the set.
-> The selftest sort-of covers the case where stashed_in_local_kptr
-> is being freed by rb_root recursive freeing,
-> but it doesn't really check for memory leaks.
-> It only checks that nothing will crash.
->
-> Please follow up with an improvement to selftest that
-> actually makes sure that recursive freeing of stashed kptr
-> correctly calls bpf_obj_free_fields->__bpf_obj_drop_impl.
->
+> >     #define BPF_CGROUP_RUN_PROG_GETSOCKOPT(sock, level, optname,
+> > optval, optlen, max_optlen, retval)
+> >      ({
+> >          int __ret = retval;
+> >     -    if (cgroup_bpf_enabled(CGROUP_GETSOCKOPT) &&
+> >     -        cgroup_bpf_sock_enabled(sock, CGROUP_GETSOCKOPT))
+> >     +    if (cgroup_bpf_sock_enabled(sock, CGROUP_GETSOCKOPT))
+> >              if (!(sock)->sk_prot->bpf_bypass_getsockopt ||
+> >                ...
+> >
+> >   +++ /net/socket.c:
+> >     int do_sock_getsockopt(struct socket *sock, bool compat, int level,
+> >      {
+> >         ...
+> >         ...
+> >     +     /* The meaning of `compat` variable could be changed here
+> >     +      * to indicate if cgroup_bpf_enabled(CGROUP_SOCK_OPS) is
+> > false.
+> >     +      */
+> >         if (!compat)
+> >     -       max_optlen = BPF_CGROUP_GETSOCKOPT_MAX_OPTLEN(optlen);
+> >     +       max_optlen = BPF_CGROUP_GETSOCKOPT_MAX_OPTLEN(optlen,
+> > &compat);
+> 
+> This is better, but it's still quite a hack. Let's not override it.
+> We can have another bool, but the question:
+> do we really need BPF_CGROUP_GETSOCKOPT_MAX_OPTLEN  ?
+> copy_from_sockptr(&__ret, optlen, sizeof(int));
+> should be fast enough to do it unconditionally.
+> What are we saving here?
+> 
+> Stan ?
 
-Will do. Thanks for reviewing the patchset!
-
-> The patches seem to do the right thing in terms of storing
-> correct btf/records in the right places,
-> but this is tricky, so extra tests are warranted.
+Agreed, most likely nobody would notice :-)
 
