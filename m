@@ -1,142 +1,112 @@
-Return-Path: <bpf+bounces-38036-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38037-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9304E95E4EC
-	for <lists+bpf@lfdr.de>; Sun, 25 Aug 2024 21:36:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DBF195E4F7
+	for <lists+bpf@lfdr.de>; Sun, 25 Aug 2024 21:40:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BDAFF1C21B1B
-	for <lists+bpf@lfdr.de>; Sun, 25 Aug 2024 19:36:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7077B1C21A25
+	for <lists+bpf@lfdr.de>; Sun, 25 Aug 2024 19:40:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D55C535D4;
-	Sun, 25 Aug 2024 19:35:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3EEE15B562;
+	Sun, 25 Aug 2024 19:39:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LmxGT41P"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="niGc+LSG"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 437033207;
-	Sun, 25 Aug 2024 19:35:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D6B23987D;
+	Sun, 25 Aug 2024 19:39:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724614558; cv=none; b=se0ppFz7ee31DNnZVJ9r5ginT7JH8FzuQFNML0WT2aIycQ7MEa+TL5jTxjmLEI+3AGXZFhFmjhA6VC4rL8GehTHkSo26YHurn+9jDRcm9YtXb2AnsxcDWyqRXv82xetaqcR/yYYC5ZafmGL/L+mqlc7vj8jSVvFLR79MgCLFLTU=
+	t=1724614795; cv=none; b=DCJgkklM3DEuw/8n4GI3xIuUPId6eNPl6GVtiAW81rUglm+hLZIYOiT47D4G9J2LhEJhzV2VCn6/dBOnZ1GZG/hJ9j5zqlOf9laJqDprSr9pUjKvSFZdJi0JhebzgiGZwJQDX1GRV/5ywSfR5AGd4wwtKoWgeej1qD+G9Frp0Ho=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724614558; c=relaxed/simple;
-	bh=/rL16dZNhfwqG9czxx8m676FTaW9Dj5RHYajQCdYwhQ=;
+	s=arc-20240116; t=1724614795; c=relaxed/simple;
+	bh=tJFMf7Ox3/eoUXodySBxnPvVaHnjOizgVNRxMtWdrpM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gqg0IiPoa2nnEgw8/4gMpgluY+XAvIgYC72B6/lzOouryo093wEaOVEHPVlFZACuR/gHeQ4taMp2YoMtMb+qVVDVO2W7tcDbhaBqxwEmi3WmXPM0aDwVLKQByX3iag3+mfLLzYn2A/wfWWW00Y0L7nG2pWYk9CyejLBfxSlwLJ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LmxGT41P; arc=none smtp.client-ip=209.85.128.44
+	 To:Cc:Content-Type; b=Iwr2Qn9cfMQ0uCGb5MlsthoY1lm2onVmtl24YAzn5E/sEwcD46o9C15p0MNHxr1LO9VI4gi0M5VAu4v15EPNazdFWPX47B28ycR6ySBGiIqEmvhBe0+/TJCNtSr/T2srWPmdykMe4LnPRceHyUlFSeO77HZQ5JKbAXkxtCyzW30=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=niGc+LSG; arc=none smtp.client-ip=209.85.221.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-4280b3a7efaso31249205e9.0;
-        Sun, 25 Aug 2024 12:35:56 -0700 (PDT)
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-3718c176ed7so2016106f8f.2;
+        Sun, 25 Aug 2024 12:39:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1724614555; x=1725219355; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1724614792; x=1725219592; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/4fYJT8DmjFd+6l6gWF+nGq3GZh2Sq1k6f9Xf+Fjxl4=;
-        b=LmxGT41P/e4gSWvwEnmNJlvP2eEoRUd2K738S1/yy8ALp/UxgyAk6muMx/yf3Cnted
-         NRLxP5v8A8Ii9XYt4rFEYhM/Su1U5FMbhsDFInJ7Hu+waFZr6zUqJH7QdCVmI5elwZoS
-         rS2Y62llZ0hYmkr14xJOYBTHB99eCbKr/XwYWupbov29JcDrC0PjN0jWa6zpaj+zOL0k
-         OJEPgsaAIEadLfWGLMEEWowdJ2vI6Eno1WJlFHedeRuWG65hQFIlUVvb38+bb8eKTOii
-         p5BQ+eFedffQwfCo0qRhVLsCe7joSDwlUfyjrZ1gk4qeDt8gKbwaYlIs97LAgo7kxCWN
-         c/dA==
+        bh=tJFMf7Ox3/eoUXodySBxnPvVaHnjOizgVNRxMtWdrpM=;
+        b=niGc+LSGEIFXnZC4qkAPjJXrA9o3YNZXL2khorLJ5Y6i/mRmw7DczQv+3AGq41l8K6
+         jRLaCAWLjZZiSGYAbddnd9mg1yRDZL2S2JUI+PuZY+z09uW1ekiJLaXvxl/yj0+0vZQI
+         QcohzQ2nwgI3sgvAwF8hF3q3lH0lsAEY5U1yHEOuZR5POlWKyRCssEkwmmMEJudFUgQ7
+         Qwv/8m/ppU7xhCv7YGIz3tYbIqPp5qi9PFv4N5NuFo5DBkGZ4fJIpk6fKxeDg0kVrxU1
+         SbLuLcZWJRtTwtzU2S/Rf8hUsAUgeFYxXdO5+wL9KsziEGjI2PqIse/ci4Q5aelSQCFN
+         2aSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724614555; x=1725219355;
+        d=1e100.net; s=20230601; t=1724614792; x=1725219592;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/4fYJT8DmjFd+6l6gWF+nGq3GZh2Sq1k6f9Xf+Fjxl4=;
-        b=wQ4suhGE+pZysTqre0Ni/GE6rDwFQ9v3WoIAZDXQhDymfETpj2BGimjKCz6QuVnYgU
-         KzZum0gUNFCzsqtn8Rc5yGKkhohWgKaBWRceGvgWSW8W+hOgf/HNs2t+LqsHyOPPuiGc
-         5YzW38OtHfbacAsHR/jdBnap/OZOEVcJiP0c4TbM/7ZXwmAXc824XHTODF2lfyb91CQ5
-         gPcshLFpidb9bJ0k3bHhPyWnW6h1PTOYRk0IK1w7wfoxjkCoDorIu10sHIgwCpgnaGC3
-         Mqy4xFN0CCoDhbyJKf+4483ew9ocLsQaPaJKGwo68NL8RdGmSPDXzBJXuIBeyMahroSz
-         zSvw==
-X-Forwarded-Encrypted: i=1; AJvYcCWB9OsmuoT6lItukVoFZ3AMf9jiwiSU244fxAu3cmupSL0A5ZGIBwKVFtWHp3e65mlwRRW1i1tD+qGJvwUn0w==@vger.kernel.org, AJvYcCX3Imc88k9T3/qbTUtanqkX9cT4TfpnSAvLrJdUy8fLaOZbNwjBGxnFSUKmWWldUgTvIhs=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwNKElTKJpl5O4asZlKBHEuZUKtNPw2a7wl9NvtOJ4fujDEG09W
-	ddglpAMAklJVLpFt4JYZWC6BDm1ZC11Zb6SSPiucs5ShpsZOnEIn3WmxP15n5PHqr6w3rwvNTtn
-	jYIF/foZ+8fp5CmDJoex+IaVhSso=
-X-Google-Smtp-Source: AGHT+IHvzjxCZw2mTuuhYMtFZiC9e77Uqjlp5fVEBcyYyq1vEc7ciikKkVKG/oHglz001SGQ5S4BKiPRRyBuAtn0gRM=
-X-Received: by 2002:a05:600c:1992:b0:425:69b7:3361 with SMTP id
- 5b1f17b1804b1-42acc8e121fmr61732195e9.18.1724614555024; Sun, 25 Aug 2024
- 12:35:55 -0700 (PDT)
+        bh=tJFMf7Ox3/eoUXodySBxnPvVaHnjOizgVNRxMtWdrpM=;
+        b=MM6Nwe+B5bPkBVqUfp7T/CfkCqSLKdTAele1Vs6eFrXu7UT5IjXYAkSYn1PLdlFZ5U
+         GoOL1E+kj8sZlQqqTh7mZe0+yoJN0EfM9p0o+rGW9j8Svg2dGmM65UN8gVZWJbHTq8aB
+         UsS7mdeYLKKpcaoSK9VSsiu8i7oiJqlmw+Ef9I1gsOkmnchoyxqIBCPvWE6gxea+YRFG
+         LSdwCMsJXAceRdX8x0yOnnXI4wQ3YPjnzmScz+ni90Hyjkad9weqrCq+KbZwEfB/x9dQ
+         ufEoDhqjT9mYo3C+nihHmQcDRJokUzzCSUcOd/fgZN6FN9rvj4C0WztIuG9epQqInCCm
+         lyQw==
+X-Forwarded-Encrypted: i=1; AJvYcCUKYCIWJpH2HkQqYXgxq+DNz+iR4Sqn5l4bZ1fmQ4HaVYEv3OJKtaE/wEIv/MhFx64HzrtEzh0PvDPwOQLd@vger.kernel.org, AJvYcCV3RAnFCYkvMZ94SJrVCh92J/7i737ITfn6oSbdQ6OQt3qZVAbs/R9icFY0y6npbDMQxnM=@vger.kernel.org, AJvYcCVr+1jJCIqdsrorcM09WT2TZjT0gEmwa5d9Gt5GYL6VOE5P5KgzAHhL19k9mvLMUh1V1iHFjmZP5IACBLUYphnl@vger.kernel.org, AJvYcCXjqx2F80k4HgISXYBDfXcP0EWDOcQDACj5opDxZhqpMt6GHirQWApLaeRJV7k7dUSPki13HlPj@vger.kernel.org
+X-Gm-Message-State: AOJu0YynUYCeXIQIVGQ/2WRF1F60WigRYaeNNecw2Y4mrJp6FYmybhuC
+	Af9ddi28rujhaPi/jN50HQOlBmcBRKoFHfdaoo3RK0zlD4WbbdG54Dq1uf3Prl4UERCfp/9RoR9
+	dCTpB8yDUpkVrwezylroVYVtAOzc=
+X-Google-Smtp-Source: AGHT+IGFbKNA4xLPSpMgdIAMRw0iydK7vN0/OI26qARJK1To1kpg2vBiPumvMtuCJAricMBw6H2GFqQcYHoRXaV2YOI=
+X-Received: by 2002:a05:6000:1006:b0:371:82ec:206e with SMTP id
+ ffacd0b85a97d-37311840ec0mr4673128f8f.5.1724614791663; Sun, 25 Aug 2024
+ 12:39:51 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240814185417.1171430-1-andrii@kernel.org> <d9a46f4d54df8d5ac57011222ebdf21b0f15f52d.camel@gmail.com>
-In-Reply-To: <d9a46f4d54df8d5ac57011222ebdf21b0f15f52d.camel@gmail.com>
+References: <20240816-ups-bpf-next-selftests-use-khdr-v1-0-1e19f3d5b17a@kernel.org>
+ <20240816-ups-bpf-next-selftests-use-khdr-v1-1-1e19f3d5b17a@kernel.org>
+ <CAADnVQ+JBq8-6Rhi_LHX470uj2_2xxJAhgdUfg_abUxEDqpdJQ@mail.gmail.com>
+ <6a693ad6-f145-48c1-b3a7-d441d3764e73@kernel.org> <CAADnVQKnEuQ4XZROLWH47mEZNwnJ9TuyTrauOnuobcLgVMrimw@mail.gmail.com>
+ <41ef2c53-600a-47d6-a35f-674e1e7860f8@kernel.org>
+In-Reply-To: <41ef2c53-600a-47d6-a35f-674e1e7860f8@kernel.org>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Sun, 25 Aug 2024 12:35:43 -0700
-Message-ID: <CAADnVQL5GyqMfaBsAH+XxNv5n3JySVdEGTee+cY=dZGNr-t7xg@mail.gmail.com>
-Subject: Re: [PATCH v6 bpf-next 00/10] Harden and extend ELF build ID parsing logic
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	linux-mm <linux-mm@kvack.org>, Andrew Morton <akpm@linux-foundation.org>, 
-	Alexey Dobriyan <adobriyan@gmail.com>, shakeel.butt@linux.dev, 
-	Johannes Weiner <hannes@cmpxchg.org>, Andi Kleen <ak@linux.intel.com>, 
-	Omar Sandoval <osandov@osandov.com>, Song Liu <song@kernel.org>, Jann Horn <jannh@google.com>, 
-	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>, Matthew Wilcox <willy@infradead.org>
+Date: Sun, 25 Aug 2024 12:39:40 -0700
+Message-ID: <CAADnVQKoesL+Rmp9eB6mQbU1J0yDWgFioigy6jK6XMsd3S1u=A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] selftests: bpf: use KHDR_INCLUDES for the
+ UAPI headers
+To: Matthieu Baerts <matttbe@kernel.org>
+Cc: MPTCP Upstream <mptcp@lists.linux.dev>, Andrii Nakryiko <andrii@kernel.org>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>, 
+	"David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
+	Jesper Dangaard Brouer <hawk@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	Network Development <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Aug 23, 2024 at 4:23=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
+On Sat, Aug 24, 2024 at 3:37=E2=80=AFAM Matthieu Baerts <matttbe@kernel.org=
 > wrote:
 >
-> On Wed, 2024-08-14 at 11:54 -0700, Andrii Nakryiko wrote:
->
-> [...]
->
-> > Andrii Nakryiko (10):
-> >   lib/buildid: harden build ID parsing logic
-> >   lib/buildid: add single folio-based file reader abstraction
-> >   lib/buildid: take into account e_phoff when fetching program headers
-> >   lib/buildid: remove single-page limit for PHDR search
-> >   lib/buildid: rename build_id_parse() into build_id_parse_nofault()
-> >   lib/buildid: implement sleepable build_id_parse() API
-> >   lib/buildid: don't limit .note.gnu.build-id to the first page in ELF
->
-> Never worked with lib/buildid before, so not sure how valuable my input i=
-s.
-> Anyways:
-> - I compared the resulting parser with ELF specification and available
->   documentation for buildid, all seems correct.
->   (with a small caveat that ELF defines Elf{32,64}_Ehdr->e_ehsize field
->    to encode actual size of the elf header, and e_phentsize
->    to encode actual size of the program header.
->    Parser uses sizeof(Elf{32,64}_{Ehdr,Phdr}) instead,
->    and this is how it was before, so probably does not matter).
->
-> - The `freader` abstraction nicely hides away difference between
->   sleepable and non-sleepable contexts.
->   (with a caveat, that freader_get_folio() uses read_cache_folio()
->    which is documented as expecting mapping->invalidate_lock to be held.
->    I assume that this is true for vma's passed to build_id_parse(), right=
-?)
->
-> For what it's worth, full patch-set looks good to me.
->
-> Reviewed-by: Eduard Zingerman <eddyz87@gmail.com>
+> Now that the CI runners have been updated to use Ubuntu 24.04 [1], we
+> can use mptcp.h from the system headers, or do some actions via
+> IPRoute2. So not having KHDR_INCLUDES is no longer blocking us for the
+> moment. I think it might still be useful to add it for future use, and
+> also to use the latest version of the UAPI headers that are not in
+> 'tools/include/uapi', but I don't want to insist if you prefer not to
+> use the latest version.
 
-Thank you for the review.
-The patch set looks good to me as well, but I think it needs
-a bit more Acks to land it through bpf-next.
-
-
-Andrew,
-
-since lib/ is under your supervision, please review and hopefully ack.
-
-
-Matthew,
-
-since you commented on the previous version pls double check
-that patch 2 plus patch 6 make the right use of folio apis.
+Let's not fix what is not broken. We'll add KHDR_INCLUDES when
+it's actually necessary.
 
