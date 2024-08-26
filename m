@@ -1,256 +1,213 @@
-Return-Path: <bpf+bounces-38078-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38079-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5C4A95F28F
-	for <lists+bpf@lfdr.de>; Mon, 26 Aug 2024 15:14:13 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBADC95F336
+	for <lists+bpf@lfdr.de>; Mon, 26 Aug 2024 15:49:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6BD44283286
-	for <lists+bpf@lfdr.de>; Mon, 26 Aug 2024 13:14:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 250EF1F2244F
+	for <lists+bpf@lfdr.de>; Mon, 26 Aug 2024 13:49:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 280FD185B4F;
-	Mon, 26 Aug 2024 13:13:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A05C17C987;
+	Mon, 26 Aug 2024 13:49:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G2aFi+kO"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eTO3Hu1M"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qv1-f45.google.com (mail-qv1-f45.google.com [209.85.219.45])
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EBA7183CDA;
-	Mon, 26 Aug 2024 13:13:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEA92153828;
+	Mon, 26 Aug 2024 13:48:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724678035; cv=none; b=MaE+grUPrJEEJMVMHdk3eOZ9e3pg0cx2Qd8eRUwajSOH+a5KCm0ADGSzJc/I6xLHFXXuQi92163T1AtDskj16pHx7pVNut4ij08+TX+KpL86m4ToCVo90r1sRPIJ8RCX0cgOX8m2AK8XarWPK3WjccDoMeVn9GN6fhd6I0Fa4uE=
+	t=1724680139; cv=none; b=mppM4Hw0su2mxitmiKqF31odggW1IYq7ixg616nUNVovcDP0cjhouF71t1VCWzY4jMcX8rihPNI31fzndFJ4Khj0Eiy9ckLOm4Fl0KsSBGm0R1hB1wAm8MNuqMtHDVoXQbuXk/j4Vpjgv7LNWbKIzspsAskDRXWUc1SwEGy5XeE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724678035; c=relaxed/simple;
-	bh=uXndQDCUvnx0Z+cralt3H9P3W4x5FKSzMQBt52DRN90=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=AbdsifLh+Bssk78WABghf0ZWcZlft1NCMo5ruWx+BdIOSp0jjY8SSJa1dGiGVwfjQNe6ylAQodlwTXOtw5aYRqwy/tRgDKjEcuMOxv6dXQUrO75ZzfF0qve0NAmOU1nJr4DtmAMBmjRMUlBg5jedcBn9S1RQjVD3DVyZMvpkYoM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=G2aFi+kO; arc=none smtp.client-ip=209.85.219.45
+	s=arc-20240116; t=1724680139; c=relaxed/simple;
+	bh=Z/HJJt/Fg7rwSJ/ePst/lRoG73U9XPBjCjvDkDKqIb0=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XVwJjeJIQkXno5jyXjHT1LzpuxycNWOerKJg+IpmovTh5caS6pa3r/43bEprrGfFfbSJYA2ezY6Klnpo7NotgKRVF7gWHg1eKnIffaGXXT3QBokQXtugtVy5VEyPCXGgdQr8mvxYlilWyXqHdHCEg6Sz8LNZ1l2fhv49HFcrguw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eTO3Hu1M; arc=none smtp.client-ip=209.85.221.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f45.google.com with SMTP id 6a1803df08f44-6bf7f4a133aso23042536d6.2;
-        Mon, 26 Aug 2024 06:13:53 -0700 (PDT)
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-3718706cf8aso2498254f8f.3;
+        Mon, 26 Aug 2024 06:48:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1724678033; x=1725282833; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vSwJhEnVRbE/lc1fBQhKHoYSdjJMMB9ydQkFXZg7Wl0=;
-        b=G2aFi+kOco8F7A7ev4siqM77VYWHD1SS+N9xARzk9mXa5Z7M7vt+omxkuFb8DdcgF9
-         zXPRGYJqqrzBLfS1Cas03+0K4qYSKwBBSFD6Bq8nRK5EbZZGNqT1lbQ/l6U/SvIXMV9j
-         zAUTSlgkhhszD4hIHfQENG1EIfyG8eEdi7xPlkqHtO8XHwk4RVSJ1YKHnKCVfbqr2oh0
-         94NBVtwYwm2YjN16k5guBkdrWHDmxpSOXoczIq3F3cCVhfkpkcuLHzyd3pFmkT7n5/8d
-         nKZJUf38vCZMggus3JMlzpoKge0iV5vKealnTfCY5EFgt2EQ4Cr7H76zd3KoY9/DLw/N
-         +WAw==
+        d=gmail.com; s=20230601; t=1724680136; x=1725284936; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=L/1dDxymQY2q0jHJd/Qc6Etj6Jk8R4gGJoG1cFJtygU=;
+        b=eTO3Hu1MDrcN18tW9tXMGsBHfKwYURDsvHDEMk3IUvF3Yql93adwa3LitdByOJ6yqd
+         fhMAiUnksbVZp4wBJTW05E8Vcu3dp9bJk86BcqfLYTnVN+TaxDUgeaS+OT5hxtB4Wg/4
+         Qo4rkH4P0Xi0A2ayiaxYjEFCA0nFab5WT6EhSBd0Lr5GYml5F8iPk9Z/EbHP6BVf2Hk3
+         WjajtWQMJrPXob5FMbaO7IH2iQjntEMpHPwLgGEe9IRopk7CFZv6sl1RUk/3NHTzVsyw
+         XE79SQZezj9aAxDYSLYk9Gp6vX1OZDo+yedA0CUdNMa6ApxVHn+CDNYDB1exYGM5OikA
+         /9gw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724678033; x=1725282833;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vSwJhEnVRbE/lc1fBQhKHoYSdjJMMB9ydQkFXZg7Wl0=;
-        b=gs+3hEUa9f7CI0POgR9qS3NcEjGNtCssdrN7CQtTayV1nVcalh9QryoctEctsPGZ7k
-         TMnab61DgsArompmA7uydEewDQEVdPkhyEpACrVSA3cvM0VnmPbYy40RFSvY2dOjZix0
-         EdNPod7kn1rKtxhD7lQbxdKtF58khDCTdW+g/43qcvg6OXDvoML/AyiuNFITehpqZSAT
-         UN4ly2vaWvFM67ugLDggFVAFAsnj3XuMXyJpYUCBxSOfZkGZFpj7OSGmWjPFV4kOKFQb
-         iYzV9BxXE4c2hXNxHU2OUvNHu/YZu/dTQUcGegzQQkp8GiisvUSsI0NTVD5txLNpIkV0
-         6e7w==
-X-Forwarded-Encrypted: i=1; AJvYcCU/ClygvLS3mjyt7se83bpFk5tbJjFXdDmm1opJ3v9PS74Ejhon0MuuTu2wAiMKGu+FIFeOQdbbiNK6yco6/saFzwWf@vger.kernel.org, AJvYcCU3p4xPq/zisqMnlMG5IMvdjAz49G7QtULEcD3tBDNl2cYIdDvsqvVN5mRDS4Q/D+T9BQ0+nTIX4e4JT/x7i8eS//EycQeV@vger.kernel.org, AJvYcCULhyl27VLZnSINwLuse687eE1Z/m7G6b14F1vuZoX3UfjlRC1VGsj4tKnVU5lwAM8UpJgpvX4GpMBrHPS8EA==@vger.kernel.org, AJvYcCUsKzmbvn/BTyybb5sUYnPxC7bFDTMi9woll1o+j9UMd+lscRYrkUkRc/R9eogDBA2XpB7rlnFj@vger.kernel.org, AJvYcCVzfSzxNbPxr0OBavXpBvqeNWuUQ2ESoDPgqDH6V7OwMSYs6YPgo18hAXk6YbSQSJwKoNgd@vger.kernel.org, AJvYcCWLflpr/Iba5wwF+1l+jBHBfSCEaqjX5whECpSSKCxyMJdlHDkCoECIltQBoJuSixUsIFAzSQ==@vger.kernel.org, AJvYcCWQK4kkZj9NqeYD7EQUF7bmfLR2E5exJYll96FnCkTFB/FdyajKDqYcLCN5vpsT52zSDxm46O1O3g==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw65lRZS6hAqREgZ7Haf0AsuxNGiOYB3+S7CQT4ie0ifahAt/LB
-	mF9Mwmduu48rJe9NQh4rLK+cxc9GOcB8FXMX+nO8xnSYy3QJgk8XAd07fYBNa407ZxvtyZoojN5
-	tzehKJK7BU1WH6jxTTMmeYk0CUw4=
-X-Google-Smtp-Source: AGHT+IEMzX23pNCTwUB3oEFnjtXMwQslYwQseElwS5dsww3heTV7mBPQDdBjGem5UqseBxKdUwlhHXFriIKrdvm/EEk=
-X-Received: by 2002:a05:6214:2b82:b0:6bf:78e1:74e7 with SMTP id
- 6a1803df08f44-6c16deb3b70mr122308516d6.50.1724678032741; Mon, 26 Aug 2024
- 06:13:52 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1724680136; x=1725284936;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=L/1dDxymQY2q0jHJd/Qc6Etj6Jk8R4gGJoG1cFJtygU=;
+        b=dKN7CZkQOYkB2sEmNGZ2HDwrBsEubQKvCw2Z1J+KaxK5huQgfGZWx3f1Qr+FhhdFDN
+         nmrcF02yzHadKU3se3OaCCtnvvEy19Fwvw6Na9nuiZfjq1I+epuPrQBr5eOCeBfHj2ft
+         KGligSKayw3PPnWCGfaT9WXhjAzdasde/Ln8JOIVbYUVEvBLbnVPAJdqIQTGTIx32Xuo
+         Jpq0p/aH82u8odo2uvGMnaq/OLt90qpzZuek8cIj87tYf+TZ+jHx8XTQNhqCfoNdTgZd
+         cCLsXgHEwTCc2TSa/TwfdHvcH9Yr7ijq+74fbWpp14x4zcO58sntw8CgmDIqmUMi/LJy
+         vdbQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUXLGToWrjEFG68dCs8F5SoJrkHcp7p1OUPJZzeNNpDNF3KVGXRjhQooa5rhiCKyKm0xpw=@vger.kernel.org, AJvYcCWbOm9pMV94iNnVax+mOrKD5Y+UkbBn0O8VzOXJFDWxd3F0FBVOXwEMeCR+1BFG4J0rGVRVUCpSGV9g2J+hYqIHz8Tn@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywkq9M5nSbY94OXXr1tkCND9U7xm9QdZho+FSb5wBvGDFDfDf29
+	gFKWoonvQvbD1YrSSkgtqAqK99N0sulNFaAH3qARtLs9lLO3xsar
+X-Google-Smtp-Source: AGHT+IHrhcgoOgjvYxzTNQoCZlmxoFMUdfceFMq9xd7w4/93UD525ZHfm2gCPPn35tCtP2ruPcmEcA==
+X-Received: by 2002:a05:6000:2c2:b0:36b:357a:bfee with SMTP id ffacd0b85a97d-37311841b2dmr8125601f8f.1.1724680135817;
+        Mon, 26 Aug 2024 06:48:55 -0700 (PDT)
+Received: from krava ([213.235.133.41])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-42abeffe43esm189721925e9.44.2024.08.26.06.48.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Aug 2024 06:48:55 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Mon, 26 Aug 2024 15:48:30 +0200
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Tianyi Liu <i.pear@outlook.com>,
+	andrii.nakryiko@gmail.com, mhiramat@kernel.org, ajor@meta.com,
+	albancrequy@linux.microsoft.com, bpf@vger.kernel.org,
+	flaniel@linux.microsoft.com, linux-trace-kernel@vger.kernel.org,
+	linux@jordanrome.com, mathieu.desnoyers@efficios.com
+Subject: Re: [PATCH v2] tracing/uprobe: Add missing PID filter for uretprobe
+Message-ID: <ZsyHrhG9Q5BpZ1ae@krava>
+References: <CAEf4Bzb29=LUO3fra40XVYN1Lm=PebBFubj-Vb038ojD6To2AA@mail.gmail.com>
+ <ME0P300MB04163A2993D1B545C3533DDC9D892@ME0P300MB0416.AUSP300.PROD.OUTLOOK.COM>
+ <20240825171417.GB3906@redhat.com>
+ <20240825224018.GD3906@redhat.com>
+ <ZsxTckUnlU_HWDMJ@krava>
+ <20240826115752.GA21268@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240817025624.13157-1-laoar.shao@gmail.com> <20240817025624.13157-7-laoar.shao@gmail.com>
- <nmhexn3mkwhgu5e6o3i7gvipboisbuwdoloshf64ulgzdxr5nv@3gwujx2y5jre> <ep44ahlsa2krmpjcqrsvoi5vfoesvnvly44icavup7dsfolewm@flnm5rl23diz>
-In-Reply-To: <ep44ahlsa2krmpjcqrsvoi5vfoesvnvly44icavup7dsfolewm@flnm5rl23diz>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Mon, 26 Aug 2024 21:13:16 +0800
-Message-ID: <CALOAHbA5VDjRYcoMOMKcLMVR0=ZwTz5FBTvQZExi6w8We9JPHg@mail.gmail.com>
-Subject: Re: [PATCH v7 6/8] mm/util: Deduplicate code in {kstrdup,kstrndup,kmemdup_nul}
-To: Alejandro Colomar <alx@kernel.org>
-Cc: akpm@linux-foundation.org, torvalds@linux-foundation.org, 
-	justinstitt@google.com, ebiederm@xmission.com, alexei.starovoitov@gmail.com, 
-	rostedt@goodmis.org, catalin.marinas@arm.com, 
-	penguin-kernel@i-love.sakura.ne.jp, linux-mm@kvack.org, 
-	linux-fsdevel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	audit@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	selinux@vger.kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, Simon Horman <horms@kernel.org>, 
-	Matthew Wilcox <willy@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240826115752.GA21268@redhat.com>
 
-On Mon, Aug 26, 2024 at 5:25=E2=80=AFPM Alejandro Colomar <alx@kernel.org> =
-wrote:
->
-> Hi Yafang,
->
-> On Sat, Aug 17, 2024 at 10:58:02AM GMT, Alejandro Colomar wrote:
-> > Hi Yafang,
+On Mon, Aug 26, 2024 at 01:57:52PM +0200, Oleg Nesterov wrote:
+> On 08/26, Jiri Olsa wrote:
 > >
-> > On Sat, Aug 17, 2024 at 10:56:22AM GMT, Yafang Shao wrote:
-> > > These three functions follow the same pattern. To deduplicate the cod=
-e,
-> > > let's introduce a common helper __kmemdup_nul().
+> > On Mon, Aug 26, 2024 at 12:40:18AM +0200, Oleg Nesterov wrote:
+> > > 	$ ./test &
+> > > 	$ bpftrace -p $! -e 'uprobe:./test:func { printf("%d\n", pid); }'
 > > >
-> > > Suggested-by: Andrew Morton <akpm@linux-foundation.org>
-> > > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > > Cc: Simon Horman <horms@kernel.org>
-> > > Cc: Matthew Wilcox <willy@infradead.org>
-> > > ---
-> > >  mm/util.c | 67 +++++++++++++++++++++--------------------------------=
---
-> > >  1 file changed, 26 insertions(+), 41 deletions(-)
+> > > I hope that the syntax of the 2nd command is correct...
 > > >
-> > > diff --git a/mm/util.c b/mm/util.c
-> > > index 4542d8a800d9..310c7735c617 100644
-> > > --- a/mm/util.c
-> > > +++ b/mm/util.c
-> > > @@ -45,33 +45,40 @@ void kfree_const(const void *x)
-> > >  EXPORT_SYMBOL(kfree_const);
-> > >
-> > >  /**
-> > > - * kstrdup - allocate space for and copy an existing string
-> > > - * @s: the string to duplicate
-> > > + * __kmemdup_nul - Create a NUL-terminated string from @s, which mig=
-ht be unterminated.
-> > > + * @s: The data to copy
-> > > + * @len: The size of the data, including the null terminator
-> > >   * @gfp: the GFP mask used in the kmalloc() call when allocating mem=
-ory
-> > >   *
-> > > - * Return: newly allocated copy of @s or %NULL in case of error
-> > > + * Return: newly allocated copy of @s with NUL-termination or %NULL =
-in
-> > > + * case of error
-> > >   */
-> > > -noinline
-> > > -char *kstrdup(const char *s, gfp_t gfp)
-> > > +static __always_inline char *__kmemdup_nul(const char *s, size_t len=
-, gfp_t gfp)
-> > >  {
-> > > -   size_t len;
-> > >     char *buf;
-> > >
-> > > -   if (!s)
-> > > +   buf =3D kmalloc_track_caller(len, gfp);
-> > > +   if (!buf)
-> > >             return NULL;
-> > >
-> > > -   len =3D strlen(s) + 1;
-> > > -   buf =3D kmalloc_track_caller(len, gfp);
-> > > -   if (buf) {
-> > > -           memcpy(buf, s, len);
-> > > -           /* During memcpy(), the string might be updated to a new =
-value,
-> > > -            * which could be longer than the string when strlen() is
-> > > -            * called. Therefore, we need to add a null termimator.
-> > > -            */
-> > > -           buf[len - 1] =3D '\0';
-> > > -   }
-> > > +   memcpy(buf, s, len);
-> > > +   /* Ensure the buf is always NUL-terminated, regardless of @s. */
-> > > +   buf[len - 1] =3D '\0';
-> > >     return buf;
-> > >  }
-> > > +
-> > > +/**
-> > > + * kstrdup - allocate space for and copy an existing string
-> > > + * @s: the string to duplicate
-> > > + * @gfp: the GFP mask used in the kmalloc() call when allocating mem=
-ory
-> > > + *
-> > > + * Return: newly allocated copy of @s or %NULL in case of error
-> > > + */
-> > > +noinline
-> > > +char *kstrdup(const char *s, gfp_t gfp)
-> > > +{
-> > > +   return s ? __kmemdup_nul(s, strlen(s) + 1, gfp) : NULL;
-> > > +}
-> > >  EXPORT_SYMBOL(kstrdup);
-> > >
-> > >  /**
-> > > @@ -106,19 +113,7 @@ EXPORT_SYMBOL(kstrdup_const);
-> > >   */
-> > >  char *kstrndup(const char *s, size_t max, gfp_t gfp)
-> > >  {
-> > > -   size_t len;
-> > > -   char *buf;
-> > > -
-> > > -   if (!s)
-> > > -           return NULL;
-> > > -
-> > > -   len =3D strnlen(s, max);
-> > > -   buf =3D kmalloc_track_caller(len+1, gfp);
-> > > -   if (buf) {
-> > > -           memcpy(buf, s, len);
-> > > -           buf[len] =3D '\0';
-> > > -   }
-> > > -   return buf;
-> > > +   return s ? __kmemdup_nul(s, strnlen(s, max) + 1, gfp) : NULL;
-> > >  }
-> > >  EXPORT_SYMBOL(kstrndup);
-> > >
-> > > @@ -192,17 +187,7 @@ EXPORT_SYMBOL(kvmemdup);
-> > >   */
-> > >  char *kmemdup_nul(const char *s, size_t len, gfp_t gfp)
-> > >  {
-> > > -   char *buf;
-> > > -
-> > > -   if (!s)
-> > > -           return NULL;
-> > > -
-> > > -   buf =3D kmalloc_track_caller(len + 1, gfp);
-> > > -   if (buf) {
-> > > -           memcpy(buf, s, len);
-> > > -           buf[len] =3D '\0';
-> > > -   }
-> > > -   return buf;
-> > > +   return s ? __kmemdup_nul(s, len + 1, gfp) : NULL;
-> > >  }
-> > >  EXPORT_SYMBOL(kmemdup_nul);
+> > > I _think_ that it will print 2 pids too.
 > >
-> > I like the idea of the patch, but it's plagued with all those +1 and -1=
-.
-> > I think that's due to a bad choice of value being passed by.  If you
-> > pass the actual length of the string (as suggested in my reply to the
-> > previous patch) you should end up with a cleaner set of APIs.
+> > yes.. but with CLONE_VM both processes share 'mm'
+> 
+> Yes sure,
+> 
+> > so they are threads,
+> 
+> Well this depends on definition ;) but the CLONE_VM child is not a sub-thread,
+> it has another TGID. See below.
+> 
+> > and at least uprobe_multi filters by process [1] now.. ;-)
+> 
+> OK, if you say that this behaviour is fine I won't argue, I simply do not know.
+> But see below.
+> 
+> > > But "perf-record -p" works as expected.
 > >
-> > The only remaining +1 is for kmalloc_track_caller(), which I ignore wha=
-t
-> > it does.
-> >
-> >       char *
-> >       __kmemdup_nul(const char *s, size_t len, gfp_t gfp)
-> >       {
-> >               char *buf;
-> >
-> >               buf =3D kmalloc_track_caller(len + 1, gfp);
-> >               if (!buf)
-> >                       return NULL;
-> >
-> >               strcpy(mempcpy(buf, s, len), "");
->
-> Changing these strcpy(, "") to the usual; =3D'\0' or =3D0, but I'd still
-> recommend the rest of the changes, that is, changing the value passed in
-> len, to remove several +1 and -1s.
->
-> What do you think?
+> > I wonder it's because there's the perf layer that schedules each
+> > uprobe event only when its process (PID1/2) is scheduled in and will
+> > receive events only from that cpu while the process is running on it
+> 
+> Not sure I understand... The task which hits the breakpoint is always
+> current, it is always scheduled in.
 
-I will update it. Thanks for your suggestion.
+hum, I might be missing something, but ;-)
 
---=20
-Regards
-Yafang
+assuming we have 2 tasks, each with perf uprobe event assigned
+
+in perf path there's uprobe_perf_func which calls the uprobe_perf_filter
+and if it returns true it then goes:
+
+  uprobe_perf_func
+    __uprobe_perf_func
+      perf_trace_buf_submit
+        perf_tp_event
+        {
+
+           hlist_for_each_entry_rcu(event, head, hlist_entry) {
+             if (perf_tp_event_match(event, &data, regs)) {
+                perf_swevent_event(event, count, &data, regs);
+
+        }
+
+so it will store the event only to perf event which is added for
+the task that is currently scheduled in, so it's not stored to the
+other task event
+
+in comparison with uprobe_multi path, where uprobe_multi_link_filter
+will pass and then it goes:
+
+  handler_chain
+    uprobe_multi_link_handler
+      bpf_prog_run
+       - executes bpf program
+
+the bpf program will get executed for uprobe from both tasks
+
+> 
+> The main purpose of uprobe_perf_func()->uprobe_perf_filter() is NOT that
+> we want to avoid __uprobe_perf_func() although this makes sense.
+> 
+> The main purpose is that we want to remove the breakpoints in current->mm
+> when uprobe_perf_filter() returns false, that is why UPROBE_HANDLER_REMOVE.
+> IOW, the main purpose is not penalise user-space unnecessarily.
+> 
+> IIUC (but I am not sure), perf-record -p will work "correctly" even if we
+> remove uprobe_perf_filter() altogether. IIRC the perf layer does its own
+> filtering but I forgot everything.
+
+I think that's what I tried to describe above
+
+> 
+> And this makes me think that perhaps BPF can't rely on uprobe_perf_filter()
+> either, even we forget about ret-probes.
+> 
+> > [1] 46ba0e49b642 bpf: fix multi-uprobe PID filtering logic
+> 
+> Looks obviously wrong... get_pid_task(PIDTYPE_TGID) can return a zombie
+> leader with ->mm == NULL while other threads and thus the whole process
+> is still alive.
+> 
+> And again, the changelog says "the intent for PID filtering it to filter by
+> *process*", but clone(CLONE_VM) creates another process, not a thread.
+> 
+> So perhaps we need
+> 
+> 	-	if (link->task && current->mm != link->task->mm)
+> 	+	if (link->task && !same_thread_group(current, link->task))
+
+that seems correct, need to check
+
+> 
+> in uprobe_prog_run() to make "filter by *process*" true, but this won't
+> fix the problem with link->task->mm == NULL in uprobe_multi_link_filter().
+> 
+> 
+> Does bpftrace use bpf_uprobe_multi_link_attach/etc ? I guess not...
+> Then which userspace tool uses this code? ;)
+
+yes, it will trigger if you attach to multiple uprobes, like with your
+test example with:
+
+  # bpftrace -p xxx -e 'uprobe:./ex:func* { printf("%d\n", pid); }'
+
+thanks,
+jirka
+
 
