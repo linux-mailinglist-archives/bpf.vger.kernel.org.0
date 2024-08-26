@@ -1,79 +1,79 @@
-Return-Path: <bpf+bounces-38048-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38049-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4395D95E92B
-	for <lists+bpf@lfdr.de>; Mon, 26 Aug 2024 08:40:20 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7BF395E92C
+	for <lists+bpf@lfdr.de>; Mon, 26 Aug 2024 08:40:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EF09C1F20FE9
-	for <lists+bpf@lfdr.de>; Mon, 26 Aug 2024 06:40:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 74432281D01
+	for <lists+bpf@lfdr.de>; Mon, 26 Aug 2024 06:40:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22DFC78C98;
-	Mon, 26 Aug 2024 06:38:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE18F83CD2;
+	Mon, 26 Aug 2024 06:39:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="JY7VdMjG"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="aUnzGn4y"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
+Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CAEA77104
-	for <bpf@vger.kernel.org>; Mon, 26 Aug 2024 06:38:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57C9983CC7
+	for <bpf@vger.kernel.org>; Mon, 26 Aug 2024 06:39:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724654331; cv=none; b=poDKY4HdhnAisd5nMcKCbKABlHSILMfjB1OXczICNQp0T62l/lQi9285W7ZHa2frFulW9/N8vIJ1TOw1GlPDx3WiGuVvTkSillITJBdLdGts0yHj44Yh10bjWaIkE8SClzdT+ZrDOBtRGCRJ2JzEBCmewivfc7+lbGL5DI5YAtI=
+	t=1724654378; cv=none; b=VxAH11GVCEm0wa0LRfAGLb9ueceTd3lUGlgam4J04wNT7fA7tzHon3nym5+h5Z92quJ+asGEcwveq1HznMw0Un/GnI/azod4uB6/0xQa2y5wOITQXpZUMLlZ8Xp+HTBTd0nZBS7eQxO3dthmfQyFGu26ZvtdU29anX5t7e2HxLo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724654331; c=relaxed/simple;
-	bh=vXbnw4Udsn5y9pQHPsmWZw6G2ky7/vw+wXKrkww5EAM=;
+	s=arc-20240116; t=1724654378; c=relaxed/simple;
+	bh=e/870TQ7HwPV2iLPH2TiK90/3Q7uE2tY3HFzQw/CCaI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=h0NSHdKbCLryyI29OpeNmJZW0T5eDZvc6b/3MJnvqMKWcJunO9cnLrBrB0fFcEr9L5C4TH0vF5P5oJPhA6gZoJXfYEolpYZ/Nfb2txXii5Z/IxeJ5deiKhrDV2CpzT/0Mugr+pSBYSgdWW6VYkNLVFdych2kC+pHkZ9l083Y3yY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=JY7VdMjG; arc=none smtp.client-ip=209.85.208.177
+	 Content-Type:Content-Disposition:In-Reply-To; b=hvWB7h1bs9ASCTqTLJxwsODjkij7OiMjYdKM1bAoFaw8AZaWapafGQOzHqkHgBvOKBijI5ywmGSSlpSYJTcKWmXAHD5dN7N676B3GsqK2CjKNddYtJ2RaT02FHk/Tw9Cw4bvl3n5pDUZcDwGPw5D+TRYnCp7pjboU8miAt4PnQg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=aUnzGn4y; arc=none smtp.client-ip=209.85.208.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2f5064816edso13618941fa.3
-        for <bpf@vger.kernel.org>; Sun, 25 Aug 2024 23:38:49 -0700 (PDT)
+Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2f4f2868783so33710001fa.2
+        for <bpf@vger.kernel.org>; Sun, 25 Aug 2024 23:39:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1724654327; x=1725259127; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1724654374; x=1725259174; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=deXNWHin9iHMfwOFWZZTdmmhFltgFZQ30NCTP3efJ/c=;
-        b=JY7VdMjGZgrjIzeaDa9IbJiPbi1IeC+6A77hlxNNU5z2hZlciXnEq/lFKdVJozFOZ2
-         2EbEF0WTMc6+YD0KRXAfSs3rFRmT991L3tRKeK4GNo6Aja6soTBZbHEn8de8IWr4dBB2
-         /hR4HqSauBxNpUF2Xv9I4JlcRU/12oU66jtNLnfTGse1+7syhOwJhh4ULJ9vgvw7KP9Z
-         0h07aAlCwhpaBmoeyeMxGHjS3P5jSeobOmfTWuYXw92LTX2KP9ca9ju49BWPpAaFi8IL
-         UJqeqhMCSjPY11B+RfQOF4za5auMOvpvhmYI8kO6gHzEsiGfkIuzalP8T1UzvXgTKBxY
-         7Gkg==
+        bh=DqsGTE2o3cnmLgcfuE+0UrEVh8CaMk/60Wk442weXOM=;
+        b=aUnzGn4yBFqhzJl1VqGb2p7U+IHSVP4+l5+Xorin5HtYUJFO8ZBF5ne/1DYzSCpJGA
+         d+g+bm9ySkac4papTG/pJZlYHuzlWa9x83Fzh+tZ5pUfpQPydIg/rGJjpcGFCaFhmy6H
+         j7XU5LjywuyGWn6cDE8A9X/LSLtAKUzHyOlVBKAlh0PF+aelnfHda3mweMIf2shu6AG1
+         hYQv3wtcbVvBhs5MZXATjymaw/vfqA4063FSw5MzQh2IBwgvMEb1FfvMPgJk0S/Geo/C
+         2I7ZzW5Ny0eNHFtkcWHzkjxPjRe3QbiLAV5T2kYg+321+vTo57HkqxvnLv0GtuoAlPBR
+         i86Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724654327; x=1725259127;
+        d=1e100.net; s=20230601; t=1724654374; x=1725259174;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=deXNWHin9iHMfwOFWZZTdmmhFltgFZQ30NCTP3efJ/c=;
-        b=OwWB2gokpdIVVEol9E1kOWTN0OiyWDF5fUbPrF4IbINhWYTlKU1OlhPxtUolN+hHp9
-         03OnkVpyTlZn44DIyloCn3TbX4VmLTDLPaSMsFj5xCrsS0U/oybr3vc1j00fRPa2Yf4P
-         lzinnH3BFXRQrRoMQzdQeKj0JASladcW8BsnlHOE26kpPRgDKzJFjQ51RKaw3Us6//11
-         UNRE2zl9Ag0HUvN8V7on+saf6g7BU9yG390+OGpc9XTr4AGGDe0VZ+CmQDd9HKLViDje
-         xwdkXLUM0Qe7fzHrBIaKHavNiIslWn1DL6mKgr9yNDNg+fYX46Uv/aisZqSlWL/adri8
-         BsQw==
-X-Gm-Message-State: AOJu0YxRD7hJgkYnDbcM0CdmBHcwC9+yVWtwNTvizw5+YMiKZRqWgXw5
-	IMm83XsdEmcDeDSU+84wkpUnZPHP4rD1IxgUKHNE9X/1uHlvZTO8Js16dSYh2Ik=
-X-Google-Smtp-Source: AGHT+IFB/zu2WLlBIMf2pLP9B66y40FhqF3JtbG2+Mq9GevjR/sVZ9XLgKYr8mNF8h3ut/Tl6YSlsg==
-X-Received: by 2002:a2e:743:0:b0:2f1:563d:ec8a with SMTP id 38308e7fff4ca-2f4f4945386mr60089521fa.41.1724654327449;
-        Sun, 25 Aug 2024 23:38:47 -0700 (PDT)
+        bh=DqsGTE2o3cnmLgcfuE+0UrEVh8CaMk/60Wk442weXOM=;
+        b=CjJztSJt+PEGBRqiYwgUvKIbtUmwa9jSDZ4i0eFe4F4ovNkejza+knZZANbHErzOC8
+         i+xwrxv/+oOOrevwYVhSxFvdJyCoH+9kwDuAUIxqfIPYPSsI9fE1bfvg644RK1Qo3ous
+         y00O9K6kkaLcldUazTKdF4RyyGoBtSMrjOHLDu4r/0HmxJghnuTsrhP040irb9YH3sxq
+         AV0WXdFyzkXhJt3iFKBTqgI8kLtvNzjk2QWXeC7w40yvyuUVY0vw1aaAg9824bNmM1oq
+         aUwM10hE+ROLnIT7k4BPV9BjaqJdf8PuEykp2kuz1zUei1eCAj/c4QGliXZh071K44AN
+         DM6Q==
+X-Gm-Message-State: AOJu0YzAD6FRbvhNXrvBZ9wGgMxRJVVimx1SMwrbUe3B30v9UzpY3/zC
+	Dxy/pI8ierBsIBiIbRZEPl91qO/PlfnFLqLNdfJbJJ8zZ8434WHFBWdRglVckZg=
+X-Google-Smtp-Source: AGHT+IFXtgT/AQH3sIcEUO6V7V0IenjL3znLmp3PlL0031EwwEatPGKdU/AP9QqxgNe60MqzR5kKgA==
+X-Received: by 2002:a2e:741:0:b0:2ef:2555:e52f with SMTP id 38308e7fff4ca-2f4f4937bf6mr58642671fa.35.1724654374365;
+        Sun, 25 Aug 2024 23:39:34 -0700 (PDT)
 Received: from u94a ([2401:e180:8812:1b5d:e57e:cdf9:3562:dd80])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2d613921a33sm9033202a91.20.2024.08.25.23.38.45
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2d613b1ac7dsm8904786a91.47.2024.08.25.23.39.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 25 Aug 2024 23:38:47 -0700 (PDT)
-Date: Mon, 26 Aug 2024 14:38:42 +0800
+        Sun, 25 Aug 2024 23:39:33 -0700 (PDT)
+Date: Mon, 26 Aug 2024 14:39:30 +0800
 From: Shung-Hsi Yu <shung-hsi.yu@suse.com>
 To: Daniel Borkmann <daniel@iogearbox.net>
 Cc: bpf@vger.kernel.org, kongln9170@gmail.com
-Subject: Re: [PATCH bpf 2/4] bpf: Zero ARG_PTR_TO_{LONG,INT} | MEM_UNINIT
- args in case of error
-Message-ID: <z6ibywiho7uinssscgezwmqh37r5ujy7wvdz55654b2bdwsvq4@ddckgf6yl2bm>
+Subject: Re: [PATCH bpf 4/4] selftests/bpf: Add a test case to write into
+ .rodata
+Message-ID: <wvgb7c67evkh6royv7jwzq6elcs3u3jvvivb7jo7h4lrgiwtfx@delzz7gse64t>
 References: <20240823222033.31006-1-daniel@iogearbox.net>
- <20240823222033.31006-2-daniel@iogearbox.net>
+ <20240823222033.31006-4-daniel@iogearbox.net>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -82,16 +82,40 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240823222033.31006-2-daniel@iogearbox.net>
+In-Reply-To: <20240823222033.31006-4-daniel@iogearbox.net>
 
-On Sat, Aug 24, 2024 at 12:20:31AM GMT, Daniel Borkmann wrote:
-> For all non-tracing helpers which have ARG_PTR_TO_{LONG,INT} | MEM_UNINIT
-> input arguments, zero the value for the case of an error as otherwise it
-> could leak memory. For tracing, it is not needed given CAP_PERFMON can
-> already read all kernel memory anyway.
+On Sat, Aug 24, 2024 at 12:20:33AM GMT, Daniel Borkmann wrote:
+> Add a test case which attempts to write into .rodata section of the
+> BPF program, and for comparison this adds test cases also for .bss
+> and .data section.
 > 
-> Fixes: 8a67f2de9b1d ("bpf: expose bpf_strtol and bpf_strtoul to all program types")
-> Fixes: d7a4cb9b6705 ("bpf: Introduce bpf_strtol and bpf_strtoul helpers")
+> Before fix:
+> 
+>   # ./vmtest.sh -- ./test_progs -t verifier_const
+>   [...]
+>   ./test_progs -t verifier_const
+>   tester_init:PASS:tester_log_buf 0 nsec
+>   process_subtest:PASS:obj_open_mem 0 nsec
+>   process_subtest:PASS:specs_alloc 0 nsec
+>   run_subtest:PASS:obj_open_mem 0 nsec
+>   run_subtest:FAIL:unexpected_load_success unexpected success: 0
+>   #465/1   verifier_const/rodata: write rejected:FAIL
+>   #465/2   verifier_const/bss: write accepted:OK
+>   #465/3   verifier_const/data: write accepted:OK
+>   #465     verifier_const:FAIL
+>   [...]
+> 
+> After fix:
+> 
+>   # ./vmtest.sh -- ./test_progs -t verifier_const
+>   [...]
+>   ./test_progs -t verifier_const
+>   #465/1   verifier_const/rodata: write rejected:OK
+>   #465/2   verifier_const/bss: write accepted:OK
+>   #465/3   verifier_const/data: write accepted:OK
+>   #465     verifier_const:OK
+>   [...]
+> 
 > Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
 [...]
 
