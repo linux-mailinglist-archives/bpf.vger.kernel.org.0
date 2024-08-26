@@ -1,165 +1,147 @@
-Return-Path: <bpf+bounces-38066-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38067-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DD0695EE69
-	for <lists+bpf@lfdr.de>; Mon, 26 Aug 2024 12:23:50 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B36195EE91
+	for <lists+bpf@lfdr.de>; Mon, 26 Aug 2024 12:37:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3A177282C6E
-	for <lists+bpf@lfdr.de>; Mon, 26 Aug 2024 10:23:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A70681F22C06
+	for <lists+bpf@lfdr.de>; Mon, 26 Aug 2024 10:37:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C53DA1487FF;
-	Mon, 26 Aug 2024 10:23:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A3D71494DC;
+	Mon, 26 Aug 2024 10:37:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kuroa.me header.i=@kuroa.me header.b="Pt88V1SG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NUTn5898"
 X-Original-To: bpf@vger.kernel.org
-Received: from pv50p00im-ztdg10011201.me.com (pv50p00im-ztdg10011201.me.com [17.58.6.39])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77EE814830F
-	for <bpf@vger.kernel.org>; Mon, 26 Aug 2024 10:23:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=17.58.6.39
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2176F146017
+	for <bpf@vger.kernel.org>; Mon, 26 Aug 2024 10:37:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724667824; cv=none; b=gxUFcQPpRPVJi+UMU7V9BCjO+qcCHBgZbxylE0YiUbpvYE3gyEb/GNiU+CsPVLSAL8xkO/btvLmOjREMwBB4Wjbf+YQ1caTyIPB5ONMoMFasHNxaWuNL9l6I4eU4TCls6jNht3rg/8wFsomisixX3negvpaGgf7NyhxEzm28gYw=
+	t=1724668673; cv=none; b=PTesyP/khcuBN2JoHFqSh9JhoLLZ6djjERaUbJ9yjESlL4XkiUiGHq9QeU7Iels98r0KNdnhEAmztDfFIhmtQT+R6UeAPMhOerI2x46k84YMejVyJBxvvw/hQsQAio4Z6eNrZX7Wscs80uxAKDup0jJgtzK9psPoAOkUdst+MwA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724667824; c=relaxed/simple;
-	bh=JpYMm2QPAmJNwfer4lrcZGTpUEZVHPaSngMPsKiDXRU=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=tRMAHyeUWOTvS8OJItojGrh5SBiIk65tKIkemw0UHVP0JzO5f8x5n1Ae7gqjP2Z2uU9FHMBTnxTW2XVKLd0i8s5kwolrByAms0B2OJWgGcMP5Kag2EL2HOEmVxkPhR5ynG1csoQNX8VvFIovUWO23WfQ8ponY+gNLD+z8za6DPU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kuroa.me; spf=pass smtp.mailfrom=kuroa.me; dkim=pass (2048-bit key) header.d=kuroa.me header.i=@kuroa.me header.b=Pt88V1SG; arc=none smtp.client-ip=17.58.6.39
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kuroa.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kuroa.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kuroa.me; s=sig1;
-	t=1724667822; bh=OSXhgW8ZM5QC6cBJ+Hnw5KZOozXWvB4XmuwlJjC7fbM=;
-	h=From:To:Subject:Date:Message-Id:MIME-Version;
-	b=Pt88V1SGm6TSk6ekv13NPCdpU9Ycy9f33eC4FEYdlfIdKyl1QhbRgUIij6QAc+e0e
-	 rzIvr58TPFwJSf9uZybYKkUmrUQYNYRL6/K+YMztR6gE4mUeNHvsfEk3iln7ypbS3c
-	 pXizcuxNwKZvCVrqhB+aeL1/dymYLpWTqa6TrR88jFYNPDLoQPDmRZ+095RSq1AV/W
-	 St0dtSRzrCwlXz141m91VYRcL6wLWWI8/BLTkMbiVklciy5WRqs0vgK9u4sQNsMYbh
-	 iFqjAv+zW5aIQJGJMEQbGMAazDEfhE0ceuEiThXnMdMCcvCX21/ueMvSf9xkMgexHp
-	 nXUWf0xfnlwtQ==
-Received: from tora.kuroa.me (pv50p00im-dlb-asmtp-mailmevip.me.com [17.56.9.10])
-	by pv50p00im-ztdg10011201.me.com (Postfix) with ESMTPSA id 3536B68033F;
-	Mon, 26 Aug 2024 10:23:33 +0000 (UTC)
-From: Xueming Feng <kuro@kuroa.me>
-To: "David S . Miller" <davem@davemloft.net>,
-	netdev@vger.kernel.org,
-	Eric Dumazet <edumazet@google.com>,
-	Lorenzo Colitti <lorenzo@google.com>,
-	Jason Xing <kerneljasonxing@gmail.com>
-Cc: Paolo Abeni <pabeni@redhat.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Neal Cardwell <ncardwell@google.com>,
-	Yuchung Cheng <ycheng@google.com>,
-	Soheil Hassas Yeganeh <soheil@google.com>,
-	David Ahern <dsahern@kernel.org>,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	Xueming Feng <kuro@kuroa.me>
-Subject: [PATCH net,v3] tcp: fix forever orphan socket caused by tcp_abort
-Date: Mon, 26 Aug 2024 18:23:27 +0800
-Message-Id: <20240826102327.1461482-1-kuro@kuroa.me>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1724668673; c=relaxed/simple;
+	bh=sPEcrJTwenHdVc/Yfnd8nSY6Fjv0xAC8DC3jZl33GvM=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=fFifRKX2CS0BYVX+/RwfPSD9OPFYpxGyZeB+xfDwbdoWgfKj+JWQU4X38poywymvOL7XBRsI4NSjfuwIm14RX+cgPQ8g6g4/iJPGZFBOWxoDRJlh35JMqhN0rcwBeg6CY8oAW9bIT477SFX+T+2LuJryfXb9llUjXs/VEO/Nwlo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NUTn5898; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F40DC51401;
+	Mon, 26 Aug 2024 10:37:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1724668672;
+	bh=sPEcrJTwenHdVc/Yfnd8nSY6Fjv0xAC8DC3jZl33GvM=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=NUTn5898+wFjuV2k1z3xgymggw45/n9c7Mu/tCzpIzQZBPlxDUuaJKGQemJ9W6V1T
+	 jdWolTPNWJOYlZ21F3Zn8S0H/B3sJbTB0CdtF+u9ZeMG0e353iALVgZBOV8mi6mQVY
+	 D08+Vyvib6R9DtMTOJNAsYK36MUClrDiM6mye/pCJZFyD2trHQBUtf3T8VZ7zV2/XS
+	 MvT0/UPtcSwxwuWWZ9ibaCKgR/0DBjVhRjNQquqt8VKfQ1wKMJp2i3kNbTszlNi+Ae
+	 nYdAkwWzEv9ky3WbYXM56tii4stF0gB5sJzL87ZZwK8mLPQX0RKg5xX9fdeptf1GKg
+	 scScJweFXcCEA==
+From: Puranjay Mohan <puranjay@kernel.org>
+To: Xu Kuohai <xukuohai@huaweicloud.com>, bpf@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Leon Hwang
+ <hffilwlqm@gmail.com>, Catalin Marinas <catalin.marinas@arm.com>, Will
+ Deacon <will@kernel.org>
+Subject: Re: [PATCH bpf-next 0/2] bpf, arm64: Simplify jited prologue/epilogue
+In-Reply-To: <20240826071624.350108-1-xukuohai@huaweicloud.com>
+References: <20240826071624.350108-1-xukuohai@huaweicloud.com>
+Date: Mon, 26 Aug 2024 10:37:33 +0000
+Message-ID: <mb61pplpvo9hu.fsf@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-GUID: 4P1gZyMk_hqAtjqS-p-jAa2JOO-jzEji
-X-Proofpoint-ORIG-GUID: 4P1gZyMk_hqAtjqS-p-jAa2JOO-jzEji
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
- definitions=2024-08-26_07,2024-08-23_01,2024-05-17_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0
- mlxlogscore=846 phishscore=0 malwarescore=0 bulkscore=0 clxscore=1030
- mlxscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2308100000 definitions=main-2408260081
+Content-Type: multipart/signed; boundary="=-=-=";
+	micalg=pgp-sha512; protocol="application/pgp-signature"
 
-We have some problem closing zero-window fin-wait-1 tcp sockets in our 
-environment. This patch come from the investigation.
+--=-=-=
+Content-Type: text/plain
 
-Previously tcp_abort only sends out reset and calls tcp_done when the 
-socket is not SOCK_DEAD, aka orphan. For orphan socket, it will only 
-purging the write queue, but not close the socket and left it to the 
-timer.
+Xu Kuohai <xukuohai@huaweicloud.com> writes:
 
-While purging the write queue, tp->packets_out and sk->sk_write_queue 
-is cleared along the way. However tcp_retransmit_timer have early 
-return based on !tp->packets_out and tcp_probe_timer have early 
-return based on !sk->sk_write_queue.
+> From: Xu Kuohai <xukuohai@huawei.com>
+>
+> The arm64 jit blindly saves/restores all callee-saved registers, making
+> the jited result looks a bit too compliated. For example, for an empty
+> prog, the jited result is:
+>
+>    0:   bti jc
+>    4:   mov     x9, lr
+>    8:   nop
+>    c:   paciasp
+>   10:   stp     fp, lr, [sp, #-16]!
+>   14:   mov     fp, sp
+>   18:   stp     x19, x20, [sp, #-16]!
+>   1c:   stp     x21, x22, [sp, #-16]!
+>   20:   stp     x26, x25, [sp, #-16]!
+>   24:   mov     x26, #0
+>   28:   stp     x26, x25, [sp, #-16]!
+>   2c:   mov     x26, sp
+>   30:   stp     x27, x28, [sp, #-16]!
+>   34:   mov     x25, sp
+>   38:   bti j 		// tailcall target
+>   3c:   sub     sp, sp, #0
+>   40:   mov     x7, #0
+>   44:   add     sp, sp, #0
+>   48:   ldp     x27, x28, [sp], #16
+>   4c:   ldp     x26, x25, [sp], #16
+>   50:   ldp     x26, x25, [sp], #16
+>   54:   ldp     x21, x22, [sp], #16
+>   58:   ldp     x19, x20, [sp], #16
+>   5c:   ldp     fp, lr, [sp], #16
+>   60:   mov     x0, x7
+>   64:   autiasp
+>   68:   ret
+>
+> Clearly, there is no need to save/restore unused callee-saved registers.
+> This patch does this change, making the jited image to only save/restore
+> the callee-saved registers it uses.
+>
+> Now the jited result of empty prog is:
+>
+>    0:   bti jc
+>    4:   mov     x9, lr
+>    8:   nop
+>    c:   paciasp
+>   10:   stp     fp, lr, [sp, #-16]!
+>   14:   mov     fp, sp
+>   18:   stp     xzr, x26, [sp, #-16]!
+>   1c:   mov     x26, sp
+>   20:   bti j		// tailcall target
+>   24:   mov     x7, #0
+>   28:   ldp     xzr, x26, [sp], #16
+>   2c:   ldp     fp, lr, [sp], #16
+>   30:   mov     x0, x7
+>   34:   autiasp
+>   38:   ret
+>
+> Xu Kuohai (2):
+>   bpf, arm64: Get rid of fpb
+>   bpf, arm64: Avoid blindly saving/restoring all callee-saved registers
+>
 
-This caused ICSK_TIME_RETRANS and ICSK_TIME_PROBE0 not being resched 
-and socket not being killed by the timers, converting a zero-windowed
-orphan into a forever orphan.
+Acked-by: Puranjay Mohan <puranjay@kernel.org>
 
-This patch removes the SOCK_DEAD check in tcp_abort, making it send 
-reset to peer and close the socket accordingly. Preventing the 
-timer-less orphan from happening.
+Thanks,
+Puranjay Mohan
 
-According to Lorenzo's email in the v1 thread, the check was there to
-prevent force-closing the same socket twice. That situation is handled
-by testing for TCP_CLOSE inside lock, and returning -ENOENT if it is
-already closed.
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
 
-The -ENOENT code comes from the associate patch Lorenzo made for 
-iproute2-ss; link attached below, which also conform to RFC 9293.
+-----BEGIN PGP SIGNATURE-----
 
-At the end of the patch, tcp_write_queue_purge(sk) is removed because it 
-was already called in tcp_done_with_error().
-
-p.s. This is the same patch with v2. Resent due to mis-labeled "changes 
-requested" on patchwork.kernel.org.
-
-Link: https://patchwork.ozlabs.org/project/netdev/patch/1450773094-7978-3-git-send-email-lorenzo@google.com/
-Fixes: c1e64e298b8c ("net: diag: Support destroying TCP sockets.")
-Signed-off-by: Xueming Feng <kuro@kuroa.me>
-Tested-by: Lorenzo Colitti <lorenzo@google.com>
-Reviewed-by: Jason Xing <kerneljasonxing@gmail.com>
----
- net/ipv4/tcp.c | 18 +++++++++++-------
- 1 file changed, 11 insertions(+), 7 deletions(-)
-
-diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
-index e03a342c9162..831a18dc7aa6 100644
---- a/net/ipv4/tcp.c
-+++ b/net/ipv4/tcp.c
-@@ -4637,6 +4637,13 @@ int tcp_abort(struct sock *sk, int err)
- 		/* Don't race with userspace socket closes such as tcp_close. */
- 		lock_sock(sk);
- 
-+	/* Avoid closing the same socket twice. */
-+	if (sk->sk_state == TCP_CLOSE) {
-+		if (!has_current_bpf_ctx())
-+			release_sock(sk);
-+		return -ENOENT;
-+	}
-+
- 	if (sk->sk_state == TCP_LISTEN) {
- 		tcp_set_state(sk, TCP_CLOSE);
- 		inet_csk_listen_stop(sk);
-@@ -4646,16 +4653,13 @@ int tcp_abort(struct sock *sk, int err)
- 	local_bh_disable();
- 	bh_lock_sock(sk);
- 
--	if (!sock_flag(sk, SOCK_DEAD)) {
--		if (tcp_need_reset(sk->sk_state))
--			tcp_send_active_reset(sk, GFP_ATOMIC,
--					      SK_RST_REASON_NOT_SPECIFIED);
--		tcp_done_with_error(sk, err);
--	}
-+	if (tcp_need_reset(sk->sk_state))
-+		tcp_send_active_reset(sk, GFP_ATOMIC,
-+				      SK_RST_REASON_NOT_SPECIFIED);
-+	tcp_done_with_error(sk, err);
- 
- 	bh_unlock_sock(sk);
- 	local_bh_enable();
--	tcp_write_queue_purge(sk);
- 	if (!has_current_bpf_ctx())
- 		release_sock(sk);
- 	return 0;
--- 
+iIoEARYKADIWIQQ3wHGvVs/5bdl78BKwwPkjG3B2nQUCZsxa7hQccHVyYW5qYXlA
+a2VybmVsLm9yZwAKCRCwwPkjG3B2nTYrAQCOFfSHVX6+u8xLTQWxqf99QWDFuI0Y
+G15E57BDE7BLYwEAj0SUSBgdyObJaKXXmWLl9mMK6+EDR99KBGz0ryg5LQw=
+=vhV4
+-----END PGP SIGNATURE-----
+--=-=-=--
 
