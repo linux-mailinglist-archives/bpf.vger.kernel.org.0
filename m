@@ -1,182 +1,190 @@
-Return-Path: <bpf+bounces-38105-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38106-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AAAF95FC5B
-	for <lists+bpf@lfdr.de>; Tue, 27 Aug 2024 00:01:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A58B795FC61
+	for <lists+bpf@lfdr.de>; Tue, 27 Aug 2024 00:02:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8E72A1C22868
-	for <lists+bpf@lfdr.de>; Mon, 26 Aug 2024 22:01:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BA53A1C227A7
+	for <lists+bpf@lfdr.de>; Mon, 26 Aug 2024 22:02:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CCC819CCED;
-	Mon, 26 Aug 2024 21:59:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A94A19D88C;
+	Mon, 26 Aug 2024 22:01:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gk5UL659"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YITfNBGQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11A2A19DF76
-	for <bpf@vger.kernel.org>; Mon, 26 Aug 2024 21:59:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54CA719ADAA;
+	Mon, 26 Aug 2024 22:01:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724709587; cv=none; b=O67zKMSCNKY4Umdgm0zzvoCOlCnEq3f4JIHVtZV3oLtl7QwV9eF8xp9jcOhuXI7woAEAI0JQ6J4ri3VxL2OC+c8DIh8jmka4jGcn/xseOiTYfCTZnlGcbY4IjMDbbm0McyEEx9jfYhzdKKgtcLh+Hp7XayKBSLYO+45iqYgso3M=
+	t=1724709711; cv=none; b=NgakVDGtEVSc4Qr51qYn4yzNuZfLqrWQNLv5ot3MzbFl8YP5FW99tRusnKYtPiyeXrIO85s/woLwY/qRQS2tBGflQ6ZTyBMjZuIsbMDmGUwiRYoiwO68mvuMeRKZOB7SlHz/JydkWt3gEI8S+a22pGBcUAzFzQTgbmPDWhAPkb8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724709587; c=relaxed/simple;
-	bh=4EUtIrnimvx8O0cU+uZ/uuVDE/0DOxB0MYGcMLSnXmE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=az5Cdpox0z1m11TFwhPpYaOcAuvwWB+6Hxd9GDVXI2evyRed1t5CbrvC9EgXXOPGMrmOXGyNQwE4LlX5VhJHceGk0MR1xa9vxwOBldg5N2VQq1DMh3SVywSnSbVU6MndNVtyeItpBQ9ab9wq6JsaXvoce03MQ2oUc2/Q0fixxtU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gk5UL659; arc=none smtp.client-ip=209.85.216.44
+	s=arc-20240116; t=1724709711; c=relaxed/simple;
+	bh=MAl8QMEg+vUOjw7aHlZYMvDL1CxDVI1xYwxmISPUo+s=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pVa3YKaTBTYdxbHIQZJWGSwb5mS3Dr3wacNtPNWpK1Otoq4L7xilLCryAKY7YHQEmBsqldJomwKkwklDIgU/XyyrbfXxRg3w0ahXs+dPDDgM3WcVzsu92Hytt1aFl+C/Kr82oUw4Byw7GRgBuUEFbB8HJC5iBycQ6+SBcHiTneA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YITfNBGQ; arc=none smtp.client-ip=209.85.128.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-2d3da6d3f22so3737795a91.0
-        for <bpf@vger.kernel.org>; Mon, 26 Aug 2024 14:59:45 -0700 (PDT)
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-42809d6e719so41832945e9.3;
+        Mon, 26 Aug 2024 15:01:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1724709585; x=1725314385; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Q/elePcEcmxfgIp/KV/bGB99eZHjEDFMaoEcXKPqmEg=;
-        b=gk5UL659ns0+Ks5Wi2Yj6TL9MbCuWAFuPVJYsYvucQDYxqS4JluK1zce0l4fs46po2
-         L5hxagK8zTM/IGYkcBOLpgUxk3xP5nDxJfwAhFOsxst52PzI+NJ791SP8IpRX6YYi7hj
-         auO/l65k9BEq2NnCYfur4+kgJaugNXqz7aObe7li95gJXDIXdwbjNu9w96RBN9mcwo1B
-         McODAg88RCcCMbwCNlAnuPMs4SVpJKAzexpr5ea32caGoorMpxpBvvSjJTcwlzdNaI2s
-         FdfExzK1zmBQLFMFvHoljEh3wtIjAxsW+SGo+8UQpGU7sKqcn6DqPdDKDhR0B8a9iWD8
-         ua8Q==
+        d=gmail.com; s=20230601; t=1724709707; x=1725314507; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=niKhWmEQf+Psg71lFmVBz1Uz8IkSk33YElBT/2u1MMg=;
+        b=YITfNBGQFBQ47QRjPieRN6SGX7eKxOR7F1+/QikKJKIq6dsqkqJajcKV/ChM4sfIqR
+         1zK8+GkqWU50xTsnEhu93t1rfW3N6bv2y2qb+0FBZb2fKD1UTKX8lgujDwlTzXLotro6
+         wyd2ujbItQxAbzdWyaLjDiKcrY3wp/FVSMC/Qbw5TEY5Ol0GCjF9l4ogzrU7towWA8WY
+         dhoyXm1Qj2QdHmHVTKYoq6/lilN+tE6FFczpAEHarakjd6F8bF24DGv3Ox4ifapcvAHW
+         vTxPYF2ktH+C3AAi/fVEa2bVas6XHGnbXtzQvHWOscHGlpoor2TAKICbPhYV9GrF1q3l
+         KyMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724709585; x=1725314385;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Q/elePcEcmxfgIp/KV/bGB99eZHjEDFMaoEcXKPqmEg=;
-        b=BmXzUf7LXF8PoDoA3b4Z5tGmOL8Tv7Ph6QR0XrFp5gO91KpIb5p2dXBFmU3JNx1+h1
-         abBTQWKjrWqwM17hlAfwIh8kOoNYSwQRx/mNW0xo0iag5ndWleBwYBakOLUWbMsCeP+s
-         PVDfmZHgb8nti8xb258TLklTo+OLqK2HhJ4tRDG0mHpV6yQLox2dT1FR2v70HHfmpUHT
-         VdY+IBbXnxs72X+sZmQcOeaWDFfEIZ5suB6fwkOVws3HcnUV5spTpkmzR2pskqy2N8bD
-         u0S/QrnbmNEPN2POAjnXN5GjppDQDCP7ICY2FY4m/CC30Lm9pi7i7An335v98tyK29L8
-         H5Rg==
-X-Gm-Message-State: AOJu0YwQ7qs0u5X21HerbSQ5ub4FC6lNTQReNlR79om5SY+VWWx4rGmU
-	ybSU41RuGVhwCLuzGcmlZfuHZBz8MC4hxMNrYuAWepVCpMM1o4OXtDck8QS+f4tXYa2GCGoZgl1
-	q7tpBBZ6czDR/Ws+ZNY5Vi8ulDrM=
-X-Google-Smtp-Source: AGHT+IHvXCFwINy3SuJbphWIZ1zr7XOnOPjHORnaMtJoUgzt6X2KurpwQ6htNGOghRBwebEjh4GJEG4vxjmN+T5rohA=
-X-Received: by 2002:a17:90b:8d6:b0:2d3:ba92:b27c with SMTP id
- 98e67ed59e1d1-2d646d74eacmr11459861a91.42.1724709585205; Mon, 26 Aug 2024
- 14:59:45 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1724709707; x=1725314507;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=niKhWmEQf+Psg71lFmVBz1Uz8IkSk33YElBT/2u1MMg=;
+        b=GwLTCW+COl8xI8LguowfGYRo+XA7gZKTmDcOQdNXdWZPTWcerSeA3/WCEvblqWz4Ef
+         PfIfHeGmWXA+G2SoTbKrAzvxoPy3oY2ZK3bqahSzzkjVwXZnHmR3BPw1lMHOyZEEdWIO
+         aVtsxMEv76fLcJPiNfcMtYeR78H37QDuuIb9IcAhmXmjDon9L6MOtY4iKgGABaJ4Z4YU
+         Ozi/c5xL4rgdBS4mYTGw1s+YIv96C8Lxz1kCvCNHtq8Eiesa302fo3s2ftK1nv2zoa8c
+         /Ptsu2dvlvdaxc9uy7uTHcmp6n5Kg4ZFmyG/rDUrO6k0y9KSGDDWIURws1JNgdptHbd6
+         HcXw==
+X-Forwarded-Encrypted: i=1; AJvYcCVpSCLa7y67YHApwp5D74sjWifcEWZzLN6BaBlUk51TXDqriYzOftuLRy3jodzhOvVhA5U=@vger.kernel.org, AJvYcCX5FJYFDbWFcLw7IwGkWz91Jj3VYb0k86nssy48ZN6FPshmOzrfEOeIWjcUrYP24bacHv9GDYUrwhgSZnHgmhw6vU8T@vger.kernel.org
+X-Gm-Message-State: AOJu0YyV4ArVGVCLRAqieUqTR6Suu+1ayzdj85Ql9aWM+D4St8J7CmOu
+	bnGo2OBdhGPvlmduXoQhgM/FDaVSNH2DN/FE8R0MVuU3O7foLiXx
+X-Google-Smtp-Source: AGHT+IH6uQJwX/9TDYPKTrazkkgRvjVLnnInMuZp4PL9jQiO9hx/uNZvRY+Qr3dWvu1BvauGDCwkmQ==
+X-Received: by 2002:a05:600c:4453:b0:426:4978:65f0 with SMTP id 5b1f17b1804b1-42acc8dd846mr86482815e9.18.1724709707327;
+        Mon, 26 Aug 2024 15:01:47 -0700 (PDT)
+Received: from krava (i68970762.versanet.de. [104.151.7.98])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-373082096bbsm11577786f8f.89.2024.08.26.15.01.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Aug 2024 15:01:47 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Tue, 27 Aug 2024 00:01:44 +0200
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Tianyi Liu <i.pear@outlook.com>,
+	andrii.nakryiko@gmail.com, mhiramat@kernel.org, ajor@meta.com,
+	albancrequy@linux.microsoft.com, bpf@vger.kernel.org,
+	flaniel@linux.microsoft.com, linux-trace-kernel@vger.kernel.org,
+	linux@jordanrome.com, mathieu.desnoyers@efficios.com
+Subject: Re: [PATCH v2] tracing/uprobe: Add missing PID filter for uretprobe
+Message-ID: <Zsz7SPp71jPlH4MS@krava>
+References: <CAEf4Bzb29=LUO3fra40XVYN1Lm=PebBFubj-Vb038ojD6To2AA@mail.gmail.com>
+ <ME0P300MB04163A2993D1B545C3533DDC9D892@ME0P300MB0416.AUSP300.PROD.OUTLOOK.COM>
+ <20240825171417.GB3906@redhat.com>
+ <20240825224018.GD3906@redhat.com>
+ <ZsxTckUnlU_HWDMJ@krava>
+ <20240826115752.GA21268@redhat.com>
+ <ZsyHrhG9Q5BpZ1ae@krava>
+ <20240826212552.GB30765@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <TCvb-R45mBUJOpoW3V-tLkH2XppfNXYbkv7Ph0ae8J9MZKWFvQ3nkJw74KKMbMzzpAvbwXBwRuBmhFOtHl0-jLLrIALH-_2_Zp-MZ9pPXPo=@pm.me>
-In-Reply-To: <TCvb-R45mBUJOpoW3V-tLkH2XppfNXYbkv7Ph0ae8J9MZKWFvQ3nkJw74KKMbMzzpAvbwXBwRuBmhFOtHl0-jLLrIALH-_2_Zp-MZ9pPXPo=@pm.me>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 26 Aug 2024 14:59:32 -0700
-Message-ID: <CAEf4BzaixE=-+YnowJhZMDk0SoVdZTHgx-X+3UwnJVUnXxkXzQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: compare vmlinux.h checksum when
- building %.bpf.o
-To: Ihor Solodrai <ihor.solodrai@pm.me>
-Cc: bpf <bpf@vger.kernel.org>, "ast@kernel.org" <ast@kernel.org>, 
-	"andrii@kernel.org" <andrii@kernel.org>, "daniel@iogearbox.net" <daniel@iogearbox.net>, 
-	Eduard Zingerman <eddyz87@gmail.com>, "mykolal@fb.com" <mykolal@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240826212552.GB30765@redhat.com>
 
-On Fri, Aug 23, 2024 at 4:06=E2=80=AFPM Ihor Solodrai <ihor.solodrai@pm.me>=
- wrote:
->
-> %.bpf.o objects depend on vmlinux.h, which makes them transitively
-> dependent on unnecessary libbpf headers. However vmlinux.h doesn't
-> actually change as often.
->
-> Compute and save vmlinux.h checksum, and change $(TRUNNER_BPF_OBJS)
-> dependencies so that they are rebuilt only if vmlinux.h contents was
-> changed. Also explicitly list libbpf headers required for test progs.
->
-> Example of build time improvement (after first clean build):
->   $ touch ../../../lib/bpf/bpf.h
->   $ time make -j8
-> Before: real  1m37.592s
-> After:  real  0m27.310s
->
-> You may notice that the speed gain is caused by skipping %.bpf.o gen.
->
-> Link: https://lore.kernel.org/bpf/CAEf4BzY1z5cC7BKye8=3DA8aTVxpsCzD=3Dp1j=
-dTfKC7i0XVuYoHUQ@mail.gmail.com
->
-> Signed-off-by: Ihor Solodrai <ihor.solodrai@pm.me>
-> ---
->  tools/testing/selftests/bpf/Makefile | 19 ++++++++++++++++---
->  1 file changed, 16 insertions(+), 3 deletions(-)
->
-> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftes=
-ts/bpf/Makefile
-> index ec7d425c4022..4f23d9ddc8b8 100644
-> --- a/tools/testing/selftests/bpf/Makefile
-> +++ b/tools/testing/selftests/bpf/Makefile
-> @@ -407,6 +407,14 @@ else
->         $(Q)cp "$(VMLINUX_H)" $@
->  endif
->
-> +VMLINUX_H_CHECKSUM :=3D $(INCLUDE_DIR)/vmlinux.h.md5
-> +
-> +$(VMLINUX_H_CHECKSUM): $(INCLUDE_DIR)/vmlinux.h
-> +       $(shell md5sum $(INCLUDE_DIR)/vmlinux.h > .tmp.md5)
-> +       $(shell md5sum -c .tmp.md5 $(VMLINUX_H_CHECKSUM) --status \
-> +               || cp -f .tmp.md5 $(VMLINUX_H_CHECKSUM))
-> +       $(shell rm .tmp.md5)
+On Mon, Aug 26, 2024 at 11:25:53PM +0200, Oleg Nesterov wrote:
+> This is offtopic, sorry for the spam, but...
+> 
+> On 08/26, Jiri Olsa wrote:
+> >
+> > On Mon, Aug 26, 2024 at 01:57:52PM +0200, Oleg Nesterov wrote:
+> > >
+> > > Does bpftrace use bpf_uprobe_multi_link_attach/etc ? I guess not...
+> > > Then which userspace tool uses this code? ;)
+> >
+> > yes, it will trigger if you attach to multiple uprobes, like with your
+> > test example with:
+> >
+> >   # bpftrace -p xxx -e 'uprobe:./ex:func* { printf("%d\n", pid); }'
+> 
+> Hmm. I reserved the testing machine with fedora 40 to play with bpftrace.
+> 
+> dummy.c:
+> 
+> 	#include <unistd.h>
+> 
+> 	void func1(void) {}
+> 	void func2(void) {}
+> 
+> 	int main(void) { for (;;) pause(); }
+> 
+> If I do
+> 
+> 	# ./dummy &
+> 	# bpftrace -p $! -e 'uprobe:./dummy:func* { printf("%d\n", pid); }'
+> 
+> and run
+> 
+> 	# bpftrace -e 'kprobe:__uprobe_register { printf("%s\n", kstack); }'
 
-I'm not sure what md5sum buys us here, tbh... To compute checksum you
-need to read entire contents anyways, so you are not really saving
-anything performance-wise.
+did you just bpftrace-ed bpftrace? ;-) on my setup I'm getting:
 
-I was originally thinking that we'll extend existing rule for
-$(INCLUDE_DIR)/vmlinux.h to do bpftool dump into temporary file, then
-do `cmp --silent` over it and existing vmlinux.h (if it does exist, of
-course), and if they are identical just exit and not modify anything.
-If not, we just mv temp file over destination vmlinux.h.
+[root@qemu ex]# ../bpftrace/build/src/bpftrace -e 'kprobe:uprobe_register { printf("%s\n", kstack); }'
+Attaching 1 probe...
 
-In my head this would prevent make from triggering dependent targets
-because vmlinux.h's modification time won't change.
-
-Does the above not work?
+        uprobe_register+1
+        bpf_uprobe_multi_link_attach+685
+        __sys_bpf+9395
+        __x64_sys_bpf+26
+        do_syscall_64+128
+        entry_SYSCALL_64_after_hwframe+118
 
 
-> +
->  $(RESOLVE_BTFIDS): $(HOST_BPFOBJ) | $(HOST_BUILD_DIR)/resolve_btfids   \
->                        $(TOOLSDIR)/bpf/resolve_btfids/main.c    \
->                        $(TOOLSDIR)/lib/rbtree.c                 \
-> @@ -515,6 +523,12 @@ xdp_features.skel.h-deps :=3D xdp_features.bpf.o
->  LINKED_BPF_OBJS :=3D $(foreach skel,$(LINKED_SKELS),$($(skel)-deps))
->  LINKED_BPF_SRCS :=3D $(patsubst %.bpf.o,%.c,$(LINKED_BPF_OBJS))
->
-> +HEADERS_FOR_BPF_OBJS :=3D $(wildcard $(BPFDIR)/*.bpf.h)          \
-> +                       $(addprefix $(BPFDIR)/, bpf_core_read.h \
-> +                                               bpf_endian.h    \
-> +                                               bpf_helpers.h   \
-> +                                               bpf_tracing.h)
-> +
->  # Set up extra TRUNNER_XXX "temporary" variables in the environment (rel=
-ies on
->  # $eval()) and pass control to DEFINE_TEST_RUNNER_RULES.
->  # Parameters:
-> @@ -564,9 +578,8 @@ $(TRUNNER_BPF_PROGS_DIR)$(if $2,-)$2-bpfobjs :=3D y
->  $(TRUNNER_BPF_OBJS): $(TRUNNER_OUTPUT)/%.bpf.o:                         =
-       \
->                      $(TRUNNER_BPF_PROGS_DIR)/%.c                       \
->                      $(TRUNNER_BPF_PROGS_DIR)/*.h                       \
-> -                    $$(INCLUDE_DIR)/vmlinux.h                          \
-> -                    $(wildcard $(BPFDIR)/bpf_*.h)                      \
-> -                    $(wildcard $(BPFDIR)/*.bpf.h)                      \
-> +                    $(VMLINUX_H_CHECKSUM)                              \
-> +                    $(HEADERS_FOR_BPF_OBJS)                            \
->                      | $(TRUNNER_OUTPUT) $$(BPFOBJ)
->         $$(call $(TRUNNER_BPF_BUILD_RULE),$$<,$$@,                      \
->                                           $(TRUNNER_BPF_CFLAGS)         \
-> --
-> 2.34.1
->
->
+I'm not sure what's bpftrace version in fedora 40, I'm using upstream build:
+
+[root@qemu ex]# ../bpftrace/build/src/bpftrace --info 2>&1 | grep uprobe_multi
+  uprobe_multi: yes
+[root@qemu ex]# ../bpftrace/build/src/bpftrace --version
+bpftrace v0.20.0
+
+
+jirka
+
+> 
+> on another console I get
+> 
+> 	Attaching 1 probe...
+> 
+>         __uprobe_register+1
+>         probe_event_enable+399
+>         perf_trace_event_init+440
+>         perf_uprobe_init+152
+>         perf_uprobe_event_init+74
+>         perf_try_init_event+71
+>         perf_event_alloc+1681
+>         __do_sys_perf_event_open+447
+>         do_syscall_64+130
+>         entry_SYSCALL_64_after_hwframe+118
+> 
+>         __uprobe_register+1
+>         probe_event_enable+399
+>         perf_trace_event_init+440
+>         perf_uprobe_init+152
+>         perf_uprobe_event_init+74
+>         perf_try_init_event+71
+>         perf_event_alloc+1681
+>         __do_sys_perf_event_open+447
+>         do_syscall_64+130
+>         entry_SYSCALL_64_after_hwframe+118
+> 
+> so it seems that bpftrace doesn't use bpf_uprobe_multi_link_attach()
+> (called by sys_bpf(BPF_LINK_CREATE) ?) in this case.
+> 
+> But again, this is offtopic, please forget.
+> 
+> Oleg.
+> 
 
