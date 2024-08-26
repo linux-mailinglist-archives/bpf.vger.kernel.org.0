@@ -1,167 +1,113 @@
-Return-Path: <bpf+bounces-38064-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38065-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2FE0E95EE06
-	for <lists+bpf@lfdr.de>; Mon, 26 Aug 2024 12:05:49 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F26495EE59
+	for <lists+bpf@lfdr.de>; Mon, 26 Aug 2024 12:18:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E16ED28393E
-	for <lists+bpf@lfdr.de>; Mon, 26 Aug 2024 10:05:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1B02FB23894
+	for <lists+bpf@lfdr.de>; Mon, 26 Aug 2024 10:18:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99C161465A5;
-	Mon, 26 Aug 2024 10:05:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 420901474A5;
+	Mon, 26 Aug 2024 10:18:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hHieg1lk"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QnsuM+S1"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 973B2804;
-	Mon, 26 Aug 2024 10:05:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 305242E414;
+	Mon, 26 Aug 2024 10:18:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724666744; cv=none; b=eKwVbCjbdsk31oZ3l9Cii9mHG2XoL/+XSNU7kaWIrEuck5sIdA8UQGOB2DzXX17tODLWUNPnwyRp5TY5AAN27g2xbxCUi0t0JOAXz2MtGb0OfAX9EKV9kSIxKq4R/SaskYPNTPm3ktCtayBHc+iMs94swALewGcAGRuMKfD8E+I=
+	t=1724667523; cv=none; b=sP8UcFSQzovlcgkO8WjcsMMYSFDpr2u1Ddr6zgqj+zg8SovCtRaDtphqvKauYXBWceCaMVIdcC5htmlyjRrHUxIdGFaIIQQTv+cbzqtUsBQZInmYb0aghORpjTuZ/IAqkgrkv/66ss5pUMtpCe2qdmE2voiJ5C+OU1jM1FFeYkQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724666744; c=relaxed/simple;
-	bh=HQq8sSpk1x7MtsQvPJS/bUIYn23FdTgDfcF20qzFjGw=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MZRdrNRzKEq9okDwfdslwPkDL+iJ9Dy9xzN0HO2fnyMn6YyFyxrMVOfEG9bRpvAkkDkO8sTXhv/1jBUL/tL//WkEHa+5TsnL4V8qjVXtw2jaoAKNaaqjmkk824ahLig35zPNSJ97y3TzCLuHD6gua6xd+fLmaGl7hMLJEceMuYs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hHieg1lk; arc=none smtp.client-ip=209.85.128.51
+	s=arc-20240116; t=1724667523; c=relaxed/simple;
+	bh=bz0S7QSRtc7JtODcDyzNbKOGW4GmsMgZza30MiR3xYg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ofVAqkoArSi1riFs+BD9IBWmSFoQ59qy6/lXfS1omiP8C9aqEGMZ2e9zWWr2u3DQJSfuwFcI7krAPjIiG+ZHkBv1Rm6D1WO3MCf9Tl0qitiOQotQYhZXcqNikNeJKMXLCvAuRikGECXbPjfyq2qZTwC/52j5XQRePDAGhjGmZ6A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QnsuM+S1; arc=none smtp.client-ip=209.85.167.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-428e3129851so36785895e9.3;
-        Mon, 26 Aug 2024 03:05:42 -0700 (PDT)
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-533463f6b16so4709273e87.1;
+        Mon, 26 Aug 2024 03:18:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1724666741; x=1725271541; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=t40XBDzLJ1B45MoGQZbb3DP7+s/9CmE4kzhKzHKXa/U=;
-        b=hHieg1lkfZhyakCQqJeV/rJ8gt8qNX/jcmoZks9tpkwW6e9urp82H3SnhCp+Kj3uK5
-         5bo/aMEhg8zRp0cr34VVMwzLxx2zrhDe6Kod0QpM57NCsMzwKYiG7ygW6QBnJ8s3jRdS
-         z77lixdA6XaaoUK3N1ff12UwOI2XTpMf92fJ457WOC/t2oxF4bpKnOJuzXmp739vIZLW
-         Q0+DzmnZNVN0+Pf9eQCqBJ2c7yo6HcSBg6yNp+DAIEvPZ77kcWSZcney22jrGGaaL5cP
-         JdTQ5kHdifnO0g0wYFywLqdHzn9SmD/zX6lYNHLop/tbvteQBuiwb0LiDVQtzauBYkNy
-         Toqg==
+        d=gmail.com; s=20230601; t=1724667520; x=1725272320; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :reply-to:in-reply-to:references:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=bz0S7QSRtc7JtODcDyzNbKOGW4GmsMgZza30MiR3xYg=;
+        b=QnsuM+S1TyHbzEO1r3vm4SIiVTeUqMSqQB8nkM4zqEBHXhWemlszCcCbPpEzn51rI+
+         SkGrTG6waCJneruAbDJAh5k81YI1e6mcU2OGp/XMUiJb41OKet0T1X9HWfoDNXEwjhcA
+         Ztpa5O//7UvdYuwXxkOn7/CZas3QfZ4qoLtOpt6VcjA0eTDmss7+1HA96DIHgzEPLk6N
+         hr+tHnF+0ZyCjt1pzEq+6i1ni5cP5N/b65sjR0oN8R0uOf+YaeUlGIIYBGX70BzC3nyf
+         q57aP4m5zMmNdquxKZmXqymxOpMI2FP+KgviCTCNyr1XoIzF4u6GIVbzxJrP6RyEDGvL
+         1MnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724666741; x=1725271541;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=t40XBDzLJ1B45MoGQZbb3DP7+s/9CmE4kzhKzHKXa/U=;
-        b=vtSyPSP4HfdDUlCgjPgnqwm3BaCihmyHdJG7xtAG2rsGGJ2Jb1aJcgY3KBRKL5IMBr
-         DS+MIchzmfbylag+7ctkb/XOMqj+XiFJVfDOH+YkfWsK/ufAWtVsDuHXmwM048H3Q/Pb
-         EMtQZH6qM+ZkN51PFGxHpT4hYt08MRzEUhycC83CvnU1yA/33QHQeLotTgpcp1hUIhVZ
-         2MVIUbk+NG6EycObEUViRCagJkpAnIFOMIdU57xCeVD5XbdV9KFJqG4/S+gTz6A7x85I
-         GVDDP+X2Su1rjlrU6pnB47QFZxaKPdbal04uga6LYQtHnP+hpGRa2OKh6uGMqEOYTQxx
-         5y9Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVufSluKS7M7TJD3oK3PqnuVWlJRqHPmjZe7PMDhH3iaDTRYoN5Xqq2+FruAd+uqauQBHAH2wVPiyn9WANwCWx3OTJ4@vger.kernel.org, AJvYcCW+2CgRV9R1tAk8gi15d48xJT779E/fFpQejEWCXzf+yOCv5/xcGTgugtmPO4y1U9C8mTA=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyJ3dJpTEWAWKPCRYumU6+LgwEyQocGAQC5EhqSWJ0pPDzTy3XQ
-	gypheu8aB5gac+JeHK7OUF5NdQ7DkdT0Wuk+Qy1ebn9tJsDImrO4
-X-Google-Smtp-Source: AGHT+IGaEo7nGIRa+g3XsADZ11D5f1+mzHp1pMSQEh75+HZZTuGkXxTo1w/THsBeR+l2GwGMDfMcyw==
-X-Received: by 2002:a05:600c:3c94:b0:427:fa39:b0db with SMTP id 5b1f17b1804b1-42acc8ff577mr59698185e9.27.1724666740601;
-        Mon, 26 Aug 2024 03:05:40 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3730826b4b5sm10252202f8f.115.2024.08.26.03.05.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Aug 2024 03:05:40 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Mon, 26 Aug 2024 12:05:38 +0200
-To: Oleg Nesterov <oleg@redhat.com>
-Cc: Tianyi Liu <i.pear@outlook.com>, andrii.nakryiko@gmail.com,
-	mhiramat@kernel.org, ajor@meta.com, albancrequy@linux.microsoft.com,
-	bpf@vger.kernel.org, flaniel@linux.microsoft.com,
-	linux-trace-kernel@vger.kernel.org, linux@jordanrome.com,
-	mathieu.desnoyers@efficios.com
-Subject: Re: [PATCH v2] tracing/uprobe: Add missing PID filter for uretprobe
-Message-ID: <ZsxTckUnlU_HWDMJ@krava>
-References: <CAEf4Bzb29=LUO3fra40XVYN1Lm=PebBFubj-Vb038ojD6To2AA@mail.gmail.com>
- <ME0P300MB04163A2993D1B545C3533DDC9D892@ME0P300MB0416.AUSP300.PROD.OUTLOOK.COM>
- <20240825171417.GB3906@redhat.com>
- <20240825224018.GD3906@redhat.com>
+        d=1e100.net; s=20230601; t=1724667520; x=1725272320;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :reply-to:in-reply-to:references:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=bz0S7QSRtc7JtODcDyzNbKOGW4GmsMgZza30MiR3xYg=;
+        b=DT0Yv3Wed4fd10IiJx7s/lEoEn8fVoSXxfJqQWwnzzArrOK27qYCvmdzaJ0dqJDSMi
+         z/dxoA7abZGFaVgrmTUN8yWOPLiECFamNGdt3ifgKxC2LHKkIWc4EbQBOJU5VwLPWkek
+         nLCzbNbNrU7UcYT2ExckdBnlPpUivDq41zrhOmSs60n+FU+NLW8rQMKnLO5M+bFXpAzI
+         M0BtNj+HdLgSdEZ6AU/+bA6bqHupo0DTuyEOMBBLkdtsX4T9PQ05q8HzPNxH+f1fc/OZ
+         Fu2R6kZUGch2V+9eRe4itLRDkr21ZZSJXtHaLwdbhjc7bnGctdKO97ts9RY2L35zAIAG
+         8TmA==
+X-Forwarded-Encrypted: i=1; AJvYcCU9G3MVcQqPdMGyOpENMVUIYId7IsrYugyMTdvVZUbdFtu0nl6E74ZVdqWvy6Q24twY04cwFMfpEg==@vger.kernel.org, AJvYcCWy9qaXMLL10guf5f+g2olFy7xBxqQ5ceao5DqC+HIxV4N1kxTECZiFIt7tWdjd5xYBR3htOwgFzwDNYYkJ@vger.kernel.org, AJvYcCWyqZeRIs/TSyAZO1II+PxT84uGxrt0AJ5klZYNDGODNAl7fQPWxNL7T75FZw+eUlsssWqPlMuIcHLWndlN@vger.kernel.org, AJvYcCX0BQXjvfjBb/19w1joc9d/1yC6isJwMzMqvBlLLdN5yAByZPqnNbtWZxso7LGfsoCsOL0=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzi1TBL3kDOXdBXWJvxWMmTIR/ZQChqThqyDx9oVQcB/5chD+Fj
+	8Rbv1jhOCZKNO5PbgjhLbZMUEsAOJ4uQfrpsvkEsetg+R/zbQty848LzhqZ+TZW0DXL/rGiI7pP
+	QhSIBYaE6xWViCVCBI0d6FnQCQV0fBhQ/
+X-Google-Smtp-Source: AGHT+IEZUDabS3AfPtgjlwoMvm9tGwtqv0CiOr2sv864GntoCh69fE2bFCWwII+opI2vogyBfdf1ISxGZQFomPJ9GcY=
+X-Received: by 2002:a05:6512:33d0:b0:52e:9b4f:dd8c with SMTP id
+ 2adb3069b0e04-53438785cd9mr7102800e87.35.1724667519884; Mon, 26 Aug 2024
+ 03:18:39 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240825224018.GD3906@redhat.com>
+References: <20240820085950.200358-1-jirislaby@kernel.org> <ZsSpU5DqT3sRDzZy@krava>
+ <523c1afa-ed9d-4c76-baea-1c43b1b0c682@kernel.org> <c2086083-4378-4503-b3e2-08fb14f8ff37@kernel.org>
+ <7ebee21d-058f-4f83-8959-bd7aaa4e7719@kernel.org> <a45nq7wustxrztjxmkqzevv3mkki5oizfik7b24gqiyldhlkhv@4rpy4tzwi52l>
+ <ZsdYGOS7Yg9pS2BJ@x1>
+In-Reply-To: <ZsdYGOS7Yg9pS2BJ@x1>
+Reply-To: sedat.dilek@gmail.com
+From: Sedat Dilek <sedat.dilek@gmail.com>
+Date: Mon, 26 Aug 2024 12:18:03 +0200
+Message-ID: <CA+icZUVL13oPX8KybWirie5zH77qWuzG9-9yTNM7O1CxwhOp1w@mail.gmail.com>
+Subject: Re: [RFC] kbuild: bpf: Do not run pahole with -j on 32bit userspace
+To: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Shung-Hsi Yu <shung-hsi.yu@suse.com>, dwarves@vger.kernel.org, 
+	Jiri Slaby <jirislaby@kernel.org>, Jiri Olsa <olsajiri@gmail.com>, masahiroy@kernel.org, 
+	linux-kernel@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>, 
+	Nicolas Schier <nicolas@fjasle.eu>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	linux-kbuild@vger.kernel.org, bpf@vger.kernel.org, msuchanek@suse.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Aug 26, 2024 at 12:40:18AM +0200, Oleg Nesterov wrote:
-> On 08/25, Oleg Nesterov wrote:
-> >
-> > At least I certainly disagree with "Fixes: c1ae5c75e103" ;)
-> >
-> > uretprobe_perf_func/etc was designed for perf, and afaics this code still
-> > works fine even if you run 2 perf-record's with -p PID1/PID2 at the same
-> > time.
-> >
-> > BPF hacks/hooks were added later, so perhaps this should be fixed in the
-> > bpf code, but I have no idea what bpftrace does...
-> 
-> And I can't install bpftrace on my old Fedora 23 working laptop ;) Yes, yes,
-> I know, I should upgrade it.
-> 
-> For the moment, please forget about ret-probes. Could you compile this program
-> 
-> 	#define _GNU_SOURCE
-> 	#include <unistd.h>
-> 	#include <sched.h>
-> 	#include <signal.h>
-> 
-> 	int func(int i)
-> 	{
-> 		return i;
-> 	}
-> 
-> 	int test(void *arg)
-> 	{
-> 		int i;
-> 		for (i = 0;; ++i) {
-> 			sleep(1);
-> 			func(i);
-> 		}
-> 		return 0;
-> 	}
-> 
-> 	int main(void)
-> 	{
-> 		static char stack[65536];
-> 
-> 		clone(test, stack + sizeof(stack)/2, CLONE_VM|SIGCHLD, NULL);
-> 		test(NULL);
-> 
-> 		return 0;
-> 	}
-> 
-> and then do something like
-> 
-> 	$ ./test &
-> 	$ bpftrace -p $! -e 'uprobe:./test:func { printf("%d\n", pid); }'
-> 
-> I hope that the syntax of the 2nd command is correct...
-> 
-> I _think_ that it will print 2 pids too.
+On Thu, Aug 22, 2024 at 5:24=E2=80=AFPM Arnaldo Carvalho de Melo
+<acme@kernel.org> wrote:
 
-yes.. but with CLONE_VM both processes share 'mm' so they are threads,
-and at least uprobe_multi filters by process [1] now.. ;-)
+> Please let me know if what is in the 'next' branch of:
+>
+> https://git.kernel.org/pub/scm/devel/pahole/pahole.git
+>
+> Works for you, that will be extra motivation to move it to the master
+> branch and cut 1.28.
 
-> 
-> But "perf-record -p" works as expected.
+For pahole version 1.28 - Please, Go Go Go.
 
-I wonder it's because there's the perf layer that schedules each
-uprobe event only when its process (PID1/2) is scheduled in and will
-receive events only from that cpu while the process is running on it
+-Sedat-
 
-jirka
-
-[1] 46ba0e49b642 bpf: fix multi-uprobe PID filtering logic
-
-> 
-> Oleg.
-> 
+pahole 1.27 segfaults when generating BTF for modules built with LTO #2032
+https://github.com/ClangBuiltLinux/linux/issues/2032
 
