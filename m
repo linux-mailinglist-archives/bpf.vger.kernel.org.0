@@ -1,196 +1,125 @@
-Return-Path: <bpf+bounces-38042-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38043-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7BBE695E6B7
-	for <lists+bpf@lfdr.de>; Mon, 26 Aug 2024 04:31:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB8CF95E74E
+	for <lists+bpf@lfdr.de>; Mon, 26 Aug 2024 05:30:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9FFD21C20C33
-	for <lists+bpf@lfdr.de>; Mon, 26 Aug 2024 02:31:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B4F12819DD
+	for <lists+bpf@lfdr.de>; Mon, 26 Aug 2024 03:30:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD00BD529;
-	Mon, 26 Aug 2024 02:31:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED7E12F870;
+	Mon, 26 Aug 2024 03:30:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="J33EkjvU"
+	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="k2QtItAY"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qv1-f48.google.com (mail-qv1-f48.google.com [209.85.219.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out162-62-58-211.mail.qq.com (out162-62-58-211.mail.qq.com [162.62.58.211])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBB6418E1A;
-	Mon, 26 Aug 2024 02:31:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A164BE6F;
+	Mon, 26 Aug 2024 03:29:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.58.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724639493; cv=none; b=ASXRj0F4TSHTpH1pE7pSrMBprV8wohUbQGbB0PvadvoHfgylawM+x4GfIldnNfmwURmifvG7tmyWNnJMd6FC2hc75vyd1ofjNzMzU6E6qAiOSK1qiUIrMOdFwXG7QN4uyyM8+5Vleuuq3MZzy+rslJvV8Zoha1GTxOE0Hn5XVMk=
+	t=1724643001; cv=none; b=fa9nAYVsnPhUDIHgT/PeqBuDXZ4AQ5uBBheiumBewbYMyiPlzOBOhmKboqP0shEfp9GNzzZuNnFrh/57XtlHDsbxdwxaIkDs728tkgDvsYMVs882hHMk4QgbZvd7Uhp7ONKcLy1yjRaUF44oF/z0pmbIQRMUxtV5W/6jSu89YNM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724639493; c=relaxed/simple;
-	bh=auvGWweHPionxG3Y2RIot08h1IaHqLUTT7XYr7Bux+w=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HkeGYKGCx+dCczcVMOOGo9ZWrNrzAf4lejUBYG1qD9BDQ1HtR6ESdgX4cp+LEGrJCGg3Rg45EGWz1AD3gMyXRr9s9t5c43HNJ3sIMZEyCGvvW7H/bYgsD4vnyXimllRwta5FHlXUOAlt5wf+5Bl3p6pDXMHJgHbjQxEjjPLu978=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=J33EkjvU; arc=none smtp.client-ip=209.85.219.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f48.google.com with SMTP id 6a1803df08f44-6bf784346b9so18220586d6.2;
-        Sun, 25 Aug 2024 19:31:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1724639490; x=1725244290; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0XScue1slDHBjUXVjmPax26pz/WL1rKHeatxMpCgrfI=;
-        b=J33EkjvUneEAQ7IrY04ueDnx8p5tDlmKPlIa+IxlvcpTc214iqMgSCbNDrmrZgBNSG
-         kKBTk7P6USq53BZHqkiu+KskQV4Jqv4MaUp17DkydRStK2+/rF7Mq7EihpRJc3768RUr
-         cBCioSfjcZdqGiyb2rakf1LvaHUR2yIeWeAMpvZ/elEwBTtboSDip6PPWHyoj6QtEyBI
-         LY4VoNXkoRrHwT/Da1/ojp7nFS6GfX3jrhKUKOnMIE6tdw96/679XDwHId07EBD0SbvO
-         P9OyjS+dBdw9sYk6XP3NisNBeRL8JgNkJAGPFuNPq7Vma8caACa6VlBJFGhvH0tm/JVA
-         FSdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724639490; x=1725244290;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0XScue1slDHBjUXVjmPax26pz/WL1rKHeatxMpCgrfI=;
-        b=RBOQNrVHQubUIRt/FxaVdir15QuETP9+0S5K7df+kpK+VUbXaBtG+nDzcqoeRwadif
-         NMkn55Fe2zZOa6mXlCxQtaBn5ZM3n1YFyOC8D7xtu6fEfOJB9R1xrRuhRWZILxQCV+uy
-         XZ/vBS5Uiwfk0bR4S6tAGSKEWIHOC2mKpJlQYjy+spuv9mTLzqMFbrW6w+L4gRDP2KwQ
-         Ef6T/x/8++1hzpgAVv71zW9gL5zTYZcFuG2VH+EG7ToWLOfR4g/q/fDzI6oQo0ZfKyNo
-         KIaDEcx5JHwg47TP0AJK+BQgUfBbjcZ1Pir3QgQGIxpRTQalnDhs2st7lAcGLQgxgzQh
-         RmPg==
-X-Forwarded-Encrypted: i=1; AJvYcCU+LLwmWF7SwxB4dhtHT73RfdD8s0GmnOkZ93FZNn7CYTInwiCupLKtiFwut6NsrmmX9kt+fSHT/A==@vger.kernel.org, AJvYcCU+Q2/qpK+CC3onhcQ7BwDX8R7kJCWIvu+enJ5zaRKoNJMWXX8lssgglf4CdzynpVesq+3okUkf0sbYibIO5r7fH9jo@vger.kernel.org, AJvYcCUfTuanryljPhtyo7jpioBGWFTefyUWB13kAqnHyFmFkHLpFPMmdabVjly+879hzf2+uSS9BvltB7w9EUd59A==@vger.kernel.org, AJvYcCVGs+GZ97iiVWrJbXD0ixBPqz30a5cBEefL8rgWKg/nlWF6+rRLy8Pd4ZoF7J7/wGSKNnBrcD8+s7SFlTPP1zHVbV8fxHdu@vger.kernel.org, AJvYcCVVgQWRNuPmfbgquVfn7PfcPR/1YFtC3SoPpM+4LTxn+fAvQR7b4Zu/LlsWj+HoWsHo48DheA==@vger.kernel.org, AJvYcCVwKBQ8X/SKwIzbn4/0wrGIsDmu20yZjWMKsKb09eyMQQt9IL5+o82XYenMVg1LFub5T3iw@vger.kernel.org, AJvYcCX72G27jpTwaedK8xNmFKpTSImxtiOn82cpZOjNhqzLfYYFSdqncKzFjl3vowXhoGJTdaRK529N@vger.kernel.org
-X-Gm-Message-State: AOJu0YzNkPg/QJ2Usa76CXkYTozsNnc2VoxrIDmBk1Qj0N6H+C2u674W
-	TYyfzLSd0rJ+xxQdJ9iSt5jA/wrt/cFTnqMj7OwXUnVQk14etHnJgd4W8HPOE1yC5XFuUTPDSfo
-	bxqSC79ZxycwGNhaisyufaQMgYNU=
-X-Google-Smtp-Source: AGHT+IGarR35eqB+ZCiektfid3NknQ5udphouR14HCsBw/jqFbYUFfZCBajx/1hzRrP8EuX3DNE+IOmZVcAYGIL4Z2k=
-X-Received: by 2002:a05:6214:318d:b0:6bb:84d9:8f91 with SMTP id
- 6a1803df08f44-6c16dc2615cmr95291406d6.6.1724639490512; Sun, 25 Aug 2024
- 19:31:30 -0700 (PDT)
+	s=arc-20240116; t=1724643001; c=relaxed/simple;
+	bh=M4KMCyQsiCR7R5r1mHLGg0HM7/ZwFUGzj3Ob9FSsQeg=;
+	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qME9hLpopy0AUM2tTNaKUUwBmHDg424Ub+GhS8O0IP8GsJzG650xqg78AMW4EGHjj9SS8vmoL9uSzBX7pmKvJ4pLVG+3J3uuaJqL66hi2SOKd/xOsNt9RrRkpF0BGxBvMCWyvqf/jVwgp2anD/O3TlDKNXveDjEr66bzX/mcW6A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=k2QtItAY; arc=none smtp.client-ip=162.62.58.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+	s=s201512; t=1724642988;
+	bh=/vjvGYarx8NbrGjDYDUIldEzqX5UWX8m8pZ3iDls3ec=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=k2QtItAYn51FPRDneriE0CnNtFDKRbLrsLGKg1l6YQ5dbJ3MCqXSEWztbzB0UjrX3
+	 mLzvaJ4FTYvMvBEg4Njk9x39c0GVD1nzrsCHbgyWASHhpoaztViE2MCjE9tpmOAffV
+	 SIxoi7DuDNbYgGAOD7cT91ztGM/MC8MMnIj/PiOw=
+Received: from localhost ([39.156.73.13])
+	by newxmesmtplogicsvrszc19-0.qq.com (NewEsmtp) with SMTP
+	id 76F2E8C0; Mon, 26 Aug 2024 11:29:47 +0800
+X-QQ-mid: xmsmtpt1724642987t73clno9p
+Message-ID: <tencent_EB51CDCA4E189E271032DFEC7E042B752008@qq.com>
+X-QQ-XMAILINFO: NiDupExshEc7csfxVbjAgBIlLQaPO+YPGCTa2poKcBWsMOUB4QszjpIOhWEIjM
+	 YHrefu2k+vZzz8hoP6Yd0o/kJ2ngph1YcqihZ8LMalCLe5Ro4UuHoHVorv574wVHXn1d6e68koZU
+	 ruNg6E2TsrmbsnMtT78EHvG8zVWF2S5+JzE7ayz7jYCRXHV+aBguOZj98i59yLpfYyKolch2r5HP
+	 0dc/u/gkZUGSKAoXL/uPjOljKxzyRvrJRAel4m4pPl8BVa4ZhGWoaiTPq0xyJLZFazLU7B+P+XM+
+	 vbnDsYLiD0aFwlQpPFNTRCjICfLg2vXPyu0pthRRP8IO410WTs9XtO9GGORI0KHccKVPFwxN8ng7
+	 uOixhPupF36b06Hlug9r7DL1fv5rs9Q4iDsza+bK9zKk+wHyONja+QNzJJs8ur16RU+PxXLGaFHe
+	 0+iert2hycPc5gqzfjahtehylbl7LqC1UEDf0EznhDiF8hN9FqZzGhErJKYu4ASpi6ZgWHld6UIR
+	 FOquvhZBWDg6mr1z8NZWnBs7aaKVkuZrS7iY1oidqvUz8/aIjcIjHN19Sesl0tIFgitJf/o50Tzu
+	 rJOfducwCbFdgE8EkWUySvBnxO5hpKm/bHzLZwCjOEOSq3sdn6MpbcNVKi1+DeWGluOeS4LozsaN
+	 DbVFyKmml7NvNky9VNTz+y4QjienFUJArcinXopP4VzQqG+EkVCnRRm0r3J+IojJen3AjTumZRwu
+	 odm3JBq8RGT9ZwQUmjETxZWth+jk6atwgs5vYGDmTsK5+WISzfvyr/cdAm1O52wmL4kdKkQ9IBJ+
+	 i4w6ao7bkIZqO2vvEMPkdWzeNsyohGh2wEn93tPJIFtE5KwsH5SpqJZ47zGhsPSKzDkU3PKxNuXR
+	 FMcGnHOyQwMNUtSOy+50icmBv/lzpylbs3tqjg1+7gXE289y+C0H2AE7SriTK3dGEjPnEhkoSz4C
+	 tUKeMSl1c7TBrZ10A8agd0lHlGvBEsBh12ntPW6QmhJaOpxZRpuQ==
+X-QQ-XMRINFO: MPJ6Tf5t3I/ycC2BItcBVIA=
+Date: Mon, 26 Aug 2024 11:29:47 +0800
+From: Gang Yan <gang_yan@foxmail.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: Re: [PATCH bpf-next] bpf: Allow error injection for
+ update_socket_protocol
+X-OQ-MSGID: <Zsv2q8C7QmPTcyVa@yangang-TM1701>
+References: <tmcxv429u9-tmgrokbfbm@nsmail7.0.0--kylin--1>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240817025624.13157-1-laoar.shao@gmail.com>
-In-Reply-To: <20240817025624.13157-1-laoar.shao@gmail.com>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Mon, 26 Aug 2024 10:30:54 +0800
-Message-ID: <CALOAHbA7VW3_gYzqzb+Pp2T3BqWb5x2sWPmUj2N+SzbYchEBBA@mail.gmail.com>
-Subject: Re: [PATCH v7 0/8] Improve the copy of task comm
-To: akpm@linux-foundation.org
-Cc: torvalds@linux-foundation.org, alx@kernel.org, justinstitt@google.com, 
-	ebiederm@xmission.com, alexei.starovoitov@gmail.com, rostedt@goodmis.org, 
-	catalin.marinas@arm.com, penguin-kernel@i-love.sakura.ne.jp, 
-	linux-mm@kvack.org, linux-fsdevel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, audit@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, selinux@vger.kernel.org, 
-	bpf@vger.kernel.org, netdev@vger.kernel.org, dri-devel@lists.freedesktop.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <tmcxv429u9-tmgrokbfbm@nsmail7.0.0--kylin--1>
 
-On Sat, Aug 17, 2024 at 10:56=E2=80=AFAM Yafang Shao <laoar.shao@gmail.com>=
- wrote:
->
-> Using {memcpy,strncpy,strcpy,kstrdup} to copy the task comm relies on the
-> length of task comm. Changes in the task comm could result in a destinati=
-on
-> string that is overflow. Therefore, we should explicitly ensure the
-> destination string is always NUL-terminated, regardless of the task comm.
-> This approach will facilitate future extensions to the task comm.
->
-> As suggested by Linus [0], we can identify all relevant code with the
-> following git grep command:
->
->   git grep 'memcpy.*->comm\>'
->   git grep 'kstrdup.*->comm\>'
->   git grep 'strncpy.*->comm\>'
->   git grep 'strcpy.*->comm\>'
->
-> PATCH #2~#4:   memcpy
-> PATCH #5~#6:   kstrdup
-> PATCH #7~#8:   strcpy
->
-> Please note that strncpy() is not included in this series as it is being
-> tracked by another effort. [1]
->
-> In this series, we have removed __get_task_comm() because the task_lock()
-> and BUILD_BUG_ON() within it are unnecessary.
->
-> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-> Link: https://lore.kernel.org/all/CAHk-=3DwjAmmHUg6vho1KjzQi2=3DpsR30+Cog=
-Fd4aXrThr2gsiS4g@mail.gmail.com/ [0]
->
-> Changes:
-> v6->v7:
-> - Improve the comment (Alejandro)
-> - Drop strncpy as it is being tracked by another effort (Justin)
->   https://github.com/KSPP/linux/issues/90 [1]
->
-> v5->v6: https://lore.kernel.org/linux-mm/20240812022933.69850-1-laoar.sha=
-o@gmail.com/
-> - Get rid of __get_task_comm() (Linus)
-> - Use ARRAY_SIZE() in get_task_comm() (Alejandro)
->
-> v4->v5: https://lore.kernel.org/all/20240804075619.20804-1-laoar.shao@gma=
-il.com/
-> - Drop changes in the mm/kmemleak.c as it was fixed by
->   commit 0b84780134fb ("mm/kmemleak: replace strncpy() with strscpy()")
-> - Drop changes in kernel/tsacct.c as it was fixed by
->   commmit 0fe2356434e ("tsacct: replace strncpy() with strscpy()")
->
-> v3->v4: https://lore.kernel.org/linux-mm/20240729023719.1933-1-laoar.shao=
-@gmail.com/
-> - Rename __kstrndup() to __kmemdup_nul() and define it inside mm/util.c
->   (Matthew)
-> - Remove unused local varaible (Simon)
->
-> v2->v3: https://lore.kernel.org/all/20240621022959.9124-1-laoar.shao@gmai=
-l.com/
-> - Deduplicate code around kstrdup (Andrew)
-> - Add commit log for dropping task_lock (Catalin)
->
-> v1->v2: https://lore.kernel.org/bpf/20240613023044.45873-1-laoar.shao@gma=
-il.com/
-> - Add comment for dropping task_lock() in __get_task_comm() (Alexei)
-> - Drop changes in trace event (Steven)
-> - Fix comment on task comm (Matus)
->
-> v1: https://lore.kernel.org/all/20240602023754.25443-1-laoar.shao@gmail.c=
-om/
->
-> Yafang Shao (8):
->   Get rid of __get_task_comm()
->   auditsc: Replace memcpy() with strscpy()
->   security: Replace memcpy() with get_task_comm()
->   bpftool: Ensure task comm is always NUL-terminated
->   mm/util: Fix possible race condition in kstrdup()
->   mm/util: Deduplicate code in {kstrdup,kstrndup,kmemdup_nul}
->   net: Replace strcpy() with strscpy()
->   drm: Replace strcpy() with strscpy()
->
->  drivers/gpu/drm/drm_framebuffer.c     |  2 +-
->  drivers/gpu/drm/i915/i915_gpu_error.c |  2 +-
->  fs/exec.c                             | 10 -----
->  fs/proc/array.c                       |  2 +-
->  include/linux/sched.h                 | 32 +++++++++++---
->  kernel/auditsc.c                      |  6 +--
->  kernel/kthread.c                      |  2 +-
->  mm/util.c                             | 61 ++++++++++++---------------
->  net/ipv6/ndisc.c                      |  2 +-
->  security/lsm_audit.c                  |  4 +-
->  security/selinux/selinuxfs.c          |  2 +-
->  tools/bpf/bpftool/pids.c              |  2 +
->  12 files changed, 65 insertions(+), 62 deletions(-)
->
-> --
-> 2.43.5
->
+Hi Alexei:
+It's my honor to recieve your reply. The response to your concerns is attached below 
+for your review.
+On Mon, Aug 26, 2024 at 10:57:12AM +0800, Gang Yan wrote:
+> On Thu, Aug 22, 2024 at 8:33 AM Jakub Kicinski wrote:
+> >
+> > On Thu, 22 Aug 2024 14:08:57 +0800 Gang Yan wrote:
+> > > diff --git a/net/socket.c b/net/socket.c
+> > > index fcbdd5bc47ac..63ce1caf75eb 100644
+> > > --- a/net/socket.c
+> > > +++ b/net/socket.c
+> > > @@ -1695,6 +1695,7 @@ __weak noinline int update_socket_protocol(int family, int type, int protocol)
+> > > {
+> > > return protocol;
+> > > }
+> > > +ALLOW_ERROR_INJECTION(update_socket_protocol, ERRNO);
+> >
+> > IDK if this falls under BPF or directly net, but could you explain
+> > what test will use this? I'd prefer not to add test hooks into the
+> > kernel unless they are exercised by in-tree tests.
 
-Hello Andrew,
+> This looks unnecessary.
+> update_socket_protocol is already registered as fmodret.
+> There is even selftest that excises this feature:
+> tools/testing/selftests/bpf/progs/mptcpify.c
+> 
+> It doesn't need to be part of the error-inject.
 
-Could you please apply this series to the mm tree ?
+The 'update_socket_protocol' is a BPF interface designed primarily to
+fix the socket protocol from TCP protocol to MPTCP protocol without
+requiring modifications to user-space application codes. However,
+when attempting to achieve this using the BCC tool in user-space,
+the BCC tool doesn't support 'fmod_ret'. Therefore, this patch aims to 
+further expand capabilities, enabling the 'kprobe' method can overriding 
+the update_socket_protocol interface.
 
---=20
-Regards
-Yafang
+As a Python developer, the BCC tool is a commonly utilized instrument for 
+interacting with the kernel. If the kernel could permit the use of an 
+error-inject method to modify the `update_socket_protocol`, it would significantly 
+benefit the subsequent promotion and development of MPTCP applications. 
+Thank you for considering this enhancement.
+
+Best wishes!
+Gang Yan
+
 
