@@ -1,199 +1,304 @@
-Return-Path: <bpf+bounces-38080-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38081-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A2AA95F344
-	for <lists+bpf@lfdr.de>; Mon, 26 Aug 2024 15:51:10 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EADD95F3EC
+	for <lists+bpf@lfdr.de>; Mon, 26 Aug 2024 16:33:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1DF901C214E3
-	for <lists+bpf@lfdr.de>; Mon, 26 Aug 2024 13:51:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F24F1F22AC6
+	for <lists+bpf@lfdr.de>; Mon, 26 Aug 2024 14:33:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD0D8188017;
-	Mon, 26 Aug 2024 13:50:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="J5hf/Iz/"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9477018BBBF;
+	Mon, 26 Aug 2024 14:32:48 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 878A317C989;
-	Mon, 26 Aug 2024 13:50:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDD9217D35B
+	for <bpf@vger.kernel.org>; Mon, 26 Aug 2024 14:32:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724680257; cv=none; b=hHTAMn9yD8bwoaQ1Yuv24Z7CSHHZXz4P1oZi2UONyhmP5CIrWdiCTM396Pfdx0rV5s1D+q8v1Idbfn9+Y690ED6FEA0iEpPCKfhvxTw1XTQSvrfLx56kXIx3YnYfk+GwDFgbywl9tHcFCZRhhfNfT8dsOJUAp/5Mrx7W+ZO0Xwg=
+	t=1724682768; cv=none; b=rTIukRR7KjDaezcN38mjU+iHYqeKngxkkYN10E0cNv54uW2Z4FI0Tz7+WJJkF6xgK3g8m+93A9uygq7HKmKMdi//9eT6jwjOejoog2nUtfoFwBOFXY/DofEpUzuzE1q3p4PlSiblUJkMLdVxFQJLcEax47uTyZFs1TTNE5GI3bU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724680257; c=relaxed/simple;
-	bh=Ql3lLhWWb12Nad4uzA4DwuvPl7xpz9d122mTN13lt3M=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UrcPSyRP7MlaNneb54Aj/zKnggEP71MmSi462qacT+Ptvv7450ArDt/kXLaV9iHuekBlNuxiMwTQkFx3C1zImyYG3HMkZfuphlrEwah16VzWuJGjdTqaR3fnCQmYgNSCJIbFO1jEXRelGJsdaZjhryt2k4a7t5DSPuQfZpe/eZk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=J5hf/Iz/; arc=none smtp.client-ip=209.85.221.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-3730749ee7aso2604930f8f.2;
-        Mon, 26 Aug 2024 06:50:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1724680254; x=1725285054; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=jDBC/eNBjytuJW+d+vzOhbTsHCHu3dAH80hQ3xzktl4=;
-        b=J5hf/Iz/Emd7eIZxMIVc/Bn+lt/uptOOKdGMH7ZAZ9xP6VtS9iMURWbFRvxxDEDRyc
-         VndsPlv22SLqRemqSsFFu12zvYBHYoLx9wXGpkpGZg4XTOEi83E7lODUvQ5l1VuZVk23
-         9q8pgDZTkMH3kxTwWEL6pTzE6irG1Dm/Q9KM/5ZwMOCk+7XzQiGTp4p+cY7zdOwOMg2U
-         ddvdBKinYMaiKdLclv+ZiMYOqvic59ux0FBveQmzLg8lYQWXUVA1s04/Ra7abmO2IiQF
-         GjzabGix87DwVqhqv0m6lok1GT1TtO+6/TQ/GB5PPWeEYNJaAn/amlWdj9lue7a3vUXD
-         o15w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724680254; x=1725285054;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jDBC/eNBjytuJW+d+vzOhbTsHCHu3dAH80hQ3xzktl4=;
-        b=iGn0RDFNYdGIIra+yDDoT8oqN6dqWmc6R0pFwNZzYuQDpjn2LDJeNSzvkauTEWkJRp
-         D6nuoJnHjAOAeHnlSNOqV/RQpNmyRwbBf+Chux5Sy+9Kfv2xOun7MNZ25Tx8feAhL/GB
-         qZhtkIZxxbRpnSQS1TlRF4tNFGFPMzDEWr2WTLMfSMCVHuywBsgmZcvSBJoBSS0Nm7n0
-         KZliE+rSdqiFBScfsi+fULm1QhYf6i59kjAVcAKTiKuZTrwBB/XarpdYwl+hEjI7GcOB
-         HO0t9hup3oV74u0hBF3U/2FRT2QnHlK///PaotZm2UFciJ4/avFk7WIEdvR347cSeoCL
-         aMmA==
-X-Forwarded-Encrypted: i=1; AJvYcCV4KPhi0buxjzcUTZ550tYDdL6wkejwUYQu5pEXdXQ8SrjqdAFlZfg/AisR0jcubQ2aC8EE2k5emqLsKVSn@vger.kernel.org, AJvYcCWiEEO0Qq3e/slfSgnteaCy16yaQ5iTVhFXd2zCO0JCIcjZWib406HsaVWGgFLTI5PuJPw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwVtg2WBvnC/TwtSUg4CxSaUk0dEMBlVz59qvOvo1TYJiX74qD0
-	5GL7/epSFyh2rz7znIHzsBRgs4cTbcr/P5wMLuClBLOYRaE8c4OAv5bqUS6M
-X-Google-Smtp-Source: AGHT+IFBBsN2W741UbmJpJpXL3MWGUWlu4fnpmjgYMtASN07/tcdSO/uip4kihga7eNBGrmHl6u5Fw==
-X-Received: by 2002:a5d:4f8f:0:b0:371:846d:12b3 with SMTP id ffacd0b85a97d-3731186386amr6967035f8f.28.1724680253535;
-        Mon, 26 Aug 2024 06:50:53 -0700 (PDT)
-Received: from krava ([213.235.133.41])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3730813c3d2sm10811517f8f.26.2024.08.26.06.50.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Aug 2024 06:50:53 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Mon, 26 Aug 2024 15:50:39 +0200
-To: Andrii Nakryiko <andrii@kernel.org>
-Cc: linux-trace-kernel@vger.kernel.org, rostedt@goodmis.org,
-	mhiramat@kernel.org, peterz@infradead.org, oleg@redhat.com,
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] uprobes: turn trace_uprobe's nhit counter to be
- per-CPU one
-Message-ID: <ZsyIL7NAN3AWbgzS@krava>
-References: <20240813203409.3985398-1-andrii@kernel.org>
+	s=arc-20240116; t=1724682768; c=relaxed/simple;
+	bh=Zr9WeE0V1P8gxLOm0cZgnNENtXNrgP3Ke7QWEV3vnPk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Ve8JlZiy40KHQxW5qD7B8N9imp7uGXNUkyqAB91hK3XRbiuP2FiWkpU3mGxBPj0Kz0crJmfVu0pJ2qhhoSU4ACBeUpS5dEFW4PJSdk4ZDmPHssxiUNtOf6MQm3PCiE/1GQwvy4sHee5i/dtuJ1mwG2gNVMtGyGwQj0ATk2ztl0w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4WstRs4sX3z4f3jMf
+	for <bpf@vger.kernel.org>; Mon, 26 Aug 2024 22:32:25 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 2A5401A15D9
+	for <bpf@vger.kernel.org>; Mon, 26 Aug 2024 22:32:40 +0800 (CST)
+Received: from [10.67.111.192] (unknown [10.67.111.192])
+	by APP1 (Coremail) with SMTP id cCh0CgDnPE8FksxmHDXLCg--.38628S2;
+	Mon, 26 Aug 2024 22:32:38 +0800 (CST)
+Message-ID: <a9ce98d0-adfb-4ed9-8500-f378fe44d634@huaweicloud.com>
+Date: Mon, 26 Aug 2024 22:32:39 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240813203409.3985398-1-andrii@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next 2/4] bpf, arm64: Fix tailcall infinite loop
+ caused by freplace
+Content-Language: en-US
+To: Leon Hwang <leon.hwang@linux.dev>, bpf@vger.kernel.org
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, toke@redhat.com,
+ martin.lau@kernel.org, yonghong.song@linux.dev, puranjay@kernel.org,
+ eddyz87@gmail.com, iii@linux.ibm.com, kernel-patches-bot@fb.com
+References: <20240825130943.7738-1-leon.hwang@linux.dev>
+ <20240825130943.7738-3-leon.hwang@linux.dev>
+From: Xu Kuohai <xukuohai@huaweicloud.com>
+In-Reply-To: <20240825130943.7738-3-leon.hwang@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:cCh0CgDnPE8FksxmHDXLCg--.38628S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3ArW5uFWfuFykJw43Wr17ZFb_yoW3WFWxpF
+	95Aws3CF4kXw47XF4xtw4xXFWakws2qr4akry5u345Ar92gr9IgF45KFW5uFW5ury8Ar48
+	ZFyjvwnxC3y7Ar7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvjb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AF
+	wI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43
+	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+	0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
+	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUF1
+	v3UUUUU
+X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
 
-On Tue, Aug 13, 2024 at 01:34:09PM -0700, Andrii Nakryiko wrote:
-> trace_uprobe->nhit counter is not incremented atomically, so its value
-> is questionable in when uprobe is hit on multiple CPUs simultaneously.
+On 8/25/2024 9:09 PM, Leon Hwang wrote:
+> Like "bpf, x64: Fix tailcall infinite loop caused by freplace", the same
+> issue happens on arm64, too.
 > 
-> Also, doing this shared counter increment across many CPUs causes heavy
-> cache line bouncing, limiting uprobe/uretprobe performance scaling with
-> number of CPUs.
+> For example:
 > 
-> Solve both problems by making this a per-CPU counter.
+> tc_bpf2bpf.c:
 > 
-> Reviewed-by: Oleg Nesterov <oleg@redhat.com>
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-
-lgtm, fwiw
-
-Reviewed-by: Jiri Olsa <jolsa@kernel.org>
-
-jirka
-
+> // SPDX-License-Identifier: GPL-2.0
+> \#include <linux/bpf.h>
+> \#include <bpf/bpf_helpers.h>
+> 
+> __noinline
+> int subprog_tc(struct __sk_buff *skb)
+> {
+> 	return skb->len * 2;
+> }
+> 
+> SEC("tc")
+> int entry_tc(struct __sk_buff *skb)
+> {
+> 	return subprog(skb);
+> }
+> 
+> char __license[] SEC("license") = "GPL";
+> 
+> tailcall_bpf2bpf_hierarchy_freplace.c:
+> 
+> // SPDX-License-Identifier: GPL-2.0
+> \#include <linux/bpf.h>
+> \#include <bpf/bpf_helpers.h>
+> 
+> struct {
+> 	__uint(type, BPF_MAP_TYPE_PROG_ARRAY);
+> 	__uint(max_entries, 1);
+> 	__uint(key_size, sizeof(__u32));
+> 	__uint(value_size, sizeof(__u32));
+> } jmp_table SEC(".maps");
+> 
+> int count = 0;
+> 
+> static __noinline
+> int subprog_tail(struct __sk_buff *skb)
+> {
+> 	bpf_tail_call_static(skb, &jmp_table, 0);
+> 	return 0;
+> }
+> 
+> SEC("freplace")
+> int entry_freplace(struct __sk_buff *skb)
+> {
+> 	count++;
+> 	subprog_tail(skb);
+> 	subprog_tail(skb);
+> 	return count;
+> }
+> 
+> char __license[] SEC("license") = "GPL";
+> 
+> The attach target of entry_freplace is subprog_tc, and the tail callee
+> in subprog_tail is entry_tc.
+> 
+> Then, the infinite loop will be entry_tc -> entry_tc -> entry_freplace ->
+> subprog_tail --tailcall-> entry_tc, because tail_call_cnt in
+> entry_freplace will count from zero for every time of entry_freplace
+> execution.
+> 
+> This patch fixes the issue by avoiding touching tail_call_cnt at
+> prologue when it's subprog or freplace prog.
+> 
+> Then, when freplace prog attaches to entry_tc, it has to initialize
+> tail_call_cnt and tail_call_cnt_ptr, because its target is main prog and
+> its target's prologue hasn't initialize them before the attach hook.
+> 
+> So, this patch uses x7 register to tell freplace prog that its target
+> prog is main prog or not.
+> 
+> Meanwhile, while tail calling to a freplace prog, it is required to
+> reset x7 register to prevent re-initializing tail_call_cnt at freplace
+> prog's prologue.
+> 
+> Fixes: 1c123c567fb1 ("bpf: Resolve fext program type when checking map compatibility")
+> Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
 > ---
->  kernel/trace/trace_uprobe.c | 24 +++++++++++++++++++++---
->  1 file changed, 21 insertions(+), 3 deletions(-)
+>   arch/arm64/net/bpf_jit_comp.c | 39 +++++++++++++++++++++++++++++++----
+>   1 file changed, 35 insertions(+), 4 deletions(-)
 > 
-> diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
-> index c98e3b3386ba..c3df411a2684 100644
-> --- a/kernel/trace/trace_uprobe.c
-> +++ b/kernel/trace/trace_uprobe.c
-> @@ -17,6 +17,7 @@
->  #include <linux/string.h>
->  #include <linux/rculist.h>
->  #include <linux/filter.h>
-> +#include <linux/percpu.h>
->  
->  #include "trace_dynevent.h"
->  #include "trace_probe.h"
-> @@ -62,7 +63,7 @@ struct trace_uprobe {
->  	char				*filename;
->  	unsigned long			offset;
->  	unsigned long			ref_ctr_offset;
-> -	unsigned long			nhit;
-> +	unsigned long __percpu		*nhits;
->  	struct trace_probe		tp;
->  };
->  
-> @@ -337,6 +338,12 @@ alloc_trace_uprobe(const char *group, const char *event, int nargs, bool is_ret)
->  	if (!tu)
->  		return ERR_PTR(-ENOMEM);
->  
-> +	tu->nhits = alloc_percpu(unsigned long);
-> +	if (!tu->nhits) {
-> +		ret = -ENOMEM;
-> +		goto error;
+> diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
+> index 59e05a7aea56a..4f8189824973f 100644
+> --- a/arch/arm64/net/bpf_jit_comp.c
+> +++ b/arch/arm64/net/bpf_jit_comp.c
+> @@ -276,6 +276,7 @@ static bool is_lsi_offset(int offset, int scale)
+>   /* generated prologue:
+>    *      bti c // if CONFIG_ARM64_BTI_KERNEL
+>    *      mov x9, lr
+> + *      mov x7, 1 // if not-freplace main prog
+>    *      nop  // POKE_OFFSET
+>    *      paciasp // if CONFIG_ARM64_PTR_AUTH_KERNEL
+>    *      stp x29, lr, [sp, #-16]!
+> @@ -293,13 +294,14 @@ static bool is_lsi_offset(int offset, int scale)
+>   static void prepare_bpf_tail_call_cnt(struct jit_ctx *ctx)
+>   {
+>   	const struct bpf_prog *prog = ctx->prog;
+> +	const bool is_ext = prog->type == BPF_PROG_TYPE_EXT;
+>   	const bool is_main_prog = !bpf_is_subprog(prog);
+>   	const u8 ptr = bpf2a64[TCCNT_PTR];
+>   	const u8 fp = bpf2a64[BPF_REG_FP];
+>   	const u8 tcc = ptr;
+>   
+>   	emit(A64_PUSH(ptr, fp, A64_SP), ctx);
+> -	if (is_main_prog) {
+> +	if (is_main_prog && !is_ext) {
+>   		/* Initialize tail_call_cnt. */
+>   		emit(A64_MOVZ(1, tcc, 0, 0), ctx);
+>   		emit(A64_PUSH(tcc, fp, A64_SP), ctx);
+> @@ -315,22 +317,26 @@ static void prepare_bpf_tail_call_cnt(struct jit_ctx *ctx)
+>   #define PAC_INSNS (IS_ENABLED(CONFIG_ARM64_PTR_AUTH_KERNEL) ? 1 : 0)
+>   
+>   /* Offset of nop instruction in bpf prog entry to be poked */
+> -#define POKE_OFFSET (BTI_INSNS + 1)
+> +#define POKE_OFFSET (BTI_INSNS + 2)
+>   
+>   /* Tail call offset to jump into */
+> -#define PROLOGUE_OFFSET (BTI_INSNS + 2 + PAC_INSNS + 10)
+> +#define PROLOGUE_OFFSET (BTI_INSNS + 3 + PAC_INSNS + 10)
+>   
+>   static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf,
+>   			  bool is_exception_cb, u64 arena_vm_start)
+>   {
+>   	const struct bpf_prog *prog = ctx->prog;
+> +	const bool is_ext = prog->type == BPF_PROG_TYPE_EXT;
+>   	const bool is_main_prog = !bpf_is_subprog(prog);
+> +	const u8 r0 = bpf2a64[BPF_REG_0];
+>   	const u8 r6 = bpf2a64[BPF_REG_6];
+>   	const u8 r7 = bpf2a64[BPF_REG_7];
+>   	const u8 r8 = bpf2a64[BPF_REG_8];
+>   	const u8 r9 = bpf2a64[BPF_REG_9];
+>   	const u8 fp = bpf2a64[BPF_REG_FP];
+>   	const u8 fpb = bpf2a64[FP_BOTTOM];
+> +	const u8 ptr = bpf2a64[TCCNT_PTR];
+> +	const u8 tmp = bpf2a64[TMP_REG_1];
+>   	const u8 arena_vm_base = bpf2a64[ARENA_VM_START];
+>   	const int idx0 = ctx->idx;
+>   	int cur_offset;
+> @@ -367,6 +373,10 @@ static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf,
+>   	emit_bti(A64_BTI_JC, ctx);
+>   
+>   	emit(A64_MOV(1, A64_R(9), A64_LR), ctx);
+> +	if (!is_ext)
+> +		emit(A64_MOVZ(1, r0, is_main_prog, 0), ctx);
+> +	else
+> +		emit(A64_NOP, ctx);
+>   	emit(A64_NOP, ctx);
+>   
+>   	if (!is_exception_cb) {
+> @@ -413,6 +423,19 @@ static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf,
+>   		emit_bti(A64_BTI_J, ctx);
+>   	}
+>   
+> +	/* If freplace's target prog is main prog, it has to make x26 as
+> +	 * tail_call_cnt_ptr, and then initialize tail_call_cnt via the
+> +	 * tail_call_cnt_ptr.
+> +	 */
+> +	if (is_main_prog && is_ext) {
+> +		emit(A64_MOVZ(1, tmp, 1, 0), ctx);
+> +		emit(A64_CMP(1, r0, tmp), ctx);
+> +		emit(A64_B_(A64_COND_NE, 4), ctx);
+> +		emit(A64_ADD_I(1, ptr, A64_SP, 16), ctx);
+> +		emit(A64_MOVZ(1, r0, 0, 0), ctx);
+> +		emit(A64_STR64I(r0, ptr, 0), ctx);
 > +	}
 > +
->  	ret = trace_probe_init(&tu->tp, event, group, true, nargs);
->  	if (ret < 0)
->  		goto error;
-> @@ -349,6 +356,7 @@ alloc_trace_uprobe(const char *group, const char *event, int nargs, bool is_ret)
->  	return tu;
->  
->  error:
-> +	free_percpu(tu->nhits);
->  	kfree(tu);
->  
->  	return ERR_PTR(ret);
-> @@ -362,6 +370,7 @@ static void free_trace_uprobe(struct trace_uprobe *tu)
->  	path_put(&tu->path);
->  	trace_probe_cleanup(&tu->tp);
->  	kfree(tu->filename);
-> +	free_percpu(tu->nhits);
->  	kfree(tu);
->  }
->  
-> @@ -815,13 +824,21 @@ static int probes_profile_seq_show(struct seq_file *m, void *v)
->  {
->  	struct dyn_event *ev = v;
->  	struct trace_uprobe *tu;
-> +	unsigned long nhits;
-> +	int cpu;
->  
->  	if (!is_trace_uprobe(ev))
->  		return 0;
->  
->  	tu = to_trace_uprobe(ev);
-> +
-> +	nhits = 0;
-> +	for_each_possible_cpu(cpu) {
-> +		nhits += per_cpu(*tu->nhits, cpu);
-> +	}
-> +
->  	seq_printf(m, "  %s %-44s %15lu\n", tu->filename,
-> -			trace_probe_name(&tu->tp), tu->nhit);
-> +		   trace_probe_name(&tu->tp), nhits);
->  	return 0;
->  }
->  
-> @@ -1512,7 +1529,8 @@ static int uprobe_dispatcher(struct uprobe_consumer *con, struct pt_regs *regs)
->  	int ret = 0;
->  
->  	tu = container_of(con, struct trace_uprobe, consumer);
-> -	tu->nhit++;
-> +
-> +	this_cpu_inc(*tu->nhits);
->  
->  	udd.tu = tu;
->  	udd.bp_addr = instruction_pointer(regs);
-> -- 
-> 2.43.5
-> 
+>   	/*
+>   	 * Program acting as exception boundary should save all ARM64
+>   	 * Callee-saved registers as the exception callback needs to recover
+> @@ -444,6 +467,7 @@ static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf,
+>   static int out_offset = -1; /* initialized on the first pass of build_body() */
+>   static int emit_bpf_tail_call(struct jit_ctx *ctx)
+>   {
+> +	const u8 r0 = bpf2a64[BPF_REG_0];
+>   	/* bpf_tail_call(void *prog_ctx, struct bpf_array *array, u64 index) */
+>   	const u8 r2 = bpf2a64[BPF_REG_2];
+>   	const u8 r3 = bpf2a64[BPF_REG_3];
+> @@ -491,6 +515,11 @@ static int emit_bpf_tail_call(struct jit_ctx *ctx)
+>   
+>   	/* Update tail_call_cnt if the slot is populated. */
+>   	emit(A64_STR64I(tcc, ptr, 0), ctx);
+> +	/* When freplace prog tail calls freplace prog, setting r0 as 0 is to
+> +	 * prevent re-initializing tail_call_cnt at the prologue of target
+> +	 * freplace prog.
+> +	 */
+> +	emit(A64_MOVZ(1, r0, 0, 0), ctx);
+>   
+>   	/* goto *(prog->bpf_func + prologue_offset); */
+>   	off = offsetof(struct bpf_prog, bpf_func);
+> @@ -2199,9 +2228,10 @@ static int prepare_trampoline(struct jit_ctx *ctx, struct bpf_tramp_image *im,
+>   		emit(A64_RET(A64_R(10)), ctx);
+>   		/* store return value */
+>   		emit(A64_STR64I(A64_R(0), A64_SP, retval_off), ctx);
+> -		/* reserve a nop for bpf_tramp_image_put */
+> +		/* reserve two nops for bpf_tramp_image_put */
+>   		im->ip_after_call = ctx->ro_image + ctx->idx;
+>   		emit(A64_NOP, ctx);
+> +		emit(A64_NOP, ctx);
+>   	}
+>   
+>   	/* update the branches saved in invoke_bpf_mod_ret with cbnz */
+> @@ -2484,6 +2514,7 @@ int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type poke_type,
+>   		/* skip to the nop instruction in bpf prog entry:
+>   		 * bti c // if BTI enabled
+>   		 * mov x9, x30
+> +		 * mov x7, 1 // if not-freplace main prog
+>   		 * nop
+>   		 */
+>   		ip = image + POKE_OFFSET * AARCH64_INSN_SIZE;
+
+This patch makes arm64 jited prologue even more complex. I've posted a series [1]
+to simplify the arm64 jited prologue/epilogue. I think we can fix this issue based
+on [1]. I'll give it a try.
+
+[1] https://lore.kernel.org/bpf/20240826071624.350108-1-xukuohai@huaweicloud.com/
+
 
