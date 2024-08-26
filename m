@@ -1,139 +1,137 @@
-Return-Path: <bpf+bounces-38088-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38089-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8803695F64E
-	for <lists+bpf@lfdr.de>; Mon, 26 Aug 2024 18:19:28 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F45795F75F
+	for <lists+bpf@lfdr.de>; Mon, 26 Aug 2024 19:04:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2ED1D1F231BA
-	for <lists+bpf@lfdr.de>; Mon, 26 Aug 2024 16:19:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AF5C3B21602
+	for <lists+bpf@lfdr.de>; Mon, 26 Aug 2024 17:03:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7079D194AE8;
-	Mon, 26 Aug 2024 16:19:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0791B198850;
+	Mon, 26 Aug 2024 17:03:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MW/tEoNC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lObtDvk8"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0798186619;
-	Mon, 26 Aug 2024 16:19:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71C143C17;
+	Mon, 26 Aug 2024 17:03:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724689161; cv=none; b=c6hMQHbyUuVUReZgP0QyoSPUUZMfrlgTmKm7x6zrzs6K+TV8B++Gvt/wUPZfaXUEBSn01TvzeKTS4bjWDNNDOVT8OHEFi6KjuVc1AWyMKCk8rhrjg1UydyXToXzS/hzh1lETyVWIYqdaGei7nxBRvtRiVhqYx9VeqBJR4Rd7dg0=
+	t=1724691827; cv=none; b=rg+aeUDrTRyL1l/WsYfA3DYHZqkujO4ZhxzxOh72X9OoZH9inSeyNi1PfUd0bQDt9tW9NnReF/35aYxMsDDKpgYOe4pI+K8j1QMGDM24uwzfuV5UH4mSUsfPEICm+3dAR5ixlbiMu1/80dSd+uCloh/i4amMiDgOPg+J5M78sqU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724689161; c=relaxed/simple;
-	bh=2TNxklj2DP+/gfuMrzYVi36ytGXhB5WDn+kWAt/Ahpc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DGfAiCPXfr3H7CPadLJiqMHR9U53bkUnrscyLoL7Ho277kJI9R8QSqyVszhJ/hOk9rniyY2HU+4Vukq2ed4knAK8Z/PdPIiNk4L77osqNnoU/5lTycmPLB0atEil5q0VOyxH7AtVMliNgExwKjTnpKIOKVRKWsskSDc1N6wm/fk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MW/tEoNC; arc=none smtp.client-ip=209.85.215.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-7cd9d408040so3086373a12.0;
-        Mon, 26 Aug 2024 09:19:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1724689159; x=1725293959; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2TNxklj2DP+/gfuMrzYVi36ytGXhB5WDn+kWAt/Ahpc=;
-        b=MW/tEoNCNXap43jyG9w+S7UU1Pde9HwOOhufnmPC5dRNLQZuaEzaossY6POPw0QArX
-         COUBESouqYCaxf5DxBllCEtL0WeZFO8rGG/3OlWccFA2H2ILkXUOwrMygZ4TNGjF3CZq
-         /pjdMgM0H6u2i6IhrQpi4xZxbpbpNUOK7yWhAVBtd29q/ZYSLfn6wIw3DT4leyFTW8LX
-         SukeL7Ub/owrB/ypohxzJX3K1IGPOe8lXw5IoqV5cJUevjf3SFEJNpztLyNDzJgyv0Wv
-         jWsLDS9mfi0pGY3vTh2f3zWU+sJGYjpAOAv9RakqudfET4bvobdRI+dP24L4s4EZFvAr
-         RT4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724689159; x=1725293959;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2TNxklj2DP+/gfuMrzYVi36ytGXhB5WDn+kWAt/Ahpc=;
-        b=SNwgX+HMjenoOVjmk8dj9kBABamGu6FmC12kAF4XrKf7e72ViJChFBt9TwyQbzfTIL
-         BY8WJ7+ALG00s3x2iczlHvmap68lu/iF+nJGw6gIG+LRP1FQjue677ihwaUhWFfkndQw
-         IDWXEofiyWmV64+GNuSAcx0Nq9bwySxIAIiFVa7o/8T7xTijUrMSXpHcylSp+5PSvmZ3
-         fg3cZ0LQjB00CeatlXTw20+GnneCj/mTFjtVCLUtd9jNc9H84gJlp0hLuQjXhrYqj0Di
-         cpo8hQEfaHvUN9dblCP6zNAis/AAhA+MQpxdUTazInH1PR4L2NemO1e6P6g4m9stMjMl
-         sbqQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWzIhHm4OC3bGTDGu/iedumF4jZnuzrq2oGC0LUabctG6ejXydn1YErXaSg9RmIaEWskKMHdRF4hH75uCGPtg==@vger.kernel.org, AJvYcCXNCVDqN576lB4wELfsK6LQOIRU6abwdGesoHPjRfUYbUNBSc/oWzKNeNxEoykNOrZO3qQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyT6BBsXyBEBMyT9ZVS8bG4LPWX9GAcxRytxC427y+4W97aiXIV
-	s7f82kBTHKuN8d6vy9PIOKA+/NNsV0NEkggerw5IXuJp+9ysBfrzX+1P3xALiuVnGpmFylpQK4w
-	/9jJks7v0d8xlr5+AD14wRPYQnXg=
-X-Google-Smtp-Source: AGHT+IF9cs5m/kA6mXNVEWrGv85VEaW26troShS04+qtdhQGucmzQKnmayLz60i/IMyXgyX1YJV77MdA8x9DInrQuTM=
-X-Received: by 2002:a17:90a:ae11:b0:2cb:4bed:ed35 with SMTP id
- 98e67ed59e1d1-2d8259f3fdbmr71826a91.41.1724689158928; Mon, 26 Aug 2024
- 09:19:18 -0700 (PDT)
+	s=arc-20240116; t=1724691827; c=relaxed/simple;
+	bh=5qUldRPe69CZ+YfxEz0IQC70ylubWa3moIOLvtg8JCE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HBQLkuk0G2aRS6pp5h335xFy1dKB1oGb5Dgbh36suDzxg1aSeugvwA010o44uZ/wcg0LWMSLpTQo4fRteYyrzHhd/ZduspNug1Zx3I7vjCCjTA5LmeBQFsj80MoDfMOITI6gOEaTgt/nxVeGy0EVRmjNiRTp4V18lxYanqv10oY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lObtDvk8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5BFB0C567F0;
+	Mon, 26 Aug 2024 17:03:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1724691826;
+	bh=5qUldRPe69CZ+YfxEz0IQC70ylubWa3moIOLvtg8JCE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=lObtDvk87oEXziS+hM8r2Yw50PxS0iZ5tSzdetAH1Vo1uViBh6Mk4hr1jS5oWTbYN
+	 tNkB5J69b7//JehMXoQHS/GqD6zdn/cMM8CTPJlJc1YJO0w1wVaOlmhEId6tquz15O
+	 WO/Z/xYRUJwaR5G5l+HIC1s3VpH7dMN6HlTO0uf1MzE+VcETL9ABr1ZgWnvHaX8tqX
+	 jgpO3rg9hJddeKvAU0BiN2qIRujZ/BS4FpUuD1Ce0CBqK3bFWgsl+TSiyEwZWsHeh0
+	 PScaIMTS7iK7OizS0NS5Q1ouYlfgyo0GLmK/G6rBf+ugGG1p18TixxR/BVGU3rU83N
+	 IX7G1gTD2devw==
+Date: Mon, 26 Aug 2024 14:03:42 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Jiri Slaby <jirislaby@kernel.org>
+Cc: Shung-Hsi Yu <shung-hsi.yu@suse.com>, dwarves@vger.kernel.org,
+	Jiri Olsa <olsajiri@gmail.com>, masahiroy@kernel.org,
+	linux-kernel@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
+	Nicolas Schier <nicolas@fjasle.eu>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>, linux-kbuild@vger.kernel.org,
+	bpf@vger.kernel.org, msuchanek@suse.com
+Subject: Re: [RFC] kbuild: bpf: Do not run pahole with -j on 32bit userspace
+Message-ID: <Zsy1blxRL9VV9DRg@x1>
+References: <20240820085950.200358-1-jirislaby@kernel.org>
+ <ZsSpU5DqT3sRDzZy@krava>
+ <523c1afa-ed9d-4c76-baea-1c43b1b0c682@kernel.org>
+ <c2086083-4378-4503-b3e2-08fb14f8ff37@kernel.org>
+ <7ebee21d-058f-4f83-8959-bd7aaa4e7719@kernel.org>
+ <a45nq7wustxrztjxmkqzevv3mkki5oizfik7b24gqiyldhlkhv@4rpy4tzwi52l>
+ <ZsdYGOS7Yg9pS2BJ@x1>
+ <f170d7c2-2056-4f47-8847-af15b9a78b81@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240814185417.1171430-1-andrii@kernel.org> <20240814185417.1171430-10-andrii@kernel.org>
- <8fc31d49d4666599cc2ac6815ff3e0b09adc8a94.camel@gmail.com>
-In-Reply-To: <8fc31d49d4666599cc2ac6815ff3e0b09adc8a94.camel@gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 26 Aug 2024 09:19:06 -0700
-Message-ID: <CAEf4Bza97MFcZ=oZ0d6T8DBdNHLR6U4UGZ5cxD+qiasoVcxM3g@mail.gmail.com>
-Subject: Re: [PATCH v6 bpf-next 09/10] bpf: wire up sleepable bpf_get_stack()
- and bpf_get_task_stack() helpers
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, linux-mm@kvack.org, 
-	akpm@linux-foundation.org, adobriyan@gmail.com, shakeel.butt@linux.dev, 
-	hannes@cmpxchg.org, ak@linux.intel.com, osandov@osandov.com, song@kernel.org, 
-	jannh@google.com, linux-fsdevel@vger.kernel.org, willy@infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <f170d7c2-2056-4f47-8847-af15b9a78b81@kernel.org>
 
-On Fri, Aug 23, 2024 at 3:22=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
-> wrote:
->
-> On Wed, 2024-08-14 at 11:54 -0700, Andrii Nakryiko wrote:
-> > Add sleepable implementations of bpf_get_stack() and
-> > bpf_get_task_stack() helpers and allow them to be used from sleepable
-> > BPF program (e.g., sleepable uprobes).
-> >
-> > Note, the stack trace IPs capturing itself is not sleepable (that would
-> > need to be a separate project), only build ID fetching is sleepable and
-> > thus more reliable, as it will wait for data to be paged in, if
-> > necessary. For that we make use of sleepable build_id_parse()
-> > implementation.
-> >
-> > Now that build ID related internals in kernel/bpf/stackmap.c can be use=
-d
-> > both in sleepable and non-sleepable contexts, we need to add additional
-> > rcu_read_lock()/rcu_read_unlock() protection around fetching
-> > perf_callchain_entry, but with the refactoring in previous commit it's
-> > now pretty straightforward. We make sure to do rcu_read_unlock (in
-> > sleepable mode only) right before stack_map_get_build_id_offset() call
-> > which can sleep. By that time we don't have any more use of
-> > perf_callchain_entry.
-> >
-> > Note, bpf_get_task_stack() will fail for user mode if task !=3D current=
-.
-> > And for kernel mode build ID are irrelevant. So in that sense adding
-> > sleepable bpf_get_task_stack() implementation is a no-op. It feel right
-> > to wire this up for symmetry and completeness, but I'm open to just
-> > dropping it until we support `user && crosstask` condition.
-> >
-> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > ---
->
-> All seems logical.
-> You skip wiring up support for sleepable bpf_get_task_stack() in
-> tp_prog_func_proto(), pe_prog_func_proto() and
-> raw_tp_prog_func_proto(), this is because these are used for programs
-> that are never run in sleepable context, right?
+On Mon, Aug 26, 2024 at 10:57:22AM +0200, Jiri Slaby wrote:
+> On 22. 08. 24, 17:24, Arnaldo Carvalho de Melo wrote:
+> > On Thu, Aug 22, 2024 at 11:55:05AM +0800, Shung-Hsi Yu wrote:
+> > I stumbled on this limitation as well when trying to build the kernel on
+> > a Libre Computer rk3399-pc board with only 4GiB of RAM, there I just
+> > created a swapfile and it managed to proceed, a bit slowly, but worked
+> > as well.
+> 
+> Here, it hits the VM space limit (3 G).
 
-Correct. I contemplated for a bit wiring it up for tracepoints, as we
-might get sleepable tracepoints eventually, but we can always do it as
-a follow up.
+right, in my case it was on a 64-bit system, so just not enough memory,
+not address space.
+ 
+> > Please let me know if what is in the 'next' branch of:
 
->
-> Reviewed-by: Eduard Zingerman <eddyz87@gmail.com>
->
-> [...]
->
+> > https://git.kernel.org/pub/scm/devel/pahole/pahole.git
+
+> > Works for you, that will be extra motivation to move it to the master
+> > branch and cut 1.28.
+
+> on 64bit (-j1):
+> * master: 3.706 GB
+> (* master + my changes: 3.559 GB)
+> * next: 3.157 GB
+ 
+> on 32bit:
+>  * master-j1: 2.445 GB
+>  * master-j16: 2.608 GB
+>  * master-j32: 2.811 GB
+>  * next-j1: 2.256 GB
+>  * next-j16: 2.401 GB
+>  * next-j32: 2.613 GB
+> 
+> It's definitely better. So I think it could work now, if the thread count
+> was limited to 1 on 32bit. As building with -j10, -j20 randomly fails on
+> random machines (32bit processes only of course). Unlike -j1.
+
+Cool, I just merged a patch from Alan Maguire that should help with the
+parallel case, would be able to test it? It is in the 'next' branch:
+
+⬢[acme@toolbox pahole]$ git log --oneline -5
+f37212d1611673a2 (HEAD -> master) pahole: Teduce memory usage by smarter deleting of CUs
+
+Excerpt of the above:
+
+    This leads to deleting ~90 CUs during parallel vmlinux BTF generation
+    versus deleting just 1 prior to this change.
+
+c7ec9200caa7d485 btf_encoder: Add "distilled_base" BTF feature to split BTF generation
+bc4e6a9adfc72758 pahole: Sync with libbpf-1.5
+5e3ed3ec2947c69f pahole: Do --lang_exclude CU filtering earlier
+c46455bb0379fa38 dwarf_loader: Allow filtering CUs early in loading
+⬢[acme@toolbox pahole]$
+
+- Arnaldo
 
