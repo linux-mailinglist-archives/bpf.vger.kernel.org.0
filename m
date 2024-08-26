@@ -1,75 +1,83 @@
-Return-Path: <bpf+bounces-38040-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38041-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAC5695E590
-	for <lists+bpf@lfdr.de>; Mon, 26 Aug 2024 00:40:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0847395E6B0
+	for <lists+bpf@lfdr.de>; Mon, 26 Aug 2024 04:27:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 12ADB1C20AE8
-	for <lists+bpf@lfdr.de>; Sun, 25 Aug 2024 22:40:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AB9961F2163F
+	for <lists+bpf@lfdr.de>; Mon, 26 Aug 2024 02:27:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 794AC7407A;
-	Sun, 25 Aug 2024 22:40:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69557B664;
+	Mon, 26 Aug 2024 02:27:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="LTOOCamv"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="D2gno/9X"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A0FF47A6A
-	for <bpf@vger.kernel.org>; Sun, 25 Aug 2024 22:40:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA0EC7489
+	for <bpf@vger.kernel.org>; Mon, 26 Aug 2024 02:27:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724625643; cv=none; b=N1lGNMNzrqRUab0SVrIZyLszgeb6JKhyvgalk7yubYMwV1cUix/QO1sP+6s8L/TqWF+Vk68iFzH9olesirObr6DA+NYUTJi21w30CCicPxKoM2yyBshwBF37ZJhGD/HwUUKyFem79gw0BcuEoK1ObztdBrZCj+O/ZIhmO+EnQQE=
+	t=1724639226; cv=none; b=Le96keDp5sd/cBGiJux4XJOZRlrSTK0acnoS0qaHCiaTkRoqmKszoi9z0pZ6Omv0kTx8sgH/sR+mvQ1QBg9w4+VQRZChYicTO1iFvKT46VuZ8jzfHzb6dTlyK4xyUqPuZjHvLjt/l8gD4SODbFHVQL3Fo3MaGZ/giNcGCnIUxVA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724625643; c=relaxed/simple;
-	bh=E2b6S42am7FxdDCGzlzr8xGm8Shd9IcqwtlxU9KAQQg=;
+	s=arc-20240116; t=1724639226; c=relaxed/simple;
+	bh=h+vf2zDNngCSGhTz8LOVBHiGSxbBMMsAacYzdRHip54=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JC2+elolVUFuREkkvE419M/xovlysxokJluOx18Y9co01Ac5QHX74MzIFXU5tqfPKpKr2xRU1iUDgHomoWj2jveohIj7WI7bkByJHOA4OjS1Xo5+krnj4SrBumUWoI1GFO09V5qBaVCf/zWfvmdgbj4xw5LTAJm48ffjC3VLUNo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=LTOOCamv; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1724625640;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=XldHedHtO4bPQ+b6KANXtOgQ6JTZqedmNWOSSS/IrRY=;
-	b=LTOOCamvvSFkWPiZ0xHTh8xTfpeQ2krGoGaEDEYZ4K43aj6ljpPUg3EMhGK31dWgNZ8iog
-	V7Y74Ty9MATMteMWsWblPcqdNkbnf26nm4G2L2DBjGkGuK3PWRZ1qb7t6AGAwFw9MRZmq5
-	EVKlHSX98jpnQGiJfvvcEw228RskoUQ=
-Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-271-aL8pZNnGOpSWp99MLDxDhw-1; Sun,
- 25 Aug 2024 18:40:34 -0400
-X-MC-Unique: aL8pZNnGOpSWp99MLDxDhw-1
-Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 78E9E1956080;
-	Sun, 25 Aug 2024 22:40:32 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.12])
-	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 14FC91955DDD;
-	Sun, 25 Aug 2024 22:40:27 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Mon, 26 Aug 2024 00:40:25 +0200 (CEST)
-Date: Mon, 26 Aug 2024 00:40:18 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-To: Tianyi Liu <i.pear@outlook.com>
-Cc: andrii.nakryiko@gmail.com, mhiramat@kernel.org, ajor@meta.com,
-	albancrequy@linux.microsoft.com, bpf@vger.kernel.org,
-	flaniel@linux.microsoft.com, jolsa@kernel.org,
-	linux-trace-kernel@vger.kernel.org, linux@jordanrome.com,
-	mathieu.desnoyers@efficios.com
-Subject: Re: [PATCH v2] tracing/uprobe: Add missing PID filter for uretprobe
-Message-ID: <20240825224018.GD3906@redhat.com>
-References: <CAEf4Bzb29=LUO3fra40XVYN1Lm=PebBFubj-Vb038ojD6To2AA@mail.gmail.com>
- <ME0P300MB04163A2993D1B545C3533DDC9D892@ME0P300MB0416.AUSP300.PROD.OUTLOOK.COM>
- <20240825171417.GB3906@redhat.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=BBSLxp1bBK3v27K3gysbDhtzSrcIxxdmLUWN5RlkQc27V5OqeybDNMtCRsdGLNYz3XaQB/TtFGirTvbVFPjczgENOsN9qQk2l1PzTR//LvgDdwXn1raHBYV0NcILmAFuU7KHD5/A3yXBxGBqeWJ7gdESuJ9kRyLwvQ98NxXNEVA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=D2gno/9X; arc=none smtp.client-ip=209.85.128.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-428101fa30aso33549315e9.3
+        for <bpf@vger.kernel.org>; Sun, 25 Aug 2024 19:27:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1724639223; x=1725244023; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ph+ZuLbsezZJ1raE1GiR3wAm1GTZNQAYiHPQbzcPMpE=;
+        b=D2gno/9Xr321/U82RXC3m4sscbGMFRTudkvtM5mqd8gdN0Vi9Jfhr3yP1DiqxGSgeC
+         oiuxURyG7x4KKbKZXiy+XXi1ejLIstFV62xmoJGNOHh/f9zRv1xKvhnHUYVk7UcMSa0x
+         PIqA6flthfDYbpeGXHmcKBUtftl8Cbs96wv7lOnfufUumaeaCrqJA28lhh/w4/uUUG3G
+         7a4+v4JWvOBJTALRi1Y4PDkzujjGfTsvM5rouDcKl6KoAq2br5nMjtqp2eYzFM2l62zY
+         DIPIzKJGbFyiA0Gly1UJXv5zpZWVS8BFFjCMEhjNOKQh7Wxq0xCSNHpwHHgsINwA6Tep
+         /NyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1724639223; x=1725244023;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ph+ZuLbsezZJ1raE1GiR3wAm1GTZNQAYiHPQbzcPMpE=;
+        b=IjMOWqEa6NZFk3LvUUx+RkhuTT7H6xXmWYuoEmcRWD1ZXF1rOUY4V5KaRoHADx5zd0
+         Tf0bUiUGwhpv1pM8icuMp4SrT2oO4EGOUM5CV5W+xbGwIQzeDlS3RegvV03+sDLYolir
+         6pX2zrgomJM5vOWSgUBQ+IZBtgcggCqwTkuJySm4hPRI2wMmEbonUh6wYModRDZdxbIF
+         rATyvuUw/tZdhtFlPzyCKggfCEKbiyZu4SakVY/wNsodhN8Lsh5I/XBgy26u9DyXb40Y
+         OeHq9grluQd9YmPpCD0/rqX7yD/llFH1vlCCPk1grNJQHF8ToZPuWJufIs0fECzvUCqj
+         bezw==
+X-Forwarded-Encrypted: i=1; AJvYcCVoU79oYyiwHrnk0nVRkIiCQRxWeViD4w3Fp27K/X6d29UaugQde2RVJFt3z+E68DESv8M=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzf1JCRGv8/PX87j6VKr3aF9PBAt9we/E383WZr8v1JyJDSs0WW
+	o2kGCdB+6k3FJ/IcjSodSiA6Pk/8WOz8lIvovvMom7pTMDGzEih2DiQyFXMBzck=
+X-Google-Smtp-Source: AGHT+IHW92GMiMx0CcynBRBCPrgf3JkUi1zJucES3LxkQJGe6B7PONl9QhzLd4yGIlezMwfmr9l1Mw==
+X-Received: by 2002:adf:a153:0:b0:371:8bc8:ad5b with SMTP id ffacd0b85a97d-373118eed3dmr5621242f8f.60.1724639222985;
+        Sun, 25 Aug 2024 19:27:02 -0700 (PDT)
+Received: from u94a (39-14-73-109.adsl.fetnet.net. [39.14.73.109])
+        by smtp.gmail.com with ESMTPSA id ca18e2360f4ac-8253d5bda0bsm257449239f.16.2024.08.25.19.26.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 25 Aug 2024 19:27:02 -0700 (PDT)
+Date: Mon, 26 Aug 2024 10:26:53 +0800
+From: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+To: Daniel Xu <dlxu@meta.com>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Cc: kernel-ci <kernel-ci@meta.com>, 
+	"andrii@kernel.org" <andrii@kernel.org>, "daniel@iogearbox.net" <daniel@iogearbox.net>, 
+	"martin.lau@linux.dev" <martin.lau@linux.dev>, Alexei Starovoitov <ast@kernel.org>, 
+	Manu Bretelle <chantra@meta.com>
+Subject: Re: BPF CI and stable backports (was Re: [PATCH stable 6.6 2/2]
+ selftests/bpf: Add a test to verify previous stacksafe() fix)
+Message-ID: <kpxnarc6aadnnabt4eq6n2gxoxhhkeowcmzysnuhc52p5egpqi@6mfuil3erxgq>
+References: <pybgmvfeil5euvdz7vs7ioacncrgiz4lnvy5sj3o4prypgsdd4@tzc2ecsmyt6g>
+ <f4c2306d-6bb9-4a17-ad51-0ffba13a140c@meta.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -78,67 +86,58 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240825171417.GB3906@redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
+In-Reply-To: <f4c2306d-6bb9-4a17-ad51-0ffba13a140c@meta.com>
 
-On 08/25, Oleg Nesterov wrote:
->
-> At least I certainly disagree with "Fixes: c1ae5c75e103" ;)
->
-> uretprobe_perf_func/etc was designed for perf, and afaics this code still
-> works fine even if you run 2 perf-record's with -p PID1/PID2 at the same
-> time.
->
-> BPF hacks/hooks were added later, so perhaps this should be fixed in the
-> bpf code, but I have no idea what bpftrace does...
+Hi Daniel,
 
-And I can't install bpftrace on my old Fedora 23 working laptop ;) Yes, yes,
-I know, I should upgrade it.
+On Fri, Aug 23, 2024 at 11:57:06PM GMT, Daniel Xu wrote:
+[...]
+> > On Fri, Aug 23, 2024 at 01:53:48AM GMT, bot+bpf-ci@kernel.org wrote:
+> > [...]
+> >> CI has tested the following submission:
+> >> Status:     CONFLICT
+> >> Name:       [stable,6.6,2/2] selftests/bpf: Add a test to verify previous stacksafe() fix
+> >> Patchwork:  https://patchwork.kernel.org/project/netdevbpf/list/?series=882411&state=*
+> >> PR:         https://github.com/kernel-patches/bpf/pull/7584
+> >>
+> >> Please rebase your submission onto the most recent upstream change and resubmit
+> >> the patch to get it tested again.
+> > 
+> > It seems the BPF CI picks up stable patches and tries to apply it on top
+> > of bpf-next, which fails to due conflict. Could a filter be added to CI
+> > so these are ignored instead? (Or have BPF CI apply and test against
+> > stable/linux-*, but that seems too much to ask)
+> > 
+> > OTOH if maintainers and reviewers prefers stable backport not to be sent
+> > to the BPF mailing list, I will drop the CC to BPF mailing list in the
+> > future.
+> > 
+[...]
+> 
+> Thanks for reporting.
+> 
+> The way kernel-patches-daemon (KPD) works is it periodically looks on 
+> patchwork for patchsets delegated to BPF tree. If there's a specific tag 
+> (bpf, bpf-next, bpf-net, for-next) it'll apply the series to that 
+> branch. If not, there's an ordered list of branches to try. bpf-next is 
+> first on that list which is why you're seeing the conflicts.
+> 
+>  From KPD side, the simplest way would be to not have backports show
+> up on patchwork. I think it makes sense - it is not really being sent 
+> for review.
+> 
+> We could probably add additional logic to ignore stable backports as 
+> well. Up to the maintainers. I don't really have an opinion.
 
-For the moment, please forget about ret-probes. Could you compile this program
+Thanks for the explanations. I didn't realize that patchwork was
+involved.
 
-	#define _GNU_SOURCE
-	#include <unistd.h>
-	#include <sched.h>
-	#include <signal.h>
+Seems like the best action for now is to drop BPF mailing list when
+sending stable backports, this also avoids cluttering Netdev + BPF
+patchwork and keep it development focused.
 
-	int func(int i)
-	{
-		return i;
-	}
+(I think backports still need reviewing, but that's probably a different
+discussion)
 
-	int test(void *arg)
-	{
-		int i;
-		for (i = 0;; ++i) {
-			sleep(1);
-			func(i);
-		}
-		return 0;
-	}
-
-	int main(void)
-	{
-		static char stack[65536];
-
-		clone(test, stack + sizeof(stack)/2, CLONE_VM|SIGCHLD, NULL);
-		test(NULL);
-
-		return 0;
-	}
-
-and then do something like
-
-	$ ./test &
-	$ bpftrace -p $! -e 'uprobe:./test:func { printf("%d\n", pid); }'
-
-I hope that the syntax of the 2nd command is correct...
-
-I _think_ that it will print 2 pids too.
-
-But "perf-record -p" works as expected.
-
-Oleg.
-
+Shung-Hsi
 
