@@ -1,157 +1,136 @@
-Return-Path: <bpf+bounces-38073-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38074-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF34C95F040
-	for <lists+bpf@lfdr.de>; Mon, 26 Aug 2024 13:58:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 93A4095F111
+	for <lists+bpf@lfdr.de>; Mon, 26 Aug 2024 14:15:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8649F1F22BF7
-	for <lists+bpf@lfdr.de>; Mon, 26 Aug 2024 11:58:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1E24B1F22008
+	for <lists+bpf@lfdr.de>; Mon, 26 Aug 2024 12:15:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 946EF15B0EE;
-	Mon, 26 Aug 2024 11:58:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69C22176FA2;
+	Mon, 26 Aug 2024 12:11:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Do1eKYrO"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="b2BHI53W"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72D0B14D2BD
-	for <bpf@vger.kernel.org>; Mon, 26 Aug 2024 11:58:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20616176AD8
+	for <bpf@vger.kernel.org>; Mon, 26 Aug 2024 12:11:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724673493; cv=none; b=YoxZw9iA4eDHniKBqrnbC8UVe4PMJESGDQHfispCyegdrxTR1AhAQanEZ+KMCZP3INER8dymTZpSoUra8v0zhfxQwq1N53lg7OnEPtuh9jYbTnIjGRkYJitvjR8TDy17kmUSTaF5rtuncbf3O++T31EZRCB/PdaH7n9zQKvfnuc=
+	t=1724674318; cv=none; b=L1gIKnk1EtiECJL+4jixXdAMNX84lYp16kebGHWObYWQPQeaS+1clVP+UEEFOyhySrbPf8Yw/C+CbcL9mvKKZMrSzMo4IDkUyr4DqiVy00gGYsNJCyT/5wiBz0owGCtdJI3dqweBisewler6keI8t7WAzSUwZkvjyxS4dig2eTo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724673493; c=relaxed/simple;
-	bh=VM8yYSFM+3GJYTnPs9F5OhGnfypf43YvecMZdPnDG4A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Fbuz8paDIYoXriG+GGwOwDEXxofxZz049FzSDDWplXiAHcFBtk08ZWnLPKWjIqxg602YOLoLZrCwd43q1IKlFSKjvjhefRW9Qi74pwrPrikCt5OOwiFZjxrrx4BcFW0jnlNddU7Kkvj3xlJwBZldQIRsV7wP2Z/SO1G7Wb6PJdM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Do1eKYrO; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1724673490;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kHDLrebuPvSrdFeWg07DDDEBQywHQBfHx09u2gZhk6M=;
-	b=Do1eKYrOIACCVzyhUwuDPmjFWCOziWbgu3FVyEQTcg3VyfmMNVu4V0P4906Y5PjuMs2z0D
-	oOUdYka6xOl1uoCj1omRLzzNS5/S4L83UgEUcct7XFigxDGweLE468t338oMnrLFubptH8
-	wG66dE36LO4knEL15Bd+CgeTU09Ln3w=
-Received: from mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-187-Buu-lX5VM_e-SoMwIjIIVQ-1; Mon,
- 26 Aug 2024 07:58:07 -0400
-X-MC-Unique: Buu-lX5VM_e-SoMwIjIIVQ-1
-Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 1873E1955BF8;
-	Mon, 26 Aug 2024 11:58:05 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.12])
-	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 797191955F45;
-	Mon, 26 Aug 2024 11:58:00 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Mon, 26 Aug 2024 13:57:57 +0200 (CEST)
-Date: Mon, 26 Aug 2024 13:57:52 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Tianyi Liu <i.pear@outlook.com>, andrii.nakryiko@gmail.com,
-	mhiramat@kernel.org, ajor@meta.com, albancrequy@linux.microsoft.com,
-	bpf@vger.kernel.org, flaniel@linux.microsoft.com,
-	linux-trace-kernel@vger.kernel.org, linux@jordanrome.com,
-	mathieu.desnoyers@efficios.com
-Subject: Re: [PATCH v2] tracing/uprobe: Add missing PID filter for uretprobe
-Message-ID: <20240826115752.GA21268@redhat.com>
-References: <CAEf4Bzb29=LUO3fra40XVYN1Lm=PebBFubj-Vb038ojD6To2AA@mail.gmail.com>
- <ME0P300MB04163A2993D1B545C3533DDC9D892@ME0P300MB0416.AUSP300.PROD.OUTLOOK.COM>
- <20240825171417.GB3906@redhat.com>
- <20240825224018.GD3906@redhat.com>
- <ZsxTckUnlU_HWDMJ@krava>
+	s=arc-20240116; t=1724674318; c=relaxed/simple;
+	bh=a/fJ1VhUeNud8O1hmpn/0NNZrKXsQ4daBBCWoqGA1B4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Yl9xgwMrifRoHXpTa7w9QIPrRzXO2Jy7Ri0LJoTV/q7hMUiWPrsrmoOiV6aX2qMtpsoc6Tp2U+Vq6hCCb4jmzYzZ5XKhUE3eCb4I2QPn6glS/cWga1ycMTt0wWoyKt05Hyo95+eXo+N9IDtk8nexxCZugpnOMZWHsG1ZxOS6js8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=b2BHI53W; arc=none smtp.client-ip=209.85.208.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2f3eabcd293so48841541fa.2
+        for <bpf@vger.kernel.org>; Mon, 26 Aug 2024 05:11:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1724674315; x=1725279115; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=a/fJ1VhUeNud8O1hmpn/0NNZrKXsQ4daBBCWoqGA1B4=;
+        b=b2BHI53WCBOsWZ1aZeyJLgkqArb9915TGPw+rA++1YKl6oxuZ5MAkZSB77L5EeFZ7f
+         uJEJPHwFBfhPEIRjLtOwI2EbYGrL4FPCTdD+YKFqThIg54tepYLYC1elMixUnM/ZYeBC
+         kdj4Sfj01W7T74eCOyjYonCQnbHPAF4WgpOENaMKUZg67eGy8/wf49IsLyTOHLc1henV
+         5CbQ83zOHJCJHqvHcm9ige+EueeL3Tcnlp+r1l8p6uSOA5povSLLwcfZZ6JngWKFsxs+
+         Tz0JnKeLUfQ2Co7g0c4QIBXH7qQFAAblhsdTdagax/ZQ7qoQG9ocr9ouFAFLzGj4IXT+
+         5Feg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1724674315; x=1725279115;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=a/fJ1VhUeNud8O1hmpn/0NNZrKXsQ4daBBCWoqGA1B4=;
+        b=rpiIOl4HBmA+uyvNW1LWZ5eEp7GGBStB2veF1Kr1s7raIq8dfGnu5O3Qgsr9pvCnWQ
+         vZcjmExpZ3aWzGTozjPdNewmXjmPZOYAjF4qJcuDxcmmkeRuRN14yhOhgYEbNIUOsLGX
+         ailkUhJtfLk+Sq3Buvt0qgjB82eHwC/82X7Qu5OV/qIGZ5tPPDfLTxbT6IbDJ68qdoox
+         SSaGu/GsGtn5Pwlgt/jNo/W9yc9hheDs49a6UHlgeXl2y5ay34nng+C4cPukj5JXcSDq
+         9fz/RFYVBeaJ9jH7WDtXq4vjoxCX/+UT9MHYGAMj/CpsRzFmTSlgrYw5/SNcibz1eJMy
+         GWWg==
+X-Forwarded-Encrypted: i=1; AJvYcCU9Gu7P12Exnxpv0KmU1b/rjfQwHhzq16X3esi/bsa65mp+DLKuPRbuoVqdP6UJaRwBwRQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwJk4dvo/W1/AHe0mUcdNE48zPWgpy3bpU7NaRUjjLzpGklO3pi
+	4NwoFTvik1blxcQsIZHsDk1fIGn744xWHtiYR4QMom7FKIZlD1JlH0GLDRfmbNH0qwoRujlWpx7
+	f7+LqIlcZh6kyEPe9iEzpHFF4r/hhW5HED1b9
+X-Google-Smtp-Source: AGHT+IFeQ08E7GutTBNKbVGUppCfdT90fcFmyhhNHkht0+6YesGTQBnTgu0blP33yoES7E+d4YGyRaK44NLX/lrkb0M=
+X-Received: by 2002:a05:6512:ea2:b0:52e:9ebe:7325 with SMTP id
+ 2adb3069b0e04-5343883b0ffmr6182540e87.31.1724674314497; Mon, 26 Aug 2024
+ 05:11:54 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZsxTckUnlU_HWDMJ@krava>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
+References: <20240826102327.1461482-1-kuro@kuroa.me>
+In-Reply-To: <20240826102327.1461482-1-kuro@kuroa.me>
+From: Eric Dumazet <edumazet@google.com>
+Date: Mon, 26 Aug 2024 14:11:42 +0200
+Message-ID: <CANn89iJqQXauMy9mWf7Y5LFNPwtxpfsgpJJtU83OFrzpomYZZQ@mail.gmail.com>
+Subject: Re: [PATCH net,v3] tcp: fix forever orphan socket caused by tcp_abort
+To: Xueming Feng <kuro@kuroa.me>
+Cc: "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org, 
+	Lorenzo Colitti <lorenzo@google.com>, Jason Xing <kerneljasonxing@gmail.com>, 
+	Paolo Abeni <pabeni@redhat.com>, Jakub Kicinski <kuba@kernel.org>, 
+	Neal Cardwell <ncardwell@google.com>, Yuchung Cheng <ycheng@google.com>, 
+	Soheil Hassas Yeganeh <soheil@google.com>, David Ahern <dsahern@kernel.org>, linux-kernel@vger.kernel.org, 
+	bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 08/26, Jiri Olsa wrote:
+On Mon, Aug 26, 2024 at 12:23=E2=80=AFPM Xueming Feng <kuro@kuroa.me> wrote=
+:
 >
-> On Mon, Aug 26, 2024 at 12:40:18AM +0200, Oleg Nesterov wrote:
-> > 	$ ./test &
-> > 	$ bpftrace -p $! -e 'uprobe:./test:func { printf("%d\n", pid); }'
-> >
-> > I hope that the syntax of the 2nd command is correct...
-> >
-> > I _think_ that it will print 2 pids too.
+> We have some problem closing zero-window fin-wait-1 tcp sockets in our
+> environment. This patch come from the investigation.
 >
-> yes.. but with CLONE_VM both processes share 'mm'
-
-Yes sure,
-
-> so they are threads,
-
-Well this depends on definition ;) but the CLONE_VM child is not a sub-thread,
-it has another TGID. See below.
-
-> and at least uprobe_multi filters by process [1] now.. ;-)
-
-OK, if you say that this behaviour is fine I won't argue, I simply do not know.
-But see below.
-
-> > But "perf-record -p" works as expected.
+> Previously tcp_abort only sends out reset and calls tcp_done when the
+> socket is not SOCK_DEAD, aka orphan. For orphan socket, it will only
+> purging the write queue, but not close the socket and left it to the
+> timer.
 >
-> I wonder it's because there's the perf layer that schedules each
-> uprobe event only when its process (PID1/2) is scheduled in and will
-> receive events only from that cpu while the process is running on it
+> While purging the write queue, tp->packets_out and sk->sk_write_queue
+> is cleared along the way. However tcp_retransmit_timer have early
+> return based on !tp->packets_out and tcp_probe_timer have early
+> return based on !sk->sk_write_queue.
+>
+> This caused ICSK_TIME_RETRANS and ICSK_TIME_PROBE0 not being resched
+> and socket not being killed by the timers, converting a zero-windowed
+> orphan into a forever orphan.
+>
+> This patch removes the SOCK_DEAD check in tcp_abort, making it send
+> reset to peer and close the socket accordingly. Preventing the
+> timer-less orphan from happening.
+>
+> According to Lorenzo's email in the v1 thread, the check was there to
+> prevent force-closing the same socket twice. That situation is handled
+> by testing for TCP_CLOSE inside lock, and returning -ENOENT if it is
+> already closed.
+>
+> The -ENOENT code comes from the associate patch Lorenzo made for
+> iproute2-ss; link attached below, which also conform to RFC 9293.
+>
+> At the end of the patch, tcp_write_queue_purge(sk) is removed because it
+> was already called in tcp_done_with_error().
+>
+> p.s. This is the same patch with v2. Resent due to mis-labeled "changes
+> requested" on patchwork.kernel.org.
+>
+> Link: https://patchwork.ozlabs.org/project/netdev/patch/1450773094-7978-3=
+-git-send-email-lorenzo@google.com/
+> Fixes: c1e64e298b8c ("net: diag: Support destroying TCP sockets.")
+> Signed-off-by: Xueming Feng <kuro@kuroa.me>
+> Tested-by: Lorenzo Colitti <lorenzo@google.com>
+> Reviewed-by: Jason Xing <kerneljasonxing@gmail.com>
 
-Not sure I understand... The task which hits the breakpoint is always
-current, it is always scheduled in.
-
-The main purpose of uprobe_perf_func()->uprobe_perf_filter() is NOT that
-we want to avoid __uprobe_perf_func() although this makes sense.
-
-The main purpose is that we want to remove the breakpoints in current->mm
-when uprobe_perf_filter() returns false, that is why UPROBE_HANDLER_REMOVE.
-IOW, the main purpose is not penalise user-space unnecessarily.
-
-IIUC (but I am not sure), perf-record -p will work "correctly" even if we
-remove uprobe_perf_filter() altogether. IIRC the perf layer does its own
-filtering but I forgot everything.
-
-And this makes me think that perhaps BPF can't rely on uprobe_perf_filter()
-either, even we forget about ret-probes.
-
-> [1] 46ba0e49b642 bpf: fix multi-uprobe PID filtering logic
-
-Looks obviously wrong... get_pid_task(PIDTYPE_TGID) can return a zombie
-leader with ->mm == NULL while other threads and thus the whole process
-is still alive.
-
-And again, the changelog says "the intent for PID filtering it to filter by
-*process*", but clone(CLONE_VM) creates another process, not a thread.
-
-So perhaps we need
-
-	-	if (link->task && current->mm != link->task->mm)
-	+	if (link->task && !same_thread_group(current, link->task))
-
-in uprobe_prog_run() to make "filter by *process*" true, but this won't
-fix the problem with link->task->mm == NULL in uprobe_multi_link_filter().
-
-
-Does bpftrace use bpf_uprobe_multi_link_attach/etc ? I guess not...
-Then which userspace tool uses this code? ;)
-
-Oleg.
-
+Reviewed-by: Eric Dumazet <edumazet@google.com>
 
