@@ -1,220 +1,256 @@
-Return-Path: <bpf+bounces-38077-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38078-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EF8295F228
-	for <lists+bpf@lfdr.de>; Mon, 26 Aug 2024 14:55:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5C4A95F28F
+	for <lists+bpf@lfdr.de>; Mon, 26 Aug 2024 15:14:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 45D452835FD
-	for <lists+bpf@lfdr.de>; Mon, 26 Aug 2024 12:55:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6BD44283286
+	for <lists+bpf@lfdr.de>; Mon, 26 Aug 2024 13:14:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1141A17C9B5;
-	Mon, 26 Aug 2024 12:52:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 280FD185B4F;
+	Mon, 26 Aug 2024 13:13:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G2aFi+kO"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+Received: from mail-qv1-f45.google.com (mail-qv1-f45.google.com [209.85.219.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B76A17C9B0
-	for <bpf@vger.kernel.org>; Mon, 26 Aug 2024 12:52:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EBA7183CDA;
+	Mon, 26 Aug 2024 13:13:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724676741; cv=none; b=EIEh/SVzCETjZLnTo4DaMF+zlQg+RDvluF6TL9A1FNomwYwx20VragdlnhwFMRZL9ECy52V4WwnJcz7YXmkXfMJqvE2JsvBXSG6mzybd8mho62KzU14IaMfDE/hEoA+hRDa5lxi75moPObRAikki33MoLDwzhJDV3Mu6LYtLoNg=
+	t=1724678035; cv=none; b=MaE+grUPrJEEJMVMHdk3eOZ9e3pg0cx2Qd8eRUwajSOH+a5KCm0ADGSzJc/I6xLHFXXuQi92163T1AtDskj16pHx7pVNut4ij08+TX+KpL86m4ToCVo90r1sRPIJ8RCX0cgOX8m2AK8XarWPK3WjccDoMeVn9GN6fhd6I0Fa4uE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724676741; c=relaxed/simple;
-	bh=iewPIKWwxjnmmShXWzD5eMbFV7rnrhci/Hk0xB9wvw8=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=ks4WNbAb5PscsqFyfkTKZI3kJRIIOt20BFhUpBZhiMqk1u5+Oc+CZFGaE680HLd7TAKkbe9UvsO7TFBr8QRnYscW7FSxHT/j5TdVlQa1mSqKt0PZis4bpI+y/pw3C7Ph96W47m/xxkthyIFYhL1NCmTP4elkVUFhtK3KGsFV+kE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-39d4c656946so52518695ab.1
-        for <bpf@vger.kernel.org>; Mon, 26 Aug 2024 05:52:19 -0700 (PDT)
+	s=arc-20240116; t=1724678035; c=relaxed/simple;
+	bh=uXndQDCUvnx0Z+cralt3H9P3W4x5FKSzMQBt52DRN90=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=AbdsifLh+Bssk78WABghf0ZWcZlft1NCMo5ruWx+BdIOSp0jjY8SSJa1dGiGVwfjQNe6ylAQodlwTXOtw5aYRqwy/tRgDKjEcuMOxv6dXQUrO75ZzfF0qve0NAmOU1nJr4DtmAMBmjRMUlBg5jedcBn9S1RQjVD3DVyZMvpkYoM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=G2aFi+kO; arc=none smtp.client-ip=209.85.219.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f45.google.com with SMTP id 6a1803df08f44-6bf7f4a133aso23042536d6.2;
+        Mon, 26 Aug 2024 06:13:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1724678033; x=1725282833; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vSwJhEnVRbE/lc1fBQhKHoYSdjJMMB9ydQkFXZg7Wl0=;
+        b=G2aFi+kOco8F7A7ev4siqM77VYWHD1SS+N9xARzk9mXa5Z7M7vt+omxkuFb8DdcgF9
+         zXPRGYJqqrzBLfS1Cas03+0K4qYSKwBBSFD6Bq8nRK5EbZZGNqT1lbQ/l6U/SvIXMV9j
+         zAUTSlgkhhszD4hIHfQENG1EIfyG8eEdi7xPlkqHtO8XHwk4RVSJ1YKHnKCVfbqr2oh0
+         94NBVtwYwm2YjN16k5guBkdrWHDmxpSOXoczIq3F3cCVhfkpkcuLHzyd3pFmkT7n5/8d
+         nKZJUf38vCZMggus3JMlzpoKge0iV5vKealnTfCY5EFgt2EQ4Cr7H76zd3KoY9/DLw/N
+         +WAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724676739; x=1725281539;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=yhLXBV41EvVRxq0pyiOc1zrWFwcXv7kRA5fXB2u90mg=;
-        b=GVvU2YAr/93mSAZxYy3GboJdBlrJwe6nher2lS7pAYTOS0plXWeoMWrKLoVJJLISaG
-         L1cLhuVNddyGRms5msxrKR7LhJ9ZbxSxpSxBRO99ero6RxMTTZu3nQ5LJEh87Gl6Guux
-         mZR8CCWMBZ+7/c5m6FAw9aYEM9koi4tRb/kjKR4Gu5FL+JRjN3T8kks9Qv94FwX0zMVt
-         TbLXDXG5hwfGyP2jHw2ISllOXkbacIruNiRD8YEhWiRjMyrJnRYTpxw+Vy3zJs5J4T+V
-         fNgFUmg9WvaTfnKNYvgQkRjXCvSN0gnEedf5Cu4tAbWj5zw3JnR2HtkFEdmN6BVb1IIC
-         Xz8g==
-X-Forwarded-Encrypted: i=1; AJvYcCU8gBVtcOju+UPw0rBBCkQskUmO/pbvr2JKIjcY1a37Jb4I8hK3vCpPt780kGR5ZpU+xJg=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzz6f+5G2HIxo/EYgX8w5Pogbok4gha11Le7GSn0dXEOv/zSLhP
-	ZjfdXn2jhmnGaBPblBwBWGm2TdfhCIobVy1vYbN4nJD9o9jT7KbSwIssr8BUnTnvI0NYTifpVLm
-	L7/KQUnIlbr/bALK28uFbp92V/3n03Vzm3Y1cR1Up/+QFYpRndGpDVbc=
-X-Google-Smtp-Source: AGHT+IHJ39gp+EnjPi6uHTN0u9WeqDEqRBpSQB3idE7i4A9GHa4RS6R179Kowo9wzYygVvoiKtBfMht1Xh+SpdxWXecCN+aJE2p9
+        d=1e100.net; s=20230601; t=1724678033; x=1725282833;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vSwJhEnVRbE/lc1fBQhKHoYSdjJMMB9ydQkFXZg7Wl0=;
+        b=gs+3hEUa9f7CI0POgR9qS3NcEjGNtCssdrN7CQtTayV1nVcalh9QryoctEctsPGZ7k
+         TMnab61DgsArompmA7uydEewDQEVdPkhyEpACrVSA3cvM0VnmPbYy40RFSvY2dOjZix0
+         EdNPod7kn1rKtxhD7lQbxdKtF58khDCTdW+g/43qcvg6OXDvoML/AyiuNFITehpqZSAT
+         UN4ly2vaWvFM67ugLDggFVAFAsnj3XuMXyJpYUCBxSOfZkGZFpj7OSGmWjPFV4kOKFQb
+         iYzV9BxXE4c2hXNxHU2OUvNHu/YZu/dTQUcGegzQQkp8GiisvUSsI0NTVD5txLNpIkV0
+         6e7w==
+X-Forwarded-Encrypted: i=1; AJvYcCU/ClygvLS3mjyt7se83bpFk5tbJjFXdDmm1opJ3v9PS74Ejhon0MuuTu2wAiMKGu+FIFeOQdbbiNK6yco6/saFzwWf@vger.kernel.org, AJvYcCU3p4xPq/zisqMnlMG5IMvdjAz49G7QtULEcD3tBDNl2cYIdDvsqvVN5mRDS4Q/D+T9BQ0+nTIX4e4JT/x7i8eS//EycQeV@vger.kernel.org, AJvYcCULhyl27VLZnSINwLuse687eE1Z/m7G6b14F1vuZoX3UfjlRC1VGsj4tKnVU5lwAM8UpJgpvX4GpMBrHPS8EA==@vger.kernel.org, AJvYcCUsKzmbvn/BTyybb5sUYnPxC7bFDTMi9woll1o+j9UMd+lscRYrkUkRc/R9eogDBA2XpB7rlnFj@vger.kernel.org, AJvYcCVzfSzxNbPxr0OBavXpBvqeNWuUQ2ESoDPgqDH6V7OwMSYs6YPgo18hAXk6YbSQSJwKoNgd@vger.kernel.org, AJvYcCWLflpr/Iba5wwF+1l+jBHBfSCEaqjX5whECpSSKCxyMJdlHDkCoECIltQBoJuSixUsIFAzSQ==@vger.kernel.org, AJvYcCWQK4kkZj9NqeYD7EQUF7bmfLR2E5exJYll96FnCkTFB/FdyajKDqYcLCN5vpsT52zSDxm46O1O3g==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw65lRZS6hAqREgZ7Haf0AsuxNGiOYB3+S7CQT4ie0ifahAt/LB
+	mF9Mwmduu48rJe9NQh4rLK+cxc9GOcB8FXMX+nO8xnSYy3QJgk8XAd07fYBNa407ZxvtyZoojN5
+	tzehKJK7BU1WH6jxTTMmeYk0CUw4=
+X-Google-Smtp-Source: AGHT+IEMzX23pNCTwUB3oEFnjtXMwQslYwQseElwS5dsww3heTV7mBPQDdBjGem5UqseBxKdUwlhHXFriIKrdvm/EEk=
+X-Received: by 2002:a05:6214:2b82:b0:6bf:78e1:74e7 with SMTP id
+ 6a1803df08f44-6c16deb3b70mr122308516d6.50.1724678032741; Mon, 26 Aug 2024
+ 06:13:52 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1d9c:b0:39d:300f:e911 with SMTP id
- e9e14a558f8ab-39e3c98359cmr9506465ab.2.1724676739248; Mon, 26 Aug 2024
- 05:52:19 -0700 (PDT)
-Date: Mon, 26 Aug 2024 05:52:19 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000654086062095987d@google.com>
-Subject: [syzbot] [bpf?] [trace?] WARNING in bpf_get_stack_raw_tp
-From: syzbot <syzbot+ce35de20ed6652f60652@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
-	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	martin.lau@linux.dev, mathieu.desnoyers@efficios.com, 
-	mattbobrowski@google.com, mhiramat@kernel.org, netdev@vger.kernel.org, 
-	rostedt@goodmis.org, sdf@fomichev.me, song@kernel.org, 
-	syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
+References: <20240817025624.13157-1-laoar.shao@gmail.com> <20240817025624.13157-7-laoar.shao@gmail.com>
+ <nmhexn3mkwhgu5e6o3i7gvipboisbuwdoloshf64ulgzdxr5nv@3gwujx2y5jre> <ep44ahlsa2krmpjcqrsvoi5vfoesvnvly44icavup7dsfolewm@flnm5rl23diz>
+In-Reply-To: <ep44ahlsa2krmpjcqrsvoi5vfoesvnvly44icavup7dsfolewm@flnm5rl23diz>
+From: Yafang Shao <laoar.shao@gmail.com>
+Date: Mon, 26 Aug 2024 21:13:16 +0800
+Message-ID: <CALOAHbA5VDjRYcoMOMKcLMVR0=ZwTz5FBTvQZExi6w8We9JPHg@mail.gmail.com>
+Subject: Re: [PATCH v7 6/8] mm/util: Deduplicate code in {kstrdup,kstrndup,kmemdup_nul}
+To: Alejandro Colomar <alx@kernel.org>
+Cc: akpm@linux-foundation.org, torvalds@linux-foundation.org, 
+	justinstitt@google.com, ebiederm@xmission.com, alexei.starovoitov@gmail.com, 
+	rostedt@goodmis.org, catalin.marinas@arm.com, 
+	penguin-kernel@i-love.sakura.ne.jp, linux-mm@kvack.org, 
+	linux-fsdevel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	audit@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	selinux@vger.kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, Simon Horman <horms@kernel.org>, 
+	Matthew Wilcox <willy@infradead.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello,
+On Mon, Aug 26, 2024 at 5:25=E2=80=AFPM Alejandro Colomar <alx@kernel.org> =
+wrote:
+>
+> Hi Yafang,
+>
+> On Sat, Aug 17, 2024 at 10:58:02AM GMT, Alejandro Colomar wrote:
+> > Hi Yafang,
+> >
+> > On Sat, Aug 17, 2024 at 10:56:22AM GMT, Yafang Shao wrote:
+> > > These three functions follow the same pattern. To deduplicate the cod=
+e,
+> > > let's introduce a common helper __kmemdup_nul().
+> > >
+> > > Suggested-by: Andrew Morton <akpm@linux-foundation.org>
+> > > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> > > Cc: Simon Horman <horms@kernel.org>
+> > > Cc: Matthew Wilcox <willy@infradead.org>
+> > > ---
+> > >  mm/util.c | 67 +++++++++++++++++++++--------------------------------=
+--
+> > >  1 file changed, 26 insertions(+), 41 deletions(-)
+> > >
+> > > diff --git a/mm/util.c b/mm/util.c
+> > > index 4542d8a800d9..310c7735c617 100644
+> > > --- a/mm/util.c
+> > > +++ b/mm/util.c
+> > > @@ -45,33 +45,40 @@ void kfree_const(const void *x)
+> > >  EXPORT_SYMBOL(kfree_const);
+> > >
+> > >  /**
+> > > - * kstrdup - allocate space for and copy an existing string
+> > > - * @s: the string to duplicate
+> > > + * __kmemdup_nul - Create a NUL-terminated string from @s, which mig=
+ht be unterminated.
+> > > + * @s: The data to copy
+> > > + * @len: The size of the data, including the null terminator
+> > >   * @gfp: the GFP mask used in the kmalloc() call when allocating mem=
+ory
+> > >   *
+> > > - * Return: newly allocated copy of @s or %NULL in case of error
+> > > + * Return: newly allocated copy of @s with NUL-termination or %NULL =
+in
+> > > + * case of error
+> > >   */
+> > > -noinline
+> > > -char *kstrdup(const char *s, gfp_t gfp)
+> > > +static __always_inline char *__kmemdup_nul(const char *s, size_t len=
+, gfp_t gfp)
+> > >  {
+> > > -   size_t len;
+> > >     char *buf;
+> > >
+> > > -   if (!s)
+> > > +   buf =3D kmalloc_track_caller(len, gfp);
+> > > +   if (!buf)
+> > >             return NULL;
+> > >
+> > > -   len =3D strlen(s) + 1;
+> > > -   buf =3D kmalloc_track_caller(len, gfp);
+> > > -   if (buf) {
+> > > -           memcpy(buf, s, len);
+> > > -           /* During memcpy(), the string might be updated to a new =
+value,
+> > > -            * which could be longer than the string when strlen() is
+> > > -            * called. Therefore, we need to add a null termimator.
+> > > -            */
+> > > -           buf[len - 1] =3D '\0';
+> > > -   }
+> > > +   memcpy(buf, s, len);
+> > > +   /* Ensure the buf is always NUL-terminated, regardless of @s. */
+> > > +   buf[len - 1] =3D '\0';
+> > >     return buf;
+> > >  }
+> > > +
+> > > +/**
+> > > + * kstrdup - allocate space for and copy an existing string
+> > > + * @s: the string to duplicate
+> > > + * @gfp: the GFP mask used in the kmalloc() call when allocating mem=
+ory
+> > > + *
+> > > + * Return: newly allocated copy of @s or %NULL in case of error
+> > > + */
+> > > +noinline
+> > > +char *kstrdup(const char *s, gfp_t gfp)
+> > > +{
+> > > +   return s ? __kmemdup_nul(s, strlen(s) + 1, gfp) : NULL;
+> > > +}
+> > >  EXPORT_SYMBOL(kstrdup);
+> > >
+> > >  /**
+> > > @@ -106,19 +113,7 @@ EXPORT_SYMBOL(kstrdup_const);
+> > >   */
+> > >  char *kstrndup(const char *s, size_t max, gfp_t gfp)
+> > >  {
+> > > -   size_t len;
+> > > -   char *buf;
+> > > -
+> > > -   if (!s)
+> > > -           return NULL;
+> > > -
+> > > -   len =3D strnlen(s, max);
+> > > -   buf =3D kmalloc_track_caller(len+1, gfp);
+> > > -   if (buf) {
+> > > -           memcpy(buf, s, len);
+> > > -           buf[len] =3D '\0';
+> > > -   }
+> > > -   return buf;
+> > > +   return s ? __kmemdup_nul(s, strnlen(s, max) + 1, gfp) : NULL;
+> > >  }
+> > >  EXPORT_SYMBOL(kstrndup);
+> > >
+> > > @@ -192,17 +187,7 @@ EXPORT_SYMBOL(kvmemdup);
+> > >   */
+> > >  char *kmemdup_nul(const char *s, size_t len, gfp_t gfp)
+> > >  {
+> > > -   char *buf;
+> > > -
+> > > -   if (!s)
+> > > -           return NULL;
+> > > -
+> > > -   buf =3D kmalloc_track_caller(len + 1, gfp);
+> > > -   if (buf) {
+> > > -           memcpy(buf, s, len);
+> > > -           buf[len] =3D '\0';
+> > > -   }
+> > > -   return buf;
+> > > +   return s ? __kmemdup_nul(s, len + 1, gfp) : NULL;
+> > >  }
+> > >  EXPORT_SYMBOL(kmemdup_nul);
+> >
+> > I like the idea of the patch, but it's plagued with all those +1 and -1=
+.
+> > I think that's due to a bad choice of value being passed by.  If you
+> > pass the actual length of the string (as suggested in my reply to the
+> > previous patch) you should end up with a cleaner set of APIs.
+> >
+> > The only remaining +1 is for kmalloc_track_caller(), which I ignore wha=
+t
+> > it does.
+> >
+> >       char *
+> >       __kmemdup_nul(const char *s, size_t len, gfp_t gfp)
+> >       {
+> >               char *buf;
+> >
+> >               buf =3D kmalloc_track_caller(len + 1, gfp);
+> >               if (!buf)
+> >                       return NULL;
+> >
+> >               strcpy(mempcpy(buf, s, len), "");
+>
+> Changing these strcpy(, "") to the usual; =3D'\0' or =3D0, but I'd still
+> recommend the rest of the changes, that is, changing the value passed in
+> len, to remove several +1 and -1s.
+>
+> What do you think?
 
-syzbot found the following issue on:
+I will update it. Thanks for your suggestion.
 
-HEAD commit:    872cf28b8df9 Merge tag 'platform-drivers-x86-v6.11-4' of g..
-git tree:       bpf
-console output: https://syzkaller.appspot.com/x/log.txt?x=1628ae09980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=df2f0ed7e30a639d
-dashboard link: https://syzkaller.appspot.com/bug?extid=ce35de20ed6652f60652
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1439fbf5980000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14b5382b980000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/72b6e311a539/disk-872cf28b.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/0c44549e5bb0/vmlinux-872cf28b.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/fb02c268f118/bzImage-872cf28b.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+ce35de20ed6652f60652@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 5229 at kernel/trace/bpf_trace.c:1917 get_bpf_raw_tp_regs kernel/trace/bpf_trace.c:1917 [inline]
-WARNING: CPU: 0 PID: 5229 at kernel/trace/bpf_trace.c:1917 ____bpf_get_stack_raw_tp kernel/trace/bpf_trace.c:1990 [inline]
-WARNING: CPU: 0 PID: 5229 at kernel/trace/bpf_trace.c:1917 bpf_get_stack_raw_tp+0x1c9/0x240 kernel/trace/bpf_trace.c:1987
-Modules linked in:
-CPU: 0 UID: 0 PID: 5229 Comm: syz-executor357 Not tainted 6.11.0-rc4-syzkaller-g872cf28b8df9 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/06/2024
-RIP: 0010:get_bpf_raw_tp_regs kernel/trace/bpf_trace.c:1917 [inline]
-RIP: 0010:____bpf_get_stack_raw_tp kernel/trace/bpf_trace.c:1990 [inline]
-RIP: 0010:bpf_get_stack_raw_tp+0x1c9/0x240 kernel/trace/bpf_trace.c:1987
-Code: 6d ee 1e 00 65 ff 0d 96 86 64 7e 4c 63 f0 4c 89 f0 48 83 c4 18 5b 41 5c 41 5d 41 5e 41 5f 5d c3 cc cc cc cc e8 88 ad f4 ff 90 <0f> 0b 90 65 ff 0d 6d 86 64 7e 49 c7 c6 f0 ff ff ff eb d1 44 89 e9
-RSP: 0018:ffffc900020de6f0 EFLAGS: 00010293
-RAX: ffffffff819eddb8 RBX: 0000000000000003 RCX: ffff88807dae0000
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 00000000fffffffc
-RBP: ffffc900020de730 R08: ffffffff819edc87 R09: 1ffffffff26e6708
-R10: dffffc0000000000 R11: ffffffffa0001c68 R12: ffff8880b9236238
-R13: 0000000000000902 R14: 0000000000000000 R15: ffffc900020de748
-FS:  0000555580bbc380(0000) GS:ffff8880b9200000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f7721d2f110 CR3: 000000002f1be000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- bpf_prog_e6cf5f9c69743609+0x42/0x46
- bpf_dispatcher_nop_func include/linux/bpf.h:1243 [inline]
- __bpf_prog_run include/linux/filter.h:691 [inline]
- bpf_prog_run include/linux/filter.h:698 [inline]
- __bpf_trace_run kernel/trace/bpf_trace.c:2406 [inline]
- bpf_trace_run4+0x334/0x590 kernel/trace/bpf_trace.c:2449
- __traceiter_mmap_lock_acquire_returned+0x93/0xf0 include/trace/events/mmap_lock.h:52
- trace_mmap_lock_acquire_returned include/trace/events/mmap_lock.h:52 [inline]
- __mmap_lock_do_trace_acquire_returned+0x286/0x2f0 mm/mmap_lock.c:102
- __mmap_lock_trace_acquire_returned include/linux/mmap_lock.h:36 [inline]
- mmap_read_trylock include/linux/mmap_lock.h:164 [inline]
- stack_map_get_build_id_offset+0x9af/0x9d0 kernel/bpf/stackmap.c:141
- __bpf_get_stack+0x4ad/0x5a0 kernel/bpf/stackmap.c:449
- ____bpf_get_stack_raw_tp kernel/trace/bpf_trace.c:1997 [inline]
- bpf_get_stack_raw_tp+0x1a3/0x240 kernel/trace/bpf_trace.c:1987
- bpf_prog_e6cf5f9c69743609+0x42/0x46
- bpf_dispatcher_nop_func include/linux/bpf.h:1243 [inline]
- __bpf_prog_run include/linux/filter.h:691 [inline]
- bpf_prog_run include/linux/filter.h:698 [inline]
- __bpf_trace_run kernel/trace/bpf_trace.c:2406 [inline]
- bpf_trace_run4+0x334/0x590 kernel/trace/bpf_trace.c:2449
- __traceiter_mmap_lock_acquire_returned+0x93/0xf0 include/trace/events/mmap_lock.h:52
- trace_mmap_lock_acquire_returned include/trace/events/mmap_lock.h:52 [inline]
- __mmap_lock_do_trace_acquire_returned+0x286/0x2f0 mm/mmap_lock.c:102
- __mmap_lock_trace_acquire_returned include/linux/mmap_lock.h:36 [inline]
- mmap_read_trylock include/linux/mmap_lock.h:164 [inline]
- stack_map_get_build_id_offset+0x9af/0x9d0 kernel/bpf/stackmap.c:141
- __bpf_get_stack+0x4ad/0x5a0 kernel/bpf/stackmap.c:449
- ____bpf_get_stack_raw_tp kernel/trace/bpf_trace.c:1997 [inline]
- bpf_get_stack_raw_tp+0x1a3/0x240 kernel/trace/bpf_trace.c:1987
- bpf_prog_e6cf5f9c69743609+0x42/0x46
- bpf_dispatcher_nop_func include/linux/bpf.h:1243 [inline]
- __bpf_prog_run include/linux/filter.h:691 [inline]
- bpf_prog_run include/linux/filter.h:698 [inline]
- __bpf_trace_run kernel/trace/bpf_trace.c:2406 [inline]
- bpf_trace_run4+0x334/0x590 kernel/trace/bpf_trace.c:2449
- __traceiter_mmap_lock_acquire_returned+0x93/0xf0 include/trace/events/mmap_lock.h:52
- trace_mmap_lock_acquire_returned include/trace/events/mmap_lock.h:52 [inline]
- __mmap_lock_do_trace_acquire_returned+0x286/0x2f0 mm/mmap_lock.c:102
- __mmap_lock_trace_acquire_returned include/linux/mmap_lock.h:36 [inline]
- mmap_read_trylock include/linux/mmap_lock.h:164 [inline]
- stack_map_get_build_id_offset+0x9af/0x9d0 kernel/bpf/stackmap.c:141
- __bpf_get_stack+0x4ad/0x5a0 kernel/bpf/stackmap.c:449
- ____bpf_get_stack_raw_tp kernel/trace/bpf_trace.c:1997 [inline]
- bpf_get_stack_raw_tp+0x1a3/0x240 kernel/trace/bpf_trace.c:1987
- bpf_prog_e6cf5f9c69743609+0x42/0x46
- bpf_dispatcher_nop_func include/linux/bpf.h:1243 [inline]
- __bpf_prog_run include/linux/filter.h:691 [inline]
- bpf_prog_run include/linux/filter.h:698 [inline]
- __bpf_trace_run kernel/trace/bpf_trace.c:2406 [inline]
- bpf_trace_run4+0x334/0x590 kernel/trace/bpf_trace.c:2449
- __traceiter_mmap_lock_acquire_returned+0x93/0xf0 include/trace/events/mmap_lock.h:52
- trace_mmap_lock_acquire_returned include/trace/events/mmap_lock.h:52 [inline]
- __mmap_lock_do_trace_acquire_returned+0x286/0x2f0 mm/mmap_lock.c:102
- __mmap_lock_trace_acquire_returned include/linux/mmap_lock.h:36 [inline]
- mmap_read_lock include/linux/mmap_lock.h:145 [inline]
- acct_collect+0x804/0x830 kernel/acct.c:563
- do_exit+0x93e/0x27f0 kernel/exit.c:861
- do_group_exit+0x207/0x2c0 kernel/exit.c:1031
- __do_sys_exit_group kernel/exit.c:1042 [inline]
- __se_sys_exit_group kernel/exit.c:1040 [inline]
- __x64_sys_exit_group+0x3f/0x40 kernel/exit.c:1040
- x64_sys_call+0x2634/0x2640 arch/x86/include/generated/asm/syscalls_64.h:232
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f7721cb3389
-Code: 90 49 c7 c0 b8 ff ff ff be e7 00 00 00 ba 3c 00 00 00 eb 12 0f 1f 44 00 00 89 d0 0f 05 48 3d 00 f0 ff ff 77 1c f4 89 f0 0f 05 <48> 3d 00 f0 ff ff 76 e7 f7 d8 64 41 89 00 eb df 0f 1f 80 00 00 00
-RSP: 002b:00007fff639ca6c8 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f7721cb3389
-RDX: 000000000000003c RSI: 00000000000000e7 RDI: 0000000000000000
-RBP: 00007f7721d2e2b0 R08: ffffffffffffffb8 R09: 0000000080bbd610
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007f7721d2e2b0
-R13: 0000000000000000 R14: 00007f7721d2ed00 R15: 00007f7721c845c0
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+--=20
+Regards
+Yafang
 
