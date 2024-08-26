@@ -1,150 +1,167 @@
-Return-Path: <bpf+bounces-38093-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38094-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCAAB95F853
-	for <lists+bpf@lfdr.de>; Mon, 26 Aug 2024 19:41:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B1F8795F917
+	for <lists+bpf@lfdr.de>; Mon, 26 Aug 2024 20:42:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 378151F21C0E
-	for <lists+bpf@lfdr.de>; Mon, 26 Aug 2024 17:41:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3E2671F24E98
+	for <lists+bpf@lfdr.de>; Mon, 26 Aug 2024 18:42:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1814F198E96;
-	Mon, 26 Aug 2024 17:41:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 603F8198A17;
+	Mon, 26 Aug 2024 18:42:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="RyY4xkTi"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nWTLl6Vb"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 440E6198830
-	for <bpf@vger.kernel.org>; Mon, 26 Aug 2024 17:41:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31CDE2A1D8;
+	Mon, 26 Aug 2024 18:42:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724694093; cv=none; b=eONC09kRzx3oD3IsfPjXe/q6klSoceoOMo7xS8n0VjObdKjAE37WbxUA6eMf17P5ZH0gQ/X00sc9wJBRPB68x8pUtIoveTVqBM9QMu9QFyfhlwqSPAgKE7Dqi74KmHWbgyrLD/1ZNOPxzus9x6bZFVeIdnL7R52YXCg21itrJaM=
+	t=1724697765; cv=none; b=WGYaHt+JldpLyZ8DMbqokdIOy8+T0J6B2vGQGvqaQwSo21fTPU/s2vL40RpZX8c6jAsAegWlUSWvjiWmsHyEUeWukcdJAAdeYL6ixp1wYnqXRegIUpJMStdhk/ocXTmTeMpG6grD8FDshsZRXPIZKqKnXC03asugmSSMWITonCA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724694093; c=relaxed/simple;
-	bh=8z0ijpKLCyL0/hK7XURRlPlM8gG/OVt4zB5FIjNk014=;
+	s=arc-20240116; t=1724697765; c=relaxed/simple;
+	bh=66rvfT30Rd9jNR9KSXQ9M+fDaZbae70XyRnCK42iEJo=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jqEJvoeDObUkvqV9SSwvWRqzdyCpu7g730V5Y03yArTjvLDvtH/iwA4M8DfnNcXdQOS0WVRU/Fcs3qwrjoyv0QnmxFHH0Ore0fGKdFtQjgnz/FF8NuupZk7m6o/AFgK8tCegoFmiy1rjIX9z2bOZqJo3IFIvPBqz41WVtdRB27U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=RyY4xkTi; arc=none smtp.client-ip=209.85.210.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-714302e7285so3860128b3a.2
-        for <bpf@vger.kernel.org>; Mon, 26 Aug 2024 10:41:31 -0700 (PDT)
+	 To:Cc:Content-Type; b=ki16hoeFunPSUxbrg9NCO3v+oGEkp58LpVt07/QrnTMBN+akGd9uVejM+ONFHcPZlz1hkbz/YMVgBojLNcgBr6fZh44225aW/V9QU4oRRZBDy0ZmsJNU4lH0Ru3n7ingW68pHKs6HdAy648HHE4FziiJiN/ZN2XxgE7D0uLEx4Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nWTLl6Vb; arc=none smtp.client-ip=209.85.167.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-5334adf7249so5561553e87.3;
+        Mon, 26 Aug 2024 11:42:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1724694090; x=1725298890; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1724697762; x=1725302562; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gk6yec5dWuUP0cgrAQJG6vAUBJ9aHrLwI2uJ5n3Lhmk=;
-        b=RyY4xkTipN3cKTf0Z8//tSaD5kW+wficFpJYbltMkKVdaDyPF6/WxyXU/01wxPtPct
-         zwZNAtZ1jnBNuImupSypFXtpCJJxke4rRiZzjxP75DbC14u7ovmESAb4XOtMBAtWHgCb
-         yBTtrrZ37IaYo/1fXFlIQ+TBdCgdJlfZDVHnE=
+         :reply-to:in-reply-to:references:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=OstNSp6UvnPgh3gsd2W7iC/ZExy1qK76QgotQhDcUX4=;
+        b=nWTLl6VbPh5Vi+ozOl0aWfPca8gK/4UE6W84mQZfN0gpJiMqYGFb0a1kPZ5oyNS6g4
+         wOHxcyBzV81ms3kYIg9GX+fZukB/tb/03zCVXJuCUjyXkAtFfiMN5DTrVIilvB7/smuI
+         hdESOfUvW8HefwfHCTj2cvwWXDjbSOsaY+K48RpN1ENjYx7RSVby24MiSsFal84TxQMP
+         MzHXEYzs8mzykMoViDgvv0lawlDVDKR6/K3Lfts3A9orhx1PY1hsDFC2gpNdFKJ55Uub
+         46z1GYHkUiXA7U0wuakvgQBb+r1U1VlSkDr1aqxk8NKeyyRcXXH2ZpJnpmkTBWhkwENE
+         SpOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724694090; x=1725298890;
+        d=1e100.net; s=20230601; t=1724697762; x=1725302562;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gk6yec5dWuUP0cgrAQJG6vAUBJ9aHrLwI2uJ5n3Lhmk=;
-        b=YWVpOPrBYDwV29KGxgPLKhal47FOlpkGHvBU0sGLtMZIIJNtBLY6Z0mqZB1pgyhTUz
-         DYzldAOKQoyC7x/QjavdL3LzjZ2MrZZhskbSAFE6dI99KyidR3Gerv288P46NM5Zpzc4
-         JTBl1C8TfidAajuKvuzXnl6lz7I/wKB/u8DEPnEncf4wIrDxx+SGm3Z3Hjd/Jn/H5SkP
-         L1ihoM7VqAkm1D+o6s146obHSVD7e3pzDzqQXWrBrjPKHkJ+wYpx7eJpAnjhLKzQ222T
-         B3/RpkcgR4krpaX9neObmL4Wxu4QM8huegguKeg0dxy+JMQt/wO0sZVWaG4S52VHT7Q7
-         gDdQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVch+lW9XBQnQ+rW4Pp8IqVyo/qnh2o7MzSwfnQtr48rL0Jpnp1F6p13/lmYuCP3p7Rwbk=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz/BhLhDaDVcjSJyGxKbsq0lieOJaFhKmFFqMn/a3K0llKDV6qV
-	Px+bcAUhIfvOcGgFIaW8OozY3lXzwlX3LSbWbJ0fcS8mfVga0h1vMVOLIId+8/b/x91C7HVAw0d
-	qifRSSTQPkecwI75LWm6HS9ewU0DqjWV2Bws2
-X-Google-Smtp-Source: AGHT+IGUoZte0p19xwWBeSiInV7PcfaUqsGgBPlQ2VYY7m0wFFR9zVxHRono64Qiy0v2wUCnm32xn+uUvVhnGv9x41o=
-X-Received: by 2002:a05:6a00:1a8e:b0:710:4d08:e094 with SMTP id
- d2e1a72fcca58-7144573cd07mr11456889b3a.2.1724694090361; Mon, 26 Aug 2024
- 10:41:30 -0700 (PDT)
+         :reply-to:in-reply-to:references:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=OstNSp6UvnPgh3gsd2W7iC/ZExy1qK76QgotQhDcUX4=;
+        b=X7sWQa/PVEWi23Vqs5ZYTU9R/vB3XmvYSnw5YFQ1GkS2uA0o5FnS0+mVLemMinJtI5
+         0szNWO6El8V3dhhmV+8jiOJuTkKpNOTMa7uYwfizC85y6U8GtczGMVMtHK4Sy3D2BPoo
+         cJ/3pgq0I3gABqlQhF2h3t8uzKhMQT9ZfFN2rhtJljB2+756TlBJ38hSTLuD8IrgQpgn
+         hrCPSKiSsCKDXgdpVSeHg/iUBUfXhLKIc99imC4WFNO9esZ6bdwhzTAV8VjUbKpN1/Ie
+         gW+cqM+TA1l8/vzwMNhf3yCHLkxc9idCdRqn4D+DAqgBNV7Rjqsnt0riPie+i9OiLWJJ
+         uCDg==
+X-Forwarded-Encrypted: i=1; AJvYcCV4CVd9mEjq2ndDKY+2HYvK7lQ6Wd8+T8i62x2f3ckGdxOTLyi+uJVD9bU4LQ23WuM55rVZU9Zz0Dpy73se@vger.kernel.org, AJvYcCW3B5KmW1JGLrCc8Kb6AFff2F74mFU8+KX2vVZlKUG1HXBYnSst255bIjdjMigdWflPBLIa2X1zOw==@vger.kernel.org, AJvYcCX9sMaBpwdLYEvlPM0fEoGJtNhzw6YCZwvMSyLAUqrzWD55bVHrcS6H+lUrUNYM/rxY0TOWNtfNNrG6w8qT@vger.kernel.org, AJvYcCXd8K/n/Dsn60nbDz374p4q6oOk0aDbj5RaxLum4twsGcOWt222AKcHtjZqpdpcw3C+wCY=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx85jLkETPHHjYA0//UlEZcEUtOLAbj1C5ytmsSXP+ZLddaBRe+
+	O1dJWXcHdj/YclXUsCc3y9B8ZRBYj9TW9YpX1fbyDqJ1PJ2IJlcQs08y6cuUgxeiObvPin8cCFk
+	K1B7C26x2hps7KTnhWEjOS7s2JLA=
+X-Google-Smtp-Source: AGHT+IE72x4d64Ak9GFyGpL4jDAfhYU2+Jx1i1fyhoAeuCz7ZrO3f1pKyzrpacY0uOb6zDsOzEtHaHUcIJStByIQ1ZI=
+X-Received: by 2002:a05:6512:3a93:b0:52c:db0a:a550 with SMTP id
+ 2adb3069b0e04-5344e4fae12mr171802e87.42.1724697761812; Mon, 26 Aug 2024
+ 11:42:41 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240814221818.2612484-1-jitendra.vegiraju@broadcom.com>
- <20240814221818.2612484-3-jitendra.vegiraju@broadcom.com> <0de48667-fe8e-4cd8-a84a-e3e5407c7263@marvell.com>
-In-Reply-To: <0de48667-fe8e-4cd8-a84a-e3e5407c7263@marvell.com>
-From: Jitendra Vegiraju <jitendra.vegiraju@broadcom.com>
-Date: Mon, 26 Aug 2024 10:41:18 -0700
-Message-ID: <CAMdnO-JSPEkJZLMPL8BLy1DKFUtU4aC_JpaXfs=g5YJFBu4_RQ@mail.gmail.com>
-Subject: Re: [net-next v4 2/5] net: stmmac: Add basic dw25gmac support to
- stmmac core
-To: Amit Singh Tomar <amitsinght@marvell.com>
-Cc: netdev@vger.kernel.org, alexandre.torgue@foss.st.com, joabreu@synopsys.com, 
-	davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, 
-	mcoquelin.stm32@gmail.com, bcm-kernel-feedback-list@broadcom.com, 
-	richardcochran@gmail.com, ast@kernel.org, daniel@iogearbox.net, 
-	hawk@kernel.org, john.fastabend@gmail.com, fancer.lancer@gmail.com, 
-	rmk+kernel@armlinux.org.uk, ahalaney@redhat.com, xiaolei.wang@windriver.com, 
-	rohan.g.thomas@intel.com, Jianheng.Zhang@synopsys.com, 
-	linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
-	linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org, andrew@lunn.ch, 
-	linux@armlinux.org.uk, horms@kernel.org, florian.fainelli@broadcom.com
+References: <20240820085950.200358-1-jirislaby@kernel.org> <ZsSpU5DqT3sRDzZy@krava>
+ <523c1afa-ed9d-4c76-baea-1c43b1b0c682@kernel.org> <c2086083-4378-4503-b3e2-08fb14f8ff37@kernel.org>
+ <7ebee21d-058f-4f83-8959-bd7aaa4e7719@kernel.org> <a45nq7wustxrztjxmkqzevv3mkki5oizfik7b24gqiyldhlkhv@4rpy4tzwi52l>
+ <ZsdYGOS7Yg9pS2BJ@x1> <f170d7c2-2056-4f47-8847-af15b9a78b81@kernel.org> <Zsy1blxRL9VV9DRg@x1>
+In-Reply-To: <Zsy1blxRL9VV9DRg@x1>
+Reply-To: sedat.dilek@gmail.com
+From: Sedat Dilek <sedat.dilek@gmail.com>
+Date: Mon, 26 Aug 2024 20:42:10 +0200
+Message-ID: <CA+icZUWMxzAFtr8vsUUQ9OCR68K=F6d6MANx8HMTQntq494roA@mail.gmail.com>
+Subject: Re: [RFC] kbuild: bpf: Do not run pahole with -j on 32bit userspace
+To: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Jiri Slaby <jirislaby@kernel.org>, Shung-Hsi Yu <shung-hsi.yu@suse.com>, dwarves@vger.kernel.org, 
+	Jiri Olsa <olsajiri@gmail.com>, masahiroy@kernel.org, linux-kernel@vger.kernel.org, 
+	Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nicolas@fjasle.eu>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	linux-kbuild@vger.kernel.org, bpf@vger.kernel.org, msuchanek@suse.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi Amit,
-
-On Thu, Aug 22, 2024 at 10:17=E2=80=AFAM Amit Singh Tomar
-<amitsinght@marvell.com> wrote:
+On Mon, Aug 26, 2024 at 7:03=E2=80=AFPM Arnaldo Carvalho de Melo
+<acme@kernel.org> wrote:
 >
-> Hi,
+> On Mon, Aug 26, 2024 at 10:57:22AM +0200, Jiri Slaby wrote:
+> > On 22. 08. 24, 17:24, Arnaldo Carvalho de Melo wrote:
+> > > On Thu, Aug 22, 2024 at 11:55:05AM +0800, Shung-Hsi Yu wrote:
+> > > I stumbled on this limitation as well when trying to build the kernel=
+ on
+> > > a Libre Computer rk3399-pc board with only 4GiB of RAM, there I just
+> > > created a swapfile and it managed to proceed, a bit slowly, but worke=
+d
+> > > as well.
+> >
+> > Here, it hits the VM space limit (3 G).
 >
-> > The BCM8958x uses early adaptor version of DWC_xgmac version 4.00a for
-> > ethernet MAC. The DW25GMAC introduced in this version adds new DMA
-> > architecture called Hyper-DMA (HDMA) for virtualization scalability.
-> > This is realized by decoupling physical DMA channels(PDMA) from potenti=
-ally
-> > large number of virtual DMA channels (VDMA). The VDMAs are software
-> > abastractions that map to PDMAs for frame transmission and reception.
-> You should either run ./scripts/checkpatch.pl --strict --codespell
-> --patch or use :set spell in vi to check for spelling mistakes
+> right, in my case it was on a 64-bit system, so just not enough memory,
+> not address space.
+>
+> > > Please let me know if what is in the 'next' branch of:
+>
+> > > https://git.kernel.org/pub/scm/devel/pahole/pahole.git
+>
+> > > Works for you, that will be extra motivation to move it to the master
+> > > branch and cut 1.28.
+>
+> > on 64bit (-j1):
+> > * master: 3.706 GB
+> > (* master + my changes: 3.559 GB)
+> > * next: 3.157 GB
+>
+> > on 32bit:
+> >  * master-j1: 2.445 GB
+> >  * master-j16: 2.608 GB
+> >  * master-j32: 2.811 GB
+> >  * next-j1: 2.256 GB
+> >  * next-j16: 2.401 GB
+> >  * next-j32: 2.613 GB
+> >
+> > It's definitely better. So I think it could work now, if the thread cou=
+nt
+> > was limited to 1 on 32bit. As building with -j10, -j20 randomly fails o=
+n
+> > random machines (32bit processes only of course). Unlike -j1.
+>
+> Cool, I just merged a patch from Alan Maguire that should help with the
+> parallel case, would be able to test it? It is in the 'next' branch:
+>
+> =E2=AC=A2[acme@toolbox pahole]$ git log --oneline -5
+> f37212d1611673a2 (HEAD -> master) pahole: Teduce memory usage by smarter =
+deleting of CUs
+>
 
-Thank you, I will do that next time.
+*R*edzce? memory usage ...
 
-> > +static u32 decode_vdma_count(u32 regval)
-> > +{
-> > +     /* compressed encoding for vdma count
-> > +      * regval: VDMA count
-> > +      * 0-15  : 1 - 16
-> > +      * 16-19 : 20, 24, 28, 32
-> > +      * 20-23 : 40, 48, 56, 64
-> > +      * 24-27 : 80, 96, 112, 128
-> > +      */
-> > +     if (regval < 16)
-> > +             return regval + 1;
-> > +     return (4 << ((regval - 16) / 4)) * ((regval % 4) + 5);
-> Is there a potential for regval to be out of bounds (regval > 27)  that
-> needed to be handled properly?
+-Sedat-
 
-The IP core documentation we have only defines support upto 128 VDMAs.
-The same formula should for higher values (bound by bitmask).
-
-> > diff --git a/drivers/net/ethernet/stmicro/stmmac/dw25gmac.h b/drivers/n=
-et/ethernet/stmicro/stmmac/dw25gmac.h
-> > new file mode 100644
-> > index 000000000000..c7fdf6624fea
-> > --- /dev/null
-> > +++ b/drivers/net/ethernet/stmicro/stmmac/dw25gmac.h
-> > @@ -0,0 +1,90 @@
-> > +/* SPDX-License-Identifier: GPL-2.0-only */
-> > +/* Copyright (c) 2024 Broadcom Corporation
-> > + * DW25GMAC definitions.
-> > + */
-> > +
-> > +#define XXVGMAC_ADDR_OFFSET          GENMASK(14, 8)
-> > +#define XXVGMAC_AUTO_INCR            GENMASK(5, 4)
-> > +#define XXVGMAC_CMD_TYPE                     BIT(1)
-> > +#define XXVGMAC_OB                   BIT(0)
-> > +#define XXVGMAC_DMA_CH_IND_DATA              0X00003084
-> nit: lower case please, 0x00003084.
-
-Thanks, will fix it.
+> Excerpt of the above:
+>
+>     This leads to deleting ~90 CUs during parallel vmlinux BTF generation
+>     versus deleting just 1 prior to this change.
+>
+> c7ec9200caa7d485 btf_encoder: Add "distilled_base" BTF feature to split B=
+TF generation
+> bc4e6a9adfc72758 pahole: Sync with libbpf-1.5
+> 5e3ed3ec2947c69f pahole: Do --lang_exclude CU filtering earlier
+> c46455bb0379fa38 dwarf_loader: Allow filtering CUs early in loading
+> =E2=AC=A2[acme@toolbox pahole]$
+>
+> - Arnaldo
+>
 
