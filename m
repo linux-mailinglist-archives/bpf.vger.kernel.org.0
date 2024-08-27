@@ -1,128 +1,135 @@
-Return-Path: <bpf+bounces-38209-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38210-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 587629618C5
-	for <lists+bpf@lfdr.de>; Tue, 27 Aug 2024 22:51:05 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2DF039618F2
+	for <lists+bpf@lfdr.de>; Tue, 27 Aug 2024 23:02:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 07E531F24656
-	for <lists+bpf@lfdr.de>; Tue, 27 Aug 2024 20:51:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BF75BB21F78
+	for <lists+bpf@lfdr.de>; Tue, 27 Aug 2024 21:02:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9AE91D318D;
-	Tue, 27 Aug 2024 20:50:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A4751D3631;
+	Tue, 27 Aug 2024 21:01:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OsW9zN7S"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Mm9D3w0X"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D11211D2780
-	for <bpf@vger.kernel.org>; Tue, 27 Aug 2024 20:50:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CCF61D2F5C
+	for <bpf@vger.kernel.org>; Tue, 27 Aug 2024 21:01:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724791859; cv=none; b=hqs1O50BCMR49sIK/Z2rjUL2SyZs4VMzoTeTeOTDpMPkyMkN0sonKK1YfgHCIM700VIlYW178kq37pQKbKk50QtfNfZmdGGFaZ5FeN92A5uIObYCiMVwId8l0lkRccghBYAwTcwoaa/HjWysgvTmsLO18S5mGUEes8YaGzwBv+Q=
+	t=1724792496; cv=none; b=pV+4KVUnfll5bQ/MO+WqlgB03MLNnxUMmg7eJJNwhQ3xsfa5V799g+fbcUK1vZUeeqdxcv3NcKrTa9/iyRfs69ImFswqpElntONyNdkUoKW6TBiw0U3ciIC6GLhzuWg/FpXLnocMBgkH91xcwT9yk5ZB8Vy8kgdqVhEitBfvn68=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724791859; c=relaxed/simple;
-	bh=AysLGNjtUG7H9zwKmPRl7V2VJ8kxJke3MQkhX2aMEGU=;
+	s=arc-20240116; t=1724792496; c=relaxed/simple;
+	bh=aIvVj5GB7VcDLbNMVHvRWLjgqRh/7swXoZjUbpS5dG0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=c+hjy0s2RIwMaYEMuxpDsMBy7vzXKiRDysyE+f6nsKbOy6aiFxKj9+EtrR+hmJoSTw4ulpLSmzkG5j4X5OCDmOs3L7wOJAYSbMJQWhhsSNoi9IamuAApFg0d0qmvR9sSxpPbBQbu2zfNpc8MQgZEPIjMk4CuortPh4ofl3FGARM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OsW9zN7S; arc=none smtp.client-ip=209.85.128.54
+	 To:Cc:Content-Type; b=qsILwyqlJ61zUi0FJdoUvhjZiwxOFtRl/pC2S3MOAqs9mbARyUtZare3pz6RdtdFJrIS8iPMsv/16QpeANWHidxFcQf67wZDD1X7l2o4jjV81MnVoMFsl0wUe4Qjo4ALooumRuKCUD/GHgOjIaT4hAbvTbY/9wuNwOVNOF0yYOY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Mm9D3w0X; arc=none smtp.client-ip=209.85.221.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-4280b3a7efaso51257245e9.0
-        for <bpf@vger.kernel.org>; Tue, 27 Aug 2024 13:50:57 -0700 (PDT)
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-371a92d8c90so3088482f8f.3
+        for <bpf@vger.kernel.org>; Tue, 27 Aug 2024 14:01:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1724791856; x=1725396656; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1724792493; x=1725397293; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=pPT1mPxctDrHDMwVvEL0rYvpNuwx7rbLWzqeCXKR0jk=;
-        b=OsW9zN7SplPbjQz9kLUGlD6VP/fW/GF7IzsAx8oevsLNQHygf3yt7cGbmZb9fkzJIV
-         clOMdSc7MfCVRmhENOlcfCnVTmHGYWBiYBr/XH3hziMvPCubWdkCZf0NjNUDeWhmBSpW
-         xuWvDZzNAVzcVPL0jHjMh7KMyGrVDRnzddDe4lsfXnLbz8Fzvi5gynICiFlkvXT+LYmt
-         y0YIVsbAb9XTu10juE7Wr4G0GLURM4eSAzuBejZ8X08Mvb7Q2dyd/ETZqwsXmzGNBOM6
-         6m5hQZE+GTsCcUH421WeCt3l/JlRYm2JPsm/rvQ7MxXphh0A9fhVLBG4IsQyajogYZt4
-         inbw==
+        bh=BXozvQ8yAFMtEYsjhmoA8OgUC22pqhoiVfJSYp4fgcU=;
+        b=Mm9D3w0XeBftreC1Df/sf7fLeo8H0b+O6wouhoJuXsE6+XnzEq8JG3MhvXjIZsUhDp
+         sNPuUUUIOJH+HBiUKIWGba3qvs9zKRyF5wY4q61gqsbRPQBmcpz15yYlNc1xl2BEVONq
+         F7QRCD/EXzPe798oqd3HbR9KSw3m3G7qdx/A3jxx4qM109xWbytrDXvADe6AQQpLUa1P
+         DHfGRVtRqrCX1+jcCDvqErZSRSMXSbjV7RGkm4j/rls8YVaVlo7573KStVjV7yfDeqFd
+         n1br/GZyM+LuqMM047RjhN1rS7EpwaDXqH9+zRcXVyuMsGXO8V4SOdm4pttalQ65fwME
+         z6ig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724791856; x=1725396656;
+        d=1e100.net; s=20230601; t=1724792493; x=1725397293;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=pPT1mPxctDrHDMwVvEL0rYvpNuwx7rbLWzqeCXKR0jk=;
-        b=rBSw84aPIuhBACrEo6IQrIvVcIrfJEsNHqCquPSMpkWois9u9f1fJBX0XVp6Fld6b4
-         9DtfxFVyLgkjJ+e4bPIk40d/SYk9TDFoZn/VgzVWsoV/YRicc1hTBqigx7w9xDJ1TpnK
-         3vQ/SSfxSg/IIyI1bwsDd6MMSyk4axzWqhAXdu8gJfDerXi6+a0BnFf8yYaGKg5dIc75
-         Tc/Ihc+2EyIIZ2pXZXApWbYJ0NYPWWoVDwAURK6qNE6yoostogu1rk0LPZKQag5LMcd8
-         U12jwr97jjtZa1MgGo0zoyTN9ieYaFs8H7I5IxpU8bc3ohqeuy6P1jAHF5zJ7CNc52q/
-         /f6A==
-X-Forwarded-Encrypted: i=1; AJvYcCUK4vNgD9OsVbOXPm4sQaLIhAqbbQEcwE96vodcrO5RRbO5dMsLMl0x1eM6UIthHeJQiN8=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw2IHgzEHLB7PgNbZY3EOe9RWAmxlEActZTGwS+Hea29vyvhMIm
-	gr1LFmzptTqT+7jj6H0+0s7iM5gS/5FTYyW94pI0rtyaN85qvdKFu5FZS2YvoymN82tfHfiHHGl
-	RFegWIpL7ygUcaT3e5zPfJogg4ao=
-X-Google-Smtp-Source: AGHT+IEClX75+7BsmF2l4/mcMLBWxhyZQBrE+mJ6pdCwwo6h+V7XKNPiNB8grkpnl9rwE0cvUbXPQ3PR/2Q4JyzuDyM=
-X-Received: by 2002:adf:a295:0:b0:371:9377:8cb5 with SMTP id
- ffacd0b85a97d-3748c7ceff7mr2566922f8f.14.1724791855797; Tue, 27 Aug 2024
- 13:50:55 -0700 (PDT)
+        bh=BXozvQ8yAFMtEYsjhmoA8OgUC22pqhoiVfJSYp4fgcU=;
+        b=qiFawh04N6yZHz8y+WfkvB2cAJHSeDJ+9icKpbIeBiTr4E/irRscc7JQF2bpcQ3l2k
+         he9yBj38BbSIEjH94wkakuomKNtTRd5Ir6Xb4zNTYQ9aqBx+Psb0MgitZEUTOsLq6GpL
+         3gtAncuNATLfdrAwasBgU3rJ6eeGgf4XZxUeFTwC27OrfkYvGv2YR1Z9hhNxXW67hzy8
+         uhpKsn+BSvSrO/dWP8u7/sVYZU9AheabN+QBL7xRt/zZhIdLc1fbARxQsHcgbffyzTCb
+         XHTGDqDMNrTMXSXpckuEv+ncMvhfBvuRJ7Ux+vCwi+DWqvHMgcfF2Uyu5pI56DLiZSfe
+         c/lA==
+X-Forwarded-Encrypted: i=1; AJvYcCUwzSP6WRt7vfwwbjd1wKmGnIKzuJfcnog8LR0JlpHy0Ltlyg6mRq+qDi0vcnRheFXm0Vc=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzG0I8jRrhC3+NLxY7hdjoDxR/1JBCZBVIGySEm8jJbYkaw4g07
+	s3VzEhxg9yCF1Eh/lptvImuimv1QRbNPt4UNDbmmE/2cufINdSxN5FVSH3fNugL0CnMPj6La2dI
+	b3AoU7FXT8RAAaC03h9oob0Yu9IM=
+X-Google-Smtp-Source: AGHT+IH5kNejjb7CdlX1AG65ecmLJBgfIl1Y/n1AhTWYemFKKYxxMal6c61kiFbDTelq9X+/YW9JuuWbplHyAlRvXAU=
+X-Received: by 2002:a5d:428f:0:b0:371:8277:6649 with SMTP id
+ ffacd0b85a97d-3748c7c7892mr2571797f8f.2.1724792492573; Tue, 27 Aug 2024
+ 14:01:32 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240825130943.7738-1-leon.hwang@linux.dev> <20240825130943.7738-2-leon.hwang@linux.dev>
- <699f5798e7d982baa2e6d4b6383ab6cd588ef5a9.camel@gmail.com> <dc2d2273-6bd7-4915-aa77-ad8f64b36218@linux.dev>
-In-Reply-To: <dc2d2273-6bd7-4915-aa77-ad8f64b36218@linux.dev>
+References: <20240826224814.289034-1-inwardvessel@gmail.com> <20240826224814.289034-2-inwardvessel@gmail.com>
+In-Reply-To: <20240826224814.289034-2-inwardvessel@gmail.com>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 27 Aug 2024 13:50:44 -0700
-Message-ID: <CAADnVQJZ_jyDzpW8rMuOH2jkiP6mAXMn21DDvF=PA9L8xYt3PQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/4] bpf, x64: Fix tailcall infinite loop caused
- by freplace
-To: Leon Hwang <leon.hwang@linux.dev>
-Cc: Eduard Zingerman <eddyz87@gmail.com>, bpf <bpf@vger.kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
-	Puranjay Mohan <puranjay@kernel.org>, Xu Kuohai <xukuohai@huaweicloud.com>, 
-	Ilya Leoshkevich <iii@linux.ibm.com>, kernel-patches-bot@fb.com
+Date: Tue, 27 Aug 2024 14:01:21 -0700
+Message-ID: <CAADnVQJp3Me_tXRs6Nupbi93bAj2D-sFuN-N7DMfKU=EtMu5ow@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/3] bpf: new btf kfunc hooks for tracepoint
+ and perf event
+To: JP Kobryn <inwardvessel@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Eddy Z <eddyz87@gmail.com>, 
+	bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Aug 27, 2024 at 5:48=E2=80=AFAM Leon Hwang <leon.hwang@linux.dev> w=
-rote:
+On Mon, Aug 26, 2024 at 3:48=E2=80=AFPM JP Kobryn <inwardvessel@gmail.com> =
+wrote:
 >
-> > I wonder if disallowing to freplace programs when
-> > replacement.tail_call_reachable !=3D replaced.tail_call_reachable
-> > would be a better option?
-> >
+> The additional hooks (and prog-to-hook mapping) for tracepoint and perf
+> event programs allow for registering kfuncs to be used within these
+> program types.
 >
-> This idea is wonderful.
+> Signed-off-by: JP Kobryn <inwardvessel@gmail.com>
+> ---
+>  kernel/bpf/btf.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
 >
-> We can disallow attaching tail_call_reachable freplace prog to
-> not-tail_call_reachable bpf prog. So, the following 3 cases are allowed.
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index 520f49f422fe..4816e309314e 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -210,6 +210,7 @@ enum btf_kfunc_hook {
+>         BTF_KFUNC_HOOK_TC,
+>         BTF_KFUNC_HOOK_STRUCT_OPS,
+>         BTF_KFUNC_HOOK_TRACING,
+> +       BTF_KFUNC_HOOK_TRACEPOINT,
+>         BTF_KFUNC_HOOK_SYSCALL,
+>         BTF_KFUNC_HOOK_FMODRET,
+>         BTF_KFUNC_HOOK_CGROUP_SKB,
+> @@ -219,6 +220,7 @@ enum btf_kfunc_hook {
+>         BTF_KFUNC_HOOK_LWT,
+>         BTF_KFUNC_HOOK_NETFILTER,
+>         BTF_KFUNC_HOOK_KPROBE,
+> +       BTF_KFUNC_HOOK_PERF_EVENT,
+>         BTF_KFUNC_HOOK_MAX,
+>  };
 >
-> 1. attach tail_call_reachable freplace prog to tail_call_reachable bpf pr=
-og.
-> 2. attach not-tail_call_reachable freplace prog to tail_call_reachable
-> bpf prog.
-> 3. attach not-tail_call_reachable freplace prog to
-> not-tail_call_reachable bpf prog.
+> @@ -8306,6 +8308,8 @@ static int bpf_prog_type_to_kfunc_hook(enum bpf_pro=
+g_type prog_type)
+>         case BPF_PROG_TYPE_TRACING:
+>         case BPF_PROG_TYPE_LSM:
+>                 return BTF_KFUNC_HOOK_TRACING;
+> +       case BPF_PROG_TYPE_TRACEPOINT:
+> +               return BTF_KFUNC_HOOK_TRACEPOINT;
 
-I think it's fine to disable freplace and tail_call combination altogether.
-
-And speaking of the patch. The following:
--                       if (tail_call_reachable) {
--
-LOAD_TAIL_CALL_CNT_PTR(bpf_prog->aux->stack_depth);
--                               ip +=3D 7;
--                       }
-+                       LOAD_TAIL_CALL_CNT_PTR(bpf_prog->aux->stack_depth);
-+                       ip +=3D 7;
-
-Is too high of a penalty for every call for freplace+tail_call combo.
-
-So disable it in the verifier.
-
-pw-bot: cr
+why special case tp and perf_event and only limit them to cpumask?
+The following would be equally safe, no?
+         case BPF_PROG_TYPE_TRACING:
+         case BPF_PROG_TYPE_LSM:
+ +       case BPF_PROG_TYPE_TRACEPOINT:
+ +       case BPF_PROG_TYPE_PERF_EVENT:
+                return BTF_KFUNC_HOOK_TRACING;
+?
 
