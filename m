@@ -1,54 +1,54 @@
-Return-Path: <bpf+bounces-38154-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38155-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C8C5960A14
-	for <lists+bpf@lfdr.de>; Tue, 27 Aug 2024 14:26:24 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A00A2960AC8
+	for <lists+bpf@lfdr.de>; Tue, 27 Aug 2024 14:45:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 26DBEB2276D
-	for <lists+bpf@lfdr.de>; Tue, 27 Aug 2024 12:26:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D6F9283C73
+	for <lists+bpf@lfdr.de>; Tue, 27 Aug 2024 12:45:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A55EA1B4C3E;
-	Tue, 27 Aug 2024 12:25:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7AB31A08DF;
+	Tue, 27 Aug 2024 12:45:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="ewfZ7R9s"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="EcUAECZN"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FB291B4C2D;
-	Tue, 27 Aug 2024 12:25:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3964019CCE7;
+	Tue, 27 Aug 2024 12:45:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724761520; cv=none; b=a+KTWwDRO1K+lXeYo0NVVlpmMZrZk2KW4NWRSn9qg3QZrrwEcA6gmw8++9Ik5AyH+BlqDslKZosgSHDFp3sGiTJ8qddnN5D0lnUAt2c6yBdjCmkD4zUMMbFet/Jriustx5N8/Xye4uiKtz5vls9nFSrP5Z+wQEdPT+B6HzgTJJ0=
+	t=1724762735; cv=none; b=RWqnQfen3Z2K+aJ7Cdnw8MsFSnZUCayGC6/KADFJeYqVOOpsyK4th+aGhIcxnmPLIk5oUFVM4THBoTWNnsYP0+CaRNDlosTIbCgeVPFSWJ8IezIFb/U9oMmaiTBTgcbi4+sDNR90vNQzTxJg/iumiSJXN3x2dr2eps8Ow07lMTc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724761520; c=relaxed/simple;
-	bh=Qnlb3gzI+fD0av5A4j+IPx7bavbCkcKgy1ctqjJ5VZo=;
+	s=arc-20240116; t=1724762735; c=relaxed/simple;
+	bh=np1f0iS3PKRxhLTFgfc1+lPPEbJpFk1twIwEjdOV8ec=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DiMwrJ7dSiLP7oVNirnFilW7YRUU+ntkTt+w5fTlaW2TfOuoL9YHp/Wh5XFOLoQKrhGJoGA2vlvYDC44NZ4PHJHZYUIgyUUIv/HCqhFFeTd002CUda7ubrbGkCKAz5YiXsLS5+IMOHF65W0sQfIbStPBom/IlEfKFLxko2ln+rw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=ewfZ7R9s; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D8D9C61041;
-	Tue, 27 Aug 2024 12:25:19 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=mAecPfcLkLra6vor3LXEW6wGRbOBq98VftSD9hrjRKRg6YkydBxWk1VfF8n4RzdKzEhLxRUmWGPWVLQBR1XywMiLYdyGS5Bt3lzunmPdRyaGmQm9jKFMHugQOBIVfHPg+qQxVrA7BsXpEzNgPpJiXuQCxiea48INya9F5tyU90c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=EcUAECZN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33C14C4FF6A;
+	Tue, 27 Aug 2024 12:45:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1724761519;
-	bh=Qnlb3gzI+fD0av5A4j+IPx7bavbCkcKgy1ctqjJ5VZo=;
+	s=korg; t=1724762734;
+	bh=np1f0iS3PKRxhLTFgfc1+lPPEbJpFk1twIwEjdOV8ec=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ewfZ7R9s3E0uhuSqrGMJjOrbQzKKCsb3tKrHcyVNEvxNaZOxKcaG9/i2Qx2w584s/
-	 wItpWc1QKD2RCjXBKFR7s7O4JusvulIJOe1vZT3rNagc8iCNkhNIhAWd+b2tYOV3f4
-	 K2jJUTkO/iCtZVbLsT6xQQVLPlbn2qTCWPxR3yA4=
-Date: Tue, 27 Aug 2024 14:25:16 +0200
+	b=EcUAECZNhSB2x2eOlnV0jR0nN4+IghP1CVbG1UWYwRA1IzJSU95LxaHjmE1i0/mob
+	 iNn+34Pqdxu76j/pPE+RnGD5MWPzwZuDRdgFY7WWfb1l1ggiijJHL1Ri/8hIeGw39q
+	 vRG5icPKtiiJuwP7ReXgP2AzybZu1gvum4aKgecI=
+Date: Tue, 27 Aug 2024 14:45:31 +0200
 From: Greg KH <gregkh@linuxfoundation.org>
 To: Shung-Hsi Yu <shung-hsi.yu@suse.com>
-Cc: stable@vger.kernel.org, Sasha Levin <sashal@kernel.org>,
-	bpf@vger.kernel.org, Yonghong Song <yonghong.song@linux.dev>,
+Cc: stable@vger.kernel.org, bpf@vger.kernel.org,
+	Yonghong Song <yonghong.song@linux.dev>,
 	Alexei Starovoitov <ast@kernel.org>
-Subject: Re: [PATCH stable 6.10 2/2] selftests/bpf: Add a test to verify
+Subject: Re: [PATCH stable 6.6 2/2] selftests/bpf: Add a test to verify
  previous stacksafe() fix
-Message-ID: <2024082706-strongbox-driving-46c5@gregkh>
-References: <20240823014631.114866-1-shung-hsi.yu@suse.com>
- <20240823014631.114866-2-shung-hsi.yu@suse.com>
+Message-ID: <2024082722-carwash-reaffirm-f23c@gregkh>
+References: <20240823014829.115038-1-shung-hsi.yu@suse.com>
+ <20240823014829.115038-2-shung-hsi.yu@suse.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -57,9 +57,9 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240823014631.114866-2-shung-hsi.yu@suse.com>
+In-Reply-To: <20240823014829.115038-2-shung-hsi.yu@suse.com>
 
-On Fri, Aug 23, 2024 at 09:46:31AM +0800, Shung-Hsi Yu wrote:
+On Fri, Aug 23, 2024 at 09:48:29AM +0800, Shung-Hsi Yu wrote:
 > From: Yonghong Song <yonghong.song@linux.dev>
 > 
 > [ Upstream commit 662c3e2db00f92e50c26e9dc4fe47c52223d9982 ]
@@ -80,8 +80,11 @@ On Fri, Aug 23, 2024 at 09:46:31AM +0800, Shung-Hsi Yu wrote:
 > Link: https://lore.kernel.org/r/20240812214852.214037-1-yonghong.song@linux.dev
 > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 > Signed-off-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+> ---
+>  tools/testing/selftests/bpf/progs/iters.c | 54 +++++++++++++++++++++++
+>  1 file changed, 54 insertions(+)
 
-Now queued up, thanks.
+Both now queued up,t hanks.
 
-greg k-h
+gre gk-h
 
