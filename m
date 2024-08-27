@@ -1,96 +1,128 @@
-Return-Path: <bpf+bounces-38122-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38123-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6B8195FF01
-	for <lists+bpf@lfdr.de>; Tue, 27 Aug 2024 04:24:25 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 419AF960050
+	for <lists+bpf@lfdr.de>; Tue, 27 Aug 2024 06:30:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 25B901C21B83
-	for <lists+bpf@lfdr.de>; Tue, 27 Aug 2024 02:24:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D02A51F2268A
+	for <lists+bpf@lfdr.de>; Tue, 27 Aug 2024 04:30:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3089CD53F;
-	Tue, 27 Aug 2024 02:24:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF78E4C634;
+	Tue, 27 Aug 2024 04:30:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Tb8x4Umb"
+	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="YSFGESaS"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
+Received: from out203-205-221-236.mail.qq.com (out203-205-221-236.mail.qq.com [203.205.221.236])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BEE3DDAB
-	for <bpf@vger.kernel.org>; Tue, 27 Aug 2024 02:24:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 127542556F;
+	Tue, 27 Aug 2024 04:30:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.236
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724725452; cv=none; b=efK7YBPSYCh0tz8WnYFTuIye414C+Ygz2AHA8KIgmFSq5bO0XHPtebTds7btyRctuXfMGhIIhodPEV0e+CkO4wUpMwos8DH2Pvnxpq701E1fBSe6cAZ11ytuVoakqrvOze728InpilPU5kYJR2gncCofiJSuTa7nTIGa26p+2Z8=
+	t=1724733041; cv=none; b=cMqFT0S1QAreLZqVfDz6h9TQRRGYrVdsBPRzG1AszCXFIZAKGQhJ6uhEUtjYSxRG7L1N9jw2vmqhGKxOo5nifz0vWa1ozTc0cDIbh2vTVkdc9QzmB3G2/hicrow8PqA101Ejo5YoJayuwFcxdWM7yvT3EFxzdTwaAzEOgs8iBqY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724725452; c=relaxed/simple;
-	bh=RwkFbmGA6dJ+h4u68iDFj48fOepnJCi3ZshlyPHpCRg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gWMajRHtPi9M1f3q8/mvnWiTrt/aQK201XS0Q+MPfv8AiT+qMt07opjUw2OAjKdk35ODBXXwDZ1mDNSzncfBZSDHrJr6YxHweDo6UTGi0st/j7Q4GRANupIo1H0qOQ9/YYCycxVb1cFt6kN0/2UUC4BM8DP+OVnv82asYzsZpSk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Tb8x4Umb; arc=none smtp.client-ip=95.215.58.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <0900df03-b1cd-41fb-be04-278e135cc730@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1724725447;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=adKqNrir+w51CfDtvwt9u64x3ymutTqSZEZs+xEHFXM=;
-	b=Tb8x4Umbr7+j4jS3uYWeE437sp0IetV6127DS5cEqr+ujNuGtq23W5owL7QPIyF3jG3d91
-	85He2JH4uBi2Kj15/HMVduRLZqBEBnOWaCO7NI0atxNW80ieHymelcKkT0JY4VSvsbcDl4
-	sSwSL2qUqnFb7wMxPFQZoA5kPVQUbxM=
-Date: Tue, 27 Aug 2024 10:23:17 +0800
+	s=arc-20240116; t=1724733041; c=relaxed/simple;
+	bh=fJlWSB8zEpvURa02sugoo7IDNT7J4LoH2lrYQThCUfo=;
+	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version; b=KsE+6Jp5xq9mEeCUZnRUjnJIKZqmHbJnI7pMKDtxryvHxwYYmhMfASgza75ZBr92IFvHxX4jf7x5fJDujjxeCMjNycWWehw1R1VchTR3ZY5JnPZ6j5+EwsQRwhoyZiFc5HmrN44Np75tUaMD8Z68E4ZkMFMS9Eq5lKzkkEmmnzM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=YSFGESaS; arc=none smtp.client-ip=203.205.221.236
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+	s=s201512; t=1724733036;
+	bh=09iYwJ8SAKD94+ckhkuk//gibULwSwL3Fhx0GI/RLJc=;
+	h=From:To:Cc:Subject:Date;
+	b=YSFGESaS/2P6z1WQEi8RiAg7cZsPQXX0bh7rPu/Z7is6lqmm+uMFYXtLe0ksE7w1z
+	 2/a8s4uGXePpXo4R0SNGsT0RyUO8htKEciP5souEOpYJ80o+MMWElOzRcTXl6oA7+v
+	 GdX3Y4nHbsNkaMwX9TKjBF7+iRKPm8maSovTMYvQ=
+Received: from RT-NUC.. ([39.156.73.10])
+	by newxmesmtplogicsvrsza29-0.qq.com (NewEsmtp) with SMTP
+	id 79FA3A9B; Tue, 27 Aug 2024 12:30:31 +0800
+X-QQ-mid: xmsmtpt1724733031tyh1ijb7f
+Message-ID: <tencent_34E5BCCAC5ABF3E81222AD81B1D05F16DE06@qq.com>
+X-QQ-XMAILINFO: OKkKo7I1HxIeMtYPow0rvLqNZ5A0akD8uH7orL2G499xmgZSl2uRct0ysgOLSj
+	 6y9lpxLOLNtOmJu8TplsdGSJJTHyek90E181vJSO3XKJIN6NylreJ5vp3tekCFYKn00ZB5QJr+qJ
+	 mZV6D1zV7I3mjcYF/FCF70QmuCcd40eSBFjdrfYetAoixiEBQFIKL/sthJPT8LPhEUT4R+2IJzX6
+	 4+cjsAtTm3COIys0iuk2JWVqHbhl1XE22PrPutrks/Lsiw7Z2vTbxGgfAFmF+XRgRutmlDBZsoVB
+	 TJQUYvS+E76Y5GMXy4NQOhp5YG3XtKdlphsertrds1SC8u6+QoVjZs708Ha22Z+9yxKgMV0vMrnp
+	 W6Gi+ggus/MgJphUYU0yd7uXFrUuLalUq8LywEseYBRQuJl3Eiv2BRv0ZAsIUH68DvLeb6sRARCA
+	 qnZuQOpGkVc0x5Hyk7qPZCWFzuVdd5aEEwBpYLSs9dTnL8OC8yuslJBIXJNX7YSmMyt69bTUbjkn
+	 9oZoUMhycoGywV480oQDdMKnAYUntQv4aunz7nPhfZ82rL2ZTZGC4WTn/3hVznH5MGM8inXbZEX5
+	 q8GHuE4PJW0A1jA7jo9tJZjibPZ7Zk+nHy0tBIkgyis+XSm9AsAdbL8REXLZn67g/3JFDoBqQ6fI
+	 T0kEFnAWnWrkMJ8ftfKIRa7w6+lh0Txreeiv9u4GdLYLK2M9M3l6525rxBJqAsdZ1nbckupzKpJP
+	 fRitYH1DGpKbgWzS4bsoazz8rLvI4AGCGgHHQKYEGi2dAvykgAxS1G8iaIon/avlkAAHIRAJlNYO
+	 G1yoIRPJb7ZGdwKiiA4GBAuyrFGdYpjlOT3fcGWdrcic9aGmOpwk5zSxshGB8V3mqd5zJgXusrDv
+	 UKIWYTAO/zIn4VjT89bDvBdwvBR3txC+iJcPNZYy0zpQsa8mtjfgAJQt6h98r6SrEd+gyrgHtmle
+	 JVwESmT3UaIzuHfWzxk8LQRrXL9EMKTORD5av/QaP3nIxdHqcNcIPxs3W/iqY7
+X-QQ-XMRINFO: NI4Ajvh11aEj8Xl/2s1/T8w=
+From: Rong Tao <rtoax@foxmail.com>
+To: ast@kernel.org,
+	daniel@iogearbox.net
+Cc: Rong Tao <rongtao@cestc.cn>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	bpf@vger.kernel.org (open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)),
+	linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH bpf-next] samples/bpf: tracex4: Fix failed to create kretprobe 'kmem_cache_alloc_node+0x0'
+Date: Tue, 27 Aug 2024 12:30:30 +0800
+X-OQ-MSGID: <20240827043030.175600-1-rtoax@foxmail.com>
+X-Mailer: git-send-email 2.46.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next 2/4] bpf, arm64: Fix tailcall infinite loop
- caused by freplace
-Content-Language: en-US
-To: Xu Kuohai <xukuohai@huaweicloud.com>, bpf@vger.kernel.org
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, toke@redhat.com,
- martin.lau@kernel.org, yonghong.song@linux.dev, puranjay@kernel.org,
- eddyz87@gmail.com, iii@linux.ibm.com, kernel-patches-bot@fb.com
-References: <20240825130943.7738-1-leon.hwang@linux.dev>
- <20240825130943.7738-3-leon.hwang@linux.dev>
- <a9ce98d0-adfb-4ed9-8500-f378fe44d634@huaweicloud.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Leon Hwang <leon.hwang@linux.dev>
-In-Reply-To: <a9ce98d0-adfb-4ed9-8500-f378fe44d634@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 
+From: Rong Tao <rongtao@cestc.cn>
 
+commit 7bd230a26648 ("mm/slab: enable slab allocation tagging for kmalloc
+and friends") [1] swap kmem_cache_alloc_node() to
+kmem_cache_alloc_node_noprof().
 
-On 26/8/24 22:32, Xu Kuohai wrote:
-> On 8/25/2024 9:09 PM, Leon Hwang wrote:
->> Like "bpf, x64: Fix tailcall infinite loop caused by freplace", the same
->> issue happens on arm64, too.
->>
+    linux/samples/bpf$ sudo ./tracex4
+    libbpf: prog 'bpf_prog2': failed to create kretprobe
+    'kmem_cache_alloc_node+0x0' perf event: No such file or directory
+    ERROR: bpf_program__attach failed
 
-[...]
+Link: https://github.com/torvalds/linux/commit/7bd230a26648ac68ab3731ebbc449090f0ac6a37
+Signed-off-by: Rong Tao <rongtao@cestc.cn>
+---
+ samples/bpf/tracex4.bpf.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> 
-> This patch makes arm64 jited prologue even more complex. I've posted a
-> series [1]
-> to simplify the arm64 jited prologue/epilogue. I think we can fix this
-> issue based
-> on [1]. I'll give it a try.
-> 
-> [1]
-> https://lore.kernel.org/bpf/20240826071624.350108-1-xukuohai@huaweicloud.com/
-> 
+diff --git a/samples/bpf/tracex4.bpf.c b/samples/bpf/tracex4.bpf.c
+index ca826750901a..d786492fd926 100644
+--- a/samples/bpf/tracex4.bpf.c
++++ b/samples/bpf/tracex4.bpf.c
+@@ -33,13 +33,13 @@ int bpf_prog1(struct pt_regs *ctx)
+ 	return 0;
+ }
+ 
+-SEC("kretprobe/kmem_cache_alloc_node")
++SEC("kretprobe/kmem_cache_alloc_node_noprof")
+ int bpf_prog2(struct pt_regs *ctx)
+ {
+ 	long ptr = PT_REGS_RC(ctx);
+ 	long ip = 0;
+ 
+-	/* get ip address of kmem_cache_alloc_node() caller */
++	/* get ip address of kmem_cache_alloc_node_noprof() caller */
+ 	BPF_KRETPROBE_READ_RET_IP(ip, ctx);
+ 
+ 	struct pair v = {
+-- 
+2.46.0
 
-Your patch series seems great. We can fix it based on it.
-
-Please notify me if you have a successful try.
-
-Thanks,
-Leon
 
