@@ -1,226 +1,221 @@
-Return-Path: <bpf+bounces-38213-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38214-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 497C4961A0E
-	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 00:37:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3362961A13
+	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 00:40:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C0A341F2415D
-	for <lists+bpf@lfdr.de>; Tue, 27 Aug 2024 22:37:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7FD48284D30
+	for <lists+bpf@lfdr.de>; Tue, 27 Aug 2024 22:40:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41E431D3652;
-	Tue, 27 Aug 2024 22:37:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A95F71D3656;
+	Tue, 27 Aug 2024 22:40:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bYIkbl9S"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="laGMwdkd"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
+Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50E98176AD8
-	for <bpf@vger.kernel.org>; Tue, 27 Aug 2024 22:37:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB67D176AD8
+	for <bpf@vger.kernel.org>; Tue, 27 Aug 2024 22:40:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724798264; cv=none; b=gSEhz9IFvxrkNnHfC5G87Zbv8Pu6nRQsi0qT3W2KLgAgYXWX2KwPgiiejI2Q6DFXSKhT6GUM+oOyOOjOL5oh1c8JfxeoPd3anoeP+19eDfRR4kHAa9jqZ0j0MNwQ2A1SVWslmrRsFI6HZOVZdlAlGewZmyieDv2b1GeoS4/eQDk=
+	t=1724798409; cv=none; b=Sgup5dNKfRupW7Hvt7KoAZUC7Y2yVK76a/WwlVHR0XLGmEh41c5BeAEJJ9ajB/h4LdnX0JCQqnRtfrmSjp2IojAa3T227dwOGVmWBhWcVmTmn5ZNGMZi+ku97X9ZbctCsg2wFflx2DFw/MPvWlbnTD7fl6VMi861u05B+EenioI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724798264; c=relaxed/simple;
-	bh=4pWvJGSPddqU4SWPdNDQibsDHcLOz+iQOk4scGrP+lg=;
+	s=arc-20240116; t=1724798409; c=relaxed/simple;
+	bh=mScWz+k8aRYTbjs9bXYRdtuisU4Q4ipuOaLisTMLFWM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JTlwLjjhmNWoyQfOb1YH4uuJ920ncWVnPkujq7hae2w1Kz4FmdsppveMVwncyku+Jg2+lu4/1JikDtNORd5NRQckuKqodyOATjVeRNNCJsv+VNU2oTQAxC6BgIcHu9c47wp9Parr7WEWc2hVnDHLAu/ngtBFq3Vk8SYbGvlV64M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bYIkbl9S; arc=none smtp.client-ip=209.85.216.41
+	 To:Cc:Content-Type; b=C9bxoEvWbik49wQur20zlx4qCIlYIIuNAwd5UYO7+bsVWYJa49Wzob9qATA9Vl6gpE/vTL/Dxwgz8DERginliW1F/kRN5kVdSe1Q6qRuzb5vljwlJ6t0znU/meR4+gNmbrnPtf+UkoN5F1yXM6dsJNy4X5xLcg/B1q2F+20qloc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=laGMwdkd; arc=none smtp.client-ip=209.85.216.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-2d3eda6603cso4827191a91.3
-        for <bpf@vger.kernel.org>; Tue, 27 Aug 2024 15:37:43 -0700 (PDT)
+Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-2d439583573so4413189a91.3
+        for <bpf@vger.kernel.org>; Tue, 27 Aug 2024 15:40:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1724798262; x=1725403062; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1724798407; x=1725403207; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=gbM1YOP7GuXuCQW2pPQ+Cu6lUYBLd1+cY5gX6CTCS9Y=;
-        b=bYIkbl9SXlyEVsqKijipd9hDvZcc9MGik3rEnKHQNvLwnLVdLhaqwrSGYbUYylewI+
-         HrGSJra5+y7F06ygCwhdArjHWtSwuUUs311aN2gSe7X6rEPn2MMoNc4A9cigX2IpyRtg
-         PsRNq4KftlsnEneTXCW5LcotNp8Rg3nCR31xpUffcenzESi/SjEcnYp/QcYCJlWBe0+g
-         +fSXDTnMWU87P68I0aamiBgY0gnr+lMUW4PMaKRLbpAXAsamblUAfSeJszwtNCKMYQHi
-         /wO8gDgVxw9H5qxqM5CmBnumeybvieDIg6P+axswXl3whvCGwuq9omUXRv+Jen2JS0tD
-         vFJw==
+        bh=jaUbaJ/gL7mUOE16yxQCc8QT6cpq/+d6nAZ3+KUNtz8=;
+        b=laGMwdkdUAjah43OtIzWPAyWYBDJwpktd/5M8ZzRvCERwWw25YeEpo7Xx7+gSxpKhD
+         tTAC3gYi8QQvtfLNzRcfkwZzeGic0xu1p7CbSCrPC1aEvRno9uNSEL+htN7UOFoOMgnh
+         OoaqcKJ+TWhd41vmqosmVGIMLUx1vtvVUV8/PVDwJkN9SgS3fdKCQTNt79DH5QR6mDDR
+         RRXLg11bTjMzMRxc14Ji43zvAKggt/ahbmrIIc5gn8WQLgc2JfJV3R5i7g8Q36BQ35Ob
+         YjGJc2Bb8K510QyWKDLGiLpPT4VWxvoAvS/gPWp+hP4V7CgZi+wG9tZsKYlA93/cxonJ
+         OjqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724798262; x=1725403062;
+        d=1e100.net; s=20230601; t=1724798407; x=1725403207;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=gbM1YOP7GuXuCQW2pPQ+Cu6lUYBLd1+cY5gX6CTCS9Y=;
-        b=mB5wAosq6GuQQvFqngXJyo9hpP2qWISSnc3x0k2J6TdovsWarM930IidP/zDHp+VCx
-         slHXp4NFaSUs8hBX/PXG2i89gbjOetlQvhHrK4LqAN36lI4V/MC66ZtmAmRwX5LbxpVx
-         UWRXmmTVDtK0e3BgTvr6kFeJRos6N5yNj41vAM0UfvbcSwqbfFE4QIeAJ8hk+pNrtLV5
-         3qdlbTogRCYD+k5DWZuDG1mFOOD5S9QQTg91hKbuSwt5Wahcy56TTpdBmgEP4kNXvGN2
-         eecXO8D3JpK09tlY120bJQuWS1+2tJtZtIiECB8WU9bkvIxYimMBjbqHu83DnuTehe5P
-         DWbQ==
-X-Gm-Message-State: AOJu0YyBhY2ZZ1j9W+VQEOi5szIQKOzCKqG3cwDZhfde6fLk7D4jHfCL
-	R8EZXFUetuPndnAkYCNudTzOGNAdz/STRWQvZuql/BX6zOSR3UQ0idCw+mij1OV/34qaS/bSLqp
-	7oLLzi7v3JCovR4Oc3VYx1jHrd+A=
-X-Google-Smtp-Source: AGHT+IHrJjKyeQjXwXlI66nObqvGfIV3bExcGlmqlvy6WoNItiGrMWjGfe1tXyyfJWGIw1RzfGAzvpaMGUkaVbu00Tc=
-X-Received: by 2002:a17:90b:4c10:b0:2cb:5678:7a1c with SMTP id
- 98e67ed59e1d1-2d8440d2024mr225714a91.18.1724798262507; Tue, 27 Aug 2024
- 15:37:42 -0700 (PDT)
+        bh=jaUbaJ/gL7mUOE16yxQCc8QT6cpq/+d6nAZ3+KUNtz8=;
+        b=WaYSDghtuSjkvRg1VbAYDafqdcxxXQtBtqAvuMqh0XkxoaULuWHPIX1okTo9O1koRj
+         3C+hAfkzLT+GY9DRA+KFRa266EHff5y5lNK6IW8kbBUguwJpbOLJ4h+RsfamTs6/A7Wh
+         7hR40dzteRvhhsu3OVgqDe+2JKrn9OYjiwE5QW8KxNgV48jPLlILBz0i7kcFP03aCKo9
+         CMOcT6EnVPwJbNeGASxxbM9dH/f8hKTF7JRSfF/BrW41+OAiSpbho8p6xVweIbDUls08
+         idJzZv9WDFxjiTwIeFE6x95/K1kYP3TSaXFbV352O9yhqkqN1tuimRcQGh4zwwoyIOr8
+         VnXg==
+X-Gm-Message-State: AOJu0Yy6byqn/2I5F9MdmBvQFrTb1WgmFP9+E+0jrKDFXlXrKo36E7hB
+	x97UARF0Kq4N4+4AHZnphXwnxyPe6ZudlJZIYo0Z/y2ijUwEeSIUDUIwZGuffBCqtogRjeGMvtK
+	3rff5efs8FIx6bk4DlWN+14Yhw+M=
+X-Google-Smtp-Source: AGHT+IEPW4DPNhdas4vRpdntlkZiTRxVbHyRFIsw+1k1F5kMf9Td5V52RKBU2RlDrepXH6cfp/Q+0r1JRi/Dyy2PMmc=
+X-Received: by 2002:a17:90a:987:b0:2c9:63ef:95b9 with SMTP id
+ 98e67ed59e1d1-2d8440e7e96mr219037a91.14.1724798406889; Tue, 27 Aug 2024
+ 15:40:06 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240823222033.31006-1-daniel@iogearbox.net>
-In-Reply-To: <20240823222033.31006-1-daniel@iogearbox.net>
+References: <20240823222033.31006-1-daniel@iogearbox.net> <20240823222033.31006-4-daniel@iogearbox.net>
+In-Reply-To: <20240823222033.31006-4-daniel@iogearbox.net>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 27 Aug 2024 15:37:30 -0700
-Message-ID: <CAEf4BzaLhBBPZWwPgTA8bRwxy-Zar07chWm4J9S55EusnH5Yzg@mail.gmail.com>
-Subject: Re: [PATCH bpf 1/4] bpf: Fix helper writes to read-only maps
+Date: Tue, 27 Aug 2024 15:39:54 -0700
+Message-ID: <CAEf4BzbTKGi0+2y84oRH=q5ZjhAQ8SMJAOrq8f0GnNjZaqf++g@mail.gmail.com>
+Subject: Re: [PATCH bpf 4/4] selftests/bpf: Add a test case to write into .rodata
 To: Daniel Borkmann <daniel@iogearbox.net>
 Cc: bpf@vger.kernel.org, kongln9170@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Aug 23, 2024 at 3:21=E2=80=AFPM Daniel Borkmann <daniel@iogearbox.n=
+On Fri, Aug 23, 2024 at 3:20=E2=80=AFPM Daniel Borkmann <daniel@iogearbox.n=
 et> wrote:
 >
-> Lonial found an issue that despite user- and BPF-side frozen BPF map
-> (like in case of .rodata), it was still possible to write into it from
-> a BPF program side through specific helpers having ARG_PTR_TO_{LONG,INT}
-> as arguments.
+> Add a test case which attempts to write into .rodata section of the
+> BPF program, and for comparison this adds test cases also for .bss
+> and .data section.
 >
-> In check_func_arg() when the argument is as mentioned, the meta->raw_mode
-> is never set. Later, check_helper_mem_access(), under the case of
-> PTR_TO_MAP_VALUE as register base type, it assumes BPF_READ for the
-> subsequent call to check_map_access_type() and given the BPF map is
-> read-only it succeeds.
+> Before fix:
 >
-> The helpers really need to be annotated as ARG_PTR_TO_{LONG,INT} | MEM_UN=
-INIT
-> when results are written into them as opposed to read out of them. The
-> latter indicates that it's okay to pass a pointer to uninitialized memory
-> as the memory is written to anyway.
+>   # ./vmtest.sh -- ./test_progs -t verifier_const
+>   [...]
+>   ./test_progs -t verifier_const
+>   tester_init:PASS:tester_log_buf 0 nsec
+>   process_subtest:PASS:obj_open_mem 0 nsec
+>   process_subtest:PASS:specs_alloc 0 nsec
+>   run_subtest:PASS:obj_open_mem 0 nsec
+>   run_subtest:FAIL:unexpected_load_success unexpected success: 0
+>   #465/1   verifier_const/rodata: write rejected:FAIL
+>   #465/2   verifier_const/bss: write accepted:OK
+>   #465/3   verifier_const/data: write accepted:OK
+>   #465     verifier_const:FAIL
+>   [...]
 >
-> Fixes: 57c3bb725a3d ("bpf: Introduce ARG_PTR_TO_{INT,LONG} arg types")
-> Reported-by: Lonial Con <kongln9170@gmail.com>
+> After fix:
+>
+>   # ./vmtest.sh -- ./test_progs -t verifier_const
+>   [...]
+>   ./test_progs -t verifier_const
+>   #465/1   verifier_const/rodata: write rejected:OK
+>   #465/2   verifier_const/bss: write accepted:OK
+>   #465/3   verifier_const/data: write accepted:OK
+>   #465     verifier_const:OK
+>   [...]
+>
 > Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
 > ---
->  kernel/bpf/helpers.c     | 4 ++--
->  kernel/bpf/syscall.c     | 2 +-
->  kernel/bpf/verifier.c    | 3 ++-
->  kernel/trace/bpf_trace.c | 4 ++--
->  net/core/filter.c        | 4 ++--
->  5 files changed, 9 insertions(+), 8 deletions(-)
+>  .../selftests/bpf/prog_tests/tc_links.c       |  1 +
+>  .../selftests/bpf/prog_tests/verifier.c       |  2 +
+>  .../selftests/bpf/progs/verifier_const.c      | 42 +++++++++++++++++++
+>  3 files changed, 45 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/progs/verifier_const.c
 >
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index b5f0adae8293..356a58aeb79b 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -538,7 +538,7 @@ const struct bpf_func_proto bpf_strtol_proto =3D {
->         .arg1_type      =3D ARG_PTR_TO_MEM | MEM_RDONLY,
->         .arg2_type      =3D ARG_CONST_SIZE,
->         .arg3_type      =3D ARG_ANYTHING,
-> -       .arg4_type      =3D ARG_PTR_TO_LONG,
-> +       .arg4_type      =3D ARG_PTR_TO_LONG | MEM_UNINIT,
->  };
+> diff --git a/tools/testing/selftests/bpf/prog_tests/tc_links.c b/tools/te=
+sting/selftests/bpf/prog_tests/tc_links.c
+> index 1af9ec1149aa..92c647dfd6f1 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/tc_links.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/tc_links.c
+> @@ -9,6 +9,7 @@
+>  #define ping_cmd "ping -q -c1 -w1 127.0.0.1 > /dev/null"
 >
->  BPF_CALL_4(bpf_strtoul, const char *, buf, size_t, buf_len, u64, flags,
-> @@ -566,7 +566,7 @@ const struct bpf_func_proto bpf_strtoul_proto =3D {
->         .arg1_type      =3D ARG_PTR_TO_MEM | MEM_RDONLY,
->         .arg2_type      =3D ARG_CONST_SIZE,
->         .arg3_type      =3D ARG_ANYTHING,
-> -       .arg4_type      =3D ARG_PTR_TO_LONG,
-> +       .arg4_type      =3D ARG_PTR_TO_LONG | MEM_UNINIT,
->  };
+>  #include "test_tc_link.skel.h"
+> +#include "test_const.skel.h"
 >
->  BPF_CALL_3(bpf_strncmp, const char *, s1, u32, s1_sz, const char *, s2)
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index bf6c5f685ea2..6d5942a6f41f 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -5952,7 +5952,7 @@ static const struct bpf_func_proto bpf_kallsyms_loo=
-kup_name_proto =3D {
->         .arg1_type      =3D ARG_PTR_TO_MEM,
->         .arg2_type      =3D ARG_CONST_SIZE_OR_ZERO,
->         .arg3_type      =3D ARG_ANYTHING,
-> -       .arg4_type      =3D ARG_PTR_TO_LONG,
-> +       .arg4_type      =3D ARG_PTR_TO_LONG | MEM_UNINIT,
->  };
->
->  static const struct bpf_func_proto *
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index d8520095ca03..70b0474e03a6 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -8877,8 +8877,9 @@ static int check_func_arg(struct bpf_verifier_env *=
-env, u32 arg,
->         case ARG_PTR_TO_INT:
->         case ARG_PTR_TO_LONG:
->         {
-> -               int size =3D int_ptr_type_to_size(arg_type);
-> +               int size =3D int_ptr_type_to_size(base_type(arg_type));
->
-> +               meta->raw_mode =3D arg_type & MEM_UNINIT;
+>  #include "netlink_helpers.h"
+>  #include "tc_helpers.h"
+> diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/te=
+sting/selftests/bpf/prog_tests/verifier.c
+> index 9dc3687bc406..c0cb1a145274 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/verifier.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
+> @@ -21,6 +21,7 @@
+>  #include "verifier_cgroup_inv_retcode.skel.h"
+>  #include "verifier_cgroup_skb.skel.h"
+>  #include "verifier_cgroup_storage.skel.h"
+> +#include "verifier_const.skel.h"
+>  #include "verifier_const_or.skel.h"
+>  #include "verifier_ctx.skel.h"
+>  #include "verifier_ctx_sk_msg.skel.h"
+> @@ -140,6 +141,7 @@ void test_verifier_cfg(void)                  { RUN(v=
+erifier_cfg); }
+>  void test_verifier_cgroup_inv_retcode(void)   { RUN(verifier_cgroup_inv_=
+retcode); }
+>  void test_verifier_cgroup_skb(void)           { RUN(verifier_cgroup_skb)=
+; }
+>  void test_verifier_cgroup_storage(void)       { RUN(verifier_cgroup_stor=
+age); }
+> +void test_verifier_const(void)                { RUN(verifier_const); }
+>  void test_verifier_const_or(void)             { RUN(verifier_const_or); =
+}
+>  void test_verifier_ctx(void)                  { RUN(verifier_ctx); }
+>  void test_verifier_ctx_sk_msg(void)           { RUN(verifier_ctx_sk_msg)=
+; }
+> diff --git a/tools/testing/selftests/bpf/progs/verifier_const.c b/tools/t=
+esting/selftests/bpf/progs/verifier_const.c
+> new file mode 100644
+> index 000000000000..81302d9738fa
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/verifier_const.c
+> @@ -0,0 +1,42 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (c) 2024 Isovalent */
+> +
+> +#include <linux/bpf.h>
+> +#include <bpf/bpf_helpers.h>
+> +#include "bpf_misc.h"
+> +
+> +const long foo =3D 42;
 
-given all existing ARG_PTR_TO_{INT,LONG} use cases just write into
-that memory, why not just set meta->raw_mode unconditionally and not
-touch helper definitions?
+nit: would be "safer" to mark it as "const volatile long" to prevent
+whatever smartness compiler might decide to do
 
-also, isn't it suspicious that int_ptr_types have PTR_TO_MAP_KEY in
-it? key should always be immutable, so can't be written into, no?
-
->                 err =3D check_helper_mem_access(env, regno, size, false, =
-meta);
->                 if (err)
->                         return err;
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index cd098846e251..95c3409ff374 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -1226,7 +1226,7 @@ static const struct bpf_func_proto bpf_get_func_arg=
-_proto =3D {
->         .ret_type       =3D RET_INTEGER,
->         .arg1_type      =3D ARG_PTR_TO_CTX,
->         .arg2_type      =3D ARG_ANYTHING,
-> -       .arg3_type      =3D ARG_PTR_TO_LONG,
-> +       .arg3_type      =3D ARG_PTR_TO_LONG | MEM_UNINIT,
->  };
->
->  BPF_CALL_2(get_func_ret, void *, ctx, u64 *, value)
-> @@ -1242,7 +1242,7 @@ static const struct bpf_func_proto bpf_get_func_ret=
-_proto =3D {
->         .func           =3D get_func_ret,
->         .ret_type       =3D RET_INTEGER,
->         .arg1_type      =3D ARG_PTR_TO_CTX,
-> -       .arg2_type      =3D ARG_PTR_TO_LONG,
-> +       .arg2_type      =3D ARG_PTR_TO_LONG | MEM_UNINIT,
->  };
->
->  BPF_CALL_1(get_func_arg_cnt, void *, ctx)
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index f3c72cf86099..2ff210cb068c 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -6346,7 +6346,7 @@ static const struct bpf_func_proto bpf_skb_check_mt=
-u_proto =3D {
->         .ret_type       =3D RET_INTEGER,
->         .arg1_type      =3D ARG_PTR_TO_CTX,
->         .arg2_type      =3D ARG_ANYTHING,
-> -       .arg3_type      =3D ARG_PTR_TO_INT,
-> +       .arg3_type      =3D ARG_PTR_TO_INT | MEM_UNINIT,
->         .arg4_type      =3D ARG_ANYTHING,
->         .arg5_type      =3D ARG_ANYTHING,
->  };
-> @@ -6357,7 +6357,7 @@ static const struct bpf_func_proto bpf_xdp_check_mt=
-u_proto =3D {
->         .ret_type       =3D RET_INTEGER,
->         .arg1_type      =3D ARG_PTR_TO_CTX,
->         .arg2_type      =3D ARG_ANYTHING,
-> -       .arg3_type      =3D ARG_PTR_TO_INT,
-> +       .arg3_type      =3D ARG_PTR_TO_INT | MEM_UNINIT,
->         .arg4_type      =3D ARG_ANYTHING,
->         .arg5_type      =3D ARG_ANYTHING,
->  };
+> +long bar;
+> +long bart =3D 96;
+> +
+> +SEC("tc/ingress")
+> +__description("rodata: write rejected")
+> +__failure __msg("write into map forbidden")
+> +int tcx1(struct __sk_buff *skb)
+> +{
+> +       char buff[] =3D { '8', '4', '\0' };
+> +       bpf_strtol(buff, sizeof(buff), 0, (long *)&foo);
+> +       return TCX_PASS;
+> +}
+> +
+> +SEC("tc/ingress")
+> +__description("bss: write accepted")
+> +__success
+> +int tcx2(struct __sk_buff *skb)
+> +{
+> +       char buff[] =3D { '8', '4', '\0' };
+> +       bpf_strtol(buff, sizeof(buff), 0, &bar);
+> +       return TCX_PASS;
+> +}
+> +
+> +SEC("tc/ingress")
+> +__description("data: write accepted")
+> +__success
+> +int tcx3(struct __sk_buff *skb)
+> +{
+> +       char buff[] =3D { '8', '4', '\0' };
+> +       bpf_strtol(buff, sizeof(buff), 0, &bart);
+> +       return TCX_PASS;
+> +}
+> +
+> +char LICENSE[] SEC("license") =3D "GPL";
 > --
 > 2.43.0
 >
