@@ -1,135 +1,94 @@
-Return-Path: <bpf+bounces-38210-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38211-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2DF039618F2
-	for <lists+bpf@lfdr.de>; Tue, 27 Aug 2024 23:02:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 292EE961938
+	for <lists+bpf@lfdr.de>; Tue, 27 Aug 2024 23:30:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BF75BB21F78
-	for <lists+bpf@lfdr.de>; Tue, 27 Aug 2024 21:02:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D8FC8285189
+	for <lists+bpf@lfdr.de>; Tue, 27 Aug 2024 21:30:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A4751D3631;
-	Tue, 27 Aug 2024 21:01:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A3BA1D3638;
+	Tue, 27 Aug 2024 21:30:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Mm9D3w0X"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d1yb9wiL"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CCF61D2F5C
-	for <bpf@vger.kernel.org>; Tue, 27 Aug 2024 21:01:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9489B155327;
+	Tue, 27 Aug 2024 21:30:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724792496; cv=none; b=pV+4KVUnfll5bQ/MO+WqlgB03MLNnxUMmg7eJJNwhQ3xsfa5V799g+fbcUK1vZUeeqdxcv3NcKrTa9/iyRfs69ImFswqpElntONyNdkUoKW6TBiw0U3ciIC6GLhzuWg/FpXLnocMBgkH91xcwT9yk5ZB8Vy8kgdqVhEitBfvn68=
+	t=1724794231; cv=none; b=tXxlxlWQjQxx76Df00YzD0RdEVd54rn1QefE/VMPhFLfl7BMl7TkkTciEFckhmgoAGqeX3rW3Fj9R4Df8R09hSnA6TsVbAc2IwypUIMylKJ5vhf3Vq1nEhh9UU++VKedjUqP4IgYYbQGKsHqx/zAD82u+XAx4MHchGRs+CPbHCg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724792496; c=relaxed/simple;
-	bh=aIvVj5GB7VcDLbNMVHvRWLjgqRh/7swXoZjUbpS5dG0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qsILwyqlJ61zUi0FJdoUvhjZiwxOFtRl/pC2S3MOAqs9mbARyUtZare3pz6RdtdFJrIS8iPMsv/16QpeANWHidxFcQf67wZDD1X7l2o4jjV81MnVoMFsl0wUe4Qjo4ALooumRuKCUD/GHgOjIaT4hAbvTbY/9wuNwOVNOF0yYOY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Mm9D3w0X; arc=none smtp.client-ip=209.85.221.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-371a92d8c90so3088482f8f.3
-        for <bpf@vger.kernel.org>; Tue, 27 Aug 2024 14:01:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1724792493; x=1725397293; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BXozvQ8yAFMtEYsjhmoA8OgUC22pqhoiVfJSYp4fgcU=;
-        b=Mm9D3w0XeBftreC1Df/sf7fLeo8H0b+O6wouhoJuXsE6+XnzEq8JG3MhvXjIZsUhDp
-         sNPuUUUIOJH+HBiUKIWGba3qvs9zKRyF5wY4q61gqsbRPQBmcpz15yYlNc1xl2BEVONq
-         F7QRCD/EXzPe798oqd3HbR9KSw3m3G7qdx/A3jxx4qM109xWbytrDXvADe6AQQpLUa1P
-         DHfGRVtRqrCX1+jcCDvqErZSRSMXSbjV7RGkm4j/rls8YVaVlo7573KStVjV7yfDeqFd
-         n1br/GZyM+LuqMM047RjhN1rS7EpwaDXqH9+zRcXVyuMsGXO8V4SOdm4pttalQ65fwME
-         z6ig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724792493; x=1725397293;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BXozvQ8yAFMtEYsjhmoA8OgUC22pqhoiVfJSYp4fgcU=;
-        b=qiFawh04N6yZHz8y+WfkvB2cAJHSeDJ+9icKpbIeBiTr4E/irRscc7JQF2bpcQ3l2k
-         he9yBj38BbSIEjH94wkakuomKNtTRd5Ir6Xb4zNTYQ9aqBx+Psb0MgitZEUTOsLq6GpL
-         3gtAncuNATLfdrAwasBgU3rJ6eeGgf4XZxUeFTwC27OrfkYvGv2YR1Z9hhNxXW67hzy8
-         uhpKsn+BSvSrO/dWP8u7/sVYZU9AheabN+QBL7xRt/zZhIdLc1fbARxQsHcgbffyzTCb
-         XHTGDqDMNrTMXSXpckuEv+ncMvhfBvuRJ7Ux+vCwi+DWqvHMgcfF2Uyu5pI56DLiZSfe
-         c/lA==
-X-Forwarded-Encrypted: i=1; AJvYcCUwzSP6WRt7vfwwbjd1wKmGnIKzuJfcnog8LR0JlpHy0Ltlyg6mRq+qDi0vcnRheFXm0Vc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzG0I8jRrhC3+NLxY7hdjoDxR/1JBCZBVIGySEm8jJbYkaw4g07
-	s3VzEhxg9yCF1Eh/lptvImuimv1QRbNPt4UNDbmmE/2cufINdSxN5FVSH3fNugL0CnMPj6La2dI
-	b3AoU7FXT8RAAaC03h9oob0Yu9IM=
-X-Google-Smtp-Source: AGHT+IH5kNejjb7CdlX1AG65ecmLJBgfIl1Y/n1AhTWYemFKKYxxMal6c61kiFbDTelq9X+/YW9JuuWbplHyAlRvXAU=
-X-Received: by 2002:a5d:428f:0:b0:371:8277:6649 with SMTP id
- ffacd0b85a97d-3748c7c7892mr2571797f8f.2.1724792492573; Tue, 27 Aug 2024
- 14:01:32 -0700 (PDT)
+	s=arc-20240116; t=1724794231; c=relaxed/simple;
+	bh=pbdDCQZ3c4mWtxZF+uZDZEXyC0e0EtwYuO/5WUr+Avs=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=TXWYlIDKtm7If+A0EjaTN1O/4qmEiB+R0NkLVoeBt0tm6UYAPyY1xuvS7W338P6H4MfflDRnAJvgiw1eS8SdscpfR7NeCTgWNWQU1SBKneMWzFyXSe14twJbEUbluz4Iit+cD9/p3zDVqSP93InCU5mOSslnpLBptuZ+CJCQ4/8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d1yb9wiL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B476C4AF11;
+	Tue, 27 Aug 2024 21:30:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1724794231;
+	bh=pbdDCQZ3c4mWtxZF+uZDZEXyC0e0EtwYuO/5WUr+Avs=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=d1yb9wiLWfHprw+iZmr9zoWZxkDcY+VcGzwrtMCGHoEA6N2a4GL8PlPyp4fqlVHRg
+	 i9lPudfXmgnGYc5JY371ROXZVrrzHtw0yv22Iy8kifSuIeO2PFNfLt00PtTMXR7Oaq
+	 CZvfBRFQRMV+vmtWZb49T5aMAm7yyIBDHFhGniD2zUDWXaddke5zdO5g5MJ1NuJm+f
+	 qu8DqCoGjdK73EEnB16hwF3QS1nd13oF3FVw5qj8oy4Xn2/pjPn3XLLdZvVccDZXCn
+	 PpOD7O/6AGQYOCE/FTubBEglXdEcL4fttaLio4ZLzOnkfHY8gXO6l+Zqk3EeYaB+HX
+	 bRKNqYFQmANNQ==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 712C23822D6D;
+	Tue, 27 Aug 2024 21:30:32 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240826224814.289034-1-inwardvessel@gmail.com> <20240826224814.289034-2-inwardvessel@gmail.com>
-In-Reply-To: <20240826224814.289034-2-inwardvessel@gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 27 Aug 2024 14:01:21 -0700
-Message-ID: <CAADnVQJp3Me_tXRs6Nupbi93bAj2D-sFuN-N7DMfKU=EtMu5ow@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/3] bpf: new btf kfunc hooks for tracepoint
- and perf event
-To: JP Kobryn <inwardvessel@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Eddy Z <eddyz87@gmail.com>, 
-	bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net,v3] tcp: fix forever orphan socket caused by tcp_abort
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <172479423125.767553.13899166301990812537.git-patchwork-notify@kernel.org>
+Date: Tue, 27 Aug 2024 21:30:31 +0000
+References: <20240826102327.1461482-1-kuro@kuroa.me>
+In-Reply-To: <20240826102327.1461482-1-kuro@kuroa.me>
+To: Xueming Feng <kuro@kuroa.me>
+Cc: davem@davemloft.net, netdev@vger.kernel.org, edumazet@google.com,
+ lorenzo@google.com, kerneljasonxing@gmail.com, pabeni@redhat.com,
+ kuba@kernel.org, ncardwell@google.com, ycheng@google.com, soheil@google.com,
+ dsahern@kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org
 
-On Mon, Aug 26, 2024 at 3:48=E2=80=AFPM JP Kobryn <inwardvessel@gmail.com> =
-wrote:
->
-> The additional hooks (and prog-to-hook mapping) for tracepoint and perf
-> event programs allow for registering kfuncs to be used within these
-> program types.
->
-> Signed-off-by: JP Kobryn <inwardvessel@gmail.com>
-> ---
->  kernel/bpf/btf.c | 6 ++++++
->  1 file changed, 6 insertions(+)
->
-> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> index 520f49f422fe..4816e309314e 100644
-> --- a/kernel/bpf/btf.c
-> +++ b/kernel/bpf/btf.c
-> @@ -210,6 +210,7 @@ enum btf_kfunc_hook {
->         BTF_KFUNC_HOOK_TC,
->         BTF_KFUNC_HOOK_STRUCT_OPS,
->         BTF_KFUNC_HOOK_TRACING,
-> +       BTF_KFUNC_HOOK_TRACEPOINT,
->         BTF_KFUNC_HOOK_SYSCALL,
->         BTF_KFUNC_HOOK_FMODRET,
->         BTF_KFUNC_HOOK_CGROUP_SKB,
-> @@ -219,6 +220,7 @@ enum btf_kfunc_hook {
->         BTF_KFUNC_HOOK_LWT,
->         BTF_KFUNC_HOOK_NETFILTER,
->         BTF_KFUNC_HOOK_KPROBE,
-> +       BTF_KFUNC_HOOK_PERF_EVENT,
->         BTF_KFUNC_HOOK_MAX,
->  };
->
-> @@ -8306,6 +8308,8 @@ static int bpf_prog_type_to_kfunc_hook(enum bpf_pro=
-g_type prog_type)
->         case BPF_PROG_TYPE_TRACING:
->         case BPF_PROG_TYPE_LSM:
->                 return BTF_KFUNC_HOOK_TRACING;
-> +       case BPF_PROG_TYPE_TRACEPOINT:
-> +               return BTF_KFUNC_HOOK_TRACEPOINT;
+Hello:
 
-why special case tp and perf_event and only limit them to cpumask?
-The following would be equally safe, no?
-         case BPF_PROG_TYPE_TRACING:
-         case BPF_PROG_TYPE_LSM:
- +       case BPF_PROG_TYPE_TRACEPOINT:
- +       case BPF_PROG_TYPE_PERF_EVENT:
-                return BTF_KFUNC_HOOK_TRACING;
-?
+This patch was applied to netdev/net.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Mon, 26 Aug 2024 18:23:27 +0800 you wrote:
+> We have some problem closing zero-window fin-wait-1 tcp sockets in our
+> environment. This patch come from the investigation.
+> 
+> Previously tcp_abort only sends out reset and calls tcp_done when the
+> socket is not SOCK_DEAD, aka orphan. For orphan socket, it will only
+> purging the write queue, but not close the socket and left it to the
+> timer.
+> 
+> [...]
+
+Here is the summary with links:
+  - [net,v3] tcp: fix forever orphan socket caused by tcp_abort
+    https://git.kernel.org/netdev/net/c/bac76cf89816
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
