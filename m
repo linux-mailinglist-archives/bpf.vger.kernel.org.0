@@ -1,302 +1,173 @@
-Return-Path: <bpf+bounces-38132-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38133-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DB84960546
-	for <lists+bpf@lfdr.de>; Tue, 27 Aug 2024 11:13:14 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9118D960727
+	for <lists+bpf@lfdr.de>; Tue, 27 Aug 2024 12:17:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6683CB22649
-	for <lists+bpf@lfdr.de>; Tue, 27 Aug 2024 09:13:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 212871F26ADB
+	for <lists+bpf@lfdr.de>; Tue, 27 Aug 2024 10:17:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACF5819ADBE;
-	Tue, 27 Aug 2024 09:13:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A31A19E83E;
+	Tue, 27 Aug 2024 10:08:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PrA01tKR"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ODE2sLgW"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 249D9199EB4;
-	Tue, 27 Aug 2024 09:13:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC5C719DF9A;
+	Tue, 27 Aug 2024 10:08:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724749981; cv=none; b=jte9quJVsp933lupLzg6TKK6wTCFI2lab8RbjXchjhJmO6SIsiKeDEwr7QkWGuR1aFlDq9yVAaEw0tFzGc5QyuwSEq2q9e/07IkVNL1miScBBZc5XxlYQuWKEag8uHntYZkEns2c1v6bO/OKAj58Tkemsmd8r2/7SKabd8zNo9E=
+	t=1724753323; cv=none; b=Pxfp8UIuh7tXXuxeeroYdsXCl8ugMJrMPb1ROWKXh2QEGZYQn35DBaBCQdxf024llzJaAVLMO3bbQhwGecxPLJhpP7vZCkcq6Dx8q8c4UTHg7b4ZYtZO/hQ966W2bqEr9Vpvww6Ig1wiR0kI1QCOjFh6DD35YT9GtbwklErU/4o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724749981; c=relaxed/simple;
-	bh=JxBQoVGyG+qnPOwGjG78VRBfznoWP5yyUz2/W3rfI0s=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZzJSAna4S1vyrGJoZFU6tj1eqG3oNx2jKXXF0Bz4ueQn8fU7w+xECrwtQF/zWwhllGKT2dKdxb33wi+cEOSEfptKRffq1Y5HYQqY9+b1bLOkWIEGjthfVlX04rqIgPJqBKcoitCm2iIcEtfY6vtL7rkFijjzfeLvQeCkgnP43c0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PrA01tKR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91C54C8B7A0;
-	Tue, 27 Aug 2024 09:13:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1724749980;
-	bh=JxBQoVGyG+qnPOwGjG78VRBfznoWP5yyUz2/W3rfI0s=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=PrA01tKRAv67667BhlYHwLAguaIpMvgYRwoz9RHhkkU4fdYgs3z1puwLLFt4z1yBy
-	 upl6LRUGvlrtoGBB5IcTtB1SIWyk4uf34i3TaDnu7ViPYAmhlkvfoGspCTH3Kkt1OZ
-	 /O1QYNB/5dewc14K70kKCELmMILYtHplTFZysZa8OvWZ9Et+lGPSOmRBAUbQ+RDXjS
-	 5BCOahxLoEdHRh+qcvbmct22T/FUwQfssUtUREWQhhj7F8TTtmUpQmPOogWPiBWftb
-	 mzQhUYovXDdNpWHvgNcGM7uqCprn3YOGPUuoQ0i32h9aS6WJAuIGs9lrdIi8fgVO5T
-	 IlFDEbRg2r/zw==
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-5334adf7249so6178305e87.3;
-        Tue, 27 Aug 2024 02:13:00 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUVAbX9lsIv1lWiBExJjnd6p+Fm/xDCvIa63Lxbzya2bifptI6PEVrq1kGHGrvvgc3FRtuDAH2LQJvLHhTW@vger.kernel.org, AJvYcCV9aDeWd7W1U4BINQtPVJiP1coMiuA+Jg+zWNxVFbPcxr/VniG2/5Phf8sn+3Z/GzrUcOppJEp4E33R/7xym3tghvR8@vger.kernel.org, AJvYcCWTsmHWpseRpyxmc1ImHFt7DAfWZIjRdtnkY9Pjb8LA6yEggEWGkzhs6BLcicPBxnT6nIc=@vger.kernel.org, AJvYcCXP7Zzl5nl8vApT3xvCTKhH+Z4cC+lvga2YYFDgcrIehMM2DEpSkCJWAfwYpAQKR9x/LAI0kwkFRHLymenY@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywj+nfU5WN2Tqz8Mx8wzRyGUoNIOTRkd2JHylMG1gqs4IOFT0EL
-	S/yGcXfs6eIGe+jyDGSlBYKsgaqlv6p8TZ1NU3nYh2NUg3/Sh/2MUYnfvcJ1VpAOELT/HXttejX
-	tVrETHuYQuwSs9PSXsAk2GnQZPtQ=
-X-Google-Smtp-Source: AGHT+IFpCvVGtqFkt0e1lRXvFIGTnLGle1JtCtNw8SoAQ03bNvZsLp6/AZo8+h9NMyIwcFL6WJlC0PGYw5oMpoctElo=
-X-Received: by 2002:a05:6512:2c8a:b0:52c:e0e1:9ae3 with SMTP id
- 2adb3069b0e04-5344e500a1fmr1501367e87.57.1724749979251; Tue, 27 Aug 2024
- 02:12:59 -0700 (PDT)
+	s=arc-20240116; t=1724753323; c=relaxed/simple;
+	bh=KWBdcLRlnl5v+404AijGeavbWWipFjEVqt5e5HNPaTQ=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JNxg+HThctZfHJ/95KxiQ2xZqkJAsSf6FrJH/ES98Eu65gDqQbn/nRJ8R9tqK8ZJPjhOxa5mO/onysKnJ+KRayjKuRBUWLLvltkKpuz3PdQreR6k3TvuNblIsGDvW0BiSHcxmUZzGyJfCtVDIXtEcj9rNXXTa3YIhJ3m5xqAOuU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ODE2sLgW; arc=none smtp.client-ip=209.85.208.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-5becfd14353so5825085a12.1;
+        Tue, 27 Aug 2024 03:08:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1724753320; x=1725358120; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Bxk4oGBqj5TSe2RGYu2wHkf2uvndUY8x3Qox3hJIZr4=;
+        b=ODE2sLgWtdgniMW2iAQKaGnI9C9s1AtZkX89oNCzS1KQiJo30k/PzsqQ0zvoEh6pZE
+         3WknVnPUsc9KT/oKRMeNETmz8E58pFT3eTZ50Q4J3BYovIJzOvKaCs5EX729Msk5KH6e
+         Yolceabyz3foAx7IG4DIH+EieHjCOcoDxppaMyxutEavOimyC4O9Ip07j0lJ47QxW4qh
+         uUkIY6dbsYhnBmjiiLUJ8nZe9GQ/p5Awm/yvg9YrjIFnQYxgHjBXSgFNp0spwZS+H6AD
+         yWroabcKSyt2mnHtssHS1FwoIffV5GbwzaB7H46QeimyQnwdN+zxNA2Y8IHocXRLY5t3
+         UTVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1724753320; x=1725358120;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Bxk4oGBqj5TSe2RGYu2wHkf2uvndUY8x3Qox3hJIZr4=;
+        b=BdVpuIXrO4exUzHQQIwSwjOsMFdhg2H76G/yyLGIPBDXOYq9pXYJw8h2sdBDTt0GaF
+         5He16M0cQbtuc8P4O8XYV3LWp1qGWNK2xkRTKzS799i2LCx7qwmDPYXdzV2CzierZeG5
+         /uwK+4FWO4IRu6/AGo3zfVrZpGkR7pEzmZkGx8TOR4qo/BjFTSBkwJ/w/o2ZMLJ/zmz1
+         oeDdqEeJWNVeLlbHrxE7BRF2y1E4Yx9UwHou9orwkUs4VcJk6b1gzpHoExGSAMXWOcTH
+         VK8Z/snIa/3ly5r7v2ky5Qmbw1HGSFZ6RSWFwIKP0/skaZwctgqvJUfC9FeoJW+AGOuP
+         6KZw==
+X-Forwarded-Encrypted: i=1; AJvYcCWX7Dnr/RXm7XLbBG6MRpxorlpGDRzgVpD6T4rQxDaVcdblOIduEzQs0ZT+vLhVxodnN1uaWQSiYrvWu+jEtiiKPAHX@vger.kernel.org, AJvYcCXB5yja0SMfA85Y6d+oL+wk+t6ZbCCRObm7bz5TMWUqOIah4lvF9tNfHyBNBHD55125iec=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxLjGLTZnr+h424BvfUS337g4nXBBsp/m5HOf1t7VbJ7+RF2xgR
+	kuYMO2EjQEI9flBBxEregqfVNzNgBt9bzbKjD8gmZVOi869ks+ws
+X-Google-Smtp-Source: AGHT+IHiS+fumnvhTqX4wqwV/4h1GzURw9WeZF+bM3GDo6fqF0NxU9dM3242dsym4HaeAp8N0y6neg==
+X-Received: by 2002:a17:907:f742:b0:a7d:3cf6:48d1 with SMTP id a640c23a62f3a-a86a52ec041mr755573066b.32.1724753319835;
+        Tue, 27 Aug 2024 03:08:39 -0700 (PDT)
+Received: from krava ([173.38.220.47])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a86e549cf94sm90064166b.80.2024.08.27.03.08.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Aug 2024 03:08:39 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Tue, 27 Aug 2024 12:08:37 +0200
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Tianyi Liu <i.pear@outlook.com>,
+	andrii.nakryiko@gmail.com, mhiramat@kernel.org, ajor@meta.com,
+	albancrequy@linux.microsoft.com, bpf@vger.kernel.org,
+	flaniel@linux.microsoft.com, linux-trace-kernel@vger.kernel.org,
+	linux@jordanrome.com, mathieu.desnoyers@efficios.com
+Subject: Re: [PATCH v2] tracing/uprobe: Add missing PID filter for uretprobe
+Message-ID: <Zs2lpd0Ni0aJoHwI@krava>
+References: <CAEf4Bzb29=LUO3fra40XVYN1Lm=PebBFubj-Vb038ojD6To2AA@mail.gmail.com>
+ <ME0P300MB04163A2993D1B545C3533DDC9D892@ME0P300MB0416.AUSP300.PROD.OUTLOOK.COM>
+ <20240825171417.GB3906@redhat.com>
+ <20240825224018.GD3906@redhat.com>
+ <ZsxTckUnlU_HWDMJ@krava>
+ <20240826115752.GA21268@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1720942106.git.naveen@kernel.org> <9cf2cdddba74ec167ae1af5ec189bba8f704fb51.1720942106.git.naveen@kernel.org>
-In-Reply-To: <9cf2cdddba74ec167ae1af5ec189bba8f704fb51.1720942106.git.naveen@kernel.org>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Date: Tue, 27 Aug 2024 18:12:22 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQV+B=Jx1o3j3YkVL6CuTz5uPUnS+340KGA7aKs2eLxXw@mail.gmail.com>
-Message-ID: <CAK7LNAQV+B=Jx1o3j3YkVL6CuTz5uPUnS+340KGA7aKs2eLxXw@mail.gmail.com>
-Subject: Re: [RFC PATCH v4 12/17] powerpc64/ftrace: Move ftrace sequence out
- of line
-To: Naveen N Rao <naveen@kernel.org>
-Cc: linuxppc-dev@lists.ozlabs.org, linux-trace-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org, linux-kbuild@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>, 
-	Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
-	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Hari Bathini <hbathini@linux.ibm.com>, Mahesh Salgaonkar <mahesh@linux.ibm.com>, 
-	Vishal Chourasia <vishalc@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240826115752.GA21268@redhat.com>
 
-On Sun, Jul 14, 2024 at 5:29=E2=80=AFPM Naveen N Rao <naveen@kernel.org> wr=
-ote:
->
-> Function profile sequence on powerpc includes two instructions at the
-> beginning of each function:
->         mflr    r0
->         bl      ftrace_caller
->
-> The call to ftrace_caller() gets nop'ed out during kernel boot and is
-> patched in when ftrace is enabled.
->
-> Given the sequence, we cannot return from ftrace_caller with 'blr' as we
-> need to keep LR and r0 intact. This results in link stack (return
-> address predictor) imbalance when ftrace is enabled. To address that, we
-> would like to use a three instruction sequence:
->         mflr    r0
->         bl      ftrace_caller
->         mtlr    r0
->
-> Further more, to support DYNAMIC_FTRACE_WITH_CALL_OPS, we need to
-> reserve two instruction slots before the function. This results in a
-> total of five instruction slots to be reserved for ftrace use on each
-> function that is traced.
->
-> Move the function profile sequence out-of-line to minimize its impact.
-> To do this, we reserve a single nop at function entry using
-> -fpatchable-function-entry=3D1 and add a pass on vmlinux.o to determine
-> the total number of functions that can be traced. This is then used to
-> generate a .S file reserving the appropriate amount of space for use as
-> ftrace stubs, which is built and linked into vmlinux.
->
-> On bootup, the stub space is split into separate stubs per function and
-> populated with the proper instruction sequence. A pointer to the
-> associated stub is maintained in dyn_arch_ftrace.
->
-> For modules, space for ftrace stubs is reserved from the generic module
-> stub space.
->
-> This is restricted to and enabled by default only on 64-bit powerpc,
-> though there are some changes to accommodate 32-bit powerpc. This is
-> done so that 32-bit powerpc could choose to opt into this based on
-> further tests and benchmarks.
->
-> As an example, after this patch, kernel functions will have a single nop
-> at function entry:
-> <kernel_clone>:
->         addis   r2,r12,467
->         addi    r2,r2,-16028
->         nop
->         mfocrf  r11,8
->         ...
->
-> When ftrace is enabled, the nop is converted to an unconditional branch
-> to the stub associated with that function:
-> <kernel_clone>:
->         addis   r2,r12,467
->         addi    r2,r2,-16028
->         b       ftrace_ool_stub_text_end+0x11b28
->         mfocrf  r11,8
->         ...
->
-> The associated stub:
-> <ftrace_ool_stub_text_end+0x11b28>:
->         mflr    r0
->         bl      ftrace_caller
->         mtlr    r0
->         b       kernel_clone+0xc
->         ...
->
-> Signed-off-by: Naveen N Rao <naveen@kernel.org>
+On Mon, Aug 26, 2024 at 01:57:52PM +0200, Oleg Nesterov wrote:
+> On 08/26, Jiri Olsa wrote:
+> >
+> > On Mon, Aug 26, 2024 at 12:40:18AM +0200, Oleg Nesterov wrote:
+> > > 	$ ./test &
+> > > 	$ bpftrace -p $! -e 'uprobe:./test:func { printf("%d\n", pid); }'
+> > >
+> > > I hope that the syntax of the 2nd command is correct...
+> > >
+> > > I _think_ that it will print 2 pids too.
+> >
+> > yes.. but with CLONE_VM both processes share 'mm'
+> 
+> Yes sure,
+> 
+> > so they are threads,
+> 
+> Well this depends on definition ;) but the CLONE_VM child is not a sub-thread,
+> it has another TGID. See below.
+> 
+> > and at least uprobe_multi filters by process [1] now.. ;-)
+> 
+> OK, if you say that this behaviour is fine I won't argue, I simply do not know.
+> But see below.
+> 
+> > > But "perf-record -p" works as expected.
+> >
+> > I wonder it's because there's the perf layer that schedules each
+> > uprobe event only when its process (PID1/2) is scheduled in and will
+> > receive events only from that cpu while the process is running on it
+> 
+> Not sure I understand... The task which hits the breakpoint is always
+> current, it is always scheduled in.
+> 
+> The main purpose of uprobe_perf_func()->uprobe_perf_filter() is NOT that
+> we want to avoid __uprobe_perf_func() although this makes sense.
+> 
+> The main purpose is that we want to remove the breakpoints in current->mm
+> when uprobe_perf_filter() returns false, that is why UPROBE_HANDLER_REMOVE.
+> IOW, the main purpose is not penalise user-space unnecessarily.
+> 
+> IIUC (but I am not sure), perf-record -p will work "correctly" even if we
+> remove uprobe_perf_filter() altogether. IIRC the perf layer does its own
+> filtering but I forgot everything.
+> 
+> And this makes me think that perhaps BPF can't rely on uprobe_perf_filter()
+> either, even we forget about ret-probes.
+> 
+> > [1] 46ba0e49b642 bpf: fix multi-uprobe PID filtering logic
+> 
+> Looks obviously wrong... get_pid_task(PIDTYPE_TGID) can return a zombie
+> leader with ->mm == NULL while other threads and thus the whole process
+> is still alive.
+> 
+> And again, the changelog says "the intent for PID filtering it to filter by
+> *process*", but clone(CLONE_VM) creates another process, not a thread.
+> 
+> So perhaps we need
+> 
+> 	-	if (link->task && current->mm != link->task->mm)
+> 	+	if (link->task && !same_thread_group(current, link->task))
+> 
+> in uprobe_prog_run() to make "filter by *process*" true, but this won't
+> fix the problem with link->task->mm == NULL in uprobe_multi_link_filter().
 
+would the same_thread_group(current, link->task) work in such case?
+(zombie leader with other alive threads)
 
+jirka
 
-> diff --git a/arch/powerpc/tools/Makefile b/arch/powerpc/tools/Makefile
-> new file mode 100644
-> index 000000000000..31dd3151c272
-> --- /dev/null
-> +++ b/arch/powerpc/tools/Makefile
-> @@ -0,0 +1,10 @@
-> +# SPDX-License-Identifier: GPL-2.0-or-later
-> +
-> +quiet_cmd_gen_ftrace_ool_stubs =3D FTRACE  $@
-
-
-This is not "FTRACE".
-
-"GEN" or something like that.
-
-
-
-> +      cmd_gen_ftrace_ool_stubs =3D $< $(objtree)/vmlinux.o $@
-> +
-> +targets +=3D .arch.vmlinux.o
-> +.arch.vmlinux.o: $(srctree)/arch/powerpc/tools/ftrace-gen-ool-stubs.sh $=
-(objtree)/vmlinux.o FORCE
-> +       $(call if_changed,gen_ftrace_ool_stubs)
-> +
-> +clean-files +=3D $(objtree)/.arch.vmlinux.S $(objtree)/.arch.vmlinux.o
-
-
-
-This is wrong. $(objtree) is always '.'
-
-It will attempt to clean up:
-
-arch/powerpc/tools/.arch.vmlinux.S
-arch/powerpc/tools/.arch.vmlinux.o
-
-
-
-You must not create the intermediate file,
-.arch.vmlinux.S at the top directory because
-this build step is pretty much PowerPC-specific.
-
-
-Rather, I'd recommend to create *.S and *.o in
-arch/powerpc/tools/:
-
-arch/powerpc/tools/vmlinux.S
-arch/powerpc/tools/vmlinux.o
-
-
-
-
-When you submit the next version, please run 'make clean'
-and confirm that any powerpc-specific build artifacts
-not being left-over.
-
-
-
-
-
-
-> diff --git a/arch/powerpc/tools/ftrace-gen-ool-stubs.sh b/arch/powerpc/to=
-ols/ftrace-gen-ool-stubs.sh
-> new file mode 100755
-> index 000000000000..0b85cd5262ff
-> --- /dev/null
-> +++ b/arch/powerpc/tools/ftrace-gen-ool-stubs.sh
-> @@ -0,0 +1,48 @@
-> +#!/bin/sh
-> +# SPDX-License-Identifier: GPL-2.0-or-later
-> +
-> +# Error out on error
-> +set -e
-> +
-> +is_enabled() {
-> +       grep -q "^$1=3Dy" include/config/auto.conf
-> +}
-> +
-> +vmlinux_o=3D${1}
-> +arch_vmlinux_o=3D${2}
-> +arch_vmlinux_S=3D$(dirname ${arch_vmlinux_o})/$(basename ${arch_vmlinux_=
-o} .o).S
-> +
-> +RELOCATION=3DR_PPC64_ADDR64
-> +if is_enabled CONFIG_PPC32; then
-> +       RELOCATION=3DR_PPC_ADDR32
-> +fi
-> +
-> +num_ool_stubs_text=3D$(${CROSS_COMPILE}objdump -r -j __patchable_functio=
-n_entries ${vmlinux_o} |
-> +                    grep -v ".init.text" | grep "${RELOCATION}" | wc -l)
-> +num_ool_stubs_inittext=3D$(${CROSS_COMPILE}objdump -r -j __patchable_fun=
-ction_entries ${vmlinux_o} |
-> +                        grep ".init.text" | grep "${RELOCATION}" | wc -l=
-)
-> +
-> +cat > ${arch_vmlinux_S} <<EOF
-> +#include <asm/asm-offsets.h>
-> +#include <linux/linkage.h>
-> +
-> +.pushsection .tramp.ftrace.text,"aw"
-> +SYM_DATA(ftrace_ool_stub_text_end_count, .long ${num_ool_stubs_text})
-> +
-> +SYM_CODE_START(ftrace_ool_stub_text_end)
-> +       .space ${num_ool_stubs_text} * FTRACE_OOL_STUB_SIZE
-> +SYM_CODE_END(ftrace_ool_stub_text_end)
-> +.popsection
-> +
-> +.pushsection .tramp.ftrace.init,"aw"
-> +SYM_DATA(ftrace_ool_stub_inittext_count, .long ${num_ool_stubs_inittext}=
-)
-> +
-> +SYM_CODE_START(ftrace_ool_stub_inittext)
-> +       .space ${num_ool_stubs_inittext} * FTRACE_OOL_STUB_SIZE
-> +SYM_CODE_END(ftrace_ool_stub_inittext)
-> +.popsection
-> +EOF
-> +
-> +${CC} ${NOSTDINC_FLAGS} ${LINUXINCLUDE} ${KBUILD_CPPFLAGS} \
-> +      ${KBUILD_AFLAGS} ${KBUILD_AFLAGS_KERNEL} \
-> +      -c -o ${arch_vmlinux_o} ${arch_vmlinux_S}
-
-
-Please do not compile this within a shell script.
-
-scripts/Makefile.build provides rule_as_o_S to do this.
-
-
-
-
-[1] vmlinux.o --> arch/powerpc/tools/vmlinux.S
-
-[2] arch/powerpc/tools/vmlinux.S --> arch/powerpc/tools/vmlinux.o
-
-
-Please split these in separate build rules.
-
-
-
-
-
-> --
-> 2.45.2
->
-
-
---
-Best Regards
-Masahiro Yamada
+> 
+> 
+> Does bpftrace use bpf_uprobe_multi_link_attach/etc ? I guess not...
+> Then which userspace tool uses this code? ;)
+> 
+> Oleg.
+> 
 
