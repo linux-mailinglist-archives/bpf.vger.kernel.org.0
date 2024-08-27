@@ -1,196 +1,180 @@
-Return-Path: <bpf+bounces-38216-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38217-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DC2D961A22
-	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 00:49:40 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 226FF961A28
+	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 00:55:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D06052850C8
-	for <lists+bpf@lfdr.de>; Tue, 27 Aug 2024 22:49:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 856B3B22E73
+	for <lists+bpf@lfdr.de>; Tue, 27 Aug 2024 22:55:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EFD11D416F;
-	Tue, 27 Aug 2024 22:49:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C3231D4165;
+	Tue, 27 Aug 2024 22:55:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c0t9UAo2"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dt81/wgN"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4405C64A;
-	Tue, 27 Aug 2024 22:49:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4359984D34;
+	Tue, 27 Aug 2024 22:55:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724798972; cv=none; b=tP7PnK77meL2lIDRAIFOT9BsrStG3HpNaUlKlWFYXHxZL57rWzkjN64fJbVQSQDqRyPF4AlUyWOZ5DOfRxPaYI/yqxQFzmYRt9U8vHOe4vATR52IH5kKON9f/LzgxGezZ0Yzg5Jy/+oGH6Zcqm2hv7UCncu9wzBeYAh82ffVYF8=
+	t=1724799342; cv=none; b=dF15vha6q+Nie8OQ6hwVOXMQu28teAL7WCPIOzg4Q55HDHMk1ZJUDdGZdDdKs9q6YfDGH0QBktrQamxM8JMVA6cMMzWEV3xMm2e3tf4nJV0NDMX8EwD1yBPH4u3qMQ0nnLgRFcUsfoTWIfal6kPXTLRtIEHKw3xPZwJv0peKUig=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724798972; c=relaxed/simple;
-	bh=ZCsx4XBxZszRLALGFHsW8Srd/rR17PluQWFhIcWOekQ=;
+	s=arc-20240116; t=1724799342; c=relaxed/simple;
+	bh=ptaK3/0U1Jk7BWxeibzeeYBhWoS6mOGUpCQa77r6vN0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=oo1LpF9yrPwwTZAdq0/jSaUg7ljNjdSg7oWhxurtUM8BcVhVl2Z2MIt6zJcC9oPOWKYFOiv4V/Ib82ANNIIA4x3i8HpVmzr93akzvKPz9nh+DRc3UhSCZlEUoeZfUGXCxO7UzMOKvAmG6rwfQuqUaL5A9bWndOtJeAEDDXHSzp4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c0t9UAo2; arc=none smtp.client-ip=209.85.214.173
+	 To:Cc:Content-Type; b=OTSFoHrwDl800JVWUDSqYpQfOJiSkmwYN4XDqUaMDJ5rMpp4PG5x4EGL2LDEsmbebs1PRH9B0BJbc4zv89xa1gBZU3FcsZL7n+R4LDkAGVPdNSJWeoR6WMpZjCrda9ztJQacV+EVnC+Zg9CQ/Us8w2r/UnUtQCkgY9CLuxmBLMw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dt81/wgN; arc=none smtp.client-ip=209.85.215.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-20223b5c1c0so55271615ad.2;
-        Tue, 27 Aug 2024 15:49:30 -0700 (PDT)
+Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-7bcf8077742so4228999a12.0;
+        Tue, 27 Aug 2024 15:55:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1724798970; x=1725403770; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1724799340; x=1725404140; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=aDrZ+EjYF19PvJC+i6jehJt+sfVjodbjYXEq8nEjBfw=;
-        b=c0t9UAo2cwN5FprNQsyQH2oA2gIUy+2/WpT06Rlk7YvH9cVP7HPg573El7gO1hpaI+
-         JdoWm/0erFnKOSqWgoCXv7Au/Y9+Skge3T1kH4APrN4z1CANUlIMotHiGhI4fLH6nrEG
-         n41Fd2dGcm1iK5ZDgQtcabZR4Rkb67OTuIl8bZr73ldUo4kYtwPY0IbiL8ndWB+ACPqV
-         mOwBcr4qi1yf5eoQLpSgbk765Qwxpl1NcoHFI2V/TeLqscV+y6H+3wJQOhF+OvaupX72
-         V3hdb7BIO1BHS0O9Q0UsD0cfyxS7JeBosQZ82TrRNQQyLLGfqxibdPhY6KTPCbNB1GZA
-         1+JA==
+        bh=lsar/HY/igeb/N5PuHSa3F5h30LOxiVIggShUntngqQ=;
+        b=dt81/wgNoy7YANdV3IVwfD7mrD6UAphmOvYUcku/NI0wYypbJJdsZ+iYOUwzo6k/29
+         WMwK32knhosRMpvdxuuIF3XtocNTgzS8/vQswpUoUct9ziArIZiCj6snbVCAuJFiRM9Q
+         VREnh0BP6i37AHS4GSBaL4io3abvpS9NXPm8eNk/rDa3IUXvwrqclI01Y+f50qMmvp9p
+         AdugjQDOO4kcUW5lAt0VYPopIVx9EI3Zfjd+ISOU/pjDWrnOStmF4G23KzOpK7oi18za
+         D4reAI9ApSTBljH4/N+0m8tYrVvPXNSHEtUXfvXlfRlTcXY6CPwfyZDAlFHQjbaUh+fN
+         QhTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724798970; x=1725403770;
+        d=1e100.net; s=20230601; t=1724799340; x=1725404140;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=aDrZ+EjYF19PvJC+i6jehJt+sfVjodbjYXEq8nEjBfw=;
-        b=FPrQ6m865Pb4M7s9YGckP4NSlB/MLHUFBIk6H5A+JCk+qnijq2VdxC+yNAByWqJOYu
-         iLjHQq/C/VQE/3hWoQXnGkm70/BX62HbU5Nk/jdlZaGT6SxOVq0uGsbLiyTpDp/x79ck
-         R0fP4Reo62TLkBXu7WWgt2zTFGqm4auM0Ms5cddzsSxlD2QoH/EyKF86Qzlll8hL1CyB
-         HndqFTQWRuEHUZ90dfvgWUXViXUoIet8f3yZpg2hwbS0U3M3bL7FPvE/KDIywwEOZRyx
-         kDUU8IIVhIacLrxSEnHk4SdOiIiYhCJCUel/zy76QKeRDpjCaRyWAiPV8sEvwiVRcXAq
-         uWlQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUgAdgd9A5G2RCJ8knp+4LhAJEO4K3z16sGJYv92qy/99bRrWC15yprqCciWbMXxrYvdVo/Pv0pRmmRYUxeTMlf@vger.kernel.org, AJvYcCWgBRi7vzDhp0891ilZqKSF0rhKfM7XBlH1RlvEiHVxz4Z23bUiWyVqxidYMY240+MpuxU=@vger.kernel.org, AJvYcCWgrUIRMbcLyowanmahlA4B+cIAoOVEE/BmcQjSynwoDlzWeO+Yquob1ufAMX4tsG5EnPkwtsMr5GxFjakg@vger.kernel.org
-X-Gm-Message-State: AOJu0YwXAsVl3BQg0cib0yY5z9jO/jcyDLbH5+cgJMi3KXwhmIKW/Wup
-	uFafh5I+5PeVi8FHI6rcJkL34oSqKeJ6xKRnOuy1YD/z0ijPabmaUF5XqLI4Duns/6qSFbdPOcC
-	0WLfdTGJKNfxLWciQ7W8skjIsReE=
-X-Google-Smtp-Source: AGHT+IEwBtby9TuFKewToNcAgGmssYT1IQ4FwnBLenBDL+7cmMy1RtU0QYGENMASBUl5BodCYDZ7bMyL99TsSkTiM0A=
-X-Received: by 2002:a17:90b:4f8b:b0:2c9:e24d:bbaa with SMTP id
- 98e67ed59e1d1-2d8441a247fmr197238a91.27.1724798970365; Tue, 27 Aug 2024
- 15:49:30 -0700 (PDT)
+        bh=lsar/HY/igeb/N5PuHSa3F5h30LOxiVIggShUntngqQ=;
+        b=Gw+4XElG7IMdUxNQGo/+QLD3PQ/C4Wkz75A7nnhPvbRuXfgUIzbbesq6BZCGEGfbGj
+         s0GiR+zqiUvmo3/mpB6GWfPeCaPH1MDEjiSrhDeYV50R6qwQU61IwBK0zZS+qbtaPIC1
+         acEE9ioxi1rsr3oucepPPKFHptK6+WpYL/DbvwAeqW6KQtgKfckftySchdTyj8JWzcUU
+         oVbvVV+Mb6mmxgvgX+TXUaVji7kuPV+U3qVl/G9p6TfU4aAlJ5JFI+NuNnyBXZvXuGuO
+         a0huawgqbAvwaqRHT1xEbJBPWypYZeqG+ItcvXN4jK6bV0fs+qGWH/R7ufTuRVV8Guoh
+         +7Bg==
+X-Forwarded-Encrypted: i=1; AJvYcCVDxSMWA4X+LG4vKnGvZVSR4iJF/s4Se05LJf9DRFzuAG+FONOHzyLfET9MpNkdmO5A9wGOcd96TDRSkvHS@vger.kernel.org
+X-Gm-Message-State: AOJu0YwVSgTiFB8s2Psj7wtN+i/30pUhyjs8rooS6r158JqLwePvTdWn
+	/U+X78K034Q5LZaVtpBdF9atpGDOLqbpipt0+sxsqLI1uPjP9WDy7EvEZTG/WI+AZsk6fclhc+d
+	asXg7Yu3nGh1uPcFzuPYe7DRtf2IQ13Xg
+X-Google-Smtp-Source: AGHT+IEwZt/y/Izw+LkAhH0vb5FK6Tqi8+RkxcIA31fyuJCPe6KaDFJJQoLNTS13v7fc+ZxHjgXzpe2+0WzO3L5ese0=
+X-Received: by 2002:a17:90a:8d0f:b0:2d3:bc5e:8452 with SMTP id
+ 98e67ed59e1d1-2d646d30403mr15932467a91.32.1724799340358; Tue, 27 Aug 2024
+ 15:55:40 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240827133959.1269178-1-yikai.lin@vivo.com> <20240827133959.1269178-3-yikai.lin@vivo.com>
-In-Reply-To: <20240827133959.1269178-3-yikai.lin@vivo.com>
+References: <20240813230300.915127-1-andrii@kernel.org>
+In-Reply-To: <20240813230300.915127-1-andrii@kernel.org>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 27 Aug 2024 15:49:18 -0700
-Message-ID: <CAEf4BzZXL9=pOkt=GbrYG2DpDGtXNLS7AHH5rL3adHd50zMKmQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 2/2] selftests/bpf: Fix cross-compile issue
- for some files and a static compile issue for "-lzstd"
-To: Lin Yikai <yikai.lin@vivo.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
-	Nick Terrell <terrelln@fb.com>, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, opensource.kernel@vivo.com
+Date: Tue, 27 Aug 2024 15:55:28 -0700
+Message-ID: <CAEf4BzY4v6D9gusa+fkY1qg4m-yT8VVFg2Y-++BdrheQMp+j6Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 0/8] BPF follow ups to struct fd refactorings
+To: viro@kernel.org, brauner@kernel.org
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
+	martin.lau@kernel.org, linux-fsdevel@vger.kernel.org, 
+	torvalds@linux-foundation.org, Andrii Nakryiko <andrii@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Aug 27, 2024 at 6:40=E2=80=AFAM Lin Yikai <yikai.lin@vivo.com> wrot=
-e:
+On Tue, Aug 13, 2024 at 4:03=E2=80=AFPM Andrii Nakryiko <andrii@kernel.org>=
+ wrote:
 >
-> 1. Fix cross-compile issue for some files:
-> [Issue]
-> When cross-compiling bpf selftests for arm64 on x86_64 host, the followin=
-g error occurs:
-> progs/loop2.c:20:7: error: incomplete definition of type 'struct user_pt_=
-regs'
->    20 |                 if (PT_REGS_RC(ctx) & 1)
->       |                     ^~~~~~~~~~~~~~~
+> This patch set extracts all the BPF-related changes done in [0] into
+> a separate series based on top of stable-struct_fd branch ([1]) merged in=
+to
+> bpf-next tree. There are also a few changes, additions, and adjustments:
 >
-> There are same error in files: loop1.c, loop2.c, loop3.c, loop6.c ???
+>   - patch subjects adjusted to use "bpf: " prefix consistently;
+>   - patch #2 is extracting bpf-related changes from original patch #19
+>     ("fdget_raw() users: switch to CLASS(fd_raw, ...)") and is ordered a =
+bit
+>     earlier in this patch set;
+>   - patch #3 is reimplemented and replaces original patch #17
+>     ("bpf: resolve_pseudo_ldimm64(): take handling of a single ldimm64 in=
+sn into helper")
+>     completely;
+>   - in patch #4 ("bpf: switch maps to CLASS(fd, ...)"), which was origina=
+lly
+>     patch #18 ("bpf maps: switch to CLASS(fd, ...)"), I've combined
+>     __bpf_get_map() and bpf_file_to_map() into __bpf_get_map(), as the la=
+tter
+>     is only used from it and makes no sense to keep separate;
+>   - as part of rebasing patch #4, I adjusted newly added in patch #3
+>     add_used_map_from_fd() function to use CLASS(fd, ...), as now
+>     __bpf_get_map() doesn't do its own fdput() anymore. This made unneces=
+sary
+>     any further bpf_map_inc() changes, because we still rely on struct fd=
+ to
+>     keep map's file reference alive;
+>   - patches #5 and #6 are BPF-specific bits extracted from original patch=
+ #23
+>     ("fdget(), trivial conversions") and #24 ("fdget(), more trivial conv=
+ersions");
+>   - patch #7 constifies security_bpf_token_create() LSM hook;
+>   - patch #8 is original patch #35 ("convert bpf_token_create()"), with
+>     path_get()+path_put() removed now that LSM hook above was adjusted.
 >
-> [Reason]
-> On arm64, in file bpf_tracing.h, we use userspace's user_pt_regs,
-> which is defined in "linux/ptrace.h".
-> We include the header file by adding "-idirafter /usr/include" for "CLANG=
-_CFLAGS".
+> All these patches were pushed into a separate bpf-next/struct_fd branch (=
+[2]).
+> They were also merged into bpf-next/for-next so they can get early testin=
+g in
+> linux-next.
 >
-> However, during cross-compiling, "linux/ptrace.h" is based on x86_64
-> and has no definition of "struct user_pt_regs".
+>   [0] https://lore.kernel.org/bpf/20240730050927.GC5334@ZenIV/
+>   [1] https://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git/log/?h=
+=3Dstable-struct_fd
+>   [2] https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/lo=
+g/?h=3Dstruct_fd
 >
-> [Fix]
-> Thus, to fix this issue, we include the Linux source tree's header file d=
-irectory.
+> Al Viro (6):
+>   bpf: convert __bpf_prog_get() to CLASS(fd, ...)
+>   bpf: switch fdget_raw() uses to CLASS(fd_raw, ...)
+>   bpf: switch maps to CLASS(fd, ...)
+>   bpf: trivial conversions for fdget()
+>   bpf: more trivial fdget() conversions
+>   bpf: convert bpf_token_create() to CLASS(fd, ...)
+>
+> Andrii Nakryiko (2):
+>   bpf: factor out fetching bpf_map from FD and adding it to used_maps
+>     list
+>   security,bpf: constify struct path in bpf_token_create() LSM hook
 >
 
-Hm.. Not sure that's the right fix. Note -D__TARGET_ARCH_$(SRCARCH) in
-BPF_CFLAGS, that __TARGET_ARCH has to match actual target
-architecture, so please check that first.
+Al, Christian,
 
-pw-bot: cr
+Can you guys please take a look and let us know if this looks sane and
+fine to you? I kept Al's patches mostly intact (see my notes in the
+cover letter above), and patch #3 does the refactoring I proposed
+earlier, keeping explicit fdput() temporarily, until Al's
+__bpf_map_get() refactoring which allows and nice and simple CLASS(fd)
+conversion.
 
-> 2. Fix static compile issue for "-lzstd":
-> [Issue]
-> By running the command "LDLIBS=3D-static LDFLAGS=3D--sysroot=3D/aarch64-l=
-inux-gnu/libc ./vmtest.sh -s -- ./test_progs",
-> during static cross-compiling, an error occurs:
-> /aarch64-linux-gnu/bin/ld: aarch64-linux-gnu/libc/usr/lib/libelf.a(elf_co=
-mpress.o): in function `__libelf_compress':
-> (.text+0xec): undefined reference to `ZSTD_createCCtx'
-> /aarch64-linux-gnu/bin/ld: (.text+0xf0): undefined reference to `ZSTD_cre=
-ateCCtx'
-> ...
->
-> [Fix]
-> For static compile, add "LDLIBS +=3D -lzstd".
+I think we end up at exactly what the end goal of the original series
+is: using CLASS(fd, ...) throughout with all the benefits.
 
-we can probably just add it unconditionally, no? But please send it as
-a separate change in its own patch
-
+>  include/linux/bpf.h            |  11 +-
+>  include/linux/lsm_hook_defs.h  |   2 +-
+>  include/linux/security.h       |   4 +-
+>  kernel/bpf/bpf_inode_storage.c |  24 ++---
+>  kernel/bpf/btf.c               |  11 +-
+>  kernel/bpf/map_in_map.c        |  38 ++-----
+>  kernel/bpf/syscall.c           | 181 +++++++++------------------------
+>  kernel/bpf/token.c             |  74 +++++---------
+>  kernel/bpf/verifier.c          | 110 +++++++++++---------
+>  net/core/sock_map.c            |  23 ++---
+>  security/security.c            |   2 +-
+>  security/selinux/hooks.c       |   2 +-
+>  12 files changed, 179 insertions(+), 303 deletions(-)
 >
-> Signed-off-by: Lin Yikai <yikai.lin@vivo.com>
-> ---
->  tools/testing/selftests/bpf/Makefile | 12 +++++++++++-
->  1 file changed, 11 insertions(+), 1 deletion(-)
->
-> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftes=
-ts/bpf/Makefile
-> index ec7d425c4022..5b725bc890d2 100644
-> --- a/tools/testing/selftests/bpf/Makefile
-> +++ b/tools/testing/selftests/bpf/Makefile
-> @@ -48,6 +48,10 @@ CFLAGS +=3D -g $(OPT_FLAGS) -rdynamic                 =
-                 \
->  LDFLAGS +=3D $(SAN_LDFLAGS)
->  LDLIBS +=3D $(LIBELF_LIBS) -lz -lrt -lpthread
->
-> +ifneq (,$(findstring -static,$(LDLIBS)))
-> +LDLIBS +=3D -lzstd
-> +endif
-> +
->  LDLIBS +=3D $(shell $(PKG_CONFIG) --libs libpcap 2>/dev/null)
->  CFLAGS +=3D $(shell $(PKG_CONFIG) --cflags libpcap 2>/dev/null)
->  CFLAGS +=3D $(shell $(PKG_CONFIG) --exists libpcap 2>/dev/null && echo "=
--DTRAFFIC_MONITOR=3D1")
-> @@ -443,13 +447,19 @@ CLANG_TARGET_ARCH =3D --target=3D$(notdir $(CROSS_C=
-OMPILE:%-=3D%))
->  endif
->
->  CLANG_SYS_INCLUDES =3D $(call get_sys_includes,$(CLANG),$(CLANG_TARGET_A=
-RCH))
-> +CLANG_CFLAGS =3D $(CLANG_SYS_INCLUDES)
-> +
->  BPF_CFLAGS =3D -g -Wall -Werror -D__TARGET_ARCH_$(SRCARCH) $(MENDIAN)   =
- \
->              -I$(INCLUDE_DIR) -I$(CURDIR) -I$(APIDIR)                   \
->              -I$(abspath $(OUTPUT)/../usr/include)                      \
->              -Wno-compare-distinct-pointer-types
->  # TODO: enable me -Wsign-compare
->
-> -CLANG_CFLAGS =3D $(CLANG_SYS_INCLUDES)
-> +#"make headers_install" at first
-> +ifneq ($(CROSS_COMPILE),)
-> +src_uapi_dir :=3D $(srctree)/usr/include
-> +BPF_CFLAGS +=3D -I$(src_uapi_dir)
-> +endif
->
->  $(OUTPUT)/test_l4lb_noinline.o: BPF_CFLAGS +=3D -fno-inline
->  $(OUTPUT)/test_xdp_noinline.o: BPF_CFLAGS +=3D -fno-inline
 > --
-> 2.34.1
+> 2.43.5
 >
 
