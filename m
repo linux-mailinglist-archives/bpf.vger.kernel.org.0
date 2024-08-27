@@ -1,178 +1,139 @@
-Return-Path: <bpf+bounces-38182-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38183-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67F1A9614D5
-	for <lists+bpf@lfdr.de>; Tue, 27 Aug 2024 19:01:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C00E19616AD
+	for <lists+bpf@lfdr.de>; Tue, 27 Aug 2024 20:17:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2003E283522
-	for <lists+bpf@lfdr.de>; Tue, 27 Aug 2024 17:01:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7DF98281682
+	for <lists+bpf@lfdr.de>; Tue, 27 Aug 2024 18:17:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DB7C1C9EAD;
-	Tue, 27 Aug 2024 17:01:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 331991CCB4A;
+	Tue, 27 Aug 2024 18:17:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jaJ6uBSd"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="OwSQ8ox6"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3EDA45025
-	for <bpf@vger.kernel.org>; Tue, 27 Aug 2024 17:01:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D81AC1D2F6E
+	for <bpf@vger.kernel.org>; Tue, 27 Aug 2024 18:16:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724778067; cv=none; b=OarNRyZzvrHf1gkwxLA4UcScGPnUQjEr7YXsp/+XXAPS37tbXQjYWsukGClkavvsyi6s1lNZxw/grPUe2AfCuhuKVkXbrbaWf5Us3l0yhM1NG4thiIqq4XNomG5mmu34UzNLmrumc95OmnrKSb/G0gTNv286cMuDzDg/CZSZqbQ=
+	t=1724782622; cv=none; b=k7qY3Ei9nsVdq1oPDFWvkZqKzXnSS7E8CQIoFxGrc1kPx1jPQN2PLCbtL8OYGewDnoJO8tEbp3ZZGMjLufiwf1RQEmGFXR3TK1DoSNYfARDeWwDJ9nxrt8URmCUblFEbI9iFSdxx7/fWACeXNWqGNSqdyUy3zLJ507QcemWAVc4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724778067; c=relaxed/simple;
-	bh=vytvSJ1kSZta2JvaDE7knomvz0Tex/K7NCAcaU0SSfs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=og94uwGzSxbQoBI0NxXHwcaHhYYVgkUeoQX23L8P1j9cQqVewfH+2FY/C114a+x+1i+N2Zym4LOzZJdv4nt6DGE+rObmNzkXELncU0RjEnz2sBvN0wsTZeKIXtl/p7Mgo4iRcBy01RhC5HoQ7WaQjQmOZTFkZmzTb7pl1bCslrM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jaJ6uBSd; arc=none smtp.client-ip=209.85.216.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-2d439583573so4182348a91.3
-        for <bpf@vger.kernel.org>; Tue, 27 Aug 2024 10:01:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1724778065; x=1725382865; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5snOsMKkskeeWvYsLYpbmKWRu6ocqwFH8f+X8NXzeZ0=;
-        b=jaJ6uBSdFw5vQmXW/7YQeeU+HTu30TtQ0R64lp652+5CKp+5QmHnnxyIJBACHzUsyi
-         Rnq0VRNjMIKgfSK2blC4mglSKZ32TU5VdOAEAr3j8VIlNi/8o24Ia7Wfw6mfufVLDtGK
-         t29CYxD2ZUzwyJ+zyHvY3Fx1zs09a87UIBQEVuEoIynkW9HuRL7ksTGnOowWiCmh0AX4
-         r9hh9EB/c75BZo2+kgm0hMl1U2GIv6adJWsjDvhXPHfDUItjMEO2niPF+GkFt/eN0rdv
-         In8b4YIcgOPJUz6Kn5sk6Rsut7048/F24a4RzEbmt+8tyGalxd4+yN/U+lOYFoJAHrwI
-         By2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724778065; x=1725382865;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5snOsMKkskeeWvYsLYpbmKWRu6ocqwFH8f+X8NXzeZ0=;
-        b=tWGQ0IV5O9xFn3byZHsBqyoSNdgsQ6VCo9R4ZSBsB23xbG6/GKtwUl3HlbKuuEt/gi
-         R8OW9LWykQ944ihPri0zlt2G91lraqyrMjWOf7psJmlKPdRxMDXZVOvvZRYtC/ZLhGDF
-         AoKhYbCo4Ldl7SF25oL/x5RCFJBFpMG+9nkuCfUmQNc+DS2GHYtiiWATJzYhig5MxnyR
-         R6QIvp9bvuPQJuxXGP3XkeQmp6vhHmMle4Ur5jzaV5Q2/fV1llHZyEzk3G1DTgRTpt0M
-         EXFLaGv3ek/bt3omroiq9fOUUCTMY6P7ogC+UpNbB7sjHExqZZpmoKG+j1VG3QSROgTe
-         PiIg==
-X-Gm-Message-State: AOJu0YxM9KHn/RRLVGEwTRVLPYpponrznB2WNBF0gzmzyYntkTx8Iusy
-	KR0izxN0DoCv41QTxu/lrA4hQz7oL5295wcJeiQ2umhe+FY9ESSVFFeyXKquASpqNQWbQ8preok
-	vPCyOfHt8YiZ43k2pYe03+o9cykI=
-X-Google-Smtp-Source: AGHT+IH46B8lhU1Q/T5ZE22cJYjojX3tkAbaDnIRjRzHN4KgK/TQMH51QouaR0YR4Ya+YTMOgHbiKsjPOSpU3twsELA=
-X-Received: by 2002:a17:90b:3881:b0:2d3:b5ca:f1e9 with SMTP id
- 98e67ed59e1d1-2d8259cfe7dmr3804130a91.33.1724778064704; Tue, 27 Aug 2024
- 10:01:04 -0700 (PDT)
+	s=arc-20240116; t=1724782622; c=relaxed/simple;
+	bh=5P4H2hi1RXvzn4wmfWi9XmN0QJD+FiFftBhtZE+9erU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=LWlWEIDPHKn5nvURm8fh+uYdJdOqO5Q8kwJJXl/+jw2NSSfQUUsZdSC7aCqNa7VJFO0+3KMXv032zcKcGIoqUhjXqyz80DPuZ35V4jpayaRpjmhsUamn178cQebpoN0G3OGQVTGhjuj7QZoUQr3YRBkj+AGuuHmFGJIAJ/4xwlY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=OwSQ8ox6; arc=none smtp.client-ip=91.218.175.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1724782617;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=BmfQSthzRc8Ay9+VHbVsttUQHDHSLiZN5uBnRsytPVY=;
+	b=OwSQ8ox6GZ9lYPBi1xsA9ea+0G9x9feyiKiFEcvvf0ifjoESCxmRKV4PxsGVKOs/HA1s2p
+	criugHkH0HhJwLfk7wTbSyFalKIweXzi8wKJZSkalqQpnVDurRyvLSrlJhWagbJop5KKtM
+	IpxHaY8Sf9NnD5Q8y0ipOlgfzcZtCoU=
+From: Martin KaFai Lau <martin.lau@linux.dev>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	Amery Hung <ameryhung@gmail.com>,
+	kernel-team@meta.com
+Subject: [PATCH v3 bpf-next 0/9] bpf: Add gen_epilogue to bpf_verifier_ops
+Date: Tue, 27 Aug 2024 11:16:36 -0700
+Message-ID: <20240827181647.847890-1-martin.lau@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <TCvb-R45mBUJOpoW3V-tLkH2XppfNXYbkv7Ph0ae8J9MZKWFvQ3nkJw74KKMbMzzpAvbwXBwRuBmhFOtHl0-jLLrIALH-_2_Zp-MZ9pPXPo=@pm.me>
- <CAEf4BzaixE=-+YnowJhZMDk0SoVdZTHgx-X+3UwnJVUnXxkXzQ@mail.gmail.com> <NlxQiywYmu4MyGt1DSHPsHoslAKqqqeFoMBQ04NZsJITsVCbnucbWel87tw50N0sU_TrQ1osPMNLt5_iTBisRhm2rYn262Ip0ZrJMAL0sYc=@pm.me>
-In-Reply-To: <NlxQiywYmu4MyGt1DSHPsHoslAKqqqeFoMBQ04NZsJITsVCbnucbWel87tw50N0sU_TrQ1osPMNLt5_iTBisRhm2rYn262Ip0ZrJMAL0sYc=@pm.me>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 27 Aug 2024 10:00:52 -0700
-Message-ID: <CAEf4BzYQ-j2i_xjs94Nn=8+FVfkWt51mLZyiYKiz9oA4Z=pCeA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: compare vmlinux.h checksum when
- building %.bpf.o
-To: Ihor Solodrai <ihor.solodrai@pm.me>
-Cc: bpf <bpf@vger.kernel.org>, "ast@kernel.org" <ast@kernel.org>, 
-	"andrii@kernel.org" <andrii@kernel.org>, "daniel@iogearbox.net" <daniel@iogearbox.net>, 
-	Eduard Zingerman <eddyz87@gmail.com>, "mykolal@fb.com" <mykolal@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, Aug 26, 2024 at 6:22=E2=80=AFPM Ihor Solodrai <ihor.solodrai@pm.me>=
- wrote:
->
-> Hi Andrii, thanks for a review.
->
-> On Monday, August 26th, 2024 at 2:59 PM, Andrii Nakryiko <andrii.nakryiko=
-@gmail.com> wrote:
->
-> [...]
->
-> > I'm not sure what md5sum buys us here, tbh... To compute checksum you
-> > need to read entire contents anyways, so you are not really saving
-> > anything performance-wise.
-> >
-> > I was originally thinking that we'll extend existing rule for
-> > $(INCLUDE_DIR)/vmlinux.h to do bpftool dump into temporary file, then
-> > do `cmp --silent` over it and existing vmlinux.h (if it does exist, of
-> > course), and if they are identical just exit and not modify anything.
-> > If not, we just mv temp file over destination vmlinux.h.
->
-> >
-> > In my head this would prevent make from triggering dependent targets
-> > because vmlinux.h's modification time won't change.
-> >
-> > Does the above not work?
->
-> I tried your suggestion and it works too. I like it better, as it's a
-> smaller change (see below).
->
-> A checksum was just the first idea I had about saving the previous
-> state of vmlinux.h, and I went with it. Copying an entire file seemed
-> excessive to me, but it's not necessary as it turns out.
->
-> Please let me know if the cmp version is ok, and I'll send v2 of the
-> patch.
->
-> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftes=
-ts/bpf/Makefile
-> index c120617b64ad..25412b9194bd 100644
-> --- a/tools/testing/selftests/bpf/Makefile
-> +++ b/tools/testing/selftests/bpf/Makefile
-> @@ -402,7 +402,8 @@ endif
->  $(INCLUDE_DIR)/vmlinux.h: $(VMLINUX_BTF) $(BPFTOOL) | $(INCLUDE_DIR)
->  ifeq ($(VMLINUX_H),)
->         $(call msg,GEN,,$@)
-> -       $(Q)$(BPFTOOL) btf dump file $(VMLINUX_BTF) format c > $@
-> +       $(Q)$(BPFTOOL) btf dump file $(VMLINUX_BTF) format c > $(INCLUDE_=
-DIR)/.vmlinux.h.tmp
-> +       $(Q)cmp -s $(INCLUDE_DIR)/.vmlinux.h.tmp $@ || mv $(INCLUDE_DIR)/=
-.vmlinux.h.tmp $@
+From: Martin KaFai Lau <martin.lau@kernel.org>
 
-great, just maybe leave a small comment that we do this to avoid
-updating timestamps if contents didn't change, to not trigger
-expensive recompilation of many dependent files
+This set allows the subsystem to patch codes before BPF_EXIT.
+The verifier ops, .gen_epilogue, is added for this purpose.
+One of the use case will be in the bpf qdisc, the bpf qdisc
+subsystem can ensure the skb->dev is in the correct value.
+The bpf qdisc subsystem can either inline fixing it in the
+epilogue or call another kernel function to handle it (e.g. drop)
+in the epilogue. Another use case could be in bpf_tcp_ca.c to
+enforce snd_cwnd has valid value (e.g. positive value).
 
->  else
->         $(call msg,CP,,$@)
->         $(Q)cp "$(VMLINUX_H)" $@
-> @@ -516,6 +517,12 @@ xdp_features.skel.h-deps :=3D xdp_features.bpf.o
->  LINKED_BPF_OBJS :=3D $(foreach skel,$(LINKED_SKELS),$($(skel)-deps))
->  LINKED_BPF_SRCS :=3D $(patsubst %.bpf.o,%.c,$(LINKED_BPF_OBJS))
->
-> +HEADERS_FOR_BPF_OBJS :=3D $(wildcard $(BPFDIR)/*.bpf.h)          \
-> +                       $(addprefix $(BPFDIR)/, bpf_core_read.h \
-> +                                               bpf_endian.h    \
-> +                                               bpf_helpers.h   \
-> +                                               bpf_tracing.h)
-> +
+v3:
+ * Moved epilogue_buf[16] to env.
+   Patch 1 is added to move the existing insn_buf[16] to env.
+ * Fixed a case that the bpf prog has a BPF_JMP that goes back
+   to the first instruction of the main prog.
+   The jump back to 1st insn case also applies to the prologue.
+   Patch 2 is added to handle it.
+ * If the bpf main prog has multiple BPF_EXIT, use a BPF_JA
+   to goto the earlier patched epilogue.
+   Note that there are (BPF_JMP32 | BPF_JA) vs (BPF_JMP | BPF_JA)
+   details in the patch 3 commit message.
+ * There are subtle changes in patch 3, so I reset the Reviewed-by.
+ * Added patch 8 and patch 9 to cover the changes in patch 2 and patch 3.
+ * Dropped the kfunc call from pro/epilogue and its selftests.
 
-let's split this change into a separate patch?
+v2:
+ * Remove the RFC tag. Keep the ordering at where .gen_epilogue is
+   called in the verifier relative to the check_max_stack_depth().
+   This will be consistent with the other extra stack_depth
+   usage like optimize_bpf_loop().
+ * Use __xlated check provided by the test_loader to
+   check the patched instructions after gen_pro/epilogue (Eduard).
+ * Added Patch 3 by Eduard (Thanks!).
 
->  # Set up extra TRUNNER_XXX "temporary" variables in the environment (rel=
-ies on
->  # $eval()) and pass control to DEFINE_TEST_RUNNER_RULES.
->  # Parameters:
-> @@ -566,8 +573,7 @@ $(TRUNNER_BPF_OBJS): $(TRUNNER_OUTPUT)/%.bpf.o:      =
-                       \
->                      $(TRUNNER_BPF_PROGS_DIR)/%.c                       \
->                      $(TRUNNER_BPF_PROGS_DIR)/*.h                       \
->                      $$(INCLUDE_DIR)/vmlinux.h                          \
-> -                    $(wildcard $(BPFDIR)/bpf_*.h)                      \
-> -                    $(wildcard $(BPFDIR)/*.bpf.h)                      \
-> +                    $(HEADERS_FOR_BPF_OBJS)                            \
->                      | $(TRUNNER_OUTPUT) $$(BPFOBJ)
->         $$(call $(TRUNNER_BPF_BUILD_RULE),$$<,$$@,                      \
->                                           $(TRUNNER_BPF_CFLAGS)         \
-> --
-> 2.34.1
->
->
+Eduard Zingerman (1):
+  selftests/bpf: attach struct_ops maps before test prog runs
+
+Martin KaFai Lau (8):
+  bpf: Move insn_buf[16] to bpf_verifier_env
+  bpf: Adjust BPF_JMP that jumps to the 1st insn of the prologue
+  bpf: Add gen_epilogue to bpf_verifier_ops
+  bpf: Export bpf_base_func_proto
+  selftests/bpf: Test gen_prologue and gen_epilogue
+  selftests/bpf: Add tailcall epilogue test
+  selftests/bpf: A pro/epilogue test when the main prog jumps back to
+    the 1st insn
+  selftests/bpf: Test epilogue patching when the main prog has multiple
+    BPF_EXIT
+
+ include/linux/bpf.h                           |   2 +
+ include/linux/bpf_verifier.h                  |   4 +
+ kernel/bpf/helpers.c                          |   1 +
+ kernel/bpf/verifier.c                         |  72 +++++--
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 190 ++++++++++++++++++
+ .../selftests/bpf/bpf_testmod/bpf_testmod.h   |  11 +
+ .../bpf/bpf_testmod/bpf_testmod_kfunc.h       |   6 +
+ .../selftests/bpf/prog_tests/pro_epilogue.c   |  54 +++++
+ .../selftests/bpf/progs/epilogue_exit.c       |  78 +++++++
+ .../selftests/bpf/progs/epilogue_tailcall.c   |  58 ++++++
+ .../bpf/progs/pro_epilogue_goto_start.c       | 149 ++++++++++++++
+ .../selftests/bpf/progs/pro_epilogue_kfunc.c  | 156 ++++++++++++++
+ .../bpf/progs/pro_epilogue_subprog.c          | 125 ++++++++++++
+ tools/testing/selftests/bpf/test_loader.c     |  27 +++
+ 14 files changed, 921 insertions(+), 12 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/pro_epilogue.c
+ create mode 100644 tools/testing/selftests/bpf/progs/epilogue_exit.c
+ create mode 100644 tools/testing/selftests/bpf/progs/epilogue_tailcall.c
+ create mode 100644 tools/testing/selftests/bpf/progs/pro_epilogue_goto_start.c
+ create mode 100644 tools/testing/selftests/bpf/progs/pro_epilogue_kfunc.c
+ create mode 100644 tools/testing/selftests/bpf/progs/pro_epilogue_subprog.c
+
+-- 
+2.43.5
+
 
