@@ -1,70 +1,72 @@
-Return-Path: <bpf+bounces-38114-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38115-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B245B95FDEF
-	for <lists+bpf@lfdr.de>; Tue, 27 Aug 2024 02:16:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B230195FDF0
+	for <lists+bpf@lfdr.de>; Tue, 27 Aug 2024 02:16:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6FCD12822B3
-	for <lists+bpf@lfdr.de>; Tue, 27 Aug 2024 00:16:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 274B71F2306F
+	for <lists+bpf@lfdr.de>; Tue, 27 Aug 2024 00:16:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 772392107;
-	Tue, 27 Aug 2024 00:16:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63A8A23DE;
+	Tue, 27 Aug 2024 00:16:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="iMkB9JA8"
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="gJJwMVuf"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qv1-f53.google.com (mail-qv1-f53.google.com [209.85.219.53])
+Received: from mail-qv1-f45.google.com (mail-qv1-f45.google.com [209.85.219.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 299B21FA4
-	for <bpf@vger.kernel.org>; Tue, 27 Aug 2024 00:16:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62B571FAA
+	for <bpf@vger.kernel.org>; Tue, 27 Aug 2024 00:16:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724717790; cv=none; b=o7TeQeF58jE88iIReQKhTjO6Q3AX2xJEXuv3m2qqYMrofqvlJsn98Nk+N+Te7EN+0Q72k+NCSMerNo2RG9OpC59UYAXiHx7Y1HieP1MvO7dF8AReVkBH/XsA0MRlIe+w8vhZOMSB0eLF665q65ZqDAh+BL2ixr/2woV0PT5/T/M=
+	t=1724717791; cv=none; b=iA3rBR0Qs4x0IchIg9Zp01pJuVSSmYuX+jv0DljjBHcgSURzmmPz9x+rvC5T0dLKsKGZb1lMjPc8BmcSegGQ2eh+NWTSfrohaW/TwWqZl41/hfkKt3AgOEYyT0QyQaQZwpNriIY2dLhJjtRnFh9gtzA0ApViYK6hnbwE1rcfwrw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724717790; c=relaxed/simple;
-	bh=MNX9a16kkQeFn5DqUjfgOX3cRGCxUfjm0QpaWgyc7Zk=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=TTBzqQ6ClkuRJbxJpvtuT1Mp61Shbi/3BcSRxyVw+EI+y259Djl67LAiJToHULxeMF9Hrh82KIUak/frQONddZ5uRbXtXpQqaC9LO8Ttt9+oIDFpGozS+38SLXBEIft/32nVTvx4vVRdxrJn8q1Zk5DS92hFegNREe5z17BdZN0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=iMkB9JA8; arc=none smtp.client-ip=209.85.219.53
+	s=arc-20240116; t=1724717791; c=relaxed/simple;
+	bh=dwXgFkLLxDlJ/psywywm0sXw8F+FfB0iKbQ1oItwNfs=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=HJYfcklmHCEl5qWhKCBYlayN1r7t37Nk7oKf5wlmIJO20PWLANTK0SMjS+aO9BHIRR59HqstxVnLmTbVMZfJslw0r/lUb5Dy3Bal91sePqQtHoRev1c6wKKkPguTYBEHdbW4CG3B2lYd+oi1OngYPZPrngrppJDZvIJYsrtcy88=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=gJJwMVuf; arc=none smtp.client-ip=209.85.219.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-qv1-f53.google.com with SMTP id 6a1803df08f44-6bf9db9740aso22131696d6.2
-        for <bpf@vger.kernel.org>; Mon, 26 Aug 2024 17:16:27 -0700 (PDT)
+Received: by mail-qv1-f45.google.com with SMTP id 6a1803df08f44-6bf6606363fso26769856d6.3
+        for <bpf@vger.kernel.org>; Mon, 26 Aug 2024 17:16:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1724717786; x=1725322586; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=KxqlCIIVPOy80RPgVgWmzEjQn5sLiFmvjQd7bMYBDjE=;
-        b=iMkB9JA8BPpM9AqV2tFEyWluXh8moLbqZtKJ9pZ8FI26yzizTTmZrqoWQk4+MaKjNd
-         8vsUd0CLdO4z27n+d/nyC0PlV9oABz6RMmSAXhOziZt2GxmElRCK1TmCHfUaEVUwhrUR
-         UWDQWL9s7+pliP8H5tthdgA3pFxj8goFCSxIM7NIkDquw1r+VI9tUVanxEhkEtEyW+4d
-         KP45T7pzXZwaN4bvE/z/itLTCsLbXrl5+u6watdSt0JyvXS1+9herPzLjg7Fe/lXkpeG
-         wJy+UpUaNXW0hJHotkRQUh3zDi/lSZsb/kew5TWqWvq0C1LkImqRPaTkBJfL0Iv3Y+r3
-         4sCw==
+        d=bytedance.com; s=google; t=1724717788; x=1725322588; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rvaGTDglxkoTbtTs4rY1slGgaJPTK8jyVArxMPfgfwk=;
+        b=gJJwMVufTosef4Y9OZjt3sdIpPdv1fkI9AmtlD0pSvudoslZmASl/JoM/Jh1ErxBYI
+         u5coH+9blADKC2JbLvFe62C6VMUMB5+WXrs8O5XThyWRZampVCmd2p8XNsprgg9mCwVk
+         DIFww9EadWDh/STmkEPOZbU5hJAJlT+Dfs1WCye6ACCYZAbz4RnKbtfM2Ja4sG+jni5X
+         MY/MRT8+/CKqNErfbi7m/qh3fyIu3Q3+QozlNlQHDmANTVabSfPSLyGo6tzbfS/aEkqP
+         W/XPYnW7UUjfQBRjGDOAK/Ub05PBpjXgOlaUU+pQJBbuYa6VQZ4ZvYzbRgsGlJLbJPiA
+         au5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724717786; x=1725322586;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=KxqlCIIVPOy80RPgVgWmzEjQn5sLiFmvjQd7bMYBDjE=;
-        b=u8BCbe/gBDGsDjrkOB6+pUTuXHn4ZETSjqEwkQQ/VteWu6DMFQXiaaWPyHmtCA1bad
-         MZEsECRdQr5pBjWeq273ifytxKky73XjnfqDWaGo58KO2FmLygvy2yw7koSREA1lNZ+2
-         Rebkmb7BtfdGw6OZN9Tb0d62rYuJJnlx14LA9u4SACBvztd5gm5IObtKPkq1SsYcb65f
-         N7KAn9cjxBB7hn1BI7mE87L9DKOPcJf/Wmvw9CcTULu98dzP9ksWuGs4DbR3gwTkjaRZ
-         OxFoooo43oUQEsdyEXW6M1rKowKqibL5haaoAaC+7iasKwLP46mBGqye19uy7n+VSgze
-         feqA==
-X-Gm-Message-State: AOJu0YzAsEpM24N17dCgLufqNXsQyxdq5KCJhFfu9kD+/ChI4SpUzTiz
-	FqFzeeoPQ4zAmCduiW5Db0na20J2WoXzI9Jyy0BtL4QkB7CkvOefVa8cmAgkAJ1Nl12PVbmXUSK
-	W
-X-Google-Smtp-Source: AGHT+IFPG6Y1jf7+5BPEFiEK9LFPqtPQh5Q/Dkl6TBuKSEqW4VLlroF06ndzuDQogttxJWwjvVUxhQ==
-X-Received: by 2002:a05:6214:4806:b0:6bf:7fba:c829 with SMTP id 6a1803df08f44-6c32b809629mr13308046d6.42.1724717786406;
-        Mon, 26 Aug 2024 17:16:26 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1724717788; x=1725322588;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rvaGTDglxkoTbtTs4rY1slGgaJPTK8jyVArxMPfgfwk=;
+        b=NF4zgrSTosZFVgCx+1DeX399+tXBC5lze/PBkNrOdKL3+W0fpMfC3YhRyv1bIImSwT
+         YSWlrZpaRj3/eb9Na3f36KvsraKYnhxZeK2uo4neOcSunjAuNuhGJeYQS+qI6q6DfzVZ
+         /AvoHwrlrfMJfYoBatO3b16GloafBNSJcxtEJhf1w80Afx7rXZG0OzjLKvgnZybfZJXg
+         iapdj6fTn0bXjzD8KcJ7Ez5pvZ58os/WkTapzfotmbYCb+KY8lsybFchVJs4I2SVLsug
+         11sY0z7peeE3brdID9OC7pmokTdEp/oPVdISlhuD9V8IxnZTYIPPkHEB4zKX2kB8JsPL
+         R9gQ==
+X-Gm-Message-State: AOJu0YyQAPUmZqffBTYqDrulgkVEaKZep3c8sy5aJfFm/h0wBVVXK9rq
+	O+chpCikQ9vAavqEKT9Y0zBmwIcWKFag+yLHZOVDRHljPuz5m/Lb2LjOTpmolb9RyASkiZ5Su0G
+	B
+X-Google-Smtp-Source: AGHT+IFbFBMiUYVwMkpOUUbZNRct4zq9d+QQoMIsLLVopZRMJGyE2dwc1oLKOSJFttUfDoFHXfmJ3Q==
+X-Received: by 2002:a05:6214:418c:b0:6b5:936d:e5e9 with SMTP id 6a1803df08f44-6c16dc86c56mr136602326d6.26.1724717787936;
+        Mon, 26 Aug 2024 17:16:27 -0700 (PDT)
 Received: from n191-036-066.byted.org ([130.44.212.119])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6c162dcda66sm51387136d6.122.2024.08.26.17.16.25
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6c162dcda66sm51387136d6.122.2024.08.26.17.16.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Aug 2024 17:16:25 -0700 (PDT)
+        Mon, 26 Aug 2024 17:16:27 -0700 (PDT)
 From: zijianzhang@bytedance.com
 To: bpf@vger.kernel.org
 Cc: edumazet@google.com,
@@ -88,11 +90,14 @@ Cc: edumazet@google.com,
 	xiyou.wangcong@gmail.com,
 	wangdongdong.6@bytedance.com,
 	zhoufeng.zf@bytedance.com,
-	Amery Hung <amery.hung@bytedance.com>
-Subject: [PATCH bpf-next v1 0/2] prevent bpf_reserve_hdr_opt() from growing skb larger than MTU
-Date: Tue, 27 Aug 2024 00:14:05 +0000
-Message-Id: <20240827001407.2476854-1-zijianzhang@bytedance.com>
+	Amery Hung <amery.hung@bytedance.com>,
+	Zijian Zhang <zijianzhang@bytedance.com>
+Subject: [PATCH bpf-next v1 1/2] bpf: tcp: prevent bpf_reserve_hdr_opt() from growing skb larger than MTU
+Date: Tue, 27 Aug 2024 00:14:06 +0000
+Message-Id: <20240827001407.2476854-2-zijianzhang@bytedance.com>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20240827001407.2476854-1-zijianzhang@bytedance.com>
+References: <20240827001407.2476854-1-zijianzhang@bytedance.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -125,24 +130,79 @@ not more than the first time. Since this cannot be done during
 verification time, we add a runtime sanity check to have
 bpf_reserve_hdr_opt return an error instead of causing packet drops later.
 
-We also add a selftests to verify the sanity check. If users accidentally
-reserve a small size, bpf_reserve_hdr_opt() should return an appropriate
-error value and no packet should be dropped.
+Signed-off-by: Amery Hung <amery.hung@bytedance.com>
+Co-developed-by: Zijian Zhang <zijianzhang@bytedance.com>
+Signed-off-by: Zijian Zhang <zijianzhang@bytedance.com>
+---
+ include/net/tcp.h     |  8 ++++++++
+ net/ipv4/tcp_input.c  |  8 --------
+ net/ipv4/tcp_output.c | 13 +++++++++++--
+ 3 files changed, 19 insertions(+), 10 deletions(-)
 
-Amery Hung (1):
-  bpf: tcp: prevent bpf_reserve_hdr_opt() from growing skb larger than
-    MTU
-
-Zijian Zhang (1):
-  bpf: selftests: reserve smaller tcp header options than the actual
-    size
-
- include/net/tcp.h                             |  8 +++
- net/ipv4/tcp_input.c                          |  8 ---
- net/ipv4/tcp_output.c                         | 13 ++++-
- .../bpf/prog_tests/tcp_hdr_options.c          | 51 +++++++++++++++++++
- 4 files changed, 70 insertions(+), 10 deletions(-)
-
+diff --git a/include/net/tcp.h b/include/net/tcp.h
+index 2aac11e7e1cc..e202eeb19be4 100644
+--- a/include/net/tcp.h
++++ b/include/net/tcp.h
+@@ -1058,6 +1058,14 @@ static inline int tcp_skb_mss(const struct sk_buff *skb)
+ 	return TCP_SKB_CB(skb)->tcp_gso_size;
+ }
+ 
++/* I wish gso_size would have a bit more sane initialization than
++ * something-or-zero which complicates things
++ */
++static inline int tcp_skb_seglen(const struct sk_buff *skb)
++{
++	return tcp_skb_pcount(skb) == 1 ? skb->len : tcp_skb_mss(skb);
++}
++
+ static inline bool tcp_skb_can_collapse_to(const struct sk_buff *skb)
+ {
+ 	return likely(!TCP_SKB_CB(skb)->eor);
+diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
+index e37488d3453f..c1ffe19b0717 100644
+--- a/net/ipv4/tcp_input.c
++++ b/net/ipv4/tcp_input.c
+@@ -1550,14 +1550,6 @@ static bool tcp_shifted_skb(struct sock *sk, struct sk_buff *prev,
+ 	return true;
+ }
+ 
+-/* I wish gso_size would have a bit more sane initialization than
+- * something-or-zero which complicates things
+- */
+-static int tcp_skb_seglen(const struct sk_buff *skb)
+-{
+-	return tcp_skb_pcount(skb) == 1 ? skb->len : tcp_skb_mss(skb);
+-}
+-
+ /* Shifting pages past head area doesn't work */
+ static int skb_can_shift(const struct sk_buff *skb)
+ {
+diff --git a/net/ipv4/tcp_output.c b/net/ipv4/tcp_output.c
+index 16c48df8df4c..f5996cdbb2ba 100644
+--- a/net/ipv4/tcp_output.c
++++ b/net/ipv4/tcp_output.c
+@@ -1033,10 +1033,19 @@ static unsigned int tcp_established_options(struct sock *sk, struct sk_buff *skb
+ 	if (unlikely(BPF_SOCK_OPS_TEST_FLAG(tp,
+ 					    BPF_SOCK_OPS_WRITE_HDR_OPT_CB_FLAG))) {
+ 		unsigned int remaining = MAX_TCP_OPTION_SPACE - size;
++		unsigned int old_remaining;
+ 
+-		bpf_skops_hdr_opt_len(sk, skb, NULL, NULL, 0, opts, &remaining);
++		if (skb) {
++			unsigned int reserved_opt_spc;
++
++			reserved_opt_spc = tp->mss_cache - tcp_skb_seglen(skb);
++			if (reserved_opt_spc < remaining)
++				remaining = reserved_opt_spc;
++		}
+ 
+-		size = MAX_TCP_OPTION_SPACE - remaining;
++		old_remaining = remaining;
++		bpf_skops_hdr_opt_len(sk, skb, NULL, NULL, 0, opts, &remaining);
++		size += old_remaining - remaining;
+ 	}
+ 
+ 	return size;
 -- 
 2.20.1
 
