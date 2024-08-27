@@ -1,92 +1,90 @@
-Return-Path: <bpf+bounces-38170-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38171-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A28FC960DD3
-	for <lists+bpf@lfdr.de>; Tue, 27 Aug 2024 16:42:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1468E960E05
+	for <lists+bpf@lfdr.de>; Tue, 27 Aug 2024 16:44:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D520E1C23095
-	for <lists+bpf@lfdr.de>; Tue, 27 Aug 2024 14:42:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B9A8B2856F2
+	for <lists+bpf@lfdr.de>; Tue, 27 Aug 2024 14:44:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F8B01C57B5;
-	Tue, 27 Aug 2024 14:41:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83D3E1C6899;
+	Tue, 27 Aug 2024 14:44:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RGIphRFZ"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hmmOJ+ew"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 586AC1C5793;
-	Tue, 27 Aug 2024 14:41:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB11419EEA2
+	for <bpf@vger.kernel.org>; Tue, 27 Aug 2024 14:44:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724769718; cv=none; b=KelIgRdzEUnKtcaYdH6H0X7WBin0zNc9nUNzor8uqMqKQWfSUGVCYbncOcRJ8CGpbElvxrIT3CHmI4P8TuLHiiSSptaBbv7+Ogxifd/k6QWbPZl+idsHmYumRIvEISHD7yWMfASGtLpv9VxsR/cpQyOALrldmQilLRIdDJ5VvVM=
+	t=1724769843; cv=none; b=u2LWIfxAqcdrHHJsAMEzuIYQCEAda+GSqMtCxWElnR5xOF2qUKOLAprfmNZYIHCm/lvjNioPIYs4sHZ6lKrpfzfrKY1Ji/pqQKigluBJoOZ4Cz3TkglKlXWhdP1eYb6/H2M3areaMBgEEmpZYScIWqz8zypN0cJN9ftOkzZF0k8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724769718; c=relaxed/simple;
-	bh=9XA5Tvf4m3mFzbkx8Mntr/6JTMjJVvRIgFSfUOTNP7U=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=U56B5JnrQYhYnC0p17c9NABnskSKBZUPG4BWtgR6RvNNYCesZmn8oiVUxowriyb3Q5CcjulK3w0iEOL5mh4rJ9QGpD/qyIsA/I0mxTclF26mpDP+7KSisWHmbt5Lc82wEvVL32KGccjc92PJpG+SqqiaMPra4ZgcIkY7aqTwE2g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RGIphRFZ; arc=none smtp.client-ip=209.85.208.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2f3f68dd44bso64400451fa.3;
-        Tue, 27 Aug 2024 07:41:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1724769714; x=1725374514; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=MwPfwK5ypJOpYnj6NBgi0Hz6PUIW6DZrmjhXCqXJegM=;
-        b=RGIphRFZpHKwtNwjD/frw/wDomf78Tw1jl2XhmoA64QYXgubKnfcKV9OenIQNomY/0
-         mvuRcTXKkyh9ql075UpCkmUui+DUg3LUmB2A30iaj7axOli1FupvZiiMBL2qm16DziJi
-         75LuctjDLcb01XMaqe8WJD2kkWGOWZSVu/p8U3QTHhYgCOit8H0HZ3/7+qILvWvL9DlU
-         wwBdHa3Yu4EBoXOpf7JMIJ8r/2rQcicgXFdzRwUVfO8tD2J3PKu6PYdab5VUXe/JEG0T
-         /NqtzI9Uu5sOR7QvNEXJNRLkQyG8Z2QtD9xhKFeao8aAUmWB7U1HscB3s4A3lOctevJS
-         E5xg==
+	s=arc-20240116; t=1724769843; c=relaxed/simple;
+	bh=oM2brBtGt+OphQ+ukuvC5IAHcPMIa5JteDm7eIPlEsQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tcvPzM+xdDGINySRaHlCIteogwrfZAfL68+c8m6Wp+Uv1uRR7Izva0ZQhr7C3DQdPe9MBN/aRz9WbZ7dWORfWEKHRO5QGP5G5rfGyQk/l9qqCO13J2CXADY+Y9Cv5iNhiQS8Zo6ySoqjd865LT5hg4aC8Hh9BGR0ElYGx6DRK9U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hmmOJ+ew; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1724769840;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BJBAd+Vbv/uzFpiXGoe8X70Z6GCJY3PwLwfnLtqWRa4=;
+	b=hmmOJ+ew0q5qg1SUPlpDA8AtdgDgnFKQ0k0Fg66atDu2houURh2a6U1pHcfRxUBZ5ur9WR
+	/OdiLdxNSvc56y9iAMQSXwT3a8OKnQTfemFyoXNSA3CXK8e83UCV3TErm+CuGDQwivievn
+	D8w3QD/+lEdxWnLY3hPzDFBkfwanA7I=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-168-XFjlRPYPNBSz1xUTK-1yrg-1; Tue, 27 Aug 2024 10:43:58 -0400
+X-MC-Unique: XFjlRPYPNBSz1xUTK-1yrg-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-42808efc688so49322615e9.0
+        for <bpf@vger.kernel.org>; Tue, 27 Aug 2024 07:43:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724769714; x=1725374514;
+        d=1e100.net; s=20230601; t=1724769837; x=1725374637;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=MwPfwK5ypJOpYnj6NBgi0Hz6PUIW6DZrmjhXCqXJegM=;
-        b=BMEXyqvqJn3jXkbtkTy0eUMq9bSOmQYQlThQxnKJ/ij+0TXAFwxyuC67mG0kU67cON
-         cTJwHSSLiJL7rHCFzv0LqHEuMG4h3XmU+dlrWUgP5e8LH6/uoZI8vonpvs+wyOdaEaFi
-         BqPkDC2gSIkkcdMnAalkgRibdiXyqrGFPocfzuoDZKglRnYJKhCQz6rwOLni6qKTqCDh
-         +1WMu67/BXxNkXK4oerLWznAa9JBUk6HeCxBVAovARwak5eCQfhFdHdPVHDt9Q4G97wn
-         Nalv/zepIPlyzBRAcnFHW+NjwwTVFzyyESvG/2RioGHtIaXvJlAesFPIadPnw+XWSRx6
-         w9Vw==
-X-Forwarded-Encrypted: i=1; AJvYcCUa1wumbOKd7JpaAp0+epNEobyMD6IFHI8fzz/GUEW8vVn5odCKtH17aH8kWIoPpGiS8KxLt3bR3JtSULp3u5xz6Zhn@vger.kernel.org, AJvYcCWMSqhx5SUvUztMAEg762lMBiCa/Az3CZptZTf0W5E31MGYrCkTnCpvkpWJu6UW0TCjlhA=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxbx4SUkGFUqYqAdyHxl5OKgL3h6JoZYvnQxVYYKdQw9PxkwNCe
-	Xtzx4yWo7JBJl/0FWT7tVMavy2iIUkax9LizwpiXFRmdiE/PL2On
-X-Google-Smtp-Source: AGHT+IHVnhfg0ZFjNAAQ3QGfSkOkv7p85b/5sM23Oura285dpiA7CmSTrXWzs/41LSjiD5oyAZZWGw==
-X-Received: by 2002:a2e:f12:0:b0:2ec:56b9:259b with SMTP id 38308e7fff4ca-2f514bb98a9mr19200031fa.49.1724769713804;
-        Tue, 27 Aug 2024 07:41:53 -0700 (PDT)
-Received: from krava ([173.38.220.47])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5c0bb2156dfsm1088071a12.53.2024.08.27.07.41.53
+        bh=BJBAd+Vbv/uzFpiXGoe8X70Z6GCJY3PwLwfnLtqWRa4=;
+        b=LGhaAKnbDkkHMbqM5anVwWkhtbUEIS3cfHb/SLvFBIGJnXMnUC9p3NBcaBO2MXh3uX
+         bt3FTOpbUGhczCGnINCd/x9S4Wg2RB92mI+fudr2lxuQhxeIT972CMC+kcBj9gh4OfL/
+         SHqwRx1JsreDDYZKOMFAM4Yx6ttIo/5NUDnVzD65IRqCg0mDRD77nuZ1bsI6fVPwWkry
+         ALB+lZLEmPoaJJzUagi0sSSdTejeTT2MOy0+7iH391ogKGJ/6Z+VzrowTv/iwdmUpzrV
+         n+YDET/iFxLcZ0/twWC0r1v5lZbEI8R/VzUWjCt8wor3gN+4VjtHQIId9cv6qc2UJv6+
+         bmKA==
+X-Forwarded-Encrypted: i=1; AJvYcCXT5mYpbu6MMWP+K9pmQ6WO/7ZeP5HUXprgwbb12oRxw14IpPW3+LdP9RzG5LU2ggUZZk0=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw3CvxUc+E6I5Ck+rRhha5L/J1uDmdCsneq9PXu7mf08z0BZvts
+	QgA5JtjHnNZgnKl9l5K55F/P4e9vO8GsQe8dLl4wx2g0quEYDi1Jwd3i12uYw29rK8es1pcotwm
+	aiGHjysdnkqMRIG/oTzHZT4PwoVy6UKcF5wAco0IOXW7nlpybqw==
+X-Received: by 2002:a05:6000:b88:b0:371:8af5:473d with SMTP id ffacd0b85a97d-37311840cb5mr8212462f8f.12.1724769836862;
+        Tue, 27 Aug 2024 07:43:56 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFVRRVuCCRt+5gQlt7iq7J/T6VTyjoxl5THgBfg7ATi95knELtLhdYqaWbZyCGmR1TU7wFeiA==
+X-Received: by 2002:a05:6000:b88:b0:371:8af5:473d with SMTP id ffacd0b85a97d-37311840cb5mr8212432f8f.12.1724769836185;
+        Tue, 27 Aug 2024 07:43:56 -0700 (PDT)
+Received: from debian (2a01cb058918ce0010ac548a3b270f8c.ipv6.abo.wanadoo.fr. [2a01:cb05:8918:ce00:10ac:548a:3b27:f8c])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-42ac514de6fsm192830515e9.9.2024.08.27.07.43.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Aug 2024 07:41:53 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Tue, 27 Aug 2024 16:41:51 +0200
-To: Oleg Nesterov <oleg@redhat.com>
-Cc: Jiri Olsa <olsajiri@gmail.com>, Tianyi Liu <i.pear@outlook.com>,
-	andrii.nakryiko@gmail.com, mhiramat@kernel.org, ajor@meta.com,
-	albancrequy@linux.microsoft.com, bpf@vger.kernel.org,
-	flaniel@linux.microsoft.com, linux-trace-kernel@vger.kernel.org,
-	linux@jordanrome.com, mathieu.desnoyers@efficios.com
-Subject: Re: [PATCH v2] tracing/uprobe: Add missing PID filter for uretprobe
-Message-ID: <Zs3lr8gwlZKDL398@krava>
-References: <CAEf4Bzb29=LUO3fra40XVYN1Lm=PebBFubj-Vb038ojD6To2AA@mail.gmail.com>
- <ME0P300MB04163A2993D1B545C3533DDC9D892@ME0P300MB0416.AUSP300.PROD.OUTLOOK.COM>
- <20240825171417.GB3906@redhat.com>
- <20240825224018.GD3906@redhat.com>
- <ZsxTckUnlU_HWDMJ@krava>
- <20240826115752.GA21268@redhat.com>
- <Zs2lpd0Ni0aJoHwI@krava>
- <20240827104052.GD30765@redhat.com>
- <Zs3VWu2axL2tQXkc@krava>
- <20240827142607.GF30765@redhat.com>
+        Tue, 27 Aug 2024 07:43:55 -0700 (PDT)
+Date: Tue, 27 Aug 2024 16:43:53 +0200
+From: Guillaume Nault <gnault@redhat.com>
+To: Ido Schimmel <idosch@nvidia.com>
+Cc: netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+	pabeni@redhat.com, edumazet@google.com, dsahern@kernel.org,
+	ast@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
+	john.fastabend@gmail.com, steffen.klassert@secunet.com,
+	herbert@gondor.apana.org.au, bpf@vger.kernel.org
+Subject: Re: [PATCH net-next 05/12] ipv4: Unmask upper DSCP bits in
+ get_rttos()
+Message-ID: <Zs3mKW5twrchCk4g@debian>
+References: <20240827111813.2115285-1-idosch@nvidia.com>
+ <20240827111813.2115285-6-idosch@nvidia.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -95,40 +93,18 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240827142607.GF30765@redhat.com>
+In-Reply-To: <20240827111813.2115285-6-idosch@nvidia.com>
 
-On Tue, Aug 27, 2024 at 04:26:08PM +0200, Oleg Nesterov wrote:
-> On 08/27, Jiri Olsa wrote:
-> >
-> > On Tue, Aug 27, 2024 at 12:40:52PM +0200, Oleg Nesterov wrote:
-> > >  static bool
-> > >  uprobe_multi_link_filter(struct uprobe_consumer *con, struct mm_struct *mm)
-> > >  {
-> > >  	struct bpf_uprobe *uprobe;
-> > > +	struct task_struct *task, *t;
-> > > +	bool ret = false;
-> > >
-> > >  	uprobe = container_of(con, struct bpf_uprobe, consumer);
-> > > -	return uprobe->link->task->mm == mm;
-> > > +	task = uprobe->link->task;
-> > > +
-> > > +	rcu_read_lock();
-> > > +	for_each_thread(task, t) {
-> > > +		struct mm_struct *mm = READ_ONCE(t->mm);
-> > > +		if (mm) {
-> > > +			ret = t->mm == mm;
-> > > +			break;
-> > > +		}
-> > > +	}
-> > > +	rcu_read_unlock();
-> >
-> > that seems expensive if there's many threads
+On Tue, Aug 27, 2024 at 02:18:06PM +0300, Ido Schimmel wrote:
+> The function is used by a few socket types to retrieve the TOS value
+> with which to perform the FIB lookup for packets sent through the socket
+> (flowi4_tos). If a DS field was passed using the IP_TOS control message,
+> then it is used. Otherwise the one specified via the IP_TOS socket
+> option.
 > 
-> many threads with ->mm == NULL? In the likely case for_each_thread()
-> stops after the first t->mm check.
+> Unmask the upper DSCP bits so that in the future the lookup could be
+> performed according to the full DSCP value.
 
-aah the mm will be the same.. right, nice
+Reviewed-by: Guillaume Nault <gnault@redhat.com>
 
-thanks,
-jirka
 
