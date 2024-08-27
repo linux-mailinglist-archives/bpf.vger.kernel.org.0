@@ -1,187 +1,183 @@
-Return-Path: <bpf+bounces-38130-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38131-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45B869604AE
-	for <lists+bpf@lfdr.de>; Tue, 27 Aug 2024 10:42:28 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E55BF9604B6
+	for <lists+bpf@lfdr.de>; Tue, 27 Aug 2024 10:43:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6A2301C221F1
-	for <lists+bpf@lfdr.de>; Tue, 27 Aug 2024 08:42:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 42208B2379D
+	for <lists+bpf@lfdr.de>; Tue, 27 Aug 2024 08:43:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0ECF3198A34;
-	Tue, 27 Aug 2024 08:42:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D88dXh5v"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BAF3198E89;
+	Tue, 27 Aug 2024 08:43:24 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2509B143C7E;
-	Tue, 27 Aug 2024 08:42:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46987197A66
+	for <bpf@vger.kernel.org>; Tue, 27 Aug 2024 08:43:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724748135; cv=none; b=SSsp0aXBVTPrOsKWWMQAEiKqyBjKJWH7U8DRIwfkURAagIy/5CMbd7tqpuMtZY8PhOmjeQRXuWG+/M57+fzHZWbCBXX+3533xsGo/uvD7gGXLQO/74Mu7Xj9f0WR8YnBEV928JHRI4l6FdOUAXeHpsfw7mGeZGBHC/wIcRhhoYU=
+	t=1724748204; cv=none; b=sU9M+1ZXpjnT3C7/MdrKMuv3/Se28WykCwcmYKonsBL0k4vQdXfS0Bm7RTWp3IwkBqjOZWqwigaUpUXnCF5z0rhIM41CC4/iGfkpeNkuoUqHz9To+OFlRJOP3/QFi1nm198fLqld+NHHppJI8t/rfasm8l4t0EqLFTytb+pnZYs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724748135; c=relaxed/simple;
-	bh=PNqq1x6RZ3z/4OSthL3PgdD7ZUv94yl3kd/T294SO7o=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZSbjdkn++FMrHWss8TNkxIJppZCiF2z4fvosuDixl3LmjvnNK480kitTSKiWd/mZiXSIowLpczuQg5eqrwBj8dgjOSCBm1/3Xobv9TD1ph/UjLItwOLH7LmiHobujg5uXOL1vK+DhBOYjrbBq3FmfYyjZhZGcmvbYyNZXih/q6o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=D88dXh5v; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-202318c4f45so53411045ad.0;
-        Tue, 27 Aug 2024 01:42:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1724748133; x=1725352933; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=c7aZDEj6JjdVi1L9Rw+bOxQtRl3ExOCjHMOkjZC63Ug=;
-        b=D88dXh5vQ89fRhLnCMUb/VhKKD9zW2qfnuv0NORcHzmIYhgcgL4dGzhxpGvXexCET1
-         Eq6+jsud6YG9EkEUlFPRlvzeGTHf4QSNkkFJoLj0vCQlYmYqmkMZdbWH1RmmJ8f7vUxT
-         tTDpp+ixpGzvL0RIp5NNJOgFEEDKWCsxIE4QPR2nEF2RGBiSfpoijXCu5kv5Gsj5ihtV
-         3XkPDVNb1o6GDH0YezImKenYwmbDZtW037dOtiWhkrGLGPBoCx0RQuRsm12PlXvsZnbB
-         kAP22arDuTsnKZwITWl+j3kCyD1lwB9hfku4Zq32Mj1KFqf+jVkd4mtczvxfY33M+9Xj
-         Dw7Q==
+	s=arc-20240116; t=1724748204; c=relaxed/simple;
+	bh=uqXQ09OZG+mGGBfN1F682nY06fkqom9Qm8QtVUIDzaE=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=Cg3WOyImzSqXg7e+DaZ62Ci0vIJ/Fsj2ER6D7ZibvYRQH3tCeon854/7ViB7gp9qeAxAMj9lgWk8bmZS23GCvmQBP/kXyAg8hLgp3Gklki/NXYAUb25IVAxgz9VxwRN5VSCFVyo4b6aVbq5ZRlgQ4M5xLWNrFcJlvhWmjC5LsH0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-81f7fa42463so430487939f.0
+        for <bpf@vger.kernel.org>; Tue, 27 Aug 2024 01:43:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724748133; x=1725352933;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=c7aZDEj6JjdVi1L9Rw+bOxQtRl3ExOCjHMOkjZC63Ug=;
-        b=LYNKuj2/QWRdMjvKzHO/uevfVo65de/i+NiFIqF+rQcYTkkdJfocYZTiAC6K448x6G
-         qa3+kvtx4KAdgDjj9L+eWSYYcaIfMNKYjkgDfpToZ2SRviC/2kY4B1gbDEuc/hksU/JY
-         32iwUVAvLlapBpwB0bqwQrdNT5See5JVKRS6gPgtBUrXjttwA6FY3yaFXJ99CQ4Bp3QX
-         xleSt5LCFvC/kTlgJxjEYrpPjxbiOM90jBwWzTYIywEFjOz0tvz0DZ7lnsVhqUNlRUVq
-         9WEvJzAUaeK5EhG+nYKjvwT0Um0qy+y9cCgkH4pVV5czJEDJzVxC/igXI7JVOW1FhzlV
-         aknQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXUR5utahqXXDY5ifNQU6zk2q8SIa7KFu41y87eQgBjYLb43ZcB3rWs1qv4Bm1SRJshM4j4l4q7zfiAertwjJ4=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyCFjuNtTX0EbyYnz56cfox4zgmMCylaKNmhdm2mfVc5kNlul02
-	RS5VoRmmzkItkZavpkcLDaw4l0D6/09CA4qKm7Niz57Mymf3DBluJt9GWO7T
-X-Google-Smtp-Source: AGHT+IGXuuPZpHWHP/m56+5tucWRJvnF8AhKT6mN8WdWvbbbcA79tA0IFrn2Py730GEk2LXICsV9DA==
-X-Received: by 2002:a17:902:e883:b0:202:1972:daf7 with SMTP id d9443c01a7336-204df4defbemr23075535ad.50.1724748133279;
-        Tue, 27 Aug 2024 01:42:13 -0700 (PDT)
-Received: from kodidev-ubuntu (69-172-146-21.cable.teksavvy.com. [69.172.146.21])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-203859f00fcsm79317155ad.247.2024.08.27.01.42.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Aug 2024 01:42:13 -0700 (PDT)
-From: Tony Ambardar <tony.ambardar@gmail.com>
-X-Google-Original-From: Tony Ambardar <Tony.Ambardar@gmail.com>
-Date: Tue, 27 Aug 2024 01:42:11 -0700
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-	Ilya Leoshkevich <iii@linux.ibm.com>,
-	Quentin Monnet <qmo@kernel.org>
-Subject: Re: [PATCH bpf-next v2 7/8] libbpf: Support creating light skeleton
- of either endianness
-Message-ID: <Zs2RY66ooXN0vWjc@kodidev-ubuntu>
-References: <cover.1724313164.git.tony.ambardar@gmail.com>
- <94a6100651e3f61166703cf143f6366b15ee0d21.1724313164.git.tony.ambardar@gmail.com>
- <CAEf4BzYixndSzU3ab97-OfDscR2Qe+H5+9HRQKRm90UM8F_o-w@mail.gmail.com>
- <Zsxf765kkRnp52xX@kodidev-ubuntu>
- <CAEf4BzZWf645pMqXjX+Bh-_nRaDEbetC+C2upVXTzQmqfN9Lmg@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1724748201; x=1725353001;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ZWhGELMHbMK2mB/lYhoJt+wxjNr36ERFlN6hsd1zl1U=;
+        b=fNRBlcCmdsPberdd2vvX5MG0DFIXnu3vG1hYTQPJogTxTVJoiaxPiARc4BeVPh105P
+         aHv2/eg1x3xtI8wSTnO02oYoCwPsOe2TBoj8RhbjnwWztwREBBqA637//oTB0VJeYcUl
+         wTnHYqdAgEniY3ihLeEAFqso7Qo8Kl+bnX6zz4W6HnqCJnI+JXcNhygyxgruvWDr5+bu
+         c9t1Ic2FShBL9ZogRd6TEbscK9GkdN8cRa0cxPMLSm08wg9AzqRRvv5d4Tlqrnizo1Mx
+         a0tnXhDsXmICU1RC3Or+0+ZtylPGm0U64XcuAzva0CaTHzLkDhgdlyRMoB73ypAjhIOR
+         8OGg==
+X-Forwarded-Encrypted: i=1; AJvYcCW3g1q1+4TigftwU+xzIhZAoQdrMKQ1Or9z15TZYKjvYlrlpf3PYFE3lF1OO2LtDBlcC3g=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwcG8m69Cvl//pHaqBsWr4Da7CzS+WJ2XC1bTCJnuv9Ohf27EmG
+	0me47e8q4R8JCRzgHVUminNguoDXx9Iki6Hmy0jjUVulmte9fRnI2WYtFO6XX7Frsy1L8gu3L/x
+	5J2qlxYWvRinmQygvZ9hRmSeO3T1m3iGCQ4kvQc9/Gwzk90gY3hpTgKs=
+X-Google-Smtp-Source: AGHT+IF9OTQp2cy1NHfX7EuSzFZv2knlruThxP9d1hWTJ4SmCBKolG1dxR19zYlDyvYoWJM4dmbyNTrv8sS5v8phEHp85FdxPWdK
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzZWf645pMqXjX+Bh-_nRaDEbetC+C2upVXTzQmqfN9Lmg@mail.gmail.com>
+X-Received: by 2002:a05:6602:6404:b0:81a:2abb:48a7 with SMTP id
+ ca18e2360f4ac-829f14698b0mr3598039f.1.1724748201413; Tue, 27 Aug 2024
+ 01:43:21 -0700 (PDT)
+Date: Tue, 27 Aug 2024 01:43:21 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000df5f630620a63b03@google.com>
+Subject: [syzbot] [bpf?] [net?] BUG: unable to handle kernel NULL pointer
+ dereference in tcp_bpf_sendmsg
+From: syzbot <syzbot+7449cfb801474783f727@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com, 
+	jakub@cloudflare.com, john.fastabend@gmail.com, kuba@kernel.org, 
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, Aug 26, 2024 at 02:25:27PM -0700, Andrii Nakryiko wrote:
-> On Mon, Aug 26, 2024 at 3:58 AM Tony Ambardar <tony.ambardar@gmail.com> wrote:
-> >
-> > On Fri, Aug 23, 2024 at 12:47:56PM -0700, Andrii Nakryiko wrote:
-> > > On Thu, Aug 22, 2024 at 2:25 AM Tony Ambardar <tony.ambardar@gmail.com> wrote:
-> > > >
-> > > > From: Tony Ambardar <tony.ambardar@gmail.com>
-> > > >
-> > > > Track target endianness in 'struct bpf_gen' and process in-memory data in
-> > > > native byte-order, but on finalization convert the embedded loader BPF
-> > > > insns to target endianness.
-> > > >
-> > > > The light skeleton also includes a target-accessed data blob which is
-> > > > heterogeneous and thus difficult to convert to target byte-order on
-> > > > finalization. Add support functions to convert data to target endianness
-> > > > as it is added to the blob.
-> > > >
-> > > > Also add additional debug logging for data blob structure details and
-> > > > skeleton loading.
-> > > >
-> > > > Signed-off-by: Tony Ambardar <tony.ambardar@gmail.com>
-> > > > ---
-> > > >  tools/lib/bpf/bpf_gen_internal.h |   1 +
-> > > >  tools/lib/bpf/gen_loader.c       | 187 +++++++++++++++++++++++--------
-> > > >  tools/lib/bpf/libbpf.c           |   1 +
-> > > >  tools/lib/bpf/skel_internal.h    |   3 +-
-> > > >  4 files changed, 147 insertions(+), 45 deletions(-)
-> > > >
-> > >
-> > > [...]
-> > >
- 
-[...]
- 
-> > > > +       move_tgt_endian(attr.func_info_rec_size, load_attr->func_info_rec_size);
-> > > > +       move_tgt_endian(attr.func_info_cnt, load_attr->func_info_cnt);
-> > >
-> > > this is quite intrusive, maybe instead of imperative move_tgt_endian()
-> > > macro, develop the one that could be used as
-> > >
-> > > attr.func_info_cnt = tgt_endian(load_attr->func_info_cnt);
-> >
-> > I had considered this but it's not reliable since the source var size may
-> > not match the dest and the bswap will be improperly sized e.g. note above
-> > that move_tgt_endian() uses the _dest_ var to size the bswap.
-> >
-> > While I completely agree this is intrusive, it's still safe and correct.
-> > The other idea I played with is to leave the assignments alone and fix up
-> > struct fields' endianness afterwards via macro. Something like:
-> >
-> >   attr.map_type = map_type;
-> >   attr.key_size = key_size;
-> >   attr.value_size = value_size;
-> >   attr.map_flags = map_attr->map_flags;
-> >   attr.map_extra = map_attr->map_extra;
-> >
-> >   BSWAP_FIELDS(attr, map_type, key_size, value_size, map_flags, map_extra);
-> >
-> > But this would require some funky macro magic, possibly in a small header.
-> > What do you think? Does something similar exist already in kernel sources?
-> 
-> do we intentionally have mismatched assignments? If not, I'd still go
-> with the cleaner casting-like approach. And even if we have one or few
-> intentional cases, we can just explicitly cast
+Hello,
 
-Yes, I recall some implicit casts in there. I'll try to trap them with the
-current macro and make them explicit, then change the imperative macro as
-suggested. However, if things break in the future then debugging it
-could be a pain...
+syzbot found the following issue on:
 
-> 
-> > >
-> > > ? I.e., working as an expression, taking into account the need to swap
-> > > and byte size of the argument. Should be doable.
-> > >
-> > > > +       func_info = add_data(gen, load_attr->func_info, func_info_tot_sz);
-> > > > +       pr_debug("gen: prog_load: func_info: off %d cnt %d rec size %d\n",
-> > > > +                func_info, load_attr->func_info_cnt,
-> > > > +                load_attr->func_info_rec_size);
-> > >
-> > > [...]
+HEAD commit:    7eb61cc674ee Merge tag 'input-for-v6.11-rc4' of git://git...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1415747b980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8eee190eab0ebaf5
+dashboard link: https://syzkaller.appspot.com/bug?extid=7449cfb801474783f727
+compiler:       aarch64-linux-gnu-gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: arm64
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/384ffdcca292/non_bootable_disk-7eb61cc6.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/da1f81d9a714/vmlinux-7eb61cc6.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/18292fa70148/Image-7eb61cc6.gz.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+7449cfb801474783f727@syzkaller.appspotmail.com
+
+Unable to handle kernel NULL pointer dereference at virtual address 0000000000000000
+Mem abort info:
+  ESR = 0x0000000096000006
+  EC = 0x25: DABT (current EL), IL = 32 bits
+  SET = 0, FnV = 0
+  EA = 0, S1PTW = 0
+  FSC = 0x06: level 2 translation fault
+Data abort info:
+  ISV = 0, ISS = 0x00000006, ISS2 = 0x00000000
+  CM = 0, WnR = 0, TnD = 0, TagAccess = 0
+  GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
+user pgtable: 4k pages, 52-bit VAs, pgdp=0000000043fd4f00
+[0000000000000000] pgd=080000004882a003, p4d=080000005bba7003, pud=080000004a4bd003, pmd=0000000000000000
+Internal error: Oops: 0000000096000006 [#1] PREEMPT SMP
+Modules linked in:
+CPU: 0 UID: 0 PID: 23032 Comm: syz.0.5798 Not tainted 6.11.0-rc4-syzkaller-00222-g7eb61cc674ee #0
+Hardware name: linux,dummy-virt (DT)
+pstate: 81400009 (Nzcv daif +PAN -UAO -TCO +DIT -SSBS BTYPE=--)
+pc : page_kasan_tag include/linux/mm.h:1816 [inline]
+pc : lowmem_page_address include/linux/mm.h:2254 [inline]
+pc : sg_virt include/linux/scatterlist.h:404 [inline]
+pc : sk_msg_memcopy_from_iter+0x134/0x1e0 net/core/skmsg.c:389
+lr : tcp_bpf_sendmsg+0x1f4/0x8d0 net/ipv4/tcp_bpf.c:541
+sp : ffff800088013720
+x29: ffff800088013720 x28: faf0000010f136c0 x27: fcf000001bb93200
+x26: 000000000000018c x25: fdf00000242bc400 x24: 0000000000000001
+x23: 0000000000000000 x22: ffff801000000000 x21: 00003e0040000000
+x20: fff0000000000000 x19: ffff800088013da0 x18: 0000000000000000
+x17: 0000000000000000 x16: 0000000000000000 x15: 0000000020001100
+x14: 0000000000000000 x13: 0000000000000000 x12: 0000000000000000
+x11: f8f0000008d11ce0 x10: 0000000000000000 x9 : 0000000000000000
+x8 : ffff800088013af8 x7 : 0000000000000000 x6 : 000000000000003f
+x5 : 0000000000000000 x4 : fdf00000242bc440 x3 : 0000000000000000
+x2 : 0000000000000000 x1 : 0000000000000001 x0 : 0000000000000000
+Call trace:
+ arch_static_branch_jump arch/arm64/include/asm/jump_label.h:46 [inline]
+ kasan_enabled include/linux/kasan-enabled.h:13 [inline]
+ page_kasan_tag include/linux/mm.h:1815 [inline]
+ lowmem_page_address include/linux/mm.h:2254 [inline]
+ sg_virt include/linux/scatterlist.h:404 [inline]
+ sk_msg_memcopy_from_iter+0x134/0x1e0 net/core/skmsg.c:389
+ tcp_bpf_sendmsg+0x1f4/0x8d0 net/ipv4/tcp_bpf.c:541
+ inet6_sendmsg+0x44/0x70 net/ipv6/af_inet6.c:661
+ sock_sendmsg_nosec net/socket.c:730 [inline]
+ __sock_sendmsg+0x54/0x60 net/socket.c:745
+ ____sys_sendmsg+0x274/0x2ac net/socket.c:2597
+ ___sys_sendmsg+0xac/0x100 net/socket.c:2651
+ __sys_sendmsg+0x84/0xe0 net/socket.c:2680
+ __do_sys_sendmsg net/socket.c:2689 [inline]
+ __se_sys_sendmsg net/socket.c:2687 [inline]
+ __arm64_sys_sendmsg+0x24/0x30 net/socket.c:2687
+ __invoke_syscall arch/arm64/kernel/syscall.c:35 [inline]
+ invoke_syscall+0x48/0x110 arch/arm64/kernel/syscall.c:49
+ el0_svc_common.constprop.0+0x40/0xe0 arch/arm64/kernel/syscall.c:132
+ do_el0_svc+0x1c/0x28 arch/arm64/kernel/syscall.c:151
+ el0_svc+0x34/0xec arch/arm64/kernel/entry-common.c:712
+ el0t_64_sync_handler+0x100/0x12c arch/arm64/kernel/entry-common.c:730
+ el0t_64_sync+0x19c/0x1a0 arch/arm64/kernel/entry.S:598
+Code: d346fed6 1a9a92f7 8b163296 d503201f (f9400001) 
+---[ end trace 0000000000000000 ]---
+----------------
+Code disassembly (best guess):
+   0:	d346fed6 	lsr	x22, x22, #6
+   4:	1a9a92f7 	csel	w23, w23, w26, ls	// ls = plast
+   8:	8b163296 	add	x22, x20, x22, lsl #12
+   c:	d503201f 	nop
+* 10:	f9400001 	ldr	x1, [x0] <-- trapping instruction
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
