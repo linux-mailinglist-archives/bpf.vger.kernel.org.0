@@ -1,47 +1,47 @@
-Return-Path: <bpf+bounces-38185-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38186-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 582DE9616AF
-	for <lists+bpf@lfdr.de>; Tue, 27 Aug 2024 20:17:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DCEF79616B0
+	for <lists+bpf@lfdr.de>; Tue, 27 Aug 2024 20:17:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D40861F25253
-	for <lists+bpf@lfdr.de>; Tue, 27 Aug 2024 18:17:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5BF291F254B4
+	for <lists+bpf@lfdr.de>; Tue, 27 Aug 2024 18:17:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93DD31D3186;
-	Tue, 27 Aug 2024 18:17:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4F561D3192;
+	Tue, 27 Aug 2024 18:17:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="FDCEFXue"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="rrqsTn5D"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-187.mta0.migadu.com (out-187.mta0.migadu.com [91.218.175.187])
+Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 341EA1DDF5
-	for <bpf@vger.kernel.org>; Tue, 27 Aug 2024 18:17:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41C631D2F4D
+	for <bpf@vger.kernel.org>; Tue, 27 Aug 2024 18:17:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724782629; cv=none; b=l6qy9ZKbC1kyCdUZs1fHRp/HD9ASmGvqBZ4pEYRajVC8pmz+HhNLWb6BTgiAdUQMsvJ6FzYc9NFTrtyETC0jig56ET9gscMliDrC2dEf7h7mQqOtzLdlyKVJdarPTYVyP4TLA43z8ZrSOQkxdmi/Z+oURaYbzOL2rFL9IjYRYu8=
+	t=1724782633; cv=none; b=iQ5FunQDlNAzgXfsH3lNvfe2cBUf0aaDi638t0nZEWRrnXhU2p+yQGJXqicQ9XdCazwpwLqdl01JSqPX2oapch95PczCczGs1sTzia86M4zEwh4gRBB87FYQ4yVIN59y49N6qfMCalDbJdSGNoMwp/z7tKC91ZXwyA8vFdww30Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724782629; c=relaxed/simple;
-	bh=qk8Tn02mQwqoLnSFPAHZVYIhZIWX+pqyPAFCALFvTSY=;
+	s=arc-20240116; t=1724782633; c=relaxed/simple;
+	bh=cvqOOqpdt8Qy6om02YyBdZJGO7w4GUTqJ3dF8uF8XDA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=hj3LOr07rLMhRQ1RT1xEGZMTNVWQG38LyK0MZ4YJSsJ5ehqV1rnO+AB7QpYF77J1is+uB0Z6VjHpU48blk92QXKcSLiWQXcKe0d02VOh6Ai9kT7FiFXbB01oKA2VrnrVmDovlQ23uOBV3nUET26AMofdlgCJ8d567jjyDBP6c5Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=FDCEFXue; arc=none smtp.client-ip=91.218.175.187
+	 MIME-Version; b=mV8VW7eFk4omBS76wI3sHbZcTUrnr22dviPQhl7PUNOZj5S5JLb6DL+1TRKYQZP7dI6ASbAsGV4UKouec7YR3codYk6/bxKs9NLz21gnf7owDL13YS82F3Z/7jfVG2iid9TN8P7XW3YkqfItr7KgYA30aeWQzULG7RUHdp4UV/s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=rrqsTn5D; arc=none smtp.client-ip=91.218.175.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1724782624;
+	t=1724782627;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=FAsnNtMpDoQTqmFDe7F/b8kSH/wEdPGGpu28sItv6iw=;
-	b=FDCEFXueOSGST4b88IZfmmHQ62vcGP77+jHLzjS02vBkhKq4pYHVMnQUqtwMQitvjjPehM
-	OnoCYdWjReQA+XV7ZzEY/w/FPLixB2Ciyg1X6RFCF9eEde+OPzN5Rr7u4SZ0YN6B3RBqJg
-	2jnfFH2+EzeBYwkr6Mw+KuzUEfgQjEw=
+	bh=KdWEuEMTdZ17pB1mw0lmMqSHTXFlIS86D8briORIeIU=;
+	b=rrqsTn5DOqO9ag7HAKHxgcPTeqvFwRcPPYcODMtcq2+cm9WYV+S9V02AIDo94OS93q1m+U
+	ltreXR+SLppHlYVQQ7FKp3clJV3oqnh2N8sWYvDt6fxDrViHAnBjBJEzmixUh5PSJIkb6/
+	xNMXx8Yjkabnuah+NiRxh23/8vv/9gg=
 From: Martin KaFai Lau <martin.lau@linux.dev>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
@@ -51,9 +51,9 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Yonghong Song <yonghong.song@linux.dev>,
 	Amery Hung <ameryhung@gmail.com>,
 	kernel-team@meta.com
-Subject: [PATCH v3 bpf-next 2/9] bpf: Adjust BPF_JMP that jumps to the 1st insn of the prologue
-Date: Tue, 27 Aug 2024 11:16:38 -0700
-Message-ID: <20240827181647.847890-3-martin.lau@linux.dev>
+Subject: [PATCH v3 bpf-next 3/9] bpf: Add gen_epilogue to bpf_verifier_ops
+Date: Tue, 27 Aug 2024 11:16:39 -0700
+Message-ID: <20240827181647.847890-4-martin.lau@linux.dev>
 In-Reply-To: <20240827181647.847890-1-martin.lau@linux.dev>
 References: <20240827181647.847890-1-martin.lau@linux.dev>
 Precedence: bulk
@@ -67,83 +67,146 @@ X-Migadu-Flow: FLOW_OUT
 
 From: Martin KaFai Lau <martin.lau@kernel.org>
 
-The next patch will add a ctx ptr saving instruction
-"(r1 = *(u64 *)(r10 -8)" at the beginning for the main prog
-when there is an epilogue patch (by the .gen_epilogue() verifier
-ops added in the next patch).
+This patch adds a .gen_epilogue to the bpf_verifier_ops. It is similar
+to the existing .gen_prologue. Instead of allowing a subsystem
+to run code at the beginning of a bpf prog, it allows the subsystem
+to run code just before the bpf prog exit.
 
-There is one corner case if the bpf prog has a BPF_JMP that jumps
-to the 1st instruction. It needs an adjustment such that
-those BPF_JMP instructions won't jump to the newly added
-ctx saving instruction.
-The commit 5337ac4c9b80 ("bpf: Fix the corner case with may_goto and jump to the 1st insn.")
-has the details on this case.
+One of the use case is to allow the upcoming bpf qdisc to ensure that
+the skb->dev is the same as the qdisc->dev_queue->dev. The bpf qdisc
+struct_ops implementation could either fix it up or drop the skb.
+Another use case could be in bpf_tcp_ca.c to enforce snd_cwnd
+has sane value (e.g. non zero).
 
-Note that the jump back to 1st instruction is not limited to the
-ctx ptr saving instruction. The same also applies to the prologue.
-A later test, pro_epilogue_goto_start.c, has a test for the prologue
-only case.
+The epilogue can do the useful thing (like checking skb->dev) if it
+can access the bpf prog's ctx. Unlike prologue, r1 may not hold the
+ctx pointer. This patch saves the r1 in the stack if the .gen_epilogue
+has returned some instructions in the "epilogue_buf".
 
-Thus, this patch does one adjustment after gen_prologue and
-the future ctx ptr saving. It is done by
-adjust_jmp_off(env->prog, 0, delta) where delta has the total
-number of instructions in the prologue and
-the future ctx ptr saving instruction.
+The existing .gen_prologue is done in convert_ctx_accesses().
+The new .gen_epilogue is done in the convert_ctx_accesses() also.
+When it sees the (BPF_JMP | BPF_EXIT) instruction, it will be patched
+with the earlier generated "epilogue_buf". The epilogue patching is
+only done for the main prog.
 
-The adjust_jmp_off(env->prog, 0, delta) assumes that the
-prologue does not have a goto 1st instruction itself.
-To accommodate the prologue might have a goto 1st insn itself,
-adjust_jmp_off() needs to skip the prologue instructions. This patch
-adds a skip_cnt argument to the adjust_jmp_off(). The skip_cnt is the
-number of instructions at the beginning that does not need adjustment.
-adjust_jmp_off(prog, 0, delta, delta) is used in this patch.
+Only one epilogue will be patched to the main program. When the
+bpf prog has multiple BPF_EXIT instructions, a BPF_JA is used
+to goto the earlier patched epilogue. Majority of the archs
+support (BPF_JMP32 | BPF_JA): x86, arm, s390, risv64, loongarch,
+powerpc and arc. This patch keeps it simple and always
+use (BPF_JMP32 | BPF_JA).
 
 Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
 ---
- kernel/bpf/verifier.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ include/linux/bpf.h          |  2 ++
+ include/linux/bpf_verifier.h |  1 +
+ kernel/bpf/verifier.c        | 46 +++++++++++++++++++++++++++++++++++-
+ 3 files changed, 48 insertions(+), 1 deletion(-)
 
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index dc63083f76b7..6f87fb014fba 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -974,6 +974,8 @@ struct bpf_verifier_ops {
+ 				struct bpf_insn_access_aux *info);
+ 	int (*gen_prologue)(struct bpf_insn *insn, bool direct_write,
+ 			    const struct bpf_prog *prog);
++	int (*gen_epilogue)(struct bpf_insn *insn, const struct bpf_prog *prog,
++			    s16 ctx_stack_off);
+ 	int (*gen_ld_abs)(const struct bpf_insn *orig,
+ 			  struct bpf_insn *insn_buf);
+ 	u32 (*convert_ctx_access)(enum bpf_access_type type,
+diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+index 0ad2d189c546..2e20207315a9 100644
+--- a/include/linux/bpf_verifier.h
++++ b/include/linux/bpf_verifier.h
+@@ -783,6 +783,7 @@ struct bpf_verifier_env {
+ 	 */
+ 	char tmp_str_buf[TMP_STR_BUF_LEN];
+ 	struct bpf_insn insn_buf[INSN_BUF_SIZE];
++	struct bpf_insn epilogue_buf[INSN_BUF_SIZE];
+ };
+ 
+ static inline struct bpf_func_info_aux *subprog_aux(struct bpf_verifier_env *env, int subprog)
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index b408692a12d7..8714b83c5fb8 100644
+index 8714b83c5fb8..8ed2aec54f68 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
-@@ -19277,14 +19277,14 @@ static struct bpf_prog *bpf_patch_insn_data(struct bpf_verifier_env *env, u32 of
-  * For all jmp insns in a given 'prog' that point to 'tgt_idx' insn adjust the
-  * jump offset by 'delta'.
+@@ -19675,15 +19675,39 @@ static int opt_subreg_zext_lo32_rnd_hi32(struct bpf_verifier_env *env,
   */
--static int adjust_jmp_off(struct bpf_prog *prog, u32 tgt_idx, u32 delta)
-+static int adjust_jmp_off(struct bpf_prog *prog, u32 tgt_idx, u32 delta, u32 skip_cnt)
+ static int convert_ctx_accesses(struct bpf_verifier_env *env)
  {
--	struct bpf_insn *insn = prog->insnsi;
-+	struct bpf_insn *insn = prog->insnsi + skip_cnt;
- 	u32 insn_cnt = prog->len, i;
- 	s32 imm;
- 	s16 off;
- 
--	for (i = 0; i < insn_cnt; i++, insn++) {
-+	for (i = skip_cnt; i < insn_cnt; i++, insn++) {
- 		u8 code = insn->code;
- 
- 		if ((BPF_CLASS(code) != BPF_JMP && BPF_CLASS(code) != BPF_JMP32) ||
-@@ -19705,6 +19705,9 @@ static int convert_ctx_accesses(struct bpf_verifier_env *env)
- 		}
- 	}
- 
-+	if (delta)
-+		WARN_ON(adjust_jmp_off(env->prog, 0, delta, delta));
++	struct bpf_subprog_info *subprogs = env->subprog_info;
+ 	const struct bpf_verifier_ops *ops = env->ops;
+-	int i, cnt, size, ctx_field_size, delta = 0;
++	int i, cnt, size, ctx_field_size, delta = 0, epilogue_cnt = 0;
+ 	const int insn_cnt = env->prog->len;
++	struct bpf_insn *epilogue_buf = env->epilogue_buf;
+ 	struct bpf_insn *insn_buf = env->insn_buf;
+ 	struct bpf_insn *insn;
+ 	u32 target_size, size_default, off;
+ 	struct bpf_prog *new_prog;
+ 	enum bpf_access_type type;
+ 	bool is_narrower_load;
++	int epilogue_idx = 0;
 +
- 	if (bpf_prog_is_offloaded(env->prog->aux))
- 		return 0;
++	if (ops->gen_epilogue) {
++		epilogue_cnt = ops->gen_epilogue(epilogue_buf, env->prog,
++						 -(subprogs[0].stack_depth + 8));
++		if (epilogue_cnt >= INSN_BUF_SIZE) {
++			verbose(env, "bpf verifier is misconfigured\n");
++			return -EINVAL;
++		} else if (epilogue_cnt) {
++			/* Save the ARG_PTR_TO_CTX for the epilogue to use */
++			cnt = 0;
++			subprogs[0].stack_depth += 8;
++			insn_buf[cnt++] = BPF_STX_MEM(BPF_DW, BPF_REG_FP, BPF_REG_1,
++						      -subprogs[0].stack_depth);
++			insn_buf[cnt++] = env->prog->insnsi[0];
++			new_prog = bpf_patch_insn_data(env, 0, insn_buf, cnt);
++			if (!new_prog)
++				return -ENOMEM;
++			env->prog = new_prog;
++			delta += cnt - 1;
++		}
++	}
  
-@@ -21136,7 +21139,7 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
- 		 * to insn after BPF_ST that inits may_goto count.
- 		 * Adjustment will succeed because bpf_patch_insn_data() didn't fail.
- 		 */
--		WARN_ON(adjust_jmp_off(env->prog, subprog_start, 1));
-+		WARN_ON(adjust_jmp_off(env->prog, subprog_start, 1, 0));
- 	}
+ 	if (ops->gen_prologue || env->seen_direct_write) {
+ 		if (!ops->gen_prologue) {
+@@ -19740,6 +19764,25 @@ static int convert_ctx_accesses(struct bpf_verifier_env *env)
+ 			insn->code = BPF_STX | BPF_PROBE_ATOMIC | BPF_SIZE(insn->code);
+ 			env->prog->aux->num_exentries++;
+ 			continue;
++		} else if (insn->code == (BPF_JMP | BPF_EXIT) &&
++			   epilogue_cnt &&
++			   i + delta < subprogs[1].start) {
++			/* Generate epilogue for the main prog */
++			if (epilogue_idx) {
++				/* jump back to the earlier generated epilogue */
++				insn_buf[0] = BPF_JMP32_IMM(BPF_JA, 0,
++							    epilogue_idx - i - delta - 1, 0);
++				cnt = 1;
++			} else {
++				memcpy(insn_buf, epilogue_buf, INSN_BUF_SIZE);
++				cnt = epilogue_cnt;
++				/* epilogue_idx cannot be 0. It must have at
++				 * least one ctx ptr saving insn before the
++				 * epilogue.
++				 */
++				 epilogue_idx = i + delta;
++			}
++			goto patch_insn_buf;
+ 		} else {
+ 			continue;
+ 		}
+@@ -19876,6 +19919,7 @@ static int convert_ctx_accesses(struct bpf_verifier_env *env)
+ 						       insn->dst_reg, insn->dst_reg,
+ 						       size * 8, 0);
  
- 	/* Since poke tab is now finalized, publish aux to tracker. */
++patch_insn_buf:
+ 		new_prog = bpf_patch_insn_data(env, i + delta, insn_buf, cnt);
+ 		if (!new_prog)
+ 			return -ENOMEM;
 -- 
 2.43.5
 
