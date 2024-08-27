@@ -1,151 +1,178 @@
-Return-Path: <bpf+bounces-38181-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38182-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7050496148F
-	for <lists+bpf@lfdr.de>; Tue, 27 Aug 2024 18:47:38 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67F1A9614D5
+	for <lists+bpf@lfdr.de>; Tue, 27 Aug 2024 19:01:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C951285E1C
-	for <lists+bpf@lfdr.de>; Tue, 27 Aug 2024 16:47:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2003E283522
+	for <lists+bpf@lfdr.de>; Tue, 27 Aug 2024 17:01:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1889A1D174E;
-	Tue, 27 Aug 2024 16:46:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DB7C1C9EAD;
+	Tue, 27 Aug 2024 17:01:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="YxpGxBJ/"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jaJ6uBSd"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2331A1CE717
-	for <bpf@vger.kernel.org>; Tue, 27 Aug 2024 16:46:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3EDA45025
+	for <bpf@vger.kernel.org>; Tue, 27 Aug 2024 17:01:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724777166; cv=none; b=LOKKYjQXL+jk6LNVpwXqxBVqYYWQoGlf6KJMl2TaQ6RepnTShIhlRvqvmHPjiVOk5SHonKMZdZs1d+Ot8hMm+RGo15e9o9YnjQvIyl05jD6mb8zAFTovJzLOPf0x0oASHwdbqLH/DOTYlzk6UQ9Zu6PKW59oPAS/SabYd1xjTAw=
+	t=1724778067; cv=none; b=OarNRyZzvrHf1gkwxLA4UcScGPnUQjEr7YXsp/+XXAPS37tbXQjYWsukGClkavvsyi6s1lNZxw/grPUe2AfCuhuKVkXbrbaWf5Us3l0yhM1NG4thiIqq4XNomG5mmu34UzNLmrumc95OmnrKSb/G0gTNv286cMuDzDg/CZSZqbQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724777166; c=relaxed/simple;
-	bh=d9Fr3NcwL3t4o7X3APqAvaGwag60bZC6xiNydmzZlo4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jqGLGamRfogUt2UE6udkQ1CXOvEk+Xv81lMpMNAJhxItJbpcqFCsgT+yCadpbPyIkZBw1rLoq6ZW8PkoKMVI/YVE47RhKDJmnS+eSWxvGG/oFb1Y45A+hq2XOL+jnivFvUHOOO1wfxrqzqv850LEHnxBetpR7BNHstejZJfm/eA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=YxpGxBJ/; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1724777162;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HHmgL5Ri1428SeB/3V7FF9Ht7PO33EShpSKr8jku7Xs=;
-	b=YxpGxBJ/CdPqtaKBs5mtHfOyK8RJ3oc8aSrYZOIdfBxD6KQ4amZcTd4o66zwpHy73FbK1n
-	LFYPuVNRlxGfH/jbsjax+hsMtD9jb4wGlhTtUtY8a/MRrxUoj7eqtNt2rYCzcIxRqjp9Wi
-	kwN7d0poZl/U/x1tn31m4Yi8efqyzmM=
-Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-660-RHXOpT3_N_mW-7cjBc_1GA-1; Tue,
- 27 Aug 2024 12:46:00 -0400
-X-MC-Unique: RHXOpT3_N_mW-7cjBc_1GA-1
-Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id B7A061955BF4;
-	Tue, 27 Aug 2024 16:45:57 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.12])
-	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id B18C91956052;
-	Tue, 27 Aug 2024 16:45:53 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Tue, 27 Aug 2024 18:45:51 +0200 (CEST)
-Date: Tue, 27 Aug 2024 18:45:45 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Tianyi Liu <i.pear@outlook.com>, andrii.nakryiko@gmail.com,
-	mhiramat@kernel.org, ajor@meta.com, albancrequy@linux.microsoft.com,
-	bpf@vger.kernel.org, flaniel@linux.microsoft.com,
-	linux-trace-kernel@vger.kernel.org, linux@jordanrome.com,
-	mathieu.desnoyers@efficios.com
-Subject: Re: [PATCH v2] tracing/uprobe: Add missing PID filter for uretprobe
-Message-ID: <20240827164545.GG30765@redhat.com>
-References: <ME0P300MB04163A2993D1B545C3533DDC9D892@ME0P300MB0416.AUSP300.PROD.OUTLOOK.COM>
- <20240825171417.GB3906@redhat.com>
- <20240825224018.GD3906@redhat.com>
- <ZsxTckUnlU_HWDMJ@krava>
- <20240826115752.GA21268@redhat.com>
- <ZsyHrhG9Q5BpZ1ae@krava>
- <20240826212552.GB30765@redhat.com>
- <Zsz7SPp71jPlH4MS@krava>
- <20240826222938.GC30765@redhat.com>
- <Zs3PdV6nqed1jWC2@krava>
+	s=arc-20240116; t=1724778067; c=relaxed/simple;
+	bh=vytvSJ1kSZta2JvaDE7knomvz0Tex/K7NCAcaU0SSfs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=og94uwGzSxbQoBI0NxXHwcaHhYYVgkUeoQX23L8P1j9cQqVewfH+2FY/C114a+x+1i+N2Zym4LOzZJdv4nt6DGE+rObmNzkXELncU0RjEnz2sBvN0wsTZeKIXtl/p7Mgo4iRcBy01RhC5HoQ7WaQjQmOZTFkZmzTb7pl1bCslrM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jaJ6uBSd; arc=none smtp.client-ip=209.85.216.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-2d439583573so4182348a91.3
+        for <bpf@vger.kernel.org>; Tue, 27 Aug 2024 10:01:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1724778065; x=1725382865; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5snOsMKkskeeWvYsLYpbmKWRu6ocqwFH8f+X8NXzeZ0=;
+        b=jaJ6uBSdFw5vQmXW/7YQeeU+HTu30TtQ0R64lp652+5CKp+5QmHnnxyIJBACHzUsyi
+         Rnq0VRNjMIKgfSK2blC4mglSKZ32TU5VdOAEAr3j8VIlNi/8o24Ia7Wfw6mfufVLDtGK
+         t29CYxD2ZUzwyJ+zyHvY3Fx1zs09a87UIBQEVuEoIynkW9HuRL7ksTGnOowWiCmh0AX4
+         r9hh9EB/c75BZo2+kgm0hMl1U2GIv6adJWsjDvhXPHfDUItjMEO2niPF+GkFt/eN0rdv
+         In8b4YIcgOPJUz6Kn5sk6Rsut7048/F24a4RzEbmt+8tyGalxd4+yN/U+lOYFoJAHrwI
+         By2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1724778065; x=1725382865;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5snOsMKkskeeWvYsLYpbmKWRu6ocqwFH8f+X8NXzeZ0=;
+        b=tWGQ0IV5O9xFn3byZHsBqyoSNdgsQ6VCo9R4ZSBsB23xbG6/GKtwUl3HlbKuuEt/gi
+         R8OW9LWykQ944ihPri0zlt2G91lraqyrMjWOf7psJmlKPdRxMDXZVOvvZRYtC/ZLhGDF
+         AoKhYbCo4Ldl7SF25oL/x5RCFJBFpMG+9nkuCfUmQNc+DS2GHYtiiWATJzYhig5MxnyR
+         R6QIvp9bvuPQJuxXGP3XkeQmp6vhHmMle4Ur5jzaV5Q2/fV1llHZyEzk3G1DTgRTpt0M
+         EXFLaGv3ek/bt3omroiq9fOUUCTMY6P7ogC+UpNbB7sjHExqZZpmoKG+j1VG3QSROgTe
+         PiIg==
+X-Gm-Message-State: AOJu0YxM9KHn/RRLVGEwTRVLPYpponrznB2WNBF0gzmzyYntkTx8Iusy
+	KR0izxN0DoCv41QTxu/lrA4hQz7oL5295wcJeiQ2umhe+FY9ESSVFFeyXKquASpqNQWbQ8preok
+	vPCyOfHt8YiZ43k2pYe03+o9cykI=
+X-Google-Smtp-Source: AGHT+IH46B8lhU1Q/T5ZE22cJYjojX3tkAbaDnIRjRzHN4KgK/TQMH51QouaR0YR4Ya+YTMOgHbiKsjPOSpU3twsELA=
+X-Received: by 2002:a17:90b:3881:b0:2d3:b5ca:f1e9 with SMTP id
+ 98e67ed59e1d1-2d8259cfe7dmr3804130a91.33.1724778064704; Tue, 27 Aug 2024
+ 10:01:04 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zs3PdV6nqed1jWC2@krava>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
+References: <TCvb-R45mBUJOpoW3V-tLkH2XppfNXYbkv7Ph0ae8J9MZKWFvQ3nkJw74KKMbMzzpAvbwXBwRuBmhFOtHl0-jLLrIALH-_2_Zp-MZ9pPXPo=@pm.me>
+ <CAEf4BzaixE=-+YnowJhZMDk0SoVdZTHgx-X+3UwnJVUnXxkXzQ@mail.gmail.com> <NlxQiywYmu4MyGt1DSHPsHoslAKqqqeFoMBQ04NZsJITsVCbnucbWel87tw50N0sU_TrQ1osPMNLt5_iTBisRhm2rYn262Ip0ZrJMAL0sYc=@pm.me>
+In-Reply-To: <NlxQiywYmu4MyGt1DSHPsHoslAKqqqeFoMBQ04NZsJITsVCbnucbWel87tw50N0sU_TrQ1osPMNLt5_iTBisRhm2rYn262Ip0ZrJMAL0sYc=@pm.me>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 27 Aug 2024 10:00:52 -0700
+Message-ID: <CAEf4BzYQ-j2i_xjs94Nn=8+FVfkWt51mLZyiYKiz9oA4Z=pCeA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: compare vmlinux.h checksum when
+ building %.bpf.o
+To: Ihor Solodrai <ihor.solodrai@pm.me>
+Cc: bpf <bpf@vger.kernel.org>, "ast@kernel.org" <ast@kernel.org>, 
+	"andrii@kernel.org" <andrii@kernel.org>, "daniel@iogearbox.net" <daniel@iogearbox.net>, 
+	Eduard Zingerman <eddyz87@gmail.com>, "mykolal@fb.com" <mykolal@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 08/27, Jiri Olsa wrote:
+On Mon, Aug 26, 2024 at 6:22=E2=80=AFPM Ihor Solodrai <ihor.solodrai@pm.me>=
+ wrote:
 >
-> On Tue, Aug 27, 2024 at 12:29:38AM +0200, Oleg Nesterov wrote:
+> Hi Andrii, thanks for a review.
+>
+> On Monday, August 26th, 2024 at 2:59 PM, Andrii Nakryiko <andrii.nakryiko=
+@gmail.com> wrote:
+>
+> [...]
+>
+> > I'm not sure what md5sum buys us here, tbh... To compute checksum you
+> > need to read entire contents anyways, so you are not really saving
+> > anything performance-wise.
 > >
-> > So, can you reproduce the problem reported by Tianyi on your setup?
+> > I was originally thinking that we'll extend existing rule for
+> > $(INCLUDE_DIR)/vmlinux.h to do bpftool dump into temporary file, then
+> > do `cmp --silent` over it and existing vmlinux.h (if it does exist, of
+> > course), and if they are identical just exit and not modify anything.
+> > If not, we just mv temp file over destination vmlinux.h.
 >
-> yes, I can repduce the issue with uretprobe on top of perf event uprobe
-
-...
-
->    ->     uretprobe-hit
->             handle_swbp
->               uprobe_handle_trampoline
->                 handle_uretprobe_chain
->                 {
+> >
+> > In my head this would prevent make from triggering dependent targets
+> > because vmlinux.h's modification time won't change.
+> >
+> > Does the above not work?
 >
->                   for_each_uprobe_consumer {
+> I tried your suggestion and it works too. I like it better, as it's a
+> smaller change (see below).
 >
->                     // consumer for task 1019
->                     uretprobe_dispatcher
->                       uretprobe_perf_func
->                         -> runs bpf program
+> A checksum was just the first idea I had about saving the previous
+> state of vmlinux.h, and I went with it. Copying an entire file seemed
+> excessive to me, but it's not necessary as it turns out.
 >
->                     // consumer for task 1018
->                     uretprobe_dispatcher
->                       uretprobe_perf_func
->                         -> runs bpf program
+> Please let me know if the cmp version is ok, and I'll send v2 of the
+> patch.
+>
+> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftes=
+ts/bpf/Makefile
+> index c120617b64ad..25412b9194bd 100644
+> --- a/tools/testing/selftests/bpf/Makefile
+> +++ b/tools/testing/selftests/bpf/Makefile
+> @@ -402,7 +402,8 @@ endif
+>  $(INCLUDE_DIR)/vmlinux.h: $(VMLINUX_BTF) $(BPFTOOL) | $(INCLUDE_DIR)
+>  ifeq ($(VMLINUX_H),)
+>         $(call msg,GEN,,$@)
+> -       $(Q)$(BPFTOOL) btf dump file $(VMLINUX_BTF) format c > $@
+> +       $(Q)$(BPFTOOL) btf dump file $(VMLINUX_BTF) format c > $(INCLUDE_=
+DIR)/.vmlinux.h.tmp
+> +       $(Q)cmp -s $(INCLUDE_DIR)/.vmlinux.h.tmp $@ || mv $(INCLUDE_DIR)/=
+.vmlinux.h.tmp $@
 
-Confused...
+great, just maybe leave a small comment that we do this to avoid
+updating timestamps if contents didn't change, to not trigger
+expensive recompilation of many dependent files
 
-I naively thought that if bpftrace uses bpf_uprobe_multi_link_attach() then
-it won't use perf/trace_uprobe, and uretprobe-hit will result in
+>  else
+>         $(call msg,CP,,$@)
+>         $(Q)cp "$(VMLINUX_H)" $@
+> @@ -516,6 +517,12 @@ xdp_features.skel.h-deps :=3D xdp_features.bpf.o
+>  LINKED_BPF_OBJS :=3D $(foreach skel,$(LINKED_SKELS),$($(skel)-deps))
+>  LINKED_BPF_SRCS :=3D $(patsubst %.bpf.o,%.c,$(LINKED_BPF_OBJS))
+>
+> +HEADERS_FOR_BPF_OBJS :=3D $(wildcard $(BPFDIR)/*.bpf.h)          \
+> +                       $(addprefix $(BPFDIR)/, bpf_core_read.h \
+> +                                               bpf_endian.h    \
+> +                                               bpf_helpers.h   \
+> +                                               bpf_tracing.h)
+> +
 
-	// current->pid == 1018
+let's split this change into a separate patch?
 
-	for_each_uprobe_consumer {
-		// consumer for task 1019
-		uprobe_multi_link_ret_handler
-		    uprobe_prog_run
-		       -> current->mm != link->task->mm, return
-
-		// consumer for task 1018
-		uprobe_multi_link_ret_handler
-		    uprobe_prog_run
-		       -> current->mm == link->task->mm, run bpf
-	}
-
-> I think the uretprobe_dispatcher could call filter as suggested in the original
-> patch..
-
-OK, agreed.
-
-> but I'm not sure we need to remove the uprobe from handle_uretprobe_chain
-> like we do in handler_chain..
-
-Me too. In any case this is another issue.
-
-Oleg.
-
+>  # Set up extra TRUNNER_XXX "temporary" variables in the environment (rel=
+ies on
+>  # $eval()) and pass control to DEFINE_TEST_RUNNER_RULES.
+>  # Parameters:
+> @@ -566,8 +573,7 @@ $(TRUNNER_BPF_OBJS): $(TRUNNER_OUTPUT)/%.bpf.o:      =
+                       \
+>                      $(TRUNNER_BPF_PROGS_DIR)/%.c                       \
+>                      $(TRUNNER_BPF_PROGS_DIR)/*.h                       \
+>                      $$(INCLUDE_DIR)/vmlinux.h                          \
+> -                    $(wildcard $(BPFDIR)/bpf_*.h)                      \
+> -                    $(wildcard $(BPFDIR)/*.bpf.h)                      \
+> +                    $(HEADERS_FOR_BPF_OBJS)                            \
+>                      | $(TRUNNER_OUTPUT) $$(BPFOBJ)
+>         $$(call $(TRUNNER_BPF_BUILD_RULE),$$<,$$@,                      \
+>                                           $(TRUNNER_BPF_CFLAGS)         \
+> --
+> 2.34.1
+>
+>
 
