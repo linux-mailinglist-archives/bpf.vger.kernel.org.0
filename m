@@ -1,58 +1,59 @@
-Return-Path: <bpf+bounces-38314-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38315-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3171996316A
-	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 22:05:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90E4A963173
+	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 22:08:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B2EAD285078
-	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 20:05:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 207101F22F0D
+	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 20:08:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3893E1ABED0;
-	Wed, 28 Aug 2024 20:05:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F3581ABECB;
+	Wed, 28 Aug 2024 20:08:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="Dev8n9ev"
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="J1fzUmuH"
 X-Original-To: bpf@vger.kernel.org
-Received: from DU2PR03CU002.outbound.protection.outlook.com (mail-northeuropeazolkn19012035.outbound.protection.outlook.com [52.103.32.35])
+Received: from DU2PR03CU002.outbound.protection.outlook.com (mail-northeuropeazolkn19012036.outbound.protection.outlook.com [52.103.32.36])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFB20139578;
-	Wed, 28 Aug 2024 20:05:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.103.32.35
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25121125BA;
+	Wed, 28 Aug 2024 20:07:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.103.32.36
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724875541; cv=fail; b=OuJfaZI+wA97EuaNnBSRjeqeL578pr51nwclv3p+PdyBE0IdB8EY9oF9Juw6aNrFw7uyPBMZ29F93Eo0XVJGdvOTanp/B/SqEvznI4Q2iZ5jDKYeFXOYePHkVl0IqUJJzvhg+7sNem7h8UQCzPMPb0BIk/Tth4B9vSeQhc8OiwE=
+	t=1724875681; cv=fail; b=kGG9eNPmTgCQtdkmYw5uo41qGHVc69sko/j8AVrKqNb46EvEg9KlC5ZD1kVcpFFHD56bFUblsTzNep1vNuwvtqZIPQHoS/fKEgVr5O4BqKdauFIhVszH+XH75hKYTNWu0sZCS3kO5mDlmD6ES0JXPthGYg4jfpU+e4nLjfODT0k=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724875541; c=relaxed/simple;
-	bh=cl8h2qFeEsahKI5RbUycxw6lHcALP1yEK3qtRs8dK1Y=;
-	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=UUP6rrWjhOgcNvyN2bHI2T2uogq0f7/4MD8GeiVlwrYtZD/yuLS9tubJRwA4sutkQyX87zlUwTHBr+EFjurNQ4zJyr2wi20nmw7EHw0k0KLDILi+rEfYoS+tiaYw3pQ2eneobeZhlaoTi/QusaLWyc6nAo883Nz5yTlcP4CqtLM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=Dev8n9ev; arc=fail smtp.client-ip=52.103.32.35
+	s=arc-20240116; t=1724875681; c=relaxed/simple;
+	bh=ynam601Yz10iaM+BbWHDjnUW5RO0j8n2ldSYjJUHi4o=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=ZpcjEDjscgKFYPyUGqRgTpMtKYx7UjNK8AeCLCqU5ckdGsHhdHWGKmnAO5F2AZ+7kgSAlNkB0wzzPwcZr059HTIXSnt+bfjcTKHvUgVMICj7PIfpW8GqXFIAy09rwBuFaFlq5gYP/CuCfykuraKba2viW5dLuJ3Wb3CHkIuHYS0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=J1fzUmuH; arc=fail smtp.client-ip=52.103.32.36
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=QXCKVbdkVz7xu20ZNenlafADOSny1d/CSy6JoEihYhyZpfyXi1mrf/rIQ6H8Ix8ejGlSrdrspAWky0Ga+toFbuDadkV85m3jRQf8EOPHIqabSjKYprXfv133FeMLyhEHG7sV2lfqSaffoedYm0LibfnXcG279CiANWFZSaX9nQwhoQ7LEgbGUggvVOFqzuEutVLdKUkoTQDeS9Cq3ntvpaoMGrSHbVf7vMOR0k7dP/DUjFNB5KkP9uU7/ZcqklFSKnWUhQu950KfbSjGSb6nnnhpZ66Syydf9zd488gA38BeiG3p6D/V6l4adCiEyIff5WWS/tueWgvZ4GXKfmnjJw==
+ b=ynRQb6RjM0MWgVXnn4uZpnXvdrMukad/MUHXhw2GIkxU+vKJGyITMW3ttCeU2qMpu3iB+tLWT5FDkNBnDl9H/9lRgtuQvBjqyGD6sIEM7gctsxRsQV0Wa7LbZuTTaOIKqXh3uqiNRBPSC81Poux7d2SRco9UfLOLGKRPMMr8yZwdhAkDZrFAa/9nhnQrayo0RhvCw9lhRH8SHdY4vDi/AQaB/KwzXj5zBtGTZVQbnEQfZKE6wo3YeG/BITYIAyFc2PrQpjOgFl9E5kBOdmDnEAPVbscndte9xXUwaWh3WJdYBmT3ze5WK0ZUZbCk0k1YyWh7XBPU2qIx8kaAgW9lDw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ZNv18U8sXFxXQncNIU+D7wD9HSF4hdVq8zTLwb0pBsM=;
- b=iOwD0u9OhcPnH353eUa2bgpqTx98LVcbCB8SifOzBpDHI4A8J2K/o+X9/CWJ5zOaTeRu/F2mlv/lqiY4mpyd9iVDF8TH7GPBT0R/p2OzjT96mMO0idAxbIY44bD2bR+iCSzOS2XeixuHceKneUgNJSynQ1Ch0cKrtSpgpflgD2s3K2e66QiLmZ0O8nBiTVVQVKspi80bW4lD+Cxo1PbWYk+fxlovnUIZIMHE/niIjnAK9XaLNlbIseBczAepxDhzL7c0OK/IQY/IHayZl2v31zl1M89YZCIjqjS53fpOoblOPJ7fCpdCx9aonv/DPZFfy15qi7QCMoq6O82IdfwsnA==
+ bh=Qw99njkeIN1UYtWdHhEZN8LuSyBAna7OqDq1laf0yos=;
+ b=fRfCodVdiBoWB42hJ/OamKTfHHnAjRblyVLMoofeZ6ju9XukE5wFaC9gaWRIDOprz0kT0FnKm7Utb8KcI68FpjuKGeZe8Y4Pqm/gLhfObvhrYNOVU3PNRFFvH+n084YM7YeumUlhxqv/JXeu8dDkSrSfYHsbrR190+4Im/q9VBuciIWv9iSpG2gu0zZD38MyTDwobHMtu4O96d37zf30M2d65Ld0Ehffrc/Snmr1iXjbtPv9RpHgqyRwchbqKhfb0/AD1wr8Y0TOkpd3taFFWmsqGhSAX7hOeCs5imy4h5t/5YBIzZm83h/wtZkXqRNRQHW5WX1128efFORIodnmzw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
  dkim=none; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZNv18U8sXFxXQncNIU+D7wD9HSF4hdVq8zTLwb0pBsM=;
- b=Dev8n9evagNNeA3KdWzUL64ipgbPRnO2Ob0yv0whxX9rgW+I6Qsb3EMYUxPmSvuNEsUl7Zl0fUSRZe9TDP8oc+Po21K0NghCOUghkwJeSFK71MlPY5hkrTH6NPHIMg1FBzA0SSODNz/X73GZ8xSqOLJOvq/He+yIpFugymL3PCik2LE9SyUxo5H6ufCNbaF+Z7DnzyfEJiWHMV+5XKxq3GriE5y0VuFdxjko+GQvQA0jFRJkeS7BzxoFfwtYOQsl0qQ8GVFtAXFK/3NVP2cT+pMw+epuLfQwldY8phuI8f/r1D95X4TJhAajQw7B17JFoRFWtFpgPZGb4mfdSQkv8A==
+ bh=Qw99njkeIN1UYtWdHhEZN8LuSyBAna7OqDq1laf0yos=;
+ b=J1fzUmuHWtGN7JU9oEGrvzL5seRW8rlXlJdsCDLQhlotBeqVs7e1iZQ1onHqHyEqBaz3/b0ynkHn2HsYLNYOEGkJBNLCCb5NjBEeboLeH47oY0hMBr0VSvZ62bIAW1/dBA0i9JA/VsdPnlZWF/oRYXgKFeYsPL+57DeLdASaL6Jcn86BOgNV/VV0XnV1D1iPUTy7Y+mHpe+E7JcKMplJ9wb+fDVA7SONu4RU/R1xf7+oAKy7db6ZgfP9wTvWmzddvncDjnjyHnEWnyUxA/pO7sdT7vIZemETiY7dil8uEJVnonplNxbkP1NUoMi+IZGGAxsT/7gOcnTj/tA4xfJ6GQ==
 Received: from AM6PR03MB5848.eurprd03.prod.outlook.com (2603:10a6:20b:e4::10)
  by VI0PR03MB10807.eurprd03.prod.outlook.com (2603:10a6:800:26a::9) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7897.27; Wed, 28 Aug
- 2024 20:05:36 +0000
+ 2024 20:07:55 +0000
 Received: from AM6PR03MB5848.eurprd03.prod.outlook.com
  ([fe80::4b97:bbdb:e0ac:6f7]) by AM6PR03MB5848.eurprd03.prod.outlook.com
  ([fe80::4b97:bbdb:e0ac:6f7%4]) with mapi id 15.20.7897.021; Wed, 28 Aug 2024
- 20:05:36 +0000
+ 20:07:55 +0000
 From: Juntong Deng <juntong.deng@outlook.com>
 To: ast@kernel.org,
 	daniel@iogearbox.net,
@@ -70,19 +71,21 @@ To: ast@kernel.org,
 	snorcht@gmail.com
 Cc: bpf@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v2 1/2] bpf: Add KF_OBTAIN for obtaining objects without reference count
-Date: Wed, 28 Aug 2024 21:04:33 +0100
+Subject: [PATCH bpf-next v2 2/2] selftests/bpf: Add tests for KF_OBTAIN kfunc
+Date: Wed, 28 Aug 2024 21:07:41 +0100
 Message-ID:
- <AM6PR03MB5848874457E6E3E21635B18999952@AM6PR03MB5848.eurprd03.prod.outlook.com>
+ <AM6PR03MB58485695AD7D298A08FEE8C599952@AM6PR03MB5848.eurprd03.prod.outlook.com>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <AM6PR03MB5848874457E6E3E21635B18999952@AM6PR03MB5848.eurprd03.prod.outlook.com>
+References: <AM6PR03MB5848874457E6E3E21635B18999952@AM6PR03MB5848.eurprd03.prod.outlook.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-TMN: [DInjrd2oaxsFe/DxbwlCnYwWOJ3Pm4Ny]
-X-ClientProxiedBy: LO2P265CA0069.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:60::33) To AM6PR03MB5848.eurprd03.prod.outlook.com
+X-TMN: [r+RzXW0+jhgGMZUs2cCFmcrKbBQmVJZA]
+X-ClientProxiedBy: LO4P123CA0547.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:319::16) To AM6PR03MB5848.eurprd03.prod.outlook.com
  (2603:10a6:20b:e4::10)
 X-Microsoft-Original-Message-ID:
- <20240828200433.52591-1-juntong.deng@outlook.com>
+ <20240828200741.53189-1-juntong.deng@outlook.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -92,40 +95,40 @@ MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: AM6PR03MB5848:EE_|VI0PR03MB10807:EE_
-X-MS-Office365-Filtering-Correlation-Id: 09fd2fa4-fe99-4f3c-52ff-08dcc79cc801
+X-MS-Office365-Filtering-Correlation-Id: 57a883b3-2c51-40ea-299f-08dcc79d1afb
 X-Microsoft-Antispam:
 	BCL:0;ARA:14566002|5072599009|19110799003|8060799006|461199028|15080799006|3412199025|440099028;
 X-Microsoft-Antispam-Message-Info:
-	BbOQnZawp2DaZlPuHHaiMdOLNc2rUzlkIC0R0LTtq2kV4zP7DtBibotmpAwQgKBd2wTd5crFv4i7o38P0dhaINE+ULhHkIGxU9G44/rbwxLiovTuVABHlRFunLzWiRB8fnG5srtHr2tCJq/jpboPiBF2oyB5jHlCRvmK2cbNzd71wpC7mRLHq5MG6TlYYewEof9GGoGT2V/jcIEFOdSO9pJ4WzfvA49Bz/aI7NjzmmSDbflxVqNjGZ7rVq4PXWtPBwchhrX1fsriG/D5qCERyKZ9aziz/rVf/CE0uVJY/Q2j75s+vfljeSsGpcX96LnIPtaTrWH97JIcYLBprrguRWhd9Z8jr1veVhPxHqZ+CsqjDesI0ykTpiXniJrutgfFCATxFRX1Toi6WukROPtbZDXBjNzb833BUASbr89V9NCNbiMFUFS9i3mOKSWZSLqBKHz+JLJTK/1yzf0+mBaB+4gxlWMOJhmrmwmbUVV2kVd38Ii3ElqV70DVlS+UE/MTjU3/L4+tXd0tETwS3RERNK282PhYSE883hOYaV0Y8yYULVoV2l7pqDldoQDYTaeyW8OiWQ7EERxxfTO2FYJCGLCMi3u5ysPmbHYzIK8XOWmbS9NUDdFDdHHgZ97pLD1Zi77jKoAhwkAyG2w/yO8TWJkvYujG5rh5gk8AbJIEC9Gn7a0iRNA81T3f22pwrlAaath3J0/t6tc4TggFaRj0Eg==
+	M5lHAJrYIMldcXjrbgJpi+fy8EON13pWXceeXjV4aSQ02dZc9foY3H0BqUSnoPmAB26Mrv9xsOHC2bGHxdSF4IHBXCT2CexEhRU3GVDXxMacWTQ5OiAdtKemiPjtF95G5dmclmjR/1nscbiDT+mCvt6TydalT7hkGZDPDAfMhnHxZHx8c0/qRkD8Jbo7pd8wfOrMnLU3Vc7PdbEcR+FWFGXPc/qgw00+6uTOhQ/0fumg3T3fKQaS5VQbvQE0x6AyD0Hk9TFaZs0frOErgEnf33h4b/ECsY469oVLUpMzVGQgp/EBOrBHifkBi7htXumK2CwL9tJxua/5xiXBA1pye4KAH9LkkbEmnFYV0hyPVciml10HhhfLXd9Tf2I/JnusV+36XsIjcmXEhH2mP4/37tvBPvTWJMtLw/JYuIsplkUwb7EGJ3zNPnPu8w++leEV/lkG46g50aRIVF5AsVYd3ep14uukC0d2MW9T78Omac50OC8oxGNMl6claKgjCPqQuoWjs1TA1fzQWefJm5HDTW59rnN+yrXDuJK/J8uPUI1QoMfUBD23YRQUNdW8reDRpZLihUGCjf/0Gpsh20HZwDO7ZaDaCvFFIXOt3AqRzZxyofl2HjJ+ZCkV371cQ4iz6emNMLC2eQzppREpz7qKK0ZayGs7bjpgMRNt8LWb3iVlgTnV5x8pq+fHvqJoJR8WfZ8NrpkR3Og4or8pvezuPw==
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?hab/v7gVnSbjuv1voGiNHNgEX4hLaC62Eextxf9B4zSwcTs/YSM+08YyRFke?=
- =?us-ascii?Q?a2Mmm8xKjgllpS/ruNM1tdbAX6iQe0YyMBl8W9fv8C79o5M3yANu4s9v6l6y?=
- =?us-ascii?Q?X2srIUqML4aGPYlt+b6g6879BGwPna8wouR8nZRxHx2wtN05s2gCYLmygijM?=
- =?us-ascii?Q?EzmxSt9/pXA4QDbZQQ1uZHmM1cfLftgWH75OcN3c9NvIvbnNwH6215xWH2wv?=
- =?us-ascii?Q?vPLnSaiHMwPwaO3HCUFuxE9neE+YjxU9JQMWtWC7aq3CF5l+JxmdkhhlQbZm?=
- =?us-ascii?Q?y0FyymyVy4Lc4Ei3vOu2wBaPrc5Cn07kUfl472TEesnR9rstlqAcvqLMpgAq?=
- =?us-ascii?Q?Fmi7EdZp35pwQxT+f9HTNsKW1RGPsR+JtArB2J05PucQ0Evi0i/V17V6rUPv?=
- =?us-ascii?Q?9z0o67s4WxmPoVHaWaf6GZVipUlofiZAwCq6i1Dj29X2s236a/6/Gopk+iFw?=
- =?us-ascii?Q?kP6Cs2Af/ohWwxIDiLcywmqp+mTgafpNAPpDymRhKx8pMr3jYosld/Am7mni?=
- =?us-ascii?Q?UuwAvT/ovXKObhE4js6XISJ1gcwIk222MwFmemgvWe3ETb8MbJpnuq+zMCzf?=
- =?us-ascii?Q?jl1ryAjrEvcFGfZqmnU3o7IdJDdp/IM/Y4Tc2EjGhewHCdZZD0VbzApwzZmx?=
- =?us-ascii?Q?e8UIGN7nhjTsX6z/V3U2M2WYfbMQ18LGKKudmlg+gYTKcIJFbyZ/AwKIZ1ch?=
- =?us-ascii?Q?0tuTCKRv4gnE8lHN5wqyXfIPXybvPeJAQ4wEwBiuSAphCajyhd4+X/5F5dKg?=
- =?us-ascii?Q?P7ienkxkj48ku7L8HE20fmYt+nhlyxAvwvz7xAEE4xXc1/wHbcGiWiXG+JCv?=
- =?us-ascii?Q?2gOAGVQLzUandwBbpNepW/wbNp/u10fakNxdqdgm2C0RywDHB+X93TNfJMZB?=
- =?us-ascii?Q?zYpqF0DbxGNYmp3EqsEtT2JTZozjAc36kssjhje2yjpdQWyNH4w2HAJ0jOfP?=
- =?us-ascii?Q?Dc5lDwSNpGAhqTCQUA0X6hYdcuwyeaLLlkKOtPSLuajU0ex9iBIy5pi7UGFl?=
- =?us-ascii?Q?GJc/iLrL/x3i8ITfPF6h7MQNGW/NsRhwHng2u2MOsEDnhi3NnSpSWkVCHOz7?=
- =?us-ascii?Q?WSIG+Z+ASQbqV3YYpB6+eKOE9r3s/Q82KbugLaQkaUJf52hFdouMzZ2NIWZ3?=
- =?us-ascii?Q?9wHm8Z/mzG39+rhhRvSqiZs/bRClPM6FHObHhOj5/+s+30w4whpUjanffbWl?=
- =?us-ascii?Q?zMgXi9OGQTUcev9rLUnSHKzcYoLOaBQCklxmxZpI7FM+Kez81AiH+rrCK+ig?=
- =?us-ascii?Q?ns5rr53UsUvpBZt3yamL?=
+	=?us-ascii?Q?oJbw4PCp15ShIhoPfPWoiY6NsKCkZwSTfM8HlS//LZaHaPBeYXZ0SOFmcCmY?=
+ =?us-ascii?Q?SbKu6TTSNPJ0dWaBwbeyhqDi68HqSRzPJgMgxyrU9AEw7/rBUFCqQWSDL6Nu?=
+ =?us-ascii?Q?oLPzWonZ3Tp9HcCQ1SujnmGaPzmwc9byjEbbOR3ha1V1mB0BxuWaoqkeB3Gr?=
+ =?us-ascii?Q?JW+uNlKIp7LSNwD3aEVBDoInpUUHyQSHWtEVNmPCXsBvXZpPxo7oD0ohps4L?=
+ =?us-ascii?Q?kTIlHFuAoBTzC6YU6fRuh+wp39Kz20PWGWivvpVKy4X3Wvbj2exyN9429eo5?=
+ =?us-ascii?Q?8NBHrepnVU1rEdkPg02nM4V1KLtVMvnAzs7aNE8DW5tLU1OB4grFSATJ3D6I?=
+ =?us-ascii?Q?DYg5LdURDRe0P8jXBzw+OhrAk79TS7Jfs1vC1e9NrCcVxKRa3vp49Zbeo2oR?=
+ =?us-ascii?Q?jlv0WwsIN+58mmfI8i8sdNSaH9f9P6An/TQo3+IqvW8iSyao6CXcodSZJsY0?=
+ =?us-ascii?Q?WuFHjTGPX15SWhhGTZeYNxS9e6S674FQqZ2fG3tYy49LuiErIN0KcNkjiwcb?=
+ =?us-ascii?Q?cuwGTS2XTHvbpFX6pg4axwqOFmNOcjF5Ngbm4+4mdFNGMJlqGIPBswm6ihi/?=
+ =?us-ascii?Q?nX0TJmcsEwenux+BWoHr/RxMEZHf+QBBJFayPDTjtnshROBDRWdJnM9Za1Z5?=
+ =?us-ascii?Q?UDLtnnPCaxx4osEerbi3mzWnVgFI8a32QpowZGAA/mFmT6tyTpMsfIMJHyyT?=
+ =?us-ascii?Q?X97/ytApGqF0T7bHC1nZ4IS+1GKan1bcyqnDV5IsQdEOc52/cm9wKsX4Q7Hq?=
+ =?us-ascii?Q?kdujCWJkZMxovx8cIwhzxdgTSIOlXmw4zTGPZqnk4gstLbGG7NbkWzw6o2ML?=
+ =?us-ascii?Q?2IK4JrqjWiBnFOINrXOcPPlTb4LRizskiMePxmXRGUrbbB5Ue148hLXICB8q?=
+ =?us-ascii?Q?vqpgD7NRGoxHfn9RTX7sZPkbtzdn9GK92ftCqx175vhZYbGcd4Ow7+QYBM6a?=
+ =?us-ascii?Q?r561IA7X7/pQvtLmP1+dT/OKOwcwWnetjde7csNj8rEL3h2qu8fpFf/eiS/G?=
+ =?us-ascii?Q?Jv+B8Ntse61X/jujAdc0bkEJhNSq9cLCl3yPac5b1W2ggCoudB9RDo4egSZF?=
+ =?us-ascii?Q?2NvRK8zNJzYeFFQ7irJLvHDq7f/veK4gYqfw6caTHFFIx8/uhYMyy5OA+wjK?=
+ =?us-ascii?Q?Zi2AP1oe+QX6G0cI39reoIqMYqioHAVJNtgSdoAVODgzIeehQx8SuCtRMnbq?=
+ =?us-ascii?Q?Acf8bIMNApfbk/h5kVKLM1CMm/7EaeUR3x/bfTsKOxqdX8UxwqeikA97XfXw?=
+ =?us-ascii?Q?Tp681NM7yDIYr+Gl+hxB?=
 X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 09fd2fa4-fe99-4f3c-52ff-08dcc79cc801
+X-MS-Exchange-CrossTenant-Network-Message-Id: 57a883b3-2c51-40ea-299f-08dcc79d1afb
 X-MS-Exchange-CrossTenant-AuthSource: AM6PR03MB5848.eurprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Aug 2024 20:05:36.6126
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Aug 2024 20:07:55.8225
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
@@ -133,87 +136,168 @@ X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
 	00000000-0000-0000-0000-000000000000
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI0PR03MB10807
 
-Not all structures in the kernel contain reference count, such as
-struct socket (its reference count is actually in struct file),
-so it makes no sense to use a combination of KF_ACQUIRE and KF_RELEASE
-to trick the verifier to make the pointer to struct socket valid.
+This patch adds test cases for KF_OBTAIN kfunc. Note that these test
+cases are only used to test KF_OBTAIN and are not related to actual
+usage scenarios.
 
-In this example, we cannot just use BTF_TYPE_SAFE_TRUSTED method,
-because not all files are sockets. It is not enough to make private_data
-in struct file to be trusted. We need a kfunc like bpf_socket_from_file.
+kfunc_obtain_not_trusted is used to test that KF_OBTAIN kfunc only
+accepts valid pointers.
 
-This patch adds KF_OBTAIN flag for the cases where a valid pointer can
-be obtained but there is no need to manipulate the reference count
-(e.g. the structure itself has no reference count, the actual reference
-count is in another structure).
+kfunc_obtain_use_after_release is used to test that the returned pointer
+becomes invalid after the pointer passed to KF_OBTAIN kfunc is released.
 
-For KF_OBTAIN kfuncs, the passed argument must be valid pointers.
-KF_OBTAIN kfuncs guarantees that if the pointer passed in is valid,
-then the pointer returned by KF_OBTAIN kfuncs is also valid.
-
-For example, bpf_socket_from_file is a KF_OBTAIN kfunc, and if the
-struct file pointer passed in is valid, then the struct socket pointer
-returned is also valid.
-
-KF_OBTAIN kfuncs use ref_obj_id to ensure that the returned pointer has
-the correct ownership and lifetime. For example, if we pass pointer A to
-KF_OBTAIN kfunc and get returned pointer B, then once pointer A is
-released, pointer B will become invalid.
+kfunc_obtain_trusted is the correct usage, valid pointers must be passed
+to KF_OBTAIN kfunc and the returned pointer is only used if the passed
+pointer has not been released.
 
 Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
 ---
-v1 -> v2: Add more example information to commit message, no code changed.
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 12 +++
+ .../bpf/bpf_testmod/bpf_testmod_kfunc.h       |  3 +
+ .../bpf/prog_tests/kfunc_obtain_test.c        | 10 +++
+ .../selftests/bpf/progs/kfunc_obtain.c        | 74 +++++++++++++++++++
+ 4 files changed, 99 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/kfunc_obtain_test.c
+ create mode 100644 tools/testing/selftests/bpf/progs/kfunc_obtain.c
 
- include/linux/btf.h   |  1 +
- kernel/bpf/verifier.c | 14 +++++++++++++-
- 2 files changed, 14 insertions(+), 1 deletion(-)
-
-diff --git a/include/linux/btf.h b/include/linux/btf.h
-index b8a583194c4a..d3f695123af9 100644
---- a/include/linux/btf.h
-+++ b/include/linux/btf.h
-@@ -75,6 +75,7 @@
- #define KF_ITER_NEXT    (1 << 9) /* kfunc implements BPF iter next method */
- #define KF_ITER_DESTROY (1 << 10) /* kfunc implements BPF iter destructor */
- #define KF_RCU_PROTECTED (1 << 11) /* kfunc should be protected by rcu cs when they are invoked */
-+#define KF_OBTAIN        (1 << 12) /* kfunc is an obtain function */
- 
- /*
-  * Tag marking a kernel function as a kfunc. This is meant to minimize the
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 5437dca56159..67a67c2b4a55 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -10985,9 +10985,15 @@ static bool is_kfunc_release(struct bpf_kfunc_call_arg_meta *meta)
- 	return meta->kfunc_flags & KF_RELEASE;
+diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+index bbf9442f0722..9e8a54dc88a2 100644
+--- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
++++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+@@ -183,6 +183,16 @@ __bpf_kfunc void bpf_kfunc_dynptr_test(struct bpf_dynptr *ptr,
+ {
  }
  
-+static bool is_kfunc_obtain(struct bpf_kfunc_call_arg_meta *meta)
++struct mm_struct *bpf_kfunc_obtain_test(struct task_struct *task)
 +{
-+	return meta->kfunc_flags & KF_OBTAIN;
++	return task->mm;
 +}
 +
- static bool is_kfunc_trusted_args(struct bpf_kfunc_call_arg_meta *meta)
++struct task_struct *bpf_get_untrusted_task_test(struct task_struct *task)
++{
++	return task;
++}
++
+ __bpf_kfunc struct bpf_testmod_ctx *
+ bpf_testmod_ctx_create(int *err)
  {
--	return (meta->kfunc_flags & KF_TRUSTED_ARGS) || is_kfunc_release(meta);
-+	return (meta->kfunc_flags & KF_TRUSTED_ARGS) || is_kfunc_release(meta) ||
-+		is_kfunc_obtain(meta);
- }
+@@ -541,6 +551,8 @@ BTF_ID_FLAGS(func, bpf_iter_testmod_seq_destroy, KF_ITER_DESTROY)
+ BTF_ID_FLAGS(func, bpf_iter_testmod_seq_value)
+ BTF_ID_FLAGS(func, bpf_kfunc_common_test)
+ BTF_ID_FLAGS(func, bpf_kfunc_dynptr_test)
++BTF_ID_FLAGS(func, bpf_kfunc_obtain_test, KF_OBTAIN)
++BTF_ID_FLAGS(func, bpf_get_untrusted_task_test)
+ BTF_ID_FLAGS(func, bpf_testmod_ctx_create, KF_ACQUIRE | KF_RET_NULL)
+ BTF_ID_FLAGS(func, bpf_testmod_ctx_release, KF_RELEASE)
+ BTF_KFUNCS_END(bpf_testmod_common_kfunc_ids)
+diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod_kfunc.h b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod_kfunc.h
+index e587a79f2239..cb38a211a9f3 100644
+--- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod_kfunc.h
++++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod_kfunc.h
+@@ -144,4 +144,7 @@ void bpf_kfunc_dynptr_test(struct bpf_dynptr *ptr, struct bpf_dynptr *ptr__nulla
+ struct bpf_testmod_ctx *bpf_testmod_ctx_create(int *err) __ksym;
+ void bpf_testmod_ctx_release(struct bpf_testmod_ctx *ctx) __ksym;
  
- static bool is_kfunc_sleepable(struct bpf_kfunc_call_arg_meta *meta)
-@@ -12845,6 +12851,12 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
- 			/* For mark_ptr_or_null_reg, see 93c230e3f5bd6 */
- 			regs[BPF_REG_0].id = ++env->id_gen;
- 		}
++struct mm_struct *bpf_kfunc_obtain_test(struct task_struct *task) __ksym;
++struct task_struct *bpf_get_untrusted_task_test(struct task_struct *task) __ksym;
 +
-+		if (is_kfunc_obtain(&meta)) {
-+			regs[BPF_REG_0].type |= PTR_TRUSTED;
-+			regs[BPF_REG_0].ref_obj_id = meta.ref_obj_id;
-+		}
+ #endif /* _BPF_TESTMOD_KFUNC_H */
+diff --git a/tools/testing/selftests/bpf/prog_tests/kfunc_obtain_test.c b/tools/testing/selftests/bpf/prog_tests/kfunc_obtain_test.c
+new file mode 100644
+index 000000000000..debc92fc1acc
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/kfunc_obtain_test.c
+@@ -0,0 +1,10 @@
++// SPDX-License-Identifier: GPL-2.0
 +
- 		mark_btf_func_reg_size(env, BPF_REG_0, sizeof(void *));
- 		if (is_kfunc_acquire(&meta)) {
- 			int id = acquire_reference_state(env, insn_idx);
++#include <test_progs.h>
++#include "kfunc_obtain.skel.h"
++
++void test_kfunc_obtain(void)
++{
++	if (env.has_testmod)
++		RUN_TESTS(kfunc_obtain);
++}
+diff --git a/tools/testing/selftests/bpf/progs/kfunc_obtain.c b/tools/testing/selftests/bpf/progs/kfunc_obtain.c
+new file mode 100644
+index 000000000000..8f0e074928ce
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/kfunc_obtain.c
+@@ -0,0 +1,74 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include "vmlinux.h"
++#include <bpf/bpf_tracing.h>
++#include <bpf/bpf_helpers.h>
++#include "bpf_misc.h"
++#include "../bpf_testmod/bpf_testmod_kfunc.h"
++
++char _license[] SEC("license") = "GPL";
++
++struct task_struct *bpf_task_from_pid(s32 pid) __ksym;
++void bpf_task_release(struct task_struct *p) __ksym;
++
++/* The following test cases are only used to test KF_OBTAIN
++ * and are not related to actual usage scenarios.
++ */
++
++SEC("syscall")
++__failure __msg("must be referenced or trusted")
++int BPF_PROG(kfunc_obtain_not_trusted)
++{
++	struct task_struct *cur_task, *untrusted_task;
++
++	cur_task = bpf_get_current_task_btf();
++	untrusted_task = bpf_get_untrusted_task_test(cur_task);
++
++	bpf_kfunc_obtain_test(untrusted_task);
++
++	return 0;
++}
++
++SEC("syscall")
++__success
++int BPF_PROG(kfunc_obtain_trusted)
++{
++	struct task_struct *cur_task, *trusted_task;
++	struct mm_struct *mm;
++	int map_count = 0;
++
++	cur_task = bpf_get_current_task_btf();
++	trusted_task = bpf_task_from_pid(cur_task->pid);
++	if (trusted_task == NULL)
++		return 0;
++
++	mm = bpf_kfunc_obtain_test(trusted_task);
++
++	map_count = mm->map_count;
++
++	bpf_task_release(trusted_task);
++
++	return map_count;
++}
++
++SEC("syscall")
++__failure __msg("invalid mem access 'scalar'")
++int BPF_PROG(kfunc_obtain_use_after_release)
++{
++	struct task_struct *cur_task, *trusted_task;
++	struct mm_struct *mm;
++	int map_count = 0;
++
++	cur_task = bpf_get_current_task_btf();
++	trusted_task = bpf_task_from_pid(cur_task->pid);
++	if (trusted_task == NULL)
++		return 0;
++
++	mm = bpf_kfunc_obtain_test(trusted_task);
++
++	bpf_task_release(trusted_task);
++
++	map_count = mm->map_count;
++
++	return map_count;
++}
 -- 
 2.39.2
 
