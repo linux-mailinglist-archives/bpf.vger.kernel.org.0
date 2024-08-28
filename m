@@ -1,74 +1,74 @@
-Return-Path: <bpf+bounces-38263-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38264-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A48F96263A
-	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 13:40:41 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C22DB962648
+	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 13:46:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 137121C23BC9
-	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 11:40:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6BCE21F23D53
+	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 11:46:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73117175548;
-	Wed, 28 Aug 2024 11:40:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5AA716C86F;
+	Wed, 28 Aug 2024 11:46:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PQWtY+fJ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Lt+hxmiq"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E91C1741D4;
-	Wed, 28 Aug 2024 11:40:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF927166F0E;
+	Wed, 28 Aug 2024 11:46:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724845220; cv=none; b=VUnkpvD08JW8CYNuzZUjEN8cMVZ+vgcNJDS2ZlETbl3seMUmg2YpWICtia6a0Q9SPAqkv+H6j0fEZeDtC9xPifKXK65V8YTP1S0Vz1Zh/6KIXgV8db4k11bpI1m83y3bwWy5fkNVbLCNgBx3Zn3Ra2AAmliKc4U4rKlrLRdEYw4=
+	t=1724845570; cv=none; b=UFgudu0bQsXJ40mzKBM3UVuM/iIJuG01z4FXkYvpzgoLt82YVejXyeZ+yTOaw0B57MAMB8Ii9gPN/HNMEXYln4g5wW908/OJtuuCk6sb8rGx//jFrhoZ+3PF8J3885J6EesZPHgD5bRM9cZ2YuC0vqaJQAse0FlRYJHm55buvr4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724845220; c=relaxed/simple;
-	bh=FePAsMvHLmE22op2flEQFmGYfkih/ncSqzEQLiob984=;
+	s=arc-20240116; t=1724845570; c=relaxed/simple;
+	bh=8ZEstB1ND1c9iOC2+qOOCsD/N4dwJhJsVf4IsY1WF+U=;
 	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KnJ4/zY9B70BV+lNQZfSHlC2u0fB7FcZJOY9Omm3OGm8IMlufU7WGlkuXUt699cMoocX95LJouYUZaG7JpDuFVX83XeWGgrt4dTEB2cRrPQrtenBHdyrdJ7IzFEWpcZ5GjFZc4clS9VJd586wT5vWX8xZYerH4fOFhxMlytMMx4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PQWtY+fJ; arc=none smtp.client-ip=209.85.208.53
+	 Content-Type:Content-Disposition:In-Reply-To; b=VUTccvqPVT+qM65Y+tTn8YVsuv4RLzGRj7XfJR+5nMNdHQzZhSl0M4L/wJ5onB4e7JiPV+V7FJUmSp5VbSKgQi4Fg4E3ydzNrtVvPNkRugLMrJjwt6NHLo5MxBkUrD6ZHEfwTkqtlIZOzXlULaU5uxegDR/T2Iai6Xu7li/zyik=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Lt+hxmiq; arc=none smtp.client-ip=209.85.208.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-5bef295a429so7708247a12.2;
-        Wed, 28 Aug 2024 04:40:18 -0700 (PDT)
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-5c218866849so577441a12.0;
+        Wed, 28 Aug 2024 04:46:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1724845217; x=1725450017; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1724845567; x=1725450367; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=5doiDsQOeWB8JxD1pa6SuHZTechKzHGIPcY9ZB/Tn0k=;
-        b=PQWtY+fJKPUE2cr6k2SYIQLEIVh0atYTOIhpMVui7dIIMaFDOYTxOQYKxNMccyKYT8
-         izWb7emN9B9RBqKLY07PCiNOF2YmOxr2cPS/Y/SvZwOAced2dfDa7JHo4huiXjUcS+oz
-         +sQF0dLJrbNl/g3fSAL+MXfcflq1oRZyJo9Dqkc/MQeW2oDkLh8TRk0JNS5KcHrWysOT
-         3GkWSpWwz2rdIVAV/PudeoDfV8mgCpJW1VeJcWo2pzXmXyTxJdCIABhH9jJPrTQiFv1O
-         P3jG5CrpW3tE9xTAOXm1U0q3BhPOWcgoOTew0wxGRd2xnDEq/qGhY9h59TMbdeZ38ZbJ
-         rXaw==
+        bh=1wAkuMMTjC69avPQ3AhGJ1Inrsm85tv0XbpC7+w92Wo=;
+        b=Lt+hxmiq7tJjZGjGoYvVZbaBud6ecN3E6YXghu8XCcwAXkDiu1v0uQTVX5eNmRMoy4
+         WPsl4ifK32mAvBpSNJ2D6VrFo3wlVIvnwsvs7VCr04Bt0ptZFdawt4zleGSCfM58Ne5a
+         DbJB2DTi7PhAO/RfgHojQ3AiBi/wZhdN/1KFyDJI3kCRJbQ0+izwjgfY8Vy4pUqlAwx0
+         F/l0vwNtRD7nkqBNHQAai74UTzh2fqWXKD951Szq+eMyjvD8smL1YwsSyQStN4R8ZdHM
+         JCU5IwpQUHhZ/I00NalhX+JO/xikpDEmue/Sf3Uwc5ZpFQMpuedKDhisbvZspISTEBBf
+         isCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724845217; x=1725450017;
+        d=1e100.net; s=20230601; t=1724845567; x=1725450367;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5doiDsQOeWB8JxD1pa6SuHZTechKzHGIPcY9ZB/Tn0k=;
-        b=IhHd4SAYptcNkvHzPiPZsWLRIRacUGZJhoy/nOfJBjlw5VTj5nDQsAtvvIiALI1q4B
-         tIO+UZQdQeD2q9dgpvdYE55MSrqszo6NwYBIoKDSeF+pRl17rnfOWNScbZY4YTFz8mD0
-         ugL3svqv5sYBSjDlVRqnWSR/ImqAV0h62T36cvlYnHSy3qkaBCBFfEEQfKBKi+++fy6p
-         7vCASUwmfMe7w09EHxUgGKxt4Yl7qaF8WAq+txfM1m3RT62YeV2s2UoJNaEUM67PVERE
-         IvhKHHO56uq9cxeYxBfhiRU1tnYTGFKCM9tBMedap6NYzAhw29Y7WLxVX/ESPJ23pfXr
-         y7SA==
-X-Forwarded-Encrypted: i=1; AJvYcCVqIgOx0zOoAGAsCf5f94hA0COEGmLzpEF1x1TnsYPG5MLiDBi9FfFTgrHrAKs2xuxb8bp2WNNG5oEZ9adc4t3T+kEh@vger.kernel.org, AJvYcCXv59YEoioLewcgxzw5pJZdDpyIEa+kUh1OWBQTNIT3JIVyMfMrkdN0k2hfBXQl8zqmBso=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx+za/FH7FXtwJG5zz3Rx/ksWgUUtKbMeZTclC3iWea5SXDlUTD
-	rAZXKxUxuaIbGFgMyOFdWyCtgjpNYyDJT8YYtfKeRExPUNagNWio09yfr4fdgaLdcA==
-X-Google-Smtp-Source: AGHT+IFJRBhL32fcNwMsF1ysq2poybkCQQs3c9osXyU1UUhvo3TmtZue1y4ttg3vqgF3b0HDB/bYEQ==
-X-Received: by 2002:a05:6402:40c6:b0:5a2:5bd2:ca50 with SMTP id 4fb4d7f45d1cf-5c0891a032bmr11591310a12.25.1724845216161;
-        Wed, 28 Aug 2024 04:40:16 -0700 (PDT)
+        bh=1wAkuMMTjC69avPQ3AhGJ1Inrsm85tv0XbpC7+w92Wo=;
+        b=Pps1gtQqVRxaVC9ZPhgsh2Z1XpoXv9QXvGoBR2j5lvKKeqy5FdyZrhju2DKxpMunw4
+         Dv2CXPuHWLk3R4bZHzORWOlBx6fMYDoaKPhlB8eTWLXQCyXctZ4PFyt7sJhPZU3g8xg/
+         v478T8MOFh6/YywduTVxkJs1H318wHwEU5IrVU9cXgf4Z4a/3EKRs1UEaHLjVgFLuENh
+         9yKr3LfkuOJ4PRcLme84FQdiubhSJ/2yqkfXz5jjSPgRztxmNK16VP05Dj32de+tbkZ7
+         8JZZCu+hGpSCbJWtfWiYR+ypcQFtBiGkzdIQbW4b1wDRnAkRUmrSolbUWOQ6ybjpQx2d
+         KL7A==
+X-Forwarded-Encrypted: i=1; AJvYcCWB0ayp3IhB6nZKymRoAG56Al+0jpa7eWX6EWYasKj6TTf/Q9fXhC4Hz/EmsMWNk5udndg=@vger.kernel.org, AJvYcCWnFg4NFstj/t7dsootRDYIJncwP0JPTHASHS9WFJ8gT28uM7lfUjMgEqBXYEyjOFO84O+Nblf8DyQFQrI61q415LPq@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw3/Ao27fn/gKsRwCn0d2c7KB85HzULfrcCobOGU++CPCnv4cIJ
+	oUG7zqYuOFgIXRI6FcDZlIWrdU2b1AHIBjUvkMae9G50gUiu26/NZj/yhRP/mUIrRQ==
+X-Google-Smtp-Source: AGHT+IFgHV8r9f5vno3x983HZlFlCq+hbnbtTdc4a/ktAqjFYir7OUjgIdb3s/7qIIJ/mT4hlYMaZg==
+X-Received: by 2002:a05:6402:2792:b0:5c0:acf4:dfb4 with SMTP id 4fb4d7f45d1cf-5c0acf4e220mr5729786a12.1.1724845566494;
+        Wed, 28 Aug 2024 04:46:06 -0700 (PDT)
 Received: from krava ([173.38.220.61])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5c0bb1e3446sm2267223a12.30.2024.08.28.04.40.15
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5c0bb1e5d3esm2170067a12.37.2024.08.28.04.46.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Aug 2024 04:40:15 -0700 (PDT)
+        Wed, 28 Aug 2024 04:46:06 -0700 (PDT)
 From: Jiri Olsa <olsajiri@gmail.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Wed, 28 Aug 2024 13:40:13 +0200
+Date: Wed, 28 Aug 2024 13:46:03 +0200
 To: Oleg Nesterov <oleg@redhat.com>
 Cc: Jiri Olsa <olsajiri@gmail.com>, Tianyi Liu <i.pear@outlook.com>,
 	andrii.nakryiko@gmail.com, mhiramat@kernel.org, ajor@meta.com,
@@ -76,7 +76,7 @@ Cc: Jiri Olsa <olsajiri@gmail.com>, Tianyi Liu <i.pear@outlook.com>,
 	flaniel@linux.microsoft.com, linux-trace-kernel@vger.kernel.org,
 	linux@jordanrome.com, mathieu.desnoyers@efficios.com
 Subject: Re: [PATCH v2] tracing/uprobe: Add missing PID filter for uretprobe
-Message-ID: <Zs8MnbfvyxInIMTj@krava>
+Message-ID: <Zs8N-xP4jlPK2yjE@krava>
 References: <20240825171417.GB3906@redhat.com>
  <20240825224018.GD3906@redhat.com>
  <ZsxTckUnlU_HWDMJ@krava>
@@ -86,7 +86,7 @@ References: <20240825171417.GB3906@redhat.com>
  <Zsz7SPp71jPlH4MS@krava>
  <20240826222938.GC30765@redhat.com>
  <Zs3PdV6nqed1jWC2@krava>
- <20240827164545.GG30765@redhat.com>
+ <20240827201926.GA15197@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -95,19 +95,13 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240827164545.GG30765@redhat.com>
+In-Reply-To: <20240827201926.GA15197@redhat.com>
 
-On Tue, Aug 27, 2024 at 06:45:45PM +0200, Oleg Nesterov wrote:
+On Tue, Aug 27, 2024 at 10:19:26PM +0200, Oleg Nesterov wrote:
+> Sorry for another reply, I just noticed I missed one part of your email...
+> 
 > On 08/27, Jiri Olsa wrote:
 > >
-> > On Tue, Aug 27, 2024 at 12:29:38AM +0200, Oleg Nesterov wrote:
-> > >
-> > > So, can you reproduce the problem reported by Tianyi on your setup?
-> >
-> > yes, I can repduce the issue with uretprobe on top of perf event uprobe
-> 
-> ...
-> 
 > >    ->     uretprobe-hit
 > >             handle_swbp
 > >               uprobe_handle_trampoline
@@ -125,42 +119,38 @@ On Tue, Aug 27, 2024 at 06:45:45PM +0200, Oleg Nesterov wrote:
 > >                     uretprobe_dispatcher
 > >                       uretprobe_perf_func
 > >                         -> runs bpf program
+> >
+> >                   }
+> >                 }
+> >
+> > and I think the same will happen for perf record in this case where instead of
+> > running the program we will execute perf_tp_event
 > 
-> Confused...
+> Hmm. Really? In this case these 2 different consumers will have the different
+> trace_event_call's, so
 > 
-> I naively thought that if bpftrace uses bpf_uprobe_multi_link_attach() then
-> it won't use perf/trace_uprobe, and uretprobe-hit will result in
+> 	// consumer for task 1019
+> 	uretprobe_dispatcher
+> 	  uretprobe_perf_func
+> 	    __uprobe_perf_func
+> 	      perf_tp_event
+> 
+> won't store the event because this_cpu_ptr(call->perf_events) should be
+> hlist_empty() on this CPU, the perf_event for task 1019 wasn't scheduled in
+> on this CPU...
 
-right, this path is for the case when bpftrace attach to single uprobe,
-but there are 2 instances of bpftrace 
+I'll double check on that, but because there's no filter for uretprobe
+I think it will be stored under 1018 event
+
+> 
+> No?
+> 
+> Ok, looks like I'm totally confused ;)
+
+I'm working on bpf selftests for above (uprobe and uprobe_multi paths)
+I plan to send them together with fixes we discussed earlier
+
+I'm hoping this will make it more clear
 
 jirka
-
-> 
-> 	// current->pid == 1018
-> 
-> 	for_each_uprobe_consumer {
-> 		// consumer for task 1019
-> 		uprobe_multi_link_ret_handler
-> 		    uprobe_prog_run
-> 		       -> current->mm != link->task->mm, return
-> 
-> 		// consumer for task 1018
-> 		uprobe_multi_link_ret_handler
-> 		    uprobe_prog_run
-> 		       -> current->mm == link->task->mm, run bpf
-> 	}
-> 
-> > I think the uretprobe_dispatcher could call filter as suggested in the original
-> > patch..
-> 
-> OK, agreed.
-> 
-> > but I'm not sure we need to remove the uprobe from handle_uretprobe_chain
-> > like we do in handler_chain..
-> 
-> Me too. In any case this is another issue.
-> 
-> Oleg.
-> 
 
