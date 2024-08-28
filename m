@@ -1,179 +1,129 @@
-Return-Path: <bpf+bounces-38244-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38245-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FC87961D38
-	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 05:54:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66A38961E34
+	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 07:30:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 72A981C239E6
-	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 03:54:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EB1132858A3
+	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 05:30:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E6B113E023;
-	Wed, 28 Aug 2024 03:54:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CCCB14D43D;
+	Wed, 28 Aug 2024 05:29:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="E2kWg83G"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nF36T2Jb"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E43D83CDA;
-	Wed, 28 Aug 2024 03:54:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D06E414A4C7;
+	Wed, 28 Aug 2024 05:29:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724817262; cv=none; b=I8EFS1K8qBpsEVOMyy+BQMv8xME0sW6MBgI9tqha5ynA6hxmLxiBWiZzp26Z0aIomqyNWWVmFy3IQ5oVwiOlf/w5t12PUxKxpLExcuyf+Mv7uhYuJ+19nnh3nkVib/SQWKRNbE6ZSZq02mlwV6Avq9VYNA6q8Pv1C8kjXXhtNjg=
+	t=1724822995; cv=none; b=REow6OxpyM3zPO5TYKfUyZw8k7TEk1ANpLsqcHYxUcJ1+66s68xZbS8MTED+8TBiiF9NAjTjQzxzuKCrcp2EhkBRtxosZkzH+ebkZC6TKRhwFRi6Zhp+Vdgl0SlGEMxbUPBsLV6J/F2R8HFXH55Bd+dXlQM02JGEO3Sn1HGlVT8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724817262; c=relaxed/simple;
-	bh=jLwgxlTbmmQa0vkZUtn7hMrKGuSWWsj08lIUB9ZB8KY=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=FJKzL428LGSt2FMVZm6xV24t6VMjekytcZOnKf2/c5Z/FUwqlRxAsVMqexVVzDkmuCCpHgS9XcRqF6Gh3c5CZrMnX6eTVEQSNmIb39Pfhs4yXzrlSXzlQRUfbMcQwe+LCDcKdXflpF9q+zZqIVeHTlU4SusIxUeR7eG6dNJYmj8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=E2kWg83G; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A49AC4FF07;
-	Wed, 28 Aug 2024 03:54:19 +0000 (UTC)
+	s=arc-20240116; t=1724822995; c=relaxed/simple;
+	bh=FGISyqZO8CsSpcS8+QnbUGriIY/DF/FJMlaX57XnfLM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=A295W0qCJL3VKC4vUDlPVArPHk2f2031Lubgju0uwI0tLimz56jrMTvEHV1q2aR4iwXdov4vYj3jb1DLEIQbY+1Jgq5s66uJib8OZcU/mcsgXm4AtvGkMS8J3wze9/lF3CxzpQdGVOxzXnmYP3juCgNx8LaOkWtWH1hjp8g44C8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nF36T2Jb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8084C4AF19;
+	Wed, 28 Aug 2024 05:29:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1724817262;
-	bh=jLwgxlTbmmQa0vkZUtn7hMrKGuSWWsj08lIUB9ZB8KY=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=E2kWg83GNBa7PtOrzE7svxEzT8SYZopOFOj4kIanaFLsDWy6ZVqjxMkShEkjP7xyn
-	 D1yCGdgUK9aTH3T/UKSotq8DO3OJw268Jz/soCZYUfT9czpEs2maPG5ksml5byK4zL
-	 JRAhBTHDJYJvUTFqniQiGmFPr5Z6pByOADpO8mNaSWHqNqQDLNzlSXJ5NVmCuMzHpu
-	 9XBAtUOTZ7b7Qs8DH5arFAjpmEnsKRjp3kqyv9Nhz3DRaFAp8ImendloiNNFWUIEgb
-	 WOtfpZfJrdMxgxmTcB4ApPTWUBfOtyK5vZMa97ukeQCVvS3UNoH8mfOyHmHRVr09BB
-	 DRpAGpHZ0Fqlw==
-Date: Wed, 28 Aug 2024 12:54:18 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Andrii Nakryiko <andrii@kernel.org>
-Cc: linux-trace-kernel@vger.kernel.org, rostedt@goodmis.org,
- peterz@infradead.org, oleg@redhat.com, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org, jolsa@kernel.org
-Subject: Re: [PATCH v3] uprobes: turn trace_uprobe's nhit counter to be
- per-CPU one
-Message-Id: <20240828125418.07c3c63e08dc688e62fef4d2@kernel.org>
-In-Reply-To: <20240813203409.3985398-1-andrii@kernel.org>
-References: <20240813203409.3985398-1-andrii@kernel.org>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=k20201202; t=1724822994;
+	bh=FGISyqZO8CsSpcS8+QnbUGriIY/DF/FJMlaX57XnfLM=;
+	h=From:To:Cc:Subject:Date:From;
+	b=nF36T2JbCPgL6N4jf3rJ4iEsuAuNqm0VlAnLTpy3LyG/BAaaxJeDBvdLwz0jOdLTH
+	 Q6Oj8q4N5cEYpqQCaG8MdlwH3YzsPmYCgDJlNsYlE0w9r91Ph2vhSPH1Q/nr5CMDbe
+	 Crqr+rAkhh+A3H5hlRMrqcQFZhM6Rh7Nton4ZYf1LgEl+LbUUZMH36bjnKdyCyOL1q
+	 +PB8kCZ8hrXj0dj1Ea1asmwHvUXRM6r/rsM1WNqPaRaa8+bO3nDbNRgrwjZas3g7/W
+	 745RZ4YQLK7+9w7PnC4sZqT4XOUyLiP1a9U33jjJKnbzl/Gvp2QaYGF3w426+OFN79
+	 bf6bp+7cM8ADw==
+From: Namhyung Kim <namhyung@kernel.org>
+To: Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Ian Rogers <irogers@google.com>,
+	Kan Liang <kan.liang@linux.intel.com>
+Cc: Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	linux-perf-users@vger.kernel.org,
+	Song Liu <song@kernel.org>,
+	bpf@vger.kernel.org,
+	Xi Wang <xii@google.com>
+Subject: [PATCH] perf lock contention: Fix spinlock and rwlock accounting
+Date: Tue, 27 Aug 2024 22:29:53 -0700
+Message-ID: <20240828052953.1445862-1-namhyung@kernel.org>
+X-Mailer: git-send-email 2.46.0.295.g3b9ea8a38a-goog
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Tue, 13 Aug 2024 13:34:09 -0700
-Andrii Nakryiko <andrii@kernel.org> wrote:
+The spinlock and rwlock use a single-element per-cpu array to track
+current locks due to performance reason.  But this means the key is
+always available and it cannot simply account lock stats in the array
+because some of them are invalid.
 
-> trace_uprobe->nhit counter is not incremented atomically, so its value
-> is questionable in when uprobe is hit on multiple CPUs simultaneously.
-> 
-> Also, doing this shared counter increment across many CPUs causes heavy
-> cache line bouncing, limiting uprobe/uretprobe performance scaling with
-> number of CPUs.
-> 
-> Solve both problems by making this a per-CPU counter.
-> 
+In fact, the contention_end() program in the BPF invalidates the entry
+by setting the 'lock' value to 0 instead of deleting the entry for the
+hashmap.  So it should skip entries with the lock value of 0 in the
+account_end_timestamp().
 
-Looks good to me. Let me pick it to linux-trace probes/for-next.
+Otherwise, it'd have spurious high contention on an idle machine:
 
-Thank you,
+  $ sudo perf lock con -ab -Y spinlock sleep 3
+   contended   total wait     max wait     avg wait         type   caller
 
+           8      4.72 s       1.84 s     590.46 ms     spinlock   rcu_core+0xc7
+           8      1.87 s       1.87 s     233.48 ms     spinlock   process_one_work+0x1b5
+           2      1.87 s       1.87 s     933.92 ms     spinlock   worker_thread+0x1a2
+           3      1.81 s       1.81 s     603.93 ms     spinlock   tmigr_update_events+0x13c
+           2      1.72 s       1.72 s     861.98 ms     spinlock   tick_do_update_jiffies64+0x25
+           6     42.48 us     13.02 us      7.08 us     spinlock   futex_q_lock+0x2a
+           1     13.03 us     13.03 us     13.03 us     spinlock   futex_wake+0xce
+           1     11.61 us     11.61 us     11.61 us     spinlock   rcu_core+0xc7
 
-> Reviewed-by: Oleg Nesterov <oleg@redhat.com>
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> ---
->  kernel/trace/trace_uprobe.c | 24 +++++++++++++++++++++---
->  1 file changed, 21 insertions(+), 3 deletions(-)
-> 
-> diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
-> index c98e3b3386ba..c3df411a2684 100644
-> --- a/kernel/trace/trace_uprobe.c
-> +++ b/kernel/trace/trace_uprobe.c
-> @@ -17,6 +17,7 @@
->  #include <linux/string.h>
->  #include <linux/rculist.h>
->  #include <linux/filter.h>
-> +#include <linux/percpu.h>
->  
->  #include "trace_dynevent.h"
->  #include "trace_probe.h"
-> @@ -62,7 +63,7 @@ struct trace_uprobe {
->  	char				*filename;
->  	unsigned long			offset;
->  	unsigned long			ref_ctr_offset;
-> -	unsigned long			nhit;
-> +	unsigned long __percpu		*nhits;
->  	struct trace_probe		tp;
->  };
->  
-> @@ -337,6 +338,12 @@ alloc_trace_uprobe(const char *group, const char *event, int nargs, bool is_ret)
->  	if (!tu)
->  		return ERR_PTR(-ENOMEM);
->  
-> +	tu->nhits = alloc_percpu(unsigned long);
-> +	if (!tu->nhits) {
-> +		ret = -ENOMEM;
-> +		goto error;
-> +	}
-> +
->  	ret = trace_probe_init(&tu->tp, event, group, true, nargs);
->  	if (ret < 0)
->  		goto error;
-> @@ -349,6 +356,7 @@ alloc_trace_uprobe(const char *group, const char *event, int nargs, bool is_ret)
->  	return tu;
->  
->  error:
-> +	free_percpu(tu->nhits);
->  	kfree(tu);
->  
->  	return ERR_PTR(ret);
-> @@ -362,6 +370,7 @@ static void free_trace_uprobe(struct trace_uprobe *tu)
->  	path_put(&tu->path);
->  	trace_probe_cleanup(&tu->tp);
->  	kfree(tu->filename);
-> +	free_percpu(tu->nhits);
->  	kfree(tu);
->  }
->  
-> @@ -815,13 +824,21 @@ static int probes_profile_seq_show(struct seq_file *m, void *v)
->  {
->  	struct dyn_event *ev = v;
->  	struct trace_uprobe *tu;
-> +	unsigned long nhits;
-> +	int cpu;
->  
->  	if (!is_trace_uprobe(ev))
->  		return 0;
->  
->  	tu = to_trace_uprobe(ev);
-> +
-> +	nhits = 0;
-> +	for_each_possible_cpu(cpu) {
-> +		nhits += per_cpu(*tu->nhits, cpu);
-> +	}
-> +
->  	seq_printf(m, "  %s %-44s %15lu\n", tu->filename,
-> -			trace_probe_name(&tu->tp), tu->nhit);
-> +		   trace_probe_name(&tu->tp), nhits);
->  	return 0;
->  }
->  
-> @@ -1512,7 +1529,8 @@ static int uprobe_dispatcher(struct uprobe_consumer *con, struct pt_regs *regs)
->  	int ret = 0;
->  
->  	tu = container_of(con, struct trace_uprobe, consumer);
-> -	tu->nhit++;
-> +
-> +	this_cpu_inc(*tu->nhits);
->  
->  	udd.tu = tu;
->  	udd.bp_addr = instruction_pointer(regs);
-> -- 
-> 2.43.5
-> 
+I don't believe it has contention on a spinlock longer than 1 second.
+After this change, it only reports some small contentions.
 
+  $ sudo perf lock con -ab -Y spinlock sleep 3
+   contended   total wait     max wait     avg wait         type   caller
 
+           4    133.51 us     43.29 us     33.38 us     spinlock   tick_do_update_jiffies64+0x25
+           4     69.06 us     31.82 us     17.27 us     spinlock   process_one_work+0x1b5
+           2     50.66 us     25.77 us     25.33 us     spinlock   rcu_core+0xc7
+           1     28.45 us     28.45 us     28.45 us     spinlock   rcu_core+0xc7
+           1     24.77 us     24.77 us     24.77 us     spinlock   tmigr_update_events+0x13c
+           1     23.34 us     23.34 us     23.34 us     spinlock   raw_spin_rq_lock_nested+0x15
+
+Fixes: b5711042a1c8 ("perf lock contention: Use per-cpu array map for spinlocks")
+Reported-by: Xi Wang <xii@google.com>
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+---
+ tools/perf/util/bpf_lock_contention.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/tools/perf/util/bpf_lock_contention.c b/tools/perf/util/bpf_lock_contention.c
+index 4ee54538aba2..a3d40940fb23 100644
+--- a/tools/perf/util/bpf_lock_contention.c
++++ b/tools/perf/util/bpf_lock_contention.c
+@@ -296,6 +296,9 @@ static void account_end_timestamp(struct lock_contention *con)
+ 			goto next;
+ 
+ 		for (int i = 0; i < total_cpus; i++) {
++			if (cpu_data[i].lock == 0)
++				continue;
++
+ 			update_lock_stat(stat_fd, -1, end_ts, aggr_mode,
+ 					 &cpu_data[i]);
+ 		}
 -- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+2.46.0.295.g3b9ea8a38a-goog
+
 
