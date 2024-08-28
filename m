@@ -1,249 +1,187 @@
-Return-Path: <bpf+bounces-38287-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38288-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 834FD962A93
-	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 16:43:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 36EA5962B57
+	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 17:09:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 890A91C20D69
-	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 14:43:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2FEA01C23B87
+	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 15:09:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFE041A38D7;
-	Wed, 28 Aug 2024 14:42:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 381B31A3BAA;
+	Wed, 28 Aug 2024 15:09:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="qlqYUGFc"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MzX2mLfI"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 643CB1A2548;
-	Wed, 28 Aug 2024 14:42:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 993741891AC;
+	Wed, 28 Aug 2024 15:09:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724856154; cv=none; b=NqnGdm5bGgl24Ag02nVkpKpt3P/4X1CaPhBoUyJygraSw0hsPTx18zi3Xa/OBJr86vtqcu2ujdLZ64gh1P1oRBUNB8cky4fuxME8dwEpfPJk3hSrN0QkMKQC7pApGZH4AgVAd5bfIso+yn/XiL0LioG6+Cv0jleCDrA75v2bDcE=
+	t=1724857755; cv=none; b=ecjiVYLEV6kDp841C4eq/OSj5O50VqD+XWXqdpcCl6i5yiZjDRkq0myLNS6jILxlao7dGCpdrL2sDm3RY1EAt75MA6JkbkmjTcr/dn70JxY9IPNZpzz5bQ0fG7J2hBpeOnhLEJLRUAZaeFS2J/MTTJ5QRydrods96FYfKf4grGw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724856154; c=relaxed/simple;
-	bh=cQBpL+pu8rPQAQ6DXfp1ZyC9FAqqvXyCZd6oDYKg2MM=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=CtGezAW6nrD9Y+uIgDh9iBk0+dLy2KJNHYIyXUtQMvJqgtpOqP18USP6Zq6DSifc2KMS2xnhY/8TNJ/I9s74Z4MAarHFsQf4UNkjmMRFA67LKSCtz78h6NF0hUWkPc1Wr6NARmSaH2G5mrTnbh+dz5oopWrzNxq4xvbah4l91q0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=qlqYUGFc; arc=none smtp.client-ip=167.114.26.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-	s=smtpout1; t=1724856150;
-	bh=cQBpL+pu8rPQAQ6DXfp1ZyC9FAqqvXyCZd6oDYKg2MM=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=qlqYUGFcp8QcHwKPnmP+i2C8vgLZ/61hFePQTq4/8i2knKK+zYXO7GuY+rk4qRlt/
-	 38ycS64IYYRRWyDxLma8PsiXNbPDYMlbkK3Lhy90m32WcEvKQTFEKZZQAOd6NcKkPU
-	 xRX3OmhLU0lXIr+DgOsObVZXADXohW9CTkY7AxZHMePAyi/QkMxOv5gm8RMuqpKoOc
-	 4JWeZU7nt2xIRM8IjddaCmEDwsdpZONeG0yVlVJcp3XFwZkCTMUx8Ysy0AO4LQayk/
-	 zMLNfYmV82oiOS2BDi+cAWjczjrrBBZ/1B4op3bxiDzC+9hQWEhiwc8zx2Kgjx5PsK
-	 DHgG7E+7hT2Gg==
-Received: from thinkos.internal.efficios.com (96-127-217-162.qc.cable.ebox.net [96.127.217.162])
-	by smtpout.efficios.com (Postfix) with ESMTPSA id 4Wv6ZY61dHz1JFV;
-	Wed, 28 Aug 2024 10:42:29 -0400 (EDT)
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To: Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>
-Cc: linux-kernel@vger.kernel.org,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Yonghong Song <yhs@fb.com>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Namhyung Kim <namhyung@kernel.org>,
-	bpf@vger.kernel.org,
-	Joel Fernandes <joel@joelfernandes.org>,
-	linux-trace-kernel@vger.kernel.org,
-	Michael Jeanson <mjeanson@efficios.com>
-Subject: [PATCH v6 5/5] tracing: Convert sys_enter/exit to faultable tracepoints
-Date: Wed, 28 Aug 2024 10:41:52 -0400
-Message-Id: <20240828144153.829582-6-mathieu.desnoyers@efficios.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240828144153.829582-1-mathieu.desnoyers@efficios.com>
-References: <20240828144153.829582-1-mathieu.desnoyers@efficios.com>
+	s=arc-20240116; t=1724857755; c=relaxed/simple;
+	bh=2dSGJx9DwCGU9inaMNC9w/ZuZvcpZXpFhNbyIbDXFXg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HM9vWhQm8Db/vZumyL9kYmuyu7y9Lmz7/y2dETXiVKeGhMr1fdAFE+O8SNWXAiozocsdm8OeOyum3MSCitz7S4Ob/s7q4hiw6rc0k3SSE91XPALYkyYLYPZIRWscz1ytP+nMUvuCkj8b6L3AeMo5Og/21qQJEy7Zvj6gh98HuDE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MzX2mLfI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B325CC4CEC1;
+	Wed, 28 Aug 2024 15:09:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1724857755;
+	bh=2dSGJx9DwCGU9inaMNC9w/ZuZvcpZXpFhNbyIbDXFXg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=MzX2mLfIg6MsGjolLr+V4iGnkKTQUdjm/EaJhLDbZvuJ66i2qkoGxZkO0ahAeXSdZ
+	 w0oCrFV6JtXAsleAblrSSNSVD9dFHJ0vrg3QkfqAS1/8U20Rzb14APD9K3tmZDJ6GK
+	 CR4Dl1yuEAannx47U0uCzgYJILYF9LdXJXWNUfl7nNIE49/dESf9Abd7xAUmTxni17
+	 nc95Xa/TzQiWQ+tq/H0ZbZrk7Htb3mVLOLBSQS2h3kJfVSREuRRDhSrxAxG8RtEwvG
+	 8Yo853oQ5RDwkuAxKSPdqth8jdfeROhvvFlts3CkhJ2C/SW9eezgX8my3EQlKOcR+8
+	 iHTOc/MxGSYRg==
+Date: Wed, 28 Aug 2024 17:09:08 +0200
+From: Alejandro Colomar <alx@kernel.org>
+To: Kees Cook <kees@kernel.org>
+Cc: Yafang Shao <laoar.shao@gmail.com>, akpm@linux-foundation.org, 
+	torvalds@linux-foundation.org, justinstitt@google.com, ebiederm@xmission.com, 
+	alexei.starovoitov@gmail.com, rostedt@goodmis.org, catalin.marinas@arm.com, 
+	penguin-kernel@i-love.sakura.ne.jp, linux-mm@kvack.org, linux-fsdevel@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org, audit@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	selinux@vger.kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, Alexander Viro <viro@zeniv.linux.org.uk>, 
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Kees Cook <keescook@chromium.org>, 
+	Matus Jokay <matus.jokay@stuba.sk>, "Serge E. Hallyn" <serge@hallyn.com>
+Subject: Re: [PATCH v8 1/8] Get rid of __get_task_comm()
+Message-ID: <ynrircglkinhherehtjz7woq55te55y4ol4rtxhfh75pvle3d5@uxp5esxt4slq>
+References: <20240828030321.20688-1-laoar.shao@gmail.com>
+ <20240828030321.20688-2-laoar.shao@gmail.com>
+ <lql4y2nvs3ewadszhmv4m6fnqja4ff4ymuurpidlwvgf4twvru@esnh37a2jxbd>
+ <n2fxqs3tekvljezaqpfnwhsmjymch4vb47y744zwmy7urf3flv@zvjtepkem4l7>
+ <CALOAHbBAYHjDnKBVw63B8JBFc6U-2RNUX9L=ryA2Gbz7nnJfsQ@mail.gmail.com>
+ <7839453E-CA06-430A-A198-92EB906F94D9@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="utmrbzzw4vz6dwo3"
+Content-Disposition: inline
+In-Reply-To: <7839453E-CA06-430A-A198-92EB906F94D9@kernel.org>
 
-Convert the definition of the system call enter/exit tracepoints to
-faultable tracepoints now that all upstream tracers handle it.
 
-This allows tracers to fault-in userspace system call arguments such as
-path strings within their probe callbacks.
+--utmrbzzw4vz6dwo3
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+From: Alejandro Colomar <alx@kernel.org>
+To: Kees Cook <kees@kernel.org>
+Cc: Yafang Shao <laoar.shao@gmail.com>, akpm@linux-foundation.org, 
+	torvalds@linux-foundation.org, justinstitt@google.com, ebiederm@xmission.com, 
+	alexei.starovoitov@gmail.com, rostedt@goodmis.org, catalin.marinas@arm.com, 
+	penguin-kernel@i-love.sakura.ne.jp, linux-mm@kvack.org, linux-fsdevel@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org, audit@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	selinux@vger.kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, Alexander Viro <viro@zeniv.linux.org.uk>, 
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Kees Cook <keescook@chromium.org>, 
+	Matus Jokay <matus.jokay@stuba.sk>, "Serge E. Hallyn" <serge@hallyn.com>
+Subject: Re: [PATCH v8 1/8] Get rid of __get_task_comm()
+References: <20240828030321.20688-1-laoar.shao@gmail.com>
+ <20240828030321.20688-2-laoar.shao@gmail.com>
+ <lql4y2nvs3ewadszhmv4m6fnqja4ff4ymuurpidlwvgf4twvru@esnh37a2jxbd>
+ <n2fxqs3tekvljezaqpfnwhsmjymch4vb47y744zwmy7urf3flv@zvjtepkem4l7>
+ <CALOAHbBAYHjDnKBVw63B8JBFc6U-2RNUX9L=ryA2Gbz7nnJfsQ@mail.gmail.com>
+ <7839453E-CA06-430A-A198-92EB906F94D9@kernel.org>
+MIME-Version: 1.0
+In-Reply-To: <7839453E-CA06-430A-A198-92EB906F94D9@kernel.org>
 
-Link: https://lore.kernel.org/lkml/20231002202531.3160-1-mathieu.desnoyers@efficios.com/
-Co-developed-by: Michael Jeanson <mjeanson@efficios.com>
-Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Signed-off-by: Michael Jeanson <mjeanson@efficios.com>
-Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Yonghong Song <yhs@fb.com>
-Cc: Paul E. McKenney <paulmck@kernel.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: bpf@vger.kernel.org
-Cc: Joel Fernandes <joel@joelfernandes.org>
----
-Since v4:
-- Use 'guard(preempt_notrace)'.
-- Add brackets to multiline 'if' statements.
----
- include/trace/events/syscalls.h |  4 +--
- kernel/trace/trace_syscalls.c   | 52 ++++++++++++++++++++++++++++-----
- 2 files changed, 46 insertions(+), 10 deletions(-)
+Hi Kees,
 
-diff --git a/include/trace/events/syscalls.h b/include/trace/events/syscalls.h
-index b6e0cbc2c71f..dc30e3004818 100644
---- a/include/trace/events/syscalls.h
-+++ b/include/trace/events/syscalls.h
-@@ -15,7 +15,7 @@
- 
- #ifdef CONFIG_HAVE_SYSCALL_TRACEPOINTS
- 
--TRACE_EVENT_FN(sys_enter,
-+TRACE_EVENT_FN_MAY_FAULT(sys_enter,
- 
- 	TP_PROTO(struct pt_regs *regs, long id),
- 
-@@ -41,7 +41,7 @@ TRACE_EVENT_FN(sys_enter,
- 
- TRACE_EVENT_FLAGS(sys_enter, TRACE_EVENT_FL_CAP_ANY)
- 
--TRACE_EVENT_FN(sys_exit,
-+TRACE_EVENT_FN_MAY_FAULT(sys_exit,
- 
- 	TP_PROTO(struct pt_regs *regs, long ret),
- 
-diff --git a/kernel/trace/trace_syscalls.c b/kernel/trace/trace_syscalls.c
-index 9c581d6da843..314666d663b6 100644
---- a/kernel/trace/trace_syscalls.c
-+++ b/kernel/trace/trace_syscalls.c
-@@ -299,6 +299,12 @@ static void ftrace_syscall_enter(void *data, struct pt_regs *regs, long id)
- 	int syscall_nr;
- 	int size;
- 
-+	/*
-+	 * Probe called with preemption enabled (may_fault), but ring buffer and
-+	 * per-cpu data require preemption to be disabled.
-+	 */
-+	guard(preempt_notrace)();
-+
- 	syscall_nr = trace_get_syscall_nr(current, regs);
- 	if (syscall_nr < 0 || syscall_nr >= NR_syscalls)
- 		return;
-@@ -338,6 +344,12 @@ static void ftrace_syscall_exit(void *data, struct pt_regs *regs, long ret)
- 	struct trace_event_buffer fbuffer;
- 	int syscall_nr;
- 
-+	/*
-+	 * Probe called with preemption enabled (may_fault), but ring buffer and
-+	 * per-cpu data require preemption to be disabled.
-+	 */
-+	guard(preempt_notrace)();
-+
- 	syscall_nr = trace_get_syscall_nr(current, regs);
- 	if (syscall_nr < 0 || syscall_nr >= NR_syscalls)
- 		return;
-@@ -376,8 +388,11 @@ static int reg_event_syscall_enter(struct trace_event_file *file,
- 	if (WARN_ON_ONCE(num < 0 || num >= NR_syscalls))
- 		return -ENOSYS;
- 	mutex_lock(&syscall_trace_lock);
--	if (!tr->sys_refcount_enter)
--		ret = register_trace_sys_enter(ftrace_syscall_enter, tr);
-+	if (!tr->sys_refcount_enter) {
-+		ret = register_trace_prio_flags_sys_enter(ftrace_syscall_enter, tr,
-+							  TRACEPOINT_DEFAULT_PRIO,
-+							  TRACEPOINT_MAY_FAULT);
-+	}
- 	if (!ret) {
- 		rcu_assign_pointer(tr->enter_syscall_files[num], file);
- 		tr->sys_refcount_enter++;
-@@ -414,8 +429,11 @@ static int reg_event_syscall_exit(struct trace_event_file *file,
- 	if (WARN_ON_ONCE(num < 0 || num >= NR_syscalls))
- 		return -ENOSYS;
- 	mutex_lock(&syscall_trace_lock);
--	if (!tr->sys_refcount_exit)
--		ret = register_trace_sys_exit(ftrace_syscall_exit, tr);
-+	if (!tr->sys_refcount_exit) {
-+		ret = register_trace_prio_flags_sys_exit(ftrace_syscall_exit, tr,
-+							 TRACEPOINT_DEFAULT_PRIO,
-+							 TRACEPOINT_MAY_FAULT);
-+	}
- 	if (!ret) {
- 		rcu_assign_pointer(tr->exit_syscall_files[num], file);
- 		tr->sys_refcount_exit++;
-@@ -582,6 +600,12 @@ static void perf_syscall_enter(void *ignore, struct pt_regs *regs, long id)
- 	int rctx;
- 	int size;
- 
-+	/*
-+	 * Probe called with preemption enabled (may_fault), but ring buffer and
-+	 * per-cpu data require preemption to be disabled.
-+	 */
-+	guard(preempt_notrace)();
-+
- 	syscall_nr = trace_get_syscall_nr(current, regs);
- 	if (syscall_nr < 0 || syscall_nr >= NR_syscalls)
- 		return;
-@@ -630,8 +654,11 @@ static int perf_sysenter_enable(struct trace_event_call *call)
- 	num = ((struct syscall_metadata *)call->data)->syscall_nr;
- 
- 	mutex_lock(&syscall_trace_lock);
--	if (!sys_perf_refcount_enter)
--		ret = register_trace_sys_enter(perf_syscall_enter, NULL);
-+	if (!sys_perf_refcount_enter) {
-+		ret = register_trace_prio_flags_sys_enter(perf_syscall_enter, NULL,
-+							  TRACEPOINT_DEFAULT_PRIO,
-+							  TRACEPOINT_MAY_FAULT);
-+	}
- 	if (ret) {
- 		pr_info("event trace: Could not activate syscall entry trace point");
- 	} else {
-@@ -682,6 +709,12 @@ static void perf_syscall_exit(void *ignore, struct pt_regs *regs, long ret)
- 	int rctx;
- 	int size;
- 
-+	/*
-+	 * Probe called with preemption enabled (may_fault), but ring buffer and
-+	 * per-cpu data require preemption to be disabled.
-+	 */
-+	guard(preempt_notrace)();
-+
- 	syscall_nr = trace_get_syscall_nr(current, regs);
- 	if (syscall_nr < 0 || syscall_nr >= NR_syscalls)
- 		return;
-@@ -727,8 +760,11 @@ static int perf_sysexit_enable(struct trace_event_call *call)
- 	num = ((struct syscall_metadata *)call->data)->syscall_nr;
- 
- 	mutex_lock(&syscall_trace_lock);
--	if (!sys_perf_refcount_exit)
--		ret = register_trace_sys_exit(perf_syscall_exit, NULL);
-+	if (!sys_perf_refcount_exit) {
-+		ret = register_trace_prio_flags_sys_exit(perf_syscall_exit, NULL,
-+							 TRACEPOINT_DEFAULT_PRIO,
-+							 TRACEPOINT_MAY_FAULT);
-+	}
- 	if (ret) {
- 		pr_info("event trace: Could not activate syscall exit trace point");
- 	} else {
--- 
-2.39.2
+On Wed, Aug 28, 2024 at 06:48:39AM GMT, Kees Cook wrote:
 
+[...]
+
+> >Thank you for your suggestion. How does the following commit log look
+> >to you? Does it meet your expectations?
+> >
+> >    string: Use ARRAY_SIZE() in strscpy()
+> >
+> >    We can use ARRAY_SIZE() instead to clarify that they are regular cha=
+racters.
+> >
+> >    Co-developed-by: Alejandro Colomar <alx@kernel.org>
+> >    Signed-off-by: Alejandro Colomar <alx@kernel.org>
+> >    Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> >
+> >diff --git a/arch/um/include/shared/user.h b/arch/um/include/shared/user=
+=2Eh
+> >index bbab79c0c074..07216996e3a9 100644
+> >--- a/arch/um/include/shared/user.h
+> >+++ b/arch/um/include/shared/user.h
+> >@@ -14,7 +14,7 @@
+> >  * copying too much infrastructure for my taste, so userspace files
+> >  * get less checking than kernel files.
+> >  */
+> >-#define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
+> >+#define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]) + __must_be_array(x))
+> >
+> > /* This is to get size_t and NULL */
+> > #ifndef __UM_HOST__
+> >@@ -60,7 +60,7 @@ static inline void print_hex_dump(const char *level,
+> >const char *prefix_str,
+> > extern int in_aton(char *str);
+> > extern size_t strlcat(char *, const char *, size_t);
+> > extern size_t sized_strscpy(char *, const char *, size_t);
+> >-#define strscpy(dst, src)      sized_strscpy(dst, src, sizeof(dst))
+> >+#define strscpy(dst, src)      sized_strscpy(dst, src, ARRAY_SIZE(dst))
+>=20
+> Uh, but why? strscpy() copies bytes, not array elements. Using sizeof() i=
+s already correct and using ARRAY_SIZE() could lead to unexpectedly small c=
+ounts (in admittedly odd situations).
+>=20
+> What is the problem you're trying to solve here?
+
+I suggested that here:
+<https://lore.kernel.org/all/2jxak5v6dfxlpbxhpm3ey7oup4g2lnr3ueurfbosf5wdo6=
+5dk4@srb3hsk72zwq/>
+
+There, you'll find the rationale (and also for avoiding the _pad calls
+where not necessary --I ignore if it's necessary here--).
+
+Have a lovely day!
+Alex
+
+>=20
+> -Kees
+>=20
+> --=20
+> Kees Cook
+
+--=20
+<https://www.alejandro-colomar.es/>
+
+--utmrbzzw4vz6dwo3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE6jqH8KTroDDkXfJAnowa+77/2zIFAmbPPZQACgkQnowa+77/
+2zLbhBAAlmo97hSALOMFZhNvjtiifi8OS3Fmi4WyEj8YDnX4pfh+3drVAhe2b44u
+nrvjsBMEM1AHDiXa+gp3sUheR3N1kFuX1oyxlPsb9crUH3IfubT4kG0tQ6qLqE8M
+Tv0OfPWGdqeGMgvvTEiQVb4xcs/OMT5T4hVdwAtws8Lw0f1ofW5uE5Vlhu5GUXUB
+Mbz0DBwkRwBtEmnOCDeZE8zBL8ifIc7k5lQ7Kp1hr4gg/89oLXSABSSxtkyx2U20
+8Q1u2OXUiGq4J1BPkNs/5REFb+DJ5bpor7fMecfxoIKms1HXU4w3BjLO6x0ijCTc
+cKtZD6eMdpBVNhzXDsJpwMEePaKmJ8k9M4XEVFzBGvdKZ7nAx2meA0rmRssG8tVN
+PkNk/kswZIw0qi+m7Lo5uoWOoyKt/s3/UxyUehrIs2k836Zxc9gNdXzX3V9l/R7l
+KStxOPruRK2CjPtIE+OBeCpkVxVpFnNhyOVRADi9sWf4ztjwoo8acuXuDNjBDRoP
+ggNzOacqXIv8N0Ly6pn+01O6jUg5VNLndq9hOMveyamHwRAZVTDiJMh2xmJqBW41
+jIckyXwpnHly1Ag/DEWDiLlgjL0KTcqLGn3Y3oG4jd6PKxqUpxZHGw5UvLPq4QOk
+Oy6ZjqF9XGRi8kCgo0hGVLIKxJX7RfAZydaWmAjQVouEODj3TvU=
+=wcL8
+-----END PGP SIGNATURE-----
+
+--utmrbzzw4vz6dwo3--
 
