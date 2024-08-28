@@ -1,262 +1,181 @@
-Return-Path: <bpf+bounces-38253-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38254-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13D56962506
-	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 12:33:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 402FE96258E
+	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 13:12:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 901FF1F20EF3
-	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 10:33:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EDA70284A0F
+	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 11:12:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9810316C692;
-	Wed, 28 Aug 2024 10:33:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC3A216C866;
+	Wed, 28 Aug 2024 11:12:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZfAUOrA4"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SY3cH7Xo"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0692B158DC2;
-	Wed, 28 Aug 2024 10:33:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E325313D53D;
+	Wed, 28 Aug 2024 11:12:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724841217; cv=none; b=BIaXRq34G3gOE2H2MR3yep9olt0J2QUe3s/ywntFUoeVOMs0gn/MZgKrDJxlD8XrHn44zcxDue18LXjlnKjn5UntLa25+Tdns/RDSKjHIfAjEopaX9UAPC7AlcT6zPI3GF/9CmeZjnv3CJE5nAzRh8G/zUnuYk9NMN14vIIcd9U=
+	t=1724843536; cv=none; b=LHebJbUMoRMolPP/2BmfIyK1tRS673HDP0YOTfblpI92CLsK1ygADEDb3nrbGaFXM0ag44ZEyoT8gFCNACqUDLH7xCNr4rUj0lJN00LyvAj9eaPNqAsuaKiO69d6KTirJ9EQQ8mt1lq/PEBWL0mYbHJ+xWjwYwkw4ba7ynvwat8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724841217; c=relaxed/simple;
-	bh=cPZgE31BSHwwP95dmqEz0ZNgyoyAIhKJPLIMk9rRdfE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bWEl/pIjfVmu98CZEreiNpiKgaXpv2i3dawDClmoJZIeOEnXUr2owtPEL6OPfLIKr7HvpBz3KfCnCAqR6BuwGsfUh+usclFvz4xyCKq3FlY1bsI+1rqfs7PBJX5IOuAI9Xa5iUjiVCz5lXaRY7kyGBV3zJZd7JI95O1DkQKNPs8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZfAUOrA4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC6B1C98EC0;
-	Wed, 28 Aug 2024 10:33:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1724841216;
-	bh=cPZgE31BSHwwP95dmqEz0ZNgyoyAIhKJPLIMk9rRdfE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ZfAUOrA4+4PzUIlLfwx0pZzjjMSWEwQzTUICw7S+nyRjSvVasQjwzTTKkWt5+VGUU
-	 snpNxm8aDorQtx2+eoDhq5hjE7V2fmP1Y4yVZkDZ7Az3sQBzwKR4QqC3jX+LM9X3Rp
-	 byiEdTEwUHqvU3eO792QkR3MI00yEyYXKsmZK2FPPX6nutKv/IgkOujyyNDE47XTjG
-	 3GcB+TQpnQVHPf6o7tRjIEnqzPMK7Yvci5uJeqREZ9I18yHVzTq7HrZ62RMHkAYsd+
-	 TPAVJgCyAb24sCuJGpMQUAIqQAVLxRiEHdDtD5g/WI34U22SQM0IrmtRGgQM3jEOj+
-	 izlByCP+HD/Tw==
-Date: Wed, 28 Aug 2024 12:33:30 +0200
-From: Alejandro Colomar <alx@kernel.org>
-To: Yafang Shao <laoar.shao@gmail.com>
-Cc: akpm@linux-foundation.org, torvalds@linux-foundation.org, 
-	justinstitt@google.com, ebiederm@xmission.com, alexei.starovoitov@gmail.com, 
-	rostedt@goodmis.org, catalin.marinas@arm.com, penguin-kernel@i-love.sakura.ne.jp, 
-	linux-mm@kvack.org, linux-fsdevel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, audit@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	selinux@vger.kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, Simon Horman <horms@kernel.org>, 
-	Matthew Wilcox <willy@infradead.org>
-Subject: Re: [PATCH v8 6/8] mm/util: Deduplicate code in
- {kstrdup,kstrndup,kmemdup_nul}
-Message-ID: <bbdhr62fk7jts6b4wok6hpbjtoiyzofbithwlq7kl5dkabn3bz@3lf47k4xrmhc>
-References: <20240828030321.20688-1-laoar.shao@gmail.com>
- <20240828030321.20688-7-laoar.shao@gmail.com>
- <byi4tx6l2lrbs5w6oxypr44ldntlh4kp56vnsza3iuztwb37oa@2qtdx2kgz4bq>
+	s=arc-20240116; t=1724843536; c=relaxed/simple;
+	bh=+WMgNDkUksrQ8WMCRM66s1BQjxl931y7etquxpQI1lg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=VKfxhJi4JQn96yu7zAXvh5hh2pWVB5seJNNQhVFS8O6kptwol79FYTOo2U+NisU91/vwpTj3c4PXxPUBRCKALHjbJPVROsQ7/XFEOe51ivnXIJh9/t7GDlPEpnI6UAqM9ip7qq4pZy5hrwmE6am/YqFJJsQielPEpRaDllSdTEg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SY3cH7Xo; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-201fba05363so55810385ad.3;
+        Wed, 28 Aug 2024 04:12:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1724843534; x=1725448334; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=WH5m/OQrXoybfAnjzluZiyKxVbMcLPHUwfs59ucNLhY=;
+        b=SY3cH7XoW84FCmiDO4ZWbI9DtY8jBda231jHge1UfuloMPRfT4freP4aaNx8XUt0lu
+         8LFdZHc1I0n688ZNJJiDhE7ZUtH3EAykn7UlKsTF+uW7DFPKusNilHkFlEvHOSuBDa5O
+         AMPH4EkyZEGkv0tMubsM4ModjRumL4RISImuzMUxXtYYpfCf8/n/vVgd7Rund0HrwirO
+         1dEYhsVa5e2VZUuaSk4ZbD7W/8ajR2cw54jsF0yv4FcuOZPeFxtS0EwQxjaTloByuvbj
+         6YSOGS7WoluDu0WED1FVgeaTR/gR2MiJQSnSk3VYNaud/hLA4inKFINlPC+ilD/ETykJ
+         wYPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1724843534; x=1725448334;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=WH5m/OQrXoybfAnjzluZiyKxVbMcLPHUwfs59ucNLhY=;
+        b=Zj1mwBPgM9RVsGa3fv5nqjaE9IqcmNDSZ0eyX78dukqD9C+QXfXIHWH8G7eGlKwwUI
+         DGOFEBhAXRU6l/tWt+DN6Tp8iXE1/Wda+mvPSptCrLsv+gWgTlwFu+fKSmiBbK8eQBvK
+         9Vk9GHLw4cz6EVvenwkgK4239yGYzESGZ+LjamVx/xJzgOTKY1OC+reOtpGBwLbgticp
+         1f8qmOXBaU00z2e0V7fBOF/NyiY499oJuhEjxhvpjqNBqHRsdIpJSVPrj434CWn/4s6M
+         ABqEMHGwPMVUA1BBoukLIDbamR18VevxFRfBL+ONtncus6mWgER+37IiH4nUP5zvjPSw
+         rrfw==
+X-Forwarded-Encrypted: i=1; AJvYcCWa6CvmsKrPUrlEMM8V+H1TttZ4YyfgcELo2fgQwf8+E46CcAf6091y9Nvjm3srOO+ik26ocSAdlTrF4kQIO4s=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwB7QC82dGvzxhR0/deLKInNGRnixO5tD4e46DZJS5pZgF2fgvZ
+	qDZT8KNPdu6T2L+pJaWdzDBOVJDeoPumTTvogj855ek38z+ZJWvzk5gKPhJE
+X-Google-Smtp-Source: AGHT+IEi+jDEx7edkLUvCVzoB4kBtO6HaMBuGTtcKccQ2HoOmi4uGf5dPw4bACHq0DrlI5WorXGoag==
+X-Received: by 2002:a17:902:e5d1:b0:202:17f7:8373 with SMTP id d9443c01a7336-204f9bb6944mr17952005ad.33.1724843533683;
+        Wed, 28 Aug 2024 04:12:13 -0700 (PDT)
+Received: from localhost.localdomain (69-172-146-21.cable.teksavvy.com. [69.172.146.21])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-203855678f9sm97369395ad.1.2024.08.28.04.12.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Aug 2024 04:12:13 -0700 (PDT)
+From: Tony Ambardar <tony.ambardar@gmail.com>
+To: bpf@vger.kernel.org
+Cc: Tony Ambardar <tony.ambardar@gmail.com>,
+	linux-kselftest@vger.kernel.org,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Ilya Leoshkevich <iii@linux.ibm.com>,
+	Quentin Monnet <qmo@kernel.org>
+Subject: [PATCH bpf-next v3 0/8] libbpf, selftests/bpf: Support cross-endian usage
+Date: Wed, 28 Aug 2024 04:11:50 -0700
+Message-Id: <cover.1724843049.git.tony.ambardar@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="xaakvknay6p4srmg"
-Content-Disposition: inline
-In-Reply-To: <byi4tx6l2lrbs5w6oxypr44ldntlh4kp56vnsza3iuztwb37oa@2qtdx2kgz4bq>
+Content-Transfer-Encoding: 8bit
+
+Hello all,
+
+This patch series targets a long-standing BPF usability issue - the lack
+of general cross-compilation support - by enabling cross-endian usage of
+libbpf and bpftool, as well as supporting cross-endian build targets for
+selftests/bpf.
+
+Benefits include improved BPF development and testing for embedded systems
+based on e.g. big-endian MIPS, more build options e.g for s390x systems,
+and better accessibility to the very latest test tools e.g. 'test_progs'.
+
+Initial development and testing used mips64, since this arch makes
+switching the build byte-order trivial and is thus very handy for A/B
+testing. However, it lacks some key features (bpf2bpf call, kfuncs, etc)
+making for poor selftests/bpf coverage.
+
+Final testing takes the kernel and selftests/bpf cross-built from x86_64
+to s390x, and runs the result under QEMU/s390x. That same configuration
+could also be used on kernel-patches/bpf CI for regression testing endian
+support or perhaps load-sharing s390x builds across x86_64 systems.
+
+This thread includes some background regarding testing on QEMU/s390x and
+the generally favourable results:
+    https://lore.kernel.org/bpf/ZsEcsaa3juxxQBUf@kodidev-ubuntu/
+
+Feedback and suggestions are welcome!
+
+Best regards,
+Tony
 
 
---xaakvknay6p4srmg
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-From: Alejandro Colomar <alx@kernel.org>
-To: Yafang Shao <laoar.shao@gmail.com>
-Cc: akpm@linux-foundation.org, torvalds@linux-foundation.org, 
-	justinstitt@google.com, ebiederm@xmission.com, alexei.starovoitov@gmail.com, 
-	rostedt@goodmis.org, catalin.marinas@arm.com, penguin-kernel@i-love.sakura.ne.jp, 
-	linux-mm@kvack.org, linux-fsdevel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, audit@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	selinux@vger.kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, Simon Horman <horms@kernel.org>, 
-	Matthew Wilcox <willy@infradead.org>
-Subject: Re: [PATCH v8 6/8] mm/util: Deduplicate code in
- {kstrdup,kstrndup,kmemdup_nul}
-References: <20240828030321.20688-1-laoar.shao@gmail.com>
- <20240828030321.20688-7-laoar.shao@gmail.com>
- <byi4tx6l2lrbs5w6oxypr44ldntlh4kp56vnsza3iuztwb37oa@2qtdx2kgz4bq>
-MIME-Version: 1.0
-In-Reply-To: <byi4tx6l2lrbs5w6oxypr44ldntlh4kp56vnsza3iuztwb37oa@2qtdx2kgz4bq>
+Changelog:
+---------
+v2 -> v3: (feedback from Andrii)
+ - improve some log and commit message formatting
+ - restructure BTF.ext endianness safety checks and byte-swapping
+ - use BTF.ext info record definitions for swapping, require BTF v1
+ - follow BTF API implementation more closely for BTF.ext
+ - explicitly reject loading non-native endianness program into kernel
+ - simplify linker output byte-order setting
+ - drop redundant safety checks during linking
+ - simplify endianness macro and improve blob setup code for light skel
+ - no unexpected test failures after cross-compiling x86_64 -> s390x
 
-On Wed, Aug 28, 2024 at 12:32:53PM GMT, Alejandro Colomar wrote:
-> On Wed, Aug 28, 2024 at 11:03:19AM GMT, Yafang Shao wrote:
-> > These three functions follow the same pattern. To deduplicate the code,
-> > let's introduce a common helper __kmemdup_nul().
-> >=20
-> > Suggested-by: Andrew Morton <akpm@linux-foundation.org>
-> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > Cc: Simon Horman <horms@kernel.org>
-> > Cc: Matthew Wilcox <willy@infradead.org>
-> > Cc: Alejandro Colomar <alx@kernel.org>
-> > ---
->=20
-> Reviewed-by: Alejandro Colomar <alx@kernel.org>
-
-(Or maybe I should say
-
-Co-developed-by: Alejandro Colomar <alx@kernel.org>
-Signed-off-by: Alejandro Colomar <alx@kernel.org>
-
-)
-
-
->=20
-> Cheers,
-> Alex
->=20
-> >  mm/util.c | 68 ++++++++++++++++++++++---------------------------------
-> >  1 file changed, 27 insertions(+), 41 deletions(-)
-> >=20
-> > diff --git a/mm/util.c b/mm/util.c
-> > index 9a77a347c385..42714fe13e24 100644
-> > --- a/mm/util.c
-> > +++ b/mm/util.c
-> > @@ -45,33 +45,41 @@ void kfree_const(const void *x)
-> >  EXPORT_SYMBOL(kfree_const);
-> > =20
-> >  /**
-> > - * kstrdup - allocate space for and copy an existing string
-> > - * @s: the string to duplicate
-> > + * __kmemdup_nul - Create a NUL-terminated string from @s, which might=
- be unterminated.
-> > + * @s: The data to copy
-> > + * @len: The size of the data, not including the NUL terminator
-> >   * @gfp: the GFP mask used in the kmalloc() call when allocating memory
-> >   *
-> > - * Return: newly allocated copy of @s or %NULL in case of error
-> > + * Return: newly allocated copy of @s with NUL-termination or %NULL in
-> > + * case of error
-> >   */
-> > -noinline
-> > -char *kstrdup(const char *s, gfp_t gfp)
-> > +static __always_inline char *__kmemdup_nul(const char *s, size_t len, =
-gfp_t gfp)
-> >  {
-> > -	size_t len;
-> >  	char *buf;
-> > =20
-> > -	if (!s)
-> > +	/* '+1' for the NUL terminator */
-> > +	buf =3D kmalloc_track_caller(len + 1, gfp);
-> > +	if (!buf)
-> >  		return NULL;
-> > =20
-> > -	len =3D strlen(s) + 1;
-> > -	buf =3D kmalloc_track_caller(len, gfp);
-> > -	if (buf) {
-> > -		memcpy(buf, s, len);
-> > -		/* During memcpy(), the string might be updated to a new value,
-> > -		 * which could be longer than the string when strlen() is
-> > -		 * called. Therefore, we need to add a NUL termimator.
-> > -		 */
-> > -		buf[len - 1] =3D '\0';
-> > -	}
-> > +	memcpy(buf, s, len);
-> > +	/* Ensure the buf is always NUL-terminated, regardless of @s. */
-> > +	buf[len] =3D '\0';
-> >  	return buf;
-> >  }
-> > +
-> > +/**
-> > + * kstrdup - allocate space for and copy an existing string
-> > + * @s: the string to duplicate
-> > + * @gfp: the GFP mask used in the kmalloc() call when allocating memory
-> > + *
-> > + * Return: newly allocated copy of @s or %NULL in case of error
-> > + */
-> > +noinline
-> > +char *kstrdup(const char *s, gfp_t gfp)
-> > +{
-> > +	return s ? __kmemdup_nul(s, strlen(s), gfp) : NULL;
-> > +}
-> >  EXPORT_SYMBOL(kstrdup);
-> > =20
-> >  /**
-> > @@ -106,19 +114,7 @@ EXPORT_SYMBOL(kstrdup_const);
-> >   */
-> >  char *kstrndup(const char *s, size_t max, gfp_t gfp)
-> >  {
-> > -	size_t len;
-> > -	char *buf;
-> > -
-> > -	if (!s)
-> > -		return NULL;
-> > -
-> > -	len =3D strnlen(s, max);
-> > -	buf =3D kmalloc_track_caller(len+1, gfp);
-> > -	if (buf) {
-> > -		memcpy(buf, s, len);
-> > -		buf[len] =3D '\0';
-> > -	}
-> > -	return buf;
-> > +	return s ? __kmemdup_nul(s, strnlen(s, max), gfp) : NULL;
-> >  }
-> >  EXPORT_SYMBOL(kstrndup);
-> > =20
-> > @@ -192,17 +188,7 @@ EXPORT_SYMBOL(kvmemdup);
-> >   */
-> >  char *kmemdup_nul(const char *s, size_t len, gfp_t gfp)
-> >  {
-> > -	char *buf;
-> > -
-> > -	if (!s)
-> > -		return NULL;
-> > -
-> > -	buf =3D kmalloc_track_caller(len + 1, gfp);
-> > -	if (buf) {
-> > -		memcpy(buf, s, len);
-> > -		buf[len] =3D '\0';
-> > -	}
-> > -	return buf;
-> > +	return s ? __kmemdup_nul(s, len, gfp) : NULL;
-> >  }
-> >  EXPORT_SYMBOL(kmemdup_nul);
-> > =20
-> > --=20
-> > 2.43.5
-> >=20
->=20
-> --=20
-> <https://www.alejandro-colomar.es/>
+v1 -> v2:
+ - fixed a light skeleton bug causing test_progs 'map_ptr' failure
+ - simplified some BTF.ext related endianness logic
+ - remove an 'inline' usage related to CI checkpatch failure
+ - improve some formatting noted by checkpatch warnings
+ - unexpected 'test_progs' failures drop 3 -> 2 (x86_64 to s390x cross)
 
 
 
---=20
-<https://www.alejandro-colomar.es/>
+Tony Ambardar (8):
+  libbpf: Improve log message formatting
+  libbpf: Fix header comment typos for BTF.ext
+  libbpf: Fix output .symtab byte-order during linking
+  libbpf: Support BTF.ext loading and output in either endianness
+  libbpf: Support opening bpf objects of either endianness
+  libbpf: Support linking bpf objects of either endianness
+  libbpf: Support creating light skeleton of either endianness
+  selftests/bpf: Support cross-endian building
 
---xaakvknay6p4srmg
-Content-Type: application/pgp-signature; name="signature.asc"
+ tools/lib/bpf/bpf_gen_internal.h     |   1 +
+ tools/lib/bpf/btf.c                  | 230 ++++++++++++++++++++++++---
+ tools/lib/bpf/btf.h                  |   3 +
+ tools/lib/bpf/btf_dump.c             |   2 +-
+ tools/lib/bpf/btf_relocate.c         |   2 +-
+ tools/lib/bpf/gen_loader.c           | 185 ++++++++++++++++-----
+ tools/lib/bpf/libbpf.c               |  39 +++--
+ tools/lib/bpf/libbpf.map             |   2 +
+ tools/lib/bpf/libbpf_internal.h      |  17 +-
+ tools/lib/bpf/linker.c               |  92 +++++++++--
+ tools/lib/bpf/relo_core.c            |   2 +-
+ tools/lib/bpf/skel_internal.h        |   3 +-
+ tools/testing/selftests/bpf/Makefile |   7 +-
+ 13 files changed, 488 insertions(+), 97 deletions(-)
 
------BEGIN PGP SIGNATURE-----
+-- 
+2.34.1
 
-iQIzBAABCgAdFiEE6jqH8KTroDDkXfJAnowa+77/2zIFAmbO/PoACgkQnowa+77/
-2zLPnw/6A+aBCutQmKak+5R0meV1Cxil2Ncoh02Vf0xc2uWghVz4ES9qrmIq3vsF
-s+1JFTqZm983+114HxnK1NGfs30MiLs9PSiFvqtK77V4LW4I6V+eSKfjCywWH3ep
-s+0O51nVwX4a6ys2pW6q1Jb1JNPSjZovOQi1OVe+TWTtpHJSdqvsiYoLyEK9b41L
-f0wj/lJ4R7XhNBo/9WqpOW73pOub4Lx+RQThi87449z+mpiaKsaFZIZSlLv0nEvH
-9VNnxKYmTQOzE7kHiEUoVSL7sC0DTU+FIsw1nF7an9UmEpTcvCHmEKQHpPerKs1T
-EoGHKtPiLY3U23B5fw4zxheJaIAQCDFM73XwYGhtluwQToyS4nswC2sjYJXB0Tyy
-8SrkG+Lubl3mMRHY/WlBBkBumKo9GYRbIiuVU2N/Xsn0AdNViOy7mQTGdeGmh9qz
-l0pU6qnyso0Bdeaum22hOW/SgHwU1zvy8LVZwYkaWjMpDkuJKM2W5rvA1MGnHisR
-DkXA953cx17eO33YRMFpuRthuA7X2/qNmEj3d6elhUP3x9ea9YLRl1PC9j0jIgRA
-PiZXrJuFNeQpp27Qz6k4PxWbBmPjzZyleFwGtvZ86qbaRzFWZo2gCQZrrPckac2X
-6fs3M2nM+8tZ6ZaqFeEb+kMnIRB3fZo7I59kFr6OEmgHSZsWCGM=
-=+lO+
------END PGP SIGNATURE-----
-
---xaakvknay6p4srmg--
 
