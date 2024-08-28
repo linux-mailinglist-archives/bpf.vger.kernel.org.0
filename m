@@ -1,47 +1,47 @@
-Return-Path: <bpf+bounces-38243-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38244-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7997C961D36
-	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 05:54:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FC87961D38
+	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 05:54:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3832D284CCA
-	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 03:54:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 72A981C239E6
+	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 03:54:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6983D13DDD3;
-	Wed, 28 Aug 2024 03:53:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E6B113E023;
+	Wed, 28 Aug 2024 03:54:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jmClLio8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="E2kWg83G"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D79FBDDC1;
-	Wed, 28 Aug 2024 03:53:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E43D83CDA;
+	Wed, 28 Aug 2024 03:54:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724817238; cv=none; b=eojZ4VKngCKsIJHnbcHaxMmbSjgbkUyn+DYCqfJI6fmUBm+rul3zZaoGQPGTgiS3gOOXbIQbgZgBIFFwc2NyvgDF3AWFhgAJ6V8nE+ZgmVOVNwPPbb1XDW8ctDUQX72esE3c4El5pxRloErjA0ZbHXlc1zMqAJhpheoSbyP62YE=
+	t=1724817262; cv=none; b=I8EFS1K8qBpsEVOMyy+BQMv8xME0sW6MBgI9tqha5ynA6hxmLxiBWiZzp26Z0aIomqyNWWVmFy3IQ5oVwiOlf/w5t12PUxKxpLExcuyf+Mv7uhYuJ+19nnh3nkVib/SQWKRNbE6ZSZq02mlwV6Avq9VYNA6q8Pv1C8kjXXhtNjg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724817238; c=relaxed/simple;
-	bh=yX0jAkexmM2SAzVU03uOMsxc/ExvX8+68XYeNfW/prc=;
+	s=arc-20240116; t=1724817262; c=relaxed/simple;
+	bh=jLwgxlTbmmQa0vkZUtn7hMrKGuSWWsj08lIUB9ZB8KY=;
 	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=BeHffqPsPt+1y62GB5hXKYAZhSx0Oq/vFS5huMan9IDjtxU/u1fdKIu6LLLu7txr8cNxos0fUZrgSlVI3infHItW1CcYaTU5MAOmnzhY2JUlzOkW8QjwK+NsvYFWV2KGu8KhCRD74fjsY+3QP3X0IyuHVXoF9pg/CJUe4TGPz3c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jmClLio8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 014FFC4FEF4;
-	Wed, 28 Aug 2024 03:53:54 +0000 (UTC)
+	 Mime-Version:Content-Type; b=FJKzL428LGSt2FMVZm6xV24t6VMjekytcZOnKf2/c5Z/FUwqlRxAsVMqexVVzDkmuCCpHgS9XcRqF6Gh3c5CZrMnX6eTVEQSNmIb39Pfhs4yXzrlSXzlQRUfbMcQwe+LCDcKdXflpF9q+zZqIVeHTlU4SusIxUeR7eG6dNJYmj8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=E2kWg83G; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A49AC4FF07;
+	Wed, 28 Aug 2024 03:54:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1724817237;
-	bh=yX0jAkexmM2SAzVU03uOMsxc/ExvX8+68XYeNfW/prc=;
+	s=k20201202; t=1724817262;
+	bh=jLwgxlTbmmQa0vkZUtn7hMrKGuSWWsj08lIUB9ZB8KY=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=jmClLio8hGSqDakn2KGNnm+mZEy/N5jhzqme6TVTWgLQ6wPnKmpyb8p6IX2pIg3O4
-	 E5vA6FY/gSNkB0YEUqZwsfyyLPQjXYjswLQ5SHQ2vyGyyqUk/XDlmUWUe6g0/1avvu
-	 GlO1aCrWSQpaxx/zttkvM7epoOf2zj7ZPIzSN29e43J08mqKJ3h1WtY10y+PNg50vW
-	 QCCllL9Yl8f+Fjs0kH0c16lMtaRJj1vLxrqbzdw4LWxl5DYolChX9znBZPZZ9onD+e
-	 bSjuksLzlybaBau14l4lQTZa5AWf0AVIpg/8e1UD4sGXXmMOUyMhy1+CzQuT9ySirK
-	 8aXGehWoB7W6Q==
-Date: Wed, 28 Aug 2024 12:53:53 +0900
+	b=E2kWg83GNBa7PtOrzE7svxEzT8SYZopOFOj4kIanaFLsDWy6ZVqjxMkShEkjP7xyn
+	 D1yCGdgUK9aTH3T/UKSotq8DO3OJw268Jz/soCZYUfT9czpEs2maPG5ksml5byK4zL
+	 JRAhBTHDJYJvUTFqniQiGmFPr5Z6pByOADpO8mNaSWHqNqQDLNzlSXJ5NVmCuMzHpu
+	 9XBAtUOTZ7b7Qs8DH5arFAjpmEnsKRjp3kqyv9Nhz3DRaFAp8ImendloiNNFWUIEgb
+	 WOtfpZfJrdMxgxmTcB4ApPTWUBfOtyK5vZMa97ukeQCVvS3UNoH8mfOyHmHRVr09BB
+	 DRpAGpHZ0Fqlw==
+Date: Wed, 28 Aug 2024 12:54:18 +0900
 From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 To: Andrii Nakryiko <andrii@kernel.org>
 Cc: linux-trace-kernel@vger.kernel.org, rostedt@goodmis.org,
@@ -49,7 +49,7 @@ Cc: linux-trace-kernel@vger.kernel.org, rostedt@goodmis.org,
  linux-kernel@vger.kernel.org, jolsa@kernel.org
 Subject: Re: [PATCH v3] uprobes: turn trace_uprobe's nhit counter to be
  per-CPU one
-Message-Id: <20240828125353.86babe6e781834e9cc988e37@kernel.org>
+Message-Id: <20240828125418.07c3c63e08dc688e62fef4d2@kernel.org>
 In-Reply-To: <20240813203409.3985398-1-andrii@kernel.org>
 References: <20240813203409.3985398-1-andrii@kernel.org>
 X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
@@ -75,7 +75,10 @@ Andrii Nakryiko <andrii@kernel.org> wrote:
 > Solve both problems by making this a per-CPU counter.
 > 
 
-Looks good to me. Let me pick it.
+Looks good to me. Let me pick it to linux-trace probes/for-next.
+
+Thank you,
+
 
 > Reviewed-by: Oleg Nesterov <oleg@redhat.com>
 > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
