@@ -1,162 +1,121 @@
-Return-Path: <bpf+bounces-38305-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38306-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 068BA96300A
-	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 20:32:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C77F2963050
+	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 20:43:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7C9E2819DE
-	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 18:32:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 80D062816D1
+	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 18:43:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCCB71A76A2;
-	Wed, 28 Aug 2024 18:32:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E40B31AAE06;
+	Wed, 28 Aug 2024 18:43:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Tg9l+C3m"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cEu000+1"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D5E81C69C;
-	Wed, 28 Aug 2024 18:32:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00B8D1D696
+	for <bpf@vger.kernel.org>; Wed, 28 Aug 2024 18:43:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724869963; cv=none; b=HRYJbeukU3hwPFxH547O6ikn3Lbzh3drymZazauIMNjce/9tCje6B1zJtK5j0nLCJ4QLLV6b2/ebbsMUGMN+RkMD9lWh2UNSl5pUvBG8+ZQnCOgVv1hR9WLjLdFE+QrJKmJlqBleDLEQSwZx+nnogp/5bnNTlsS3CKYIDxlGQVc=
+	t=1724870611; cv=none; b=ivKJo1A7aWwGeIvRDKG8/D7ku8ONGEMltsD4SdFXVSHmnHybrg2BKIrAWjRJZTMFYO1/sFYZUfUheJZgV13DqCL4NnjANAMDrlijO4Fut49ZjHNYsg9/t9qjDhGxLldwkwidcbS85hjjB68yx44xOgGAFgKvoscIXgI5e3ybAjw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724869963; c=relaxed/simple;
-	bh=vMGxzc5PSM5nD5jGS6EaxP7xELSSt4GgTt/MEDnsiaA=;
+	s=arc-20240116; t=1724870611; c=relaxed/simple;
+	bh=JLfch2l80aGjL5I585jyrdgFI8z+twgwD28pktCNFh8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VZxiuu8zIV9Cys7/RaoDnuL2PnkZg5rKT8JedbZ4tLMPHDxaWXReJRjclNl75fX++Eaydus6sGVqOeyhDi07s93td+HSJZBKtoiD46qNOyzAsHcfg5RNugaqSf/Rnz4uzvLXUoVCuQca2yVPLJn6BIFXTzKjBplkR+ZrXNHtcvY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Tg9l+C3m; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D661FC4CEC0;
-	Wed, 28 Aug 2024 18:32:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1724869962;
-	bh=vMGxzc5PSM5nD5jGS6EaxP7xELSSt4GgTt/MEDnsiaA=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=Tg9l+C3mCfuWKTYYhIhedlNYQ1JkV82yMFfQ40/xdo+UROE3VKJC1Fj/5rYr0BFY1
-	 tHT9gqxWpYbEoE33ccdRyr/qKU9DCOaB7ZcyVP12fQJY5E2rQ4XuMkugU/GWfW5i3f
-	 GKcxRvfAYh3sUZZ+2c11zFboOoSfLrxUCm/01Dq5W6Pemku8c/W25HdpY5Vle+ml7G
-	 iVkZ2Xw3JY/V8uSOlk+WZjPI04ify3XZ3+4SxZTa6xE4vwQt0lNu4zInQ8lrHgz+dR
-	 8EHxXRpjkRC4ta2Xqh7Dk8Jqj7uQKVBLcEdTG0I2Y0RbUqbjJBBTWApi1Fk+tymXlX
-	 HO5mTKydJeNYA==
-Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2f401c20b56so8553211fa.0;
-        Wed, 28 Aug 2024 11:32:42 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWd1ubI/EBGZukC6agu9tBZuestgZdH6uOyV5M9+JSqWwGld48MiNv22T6+skgKXUoEFDwcm/St/C2e4d5c@vger.kernel.org, AJvYcCWeC5TtWNi0T5zSIYZDP6XVHjv6EjCYsgGlxCxidRcZSGylmalzPbxvYTsTbXetmuedUWY=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzkl+DRm0m6xjEwrjQYxT6qZikz/proNRQDXfuOsvzc1kev2Q88
-	ScxWZ2SQAD4pTdEp7e011CkYJmKZt6h4FzioRZyWUiD5MtH1F3dMgR+wxcq3MeYB6k6PNGZPKym
-	UG7W98Qwgb87XVcZLRsbObV7BEaM=
-X-Google-Smtp-Source: AGHT+IGCtSdi497UEot/m94AniVRUfQkmwPZ8M+oEDJxfPrHHMvANPjnxHjSNm5KbBfYPrpxeGNjrdCJtpk8lVOtYRw=
-X-Received: by 2002:a2e:f01:0:b0:2f5:29f:43d5 with SMTP id 38308e7fff4ca-2f612a81b43mr137261fa.24.1724869961520;
- Wed, 28 Aug 2024 11:32:41 -0700 (PDT)
+	 To:Cc:Content-Type; b=CRK6aIAp7Akju+O5QGQqVeJkmgfjrS3AWTwrFUkQzEGWN7U0KDGJ1IMZ3BlH8dV2orkCOM0DoxunuTBOkyf5kOV01N2fzh0+O90kT6xrHu19BbKlUpl+QEczbBhabMl0DDDpUw7w0PMOp3FqQ7QQC+/XXFxBpU5dwmjporCLgRk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cEu000+1; arc=none smtp.client-ip=209.85.221.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-3719398eafcso4102587f8f.1
+        for <bpf@vger.kernel.org>; Wed, 28 Aug 2024 11:43:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1724870608; x=1725475408; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mCpSmCL/av8nO2rS13wcAAxRAiSBhen3pOGYGJuWs6M=;
+        b=cEu000+1YLeREtxHsWmyOu6ssF3uG7vy6HXKOWBbRd7NJsqk6rbRuP4gH8+G9kNAQG
+         TNN4kXcm0Wr0j/xKCB3ijrXpkUQnWrwsKai/WyAYWfQF11L3y5M17I1ZQoNq4x5vE+bn
+         ADQ8S78yzcgrChZRWzSDS9KfmerMySspdoNkcb48CfJTmyXYxcPbnVxaJKE+fAL6XxNY
+         slo1dAfDGuuaBMIzW5hIDo65yyMB/WHEtSGMgtlu/qIm1V138+qrsR/elb0JgMN+6Rjx
+         m4GVRxtlS+jjuROmaY4FLQtOp9DX1tjuBhlJiDJpEzEtoPh4GEP82jSLsaogXp6oSWah
+         31Xg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1724870608; x=1725475408;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mCpSmCL/av8nO2rS13wcAAxRAiSBhen3pOGYGJuWs6M=;
+        b=La2qBuFVAwMneK+Ln6b34K9lRi/+ZxSu7uP8V7LjACdOW6zbfjd7C8d61GI7DhIc53
+         HX14XN+pDLI6pprO38xin4/C7MUNwDeqg4KdFzAqmdYnVE7MVtBwhhBQ63cT236Avdhw
+         MvSQ7EuXsPXX9DzVgmbv/FOpHXPpFVKLzx4eP1ABRIYB+htevsk0vaWhx2AqKwHjygBo
+         40bdBdaKu305VJgS0w663oTF3dxI7vl56D1pgf33wJHwpJcG2ur4V1JeEyC4M9sW0GmA
+         kOsjNeXWQihJ3UxVIxc9tv4N+VK7aChVeLNY9i5Kpa+va/gnlOHYNitcBjTkyBZfPTl5
+         mjdw==
+X-Gm-Message-State: AOJu0YwVK5CgsbFAblPW8Vx2v+4j9zSbBjAThT0mkbYswtGPzd/JA0QM
+	4FSKpblDb4U2YRUbRSFAx9SVuGaSHpvK/BZ3Ri0FFE27hoLPwRTfRtTuqaXAh0/kXNQhZHn5xDp
+	lRjypuX5nfOnK6rDzhusejpCc1ZA=
+X-Google-Smtp-Source: AGHT+IHaMJgWNpyE3yAO6nXwycDMLebjWyPFhGwhJUUxMIgaDLJgFG/iRcBXOSwKLqwv9JwxIgp8CbSptU28ny2BGYc=
+X-Received: by 2002:adf:8bd1:0:b0:362:8ec2:53d6 with SMTP id
+ ffacd0b85a97d-3749b5948fdmr291411f8f.61.1724870608055; Wed, 28 Aug 2024
+ 11:43:28 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAK7LNATb8dbhvdSgiNEMkdsgg93q4ZUGUxReZYNjOV3fDPnfyQ@mail.gmail.com>
- <20240828181028.4166334-1-legion@kernel.org>
-In-Reply-To: <20240828181028.4166334-1-legion@kernel.org>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Date: Thu, 29 Aug 2024 03:32:04 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQRDe7yLKj-EPewSirpnELmSXHFQRQyVaqRooEyY5qdyg@mail.gmail.com>
-Message-ID: <CAK7LNAQRDe7yLKj-EPewSirpnELmSXHFQRQyVaqRooEyY5qdyg@mail.gmail.com>
-Subject: Re: [PATCH v3] bpf: Remove custom build rule
-To: Alexey Gladkov <legion@kernel.org>
-Cc: linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-kbuild@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+References: <20240827194834.1423815-1-martin.lau@linux.dev>
+ <20240827195208.1435815-1-martin.lau@linux.dev> <CAADnVQJbGCB5Hjb8NPU7P0ZOwR_EWcREuxsBOvyo7cRggdioDA@mail.gmail.com>
+ <669bc1c6-2c8c-483f-8d38-0a705463a25d@linux.dev>
+In-Reply-To: <669bc1c6-2c8c-483f-8d38-0a705463a25d@linux.dev>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 28 Aug 2024 11:43:16 -0700
+Message-ID: <CAADnVQ+0qWRDvRouyZoikYAf=EQepPyuOWrk4oH+h8s1wJW-YA@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 2/9] bpf: Adjust BPF_JMP that jumps to the 1st
+ insn of the prologue
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
 	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Oleg Nesterov <oleg@redhat.com>
+	Eduard Zingerman <eddyz87@gmail.com>, Yonghong Song <yonghong.song@linux.dev>, 
+	Amery Hung <ameryhung@gmail.com>, Kernel Team <kernel-team@meta.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Aug 29, 2024 at 3:11=E2=80=AFAM Alexey Gladkov <legion@kernel.org> =
-wrote:
+On Wed, Aug 28, 2024 at 10:44=E2=80=AFAM Martin KaFai Lau <martin.lau@linux=
+.dev> wrote:
+> >>
+> >> -       for (i =3D 0; i < insn_cnt; i++, insn++) {
+> >> +       for (i =3D skip_cnt; i < insn_cnt; i++, insn++) {
+> >
+> > Do we really need to add this argument?
+> >
+> >> -               WARN_ON(adjust_jmp_off(env->prog, subprog_start, 1));
+> >> +               WARN_ON(adjust_jmp_off(env->prog, subprog_start, 1, 0)=
+);
+> >
+> > We can always do for (i =3D delta; ...
+> >
+> > The above case of skip_cnt =3D=3D 0 is lucky to work this way.
+> > It would be less surprising to skip all insns in the patch.
+> > Maybe I'm missing something.
 >
-> According to the documentation, when building a kernel with the C=3D2
-> parameter, all source files should be checked. But this does not happen
-> for the kernel/bpf/ directory.
+> For subprog_start case, tgt_idx (where the patch started) may not be 0. H=
+ow
+> about this:
 >
-> $ touch kernel/bpf/core.c
-> $ make C=3D2 CHECK=3Dtrue kernel/bpf/core.o
->
-> Outputs:
->
->   CHECK   scripts/mod/empty.c
->   CALL    scripts/checksyscalls.sh
->   DESCEND objtool
->   INSTALL libsubcmd_headers
->   CC      kernel/bpf/core.o
->
-> As can be seen the compilation is done, but CHECK is not executed. This
-> happens because kernel/bpf/Makefile has defined its own rule for
-> compilation and forgotten the macro that does the check.
->
-> There is no need to duplicate the build code, and this rule can be
-> removed to use generic rules.
->
-> Signed-off-by: Alexey Gladkov <legion@kernel.org>
+>         for (i =3D 0; i < insn_cnt; i++, insn++) {
+>                 if (tgt_idx <=3D i && i < tgt_idx + delta)
+>                         continue;
 
+Yeah. Right. Same idea, but certainly your way is more correct
+instead of my buggy proposal.
 
-Acked-by: Masahiro Yamada <masahiroy@kernel.org>
-
-
-> ---
->  kernel/bpf/Makefile       | 6 ------
->  kernel/bpf/btf_iter.c     | 2 ++
->  kernel/bpf/btf_relocate.c | 2 ++
->  kernel/bpf/relo_core.c    | 2 ++
->  4 files changed, 6 insertions(+), 6 deletions(-)
->  create mode 100644 kernel/bpf/btf_iter.c
->  create mode 100644 kernel/bpf/btf_relocate.c
->  create mode 100644 kernel/bpf/relo_core.c
->
-> diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
-> index 0291eef9ce92..9b9c151b5c82 100644
-> --- a/kernel/bpf/Makefile
-> +++ b/kernel/bpf/Makefile
-> @@ -52,9 +52,3 @@ obj-$(CONFIG_BPF_PRELOAD) +=3D preload/
->  obj-$(CONFIG_BPF_SYSCALL) +=3D relo_core.o
->  obj-$(CONFIG_BPF_SYSCALL) +=3D btf_iter.o
->  obj-$(CONFIG_BPF_SYSCALL) +=3D btf_relocate.o
-> -
-> -# Some source files are common to libbpf.
-> -vpath %.c $(srctree)/kernel/bpf:$(srctree)/tools/lib/bpf
-> -
-> -$(obj)/%.o: %.c FORCE
-> -       $(call if_changed_rule,cc_o_c)
-> diff --git a/kernel/bpf/btf_iter.c b/kernel/bpf/btf_iter.c
-> new file mode 100644
-> index 000000000000..eab8493a1669
-> --- /dev/null
-> +++ b/kernel/bpf/btf_iter.c
-> @@ -0,0 +1,2 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +#include "../../tools/lib/bpf/btf_iter.c"
-> diff --git a/kernel/bpf/btf_relocate.c b/kernel/bpf/btf_relocate.c
-> new file mode 100644
-> index 000000000000..8c89c7b59ef8
-> --- /dev/null
-> +++ b/kernel/bpf/btf_relocate.c
-> @@ -0,0 +1,2 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +#include "../../tools/lib/bpf/btf_relocate.c"
-> diff --git a/kernel/bpf/relo_core.c b/kernel/bpf/relo_core.c
-> new file mode 100644
-> index 000000000000..6a36fbc0e5ab
-> --- /dev/null
-> +++ b/kernel/bpf/relo_core.c
-> @@ -0,0 +1,2 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +#include "../../tools/lib/bpf/relo_core.c"
-> --
-> 2.46.0
->
-
-
---=20
-Best Regards
-Masahiro Yamada
+In that sense the "for (i =3D skip_cnt" approach
+is also a bit buggy, if tgt_idx !=3D 0.
 
