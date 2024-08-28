@@ -1,258 +1,132 @@
-Return-Path: <bpf+bounces-38273-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38274-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9995696293B
-	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 15:48:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F23D96294B
+	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 15:53:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 18BB61F225BB
-	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 13:48:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 421B21C23166
+	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 13:53:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9777418801F;
-	Wed, 28 Aug 2024 13:48:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB86F18756D;
+	Wed, 28 Aug 2024 13:53:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EbjLpfkN"
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="aCaCq6OP"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F117B2D600;
-	Wed, 28 Aug 2024 13:48:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D2AE16CD06;
+	Wed, 28 Aug 2024 13:53:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724852919; cv=none; b=EyK9jixn97YCWXk/5ndnZpgambIcUMvwxmF5pBJfHg/RTtM/hg2CH3oXee8iq13S0k5CPXPmXHlpK+z0jZe9/tKfhal0as5RtKo5A0H1oVwQvj9J7pVe2stKNr93KHggUrdbxCtocsilVm0qJS3jkd0uqNypECvo17gd0WrdyhE=
+	t=1724853205; cv=none; b=F0xtjxysP0lJ1xTWQqWrWQ07/cFbNGiuIkaUS5RVsZHsQw15DzzNAzfOsVJ4LEmI6WfBfkQcaicDoGpNAlnGBRptyPq72YJsa58vfCqPCCeti+0mAU6s+jk+1Bc+D03iVJp+YyQqVIAy0GPQ3OQ6Sdlf37JxDIXOXicEjU6jcqw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724852919; c=relaxed/simple;
-	bh=TFXHpYUbMPU1PBJdBGzhBTwFtAf9olUiwemN+xYfsaI=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
-	 MIME-Version:Content-Type; b=BczjG21vG2G6uh8pM4nYtUWRzg7t2MtmdjTqKZWr5vZqgIlqDqWmVaih9kyAakCElVDYJABK7xrQ8SsvZFMIIdjIvIoV8SZu3ruVh9zR/p2JsubD9jeEGBG1ZUwTreRlSKaECwrYRkuri+Gt2Y4mPJM5uve39yDJn9JGgwt3+pw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EbjLpfkN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 716F8C5FB24;
-	Wed, 28 Aug 2024 13:48:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1724852918;
-	bh=TFXHpYUbMPU1PBJdBGzhBTwFtAf9olUiwemN+xYfsaI=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-	b=EbjLpfkNlvuKmapZ4irEc3+VoB7uNdRFIRrm37fZuyRc+hVMgA7reiu+oN5SrtH3L
-	 r5aLX0kCDbqvYUq/ujIE6rw/uu06Bt8oj9Hu3IKc0vGDwjC6fnE6vBD3dN9YNxQU8u
-	 86Jxn9AehGCVE3LJBYwEIM2zAL48oXK+oLk4itMPso5Iz3c4nsCNfnEMtSE+18I/xd
-	 dEAuNkIPUKy9qd7cUdbKJLBVMrTgzuXOGogCTlVmiTQFwD7hn+LA/8kxfBjngnteo+
-	 RG5H8USGaa8sS94tdIcVvfhl5sQn6YRvK++Lwf+dnnbWq/xtWKAknb2oyJmTD/thI0
-	 PmekGQbSXjv1Q==
-Date: Wed, 28 Aug 2024 06:48:39 -0700
-From: Kees Cook <kees@kernel.org>
-To: Yafang Shao <laoar.shao@gmail.com>, Alejandro Colomar <alx@kernel.org>
-CC: akpm@linux-foundation.org, torvalds@linux-foundation.org,
- justinstitt@google.com, ebiederm@xmission.com, alexei.starovoitov@gmail.com,
- rostedt@goodmis.org, catalin.marinas@arm.com,
- penguin-kernel@i-love.sakura.ne.jp, linux-mm@kvack.org,
- linux-fsdevel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- audit@vger.kernel.org, linux-security-module@vger.kernel.org,
- selinux@vger.kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org,
- dri-devel@lists.freedesktop.org, Alexander Viro <viro@zeniv.linux.org.uk>,
- Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
- Kees Cook <keescook@chromium.org>, Matus Jokay <matus.jokay@stuba.sk>,
- "Serge E. Hallyn" <serge@hallyn.com>
-Subject: Re: [PATCH v8 1/8] Get rid of __get_task_comm()
-User-Agent: K-9 Mail for Android
-In-Reply-To: <CALOAHbBAYHjDnKBVw63B8JBFc6U-2RNUX9L=ryA2Gbz7nnJfsQ@mail.gmail.com>
-References: <20240828030321.20688-1-laoar.shao@gmail.com> <20240828030321.20688-2-laoar.shao@gmail.com> <lql4y2nvs3ewadszhmv4m6fnqja4ff4ymuurpidlwvgf4twvru@esnh37a2jxbd> <n2fxqs3tekvljezaqpfnwhsmjymch4vb47y744zwmy7urf3flv@zvjtepkem4l7> <CALOAHbBAYHjDnKBVw63B8JBFc6U-2RNUX9L=ryA2Gbz7nnJfsQ@mail.gmail.com>
-Message-ID: <7839453E-CA06-430A-A198-92EB906F94D9@kernel.org>
+	s=arc-20240116; t=1724853205; c=relaxed/simple;
+	bh=hqxyw8l9U76d0ugy8OuKsZ3mvhcpdqvX8AWYEPYW1fM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=dQwIi6myCTe9XNN9jNYK6UwB4kD6w+T+w3lfhXfUZUE5aUMlpEYHZYuRV6mM0gbwa9lyBuSCpSP39eJ2BDbrQeDgS1jkQOxxymZd9TvYJOx/ArXdRUtHraDQQ8OUBzu8HXMLOLg/9YVemKbxgd8bI/CrtN13krzbobIM/KWIO/Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=aCaCq6OP; arc=none smtp.client-ip=167.114.26.122
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+	s=smtpout1; t=1724853195;
+	bh=hqxyw8l9U76d0ugy8OuKsZ3mvhcpdqvX8AWYEPYW1fM=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=aCaCq6OPdUQb+cCM6A7UyjdXA4Cu/nAgwMPe/lNm8t+PkWZM7d0on20GTW+3ClW44
+	 w/VrjN8ibNg/dANdJVJKkWWRnb24f7mxHdp9+3u27qFl4aGnruxHdRB4WnuTbL3LQ9
+	 JigZyOhICriFFbkW/0BPsX7ayEfWkP61iFrvxT5me31q107fNoHrln58+sOfawKlNz
+	 dsdUiIEioXdy6SXBntWXOCXhrockeZ46IKcWuPLnXogvy3kGNKHVsay1S7ZjvX/6mD
+	 LebtwphowF5fC+2yKigT+Z6xQ9qzrfrGnHZwRTb29hEjsvfZENzx5l6Ro8+ggTJoDE
+	 LF6rL8daL8Zsg==
+Received: from [172.16.0.134] (96-127-217-162.qc.cable.ebox.net [96.127.217.162])
+	by smtpout.efficios.com (Postfix) with ESMTPSA id 4Wv5Tk5Fyvz1JGb;
+	Wed, 28 Aug 2024 09:53:14 -0400 (EDT)
+Message-ID: <16d0d924-f39b-4e0a-a488-74513f1214a6@efficios.com>
+Date: Wed, 28 Aug 2024 09:52:49 -0400
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 0/8] Faultable Tracepoints
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, linux-kernel@vger.kernel.org,
+ Peter Zijlstra <peterz@infradead.org>, Alexei Starovoitov <ast@kernel.org>,
+ Yonghong Song <yhs@fb.com>, "Paul E . McKenney" <paulmck@kernel.org>,
+ Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
+ bpf@vger.kernel.org, Joel Fernandes <joel@joelfernandes.org>
+References: <20240626185941.68420-1-mathieu.desnoyers@efficios.com>
+ <20240626212543.7565162d@gandalf.local.home>
+From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Content-Language: en-US
+In-Reply-To: <20240626212543.7565162d@gandalf.local.home>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-
-
-On August 28, 2024 6:40:35 AM PDT, Yafang Shao <laoar=2Eshao@gmail=2Ecom> =
-wrote:
->On Wed, Aug 28, 2024 at 8:58=E2=80=AFPM Alejandro Colomar <alx@kernel=2Eo=
-rg> wrote:
+On 2024-06-27 03:25, Steven Rostedt wrote:
+> On Wed, 26 Jun 2024 14:59:33 -0400
+> Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
+> 
+>> Wire up the system call tracepoints with Tasks Trace RCU to allow
+>> the ftrace, perf, and eBPF tracers to handle page faults.
 >>
->> On Wed, Aug 28, 2024 at 12:15:40PM GMT, Alejandro Colomar wrote:
->> > Hi Yafang,
->> >
->> > On Wed, Aug 28, 2024 at 11:03:14AM GMT, Yafang Shao wrote:
->> > > We want to eliminate the use of __get_task_comm() for the following
->> > > reasons:
->> > >
->> > > - The task_lock() is unnecessary
->> > >   Quoted from Linus [0]:
->> > >   : Since user space can randomly change their names anyway, using =
-locking
->> > >   : was always wrong for readers (for writers it probably does make=
- sense
->> > >   : to have some lock - although practically speaking nobody cares =
-there
->> > >   : either, but at least for a writer some kind of race could have
->> > >   : long-term mixed results
->> > >
->> > > - The BUILD_BUG_ON() doesn't add any value
->> > >   The only requirement is to ensure that the destination buffer is =
-a valid
->> > >   array=2E
->> > >
->> > > - Zeroing is not necessary in current use cases
->> > >   To avoid confusion, we should remove it=2E Moreover, not zeroing =
-could
->> > >   potentially make it easier to uncover bugs=2E If the caller needs=
- a
->> > >   zero-padded task name, it should be explicitly handled at the cal=
-l site=2E
->> > >
->> > > Suggested-by: Linus Torvalds <torvalds@linux-foundation=2Eorg>
->> > > Link: https://lore=2Ekernel=2Eorg/all/CAHk-=3DwivfrF0_zvf+oj6=3D=3D=
-Sh=3D-npJooP8chLPEfaFV0oNYTTBA@mail=2Egmail=2Ecom [0]
->> > > Link: https://lore=2Ekernel=2Eorg/all/CAHk-=3DwhWtUC-AjmGJveAETKOMe=
-MFSTwKwu99v7+b6AyHMmaDFA@mail=2Egmail=2Ecom/
->> > > Suggested-by: Alejandro Colomar <alx@kernel=2Eorg>
->> > > Link: https://lore=2Ekernel=2Eorg/all/2jxak5v6dfxlpbxhpm3ey7oup4g2l=
-nr3ueurfbosf5wdo65dk4@srb3hsk72zwq
->> > > Signed-off-by: Yafang Shao <laoar=2Eshao@gmail=2Ecom>
->> > > Cc: Alexander Viro <viro@zeniv=2Elinux=2Eorg=2Euk>
->> > > Cc: Christian Brauner <brauner@kernel=2Eorg>
->> > > Cc: Jan Kara <jack@suse=2Ecz>
->> > > Cc: Eric Biederman <ebiederm@xmission=2Ecom>
->> > > Cc: Kees Cook <keescook@chromium=2Eorg>
->> > > Cc: Alexei Starovoitov <alexei=2Estarovoitov@gmail=2Ecom>
->> > > Cc: Matus Jokay <matus=2Ejokay@stuba=2Esk>
->> > > Cc: Alejandro Colomar <alx@kernel=2Eorg>
->> > > Cc: "Serge E=2E Hallyn" <serge@hallyn=2Ecom>
->> > > ---
->> > >  fs/exec=2Ec             | 10 ----------
->> > >  fs/proc/array=2Ec       |  2 +-
->> > >  include/linux/sched=2Eh | 32 ++++++++++++++++++++++++++------
->> > >  kernel/kthread=2Ec      |  2 +-
->> > >  4 files changed, 28 insertions(+), 18 deletions(-)
->> > >
->> >
->> > [=2E=2E=2E]
->> >
->> > > diff --git a/include/linux/sched=2Eh b/include/linux/sched=2Eh
->> > > index f8d150343d42=2E=2Ec40b95a79d80 100644
->> > > --- a/include/linux/sched=2Eh
->> > > +++ b/include/linux/sched=2Eh
->> >
->> > [=2E=2E=2E]
->> >
->> > > @@ -1914,10 +1917,27 @@ static inline void set_task_comm(struct tas=
-k_struct *tsk, const char *from)
->> > >     __set_task_comm(tsk, from, false);
->> > >  }
->> > >
->> > > -extern char *__get_task_comm(char *to, size_t len, struct task_str=
-uct *tsk);
->> > > +/*
->> >
->> > [=2E=2E=2E]
->> >
->> > > + * - ARRAY_SIZE() can help ensure that @buf is indeed an array=2E
->> > > + */
->> > >  #define get_task_comm(buf, tsk) ({                 \
->> > > -   BUILD_BUG_ON(sizeof(buf) !=3D TASK_COMM_LEN);     \
->> > > -   __get_task_comm(buf, sizeof(buf), tsk);         \
->> > > +   strscpy(buf, (tsk)->comm, ARRAY_SIZE(buf));     \
->> >
->> > I see that there's a two-argument macro
->> >
->> >       #define strscpy(dst, src)       sized_strscpy(dst, src, sizeof(=
-dst))
->> >
->> > which is used in patch 2/8
->> >
->> >       diff --git a/kernel/auditsc=2Ec b/kernel/auditsc=2Ec
->> >       index 6f0d6fb6523f=2E=2Ee4ef5e57dde9 100644
->> >       --- a/kernel/auditsc=2Ec
->> >       +++ b/kernel/auditsc=2Ec
->> >       @@ -2730,7 +2730,7 @@ void __audit_ptrace(struct task_struct *t=
-)
->> >               context->target_uid =3D task_uid(t);
->> >               context->target_sessionid =3D audit_get_sessionid(t);
->> >               security_task_getsecid_obj(t, &context->target_sid);
->> >       -       memcpy(context->target_comm, t->comm, TASK_COMM_LEN);
->> >       +       strscpy(context->target_comm, t->comm);
->> >        }
->> >
->> >        /**
+>> This series does the initial wire-up allowing tracers to handle page
+>> faults, but leaves out the actual handling of said page faults as future
+>> work.
 >>
->> Ahh, the actual generic definition is in <include/linux/string=2Eh>=2E
->> You could do
+>> I have tested this against a feature branch of lttng-modules which
+>> implements handling of page faults for the filename argument of the
+>> openat(2) system call.
 >>
->>         diff --git i/include/linux/string=2Eh w/include/linux/string=2E=
-h
->>         index 9edace076ddb=2E=2E060504719904 100644
->>         --- i/include/linux/string=2Eh
->>         +++ w/include/linux/string=2Eh
->>         @@ -76,11 +76,11 @@ ssize_t sized_strscpy(char *, const char *,=
- size_t);
->>           * known size=2E
->>           */
->>          #define __strscpy0(dst, src, =2E=2E=2E)      \
->>         -       sized_strscpy(dst, src, sizeof(dst) + __must_be_array(d=
-st))
->>         +       sized_strscpy(dst, src, ARRAY_SIZE(dst))
->>          #define __strscpy1(dst, src, size)     sized_strscpy(dst, src,=
- size)
+>> This v5 addresses comments from the previous round of review [1].
+> 
+> Hi Mathieu,
+> 
+> Can you resend this and Cc linux-trace-kernel@vger.kernel.org?
+
+Sure, will do for v6. Thanks!
+
+Mathieu
+
+> 
+> That would put it into our patchwork and makes it work with our workflow.
+> 
+>   https://patchwork.kernel.org/project/linux-trace-kernel/list/
+> 
+> Thanks,
+> 
+> -- Steve
+> 
+> 
 >>
->>          #define __strscpy_pad0(dst, src, =2E=2E=2E)  \
->>         -       sized_strscpy_pad(dst, src, sizeof(dst) + __must_be_arr=
-ay(dst))
->>         +       sized_strscpy_pad(dst, src, ARRAY_SIZE(dst))
->>          #define __strscpy_pad1(dst, src, size) sized_strscpy_pad(dst, =
-src, size)
+>> Steven Rostedt suggested separating tracepoints into two separate
+>> sections. It is unclear how that approach would prove to be an
+>> improvement over the currently proposed approach, so those changes were
+>> not incorporated. See [2] for my detailed reply.
 >>
->>          /**
->
->Thank you for your suggestion=2E How does the following commit log look
->to you? Does it meet your expectations?
->
->    string: Use ARRAY_SIZE() in strscpy()
->
->    We can use ARRAY_SIZE() instead to clarify that they are regular char=
-acters=2E
->
->    Co-developed-by: Alejandro Colomar <alx@kernel=2Eorg>
->    Signed-off-by: Alejandro Colomar <alx@kernel=2Eorg>
->    Signed-off-by: Yafang Shao <laoar=2Eshao@gmail=2Ecom>
->
->diff --git a/arch/um/include/shared/user=2Eh b/arch/um/include/shared/use=
-r=2Eh
->index bbab79c0c074=2E=2E07216996e3a9 100644
->--- a/arch/um/include/shared/user=2Eh
->+++ b/arch/um/include/shared/user=2Eh
->@@ -14,7 +14,7 @@
->  * copying too much infrastructure for my taste, so userspace files
->  * get less checking than kernel files=2E
->  */
->-#define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
->+#define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]) + __must_be_array(x))
->
-> /* This is to get size_t and NULL */
-> #ifndef __UM_HOST__
->@@ -60,7 +60,7 @@ static inline void print_hex_dump(const char *level,
->const char *prefix_str,
-> extern int in_aton(char *str);
-> extern size_t strlcat(char *, const char *, size_t);
-> extern size_t sized_strscpy(char *, const char *, size_t);
->-#define strscpy(dst, src)      sized_strscpy(dst, src, sizeof(dst))
->+#define strscpy(dst, src)      sized_strscpy(dst, src, ARRAY_SIZE(dst))
+>> In the previous round, Peter Zijlstra suggested use of SRCU rather than
+>> Tasks Trace RCU. See my reply about the distinction between SRCU and
+>> Tasks Trace RCU [3] and this explanation from Paul E. McKenney about the
+>> purpose of Tasks Trace RCU [4].
+>>
+>> The macros DEFINE_INACTIVE_GUARD and activate_guard are added to
+>> cleanup.h for use in the __DO_TRACE() macro. Those appear to be more
+>> flexible than the guard_if() proposed by Peter Zijlstra in the previous
+>> round of review [5].
+>>
+>> This series is based on kernel v6.9.6.
 
-Uh, but why? strscpy() copies bytes, not array elements=2E Using sizeof() =
-is already correct and using ARRAY_SIZE() could lead to unexpectedly small =
-counts (in admittedly odd situations)=2E
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
 
-What is the problem you're trying to solve here?
-
--Kees
-
---=20
-Kees Cook
 
