@@ -1,369 +1,296 @@
-Return-Path: <bpf+bounces-38248-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38249-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF92496225D
-	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 10:36:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1BEF962415
+	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 11:55:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E4AEA1C21281
-	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 08:36:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 439DA1F215BB
+	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 09:55:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26E5315C15D;
-	Wed, 28 Aug 2024 08:36:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AADC2166F20;
+	Wed, 28 Aug 2024 09:55:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="FzUI8QiL"
+	dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b="pClNqJuN"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2079.outbound.protection.outlook.com [40.107.215.79])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99901142E6F;
-	Wed, 28 Aug 2024 08:36:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724834204; cv=none; b=ODYybxVxn+HlOfBa/PwT8XsQhFJsjQT8BdZgs6SLzQSLiWySiXwgqpB/YygSgbUjCnxseAppWIFhmoS9vSXYPZlCCgxkYz7TDNGl+zvAAzHt4ORU4PCfN+9n/CXeBdzDqsV1xe1utzBTu16sP714P5/SXkCBYAna8An/sXgQMIA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724834204; c=relaxed/simple;
-	bh=uSmvSJeNFmeyFfY8BGu6VB4JiXjq3KkKYAvR2TQtleU=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Lpn5jPyUTyhuCvZA8/L7kIdcBT2Q1fUCwXc6kCLU1IoTAgLaXqWYT80FcomA60XcI+4JkSuZoP6ebnpn8VXcw6cCvz2oEdOmgvzxE9vsqWnjnCxkDjS5JEXHRULyVopesU/EohMgCuKdfVXZKr7UcuyDILytknZPqoOIdLkxumg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=FzUI8QiL; arc=none smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 47S7twWb001449;
-	Wed, 28 Aug 2024 08:36:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=
-	from:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding; s=corp-2023-11-20; bh=erGN/lqsjy+1F1
-	v45hgnTn7sAAhyNEqUCYCfrD4e66w=; b=FzUI8QiLz8N8Q9/kg9sBihxj/oY8ZC
-	kaVESOG/UcGONLSec3hC635Mh29O7hxOpDUdTjjabT3xm9XzA5ilWRxKcqdYvxlk
-	bJPD+0O7qe2cpHrmLeHjcXBmnOm3HomNqgoQUnpWsusEOse+YFnLWo2i8bitu41a
-	wpWcjTxX7t/CG1DkypMhFZnk/N8yFry+PdYMVivyXQSRWUnWU1X7MS50tTzYljgN
-	1NidAHdw9C3NtFRWkM+o+ijq4zuEh7OGv8S0iXLNeUpTdvS2xtqUG3AJ8+xM2URU
-	gOoVexbOghjd/moFl666q1VSZmGpCOPEZ8n3Yv+ArqN+8Hr/67+PS9sg==
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 419pugrs44-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 28 Aug 2024 08:36:18 +0000 (GMT)
-Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 47S72I0x016639;
-	Wed, 28 Aug 2024 08:36:17 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 418a5ten6d-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 28 Aug 2024 08:36:17 +0000
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 47S8KiB0017099;
-	Wed, 28 Aug 2024 08:36:17 GMT
-Received: from localhost.localdomain (dhcp-10-175-47-71.vpn.oracle.com [10.175.47.71])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 418a5ten64-1;
-	Wed, 28 Aug 2024 08:36:16 +0000
-From: Vegard Nossum <vegard.nossum@oracle.com>
-To: Masahiro Yamada <masahiroy@kernel.org>
-Cc: linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
-        kvmarm@lists.linux.dev, kvm@vger.kernel.org,
-        linux-um@lists.infradead.org, bpf@vger.kernel.org,
-        llvm@lists.linux.dev, Vegard Nossum <vegard.nossum@oracle.com>
-Subject: [PATCH] kbuild: use objcopy to generate asm-offsets
-Date: Wed, 28 Aug 2024 10:36:04 +0200
-Message-Id: <20240828083605.3093701-1-vegard.nossum@oracle.com>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 646185A79B;
+	Wed, 28 Aug 2024 09:55:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.215.79
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1724838909; cv=fail; b=CtbmW1DkWY7shPFBERJXjVbr5d1XxdEdWGc9rZbq2UOrCOjkE4kDLavPj2CtznrieINx7SSsX2NemPRYZ3sS+Zg02ap1nJbxAHaarDiUJ+6X2AV4shvnSIho85fivFHhX2wdTOZqgNZyILnSbMhYsCHGTKcS7apa08m08kdHy8Y=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1724838909; c=relaxed/simple;
+	bh=0YDHXNOoimyB/icsM5qzt45ub3u7lkFy8JV1MGtsO0Q=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=FYMzb7uie9SFQSq+bYIOfyYzkAbNiMlh5ofF3fjwaDPTG484HyaD7PbkO1XxLPLTI+QT3EDzEpTBVqt38nbG2gKduAap94hPYyDkGDmigvNeV0Kmb/z2k33DAYtLIDSClUr6LyXL5Yl+4EO0npNauy6zHlw8mAF4sfazlC6aXYU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com; spf=pass smtp.mailfrom=vivo.com; dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b=pClNqJuN; arc=fail smtp.client-ip=40.107.215.79
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vivo.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=wdycC3Uc9ZTqeGB8QirLDlwg9RtBiB8KqNt2sTKr0Esn9NOvo1yIZtGPs+bu0g80RDytPprSri8qjfcl8Tb4tKF/9qDu4WuTIoSplZGZygCnYdeyk2NLM0NvPctuaXTRBSF+RCvoOiQl7m0vk98x88MiPqdbphTIwuOx2LnZSZ7xGhmcwYdWU8adtcVT/blI7hG4qnsULgJNWmNDCUHyRFsI3GZ+Rj3EneFoyV/4vqQLgiyxShj6LNvC7W+fihaKyMYx5mv5Yrl6nog3Vd00wGR72fg0BPuLbD/wi7df0gHHj2RwA46jewbjUsVMb7+M6/FbZxwDzPu7JixHNeSOWQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=gTrKQlIrSEaagSUvoeCGOlYDdg9RT6aJBuujbdB9F3E=;
+ b=rE07YJS2Cse9gp63UU/VmDOWRc5rdJ6l265L4L+2X09RB1lDG2eQ4J4WecpTLpAC3BgFfAW/GI5enjCaOGybRmATGC/uR51titl42iZbLiq4HhR95uPhN1kN/GFj4OP78bT8ZUaBgLaM2fniYRUAPN5Mlly1lUgrzp/Pg0g22xehMMBfWIy5/lWqa4Bl7kN0t/qMRTNEM2z5Hl0C9M8uiPsJ4TIMihOUo4BVFl93y+V3I4ct/DvWzmy0JJSmPMyE5xFFlX5/SyHi4t1G7Z3dWWtE4m2MDKfer5XFUIt04gaWqDE77reuR7JYv50CoU0i4Bxa8ANu7R1wVa2P2Gr48g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gTrKQlIrSEaagSUvoeCGOlYDdg9RT6aJBuujbdB9F3E=;
+ b=pClNqJuNQmraQ4/yqn9azua3eYlR28by54Oqh3288GQzr2EVR7nPknHF0iMhquabMJW42aSwm2S9ntBfY9zUGINBkQOkKAzHPA3siHCeMTYSz4I6XDYwYOKaJ2IaryveeoUxcBJku6pbirRTa+TKJ6oKv5fTds2bf3AWhGB7AqO1qVCVX8WC1Y001lsB+pSrQV0uclzAWtFpcCHBisKXuecJyR3TyFAecxffrJz1/zdFsjMSuvk8uFoa0NxhJckp4B8qdelHNfOIgt8vi1MecKViniFL89xyPxoanGHMpUngA46UGR1fBYZBqdJJyzQWrPkA8bjInO7Amv9G8473qA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from SEYPR06MB5913.apcprd06.prod.outlook.com (2603:1096:101:da::16)
+ by SG2PR06MB5360.apcprd06.prod.outlook.com (2603:1096:4:1db::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7897.24; Wed, 28 Aug
+ 2024 09:54:58 +0000
+Received: from SEYPR06MB5913.apcprd06.prod.outlook.com
+ ([fe80::f049:a716:8200:c4a1]) by SEYPR06MB5913.apcprd06.prod.outlook.com
+ ([fe80::f049:a716:8200:c4a1%4]) with mapi id 15.20.7897.021; Wed, 28 Aug 2024
+ 09:54:58 +0000
+Message-ID: <72d7f850-2143-4287-b2cf-96da367b8941@vivo.com>
+Date: Wed, 28 Aug 2024 17:54:51 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v1 2/2] selftests/bpf: Fix cross-compile issue
+ for some files and a static compile issue for "-lzstd"
+Content-Language: en-US
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
+ Shuah Khan <shuah@kernel.org>, Nick Terrell <terrelln@fb.com>,
+ bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ linux-kernel@vger.kernel.org, opensource.kernel@vivo.com,
+ Yikai Lin <yikai.lin@vivo.com>
+References: <20240827133959.1269178-1-yikai.lin@vivo.com>
+ <20240827133959.1269178-3-yikai.lin@vivo.com>
+ <CAEf4BzZXL9=pOkt=GbrYG2DpDGtXNLS7AHH5rL3adHd50zMKmQ@mail.gmail.com>
+From: Yikai Lin <yikai.lin@vivo.com>
+In-Reply-To: <CAEf4BzZXL9=pOkt=GbrYG2DpDGtXNLS7AHH5rL3adHd50zMKmQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SGBP274CA0011.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b0::23)
+ To SEYPR06MB5913.apcprd06.prod.outlook.com (2603:1096:101:da::16)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
- definitions=2024-08-28_03,2024-08-27_01,2024-05-17_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 mlxlogscore=999
- phishscore=0 bulkscore=0 malwarescore=0 suspectscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2407110000
- definitions=main-2408280060
-X-Proofpoint-GUID: RCp8Tn4L9XlNZemaT9NkL3670WSRULoV
-X-Proofpoint-ORIG-GUID: RCp8Tn4L9XlNZemaT9NkL3670WSRULoV
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SEYPR06MB5913:EE_|SG2PR06MB5360:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6f13abb6-78a5-463f-2160-08dcc74779d1
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|1800799024|7416014|366016;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?NUp0R3R4em5UNFhDMWZrM3RkOXRJUDExUWo2QXF0andDdkRSeDZ2UU8vMFVX?=
+ =?utf-8?B?OHVhekRVMTRrRkVuZWQ1WmEvZStORk1PQU1jcHBoYkxjNFRnNzVtNFNmanhQ?=
+ =?utf-8?B?d1duU0s5YmZMSUloVUhwb1MwdWEzNnFRdFcycDRZbktDRVo4ZTVtejF1V3FM?=
+ =?utf-8?B?YzlkaDRUTkY4SXFWM29icjBUWm1tU05mdTV3Z0k1U09nQUtjT2VTbGRyRW84?=
+ =?utf-8?B?T2ZIc3laYmd6OXpINk54OGVBRVlNQjgyb01nYVlXZDNObkU1ZGdhVTNRV1NL?=
+ =?utf-8?B?TW1YL3NkdEZSc2NxenQyZTJKdng4UnZ5NlhTVWtQdVBTWWRheVVxUzY2OTZF?=
+ =?utf-8?B?TWVwWkYrcElXY1ZvOXRQMjBkaEw0UVBZdCtFS0FGQ0srTFN4RXUzZVloblJH?=
+ =?utf-8?B?Qzc4cDd1eDF6OHZ6WWdWeSthT2ZTZWh6dDlvbUJDeUYrZXBWb0dwV0dteFRM?=
+ =?utf-8?B?YWtBRGUxL2RQNnA0SjlrZXlwM3k1Z2FzYUhzcHN1QjJHTVM2dnRwZEJWbFlx?=
+ =?utf-8?B?UmJhRDJsSlNEZDFrY25hYXNpZ1FrK25CUmhKWlc2WXhrdm84bzBHY0tsTEJC?=
+ =?utf-8?B?TnlnemdBcHVGWlRxU2U3Y2FHNGhkQitWMi9ZS2FDWHBIZXRjYkpnNHJja0FL?=
+ =?utf-8?B?eFJIQlllUFU3R1VDVFcva0hmdEVxVFZINktZcUlsVXhCTzkyUElUWFFPNi9Z?=
+ =?utf-8?B?YnhsOHJHRjZIckZva3ZmMGpVS2Y4RzZRcmtpYzR3VEZWYUozclV1RWQxZ0lB?=
+ =?utf-8?B?RkdEZC90azJhUWRlTWtjbjIzd0U2aGZhdkRsQ29xV2hiR2pUTklXbURvWU5N?=
+ =?utf-8?B?MXl3ZGdMYWwyamJ0amt2Qkt6WE5UeGVUazVIaHBJMjYvZEl6aE9RVWQxeEp2?=
+ =?utf-8?B?d2tBOXRQQW81VnNycURUUlpUNUVwWmk3R2I3NThQeCtlYnBtbnZzWG45M01r?=
+ =?utf-8?B?SkI4OHhzVGRYeGprK2F5SlhINVdoaU92MEVsY2xRaVVGNm0zL2dXWi9OQ2kw?=
+ =?utf-8?B?dkJEZjg5NXI1RTk5ZFE2MS9YbHRRV3MrS2psTlluUytzbFBBZEdCcTNPTTkx?=
+ =?utf-8?B?cHE1ZjBJbWxsUTRnK0VqTkhhbklXelQvWk9ZTmQ4dFRSS0FOWHRrMzljMSs1?=
+ =?utf-8?B?ZFNPSGpoNDI1N2FMbnlxdFozUWNJb3EzZVZyUEcrS0pQSmYyQmhBNytnV1JJ?=
+ =?utf-8?B?VHZoU1o5QkJYc2Y4ckZVeldjbjFtMnFWVEIvK1VpclVkdVBsbWZKRDA5OXNB?=
+ =?utf-8?B?MGpLbHJCR0tzUTFCUUlMSzhIcGRKS3hFWkJXL1h2WUdmb2JReEVraGtaRDJw?=
+ =?utf-8?B?QURaTzV0QUdrRlczZjdVS09uN25DRHhXVWNDN0dQeTloclhrS2l2Mlp2QmJk?=
+ =?utf-8?B?YjFhWm00Y3F3eW42TFdub0V5QW9HMklJVFVEN0Jjblp5cVNHSVN6RUlJRVdF?=
+ =?utf-8?B?NG03RmlKcW1LRUdjNzNUelFrcVFIVFRRSVZsTjdlU3ZBTzY1azRoVlBNeWQr?=
+ =?utf-8?B?RU9vZFZKUG9ERTllcDZZVS9oRGNVazhEOEh4UE4waTlCZkpISzZId2VQV0Y4?=
+ =?utf-8?B?OVZyNkZQVVAvVE92VC9iSmRYL1U2aVVWQUVGWGxtNEJtWFlZclRIL0VVWEkr?=
+ =?utf-8?B?TUNqamlpSnhiTlgzQWR4RXdaaUFtd2NFa2h3REFOb2JTV25VYlpXcWxSV2J2?=
+ =?utf-8?B?dUJCYk9uUlo1Z0FPSXpPV0czcll3Y1J0K21uNlFaVzd6SUVDeXBCTk8rZEMy?=
+ =?utf-8?B?SU9hbUxsamozNk5pcExEUnQ2VVhmOGUrVkF5V0Rsc01HOEV4NzZSTzlONkhC?=
+ =?utf-8?B?WERWblArWmsvQ3BLdFN2UT09?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SEYPR06MB5913.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(1800799024)(7416014)(366016);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?elNjWVJVZi94UVdGRHVUQ0JxOTZXRzZUaE9haUpwSmZiczF0cFlCdW5HWFdH?=
+ =?utf-8?B?OXh0Y25UUHRoQ3BudGZnZkl6d081bklzcEVuRjRwQmNaY0g2YTVvK1owMkVL?=
+ =?utf-8?B?WnY5VzRzNDlIVzIrMHRVWEV6THlvQmI3Y0l4RE5aVzRhckVzVlRFd0o0a2Fi?=
+ =?utf-8?B?NzJPS0FCdENHd2tpdUZ5VS9OeStYVHFYRkdmSTBYeTZvR210dVMwZUZBbGlQ?=
+ =?utf-8?B?OFA3cmpyQ05vV0x6UGdzVDVycSt1d3d3dVpOZ0s1YkRZYzdPNHlkWEJlaGcz?=
+ =?utf-8?B?NTMxa3ZraGxTby96SmF4cGJsRlhQSWdUTVp4RzBJOU5zaHI0TTFxbFN3blRG?=
+ =?utf-8?B?ZktGMklhVXFtTkZJdWJPK2RTemxwejY4YkZXK1FLWVVxSVFLTnBVWjNwUkdY?=
+ =?utf-8?B?bkdpWjZhVzl3TXdPQnlhajE1K0ZDTSszckliWTd0SGQzU2MvOWpFczk4NTRo?=
+ =?utf-8?B?MXRvTmxtbFVrUDl1R3ZabFRxUUM2dzVEemdTc0NvN3NibmltdU13N0kydEl4?=
+ =?utf-8?B?eE92TmZ5QTBEUllWQ1ZmdUJUL0JGN1QySWhSS2c2MjJjN1BhUHhtcVR0SFVD?=
+ =?utf-8?B?WEVaTFFuY0NWSnJCb2xvcTZDamxrd2l2VUlycUFjNnBtUWE5aWI3M2lhYW1D?=
+ =?utf-8?B?TGNmbnpPMy8vMm15Zm1tcTZ0VzN1U1BqZklFNVArb3Nnc2REeHZha3VtUDVC?=
+ =?utf-8?B?TmRuQ0VPQ2xHU2xjM21jZmlqRS83SDVWZGtLalVxamkvbGJ1eXZaQzdFb1kz?=
+ =?utf-8?B?eXE4UkZJRWN5R3pEd00zVEJTRURLNzZMQ0x2eDBNSHd1SjhjR2JiWDJDRzFF?=
+ =?utf-8?B?aGNLSFl5WVZaU0xNMUs2UTdHR0F3T3UrM0plcHBUd3pwWVp3aktNbWdUUDVi?=
+ =?utf-8?B?Yi94WDloaXFMRFFVT1FqSUxGQWwwYTdvTUpQdjlVQVRlN204MGFuRGhwWXN2?=
+ =?utf-8?B?OEZWNUpXdXNQN3Fld2NJdkYzUTNMb1M1aXVzRUcvaHQwR2NyeGM3Tlg5Wmlu?=
+ =?utf-8?B?cmFPWVlLN2wvYkJhaFh3WXBwa0ZTRWx6ZE1CaU5ZWVZTSHFPSlMyRTQ2NGZ0?=
+ =?utf-8?B?d1FKY3JRRC9BK010blRPUU83b1R5OUp4ZTZ4L1BxR3VKN3pWM1hoakM5S25k?=
+ =?utf-8?B?SU9WcHhBRkNtc1lLVE1XN1RUZDRVTTFXL01hOVNUQ0JvK0k4ekp2VEprNW5w?=
+ =?utf-8?B?OFcxS0dqRjFLaEpJbUFsMllBT01Pb05hRXQ5MEVBTTlxWkU3TGtTNnpLM3FB?=
+ =?utf-8?B?NEdydmRBMEtQWHNqaHRNQzlBbURnZ2k0RFg1WWJrTld4aGpMRllMV1dxVWhM?=
+ =?utf-8?B?aHUzZXZDTEdKTWFvajVYQ245ZSt5UUd3cWxVMlJHOHJGLzZvaVlEQUlUODNE?=
+ =?utf-8?B?b1h1NTlpS2cwN01MZnVnLzBUdWhnL3U0VXJsYWk5TytaVENnMlVwcVNxNS9o?=
+ =?utf-8?B?Q0tkMEVpZGEyU3FEZkZkR1FnQ081Z05STEs1S2ZsbEdFMVpNL1JwMEFUd2hn?=
+ =?utf-8?B?SHA4S2xEVzFpVzZPaUwrTlhrdXZ0TlZQc3ZDTURWYnQ0R3dYSkZVK2I3alU0?=
+ =?utf-8?B?djdMMnEvdHdyTjBrczB1UXBCM0hweGhqS1I5OGFPRGJkM2IyZFg0SDZZQ1o4?=
+ =?utf-8?B?bUtkdk1uRmxKWWQwdlVDVDg4MGN4K0EwZGoyU0lsQ1NWQ0d4NS96N1hwN3Z6?=
+ =?utf-8?B?S1VRcm9JOUlFUG11ZjFIMTUvVkdnTWRPd292TU9DRjBZNzFSckVrQ1hRYzcr?=
+ =?utf-8?B?V2pPTCt4Ym5aZ1ErNjFFK2VjQ0ZOalkvOEJEdUF2cjZtdFlIRW01OFFNY0Jx?=
+ =?utf-8?B?WWZPWmxENEFpRDM0UEJTL2s5d0NGei9UTzNWU0UvYjRlek5NT21WVCtDa2g4?=
+ =?utf-8?B?d1JEZDR5RzdDZWMzQ24xZEo5QmMwc0YvOWZDNnk2SGdIdktaRTI2NGgxblJa?=
+ =?utf-8?B?blZyS2hUc3V2Wk1QK0ZyendhYkxwOHd5OEpmdi9ONlp3WmFRbVhubUNDL2dQ?=
+ =?utf-8?B?SFluVWg1ekk5VXU0K3poQ0Njb1hZTlB2ZHVaRTYySS8xbVdjbWxEQ0FiYmJz?=
+ =?utf-8?B?Mm4rTHMzeENFUngyRkVnR1NHcS94Y0ZsdE5QWHZJWTJ5dVA3a1FCUFNhek4z?=
+ =?utf-8?Q?SSAw+rR8YxkvCG0LVXmoaIwe/?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6f13abb6-78a5-463f-2160-08dcc74779d1
+X-MS-Exchange-CrossTenant-AuthSource: SEYPR06MB5913.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Aug 2024 09:54:58.2951
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: hUxmBIZJZQkw7xuAKxhb4Q4mZUfIZBZS1nkKMZBn67aOj9/LbruD5YKupf29qgFbxaG9AN/+9U49P7dBpr44zw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SG2PR06MB5360
 
-In order to give assembly code access to C structs without having to
-hardcore member offsets, the kernel compiles a C source file listing all
-the structs and offsets that are needed in assembly code. Using some
-C preprocessor trickery and a sed script, the compiled assembly code is
-turned back into C preprocessor code that in turn can be used by the
-asssembly code.
+On 2024/8/28 06:49:18, Lin Yikai reply:
 
-This sed script is very hard to read and understand.
+> [Some people who received this message don't often get email from andrii.nakryiko@gmail.com. Learn why this is important at https://aka.ms/LearnAboutSenderIdentification ]
+> 
+> On Tue, Aug 27, 2024 at 6:40 AM Lin Yikai <yikai.lin@vivo.com> wrote:
+>>
+>> 1. Fix cross-compile issue for some files:
+>> [Issue]
+>> When cross-compiling bpf selftests for arm64 on x86_64 host, the following error occurs:
+>> progs/loop2.c:20:7: error: incomplete definition of type 'struct user_pt_regs'
+>>     20 |                 if (PT_REGS_RC(ctx) & 1)
+>>        |                     ^~~~~~~~~~~~~~~
+>>
+>> There are same error in files: loop1.c, loop2.c, loop3.c, loop6.c ???
+>>
+>> [Reason]
+>> On arm64, in file bpf_tracing.h, we use userspace's user_pt_regs,
+>> which is defined in "linux/ptrace.h".
+>> We include the header file by adding "-idirafter /usr/include" for "CLANG_CFLAGS".
+>>
+>> However, during cross-compiling, "linux/ptrace.h" is based on x86_64
+>> and has no definition of "struct user_pt_regs".
+>>
+>> [Fix]
+>> Thus, to fix this issue, we include the Linux source tree's header file directory.
+>>
+> 
+> Hm.. Not sure that's the right fix. Note -D__TARGET_ARCH_$(SRCARCH) in
+> BPF_CFLAGS, that __TARGET_ARCH has to match actual target
+> architecture, so please check that first.
+> 
 
-Remove the sed script and compile the C source listing structs and
-offsets to an object file (instead of assembly code) that embeds C source
-directly. Then extract the C source using objcopy.
+Hi, Andrii, thanks for your advice.
 
-The resulting code is more readable, less fragile, and sligthly shorter.
+After searching, I find needed "user_pt_regs" is defined as below:
+   bpf-next$ find ./ -name "ptrace.h" | xargs grep -rni "user_pt_regs"
+   ./arch/arm64/include/uapi/asm/ptrace.h:88:struct user_pt_regs {
 
-Note to reviewers: The 'objcopy ... /dev/stdout | cat' bit is needed to
-force the correct ordering of the objcopy lines vs. the surrounding echo
-commands; without it, objcopy will open /dev/stdout (which refers to a
-temporary file created by kbuild) and reset the file offset to 0. In
-other words, the pipe ensures that objcopy doesn't overwrite the lines
-that already exist in /dev/stdout.
+So we can directly add it into include directory
+by below approach without "make header_install".
 
-Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
----
- Kbuild                       | 10 +++++-----
- arch/arm/mach-at91/Makefile  |  4 ++--
- arch/arm/mach-omap2/Makefile |  4 ++--
- arch/arm64/kvm/Makefile      |  9 +++++----
- arch/x86/kvm/Makefile        |  4 ++--
- arch/x86/um/Makefile         |  6 +++---
- drivers/memory/Makefile      |  4 ++--
- include/linux/kbuild.h       | 15 +++++++++++----
- samples/bpf/Makefile         |  4 ++--
- scripts/Makefile.lib         | 13 +------------
- scripts/mod/Makefile         |  4 ++--
- 11 files changed, 37 insertions(+), 40 deletions(-)
+   +ifneq ($(CROSS_COMPILE),)
+   +src_uapi_dir := $(srctree)/arch/$(SRCARCH)/include/uapi
+   +BPF_CFLAGS += -I$(src_uapi_dir)
+   +endif
 
-diff --git a/Kbuild b/Kbuild
-index 464b34a08f51e..412b77007deb1 100644
---- a/Kbuild
-+++ b/Kbuild
-@@ -9,9 +9,9 @@
- 
- bounds-file := include/generated/bounds.h
- 
--targets := kernel/bounds.s
-+targets := kernel/bounds.o
- 
--$(bounds-file): kernel/bounds.s FORCE
-+$(bounds-file): kernel/bounds.o FORCE
- 	$(call filechk,offsets,__LINUX_BOUNDS_H__)
- 
- # Generate timeconst.h
-@@ -27,11 +27,11 @@ $(timeconst-file): kernel/time/timeconst.bc FORCE
- 
- offsets-file := include/generated/asm-offsets.h
- 
--targets += arch/$(SRCARCH)/kernel/asm-offsets.s
-+targets += arch/$(SRCARCH)/kernel/asm-offsets.o
- 
--arch/$(SRCARCH)/kernel/asm-offsets.s: $(timeconst-file) $(bounds-file)
-+arch/$(SRCARCH)/kernel/asm-offsets.o: $(timeconst-file) $(bounds-file)
- 
--$(offsets-file): arch/$(SRCARCH)/kernel/asm-offsets.s FORCE
-+$(offsets-file): arch/$(SRCARCH)/kernel/asm-offsets.o FORCE
- 	$(call filechk,offsets,__ASM_OFFSETS_H__)
- 
- # Check for missing system calls
-diff --git a/arch/arm/mach-at91/Makefile b/arch/arm/mach-at91/Makefile
-index 794bd12ab0a8e..4d4be0000fd98 100644
---- a/arch/arm/mach-at91/Makefile
-+++ b/arch/arm/mach-at91/Makefile
-@@ -18,10 +18,10 @@ ifeq ($(CONFIG_PM_DEBUG),y)
- CFLAGS_pm.o += -DDEBUG
- endif
- 
--$(obj)/pm_data-offsets.h: $(obj)/pm_data-offsets.s FORCE
-+$(obj)/pm_data-offsets.h: $(obj)/pm_data-offsets.o FORCE
- 	$(call filechk,offsets,__PM_DATA_OFFSETS_H__)
- 
- $(obj)/pm_suspend.o: $(obj)/pm_data-offsets.h
- 
--targets += pm_data-offsets.s
-+targets += pm_data-offsets.o
- clean-files += pm_data-offsets.h
-diff --git a/arch/arm/mach-omap2/Makefile b/arch/arm/mach-omap2/Makefile
-index daf21127c82f1..991ffe6871d1d 100644
---- a/arch/arm/mach-omap2/Makefile
-+++ b/arch/arm/mach-omap2/Makefile
-@@ -217,12 +217,12 @@ obj-y					+= omap_phy_internal.o
- 
- obj-$(CONFIG_MACH_OMAP2_TUSB6010)	+= usb-tusb6010.o
- 
--$(obj)/pm-asm-offsets.h: $(obj)/pm-asm-offsets.s FORCE
-+$(obj)/pm-asm-offsets.h: $(obj)/pm-asm-offsets.o FORCE
- 	$(call filechk,offsets,__TI_PM_ASM_OFFSETS_H__)
- 
- $(obj)/sleep33xx.o $(obj)/sleep43xx.o: $(obj)/pm-asm-offsets.h
- 
--targets += pm-asm-offsets.s
-+targets += pm-asm-offsets.o
- clean-files += pm-asm-offsets.h
- 
- obj-$(CONFIG_OMAP_IOMMU)		+= omap-iommu.o
-diff --git a/arch/arm64/kvm/Makefile b/arch/arm64/kvm/Makefile
-index 86a629aaf0a13..ee699a683d82c 100644
---- a/arch/arm64/kvm/Makefile
-+++ b/arch/arm64/kvm/Makefile
-@@ -28,17 +28,18 @@ kvm-y += arm.o mmu.o mmio.o psci.o hypercalls.o pvtime.o \
- kvm-$(CONFIG_HW_PERF_EVENTS)  += pmu-emul.o pmu.o
- kvm-$(CONFIG_ARM64_PTR_AUTH)  += pauth.o
- 
--always-y := hyp_constants.h hyp-constants.s
-+always-y := hyp_constants.h hyp-constants.o
- 
- define rule_gen_hyp_constants
- 	$(call filechk,offsets,__HYP_CONSTANTS_H__)
- endef
- 
- CFLAGS_hyp-constants.o = -I $(src)/hyp/include
--$(obj)/hyp-constants.s: $(src)/hyp/hyp-constants.c FORCE
--	$(call if_changed_dep,cc_s_c)
- 
--$(obj)/hyp_constants.h: $(obj)/hyp-constants.s FORCE
-+$(obj)/hyp-constants.o: $(src)/hyp/hyp-constants.c FORCE
-+	$(call if_changed_dep,cc_o_c)
-+
-+$(obj)/hyp_constants.h: $(obj)/hyp-constants.o FORCE
- 	$(call if_changed_rule,gen_hyp_constants)
- 
- obj-kvm := $(addprefix $(obj)/, $(kvm-y))
-diff --git a/arch/x86/kvm/Makefile b/arch/x86/kvm/Makefile
-index 5494669a055a6..3b561c7e7c4f9 100644
---- a/arch/x86/kvm/Makefile
-+++ b/arch/x86/kvm/Makefile
-@@ -42,8 +42,8 @@ $(obj)/svm/vmenter.o: $(obj)/kvm-asm-offsets.h
- AFLAGS_vmx/vmenter.o    := -iquote $(obj)
- $(obj)/vmx/vmenter.o: $(obj)/kvm-asm-offsets.h
- 
--$(obj)/kvm-asm-offsets.h: $(obj)/kvm-asm-offsets.s FORCE
-+$(obj)/kvm-asm-offsets.h: $(obj)/kvm-asm-offsets.o FORCE
- 	$(call filechk,offsets,__KVM_ASM_OFFSETS_H__)
- 
--targets += kvm-asm-offsets.s
-+targets += kvm-asm-offsets.o
- clean-files += kvm-asm-offsets.h
-diff --git a/arch/x86/um/Makefile b/arch/x86/um/Makefile
-index 36e67fc97c22f..6563503d4b25d 100644
---- a/arch/x86/um/Makefile
-+++ b/arch/x86/um/Makefile
-@@ -38,11 +38,11 @@ subarch-$(CONFIG_MODULES) += ../kernel/module.o
- 
- USER_OBJS := bugs_$(BITS).o ptrace_user.o fault.o
- 
--$(obj)/user-offsets.s: c_flags = -Wp,-MD,$(depfile) $(USER_CFLAGS) \
-+$(obj)/user-offsets.o: c_flags = -Wp,-MD,$(depfile) $(USER_CFLAGS) \
- 	-Iarch/x86/include/generated
--targets += user-offsets.s
-+targets += user-offsets.o
- 
--include/generated/user_constants.h: $(obj)/user-offsets.s FORCE
-+include/generated/user_constants.h: $(obj)/user-offsets.o FORCE
- 	$(call filechk,offsets,__USER_CONSTANT_H__)
- 
- UNPROFILE_OBJS := stub_segv.o
-diff --git a/drivers/memory/Makefile b/drivers/memory/Makefile
-index d2e6ca9abbe02..efae95f315a12 100644
---- a/drivers/memory/Makefile
-+++ b/drivers/memory/Makefile
-@@ -34,8 +34,8 @@ ti-emif-sram-objs		:= ti-emif-pm.o ti-emif-sram-pm.o
- 
- $(obj)/ti-emif-sram-pm.o: $(obj)/ti-emif-asm-offsets.h
- 
--$(obj)/ti-emif-asm-offsets.h: $(obj)/emif-asm-offsets.s FORCE
-+$(obj)/ti-emif-asm-offsets.h: $(obj)/emif-asm-offsets.o FORCE
- 	$(call filechk,offsets,__TI_EMIF_ASM_OFFSETS_H__)
- 
--targets += emif-asm-offsets.s
-+targets += emif-asm-offsets.o
- clean-files += ti-emif-asm-offsets.h
-diff --git a/include/linux/kbuild.h b/include/linux/kbuild.h
-index e7be517aaaf68..d253ae4dfd1c1 100644
---- a/include/linux/kbuild.h
-+++ b/include/linux/kbuild.h
-@@ -2,15 +2,22 @@
- #ifndef __LINUX_KBUILD_H
- #define __LINUX_KBUILD_H
- 
--#define DEFINE(sym, val) \
--	asm volatile("\n.ascii \"->" #sym " %0 " #val "\"" : : "i" (val))
-+#define _LINE(x, ...) \
-+	asm volatile( \
-+		".pushsection \".data.kbuild\"; "\
-+		".ascii \"" x "\\n\"; "\
-+		".popsection" : : __VA_ARGS__)
- 
--#define BLANK() asm volatile("\n.ascii \"->\"" : : )
-+#define DEFINE(sym, val) \
-+	_LINE("#define " #sym " %c0 /* " #val " */", "i" (val))
- 
- #define OFFSET(sym, str, mem) \
- 	DEFINE(sym, offsetof(struct str, mem))
- 
-+#define BLANK() \
-+	_LINE("")
-+
- #define COMMENT(x) \
--	asm volatile("\n.ascii \"->#" x "\"")
-+	_LINE("/* " #x " */")
- 
- #endif
-diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
-index 3e003dd6bea09..a5d86ac8f5f57 100644
---- a/samples/bpf/Makefile
-+++ b/samples/bpf/Makefile
-@@ -270,10 +270,10 @@ $(LIBBPF_OUTPUT) $(BPFTOOL_OUTPUT):
- 	$(call msg,MKDIR,$@)
- 	$(Q)mkdir -p $@
- 
--$(obj)/syscall_nrs.h:	$(obj)/syscall_nrs.s FORCE
-+$(obj)/syscall_nrs.h:	$(obj)/syscall_nrs.o FORCE
- 	$(call filechk,offsets,__SYSCALL_NRS_H__)
- 
--targets += syscall_nrs.s
-+targets += syscall_nrs.o
- clean-files += syscall_nrs.h
- 
- FORCE:
-diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
-index 207325eaf1d1c..f78b0b12ace26 100644
---- a/scripts/Makefile.lib
-+++ b/scripts/Makefile.lib
-@@ -583,17 +583,6 @@ quiet_cmd_zstd22_with_size = ZSTD22  $@
- # ASM offsets
- # ---------------------------------------------------------------------------
- 
--# Default sed regexp - multiline due to syntax constraints
--#
--# Use [:space:] because LLVM's integrated assembler inserts <tab> around
--# the .ascii directive whereas GCC keeps the <space> as-is.
--define sed-offsets
--	's:^[[:space:]]*\.ascii[[:space:]]*"\(.*\)".*:\1:; \
--	/^->/{s:->#\(.*\):/* \1 */:; \
--	s:^->\([^ ]*\) [\$$#]*\([^ ]*\) \(.*\):#define \1 \2 /* \3 */:; \
--	s:->::; p;}'
--endef
--
- # Use filechk to avoid rebuilds when a header changes, but the resulting file
- # does not
- define filechk_offsets
-@@ -605,7 +594,7 @@ define filechk_offsets
- 	 echo " * This file was generated by Kbuild"; \
- 	 echo " */"; \
- 	 echo ""; \
--	 sed -ne $(sed-offsets) < $<; \
-+	 $(OBJCOPY) -j .data.kbuild -O binary $< /dev/stdout | cat; \
- 	 echo ""; \
- 	 echo "#endif"
- endef
-diff --git a/scripts/mod/Makefile b/scripts/mod/Makefile
-index c729bc936bae1..3c3f5e16a30a2 100644
---- a/scripts/mod/Makefile
-+++ b/scripts/mod/Makefile
-@@ -8,10 +8,10 @@ modpost-objs	:= modpost.o file2alias.o sumversion.o symsearch.o
- 
- devicetable-offsets-file := devicetable-offsets.h
- 
--$(obj)/$(devicetable-offsets-file): $(obj)/devicetable-offsets.s FORCE
-+$(obj)/$(devicetable-offsets-file): $(obj)/devicetable-offsets.o FORCE
- 	$(call filechk,offsets,__DEVICETABLE_OFFSETS_H__)
- 
--targets += $(devicetable-offsets-file) devicetable-offsets.s
-+targets += $(devicetable-offsets-file) devicetable-offsets.o
- 
- # dependencies on generated files need to be listed explicitly
- 
--- 
-2.34.1
+I'll test it and send a v2 patch.
+
+> pw-bot: cr
+> 
+>> 2. Fix static compile issue for "-lzstd":
+>> [Issue]
+>> By running the command "LDLIBS=-static LDFLAGS=--sysroot=/aarch64-linux-gnu/libc ./vmtest.sh -s -- ./test_progs",
+>> during static cross-compiling, an error occurs:
+>> /aarch64-linux-gnu/bin/ld: aarch64-linux-gnu/libc/usr/lib/libelf.a(elf_compress.o): in function `__libelf_compress':
+>> (.text+0xec): undefined reference to `ZSTD_createCCtx'
+>> /aarch64-linux-gnu/bin/ld: (.text+0xf0): undefined reference to `ZSTD_createCCtx'
+>> ...
+>>
+>> [Fix]
+>> For static compile, add "LDLIBS += -lzstd".
+> 
+> we can probably just add it unconditionally, no? But please send it as
+> a separate change in its own patch
+> 
+Thanks, I'll try it for v2 patch.
+
+>>
+>> Signed-off-by: Lin Yikai <yikai.lin@vivo.com>
+>> ---
+>>   tools/testing/selftests/bpf/Makefile | 12 +++++++++++-
+>>   1 file changed, 11 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+>> index ec7d425c4022..5b725bc890d2 100644
+>> --- a/tools/testing/selftests/bpf/Makefile
+>> +++ b/tools/testing/selftests/bpf/Makefile
+>> @@ -48,6 +48,10 @@ CFLAGS += -g $(OPT_FLAGS) -rdynamic                                  \
+>>   LDFLAGS += $(SAN_LDFLAGS)
+>>   LDLIBS += $(LIBELF_LIBS) -lz -lrt -lpthread
+>>
+>> +ifneq (,$(findstring -static,$(LDLIBS)))
+>> +LDLIBS += -lzstd
+>> +endif
+>> +
+>>   LDLIBS += $(shell $(PKG_CONFIG) --libs libpcap 2>/dev/null)
+>>   CFLAGS += $(shell $(PKG_CONFIG) --cflags libpcap 2>/dev/null)
+>>   CFLAGS += $(shell $(PKG_CONFIG) --exists libpcap 2>/dev/null && echo "-DTRAFFIC_MONITOR=1")
+>> @@ -443,13 +447,19 @@ CLANG_TARGET_ARCH = --target=$(notdir $(CROSS_COMPILE:%-=%))
+>>   endif
+>>
+>>   CLANG_SYS_INCLUDES = $(call get_sys_includes,$(CLANG),$(CLANG_TARGET_ARCH))
+>> +CLANG_CFLAGS = $(CLANG_SYS_INCLUDES)
+>> +
+>>   BPF_CFLAGS = -g -Wall -Werror -D__TARGET_ARCH_$(SRCARCH) $(MENDIAN)    \
+>>               -I$(INCLUDE_DIR) -I$(CURDIR) -I$(APIDIR)                   \
+>>               -I$(abspath $(OUTPUT)/../usr/include)                      \
+>>               -Wno-compare-distinct-pointer-types
+>>   # TODO: enable me -Wsign-compare
+>>
+>> -CLANG_CFLAGS = $(CLANG_SYS_INCLUDES)
+>> +#"make headers_install" at first
+>> +ifneq ($(CROSS_COMPILE),)
+>> +src_uapi_dir := $(srctree)/usr/include
+>> +BPF_CFLAGS += -I$(src_uapi_dir)
+>> +endif
+>>
+>>   $(OUTPUT)/test_l4lb_noinline.o: BPF_CFLAGS += -fno-inline
+>>   $(OUTPUT)/test_xdp_noinline.o: BPF_CFLAGS += -fno-inline
+>> --
+>> 2.34.1
+>>
 
 
