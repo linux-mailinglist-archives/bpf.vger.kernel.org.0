@@ -1,141 +1,153 @@
-Return-Path: <bpf+bounces-38297-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38298-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69B87962E7D
-	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 19:29:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E85B962EBE
+	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 19:44:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9CB761C21A36
-	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 17:29:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0C4B4281B61
+	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 17:44:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F059B1A4F1F;
-	Wed, 28 Aug 2024 17:29:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE1F81A7068;
+	Wed, 28 Aug 2024 17:44:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b="Fa/VYNpy"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="oeL/GHFF"
 X-Original-To: bpf@vger.kernel.org
-Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
+Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 137EE13C8E8
-	for <bpf@vger.kernel.org>; Wed, 28 Aug 2024 17:29:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.67.36.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCBE0188013
+	for <bpf@vger.kernel.org>; Wed, 28 Aug 2024 17:44:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724866157; cv=none; b=Lmx8gkRkI3RiQbIyqViMbTuUokBnpIdU7d4wqkvXn9S8fCVoVE8W0TGyfjt090fY+nig/9H7AARwWO45W8+gdaGnI7ljwSPxda9+f96875LtdBm1HrBAXV7RIz546Qt5OnOax2/ykgeawvgs9Mdk8DA4YWjNKfWDcxu6vWuPwhs=
+	t=1724867075; cv=none; b=DF8LWckco++z4RXjwrfzwQidl5S+PZs5a41GZQq83M8yext3/N/5VnrxU22b3daY0WwyV6aTTJVLMnNO8rINoZ1Zx9S1piOLOrAczl1ep99gcHZRH4B8JAp/X3UPBFFWw+Fe3uCN+GCBMiNTqSaYXc4y2yBPrPIlZzy+K3LKAc0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724866157; c=relaxed/simple;
-	bh=5stywCFynSdmVXFZ9+R+kgdCoZN4IvbWmEKe8u6DSqM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aLUFV8RdkiHze75JX50t2xrK/x+4HwWnhFFzNluzy+75qZ/gUhztLV/HJQwB/uaBSPSekCr8+qGpUGc++UUVfUf0jbgzNDTzo3IhbPTdDl3M104M/t4quqbavmUB0rLSbD4rBItCdZsLU8kRakbHFCIY4OWgbviR8oNyc8x0lyw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net; spf=pass smtp.mailfrom=posteo.net; dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b=Fa/VYNpy; arc=none smtp.client-ip=185.67.36.66
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=posteo.net
-Received: from submission (posteo.de [185.67.36.169]) 
-	by mout02.posteo.de (Postfix) with ESMTPS id 4304E240104
-	for <bpf@vger.kernel.org>; Wed, 28 Aug 2024 19:29:07 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-	t=1724866147; bh=5stywCFynSdmVXFZ9+R+kgdCoZN4IvbWmEKe8u6DSqM=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:Content-Transfer-Encoding:From;
-	b=Fa/VYNpyw/gbn38EhaXWk+de2b9pF7uT824Ms3uPGzxcSA5o8bsTxU9qG6exYoIQ6
-	 UYoTNNQXMlArlz2Zwyy+wDVjislLM6BVk0Yd8EUsDs0Mplj4RtA0qxm7IkrDC83m5F
-	 9GQ0hGJTpKBFZ2JqCRqXJDnv3poRpRaBhxEspqQpi5s0FQIeZXokq/LWISLx0Og2/9
-	 6se47p8Yz5tXmwwH/UZ+Vs5oLZQi7i2O07hLTWr7/awVLG4ETPMMZ+QjXnJ6hDHlHe
-	 3njh7BFGUqbI0tLZB8PjSHT6SkLSHmbH2TfKM+X8+p1zURHjMdXjUGpJDpBAfOzN/E
-	 ugLRKh8TsTjFQ==
-Received: from customer (localhost [127.0.0.1])
-	by submission (posteo.de) with ESMTPSA id 4WvBGn0lNgz6twd;
-	Wed, 28 Aug 2024 19:29:04 +0200 (CEST)
-Date: Wed, 28 Aug 2024 17:28:39 +0000
-From: Daniel =?utf-8?Q?M=C3=BCller?= <deso@posteo.net>
-To: Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
-	martin.lau@kernel.org, kernel-team@meta.com
-Subject: Re: [PATCH bpf-next] libbpf: fix bpf_object__open_skeleton()'s
- mishandling of options
-Message-ID: <ktql72figcdzhjtu56mnjyxqvma4s7wf3g65ygd4kdsjovsbwl@4zltm7wh237q>
-References: <20240827203721.1145494-1-andrii@kernel.org>
+	s=arc-20240116; t=1724867075; c=relaxed/simple;
+	bh=qE544IgORjsuKCgM+1/FNoCEJ6WjIbOm/2/VzeFWJxw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=tzTBbr3AuNrp/U4wBGUDLndhTyvgHiplnDqM4JkLku3Wq88YbvLwQ73jY2pt4H2SmYCsF2Prmqy0HEVzrxieOF+px7OMhmRAGWahXTEOp7ynTv2+KvRx4f/iduvwMcDv/W9OWiPA1gIBLTFIVhYHz6l9Hl8RLgI43XgM74hHwzY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=oeL/GHFF; arc=none smtp.client-ip=95.215.58.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <669bc1c6-2c8c-483f-8d38-0a705463a25d@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1724867069;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=h5b44qG8MByrSjeIVGAHIZjnLcR1H2bOYorOvEoA02k=;
+	b=oeL/GHFF+sqXIehgTHej7d4ec6mwXujqrrTtjRv+450RkHivLJqObVclYDx6yVqB4H72+m
+	8cBQJf/Q0XV3elLZ/xK5rjhcFwluYjz1Sq+ECoAP24UKoJ0pKXEJr6D1hyrD9PO3STdbL9
+	DTnXbrRPF+X1/FafldasdmRGaJa/wG8=
+Date: Wed, 28 Aug 2024 10:44:24 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Subject: Re: [PATCH v4 bpf-next 2/9] bpf: Adjust BPF_JMP that jumps to the 1st
+ insn of the prologue
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Eduard Zingerman <eddyz87@gmail.com>, Yonghong Song
+ <yonghong.song@linux.dev>, Amery Hung <ameryhung@gmail.com>,
+ Kernel Team <kernel-team@meta.com>
+References: <20240827194834.1423815-1-martin.lau@linux.dev>
+ <20240827195208.1435815-1-martin.lau@linux.dev>
+ <CAADnVQJbGCB5Hjb8NPU7P0ZOwR_EWcREuxsBOvyo7cRggdioDA@mail.gmail.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <CAADnVQJbGCB5Hjb8NPU7P0ZOwR_EWcREuxsBOvyo7cRggdioDA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240827203721.1145494-1-andrii@kernel.org>
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, Aug 27, 2024 at 01:37:21PM GMT, Andrii Nakryiko wrote:
-> We do an ugly copying of options in bpf_object__open_skeleton() just to
-> be able to set object name from skeleton's recorded name (while still
-> allowing user to override it through opts->object_name).
+On 8/28/24 9:48 AM, Alexei Starovoitov wrote:
+> On Tue, Aug 27, 2024 at 12:53â€¯PM Martin KaFai Lau <martin.lau@linux.dev> wrote:
+>>
+>> From: Martin KaFai Lau <martin.lau@kernel.org>
+>>
+>> The next patch will add a ctx ptr saving instruction
+>> "(r1 = *(u64 *)(r10 -8)" at the beginning for the main prog
+>> when there is an epilogue patch (by the .gen_epilogue() verifier
+>> ops added in the next patch).
+>>
+>> There is one corner case if the bpf prog has a BPF_JMP that jumps
+>> to the 1st instruction. It needs an adjustment such that
+>> those BPF_JMP instructions won't jump to the newly added
+>> ctx saving instruction.
+>> The commit 5337ac4c9b80 ("bpf: Fix the corner case with may_goto and jump to the 1st insn.")
+>> has the details on this case.
+>>
+>> Note that the jump back to 1st instruction is not limited to the
+>> ctx ptr saving instruction. The same also applies to the prologue.
+>> A later test, pro_epilogue_goto_start.c, has a test for the prologue
+>> only case.
+>>
+>> Thus, this patch does one adjustment after gen_prologue and
+>> the future ctx ptr saving. It is done by
+>> adjust_jmp_off(env->prog, 0, delta) where delta has the total
+>> number of instructions in the prologue and
+>> the future ctx ptr saving instruction.
+>>
+>> The adjust_jmp_off(env->prog, 0, delta) assumes that the
+>> prologue does not have a goto 1st instruction itself.
+>> To accommodate the prologue might have a goto 1st insn itself,
+>> adjust_jmp_off() needs to skip the prologue instructions. This patch
+>> adds a skip_cnt argument to the adjust_jmp_off(). The skip_cnt is the
+>> number of instructions at the beginning that does not need adjustment.
+>> adjust_jmp_off(prog, 0, delta, delta) is used in this patch.
+>>
+>> Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
+>> ---
+>>   kernel/bpf/verifier.c | 11 +++++++----
+>>   1 file changed, 7 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+>> index b408692a12d7..8714b83c5fb8 100644
+>> --- a/kernel/bpf/verifier.c
+>> +++ b/kernel/bpf/verifier.c
+>> @@ -19277,14 +19277,14 @@ static struct bpf_prog *bpf_patch_insn_data(struct bpf_verifier_env *env, u32 of
+>>    * For all jmp insns in a given 'prog' that point to 'tgt_idx' insn adjust the
+>>    * jump offset by 'delta'.
+>>    */
+>> -static int adjust_jmp_off(struct bpf_prog *prog, u32 tgt_idx, u32 delta)
+>> +static int adjust_jmp_off(struct bpf_prog *prog, u32 tgt_idx, u32 delta, u32 skip_cnt)
+>>   {
+>> -       struct bpf_insn *insn = prog->insnsi;
+>> +       struct bpf_insn *insn = prog->insnsi + skip_cnt;
+>>          u32 insn_cnt = prog->len, i;
+>>          s32 imm;
+>>          s16 off;
+>>
+>> -       for (i = 0; i < insn_cnt; i++, insn++) {
+>> +       for (i = skip_cnt; i < insn_cnt; i++, insn++) {
 > 
-> This is not just ugly, but it also is broken due to memcpy() that
-> doesn't take into account potential skel_opts' and user-provided opts'
-> sizes differences due to backward and forward compatibility. This leads
-> to copying over extra bytes and then failing to validate options
-> properly. It could, technically, lead also to SIGSEGV, if we are unlucky.
+> Do we really need to add this argument?
 > 
-> So just get rid of that memory copy completely and instead pass
-> default object name into bpf_object_open() directly, simplifying all
-> this significantly. The rule now is that obj_name should be non-NULL for
-> bpf_object_open() when called with in-memory buffer, so validate that
-> explicitly as well.
+>> -               WARN_ON(adjust_jmp_off(env->prog, subprog_start, 1));
+>> +               WARN_ON(adjust_jmp_off(env->prog, subprog_start, 1, 0));
 > 
-> We adopt bpf_object__open_mem() to this as well and generate default
-> name (based on buffer memory address and size) outside of bpf_object_open().
+> We can always do for (i = delta; ...
 > 
-> Fixes: d66562fba1ce ("libbpf: Add BPF object skeleton support")
-> Reported-by: Daniel Müller <deso@posteo.net>
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> ---
->  tools/lib/bpf/libbpf.c | 52 +++++++++++++++---------------------------
->  1 file changed, 19 insertions(+), 33 deletions(-)
-> 
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index e55353887439..d3a542649e6b 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -13761,29 +13763,13 @@ static int populate_skeleton_progs(const struct bpf_object *obj,
->  int bpf_object__open_skeleton(struct bpf_object_skeleton *s,
->  			      const struct bpf_object_open_opts *opts)
->  {
-> -	DECLARE_LIBBPF_OPTS(bpf_object_open_opts, skel_opts,
-> -		.object_name = s->name,
-> -	);
->  	struct bpf_object *obj;
->  	int err;
->  
-> -	/* Attempt to preserve opts->object_name, unless overriden by user
-> -	 * explicitly. Overwriting object name for skeletons is discouraged,
-> -	 * as it breaks global data maps, because they contain object name
-> -	 * prefix as their own map name prefix. When skeleton is generated,
-> -	 * bpftool is making an assumption that this name will stay the same.
-> -	 */
-> -	if (opts) {
-> -		memcpy(&skel_opts, opts, sizeof(*opts));
-> -		if (!opts->object_name)
-> -			skel_opts.object_name = s->name;
-> -	}
-> -
-> -	obj = bpf_object__open_mem(s->data, s->data_sz, &skel_opts);
-> -	err = libbpf_get_error(obj);
-> -	if (err) {
-> -		pr_warn("failed to initialize skeleton BPF object '%s': %d\n",
-> -			s->name, err);
-> +	obj = bpf_object_open(NULL, s->data, s->data_sz, s->name, opts);
-> +	if (IS_ERR(obj)) {
-> +		err = PTR_ERR(obj);
-> +		pr_warn("failed to initialize skeleton BPF object '%s': %d\n", s->name, err);
+> The above case of skip_cnt == 0 is lucky to work this way.
+> It would be less surprising to skip all insns in the patch.
+> Maybe I'm missing something.
 
-Ideally we'd do the same dance here for the name that we do in
-bpf_object_open, right? Otherwise the warning may be mildly confusing if
-  > pr_debug("loading object '%s' from buffer\n", obj_name)
-earlier refers to a potentially different name?
+For subprog_start case, tgt_idx (where the patch started) may not be 0. How 
+about this:
 
-Seems minor, though. Thanks for the fix.
+	for (i = 0; i < insn_cnt; i++, insn++) {
+		if (tgt_idx <= i && i < tgt_idx + delta)
+			continue;
 
-Reviewed-by: Daniel Müller <deso@posteo.net>
+		/* ... */
+	}
+
 
