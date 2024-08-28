@@ -1,146 +1,318 @@
-Return-Path: <bpf+bounces-38320-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38321-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62FE996344E
-	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 00:02:25 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71AF69634FD
+	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 00:47:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 95DB01C22A0A
-	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 22:02:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EED061F23801
+	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 22:47:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 498D3165EFB;
-	Wed, 28 Aug 2024 22:02:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F09D1ACE0F;
+	Wed, 28 Aug 2024 22:47:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Aup3wiqu"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="nhTZk34C"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79BA81586CF
-	for <bpf@vger.kernel.org>; Wed, 28 Aug 2024 22:02:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7866915A858
+	for <bpf@vger.kernel.org>; Wed, 28 Aug 2024 22:47:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724882538; cv=none; b=ezvGQclzs+d7k1UXLaB7+9ED7kccBh4Gn3NhPiaDQZI/6Um6ZYrho93mQK/8X9UjA14m92jGUijsYhYlVYLRe3IzMpfO5ZOC82eGFdxdNYqiVvGihye+c0FT+QVVHo1bvgqw+u8jSXf1oIHdQfhMBCk1NkM0A5LVYoPBbVbt0nc=
+	t=1724885252; cv=none; b=AjIRnwgW24nFaH8hkuGNBdqNqrcmk/IIHD9BGGPnPXUPq5YA0ipsuvq77+Djpbp1YO1OcGxpqqe1CnfqFej3Gpi1q1ahJAPuc4qEtBq5bwYkTC8/gjyQ18atGxkhIBu68g+SZf6sHkLiao/boP5Ln3RrYCTTebnrEMU/SEKIwV8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724882538; c=relaxed/simple;
-	bh=LwNWUqmvYob5g6SWQrkiVvdJRQ3zBxvPdeSLY13IAL8=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=hN1kffDmBo3pOi70NR2asxPeSDXXaxzVuaFtnkFFOkJimAVzJLBQZHKNN5mnNKppcFR0MaCH0bwfd7XEtHz88/uAsKCF4XWPUnFE6XCLT3pBxME5JOnp9Hd59Lul0GRiAJb8iP0E4zprMNIFyLjoQloi5GZIWsXJ8/SG3aFWNW8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Aup3wiqu; arc=none smtp.client-ip=209.85.210.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-71433096e89so6165351b3a.3
-        for <bpf@vger.kernel.org>; Wed, 28 Aug 2024 15:02:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1724882537; x=1725487337; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=gvUlonW5WjMSS24X0G9RzaIySVKz0rXKQNbsy5fRgKM=;
-        b=Aup3wiquHJadTwvYu/ZeQG32USuEiavUzHyO5wVpsBjO0DAaiKr+29KKjuYn0g2o+9
-         ib5CujuGxEyx9AKDiX9yhC+Zw+oLStXsObv+qWKSZTvnMTkBdOv/gh6bVXRcMbsPg5xr
-         K/H1HprWnRaaxDRSWCexbKF8QhApGvINaYUF0zE2nwqrMMOdG4TUofVZYKMTA8a+sNPF
-         bkf8n3ZK90wt05yqvllCRod7gPa4rdxNMoeMz1IEC0BDmJOdKC3jfQJN8JZAxSCMJ6bm
-         MOmXWIeKZ/s7DW7iXx3KwFwAF2hOyKSdNO7LQLhScBhtxcNkmYZN4fYr3ZF1T9FXonAN
-         nKvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724882537; x=1725487337;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=gvUlonW5WjMSS24X0G9RzaIySVKz0rXKQNbsy5fRgKM=;
-        b=pPr7ENUdsrwPeworFvn9mQBku4e9ImM1nStHZ8rUcv1KvBjwEt7r6RuQ5Auaw/PhYb
-         w/IlNrkaDOYtHMXd1aWXFW31Kj+qn3BNPaVN5RPgL35Mj5fUJvhRBSUiygeu5zKjhyom
-         07gDd1t7wDuqyl0+pG+6BtjJPJnk3enFftegmMrqKuVmBbmYubSCjcTQcDrt+uYUQ9es
-         W1CKzzTE9F/cD7BJg/5LDU2fGTYXMAUuvxglVXH+mtQC4j0Ushwrxmso1Y26p19Arwtr
-         1CxjHstwbumF4bxqeRZ9W1TxJJXtsoh2nKga0X/6zWZgkkIyjXiL0eOVFLKv4LxGBXPG
-         TTgA==
-X-Forwarded-Encrypted: i=1; AJvYcCUo6y2T7JQTiLGajjaMF3yvu+bpSY2qwnDHDZ7MRiOJN6KGMfgUo9gT5HHFn6aocRUHvfI=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxC6XooG1UyxYFW23AjVwnqWAB9ETl94HjKPKp+khZ50TV9ilPn
-	5kHO38fx7AHf5GVPaeUaAuxKu4NmnScjfbXrn2+XeGJl6DKQbyAreDxu9A==
-X-Google-Smtp-Source: AGHT+IE8XQjljzPetUhaL3pNpfmaMCOliE2ANt7oHUwP+Ijlod6p2u7nZs7ZFrcCE1jqO9QZAMdtag==
-X-Received: by 2002:a05:6a00:91a0:b0:70d:2b1b:a37f with SMTP id d2e1a72fcca58-715dfc22895mr1056421b3a.24.1724882536589;
-        Wed, 28 Aug 2024 15:02:16 -0700 (PDT)
-Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-715c49aa23dsm3136475b3a.5.2024.08.28.15.02.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Aug 2024 15:02:15 -0700 (PDT)
-Message-ID: <b48f348c76dd5b724384aef7c7c067877b28ee5b.camel@gmail.com>
-Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: do not update vmlinux.h
- unnecessarily
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Ihor Solodrai <ihor.solodrai@pm.me>, bpf@vger.kernel.org,
- andrii@kernel.org
-Cc: ast@kernel.org, daniel@iogearbox.net, mykolal@fb.com
-Date: Wed, 28 Aug 2024 15:02:11 -0700
-In-Reply-To: <20240828174608.377204-2-ihor.solodrai@pm.me>
-References: <20240828174608.377204-1-ihor.solodrai@pm.me>
-	 <20240828174608.377204-2-ihor.solodrai@pm.me>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.4 (3.52.4-1.fc40) 
+	s=arc-20240116; t=1724885252; c=relaxed/simple;
+	bh=JgUoRbFenP7vs8Wa6ItRUTXZr40k2I8duWk+Pou17ag=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=VYDqsKUmEDKC4169UorvaZMDHIbR610r2CBWvtHsqWcQu4a0ddCGz1dhk0TxlovSgFDznQ7BuG8hgSVoephFd3T2TrXfNvkj29vqnKKZf/c0kj9fUjwLcEnypUbD7ZuVQkmneJ+EBENVGOXc1OaVl3nDKSZc0GcSGxic/VVcudY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=nhTZk34C; arc=none smtp.client-ip=91.218.175.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <7e2ad37e-e750-4cbd-8305-bf16bbebcc53@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1724885247;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=hYTWcigkIiAne3TySTUR7PgX18rfHUfqg1rg2LiWIAY=;
+	b=nhTZk34CDWvAJti1DBsCV7L+4cYB4HdJrhEWAAqnUW2jFayd9v7iQaNfHPD/lOd0Lmt3sr
+	G/fQKaqOaFEOsP8DRiev8V4HNWUAN5Em9CRjSdBrrmqB2SnY7WxqTBWDngBYQEOsuC2DQj
+	9GlgG4FkVY25vhoZMAsNYHRpJ92lwoQ=
+Date: Wed, 28 Aug 2024 15:47:21 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [PATCH bpf-next] bpf, x64: Fix a jit convergence issue
+Content-Language: en-GB
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>,
+ Daniel Hodges <hodgesd@meta.com>
+References: <20240825200406.1874982-1-yonghong.song@linux.dev>
+ <CAADnVQ+5HD1ZxBqpDgNuwPkO1+VGzm1yqhxuDD4HYtkRYHwXiA@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <CAADnVQ+5HD1ZxBqpDgNuwPkO1+VGzm1yqhxuDD4HYtkRYHwXiA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, 2024-08-28 at 17:46 +0000, Ihor Solodrai wrote:
-> %.bpf.o objects depend on vmlinux.h, which makes them transitively
-> dependent on unnecessary libbpf headers. However vmlinux.h doesn't
-> actually change as often.
->=20
-> When generating vmlinux.h, compare it to a previous version and update
-> it only if there are changes.
->=20
-> Example of build time improvement (after first clean build):
->   $ touch ../../../lib/bpf/bpf.h
->   $ time make -j8
-> Before: real  1m37.592s
-> After:  real  0m27.310s
->=20
-> Notice that %.bpf.o gen step is skipped if vmlinux.h hasn't changed.
->=20
-> Link: https://lore.kernel.org/bpf/CAEf4BzY1z5cC7BKye8=3DA8aTVxpsCzD=3Dp1j=
-dTfKC7i0XVuYoHUQ@mail.gmail.com
->=20
-> Signed-off-by: Ihor Solodrai <ihor.solodrai@pm.me>
-> ---
 
-Unfortunately, I think that this is a half-measure.
-E.g. the following command forces tests rebuild for me:
+On 8/27/24 7:24 PM, Alexei Starovoitov wrote:
+> On Sun, Aug 25, 2024 at 1:04 PM Yonghong Song <yonghong.song@linux.dev> wrote:
+>> Daniel Hodges reported a jit error when playing with a sched-ext
+>> program. The error message is:
+>>    unexpected jmp_cond padding: -4 bytes
+>>
+>> But further investigation shows the error is actual due to failed
+>> convergence. The following are some analysis:
+>>
+>>    ...
+>>    pass4, final_proglen=4391:
+>>      ...
+>>      20e:    48 85 ff                test   rdi,rdi
+>>      211:    74 7d                   je     0x290
+>>      213:    48 8b 77 00             mov    rsi,QWORD PTR [rdi+0x0]
+>>      ...
+>>      289:    48 85 ff                test   rdi,rdi
+>>      28c:    74 17                   je     0x2a5
+>>      28e:    e9 7f ff ff ff          jmp    0x212
+>>      293:    bf 03 00 00 00          mov    edi,0x3
+>>
+>> Note that insn at 0x211 is 2-byte cond jump insn for offset 0x7d (-125)
+>> and insn at 0x28e is 5-byte jmp insn with offset -129.
+>>
+>>    pass5, final_proglen=4392:
+>>      ...
+>>      20e:    48 85 ff                test   rdi,rdi
+>>      211:    0f 84 80 00 00 00       je     0x297
+>>      217:    48 8b 77 00             mov    rsi,QWORD PTR [rdi+0x0]
+>>      ...
+>>      28d:    48 85 ff                test   rdi,rdi
+>>      290:    74 1a                   je     0x2ac
+>>      292:    eb 84                   jmp    0x218
+>>      294:    bf 03 00 00 00          mov    edi,0x3
+>>
+>> Note that insn at 0x211 is 5-byte cond jump insn now since its offset
+>> becomes 0x80 based on previous round (0x293 - 0x213 = 0x80).
+>> At the same time, insn at 0x292 is a 2-byte insn since its offset is
+>> -124.
+>>
+>> pass6 will repeat the same code as in pass4. pass7 will repeat the same
+>> code as in pass5, and so on. This will prevent eventual convergence.
+>>
+>> Passes 1-14 are with padding = 0. At pass15, padding is 1 and related
+>> insn looks like:
+>>
+>>      211:    0f 84 80 00 00 00       je     0x297
+>>      217:    48 8b 77 00             mov    rsi,QWORD PTR [rdi+0x0]
+>>      ...
+>>      24d:    48 85 d2                test   rdx,rdx
+>>
+>> The similar code in pass14:
+>>      211:    74 7d                   je     0x290
+>>      213:    48 8b 77 00             mov    rsi,QWORD PTR [rdi+0x0]
+>>      ...
+>>      249:    48 85 d2                test   rdx,rdx
+>>      24c:    74 21                   je     0x26f
+>>      24e:    48 01 f7                add    rdi,rsi
+>>      ...
+>>
+>> Before generating the following insn,
+>>    250:    74 21                   je     0x273
+>> "padding = 1" enables some checking to ensure nops is either 0 or 4
+>> where
+>>    #define INSN_SZ_DIFF (((addrs[i] - addrs[i - 1]) - (prog - temp)))
+>>    nops = INSN_SZ_DIFF - 2
+>>
+>> In this specific case,
+>>    addrs[i] = 0x24e // from pass14
+>>    addrs[i-1] = 0x24d // from pass15
+>>    prog - temp = 3 // from 'test rdx,rdx' in pass15
+>> so
+>>    nops = -4
+>> and this triggers the failure.
+>> Making jit prog convergable can fix the above error.
+>>
+>> Reported-by: Daniel Hodges <hodgesd@meta.com>
+>> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+>> ---
+>>   arch/x86/net/bpf_jit_comp.c | 47 ++++++++++++++++++++++++++++++++++++-
+>>   1 file changed, 46 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+>> index 074b41fafbe3..ec541aae5d9b 100644
+>> --- a/arch/x86/net/bpf_jit_comp.c
+>> +++ b/arch/x86/net/bpf_jit_comp.c
+>> @@ -64,6 +64,51 @@ static bool is_imm8(int value)
+>>          return value <= 127 && value >= -128;
+>>   }
+>>
+>> +/*
+>> + * Let us limit the positive offset to be <= 124.
+>> + * This is to ensure eventual jit convergence For the following patterns:
+>> + * ...
+>> + * pass4, final_proglen=4391:
+>> + *   ...
+>> + *   20e:    48 85 ff                test   rdi,rdi
+>> + *   211:    74 7d                   je     0x290
+>> + *   213:    48 8b 77 00             mov    rsi,QWORD PTR [rdi+0x0]
+>> + *   ...
+>> + *   289:    48 85 ff                test   rdi,rdi
+>> + *   28c:    74 17                   je     0x2a5
+>> + *   28e:    e9 7f ff ff ff          jmp    0x212
+>> + *   293:    bf 03 00 00 00          mov    edi,0x3
+>> + * Note that insn at 0x211 is 2-byte cond jump insn for offset 0x7d (-125)
+>> + * and insn at 0x28e is 5-byte jmp insn with offset -129.
+>> + *
+>> + * pass5, final_proglen=4392:
+>> + *   ...
+>> + *   20e:    48 85 ff                test   rdi,rdi
+>> + *   211:    0f 84 80 00 00 00       je     0x297
+>> + *   217:    48 8b 77 00             mov    rsi,QWORD PTR [rdi+0x0]
+>> + *   ...
+>> + *   28d:    48 85 ff                test   rdi,rdi
+>> + *   290:    74 1a                   je     0x2ac
+>> + *   292:    eb 84                   jmp    0x218
+>> + *   294:    bf 03 00 00 00          mov    edi,0x3
+>> + * Note that insn at 0x211 is 5-byte cond jump insn now since its offset
+>> + * becomes 0x80 based on previous round (0x293 - 0x213 = 0x80).
+>> + * At the same time, insn at 0x292 is a 2-byte insn since its offset is
+>> + * -124.
+>> + *
+>> + * pass6 will repeat the same code as in pass4 and this will prevent
+>> + * eventual convergence.
+>> + *
+>> + * To fix this issue, we need to break je (2->6 bytes) <-> jmp (5->2 bytes)
+>> + * cycle in the above. Let us limit the positive offset for 8bit cond jump
+>> + * insn to mamximum 124 (0x7c). This way, the jmp insn will be always 2-bytes,
+>> + * and the jit pass can eventually converge.
+>> + */
+> je<->jmp
+>
+> It can be je/je too, no?
 
-  touch ../../../../kernel/bpf/verifier.c; \
-  make -j22 -C ../../../../; \
-  time make test_progs
+Yes. It is possible.
 
-To workaround this we need to enable reproducible_build option:
+>
+> so 128 - 4 instead of 128 - 3 ?
 
-    diff --git a/scripts/Makefile.btf b/scripts/Makefile.btf
-    index b75f09f3f424..8cd648f3e32b 100644
-    --- a/scripts/Makefile.btf
-    +++ b/scripts/Makefile.btf
-    @@ -19,7 +19,7 @@ pahole-flags-$(call test-ge, $(pahole-ver), 125)     =
- +=3D --skip_encoding_btf_inconsis
-     else
+You probably mean "127 - 4 instead of 127 - 3" since
+the maximum value is 127.
 
-     # Switch to using --btf_features for v1.26 and later.
-    -pahole-flags-$(call test-ge, $(pahole-ver), 126)  =3D -j --btf_feature=
-s=3Dencode_force,var,float,enum64,decl_tag,type_tag,optimized_func,consiste=
-nt_func,decl_tag_kfuncs
-    +pahole-flags-$(call test-ge, $(pahole-ver), 126)  =3D -j --btf_feature=
-s=3Dencode_force,var,float,enum64,decl_tag,type_tag,optimized_func,consiste=
-nt_func,decl_tag_kfuncs,reproducible_build
+I checked 127 - 4 = 0x7c and indeed we should. See below examples:
 
-     ifneq ($(KBUILD_EXTMOD),)
-     module-pahole-flags-$(call test-ge, $(pahole-ver), 126) +=3D --btf_fea=
-tures=3Ddistilled_base
+    20e:    48 85 ff                test   rdi,rdi
+    211:    XX XX                   je     0x291
+    213:    48 8b 77 00             mov    rsi,QWORD PTR [rdi+0x0]
+    ...
+    28d:    XX XX XX XX XX XX       je     0x212
+    293:    bf 03 00 00 00          mov    edi,0x3
 
-Question to the mailing list: do we want this?
+=>
 
-[...]
+    20e:    48 85 ff                test   rdi,rdi
+    211:    XX XX XX XX XX XX       je     0x297 (0x293 - 0x213)
+    217:    48 8b 77 00             mov    rsi,QWORD PTR [rdi+0x0]
+    ...
+    291:    XX XX                   je     0x217 (0x217 - 0x293)
+    293:    bf 03 00 00 00          mov    edi,0x3
 
+=>
+
+    20e:    48 85 ff                test   rdi,rdi
+    211:    XX XX                   je     0x28f (0x293 - 0x217)
+    213:    48 8b 77 00             mov    rsi,QWORD PTR [rdi+0x0]
+    ...
+    28d:    XX XX                   je     0x213 (0x213 - 0x293)  // -0x80 allowed
+    293:    bf 03 00 00 00          mov    edi,0x3
+
+=>
+
+    20e:    48 85 ff                test   rdi,rdi
+    211:    XX XX XX XX XX XX       je     0x28f (0x293 - 0x213)
+    217:    48 8b 77 00             mov    rsi,QWORD PTR [rdi+0x0]
+    ...
+    291:    XX XX                   je     0x217 (0x217 - 0x293)
+    293:    bf 03 00 00 00          mov    edi,0x3
+
+=>
+    ...
+
+
+Here 0x293 - 0x217 = 0x7c
+
+>
+>> +static bool is_imm8_cond_offset(int value)
+>> +{
+>> +       return value <= 124 && value >= -128;
+> the other side needs the same treatment, no ?
+
+good question. From my understanding, the non-convergence in the
+above needs both forward and backport conditions. The solution we
+are using is based on putting a limitation on forward conditions
+w.r.t. jit code gen.
+
+Another solution is actually to put a limitation on backward
+conditions. For example, let us say the above is_imm8_cond_offset()
+has
+	return value <= 127 && value > -124
+
+See below example:
+
+    20e:    48 85 ff                test   rdi,rdi
+    211:    XX XX                   je     0x291
+    213:    48 8b 77 00             mov    rsi,QWORD PTR [rdi+0x0]
+    ...
+    28d:    XX XX XX XX XX XX       je     0x212
+    293:    bf 03 00 00 00          mov    edi,0x3
+
+=>
+
+    20e:    48 85 ff                test   rdi,rdi
+    211:    XX XX XX XX XX XX       je     0x297 (0x293 - 0x213)
+    217:    48 8b 77 00             mov    rsi,QWORD PTR [rdi+0x0]
+    ...
+    291:    XX XX XX XX XX XX       je     0x21b (0x217 - 0x293)
+    297:    bf 03 00 00 00          mov    edi,0x3
+  
+=>
+
+    20e:    48 85 ff                test   rdi,rdi
+    211:    XX XX XX XX XX XX       je     0x297 (0x297 - 0x217)
+    217:    48 8b 77 00             mov    rsi,QWORD PTR [rdi+0x0]
+    ...
+    291:    XX XX XX XX XX XX       je     0x217 (0x217 - 0x297)
+    297:    bf 03 00 00 00          mov    edi,0x3
+
+converged here.
+
+So I think we do not need to limit both sides. One side should be enough.
+
+>
+>> +}
+>> +
+>>   static bool is_simm32(s64 value)
+>>   {
+>>          return value == (s64)(s32)value;
+>> @@ -2231,7 +2276,7 @@ st:                       if (is_imm8(insn->off))
+>>                                  return -EFAULT;
+>>                          }
+>>                          jmp_offset = addrs[i + insn->off] - addrs[i];
+>> -                       if (is_imm8(jmp_offset)) {
+>> +                       if (is_imm8_cond_offset(jmp_offset)) {
+>>                                  if (jmp_padding) {
+>>                                          /* To keep the jmp_offset valid, the extra bytes are
+>>                                           * padded before the jump insn, so we subtract the
+>> --
+>> 2.43.5
+>>
 
