@@ -1,51 +1,51 @@
-Return-Path: <bpf+bounces-38274-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38275-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F23D96294B
-	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 15:53:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0919696296C
+	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 15:56:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 421B21C23166
-	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 13:53:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3A59C1C23C83
+	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 13:56:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB86F18756D;
-	Wed, 28 Aug 2024 13:53:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E813D187FE5;
+	Wed, 28 Aug 2024 13:55:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="aCaCq6OP"
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="sYMNH8Fj"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D2AE16CD06;
-	Wed, 28 Aug 2024 13:53:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FCE9166F12;
+	Wed, 28 Aug 2024 13:55:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724853205; cv=none; b=F0xtjxysP0lJ1xTWQqWrWQ07/cFbNGiuIkaUS5RVsZHsQw15DzzNAzfOsVJ4LEmI6WfBfkQcaicDoGpNAlnGBRptyPq72YJsa58vfCqPCCeti+0mAU6s+jk+1Bc+D03iVJp+YyQqVIAy0GPQ3OQ6Sdlf37JxDIXOXicEjU6jcqw=
+	t=1724853345; cv=none; b=j279QQllSulbOQifc1KV7ISZwnqtmqL+rC57tKd1Rb9XhDVa/cUkdvFtfk+3s416caMfXnJspAQFGvqu70zEgkN8jNauqTpLxPvWVVbnn2Yz0lOaR16Z+PEV9gnqCm5r5ULiXhGgZ84aD0htZWWL+ln9hryA0iJFD2iOFGqv5wc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724853205; c=relaxed/simple;
-	bh=hqxyw8l9U76d0ugy8OuKsZ3mvhcpdqvX8AWYEPYW1fM=;
+	s=arc-20240116; t=1724853345; c=relaxed/simple;
+	bh=FmCYspisTCQpwHF/NurpB9RXdm79uGq+/21JQtFsC0E=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dQwIi6myCTe9XNN9jNYK6UwB4kD6w+T+w3lfhXfUZUE5aUMlpEYHZYuRV6mM0gbwa9lyBuSCpSP39eJ2BDbrQeDgS1jkQOxxymZd9TvYJOx/ArXdRUtHraDQQ8OUBzu8HXMLOLg/9YVemKbxgd8bI/CrtN13krzbobIM/KWIO/Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=aCaCq6OP; arc=none smtp.client-ip=167.114.26.122
+	 In-Reply-To:Content-Type; b=ufmlyp8JOkhvPaMqjw7xw4kb0d/wjl8TqgTIWI6U9XSKE50+wP8H9UH4A1w3vWj61bTNT92AzQ60NZ19uhAVk1ESENY1aQ5uZBL+Y3chIkD3mSNS9g5+K+zv2xtmZHzSUMYbfGyzbcuHPIEswr3nuFK29gVs8vnC+pHYeck/z4Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=sYMNH8Fj; arc=none smtp.client-ip=167.114.26.122
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-	s=smtpout1; t=1724853195;
-	bh=hqxyw8l9U76d0ugy8OuKsZ3mvhcpdqvX8AWYEPYW1fM=;
+	s=smtpout1; t=1724853342;
+	bh=FmCYspisTCQpwHF/NurpB9RXdm79uGq+/21JQtFsC0E=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=aCaCq6OPdUQb+cCM6A7UyjdXA4Cu/nAgwMPe/lNm8t+PkWZM7d0on20GTW+3ClW44
-	 w/VrjN8ibNg/dANdJVJKkWWRnb24f7mxHdp9+3u27qFl4aGnruxHdRB4WnuTbL3LQ9
-	 JigZyOhICriFFbkW/0BPsX7ayEfWkP61iFrvxT5me31q107fNoHrln58+sOfawKlNz
-	 dsdUiIEioXdy6SXBntWXOCXhrockeZ46IKcWuPLnXogvy3kGNKHVsay1S7ZjvX/6mD
-	 LebtwphowF5fC+2yKigT+Z6xQ9qzrfrGnHZwRTb29hEjsvfZENzx5l6Ro8+ggTJoDE
-	 LF6rL8daL8Zsg==
+	b=sYMNH8FjXRdmYJf8C85acwyKBmhv3U91GbRv9Cvzaf7ypCQ2ccHq1GvNMvm7FWFyw
+	 xerl4zaXhfidrAlIOtWHGdCPltZMyXzZvzB0YCYRbPfIAtIFO08N+bs9a7A0aPu5zq
+	 CvcfmH5uDHzLZqXo2N56IJ4uIaRm28jtfNDxul/eKlpgQl1drU9vBE4zN5qfgF0dVl
+	 37ypjZ9oi/kdXDftXBxSSWm0eZAwYo7q3/18M36+HPxXwRccOg1ErYYeiCXHymnaGT
+	 u7iA97OSzu3vZ1WnpNUL3bg5YAgTgDKRRYWEw80mUpjsoVQC97mnhOb4AN94XncMic
+	 3s8F2cyFjwuHg==
 Received: from [172.16.0.134] (96-127-217-162.qc.cable.ebox.net [96.127.217.162])
-	by smtpout.efficios.com (Postfix) with ESMTPSA id 4Wv5Tk5Fyvz1JGb;
-	Wed, 28 Aug 2024 09:53:14 -0400 (EDT)
-Message-ID: <16d0d924-f39b-4e0a-a488-74513f1214a6@efficios.com>
-Date: Wed, 28 Aug 2024 09:52:49 -0400
+	by smtpout.efficios.com (Postfix) with ESMTPSA id 4Wv5XZ06TQz1JcM;
+	Wed, 28 Aug 2024 09:55:41 -0400 (EDT)
+Message-ID: <d83bdff2-2665-4dcb-ab1d-c102bde7b46a@efficios.com>
+Date: Wed, 28 Aug 2024 09:55:17 -0400
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -53,76 +53,70 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 0/8] Faultable Tracepoints
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, linux-kernel@vger.kernel.org,
+Subject: Re: [PATCH v5 6/8] tracing/bpf-trace: Add support for faultable
+ tracepoints
+To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
  Peter Zijlstra <peterz@infradead.org>, Alexei Starovoitov <ast@kernel.org>,
  Yonghong Song <yhs@fb.com>, "Paul E . McKenney" <paulmck@kernel.org>,
  Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>,
  Mark Rutland <mark.rutland@arm.com>,
  Alexander Shishkin <alexander.shishkin@linux.intel.com>,
  Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
- bpf@vger.kernel.org, Joel Fernandes <joel@joelfernandes.org>
+ bpf@vger.kernel.org, Joel Fernandes <joel@joelfernandes.org>,
+ Michael Jeanson <mjeanson@efficios.com>
 References: <20240626185941.68420-1-mathieu.desnoyers@efficios.com>
- <20240626212543.7565162d@gandalf.local.home>
+ <20240626185941.68420-7-mathieu.desnoyers@efficios.com>
+ <20240702090202.bc000b44890fe16d9b757b40@kernel.org>
 From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 Content-Language: en-US
-In-Reply-To: <20240626212543.7565162d@gandalf.local.home>
+In-Reply-To: <20240702090202.bc000b44890fe16d9b757b40@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 2024-06-27 03:25, Steven Rostedt wrote:
-> On Wed, 26 Jun 2024 14:59:33 -0400
+On 2024-07-02 02:02, Masami Hiramatsu (Google) wrote:
+> On Wed, 26 Jun 2024 14:59:39 -0400
 > Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
 > 
->> Wire up the system call tracepoints with Tasks Trace RCU to allow
->> the ftrace, perf, and eBPF tracers to handle page faults.
->>
->> This series does the initial wire-up allowing tracers to handle page
->> faults, but leaves out the actual handling of said page faults as future
->> work.
->>
->> I have tested this against a feature branch of lttng-modules which
->> implements handling of page faults for the filename argument of the
->> openat(2) system call.
->>
->> This v5 addresses comments from the previous round of review [1].
+>> @@ -2443,9 +2443,15 @@ static int __bpf_probe_register(struct bpf_raw_event_map *btp, struct bpf_prog *
+>>   	if (prog->aux->max_tp_access > btp->writable_size)
+>>   		return -EINVAL;
+>>   
+>> -	return tracepoint_probe_register_prio_flags(tp, (void *)btp->bpf_func,
+>> -						    prog, TRACEPOINT_DEFAULT_PRIO,
+>> -						    TRACEPOINT_MAY_EXIST);
+>> +	if (tp->flags & TRACEPOINT_MAY_FAULT) {
+>> +		return tracepoint_probe_register_prio_flags(tp, (void *)btp->bpf_func,
+>> +							    prog, TRACEPOINT_DEFAULT_PRIO,
+>> +							    TRACEPOINT_MAY_EXIST | TRACEPOINT_MAY_FAULT);
+>> +	} else {
+>> +		return tracepoint_probe_register_prio_flags(tp, (void *)btp->bpf_func,
+>> +							    prog, TRACEPOINT_DEFAULT_PRIO,
+>> +							    TRACEPOINT_MAY_EXIST);
+>> +	}
 > 
-> Hi Mathieu,
+> nit: you can also just pass the flag directly,
 > 
-> Can you resend this and Cc linux-trace-kernel@vger.kernel.org?
+> 		return tracepoint_probe_register_prio_flags(tp, (void *)btp->bpf_func,
+> 							    prog, TRACEPOINT_DEFAULT_PRIO,
+> 							    TRACEPOINT_MAY_EXIST | (tp->flags & TRACEPOINT_MAY_FAULT));
+> 
 
-Sure, will do for v6. Thanks!
+I'll do that for both the ftrace and the bpf patches and eliminate this
+odd duplication. That's a good idea.
+
+I'll add your Reviewed-by to all the "tracing/*" patches.
+
+Thanks,
 
 Mathieu
 
+> But others looks good to me.
 > 
-> That would put it into our patchwork and makes it work with our workflow.
+> Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 > 
->   https://patchwork.kernel.org/project/linux-trace-kernel/list/
+> Thank you,
 > 
-> Thanks,
-> 
-> -- Steve
-> 
-> 
->>
->> Steven Rostedt suggested separating tracepoints into two separate
->> sections. It is unclear how that approach would prove to be an
->> improvement over the currently proposed approach, so those changes were
->> not incorporated. See [2] for my detailed reply.
->>
->> In the previous round, Peter Zijlstra suggested use of SRCU rather than
->> Tasks Trace RCU. See my reply about the distinction between SRCU and
->> Tasks Trace RCU [3] and this explanation from Paul E. McKenney about the
->> purpose of Tasks Trace RCU [4].
->>
->> The macros DEFINE_INACTIVE_GUARD and activate_guard are added to
->> cleanup.h for use in the __DO_TRACE() macro. Those appear to be more
->> flexible than the guard_if() proposed by Peter Zijlstra in the previous
->> round of review [5].
->>
->> This series is based on kernel v6.9.6.
 
 -- 
 Mathieu Desnoyers
