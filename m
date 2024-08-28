@@ -1,202 +1,236 @@
-Return-Path: <bpf+bounces-38268-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38269-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68A8B9626BF
-	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 14:18:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FBB69627F7
+	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 14:58:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8EA251C219E1
-	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 12:18:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 44C471C23F36
+	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 12:58:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EFE3178368;
-	Wed, 28 Aug 2024 12:17:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5AF61862B7;
+	Wed, 28 Aug 2024 12:57:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b="U2wlLubZ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gLArsCt1"
 X-Original-To: bpf@vger.kernel.org
-Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2056.outbound.protection.outlook.com [40.107.215.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f43.google.com (mail-qv1-f43.google.com [209.85.219.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BE4F176259;
-	Wed, 28 Aug 2024 12:17:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.215.56
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724847468; cv=fail; b=ePF4VQ0IT2keSshmumDcgD3nySeU3f7ssFqNrz5HV/RF9hLs51JDTA9qrWWdYphmEoejxUSx4+fM9AuAEcP3xJ/Bqe3O0buRa6yF4pQ5gwlRBwXvKWK+9Dz5LvWHw2PH54lqT5IxfEL5ewMbLiXw7htQj1CtAUxZsgNMg9Q9VcE=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724847468; c=relaxed/simple;
-	bh=W7Pf/beh55LSkU7u5QFgUZgcOvsu6zYrFFs9audhap0=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=gg2D+4fSOBu1Qr0M3yNj7kzESRWN6HCfI4lKSb40tVyAOJTI7KtyycxqXzf7L60QioXDn7ctlRwa8bB/lgqW9V/guzN/XmP4QsW193ReSRc9OxXaZOxE7Isq0kX3bsPCAmNcd+pvH403FC55g6cfEJIJTJkogLAK2iaSqdvdyTE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com; spf=pass smtp.mailfrom=vivo.com; dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b=U2wlLubZ; arc=fail smtp.client-ip=40.107.215.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vivo.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=LIxg9Nrg54BKbjtU3Jwt1J7/FNfjQp3gJY5hJm91P6ysSwDfutw3LkokncuqpM5iicMMeqMRXFzzpK7Y6oSqv01j4wI88tjzhPF09oogbKRoUh7XDTzYU2IYCyb2gYboPTzX1DnN20REDFMew1WoR6NVsLHKFFg1sJODeWdG1sa9YBNNs7BXp1omLlQ8NkLHisSHyBQbe7QNAkflzIJBMT92ufzerKDht55zVMzq2eyW9YcRO/EKvVPHloh6VJ41CnktuQrMHkghhQ6aLh3WdZqdEQYtm4yXMQ+ZbIXr6h633Oy0tqF3Dd9fyuE1PSbJWReSIc5HaIdwPJD7YTXjTg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=SHLIcIwjRUgWJ5T4eU7rRhy1/DMI61YC1bYUPUH9Dlc=;
- b=c7kXUZQsUC9RBX8lZRM0Ut1bjhB+uM2u9kOeimUscvZ+KP+59PklK017DLNz2Sua3DBP9YWQ+ZWBXS0O2fHd+joSelMT48AJyGYp49N3l0ySTFpjSa49b+5dT165EiqO5iUPS8oJ78ZF5+FXyPU9DnMBlmDn8SSJf8SFh0pX/lO44zhWWfnMatT/7AkGpk0FCAVvsKX8mryKfwmUXULW4SN5qZtV5JM5/yLhXfPZ/lqrl38cG7HSvvpCkag8Pu0qRzevOBiMiwYPlB2ZmXU5LcW7lPlCao+bkwgCfi3kaHbz8RPHixEa+rKXXvJUTrFjAuLkwOSPzA8msfCkvPEr9Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SHLIcIwjRUgWJ5T4eU7rRhy1/DMI61YC1bYUPUH9Dlc=;
- b=U2wlLubZYcUO1ZpASpbFk3bFdyAUxfX9zoOmeUWYxSAyhSZQ4OYo+Vj4Zedxkdy9z/3w4a/XE1riYO/E3ObsV7iAPGEnc1B+M3fncZtz9GlI9F9rHqY2qvsoMWl6OUiUPkTO1LACofaWR1y/7txCJWUhrL4l6HBLkywTZR+M6HWDW2FfNei5GcjjDzQJZLvgb8lfPCWm0J3OBiZicHjyHNEkM+yiIou0I4XeIm5fUgU8/wC5ImNQ4uNmYgy46wUllku9HC7lbZjFjSuwZOXjB+/k2J2/KP539hAQD3WChDKHmUYwTaNgyQdE4dZBhZG/VQd3ZeE+X2DPNKMZM6TdzQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from SEYPR06MB5913.apcprd06.prod.outlook.com (2603:1096:101:da::16)
- by KL1PR06MB5884.apcprd06.prod.outlook.com (2603:1096:820:dd::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7897.27; Wed, 28 Aug
- 2024 12:17:39 +0000
-Received: from SEYPR06MB5913.apcprd06.prod.outlook.com
- ([fe80::f049:a716:8200:c4a1]) by SEYPR06MB5913.apcprd06.prod.outlook.com
- ([fe80::f049:a716:8200:c4a1%4]) with mapi id 15.20.7897.021; Wed, 28 Aug 2024
- 12:17:39 +0000
-From: Lin Yikai <yikai.lin@vivo.com>
-To: andrii@kernel.org
-Cc: ast@kernel.org,
-	daniel@iogearbox.net,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	mykolal@fb.com,
-	shuah@kernel.org,
-	terrelln@fb.com,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	opensource.kernel@vivo.com,
-	yikai.lin@vivo.com
-Subject: [PATCH bpf-next v2 2/2] selftests/bpf: fix static cross-compile error for liblstd.a linking.
-Date: Wed, 28 Aug 2024 20:17:06 +0800
-Message-Id: <20240828121706.1721287-3-yikai.lin@vivo.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240828121706.1721287-1-yikai.lin@vivo.com>
-References: <20240828121706.1721287-1-yikai.lin@vivo.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SGBP274CA0018.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b0::30)
- To SEYPR06MB5913.apcprd06.prod.outlook.com (2603:1096:101:da::16)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F06717BEAB;
+	Wed, 28 Aug 2024 12:57:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.43
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1724849874; cv=none; b=BI5I9A7yV8ckt5axpdn/N6rmbLCC0FqSIi2LifR2icw15X7IX0JKJCsXjrNLTc9TIrlW3uodg5bynabLBOaAocsD4K3ziys5SdDlxCZNcGJjWE4bhxsp8u2JVHIxEPRi2dWgJEuCsZXNaf+ekslNNc2STZesPUYZcwNEjuO8EP4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1724849874; c=relaxed/simple;
+	bh=XQwE1UqhwI172D6a6kc3gjP1iHymRSudK+/ZnlUNkqc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=GFP+j6iOR6KlaMIj5MzAFtvayfNlLbhbsqzEtPcf+42eZ9GKCAiJCxJ6Pi1z9zuvrhmPXPJRhUqTP+n0lhLoecxsrA18bHSI+1uLu52vVshdAcynFP65/JsrohgOT11abdB4/FQ17eFY1NeNy8v8NAXwdnUETicYQEg5vAkxYSM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gLArsCt1; arc=none smtp.client-ip=209.85.219.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f43.google.com with SMTP id 6a1803df08f44-6bf90d52e79so36757176d6.3;
+        Wed, 28 Aug 2024 05:57:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1724849871; x=1725454671; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=75zSlLwUuo3vTsXNiB/Bg248lll9xEE0NLqRnWuoevM=;
+        b=gLArsCt1AMcKr9OxA17BIdgojvRi7s0rpUH9KQNH0d6Hqc4k6G8dxjQvU6NwRgf5fn
+         4qKttec1CNbz7K4YJoAug7EpYXjqPICLVBUuCp2y4UweZRWKT/FM2hR+0R0TBSK5Xqm3
+         3Dsy6MBLgE4AhqhJ+yI3ALIrN+iEXKFiBCM0ObFY1LgEsSvmB5SEFY9611McUd8WjK6F
+         kvAOCqcHQd7yl9go3em1EhXTRBd13lyuPFO8mxyLK8kSrIKFFxwTpNTV+gPuDqco/gqi
+         pb7EhqGJRA2yJVnuuaUO7aTJ1+9RPXChE908F19JKLpx4wxC2jhqXXbkSSWWn1a+isvb
+         hfdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1724849871; x=1725454671;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=75zSlLwUuo3vTsXNiB/Bg248lll9xEE0NLqRnWuoevM=;
+        b=xJXUvdmH2GcFFn1YxnKpSSSD/E7owZ9cIlIY0+ku79aw26HnryAzCAYLytlfEwHVQT
+         /o3zpq6bLkUkw7KNC5xm5R8+ZVnAmjVf8UTqiQ0jvAN5xjZfabnkG9QKTX2qsdKSy9n2
+         DtQ5+/f4Yg8Yk168GBdCah2UBXN7b0nE2B2YtyiuZRLnaWxDOduKXcZUeSzlZI/yo5zc
+         Cr+e7pnOJ0vaiayjnGXJdEHsmEliiZhnlnkrKoU3h5YWx8LglQI7ACcm4tYcNlNppnOc
+         IHQBvcMk+d2V8Stl6MzIScp1GCaP0XBA/r1PdNhp+a6r28Ndzaq+bGRiJDMmTVZa0vAA
+         D2mw==
+X-Forwarded-Encrypted: i=1; AJvYcCUuHnkdX2wAmSo+KdxHXi2eYlkyas1jqi3iNlYlvsqOWTpoC6t5cUAjP7OBih7G0cXq/ihHL7hx@vger.kernel.org, AJvYcCVOLjf981pMBOj3dE7OiTKVwlcEo9Xs0mwFPLz4YzlQtaZzuADq78uFvgqdcuIFyZe31oeklbII1Q==@vger.kernel.org, AJvYcCVWKuDngX93rqHaTnY/Gj+IfPfq4C57wvXwLFiVKU+lF98brMRL1FpfuqSGp32gDuGSPF+f@vger.kernel.org, AJvYcCX4lMSE7wrmCSPP4+AHlEec9M5II7wbq0cQZmgDYipPGI4OfcFMceJnEggQRhVwu3js7SVSzQmvxtxG6qjZwWwpiGTa6bnG@vger.kernel.org, AJvYcCXKOgJFtSRNWjdo+KSZyf61E1pZDHLrecfGmZfadlCxeCKm8x5E3d7zxHPSkEgjIjceU5vLNmbNX3XtpRiPmw==@vger.kernel.org, AJvYcCXbmENwDCPXjaNJwM23K/RTY1AyFRRwPhBxMEASykkmZESmdpggcbcxYH+UrkZssRoJDuefQcYIqwocw5Y9SnFnLAhJ@vger.kernel.org, AJvYcCXfqL84c/g4aRpMSfuGEij1p3OJWGuSAZItiH21Hl6vtIkNOLfrQRd6XPUYrkB30jO3/+MTnQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw6PZWx8NBj2W83uDZFw1Aog/HcNo57PNeHcUXuEgQwtfksZm0a
+	obsaWutauqFIprgpPecbwX1kTkgrM/ERtTXZLA9QD5eH2KEha1Ua2T+sp3GBUZD/fGW/Kl5WHDD
+	Ybgf4jZyfvsF64RKO2VG38eMp088=
+X-Google-Smtp-Source: AGHT+IGVdDZRdAbiWZ5RYcs75Y+9kyklByrS1cllsDWIp6LEk4Cl8MdoT9mGOnGBew4RhB5tPSnWZccJF6guOMsDPnY=
+X-Received: by 2002:a05:6214:320c:b0:6c1:5283:e67b with SMTP id
+ 6a1803df08f44-6c16deb306dmr178438206d6.47.1724849871190; Wed, 28 Aug 2024
+ 05:57:51 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SEYPR06MB5913:EE_|KL1PR06MB5884:EE_
-X-MS-Office365-Filtering-Correlation-Id: 11f7f8d6-0f34-49f2-4356-08dcc75b6867
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|376014|7416014|366016|52116014|38350700014;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?3wFNbtBiOfF6AX6dd1OPYrIOye/8DmrO5Jo6IOj8KX5mdstGKF5WLuPgzHE2?=
- =?us-ascii?Q?Nuz4wm+VUgPZqgA4b/d4huR9rOEEwJi5iFTGH7H7KxCPqA1Veqj5QCuw1Eh/?=
- =?us-ascii?Q?D4Tgu2Bm3nyWE/92/iBZz2fgw0goBnwjv1Va8ttcXmo9QEsp8/VTA/HYLRQp?=
- =?us-ascii?Q?xOBwGa6nOtnexl79CInGttsHQDNX+KepoxLWe575a9+6ZQTq/6tKLbtGRIt4?=
- =?us-ascii?Q?i6HqitoOGDJgnztFBDtEWipxcCXFmVpRZgYRTFXt749KsCmU9AYPYfTBSeZZ?=
- =?us-ascii?Q?Y8lCl/XTHrQJHwlpQ+2ggflU9HSQZgOSs+maULoSoBXqn/p6rVVNC2BXxTWk?=
- =?us-ascii?Q?THbe/emEM07cEDjduuvbA18KbzZouh5lqDscdQQXBzrprEzj6UoIQH8dNTDX?=
- =?us-ascii?Q?7/oYWir3jp22ezNKJ/Lkzs3NRxETvoA54fNaZ9UpwX6q39QpHjyu38T6KwUv?=
- =?us-ascii?Q?aosSAYPImDc6f/R303EKHWv7SNUxyZ2qUkI32VxthdOwFsvRCaxcIU8QKnrH?=
- =?us-ascii?Q?QRg6M79ku2FyxxRbFcjfNF8TjVhK3SNtogo14A21wKocVv4eURHdFIiplZRF?=
- =?us-ascii?Q?4czk5y3Vl8+IW+MT9ivBICYmkPfCMH/754rYCTFx++EYqT6lCJ0f4wXBdJdz?=
- =?us-ascii?Q?jVGEJDI5Pyyfrrlt88yggjBSJQjGb/WR9+PARBtnal4ytzloHRCbIHwE7c3D?=
- =?us-ascii?Q?+tMaAvbk0xnfM+fCPuG6GhK9wsM4bC85tWOe61THIW/qThgbdYhSn0NMABre?=
- =?us-ascii?Q?prqAWhBU1nATPzyoX85x28jrWvl9pvtiBuPofyFyVvvnBdecRZA/X93KECvB?=
- =?us-ascii?Q?rRhWcsov8CEx2pvXI3dVJAAG+RrqX59Nj2l12PxNmXhRp5bZambM0nNvCRGV?=
- =?us-ascii?Q?LPN2DF1SO0WGec2VNyFcTA9x1qKmK+JK4rCQlkFzQ8Shg0t7NnTnxqm+2YlL?=
- =?us-ascii?Q?jojWOgLLFzNSeCLM7D4wGu/FJA4jzkyvRjAhzjtZYoST4sWFWZPZr+SOZQzI?=
- =?us-ascii?Q?RB395hzI8F94bLrxFdUpaVwQvmyWXf6eIy9cqtZZSBXjYX1K0RBtcj+uu4I2?=
- =?us-ascii?Q?wAZIgSvijoPA/+b/m3UOP5QOSSAylBdW2VBlGP8PdnCTqJXARKCAroHoV927?=
- =?us-ascii?Q?7b7v0RU1/8Ti3quTWZp7LdXasDh1K0Z8sMmQxHLTVoViAGf4D3zG8vgyols8?=
- =?us-ascii?Q?HzUb4i9GJLnnMiv5Vk1e6ve88ixWuU27aRhBusmxpQWJlS8aqzXE5ViZuJVu?=
- =?us-ascii?Q?T/UY0B6ziW7QR2t0QtfEW47QEu4o1mkPoGplK2K7bSMLmNONwefWq+nanvgH?=
- =?us-ascii?Q?X40Ri9amSeEBCMP9BmCIOm2YQg5RGK/4PBX9QgY0tRGbRi3uMZqXYgxWwq4d?=
- =?us-ascii?Q?9/dM7YAUJY8OStjkk5mwuS2fNuouZISyflBsG0si8EEr3wgmbQ=3D=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SEYPR06MB5913.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(7416014)(366016)(52116014)(38350700014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?+DFHAUsPW2eG4DgGsxXhCFfqTpmUo3WrOnlRvxCg3kFMHP4vzNMgKaSqPz0T?=
- =?us-ascii?Q?SDufrHMnWMc1nZSn50/JrHTVmva6H3jSAVZXcRpVxVyd/27ye9LrXRtTP8Zv?=
- =?us-ascii?Q?ZWiyISFEunOd0Yl84O1Z8+2JoS6pVS0JAX9+Yfnb/YvEf6yKz/IFdujNMMnl?=
- =?us-ascii?Q?CZuPPtdz8T2Ne6hP72194BRR7WgGZB+RWMxWW4389Bzr0N5cPenrgTlwUr9k?=
- =?us-ascii?Q?hZQ/galdlVBf6xhAINSsJVWmcBO0bYATdHNISgKVHagd7OTgKPyIl9J4Udl7?=
- =?us-ascii?Q?uS6Ge8uUMbmBxtSm5UQlxdhNGl6xe4wPWD6TvR0maZAuqiwS4vDu4qYmvUNc?=
- =?us-ascii?Q?3CQeVjV/SXulvBmG4Gr23NjL3T2XbOPMt/sYu33ZeJrFlYYsUKYdVgq2ufUN?=
- =?us-ascii?Q?WRpo6B8rPXxMRVjlD0u3YviL+KBl1BivRsGbE4lgrSt2iZnTdqx7v/3NnH+E?=
- =?us-ascii?Q?WbD0z0jLmNodEgCaH4npw1gsfInyJw5jH7aDoz+C/grebfNMpELgorLLhP22?=
- =?us-ascii?Q?3Wa25rJ6m5kntMEIBweKW2SdVTujVcBDzOGIqSCPwZShwDylnUNfiy1FvpOj?=
- =?us-ascii?Q?na3IH0Q6sehLoxst0uPBPJFbT48W3derY+EBeX9c6M3sSPvgOi4V1wI9lRHo?=
- =?us-ascii?Q?q80JePxrNL7H5IX0LFGd6BjSSt3SQnCB3xygdAnSnCXzXj4HJb323DYvF1lF?=
- =?us-ascii?Q?FhUesGK4ZOEiinuj9j4LVHm47z6cdh5Dg6JQ3t4X1lIafE8v46123ZEA8fHW?=
- =?us-ascii?Q?OeW0nmeLV0rKxyQmGp39blVFPvvBcu61ry8JPxOuUuyxDG9xhfcE0n8Pe/aU?=
- =?us-ascii?Q?3LNs62MTp3unV7UuGSDBBXBy4VFYmwzN6bPbAqLBTYCGUQG9Y6Wo/xY6d/vv?=
- =?us-ascii?Q?fIcFPcVB1TCSl55n0uequOz/Apl+mP2tbGIDx1Mkoe06bCorrU7KxSTX/7qn?=
- =?us-ascii?Q?3X+uBsEcRCgdmw8u4vI/kDz5BapBB0GD+1bvLvuBxhKj8f4VK/uxg9BbBj9I?=
- =?us-ascii?Q?0SUYv9vZgZl+SEsBOiLuTHCMkf6Rqd3gfESRVAF+2aiS6Kxe0sf3vcnKJIp6?=
- =?us-ascii?Q?lcN/rTsDvT7vC8PehoKW5WRmQ3ZSoXN0LKzcKX7LL238NETTA60czMhurdp2?=
- =?us-ascii?Q?Wq+4Fl7X9M1bk8B12kwwz3pL4Vkghqb0zRay/nKJIdjLAQgM009fvkUVLP9b?=
- =?us-ascii?Q?hlCmNNSLcBW3Ip5Yo81jTF14hkBElNq1sjm231VRvkkYcv31fxlP8A11m+9n?=
- =?us-ascii?Q?oAgFMrZlUOqPOJEfe8rDJxPyURTcEn7rxFoTbpcPrd1HvFR+pXIUeUhYry2o?=
- =?us-ascii?Q?REOi0+G8rw9ssaeOlClZO5ImZMyYP9ybNyMY+4XrBNILTpSNCrkUQPROPnw9?=
- =?us-ascii?Q?gbAoQNhZ1Uo7OCuVmQnrnABrnpnfVmx/4pB9sjRfGGfuswjt6I0H6ujMKbG0?=
- =?us-ascii?Q?eGOU6VJWrdqE9YmJy9YkfHM8VnJcm/wMw4oD30A7I3Pi4mRBrhsq2+lFFlLO?=
- =?us-ascii?Q?21sBRlH+9LSMraZfZlVZrIf+NlQckaGXK8J6Uw0IhpT0tlexHoEyk47GENo7?=
- =?us-ascii?Q?GvNPsc/uQGkoPGPzhXfIePvihmXgF0Pa/wxO3ZB3?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 11f7f8d6-0f34-49f2-4356-08dcc75b6867
-X-MS-Exchange-CrossTenant-AuthSource: SEYPR06MB5913.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Aug 2024 12:17:39.0245
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: RowrE1P2spMgmXuwqd8vPV8yLF3GVZu7EQh4mikGEBrmLk2N3kCVfhrbseBaxQLwawtktpa2JXzjrVPEJdQC0g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: KL1PR06MB5884
+References: <20240828030321.20688-1-laoar.shao@gmail.com> <20240828030321.20688-2-laoar.shao@gmail.com>
+ <lql4y2nvs3ewadszhmv4m6fnqja4ff4ymuurpidlwvgf4twvru@esnh37a2jxbd>
+In-Reply-To: <lql4y2nvs3ewadszhmv4m6fnqja4ff4ymuurpidlwvgf4twvru@esnh37a2jxbd>
+From: Yafang Shao <laoar.shao@gmail.com>
+Date: Wed, 28 Aug 2024 20:57:13 +0800
+Message-ID: <CALOAHbCR52PSzc2JMN+kwJZW-b1yPzSgqznzmcE9Ldp3nx9=XQ@mail.gmail.com>
+Subject: Re: [PATCH v8 1/8] Get rid of __get_task_comm()
+To: Alejandro Colomar <alx@kernel.org>
+Cc: akpm@linux-foundation.org, torvalds@linux-foundation.org, 
+	justinstitt@google.com, ebiederm@xmission.com, alexei.starovoitov@gmail.com, 
+	rostedt@goodmis.org, catalin.marinas@arm.com, 
+	penguin-kernel@i-love.sakura.ne.jp, linux-mm@kvack.org, 
+	linux-fsdevel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	audit@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	selinux@vger.kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, Alexander Viro <viro@zeniv.linux.org.uk>, 
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Kees Cook <keescook@chromium.org>, 
+	Matus Jokay <matus.jokay@stuba.sk>, "Serge E. Hallyn" <serge@hallyn.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Regard "LDLIBS += -lzstd" as a separate patch for static compile.
-To fix static cross-compile error like this:
+On Wed, Aug 28, 2024 at 6:15=E2=80=AFPM Alejandro Colomar <alx@kernel.org> =
+wrote:
+>
+> Hi Yafang,
+>
+> On Wed, Aug 28, 2024 at 11:03:14AM GMT, Yafang Shao wrote:
+> > We want to eliminate the use of __get_task_comm() for the following
+> > reasons:
+> >
+> > - The task_lock() is unnecessary
+> >   Quoted from Linus [0]:
+> >   : Since user space can randomly change their names anyway, using lock=
+ing
+> >   : was always wrong for readers (for writers it probably does make sen=
+se
+> >   : to have some lock - although practically speaking nobody cares ther=
+e
+> >   : either, but at least for a writer some kind of race could have
+> >   : long-term mixed results
+> >
+> > - The BUILD_BUG_ON() doesn't add any value
+> >   The only requirement is to ensure that the destination buffer is a va=
+lid
+> >   array.
+> >
+> > - Zeroing is not necessary in current use cases
+> >   To avoid confusion, we should remove it. Moreover, not zeroing could
+> >   potentially make it easier to uncover bugs. If the caller needs a
+> >   zero-padded task name, it should be explicitly handled at the call si=
+te.
+> >
+> > Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+> > Link: https://lore.kernel.org/all/CAHk-=3DwivfrF0_zvf+oj6=3D=3DSh=3D-np=
+JooP8chLPEfaFV0oNYTTBA@mail.gmail.com [0]
+> > Link: https://lore.kernel.org/all/CAHk-=3DwhWtUC-AjmGJveAETKOMeMFSTwKwu=
+99v7+b6AyHMmaDFA@mail.gmail.com/
+> > Suggested-by: Alejandro Colomar <alx@kernel.org>
+> > Link: https://lore.kernel.org/all/2jxak5v6dfxlpbxhpm3ey7oup4g2lnr3ueurf=
+bosf5wdo65dk4@srb3hsk72zwq
+> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> > Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+> > Cc: Christian Brauner <brauner@kernel.org>
+> > Cc: Jan Kara <jack@suse.cz>
+> > Cc: Eric Biederman <ebiederm@xmission.com>
+> > Cc: Kees Cook <keescook@chromium.org>
+> > Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+> > Cc: Matus Jokay <matus.jokay@stuba.sk>
+> > Cc: Alejandro Colomar <alx@kernel.org>
+> > Cc: "Serge E. Hallyn" <serge@hallyn.com>
+> > ---
+> >  fs/exec.c             | 10 ----------
+> >  fs/proc/array.c       |  2 +-
+> >  include/linux/sched.h | 32 ++++++++++++++++++++++++++------
+> >  kernel/kthread.c      |  2 +-
+> >  4 files changed, 28 insertions(+), 18 deletions(-)
+> >
+>
+> [...]
+>
+> > diff --git a/include/linux/sched.h b/include/linux/sched.h
+> > index f8d150343d42..c40b95a79d80 100644
+> > --- a/include/linux/sched.h
+> > +++ b/include/linux/sched.h
+>
+> [...]
+>
+> > @@ -1914,10 +1917,27 @@ static inline void set_task_comm(struct task_st=
+ruct *tsk, const char *from)
+> >       __set_task_comm(tsk, from, false);
+> >  }
+> >
+> > -extern char *__get_task_comm(char *to, size_t len, struct task_struct =
+*tsk);
+> > +/*
+>
+> [...]
+>
+> > + * - ARRAY_SIZE() can help ensure that @buf is indeed an array.
+> > + */
+> >  #define get_task_comm(buf, tsk) ({                   \
+> > -     BUILD_BUG_ON(sizeof(buf) !=3D TASK_COMM_LEN);     \
+> > -     __get_task_comm(buf, sizeof(buf), tsk);         \
+> > +     strscpy(buf, (tsk)->comm, ARRAY_SIZE(buf));     \
+>
+> I see that there's a two-argument macro
+>
+>         #define strscpy(dst, src)       sized_strscpy(dst, src, sizeof(ds=
+t))
 
-  $LDLIBS=-static LDFLAGS=--sysroot=/aarch64-linux-gnu/libc ./vmtest.sh -s -- ./test_progs
+This macro is defined in arch/um/include/shared/user.h, which is not
+used outside
+the arch/um/ directory.
+This marco should be addressed.
 
-  /aarch64-linux-gnu/bin/ld: aarch64-linux-gnu/libc/usr/lib/libelf.a(elf_compress.o): in function `__libelf_compress':
-  (.text+0xec): undefined reference to `ZSTD_createCCtx'
-  /aarch64-linux-gnu/bin/ld: (.text+0xf0): undefined reference to `ZSTD_createCCtx'
-  ...
+>
+> which is used in patch 2/8
 
-Signed-off-by: Lin Yikai <yikai.lin@vivo.com>
----
- tools/testing/selftests/bpf/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The strscpy() function used in this series is defined in
+include/linux/string.h, which already checks whether the input is an
+array:
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 3f0f9a171651..17d75ac2f461 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -46,7 +46,7 @@ CFLAGS += -g $(OPT_FLAGS) -rdynamic					\
- 	  -I$(CURDIR) -I$(INCLUDE_DIR) -I$(GENDIR) -I$(LIBDIR)		\
- 	  -I$(TOOLSINCDIR) -I$(APIDIR) -I$(OUTPUT)
- LDFLAGS += $(SAN_LDFLAGS)
--LDLIBS += $(LIBELF_LIBS) -lz -lrt -lpthread
-+LDLIBS += $(LIBELF_LIBS) -lz -lrt -lpthread -lzstd
- 
- PCAP_CFLAGS	:= $(shell $(PKG_CONFIG) --cflags libpcap 2>/dev/null && echo "-DTRAFFIC_MONITOR=1")
- PCAP_LIBS	:= $(shell $(PKG_CONFIG) --libs libpcap 2>/dev/null)
--- 
-2.34.1
+#define __strscpy0(dst, src, ...)       \
+        sized_strscpy(dst, src, sizeof(dst) + __must_be_array(dst))
+#define __strscpy1(dst, src, size)      sized_strscpy(dst, src, size)
 
+#define __strscpy_pad0(dst, src, ...)   \
+        sized_strscpy_pad(dst, src, sizeof(dst) + __must_be_array(dst))
+#define __strscpy_pad1(dst, src, size)  sized_strscpy_pad(dst, src, size)
+
+
+>
+>         diff --git a/kernel/auditsc.c b/kernel/auditsc.c
+>         index 6f0d6fb6523f..e4ef5e57dde9 100644
+>         --- a/kernel/auditsc.c
+>         +++ b/kernel/auditsc.c
+>         @@ -2730,7 +2730,7 @@ void __audit_ptrace(struct task_struct *t)
+>                 context->target_uid =3D task_uid(t);
+>                 context->target_sessionid =3D audit_get_sessionid(t);
+>                 security_task_getsecid_obj(t, &context->target_sid);
+>         -       memcpy(context->target_comm, t->comm, TASK_COMM_LEN);
+>         +       strscpy(context->target_comm, t->comm);
+>          }
+>
+>          /**
+>
+> I propose modifying that macro to use ARRAY_SIZE() instead of sizeof(),
+> and then calling that macro here too.  That would not only make sure
+> that this is an array, but make sure that every call to that macro is an
+> array.  An if there are macros for similar string functions that reduce
+> the argument with a usual sizeof(), the same thing could be done to
+> those too.
+
+I have no preference between using ARRAY_SIZE() or sizeof(dst) +
+__must_be_array(dst). However, for consistency, it might be better to
+use ARRAY_SIZE().
+
+
+--
+Regards
+
+Yafang
 
