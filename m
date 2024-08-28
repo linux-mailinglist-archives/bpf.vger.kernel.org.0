@@ -1,154 +1,369 @@
-Return-Path: <bpf+bounces-38247-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38248-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA93A9620D7
-	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 09:23:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF92496225D
+	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 10:36:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 73D231F2108D
-	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 07:23:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E4AEA1C21281
+	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 08:36:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67FF815B57A;
-	Wed, 28 Aug 2024 07:20:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26E5315C15D;
+	Wed, 28 Aug 2024 08:36:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="iXiG2zT1"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="FzUI8QiL"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com [209.85.160.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B126F15B12F
-	for <bpf@vger.kernel.org>; Wed, 28 Aug 2024 07:20:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99901142E6F;
+	Wed, 28 Aug 2024 08:36:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724829640; cv=none; b=BlDGI5F67MI1BQ3ug8BkLsvCfnMoRBkq1nJak3VvpMue3EvbGFkxyGyJ1FadP2cQgTOnx71swDBrcy8A6Wn94sfpHnXW/gbFHmX/TgiQccbWnXn3vOK9qRZAfVlWbaa3Pslr9mR/+/D7EFhdO4TFXl0JuGcpn7Thtdv5euVROH8=
+	t=1724834204; cv=none; b=ODYybxVxn+HlOfBa/PwT8XsQhFJsjQT8BdZgs6SLzQSLiWySiXwgqpB/YygSgbUjCnxseAppWIFhmoS9vSXYPZlCCgxkYz7TDNGl+zvAAzHt4ORU4PCfN+9n/CXeBdzDqsV1xe1utzBTu16sP714P5/SXkCBYAna8An/sXgQMIA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724829640; c=relaxed/simple;
-	bh=hY0rdkFxlOJ73INaytL9GxG6uDuQeptdtje3tcWXF+U=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PgGWlITnFmqpjjdJpaayDmKI72xJ4V+tuVqL0n+bFdiDaPAXXKFeKDodtc3Uv+GGsrLPK7WiUSjYappxrmkjFTOu/RZ0tvGsd/0JGZHwqXy2yQ0o2OaHJ+U113Wyw1g8EI4W1JhnvpYjGdmlreKEnJqj6bZvAXIV5yXwgtV1KRM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=iXiG2zT1; arc=none smtp.client-ip=209.85.160.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f182.google.com with SMTP id d75a77b69052e-4518d9fa2f4so190521cf.0
-        for <bpf@vger.kernel.org>; Wed, 28 Aug 2024 00:20:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1724829636; x=1725434436; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WaKkxTlZTeNsK8i9Bxn3PWY1aY/BLsT89GdUnPxSzCs=;
-        b=iXiG2zT1LZYmRlQ14gRZynyy8LwteaYwvbXkKGk5hnY0hWAZjMr8whQjsAqKYp6nIP
-         XLnbQMYBrYHBNu2sGcwa411HH/mMlVF0VBicIn18IOgiBOcMj7TzkZBN5rg7K/Yp9zac
-         R4aJXx9G57xEL9LbZaFy70W55jvCQSwc1bpuGqMWGM3uz93nKfBiK3V6jDEh2jPTaxEM
-         ohJQqGdPdB4R2lsc7JjJsg2tfPWD/feF/rI2J35mNcyrE53PQxNmaeKZ+1xv3hFDVUjb
-         cdTv7zi2Ctk8Iohq3E3vtTNIz1joqkAMQVGFaQBTDLqcJ+jeTne9UjwOa8Bge8CxHv3Z
-         0R5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724829636; x=1725434436;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WaKkxTlZTeNsK8i9Bxn3PWY1aY/BLsT89GdUnPxSzCs=;
-        b=LG9JJXMknCf1BDG9NekLFL+RCrtqnjx6IpRUf8n9dUSP7KygFoCYSU6TsxzQ2pZtqd
-         pXNcExo3VQKM/PLkKQpCVR/vymmxo5rZbp19K0PpYokvOPw1DbQlR6WBv3NpYvVP9D0o
-         XIDeQdkyrTQRwTWJMpCH+RmjfHfOmdHcs1dhgN/nWNOyLtj3a15JdMSNSL4U1jjYVtM1
-         vvXzxzrtOY93BBZcHBTVYgnFJgshl0QGN/VYKKzXchfuKdLTlmcCYntUVsQtmEd83CCL
-         aQ7gFhrS0p+7MLI7zKAoRoJFisWsY1vXRGDQsEysA8C9A7WxS6m0GVNFyiz62ZMe9e9e
-         Wj1w==
-X-Forwarded-Encrypted: i=1; AJvYcCXfLg95pjMbFCQk32G8ZwCB90lBNtj42yi5AiFkWpYeUMQtTBtedImCL5069koHS976la4=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzkkNITEhDdtgj44INJFH5fw+G4lszveetsogj4yA2cZv0MrrcG
-	o4izvI79+kKqIIuJcFipJhB8NS3FKL5HnfWfjl0DEgxhG/M3YItFhvux81P8VkA5t6hg+7T1QmB
-	Gh0Hyi0/EmH5+OFZmH+T9H9Crpe4wCWEkqDz8
-X-Google-Smtp-Source: AGHT+IHyMD+4xnusQLwuQ5h6kBQmR1VYMf6lXqEwBGB2U8vCgE7ervQyk/rNIf69lWKuYbdIUKJLj3Yofx+zROPan7c=
-X-Received: by 2002:a05:622a:1211:b0:451:cd18:84c3 with SMTP id
- d75a77b69052e-4566cb29dc2mr2435821cf.12.1724829636084; Wed, 28 Aug 2024
- 00:20:36 -0700 (PDT)
+	s=arc-20240116; t=1724834204; c=relaxed/simple;
+	bh=uSmvSJeNFmeyFfY8BGu6VB4JiXjq3KkKYAvR2TQtleU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Lpn5jPyUTyhuCvZA8/L7kIdcBT2Q1fUCwXc6kCLU1IoTAgLaXqWYT80FcomA60XcI+4JkSuZoP6ebnpn8VXcw6cCvz2oEdOmgvzxE9vsqWnjnCxkDjS5JEXHRULyVopesU/EohMgCuKdfVXZKr7UcuyDILytknZPqoOIdLkxumg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=FzUI8QiL; arc=none smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 47S7twWb001449;
+	Wed, 28 Aug 2024 08:36:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding; s=corp-2023-11-20; bh=erGN/lqsjy+1F1
+	v45hgnTn7sAAhyNEqUCYCfrD4e66w=; b=FzUI8QiLz8N8Q9/kg9sBihxj/oY8ZC
+	kaVESOG/UcGONLSec3hC635Mh29O7hxOpDUdTjjabT3xm9XzA5ilWRxKcqdYvxlk
+	bJPD+0O7qe2cpHrmLeHjcXBmnOm3HomNqgoQUnpWsusEOse+YFnLWo2i8bitu41a
+	wpWcjTxX7t/CG1DkypMhFZnk/N8yFry+PdYMVivyXQSRWUnWU1X7MS50tTzYljgN
+	1NidAHdw9C3NtFRWkM+o+ijq4zuEh7OGv8S0iXLNeUpTdvS2xtqUG3AJ8+xM2URU
+	gOoVexbOghjd/moFl666q1VSZmGpCOPEZ8n3Yv+ArqN+8Hr/67+PS9sg==
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 419pugrs44-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 28 Aug 2024 08:36:18 +0000 (GMT)
+Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 47S72I0x016639;
+	Wed, 28 Aug 2024 08:36:17 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 418a5ten6d-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 28 Aug 2024 08:36:17 +0000
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 47S8KiB0017099;
+	Wed, 28 Aug 2024 08:36:17 GMT
+Received: from localhost.localdomain (dhcp-10-175-47-71.vpn.oracle.com [10.175.47.71])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 418a5ten64-1;
+	Wed, 28 Aug 2024 08:36:16 +0000
+From: Vegard Nossum <vegard.nossum@oracle.com>
+To: Masahiro Yamada <masahiroy@kernel.org>
+Cc: linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
+        kvmarm@lists.linux.dev, kvm@vger.kernel.org,
+        linux-um@lists.infradead.org, bpf@vger.kernel.org,
+        llvm@lists.linux.dev, Vegard Nossum <vegard.nossum@oracle.com>
+Subject: [PATCH] kbuild: use objcopy to generate asm-offsets
+Date: Wed, 28 Aug 2024 10:36:04 +0200
+Message-Id: <20240828083605.3093701-1-vegard.nossum@oracle.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240825041511.324452-1-almasrymina@google.com>
- <20240825041511.324452-5-almasrymina@google.com> <20240827191519.5464a0b2@kernel.org>
-In-Reply-To: <20240827191519.5464a0b2@kernel.org>
-From: Mina Almasry <almasrymina@google.com>
-Date: Wed, 28 Aug 2024 00:20:23 -0700
-Message-ID: <CAHS8izP8T5Xj97M7efecBmCrG9z8E0PYTxWCYZ0ym0hv13-DKg@mail.gmail.com>
-Subject: Re: [PATCH net-next v22 04/13] netdev: netdevice devmem allocator
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org, 
-	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
-	sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	linux-arch@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, Donald Hunter <donald.hunter@gmail.com>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Paolo Abeni <pabeni@redhat.com>, Jonathan Corbet <corbet@lwn.net>, 
-	Richard Henderson <richard.henderson@linaro.org>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, 
-	Matt Turner <mattst88@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
-	Andreas Larsson <andreas@gaisler.com>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Arnd Bergmann <arnd@arndb.de>, Steffen Klassert <steffen.klassert@secunet.com>, 
-	Herbert Xu <herbert@gondor.apana.org.au>, David Ahern <dsahern@kernel.org>, 
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
-	Magnus Karlsson <magnus.karlsson@intel.com>, 
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>, Jonathan Lemon <jonathan.lemon@gmail.com>, 
-	Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
-	Sumit Semwal <sumit.semwal@linaro.org>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
-	Pavel Begunkov <asml.silence@gmail.com>, David Wei <dw@davidwei.uk>, Jason Gunthorpe <jgg@ziepe.ca>, 
-	Yunsheng Lin <linyunsheng@huawei.com>, Shailend Chand <shailend@google.com>, 
-	Harshitha Ramamurthy <hramamurthy@google.com>, Shakeel Butt <shakeel.butt@linux.dev>, 
-	Jeroen de Borst <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>, 
-	Bagas Sanjaya <bagasdotme@gmail.com>, Christoph Hellwig <hch@infradead.org>, 
-	Nikolay Aleksandrov <razor@blackwall.org>, Taehee Yoo <ap420073@gmail.com>, 
-	Willem de Bruijn <willemb@google.com>, Kaiyuan Zhang <kaiyuanz@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
+ definitions=2024-08-28_03,2024-08-27_01,2024-05-17_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 mlxlogscore=999
+ phishscore=0 bulkscore=0 malwarescore=0 suspectscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2407110000
+ definitions=main-2408280060
+X-Proofpoint-GUID: RCp8Tn4L9XlNZemaT9NkL3670WSRULoV
+X-Proofpoint-ORIG-GUID: RCp8Tn4L9XlNZemaT9NkL3670WSRULoV
 
-On Tue, Aug 27, 2024 at 7:15=E2=80=AFPM Jakub Kicinski <kuba@kernel.org> wr=
-ote:
->
-> On Sun, 25 Aug 2024 04:15:02 +0000 Mina Almasry wrote:
-> > +void net_devmem_free_dmabuf(struct net_iov *niov)
-> > +{
-> > +     struct net_devmem_dmabuf_binding *binding =3D net_iov_binding(nio=
-v);
-> > +     unsigned long dma_addr =3D net_devmem_get_dma_addr(niov);
-> > +
-> > +     if (gen_pool_has_addr(binding->chunk_pool, dma_addr, PAGE_SIZE))
-> > +             gen_pool_free(binding->chunk_pool, dma_addr, PAGE_SIZE);
->
-> Is the check necessary for correctness? Should it perhaps be a WARN
-> under DEBUG_NET instead? The rest LGTM:
->
+In order to give assembly code access to C structs without having to
+hardcore member offsets, the kernel compiles a C source file listing all
+the structs and offsets that are needed in assembly code. Using some
+C preprocessor trickery and a sed script, the compiled assembly code is
+turned back into C preprocessor code that in turn can be used by the
+asssembly code.
 
-Not really necessary for correctness per se, but if we try to free a
-dma_addr that is not in a gen_pool (due to some other bug in the
-code), then gen_pool_free ends up BUG_ON, crashing the kernel.
+This sed script is very hard to read and understand.
 
-Arguably gen_pool_free should not BUG_ON, but I think that's an old
-API, and existing call sites have worked around the BUG_ON by doing a
-gen_pool_has_addr check like I do here, for example kernel/dma/pool.c.
-So I did not seek to change this established behavior.
+Remove the sed script and compile the C source listing structs and
+offsets to an object file (instead of assembly code) that embeds C source
+directly. Then extract the C source using objcopy.
 
-I think WARN seems fine to me, but maybe not under DEBUG_NET. I don't
-want production code crashing due to this error, if it's OK with you.
+The resulting code is more readable, less fragile, and sligthly shorter.
 
-Unless I hear otherwise I'll add a WARN without debug here.
+Note to reviewers: The 'objcopy ... /dev/stdout | cat' bit is needed to
+force the correct ordering of the objcopy lines vs. the surrounding echo
+commands; without it, objcopy will open /dev/stdout (which refers to a
+temporary file created by kbuild) and reset the file offset to 0. In
+other words, the pipe ensures that objcopy doesn't overwrite the lines
+that already exist in /dev/stdout.
 
-> Reviewed-by: Jakub Kicinski <kuba@kernel.org>
->
+Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
+---
+ Kbuild                       | 10 +++++-----
+ arch/arm/mach-at91/Makefile  |  4 ++--
+ arch/arm/mach-omap2/Makefile |  4 ++--
+ arch/arm64/kvm/Makefile      |  9 +++++----
+ arch/x86/kvm/Makefile        |  4 ++--
+ arch/x86/um/Makefile         |  6 +++---
+ drivers/memory/Makefile      |  4 ++--
+ include/linux/kbuild.h       | 15 +++++++++++----
+ samples/bpf/Makefile         |  4 ++--
+ scripts/Makefile.lib         | 13 +------------
+ scripts/mod/Makefile         |  4 ++--
+ 11 files changed, 37 insertions(+), 40 deletions(-)
 
-Thanks!
+diff --git a/Kbuild b/Kbuild
+index 464b34a08f51e..412b77007deb1 100644
+--- a/Kbuild
++++ b/Kbuild
+@@ -9,9 +9,9 @@
+ 
+ bounds-file := include/generated/bounds.h
+ 
+-targets := kernel/bounds.s
++targets := kernel/bounds.o
+ 
+-$(bounds-file): kernel/bounds.s FORCE
++$(bounds-file): kernel/bounds.o FORCE
+ 	$(call filechk,offsets,__LINUX_BOUNDS_H__)
+ 
+ # Generate timeconst.h
+@@ -27,11 +27,11 @@ $(timeconst-file): kernel/time/timeconst.bc FORCE
+ 
+ offsets-file := include/generated/asm-offsets.h
+ 
+-targets += arch/$(SRCARCH)/kernel/asm-offsets.s
++targets += arch/$(SRCARCH)/kernel/asm-offsets.o
+ 
+-arch/$(SRCARCH)/kernel/asm-offsets.s: $(timeconst-file) $(bounds-file)
++arch/$(SRCARCH)/kernel/asm-offsets.o: $(timeconst-file) $(bounds-file)
+ 
+-$(offsets-file): arch/$(SRCARCH)/kernel/asm-offsets.s FORCE
++$(offsets-file): arch/$(SRCARCH)/kernel/asm-offsets.o FORCE
+ 	$(call filechk,offsets,__ASM_OFFSETS_H__)
+ 
+ # Check for missing system calls
+diff --git a/arch/arm/mach-at91/Makefile b/arch/arm/mach-at91/Makefile
+index 794bd12ab0a8e..4d4be0000fd98 100644
+--- a/arch/arm/mach-at91/Makefile
++++ b/arch/arm/mach-at91/Makefile
+@@ -18,10 +18,10 @@ ifeq ($(CONFIG_PM_DEBUG),y)
+ CFLAGS_pm.o += -DDEBUG
+ endif
+ 
+-$(obj)/pm_data-offsets.h: $(obj)/pm_data-offsets.s FORCE
++$(obj)/pm_data-offsets.h: $(obj)/pm_data-offsets.o FORCE
+ 	$(call filechk,offsets,__PM_DATA_OFFSETS_H__)
+ 
+ $(obj)/pm_suspend.o: $(obj)/pm_data-offsets.h
+ 
+-targets += pm_data-offsets.s
++targets += pm_data-offsets.o
+ clean-files += pm_data-offsets.h
+diff --git a/arch/arm/mach-omap2/Makefile b/arch/arm/mach-omap2/Makefile
+index daf21127c82f1..991ffe6871d1d 100644
+--- a/arch/arm/mach-omap2/Makefile
++++ b/arch/arm/mach-omap2/Makefile
+@@ -217,12 +217,12 @@ obj-y					+= omap_phy_internal.o
+ 
+ obj-$(CONFIG_MACH_OMAP2_TUSB6010)	+= usb-tusb6010.o
+ 
+-$(obj)/pm-asm-offsets.h: $(obj)/pm-asm-offsets.s FORCE
++$(obj)/pm-asm-offsets.h: $(obj)/pm-asm-offsets.o FORCE
+ 	$(call filechk,offsets,__TI_PM_ASM_OFFSETS_H__)
+ 
+ $(obj)/sleep33xx.o $(obj)/sleep43xx.o: $(obj)/pm-asm-offsets.h
+ 
+-targets += pm-asm-offsets.s
++targets += pm-asm-offsets.o
+ clean-files += pm-asm-offsets.h
+ 
+ obj-$(CONFIG_OMAP_IOMMU)		+= omap-iommu.o
+diff --git a/arch/arm64/kvm/Makefile b/arch/arm64/kvm/Makefile
+index 86a629aaf0a13..ee699a683d82c 100644
+--- a/arch/arm64/kvm/Makefile
++++ b/arch/arm64/kvm/Makefile
+@@ -28,17 +28,18 @@ kvm-y += arm.o mmu.o mmio.o psci.o hypercalls.o pvtime.o \
+ kvm-$(CONFIG_HW_PERF_EVENTS)  += pmu-emul.o pmu.o
+ kvm-$(CONFIG_ARM64_PTR_AUTH)  += pauth.o
+ 
+-always-y := hyp_constants.h hyp-constants.s
++always-y := hyp_constants.h hyp-constants.o
+ 
+ define rule_gen_hyp_constants
+ 	$(call filechk,offsets,__HYP_CONSTANTS_H__)
+ endef
+ 
+ CFLAGS_hyp-constants.o = -I $(src)/hyp/include
+-$(obj)/hyp-constants.s: $(src)/hyp/hyp-constants.c FORCE
+-	$(call if_changed_dep,cc_s_c)
+ 
+-$(obj)/hyp_constants.h: $(obj)/hyp-constants.s FORCE
++$(obj)/hyp-constants.o: $(src)/hyp/hyp-constants.c FORCE
++	$(call if_changed_dep,cc_o_c)
++
++$(obj)/hyp_constants.h: $(obj)/hyp-constants.o FORCE
+ 	$(call if_changed_rule,gen_hyp_constants)
+ 
+ obj-kvm := $(addprefix $(obj)/, $(kvm-y))
+diff --git a/arch/x86/kvm/Makefile b/arch/x86/kvm/Makefile
+index 5494669a055a6..3b561c7e7c4f9 100644
+--- a/arch/x86/kvm/Makefile
++++ b/arch/x86/kvm/Makefile
+@@ -42,8 +42,8 @@ $(obj)/svm/vmenter.o: $(obj)/kvm-asm-offsets.h
+ AFLAGS_vmx/vmenter.o    := -iquote $(obj)
+ $(obj)/vmx/vmenter.o: $(obj)/kvm-asm-offsets.h
+ 
+-$(obj)/kvm-asm-offsets.h: $(obj)/kvm-asm-offsets.s FORCE
++$(obj)/kvm-asm-offsets.h: $(obj)/kvm-asm-offsets.o FORCE
+ 	$(call filechk,offsets,__KVM_ASM_OFFSETS_H__)
+ 
+-targets += kvm-asm-offsets.s
++targets += kvm-asm-offsets.o
+ clean-files += kvm-asm-offsets.h
+diff --git a/arch/x86/um/Makefile b/arch/x86/um/Makefile
+index 36e67fc97c22f..6563503d4b25d 100644
+--- a/arch/x86/um/Makefile
++++ b/arch/x86/um/Makefile
+@@ -38,11 +38,11 @@ subarch-$(CONFIG_MODULES) += ../kernel/module.o
+ 
+ USER_OBJS := bugs_$(BITS).o ptrace_user.o fault.o
+ 
+-$(obj)/user-offsets.s: c_flags = -Wp,-MD,$(depfile) $(USER_CFLAGS) \
++$(obj)/user-offsets.o: c_flags = -Wp,-MD,$(depfile) $(USER_CFLAGS) \
+ 	-Iarch/x86/include/generated
+-targets += user-offsets.s
++targets += user-offsets.o
+ 
+-include/generated/user_constants.h: $(obj)/user-offsets.s FORCE
++include/generated/user_constants.h: $(obj)/user-offsets.o FORCE
+ 	$(call filechk,offsets,__USER_CONSTANT_H__)
+ 
+ UNPROFILE_OBJS := stub_segv.o
+diff --git a/drivers/memory/Makefile b/drivers/memory/Makefile
+index d2e6ca9abbe02..efae95f315a12 100644
+--- a/drivers/memory/Makefile
++++ b/drivers/memory/Makefile
+@@ -34,8 +34,8 @@ ti-emif-sram-objs		:= ti-emif-pm.o ti-emif-sram-pm.o
+ 
+ $(obj)/ti-emif-sram-pm.o: $(obj)/ti-emif-asm-offsets.h
+ 
+-$(obj)/ti-emif-asm-offsets.h: $(obj)/emif-asm-offsets.s FORCE
++$(obj)/ti-emif-asm-offsets.h: $(obj)/emif-asm-offsets.o FORCE
+ 	$(call filechk,offsets,__TI_EMIF_ASM_OFFSETS_H__)
+ 
+-targets += emif-asm-offsets.s
++targets += emif-asm-offsets.o
+ clean-files += ti-emif-asm-offsets.h
+diff --git a/include/linux/kbuild.h b/include/linux/kbuild.h
+index e7be517aaaf68..d253ae4dfd1c1 100644
+--- a/include/linux/kbuild.h
++++ b/include/linux/kbuild.h
+@@ -2,15 +2,22 @@
+ #ifndef __LINUX_KBUILD_H
+ #define __LINUX_KBUILD_H
+ 
+-#define DEFINE(sym, val) \
+-	asm volatile("\n.ascii \"->" #sym " %0 " #val "\"" : : "i" (val))
++#define _LINE(x, ...) \
++	asm volatile( \
++		".pushsection \".data.kbuild\"; "\
++		".ascii \"" x "\\n\"; "\
++		".popsection" : : __VA_ARGS__)
+ 
+-#define BLANK() asm volatile("\n.ascii \"->\"" : : )
++#define DEFINE(sym, val) \
++	_LINE("#define " #sym " %c0 /* " #val " */", "i" (val))
+ 
+ #define OFFSET(sym, str, mem) \
+ 	DEFINE(sym, offsetof(struct str, mem))
+ 
++#define BLANK() \
++	_LINE("")
++
+ #define COMMENT(x) \
+-	asm volatile("\n.ascii \"->#" x "\"")
++	_LINE("/* " #x " */")
+ 
+ #endif
+diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
+index 3e003dd6bea09..a5d86ac8f5f57 100644
+--- a/samples/bpf/Makefile
++++ b/samples/bpf/Makefile
+@@ -270,10 +270,10 @@ $(LIBBPF_OUTPUT) $(BPFTOOL_OUTPUT):
+ 	$(call msg,MKDIR,$@)
+ 	$(Q)mkdir -p $@
+ 
+-$(obj)/syscall_nrs.h:	$(obj)/syscall_nrs.s FORCE
++$(obj)/syscall_nrs.h:	$(obj)/syscall_nrs.o FORCE
+ 	$(call filechk,offsets,__SYSCALL_NRS_H__)
+ 
+-targets += syscall_nrs.s
++targets += syscall_nrs.o
+ clean-files += syscall_nrs.h
+ 
+ FORCE:
+diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
+index 207325eaf1d1c..f78b0b12ace26 100644
+--- a/scripts/Makefile.lib
++++ b/scripts/Makefile.lib
+@@ -583,17 +583,6 @@ quiet_cmd_zstd22_with_size = ZSTD22  $@
+ # ASM offsets
+ # ---------------------------------------------------------------------------
+ 
+-# Default sed regexp - multiline due to syntax constraints
+-#
+-# Use [:space:] because LLVM's integrated assembler inserts <tab> around
+-# the .ascii directive whereas GCC keeps the <space> as-is.
+-define sed-offsets
+-	's:^[[:space:]]*\.ascii[[:space:]]*"\(.*\)".*:\1:; \
+-	/^->/{s:->#\(.*\):/* \1 */:; \
+-	s:^->\([^ ]*\) [\$$#]*\([^ ]*\) \(.*\):#define \1 \2 /* \3 */:; \
+-	s:->::; p;}'
+-endef
+-
+ # Use filechk to avoid rebuilds when a header changes, but the resulting file
+ # does not
+ define filechk_offsets
+@@ -605,7 +594,7 @@ define filechk_offsets
+ 	 echo " * This file was generated by Kbuild"; \
+ 	 echo " */"; \
+ 	 echo ""; \
+-	 sed -ne $(sed-offsets) < $<; \
++	 $(OBJCOPY) -j .data.kbuild -O binary $< /dev/stdout | cat; \
+ 	 echo ""; \
+ 	 echo "#endif"
+ endef
+diff --git a/scripts/mod/Makefile b/scripts/mod/Makefile
+index c729bc936bae1..3c3f5e16a30a2 100644
+--- a/scripts/mod/Makefile
++++ b/scripts/mod/Makefile
+@@ -8,10 +8,10 @@ modpost-objs	:= modpost.o file2alias.o sumversion.o symsearch.o
+ 
+ devicetable-offsets-file := devicetable-offsets.h
+ 
+-$(obj)/$(devicetable-offsets-file): $(obj)/devicetable-offsets.s FORCE
++$(obj)/$(devicetable-offsets-file): $(obj)/devicetable-offsets.o FORCE
+ 	$(call filechk,offsets,__DEVICETABLE_OFFSETS_H__)
+ 
+-targets += $(devicetable-offsets-file) devicetable-offsets.s
++targets += $(devicetable-offsets-file) devicetable-offsets.o
+ 
+ # dependencies on generated files need to be listed explicitly
+ 
+-- 
+2.34.1
 
---=20
-Thanks,
-Mina
 
