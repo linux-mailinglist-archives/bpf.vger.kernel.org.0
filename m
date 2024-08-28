@@ -1,47 +1,47 @@
-Return-Path: <bpf+bounces-38251-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38252-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D12896248F
-	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 12:16:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09A669624F9
+	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 12:33:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B591CB23553
-	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 10:16:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AAA84281E32
+	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 10:33:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B61416B720;
-	Wed, 28 Aug 2024 10:15:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7495B16BE27;
+	Wed, 28 Aug 2024 10:32:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n474//dd"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rkDzbRiK"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8815216132F;
-	Wed, 28 Aug 2024 10:15:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C580C1465AC;
+	Wed, 28 Aug 2024 10:32:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724840140; cv=none; b=VTFT3D7YBFnl/afoJnW8DOtsD+6CxZPJEIt97kwa9hEyAg5KlhDy+on+rG2WNqwBtgO8qk5Tll3hasZzD9pBhdQdGHT55cNfiaKOVRppQ+3rUlO0CXZUk9lp9Al40BElv95DnR8bQAbQOJfp/tZENAUw+sPoOKu1r7JgJhZAg84=
+	t=1724841174; cv=none; b=jmAZZWdT5CxJYqTveduBzXX9ocV6piobDPFsYFG0YTrBlGDaETKMUKjSvEaMPriiGOe0PLppV0nRmHmYFSTn4mawYM9dcHS5koR4coP8T365czhqnx9bmzjmFJfbRy+3G5bjD2PCikIVcu0NsubeWQyWgrbUB0UEfNFvux/GA+k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724840140; c=relaxed/simple;
-	bh=5xuHNpJ8s4HOyC/ZMbuo393EqBOuuHgBE8NpAhMS1xo=;
+	s=arc-20240116; t=1724841174; c=relaxed/simple;
+	bh=RAZiyHV0BW9WjoN1ECXpyLaENcTOjscCNA3CQ8WtSxg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WfWKw6G0eVSUKdGcitRmZGAGCD/t8reKnkfIP+wTZuGLmNU4vqbuSpgsQT0ArUjk5WCh4s14GcH3xurx2GV5FaxPYjeRaj1+sOu4TIHm8DfS6l1vK9rqejWpNbst6cu4OK1mZ+NuGdWZ+dgJ8XbYb7FuIvtmpYclp8Z3QOS4GfE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n474//dd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5E4DC98EC0;
-	Wed, 28 Aug 2024 10:15:35 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=ErEYOQUrfs3aK8H/N1fJ8pHUyI5pmRlvH2ZoAiizZGmM2W6+raoQWKKw+1IPijUKGiD1cQGaVjjEk6zlfZXhU2qcVop2DRxiT7w7akPmE+H1FrbgM9nAbHz/AxM0vkxe8aqRq3g9VjIt0obigmV9oAuZIrLVid/axf8d9Ca50Go=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rkDzbRiK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D188C98EC2;
+	Wed, 28 Aug 2024 10:32:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1724840140;
-	bh=5xuHNpJ8s4HOyC/ZMbuo393EqBOuuHgBE8NpAhMS1xo=;
+	s=k20201202; t=1724841173;
+	bh=RAZiyHV0BW9WjoN1ECXpyLaENcTOjscCNA3CQ8WtSxg=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=n474//ddYkvBDbFi4PGLE0FTy+iiAA4s4wyNdxcHGJALrL1fthrhN3uI+zqdovRS/
-	 144KFSBIez7oTLYMwkU1OpzSMrIJ/beg9u2IV2kfsLQ3HbVrfcjTYwUOYc0zNYGCUW
-	 sJPUqdSKe/vNZkKLA9B0zTCgnE8dCgdnbOaVHYsUF8xA9psYiMn54rrFhKkNIi3oCl
-	 dvtmwiVj6Pzfi2AhPqiPDt2mnx4XVarJ+wsJOyfm+g/Kx8+3f9FhCTGEuLGnAERvcX
-	 Jg4rftmJ9JMgCrLnqOr0dbza144I/TB8JbkMRSm3BmoN9HM3dOV8VyCx9rbu7NESVa
-	 DUUS4wBFCSJWg==
-Date: Wed, 28 Aug 2024 12:15:33 +0200
+	b=rkDzbRiKRlpXFmTZretmNOGGQgiy5srKWiQ0PRA0Tk0OZDkahXPqUd4Z9CUuUNqBo
+	 nYGxEXH3rwTgaamSsdtMI/ul4SgdEA45Mv5vcQ1jvnYqV8l67eUuZvJUhL0+SpOZLc
+	 CtR3OVviUoN03RcnZCIWKOV5FaDXwjOJQL/YcDD8pcTl4aTGvITIxAaQnIJVjL/dxH
+	 TEfdTsqMfwOnr6d/uYlOW+ygSijg0UhHigPd3keM8m3YwMUpZU+wsk3kDRnsPInXGr
+	 luK/ARDKw3REReStXJIPprYvfeemOfSSHFZLRQB2gkKHeej8wuLr70XMYRGbXclw6c
+	 riP3Ob2CZ89tw==
+Date: Wed, 28 Aug 2024 12:32:47 +0200
 From: Alejandro Colomar <alx@kernel.org>
 To: Yafang Shao <laoar.shao@gmail.com>
 Cc: akpm@linux-foundation.org, torvalds@linux-foundation.org, 
@@ -50,13 +50,13 @@ Cc: akpm@linux-foundation.org, torvalds@linux-foundation.org,
 	linux-mm@kvack.org, linux-fsdevel@vger.kernel.org, 
 	linux-trace-kernel@vger.kernel.org, audit@vger.kernel.org, linux-security-module@vger.kernel.org, 
 	selinux@vger.kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, Alexander Viro <viro@zeniv.linux.org.uk>, 
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Kees Cook <keescook@chromium.org>, 
-	Matus Jokay <matus.jokay@stuba.sk>, "Serge E. Hallyn" <serge@hallyn.com>
-Subject: Re: [PATCH v8 1/8] Get rid of __get_task_comm()
-Message-ID: <lql4y2nvs3ewadszhmv4m6fnqja4ff4ymuurpidlwvgf4twvru@esnh37a2jxbd>
+	dri-devel@lists.freedesktop.org, Simon Horman <horms@kernel.org>, 
+	Matthew Wilcox <willy@infradead.org>
+Subject: Re: [PATCH v8 6/8] mm/util: Deduplicate code in
+ {kstrdup,kstrndup,kmemdup_nul}
+Message-ID: <byi4tx6l2lrbs5w6oxypr44ldntlh4kp56vnsza3iuztwb37oa@2qtdx2kgz4bq>
 References: <20240828030321.20688-1-laoar.shao@gmail.com>
- <20240828030321.20688-2-laoar.shao@gmail.com>
+ <20240828030321.20688-7-laoar.shao@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -64,12 +64,12 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="74qvuoge5bg2djof"
+	protocol="application/pgp-signature"; boundary="fvf522dvf7ucivwn"
 Content-Disposition: inline
-In-Reply-To: <20240828030321.20688-2-laoar.shao@gmail.com>
+In-Reply-To: <20240828030321.20688-7-laoar.shao@gmail.com>
 
 
---74qvuoge5bg2djof
+--fvf522dvf7ucivwn
 Content-Type: text/plain; protected-headers=v1; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
@@ -81,138 +81,138 @@ Cc: akpm@linux-foundation.org, torvalds@linux-foundation.org,
 	linux-mm@kvack.org, linux-fsdevel@vger.kernel.org, 
 	linux-trace-kernel@vger.kernel.org, audit@vger.kernel.org, linux-security-module@vger.kernel.org, 
 	selinux@vger.kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, Alexander Viro <viro@zeniv.linux.org.uk>, 
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Kees Cook <keescook@chromium.org>, 
-	Matus Jokay <matus.jokay@stuba.sk>, "Serge E. Hallyn" <serge@hallyn.com>
-Subject: Re: [PATCH v8 1/8] Get rid of __get_task_comm()
+	dri-devel@lists.freedesktop.org, Simon Horman <horms@kernel.org>, 
+	Matthew Wilcox <willy@infradead.org>
+Subject: Re: [PATCH v8 6/8] mm/util: Deduplicate code in
+ {kstrdup,kstrndup,kmemdup_nul}
 References: <20240828030321.20688-1-laoar.shao@gmail.com>
- <20240828030321.20688-2-laoar.shao@gmail.com>
+ <20240828030321.20688-7-laoar.shao@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20240828030321.20688-2-laoar.shao@gmail.com>
+In-Reply-To: <20240828030321.20688-7-laoar.shao@gmail.com>
 
-Hi Yafang,
-
-On Wed, Aug 28, 2024 at 11:03:14AM GMT, Yafang Shao wrote:
-> We want to eliminate the use of __get_task_comm() for the following
-> reasons:
+On Wed, Aug 28, 2024 at 11:03:19AM GMT, Yafang Shao wrote:
+> These three functions follow the same pattern. To deduplicate the code,
+> let's introduce a common helper __kmemdup_nul().
 >=20
-> - The task_lock() is unnecessary
->   Quoted from Linus [0]:
->   : Since user space can randomly change their names anyway, using locking
->   : was always wrong for readers (for writers it probably does make sense
->   : to have some lock - although practically speaking nobody cares there
->   : either, but at least for a writer some kind of race could have
->   : long-term mixed results
->=20
-> - The BUILD_BUG_ON() doesn't add any value
->   The only requirement is to ensure that the destination buffer is a valid
->   array.
->=20
-> - Zeroing is not necessary in current use cases
->   To avoid confusion, we should remove it. Moreover, not zeroing could
->   potentially make it easier to uncover bugs. If the caller needs a
->   zero-padded task name, it should be explicitly handled at the call site.
->=20
-> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-> Link: https://lore.kernel.org/all/CAHk-=3DwivfrF0_zvf+oj6=3D=3DSh=3D-npJo=
-oP8chLPEfaFV0oNYTTBA@mail.gmail.com [0]
-> Link: https://lore.kernel.org/all/CAHk-=3DwhWtUC-AjmGJveAETKOMeMFSTwKwu99=
-v7+b6AyHMmaDFA@mail.gmail.com/
-> Suggested-by: Alejandro Colomar <alx@kernel.org>
-> Link: https://lore.kernel.org/all/2jxak5v6dfxlpbxhpm3ey7oup4g2lnr3ueurfbo=
-sf5wdo65dk4@srb3hsk72zwq
+> Suggested-by: Andrew Morton <akpm@linux-foundation.org>
 > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-> Cc: Christian Brauner <brauner@kernel.org>
-> Cc: Jan Kara <jack@suse.cz>
-> Cc: Eric Biederman <ebiederm@xmission.com>
-> Cc: Kees Cook <keescook@chromium.org>
-> Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-> Cc: Matus Jokay <matus.jokay@stuba.sk>
+> Cc: Simon Horman <horms@kernel.org>
+> Cc: Matthew Wilcox <willy@infradead.org>
 > Cc: Alejandro Colomar <alx@kernel.org>
-> Cc: "Serge E. Hallyn" <serge@hallyn.com>
 > ---
->  fs/exec.c             | 10 ----------
->  fs/proc/array.c       |  2 +-
->  include/linux/sched.h | 32 ++++++++++++++++++++++++++------
->  kernel/kthread.c      |  2 +-
->  4 files changed, 28 insertions(+), 18 deletions(-)
->=20
 
-[...]
+Reviewed-by: Alejandro Colomar <alx@kernel.org>
 
-> diff --git a/include/linux/sched.h b/include/linux/sched.h
-> index f8d150343d42..c40b95a79d80 100644
-> --- a/include/linux/sched.h
-> +++ b/include/linux/sched.h
-
-[...]
-
-> @@ -1914,10 +1917,27 @@ static inline void set_task_comm(struct task_stru=
-ct *tsk, const char *from)
->  	__set_task_comm(tsk, from, false);
->  }
-> =20
-> -extern char *__get_task_comm(char *to, size_t len, struct task_struct *t=
-sk);
-> +/*
-
-[...]
-
-> + * - ARRAY_SIZE() can help ensure that @buf is indeed an array.
-> + */
->  #define get_task_comm(buf, tsk) ({			\
-> -	BUILD_BUG_ON(sizeof(buf) !=3D TASK_COMM_LEN);	\
-> -	__get_task_comm(buf, sizeof(buf), tsk);		\
-> +	strscpy(buf, (tsk)->comm, ARRAY_SIZE(buf));	\
-
-I see that there's a two-argument macro
-
-	#define strscpy(dst, src)	sized_strscpy(dst, src, sizeof(dst))
-
-which is used in patch 2/8
-
-	diff --git a/kernel/auditsc.c b/kernel/auditsc.c
-	index 6f0d6fb6523f..e4ef5e57dde9 100644
-	--- a/kernel/auditsc.c
-	+++ b/kernel/auditsc.c
-	@@ -2730,7 +2730,7 @@ void __audit_ptrace(struct task_struct *t)
-		context->target_uid =3D task_uid(t);
-		context->target_sessionid =3D audit_get_sessionid(t);
-		security_task_getsecid_obj(t, &context->target_sid);
-	-       memcpy(context->target_comm, t->comm, TASK_COMM_LEN);
-	+       strscpy(context->target_comm, t->comm);
-	 }
-
-	 /**
-
-I propose modifying that macro to use ARRAY_SIZE() instead of sizeof(),
-and then calling that macro here too.  That would not only make sure
-that this is an array, but make sure that every call to that macro is an
-array.  An if there are macros for similar string functions that reduce
-the argument with a usual sizeof(), the same thing could be done to
-those too.
-
-Have a lovley day!
+Cheers,
 Alex
 
-> +	buf;						\
->  })
+>  mm/util.c | 68 ++++++++++++++++++++++---------------------------------
+>  1 file changed, 27 insertions(+), 41 deletions(-)
+>=20
+> diff --git a/mm/util.c b/mm/util.c
+> index 9a77a347c385..42714fe13e24 100644
+> --- a/mm/util.c
+> +++ b/mm/util.c
+> @@ -45,33 +45,41 @@ void kfree_const(const void *x)
+>  EXPORT_SYMBOL(kfree_const);
 > =20
->  #ifdef CONFIG_SMP
-> diff --git a/kernel/kthread.c b/kernel/kthread.c
-> index f7be976ff88a..7d001d033cf9 100644
-> --- a/kernel/kthread.c
-> +++ b/kernel/kthread.c
-> @@ -101,7 +101,7 @@ void get_kthread_comm(char *buf, size_t buf_size, str=
-uct task_struct *tsk)
->  	struct kthread *kthread =3D to_kthread(tsk);
+>  /**
+> - * kstrdup - allocate space for and copy an existing string
+> - * @s: the string to duplicate
+> + * __kmemdup_nul - Create a NUL-terminated string from @s, which might b=
+e unterminated.
+> + * @s: The data to copy
+> + * @len: The size of the data, not including the NUL terminator
+>   * @gfp: the GFP mask used in the kmalloc() call when allocating memory
+>   *
+> - * Return: newly allocated copy of @s or %NULL in case of error
+> + * Return: newly allocated copy of @s with NUL-termination or %NULL in
+> + * case of error
+>   */
+> -noinline
+> -char *kstrdup(const char *s, gfp_t gfp)
+> +static __always_inline char *__kmemdup_nul(const char *s, size_t len, gf=
+p_t gfp)
+>  {
+> -	size_t len;
+>  	char *buf;
 > =20
->  	if (!kthread || !kthread->full_name) {
-> -		__get_task_comm(buf, buf_size, tsk);
-> +		strscpy(buf, tsk->comm, buf_size);
->  		return;
->  	}
+> -	if (!s)
+> +	/* '+1' for the NUL terminator */
+> +	buf =3D kmalloc_track_caller(len + 1, gfp);
+> +	if (!buf)
+>  		return NULL;
+> =20
+> -	len =3D strlen(s) + 1;
+> -	buf =3D kmalloc_track_caller(len, gfp);
+> -	if (buf) {
+> -		memcpy(buf, s, len);
+> -		/* During memcpy(), the string might be updated to a new value,
+> -		 * which could be longer than the string when strlen() is
+> -		 * called. Therefore, we need to add a NUL termimator.
+> -		 */
+> -		buf[len - 1] =3D '\0';
+> -	}
+> +	memcpy(buf, s, len);
+> +	/* Ensure the buf is always NUL-terminated, regardless of @s. */
+> +	buf[len] =3D '\0';
+>  	return buf;
+>  }
+> +
+> +/**
+> + * kstrdup - allocate space for and copy an existing string
+> + * @s: the string to duplicate
+> + * @gfp: the GFP mask used in the kmalloc() call when allocating memory
+> + *
+> + * Return: newly allocated copy of @s or %NULL in case of error
+> + */
+> +noinline
+> +char *kstrdup(const char *s, gfp_t gfp)
+> +{
+> +	return s ? __kmemdup_nul(s, strlen(s), gfp) : NULL;
+> +}
+>  EXPORT_SYMBOL(kstrdup);
+> =20
+>  /**
+> @@ -106,19 +114,7 @@ EXPORT_SYMBOL(kstrdup_const);
+>   */
+>  char *kstrndup(const char *s, size_t max, gfp_t gfp)
+>  {
+> -	size_t len;
+> -	char *buf;
+> -
+> -	if (!s)
+> -		return NULL;
+> -
+> -	len =3D strnlen(s, max);
+> -	buf =3D kmalloc_track_caller(len+1, gfp);
+> -	if (buf) {
+> -		memcpy(buf, s, len);
+> -		buf[len] =3D '\0';
+> -	}
+> -	return buf;
+> +	return s ? __kmemdup_nul(s, strnlen(s, max), gfp) : NULL;
+>  }
+>  EXPORT_SYMBOL(kstrndup);
+> =20
+> @@ -192,17 +188,7 @@ EXPORT_SYMBOL(kvmemdup);
+>   */
+>  char *kmemdup_nul(const char *s, size_t len, gfp_t gfp)
+>  {
+> -	char *buf;
+> -
+> -	if (!s)
+> -		return NULL;
+> -
+> -	buf =3D kmalloc_track_caller(len + 1, gfp);
+> -	if (buf) {
+> -		memcpy(buf, s, len);
+> -		buf[len] =3D '\0';
+> -	}
+> -	return buf;
+> +	return s ? __kmemdup_nul(s, len, gfp) : NULL;
+>  }
+>  EXPORT_SYMBOL(kmemdup_nul);
 > =20
 > --=20
 > 2.43.5
@@ -221,25 +221,25 @@ uct task_struct *tsk)
 --=20
 <https://www.alejandro-colomar.es/>
 
---74qvuoge5bg2djof
+--fvf522dvf7ucivwn
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCgAdFiEE6jqH8KTroDDkXfJAnowa+77/2zIFAmbO+MUACgkQnowa+77/
-2zKy2RAAnnnQ7wIvUyQxf0H9XEIY8X2+ncAYPevk+tiPOW5bQccWRYr4HTCgFzGw
-ROoKl9PQMjlmswMdkJxLRBd3r2r4nwpDtvORpRfVBbyJwcEbrh1+L8l834QWQbKA
-sf7ADLROAhIWViIeyaFhFYw/LyBh8fwArPgzPbS1V1YbpXQeh50zpTaZG5CnTFzC
-OwQ02fhV2rZABw7Vc5d/ZSk0sk4ZfkfqrGKADzX2fhVYkcXYta4QU5oIYmtVlZ1K
-GyNHVHWcF27pDYQ/it3bKIugmz3RpyJ0uf7vYwcOwfnCeypEQquaEHAxOOuCdjGk
-SdObiDbJmE5L3FmMcRxHacE2bX5vSlubD9oNFhIA8nJVNN//lvEcG2f7uLUNtT9a
-rb5+wxYYuIoe5CY/hAm0g4R5RTen4WJdnnGuawk703XeRp7eZKvOfJHgwx+mLiln
-CB3EGWz6g8ieUhnYcmn3ZRH0YyStGxY/xVgWldQSJkcLJSQ/ppGk+BqeDwShUPnD
-lPvOwIzfDehLUj+he0PiELV787pJWEbrXHdUumbLryBlBEAnwgkz93KfZtEYjGst
-g/63uDKyaxh6XYNtKbmYyDC0uN3jf9JKdfNFtA73mlOaeV4EYP7DLUc9m7t9Wuq6
-QXB8wxZoun63oEyvF1QFKG1QEU0q9LRvy3h/isMlJmcehTcqI3Y=
-=NyZ7
+iQIzBAABCgAdFiEE6jqH8KTroDDkXfJAnowa+77/2zIFAmbO/MkACgkQnowa+77/
+2zJ0rg/6A9w0pR/IBhWTYnFTKH8DiRQVQuPVpRuWDuTYTqrMqUR2OEtQ2gWcf10h
+TYl0N0mXcVo4vsCvdthueqs1ipa1bvOY3QN5aKpL5qXRq81NBe4JWd7ym/T8TU9Z
+EP6iBPimsQMYTPMNwgCK768HYPfu9lygO8CecifrGLoSZ5EDZ2GnyDz2xzCMZIq6
++KKTKJqyhww4ydIgm49fMi1bk59rI45fjg0GpVepcATmdR6bbPiE8yvdazxOJCT1
+t6dAVGehLzNV1hGgDqiG8QS0GuqM1YMwEy6pWoi6zoHUjT8326bOP0UXuzB1NAxd
+M93w62xDoKpceGkLS22ajjH+0H7qgBtWyXBpd6QUVoqQ0lBWpnS7FfqMh9wJmd5L
+55IaQKIPcaWDSBImqC/Mm2NYgH0DgcuF+JN/xaR6bhx+92rpzhE4/HM7Fll9OmuF
+NVDkfuQIuuuZ74Be1QOYCa4h+jeB6sksNlF18wmhH8OipYCzRVEjROxUSd4SSb2m
+bWd1Wpkx65jf1musgB9Q3oGofNPQvx9xnKYKk97o0n+UXyi7B7abukTl4oXKWbmB
+WisDpchUmGJAOm0uncet+rsM5Vod5zXbdf0aRXz5WPYAE1CDauPDzi9z2qKrYdHc
+gzn7xNZqVSRW8SsYctxEgro1zc1c8XxsHFiWJCQdjtwh9fOA1zU=
+=+sNM
 -----END PGP SIGNATURE-----
 
---74qvuoge5bg2djof--
+--fvf522dvf7ucivwn--
 
