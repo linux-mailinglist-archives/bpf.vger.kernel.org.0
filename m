@@ -1,128 +1,109 @@
-Return-Path: <bpf+bounces-38307-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38308-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AB4B963059
-	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 20:43:48 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A632963093
+	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 21:00:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6EDE71C23C14
-	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 18:43:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7168BB249EE
+	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 19:00:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F2771AB525;
-	Wed, 28 Aug 2024 18:43:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9CF91AB522;
+	Wed, 28 Aug 2024 18:59:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ROtLpkCE"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="WlREnyGa"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D54D1D696;
-	Wed, 28 Aug 2024 18:43:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BEE11AB503
+	for <bpf@vger.kernel.org>; Wed, 28 Aug 2024 18:59:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724870616; cv=none; b=uJZwamkrjh5oRjpH6SBD4rh3eC2qJJ6li8bOxd5aUabP5asyfwAiyQQA7r8VU6YltEMBEq+S6n9QP8Dlx4h+rbIj5vevFLwfXMyBxp6V75zSS4V8oRmmBnAY/TOGSN9fiuLocENf5HO10aJBI6GJisdLzQ84IBuSHLgi6aEDWZ4=
+	t=1724871588; cv=none; b=owMYdr+f+N6mhcUqBss6LAOUC8L9ABoJx0Qw6/cV/oX1z/NZJqGMUXc7sNNxxWmTy2asgxFpjVz3xh6h95zO8KIiHuwLi9lCCVNLW4KbzUgVQx4GbbmtY4U5bVt2TMLEb4gX215sjWoBuPID61foSHTLymVxEw2CzrxfZTYF08o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724870616; c=relaxed/simple;
-	bh=bWjjtD9ux0QAGG3fGYObh74lsPxgFpjHa3YWm0m0vIU=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Tg8NLAiN1pUYg/CZyuIe3v/9AOKfJ3kdjm5n9ZUcJWOqRE17Iih5BlNWvRTbUydOrtYLKo/GvtwNdO9eC4UuAeS2ybdlpWXDVR7yAc0xB1IA6dKqW3Bccz1evVcTEc5V2SZTYQ6YzZwJWwYLE+78WGN6UYT7cyU0DtjrZPKn/ko=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ROtLpkCE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72659C4CEC0;
-	Wed, 28 Aug 2024 18:43:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1724870616;
-	bh=bWjjtD9ux0QAGG3fGYObh74lsPxgFpjHa3YWm0m0vIU=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=ROtLpkCEGD8Ucdbs7a1iRfvuc32G3qJBY6quO3vEkfgfTtRxHiuhmUPG4800e2RsG
-	 /Lm2aGh9ZM5echC/qr/x2EXrVQ45i6g+DGFDj3b4IL1+1nBBMKPOO7F2EVPH21SXWt
-	 D3wyLlY3wzUG+pAwc9PiOyoANcpRLYBPjrk80WBsoM0sK/mk/Y/+Np3wR59Dnj9tMd
-	 zCiuTrI/cV8v34a6M0pTb4HTETCCVIQdFJzGlV39b2ciDrjitNDYPxuwRZojB40abg
-	 4ctkvmZU35i1iPs5RMsbgdrXOvldO8psyPOoy6iI6yqUNNrEivtWT76jv46HwMkF1o
-	 46/gB0lOrWDFQ==
-Date: Wed, 28 Aug 2024 11:43:33 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Mina Almasry <almasrymina@google.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org,
- linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
- sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- linux-arch@vger.kernel.org, bpf@vger.kernel.org,
- linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org,
- dri-devel@lists.freedesktop.org, Donald Hunter <donald.hunter@gmail.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Jonathan Corbet
- <corbet@lwn.net>, Richard Henderson <richard.henderson@linaro.org>, Ivan
- Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>, "James E.J. Bottomley"
- <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>,
- Andreas Larsson <andreas@gaisler.com>, Jesper Dangaard Brouer
- <hawk@kernel.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>, Steven
- Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Arnd Bergmann
- <arnd@arndb.de>, Steffen Klassert <steffen.klassert@secunet.com>, Herbert
- Xu <herbert@gondor.apana.org.au>, David Ahern <dsahern@kernel.org>, Willem
- de Bruijn <willemdebruijn.kernel@gmail.com>, =?UTF-8?B?QmrDtnJuIFTDtnBl?=
- =?UTF-8?B?bA==?= <bjorn@kernel.org>, Magnus Karlsson
- <magnus.karlsson@intel.com>, Maciej Fijalkowski
- <maciej.fijalkowski@intel.com>, Jonathan Lemon <jonathan.lemon@gmail.com>,
- Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>,
- Sumit Semwal <sumit.semwal@linaro.org>, Christian =?UTF-8?B?S8O2bmln?=
- <christian.koenig@amd.com>, Pavel Begunkov <asml.silence@gmail.com>, David
- Wei <dw@davidwei.uk>, Jason Gunthorpe <jgg@ziepe.ca>, Yunsheng Lin
- <linyunsheng@huawei.com>, Shailend Chand <shailend@google.com>, Harshitha
- Ramamurthy <hramamurthy@google.com>, Shakeel Butt <shakeel.butt@linux.dev>,
- Jeroen de Borst <jeroendb@google.com>, Praveen Kaligineedi
- <pkaligineedi@google.com>, Bagas Sanjaya <bagasdotme@gmail.com>, Christoph
- Hellwig <hch@infradead.org>, Nikolay Aleksandrov <razor@blackwall.org>,
- Taehee Yoo <ap420073@gmail.com>, Willem de Bruijn <willemb@google.com>,
- Kaiyuan Zhang <kaiyuanz@google.com>
-Subject: Re: [PATCH net-next v22 04/13] netdev: netdevice devmem allocator
-Message-ID: <20240828114333.560895f0@kernel.org>
-In-Reply-To: <CAHS8izP8T5Xj97M7efecBmCrG9z8E0PYTxWCYZ0ym0hv13-DKg@mail.gmail.com>
-References: <20240825041511.324452-1-almasrymina@google.com>
-	<20240825041511.324452-5-almasrymina@google.com>
-	<20240827191519.5464a0b2@kernel.org>
-	<CAHS8izP8T5Xj97M7efecBmCrG9z8E0PYTxWCYZ0ym0hv13-DKg@mail.gmail.com>
+	s=arc-20240116; t=1724871588; c=relaxed/simple;
+	bh=2bES864NO1Dk0ae92GXkIm3uTTTcvmmiy4DjawLx+n0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=RiiMUAv9PEKHOZKhdNj1TdbjTS5N5RwsayXAr2zVoErfhyP9Fc5Yj69h3vLugLEXuOm8b9ogw0w0kUd+/dwvMUOTCFiiDEebfgx5bmFhL5wdTq9mx363DRYZbYbZbSZHscjH6xP+U/b1SII0Ux9j3aUtb1V21+y6hBsUIC90mic=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=WlREnyGa; arc=none smtp.client-ip=95.215.58.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <a76c7e0c-d8f7-44bf-94b5-63610abbd506@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1724871583;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=d832903oHpgQqOKttJnC2sKKD1MJzsqysSdhnzV5kOI=;
+	b=WlREnyGagnPHHMgxWuHoq0pLzok4k2R7ZPamr5BnPa2+ZnYvZW9YwK/ZjbG6A/1Owykxi0
+	ttcHXCj18XyyNORwiChQhjKsPFenDVYsYLbMQ3IgcYxMJSIxuctrmU734Pwagf6DX/NBil
+	qgbCI86s0KClOCR6ZGK9N7/yOK+TpoU=
+Date: Wed, 28 Aug 2024 11:59:37 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH v4 bpf-next 2/9] bpf: Adjust BPF_JMP that jumps to the 1st
+ insn of the prologue
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Eduard Zingerman <eddyz87@gmail.com>, Yonghong Song
+ <yonghong.song@linux.dev>, Amery Hung <ameryhung@gmail.com>,
+ Kernel Team <kernel-team@meta.com>
+References: <20240827194834.1423815-1-martin.lau@linux.dev>
+ <20240827195208.1435815-1-martin.lau@linux.dev>
+ <CAADnVQJbGCB5Hjb8NPU7P0ZOwR_EWcREuxsBOvyo7cRggdioDA@mail.gmail.com>
+ <669bc1c6-2c8c-483f-8d38-0a705463a25d@linux.dev>
+ <CAADnVQ+0qWRDvRouyZoikYAf=EQepPyuOWrk4oH+h8s1wJW-YA@mail.gmail.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <CAADnVQ+0qWRDvRouyZoikYAf=EQepPyuOWrk4oH+h8s1wJW-YA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, 28 Aug 2024 00:20:23 -0700 Mina Almasry wrote:
-> > On Sun, 25 Aug 2024 04:15:02 +0000 Mina Almasry wrote:  
-> > > +void net_devmem_free_dmabuf(struct net_iov *niov)
-> > > +{
-> > > +     struct net_devmem_dmabuf_binding *binding = net_iov_binding(niov);
-> > > +     unsigned long dma_addr = net_devmem_get_dma_addr(niov);
-> > > +
-> > > +     if (gen_pool_has_addr(binding->chunk_pool, dma_addr, PAGE_SIZE))
-> > > +             gen_pool_free(binding->chunk_pool, dma_addr, PAGE_SIZE);  
-> >
-> > Is the check necessary for correctness? Should it perhaps be a WARN
-> > under DEBUG_NET instead? The rest LGTM:
-> >  
+On 8/28/24 11:43 AM, Alexei Starovoitov wrote:
+> On Wed, Aug 28, 2024 at 10:44 AM Martin KaFai Lau <martin.lau@linux.dev> wrote:
+>>>>
+>>>> -       for (i = 0; i < insn_cnt; i++, insn++) {
+>>>> +       for (i = skip_cnt; i < insn_cnt; i++, insn++) {
+>>>
+>>> Do we really need to add this argument?
+>>>
+>>>> -               WARN_ON(adjust_jmp_off(env->prog, subprog_start, 1));
+>>>> +               WARN_ON(adjust_jmp_off(env->prog, subprog_start, 1, 0));
+>>>
+>>> We can always do for (i = delta; ...
+>>>
+>>> The above case of skip_cnt == 0 is lucky to work this way.
+>>> It would be less surprising to skip all insns in the patch.
+>>> Maybe I'm missing something.
+>>
+>> For subprog_start case, tgt_idx (where the patch started) may not be 0. How
+>> about this:
+>>
+>>          for (i = 0; i < insn_cnt; i++, insn++) {
+>>                  if (tgt_idx <= i && i < tgt_idx + delta)
+>>                          continue;
 > 
-> Not really necessary for correctness per se, but if we try to free a
-> dma_addr that is not in a gen_pool (due to some other bug in the
-> code), then gen_pool_free ends up BUG_ON, crashing the kernel.
+> Yeah. Right. Same idea, but certainly your way is more correct
+> instead of my buggy proposal.
 > 
-> Arguably gen_pool_free should not BUG_ON, but I think that's an old
-> API, and existing call sites have worked around the BUG_ON by doing a
-> gen_pool_has_addr check like I do here, for example kernel/dma/pool.c.
-> So I did not seek to change this established behavior.
-> 
-> I think WARN seems fine to me, but maybe not under DEBUG_NET. I don't
-> want production code crashing due to this error, if it's OK with you.
-> 
-> Unless I hear otherwise I'll add a WARN without debug here.
+> In that sense the "for (i = skip_cnt" approach
+> is also a bit buggy, if tgt_idx != 0.
 
-WARN makes sense, I didn't know about the BUG_ON() hiding inside
-gen_pool :(
+Yep. Adding skip_cnt like this patch 2 is not right. I didn't think hard enough 
+what to do with the existing adjust_jmp_off().
+
+I will remove skip_cnt in the next respin.
+
+Thanks for the review!
 
