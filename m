@@ -1,237 +1,164 @@
-Return-Path: <bpf+bounces-38278-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38279-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 831DB9629E5
-	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 16:11:07 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C74DD962A6E
+	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 16:39:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A82A61C23DDE
-	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 14:11:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7180E1F2117E
+	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 14:39:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E426189BAC;
-	Wed, 28 Aug 2024 14:10:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FEA11A2C3F;
+	Wed, 28 Aug 2024 14:37:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NrGd79/b"
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="G9I/ucdD"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9746168489;
-	Wed, 28 Aug 2024 14:10:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 838CA1A2C24;
+	Wed, 28 Aug 2024 14:37:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724854257; cv=none; b=AjjwJENaHKnLSm698l7VIPb4Epo4iaYWh6IpD5U4uCLg5b59R4G6+zs7Uy8ifT5SU8OyU2TqHyWby8Fg10cJXkGzGtUWy6ztg3dUSB//mWP5EbOjL0sl1UZA5HhTfGlFO6O3Xf2AyswwdMbOir7WwL7hWiG8Unp0SD31VBjyBdk=
+	t=1724855872; cv=none; b=MH2v0z5RUcH5jfPEDG3xNylFMUY7eif/YKBJS/MPWZgSymhT+8ldc9peUYpipTK98laaj5JG7J6LqKNvLvHKHiXBkbHJQfgI/26K15kXCtTiNXOFJmagTKGF1Y1alULi0EyiD0P2VFqcnuuOWmm9Qeq1OvjJ2KoYqf/4I9bdjSM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724854257; c=relaxed/simple;
-	bh=qp4XkaS0PrbdLwrhGw+MAEDZjVMGB9Unfk/C47vHb70=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=U/UoDRrnuqkCC0J8YhqM7igEVMqZTVDSi+FWYsYoqoCRwSk6l0lBWLT5H8Ac4HvcNADxKhoH32G0MG1iLqBwHynT3/vgAAdzvlkITChc6zbwsLqavcAzRArB0ffS9BoiJoqaVdUYsw6TgtEMtYUArfNADdOJGhmTqY4NcZCFqZA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NrGd79/b; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1587FC58190;
-	Wed, 28 Aug 2024 14:10:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1724854256;
-	bh=qp4XkaS0PrbdLwrhGw+MAEDZjVMGB9Unfk/C47vHb70=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=NrGd79/bkxy5uNQSg/aQYVCZzUtcQChkqi1vHEE8JgYEoneD4TVnVrA1U7uCyOu2P
-	 pc4jhnotRJpVsL81E5tXJPcCEgMj9RXQkul0ZZ9KDmng9yDoTCIFM3N1mg/mFvBl+q
-	 pPA9Aqo/x1Hi0n02i143QiN7a7ZonIkfp0w1wH1rqSzGhfEhNlOQwqP+9Jsk8htbdA
-	 On0mqHZtaVndCmx7CgTwOUvNp7/5tqCwJhPtO+fjMwkA8elE4/u2nkJXf6keavdJY9
-	 zZBHjrCKs8/25LXBlgtf6MsU7IvAviSPZoTamroPsID1x8qWzjRcU88z2D0pRjvMbx
-	 7MGTLq6mfNUvA==
-Date: Wed, 28 Aug 2024 16:10:49 +0200
-From: Alejandro Colomar <alx@kernel.org>
-To: Yafang Shao <laoar.shao@gmail.com>
-Cc: akpm@linux-foundation.org, torvalds@linux-foundation.org, 
-	justinstitt@google.com, ebiederm@xmission.com, alexei.starovoitov@gmail.com, 
-	rostedt@goodmis.org, catalin.marinas@arm.com, penguin-kernel@i-love.sakura.ne.jp, 
-	linux-mm@kvack.org, linux-fsdevel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, audit@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	selinux@vger.kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, Alexander Viro <viro@zeniv.linux.org.uk>, 
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Kees Cook <keescook@chromium.org>, 
-	Matus Jokay <matus.jokay@stuba.sk>, "Serge E. Hallyn" <serge@hallyn.com>
-Subject: Re: [PATCH v8 1/8] Get rid of __get_task_comm()
-Message-ID: <hxwogrharokumnbphayi22qnl4yxeqxkxdddjkshso3nztroq5@lb3wbcsp3vhf>
-References: <20240828030321.20688-1-laoar.shao@gmail.com>
- <20240828030321.20688-2-laoar.shao@gmail.com>
- <lql4y2nvs3ewadszhmv4m6fnqja4ff4ymuurpidlwvgf4twvru@esnh37a2jxbd>
- <n2fxqs3tekvljezaqpfnwhsmjymch4vb47y744zwmy7urf3flv@zvjtepkem4l7>
- <CALOAHbBAYHjDnKBVw63B8JBFc6U-2RNUX9L=ryA2Gbz7nnJfsQ@mail.gmail.com>
+	s=arc-20240116; t=1724855872; c=relaxed/simple;
+	bh=5WZBkhTqLLTBIxUntgfPtpfXSq+rSI5jc+kEehv3GH4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=UHfVCFltL+wqwlyMi/eTPVJjjdVR7eeq56JqJt4CpWRKNoOfXHep2YgL8l8KfacTUbaxqHYUW40ZkJRma5n7JW/ycRx+25YYYs4Wb9BOyAfj624MU5WGhOP9ApNa9b964Z561/6rAqTfMDl9djyquSWY8lnfJZ2zP6WAfo+IM3Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=G9I/ucdD; arc=none smtp.client-ip=167.114.26.122
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+	s=smtpout1; t=1724855869;
+	bh=5WZBkhTqLLTBIxUntgfPtpfXSq+rSI5jc+kEehv3GH4=;
+	h=From:To:Cc:Subject:Date:From;
+	b=G9I/ucdD+h6aKe64GdncroXMeJ3mUsF2UdqB9Mb0KuLrDz8jRP+YgXaXkNlmU8lK+
+	 vxgbDiS2PhINV8kbm6fYMSajE/tqV6Ai3i0rJUfYmNHEcF9MJL+JMV3/i40bqLoxZX
+	 n3o04ue87cfmGD2bdPuCDEUIFmNhGoHqnwx1c5eKpg/ji5Iu1wj6FpPvXLKLi1HNyY
+	 ZwOzt1TepwZA/K4F5rAHkFa51gGHovtZpho/BNCAbjxR6Fk2iAyZLmAsb0L99oCccs
+	 BU+K9HZNZHfRjzBrcPNgf9pbA0pQwQjqe2NN8ZKgkpAtDiiY445G3YFaQ6IAx0pbUG
+	 HObXRiZrOBjQg==
+Received: from thinkos.internal.efficios.com (96-127-217-162.qc.cable.ebox.net [96.127.217.162])
+	by smtpout.efficios.com (Postfix) with ESMTPSA id 4Wv6T90GxSz1JFP;
+	Wed, 28 Aug 2024 10:37:49 -0400 (EDT)
+From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To: Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>
+Cc: linux-kernel@vger.kernel.org,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Kees Cook <keescook@chromium.org>,
+	Greg KH <gregkh@linuxfoundation.org>,
+	Sean Christopherson <seanjc@google.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Yonghong Song <yhs@fb.com>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Namhyung Kim <namhyung@kernel.org>,
+	bpf@vger.kernel.org,
+	Joel Fernandes <joel@joelfernandes.org>,
+	linux-trace-kernel@vger.kernel.org
+Subject: [PATCH v1 0/2] cleanup.h: Introduce DEFINE_INACTIVE_GUARD()/activate_guard()
+Date: Wed, 28 Aug 2024 10:37:17 -0400
+Message-Id: <20240828143719.828968-1-mathieu.desnoyers@efficios.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="egnngjetwmt4ba2t"
-Content-Disposition: inline
-In-Reply-To: <CALOAHbBAYHjDnKBVw63B8JBFc6U-2RNUX9L=ryA2Gbz7nnJfsQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 
+In preparation to introduce a "DEFINE_INACTIVE_GUARD()" to actually
+define a guard variable, rename all the guard "DEFINE_" prefix to
+"DECLARE_".
 
---egnngjetwmt4ba2t
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-From: Alejandro Colomar <alx@kernel.org>
-To: Yafang Shao <laoar.shao@gmail.com>
-Cc: akpm@linux-foundation.org, torvalds@linux-foundation.org, 
-	justinstitt@google.com, ebiederm@xmission.com, alexei.starovoitov@gmail.com, 
-	rostedt@goodmis.org, catalin.marinas@arm.com, penguin-kernel@i-love.sakura.ne.jp, 
-	linux-mm@kvack.org, linux-fsdevel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, audit@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	selinux@vger.kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, Alexander Viro <viro@zeniv.linux.org.uk>, 
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Kees Cook <keescook@chromium.org>, 
-	Matus Jokay <matus.jokay@stuba.sk>, "Serge E. Hallyn" <serge@hallyn.com>
-Subject: Re: [PATCH v8 1/8] Get rid of __get_task_comm()
-References: <20240828030321.20688-1-laoar.shao@gmail.com>
- <20240828030321.20688-2-laoar.shao@gmail.com>
- <lql4y2nvs3ewadszhmv4m6fnqja4ff4ymuurpidlwvgf4twvru@esnh37a2jxbd>
- <n2fxqs3tekvljezaqpfnwhsmjymch4vb47y744zwmy7urf3flv@zvjtepkem4l7>
- <CALOAHbBAYHjDnKBVw63B8JBFc6U-2RNUX9L=ryA2Gbz7nnJfsQ@mail.gmail.com>
-MIME-Version: 1.0
-In-Reply-To: <CALOAHbBAYHjDnKBVw63B8JBFc6U-2RNUX9L=ryA2Gbz7nnJfsQ@mail.gmail.com>
+To cover scenarios where the scope of the guard differs from the scope
+of its activation, introduce DEFINE_INACTIVE_GUARD() and activate_guard().
 
-Hi Yafang,
+The faultable tracepoints depend on this.
 
-On Wed, Aug 28, 2024 at 09:40:35PM GMT, Yafang Shao wrote:
-> > Ahh, the actual generic definition is in <include/linux/string.h>.
-> > You could do
-> >
-> >         diff --git i/include/linux/string.h w/include/linux/string.h
-> >         index 9edace076ddb..060504719904 100644
-> >         --- i/include/linux/string.h
-> >         +++ w/include/linux/string.h
-> >         @@ -76,11 +76,11 @@ ssize_t sized_strscpy(char *, const char *,=
- size_t);
-> >           * known size.
-> >           */
-> >          #define __strscpy0(dst, src, ...)      \
-> >         -       sized_strscpy(dst, src, sizeof(dst) + __must_be_array(d=
-st))
-> >         +       sized_strscpy(dst, src, ARRAY_SIZE(dst))
-> >          #define __strscpy1(dst, src, size)     sized_strscpy(dst, src,=
- size)
-> >
-> >          #define __strscpy_pad0(dst, src, ...)  \
-> >         -       sized_strscpy_pad(dst, src, sizeof(dst) + __must_be_arr=
-ay(dst))
-> >         +       sized_strscpy_pad(dst, src, ARRAY_SIZE(dst))
-> >          #define __strscpy_pad1(dst, src, size) sized_strscpy_pad(dst, =
-src, size)
-> >
-> >          /**
->=20
-> Thank you for your suggestion. How does the following commit log look
-> to you? Does it meet your expectations?
->=20
->     string: Use ARRAY_SIZE() in strscpy()
->=20
->     We can use ARRAY_SIZE() instead to clarify that they are regular char=
-acters.
+Based on v6.11-rc5.
 
-I would write the following:
+Thanks,
 
-For symmetry with wide-character string functions, ARRAY_SIZE() is more
-appropriate than sizeof().
+Mathieu
 
-For example, one would call wcs*cpy(dst, src, ARRAY_SIZE(dst)).
-The call wcs*cpy(dst, src, sizeof(dst)) would be bogus, since the
-argument is the number of wide characters, not the number of bytes.
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Greg KH <gregkh@linuxfoundation.org>
+Cc: Sean Christopherson <seanjc@google.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Yonghong Song <yhs@fb.com>
+Cc: Paul E. McKenney <paulmck@kernel.org>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: bpf@vger.kernel.org
+Cc: Joel Fernandes <joel@joelfernandes.org>
+Cc: linux-trace-kernel@vger.kernel.org
 
-When translating that to normal characters, one wants conceptually the
-same operation, but on (normal) characters.  That is, one wants
-strscpy(dst, src, ARRAY_SIZE(dst)).  While strscpy() with sizeof() works
-just fine because sizeof(char)=3D=3D1 by definition, it is conceptually
-wrong to use it.
+Mathieu Desnoyers (2):
+  cleanup.h guard: Rename DEFINE_ prefix to DECLARE_
+  cleanup.h: Introduce DEFINE_INACTIVE_GUARD and activate_guard
 
-By using ARRAY_SIZE(), we get the __must_be_array() check for free.
+ crypto/asymmetric_keys/x509_parser.h         |  4 +-
+ drivers/cxl/acpi.c                           |  6 +-
+ drivers/cxl/core/cdat.c                      |  2 +-
+ drivers/cxl/cxl.h                            |  2 +-
+ drivers/gpio/gpiolib.h                       |  2 +-
+ drivers/net/wireless/intel/iwlwifi/mvm/mvm.h |  2 +-
+ drivers/platform/x86/intel/pmc/core_ssram.c  |  2 +-
+ fs/fuse/virtio_fs.c                          |  2 +-
+ fs/namespace.c                               |  2 +-
+ fs/pstore/inode.c                            |  4 +-
+ include/linux/bitmap.h                       |  2 +-
+ include/linux/cleanup.h                      | 79 +++++++++++++-------
+ include/linux/cpuhplock.h                    |  2 +-
+ include/linux/cpumask.h                      |  2 +-
+ include/linux/device.h                       |  6 +-
+ include/linux/file.h                         |  6 +-
+ include/linux/firmware.h                     |  2 +-
+ include/linux/firmware/qcom/qcom_tzmem.h     |  2 +-
+ include/linux/gpio/driver.h                  |  4 +-
+ include/linux/iio/iio.h                      |  4 +-
+ include/linux/interrupt.h                    |  4 +-
+ include/linux/irqflags.h                     |  4 +-
+ include/linux/local_lock.h                   | 22 +++---
+ include/linux/mutex.h                        |  6 +-
+ include/linux/netdevice.h                    |  2 +-
+ include/linux/nsproxy.h                      |  2 +-
+ include/linux/of.h                           |  2 +-
+ include/linux/path.h                         |  2 +-
+ include/linux/pci.h                          |  4 +-
+ include/linux/percpu.h                       |  2 +-
+ include/linux/preempt.h                      |  6 +-
+ include/linux/property.h                     |  2 +-
+ include/linux/rcupdate.h                     |  2 +-
+ include/linux/rtnetlink.h                    |  2 +-
+ include/linux/rwsem.h                        | 10 +--
+ include/linux/sched/task.h                   |  4 +-
+ include/linux/slab.h                         |  4 +-
+ include/linux/spinlock.h                     | 38 +++++-----
+ include/linux/srcu.h                         |  8 +-
+ include/sound/pcm.h                          |  6 +-
+ kernel/sched/core.c                          |  2 +-
+ kernel/sched/sched.h                         | 16 ++--
+ kernel/sched/syscalls.c                      |  4 +-
+ lib/locking-selftest.c                       | 12 +--
+ sound/core/control_led.c                     |  2 +-
+ 45 files changed, 163 insertions(+), 142 deletions(-)
 
->=20
->     Co-developed-by: Alejandro Colomar <alx@kernel.org>
->     Signed-off-by: Alejandro Colomar <alx@kernel.org>
->     Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
->=20
-> diff --git a/arch/um/include/shared/user.h b/arch/um/include/shared/user.h
-> index bbab79c0c074..07216996e3a9 100644
-> --- a/arch/um/include/shared/user.h
-> +++ b/arch/um/include/shared/user.h
-> @@ -14,7 +14,7 @@
->   * copying too much infrastructure for my taste, so userspace files
->   * get less checking than kernel files.
->   */
-> -#define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
-> +#define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]) + __must_be_array(x))
->=20
->  /* This is to get size_t and NULL */
->  #ifndef __UM_HOST__
-> @@ -60,7 +60,7 @@ static inline void print_hex_dump(const char *level,
-> const char *prefix_str,
->  extern int in_aton(char *str);
->  extern size_t strlcat(char *, const char *, size_t);
->  extern size_t sized_strscpy(char *, const char *, size_t);
-> -#define strscpy(dst, src)      sized_strscpy(dst, src, sizeof(dst))
-> +#define strscpy(dst, src)      sized_strscpy(dst, src, ARRAY_SIZE(dst))
->=20
->  /* Copied from linux/compiler-gcc.h since we can't include it directly */
->  #define barrier() __asm__ __volatile__("": : :"memory")
-> diff --git a/include/linux/string.h b/include/linux/string.h
-> index 9edace076ddb..060504719904 100644
-> --- a/include/linux/string.h
-> +++ b/include/linux/string.h
->=20
-> @@ -76,11 +76,11 @@ ssize_t sized_strscpy(char *, const char *, size_t);
->   * known size.
->   */
->  #define __strscpy0(dst, src, ...)      \
-> -       sized_strscpy(dst, src, sizeof(dst) + __must_be_array(dst))
-> +       sized_strscpy(dst, src, ARRAY_SIZE(dst))
->  #define __strscpy1(dst, src, size)     sized_strscpy(dst, src, size)
->=20
->  #define __strscpy_pad0(dst, src, ...)  \
-> -       sized_strscpy_pad(dst, src, sizeof(dst) + __must_be_array(dst))
-> +       sized_strscpy_pad(dst, src, ARRAY_SIZE(dst))
->  #define __strscpy_pad1(dst, src, size) sized_strscpy_pad(dst, src, size)
-
-The diff looks good to me.  Thanks!
-
-Cheers,
-Alex
-
->=20
->  /**
->=20
-> --
-> Regards
->=20
-> Yafang
-
---=20
-<https://www.alejandro-colomar.es/>
-
---egnngjetwmt4ba2t
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE6jqH8KTroDDkXfJAnowa+77/2zIFAmbPL+QACgkQnowa+77/
-2zJobg//W3RHrDHVBPuZSKc3m1rr+m7+7TxlOxTaXg8qwoJHeHq4f/sbSV5l1HR4
-UF2gEJicrF4OknzCcegkXqdjxs1MUkzlaMxIQmj0yPgQmZ1Upg9aoGlVJNyjynvD
-09twa1O3azCA8YvuZc+vn0YoqbGkM54+OPWJaBsSERqgcVF57/vXgS702rKBqwhw
-3CrAWa/WTX5z10Q6yX+kwV8gWrtOBsMyAQRk53Yr3ZRR8DhCyK1ImS8BSHROV8+T
-Dz5g8o2WzPkvKZiLq/Slxa9UpRvw5j5RBh3GBGxhZcubv8arya/FMwXotUa2L3Rr
-uvfxbQw6lCR15FlHrI8984b99T7YkIr/pxYmrQABScUz7uMqJAhVutei6YJJgkUs
-jpEsNQeOiDgJoQUU7xcVuP1ME6sgdU7/vxYfcjiybYX0rvaVjKTRWRAQt6NmmvqX
-L6sZ94Tmba4wN92Akga5S3wnEadpbFHZtVGOVbc6tHz9ee0uVksD+DWSQVz7F8pw
-vMu73OMlE/cp9AFZhtVDuUCqneXgvgEGs86akKQuVdx2fSeZG3CVkTH5L8vSlTGi
-AlUtf5jlr8oHAP3g6Jl5KTxgGQXaXybO0RlbyVgM1ZrT+vrHLIB0mwBTJ3cIBKLS
-jAh4WPx1tmvxpQw9/G3igu98xN7ttGBv7Lc+WxmGK/aQfJtl6T4=
-=TaLj
------END PGP SIGNATURE-----
-
---egnngjetwmt4ba2t--
+-- 
+2.39.2
 
