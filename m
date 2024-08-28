@@ -1,59 +1,58 @@
-Return-Path: <bpf+bounces-38313-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38314-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D83D96314E
-	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 21:52:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3171996316A
+	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 22:05:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C23DD1C236E9
-	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 19:52:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B2EAD285078
+	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 20:05:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 612C51ABED8;
-	Wed, 28 Aug 2024 19:52:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3893E1ABED0;
+	Wed, 28 Aug 2024 20:05:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="GS0kQ2Cj"
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="Dev8n9ev"
 X-Original-To: bpf@vger.kernel.org
-Received: from AS8PR04CU009.outbound.protection.outlook.com (mail-westeuropeazolkn19011034.outbound.protection.outlook.com [52.103.33.34])
+Received: from DU2PR03CU002.outbound.protection.outlook.com (mail-northeuropeazolkn19012035.outbound.protection.outlook.com [52.103.32.35])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09C85189511;
-	Wed, 28 Aug 2024 19:52:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.103.33.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFB20139578;
+	Wed, 28 Aug 2024 20:05:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.103.32.35
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724874722; cv=fail; b=OaELbaoqQ9A5C3xfiQTT58xQ7OuRP+Bs5x4Sj111TILQ2tLu9+IofPVGUWxPbQivQ4Us0wOREhofl+o3xbzRGSMosfv9Bz4xGwfonRcsldYNB0FJCevURHeILufghimaoBsUgwnwzmF5FXcLwzEy5+EJcRxmfj2NkZ74gXAoFOQ=
+	t=1724875541; cv=fail; b=OuJfaZI+wA97EuaNnBSRjeqeL578pr51nwclv3p+PdyBE0IdB8EY9oF9Juw6aNrFw7uyPBMZ29F93Eo0XVJGdvOTanp/B/SqEvznI4Q2iZ5jDKYeFXOYePHkVl0IqUJJzvhg+7sNem7h8UQCzPMPb0BIk/Tth4B9vSeQhc8OiwE=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724874722; c=relaxed/simple;
-	bh=I+PRF25M7jfBqRgW2Ga7WKjqfRzrL9d3hmcjmGC05ks=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=VxG/H0rd6kkVnYFmEYczmfyCuleQfqZlW3vo8/4XCYcecLKIHSYXadzOXyLTEVCFIMzz1aBlnniolBiiPstK/F6UnrEtgaenoXgGdUSyghzYDyr+s6aYLYx6nvpGsVPAJj0m84JRoYLNZjMHyV18pHRs36zBm3SD1tS+qoXUDmw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=GS0kQ2Cj; arc=fail smtp.client-ip=52.103.33.34
+	s=arc-20240116; t=1724875541; c=relaxed/simple;
+	bh=cl8h2qFeEsahKI5RbUycxw6lHcALP1yEK3qtRs8dK1Y=;
+	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=UUP6rrWjhOgcNvyN2bHI2T2uogq0f7/4MD8GeiVlwrYtZD/yuLS9tubJRwA4sutkQyX87zlUwTHBr+EFjurNQ4zJyr2wi20nmw7EHw0k0KLDILi+rEfYoS+tiaYw3pQ2eneobeZhlaoTi/QusaLWyc6nAo883Nz5yTlcP4CqtLM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=Dev8n9ev; arc=fail smtp.client-ip=52.103.32.35
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=EMHTIxIG5Cla0Y9BsGAhrE02NBIooSNtWFU6qhu5zlujjs2DYUShluDGW6iwPpk0WnTovNLC0jxyfhiTdlvDT0xDZwNgtFAK8SJVrmQkMH9rxN9fiogcKW0OnJqin1Y3HsX8Y4s9FdTGiaTUAPmDHRMQDuW05YXIG/pzY19CMFguYqViTrP5jmvv/TXEnec8XI90xMfiKWgZ+G0cwoCNG0/ifhMoaelJfQfN5SeiczET8aHdNI13TtS5ssdGKuSTe8hanU0ffkOVRXvqVwT8cuzlnOVIMVcMj8j/fNycRV4kY7iRhYn/kRyLYnh5Gc1VoHI5kGZmTEINHLX0R9O5Jw==
+ b=QXCKVbdkVz7xu20ZNenlafADOSny1d/CSy6JoEihYhyZpfyXi1mrf/rIQ6H8Ix8ejGlSrdrspAWky0Ga+toFbuDadkV85m3jRQf8EOPHIqabSjKYprXfv133FeMLyhEHG7sV2lfqSaffoedYm0LibfnXcG279CiANWFZSaX9nQwhoQ7LEgbGUggvVOFqzuEutVLdKUkoTQDeS9Cq3ntvpaoMGrSHbVf7vMOR0k7dP/DUjFNB5KkP9uU7/ZcqklFSKnWUhQu950KfbSjGSb6nnnhpZ66Syydf9zd488gA38BeiG3p6D/V6l4adCiEyIff5WWS/tueWgvZ4GXKfmnjJw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=XRzYS+j2NqWHTDb4LpZDygrfOUTmSmzG8CChrzTWgHI=;
- b=JimFrS4FyAT6lkx5MG2bx5lz2ix4M5XW6x6BeLBSykSgcE05aDhFDxWtQ1SlSuj335mXrxJfBtDQ2F34o93vUs2nGMAJU9XIQgl0DgBeWN7Kz81DWo9LcOAq9XTWtZtPZ8u3nGQjPHM28JKa6h+Tfx5cPZTe0/cw4GwZua9pCxxW9SO+7ZqDwpPcBd66kcAVMiexnFSypyou7hnQFeKoKUcrESrdOcdC0scU79MHmtrgXu1s+7TlR3tC8PT61CevGkf8VxRCAUEbhvAaGgSVYvGN2L9Xn6wUSRcnvBZH7EbK/8x+x+ruJ/WIvSFbBhkZq9BXUd/FkZuLa+uQzOszZQ==
+ bh=ZNv18U8sXFxXQncNIU+D7wD9HSF4hdVq8zTLwb0pBsM=;
+ b=iOwD0u9OhcPnH353eUa2bgpqTx98LVcbCB8SifOzBpDHI4A8J2K/o+X9/CWJ5zOaTeRu/F2mlv/lqiY4mpyd9iVDF8TH7GPBT0R/p2OzjT96mMO0idAxbIY44bD2bR+iCSzOS2XeixuHceKneUgNJSynQ1Ch0cKrtSpgpflgD2s3K2e66QiLmZ0O8nBiTVVQVKspi80bW4lD+Cxo1PbWYk+fxlovnUIZIMHE/niIjnAK9XaLNlbIseBczAepxDhzL7c0OK/IQY/IHayZl2v31zl1M89YZCIjqjS53fpOoblOPJ7fCpdCx9aonv/DPZFfy15qi7QCMoq6O82IdfwsnA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
  dkim=none; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XRzYS+j2NqWHTDb4LpZDygrfOUTmSmzG8CChrzTWgHI=;
- b=GS0kQ2Cjuyn8sqnbc0eh3D8wzGxc7q7qrvbPxbHw2ArLcu6E9sfY8nPJzQ/GF/tAUtQFpkvuGrXD07vqaLRePAshWz8EVF3jdQu3C1E02LlA+mGYemW1anK3Y9eqXnGN0BHhRIc4mKttOnmpaUHZyzTxpM9EzRaObHkZ6EilGqF92O9VaNemeWfuuxxC51sWvVjMbqisaXOWYN559mVmDzEqzC7e3/7aYh1GEiCv6OW0M/udhyo4pa8hgimqqRJ3OBOWrekJzAnxltZChNCIruHMZFMIgDfNMnWay0zQFoX2xJ7srNjKuvU0XuHGUwTGKMIH5wtT38dsj4kVhBsp6A==
+ bh=ZNv18U8sXFxXQncNIU+D7wD9HSF4hdVq8zTLwb0pBsM=;
+ b=Dev8n9evagNNeA3KdWzUL64ipgbPRnO2Ob0yv0whxX9rgW+I6Qsb3EMYUxPmSvuNEsUl7Zl0fUSRZe9TDP8oc+Po21K0NghCOUghkwJeSFK71MlPY5hkrTH6NPHIMg1FBzA0SSODNz/X73GZ8xSqOLJOvq/He+yIpFugymL3PCik2LE9SyUxo5H6ufCNbaF+Z7DnzyfEJiWHMV+5XKxq3GriE5y0VuFdxjko+GQvQA0jFRJkeS7BzxoFfwtYOQsl0qQ8GVFtAXFK/3NVP2cT+pMw+epuLfQwldY8phuI8f/r1D95X4TJhAajQw7B17JFoRFWtFpgPZGb4mfdSQkv8A==
 Received: from AM6PR03MB5848.eurprd03.prod.outlook.com (2603:10a6:20b:e4::10)
- by PAWPR03MB9785.eurprd03.prod.outlook.com (2603:10a6:102:2e4::22) with
+ by VI0PR03MB10807.eurprd03.prod.outlook.com (2603:10a6:800:26a::9) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7897.24; Wed, 28 Aug
- 2024 19:51:58 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7897.27; Wed, 28 Aug
+ 2024 20:05:36 +0000
 Received: from AM6PR03MB5848.eurprd03.prod.outlook.com
  ([fe80::4b97:bbdb:e0ac:6f7]) by AM6PR03MB5848.eurprd03.prod.outlook.com
  ([fe80::4b97:bbdb:e0ac:6f7%4]) with mapi id 15.20.7897.021; Wed, 28 Aug 2024
- 19:51:58 +0000
+ 20:05:36 +0000
 From: Juntong Deng <juntong.deng@outlook.com>
 To: ast@kernel.org,
 	daniel@iogearbox.net,
@@ -71,21 +70,19 @@ To: ast@kernel.org,
 	snorcht@gmail.com
 Cc: bpf@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v2 2/2] selftests/bpf: Add test for zero offset or non-zero offset pointers as KF_ACQUIRE kfuncs argument
-Date: Wed, 28 Aug 2024 20:51:32 +0100
+Subject: [PATCH bpf-next v2 1/2] bpf: Add KF_OBTAIN for obtaining objects without reference count
+Date: Wed, 28 Aug 2024 21:04:33 +0100
 Message-ID:
- <AM6PR03MB5848CB6F0D4D9068669A905B99952@AM6PR03MB5848.eurprd03.prod.outlook.com>
+ <AM6PR03MB5848874457E6E3E21635B18999952@AM6PR03MB5848.eurprd03.prod.outlook.com>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <AM6PR03MB5848FD2BD89BF0B6B5AA3B4C99952@AM6PR03MB5848.eurprd03.prod.outlook.com>
-References: <AM6PR03MB5848FD2BD89BF0B6B5AA3B4C99952@AM6PR03MB5848.eurprd03.prod.outlook.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-TMN: [0BW342BtYrawydNSq+Wc5V8bxSrN52Gb]
-X-ClientProxiedBy: LO4P123CA0531.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:2c5::15) To AM6PR03MB5848.eurprd03.prod.outlook.com
+X-TMN: [DInjrd2oaxsFe/DxbwlCnYwWOJ3Pm4Ny]
+X-ClientProxiedBy: LO2P265CA0069.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:60::33) To AM6PR03MB5848.eurprd03.prod.outlook.com
  (2603:10a6:20b:e4::10)
 X-Microsoft-Original-Message-ID:
- <20240828195132.50260-1-juntong.deng@outlook.com>
+ <20240828200433.52591-1-juntong.deng@outlook.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -94,168 +91,129 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM6PR03MB5848:EE_|PAWPR03MB9785:EE_
-X-MS-Office365-Filtering-Correlation-Id: abc03ebf-59d0-4048-f9ff-08dcc79ae027
+X-MS-TrafficTypeDiagnostic: AM6PR03MB5848:EE_|VI0PR03MB10807:EE_
+X-MS-Office365-Filtering-Correlation-Id: 09fd2fa4-fe99-4f3c-52ff-08dcc79cc801
 X-Microsoft-Antispam:
-	BCL:0;ARA:14566002|461199028|8060799006|15080799006|5072599009|19110799003|3412199025|440099028;
+	BCL:0;ARA:14566002|5072599009|19110799003|8060799006|461199028|15080799006|3412199025|440099028;
 X-Microsoft-Antispam-Message-Info:
-	ElpsPg1MvCmqFkQJfgQyZvxgx5exuwIsUW08NEhNhq2DgRU4jaLiUDZOMC5JZneOawjXvrUocDPjzsko2ZLk2wLDLNBZeK3mqoHPSY0GWB1tEp5Nupr7IdBDKSQN/OnTyKPvmMsiv1JP5JC2NhYRILU1ocq/CJrfOAUsCELWhKQo7x1DU7HEGIQSJnVplVYcwY0u79VSJfnugVffOY4Gpy/4X0UxBaGkcV4wmPwU9gO+uEtqtglwVWSxRj/xEP11di/dJsyj+Rk3wwSKHiUY+X7/YTBgf2B0ij8x0AF58o/EN5EXBSz4HHbPx1GsPRcgT7G1Hd2/YtoG2V9gS/ObPfQf2xb+Krs3zRoTIP1OaitrxlMRIgKs2XUhXtnsyjVvReXAWGPVgaIqXGPo4yTmbpEFNyYvp2nzfX3+KkqvKKDI9bx0q35Pzoiv7kALiHUPE4WMxQcExFlFnKGi40S2ixn8H+arFW76q6gbqqB8hLggI2e9AF+CPClTS5eiQDu5SXHUnv1TfTvjAEPspTJyJFGiRVZ0WXvl5aicJLmo7+vbksbnW+TMRh/XYOeeQEFR05KannER+b4rjGbP8aMVy9msdg/XrZiNfhHW5RXV3BXzDL1Ovkx+VMJ3MOcl7rCNdGqTBOTluJKZW8ZferJ7+rYsNtDek/vXjuiV7VrBxvnAMtfYsBbnJ3LhH9SbWl9knAlJIYxxK1TB40K+4v+ckw==
+	BbOQnZawp2DaZlPuHHaiMdOLNc2rUzlkIC0R0LTtq2kV4zP7DtBibotmpAwQgKBd2wTd5crFv4i7o38P0dhaINE+ULhHkIGxU9G44/rbwxLiovTuVABHlRFunLzWiRB8fnG5srtHr2tCJq/jpboPiBF2oyB5jHlCRvmK2cbNzd71wpC7mRLHq5MG6TlYYewEof9GGoGT2V/jcIEFOdSO9pJ4WzfvA49Bz/aI7NjzmmSDbflxVqNjGZ7rVq4PXWtPBwchhrX1fsriG/D5qCERyKZ9aziz/rVf/CE0uVJY/Q2j75s+vfljeSsGpcX96LnIPtaTrWH97JIcYLBprrguRWhd9Z8jr1veVhPxHqZ+CsqjDesI0ykTpiXniJrutgfFCATxFRX1Toi6WukROPtbZDXBjNzb833BUASbr89V9NCNbiMFUFS9i3mOKSWZSLqBKHz+JLJTK/1yzf0+mBaB+4gxlWMOJhmrmwmbUVV2kVd38Ii3ElqV70DVlS+UE/MTjU3/L4+tXd0tETwS3RERNK282PhYSE883hOYaV0Y8yYULVoV2l7pqDldoQDYTaeyW8OiWQ7EERxxfTO2FYJCGLCMi3u5ysPmbHYzIK8XOWmbS9NUDdFDdHHgZ97pLD1Zi77jKoAhwkAyG2w/yO8TWJkvYujG5rh5gk8AbJIEC9Gn7a0iRNA81T3f22pwrlAaath3J0/t6tc4TggFaRj0Eg==
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?FSqpcoqb3RYvSgvfjhIgOSCP5HWrquOyJIlZ8mAQbtOOfWeMkCWJ6Ce+n4Bf?=
- =?us-ascii?Q?JHmDS6HhB0C7bYgMWv9Lzf2xn4Ag0PJprGNOPr4LI8mGGWPfIQetr9s94KVX?=
- =?us-ascii?Q?Qk1CZCcjeh5TibROEdq3kxX3FVdpCx1rDvTWv+UAa+M/K6JxncAd8JNNQMfh?=
- =?us-ascii?Q?GJke3GyHrt8XBRrPgqhR2MOctWgo/fd4UrahiaXEIs6LCHj/RRpXYxtpz9eo?=
- =?us-ascii?Q?g4+iUMJq8RgqgFOduqYJJLc2AIN2BMWnZWUylws3oND3jocrAoyAIaeoTiFD?=
- =?us-ascii?Q?vafTf0NDf4XZF/z4v5OCgYTrtpdO5ym0qmwV4VAmNAK4mDPp5+sl7JNiyKWf?=
- =?us-ascii?Q?oH2dK2TH34OseBE7wuoYjEy6rYjTyF8llnQ2pB60wG+n3dcZJM8pZOVz/VO2?=
- =?us-ascii?Q?0QMstrUYGyNHL8q+/DHgGv5sMDWmt6j9eAKBL5gsGYpQ+0NRyhZCa3+3ffCr?=
- =?us-ascii?Q?U8IGbhbYBBlYA55RwY90SVsQn9twZ2RghjpSREP572xbLfEA6sf+ngmQw/jX?=
- =?us-ascii?Q?2pSL3XcvQvIXz2zkm1Z3Pntz5XsvO9VHs1Ex4/F+KFumXpXlYi8GVXeW2dka?=
- =?us-ascii?Q?HCUeY3aYsBd40ehIciZi8aDj05WME3+0Wdyj12nLCamevDNBlp9c4JRTzBxW?=
- =?us-ascii?Q?M1yJ+DlJ5ygdnlvZPTU1gWivfer4+xVEt8TcOmplVNy0uB4qRm22lyI0nflG?=
- =?us-ascii?Q?drEDHasdYftBD0r1ZaTJ7cS22CIFAob5TfCkiGUV/SoHJOJLWNQ86x5+/Fbk?=
- =?us-ascii?Q?JkJIXq5MbnV4eHpe9q0D151O46oTVyeuDU6U+oP8AjkfEaRiiYTL7LYWMazA?=
- =?us-ascii?Q?US0pM2vsIyddIqy+b0eU9EOlafnD2YE1UVi6wrFi41f+Imb1VUqISS+KzOYO?=
- =?us-ascii?Q?Ex+EO1uI8ZCuRe+sIRwEPmrwCUmiSGUfDrqkAmUHpLZLOFQr4GQsC9HdyuOR?=
- =?us-ascii?Q?0hmXlV0MKhv24bw9FoKgKOC/CIGyzzFzHti753oAjTQ//XDSJRaHVyZeoBFn?=
- =?us-ascii?Q?AnpMd7nZtazU9C3/8IC6n96vJMgBK7+sEj9tHuuhrW+R9qkUn8d9xCPTqRN6?=
- =?us-ascii?Q?pc8oxJ+wFAf5eTdmIR2CvUoXy8PQ4LRJFNFkzqhaGGeiYftvWC2xptEUMZ1t?=
- =?us-ascii?Q?98qHlsdQTZ1hwzL3DX9OZvN7riC7Qa0dKgajdQ/SEPu11r6j1J5ei77+iZ4w?=
- =?us-ascii?Q?5fvUdfRa7BYBAd+eXaMxPAxZxHcHC0ltg+Q/KhRk9mFdKtzoXz5LeA+Nysbx?=
- =?us-ascii?Q?lEuewT9S90dJpLA1qLND?=
+	=?us-ascii?Q?hab/v7gVnSbjuv1voGiNHNgEX4hLaC62Eextxf9B4zSwcTs/YSM+08YyRFke?=
+ =?us-ascii?Q?a2Mmm8xKjgllpS/ruNM1tdbAX6iQe0YyMBl8W9fv8C79o5M3yANu4s9v6l6y?=
+ =?us-ascii?Q?X2srIUqML4aGPYlt+b6g6879BGwPna8wouR8nZRxHx2wtN05s2gCYLmygijM?=
+ =?us-ascii?Q?EzmxSt9/pXA4QDbZQQ1uZHmM1cfLftgWH75OcN3c9NvIvbnNwH6215xWH2wv?=
+ =?us-ascii?Q?vPLnSaiHMwPwaO3HCUFuxE9neE+YjxU9JQMWtWC7aq3CF5l+JxmdkhhlQbZm?=
+ =?us-ascii?Q?y0FyymyVy4Lc4Ei3vOu2wBaPrc5Cn07kUfl472TEesnR9rstlqAcvqLMpgAq?=
+ =?us-ascii?Q?Fmi7EdZp35pwQxT+f9HTNsKW1RGPsR+JtArB2J05PucQ0Evi0i/V17V6rUPv?=
+ =?us-ascii?Q?9z0o67s4WxmPoVHaWaf6GZVipUlofiZAwCq6i1Dj29X2s236a/6/Gopk+iFw?=
+ =?us-ascii?Q?kP6Cs2Af/ohWwxIDiLcywmqp+mTgafpNAPpDymRhKx8pMr3jYosld/Am7mni?=
+ =?us-ascii?Q?UuwAvT/ovXKObhE4js6XISJ1gcwIk222MwFmemgvWe3ETb8MbJpnuq+zMCzf?=
+ =?us-ascii?Q?jl1ryAjrEvcFGfZqmnU3o7IdJDdp/IM/Y4Tc2EjGhewHCdZZD0VbzApwzZmx?=
+ =?us-ascii?Q?e8UIGN7nhjTsX6z/V3U2M2WYfbMQ18LGKKudmlg+gYTKcIJFbyZ/AwKIZ1ch?=
+ =?us-ascii?Q?0tuTCKRv4gnE8lHN5wqyXfIPXybvPeJAQ4wEwBiuSAphCajyhd4+X/5F5dKg?=
+ =?us-ascii?Q?P7ienkxkj48ku7L8HE20fmYt+nhlyxAvwvz7xAEE4xXc1/wHbcGiWiXG+JCv?=
+ =?us-ascii?Q?2gOAGVQLzUandwBbpNepW/wbNp/u10fakNxdqdgm2C0RywDHB+X93TNfJMZB?=
+ =?us-ascii?Q?zYpqF0DbxGNYmp3EqsEtT2JTZozjAc36kssjhje2yjpdQWyNH4w2HAJ0jOfP?=
+ =?us-ascii?Q?Dc5lDwSNpGAhqTCQUA0X6hYdcuwyeaLLlkKOtPSLuajU0ex9iBIy5pi7UGFl?=
+ =?us-ascii?Q?GJc/iLrL/x3i8ITfPF6h7MQNGW/NsRhwHng2u2MOsEDnhi3NnSpSWkVCHOz7?=
+ =?us-ascii?Q?WSIG+Z+ASQbqV3YYpB6+eKOE9r3s/Q82KbugLaQkaUJf52hFdouMzZ2NIWZ3?=
+ =?us-ascii?Q?9wHm8Z/mzG39+rhhRvSqiZs/bRClPM6FHObHhOj5/+s+30w4whpUjanffbWl?=
+ =?us-ascii?Q?zMgXi9OGQTUcev9rLUnSHKzcYoLOaBQCklxmxZpI7FM+Kez81AiH+rrCK+ig?=
+ =?us-ascii?Q?ns5rr53UsUvpBZt3yamL?=
 X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: abc03ebf-59d0-4048-f9ff-08dcc79ae027
+X-MS-Exchange-CrossTenant-Network-Message-Id: 09fd2fa4-fe99-4f3c-52ff-08dcc79cc801
 X-MS-Exchange-CrossTenant-AuthSource: AM6PR03MB5848.eurprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Aug 2024 19:51:58.1941
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Aug 2024 20:05:36.6126
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
 X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
 	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAWPR03MB9785
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI0PR03MB10807
 
-This patch adds test cases for zero offset (implicit cast) or non-zero
-offset pointer as KF_ACQUIRE kfuncs argument. Currently KF_ACQUIRE
-kfuncs should support passing in pointers like &sk->sk_write_queue
-(non-zero offset) or &sk->__sk_common (zero offset) and not be rejected
-by the verifier.
+Not all structures in the kernel contain reference count, such as
+struct socket (its reference count is actually in struct file),
+so it makes no sense to use a combination of KF_ACQUIRE and KF_RELEASE
+to trick the verifier to make the pointer to struct socket valid.
+
+In this example, we cannot just use BTF_TYPE_SAFE_TRUSTED method,
+because not all files are sockets. It is not enough to make private_data
+in struct file to be trusted. We need a kfunc like bpf_socket_from_file.
+
+This patch adds KF_OBTAIN flag for the cases where a valid pointer can
+be obtained but there is no need to manipulate the reference count
+(e.g. the structure itself has no reference count, the actual reference
+count is in another structure).
+
+For KF_OBTAIN kfuncs, the passed argument must be valid pointers.
+KF_OBTAIN kfuncs guarantees that if the pointer passed in is valid,
+then the pointer returned by KF_OBTAIN kfuncs is also valid.
+
+For example, bpf_socket_from_file is a KF_OBTAIN kfunc, and if the
+struct file pointer passed in is valid, then the struct socket pointer
+returned is also valid.
+
+KF_OBTAIN kfuncs use ref_obj_id to ensure that the returned pointer has
+the correct ownership and lifetime. For example, if we pass pointer A to
+KF_OBTAIN kfunc and get returned pointer B, then once pointer A is
+released, pointer B will become invalid.
 
 Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
 ---
- .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 17 ++++++++++
- .../bpf/bpf_testmod/bpf_testmod_kfunc.h       |  4 +++
- .../selftests/bpf/prog_tests/nested_trust.c   |  4 +++
- .../selftests/bpf/progs/nested_acquire.c      | 33 +++++++++++++++++++
- 4 files changed, 58 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/nested_acquire.c
+v1 -> v2: Add more example information to commit message, no code changed.
 
-diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-index bbf9442f0722..e8b34aeef232 100644
---- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-+++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-@@ -183,6 +183,20 @@ __bpf_kfunc void bpf_kfunc_dynptr_test(struct bpf_dynptr *ptr,
- {
+ include/linux/btf.h   |  1 +
+ kernel/bpf/verifier.c | 14 +++++++++++++-
+ 2 files changed, 14 insertions(+), 1 deletion(-)
+
+diff --git a/include/linux/btf.h b/include/linux/btf.h
+index b8a583194c4a..d3f695123af9 100644
+--- a/include/linux/btf.h
++++ b/include/linux/btf.h
+@@ -75,6 +75,7 @@
+ #define KF_ITER_NEXT    (1 << 9) /* kfunc implements BPF iter next method */
+ #define KF_ITER_DESTROY (1 << 10) /* kfunc implements BPF iter destructor */
+ #define KF_RCU_PROTECTED (1 << 11) /* kfunc should be protected by rcu cs when they are invoked */
++#define KF_OBTAIN        (1 << 12) /* kfunc is an obtain function */
+ 
+ /*
+  * Tag marking a kernel function as a kfunc. This is meant to minimize the
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 5437dca56159..67a67c2b4a55 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -10985,9 +10985,15 @@ static bool is_kfunc_release(struct bpf_kfunc_call_arg_meta *meta)
+ 	return meta->kfunc_flags & KF_RELEASE;
  }
  
-+__bpf_kfunc struct sk_buff *bpf_kfunc_nested_acquire_nonzero_offset_test(struct sk_buff_head *ptr)
++static bool is_kfunc_obtain(struct bpf_kfunc_call_arg_meta *meta)
 +{
-+	return NULL;
++	return meta->kfunc_flags & KF_OBTAIN;
 +}
 +
-+__bpf_kfunc struct sk_buff *bpf_kfunc_nested_acquire_zero_offset_test(struct sock_common *ptr)
-+{
-+	return NULL;
-+}
-+
-+__bpf_kfunc void bpf_kfunc_nested_release_test(struct sk_buff *ptr)
-+{
-+}
-+
- __bpf_kfunc struct bpf_testmod_ctx *
- bpf_testmod_ctx_create(int *err)
+ static bool is_kfunc_trusted_args(struct bpf_kfunc_call_arg_meta *meta)
  {
-@@ -541,6 +555,9 @@ BTF_ID_FLAGS(func, bpf_iter_testmod_seq_destroy, KF_ITER_DESTROY)
- BTF_ID_FLAGS(func, bpf_iter_testmod_seq_value)
- BTF_ID_FLAGS(func, bpf_kfunc_common_test)
- BTF_ID_FLAGS(func, bpf_kfunc_dynptr_test)
-+BTF_ID_FLAGS(func, bpf_kfunc_nested_acquire_nonzero_offset_test, KF_ACQUIRE)
-+BTF_ID_FLAGS(func, bpf_kfunc_nested_acquire_zero_offset_test, KF_ACQUIRE)
-+BTF_ID_FLAGS(func, bpf_kfunc_nested_release_test, KF_RELEASE)
- BTF_ID_FLAGS(func, bpf_testmod_ctx_create, KF_ACQUIRE | KF_RET_NULL)
- BTF_ID_FLAGS(func, bpf_testmod_ctx_release, KF_RELEASE)
- BTF_KFUNCS_END(bpf_testmod_common_kfunc_ids)
-diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod_kfunc.h b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod_kfunc.h
-index e587a79f2239..c6c314965bb1 100644
---- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod_kfunc.h
-+++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod_kfunc.h
-@@ -144,4 +144,8 @@ void bpf_kfunc_dynptr_test(struct bpf_dynptr *ptr, struct bpf_dynptr *ptr__nulla
- struct bpf_testmod_ctx *bpf_testmod_ctx_create(int *err) __ksym;
- void bpf_testmod_ctx_release(struct bpf_testmod_ctx *ctx) __ksym;
- 
-+struct sk_buff *bpf_kfunc_nested_acquire_nonzero_offset_test(struct sk_buff_head *ptr) __ksym;
-+struct sk_buff *bpf_kfunc_nested_acquire_zero_offset_test(struct sock_common *ptr) __ksym;
-+void bpf_kfunc_nested_release_test(struct sk_buff *ptr) __ksym;
-+
- #endif /* _BPF_TESTMOD_KFUNC_H */
-diff --git a/tools/testing/selftests/bpf/prog_tests/nested_trust.c b/tools/testing/selftests/bpf/prog_tests/nested_trust.c
-index 39886f58924e..54a112ad5f9c 100644
---- a/tools/testing/selftests/bpf/prog_tests/nested_trust.c
-+++ b/tools/testing/selftests/bpf/prog_tests/nested_trust.c
-@@ -4,9 +4,13 @@
- #include <test_progs.h>
- #include "nested_trust_failure.skel.h"
- #include "nested_trust_success.skel.h"
-+#include "nested_acquire.skel.h"
- 
- void test_nested_trust(void)
- {
- 	RUN_TESTS(nested_trust_success);
- 	RUN_TESTS(nested_trust_failure);
-+
-+	if (env.has_testmod)
-+		RUN_TESTS(nested_acquire);
+-	return (meta->kfunc_flags & KF_TRUSTED_ARGS) || is_kfunc_release(meta);
++	return (meta->kfunc_flags & KF_TRUSTED_ARGS) || is_kfunc_release(meta) ||
++		is_kfunc_obtain(meta);
  }
-diff --git a/tools/testing/selftests/bpf/progs/nested_acquire.c b/tools/testing/selftests/bpf/progs/nested_acquire.c
-new file mode 100644
-index 000000000000..8e521a21d995
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/nested_acquire.c
-@@ -0,0 +1,33 @@
-+// SPDX-License-Identifier: GPL-2.0
+ 
+ static bool is_kfunc_sleepable(struct bpf_kfunc_call_arg_meta *meta)
+@@ -12845,6 +12851,12 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+ 			/* For mark_ptr_or_null_reg, see 93c230e3f5bd6 */
+ 			regs[BPF_REG_0].id = ++env->id_gen;
+ 		}
 +
-+#include <vmlinux.h>
-+#include <bpf/bpf_tracing.h>
-+#include <bpf/bpf_helpers.h>
-+#include "bpf_misc.h"
-+#include "../bpf_testmod/bpf_testmod_kfunc.h"
++		if (is_kfunc_obtain(&meta)) {
++			regs[BPF_REG_0].type |= PTR_TRUSTED;
++			regs[BPF_REG_0].ref_obj_id = meta.ref_obj_id;
++		}
 +
-+char _license[] SEC("license") = "GPL";
-+
-+SEC("tp_btf/tcp_probe")
-+__success
-+int BPF_PROG(test_nested_acquire_nonzero, struct sock *sk, struct sk_buff *skb)
-+{
-+	struct sk_buff *ptr;
-+
-+	ptr = bpf_kfunc_nested_acquire_nonzero_offset_test(&sk->sk_write_queue);
-+
-+	bpf_kfunc_nested_release_test(ptr);
-+	return 0;
-+}
-+
-+SEC("tp_btf/tcp_probe")
-+__success
-+int BPF_PROG(test_nested_acquire_zero, struct sock *sk, struct sk_buff *skb)
-+{
-+	struct sk_buff *ptr;
-+
-+	ptr = bpf_kfunc_nested_acquire_zero_offset_test(&sk->__sk_common);
-+
-+	bpf_kfunc_nested_release_test(ptr);
-+	return 0;
-+}
+ 		mark_btf_func_reg_size(env, BPF_REG_0, sizeof(void *));
+ 		if (is_kfunc_acquire(&meta)) {
+ 			int id = acquire_reference_state(env, insn_idx);
 -- 
 2.39.2
 
