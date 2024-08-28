@@ -1,150 +1,166 @@
-Return-Path: <bpf+bounces-38262-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38263-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 286729625A6
-	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 13:13:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A48F96263A
+	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 13:40:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5B8C71C2247B
-	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 11:13:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 137121C23BC9
+	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 11:40:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FDC0175D2C;
-	Wed, 28 Aug 2024 11:12:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73117175548;
+	Wed, 28 Aug 2024 11:40:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ISSdS8Dz"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PQWtY+fJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 364B71714AE;
-	Wed, 28 Aug 2024 11:12:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E91C1741D4;
+	Wed, 28 Aug 2024 11:40:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724843563; cv=none; b=abWPKkI6q8Jq7O1Axoh97W2hCxli67UvBbcexnrK4Ygk7V8QPrKL1x1vb7/GuX1s8J7zVgfB/Lb0/x1QRxTS+UgcAtOfGUArtYD1nok4XqoiwE+lLk4PD4KhjipIHAuEfXeGz2SdiK3y/dv3b4YNQiarLsQ2fl/qWbUuFn551Kk=
+	t=1724845220; cv=none; b=VUnkpvD08JW8CYNuzZUjEN8cMVZ+vgcNJDS2ZlETbl3seMUmg2YpWICtia6a0Q9SPAqkv+H6j0fEZeDtC9xPifKXK65V8YTP1S0Vz1Zh/6KIXgV8db4k11bpI1m83y3bwWy5fkNVbLCNgBx3Zn3Ra2AAmliKc4U4rKlrLRdEYw4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724843563; c=relaxed/simple;
-	bh=Sf7g9q6kzZ2QDVZ42l9TEK1MrgR/netlPt93lP7g9x4=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=LEwQWP92pHyIu0qSMAQpvBAIwEiwyqtkMIScHYbr3RIqyf3+znUNGXDTglFiueKs+rcAmzFfamqFlyoEFLyYj8LIiTkoDExXlzfqt/gZvIJGCW2UmfsxxbzjXm+pzoxrwwDBAsugkPbjITbmJmriWsSJnGasP6Zdj77u8M4jIcw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ISSdS8Dz; arc=none smtp.client-ip=209.85.214.176
+	s=arc-20240116; t=1724845220; c=relaxed/simple;
+	bh=FePAsMvHLmE22op2flEQFmGYfkih/ncSqzEQLiob984=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KnJ4/zY9B70BV+lNQZfSHlC2u0fB7FcZJOY9Omm3OGm8IMlufU7WGlkuXUt699cMoocX95LJouYUZaG7JpDuFVX83XeWGgrt4dTEB2cRrPQrtenBHdyrdJ7IzFEWpcZ5GjFZc4clS9VJd586wT5vWX8xZYerH4fOFhxMlytMMx4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PQWtY+fJ; arc=none smtp.client-ip=209.85.208.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-202089e57d8so3325455ad.0;
-        Wed, 28 Aug 2024 04:12:41 -0700 (PDT)
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-5bef295a429so7708247a12.2;
+        Wed, 28 Aug 2024 04:40:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1724843561; x=1725448361; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DRgUXWe8dZjfzs16xzJQ+DDVhbgl0JeJ2Y/m+gXLXrs=;
-        b=ISSdS8DzI8110ozIu8QxgiWxgd0mTOEPnauxbOHT+4gRte8p5Yt6RIkuL7DJAyJhp4
-         SuR58+B+6rpeSM2EG22WtHrJ08JjNa9Mjae0oTmNtW/4y8Fzbal66ECUzunjrg2lZdS5
-         k8E9avWgAwWPObYU+38aSx28OmL4sM/M7KCTD9N/NL7ncO6IdcFC1vHMWRzOngvo9OTR
-         LNTlT4JeH2IV+/KgnR98DqXMFc2teJsGvgO0+U8xPnWhhMupXT1db9MH+Z9CIpc03PjN
-         gUwW/LfXSyRKJuwp4BK5j8+ZpILTbFVsp/cacRmv75bx4dyVYrKHSOmf83QQXTgvv9e5
-         34CA==
+        d=gmail.com; s=20230601; t=1724845217; x=1725450017; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=5doiDsQOeWB8JxD1pa6SuHZTechKzHGIPcY9ZB/Tn0k=;
+        b=PQWtY+fJKPUE2cr6k2SYIQLEIVh0atYTOIhpMVui7dIIMaFDOYTxOQYKxNMccyKYT8
+         izWb7emN9B9RBqKLY07PCiNOF2YmOxr2cPS/Y/SvZwOAced2dfDa7JHo4huiXjUcS+oz
+         +sQF0dLJrbNl/g3fSAL+MXfcflq1oRZyJo9Dqkc/MQeW2oDkLh8TRk0JNS5KcHrWysOT
+         3GkWSpWwz2rdIVAV/PudeoDfV8mgCpJW1VeJcWo2pzXmXyTxJdCIABhH9jJPrTQiFv1O
+         P3jG5CrpW3tE9xTAOXm1U0q3BhPOWcgoOTew0wxGRd2xnDEq/qGhY9h59TMbdeZ38ZbJ
+         rXaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724843561; x=1725448361;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DRgUXWe8dZjfzs16xzJQ+DDVhbgl0JeJ2Y/m+gXLXrs=;
-        b=iADBLC4nEnCLUBkDq/tImqQ9gT/kylD2Np4bT0ocLbqeT+C9+Sf8LmOQIuPAC3XoJT
-         HRPnt5kDuIOLLlc5zmr78GJJFs6uPDuOeOKF2FQAjlEboXOAGLzSs4k5JNYNcDZh62nO
-         InBQGoFPfN6CbL+MGBRQ8Ltk+z4Ubykyv89JoFTTtuFPwHg4/5PnRJYG/k3Ie1l+mpni
-         /D3ATWst5qRI0+zQly69chdOV0PLmE07asWq1hP+cco1IGtEpCPAAnPGgpyz2yS+3uVz
-         gSY2M6ch8P9Y5NWd7CxdH+u7BD6WeHc0yi3s5PuBk2xUwS15D0+GU7KqL9wljUQuKkny
-         7P3w==
-X-Forwarded-Encrypted: i=1; AJvYcCWqbU7cC0GPNeoUtiG4Dtgy/EhNUcA6VzrNYBsgDRgXKzUiXF9PdkAUgvUdbt3pQBQPwMIJaN5KjxY0QxLVpgU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzCJd9yasQeryRRLdOP7VMpcIsRFidb1l9HFL4+cAnd1+gC7yMu
-	icHbznWWgoGvEIMUzrA0aWEYNrREgJy1ft2+NlVCe4oYwHZfMkw01CoKTrC2
-X-Google-Smtp-Source: AGHT+IF17LvQdX0nlvFZv3KKEyPcd6PlsJDl18GzJgHep9e1plVKgnsJdA6JoC+HEGZBVhHkx/ONuw==
-X-Received: by 2002:a17:902:c94c:b0:1fd:6ca4:f987 with SMTP id d9443c01a7336-204f9bcea59mr31930845ad.15.1724843561136;
-        Wed, 28 Aug 2024 04:12:41 -0700 (PDT)
-Received: from localhost.localdomain (69-172-146-21.cable.teksavvy.com. [69.172.146.21])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-203855678f9sm97369395ad.1.2024.08.28.04.12.40
+        d=1e100.net; s=20230601; t=1724845217; x=1725450017;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5doiDsQOeWB8JxD1pa6SuHZTechKzHGIPcY9ZB/Tn0k=;
+        b=IhHd4SAYptcNkvHzPiPZsWLRIRacUGZJhoy/nOfJBjlw5VTj5nDQsAtvvIiALI1q4B
+         tIO+UZQdQeD2q9dgpvdYE55MSrqszo6NwYBIoKDSeF+pRl17rnfOWNScbZY4YTFz8mD0
+         ugL3svqv5sYBSjDlVRqnWSR/ImqAV0h62T36cvlYnHSy3qkaBCBFfEEQfKBKi+++fy6p
+         7vCASUwmfMe7w09EHxUgGKxt4Yl7qaF8WAq+txfM1m3RT62YeV2s2UoJNaEUM67PVERE
+         IvhKHHO56uq9cxeYxBfhiRU1tnYTGFKCM9tBMedap6NYzAhw29Y7WLxVX/ESPJ23pfXr
+         y7SA==
+X-Forwarded-Encrypted: i=1; AJvYcCVqIgOx0zOoAGAsCf5f94hA0COEGmLzpEF1x1TnsYPG5MLiDBi9FfFTgrHrAKs2xuxb8bp2WNNG5oEZ9adc4t3T+kEh@vger.kernel.org, AJvYcCXv59YEoioLewcgxzw5pJZdDpyIEa+kUh1OWBQTNIT3JIVyMfMrkdN0k2hfBXQl8zqmBso=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx+za/FH7FXtwJG5zz3Rx/ksWgUUtKbMeZTclC3iWea5SXDlUTD
+	rAZXKxUxuaIbGFgMyOFdWyCtgjpNYyDJT8YYtfKeRExPUNagNWio09yfr4fdgaLdcA==
+X-Google-Smtp-Source: AGHT+IFJRBhL32fcNwMsF1ysq2poybkCQQs3c9osXyU1UUhvo3TmtZue1y4ttg3vqgF3b0HDB/bYEQ==
+X-Received: by 2002:a05:6402:40c6:b0:5a2:5bd2:ca50 with SMTP id 4fb4d7f45d1cf-5c0891a032bmr11591310a12.25.1724845216161;
+        Wed, 28 Aug 2024 04:40:16 -0700 (PDT)
+Received: from krava ([173.38.220.61])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5c0bb1e3446sm2267223a12.30.2024.08.28.04.40.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Aug 2024 04:12:40 -0700 (PDT)
-From: Tony Ambardar <tony.ambardar@gmail.com>
-To: bpf@vger.kernel.org
-Cc: Tony Ambardar <tony.ambardar@gmail.com>,
-	linux-kselftest@vger.kernel.org,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Shuah Khan <shuah@kernel.org>,
-	Ilya Leoshkevich <iii@linux.ibm.com>,
-	Quentin Monnet <qmo@kernel.org>
-Subject: [PATCH bpf-next v3 8/8] selftests/bpf: Support cross-endian building
-Date: Wed, 28 Aug 2024 04:11:58 -0700
-Message-Id: <524c7472b9c5b0a5f4f6f415975807a23b9679b9.1724843049.git.tony.ambardar@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1724843049.git.tony.ambardar@gmail.com>
-References: <cover.1724843049.git.tony.ambardar@gmail.com>
+        Wed, 28 Aug 2024 04:40:15 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Wed, 28 Aug 2024 13:40:13 +0200
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Tianyi Liu <i.pear@outlook.com>,
+	andrii.nakryiko@gmail.com, mhiramat@kernel.org, ajor@meta.com,
+	albancrequy@linux.microsoft.com, bpf@vger.kernel.org,
+	flaniel@linux.microsoft.com, linux-trace-kernel@vger.kernel.org,
+	linux@jordanrome.com, mathieu.desnoyers@efficios.com
+Subject: Re: [PATCH v2] tracing/uprobe: Add missing PID filter for uretprobe
+Message-ID: <Zs8MnbfvyxInIMTj@krava>
+References: <20240825171417.GB3906@redhat.com>
+ <20240825224018.GD3906@redhat.com>
+ <ZsxTckUnlU_HWDMJ@krava>
+ <20240826115752.GA21268@redhat.com>
+ <ZsyHrhG9Q5BpZ1ae@krava>
+ <20240826212552.GB30765@redhat.com>
+ <Zsz7SPp71jPlH4MS@krava>
+ <20240826222938.GC30765@redhat.com>
+ <Zs3PdV6nqed1jWC2@krava>
+ <20240827164545.GG30765@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240827164545.GG30765@redhat.com>
 
-Update Makefile build rules to compile BPF programs with target endianness
-rather than host byte-order. With recent changes, this allows building the
-full selftests/bpf suite hosted on x86_64 and targeting s390x or mips64eb
-for example.
+On Tue, Aug 27, 2024 at 06:45:45PM +0200, Oleg Nesterov wrote:
+> On 08/27, Jiri Olsa wrote:
+> >
+> > On Tue, Aug 27, 2024 at 12:29:38AM +0200, Oleg Nesterov wrote:
+> > >
+> > > So, can you reproduce the problem reported by Tianyi on your setup?
+> >
+> > yes, I can repduce the issue with uretprobe on top of perf event uprobe
+> 
+> ...
+> 
+> >    ->     uretprobe-hit
+> >             handle_swbp
+> >               uprobe_handle_trampoline
+> >                 handle_uretprobe_chain
+> >                 {
+> >
+> >                   for_each_uprobe_consumer {
+> >
+> >                     // consumer for task 1019
+> >                     uretprobe_dispatcher
+> >                       uretprobe_perf_func
+> >                         -> runs bpf program
+> >
+> >                     // consumer for task 1018
+> >                     uretprobe_dispatcher
+> >                       uretprobe_perf_func
+> >                         -> runs bpf program
+> 
+> Confused...
+> 
+> I naively thought that if bpftrace uses bpf_uprobe_multi_link_attach() then
+> it won't use perf/trace_uprobe, and uretprobe-hit will result in
 
-Signed-off-by: Tony Ambardar <tony.ambardar@gmail.com>
----
- tools/testing/selftests/bpf/Makefile | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+right, this path is for the case when bpftrace attach to single uprobe,
+but there are 2 instances of bpftrace 
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index c120617b64ad..27afbfa9e831 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -438,6 +438,7 @@ endef
- IS_LITTLE_ENDIAN = $(shell $(CC) -dM -E - </dev/null | \
- 			grep 'define __BYTE_ORDER__ __ORDER_LITTLE_ENDIAN__')
- MENDIAN=$(if $(IS_LITTLE_ENDIAN),-mlittle-endian,-mbig-endian)
-+BPF_TARGET_ENDIAN=$(if $(IS_LITTLE_ENDIAN),--target=bpfel,--target=bpfeb)
- 
- ifneq ($(CROSS_COMPILE),)
- CLANG_TARGET_ARCH = --target=$(notdir $(CROSS_COMPILE:%-=%))
-@@ -465,17 +466,17 @@ $(OUTPUT)/cgroup_getset_retval_hooks.o: cgroup_getset_retval_hooks.h
- # $4 - binary name
- define CLANG_BPF_BUILD_RULE
- 	$(call msg,CLNG-BPF,$4,$2)
--	$(Q)$(CLANG) $3 -O2 --target=bpf -c $1 -mcpu=v3 -o $2
-+	$(Q)$(CLANG) $3 -O2 $(BPF_TARGET_ENDIAN) -c $1 -mcpu=v3 -o $2
- endef
- # Similar to CLANG_BPF_BUILD_RULE, but with disabled alu32
- define CLANG_NOALU32_BPF_BUILD_RULE
- 	$(call msg,CLNG-BPF,$4,$2)
--	$(Q)$(CLANG) $3 -O2 --target=bpf -c $1 -mcpu=v2 -o $2
-+	$(Q)$(CLANG) $3 -O2 $(BPF_TARGET_ENDIAN) -c $1 -mcpu=v2 -o $2
- endef
- # Similar to CLANG_BPF_BUILD_RULE, but with cpu-v4
- define CLANG_CPUV4_BPF_BUILD_RULE
- 	$(call msg,CLNG-BPF,$4,$2)
--	$(Q)$(CLANG) $3 -O2 --target=bpf -c $1 -mcpu=v4 -o $2
-+	$(Q)$(CLANG) $3 -O2 $(BPF_TARGET_ENDIAN) -c $1 -mcpu=v4 -o $2
- endef
- # Build BPF object using GCC
- define GCC_BPF_BUILD_RULE
--- 
-2.34.1
+jirka
 
+> 
+> 	// current->pid == 1018
+> 
+> 	for_each_uprobe_consumer {
+> 		// consumer for task 1019
+> 		uprobe_multi_link_ret_handler
+> 		    uprobe_prog_run
+> 		       -> current->mm != link->task->mm, return
+> 
+> 		// consumer for task 1018
+> 		uprobe_multi_link_ret_handler
+> 		    uprobe_prog_run
+> 		       -> current->mm == link->task->mm, run bpf
+> 	}
+> 
+> > I think the uretprobe_dispatcher could call filter as suggested in the original
+> > patch..
+> 
+> OK, agreed.
+> 
+> > but I'm not sure we need to remove the uprobe from handle_uretprobe_chain
+> > like we do in handler_chain..
+> 
+> Me too. In any case this is another issue.
+> 
+> Oleg.
+> 
 
