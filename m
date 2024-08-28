@@ -1,179 +1,162 @@
-Return-Path: <bpf+bounces-38304-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38305-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3243962F6E
-	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 20:11:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 068BA96300A
+	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 20:32:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 322851F23841
-	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 18:11:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7C9E2819DE
+	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2024 18:32:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A8C41AAE24;
-	Wed, 28 Aug 2024 18:11:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCCB71A76A2;
+	Wed, 28 Aug 2024 18:32:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EEO7VoQo"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Tg9l+C3m"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EE391A76B9
-	for <bpf@vger.kernel.org>; Wed, 28 Aug 2024 18:11:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D5E81C69C;
+	Wed, 28 Aug 2024 18:32:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724868678; cv=none; b=fs3z51yNeoK1/uwEea3TU4O7nI38fQNYIFev4N/QVwaAltU1VaVf0NlCaXX/s0k8KSVSs+StcZc5fT2sB2XR1lK2CPmnMvCUWsqJdy8Od7sU2oOEwyZR+YdxY5Lmm3gGpxYv8ECpgywa6sxlMVAGkDJ94NeXClAxJAimGgx70us=
+	t=1724869963; cv=none; b=HRYJbeukU3hwPFxH547O6ikn3Lbzh3drymZazauIMNjce/9tCje6B1zJtK5j0nLCJ4QLLV6b2/ebbsMUGMN+RkMD9lWh2UNSl5pUvBG8+ZQnCOgVv1hR9WLjLdFE+QrJKmJlqBleDLEQSwZx+nnogp/5bnNTlsS3CKYIDxlGQVc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724868678; c=relaxed/simple;
-	bh=oX9CNVm7xzROQJvNuUwl0Bu3r4lb0mT+cCalwtQynRc=;
+	s=arc-20240116; t=1724869963; c=relaxed/simple;
+	bh=vMGxzc5PSM5nD5jGS6EaxP7xELSSt4GgTt/MEDnsiaA=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=FTSZyTGSUILhiu1rCDc670A3P6kCzs1ztPFewazhm9/WcHH6VI3L88rNX8Y2Yy2or3aJCP4V+lVpdcKb0rYj0b7Atf8BK5Eab4HliUKcvUn/U7avQEwMgUg2X2OawDzWWG0EQdgBe8q6D2HT6pcY0bFCLdBG48iXfY7vC3+RvYo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EEO7VoQo; arc=none smtp.client-ip=209.85.216.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-2d3e46ba5bcso5185807a91.0
-        for <bpf@vger.kernel.org>; Wed, 28 Aug 2024 11:11:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1724868676; x=1725473476; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SqaB26jignlTsb75pyi69H5phOSTe06TWWyyqyq61sU=;
-        b=EEO7VoQokqISdixMyqZiVNoSXriXHPN/ZaLngI7N6jv4ewUuMefYbBQbGRH+O67bof
-         XWQpQzGD9NivQ/eNRpiIMJzuRrhwaX2DBO8/s1XU9mRmvS5vwIb7pBPRUzCkIMWJzAA5
-         q0GzGpAcQ57+IviA3t/Tmfsva5nGivlYlKpf05yIB/xhcViQIUfeT0V16Whp+8SS/PlM
-         PFSBHdgfIddF7xCezbXHhwiUIJuia18P2RTB636dRRel+52igIeiEd05jxZMd98YfKzh
-         KKCEoFEY0wG5SYsQliplCu2xq7PHsAfDdwoWeisPtry5JrYxdugBzxEeq8sWH4xgdvPY
-         7gOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724868676; x=1725473476;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SqaB26jignlTsb75pyi69H5phOSTe06TWWyyqyq61sU=;
-        b=N0obkPVH7EtJs94D6t0bKrNb7KS+L2xtsl61MOIeoUsSpvZ7vKmPvCnjIo5y3jRuDY
-         xj8LDDnVV6mFFTfQVwn0ItltY8SLCGKWsseUfXk35ITWdfe9W5F9t5ByQKvaDEPmO7Uj
-         5FMxYT0QhQcaiWisXC4hCGXkB1wNpak3r1cQAQCaWPEJ2cNLQ1z1mKiG8M6BxakRf8An
-         ciUo+vXS/Z5k1Ha1uATHyyqCxy0ldRMaUqurf32tz+LDv4THtEEI+o9aMFm8Al3kA8/D
-         BRYFDRcds2YULsX4EMeRjvmrKiuSxzCnrBH8/P0UdF3GyX5cC0IMrp59+8c7VBnhVXaA
-         s3mQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW9EaM5Wo80tzvbmhGPz090HLEw5zuEEXZp5Wrq9Z3X/9C7CYuoX5+tXWx/xIi1JfbKhcE=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwEA3yIuogJibpMGSh7zeL36v+UqE70exbq1gPRBH1E+Qeo8far
-	jowds615xiwZ9Aov+NDwBek8yWfVlf6GmzWTlTABsVymRAUwdRGK/6zMd03izPIAL2Gu3HXJI8Q
-	jnPPkhiyfSNKG3sDxFLaj7t3ztoE=
-X-Google-Smtp-Source: AGHT+IGy78YHrosrqhX/VFXIC67Kb1WwKAMjiUetOl9GSuPfrMkIPOcuILQZnWSQlujJWo4wUmoL6hyiLzCcC0bDIiE=
-X-Received: by 2002:a17:90a:3983:b0:2c9:3370:56e3 with SMTP id
- 98e67ed59e1d1-2d856391ebbmr128033a91.34.1724868676420; Wed, 28 Aug 2024
- 11:11:16 -0700 (PDT)
+	 To:Cc:Content-Type; b=VZxiuu8zIV9Cys7/RaoDnuL2PnkZg5rKT8JedbZ4tLMPHDxaWXReJRjclNl75fX++Eaydus6sGVqOeyhDi07s93td+HSJZBKtoiD46qNOyzAsHcfg5RNugaqSf/Rnz4uzvLXUoVCuQca2yVPLJn6BIFXTzKjBplkR+ZrXNHtcvY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Tg9l+C3m; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D661FC4CEC0;
+	Wed, 28 Aug 2024 18:32:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1724869962;
+	bh=vMGxzc5PSM5nD5jGS6EaxP7xELSSt4GgTt/MEDnsiaA=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=Tg9l+C3mCfuWKTYYhIhedlNYQ1JkV82yMFfQ40/xdo+UROE3VKJC1Fj/5rYr0BFY1
+	 tHT9gqxWpYbEoE33ccdRyr/qKU9DCOaB7ZcyVP12fQJY5E2rQ4XuMkugU/GWfW5i3f
+	 GKcxRvfAYh3sUZZ+2c11zFboOoSfLrxUCm/01Dq5W6Pemku8c/W25HdpY5Vle+ml7G
+	 iVkZ2Xw3JY/V8uSOlk+WZjPI04ify3XZ3+4SxZTa6xE4vwQt0lNu4zInQ8lrHgz+dR
+	 8EHxXRpjkRC4ta2Xqh7Dk8Jqj7uQKVBLcEdTG0I2Y0RbUqbjJBBTWApi1Fk+tymXlX
+	 HO5mTKydJeNYA==
+Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2f401c20b56so8553211fa.0;
+        Wed, 28 Aug 2024 11:32:42 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWd1ubI/EBGZukC6agu9tBZuestgZdH6uOyV5M9+JSqWwGld48MiNv22T6+skgKXUoEFDwcm/St/C2e4d5c@vger.kernel.org, AJvYcCWeC5TtWNi0T5zSIYZDP6XVHjv6EjCYsgGlxCxidRcZSGylmalzPbxvYTsTbXetmuedUWY=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzkl+DRm0m6xjEwrjQYxT6qZikz/proNRQDXfuOsvzc1kev2Q88
+	ScxWZ2SQAD4pTdEp7e011CkYJmKZt6h4FzioRZyWUiD5MtH1F3dMgR+wxcq3MeYB6k6PNGZPKym
+	UG7W98Qwgb87XVcZLRsbObV7BEaM=
+X-Google-Smtp-Source: AGHT+IGCtSdi497UEot/m94AniVRUfQkmwPZ8M+oEDJxfPrHHMvANPjnxHjSNm5KbBfYPrpxeGNjrdCJtpk8lVOtYRw=
+X-Received: by 2002:a2e:f01:0:b0:2f5:29f:43d5 with SMTP id 38308e7fff4ca-2f612a81b43mr137261fa.24.1724869961520;
+ Wed, 28 Aug 2024 11:32:41 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240827203721.1145494-1-andrii@kernel.org> <ktql72figcdzhjtu56mnjyxqvma4s7wf3g65ygd4kdsjovsbwl@4zltm7wh237q>
-In-Reply-To: <ktql72figcdzhjtu56mnjyxqvma4s7wf3g65ygd4kdsjovsbwl@4zltm7wh237q>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 28 Aug 2024 11:11:03 -0700
-Message-ID: <CAEf4BzaONQ8FY8TzdXycH+L6yvgox+ve2_BHOjmONvpf5pbX3w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: fix bpf_object__open_skeleton()'s
- mishandling of options
-To: =?UTF-8?Q?Daniel_M=C3=BCller?= <deso@posteo.net>
-Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, ast@kernel.org, 
-	daniel@iogearbox.net, martin.lau@kernel.org, kernel-team@meta.com
+References: <CAK7LNATb8dbhvdSgiNEMkdsgg93q4ZUGUxReZYNjOV3fDPnfyQ@mail.gmail.com>
+ <20240828181028.4166334-1-legion@kernel.org>
+In-Reply-To: <20240828181028.4166334-1-legion@kernel.org>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Thu, 29 Aug 2024 03:32:04 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQRDe7yLKj-EPewSirpnELmSXHFQRQyVaqRooEyY5qdyg@mail.gmail.com>
+Message-ID: <CAK7LNAQRDe7yLKj-EPewSirpnELmSXHFQRQyVaqRooEyY5qdyg@mail.gmail.com>
+Subject: Re: [PATCH v3] bpf: Remove custom build rule
+To: Alexey Gladkov <legion@kernel.org>
+Cc: linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
+	linux-kbuild@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Oleg Nesterov <oleg@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Aug 28, 2024 at 10:29=E2=80=AFAM Daniel M=C3=BCller <deso@posteo.ne=
-t> wrote:
+On Thu, Aug 29, 2024 at 3:11=E2=80=AFAM Alexey Gladkov <legion@kernel.org> =
+wrote:
 >
-> On Tue, Aug 27, 2024 at 01:37:21PM GMT, Andrii Nakryiko wrote:
-> > We do an ugly copying of options in bpf_object__open_skeleton() just to
-> > be able to set object name from skeleton's recorded name (while still
-> > allowing user to override it through opts->object_name).
-> >
-> > This is not just ugly, but it also is broken due to memcpy() that
-> > doesn't take into account potential skel_opts' and user-provided opts'
-> > sizes differences due to backward and forward compatibility. This leads
-> > to copying over extra bytes and then failing to validate options
-> > properly. It could, technically, lead also to SIGSEGV, if we are unluck=
-y.
-> >
-> > So just get rid of that memory copy completely and instead pass
-> > default object name into bpf_object_open() directly, simplifying all
-> > this significantly. The rule now is that obj_name should be non-NULL fo=
-r
-> > bpf_object_open() when called with in-memory buffer, so validate that
-> > explicitly as well.
-> >
-> > We adopt bpf_object__open_mem() to this as well and generate default
-> > name (based on buffer memory address and size) outside of bpf_object_op=
-en().
-> >
-> > Fixes: d66562fba1ce ("libbpf: Add BPF object skeleton support")
-> > Reported-by: Daniel M=C3=BCller <deso@posteo.net>
-> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > ---
-> >  tools/lib/bpf/libbpf.c | 52 +++++++++++++++---------------------------
-> >  1 file changed, 19 insertions(+), 33 deletions(-)
-> >
-> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> > index e55353887439..d3a542649e6b 100644
-> > --- a/tools/lib/bpf/libbpf.c
-> > +++ b/tools/lib/bpf/libbpf.c
-> > @@ -13761,29 +13763,13 @@ static int populate_skeleton_progs(const stru=
-ct bpf_object *obj,
-> >  int bpf_object__open_skeleton(struct bpf_object_skeleton *s,
-> >                             const struct bpf_object_open_opts *opts)
-> >  {
-> > -     DECLARE_LIBBPF_OPTS(bpf_object_open_opts, skel_opts,
-> > -             .object_name =3D s->name,
-> > -     );
-> >       struct bpf_object *obj;
-> >       int err;
-> >
-> > -     /* Attempt to preserve opts->object_name, unless overriden by use=
-r
-> > -      * explicitly. Overwriting object name for skeletons is discourag=
-ed,
-> > -      * as it breaks global data maps, because they contain object nam=
-e
-> > -      * prefix as their own map name prefix. When skeleton is generate=
-d,
-> > -      * bpftool is making an assumption that this name will stay the s=
-ame.
-> > -      */
-> > -     if (opts) {
-> > -             memcpy(&skel_opts, opts, sizeof(*opts));
-> > -             if (!opts->object_name)
-> > -                     skel_opts.object_name =3D s->name;
-> > -     }
-> > -
-> > -     obj =3D bpf_object__open_mem(s->data, s->data_sz, &skel_opts);
-> > -     err =3D libbpf_get_error(obj);
-> > -     if (err) {
-> > -             pr_warn("failed to initialize skeleton BPF object '%s': %=
-d\n",
-> > -                     s->name, err);
-> > +     obj =3D bpf_object_open(NULL, s->data, s->data_sz, s->name, opts)=
-;
-> > +     if (IS_ERR(obj)) {
-> > +             err =3D PTR_ERR(obj);
-> > +             pr_warn("failed to initialize skeleton BPF object '%s': %=
-d\n", s->name, err);
+> According to the documentation, when building a kernel with the C=3D2
+> parameter, all source files should be checked. But this does not happen
+> for the kernel/bpf/ directory.
 >
-> Ideally we'd do the same dance here for the name that we do in
-> bpf_object_open, right? Otherwise the warning may be mildly confusing if
->   > pr_debug("loading object '%s' from buffer\n", obj_name)
-> earlier refers to a potentially different name?
+> $ touch kernel/bpf/core.c
+> $ make C=3D2 CHECK=3Dtrue kernel/bpf/core.o
+>
+> Outputs:
+>
+>   CHECK   scripts/mod/empty.c
+>   CALL    scripts/checksyscalls.sh
+>   DESCEND objtool
+>   INSTALL libsubcmd_headers
+>   CC      kernel/bpf/core.o
+>
+> As can be seen the compilation is done, but CHECK is not executed. This
+> happens because kernel/bpf/Makefile has defined its own rule for
+> compilation and forgotten the macro that does the check.
+>
+> There is no need to duplicate the build code, and this rule can be
+> removed to use generic rules.
+>
+> Signed-off-by: Alexey Gladkov <legion@kernel.org>
 
-Yeah, true, but I'm not really happy to add this "name resolution"
-duplication of logic here, tbh. Also validation of options, etc. Let's
-keep it as is, it's very unlikely someone will be overriding the
-object name.
 
+Acked-by: Masahiro Yamada <masahiroy@kernel.org>
+
+
+> ---
+>  kernel/bpf/Makefile       | 6 ------
+>  kernel/bpf/btf_iter.c     | 2 ++
+>  kernel/bpf/btf_relocate.c | 2 ++
+>  kernel/bpf/relo_core.c    | 2 ++
+>  4 files changed, 6 insertions(+), 6 deletions(-)
+>  create mode 100644 kernel/bpf/btf_iter.c
+>  create mode 100644 kernel/bpf/btf_relocate.c
+>  create mode 100644 kernel/bpf/relo_core.c
 >
-> Seems minor, though. Thanks for the fix.
+> diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
+> index 0291eef9ce92..9b9c151b5c82 100644
+> --- a/kernel/bpf/Makefile
+> +++ b/kernel/bpf/Makefile
+> @@ -52,9 +52,3 @@ obj-$(CONFIG_BPF_PRELOAD) +=3D preload/
+>  obj-$(CONFIG_BPF_SYSCALL) +=3D relo_core.o
+>  obj-$(CONFIG_BPF_SYSCALL) +=3D btf_iter.o
+>  obj-$(CONFIG_BPF_SYSCALL) +=3D btf_relocate.o
+> -
+> -# Some source files are common to libbpf.
+> -vpath %.c $(srctree)/kernel/bpf:$(srctree)/tools/lib/bpf
+> -
+> -$(obj)/%.o: %.c FORCE
+> -       $(call if_changed_rule,cc_o_c)
+> diff --git a/kernel/bpf/btf_iter.c b/kernel/bpf/btf_iter.c
+> new file mode 100644
+> index 000000000000..eab8493a1669
+> --- /dev/null
+> +++ b/kernel/bpf/btf_iter.c
+> @@ -0,0 +1,2 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +#include "../../tools/lib/bpf/btf_iter.c"
+> diff --git a/kernel/bpf/btf_relocate.c b/kernel/bpf/btf_relocate.c
+> new file mode 100644
+> index 000000000000..8c89c7b59ef8
+> --- /dev/null
+> +++ b/kernel/bpf/btf_relocate.c
+> @@ -0,0 +1,2 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +#include "../../tools/lib/bpf/btf_relocate.c"
+> diff --git a/kernel/bpf/relo_core.c b/kernel/bpf/relo_core.c
+> new file mode 100644
+> index 000000000000..6a36fbc0e5ab
+> --- /dev/null
+> +++ b/kernel/bpf/relo_core.c
+> @@ -0,0 +1,2 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +#include "../../tools/lib/bpf/relo_core.c"
+> --
+> 2.46.0
 >
-> Reviewed-by: Daniel M=C3=BCller <deso@posteo.net>
+
+
+--=20
+Best Regards
+Masahiro Yamada
 
