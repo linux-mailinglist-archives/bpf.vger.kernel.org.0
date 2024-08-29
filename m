@@ -1,119 +1,239 @@
-Return-Path: <bpf+bounces-38463-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38464-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08A2F965081
-	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 22:10:40 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 273DF965088
+	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 22:12:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2C1791C2154D
-	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 20:10:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D158428125A
+	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 20:12:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87DF91BA876;
-	Thu, 29 Aug 2024 20:10:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAFA81BAEFC;
+	Thu, 29 Aug 2024 20:12:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="JHnp7tBX"
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="kcwI/nRg"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05olkn2050.outbound.protection.outlook.com [40.92.90.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0D521311B5
-	for <bpf@vger.kernel.org>; Thu, 29 Aug 2024 20:10:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724962234; cv=none; b=mCiCfrPIc0vL871P7gQS/w5hVa6n21JmqbgTAN03aMidd1p1lPeM3l/KRvigDzdsPZrkK6PRnyloqtROFb5VV7DBlR4HwvEx5DMhcwBE/U62m6iLSB6H7JnnhJvsiOFskGFwuaBe4eMVygrjhXTXiG2XuKJUnXp2PGMi6enwTFE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724962234; c=relaxed/simple;
-	bh=5KVDQSRJqn1uLOrwPqOnPp59IExMMYu9Go6kY04yP5E=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=EsuIXwi7x6E4oZLTCceVgiJfhMFezzDctiftPhNvDoArtFwEva2x6r+zzNangR+fPHRxX6Yxf/2pZzNIL2a6s7CdV9x5K8QcI3XMHrlh3CfTmfxwrq1lEyOb4YXbkJZuemvTBdZtRV3ukqc7ONSdWCn0NbqDX46r9dBKQR5YrhA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=JHnp7tBX; arc=none smtp.client-ip=209.85.214.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-201fed75b38so12375ad.1
-        for <bpf@vger.kernel.org>; Thu, 29 Aug 2024 13:10:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1724962232; x=1725567032; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5KVDQSRJqn1uLOrwPqOnPp59IExMMYu9Go6kY04yP5E=;
-        b=JHnp7tBXqmcw9d2ybPEhuJbzHspZn6y79KTFnWRZhAYoCX9VSD7uwNzTxvLu5CSdC6
-         fs+DZkaeuz9T3XzIAbW8Vf9d/1BSjH+KhFlZ2zCS+VtcCfEcdOfzv+Cpci/TRdXDp22K
-         GzNqBj9uWk2oxMO4qQp4fu2ynndCEYNQelI1sQCV2xTzFJBHhPki+yNf37vhDIrX15U7
-         Irfe1mNd8bXxMfqce6Suv7nwm5MEdBx+unOwZQYYKmPH7rH220WRFM4q8UfRL1/sd9g4
-         IMT8kTrSzmsIfX6NC8SBA9uKwMh/tTWC/nxTNYaeAuXU8ZTqq1hp9QPH/pRzSHCGKBtQ
-         tLkg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724962232; x=1725567032;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5KVDQSRJqn1uLOrwPqOnPp59IExMMYu9Go6kY04yP5E=;
-        b=nM/5EDnu7/82H8hH3lRjWlkvpgbvx4hRbGh5geScEnOtdfGEDEsqCR1sBWjXPOSGvm
-         FxCITPzPol/vSsCtfP6qyK2DVNUCCCXJNjV87Vn4v7vVHq5D8nPUfLYxTnG5pd0oHvBR
-         O0bjIhHNL5Qt4Yni/iNMtFB2uw85aeLr6Jrcy+RmXP06ArwiVS6vv28boYHMXYg9CB8L
-         PMYjCiSlEfrnncS1MClTPVjcfgvec+8ZXrL/OzAJs0gKxg67pTbVyPUyIWbr64ZaTfUy
-         EiV4/2fyn+d74fbbCWG5VLDRJtlmNxIGxvlDZpnnx02ZKPX+MBMAFF2rx/OkwILDmEkH
-         URbg==
-X-Forwarded-Encrypted: i=1; AJvYcCUcfe53m3j4d2xBgZfMA3x8ZWgUl6r2KL6gCjVpCABko3yqzy4gDbKiwJww4oX4UsVIg/I=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyfJynoCj/pV5AbQ75bnMTn6+25cv8aqWYbgTgdUxtTPObMBIZv
-	WaAeIyCjygTuH+wfBKemM/YvNJ+hNGzdzZdyVqQhti8FcS8mpZN+BdVEHz9TWE4VDA++OOK4gb7
-	mxj7ul2wWPAhZxt7e1SYA1fP+ERnOv+G7TIOZ
-X-Google-Smtp-Source: AGHT+IFQRNbNGLHbbGCo2uMEpZQ8l/Z8Qfl7lbbo3l69mIFsmK7QVww06v7HFuoldRojF6blnNbqjyk2g2kuM7Aop/A=
-X-Received: by 2002:a17:903:2282:b0:1fb:19fb:a1f0 with SMTP id
- d9443c01a7336-2052388c8f1mr664215ad.4.1724962231569; Thu, 29 Aug 2024
- 13:10:31 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60BD81BAEF1;
+	Thu, 29 Aug 2024 20:12:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.90.50
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1724962336; cv=fail; b=hAlVtWy31JGGNVOsSxEKvihp5Fj/Rhrp3EsQYhPDruVSOJ6fUtmp81TD7n/h/eqt81i8jSeE/pm7rQrICV+r1WJsh2jNPUa6imX9IbywHuTblD5jmr6yHxZTMJ+FubkzfR38/nsR1rzzH+JoWZbTYGlHa33x/M9e/OmGFILHO7A=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1724962336; c=relaxed/simple;
+	bh=mXaUltMQOqY6mOy3v5upBPfZp2TJ2N/EvBax6MVebpE=;
+	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=YZ0uZ+DdRFky2iWfuULLh+N52+Lty44Qw8EK1Eeicu/mBFj1Jtt7Ggn2hVCJQYz3ep5sTG1Dn12E1btXynsrq9fM2jZbgM4IKTaBGvOmYgekSm0qLUpbpwjkT8aldcj7DkoniHeVjYvCSePLPQt8Plg+WDcHH51F9h5XDmj5Lrg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=kcwI/nRg; arc=fail smtp.client-ip=40.92.90.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=DL5TdZkEEE0o71YDKGcCWXi2914ym+vSHVEitAvv/DX/YlvUo7bGzGksngbDNDGDc0zYN4plVkrC+51On5oYjqQDEDOYz/VOx/jY8Ug63K39hYjjfRYD9Ix0gGslvG8e/CzpxKSbwtEL0oiUgcWOPIZl1x2wZthZeikW1L894Y0eO1bepmzeczcTi0LFJnTm1N3OAo5SmMGclfpmmROpU+pEvZm0V//6mDBthfK9m2++adYai4o+roOoq2Oe5E+6YLtSX1lB83qCpFEQsqHbyaf8Kg8dEDO4veRhR9R5VaIyFjJlvFG5G1A2miYkgv/cJnd0qJ5LIP4fCuneEn26Hg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=aZw/Lw/cxn36AmgX3V4Ar93G+6lP7C8ph2DovvJqq10=;
+ b=unZS/+3F+80XtLBbxpHTZh1XastT9o9/fgc6rb8FDWa/d32eg+6xjzYF2XZJKVBAkH/3WDTfbJvMl9XwT5H++tW4degEOQTu6GS1gluGl35lAw07jJzMpiXgSxXzPTc2y2egeYudl8vzRNf5lM40pVLci7iXlfebxvyKdo3cym5jLb28ew7SGZP+rbky+yB9jMzT5vo8W+5zdtfxmnqB2VJqaZOTE6vLmFU+0itQFz1vbUhMueWHgwc0LzuIepL1dXKOnmU982Lt4kTFmVPm0jCRhXH2s6o28Sim3rQ5txokdTDtuIMeF2U8m8SUCacKnxxni/+Fh4J08f800XLeSQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=aZw/Lw/cxn36AmgX3V4Ar93G+6lP7C8ph2DovvJqq10=;
+ b=kcwI/nRg/gyABaQilh86E6rdekkhquJyfJHGYNl2U5r5b0Blj0kN6YQDIACVxwPByLNLd4JiFJdvybkaaaWftsjNJotlCOIu+S0izKgBEM5rwsGGXlFXsvsKqchHSwnwe3Rr2k63STJzh1DpHDGlct00HDO/YHmH7XAQYMN7ajTkDrVPxIhNdCfSGcXTlV05stSIlgACXYfk8UBlBKxRE7za8+uIBbF2L7y/N5Apvg0T8qp5j1YC9C6oruBmyBkdZQPdeqQBIjHOho9tF0uvgP0Nm1mc8ZL6qLW3yQ0HvZOUjK6RSAZA5sAfVEu6mYDqw9F5F3WadjCk2xtPMAIk6g==
+Received: from AM6PR03MB5848.eurprd03.prod.outlook.com (2603:10a6:20b:e4::10)
+ by GV1PR03MB10409.eurprd03.prod.outlook.com (2603:10a6:150:163::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7897.28; Thu, 29 Aug
+ 2024 20:12:10 +0000
+Received: from AM6PR03MB5848.eurprd03.prod.outlook.com
+ ([fe80::4b97:bbdb:e0ac:6f7]) by AM6PR03MB5848.eurprd03.prod.outlook.com
+ ([fe80::4b97:bbdb:e0ac:6f7%4]) with mapi id 15.20.7897.021; Thu, 29 Aug 2024
+ 20:12:10 +0000
+From: Juntong Deng <juntong.deng@outlook.com>
+To: ast@kernel.org,
+	daniel@iogearbox.net,
+	john.fastabend@gmail.com,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	memxor@gmail.com,
+	snorcht@gmail.com
+Cc: bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next v4 1/2] bpf: Make the pointer returned by iter next method valid
+Date: Thu, 29 Aug 2024 21:11:17 +0100
+Message-ID:
+ <AM6PR03MB584869F8B448EA1C87B7CDA399962@AM6PR03MB5848.eurprd03.prod.outlook.com>
+X-Mailer: git-send-email 2.39.2
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN: [ITCKKKO8MRpVsLi+PvMuhIoOXkvwX773]
+X-ClientProxiedBy: LO4P123CA0217.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:1a6::6) To AM6PR03MB5848.eurprd03.prod.outlook.com
+ (2603:10a6:20b:e4::10)
+X-Microsoft-Original-Message-ID:
+ <20240829201117.25056-1-juntong.deng@outlook.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CANikGpeQuBKj89rTkaAs5ADrz0+YLQ54g-0CshYzE3h06G0U5g@mail.gmail.com>
- <202408281719.8BBA257@keescook>
-In-Reply-To: <202408281719.8BBA257@keescook>
-From: Jann Horn <jannh@google.com>
-Date: Thu, 29 Aug 2024 22:09:51 +0200
-Message-ID: <CAG48ez3bxCBtWbMG7eooSivNQtb+kTixk6Z2EaEQbmLPB+G=bg@mail.gmail.com>
-Subject: Re: BUG: null pointer dereference in seccomp
-To: Juefei Pu <juefei.pu@email.ucr.edu>
-Cc: Kees Cook <kees@kernel.org>, luto@amacapital.net, wad@chromium.org, 
-	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org, 
-	bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM6PR03MB5848:EE_|GV1PR03MB10409:EE_
+X-MS-Office365-Filtering-Correlation-Id: 83bf9d14-d9d0-42b7-bad0-08dcc866dd02
+X-Microsoft-Antispam:
+	BCL:0;ARA:14566002|5072599009|8060799006|461199028|19110799003|15080799006|3412199025|440099028;
+X-Microsoft-Antispam-Message-Info:
+	zUQmB4QdBN5XDo+ZXOUC4dR+E40cNKbwHaS6fA+qu1zmVQy/p+39woRSZdZACflf+v6r0iTH4n6ep1BnFBFiwPgN33vOd76PtqPaejt8YZj91udp+1AjM/65nOo6jpeQnTzizYlcLe8iuFyKH2s54Lsd9ClHINxbELAS6RfoIBAm4ySjNI22y2C2jSmqPZgpvjdQO3VUMSYN/1+wMSQSdl0C1FW/yUtMSvZ4t2rv/t+wQVyYH9I8WQioOzTFEtWh2iWCj8h5qFe/5ET5d1mrfhKUeUGCtAroYOGHZrmFokyxE9IkvUj8+9m2i/XHrAisSWFapiWC6xh9xvFWIVGhUQ8pkwCDtBG6qsjZRvPX0vjUoamYWGXfB8gbA0KRHZe8wTVMkeeyznOF0URlYVl4dDbI5AQSMD4KpQnxP1gg4365slGxQMAY8CFsx0NgERsaBQerABm9bEzmD3c4BAA8Z0JiQIKcYzg0xpQFYTFOcDYrpRP06BuUOkZqzxvBJqunxUCqHKe9kQAIEEV7fU8JifossSmPhVJU/wNDLdSKmImqeYFuTcfsa5FXUM2HMBOhacA4UWw2AAmmNPm2CDBntiXxc3XOtTq3EEda2pnJJcbFcCa5Xp2Lx/7HHX9sezEZ0woBlN0BQLaiAfq/hOFnyzP7HzMRwuKBxgNuPdfOkRabR107Gc1qZ6JWTuWiNmxjzlGpvGgdm4J7BYItOdjq3g==
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?6GwBDZUBwqcbi0Vepn3q6LyKvM3EMykVSOhJDRHjWURReXIz/8wFomPl0dyC?=
+ =?us-ascii?Q?OGiC3JpW20058lbCrzlfDAOf/Ts580OUSrwGBVq1tiiE96B6zY5QG5dd5JcP?=
+ =?us-ascii?Q?xRh5FlhwT90OMjNqWLT9VckdyP6b11X3qR9k2UWDANqXVUDXRFmESiljBl4I?=
+ =?us-ascii?Q?YOHeHeYnOTKQT+AdmH3xmRZIz8e5Uimh0eYWfUhzeYe6wP8XQL2Wx2J9+m5e?=
+ =?us-ascii?Q?OAG2ifw4QdRS8CFD2EoJxF6iibi0TeM2BG+ckW0vKzZw9UfCzpij4FYlYkIp?=
+ =?us-ascii?Q?VpDU88PUXiKmZZx0eu1wZwduzNMMyg2Tvsq4XECXbUEHLyw9GD23Cd27Lmk/?=
+ =?us-ascii?Q?3rRrWIyd2yaH1lPbgbk2zNHAt+7/24YR4UnC1qISD6GhQCJqm+n4/AE9kG1h?=
+ =?us-ascii?Q?pLTwIZSWJrq4RCEADb8/FBowVxfHidPeKX1B9MAhjlWViIcpnZljQn6rGVaK?=
+ =?us-ascii?Q?o1WIbT/jOFLEMcbw1ZzJMHdG65vtvbr0s8U9u1SuXAGeVnbdA8CWqAAJTPPN?=
+ =?us-ascii?Q?u7OYGUTc6pUd0pnG35CGOIt9XB3ASFXn/gaBptZI0MpBBdev9pSkfw64frHC?=
+ =?us-ascii?Q?ByIF1Gmvqo1grkDiwnMV0SmX7NA/RpTymcTXN13E+OBZ/lEbARjxBcMgkrfu?=
+ =?us-ascii?Q?37CvHEZsEnawBazsgSGgzCNU5CW3raiwndX1acRvYodmVaBKzuTPsH/5AjGJ?=
+ =?us-ascii?Q?jcBZXnDWPByDW+aWn+fyBEun9l/ryZ26nUOPyuWOXYp01frVFyGIE6Z2pwpW?=
+ =?us-ascii?Q?SLw/oz8BxoWOKXpUIdLc5sqJ5EMwCUEXuUWIwYMKP/+YZVtmP0tRnyybuAFu?=
+ =?us-ascii?Q?W580BU7fHj6xuCaS1+D8jBU4ayXziBC2unFSDTqZfTUlbwG4Z+5If7CgY3U2?=
+ =?us-ascii?Q?z3b+w33QgUV5PliyQntK2Ar3IBX+sRNTdA1czrJFaVCeTEAMSqa+tQ1s9ViE?=
+ =?us-ascii?Q?LYnX1K2SXnXUhOK/6+A5f4ujdQ6ovcX+DoZ6inUNW6a20Hs+24XVuIrGcwJR?=
+ =?us-ascii?Q?trKhAqgXOWuIjlMNGXY1tmjmYh0QMCgkTF8qMKvj4+XOLlLjb5mlG5+Dbc53?=
+ =?us-ascii?Q?sNjcF89kp1ScOQsy9t3aKVsTxT5JuXwQv9+9AdR6CjNJLjceG4FsrAXo72jU?=
+ =?us-ascii?Q?uy8SZchoJ9eYan0gBKA1P5AcL44DxIpOnT63LAN9J9QYiUVwYyWJDCVpFCjP?=
+ =?us-ascii?Q?RsxLdfYe+WjJX73BYl/4hu1AlCluPOW35oBIjX5jkjE2JMbBtNgeNWRbFOwT?=
+ =?us-ascii?Q?XithSAanpMAaKqTcH8p4?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 83bf9d14-d9d0-42b7-bad0-08dcc866dd02
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR03MB5848.eurprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Aug 2024 20:12:10.3593
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: GV1PR03MB10409
 
-On Thu, Aug 29, 2024 at 2:38=E2=80=AFAM Kees Cook <kees@kernel.org> wrote:
-> On Tue, Aug 27, 2024 at 09:09:49PM -0700, Juefei Pu wrote:
-> > Hello,
-> > We found the following null-pointer-dereference issue using syzkaller
-> > on Linux v6.10.
->
-> In seccomp! Yikes.
->
-> > Unfortunately, the syzkaller failed to generate a reproducer.
->
-> That's a bummer.
->
-> > But at least we have the report:
-> >
-> > Oops: general protection fault, probably for non-canonical address
-> > 0xdffffc0000000006: 0000 [#1] PREEMPT SMP KASAN PTI
-> > KASAN: null-ptr-deref in range [0x0000000000000030-0x0000000000000037]
-> > CPU: 0 PID: 4493 Comm: systemd-journal Not tainted 6.10.0 #13
-> > Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04=
-/01/2014
-> > RIP: 0010:__bpf_prog_run include/linux/filter.h:691 [inline]
+Currently we cannot pass the pointer returned by iter next method as
+argument to KF_TRUSTED_ARGS or KF_RCU kfuncs, because the pointer
+returned by iter next method is not "valid".
 
-So, the issue can't be that we went through the seccomp filter setup
-path properly and the bpf_prog was never actually installed, because
-in that case we would've crashed in seccomp_cache_prepare_bitmap().
+This patch sets the pointer returned by iter next method to be valid.
 
-I'm pretty confused how we could've possibly gotten into this situation...
+This is based on the fact that if the iterator is implemented correctly,
+then the pointer returned from the iter next method should be valid.
 
-What kind of test setup are you using - is this QEMU in TCG mode or in
-KVM mode? Can you share your vmlinux binary, so we can see if there's
-a clue left in the register state of the crash?
+This does not make NULL pointer valid. If the iter next method has
+KF_RET_NULL flag, then the verifier will ask the ebpf program to
+check NULL pointer.
+
+KF_RCU_PROTECTED iterator is a special case, the pointer returned by
+iter next method should only be valid within RCU critical section,
+so it should be with MEM_RCU, not PTR_TRUSTED.
+
+Another special case is bpf_iter_num_next, which returns a pointer with
+base type PTR_TO_MEM. PTR_TO_MEM should not be combined with type flag
+PTR_TRUSTED (PTR_TO_MEM already means the pointer is valid).
+
+The pointer returned by iter next method of other types of iterators
+is with PTR_TRUSTED.
+
+In addition, this patch adds get_iter_from_state to help us get the
+current iterator from the current state.
+
+Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
+---
+v3 -> v4: Eliminate the != PTR_TO_MEM part.
+
+v2 -> v3: Move modifications to check_kfunc_call. Handle PTR_TO_MEM case
+and add corresponding test case. Add get_iter_from_state.
+
+v1 -> v2: Handle KF_RCU_PROTECTED case and add corresponding test cases.
+
+ kernel/bpf/verifier.c | 26 ++++++++++++++++++++++----
+ 1 file changed, 22 insertions(+), 4 deletions(-)
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index f32e3b9bb4e5..f1d764384305 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -8148,6 +8148,15 @@ static int widen_imprecise_scalars(struct bpf_verifier_env *env,
+ 	return 0;
+ }
+ 
++static struct bpf_reg_state *get_iter_from_state(struct bpf_verifier_state *cur_st,
++						 struct bpf_kfunc_call_arg_meta *meta)
++{
++	int iter_frameno = meta->iter.frameno;
++	int iter_spi = meta->iter.spi;
++
++	return &cur_st->frame[iter_frameno]->stack[iter_spi].spilled_ptr;
++}
++
+ /* process_iter_next_call() is called when verifier gets to iterator's next
+  * "method" (e.g., bpf_iter_num_next() for numbers iterator) call. We'll refer
+  * to it as just "iter_next()" in comments below.
+@@ -8232,12 +8241,10 @@ static int process_iter_next_call(struct bpf_verifier_env *env, int insn_idx,
+ 	struct bpf_verifier_state *cur_st = env->cur_state, *queued_st, *prev_st;
+ 	struct bpf_func_state *cur_fr = cur_st->frame[cur_st->curframe], *queued_fr;
+ 	struct bpf_reg_state *cur_iter, *queued_iter;
+-	int iter_frameno = meta->iter.frameno;
+-	int iter_spi = meta->iter.spi;
+ 
+ 	BTF_TYPE_EMIT(struct bpf_iter);
+ 
+-	cur_iter = &env->cur_state->frame[iter_frameno]->stack[iter_spi].spilled_ptr;
++	cur_iter = get_iter_from_state(cur_st, meta);
+ 
+ 	if (cur_iter->iter.state != BPF_ITER_STATE_ACTIVE &&
+ 	    cur_iter->iter.state != BPF_ITER_STATE_DRAINED) {
+@@ -8265,7 +8272,7 @@ static int process_iter_next_call(struct bpf_verifier_env *env, int insn_idx,
+ 		if (!queued_st)
+ 			return -ENOMEM;
+ 
+-		queued_iter = &queued_st->frame[iter_frameno]->stack[iter_spi].spilled_ptr;
++		queued_iter = get_iter_from_state(queued_st, meta);
+ 		queued_iter->iter.state = BPF_ITER_STATE_ACTIVE;
+ 		queued_iter->iter.depth++;
+ 		if (prev_st)
+@@ -12853,6 +12860,17 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+ 			regs[BPF_REG_0].btf = desc_btf;
+ 			regs[BPF_REG_0].type = PTR_TO_BTF_ID;
+ 			regs[BPF_REG_0].btf_id = ptr_type_id;
++
++			if (is_iter_next_kfunc(&meta)) {
++				struct bpf_reg_state *cur_iter;
++
++				cur_iter = get_iter_from_state(env->cur_state, &meta);
++
++				if (cur_iter->type & MEM_RCU) /* KF_RCU_PROTECTED */
++					regs[BPF_REG_0].type |= MEM_RCU;
++				else
++					regs[BPF_REG_0].type |= PTR_TRUSTED;
++			}
+ 		}
+ 
+ 		if (is_kfunc_ret_null(&meta)) {
+-- 
+2.39.2
+
 
