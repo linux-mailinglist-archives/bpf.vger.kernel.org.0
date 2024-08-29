@@ -1,155 +1,155 @@
-Return-Path: <bpf+bounces-38426-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38427-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 849B8964CE9
-	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 19:35:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 80999964D07
+	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 19:42:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0D2CB285A66
-	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 17:35:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 365B51F22DDF
+	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 17:42:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B1781B5EA0;
-	Thu, 29 Aug 2024 17:35:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E83111B78FF;
+	Thu, 29 Aug 2024 17:42:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="OV/9FqoS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sXxDx64F"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E27C3A8F0
-	for <bpf@vger.kernel.org>; Thu, 29 Aug 2024 17:35:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C7AE1B78FB;
+	Thu, 29 Aug 2024 17:42:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724952948; cv=none; b=gHz6oeiLMBIh2DL8yhHQLgjz+5KMDKtkhqNBFh990/KW8ltyGh4BYue1HesEnlLqeDYQRVieILZ0PkmfrOBorXQpZ6yOSf6/gLsRQcjd7P/DRzAnfWW6pJwMidhfPtGFZKxCXuIBly53rN4uDjsf2b3GDljIFXiPx9MwWKfHeNE=
+	t=1724953355; cv=none; b=GTt7fmqg7SZi5PZIp4akCZKEpq3GpOl2SlsXfhdaGxjcS+cYBIicprasmMnBMblrItyeRq0zMXBFLs/j2VgKY4OSt2rs7FKXg1/VtGOuv6WvxgtKZPrb2uvvDV6u4EmTh641MeD/FQckFYKEaAdPGOlnqReEsbAUKonsuzYmGEI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724952948; c=relaxed/simple;
-	bh=Br66uzxqt5wE0FYYxrjYrtfafEBkW5HjXGMuRTgXvg4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mJP76a3QKlVJF0XGtW3RH8/6f1Eiy8/y2+fHli2epMDadNTigo5jKpq1/iTh/swYE+LYloNenQDyZeUS7U0jytnbbpFT3q4rtE1SjEbHSUqCqZGpmMRpA7PoTQMAt9ny1Qq+JgYq914TGOcfRvKlACbQaUWSnMOoog8kSvZMHa0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=OV/9FqoS; arc=none smtp.client-ip=91.218.175.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <6b81ecdb-779a-445f-ba2f-22147e635f6f@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1724952943;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=71hv2gv2vW/C2aPVCbmvjWaxHVZqjM9s6x7PByhtxmw=;
-	b=OV/9FqoSOjjDY1cIZpNd6Ffs7boJPKfQV9s2eT4Q/97D5ZQVu5mMEENQRT7ejoMyft9LNC
-	k2zmPI2fBZWqxIlfH66fvShLiJXnFFW/HQ74tOx/5jrSomLS8bGQAqx+VTcDT6WDcKDTJA
-	dJuREEcP/M0E/o0Q/ZtK2MVvob+4ziI=
-Date: Thu, 29 Aug 2024 10:35:35 -0700
+	s=arc-20240116; t=1724953355; c=relaxed/simple;
+	bh=4nRg3RUz99sC+bTAc3chTieWxnU9HfYtyRRpqpRzGvU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=DppkmdHFdwSYS2DWv9H6Yz4eikQjH+DoJIgkQrLm5Ied2h1tavsButMRXMCV6v8mS11wh9v5qs+flz2PIPDVZ13jlOuCqacL5XPOcaa9N+hj6pxXQxgW1/xaCPGNYNJH3OVQXD/z+eZP6wlPe9pSfLxgPgqaetjraW7MKF4ocrg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sXxDx64F; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CBEDEC4CEC1;
+	Thu, 29 Aug 2024 17:42:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1724953355;
+	bh=4nRg3RUz99sC+bTAc3chTieWxnU9HfYtyRRpqpRzGvU=;
+	h=From:To:Cc:Subject:Date:From;
+	b=sXxDx64F2XQO2t8V77kyt59L27JoWD8GMWr61BdbjjrAZZGYGgaqHh6fx2PpwQ3d1
+	 E4t+y1ltBEWWFYrmF91WTaWN38IUlWaKWfMrjVQE3h3oRrWkO3ij4/L6MeJrkKOQzZ
+	 fUVNo6HRhxPSrVqEi7+2XRLg6NK/Q+AFMVxzsuVqnyP4qX1d3wsCgSaXV5crNgIRF6
+	 04IyWUz7zEh3E0dXQSbr/N30uIldZNt+01v2zjUfZQ6ZJsCSbPSbNGgLqnLamddWil
+	 D8atG92lLn/sfdaunkbjhIwBtDuYrNFs4Tv12hbWy6+zLl91F2stOF9urQBP+Uv6xo
+	 /gPwqpmb9F21Q==
+From: Andrii Nakryiko <andrii@kernel.org>
+To: bpf@vger.kernel.org
+Cc: linux-mm@kvack.org,
+	akpm@linux-foundation.org,
+	adobriyan@gmail.com,
+	shakeel.butt@linux.dev,
+	hannes@cmpxchg.org,
+	ak@linux.intel.com,
+	osandov@osandov.com,
+	song@kernel.org,
+	jannh@google.com,
+	linux-fsdevel@vger.kernel.org,
+	willy@infradead.org,
+	Andrii Nakryiko <andrii@kernel.org>
+Subject: [PATCH v7 bpf-next 00/10] Harden and extend ELF build ID parsing logic
+Date: Thu, 29 Aug 2024 10:42:22 -0700
+Message-ID: <20240829174232.3133883-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v4 bpf-next 6/9] selftests/bpf: Test gen_prologue and
- gen_epilogue
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Yonghong Song <yonghong.song@linux.dev>, Amery Hung <ameryhung@gmail.com>,
- kernel-team@meta.com
-References: <20240827194834.1423815-1-martin.lau@linux.dev>
- <20240827194834.1423815-7-martin.lau@linux.dev>
- <12566dccdcf9b39cf6b9eda88104451719d18676.camel@gmail.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <12566dccdcf9b39cf6b9eda88104451719d18676.camel@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 
-On 8/29/24 12:27 AM, Eduard Zingerman wrote:
-> On Tue, 2024-08-27 at 12:48 -0700, Martin KaFai Lau wrote:
->> From: Martin KaFai Lau <martin.lau@kernel.org>
->>
->> This test adds a new struct_ops "bpf_testmod_st_ops" in bpf_testmod.
->> The ops of the bpf_testmod_st_ops is triggered by new kfunc calls
->> "bpf_kfunc_st_ops_test_*logue". These new kfunc calls are
->> primarily used by the SEC("syscall") program. The test triggering
->> sequence is like:
->>      SEC("syscall")
->>      syscall_prologue_subprog(struct st_ops_args *args)
->>          bpf_kfunc_st_op_test_prologue(args)
->> 	    st_ops->test_prologue(args)
->>
->> .gen_prologue adds 1000 to args->a
->> .gen_epilogue adds 10000 to args->a
->> .gen_epilogue will also set the r0 to 2 * args->a.
->>
->> The .gen_prologue and .gen_epilogue of the bpf_testmod_st_ops
->> will test the prog->aux->attach_func_name to decide if
->> it needs to generate codes.
->>
->> The main programs of the pro_epilogue_subprog.c will call a subprog()
->> which does "args->a += 1".
->>
->> The main programs of the pro_epilogue_kfunc.c will call a
->> new kfunc bpf_kfunc_st_ops_inc10 which does "args->a += 10".
->>
->> This patch uses the test_loader infra to check the __xlated
->> instructions patched after gen_prologue and/or gen_epilogue.
->> The __xlated check is based on Eduard's example (Thanks!) in v1.
->>
->> args->a is returned by the struct_ops prog (either the main prog
->> or the epilogue). Thus, the __retval of the SEC("syscall") prog
->> is checked. For example, when triggering the ops in the
->> 'SEC("struct_ops/test_epilogue_subprog") int test_epilogue_subprog'
->> The expected args->a is +1 (subprog call) + 10000 (.gen_epilogue) = 10001.
->> The expected return value is 2 * 10001 (.gen_epilogue).
->>
->> Suggested-by: Eduard Zingerman <eddyz87@gmail.com>
->> Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
->> ---
-> 
-> Acked-by: Eduard Zingerman <eddyz87@gmail.com>
-> 
-> [...]
-> 
->> diff --git a/tools/testing/selftests/bpf/progs/pro_epilogue_kfunc.c b/tools/testing/selftests/bpf/progs/pro_epilogue_kfunc.c
->> new file mode 100644
->> index 000000000000..7d1124cf4942
->> --- /dev/null
->> +++ b/tools/testing/selftests/bpf/progs/pro_epilogue_kfunc.c
->> @@ -0,0 +1,156 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/* Copyright (c) 2024 Meta Platforms, Inc. and affiliates. */
->> +
->> +#include <vmlinux.h>
->> +#include <bpf/bpf_tracing.h>
->> +#include "bpf_misc.h"
->> +#include "../bpf_testmod/bpf_testmod.h"
->> +#include "../bpf_testmod/bpf_testmod_kfunc.h"
->> +
->> +char _license[] SEC("license") = "GPL";
->> +
->> +void __kfunc_btf_root(void)
->> +{
->> +	struct st_ops_args args = {};
->> +
->> +	bpf_kfunc_st_ops_inc10(&args);
-> 
-> Nit: 'bpf_kfunc_st_ops_inc10(0);' would also work.
+The goal of this patch set is to extend existing ELF build ID parsing logic,
+currently mostly used by BPF subsystem, with support for working in sleepable
+mode in which memory faults are allowed and can be relied upon to fetch
+relevant parts of ELF file to find and fetch .note.gnu.build-id information.
 
-sgtm. I think it will make it obvious that it won't be executed also.
+This is useful and important for BPF subsystem itself, but also for
+PROCMAP_QUERY ioctl(), built atop of /proc/<pid>/maps functionality (see [0]),
+which makes use of the same build_id_parse() functionality. PROCMAP_QUERY is
+always called from sleepable user process context, so it doesn't have to
+suffer from current restrictions of build_id_parse() which are due to the NMI
+context assumption.
 
-> 
->> +}
-> 
-> As a side note, I think that kfunc and subprog sets of tests could be
-> combined in order to have less code. Probably does not matter.
+Along the way, we harden the logic to avoid TOCTOU, overflow, out-of-bounds
+access problems.  This is the very first patch, which can be backported to
+older releases, if necessary.
 
-ok. I will drop the _subprog.c and only keep the _kfunc.c.
+We also lift existing limitations of only working as long as ELF program
+headers and build ID note section is contained strictly within the very first
+page of ELF file.
 
-The _kfunc.c calls a subprog and a kfunc which should have already covered the 
-_subprog.c cases.
+We achieve all of the above without duplication of logic between sleepable and
+non-sleepable modes through freader abstraction that manages underlying folio
+from page cache (on demand) and gives a simple to use direct memory access
+interface. With that, single page restrictions and adding sleepable mode
+support is rather straightforward.
+
+We also extend existing set of BPF selftests with a few tests targeting build
+ID logic across sleepable and non-sleepabe contexts (we utilize sleepable and
+non-sleepable uprobes for that).
+
+   [0] https://lore.kernel.org/linux-mm/20240627170900.1672542-4-andrii@kernel.org/
+
+v6->v7:
+  - added filemap_invalidate_{lock,unlock}_shared() around read_cache_folio
+    and kept Eduard's Reviewed-by (Eduard);
+v5->v6:
+  - use local phnum variable in get_build_id_32() (Jann);
+  - switch memcmp() instead of strcmp() in parse_build_id() (Jann);
+v4->v5:
+  - pass proper file reference to read_cache_folio() (Shakeel);
+  - fix another potential overflow due to two u32 additions (Andi);
+  - add PageUptodate() check to patch #1 (Jann);
+v3->v4:
+  - fix few more potential overflow and out-of-bounds access issues (Andi);
+  - use purely folio-based implementation for freader (Matthew);
+v2->v3:
+  - remove unneeded READ_ONCE()s and force phoff to u64 for 32-bit mode (Andi);
+  - moved hardening fixes to the front for easier backporting (Jann);
+  - call freader_cleanup() from build_id_parse_buf() for consistency (Jiri);
+v1->v2:
+  - ensure MADV_PAGEOUT works reliably by paging data in first (Shakeel);
+  - to fix BPF CI build optionally define MADV_POPULATE_READ in selftest.
+
+Andrii Nakryiko (10):
+  lib/buildid: harden build ID parsing logic
+  lib/buildid: add single folio-based file reader abstraction
+  lib/buildid: take into account e_phoff when fetching program headers
+  lib/buildid: remove single-page limit for PHDR search
+  lib/buildid: rename build_id_parse() into build_id_parse_nofault()
+  lib/buildid: implement sleepable build_id_parse() API
+  lib/buildid: don't limit .note.gnu.build-id to the first page in ELF
+  bpf: decouple stack_map_get_build_id_offset() from
+    perf_callchain_entry
+  bpf: wire up sleepable bpf_get_stack() and bpf_get_task_stack()
+    helpers
+  selftests/bpf: add build ID tests
+
+ include/linux/bpf.h                           |   2 +
+ include/linux/buildid.h                       |   4 +-
+ kernel/bpf/stackmap.c                         | 131 ++++--
+ kernel/events/core.c                          |   2 +-
+ kernel/trace/bpf_trace.c                      |   5 +-
+ lib/buildid.c                                 | 397 +++++++++++++-----
+ tools/testing/selftests/bpf/Makefile          |   5 +-
+ .../selftests/bpf/prog_tests/build_id.c       | 118 ++++++
+ .../selftests/bpf/progs/test_build_id.c       |  31 ++
+ tools/testing/selftests/bpf/uprobe_multi.c    |  41 ++
+ tools/testing/selftests/bpf/uprobe_multi.ld   |  11 +
+ 11 files changed, 605 insertions(+), 142 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/build_id.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_build_id.c
+ create mode 100644 tools/testing/selftests/bpf/uprobe_multi.ld
+
+-- 
+2.43.5
 
 
