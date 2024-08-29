@@ -1,368 +1,141 @@
-Return-Path: <bpf+bounces-38437-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38438-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE69C964D1E
-	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 19:43:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48C28964D8E
+	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 20:16:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A57A628196D
-	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 17:43:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7C0271C20D98
+	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 18:16:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 334971B81D8;
-	Thu, 29 Aug 2024 17:43:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 807661B6539;
+	Thu, 29 Aug 2024 18:16:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pCQ/coWl"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="B32tRl4V"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA4801B5808;
-	Thu, 29 Aug 2024 17:43:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DEFC4DA14
+	for <bpf@vger.kernel.org>; Thu, 29 Aug 2024 18:16:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724953387; cv=none; b=OLq89i8I9967JWERRMbJ8j5nvcgtzO8G6yFRNqXwYfVN+nsdufCBnh6as+QLm4htChd2Wz7Sis/J236kNZyisvygiWBbDLpkvPgEmDSvcbo1T1SIpLu1cxrIrGt+37OTYfbPGJphpICBOH52BxJDBLt/komnrQzcCmxfrQCewbs=
+	t=1724955365; cv=none; b=Lyx3wHuHJGqpQ+3uRNQk9o3MAC2P22DZqCspBJDOEyoiV48bWqdin4yxpFNaPe4rx1kFsm8DG6XFZMN9Tb1skxZqHaAb0iGaakPdEo1J+92L2AyAUawrZYxWZtAPGAFtR2kNwnzKD3OVyl4o3jr0uZLSl/v+4NGn/fKP233BeoA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724953387; c=relaxed/simple;
-	bh=X97j92yUSN/YIJFWooWtS6FnLn2/foHfKK8DgE5pkPM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=okue9ppsqm1ro7SSC3D2qVV89SBy9tILFSl0gOp6qrnqp/My5YOSTmAH9uX5FALWRwunZbErPAhNuEEgUrUUgG5XAWrGBtQvn8K38IYXA8rESie987hPwsiM1jrLTtl8K0qDC/xFfrHr6DtzGOXBMJrPaWvx3FagpU5UatIA3pg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pCQ/coWl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D9EBC4CEC1;
-	Thu, 29 Aug 2024 17:43:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1724953387;
-	bh=X97j92yUSN/YIJFWooWtS6FnLn2/foHfKK8DgE5pkPM=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=pCQ/coWlxELV2e9dG7DPTFDkSYBOCl764rRVpgXaomvACgIEgQLQ1I+HSWLCvbP3j
-	 buvAtEDakO9xIZ7ovIhxaSxf98o97QsyJ0gDB8kII0tjRGpWlbUpJFAY4rD3TiO5u5
-	 1sI9b6y30lbZscxftSg3sk4TF7YaberGU32Xi2YeQF88aMEgB7B6t3UT910+p31/HI
-	 q+vRTmkWfnNwojKGeKDdmTXh05T57BKtEE9Xf9AA0XtPSYaeksZNPJDaKZrxv9pdT0
-	 5ljSREa6FbOv1qFsJiv+4JLMB7KebgayPM3cUlQEZHYpudK7ZpsR4/Jmh0I4C/wvTr
-	 Wq7vI1f3cZFzA==
-From: Andrii Nakryiko <andrii@kernel.org>
-To: bpf@vger.kernel.org
-Cc: linux-mm@kvack.org,
-	akpm@linux-foundation.org,
-	adobriyan@gmail.com,
-	shakeel.butt@linux.dev,
-	hannes@cmpxchg.org,
-	ak@linux.intel.com,
-	osandov@osandov.com,
-	song@kernel.org,
-	jannh@google.com,
-	linux-fsdevel@vger.kernel.org,
-	willy@infradead.org,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH v7 bpf-next 10/10] selftests/bpf: add build ID tests
-Date: Thu, 29 Aug 2024 10:42:32 -0700
-Message-ID: <20240829174232.3133883-11-andrii@kernel.org>
-X-Mailer: git-send-email 2.43.5
-In-Reply-To: <20240829174232.3133883-1-andrii@kernel.org>
-References: <20240829174232.3133883-1-andrii@kernel.org>
+	s=arc-20240116; t=1724955365; c=relaxed/simple;
+	bh=KkzUpb83qE0fANTCtuTB0douS2O2pLVIIa8jKF4w2XM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=aSB7R9HGO+lGa9lczy5OS4axPKgtsE1UlAkJwuwc4D0h5vxJ26PXi9wCK8+A+hlt72qbSEf+uejhQYpp6HsdshFRZqQK0waAhmHnBFL/9MRIwl6CkQlwhimFOp6/Ayfcx8tGZ7Rryv56txETiV0xI7/rIBT7VSF1ZtLdPUpxe1A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=B32tRl4V; arc=none smtp.client-ip=91.218.175.186
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <7033d812-39ed-487e-8cea-068acec8c132@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1724955360;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FSagsDqA7CAx48NUVMk0thmE8Vrrx4HInRIKqbrcwLM=;
+	b=B32tRl4VMIMEZ6VsELnwzJEQlU4Fl0h7PWCaQkBpmsm58voGWJnpiOhsU6GWyx4RssI5DS
+	BrRDsR1QHLknyP9giDYKXD71RWMGDPeJMeHGF9xpLZ+wDJ8OYduJUo8lKRqIusrBL1GZ8t
+	4uXuaHseV4PDQ9ng6Bi0yCYGvOWW/3Q=
+Date: Thu, 29 Aug 2024 11:15:53 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v4 bpf-next 7/9] selftests/bpf: Add tailcall epilogue test
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Yonghong Song <yonghong.song@linux.dev>, Amery Hung <ameryhung@gmail.com>,
+ kernel-team@meta.com
+References: <20240827194834.1423815-1-martin.lau@linux.dev>
+ <20240827194834.1423815-8-martin.lau@linux.dev>
+ <5ef794cd921623dd8e0e6e350b6ad8ffd1aa7c26.camel@gmail.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <5ef794cd921623dd8e0e6e350b6ad8ffd1aa7c26.camel@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-Add a new set of tests validating behavior of capturing stack traces
-with build ID. We extend uprobe_multi target binary with ability to
-trigger uprobe (so that we can capture stack traces from it), but also
-we allow to force build ID data to be either resident or non-resident in
-memory (see also a comment about quirks of MADV_PAGEOUT).
+On 8/28/24 11:16 PM, Eduard Zingerman wrote:
+> On Tue, 2024-08-27 at 12:48 -0700, Martin KaFai Lau wrote:
+>> From: Martin KaFai Lau <martin.lau@kernel.org>
+>>
+>> This patch adds a gen_epilogue test to test a main prog
+>> using a bpf_tail_call.
+>>
+>> A non test_loader test is used. The tailcall target program,
+>> "test_epilogue_subprog", needs to be used in a struct_ops map
+>> before it can be loaded. Another struct_ops map is also needed
+>> to host the actual "test_epilogue_tailcall" struct_ops program
+>> that does the bpf_tail_call. The earlier test_loader patch
+>> will attach all struct_ops maps but the bpf_testmod.c does
+>> not support >1 attached struct_ops.
+>>
+>> The earlier patch used the test_loader which has already covered
+>> checking for the patched pro/epilogue instructions. This is done
+>> by the __xlated tag.
+>>
+>> This patch goes for the regular skel load and syscall test to do
+>> the tailcall test that can also allow to directly pass the
+>> the "struct st_ops_args *args" as ctx_in to the
+>> SEC("syscall") program.
+>>
+>> Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
+>> ---
+> 
+> Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+> 
+> [...]
+> 
+>> +static void test_tailcall(void)
+>> +{
+>> +	LIBBPF_OPTS(bpf_test_run_opts, topts);
+>> +	struct epilogue_tailcall *skel;
+>> +	struct st_ops_args args;
+>> +	int err, prog_fd;
+>> +
+>> +	skel = epilogue_tailcall__open_and_load();
+>> +	if (!ASSERT_OK_PTR(skel, "epilogue_tailcall__open_and_load"))
+>> +		return;
+>> +
+>> +	topts.ctx_in = &args;
+>> +	topts.ctx_size_in = sizeof(args);
+>> +
+>> +	skel->links.epilogue_tailcall =
+>> +		bpf_map__attach_struct_ops(skel->maps.epilogue_tailcall);
+>> +	if (!ASSERT_OK_PTR(skel->links.epilogue_tailcall, "attach_struct_ops"))
+>> +		goto done;
+>> +
+> 
+> Nitpick:
+> Both test_epilogue_tailcall and test_epilogue_subprog would be
+> augmented with epilogue, and we know that tail call run as expected
+> because only test_epilogue_subprog does +1, right?
 
-That way we can validate that in non-sleepable context we won't get
-build ID (as expected), but with sleepable uprobes we will get that
-build ID regardless of it being physically present in memory.
+Yes. and also the epilogue of the test_epilogue_subprog is executed.
 
-Also, we add a small add-on linker script which reorders
-.note.gnu.build-id section and puts it after (big) .text section,
-putting build ID data outside of the very first page of ELF file. This
-will test all the relaxations we did in build ID parsing logic in kernel
-thanks to freader abstraction.
+> 
+> If above is true, could you please update the comment a bit, e.g.:
+> 
+> /* Both test_epilogue_tailcall and test_epilogue_subprog are
+>   * augmented with epilogue. When syscall_epilogue_tailcall()
+>   * is run test_epilogue_tailcall() is triggered,
+>   * it executes a tail call and control is transferred to
+>   * test_epilogue_subprog(). Only test_epilogue_subprog()
+>   * does args->a += 1, thus final args.a value of 10001
+>   * guarantees that tail call was executed as expected.
+>   */
 
-Reviewed-by: Eduard Zingerman <eddyz87@gmail.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/testing/selftests/bpf/Makefile          |   5 +-
- .../selftests/bpf/prog_tests/build_id.c       | 118 ++++++++++++++++++
- .../selftests/bpf/progs/test_build_id.c       |  31 +++++
- tools/testing/selftests/bpf/uprobe_multi.c    |  41 ++++++
- tools/testing/selftests/bpf/uprobe_multi.ld   |  11 ++
- 5 files changed, 204 insertions(+), 2 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/build_id.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_build_id.c
- create mode 100644 tools/testing/selftests/bpf/uprobe_multi.ld
-
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index c120617b64ad..4c021eb2e857 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -832,9 +832,10 @@ $(OUTPUT)/veristat: $(OUTPUT)/veristat.o
- 
- # Linking uprobe_multi can fail due to relocation overflows on mips.
- $(OUTPUT)/uprobe_multi: CFLAGS += $(if $(filter mips, $(ARCH)),-mxgot)
--$(OUTPUT)/uprobe_multi: uprobe_multi.c
-+$(OUTPUT)/uprobe_multi: uprobe_multi.c uprobe_multi.ld
- 	$(call msg,BINARY,,$@)
--	$(Q)$(CC) $(CFLAGS) -O0 $(LDFLAGS) $^ $(LDLIBS) -o $@
-+	$(Q)$(CC) $(CFLAGS) -Wl,-T,uprobe_multi.ld -O0 $(LDFLAGS) 	\
-+		$(filter-out %.ld,$^) $(LDLIBS) -o $@
- 
- EXTRA_CLEAN := $(SCRATCH_DIR) $(HOST_SCRATCH_DIR)			\
- 	prog_tests/tests.h map_tests/tests.h verifier/tests.h		\
-diff --git a/tools/testing/selftests/bpf/prog_tests/build_id.c b/tools/testing/selftests/bpf/prog_tests/build_id.c
-new file mode 100644
-index 000000000000..aec9c8d6bc96
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/build_id.c
-@@ -0,0 +1,118 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2024 Meta Platforms, Inc. and affiliates. */
-+#include <test_progs.h>
-+
-+#include "test_build_id.skel.h"
-+
-+static char build_id[BPF_BUILD_ID_SIZE];
-+static int build_id_sz;
-+
-+static void print_stack(struct bpf_stack_build_id *stack, int frame_cnt)
-+{
-+	int i, j;
-+
-+	for (i = 0; i < frame_cnt; i++) {
-+		printf("FRAME #%02d: ", i);
-+		switch (stack[i].status) {
-+		case BPF_STACK_BUILD_ID_EMPTY:
-+			printf("<EMPTY>\n");
-+			break;
-+		case BPF_STACK_BUILD_ID_VALID:
-+			printf("BUILD ID = ");
-+			for (j = 0; j < BPF_BUILD_ID_SIZE; j++)
-+				printf("%02hhx", (unsigned)stack[i].build_id[j]);
-+			printf(" OFFSET = %llx", (unsigned long long)stack[i].offset);
-+			break;
-+		case BPF_STACK_BUILD_ID_IP:
-+			printf("IP = %llx", (unsigned long long)stack[i].ip);
-+			break;
-+		default:
-+			printf("UNEXPECTED STATUS %d ", stack[i].status);
-+			break;
-+		}
-+		printf("\n");
-+	}
-+}
-+
-+static void subtest_nofault(bool build_id_resident)
-+{
-+	struct test_build_id *skel;
-+	struct bpf_stack_build_id *stack;
-+	int frame_cnt;
-+
-+	skel = test_build_id__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_open"))
-+		return;
-+
-+	skel->links.uprobe_nofault = bpf_program__attach(skel->progs.uprobe_nofault);
-+	if (!ASSERT_OK_PTR(skel->links.uprobe_nofault, "link"))
-+		goto cleanup;
-+
-+	if (build_id_resident)
-+		ASSERT_OK(system("./uprobe_multi uprobe-paged-in"), "trigger_uprobe");
-+	else
-+		ASSERT_OK(system("./uprobe_multi uprobe-paged-out"), "trigger_uprobe");
-+
-+	if (!ASSERT_GT(skel->bss->res_nofault, 0, "res"))
-+		goto cleanup;
-+
-+	stack = skel->bss->stack_nofault;
-+	frame_cnt = skel->bss->res_nofault / sizeof(struct bpf_stack_build_id);
-+	if (env.verbosity >= VERBOSE_NORMAL)
-+		print_stack(stack, frame_cnt);
-+
-+	if (build_id_resident) {
-+		ASSERT_EQ(stack[0].status, BPF_STACK_BUILD_ID_VALID, "build_id_status");
-+		ASSERT_EQ(memcmp(stack[0].build_id, build_id, build_id_sz), 0, "build_id_match");
-+	} else {
-+		ASSERT_EQ(stack[0].status, BPF_STACK_BUILD_ID_IP, "build_id_status");
-+	}
-+
-+cleanup:
-+	test_build_id__destroy(skel);
-+}
-+
-+static void subtest_sleepable(void)
-+{
-+	struct test_build_id *skel;
-+	struct bpf_stack_build_id *stack;
-+	int frame_cnt;
-+
-+	skel = test_build_id__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_open"))
-+		return;
-+
-+	skel->links.uprobe_sleepable = bpf_program__attach(skel->progs.uprobe_sleepable);
-+	if (!ASSERT_OK_PTR(skel->links.uprobe_sleepable, "link"))
-+		goto cleanup;
-+
-+	/* force build ID to not be paged in */
-+	ASSERT_OK(system("./uprobe_multi uprobe-paged-out"), "trigger_uprobe");
-+
-+	if (!ASSERT_GT(skel->bss->res_sleepable, 0, "res"))
-+		goto cleanup;
-+
-+	stack = skel->bss->stack_sleepable;
-+	frame_cnt = skel->bss->res_sleepable / sizeof(struct bpf_stack_build_id);
-+	if (env.verbosity >= VERBOSE_NORMAL)
-+		print_stack(stack, frame_cnt);
-+
-+	ASSERT_EQ(stack[0].status, BPF_STACK_BUILD_ID_VALID, "build_id_status");
-+	ASSERT_EQ(memcmp(stack[0].build_id, build_id, build_id_sz), 0, "build_id_match");
-+
-+cleanup:
-+	test_build_id__destroy(skel);
-+}
-+
-+void serial_test_build_id(void)
-+{
-+	build_id_sz = read_build_id("uprobe_multi", build_id, sizeof(build_id));
-+	ASSERT_EQ(build_id_sz, BPF_BUILD_ID_SIZE, "parse_build_id");
-+
-+	if (test__start_subtest("nofault-paged-out"))
-+		subtest_nofault(false /* not resident */);
-+	if (test__start_subtest("nofault-paged-in"))
-+		subtest_nofault(true /* resident */);
-+	if (test__start_subtest("sleepable"))
-+		subtest_sleepable();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_build_id.c b/tools/testing/selftests/bpf/progs/test_build_id.c
-new file mode 100644
-index 000000000000..32ce59f9aa27
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_build_id.c
-@@ -0,0 +1,31 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2024 Meta Platforms, Inc. and affiliates. */
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+
-+struct bpf_stack_build_id stack_sleepable[128];
-+int res_sleepable;
-+
-+struct bpf_stack_build_id stack_nofault[128];
-+int res_nofault;
-+
-+SEC("uprobe.multi/./uprobe_multi:uprobe")
-+int uprobe_nofault(struct pt_regs *ctx)
-+{
-+	res_nofault = bpf_get_stack(ctx, stack_nofault, sizeof(stack_nofault),
-+				    BPF_F_USER_STACK | BPF_F_USER_BUILD_ID);
-+
-+	return 0;
-+}
-+
-+SEC("uprobe.multi.s/./uprobe_multi:uprobe")
-+int uprobe_sleepable(struct pt_regs *ctx)
-+{
-+	res_sleepable = bpf_get_stack(ctx, stack_sleepable, sizeof(stack_sleepable),
-+				      BPF_F_USER_STACK | BPF_F_USER_BUILD_ID);
-+
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/uprobe_multi.c b/tools/testing/selftests/bpf/uprobe_multi.c
-index 7ffa563ffeba..c7828b13e5ff 100644
---- a/tools/testing/selftests/bpf/uprobe_multi.c
-+++ b/tools/testing/selftests/bpf/uprobe_multi.c
-@@ -2,8 +2,21 @@
- 
- #include <stdio.h>
- #include <string.h>
-+#include <stdbool.h>
-+#include <stdint.h>
-+#include <sys/mman.h>
-+#include <unistd.h>
- #include <sdt.h>
- 
-+#ifndef MADV_POPULATE_READ
-+#define MADV_POPULATE_READ 22
-+#endif
-+
-+int __attribute__((weak)) uprobe(void)
-+{
-+	return 0;
-+}
-+
- #define __PASTE(a, b) a##b
- #define PASTE(a, b) __PASTE(a, b)
- 
-@@ -75,6 +88,30 @@ static int usdt(void)
- 	return 0;
- }
- 
-+extern char build_id_start[];
-+extern char build_id_end[];
-+
-+int __attribute__((weak)) trigger_uprobe(bool build_id_resident)
-+{
-+	int page_sz = sysconf(_SC_PAGESIZE);
-+	void *addr;
-+
-+	/* page-align build ID start */
-+	addr = (void *)((uintptr_t)&build_id_start & ~(page_sz - 1));
-+
-+	/* to guarantee MADV_PAGEOUT work reliably, we need to ensure that
-+	 * memory range is mapped into current process, so we unconditionally
-+	 * do MADV_POPULATE_READ, and then MADV_PAGEOUT, if necessary
-+	 */
-+	madvise(addr, page_sz, MADV_POPULATE_READ);
-+	if (!build_id_resident)
-+		madvise(addr, page_sz, MADV_PAGEOUT);
-+
-+	(void)uprobe();
-+
-+	return 0;
-+}
-+
- int main(int argc, char **argv)
- {
- 	if (argc != 2)
-@@ -84,6 +121,10 @@ int main(int argc, char **argv)
- 		return bench();
- 	if (!strcmp("usdt", argv[1]))
- 		return usdt();
-+	if (!strcmp("uprobe-paged-out", argv[1]))
-+		return trigger_uprobe(false /* page-out build ID */);
-+	if (!strcmp("uprobe-paged-in", argv[1]))
-+		return trigger_uprobe(true /* page-in build ID */);
- 
- error:
- 	fprintf(stderr, "usage: %s <bench|usdt>\n", argv[0]);
-diff --git a/tools/testing/selftests/bpf/uprobe_multi.ld b/tools/testing/selftests/bpf/uprobe_multi.ld
-new file mode 100644
-index 000000000000..a2e94828bc8c
---- /dev/null
-+++ b/tools/testing/selftests/bpf/uprobe_multi.ld
-@@ -0,0 +1,11 @@
-+SECTIONS
-+{
-+	. = ALIGN(4096);
-+	.note.gnu.build-id : { *(.note.gnu.build-id) }
-+	. = ALIGN(4096);
-+}
-+INSERT AFTER .text;
-+
-+build_id_start = ADDR(.note.gnu.build-id);
-+build_id_end = ADDR(.note.gnu.build-id) + SIZEOF(.note.gnu.build-id);
-+
--- 
-2.43.5
+Added. I massaged the wordings a little.
 
 
