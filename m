@@ -1,202 +1,166 @@
-Return-Path: <bpf+bounces-38468-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38470-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48ADF9650D2
-	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 22:38:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 876D9965170
+	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 23:08:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9966E1F24CA4
-	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 20:38:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 445A4285725
+	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 21:08:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07E7A1BAEE8;
-	Thu, 29 Aug 2024 20:38:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0BED18C016;
+	Thu, 29 Aug 2024 21:08:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="anW59re8"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="MBRpu8nz"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 836E9189F5A;
-	Thu, 29 Aug 2024 20:38:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA1B718A955
+	for <bpf@vger.kernel.org>; Thu, 29 Aug 2024 21:08:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724963898; cv=none; b=BjlzDdA/WKx+LXldThH8q4blG3tZX3TGZ5+V1DdIsFozNrKtcHev/PlEn09x+bWf9BPncjjA7XjhXJLmAn1PZKMiSMval2trr7FS6hURZxfNbtXyBYDSqWjUcG7abGzEDgWyYz3zSwFjazqHrfdSyGIdveFaqFqgYTyjV4waMq8=
+	t=1724965731; cv=none; b=QusMOkeEqVK5Hb29jcBaPSSLfCaNj4lmA5L/xcEKKZXNgpLziRe2AWZETVcHWErwwUbJaoQrVA2CLV3Gm9vb8wdECxaB5wGqaO2UCDNIHNmvyoU1DC1DkRrLknNpcl7FWDQl3aNa99CwKdym8B+VD10FKVdEeDBjCVU6+FV9BOA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724963898; c=relaxed/simple;
-	bh=tscwRgI2saPDR7x1unDsFBI0xOp0fMmY1QDhyt+9PHk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ss3sJVP4SYqLwK/aO06zGgpYIXDBCRWJUcU3tts3v05dtuccu3W6lTIpsrch2enAl6mrU9UtMpENgGxBD6dV8OKwCI9J1K4Li6P1ejHAk6A2FqmyCrkjXlPJkRi8wCSod51A5CUO7i2d4ChCx7uet/5Cf+TAP4lvEAe7OJqstHA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=anW59re8; arc=none smtp.client-ip=192.198.163.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1724963897; x=1756499897;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=tscwRgI2saPDR7x1unDsFBI0xOp0fMmY1QDhyt+9PHk=;
-  b=anW59re8g7E9kAelpNk+BBP1JV1PEOrPDKd7lZU3vM+SOIaCuXobj0e7
-   uP8jDX1W910+zN1waibuYTbWL94NJXYfhUx2AC9ZLDFiUSrgdhMxcwleh
-   OUEOtML7MWvmxWzN/kTUyo65swMO2bpGzo61/drgiQ/kPWsVZjOSyz2jV
-   RIylGzGYX7dHLL5pkZqeCHM9cIzq4NMLT1Lq1EiwtFMExxfQwx/P2Bse4
-   i3a5xxZANsNKbKJtTLaOEFDOOKEf1GGNI6f/lyXCoFIQCUAf4iwRPCoW8
-   GfNpg9+UU3sctCg7zK6YcjZCv0EM+Dipba01RU1n3VXzfgtzA+iajeMPQ
-   w==;
-X-CSE-ConnectionGUID: uMfpJ0muT5O3mIJDIuxDYw==
-X-CSE-MsgGUID: lbXaaTgCQVukWM3SIXoUVQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11179"; a="34200571"
-X-IronPort-AV: E=Sophos;i="6.10,186,1719903600"; 
-   d="scan'208";a="34200571"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Aug 2024 13:37:41 -0700
-X-CSE-ConnectionGUID: +2I+PKpfTEWO7ZhOV/mdjw==
-X-CSE-MsgGUID: 9jFLsk+2R9icUo/uf7t0Ig==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.10,186,1719903600"; 
-   d="scan'208";a="63325399"
-Received: from lkp-server01.sh.intel.com (HELO 9c6b1c7d3b50) ([10.239.97.150])
-  by fmviesa006.fm.intel.com with ESMTP; 29 Aug 2024 13:37:38 -0700
-Received: from kbuild by 9c6b1c7d3b50 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1sjltg-0000iM-02;
-	Thu, 29 Aug 2024 20:37:36 +0000
-Date: Fri, 30 Aug 2024 04:37:35 +0800
-From: kernel test robot <lkp@intel.com>
-To: Vegard Nossum <vegard.nossum@oracle.com>,
-	Masahiro Yamada <masahiroy@kernel.org>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kbuild@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-omap@vger.kernel.org, kvmarm@lists.linux.dev,
-	kvm@vger.kernel.org, linux-um@lists.infradead.org,
-	bpf@vger.kernel.org, llvm@lists.linux.dev,
-	Vegard Nossum <vegard.nossum@oracle.com>
-Subject: Re: [PATCH] kbuild: use objcopy to generate asm-offsets
-Message-ID: <202408300438.xObK98m5-lkp@intel.com>
-References: <20240828083605.3093701-1-vegard.nossum@oracle.com>
+	s=arc-20240116; t=1724965731; c=relaxed/simple;
+	bh=Yf4xgNeXTRlZl6ijLFbCk2inW7dgejK8negwkjd5KUw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=k+UbQTK6BggJqGKX0cPSmnhfsQaD1RWjut1Bb4Qn0ew6dg/bcye/Bj1fge6R/d3MPcmCCNyZYzO9aT+GbGWnRPBihWXQWAxrP0pg4o8ymFTkn597soHdLeeOl3l9Cjqg6EFL2PtBdy9Y8P75lNBz5O98KyEXqNAT8TSoXueToFw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=MBRpu8nz; arc=none smtp.client-ip=95.215.58.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1724965726;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=QNXyF6/gA4Fvy2NblU6r5QMdHrXo/5nysw2QTdYfVTI=;
+	b=MBRpu8nza0rTeE/puPv4z2DHsa48v+zeqASK4e7PUmxU8/Ze8IUIymV81Xc7DMd/3LMyIF
+	e1SmpWa7G9J/4IG3/IdN53mODdGhdQ5X3HgkXuSke69BB57WGIfn0WQGt/F6AdavIUkegj
+	+DnUH2u3H1cEYUqgBbSXR7qL8OEDZFE=
+From: Martin KaFai Lau <martin.lau@linux.dev>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	Amery Hung <ameryhung@gmail.com>,
+	kernel-team@meta.com
+Subject: [PATCH v5 bpf-next 0/9] bpf: Add gen_epilogue to bpf_verifier_ops
+Date: Thu, 29 Aug 2024 14:08:22 -0700
+Message-ID: <20240829210833.388152-1-martin.lau@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240828083605.3093701-1-vegard.nossum@oracle.com>
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-Hi Vegard,
+From: Martin KaFai Lau <martin.lau@kernel.org>
 
-kernel test robot noticed the following build warnings:
+This set allows the subsystem to patch codes before BPF_EXIT.
+The verifier ops, .gen_epilogue, is added for this purpose.
+One of the use case will be in the bpf qdisc, the bpf qdisc
+subsystem can ensure the skb->dev is in the correct value.
+The bpf qdisc subsystem can either inline fixing it in the
+epilogue or call another kernel function to handle it (e.g. drop)
+in the epilogue. Another use case could be in bpf_tcp_ca.c to
+enforce snd_cwnd has valid value (e.g. positive value).
 
-[auto build test WARNING on masahiroy-kbuild/for-next]
-[also build test WARNING on masahiroy-kbuild/fixes soc/for-next kvmarm/next kvm/queue uml/next krzk-mem-ctrl/for-next bpf-next/master bpf/master linus/master v6.11-rc5 next-20240829]
-[cannot apply to tmlind-omap/for-next kvm/linux-next uml/fixes]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+v5:
+ * Removed the skip_cnt argument from adjust_jmp_off() in patch 2.
+   Instead, reuse the delta argument and skip
+   the [tgt_idx, tgt_idx + delta) instructions.
+ * Added a BPF_JMP32_A macro in patch 3.
+ * Removed pro_epilogue_subprog.c in patch 6.
+   The pro_epilogue_kfunc.c has covered the subprog case.
+   Renamed the file pro_epilogue_kfunc.c to pro_epilogue.c.
+   Some of the SEC names and function names are changed
+   accordingly (mainly shorten them by removing the _kfunc suffix).
+ * Added comments to explain the tail_call result in patch 7.
+ * Fixed the following bpf CI breakages. I ran it in CI
+   manually to confirm:
+   https://github.com/kernel-patches/bpf/actions/runs/10590714532
+ * s390 zext added "w3 = w3". Adjusted the test to
+   use all ALU64 and BPF_DW to avoid zext.
+   Also changed the "int a" in the "struct st_ops_args" to "u64 a".
+ * llvm17 does not take:
+       *(u64 *)(r1 +0) = 0;
+   so it is changed to:
+       r3 = 0;
+       *(u64 *)(r1 +0) = r3;
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Vegard-Nossum/kbuild-use-objcopy-to-generate-asm-offsets/20240828-163854
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git for-next
-patch link:    https://lore.kernel.org/r/20240828083605.3093701-1-vegard.nossum%40oracle.com
-patch subject: [PATCH] kbuild: use objcopy to generate asm-offsets
-config: mips-loongson3_defconfig (https://download.01.org/0day-ci/archive/20240830/202408300438.xObK98m5-lkp@intel.com/config)
-compiler: mips64el-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240830/202408300438.xObK98m5-lkp@intel.com/reproduce)
+v4:
+ * Fixed a bug in the memcpy in patch 3
+   The size in the memcpy should be
+   epilogue_cnt * sizeof(*epilogue_buf)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202408300438.xObK98m5-lkp@intel.com/
+v3:
+ * Moved epilogue_buf[16] to env.
+   Patch 1 is added to move the existing insn_buf[16] to env.
+ * Fixed a case that the bpf prog has a BPF_JMP that goes back
+   to the first instruction of the main prog.
+   The jump back to 1st insn case also applies to the prologue.
+   Patch 2 is added to handle it.
+ * If the bpf main prog has multiple BPF_EXIT, use a BPF_JA
+   to goto the earlier patched epilogue.
+   Note that there are (BPF_JMP32 | BPF_JA) vs (BPF_JMP | BPF_JA)
+   details in the patch 3 commit message.
+ * There are subtle changes in patch 3, so I reset the Reviewed-by.
+ * Added patch 8 and patch 9 to cover the changes in patch 2 and patch 3.
+ * Dropped the kfunc call from pro/epilogue and its selftests.
 
-All warnings (new ones prefixed by >>):
+v2:
+ * Remove the RFC tag. Keep the ordering at where .gen_epilogue is
+   called in the verifier relative to the check_max_stack_depth().
+   This will be consistent with the other extra stack_depth
+   usage like optimize_bpf_loop().
+ * Use __xlated check provided by the test_loader to
+   check the patched instructions after gen_pro/epilogue (Eduard).
+ * Added Patch 3 by Eduard (Thanks!).
 
-   mips64el-linux-objcopy: /dev/stdout[.data.kbuild]: Illegal seek
-   In file included from include/linux/mm_types.h:18,
-                    from include/linux/uio.h:10,
-                    from include/linux/socket.h:8,
-                    from include/linux/compat.h:15,
-                    from arch/mips/kernel/asm-offsets.c:12:
-   include/linux/page-flags-layout.h:15:5: warning: "MAX_NR_ZONES" is not defined, evaluates to 0 [-Wundef]
-      15 | #if MAX_NR_ZONES < 2
-         |     ^~~~~~~~~~~~
-   include/linux/page-flags-layout.h:58:19: warning: "LRU_GEN_WIDTH" is not defined, evaluates to 0 [-Wundef]
-      58 | #if ZONES_WIDTH + LRU_GEN_WIDTH + SECTIONS_WIDTH + NODES_SHIFT \
-         |                   ^~~~~~~~~~~~~
-   include/linux/page-flags-layout.h:59:28: warning: "NR_PAGEFLAGS" is not defined, evaluates to 0 [-Wundef]
-      59 |         <= BITS_PER_LONG - NR_PAGEFLAGS
-         |                            ^~~~~~~~~~~~
-   include/linux/page-flags-layout.h:93:19: warning: "LRU_GEN_WIDTH" is not defined, evaluates to 0 [-Wundef]
-      93 | #if ZONES_WIDTH + LRU_GEN_WIDTH + SECTIONS_WIDTH + NODES_WIDTH + \
-         |                   ^~~~~~~~~~~~~
-   include/linux/page-flags-layout.h:94:64: warning: "NR_PAGEFLAGS" is not defined, evaluates to 0 [-Wundef]
-      94 |         KASAN_TAG_WIDTH + LAST_CPUPID_SHIFT <= BITS_PER_LONG - NR_PAGEFLAGS
-         |                                                                ^~~~~~~~~~~~
-   include/linux/page-flags-layout.h:104:19: warning: "LRU_GEN_WIDTH" is not defined, evaluates to 0 [-Wundef]
-     104 | #if ZONES_WIDTH + LRU_GEN_WIDTH + SECTIONS_WIDTH + NODES_WIDTH + \
-         |                   ^~~~~~~~~~~~~
-   include/linux/page-flags-layout.h:105:63: warning: "NR_PAGEFLAGS" is not defined, evaluates to 0 [-Wundef]
-     105 |         KASAN_TAG_WIDTH + LAST_CPUPID_WIDTH > BITS_PER_LONG - NR_PAGEFLAGS
-         |                                                               ^~~~~~~~~~~~
-   In file included from include/linux/mm_types.h:5:
-   include/linux/mm_types_task.h:22:34: warning: "SPINLOCK_SIZE" is not defined, evaluates to 0 [-Wundef]
-      22 | #define ALLOC_SPLIT_PTLOCKS     (SPINLOCK_SIZE > BITS_PER_LONG/8)
-         |                                  ^~~~~~~~~~~~~
-   include/linux/mm_types.h:478:5: note: in expansion of macro 'ALLOC_SPLIT_PTLOCKS'
-     478 | #if ALLOC_SPLIT_PTLOCKS
-         |     ^~~~~~~~~~~~~~~~~~~
-   In file included from include/linux/dcache.h:14,
-                    from include/linux/fs.h:8,
-                    from include/linux/compat.h:17:
->> include/linux/lockref.h:23:36: warning: "SPINLOCK_SIZE" is not defined, evaluates to 0 [-Wundef]
-      23 |          IS_ENABLED(CONFIG_SMP) && SPINLOCK_SIZE <= 4)
-         |                                    ^~~~~~~~~~~~~
-   include/linux/lockref.h:27:5: note: in expansion of macro 'USE_CMPXCHG_LOCKREF'
-      27 | #if USE_CMPXCHG_LOCKREF
-         |     ^~~~~~~~~~~~~~~~~~~
-   In file included from include/linux/gfp.h:7,
-                    from include/linux/xarray.h:16,
-                    from include/linux/list_lru.h:14,
-                    from include/linux/fs.h:13:
-   include/linux/mmzone.h:842:29: error: 'MAX_NR_ZONES' undeclared here (not in a function); did you mean 'MAX_NR_GENS'?
-     842 |         long lowmem_reserve[MAX_NR_ZONES];
-         |                             ^~~~~~~~~~~~
-         |                             MAX_NR_GENS
-   include/linux/mm_types_task.h:22:34: warning: "SPINLOCK_SIZE" is not defined, evaluates to 0 [-Wundef]
-      22 | #define ALLOC_SPLIT_PTLOCKS     (SPINLOCK_SIZE > BITS_PER_LONG/8)
-         |                                  ^~~~~~~~~~~~~
-   include/linux/mm.h:2889:5: note: in expansion of macro 'ALLOC_SPLIT_PTLOCKS'
-    2889 | #if ALLOC_SPLIT_PTLOCKS
-         |     ^~~~~~~~~~~~~~~~~~~
-   In file included from include/linux/swap.h:9,
-                    from include/linux/suspend.h:5,
-                    from arch/mips/kernel/asm-offsets.c:17:
-   include/linux/memcontrol.h: In function 'mem_cgroup_get_zone_lru_size':
->> include/linux/memcontrol.h:914:31: warning: parameter 'lru' set but not used [-Wunused-but-set-parameter]
-     914 |                 enum lru_list lru, int zone_idx)
-         |                 ~~~~~~~~~~~~~~^~~
->> include/linux/memcontrol.h:914:40: warning: parameter 'zone_idx' set but not used [-Wunused-but-set-parameter]
-     914 |                 enum lru_list lru, int zone_idx)
-         |                                    ~~~~^~~~~~~~
-   make[3]: *** [scripts/Makefile.build:244: arch/mips/kernel/asm-offsets.o] Error 1
-   make[3]: Target 'missing-syscalls' not remade because of errors.
-   make[2]: *** [arch/mips/Makefile:432: archprepare] Error 2
-   make[2]: Target 'prepare' not remade because of errors.
-   make[1]: *** [Makefile:224: __sub-make] Error 2
-   make[1]: Target 'prepare' not remade because of errors.
-   make: *** [Makefile:224: __sub-make] Error 2
-   make: Target 'prepare' not remade because of errors.
+Eduard Zingerman (1):
+  selftests/bpf: attach struct_ops maps before test prog runs
 
+Martin KaFai Lau (8):
+  bpf: Move insn_buf[16] to bpf_verifier_env
+  bpf: Adjust BPF_JMP that jumps to the 1st insn of the prologue
+  bpf: Add gen_epilogue to bpf_verifier_ops
+  bpf: Export bpf_base_func_proto
+  selftests/bpf: Test gen_prologue and gen_epilogue
+  selftests/bpf: Add tailcall epilogue test
+  selftests/bpf: A pro/epilogue test when the main prog jumps back to
+    the 1st insn
+  selftests/bpf: Test epilogue patching when the main prog has multiple
+    BPF_EXIT
 
-vim +/SPINLOCK_SIZE +23 include/linux/lockref.h
-
-57f4257eae33e0 Peter Zijlstra     2013-11-14  20  
-57f4257eae33e0 Peter Zijlstra     2013-11-14  21  #define USE_CMPXCHG_LOCKREF \
-57f4257eae33e0 Peter Zijlstra     2013-11-14  22  	(IS_ENABLED(CONFIG_ARCH_USE_CMPXCHG_LOCKREF) && \
-597d795a2a786d Kirill A. Shutemov 2013-12-20 @23  	 IS_ENABLED(CONFIG_SMP) && SPINLOCK_SIZE <= 4)
-0f8f2aaaab0b0f Waiman Long        2013-08-28  24  
+ include/linux/bpf.h                           |   2 +
+ include/linux/bpf_verifier.h                  |   4 +
+ include/linux/filter.h                        |  10 +
+ kernel/bpf/helpers.c                          |   1 +
+ kernel/bpf/verifier.c                         |  67 +++++-
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 190 ++++++++++++++++++
+ .../selftests/bpf/bpf_testmod/bpf_testmod.h   |  11 +
+ .../bpf/bpf_testmod/bpf_testmod_kfunc.h       |   6 +
+ .../selftests/bpf/prog_tests/pro_epilogue.c   |  60 ++++++
+ .../selftests/bpf/progs/epilogue_exit.c       |  82 ++++++++
+ .../selftests/bpf/progs/epilogue_tailcall.c   |  58 ++++++
+ .../selftests/bpf/progs/pro_epilogue.c        | 154 ++++++++++++++
+ .../bpf/progs/pro_epilogue_goto_start.c       | 149 ++++++++++++++
+ tools/testing/selftests/bpf/test_loader.c     |  27 +++
+ 14 files changed, 813 insertions(+), 8 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/pro_epilogue.c
+ create mode 100644 tools/testing/selftests/bpf/progs/epilogue_exit.c
+ create mode 100644 tools/testing/selftests/bpf/progs/epilogue_tailcall.c
+ create mode 100644 tools/testing/selftests/bpf/progs/pro_epilogue.c
+ create mode 100644 tools/testing/selftests/bpf/progs/pro_epilogue_goto_start.c
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.43.5
+
 
