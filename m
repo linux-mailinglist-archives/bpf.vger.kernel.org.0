@@ -1,156 +1,140 @@
-Return-Path: <bpf+bounces-38391-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38392-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A5B6964395
-	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 13:55:12 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D0B49643C6
+	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 14:03:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 468FE282107
-	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 11:55:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E6F32B24028
+	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 12:03:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67A32194080;
-	Thu, 29 Aug 2024 11:54:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01B001917FC;
+	Thu, 29 Aug 2024 12:03:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="N3kVez2i"
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="m28pwUuR"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from AM0PR83CU005.outbound.protection.outlook.com (mail-westeuropeazolkn19010010.outbound.protection.outlook.com [52.103.33.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 647A3193081
-	for <bpf@vger.kernel.org>; Thu, 29 Aug 2024 11:54:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724932495; cv=none; b=i+qpAMTxm8c2gHljsGsoqs9cnXy/gpHBskC5XoQi7XafM4aLEHjBN1tlTAmUNVDx0FYSG6XgqGVMKioQ6ChI2dL29sy1Tv32P+4iM9S4jdSlQ9+TkVz0tdSSFcvPLDqw0fkwm0v2fVoE8X3F20aMsgaRYHIhh2dsSZBYCKI6564=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724932495; c=relaxed/simple;
-	bh=3dlnyn8cQAlgxTVlcH28u4JCVZfmHHE1szobMOlIZN4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OxGHPXb6jIxSo/kX9vRo0xrh31XaGgsgZ6drf0wkfNtAXjwyDJujEb4FWS/9LPftYx4ZrtY3YpvMnAk+8FFkjM5hbS58xWyXTKs3knVHxbwfFW9ztCIEqp/rN9t5qpfe16Apr83jGyJPTtsenKczaO+g/XZ05y4aNHoxH3YT1Bg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=N3kVez2i; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1724932492;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=lJ2FyZrQ5MN+v6+9J0qNtf0BSskC1KanKJ9n3vo/YSc=;
-	b=N3kVez2iCxby7xzFW2xGhfW1kZ+g0oZZt4Nf2KAqi+QpZsj1HwyDDh3ZLWaolcDSV+CSod
-	JgMT9oZdbg+9tWguO/UKvrVq8nh2p/4SdIhx5Te2PN59nN/Y0lKabqpK0TQyd6+L3CwTpM
-	L2f8C0fX1Bpor6I7ia7HNxOgj/j9Rgg=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-630-ND5MnsS9NkCHoCidYvBvVw-1; Thu, 29 Aug 2024 07:54:51 -0400
-X-MC-Unique: ND5MnsS9NkCHoCidYvBvVw-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-428fc34f41bso6075075e9.3
-        for <bpf@vger.kernel.org>; Thu, 29 Aug 2024 04:54:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724932490; x=1725537290;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lJ2FyZrQ5MN+v6+9J0qNtf0BSskC1KanKJ9n3vo/YSc=;
-        b=oiQkx/f8d+HtgjatbsDo3nBMEJKm1ryRGI2Y8avvvpTng74L5l8vThnN3vDYl6ldos
-         TviSnV5/y4HY6sb3vOlaahDpMyswfsgji9Rm0CK40MwNmxlrPm4u+KQhLXv0h9wNFMzN
-         0wVCHMhHZjZaqwO47616SMVx6s6rplq44k8z8aFU1C2RYEFhUycZ3s+3A/VtVfCkNd4D
-         TIGKDAapf5Twjpa0oXqT21FGR7pRaV7jxqyra0BOtAyqu7Vn8dA2x09BIQVk5FQRa/vJ
-         PRe3MeJeY0AqXnQ5Se3F4qcdRia4f5IIK3HuzOijrjovrQd9v8U4sc74ZDcP87tdaLKG
-         amHw==
-X-Forwarded-Encrypted: i=1; AJvYcCWyzKxU3mGK8iW+AhFikIZqWhLrw6baPQ5rxVNQkA7Lmj8iNukyRod8GP8Zo4Bwr/jVdCk=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz43qce7xBNMkJ7bLejc1gxgT+JX28N1fbluS6jJkajM+qpLtN3
-	j9c2DFlZU6BC7uD8N3eKZKYGX0BoPjq4rWE+6VKKAML4mwdvmccvJthr3ndWEMZPiV6fytZX8MX
-	USJoQ4Lhsq5ydXzZj/0EtSxw0YxpY7Z9eDLjjPJcu8BY8MpY6QA==
-X-Received: by 2002:a05:600c:1389:b0:428:ea8e:b48a with SMTP id 5b1f17b1804b1-42bb01ae3b1mr20370205e9.8.1724932489823;
-        Thu, 29 Aug 2024 04:54:49 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IE8uIiIhNB/s/DXbThEbhYHqwNvr8MtzMKTyQpaFJoJEZiBfcxloGBA17PidNn1QpMyEu7mrw==
-X-Received: by 2002:a05:600c:1389:b0:428:ea8e:b48a with SMTP id 5b1f17b1804b1-42bb01ae3b1mr20369875e9.8.1724932488894;
-        Thu, 29 Aug 2024 04:54:48 -0700 (PDT)
-Received: from debian (2a01cb058918ce00dbd0c02dbfacd1ba.ipv6.abo.wanadoo.fr. [2a01:cb05:8918:ce00:dbd0:c02d:bfac:d1ba])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-42bb6deb1ebsm15059505e9.3.2024.08.29.04.54.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Aug 2024 04:54:48 -0700 (PDT)
-Date: Thu, 29 Aug 2024 13:54:46 +0200
-From: Guillaume Nault <gnault@redhat.com>
-To: Ido Schimmel <idosch@nvidia.com>
-Cc: netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-	pabeni@redhat.com, edumazet@google.com, dsahern@kernel.org,
-	ast@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
-	john.fastabend@gmail.com, steffen.klassert@secunet.com,
-	herbert@gondor.apana.org.au, bpf@vger.kernel.org
-Subject: Re: [PATCH net-next 00/12] Unmask upper DSCP bits - part 2
-Message-ID: <ZtBhhhBeKj82CkYR@debian>
-References: <20240827111813.2115285-1-idosch@nvidia.com>
- <Zs3Y2ehPt3jEABwa@debian>
- <Zs30sZynSw53zQfW@shredder.mtl.com>
- <Zs8Tb2HXO7b9BbYn@shredder.mtl.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AACA218E756;
+	Thu, 29 Aug 2024 12:03:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.103.33.10
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1724932984; cv=fail; b=M++0Na4lM8i7khv2kZfzu54R8C9Nl8eFsF7bJrWs1I1vnNTBSzPABN6hoOz+SM6+AOTmnNc3w+PnCvNH6z2GNB/CExrzXc419X6/Vsh0qW8Mp3n2NUGYoKNebXbKKEyILX3+c79TygpdOyhrvP4Fp/aY3Q8bgMgEVmQ0aOG+YnU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1724932984; c=relaxed/simple;
+	bh=fc0Z3Pv+OnqMx/QuDcBUkAsyqWOj76znw+vGY4gQddc=;
+	h=Message-ID:Date:Subject:From:To:Cc:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=rg1nnfGcv6j37ZxjmpADWqk3Vi3R19Ejp7sNSkEHOagg/6keJqZLGe0MPxl7f110Anf1sbt7WUIgXJ2u22z7d1nH5h8luXOb9YghPvW2wlD7Td6eRYEYGqtkbpn4IMHJvnvI+TjyCpqhc7c/p2XO5xtOrjmJ4vZusONfkbQUDEI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=m28pwUuR; arc=fail smtp.client-ip=52.103.33.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=eWotNL+b/1lIKl9pFo2yhxxIrgIOBZ9umDuMJYxaWztHBIuer0j7AyNg1sjxIeRaF3FLzfLenVQ37FKiQU6RAxEMH/RP5slThxxlzPCxb5e8uAAAmUSekYx3F2KzepvtM3abh8ECCsG4P3O7tvFwouX00n/sm1fy217P75VX8fdM+UCbv8rKZ2DRYat5lBN3tbAoxr9fMuQ/XSeeZBOVWtLbfqGHy+VvGXwz47+eGvdKAoCx3p7lFaTIQ0TWUakgW6BScYAxliZElJYzTbKvzGI47VUoNqmPuTcp4d8HgkEQK9KAmjYHSxaqQpZbpdwUJQsQB06n2yZxHn2cANMCLg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=fc0Z3Pv+OnqMx/QuDcBUkAsyqWOj76znw+vGY4gQddc=;
+ b=oekRArmewtSXG+BOfL4jx8JnlXtolHacnse6zksfsDeSxAx+dZcKr8oLgcU1Ef9SCZpofdnpUmXeEIpLtJNPhaZnbJV0FiMPJvKk17y7yMWoLwWWiGhoac+eF64URKYTZDDVS3HMeIoERWHYxvQIJT/UAGIMoRyuShueJQv6rKTDHQ8YvYMLT1hP5d9m2HHPYGt9kICM7WQ/UFxP0R4o9ZnBHel/M38GGr3iWwcYoeTjpQwcBZyIPAK4vvZNP0inXfCdCnCmjW5AqwZfrK0u3GngNUfuc/OGuEoGO0t5lFYL8UlCE40bhUIWdmY7OFlG0tBTzPXM5bFpftzQNU8EIQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=fc0Z3Pv+OnqMx/QuDcBUkAsyqWOj76znw+vGY4gQddc=;
+ b=m28pwUuRHvPH3iR2Mweczz4MowQzHhchNAcBRQmoqwaS0y8SkxugzG7f174e4bCklG4JoDzcr/E5NoTg+Mt+gK+iXhaPO5wQLq+uSyrs0CYdgTFL9NW3sblI8cu0J97tMGGHuNBLXxA/wAUKpgAA2e2300DoPYkk+FfQx5+gN1K2XPz5xiYHezdH1ZWi64Q6EeE6OJnTnS9V91bH3RTOlfYsdmTW8YPbRLiRSL8rx1mm3dxAGusY2IlF5u4M5NkCInER8G1XwUECdKxHzHOhCRkYrOO+gmwmNlg+Lh+MxFg8Ri3eWtt11QILoBinAA/hu9gbJMEZjsR2opui6QcHiQ==
+Received: from AM6PR03MB5848.eurprd03.prod.outlook.com (2603:10a6:20b:e4::10)
+ by PAXPR03MB7715.eurprd03.prod.outlook.com (2603:10a6:102:207::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7897.28; Thu, 29 Aug
+ 2024 12:02:59 +0000
+Received: from AM6PR03MB5848.eurprd03.prod.outlook.com
+ ([fe80::4b97:bbdb:e0ac:6f7]) by AM6PR03MB5848.eurprd03.prod.outlook.com
+ ([fe80::4b97:bbdb:e0ac:6f7%4]) with mapi id 15.20.7897.021; Thu, 29 Aug 2024
+ 12:02:59 +0000
+Message-ID:
+ <AM6PR03MB5848CC486825EF56A7DF0FD699962@AM6PR03MB5848.eurprd03.prod.outlook.com>
+Date: Thu, 29 Aug 2024 13:02:58 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v3 2/2] selftests/bpf: Add tests for iter next
+ method returning valid pointer
+From: Juntong Deng <juntong.deng@outlook.com>
+To: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
+ andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me,
+ haoluo@google.com, jolsa@kernel.org, memxor@gmail.com, snorcht@gmail.com
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <AM6PR03MB58482E9A154910D06A9E58B499962@AM6PR03MB5848.eurprd03.prod.outlook.com>
+ <AM6PR03MB5848706D6E610747C4BB6F9999962@AM6PR03MB5848.eurprd03.prod.outlook.com>
+Content-Language: en-US
+In-Reply-To: <AM6PR03MB5848706D6E610747C4BB6F9999962@AM6PR03MB5848.eurprd03.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TMN: [XPt2yJSDF2SMYOF1ZcyFUHSqrDpgEe8f]
+X-ClientProxiedBy: LO4P265CA0119.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:2c6::6) To AM6PR03MB5848.eurprd03.prod.outlook.com
+ (2603:10a6:20b:e4::10)
+X-Microsoft-Original-Message-ID:
+ <33ecf659-cd79-46c8-a1b3-6b7ea21a0dfa@outlook.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zs8Tb2HXO7b9BbYn@shredder.mtl.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM6PR03MB5848:EE_|PAXPR03MB7715:EE_
+X-MS-Office365-Filtering-Correlation-Id: b1b68439-62b5-47f8-1085-08dcc82286c7
+X-Microsoft-Antispam:
+	BCL:0;ARA:14566002|6090799003|15080799006|461199028|8060799006|19110799003|5072599009|3412199025|440099028;
+X-Microsoft-Antispam-Message-Info:
+	BHgFluVvYugZKO04zKRvIuuW+eDv/tm7FEFrEBwr9kifFbhw8zxWQTUW6ywZS54ZY5x9+DMQW5e+4RPZdiK6sxg+6cZeuoyb5uNxOmGuwB80OWR3460fmDeau5kXDC/QK/bqqntZItZV4737/zxEjVdAQbo0UaSp68aosL3gvu4MEXnAK0EnkkRRECG+Q7Qibz9MDVdCt8/XvJinuMdfscWuAYKu6ZRGs/Becf2rhxhb3QiesjhH2M7JX3gSGqaJepBCZCI7CeIR43hU6NicC+Zw7YCPf0kaQjAYVCl/ZlEtZQ+XZ1HokBNHRQD8BtnI3qsTZOfe9EulQKf78r5hSkJvzk8xFEKpnQ3wDMOgUfDtTq1oEgyijeuFalN4qKCAbfgAetSmpXnOr9asvFd00INxxjvpeJUM3gDSilsajs6Sil5g1TCtjpAGrMdekhCbz8KTfpgHcNv5u1ILaq6NKaZbvxZmowFHyxXH/Qu3Q2tvpg5b0bhO66kZZ4RLDvkj+rhmLx3f1KsLE8xIUiQW/geGcCnDZR6TKWo552yPbN5jvYEPvqZKC3hB1GQcd0UFcayGsIy8LQEnNubDA748qoOOtwGuS2N3OQ4ssv4UZoq92wND8XJbwzFJfXYAHgtQQysIR1xp4ZehsOwB3W1ooTaPAMCtfAwNYS9oChUzbCg0/oHrqAfxJzg+k6eF4LKuG/C/1UzQdnufCwja2N8UBh2bHTqSGGSnUftxnvUhOOI=
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?M3JmT2d0NVpnUHljSmxoWDBYUGpMazF4T1NGWlpwOW92TEhNTHpRNjVtVTYz?=
+ =?utf-8?B?SVlkbUxEbzZoTXl5bGErN1Y1TjkxYUxPa1VlUVU3dCt1TTZEM2lQOUlBdUZj?=
+ =?utf-8?B?ck90eGw0WHlYaGRqdlA1Z2RJOGNkYTFHcmZSK1k1bUVrcmVhRXgxRFZCOUdC?=
+ =?utf-8?B?NFBXV0NiVWU3UytjQk14ck5uVjZIUUlUUXkrV1BSVHVQNU1mOHRqd2hKMFFR?=
+ =?utf-8?B?bjBsVjdCaHo1bTBLTFltWS9Ic3BIQ0FzVVRSRFAwMEtBU01vd2Y2TGdpWUtT?=
+ =?utf-8?B?c2YwVUlmbXJBemtYNzIwamY3U3FTM1NMZysvbGFWYWJ3aFlBc2J5dnM1eVBE?=
+ =?utf-8?B?REk3cXo1YktzUFU1REk1NFV4aTd0TG8zZmdwRzgwdFR0Q1k1NElSdHg1MDhR?=
+ =?utf-8?B?Rk1hZ0ZDRXdVSjZZM1JEQy92bnNSbTE4ZjI2bHBlTUV2aGl3YWhwV0xWbzFR?=
+ =?utf-8?B?UU9tZGs1cGxMWHlhZUw2OXZtUk1xU0hOTk5iSkJtVzFoTnZqSnozOFRvMTJj?=
+ =?utf-8?B?Nk14Y05FRlZuWko4NUYzaEI4RmpyV1RzWkMyeGZzNkVqc0tRQWVjUURzanZQ?=
+ =?utf-8?B?aEhpQURpWVp0R2xKLzVneVprbTRUMCtQU216L0xyYTlwbmVDbllwVFNTeEJy?=
+ =?utf-8?B?ZWtGUWp5bm1xVnJnZ0NnN0E3NjE2ci9xMTB2ZVFLT0pnWmJnUGpkZnhGY2t3?=
+ =?utf-8?B?dU51azdTOGxsc2NXakhTdHpUZHJJYTlzUUQrYXFQSGxGc1RVWnRSN1hkR0tW?=
+ =?utf-8?B?WldWVDVhSk5lTzhySXdkdWVkNGVMOFlHVEgvVmpjelRxU3AxY3paVFo1UzFC?=
+ =?utf-8?B?YWorbWl3OCsrYzNkVC80ODFzYlBmVjg0QjVOTjF6T0NwWURKV3hQeU5oQzY4?=
+ =?utf-8?B?d0pHdk1tVXI4R1BKeU42RThYQ01ndktYRkZNUUUxcmVrQXJDLzRBS1RkZnhl?=
+ =?utf-8?B?UThsa2NaU2dSTWFLR2Q5cmh1dG15TWx0YmxoTnBrVXkyK093TkhVL3Z1MHJ4?=
+ =?utf-8?B?SS9PWmFIOW4wR2NGcGtlcVVFcXR1d0djK25sR245cWZCZ1FUNzAyM1Qzb2ZW?=
+ =?utf-8?B?M3lhMDE1dW9HOG9ZWW1aaG1LQXRmSlpEU1V0VjRpenlqdm54eWpoaXB6SkJO?=
+ =?utf-8?B?L1JGRWdqL1VRK1pOTWpjVzY5MXp1dkFlN0U3N0dQUnpTaWZ4ZS8rdFhQU0No?=
+ =?utf-8?B?OWlVdEdqNHZhcXlKRXVNSXZzaHJremJtR1FQQ0FRTGJmVXBWb2tCVmtQNWI5?=
+ =?utf-8?B?Tk81RG11OGozV2NsRHlsTXJ5b0UvN0FhL2pJV3BFMUd2MFJHSGd4c2t5cHB2?=
+ =?utf-8?B?NVlXQ1dSM0E1alNzUEE2aUVuQnEvSHJsLzJ3VXNrM3ZZUk4yL2h4OUM1OHBz?=
+ =?utf-8?B?ODdGd1ZEaEtaNXNGZXUvWlRXK3ZyU1BoeXFaNkVjZU9wbW1FSGVldlA3NDdG?=
+ =?utf-8?B?ZXZ3enZrZFVHeGZQQUNOYTZLUlAxaVU3bWhXRitTcFNUWlhtcUQ4SElkb053?=
+ =?utf-8?B?b1BJQStxc3d0YVVkMjZLZkZwNVFWQ2EyalNhc2lFdk1LaW8yUFZQT0hHNUxH?=
+ =?utf-8?B?WkNJMG9haVVPSFhCalJYTDdPK0VGcFBKMDJHNmNrQTh3ZVlTUFJyU1VVUkdo?=
+ =?utf-8?B?SFRvN0V6ajh0ekdGMUFWREV4VVIzaXRlRGhDWFE2NWdhU2JPK3ZEYjRUSXA2?=
+ =?utf-8?Q?CMAEP9qptCuc6E9zPbsC?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b1b68439-62b5-47f8-1085-08dcc82286c7
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR03MB5848.eurprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Aug 2024 12:02:59.7784
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR03MB7715
 
-On Wed, Aug 28, 2024 at 03:09:19PM +0300, Ido Schimmel wrote:
-> On Tue, Aug 27, 2024 at 06:45:53PM +0300, Ido Schimmel wrote:
-> > On Tue, Aug 27, 2024 at 03:47:05PM +0200, Guillaume Nault wrote:
-> > > On Tue, Aug 27, 2024 at 02:18:01PM +0300, Ido Schimmel wrote:
-> > > > tl;dr - This patchset continues to unmask the upper DSCP bits in the
-> > > > IPv4 flow key in preparation for allowing IPv4 FIB rules to match on
-> > > > DSCP. No functional changes are expected. Part 1 was merged in commit
-> > > > ("Merge branch 'unmask-upper-dscp-bits-part-1'").
-> > > > 
-> > > > The TOS field in the IPv4 flow key ('flowi4_tos') is used during FIB
-> > > > lookup to match against the TOS selector in FIB rules and routes.
-> > > > 
-> > > > It is currently impossible for user space to configure FIB rules that
-> > > > match on the DSCP value as the upper DSCP bits are either masked in the
-> > > > various call sites that initialize the IPv4 flow key or along the path
-> > > > to the FIB core.
-> > > > 
-> > > > In preparation for adding a DSCP selector to IPv4 and IPv6 FIB rules, we
-> > > 
-> > > Hum, do you plan to add a DSCP selector for IPv6? That shouldn't be
-> > > necessary as IPv6 already takes all the DSCP bits into account. Also we
-> > > don't need to keep any compatibility with the legacy TOS interpretation,
-> > > as it has never been defined nor used in IPv6.
-> > 
-> > Yes. I want to add the DSCP selector for both families so that user
-> > space would not need to use different selectors for different families.
-> 
-> Another approach could be to add a mask to the existing tos/dsfield. For
-> example:
-> 
-> # ip -4 rule add dsfield 0x04/0xfc table 100
-> # ip -6 rule add dsfield 0xf8/0xfc table 100
-> 
-> The default IPv4 mask (when user doesn't specify one) would be 0x1c and
-> the default IPv6 mask would be 0xfc.
-> 
-> WDYT?
-
-For internal implementation, I find the mask option elegant (to avoid
-conditionals). But I don't really like the idea of letting user space
-provide its own mask. This would let the user create non-standard
-behaviours, likely by mistake (as nobody seem to ever have requested
-that flexibility).
-
-I think my favourite approach would be to have the new FRA_DSCP
-attribute work identically on both IPv4 and IPv6 FIB rules and keep
-the behaviour of the old "tos" field of struct fib_rule_hdr unchanged.
-
-This "tos" field would still work differently for IPv4 and IPv6, as it
-always did, but people wanting consistent behaviour could just use
-FRA_DSCP instead. Also, FRA_DSCP accepts real DSCP values as defined in
-RFCs, while "tos" requires the 2 bits shift. For all these reasons, I'm
-tempted to just consider "tos" as a legacy option used only for
-backward compatibility, while FRA_DSCP would be the "clean" interface.
-
-Is that approach acceptable for you?
-
+I saw the s390x test cases in patchwork failed, but based on the error
+logs, it looks like the errors are not caused by my patches :).
 
