@@ -1,130 +1,253 @@
-Return-Path: <bpf+bounces-38415-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38416-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48D19964A7E
-	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 17:48:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F8B8964A91
+	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 17:50:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F11CB1F2400D
-	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 15:48:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 95A7B1C2484D
+	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 15:50:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8BDF1B4C3A;
-	Thu, 29 Aug 2024 15:48:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B712F1B3F0A;
+	Thu, 29 Aug 2024 15:50:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="PncI/bMr"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="gUs8ZMi7"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 172231B14F4
-	for <bpf@vger.kernel.org>; Thu, 29 Aug 2024 15:48:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7039B1B3758
+	for <bpf@vger.kernel.org>; Thu, 29 Aug 2024 15:50:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724946484; cv=none; b=jXFu9iMD2xeCinL+rwFir8s9shU5hc4tFIdT4s/d9wWDsJKmYplsJrwcAxVsH+r9Nc1gMD2p4LptHHBzneq6pOiuRg9QhJc60idZL6yHWL/nylBjxJpKzF0YJoC/hxRdar7732wBNUamXQ9QMA91ffzbU83WHtdin+zziSNxxIk=
+	t=1724946624; cv=none; b=XOgLT11Y1hnYz+aMaU19thYP9eRWNhV+PaSBH+s9pwoW8slXC7gDRR8djLA5ryR3b4C1QVw0LQINnIUBxIejciIz1NgCl8OZLy4aEMuAKx8hUhtxe6qwhlqDxiC3lNlVoHcMRn0CBM44aeF8bPz+w6Drf+OQDZaU1pSUsZuEx18=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724946484; c=relaxed/simple;
-	bh=M1oXa7fTBWFI8IFUApff9iVmN5/0skbcC7AChm1bSdg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=oMxmswMmZejbH5UaIaUAxamt0KXsxboaMq/mzyMkLzcpEyqMpQ/kICBK1xfa55J8896K5w4t3iDGwBa0z5ZRpHPnsUbYVLEr0GLmWYYQAnLHSbL8IRoyCOHosXNfSthp7aCvgG6fCx2NeK5Y3VoCCw+3xl2pDPlv5bY95zrKez0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=PncI/bMr; arc=none smtp.client-ip=95.215.58.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <99b8dc0e-5ef1-49bc-a8c7-0fb0fc4bfa75@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1724946480;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rjA3ckQK3bC1zjr7YYb/IshGkMiAhONKBEwFsy0p/Bg=;
-	b=PncI/bMr5sQpAdeGHJ0ZnFqGG4S193OKTnqCRg0wY6Q3bI4JIR0J6CP5ayiS68b1ngN7Ds
-	+Xh4BEGYuQ4d2HuXc00XK2+uJkZqopOQ+HIsW8JcOzkuOAit9kyzkd+Y5VVo4EdQy0I5pg
-	q1zShc11epOkgLm0wRV03olm9sT5Ulg=
-Date: Thu, 29 Aug 2024 08:47:52 -0700
+	s=arc-20240116; t=1724946624; c=relaxed/simple;
+	bh=Mt9oXi+cRCWoO6vQGhdRGWzq9CIvR1tzuQnaO9MknOs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=YOHe7TMc7EKeLBbqhcSL8Cp2VrVikscJG8/RFLHILhyWZshtl/I7lsPuzsw1kyMaqJz46zQeivg4Gk5LyPK9+D4KEScV8fD7V1CfiYTm0PDYjONEU7xG8hxxPBMFtfXB5D/4mQ/gUk3owf73KfHVWQmpcRj3dXgumSWdQSoGXvc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=gUs8ZMi7; arc=none smtp.client-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-427fc9834deso82035e9.0
+        for <bpf@vger.kernel.org>; Thu, 29 Aug 2024 08:50:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1724946621; x=1725551421; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fLlpduslb3Nup0YapZ+XHfrA6gZyOTFlQOWFXdv5DXc=;
+        b=gUs8ZMi7jXTd4cfM/PBUaLz8mz7C7e3reZdlerpK1iO7rHIPga2vd6Ssgn7nPx8zMS
+         IV8CDwfH47dgml7+u3K+8puZIXGQTgKX1BjtneYVklIbxrpAzIprwptaRVIDqX7L99sV
+         it/DBDNSdjGDwhepA1uy5z7IlaVqQJKjqom7dDQN+ueWmROMuHSjFUzUa8vykgX2CwfQ
+         iUD6G/rPqap+8MABhmuXRwIYsBzHjwxBJmLK0IrcRfnPJbDa56O4rgpPG/SlMJFwU1U+
+         idXClpcoDq/rNaeMw3xkGbyanMaLeqd1o9zoGkNtcbQ0STw2kCUCEfDWQfwj/HHnQtEo
+         Rxbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1724946621; x=1725551421;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fLlpduslb3Nup0YapZ+XHfrA6gZyOTFlQOWFXdv5DXc=;
+        b=Ma0SMc1oknNzwa16+f4o9vosLunoE7wxQ4lJmu1EZsetPEaZ35DSTEFcHwqd8YaSMt
+         4bruReTQGPWopI/An4bchf5h9Kqd5iharT5Be7C+DvCeAQXuB7+RJcG1PKu0ZAW759Kz
+         5FV9+ir8NXiJ7xkpgxhyI+wPunAIiQ0pLZ+HJOHFY9kbfuKDjGSffyGarO98amNQbYgc
+         BMCPex2iifc1wzYfJkqiCNxRs1AeHZ6J+Be8aNEtNOV2jPhau+jGrqYCA1D2H45ojBUC
+         wItuvet0xChKqD0EqS+fw8/whzAGxgagvZuJeeFILzvyMdgtY0UDQj5mkabPSzxuktcD
+         cxBQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWIua1vNrI2HkS+Z+Jjm2DDSJdUbL6+Ye2i3jy4ChtH1KDUByaYWPumnQA7JeyMeyxWY18=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz7aTGddav3WZPJYQSAPr6Z+51CDJEHQAc3Zl4hs3QI/vUKZirf
+	Ep5mtEn0CRGyqo85wmRfOtREmYAho/IcrrQO3EVxKJlIzLLRhmyZqiZW5vMRiEsXYq8dtGAoJSK
+	A20Nv3mm6UaaQ8cABY8Dqs8HWL60GEF4D9DwK
+X-Google-Smtp-Source: AGHT+IHQhDGF7YPprlvR4k07dqcjERElj7mv89A99GAbXZwAJdXs2wLoqYZVZqW9oM+scb9rMPKMaXRZYIrBdd69EVk=
+X-Received: by 2002:a05:600c:3d16:b0:426:5d89:896d with SMTP id
+ 5b1f17b1804b1-42bb5fcc333mr1360945e9.1.1724946620213; Thu, 29 Aug 2024
+ 08:50:20 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v4 bpf-next 3/9] bpf: Add gen_epilogue to bpf_verifier_ops
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Yonghong Song <yonghong.song@linux.dev>, Amery Hung <ameryhung@gmail.com>,
- kernel-team@meta.com
-References: <20240827194834.1423815-1-martin.lau@linux.dev>
- <20240827194834.1423815-4-martin.lau@linux.dev>
- <306399911fc4b6241ac6fac7a36eb564210eee15.camel@gmail.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <306399911fc4b6241ac6fac7a36eb564210eee15.camel@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <CANikGpeQuBKj89rTkaAs5ADrz0+YLQ54g-0CshYzE3h06G0U5g@mail.gmail.com>
+ <202408281719.8BBA257@keescook>
+In-Reply-To: <202408281719.8BBA257@keescook>
+From: Jann Horn <jannh@google.com>
+Date: Thu, 29 Aug 2024 17:49:42 +0200
+Message-ID: <CAG48ez26ot6z0swcqrR7Z6Eho73BObz-5zO4ts=Qqtn78ZUBYQ@mail.gmail.com>
+Subject: Re: BUG: null pointer dereference in seccomp
+To: Kees Cook <kees@kernel.org>
+Cc: Juefei Pu <juefei.pu@email.ucr.edu>, luto@amacapital.net, wad@chromium.org, 
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org, 
+	bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 8/28/24 7:26 PM, Eduard Zingerman wrote:
-> On Tue, 2024-08-27 at 12:48 -0700, Martin KaFai Lau wrote:
->> From: Martin KaFai Lau <martin.lau@kernel.org>
->>
->> This patch adds a .gen_epilogue to the bpf_verifier_ops. It is similar
->> to the existing .gen_prologue. Instead of allowing a subsystem
->> to run code at the beginning of a bpf prog, it allows the subsystem
->> to run code just before the bpf prog exit.
->>
->> One of the use case is to allow the upcoming bpf qdisc to ensure that
->> the skb->dev is the same as the qdisc->dev_queue->dev. The bpf qdisc
->> struct_ops implementation could either fix it up or drop the skb.
->> Another use case could be in bpf_tcp_ca.c to enforce snd_cwnd
->> has sane value (e.g. non zero).
->>
->> The epilogue can do the useful thing (like checking skb->dev) if it
->> can access the bpf prog's ctx. Unlike prologue, r1 may not hold the
->> ctx pointer. This patch saves the r1 in the stack if the .gen_epilogue
->> has returned some instructions in the "epilogue_buf".
->>
->> The existing .gen_prologue is done in convert_ctx_accesses().
->> The new .gen_epilogue is done in the convert_ctx_accesses() also.
->> When it sees the (BPF_JMP | BPF_EXIT) instruction, it will be patched
->> with the earlier generated "epilogue_buf". The epilogue patching is
->> only done for the main prog.
->>
->> Only one epilogue will be patched to the main program. When the
->> bpf prog has multiple BPF_EXIT instructions, a BPF_JA is used
->> to goto the earlier patched epilogue. Majority of the archs
->> support (BPF_JMP32 | BPF_JA): x86, arm, s390, risv64, loongarch,
->> powerpc and arc. This patch keeps it simple and always
->> use (BPF_JMP32 | BPF_JA).
->>
->> Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
->> ---
-> 
-> Acked-by: Eduard Zingerman <eddyz87@gmail.com>
-> 
-> [...]
-> 
->> @@ -19740,6 +19764,26 @@ static int convert_ctx_accesses(struct bpf_verifier_env *env)
->>   			insn->code = BPF_STX | BPF_PROBE_ATOMIC | BPF_SIZE(insn->code);
->>   			env->prog->aux->num_exentries++;
->>   			continue;
->> +		} else if (insn->code == (BPF_JMP | BPF_EXIT) &&
->> +			   epilogue_cnt &&
->> +			   i + delta < subprogs[1].start) {
->> +			/* Generate epilogue for the main prog */
->> +			if (epilogue_idx) {
->> +				/* jump back to the earlier generated epilogue */
->> +				insn_buf[0] = BPF_JMP32_IMM(BPF_JA, 0,
->> +							    epilogue_idx - i - delta - 1, 0);
-> 
-> Nit: maybe add BPF_GOTOL macro or mention that this is a 'gotol' instruction in the comment?
->       (this is how it is called in llvm).
+On Thu, Aug 29, 2024 at 2:38=E2=80=AFAM Kees Cook <kees@kernel.org> wrote:
+> On Tue, Aug 27, 2024 at 09:09:49PM -0700, Juefei Pu wrote:
+> > Hello,
+> > We found the following null-pointer-dereference issue using syzkaller
+> > on Linux v6.10.
+>
+> In seccomp! Yikes.
+>
+> > Unfortunately, the syzkaller failed to generate a reproducer.
+>
+> That's a bummer.
+>
+> > But at least we have the report:
+> >
+> > Oops: general protection fault, probably for non-canonical address
+> > 0xdffffc0000000006: 0000 [#1] PREEMPT SMP KASAN PTI
+> > KASAN: null-ptr-deref in range [0x0000000000000030-0x0000000000000037]
+> > CPU: 0 PID: 4493 Comm: systemd-journal Not tainted 6.10.0 #13
+> > Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04=
+/01/2014
+> > RIP: 0010:__bpf_prog_run include/linux/filter.h:691 [inline]
+>
+> This doesn't look like a NULL deref, this looks like a corrupted
+> pointer: 0xdffffc0000000006.
 
-sgtm.
+No, it really is a NULL deref - in a non-KASAN build, you'd see a page
+fault at virtual address 0x30. KASAN builds with inline
+instrumentation cause a GPF on NULL deref because they try to first
+check the KASAN shadow mapping for that address, and applying the
+shadow address calculation to NULL (or addresses in the low address
+space half) gives non-canonical addresses.
 
-There is a BPF_JMP_A(OFF). BPF_JMP32_A(IMM) probably will be more consistent 
-with the other existing macros.
+This line directly below the oops message is supposed to point this
+out (it works by decoding the faulting instruction, calculating the
+effective address of the access, and then having KASAN calculate
+backwards from the shadow address what the original address could have
+been):
 
+KASAN: null-ptr-deref in range [0x0000000000000030-0x0000000000000037]
+
+> Is prog bad or dfunc bad? I assume the
+> former, as dfunc is hard-coded below...
+>
+>                 ret =3D dfunc(ctx, prog->insnsi, prog->bpf_func);
+>
+> > RIP: 0010:bpf_prog_run include/linux/filter.h:698 [inline]
+>
+>         return __bpf_prog_run(prog, ctx, bpf_dispatcher_nop_func);
+>
+> > RIP: 0010:bpf_prog_run_pin_on_cpu include/linux/filter.h:715 [inline]
+>
+>         ret =3D bpf_prog_run(prog, ctx);
+>
+> > RIP: 0010:seccomp_run_filters+0x17a/0x3f0 kernel/seccomp.c:426
+>
+>                 u32 cur_ret =3D bpf_prog_run_pin_on_cpu(f->prog, sd);
+>
+> > Code: 00 00 e8 99 36 d2 ff 0f 1f 44 00 00 e8 cf 58 ff ff 48 8d 5d 48
+> > 48 83 c5 30 48 89 e8 48 c1 e8 03 48 b9 00 00 00 00 00 fc ff df <80> 3c
+> > 08 00 74 08 48 89 ef e8 c8 63 62 00 4c 8b 5d 00 48 8b 3c 24
+> > RSP: 0018:ffffc90002cb7be0 EFLAGS: 00010206
+> > RAX: 0000000000000006 RBX: 0000000000000048 RCX: dffffc0000000000
+> > RDX: 0000000000000000 RSI: 00000000000002a4 RDI: ffffffff8b517360
+> > RBP: 0000000000000030 R08: ffffffff8191f8eb R09: 1ffff11004039e86
+> > R10: dffffc0000000000 R11: ffffffffa00016d0 R12: 000000007fff0000
+> > R13: ffff88801f84a800 R14: ffffc90002cb7df0 R15: 000000007fff0000
+> > FS:  00007f897e849900(0000) GS:ffff888063a00000(0000) knlGS:00000000000=
+00000
+> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > CR2: 00007f897d771b08 CR3: 00000000195fe000 CR4: 0000000000350ef0
+> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > Call Trace:
+> >  <TASK>
+> >  __seccomp_filter+0x46f/0x1c70 kernel/seccomp.c:1222
+> >  syscall_trace_enter+0xa4/0x140 kernel/entry/common.c:52
+> >  syscall_enter_from_user_mode_work include/linux/entry-common.h:168 [in=
+line]
+> >  syscall_enter_from_user_mode include/linux/entry-common.h:198 [inline]
+> >  do_syscall_64+0x5d/0x150 arch/x86/entry/common.c:79
+> >  entry_SYSCALL_64_after_hwframe+0x67/0x6f
+>
+> Has anything changed in BPF in this area lately?
+>
+> > RIP: 0033:0x7f897ed171e4
+> > Code: 84 00 00 00 00 00 44 89 54 24 0c e8 36 58 f9 ff 44 8b 54 24 0c
+> > 44 89 e2 48 89 ee 41 89 c0 bf 9c ff ff ff b8 01 01 00 00 0f 05 <48> 3d
+> > 00 f0 ff ff 77 34 44 89 c7 89 44 24 0c e8 68 58 f9 ff 8b 44
+> > RSP: 002b:00007ffd4ae74a60 EFLAGS: 00000293 ORIG_RAX: 0000000000000101
+> > RAX: ffffffffffffffda RBX: 00005627cd785ed0 RCX: 00007f897ed171e4
+> > RDX: 0000000000290000 RSI: 00007f897f010d0a RDI: 00000000ffffff9c
+> > RBP: 00007f897f010d0a R08: 0000000000000000 R09: 0034353132303865
+> > R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000290000
+> > R13: 00007ffd4ae74d20 R14: 0000000000000000 R15: 00007ffd4ae74e28
+> >  </TASK>
+> > Modules linked in:
+> > ---[ end trace 0000000000000000 ]---
+> > RIP: 0010:__bpf_prog_run include/linux/filter.h:691 [inline]
+> > RIP: 0010:bpf_prog_run include/linux/filter.h:698 [inline]
+> > RIP: 0010:bpf_prog_run_pin_on_cpu include/linux/filter.h:715 [inline]
+> > RIP: 0010:seccomp_run_filters+0x17a/0x3f0 kernel/seccomp.c:426
+> > Code: 00 00 e8 99 36 d2 ff 0f 1f 44 00 00 e8 cf 58 ff ff 48 8d 5d 48
+> > 48 83 c5 30 48 89 e8 48 c1 e8 03 48 b9 00 00 00 00 00 fc ff df <80> 3c
+> > 08 00 74 08 48 89 ef e8 c8 63 62 00 4c 8b 5d 00 48 8b 3c 24
+> > RSP: 0018:ffffc90002cb7be0 EFLAGS: 00010206
+> > RAX: 0000000000000006 RBX: 0000000000000048 RCX: dffffc0000000000
+> > RDX: 0000000000000000 RSI: 00000000000002a4 RDI: ffffffff8b517360
+> > RBP: 0000000000000030 R08: ffffffff8191f8eb R09: 1ffff11004039e86
+> > R10: dffffc0000000000 R11: ffffffffa00016d0 R12: 000000007fff0000
+> > R13: ffff88801f84a800 R14: ffffc90002cb7df0 R15: 000000007fff0000
+> > FS:  00007f897e849900(0000) GS:ffff888063a00000(0000) knlGS:00000000000=
+00000
+> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > CR2: 00007f521f8ca000 CR3: 00000000195fe000 CR4: 0000000000350ef0
+> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > ----------------
+> > Code disassembly (best guess):
+> >    0: 00 00                 add    %al,(%rax)
+> >    2: e8 99 36 d2 ff       call   0xffd236a0
+> >    7: 0f 1f 44 00 00       nopl   0x0(%rax,%rax,1)
+> >    c: e8 cf 58 ff ff       call   0xffff58e0
+> >   11: 48 8d 5d 48           lea    0x48(%rbp),%rbx
+
+This LEA looks like it's calculating the address of prog->insnsi.
+
+> >   15: 48 83 c5 30           add    $0x30,%rbp
+> >   19: 48 89 e8             mov    %rbp,%rax
+> >   1c: 48 c1 e8 03           shr    $0x3,%rax
+> >   20: 48 b9 00 00 00 00 00 movabs $0xdffffc0000000000,%rcx
+> >   27: fc ff df
+> > * 2a: 80 3c 08 00           cmpb   $0x0,(%rax,%rcx,1) <-- trapping inst=
+ruction
+
+Here you can see - the access happens at rax+rcx, which is
+(rbp>>3)+0xdffffc0000000000. rbp is the actual pointer that will be
+accessed; this shift-right-and-add-0xdffffc0000000000 pattern is how
+inline KASAN instrumentation determines the shadow address.
+
+> >   2e: 74 08                 je     0x38
+
+Normally we jump over the next two instructions, if the KASAN shadow
+is 0 (which means fully accessible)...
+
+> >   30: 48 89 ef             mov    %rbp,%rdi
+> >   33: e8 c8 63 62 00       call   0x626400
+
+... continue here:
+
+> >   38: 4c 8b 5d 00           mov    0x0(%rbp),%r11
+
+And here's the actual access to rbp, which is probably loading the
+prog->bpf_func.
+
+> >   3c: 48 8b 3c 24           mov    (%rsp),%rdi
+>
+> What's the movabs? I don't have anything like that in my vmlinux binary
+> output. Is this KASAN perhaps?
+
+Yes, inline KASAN.
+
+
+>
+> Regardless, I don't see how prog could be NULL. :( It shouldn't be
+> possible without some kind of major refcounting bug.
 
