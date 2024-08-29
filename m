@@ -1,126 +1,284 @@
-Return-Path: <bpf+bounces-38365-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38366-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90CD5963B92
-	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 08:29:19 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C555963BB1
+	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 08:31:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 49931282463
-	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 06:29:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9DBF31F22FC9
+	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 06:31:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0834B16A931;
-	Thu, 29 Aug 2024 06:28:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A23615CD64;
+	Thu, 29 Aug 2024 06:30:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A4xPJr1R"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IQv4ALTN"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oa1-f51.google.com (mail-oa1-f51.google.com [209.85.160.51])
+Received: from mail-qv1-f51.google.com (mail-qv1-f51.google.com [209.85.219.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1671614AD17
-	for <bpf@vger.kernel.org>; Thu, 29 Aug 2024 06:28:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BDDD647;
+	Thu, 29 Aug 2024 06:30:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724912921; cv=none; b=GAy1PFIZEK/dNuYtKM5qEXp8ikmK05dCAm7UjH47X+/kKtVB0HQpD1LOMtbk+6nb4lR5gY0pYrquwJ/WvLD1fRG6OAkN+HZGbImsLEbq4E2JZpI5N+xTk6Wt05D3qTvawWtZ4bwZp8xZB4j1cGwYY0V21aKOlSvns4gB4FAP2Xk=
+	t=1724913056; cv=none; b=W615srnP7XCCmvElREWxVcFRWkLDLFHUnaEJlWwLpJY0svfX2VZwR5/PHpOfGw/SXKYb5CS5IdcGJAEP5ESZvoEQDRP5sMAyRWsB8wP9ibGgMzVuKtvJZqDZwvxEwWnYqWOzSwUYV5kuViO+6zaXeAyAWCTWTmE4akfVOwvbsFA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724912921; c=relaxed/simple;
-	bh=iXwK71RC+WiJ6tqgkmLFcTxK7PF4LP6JKRUl24yRYBg=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=krN7kr9Mri5mTZoCdmnHo7aa7peB/f1LnFL1bT1YlLIW8lZjpcmhYfZ8WKJuR0MXV7icafxYwK6fVE203EDPj7MInTeCeUTzy2HGlXGnfIxeRcBx55pSK3CIr6me91QJkZyqtGKjdTyv1U4DuVdABWTtzguFLJyxxlRWbY4OFpw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A4xPJr1R; arc=none smtp.client-ip=209.85.160.51
+	s=arc-20240116; t=1724913056; c=relaxed/simple;
+	bh=VU81vUW30AdKSehoqmKNMJjqyl1FXmEDl82UsAHavbk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=q0SrFH3Cv14xKqPksSSqH0yBkDniHHZZnM6frt2dSRUCxy6BJOW/jKXtYqUBSoG699ON439aTPeNTR42SwO5S9g6VJgXvjtY0HIZu93evYAuIG7vJpBtUUMHn8VYWeuITmMf9m997gcGFa1huJ7EVgd1pPNXJC0p7FOmRlSyF6w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IQv4ALTN; arc=none smtp.client-ip=209.85.219.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f51.google.com with SMTP id 586e51a60fabf-27026393c12so176279fac.2
-        for <bpf@vger.kernel.org>; Wed, 28 Aug 2024 23:28:39 -0700 (PDT)
+Received: by mail-qv1-f51.google.com with SMTP id 6a1803df08f44-6bf6721aae5so1799416d6.2;
+        Wed, 28 Aug 2024 23:30:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1724912919; x=1725517719; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=cvLxHnDvR7iNQfPjVAYpRg0qY22T8jDYhoby3zEX9Dc=;
-        b=A4xPJr1RIWFhjY+YhLCJ6n2qzcgHdIVIlDUHzqxSzorX54ltysmJlNZLJXh1lH3MST
-         IwhYOTcyHi3uBR2BXRuWgT/u3HwyiinadC1TYIXiKA+2f0DmkSqi68AobXbWqF0kvhZR
-         mHb/dTdKohl9Y930/8SRwif8rhO14+QdE5oZwkYILzN06xfkwqxxlwN0BI7D00Jjif+/
-         2mEMJH4z3D0wlh/D4wdaykT2ScQgJQO7J3cOvq3/hROm0YUhjTyCeILESfdlnUnlUFdZ
-         KfCO/QaC7+aNoumsXdITbr7/BcIO+bZPvTvBUQZ3ntZTiU+QzIXLpphOEMkExCXJ4t/M
-         3How==
+        d=gmail.com; s=20230601; t=1724913053; x=1725517853; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DVHRuwAUcEYymH+J/b0R0e+3iNvUH3y6v7Jow7lKvQY=;
+        b=IQv4ALTNbagKhB9j7itvHwIIkGqofLGBzd79YMXXMEwC1Yw7WwdTRVSXeMkP4DeSkc
+         /IuiHm67ZsrFHtIr4UypKhSPEb9POhGqWdGgkeeyG7HW1hj0ga3l5ukaxBTXp/LtLL64
+         k5a1PPRmBK/rNk9u0o3J90AdjTsZ8UkB7k2YNjnVhU7C1BI/H+EzN/z/oKbH2UBl6p9o
+         yZ20YoKSaZlbAu94E5HOMpa4qlTQJjmBnDyq+Hli7otP9rwnlUTr+PRouxB23RZZFCw2
+         fvmtGt/IPxF6RDWtWlTqxLzV5nb0HXazT8EeW/kKUeWz0sZEhvmIS/x96TJVTNMwF6Av
+         LkUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724912919; x=1725517719;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=cvLxHnDvR7iNQfPjVAYpRg0qY22T8jDYhoby3zEX9Dc=;
-        b=UqMkJx6F7rS8iLLEZgei76ziS6Qavx5INsWSL/SFH+Pun0CVilcT4o6d3X986svals
-         hlBFfsQqpWP3WE6TZWisdRPLbBdPnzucDYg5j73cOt88IztMNmlr8hQDdQ6lm64kfnlL
-         ib99XI98E88EaujxAxE88RWqUbD7QuzgAQrtJ+/KUM+WDyPB2p5eFGURs8kUBW2GZ+Q3
-         1lA3yU+tLGW/bKYr9Y60IFxXNj76TB4Lygp80BSdOCzWdqm4Sp/cWTFjn64RVXNgXbvo
-         GyaUB5+h6tPH8Co2jkxz76343MTo9qGze9Y4abJJGZ0UlCruFzr080msrFQsErXlmaxw
-         yO+Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXuWONDmjHrIbqMy/35Oy5fVnAIo8I7FBsA0cZBmJJYgZO2+wiY8Gxc8xQlSTl0CBun14Y=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzy9pDTEGTksnMT1aFCudtJSGSVV4wZ/VtTxpUKI2fJr+EZh9Nv
-	VgdhYknsa9/VjRcbDAQWCWwS84DGtLq7e0sblvBRiTLoX0ZoUkse
-X-Google-Smtp-Source: AGHT+IG4/9PZkxvq8FwgDb1XvqThFgI5anF3yJNMXwFMLXYzWt4sndkQoPxt0M8SnBUg0/DMH0ysaQ==
-X-Received: by 2002:a05:6870:b296:b0:270:7e7e:3f62 with SMTP id 586e51a60fabf-2779035c264mr2112754fac.47.1724912919155;
-        Wed, 28 Aug 2024 23:28:39 -0700 (PDT)
-Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-715e55a45e1sm460322b3a.58.2024.08.28.23.28.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Aug 2024 23:28:38 -0700 (PDT)
-Message-ID: <7e254fb2c9bdb9350d9be5f894e346e5cbf7382c.camel@gmail.com>
-Subject: Re: [PATCH v4 bpf-next 9/9] selftests/bpf: Test epilogue patching
- when the main prog has multiple BPF_EXIT
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Martin KaFai Lau <martin.lau@linux.dev>, bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko
- <andrii@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>, Yonghong Song
- <yonghong.song@linux.dev>, Amery Hung <ameryhung@gmail.com>, 
- kernel-team@meta.com
-Date: Wed, 28 Aug 2024 23:28:34 -0700
-In-Reply-To: <08bc097d-6e95-4fc9-8899-1c0c69712005@linux.dev>
-References: <20240827194834.1423815-1-martin.lau@linux.dev>
-	 <20240827194834.1423815-10-martin.lau@linux.dev>
-	 <08bc097d-6e95-4fc9-8899-1c0c69712005@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.4 (3.52.4-1.fc40) 
+        d=1e100.net; s=20230601; t=1724913053; x=1725517853;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DVHRuwAUcEYymH+J/b0R0e+3iNvUH3y6v7Jow7lKvQY=;
+        b=LOY0j4oE/SFjSGK9ZEl9BMT4iyugdu4FxYLyW4RssjZdYzI+lxKQxa3QGOj9PRRqHw
+         /i1xzr9KH9zzaUT6xBNMHyUYItl0DUuDmE0gfNtVdZ+yerzHS7RpHX+FaoYlJzHuGGTj
+         VigLZ8Z4hWepzX/8odQdnK27nZeZul98WPlk5FFo6yfNkdY6mY2/ESrF1iU27NAYGOZJ
+         f0d++ie0TzoHedRF5ivRuxqOf/Bw8CaR5Tx1SotcJrAR5+JSMnKkgnpUoW4Hcq62jKaF
+         tADYxX0hZzltl3VCQJYxd/rJX6tJR3ugJwZIZz8dey0u+ZB8wEmQbm//N42UdZstNplN
+         6xeg==
+X-Forwarded-Encrypted: i=1; AJvYcCU+oKcHJ5hLkGYF8vGNk+Bkpv8kp6ykGtBDGki5ywYznpPJ9JnbpT7uNqNST6PFlNLpSe3Q@vger.kernel.org, AJvYcCUxEmRud/VXlQh2jBQmgid4q1y4BV8dldleKMhi9LGjDMglWHG2OsokkahXat5VEwljukfzoqvn@vger.kernel.org, AJvYcCVJ2u3AjBDE+2B8dttndSQUoN5m6IyALKtiD7QiRnC/N18ovWfJG+Lw7fnd3dgCc4fdIj5b4+gAC/e1JkgZxf5MfyuV@vger.kernel.org, AJvYcCVdLb5DCwfa+X0mHSN36xRVWdvNka9UTlVCrtW8Ya2WHXlBiXUvlSgHAM2by8imG5KO262fe20GmA==@vger.kernel.org, AJvYcCWr0sAomN/TTFcQwYaMLZ2oRORiCTsqa5zX3H5i46OL5jqHh8g89qPkD0C/qU7hJSQQ5fSlUg==@vger.kernel.org, AJvYcCXZFSSEmlwEEIHdfBhJKHRtydO3OXab6KK6MHgi9iejM0e0tCCgib3vVZdFsXL+llrao78hSag5Gjlz/HkkF5fUUFPWr4V/@vger.kernel.org, AJvYcCXcWQzTS2sD4TRytLiQp9/k4wtKu19lPiXpl58+KZBvaTtrEW6awb9ZgAti6DI/sx00fW2Y9jeyljH2o6Kjdw==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxayWA/FlzvSvQYLc/4m4rkF0HMPrWLsIwRK0tH3i/sL6c9LRm6
+	Zsejs6QN8A1ORtzPw9wsdqL8TM8fSBjC29Ysixrc0a2x9j80wZdjpPtxmk8uASh0FvzORoZ/fYR
+	E4iUSdZ8dS7fwvEcp0+Lp9cOv2HA=
+X-Google-Smtp-Source: AGHT+IHAaYj3VKJPFC+rsCIttyDdBV4rNcUvYcw6ZzQZduvgmQVvDq94rvCCqajdqQxNsCbTeYDYWfFYA4N5Ml43Gtc=
+X-Received: by 2002:a05:6214:2d4a:b0:6bb:ab4a:dbdb with SMTP id
+ 6a1803df08f44-6c33e5e7de8mr21034396d6.1.1724913053063; Wed, 28 Aug 2024
+ 23:30:53 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20240828030321.20688-1-laoar.shao@gmail.com> <20240828030321.20688-2-laoar.shao@gmail.com>
+ <8A36564D-56E3-469B-B201-0BD7C11D6EFC@kernel.org>
+In-Reply-To: <8A36564D-56E3-469B-B201-0BD7C11D6EFC@kernel.org>
+From: Yafang Shao <laoar.shao@gmail.com>
+Date: Thu, 29 Aug 2024 14:30:14 +0800
+Message-ID: <CALOAHbBHkS=J8Bv+XsoWvwdfG7fGFg0eVw9PhOVWVbJ1ebrr1w@mail.gmail.com>
+Subject: Re: [PATCH v8 1/8] Get rid of __get_task_comm()
+To: Kees Cook <kees@kernel.org>
+Cc: akpm@linux-foundation.org, torvalds@linux-foundation.org, alx@kernel.org, 
+	justinstitt@google.com, ebiederm@xmission.com, alexei.starovoitov@gmail.com, 
+	rostedt@goodmis.org, catalin.marinas@arm.com, 
+	penguin-kernel@i-love.sakura.ne.jp, linux-mm@kvack.org, 
+	linux-fsdevel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	audit@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	selinux@vger.kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, Alexander Viro <viro@zeniv.linux.org.uk>, 
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Kees Cook <keescook@chromium.org>, 
+	Matus Jokay <matus.jokay@stuba.sk>, "Serge E. Hallyn" <serge@hallyn.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2024-08-27 at 17:58 -0700, Martin KaFai Lau wrote:
+On Wed, Aug 28, 2024 at 10:04=E2=80=AFPM Kees Cook <kees@kernel.org> wrote:
+>
+>
+>
+> On August 27, 2024 8:03:14 PM PDT, Yafang Shao <laoar.shao@gmail.com> wro=
+te:
+> >We want to eliminate the use of __get_task_comm() for the following
+> >reasons:
+> >
+> >- The task_lock() is unnecessary
+> >  Quoted from Linus [0]:
+> >  : Since user space can randomly change their names anyway, using locki=
+ng
+> >  : was always wrong for readers (for writers it probably does make sens=
+e
+> >  : to have some lock - although practically speaking nobody cares there
+> >  : either, but at least for a writer some kind of race could have
+> >  : long-term mixed results
+> >
+> >- The BUILD_BUG_ON() doesn't add any value
+> >  The only requirement is to ensure that the destination buffer is a val=
+id
+> >  array.
+>
+> Sorry, that's not a correct evaluation. See below.
+>
+> >
+> >- Zeroing is not necessary in current use cases
+> >  To avoid confusion, we should remove it. Moreover, not zeroing could
+> >  potentially make it easier to uncover bugs. If the caller needs a
+> >  zero-padded task name, it should be explicitly handled at the call sit=
+e.
+>
+> This is also not an appropriate rationale. We don't make the kernel "more=
+ buggy" not purpose. ;) See below.
+>
+> >
+> >Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+> >Link: https://lore.kernel.org/all/CAHk-=3DwivfrF0_zvf+oj6=3D=3DSh=3D-npJ=
+ooP8chLPEfaFV0oNYTTBA@mail.gmail.com [0]
+> >Link: https://lore.kernel.org/all/CAHk-=3DwhWtUC-AjmGJveAETKOMeMFSTwKwu9=
+9v7+b6AyHMmaDFA@mail.gmail.com/
+> >Suggested-by: Alejandro Colomar <alx@kernel.org>
+> >Link: https://lore.kernel.org/all/2jxak5v6dfxlpbxhpm3ey7oup4g2lnr3ueurfb=
+osf5wdo65dk4@srb3hsk72zwq
+> >Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> >Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+> >Cc: Christian Brauner <brauner@kernel.org>
+> >Cc: Jan Kara <jack@suse.cz>
+> >Cc: Eric Biederman <ebiederm@xmission.com>
+> >Cc: Kees Cook <keescook@chromium.org>
+> >Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+> >Cc: Matus Jokay <matus.jokay@stuba.sk>
+> >Cc: Alejandro Colomar <alx@kernel.org>
+> >Cc: "Serge E. Hallyn" <serge@hallyn.com>
+> >---
+> > fs/exec.c             | 10 ----------
+> > fs/proc/array.c       |  2 +-
+> > include/linux/sched.h | 32 ++++++++++++++++++++++++++------
+> > kernel/kthread.c      |  2 +-
+> > 4 files changed, 28 insertions(+), 18 deletions(-)
+> >
+> >diff --git a/fs/exec.c b/fs/exec.c
+> >index 50e76cc633c4..8a23171bc3c3 100644
+> >--- a/fs/exec.c
+> >+++ b/fs/exec.c
+> >@@ -1264,16 +1264,6 @@ static int unshare_sighand(struct task_struct *me=
+)
+> >       return 0;
+> > }
+> >
+> >-char *__get_task_comm(char *buf, size_t buf_size, struct task_struct *t=
+sk)
+> >-{
+> >-      task_lock(tsk);
+> >-      /* Always NUL terminated and zero-padded */
+> >-      strscpy_pad(buf, tsk->comm, buf_size);
+> >-      task_unlock(tsk);
+> >-      return buf;
+> >-}
+> >-EXPORT_SYMBOL_GPL(__get_task_comm);
+> >-
+> > /*
+> >  * These functions flushes out all traces of the currently running exec=
+utable
+> >  * so that a new one can be started
+> >diff --git a/fs/proc/array.c b/fs/proc/array.c
+> >index 34a47fb0c57f..55ed3510d2bb 100644
+> >--- a/fs/proc/array.c
+> >+++ b/fs/proc/array.c
+> >@@ -109,7 +109,7 @@ void proc_task_name(struct seq_file *m, struct task_=
+struct *p, bool escape)
+> >       else if (p->flags & PF_KTHREAD)
+> >               get_kthread_comm(tcomm, sizeof(tcomm), p);
+> >       else
+> >-              __get_task_comm(tcomm, sizeof(tcomm), p);
+> >+              get_task_comm(tcomm, p);
+> >
+> >       if (escape)
+> >               seq_escape_str(m, tcomm, ESCAPE_SPACE | ESCAPE_SPECIAL, "=
+\n\\");
+> >diff --git a/include/linux/sched.h b/include/linux/sched.h
+> >index f8d150343d42..c40b95a79d80 100644
+> >--- a/include/linux/sched.h
+> >+++ b/include/linux/sched.h
+> >@@ -1096,9 +1096,12 @@ struct task_struct {
+> >       /*
+> >        * executable name, excluding path.
+> >        *
+> >-       * - normally initialized setup_new_exec()
+> >-       * - access it with [gs]et_task_comm()
+> >-       * - lock it with task_lock()
+> >+       * - normally initialized begin_new_exec()
+> >+       * - set it with set_task_comm()
+> >+       *   - strscpy_pad() to ensure it is always NUL-terminated and
+> >+       *     zero-padded
+> >+       *   - task_lock() to ensure the operation is atomic and the name=
+ is
+> >+       *     fully updated.
+> >        */
+> >       char                            comm[TASK_COMM_LEN];
+> >
+> >@@ -1914,10 +1917,27 @@ static inline void set_task_comm(struct task_str=
+uct *tsk, const char *from)
+> >       __set_task_comm(tsk, from, false);
+> > }
+> >
+> >-extern char *__get_task_comm(char *to, size_t len, struct task_struct *=
+tsk);
+> >+/*
+> >+ * - Why not use task_lock()?
+> >+ *   User space can randomly change their names anyway, so locking for =
+readers
+> >+ *   doesn't make sense. For writers, locking is probably necessary, as=
+ a race
+> >+ *   condition could lead to long-term mixed results.
+> >+ *   The strscpy_pad() in __set_task_comm() can ensure that the task co=
+mm is
+> >+ *   always NUL-terminated and zero-padded. Therefore the race conditio=
+n between
+> >+ *   reader and writer is not an issue.
+> >+ *
+> >+ * - Why not use strscpy_pad()?
+> >+ *   While strscpy_pad() prevents writing garbage past the NUL terminat=
+or, which
+> >+ *   is useful when using the task name as a key in a hash map, most us=
+e cases
+> >+ *   don't require this. Zero-padding might confuse users if it=E2=80=
+=99s unnecessary,
+> >+ *   and not zeroing might even make it easier to expose bugs. If you n=
+eed a
+> >+ *   zero-padded task name, please handle that explicitly at the call s=
+ite.
+>
+> I really don't like this part of the change. You don't know that existing=
+ callers don't depend on the padding. Please invert this logic: get_task_co=
+mm() must use strscpy_pad(). Calls NOT wanting padding can call strscpy() t=
+hemselves.
+>
+> >+ *
+> >+ * - ARRAY_SIZE() can help ensure that @buf is indeed an array.
+>
+> This doesn't need checking here; strscpy() will already do that.
+>
+> >+ */
+> > #define get_task_comm(buf, tsk) ({                    \
+> >-      BUILD_BUG_ON(sizeof(buf) !=3D TASK_COMM_LEN);     \
+>
+> Also, please leave the TASK_COMM_LEN test so that destination buffers con=
+tinue to be the correct size: current callers do not perform any return val=
+ue analysis, so they cannot accidentally start having situations where the =
+destination string might be truncated. Again, anyone wanting to avoid that =
+restriction can use strscpy() directly and check the return value.
 
-[...]
+Hello Kees,
 
-> > +SEC("struct_ops/test_epilogue_exit")
-> > +__naked int test_epilogue_exit(void)
-> > +{
-> > +	asm volatile (
-> > +	"r1 =3D *(u64 *)(r1 +0);"
-> > +	"r2 =3D *(u32 *)(r1 +0);"
-> > +	"if r2 =3D=3D 0 goto +3;"
-> > +	"r0 =3D 0;"
-> > +	"*(u32 *)(r1 + 0) =3D 0;"
->=20
-> llvm17 cannot take "*(u32 *)(r1 +0) =3D 0".
->=20
-> Instead:
->=20
-> r3 =3D 0;
-> *(u32 *)(r1 + 0) =3D r3;
->=20
-> The above solved the llvm17 error:
-> https://github.com/kernel-patches/bpf/actions/runs/10586206183/job/293346=
-90461
->=20
-> However, there is still a zext with s390 that added extra insn and failed=
- the=20
-> __xlated check. will try an adjustment in the tests to avoid the zext.
+Thanks for your input.
 
-Another option would be to limit archs for the test, e.g. use
-__arch_x86_64 and __arch_arm64.
+Alejandro has addressed all the other changes except for the removal
+of BUILD_BUG_ON(). I have a question regarding this: if we're using it
+to avoid truncation, why not write it like this?
 
+    BUILD_BUG_ON(sizeof(buf) < TASK_COMM_LEN);
+
+This way, it ensures that the size is at least as large as TASK_COMM_LEN.
+
+--
+Regards
+Yafang
 
