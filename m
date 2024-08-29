@@ -1,308 +1,141 @@
-Return-Path: <bpf+bounces-38411-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38412-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F62A9649DF
-	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 17:21:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42B269649F6
+	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 17:27:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3F6A5B269C4
-	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 15:20:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B8F6C1F23879
+	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 15:27:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF8D91B2505;
-	Thu, 29 Aug 2024 15:20:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C6EF1B29AF;
+	Thu, 29 Aug 2024 15:26:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="FacFhs1U"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KalopebI"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9922C1487F1
-	for <bpf@vger.kernel.org>; Thu, 29 Aug 2024 15:20:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC9D81B251F
+	for <bpf@vger.kernel.org>; Thu, 29 Aug 2024 15:26:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724944855; cv=none; b=bzzIA2EXFSNxg/HOFPGbMFL06yKIaCUIsonw9T7apPGhQERFz3v5cb5rYTuFtJ8rTRn2tKY/u/49Qnd6fcWMdSJp1aOMeG9MmcpDbqAtFYlAe814N4To4q6zzQa4oEN5tqtxYjwuLZsKYRtLiaOg7p0ThrgsqNYVKRkpqjLSrGA=
+	t=1724945193; cv=none; b=qzvfAr0jxhTnpHzmTywhyD8vhExVQ4yz6FtDWLyGBTzOdwo7qRXWvDQA3yNCa8iZ4AaW6t+DRJ5bfKFjOVVV7IZS03nnTbpb7w79FrprqlXWl+NWySA/ykyzaI+16j87YRyTODMf1apkVMk0PYJS5awQccnbl5Ffl/TCUVX1qK4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724944855; c=relaxed/simple;
-	bh=VzvFm5X4E+ZuLcyLJfznBhONfOhsAxOWG2f9QQsKMfo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=M1aLT+m1YIMAfgATTzZmh7yumYCdPbNKQt4x//gp7JNwn1c7Ne/BBX7fcxiTnHUgUkyZajSnbSW2/u10y14k4obfKjNKpGOYppyT63+C9A16PTP2HYOu9GTgsj41b3urvKb9aAtxQG6xG8L2lnS+YeqISQcNNvygfqScAuVG3Qc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=FacFhs1U; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1724944852;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1/3P26cuv3TUVRRp+TSC+oGfXdDo0J9OUwaTJoFEzis=;
-	b=FacFhs1U8EEyqlug4mEAnOP8J/JJISqzoTc6k3G0hDuy36+1wHaGsuCdAtKutfzTmSJHGC
-	NJlwoEtZtzKn5AC+eEQJM+GjSWKr7rofqaFwgrwDEY9CyAQLOnKmi+Yr6/B8sUbXL+J9La
-	5HPftlaIjOCx6Z0CY2TFoFGlw695joE=
-Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-636-dkgkyYAmOXmJ_Lh1aUFgDQ-1; Thu,
- 29 Aug 2024 11:20:49 -0400
-X-MC-Unique: dkgkyYAmOXmJ_Lh1aUFgDQ-1
-Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 060B31955EB3;
-	Thu, 29 Aug 2024 15:20:46 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.139])
-	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id D71973001FC3;
-	Thu, 29 Aug 2024 15:20:41 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Thu, 29 Aug 2024 17:20:38 +0200 (CEST)
-Date: Thu, 29 Aug 2024 17:20:33 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Tianyi Liu <i.pear@outlook.com>, andrii.nakryiko@gmail.com,
-	mhiramat@kernel.org, ajor@meta.com, albancrequy@linux.microsoft.com,
-	bpf@vger.kernel.org, flaniel@linux.microsoft.com,
-	linux-trace-kernel@vger.kernel.org, linux@jordanrome.com,
-	mathieu.desnoyers@efficios.com
-Subject: Re: [PATCH v2] tracing/uprobe: Add missing PID filter for uretprobe
-Message-ID: <20240829152032.GA23996@redhat.com>
-References: <20240825224018.GD3906@redhat.com>
- <ZsxTckUnlU_HWDMJ@krava>
- <20240826115752.GA21268@redhat.com>
- <ZsyHrhG9Q5BpZ1ae@krava>
- <20240826212552.GB30765@redhat.com>
- <Zsz7SPp71jPlH4MS@krava>
- <20240826222938.GC30765@redhat.com>
- <Zs3PdV6nqed1jWC2@krava>
- <20240827201926.GA15197@redhat.com>
- <Zs8N-xP4jlPK2yjE@krava>
+	s=arc-20240116; t=1724945193; c=relaxed/simple;
+	bh=UA/rpNs+aVAVIH+2o5lAyJ08ajsMYEDYCcxXL6fiYuU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=dxIChcMOR1I5e326w8dt7o3DY8dbKV96XYwgzXHInwkgFjRZwwk0EBq1VxDdKF6USOYLM36yW0HGL79qZI6gvoa0hzW2i2mhW47VWZuFg50yiN8lM96rUHjcSTkunbHI31yd1+tQfxrqBQO1tkareKM7j2khpr2uTzZDmKUJZQM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KalopebI; arc=none smtp.client-ip=209.85.128.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-429ec9f2155so7194365e9.2
+        for <bpf@vger.kernel.org>; Thu, 29 Aug 2024 08:26:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1724945190; x=1725549990; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UA/rpNs+aVAVIH+2o5lAyJ08ajsMYEDYCcxXL6fiYuU=;
+        b=KalopebIcUPq4pta9s8zekyPwKWMMsABqQ1RamhY1iJeWoBN9JVtAbCzwTDyqLtw6r
+         yFtGyTJkqGtvVYHfKQFne1oZxmHGmjZdP+G3Im5mLcCIloW9Mhfi3ggHMGJRdvT0KChW
+         QwAHPpkIlUGkSITVr5C9vzYdBA2o2zAGwi3FflraOCN5Dbf/HTadGz2120DXD/yx3635
+         oIXafD+eq46ljK+nmGwj0/DLrgrtH0bjaSCVdhUOzRTAtl3sfHfIJqUKFDHdgP+KWW2U
+         1L/1CnTwPrTjTSbCY/ff6g0oGUmHdaqp71YwQc7UkI24y6pwF3HDtYJMjID2aLaYgAu0
+         0j9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1724945190; x=1725549990;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UA/rpNs+aVAVIH+2o5lAyJ08ajsMYEDYCcxXL6fiYuU=;
+        b=YITMvfJXrfMH9FBKRqZca8zr6T0YqftpRnQtKjPL/EEE37Sww5RkBwi76EbktXhEVA
+         s94Ae9lfIS5R0xsJPUYCKuciK4lrQ/rt0c0hfF2HUCHauoXLHlubyIqeI8CnfRvIA/Yo
+         58/yuAzNNcippa48lffx6ROEHDUzcg5NDdGGZEKhZTWTFHBErZMvzkIAafX6Aj641v/7
+         h3cQQfP2UblwlItR2FgXERU5KpeIlA0OimMAlCPGdKEupi82px7fZ/Rsqy3DOyHW+MB3
+         kHfm2rDaXIf1+kKsbSGcpGEGLOsUdOxkB3/FfQoG6VsrPKiQDd3finKF3RQIgkI+uK6M
+         RNbQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUpiDECyD8GGVYivt8e5a6HG7RSqNeMigmxMeRCPS14IbC7I4US/QGi9m4/yugHhAGnAMs=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwT3LKlK1xQ5d8OKs+bT5/znDQIuWD2dj+sUt0i6z55hoXlA043
+	UiLR5zOcEn5/DuUY97ODflNhqWHUxqE18Bc9uso9hKML9RHovohLffDg62wb0XcxXBrc1Up8Qx8
+	DogFH4jI3V8fzmi/FZmY4OpBBDdEn+w==
+X-Google-Smtp-Source: AGHT+IFBaVD+tCDz9N7YjGkam7YzVfDsPcGvDhyPxCYVq1W4A1+viTuHdXUo1NONvFj7LKGrrB1U3OH3YmfF6figWRw=
+X-Received: by 2002:a05:600c:1c83:b0:42b:a9b4:3f59 with SMTP id
+ 5b1f17b1804b1-42bb0293da3mr24291405e9.14.1724945189821; Thu, 29 Aug 2024
+ 08:26:29 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zs8N-xP4jlPK2yjE@krava>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
+References: <20240827194834.1423815-1-martin.lau@linux.dev>
+ <20240827194834.1423815-2-martin.lau@linux.dev> <9bcfc97f011f4b4d5dc312e26074d0c1d744af02.camel@gmail.com>
+ <CAADnVQKfuWjpDxL=0OYMe_u37tTpPgPUW3-5L7X-QVUGh5x1gw@mail.gmail.com> <bff92d52-344e-46bf-ac0c-f03e1b22d22b@linux.dev>
+In-Reply-To: <bff92d52-344e-46bf-ac0c-f03e1b22d22b@linux.dev>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 29 Aug 2024 08:26:18 -0700
+Message-ID: <CAADnVQ+jBwKQGR3LpRwZJT0G7pB+Xzf+L0gJkZdjL7UTrZeg_Q@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 1/9] bpf: Move insn_buf[16] to bpf_verifier_env
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Eduard Zingerman <eddyz87@gmail.com>, bpf <bpf@vger.kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Yonghong Song <yonghong.song@linux.dev>, 
+	Amery Hung <ameryhung@gmail.com>, Kernel Team <kernel-team@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 08/28, Jiri Olsa wrote:
+On Thu, Aug 29, 2024 at 8:20=E2=80=AFAM Martin KaFai Lau <martin.lau@linux.=
+dev> wrote:
 >
-> On Tue, Aug 27, 2024 at 10:19:26PM +0200, Oleg Nesterov wrote:
-> > Hmm. Really? In this case these 2 different consumers will have the different
-> > trace_event_call's, so
+> On 8/28/24 6:46 PM, Alexei Starovoitov wrote:
+> > On Wed, Aug 28, 2024 at 5:41=E2=80=AFPM Eduard Zingerman <eddyz87@gmail=
+.com> wrote:
+> >>
+> >> On Tue, 2024-08-27 at 12:48 -0700, Martin KaFai Lau wrote:
+> >>> From: Martin KaFai Lau <martin.lau@kernel.org>
+> >>>
+> >>> This patch moves the 'struct bpf_insn insn_buf[16]' stack usage
+> >>> to the bpf_verifier_env. A '#define INSN_BUF_SIZE 16' is also added
+> >>> to replace the ARRAY_SIZE(insn_buf) usages.
+> >>>
+> >>> Both convert_ctx_accesses() and do_misc_fixup() are changed
+> >>> to use the env->insn_buf.
+> >>>
+> >>> It is a prep work for adding the epilogue_buf[16] in a later patch.
+> >>>
+> >>> Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
+> >>> ---
+> >>
+> >> Not sure if this refactoring is worth it but code looks correct.
+> >> Note that there is also inline_bpf_loop()
+> >> (it needs a slightly bigger buffer).
 > >
-> > 	// consumer for task 1019
-> > 	uretprobe_dispatcher
-> > 	  uretprobe_perf_func
-> > 	    __uprobe_perf_func
-> > 	      perf_tp_event
-> >
-> > won't store the event because this_cpu_ptr(call->perf_events) should be
-> > hlist_empty() on this CPU, the perf_event for task 1019 wasn't scheduled in
-> > on this CPU...
+> > Probably worth it in the follow up, since people complain that
+> > this or that function in verifier.c reaches stack size limit
+> > when compiled with sanitizers.
+> > These buffers on stack are the biggest consumers.
 >
-> I'll double check on that,
+> ok. I will drop this patch for now. Redo it again as a followup and will
+> consider inline_bpf_loop() together at that time.
 
-Yes, please.
+why? Keep it. It's an improvement already.
 
-> but because there's no filter for uretprobe
-> I think it will be stored under 1018 event
-...
-> I'm working on bpf selftests for above (uprobe and uprobe_multi paths)
+> Regarding the stack size, I did notice the compilation warning difference=
+ on the
+> stack size which I should have put in the commit message.
+>
+> Before:
+> ./kernel/bpf/verifier.c:22133:5: warning: stack frame size (2584) exceeds=
+ limit
+> (2048) in 'bpf_check' [-Wframe-larger-than]
+>
+> After:
+> ./kernel/bpf/verifier.c:22184:5: warning: stack frame size (2264) exceeds=
+ limit
+> (2048) in 'bpf_check' [-Wframe-larger-than]
 
-Meanwhile, I decided to try to test this case too ;)
-
-test.c:
-
-	#include <unistd.h>
-
-	int func(int i)
-	{
-		return i;
-	}
-
-	int main(void)
-	{
-		int i;
-		for (i = 0;; ++i) {
-			sleep(1);
-			func(i);
-		}
-		return 0;
-	}
-
-run_probe.c:
-
-	#include "./include/uapi/linux/perf_event.h"
-	#define _GNU_SOURCE
-	#include <sys/syscall.h>
-	#include <sys/ioctl.h>
-	#include <assert.h>
-	#include <unistd.h>
-	#include <stdlib.h>
-	#include <stdio.h>
-
-	// cat /sys/bus/event_source/devices/uprobe/type
-	#define UPROBE_TYPE	9
-
-	void run_probe(const char *file, unsigned offset, int pid)
-	{
-		struct perf_event_attr attr = {
-			.type		= UPROBE_TYPE,
-			.config		= 1, // ret-probe
-			.uprobe_path	= (unsigned long)file,
-			.probe_offset	= offset,
-			.size		= sizeof(struct perf_event_attr),
-		};
-
-		int fd = syscall(__NR_perf_event_open, &attr, pid, 0, -1, 0);
-		assert(fd >= 0);
-
-		assert(ioctl(fd, PERF_EVENT_IOC_ENABLE, 0) == 0);
-
-		for (;;)
-			pause();
-	}
-
-	int main(int argc, const char *argv[])
-	{
-		int pid = atoi(argv[1]);
-		run_probe("./test", 0x536, pid);
-		return 0;
-	}
-
-Now, with the kernel patch below applied, I do
-
-	$ ./test &
-	$ PID1=$!
-	$ ./test &
-	$ PID2=$!
-
-	$ ./run_probe $PID1 &
-	$ ./run_probe $PID2 &
-
-and the kernel prints:
-
-	CHAIN
-	trace_uprobe: HANDLER pid=46 consumers_target=46 stored=1
-	trace_uprobe: HANDLER pid=46 consumers_target=45 stored=0
-	CHAIN
-	trace_uprobe: HANDLER pid=45 consumers_target=46 stored=0
-	trace_uprobe: HANDLER pid=45 consumers_target=45 stored=1
-	CHAIN
-	trace_uprobe: HANDLER pid=46 consumers_target=46 stored=1
-	trace_uprobe: HANDLER pid=46 consumers_target=45 stored=0
-	CHAIN
-	trace_uprobe: HANDLER pid=45 consumers_target=46 stored=0
-	trace_uprobe: HANDLER pid=45 consumers_target=45 stored=1
-	CHAIN
-	trace_uprobe: HANDLER pid=46 consumers_target=46 stored=1
-	trace_uprobe: HANDLER pid=46 consumers_target=45 stored=0
-	CHAIN
-	trace_uprobe: HANDLER pid=45 consumers_target=46 stored=0
-	trace_uprobe: HANDLER pid=45 consumers_target=45 stored=1
-	CHAIN
-	trace_uprobe: HANDLER pid=46 consumers_target=46 stored=1
-	trace_uprobe: HANDLER pid=46 consumers_target=45 stored=0
-	CHAIN
-	trace_uprobe: HANDLER pid=45 consumers_target=46 stored=0
-	trace_uprobe: HANDLER pid=45 consumers_target=45 stored=1
-
-and so on.
-
-As you can see, perf_trace_buf_submit/etc is never called for the "unfiltered"
-consumer, so I still think that perf is fine wrt filtering. But I can be easily
-wrong, please check.
-
-Oleg.
-
-
-diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-index acc73c1bc54c..14aa92a78d6d 100644
---- a/kernel/events/uprobes.c
-+++ b/kernel/events/uprobes.c
-@@ -2150,6 +2150,8 @@ handle_uretprobe_chain(struct return_instance *ri, struct pt_regs *regs)
- 	struct uprobe *uprobe = ri->uprobe;
- 	struct uprobe_consumer *uc;
- 
-+	pr_crit("CHAIN\n");
-+
- 	rcu_read_lock_trace();
- 	list_for_each_entry_rcu(uc, &uprobe->consumers, cons_node, rcu_read_lock_trace_held()) {
- 		if (uc->ret_handler)
-diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
-index f7443e996b1b..e4eaa0363742 100644
---- a/kernel/trace/trace_uprobe.c
-+++ b/kernel/trace/trace_uprobe.c
-@@ -1364,7 +1364,7 @@ static bool uprobe_perf_filter(struct uprobe_consumer *uc, struct mm_struct *mm)
- 	return ret;
- }
- 
--static void __uprobe_perf_func(struct trace_uprobe *tu,
-+static int __uprobe_perf_func(struct trace_uprobe *tu,
- 			       unsigned long func, struct pt_regs *regs,
- 			       struct uprobe_cpu_buffer **ucbp)
- {
-@@ -1375,6 +1375,7 @@ static void __uprobe_perf_func(struct trace_uprobe *tu,
- 	void *data;
- 	int size, esize;
- 	int rctx;
-+	int ret = 0;
- 
- #ifdef CONFIG_BPF_EVENTS
- 	if (bpf_prog_array_valid(call)) {
-@@ -1382,7 +1383,7 @@ static void __uprobe_perf_func(struct trace_uprobe *tu,
- 
- 		ret = bpf_prog_run_array_uprobe(call->prog_array, regs, bpf_prog_run);
- 		if (!ret)
--			return;
-+			return -1;
- 	}
- #endif /* CONFIG_BPF_EVENTS */
- 
-@@ -1392,12 +1393,13 @@ static void __uprobe_perf_func(struct trace_uprobe *tu,
- 	size = esize + ucb->dsize;
- 	size = ALIGN(size + sizeof(u32), sizeof(u64)) - sizeof(u32);
- 	if (WARN_ONCE(size > PERF_MAX_TRACE_SIZE, "profile buffer not large enough"))
--		return;
-+		return -1;
- 
- 	preempt_disable();
- 	head = this_cpu_ptr(call->perf_events);
- 	if (hlist_empty(head))
- 		goto out;
-+	ret = 1;
- 
- 	entry = perf_trace_buf_alloc(size, NULL, &rctx);
- 	if (!entry)
-@@ -1421,6 +1423,7 @@ static void __uprobe_perf_func(struct trace_uprobe *tu,
- 			      head, NULL);
-  out:
- 	preempt_enable();
-+	return ret;
- }
- 
- /* uprobe profile handler */
-@@ -1439,7 +1442,15 @@ static void uretprobe_perf_func(struct trace_uprobe *tu, unsigned long func,
- 				struct pt_regs *regs,
- 				struct uprobe_cpu_buffer **ucbp)
- {
--	__uprobe_perf_func(tu, func, regs, ucbp);
-+	struct trace_uprobe_filter *filter = tu->tp.event->filter;
-+	struct perf_event *event = list_first_entry(&filter->perf_events,
-+					struct perf_event, hw.tp_list);
-+
-+	int r = __uprobe_perf_func(tu, func, regs, ucbp);
-+
-+	pr_crit("HANDLER pid=%d consumers_target=%d stored=%d\n",
-+		current->pid, event->hw.target ? event->hw.target->pid : -1, r);
-+
- }
- 
- int bpf_get_uprobe_info(const struct perf_event *event, u32 *fd_type,
-
+Exactly. It's a step forward.
 
