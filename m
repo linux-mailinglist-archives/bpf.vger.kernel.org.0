@@ -1,108 +1,129 @@
-Return-Path: <bpf+bounces-38481-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38482-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA0C9965192
-	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 23:12:32 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B0D3965195
+	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 23:13:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3A38828635B
-	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 21:12:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0B39FB22714
+	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 21:13:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BBDC1B6545;
-	Thu, 29 Aug 2024 21:12:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDA8818C015;
+	Thu, 29 Aug 2024 21:13:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="us1i7LvN"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Gb99zOJT"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA7BA4D108;
-	Thu, 29 Aug 2024 21:12:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0912B18C004
+	for <bpf@vger.kernel.org>; Thu, 29 Aug 2024 21:13:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724965937; cv=none; b=CHGykNS7pH2GeSdxYZ7xjUANtoIlQETgDLA9jj40gvJwtA9U5X/iSqAwc3dtNwjadYYiGFseyi9sXbsVaUJ0VQP4W4rSycgnhtuVdN0ByHIpKpTuK5Hj34uyDAIRk2EUg91ojDq+rzatoL4GG6x5yolxObnjXslUss2wVMjSg3Y=
+	t=1724965985; cv=none; b=dgQArT26E0B/BoDRp37BKi8GgzoiR1mphetoKGBy77v4Yf5o33pAcjaS7rOZAgbn/WS40qhMX0BI+F+v09JZGronTE5eRTkPRueBGcklzg452au8eMsocjeEse/PDN+nT4UPDRxtCZgGW5FshJfnEfzQhZy2vo+TCU4XsGccO00=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724965937; c=relaxed/simple;
-	bh=SdFDbc/FKfVCaHZ3R/u6SOjH9IobabUDvHC41qgaXUk=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=qVnWnAsdkkJ1bgmhE+sWnNqzDjs19lsbylscvm3vLViMP6ecwu353kwhboNh1ZdMfL/I3pHgWVLUJCh5FX2gMOAPiV15pwagvp2HPGElH8eIiJjuGrPWsIGiKIUfOuZ3b5HFrO9ZgmOXn08X0ASeLY/TGIyEhSnAehiZ7MFRXrc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=us1i7LvN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7BD0C4CEC1;
-	Thu, 29 Aug 2024 21:12:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1724965936;
-	bh=SdFDbc/FKfVCaHZ3R/u6SOjH9IobabUDvHC41qgaXUk=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=us1i7LvNVt8Qyg0Ds3Qzx74/wqCdnCowJCXYSfINx9H2q6n5Kit1aO8FDlGGeTMaf
-	 vHRHoicpP5fkO3U2+B+81byJTxSyg+s/JKaYfAXXXdaGZWJ8id+HmCmmuUmWdaElQn
-	 gv+atJ2B0Ww51vx9gFkQVsIDp8BIu4oIA7f7e5Fp9659+RAYm3nte+AWc4etT9Sc/o
-	 /HVToybUJrWVLFvJ3z5lls1n69Cce9t5gwg1hA83miP9iDl4xOg9yZp2+Rj04tO4em
-	 wlA6UgNFKwOVnSaAgjOChfdDXWkt/q9nVjfwSzRkZxy01PXMkIQpvgBVgXQ7kosnUy
-	 Ykx86deotI6gw==
-Date: Thu, 29 Aug 2024 14:12:12 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Mina Almasry <almasrymina@google.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org,
- linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
- sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- linux-arch@vger.kernel.org, bpf@vger.kernel.org,
- linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org,
- dri-devel@lists.freedesktop.org, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Donald
- Hunter <donald.hunter@gmail.com>, Jonathan Corbet <corbet@lwn.net>, Richard
- Henderson <richard.henderson@linaro.org>, Ivan Kokshaysky
- <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Thomas
- Bogendoerfer <tsbogend@alpha.franken.de>, "James E.J. Bottomley"
- <James.Bottomley@HansenPartnership.com>, Helge Deller <deller@gmx.de>,
- Andreas Larsson <andreas@gaisler.com>, Jesper Dangaard Brouer
- <hawk@kernel.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>, Steven
- Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Arnd Bergmann
- <arnd@arndb.de>, Steffen Klassert <steffen.klassert@secunet.com>, Herbert
- Xu <herbert@gondor.apana.org.au>, David Ahern <dsahern@kernel.org>, Willem
- de Bruijn <willemdebruijn.kernel@gmail.com>, "=?UTF-8?B?QmrDtnJuIFTDtnBl?=
- =?UTF-8?B?bA==?=" <bjorn@kernel.org>, Magnus Karlsson
- <magnus.karlsson@intel.com>, Maciej Fijalkowski
- <maciej.fijalkowski@intel.com>, Jonathan Lemon <jonathan.lemon@gmail.com>,
- Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>,
- Sumit Semwal <sumit.semwal@linaro.org>, "Christian =?UTF-8?B?S8O2bmln?="
- <christian.koenig@amd.com>, Pavel Begunkov <asml.silence@gmail.com>, David
- Wei <dw@davidwei.uk>, Jason Gunthorpe <jgg@ziepe.ca>, Yunsheng Lin
- <linyunsheng@huawei.com>, Shailend Chand <shailend@google.com>, Harshitha
- Ramamurthy <hramamurthy@google.com>, Shakeel Butt <shakeel.butt@linux.dev>,
- Jeroen de Borst <jeroendb@google.com>, Praveen Kaligineedi
- <pkaligineedi@google.com>, Bagas Sanjaya <bagasdotme@gmail.com>, Christoph
- Hellwig <hch@infradead.org>, Nikolay Aleksandrov <razor@blackwall.org>,
- Taehee Yoo <ap420073@gmail.com>, Willem de Bruijn <willemb@google.com>,
- Kaiyuan Zhang <kaiyuanz@google.com>, Daniel Vetter <daniel.vetter@ffwll.ch>
-Subject: Re: [PATCH net-next v23 03/13] netdev: support binding dma-buf to
- netdevice
-Message-ID: <20240829141212.1d146a16@kernel.org>
-In-Reply-To: <20240829060126.2792671-4-almasrymina@google.com>
-References: <20240829060126.2792671-1-almasrymina@google.com>
-	<20240829060126.2792671-4-almasrymina@google.com>
+	s=arc-20240116; t=1724965985; c=relaxed/simple;
+	bh=MqUh56zN7NJNdjmghT/euStrp6pZZ7zbmVkxBqupF34=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ajxaAOMRYjPjvBaX54zinqdE+dETSRPQDzcwjme+I4XP0oodATgBWt8uRgmBs+jPMzF7DB+J82jjd5KkOYLLxvCZ3MtiyddruIGVuch4E+e+vy7u11YJ3Af9anCEq96nUH932cGR3LU5PI5gvkVW4yDCpDxUF38q1ugd+ezFpEo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Gb99zOJT; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1724965983;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=uV8YErksJWOCHNNkf7up1j+SAnFhOu+hNSyWOYIg8QY=;
+	b=Gb99zOJTcOrYJuX2NNHeIbB8VqKYSzBhuzCnzz2so5iiqP0K19l9R/bX4gghDvqCCcqTK1
+	IBJ8bF8LBQ7ETRXqV0o44XfIoDyriTGvw0Kb29pzUuTRyagGDBW30f+zOIFwI4fUtEnOOu
+	OoEp4++Q54KLcLMhZ1w3QNtf7xkxZ7I=
+Received: from mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-507-SLQD5WZoNPqQH_1vwF2sEA-1; Thu,
+ 29 Aug 2024 17:12:57 -0400
+X-MC-Unique: SLQD5WZoNPqQH_1vwF2sEA-1
+Received: from mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.40])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 7E81C19560B0;
+	Thu, 29 Aug 2024 21:12:55 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.20])
+	by mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 5F71F19560A3;
+	Thu, 29 Aug 2024 21:12:51 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Thu, 29 Aug 2024 23:12:46 +0200 (CEST)
+Date: Thu, 29 Aug 2024 23:12:41 +0200
+From: Oleg Nesterov <oleg@redhat.com>
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Tianyi Liu <i.pear@outlook.com>, andrii.nakryiko@gmail.com,
+	mhiramat@kernel.org, ajor@meta.com, albancrequy@linux.microsoft.com,
+	bpf@vger.kernel.org, flaniel@linux.microsoft.com,
+	linux-trace-kernel@vger.kernel.org, linux@jordanrome.com,
+	mathieu.desnoyers@efficios.com
+Subject: Re: [PATCH v2] tracing/uprobe: Add missing PID filter for uretprobe
+Message-ID: <20240829211241.GA19243@redhat.com>
+References: <20240826115752.GA21268@redhat.com>
+ <ZsyHrhG9Q5BpZ1ae@krava>
+ <20240826212552.GB30765@redhat.com>
+ <Zsz7SPp71jPlH4MS@krava>
+ <20240826222938.GC30765@redhat.com>
+ <Zs3PdV6nqed1jWC2@krava>
+ <20240827201926.GA15197@redhat.com>
+ <Zs8N-xP4jlPK2yjE@krava>
+ <20240829152032.GA23996@redhat.com>
+ <ZtDQEVN1-BAfWuMU@krava>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZtDQEVN1-BAfWuMU@krava>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.40
 
-On Thu, 29 Aug 2024 06:01:16 +0000 Mina Almasry wrote:
-> +		if (NL_REQ_ATTR_CHECK(info->extack, attr, tb, NETDEV_A_QUEUE_ID) ||
-> +		    NL_REQ_ATTR_CHECK(info->extack, attr, tb, NETDEV_A_QUEUE_TYPE) ||
-> +		    nla_get_u32(tb[NETDEV_A_QUEUE_TYPE]) != NETDEV_QUEUE_TYPE_RX) {
+Ah. we certainly misunderstand each other.
 
-I keep going back and forth if I should complain.. so nit:
+On 08/29, Jiri Olsa wrote:
+>
+> On Thu, Aug 29, 2024 at 05:20:33PM +0200, Oleg Nesterov wrote:
+>
+> SNIP
 
-The first two conditions can be together, but for the third one
-you want to NL_SET_BAD_ATTR(info->extack, tb[NETDEV_A_QUEUE_TYPE]));
-so separate if() is needed. I think I suggested the combining
-but I meant just the NL_REQ_ATTR.. ones.
+SNIP
+
+> right.. if the event is not added by perf_trace_add on this cpu
+> it won't go pass this point, so no problem for perf
+
+Yes, and this is what I tried to verify. In your previous email you said
+
+	and I think the same will happen for perf record in this case where instead of
+	running the program we will execute perf_tp_event
+
+and I tried verify this can't happen. So no problem for perf ;)
+
+> but the issue is with bpf program triggered earlier by return uprobe
+
+Well, the issue with bpf program (with the bpf_prog_array_valid(call) code
+in __uprobe_perf_func) was clear from the very beginning, no questions.
+
+> and [1] patch seems to fix that
+
+I'd say this patch fixes the symptoms, and it doesn't fix all the problems.
+But I can't suggest anything better for bpf code, so I won't really argue.
+However the changelog and even the subject is wrong.
+
+> I sent out the bpf selftest that triggers the issue [2]
+
+Thanks, I'll try take a look tomorrow.
+
+Oleg.
+
 
