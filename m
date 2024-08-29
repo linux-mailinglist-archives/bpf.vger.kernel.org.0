@@ -1,162 +1,143 @@
-Return-Path: <bpf+bounces-38328-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38329-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DBD519636AE
-	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 02:08:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D4FF49636BF
+	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 02:18:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 758441F24CA3
-	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 00:08:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 065BE1C2130F
+	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 00:18:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84699256D;
-	Thu, 29 Aug 2024 00:08:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BED4EBA47;
+	Thu, 29 Aug 2024 00:17:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XSco76Ez"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q7q2uKup"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0B95DDA6;
-	Thu, 29 Aug 2024 00:08:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2897212B73;
+	Thu, 29 Aug 2024 00:17:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724890122; cv=none; b=ennSxGGWBlTzjAydmZuiNHxKbcEO6I0GDi7wW9xGtxpikp14g2AwoNy0xBah0/6VpUdVbPOpFtyvCHoFafXfz1o5TjzF25dYDDogGOqScrSXAzldkX8FjLxFFAMF0S1E9qIlYd/8orkmYsBlx4TSqyG4wVDWC6xwGh1+sG2wWcU=
+	t=1724890676; cv=none; b=sd/h1hYIBobj7RWJvgqx+T94TgNNzBAL4rtOE8iGCc3bYQVPnIMU6JjePjbmyj4I3v8Vc5wufbut5eLOgDFYSXqEdW+BsvsRtezXenweAXp42r+xbP1C9tdhtvwUyKOS9E5UZTrVdw17P0Lq9iV+urZ6JBG/vaiFi1fcXlJVFrM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724890122; c=relaxed/simple;
-	bh=4mrOInaGgcSsyPxSOv0jBWUB2KmSNACrUTxiR3RHI8c=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=Gma87mcH4Sv3RO0o4ThicWXf7QYJnAs0pKyESwtztXiZwc+CgOLInOBzzS/0JrQykIj63XtRJHoIquBiUE9F66E841vHi4iMqF0isxQXbdrXoQJYh+Ny7G4wRQPpJSf4Nd0KRJ84h20hEpFs7OB/2zcUZEhaF6PCTNxPZsJw0HA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XSco76Ez; arc=none smtp.client-ip=209.85.215.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-7cd8803fe0aso33440a12.0;
-        Wed, 28 Aug 2024 17:08:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1724890120; x=1725494920; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=JwAJcNFbkfNLCvJ5Fy89lTRAKt+aTy//gJLU+v3KL2o=;
-        b=XSco76EzxOpoj5WUGpaHpjzM7jf/JR8W3fucYk8dQscHkQAV7djvjR+rN2asIaa2DJ
-         XK9pf0xnQdQaIEvtDTJREEfHxm64nKpcm04yBOzmpH7pui5JMDtod9i23Pwtoalm+KP/
-         qkxIbnNrsgGwMNp9DaMtuaxSwBXgKHQTmg5E63uLql+HZDmY98J9ZqYVY6e1v6j3/zFS
-         h+Zm4uFG2coWR4I4PzHiUv03T2Zm2IoGYdrnQMeXxuXpBMjERZELQmQA70gsm1WNhC19
-         rcdnL+mbHa6VHRw01ifv081wCFz5EB694s0KmvUd1favY9oY5644PB0GOVpzlhId5qNz
-         HlVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724890120; x=1725494920;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=JwAJcNFbkfNLCvJ5Fy89lTRAKt+aTy//gJLU+v3KL2o=;
-        b=a+2sb7XSOjnl9tL0ggwbkT9uggB/9EcUY6+Erq7dcD2cTv4HNOEcvZh1CEMaSiI+h+
-         iXkyhws5Ts2Skkp3EAZbEwP+euE2sdUdU+uQdZO64yFxeTxpShLW5Z0NnUomr6vd2vtx
-         sJ264uro3XDlIE1/9qdLR9D8qLzUUlqYHwXFV3D36I9lUKlhJ1Fii2iIS9J9COvu8oyn
-         RcCu8cwyn4wc0J+yMSz0WkTXbgxKKR3Yqgi919qnXjHd+Ea+KWeSdFQDR2mWHFZhdePX
-         cxjWOm73MSyIvCRHWr0jPZHj8ddSkZ1YqQChCnrlYMSdNZ5ZETsl4S6nCQkcaEhDVx0o
-         VCyQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU1Dla9MMPJQZqGorqqlkrffOt4wYgwNwejpKMxVBwGzUHJfysdy3dVX42uRqVC8okVKC66C1BH8Q==@vger.kernel.org, AJvYcCVp8GrZKjeMfnOTqLmTi2qF06hCoEd7b3sy/k43698I5ePa5dLwt3B6Sx/lVpFZP/5pzxDFg7TTogNkYSMy@vger.kernel.org, AJvYcCXQB2wzlQe1YyAZj5606oJMd0SOAds+xfs2bgUpdvM1bAt3NvXbuAARe4PqJIZh8ITF99Q=@vger.kernel.org
-X-Gm-Message-State: AOJu0YylTWUoL933GaveNFHgRIWryEfy+yMHK+fsDZiOE7ulhT73Ny7x
-	/gaRWik5POstl/B+JSRHJ4ZMVC3VkBuj356LjW10j0VbxWgaURwC
-X-Google-Smtp-Source: AGHT+IEz7DDxbFAT6mOeyMJDiHUnKBgQmO3DPznwmp0JxhvgeNKaIO5s8gmnsuyfvmHr4oyLGnrb9w==
-X-Received: by 2002:a05:6a20:e196:b0:1c4:9100:6a1b with SMTP id adf61e73a8af0-1cce101dfdfmr998580637.30.1724890119797;
-        Wed, 28 Aug 2024 17:08:39 -0700 (PDT)
-Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-205152b3343sm482175ad.30.2024.08.28.17.08.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Aug 2024 17:08:39 -0700 (PDT)
-Message-ID: <2b92648adb162a1c6202ba447277a37902d0b407.camel@gmail.com>
-Subject: Re: [PATCH 1/1] pahole: Add option to obtain a vmlinux matching the
- running kernel
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Alan Maguire <alan.maguire@oracle.com>, Andrii Nakryiko
- <andrii@kernel.org>,  Jiri Olsa <jolsa@kernel.org>,
- dwarves@vger.kernel.org, bpf@vger.kernel.org, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>
-Date: Wed, 28 Aug 2024 17:08:34 -0700
-In-Reply-To: <Zs977_n0rkleEl94@x1>
-References: <Zs977_n0rkleEl94@x1>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.4 (3.52.4-1.fc40) 
+	s=arc-20240116; t=1724890676; c=relaxed/simple;
+	bh=wqwfbglmiOW3zEjrozGHbRY21H9OrGw1J7tCUk4qVjg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qP/9xmiK9tj0vtuh8LUMZI5X/zTJpN7h/b2cKzLMUr0Jt5oFv97Xs3VKCGD3dmGe/5ravgj2isvyy7X4KaVKea1LQEZb3tGBnpySRo7UKki0d4tpywUEkTEljcNupr+weZ99YHUStMLGs2tuPt7t1RC4CC1O82PA2rTTFOd+r9A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q7q2uKup; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA5D1C4CEC0;
+	Thu, 29 Aug 2024 00:17:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1724890675;
+	bh=wqwfbglmiOW3zEjrozGHbRY21H9OrGw1J7tCUk4qVjg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Q7q2uKupXiWrXEb5VBisQRcVpWz1lLcSeE7zINvaSJm8aB8JKzaa1Qlj4qvHMl9T/
+	 mB0q0BY6SVtNcYAr1aQd4hYDHFHib8zZ9wUNt5pkZkagn7QUYxvdthCYydJEcS6isS
+	 EIaBZgHBZegmK+8STHem6es+CstqnY94jKsuJoGG9Eu4OXFZpHJMWmXP/XUZReh9Ty
+	 SwdIv0b0X/rYgMw8zApCJK8AIPIiB13V8lLrSIAOdunytxsuwfeR+sQxj1xQwuY7Db
+	 UT7C88ojT+76hQqBGXasE9vK2f5kOA2shjJvfoKnyQ6Bq2qrQ6C6FSIanWfsDiAHqV
+	 G4c5NZzYW7RGA==
+Date: Wed, 28 Aug 2024 17:17:55 -0700
+From: Kees Cook <kees@kernel.org>
+To: Alejandro Colomar <alx@kernel.org>
+Cc: Yafang Shao <laoar.shao@gmail.com>, akpm@linux-foundation.org,
+	torvalds@linux-foundation.org, justinstitt@google.com,
+	ebiederm@xmission.com, alexei.starovoitov@gmail.com,
+	rostedt@goodmis.org, catalin.marinas@arm.com,
+	penguin-kernel@i-love.sakura.ne.jp, linux-mm@kvack.org,
+	linux-fsdevel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	audit@vger.kernel.org, linux-security-module@vger.kernel.org,
+	selinux@vger.kernel.org, bpf@vger.kernel.org,
+	netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+	Matus Jokay <matus.jokay@stuba.sk>,
+	"Serge E. Hallyn" <serge@hallyn.com>
+Subject: Re: [PATCH v8 1/8] Get rid of __get_task_comm()
+Message-ID: <202408281712.F78440FF@keescook>
+References: <20240828030321.20688-1-laoar.shao@gmail.com>
+ <20240828030321.20688-2-laoar.shao@gmail.com>
+ <lql4y2nvs3ewadszhmv4m6fnqja4ff4ymuurpidlwvgf4twvru@esnh37a2jxbd>
+ <n2fxqs3tekvljezaqpfnwhsmjymch4vb47y744zwmy7urf3flv@zvjtepkem4l7>
+ <CALOAHbBAYHjDnKBVw63B8JBFc6U-2RNUX9L=ryA2Gbz7nnJfsQ@mail.gmail.com>
+ <7839453E-CA06-430A-A198-92EB906F94D9@kernel.org>
+ <ynrircglkinhherehtjz7woq55te55y4ol4rtxhfh75pvle3d5@uxp5esxt4slq>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ynrircglkinhherehtjz7woq55te55y4ol4rtxhfh75pvle3d5@uxp5esxt4slq>
 
-On Wed, 2024-08-28 at 16:35 -0300, Arnaldo Carvalho de Melo wrote:
+On Wed, Aug 28, 2024 at 05:09:08PM +0200, Alejandro Colomar wrote:
+> Hi Kees,
+> 
+> On Wed, Aug 28, 2024 at 06:48:39AM GMT, Kees Cook wrote:
+> 
+> [...]
+> 
+> > >Thank you for your suggestion. How does the following commit log look
+> > >to you? Does it meet your expectations?
+> > >
+> > >    string: Use ARRAY_SIZE() in strscpy()
+> > >
+> > >    We can use ARRAY_SIZE() instead to clarify that they are regular characters.
+> > >
+> > >    Co-developed-by: Alejandro Colomar <alx@kernel.org>
+> > >    Signed-off-by: Alejandro Colomar <alx@kernel.org>
+> > >    Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> > >
+> > >diff --git a/arch/um/include/shared/user.h b/arch/um/include/shared/user.h
+> > >index bbab79c0c074..07216996e3a9 100644
+> > >--- a/arch/um/include/shared/user.h
+> > >+++ b/arch/um/include/shared/user.h
+> > >@@ -14,7 +14,7 @@
+> > >  * copying too much infrastructure for my taste, so userspace files
+> > >  * get less checking than kernel files.
+> > >  */
+> > >-#define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
+> > >+#define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]) + __must_be_array(x))
+> > >
+> > > /* This is to get size_t and NULL */
+> > > #ifndef __UM_HOST__
+> > >@@ -60,7 +60,7 @@ static inline void print_hex_dump(const char *level,
+> > >const char *prefix_str,
+> > > extern int in_aton(char *str);
+> > > extern size_t strlcat(char *, const char *, size_t);
+> > > extern size_t sized_strscpy(char *, const char *, size_t);
+> > >-#define strscpy(dst, src)      sized_strscpy(dst, src, sizeof(dst))
+> > >+#define strscpy(dst, src)      sized_strscpy(dst, src, ARRAY_SIZE(dst))
+> > 
+> > Uh, but why? strscpy() copies bytes, not array elements. Using sizeof() is already correct and using ARRAY_SIZE() could lead to unexpectedly small counts (in admittedly odd situations).
+> > 
+> > What is the problem you're trying to solve here?
+> 
+> I suggested that here:
+> <https://lore.kernel.org/all/2jxak5v6dfxlpbxhpm3ey7oup4g2lnr3ueurfbosf5wdo65dk4@srb3hsk72zwq/>
+> 
+> There, you'll find the rationale (and also for avoiding the _pad calls
+> where not necessary --I ignore if it's necessary here--).
 
-[...]
+Right, so we only use byte strings for strscpy(), so sizeof() is
+sufficient. There's no technical need to switch to ARRAY_SIZE(), and I'd
+like to minimize any changes to such core APIs without a good reason.
 
-Tested-by: Eduard Zingerman <eddyz87@gmail.com>
+And for the _pad change, we are also doing strncpy() replacement via
+case-by-case analysis, but with a common function like get_task_comm(),
+I don't want to change the behavior without a complete audit of the
+padding needs of every caller. Since that's rather a lot for this series,
+I'd rather we just leave the existing behavior as-is, and if padding
+removal is wanted after that, we can do it on a case-by-case basis then.
 
-> @@ -3707,6 +3716,21 @@ int main(int argc, char *argv[])
->  		goto out;
->  	}
-> =20
-> +	if (show_running_kernel_vmlinux) {
-> +		const char *vmlinux =3D vmlinux_path__find_running_kernel();
-> +
-> +		if (vmlinux) {
-> +			fprintf(stdout, "%s\n", vmlinux);
-> +			rc =3D EXIT_SUCCESS;
-> +		} else {
-> +			fputs("pahole: couldn't find a vmlinux that matches the running kerne=
-l\n"
-> +			      "HINT: Maybe you're inside a container or missing a debuginfo p=
-ackage?\n",
-> +			      stderr);
-> +		}
+-Kees
 
-Nitpick: when run with valgrind this reports a leak for 'vmlinux':
-
-    =3D=3D186=3D=3D Memcheck, a memory error detector
-    =3D=3D186=3D=3D Copyright (C) 2002-2024, and GNU GPL'd, by Julian Sewar=
-d et al.
-    =3D=3D186=3D=3D Using Valgrind-3.23.0 and LibVEX; rerun with -h for cop=
-yright info
-    =3D=3D186=3D=3D Command: /home/eddy/work/dwarves-fork/build/pahole --ru=
-nning_kernel_vmlinux
-    =3D=3D186=3D=3D=20
-    vmlinux
-    =3D=3D186=3D=3D=20
-    =3D=3D186=3D=3D HEAP SUMMARY:
-    =3D=3D186=3D=3D     in use at exit: 8 bytes in 1 blocks
-    =3D=3D186=3D=3D   total heap usage: 15 allocs, 14 frees, 21,408 bytes a=
-llocated
-    =3D=3D186=3D=3D=20
-    =3D=3D186=3D=3D 8 bytes in 1 blocks are definitely lost in loss record =
-1 of 1
-    =3D=3D186=3D=3D    at 0x4843866: malloc (vg_replace_malloc.c:446)
-    =3D=3D186=3D=3D    by 0x4A8F9AE: strdup (strdup.c:42)
-    =3D=3D186=3D=3D    by 0x48755EC: vmlinux_path__find_running_kernel (dwa=
-rves.c:2718)
-    =3D=3D186=3D=3D    by 0x40ABBD: main (pahole.c:3720)
-    =3D=3D186=3D=3D=20
-    =3D=3D186=3D=3D LEAK SUMMARY:
-    =3D=3D186=3D=3D    definitely lost: 8 bytes in 1 blocks
-    =3D=3D186=3D=3D    indirectly lost: 0 bytes in 0 blocks
-    =3D=3D186=3D=3D      possibly lost: 0 bytes in 0 blocks
-    =3D=3D186=3D=3D    still reachable: 0 bytes in 0 blocks
-    =3D=3D186=3D=3D         suppressed: 0 bytes in 0 blocks
-
-While technically this is not a problem, maybe add a call to free()
-just to avoid noise in valgrind output?
-(Note that 'const' qualifier is no longer needed for
- vmlinux_path__find_running_kernel, as it returns strdup result).
-
-> +
-> +		return rc;
-> +	}
-> +
->  	if (languages.str && parse_languages())
->  		return rc;
-> =20
-
-
+-- 
+Kees Cook
 
