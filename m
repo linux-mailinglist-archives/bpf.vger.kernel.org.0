@@ -1,287 +1,206 @@
-Return-Path: <bpf+bounces-38386-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38387-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8373964246
-	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 12:53:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD32796424B
+	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 12:53:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0BD2BB24967
-	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 10:53:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 83ED7281CE7
+	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 10:53:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C013018FDA6;
-	Thu, 29 Aug 2024 10:52:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D66418FC7E;
+	Thu, 29 Aug 2024 10:53:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mdLiriDb"
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="Y1vA5rLr"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from EUR03-VI1-obe.outbound.protection.outlook.com (mail-vi1eur03olkn2056.outbound.protection.outlook.com [40.92.57.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC76418F2C1;
-	Thu, 29 Aug 2024 10:52:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724928770; cv=none; b=ViB6z6KZ8MPrc1C7nDd4MEIOvsCJQ2goqR0wkkj0OKKGuvElWUBhXHKEkiBvmJ0vjeVj0rkeluJXdVAPynatljuT+biSCqs/T2sbuNk3VCotrINel5tTzMHtE56bE18Jn0bZ7Knjdra8KhgahxXKiTPkqDd16BYYerGwLqulsLA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724928770; c=relaxed/simple;
-	bh=xZQ59p1q3lZltXo5m95QXJ/g4rKkFaSLyF3m77XIVrk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TErvnfqMjM0cb7Nf3sRhHFrLXEWTPpIJFiHF2Mpy2aseSIplHU43SKr9UV97rDwjKTwU9nYyfQivDkVkzXe1acwEW9NXeHMPYpgtn1oRGMMdJ0Pax1dA3xhGLX5shROafXuNO8b4xvZoQgAPw9/2OiJs6V2wEGweyV0BqOLrT5w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mdLiriDb; arc=none smtp.client-ip=209.85.208.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2f3ffc7841dso4745401fa.0;
-        Thu, 29 Aug 2024 03:52:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1724928765; x=1725533565; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=85t1HtXgo7SOU0tFEbV89Wze3MMLMJdkmn9MnnBc9fY=;
-        b=mdLiriDbPXOFEIkZA+Jz+x/94jmW/BMo8DghnNI0iAyk2Fr4HXPA64V5qscS0INLxS
-         5ermrkDce8r2LXwg9tRYd6jfJsOAHLB0ql7mMLDjtra0BeNnVTyFQEaSv5w/aiP++nuH
-         qHm+NGI+V84MRmuyzI7oWjQuXrLgAPexRN9fD759YEOlP6gQuWV6I98yttg97ILjYTBB
-         gg4AqqHzS5z57H6QkHrGTd5887DufdVu4YWPhzXIlGLennoaRROWPWDayGjCBtmjDruE
-         WYGQyXysOdSIMV6/bcLY9r4ZsZxh/JkE2Ghnz0DkO5SSSIl1h4fJlKL9PCXIYD4uv9dN
-         vDpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724928765; x=1725533565;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=85t1HtXgo7SOU0tFEbV89Wze3MMLMJdkmn9MnnBc9fY=;
-        b=JXOjnS1WX/9MgEp08vJLOlGD9R0ZBWvvgd6xzEb6YvUfTArZC2CSwEKHlFVWAk5UDb
-         vtVRZtiCmW/l2lZ+LrX/c7kCcsVtyPhbhagw6XtvcA9WfcaN4meV5px8zPXg7ZbdjSZE
-         9jYB9ZrgNwIwPIiTjK24iSxh9kDjXJvATmbxMePEyLntFInZ2QzsbBeaDxvNWJQtnnu6
-         9tDeuwQ3dkSbAN5avljJto1ulSbqcSCbxgUrB1wEO4LUTX9uy+BovuFIYUCmcucaoW/l
-         5ommkBMNwZ5fuu9BKDuUrj1Q908fjn6qlBG7Us9Fid5uaSFWPUsAeA0UZaIldbz6LMTT
-         GfEw==
-X-Forwarded-Encrypted: i=1; AJvYcCUHYeHq3aQBH7gRHROF6SBd3Bv74bdFWX5QPA4GIBrkxBtGye7Fy+3IOGCB5dE2zmwwoSAUwCavrxmOeO/o@vger.kernel.org, AJvYcCUZkzNoaL7NaY8YJlkuFXqeANtXoYAh0FrstcPMWEBIgmU99qYYWFN/SuiOAO3m++VWeQo=@vger.kernel.org
-X-Gm-Message-State: AOJu0YywoG5y48EF1lXU25tr/bIrxoxQ7fD1we6oHE3qyQS3BbRXaCOR
-	6vZgoRtokFcAZXlFf+obCtpwJugomxtQ02/RAxQ9lXNP/s/060kQ
-X-Google-Smtp-Source: AGHT+IEB/7p1y7S3x/3Z99k2vwiX5IMmtekOSaDa7H4Y4hvZQdNoJ3r226lxw5zBSAYxoAqEwF3oDQ==
-X-Received: by 2002:a05:651c:1503:b0:2ef:2bac:bb50 with SMTP id 38308e7fff4ca-2f6108a3d59mr20296631fa.11.1724928764065;
-        Thu, 29 Aug 2024 03:52:44 -0700 (PDT)
-Received: from mobilestation ([178.176.56.174])
-        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-2f615182d72sm1355891fa.112.2024.08.29.03.52.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Aug 2024 03:52:43 -0700 (PDT)
-Date: Thu, 29 Aug 2024 13:52:40 +0300
-From: Serge Semin <fancer.lancer@gmail.com>
-To: Jitendra Vegiraju <jitendra.vegiraju@broadcom.com>
-Cc: netdev@vger.kernel.org, alexandre.torgue@foss.st.com, 
-	joabreu@synopsys.com, davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
-	pabeni@redhat.com, mcoquelin.stm32@gmail.com, bcm-kernel-feedback-list@broadcom.com, 
-	richardcochran@gmail.com, ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org, 
-	john.fastabend@gmail.com, rmk+kernel@armlinux.org.uk, ahalaney@redhat.com, 
-	xiaolei.wang@windriver.com, rohan.g.thomas@intel.com, Jianheng.Zhang@synopsys.com, 
-	linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
-	linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org, andrew@lunn.ch, linux@armlinux.org.uk, 
-	horms@kernel.org, florian.fainelli@broadcom.com
-Subject: Re: [net-next v4 3/5] net: stmmac: Integrate dw25gmac into stmmac
- hwif handling
-Message-ID: <li75hdp527xa3k23za3mfnwgwdcs7j324mlqj3qcxto6t5f6mw@yvhnpxlvlt5c>
-References: <20240814221818.2612484-1-jitendra.vegiraju@broadcom.com>
- <20240814221818.2612484-4-jitendra.vegiraju@broadcom.com>
- <vxpwwstbvbruaafcatq5zyi257hf25x5levct3y7s7ympcsqvh@b6wmfkd4cxfy>
- <CAMdnO-LDw0OZRfBWmh_4AEYuwbq6dmnh=W3PZwRe1766Ys2huA@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEDB418FC72;
+	Thu, 29 Aug 2024 10:52:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.57.56
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1724928781; cv=fail; b=NgZl9dviT4+d2mrBVkYab/gMagrOlONRYeJDpXaPE5lTOn3Gmi04hEK1Jhc4Ica3XT8RjUKbjjioXCCnZnrN7Asa/TSk/zEOLSMvozvXwtZjK4OGeR0CKkFLX14VykwhySQ4mgmmVw9P1WK/Maapzv3lEAANAeoJGNcBO9kTsP8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1724928781; c=relaxed/simple;
+	bh=nCKTRGMn4renIxCrfL63fEkoB85zPHnh3+Dnl6uj0ZA=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=WbKuFTyZ4Qeuo4hKo3gVfHVZuH6Kg7DDtqiviVIhMnrMZmuqBTEzHEKidlWa98jfERLgOyWfYaNuJTobKS6VpaTlRDD0nrv/g2bSnjZfcDreUwcy64Ximiu0w5E6/Vcr4aYFcEbJx7NathfbpsujS/R9BoNJzq0BEpVF86puhyE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=Y1vA5rLr; arc=fail smtp.client-ip=40.92.57.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=HLxJfcWNjhWPyDGCB+GZV3iatPXyEGs1LFmiLknvFEJ+ZAiB2GubhhQ2JzUHcAlDOKXRFtFquIGdMGOJzlrQ2UcrJZqzZI5BnAvcAxg8KjHECCHa72aDnHSB67s4ypOR6aGXlPKB1anQNSG5wD1a7AqBNrbRpXhrKPlV0ilCkK5f+rH4e15VW1seX9iC5o4p7vWkEB9r8CE/BRqDfsJsiZmNBsn0PQpSbGqeRdMIkRCZ4+XGQDxo6bTHvykRw9zidOC4q2TrJDojcQm9Kdks5cUPwd+5JHctin+jJNDV5KfL7pwBcsfd3kkLdZRXruBhWTvmIj1iyP80hwJvTpWgVg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=V9MRBL0U/ikibt7FdXKhMImtzKnwglIAtb9N0Xya4vw=;
+ b=YYDbOZVNW82fUkes7UdepKkVnhZJJ3GIGYYU3jYVPISgs6y4bKyNChREwUnfrn2l0/feevLQoPfKHk1E7xqBkTqNpTtrHshiFqtpANiWdSWNlzacI0uTCjGAckNX/en2TicdhpajhnLgKZm0QQSFvff21f2is+eGdFeY0FOZFMEZXyY0+i4mc/Z2U8UgEkwAgtyaRGj0zzFB4X1GEc5s381hR6KJWnUAMgfzkiY9THLIEQ6ibRLMX7rbTpHqcPQwy/5ZO1jMM0HWKI4xWChGM2tm79EtC9oVhwQNcTIv73D2M0a4576scEmw5NRj+/ak9zNwI6Sy7h5h1ZhlzeSCvQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=V9MRBL0U/ikibt7FdXKhMImtzKnwglIAtb9N0Xya4vw=;
+ b=Y1vA5rLrT52QVnFKVhNMGgJ6oUxpSfBV0ogURPUCGyJPGVE9hN4JlcbRsjB395L/AnqfAwsn4HgxC9fYHGLFHFBHz1rG1Vd3tBw9hyi7saUkW/4bVM0JxgVVtVPsZC9FCbiTj9z8dsBwDAHdVPLGm48CQ9BLnozANOpRlbfSOYPoV1/s2vDW+gS4kW2vJ02VxpWQCQzxi99aXYbvCCKYsUv772W/M6NhMqK2yw0gcSodahJakvVN8OVmC+4Hw7oTG8vD5JnYRqFcan3LcCgVjgOHKxiazXwOWSfgGUC5Jj4ki9RLMxUTTwuiJhs3bhwXYDmsT0ZFKm1EUPFdT/SwRQ==
+Received: from AM6PR03MB5848.eurprd03.prod.outlook.com (2603:10a6:20b:e4::10)
+ by DU0PR03MB9125.eurprd03.prod.outlook.com (2603:10a6:10:464::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7897.27; Thu, 29 Aug
+ 2024 10:52:55 +0000
+Received: from AM6PR03MB5848.eurprd03.prod.outlook.com
+ ([fe80::4b97:bbdb:e0ac:6f7]) by AM6PR03MB5848.eurprd03.prod.outlook.com
+ ([fe80::4b97:bbdb:e0ac:6f7%4]) with mapi id 15.20.7897.021; Thu, 29 Aug 2024
+ 10:52:55 +0000
+Message-ID:
+ <AM6PR03MB58488B410942326C129073F499962@AM6PR03MB5848.eurprd03.prod.outlook.com>
+Date: Thu, 29 Aug 2024 11:52:53 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v2 1/2] bpf: Make the pointer returned by iter
+ next method valid
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
+ KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+ Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+ Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf <bpf@vger.kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>
+References: <AM6PR03MB5848FD2C06A4AEF4D142EE91998C2@AM6PR03MB5848.eurprd03.prod.outlook.com>
+ <CAADnVQ+-yTEE6_B6+VOjv9uZ-sP3bUogcNPk7cZJBUqpuQVQfg@mail.gmail.com>
+Content-Language: en-US
+From: Juntong Deng <juntong.deng@outlook.com>
+In-Reply-To: <CAADnVQ+-yTEE6_B6+VOjv9uZ-sP3bUogcNPk7cZJBUqpuQVQfg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-TMN: [34mJr1yCyeTM0Aq4HNwZnnGsGauSYdgo]
+X-ClientProxiedBy: AM0PR03CA0009.eurprd03.prod.outlook.com
+ (2603:10a6:208:14::22) To AM6PR03MB5848.eurprd03.prod.outlook.com
+ (2603:10a6:20b:e4::10)
+X-Microsoft-Original-Message-ID:
+ <8883f493-998f-404f-ab73-c6966f1f6a64@outlook.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMdnO-LDw0OZRfBWmh_4AEYuwbq6dmnh=W3PZwRe1766Ys2huA@mail.gmail.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM6PR03MB5848:EE_|DU0PR03MB9125:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4dffafda-2521-48cc-6314-08dcc818bc99
+X-Microsoft-Antispam:
+	BCL:0;ARA:14566002|8060799006|19110799003|461199028|5072599009|15080799006|6090799003|3412199025|440099028;
+X-Microsoft-Antispam-Message-Info:
+	AGbd9h4N1XXRGK8CIapg7mfpqISJoOEBvuKg4xP5//upOHW4OBPqygxZ9Hy+HUbVQXdTpUwfqAA3Gt5lgSbzAPzViEGc7geBcw1lfhBi1YWCjq+F7gsE7h7IxzY1CqKZN6S/l2ztFkm+iGc2CrrKzJ03e9pU8Xh0idc4F19EYgrOaMmymAo1eE/l7jep2EMof0nxSyrHbtzqLssnDDeolTBaOPrXN9sLG8ISKJ5IHI2wlolVOHmhO7Ah4ofjbBgu1jGLvcVC13H1gCnhW7lANnYtRfR0+0DYBjwMPfWHvRYJWOpyu8SBtdvOgfokJ1BzBFTPh6Sjt9dGiLFnPZOrWKi0b5P0hXMoV93iH5G1vaD4KnelbgPuGXwjCwyVD7oyecfyaK80kw/L9vbqWX0NVp8ji9DQpsrCfRWxN03RRIdUwmY9qBd516deZgYPkqobL3aoaouOKKzCmWwZBq0rudiEamD6AxhCPhEOw4ivibgMWYTWkh83MrtDOSoP8SktQaUX6Re1go2DzjJbA7XVbGEKP58xlognk1hEJFHTqGrbQ8zuSFEDAcYTqOLrCbYWvdS1RjFwW4Xwn/kzXw20WCMYomJE3g+/Aw8EjP/jI4xxUnzj3A6UZCtab3ySbRJg0Fkyz4Wj7QtM8RNHn7FtqRHQAo1xuSrrb141T6HcV0bRcXsegP3lkwjNP5hcQgIaYyskn+Diau1dqjLOljzc/7ryvUAu0zFsy/7bQR9XQhztNxeEJjd1bhOvOJOYX2KgcvaSCCpHKF6RL4MUSNshT43ulZ2ZEscoN/8u8cU9Puk=
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?M0JYVXQ2ZGhkRE80M1lYdjA4b1pjNEVheWtrUFdQbUFKTUplRmMrOWhGdUIv?=
+ =?utf-8?B?MS9WUjM2SElrS1ZZR21xMkVya1IwVjNqODQvZWs5ajBadkRzVEl3eWcvbXVB?=
+ =?utf-8?B?VktobmdsR1RKWWxyOENyYWdiSmRxaEpvYXNydk1uQ3hEYWdCdmRrQnVrUXZx?=
+ =?utf-8?B?dFE2ZHVtTjBUejFEMWFxd05XUmYyZ2tsd1VBS290WFdZRHlKUU5TQzRGZERr?=
+ =?utf-8?B?U3RzODFaQVBjSms2RTVSNS82UGVwRjRvT3JFc1daMW81YXdZU2tHck9saFZ0?=
+ =?utf-8?B?c3lyZmFZOCtNeXUwUTZ4R1FsdTNINThGN2l5aGxBcEhzT2ZrVnJTNUI2RFRr?=
+ =?utf-8?B?OUxrVU52VVRlcnRlNFBlWWxZNFh0L1p1TDk1bDc3d1J2VWFZZHM4TGE4RTFD?=
+ =?utf-8?B?QmZXMExiOUtnSXRYZkcrTzBlbzBGZjNmNWZFa0Q4SWE3NzQ4bU5pbXRHblVM?=
+ =?utf-8?B?Wk1hdE5UMW50TWQvbFVJbkNsVXhYZmMvVzRldGZ1OWlDZmpFZS9BSGlWQXA0?=
+ =?utf-8?B?V2lWWHNVTkdLck5IVUNhR2tOeHc3Wk45QVNqR2JMN2FENGUxQkpzV0hOODZ3?=
+ =?utf-8?B?VDgyWE9hbUxoZU5QSUk1QmF0RFBaS0NUZzJZNFE4M09jUEVyeDBPTUhZUkZv?=
+ =?utf-8?B?S2tPUGpUWlZDaXhkemhsY21YTk9JNE9pMFdTWFF1K2ZWVDBrNlhjUjZHcmVU?=
+ =?utf-8?B?MURiT2hsRVpJazNuNEhyb2E0VmlhUGFrWXp0RThZN3VzWjdWdndOeHhJSGhx?=
+ =?utf-8?B?M3lIQkFhbWdWWUcvZnBGa0NPN0drcEN1ZUxvdmJ3ZUZRNTliNU41NG82ajVo?=
+ =?utf-8?B?QVAxMnRua1dGUVU1VmtNMEhMZXdRYUdMYU16aDIxUUwzbklCVlVwMVlXVERH?=
+ =?utf-8?B?UTk5eWpGL1lJY2M1OUNtWm5HaEVuc2xPOVI2ZU4vRGRJTjFXRUxyajlMYlZE?=
+ =?utf-8?B?NmNJM3RObzNwZ0ptbmNoTlAwRTdZVW5mMTI5N2w5UWZ2VFdTMXo4Vm5GTVJr?=
+ =?utf-8?B?STFESDBMZ1Qxem1JcktUOFJYSC9tdldkajh3Z1N1WVZBUGRlMmNnRDZOR2ZP?=
+ =?utf-8?B?SFRPN28vZ2hoOHBBZGRkaGN5VVQ1eVNQbjNqTFIxNDVaYjFTazd3SkNkV0po?=
+ =?utf-8?B?NytpS2Evbjh6WGphMmdpaFZQcVVYRUxEcWNOcFhRbTlzUGJzRlR5eFVzaUc5?=
+ =?utf-8?B?ZDVmN281VGlvYkVmWlYrUVdMQ1lVTHFWLzExM1pkY1U2TmY0VlhHRElFV2x2?=
+ =?utf-8?B?L3ZvUGcyOTJGK0JRK0RzYXFQUkoraytZdTZmVUJsY3FqM3ZqS1l2bUVSeitk?=
+ =?utf-8?B?dU5JcTZDdnZFbEhRYVcrMzhXVHFEREdZZGt2TWtmZVhxcjFPVWJJeWIzV1po?=
+ =?utf-8?B?cGdjMENyKyt0U1RIdU54b1FRWTljZHBrYnl1YWFRNS8rUzBCbEhFcWFHREZw?=
+ =?utf-8?B?dTVtYW9HY2cveFliMGMwVWtGVXhuTmtTVDRiZThsOEdpdzVNMkdHMndHTFJk?=
+ =?utf-8?B?ejR6aWF2TTdHREFGWWxSaUoxdVc2anVDbmFGK0J6YUVoR0krbUFFWWVZTWUx?=
+ =?utf-8?B?WTBjNHd4UHRxOEtzbnJ1cGJwVE1xV1FoRkFPdFBXYWZ4dkQwVjJCZUhRajF0?=
+ =?utf-8?B?VW1yVys2YjcySmFrdDJuVVFNMDFBSS9EUjJCZ3NXcWFsUmZnM3pPcjJPSzg0?=
+ =?utf-8?Q?r4J7sWbd805w/QCA3H6D?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4dffafda-2521-48cc-6314-08dcc818bc99
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR03MB5848.eurprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Aug 2024 10:52:55.2052
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU0PR03MB9125
 
-Hi Jitendra
-
-On Mon, Aug 26, 2024 at 11:53:13AM -0700, Jitendra Vegiraju wrote:
-> Hi Serge(y)
-> Thank you for reviewing the patch.
+On 8/21/24 21:53, Alexei Starovoitov wrote:
+> On Mon, Aug 19, 2024 at 3:16 AM Juntong Deng <juntong.deng@outlook.com> wrote:
+>>
+>> Currently we cannot pass the pointer returned by iter next method as
+>> argument to KF_TRUSTED_ARGS or KF_RCU kfuncs, because the pointer
+>> returned by iter next method is not "valid".
+>>
+>> This patch sets the pointer returned by iter next method to be valid.
+>>
+>> This is based on the fact that if the iterator is implemented correctly,
+>> then the pointer returned from the iter next method should be valid.
+>>
+>> This does not make NULL pointer valid. If the iter next method has
+>> KF_RET_NULL flag, then the verifier will ask the ebpf program to
+>> check NULL pointer.
+>>
+>> KF_RCU_PROTECTED iterator is a special case, the pointer returned by
+>> iter next method should only be valid within RCU critical section,
+>> so it should be with MEM_RCU, not PTR_TRUSTED.
+>>
+>> The pointer returned by iter next method of other types of iterators
+>> is with PTR_TRUSTED.
+>>
+>> Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
+>> ---
+>> v1 -> v2: Handle KF_RCU_PROTECTED case and add corresponding test cases
+>>
+>>   kernel/bpf/verifier.c | 6 ++++++
+>>   1 file changed, 6 insertions(+)
+>>
+>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+>> index ebec74c28ae3..d083925c2ba8 100644
+>> --- a/kernel/bpf/verifier.c
+>> +++ b/kernel/bpf/verifier.c
+>> @@ -8233,6 +8233,12 @@ static int process_iter_next_call(struct bpf_verifier_env *env, int insn_idx,
+>>                          verbose(env, "bug: bad parent state for iter next call");
+>>                          return -EFAULT;
+>>                  }
+>> +
+>> +               if (cur_iter->type & MEM_RCU) /* KF_RCU_PROTECTED */
+>> +                       cur_fr->regs[BPF_REG_0].type |= MEM_RCU;
+>> +               else
+>> +                       cur_fr->regs[BPF_REG_0].type |= PTR_TRUSTED;
+>> +
 > 
-> On Fri, Aug 23, 2024 at 6:49 AM Serge Semin <fancer.lancer@gmail.com> wrote:
-> >
-> > Hi Jitendra
-> >
-> > On Wed, Aug 14, 2024 at 03:18:16PM -0700, jitendra.vegiraju@broadcom.com wrote:
-> > > From: Jitendra Vegiraju <jitendra.vegiraju@broadcom.com>
-> > >
-> > > Integrate dw25gmac support into stmmac hardware interface handling.
-> > > Added a new entry to the stmmac_hw table in hwif.c.
-> > > Define new macros DW25GMAC_CORE_4_00 and DW25GMAC_ID to identify 25GMAC
-> > > device.
-> > > Since BCM8958x is an early adaptor device, the synopsis_id reported in HW
-> > > is 0x32 and device_id is DWXGMAC_ID. Provide override support by defining
-> > > synopsys_dev_id member in struct stmmac_priv so that driver specific setup
-> > > functions can override the hardware reported values.
-> > >
-> > > Signed-off-by: Jitendra Vegiraju <jitendra.vegiraju@broadcom.com>
-> > > ---
-> > >  drivers/net/ethernet/stmicro/stmmac/common.h |  2 ++
-> > >  drivers/net/ethernet/stmicro/stmmac/hwif.c   | 25 ++++++++++++++++++--
-> > >  drivers/net/ethernet/stmicro/stmmac/stmmac.h |  1 +
-> > >  3 files changed, 26 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/drivers/net/ethernet/stmicro/stmmac/common.h b/drivers/net/ethernet/stmicro/stmmac/common.h
-> > > index 684489156dce..46edbe73a124 100644
-> > > --- a/drivers/net/ethernet/stmicro/stmmac/common.h
-> > > +++ b/drivers/net/ethernet/stmicro/stmmac/common.h
-> > > @@ -38,9 +38,11 @@
-> > >  #define DWXGMAC_CORE_2_10    0x21
-> > >  #define DWXGMAC_CORE_2_20    0x22
-> > >  #define DWXLGMAC_CORE_2_00   0x20
-> > > +#define DW25GMAC_CORE_4_00   0x40
-> > >
-> > >  /* Device ID */
-> > >  #define DWXGMAC_ID           0x76
-> > > +#define DW25GMAC_ID          0x55
-> > >  #define DWXLGMAC_ID          0x27
-> > >
-> > >  #define STMMAC_CHAN0 0       /* Always supported and default for all chips */
-> > > diff --git a/drivers/net/ethernet/stmicro/stmmac/hwif.c b/drivers/net/ethernet/stmicro/stmmac/hwif.c
-> > > index 29367105df54..97e5594ddcda 100644
-> > > --- a/drivers/net/ethernet/stmicro/stmmac/hwif.c
-> > > +++ b/drivers/net/ethernet/stmicro/stmmac/hwif.c
-> > > @@ -278,6 +278,27 @@ static const struct stmmac_hwif_entry {
-> > >               .est = &dwmac510_est_ops,
-> > >               .setup = dwxlgmac2_setup,
-> > >               .quirks = stmmac_dwxlgmac_quirks,
-> >
-> > > +     }, {
-> > > +             .gmac = false,
-> > > +             .gmac4 = false,
-> > > +             .xgmac = true,
-> > > +             .min_id = DW25GMAC_CORE_4_00,
-> > > +             .dev_id = DW25GMAC_ID,
-> > > +             .regs = {
-> > > +                     .ptp_off = PTP_XGMAC_OFFSET,
-> > > +                     .mmc_off = MMC_XGMAC_OFFSET,
-> > > +                     .est_off = EST_XGMAC_OFFSET,
-> > > +             },
-> > > +             .desc = &dwxgmac210_desc_ops,
-> > > +             .dma = &dw25gmac400_dma_ops,
-> > > +             .mac = &dwxgmac210_ops,
-> > > +             .hwtimestamp = &stmmac_ptp,
-> > > +             .mode = NULL,
-> > > +             .tc = &dwmac510_tc_ops,
-> > > +             .mmc = &dwxgmac_mmc_ops,
-> > > +             .est = &dwmac510_est_ops,
-> > > +             .setup = dwxgmac2_setup,
-> > > +             .quirks = NULL,
-> > >       },
-> >
-> > This can be replaced with just:
-> >
-> > +       }, {
-> > +               .gmac = false,
-> > +               .gmac4 = false,
-> > +               .xgmac = true,
-> > +               .min_id = DW25GMAC_CORE_4_00,
-> > +               .dev_id = DWXGMAC_ID, /* Early DW 25GMAC IP-core had XGMAC ID */
-> > +               .regs = {
-> > +                       .ptp_off = PTP_XGMAC_OFFSET,
-> > +                       .mmc_off = MMC_XGMAC_OFFSET,
-> > +                       .est_off = EST_XGMAC_OFFSET,
-> > +               },
-> > +               .desc = &dwxgmac210_desc_ops,
-> > +               .dma = &dw25gmac400_dma_ops,
-> > +               .mac = &dwxgmac210_ops,
-> > +               .hwtimestamp = &stmmac_ptp,
-> > +               .mode = NULL,
-> > +               .tc = &dwmac510_tc_ops,
-> > +               .mmc = &dwxgmac_mmc_ops,
-> > +               .est = &dwmac510_est_ops,
-> > +               .setup = dw25gmac_setup,
-> > +               .quirks = NULL,
-> >         }
-> >
-> > and you won't need to pre-define the setup() method in the
-> > glue driver. Instead you can define a new dw25xgmac_setup() method in
-> > the dwxgmac2_core.c as it's done for the DW XGMAC/LXGMAC IP-cores.
-> >
-> > Note if your device is capable to work with up to 10Gbps speed, then
-> > just set the plat_stmmacenet_data::max_speed field to SPEED_10000.
-> > Alternatively if you really need to specify the exact MAC
-> > capabilities, then you can implement what Russell suggested here
-> > sometime ago:
-> > https://lore.kernel.org/netdev/Zf3ifH%2FCjyHtmXE3@shell.armlinux.org.uk/
-> >
-> I like your suggestion to add one stmmac_hw[] array entry (entry_a) for this
-> "early release" DW25GMAC IP and another entry (entry_b) for final DW25MAC
-> IP, in the process eliminate the need for a new member variable in struct
-> stmmac_priv.
+> That's an odd place to make such an adjustment.
+> check_kfunc_call() would fit much better.
+> That's where r0.type is typically set.
 > 
-
-> However, I would like to bring to your attention that this device requires
-> special handling for both synopsys_id and dev_id.
-> This device is reporting 0x32 for synopsys_id and 0x76(XGMAC) for dev_id.
-> The final 25GMAC spec will have 0x40 for synopsys_id and 0x55(25GMAC) for
-> dev_id.
-
-For some reason I was thinking that your device had only the device ID
-pre-defined with the XGMAC value meanwhile the Synopsys ID was 0x40.
-Indeed you get to override both of these data in the platform-specific
-setup() method.
-
+> Also, the above is buggy for num iter.
+> check_kfunc_call() would set r0.type = PTR_TO_MEM for that iter,
+> since it's proto: int *bpf_iter_num_next(struct bpf_iter_num* it)
+> but above logic would slap PTR_TRUSTED on top.
+> PTR_TO_MEM | PTR_TRUSTED is invalid combination.
+> I'm surprised nothing crashed.
 > 
-> So, in order to avoid falsely qualifying other XGMAC devices with
-> synopsis_id >=0x32 as DW25GMAC, I am thinking we will have to overwrite the
-> synopsys_id to 0x40 (DW25GMAC_CORE_4_00) in glue driver using existing
-> glue driver override mechanism.
-> 
-> We can implement dw25gmac_setup() in dwxgmac2_core.c for generic 25GMAC
-> case. But, this glue driver will have to rely on its own setup function
-> to override the synopsys_id as DW25GMAC_CORE_4_00.
-> 
-> Do you think it looks reasonable?
+> pw-bot: cr
 
-What I was trying to avoid was the setup() method re-definition just
-for the sake of the IP-core version override. Because if not for that
-you could have created and used the generic DW 25GMAC dw25gmac_setup()
-function.
+I fixed the above issues and added corresponding tests.
 
-One of the possible solutions I was thinking was to introduce the
-plat_stmmacenet_data::{snps_id,dev_id} fields and use their values in
-the stmmac_hwif_init() procedure instead of the data read from the
-MAC.VERSION CSR.
-
-Another solution could be to add the plat_stmmacenet_data::has_25gmac
-field and fix the generic driver code to using it where it's relevant.
-Then you won't need to think about what actual Synopsys ID/Device ID
-since it would mean a whole new IP-core.
-
--Serge(y)
-
-> If yes, do you want me to add the generic 25GMAC stmmac_hw[] entry
-> ("entry_b") now or when
-> such a device becomes available for testing?
-> 
-> > If you also have a DW 25GMAC-based device with 0x55 device ID, then
-> > just add another stmmac_hw[] array entry.
-> >
-> 
-> > >  };
-> > >
-> > >       int hw_cap_support;
-> > >       int synopsys_id;
-> >
-> > > +     int synopsys_dev_id;
-> >
-> > With the suggestion above implemented you won't need this.
-> 
-> Got it. Thanks.
-> 
-> >
-> > -Serge(y)
-> >
-> > >       u32 msg_enable;
-> > >       int wolopts;
-> > >       int wol_irq;
-> > > --
-> > > 2.34.1
-> > >
+I sent the version 3 patch set:
+https://lore.kernel.org/bpf/AM6PR03MB58482E9A154910D06A9E58B499962@AM6PR03MB5848.eurprd03.prod.outlook.com/T/#t
 
