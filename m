@@ -1,115 +1,341 @@
-Return-Path: <bpf+bounces-38337-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38338-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB8CC9637F0
-	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 03:46:21 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31F83963803
+	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 03:55:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 68A592850FD
-	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 01:46:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AF9611F23CF4
+	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 01:55:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C415B1C6A1;
-	Thu, 29 Aug 2024 01:46:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68A0F208CA;
+	Thu, 29 Aug 2024 01:55:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JrKC8wKc"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="qejrDkqJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD8578814
-	for <bpf@vger.kernel.org>; Thu, 29 Aug 2024 01:46:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54AEF2837F
+	for <bpf@vger.kernel.org>; Thu, 29 Aug 2024 01:55:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724895976; cv=none; b=kkzjpXMqSGfowjmQIXA8B5Mi9u8lIVusqEXbtQW8GMOerNqY15zC9dyDyh0JsmaxuOat0MK5HgbwMucA7beC3NUqLw7bXDy77ASvJ7YQDssGcyFjU+/1aW/l/S0T1bHbRdWMx6TIG+YHtawqIJiks2aLT+5JLDkE850O94Smkrw=
+	t=1724896515; cv=none; b=tz+rvb8oNMi88Ed/XnNw7iE3HdENBzosIQKbQ6KKG46yUw/PpJB9nzoUWjVfl5igVKIYT/+HIJTbokTmtzFB3PeGR88ot0/a4klIfvULuCj4czcZjgnGwlnD7llLBJfZBdwSKrg31KmVLw2WPqyQRWBmCSjNt9ZCq35RkqbdAlo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724895976; c=relaxed/simple;
-	bh=E1f6Vzt+AYOhHsqvgQVqRKkfhnqh86zmCGFv9EbTHZk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jy931GqTPbbVdwlT75HqtDQqohEbCEZ69poTQMXizQ8gQYfroRksQksN8Ao2PM94DuxxnruMT55Hsb4OT5WTxygRjmLNlELryCoRPPS8Izckv7l8N0791LagFESA2G1tJ7m2KTBQcQnCMuyg+sj1wMysQ73F4MDmhiT5DjGIFqA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JrKC8wKc; arc=none smtp.client-ip=209.85.221.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-3718c176ed7so71880f8f.2
-        for <bpf@vger.kernel.org>; Wed, 28 Aug 2024 18:46:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1724895973; x=1725500773; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=E1f6Vzt+AYOhHsqvgQVqRKkfhnqh86zmCGFv9EbTHZk=;
-        b=JrKC8wKceNaXBf64PiTB5YzstuZX/BdW7VCX+4gH2WbsuuKePse/qJ3OoHy9nQP22l
-         d4dEtPunCR6hYJjsy2VP5YZz3ILH74sdm98RgIQQZI0fO2Y2pH70/7NAuPerUrcxemtq
-         IDezhuWLAoUODNbr+BLBi/VgkpxLft1zPTjB6tmpQhmKU0RZDo/XKWd2v/uVB+ZeI0gR
-         j5nWmFxpTOKIBnLyXHPv6eJNl9Op8QoORxB9PqjMozGnwixVc6v1/OTBW1XK+flFEEf7
-         LE4IW8wIvgh9PH0LtYQXlG0LwFSLy0BhLOzywsfh1qsq96UOvnPHszcSw6vclOK/O+GF
-         wgVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724895973; x=1725500773;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=E1f6Vzt+AYOhHsqvgQVqRKkfhnqh86zmCGFv9EbTHZk=;
-        b=j13S1FcRuvqHgW200CEbjpCvUzFo7fKnv5hQIFbSAfXajIeE3G4WW26sqWU1aQ2i3U
-         IsOy9s/zBTvJMQMplNy9WxtgfO/YbV8V4yLzy+UoTUXznBxQDz57V7INArG3icLjo2MD
-         EKhzbDpZ67KLygoEZYuAandACJaA/bWh5++mt1DQQzy6e2ChXwrfN7zUlnSeBkw9uMOe
-         04DMc3UaqHH6jCLjOxHndj3vDBdFz7JauHQ/JKezlU9eYulGTFXiAf/dT0aGYrw4/9e1
-         s4tppNBC9HGuY92nOTSHe1NKS2nFOuBLqbGQfyPgc3Mj1wND4nSfEy1xYowaJYzdekhc
-         uSIw==
-X-Forwarded-Encrypted: i=1; AJvYcCWXBGk1xfG26r5UkfY1Tn+GcchbgTlP+kt6szoLamdTB8K6mIydf0m1BAvuZYEpC8wpIqc=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy9CN00tUMTLQ97qD6T+IW+MBuQdoxPshMQbU46+jcUOwmxkhPX
-	JllbLrjd7eDwdooOVCQ4uNbZy/+qzoHJ5TlalF0HQVUR0G/FVn7QufL5H+8af5AOanmMphhRLMI
-	CWkcdv6Ze8RSELOboz+v9CiypIEs=
-X-Google-Smtp-Source: AGHT+IENevEE01iykZwl2IDKD/F3Ppf6+qL94djp/zhZ0iphstPbOpsLneZ/sJuvx8LxBCzkiABmKr/lLLq/VkUofRg=
-X-Received: by 2002:adf:f008:0:b0:371:93eb:78a4 with SMTP id
- ffacd0b85a97d-3749b52ec3dmr738159f8f.9.1724895972778; Wed, 28 Aug 2024
- 18:46:12 -0700 (PDT)
+	s=arc-20240116; t=1724896515; c=relaxed/simple;
+	bh=qzAfXPzF767/GvrTzz7dmZa0FlsfaH16IhwRIB1qrY8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=icU4LkhryfUwYoDWi+52XwyQQRhT+m+U0t/rbt+VEqTExOE6q9tjiLh7yHhmXnkN8Dm0uPPKo93jUHE++Oh6/ZrvBUEmT+5DlX/Xk9SfVXBuf3WO5X472CYjIvU95svhIi1iYd8Oco+/C+JBpw7pM9dZKoDzNt5ZrNcbRp2t8kk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=qejrDkqJ; arc=none smtp.client-ip=91.218.175.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <0723964d-97b9-4b48-995c-3c9efa980f5a@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1724896511;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=MR0T95174GvoKL8fBKsrn92m5inRkPrg1CAjBsS0wjs=;
+	b=qejrDkqJjVTaxQQOCle5aYgSrNGv91ij4CcEUrRQbg0fsfeO35PuqgH+rPhP45/B5dvE/h
+	3l8+5Gbi/jUX1SyGm6Hyc0aPGSjxovFewQETSBLHk9vdb2yY1vzsfhmoDEKotrxdcWydey
+	UOPJlYtwzpRnyfgpjaYFKZyhrzV5+YI=
+Date: Wed, 28 Aug 2024 18:54:58 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240827194834.1423815-1-martin.lau@linux.dev>
- <20240827194834.1423815-2-martin.lau@linux.dev> <9bcfc97f011f4b4d5dc312e26074d0c1d744af02.camel@gmail.com>
-In-Reply-To: <9bcfc97f011f4b4d5dc312e26074d0c1d744af02.camel@gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 28 Aug 2024 18:46:01 -0700
-Message-ID: <CAADnVQKfuWjpDxL=0OYMe_u37tTpPgPUW3-5L7X-QVUGh5x1gw@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 1/9] bpf: Move insn_buf[16] to bpf_verifier_env
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Yonghong Song <yonghong.song@linux.dev>, 
-	Amery Hung <ameryhung@gmail.com>, Kernel Team <kernel-team@meta.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next] bpf, x64: Fix a jit convergence issue
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>,
+ Daniel Hodges <hodgesd@meta.com>
+References: <20240825200406.1874982-1-yonghong.song@linux.dev>
+ <CAADnVQ+5HD1ZxBqpDgNuwPkO1+VGzm1yqhxuDD4HYtkRYHwXiA@mail.gmail.com>
+ <7e2ad37e-e750-4cbd-8305-bf16bbebcc53@linux.dev>
+ <CAADnVQLbknLw9fOhgbSNaNzKi5gfQTP74vXQu3D1P2OVF81b+Q@mail.gmail.com>
+Content-Language: en-GB
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <CAADnVQLbknLw9fOhgbSNaNzKi5gfQTP74vXQu3D1P2OVF81b+Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, Aug 28, 2024 at 5:41=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
-> wrote:
->
-> On Tue, 2024-08-27 at 12:48 -0700, Martin KaFai Lau wrote:
-> > From: Martin KaFai Lau <martin.lau@kernel.org>
-> >
-> > This patch moves the 'struct bpf_insn insn_buf[16]' stack usage
-> > to the bpf_verifier_env. A '#define INSN_BUF_SIZE 16' is also added
-> > to replace the ARRAY_SIZE(insn_buf) usages.
-> >
-> > Both convert_ctx_accesses() and do_misc_fixup() are changed
-> > to use the env->insn_buf.
-> >
-> > It is a prep work for adding the epilogue_buf[16] in a later patch.
-> >
-> > Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
-> > ---
->
-> Not sure if this refactoring is worth it but code looks correct.
-> Note that there is also inline_bpf_loop()
-> (it needs a slightly bigger buffer).
 
-Probably worth it in the follow up, since people complain that
-this or that function in verifier.c reaches stack size limit
-when compiled with sanitizers.
-These buffers on stack are the biggest consumers.
+On 8/28/24 4:44 PM, Alexei Starovoitov wrote:
+> On Wed, Aug 28, 2024 at 3:47 PM Yonghong Song <yonghong.song@linux.dev> wrote:
+>>> It can be je/je too, no?
+>> Yes. It is possible.
+>>
+>>> so 128 - 4 instead of 128 - 3 ?
+>> You probably mean "127 - 4 instead of 127 - 3" since
+>> the maximum value is 127.
+> Yes, of course :)
+>
+>> I checked 127 - 4 = 0x7c and indeed we should. See below examples:
+>>
+>>      20e:    48 85 ff                test   rdi,rdi
+>>      211:    XX XX                   je     0x291
+>>      213:    48 8b 77 00             mov    rsi,QWORD PTR [rdi+0x0]
+>>      ...
+>>      28d:    XX XX XX XX XX XX       je     0x212
+>>      293:    bf 03 00 00 00          mov    edi,0x3
+>>
+>> =>
+>>
+>>      20e:    48 85 ff                test   rdi,rdi
+>>      211:    XX XX XX XX XX XX       je     0x297 (0x293 - 0x213)
+>>      217:    48 8b 77 00             mov    rsi,QWORD PTR [rdi+0x0]
+>>      ...
+>>      291:    XX XX                   je     0x217 (0x217 - 0x293)
+>>      293:    bf 03 00 00 00          mov    edi,0x3
+>>
+>> =>
+>>
+>>      20e:    48 85 ff                test   rdi,rdi
+>>      211:    XX XX                   je     0x28f (0x293 - 0x217)
+>>      213:    48 8b 77 00             mov    rsi,QWORD PTR [rdi+0x0]
+>>      ...
+>>      28d:    XX XX                   je     0x213 (0x213 - 0x293)  // -0x80 allowed
+>>      293:    bf 03 00 00 00          mov    edi,0x3
+>>
+>> =>
+>>
+>>      20e:    48 85 ff                test   rdi,rdi
+>>      211:    XX XX XX XX XX XX       je     0x28f (0x293 - 0x213)
+>>      217:    48 8b 77 00             mov    rsi,QWORD PTR [rdi+0x0]
+>>      ...
+>>      291:    XX XX                   je     0x217 (0x217 - 0x293)
+>>      293:    bf 03 00 00 00          mov    edi,0x3
+>>
+>> =>
+>>      ...
+>>
+>>
+>> Here 0x293 - 0x217 = 0x7c
+> How did you craft such a test?
+> Can we add it as a selftest somehow?
+
+This is not from a complete test. I assumed some state during convergence
+and from there to further derive states. But I will try to see whether
+I can construct actual test cases or not.
+
+>
+>>>> +static bool is_imm8_cond_offset(int value)
+>>>> +{
+>>>> +       return value <= 124 && value >= -128;
+>>> the other side needs the same treatment, no ?
+>> good question. From my understanding, the non-convergence in the
+>> above needs both forward and backport conditions. The solution we
+>> are using is based on putting a limitation on forward conditions
+>> w.r.t. jit code gen.
+>>
+>> Another solution is actually to put a limitation on backward
+>> conditions. For example, let us say the above is_imm8_cond_offset()
+>> has
+>>          return value <= 127 && value > -124
+>>
+>> See below example:
+>>
+>>      20e:    48 85 ff                test   rdi,rdi
+>>      211:    XX XX                   je     0x291
+>>      213:    48 8b 77 00             mov    rsi,QWORD PTR [rdi+0x0]
+>>      ...
+>>      28d:    XX XX XX XX XX XX       je     0x212
+>>      293:    bf 03 00 00 00          mov    edi,0x3
+>>
+>> =>
+>>
+>>      20e:    48 85 ff                test   rdi,rdi
+>>      211:    XX XX XX XX XX XX       je     0x297 (0x293 - 0x213)
+>>      217:    48 8b 77 00             mov    rsi,QWORD PTR [rdi+0x0]
+>>      ...
+>>      291:    XX XX XX XX XX XX       je     0x21b (0x217 - 0x293)
+>>      297:    bf 03 00 00 00          mov    edi,0x3
+>>
+>> =>
+>>
+>>      20e:    48 85 ff                test   rdi,rdi
+>>      211:    XX XX XX XX XX XX       je     0x297 (0x297 - 0x217)
+>>      217:    48 8b 77 00             mov    rsi,QWORD PTR [rdi+0x0]
+>>      ...
+>>      291:    XX XX XX XX XX XX       je     0x217 (0x217 - 0x297)
+>>      297:    bf 03 00 00 00          mov    edi,0x3
+>>
+>> converged here.
+>>
+>> So I think we do not need to limit both sides. One side should be enough.
+> I see and agree when both sides are je/je.
+> What if the earlier one is a jmp ?
+>
+> Then we can hit:
+>             if (nops != 0 && nops != 3) {
+>                       pr_err("unexpected jump padding: %d bytes\n",
+>                                               nops);
+> ?
+>
+> So one side of "jmp_cond padding" and the same side in "jump padding"
+> needs to do it?
+
+I did some further experiments with pattern like
+   jmp <-> je
+and
+   jmp <-> jmp
+
+The below is the illustration (not from a complete test):
+
+================
+
+     211:    XX XX                   jmp     0x291
+     213:    48 8b 77 00             mov    rsi,QWORD PTR [rdi+0x0]
+     ...
+     28d:    XX XX XX XX XX XX       je     0x212
+     293:    bf 03 00 00 00          mov    edi,0x3
+
+=>
+
+     211:    XX XX XX XX XX          jmp     (0x293 - 0x213)
+     216:    48 8b 77 00             mov    rsi,QWORD PTR [rdi+0x0]
+     ...
+     291:    XX XX                   je      (0x216 - 0x293)
+     293:    bf 03 00 00 00          mov    edi,0x3
+
+=>
+
+     211:    XX XX                   jmp     (0x293 - 0x216 = 0x7d)
+     213:    48 8b 77 00             mov    rsi,QWORD PTR [rdi+0x0]
+     ...
+     28d:    XX XX                   je      (0x213 - 0x293)
+     293:    bf 03 00 00 00          mov    edi,0x3
+
+=>
+
+     211:    XX XX XX XX XX          jmp     (0x293 - 0x213)
+     216:    48 8b 77 00             mov    rsi,QWORD PTR [rdi+0x0]
+     ...
+     291:    XX XX                   je      (0x216 - 0x293)
+     293:    bf 03 00 00 00          mov    edi,0x3
+
+=>
+     ...
+
+not converged!
+
+================
+
+     211:    XX XX                   jmp     0x291
+     213:    48 8b 77 00             mov    rsi,QWORD PTR [rdi+0x0]
+     ...
+     28c:    XX XX XX XX XX XX       je     0x212
+     292:    bf 03 00 00 00          mov    edi,0x3
+
+=>
+
+     211:    XX XX                   jmp     (0x292 - 0x213)
+     213:    48 8b 77 00             mov    rsi,QWORD PTR [rdi+0x0]
+     ...
+     28c:    XX XX                   je     (0x213 - 0x292)
+     28e:    bf 03 00 00 00          mov    edi,0x3
+
+=>
+
+     211:    XX XX                   jmp     (0x28e - 0x213 = 0x7b)
+     213:    48 8b 77 00             mov    rsi,QWORD PTR [rdi+0x0]
+     ...
+     28c:    XX XX                   je     (0x213 - 0x28e)
+     28e:    bf 03 00 00 00          mov    edi,0x3
+
+converged!
+
+=================
+
+     211:    XX XX                   jmp     0x291
+     213:    48 8b 77 00             mov    rsi,QWORD PTR [rdi+0x0]
+     ...
+     28e:    XX XX XX XX XX          jmp     0x212
+     293:    bf 03 00 00 00          mov    edi,0x3
+
+=>
+
+     211:    XX XX XX XX XX          jmp    (0x293 - 0x213)
+     216:    48 8b 77 00             mov    rsi,QWORD PTR [rdi+0x0]
+     ...
+     292:    XX XX                   jmp    (0x216 - 0x293)
+     294:    bf 03 00 00 00          mov    edi,0x3
+
+=>
+
+     211:    XX XX                   jmp    (0x294 - 0x216 = 0x7e)
+     213:    48 8b 77 00             mov    rsi,QWORD PTR [rdi+0x0]
+     ...
+     28e:    XX XX XX XX XX          jmp    (0x213 - 0x294)
+     294:    bf 03 00 00 00          mov    edi,0x3
+
+=>
+
+     211:    XX XX                   jmp    (0x294 - 0x216 = 0x7e)
+     213:    48 8b 77 00             mov    rsi,QWORD PTR [rdi+0x0]
+     ...
+     28e:    XX XX XX XX XX          jmp    (0x213 - 0x294)
+     294:    bf 03 00 00 00          mov    edi,0x3
+
+=>
+
+     211:    XX XX XX XX XX          jmp    (0x294 - 0x213)
+     216:    48 8b 77 00             mov    rsi,QWORD PTR [rdi+0x0]
+     ...
+     292:    XX XX                   jmp    (0x216 - 0x294)
+     294:    bf 03 00 00 00          mov    edi,0x3
+
+=>
+    ...
+
+no converged!
+
+===================================
+
+     211:    XX XX                   jmp     0x291
+     213:    48 8b 77 00             mov    rsi,QWORD PTR [rdi+0x0]
+     ...
+     28d:    XX XX XX XX XX          jmp     0x212
+     292:    bf 03 00 00 00          mov    edi,0x3
+
+=>
+
+     211:    XX XX                   jmp     (0x292 - 0x213)
+     213:    48 8b 77 00             mov    rsi,QWORD PTR [rdi+0x0]
+     ...
+     28d:    XX XX                   jmp     (0x213 - 0x292)
+     290:    bf 03 00 00 00          mov    edi,0x3
+
+=>
+
+     211:    XX XX                   jmp     (0x290 - 0x213 = 0x7d)
+     213:    48 8b 77 00             mov    rsi,QWORD PTR [rdi+0x0]
+     ...
+     28d:    XX XX                   jmp     (0x213 - 0x290)
+     290:    bf 03 00 00 00          mov    edi,0x3
+
+converged!
+
+So I emulated je <-> je, je <-> jmp, jmp <-> je and jmp <-> jmp.
+
+So we need to apply the same checking is_imm8_cond_offset() to jmp insn.
+This should cover all cases.
+
+Hitting the following
+            if (nops != 0 && nops != 3) {
+                      pr_err("unexpected jump padding: %d bytes\n",
+                                              nops);
+
+is not due to the above illustration with 'jmp' insn as indeed
+its insn length changes with 0 or 3. But it is due to some jmp/cond_jmp
+insn inside je/jmp <-> je/jmp.
+
 
