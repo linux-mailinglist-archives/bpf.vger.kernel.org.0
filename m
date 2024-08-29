@@ -1,262 +1,110 @@
-Return-Path: <bpf+bounces-38449-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38447-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFE6D964DDE
-	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 20:40:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D5204964DDA
+	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 20:39:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A7E44281863
-	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 18:40:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 75AA21F21F7C
+	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 18:39:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9F101BB6B4;
-	Thu, 29 Aug 2024 18:38:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 743AF1BAECE;
+	Thu, 29 Aug 2024 18:38:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QnKvJP4g"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bb9OFmzR"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D2FB1BB6A3;
-	Thu, 29 Aug 2024 18:38:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71CE91BA88A;
+	Thu, 29 Aug 2024 18:38:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724956693; cv=none; b=bhnFXdXpk/059jwWFwn2vWnktnxJakwp5J4ZX0B5pdudR0NhtcYUwURiQv9NmInFuaD/dQhxjNXa31T4+bwE78vx4Qs2lg0jZueU5O0KBaoaMsWl3Uxu16hCm5ReXlB1b+kt4EeXvnQE61fyRjUHriTX+f+BZQ95EOKxWu7MGXs=
+	t=1724956687; cv=none; b=TQXAYVpdWOFu3J/B6LRmpbJMi0KGjvJw2oIwwunIByPsuSlL/qZeU28goszbfIwOI5AjjaUR3Hb3QxUUjaN0eR8vvKmgG3FzDUnRNobIWhAezBOVPJrV27sdJX7UcU5LJNf7s0NmhubvEzVg0PqYaLh7+G+lC//wDz5LeuyeGIY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724956693; c=relaxed/simple;
-	bh=Jv6KT2UGgAmwIKABURNXs74b2nTjkVTPbA6PDUOU5nQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=HLaI38mFbHsUnl2H0VzwfDs3gO3XLyloSOj2N0fG1GCnFaQp0SQW9gaCIaRNCzPtdyDB01fbYUtsBjBcJ8PDU9BSjsK27iqBsiblKxpPLuKMCDAniBDJDyaXYiV7xRpW9ZbeMfUhmjQrMnjHESUPUHOfqMcUrSkMxK0btdoafyQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QnKvJP4g; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D088C4CEC1;
-	Thu, 29 Aug 2024 18:38:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1724956692;
-	bh=Jv6KT2UGgAmwIKABURNXs74b2nTjkVTPbA6PDUOU5nQ=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=QnKvJP4gt4bTiecXgx46lcFCCvdZn8AOYqSJkL7xF8R8HkS8GsKEcPk0Eva0855YG
-	 z6Jd28llajhOMKffsONc8T9IUvkosxd4J69TVk0JuQ1I+7As0u/pRnq5gJbTBzi+U0
-	 R+vHEuvTrFugTc+jD/Wry/pQGr/N3hzYPuduFcXn5moFYNmeuU6hIWbdktcP1O9/VZ
-	 F7cx3tZAKHOgEdAT3g0OrXtoqJQQh9HzqlFioNyVCh8AIFehHlJPvDtStRjhBgXE7c
-	 lDHpr11rkId9QOD5/3IAKTCWeB5V45KQ9Rohmooo4r2vZvd+1Qs2xuwpArgVVsnxUQ
-	 a6zswlYT80YaQ==
-From: Andrii Nakryiko <andrii@kernel.org>
-To: linux-trace-kernel@vger.kernel.org,
-	peterz@infradead.org,
-	oleg@redhat.com
-Cc: rostedt@goodmis.org,
-	mhiramat@kernel.org,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	jolsa@kernel.org,
-	paulmck@kernel.org,
-	willy@infradead.org,
-	surenb@google.com,
-	akpm@linux-foundation.org,
-	linux-mm@kvack.org,
-	Andrii Nakryiko <andrii@kernel.org>
-Subject: [PATCH v4 8/8] uprobes: switch to RCU Tasks Trace flavor for better performance
-Date: Thu, 29 Aug 2024 11:37:41 -0700
-Message-ID: <20240829183741.3331213-9-andrii@kernel.org>
-X-Mailer: git-send-email 2.43.5
-In-Reply-To: <20240829183741.3331213-1-andrii@kernel.org>
-References: <20240829183741.3331213-1-andrii@kernel.org>
+	s=arc-20240116; t=1724956687; c=relaxed/simple;
+	bh=kn6kId+WElwQbJomtHV8/JDSRr2Vt/uvyhu71qrhJIU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=XBf1693SmHrisB3YRFYsFJvoF0lbrWOpPZVGpC5/aNPgQniYRZG+QhuJUXv4lpy2wCazOoZfVp95aDOkwLIyXyLJVQCPFHI96GLYGBJONNXPHPBlcX3p7tFnXgxk6MlJgDOqeamiSgnbGjsuvZbvf88h5QEmmA2z335J4tJ5mhM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bb9OFmzR; arc=none smtp.client-ip=209.85.221.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-3718c176ed7so622253f8f.2;
+        Thu, 29 Aug 2024 11:38:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1724956684; x=1725561484; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/A8H3hn9t/qDw+QP/avd33PJtlpDZ3DcFKIA/WZ8eDE=;
+        b=bb9OFmzRqYzNqCZQaPqSA0+x1zs0X5lSuroWCwz9E8mE/E97QvAimGn4rFqOH9uNQb
+         Q1g6UBG9zDNzmebSorYatDCkIugvxxnD976w4/H8lEL9+UvzdxMrpAkjtgvZjL9H4fiZ
+         vb9Tl2TKNppBRazo62ozn56J35dFyP1u9JbHG5lEsshe6RSWO8mZillU5K0Fof6bNDMR
+         I07tRPH7bt+dz24hEV9E5F2VXerCNN09BWrAlBL40ilVZwcZTjjSkI9B/BJeJqPyakWo
+         Lyp3lisGXWKKuUzMswSnmgjJkn7P6RlO/Yd4vISQTm7UQCz2RjUb0ZXC59a59dY6MmLk
+         /f+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1724956684; x=1725561484;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/A8H3hn9t/qDw+QP/avd33PJtlpDZ3DcFKIA/WZ8eDE=;
+        b=Y032HFtVyc45nXkUVV5va5CegbmdOAMfSEmWNa5tv+xj+hETqJ6lZkJwoUZdo4baOG
+         Ndqxs2eZHLjsYhE4tcqJNCPP6p8F6ONOl3+CDSTnZT0mCRhn88B9JXyPHyp7cqECKrjh
+         zQ7k5LJWBHlSPivslHjY0oOUJiXAtoiPNab/IZL9vovFhgBN/JVYvrh8VDwNTihU8nwX
+         PbUK1mhHa4v4vrs1LHe1qPe+o3+YBVi+tjANET11M1EFMh/XPtpJPuJ1WrwZfI7Tpbnk
+         bUZRud3eEbt7as86/pL7xim28MFlwQuHgxAhP3QjTzqsVLBMNNW/ELOJAkDA0IHMCfXP
+         inhA==
+X-Forwarded-Encrypted: i=1; AJvYcCUQS6zWJvcYxnG6ixv9kYbls/0xrX+sMmN3mrRlFkdj20LsesqEBQx8KLtsy9qG9BQ7FhtO/saA5rcSw+lS@vger.kernel.org, AJvYcCWMqGEE7Rf/ix855uTL9rcIZ1WWAWQNEfq2SNiPc5Re4NsHrKAFGza4OHwNF4l2Y/nNbak=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxpCalo9gE5nrThf6/+ldgHh/1t4IuCb2sHkxocIq7fbo+r/+2X
+	ebYZMSDFdNqNVmInFxJPpJYhwVaLl7J67fYLcyMfr7HWOgGjFgjVRSMaQ2aus/rs9xBUEoIxmkp
+	hYPO9G/LRamG9px+u36yhfLcjbTg=
+X-Google-Smtp-Source: AGHT+IEpycbQ0gGT9DmLqoX/3ROWtk622CylKyxWyGjJ8NxhSqRwXh3B5yOCS7cg08e/Ywg1tr9bu4/+OWlp25bkJQY=
+X-Received: by 2002:a05:6000:1802:b0:371:a844:d326 with SMTP id
+ ffacd0b85a97d-3749b57febemr2595945f8f.43.1724956683502; Thu, 29 Aug 2024
+ 11:38:03 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <AM6PR03MB58482E9A154910D06A9E58B499962@AM6PR03MB5848.eurprd03.prod.outlook.com>
+In-Reply-To: <AM6PR03MB58482E9A154910D06A9E58B499962@AM6PR03MB5848.eurprd03.prod.outlook.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 29 Aug 2024 11:37:51 -0700
+Message-ID: <CAADnVQ+P=j0MTkyDD0vYcaqU-qqdE_+mi+gDaqDsLqTXWNPHwA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 1/2] bpf: Make the pointer returned by iter
+ next method valid
+To: Juntong Deng <juntong.deng@outlook.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, snorcht@gmail.com, bpf <bpf@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-This patch switches uprobes SRCU usage to RCU Tasks Trace flavor, which
-is optimized for more lightweight and quick readers (at the expense of
-slower writers, which for uprobes is a fine tradeof) and has better
-performance and scalability with number of CPUs.
+On Thu, Aug 29, 2024 at 3:45=E2=80=AFAM Juntong Deng <juntong.deng@outlook.=
+com> wrote:
+>
+>                 if (prev_st)
+> @@ -12860,6 +12867,16 @@ static int check_kfunc_call(struct bpf_verifier_=
+env *env, struct bpf_insn *insn,
+>                         /* For mark_ptr_or_null_reg, see 93c230e3f5bd6 */
+>                         regs[BPF_REG_0].id =3D ++env->id_gen;
+>                 }
+> +
+> +               if (is_iter_next_kfunc(&meta) && base_type(regs[BPF_REG_0=
+].type) !=3D PTR_TO_MEM) {
 
-Similarly to baseline vs SRCU, we've benchmarked SRCU-based
-implementation vs RCU Tasks Trace implementation.
+The !=3D PTR_TO_MEM part is a bit ugly.
 
-SRCU
-====
-uprobe-nop      ( 1 cpus):    3.276 ± 0.005M/s  (  3.276M/s/cpu)
-uprobe-nop      ( 2 cpus):    4.125 ± 0.002M/s  (  2.063M/s/cpu)
-uprobe-nop      ( 4 cpus):    7.713 ± 0.002M/s  (  1.928M/s/cpu)
-uprobe-nop      ( 8 cpus):    8.097 ± 0.006M/s  (  1.012M/s/cpu)
-uprobe-nop      (16 cpus):    6.501 ± 0.056M/s  (  0.406M/s/cpu)
-uprobe-nop      (32 cpus):    4.398 ± 0.084M/s  (  0.137M/s/cpu)
-uprobe-nop      (64 cpus):    6.452 ± 0.000M/s  (  0.101M/s/cpu)
-
-uretprobe-nop   ( 1 cpus):    2.055 ± 0.001M/s  (  2.055M/s/cpu)
-uretprobe-nop   ( 2 cpus):    2.677 ± 0.000M/s  (  1.339M/s/cpu)
-uretprobe-nop   ( 4 cpus):    4.561 ± 0.003M/s  (  1.140M/s/cpu)
-uretprobe-nop   ( 8 cpus):    5.291 ± 0.002M/s  (  0.661M/s/cpu)
-uretprobe-nop   (16 cpus):    5.065 ± 0.019M/s  (  0.317M/s/cpu)
-uretprobe-nop   (32 cpus):    3.622 ± 0.003M/s  (  0.113M/s/cpu)
-uretprobe-nop   (64 cpus):    3.723 ± 0.002M/s  (  0.058M/s/cpu)
-
-RCU Tasks Trace
-===============
-uprobe-nop      ( 1 cpus):    3.396 ± 0.002M/s  (  3.396M/s/cpu)
-uprobe-nop      ( 2 cpus):    4.271 ± 0.006M/s  (  2.135M/s/cpu)
-uprobe-nop      ( 4 cpus):    8.499 ± 0.015M/s  (  2.125M/s/cpu)
-uprobe-nop      ( 8 cpus):   10.355 ± 0.028M/s  (  1.294M/s/cpu)
-uprobe-nop      (16 cpus):    7.615 ± 0.099M/s  (  0.476M/s/cpu)
-uprobe-nop      (32 cpus):    4.430 ± 0.007M/s  (  0.138M/s/cpu)
-uprobe-nop      (64 cpus):    6.887 ± 0.020M/s  (  0.108M/s/cpu)
-
-uretprobe-nop   ( 1 cpus):    2.174 ± 0.001M/s  (  2.174M/s/cpu)
-uretprobe-nop   ( 2 cpus):    2.853 ± 0.001M/s  (  1.426M/s/cpu)
-uretprobe-nop   ( 4 cpus):    4.913 ± 0.002M/s  (  1.228M/s/cpu)
-uretprobe-nop   ( 8 cpus):    5.883 ± 0.002M/s  (  0.735M/s/cpu)
-uretprobe-nop   (16 cpus):    5.147 ± 0.001M/s  (  0.322M/s/cpu)
-uretprobe-nop   (32 cpus):    3.738 ± 0.008M/s  (  0.117M/s/cpu)
-uretprobe-nop   (64 cpus):    4.397 ± 0.002M/s  (  0.069M/s/cpu)
-
-Peak throughput for uprobes increases from 8 mln/s to 10.3 mln/s
-(+28%!), and for uretprobes from 5.3 mln/s to 5.8 mln/s (+11%), as we
-have more work to do on uretprobes side.
-
-Even single-thread (no contention) performance is slightly better: 3.276
-mln/s to 3.396 mln/s (+3.5%) for uprobes, and 2.055 mln/s to 2.174 mln/s
-(+5.8%) for uretprobes.
-
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- kernel/events/uprobes.c | 37 +++++++++++++++----------------------
- 1 file changed, 15 insertions(+), 22 deletions(-)
-
-diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-index 8a464cf38127..a5d39cec53d5 100644
---- a/kernel/events/uprobes.c
-+++ b/kernel/events/uprobes.c
-@@ -42,8 +42,6 @@ static struct rb_root uprobes_tree = RB_ROOT;
- static DEFINE_RWLOCK(uprobes_treelock);	/* serialize rbtree access */
- static seqcount_rwlock_t uprobes_seqcount = SEQCNT_RWLOCK_ZERO(uprobes_seqcount, &uprobes_treelock);
- 
--DEFINE_STATIC_SRCU(uprobes_srcu);
--
- #define UPROBES_HASH_SZ	13
- /* serialize uprobe->pending_list */
- static struct mutex uprobes_mmap_mutex[UPROBES_HASH_SZ];
-@@ -652,7 +650,7 @@ static void put_uprobe(struct uprobe *uprobe)
- 	delayed_uprobe_remove(uprobe, NULL);
- 	mutex_unlock(&delayed_uprobe_lock);
- 
--	call_srcu(&uprobes_srcu, &uprobe->rcu, uprobe_free_rcu);
-+	call_rcu_tasks_trace(&uprobe->rcu, uprobe_free_rcu);
- }
- 
- static __always_inline
-@@ -707,7 +705,7 @@ static struct uprobe *find_uprobe_rcu(struct inode *inode, loff_t offset)
- 	struct rb_node *node;
- 	unsigned int seq;
- 
--	lockdep_assert(srcu_read_lock_held(&uprobes_srcu));
-+	lockdep_assert(rcu_read_lock_trace_held());
- 
- 	do {
- 		seq = read_seqcount_begin(&uprobes_seqcount);
-@@ -935,8 +933,7 @@ static bool filter_chain(struct uprobe *uprobe, struct mm_struct *mm)
- 	bool ret = false;
- 
- 	down_read(&uprobe->consumer_rwsem);
--	list_for_each_entry_srcu(uc, &uprobe->consumers, cons_node,
--				 srcu_read_lock_held(&uprobes_srcu)) {
-+	list_for_each_entry_rcu(uc, &uprobe->consumers, cons_node, rcu_read_lock_trace_held()) {
- 		ret = consumer_filter(uc, mm);
- 		if (ret)
- 			break;
-@@ -1157,7 +1154,7 @@ void uprobe_unregister_sync(void)
- 	 * unlucky enough caller can free consumer's memory and cause
- 	 * handler_chain() or handle_uretprobe_chain() to do an use-after-free.
- 	 */
--	synchronize_srcu(&uprobes_srcu);
-+	synchronize_rcu_tasks_trace();
- }
- EXPORT_SYMBOL_GPL(uprobe_unregister_sync);
- 
-@@ -1241,19 +1238,18 @@ EXPORT_SYMBOL_GPL(uprobe_register);
- int uprobe_apply(struct uprobe *uprobe, struct uprobe_consumer *uc, bool add)
- {
- 	struct uprobe_consumer *con;
--	int ret = -ENOENT, srcu_idx;
-+	int ret = -ENOENT;
- 
- 	down_write(&uprobe->register_rwsem);
- 
--	srcu_idx = srcu_read_lock(&uprobes_srcu);
--	list_for_each_entry_srcu(con, &uprobe->consumers, cons_node,
--				 srcu_read_lock_held(&uprobes_srcu)) {
-+	rcu_read_lock_trace();
-+	list_for_each_entry_rcu(con, &uprobe->consumers, cons_node, rcu_read_lock_trace_held()) {
- 		if (con == uc) {
- 			ret = register_for_each_vma(uprobe, add ? uc : NULL);
- 			break;
- 		}
- 	}
--	srcu_read_unlock(&uprobes_srcu, srcu_idx);
-+	rcu_read_unlock_trace();
- 
- 	up_write(&uprobe->register_rwsem);
- 
-@@ -2123,8 +2119,7 @@ static void handler_chain(struct uprobe *uprobe, struct pt_regs *regs)
- 
- 	current->utask->auprobe = &uprobe->arch;
- 
--	list_for_each_entry_srcu(uc, &uprobe->consumers, cons_node,
--				 srcu_read_lock_held(&uprobes_srcu)) {
-+	list_for_each_entry_rcu(uc, &uprobe->consumers, cons_node, rcu_read_lock_trace_held()) {
- 		int rc = 0;
- 
- 		if (uc->handler) {
-@@ -2162,15 +2157,13 @@ handle_uretprobe_chain(struct return_instance *ri, struct pt_regs *regs)
- {
- 	struct uprobe *uprobe = ri->uprobe;
- 	struct uprobe_consumer *uc;
--	int srcu_idx;
- 
--	srcu_idx = srcu_read_lock(&uprobes_srcu);
--	list_for_each_entry_srcu(uc, &uprobe->consumers, cons_node,
--				 srcu_read_lock_held(&uprobes_srcu)) {
-+	rcu_read_lock_trace();
-+	list_for_each_entry_rcu(uc, &uprobe->consumers, cons_node, rcu_read_lock_trace_held()) {
- 		if (uc->ret_handler)
- 			uc->ret_handler(uc, ri->func, regs);
- 	}
--	srcu_read_unlock(&uprobes_srcu, srcu_idx);
-+	rcu_read_unlock_trace();
- }
- 
- static struct return_instance *find_next_ret_chain(struct return_instance *ri)
-@@ -2255,13 +2248,13 @@ static void handle_swbp(struct pt_regs *regs)
- {
- 	struct uprobe *uprobe;
- 	unsigned long bp_vaddr;
--	int is_swbp, srcu_idx;
-+	int is_swbp;
- 
- 	bp_vaddr = uprobe_get_swbp_addr(regs);
- 	if (bp_vaddr == uprobe_get_trampoline_vaddr())
- 		return uprobe_handle_trampoline(regs);
- 
--	srcu_idx = srcu_read_lock(&uprobes_srcu);
-+	rcu_read_lock_trace();
- 
- 	uprobe = find_active_uprobe_rcu(bp_vaddr, &is_swbp);
- 	if (!uprobe) {
-@@ -2319,7 +2312,7 @@ static void handle_swbp(struct pt_regs *regs)
- 
- out:
- 	/* arch_uprobe_skip_sstep() succeeded, or restart if can't singlestep */
--	srcu_read_unlock(&uprobes_srcu, srcu_idx);
-+	rcu_read_unlock_trace();
- }
- 
- /*
--- 
-2.43.5
-
+Why not do it in {} scope right above?
+Just move it up by a few lines?
+Right after regs[BPF_REG_0].type =3D PTR_TO_BTF_ID;
 
