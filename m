@@ -1,152 +1,90 @@
-Return-Path: <bpf+bounces-38422-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38423-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5087F964BEB
-	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 18:46:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6EA9964BF8
+	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 18:50:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 836461C22A68
-	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 16:46:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9D5131F2310C
+	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 16:50:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F2871B581A;
-	Thu, 29 Aug 2024 16:46:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AF7A1B5825;
+	Thu, 29 Aug 2024 16:50:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hhr1LshW"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="krKTnK5L"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1EE018C331
-	for <bpf@vger.kernel.org>; Thu, 29 Aug 2024 16:46:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E90F41B0120
+	for <bpf@vger.kernel.org>; Thu, 29 Aug 2024 16:50:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724949986; cv=none; b=sFR8VZhYQSJ0v1OvOjwV1vPvkuMV0Tz1b8xRWkweJyv1VpuQqfduBm0Tn46X/JNp0tVzy4uy8MLYSsy5INdahTBUd4RH3uI2IiuUc8lndnyhHyWCZGsMGokAYFvU+VP8BpqoyG7h0zf62hGrZ90BalvYtgvCjrI6itdjkmemyHo=
+	t=1724950235; cv=none; b=EtiSMVezatyqgXbiPPk/J3tSFk8nqkMm+jTSHWTsuZiPD1z+pjsujXIiwxyh7DNmDfLjkPcwnSYmYrZvbR78cU2Lgu8ovF+Sa+S/PC8j4IQy4aQ+JiFz+l3l/LdpQz0fakdCyeXQgvXaV5etN2gsK6AQeLU4Zde7fQxC82T/Vrs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724949986; c=relaxed/simple;
-	bh=9IJqmXLOf2YxBdyluG7FzTaegsmjOZBfhP1s0VmmWRY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HabB6TwGJLB4t8op+jOijogMvqWdW7rQD1DeICMRq8eVyS/VG8D9Rp0bVlPJTBuANT7bdKS+tBHwI4bMmwy+Z+fJouxuazpatWViZt3ACN+QpKtHHP4uRhgGBJaSAy77mAMZK/mrpULoHHRnObv7qwxrpfvEGsOhhrMI5eZGwRU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hhr1LshW; arc=none smtp.client-ip=209.85.214.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-204f52fe74dso7887545ad.1
-        for <bpf@vger.kernel.org>; Thu, 29 Aug 2024 09:46:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1724949984; x=1725554784; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=XUhCP6JjVMDPqL8ZAp2Ra+MI6Lhm8OrZimHxQWVuaJw=;
-        b=hhr1LshWNnWSkqrCmovS9WqCAnvKEtk0fOcAi5iPWF6e5Hz/zRthGMUHfKX3s6N6uI
-         B5ggGYXw+B4APAIx6QYT4ZlI++IWBAzepo9OU5veeJUG7NyY8S2W4rjWOpkhx8yrU78p
-         UyCJU7UzDvV1+krSZ6tQqGoYpms7C6QhJ3coT8k1FJF8cCLIdueGpwE4lOV/jmBLORvQ
-         DaKRFQBYZXygLZl3NCTqz1Roi3oImjtjQ3S7eqOv3SMWU8nFcpExYiGNK0SXWAoQKfaQ
-         rJDUWgzlmNMWh2jwV5MpUTiRHCN7yg7ipQhyoKfa4XKqlxYR7Q2sIUmodFa8fZNqBvLl
-         +I7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724949984; x=1725554784;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XUhCP6JjVMDPqL8ZAp2Ra+MI6Lhm8OrZimHxQWVuaJw=;
-        b=giBisuZzROK01fC0qb3m8j/Q/oZ3wn6Kk6Nod23o/c59nD04Q+axrEEketxAZMb81t
-         OLDmUKUo3JFms3sh0KB3J3+NiOMJQX6RVYcRTdEls4J1c4uguLHcPJvf8pOroiEz8gQ9
-         zoshrjYTbrFFvW0eJJZ/JA7VUkRYdth1C9W8qNwja9GAcOjASS4LmyEiQdVlEifoP+Uv
-         2xLKopwJ/bv6Av4QiX0vhPGLQKCYhIeWtnDKtR5K6yaXB1mrm/bbv9rizUEKR5sZlCNd
-         HnyyyII3xWkoi0ewoio9I08L724hJ/coZ55Goan/gE5ZAC/ecNdhNqzAQQW5QnBNCFO/
-         qGTw==
-X-Forwarded-Encrypted: i=1; AJvYcCXuHboGlNv5LJEi69RGUwtQj3cinnH77sjzpstt0hO2qa8KH0nDd622mDM8aPJ2bAcgWO0=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxdB+ADZvp07MnBDLHTE7GN5STKT3s48KcwOL0epz7jSz1TtFyO
-	NleuBhRKNU/OABW9cjC8/CmS56v1363oZlz5Yb0ud6NaAtLAGGtLirwkYz+q
-X-Google-Smtp-Source: AGHT+IHK+ADi8qoDT7xqVCLr59uopdcwIqwy4qpzKORUnHPH84hM+3/YRKl/YxTMNEqfnbOnInkEcw==
-X-Received: by 2002:a17:902:f68e:b0:1fd:8c25:4145 with SMTP id d9443c01a7336-2050c345cbdmr31280565ad.17.1724949983818;
-        Thu, 29 Aug 2024 09:46:23 -0700 (PDT)
-Received: from localhost ([2601:647:6881:9060:1504:7219:cbca:d77e])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-205152d2b3bsm13490045ad.66.2024.08.29.09.46.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Aug 2024 09:46:23 -0700 (PDT)
-Date: Thu, 29 Aug 2024 09:46:22 -0700
-From: Cong Wang <xiyou.wangcong@gmail.com>
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: zijianzhang@bytedance.com, Amery Hung <amery.hung@bytedance.com>,
-	bpf@vger.kernel.org, edumazet@google.com, davem@davemloft.net,
-	kuba@kernel.org, pabeni@redhat.com, dsahern@kernel.org,
-	ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-	eddyz87@gmail.com, yonghong.song@linux.dev,
-	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
-	haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
-	shuah@kernel.org, wangdongdong.6@bytedance.com,
-	zhoufeng.zf@bytedance.com
-Subject: Re: [PATCH bpf-next v2 1/2] bpf: tcp: prevent bpf_reserve_hdr_opt()
- from growing skb larger than MTU
-Message-ID: <ZtCl3kQrldshCFam@pop-os.localdomain>
-References: <20240827013736.2845596-1-zijianzhang@bytedance.com>
- <20240827013736.2845596-2-zijianzhang@bytedance.com>
- <5186a69b-c53d-4afa-b3be-e6bd272d264f@linux.dev>
+	s=arc-20240116; t=1724950235; c=relaxed/simple;
+	bh=dD4PvjbZZ23Cf4eOMekq2pj4kQL6uLWLecmPT1bKoGc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=YCjYB4zwxNkuuoc+/dJiiyIpizSVRU2wUqM8FuMKd2XQ5sj1LY/XEEroNY9I1wAMu4augA5t7Rpu8UJkvXRgdj1MGTCxzT9KezeDzg5fWV7Yy+/TztCiTZvZiI4MNhOmN7nhKNMf/5JJIHUWRehAuhsKL1tsqmYKdk/xeLetkD0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=krKTnK5L; arc=none smtp.client-ip=91.218.175.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <161d7d7f-a99c-449c-8ee2-c4f74ea543cc@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1724950230;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dD4PvjbZZ23Cf4eOMekq2pj4kQL6uLWLecmPT1bKoGc=;
+	b=krKTnK5LCCfyZ6m3U34s/PDOF8MRUHrJOYyNbXdw5I1IcTgZiy4tO8ocG/wtVuEllcNm/n
+	wviAJ7Og+B8aG6+uUpxirUNn/WTQJaLFtDI1y69QdjowsLGWltkoZ7CCsPHrr2+0H/wGyF
+	N7JwhjVs/YIysGWM5ojAOLyCUCgY6Jw=
+Date: Thu, 29 Aug 2024 09:50:24 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5186a69b-c53d-4afa-b3be-e6bd272d264f@linux.dev>
+Subject: Re: [PATCH bpf-next] bpf, x64: Fix a jit convergence issue
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>,
+ Daniel Hodges <hodgesd@meta.com>
+References: <20240825200406.1874982-1-yonghong.song@linux.dev>
+ <CAADnVQ+5HD1ZxBqpDgNuwPkO1+VGzm1yqhxuDD4HYtkRYHwXiA@mail.gmail.com>
+ <7e2ad37e-e750-4cbd-8305-bf16bbebcc53@linux.dev>
+ <CAADnVQLbknLw9fOhgbSNaNzKi5gfQTP74vXQu3D1P2OVF81b+Q@mail.gmail.com>
+ <0723964d-97b9-4b48-995c-3c9efa980f5a@linux.dev>
+ <CAADnVQJ1WRVy1Zto=7N86PpYshLyjTXwwtawrhuok3ydAsjTCQ@mail.gmail.com>
+Content-Language: en-GB
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <CAADnVQJ1WRVy1Zto=7N86PpYshLyjTXwwtawrhuok3ydAsjTCQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, Aug 28, 2024 at 02:29:17PM -0700, Martin KaFai Lau wrote:
-> On 8/26/24 6:37 PM, zijianzhang@bytedance.com wrote:
-> > From: Amery Hung <amery.hung@bytedance.com>
-> > 
-> > This series prevents sockops users from accidentally causing packet
-> > drops. This can happen when a BPF_SOCK_OPS_HDR_OPT_LEN_CB program
-> > reserves different option lengths in tcp_sendmsg().
-> > 
-> > Initially, sockops BPF_SOCK_OPS_HDR_OPT_LEN_CB program will be called to
-> > reserve a space in tcp_send_mss(), which will return the MSS for TSO.
-> > Then, BPF_SOCK_OPS_HDR_OPT_LEN_CB will be called in __tcp_transmit_skb()
-> > again to calculate the actual tcp_option_size and skb_push() the total
-> > header size.
-> > 
-> > skb->gso_size is restored from TCP_SKB_CB(skb)->tcp_gso_size, which is
-> > derived from tcp_send_mss() where we first call HDR_OPT_LEN. If the
-> > reserved opt size is smaller than the actual header size, the len of the
-> > skb can exceed the MTU. As a result, ip(6)_fragment will drop the
-> > packet if skb->ignore_df is not set.
-> > 
-> > To prevent this accidental packet drop, we need to make sure the
-> > second call to the BPF_SOCK_OPS_HDR_OPT_LEN_CB program reserves space
-> > not more than the first time.
-> 
-> iiuc, it is a bug in the bpf prog itself that did not reserve the same
-> header length and caused a drop. It is not the only drop case though for an
-> incorrect bpf prog. There are other cases where a bpf prog can accidentally
-> drop a packet.
 
-But safety is the most important thing for eBPF programs, do we really
-allow this kind of bug to happen in eBPF programs?
+On 8/29/24 9:37 AM, Alexei Starovoitov wrote:
+> On Wed, Aug 28, 2024 at 6:55 PM Yonghong Song <yonghong.song@linux.dev> wrote:
+>>
+>>
+>> So we need to apply the same checking is_imm8_cond_offset() to jmp insn.
+>> This should cover all cases.
+> Looks like it.
+> If I'm reading it correctly is_imm8_cond_offset() doesn't need
+> to be 127-4 for jmp. It can be 127-3, since jmp insn can grow by 3 bytes.
 
-> 
-> Do you have an actual use case that the bpf prog cannot reserve the correct
-> header length for the same sk ?
+Right, 127-3 should work for jmp insn.
 
-You can think of it as a simple call of bpf_get_prandom_u32():
+> But to avoid thinking twice I'd use the same is_imm8_cond_offset()
+> for both jmp_cond and jmp.
 
-SEC("sockops")
-int bpf_sock_ops_cb(struct bpf_sock_ops *skops)
-{
-    if (skops->op == BPF_SOCK_OPS_HDR_OPT_LEN_CB) {
-        return bpf_get_prandom_u32();
-    }
-    return 0;
-}
-
-And eBPF programs are stateful anyway, at least we should not assume
-it is stateless since maps are commonly used. Therefore, different invocations
-of a same eBPF program are expected to return different values. IMHO,
-this is a situation we have to deal with in the kernel, hence stricter
-checks are reasonable and necessary.
-
-Thanks.
+Sounds good. I will add this into commit message as well.
 
 
