@@ -1,199 +1,146 @@
-Return-Path: <bpf+bounces-38346-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38347-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1AB396395A
-	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 06:28:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69A06963A00
+	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 07:45:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 86D062858CE
-	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 04:28:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 255452858B3
+	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 05:45:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C83E212F399;
-	Thu, 29 Aug 2024 04:28:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 786C9148FF0;
+	Thu, 29 Aug 2024 05:45:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PbKnHCXo"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aBgmNRrP"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFB9E23BF;
-	Thu, 29 Aug 2024 04:28:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B03D04D8C8;
+	Thu, 29 Aug 2024 05:45:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724905725; cv=none; b=HWcPTd17zgdaL98+CgpRdfGlnIB7OHKQux1DyWo6QnFFPZSG3pD240oa6ekugHEfbh/B0+ubtTtCH8hSaTuTgXI2/+bDMKt6h0ITW2tZH2FpUMi3aTwhH/wBb1xqE3enT+5b1+j8ubb4E/lOR97i02n1qPBuf/bwiRAurAAOAfs=
+	t=1724910326; cv=none; b=oPkobF8okl2K0NqLP6yDE5lKVQLs2/EQHZPYABwkLPHDhIY2+MMpTaEz56WIApg3D4pbXCDHIF0DxQyZ+UOxGOb0i8HRu8NDQPA3knQgbvMZgQKbRbn0hoGPLAHDwjFU0/3c+0LUH3oo3VbbnyTpRXNUxtA1LD7+h5u2sSxReXI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724905725; c=relaxed/simple;
-	bh=LWQtLgZZu8tCfqnqjrIXLUAEDTMm/Ny1scYYBAuCUHI=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WNz/MQb9xQIJo6HHC+qlLrWT1FCNmtLt93tQoACzqbw+wg6D+ng6jJnAFazsf+h/L3O61rpPje497p/5w4ErU+P7FgBkqLFfDcltoc/9wJOskzrx5l5M4NrsCLtgXkpIbQEz5LPhJlHWe6mwSF/Wcyb0sgnoi6NAc4giYUEOOmM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PbKnHCXo; arc=none smtp.client-ip=209.85.214.172
+	s=arc-20240116; t=1724910326; c=relaxed/simple;
+	bh=niPsbo8FagnABTd0ex4iS3PoQ4LHrM2/TG3FQ1R7abk=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=txaWIr2g56ZJ435v2brVUItCXEUQSEjqrjCoJRpiBggIq/1/AJJOttgGUF9P+xc/g6R+5y+JBS7cH+0YCMJuc+jU8AT+BhPh9wNYqJpxq+K+syUhgcP/AhuZ6iXlspCOjV5ic0IQ1tNtUw3aWb7VOCyAYgMaYM7X0R9vTJWw5Ys=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aBgmNRrP; arc=none smtp.client-ip=209.85.215.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-204eebfaebdso1842515ad.1;
-        Wed, 28 Aug 2024 21:28:43 -0700 (PDT)
+Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-7bcf8077742so184658a12.0;
+        Wed, 28 Aug 2024 22:45:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1724905723; x=1725510523; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=JIzkwIMd5hoc+ClzeMKK/i7AA4aktiBj8nauUJkRQ3o=;
-        b=PbKnHCXoLLw4Fw8kVRHdz6CBm6LSh6+cpEw2kd/V6k59NyeI4dJN3UBxxo4M5Mcwby
-         z6UK62scf++Mhs0HM4MOULGC4P7mzz5PT6UYLIja9KY2Sq7MUHW40aFcfFsP87+FMDGz
-         XjmjRreXo4ZLMzMn+k7PoAxYvUQIyuSwVxTPDq796EcyNYxi6z5ZC3XJAtrTTmX6pLEv
-         YT+zG25QnF8dta4iyYWM6zqfeBG4nLKcyBNo/fcCf8wJQdGfh4eSyUCb+Ql8SpTS2Jwm
-         gNC3DtptjszUGR7kBQbIztKRN2KauWfDeMTt1X+jkIBc1y0Lsu/+OaZXYbctHTGUUNhl
-         Zk9Q==
+        d=gmail.com; s=20230601; t=1724910324; x=1725515124; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=PG7vUrjczTjDpkZnaTU3bwsLk/EQ0vq8liBHN/oleaE=;
+        b=aBgmNRrP5ZStXqq+R9cACG//9OYUPHWLixUQ2FsLMtxM6YNJNBoPrJ5jbhmAlrmKOm
+         sLmqzyUoLykL4xi1EgAf1SaW+SRNljRh8f7TsptCMOJ4OHUtqhjamSAj/lZQMNI6VND2
+         To6YCkRNxcIWRjoWEAB2zD0UnDQDkxWWtlmvOMXVcUYf6+utROcPiWlvn7nG7IZ4BKy3
+         2dXYVnbkIrzWCu8uwko5PeTRS+n/fQEY5O51xWKw7BetR60NyJ6GktHN46uMeb1hCzHd
+         QN0gu8yLQVVUFpLCs4RtXxrL8byWlYbZI0zlUz+1gjhIG+qHV2/3einq0MIjRTrK7YVa
+         I84Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724905723; x=1725510523;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JIzkwIMd5hoc+ClzeMKK/i7AA4aktiBj8nauUJkRQ3o=;
-        b=xJ2kGAFGj9uKfgE6g+OSBCy3d/N3bdyNegiYR6oJCrJ6PBaFg+kDDe5Tvwcu6tyava
-         NuGK6KbRNy9EoBJC6FBipV87zWyoiXXJKqqxuvjiKUJFJ0NJNOUSEsk7djFtcaz/t/He
-         8rupcLEqDku9Lwzg6WW2dC0bHNim9klY6NUc9T43vHGeda2mrVPwrAhvL1tEN7afUPY3
-         iMzG3fCaSpvVXHeVVlu5sfmvZu/jtjLBkvuHMWE5rCFXfe85LlltvTqIezq0a4yZP14G
-         HwXRRz/plZXhb/Cqbg78Ue4WlAis1LQuMy/+/LhfG+bZ2Z69n9Dd5oiz+qGfla1rI3Us
-         ffNw==
-X-Gm-Message-State: AOJu0YzuheSZy2SEKcRrqsVsCVerY/sJpVvxongMwzKkf35mCaPrprGk
-	nhGPi6thekZoe6zq/e9NdnlrCnzX1m5OLStSvte8UZfIY6gd5P6ZLLQW1H3F
-X-Google-Smtp-Source: AGHT+IEWcv+KuDXd0q4goKH7BMEUteeDspjfrKw1zga/q15RQ2Bu7GLN0F0B+W7u0ykFOnL2Clbz6g==
-X-Received: by 2002:a17:903:3590:b0:1fb:57e7:5bc6 with SMTP id d9443c01a7336-2050c23dd4emr19833695ad.23.1724905722538;
-        Wed, 28 Aug 2024 21:28:42 -0700 (PDT)
-Received: from kodidev-ubuntu (69-172-146-21.cable.teksavvy.com. [69.172.146.21])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-205155637bfsm2657835ad.294.2024.08.28.21.28.37
+        d=1e100.net; s=20230601; t=1724910324; x=1725515124;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=PG7vUrjczTjDpkZnaTU3bwsLk/EQ0vq8liBHN/oleaE=;
+        b=qzdQSwLZS0tTZqxtqwON+v9mFVfUTKMna4Y1xErqFu5wIQdMr+4px9IHInYFHX2dxE
+         WHjdZ3tlDdtNZb8dwtzBlSYq/vkiC+to5+NGKM6F1bqZvC7pMkdCdcS52ULSpJDDCoaz
+         gmTONRC4cOxwRqnqPStVWI4M7SKhbwXdMaYQxsM+foBy5pgoaXQNPvOM5q69JmWG3K5X
+         8ma+0qEX3r6J728R5LwvPhRFBAZzXQbxBHFv8JD6aJtkekjJTDGsOfq33VHQGld2x2uk
+         Oa18mbb2dUnRDIv8JUOa7yBAPCl3PNVzSUgAWYtHYNQf00YKAGx8NAwBkUvr0KW7OaK9
+         TotQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV88H5tA/hH0DD1fzNsvd+PFEsWA3AE9Ru31Ibrb0eEsl60r14uqP4wD0TGZROxvsEfaNE=@vger.kernel.org, AJvYcCX4sMaw1WsMSZdk+67597v+tn6eh7sDbPrCOMR8VIHqZTYYimKbrRcyyXMc7u4NJO9VTjsfdJfK/U211OcA@vger.kernel.org
+X-Gm-Message-State: AOJu0YxRfpjRw1xBomsyevTe5yL4D3DqebvH4i5iJhrjIgShwCXNjlUk
+	Bb2QwhRX3G6RZNlzGqbZWyQOIjL6/eycrUMcVusEZ8E9/axg3dvON8VYo+Q6
+X-Google-Smtp-Source: AGHT+IFRhJ/jJGZgSwALOLE4RIOGZVAVMdKqAUQuGpcwiU0TTI2cOHaHrPBCidQDiWUz0TG1tH2w+A==
+X-Received: by 2002:a05:6a21:2d05:b0:1cc:e659:7ffe with SMTP id adf61e73a8af0-1cce659819emr354168637.14.1724910323765;
+        Wed, 28 Aug 2024 22:45:23 -0700 (PDT)
+Received: from [192.168.0.235] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2d8445e9a51sm3003665a91.21.2024.08.28.22.45.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Aug 2024 21:28:41 -0700 (PDT)
-From: Tony Ambardar <tony.ambardar@gmail.com>
-X-Google-Original-From: Tony Ambardar <Tony.Ambardar@gmail.com>
-Date: Wed, 28 Aug 2024 21:28:34 -0700
-To: bpf@vger.kernel.org
-Cc: linux-kselftest@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-	Ilya Leoshkevich <iii@linux.ibm.com>,
-	Quentin Monnet <qmo@kernel.org>
-Subject: Re: [PATCH bpf-next v3 0/8] libbpf, selftests/bpf: Support
- cross-endian usage
-Message-ID: <Zs/48v0yRjJDUDu0@kodidev-ubuntu>
-References: <cover.1724843049.git.tony.ambardar@gmail.com>
+        Wed, 28 Aug 2024 22:45:23 -0700 (PDT)
+Message-ID: <d1ca563d8f2f5b63e7b0ec8b91c57914c32f1679.camel@gmail.com>
+Subject: Re: [PATCH bpf] bpf: add check for invalid name in
+ btf_name_valid_section()
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Jeongjun Park <aha310510@gmail.com>, alexei.starovoitov@gmail.com
+Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+ daniel@iogearbox.net,  haoluo@google.com, john.fastabend@gmail.com,
+ jolsa@kernel.org, kpsingh@kernel.org,  linux-kernel@vger.kernel.org,
+ martin.lau@linux.dev, sdf@fomichev.me,  song@kernel.org,
+ yonghong.song@linux.dev
+Date: Wed, 28 Aug 2024 22:45:18 -0700
+In-Reply-To: <20240829034552.262214-1-aha310510@gmail.com>
+References: 
+	<CAADnVQKsZ9zboc4k0mnrwcUv6ioSQ6aBXXC+t+-233n17Vdw-A@mail.gmail.com>
+	 <20240829034552.262214-1-aha310510@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.4 (3.52.4-1.fc40) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="CiKMM2wF0C80B0Q7"
-Content-Disposition: inline
-In-Reply-To: <cover.1724843049.git.tony.ambardar@gmail.com>
 
+On Thu, 2024-08-29 at 12:45 +0900, Jeongjun Park wrote:
+> Alexei Starovoitov wrote:
+> >=20
+> > On Fri, Aug 23, 2024 at 3:43=E2=80=AFAM Jeongjun Park <aha310510@gmail.=
+com> wrote:
+> > >=20
+> > > If the length of the name string is 1 and the value of name[0] is NUL=
+L
+> > > byte, an OOB vulnerability occurs in btf_name_valid_section() and the
+> > > return value is true, so the invalid name passes the check.
+> > >=20
+> > > To solve this, you need to check if the first position is NULL byte.
+> > >=20
+> > > Fixes: bd70a8fb7ca4 ("bpf: Allow all printable characters in BTF DATA=
+SEC names")
+> > > Signed-off-by: Jeongjun Park <aha310510@gmail.com>
+> > > ---
+> > >  kernel/bpf/btf.c | 3 +++
+> > >  1 file changed, 3 insertions(+)
+> > >=20
+> > > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> > > index 520f49f422fe..5c24ea1a65a4 100644
+> > > --- a/kernel/bpf/btf.c
+> > > +++ b/kernel/bpf/btf.c
+> > > @@ -823,6 +823,9 @@ static bool btf_name_valid_section(const struct b=
+tf *btf, u32 offset)
+> > >         const char *src =3D btf_str_by_offset(btf, offset);
+> > >         const char *src_limit;
+> > >=20
+> > > +       if (!*src)
+> > > +               return false;
+> > > +
+> >=20
+> > We've talked about it. Quote:
+> > "Pls add a selftest that demonstrates the issue
+> > and produce a patch to fix just that."
+> >=20
+> > length =3D=3D 1 and name[0] =3D 0 is a hypothesis.
+> > Demonstrate that such a scenario is possible then this patch will be
+> > worth applying.
+> >=20
+> > pw-bot: cr
+>=20
+> Sorry for the omission, I still don't know how to write selftest.
+>=20
+> But I can give you the C repro and KASAN log that trigger this=C2=A0vulne=
+rability.=20
+> I would appreciate it if you could look at it and=C2=A0make a judgment.
 
---CiKMM2wF0C80B0Q7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Aug 28, 2024 at 04:11:50AM -0700, Tony Ambardar wrote:
-> Hello all,
-
-[snip]
-
-> Changelog:
-> ---------
-> v2 -> v3: (feedback from Andrii)
->  - improve some log and commit message formatting
->  - restructure BTF.ext endianness safety checks and byte-swapping
->  - use BTF.ext info record definitions for swapping, require BTF v1
->  - follow BTF API implementation more closely for BTF.ext
->  - explicitly reject loading non-native endianness program into kernel
->  - simplify linker output byte-order setting
->  - drop redundant safety checks during linking
->  - simplify endianness macro and improve blob setup code for light skel
->  - no unexpected test failures after cross-compiling x86_64 -> s390x
-
-Sadly, shortly after posting v3 I hit a strange new issue in CI testing.
-
-Existing code in bpf_object__elf_finish() doesn't zero Ehdr references
-after freeing the related ELF data, allowing use of stale endian data
-which can be reallocated and overwritten, leading to rare, confusing CI
-errors like:
-
-  test_tailcall_count:PASS:open fentry_obj file 0 nsec
-  test_tailcall_count:PASS:find fentry prog 0 nsec
-  test_tailcall_count:PASS:set_attach_target subprog_tail 0 nsec
-  libbpf: object 'tailcall_bpf2bp' is not native endianness
-  test_tailcall_count:FAIL:load fentry_obj unexpected error: -4003 (errno 4003)
-  #333/13  tailcalls/tailcall_bpf2bpf_fentry:FAIL
-
-I have a minor patch to fix this but will wait for feedback on v3 before
-posting it together with any further requested changes in a v4. Apologies
-for the extra churn, and I'll attach the pending patch for reference.
-
-Thanks,
-Tony
-
-
---CiKMM2wF0C80B0Q7
-Content-Type: text/x-diff; charset=us-ascii
-Content-Disposition: attachment; filename="elf-use-after-free.patch"
-
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -694,6 +694,8 @@ struct bpf_object {
- 	/* Information when doing ELF related work. Only valid if efile.elf is not NULL */
- 	struct elf_state efile;
- 
-+	unsigned char byteorder;
-+
- 	struct btf *btf;
- 	struct btf_ext *btf_ext;
- 
-@@ -1521,6 +1523,7 @@ static void bpf_object__elf_finish(struct bpf_object *obj)
- 
- 	elf_end(obj->efile.elf);
- 	obj->efile.elf = NULL;
-+	obj->efile.ehdr = NULL;
- 	obj->efile.symbols = NULL;
- 	obj->efile.arena_data = NULL;
- 
-@@ -1586,6 +1589,18 @@ static int bpf_object__elf_init(struct bpf_object *obj)
- 		goto errout;
- 	}
- 
-+	/* Validate ELF object endianness... */
-+	if (ehdr->e_ident[EI_DATA] != ELFDATA2LSB &&
-+	    ehdr->e_ident[EI_DATA] != ELFDATA2MSB) {
-+		err = -LIBBPF_ERRNO__ENDIAN;
-+		pr_warn("elf: '%s' has unknown byte order\n", obj->path);
-+		goto errout;
-+	}
-+	/* and preserve outside lifetime of bpf_object_open() */
-+	obj->byteorder = ehdr->e_ident[EI_DATA];
-+
-+
-+
- 	if (elf_getshdrstrndx(elf, &obj->efile.shstrndx)) {
- 		pr_warn("elf: failed to get section names section index for %s: %s\n",
- 			obj->path, elf_errmsg(-1));
-@@ -1617,9 +1632,9 @@ static int bpf_object__elf_init(struct bpf_object *obj)
- static bool is_native_endianness(struct bpf_object *obj)
- {
- #if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
--	return obj->efile.ehdr->e_ident[EI_DATA] == ELFDATA2LSB;
-+	return obj->byteorder == ELFDATA2LSB;
- #elif __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
--	return obj->efile.ehdr->e_ident[EI_DATA] == ELFDATA2MSB;
-+	return obj->byteorder == ELFDATA2MSB;
- #else
- # error "Unrecognized __BYTE_ORDER__"
- #endif
-
---CiKMM2wF0C80B0Q7--
+I will prepare a test case.
+Probably tomorrow.
 
