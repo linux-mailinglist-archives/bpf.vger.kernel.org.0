@@ -1,220 +1,185 @@
-Return-Path: <bpf+bounces-38331-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38332-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA42B9636DD
-	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 02:25:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8ECC89636EB
+	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 02:38:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E2DB1B20EB1
-	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 00:25:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B6284B2355F
+	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 00:38:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5643DDDAD;
-	Thu, 29 Aug 2024 00:25:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BCE6DDC5;
+	Thu, 29 Aug 2024 00:38:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B4lHRAJg"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o+39IN8v"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC0099474;
-	Thu, 29 Aug 2024 00:25:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1314536B;
+	Thu, 29 Aug 2024 00:38:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724891107; cv=none; b=uKy12cj72ZObc5AXxE2CknTLbrALmshn/1xpOh8XvDZ+1x2RqNn8mAtslBUJq6BWkX+AuyuHDmzgvgMBXFE8WnkuifbIbRWPkzLD7c7lArm90iB5ZEIQ+ookc7HYwjU6t68UaatoXdr24QsFt89Rwcd9CCOltEAz7rtq43h8bA4=
+	t=1724891918; cv=none; b=DThHXNR0dfbiyhq9FC+QylZ0hcH+/NKWFuaRNkECeCBSaS0MlDmAotGBpBaYv6Fl+L8fMdLx9liEs8vIDm7lFnZzceVTwZ6IsExjci/Mkho1q3gI1yclulUshQGnNDifysFOYJf1nye8sAyB1nDlx2Xca8ywclfD3ZII6eKjhIY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724891107; c=relaxed/simple;
-	bh=nCM8XvqCff53EEr64RnHMSHTUq4K5/SJ/d7fShpXRWA=;
+	s=arc-20240116; t=1724891918; c=relaxed/simple;
+	bh=H/Us5usGxDS5wVRR+GqgLPHopjD00i4j8HH8GeuvDEo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aeya4sFpWSYXo65Huz9yXThz9K943E000DOU76vXAxhMojMRKC7EQGWm8EY6IgOxM908Achf6eY41dFlivI7chHFlOvOVU0A830s5wiutWxYi7DhV/JMxcwRtNyajp96HUFuQyAh7goBmQbufcILa/8CT6jxlGuntFvWE3JPRqs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B4lHRAJg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C767C4CEC0;
-	Thu, 29 Aug 2024 00:25:02 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=VBlGFMBx8oobWUF8td2am5c3lwOSpFPqlqAoSvJUB78V7ZYFUr3/V5yN0DOIzJlqAzMGJ1uPjC+8SJ2rH/Kt8zcts7SpJfFIypLb5x0XshaeJEu4LFsJ1OAiO6wPGaFNg0vvk7f9oS/EaSOf8j50xkM45pucIXwcHul5KCl6qyA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o+39IN8v; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28EE3C4CEC0;
+	Thu, 29 Aug 2024 00:38:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1724891107;
-	bh=nCM8XvqCff53EEr64RnHMSHTUq4K5/SJ/d7fShpXRWA=;
+	s=k20201202; t=1724891917;
+	bh=H/Us5usGxDS5wVRR+GqgLPHopjD00i4j8HH8GeuvDEo=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=B4lHRAJg6X7XqkRKlrJ+YCiTKqMVqdBCKwXygNvBCntYpT5Vq6fZbbC+Nl0QovgDE
-	 BFcwORztl1ocSysdnEElSTbXDVJQ9CxTFxF+BSpUYXYJtMKiShrT5IEZ1V38H8RA6N
-	 Hf/pEQMJVXY5VRKwDto8lQoZMKdmlkI5keOQcIeRZZGqi8FY16e8TvC2FYJQmAJuYW
-	 yf/9525rDiO7baZJw4ny+zdrGylPp6H1khY2PrsBSc200YRIlkH5k14t2QGtrQI5BA
-	 HkIXGqgoBXNSYKoma2iEL73nWmWUkWMtVdW2JxHb5ffcxRp0a7mDeklktF8oiSQ0S3
-	 MQmp6Wq+CgrJQ==
-Date: Thu, 29 Aug 2024 02:25:00 +0200
-From: Alejandro Colomar <alx@kernel.org>
-To: Kees Cook <kees@kernel.org>
-Cc: Yafang Shao <laoar.shao@gmail.com>, akpm@linux-foundation.org, 
-	torvalds@linux-foundation.org, justinstitt@google.com, ebiederm@xmission.com, 
-	alexei.starovoitov@gmail.com, rostedt@goodmis.org, catalin.marinas@arm.com, 
-	penguin-kernel@i-love.sakura.ne.jp, linux-mm@kvack.org, linux-fsdevel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, audit@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	selinux@vger.kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, Alexander Viro <viro@zeniv.linux.org.uk>, 
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Matus Jokay <matus.jokay@stuba.sk>, 
-	"Serge E. Hallyn" <serge@hallyn.com>
-Subject: Re: [PATCH v8 1/8] Get rid of __get_task_comm()
-Message-ID: <q6xvpwqj7dkgu2cay5mgahscfgdwu2ohzxs7xd3nw3xa622sh4@u35topnxx36b>
-References: <20240828030321.20688-1-laoar.shao@gmail.com>
- <20240828030321.20688-2-laoar.shao@gmail.com>
- <lql4y2nvs3ewadszhmv4m6fnqja4ff4ymuurpidlwvgf4twvru@esnh37a2jxbd>
- <n2fxqs3tekvljezaqpfnwhsmjymch4vb47y744zwmy7urf3flv@zvjtepkem4l7>
- <CALOAHbBAYHjDnKBVw63B8JBFc6U-2RNUX9L=ryA2Gbz7nnJfsQ@mail.gmail.com>
- <7839453E-CA06-430A-A198-92EB906F94D9@kernel.org>
- <ynrircglkinhherehtjz7woq55te55y4ol4rtxhfh75pvle3d5@uxp5esxt4slq>
- <202408281712.F78440FF@keescook>
+	b=o+39IN8v8PiE2fCMazeCrm6GKNThs9g20kxKk9yyAC5UgyXNrRT6lnMBjGcGhwInV
+	 AdCb2q7qy7XkyeAGCtJe79ZbI4QnkrjTriMxVolZ5Cbqd53LwBW9z0kAT5vaLItSVg
+	 0+LfFlPgiuGvFmFr5eYLeGsVSPSs+9RsuIvY9eoVHXiCFp7Mu64SlxByT4T1l9ZOw/
+	 P15osE9Zqd6RMnO0MH6UrjzymJDQaguyNynrVtxNNCb5THpWKG2yALm4Mp7jym1vZD
+	 DZ9H08x/jvLaqxW+5Gq6KxOaTbMAvwzwuuDTnU5d2aoOtKVIZ/2z3EYD58LHA8IPUq
+	 2X9NRwX0ox25Q==
+Date: Wed, 28 Aug 2024 17:38:36 -0700
+From: Kees Cook <kees@kernel.org>
+To: Juefei Pu <juefei.pu@email.ucr.edu>
+Cc: luto@amacapital.net, wad@chromium.org, linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: BUG: null pointer dereference in seccomp
+Message-ID: <202408281719.8BBA257@keescook>
+References: <CANikGpeQuBKj89rTkaAs5ADrz0+YLQ54g-0CshYzE3h06G0U5g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="o6w5uwkuyqtfps7p"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <202408281712.F78440FF@keescook>
+In-Reply-To: <CANikGpeQuBKj89rTkaAs5ADrz0+YLQ54g-0CshYzE3h06G0U5g@mail.gmail.com>
 
+On Tue, Aug 27, 2024 at 09:09:49PM -0700, Juefei Pu wrote:
+> Hello,
+> We found the following null-pointer-dereference issue using syzkaller
+> on Linux v6.10.
 
---o6w5uwkuyqtfps7p
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-From: Alejandro Colomar <alx@kernel.org>
-To: Kees Cook <kees@kernel.org>
-Cc: Yafang Shao <laoar.shao@gmail.com>, akpm@linux-foundation.org, 
-	torvalds@linux-foundation.org, justinstitt@google.com, ebiederm@xmission.com, 
-	alexei.starovoitov@gmail.com, rostedt@goodmis.org, catalin.marinas@arm.com, 
-	penguin-kernel@i-love.sakura.ne.jp, linux-mm@kvack.org, linux-fsdevel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, audit@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	selinux@vger.kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, Alexander Viro <viro@zeniv.linux.org.uk>, 
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Matus Jokay <matus.jokay@stuba.sk>, 
-	"Serge E. Hallyn" <serge@hallyn.com>
-Subject: Re: [PATCH v8 1/8] Get rid of __get_task_comm()
-References: <20240828030321.20688-1-laoar.shao@gmail.com>
- <20240828030321.20688-2-laoar.shao@gmail.com>
- <lql4y2nvs3ewadszhmv4m6fnqja4ff4ymuurpidlwvgf4twvru@esnh37a2jxbd>
- <n2fxqs3tekvljezaqpfnwhsmjymch4vb47y744zwmy7urf3flv@zvjtepkem4l7>
- <CALOAHbBAYHjDnKBVw63B8JBFc6U-2RNUX9L=ryA2Gbz7nnJfsQ@mail.gmail.com>
- <7839453E-CA06-430A-A198-92EB906F94D9@kernel.org>
- <ynrircglkinhherehtjz7woq55te55y4ol4rtxhfh75pvle3d5@uxp5esxt4slq>
- <202408281712.F78440FF@keescook>
-MIME-Version: 1.0
-In-Reply-To: <202408281712.F78440FF@keescook>
+In seccomp! Yikes.
 
-Hi Kees,
+> Unfortunately, the syzkaller failed to generate a reproducer.
 
-On Wed, Aug 28, 2024 at 05:17:55PM GMT, Kees Cook wrote:
-> On Wed, Aug 28, 2024 at 05:09:08PM +0200, Alejandro Colomar wrote:
-> > Hi Kees,
-> >=20
-> > On Wed, Aug 28, 2024 at 06:48:39AM GMT, Kees Cook wrote:
-> >=20
-> > [...]
-> >=20
-> > > >Thank you for your suggestion. How does the following commit log look
-> > > >to you? Does it meet your expectations?
-> > > >
-> > > >    string: Use ARRAY_SIZE() in strscpy()
-> > > >
-> > > >    We can use ARRAY_SIZE() instead to clarify that they are regular=
- characters.
-> > > >
-> > > >    Co-developed-by: Alejandro Colomar <alx@kernel.org>
-> > > >    Signed-off-by: Alejandro Colomar <alx@kernel.org>
-> > > >    Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > > >
-> > > >diff --git a/arch/um/include/shared/user.h b/arch/um/include/shared/=
-user.h
-> > > >index bbab79c0c074..07216996e3a9 100644
-> > > >--- a/arch/um/include/shared/user.h
-> > > >+++ b/arch/um/include/shared/user.h
-> > > >@@ -14,7 +14,7 @@
-> > > >  * copying too much infrastructure for my taste, so userspace files
-> > > >  * get less checking than kernel files.
-> > > >  */
-> > > >-#define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
-> > > >+#define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]) + __must_be_array=
-(x))
-> > > >
-> > > > /* This is to get size_t and NULL */
-> > > > #ifndef __UM_HOST__
-> > > >@@ -60,7 +60,7 @@ static inline void print_hex_dump(const char *leve=
-l,
-> > > >const char *prefix_str,
-> > > > extern int in_aton(char *str);
-> > > > extern size_t strlcat(char *, const char *, size_t);
-> > > > extern size_t sized_strscpy(char *, const char *, size_t);
-> > > >-#define strscpy(dst, src)      sized_strscpy(dst, src, sizeof(dst))
-> > > >+#define strscpy(dst, src)      sized_strscpy(dst, src, ARRAY_SIZE(d=
-st))
-> > >=20
-> > > Uh, but why? strscpy() copies bytes, not array elements. Using sizeof=
-() is already correct and using ARRAY_SIZE() could lead to unexpectedly sma=
-ll counts (in admittedly odd situations).
-> > >=20
-> > > What is the problem you're trying to solve here?
-> >=20
-> > I suggested that here:
-> > <https://lore.kernel.org/all/2jxak5v6dfxlpbxhpm3ey7oup4g2lnr3ueurfbosf5=
-wdo65dk4@srb3hsk72zwq/>
-> >=20
-> > There, you'll find the rationale (and also for avoiding the _pad calls
-> > where not necessary --I ignore if it's necessary here--).
->=20
-> Right, so we only use byte strings for strscpy(), so sizeof() is
-> sufficient. There's no technical need to switch to ARRAY_SIZE(), and I'd
-> like to minimize any changes to such core APIs without a good reason.
+That's a bummer.
 
-Makes sense.  My original proposal was ignoring that the wrapper was
-already using __must_be_array().  Having already sizeof() +
-__must_be_array(), I'd leave it like that, since both do effectively the
-same.
+> But at least we have the report:
+> 
+> Oops: general protection fault, probably for non-canonical address
+> 0xdffffc0000000006: 0000 [#1] PREEMPT SMP KASAN PTI
+> KASAN: null-ptr-deref in range [0x0000000000000030-0x0000000000000037]
+> CPU: 0 PID: 4493 Comm: systemd-journal Not tainted 6.10.0 #13
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/2014
+> RIP: 0010:__bpf_prog_run include/linux/filter.h:691 [inline]
 
-> And for the _pad change, we are also doing strncpy() replacement via
-> case-by-case analysis, but with a common function like get_task_comm(),
-> I don't want to change the behavior without a complete audit of the
-> padding needs of every caller.
+This doesn't look like a NULL deref, this looks like a corrupted
+pointer: 0xdffffc0000000006. Is prog bad or dfunc bad? I assume the
+former, as dfunc is hard-coded below...
 
-Agree.  I had the same problem with shadow.  Removing padding was the
-worst part, because it was hard to justify that nothing was relying on
-the padding.
+                ret = dfunc(ctx, prog->insnsi, prog->bpf_func);
 
-> Since that's rather a lot for this series,
-> I'd rather we just leave the existing behavior as-is, and if padding
-> removal is wanted after that, we can do it on a case-by-case basis then.
->=20
-> -Kees
+> RIP: 0010:bpf_prog_run include/linux/filter.h:698 [inline]
 
-Have a lovely night!
-Alex
+        return __bpf_prog_run(prog, ctx, bpf_dispatcher_nop_func);
 
->=20
-> --=20
-> Kees Cook
+> RIP: 0010:bpf_prog_run_pin_on_cpu include/linux/filter.h:715 [inline]
 
---=20
-<https://www.alejandro-colomar.es/>
+        ret = bpf_prog_run(prog, ctx);
 
---o6w5uwkuyqtfps7p
-Content-Type: application/pgp-signature; name="signature.asc"
+> RIP: 0010:seccomp_run_filters+0x17a/0x3f0 kernel/seccomp.c:426
 
------BEGIN PGP SIGNATURE-----
+                u32 cur_ret = bpf_prog_run_pin_on_cpu(f->prog, sd);
 
-iQIzBAABCgAdFiEE6jqH8KTroDDkXfJAnowa+77/2zIFAmbPv9wACgkQnowa+77/
-2zLmfhAAqsMngDf8es0F6qRd7cwzD5RwLYJ8tk1KfFfVJjLJN6kb3mV29YiA0pl7
-LsZlkqQ/rmDcqE2Ex9UoiAlIrJw154+Dg63MqkrOYnXf3vDpMopi4jtGlBSG3cJn
-Jm9toPA7lNWwiDe6q19RzLraVFl4+t2ik2wUWtC+SYxBN/vFkU0CRQqwbSg78DMJ
-S3ZIJfLKdkkSeSV9wbddJTwtolje98WEKLtGxbnc7urnmtlvIFqcYACYe9MGVeqf
-kuq//H0SGfCjVEpzizecG93wlp5B2q1Q1sulb1l7mj5rfgaaNE/NilFGv7y/+GwY
-zEyhm6rEjbWZjsh1PxuofuN4ftlJyqlpioondQryrcE370W1Ugfcac6oP5t8ornD
-pdjU1JgIVwY+3Nug3vBKggFwOuy3aQOYP2s6E06KnDEP7GYY1xpzVE6WRbPPzO/T
-FNisBNfvY1FE9M09QiaSkbbePpvTbvYK3RSR7goiKWRMj7gB5NyTuimpZX4Z3Hxa
-y190DotOM8xuALV0EQnx/2quq2+GgT0+N2Et4UdB0U9ENq0X8hAcYYtF1MGnOsCj
-cn3A+JU5VJjLEkFyLF9g9j2dimru4mnxyT7IKtO0NqPjEb7R7TLQPWA1yqwt0Sfm
-pf5ipWUVNTfZ/CEKirXNhGKFwGyva449J3Pu8od1GEbyS8yEj7Q=
-=UqVz
------END PGP SIGNATURE-----
+> Code: 00 00 e8 99 36 d2 ff 0f 1f 44 00 00 e8 cf 58 ff ff 48 8d 5d 48
+> 48 83 c5 30 48 89 e8 48 c1 e8 03 48 b9 00 00 00 00 00 fc ff df <80> 3c
+> 08 00 74 08 48 89 ef e8 c8 63 62 00 4c 8b 5d 00 48 8b 3c 24
+> RSP: 0018:ffffc90002cb7be0 EFLAGS: 00010206
+> RAX: 0000000000000006 RBX: 0000000000000048 RCX: dffffc0000000000
+> RDX: 0000000000000000 RSI: 00000000000002a4 RDI: ffffffff8b517360
+> RBP: 0000000000000030 R08: ffffffff8191f8eb R09: 1ffff11004039e86
+> R10: dffffc0000000000 R11: ffffffffa00016d0 R12: 000000007fff0000
+> R13: ffff88801f84a800 R14: ffffc90002cb7df0 R15: 000000007fff0000
+> FS:  00007f897e849900(0000) GS:ffff888063a00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007f897d771b08 CR3: 00000000195fe000 CR4: 0000000000350ef0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  <TASK>
+>  __seccomp_filter+0x46f/0x1c70 kernel/seccomp.c:1222
+>  syscall_trace_enter+0xa4/0x140 kernel/entry/common.c:52
+>  syscall_enter_from_user_mode_work include/linux/entry-common.h:168 [inline]
+>  syscall_enter_from_user_mode include/linux/entry-common.h:198 [inline]
+>  do_syscall_64+0x5d/0x150 arch/x86/entry/common.c:79
+>  entry_SYSCALL_64_after_hwframe+0x67/0x6f
 
---o6w5uwkuyqtfps7p--
+Has anything changed in BPF in this area lately?
+
+> RIP: 0033:0x7f897ed171e4
+> Code: 84 00 00 00 00 00 44 89 54 24 0c e8 36 58 f9 ff 44 8b 54 24 0c
+> 44 89 e2 48 89 ee 41 89 c0 bf 9c ff ff ff b8 01 01 00 00 0f 05 <48> 3d
+> 00 f0 ff ff 77 34 44 89 c7 89 44 24 0c e8 68 58 f9 ff 8b 44
+> RSP: 002b:00007ffd4ae74a60 EFLAGS: 00000293 ORIG_RAX: 0000000000000101
+> RAX: ffffffffffffffda RBX: 00005627cd785ed0 RCX: 00007f897ed171e4
+> RDX: 0000000000290000 RSI: 00007f897f010d0a RDI: 00000000ffffff9c
+> RBP: 00007f897f010d0a R08: 0000000000000000 R09: 0034353132303865
+> R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000290000
+> R13: 00007ffd4ae74d20 R14: 0000000000000000 R15: 00007ffd4ae74e28
+>  </TASK>
+> Modules linked in:
+> ---[ end trace 0000000000000000 ]---
+> RIP: 0010:__bpf_prog_run include/linux/filter.h:691 [inline]
+> RIP: 0010:bpf_prog_run include/linux/filter.h:698 [inline]
+> RIP: 0010:bpf_prog_run_pin_on_cpu include/linux/filter.h:715 [inline]
+> RIP: 0010:seccomp_run_filters+0x17a/0x3f0 kernel/seccomp.c:426
+> Code: 00 00 e8 99 36 d2 ff 0f 1f 44 00 00 e8 cf 58 ff ff 48 8d 5d 48
+> 48 83 c5 30 48 89 e8 48 c1 e8 03 48 b9 00 00 00 00 00 fc ff df <80> 3c
+> 08 00 74 08 48 89 ef e8 c8 63 62 00 4c 8b 5d 00 48 8b 3c 24
+> RSP: 0018:ffffc90002cb7be0 EFLAGS: 00010206
+> RAX: 0000000000000006 RBX: 0000000000000048 RCX: dffffc0000000000
+> RDX: 0000000000000000 RSI: 00000000000002a4 RDI: ffffffff8b517360
+> RBP: 0000000000000030 R08: ffffffff8191f8eb R09: 1ffff11004039e86
+> R10: dffffc0000000000 R11: ffffffffa00016d0 R12: 000000007fff0000
+> R13: ffff88801f84a800 R14: ffffc90002cb7df0 R15: 000000007fff0000
+> FS:  00007f897e849900(0000) GS:ffff888063a00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007f521f8ca000 CR3: 00000000195fe000 CR4: 0000000000350ef0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> ----------------
+> Code disassembly (best guess):
+>    0: 00 00                 add    %al,(%rax)
+>    2: e8 99 36 d2 ff       call   0xffd236a0
+>    7: 0f 1f 44 00 00       nopl   0x0(%rax,%rax,1)
+>    c: e8 cf 58 ff ff       call   0xffff58e0
+>   11: 48 8d 5d 48           lea    0x48(%rbp),%rbx
+>   15: 48 83 c5 30           add    $0x30,%rbp
+>   19: 48 89 e8             mov    %rbp,%rax
+>   1c: 48 c1 e8 03           shr    $0x3,%rax
+>   20: 48 b9 00 00 00 00 00 movabs $0xdffffc0000000000,%rcx
+>   27: fc ff df
+> * 2a: 80 3c 08 00           cmpb   $0x0,(%rax,%rcx,1) <-- trapping instruction
+>   2e: 74 08                 je     0x38
+>   30: 48 89 ef             mov    %rbp,%rdi
+>   33: e8 c8 63 62 00       call   0x626400
+>   38: 4c 8b 5d 00           mov    0x0(%rbp),%r11
+>   3c: 48 8b 3c 24           mov    (%rsp),%rdi
+
+What's the movabs? I don't have anything like that in my vmlinux binary
+output. Is this KASAN perhaps?
+
+Regardless, I don't see how prog could be NULL. :( It shouldn't be
+possible without some kind of major refcounting bug.
+
+-Kees
+
+-- 
+Kees Cook
 
