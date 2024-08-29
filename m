@@ -1,275 +1,192 @@
-Return-Path: <bpf+bounces-38458-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38459-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5BAFA965037
-	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 21:55:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8ED8996503A
+	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 21:55:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A0E88B24CB8
-	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 19:55:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B3CD11C20B75
+	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2024 19:55:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 013971BD038;
-	Thu, 29 Aug 2024 19:45:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74F501BDA97;
+	Thu, 29 Aug 2024 19:46:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ekz2nSD0"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PYdT+heh"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77CDD1BD002;
-	Thu, 29 Aug 2024 19:45:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E1501BC9ED;
+	Thu, 29 Aug 2024 19:46:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724960739; cv=none; b=IqeNFdEHP2jNnhFuaA7LK7OIp8l/f2h0nxmq8OWzNeSemh1IC0sVhV13hsvHmdn7MUgmyKWictRvy0QIV1JoftQ4dIl3RUPUkgxqcEaF6dYz7hjSzIxjdtcQJqzvTcne5+ePE7zt4zldwdXT6YDORcEZseZ4zU7jLCtgTF4Nm+o=
+	t=1724960795; cv=none; b=tPgiGe4S7gJU75OsfJqTXtj8sL4aD6n3LRHuQPIbx455VKsAoZ90g4zjPWkZluhEB1oHEbIoef/fe7QVM7dHS95CSCDc8TxafbtVaWpeq+3J9moK4cl39r1mYS+Wz8MxDJOL5ZEsY34smwBaLJ2xerGPPi39bPU7ke5DTVK0fYE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724960739; c=relaxed/simple;
-	bh=hsofY5mS1ng3aVwCqPdHOCoXxhZ1oo3tDrHGXnPOec0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mqga9d3g8vokRm4jTShWwzT6GLOM2Mfx30m2a7ichdnt4gdb0Ls08EAvqTjstwFZ8PifQjZhhyC2am8FzhhysFFQAfLug+20kaUypJJxyItd1JFHp8E9CP6ENf9WdHIy/OQO6qu1vqcdW6RuZbdkWsmaTrwBF0iY4/+iQNy4iJg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ekz2nSD0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2295FC4CEC1;
-	Thu, 29 Aug 2024 19:45:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1724960739;
-	bh=hsofY5mS1ng3aVwCqPdHOCoXxhZ1oo3tDrHGXnPOec0=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ekz2nSD0y7N2VWg2f1ezpLD5FwXmLI9Pl4JxxykMIVap5B8Zbc+W7IY0jHRd28g0u
-	 2G0IAPSyDAzIWAMTC2OXbZiWHiKXdQP+4+NlxpPUj19zBYIBLEfa2F3JpnmdLcPD+m
-	 nwVTck/6ckwm2QE9t+A7pjU7EZCvzcPSVryUyU0WJHrb+rTcez8wHrZ8DVu2t0N5tH
-	 Qw+DCQOqAwd0n66ysJjPrQqFlwn9B+J/DClk/QJ8Y2aF+9pcOapwp8RoO26ya47lr+
-	 BZ5sjKL8pvQ3foVQGRQ94AUM8GJUTWRIUsJlvkBX3yLJ2Ao4PEbY4a1iVWKuEZzK49
-	 fA8qudoJP/eMw==
-From: Jiri Olsa <jolsa@kernel.org>
-To: Oleg Nesterov <oleg@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Tianyi Liu <i.pear@outlook.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>
-Cc: bpf@vger.kernel.org,
-	Steven Rostedt <rostedt@goodmis.org>,
-	linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org
-Subject: [PATCH bpf-next 2/2] selftests/bpf: Add uprobe pid filter test for multiple processes
-Date: Thu, 29 Aug 2024 21:45:05 +0200
-Message-ID: <20240829194505.402807-3-jolsa@kernel.org>
-X-Mailer: git-send-email 2.46.0
-In-Reply-To: <20240829194505.402807-1-jolsa@kernel.org>
-References: <20240829194505.402807-1-jolsa@kernel.org>
+	s=arc-20240116; t=1724960795; c=relaxed/simple;
+	bh=kSKIJM+ZkFtvcMzZuWgU0edkekPpcAE1D9VScgc0tmY=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GokigguerzR3ybhLbjqaY1b8sZNxmakm0sUwK50irqZYIKSRn/ttfUdMfVwhJ0uOH7684uDmU2Ha2LvUlZcn32UbEM9J//UDD7v9V6gowrhHaV4xnpVPdAeHzFrtyL/JfrrwC7loxkYrEBefKanIV9Htjye41STV08PCoQqFI0I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PYdT+heh; arc=none smtp.client-ip=209.85.221.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-371b97cfd6fso778953f8f.2;
+        Thu, 29 Aug 2024 12:46:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1724960791; x=1725565591; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=0DbO5BGKjG9tb39+SvI3tyQ9zhNKOte0pvwUl4A4jE8=;
+        b=PYdT+hehu8NaR2QQ/qiEp8CGJAu84tP1d0Qx6ty6e97B3lagKXQ0L9cnUFJYpcKZBD
+         Ha0g+EeD6OjW0lD1YWBRpq8sho7/fFnZeLH0e90lxx7v4MIAbntmtxjkK+iVM39DgsTA
+         TO+Enr2PU1c6sHn2RGBW54o1vWq3zs8ljQjjQSjATALDrF/xHMOKCXsF+fkGPBGE9d+y
+         UqzE0iy9qbJu8DHqITuidtkD3VWwhkyL8Md4ExGPaEt7+1N4o6jYCyIpOlGVQDdUgDK/
+         MTaNA+4oFffoXnPl277uPgLlB9EvL9p6qhG1Xp4rT8x+LPAYzfwDGWHQDQavodavf/Ds
+         eyKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1724960791; x=1725565591;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0DbO5BGKjG9tb39+SvI3tyQ9zhNKOte0pvwUl4A4jE8=;
+        b=b3AGaDO/bo9RNIcs3bGLTwc85KNDVkb0iJ8TA5RetRs/FCmIAbBgGEtSfOzh60+Yy8
+         ix+uGREaCz1Om3eici+/eo2xqp/FiAo4cCr1WA0V/rI1HAMzAZq823qzMIne6ElRyxe9
+         nvSN1eU/x6eO5diirTIIjbpphgLupBM/cqrXfUiSfHlE73rrAVUwHOkVJsTaHyqxYv3o
+         fIVpxQpTPx9+RWbDXwEKk594p4hg0BMAaDGeoaywKXK7+42HJpGEVsOLIavIdFbHXt7s
+         fFG4SsCzHMbK2wh3+5wBLDDGoEBVxQ08MxTRapV+X0kpWQ5W6C4JlCKe/a9lUeGQ4P3q
+         g8fw==
+X-Forwarded-Encrypted: i=1; AJvYcCXRWPJHTtFeXzAwI4m3+hrMznTZUQWFbywKuvtYrCobOoCq8r5KB0Eu7YDM61R/mgqG5OI=@vger.kernel.org, AJvYcCXel/sGLojEhSmFIRYV6wLvfTCyY7iW4Pw8wUbeCseEiJ5TS5Y7GAuJg8hcKs8+q/2/G1iQ4eTXMzTpKqRRkx3wSZfR@vger.kernel.org
+X-Gm-Message-State: AOJu0YzBqBgm3CZt/nj0sJN+0xANp9HEero/CF7b0XX75p/3F8Orv/Jj
+	llAQea+dcSt8yNY+ofOZjgCIpQEvom4rbzl8hmZ6oGruX9REZ20u
+X-Google-Smtp-Source: AGHT+IHWTLvEDzjTtPztef87V+QDQ14fhwlqoyFAqtoZWJsX4QwBgEtVrInR/UXbeZ4xKOqLT5lALg==
+X-Received: by 2002:a5d:6406:0:b0:371:9377:8cb5 with SMTP id ffacd0b85a97d-3749b54869dmr2792155f8f.14.1724960790164;
+        Thu, 29 Aug 2024 12:46:30 -0700 (PDT)
+Received: from krava (37-188-180-165.red.o2.cz. [37.188.180.165])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3749eea60e2sm2187256f8f.62.2024.08.29.12.46.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Aug 2024 12:46:29 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Thu, 29 Aug 2024 21:46:25 +0200
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Tianyi Liu <i.pear@outlook.com>,
+	andrii.nakryiko@gmail.com, mhiramat@kernel.org, ajor@meta.com,
+	albancrequy@linux.microsoft.com, bpf@vger.kernel.org,
+	flaniel@linux.microsoft.com, linux-trace-kernel@vger.kernel.org,
+	linux@jordanrome.com, mathieu.desnoyers@efficios.com
+Subject: Re: [PATCH v2] tracing/uprobe: Add missing PID filter for uretprobe
+Message-ID: <ZtDQEVN1-BAfWuMU@krava>
+References: <ZsxTckUnlU_HWDMJ@krava>
+ <20240826115752.GA21268@redhat.com>
+ <ZsyHrhG9Q5BpZ1ae@krava>
+ <20240826212552.GB30765@redhat.com>
+ <Zsz7SPp71jPlH4MS@krava>
+ <20240826222938.GC30765@redhat.com>
+ <Zs3PdV6nqed1jWC2@krava>
+ <20240827201926.GA15197@redhat.com>
+ <Zs8N-xP4jlPK2yjE@krava>
+ <20240829152032.GA23996@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240829152032.GA23996@redhat.com>
 
-The idea is to create and monitor 3 uprobes, each trigered in separate
-process and make sure the bpf program gets executed just for the proper
-PID specified via pid filter.
+On Thu, Aug 29, 2024 at 05:20:33PM +0200, Oleg Nesterov wrote:
 
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- .../bpf/prog_tests/uprobe_multi_test.c        | 103 ++++++++++++++++++
- .../bpf/progs/uprobe_multi_pid_filter.c       |  61 +++++++++++
- 2 files changed, 164 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/uprobe_multi_pid_filter.c
+SNIP
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c b/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-index 250eb47c68f9..59c460675af9 100644
---- a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-+++ b/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-@@ -7,6 +7,7 @@
- #include "uprobe_multi_bench.skel.h"
- #include "uprobe_multi_usdt.skel.h"
- #include "uprobe_multi_consumers.skel.h"
-+#include "uprobe_multi_pid_filter.skel.h"
- #include "bpf/libbpf_internal.h"
- #include "testing_helpers.h"
- #include "../sdt.h"
-@@ -935,6 +936,106 @@ static void test_consumers(void)
- 	uprobe_multi_consumers__destroy(skel);
- }
- 
-+typedef struct bpf_link *(create_link_t)(struct uprobe_multi_pid_filter *, int, int, bool);
-+
-+static struct bpf_program *uprobe_program(struct uprobe_multi_pid_filter *skel, int idx)
-+{
-+	switch (idx) {
-+	case 0: return skel->progs.uprobe_0;
-+	case 1: return skel->progs.uprobe_1;
-+	case 2: return skel->progs.uprobe_2;
-+	}
-+	return NULL;
-+}
-+
-+static struct bpf_link *create_link_uprobe(struct uprobe_multi_pid_filter *skel,
-+					   int idx, int pid, bool retprobe)
-+{
-+	LIBBPF_OPTS(bpf_uprobe_opts, opts,
-+		.retprobe  = retprobe,
-+		.func_name = "uprobe_multi_func_1",
-+	);
-+
-+	return bpf_program__attach_uprobe_opts(uprobe_program(skel, idx), pid,
-+					       "/proc/self/exe", 0, &opts);
-+}
-+
-+static struct bpf_program *uprobe_multi_program(struct uprobe_multi_pid_filter *skel, int idx)
-+{
-+	switch (idx) {
-+	case 0: return skel->progs.uprobe_multi_0;
-+	case 1: return skel->progs.uprobe_multi_1;
-+	case 2: return skel->progs.uprobe_multi_2;
-+	}
-+	return NULL;
-+}
-+
-+static struct bpf_link *create_link_uprobe_multi(struct uprobe_multi_pid_filter *skel,
-+						 int idx, int pid, bool retprobe)
-+{
-+	LIBBPF_OPTS(bpf_uprobe_multi_opts, opts, .retprobe = retprobe);
-+
-+	return bpf_program__attach_uprobe_multi(uprobe_multi_program(skel, idx), pid,
-+						"/proc/self/exe", "uprobe_multi_func_1", &opts);
-+}
-+
-+#define TASKS 3
-+
-+static void run_pid_filter(struct uprobe_multi_pid_filter *skel,
-+			   create_link_t create_link, bool retprobe)
-+{
-+	struct bpf_link *link[TASKS] = {};
-+	struct child child[TASKS] = {};
-+	int i;
-+
-+	printf("%s retprobe %d\n", create_link == create_link_uprobe ? "uprobe" : "uprobe_multi",
-+		retprobe);
-+
-+	memset(skel->bss->test, 0, sizeof(skel->bss->test));
-+
-+	for (i = 0; i < TASKS; i++) {
-+		if (!ASSERT_OK(spawn_child(&child[i]), "spawn_child"))
-+			goto cleanup;
-+		skel->bss->pids[i] = child[i].pid;
-+	}
-+
-+	for (i = 0; i < TASKS; i++) {
-+		link[i] = create_link(skel, i, child[i].pid, retprobe);
-+		if (!ASSERT_OK_PTR(link[i], "create_link"))
-+			goto cleanup;
-+	}
-+
-+	for (i = 0; i < TASKS; i++)
-+		kick_child(&child[i]);
-+
-+	for (i = 0; i < TASKS; i++) {
-+		ASSERT_EQ(skel->bss->test[i][0], 1, "pid");
-+		ASSERT_EQ(skel->bss->test[i][1], 0, "unknown");
-+	}
-+
-+cleanup:
-+	for (i = 0; i < TASKS; i++)
-+		bpf_link__destroy(link[i]);
-+	for (i = 0; i < TASKS; i++)
-+		release_child(&child[i]);
-+}
-+
-+static void test_pid_filter_process(void)
-+{
-+	struct uprobe_multi_pid_filter *skel;
-+
-+	skel = uprobe_multi_pid_filter__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "uprobe_multi_pid_filter__open_and_load"))
-+		return;
-+
-+	run_pid_filter(skel, create_link_uprobe, false);
-+	run_pid_filter(skel, create_link_uprobe, true);
-+	run_pid_filter(skel, create_link_uprobe_multi, false);
-+	run_pid_filter(skel, create_link_uprobe_multi, true);
-+
-+	uprobe_multi_pid_filter__destroy(skel);
-+}
-+
- static void test_bench_attach_uprobe(void)
- {
- 	long attach_start_ns = 0, attach_end_ns = 0;
-@@ -1027,4 +1128,6 @@ void test_uprobe_multi_test(void)
- 		test_attach_uprobe_fails();
- 	if (test__start_subtest("consumers"))
- 		test_consumers();
-+	if (test__start_subtest("filter_process"))
-+		test_pid_filter_process();
- }
-diff --git a/tools/testing/selftests/bpf/progs/uprobe_multi_pid_filter.c b/tools/testing/selftests/bpf/progs/uprobe_multi_pid_filter.c
-new file mode 100644
-index 000000000000..260d46406e47
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/uprobe_multi_pid_filter.c
-@@ -0,0 +1,61 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+__u32 pids[3];
-+__u32 test[3][2];
-+
-+static void update_pid(int idx)
-+{
-+	__u32 pid = bpf_get_current_pid_tgid() >> 32;
-+
-+	if (pid == pids[idx])
-+		test[idx][0]++;
-+	else
-+		test[idx][1]++;
-+}
-+
-+SEC("uprobe.multi")
-+int uprobe_multi_0(struct pt_regs *ctx)
-+{
-+	update_pid(0);
-+	return 0;
-+}
-+
-+SEC("uprobe.multi")
-+int uprobe_multi_1(struct pt_regs *ctx)
-+{
-+	update_pid(1);
-+	return 0;
-+}
-+
-+SEC("uprobe.multi")
-+int uprobe_multi_2(struct pt_regs *ctx)
-+{
-+	update_pid(2);
-+	return 0;
-+}
-+
-+SEC("uprobe")
-+int uprobe_0(struct pt_regs *ctx)
-+{
-+	update_pid(0);
-+	return 0;
-+}
-+
-+SEC("uprobe")
-+int uprobe_1(struct pt_regs *ctx)
-+{
-+	update_pid(1);
-+	return 0;
-+}
-+
-+SEC("uprobe")
-+int uprobe_2(struct pt_regs *ctx)
-+{
-+	update_pid(2);
-+	return 0;
-+}
--- 
-2.46.0
+> diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
+> index f7443e996b1b..e4eaa0363742 100644
+> --- a/kernel/trace/trace_uprobe.c
+> +++ b/kernel/trace/trace_uprobe.c
+> @@ -1364,7 +1364,7 @@ static bool uprobe_perf_filter(struct uprobe_consumer *uc, struct mm_struct *mm)
+>  	return ret;
+>  }
+>  
+> -static void __uprobe_perf_func(struct trace_uprobe *tu,
+> +static int __uprobe_perf_func(struct trace_uprobe *tu,
+>  			       unsigned long func, struct pt_regs *regs,
+>  			       struct uprobe_cpu_buffer **ucbp)
+>  {
+> @@ -1375,6 +1375,7 @@ static void __uprobe_perf_func(struct trace_uprobe *tu,
+>  	void *data;
+>  	int size, esize;
+>  	int rctx;
+> +	int ret = 0;
+>  
+>  #ifdef CONFIG_BPF_EVENTS
+>  	if (bpf_prog_array_valid(call)) {
+> @@ -1382,7 +1383,7 @@ static void __uprobe_perf_func(struct trace_uprobe *tu,
+>  
+>  		ret = bpf_prog_run_array_uprobe(call->prog_array, regs, bpf_prog_run);
+>  		if (!ret)
+> -			return;
+> +			return -1;
+>  	}
+>  #endif /* CONFIG_BPF_EVENTS */
+>  
+> @@ -1392,12 +1393,13 @@ static void __uprobe_perf_func(struct trace_uprobe *tu,
+>  	size = esize + ucb->dsize;
+>  	size = ALIGN(size + sizeof(u32), sizeof(u64)) - sizeof(u32);
+>  	if (WARN_ONCE(size > PERF_MAX_TRACE_SIZE, "profile buffer not large enough"))
+> -		return;
+> +		return -1;
+>  
+>  	preempt_disable();
+>  	head = this_cpu_ptr(call->perf_events);
+>  	if (hlist_empty(head))
+>  		goto out;
 
+right.. if the event is not added by perf_trace_add on this cpu
+it won't go pass this point, so no problem for perf
+
+but the issue is with bpf program triggered earlier by return uprobe
+created via perf event and [1] patch seems to fix that
+
+I sent out the bpf selftest that triggers the issue [2]
+
+thanks,
+jirka
+
+
+[1] https://lore.kernel.org/linux-trace-kernel/ME0P300MB0416034322B9915ECD3888649D882@ME0P300MB0416.AUSP300.PROD.OUTLOOK.COM/
+[2] https://lore.kernel.org/bpf/20240829194505.402807-1-jolsa@kernel.org/T/#u
+
+
+> +	ret = 1;
+>  
+>  	entry = perf_trace_buf_alloc(size, NULL, &rctx);
+>  	if (!entry)
+> @@ -1421,6 +1423,7 @@ static void __uprobe_perf_func(struct trace_uprobe *tu,
+>  			      head, NULL);
+>   out:
+>  	preempt_enable();
+> +	return ret;
+>  }
+>  
+>  /* uprobe profile handler */
+> @@ -1439,7 +1442,15 @@ static void uretprobe_perf_func(struct trace_uprobe *tu, unsigned long func,
+>  				struct pt_regs *regs,
+>  				struct uprobe_cpu_buffer **ucbp)
+>  {
+> -	__uprobe_perf_func(tu, func, regs, ucbp);
+> +	struct trace_uprobe_filter *filter = tu->tp.event->filter;
+> +	struct perf_event *event = list_first_entry(&filter->perf_events,
+> +					struct perf_event, hw.tp_list);
+> +
+> +	int r = __uprobe_perf_func(tu, func, regs, ucbp);
+> +
+> +	pr_crit("HANDLER pid=%d consumers_target=%d stored=%d\n",
+> +		current->pid, event->hw.target ? event->hw.target->pid : -1, r);
+> +
+>  }
+>  
+>  int bpf_get_uprobe_info(const struct perf_event *event, u32 *fd_type,
+> 
 
