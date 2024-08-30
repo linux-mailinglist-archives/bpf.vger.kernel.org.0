@@ -1,125 +1,93 @@
-Return-Path: <bpf+bounces-38590-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38591-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B847966889
-	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 19:59:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id DC683966893
+	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 20:00:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 901001C23DA0
-	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 17:59:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1969F1C23BFA
+	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 18:00:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 110E41BC07D;
-	Fri, 30 Aug 2024 17:59:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 019AE1BB688;
+	Fri, 30 Aug 2024 18:00:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LjZbkURy"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HBaJWAoT"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EB9D14F135;
-	Fri, 30 Aug 2024 17:59:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8116F46B91
+	for <bpf@vger.kernel.org>; Fri, 30 Aug 2024 18:00:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725040744; cv=none; b=FXl8AOWC2tBVQuGJFzCqiHPjKK+v6R9lFwSQYu8vanMuoWJmGuB1rEc2V6slSeNgf0JgLrg9XieGO7gjmmlvN/5BQMv/t2Cx87JgOLUilAif38kLu+RCpEu42kSCGEFqQ2tPNru1nzZIizbMgYcsrdsQ+A14CiMBEvxNEtV/AJo=
+	t=1725040827; cv=none; b=PuLBrRAcqpoZy+WNnV6fFUr154MKiI4fyNnypsJlQVLDY9bfFDtM7xORStzjUPziiMTL/XZefrN6hIzPs9b2WjTrgPw0yrLYVDwmL/JtmsXzvAcDJJ9vUrnm2CtXJcgoUknr+xsMiPlwVBX8FyGx33RGGwUztLMnrt8RiooxBQY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725040744; c=relaxed/simple;
-	bh=2Jkgq5he2WxrmzFT3bK4fOcS2dH6LFp69dhviYcUaOg=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=oc85VY8Gaj6GN+5QSv1jRLB9gu70C2GjLwN0tR4DSzBcz3fpHSnu5Oa8rP1kP6tKR7FwZFpVzZHrm3QBrhN3/BEXEPSixPVZTNH3Ezpkc41oG3M7N+SS3RGiRpS51PhiyDvlOWohlcuHbgxDLmU/TIupsbcdbwohIilKk/OKqqY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LjZbkURy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1AC5CC4CEC2;
-	Fri, 30 Aug 2024 17:59:02 +0000 (UTC)
+	s=arc-20240116; t=1725040827; c=relaxed/simple;
+	bh=1p3B0rH/hyC0oMFn8xqSBvEEH91iBSIfjL8FVq6TAFA=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=JZuN2HvBIjvPPVbZnTKlHlGT1NAB3sfSA3xWX9dWknX8Nnjok+vvZeB/KwuJyHRLjMFDrNyHuik7LlSmZfQkJ8QDlRjIdkaZVsxlDYbBIkSzo38HpL6rVwjUhBqrKQyqLBfdwmMxozv6wytLTwJcvXTHFDLBv3HB2U80M81AEL4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HBaJWAoT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 283E9C4CEC4;
+	Fri, 30 Aug 2024 18:00:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1725040743;
-	bh=2Jkgq5he2WxrmzFT3bK4fOcS2dH6LFp69dhviYcUaOg=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=LjZbkURyQNKOAXItRoOtb5ppDFUPv+/i17eT3Ov4/nCswre0krz2mianWNuHI1r8v
-	 yExKTIdr9UX67PvPwuSPK4U3Wf+NlFoWyTljiZhgcBStuHt1V2pUJopoJyailtq18K
-	 yLPiChNodDGr4fr4tlLmC/K3qIiUjplzLeLAa7oR7VDZMYP+vUGFTZkOKxxb2cDhYD
-	 TBO3c0v91ccwTLdQahN5cxNE1w/rE6kPrNVD6eh0vVP3WbCWknqpNHcP5Tqc1ImrEE
-	 TBJtJvmIu954K/MBIzWorcfi12TV8HA6GQP5d7NasrFNQTufqL94j3/PGxTK3U3gxf
-	 cGCV90knr8wOg==
-Date: Fri, 30 Aug 2024 10:59:01 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Mina Almasry <almasrymina@google.com>
-Cc: Vadim Fedorenko <vadim.fedorenko@linux.dev>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
- linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
- bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org, "David S.
- Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Paolo
- Abeni <pabeni@redhat.com>, Donald Hunter <donald.hunter@gmail.com>,
- Jonathan Corbet <corbet@lwn.net>, Richard Henderson
- <richard.henderson@linaro.org>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
- Matt Turner <mattst88@gmail.com>, Thomas Bogendoerfer
- <tsbogend@alpha.franken.de>, "James E.J. Bottomley"
- <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>,
- Andreas Larsson <andreas@gaisler.com>, Jesper Dangaard Brouer
- <hawk@kernel.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>, Steven
- Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Arnd Bergmann
- <arnd@arndb.de>, Steffen Klassert <steffen.klassert@secunet.com>, Herbert
- Xu <herbert@gondor.apana.org.au>, David Ahern <dsahern@kernel.org>, Willem
- de Bruijn <willemdebruijn.kernel@gmail.com>, =?UTF-8?B?QmrDtnJuIFTDtnBl?=
- =?UTF-8?B?bA==?= <bjorn@kernel.org>, Magnus Karlsson
- <magnus.karlsson@intel.com>, Maciej Fijalkowski
- <maciej.fijalkowski@intel.com>, Jonathan Lemon <jonathan.lemon@gmail.com>,
- Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>,
- Sumit Semwal <sumit.semwal@linaro.org>, Christian =?UTF-8?B?S8O2bmln?=
- <christian.koenig@amd.com>, Pavel Begunkov <asml.silence@gmail.com>, David
- Wei <dw@davidwei.uk>, Jason Gunthorpe <jgg@ziepe.ca>, Yunsheng Lin
- <linyunsheng@huawei.com>, Shailend Chand <shailend@google.com>, Harshitha
- Ramamurthy <hramamurthy@google.com>, Shakeel Butt <shakeel.butt@linux.dev>,
- Jeroen de Borst <jeroendb@google.com>, Praveen Kaligineedi
- <pkaligineedi@google.com>, Bagas Sanjaya <bagasdotme@gmail.com>, Christoph
- Hellwig <hch@infradead.org>, Nikolay Aleksandrov <razor@blackwall.org>,
- Taehee Yoo <ap420073@gmail.com>, Willem de Bruijn <willemb@google.com>,
- Kaiyuan Zhang <kaiyuanz@google.com>, Daniel Vetter <daniel.vetter@ffwll.ch>
-Subject: Re: [PATCH net-next v23 03/13] netdev: support binding dma-buf to
- netdevice
-Message-ID: <20240830105901.27e2e139@kernel.org>
-In-Reply-To: <CAHS8izOy26r0uoWdASgmBCENNS6cDjHpkp+AHhOaKVkZR1LZqQ@mail.gmail.com>
-References: <20240829060126.2792671-1-almasrymina@google.com>
-	<20240829060126.2792671-4-almasrymina@google.com>
-	<20240829140824.555d016c@kernel.org>
-	<e6df00ec-2c52-489e-a510-b69db7e9dbf9@linux.dev>
-	<CAHS8izOy26r0uoWdASgmBCENNS6cDjHpkp+AHhOaKVkZR1LZqQ@mail.gmail.com>
+	s=k20201202; t=1725040827;
+	bh=1p3B0rH/hyC0oMFn8xqSBvEEH91iBSIfjL8FVq6TAFA=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=HBaJWAoTVkiC0RIstnOMX+0Yb3rdySPuRZcm+LIWFtF3WSrDhWj7qmcToMbxoteGw
+	 NKNaRuIrD8I9QUZHHiTuGMxSFWqU7EpkUI16bVevNnENK5LHq2MFDPQ+TVbAI33Xhj
+	 LqTJlyBsMf7LEdndRM8kZUbLgwr+hkqrnspgatO2VDsl9bSDn3+gitLGrTwG49xB2t
+	 dX3VGY3daOHIOvd6eQYbZCWDis5ZtkeybTbLxfqEWysgiiO9ZlooWIm+/2+MS6Zqm/
+	 T0YQcHP4PiXxLnLvHXBeNqVk/KRMaxTtpTdLWdcL3m3YYNHEeJOSSngGTERrvuXSSk
+	 5gErCM1MCnGTQ==
+Received: from ip-10-30-226-235.us-west-2.compute.internal (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id BE3733809A81;
+	Fri, 30 Aug 2024 18:00:28 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next] selftests/bpf: check if distilled base inherits
+ source endianness
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <172504082877.2672459.17186170323678789822.git-patchwork-notify@kernel.org>
+Date: Fri, 30 Aug 2024 18:00:28 +0000
+References: <20240830173406.1581007-1-eddyz87@gmail.com>
+In-Reply-To: <20240830173406.1581007-1-eddyz87@gmail.com>
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+ daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com,
+ yonghong.song@linux.dev, tony.ambardar@gmail.com, alan.maguire@oracle.com
 
-On Thu, 29 Aug 2024 22:41:17 -0700 Mina Almasry wrote:
-> Thank you, I think the right fix here is to reacquire rtnl_lock before
-> the `goto err_unbind;`, since err_unbind expects rtnl to be locked at
-> this point.
+Hello:
 
-FWIW it's best to keep the error path a mirror image of the success
-path, so I'd add a new label "err_relock" or something. But..
+This patch was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
 
-> This could introduce a weird edge case where we drop rtnl_lock, then
-> find out genlmsg_reply failed, then reacquire rtnl_lock to do the
-> cleanup. I can't think of anything that would horribly break if we do
-> that, but I may be missing something. In theory we could race with a
-> dmabuf unbind call happening in parallel.
+On Fri, 30 Aug 2024 10:34:06 -0700 you wrote:
+> Create a BTF with endianness different from host, make a distilled
+> base/split BTF pair from it, dump as raw bytes, import again and
+> verify that endianness is preserved.
 > 
-> If we can't reacquire rtnl_lock to do the cleanup, I think I need to
-> revert back to doing genlmsg_reply inside of rtnl_lock, and dropping
-> the lock before we return from the function.
+> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+> ---
+>  .../selftests/bpf/prog_tests/btf_distill.c    | 73 +++++++++++++++++++
+>  1 file changed, 73 insertions(+)
 
-..indeed, best to keep it atomic. So let's hold rtnl_lock longer.
-genlmsg_reply() shouldn't block, AFAIU.
+Here is the summary with links:
+  - [bpf-next] selftests/bpf: check if distilled base inherits source endianness
+    https://git.kernel.org/bpf/bpf-next/c/217c4dfec4a6
 
-BTW CI is quite behind but Yunsheng ignored it and reposted his
-"refactor" which is going to take us another 10 hours back, 
-so whatever, just post v24 when you're ready...
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
