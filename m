@@ -1,225 +1,191 @@
-Return-Path: <bpf+bounces-38579-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38580-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB6449667DB
-	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 19:21:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 333FD96680F
+	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 19:34:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 63A282826B5
-	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 17:21:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DFA17281AB8
+	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 17:34:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31E1C1BA888;
-	Fri, 30 Aug 2024 17:21:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25C3F1BAEFB;
+	Fri, 30 Aug 2024 17:34:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="Shd4Thyx";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="DHwTrUcE"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IbwXgxiH"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 188AF14C585
-	for <bpf@vger.kernel.org>; Fri, 30 Aug 2024 17:21:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725038502; cv=fail; b=EG9Fn2V5oArkxycrhhqQF6hJIb8zqJKQ1LYBG1RAh6HPKKyFl717SmdxXiiUkPs/VKX9P5l2WBRtEYrTLjjUdOC3huM2UxFhlbJPOSL17MN0x4T1jPWurZfIFYdDJSbHi5MwT4VnaUDvbDKt4+n68rZfZPpMXhkrJRE0PTP+fL4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725038502; c=relaxed/simple;
-	bh=cZ3rzqb/euj4tiWAwbfvsidIXwJMnwD3qIPDnK88KqE=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=SEHNpWzZk6WT95VtO4Zmia0Yt6p1u6DI1qgCozJKXCGsc6NNPLcR0AqlN1FOmEkCJY63KTzZfdguaXnnH33zqAxCC/hrP7qoyqoyUm6NtOXDRj/xw1vc+LBdaKrTExul+dLj/T2hbV7XWioDbkSU0oHJ70by1hsRAbOg69/UZug=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=Shd4Thyx; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=DHwTrUcE; arc=fail smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 47UFnxLZ021833;
-	Fri, 30 Aug 2024 17:20:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=
-	message-id:date:subject:to:cc:references:from:in-reply-to
-	:content-type:content-transfer-encoding:mime-version; s=
-	corp-2023-11-20; bh=mnPhv3T3weFIC/Uz8Rd6ZrzPrPZfwdMNkv9UbP0ewgE=; b=
-	Shd4ThyxJBF9i7ahP4z4RMTGZx7dQPYqok77i4M9cF0UDZs7f2yQsuZ1yZROisUy
-	HQtFYpTmeN5vkx5jy0yoR0EvfY0f4H7pyPYqv2n/M5PohKwQVKHfMgKBBTkm2vlm
-	KPbWkAi4R84vYQPwC9AfiSrvJHTt08nywL7jaYF7wNo1SZllhmzrekrGIFIXqB0u
-	QukD67XBbzcssJyuuw+DRtD4JgCskkJM7IJyrFrXRBt2YMiliWzwGUDHVkKc/7tf
-	qfou9B+yr+nBn4G8RZbzhwTuHnjeo76VAfbbgREfG8CXSSnoMFQ6MmAWEOTKiC+G
-	l7Q+mF5YoknbgLfgulHgYg==
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 41baa914b7-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 30 Aug 2024 17:20:44 +0000 (GMT)
-Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 47UFwehW036832;
-	Fri, 30 Aug 2024 17:20:43 GMT
-Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2176.outbound.protection.outlook.com [104.47.56.176])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 4189jpueht-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 30 Aug 2024 17:20:43 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=DQIZJVZwgMCqIM60eKKhCEs7a2u0yZ8ES8Wndd3iPnTGMahj9RBzD7ZNYZ0rnMtiyag3WCGlhRHoJ4s0072lkCUw9r365eLKjIN82LETZ/iwGb0qjQ5+5rYIEw2SIkMTSWmOFQcqqn5iVJSdjrLsUpBc30w5MrnD1N/OyNgLMJKkwPSu+y5WiSAdhs7t9DWZLR/OAFDhoWSfh8tEIsK/mdV0UG35XE7Jj4lwfVNW0Y0/UxilkNulp64QmxvZMRoxtf5slt6DC2+HwxU4Lm0tV+TlEN7juS5KHK9aYILJWH3A730eVmzj4qcIdz7syiK08nROZGzo8OU6t239Grl0Zg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=mnPhv3T3weFIC/Uz8Rd6ZrzPrPZfwdMNkv9UbP0ewgE=;
- b=fHD6OO/IMSGAPVQrgZVHtbU4iXs8K2Hfssc87z4V4CwCAvbXHn04o+M5i+9XIRpayRoF0DENKIixfQmsqtDbGuS6Loar44n5CNvGJ/K+vW9xFS6POAh85h0xXATWlUV5w4xs2PcTGQkaUhHjaPidPkxuHGjqERcKyGs0zalq9a8st9B73VmRP4fjkYMqtKjxfq1TC/jJ89O44Vp376bVQs+mS7FjKezxI5K+OrJBQ9p1JIy2PNPDF3w3EZL6+y86bLgDSokhAGE6p6/+qFePgW24/v4UQT9214WFmR+UjmXokH+zsMpfZITCOOUOqptqDSlgFRRdbymCaMj7lD5JBg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A8AF15C153
+	for <bpf@vger.kernel.org>; Fri, 30 Aug 2024 17:34:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1725039263; cv=none; b=P69jg4iK7cxKWNnZQCmOiLlW+AjKyGyMHSvNzTeqWzw9xuflfKRhD3xMJL5n7Fmspber4vXeHvtT1DXFx6Ql9chCoObKHlLtEKpsD/0UH87qbFsjYGymeX0uKXoRU4l9x24hRRKaX+NOAVgf3mzoGgINO4ozEYyy12dixuTEEHM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1725039263; c=relaxed/simple;
+	bh=gzTtA6KZd87b/c/OTmhe/x4bN6GJo38FrBy2PbTydWk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=RbCoPNemhJ2hjvFckhqU86M4CGtzB9oW2RRPvwLPXbWZjx4KA6dQQFwOXyCoI2Rvqo/1gKumTVAgus7YjweEWLTwTg/jOY0N7/1HJ0OYeYI4ThWC/5Y+eJpRdwegpEgHJKZD6iyg6PgiwF/CHg6K98McW3bkVqVHO+1Ez6Tt3W0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IbwXgxiH; arc=none smtp.client-ip=209.85.214.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-2020b730049so19126255ad.3
+        for <bpf@vger.kernel.org>; Fri, 30 Aug 2024 10:34:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mnPhv3T3weFIC/Uz8Rd6ZrzPrPZfwdMNkv9UbP0ewgE=;
- b=DHwTrUcEIC7eELh5oeOstfLwARhZPMW8zM7Dhhr836+lvjeav40yVG12HI9A/nv3gHH5ywXq1cFCb+KzLdIyD7ReDAdWGpGOESScTdLDzeiK+PDLQQZ9ecIUOp+POAN9tIVHOEq8VnnM4JNprKarcAJF7OWkL9GewaNS/MzGCFw=
-Received: from BLAPR10MB5267.namprd10.prod.outlook.com (2603:10b6:208:30e::22)
- by LV3PR10MB7795.namprd10.prod.outlook.com (2603:10b6:408:1b6::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7918.20; Fri, 30 Aug
- 2024 17:20:40 +0000
-Received: from BLAPR10MB5267.namprd10.prod.outlook.com
- ([fe80::682b:c879:9f97:a34f]) by BLAPR10MB5267.namprd10.prod.outlook.com
- ([fe80::682b:c879:9f97:a34f%4]) with mapi id 15.20.7918.019; Fri, 30 Aug 2024
- 17:20:40 +0000
-Message-ID: <71dcef0e-9fa3-49c4-9ea0-ed97adf3c488@oracle.com>
-Date: Fri, 30 Aug 2024 18:20:36 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf] bpf: Fix a crash when btf_parse_base() returns an
- error pointer
-To: Martin KaFai Lau <martin.lau@linux.dev>, bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@meta.com
-References: <20240830012214.1646005-1-martin.lau@linux.dev>
-Content-Language: en-GB
-From: Alan Maguire <alan.maguire@oracle.com>
-In-Reply-To: <20240830012214.1646005-1-martin.lau@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: AS4P189CA0069.EURP189.PROD.OUTLOOK.COM
- (2603:10a6:20b:659::7) To BLAPR10MB5267.namprd10.prod.outlook.com
- (2603:10b6:208:30e::22)
+        d=gmail.com; s=20230601; t=1725039261; x=1725644061; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=iMv4IDP78/5lUqvfivRe7eqWhVg9TLLpihpI5JqTmOE=;
+        b=IbwXgxiH4AZLGqJ52l+exqnuBRCASf5JfeILACYUqxmuAgZIT49y/86VYFLGrmwIBY
+         oxdNS60wrncvu+OuUZr/Cko3pyKNiVZph8O49yqCGD6ezutlFD5/nIFZBi8h88G3XfSJ
+         hLNIlKGoS0tQAiaSL63L72mINFcD1iwijHy3e3cO8YUmpCMcykDyxdX1Cw98E7paMXcz
+         RqP990DcyluVm0O0hUPV8gPE80X0Cq8Lptgmweswwjxnq/RSax3BvHV3hUoKCY9b/x0G
+         VjEFDT2tcXgVoguu/RpCflJWVLTGDWloSWq8+3l88FECM0JuIVJ0/1QhykPCn31XPkhR
+         rZAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1725039261; x=1725644061;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=iMv4IDP78/5lUqvfivRe7eqWhVg9TLLpihpI5JqTmOE=;
+        b=gfEFMQSCDYhXgcCFqMp+9TJyLhpe2/arOXjvy1Q1vBQXDfNNHesJESS0bI1038RcMl
+         9dJUoMhwyyp/+4eVeLxhg8K8AwG7fq4+FsSKcNMcg4hNCdaqY3xg9NcLG2muMWOj0/a4
+         87YIZgJBQG/PL0yqWEUg5Q6aKTE29YwaNUG+L4zQ7tLzzsr92k/991FODcQ/AIB0v0OZ
+         nRBDGx9N910eVfJvlgM8/3Jodgt0baWw4+kTHWYoA0vGGga7T0i7zqljIQAjT3+FANz7
+         n7o7mOGX3V950x7i9u1tWpvumMdq0YrTfF+5ZdJUkFEA9SrDerWxLC3rAP5fnTL7lyRi
+         c1Rg==
+X-Gm-Message-State: AOJu0YyA9NHzgq4m3ijz0Sm8kTHlRGPExgVDMWlWcPmJCiI4pNqoBFLG
+	2o2N8VQVUUB7bCfnyXkg/nbfxW7XB6kHusfZz/2psx9Wbfvmtn0MI5JcrQ==
+X-Google-Smtp-Source: AGHT+IEs7EeAyE+poALtcOSTEmbYbi8+KJzczGJbLH/GYTUd0dDhKi/6OjRekL7VvKSYosvFYXuHzQ==
+X-Received: by 2002:a17:902:e883:b0:202:38be:7b20 with SMTP id d9443c01a7336-2050c386c0bmr82362855ad.38.1725039261129;
+        Fri, 30 Aug 2024 10:34:21 -0700 (PDT)
+Received: from honey-badger.. ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20515533ba3sm29326655ad.152.2024.08.30.10.34.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Aug 2024 10:34:20 -0700 (PDT)
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: bpf@vger.kernel.org,
+	ast@kernel.org
+Cc: andrii@kernel.org,
+	daniel@iogearbox.net,
+	martin.lau@linux.dev,
+	kernel-team@fb.com,
+	yonghong.song@linux.dev,
+	tony.ambardar@gmail.com,
+	alan.maguire@oracle.com,
+	Eduard Zingerman <eddyz87@gmail.com>
+Subject: [PATCH bpf-next] selftests/bpf: check if distilled base inherits source endianness
+Date: Fri, 30 Aug 2024 10:34:06 -0700
+Message-ID: <20240830173406.1581007-1-eddyz87@gmail.com>
+X-Mailer: git-send-email 2.46.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BLAPR10MB5267:EE_|LV3PR10MB7795:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0835b23d-7f15-4e9e-c44d-08dcc9181270
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|366016|1800799024;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?MjYySWhnSFN3NWpqWkRQNzh0ZXVvd3ZBcHNENit2SGJNMkduN0FpWitSVWR0?=
- =?utf-8?B?OFlHYjdtSEkvM041MFk3NkJUa2ZSaVNWNGhKZHZMYkFvRGhoTElyeWdMcVZY?=
- =?utf-8?B?UWFLczA0OEpwbkRKcTIvOFFEbzBIZTZrc1BJczJWZk05RWs1TysvbmN1TVZv?=
- =?utf-8?B?N3pnY29XL2pNanRBczRYRzJPUThYbFdRTzZZK0JnNEg5UDlqNTVnejNOMnBH?=
- =?utf-8?B?MDJEZ1VFQVJqM2RBNkxzeTRCUkZpSVNOYlhKNEpOYk01R2RtOHd6ZGh6dGtP?=
- =?utf-8?B?S2RpaENpbWNMbldzSDh5OGkwdVpjTXJVVlhySkVmZS9ZSlBJc2RMSWFuamNR?=
- =?utf-8?B?Q2xxejRCdnloWVQ5RFhpdjduL0RVL3FpcEpEQkNuMHl1TlhoT2RBWjIwSUZo?=
- =?utf-8?B?LzFqeW92eXNSeXozWHhMQmEvOENha0d4VFlad01TOTVjQkx5UGhlYmZiUndZ?=
- =?utf-8?B?Smx5dXpwREcybEtncUZrY2NyL0xzWllzTjcvc3MzaGZsTXNHZFBtZ2xndmd1?=
- =?utf-8?B?SlZYS0ExNGRKT1hiVHNwbjh5cVdNSGdicHoxS3pPcjZqMlFiMW1adVl2Zndp?=
- =?utf-8?B?N0xuZHFXNlJKblFvWUNPTGJSSEtWRHgrME9meFZMcUlSeGF6cjIwaXNTZHlY?=
- =?utf-8?B?UDVUTmtJZWJTUmYwVXJ4Q2dKQUViUnFMS2MxOU93aWhseXl6Z0VMSkJVeUdG?=
- =?utf-8?B?NnFhckQvVkZ1QkxLZFgyRVNScTJuRGNoZnVlRnJrUTFDVXlhZHFpMDFlVUZk?=
- =?utf-8?B?aW82QUhiM3ZlQXRaU2ZDeWIralFQaHZvTnl3cTd2Y0NFT0lnbzIwbTkwSU1r?=
- =?utf-8?B?Zm1oSjNua3U0UDg2aWhQdklTNmlISGVCZ2NnOFRIK2pJdVMzbDlqdEhZN2Qr?=
- =?utf-8?B?U2JxeUpXYlpoSGZqT2NPcHZMTEYxZDRVcGMzdjhicFlqcFl4QXVGY2syak9H?=
- =?utf-8?B?K0xwWmhGQVhFZEI2Y1lZUkxEMGVhekJKYS9RdnVPamppeFZXYitNZGFjWHpq?=
- =?utf-8?B?WEdEampMYk5MWjNISjJMWFoyb1Uva1RzOVorTXNsNXFaZzlPT1pmSllWSlN3?=
- =?utf-8?B?bFZxK1gxRlpIVUdWWnJsc3drMVhrWVFnTmk4TXJMaHUyNnNoWEVlVHNIUHdh?=
- =?utf-8?B?a29jenBqMVRVOUNUdFlmQ1UwMGJaeE15VHdhTDJ1NzlQVkVTMm9OMTBYOTVz?=
- =?utf-8?B?ZmNJRC9vMVN3NmFpY3lyaUk5TlpxM05ncUg0SXdaaGozcWJ2VkF1UHhrbEIw?=
- =?utf-8?B?SjMvQUw4bGFIcXlwRExZSnlpbjBiZ0lCNytXaEtuUWFhS055QklkZVgxOWhs?=
- =?utf-8?B?MWxzbHlRN0l3elBQTkFiTnZ5TGczUnNROU9FaU5idEdSaUgySENINERlUG5E?=
- =?utf-8?B?MHZ6eTEzMk56bndCSlNGUXVYTVFTZ0JzbkQzWnhGK3R3cHZtSVc0S0FlejBY?=
- =?utf-8?B?MlBwem1XMi9aZk40RjcrQmUzTjV5VWdnODNLcWY5QzY1SUZaWGwveTVQakVN?=
- =?utf-8?B?czNNTlg2UFphNzRuZk0xTkROOVQwb1FRRDQvaHRSaDZXaWdSZTdURy9KdDZo?=
- =?utf-8?B?K1RVcUdzVzFJVTlHRHFidHlyZ1JlTnlmdkdhaUxVOUdZU0pmMnBWRE5wVXVV?=
- =?utf-8?B?cVA3UW10VGdTdUFSMHJObzk2U0lvMU12dUtxcE5SV2xvN09yNFBWdFZ4OUxV?=
- =?utf-8?B?TUZZQ002SEV6VGFsZnZiNWMyMWdJTm11TS83emJnUWtRQ254Nk14VmVKWkFm?=
- =?utf-8?B?VTVaeUt2TG1heG1idkNtMjlDZW50alQrR3hmdTdSRGQ1dU9xZnMwb21VSlZN?=
- =?utf-8?B?MEJMN0x2R1hHUlB0OG0xQT09?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5267.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(366016)(1800799024);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?ZE8zQVhNY3JTcVNoWnZ1dVplK0dXSWFybVhZK0R3a1FxdmFrTFd5dnB4a1p5?=
- =?utf-8?B?bFdUelArOTNyTXBoaUNXQjhkZURKQjNwVUxhRzdKTkVILyt4YkFMNWcvd2Mz?=
- =?utf-8?B?VDBWOEZaaUU4U1VMWFZ1VG1PZlRic3hiS0l2aVBLOTE5ZG5pVzJnbnhETTUz?=
- =?utf-8?B?b3Y4eFV6UVozVFlUSXpLVVJLdHJZZkNiVUJSY3NCVjJ5dWcxcWMxaGlGOFoy?=
- =?utf-8?B?TE9wSVg3UkRhbW1iNE1KUFB5NWw4UEZBZjBsWXFMaXBLQnZQdURZc0tSamdM?=
- =?utf-8?B?VW8xanY4ZVNuWXVGYzRYWmhOU3duOTlRcUVYNTMxVVdyckgxMlJIMGVBK2tz?=
- =?utf-8?B?UzAydERQNVFHci9rM3BSRDdCVGl1d2dWejNoTzRmUEdWYjArRnZicnZkM2RY?=
- =?utf-8?B?UFc3UmxrbVplWGpzSjNGbDdwVGZldCtLYkFlNlRaOGVMMVRvTHR1RGN6M1NC?=
- =?utf-8?B?Z0N6NTU2N0M4ODBCaS9ySDZkMDBoNnA1aHVvNFc1V2gyZ29GeXg1Y1ZvaTJq?=
- =?utf-8?B?N1dMZDhnVGlxN2dmdGpWUlQ5dFZSdGJPY1RsWElVYm9sSG5NWGFGT0RwSll4?=
- =?utf-8?B?d28yS0RJNlE1WE5mWGtCQk1SNzR2L01GbXVZbXdqWElKZlMwbVNHelRpM09l?=
- =?utf-8?B?dUhJSXYrTHpWaGlOMzFpVmR2SHJLR2JwUC9WaHBuTy85UUU1bEZiR1pncXNm?=
- =?utf-8?B?Znh0cFNqY3pkVTBtUEl1N3hFaEFJaU44UDFSVlVpTnFzZ0UvbEp6V0pRNFFB?=
- =?utf-8?B?enVmYkV3NUJmSW9Fb0Ntb3VubXl6Qkg1LzVvbzIxWjFlOW04cDVFaVNzT1pE?=
- =?utf-8?B?RldRQWlqditQTFpjQWs2SVFMWFNUNjVVdjdlL1BUamd2Y2orbzFGVitnajhs?=
- =?utf-8?B?YTNVODF4T1l3d3RvWEQ5VnB5OTFLMGxpRk4wbFpKdmRKTXJjQi9aK1NFbzh3?=
- =?utf-8?B?cjNuRk5Vc2lsTE5CQWdBV0Foc2U1OXo5NjRKTC96amtUdUNaMjNaWFpuWjRj?=
- =?utf-8?B?WHhxSEpzRmJSWXlCb3RYVUo0azFTb1RicG5ENW9KSEpoTHM2UC91djFwQ21C?=
- =?utf-8?B?MlltTXNyek1xS2JlM2kxbHhaaHFVZitMUTZrL1ZlL3ltVGFCYjVqUGlrRVYz?=
- =?utf-8?B?Sk10cXBabzFkakxUdFNTeWZPMzJYanRJM0ZjbVczS0pXZXJYVGxweXNXQjB2?=
- =?utf-8?B?eTk0ZnU3clhZYkg5QzduYjM1UE0zYUp5YjhmSXFyK2p5dWVsZjl3Ry9SZnQy?=
- =?utf-8?B?eWNoV3dvQVM2Mi9qN3BoWmFaNDl3MEZqU0d6WDhkWXRwSjFSWUtZR2FaWUE4?=
- =?utf-8?B?Z3dtWVhKWWpkT3huTVk4MTMwWlBTK3NWNnp4Uis5cG10K1o2RDhQWmVzblVz?=
- =?utf-8?B?VWJFWXRJUTRVeTQrWHJKVXhOTStsK2xiT3QvSVBRVHhSQ0JjWWorZE5Fb3ZU?=
- =?utf-8?B?dWFrRU50ZkZydG1vMnRIUXp4cHpxWWdQSWtUckZIN2VaRWU5MndTS3VidTlD?=
- =?utf-8?B?ZjdmTVhYdE11KzE3VlNkRGh5TjM1SjA4eW1PN2lBbGVpK2JUcm5jaGx5bmNi?=
- =?utf-8?B?Uzdrc05MTVVJb01JbVkxRklLUGtIUGJncGhXN2RZek0yQjFucm4vaWVsVHMx?=
- =?utf-8?B?MUJTYi9NNTk1Nkh2S3A4bmlBU0l1WXoyMnhyRy9ZcFI5NW93UGZaMU90bktr?=
- =?utf-8?B?TGVvb3FqNWJQT2xvQnFpTk5ZQjF4dXg0Z1d1UTRzajg5VDM2a0xaL2NKcG1W?=
- =?utf-8?B?V1ROejFrOW9MeXd0emRlM1dMS2hkYjdGZE5KcDRhc2tCL1pudmV2RjR0cU9W?=
- =?utf-8?B?RXYyYTdiY1ZpNkxnSWt5V044UlBXenpoY0tyK29UaVBCKzlydUxlUWRjbENK?=
- =?utf-8?B?dzduRjU0c0l4ZFlNWEhYNkRlRVBWbUh5OFFiUHdlSDE3V294aFVEVVF5cmdR?=
- =?utf-8?B?aFM1VStCTzZZNHZ4V1o3QnhRQkduYVRJYytvMVJFSmlnd2R0Y0haSGhVeVBY?=
- =?utf-8?B?OW5PM1hUbVExaDNHTTdQTW5SdGhjYU9rcHlONCs2YkRyR2hUZG0xYkJxdFRZ?=
- =?utf-8?B?RnpZZGhmREM3RDhCeUlEcXpnUU5FRTl5SlhMVklaM25PaHlKbnpiQWEvUWtW?=
- =?utf-8?B?YTZLU2tGTHE3WHlTY2wxS1ZvNWFxSmhkKzJPbi9tK2tDdHVjQmtHNExwWUNI?=
- =?utf-8?Q?LTdX+9z2vbxYOJs2NrxW0gM=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	SH3a3FMhBlSXcgpFMBoi9UwIF4PcJy2OsD2CIcVpNCGgAXpfOnztbz5DOe8ewCc84aqBrOWTbgGlVDKuQGdmXlAnqs568HMWHsPJmlN8E+fGjiF8V1XYlhI4aqFMRUb6Rzr/j37alrM8tnDvHSmvVQYTI3+cE1Qv7qh8e7SrKTeRtAYsQBDMN9z7G1RlL7zL7Vs0vVOxtdZAcUvtk3tL1auif9M+SoAHgrpanNb1XZ+86SzLB1guvs44YkPbWfxbB3Y/irN2/jg6YFA/49hlCMZ+EodZllWV8mz9Xu7xh7+/vA58kgtKF+czR+W2Jf/9mMnh/Gp6uWplBL7gJ0CApvw1JPNQ9czsMPAVg3Gl9MUhlxdL8DpZ4coVahsFqvmiwB/SVFz9n58KPIWGoHKYrPRnmjYwbj/oIhQFfWK3LTvpsTZSQlowP1CIK7F3QUhOtQ90RmcM/LWCKbAJBkpegDGr3kZIUcVrFIb0w88PzNQl1eNREDTCUOZ7+UR8d1K4zn3XcxqaHOmFcqC7wwUmXkj9HiW1J8wa8sEmJXcoXs4xUtq1vWp1W2idtyY24JGgIYnby3Yd4YzZwYwJWBi7TTxpV4Xbs5F8wb2Ahw9OoDI=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0835b23d-7f15-4e9e-c44d-08dcc9181270
-X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5267.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Aug 2024 17:20:40.8215
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: tn3ym6uOFCHP6OzTjvJWnROAU2Okk+lPS5Wc3Ov/U6Awa9yxCKt4TfrabYQvMNrd4vBzhCZWmTZixvmD06C15w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR10MB7795
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
- definitions=2024-08-30_10,2024-08-30_01,2024-05-17_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxscore=0 suspectscore=0
- phishscore=0 malwarescore=0 bulkscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2407110000
- definitions=main-2408300132
-X-Proofpoint-GUID: YGA9K10TvvsV1BQ8j7s0w5GDfeDdYVMc
-X-Proofpoint-ORIG-GUID: YGA9K10TvvsV1BQ8j7s0w5GDfeDdYVMc
+Content-Transfer-Encoding: 8bit
 
-On 30/08/2024 02:22, Martin KaFai Lau wrote:
-> From: Martin KaFai Lau <martin.lau@kernel.org>
-> 
-> The pointer returned by btf_parse_base could be an error pointer.
-> IS_ERR() check is needed before calling btf_free(base_btf).
-> 
-> Cc: Alan Maguire <alan.maguire@oracle.com>
-> Fixes: 8646db238997 ("libbpf,bpf: Share BTF relocate-related code with kernel")
-> Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
+Create a BTF with endianness different from host, make a distilled
+base/split BTF pair from it, dump as raw bytes, import again and
+verify that endianness is preserved.
 
-Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
+Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+---
+ .../selftests/bpf/prog_tests/btf_distill.c    | 73 +++++++++++++++++++
+ 1 file changed, 73 insertions(+)
 
+diff --git a/tools/testing/selftests/bpf/prog_tests/btf_distill.c b/tools/testing/selftests/bpf/prog_tests/btf_distill.c
+index bfbe795823a2..810b2e434562 100644
+--- a/tools/testing/selftests/bpf/prog_tests/btf_distill.c
++++ b/tools/testing/selftests/bpf/prog_tests/btf_distill.c
+@@ -535,6 +535,77 @@ static void test_distilled_base_vmlinux(void)
+ 	btf__free(vmlinux_btf);
+ }
+ 
++static bool is_host_big_endian(void)
++{
++	return htons(0x1234) == 0x1234;
++}
++
++/* Split and new base BTFs should inherit endianness from source BTF. */
++static void test_distilled_endianness(void)
++{
++	struct btf *base = NULL, *split = NULL, *new_base = NULL, *new_split = NULL;
++	struct btf *new_base1 = NULL, *new_split1 = NULL;
++	enum btf_endianness inverse_endianness;
++	const void *raw_data;
++	__u32 size;
++
++	printf("is_host_big_endian? %d\n", is_host_big_endian());
++	inverse_endianness = is_host_big_endian() ? BTF_LITTLE_ENDIAN : BTF_BIG_ENDIAN;
++	base = btf__new_empty();
++	btf__set_endianness(base, inverse_endianness);
++	if (!ASSERT_OK_PTR(base, "empty_main_btf"))
++		return;
++	btf__add_int(base, "int", 4, BTF_INT_SIGNED);   /* [1] int */
++	VALIDATE_RAW_BTF(
++		base,
++		"[1] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED");
++	split = btf__new_empty_split(base);
++	if (!ASSERT_OK_PTR(split, "empty_split_btf"))
++		goto cleanup;
++	btf__add_ptr(split, 1);
++	VALIDATE_RAW_BTF(
++		split,
++		"[1] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED",
++		"[2] PTR '(anon)' type_id=1");
++	if (!ASSERT_EQ(0, btf__distill_base(split, &new_base, &new_split),
++		       "distilled_base") ||
++	    !ASSERT_OK_PTR(new_base, "distilled_base") ||
++	    !ASSERT_OK_PTR(new_split, "distilled_split") ||
++	    !ASSERT_EQ(2, btf__type_cnt(new_base), "distilled_base_type_cnt"))
++		goto cleanup;
++	VALIDATE_RAW_BTF(
++		new_split,
++		"[1] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED",
++		"[2] PTR '(anon)' type_id=1");
++
++	raw_data = btf__raw_data(new_base, &size);
++	if (!ASSERT_OK_PTR(raw_data, "btf__raw_data #1"))
++		goto cleanup;
++	new_base1 = btf__new(raw_data, size);
++	if (!ASSERT_OK_PTR(new_base1, "new_base1 = btf__new()"))
++		goto cleanup;
++	raw_data = btf__raw_data(new_split, &size);
++	if (!ASSERT_OK_PTR(raw_data, "btf__raw_data #2"))
++		goto cleanup;
++	new_split1 = btf__new_split(raw_data, size, new_base1);
++	if (!ASSERT_OK_PTR(new_split1, "new_split1 = btf__new()"))
++		goto cleanup;
++
++	ASSERT_EQ(btf__endianness(new_base1), inverse_endianness, "new_base1 endianness");
++	ASSERT_EQ(btf__endianness(new_split1), inverse_endianness, "new_split1 endianness");
++	VALIDATE_RAW_BTF(
++		new_split1,
++		"[1] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED",
++		"[2] PTR '(anon)' type_id=1");
++cleanup:
++	btf__free(new_split1);
++	btf__free(new_base1);
++	btf__free(new_split);
++	btf__free(new_base);
++	btf__free(split);
++	btf__free(base);
++}
++
+ void test_btf_distill(void)
+ {
+ 	if (test__start_subtest("distilled_base"))
+@@ -549,4 +620,6 @@ void test_btf_distill(void)
+ 		test_distilled_base_multi_err2();
+ 	if (test__start_subtest("distilled_base_vmlinux"))
+ 		test_distilled_base_vmlinux();
++	if (test__start_subtest("distilled_endianness"))
++		test_distilled_endianness();
+ }
+-- 
+2.46.0
 
-Thanks!
-
-Alan
 
