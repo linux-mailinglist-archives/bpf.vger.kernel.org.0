@@ -1,215 +1,226 @@
-Return-Path: <bpf+bounces-38609-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38610-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 02ED1966B19
-	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 23:05:23 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C88CB966B2E
+	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 23:14:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B749228153E
-	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 21:05:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 534161F22062
+	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 21:14:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DA011C174F;
-	Fri, 30 Aug 2024 21:05:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59FAE1BFDEA;
+	Fri, 30 Aug 2024 21:14:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dZ/F41EG"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kYo8z4eJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B1291BF7FD;
-	Fri, 30 Aug 2024 21:05:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C0F01BF7E5;
+	Fri, 30 Aug 2024 21:14:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725051903; cv=none; b=IVvvcXwU0SKjrhMLtvavfo1dJxK9lB4oiAz64dI/KWdZa2ZuAEGb2tn3ohOYOOPXgoRXE2LZZAfDOA8jK0hHVVZdLZYFK6nVRI9apLzQjbzuSyucEg8jQ4KNyBehlobyGwbBSFaKmfFI14seZSgPFWYqKuMIAwVjUI1jQOzBOCY=
+	t=1725052474; cv=none; b=mWtcTNGROZh7bTDb05fmtK3yHXDyba6rAXmv3ntVltAo/QBt91FImqNjTaxHav4lOaB71vwHLFR56iZr8yX8q3W03OmQUK1sq8b6E09IYddZBd2BybDOrWrjMBTZ3RvvR4l/sJk85ZH15Vsvpfc2BPJPnyuMm/ie9iklL8zFdMU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725051903; c=relaxed/simple;
-	bh=4QKNxIJXLhyW7TCh8hyly0p/oWDPPtldet7OPIazz6A=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=JFrMBh1GyDpQ8+rNRFwEnY7CN6mRXX8wBIk7xMXUJ6FiCxd1vrnPYTLB3tDYdXRzfwAxN2m2Q94U3JfgqrFrqAhRSQqVAm6O7x3gBdf8gDfMUf5N+Zglzoobq15BSK9iT3zre/dF4q1mR4mHk1a4bkS1UX8PhFpasNvE7ueWgNw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dZ/F41EG; arc=none smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1725051902; x=1756587902;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=4QKNxIJXLhyW7TCh8hyly0p/oWDPPtldet7OPIazz6A=;
-  b=dZ/F41EG9CvF9gKNVh+qqnsvZtChP8KZHRPki2aOK0Us6VmDpVroXn16
-   aMhTyrsqAGom+SgsvhgH4h3+KcLCmAx+djdpEVzmZ+CXvn5TN/Yl1c367
-   wf8CilK0sMox+WQagQv6tr2KPvRs4mvqKzVQ10scI5xHfNSXnENrRCGbW
-   O+zidpvRbpExI+JB+/rYIiGsxjggg/4edcqO1G7HKRB+yr0W0V8tCJHdc
-   2lBJdW9NzvpDvpK2d6YeJmqw7OB0FJGdcgYySa70yG5lfSmrMwXJ845JA
-   OJolYjqjgzoNP8G27Slhz+Z5BOoP61algQlcHX5IBOx87hp7WkT5zJJm8
-   A==;
-X-CSE-ConnectionGUID: Dlz0MCpXTwqFBFFI720Fwg==
-X-CSE-MsgGUID: bQC9BfLUR9Wap0XSicEBOA==
-X-IronPort-AV: E=McAfee;i="6700,10204,11180"; a="13304265"
-X-IronPort-AV: E=Sophos;i="6.10,189,1719903600"; 
-   d="scan'208";a="13304265"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2024 14:05:00 -0700
-X-CSE-ConnectionGUID: 6xg0zqV+T/iRd36Zho1dKA==
-X-CSE-MsgGUID: Q2/q+nMjREm82prqpiZGow==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.10,189,1719903600"; 
-   d="scan'208";a="63625247"
-Received: from anguy11-upstream.jf.intel.com ([10.166.9.133])
-  by fmviesa006.fm.intel.com with ESMTP; 30 Aug 2024 14:04:59 -0700
-From: Tony Nguyen <anthony.l.nguyen@intel.com>
-To: davem@davemloft.net,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	edumazet@google.com,
-	netdev@vger.kernel.org
-Cc: Kurt Kanzenbach <kurt@linutronix.de>,
-	anthony.l.nguyen@intel.com,
-	sasha.neftin@intel.com,
-	vitaly.lifshits@intel.com,
-	dima.ruinskiy@intel.com,
-	maciej.fijalkowski@intel.com,
-	magnus.karlsson@intel.com,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	hawk@kernel.org,
-	john.fastabend@gmail.com,
-	bpf@vger.kernel.org,
-	bigeasy@linutronix.de,
-	Vinicius Costa Gomes <vinicius.gomes@intel.com>,
-	Simon Horman <horms@kernel.org>,
-	Mor Bar-Gabay <morx.bar.gabay@intel.com>
-Subject: [PATCH net-next 2/6] igc: Get rid of spurious interrupts
-Date: Fri, 30 Aug 2024 14:04:44 -0700
-Message-ID: <20240830210451.2375215-3-anthony.l.nguyen@intel.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20240830210451.2375215-1-anthony.l.nguyen@intel.com>
-References: <20240830210451.2375215-1-anthony.l.nguyen@intel.com>
+	s=arc-20240116; t=1725052474; c=relaxed/simple;
+	bh=hsj1N+kjKKb6PUWuikJXalXA8B5x42lYLXRJKmV+JdU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=pKdwbUK1gyvi3dMeEHoZ0dYlTCIQO7QQUV/PsAAtpWT69lA8ZPTnldfzButAfY+TvmjGIftg212ndWlzQqC98mDqaUiSmxPdqL0JVIBan/Fje/wm50e8chOeoZmMYj9NMnTiPheR47ekG2laaumWEIY1V2VCDZlKiEeSUZwuQGk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kYo8z4eJ; arc=none smtp.client-ip=209.85.216.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2d88edf1340so211831a91.1;
+        Fri, 30 Aug 2024 14:14:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1725052473; x=1725657273; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RCEBFjIdfRDKOJX9QDpjMc0waCfcL+Y7bbP2LFGDFss=;
+        b=kYo8z4eJ0uefBEsPDzz7PKT326qITdLhVvshOFA94CtAIOyjMiDRDZTOaN+nCOO+Kw
+         Cv66wEBuKHykkQjrIisGYRFH3Bv6wrpEQjbHih49goy5Vs70dBOjbEZ0Ja4ueG+xX60j
+         Bkr8fQuxcKx2Iy9FHil+1xgY3Xr2YIariPbKwDWohC1kdj5aFybR01ANYWT/miwfOZo7
+         f5PoKqNVGL+IECyIUAAzDdCRp3no3Ks7gwrQrJEhblgoQcPT45+gA3xWV0Mh1SRKpTHE
+         xFA5/2LHkmnOJetZWVpuk1Y/fvSEy32UbsyA3wSmREn1sQPm8h+HvoBdfCcXKa65Jk5c
+         kEIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1725052473; x=1725657273;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=RCEBFjIdfRDKOJX9QDpjMc0waCfcL+Y7bbP2LFGDFss=;
+        b=nEXX8lHHrTly0mFMFMEODRS+SSqMsc4vY6SJV5/isHoyUVyfLr61JryG8Va1qy2TmF
+         o4av+l6CuyIz03JMyQLPTIwtPxS77y1/OLNIXnkYn7M8qoMNgM96+shcaO6rDZSxhBC/
+         Q1WkHhttjW4+N8x94n2Y2HK9w4Ga6fsUhayigsNaXrSSJKg+7X4DwCycmX2F/YTwujTy
+         moUOkv1Soodmu3nLZX9z2psqdqHgNnWeTYXCkuTaOvEaBEgXW73U/P9WmeGgLy2c22hm
+         bf0NPGMRIcH9sQGNHUOtn4TyVoZsRIKhWd7Qb6m7OOjhfT8R0inqb3EBgX1KwBdvkXR/
+         3skQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUrWnmaNkKgilWua4ofOaJLAziYCQUi8rKB3ZYBu5UvaiQ7H9A9RbnlSqqRY36RhXFbt1tzm+wPKMFVv4b2HmM=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywkr+ZIV6K2xeHar4nvS7cRklwsL1zXLFHY31kNQVTp8g6QWnEg
+	lz9D4xdZ1wHPHahAVGQBRTaK2GBiP5IuHevmnHTKRZLs57FxFjJXH5KtW8WfX5HJoUZpIld2dW5
+	ZTxiXWUeofa/kdi3Lz02orZ9XRYNmbeDp
+X-Google-Smtp-Source: AGHT+IFOE9O4GRhB62rk8+skaC23vbSVv+rBUjv4gSXFGvq4YZzz/x5ulglXq4GyBIBjasKMjXrCn5ftWZrXEKF4pdo=
+X-Received: by 2002:a17:90b:3141:b0:2d3:c862:aa80 with SMTP id
+ 98e67ed59e1d1-2d856503ac0mr7511698a91.41.1725052472594; Fri, 30 Aug 2024
+ 14:14:32 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1724976539.git.tony.ambardar@gmail.com> <8eaba4b675cba9035121121bba6618c9f8f65610.1724976539.git.tony.ambardar@gmail.com>
+In-Reply-To: <8eaba4b675cba9035121121bba6618c9f8f65610.1724976539.git.tony.ambardar@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Fri, 30 Aug 2024 14:14:19 -0700
+Message-ID: <CAEf4BzZu8yGnjsBcw=8sZd9knzgM2F8fUfrSuhfLNEpGM3p3Og@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 4/8] libbpf: Support BTF.ext loading and
+ output in either endianness
+To: Tony Ambardar <tony.ambardar@gmail.com>
+Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	Ilya Leoshkevich <iii@linux.ibm.com>, Quentin Monnet <qmo@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Kurt Kanzenbach <kurt@linutronix.de>
+On Fri, Aug 30, 2024 at 12:30=E2=80=AFAM Tony Ambardar <tony.ambardar@gmail=
+.com> wrote:
+>
+> Support for handling BTF data of either endianness was added in [1], but
+> did not include BTF.ext data for lack of use cases. Later, support for
+> static linking [2] provided a use case, but this feature and later ones
+> were restricted to native-endian usage.
+>
+> Add support for BTF.ext handling in either endianness. Convert BTF.ext da=
+ta
+> to native endianness when read into memory for further processing, and
+> support raw data access that restores the original byte-order for output.
+> Add internal header functions for byte-swapping func, line, and core info
+> records.
+>
+> Add new API functions btf_ext__endianness() and btf_ext__set_endianness()
+> for query and setting byte-order, as already exist for BTF data.
+>
+> [1] 3289959b97ca ("libbpf: Support BTF loading and raw data output in bot=
+h endianness")
+> [2] 8fd27bf69b86 ("libbpf: Add BPF static linker BTF and BTF.ext support"=
+)
+>
+> Signed-off-by: Tony Ambardar <tony.ambardar@gmail.com>
+> ---
+>  tools/lib/bpf/btf.c             | 192 +++++++++++++++++++++++++++++---
+>  tools/lib/bpf/btf.h             |   3 +
+>  tools/lib/bpf/libbpf.map        |   2 +
+>  tools/lib/bpf/libbpf_internal.h |  33 ++++++
+>  4 files changed, 214 insertions(+), 16 deletions(-)
+>
+> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+> index f5081de86ee0..064cfe126c09 100644
+> --- a/tools/lib/bpf/btf.c
+> +++ b/tools/lib/bpf/btf.c
+> @@ -3022,25 +3022,102 @@ static int btf_ext_setup_core_relos(struct btf_e=
+xt *btf_ext)
+>         return btf_ext_setup_info(btf_ext, &param);
+>  }
+>
+> -static int btf_ext_parse_hdr(__u8 *data, __u32 data_size)
+> +/* Swap byte-order of BTF.ext header with any endianness */
+> +static void btf_ext_bswap_hdr(struct btf_ext *btf_ext, __u32 hdr_len)
+>  {
+> -       const struct btf_ext_header *hdr =3D (struct btf_ext_header *)dat=
+a;
+> +       struct btf_ext_header *h =3D btf_ext->hdr;
+>
+> -       if (data_size < offsetofend(struct btf_ext_header, hdr_len) ||
+> -           data_size < hdr->hdr_len) {
+> -               pr_debug("BTF.ext header not found\n");
+> +       h->magic =3D bswap_16(h->magic);
+> +       h->hdr_len =3D bswap_32(h->hdr_len);
+> +       h->func_info_off =3D bswap_32(h->func_info_off);
+> +       h->func_info_len =3D bswap_32(h->func_info_len);
+> +       h->line_info_off =3D bswap_32(h->line_info_off);
+> +       h->line_info_len =3D bswap_32(h->line_info_len);
+> +
+> +       if (hdr_len < offsetofend(struct btf_ext_header, core_relo_len))
+> +               return;
+> +
+> +       h->core_relo_off =3D bswap_32(h->core_relo_off);
+> +       h->core_relo_len =3D bswap_32(h->core_relo_len);
+> +}
+> +
+> +/* Swap byte-order of a generic info subsection */
+> +static void info_subsec_bswap(const struct btf_ext_header *hdr, bool nat=
+ive,
+> +                             __u32 off, __u32 len, anon_info_bswap_fn_t =
+bswap)
 
-When running the igc with XDP/ZC in busy polling mode with deferral of hard
-interrupts, interrupts still happen from time to time. That is caused by
-the igc task watchdog which triggers Rx interrupts periodically.
+ok, so I'm not a fan of this bswap callback, tbh. Also, we don't
+really enforce that each kind of record has exact size we expect
+(i.e., bpf_line_info_min and bpf_func_info_min shouldn't be "min" for
+byte-swapped case, it should be exact).
 
-That mechanism has been introduced to overcome skb/memory allocation
-failures [1]. So the Rx clean functions stop processing the Rx ring in case
-of such failure. The task watchdog triggers Rx interrupts periodically in
-the hope that memory became available in the mean time.
+How about this slight modification: split byte swapping of
+sections/subsection metadata, so we adjust record size, sec_name_off
+and num_info separately from adjusting each record.
 
-The current behavior is undesirable for real time applications, because the
-driver induced Rx interrupts trigger also the softirq processing. However,
-all real time packets should be processed by the application which uses the
-busy polling method.
+Once this swapping is done we:
 
-Therefore, only trigger the Rx interrupts in case of real allocation
-failures. Introduce a new flag for signaling that condition.
+a) validate record size for each section is expected (according to its
+type, of course)
+b) we can then use for_each_btf_ext_sec() and for_each_btf_ext_rec()
+macro (which assume proper in-memory metadata byte order) and then
+hard-code swapping of each record fields
 
-[1] - https://git.kernel.org/pub/scm/linux/kernel/git/tglx/history.git/commit/?id=3be507547e6177e5c808544bd6a2efa2c7f1d436
+No callbacks.
 
-Reviewed-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Acked-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
-Acked-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Signed-off-by: Kurt Kanzenbach <kurt@linutronix.de>
-Reviewed-by: Simon Horman <horms@kernel.org>
-Tested-by: Mor Bar-Gabay <morx.bar.gabay@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
----
- drivers/net/ethernet/intel/igc/igc.h      |  1 +
- drivers/net/ethernet/intel/igc/igc_main.c | 30 ++++++++++++++++++++---
- 2 files changed, 27 insertions(+), 4 deletions(-)
+This has also a benefit of not needing this annoying "bool native"
+flag when producing raw bytes. We just ensure proper order of
+operation:
 
-diff --git a/drivers/net/ethernet/intel/igc/igc.h b/drivers/net/ethernet/intel/igc/igc.h
-index 8642d67af6cc..eac0f966e0e4 100644
---- a/drivers/net/ethernet/intel/igc/igc.h
-+++ b/drivers/net/ethernet/intel/igc/igc.h
-@@ -687,6 +687,7 @@ enum igc_ring_flags_t {
- 	IGC_RING_FLAG_TX_DETECT_HANG,
- 	IGC_RING_FLAG_AF_XDP_ZC,
- 	IGC_RING_FLAG_TX_HWTSTAMP,
-+	IGC_RING_FLAG_RX_ALLOC_FAILED,
- };
- 
- #define ring_uses_large_buffer(ring) \
-diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethernet/intel/igc/igc_main.c
-index 96b2f2a37bc3..da322899e834 100644
---- a/drivers/net/ethernet/intel/igc/igc_main.c
-+++ b/drivers/net/ethernet/intel/igc/igc_main.c
-@@ -2191,6 +2191,7 @@ static bool igc_alloc_mapped_page(struct igc_ring *rx_ring,
- 	page = dev_alloc_pages(igc_rx_pg_order(rx_ring));
- 	if (unlikely(!page)) {
- 		rx_ring->rx_stats.alloc_failed++;
-+		set_bit(IGC_RING_FLAG_RX_ALLOC_FAILED, &rx_ring->flags);
- 		return false;
- 	}
- 
-@@ -2207,6 +2208,7 @@ static bool igc_alloc_mapped_page(struct igc_ring *rx_ring,
- 		__free_page(page);
- 
- 		rx_ring->rx_stats.alloc_failed++;
-+		set_bit(IGC_RING_FLAG_RX_ALLOC_FAILED, &rx_ring->flags);
- 		return false;
- 	}
- 
-@@ -2658,6 +2660,7 @@ static int igc_clean_rx_irq(struct igc_q_vector *q_vector, const int budget)
- 		if (!skb) {
- 			rx_ring->rx_stats.alloc_failed++;
- 			rx_buffer->pagecnt_bias++;
-+			set_bit(IGC_RING_FLAG_RX_ALLOC_FAILED, &rx_ring->flags);
- 			break;
- 		}
- 
-@@ -2738,6 +2741,7 @@ static void igc_dispatch_skb_zc(struct igc_q_vector *q_vector,
- 	skb = igc_construct_skb_zc(ring, xdp);
- 	if (!skb) {
- 		ring->rx_stats.alloc_failed++;
-+		set_bit(IGC_RING_FLAG_RX_ALLOC_FAILED, &ring->flags);
- 		return;
- 	}
- 
-@@ -5807,11 +5811,29 @@ static void igc_watchdog_task(struct work_struct *work)
- 	if (adapter->flags & IGC_FLAG_HAS_MSIX) {
- 		u32 eics = 0;
- 
--		for (i = 0; i < adapter->num_q_vectors; i++)
--			eics |= adapter->q_vector[i]->eims_value;
--		wr32(IGC_EICS, eics);
-+		for (i = 0; i < adapter->num_q_vectors; i++) {
-+			struct igc_q_vector *q_vector = adapter->q_vector[i];
-+			struct igc_ring *rx_ring;
-+
-+			if (!q_vector->rx.ring)
-+				continue;
-+
-+			rx_ring = adapter->rx_ring[q_vector->rx.ring->queue_index];
-+
-+			if (test_bit(IGC_RING_FLAG_RX_ALLOC_FAILED, &rx_ring->flags)) {
-+				eics |= q_vector->eims_value;
-+				clear_bit(IGC_RING_FLAG_RX_ALLOC_FAILED, &rx_ring->flags);
-+			}
-+		}
-+		if (eics)
-+			wr32(IGC_EICS, eics);
- 	} else {
--		wr32(IGC_ICS, IGC_ICS_RXDMT0);
-+		struct igc_ring *rx_ring = adapter->rx_ring[0];
-+
-+		if (test_bit(IGC_RING_FLAG_RX_ALLOC_FAILED, &rx_ring->flags)) {
-+			clear_bit(IGC_RING_FLAG_RX_ALLOC_FAILED, &rx_ring->flags);
-+			wr32(IGC_ICS, IGC_ICS_RXDMT0);
-+		}
- 	}
- 
- 	igc_ptp_tx_hang(adapter);
--- 
-2.42.0
+a) swap records
+b) swap metadata (so just mirrored order from initialization)
 
+WDYT?
+
+pw-bot: cr
+
+> +{
+> +       __u32 left, i, *rs, rec_size, num_info;
+> +       struct btf_ext_info_sec *si;
+> +       void *p;
+> +
+> +       if (len =3D=3D 0)
+> +               return;
+> +
+> +       rs =3D (void *)hdr + hdr->hdr_len + off;  /* record size */
+> +       si =3D (void *)rs + sizeof(__u32);        /* sec info #1 */
+> +       rec_size =3D native ? *rs : bswap_32(*rs);
+> +       *rs =3D bswap_32(*rs);
+> +       left =3D len - sizeof(__u32);
+> +       while (left > 0) {
+> +               num_info =3D native ? si->num_info : bswap_32(si->num_inf=
+o);
+> +               si->sec_name_off =3D bswap_32(si->sec_name_off);
+> +               si->num_info =3D bswap_32(si->num_info);
+> +               left -=3D offsetof(struct btf_ext_info_sec, data);
+> +               p =3D si->data;
+> +               for (i =3D 0; i < num_info; i++)  /* list of records */
+> +                       p +=3D bswap(p);
+> +               si =3D p;
+> +               left -=3D  rec_size * num_info;
+
+nit: extra space here
+
+> +       }
+> +}
+> +
+
+[...]
 
