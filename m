@@ -1,74 +1,45 @@
-Return-Path: <bpf+bounces-38529-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38530-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFE439658B3
-	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 09:36:56 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A8B39658BA
+	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 09:37:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E4AC01C21475
-	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 07:36:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B3C95B20C46
+	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 07:37:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 803701586E7;
-	Fri, 30 Aug 2024 07:36:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="pIVKLswp"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EBAD158554;
+	Fri, 30 Aug 2024 07:37:29 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 406F91531FE
-	for <bpf@vger.kernel.org>; Fri, 30 Aug 2024 07:36:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2A1E14E2DE
+	for <bpf@vger.kernel.org>; Fri, 30 Aug 2024 07:37:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725003399; cv=none; b=FrVZ0LOdHNWtxp2UjzAwctU5RBaHFORYL8Z+ZpLDXj0sCXWYHppSPSHot+azWGi1PY8FYMrhKuPTxUqc7yLY73gUYGd5QBj/vadL7mU2/AoxNJDsg8ah0u5r9gOX1cLnijoYgh9GkS/aD1jEVWMLRhA5WLaZ3UwvDDPX5yzWJPY=
+	t=1725003448; cv=none; b=eWzFccAbS4KWyo/CpFTV3Iqcqi0Y1wxhnyPOZ7dRy0+yJ8+u9w9f/mX2xlQle7W72XSM8k/1VUOmmHyWIPzr1rg+ag9JwAVoBUvSGgJkRA6+oIH4mdT1SSIrkFPXRrx+TsMrMB1/FNiFDoXhgxV6zLkv71aBGSPoV/Uy8u4u9oE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725003399; c=relaxed/simple;
-	bh=x8/BarACP66DHb2OmZ3Q/oMwacV43SJiRhJBLFSb+/U=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=i07dX3K/VsJHQWJrnZlNwdbYO0niwzTV3auxHp1naMPF6pQdDd6aANRezeR6Uko7Zlq8aw9++wIgtTrJl5DwKlrfnuduq1NBEdUEjq+j5B9SlxjHYvyz6WF9huxPShlNVvg6lqr+d3/flCxNnba6mMSQcbHaNwV3Wn9yxB14D6Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=pIVKLswp; arc=none smtp.client-ip=209.85.167.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-53438aa64a4so1749142e87.3
-        for <bpf@vger.kernel.org>; Fri, 30 Aug 2024 00:36:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1725003394; x=1725608194; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=aq3ZbOruMFHcebgoxqzGvdWYBubRMesb2UNv/9i5+1w=;
-        b=pIVKLswpJeA04xBBN68YH5i66RmcqTmqEmw1ezfLPHrAaG7xFN3KzpVGMOsPWfaf5p
-         UC459T7/GcJXu55OXscCDLhTHQefxAsuDkMTUdRtnax4w8vPvOMDEAlaCQcAns5Y4zC9
-         Laot2ozrMzb/lkei5U53Xipz0Bx2RcZP/JGht4TzOKfVGn/rTkX1pVA0EACg16KCnYQD
-         Burp75T1tIkT9Wt818gfw4wQm3rbffrqWcIm39IjDwAdh7DdPB5aoHjyHapFNZeWepRa
-         W0bK6REbeBOi1PoYYw8FHeDleAwM/dBATYFnWslgep+2dO9/0tB/sPtYNDlAz6sWHfkQ
-         8VOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725003394; x=1725608194;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=aq3ZbOruMFHcebgoxqzGvdWYBubRMesb2UNv/9i5+1w=;
-        b=QQstAZ/O6mKnLO5RcHtvrmG8HetE+gkAwz7XZrIn/26aXa6qt+zyt1VrHnmfA39NEQ
-         oRzM62aZL+uY+dmqCdiuI3FZDCZ3eveJQQWm4MMCrFm6+RV4JEwoa7cWRzx1kH6xdkz0
-         YiEdEcE3stvGRWVQ0rssusgxENb9ECRmxvKrycvzCzt81omZoyYQ8pUqrLUznCKNvC5Z
-         /GfIDBU+OLn78WQeuAloPH15RMgVvuHRI8RUVNd+8G+40ZcDvjqdNIbuVKxCrfkuwU6h
-         zXwxXfWU1pjz0qDD/SP1CtL18bJmfyyLx8CwK5ZXVVB5uN21jpNrf231cca6Lfa0mnzr
-         2rPw==
-X-Forwarded-Encrypted: i=1; AJvYcCUelX1Wt+tyz0pA9xIIhzOJRM0VW4dRFr5NQ2gYNIQOo19LcXVFIdvb43kdXdAb17x9wXc=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yydg+floI5tFVOnVgELgVA54yK6x6nyk9F51wXSWIxKIqdZHhAq
-	2LDu8WuEju//zBVhwBlRqSC8cZoiVjhK8wLrpHMzQvZYFrsPO2nQpJgTBawymn0=
-X-Google-Smtp-Source: AGHT+IHfZUNiJUPiW9T4fMW2U3bxiTqLrbAacKaLA5/BgyjZPfqSwAZgANQ1GW4OoLjjFNcSXi9d5g==
-X-Received: by 2002:a05:6512:3b92:b0:533:4620:ebfb with SMTP id 2adb3069b0e04-53546b042camr714413e87.21.1725003393937;
-        Fri, 30 Aug 2024 00:36:33 -0700 (PDT)
-Received: from [192.168.1.94] (56.31.102.84.rev.sfr.net. [84.102.31.56])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a898922710csm181746966b.223.2024.08.30.00.36.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 30 Aug 2024 00:36:33 -0700 (PDT)
-Message-ID: <e86dade9-a151-42e4-94e2-7710bcd3a6a6@baylibre.com>
-Date: Fri, 30 Aug 2024 09:36:30 +0200
+	s=arc-20240116; t=1725003448; c=relaxed/simple;
+	bh=sd3ZOyvodzADOKhIPbn412NsOXNDyzOld5WPpgBGJ2Y=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=fKhbHsd9YWYu3LABceL134X/4gw0kkYJ6R2Xs0Odr/iV9s2iwPXsmFoGZhOIffm81Qat7gBQDj8pmLhcDTbK/wr5nVWZaf97PFiZjrs81Xa1VP2z1qySnXDx0lTzODH8eirUTVBIvKLAnCdbTbVyk41frk2G+dtW/6PkSV23E64=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Ww92y0cr0z4f3jqL
+	for <bpf@vger.kernel.org>; Fri, 30 Aug 2024 15:37:14 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 268DC1A1372
+	for <bpf@vger.kernel.org>; Fri, 30 Aug 2024 15:37:24 +0800 (CST)
+Received: from [10.67.111.192] (unknown [10.67.111.192])
+	by APP4 (Coremail) with SMTP id gCh0CgAHLoSydtFmrZ5_DA--.49245S2;
+	Fri, 30 Aug 2024 15:37:23 +0800 (CST)
+Message-ID: <0f3c9711-3f1c-4678-9e0a-bd825c6fb78f@huaweicloud.com>
+Date: Fri, 30 Aug 2024 15:37:25 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -76,74 +47,295 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net 0/3] net: ethernet: ti: am65-cpsw: Fix XDP
- implementation
-To: Roger Quadros <rogerq@kernel.org>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- Jacob Keller <jacob.e.keller@intel.com>
-Cc: Siddharth Vadapalli <s-vadapalli@ti.com>,
- Md Danish Anwar <danishanwar@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
- Govindarajan Sriramakrishnan <srk@ti.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-References: <20240829-am65-cpsw-xdp-v1-0-ff3c81054a5e@kernel.org>
+From: Xu Kuohai <xukuohai@huaweicloud.com>
+Subject: Re: [PATCH bpf-next 2/4] bpf, arm64: Fix tailcall infinite loop
+ caused by freplace
+To: Leon Hwang <leon.hwang@linux.dev>, bpf@vger.kernel.org
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, toke@redhat.com,
+ martin.lau@kernel.org, yonghong.song@linux.dev, puranjay@kernel.org,
+ eddyz87@gmail.com, iii@linux.ibm.com, kernel-patches-bot@fb.com
+References: <20240825130943.7738-1-leon.hwang@linux.dev>
+ <20240825130943.7738-3-leon.hwang@linux.dev>
+ <a9ce98d0-adfb-4ed9-8500-f378fe44d634@huaweicloud.com>
+ <0900df03-b1cd-41fb-be04-278e135cc730@linux.dev>
 Content-Language: en-US
-From: Julien Panis <jpanis@baylibre.com>
-In-Reply-To: <20240829-am65-cpsw-xdp-v1-0-ff3c81054a5e@kernel.org>
+In-Reply-To: <0900df03-b1cd-41fb-be04-278e135cc730@linux.dev>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:gCh0CgAHLoSydtFmrZ5_DA--.49245S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3Jr1fWw1fWry8Kw4kCFW5Awb_yoW3ur1Dpr
+	WrG34IkF4Iqr45Zay0y3Z7XF13Kw4ktryakry5u3yfAa9avr9xGF15KrWjvFZxZrWvkw1x
+	uFWqvwn3u39xArJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
+	14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
+	ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
+	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1
+	7KsUUUUUU==
+X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
 
-On 8/29/24 14:03, Roger Quadros wrote:
-> The XDP implementation on am65-cpsw driver is broken in many ways
-> and this series fixes it.
->
-> Below are the current issues that are being fixed:
->
-> 1)  The following XDP_DROP test from [1] stalls the interface after
->      250 packets.
->      ~# xdb-bench drop -m native eth0
->      This is because new RX requests are never queued. Fix that.
->
-> 2)  The below XDP_TX test from [1] fails with a warning
->      [  499.947381] XDP_WARN: xdp_update_frame_from_buff(line:277): Driver BUG: missing reserved tailroom
->      ~# xdb-bench tx -m native eth0
->      Fix that by using PAGE_SIZE during xdp_init_buf().
->
-> 3)  In XDP_REDIRECT case only 1 packet was processed in rx_poll.
->      Fix it to process up to budget packets.
->      ~# ./xdp-bench redirect -m native eth0 eth0
->
-> 4)  If number of TX queues are set to 1 we get a NULL pointer
->      dereference during XDP_TX.
->      ~# ethtool -L eth0 tx 1
->      ~# ./xdp-trafficgen udp -A <ipv6-src> -a <ipv6-dst> eth0 -t 2
->      Transmitting on eth0 (ifindex 2)
->      [  241.135257] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000030
->
-> 5)  Net statistics is broken for XDP_TX and XDP_REDIRECT
->
-> [1] xdp-tools suite https://github.com/xdp-project/xdp-tools
->
-> Signed-off-by: Roger Quadros <rogerq@kernel.org>
-> ---
-> Roger Quadros (3):
->        net: ethernet: ti: am65-cpsw: fix XDP_DROP, XDP_TX and XDP_REDIRECT
->        net: ethernet: ti: am65-cpsw: Fix NULL dereference on XDP_TX
->        net: ethernet: ti: am65-cpsw: Fix RX statistics for XDP_TX and XDP_REDIRECT
->
->   drivers/net/ethernet/ti/am65-cpsw-nuss.c | 82 +++++++++++++++++++-------------
->   1 file changed, 49 insertions(+), 33 deletions(-)
-> ---
-> base-commit: 5be63fc19fcaa4c236b307420483578a56986a37
-> change-id: 20240829-am65-cpsw-xdp-d5876b25335c
->
-> Best regards,
+On 8/27/2024 10:23 AM, Leon Hwang wrote:
+> 
+> 
+> On 26/8/24 22:32, Xu Kuohai wrote:
+>> On 8/25/2024 9:09 PM, Leon Hwang wrote:
+>>> Like "bpf, x64: Fix tailcall infinite loop caused by freplace", the same
+>>> issue happens on arm64, too.
+>>>
+> 
+> [...]
+> 
+>>
+>> This patch makes arm64 jited prologue even more complex. I've posted a
+>> series [1]
+>> to simplify the arm64 jited prologue/epilogue. I think we can fix this
+>> issue based
+>> on [1]. I'll give it a try.
+>>
+>> [1]
+>> https://lore.kernel.org/bpf/20240826071624.350108-1-xukuohai@huaweicloud.com/
+>>
+> 
+> Your patch series seems great. We can fix it based on it.
+> 
+> Please notify me if you have a successful try.
+> 
 
-Thank you for the fixes Roger.
+I think the complexity arises from having to decide whether
+to initialize or keep the tail counter value in the prologue.
 
-Acked-by: Julien Panis <jpanis@baylibre.com>
+To get rid of this complexity, a straightforward idea is to
+move the tail call counter initialization to the entry of
+bpf world, and in the bpf world, we only increase and check
+the tail call counter, never save/restore or set it. The
+"entry of the bpf world" here refers to mechanisms like
+bpf_prog_run, bpf dispatcher, or bpf trampoline that
+allows bpf prog to be invoked from C function.
+
+Below is a rough POC diff for arm64 that could pass all
+of your tests. The tail call counter is held in callee-saved
+register x26, and is set to 0 by arch_run_bpf.
+
+diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
+index 8aa32cb140b9..2c0f7daf1655 100644
+--- a/arch/arm64/net/bpf_jit_comp.c
++++ b/arch/arm64/net/bpf_jit_comp.c
+@@ -26,7 +26,7 @@
+
+  #define TMP_REG_1 (MAX_BPF_JIT_REG + 0)
+  #define TMP_REG_2 (MAX_BPF_JIT_REG + 1)
+-#define TCCNT_PTR (MAX_BPF_JIT_REG + 2)
++#define TCALL_CNT (MAX_BPF_JIT_REG + 2)
+  #define TMP_REG_3 (MAX_BPF_JIT_REG + 3)
+  #define ARENA_VM_START (MAX_BPF_JIT_REG + 5)
+
+@@ -63,7 +63,7 @@ static const int bpf2a64[] = {
+  	[TMP_REG_2] = A64_R(11),
+  	[TMP_REG_3] = A64_R(12),
+  	/* tail_call_cnt_ptr */
+-	[TCCNT_PTR] = A64_R(26),
++	[TCALL_CNT] = A64_R(26), // x26 is used to hold tail call counter
+  	/* temporary register for blinding constants */
+  	[BPF_REG_AX] = A64_R(9),
+  	/* callee saved register for kern_vm_start address */
+@@ -286,19 +286,6 @@ static bool is_lsi_offset(int offset, int scale)
+   *      // PROLOGUE_OFFSET
+   *	// save callee-saved registers
+   */
+-static void prepare_bpf_tail_call_cnt(struct jit_ctx *ctx)
+-{
+-	const bool is_main_prog = !bpf_is_subprog(ctx->prog);
+-	const u8 ptr = bpf2a64[TCCNT_PTR];
+-
+-	if (is_main_prog) {
+-		/* Initialize tail_call_cnt. */
+-		emit(A64_PUSH(A64_ZR, ptr, A64_SP), ctx);
+-		emit(A64_MOV(1, ptr, A64_SP), ctx);
+-	} else
+-		emit(A64_PUSH(ptr, ptr, A64_SP), ctx);
+-}
+-
+  static void find_used_callee_regs(struct jit_ctx *ctx)
+  {
+  	int i;
+@@ -419,7 +406,7 @@ static void pop_callee_regs(struct jit_ctx *ctx)
+  #define POKE_OFFSET (BTI_INSNS + 1)
+
+  /* Tail call offset to jump into */
+-#define PROLOGUE_OFFSET (BTI_INSNS + 2 + PAC_INSNS + 4)
++#define PROLOGUE_OFFSET (BTI_INSNS + 2 + PAC_INSNS + 2)
+
+  static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf)
+  {
+@@ -473,8 +460,6 @@ static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf)
+  		emit(A64_PUSH(A64_FP, A64_LR, A64_SP), ctx);
+  		emit(A64_MOV(1, A64_FP, A64_SP), ctx);
+
+-		prepare_bpf_tail_call_cnt(ctx);
+-
+  		if (!ebpf_from_cbpf && is_main_prog) {
+  			cur_offset = ctx->idx - idx0;
+  			if (cur_offset != PROLOGUE_OFFSET) {
+@@ -499,7 +484,7 @@ static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf)
+  		 *
+  		 * 12 registers are on the stack
+  		 */
+-		emit(A64_SUB_I(1, A64_SP, A64_FP, 96), ctx);
++		emit(A64_SUB_I(1, A64_SP, A64_FP, 80), ctx);
+  	}
+
+  	if (ctx->fp_used)
+@@ -527,8 +512,7 @@ static int emit_bpf_tail_call(struct jit_ctx *ctx)
+
+  	const u8 tmp = bpf2a64[TMP_REG_1];
+  	const u8 prg = bpf2a64[TMP_REG_2];
+-	const u8 tcc = bpf2a64[TMP_REG_3];
+-	const u8 ptr = bpf2a64[TCCNT_PTR];
++	const u8 tcc = bpf2a64[TCALL_CNT];
+  	size_t off;
+  	__le32 *branch1 = NULL;
+  	__le32 *branch2 = NULL;
+@@ -546,16 +530,15 @@ static int emit_bpf_tail_call(struct jit_ctx *ctx)
+  	emit(A64_NOP, ctx);
+
+  	/*
+-	 * if ((*tail_call_cnt_ptr) >= MAX_TAIL_CALL_CNT)
++	 * if (tail_call_cnt >= MAX_TAIL_CALL_CNT)
+  	 *     goto out;
+  	 */
+  	emit_a64_mov_i64(tmp, MAX_TAIL_CALL_CNT, ctx);
+-	emit(A64_LDR64I(tcc, ptr, 0), ctx);
+  	emit(A64_CMP(1, tcc, tmp), ctx);
+  	branch2 = ctx->image + ctx->idx;
+  	emit(A64_NOP, ctx);
+
+-	/* (*tail_call_cnt_ptr)++; */
++	/* tail_call_cnt++; */
+  	emit(A64_ADD_I(1, tcc, tcc, 1), ctx);
+
+  	/* prog = array->ptrs[index];
+@@ -570,9 +553,6 @@ static int emit_bpf_tail_call(struct jit_ctx *ctx)
+  	branch3 = ctx->image + ctx->idx;
+  	emit(A64_NOP, ctx);
+
+-	/* Update tail_call_cnt if the slot is populated. */
+-	emit(A64_STR64I(tcc, ptr, 0), ctx);
+-
+  	/* restore SP */
+  	if (ctx->stack_size)
+  		emit(A64_ADD_I(1, A64_SP, A64_SP, ctx->stack_size), ctx);
+@@ -793,6 +773,27 @@ asm (
+  "	.popsection\n"
+  );
+
++unsigned int arch_run_bpf(const void *ctx, const struct bpf_insn *insnsi, bpf_func_t bpf_func);
++asm (
++"	.pushsection .text, \"ax\", @progbits\n"
++"	.global arch_run_bpf\n"
++"	.type arch_run_bpf, %function\n"
++"arch_run_bpf:\n"
++#if IS_ENABLED(CONFIG_ARM64_BTI_KERNEL)
++"	bti j\n"
++#endif
++"	stp x29, x30, [sp, #-16]!\n"
++"	stp xzr, x26, [sp, #-16]!\n"
++"	mov x26, #0\n"
++"	blr x2\n"
++"	ldp xzr, x26, [sp], #16\n"
++"	ldp x29, x30, [sp], #16\n"
++"	ret x30\n"
++"	.size arch_run_bpf, . - arch_run_bpf\n"
++"	.popsection\n"
++);
++EXPORT_SYMBOL_GPL(arch_run_bpf);
++
+  /* build a plt initialized like this:
+   *
+   * plt:
+@@ -826,7 +827,6 @@ static void build_plt(struct jit_ctx *ctx)
+  static void build_epilogue(struct jit_ctx *ctx)
+  {
+  	const u8 r0 = bpf2a64[BPF_REG_0];
+-	const u8 ptr = bpf2a64[TCCNT_PTR];
+
+  	/* We're done with BPF stack */
+  	if (ctx->stack_size)
+@@ -834,8 +834,6 @@ static void build_epilogue(struct jit_ctx *ctx)
+
+  	pop_callee_regs(ctx);
+
+-	emit(A64_POP(A64_ZR, ptr, A64_SP), ctx);
+-
+  	/* Restore FP/LR registers */
+  	emit(A64_POP(A64_FP, A64_LR, A64_SP), ctx);
+
+@@ -2066,6 +2064,8 @@ static int prepare_trampoline(struct jit_ctx *ctx, struct bpf_tramp_image *im,
+  	bool save_ret;
+  	__le32 **branches = NULL;
+
++	bool target_is_bpf = is_bpf_text_address((unsigned long)func_addr);
++
+  	/* trampoline stack layout:
+  	 *                  [ parent ip         ]
+  	 *                  [ FP                ]
+@@ -2133,6 +2133,11 @@ static int prepare_trampoline(struct jit_ctx *ctx, struct bpf_tramp_image *im,
+  	 */
+  	emit_bti(A64_BTI_JC, ctx);
+
++	if (!target_is_bpf) {
++		emit(A64_PUSH(A64_ZR, A64_R(26), A64_SP), ctx);
++		emit(A64_MOVZ(1, A64_R(26), 0, 0), ctx);
++	}
++
+  	/* frame for parent function */
+  	emit(A64_PUSH(A64_FP, A64_R(9), A64_SP), ctx);
+  	emit(A64_MOV(1, A64_FP, A64_SP), ctx);
+@@ -2226,6 +2231,8 @@ static int prepare_trampoline(struct jit_ctx *ctx, struct bpf_tramp_image *im,
+  	/* pop frames  */
+  	emit(A64_POP(A64_FP, A64_LR, A64_SP), ctx);
+  	emit(A64_POP(A64_FP, A64_R(9), A64_SP), ctx);
++	if (!target_is_bpf)
++		emit(A64_POP(A64_ZR, A64_R(26), A64_SP), ctx);
+
+  	if (flags & BPF_TRAMP_F_SKIP_FRAME) {
+  		/* skip patched function, return to parent */
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index dc63083f76b7..8660d15dd50c 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1244,12 +1244,14 @@ struct bpf_dispatcher {
+  #define __bpfcall __nocfi
+  #endif
+
++unsigned int arch_run_bpf(const void *ctx, const struct bpf_insn *insnsi, bpf_func_t bpf_func);
++
+  static __always_inline __bpfcall unsigned int bpf_dispatcher_nop_func(
+  	const void *ctx,
+  	const struct bpf_insn *insnsi,
+  	bpf_func_t bpf_func)
+  {
+-	return bpf_func(ctx, insnsi);
++	return arch_run_bpf(ctx, insnsi, bpf_func);
+  }
+
+  /* the implementation of the opaque uapi struct bpf_dynptr */
+@@ -1317,7 +1319,7 @@ int arch_prepare_bpf_dispatcher(void *image, void *buf, s64 *funcs, int num_func
+  #else
+  #define __BPF_DISPATCHER_SC_INIT(name)
+  #define __BPF_DISPATCHER_SC(name)
+-#define __BPF_DISPATCHER_CALL(name)		bpf_func(ctx, insnsi)
++#define __BPF_DISPATCHER_CALL(name)		arch_run_bpf(ctx, insnsi, bpf_func);
+  #define __BPF_DISPATCHER_UPDATE(_d, _new)
+  #endif
+
+> Thanks,
+> Leon
 
 
