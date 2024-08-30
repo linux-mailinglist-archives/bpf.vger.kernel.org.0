@@ -1,257 +1,235 @@
-Return-Path: <bpf+bounces-38513-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38514-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26A64965518
-	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 04:08:45 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 97FD4965569
+	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 04:50:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4B0BC1C22B83
-	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 02:08:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 175D71F242ED
+	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 02:50:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FD4D535DC;
-	Fri, 30 Aug 2024 02:08:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99E59132111;
+	Fri, 30 Aug 2024 02:49:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="j30jAU3V"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C50BB1D1300;
-	Fri, 30 Aug 2024 02:08:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724983708; cv=none; b=sdwLwT9YY4TCPgUIKC5nBWNvzLWKvz3tAxniX2DD+m8GNrpktx4WFu1++bvppWMhH1yo1mwkfSQM/fS8fQsvfR4eWqopKHanBxBpbJ2gWz7ahmB9IHfOrJzA5QfeuZ6wHQ2LWYHn3zfl29/jv7KG+8eCchLYQtUfRks4UDt298g=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724983708; c=relaxed/simple;
-	bh=wOgvntKYQmYohnFZGu07J+B7vsxAmgNnANMJIoUIDlI=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=Im/h5uyfId1dSn4FLOluV+V56CU2+muc+48aaOIDwNSdVd2Sqm0NR+sAwHRMVLvAWyQNm7KgBKqTEHURlhf+nvo5xP9d/uSn4RRXR4TqGpZoy3PPTGxBHe+FJmoJoz5bPneH9eG/4T+RC3t07pkyJdJdGQDctOqYWBjBhUgqb7Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Ww1lC71sWz4f3jJC;
-	Fri, 30 Aug 2024 10:08:07 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.252])
-	by mail.maildlp.com (Postfix) with ESMTP id A5A8E1A06D7;
-	Fri, 30 Aug 2024 10:08:22 +0800 (CST)
-Received: from [10.67.109.79] (unknown [10.67.109.79])
-	by APP3 (Coremail) with SMTP id _Ch0CgAHtrSTKdFmeZoADA--.9512S2;
-	Fri, 30 Aug 2024 10:08:20 +0800 (CST)
-Message-ID: <cd2bc5bf-ac78-4121-80eb-9b5c7fd4549c@huaweicloud.com>
-Date: Fri, 30 Aug 2024 10:08:19 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55F331D12F7;
+	Fri, 30 Aug 2024 02:49:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=67.231.145.42
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1724986195; cv=fail; b=kO6HrFefdpk6mh8TworAme8FfxCvGF04Wvn1baZTSJhtmBj96jk0XFngvaX85jvKqa5oXgr7fKL4CZLWLXHSzpCPuiMBxNeX1rKvrFHZ2njF36qqT9zfRAR3h6vYlH0C3K2xODSOhW3GFX52mHQJRFwN00tmtfiAQhsC3mKXPEM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1724986195; c=relaxed/simple;
+	bh=WX3JFsujst3eZ3VYEwNIN//Gw2QZRHUY2sQJlBzSx4k=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=gfTyUkrgF8piw/rkcmhS3zJ3V10GpxZ0BZDy684IurBL0Q04M9tOKGeNPpw25NfNlf726eRiUr8LdthT0UgH8shfoZGr3bDjLCEcLaaiZcuTOnVEPO3f7XbhwYbZobddE/q1r65EzgCi0X1gVHSm4yZODzjqP36dAUcsbkf5s5I=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=j30jAU3V; arc=fail smtp.client-ip=67.231.145.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 47U1TlN6001802;
+	Thu, 29 Aug 2024 19:49:52 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=from
+	:to:cc:subject:date:message-id:references:in-reply-to
+	:content-type:content-id:content-transfer-encoding:mime-version;
+	 s=s2048-2021-q4; bh=WX3JFsujst3eZ3VYEwNIN//Gw2QZRHUY2sQJlBzSx4k
+	=; b=j30jAU3VLEMX/0ReFdzm0hlMzvoNdcgFxDE6Zt3juyWysF9uZP5KSU6I2Oo
+	i4pSLBdA5aRz3tVjIGxSaX0RRDWplaprTRNzfdptFw2dWgrzFrcSTHSzKk1/I8wR
+	kTS6HdqRRiJyFyIhmOHcf+EEup3p/+to0wLLPoGPqxohPNUm9I7oW+U4CY44UYax
+	zNuXQvvd15oe5lYA2UHUXWUunZj2GTUNx1wlE9CTO2RXxhAn7lj9qw4Vnmk5Iu6R
+	rFDGaTxKCP4qEFI1yVmwQqBGc1smp8cHZltC1fV959qa5J3a5qgkUxXhaZq0aqdr
+	otK8sWPHYv8GCR4YeS0qBGlIYOw==
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2041.outbound.protection.outlook.com [104.47.70.41])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 41b16f1av3-2
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 29 Aug 2024 19:49:52 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=f1htbMs7co5bLF2EN6GCnBGAgyphOddn9OEVLHlhDl88PidliqYecnN9AaMXtUl/4JmrUkl878sNkyOqwSnQI2FTQ+sP3Jb2Ejmwzr04zSVm+bMhypZC+RHM0TWLlvSdxZYNG+R2SpcrIKezRSOIrzGirrPSXEUf9JQZnmm+tPwYYh49/Brcs4Xhd2BnNb4B24z1RIJLcFnUYIXzbhlp7TGRsU8f4UeC9iwq0kXGspqnTZrYFuK3z31luc+O9/LdUvzRQKkzwdKK9b2tDgd4/Bq5xulhOeh97ah4YWSIDT1hrTtqeGjjBGKD/akifOGu524mZOOIQFFVX/XdW7kKSg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=WX3JFsujst3eZ3VYEwNIN//Gw2QZRHUY2sQJlBzSx4k=;
+ b=fjaTu0f1I07JWJLi5T51vqmwQkfYUFmQry2XNP8y68G7qkNbgWXhUhemXE0VpW/KhkIm6BBjyUl824LvL1TNBQ1JcbxKhsweSwNFMZiE1yPcaIYaKbNgKO4R4vYEmV9DfWWGMSNujcm+kO2I4OvYshDNT6YSQ+Y6//n4bkFYraN5FF35VWbx9AFxXwwznPRmy3gMvXgZR+fbqczVli/+NiMejNawSqtlf0q5oQeP5tl+RrFFKVlKsgKHFxI+eOyXPoH2otnMYr9BuXvdR6nez3lmg73ETo5/bnQnrjQ3wImOGXzrVWTdomOZh9PtATc0wOpNe25Q0CL6KT/qZ+RfGw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
+ dkim=pass header.d=meta.com; arc=none
+Received: from SA1PR15MB5109.namprd15.prod.outlook.com (2603:10b6:806:1dc::10)
+ by SA6PR15MB6690.namprd15.prod.outlook.com (2603:10b6:806:419::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7875.34; Fri, 30 Aug
+ 2024 02:49:49 +0000
+Received: from SA1PR15MB5109.namprd15.prod.outlook.com
+ ([fe80::662b:d7bd:ab1b:2610]) by SA1PR15MB5109.namprd15.prod.outlook.com
+ ([fe80::662b:d7bd:ab1b:2610%4]) with mapi id 15.20.7897.027; Fri, 30 Aug 2024
+ 02:49:48 +0000
+From: Song Liu <songliubraving@meta.com>
+To: Eduard Zingerman <eddyz87@gmail.com>
+CC: Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alan Maguire
+	<alan.maguire@oracle.com>,
+        "dwarves@vger.kernel.org"
+	<dwarves@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Andrii Nakryiko
+	<andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu
+	<songliubraving@meta.com>
+Subject: Re: FYI: CI regression on big-endian arch (s390) after recent pahole
+ changes
+Thread-Topic: FYI: CI regression on big-endian arch (s390) after recent pahole
+ changes
+Thread-Index: AQHa+nBTcEap9q1O5UerHgxRy6xOaLI/GZ8A
+Date: Fri, 30 Aug 2024 02:49:48 +0000
+Message-ID: <442C7AEC-2919-4307-8700-F7A0B60B5565@fb.com>
+References: <6358db36c5f68b07873a0a5be2d062b1af5ea5f8.camel@gmail.com>
+In-Reply-To: <6358db36c5f68b07873a0a5be2d062b1af5ea5f8.camel@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-mailer: Apple Mail (2.3776.700.51)
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SA1PR15MB5109:EE_|SA6PR15MB6690:EE_
+x-ms-office365-filtering-correlation-id: 1e4b3801-82d4-4870-5c46-08dcc89e6a04
+x-fb-source: Internal
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;ARA:13230040|366016|376014|1800799024|38070700018;
+x-microsoft-antispam-message-info:
+ =?utf-8?B?dVBURXhBZk8zMkRvajR2bkVYMEdpVlNZNTJNa21xWXFreUZjVDRQSk40dVQw?=
+ =?utf-8?B?TDV6WUExNGtWcjA1WUZpWmlPbmJIMXcwd2Z4bUZTbVBCdUwrQlhBTXg4ZWY3?=
+ =?utf-8?B?MDE1bGFyTlJ3OEorWE02TEZtRVpkSk15OW5IVURHeDZ1SnAyNEpGVzVsM2s4?=
+ =?utf-8?B?bHdLb3FNcUk4Z0dkb2pWOC85c2x4TXh0N25jdkw2OEtVYTdLVDgwOW1YL05W?=
+ =?utf-8?B?c1hPVkhJVTEyS2hGRElPVXQ5SlJyR2w2WDhsQjBISktZbmJGSzlMUFBXVEhC?=
+ =?utf-8?B?V2pwYjArQ1Z1QnkvOFlwZmNESmFieGZMMVFFTFowanl4L0Z5RlRIblRLaEc1?=
+ =?utf-8?B?a3RNVlVhSmZSNmRFREZwa2JUc3hBNWx5TzM2RlRNdVBub0dyeHk0Z1FZbnBE?=
+ =?utf-8?B?djF1L1NuN3RqZXk1MVhidis0NlpMelN2NUhpUVFpV3ExU1VTOU9rM0dWekdB?=
+ =?utf-8?B?QitJMG5YWExsUHdIbUtqUUVFbVk3WFpGcjJDazE3eEtuZ2Nvdlltb3g0ZHlI?=
+ =?utf-8?B?UU9lcElOQkgwbTdrTGVocERoVURnZTNMWkdQT2Q3Rm5XYWlweEYwYXM0QVFk?=
+ =?utf-8?B?Z2lCV0JFZmxpNFJPSWZta1JrVkJsOEVrOHRpMFpEVndJNlgyTkNBNFNGdWFY?=
+ =?utf-8?B?ZGo3TTRrbkpUbUpQclpDVklaV2YrRWJCVHk1TjMrWm8xUVhPV1U4V1hOMHF0?=
+ =?utf-8?B?Wjg4Ulh5eG1xV3ZMaHRRNkJYVnpwQlpTZkIxekVCZUtWMlFzVHNZbFRvL2tz?=
+ =?utf-8?B?NEJ6NkM0WUxiK0ZEVnZUM3M2UFdUVjQ2MCtsd1VxWGxFM0lpQ05USkR3RVJr?=
+ =?utf-8?B?Q1l0U0s0aVRLVGh6cXFGandNTUR4a0N3MzVMcmgxZ2NEZTZxV1BZL1BraEN6?=
+ =?utf-8?B?RVp5VGVnSTBjYjVlRFhjdjJkTW5rMkNBVFFQb0d0MzNXSHhObDlSQVNZeTZF?=
+ =?utf-8?B?dWl3bk9TSnlyaWV3U3J4R2JiYy8ySWRiWndtbzhXWUl2ckJJZHJlQk9IMG1B?=
+ =?utf-8?B?UUJsRjBvT0RSQUJleWdCWUJ6blMrcnBCbHozV0ZCKzZnS2JwQ21FMXEwZkdm?=
+ =?utf-8?B?N0FtdHhDd1k3Vk01dXlDdXVkMmM3UWhjcG5ZOTZYWVE1S1JhcExTdlZ5cHh4?=
+ =?utf-8?B?eU8wYnhxVDhLZXVDem5OTnNITCtaN214dXlKall0YzgvS3JtN2ppRVozRWlD?=
+ =?utf-8?B?TkhqVGFsWis1Zmd5bDBvOFNZellCRUJVbTdrd3c3TTcvQW9NbFRBUGozUmRw?=
+ =?utf-8?B?bXo0cEFiZ3N2UkpyOW5FZmMyOW9QbGs2ajlrRWtSd21lVUhWRlFTOU80ZktP?=
+ =?utf-8?B?Z1NRbndUMTdNTFU5OTRZRWdQWm5YVnhOTDdVeWZ6dnJhRXhCYXBiZUZ4SjJj?=
+ =?utf-8?B?aW5JdnVaaUVpUWxmOWxEQlVDTlJUUDZOWmxyK2ZyVDRCMTRwNzhzT05HcXlQ?=
+ =?utf-8?B?a05aL3haSXpxVXBPSUY5NXBSdHRLRGdaUUx0dFhuNG5LamFaTzlBTEZGa3Zw?=
+ =?utf-8?B?am1mRFB5dVNqSlR6eklIZ1M1YUw5MkZ3UkNsNjMrVUlOZ2NYeWtpU2xFakxZ?=
+ =?utf-8?B?dnJZTmFtR0VZL0Y3aG5pblhRa0RvdDJXL2tFUGhBaUJMUk9GbnoxdXJsTGdq?=
+ =?utf-8?B?VVpMY0Vzeml1Q0xBc1hqRGtDWTRSOGxpSjdhMjBpc1VZdWNqNEtJVnQ2TnUw?=
+ =?utf-8?B?aGRMZW95aW1INHgzZS9ya2Q0RUs4WUlmQ3JOZU5UWmpqeU5DUDl5NktpbkNJ?=
+ =?utf-8?B?OFhYcFd4ZytHNlAyVjVlbldiZnRiY2t2dkxpRGZuSmJISkhYVVU2enlSeUdZ?=
+ =?utf-8?B?V21BdmFKSUNTV1RuM3p2a2VWTTlkNS8rNWgxRHppL3g0LzdtR1RvVFNtU3pR?=
+ =?utf-8?B?YlZzamRIQ2lYaUZSdDQ1aDc1UVoyUTU2NlhabkduSTRNcWc9PQ==?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5109.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(1800799024)(38070700018);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?bmdZbUVGcVFnL2d1TWFqbEM0Sm0rZXlrR0xUQ0p0U0dDbzZIS3FDRlNER1JK?=
+ =?utf-8?B?RkhZb2ZyZGVibzJVTC9pazVUVkFLRXhTTTBSL0E5UTM2OGJCZ1kraUhGVVRy?=
+ =?utf-8?B?b1dZK09NaFIwakVrRllyYXYyRjRhTGpXbU8yNE5vSFR0aHdabXZzck1GaGZz?=
+ =?utf-8?B?dkNKT2w3UmNtM1UyMk14ZXhydFhDODQrcDhYYU9wc2JQTmdIYkRKdlhYU1l3?=
+ =?utf-8?B?aDVERzByQ0p1cHR2Vm5HNVdGLzdac1RhVmxJd2JJdkpGaTAyNzhmWnkvZG5P?=
+ =?utf-8?B?eThXZ1ptUXB4UXpTb0JVRmdtdkZRM25VejFyOWoybEVWbm9TaklnbzI5eFdY?=
+ =?utf-8?B?TFo4WlZ4V3ZMeU1oUy93Z2l3eEhVZmNpYW1NWW91M1BMWWJyU1JpallBYnhl?=
+ =?utf-8?B?VEkwY0Q0c3B0TXVqMmRZRG1VZTU1cDRkdGxtaVBxQVpuU0JXNG9ESTk2UFJO?=
+ =?utf-8?B?bURXczFuS1gyWnR1TlVQcitMbFBmbjArR0NjK2Y3dmhBeUszSmIzV0lQUjBR?=
+ =?utf-8?B?Z3EzTlBremZoeHhJSGhhZXJlSkJyK0ZMOVNKR3N4WXpDbGlKQldXU291Qnp5?=
+ =?utf-8?B?Y0RZeTBBYWpOTTNDQUdraWU4N3ArYmRveXhXN3AwYTlMektZeU9ZMHR1Tlor?=
+ =?utf-8?B?MXpLaHhaNDVuM2FJbzZ5RzdKOWtXNXYxZWh1MjBtQUUzaVZYd2VkY1c1aDhE?=
+ =?utf-8?B?WkxERC8yT3FYQXNiaHRJMEh5SGQ0N0xjL3NPcG9YQ3BYaWl6YWRaVzVhVlJ3?=
+ =?utf-8?B?Ris2Z1drSWkxcm8wZXd1OU1FOWJiQkdzZ2RwckkyMk9hbDhlWDZFMjJ3eGEz?=
+ =?utf-8?B?SThNeHF1UXFGalh0aXEvSmQ2NmNGeUN1OGoyKzltMTMyUDNHeGs1ZUNlOG81?=
+ =?utf-8?B?cUkvN0ZkbmRoaDdUUURSYkUvRDhWbXB4dGZQZFdDRWVmZUsrdVFqdGRMM3l6?=
+ =?utf-8?B?Qm1yZTJhRW90TGE5MjBHRXBzcFM4VFdTRmpDYWxkMmVoY0hIVHhPa2ZQK1hH?=
+ =?utf-8?B?T1ByVy9wUUsvVVJnNjdYUUpEaHJIaVU2bG5ZZUhpN0c4UVIwN3RjU3NrWmo4?=
+ =?utf-8?B?Y0FaL2ppSGJKMlZlVm5hczEvKzdjbm9lSTNIY3Q2T1FNeVI4aUQyaVB3QTdu?=
+ =?utf-8?B?Y0tEdTBzYjFvZjJ0c0pqOTBHWXRSWG5BOXR6azlhWVl4dkk1aXdkeEZDM001?=
+ =?utf-8?B?RHlIREIvRnNKanNvM21xU3lpUnNhWWlQQ2I3cGhWWG5Tc0I4TXNtV3ZOb2p1?=
+ =?utf-8?B?L1lNWXFvNFdQTnpCQ1RBa25CUnJnbGUzWEtOdkdYZTBQVE5LWE1DbWRwdWh5?=
+ =?utf-8?B?UzQrblJmL2VnT1k5Vk54S3RueUphbk1OZlNMT0NiaSt0bkhjR0JubzZKRnZu?=
+ =?utf-8?B?S1hLV2VlT0d4QjhPWTdwL0ZhRFdtWkNIVW1samVybStMSGcxTVNucFR5TW5o?=
+ =?utf-8?B?ekdnVHZQTWlHRjFoelpjTm5KamtlVnpHYWRaSTlhUCsxK2FXNVZaNVYxeXMx?=
+ =?utf-8?B?NFl6REhTYkxuQitvSnk2bzRycUhVK2RpMngyL2ZMMms5eWEzZFkrUHY1OHR1?=
+ =?utf-8?B?RytBZEY1TThobUQxOTlnUkdlU0ZCVG9qNG9WcEtkSVJZNERWMldpTU5MWDJ1?=
+ =?utf-8?B?aVJXZnAvakZFTUphWVE1Z29UdEFCL2V5NFZ0Z3BtU1hnNTVEbjBZZkx4Y1RL?=
+ =?utf-8?B?U1dvT3dxdndueGdWUWpMUWN2SjdjK05GYXdkUlQwTkVDV3VpM2dWV0dqM0F5?=
+ =?utf-8?B?Mlh6RkRrRW1zUlJZbVdWaHZaRWwyeGJHa3FIb0t1RGxiRUhnSWtGZGxKTzFy?=
+ =?utf-8?B?bjNjU0RaNXNuWXZlYzlHL2tHS1A4YmQxd1F0SDBVYUhkWVRKTTlzbEcxb3hY?=
+ =?utf-8?B?MFgxZ0hzQ0xoNTlQd2c0M1UwemVJQ2JtdFFNbk0xNjFoNFVVZnJldnMzNjlw?=
+ =?utf-8?B?WDJxeEZZVjRkbm80VWd1VVFLRytoQW5MUi9lRVJyQzgxUjM1OHFlenpJaXZW?=
+ =?utf-8?B?U1FYNzlqT1RkR3dtMmh5eTZoay9MSVFQL0t5MmNzUDJrTW0ramo2cUVRZjN4?=
+ =?utf-8?B?Nm9Nbkw4TWxiZjZNUm53ZmdDTTZqUXRRMmZDdVdBeitTVmt5b1dMaDhUL2Vu?=
+ =?utf-8?B?SDNxSFJUVHpxK1l1Q0xiWGwzVG11b1RKdXgxaGRpRXhvRlVicVQycFBHblBF?=
+ =?utf-8?B?Umc9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <42283A21992D3545B9549F51E27CF5BC@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/1] cgroup: fix deadlock caused by cgroup_mutex and
- cpu_hotplug_lock
-From: Chen Ridong <chenridong@huaweicloud.com>
-To: martin.lau@linux.dev, ast@kernel.org, daniel@iogearbox.net,
- andrii@kernel.org, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@google.com, haoluo@google.com, jolsa@kernel.org, tj@kernel.org,
- lizefan.x@bytedance.com, hannes@cmpxchg.org, roman.gushchin@linux.dev,
- =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: bpf@vger.kernel.org, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240817093334.6062-1-chenridong@huawei.com>
- <20240817093334.6062-2-chenridong@huawei.com>
- <8c1ccd1b-47cd-43b6-b961-2829a5a24513@huaweicloud.com>
-Content-Language: en-US
-In-Reply-To: <8c1ccd1b-47cd-43b6-b961-2829a5a24513@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_Ch0CgAHtrSTKdFmeZoADA--.9512S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3Jw43CF4fWr43Zr1fZr4Utwb_yoW3ZFWrpr
-	n5JryUJ3yrCr1ktr4Utw1UXryrKr40q3WUJr18J3WUAr47Jr1jqr1UZr1jgFyUJFs7Cr1U
-	AF1Yvry2vr1jqw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6r1S6rWUM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWr
-	XwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
-	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0
-	s2-5UUUUU==
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+X-OriginatorOrg: meta.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5109.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1e4b3801-82d4-4870-5c46-08dcc89e6a04
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Aug 2024 02:49:48.8408
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: wcN512OVvSYFS7lI8eTrSMrX8K26VVeXsPLSzFPvqaGhk3/y86d5Ft+umy1xezjPPEPBtwrTmLKtzV1Cj9lOjA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA6PR15MB6690
+X-Proofpoint-GUID: 1PmoAOPC24qYbcYoo9s5PmqB2KpOPf0d
+X-Proofpoint-ORIG-GUID: 1PmoAOPC24qYbcYoo9s5PmqB2KpOPf0d
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
+ definitions=2024-08-29_06,2024-08-29_02,2024-05-17_01
 
-
-
-On 2024/8/22 8:57, Chen Ridong wrote:
-> 
-> 
-> On 2024/8/17 17:33, Chen Ridong wrote:
->> We found a hung_task problem as shown below:
->>
->> INFO: task kworker/0:0:8 blocked for more than 327 seconds.
->> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
->> task:kworker/0:0     state:D stack:13920 pid:8     ppid:2       
->> flags:0x00004000
->> Workqueue: events cgroup_bpf_release
->> Call Trace:
->>   <TASK>
->>   __schedule+0x5a2/0x2050
->>   ? find_held_lock+0x33/0x100
->>   ? wq_worker_sleeping+0x9e/0xe0
->>   schedule+0x9f/0x180
->>   schedule_preempt_disabled+0x25/0x50
->>   __mutex_lock+0x512/0x740
->>   ? cgroup_bpf_release+0x1e/0x4d0
->>   ? cgroup_bpf_release+0xcf/0x4d0
->>   ? process_scheduled_works+0x161/0x8a0
->>   ? cgroup_bpf_release+0x1e/0x4d0
->>   ? mutex_lock_nested+0x2b/0x40
->>   ? __pfx_delay_tsc+0x10/0x10
->>   mutex_lock_nested+0x2b/0x40
->>   cgroup_bpf_release+0xcf/0x4d0
->>   ? process_scheduled_works+0x161/0x8a0
->>   ? trace_event_raw_event_workqueue_execute_start+0x64/0xd0
->>   ? process_scheduled_works+0x161/0x8a0
->>   process_scheduled_works+0x23a/0x8a0
->>   worker_thread+0x231/0x5b0
->>   ? __pfx_worker_thread+0x10/0x10
->>   kthread+0x14d/0x1c0
->>   ? __pfx_kthread+0x10/0x10
->>   ret_from_fork+0x59/0x70
->>   ? __pfx_kthread+0x10/0x10
->>   ret_from_fork_asm+0x1b/0x30
->>   </TASK>
->>
->> This issue can be reproduced by the following pressuse test:
->> 1. A large number of cpuset cgroups are deleted.
->> 2. Set cpu on and off repeatly.
->> 3. Set watchdog_thresh repeatly.
->> The scripts can be obtained at LINK mentioned above the signature.
->>
->> The reason for this issue is cgroup_mutex and cpu_hotplug_lock are
->> acquired in different tasks, which may lead to deadlock.
->> It can lead to a deadlock through the following steps:
->> 1. A large number of cpusets are deleted asynchronously, which puts a
->>     large number of cgroup_bpf_release works into system_wq. The 
->> max_active
->>     of system_wq is WQ_DFL_ACTIVE(256). Consequently, all active works 
->> are
->>     cgroup_bpf_release works, and many cgroup_bpf_release works will 
->> be put
->>     into inactive queue. As illustrated in the diagram, there are 256 (in
->>     the acvtive queue) + n (in the inactive queue) works.
->> 2. Setting watchdog_thresh will hold cpu_hotplug_lock.read and put
->>     smp_call_on_cpu work into system_wq. However step 1 has already 
->> filled
->>     system_wq, 'sscs.work' is put into inactive queue. 'sscs.work' has
->>     to wait until the works that were put into the inacvtive queue 
->> earlier
->>     have executed (n cgroup_bpf_release), so it will be blocked for a 
->> while.
->> 3. Cpu offline requires cpu_hotplug_lock.write, which is blocked by 
->> step 2.
->> 4. Cpusets that were deleted at step 1 put cgroup_release works into
->>     cgroup_destroy_wq. They are competing to get cgroup_mutex all the 
->> time.
->>     When cgroup_metux is acqured by work at css_killed_work_fn, it will
->>     call cpuset_css_offline, which needs to acqure cpu_hotplug_lock.read.
->>     However, cpuset_css_offline will be blocked for step 3.
->> 5. At this moment, there are 256 works in active queue that are
->>     cgroup_bpf_release, they are attempting to acquire cgroup_mutex, 
->> and as
->>     a result, all of them are blocked. Consequently, sscs.work can not be
->>     executed. Ultimately, this situation leads to four processes being
->>     blocked, forming a deadlock.
->>
->> system_wq(step1)        WatchDog(step2)            cpu 
->> offline(step3)    cgroup_destroy_wq(step4)
->> ...
->> 2000+ cgroups deleted asyn
->> 256 actives + n inactives
->>                 __lockup_detector_reconfigure
->>                 P(cpu_hotplug_lock.read)
->>                 put sscs.work into system_wq
->> 256 + n + 1(sscs.work)
->> sscs.work wait to be executed
->>                 warting sscs.work finish
->>                                 percpu_down_write
->>                                 P(cpu_hotplug_lock.write)
->>                                 ...blocking...
->>                                             css_killed_work_fn
->>                                             P(cgroup_mutex)
->>                                             cpuset_css_offline
->>                                             P(cpu_hotplug_lock.read)
->>                                             ...blocking...
->> 256 cgroup_bpf_release
->> mutex_lock(&cgroup_mutex);
->> ..blocking...
->>
->> To fix the problem, place cgroup_bpf_release works on cgroup_destroy_wq,
->> which can break the loop and solve the problem. System wqs are for misc
->> things which shouldn't create a large number of concurrent work items.
->> If something is going to generate >WQ_DFL_ACTIVE(256) concurrent work
->> items, it should use its own dedicated workqueue.
->>
->> Fixes: 4bfc0bb2c60e ("bpf: decouple the lifetime of cgroup_bpf from 
->> cgroup itself")
->> Link: 
->> https://lore.kernel.org/cgroups/e90c32d2-2a85-4f28-9154-09c7d320cb60@huawei.com/T/#t
->> Signed-off-by: Chen Ridong <chenridong@huawei.com>
->> ---
->>   kernel/bpf/cgroup.c             | 2 +-
->>   kernel/cgroup/cgroup-internal.h | 1 +
->>   kernel/cgroup/cgroup.c          | 2 +-
->>   3 files changed, 3 insertions(+), 2 deletions(-)
->>
->> diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
->> index 8ba73042a239..a611a1274788 100644
->> --- a/kernel/bpf/cgroup.c
->> +++ b/kernel/bpf/cgroup.c
->> @@ -334,7 +334,7 @@ static void cgroup_bpf_release_fn(struct 
->> percpu_ref *ref)
->>       struct cgroup *cgrp = container_of(ref, struct cgroup, bpf.refcnt);
->>       INIT_WORK(&cgrp->bpf.release_work, cgroup_bpf_release);
->> -    queue_work(system_wq, &cgrp->bpf.release_work);
->> +    queue_work(cgroup_destroy_wq, &cgrp->bpf.release_work);
->>   }
->>   /* Get underlying bpf_prog of bpf_prog_list entry, regardless if 
->> it's through
->> diff --git a/kernel/cgroup/cgroup-internal.h 
->> b/kernel/cgroup/cgroup-internal.h
->> index c964dd7ff967..17ac19bc8106 100644
->> --- a/kernel/cgroup/cgroup-internal.h
->> +++ b/kernel/cgroup/cgroup-internal.h
->> @@ -13,6 +13,7 @@
->>   extern spinlock_t trace_cgroup_path_lock;
->>   extern char trace_cgroup_path[TRACE_CGROUP_PATH_LEN];
->>   extern void __init enable_debug_cgroup(void);
->> +extern struct workqueue_struct *cgroup_destroy_wq;
->>   /*
->>    * cgroup_path() takes a spin lock. It is good practice not to take
->> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
->> index 75058fbf4450..77fa9ed69c86 100644
->> --- a/kernel/cgroup/cgroup.c
->> +++ b/kernel/cgroup/cgroup.c
->> @@ -124,7 +124,7 @@ DEFINE_PERCPU_RWSEM(cgroup_threadgroup_rwsem);
->>    * destruction work items don't end up filling up max_active of 
->> system_wq
->>    * which may lead to deadlock.
->>    */
->> -static struct workqueue_struct *cgroup_destroy_wq;
->> +struct workqueue_struct *cgroup_destroy_wq;
->>   /* generate an array of cgroup subsystem pointers */
->>   #define SUBSYS(_x) [_x ## _cgrp_id] = &_x ## _cgrp_subsys,
-> 
-> Ping.
-> Hi,TJ, Roman and Michal, I have updated commit message, I think it can 
-> be much clearer now, can you review it again?
-> 
-> Thanks,
-> Ridong
-> 
-Friendly ping.
-
+SGkgRWR1YXJkLCANCg0KVGhhbmtzIGZvciBzZW5kaW5nIHRoZSByZXBvcnQhDQoNCj4gT24gQXVn
+IDI5LCAyMDI0LCBhdCA1OjA14oCvUE0sIEVkdWFyZCBaaW5nZXJtYW4gPGVkZHl6ODdAZ21haWwu
+Y29tPiB3cm90ZToNCj4gDQo+IEhpIEFybmFsZG8sIEFsYW4sDQo+IA0KPiBBZnRlciByZWNlbnQg
+cGFob2xlIGNoYW5nZXMgWzFdIEJQRiBDSSBmYWlscyBmb3IgczM5MCBbMl0uDQo+IFNvbmcgTGl1
+IGlkZW50aWZpZWQgdGhhdCB0aGVyZSBpcyBhIG1pc21hdGNoIGJldHdlZW4gZW5kaWFubmVzcyBv
+ZiBCVEYNCj4gaW4gLkJURiBhbmQgLkJURi5iYXNlIHNlY3Rpb25zLg0KDQpDbGFyaWZpY2F0aW9u
+OiANCg0KV2l0aCB0aGUgcmVncmVzc2lvbiwgX2JvdGhfIC5CVEYgYW5kIC5CVEYuYmFzZSBzZWN0
+aW9ucyAob3IgYXQgDQpsZWFzdCBwYXJ0IG9mIHRoZXNlIHNlY3Rpb25zKSBhcmUgaW4gbGl0dGxl
+IGVuZGlhbiBmb3IgczM5MDoNCg0KJCBvYmpkdW1wIC1zIC1qIC5CVEYgYnBmX3Rlc3Rtb2Qua28g
+fCBoZWFkDQpicGZfdGVzdG1vZC5rbzogICAgIGZpbGUgZm9ybWF0IGVsZjY0LWJpZw0KDQpDb250
+ZW50cyBvZiBzZWN0aW9uIC5CVEY6DQogMDAwMCA5ZmViMDEwMCAxODAwMDAwMCAwMDAwMDAwMCAz
+MDFhMDAwMCAgLi4uLi4uLi4uLi4uMC4uLg0KIDAwMTAgMzAxYTAwMDAgODAxMTAwMDAgMDAwMDAw
+MDAgMDAwMDAwMGEgIDAuLi4uLi4uLi4uLi4uLi4NCiAwMDIwIDI0MDAwMDAwIDAwMDAwMDAwIDAw
+MDAwMDAzIDAwMDAwMDAwICAkLi4uLi4uLi4uLi4uLi4uDQogMDAzMCAyODAwMDAwMCAwNjAwMDAw
+MCAyYjAwMDAwMCAwMDAwMDAwMCAgKC4uLi4uLi4rLi4uLi4uLg0KIDAwNDAgMDAwMDAwMGEgMjkw
+MDAwMDAgZWEwMTAwMDAgMDMwMDAwMDQgIC4uLi4pLi4uLi4uLi4uLi4NCiAwMDUwIDE4MDAwMDAw
+IDA0MDIwMDAwIDFlMDEwMDAwIDAwMDAwMDAwICAuLi4uLi4uLi4uLi4uLi4uDQoNCiQgb2JqZHVt
+cCAtcyAtaiAuQlRGLmJhc2UgYnBmX3Rlc3Rtb2Qua28gfCBoZWFkDQpicGZfdGVzdG1vZC5rbzog
+ICAgIGZpbGUgZm9ybWF0IGVsZjY0LWJpZw0KDQpDb250ZW50cyBvZiBzZWN0aW9uIC5CVEYuYmFz
+ZToNCiAwMDAwIDlmZWIwMTAwIDE4MDAwMDAwIDAwMDAwMDAwIGZjMDEwMDAwICAuLi4uLi4uLi4u
+Li4uLi4uDQogMDAxMCBmYzAxMDAwMCBlYTAxMDAwMCAwMTAwMDAwMCAwMDAwMDAwMSAgLi4uLi4u
+Li4uLi4uLi4uLg0KIDAwMjAgMDgwMDAwMDAgNDAwMDAwMDAgMTMwMDAwMDAgMDAwMDAwMDEgIC4u
+Li5ALi4uLi4uLi4uLi4NCiAwMDMwIDAxMDAwMDAwIDA4MDAwMDAwIDE4MDAwMDAwIDAwMDAwMDAx
+ICAuLi4uLi4uLi4uLi4uLi4uDQogMDA0MCAwNDAwMDAwMCAyMDAwMDAwMCAyNTAwMDAwMCAwMDAw
+MDAwMSAgLi4uLiAuLi4lLi4uLi4uLg0KIDAwNTAgMDEwMDAwMDAgMDgwMDAwMDEgMzEwMDAwMDAg
+MDAwMDAwMDEgIC4uLi4uLi4uMS4uLi4uLi4NCg0KDQoNCkJlZm9yZSB0aGUgcmVncmVzc2lvbiwg
+dGhlICI5ZmViIiBwYXJ0IHdhcyAiZWI5ZiIgZm9yIHMzOTA6DQoNCiQgb2JqZHVtcCAtcyAtaiAu
+QlRGIGJwZl90ZXN0bW9kLmtvIHwgaGVhZA0KYnBmX3Rlc3Rtb2Qua286ICAgICBmaWxlIGZvcm1h
+dCBlbGY2NC1iaWcNCg0KQ29udGVudHMgb2Ygc2VjdGlvbiAuQlRGOg0KIDAwMDAgZWI5ZjAxMDAg
+MDAwMDAwMTggMDAwMDAwMDAgMDAwMDE1NjAgIC4uLi4uLi4uLi4uLi4uLmANCiAwMDEwIDAwMDAx
+NTYwIDAwMDAwZmMyIDAwMDAwMDAwIDBhMDAwMDAwICAuLi5gLi4uLi4uLi4uLi4uDQoNCg0KVGhh
+bmtzLA0KU29uZw0KDQo=
 
