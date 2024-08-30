@@ -1,143 +1,197 @@
-Return-Path: <bpf+bounces-38560-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38561-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20BC69665F5
-	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 17:45:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 172BA966617
+	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 17:51:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8617BB23EF6
-	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 15:45:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C3B0C28281B
+	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 15:51:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BFFB1B78F1;
-	Fri, 30 Aug 2024 15:44:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3F041B1D7C;
+	Fri, 30 Aug 2024 15:51:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Yevicrlg"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PwXJqnDp"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
+Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 469121B5EA9;
-	Fri, 30 Aug 2024 15:44:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E826A1B5ED6;
+	Fri, 30 Aug 2024 15:51:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725032694; cv=none; b=PNGwYH5GP9hy59bb55Hex+G1IWvt0JjnsB42lhLFFHjQcT/OTM8YHpSAJW+bAmAlhU9WmyZjtFZ9U0eEK5HzQsyP29JkQ/Q7KdgbTa9oQFjQ39jUuVDDO8AOYnaPxFxPLSebGJ2RqgKVeBlQBGqvBCYfaumR7E5gKuzWdajkNUk=
+	t=1725033087; cv=none; b=E1h/hFbEtJbcQscrWayXzBoGM0hFU6K+bKwSLixaH8df3LmP0vLKZXaPEQHsamx0NBcXu6wk/62Qa9Y6/8pC9sEVZ6e7rOlS/Weu68glYNVM5IDHIE79ei0L2p7oziURb+xsnKN0xLC6GcdJD8ycwTY3meJ/RZcYuXztlVH5Pgs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725032694; c=relaxed/simple;
-	bh=hUdJ3tWChLbbIEYKPPb76YRhW/3TjJ4im9OWeMVWOqY=;
+	s=arc-20240116; t=1725033087; c=relaxed/simple;
+	bh=xAioSBDKFkFJYFGiE/9X5In06ymYVEpnW7BVX8AjVNY=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KpR78mcvo24my41uarXvX4EGP73CGLNLr032O6Vbf5LdlJgxd4B9fwHPHjLbJkzrI0JwQKEovwHWlwvVZrAD9zGfMjIYXhY1TNz9A7JYuHuM58nC7MqQSwbwaNmxqzqk/31T4phir8mF2js6JD+KES1pBsnZ5QnCaZ419NxZx3k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Yevicrlg; arc=none smtp.client-ip=209.85.216.41
+	 To:Cc:Content-Type; b=U5dyXx6dXVQMLrZm+6/Y+8Ymcc037A2YdE2NRBei1m/Xf/1bnuwRM5bYRNF5BXZWZtmKqRHz8TXXUw6OqBz9bAkYmuRnAX0tQsSP3rAlQvSKCnKNPnfVH8VwAt+rC7r0kadhi4wq0fzztMEjOv7bDm73x/tMsznVj+8zpd6vUWU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PwXJqnDp; arc=none smtp.client-ip=209.85.216.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-2d3da054f7cso1506730a91.1;
-        Fri, 30 Aug 2024 08:44:53 -0700 (PDT)
+Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-2d3dacaccfaso1329750a91.0;
+        Fri, 30 Aug 2024 08:51:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1725032692; x=1725637492; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1725033085; x=1725637885; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hUdJ3tWChLbbIEYKPPb76YRhW/3TjJ4im9OWeMVWOqY=;
-        b=YevicrlghPocsPDK3NvUrHhvcAB3iqOKcne1QbsulqjB0eoteEZtXPsY4x+ndhvoJO
-         zT5WEU/+/6M3wpbUOY0KcAR0vwtm7/C8Z4tHkP5CnRPDs87ksqVJH3rBUMVs1ZVtmR/M
-         tnmPw9GhTVHjOrDm50Sb6T52BjgyT8o7Ik0r6qNV9kFSxDC8bL4xQQZoQV6mVFwAVd2k
-         rW8tkLTdhzs97lc679ozmzaxY9IHiK/RGQeXfg2eG/iC4rnu0L0HPXxqRUd2u+htXTxd
-         +QRf+tCxoNvm9ZkIpc7RtUXJv4kepIcrXv2fCRanFwk9oiEOC01x2Z2v8pj1lv0LkUkm
-         mptQ==
+        bh=TBJRhd+VANLoHVBvpomYfQjFBa3qlIC8N1wh5qWHTzo=;
+        b=PwXJqnDp6u1/MzHxisTXk1GkTkimEElGRtZdM3zUe87xFQxBrfwn9TjqCVTtsnzKDj
+         +bgmpIJyUUqFoAs5poVk0QUxGVBCSawxmynWoc+P7YnEQpk7cl0bGrj2aeTyalwesUEQ
+         SJAMJN+Auz5C4hvUPTuyL5s1MW9mckvMJhMy3Pvp30SVzxf2SOB+MQpjXIUUfEkHC048
+         vkuJwuvG3DSWdrP2ronskENjzf92tfZZdNuw2ROBrxSkzYfs7oRisFBb4UqFEX2pebuB
+         I8KyJBnvU5COe9pilRaQ3EeYh4SQFXj1hjVFa9TrpfdKhlKrR50EyhqdcqFYrBaoghiN
+         /ZuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725032692; x=1725637492;
+        d=1e100.net; s=20230601; t=1725033085; x=1725637885;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=hUdJ3tWChLbbIEYKPPb76YRhW/3TjJ4im9OWeMVWOqY=;
-        b=a6FUSCwIuiHBhGtmqjMIkayS5F2e2omutH/QAI7xJRW0bzzSngifUlkBT25ljsDCEa
-         tRvvQq8POBBmrer2nLu2GbEJh+sTw/GvSwj+Naoh2K8YOFkxXjh1st0bJmC+/s6j1rKR
-         e4BEcqPYjoISKgrdiJNP69z/7iEoqAlMXANL/ol2h83MIQOBEqlnT7+XF84FG7eZoFK/
-         5th59nlyxmeoSjNQvnX3DE2uY1b94HKJNVIG6q5Am30OJvzC7U12i28faR5EoJoGHSn/
-         91ajvWCWQ7GBbCpTZAcrScLif6OLIJTG6QNA8F7cORAj+UohKUOHpOiBh2eUFsPLksAT
-         YZHw==
-X-Forwarded-Encrypted: i=1; AJvYcCUm84KsPxmzpNhUDXC23s0biLbNeWAIKYRt3roCU0fLRpGL8Y38prNKj+cqqI4bxN5YMMj42tvsoskoVm1YX/Ym2IYq@vger.kernel.org, AJvYcCVJPIBXY6Dw1GckPdDBBhrXnX4p4YqQPMZUPSVDWiF4v1B2LapkvRmc0ws4FboZ2sqfnuf+auGKVYMbz2VL@vger.kernel.org, AJvYcCXx5WB1lzTpFuAYaGB9e1NGlAtAQNSAzL39C9vcjjrq86ZOWdagYNvxElCmw8aZ6543kw8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzB1+/hlvo+rfp3UtpxdsHnQEM6P2qc5oyTNB1rcXV8R2dcNPZL
-	5gB9yeWGe05dRqnB9GsIWnj4Q52g1WPlhD0YRxqHCaVX21FCq7Bkkjh+3oGv6u452XkVP2wypJL
-	mox6wAt9C0ixVPKHg1oE6gFhQbc4=
-X-Google-Smtp-Source: AGHT+IH9lOOCe2rTqfIXmA2Zm8EduBS6oRpThaN24Qeaw7NMFyCeTcHthyMHP2O028nkC0WV5jBoesnEOD50qPdMhJ4=
-X-Received: by 2002:a17:90b:4b45:b0:2d3:ba42:775c with SMTP id
- 98e67ed59e1d1-2d85618168dmr7730941a91.1.1725032692525; Fri, 30 Aug 2024
- 08:44:52 -0700 (PDT)
+        bh=TBJRhd+VANLoHVBvpomYfQjFBa3qlIC8N1wh5qWHTzo=;
+        b=jSvLRvKc0fD2gPVj9zX0o2JrQhbiieE2NJS2at8V6giVEpqH7PybePN633jpPDniaY
+         QRDCmnYJFzYtilyPvaxffXqXmGS0J09hz7LKE2gr6rGIeBqzjJwA/0YBMKqcTFlqvZPE
+         0v4wJWih52yDFM88fy5qPqh2tLuuO597zzBGnexDqzu3VCNfYIAzJEtLeZ0tS5DZH5p2
+         5AHoa6nffQ1GemvLfGmxlcBzaJRdXx+3fVW28HySmsIXZXOe0JBdl80szaZLW7bBrVD8
+         louerouMQFYM6iVBgfEbNPLHStM4klkNhCpKBdkYlGZFihPFX0N5fwlVdP78DphrTBZj
+         hlqw==
+X-Forwarded-Encrypted: i=1; AJvYcCVfH4XpmMC4xQCGQvesuXQ8yW5nNjUE1uffSPQdgCL1oPREiD7qWrD3LDHcV5zrhgM0kWR8XI9mW9uUS92vxKpYaoU8@vger.kernel.org, AJvYcCXz5Wfgd6rGlu4Rm27kUXC6K5/96AtGUblVjpXz4jwabyKV12NVD9V3OBkwWI9kO8Q02sw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyeZnzyo/n7OPQzVeLZOoC6UdegOfqq8PpeOEigsqF9QHZ3Z4b4
+	prgNtlDzvkvfH0LSInF9U018UaiI0dHasDBw5z37ULnAAIAAiPJklEcyosraXuAJHm83V6hSuxQ
+	Qt0V308/+h9Vc4Zy6KxGlOfriyEs=
+X-Google-Smtp-Source: AGHT+IF+XGRJ0p/KIRbjfp6ASdfmBhco1nJqHK0e48ekp81nExo82zUuM7HK/JAta/eCvm2KG7HxuFT1i3o/P8xayhY=
+X-Received: by 2002:a17:90a:9314:b0:2c9:61ad:dcd9 with SMTP id
+ 98e67ed59e1d1-2d8564cb26fmr7027715a91.27.1725033085027; Fri, 30 Aug 2024
+ 08:51:25 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240829183741.3331213-1-andrii@kernel.org> <20240829183741.3331213-5-andrii@kernel.org>
- <ZtD_x9zxLjyhS37Z@krava> <CAEf4Bzb3mCWK5St51bRDnQ1b-aTj=2w6bi6MkZydW48s=R+CCA@mail.gmail.com>
- <ZtHM_C1NmDSKL0pi@krava> <20240830143151.GC20163@redhat.com>
-In-Reply-To: <20240830143151.GC20163@redhat.com>
+References: <ME0P300MB0416034322B9915ECD3888649D882@ME0P300MB0416.AUSP300.PROD.OUTLOOK.COM>
+ <20240830101209.GA24733@redhat.com> <ZtHKTtn7sqaLeVxV@krava>
+In-Reply-To: <ZtHKTtn7sqaLeVxV@krava>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 30 Aug 2024 08:44:40 -0700
-Message-ID: <CAEf4BzbOjB9Str9-ea6pa46sRDdHJF5mb0rj1dyJquvBT-9vnw@mail.gmail.com>
-Subject: Re: [PATCH v4 4/8] uprobes: travers uprobe's consumer list locklessly
- under SRCU protection
-To: Oleg Nesterov <oleg@redhat.com>
-Cc: Jiri Olsa <olsajiri@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	linux-trace-kernel@vger.kernel.org, peterz@infradead.org, rostedt@goodmis.org, 
-	mhiramat@kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	paulmck@kernel.org, willy@infradead.org, surenb@google.com, 
-	akpm@linux-foundation.org, linux-mm@kvack.org
+Date: Fri, 30 Aug 2024 08:51:12 -0700
+Message-ID: <CAEf4BzZPGxuV38Kz3R387tANP3tLF7j9GLRd6tOYtaEWT9uqCw@mail.gmail.com>
+Subject: Re: [PATCH v2] tracing/uprobe: Add missing PID filter for uretprobe
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Oleg Nesterov <oleg@redhat.com>, Tianyi Liu <i.pear@outlook.com>, 
+	Jordan Rome <linux@jordanrome.com>, ajor@meta.com, rostedt@goodmis.org, 
+	mhiramat@kernel.org, mathieu.desnoyers@efficios.com, 
+	flaniel@linux.microsoft.com, albancrequy@linux.microsoft.com, 
+	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Aug 30, 2024 at 7:33=E2=80=AFAM Oleg Nesterov <oleg@redhat.com> wro=
-te:
+On Fri, Aug 30, 2024 at 6:34=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wrot=
+e:
 >
-> On 08/30, Jiri Olsa wrote:
+> On Fri, Aug 30, 2024 at 12:12:09PM +0200, Oleg Nesterov wrote:
+> > The whole discussion was very confusing (yes, I too contributed to the
+> > confusion ;), let me try to summarise.
 > >
-> > with this change the probe will not get removed in the attached test,
-> > it'll get 2 hits, without this change just 1 hit
+> > > U(ret)probes are designed to be filterable using the PID, which is th=
+e
+> > > second parameter in the perf_event_open syscall. Currently, uprobe wo=
+rks
+> > > well with the filtering, but uretprobe is not affected by it.
+> >
+> > And this is correct. But the CONFIG_BPF_EVENTS code in __uprobe_perf_fu=
+nc()
+> > misunderstands the purpose of uprobe_perf_filter().
+> >
+> > Lets forget about BPF for the moment. It is not that uprobe_perf_filter=
+()
+> > does the filtering by the PID, it doesn't. We can simply kill this func=
+tion
+> > and perf will work correctly. The perf layer in __uprobe_perf_func() do=
+es
+> > the filtering when perf_event->hw.target !=3D NULL.
+> >
+> > So why does uprobe_perf_filter() call uprobe_perf_filter()? Not to avoi=
+d
+> > the __uprobe_perf_func() call (as the BPF code assumes), but to trigger
+> > unapply_uprobe() in handler_chain().
+> >
+> > Suppose you do, say,
+> >
+> >       $ perf probe -x /path/to/libc some_hot_function
+> > or
+> >       $ perf probe -x /path/to/libc some_hot_function%return
+> > then
+> >       $perf record -e ... -p 1
+> >
+> > to trace the usage of some_hot_function() in the init process. Everythi=
+ng
+> > will work just fine if we kill uprobe_perf_filter()->uprobe_perf_filter=
+().
+> >
+> > But. If INIT forks a child C, dup_mm() will copy int3 installed by perf=
+.
+> > So the child C will hit this breakpoint and cal handle_swbp/etc for no
+> > reason every time it calls some_hot_function(), not good.
+> >
+> > That is why uprobe_perf_func() calls uprobe_perf_filter() which returns
+> > UPROBE_HANDLER_REMOVE when C hits the breakpoint. handler_chain() will
+> > call unapply_uprobe() which will remove this breakpoint from C->mm.
 >
-> I don't understand the code in tools/...bpf../ at all, can't comment,
+> thanks for the info, I wasn't aware this was the intention
 >
-> > but I'm not sure it's a big problem, because seems like that's not the
-> > intended way the removal should be used anyway, as explained by Oleg [1=
-]
->
-> It seems that I confused you again ;)
->
-> No, I think you found a problem. UPROBE_HANDLER_REMOVE can be lost if
-> uc->filter =3D=3D NULL of if it returns true. See another reply I sent a
-> minute ago.
->
+> uprobe_multi does not have perf event mechanism/check, so it's using
+> the filter function to do the process filtering.. which is not working
+> properly as you pointed out earlier
 
-For better or worse, but I think there is (or has to be) and implicit
-contract that if uprobe (or uretprobe for that matter as well, but
-that's a separate issue) handler can return UPROBE_HANDLER_REMOVE,
-then it *has to* also provide filter. If it doesn't provide filter
-callback, it doesn't care about PID filtering and thus can't and
-shouldn't cause unregistration.
+So this part I don't completely get. I get that using task->mm
+comparison is wrong due to CLONE_VM, but why same_thread_group() check
+is wrong? I.e., why task->signal comparison is wrong?
 
-In ideal world, we wouldn't need handler to do the filtering, and
-instead generic uprobe/uretprobe code would just call uc->filter to
-know whether to trigger consumer or not. Unfortunately, that's a lot
-of overhead due to indirect function call, especially with retpolines
-and stuff like that.
-
-So I think it's reasonable to have an (implicit, yeah...) contract
-that whoever cares about UPROBE_HANDLER_REMOVE has to provide filter,
-they go together.
-
-Jiri, the fact that uprobe/uretprobe can cause detachment by returning
-1 is a bug, we should not allow that. But that's a separate issue
-which we can fix in bpf-next tree. Please send a patch.
-
-> I think the fix is simple, plus we need to cleanup this logic anyway,
-> I'll try to send some code on Monday.
-
-Can we please let me land these patches first? It's been a while. I
-don't think anything is really broken with the logic.
+Sorry, I tried to follow the thread, but there were a lot of emails
+with a bunch of confusion, so I'm not sure I got all the details.
 
 >
-> Oleg.
+> >
+> > > We found that the filter function was not invoked when uretprobe was
+> > > initially implemented, and this has been existing for ten years.
+> >
+> > See above, this is correct.
+> >
+> > Note also that if you only use perf-probe + perf-record, no matter how
+> > many instances, you can even add BUG_ON(!uprobe_perf_filter(...)) into
+> > uretprobe_perf_func(). IIRC, perf doesn't use create_local_trace_uprobe=
+().
+> >
+> > -----------------------------------------------------------------------=
+----
+> > Now lets return to BPF and this particular problem. I won't really argu=
+e
+> > with this patch, but
+> >
+> >       - Please change the subject and update the changelog,
+> >         "Fixes: c1ae5c75e103" and the whole reasoning is misleading
+> >         and wrong, IMO.
+> >
+> >       - This patch won't fix all problems because uprobe_perf_filter()
+> >         filters by mm, not by pid. The changelog/patch assumes that it
+> >         is a "PID filter", but it is not.
+> >
+> >         See https://lore.kernel.org/linux-trace-kernel/20240825224018.G=
+D3906@redhat.com/
+> >         If the traced process does clone(CLONE_VM), bpftrace will hit t=
+he
+> >         similar problem, with uprobe or uretprobe.
+> >
+> >       - So I still think that the "right" fix should change the
+> >         bpf_prog_run_array_uprobe() paths somehow, but I know nothing
+> >         about bpf.
 >
+> to follow the perf event filter properly, bpf_prog_run_array_uprobe shoul=
+d
+> be called in perf_tp_event after the perf_tp_event_match call, but that's
+> already under preempt_disable, so that's why it's called before that
+>
+> jirka
 
