@@ -1,174 +1,225 @@
-Return-Path: <bpf+bounces-38588-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38589-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0C78966875
-	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 19:55:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F5D496687B
+	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 19:56:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DFB511C218E0
-	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 17:55:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0D9E01F23F9C
+	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 17:56:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B62C71BBBCC;
-	Fri, 30 Aug 2024 17:55:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC1DD1BBBC9;
+	Fri, 30 Aug 2024 17:56:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Fg9kByCP"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MFlG3bIZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
+Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D363F1BB6BD;
-	Fri, 30 Aug 2024 17:55:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDD691BB6BD
+	for <bpf@vger.kernel.org>; Fri, 30 Aug 2024 17:56:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725040518; cv=none; b=E2gWWcY1B3W24LEmr6H+qQAPFm2Uf3wFKX1BgkxAfxT/erwXsLHfRKh/ai70l7H7LRbg8mvTPPmMHJ+MTRiK7dT4E8sQbzpP9M2p86aA39m88lcayM/avuyp+ihsZkA+uNDSDaeTkYf8JDtswcOkb9Hd7GFa0J7BScje/FYJoG0=
+	t=1725040602; cv=none; b=frKzsLOIvivXVfPeIn6KoyeP7oOMurKGlUqcpQdFBoCL0N2ChMaBbjT1mqnFQUQlzdZfoPsHaUw2Drj8P75dKP464m9sBiZO/Bt2wrxESdVOh3esm+etH+vyA8kQ8/d8AAa7lRGmANr1rN7DTK2byY3/1F12A71+vOuARZ5ptlc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725040518; c=relaxed/simple;
-	bh=f3THC0pBTuv9SAl7dOz57STAiV+tmA1lLWhuX8fg/Tw=;
+	s=arc-20240116; t=1725040602; c=relaxed/simple;
+	bh=GMAzhJKWV6mvym5/zBUD/yfvV8UgBjXw7W3ik/L/5EU=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=r/cOd660UJplb/JgHwnp3qXt/grRLZz8ineClIojOZIRyouhQCkr2fNS+mtYALs3VwX59raAm5T5To7GwtiEie4sQGK4WlrzuQ2CCE0zfXhdbu6AMXTvHJMTCmHEL2tQ0u4UWBsa8hcL0Wo5Pwa/bYb+6ZPKI/e4FVk6v64FrlM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Fg9kByCP; arc=none smtp.client-ip=209.85.216.54
+	 To:Cc:Content-Type; b=njoPlpr6pnyM5/U4s7QxNozyX4QCZkqaC9fVxOBTCVWSrFFTowE2Av0p9dwtFVmyYUm8you+8AuwwfodTTyZZ71CTxxdRtHCGZMBvxdFPX7ouF7woqU2XqNz3hJAmFu+WpWPMckvGkl6muRqaV3YIry4ptFGnU0VI0ejzprvfgs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MFlG3bIZ; arc=none smtp.client-ip=209.85.215.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-2d3bae081efso1602758a91.1;
-        Fri, 30 Aug 2024 10:55:16 -0700 (PDT)
+Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-7cd8d2731d1so1456687a12.3
+        for <bpf@vger.kernel.org>; Fri, 30 Aug 2024 10:56:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1725040516; x=1725645316; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1725040600; x=1725645400; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=qZ762szQ1qEpWPo0O5KQwapOAPZbS/knJpSelWgCLe8=;
-        b=Fg9kByCPmwiPICxxkSYdamntmDe34mWjgH7v0hg2M50LP10TYwlaMDCyVBfphPxSWP
-         +VvSVjiXN4RzsQFlfG6IEVvbUqO3XO6+eYPuLXWDjaL2erDGzc3Pve+gpC0EGwbbzMiV
-         n27XUWcqwKsqjwOBqwnpz/MUKzycTYjXJKdm751Deihl038QrepDOj9qetnBaXt+89gm
-         ONuX0gLsAv2S9fWKVZu0KaYit0ZKWhb687TIhgatoqR0WEkzq3tOw84ifnERxxXMzUYM
-         I9m5wB17IrDtK9Vsu8wShgHQWpw1iL70St8f91FoWxvkLA/qyzT1qubZ86v4O8W+3R9n
-         3UsQ==
+        bh=4LR5XJcgqMhm5Q/Ia7ZKjX7hMdZWLiiPv+aAxJeCp3M=;
+        b=MFlG3bIZ1oggPRNSzT70EeZBxWqXFMq2Ts2ahxFS/SnBWs/qbB+aW8k+uRJ5g2cMFh
+         mUsju+BlvNqDanyT7UnpxStK18KRLUeSUmaa+4OF1Lp+5yrBagzGq00uf18LtNdQNFRY
+         dgkkGS7P489ezTMxQyFPQOqQEjeqHT0ImWL6xxX6tZ28a9OQCXtRe5Lf8/gmLqnZYM6y
+         PtIUHNFH2YtLjmSS4TLL2qxEzefR23Pq9il7KMNT7dNhylxN0XJCfkZ0ri4yQQn5DST4
+         48gbxmC5iBMaR8JGqPg7N2CTM2YJnKt8d8CBzPJpaRkANT6SKuw81S0sfCPwW1gYI2ly
+         1vVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725040516; x=1725645316;
+        d=1e100.net; s=20230601; t=1725040600; x=1725645400;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=qZ762szQ1qEpWPo0O5KQwapOAPZbS/knJpSelWgCLe8=;
-        b=gpeiVkpdmfrD2+LXQnxOdCKCHD2qOIEUh+46uXYJUi0UYvceiN7vTICmQN7DU/pdHM
-         dIgpUtpBADIeyo+kuVyqzcXhlUImezuyY0dDKLc1FBhquvg4zUXlYc8EOdHpNcurWj08
-         XBps+zM+v9qbGtdhvkxqZomLhQKkcRwNu3Goci6vX5tRiXxRsdfKfv3VU7u/XMKB5WUF
-         VroraMqtZZTakHz/0lRtr2Ba0PpDMc691rTboIAuLrSVnAPRUtLX97jp6sBtknjC6jSb
-         IxTxlFoOT0+WUbHb5Ferha9CjzZ75FU03sB1Tn5PqUsQYt8uPEqDcr9XTf920sy1uVHI
-         TIaw==
-X-Forwarded-Encrypted: i=1; AJvYcCUo8TkL0azqtgYPIzLqdboxepp24g4LgUU4+8OUAAcBTApNN6s1eRdpQ9QRFLS9haZIf9w=@vger.kernel.org, AJvYcCVe9RBbyMGmNlgu15f0U/4AF46TI9wx2AH7KnbeVpQAisEh2YtaDArjF5ShVIiCxNTxsO6Pn+XPIZEua35aQ+UUTAhB@vger.kernel.org, AJvYcCXJ37v1PmrtiHC3CnAhmZvOXXLHHdSCg8ba9N6uYjrYF6wYxvofNecajciAHBtYQH9fvTBceHE3gj39P9HE@vger.kernel.org
-X-Gm-Message-State: AOJu0YxaeiyecGFCtJal0r77i2zMe2alsI5wtxJgiUJokpwjV2zUFC+4
-	hKKkeHzHu5L/SZ1y86/cFvNnyuNepdmxr8RXVi3yA+hPRfcbPLJYz5Jk3Tj2qzaOwaR/bVSreNh
-	mLQaPmdkUFVBmd2pHDKx3OmAW0uU=
-X-Google-Smtp-Source: AGHT+IHtJjX1Gwk7q65iKPb2jj2ZTbFe6Gbjk0MA9s/QRUze7TuxIpE1CDYdoK+SEpOHhavyYH0EIzF6ReAgjG7xuJ8=
-X-Received: by 2002:a17:90a:ce90:b0:2d8:6f73:55a with SMTP id
- 98e67ed59e1d1-2d86f7305edmr2818362a91.25.1725040515970; Fri, 30 Aug 2024
- 10:55:15 -0700 (PDT)
+        bh=4LR5XJcgqMhm5Q/Ia7ZKjX7hMdZWLiiPv+aAxJeCp3M=;
+        b=vaPvOFpu0YiK2Nt/lXlB6i/yL+QguPQaM8qijNhGAC/blPBFqhe0eOFGeNRRzf+oWn
+         2WijUH3gZnZ0hqtMf128lvARA1V9zpfbyHLp+S3uGarhgMio18LHyIkblZMvY2Big89h
+         zr78mK9dNrQ4Rqziz7Jxg54uPizyQwxf8nFzCIOTmlJd3OPv9p/LhWAnnpSpw4mMh8xz
+         7j0O/FuEbi2rHgSv39AvSk8GBzhCiPyJEKcEbncs5sxVikN2y1j4NxKCSTi36mL3zGrC
+         WO2q/UMDOUxl3bTqwGWBloPI21vM5QcuNzc4wUpiJ5sx/0fZswLDrb3UVGG3GvZVC25C
+         HIhw==
+X-Forwarded-Encrypted: i=1; AJvYcCXNv8TAby33SZuXDYJPKYwQr4wo5KN3pR6JiSW2GJSQ37GY2Rl8cNkRV1gLZslcUn+eNd0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxGs35wwEiE1w4rVjZpxsspid2FBUvySi2/AwmzQtrEB2Qt0FWL
+	BTpmblY1s80wk7whiIacaY1elg4r8zpGg4PcOsjc46J7oT4YQo4z6eesIJD55HXHTbc4NmDwDxr
+	PL0gWywoIIWTPNrocgPmYTeIpBbY=
+X-Google-Smtp-Source: AGHT+IGDA5waLY077sXEaKmEln2+9hR/okDjwOA5vrO2YgocNdMV/KZJB6FEyC255k7MyBw6DAU8v6mlZDJ5BngISaM=
+X-Received: by 2002:a17:90b:4c09:b0:2c6:ee50:5af4 with SMTP id
+ 98e67ed59e1d1-2d85618aabdmr7449958a91.6.1725040600008; Fri, 30 Aug 2024
+ 10:56:40 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240829183741.3331213-9-andrii@kernel.org> <202408310130.t9EBKteQ-lkp@intel.com>
-In-Reply-To: <202408310130.t9EBKteQ-lkp@intel.com>
+References: <20240830173406.1581007-1-eddyz87@gmail.com> <e3cd9ac9-2c19-454e-833c-08c4ad450b77@oracle.com>
+In-Reply-To: <e3cd9ac9-2c19-454e-833c-08c4ad450b77@oracle.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 30 Aug 2024 10:55:04 -0700
-Message-ID: <CAEf4BzYiSfyZky+Axab6BwN55cyoY9N-0p7DA9R2OFr=ZdjS5Q@mail.gmail.com>
-Subject: Re: [PATCH v4 8/8] uprobes: switch to RCU Tasks Trace flavor for
- better performance
-To: kernel test robot <lkp@intel.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org, 
-	peterz@infradead.org, oleg@redhat.com, llvm@lists.linux.dev, 
-	oe-kbuild-all@lists.linux.dev, rostedt@goodmis.org, mhiramat@kernel.org, 
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, jolsa@kernel.org, 
-	paulmck@kernel.org, willy@infradead.org, surenb@google.com, 
-	akpm@linux-foundation.org, linux-mm@kvack.org
+Date: Fri, 30 Aug 2024 10:56:28 -0700
+Message-ID: <CAEf4BzbWHFK-cLN+doN1FVCaYoOUmRGdcpOknBSTT_kyGGb70g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: check if distilled base inherits
+ source endianness
+To: Alan Maguire <alan.maguire@oracle.com>
+Cc: Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org, ast@kernel.org, 
+	andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev, 
+	kernel-team@fb.com, yonghong.song@linux.dev, tony.ambardar@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Aug 30, 2024 at 10:42=E2=80=AFAM kernel test robot <lkp@intel.com> =
-wrote:
+On Fri, Aug 30, 2024 at 10:54=E2=80=AFAM Alan Maguire <alan.maguire@oracle.=
+com> wrote:
 >
-> Hi Andrii,
+> On 30/08/2024 18:34, Eduard Zingerman wrote:
+> > Create a BTF with endianness different from host, make a distilled
+> > base/split BTF pair from it, dump as raw bytes, import again and
+> > verify that endianness is preserved.
+> >
+> > Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 >
-> kernel test robot noticed the following build errors:
+> One small thing below, but
 >
-> [auto build test ERROR on tip/perf/core]
-> [also build test ERROR on next-20240830]
-> [cannot apply to perf-tools-next/perf-tools-next perf-tools/perf-tools li=
-nus/master acme/perf/core v6.11-rc5]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch#_base_tree_information]
->
-> url:    https://github.com/intel-lab-lkp/linux/commits/Andrii-Nakryiko/up=
-robes-revamp-uprobe-refcounting-and-lifetime-management/20240830-024135
-> base:   tip/perf/core
-> patch link:    https://lore.kernel.org/r/20240829183741.3331213-9-andrii%=
-40kernel.org
-> patch subject: [PATCH v4 8/8] uprobes: switch to RCU Tasks Trace flavor f=
-or better performance
-> config: i386-buildonly-randconfig-004-20240830 (https://download.01.org/0=
-day-ci/archive/20240831/202408310130.t9EBKteQ-lkp@intel.com/config)
-> compiler: clang version 18.1.5 (https://github.com/llvm/llvm-project 617a=
-15a9eac96088ae5e9134248d8236e34b91b1)
-> reproduce (this is a W=3D1 build): (https://download.01.org/0day-ci/archi=
-ve/20240831/202408310130.t9EBKteQ-lkp@intel.com/reproduce)
->
-> If you fix the issue in a separate patch/commit (i.e. not just a new vers=
-ion of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202408310130.t9EBKteQ-lkp=
-@intel.com/
->
-> All errors (new ones prefixed by >>):
->
-> >> kernel/events/uprobes.c:1157:2: error: call to undeclared function 'sy=
-nchronize_rcu_tasks_trace'; ISO C99 and later do not support implicit funct=
-ion declarations [-Wimplicit-function-declaration]
->     1157 |         synchronize_rcu_tasks_trace();
->          |         ^
->    kernel/events/uprobes.c:1157:2: note: did you mean 'synchronize_rcu_ta=
-sks_rude'?
->    include/linux/rcupdate.h:206:6: note: 'synchronize_rcu_tasks_rude' dec=
-lared here
->      206 | void synchronize_rcu_tasks_rude(void);
->          |      ^
->    1 error generated.
+> Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
+> Tested-by: Alan Maguire <alan.maguire@oracle.com>
 
-Missing #include <linux/rcupdate_trace.h>, will add.
+will add and force-push, thanks
 
 >
+> Thanks!
 >
-> vim +/synchronize_rcu_tasks_trace +1157 kernel/events/uprobes.c
+> > ---
+> >  .../selftests/bpf/prog_tests/btf_distill.c    | 73 +++++++++++++++++++
+> >  1 file changed, 73 insertions(+)
+> >
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/btf_distill.c b/too=
+ls/testing/selftests/bpf/prog_tests/btf_distill.c
+> > index bfbe795823a2..810b2e434562 100644
+> > --- a/tools/testing/selftests/bpf/prog_tests/btf_distill.c
+> > +++ b/tools/testing/selftests/bpf/prog_tests/btf_distill.c
+> > @@ -535,6 +535,77 @@ static void test_distilled_base_vmlinux(void)
+> >       btf__free(vmlinux_btf);
+> >  }
+> >
+> > +static bool is_host_big_endian(void)
+> > +{
+> > +     return htons(0x1234) =3D=3D 0x1234;
+> > +}
+> > +
+> > +/* Split and new base BTFs should inherit endianness from source BTF. =
+*/
+> > +static void test_distilled_endianness(void)
+> > +{
+> > +     struct btf *base =3D NULL, *split =3D NULL, *new_base =3D NULL, *=
+new_split =3D NULL;
+> > +     struct btf *new_base1 =3D NULL, *new_split1 =3D NULL;
+> > +     enum btf_endianness inverse_endianness;
+> > +     const void *raw_data;
+> > +     __u32 size;
+> > +
+> > +     printf("is_host_big_endian? %d\n", is_host_big_endian());
+> > +     inverse_endianness =3D is_host_big_endian() ? BTF_LITTLE_ENDIAN :=
+ BTF_BIG_ENDIAN;
+> > +     base =3D btf__new_empty();
 >
->   1145
->   1146  void uprobe_unregister_sync(void)
->   1147  {
->   1148          /*
->   1149           * Now that handler_chain() and handle_uretprobe_chain() =
-iterate over
->   1150           * uprobe->consumers list under RCU protection without ho=
-lding
->   1151           * uprobe->register_rwsem, we need to wait for RCU grace =
-period to
->   1152           * make sure that we can't call into just unregistered
->   1153           * uprobe_consumer's callbacks anymore. If we don't do th=
-at, fast and
->   1154           * unlucky enough caller can free consumer's memory and c=
-ause
->   1155           * handler_chain() or handle_uretprobe_chain() to do an u=
-se-after-free.
->   1156           */
-> > 1157          synchronize_rcu_tasks_trace();
->   1158  }
->   1159  EXPORT_SYMBOL_GPL(uprobe_unregister_sync);
->   1160
 >
-> --
-> 0-DAY CI Kernel Test Service
-> https://github.com/intel/lkp-tests/wiki
+> nit: I think you could avoid the need for is_host_big_endian() by doing
+> this:
+>
+> inverse_endianness =3D btf__endianness(base) =3D=3D BTF_LITTLE_ENDIAN ?
+>                      BTF_BIG_ENDIAN : BTF_LITTLE_ENDIAN;
+
+good point, I'll fix it up
+
+>
+>
+> > +     btf__set_endianness(base, inverse_endianness);
+> > +     if (!ASSERT_OK_PTR(base, "empty_main_btf"))
+> > +             return;
+> > +     btf__add_int(base, "int", 4, BTF_INT_SIGNED);   /* [1] int */
+> > +     VALIDATE_RAW_BTF(
+> > +             base,
+> > +             "[1] INT 'int' size=3D4 bits_offset=3D0 nr_bits=3D32 enco=
+ding=3DSIGNED");
+> > +     split =3D btf__new_empty_split(base);
+> > +     if (!ASSERT_OK_PTR(split, "empty_split_btf"))
+> > +             goto cleanup;
+> > +     btf__add_ptr(split, 1);
+> > +     VALIDATE_RAW_BTF(
+> > +             split,
+> > +             "[1] INT 'int' size=3D4 bits_offset=3D0 nr_bits=3D32 enco=
+ding=3DSIGNED",
+> > +             "[2] PTR '(anon)' type_id=3D1");
+> > +     if (!ASSERT_EQ(0, btf__distill_base(split, &new_base, &new_split)=
+,
+> > +                    "distilled_base") ||
+> > +         !ASSERT_OK_PTR(new_base, "distilled_base") ||
+> > +         !ASSERT_OK_PTR(new_split, "distilled_split") ||
+> > +         !ASSERT_EQ(2, btf__type_cnt(new_base), "distilled_base_type_c=
+nt"))
+> > +             goto cleanup;
+> > +     VALIDATE_RAW_BTF(
+> > +             new_split,
+> > +             "[1] INT 'int' size=3D4 bits_offset=3D0 nr_bits=3D32 enco=
+ding=3DSIGNED",
+> > +             "[2] PTR '(anon)' type_id=3D1");
+> > +
+> > +     raw_data =3D btf__raw_data(new_base, &size);
+> > +     if (!ASSERT_OK_PTR(raw_data, "btf__raw_data #1"))
+> > +             goto cleanup;
+> > +     new_base1 =3D btf__new(raw_data, size);
+> > +     if (!ASSERT_OK_PTR(new_base1, "new_base1 =3D btf__new()"))
+> > +             goto cleanup;
+> > +     raw_data =3D btf__raw_data(new_split, &size);
+> > +     if (!ASSERT_OK_PTR(raw_data, "btf__raw_data #2"))
+> > +             goto cleanup;
+> > +     new_split1 =3D btf__new_split(raw_data, size, new_base1);
+> > +     if (!ASSERT_OK_PTR(new_split1, "new_split1 =3D btf__new()"))
+> > +             goto cleanup;
+> > +
+> > +     ASSERT_EQ(btf__endianness(new_base1), inverse_endianness, "new_ba=
+se1 endianness");
+> > +     ASSERT_EQ(btf__endianness(new_split1), inverse_endianness, "new_s=
+plit1 endianness");
+> > +     VALIDATE_RAW_BTF(
+> > +             new_split1,
+> > +             "[1] INT 'int' size=3D4 bits_offset=3D0 nr_bits=3D32 enco=
+ding=3DSIGNED",
+> > +             "[2] PTR '(anon)' type_id=3D1");
+> > +cleanup:
+> > +     btf__free(new_split1);
+> > +     btf__free(new_base1);
+> > +     btf__free(new_split);
+> > +     btf__free(new_base);
+> > +     btf__free(split);
+> > +     btf__free(base);
+> > +}
+> > +
+> >  void test_btf_distill(void)
+> >  {
+> >       if (test__start_subtest("distilled_base"))
+> > @@ -549,4 +620,6 @@ void test_btf_distill(void)
+> >               test_distilled_base_multi_err2();
+> >       if (test__start_subtest("distilled_base_vmlinux"))
+> >               test_distilled_base_vmlinux();
+> > +     if (test__start_subtest("distilled_endianness"))
+> > +             test_distilled_endianness();
+> >  }
 
