@@ -1,128 +1,143 @@
-Return-Path: <bpf+bounces-38604-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38605-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B60A0966AD7
-	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 22:49:43 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47F70966ADE
+	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 22:51:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6A6BD1F23121
-	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 20:49:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C95C7B22E06
+	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 20:51:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C48F41BF81E;
-	Fri, 30 Aug 2024 20:49:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02B851C0DD2;
+	Fri, 30 Aug 2024 20:51:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pV/HdtQK"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RJF9E6Yn"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A8B81BF33A;
-	Fri, 30 Aug 2024 20:49:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19F4D1BF7FD;
+	Fri, 30 Aug 2024 20:51:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725050977; cv=none; b=Q3VYaMlc2OgtkWg5meP/2furX+oCrBCA3TmofKKwQ/4oNA6M11GPTDZdmTysrw4rJV7T8Z3UCRfAB7888aaIK1rwG1pb4hQ8JFdbVXT/dyRNfriVsFakk0hVSZBjwGrE9QPkoTQUB+pHuzezbo9E33XaIowhWNfV7eqLz03bBU4=
+	t=1725051079; cv=none; b=fFt8vnkZdVRP/YkdmsEdLdmYkSNaTcYez+hBiKXQR+637Nwy9ctpsk8zElGHPw2hEFgWGpUVwUKiRV3CiRbedNI8gx20CyW8yUtwgtPyBJwXoBa6d1lEtK8pEL9CttW+SL0gTW8C7x9y7bMkM/ivqZJjm2U1VCWww2Wccm2xEPg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725050977; c=relaxed/simple;
-	bh=jSCw3hQQ/gHXS6sCJcdg7efLE4NjUVxqveuVsrCc5t0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ai2kFwMGt+xtINJ0cADZoEttxY3u0BZRd/15y+oHv3DLP9t1glA36C2mEByVCJ0pajqWQ1KUimkeA/NuV4jpkKVD0kM3ODQdmZU//lmYB+pf76q5bJOSVH7JwXcz8i6DDejoO4EnGqb7iSYK3bU7DYFCWo3YdUXeeciPi/ZR6Lk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pV/HdtQK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 451F4C4CEC2;
-	Fri, 30 Aug 2024 20:49:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1725050976;
-	bh=jSCw3hQQ/gHXS6sCJcdg7efLE4NjUVxqveuVsrCc5t0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=pV/HdtQKYTWakqKxzXRz2xOPI9Pjf8roUf1mnZ3lIKheUEyoK0NvYbKAGPul1v+VQ
-	 O33A06vktFYnq5ml7O3kzqNLq7++2RBQLYVPggQmgWlTM7WVh6C0LTIF8ytL594KEZ
-	 gQ8tOU3LnlYLVuBGXBrX82zK3ISIW5Ivli6Le6qoDy1PPQH3l6lo9sYeqrfjEs0rR3
-	 5YdolJksH+jxE4vVqZkXSR+FDu1I/lhOWflkMOiFwaaR5guXfE1FHoOKqhPHSShgIe
-	 UcdcC49DWu+WdBwPqsO+KE2C2SWXR9BtjpRG0S/oOnX2SfEZfYRPeq66U6EhQPc6V0
-	 er0mnLh8tzSmQ==
-Date: Fri, 30 Aug 2024 17:49:33 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Alan Maguire <alan.maguire@oracle.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <songliubraving@meta.com>,
-	"dwarves@vger.kernel.org" <dwarves@vger.kernel.org>,
-	bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>
-Subject: Re: FYI: CI regression on big-endian arch (s390) after recent pahole
- changes
-Message-ID: <ZtIwXdl_WyYmdLFx@x1>
-References: <6358db36c5f68b07873a0a5be2d062b1af5ea5f8.camel@gmail.com>
- <442C7AEC-2919-4307-8700-F7A0B60B5565@fb.com>
- <322d9bac47bc3732b77cf2cf23d69f2c4665bc36.camel@gmail.com>
- <860fe244-157b-46cf-9b41-ee9fd36f9c1e@oracle.com>
- <ZtHG9YwwG5kwiRFt@x1>
- <CAEf4Bza9OJckdJ4=nask2m+bJsiDszvoLoaf+GhVFu8CNarb=g@mail.gmail.com>
+	s=arc-20240116; t=1725051079; c=relaxed/simple;
+	bh=EGmaHQIyFUQXRzkAm6S7M6ACd+k5XeZNvtGEUAyJy0w=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=hrPyGKTXmFIIkt0HsdrjWnNVZyAO/1FvVtSKcVLWQaTkwmkeHn9O84N/jKgpZYkD7osGNjxGiBn7g0TuQV5fvFM2dCxJtbn6YLedN18sgT2eFyhUqj3CNMY1VL0aTEYxJU5tPc+Aggvia3VOxXuH6ZsfdhigNAhC78ivT5XzXbg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RJF9E6Yn; arc=none smtp.client-ip=209.85.215.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-7bcf8077742so1562120a12.0;
+        Fri, 30 Aug 2024 13:51:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1725051077; x=1725655877; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gKCWX5eBlnYoIPNYnC/Yrj2h0Y/qTbwBQ/bhYQL0ahI=;
+        b=RJF9E6YnGRQz8YjtxUy4PrOwffcqeN3TRTJ/PAPJibjhWIV+HvckGQx47Zrh10BajW
+         xiSjC5rAnXpAhFey2xvQ0O8cj/5Gu+fpISFWjm3LjhXXzh7HSaCpwLPovbdt2LeNPOAm
+         yHOWbRqLYka5h7fUNnrwR8xvCTaSt7qbLq7f9NFE0fu/H2WkqnkA17ShzyFJwzlMHpar
+         jwKbqeyq+BP0nfVH7JE37EhGm+ORG7JJz968nERfFA42MooKcGpV6OzWrEQNEnQusawZ
+         bQhfw1yEBVM5qVleUvM5nw8lB+hnI6/9PsufzuxqL3GZcui6PdBvEP3NnmIfPS3eMV+4
+         mEUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1725051077; x=1725655877;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gKCWX5eBlnYoIPNYnC/Yrj2h0Y/qTbwBQ/bhYQL0ahI=;
+        b=haUegjPKmp9ONhiZhiMs7NlcATbrQ9Yg1F3PhP36hYZU8e3DC0z8JPQ3oEQQYbm+k0
+         yB3Z1Rqrt9lIWuKn4A2MN4UmAkzg3GtejNuN+hjbHNIMff3y8Rw2tcwaWZdp6PEuX5Hn
+         M8ym9KNSS6KQj9BAC7RH+xWsdxVIKmLFUvHdVda0eGo2kHHRHzVnfNDSZJSzYhdY/ejm
+         DbWTi9/vaDCifC+877IIOoxGTLG9FL9lnXZomWFGGQr94yTXFSNXs4cLfHkLq6SyAX6C
+         zkbZDw3/kpc4YVysknQimfrTkoO2JrMjgV2hZNymlevEQMUIWPULkLBlzXiBtKV1j6jT
+         wjJw==
+X-Forwarded-Encrypted: i=1; AJvYcCUUYC+Mg9ik++MAOfHqGU7odRf3xf7jB9t3imLQ+X3tVb4+qv6Vhlu6JNID4hBoLrr9+nbWKXeVsQ+gGAM5@vger.kernel.org, AJvYcCUV9edyw3Eo3Htu4N5OjcZuTzcAZjx84ixdM0fFjRU0gmAwzSx6BNC4R/Y+1ukE6h/NV3WWEVOB1Ucc6yp8pFfBUk60@vger.kernel.org, AJvYcCVsIx5A4CZkYZqxdPnMjdVU8+f6k4wH01Et8s5LMIoKbnnu9sRxHA+55LfCQ3P8isJfnCk=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywv+OxP5xUD9+gOtGT4Ew1UtTQNXsmUeuBj+XZbtaeHBStfYJDc
+	gR3h64xNBDGkwg21Mu+fhtcFVIIbU+2JLovjs+EZg1u/PTpT9KJAFAi1qSvypqimjWjs4UIZMIq
+	EmsGePETGQ/zivFx/CJiTTopsCq8=
+X-Google-Smtp-Source: AGHT+IFJkXzMiCz4hLWiGHcIVHu9KNDUbV2A/WAg3aG8mUvFdbjfQlgpeqAXSl8XE4hL1lGIco6WROtxFKXpTg8dotw=
+X-Received: by 2002:a17:90a:4b85:b0:2cf:7388:ad9e with SMTP id
+ 98e67ed59e1d1-2d85616eccamr7546969a91.2.1725051077220; Fri, 30 Aug 2024
+ 13:51:17 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4Bza9OJckdJ4=nask2m+bJsiDszvoLoaf+GhVFu8CNarb=g@mail.gmail.com>
+References: <20240829194505.402807-1-jolsa@kernel.org> <20240829194505.402807-3-jolsa@kernel.org>
+In-Reply-To: <20240829194505.402807-3-jolsa@kernel.org>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Fri, 30 Aug 2024 13:51:04 -0700
+Message-ID: <CAEf4Bza4JztS8YBaEFUi81OwH2aSNbv3c29hoVc31vTnfgiCLA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Add uprobe pid filter test
+ for multiple processes
+To: Jiri Olsa <jolsa@kernel.org>
+Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Tianyi Liu <i.pear@outlook.com>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, bpf@vger.kernel.org, 
+	Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Aug 30, 2024 at 08:56:08AM -0700, Andrii Nakryiko wrote:
-> On Fri, Aug 30, 2024 at 6:19 AM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
-> > On Fri, Aug 30, 2024 at 11:05:30AM +0100, Alan Maguire wrote:
-> > > Arnaldo: apologies but I think we'll either need to back out the
-> > > distilled stuff for 1.28 or have a new libbpf resync that captures the
-> > > fixes for endian issues once they land. Let me know what works best for
-> > > you. Thanks!
-> >
-> > It was useful, we got it tested more widely and caught this one.
-> >
-> > Andrii, what do you think? Can we get a 1.5.1 with this soon so that we
-> > do a resying in pahole and then release 1.28?
-> 
-> Did you mean 1.4.6? We haven't released v1.5 just yet.
-> 
-> But yes, I'm going to cut a new set of bugfix releases to libbpf
-> anyways, there is one more skeleton-related fix I have to backport.
-> 
-> So I'll try to review, land, and backport the fix ASAP.
+On Thu, Aug 29, 2024 at 12:45=E2=80=AFPM Jiri Olsa <jolsa@kernel.org> wrote=
+:
+>
+> The idea is to create and monitor 3 uprobes, each trigered in separate
 
-Well, Alan sent patches updating libbpf to 1.5.0, so I misunderstood, I
-think he meant what is to become 1.5.0, so even better, I think its just
-a matter of updating the submodule sha:
+typo: triggered
 
-⬢[acme@toolbox pahole]$ git show b6def578aa4a631f870568e13bfd647312718e7f
-commit b6def578aa4a631f870568e13bfd647312718e7f
-Author: Alan Maguire <alan.maguire@oracle.com>
-Date:   Mon Jul 29 12:13:16 2024 +0100
+> process and make sure the bpf program gets executed just for the proper
+> PID specified via pid filter.
+>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  .../bpf/prog_tests/uprobe_multi_test.c        | 103 ++++++++++++++++++
+>  .../bpf/progs/uprobe_multi_pid_filter.c       |  61 +++++++++++
+>  2 files changed, 164 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/progs/uprobe_multi_pid_fi=
+lter.c
+>
 
-    pahole: Sync with libbpf-1.5
-    
-    This will pull in BTF support for distilled base BTF.
-    
-    Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-    Cc: Alexei Starovoitov <ast@kernel.org>
-    Cc: Andrii Nakryiko <andrii@kernel.org>
-    Cc: Eduard Zingerman <eddyz87@gmail.com>
-    Cc: Jiri Olsa <jolsa@kernel.org>
-    Cc: bpf@vger.kernel.org
-    Cc: dwarves@vger.kernel.org
-    Link: https://lore.kernel.org/r/20240729111317.140816-2-alan.maguire@oracle.com
-    Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+It's good to have a test, thanks for adding it! But we should couple
+it with the fix in multi-uprobe and land together, right? I'm not
+exactly sure why we can't just use task->signal-based check, but let's
+try to converge on something and fix it.
 
-diff --git a/lib/bpf b/lib/bpf
-index 6597330c45d18538..686f600bca59e107 160000
---- a/lib/bpf
-+++ b/lib/bpf
-@@ -1 +1 @@
--Subproject commit 6597330c45d185381900037f0130712cd326ae59
-+Subproject commit 686f600bca59e107af4040d0838ca2b02c14ff50
-⬢[acme@toolbox pahole]$
+pw-bot: cr
 
-Right?
+[...]
 
-- Arnaldo
+> +#define TASKS 3
+> +
+> +static void run_pid_filter(struct uprobe_multi_pid_filter *skel,
+> +                          create_link_t create_link, bool retprobe)
+> +{
+> +       struct bpf_link *link[TASKS] =3D {};
+> +       struct child child[TASKS] =3D {};
+> +       int i;
+> +
+> +       printf("%s retprobe %d\n", create_link =3D=3D create_link_uprobe =
+? "uprobe" : "uprobe_multi",
+> +               retprobe);
+
+leftovers
+
+> +
+> +       memset(skel->bss->test, 0, sizeof(skel->bss->test));
+> +
+> +       for (i =3D 0; i < TASKS; i++) {
+> +               if (!ASSERT_OK(spawn_child(&child[i]), "spawn_child"))
+> +                       goto cleanup;
+> +               skel->bss->pids[i] =3D child[i].pid;
+> +       }
+
+[...]
 
