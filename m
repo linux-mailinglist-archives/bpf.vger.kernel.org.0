@@ -1,191 +1,103 @@
-Return-Path: <bpf+bounces-38580-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38581-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 333FD96680F
-	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 19:34:29 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED72D966821
+	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 19:37:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DFA17281AB8
-	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 17:34:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 983F91F243CB
+	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 17:37:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25C3F1BAEFB;
-	Fri, 30 Aug 2024 17:34:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E01021BB6A4;
+	Fri, 30 Aug 2024 17:36:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IbwXgxiH"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Q45FCVxY"
 X-Original-To: bpf@vger.kernel.org
 Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A8AF15C153
-	for <bpf@vger.kernel.org>; Fri, 30 Aug 2024 17:34:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2509F16C68F
+	for <bpf@vger.kernel.org>; Fri, 30 Aug 2024 17:36:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725039263; cv=none; b=P69jg4iK7cxKWNnZQCmOiLlW+AjKyGyMHSvNzTeqWzw9xuflfKRhD3xMJL5n7Fmspber4vXeHvtT1DXFx6Ql9chCoObKHlLtEKpsD/0UH87qbFsjYGymeX0uKXoRU4l9x24hRRKaX+NOAVgf3mzoGgINO4ozEYyy12dixuTEEHM=
+	t=1725039414; cv=none; b=A8YWFng2yQf6Meto0Wh/bDCchhSZU+p6tlB2lK8YpX/ji36ZqDmOAFpxjP6bNBXRSZY/mETXaNN3MiVM4tZdLpJo7+mVYgtzzzphuSM7InWj40g3fgXufvlWzDDkFZW8nvtVdy7neJMJORVDHAPr5Y3p0nXYrgnoaqmHXz6V2PE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725039263; c=relaxed/simple;
-	bh=gzTtA6KZd87b/c/OTmhe/x4bN6GJo38FrBy2PbTydWk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=RbCoPNemhJ2hjvFckhqU86M4CGtzB9oW2RRPvwLPXbWZjx4KA6dQQFwOXyCoI2Rvqo/1gKumTVAgus7YjweEWLTwTg/jOY0N7/1HJ0OYeYI4ThWC/5Y+eJpRdwegpEgHJKZD6iyg6PgiwF/CHg6K98McW3bkVqVHO+1Ez6Tt3W0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IbwXgxiH; arc=none smtp.client-ip=209.85.214.174
+	s=arc-20240116; t=1725039414; c=relaxed/simple;
+	bh=gkabglCfmxFQ1Ufxyk12Ux507KQQhJ6FwiObhlwD3fc=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=UoVEP3/OOeS3uNJwmtJUM+4imAlXzmMjFbStAXSAJWJfw/ykBsUmKurMeTiMs1tJSS0qOleGJqLtyD+XxFiYTKIlbK4qW9wSSA1Wq1jYJd1tVQd8uAz3dAOqCHdC7oBIcQA8w4x9KVEbqXY0o3bFyHempzVMJDH//dZ6M8aKgJk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Q45FCVxY; arc=none smtp.client-ip=209.85.214.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-2020b730049so19126255ad.3
-        for <bpf@vger.kernel.org>; Fri, 30 Aug 2024 10:34:22 -0700 (PDT)
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-201fae21398so15281585ad.1
+        for <bpf@vger.kernel.org>; Fri, 30 Aug 2024 10:36:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1725039261; x=1725644061; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=iMv4IDP78/5lUqvfivRe7eqWhVg9TLLpihpI5JqTmOE=;
-        b=IbwXgxiH4AZLGqJ52l+exqnuBRCASf5JfeILACYUqxmuAgZIT49y/86VYFLGrmwIBY
-         oxdNS60wrncvu+OuUZr/Cko3pyKNiVZph8O49yqCGD6ezutlFD5/nIFZBi8h88G3XfSJ
-         hLNIlKGoS0tQAiaSL63L72mINFcD1iwijHy3e3cO8YUmpCMcykDyxdX1Cw98E7paMXcz
-         RqP990DcyluVm0O0hUPV8gPE80X0Cq8Lptgmweswwjxnq/RSax3BvHV3hUoKCY9b/x0G
-         VjEFDT2tcXgVoguu/RpCflJWVLTGDWloSWq8+3l88FECM0JuIVJ0/1QhykPCn31XPkhR
-         rZAQ==
+        d=gmail.com; s=20230601; t=1725039412; x=1725644212; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=gkabglCfmxFQ1Ufxyk12Ux507KQQhJ6FwiObhlwD3fc=;
+        b=Q45FCVxYLatfZm/XaznRCAVzAWHr1VQMXviTXuww7jqhbSIGHCtezDcq2nMYtBEXVV
+         UYa2ABJLrTcLw/cnvjIitpPJvrAN2YiH1OM5IA9i1UsBoAyxZ2o4FTxJ50ihLg9piG6P
+         g9QaWHgfNe5KhTSn+JtV/ycKifWdBHklwPEVjvAnvX/vV73KvbZjDq9uVSolNDAC6MS6
+         cYlDOU03v6RTo5qldwjxlcPI8aBryE5aXgx0FEbkipRvsBD5c0Z93jc+xpAf655eVwkw
+         MHTESVdxHvccik8q8RLqhDlX0lhtj93CbM3T7SLljjmuy4GHr4lk6hfwp2kjzhFQyKbm
+         7ETA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725039261; x=1725644061;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=iMv4IDP78/5lUqvfivRe7eqWhVg9TLLpihpI5JqTmOE=;
-        b=gfEFMQSCDYhXgcCFqMp+9TJyLhpe2/arOXjvy1Q1vBQXDfNNHesJESS0bI1038RcMl
-         9dJUoMhwyyp/+4eVeLxhg8K8AwG7fq4+FsSKcNMcg4hNCdaqY3xg9NcLG2muMWOj0/a4
-         87YIZgJBQG/PL0yqWEUg5Q6aKTE29YwaNUG+L4zQ7tLzzsr92k/991FODcQ/AIB0v0OZ
-         nRBDGx9N910eVfJvlgM8/3Jodgt0baWw4+kTHWYoA0vGGga7T0i7zqljIQAjT3+FANz7
-         n7o7mOGX3V950x7i9u1tWpvumMdq0YrTfF+5ZdJUkFEA9SrDerWxLC3rAP5fnTL7lyRi
-         c1Rg==
-X-Gm-Message-State: AOJu0YyA9NHzgq4m3ijz0Sm8kTHlRGPExgVDMWlWcPmJCiI4pNqoBFLG
-	2o2N8VQVUUB7bCfnyXkg/nbfxW7XB6kHusfZz/2psx9Wbfvmtn0MI5JcrQ==
-X-Google-Smtp-Source: AGHT+IEs7EeAyE+poALtcOSTEmbYbi8+KJzczGJbLH/GYTUd0dDhKi/6OjRekL7VvKSYosvFYXuHzQ==
-X-Received: by 2002:a17:902:e883:b0:202:38be:7b20 with SMTP id d9443c01a7336-2050c386c0bmr82362855ad.38.1725039261129;
-        Fri, 30 Aug 2024 10:34:21 -0700 (PDT)
-Received: from honey-badger.. ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20515533ba3sm29326655ad.152.2024.08.30.10.34.20
+        d=1e100.net; s=20230601; t=1725039412; x=1725644212;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=gkabglCfmxFQ1Ufxyk12Ux507KQQhJ6FwiObhlwD3fc=;
+        b=PlOi87QKgPkGJH6vaKfNPwixBn7s9/cCADl+v61faEEW75yoRGOj/9yYS6a78cg2WC
+         deea804vuk4RZLdoiUMbFnKssp5epj0hR6jFsC/fEX27M4Jp9AyDHRYDtfaCq/8I1Ul1
+         2kkkqHpzc1BwKpKRbtvcHPpskxxN57Ug/YSannJ5jSDGofjgAlA9BGWywH26ILkr3trg
+         FuOMKgxJsImZG6ukfXFilLx5yRzIjpX6yXKw04Ui+A4C6zSjGfv3f7RANWAT7voedk6g
+         3FnLBH3jogYv0RuZ+RNr6+AM46uz9MfMwWub4qtmoJqNyn9QUhCU+/aiDQz2XkB5Gl+0
+         8tHQ==
+X-Gm-Message-State: AOJu0YwfixcO7ooM3swqjZnC7VH6LyXzKAcyW1zlwK/Nh3DbQeGA7+L5
+	PKqUu+7ae2R25B8mTRcLbgY8/NBsiZiMEKQSmGb5SwLPkuaKFtnnxgKt6A==
+X-Google-Smtp-Source: AGHT+IEjFxog6CyxpnU6CgrBn9sh0MhAYFrhlkq+1FdVGze69UqF/H9MNenMdECCDuDrseXLSNVJAA==
+X-Received: by 2002:a17:902:ebc5:b0:202:3617:d53d with SMTP id d9443c01a7336-20544500724mr2164185ad.25.1725039412001;
+        Fri, 30 Aug 2024 10:36:52 -0700 (PDT)
+Received: from [192.168.0.235] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2052b34ca27sm12987675ad.84.2024.08.30.10.36.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Aug 2024 10:34:20 -0700 (PDT)
+        Fri, 30 Aug 2024 10:36:51 -0700 (PDT)
+Message-ID: <8409d6f7118f6b75f2b9b011068d1dd51eb3ae4e.camel@gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: check if distilled base
+ inherits source endianness
 From: Eduard Zingerman <eddyz87@gmail.com>
-To: bpf@vger.kernel.org,
-	ast@kernel.org
-Cc: andrii@kernel.org,
-	daniel@iogearbox.net,
-	martin.lau@linux.dev,
-	kernel-team@fb.com,
-	yonghong.song@linux.dev,
-	tony.ambardar@gmail.com,
-	alan.maguire@oracle.com,
-	Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH bpf-next] selftests/bpf: check if distilled base inherits source endianness
-Date: Fri, 30 Aug 2024 10:34:06 -0700
-Message-ID: <20240830173406.1581007-1-eddyz87@gmail.com>
-X-Mailer: git-send-email 2.46.0
+To: bpf@vger.kernel.org, ast@kernel.org
+Cc: andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev, 
+	kernel-team@fb.com, yonghong.song@linux.dev, tony.ambardar@gmail.com, 
+	alan.maguire@oracle.com
+Date: Fri, 30 Aug 2024 10:36:46 -0700
+In-Reply-To: <20240830173406.1581007-1-eddyz87@gmail.com>
+References: <20240830173406.1581007-1-eddyz87@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.4 (3.52.4-1.fc40) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-Create a BTF with endianness different from host, make a distilled
-base/split BTF pair from it, dump as raw bytes, import again and
-verify that endianness is preserved.
+On Fri, 2024-08-30 at 10:34 -0700, Eduard Zingerman wrote:
+> Create a BTF with endianness different from host, make a distilled
+> base/split BTF pair from it, dump as raw bytes, import again and
+> verify that endianness is preserved.
+>=20
+> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+> ---
 
-Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
----
- .../selftests/bpf/prog_tests/btf_distill.c    | 73 +++++++++++++++++++
- 1 file changed, 73 insertions(+)
+Note: this would fail on CI unless [1] is applied.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/btf_distill.c b/tools/testing/selftests/bpf/prog_tests/btf_distill.c
-index bfbe795823a2..810b2e434562 100644
---- a/tools/testing/selftests/bpf/prog_tests/btf_distill.c
-+++ b/tools/testing/selftests/bpf/prog_tests/btf_distill.c
-@@ -535,6 +535,77 @@ static void test_distilled_base_vmlinux(void)
- 	btf__free(vmlinux_btf);
- }
- 
-+static bool is_host_big_endian(void)
-+{
-+	return htons(0x1234) == 0x1234;
-+}
-+
-+/* Split and new base BTFs should inherit endianness from source BTF. */
-+static void test_distilled_endianness(void)
-+{
-+	struct btf *base = NULL, *split = NULL, *new_base = NULL, *new_split = NULL;
-+	struct btf *new_base1 = NULL, *new_split1 = NULL;
-+	enum btf_endianness inverse_endianness;
-+	const void *raw_data;
-+	__u32 size;
-+
-+	printf("is_host_big_endian? %d\n", is_host_big_endian());
-+	inverse_endianness = is_host_big_endian() ? BTF_LITTLE_ENDIAN : BTF_BIG_ENDIAN;
-+	base = btf__new_empty();
-+	btf__set_endianness(base, inverse_endianness);
-+	if (!ASSERT_OK_PTR(base, "empty_main_btf"))
-+		return;
-+	btf__add_int(base, "int", 4, BTF_INT_SIGNED);   /* [1] int */
-+	VALIDATE_RAW_BTF(
-+		base,
-+		"[1] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED");
-+	split = btf__new_empty_split(base);
-+	if (!ASSERT_OK_PTR(split, "empty_split_btf"))
-+		goto cleanup;
-+	btf__add_ptr(split, 1);
-+	VALIDATE_RAW_BTF(
-+		split,
-+		"[1] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED",
-+		"[2] PTR '(anon)' type_id=1");
-+	if (!ASSERT_EQ(0, btf__distill_base(split, &new_base, &new_split),
-+		       "distilled_base") ||
-+	    !ASSERT_OK_PTR(new_base, "distilled_base") ||
-+	    !ASSERT_OK_PTR(new_split, "distilled_split") ||
-+	    !ASSERT_EQ(2, btf__type_cnt(new_base), "distilled_base_type_cnt"))
-+		goto cleanup;
-+	VALIDATE_RAW_BTF(
-+		new_split,
-+		"[1] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED",
-+		"[2] PTR '(anon)' type_id=1");
-+
-+	raw_data = btf__raw_data(new_base, &size);
-+	if (!ASSERT_OK_PTR(raw_data, "btf__raw_data #1"))
-+		goto cleanup;
-+	new_base1 = btf__new(raw_data, size);
-+	if (!ASSERT_OK_PTR(new_base1, "new_base1 = btf__new()"))
-+		goto cleanup;
-+	raw_data = btf__raw_data(new_split, &size);
-+	if (!ASSERT_OK_PTR(raw_data, "btf__raw_data #2"))
-+		goto cleanup;
-+	new_split1 = btf__new_split(raw_data, size, new_base1);
-+	if (!ASSERT_OK_PTR(new_split1, "new_split1 = btf__new()"))
-+		goto cleanup;
-+
-+	ASSERT_EQ(btf__endianness(new_base1), inverse_endianness, "new_base1 endianness");
-+	ASSERT_EQ(btf__endianness(new_split1), inverse_endianness, "new_split1 endianness");
-+	VALIDATE_RAW_BTF(
-+		new_split1,
-+		"[1] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED",
-+		"[2] PTR '(anon)' type_id=1");
-+cleanup:
-+	btf__free(new_split1);
-+	btf__free(new_base1);
-+	btf__free(new_split);
-+	btf__free(new_base);
-+	btf__free(split);
-+	btf__free(base);
-+}
-+
- void test_btf_distill(void)
- {
- 	if (test__start_subtest("distilled_base"))
-@@ -549,4 +620,6 @@ void test_btf_distill(void)
- 		test_distilled_base_multi_err2();
- 	if (test__start_subtest("distilled_base_vmlinux"))
- 		test_distilled_base_vmlinux();
-+	if (test__start_subtest("distilled_endianness"))
-+		test_distilled_endianness();
- }
--- 
-2.46.0
+[1] https://lore.kernel.org/bpf/20240830095150.278881-1-tony.ambardar@gmail=
+.com/
 
 
