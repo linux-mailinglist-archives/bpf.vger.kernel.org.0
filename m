@@ -1,1407 +1,250 @@
-Return-Path: <bpf+bounces-38547-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38548-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 810C99660AD
-	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 13:28:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EFAD9660BC
+	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 13:30:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 97A721C251E7
-	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 11:28:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 99F261C25208
+	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 11:30:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53DFE1B2EF9;
-	Fri, 30 Aug 2024 11:25:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17CC9199FCC;
+	Fri, 30 Aug 2024 11:26:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="R92uDccr";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="B0kuid4W"
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 510E119306A;
-	Fri, 30 Aug 2024 11:25:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725017110; cv=none; b=jI/d1M80z0CMqQmQQ4Elu4kQ1U3YwbhtcIDlxySxnhFSfUies8jZy23zx7n5sHwzMgOdZ38TeyF7MGK9lgvrdJQfKm/1VgzgfC1kRMlOtiPSxhi1ozUfOkiqcbmdV0QljdX4UMdcrAhfKsNx09qd9A5oVd88U/6mGr8zj4ul1Q8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725017110; c=relaxed/simple;
-	bh=kOHVZbfiK7f7x/qSvLw4/rRj1Su+nCiDcq1kxqXF47o=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=j3ZvOPFL+6KuGspGzjEfqCdD/SzDl5ipGccNmWLNzpEmXcqdggYoLi3eQb4fGmegiZ9J0HiP7hXGkFgnV9Et5ILvFvqjXbaFBaua6eOVnku6gsVZ4AfkxtRiSj7bvgjdjLRn46I4ofzHA2gDnPJKpMvLimcSlqVSXGRNYCRlpFI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.194])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4WwG4s04TJzyQlM;
-	Fri, 30 Aug 2024 19:24:13 +0800 (CST)
-Received: from dggpemf200006.china.huawei.com (unknown [7.185.36.61])
-	by mail.maildlp.com (Postfix) with ESMTPS id 2194A140360;
-	Fri, 30 Aug 2024 19:25:04 +0800 (CST)
-Received: from localhost.localdomain (10.90.30.45) by
- dggpemf200006.china.huawei.com (7.185.36.61) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Fri, 30 Aug 2024 19:25:03 +0800
-From: Yunsheng Lin <linyunsheng@huawei.com>
-To: <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>
-CC: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Yunsheng Lin
-	<linyunsheng@huawei.com>, Alexander Duyck <alexander.duyck@gmail.com>, Ayush
- Sawal <ayush.sawal@chelsio.com>, Eric Dumazet <edumazet@google.com>, Willem
- de Bruijn <willemdebruijn.kernel@gmail.com>, Jason Wang
-	<jasowang@redhat.com>, Ingo Molnar <mingo@redhat.com>, Peter Zijlstra
-	<peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot
-	<vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel
- Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>, John
- Fastabend <john.fastabend@gmail.com>, Jakub Sitnicki <jakub@cloudflare.com>,
-	David Ahern <dsahern@kernel.org>, Matthieu Baerts <matttbe@kernel.org>, Mat
- Martineau <martineau@kernel.org>, Geliang Tang <geliang@kernel.org>, Jamal
- Hadi Salim <jhs@mojatatu.com>, Cong Wang <xiyou.wangcong@gmail.com>, Jiri
- Pirko <jiri@resnulli.us>, Boris Pismenny <borisp@nvidia.com>,
-	<bpf@vger.kernel.org>, <mptcp@lists.linux.dev>
-Subject: [PATCH net-next v16 12/14] net: replace page_frag with page_frag_cache
-Date: Fri, 30 Aug 2024 19:18:42 +0800
-Message-ID: <20240830111845.1593542-13-linyunsheng@huawei.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20240830111845.1593542-1-linyunsheng@huawei.com>
-References: <20240830111845.1593542-1-linyunsheng@huawei.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9161218F2DA
+	for <bpf@vger.kernel.org>; Fri, 30 Aug 2024 11:26:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1725017191; cv=fail; b=c91FZ26FbRIEoBrMiMQSYP3A1Cku/NtMYDvVmOsL9XhbQKsUr/GlQQb7WhvP4r5rHD1U2FDHT2yLnMLB4j+/eG74zoM7UA+zaTwSw/s8YX0sL6X5iALs3wm4mrvGFDMPAYMlbGwSXBD3bx8gjNRJp7ED0tehtrZMo+mgrcgHYsY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1725017191; c=relaxed/simple;
+	bh=2CGSnCWzoTLvQJAxLQyu0IjbwvHYaXq66rNW3br+y40=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=aZzyDQ+6LnKBwTkfBMam7n8mYwkHOttE/06FuBn7MX5P5ULqUhLac9JmSk+NXAFfJsIB3xP99y0/1S2Hmq+LpZ951GDye/gHHqBtvDkWlQXEaowjaOMx00wrWYsAagPY43/dgPgsFqb+yp4jtnGnzTSCn8FLexYSdHQFwjIsy1o=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=R92uDccr; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=B0kuid4W; arc=fail smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 47UBF7Bv014159;
+	Fri, 30 Aug 2024 11:26:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=
+	message-id:date:subject:to:cc:references:from:in-reply-to
+	:content-type:content-transfer-encoding:mime-version; s=
+	corp-2023-11-20; bh=EEKgY5Aq8WAq2/XV3jUs5blNEB79wygl20yotEZI8rI=; b=
+	R92uDccr0gWwnmJebs07uH4fGJYKXvbr0Qjnlp3Qx8RWjw/DXQQ4Hb0dccLHsiC0
+	ixyEBD7zzUZ+kdF/Zy9yFehIODLIgClVD5TSxnOvL7l72nl+TZXuY1ZRBU/DVB5s
+	MXq+E4mehYP9T/bJ635BOYfAeNhfM8qM1Vvq36MxqhiMFzpEYrNQiRb/NcpeERUk
+	ct9LmSAZMnX9vudpbOApz2LAARH/QuEk+yxOuovXo2ZnR6qfbnUdIKCz/LrHkPg5
+	U9harDmIkzGVqhmH3G7zdTNZNV7w+qFr1PkLIYNKqWNfO9x5/IWKxv7hUFsWOCUA
+	IyQzL5KH8cL/HFPoSG/iwA==
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 41bd1gr0mp-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 30 Aug 2024 11:26:03 +0000 (GMT)
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 47UBAIJB031739;
+	Fri, 30 Aug 2024 11:26:02 GMT
+Received: from nam04-bn8-obe.outbound.protection.outlook.com (mail-bn8nam04lp2046.outbound.protection.outlook.com [104.47.74.46])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 418a0xxsas-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 30 Aug 2024 11:26:02 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=DkGLUtNHrrxpMAXM0iRN5iOKhQQH9oYSOsAYmOfpHeoZEX06TOQDMoXa5XnLF206YvYc6/EeHbNlXx4l/pNJOCjY+r6tBPs9bI4DLwO1OVjELYgZObQHrzTDXiD2dUtfZmVLtHo0SkVNumBeEBqLOy4+WGY3OmQNqO6pJew94FKFC+GRdWjhwh5SbPERzX6dXM48eNtQSa/SxJKD7NuUswV1zp0FFoBjKBAdIWrYJHTYPGmG77pwg29dKPcaUBy/3rtv1ZlMaWC/JU4/SbXqDLGggd0pdWaKRlZm7QsBBDVwxlz4qNUT2eiBMgHxtP03nfMWk8LzFZl5v5B2cwd5hA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=EEKgY5Aq8WAq2/XV3jUs5blNEB79wygl20yotEZI8rI=;
+ b=M5wTwVodgEdkOmM4geGM+OHh0hhCqsoO+9oUDEd4jI0LrfNt2+LE/PZDk5RM3+G5ZNuo7IjcXuaqOVGMTjB0TOme15Dgr/B2x1oBFtSwLZte2myke5Y+x4RBJfR3hEbee42CijTr+08L7hOduxB+Bfr54aOQMekA0SzKWVp1Vzj9/ckX7Xtkwt7+PpzXFUJVo8sB2AKMHMd5Ec4qBmxb/iUqyjpZCezi+HvtRNxKUC2OUvu2KW1xm2g46gIJTsrMkcUgP29UiX73rQ+sxDZiAdlqM5HvB7KRlf2OrbY4M8qmlc+biWTH+PHgnsNq7ptEY00/lVGrzvEXzkSJLEAX+A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EEKgY5Aq8WAq2/XV3jUs5blNEB79wygl20yotEZI8rI=;
+ b=B0kuid4WY5PmpPh1L4x1+ddxxTReKZ6o7i7G6p98sDTu60/CR+BSmbTYPvQRJ/Z1Z5dFs0KFNt6wbzM+fcNI7LxuNZJvpjPgomgotdwKJ+g6kuoEEZT7nw0piYTzo5RP31AYtIJR5dOOTfpYy/tpXLJVyM7xtMG0Z1uXWOGVZLQ=
+Received: from BLAPR10MB5267.namprd10.prod.outlook.com (2603:10b6:208:30e::22)
+ by CO6PR10MB5650.namprd10.prod.outlook.com (2603:10b6:303:14f::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7918.19; Fri, 30 Aug
+ 2024 11:26:00 +0000
+Received: from BLAPR10MB5267.namprd10.prod.outlook.com
+ ([fe80::682b:c879:9f97:a34f]) by BLAPR10MB5267.namprd10.prod.outlook.com
+ ([fe80::682b:c879:9f97:a34f%4]) with mapi id 15.20.7918.019; Fri, 30 Aug 2024
+ 11:26:00 +0000
+Message-ID: <5d5fe5b6-49bd-4ae3-8d6a-973ec627624a@oracle.com>
+Date: Fri, 30 Aug 2024 12:25:54 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v1] libbpf: ensure new BTF objects inherit input
+ endianness
+To: Eduard Zingerman <eddyz87@gmail.com>,
+        Tony Ambardar <tony.ambardar@gmail.com>, bpf@vger.kernel.org
+Cc: Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
+References: <5be4f797c3d5092b34d243361ebd0609f3301452.camel@gmail.com>
+ <20240830095150.278881-1-tony.ambardar@gmail.com>
+ <7425efdc2c8f52a780e2b4817e15911f8dd491f2.camel@gmail.com>
+Content-Language: en-GB
+From: Alan Maguire <alan.maguire@oracle.com>
+In-Reply-To: <7425efdc2c8f52a780e2b4817e15911f8dd491f2.camel@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: LO4P123CA0548.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:319::11) To BLAPR10MB5267.namprd10.prod.outlook.com
+ (2603:10b6:208:30e::22)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemf200006.china.huawei.com (7.185.36.61)
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BLAPR10MB5267:EE_|CO6PR10MB5650:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1deac6df-fe6d-482d-7095-08dcc8e6863f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|376014|1800799024|7416014;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?MEgwVzZIUy9teHlJeDhzZTk1VndjcEI1SVFGNnVGb3k0VHRsUm1jN04wOUxO?=
+ =?utf-8?B?MHdidjFtRkNla0xBWFV0MCtQQ2t6YzlWMW8rSzFjOE9kSVNXQkZpK2hQalMz?=
+ =?utf-8?B?WU1JMU5GeFJjdmdBWHhPNlRNM1hwRFE0NU03L2tnYVpMdDJyeisvTmJxc1VE?=
+ =?utf-8?B?clBBYWcvRXJPZjFpcUpMUmtxNzU3aVo1SUt6U25zd05BK2NtdjdXR29CWFNJ?=
+ =?utf-8?B?TzBEWkRLZW1rMk1xM3JudFBqdUhza1YweHg1TzNnZkl3TWZ5QUhKWkl6MFEz?=
+ =?utf-8?B?Z2FWRm5na3dRQkkvNmZRbXRIQ1RsSGJ5VVdoalhndU8rNm8zeXYrTFp1WHNG?=
+ =?utf-8?B?NXI3blRFMjNmakl5YmV6cDk2TWJLWThleFFMeXFDNVhSQnIydUhnUmZOVWV6?=
+ =?utf-8?B?WHg3VTZiZmk5bVNtRVk3ZXZYcDg2NWtCZUhMa1E0OWM4emcvZENuejBwWG9t?=
+ =?utf-8?B?aGV5RHlWb283aTRCY1RBU0IySWhSanZFRk1aOVlhcW90U3ZzL2l3SGFwcisx?=
+ =?utf-8?B?UHhhTjFYV2h0WWs5MjNuOW9iRm1QQzhiTExhcGpiNkNCK0IvQmV4cUd5YjM0?=
+ =?utf-8?B?M3NKS0J3Y3I0RU5DTFVOTmJaT2h6TWpMZStyNUVHUGtDM0Z3OHBWbW1TRy9Q?=
+ =?utf-8?B?ZFJQS0ZMRTlZbkd3VmRSOXF2dS9TcDh3dWtadE5vN2ZNOHdDRm9UYjdWdEFi?=
+ =?utf-8?B?aER3dUl3KzBUS0lITS9BUERDa3BQL1lWVlB6RWsvQkxuSGdsMzFnaHl6eXRF?=
+ =?utf-8?B?RHB4QnozK1lsR09yZDExbExKa0RyQldGbGFPelU2T24vSm5Nd1dicEpzTUxk?=
+ =?utf-8?B?SktyaVc1em5qdCtBdk1KUHAvdjNGcUF4YTF5T01WZGlJT3h6dDB3dFpFVlJE?=
+ =?utf-8?B?cVl4dW9OMXZkVnVCT0JiUjdWdHZqbGt4K3gzQlpnZnltZVFPNDNGYzRsVkhJ?=
+ =?utf-8?B?SHJ5OWxGZWQvS3luT1BTeTF4LzdRNmgya2x0dERab0laQ2Y0TW9jc0YzYWFJ?=
+ =?utf-8?B?NzNjeEp0dDYvbjB0cU5KQWFDRTdQOGZVOUF2N3hLdHZpMzZ6aWloWjFZSW9U?=
+ =?utf-8?B?OHZuYXdwbTEzSG04M3VKQk94dmxLWm5LMXR5N1pldVdLeU4wNGxsaTJmL2tC?=
+ =?utf-8?B?WVFTMHA1YS9rVWl6Zm5wU2xYN3ZaNWtsd1N6T2ovaG5oVjBZNSt0Vjc5WFI5?=
+ =?utf-8?B?V3U0RGZvRUg5YUtQc3cvUzg0SzJRK01BT3JTOThqanNuc0Z1Zm1ackRzVldW?=
+ =?utf-8?B?YndUN3VEcG85eWUweEV4bDF4Uk5ldTdUdWZMTCs0dHZtelY0Vm04OUd1dFMx?=
+ =?utf-8?B?T3A1c092akJnL1lqZTVBb01VeGQ4anlMaVVjbTZVZUlQc1BYUkorV1V5UTJU?=
+ =?utf-8?B?Zm0wY3NkZWF6RDQ0cC9sR1dmV2ZFRlBJTGIrYUtIOW80Zi9FR2h6aWRZTi9N?=
+ =?utf-8?B?RGV1aFJEMGRqditDZEprV041cy9BOFRvRDVybTdEMlZqcDc1bFo2Z1JETW8w?=
+ =?utf-8?B?TGlEQ2JieDNsVnlPc3Vab3hKVXZmV0lkRFZ6RXpncHMrMURoVVB6alU0T3F0?=
+ =?utf-8?B?L0RnQ1dGd0pHRlJ4bGRJWm5jTTljb095YXM5bGE0ZkFUcis5MjZoT0VSeko4?=
+ =?utf-8?B?Z3YwZjZYd2FFa2kweE5IRVVnUFFNRlUySitjKzI4QW9qMkZERUwwQ1BlU0Jh?=
+ =?utf-8?B?WDFReUFjdXBncEd1UE0ydUxoN1dIbkFIZ0lydkhvTXhPVld1bGRod1QrN01r?=
+ =?utf-8?B?L3hyMG5ETzFQT3VtcnV0NDEwbnRUWXplVDJXM1NKalRTV2dESHVxUks5SWpu?=
+ =?utf-8?Q?ZS38eKzJEKIywqOOgsqwON/jTFr3MuuR2N0s4=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5267.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(1800799024)(7416014);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?UWoxbVh1QlpIemJrZ0tsT09UWGlrZW0ybm91dEhrZ2V5ano0YUhTVWhJSVM5?=
+ =?utf-8?B?SWhaYUgwUUNtQndyMkxoQkZTMzFSZW14cFZtbmFvNURzc1Via3JSbzBnTWFy?=
+ =?utf-8?B?eXhQWGxOR25WalRlQ0U0WnR4bDl4cjRYMnFORmtySHBmaG8yU05MaCs1Yy9U?=
+ =?utf-8?B?T1Q4T1M0TmlqNWljN3pDd2pveWJtTEk1TDZ4SFBKSUFnekRKTXpsa1pCTlFO?=
+ =?utf-8?B?TktjN0FlME95N3VxU2I3WjlEd1k0UzllNWttTkY1WDJiRktqeFdTemVMVUlh?=
+ =?utf-8?B?dTRnb1FnaG5XQmdiaFlOMkVSRU93UjV6bDlwSGhOczVQczdlS0RIeGlOeUZs?=
+ =?utf-8?B?eUQ0eWtVWFpEUlpRZmhoL3g0YlJ4dy9FZ0F0SE5BalE3ZFJkMWFyNUJUS284?=
+ =?utf-8?B?VVNYcHNlWXRlRlpuVVhPVDlYZW9IV1BJaUloQ3ZXMzFVZnhPbzFDY0R1cVE4?=
+ =?utf-8?B?OTE1UkhHQlRUb2F2VWlUbDczcXpNdmJ6ajlqSHhsM1hrL21IL2JIZ28veWlR?=
+ =?utf-8?B?UXhQN0U0QlgwRVJMYVAyQ3krZUJzcEp1MTdJZ3JoLzBwYnZsQ1FENXpOTG9Q?=
+ =?utf-8?B?L3RkeVdvbVZ1bzJVeW9PMjd6M3lyU082aER4TmE0THZHZmVCSEsxT0hNcysr?=
+ =?utf-8?B?TWdwOVBYUVZTMVVUUmpSczJJc1hML041RUtDNjRIS01rV3JLUFRpd2Fta2NT?=
+ =?utf-8?B?MDA0QzE0ZWh5WWViaU1NYzBlamdSSlV5eEYvMXg1WXZkYTFQdTM0NXM1SkZv?=
+ =?utf-8?B?a2ZReGJCam05K0xubnY4SWxGblZsc0tpeGVoR2NxZXZGT3FYcWZPWXJBZnZh?=
+ =?utf-8?B?K3JoRU9iK21KbGpDL1lNWFNhNUJSaDl1Ym8yS1g2L3VkVHZkYUhrNVA5TVVv?=
+ =?utf-8?B?cTA0ek1jbXRDekRyMkk1d1Rha3cvcDQ1cXpwSVEwNWhOejk1bUlDbFh5Q3RV?=
+ =?utf-8?B?cHNhbTcrUC9Zb0EzN0hpanlHRkY3Z0g4TjMwS2hreHNLQzFpSWpaTElxTmZH?=
+ =?utf-8?B?eHQ0ZU9ZSXB2MEhiS0ZrMHZyVWtDak1DN1kyME9XQVFKbit1K3FJenhHUW5y?=
+ =?utf-8?B?b2JycjM2SVY0ZFNmSWdrR1ZIVWYwMTRDTG1oMVl4eUZFMlhPaEZXdnArcHlW?=
+ =?utf-8?B?ZFZvbGQ2SDRCeUpPOWp3L3hFV1kyWllGME5vVWpHMm53bStsVFZFVldxVnNl?=
+ =?utf-8?B?N1djMnZNbnlGaFA1cFcvdUZPRjd1dnF6RVE0YVg3TExMazFKcmxuN3VKQ1BR?=
+ =?utf-8?B?d2tkeWNLSi9RRU9KTlZOZE96N0ZablZGdFlaK0hoU21QR0RtVFYwcFBBbita?=
+ =?utf-8?B?ZTFvdjRVN0hteXBiOWpIRnFGbmNjYzduZFBHbTQ4STI4cU9xUlZ2cWltT29N?=
+ =?utf-8?B?ZVEyM0JnTzR4SmtnSnY4ZHVlUDJTWlZjN1BiTzIwZkxKZS9wR1kvT0xYWENx?=
+ =?utf-8?B?eG5aUUhpN2o5Skw4VjUyVnhrTElwMGZTNHg2T3p0blN5VlZQZUVkRjlkOG51?=
+ =?utf-8?B?K1RUOUZveHlTamdqRXVRTzRUYnFhMjBxTnJTakRQb0tCV013MFdmOE10WlRk?=
+ =?utf-8?B?RkZDRk5NMWpmZHZHemgzd3hRQzNLc0cvcU1rZDdMZ1p5T0lNZlY2akYwNGJs?=
+ =?utf-8?B?OGpjeS8zNzJGUzFwYXFqbnMwK0dST2V3STk2Q09oZjRuT1E2cDBwR1p2eGY2?=
+ =?utf-8?B?MVdWdklCamYzZ0NIS3p4eDhVWmdCTDdOSlIvcVlTVGFMN2FwT2N4clRhaTND?=
+ =?utf-8?B?VkZuK3NQUkg3cGdwVkJoSkkxUnZTRERIRFpJdVp0ODNHVVJpSEpVbE9kU3ll?=
+ =?utf-8?B?a1ZjeWJIY09XZTZKSlRwN21HZUZUdFFuMktiTE1tbWZVbUpzdUtJSGV2SHFM?=
+ =?utf-8?B?d0MxL1EzdFF1M3NzN1FQS3dOWXRVWEYwaVVuLzYvaHpOL2FVZ2crSVloSGlT?=
+ =?utf-8?B?TDl5M2t1cmRzUVhZWHZqK3p6dHJpL2M1V21JL1c5ODl1ZjRIRGthOFhwMFpQ?=
+ =?utf-8?B?ZWdNN3BYV0x0ZGpFTEV2d1NENWJydGtLdFYzRkk5VGFhSi9wb2ZzRzhQSldH?=
+ =?utf-8?B?YjNGV0l4K1psUTVFeVpjcit0RHlsN0JpRUdmQnFWU25oRmZzNVR6MWtsVkZ5?=
+ =?utf-8?B?bVVWd2MwM3htc3ZOdTNWakpKWldhYzZBSlVFNUNyWEptenozblB4Nm91YzVi?=
+ =?utf-8?Q?kM8mudKKF4HuOxY9ApYuLjE=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	yLWixqKiDyWiOQjZPp6bsdxeoh6p1a2lAJdxh3/MUo+Kp67saLpXuVyHR3TIIr08Ouarx3sLoM1OUIouhfxEPEP5NlGb/Ml7zdzWrZMIaspmBRMbuthPSJ8itkVrA6oUp7OsfTFF3XhVjKdqQggem11AuQ9q1VUMnezeA8JFTtUnxs+oSYwhZoPxMGcfdEhNd0aoDxzuDBXC1txkN4+VaDT7J+TYwyJ++DzsBsPrUhFdHTzx2ZCAVDnKDz+XQgWR/s5tSP87esKFVXaE4yZ8xuCIFZeWEGLZTH8EubEfKmo1WEmxa9ArsyRfXS4SvEOPcVgFAZnKhGXyDZsiMrAKml9dhV3m0hEMbJraMzMFh6v5Bbxz8K42wmXRTAVZbjq2sd0QMenE+g7lfvA8vBg/znEuHRkCw2itcdG0Qc9K+IBjcOrBbQuRStehrU/aHbm2NYUdX7fgSiEDG14mov0rmlKwM6ZMfja68u5Syq2BzLEoZgRzctNZGXJYKukoEo43HnNCVYDpKwINnkIVxi9TIKL6+HhPj4200QIo3jkHvM+8JQsLKzZCkny+kRd+amddgRVWZ/661a+xTDCUKVVrSZgSOjc1FkEdq+sK83y2fcc=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1deac6df-fe6d-482d-7095-08dcc8e6863f
+X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5267.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Aug 2024 11:26:00.1797
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: fpaIzggVn5In6Ymrm3Yz+nwDUUGhrf8//GA+sGtnaGHwUHpmWFL37z69aI+l4fzytyD1wpSQuebHsU1X3zONKA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR10MB5650
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
+ definitions=2024-08-30_06,2024-08-30_01,2024-05-17_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxlogscore=999 mlxscore=0
+ suspectscore=0 malwarescore=0 spamscore=0 adultscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2407110000
+ definitions=main-2408300086
+X-Proofpoint-ORIG-GUID: 0VTAdqc9T0SXgcZJFQAfVV_hl_P2Ys6a
+X-Proofpoint-GUID: 0VTAdqc9T0SXgcZJFQAfVV_hl_P2Ys6a
 
-Use the newly introduced prepare/probe/commit API to
-replace page_frag with page_frag_cache for sk_page_frag().
+On 30/08/2024 12:15, Eduard Zingerman wrote:
+> On Fri, 2024-08-30 at 02:51 -0700, Tony Ambardar wrote:
+>> The pahole master branch recently added support for "distilled BTF" based
+>> on libbpf v1.5, but may add .BTF and .BTF.base sections with the wrong byte
+>> order (e.g. on s390x BPF CI), which then lead to kernel Oops when loaded.
+>>
+>> Fix by updating libbpf's btf__distill_base() and btf_new_empty() to retain
+>> the byte order of any source BTF objects when creating new ones.
+>>
+>> Reported-by: Song Liu <song@kernel.org>
+>> Reported-by: Eduard Zingerman <eddyz87@gmail.com>
+>> Suggested-by: Eduard Zingerman <eddyz87@gmail.com>
+>> Link: https://lore.kernel.org/bpf/6358db36c5f68b07873a0a5be2d062b1af5ea5f8.camel@gmail.com/
+>> Signed-off-by: Tony Ambardar <tony.ambardar@gmail.com>
+>> ---
+> 
+> Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+>
 
-CC: Alexander Duyck <alexander.duyck@gmail.com>
-Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
----
- .../chelsio/inline_crypto/chtls/chtls.h       |   3 -
- .../chelsio/inline_crypto/chtls/chtls_io.c    | 100 +++++-------------
- .../chelsio/inline_crypto/chtls/chtls_main.c  |   3 -
- drivers/net/tun.c                             |  47 ++++----
- include/linux/sched.h                         |   2 +-
- include/net/sock.h                            |  21 ++--
- kernel/exit.c                                 |   3 +-
- kernel/fork.c                                 |   3 +-
- net/core/skbuff.c                             |  58 +++++-----
- net/core/skmsg.c                              |  12 ++-
- net/core/sock.c                               |  31 ++++--
- net/ipv4/ip_output.c                          |  28 +++--
- net/ipv4/tcp.c                                |  23 ++--
- net/ipv4/tcp_output.c                         |  25 +++--
- net/ipv6/ip6_output.c                         |  28 +++--
- net/kcm/kcmsock.c                             |  18 ++--
- net/mptcp/protocol.c                          |  45 ++++----
- net/sched/em_meta.c                           |   2 +-
- net/tls/tls_device.c                          |  99 ++++++++++-------
- 19 files changed, 289 insertions(+), 262 deletions(-)
+Tested-by: Alan Maguire <alan.maguire@oracle.com>
 
-diff --git a/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls.h b/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls.h
-index 7ff82b6778ba..fe2b6a8ef718 100644
---- a/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls.h
-+++ b/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls.h
-@@ -234,7 +234,6 @@ struct chtls_dev {
- 	struct list_head list_node;
- 	struct list_head rcu_node;
- 	struct list_head na_node;
--	unsigned int send_page_order;
- 	int max_host_sndbuf;
- 	u32 round_robin_cnt;
- 	struct key_map kmap;
-@@ -453,8 +452,6 @@ enum {
- 
- /* The ULP mode/submode of an skbuff */
- #define skb_ulp_mode(skb)  (ULP_SKB_CB(skb)->ulp_mode)
--#define TCP_PAGE(sk)   (sk->sk_frag.page)
--#define TCP_OFF(sk)    (sk->sk_frag.offset)
- 
- static inline struct chtls_dev *to_chtls_dev(struct tls_toe_device *tlsdev)
- {
-diff --git a/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_io.c b/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_io.c
-index d567e42e1760..bcbb4f20a8e0 100644
---- a/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_io.c
-+++ b/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_io.c
-@@ -825,12 +825,6 @@ void skb_entail(struct sock *sk, struct sk_buff *skb, int flags)
- 	ULP_SKB_CB(skb)->flags = flags;
- 	__skb_queue_tail(&csk->txq, skb);
- 	sk->sk_wmem_queued += skb->truesize;
--
--	if (TCP_PAGE(sk) && TCP_OFF(sk)) {
--		put_page(TCP_PAGE(sk));
--		TCP_PAGE(sk) = NULL;
--		TCP_OFF(sk) = 0;
--	}
- }
- 
- static struct sk_buff *get_tx_skb(struct sock *sk, int size)
-@@ -882,16 +876,12 @@ static void push_frames_if_head(struct sock *sk)
- 		chtls_push_frames(csk, 1);
- }
- 
--static int chtls_skb_copy_to_page_nocache(struct sock *sk,
--					  struct iov_iter *from,
--					  struct sk_buff *skb,
--					  struct page *page,
--					  int off, int copy)
-+static int chtls_skb_copy_to_va_nocache(struct sock *sk, struct iov_iter *from,
-+					struct sk_buff *skb, char *va, int copy)
- {
- 	int err;
- 
--	err = skb_do_copy_data_nocache(sk, skb, from, page_address(page) +
--				       off, copy, skb->len);
-+	err = skb_do_copy_data_nocache(sk, skb, from, va, copy, skb->len);
- 	if (err)
- 		return err;
- 
-@@ -1114,82 +1104,44 @@ int chtls_sendmsg(struct sock *sk, struct msghdr *msg, size_t size)
- 			if (err)
- 				goto do_fault;
- 		} else {
-+			struct page_frag_cache *nc = &sk->sk_frag;
-+			struct page_frag page_frag, *pfrag;
- 			int i = skb_shinfo(skb)->nr_frags;
--			struct page *page = TCP_PAGE(sk);
--			int pg_size = PAGE_SIZE;
--			int off = TCP_OFF(sk);
--			bool merge;
--
--			if (page)
--				pg_size = page_size(page);
--			if (off < pg_size &&
--			    skb_can_coalesce(skb, i, page, off)) {
-+			bool merge = false;
-+			void *va;
-+
-+			pfrag = &page_frag;
-+			va = page_frag_alloc_refill_prepare(nc, 32U, pfrag,
-+							    sk->sk_allocation);
-+			if (unlikely(!va))
-+				goto wait_for_memory;
-+
-+			if (skb_can_coalesce(skb, i, pfrag->page, pfrag->offset))
- 				merge = true;
--				goto copy;
--			}
--			merge = false;
--			if (i == (is_tls_tx(csk) ? (MAX_SKB_FRAGS - 1) :
--			    MAX_SKB_FRAGS))
-+			else if (i == (is_tls_tx(csk) ? (MAX_SKB_FRAGS - 1) :
-+				       MAX_SKB_FRAGS))
- 				goto new_buf;
- 
--			if (page && off == pg_size) {
--				put_page(page);
--				TCP_PAGE(sk) = page = NULL;
--				pg_size = PAGE_SIZE;
--			}
--
--			if (!page) {
--				gfp_t gfp = sk->sk_allocation;
--				int order = cdev->send_page_order;
--
--				if (order) {
--					page = alloc_pages(gfp | __GFP_COMP |
--							   __GFP_NOWARN |
--							   __GFP_NORETRY,
--							   order);
--					if (page)
--						pg_size <<= order;
--				}
--				if (!page) {
--					page = alloc_page(gfp);
--					pg_size = PAGE_SIZE;
--				}
--				if (!page)
--					goto wait_for_memory;
--				off = 0;
--			}
--copy:
--			if (copy > pg_size - off)
--				copy = pg_size - off;
-+			copy = min_t(int, copy, pfrag->size);
- 			if (is_tls_tx(csk))
- 				copy = min_t(int, copy, csk->tlshws.txleft);
- 
--			err = chtls_skb_copy_to_page_nocache(sk, &msg->msg_iter,
--							     skb, page,
--							     off, copy);
--			if (unlikely(err)) {
--				if (!TCP_PAGE(sk)) {
--					TCP_PAGE(sk) = page;
--					TCP_OFF(sk) = 0;
--				}
-+			err = chtls_skb_copy_to_va_nocache(sk, &msg->msg_iter,
-+							   skb, va, copy);
-+			if (unlikely(err))
- 				goto do_fault;
--			}
-+
- 			/* Update the skb. */
- 			if (merge) {
- 				skb_frag_size_add(
- 						&skb_shinfo(skb)->frags[i - 1],
- 						copy);
-+				page_frag_commit_noref(nc, pfrag, copy);
- 			} else {
--				skb_fill_page_desc(skb, i, page, off, copy);
--				if (off + copy < pg_size) {
--					/* space left keep page */
--					get_page(page);
--					TCP_PAGE(sk) = page;
--				} else {
--					TCP_PAGE(sk) = NULL;
--				}
-+				skb_fill_page_desc(skb, i, pfrag->page,
-+						   pfrag->offset, copy);
-+				page_frag_commit(nc, pfrag, copy);
- 			}
--			TCP_OFF(sk) = off + copy;
- 		}
- 		if (unlikely(skb->len == mss))
- 			tx_skb_finalize(skb);
-diff --git a/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_main.c b/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_main.c
-index 455a54708be4..ba88b2fc7cd8 100644
---- a/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_main.c
-+++ b/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_main.c
-@@ -34,7 +34,6 @@ static DEFINE_MUTEX(notify_mutex);
- static RAW_NOTIFIER_HEAD(listen_notify_list);
- static struct proto chtls_cpl_prot, chtls_cpl_protv6;
- struct request_sock_ops chtls_rsk_ops, chtls_rsk_opsv6;
--static uint send_page_order = (14 - PAGE_SHIFT < 0) ? 0 : 14 - PAGE_SHIFT;
- 
- static void register_listen_notifier(struct notifier_block *nb)
- {
-@@ -273,8 +272,6 @@ static void *chtls_uld_add(const struct cxgb4_lld_info *info)
- 	INIT_WORK(&cdev->deferq_task, process_deferq);
- 	spin_lock_init(&cdev->listen_lock);
- 	spin_lock_init(&cdev->idr_lock);
--	cdev->send_page_order = min_t(uint, get_order(32768),
--				      send_page_order);
- 	cdev->max_host_sndbuf = 48 * 1024;
- 
- 	if (lldi->vr->key.size)
-diff --git a/drivers/net/tun.c b/drivers/net/tun.c
-index 1d06c560c5e6..af7befe3969a 100644
---- a/drivers/net/tun.c
-+++ b/drivers/net/tun.c
-@@ -1598,21 +1598,19 @@ static bool tun_can_build_skb(struct tun_struct *tun, struct tun_file *tfile,
- }
- 
- static struct sk_buff *__tun_build_skb(struct tun_file *tfile,
--				       struct page_frag *alloc_frag, char *buf,
--				       int buflen, int len, int pad)
-+				       char *buf, int buflen, int len, int pad)
- {
- 	struct sk_buff *skb = build_skb(buf, buflen);
- 
--	if (!skb)
-+	if (!skb) {
-+		page_frag_free(buf);
- 		return ERR_PTR(-ENOMEM);
-+	}
- 
- 	skb_reserve(skb, pad);
- 	skb_put(skb, len);
- 	skb_set_owner_w(skb, tfile->socket.sk);
- 
--	get_page(alloc_frag->page);
--	alloc_frag->offset += buflen;
--
- 	return skb;
- }
- 
-@@ -1660,8 +1658,8 @@ static struct sk_buff *tun_build_skb(struct tun_struct *tun,
- 				     struct virtio_net_hdr *hdr,
- 				     int len, int *skb_xdp)
- {
--	struct page_frag *alloc_frag = &current->task_frag;
- 	struct bpf_net_context __bpf_net_ctx, *bpf_net_ctx;
-+	struct page_frag_cache *nc = &current->task_frag;
- 	struct bpf_prog *xdp_prog;
- 	int buflen = SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
- 	char *buf;
-@@ -1676,16 +1674,16 @@ static struct sk_buff *tun_build_skb(struct tun_struct *tun,
- 	buflen += SKB_DATA_ALIGN(len + pad);
- 	rcu_read_unlock();
- 
--	alloc_frag->offset = ALIGN((u64)alloc_frag->offset, SMP_CACHE_BYTES);
--	if (unlikely(!skb_page_frag_refill(buflen, alloc_frag, GFP_KERNEL)))
-+	buf = page_frag_alloc_align(nc, buflen, GFP_KERNEL,
-+				    SMP_CACHE_BYTES);
-+	if (unlikely(!buf))
- 		return ERR_PTR(-ENOMEM);
- 
--	buf = (char *)page_address(alloc_frag->page) + alloc_frag->offset;
--	copied = copy_page_from_iter(alloc_frag->page,
--				     alloc_frag->offset + pad,
--				     len, from);
--	if (copied != len)
-+	copied = copy_from_iter(buf + pad, len, from);
-+	if (copied != len) {
-+		page_frag_alloc_abort(nc, buflen);
- 		return ERR_PTR(-EFAULT);
-+	}
- 
- 	/* There's a small window that XDP may be set after the check
- 	 * of xdp_prog above, this should be rare and for simplicity
-@@ -1693,8 +1691,7 @@ static struct sk_buff *tun_build_skb(struct tun_struct *tun,
- 	 */
- 	if (hdr->gso_type || !xdp_prog) {
- 		*skb_xdp = 1;
--		return __tun_build_skb(tfile, alloc_frag, buf, buflen, len,
--				       pad);
-+		return __tun_build_skb(tfile, buf, buflen, len, pad);
- 	}
- 
- 	*skb_xdp = 0;
-@@ -1711,21 +1708,23 @@ static struct sk_buff *tun_build_skb(struct tun_struct *tun,
- 		xdp_prepare_buff(&xdp, buf, pad, len, false);
- 
- 		act = bpf_prog_run_xdp(xdp_prog, &xdp);
--		if (act == XDP_REDIRECT || act == XDP_TX) {
--			get_page(alloc_frag->page);
--			alloc_frag->offset += buflen;
--		}
- 		err = tun_xdp_act(tun, xdp_prog, &xdp, act);
- 		if (err < 0) {
--			if (act == XDP_REDIRECT || act == XDP_TX)
--				put_page(alloc_frag->page);
-+			if (act == XDP_REDIRECT || act == XDP_TX) {
-+				page_frag_alloc_abort(nc, 0);
-+				goto out;
-+			}
-+
-+			page_frag_alloc_abort(nc, buflen);
- 			goto out;
- 		}
- 
- 		if (err == XDP_REDIRECT)
- 			xdp_do_flush();
--		if (err != XDP_PASS)
-+		if (err != XDP_PASS) {
-+			page_frag_alloc_abort(nc, buflen);
- 			goto out;
-+		}
- 
- 		pad = xdp.data - xdp.data_hard_start;
- 		len = xdp.data_end - xdp.data;
-@@ -1734,7 +1733,7 @@ static struct sk_buff *tun_build_skb(struct tun_struct *tun,
- 	rcu_read_unlock();
- 	local_bh_enable();
- 
--	return __tun_build_skb(tfile, alloc_frag, buf, buflen, len, pad);
-+	return __tun_build_skb(tfile, buf, buflen, len, pad);
- 
- out:
- 	bpf_net_ctx_clear(bpf_net_ctx);
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index f8d150343d42..bb9a8e9d6d2d 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -1355,7 +1355,7 @@ struct task_struct {
- 	/* Cache last used pipe for splice(): */
- 	struct pipe_inode_info		*splice_pipe;
- 
--	struct page_frag		task_frag;
-+	struct page_frag_cache		task_frag;
- 
- #ifdef CONFIG_TASK_DELAY_ACCT
- 	struct task_delay_info		*delays;
-diff --git a/include/net/sock.h b/include/net/sock.h
-index 5069813895c6..550ea541b5d9 100644
---- a/include/net/sock.h
-+++ b/include/net/sock.h
-@@ -303,7 +303,7 @@ struct sk_filter;
-   *	@sk_stamp: time stamp of last packet received
-   *	@sk_stamp_seq: lock for accessing sk_stamp on 32 bit architectures only
-   *	@sk_tsflags: SO_TIMESTAMPING flags
--  *	@sk_use_task_frag: allow sk_page_frag() to use current->task_frag.
-+  *	@sk_use_task_frag: allow sk_page_frag_cache() to use current->task_frag.
-   *			   Sockets that can be used under memory reclaim should
-   *			   set this to false.
-   *	@sk_bind_phc: SO_TIMESTAMPING bind PHC index of PTP virtual clock
-@@ -461,7 +461,7 @@ struct sock {
- 	struct sk_buff_head	sk_write_queue;
- 	u32			sk_dst_pending_confirm;
- 	u32			sk_pacing_status; /* see enum sk_pacing */
--	struct page_frag	sk_frag;
-+	struct page_frag_cache	sk_frag;
- 	struct timer_list	sk_timer;
- 
- 	unsigned long		sk_pacing_rate; /* bytes per second */
-@@ -2469,22 +2469,22 @@ static inline void sk_stream_moderate_sndbuf(struct sock *sk)
- }
- 
- /**
-- * sk_page_frag - return an appropriate page_frag
-+ * sk_page_frag_cache - return an appropriate page_frag_cache
-  * @sk: socket
-  *
-- * Use the per task page_frag instead of the per socket one for
-+ * Use the per task page_frag_cache instead of the per socket one for
-  * optimization when we know that we're in process context and own
-  * everything that's associated with %current.
-  *
-  * Both direct reclaim and page faults can nest inside other
-- * socket operations and end up recursing into sk_page_frag()
-- * while it's already in use: explicitly avoid task page_frag
-+ * socket operations and end up recursing into sk_page_frag_cache()
-+ * while it's already in use: explicitly avoid task page_frag_cache
-  * when users disable sk_use_task_frag.
-  *
-  * Return: a per task page_frag if context allows that,
-  * otherwise a per socket one.
-  */
--static inline struct page_frag *sk_page_frag(struct sock *sk)
-+static inline struct page_frag_cache *sk_page_frag_cache(struct sock *sk)
- {
- 	if (sk->sk_use_task_frag)
- 		return &current->task_frag;
-@@ -2492,7 +2492,12 @@ static inline struct page_frag *sk_page_frag(struct sock *sk)
- 	return &sk->sk_frag;
- }
- 
--bool sk_page_frag_refill(struct sock *sk, struct page_frag *pfrag);
-+bool sk_page_frag_refill_prepare(struct sock *sk, struct page_frag_cache *nc,
-+				 struct page_frag *pfrag);
-+
-+void *sk_page_frag_alloc_refill_prepare(struct sock *sk,
-+					struct page_frag_cache *nc,
-+					struct page_frag *pfrag);
- 
- /*
-  *	Default write policy as shown to user space via poll/select/SIGIO
-diff --git a/kernel/exit.c b/kernel/exit.c
-index 7430852a8571..b5257e74ec1c 100644
---- a/kernel/exit.c
-+++ b/kernel/exit.c
-@@ -917,8 +917,7 @@ void __noreturn do_exit(long code)
- 	if (tsk->splice_pipe)
- 		free_pipe_info(tsk->splice_pipe);
- 
--	if (tsk->task_frag.page)
--		put_page(tsk->task_frag.page);
-+	page_frag_cache_drain(&tsk->task_frag);
- 
- 	exit_task_stack_account(tsk);
- 
-diff --git a/kernel/fork.c b/kernel/fork.c
-index cc760491f201..7d380a6fd64a 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -80,6 +80,7 @@
- #include <linux/tty.h>
- #include <linux/fs_struct.h>
- #include <linux/magic.h>
-+#include <linux/page_frag_cache.h>
- #include <linux/perf_event.h>
- #include <linux/posix-timers.h>
- #include <linux/user-return-notifier.h>
-@@ -1157,10 +1158,10 @@ static struct task_struct *dup_task_struct(struct task_struct *orig, int node)
- 	tsk->btrace_seq = 0;
- #endif
- 	tsk->splice_pipe = NULL;
--	tsk->task_frag.page = NULL;
- 	tsk->wake_q.next = NULL;
- 	tsk->worker_private = NULL;
- 
-+	page_frag_cache_init(&tsk->task_frag);
- 	kcov_task_init(tsk);
- 	kmsan_task_create(tsk);
- 	kmap_local_fork(tsk);
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index a5f8e4e0c649..aa735e965d25 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -3040,25 +3040,6 @@ static void sock_spd_release(struct splice_pipe_desc *spd, unsigned int i)
- 	put_page(spd->pages[i]);
- }
- 
--static struct page *linear_to_page(struct page *page, unsigned int *len,
--				   unsigned int *offset,
--				   struct sock *sk)
--{
--	struct page_frag *pfrag = sk_page_frag(sk);
--
--	if (!sk_page_frag_refill(sk, pfrag))
--		return NULL;
--
--	*len = min_t(unsigned int, *len, pfrag->size - pfrag->offset);
--
--	memcpy(page_address(pfrag->page) + pfrag->offset,
--	       page_address(page) + *offset, *len);
--	*offset = pfrag->offset;
--	pfrag->offset += *len;
--
--	return pfrag->page;
--}
--
- static bool spd_can_coalesce(const struct splice_pipe_desc *spd,
- 			     struct page *page,
- 			     unsigned int offset)
-@@ -3069,6 +3050,37 @@ static bool spd_can_coalesce(const struct splice_pipe_desc *spd,
- 		 spd->partial[spd->nr_pages - 1].len == offset);
- }
- 
-+static bool spd_fill_linear_page(struct splice_pipe_desc *spd,
-+				 struct page *page, unsigned int offset,
-+				 unsigned int *len, struct sock *sk)
-+{
-+	struct page_frag_cache *nc = sk_page_frag_cache(sk);
-+	struct page_frag page_frag, *pfrag;
-+	void *va;
-+
-+	pfrag = &page_frag;
-+	va = sk_page_frag_alloc_refill_prepare(sk, nc, pfrag);
-+	if (!va)
-+		return true;
-+
-+	*len = min_t(unsigned int, *len, pfrag->size);
-+	memcpy(va, page_address(page) + offset, *len);
-+
-+	if (spd_can_coalesce(spd, pfrag->page, pfrag->offset)) {
-+		spd->partial[spd->nr_pages - 1].len += *len;
-+		page_frag_commit_noref(nc, pfrag, *len);
-+		return false;
-+	}
-+
-+	page_frag_commit(nc, pfrag, *len);
-+	spd->pages[spd->nr_pages] = pfrag->page;
-+	spd->partial[spd->nr_pages].len = *len;
-+	spd->partial[spd->nr_pages].offset = pfrag->offset;
-+	spd->nr_pages++;
-+
-+	return false;
-+}
-+
- /*
-  * Fill page/offset/length into spd, if it can hold more pages.
-  */
-@@ -3081,11 +3093,9 @@ static bool spd_fill_page(struct splice_pipe_desc *spd,
- 	if (unlikely(spd->nr_pages == MAX_SKB_FRAGS))
- 		return true;
- 
--	if (linear) {
--		page = linear_to_page(page, len, &offset, sk);
--		if (!page)
--			return true;
--	}
-+	if (linear)
-+		return spd_fill_linear_page(spd, page, offset, len,  sk);
-+
- 	if (spd_can_coalesce(spd, page, offset)) {
- 		spd->partial[spd->nr_pages - 1].len += *len;
- 		return false;
-diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-index bbf40b999713..e3cd21d5a31f 100644
---- a/net/core/skmsg.c
-+++ b/net/core/skmsg.c
-@@ -27,23 +27,25 @@ static bool sk_msg_try_coalesce_ok(struct sk_msg *msg, int elem_first_coalesce)
- int sk_msg_alloc(struct sock *sk, struct sk_msg *msg, int len,
- 		 int elem_first_coalesce)
- {
--	struct page_frag *pfrag = sk_page_frag(sk);
-+	struct page_frag_cache *nc = sk_page_frag_cache(sk);
- 	u32 osize = msg->sg.size;
- 	int ret = 0;
- 
- 	len -= msg->sg.size;
- 	while (len > 0) {
-+		struct page_frag page_frag, *pfrag;
- 		struct scatterlist *sge;
- 		u32 orig_offset;
- 		int use, i;
- 
--		if (!sk_page_frag_refill(sk, pfrag)) {
-+		pfrag = &page_frag;
-+		if (!sk_page_frag_refill_prepare(sk, nc, pfrag)) {
- 			ret = -ENOMEM;
- 			goto msg_trim;
- 		}
- 
- 		orig_offset = pfrag->offset;
--		use = min_t(int, len, pfrag->size - orig_offset);
-+		use = min_t(int, len, pfrag->size);
- 		if (!sk_wmem_schedule(sk, use)) {
- 			ret = -ENOMEM;
- 			goto msg_trim;
-@@ -57,6 +59,7 @@ int sk_msg_alloc(struct sock *sk, struct sk_msg *msg, int len,
- 		    sg_page(sge) == pfrag->page &&
- 		    sge->offset + sge->length == orig_offset) {
- 			sge->length += use;
-+			page_frag_commit_noref(nc, pfrag, use);
- 		} else {
- 			if (sk_msg_full(msg)) {
- 				ret = -ENOSPC;
-@@ -66,13 +69,12 @@ int sk_msg_alloc(struct sock *sk, struct sk_msg *msg, int len,
- 			sge = &msg->sg.data[msg->sg.end];
- 			sg_unmark_end(sge);
- 			sg_set_page(sge, pfrag->page, use, orig_offset);
--			get_page(pfrag->page);
-+			page_frag_commit(nc, pfrag, use);
- 			sk_msg_iter_next(msg, end);
- 		}
- 
- 		sk_mem_charge(sk, use);
- 		msg->sg.size += use;
--		pfrag->offset += use;
- 		len -= use;
- 	}
- 
-diff --git a/net/core/sock.c b/net/core/sock.c
-index 468b1239606c..0a0c1d5e6684 100644
---- a/net/core/sock.c
-+++ b/net/core/sock.c
-@@ -2207,10 +2207,7 @@ static void __sk_destruct(struct rcu_head *head)
- 		pr_debug("%s: optmem leakage (%d bytes) detected\n",
- 			 __func__, atomic_read(&sk->sk_omem_alloc));
- 
--	if (sk->sk_frag.page) {
--		put_page(sk->sk_frag.page);
--		sk->sk_frag.page = NULL;
--	}
-+	page_frag_cache_drain(&sk->sk_frag);
- 
- 	/* We do not need to acquire sk->sk_peer_lock, we are the last user. */
- 	put_cred(sk->sk_peer_cred);
-@@ -2956,16 +2953,32 @@ bool skb_page_frag_refill(unsigned int sz, struct page_frag *pfrag, gfp_t gfp)
- }
- EXPORT_SYMBOL(skb_page_frag_refill);
- 
--bool sk_page_frag_refill(struct sock *sk, struct page_frag *pfrag)
-+bool sk_page_frag_refill_prepare(struct sock *sk, struct page_frag_cache *nc,
-+				 struct page_frag *pfrag)
- {
--	if (likely(skb_page_frag_refill(32U, pfrag, sk->sk_allocation)))
-+	if (likely(page_frag_refill_prepare(nc, 32U, pfrag, sk->sk_allocation)))
- 		return true;
- 
- 	sk_enter_memory_pressure(sk);
- 	sk_stream_moderate_sndbuf(sk);
- 	return false;
- }
--EXPORT_SYMBOL(sk_page_frag_refill);
-+EXPORT_SYMBOL(sk_page_frag_refill_prepare);
-+
-+void *sk_page_frag_alloc_refill_prepare(struct sock *sk, struct page_frag_cache *nc,
-+					struct page_frag *pfrag)
-+{
-+	void *va;
-+
-+	va = page_frag_alloc_refill_prepare(nc, 32U, pfrag, sk->sk_allocation);
-+	if (likely(va))
-+		return va;
-+
-+	sk_enter_memory_pressure(sk);
-+	sk_stream_moderate_sndbuf(sk);
-+	return NULL;
-+}
-+EXPORT_SYMBOL(sk_page_frag_alloc_refill_prepare);
- 
- void __lock_sock(struct sock *sk)
- 	__releases(&sk->sk_lock.slock)
-@@ -3487,8 +3500,8 @@ void sock_init_data_uid(struct socket *sock, struct sock *sk, kuid_t uid)
- 	sk->sk_error_report	=	sock_def_error_report;
- 	sk->sk_destruct		=	sock_def_destruct;
- 
--	sk->sk_frag.page	=	NULL;
--	sk->sk_frag.offset	=	0;
-+	page_frag_cache_init(&sk->sk_frag);
-+
- 	sk->sk_peek_off		=	-1;
- 
- 	sk->sk_peer_pid 	=	NULL;
-diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
-index b90d0f78ac80..786c2cb0b770 100644
---- a/net/ipv4/ip_output.c
-+++ b/net/ipv4/ip_output.c
-@@ -952,7 +952,7 @@ static int __ip_append_data(struct sock *sk,
- 			    struct flowi4 *fl4,
- 			    struct sk_buff_head *queue,
- 			    struct inet_cork *cork,
--			    struct page_frag *pfrag,
-+			    struct page_frag_cache *nc,
- 			    int getfrag(void *from, char *to, int offset,
- 					int len, int odd, struct sk_buff *skb),
- 			    void *from, int length, int transhdrlen,
-@@ -1227,13 +1227,19 @@ static int __ip_append_data(struct sock *sk,
- 			copy = err;
- 			wmem_alloc_delta += copy;
- 		} else if (!zc) {
-+			struct page_frag page_frag, *pfrag;
- 			int i = skb_shinfo(skb)->nr_frags;
-+			void *va;
- 
- 			err = -ENOMEM;
--			if (!sk_page_frag_refill(sk, pfrag))
-+			pfrag = &page_frag;
-+			va = sk_page_frag_alloc_refill_prepare(sk, nc, pfrag);
-+			if (!va)
- 				goto error;
- 
- 			skb_zcopy_downgrade_managed(skb);
-+			copy = min_t(int, copy, pfrag->size);
-+
- 			if (!skb_can_coalesce(skb, i, pfrag->page,
- 					      pfrag->offset)) {
- 				err = -EMSGSIZE;
-@@ -1241,18 +1247,18 @@ static int __ip_append_data(struct sock *sk,
- 					goto error;
- 
- 				__skb_fill_page_desc(skb, i, pfrag->page,
--						     pfrag->offset, 0);
-+						     pfrag->offset, copy);
- 				skb_shinfo(skb)->nr_frags = ++i;
--				get_page(pfrag->page);
-+				page_frag_commit(nc, pfrag, copy);
-+			} else {
-+				skb_frag_size_add(
-+					&skb_shinfo(skb)->frags[i - 1], copy);
-+				page_frag_commit_noref(nc, pfrag, copy);
- 			}
--			copy = min_t(int, copy, pfrag->size - pfrag->offset);
--			if (getfrag(from,
--				    page_address(pfrag->page) + pfrag->offset,
--				    offset, copy, skb->len, skb) < 0)
-+
-+			if (getfrag(from, va, offset, copy, skb->len, skb) < 0)
- 				goto error_efault;
- 
--			pfrag->offset += copy;
--			skb_frag_size_add(&skb_shinfo(skb)->frags[i - 1], copy);
- 			skb_len_add(skb, copy);
- 			wmem_alloc_delta += copy;
- 		} else {
-@@ -1363,7 +1369,7 @@ int ip_append_data(struct sock *sk, struct flowi4 *fl4,
- 	}
- 
- 	return __ip_append_data(sk, fl4, &sk->sk_write_queue, &inet->cork.base,
--				sk_page_frag(sk), getfrag,
-+				sk_page_frag_cache(sk), getfrag,
- 				from, length, transhdrlen, flags);
- }
- 
-diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
-index 8bf8ce656b0a..f1a738ebf808 100644
---- a/net/ipv4/tcp.c
-+++ b/net/ipv4/tcp.c
-@@ -1189,9 +1189,13 @@ int tcp_sendmsg_locked(struct sock *sk, struct msghdr *msg, size_t size)
- 		if (zc == 0) {
- 			bool merge = true;
- 			int i = skb_shinfo(skb)->nr_frags;
--			struct page_frag *pfrag = sk_page_frag(sk);
-+			struct page_frag_cache *nc = sk_page_frag_cache(sk);
-+			struct page_frag page_frag, *pfrag;
-+			void *va;
- 
--			if (!sk_page_frag_refill(sk, pfrag))
-+			pfrag = &page_frag;
-+			va = sk_page_frag_alloc_refill_prepare(sk, nc, pfrag);
-+			if (!va)
- 				goto wait_for_space;
- 
- 			if (!skb_can_coalesce(skb, i, pfrag->page,
-@@ -1203,7 +1207,7 @@ int tcp_sendmsg_locked(struct sock *sk, struct msghdr *msg, size_t size)
- 				merge = false;
- 			}
- 
--			copy = min_t(int, copy, pfrag->size - pfrag->offset);
-+			copy = min_t(int, copy, pfrag->size);
- 
- 			if (unlikely(skb_zcopy_pure(skb) || skb_zcopy_managed(skb))) {
- 				if (tcp_downgrade_zcopy_pure(sk, skb))
-@@ -1216,20 +1220,19 @@ int tcp_sendmsg_locked(struct sock *sk, struct msghdr *msg, size_t size)
- 				goto wait_for_space;
- 
- 			err = skb_copy_to_va_nocache(sk, &msg->msg_iter, skb,
--						     page_address(pfrag->page) +
--						     pfrag->offset, copy);
-+						     va, copy);
- 			if (err)
- 				goto do_error;
- 
- 			/* Update the skb. */
- 			if (merge) {
- 				skb_frag_size_add(&skb_shinfo(skb)->frags[i - 1], copy);
-+				page_frag_commit_noref(nc, pfrag, copy);
- 			} else {
- 				skb_fill_page_desc(skb, i, pfrag->page,
- 						   pfrag->offset, copy);
--				page_ref_inc(pfrag->page);
-+				page_frag_commit(nc, pfrag, copy);
- 			}
--			pfrag->offset += copy;
- 		} else if (zc == MSG_ZEROCOPY)  {
- 			/* First append to a fragless skb builds initial
- 			 * pure zerocopy skb
-@@ -3134,11 +3137,7 @@ int tcp_disconnect(struct sock *sk, int flags)
- 
- 	WARN_ON(inet->inet_num && !icsk->icsk_bind_hash);
- 
--	if (sk->sk_frag.page) {
--		put_page(sk->sk_frag.page);
--		sk->sk_frag.page = NULL;
--		sk->sk_frag.offset = 0;
--	}
-+	page_frag_cache_drain(&sk->sk_frag);
- 	sk_error_report(sk);
- 	return 0;
- }
-diff --git a/net/ipv4/tcp_output.c b/net/ipv4/tcp_output.c
-index cdd0def14427..75add1c4f57c 100644
---- a/net/ipv4/tcp_output.c
-+++ b/net/ipv4/tcp_output.c
-@@ -3970,9 +3970,11 @@ static int tcp_send_syn_data(struct sock *sk, struct sk_buff *syn)
- 	struct inet_connection_sock *icsk = inet_csk(sk);
- 	struct tcp_sock *tp = tcp_sk(sk);
- 	struct tcp_fastopen_request *fo = tp->fastopen_req;
--	struct page_frag *pfrag = sk_page_frag(sk);
-+	struct page_frag_cache *nc = sk_page_frag_cache(sk);
-+	struct page_frag page_frag, *pfrag;
- 	struct sk_buff *syn_data;
- 	int space, err = 0;
-+	void *va;
- 
- 	tp->rx_opt.mss_clamp = tp->advmss;  /* If MSS is not cached */
- 	if (!tcp_fastopen_cookie_check(sk, &tp->rx_opt.mss_clamp, &fo->cookie))
-@@ -3991,21 +3993,25 @@ static int tcp_send_syn_data(struct sock *sk, struct sk_buff *syn)
- 
- 	space = min_t(size_t, space, fo->size);
- 
--	if (space &&
--	    !skb_page_frag_refill(min_t(size_t, space, PAGE_SIZE),
--				  pfrag, sk->sk_allocation))
--		goto fallback;
-+	if (space) {
-+		pfrag = &page_frag;
-+		va = page_frag_alloc_refill_prepare(nc,
-+						    min_t(size_t, space, PAGE_SIZE),
-+						    pfrag, sk->sk_allocation);
-+		if (!va)
-+			goto fallback;
-+	}
-+
- 	syn_data = tcp_stream_alloc_skb(sk, sk->sk_allocation, false);
- 	if (!syn_data)
- 		goto fallback;
- 	memcpy(syn_data->cb, syn->cb, sizeof(syn->cb));
- 	if (space) {
--		space = min_t(size_t, space, pfrag->size - pfrag->offset);
-+		space = min_t(size_t, space, pfrag->size);
- 		space = tcp_wmem_schedule(sk, space);
- 	}
- 	if (space) {
--		space = copy_page_from_iter(pfrag->page, pfrag->offset,
--					    space, &fo->data->msg_iter);
-+		space = _copy_from_iter(va, space, &fo->data->msg_iter);
- 		if (unlikely(!space)) {
- 			tcp_skb_tsorted_anchor_cleanup(syn_data);
- 			kfree_skb(syn_data);
-@@ -4013,8 +4019,7 @@ static int tcp_send_syn_data(struct sock *sk, struct sk_buff *syn)
- 		}
- 		skb_fill_page_desc(syn_data, 0, pfrag->page,
- 				   pfrag->offset, space);
--		page_ref_inc(pfrag->page);
--		pfrag->offset += space;
-+		page_frag_commit(nc, pfrag, space);
- 		skb_len_add(syn_data, space);
- 		skb_zcopy_set(syn_data, fo->uarg, NULL);
- 	}
-diff --git a/net/ipv6/ip6_output.c b/net/ipv6/ip6_output.c
-index f26841f1490f..b83d2da8e7b0 100644
---- a/net/ipv6/ip6_output.c
-+++ b/net/ipv6/ip6_output.c
-@@ -1413,7 +1413,7 @@ static int __ip6_append_data(struct sock *sk,
- 			     struct sk_buff_head *queue,
- 			     struct inet_cork_full *cork_full,
- 			     struct inet6_cork *v6_cork,
--			     struct page_frag *pfrag,
-+			     struct page_frag_cache *nc,
- 			     int getfrag(void *from, char *to, int offset,
- 					 int len, int odd, struct sk_buff *skb),
- 			     void *from, size_t length, int transhdrlen,
-@@ -1754,13 +1754,19 @@ static int __ip6_append_data(struct sock *sk,
- 			copy = err;
- 			wmem_alloc_delta += copy;
- 		} else if (!zc) {
-+			struct page_frag page_frag, *pfrag;
- 			int i = skb_shinfo(skb)->nr_frags;
-+			void *va;
- 
- 			err = -ENOMEM;
--			if (!sk_page_frag_refill(sk, pfrag))
-+			pfrag = &page_frag;
-+			va = sk_page_frag_alloc_refill_prepare(sk, nc, pfrag);
-+			if (!va)
- 				goto error;
- 
- 			skb_zcopy_downgrade_managed(skb);
-+			copy = min_t(int, copy, pfrag->size);
-+
- 			if (!skb_can_coalesce(skb, i, pfrag->page,
- 					      pfrag->offset)) {
- 				err = -EMSGSIZE;
-@@ -1768,18 +1774,18 @@ static int __ip6_append_data(struct sock *sk,
- 					goto error;
- 
- 				__skb_fill_page_desc(skb, i, pfrag->page,
--						     pfrag->offset, 0);
-+						     pfrag->offset, copy);
- 				skb_shinfo(skb)->nr_frags = ++i;
--				get_page(pfrag->page);
-+				page_frag_commit(nc, pfrag, copy);
-+			} else {
-+				skb_frag_size_add(
-+					&skb_shinfo(skb)->frags[i - 1], copy);
-+				page_frag_commit_noref(nc, pfrag, copy);
- 			}
--			copy = min_t(int, copy, pfrag->size - pfrag->offset);
--			if (getfrag(from,
--				    page_address(pfrag->page) + pfrag->offset,
--				    offset, copy, skb->len, skb) < 0)
-+
-+			if (getfrag(from, va, offset, copy, skb->len, skb) < 0)
- 				goto error_efault;
- 
--			pfrag->offset += copy;
--			skb_frag_size_add(&skb_shinfo(skb)->frags[i - 1], copy);
- 			skb->len += copy;
- 			skb->data_len += copy;
- 			skb->truesize += copy;
-@@ -1842,7 +1848,7 @@ int ip6_append_data(struct sock *sk,
- 	}
- 
- 	return __ip6_append_data(sk, &sk->sk_write_queue, &inet->cork,
--				 &np->cork, sk_page_frag(sk), getfrag,
-+				 &np->cork, sk_page_frag_cache(sk), getfrag,
- 				 from, length, transhdrlen, flags, ipc6);
- }
- EXPORT_SYMBOL_GPL(ip6_append_data);
-diff --git a/net/kcm/kcmsock.c b/net/kcm/kcmsock.c
-index f4462cf88ed5..ab6ab1d102b2 100644
---- a/net/kcm/kcmsock.c
-+++ b/net/kcm/kcmsock.c
-@@ -804,9 +804,13 @@ static int kcm_sendmsg(struct socket *sock, struct msghdr *msg, size_t len)
- 	while (msg_data_left(msg)) {
- 		bool merge = true;
- 		int i = skb_shinfo(skb)->nr_frags;
--		struct page_frag *pfrag = sk_page_frag(sk);
-+		struct page_frag_cache *nc = sk_page_frag_cache(sk);
-+		struct page_frag page_frag, *pfrag;
-+		void *va;
- 
--		if (!sk_page_frag_refill(sk, pfrag))
-+		pfrag = &page_frag;
-+		va = sk_page_frag_alloc_refill_prepare(sk, nc, pfrag);
-+		if (!va)
- 			goto wait_for_memory;
- 
- 		if (!skb_can_coalesce(skb, i, pfrag->page,
-@@ -851,14 +855,12 @@ static int kcm_sendmsg(struct socket *sock, struct msghdr *msg, size_t len)
- 			if (head != skb)
- 				head->truesize += copy;
- 		} else {
--			copy = min_t(int, msg_data_left(msg),
--				     pfrag->size - pfrag->offset);
-+			copy = min_t(int, msg_data_left(msg), pfrag->size);
- 			if (!sk_wmem_schedule(sk, copy))
- 				goto wait_for_memory;
- 
- 			err = skb_copy_to_va_nocache(sk, &msg->msg_iter, skb,
--						     page_address(pfrag->page) +
--						     pfrag->offset, copy);
-+						     va, copy);
- 			if (err)
- 				goto out_error;
- 
-@@ -866,13 +868,13 @@ static int kcm_sendmsg(struct socket *sock, struct msghdr *msg, size_t len)
- 			if (merge) {
- 				skb_frag_size_add(
- 					&skb_shinfo(skb)->frags[i - 1], copy);
-+				page_frag_commit_noref(nc, pfrag, copy);
- 			} else {
- 				skb_fill_page_desc(skb, i, pfrag->page,
- 						   pfrag->offset, copy);
--				get_page(pfrag->page);
-+				page_frag_commit(nc, pfrag, copy);
- 			}
- 
--			pfrag->offset += copy;
- 		}
- 
- 		copied += copy;
-diff --git a/net/mptcp/protocol.c b/net/mptcp/protocol.c
-index 37ebcb7640eb..ec5f2d2650c2 100644
---- a/net/mptcp/protocol.c
-+++ b/net/mptcp/protocol.c
-@@ -960,7 +960,6 @@ static bool mptcp_skb_can_collapse_to(u64 write_seq,
- }
- 
- /* we can append data to the given data frag if:
-- * - there is space available in the backing page_frag
-  * - the data frag tail matches the current page_frag free offset
-  * - the data frag end sequence number matches the current write seq
-  */
-@@ -969,7 +968,6 @@ static bool mptcp_frag_can_collapse_to(const struct mptcp_sock *msk,
- 				       const struct mptcp_data_frag *df)
- {
- 	return df && pfrag->page == df->page &&
--		pfrag->size - pfrag->offset > 0 &&
- 		pfrag->offset == (df->offset + df->data_len) &&
- 		df->data_seq + df->data_len == msk->write_seq;
- }
-@@ -1085,14 +1083,20 @@ static void mptcp_enter_memory_pressure(struct sock *sk)
- /* ensure we get enough memory for the frag hdr, beyond some minimal amount of
-  * data
-  */
--static bool mptcp_page_frag_refill(struct sock *sk, struct page_frag *pfrag)
-+static void *mptcp_page_frag_alloc_refill_prepare(struct sock *sk,
-+						  struct page_frag_cache *nc,
-+						  struct page_frag *pfrag)
- {
--	if (likely(skb_page_frag_refill(32U + sizeof(struct mptcp_data_frag),
--					pfrag, sk->sk_allocation)))
--		return true;
-+	void *va;
-+
-+	va = page_frag_alloc_refill_prepare(nc,
-+					    32U + sizeof(struct mptcp_data_frag),
-+					    pfrag, sk->sk_allocation);
-+	if (likely(va))
-+		return va;
- 
- 	mptcp_enter_memory_pressure(sk);
--	return false;
-+	return NULL;
- }
- 
- static struct mptcp_data_frag *
-@@ -1795,7 +1799,7 @@ static u32 mptcp_send_limit(const struct sock *sk)
- static int mptcp_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
- {
- 	struct mptcp_sock *msk = mptcp_sk(sk);
--	struct page_frag *pfrag;
-+	struct page_frag_cache *nc;
- 	size_t copied = 0;
- 	int ret = 0;
- 	long timeo;
-@@ -1829,14 +1833,16 @@ static int mptcp_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
- 	if (unlikely(sk->sk_err || (sk->sk_shutdown & SEND_SHUTDOWN)))
- 		goto do_error;
- 
--	pfrag = sk_page_frag(sk);
-+	nc = sk_page_frag_cache(sk);
- 
- 	while (msg_data_left(msg)) {
-+		struct page_frag page_frag, *pfrag;
- 		int total_ts, frag_truesize = 0;
- 		struct mptcp_data_frag *dfrag;
- 		bool dfrag_collapsed;
--		size_t psize, offset;
- 		u32 copy_limit;
-+		size_t psize;
-+		void *va;
- 
- 		/* ensure fitting the notsent_lowat() constraint */
- 		copy_limit = mptcp_send_limit(sk);
-@@ -1847,21 +1853,24 @@ static int mptcp_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
- 		 * page allocator
- 		 */
- 		dfrag = mptcp_pending_tail(sk);
--		dfrag_collapsed = mptcp_frag_can_collapse_to(msk, pfrag, dfrag);
-+		pfrag = &page_frag;
-+		va = page_frag_alloc_refill_probe(nc, 1, pfrag);
-+		dfrag_collapsed = va && mptcp_frag_can_collapse_to(msk, pfrag, dfrag);
- 		if (!dfrag_collapsed) {
--			if (!mptcp_page_frag_refill(sk, pfrag))
-+			va = mptcp_page_frag_alloc_refill_prepare(sk, nc, pfrag);
-+			if (!va)
- 				goto wait_for_memory;
- 
- 			dfrag = mptcp_carve_data_frag(msk, pfrag, pfrag->offset);
- 			frag_truesize = dfrag->overhead;
-+			va += dfrag->overhead;
- 		}
- 
- 		/* we do not bound vs wspace, to allow a single packet.
- 		 * memory accounting will prevent execessive memory usage
- 		 * anyway
- 		 */
--		offset = dfrag->offset + dfrag->data_len;
--		psize = pfrag->size - offset;
-+		psize = pfrag->size - frag_truesize;
- 		psize = min_t(size_t, psize, msg_data_left(msg));
- 		psize = min_t(size_t, psize, copy_limit);
- 		total_ts = psize + frag_truesize;
-@@ -1869,8 +1878,7 @@ static int mptcp_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
- 		if (!sk_wmem_schedule(sk, total_ts))
- 			goto wait_for_memory;
- 
--		ret = do_copy_data_nocache(sk, psize, &msg->msg_iter,
--					   page_address(dfrag->page) + offset);
-+		ret = do_copy_data_nocache(sk, psize, &msg->msg_iter, va);
- 		if (ret)
- 			goto do_error;
- 
-@@ -1879,7 +1887,6 @@ static int mptcp_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
- 		copied += psize;
- 		dfrag->data_len += psize;
- 		frag_truesize += psize;
--		pfrag->offset += frag_truesize;
- 		WRITE_ONCE(msk->write_seq, msk->write_seq + psize);
- 
- 		/* charge data on mptcp pending queue to the msk socket
-@@ -1887,10 +1894,12 @@ static int mptcp_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
- 		 */
- 		sk_wmem_queued_add(sk, frag_truesize);
- 		if (!dfrag_collapsed) {
--			get_page(dfrag->page);
-+			page_frag_commit(nc, pfrag, frag_truesize);
- 			list_add_tail(&dfrag->list, &msk->rtx_queue);
- 			if (!msk->first_pending)
- 				WRITE_ONCE(msk->first_pending, dfrag);
-+		} else {
-+			page_frag_commit_noref(nc, pfrag, frag_truesize);
- 		}
- 		pr_debug("msk=%p dfrag at seq=%llu len=%u sent=%u new=%d\n", msk,
- 			 dfrag->data_seq, dfrag->data_len, dfrag->already_sent,
-diff --git a/net/sched/em_meta.c b/net/sched/em_meta.c
-index 8996c73c9779..4da465af972f 100644
---- a/net/sched/em_meta.c
-+++ b/net/sched/em_meta.c
-@@ -590,7 +590,7 @@ META_COLLECTOR(int_sk_sendmsg_off)
- 		*err = -1;
- 		return;
- 	}
--	dst->value = sk->sk_frag.offset;
-+	dst->value = page_frag_cache_page_offset(&sk->sk_frag);
- }
- 
- META_COLLECTOR(int_sk_write_pend)
-diff --git a/net/tls/tls_device.c b/net/tls/tls_device.c
-index dc063c2c7950..09dd3028825e 100644
---- a/net/tls/tls_device.c
-+++ b/net/tls/tls_device.c
-@@ -253,8 +253,8 @@ static void tls_device_resync_tx(struct sock *sk, struct tls_context *tls_ctx,
- }
- 
- static void tls_append_frag(struct tls_record_info *record,
--			    struct page_frag *pfrag,
--			    int size)
-+			    struct page_frag_cache *nc,
-+			    struct page_frag *pfrag, int size)
- {
- 	skb_frag_t *frag;
- 
-@@ -262,15 +262,34 @@ static void tls_append_frag(struct tls_record_info *record,
- 	if (skb_frag_page(frag) == pfrag->page &&
- 	    skb_frag_off(frag) + skb_frag_size(frag) == pfrag->offset) {
- 		skb_frag_size_add(frag, size);
-+		page_frag_commit_noref(nc, pfrag, size);
- 	} else {
- 		++frag;
- 		skb_frag_fill_page_desc(frag, pfrag->page, pfrag->offset,
- 					size);
- 		++record->num_frags;
-+		page_frag_commit(nc, pfrag, size);
-+	}
-+
-+	record->len += size;
-+}
-+
-+static void tls_append_dummy_frag(struct tls_record_info *record,
-+				  struct page_frag *pfrag, int size)
-+{
-+	skb_frag_t *frag;
-+
-+	frag = &record->frags[record->num_frags - 1];
-+	if (skb_frag_page(frag) == pfrag->page &&
-+	    skb_frag_off(frag) + skb_frag_size(frag) == pfrag->offset) {
-+		skb_frag_size_add(frag, size);
-+	} else {
-+		++frag;
-+		skb_frag_fill_page_desc(frag, pfrag->page, pfrag->offset, size);
-+		++record->num_frags;
- 		get_page(pfrag->page);
- 	}
- 
--	pfrag->offset += size;
- 	record->len += size;
- }
- 
-@@ -311,11 +330,11 @@ static int tls_push_record(struct sock *sk,
- static void tls_device_record_close(struct sock *sk,
- 				    struct tls_context *ctx,
- 				    struct tls_record_info *record,
--				    struct page_frag *pfrag,
-+				    struct page_frag_cache *nc,
- 				    unsigned char record_type)
- {
- 	struct tls_prot_info *prot = &ctx->prot_info;
--	struct page_frag dummy_tag_frag;
-+	struct page_frag dummy_tag_frag, *pfrag;
- 
- 	/* append tag
- 	 * device will fill in the tag, we just need to append a placeholder
-@@ -323,13 +342,16 @@ static void tls_device_record_close(struct sock *sk,
- 	 * increases frag count)
- 	 * if we can't allocate memory now use the dummy page
- 	 */
--	if (unlikely(pfrag->size - pfrag->offset < prot->tag_size) &&
--	    !skb_page_frag_refill(prot->tag_size, pfrag, sk->sk_allocation)) {
-+	pfrag = &dummy_tag_frag;
-+	if (unlikely(!page_frag_refill_probe(nc, prot->tag_size, pfrag) &&
-+		     !page_frag_refill_prepare(nc, prot->tag_size, pfrag,
-+					       sk->sk_allocation))) {
- 		dummy_tag_frag.page = dummy_page;
- 		dummy_tag_frag.offset = 0;
--		pfrag = &dummy_tag_frag;
-+		tls_append_dummy_frag(record, pfrag, prot->tag_size);
-+	} else {
-+		tls_append_frag(record, nc, pfrag, prot->tag_size);
- 	}
--	tls_append_frag(record, pfrag, prot->tag_size);
- 
- 	/* fill prepend */
- 	tls_fill_prepend(ctx, skb_frag_address(&record->frags[0]),
-@@ -338,6 +360,7 @@ static void tls_device_record_close(struct sock *sk,
- }
- 
- static int tls_create_new_record(struct tls_offload_context_tx *offload_ctx,
-+				 struct page_frag_cache *nc,
- 				 struct page_frag *pfrag,
- 				 size_t prepend_size)
- {
-@@ -352,8 +375,7 @@ static int tls_create_new_record(struct tls_offload_context_tx *offload_ctx,
- 	skb_frag_fill_page_desc(frag, pfrag->page, pfrag->offset,
- 				prepend_size);
- 
--	get_page(pfrag->page);
--	pfrag->offset += prepend_size;
-+	page_frag_commit(nc, pfrag, prepend_size);
- 
- 	record->num_frags = 1;
- 	record->len = prepend_size;
-@@ -361,33 +383,33 @@ static int tls_create_new_record(struct tls_offload_context_tx *offload_ctx,
- 	return 0;
- }
- 
--static int tls_do_allocation(struct sock *sk,
--			     struct tls_offload_context_tx *offload_ctx,
--			     struct page_frag *pfrag,
--			     size_t prepend_size)
-+static void *tls_do_allocation(struct sock *sk,
-+			       struct tls_offload_context_tx *offload_ctx,
-+			       struct page_frag_cache *nc,
-+			       size_t prepend_size, struct page_frag *pfrag)
- {
- 	int ret;
- 
- 	if (!offload_ctx->open_record) {
--		if (unlikely(!skb_page_frag_refill(prepend_size, pfrag,
--						   sk->sk_allocation))) {
-+		void *va;
-+
-+		if (unlikely(!page_frag_refill_prepare(nc, prepend_size, pfrag,
-+						       sk->sk_allocation))) {
- 			READ_ONCE(sk->sk_prot)->enter_memory_pressure(sk);
- 			sk_stream_moderate_sndbuf(sk);
--			return -ENOMEM;
-+			return NULL;
- 		}
- 
--		ret = tls_create_new_record(offload_ctx, pfrag, prepend_size);
-+		ret = tls_create_new_record(offload_ctx, nc, pfrag, prepend_size);
- 		if (ret)
--			return ret;
-+			return NULL;
- 
--		if (pfrag->size > pfrag->offset)
--			return 0;
-+		va = page_frag_alloc_refill_probe(nc, 1, pfrag);
-+		if (va)
-+			return va;
- 	}
- 
--	if (!sk_page_frag_refill(sk, pfrag))
--		return -ENOMEM;
--
--	return 0;
-+	return sk_page_frag_alloc_refill_prepare(sk, nc, pfrag);
- }
- 
- static int tls_device_copy_data(void *addr, size_t bytes, struct iov_iter *i)
-@@ -424,8 +446,8 @@ static int tls_push_data(struct sock *sk,
- 	struct tls_prot_info *prot = &tls_ctx->prot_info;
- 	struct tls_offload_context_tx *ctx = tls_offload_ctx_tx(tls_ctx);
- 	struct tls_record_info *record;
-+	struct page_frag_cache *nc;
- 	int tls_push_record_flags;
--	struct page_frag *pfrag;
- 	size_t orig_size = size;
- 	u32 max_open_record_len;
- 	bool more = false;
-@@ -454,7 +476,7 @@ static int tls_push_data(struct sock *sk,
- 			return rc;
- 	}
- 
--	pfrag = sk_page_frag(sk);
-+	nc = sk_page_frag_cache(sk);
- 
- 	/* TLS_HEADER_SIZE is not counted as part of the TLS record, and
- 	 * we need to leave room for an authentication tag.
-@@ -462,8 +484,12 @@ static int tls_push_data(struct sock *sk,
- 	max_open_record_len = TLS_MAX_PAYLOAD_SIZE +
- 			      prot->prepend_size;
- 	do {
--		rc = tls_do_allocation(sk, ctx, pfrag, prot->prepend_size);
--		if (unlikely(rc)) {
-+		struct page_frag page_frag, *pfrag;
-+		void *va;
-+
-+		pfrag = &page_frag;
-+		va = tls_do_allocation(sk, ctx, nc, prot->prepend_size, pfrag);
-+		if (unlikely(!va)) {
- 			rc = sk_stream_wait_memory(sk, &timeo);
- 			if (!rc)
- 				continue;
-@@ -512,16 +538,15 @@ static int tls_push_data(struct sock *sk,
- 
- 			zc_pfrag.offset = off;
- 			zc_pfrag.size = copy;
--			tls_append_frag(record, &zc_pfrag, copy);
-+			tls_append_dummy_frag(record, &zc_pfrag, copy);
- 		} else if (copy) {
--			copy = min_t(size_t, copy, pfrag->size - pfrag->offset);
-+			copy = min_t(size_t, copy, pfrag->size);
- 
--			rc = tls_device_copy_data(page_address(pfrag->page) +
--						  pfrag->offset, copy,
--						  iter);
-+			rc = tls_device_copy_data(va, copy, iter);
- 			if (rc)
- 				goto handle_error;
--			tls_append_frag(record, pfrag, copy);
-+
-+			tls_append_frag(record, nc, pfrag, copy);
- 		}
- 
- 		size -= copy;
-@@ -539,7 +564,7 @@ static int tls_push_data(struct sock *sk,
- 		if (done || record->len >= max_open_record_len ||
- 		    (record->num_frags >= MAX_SKB_FRAGS - 1)) {
- 			tls_device_record_close(sk, tls_ctx, record,
--						pfrag, record_type);
-+						nc, record_type);
- 
- 			rc = tls_push_record(sk,
- 					     tls_ctx,
--- 
-2.33.0
+Thanks for the fix!
 
+> But we also need a test for this. Like the one attached.
+> Or Alan can share his test, which is much shorter but skips round trip to bytes and back.
+>
+
+Eduard's test is better than mine; mine was a simple addition to
+btf_endian() tests that checked split/distilled BTF matched endianness
+of the originating BTF for non-native endianness. Having actual
+non-native endianness _use_ as in Eduard's test is much preferred I think.
+
+> [...]
 
