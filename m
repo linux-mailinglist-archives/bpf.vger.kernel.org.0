@@ -1,93 +1,150 @@
-Return-Path: <bpf+bounces-38565-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38566-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40ED996665A
-	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 18:00:45 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77625966664
+	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 18:02:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A7D4FB2396F
-	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 16:00:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3281E286F01
+	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 16:02:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 115F41B86D9;
-	Fri, 30 Aug 2024 16:00:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC6A51B8EB6;
+	Fri, 30 Aug 2024 16:01:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M35Lo/+K"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E60ia9i5"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83AB71B5ED3;
-	Fri, 30 Aug 2024 16:00:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 159AB1B8EB8
+	for <bpf@vger.kernel.org>; Fri, 30 Aug 2024 16:01:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725033626; cv=none; b=fqkKJElju4LP1d9QB3XCACW2RWavNczxl8XHd9Cf/EOtGP148fSmSbKpDs+su9eONxFIMM1Wz884nfI1OFgniumXvmfqLxr9jI8PqF6N3rRLsxo48agIXoaIdUpbaUTRoJwgh6LG+Ers9C/H6HkZ1LGSS7JJW0U/OA2/YfnsEe0=
+	t=1725033666; cv=none; b=ZxdzcKATOah5QB1dLjIZQxDRl7yoXtozG9jvFhUGmNqFOjbCZYiIdcfr2dF62BzyYwUzkfdy6gxcxCqQncfl8AhWXsF41ZYoW3Bg93fml0/NVB7Nz6zdif3eteiHc3j7DktsN7GknCZRyehvJtio8uu7wJhY3kDi4J6+ME4hg5g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725033626; c=relaxed/simple;
-	bh=H1eVR7fCA25sTItQDzNJKfMrwfmWIW5Mj3idcLd+EzQ=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=OrKqRU3ufwgpvnHzJv0wZIq92kwCIFzU5U2kD21vHm0sW6fIkDHFQk1FfUMEiGcXcuVl8hIuOniE3Sjl1tdNYafgFVFwPt1dIsXkNYcAbOu8vk8QtKvirNd6NcVcHch6pLym9wFYJxDO1zgt5S9R0YvTz3IR/VKCk/5s5ql4rCE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M35Lo/+K; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1601DC4CEC7;
-	Fri, 30 Aug 2024 16:00:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1725033626;
-	bh=H1eVR7fCA25sTItQDzNJKfMrwfmWIW5Mj3idcLd+EzQ=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=M35Lo/+Kk3ZCNXPouvGjPvhDAn/ShvDhVs/2VPLgK0mXoUBYTNtjCutv+q2sm/QQj
-	 mFZmYF0HVFosWmYol+InpRnXNQIigigebWQVvvdPpVnti5xqlzoYkVgSkqidyOZyQ4
-	 psNJOoljcGo30FVlEL02wzpVvHxf/90N0hiCsYpjFphwUkv85f8wsnncgiM2wBmSh3
-	 8S6SrXfd39XfoE1GGHcgHX99r5DtwliX1Fq8YF6qfxzuG49ZICUykXZ6NMDrEwUntB
-	 4CIdgqdQcx2sqJWOIC0RlSYlTs1zy+J6fasdU5GrhcGUgdAobYifTOjV+KzOvtS65K
-	 hJYO6t/Nxts1A==
-Received: from ip-10-30-226-235.us-west-2.compute.internal (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id AB9223809A81;
-	Fri, 30 Aug 2024 16:00:27 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1725033666; c=relaxed/simple;
+	bh=gHWbPneExtgN6k9ToDNNfFE6Fx3kux2xQTY48RpptP4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=gBDvTUDJMhnT+e/qNNXjipUtZ7H3mAUP0bQcuqjqb3I6gKb0e720Z7ZlIr7AxoSnOlZ0vln8mvh0BJcRho9yZaSB32ZEBlI6Hb4sKbOr4N5vlL9lnvjjNDi8HhEzje3jDQ7z3/0KGjDwpkjyD+hKfPZLVRsDR/6RtSaa6b+vn0A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E60ia9i5; arc=none smtp.client-ip=209.85.215.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-7cf5e179b68so1335826a12.1
+        for <bpf@vger.kernel.org>; Fri, 30 Aug 2024 09:01:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1725033664; x=1725638464; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TBDbxJU21T7L/UzcFfIRe29/jzO5Efklip9vWpLlmLI=;
+        b=E60ia9i5RbXPQwJDyffco5ynCP1nrXcCZ+SceM6JenmqB7g3S7rwucG2Rjc/ZyBKSf
+         Kr5FmBswPvBrx6BaND56xOeFmFRscLLXxIomXBoivl6lI6yrrUUHJULznArox1lqcZAN
+         UfBYFbERNEfZuGqoLM9JdBrJEeJ1uhNr2XEo6zmX2wmyk1SMWNCsLEGLxfZzzOicasFQ
+         yfX+RYvfync4SNc/VJq/6ZUE+P9WwsCUkAx9V7xXE1MrrBoP+t92KdCTS54WaNjlXHff
+         rd8dLs0CDdfbXAoymNydJ639KSydUh889ET0RLhhZNEjaTbFoH4tcRbtlBhpPwZEo7IT
+         omVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1725033664; x=1725638464;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TBDbxJU21T7L/UzcFfIRe29/jzO5Efklip9vWpLlmLI=;
+        b=JSO08VTuL/DxTWgNWYbsdyubkMRzahHZ08A4VWWniYGZN15cnZ/jLyGc5J8cEbwiVu
+         cZR1WyGvgsIRqwrm0Bkhy/pCUWc9+pMLo3hjjw8zxxBZ7tMUUD+eK6QHRWGf9iXOGZuT
+         elVS7F0SpPwFQMHRGHTLluZeMDlQHmXjcduOB/oi7fLG3TsfyuEw4X914Z+1o7Sp6uVw
+         A40g22ZbIVzknNcpUOEJxrnZVcbZE/cEbNp0x6I563zEGvU1J+T3z9Zgp625isBUXxsp
+         7EPv2jhctE3AfXl5B0b40rKvi+Dj4AfiOLOvoAkclIRLhEGDJMctpG3UNBzvO7i+NMP5
+         5y+Q==
+X-Gm-Message-State: AOJu0YxmbBaGVhLK2tBmMvGo8aHFSmYlZK1A3OcldQwomQojKN+puAwk
+	NEp9TAUG8qTFMop1tjHyoaxm5HrE+IJZJfTJ32RZ02qrrNYkhophuKjOcUCYk2rqNpuM/cyOTKS
+	Z7J1Hrg0QAzae9XEjRufnd3v4LmE=
+X-Google-Smtp-Source: AGHT+IHXSXeNaABBAB1t+ezqIhyqL6IRfUG/zxJ5hQ48GcS/kWb2BCM6J7ySuSHK047nKkFgOIMtARN56xhEg1eo+W0=
+X-Received: by 2002:a17:90b:370f:b0:2d8:7a63:f9c8 with SMTP id
+ 98e67ed59e1d1-2d87a63fceemr2767559a91.14.1725033664187; Fri, 30 Aug 2024
+ 09:01:04 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v4] bpf: Remove custom build rule
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <172503362769.2640228.5019658965593399778.git-patchwork-notify@kernel.org>
-Date: Fri, 30 Aug 2024 16:00:27 +0000
-References: <20240830074350.211308-1-legion@kernel.org>
-In-Reply-To: <20240830074350.211308-1-legion@kernel.org>
-To: Alexey Gladkov <legion@kernel.org>
-Cc: linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
- linux-kbuild@vger.kernel.org, masahiroy@kernel.org, ast@kernel.org,
- andrii@kernel.org, daniel@iogearbox.net, oleg@redhat.com,
- alan.maguire@oracle.com
+References: <5be4f797c3d5092b34d243361ebd0609f3301452.camel@gmail.com> <20240830095150.278881-1-tony.ambardar@gmail.com>
+In-Reply-To: <20240830095150.278881-1-tony.ambardar@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Fri, 30 Aug 2024 09:00:51 -0700
+Message-ID: <CAEf4BzYCgP8Y63Y5wjA=7mRHCMMYa-XBXqhyVTzwk94AhqLKCQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1] libbpf: ensure new BTF objects inherit input endianness
+To: Tony Ambardar <tony.ambardar@gmail.com>
+Cc: bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello:
+On Fri, Aug 30, 2024 at 2:52=E2=80=AFAM Tony Ambardar <tony.ambardar@gmail.=
+com> wrote:
+>
+> The pahole master branch recently added support for "distilled BTF" based
+> on libbpf v1.5, but may add .BTF and .BTF.base sections with the wrong by=
+te
 
-This patch was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+there is no libbpf v1.5 release, are we talking about using unreleased
+master branch?
 
-On Fri, 30 Aug 2024 09:43:50 +0200 you wrote:
-> According to the documentation, when building a kernel with the C=2
-> parameter, all source files should be checked. But this does not happen
-> for the kernel/bpf/ directory.
-> 
-> $ touch kernel/bpf/core.o
-> $ make C=2 CHECK=true kernel/bpf/core.o
-> 
-> [...]
+> order (e.g. on s390x BPF CI), which then lead to kernel Oops when loaded.
+>
+> Fix by updating libbpf's btf__distill_base() and btf_new_empty() to retai=
+n
+> the byte order of any source BTF objects when creating new ones.
+>
+> Reported-by: Song Liu <song@kernel.org>
+> Reported-by: Eduard Zingerman <eddyz87@gmail.com>
+> Suggested-by: Eduard Zingerman <eddyz87@gmail.com>
+> Link: https://lore.kernel.org/bpf/6358db36c5f68b07873a0a5be2d062b1af5ea5f=
+8.camel@gmail.com/
+> Signed-off-by: Tony Ambardar <tony.ambardar@gmail.com>
+> ---
+>  tools/lib/bpf/btf.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+>
+> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+> index 064cfe126c09..7726b7c6d40a 100644
+> --- a/tools/lib/bpf/btf.c
+> +++ b/tools/lib/bpf/btf.c
+> @@ -996,6 +996,7 @@ static struct btf *btf_new_empty(struct btf *base_btf=
+)
+>                 btf->base_btf =3D base_btf;
+>                 btf->start_id =3D btf__type_cnt(base_btf);
+>                 btf->start_str_off =3D base_btf->hdr->str_len;
+> +               btf->swapped_endian =3D base_btf->swapped_endian;
+>         }
+>
+>         /* +1 for empty string at offset 0 */
+> @@ -5554,6 +5555,10 @@ int btf__distill_base(const struct btf *src_btf, s=
+truct btf **new_base_btf,
+>         new_base =3D btf__new_empty();
+>         if (!new_base)
+>                 return libbpf_err(-ENOMEM);
+> +       err =3D btf__set_endianness(new_base, btf__endianness(src_btf));
+> +       if (err < 0)
+> +               goto done;
 
-Here is the summary with links:
-  - [v4] bpf: Remove custom build rule
-    https://git.kernel.org/bpf/bpf-next/c/1dd7622ef508
+This error check is really unnecessary and paranoid, because the only
+way btf__set_endianness() can fail is if the provided endianness enum
+is corrupted (some invalid int cast to enum). But in this case we are
+getting it from libbpf itself, which will always be correct. So I
+think I'll drop the error check while applying.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+> +
+>         dist.id_map =3D calloc(n, sizeof(*dist.id_map));
+>         if (!dist.id_map) {
+>                 err =3D -ENOMEM;
+> --
+> 2.34.1
+>
 
