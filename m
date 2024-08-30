@@ -1,145 +1,77 @@
-Return-Path: <bpf+bounces-38531-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38532-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 143E09658F4
-	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 09:45:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D539965913
+	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 09:50:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7F8EDB251BC
-	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 07:45:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AFE9C1C20D40
+	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 07:50:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D54715F41D;
-	Fri, 30 Aug 2024 07:44:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XZQ7phyN"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49B0C160887;
+	Fri, 30 Aug 2024 07:50:41 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B3EB15C154;
-	Fri, 30 Aug 2024 07:44:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57BDB14C5BA;
+	Fri, 30 Aug 2024 07:50:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725003869; cv=none; b=FsFe1pnU9rX8lRzNPceyVlgX78/nkgn7N8bcQR+uO12aFp8Ncoajw/L/kafwuLqC7pcbj4YiAKDqpgeujTqE9YJQkU1CXh1aqUIJu0pc9a8WTyt8SAXqXiBW8dfMsUYXZXYuIBSZEVqnii9julfKcryKRROXd4bcv9kMBOnmiZY=
+	t=1725004241; cv=none; b=dusxR8nev1QYgqf5MF2b8HE2c3Ru00zvU98vdEBsL2ajWh2YtHwHZY+0LNSlT0r4NumS4qdINCTmPKqaQpFM3WKLg46GHk+iOv3SMg5mvKMK5fFxg04I8Fo9O9Tct8auyTwM6o79gk9GngSaseWTVpMME+cmXD5F5CsIw20HPEQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725003869; c=relaxed/simple;
-	bh=ab9E8yRsVsHNSM1VcLw6wnCuw/OKKKTdW168xZIgIJ4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=RW/Ur0TXMGZeinaiRxtKJ6z9jBXLrwl4Zx6SHX0P77ck2bBinXPDLjj4tM0xbXHroyo/mIQz3RimRbB+tuh96QyPyqcRNLkv2y8i2K5idnWzAS0C+4nVrihC3nierTpS+cx4S7L8QbUeaGkm0pOgCkcu1iHeeRyCaNlTPQVpxH0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XZQ7phyN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 242F5C4CEC2;
-	Fri, 30 Aug 2024 07:44:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1725003869;
-	bh=ab9E8yRsVsHNSM1VcLw6wnCuw/OKKKTdW168xZIgIJ4=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=XZQ7phyNKtZDX4or/EXnonJV+IXRySCOITTQgFC3nAfJkGcwv5cBgyOgzkghlE4T/
-	 OPVQVey6bW+y090lIzs3/L1XoZpsapLBMxQRlC8SqQppy3WB2OvE8gOsFqvq0eC9xr
-	 VarKorz25elSSfFj73qUjYePvecRFUhdsdbdcIcjFNkby7Kc6QK0ZPxvXZyf6gtjxe
-	 ob/f7E6TV+hw536dhN5WAc8tEU+BV/AOu0mf26wOXSEGHRa+N23KIh1wFha6iYgWxQ
-	 scs4aVkAs+GB8TsO9IaAx4sEdw8CiA43jc+qvehsIXhWdBbdqEWD6OS9U58ojgQAul
-	 W6e8YActPrU7A==
-From: Alexey Gladkov <legion@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	linux-kbuild@vger.kernel.org
-Cc: Masahiro Yamada <masahiroy@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Oleg Nesterov <oleg@redhat.com>,
-	Alan Maguire <alan.maguire@oracle.com>
-Subject: [PATCH v4] bpf: Remove custom build rule
-Date: Fri, 30 Aug 2024 09:43:50 +0200
-Message-ID: <20240830074350.211308-1-legion@kernel.org>
-X-Mailer: git-send-email 2.46.0
-In-Reply-To: <CAADnVQL4Cy-F_=RJy_=3v97mfaMRWGp54xN-t9QzOqY3+hoghg@mail.gmail.com>
-References: <CAADnVQL4Cy-F_=RJy_=3v97mfaMRWGp54xN-t9QzOqY3+hoghg@mail.gmail.com>
+	s=arc-20240116; t=1725004241; c=relaxed/simple;
+	bh=uKg4qJIpfYrSIE8D0HeA0yQsXzxv/5KdvZXOAvsvcMg=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
+	 In-Reply-To:Content-Type; b=Hz9KuKhd2/wt6LNQpnvpzXfHGxCefXKSXQ6AwLM2cHRb8lm3BQVdIxAecQ3bwCjDNn4t//j+b7nB11BRoIBakOXMfegojQXvzk6WWSmiimAaI50pcXj+f94MeS+4irImLlvFuiy3vhIveUCOch7H0itB1FopnNwVXYcAqs7+slE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: 881409ea66a411efa216b1d71e6e1362-20240830
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.38,REQID:3781fd2f-9329-4c04-86a0-13838f35b2c1,IP:20,
+	URL:0,TC:0,Content:0,EDM:25,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+	ON:release,TS:40
+X-CID-INFO: VERSION:1.1.38,REQID:3781fd2f-9329-4c04-86a0-13838f35b2c1,IP:20,UR
+	L:0,TC:0,Content:0,EDM:25,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:40
+X-CID-META: VersionHash:82c5f88,CLOUDID:f2942b352dddbb701cf49298b2942fd7,BulkI
+	D:240830155032V78ETUYF,BulkQuantity:0,Recheck:0,SF:17|19|43|74|66|23|102,T
+	C:nil,Content:0|-5,EDM:5,IP:-2,URL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:n
+	il,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD
+X-UUID: 881409ea66a411efa216b1d71e6e1362-20240830
+X-User: zhaomengmeng@kylinos.cn
+Received: from [192.168.109.86] [(123.53.36.118)] by mailgw.kylinos.cn
+	(envelope-from <zhaomengmeng@kylinos.cn>)
+	(Generic MTA with TLSv1.3 TLS_AES_128_GCM_SHA256 128/128)
+	with ESMTP id 1999602693; Fri, 30 Aug 2024 15:50:31 +0800
+Message-ID: <d44e3c03-3322-4eae-b023-71b8bdc18b23@kylinos.cn>
+Date: Fri, 30 Aug 2024 15:49:55 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+To: syzbot+061f58eec3bde7ee8ffa@syzkaller.appspotmail.com
+Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+ daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com,
+ houtao@huaweicloud.com, john.fastabend@gmail.com, jolsa@kernel.org,
+ kpsingh@kernel.org, linux-kernel@vger.kernel.org, martin.lau@linux.dev,
+ netdev@vger.kernel.org, sdf@google.com, song@kernel.org,
+ syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
+References: <0000000000009df8df061faea836@google.com>
+Subject: Re: [syzbot] KASAN: slab-use-after-free Read in htab_map_alloc (2)
+From: Zhao Mengmeng <zhaomengmeng@kylinos.cn>
+In-Reply-To: <0000000000009df8df061faea836@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-According to the documentation, when building a kernel with the C=2
-parameter, all source files should be checked. But this does not happen
-for the kernel/bpf/ directory.
-
-$ touch kernel/bpf/core.o
-$ make C=2 CHECK=true kernel/bpf/core.o
-
-Outputs:
-
-  CHECK   scripts/mod/empty.c
-  CALL    scripts/checksyscalls.sh
-  DESCEND objtool
-  INSTALL libsubcmd_headers
-  CC      kernel/bpf/core.o
-
-As can be seen the compilation is done, but CHECK is not executed. This
-happens because kernel/bpf/Makefile has defined its own rule for
-compilation and forgotten the macro that does the check.
-
-There is no need to duplicate the build code, and this rule can be
-removed to use generic rules.
-
-Acked-by: Masahiro Yamada <masahiroy@kernel.org>
-Tested-by: Oleg Nesterov <oleg@redhat.com>
-Tested-by: Alan Maguire <alan.maguire@oracle.com>
-Signed-off-by: Alexey Gladkov <legion@kernel.org>
----
- kernel/bpf/Makefile       | 6 ------
- kernel/bpf/btf_iter.c     | 2 ++
- kernel/bpf/btf_relocate.c | 2 ++
- kernel/bpf/relo_core.c    | 2 ++
- 4 files changed, 6 insertions(+), 6 deletions(-)
- create mode 100644 kernel/bpf/btf_iter.c
- create mode 100644 kernel/bpf/btf_relocate.c
- create mode 100644 kernel/bpf/relo_core.c
-
-diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
-index 0291eef9ce92..9b9c151b5c82 100644
---- a/kernel/bpf/Makefile
-+++ b/kernel/bpf/Makefile
-@@ -52,9 +52,3 @@ obj-$(CONFIG_BPF_PRELOAD) += preload/
- obj-$(CONFIG_BPF_SYSCALL) += relo_core.o
- obj-$(CONFIG_BPF_SYSCALL) += btf_iter.o
- obj-$(CONFIG_BPF_SYSCALL) += btf_relocate.o
--
--# Some source files are common to libbpf.
--vpath %.c $(srctree)/kernel/bpf:$(srctree)/tools/lib/bpf
--
--$(obj)/%.o: %.c FORCE
--	$(call if_changed_rule,cc_o_c)
-diff --git a/kernel/bpf/btf_iter.c b/kernel/bpf/btf_iter.c
-new file mode 100644
-index 000000000000..0e2c66a52df9
---- /dev/null
-+++ b/kernel/bpf/btf_iter.c
-@@ -0,0 +1,2 @@
-+// SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
-+#include "../../tools/lib/bpf/btf_iter.c"
-diff --git a/kernel/bpf/btf_relocate.c b/kernel/bpf/btf_relocate.c
-new file mode 100644
-index 000000000000..c12ccbf66507
---- /dev/null
-+++ b/kernel/bpf/btf_relocate.c
-@@ -0,0 +1,2 @@
-+// SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
-+#include "../../tools/lib/bpf/btf_relocate.c"
-diff --git a/kernel/bpf/relo_core.c b/kernel/bpf/relo_core.c
-new file mode 100644
-index 000000000000..aa822c9fcfde
---- /dev/null
-+++ b/kernel/bpf/relo_core.c
-@@ -0,0 +1,2 @@
-+// SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
-+#include "../../tools/lib/bpf/relo_core.c"
--- 
-2.46.0
-
+#syz fix: net/sched: unregister lockdep keys in qdisc_create/qdisc_alloc error path
 
