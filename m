@@ -1,48 +1,48 @@
-Return-Path: <bpf+bounces-38564-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38565-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68E1C966659
-	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 18:00:41 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40ED996665A
+	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 18:00:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 122D21F26478
-	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 16:00:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A7D4FB2396F
+	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 16:00:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A9201B86D6;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 115F41B86D9;
 	Fri, 30 Aug 2024 16:00:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F/waq+62"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M35Lo/+K"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83A691B5EC2;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83AB71B5ED3;
 	Fri, 30 Aug 2024 16:00:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725033626; cv=none; b=mqvBSiet97zlpt06oICT5poZQMUK90EhlSYKYA6y+LbghQ5uP4beJCyhOoOqU7dAsyhChg0hfT5VWg6UvOiVPUmZpAX/8gzTvI2XjHM7AH46tMv//fT+XNhVz6KSZytudEqexJNdQfeuYbDk7fs5hzLXnGVsNLlu6YbxDX73vJo=
+	t=1725033626; cv=none; b=fqkKJElju4LP1d9QB3XCACW2RWavNczxl8XHd9Cf/EOtGP148fSmSbKpDs+su9eONxFIMM1Wz884nfI1OFgniumXvmfqLxr9jI8PqF6N3rRLsxo48agIXoaIdUpbaUTRoJwgh6LG+Ers9C/H6HkZ1LGSS7JJW0U/OA2/YfnsEe0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1725033626; c=relaxed/simple;
-	bh=248ECo2yfsKcAquPHD4bXLciDXt4dXthlnnElfhvepM=;
+	bh=H1eVR7fCA25sTItQDzNJKfMrwfmWIW5Mj3idcLd+EzQ=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=Yu2FCHEqc28Z2TREQR1JXrybd+cH3NXaFc44r5B5u4pjBb6CEW41TH09iT7YJfJjFAy9hsDf2oatWxtFTz//X5sWov58gl8oPKbsg7OKN3Nm9MUPWWrPGwJpG2USrW/D2bmQoaGSH0FCu7OcZArdODiroirU40xOnjJIlKPmhOA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=F/waq+62; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21CCAC4CEC9;
+	 In-Reply-To:To:Cc; b=OrKqRU3ufwgpvnHzJv0wZIq92kwCIFzU5U2kD21vHm0sW6fIkDHFQk1FfUMEiGcXcuVl8hIuOniE3Sjl1tdNYafgFVFwPt1dIsXkNYcAbOu8vk8QtKvirNd6NcVcHch6pLym9wFYJxDO1zgt5S9R0YvTz3IR/VKCk/5s5ql4rCE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M35Lo/+K; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1601DC4CEC7;
 	Fri, 30 Aug 2024 16:00:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1725033626;
-	bh=248ECo2yfsKcAquPHD4bXLciDXt4dXthlnnElfhvepM=;
+	bh=H1eVR7fCA25sTItQDzNJKfMrwfmWIW5Mj3idcLd+EzQ=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=F/waq+62DoXgGkQitmjBVhJTL+dDVzk7slAvAYHjvhc1YfRFyIGR75AMpp+lyPxoQ
-	 lFgPrWkzpAZYmHICUHbbmhug7m5r0NtQJ4chgV276UDt9S8DM+CxmUaD6OR1UDBWfD
-	 vO/kvMX/vPFBeMCYPGdG+sPsP1WYfRHh7eDcF7DjLsOpvAO4LIpCrRCJJSj+b5Q4V4
-	 /mzxzp91Av21dL0+kt/uKRF2DV9mlthCTa8uTXj+4dW2xgNaYNmO+mlyYFS/zJZKiP
-	 t6gmhOIyD1eCNpFO82rskb6sGMXbJnU+ACn0kDj1g9WaoRZ0iwR+U2Zem/g4OBY6Zo
-	 3jRAabmWGLQyQ==
+	b=M35Lo/+Kk3ZCNXPouvGjPvhDAn/ShvDhVs/2VPLgK0mXoUBYTNtjCutv+q2sm/QQj
+	 mFZmYF0HVFosWmYol+InpRnXNQIigigebWQVvvdPpVnti5xqlzoYkVgSkqidyOZyQ4
+	 psNJOoljcGo30FVlEL02wzpVvHxf/90N0hiCsYpjFphwUkv85f8wsnncgiM2wBmSh3
+	 8S6SrXfd39XfoE1GGHcgHX99r5DtwliX1Fq8YF6qfxzuG49ZICUykXZ6NMDrEwUntB
+	 4CIdgqdQcx2sqJWOIC0RlSYlTs1zy+J6fasdU5GrhcGUgdAobYifTOjV+KzOvtS65K
+	 hJYO6t/Nxts1A==
 Received: from ip-10-30-226-235.us-west-2.compute.internal (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id B837B3809A82;
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id AB9223809A81;
 	Fri, 30 Aug 2024 16:00:27 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
@@ -52,40 +52,37 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next RESEND] bpf: Use sockfd_put() helper
+Subject: Re: [PATCH v4] bpf: Remove custom build rule
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <172503362774.2640228.3124163275432986124.git-patchwork-notify@kernel.org>
+ <172503362769.2640228.5019658965593399778.git-patchwork-notify@kernel.org>
 Date: Fri, 30 Aug 2024 16:00:27 +0000
-References: <20240830020756.607877-1-ruanjinjie@huawei.com>
-In-Reply-To: <20240830020756.607877-1-ruanjinjie@huawei.com>
-To: Jinjie Ruan <ruanjinjie@huawei.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org
+References: <20240830074350.211308-1-legion@kernel.org>
+In-Reply-To: <20240830074350.211308-1-legion@kernel.org>
+To: Alexey Gladkov <legion@kernel.org>
+Cc: linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ linux-kbuild@vger.kernel.org, masahiroy@kernel.org, ast@kernel.org,
+ andrii@kernel.org, daniel@iogearbox.net, oleg@redhat.com,
+ alan.maguire@oracle.com
 
 Hello:
 
 This patch was applied to bpf/bpf-next.git (master)
 by Alexei Starovoitov <ast@kernel.org>:
 
-On Fri, 30 Aug 2024 10:07:56 +0800 you wrote:
-> Replace fput() with sockfd_put() in bpf_fd_reuseport_array_update_elem().
+On Fri, 30 Aug 2024 09:43:50 +0200 you wrote:
+> According to the documentation, when building a kernel with the C=2
+> parameter, all source files should be checked. But this does not happen
+> for the kernel/bpf/ directory.
 > 
-> Signed-off-by: Jinjie Ruan <ruanjinjie@huawei.com>
-> Acked-by: Stanislav Fomichev <sdf@fomichev.me>
-> ---
-> v1-> RESEND
-> - Use bpf-next instead of -next for commit title prefix.
-> - Add acked-by.
+> $ touch kernel/bpf/core.o
+> $ make C=2 CHECK=true kernel/bpf/core.o
 > 
 > [...]
 
 Here is the summary with links:
-  - [bpf-next,RESEND] bpf: Use sockfd_put() helper
-    https://git.kernel.org/bpf/bpf-next/c/65ef66d91803
+  - [v4] bpf: Remove custom build rule
+    https://git.kernel.org/bpf/bpf-next/c/1dd7622ef508
 
 You are awesome, thank you!
 -- 
