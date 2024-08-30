@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-38517-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38518-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B32509657D2
-	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 08:52:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FC449657D4
+	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 08:52:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E5AF71C21EE4
-	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 06:52:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D27D128597D
+	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 06:52:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E699F1534E6;
-	Fri, 30 Aug 2024 06:51:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70DF91547F6;
+	Fri, 30 Aug 2024 06:51:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CG2SaVt+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nEISNJ5h"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F4231531DC;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC8521531FE;
 	Fri, 30 Aug 2024 06:51:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725000712; cv=none; b=TWZoJMBlFEPfSKskbdgjkpCMrG5MF4IfcFZAqQXws2deV4mqz/31cIwdY/wMsWTdWYvn034da0SXbnokUyK2u5N9+eQ/s0yEiAAlnEDAUneJ3GJ33VbuJsWU5EvorGEX/QAFdh8hHuBVY6ZMZNjKiNtJ2rJHNqRlXxkFIVnf+cs=
+	t=1725000713; cv=none; b=cD4iXub3LDYQaOKeudvf08TJrZp91ZQItss0QWnVxLJsA86mP8bzzcNV9AT618QApDkrJv4+4thEcs37fkwBQaRdRDNYLWhRAOpvmIn0a93i/hD4lDy7Q1qtLUc/IE136/Nixr1BIujiXKzEWckAhU8kZUkbkVZ5itm46g+C2Dg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725000712; c=relaxed/simple;
-	bh=q4/3jfLknydUp8HCEo8sK+b+5kXMu3szQ6Mw0K+Tp88=;
+	s=arc-20240116; t=1725000713; c=relaxed/simple;
+	bh=wCR9miOWHuvC38OVs2dILCHpxCTCD26WoFfBRNFtywY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=E3fmpL/le4ShE/GoPakAd3VgMF+KWrD7jfb89TV1vP2/nLFumc14bbeAhLrmeQJ2tlSYfoeimOEuRv4lJbGWBlFwLgxgpfcKfstPsMyn2c6s6AteC6F9VMIp4hIdKI5rLt4Y6enWfsiDvIzupEmZGByJd8/y6a7Zzhp9WIZh8OU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CG2SaVt+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B1ACC4CECA;
-	Fri, 30 Aug 2024 06:51:51 +0000 (UTC)
+	 MIME-Version; b=BSAfcVYptVp/s5YDNRPFBwrZbvO7e1MwBZuQRCX8h1UfMfe+dtiDcgHY2+aZHbHWuuGmbbhzJqyrl7UmSXnsFgEcNPH7xmxa3cinsxHzo8b8u16qEnT3SEFu8gsRwqgmI+/Shr4I7NGzFhp1Q6hZABHKzOegbKKicZP57G3PNdQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nEISNJ5h; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C1DAC4CEC2;
+	Fri, 30 Aug 2024 06:51:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1725000711;
-	bh=q4/3jfLknydUp8HCEo8sK+b+5kXMu3szQ6Mw0K+Tp88=;
+	s=k20201202; t=1725000712;
+	bh=wCR9miOWHuvC38OVs2dILCHpxCTCD26WoFfBRNFtywY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=CG2SaVt+pytwgzo19CuFRkT6ZlwILs1M5j1P5aWhvNnN26M7+EO6cn3XeR1+sB6WR
-	 C8ZwgYvI0NlWqw/oY/ThuAeElfdqGpf1gffkvdnVle3niOvxUxw2e8l+kS1kzk2dth
-	 tIFdaF8VfzAmndElUz+M7H6ewNcfFelUkCZe6EwJlyI9lrjk+XBYe64/CySmVkujkk
-	 e9UlPKnXQHueVOOKG5FhPI2j/SoxYyuECHWb8RGxnRyuqU/JSp/mVUqB2BAnM8hIl8
-	 SHZVw2RZ63Q0NZR1X6B7yAgScWIQzRR4QJoZY8DaBS/hGy66nSnfE67St0gpqaFfiV
-	 eCpzXKspWPrrw==
+	b=nEISNJ5hNoowtpXMTYmu6CxZzOrlXDCrbXZfokfHyCZ/hgLiFChgj8N1jGvcrewIQ
+	 xyd70x7tpZxElAKM7Nm7Sd2Y5T1T8YNGz0pPUsJ7Hk3RqzcZuOsgFCoRZqCB8ytoBu
+	 KjDQIa8aJ+WUik9qqRaRAT9K/b2GV3psU+nNqU1bi4/pW0oOIwb0d/ptATMbXT2mMI
+	 y1jefhatg5Ah1ePHS9XVz+GQw6mQ688SV+887Wh5LV6uoSRiMIoxWBjcnLvgRatY+3
+	 L0inblkGn6jJZGRav1lgI1fzt8Y3rCF+iv3h1ckgC5JgbXkG/l8+J/r7lGgnbgV2z6
+	 YSVJBu2mzQHRQ==
 From: Namhyung Kim <namhyung@kernel.org>
 To: Arnaldo Carvalho de Melo <acme@kernel.org>,
 	Ian Rogers <irogers@google.com>,
@@ -53,9 +53,9 @@ Cc: Jiri Olsa <jolsa@kernel.org>,
 	linux-perf-users@vger.kernel.org,
 	Song Liu <song@kernel.org>,
 	bpf@vger.kernel.org
-Subject: [PATCH 2/3] perf lock contention: Simplify spinlock check
-Date: Thu, 29 Aug 2024 23:51:49 -0700
-Message-ID: <20240830065150.1758962-2-namhyung@kernel.org>
+Subject: [PATCH 3/3] perf lock contention: Do not fail EEXIST for update
+Date: Thu, 29 Aug 2024 23:51:50 -0700
+Message-ID: <20240830065150.1758962-3-namhyung@kernel.org>
 X-Mailer: git-send-email 2.46.0.469.g59c65b2a67-goog
 In-Reply-To: <20240830065150.1758962-1-namhyung@kernel.org>
 References: <20240830065150.1758962-1-namhyung@kernel.org>
@@ -67,30 +67,42 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The LCB_F_SPIN bit is used for spinlock, rwlock and optimistic spinning
-in mutex.  In get_tstamp_elem() it needs to check spinlock and rwlock
-only.  As mutex sets the LCB_F_MUTEX, it can check those two bits and
-reduce the number of operations.
+When it updates the lock stat for the first time, it needs to create an
+element in the BPF hash map.  But if there's a concurrent thread waiting
+for the same lock (like for rwsem or rwlock), it might race with the
+thread and possibly failed to update with -EEXIST.  In that case, it can
+lookup the map again and put the data there instead of failing.
 
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/perf/util/bpf_skel/lock_contention.bpf.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ tools/perf/util/bpf_skel/lock_contention.bpf.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
 diff --git a/tools/perf/util/bpf_skel/lock_contention.bpf.c b/tools/perf/util/bpf_skel/lock_contention.bpf.c
-index e8a6f6463019..4b7237e178bd 100644
+index 4b7237e178bd..52a876b42699 100644
 --- a/tools/perf/util/bpf_skel/lock_contention.bpf.c
 +++ b/tools/perf/util/bpf_skel/lock_contention.bpf.c
-@@ -323,8 +323,7 @@ static inline struct tstamp_data *get_tstamp_elem(__u32 flags)
- 	struct tstamp_data *pelem;
+@@ -491,6 +491,12 @@ int contention_end(u64 *ctx)
  
- 	/* Use per-cpu array map for spinlock and rwlock */
--	if (flags == (LCB_F_SPIN | LCB_F_READ) || flags == LCB_F_SPIN ||
--	    flags == (LCB_F_SPIN | LCB_F_WRITE)) {
-+	if ((flags & (LCB_F_SPIN | LCB_F_MUTEX)) == LCB_F_SPIN) {
- 		__u32 idx = 0;
+ 		err = bpf_map_update_elem(&lock_stat, &key, &first, BPF_NOEXIST);
+ 		if (err < 0) {
++			if (err == -EEXIST) {
++				/* it lost the race, try to get it again */
++				data = bpf_map_lookup_elem(&lock_stat, &key);
++				if (data != NULL)
++					goto found;
++			}
+ 			if (err == -E2BIG)
+ 				data_map_full = 1;
+ 			__sync_fetch_and_add(&data_fail, 1);
+@@ -498,6 +504,7 @@ int contention_end(u64 *ctx)
+ 		goto out;
+ 	}
  
- 		pelem = bpf_map_lookup_elem(&tstamp_cpu, &idx);
++found:
+ 	__sync_fetch_and_add(&data->total_time, duration);
+ 	__sync_fetch_and_add(&data->count, 1);
+ 
 -- 
 2.46.0.469.g59c65b2a67-goog
 
