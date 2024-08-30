@@ -1,164 +1,149 @@
-Return-Path: <bpf+bounces-38584-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38585-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C9A3966867
-	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 19:51:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AC70966869
+	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 19:52:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 422101C239A9
-	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 17:51:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 07E10281509
+	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 17:52:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32C881BB6A3;
-	Fri, 30 Aug 2024 17:51:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED6471BB6A4;
+	Fri, 30 Aug 2024 17:52:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XDy+/Y+D"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nKEi81Yd"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
+Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DEC814A4EA
-	for <bpf@vger.kernel.org>; Fri, 30 Aug 2024 17:51:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29DC114E2E9
+	for <bpf@vger.kernel.org>; Fri, 30 Aug 2024 17:52:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725040295; cv=none; b=FoOhCjhdqtDuba6dOYRx+Wksy2BLKn6gRSYQ6zDuOD0BIr3tDdPbhx9mybZhQoFspZZeSw0Lgfn1b3jnVIerUtCzfrSp4O3Y6d9+E+M22IhQzTd118OJLmZV1KVU4vylMAr/J6nrisVf7RA0bgfk1KJr2lX0W8Hq43SD7UTowko=
+	t=1725040323; cv=none; b=nomgLlFjAbqrU4W0mS4V2eKZDodtN/kwn3bFDzxQ4vREDzjKjqUtDNeW78prIVZ/z8aHKWNh8EPZSwv48Lq3+Ynex6KhRsBzbsUSyLIhArb/ALJKKOan5vA02IQv0Ay2r12gD3ER8C3tjAeCkIS8lKpgBIK81gm1/5OwPifz3Uo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725040295; c=relaxed/simple;
-	bh=OFj2h3xPq9EKnWmzB64sWF8jI4mHN6rePSTm08Q6ajY=;
+	s=arc-20240116; t=1725040323; c=relaxed/simple;
+	bh=uRR+iSgW2XWqtGKq9ZumpJ37s6OBjLY3EsOg7iRt0CM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pBB1sLTwnxx2pM7ijUA+ty3BCjPjAM14jVGTr1PdqCAlCLKfxdYysmmctgMemlv7PyJ66TyTs3XqmQ6UYZirc9LaK7/RfnSaBwDXr8Iq4vsfkWXhq6pK/XLV4B6ectG0RLISWjpYRK1LJYhGPLlNAcJ/30+2HZLzfORVuwJC3f8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XDy+/Y+D; arc=none smtp.client-ip=209.85.216.42
+	 To:Cc:Content-Type; b=Wa+DidbiVDMTnyUQrJHnd3jddaEAMlNDsf7wZLO2GMyAlA+MW2lPPZZobAtH02U+lEt0b4YKcS8dHBx1lSn+gf+rjnjmftcrV7fuMjFalQFXNXqlXXgQuqtJ3vEidinJ1940vpVKBTm5xpCQLKEt78LABPqmIWyBidoJ+8OA8VA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nKEi81Yd; arc=none smtp.client-ip=209.85.215.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-2d41b082ab8so1604332a91.3
-        for <bpf@vger.kernel.org>; Fri, 30 Aug 2024 10:51:34 -0700 (PDT)
+Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-6bce380eb96so1195492a12.0
+        for <bpf@vger.kernel.org>; Fri, 30 Aug 2024 10:52:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1725040293; x=1725645093; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1725040321; x=1725645121; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=usKBbmsfUWuRqfzcd+tA6ftXTbdtGXcjlSRuc1oncRA=;
-        b=XDy+/Y+DQYXPYnPuFCsPbcAJtCUt1C5UVvzQ57bmHn3dqMNAr74WNH3zwE9c43BjF8
-         50BrViWuuO04eNKs3MCDDkPAKGstvg8Cmr2l5WrdTc8dE81+dVPg4SzP1XPsLlzviHnF
-         s8r57cQl+UXLNtyDCagj+r3rf8FgjzlCBvwCRjo8ppwfZmhMoz9TfJ12J1wh8tluOkQi
-         bqjmo4TWgeUXm0gJQfHg1FSIvFQHL/Dwc0I+U8eozrfLOyh+ksbZPR7gV/24nJTOusLs
-         HMfZ70cSn2kP2fcFSQzhqOvT0kHF0IEDaYjH4fn/FQ43pUYVty/cjckd2JjmZzFpMd+K
-         dytA==
+        bh=LKChkzVbCCfFfBYZvpd3EOBHIgKlScj1Tt9DTkAnXWg=;
+        b=nKEi81Yd2tAgUBeA+kP78OsYh04X5F27pGD/K72PVnZnjSUPBr7R9ojwpgvJwACQ2X
+         CtHG5YZI4RhqXVTFjohueU7yf9wD36gBgmkRLLrPJBlYCvNQaHxAGsX3hd5nr98gW+lm
+         vTb9FvWUAkYlKiuWt6RmmLc+D69bqF3sQoQx/8KbY10zWEVlLXIsa7ZjpYiKPF0hyi3H
+         ECdbHKO4i0yBlV6rE46Rb0niW7bK5cDiadZLpEb5OyXwYozmE0IqVw2WcZ+Q29nprtd/
+         CQpWbCgxGJbpeKlXMqDx+KN3wG4zF4iAYmm0dMu5ECEHk9omBoZouAKut+LmAEsng544
+         fWvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725040293; x=1725645093;
+        d=1e100.net; s=20230601; t=1725040321; x=1725645121;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=usKBbmsfUWuRqfzcd+tA6ftXTbdtGXcjlSRuc1oncRA=;
-        b=GpYeFlmCGvkEcylkRiR/k0tf7fkO+pBmCEZxBZU5B9Zq6lvXaAsnCmjOgRFnDNbveU
-         7s4fHJbg3ClXvPx7pG1f/GVVoZU95h/NaEKg1mhbhorTSLXSdwHpSK4rwFfqWVsniqWi
-         f2qSUtAvshCjlfDU0PpSfWyQk2zSrYnFeq0sCQcM+Y/gtoYU1nZF19VlJxPILw84wK1P
-         CiRwwv67QchPJEaScfAlTwwjICtw5wqP5Hkf0oYMCAmct5FdF7XpXpocjOB2TKUUuOEk
-         chwAwW3+AFIBFt6JDNfvEt/FKuMpSmfjmY5wdhoGgvPTG58NYUanPO80olYnUodv0Fio
-         2qjQ==
-X-Gm-Message-State: AOJu0YznULozEMToJSevJL4SLHH0Sb6UVI0rQutFN9psRbuvKHbtBj4L
-	w5n9nmzL1WDvFL9yAQxOw8ee431ZjvA3ZP/WjEr+v7qTO1RYkDBN+eusirRaArUSe1NhiV4IjMr
-	MJSiRpq8Y1Uh/f2sI6hprDNyIRWk=
-X-Google-Smtp-Source: AGHT+IEycvyO2Tm892ZK6nqj0Usadz7oJpPaSQOHyIrZFqmH2nOuhU811798q3ooV8RWcapUKPmLFwm7mI8LLr6aw8U=
-X-Received: by 2002:a17:90a:b898:b0:2c9:a3ca:cc98 with SMTP id
- 98e67ed59e1d1-2d8904c6ed8mr172297a91.7.1725040293569; Fri, 30 Aug 2024
- 10:51:33 -0700 (PDT)
+        bh=LKChkzVbCCfFfBYZvpd3EOBHIgKlScj1Tt9DTkAnXWg=;
+        b=DmSYjJDEG5nJQxMvwKghAn+sljEW+ewvyheI/0vZXxsePzMtHavkzggXWgcKw5dj0G
+         gQKjnjUBK57ZhDgkeyufJGnFc3sVG5Co5dP8HdMnuvQ5hVHd747dKbTgJVgc0XYMbxq0
+         OnzSPOYvJs+WzP0c2hoyROPQREQVO2fvW40WMCQDyEzGQFGDqs7BfSb4Qsm7WXj8BQRp
+         mCIU1C4tW+WJ3Shmqh/JCmi7YarJ5ab4Uv6mPTADka3PxwEeJayX6WBWGxLWOcVnbWGH
+         KUjYcisbktCwzKEzvbhNOtfoW6jp8DFx/5oMGEiodSmo7vsi404lfON2p6dCkLixtLi/
+         0tIg==
+X-Gm-Message-State: AOJu0YwpUlFu9TVJyFMACvovcuobHaXYZf8/w2mMHd0nnbAvPf7CKE2C
+	zT7cinFB/Uzqh0+eFfDDijaO4Qg2kBrXSxEXiiNUOOB/Ite97oZ3oUz0m8pIOe+xyfURkrtW8Rp
+	fvqAEMOmJ0ihTfopdCFIfJ/SE+iE=
+X-Google-Smtp-Source: AGHT+IH4cw/+D0iy6Zj+AtJfDRHj9egLNqaAXbBT2RyzkJhu4kYY8oLXRSuJL1QfkjtC/oGCZi1tS9/WES5e6Ujrei0=
+X-Received: by 2002:a17:90a:de93:b0:2d8:8a04:1b16 with SMTP id
+ 98e67ed59e1d1-2d8905ed640mr118132a91.33.1725040321338; Fri, 30 Aug 2024
+ 10:52:01 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <5be4f797c3d5092b34d243361ebd0609f3301452.camel@gmail.com>
- <20240830095150.278881-1-tony.ambardar@gmail.com> <CAEf4BzYCgP8Y63Y5wjA=7mRHCMMYa-XBXqhyVTzwk94AhqLKCQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzYCgP8Y63Y5wjA=7mRHCMMYa-XBXqhyVTzwk94AhqLKCQ@mail.gmail.com>
+References: <20240830173406.1581007-1-eddyz87@gmail.com>
+In-Reply-To: <20240830173406.1581007-1-eddyz87@gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 30 Aug 2024 10:51:20 -0700
-Message-ID: <CAEf4BzYCS2qzrD5bsKgcJcP=bkWQYgYrCaVcWAgTW04yQCGv2g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1] libbpf: ensure new BTF objects inherit input endianness
-To: Tony Ambardar <tony.ambardar@gmail.com>
-Cc: bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>
+Date: Fri, 30 Aug 2024 10:51:49 -0700
+Message-ID: <CAEf4BzYF0PqVHuj2gjZzaqrBOrVo8TEfuxiJe0TZvBb55n_Jog@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: check if distilled base inherits
+ source endianness
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
+	daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com, 
+	yonghong.song@linux.dev, tony.ambardar@gmail.com, alan.maguire@oracle.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Aug 30, 2024 at 9:00=E2=80=AFAM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Fri, Aug 30, 2024 at 10:34=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.co=
+m> wrote:
 >
-> On Fri, Aug 30, 2024 at 2:52=E2=80=AFAM Tony Ambardar <tony.ambardar@gmai=
-l.com> wrote:
-> >
-> > The pahole master branch recently added support for "distilled BTF" bas=
-ed
-> > on libbpf v1.5, but may add .BTF and .BTF.base sections with the wrong =
-byte
+> Create a BTF with endianness different from host, make a distilled
+> base/split BTF pair from it, dump as raw bytes, import again and
+> verify that endianness is preserved.
 >
-> there is no libbpf v1.5 release, are we talking about using unreleased
-> master branch?
+> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+> ---
+>  .../selftests/bpf/prog_tests/btf_distill.c    | 73 +++++++++++++++++++
+>  1 file changed, 73 insertions(+)
 >
-> > order (e.g. on s390x BPF CI), which then lead to kernel Oops when loade=
-d.
-> >
-> > Fix by updating libbpf's btf__distill_base() and btf_new_empty() to ret=
-ain
-> > the byte order of any source BTF objects when creating new ones.
-> >
-> > Reported-by: Song Liu <song@kernel.org>
-> > Reported-by: Eduard Zingerman <eddyz87@gmail.com>
-> > Suggested-by: Eduard Zingerman <eddyz87@gmail.com>
-> > Link: https://lore.kernel.org/bpf/6358db36c5f68b07873a0a5be2d062b1af5ea=
-5f8.camel@gmail.com/
-> > Signed-off-by: Tony Ambardar <tony.ambardar@gmail.com>
-> > ---
-> >  tools/lib/bpf/btf.c | 5 +++++
-> >  1 file changed, 5 insertions(+)
-> >
+> diff --git a/tools/testing/selftests/bpf/prog_tests/btf_distill.c b/tools=
+/testing/selftests/bpf/prog_tests/btf_distill.c
+> index bfbe795823a2..810b2e434562 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/btf_distill.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/btf_distill.c
+> @@ -535,6 +535,77 @@ static void test_distilled_base_vmlinux(void)
+>         btf__free(vmlinux_btf);
+>  }
+>
+> +static bool is_host_big_endian(void)
+> +{
+> +       return htons(0x1234) =3D=3D 0x1234;
+> +}
+> +
+> +/* Split and new base BTFs should inherit endianness from source BTF. */
+> +static void test_distilled_endianness(void)
+> +{
+> +       struct btf *base =3D NULL, *split =3D NULL, *new_base =3D NULL, *=
+new_split =3D NULL;
+> +       struct btf *new_base1 =3D NULL, *new_split1 =3D NULL;
+> +       enum btf_endianness inverse_endianness;
+> +       const void *raw_data;
+> +       __u32 size;
+> +
+> +       printf("is_host_big_endian? %d\n", is_host_big_endian());
 
-Also added
+removed printf
 
-Fixes: ba451366bf44 ("libbpf: Implement basic split BTF support")
-Fixes: 58e185a0dc35 ("libbpf: Add btf__distill_base() creating split
-BTF with distilled base BTF")
+> +       inverse_endianness =3D is_host_big_endian() ? BTF_LITTLE_ENDIAN :=
+ BTF_BIG_ENDIAN;
+> +       base =3D btf__new_empty();
+> +       btf__set_endianness(base, inverse_endianness);
+> +       if (!ASSERT_OK_PTR(base, "empty_main_btf"))
 
-> > diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-> > index 064cfe126c09..7726b7c6d40a 100644
-> > --- a/tools/lib/bpf/btf.c
-> > +++ b/tools/lib/bpf/btf.c
-> > @@ -996,6 +996,7 @@ static struct btf *btf_new_empty(struct btf *base_b=
-tf)
-> >                 btf->base_btf =3D base_btf;
-> >                 btf->start_id =3D btf__type_cnt(base_btf);
-> >                 btf->start_str_off =3D base_btf->hdr->str_len;
-> > +               btf->swapped_endian =3D base_btf->swapped_endian;
-> >         }
-> >
-> >         /* +1 for empty string at offset 0 */
-> > @@ -5554,6 +5555,10 @@ int btf__distill_base(const struct btf *src_btf,=
- struct btf **new_base_btf,
-> >         new_base =3D btf__new_empty();
-> >         if (!new_base)
-> >                 return libbpf_err(-ENOMEM);
-> > +       err =3D btf__set_endianness(new_base, btf__endianness(src_btf))=
-;
-> > +       if (err < 0)
-> > +               goto done;
->
-> This error check is really unnecessary and paranoid, because the only
-> way btf__set_endianness() can fail is if the provided endianness enum
-> is corrupted (some invalid int cast to enum). But in this case we are
-> getting it from libbpf itself, which will always be correct. So I
-> think I'll drop the error check while applying.
->
-> > +
-> >         dist.id_map =3D calloc(n, sizeof(*dist.id_map));
-> >         if (!dist.id_map) {
-> >                 err =3D -ENOMEM;
-> > --
-> > 2.34.1
-> >
+moved check before set_endianness
+
+applied to bpf-next after Tony's endianness fix, thanks!
+
+> +               return;
+> +       btf__add_int(base, "int", 4, BTF_INT_SIGNED);   /* [1] int */
+> +       VALIDATE_RAW_BTF(
+> +               base,
+> +               "[1] INT 'int' size=3D4 bits_offset=3D0 nr_bits=3D32 enco=
+ding=3DSIGNED");
+> +       split =3D btf__new_empty_split(base);
+> +       if (!ASSERT_OK_PTR(split, "empty_split_btf"))
+> +               goto cleanup;
+> +       btf__add_ptr(split, 1);
+
+[...]
 
