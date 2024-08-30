@@ -1,122 +1,82 @@
-Return-Path: <bpf+bounces-38499-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38500-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D68E596547C
-	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 03:10:46 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B928C9654A0
+	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 03:18:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 156F21C2340D
-	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 01:10:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 766D928715D
+	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 01:18:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A84481803E;
-	Fri, 30 Aug 2024 01:10:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="LdKi7r5t"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F8FF4595B;
+	Fri, 30 Aug 2024 01:18:07 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 220871758F
-	for <bpf@vger.kernel.org>; Fri, 30 Aug 2024 01:10:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1721F3A8D2
+	for <bpf@vger.kernel.org>; Fri, 30 Aug 2024 01:18:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724980241; cv=none; b=Z89GoF1hCRsNy27mjXuQuPja5UdZwSVMwy0dXEgerbwf3Hk3CwPm2O0SngsdRAjoiks0XcuyRjhwPP23jbWlrPi4PDlMDBDS+JBj6OCmz8Od+cH+AOYIHISabJBOcflMpqmWUIUvLLNuUNoXLNYgXDPK6f6i9A3d2eFLgqBAwkI=
+	t=1724980686; cv=none; b=CcuOtSdefODUWjZWRkihB9K5O/ik8+HFOrwXdSKpneR8gHMqKfM3g9OLy+AxovCC+f/X27waKVl75h9vmuycBES3mXfxjDlHTTPpHENgbwLtOqKMsBwLVGUkT2mNQcTcAnBTIk5JKRYI62UQ88kD4t8WMxMjwWvdrJRMAmYSdDI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724980241; c=relaxed/simple;
-	bh=bni2f8K1DjyjsLcwJFKwz3Wr5fTRyZ4p5NaC4JWnDpc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Nr0H7N6CyN+Hrt906GvbZSigF2Pabja92YcAzpDL0UtAtDQiYkc0dVzjyiFbuI2kImFg3DS2iU9q8YDWjqGU/BRw9ta7nRpwl5kJgtV+Pl4SaHMqh+uCgpGqoZCz+uqpWTZyUWg//CEbAU08Eqk4qVne1fgtUJgazYG35ayEvsg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=LdKi7r5t; arc=none smtp.client-ip=95.215.58.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <d7ca6398-43aa-499a-b9ae-6b6e00a7e72e@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1724980234;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CvKVlPfjc5FkL+CSNqALSKJKQV3SzXeZ4J0ahpTQEqc=;
-	b=LdKi7r5tVDzu0oSpEez0wHZ5lz4qDE+lT+0ngTTqGq7gQufyeWnwb34ecTo5qq1xxcqJEV
-	ECSVVFmhKwMlN+/hpqQ3GG1OGBFoOR87+/q51ce+uKAWAOU+2b2OEMogklDQ7WDUUCP14o
-	s6l016xoA5DV9gOD2QeNmDGyBwhJgcY=
-Date: Thu, 29 Aug 2024 18:10:24 -0700
+	s=arc-20240116; t=1724980686; c=relaxed/simple;
+	bh=T5khp2IOgxmThgXUNUk7h3/itvLtgWIxI4p/73kVsyk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=BZ43/FzLqWHCsFTer73Yy/Y0omuK+d4jP85ZtSEzRIcgMSB1GXLhO8cTgIkx+nWamitwWUw5VSsqQBrgm/Se5WAFPbgmrUftL0BopdllHjFw2eUMpLAMJkmxgTRX7piAxkVYNx3LxQ9bB29yYmI2Bap2xnHNLyc3xC2nPS4pj+Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.44])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Ww0d82pWNz2DbZm;
+	Fri, 30 Aug 2024 09:17:48 +0800 (CST)
+Received: from kwepemh500013.china.huawei.com (unknown [7.202.181.146])
+	by mail.maildlp.com (Postfix) with ESMTPS id BE5EE140361;
+	Fri, 30 Aug 2024 09:18:01 +0800 (CST)
+Received: from [10.67.109.254] (10.67.109.254) by
+ kwepemh500013.china.huawei.com (7.202.181.146) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Fri, 30 Aug 2024 09:18:01 +0800
+Message-ID: <1fefabf3-3fe1-22cf-dc7c-bed655829330@huawei.com>
+Date: Fri, 30 Aug 2024 09:18:00 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v5 bpf-next 2/9] bpf: Adjust BPF_JMP that jumps to the 1st
- insn of the prologue
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Yonghong Song <yonghong.song@linux.dev>, Amery Hung <ameryhung@gmail.com>,
- kernel-team@meta.com
-References: <20240829210833.388152-1-martin.lau@linux.dev>
- <20240829210833.388152-3-martin.lau@linux.dev>
- <cdd2ea1421331cf27e5435ad60b7461936eceab2.camel@gmail.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.2.0
+Subject: Re: [PATCH -next] bpf: Use sockfd_put() helper
 Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <cdd2ea1421331cf27e5435ad60b7461936eceab2.camel@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: Stanislav Fomichev <sdf@fomichev.me>
+CC: <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+	<martin.lau@linux.dev>, <eddyz87@gmail.com>, <song@kernel.org>,
+	<yonghong.song@linux.dev>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
+	<haoluo@google.com>, <jolsa@kernel.org>, <bpf@vger.kernel.org>
+References: <20240829085040.156043-1-ruanjinjie@huawei.com>
+ <ZtDk9juU30-rIOQ_@mini-arch>
+From: Jinjie Ruan <ruanjinjie@huawei.com>
+In-Reply-To: <ZtDk9juU30-rIOQ_@mini-arch>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemh500013.china.huawei.com (7.202.181.146)
 
-On 8/29/24 5:47 PM, Eduard Zingerman wrote:
-> On Thu, 2024-08-29 at 14:08 -0700, Martin KaFai Lau wrote:
-> 
-> [...]
-> 
->> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->> index 261849384ea8..03e974129c05 100644
->> --- a/kernel/bpf/verifier.c
->> +++ b/kernel/bpf/verifier.c
->> @@ -19286,6 +19286,9 @@ static int adjust_jmp_off(struct bpf_prog *prog, u32 tgt_idx, u32 delta)
->>   	for (i = 0; i < insn_cnt; i++, insn++) {
->>   		u8 code = insn->code;
->>   
->> +		if (tgt_idx <= i && i < tgt_idx + delta)
->> +			continue;
->> +
->>   		if ((BPF_CLASS(code) != BPF_JMP && BPF_CLASS(code) != BPF_JMP32) ||
->>   		    BPF_OP(code) == BPF_CALL || BPF_OP(code) == BPF_EXIT)
->>   			continue;
->> @@ -19704,6 +19707,9 @@ static int convert_ctx_accesses(struct bpf_verifier_env *env)
->>   		}
->>   	}
->>   
->> +	if (delta)
->> +		WARN_ON(adjust_jmp_off(env->prog, 0, delta));
-> 
-> Just noticed this.
-> Suppose prologue is three instructions long and no epilogue,
-> then cnt == 3 and delta == 2, adjust_jmp_off() would skip instructions
-> in range [0..2), while inserted instructions range is [0..2].
-> So, this would work only if the last statement in the prologue/epilogue
-> generator is:
-> 
-> 	*insn++ = prog->insnsi[0];
-> 
-> which seems to be true for prologue generators in the tree,
-> but looks a bit unintuitive...
 
-Right, it is the current requirement/setup for the existing gen_prologue. It 
-should be obvious to spot if the gen_prologue does not do this and more unlikely 
-also somehow needs to jump back to itself.
 
-Thanks for looking at the patches!
+On 2024/8/30 5:15, Stanislav Fomichev wrote:
+> On 08/29, Jinjie Ruan wrote:
+>> Replace fput() with sockfd_put() in bpf_fd_reuseport_array_update_elem().
+>>
+>> Signed-off-by: Jinjie Ruan <ruanjinjie@huawei.com>
+> 
+> Can you resend with a proper [PATCH bpf-next] tag? 
+
+Sure.
 
 > 
->> +
->>   	if (bpf_prog_is_offloaded(env->prog->aux))
->>   		return 0;
->>   
-> 
-> 
-
+> Acked-by: Stanislav Fomichev <sdf@fomichev.me>
 
