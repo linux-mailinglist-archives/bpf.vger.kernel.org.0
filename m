@@ -1,168 +1,103 @@
-Return-Path: <bpf+bounces-38664-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38665-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6934696703B
-	for <lists+bpf@lfdr.de>; Sat, 31 Aug 2024 09:57:16 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C06D896713D
+	for <lists+bpf@lfdr.de>; Sat, 31 Aug 2024 13:26:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 75FE81C217AB
-	for <lists+bpf@lfdr.de>; Sat, 31 Aug 2024 07:57:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E1922B22823
+	for <lists+bpf@lfdr.de>; Sat, 31 Aug 2024 11:26:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A134216F8E9;
-	Sat, 31 Aug 2024 07:57:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E3FD17D378;
+	Sat, 31 Aug 2024 11:26:41 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3844B14A4F1;
-	Sat, 31 Aug 2024 07:57:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6D9A33EA;
+	Sat, 31 Aug 2024 11:26:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725091027; cv=none; b=f/3OJDS9znwak6VFAE0tBin0B7yAfp5u19krbMPQEaLi28l0pr1RKpNtN5FTQ/WR5jIsFlsNMgGUFhryDliHWjpy6IcWVtOvqlK5UsPvQPfUtULsL+4ncGLO8vrkusKnjXyVXNLOotX+a3rKzOqoVXKfU8kN410Hf0r+n3gOEkg=
+	t=1725103601; cv=none; b=N7Fm3Dv5lRSWD7dT1rXj9ihlqr9qeF0Mq4pV322sW+NEWQLcwT/tsDksZH9XjKjtqwSiiukN7Cj6xUesi7IGMGVBAawrSceKjRpGonVUef+an5d7DfpifJ9FB78/rfmkHv23zCvBIzPQEJfloPAvnuBt5Xpzk0ODvfBenMhEBBA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725091027; c=relaxed/simple;
-	bh=6szWU4nLb963mx9nh9M5k8xWXTuIqLNSfy020SIaS4I=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=NsQfe0zS6XuVWB2snq0zXlWVMpNBoadwQPI/y475owLV+fX05pVNELWQFrodfU+9ZA6bHPqtEZS51nYYhZnD5vZpXkDmMdaYgHFe/U4CJPajytOqAvii3BbN2RvZAA1InWcj2fAMhmHGDxUSf23iS+Q+/KwRHotW07SgC4Lw4H0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4WwnR1302pz4f3lDG;
-	Sat, 31 Aug 2024 15:56:45 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 0C2C71A058E;
-	Sat, 31 Aug 2024 15:57:01 +0800 (CST)
-Received: from [10.67.111.192] (unknown [10.67.111.192])
-	by APP4 (Coremail) with SMTP id gCh0CgCnGYDLzNJmO_LeDA--.44445S2;
-	Sat, 31 Aug 2024 15:57:00 +0800 (CST)
-Message-ID: <79b30c83-ee5e-453d-981e-61f826cf82d7@huaweicloud.com>
-Date: Sat, 31 Aug 2024 15:57:02 +0800
+	s=arc-20240116; t=1725103601; c=relaxed/simple;
+	bh=ZvbGp0mAKFAUDmcihLLlDp0OuZrzBX+nmwBkND+95xE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=fQLbVOYI0GUA1in2RwGdrcRugw3XPlqZi+41I2TK3ZhroBciEkF8mGUo/dF1i6hUXPKmjGyVqJLbJqWFF/2eMOW8ihG+opROrEce0Q2K0YfpzXo5S7hLGtrVhPS/FNddjCBrfCi2by4et0yrjUcuyzuayiqtCkzeHjre8modQuw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=fedoraproject.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=fedoraproject.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-42bb9d719d4so16089405e9.3;
+        Sat, 31 Aug 2024 04:26:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1725103597; x=1725708397;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZvbGp0mAKFAUDmcihLLlDp0OuZrzBX+nmwBkND+95xE=;
+        b=jbldVREBC1YooSkH250v1GgzxXbNMPbXAye/wGmwI09d91YZu9iJhGDM7IFk1NvLAl
+         j+d2UAB5yP3PHxLv5wHSlcX82t3g52bEpjypQaXsrDjeAzUMLcgHr5TqoJ1k5rQpQqMy
+         7ZtQDYnkOex/7ySAcNwmz1fVHoOChFrumucbBmbSKGq/FxnfecXE15er9TpFD7d3aN2x
+         VIYJiN3QoSjrS77JTu08oPPiexu0VsnGMwEkmX9Mxx8Xz4Jq+2qv1DZTKY22CIHqsLHt
+         zzCkZMXY+ylrDB7DCP6Dw7JiHqTsmFslZx5rFinU+ANyn4GvDPKYL1EjeJj5mSvy89mD
+         dQqQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWULp5kPr9EXduoAmjqDHC7MGniyAEf7M24mxU+rDACTHk2Lq7mMxkPqGTOFz886pQq8t8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyB/RCXcvPy1dLmefUXM9cR3trOPy1BM97iXi6JielQYn/nIK51
+	vljXHvN9Bdt6Jw0wNW6gB1DZIEyal5K3dOwftcB+MPB5z6ejXohdjNx+/wq4
+X-Google-Smtp-Source: AGHT+IHjIV0wNFzBDkSzTEmFFC73pt6/3eZBEe0W3ElSXi4eWK0Z4NvLr/P1WhaQ2fEt9aRZk1om5A==
+X-Received: by 2002:adf:e642:0:b0:367:9614:fb99 with SMTP id ffacd0b85a97d-3749b526f8bmr6304669f8f.10.1725103596789;
+        Sat, 31 Aug 2024 04:26:36 -0700 (PDT)
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com. [209.85.208.47])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5c226ccff17sm2870399a12.73.2024.08.31.04.26.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 31 Aug 2024 04:26:36 -0700 (PDT)
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-5befd2f35bfso2502349a12.2;
+        Sat, 31 Aug 2024 04:26:36 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUEOKapEkXfkGdGx7gZLaxQwmnrqEIrkH+QdIrRASyyp6W/u68eQBAiEBprgMoHR91npV8=@vger.kernel.org
+X-Received: by 2002:a05:6402:2714:b0:5a3:a4d7:caf5 with SMTP id
+ 4fb4d7f45d1cf-5c21eda33d9mr6746821a12.36.1725103596088; Sat, 31 Aug 2024
+ 04:26:36 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v3 2/4] libbpf: Access first syscall argument
- with CO-RE direct read on arm64
-Content-Language: en-US
-From: Xu Kuohai <xukuohai@huaweicloud.com>
-To: Pu Lehui <pulehui@huaweicloud.com>, bpf@vger.kernel.org,
- linux-riscv@lists.infradead.org, netdev@vger.kernel.org,
- Andrii Nakryiko <andrii@kernel.org>
-Cc: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
- Ilya Leoshkevich <iii@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Puranjay Mohan <puranjay@kernel.org>,
- Palmer Dabbelt <palmer@dabbelt.com>, Pu Lehui <pulehui@huawei.com>
-References: <20240831041934.1629216-1-pulehui@huaweicloud.com>
- <20240831041934.1629216-3-pulehui@huaweicloud.com>
- <2379c139-6457-49dc-84fa-0d60ce226f2a@huaweicloud.com>
-In-Reply-To: <2379c139-6457-49dc-84fa-0d60ce226f2a@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgCnGYDLzNJmO_LeDA--.44445S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxCry3Xr1rZr4UJw1DCw1rZwb_yoW5tw13pF
-	W8Ca4UCr18u3yjka42g3y3JF13Jws8tw48JF93Ga4S9FWjgryFq3W2gFWakryavrs7Gwsx
-	ZrnFkry0q3W2v3JanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWr
-	XwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
-	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0
-	s2-5UUUUU==
-X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
+References: <CAEg-Je8=t_cXKsWL0XSx3vF1gsArSWpychfbEf+yjM6wVz3Mjw@mail.gmail.com>
+ <CAM22NNBrXSUbrpFAKv8jrREKTBYx_aW0cibtDE5AZ_kTijUrPA@mail.gmail.com> <CAEg-Je_9r_96j-un6TS7Dm_kJ3m7Q6y_RDEs9NTvxjNJM-zEvQ@mail.gmail.com>
+In-Reply-To: <CAEg-Je_9r_96j-un6TS7Dm_kJ3m7Q6y_RDEs9NTvxjNJM-zEvQ@mail.gmail.com>
+From: Neal Gompa <ngompa@fedoraproject.org>
+Date: Sat, 31 Aug 2024 07:25:59 -0400
+X-Gmail-Original-Message-ID: <CAEg-Je-yfKSvHVnyJDmD9fprKX2kw9icKcG0SipGTUvjivwL9g@mail.gmail.com>
+Message-ID: <CAEg-Je-yfKSvHVnyJDmD9fprKX2kw9icKcG0SipGTUvjivwL9g@mail.gmail.com>
+Subject: Re: Weird failure with bpftool when building 6.11-rc4 with clang+rust+lto
+To: Matthew Maurer <matthew.r.maurer@gmail.com>
+Cc: rust-for-linux@vger.kernel.org, Miguel Ojeda <ojeda@kernel.org>, 
+	Quentin Monnet <qmo@kernel.org>, bpf@vger.kernel.org, 
+	"Justin M. Forbes" <jforbes@fedoraproject.org>, Davide Cavalca <dcavalca@fedoraproject.org>, 
+	Janne Grunau <jannau@fedoraproject.org>, Hector Martin <marcan@fedoraproject.org>, 
+	Asahi Linux <asahi@lists.linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 8/31/2024 3:26 PM, Xu Kuohai wrote:
-> On 8/31/2024 12:19 PM, Pu Lehui wrote:
->> From: Pu Lehui <pulehui@huawei.com>
->>
->> Currently PT_REGS_PARM1 SYSCALL(x) is consistent with PT_REGS_PARM1_CORE
->> SYSCALL(x), which will introduce the overhead of BPF_CORE_READ(), taking
->> into account the read pt_regs comes directly from the context, let's use
->> CO-RE direct read to access the first system call argument.
->>
->> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
->> Signed-off-by: Pu Lehui <pulehui@huawei.com>
->> ---
->>   tools/lib/bpf/bpf_tracing.h | 4 ++--
->>   1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/tools/lib/bpf/bpf_tracing.h b/tools/lib/bpf/bpf_tracing.h
->> index e7d9382efeb3..051c408e6aed 100644
->> --- a/tools/lib/bpf/bpf_tracing.h
->> +++ b/tools/lib/bpf/bpf_tracing.h
->> @@ -222,7 +222,7 @@ struct pt_regs___s390 {
->>   struct pt_regs___arm64 {
->>       unsigned long orig_x0;
->> -};
->> +} __attribute__((preserve_access_index));
->>   /* arm64 provides struct user_pt_regs instead of struct pt_regs to userspace */
->>   #define __PT_REGS_CAST(x) ((const struct user_pt_regs *)(x))
->> @@ -241,7 +241,7 @@ struct pt_regs___arm64 {
->>   #define __PT_PARM4_SYSCALL_REG __PT_PARM4_REG
->>   #define __PT_PARM5_SYSCALL_REG __PT_PARM5_REG
->>   #define __PT_PARM6_SYSCALL_REG __PT_PARM6_REG
->> -#define PT_REGS_PARM1_SYSCALL(x) PT_REGS_PARM1_CORE_SYSCALL(x)
->> +#define PT_REGS_PARM1_SYSCALL(x) (((const struct pt_regs___arm64 *)(x))->orig_x0)
->>   #define PT_REGS_PARM1_CORE_SYSCALL(x) \
->>       BPF_CORE_READ((const struct pt_regs___arm64 *)(x), __PT_PARM1_SYSCALL_REG)
-> 
-> Cool!
-> 
-> Acked-by: Xu Kuohai <xukuohai@huawei.com>
-> 
-> 
+On Fri, Aug 23, 2024 at 5:45=E2=80=AFPM Neal Gompa <ngompa@fedoraproject.or=
+g> wrote:
+>
+> Hey Matthew,
+>
+> The current thinking is that maybe the culprit is dwarves. We've
+> backported a fix in Fedora that may help, I'm waiting to find out if
+> it does. Apparently all test runs with Clang+LTO are broken right now
+> with dwarves 1.27, so it wasn't just unique to my merge request.
+>
 
-Wait, it breaks the following test:
+Well, that didn't work. The backported fix doesn't seem to have
+resolved the problem. I'm at a loss now.
 
---- a/tools/testing/selftests/bpf/progs/bpf_syscall_macro.c
-+++ b/tools/testing/selftests/bpf/progs/bpf_syscall_macro.c
-@@ -43,7 +43,7 @@ int BPF_KPROBE(handle_sys_prctl)
 
-         /* test for PT_REGS_PARM */
 
--       bpf_probe_read_kernel(&tmp, sizeof(tmp), &PT_REGS_PARM1_SYSCALL(real_regs));
-+       tmp = PT_REGS_PARM1_SYSCALL(real_regs);
-         arg1 = tmp;
-         bpf_probe_read_kernel(&arg2, sizeof(arg2), &PT_REGS_PARM2_SYSCALL(real_regs));
-         bpf_probe_read_kernel(&arg3, sizeof(arg3), &PT_REGS_PARM3_SYSCALL(real_regs));
-
-Failed with verifier rejection:
-
-0: R1=ctx() R10=fp0
-; int BPF_KPROBE(handle_sys_prctl) @ bpf_syscall_macro.c:33
-0: (bf) r6 = r1                       ; R1=ctx() R6_w=ctx()
-; pid_t pid = bpf_get_current_pid_tgid() >> 32; @ bpf_syscall_macro.c:36
-1: (85) call bpf_get_current_pid_tgid#14      ; R0_w=scalar()
-; if (pid != filter_pid) @ bpf_syscall_macro.c:39
-2: (18) r1 = 0xffff800082e0e000       ; R1_w=map_value(map=bpf_sysc.rodata,ks=4,vs=4)
-4: (61) r1 = *(u32 *)(r1 +0)          ; R1_w=607
-; pid_t pid = bpf_get_current_pid_tgid() >> 32; @ bpf_syscall_macro.c:36
-5: (77) r0 >>= 32                     ; R0_w=scalar(smin=0,smax=umax=0xffffffff,var_off=(0x0; 0xffffffff))
-; if (pid != filter_pid) @ bpf_syscall_macro.c:39
-6: (5e) if w1 != w0 goto pc+98        ; R0_w=607 R1_w=607
-; real_regs = PT_REGS_SYSCALL_REGS(ctx); @ bpf_syscall_macro.c:42
-7: (79) r8 = *(u64 *)(r6 +0)          ; R6_w=ctx() R8_w=scalar()
-; tmp = PT_REGS_PARM1_SYSCALL(real_regs); @ bpf_syscall_macro.c:46
-8: (79) r1 = *(u64 *)(r8 +272)
-R8 invalid mem access 'scalar'
-processed 8 insns (limit 1000000) max_states_per_insn 0 total_states 0 peak_states 0 mark_read 0
-
+--=20
+Neal Gompa (FAS: ngompa)
 
