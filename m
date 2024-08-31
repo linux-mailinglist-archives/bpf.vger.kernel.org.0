@@ -1,192 +1,441 @@
-Return-Path: <bpf+bounces-38624-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38625-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2B74966CF9
-	for <lists+bpf@lfdr.de>; Sat, 31 Aug 2024 01:43:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF0BB966D2F
+	for <lists+bpf@lfdr.de>; Sat, 31 Aug 2024 02:10:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 229831C22C8F
-	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2024 23:43:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5DDC1284C83
+	for <lists+bpf@lfdr.de>; Sat, 31 Aug 2024 00:10:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E23AE18F2CF;
-	Fri, 30 Aug 2024 23:42:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C9F428EF;
+	Sat, 31 Aug 2024 00:10:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YZl0cxYI"
+	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="Z/DQgEsW"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out162-62-58-216.mail.qq.com (out162-62-58-216.mail.qq.com [162.62.58.216])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CD3815C150
-	for <bpf@vger.kernel.org>; Fri, 30 Aug 2024 23:42:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40010193
+	for <bpf@vger.kernel.org>; Sat, 31 Aug 2024 00:10:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.58.216
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725061373; cv=none; b=D6xPv0Fpek0vncgc2DNsObufafhNK4wKw3mhBDBocOHdhaODpM21ZHDG9+OrWmEfiPZbOhcH7jBzANmsxNeBf8EQQ+/MLOloAMthBtuAjZMm27CeW9KHKEaCdxoD0O9Kjq90XMft8Ew7rbIeTXUrV0wpwBREmy5wSKpycXkJt3U=
+	t=1725063015; cv=none; b=ro3dC8rQVYeX34BxxUTVkJJk0epitjRFcQlEeDM9uHirXccM3Gaqg7G46aqo17jDHpGK9ZZYXN/YrQeBddL3pdBN9XuzAQi5TQkOG8ZvbTGpXFFmx8Ga1Mn1pXUtBrEiPzteBoiH29idyuuIMpFQsvX6+cQiKQGB9dcMkFkQx8c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725061373; c=relaxed/simple;
-	bh=tmRQGlxyD6UPBbvBGBnhQJTxWh7cvIkbz3ME9Gd0HU0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qUqTFxKKQ6zN77fEptMKDsPUj3pYQFjdqjGtShIVxSbqjvyFNaGaos76KSa3LTGsHxiYhWzis6hAASGX2bh55c7c33SXG+ncfqv43vlH/etx5We+CHU3Xr9TY+iSgot7WCmXX29eusc+IuaMYYq3zZUuUzdO2R4p6Lb5aogNCMM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YZl0cxYI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1CF6C4CEC2;
-	Fri, 30 Aug 2024 23:42:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1725061373;
-	bh=tmRQGlxyD6UPBbvBGBnhQJTxWh7cvIkbz3ME9Gd0HU0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=YZl0cxYI/jP9nLYfPCVNOxmET4pC9Hnkle3144/dKF6bBUJOhUO6aZjuodw67/ucc
-	 sc9OqoRTskZm5YjdzDfPqtuYHIu1PdEENbLfb3nUbOXlfx8QObnpklRYPAQ/6np2H6
-	 Ust6pJFSSO1s0fxlItzWp9qJtkcqwo+xuCg1heGk03j83LjmMP5fH1eTpgDXqDalB3
-	 yd59tsnYlueRjZ793Gy6wsekAB76x5RTH7oNQedc2UjAPPd39dE5rH/6mzP/IfLycN
-	 RtJfdR0dF2M46TC7JVjeuBaw8QpCIRRQ2b+0CIMohIf1jQ2SYB58NSKvJdg/Iex0vL
-	 euIwWOEGrdF3A==
-Date: Fri, 30 Aug 2024 20:42:50 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Alan Maguire <alan.maguire@oracle.com>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Mykyta Yatsenko <yatsenko@meta.com>,
-	Ihor Solodrai <ihor.solodrai@pm.me>, bpf@vger.kernel.org,
-	andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-	mykolal@fb.com
-Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: do not update vmlinux.h
- unnecessarily
-Message-ID: <ZtJY-jd0ATcFV-nS@x1>
-References: <20240828174608.377204-1-ihor.solodrai@pm.me>
- <20240828174608.377204-2-ihor.solodrai@pm.me>
- <b48f348c76dd5b724384aef7c7c067877b28ee5b.camel@gmail.com>
- <CAEf4BzaBMhb4a2Y-2_mcLmYjJ2UWQuwNF-2sPVJXo39+0ziqzw@mail.gmail.com>
- <68c211f8-48a3-415c-a7d1-5b3ee2074f45@oracle.com>
+	s=arc-20240116; t=1725063015; c=relaxed/simple;
+	bh=3ELa3v7d0Sd3CCzs5ZLq9ROy55shKSmTqiKw5F2ANdM=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=LLmgJQ+xwI7+xOZSwtUJ+nlwLsCEZb+esksMT9Va/4pJ5UhIBwCO99GsLqEjPH0ORG3h2NUl8d0trbG8s+xCrqiORol3Edy+Pcx281RdJxqx3hahjTBwTyndKjdGkuyqiQIkrSkvSfZUqjyoPZnxQCTjkHeI/C7dLCw38l+W+Lw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=Z/DQgEsW; arc=none smtp.client-ip=162.62.58.216
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+	s=s201512; t=1725063008;
+	bh=Pp5fbxH8Yz5IVta2/xKONO8NGXAM54UiF0c+o7rpJZU=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=Z/DQgEsWAYLvBxp1N0Pq7uoNALzXH+UUIIEbnQd0VziRynZ3+SuTT/aSNV4S6LMGM
+	 dbbOotApRGAYkPAXpcldXglI8vBbE8US5xripy1c3qZj7cFpaDqdRgjSjsZod+Gli8
+	 C72JvwG2rcGrEVapn2Ldt7gnF/LzGiuR0ooDy9t0=
+Received: from rtoax.lan ([120.245.115.147])
+	by newxmesmtplogicsvrsza15-1.qq.com (NewEsmtp) with SMTP
+	id EE3BE3C; Sat, 31 Aug 2024 08:03:46 +0800
+X-QQ-mid: xmsmtpt1725062626tuusdn36m
+Message-ID: <tencent_30ADAC88CB2915CA57E9512D4460035BA107@qq.com>
+X-QQ-XMAILINFO: OW8rLgt5YFkGLOQfs+m1UIYMbW/SmndDdxI5lTRMX6seJPklYhm+kmfeD4xWmt
+	 0fDEIHZosBprGbqHiywUg/j5bM850XjeLHYiUFLfdUxkg2sAPMALSABa+CGjzvpfdpbnwgIlnJYq
+	 gTymTP5b/A1mfTT01+UvQzHQASIBrEkXlaiISJXAV+vsU4cHMNnNJmyeIfrOgNNdprQ9VMakFH6T
+	 +7WUt/H7A9jMdMwXwcTEhEIvPS/8+fIUcoggPymD9B2+IukySjws4ekTxspPPhMp3y8Tn8p1D84v
+	 1PnGwp3ILmtaiGdxuMqmbhu2n9mG+WZOf/30E3l2jI/iuSUUdRw0nltDqBnGZByGWnq5fT9ZU611
+	 ShjV44/lfM7ViLqpeI0RMboTnv/qqRfEVzpIuL5x9GGoNEjUMw0fK9nhVfmzvOS47DoqKNu4ahqt
+	 zpI4kb6UVjBNinqHowuHvibUC3TYHojHBvlULn81nyRF7Mp9tde3j7Cxu3MDvUQluRneOUttO5qt
+	 x9n53q+B5J5EcvI9V+vMmgzOHJThaCcQ57jQeuSirFeXtGNIDPshe3zlfap/ulin0GoWxjm9g8Gi
+	 Yl8F1aMiAjCrD2h32iwnavRj/vyxXxnuxfz8ZN1AgAaVO0ldociVK69C3akH4P/JLqJqBmakyziN
+	 lf38rQOPe+8rStJ/LLmpZIQ5VDC/ar3uO/GQqZ/MO4xh7zNRRuIUpkegyClbS1eu8iU9iWbIkCcF
+	 rxLq3NCOBokfDbpmHCEW8A3z1fwNgAwC1SMkj2GdIKmJYSBRaob1zA2BIfWYbLfMdvqzJnBQGt3R
+	 sUPv8NA9tegwkMQ6l/zrKD4WtyFMvx7aAEAXz0TpiCWJ7Fq7WSGlHS0QPUjg+re6MCzVyxU716Pr
+	 F4/2PIJoQXvXEEGCawz60fq0fG+BdzCjYLlAVnuSShbHVqyxY8SMP0zqZmS+gMGTCOo5ethWxjPO
+	 1kl/23/HcOF+YntuCXXIvByiApTXUFkcrZftkwzLW8qtbbcoaFoThauxD5rroxcRvbAMyUnKo=
+X-QQ-XMRINFO: NI4Ajvh11aEj8Xl/2s1/T8w=
+From: Rong Tao <rtoax@foxmail.com>
+To: andrii.nakryiko@gmail.com
+Cc: andrii@kernel.org,
+	ast@kernel.org,
+	bpf@vger.kernel.org,
+	daniel@iogearbox.net,
+	eddyz87@gmail.com,
+	haoluo@google.com,
+	john.fastabend@gmail.com,
+	jolsa@kernel.org,
+	kpsingh@kernel.org,
+	linux-kernel@vger.kernel.org,
+	martin.lau@linux.dev,
+	rongtao@cestc.cn,
+	rtoax@foxmail.com,
+	sdf@fomichev.me,
+	song@kernel.org,
+	yonghong.song@linux.dev
+Subject: [PATCH bpf-next] samples/bpf: Remove sample tracex2
+Date: Sat, 31 Aug 2024 08:03:38 +0800
+X-OQ-MSGID: <20240831000338.9813-1-rtoax@foxmail.com>
+X-Mailer: git-send-email 2.46.0
+In-Reply-To: <CAEf4BzaCW03xOp6=rSUqmy8DRFvGJWHy1LyGNdpP+D-D9Eo+Yw@mail.gmail.com>
+References: <CAEf4BzaCW03xOp6=rSUqmy8DRFvGJWHy1LyGNdpP+D-D9Eo+Yw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <68c211f8-48a3-415c-a7d1-5b3ee2074f45@oracle.com>
 
-On Fri, Aug 30, 2024 at 10:03:40PM +0100, Alan Maguire wrote:
-> On 30/08/2024 21:34, Andrii Nakryiko wrote:
-> > On Wed, Aug 28, 2024 at 3:02 PM Eduard Zingerman <eddyz87@gmail.com> wrote:
-> >>
-> >> On Wed, 2024-08-28 at 17:46 +0000, Ihor Solodrai wrote:
-> >>> %.bpf.o objects depend on vmlinux.h, which makes them transitively
-> >>> dependent on unnecessary libbpf headers. However vmlinux.h doesn't
-> >>> actually change as often.
-> >>>
-> >>> When generating vmlinux.h, compare it to a previous version and update
-> >>> it only if there are changes.
-> >>>
-> >>> Example of build time improvement (after first clean build):
-> >>>   $ touch ../../../lib/bpf/bpf.h
-> >>>   $ time make -j8
-> >>> Before: real  1m37.592s
-> >>> After:  real  0m27.310s
-> >>>
-> >>> Notice that %.bpf.o gen step is skipped if vmlinux.h hasn't changed.
-> >>>
-> >>> Link: https://lore.kernel.org/bpf/CAEf4BzY1z5cC7BKye8=A8aTVxpsCzD=p1jdTfKC7i0XVuYoHUQ@mail.gmail.com
-> >>>
-> >>> Signed-off-by: Ihor Solodrai <ihor.solodrai@pm.me>
-> >>> ---
-> >>
-> >> Unfortunately, I think that this is a half-measure.
-> >> E.g. the following command forces tests rebuild for me:
-> >>
-> >>   touch ../../../../kernel/bpf/verifier.c; \
-> >>   make -j22 -C ../../../../; \
-> >>   time make test_progs
-> >>
-> >> To workaround this we need to enable reproducible_build option:
-> >>
-> >>     diff --git a/scripts/Makefile.btf b/scripts/Makefile.btf
-> >>     index b75f09f3f424..8cd648f3e32b 100644
-> >>     --- a/scripts/Makefile.btf
-> >>     +++ b/scripts/Makefile.btf
-> >>     @@ -19,7 +19,7 @@ pahole-flags-$(call test-ge, $(pahole-ver), 125)      += --skip_encoding_btf_inconsis
-> >>      else
-> >>
-> >>      # Switch to using --btf_features for v1.26 and later.
-> >>     -pahole-flags-$(call test-ge, $(pahole-ver), 126)  = -j --btf_features=encode_force,var,float,enum64,decl_tag,type_tag,optimized_func,consistent_func,decl_tag_kfuncs
-> >>     +pahole-flags-$(call test-ge, $(pahole-ver), 126)  = -j --btf_features=encode_force,var,float,enum64,decl_tag,type_tag,optimized_func,consistent_func,decl_tag_kfuncs,reproducible_build
-> >>
-> >>      ifneq ($(KBUILD_EXTMOD),)
-> >>      module-pahole-flags-$(call test-ge, $(pahole-ver), 126) += --btf_features=distilled_base
-> >>
-> >> Question to the mailing list: do we want this?
-> > 
-> > Alan, can you please give us a summary of what are the consequences of
-> > the reproducible_build pahole option? In terms of performance and
-> > otherwise.
-> >
-> 
-> Sure. The original context was that the folks trying to do reproducible
-> builds were being impacted by the fact that BTF generation was
-> non-deterministic when done in parallel; i.e. same kernel would give
-> different BTF ids when rebuilding vmlinux BTF; the reason was largely as
-> I understand it that when pahole partitioned CUs between multiple
-> threads, that partitioning could vary. If it varied, when BTF was merged
-> across threads we could end up with differing id assignments. Since BTF
-> then was baked into the vmlinux binary, unstable BTF ids meant
-> non-identical vmlinux.
-> 
-> The first approach to solve this was to remove parallel BTF generation
-> to support reproducibility. Arnaldo however added support that retained
-> parallelism while supporting determinism through using the DWARF CU
-> order. He did some great analysis on the overheads for vmlinux
-> generation too [1]; summary is that the overhead in runtime is approx
-> 33% versus parallel non-reproducible encoding. Those numbers might not
-> 100% translate to the vmlinux build during kernel since it was a
-> detached pahole generation and the options might differ slightly, but
-> they give a sense of things. I don't _think_ there should be additional
-> memory overheads during pahole generation (we really can't afford any
-> more memory usage), since it's really more about making order of CU
-> processing consistent.
-> 
-> Would be good to get Arnaldo's perspective too if we're considering
-> switching this on by default, as he knows this stuff much better than I do.
+From: Rong Tao <rongtao@cestc.cn>
 
-You described it nicely! And on top of that there was recent work that
-will be available in 1.28 to reduce the memory footprint of pahole,
-using it to find things to pack in itself, reducing the number of
-allocations, not keeping unreferenced CUs around (you did it), part of
-the work to have it working on 32-bit architectures, where we had
-reports of it not working.
+In commit ba8de796baf4 ("net: introduce sk_skb_reason_drop function")
+kfree_skb_reason() becomes an inline function and cannot be traced.
 
-There is certainly more optimizations to be made to reduce its memory
-footprint while allowing it to run in parallel, but at this point it
-seems to have addressed the problems that were reported.
+samples/bpf is abandonware by now, and we should slowly but surely
+convert whatever makes sense into BPF selftests under
+tools/testing/selftests/bpf and just get rid of the rest.
 
-More people trying it and measuring the impacts, to confirm the tests
-and analysis we did and you alluded too can be only a good thing in
-getting us all informed and confortable with using this option by
-default.
+Link: https://github.com/torvalds/linux/commit/ba8de796baf4bdc03530774fb284fe3c97875566
+Signed-off-by: Rong Tao <rongtao@cestc.cn>
+---
+ samples/bpf/Makefile       |   3 -
+ samples/bpf/tracex2.bpf.c  |  99 --------------------
+ samples/bpf/tracex2_user.c | 187 -------------------------------------
+ 3 files changed, 289 deletions(-)
+ delete mode 100644 samples/bpf/tracex2.bpf.c
+ delete mode 100644 samples/bpf/tracex2_user.c
 
-BTW, we have now a tests/ directory with a regression test for this
-feature and another for the --prettify feature in pahole (use DWARF or
-BTF to pretty print raw data with several tricks on finding the right
-data structure based on enumerations when the conventions used in a
-project allow for that, that is the case with tools/perf, also for using
-header sizes to traverse variable sized records, etc), please see:
+diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
+index dca56aa360ff..7afe040cf43b 100644
+--- a/samples/bpf/Makefile
++++ b/samples/bpf/Makefile
+@@ -13,7 +13,6 @@ tprogs-y += sockex1
+ tprogs-y += sockex2
+ tprogs-y += sockex3
+ tprogs-y += tracex1
+-tprogs-y += tracex2
+ tprogs-y += tracex3
+ tprogs-y += tracex4
+ tprogs-y += tracex5
+@@ -63,7 +62,6 @@ sockex1-objs := sockex1_user.o
+ sockex2-objs := sockex2_user.o
+ sockex3-objs := sockex3_user.o
+ tracex1-objs := tracex1_user.o $(TRACE_HELPERS)
+-tracex2-objs := tracex2_user.o
+ tracex3-objs := tracex3_user.o
+ tracex4-objs := tracex4_user.o
+ tracex5-objs := tracex5_user.o $(TRACE_HELPERS)
+@@ -105,7 +103,6 @@ always-y += sockex1_kern.o
+ always-y += sockex2_kern.o
+ always-y += sockex3_kern.o
+ always-y += tracex1.bpf.o
+-always-y += tracex2.bpf.o
+ always-y += tracex3.bpf.o
+ always-y += tracex4.bpf.o
+ always-y += tracex5.bpf.o
+diff --git a/samples/bpf/tracex2.bpf.c b/samples/bpf/tracex2.bpf.c
+deleted file mode 100644
+index 0a5c75b367be..000000000000
+--- a/samples/bpf/tracex2.bpf.c
++++ /dev/null
+@@ -1,99 +0,0 @@
+-/* Copyright (c) 2013-2015 PLUMgrid, http://plumgrid.com
+- *
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of version 2 of the GNU General Public
+- * License as published by the Free Software Foundation.
+- */
+-#include "vmlinux.h"
+-#include <linux/version.h>
+-#include <bpf/bpf_helpers.h>
+-#include <bpf/bpf_tracing.h>
+-#include <bpf/bpf_core_read.h>
+-
+-struct {
+-	__uint(type, BPF_MAP_TYPE_HASH);
+-	__type(key, long);
+-	__type(value, long);
+-	__uint(max_entries, 1024);
+-} my_map SEC(".maps");
+-
+-/* kprobe is NOT a stable ABI. If kernel internals change this bpf+kprobe
+- * example will no longer be meaningful
+- */
+-SEC("kprobe/kfree_skb_reason")
+-int bpf_prog2(struct pt_regs *ctx)
+-{
+-	long loc = 0;
+-	long init_val = 1;
+-	long *value;
+-
+-	/* read ip of kfree_skb_reason caller.
+-	 * non-portable version of __builtin_return_address(0)
+-	 */
+-	BPF_KPROBE_READ_RET_IP(loc, ctx);
+-
+-	value = bpf_map_lookup_elem(&my_map, &loc);
+-	if (value)
+-		*value += 1;
+-	else
+-		bpf_map_update_elem(&my_map, &loc, &init_val, BPF_ANY);
+-	return 0;
+-}
+-
+-static unsigned int log2(unsigned int v)
+-{
+-	unsigned int r;
+-	unsigned int shift;
+-
+-	r = (v > 0xFFFF) << 4; v >>= r;
+-	shift = (v > 0xFF) << 3; v >>= shift; r |= shift;
+-	shift = (v > 0xF) << 2; v >>= shift; r |= shift;
+-	shift = (v > 0x3) << 1; v >>= shift; r |= shift;
+-	r |= (v >> 1);
+-	return r;
+-}
+-
+-static unsigned int log2l(unsigned long v)
+-{
+-	unsigned int hi = v >> 32;
+-	if (hi)
+-		return log2(hi) + 32;
+-	else
+-		return log2(v);
+-}
+-
+-struct hist_key {
+-	char comm[16];
+-	u64 pid_tgid;
+-	u64 uid_gid;
+-	u64 index;
+-};
+-
+-struct {
+-	__uint(type, BPF_MAP_TYPE_PERCPU_HASH);
+-	__uint(key_size, sizeof(struct hist_key));
+-	__uint(value_size, sizeof(long));
+-	__uint(max_entries, 1024);
+-} my_hist_map SEC(".maps");
+-
+-SEC("ksyscall/write")
+-int BPF_KSYSCALL(bpf_prog3, unsigned int fd, const char *buf, size_t count)
+-{
+-	long init_val = 1;
+-	long *value;
+-	struct hist_key key;
+-
+-	key.index = log2l(count);
+-	key.pid_tgid = bpf_get_current_pid_tgid();
+-	key.uid_gid = bpf_get_current_uid_gid();
+-	bpf_get_current_comm(&key.comm, sizeof(key.comm));
+-
+-	value = bpf_map_lookup_elem(&my_hist_map, &key);
+-	if (value)
+-		__sync_fetch_and_add(value, 1);
+-	else
+-		bpf_map_update_elem(&my_hist_map, &key, &init_val, BPF_ANY);
+-	return 0;
+-}
+-char _license[] SEC("license") = "GPL";
+-u32 _version SEC("version") = LINUX_VERSION_CODE;
+diff --git a/samples/bpf/tracex2_user.c b/samples/bpf/tracex2_user.c
+deleted file mode 100644
+index 2131f1648cf1..000000000000
+--- a/samples/bpf/tracex2_user.c
++++ /dev/null
+@@ -1,187 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-#include <stdio.h>
+-#include <unistd.h>
+-#include <stdlib.h>
+-#include <signal.h>
+-#include <string.h>
+-
+-#include <bpf/bpf.h>
+-#include <bpf/libbpf.h>
+-#include "bpf_util.h"
+-
+-#define MAX_INDEX	64
+-#define MAX_STARS	38
+-
+-/* my_map, my_hist_map */
+-static int map_fd[2];
+-
+-static void stars(char *str, long val, long max, int width)
+-{
+-	int i;
+-
+-	for (i = 0; i < (width * val / max) - 1 && i < width - 1; i++)
+-		str[i] = '*';
+-	if (val > max)
+-		str[i - 1] = '+';
+-	str[i] = '\0';
+-}
+-
+-struct task {
+-	char comm[16];
+-	__u64 pid_tgid;
+-	__u64 uid_gid;
+-};
+-
+-struct hist_key {
+-	struct task t;
+-	__u32 index;
+-};
+-
+-#define SIZE sizeof(struct task)
+-
+-static void print_hist_for_pid(int fd, void *task)
+-{
+-	unsigned int nr_cpus = bpf_num_possible_cpus();
+-	struct hist_key key = {}, next_key;
+-	long values[nr_cpus];
+-	char starstr[MAX_STARS];
+-	long value;
+-	long data[MAX_INDEX] = {};
+-	int max_ind = -1;
+-	long max_value = 0;
+-	int i, ind;
+-
+-	while (bpf_map_get_next_key(fd, &key, &next_key) == 0) {
+-		if (memcmp(&next_key, task, SIZE)) {
+-			key = next_key;
+-			continue;
+-		}
+-		bpf_map_lookup_elem(fd, &next_key, values);
+-		value = 0;
+-		for (i = 0; i < nr_cpus; i++)
+-			value += values[i];
+-		ind = next_key.index;
+-		data[ind] = value;
+-		if (value && ind > max_ind)
+-			max_ind = ind;
+-		if (value > max_value)
+-			max_value = value;
+-		key = next_key;
+-	}
+-
+-	printf("           syscall write() stats\n");
+-	printf("     byte_size       : count     distribution\n");
+-	for (i = 1; i <= max_ind + 1; i++) {
+-		stars(starstr, data[i - 1], max_value, MAX_STARS);
+-		printf("%8ld -> %-8ld : %-8ld |%-*s|\n",
+-		       (1l << i) >> 1, (1l << i) - 1, data[i - 1],
+-		       MAX_STARS, starstr);
+-	}
+-}
+-
+-static void print_hist(int fd)
+-{
+-	struct hist_key key = {}, next_key;
+-	static struct task tasks[1024];
+-	int task_cnt = 0;
+-	int i;
+-
+-	while (bpf_map_get_next_key(fd, &key, &next_key) == 0) {
+-		int found = 0;
+-
+-		for (i = 0; i < task_cnt; i++)
+-			if (memcmp(&tasks[i], &next_key, SIZE) == 0)
+-				found = 1;
+-		if (!found)
+-			memcpy(&tasks[task_cnt++], &next_key, SIZE);
+-		key = next_key;
+-	}
+-
+-	for (i = 0; i < task_cnt; i++) {
+-		printf("\npid %d cmd %s uid %d\n",
+-		       (__u32) tasks[i].pid_tgid,
+-		       tasks[i].comm,
+-		       (__u32) tasks[i].uid_gid);
+-		print_hist_for_pid(fd, &tasks[i]);
+-	}
+-
+-}
+-
+-static void int_exit(int sig)
+-{
+-	print_hist(map_fd[1]);
+-	exit(0);
+-}
+-
+-int main(int ac, char **argv)
+-{
+-	long key, next_key, value;
+-	struct bpf_link *links[2];
+-	struct bpf_program *prog;
+-	struct bpf_object *obj;
+-	char filename[256];
+-	int i, j = 0;
+-	FILE *f;
+-
+-	snprintf(filename, sizeof(filename), "%s.bpf.o", argv[0]);
+-	obj = bpf_object__open_file(filename, NULL);
+-	if (libbpf_get_error(obj)) {
+-		fprintf(stderr, "ERROR: opening BPF object file failed\n");
+-		return 0;
+-	}
+-
+-	/* load BPF program */
+-	if (bpf_object__load(obj)) {
+-		fprintf(stderr, "ERROR: loading BPF object file failed\n");
+-		goto cleanup;
+-	}
+-
+-	map_fd[0] = bpf_object__find_map_fd_by_name(obj, "my_map");
+-	map_fd[1] = bpf_object__find_map_fd_by_name(obj, "my_hist_map");
+-	if (map_fd[0] < 0 || map_fd[1] < 0) {
+-		fprintf(stderr, "ERROR: finding a map in obj file failed\n");
+-		goto cleanup;
+-	}
+-
+-	signal(SIGINT, int_exit);
+-	signal(SIGTERM, int_exit);
+-
+-	/* start 'ping' in the background to have some kfree_skb_reason
+-	 * events */
+-	f = popen("ping -4 -c5 localhost", "r");
+-	(void) f;
+-
+-	/* start 'dd' in the background to have plenty of 'write' syscalls */
+-	f = popen("dd if=/dev/zero of=/dev/null count=5000000", "r");
+-	(void) f;
+-
+-	bpf_object__for_each_program(prog, obj) {
+-		links[j] = bpf_program__attach(prog);
+-		if (libbpf_get_error(links[j])) {
+-			fprintf(stderr, "ERROR: bpf_program__attach failed\n");
+-			links[j] = NULL;
+-			goto cleanup;
+-		}
+-		j++;
+-	}
+-
+-	for (i = 0; i < 5; i++) {
+-		key = 0;
+-		while (bpf_map_get_next_key(map_fd[0], &key, &next_key) == 0) {
+-			bpf_map_lookup_elem(map_fd[0], &next_key, &value);
+-			printf("location 0x%lx count %ld\n", next_key, value);
+-			key = next_key;
+-		}
+-		if (key)
+-			printf("\n");
+-		sleep(1);
+-	}
+-	print_hist(map_fd[1]);
+-
+-cleanup:
+-	for (j--; j >= 0; j--)
+-		bpf_link__destroy(links[j]);
+-
+-	bpf_object__close(obj);
+-	return 0;
+-}
+-- 
+2.46.0
 
-https://git.kernel.org/pub/scm/devel/pahole/pahole.git/tree/tests
-
-And:
-
-https://git.kernel.org/pub/scm/devel/pahole/pahole.git/commit/?id=fd14dc67cb6aaead553074afb4a1ddad10209892
-https://git.kernel.org/pub/scm/devel/pahole/pahole.git/commit/?id=be638365781ed0c843249c5bcebe90a01e74b2fe
-
-This should help us in detecting problems earlier, brownie point to
-whoever gets this hooked up in CI systems, existing or new 8-)
-
-Thanks,
-
-- Arnaldo
- 
-> [1]
-> https://lore.kernel.org/dwarves/20240412211604.789632-12-acme@kernel.org/
 
