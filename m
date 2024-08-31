@@ -1,132 +1,109 @@
-Return-Path: <bpf+bounces-38646-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38647-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31EF5966E6D
-	for <lists+bpf@lfdr.de>; Sat, 31 Aug 2024 03:26:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DB71966EE6
+	for <lists+bpf@lfdr.de>; Sat, 31 Aug 2024 04:14:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8C6DCB232C4
-	for <lists+bpf@lfdr.de>; Sat, 31 Aug 2024 01:26:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2FA281C220B0
+	for <lists+bpf@lfdr.de>; Sat, 31 Aug 2024 02:14:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41A9B219F6;
-	Sat, 31 Aug 2024 01:26:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DB453B192;
+	Sat, 31 Aug 2024 02:14:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eT311lAr"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Klu0caKW"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 803483FC2;
-	Sat, 31 Aug 2024 01:26:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EA221758F
+	for <bpf@vger.kernel.org>; Sat, 31 Aug 2024 02:14:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725067577; cv=none; b=D2X8Wqwvb0dhmva64E0pfX+vAkcJYl07akqVZxQniVfU/zEGgINxjdsGef8KydKjzDnawk3c0ybn2UsoIXVf923BP6/9de4QPuIrmMcifNCbgYn3C0vERxW9oKOfjc8W3UQlyh06unBjsEuPzQbf7z5GoSw3trHCheNDKlrmzSo=
+	t=1725070462; cv=none; b=DaYrO+ZtZZWpNspCh2IjBlYk8VIeLk8bd+VhjoEPbED3nbV1U8wuaQPN3jP1UxRAlYoX/wWg/my0Bb1w7kmhcQKBEF56fCVt2xV3m0C70psd6XDw+q/euljUkiO32pDJxu4/wbbrLYliA4XDM7txbFc7BKuNkmnoX+swCi693fU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725067577; c=relaxed/simple;
-	bh=gxPdNZGQEFMPNKWeKlJD9uAC8slxEZ3cQIYJD90Mt4Q=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=KoY1r5xOw3xeP+L+3FEpSvGVb/yxc3OtxDB/7jIS+w8SkV9N7HHG/NLff+v329BwVoUgiSdUOfIu5Ymg1Gm+2SC8f58VZfAIOkl4C5cJVbaD1/lSMABVQaNwgS4fipJ0HffVfKyrACFywb7PoXwBubiarkhzjHQbOMgHmyxJCmg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eT311lAr; arc=none smtp.client-ip=209.85.214.182
+	s=arc-20240116; t=1725070462; c=relaxed/simple;
+	bh=75HqIkJujdkOIL2qY9pXCBhgTD3eGe1aMaDcqP93LD4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=jNiK2NZzw3FTv3gE/T51BrkNe1CojCKEB6710tnfEEytZX4NltsYYumcWL6MtyuPYVM0D5JPN6QfT3ai4aICQOpeaAxB5pV3ChAm+E+kFESpbsaa7noIvD4PkZ9Zislr4Qx4QRYqTiFFZn1f6PgF/Y0X0j8Gyi3Sz1tTQ6bdvsc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Klu0caKW; arc=none smtp.client-ip=209.85.128.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-20227ba378eso21337775ad.0;
-        Fri, 30 Aug 2024 18:26:16 -0700 (PDT)
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-4280ca0791bso20787335e9.1
+        for <bpf@vger.kernel.org>; Fri, 30 Aug 2024 19:14:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1725067576; x=1725672376; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=JMq8LeiKLC4aaQqQtyI/62ZqnY23+Wt9p5UO3ew0Jxk=;
-        b=eT311lArhQbj3gNxIFRlEbiJY9s3JjeuNi3N6NTyj1dOaLSSvRWg6uI9i8vf2hd/7v
-         mQ63G1gNbZVy4QOvHsJxoUxL5+gVZwCLCju3q3EUAZxmUI2X74WIm4ed541aftHiO2Jh
-         M2rhh6pzadcFlowMN69HYEoZGuoS5lAltcvzM5HL6C5NwDsm0g/tFvCDVeJZhnh2qwX7
-         +Y/v7V/FItJuLzHmgjARCDtoqq6QukAfTmvrUQj0pz8mR2Fp4eoIIecbLgkdez/YJ8Ri
-         YHV/wsF19jKuHzFNqEst/HkTjhom2KBkYwIM5Q3Vwa1wURMXflW6iKJR48M+/c+OtvkV
-         niyw==
+        d=gmail.com; s=20230601; t=1725070459; x=1725675259; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=75HqIkJujdkOIL2qY9pXCBhgTD3eGe1aMaDcqP93LD4=;
+        b=Klu0caKW3GknPhHnnSrRGbS+A6kYgsbU6RWiqRkiza0QHWXfu2Dhn4CuFYlo+MTvAo
+         6Q322nO+HpaEMwlnZPUZWD5A2PdrIyFhnUzaD0MBvn5Qu5H7HOwGblvSLcMp/YEaNPnN
+         g0gFNsEpThylX5sLztjr1DJvSGmky50lWluQh6TNGJwaVRd82CLm1LDy8ooiEmLcb6fc
+         6ERssx8ezEjQsFALQdg7HiDExbhHwHQJpg1UY/9QTu13nA/yYvewb2iwmuftATqqtsVP
+         zhhQWA64C611lA9DGqw/zMSg2HnADraQpLAOWxu+ItnIg4WX+jrEL6C2hVeLRHarq4Q/
+         aMXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725067576; x=1725672376;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=JMq8LeiKLC4aaQqQtyI/62ZqnY23+Wt9p5UO3ew0Jxk=;
-        b=H+sjSfIpAfAS5VzjNnBwQvCMMA0rPR11ongXsj3wUJh02xi5gDMef7FHX2OpMMqMjk
-         y4oRfBbAanrYSZUzzJKSsobIMDIwIB/r6fn1Mi9uyNO464EMkllLGryeY9yKq3RKId9e
-         mnwUMLZ2lM0UOn3Vt+iY59VrR8U/XlFjy39pAoIWQ/l7cchNtkbhOyBMI2StpnrCPsqF
-         9d/xFC3MiqbucDycl/+Ng9EqFxyPDMv0L3kgPLRwU6rvouOPCG0xx9V2Y3Ql2bxRWNpG
-         AkS8msPfFyCSgJZax3oik59fMxPUJJLGAdOn4VjfyN1xrE6T8pQh0UKybEnNpiX0qjvC
-         lW1A==
-X-Forwarded-Encrypted: i=1; AJvYcCVbosIQ0179JTm9pnePrKi2Q7ZMDERpC4Y258+BYa5VbystNVAPO37ELxe+JsjkIV54HGL9Q5r5vfYNNf62YNI=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxW3cDB1lQ/ifk4dwoHRT3ma6aGpVVRCCRXpfFP3lQIsstBbYcf
-	vnB0VnZN632MESvfNSaDfPJhGbgLknF9DuBjG7fup8sUlkebr2bV
-X-Google-Smtp-Source: AGHT+IH5Tebb6zzTj9RNR7gBHKEIfrDl789p9NF+kRhOFrGC9LvdaPxMqEh9DoapBZLJwaqiiGoPqA==
-X-Received: by 2002:a17:903:3543:b0:201:f052:d3e with SMTP id d9443c01a7336-2050c23dceemr89217115ad.24.1725067575855;
-        Fri, 30 Aug 2024 18:26:15 -0700 (PDT)
-Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20538532e86sm11100305ad.5.2024.08.30.18.26.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Aug 2024 18:26:15 -0700 (PDT)
-Message-ID: <f52f1489bd0936595ff0e492bcdfad8307bab364.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v4 5/8] libbpf: Support opening bpf objects of
- either endianness
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Tony Ambardar
-	 <tony.ambardar@gmail.com>
-Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, Andrii Nakryiko
- <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu
- <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
- <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
- Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>,  Mykola Lysenko <mykolal@fb.com>, Shuah Khan
- <shuah@kernel.org>, Ilya Leoshkevich <iii@linux.ibm.com>, Quentin Monnet
- <qmo@kernel.org>
-Date: Fri, 30 Aug 2024 18:26:10 -0700
-In-Reply-To: <CAEf4BzbXD0M0Zfgih-7Rght_zSkTsZY3AmOpYxX5iaYimROaRg@mail.gmail.com>
-References: <cover.1724976539.git.tony.ambardar@gmail.com>
-	 <a12e83308e11b15501aa3b9e927bc94139418ce3.1724976539.git.tony.ambardar@gmail.com>
-	 <CAEf4BzbXD0M0Zfgih-7Rght_zSkTsZY3AmOpYxX5iaYimROaRg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.4 (3.52.4-1.fc40) 
+        d=1e100.net; s=20230601; t=1725070459; x=1725675259;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=75HqIkJujdkOIL2qY9pXCBhgTD3eGe1aMaDcqP93LD4=;
+        b=ZqfuX6n2ZcQ3b+ND08dfSYNZjLTpXlj5JN9UiidMm1B9MtcR5LaDG57nDysZShFQJi
+         pULGAdvXLSJoPWB2D26OhPwaKJ0QlEBPr04HYyzJAo2phILfivtnNh+qdysEyfqLAHmr
+         jUDnHDI9LsQwNtLFkoKjUBjxG26Iv+S8esOhjaTDHWTJ/Ye8VPMFeG4+J8nRhfGHMmka
+         Q1+OUx4yKv6CXUiVB/6lbmM2sEG4jGTlUXIbgvt9GtiHZqVrvgfKN24ENwnRYCcD6F+N
+         DJhVzXfGNI/oiVtw75g2aZiZnxCGzPCG8nyoCzB4Igz4Xpfcstgg43AYpq8h2bBIBxAZ
+         rB4A==
+X-Forwarded-Encrypted: i=1; AJvYcCVS20LdNvMgR/6BsT38uetXNjXhthV6eOSd0zBK2mbGSeecVh8aMI5/J1rjSog/5nC9CMI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzKYAbWxbvebAy3j/48RN1/o3QkL86H+twsTqBI1ZCiuHdPscV0
+	x1uwVDWmgTWzAlVyQ7Lpux7iPrwoM0tm8dkh+t8jrqGEKj0hZ88BKhUFMzotUkvHAWgFvIzhbc8
+	NB3RuFHmZwJ6QnP9w9NAjnqDLUhw=
+X-Google-Smtp-Source: AGHT+IHsvq8G/4YiFA9TTGteVs3goIpRpQt7SUVVDgD/g4iyJ0999x7AjfIr1QrxXPA5vK8Vqu7N6YiEBsUTyXSN4+s=
+X-Received: by 2002:a05:600c:4fd3:b0:428:1007:6068 with SMTP id
+ 5b1f17b1804b1-42bb01fb0e4mr68390565e9.34.1725070459047; Fri, 30 Aug 2024
+ 19:14:19 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20240826224814.289034-1-inwardvessel@gmail.com>
+ <20240826224814.289034-2-inwardvessel@gmail.com> <CAADnVQJp3Me_tXRs6Nupbi93bAj2D-sFuN-N7DMfKU=EtMu5ow@mail.gmail.com>
+ <CAEf4BzaaZqiRGwK5=GHrd81HgtVbWfXOSWAeyorHgbCVjsv-jw@mail.gmail.com> <Zs91tK9dduFe1dIj@saturn>
+In-Reply-To: <Zs91tK9dduFe1dIj@saturn>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 30 Aug 2024 19:14:08 -0700
+Message-ID: <CAADnVQJduHZsK8dpRxzD6cXqfrdjkmOd5CQD3yPH8s8NDD6CmA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/3] bpf: new btf kfunc hooks for tracepoint
+ and perf event
+To: JP Kobryn <inwardvessel@gmail.com>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Eddy Z <eddyz87@gmail.com>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2024-08-30 at 14:25 -0700, Andrii Nakryiko wrote:
+On Wed, Aug 28, 2024 at 12:08=E2=80=AFPM JP Kobryn <inwardvessel@gmail.com>=
+ wrote:
+>
+> With this change, anywhere we do
+> register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING, &some_kfunc_set),
+> BTF_KFUNC_HOOK_TRACING becomes allowed. So even if we never register the
+> extra program types like PROG_TYPE_PERF_EVENT, we still allow them as a
+> side effect since at runtime the program type mapping returns HOOK_TRACIN=
+G.
+> Any program type associated with this hook will be allowed even though no=
+t
+> explicitly registered.
 
-[...]
-
-> >         err =3D bpf_object__elf_init(obj);
-> > -       err =3D err ? : bpf_object__check_endianness(obj);
-> >         err =3D err ? : bpf_object__elf_collect(obj);
-> >         err =3D err ? : bpf_object__collect_externs(obj);
-> >         err =3D err ? : bpf_object_fixup_btf(obj);
-> > @@ -8500,6 +8529,10 @@ static int bpf_object_load(struct bpf_object *ob=
-j, int extra_log_level, const ch
-> >=20
-> >         if (obj->gen_loader)
-> >                 bpf_gen__init(obj->gen_loader, extra_log_level, obj->nr=
-_programs, obj->nr_maps);
->=20
-> nit: add {} around if, both sides should either have or not have {}
->=20
-> > +       else if (!is_native_endianness(obj)) {
-> > +               pr_warn("object '%s' is not native endianness\n", obj->=
-name);
->=20
-> "object '%s': load is not supported in non-native endianness\n"
->=20
->=20
-> > +               return libbpf_err(-LIBBPF_ERRNO__ENDIAN);
-> > +       }
-
-Silly question:
-  why load is allowed to proceed for non-native endianness when obj->gen_lo=
-ader is set?
-
+Correct. kfuncs differentiate by type of their arguments.
+prog_type -> helper was an old style when context was the only
+thing we had. So we had to differentiate by prog_type.
+kfuncs are currently register by prog_type too, but that will go away.
+We're planning to do large refactoring in that area to satisfy
+sched-ext requests. It's not the prog type that would allow or
+disallow certain kfuncs but rather hook point plus custom flags.
 
