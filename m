@@ -1,152 +1,98 @@
-Return-Path: <bpf+bounces-38669-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38670-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 966239672F3
-	for <lists+bpf@lfdr.de>; Sat, 31 Aug 2024 20:18:40 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A39A2967342
+	for <lists+bpf@lfdr.de>; Sat, 31 Aug 2024 22:55:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 453D9283795
-	for <lists+bpf@lfdr.de>; Sat, 31 Aug 2024 18:18:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 63A941F221A4
+	for <lists+bpf@lfdr.de>; Sat, 31 Aug 2024 20:55:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 444A713CFBC;
-	Sat, 31 Aug 2024 18:18:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b="RLwlTiwF"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F3671802A8;
+	Sat, 31 Aug 2024 20:55:04 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-4316.protonmail.ch (mail-4316.protonmail.ch [185.70.43.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B076023774
-	for <bpf@vger.kernel.org>; Sat, 31 Aug 2024 18:18:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDF2A13C9CB
+	for <bpf@vger.kernel.org>; Sat, 31 Aug 2024 20:55:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725128313; cv=none; b=UYN6wIxyDqaAzj15sP47obgSD8ldV2m7T3Cyj1iFeZrTu1/s3VrUj2fa8LCpQedqAtNlIVZufQhF+i/2ViiCXeISlStPqPswTY5amBzSm4wLD/M8Cxff5PMZAEZ1CoMo9Vqv6SfpRlcgfEkzMgq8zdeab6FBEx7t6tXZBv0AhJQ=
+	t=1725137704; cv=none; b=pZvtRhAmUX7ekRngscO0NZt5kDdSfI4zigONBrMQZd3o1+QLDjXlRmUXt6yZg8KDNDVZtipEHIXrjHwFMOvzxkBzwW8lJScHCfdTxgigRIH7otBnlJzyW7BKdbDqoxBKWXPk3z4bWjCfKHnm92lgyr+HUaW6wHWX7SyXLI0snXM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725128313; c=relaxed/simple;
-	bh=T62WkLdFENqPufxx5CQ6virlgnpBPz07TVFDjdTYMzw=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=k4vxnqoHZPZobIm5P/fYC+G26NKTO/lTcaicJg1x/CHEZ9dPIm9tDhWBdZ4THjauXlbhWnpYdrk09gs6sRBsof2XyEIcCDPGniV4QYQtbAb4JTnD2Rky1NljpOam4EaF90NkutGEMB6SxvxtYbG13tQsujTbe8H7ruhFs9ulf0U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me; spf=pass smtp.mailfrom=pm.me; dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b=RLwlTiwF; arc=none smtp.client-ip=185.70.43.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pm.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me;
-	s=protonmail3; t=1725128307; x=1725387507;
-	bh=JAf25GjrwIcktDCFibZxbjYWaI7t+LtIo2r48UOrxKc=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=RLwlTiwFfkPZ9dZyFZU0Nhb8slQ7ASrrZqxRlavxodDOPJ3qC4xr/91sDp4pi+dji
-	 TrCdlsYXK7QsA3+p8jyRykbY5BQAJ1I/kczHOsdyQVNYIXa5MWlo8IBiiF2dgQf9er
-	 Ot6UpoAelwUP0329RlkrijVj8b/GuNHjtO9BCkJDhRgOUvsk3XmzyuekPl8f0zWKHw
-	 HbA0sApgA8IQttZFeqRkpr+3xQ3EMNdqgf4UShSRniAdWugavJuIDVRAQkOTVElLZy
-	 Nfx5E2yqACSv0xv3ltQt9nJ1Mq3f3u2k4i53wMAfUC678w9QzJNTDYXXVUBklVSCwi
-	 QaK7YCngygg0Q==
-Date: Sat, 31 Aug 2024 18:18:25 +0000
-To: Eduard Zingerman <eddyz87@gmail.com>, Andrii Nakryiko <andrii.nakryiko@gmail.com>
-From: Ihor Solodrai <ihor.solodrai@pm.me>
-Cc: Alan Maguire <alan.maguire@oracle.com>, Mykyta Yatsenko <yatsenko@meta.com>, bpf@vger.kernel.org, andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net, mykolal@fb.com
-Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: do not update vmlinux.h unnecessarily
-Message-ID: <xldWjE0i64YdD2vmNCSi3aJ7kls4eQT-R_EWtcnRaYIZuWvjdIBwjgGcoBYm02UHiO6bz5ZyyMtBDZXeLxC_iXkdo_PqkdWkMejoocJw5rs=@pm.me>
-In-Reply-To: <CAEf4BzaBMhb4a2Y-2_mcLmYjJ2UWQuwNF-2sPVJXo39+0ziqzw@mail.gmail.com>
-References: <20240828174608.377204-1-ihor.solodrai@pm.me> <20240828174608.377204-2-ihor.solodrai@pm.me> <b48f348c76dd5b724384aef7c7c067877b28ee5b.camel@gmail.com> <CAEf4BzaBMhb4a2Y-2_mcLmYjJ2UWQuwNF-2sPVJXo39+0ziqzw@mail.gmail.com>
-Feedback-ID: 27520582:user:proton
-X-Pm-Message-ID: b28c0bab96b74b1ba80d8af57cf7ac78b6b31492
+	s=arc-20240116; t=1725137704; c=relaxed/simple;
+	bh=jFH484BT5R7q2HOiKMJKv1FmMZ4CHygH+s9H6wFYtsY=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=tz67U1oZsHTaLKy5qbtemo97GPAbmrfpb/J/Xh2trTADx9dZ0JlOR6MmKI4CeaXVUWydI64eNRMEfXcS0qvurYGHJzC8L04nY5+FjjCKnIRacqKenAhR9sN2UzsJuWpDqt39HY7RjXjYnlNXtYz2yXKmeFcNpoJlnqZM4me80OI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-82a20631362so211856239f.0
+        for <bpf@vger.kernel.org>; Sat, 31 Aug 2024 13:55:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1725137702; x=1725742502;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=TXinuCcZsAGJ7z0LOnrPbuvxWrzVfa5BPSiAe1GhMOU=;
+        b=ey1YMlf5L50t9sI396lCbtMu0tU6+ZtYu8fNEe5CzqU2ugEC0v+B4WUE9AkFeiMKvs
+         u8H9ZbyG9TCzzPVWxhBQb78vIh+y3THr7z5SnRXEYlFheMT7tRUEOaiYjiOFr3j3hYcM
+         3W8TC00JTNrIYy5yPsduDVDiNIB/G8rtEmOFaDK4da6gOv86o7u+uHCBhywmquyPo7mZ
+         h0PBrEoOuvoLjRQlJEREfmaACSxFtHAe4Yuq8DmzqtgpNkk0OodszxGKvQyFFXY1LcQ+
+         9uBUJHorY3J/GNGqlquivGzWNp14TGIeI5ZpTdIcKQqpxRn3pLK4pyGe4frfOJ2y0iMc
+         1G4Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXnA9aqaRHDyx5bHrFpT0t4fLqoctwMULk3ZYux30Jjl9942ufpfg8PS6d3CZDeiJV9KvM=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzysNFnMwa/U0EgIR+1RogsbbNN5sZXRtFpW03Obl/VUcsKmnDT
+	gHXjWblokCNIb8hzeB5XCCZeSVp4iivpJ1GWm3UvCLm9B7Bj0yy8JLq4yP17Dpnc9uTsYgsNq49
+	uZMqAPXIzU/tX2oT9ZIBFJmlZ1DvIYUfvkovI+HH5cdxFNRFv79ynJDQ=
+X-Google-Smtp-Source: AGHT+IGM0VYo+phzMqpcyZHt8FGQ9BOhTyofLbSGzhKKdLQqrxnCP6aoFjZSGJSMGF9oIciQZ2cX72Nge3gLhsO5Q6V4uQ+vSiD2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+X-Received: by 2002:a05:6602:14d5:b0:81a:2abb:48a7 with SMTP id
+ ca18e2360f4ac-82a266d18a8mr41499139f.1.1725137702080; Sat, 31 Aug 2024
+ 13:55:02 -0700 (PDT)
+Date: Sat, 31 Aug 2024 13:55:02 -0700
+In-Reply-To: <00000000000099cf25061964d113@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ebe92a062100eb94@google.com>
+Subject: Re: [syzbot] [bpf?] [net?] general protection fault in
+ dev_map_enqueue (2)
+From: syzbot <syzbot+cca39e6e84a367a7e6f6@syzkaller.appspotmail.com>
+To: alexei.starovoitov@gmail.com, andrii@kernel.org, ast@kernel.org, 
+	bigeasy@linutronix.de, bpf@vger.kernel.org, daniel@iogearbox.net, 
+	davem@davemloft.net, eddyz87@gmail.com, haoluo@google.com, hawk@kernel.org, 
+	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
+	kuba@kernel.org, linux-kernel@vger.kernel.org, martin.lau@linux.dev, 
+	michal.switala@infogain.com, netdev@vger.kernel.org, revest@google.com, 
+	sdf@fomichev.me, sdf@google.com, song@kernel.org, 
+	syzkaller-bugs@googlegroups.com, toke@redhat.com, yonghong.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
-Andrii, Eduard,
+syzbot suspects this issue was fixed by commit:
 
-On Friday, August 30th, 2024 at 1:34 PM, Andrii Nakryiko <andrii.nakryiko@g=
-mail.com> wrote:
+commit 401cb7dae8130fd34eb84648e02ab4c506df7d5e
+Author: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Date:   Thu Jun 20 13:22:04 2024 +0000
 
-[...]
+    net: Reference bpf_redirect_info via task_struct on PREEMPT_RT.
 
-> I've applied patches as is, despite them not solving the issue
-> completely, as they are moving us in the right direction anyways. I do
-> get slightly different BTF every single time I rebuild my kernel, so
-> the change in patch #2 doesn't yet help me.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12597c63980000
+start commit:   36534d3c5453 tcp: use signed arithmetic in tcp_rtx_probe0_..
+git tree:       bpf
+kernel config:  https://syzkaller.appspot.com/x/.config?x=333ebe38d43c42e2
+dashboard link: https://syzkaller.appspot.com/bug?extid=cca39e6e84a367a7e6f6
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13390aea980000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10948741980000
 
-Thanks for applying the patches.
-I didn't realize vmlinux.h generation is non-deterministic. Interesting.
+If the result looks correct, please mark the issue as fixed by replying with:
 
->=20
-> For libbpf headers, Ihor, can you please follow up with adding
-> bpf_helper_defs.h as a dependency?
+#syz fix: net: Reference bpf_redirect_info via task_struct on PREEMPT_RT.
 
-I've tried tracking down where bpf_helper_defs.h is coming from and
-(assuming my analysis is correct) this header is generated by
-`scripts/bpf_doc.py`. From the selftests/bpf point of view the
-dependency chain is as follows:
-
-  1. vmlinux.h depends on bpftool:
-
-       $(INCLUDE_DIR)/vmlinux.h: $(VMLINUX_BTF) $(BPFTOOL) | $(INCLUDE_DIR)
-
-  2. bpftool is installed for selftests via `make -C tools/bpf/bpftool inst=
-all-bin`:
-
-       BPFTOOL ?=3D $(DEFAULT_BPFTOOL)
-       $(DEFAULT_BPFTOOL): ...
-  =09  $(Q)$(MAKE) $(submake_extras) -C $(BPFTOOLDIR) ... install-bin
-
-  3. bpftool install-bin depends on libbpf:
-
-       $(OUTPUT)bpftool: $(OBJS) $(LIBBPF)
-         ...
-       install-bin: $(OUTPUT)bpftool
-
-
-  4. $(LIBBPF) recipe runs `make -C tools/lib/bpf install_headers`,
-     which depends on $(BPF_GENERATED) which equals to $(BPF_HELPER_DEFS)
-
-       BPF_GENERATED=09:=3D $(BPF_HELPER_DEFS)
-         ...
-       install_headers: $(BPF_GENERATED) $(INSTALL_SRC_HDRS) $(INSTALL_GEN_=
-HDRS)
-
-  5. Finally $(BPF_HELPER_DEFS) recipe executes the python script (in lib/b=
-pf):
-
-     $(BPF_HELPER_DEFS): $(srctree)/tools/include/uapi/linux/bpf.h
-=09$(QUIET_GEN)$(srctree)/scripts/bpf_doc.py --header \
-=09=09--file $(srctree)/tools/include/uapi/linux/bpf.h > $(BPF_HELPER_DEFS)
-
-
-I don't see any benefit to adding bpf_helper_defs.h as a direct
-dependency of anything in selftests/bpf. %.bpf.o already depend on
-vmlinux.h, and unless we somehow get rid of vmlinux.h dependency on
-bpftool, bpf_helper_defs.h should always be there at a point when=20
-%.bpf.o objects are compiled.
-
-
->=20
-> I have some ideas on how to make BTF regeneration in vmlinux.h itself
-> unnecessary, that might help with this issue. Separately (depending on
-> what are the negatives of the reproducible_build option) we can look
-> into making pahole have more consistent internal BTF type ordering
-> without negatively affecting the overall BTF dedup performance in
-> pahole. Hopefully I can work with Ihor on this as follow ups.
-
-I still know little about how all this machinery works, but I'd be
-glad to help.
-
->=20
-> P.S. I also spent more time than I'm willing to admit trying to
-> improve bpftool's BTF sorting to minimize the chance of vmlinux.h
-> contents being different, and I think I removed a bunch of cases where
-> we had unnecessary differences, but still, it's fundamentally
-> non-deterministic to do everything based on type and field names,
-> unfortunately.
-
-[...]
-
-
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
