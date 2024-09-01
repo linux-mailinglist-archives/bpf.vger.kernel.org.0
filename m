@@ -1,64 +1,69 @@
-Return-Path: <bpf+bounces-38688-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38689-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E8AF967C44
-	for <lists+bpf@lfdr.de>; Sun,  1 Sep 2024 23:08:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7973967C53
+	for <lists+bpf@lfdr.de>; Sun,  1 Sep 2024 23:31:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 48BE21C21229
-	for <lists+bpf@lfdr.de>; Sun,  1 Sep 2024 21:08:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 65B0D281B0A
+	for <lists+bpf@lfdr.de>; Sun,  1 Sep 2024 21:31:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52DD179B84;
-	Sun,  1 Sep 2024 21:07:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Z6J1BENu"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A58F86126;
+	Sun,  1 Sep 2024 21:31:01 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6FB52C6AF
-	for <bpf@vger.kernel.org>; Sun,  1 Sep 2024 21:07:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F79A1E87B
+	for <bpf@vger.kernel.org>; Sun,  1 Sep 2024 21:30:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725224875; cv=none; b=s3LnOMAoC2d55fHrZ40IHr6JkCR6n2IlMNR1zO4gIVNikhivOO39WTSCv6z4+KE3ajMHqJLcrvfo75qZHtHDErY26QJm//i6ugwySf+tUEAuemKPgsDRVuunIMNwU6s5UiVciZ9FVJJzB+ubOT+uBOr154H14gDiNSg053tHBPQ=
+	t=1725226261; cv=none; b=kYv4DjuW2hTwPfJAATOLfCQPiDdZZtoKOoHzaavqBCfqdxgLXqECm/NZKzZQAimUHL1u9219Lv5DNOxVpxM5JkB+uahhELDB8Esb9Akz/RMrEpOt+UmsRYoiUYlUD0OXR/M6ClsLsdfEB3kIzsXz2WD/Y7DFpmzUhfTyY2mSzDQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725224875; c=relaxed/simple;
-	bh=NK20xvBCV0o+sh/OPnElLbYxb6WURUOW/x/m7BdvigA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ITQMPaAYCoXXYXE83Mrn/QSAmAAdXYt+8OxsZrl7bVAEQOTNU0oBsLLIVt8pMW2Nz+CdIzJ0nGQGpEvWDIXYCxp3/sMjzgSUrco6i0KYYuowtHX57B2IMKLWjAn/7Ej4aZ1uTwNWKJKj4TZ5+xHQ3s/NJQU8IWM/ykaqFqW4XZQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Z6J1BENu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D97EC4CEC3;
-	Sun,  1 Sep 2024 21:07:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1725224875;
-	bh=NK20xvBCV0o+sh/OPnElLbYxb6WURUOW/x/m7BdvigA=;
-	h=From:To:Cc:Subject:Date:From;
-	b=Z6J1BENuFtwiuETn7ymZIldEefn8x8z7gtUyhEb0KRqhX/Znqre3vCMcmlOkzAogl
-	 AYH2ohL4QaW5A4WJKvUqKkJY3jArQxn66CsFv4IenVrFz42CaaUXm0POvKO/r16FrS
-	 0FAKPQHHZr0YvbzJooF7hDdFU+TlKolxlPBkF70XfKeIw7nyBo3qONyRswyyZ+WkvT
-	 X+NbylG5s7H4W6yQbOsQP+wvZMM+TDzoCJLDvzUbYTIaCq76mfyUzOz3b3I3jc7mPc
-	 rNst5soiCeqsSCGoJOE6r/BiY4SuYfeTFFSSOEpxUvjyG2JEcHSykwhoJHCm+o8bXp
-	 4qymvaanbSMjA==
-From: Quentin Monnet <qmo@kernel.org>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>
-Cc: Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	bpf@vger.kernel.org,
-	Quentin Monnet <qmo@kernel.org>
-Subject: [PATCH bpf-next] bpftool: Add missing blank lines in bpftool-net doc example
-Date: Sun,  1 Sep 2024 22:07:42 +0100
-Message-ID: <20240901210742.25758-1-qmo@kernel.org>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1725226261; c=relaxed/simple;
+	bh=3cl2iGeT8e8Fb4olUAud3qwB+Ne97nJzV7tbxRyhifg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=tVx3qWtMUuK2KmjzEveVDj87K8zkRmbNspw+/1cqlAVXUXTr4l++YQ167s3KV8si3Kc2OR4yWU4dO7bPYwBN/0sGAWfDlKXjz+8C3QpVrwhUoS/oP/ZFruSFVL5QJR5/v+sO31IhET1geoY9BoxX4a4s/DwaF3khzImRSGSow/0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2f4f24263acso53018991fa.0
+        for <bpf@vger.kernel.org>; Sun, 01 Sep 2024 14:30:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1725226255; x=1725831055;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Q97AXyut1QQEk43wGOaj/ltaUmGYuhMqvyklA5F6mOI=;
+        b=lRRaAFJ+KnjJyAGaOPjzU4YeESzwdG7lKOkI8Aue144HLDbawazXNKDbvWG3wdit7j
+         Dq6kJOrHAkAM70ibIIvT+sRoNKOt8DsgaUESjlUsibDhX7o5ot1b+wy6aTi3CKfUF0Qc
+         hxiBKtiRzKJyipbUMqF/WhHK4uws1Sk/s49RtaMd9Irx/+UWlOPl5RhdaYUZYjocVSMJ
+         wUt3ZNobub5VuKyIiztcDaqiI8SZ+yXfBToH/Ym3VNmn6ZI+2MdMmatHsT9qnLtk34M4
+         kV4v2petAgIh5q+vaiuzh3M/nZtZMU4FFvfk9k6h7xCvjeMz2KW/ZddhtQ/SSVUkZxpg
+         9YyQ==
+X-Gm-Message-State: AOJu0YyHXgR5T/aDEUHnWmMJaC2Jw7A6l4FQBQpSUn1uS0ofxWuYzO5F
+	wwHlEgNmW+9TNM6+6LQqqWVBPwZR+R3RPqzJHl+oPcnfrjRtiOE3C7Y/oPXb
+X-Google-Smtp-Source: AGHT+IHimgclbkuRZ5GXXhG+Y8o1rKNaTNK3E0IvZ53VAJsLo4M/D+nCWhmhOFI/9dXpBMtxn08RBQ==
+X-Received: by 2002:a2e:4e09:0:b0:2ef:2555:e52d with SMTP id 38308e7fff4ca-2f6108ae923mr83323161fa.45.1725226254533;
+        Sun, 01 Sep 2024 14:30:54 -0700 (PDT)
+Received: from localhost.localdomain (walt-20-b2-v4wan-167837-cust573.vm13.cable.virginm.net. [80.2.18.62])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a89891a3d60sm475648466b.123.2024.09.01.14.30.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 01 Sep 2024 14:30:54 -0700 (PDT)
+From: Mykyta@web.codeaurora.org, Yatsenko@web.codeaurora.org,
+	mykyta.yatsenko5@gmail.com
+To: bpf@vger.kernel.org,
+	ast@kernel.org,
+	andrii@kernel.org,
+	daniel@iogearbox.net,
+	kafai@meta.com,
+	kernel-team@meta.com
+Cc: Mykyta Yatsenko <yatsenko@meta.com>
+Subject: [PATCH bpf-next] bpftool: Fix handling enum64 in btf dump sorting
+Date: Sun,  1 Sep 2024 22:30:40 +0100
+Message-ID: <20240901213040.766724-1-yatsenko@meta.com>
+X-Mailer: git-send-email 2.46.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -67,58 +72,48 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-In bpftool-net documentation, two blank lines are missing in a
-recently added example, causing docutils to complain:
+From: Mykyta Yatsenko <yatsenko@meta.com>
 
-    $ cd tools/bpf/bpftool
-    $ make doc
-      DESCEND Documentation
-      GEN     bpftool-btf.8
-      GEN     bpftool-cgroup.8
-      GEN     bpftool-feature.8
-      GEN     bpftool-gen.8
-      GEN     bpftool-iter.8
-      GEN     bpftool-link.8
-      GEN     bpftool-map.8
-      GEN     bpftool-net.8
-    <stdin>:189: (INFO/1) Possible incomplete section title.
-    Treating the overline as ordinary text because it's so short.
-    <stdin>:192: (INFO/1) Blank line missing before literal block (after the "::")? Interpreted as a definition list item.
-    <stdin>:199: (INFO/1) Possible incomplete section title.
-    Treating the overline as ordinary text because it's so short.
-    <stdin>:201: (INFO/1) Blank line missing before literal block (after the "::")? Interpreted as a definition list item.
-      GEN     bpftool-perf.8
-      GEN     bpftool-prog.8
-      GEN     bpftool.8
-      GEN     bpftool-struct_ops.8
+Wrong function is used to access the first enum64 element.
+Substituting btf_enum(t) with btf_enum64(t) for BTF_KIND_ENUM64.
 
-Add the missing blank lines.
-
-Fixes: 0d7c06125cea ("bpftool: Add document for net attach/detach on tcx subcommand")
-Signed-off-by: Quentin Monnet <qmo@kernel.org>
+Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
 ---
- tools/bpf/bpftool/Documentation/bpftool-net.rst | 2 ++
- 1 file changed, 2 insertions(+)
+ tools/bpf/bpftool/btf.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
-diff --git a/tools/bpf/bpftool/Documentation/bpftool-net.rst b/tools/bpf/bpftool/Documentation/bpftool-net.rst
-index 4a8cb5e0d94b..a9ed8992800f 100644
---- a/tools/bpf/bpftool/Documentation/bpftool-net.rst
-+++ b/tools/bpf/bpftool/Documentation/bpftool-net.rst
-@@ -187,6 +187,7 @@ EXAMPLES
- |
+diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
+index 6789c7a4d5ca..b0f12c511bb3 100644
+--- a/tools/bpf/bpftool/btf.c
++++ b/tools/bpf/bpftool/btf.c
+@@ -557,16 +557,23 @@ static const char *btf_type_sort_name(const struct btf *btf, __u32 index, bool f
+ 	const struct btf_type *t = btf__type_by_id(btf, index);
  
- ::
+ 	switch (btf_kind(t)) {
+-	case BTF_KIND_ENUM:
+-	case BTF_KIND_ENUM64: {
++	case BTF_KIND_ENUM: {
+ 		int name_off = t->name_off;
+ 
+ 		/* Use name of the first element for anonymous enums if allowed */
+-		if (!from_ref && !t->name_off && btf_vlen(t))
++		if (!from_ref && !name_off && btf_vlen(t))
+ 			name_off = btf_enum(t)->name_off;
+ 
+ 		return btf__name_by_offset(btf, name_off);
+ 	}
++	case BTF_KIND_ENUM64: {
++		int name_off = t->name_off;
 +
-       tc:
-       lo(1) tcx/ingress tc_prog prog_id 29
- 
-@@ -197,4 +198,5 @@ EXAMPLES
- |
- 
- ::
++		if (!from_ref && !name_off && btf_vlen(t))
++			name_off = btf_enum64(t)->name_off;
 +
-       tc:
++		return btf__name_by_offset(btf, name_off);
++	}
+ 	case BTF_KIND_ARRAY:
+ 		return btf_type_sort_name(btf, btf_array(t)->type, true);
+ 	case BTF_KIND_TYPE_TAG:
 -- 
-2.43.0
+2.46.0
 
 
