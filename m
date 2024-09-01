@@ -1,47 +1,47 @@
-Return-Path: <bpf+bounces-38683-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38684-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA4B29676CA
-	for <lists+bpf@lfdr.de>; Sun,  1 Sep 2024 15:41:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id F380C9676CB
+	for <lists+bpf@lfdr.de>; Sun,  1 Sep 2024 15:41:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4B5281F21A51
-	for <lists+bpf@lfdr.de>; Sun,  1 Sep 2024 13:41:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 675261F21A74
+	for <lists+bpf@lfdr.de>; Sun,  1 Sep 2024 13:41:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 014A817F394;
-	Sun,  1 Sep 2024 13:41:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EF1417DFF5;
+	Sun,  1 Sep 2024 13:41:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="gZzV+B1h"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="QWp8ZvcY"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
+Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CCFA17E01A
-	for <bpf@vger.kernel.org>; Sun,  1 Sep 2024 13:41:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89CD417DFEC
+	for <bpf@vger.kernel.org>; Sun,  1 Sep 2024 13:41:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725198073; cv=none; b=RAHVyJhjOHkGcC6hB/xlreREyZoye/TNTw4RFGWS+nZ0DRIA/TJ9o2WfQXcvRr4KN6T6VEY0oAuOV12EJDsFeA9l5fs+C2NBVm7RdPYD++X2CAP0iIVuP1u/kz0sDfTDFM8IfH6hmB9BU+IMvZtEK7YcnbsmRh3YiK80Y5kXksc=
+	t=1725198076; cv=none; b=bK7lMDI2ny6YiDKaxN80h3O9ryrRIWdN6BtHcX0aUpARJ3jOhembIERIbirAzW7ec3c2Bc/KflUYM+vsNfkjniR33oASumCsR5cz9w14Dx6Xcw0lvRalSoizNjInXYQDrzI0V1R11gchxHXy0GagzzV0pTsi9WlXm/9iLiXepUQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725198073; c=relaxed/simple;
-	bh=hl/3D5IoLkxUm/uJLAtbhp84PmcSNO046+P3bpIZVdc=;
+	s=arc-20240116; t=1725198076; c=relaxed/simple;
+	bh=CB9krOCCZUydcFRPKL9eAZfHHhNNTrwagbgeo9IorfE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=gkFrgSY26WeCooU5eMB/bVYXRsbWY9vDDbN4YSx3XhmQLMDCUcXeSCjbcWW95dGktaUHCgIvNVm9PoZ3GJLOs/yMRoV/8RKhwWUaKzvnxAUaVWnbj7iUAXjEjONXJC3rS9N5tJ3Qclkq5GYZURBPC+OQeCP2a8diDQDXfUdmXE4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=gZzV+B1h; arc=none smtp.client-ip=91.218.175.189
+	 MIME-Version; b=ePxyt3+cixtzfcCM8JRy9pQY/hLl+VoDGvCveyL/vDN6B1n9BLBN/Fx3AgbGD0s5X+XsTkt106N7t1f1NG2k+1wp0ptVGexL2xLOxEmuvDEzo0Lmgxf9iIRxsY5sBFIRcUBE0kwRwL9DRV0L90l4JM6y1GE8uyTvwoIjtxfRmNI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=QWp8ZvcY; arc=none smtp.client-ip=91.218.175.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1725198068;
+	t=1725198072;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=gVrNiBR2Rj0lYUi1R/vLWhIcSmCKwjLMWxkO6agL3ZI=;
-	b=gZzV+B1hgOOTVH9LWo5ade+/Oe9un5ow3lxuCxsFd3UumiUVKb4YLcVp7G8F523A6NiT3l
-	ZZHaNtPUQqVg7+dwR+P8HtGgGoBkS8UYrz/hktbB3YDi9++r7lpOgAeWssBemgq5e9zJ0r
-	a3gbnTEMsToDQp/2Kd6cSsV/INkuVQg=
+	bh=u/fw2V2lsSEY6Zw7Gjns+M8Uy3pcrWYbLrye98HThtE=;
+	b=QWp8ZvcYQPQiZTfoR56dpQ/pt/83p20IwXghAQHb+RO//X7RXcOA3MHCOjWqt3VTdvTQtM
+	AYGoPinxTGKvni6s6UXu4Z+LHkYsYzPvoysH4IZJC6HV6gWmP9b0iToApA/A/VNM/Q6F07
+	NemNeBqoH5rNdGEJcFf5OEesTYWjCY4=
 From: Leon Hwang <leon.hwang@linux.dev>
 To: bpf@vger.kernel.org
 Cc: ast@kernel.org,
@@ -56,9 +56,9 @@ Cc: ast@kernel.org,
 	iii@linux.ibm.com,
 	leon.hwang@linux.dev,
 	kernel-patches-bot@fb.com
-Subject: [PATCH bpf-next v2 2/4] bpf, arm64: Fix tailcall infinite loop caused by freplace
-Date: Sun,  1 Sep 2024 21:38:54 +0800
-Message-ID: <20240901133856.64367-3-leon.hwang@linux.dev>
+Subject: [PATCH bpf-next v2 3/4] selftests/bpf: Add testcases for another tailcall infinite loop fixing
+Date: Sun,  1 Sep 2024 21:38:55 +0800
+Message-ID: <20240901133856.64367-4-leon.hwang@linux.dev>
 In-Reply-To: <20240901133856.64367-1-leon.hwang@linux.dev>
 References: <20240901133856.64367-1-leon.hwang@linux.dev>
 Precedence: bulk
@@ -70,220 +70,388 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Like "bpf, x64: Fix tailcall infinite loop caused by freplace", the same
-issue happens on arm64, too.
+The issue has been fixed on both x64 and arm64.
 
-For example:
+On x64:
 
-tc_bpf2bpf.c:
+cd tools/testing/selftests/bpf; ./test_progs -t tailcalls
+334/26  tailcalls/tailcall_bpf2bpf_freplace:OK
+334/27  tailcalls/tailcall_bpf2bpf_hierarchy_freplace_1:OK
+334/28  tailcalls/tailcall_bpf2bpf_hierarchy_freplace_2:OK
+334/29  tailcalls/tailcall_bpf2bpf_hierarchy_freplace_3:OK
+334/30  tailcalls/tailcall_bpf2bpf_hierarchy_freplace_4:OK
+334/31  tailcalls/tailcall_bpf2bpf_hierarchy_freplace_5:OK
+334     tailcalls:OK
+Summary: 1/31 PASSED, 0 SKIPPED, 0 FAILED
 
-// SPDX-License-Identifier: GPL-2.0
-\#include <linux/bpf.h>
-\#include <bpf/bpf_helpers.h>
+on arm64:
 
-__noinline
-int subprog_tc(struct __sk_buff *skb)
-{
-	return skb->len * 2;
-}
+cd tools/testing/selftests/bpf; ./test_progs -t tailcalls
+334/26  tailcalls/tailcall_bpf2bpf_freplace:OK
+334/27  tailcalls/tailcall_bpf2bpf_hierarchy_freplace_1:OK
+334/28  tailcalls/tailcall_bpf2bpf_hierarchy_freplace_2:OK
+334/29  tailcalls/tailcall_bpf2bpf_hierarchy_freplace_3:OK
+334/30  tailcalls/tailcall_bpf2bpf_hierarchy_freplace_4:OK
+334/31  tailcalls/tailcall_bpf2bpf_hierarchy_freplace_5:OK
+334     tailcalls:OK
+Summary: 1/31 PASSED, 0 SKIPPED, 0 FAILED
 
-SEC("tc")
-int entry_tc(struct __sk_buff *skb)
-{
-	return subprog(skb);
-}
-
-char __license[] SEC("license") = "GPL";
-
-tailcall_bpf2bpf_hierarchy_freplace.c:
-
-// SPDX-License-Identifier: GPL-2.0
-\#include <linux/bpf.h>
-\#include <bpf/bpf_helpers.h>
-
-struct {
-	__uint(type, BPF_MAP_TYPE_PROG_ARRAY);
-	__uint(max_entries, 1);
-	__uint(key_size, sizeof(__u32));
-	__uint(value_size, sizeof(__u32));
-} jmp_table SEC(".maps");
-
-int count = 0;
-
-static __noinline
-int subprog_tail(struct __sk_buff *skb)
-{
-	bpf_tail_call_static(skb, &jmp_table, 0);
-	return 0;
-}
-
-SEC("freplace")
-int entry_freplace(struct __sk_buff *skb)
-{
-	count++;
-	subprog_tail(skb);
-	subprog_tail(skb);
-	return count;
-}
-
-char __license[] SEC("license") = "GPL";
-
-The attach target of entry_freplace is subprog_tc, and the tail callee
-in subprog_tail is entry_tc.
-
-Then, the infinite loop will be entry_tc -> entry_tc -> entry_freplace ->
-subprog_tail --tailcall-> entry_tc, because tail_call_cnt in
-entry_freplace will count from zero for every time of entry_freplace
-execution.
-
-This patch fixes the issue by avoiding touching tail_call_cnt at
-prologue when it's subprog or freplace prog.
-
-Then, when freplace prog attaches to entry_tc, it has to initialize
-tail_call_cnt and tail_call_cnt_ptr, because its target is main prog and
-its target's prologue hasn't initialize them before the attach hook.
-
-So, this patch uses x7 register to tell freplace prog that its target
-prog is main prog or not.
-
-Meanwhile, while tail calling to a freplace prog, it is required to
-reset x7 register to prevent re-initializing tail_call_cnt at freplace
-prog's prologue.
-
-Fixes: 1c123c567fb1 ("bpf: Resolve fext program type when checking map compatibility")
 Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
 ---
- arch/arm64/net/bpf_jit_comp.c | 44 +++++++++++++++++++++++++++++++----
- 1 file changed, 39 insertions(+), 5 deletions(-)
+ .../selftests/bpf/prog_tests/tailcalls.c      | 216 +++++++++++++++++-
+ .../tailcall_bpf2bpf_hierarchy_freplace.c     |  30 +++
+ .../testing/selftests/bpf/progs/tc_bpf2bpf.c  |  37 ++-
+ 3 files changed, 279 insertions(+), 4 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_hierarchy_freplace.c
 
-diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-index 8aa32cb140b9e..cdc12dd83c4be 100644
---- a/arch/arm64/net/bpf_jit_comp.c
-+++ b/arch/arm64/net/bpf_jit_comp.c
-@@ -277,6 +277,7 @@ static bool is_lsi_offset(int offset, int scale)
- /* generated main prog prologue:
-  *      bti c // if CONFIG_ARM64_BTI_KERNEL
-  *      mov x9, lr
-+ *      mov x7, 1 // if not-freplace main prog
-  *      nop  // POKE_OFFSET
-  *      paciasp // if CONFIG_ARM64_PTR_AUTH_KERNEL
-  *      stp x29, lr, [sp, #-16]!
-@@ -288,15 +289,19 @@ static bool is_lsi_offset(int offset, int scale)
-  */
- static void prepare_bpf_tail_call_cnt(struct jit_ctx *ctx)
- {
-+	const bool is_ext = ctx->prog->type == BPF_PROG_TYPE_EXT;
- 	const bool is_main_prog = !bpf_is_subprog(ctx->prog);
- 	const u8 ptr = bpf2a64[TCCNT_PTR];
+diff --git a/tools/testing/selftests/bpf/prog_tests/tailcalls.c b/tools/testing/selftests/bpf/prog_tests/tailcalls.c
+index 21c5a37846ade..0faa0f57f71d4 100644
+--- a/tools/testing/selftests/bpf/prog_tests/tailcalls.c
++++ b/tools/testing/selftests/bpf/prog_tests/tailcalls.c
+@@ -5,6 +5,7 @@
+ #include "tailcall_poke.skel.h"
+ #include "tailcall_bpf2bpf_hierarchy2.skel.h"
+ #include "tailcall_bpf2bpf_hierarchy3.skel.h"
++#include "tailcall_bpf2bpf_hierarchy_freplace.skel.h"
+ #include "tailcall_freplace.skel.h"
+ #include "tc_bpf2bpf.skel.h"
  
--	if (is_main_prog) {
-+	if (is_main_prog && !is_ext) {
- 		/* Initialize tail_call_cnt. */
- 		emit(A64_PUSH(A64_ZR, ptr, A64_SP), ctx);
- 		emit(A64_MOV(1, ptr, A64_SP), ctx);
--	} else
-+	} else {
-+		/* Keep the same insn layout for freplace main prog. */
- 		emit(A64_PUSH(ptr, ptr, A64_SP), ctx);
-+		emit(A64_NOP, ctx);
-+	}
+@@ -1525,7 +1526,8 @@ static void test_tailcall_freplace(void)
+ 
+ 	prog_fd = bpf_program__fd(tc_skel->progs.entry_tc);
+ 	freplace_prog = freplace_skel->progs.entry_freplace;
+-	err = bpf_program__set_attach_target(freplace_prog, prog_fd, "subprog");
++	err = bpf_program__set_attach_target(freplace_prog, prog_fd,
++					     "subprog_tailcall_tc");
+ 	if (!ASSERT_OK(err, "set_attach_target"))
+ 		goto out;
+ 
+@@ -1534,7 +1536,7 @@ static void test_tailcall_freplace(void)
+ 		goto out;
+ 
+ 	freplace_link = bpf_program__attach_freplace(freplace_prog, prog_fd,
+-						     "subprog");
++						     "subprog_tailcall_tc");
+ 	if (!ASSERT_OK_PTR(freplace_link, "attach_freplace"))
+ 		goto out;
+ 
+@@ -1556,6 +1558,204 @@ static void test_tailcall_freplace(void)
+ 	tailcall_freplace__destroy(freplace_skel);
  }
  
- static void find_used_callee_regs(struct jit_ctx *ctx)
-@@ -416,16 +421,20 @@ static void pop_callee_regs(struct jit_ctx *ctx)
- #define PAC_INSNS (IS_ENABLED(CONFIG_ARM64_PTR_AUTH_KERNEL) ? 1 : 0)
- 
- /* Offset of nop instruction in bpf prog entry to be poked */
--#define POKE_OFFSET (BTI_INSNS + 1)
-+#define POKE_OFFSET (BTI_INSNS + 2)
- 
- /* Tail call offset to jump into */
--#define PROLOGUE_OFFSET (BTI_INSNS + 2 + PAC_INSNS + 4)
-+#define PROLOGUE_OFFSET (BTI_INSNS + 3 + PAC_INSNS + 4)
- 
- static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf)
- {
- 	const struct bpf_prog *prog = ctx->prog;
-+	const bool is_ext = prog->type == BPF_PROG_TYPE_EXT;
- 	const bool is_main_prog = !bpf_is_subprog(prog);
-+	const u8 r0 = bpf2a64[BPF_REG_0];
- 	const u8 fp = bpf2a64[BPF_REG_FP];
-+	const u8 ptr = bpf2a64[TCCNT_PTR];
-+	const u8 tmp = bpf2a64[TMP_REG_1];
- 	const u8 arena_vm_base = bpf2a64[ARENA_VM_START];
- 	const int idx0 = ctx->idx;
- 	int cur_offset;
-@@ -462,6 +471,10 @@ static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf)
- 	emit_bti(A64_BTI_JC, ctx);
- 
- 	emit(A64_MOV(1, A64_R(9), A64_LR), ctx);
-+	if (!is_ext)
-+		emit(A64_MOVZ(1, r0, is_main_prog, 0), ctx);
-+	else
-+		emit(A64_NOP, ctx);
- 	emit(A64_NOP, ctx);
- 
- 	if (!prog->aux->exception_cb) {
-@@ -485,6 +498,18 @@ static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf)
- 			/* BTI landing pad for the tail call, done with a BR */
- 			emit_bti(A64_BTI_J, ctx);
- 		}
-+		/* If freplace's target prog is main prog, it has to make x26 as
-+		 * tail_call_cnt_ptr, and then initialize tail_call_cnt via the
-+		 * tail_call_cnt_ptr.
-+		 */
-+		if (is_main_prog && is_ext) {
-+			emit(A64_MOVZ(1, tmp, 1, 0), ctx);
-+			emit(A64_CMP(1, r0, tmp), ctx);
-+			emit(A64_B_(A64_COND_NE, 4), ctx);
-+			emit(A64_MOV(1, ptr, A64_SP), ctx);
-+			emit(A64_MOVZ(1, r0, 0, 0), ctx);
-+			emit(A64_STR64I(r0, ptr, 0), ctx);
-+		}
- 		push_callee_regs(ctx);
- 	} else {
- 		/*
-@@ -521,6 +546,7 @@ static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf)
- 
- static int emit_bpf_tail_call(struct jit_ctx *ctx)
- {
-+	const u8 r0 = bpf2a64[BPF_REG_0];
- 	/* bpf_tail_call(void *prog_ctx, struct bpf_array *array, u64 index) */
- 	const u8 r2 = bpf2a64[BPF_REG_2];
- 	const u8 r3 = bpf2a64[BPF_REG_3];
-@@ -579,6 +605,12 @@ static int emit_bpf_tail_call(struct jit_ctx *ctx)
- 
- 	pop_callee_regs(ctx);
- 
-+	/* When freplace prog tail calls freplace prog, setting r0 as 0 is to
-+	 * prevent re-initializing tail_call_cnt at the prologue of target
-+	 * freplace prog.
-+	 */
-+	emit(A64_MOVZ(1, r0, 0, 0), ctx);
++/* test_tailcall_bpf2bpf_freplace checks that the count value of the tail
++ * call limit enforcement matches with expectation for this case:
++ *
++ * entry_tc --> subprog_tailcall_tc --jump-> entry_freplace --tailcall-> entry_tc
++ *
++ * Meanwhile, check the failure that fails to attach tailcall-reachable freplace
++ * prog to not-tailcall-reachable subprog.
++ */
++static void test_tailcall_bpf2bpf_freplace(void)
++{
++	struct tailcall_freplace *freplace_skel = NULL;
++	struct bpf_link *freplace_link = NULL;
++	struct tc_bpf2bpf *tc_skel = NULL;
++	char buff[128] = {};
++	int prog_fd, map_fd;
++	int err, i;
 +
- 	/* goto *(prog->bpf_func + prologue_offset); */
- 	off = offsetof(struct bpf_prog, bpf_func);
- 	emit_a64_mov_i64(tmp, off, ctx);
-@@ -2189,9 +2221,10 @@ static int prepare_trampoline(struct jit_ctx *ctx, struct bpf_tramp_image *im,
- 		emit(A64_RET(A64_R(10)), ctx);
- 		/* store return value */
- 		emit(A64_STR64I(A64_R(0), A64_SP, retval_off), ctx);
--		/* reserve a nop for bpf_tramp_image_put */
-+		/* reserve two nops for bpf_tramp_image_put */
- 		im->ip_after_call = ctx->ro_image + ctx->idx;
- 		emit(A64_NOP, ctx);
-+		emit(A64_NOP, ctx);
- 	}
++	LIBBPF_OPTS(bpf_test_run_opts, topts,
++		    .data_in = buff,
++		    .data_size_in = sizeof(buff),
++		    .repeat = 1,
++	);
++
++	tc_skel = tc_bpf2bpf__open_and_load();
++	if (!ASSERT_OK_PTR(tc_skel, "tc_bpf2bpf__open_and_load"))
++		goto out;
++
++	prog_fd = bpf_program__fd(tc_skel->progs.entry_tc);
++	freplace_skel = tailcall_freplace__open();
++	if (!ASSERT_OK_PTR(freplace_skel, "tailcall_freplace__open"))
++		goto out;
++
++	err = bpf_program__set_attach_target(freplace_skel->progs.entry_freplace,
++					     prog_fd, "subprog_tailcall_tc");
++	if (!ASSERT_OK(err, "set_attach_target"))
++		goto out;
++
++	err = tailcall_freplace__load(freplace_skel);
++	if (!ASSERT_OK(err, "tailcall_freplace__load"))
++		goto out;
++
++	i = 0;
++	map_fd = bpf_map__fd(freplace_skel->maps.jmp_table);
++	err = bpf_map_update_elem(map_fd, &i, &prog_fd, BPF_ANY);
++	if (!ASSERT_OK(err, "update jmp_table"))
++		goto out;
++
++	freplace_link = bpf_program__attach_freplace(freplace_skel->progs.entry_freplace,
++						     prog_fd, "subprog_tc");
++	if (!ASSERT_ERR_PTR(freplace_link, "attach_freplace fail"))
++		goto out;
++
++	freplace_link = bpf_program__attach_freplace(freplace_skel->progs.entry_freplace,
++						     prog_fd, "subprog_tailcall_tc");
++	if (!ASSERT_OK_PTR(freplace_link, "attach_freplace"))
++		goto out;
++
++	err = bpf_prog_test_run_opts(prog_fd, &topts);
++	ASSERT_OK(err, "test_run_opts");
++	ASSERT_EQ(topts.retval, 34, "test_run_opts retval");
++
++out:
++	bpf_link__destroy(freplace_link);
++	tailcall_freplace__destroy(freplace_skel);
++	tc_bpf2bpf__destroy(tc_skel);
++}
++
++static void test_tailcall_bpf2bpf_hierarchy_freplace(bool freplace_subprog,
++						     bool tailcall_tc,
++						     bool target_entry2,
++						     int count1, int count2)
++{
++	struct tailcall_bpf2bpf_hierarchy_freplace *freplace_skel = NULL;
++	struct bpf_link *freplace_link = NULL;
++	int freplace_prog_fd, prog_fd, map_fd;
++	struct tc_bpf2bpf *tc_skel = NULL;
++	char buff[128] = {};
++	int err, i, val;
++
++	LIBBPF_OPTS(bpf_test_run_opts, topts,
++		    .data_in = buff,
++		    .data_size_in = sizeof(buff),
++		    .repeat = 1,
++	);
++
++	tc_skel = tc_bpf2bpf__open_and_load();
++	if (!ASSERT_OK_PTR(tc_skel, "tc_bpf2bpf__open_and_load"))
++		goto out;
++
++	prog_fd = bpf_program__fd(target_entry2 ? tc_skel->progs.entry_tc_2 :
++				  tc_skel->progs.entry_tc);
++	freplace_skel = tailcall_bpf2bpf_hierarchy_freplace__open();
++	if (!ASSERT_OK_PTR(freplace_skel, "tailcall_bpf2bpf_hierarchy_freplace__open"))
++		goto out;
++
++	err = bpf_program__set_attach_target(freplace_skel->progs.entry_freplace,
++					     prog_fd, freplace_subprog ?
++					     "subprog_tailcall_tc" : "entry_tc");
++	if (!ASSERT_OK(err, "set_attach_target"))
++		goto out;
++
++	err = tailcall_bpf2bpf_hierarchy_freplace__load(freplace_skel);
++	if (!ASSERT_OK(err, "tailcall_bpf2bpf_hierarchy_freplace__load"))
++		goto out;
++
++	freplace_prog_fd = bpf_program__fd(freplace_skel->progs.entry_freplace);
++	map_fd = bpf_map__fd(freplace_skel->maps.jmp_table);
++	val = tailcall_tc ? prog_fd : freplace_prog_fd;
++	i = 0;
++	err = bpf_map_update_elem(map_fd, &i, &val, BPF_ANY);
++	if (!ASSERT_OK(err, "update jmp_table"))
++		goto out;
++
++	freplace_link = bpf_program__attach_freplace(freplace_skel->progs.entry_freplace,
++						     prog_fd, freplace_subprog ?
++						     "subprog_tailcall_tc" : "entry_tc");
++	if (!ASSERT_OK_PTR(freplace_link, "attach_freplace"))
++		goto out;
++
++	err = bpf_prog_test_run_opts(prog_fd, &topts);
++	ASSERT_OK(err, "test_run_opts");
++	ASSERT_EQ(topts.retval, count1, "test_run_opts retval");
++
++	i = 0;
++	err = bpf_map_delete_elem(map_fd, &i);
++	if (!ASSERT_OK(err, "delete_elem from jmp_table"))
++		goto out;
++
++	err = bpf_prog_test_run_opts(prog_fd, &topts);
++	ASSERT_OK(err, "test_run_opts again");
++	ASSERT_EQ(topts.retval, count2, "test_run_opts retval again");
++
++out:
++	bpf_link__destroy(freplace_link);
++	tailcall_bpf2bpf_hierarchy_freplace__destroy(freplace_skel);
++	tc_bpf2bpf__destroy(tc_skel);
++}
++
++/* test_tailcall_bpf2bpf_hierarchy_freplace_1 checks the count value of tail
++ * call limit enforcement matches with expectation for this case:
++ *
++ *                                    subprog_tail --tailcall-> entry_freplace
++ * entry_tc --jump-> entry_freplace <
++ *                                    subprog_tail --tailcall-> entry_freplace
++ */
++static void test_tailcall_bpf2bpf_hierarchy_freplace_1(void)
++{
++	test_tailcall_bpf2bpf_hierarchy_freplace(false, false, false, 34, 35);
++}
++
++/* test_tailcall_bpf2bpf_hierarchy_freplace_2 checks the count value of tail
++ * call limit enforcement matches with expectation for this case:
++ *
++ *                                                            subprog_tail --tailcall-> entry_freplace
++ * entry_tc --> subprog_tailcall_tc --jump-> entry_freplace <
++ *                                                            subprog_tail --tailcall-> entry_freplace
++ */
++static void test_tailcall_bpf2bpf_hierarchy_freplace_2(void)
++{
++	test_tailcall_bpf2bpf_hierarchy_freplace(true, false, false, 34, 35);
++}
++
++/* test_tailcall_bpf2bpf_hierarchy_freplace_3 checks the count value of tail
++ * call limit enforcement matches with expectation for this case:
++ *
++ *                                                            subprog_tail --tailcall-> entry_tc
++ * entry_tc --> subprog_tailcall_tc --jump-> entry_freplace <
++ *                                                            subprog_tail --tailcall-> entry_tc
++ */
++static void test_tailcall_bpf2bpf_hierarchy_freplace_3(void)
++{
++	test_tailcall_bpf2bpf_hierarchy_freplace(true, true, false, 34, 35);
++}
++
++/* test_tailcall_bpf2bpf_hierarchy_freplace_4 checks the count value of tail
++ * call limit enforcement matches with expectation for this case:
++ *
++ *                                                                              subprog_tail --tailcall-> entry_freplace
++ * entry_tc_2 --> subprog_tailcall_tc (call 10 times) --jump-> entry_freplace <
++ *                                                                              subprog_tail --tailcall-> entry_freplace
++ */
++static void test_tailcall_bpf2bpf_hierarchy_freplace_4(void)
++{
++	test_tailcall_bpf2bpf_hierarchy_freplace(true, false, true, 43, 53);
++}
++
++/* test_tailcall_bpf2bpf_hierarchy_freplace_5 checks the count value of tail
++ * call limit enforcement matches with expectation for this case:
++ *
++ *                                                                              subprog_tail --tailcall-> entry_tc_2
++ * entry_tc_2 --> subprog_tailcall_tc (call 10 times) --jump-> entry_freplace <
++ *                                                                              subprog_tail --tailcall-> entry_tc_2
++ */
++static void test_tailcall_bpf2bpf_hierarchy_freplace_5(void)
++{
++	test_tailcall_bpf2bpf_hierarchy_freplace(true, true, true, 340, 350);
++}
++
+ void test_tailcalls(void)
+ {
+ 	if (test__start_subtest("tailcall_1"))
+@@ -1606,4 +1806,16 @@ void test_tailcalls(void)
+ 	test_tailcall_bpf2bpf_hierarchy_3();
+ 	if (test__start_subtest("tailcall_freplace"))
+ 		test_tailcall_freplace();
++	if (test__start_subtest("tailcall_bpf2bpf_freplace"))
++		test_tailcall_bpf2bpf_freplace();
++	if (test__start_subtest("tailcall_bpf2bpf_hierarchy_freplace_1"))
++		test_tailcall_bpf2bpf_hierarchy_freplace_1();
++	if (test__start_subtest("tailcall_bpf2bpf_hierarchy_freplace_2"))
++		test_tailcall_bpf2bpf_hierarchy_freplace_2();
++	if (test__start_subtest("tailcall_bpf2bpf_hierarchy_freplace_3"))
++		test_tailcall_bpf2bpf_hierarchy_freplace_3();
++	if (test__start_subtest("tailcall_bpf2bpf_hierarchy_freplace_4"))
++		test_tailcall_bpf2bpf_hierarchy_freplace_4();
++	if (test__start_subtest("tailcall_bpf2bpf_hierarchy_freplace_5"))
++		test_tailcall_bpf2bpf_hierarchy_freplace_5();
+ }
+diff --git a/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_hierarchy_freplace.c b/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_hierarchy_freplace.c
+new file mode 100644
+index 0000000000000..6f7c1fac9ddb7
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_hierarchy_freplace.c
+@@ -0,0 +1,30 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++
++struct {
++	__uint(type, BPF_MAP_TYPE_PROG_ARRAY);
++	__uint(max_entries, 1);
++	__uint(key_size, sizeof(__u32));
++	__uint(value_size, sizeof(__u32));
++} jmp_table SEC(".maps");
++
++int count = 0;
++
++static __noinline
++int subprog_tail(struct __sk_buff *skb)
++{
++	bpf_tail_call_static(skb, &jmp_table, 0);
++	return 0;
++}
++
++SEC("freplace")
++int entry_freplace(struct __sk_buff *skb)
++{
++	count++;
++	subprog_tail(skb);
++	subprog_tail(skb);
++	return count;
++}
++
++char __license[] SEC("license") = "GPL";
+diff --git a/tools/testing/selftests/bpf/progs/tc_bpf2bpf.c b/tools/testing/selftests/bpf/progs/tc_bpf2bpf.c
+index 8a0632c37839a..beacf60a52677 100644
+--- a/tools/testing/selftests/bpf/progs/tc_bpf2bpf.c
++++ b/tools/testing/selftests/bpf/progs/tc_bpf2bpf.c
+@@ -4,11 +4,30 @@
+ #include <bpf/bpf_helpers.h>
+ #include "bpf_misc.h"
  
- 	/* update the branches saved in invoke_bpf_mod_ret with cbnz */
-@@ -2474,6 +2507,7 @@ int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type poke_type,
- 		/* skip to the nop instruction in bpf prog entry:
- 		 * bti c // if BTI enabled
- 		 * mov x9, x30
-+		 * mov x7, 1 // if not-freplace main prog
- 		 * nop
- 		 */
- 		ip = image + POKE_OFFSET * AARCH64_INSN_SIZE;
++struct {
++	__uint(type, BPF_MAP_TYPE_PROG_ARRAY);
++	__uint(max_entries, 1);
++	__uint(key_size, sizeof(__u32));
++	__uint(value_size, sizeof(__u32));
++} jmp_table SEC(".maps");
++
++__noinline
++int subprog_tailcall_tc(struct __sk_buff *skb)
++{
++	int ret = 1;
++
++	bpf_tail_call_static(skb, &jmp_table, 0);
++	__sink(skb);
++	__sink(ret);
++	return ret;
++}
++
+ __noinline
+-int subprog(struct __sk_buff *skb)
++int subprog_tc(struct __sk_buff *skb)
+ {
+ 	int ret = 1;
+ 
++	__sink(skb);
+ 	__sink(ret);
+ 	return ret;
+ }
+@@ -16,7 +35,21 @@ int subprog(struct __sk_buff *skb)
+ SEC("tc")
+ int entry_tc(struct __sk_buff *skb)
+ {
+-	return subprog(skb);
++	subprog_tc(skb);
++	return subprog_tailcall_tc(skb);
++}
++
++SEC("tc")
++int entry_tc_2(struct __sk_buff *skb)
++{
++	int ret, i;
++
++	for (i = 0; i < 10; i++) {
++		ret = subprog_tailcall_tc(skb);
++		__sink(ret);
++	}
++
++	return ret;
+ }
+ 
+ char __license[] SEC("license") = "GPL";
 -- 
 2.44.0
 
