@@ -1,107 +1,108 @@
-Return-Path: <bpf+bounces-38707-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38708-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B20B4968B35
-	for <lists+bpf@lfdr.de>; Mon,  2 Sep 2024 17:43:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92BA3968BB1
+	for <lists+bpf@lfdr.de>; Mon,  2 Sep 2024 18:11:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3CADAB21640
-	for <lists+bpf@lfdr.de>; Mon,  2 Sep 2024 15:43:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3E0FD1F235F5
+	for <lists+bpf@lfdr.de>; Mon,  2 Sep 2024 16:11:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CC231A2640;
-	Mon,  2 Sep 2024 15:43:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF6FE1A304E;
+	Mon,  2 Sep 2024 16:11:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="qIEvWUu2"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bsA1r4U9"
 X-Original-To: bpf@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9144D1CB51D;
-	Mon,  2 Sep 2024 15:43:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BBA71A3029;
+	Mon,  2 Sep 2024 16:11:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725291830; cv=none; b=PobFxcay5gGzD9rE8TQiYVN3E3HbwUzfCRQ8unyv9J2SPSfjrMN+8jPjDTTL8i7stX05ftnDwnP/d8mH6qbTuLksLBWAX8jykDoU2LzliQEFAelVNxjLEOU2BE4CYiXTbysFotRrhpGT9XCz07xCLOssGfRA99YNPRBIIClQjqI=
+	t=1725293478; cv=none; b=HRIdSp4gvkzSaPvtFj4NrIgVP8kBrepG8R36u/UH+u218imF6Im4TYRrimFfwWBso8gF5gEZnLZBdwGxF9dY4tRxhA9fb1r6JQ746s+eZt0kDccsziJuytMsUALbb66SxL6F0R1dVaIxSj8FmIelaQep1Bo4BaQx38pa/zz05Ew=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725291830; c=relaxed/simple;
-	bh=p/ziduP6idDY0qvJIEhR3b3LMF5uGVgDgcAHfDP96MA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GdiyG6ALilCzBENGkYthBh4fpS+Hr4c2vvHGX5ZMZ3ceGDEv9a6CDm2eRXQ1IZXhF4C8sYFqZcQE+Ly/PWlXc5wEg7P6hd12llmr99L5PsknHcNOsbTsw4185S+Y8N03lZwL0LaOaHAXza1ueLY1ICl85dAeP7Vsw+CXzmEQ/aE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=qIEvWUu2; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=fo3JtNSgEnDqg8YlNSSixwkDr/LZX4dg7x2z5VanSmk=; b=qIEvWUu2BZMBtdRph8WC4tyfMa
-	YCNGDlpl5XY64jaVfkbOC69FDIJckB6Whp5frRITtczct3+rkyu/F/1RWe1mx+K1fVI6CPM6M8mjx
-	jBUxSpDdujZ8GKKnWf+mk4AnKagwTAqjs1C+ZF+xy2lpVHehOA940KELRQYCuw5OeC9kqxnMjE73b
-	FCC6esRJ21DcGfdNHdnsxxOgsEecd9WwPf9Hgr+X/bA1myFpvIRoSD+ofnLqtJD6BG/ZMjC+JL7gG
-	W9eYUzQfHXsxodMgvZTCP5IiTUJtWVrYuhjm0OIAd1sfxD88pkvPyPT38sQV6DS5ZQklQAhNYxoBL
-	I+/BeI0w==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-	by casper.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
-	id 1sl9DL-00000006pZ0-1DPA;
-	Mon, 02 Sep 2024 15:43:35 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 4B6EF30058E; Mon,  2 Sep 2024 17:43:34 +0200 (CEST)
-Date: Mon, 2 Sep 2024 17:43:34 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Kees Cook <keescook@chromium.org>,
-	Greg KH <gregkh@linuxfoundation.org>,
-	Sean Christopherson <seanjc@google.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Namhyung Kim <namhyung@kernel.org>, bpf@vger.kernel.org,
-	Joel Fernandes <joel@joelfernandes.org>,
-	linux-trace-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCH v1 2/2] cleanup.h: Introduce DEFINE_INACTIVE_GUARD and
- activate_guard
-Message-ID: <20240902154334.GH4723@noisy.programming.kicks-ass.net>
-References: <20240828143719.828968-1-mathieu.desnoyers@efficios.com>
- <20240828143719.828968-3-mathieu.desnoyers@efficios.com>
+	s=arc-20240116; t=1725293478; c=relaxed/simple;
+	bh=wk7mJjx0Xs0Q7CfUTyDNU+Eh3I4XTXvSQzWkhmeVDwY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Y6QCZwnT/Tz0TapfWSE9foHPxImbE63lv8ws+URsj7JmmLpEnreaZTD7QiHvJdycY3kDw1Lfr+n58NYiGa+q71tV/wKUx6zcZkz7b6KDG1WKL8Ze/jHDh2CMEcTuPWj8M1egPk+Vb4plfxoh8cqh2kJ855lqzWbou5U9zbwYYOY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bsA1r4U9; arc=none smtp.client-ip=209.85.216.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-2d42c59df79so723053a91.1;
+        Mon, 02 Sep 2024 09:11:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1725293476; x=1725898276; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wk7mJjx0Xs0Q7CfUTyDNU+Eh3I4XTXvSQzWkhmeVDwY=;
+        b=bsA1r4U9bkRj2ayNmnFpAm1V99ya6TFLF6NRGlB2a0zEUorcR/cwEfJmEQVsbSDxHb
+         uA8h3G7KLfi8C+jL9ROyMRSceaqsNJZ54qJLqJxgaLFcYQQQSFA6LJ9WDaRsjLFR/ZXr
+         LBRAZHILeZ/va75y7efmZRGuewtfGh66ibuuMOxI0bUtqEGgomGUAQ9PTXcMM/tHAjND
+         tiQyJUHW5IvT8HuDCmqx1a3DsCu3/sPfTHJaO+0mNL9gMlzltA7M7ZfuCMUIVLaadAlV
+         LHYHJZczAwhBH73S2nbokZ0k2pGCME/PUB9K0MvE2E1OrtllXwvyyfVO8PgZeOGVg9da
+         xT2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1725293476; x=1725898276;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wk7mJjx0Xs0Q7CfUTyDNU+Eh3I4XTXvSQzWkhmeVDwY=;
+        b=YqavNTCkHB+yW3Jk48yI6Z5AIjk8aP1Y9Lu0i97Z3VQrdOzWaSPf5dSAgIJHyghlS8
+         aLMfzJ7umrHkuNz/nVi5NbSBFdaU5UCZ8Cl89QhUmxOuKaFUmLuemU5tdl5gpdyg3rQb
+         /W5WnqHfF5oV9h3KA0fS6Rxt9k4D4hhq9L4lj7+XQcCa/LOhyNTH9Su35xcXrlYPBzRc
+         86bIskU+WueoUL87LhErZz3/irGT2QGD71p+FukpWWw7ppRIwbzajCpiyCna1+GlS1r3
+         Uk+GvHUjPv/H+meXByVH4nKkd2VBswP8UBOCl0Ztpz1Y8ZclMOz1DWf2vGqqF/X2p/Ck
+         Oh7w==
+X-Forwarded-Encrypted: i=1; AJvYcCUTFwGahhsmqmSk4Mq8/3SMZyVH/XMH0+RWLRL6aj4BmH+Q5nE103ooYNU4jhuBSFGEqnNNvd3Uf/qJNj/Z@vger.kernel.org, AJvYcCUxtVo88ntOe/T3lB2BAcMGuZRIXTmZd0D0y7R2m+kBrsat9Er1DLyXsuav0OFFcgMXJM1vPpkVJB2OeUei@vger.kernel.org, AJvYcCWB2ay0K/JCz6xf7hkd2Jxila6L+ZWrgOZPoG6UwEf6U1b+Bff0xM4Q0n0n9HOzC9CvfsU=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxq3wrxI4k2NwQZ+XGSFuxBbQsLC8i/vw8EkxlEN9H5KnZz3m6P
+	lVnHQzX84weVtumsjmLmHlCaC8P4KTUiu2PmjUJ+oVw+YwEs2aKX+FBab/cOy/1haBmBifLUphw
+	bC3xDauszHD462tnDPzSn1/5yELQ=
+X-Google-Smtp-Source: AGHT+IHuwEJDhCc4s+mmfVcupdQTMg6prAW9eGXQCrQq50fzIiiapvtm80hin/j+dLtZBzIECbJiloot8yiAcR4eJR0=
+X-Received: by 2002:a17:902:e303:b0:205:40f5:d1a with SMTP id
+ d9443c01a7336-20540f50db1mr48362355ad.6.1725293476345; Mon, 02 Sep 2024
+ 09:11:16 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240828143719.828968-3-mathieu.desnoyers@efficios.com>
+References: <20240728125527.690726-1-ojeda@kernel.org> <CAK7LNARhR=GGZ2Vr-SSog1yjnjh6iT7cCEe4mpYg889GhJnO9g@mail.gmail.com>
+ <ZsiV0V5-UYFGkxPE@bergen> <CANiq72khCDjCVbU=t+vpR+EfJucNBpYhZkW2VVjnXbD9S77C0A@mail.gmail.com>
+ <CAK7LNARJjM2t_sqE-MePzEEF3D3SznNYh99F5bM003N_xGFpug@mail.gmail.com>
+In-Reply-To: <CAK7LNARJjM2t_sqE-MePzEEF3D3SznNYh99F5bM003N_xGFpug@mail.gmail.com>
+From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date: Mon, 2 Sep 2024 18:11:04 +0200
+Message-ID: <CANiq72=3V2XYgmFME3kab9VMrT1yBi9nr99X6CMrqUjvTVMTtA@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: pahole-version: avoid errors if executing fails
+To: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Nicolas Schier <nicolas@fjasle.eu>, Miguel Ojeda <ojeda@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org, 
+	Nathan Chancellor <nathan@kernel.org>, linux-kbuild@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, patches@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Aug 28, 2024 at 10:37:19AM -0400, Mathieu Desnoyers wrote:
-> To cover scenarios where the scope of the guard differs from the scope
-> of its activation, introduce DEFINE_INACTIVE_GUARD() and activate_guard().
-> 
-> Here is an example use for a conditionally activated guard variable:
-> 
-> void func(bool a)
-> {
-> 	DEFINE_INACTIVE_GUARD(preempt_notrace, myguard);
-> 
-> 	[...]
-> 	if (a) {
-> 		might_sleep();
-> 		activate_guard(preempt_notrace, myguard)();
-> 	}
-> 	[ protected code ]
-> }
+On Mon, Sep 2, 2024 at 4:15=E2=80=AFAM Masahiro Yamada <masahiroy@kernel.or=
+g> wrote:
+>
+> Ensuring this should be easy.
+> Why don't we fix it properly while we are here?
 
-So... I more or less proposed this much earlier:
+That is great, I would prefer that.
 
-  https://lore.kernel.org/all/20230919131038.GC39346@noisy.programming.kicks-ass.net/T/#mb7b84212619ac743dfe4d2cc81decce451586b27
+Sent v2: https://lore.kernel.org/all/20240902160828.1092891-1-ojeda@kernel.=
+org/
 
-and Linus took objection to similar patterns. But perhaps my naming
-wasn't right.
+Cheers,
+Miguel
 
