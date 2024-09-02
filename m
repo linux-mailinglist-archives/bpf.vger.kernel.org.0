@@ -1,47 +1,47 @@
-Return-Path: <bpf+bounces-38740-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38741-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24687968EFE
-	for <lists+bpf@lfdr.de>; Mon,  2 Sep 2024 22:59:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3387968F1E
+	for <lists+bpf@lfdr.de>; Mon,  2 Sep 2024 23:12:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CF1CC1F232D3
-	for <lists+bpf@lfdr.de>; Mon,  2 Sep 2024 20:59:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C65B284725
+	for <lists+bpf@lfdr.de>; Mon,  2 Sep 2024 21:12:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1C291A3A9E;
-	Mon,  2 Sep 2024 20:59:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 467F91A3A9D;
+	Mon,  2 Sep 2024 21:12:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aTSOvv0g"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jg0uee8T"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47A2F69959;
-	Mon,  2 Sep 2024 20:59:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFA5E13D260;
+	Mon,  2 Sep 2024 21:12:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725310777; cv=none; b=s1SbLbeU2rBQoYlllj977a6uagz476pKOR8csfeoncrwv2UHFma+OU4JFg/rob9qNtlhr6NKvvjIGOfboEX0e+OvvAoyEIQO+z0iOjziwSsOgZdVRTDu7NYN+XicjeIWtvIlX5YAnEMzlc+8dOvNcfgytM4pzXgXWcUpLhxqykQ=
+	t=1725311562; cv=none; b=K50RCm7hYyvpNZoGIjh8ygblbzuHGfsj+0Jm4WuoRaum01EMRn/QywOu4GA1XijjA3dCYZ8cZjlqJB0a8P52pJb71NMlMC612dmkdMxXUzwWDwcY+fCyFNpm857Q7iYv58rjpBBLs0PdThlBtGBk8bSzbG033LkdK8sBmJYJkbI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725310777; c=relaxed/simple;
-	bh=r9qaTh+53ujld32cT6POMGMmnH20RcpZ6t2TTllW2Hw=;
+	s=arc-20240116; t=1725311562; c=relaxed/simple;
+	bh=lORzwTXT57dhMR/bpO4ifz86tt0oau7aGv/z53yqMO0=;
 	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=nuQ3sh5T3dQpmA64lT/FLJJYwFeeWIcMQIdi4es375S2DvkNhFc+beYwEydfPhzd7cB80kaZYB+kOhSA7M7EAL7XYiCNfR03b/Zy1XMKQMJgb2Cm4uxWSAqktbnTDLgASbf3VpXEhuGI6CQP3jH9EniahJmQdmtjZgPO+9jnBHI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aTSOvv0g; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A5D6C4CEC2;
-	Mon,  2 Sep 2024 20:59:36 +0000 (UTC)
+	 Content-Disposition:In-Reply-To; b=oJHe9HsUZN0JIXHh42QNf1x2Lu68vz3UQFAlG1Tc3hiFxzoAloILXoRqsNGEGuApQ3UW1urVKogFsHGBTWS8rdPPKffckkRc0tIfbdqhxFRsK6hB3KC5U6b34EeBEd4eXQba0jfUIEE8bYMLTEJSlWn8BUk+YNAVGcM7y//yJ3U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jg0uee8T; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8D4FC4CEC2;
+	Mon,  2 Sep 2024 21:12:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1725310776;
-	bh=r9qaTh+53ujld32cT6POMGMmnH20RcpZ6t2TTllW2Hw=;
+	s=k20201202; t=1725311562;
+	bh=lORzwTXT57dhMR/bpO4ifz86tt0oau7aGv/z53yqMO0=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=aTSOvv0ge41O8LerqN8uWFZtaSDOgysBtJ8534F0opdMVWDxru2yIsGdNOPi+y3WA
-	 xaQV0Y5QVUT5+1Ly2uwOzRixSARVkaY8NAN8qnMmS5w8CbAlbljTcbbmoVsa3ZIhKO
-	 yGcFLWdKFXpSKfNy0e/iRQpcckh2yu+daDnuYY8nMfbQ2WNnwTskGAc2cBIxH1OcXn
-	 Q9ULidDmdbnWSOz7O1ZSjoAc2QAlRnAT1dpbErxU9JPQ29KpkbbNw9sJ1vBcG87HVA
-	 k85R53LYg1DT2JxnXckQVeS2DKsovSZp6tbYltmvYi/1H2ZYK/bQFBEJDcj+NPCoaq
-	 IPNg4fOyUEh8w==
-Date: Mon, 2 Sep 2024 15:59:34 -0500
+	b=jg0uee8T0ltCRUGD1+vdZHV/vbB3c/HU4kHMjKDCxwFNnHXuDy/8MtuUhiAJlv7Um
+	 h7L0kO+mzDv0sVQEq0Gw05RbsWfVldBEc30kzimFaE++oAAiXbQ0iMZOU8y7wmBP4L
+	 JG8f+UPARiORk54IZXT2rtx3gpqjmXMHZcm5J6aMrOva4K/Yrc2f2KlhhfmfzcylzS
+	 NAoRIfSrKNxKzRpMdqLq6pPT7ltEVj7o7hZYitqobbCvdVuJnxVHnbKeGS4dA3gCiH
+	 huMgIdf07m5vERDMH5l6B1dyl6XtW9oqlNfpeGaPUXu9bZIhrbWjrbWlPCiCz9kXk4
+	 tBy7SRjo+AgxQ==
+Date: Mon, 2 Sep 2024 16:12:40 -0500
 From: Bjorn Helgaas <helgaas@kernel.org>
 To: Frank Li <Frank.Li@nxp.com>
 Cc: Richard Zhu <hongxing.zhu@nxp.com>,
@@ -65,7 +65,7 @@ Cc: Richard Zhu <hongxing.zhu@nxp.com>,
 	devicetree@vger.kernel.org
 Subject: Re: [PATCH v8 01/11] PCI: imx6: Fix establish link failure in EP
  mode for iMX8MM and iMX8MP
-Message-ID: <20240902205934.GA227711@bhelgaas>
+Message-ID: <20240902211240.GA228125@bhelgaas>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -78,55 +78,13 @@ In-Reply-To: <20240729-pci2_upstream-v8-1-b68ee5ef2b4d@nxp.com>
 
 On Mon, Jul 29, 2024 at 04:18:08PM -0400, Frank Li wrote:
 > From: Richard Zhu <hongxing.zhu@nxp.com>
-> 
-> Add IMX6_PCIE_FLAG_HAS_APP_RESET flag to IMX8MM_EP and IMX8MP_EP drvdata.
-> This flag was overlooked during code restructuring. It is crucial to
-> release the app-reset from the System Reset Controller before initiating
-> LTSSM to rectify the issue
 
-What exactly is the issue?  What does it look like to a user?  The
-endpoint doesn't establish a link correctly?
+Maybe "iMX8MP" in this subject should be "i.MX8MP" as in the subject
+of the next patch?
 
-> Fixes: 0c9651c21f2a ("PCI: imx6: Simplify reset handling by using *_FLAG_HAS_*_RESET")
-> Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
-> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+And if so, maybe it should be "i.MX8MM" here, too?
 
-Does this need a -stable tag?
-
-0c9651c21f2a appeared in v6.9, but this could arguably be v6.11
-material if it fixes a serious issue.
-
-> ---
->  drivers/pci/controller/dwc/pci-imx6.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
-> index 964d67756eb2b..42fd17fbadfa5 100644
-> --- a/drivers/pci/controller/dwc/pci-imx6.c
-> +++ b/drivers/pci/controller/dwc/pci-imx6.c
-> @@ -1562,7 +1562,8 @@ static const struct imx6_pcie_drvdata drvdata[] = {
->  	},
->  	[IMX8MM_EP] = {
->  		.variant = IMX8MM_EP,
-> -		.flags = IMX6_PCIE_FLAG_HAS_PHYDRV,
-> +		.flags = IMX6_PCIE_FLAG_HAS_APP_RESET |
-> +			 IMX6_PCIE_FLAG_HAS_PHYDRV,
->  		.mode = DW_PCIE_EP_TYPE,
->  		.gpr = "fsl,imx8mm-iomuxc-gpr",
->  		.clk_names = imx8mm_clks,
-> @@ -1573,7 +1574,8 @@ static const struct imx6_pcie_drvdata drvdata[] = {
->  	},
->  	[IMX8MP_EP] = {
->  		.variant = IMX8MP_EP,
-> -		.flags = IMX6_PCIE_FLAG_HAS_PHYDRV,
-> +		.flags = IMX6_PCIE_FLAG_HAS_APP_RESET |
-> +			 IMX6_PCIE_FLAG_HAS_PHYDRV,
->  		.mode = DW_PCIE_EP_TYPE,
->  		.gpr = "fsl,imx8mp-iomuxc-gpr",
->  		.clk_names = imx8mm_clks,
-> 
-> -- 
-> 2.34.1
-> 
+That seems to match usage in the rest of the series (although "PCI:
+imx6: Add i.MX8Q PCIe Root Complex (RC) support" uses "iMX8MP" once in
+the commit log).
 
