@@ -1,185 +1,143 @@
-Return-Path: <bpf+bounces-38730-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38731-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 873C1968DDD
-	for <lists+bpf@lfdr.de>; Mon,  2 Sep 2024 20:47:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A400968DE0
+	for <lists+bpf@lfdr.de>; Mon,  2 Sep 2024 20:48:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AC6B21C21DAF
-	for <lists+bpf@lfdr.de>; Mon,  2 Sep 2024 18:47:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C841C1F21F74
+	for <lists+bpf@lfdr.de>; Mon,  2 Sep 2024 18:48:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3A771A3AB2;
-	Mon,  2 Sep 2024 18:47:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89CB91A3A8F;
+	Mon,  2 Sep 2024 18:48:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="fA6Y7uNm"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iybsLoTF"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80A581A3A8B
-	for <bpf@vger.kernel.org>; Mon,  2 Sep 2024 18:47:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D9B01A3A80;
+	Mon,  2 Sep 2024 18:48:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725302833; cv=none; b=lGaC3tWwJwd/X/2oc9ODs+QhlTYP7uDRl40HJfdqIN2kXPdEs8BEQ+nBmUhRWctkklURT7rIXvksj354xfiLqppna2IXSGeBX8J3sKPu1oSqIsfu8Ygw01JvrPUNT/rU+YZHIKMr4JSs846aqm2XlcY/lzA0ZRaSlxu9ioouQ9c=
+	t=1725302923; cv=none; b=Z1D7AlUB5wW4mjavLSy7s0ZoLMf6KZPV8rTDk1ltC6FytsRhafb0e0tkJv+U8sNsyzUfJO9zMwC/qDKtSwhp5Tsq2rYdmFAsy+twzirj2oArKHIIqPry6q2dvfiNEIGO4iGh+7FCSEeuKl7XXOvDSn8QCN8ZGPUwgB08ufZCq90=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725302833; c=relaxed/simple;
-	bh=LI900uzgGCQElfJqtf01iHNZkLmSZEe/42LMd0+O44Y=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Yla6OPom6kq6PSk3TfNIv+e8c3W6hJPJ6LoRAd5CtZ/NCAOIiomSDMqFhpkmT2WjlVR8oBrTZHFvjMjDidDvPwcMIkmPf1/PI6du0Ppz/EGLO9cu/mopT/XHu8VPqCW/hTr9e0BXHvCyvwWwK0MRNmCvxSKf8E1+IkTvBapfpcA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=fA6Y7uNm; arc=none smtp.client-ip=209.85.167.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-534366c194fso4117680e87.0
-        for <bpf@vger.kernel.org>; Mon, 02 Sep 2024 11:47:11 -0700 (PDT)
+	s=arc-20240116; t=1725302923; c=relaxed/simple;
+	bh=GhnPwaANvzIEJfD7074jTlrZcF9HJ/AnfdG4A69fYnQ=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=I0nN9aY0zFESBqzdYzyKJuCe2/8k6Uw0ckaV02GTnY2V0sDjmz8vFlLnBkm8/CoAYdhUt1o2eb8iheuNwt6YM05a397rT3nagYboHSxkFv57SXse3dAiJMd6fQ38eB8TFE9cTo3tHzwgUMHMohdc3Y1c016WFTwVG7iC/O+FQWE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iybsLoTF; arc=none smtp.client-ip=209.85.221.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-374bd0da617so1546249f8f.3;
+        Mon, 02 Sep 2024 11:48:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1725302829; x=1725907629; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=NCSu3cKIwSHt25rKzyc3TLGkgrpQltQSLr6RUpbw+m8=;
-        b=fA6Y7uNmbZiF+j5NZnnjA6qUmiMpsceMQWQzFk6ssH5bMcWKGpxR1l7e38MmLJiQy0
-         9RNwNGSwavhQCnWaa/Lii/juRmEJW9CjH29TGM2F9ddCB0j/KmhSNbeFOsxTXaPQEJpW
-         XFyztRIEE6/m60saEeaRue9sPU/TkK6TQ3OGA=
+        d=gmail.com; s=20230601; t=1725302920; x=1725907720; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=MELQtSmOnmWF4IFnsIuzL6tau5qYYjPDtZMmxK7Zyb4=;
+        b=iybsLoTFlJVnuOawYmikcYIP05xAlb09FHn3UjFXNDqU0S77cLf29Hlppx6mkXljCW
+         GCuV8bjPsaM9jU9TcST7qzIsjg840yKHzC27fJbyJI+XKmVOZRSO61xWqUgYblE8c/ht
+         cASADwYoMAGdPdLxzaXqKw3zk72w0kGnNstP3qSbULjG2T7SBkvMgTjQPPHXHr7dqGoJ
+         fm65px1Ts1N5bQuk3KEsWj8sw5Bbl5eNAmOE6JkwAIHf3bXbPkkxzBA4znGS7t7ZBaMS
+         +yPAhBkhHlc9sXaJPK3+CyBpEMCR4EoExvn3M/x2HVc2TRED4kg/dGR9rNYsLWqENQwz
+         4xUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725302829; x=1725907629;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=NCSu3cKIwSHt25rKzyc3TLGkgrpQltQSLr6RUpbw+m8=;
-        b=MT/xQvHznR3mlANk2ZMGNnmbgPJ/GZZuE3ueHeCjivt58EZwUG6w22wQ5AuyX/xktJ
-         mXZRxC+BfbMPsO1c6NIPaU329rqz4XvZD0LWqSuyDqDLvbmj9f959fDdJwdnfmutyAOE
-         PGgVTOLlZ6p0KZ7VCwO6ui29jYl+II4J5+mwYJWomw9r4KlRPmDPH8EpE3BSCe2pdukF
-         3w1v0bGzGiMR/HJiUw22pCBBSyKoBtI1L6eWz8XO5XDtHKwHp94PRYL5SaaNTSctCWr1
-         QIUEo6F9084G3s+f+WR3/dXFaYUNISmAeaYORIjCMUAjzG4Hak97a3rRkKzJrap1sxSe
-         3dvw==
-X-Forwarded-Encrypted: i=1; AJvYcCUz3sLMqq0rIuUUerVLlNwxx4Kdm/PiQeRhwszmljW+WGaMB5XkF+DAR18BN0DYCCbzzzs=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxCLOUSGYvXTH5MM5rxy+UirqW0H/5XduHtz8T22f20+sbxgczz
-	0wKLSaYdOpeKiYsJS7BwUkJJ7zpAQIwsWV1RBLEDZLw2ZfRZGFt3jG2hdlz6MQwRzdn6QTtJDve
-	7a5E=
-X-Google-Smtp-Source: AGHT+IHqqe9koL+FbrBBLaPTP3OLor6IyrPtmNay3KeRVgYQL9MoLF94I8hnPrhuXrsoGvRSIdzHQA==
-X-Received: by 2002:a05:6512:12d6:b0:52c:deba:7e6e with SMTP id 2adb3069b0e04-53546b4a1damr8814328e87.29.1725302828908;
-        Mon, 02 Sep 2024 11:47:08 -0700 (PDT)
-Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com. [209.85.208.174])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-5354079bb6asm1717129e87.12.2024.09.02.11.47.06
-        for <bpf@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Sep 2024 11:47:08 -0700 (PDT)
-Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2f4f8742138so50743131fa.0
-        for <bpf@vger.kernel.org>; Mon, 02 Sep 2024 11:47:06 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUPpUAvYHlF9PIiTc+QFC2sMqrZbxoqIX9JDBWG2zIoqFveXiexfm7UPXqisLZ+RVMVJvU=@vger.kernel.org
-X-Received: by 2002:a2e:bc0e:0:b0:2f1:6cd6:c880 with SMTP id
- 38308e7fff4ca-2f610890881mr116441241fa.37.1725302826121; Mon, 02 Sep 2024
- 11:47:06 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1725302920; x=1725907720;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MELQtSmOnmWF4IFnsIuzL6tau5qYYjPDtZMmxK7Zyb4=;
+        b=L6GU5gEEgmubVY8XDibsN5piq2ofZWlq8nbM8LMpTRlbDuoZ9fRQJZCh6DDWtB0olR
+         SVfzyVUK1tWrU9YhdmnGfDZgcWe3ClfFVle/4toeok2naYajtPaYafnRdLSGWN2355Y3
+         V04nTJhjf0gEh2vV9I6IeSVUYC3DXoRt2TgIvNWz/Sn33BO3z4iuVh0cSkqUFWEJlnEl
+         Wffh6bAkGb6m30/N2iJDy75G8cWEjrbFPOTebwTMkX4lB3hJciGmm/uosErWCIq469x3
+         BcnxWT7nTHUcnSrl1+8OBzWUIWehiI6s/Hcgc3x8POBts18CDeL/7CxYHAORwcHBJROA
+         jXVQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWUWgsIUlqNgpKbGtrR5EupKQo+rDSX1jOoOhnJ5Ho7KWvAnwAlLzILzfDmrQNcK0a4xV4=@vger.kernel.org, AJvYcCWiKOu+4ACSq1HdrZ+FFQSMRzIOnNTpkvVmLluj0yNdh1W9JonLczsvPHf3dl6m0vGVhE93YkAwVboATuDsADsU@vger.kernel.org
+X-Gm-Message-State: AOJu0YxQev11IZF/cxFcG3zkYIok8nHbTgoBFmfseQOhouLkskH0weAO
+	EgMYDRu5uMuBaWDHjXzLQz6x/kvrOWMszbWwxWnx+VL0PzYMr8b8skh2tUKjnc8=
+X-Google-Smtp-Source: AGHT+IHuHj5iv9qM/QbYWy+Bt9iEMD4aVFI13zXUvjPKNXFR4KO37kCJfraPrjPzTfKQXpJowfxP4Q==
+X-Received: by 2002:adf:978c:0:b0:371:8dcc:7f9e with SMTP id ffacd0b85a97d-374bce9864bmr7721115f8f.2.1725302919649;
+        Mon, 02 Sep 2024 11:48:39 -0700 (PDT)
+Received: from krava ([87.202.122.118])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-374c8e4f1b3sm4485930f8f.27.2024.09.02.11.48.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Sep 2024 11:48:39 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Mon, 2 Sep 2024 21:48:35 +0300
+To: Yuan Chen <chenyuan_fl@163.com>
+Cc: andrii@kernel.org, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH] selftests/bpf: Fix procmap_query()'s params mismatch and
+ compilation warning
+Message-ID: <ZtYIgzz74_OZQM7B@krava>
+References: <20240902093248.23473-1-chenyuan_fl@163.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240828143719.828968-1-mathieu.desnoyers@efficios.com>
- <20240828143719.828968-3-mathieu.desnoyers@efficios.com> <20240902154334.GH4723@noisy.programming.kicks-ass.net>
- <9de6ca8f-b3f1-4ebc-a5eb-185532e164e7@efficios.com>
-In-Reply-To: <9de6ca8f-b3f1-4ebc-a5eb-185532e164e7@efficios.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Mon, 2 Sep 2024 11:46:49 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgRefOSUy88-rcackyb4Ss3yYjuqS_TJRJwY_p7E3r0SA@mail.gmail.com>
-Message-ID: <CAHk-=wgRefOSUy88-rcackyb4Ss3yYjuqS_TJRJwY_p7E3r0SA@mail.gmail.com>
-Subject: Re: [PATCH v1 2/2] cleanup.h: Introduce DEFINE_INACTIVE_GUARD and activate_guard
-To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org, 
-	Kees Cook <keescook@chromium.org>, Greg KH <gregkh@linuxfoundation.org>, 
-	Sean Christopherson <seanjc@google.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>, 
-	"Paul E . McKenney" <paulmck@kernel.org>, Arnaldo Carvalho de Melo <acme@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Namhyung Kim <namhyung@kernel.org>, 
-	bpf@vger.kernel.org, Joel Fernandes <joel@joelfernandes.org>, 
-	linux-trace-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240902093248.23473-1-chenyuan_fl@163.com>
 
-On Mon, 2 Sept 2024 at 11:08, Mathieu Desnoyers
-<mathieu.desnoyers@efficios.com> wrote:
->
-> If Linus' objections were mainly about naming, perhaps what I am
-> suggestion here may be more to his liking ?
+On Mon, Sep 02, 2024 at 05:32:48PM +0800, Yuan Chen wrote:
+> From: Yuan Chen <chenyuan@kylinos.cn>
+> 
+> When the PROCMAP_QUERY is not defined, a compilation error occurs due to the
+> mismatch of the procmap_query()'s params, procmap_query() only be called in
+> the file where the function is defined, modify the params so they can match.
+> 
+> We get a warning when build samples/bpf:
+>     trace_helpers.c:252:5: warning: no previous prototype for ‘procmap_query’ [-Wmissing-prototypes]
+>       252 | int procmap_query(int fd, const void *addr, __u32 query_flags, size_t *start, size_t *offset, int *flags)
+>           |     ^~~~~~~~~~~~~
+> As this function is only used in the file, mark it as 'static'.
+> 
+> Signed-off-by: Yuan Chen <chenyuan@kylinos.cn>
 
-Most of my objections were about having subtle features that then had
-very subtle syntax and weren't that clear.
+perhaps also 
 
-And yes, a small part of it was naming (I absolutely hated the initial
-"everything is a guard" thing, when one of the main uses were about
-automatic freeing of variables).
+Fixes: 4e9e07603ecd ("selftests/bpf: make use of PROCMAP_QUERY ioctl if available")
 
-But a much larger part was about making the new use greppable and have
-really simple syntax.
+Acked-by: Jiri Olsa <jolsa@kernel.org>
 
-And the conditional case was never that simple syntax, and I feel it
-really violates the whole "this scope is protected".
+jirka
 
-And no, I do not like Peter's "if_guard()" either.
-
-Honestly, I get the feeling that this is all wrong.
-
-For example, I searched for a few of the places where you wanted to
-use this, and see code like this:
-
-    #define __BPF_DECLARE_TRACE(call, proto, args, tp_flags)            \
-    static notrace void                                                 \
-    __bpf_trace_##call(void *__data, proto)                             \
-    {                                                                   \
-        DEFINE_INACTIVE_GUARD(preempt_notrace, bpf_trace_guard);        \
-                                                                        \
-        if ((tp_flags) & TRACEPOINT_MAY_FAULT) {                        \
-                might_fault();                                          \
-                activate_guard(preempt_notrace, bpf_trace_guard)();     \
-        }                                                               \
-                                                                        \
-        CONCATENATE(bpf_trace_run, COUNT_ARGS(args))(__data,
-CAST_TO_U64(args)); \
-    }
-
-and it makes me just go "that's just *WRONG*".
-
-That code should never EVER use a conditional guard.
-
-I find *two* uses of this in your patches, and both of them look
-com,pletely wrong to me, because you could have written the code
-*without* that conditional activation, and it would have been *better*
-that way.
-
-IOW, that code should just have been something like this:
-
-    #define __BPF_DECLARE_TRACE(call, proto, args, tp_flags)    \
-    static notrace void                                         \
-    __bpf_trace_##call(void *__data, proto)                     \
-    {                                                           \
-                                                                \
-        if ((tp_flags) & TRACEPOINT_MAY_FAULT) {                \
-                might_fault();                                  \
-                guard(preempt_notrace)();                       \
-                CONCATENATE(bpf_trace_run, ...                  \
-                return;                                         \
-        }                                                       \
-        CONCATENATE(bpf_trace_run, ...                          \
-    }
-
-instead.
-
-Sure, it duplicates the code inside the guard, but what's the
-downside? In both of the cases I saw, the "duplicated" code was
-trivial.
-
-And the *upside* is that you don't have any conditional locking or
-guarding, and you don't have to make up ridiculous and meaningless
-temporary names for the guard etc. So you get to use the *LEGIBLE*
-code.
-
-And you don't have a patch that just renames all our existing uses.
-Which was also wrong.
-
-So no, I don't like Peter's "if_guard()",  but I find your conditional
-activation to be absolutely wrogn and horrible too.
-
-                 Linus
+> ---
+>  tools/testing/selftests/bpf/trace_helpers.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/bpf/trace_helpers.c b/tools/testing/selftests/bpf/trace_helpers.c
+> index 1bfd881c0e07..2d742fdac6b9 100644
+> --- a/tools/testing/selftests/bpf/trace_helpers.c
+> +++ b/tools/testing/selftests/bpf/trace_helpers.c
+> @@ -249,7 +249,7 @@ int kallsyms_find(const char *sym, unsigned long long *addr)
+>  #ifdef PROCMAP_QUERY
+>  int env_verbosity __weak = 0;
+>  
+> -int procmap_query(int fd, const void *addr, __u32 query_flags, size_t *start, size_t *offset, int *flags)
+> +static int procmap_query(int fd, const void *addr, __u32 query_flags, size_t *start, size_t *offset, int *flags)
+>  {
+>  	char path_buf[PATH_MAX], build_id_buf[20];
+>  	struct procmap_query q;
+> @@ -293,7 +293,7 @@ int procmap_query(int fd, const void *addr, __u32 query_flags, size_t *start, si
+>  	return 0;
+>  }
+>  #else
+> -int procmap_query(int fd, const void *addr, size_t *start, size_t *offset, int *flags)
+> +static int procmap_query(int fd, const void *addr, __u32 query_flags, size_t *start, size_t *offset, int *flags)
+>  {
+>  	return -EOPNOTSUPP;
+>  }
+> -- 
+> 2.46.0
+> 
+> 
 
