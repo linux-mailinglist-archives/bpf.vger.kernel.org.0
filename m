@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-38737-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38738-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D522968EB4
-	for <lists+bpf@lfdr.de>; Mon,  2 Sep 2024 22:06:21 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC7DA968EB5
+	for <lists+bpf@lfdr.de>; Mon,  2 Sep 2024 22:06:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 51F661C21F03
-	for <lists+bpf@lfdr.de>; Mon,  2 Sep 2024 20:06:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6C5D01F2343F
+	for <lists+bpf@lfdr.de>; Mon,  2 Sep 2024 20:06:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8385521C19C;
-	Mon,  2 Sep 2024 20:05:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24BDD3DAC09;
+	Mon,  2 Sep 2024 20:05:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SxFojMMn"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MHKAT3vc"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01F1D1C62DB;
-	Mon,  2 Sep 2024 20:05:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C9B621C19E;
+	Mon,  2 Sep 2024 20:05:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725307519; cv=none; b=M823azHNlIwcvrEMQ7YB+VAfW/5pQnv5pkWXKLT/+T/oDAm+apAxH4ifu0vJdS1Kx/W0bSugXxN81S9TZKcAzk4ZZ9Yu2Drvp+fg3eZARRVZtNCynKPJyzW8ue/1p5Tw4nQgcIo4fFODRopGnc9GLCKa/yGFLUeL7GRSepgSjpQ=
+	t=1725307519; cv=none; b=OLcrY3yPFGBxBho3TSP3EEH997ZM6vKhUKFHfpYUU8x0Gepa3zVCBYhNbKNSBi6xlinKHxGlICEwR8kNOl2/Olemqgjwq1rrEnJTZkYfnhxs3rS7CokiQGza6rnApRVF0Mj29AFanjYuncb5uMGT0i5S4QtqjH0D/f0IzW+685I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1725307519; c=relaxed/simple;
-	bh=vbXiJUW44MYn4zKNicBPcWvvEQsLojbALFnxDDCzRRM=;
+	bh=+Pwd5GaA9knREy8lwTTeOVCpbI0xDH9FKh/p825ZiW4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=p1JjEwBV8fSwf4WER1Y3xe60qgyZddsqgy7kw9L22sfRbKVM0yBFVnKG4eZmebXO9V+6uDG36jR7xmWwby+y3V5/KyVA6UEZxMSr9kGqlbz2vf5Iu1e1tKAo+bNDKCHDsyW9I+dWeS8qPv0eJqIH9PT6BgIys0TxLZGSHjl9/S4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SxFojMMn; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21931C4CED8;
+	 MIME-Version; b=QBq006awsAbS+2e6xiZNAPZQ3/J+R90KtY1UrKpLEGgWdfEN3eQDwi/rAovVblrzGhX8mqjhRxMhUsxoF/Yo5nod8ihNjragtRquYb0+ZNLfxz1pANqA+GnEikV0yHXTwfqRSNR+VLnbwjFy5m14Zf5jLIi3Xp6kvYLqUnHLqas=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MHKAT3vc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8CE1C4CED4;
 	Mon,  2 Sep 2024 20:05:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1725307518;
-	bh=vbXiJUW44MYn4zKNicBPcWvvEQsLojbALFnxDDCzRRM=;
+	s=k20201202; t=1725307519;
+	bh=+Pwd5GaA9knREy8lwTTeOVCpbI0xDH9FKh/p825ZiW4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=SxFojMMnaxyrEJG1fjJldXz3VQfQtCEhqEd9/XyRgPQfPoeb7e+3eqA7MRPgXDbgB
-	 qcCGpmOT6At+kOhRbaGhvMuWBFM/hE1i78Sf5PcOoCGqkKpDw73mPN6x+2yjS4BhAN
-	 N0gjLgEOIzaxh4KamQxCKawXDc770muvYd/PH4GNSTE3ZSOR/NfKmYZcKnE8mSt0MZ
-	 m+7+f1U37xV7u14MgBbf11n9C9rPmR5UwoKQq2seqxB/rDEat4FgcELJV1jZSJ3MxU
-	 AsPvnq9euqHRgxYXh7fhfPQjDLt2qOo3zMQ72Yx3OtvvLDnpGgI9pv5sXDrQb8S4JQ
-	 2F5s62IIXeiLA==
+	b=MHKAT3vcR/3ZyLfB90CSL3UldTyRqP/Z4jDLAbdHrop+kFB6gZFw9TBniv0PORXHJ
+	 eUKgiWz3MS1acbIFVyApmYtjT6pS5ZEP9bKx2eE+Y3mKF4eFMoOUH1875B2QRkFhRz
+	 2Ktd/b6xnzr6IK32MUcxs4ribt2JWoLh5VRhZWxLnERn2Xfxm8d06yZs4OHCGMZBcy
+	 N+35ssm00BaE2gtjPEsRNnJpH2jlnzn4jOrRDemLVXxIrWj3ru17T6cKy3laY0Y+di
+	 d1+AVY6tx0GOiE1wBWZug0OzLat/WP+Dj3efcDQ4udm5CldeqToRaQXBwREQj+vL6t
+	 USohxECgf5Tpg==
 From: Namhyung Kim <namhyung@kernel.org>
 To: Arnaldo Carvalho de Melo <acme@kernel.org>,
 	Ian Rogers <irogers@google.com>,
@@ -53,9 +53,9 @@ Cc: Jiri Olsa <jolsa@kernel.org>,
 	linux-perf-users@vger.kernel.org,
 	Song Liu <song@kernel.org>,
 	bpf@vger.kernel.org
-Subject: [PATCH 4/5] perf lock contention: Constify control data for BPF
-Date: Mon,  2 Sep 2024 13:05:14 -0700
-Message-ID: <20240902200515.2103769-5-namhyung@kernel.org>
+Subject: [PATCH 5/5] perf record offcpu: Constify control data for BPF
+Date: Mon,  2 Sep 2024 13:05:15 -0700
+Message-ID: <20240902200515.2103769-6-namhyung@kernel.org>
 X-Mailer: git-send-email 2.46.0.469.g59c65b2a67-goog
 In-Reply-To: <20240902200515.2103769-1-namhyung@kernel.org>
 References: <20240902200515.2103769-1-namhyung@kernel.org>
@@ -72,67 +72,64 @@ The control knobs set before loading BPF programs should be declared as
 
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/perf/util/bpf_lock_contention.c         | 45 ++++++++++---------
- .../perf/util/bpf_skel/lock_contention.bpf.c  | 27 +++++------
- 2 files changed, 38 insertions(+), 34 deletions(-)
+ tools/perf/util/bpf_off_cpu.c          | 16 ++++++++--------
+ tools/perf/util/bpf_skel/off_cpu.bpf.c |  9 +++++----
+ 2 files changed, 13 insertions(+), 12 deletions(-)
 
-diff --git a/tools/perf/util/bpf_lock_contention.c b/tools/perf/util/bpf_lock_contention.c
-index bc4e92c0c08b8b20..41a1ad08789511c3 100644
---- a/tools/perf/util/bpf_lock_contention.c
-+++ b/tools/perf/util/bpf_lock_contention.c
-@@ -46,14 +46,22 @@ int lock_contention_prepare(struct lock_contention *con)
- 	else
- 		bpf_map__set_max_entries(skel->maps.stacks, 1);
+diff --git a/tools/perf/util/bpf_off_cpu.c b/tools/perf/util/bpf_off_cpu.c
+index 6af36142dc5a7fd0..a590a8ac1f9d42f0 100644
+--- a/tools/perf/util/bpf_off_cpu.c
++++ b/tools/perf/util/bpf_off_cpu.c
+@@ -73,14 +73,12 @@ static void off_cpu_start(void *arg)
+ 	struct evlist *evlist = arg;
  
--	if (target__has_cpu(target))
-+	if (target__has_cpu(target)) {
-+		skel->rodata->has_cpu = 1;
+ 	/* update task filter for the given workload */
+-	if (!skel->bss->has_cpu && !skel->bss->has_task &&
++	if (skel->rodata->has_task && skel->rodata->uses_tgid &&
+ 	    perf_thread_map__pid(evlist->core.threads, 0) != -1) {
+ 		int fd;
+ 		u32 pid;
+ 		u8 val = 1;
+ 
+-		skel->bss->has_task = 1;
+-		skel->bss->uses_tgid = 1;
+ 		fd = bpf_map__fd(skel->maps.task_filter);
+ 		pid = perf_thread_map__pid(evlist->core.threads, 0);
+ 		bpf_map_update_elem(fd, &pid, &val, BPF_ANY);
+@@ -148,6 +146,7 @@ int off_cpu_prepare(struct evlist *evlist, struct target *target,
+ 	if (target->cpu_list) {
  		ncpus = perf_cpu_map__nr(evlist->core.user_requested_cpus);
--	if (target__has_task(target))
-+	}
-+	if (target__has_task(target)) {
-+		skel->rodata->has_task = 1;
- 		ntasks = perf_thread_map__nr(evlist->core.threads);
--	if (con->filters->nr_types)
-+	}
-+	if (con->filters->nr_types) {
-+		skel->rodata->has_type = 1;
- 		ntypes = con->filters->nr_types;
--	if (con->filters->nr_cgrps)
-+	}
-+	if (con->filters->nr_cgrps) {
-+		skel->rodata->has_cgroup = 1;
- 		ncgrps = con->filters->nr_cgrps;
-+	}
- 
- 	/* resolve lock name filters to addr */
- 	if (con->filters->nr_syms) {
-@@ -82,6 +90,7 @@ int lock_contention_prepare(struct lock_contention *con)
- 			con->filters->addrs = addrs;
- 		}
- 		naddrs = con->filters->nr_addrs;
-+		skel->rodata->has_addr = 1;
+ 		bpf_map__set_max_entries(skel->maps.cpu_filter, ncpus);
++		skel->rodata->has_cpu = 1;
  	}
  
- 	bpf_map__set_max_entries(skel->maps.cpu_filter, ncpus);
-@@ -90,6 +99,16 @@ int lock_contention_prepare(struct lock_contention *con)
- 	bpf_map__set_max_entries(skel->maps.addr_filter, naddrs);
- 	bpf_map__set_max_entries(skel->maps.cgroup_filter, ncgrps);
+ 	if (target->pid) {
+@@ -173,11 +172,16 @@ int off_cpu_prepare(struct evlist *evlist, struct target *target,
+ 			ntasks = MAX_PROC;
  
-+	skel->rodata->stack_skip = con->stack_skip;
-+	skel->rodata->aggr_mode = con->aggr_mode;
-+	skel->rodata->needs_callstack = con->save_callstack;
-+	skel->rodata->lock_owner = con->owner;
-+
-+	if (con->aggr_mode == LOCK_AGGR_CGROUP || con->filters->nr_cgrps) {
-+		if (cgroup_is_v2("perf_event"))
-+			skel->rodata->use_cgroup_v2 = 1;
-+	}
-+
- 	if (lock_contention_bpf__load(skel) < 0) {
- 		pr_err("Failed to load lock-contention BPF skeleton\n");
- 		return -1;
-@@ -99,7 +118,6 @@ int lock_contention_prepare(struct lock_contention *con)
+ 		bpf_map__set_max_entries(skel->maps.task_filter, ntasks);
++		skel->rodata->has_task = 1;
++		skel->rodata->uses_tgid = 1;
+ 	} else if (target__has_task(target)) {
+ 		ntasks = perf_thread_map__nr(evlist->core.threads);
+ 		bpf_map__set_max_entries(skel->maps.task_filter, ntasks);
++		skel->rodata->has_task = 1;
+ 	} else if (target__none(target)) {
+ 		bpf_map__set_max_entries(skel->maps.task_filter, MAX_PROC);
++		skel->rodata->has_task = 1;
++		skel->rodata->uses_tgid = 1;
+ 	}
+ 
+ 	if (evlist__first(evlist)->cgrp) {
+@@ -186,6 +190,7 @@ int off_cpu_prepare(struct evlist *evlist, struct target *target,
+ 
+ 		if (!cgroup_is_v2("perf_event"))
+ 			skel->rodata->uses_cgroup_v1 = true;
++		skel->rodata->has_cgroup = 1;
+ 	}
+ 
+ 	if (opts->record_cgroup) {
+@@ -208,7 +213,6 @@ int off_cpu_prepare(struct evlist *evlist, struct target *target,
  		u32 cpu;
  		u8 val = 1;
  
@@ -140,7 +137,16 @@ index bc4e92c0c08b8b20..41a1ad08789511c3 100644
  		fd = bpf_map__fd(skel->maps.cpu_filter);
  
  		for (i = 0; i < ncpus; i++) {
-@@ -112,7 +130,6 @@ int lock_contention_prepare(struct lock_contention *con)
+@@ -220,8 +224,6 @@ int off_cpu_prepare(struct evlist *evlist, struct target *target,
+ 	if (target->pid) {
+ 		u8 val = 1;
+ 
+-		skel->bss->has_task = 1;
+-		skel->bss->uses_tgid = 1;
+ 		fd = bpf_map__fd(skel->maps.task_filter);
+ 
+ 		strlist__for_each_entry(pos, pid_slist) {
+@@ -240,7 +242,6 @@ int off_cpu_prepare(struct evlist *evlist, struct target *target,
  		u32 pid;
  		u8 val = 1;
  
@@ -148,97 +154,34 @@ index bc4e92c0c08b8b20..41a1ad08789511c3 100644
  		fd = bpf_map__fd(skel->maps.task_filter);
  
  		for (i = 0; i < ntasks; i++) {
-@@ -125,7 +142,6 @@ int lock_contention_prepare(struct lock_contention *con)
- 		u32 pid = evlist->workload.pid;
- 		u8 val = 1;
- 
--		skel->bss->has_task = 1;
- 		fd = bpf_map__fd(skel->maps.task_filter);
- 		bpf_map_update_elem(fd, &pid, &val, BPF_ANY);
- 	}
-@@ -133,7 +149,6 @@ int lock_contention_prepare(struct lock_contention *con)
- 	if (con->filters->nr_types) {
- 		u8 val = 1;
- 
--		skel->bss->has_type = 1;
- 		fd = bpf_map__fd(skel->maps.type_filter);
- 
- 		for (i = 0; i < con->filters->nr_types; i++)
-@@ -143,7 +158,6 @@ int lock_contention_prepare(struct lock_contention *con)
- 	if (con->filters->nr_addrs) {
- 		u8 val = 1;
- 
--		skel->bss->has_addr = 1;
- 		fd = bpf_map__fd(skel->maps.addr_filter);
- 
- 		for (i = 0; i < con->filters->nr_addrs; i++)
-@@ -153,25 +167,14 @@ int lock_contention_prepare(struct lock_contention *con)
- 	if (con->filters->nr_cgrps) {
+@@ -253,7 +254,6 @@ int off_cpu_prepare(struct evlist *evlist, struct target *target,
+ 		struct evsel *evsel;
  		u8 val = 1;
  
 -		skel->bss->has_cgroup = 1;
  		fd = bpf_map__fd(skel->maps.cgroup_filter);
  
- 		for (i = 0; i < con->filters->nr_cgrps; i++)
- 			bpf_map_update_elem(fd, &con->filters->cgrps[i], &val, BPF_ANY);
- 	}
- 
--	/* these don't work well if in the rodata section */
--	skel->bss->stack_skip = con->stack_skip;
--	skel->bss->aggr_mode = con->aggr_mode;
--	skel->bss->needs_callstack = con->save_callstack;
--	skel->bss->lock_owner = con->owner;
--
--	if (con->aggr_mode == LOCK_AGGR_CGROUP) {
--		if (cgroup_is_v2("perf_event"))
--			skel->bss->use_cgroup_v2 = 1;
--
-+	if (con->aggr_mode == LOCK_AGGR_CGROUP)
- 		read_all_cgroups(&con->cgroups);
--	}
- 
- 	bpf_program__set_autoload(skel->progs.collect_lock_syms, false);
- 
-diff --git a/tools/perf/util/bpf_skel/lock_contention.bpf.c b/tools/perf/util/bpf_skel/lock_contention.bpf.c
-index 52a876b4269917fe..1069bda5d733887f 100644
---- a/tools/perf/util/bpf_skel/lock_contention.bpf.c
-+++ b/tools/perf/util/bpf_skel/lock_contention.bpf.c
-@@ -117,21 +117,22 @@ struct mm_struct___new {
+ 		evlist__for_each_entry(evlist, evsel) {
+diff --git a/tools/perf/util/bpf_skel/off_cpu.bpf.c b/tools/perf/util/bpf_skel/off_cpu.bpf.c
+index d877a0a9731f9f2f..c152116df72f9bc1 100644
+--- a/tools/perf/util/bpf_skel/off_cpu.bpf.c
++++ b/tools/perf/util/bpf_skel/off_cpu.bpf.c
+@@ -85,10 +85,11 @@ struct task_struct___old {
  } __attribute__((preserve_access_index));
  
- /* control flags */
--int enabled;
--int has_cpu;
--int has_task;
--int has_type;
--int has_addr;
--int has_cgroup;
--int needs_callstack;
--int stack_skip;
--int lock_owner;
--
--int use_cgroup_v2;
--int perf_subsys_id = -1;
-+const volatile int has_cpu;
-+const volatile int has_task;
-+const volatile int has_type;
-+const volatile int has_addr;
-+const volatile int has_cgroup;
-+const volatile int needs_callstack;
-+const volatile int stack_skip;
-+const volatile int lock_owner;
-+const volatile int use_cgroup_v2;
- 
- /* determine the key of lock stat */
--int aggr_mode;
-+const volatile int aggr_mode;
+ int enabled = 0;
+-int has_cpu = 0;
+-int has_task = 0;
+-int has_cgroup = 0;
+-int uses_tgid = 0;
 +
-+int enabled;
-+
-+int perf_subsys_id = -1;
++const volatile int has_cpu = 0;
++const volatile int has_task = 0;
++const volatile int has_cgroup = 0;
++const volatile int uses_tgid = 0;
  
- __u64 end_ts;
- 
+ const volatile bool has_prev_state = false;
+ const volatile bool needs_cgroup = false;
 -- 
 2.46.0.469.g59c65b2a67-goog
 
