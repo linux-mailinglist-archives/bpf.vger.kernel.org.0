@@ -1,138 +1,156 @@
-Return-Path: <bpf+bounces-38728-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38729-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C60D968D23
-	for <lists+bpf@lfdr.de>; Mon,  2 Sep 2024 20:14:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 233B0968DDA
+	for <lists+bpf@lfdr.de>; Mon,  2 Sep 2024 20:45:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E9C371F22CEE
-	for <lists+bpf@lfdr.de>; Mon,  2 Sep 2024 18:14:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D34B0283B53
+	for <lists+bpf@lfdr.de>; Mon,  2 Sep 2024 18:45:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C9BE1C62C5;
-	Mon,  2 Sep 2024 18:14:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DC1C1A3A99;
+	Mon,  2 Sep 2024 18:44:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="UfPtcApD"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y0X7ZZhP"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DBE219F127;
-	Mon,  2 Sep 2024 18:14:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2658E1A3A8E;
+	Mon,  2 Sep 2024 18:44:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725300889; cv=none; b=ZkiiI5lq37rtem5jJHvtRNzTWXmc2Uj0kW9qwTzHaG/6TFp5t3KSwNsErndHPDNrMhqzPltL5gSTyPx9JIFctiNHLq3eSMDer0BTF7OL9ATUndrX0D8UASASCHpZmU9oLXW5OfL4l+98dwpM6BOu3Firx38XfKjD2RVIbTGMFXE=
+	t=1725302692; cv=none; b=XaGJQcbLPpzs8z7MKL/t7pgXnuFyNHx542zOCs1ZOyYNiJSODMG8vZVC9rldSagUzl93YmC1g9s6jRWalEbMN/lMke+dGw2+YRSgyXeK2gSyMvDep5GnbaWh2+Iqu8WLYph/jFPwj6i8oQD1Z2jOnlQDEOLPjwNg+17bJPj4J60=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725300889; c=relaxed/simple;
-	bh=8uyHUZeOmd4UOmgEXNT5ZG8aChZN4UjqzNfyOYiOS6M=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=G7PGqrkFltraTTzHoY/6k2eRrxTuXeZ91TDjdXkMBciejmR2Wtxr1eimRnsjB/rFse0dVLPJcBSl42hnI8NpzAJBWrF+KMRpH1jB1G12+RZAIb1NHrfvEBX5Naz42HcfsuOfcSG7SPgdYDEmw/SjX6PCSW3VTRcWaYIEIwZX5ao=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=UfPtcApD; arc=none smtp.client-ip=167.114.26.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-	s=smtpout1; t=1725300886;
-	bh=8uyHUZeOmd4UOmgEXNT5ZG8aChZN4UjqzNfyOYiOS6M=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=UfPtcApDDzyzOFJavT2qsGtbCmG42ir2h5al77oQtSfLAM+QGtzr/aFRAuLAxeVWY
-	 quIB/5Y/9dEsEvkbeSVRV1VyD604mN30ljleddyJ6s8Dma7x9He+kp/uVl0jrDvfKV
-	 4vawSjoNwYVGVxt5F4Xe6RTSfZ2/MMFf+p7s9B3b58L7KQGWmzzPm0rO/3SEkwyzN0
-	 WMoNpcPnN8JbWDaHffEW1AReHiMYpHMqbzG4G8ix0BQRGKpuSAdhZDYE6Ifytzwwz+
-	 yWEdozJ92cIyVBF6BsEXJEtNpuN0wnLGx7OhLN5W2Ohga/ahOFoma8BJqi8HSq57ON
-	 MeEqxLUtPkyOw==
-Received: from [IPV6:2606:6d00:100:4000:cacb:9855:de1f:ded2] (unknown [IPv6:2606:6d00:100:4000:cacb:9855:de1f:ded2])
-	by smtpout.efficios.com (Postfix) with ESMTPSA id 4WyH3B16xRz1JpH;
-	Mon,  2 Sep 2024 14:14:46 -0400 (EDT)
-Message-ID: <025ea126-f6db-4988-b500-5fbee0a65a3e@efficios.com>
-Date: Mon, 2 Sep 2024 14:14:26 -0400
+	s=arc-20240116; t=1725302692; c=relaxed/simple;
+	bh=HvJTC57CEcuMqHJ1O044sOAIGSvdGXbQRicP0ep4RKw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eF25yyAnDnbZrsMINY+qMgY3YswR/sYtoyPFzI2rSaXGP2K6xQORcg2FEswR5GqRMHCZSoRpTHGfvRjISbQy6vsPZvPoBEBK/MGIh2jjkKc/XSI+nLhaP3VtIUjaCVKdpNelxwX6wBj+92V9Av9ksdTkdBRFWzgqJ4maiTw2BTQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Y0X7ZZhP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9966EC4CEC2;
+	Mon,  2 Sep 2024 18:44:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1725302692;
+	bh=HvJTC57CEcuMqHJ1O044sOAIGSvdGXbQRicP0ep4RKw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Y0X7ZZhPJ6iTrW+kC8Sph0925FjKlM2gF96xZgdcZdI+Lqtq87XyFlevB8W83Z2mv
+	 M/AvPRaStoqB86zLPasmSj1nId+CwIiE36ZSuNyh+EU2rCYWIkHFU0Is0OF77zf+AK
+	 Rc+UPeRZYgm775U1QBFRdGpAmffbfkhm9V3Wk2WAh87tcItVCny+chso09NNyHd8/7
+	 dSgvQIbHV0nZkjdToa55Bp5XL3OLnzhVMWBOI0jtmnXzIk4bp7gxZeXfX+H0IOz3EN
+	 P8FKeTiCpoJj61s9/1ddn0xXcpHCYDcZ7lTgej5GYsWMo6Fvj7fdOE6B4N49JtSTLe
+	 Y1FJOo3hsMEBg==
+Date: Mon, 2 Sep 2024 15:44:49 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Alan Maguire <alan.maguire@oracle.com>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <songliubraving@meta.com>,
+	"dwarves@vger.kernel.org" <dwarves@vger.kernel.org>,
+	bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>
+Subject: Re: FYI: CI regression on big-endian arch (s390) after recent pahole
+ changes
+Message-ID: <ZtYHoZx-JkWTsv51@x1>
+References: <442C7AEC-2919-4307-8700-F7A0B60B5565@fb.com>
+ <322d9bac47bc3732b77cf2cf23d69f2c4665bc36.camel@gmail.com>
+ <860fe244-157b-46cf-9b41-ee9fd36f9c1e@oracle.com>
+ <ZtHG9YwwG5kwiRFt@x1>
+ <CAEf4Bza9OJckdJ4=nask2m+bJsiDszvoLoaf+GhVFu8CNarb=g@mail.gmail.com>
+ <ZtIwXdl_WyYmdLFx@x1>
+ <CAEf4BzY5kx9HayBCViuXf0i7DyvFgcRObvnA1u3bqot2WjfyGg@mail.gmail.com>
+ <2bd94dc7-172f-49c0-87c8-e3c51c840082@oracle.com>
+ <ZtXG8TTMXTzXUkRg@x1>
+ <ab553623-0e0a-496d-a2d8-6fd23de458b0@oracle.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 2/2] cleanup.h: Introduce DEFINE_INACTIVE_GUARD and
- activate_guard
-To: Linus Torvalds <torvalds@linux-foundation.org>,
- Peter Zijlstra <peterz@infradead.org>
-Cc: Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
- Kees Cook <keescook@chromium.org>, Greg KH <gregkh@linuxfoundation.org>,
- Sean Christopherson <seanjc@google.com>, Steven Rostedt
- <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>,
- Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>,
- "Paul E . McKenney" <paulmck@kernel.org>,
- Arnaldo Carvalho de Melo <acme@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Namhyung Kim <namhyung@kernel.org>, bpf@vger.kernel.org,
- Joel Fernandes <joel@joelfernandes.org>, linux-trace-kernel@vger.kernel.org,
- Ingo Molnar <mingo@kernel.org>
-References: <20240828143719.828968-1-mathieu.desnoyers@efficios.com>
- <20240828143719.828968-3-mathieu.desnoyers@efficios.com>
- <20240902154334.GH4723@noisy.programming.kicks-ass.net>
- <CAHk-=whef03dn8OWJ01L08hShVHCieVz7Rrzr1HJQOriVBvaDg@mail.gmail.com>
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Content-Language: en-US
-In-Reply-To: <CAHk-=whef03dn8OWJ01L08hShVHCieVz7Rrzr1HJQOriVBvaDg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ab553623-0e0a-496d-a2d8-6fd23de458b0@oracle.com>
 
-On 2024-09-02 14:10, Linus Torvalds wrote:
-> On Mon, 2 Sept 2024 at 08:43, Peter Zijlstra <peterz@infradead.org> wrote:
->>
->> and Linus took objection to similar patterns. But perhaps my naming
->> wasn't right.
+On Mon, Sep 02, 2024 at 03:59:26PM +0100, Alan Maguire wrote:
+> On 02/09/2024 15:08, Arnaldo Carvalho de Melo wrote:
+> > On Fri, Aug 30, 2024 at 11:34:40PM +0100, Alan Maguire wrote:
+> >> On 30/08/2024 23:20, Andrii Nakryiko wrote:
+> >>> On Fri, Aug 30, 2024 at 1:49 PM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+> >>>> On Fri, Aug 30, 2024 at 08:56:08AM -0700, Andrii Nakryiko wrote:
+> >>>> +++ b/lib/bpf
+> >>>> @@ -1 +1 @@
+> >>>> -Subproject commit 6597330c45d185381900037f0130712cd326ae59
+> >>>> +Subproject commit 686f600bca59e107af4040d0838ca2b02c14ff50
+> >>>> ⬢[acme@toolbox pahole]$
+> > 
+> >>>> Right?
+> > 
+> >>> Yes, and I'm doing another Github sync today.
+> > 
+> > So, I just commited this locally:
+> > 
+> > ⬢[acme@toolbox pahole]$ git show
+> > commit 5fd558301891d1c0456fcae79798a789b499c1f9 (HEAD -> master)
+> > Author: Arnaldo Carvalho de Melo <acme@redhat.com>
+> > Date:   Mon Sep 2 11:05:06 2024 -0300
+> > 
+> >     libbpf: Sync with master, i.e. what will become 1.5.0
+> >     
+> >     To pick this distilled BPF fix:
+> >     
+> >       fe28fae57a9463fbf ("libbpf: Ensure new BTF objects inherit input endianness")
+> >     
+> >     Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+> > 
+> > diff --git a/lib/bpf b/lib/bpf
+> > index 686f600bca59e107..caa17bdcbfc58e68 160000
+> > --- a/lib/bpf
+> > +++ b/lib/bpf
+> > @@ -1 +1 @@
+> > -Subproject commit 686f600bca59e107af4040d0838ca2b02c14ff50
+> > +Subproject commit caa17bdcbfc58e68eaf4d017c058e6577606bf56
+> > ⬢[acme@toolbox pahole]$
+> > 
+> > Ack?
+> >
 > 
-> Well, more of a "this stuff is new, let's start very limited and very clear".
+> Acked-by: Alan Maguire <alan.maguire@oracle.com>
 > 
-> I'm not loving the inactive guard, but I did try to think of a better
-> model for it, and I can't.  I absolutely hate the *example*, though:
+> My patch for the same change crossed with your email [1], just ignore
+> it. Thanks!
+
+I dropped mine and picked yours :-)
+
+Thanks!
+
+- Arnaldo
+ 
+> Alan
 > 
->    void func(bool a)
->    {
->          DEFINE_INACTIVE_GUARD(preempt_notrace, myguard);
+> [1]
+> https://lore.kernel.org/dwarves/20240902141043.177815-1-alan.maguire@oracle.com/T/#u
 > 
->          [...]
->          if (a) {
->                  might_sleep();
->                  activate_guard(preempt_notrace, myguard)();
->          }
->          [ protected code ]
-
-Fair. I should have written something more like
-
-   [ conditionally protected code ]
-
->    }
-> 
-> because that "protected code" obviously is *NOT* protected code. It's
-> conditionally protected only in one situation.
-> 
-> Honestly, I still think the guard macros are new enough that we should
-> strive to avoid them in complicated cases like this. And this *is*
-> complicated. It *looks* simple, but when even the example that was
-> given was pure and utter garbage, it's clearly not *actually* simple.
-> 
-> Once some code is sometimes protected, and sometimes isn't, and you
-> have magic compiler stuff that *hides* it, I'm not sure we should use
-> the magic compiler stuff.
-
-I've tried my best to come up with a scheme which would be cleaner
-than the "guard_if()" proposed by Peter, because I really hate it.
-
-I'm perfectly fine going back to goto/labels for that function if we
-cannot agree on a clean way to express what is needed there.
-
-Thanks,
-
-Mathieu
-
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
-
+> >>> Separate question, I think pahole supports the shared library version
+> >>> of libbpf, as an option, is that right? How do you guys handle missing
+> >>> APIs for distilled BTF in such a case?
+> >  
+> >> Good question - at present the distill-related code is conditionally
+> >> compiled if LIBBPF_MAJOR_VERSION >=1 and LIBBF_MINOR_VERSION >= 5; so if
+> >> an older shared library libbpf+headers is used, the btf_feature is
+> >> simply ignored as if we didn't know about it. See [1] for the relevant
+> >> code in btf_encoder.c. This problem doesn't arise if we're using the
+> >> synced libbpf.
+> >  
+> >> There might be a better way to handle this, but I think that's enough to
+> >> ensure we avoid compilation failures at least.
+> > 
+> > I guess this is good enough,
+> > 
+> > - Arnaldo
+> >  
+> >> [1]
+> >> https://github.com/acmel/dwarves/blob/fd14dc67cb6aaead553074afb4a1ddad10209892/btf_encoder.c#L1766
 
