@@ -1,97 +1,149 @@
-Return-Path: <bpf+bounces-38744-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38745-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F5C7969048
-	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 01:02:05 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01CAB969082
+	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 01:45:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 45B9C1C23273
-	for <lists+bpf@lfdr.de>; Mon,  2 Sep 2024 23:02:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A43C5283622
+	for <lists+bpf@lfdr.de>; Mon,  2 Sep 2024 23:45:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01021188A35;
-	Mon,  2 Sep 2024 22:59:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05A86187FF7;
+	Mon,  2 Sep 2024 23:45:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AIErJMG7"
+	dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="SVJPlBNP"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mail.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6361E188007;
-	Mon,  2 Sep 2024 22:59:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F25F13C684;
+	Mon,  2 Sep 2024 23:45:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725317963; cv=none; b=h/W8Ntka/fBAAfJt8ytGaklDTQ39Zx2EspmT1JMaYA6/U/tCv8yzH+6wEwTlwYyDo32y7Wc+w93visXNZ9g3XexbhVagoIyP+e5AmsMNx8+zpYTBf9d6nanwbAzO4fzuTCHv+KSHvuiSZQeetHlwEHPNv2fR4Z78S0813mB0Fmc=
+	t=1725320716; cv=none; b=meqJWsiRTTY2aILDHte2oZkZ8UCEFcouU4Sez8igCf2i089SqDsc0JjiILmGPGttrymoS7HjK/6N0tsW0ezxaWAQpD8RfbMmTWgnVLhW6lgUDz+sZeBPG1uaMVytVtbEcTxIIHe9igDeGw4nev1R4a09u0r/M15TrK3I2Au+zSo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725317963; c=relaxed/simple;
-	bh=Km/6KlnmQOWJjXq++Cne0pmAvoAL3JA6Ik/pIQ5aMsc=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=KlHIw9IZzez4JYiYkLf5oX2eX25TcNAnmyOWnqhru2nKeN3SVPWYNLCuj5rcjULfcLAms8SqGM1u8AfAszOq1XCaxY2snEvT5edRtMLF8tXumXsCJ9lQRUofA2P6luL0OHRa6rMM+ud7Tn/p1hQPjCyQxY8nKiEL8OJjHaH+Auc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AIErJMG7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7C12C4CEC2;
-	Mon,  2 Sep 2024 22:59:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1725317963;
-	bh=Km/6KlnmQOWJjXq++Cne0pmAvoAL3JA6Ik/pIQ5aMsc=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=AIErJMG7cKzgaRygrtjzs5mL/pC6veeZwCogVHvV/WBtBT/cKLnuDR62hPgSMcBe8
-	 /yuQvKlu7eI5fNCDD4J/dgkzx3ooEmujnp/daGOhR5v+4eVZtVVrMG6e2PG0iFSRZF
-	 NIrYhg19ylgXYLM2wQvCc4o/jRlPuA9dEeuQ9jUM3iaLWlUG5Nz2p9/Gke8q0PWRiS
-	 gkFDR8G5EB7ytWVL5yqqdSrm6GfhVY2FI1lTb/B4Wd7W2cvFQPmCDCXe7szd35TzKm
-	 tlnvY4CVN8T/3+7HoZ8o1Y5GcnDRVLLdtp21+GlcY5VliDWak3j8Yi1r0hUiRotEtK
-	 IByHh8ZKne3NQ==
-Date: Mon, 2 Sep 2024 17:59:21 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Frank Li <Frank.li@nxp.com>
-Cc: Richard Zhu <hongxing.zhu@nxp.com>,
-	Lucas Stach <l.stach@pengutronix.de>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, linux-pci@vger.kernel.org,
-	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	devicetree@vger.kernel.org
-Subject: Re: [PATCH v8 01/11] PCI: imx6: Fix establish link failure in EP
- mode for iMX8MM and iMX8MP
-Message-ID: <20240902225921.GA232316@bhelgaas>
+	s=arc-20240116; t=1725320716; c=relaxed/simple;
+	bh=Q+f+B1Jwe/vmxiVTW7NQhx5vIjICvDdunj5m6k0q6ok=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=ucMyzrqDaE6GMsYbMyvmuE7CxeTTIQ5sOWHdyayiTdO6VarCTHyGIGwS5t6fzD/15vOj0UdOMcbkAk6h/AdYLMESW4peZdTnimMlk40TaemzdXRgGhu+7Jo24BjqSbJYdKXXa1twGQzez2fnen8qU0+6zek1jE1bOfbQvN4l/9I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au; spf=pass smtp.mailfrom=ellerman.id.au; dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b=SVJPlBNP; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+	s=201909; t=1725320712;
+	bh=UaJezUaY19zxJWqob2w1cOAk5qiAPl5VHmtR3xKChPw=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=SVJPlBNP8APfuR/jBD4BjKXOasjSRZ3dbEv80YacUUHbcdDw+XM6x2QOEMOi1xx0G
+	 2YI84S67i5/r6XZ2EhcaDv98rdhCTGlEoi1jECCm64pD3ZPLG9/H5Q/8B0fDuEFnn0
+	 ODaujSs7E9rewRWin3OvP+Wi7kVFPTMXmkAtlOVngxeC9c92hxF0K9sD5LWYyiAqz9
+	 XX/5QjfzVMkzcIC5jr62Zzp+L4JnzRecg6m4Zt5sMtEE1k/SNxRAfgO7Uhbr4eH27d
+	 TDyAw6f/mrTclwB3jDJ3y1IQnfoXHfFk61zd0A7zo2gIuket9WZa/x4aJ3zVCrY44b
+	 JAHuQDXFAf6gQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4WyQNR6tgxz4x1V;
+	Tue,  3 Sep 2024 09:45:11 +1000 (AEST)
+From: Michael Ellerman <mpe@ellerman.id.au>
+To: Vegard Nossum <vegard.nossum@oracle.com>, Masahiro Yamada
+ <masahiroy@kernel.org>
+Cc: linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
+ kvmarm@lists.linux.dev, kvm@vger.kernel.org, linux-um@lists.infradead.org,
+ bpf@vger.kernel.org, llvm@lists.linux.dev, Vegard Nossum
+ <vegard.nossum@oracle.com>
+Subject: Re: [PATCH] kbuild: use objcopy to generate asm-offsets
+In-Reply-To: <20240828083605.3093701-1-vegard.nossum@oracle.com>
+References: <20240828083605.3093701-1-vegard.nossum@oracle.com>
+Date: Tue, 03 Sep 2024 09:45:11 +1000
+Message-ID: <875xrd7h88.fsf@mail.lhotse>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZtZBeL6LqpIKseXc@lizhi-Precision-Tower-5810>
+Content-Type: text/plain
 
-On Mon, Sep 02, 2024 at 06:51:36PM -0400, Frank Li wrote:
-> On Mon, Sep 02, 2024 at 04:12:40PM -0500, Bjorn Helgaas wrote:
-> > On Mon, Jul 29, 2024 at 04:18:08PM -0400, Frank Li wrote:
-> > > From: Richard Zhu <hongxing.zhu@nxp.com>
-> >
-> > Maybe "iMX8MP" in this subject should be "i.MX8MP" as in the subject
-> > of the next patch?
-> >
-> > And if so, maybe it should be "i.MX8MM" here, too?
-> 
-> i.MX8MP and i.MX8MM is more formal. Many other place in kernel tree also
-> use iMX8MP and iMX8MM.
-> 
-> Do you need me repost it?
+Vegard Nossum <vegard.nossum@oracle.com> writes:
+> In order to give assembly code access to C structs without having to
+> hardcore member offsets, the kernel compiles a C source file listing all
+> the structs and offsets that are needed in assembly code. Using some
+> C preprocessor trickery and a sed script, the compiled assembly code is
+> turned back into C preprocessor code that in turn can be used by the
+> asssembly code.
+>
+> This sed script is very hard to read and understand.
+>
+> Remove the sed script and compile the C source listing structs and
+> offsets to an object file (instead of assembly code) that embeds C source
+> directly. Then extract the C source using objcopy.
+>
 
-No, no point it that, we can tidy that easily.
+I threw some builders at this and hit a few errors:
 
-Same for the stable tag, we can add that.
+parisc:
+  # make -s -j 160 ARCH=parisc64 O=/kisskb/build/mpe_generic-64bit_defconfig_parisc64-gcc13 CROSS_COMPILE=/opt/cross/kisskb/korg/gcc-13.1.0-nolibc/hppa-linux/bin/hppa64-linux-  
+  {standard input}: Assembler messages:
+  {standard input}: Error: .size expression for main does not evaluate to a constant
+  make[3]: *** [/kisskb/src/scripts/Makefile.build:244: scripts/mod/devicetable-offsets.o] Error 1
+
+s390:
+  # make -s -j 32 ARCH=s390 O=/kisskb/build/mpe_defconfig_s390x-gcc13 CROSS_COMPILE=/opt/cross/kisskb/korg/gcc-13.1.0-nolibc/s390-linux/bin/s390-linux-  
+  In file included from /kisskb/src/arch/s390/include/asm/ptrace.h:11,
+                   from /kisskb/src/arch/s390/kernel/vdso64/vdso_user_wrapper.S:7:
+  /kisskb/src/arch/s390/include/uapi/asm/ptrace.h:167: warning: "STACK_FRAME_OVERHEAD" redefined
+    167 | #define STACK_FRAME_OVERHEAD    160      /* size of minimum stack frame */
+        | 
+  In file included from /kisskb/src/include/asm-generic/asm-offsets.h:1,
+                   from ./arch/s390/include/generated/asm/asm-offsets.h:1,
+                   from /kisskb/src/arch/s390/kernel/vdso64/vdso_user_wrapper.S:5:
+  ./include/generated/asm-offsets.h:51: note: this is the location of the previous definition
+     51 | #define STACK_FRAME_OVERHEAD -96 /* sizeof(struct stack_frame) */
+
+mips:
+  # make -s -j 32 ARCH=mips O=/kisskb/build/mpe_defconfig_mips-gcc13 CROSS_COMPILE=/opt/cross/kisskb/korg/gcc-13.1.0-nolibc/mips-linux/bin/mips-linux-  
+  {standard input}: Assembler messages:
+  {standard input}:27: Error: junk at end of line, first unrecognized character is `M'
+  {standard input}:212: Error: junk at end of line, first unrecognized character is `M'
+  {standard input}:265: Error: junk at end of line, first unrecognized character is `M'
+  {standard input}:338: Error: junk at end of line, first unrecognized character is `M'
+  {standard input}:596: Error: junk at end of line, first unrecognized character is `S'
+  {standard input}:608: Error: junk at end of line, first unrecognized character is `L'
+  {standard input}:721: Error: junk at end of line, first unrecognized character is `L'
+  {standard input}:806: Error: junk at end of line, first unrecognized character is `L'
+  {standard input}:963: Error: junk at end of line, first unrecognized character is `P'
+  {standard input}:996: Error: junk at end of line, first unrecognized character is `K'
+  {standard input}:1161: Error: junk at end of line, first unrecognized character is `M'
+  make[3]: *** [/kisskb/src/scripts/Makefile.build:244: arch/mips/kernel/asm-offsets.o] Error 1
+
+riscv:
+  # make -s -j 160 ARCH=riscv O=/kisskb/build/mpe_defconfig_riscv-gcc13 CROSS_COMPILE=/opt/cross/kisskb/korg/gcc-13.1.0-nolibc/riscv64-linux/bin/riscv64-linux-  
+  In file included from /kisskb/src/arch/riscv/kernel/asm-offsets.c:9:
+  /kisskb/src/arch/riscv/kernel/asm-offsets.c: In function 'asm_offsets':
+  /kisskb/src/include/linux/kbuild.h:6:9: error: invalid 'asm': invalid use of '%c'
+      6 |         asm volatile( \
+        |         ^~~
+  /kisskb/src/include/linux/kbuild.h:12:9: note: in expansion of macro '_LINE'
+     12 |         _LINE("#define " #sym " %c0 /* " #val " */", "i" (val))
+        |         ^~~~~
+  /kisskb/src/include/linux/kbuild.h:15:9: note: in expansion of macro 'DEFINE'
+     15 |         DEFINE(sym, offsetof(struct str, mem))
+        |         ^~~~~~
+  /kisskb/src/arch/riscv/kernel/asm-offsets.c:25:9: note: in expansion of macro 'OFFSET'
+     25 |         OFFSET(TASK_THREAD_RA, task_struct, thread.ra);
+        |         ^~~~~~
+  /kisskb/src/include/linux/kbuild.h:6:9: error: invalid 'asm': invalid use of '%c'
+      6 |         asm volatile( \
+        |         ^~~
+
+
+Full list here, but note there are some unrelated pre-existing failures:
+  http://kisskb.ellerman.id.au/kisskb/head/259bba3447faaf5e5b12ae41a26a62978d4c1965/
+
+
+cheers
 
