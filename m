@@ -1,108 +1,156 @@
-Return-Path: <bpf+bounces-38708-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38709-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92BA3968BB1
-	for <lists+bpf@lfdr.de>; Mon,  2 Sep 2024 18:11:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCE6F968BBB
+	for <lists+bpf@lfdr.de>; Mon,  2 Sep 2024 18:15:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3E0FD1F235F5
-	for <lists+bpf@lfdr.de>; Mon,  2 Sep 2024 16:11:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED6351C2296F
+	for <lists+bpf@lfdr.de>; Mon,  2 Sep 2024 16:15:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF6FE1A304E;
-	Mon,  2 Sep 2024 16:11:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 315BF1A305B;
+	Mon,  2 Sep 2024 16:15:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bsA1r4U9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WmdtUR/s"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BBA71A3029;
-	Mon,  2 Sep 2024 16:11:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C0711A2627;
+	Mon,  2 Sep 2024 16:14:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725293478; cv=none; b=HRIdSp4gvkzSaPvtFj4NrIgVP8kBrepG8R36u/UH+u218imF6Im4TYRrimFfwWBso8gF5gEZnLZBdwGxF9dY4tRxhA9fb1r6JQ746s+eZt0kDccsziJuytMsUALbb66SxL6F0R1dVaIxSj8FmIelaQep1Bo4BaQx38pa/zz05Ew=
+	t=1725293699; cv=none; b=CrN/FX25dHSaZG/NOb3ZzDkizLBbfXQ18dnsrGCQjtfYM6fueL5Fwm4AJZSgWI+5C0hHn1MuNDnDZBUnMHPS95wiLcEUomlfPm9KKncJ7xxLT5xl5NBP8ExXaEDSGAIVAaWY4HjntnXUIgzdArls3kaL5AThD05SHKqdNmgVP9A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725293478; c=relaxed/simple;
-	bh=wk7mJjx0Xs0Q7CfUTyDNU+Eh3I4XTXvSQzWkhmeVDwY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Y6QCZwnT/Tz0TapfWSE9foHPxImbE63lv8ws+URsj7JmmLpEnreaZTD7QiHvJdycY3kDw1Lfr+n58NYiGa+q71tV/wKUx6zcZkz7b6KDG1WKL8Ze/jHDh2CMEcTuPWj8M1egPk+Vb4plfxoh8cqh2kJ855lqzWbou5U9zbwYYOY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bsA1r4U9; arc=none smtp.client-ip=209.85.216.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-2d42c59df79so723053a91.1;
-        Mon, 02 Sep 2024 09:11:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1725293476; x=1725898276; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wk7mJjx0Xs0Q7CfUTyDNU+Eh3I4XTXvSQzWkhmeVDwY=;
-        b=bsA1r4U9bkRj2ayNmnFpAm1V99ya6TFLF6NRGlB2a0zEUorcR/cwEfJmEQVsbSDxHb
-         uA8h3G7KLfi8C+jL9ROyMRSceaqsNJZ54qJLqJxgaLFcYQQQSFA6LJ9WDaRsjLFR/ZXr
-         LBRAZHILeZ/va75y7efmZRGuewtfGh66ibuuMOxI0bUtqEGgomGUAQ9PTXcMM/tHAjND
-         tiQyJUHW5IvT8HuDCmqx1a3DsCu3/sPfTHJaO+0mNL9gMlzltA7M7ZfuCMUIVLaadAlV
-         LHYHJZczAwhBH73S2nbokZ0k2pGCME/PUB9K0MvE2E1OrtllXwvyyfVO8PgZeOGVg9da
-         xT2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725293476; x=1725898276;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wk7mJjx0Xs0Q7CfUTyDNU+Eh3I4XTXvSQzWkhmeVDwY=;
-        b=YqavNTCkHB+yW3Jk48yI6Z5AIjk8aP1Y9Lu0i97Z3VQrdOzWaSPf5dSAgIJHyghlS8
-         aLMfzJ7umrHkuNz/nVi5NbSBFdaU5UCZ8Cl89QhUmxOuKaFUmLuemU5tdl5gpdyg3rQb
-         /W5WnqHfF5oV9h3KA0fS6Rxt9k4D4hhq9L4lj7+XQcCa/LOhyNTH9Su35xcXrlYPBzRc
-         86bIskU+WueoUL87LhErZz3/irGT2QGD71p+FukpWWw7ppRIwbzajCpiyCna1+GlS1r3
-         Uk+GvHUjPv/H+meXByVH4nKkd2VBswP8UBOCl0Ztpz1Y8ZclMOz1DWf2vGqqF/X2p/Ck
-         Oh7w==
-X-Forwarded-Encrypted: i=1; AJvYcCUTFwGahhsmqmSk4Mq8/3SMZyVH/XMH0+RWLRL6aj4BmH+Q5nE103ooYNU4jhuBSFGEqnNNvd3Uf/qJNj/Z@vger.kernel.org, AJvYcCUxtVo88ntOe/T3lB2BAcMGuZRIXTmZd0D0y7R2m+kBrsat9Er1DLyXsuav0OFFcgMXJM1vPpkVJB2OeUei@vger.kernel.org, AJvYcCWB2ay0K/JCz6xf7hkd2Jxila6L+ZWrgOZPoG6UwEf6U1b+Bff0xM4Q0n0n9HOzC9CvfsU=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxq3wrxI4k2NwQZ+XGSFuxBbQsLC8i/vw8EkxlEN9H5KnZz3m6P
-	lVnHQzX84weVtumsjmLmHlCaC8P4KTUiu2PmjUJ+oVw+YwEs2aKX+FBab/cOy/1haBmBifLUphw
-	bC3xDauszHD462tnDPzSn1/5yELQ=
-X-Google-Smtp-Source: AGHT+IHuwEJDhCc4s+mmfVcupdQTMg6prAW9eGXQCrQq50fzIiiapvtm80hin/j+dLtZBzIECbJiloot8yiAcR4eJR0=
-X-Received: by 2002:a17:902:e303:b0:205:40f5:d1a with SMTP id
- d9443c01a7336-20540f50db1mr48362355ad.6.1725293476345; Mon, 02 Sep 2024
- 09:11:16 -0700 (PDT)
+	s=arc-20240116; t=1725293699; c=relaxed/simple;
+	bh=2YXvs+4h6EtwgTDIiHH+k7lx3bBCvlfhGPYD9djhnD0=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=CP3Ya+3QXzPDouXaFE8gv7k7+pR41um0joK35bEj3gyPAART9X+WRXouhqHWtxYs/WkMrw4a9ypG04MRx3DoR90unyqk7otHRHChS11xz8tqlT81DBQS7KFnDYMubPXcdKAT+yH6Qh7/xJx+QjyMID8Bkv70sqSHoF8yE+WbKPA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WmdtUR/s; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCE5EC4CEC2;
+	Mon,  2 Sep 2024 16:14:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1725293699;
+	bh=2YXvs+4h6EtwgTDIiHH+k7lx3bBCvlfhGPYD9djhnD0=;
+	h=From:Subject:Date:To:Cc:From;
+	b=WmdtUR/sRt9/rVHTFsg3tdydOMs9g8cytn2zASvD9jPODXG+5JOY7usGel9zF2JTi
+	 623n5c12xkpGvF6S2Z/VdrkH+Gd3rEEb3kcO+f85ezNd4wqY7z7GOa/ZL8l8/oYeF+
+	 hPnEtWVizk6kdKLqVaWBbnkWIUV6ne2ec8+gZ5LLh449cYWyHQkhZC0pYeDV9nlh8+
+	 bKv2zCmc/Cb1SpeYpRcNT1LHez628sVPc/4ocYxubo4UW1l/ZIJTxFMsVDWhE7hJxu
+	 rrUgf1Q7uDtrDpzYyvJViuPrDCK1CZsOx822PArRbjtdYJbmiZaTG/4cJQuwMTrpO4
+	 PLJbXWK/IfonQ==
+From: Benjamin Tissoires <bentiss@kernel.org>
+Subject: [PATCH HID 0/7] HID: bpf: add a new hook to control hid-generic
+Date: Tue, 03 Sep 2024 01:14:30 +0900
+Message-Id: <20240903-hid-bpf-hid-generic-v1-0-9511a565b2da@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240728125527.690726-1-ojeda@kernel.org> <CAK7LNARhR=GGZ2Vr-SSog1yjnjh6iT7cCEe4mpYg889GhJnO9g@mail.gmail.com>
- <ZsiV0V5-UYFGkxPE@bergen> <CANiq72khCDjCVbU=t+vpR+EfJucNBpYhZkW2VVjnXbD9S77C0A@mail.gmail.com>
- <CAK7LNARJjM2t_sqE-MePzEEF3D3SznNYh99F5bM003N_xGFpug@mail.gmail.com>
-In-Reply-To: <CAK7LNARJjM2t_sqE-MePzEEF3D3SznNYh99F5bM003N_xGFpug@mail.gmail.com>
-From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date: Mon, 2 Sep 2024 18:11:04 +0200
-Message-ID: <CANiq72=3V2XYgmFME3kab9VMrT1yBi9nr99X6CMrqUjvTVMTtA@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: pahole-version: avoid errors if executing fails
-To: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Nicolas Schier <nicolas@fjasle.eu>, Miguel Ojeda <ojeda@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org, 
-	Nathan Chancellor <nathan@kernel.org>, linux-kbuild@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, patches@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAGbk1WYC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxMDCyNL3YzMFN2kgjQwnZ6aB9SdrGtmaGpumWaaZGppYqoE1FlQlJqWWQE
+ 2NVrJw9NFKba2FgCCMG3zagAAAA==
+To: Jiri Kosina <jikos@kernel.org>, 
+ Peter Hutterer <peter.hutterer@who-t.net>, Vicki Pfau <vi@endrift.com>, 
+ Shuah Khan <shuah@kernel.org>, Jonathan Corbet <corbet@lwn.net>
+Cc: linux-input@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
+ linux-doc@vger.kernel.org, Benjamin Tissoires <bentiss@kernel.org>
+X-Mailer: b4 0.14.1
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1725293696; l=4061;
+ i=bentiss@kernel.org; s=20230215; h=from:subject:message-id;
+ bh=2YXvs+4h6EtwgTDIiHH+k7lx3bBCvlfhGPYD9djhnD0=;
+ b=m0iCZE1dHV9g7xwZtqTLCsu7pk2cVmrdyeFbjmCJtVCjK/kAT3HuOJA8z1AzYZAj2AajwbxRV
+ 1y3XyKrSD+UAkxR7DdC0smgCXARau1kShwLKgxc77dGNa7NyQnAe3oG
+X-Developer-Key: i=bentiss@kernel.org; a=ed25519;
+ pk=7D1DyAVh6ajCkuUTudt/chMuXWIJHlv2qCsRkIizvFw=
 
-On Mon, Sep 2, 2024 at 4:15=E2=80=AFAM Masahiro Yamada <masahiroy@kernel.or=
-g> wrote:
->
-> Ensuring this should be easy.
-> Why don't we fix it properly while we are here?
+This is a slight change from the fundamentals of HID-BPF.
+In theory, HID-BPF is abstract to the kernel itself, and makes
+only changes at the HID level (through report descriptors or
+events emitted to/from the device).
 
-That is great, I would prefer that.
+However, we have seen a few use cases where HID-BPF might interact with
+the running kernel when the target device is already handled by a
+specific device.
 
-Sent v2: https://lore.kernel.org/all/20240902160828.1092891-1-ojeda@kernel.=
-org/
+For example, the XP-Pen/Huion/UC-Logic tablets are handled by
+hid-uclogic but this driver is also doing a report descriptor fixup
+without checking if the device has already been fixed by HID-BPF.
 
-Cheers,
-Miguel
+In the same way, another recent example[0] was when a cheap foot pedal is
+used and tricks iPhones and Windows machines by presenting itself as a
+known Apple wireless keyboard. The problem is that this fake keyboard is
+not presenting a compatible report descriptor and hid-core merges all
+device nodes together making libinput ignore the keyboard part for
+historical reasons.
+
+Last, there has been a long standing request to allow to disable the
+input part of a given gamepad while SDL or Steam opens the device
+through hidraw.
+
+This series aims at tackling both of these problems:
+- first we had a new hook `hid_bpf_driver_probe` which allows the BPF
+  program to decide if the curently probed driver should be used or not
+- then this same hook can also change the ->driver_data of the struct
+  hid_device_id argument, and we teach hid-generic to use that field as
+  the connect mask.
+
+Basically, it means that when we insert a BPF program to fix a device,
+we can force hid-generic to handle the device, and thus preventing
+any other kernel driver to tamper with our device. We can also
+selectively decide to export the hidraw or input nodes when using
+hid-generic.
+
+In the SDL/Steam use case, this would means that the gaming application
+will load one BPF program per input device it wants to open through
+hidraw, that BPF program reassigns the input device to hid-generic and
+disables hid-input, then it can open the new hidraw node.
+Once that program terminates, the BPF program is removed (either
+automatically because no-one has the fd of the links open, or manually
+by SDL/Steam), and the normal driver rebinds to the HID device,
+restoring full input functionality.
+
+This branch is on top of the for-6.12/hidraw branch of hid.git, mainly
+because that branch saw some selftests/hid changes.
+
+[0] https://gitlab.freedesktop.org/libinput/libinput/-/issues/1014
+
+Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
+---
+Benjamin Tissoires (7):
+      selftests/hid: add dependency on hid_common.h
+      selftests/hid: cleanup C tests by adding a common struct uhid_device
+      selftests/hid: allow to parametrize bus/vid/pid/rdesc on the test device
+      HID: bpf: allow BPF programs to force using hid-generic
+      selftests/hid: add test for assigning a given device to hid-generic
+      HID: bpf: Allow to control the connect mask of hid-generic from BPF
+      selftests/hid: add test to disable hid-input
+
+ Documentation/hid/hid-bpf.rst                      |   2 +-
+ drivers/hid/bpf/hid_bpf_dispatch.c                 |  31 ++++
+ drivers/hid/bpf/hid_bpf_struct_ops.c               |   4 +
+ drivers/hid/hid-core.c                             |  18 +-
+ drivers/hid/hid-generic.c                          |   5 +-
+ include/linux/hid_bpf.h                            |  40 ++++
+ tools/testing/selftests/hid/Makefile               |   2 +-
+ tools/testing/selftests/hid/hid_bpf.c              | 205 ++++++++++++++++-----
+ tools/testing/selftests/hid/hid_common.h           | 112 +++++++----
+ tools/testing/selftests/hid/hidraw.c               |  36 +---
+ tools/testing/selftests/hid/progs/hid.c            |  31 ++++
+ .../testing/selftests/hid/progs/hid_bpf_helpers.h  |   4 +
+ 12 files changed, 372 insertions(+), 118 deletions(-)
+---
+base-commit: 321f7798cfb8d834ae0ed0d467c8bf46804243f9
+change-id: 20240829-hid-bpf-hid-generic-61579f5b5945
+
+Best regards,
+-- 
+Benjamin Tissoires <bentiss@kernel.org>
+
 
