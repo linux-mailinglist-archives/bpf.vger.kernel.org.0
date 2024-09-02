@@ -1,95 +1,88 @@
-Return-Path: <bpf+bounces-38697-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38698-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C672096818B
-	for <lists+bpf@lfdr.de>; Mon,  2 Sep 2024 10:19:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AEFC09682CD
+	for <lists+bpf@lfdr.de>; Mon,  2 Sep 2024 11:11:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1BEB5B20994
-	for <lists+bpf@lfdr.de>; Mon,  2 Sep 2024 08:19:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D0C771C22717
+	for <lists+bpf@lfdr.de>; Mon,  2 Sep 2024 09:11:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79934185947;
-	Mon,  2 Sep 2024 08:19:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAB10187335;
+	Mon,  2 Sep 2024 09:11:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EEy03NgF"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Wgsqm2ip"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DDD026AC1;
-	Mon,  2 Sep 2024 08:19:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A10A7186287;
+	Mon,  2 Sep 2024 09:11:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725265190; cv=none; b=h/tlDfkN8j6eBSqR6f3Tpan/my3CKftuUhqst2yDRKW9oz/yAaSScUm/WV2lZiK85q6RJ+uOpET5j2WjUf1/EJqw6TkfI1hfohiQ1Ywpt+36MoDasb6xCtZ3w9d3pMHgKtFL+BIbK05gJDKQYv7EDCyNyCfh7OrksbHvTh3A6zM=
+	t=1725268302; cv=none; b=ci0/jexl4za4/xP8G+fy1fuJdYGc/qPQr/ZbVjzDOrCBVNe3WtJNpwYQIs1h8EaaBE+V0iWUGnp2G1G2kBtYMYsfC9UxL7YrrodjwdEOF1NNEW7dQUSi+zUO21A9BvZNSaGBQ9asuCEiwA2EEp98f8fEvq0e/r/pVD/7ZED1mCU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725265190; c=relaxed/simple;
-	bh=NeAXS1q4WKKVX+jak6/Xd3iRMjcWAJKAO/hACLL12U4=;
+	s=arc-20240116; t=1725268302; c=relaxed/simple;
+	bh=Ze5XgkMUSpr8SCNL10HvJp4M0g7KOfF9oueeg28V9ko=;
 	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oN/4ksBvvzFd8XA8NHFeHxsfxXx7argPhmBkv0smEyJSr9mv4F5weKKJNTJrEUvGf4eeux4IzCtjQm6N6zAg2Oz5VOPoSUmCr0h5rXuMsWX63M0x2dxEaSxA6XAhgxu247Wtw37d+pOvqWt45IY3Zeqpz3bE3D4bJLqlj823uiw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EEy03NgF; arc=none smtp.client-ip=209.85.214.169
+	 Content-Type:Content-Disposition:In-Reply-To; b=MLoZK81ncnVIeLJHS9Qo+0bxeqsGYnlzwj7PgN3WYG/MPjE4HmV8fO0wr4x0tBKAkjXDXF7FA0bTYuhXTFad5/l+Ryk0bFqces7GAapqi8PeRz3heMzuW5VSSO3UAYVXZkQdaTqrN1juhPRRB8kvqEqR3f7Q28r3BI04tQy8wnk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Wgsqm2ip; arc=none smtp.client-ip=209.85.128.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-204d391f53bso26730355ad.2;
-        Mon, 02 Sep 2024 01:19:48 -0700 (PDT)
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-42bb9d719d4so27697035e9.3;
+        Mon, 02 Sep 2024 02:11:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1725265188; x=1725869988; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1725268299; x=1725873099; darn=vger.kernel.org;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:date:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=iXdqClKjYaw+pwVY+vTn/MWfGep4gvPjiMkUkpvnbGo=;
-        b=EEy03NgF3rcxYX/tElwTh7bzmqCeABZKXMrUJt0N3Ylr8qnjwt3A82UwyUR3fpqYMh
-         p+nVjMHmZoJOYmrzmn9xwbb99sa6wxYzc4CmCuxDUJmEgS2tHisLHM0jWY/zX3Wi8c7h
-         CeaBzTMbisYeV4odBnPMuofnfxJGgqudn2VDH53H8ZsEnEumoA9nl1GN2Ynh4RDb6jlx
-         u+wyxArzWupF6ZfU8YGyN6pzjqyqGK47vZqos91+ELI2XjQjFfWL8qqwIo8lLi0292kk
-         VczMCBgJmQhR+IoTbc+hHOtu1TMeY7YY9a9VfSIGhQROTP2tRMkC7OeZz38tzHf6PeZF
-         a/jw==
+        bh=w866Zb3XiSYwaoQyh8s0RANWJJh1KBMZkoTV9yM5crk=;
+        b=Wgsqm2ipi0dXyauhD03jKPzSoSBVO6dYbI+Ad0JMSbrQkK7pkpDx75DKATwNn1QZCP
+         XmA2M+OSgWA+lJIMfcvorrqShgwjF3cnUKg+S15UoAYIEyabdX9cdX1axmABTKIZdx/1
+         GjecZaNiEuxUHqYV7rHuqoIKkvbfZXZYk3p6yfcUfwM324BcbamCSCcemd16EPl9+Fl3
+         bWzcZPsAKHtWnJN9c2vIUelbO9DKHD9y10TO94y16g1W6TE9otBggVgTiwl3XRlUrk0+
+         PyXuwcdMqpetcCfduvi/ogF4otAN3zUvpiAS7tgf891o7GCelGxsT4bIfvwnQJkxPdrD
+         UKyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725265188; x=1725869988;
+        d=1e100.net; s=20230601; t=1725268299; x=1725873099;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:date:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=iXdqClKjYaw+pwVY+vTn/MWfGep4gvPjiMkUkpvnbGo=;
-        b=uw8DBWsPhtcaBZ/QbrHTk3b3c0RiN+NqmQNrgj3n14tC6DmGFZaUaQ5qHaTrvOLYiK
-         V+yyRnGqtxjYAJUQ5btMfzDEMmVLT3DGHIwP/PDQxPMs62YaHoVEtzecsVw+tpCMTR4N
-         67N0BIMEs3y0iybsNoDwZOruxuGlsKeFUtii3xZa3OOM5dDaTf7NhG/HGyK/GhzpVExD
-         jtjEt+2uo53nzn+MMUH0A7FXkDpIHSMXSy6DE7hVUFXgDcOFXyPFTH9sj/Errnh1mI5J
-         K/Fqh228SoQTDrmVdtI6RIDR6/pHgV4Uw3NHpxuVrArJbpoA29qp7K4zvjTLYgsem7yX
-         zcrQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUJ2Ba7wtIO4F8bhqJSRKok1yRTufdHGL/UADEoBhL9UkDLdb1TaWyyNefUsZMIiAWzSfuUi5MuU5e0k/yW654=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzr318XZE1QoglTdvjh8mG9vMLEevwwtayo0lfqz0o4N8Dq3Ofk
-	NWvk8HSC/5EpF9ZY0QHWXa/9U7I5E2aDOHYWaRInRYKtJOsAZwnxVlAHNA==
-X-Google-Smtp-Source: AGHT+IH/giKb/R4Rf4M0toLyqXvAKJgvttBxaM/aefkGZ6gAGqOdXVEKlCUvijQxj0axVvyBBSOtzA==
-X-Received: by 2002:a17:902:d4c4:b0:205:43d8:710f with SMTP id d9443c01a7336-20547d03668mr56172615ad.58.1725265187552;
-        Mon, 02 Sep 2024 01:19:47 -0700 (PDT)
-Received: from kodidev-ubuntu (69-172-146-21.cable.teksavvy.com. [69.172.146.21])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20533ed264asm43500755ad.198.2024.09.02.01.19.46
+        bh=w866Zb3XiSYwaoQyh8s0RANWJJh1KBMZkoTV9yM5crk=;
+        b=cMCplp+tf3pFEI3IUcaLXapR//P2sjm6/aTiAdZri9+czYrfd1MqF/2GkU9swieEGK
+         JdEbklNKC5Ya4ED/CVlT8rwXqsYgvGEl+eG33hw1WQUDXaTXQTPXQkV/MrlWgC3WdYvt
+         9uUVIRTKsDHzepmfcl8Gj7sBI4l/oRgg+ik3gp2b/8/j7qf+bsBQIQ+zG2cNrSEAvIFm
+         TO1K23OjKGlgLro4GK6mtAT9o4abjYX2ov1SBWBjl/iju7Ugwhw18qrjkAVrM7G3zjx/
+         Yk7iMnazkc8/vyQphUsUrVhhxGvfYy975ij+ln7JA1Z5WsRSKoJyQ/CXNlNJTutg3Jpp
+         btfg==
+X-Forwarded-Encrypted: i=1; AJvYcCVCCkS5jLHE7es+p+jbWD8bQnUo/EV9/WM6FLyfV9Szt/KCnitMXl2APHOSqta8Jjc7klk=@vger.kernel.org, AJvYcCXVuhaV/J9EayzbLqf/Njp9WeQJInd4dlyN9BGDMA4GOu+uUVIXw2RWk6yWBP4gDmCtWXdhaK0mcJnRo+IVNH3PKdfe@vger.kernel.org
+X-Gm-Message-State: AOJu0YySiLq607eMXmK8bQG2277A3V/EfXb26ElZnkD6dg1NssA+WRGQ
+	8v9+Xt1T8/+AY1tpDLh3Q46o0h66dMhXPddQbKVTBi86HSeFZI2uMgD+OHnV9+c=
+X-Google-Smtp-Source: AGHT+IEjipaqKXixmWQPn7Ax5wPPsCL88WkGlwpctr8endQwXziWeM6jD8pcq/xkQ28hb+7/WHn/mg==
+X-Received: by 2002:a05:600c:3b8e:b0:42b:a9d7:93 with SMTP id 5b1f17b1804b1-42bb032c82cmr107500965e9.28.1725268298698;
+        Mon, 02 Sep 2024 02:11:38 -0700 (PDT)
+Received: from krava ([87.202.122.118])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-42c7f172be3sm47182615e9.36.2024.09.02.02.11.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Sep 2024 01:19:46 -0700 (PDT)
-From: Tony Ambardar <tony.ambardar@gmail.com>
-X-Google-Original-From: Tony Ambardar <Tony.Ambardar@gmail.com>
-Date: Mon, 2 Sep 2024 01:19:44 -0700
+        Mon, 02 Sep 2024 02:11:38 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Mon, 2 Sep 2024 12:11:34 +0300
 To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-	Ilya Leoshkevich <iii@linux.ibm.com>,
-	Quentin Monnet <qmo@kernel.org>
-Subject: Re: [PATCH bpf-next v4 4/8] libbpf: Support BTF.ext loading and
- output in either endianness
-Message-ID: <ZtV1IG1XCPUAIzhl@kodidev-ubuntu>
-References: <cover.1724976539.git.tony.ambardar@gmail.com>
- <8eaba4b675cba9035121121bba6618c9f8f65610.1724976539.git.tony.ambardar@gmail.com>
- <CAEf4BzZu8yGnjsBcw=8sZd9knzgM2F8fUfrSuhfLNEpGM3p3Og@mail.gmail.com>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Oleg Nesterov <oleg@redhat.com>,
+	Tianyi Liu <i.pear@outlook.com>, Jordan Rome <linux@jordanrome.com>,
+	ajor@meta.com, rostedt@goodmis.org, mhiramat@kernel.org,
+	mathieu.desnoyers@efficios.com, flaniel@linux.microsoft.com,
+	albancrequy@linux.microsoft.com, linux-trace-kernel@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH v2] tracing/uprobe: Add missing PID filter for uretprobe
+Message-ID: <ZtWBRgM3TyhdiwKw@krava>
+References: <ME0P300MB0416034322B9915ECD3888649D882@ME0P300MB0416.AUSP300.PROD.OUTLOOK.COM>
+ <20240830101209.GA24733@redhat.com>
+ <ZtHKTtn7sqaLeVxV@krava>
+ <CAEf4BzZPGxuV38Kz3R387tANP3tLF7j9GLRd6tOYtaEWT9uqCw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -99,182 +92,100 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzZu8yGnjsBcw=8sZd9knzgM2F8fUfrSuhfLNEpGM3p3Og@mail.gmail.com>
+In-Reply-To: <CAEf4BzZPGxuV38Kz3R387tANP3tLF7j9GLRd6tOYtaEWT9uqCw@mail.gmail.com>
 
-On Fri, Aug 30, 2024 at 02:14:19PM -0700, Andrii Nakryiko wrote:
-> On Fri, Aug 30, 2024 at 12:30 AM Tony Ambardar <tony.ambardar@gmail.com> wrote:
+On Fri, Aug 30, 2024 at 08:51:12AM -0700, Andrii Nakryiko wrote:
+> On Fri, Aug 30, 2024 at 6:34 AM Jiri Olsa <olsajiri@gmail.com> wrote:
 > >
-> > Support for handling BTF data of either endianness was added in [1], but
-> > did not include BTF.ext data for lack of use cases. Later, support for
-> > static linking [2] provided a use case, but this feature and later ones
-> > were restricted to native-endian usage.
+> > On Fri, Aug 30, 2024 at 12:12:09PM +0200, Oleg Nesterov wrote:
+> > > The whole discussion was very confusing (yes, I too contributed to the
+> > > confusion ;), let me try to summarise.
+> > >
+> > > > U(ret)probes are designed to be filterable using the PID, which is the
+> > > > second parameter in the perf_event_open syscall. Currently, uprobe works
+> > > > well with the filtering, but uretprobe is not affected by it.
+> > >
+> > > And this is correct. But the CONFIG_BPF_EVENTS code in __uprobe_perf_func()
+> > > misunderstands the purpose of uprobe_perf_filter().
+> > >
+> > > Lets forget about BPF for the moment. It is not that uprobe_perf_filter()
+> > > does the filtering by the PID, it doesn't. We can simply kill this function
+> > > and perf will work correctly. The perf layer in __uprobe_perf_func() does
+> > > the filtering when perf_event->hw.target != NULL.
+> > >
+> > > So why does uprobe_perf_filter() call uprobe_perf_filter()? Not to avoid
+> > > the __uprobe_perf_func() call (as the BPF code assumes), but to trigger
+> > > unapply_uprobe() in handler_chain().
+> > >
+> > > Suppose you do, say,
+> > >
+> > >       $ perf probe -x /path/to/libc some_hot_function
+> > > or
+> > >       $ perf probe -x /path/to/libc some_hot_function%return
+> > > then
+> > >       $perf record -e ... -p 1
+> > >
+> > > to trace the usage of some_hot_function() in the init process. Everything
+> > > will work just fine if we kill uprobe_perf_filter()->uprobe_perf_filter().
+> > >
+> > > But. If INIT forks a child C, dup_mm() will copy int3 installed by perf.
+> > > So the child C will hit this breakpoint and cal handle_swbp/etc for no
+> > > reason every time it calls some_hot_function(), not good.
+> > >
+> > > That is why uprobe_perf_func() calls uprobe_perf_filter() which returns
+> > > UPROBE_HANDLER_REMOVE when C hits the breakpoint. handler_chain() will
+> > > call unapply_uprobe() which will remove this breakpoint from C->mm.
 > >
-> > Add support for BTF.ext handling in either endianness. Convert BTF.ext data
-> > to native endianness when read into memory for further processing, and
-> > support raw data access that restores the original byte-order for output.
-> > Add internal header functions for byte-swapping func, line, and core info
-> > records.
+> > thanks for the info, I wasn't aware this was the intention
 > >
-> > Add new API functions btf_ext__endianness() and btf_ext__set_endianness()
-> > for query and setting byte-order, as already exist for BTF data.
-> >
-> > [1] 3289959b97ca ("libbpf: Support BTF loading and raw data output in both endianness")
-> > [2] 8fd27bf69b86 ("libbpf: Add BPF static linker BTF and BTF.ext support")
-> >
-> > Signed-off-by: Tony Ambardar <tony.ambardar@gmail.com>
-> > ---
-> >  tools/lib/bpf/btf.c             | 192 +++++++++++++++++++++++++++++---
-> >  tools/lib/bpf/btf.h             |   3 +
-> >  tools/lib/bpf/libbpf.map        |   2 +
-> >  tools/lib/bpf/libbpf_internal.h |  33 ++++++
-> >  4 files changed, 214 insertions(+), 16 deletions(-)
-> >
-> > diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-> > index f5081de86ee0..064cfe126c09 100644
-> > --- a/tools/lib/bpf/btf.c
-> > +++ b/tools/lib/bpf/btf.c
-> > @@ -3022,25 +3022,102 @@ static int btf_ext_setup_core_relos(struct btf_ext *btf_ext)
-> >         return btf_ext_setup_info(btf_ext, &param);
-> >  }
-> >
-> > -static int btf_ext_parse_hdr(__u8 *data, __u32 data_size)
-> > +/* Swap byte-order of BTF.ext header with any endianness */
-> > +static void btf_ext_bswap_hdr(struct btf_ext *btf_ext, __u32 hdr_len)
-> >  {
-> > -       const struct btf_ext_header *hdr = (struct btf_ext_header *)data;
-> > +       struct btf_ext_header *h = btf_ext->hdr;
-> >
-> > -       if (data_size < offsetofend(struct btf_ext_header, hdr_len) ||
-> > -           data_size < hdr->hdr_len) {
-> > -               pr_debug("BTF.ext header not found\n");
-> > +       h->magic = bswap_16(h->magic);
-> > +       h->hdr_len = bswap_32(h->hdr_len);
-> > +       h->func_info_off = bswap_32(h->func_info_off);
-> > +       h->func_info_len = bswap_32(h->func_info_len);
-> > +       h->line_info_off = bswap_32(h->line_info_off);
-> > +       h->line_info_len = bswap_32(h->line_info_len);
-> > +
-> > +       if (hdr_len < offsetofend(struct btf_ext_header, core_relo_len))
-> > +               return;
-> > +
-> > +       h->core_relo_off = bswap_32(h->core_relo_off);
-> > +       h->core_relo_len = bswap_32(h->core_relo_len);
-> > +}
-> > +
-> > +/* Swap byte-order of a generic info subsection */
-> > +static void info_subsec_bswap(const struct btf_ext_header *hdr, bool native,
-> > +                             __u32 off, __u32 len, anon_info_bswap_fn_t bswap)
+> > uprobe_multi does not have perf event mechanism/check, so it's using
+> > the filter function to do the process filtering.. which is not working
+> > properly as you pointed out earlier
 > 
-> ok, so I'm not a fan of this bswap callback, tbh. Also, we don't
-> really enforce that each kind of record has exact size we expect
-> (i.e., bpf_line_info_min and bpf_func_info_min shouldn't be "min" for
-> byte-swapped case, it should be exact).
-> 
-> How about this slight modification: split byte swapping of
-> sections/subsection metadata, so we adjust record size, sec_name_off
-> and num_info separately from adjusting each record.
+> So this part I don't completely get. I get that using task->mm
+> comparison is wrong due to CLONE_VM, but why same_thread_group() check
+> is wrong? I.e., why task->signal comparison is wrong?
 
-Hmmm, the bulk of code needed is to parse the metadata, with only 2 lines
-used to go through records. Splitting per above would add unnecessary
-duplication it seems, no?
+the way I understand it is that we take the group leader task and
+store it in bpf_uprobe_multi_link::task
 
-> 
-> Once this swapping is done we:
-> 
-> a) validate record size for each section is expected (according to its
-> type, of course)
+but it can exit while the rest of the threads is still running so
+the uprobe_multi_link_filter won't match them (leader->mm is NULL)
 
-This is a good point I overlooked, and needs doing in any case.
+Oleg suggested change below (in addition to same_thread_group change)
+to take that in account
 
-> b) we can then use for_each_btf_ext_sec() and for_each_btf_ext_rec()
-> macro (which assume proper in-memory metadata byte order) and then
-> hard-code swapping of each record fields
+jirka
 
-How easily can we use these macros? Consider the current call chain:
 
-btf_ext__new
-     btf_ext_parse
-          btf_ext_bswap_hdr     (1)
-          btf_ext_bswap_info    (2)
-     btf_ext_setup_func_info
-     btf_ext_setup_line_info
-     btf_ext_setup_core_relos   (3)
-	
-btf_ext__raw_data
-     btf_ext_bswap_info         (4)
-     btf_ext_bswap_hdr
-
-The macros iterate on 'struct btf_ext_info' instances in 'struct btf_ext'
-but these are only set up after (3) it seems and unavailable at (2). I
-suppose they could be used with some sort of kludge but unsure how well
-they'll work.
-
-> 
-> No callbacks.
-> 
-> This has also a benefit of not needing this annoying "bool native"
-> flag when producing raw bytes. We just ensure proper order of
-> operation:
-> 
-> a) swap records
-> b) swap metadata (so just mirrored order from initialization)
-
-How does that work? If we split up btf_ext_bswap_info(), after (1)
-btf_ext->swapped_endian is set and btf_ext->hdr->magic is swapped, so at
-(2) it's not possible to tell the current info data byte order without
-some hinting.
-
-But maybe if we defer setting btf_ext->swapped_endian until after (b) we
-can drop the "bool native" thanks to symmetry breaking. Let me check.
-
-> 
-> WDYT?
-
-Adding a record_size check is definitely needed.
-
-But I have trouble seeing how splitting bswap of info metadata/records
-would yield something simpler and cleaner than the callbacks. What if
-they were passed via a descriptor, as in btf_ext_setup_func_info()? I
-think I need to play around with this a while and see..
-
-It would also help me if you'd elaborate on the drawbacks you see of
-using callbacks, given I see then in other parts of libbpf.
-
-> 
-> pw-bot: cr
-> 
-> > +{
-> > +       __u32 left, i, *rs, rec_size, num_info;
-> > +       struct btf_ext_info_sec *si;
-> > +       void *p;
-> > +
-> > +       if (len == 0)
-> > +               return;
-> > +
-> > +       rs = (void *)hdr + hdr->hdr_len + off;  /* record size */
-> > +       si = (void *)rs + sizeof(__u32);        /* sec info #1 */
-> > +       rec_size = native ? *rs : bswap_32(*rs);
-> > +       *rs = bswap_32(*rs);
-> > +       left = len - sizeof(__u32);
-> > +       while (left > 0) {
-> > +               num_info = native ? si->num_info : bswap_32(si->num_info);
-> > +               si->sec_name_off = bswap_32(si->sec_name_off);
-> > +               si->num_info = bswap_32(si->num_info);
-> > +               left -= offsetof(struct btf_ext_info_sec, data);
-> > +               p = si->data;
-> > +               for (i = 0; i < num_info; i++)  /* list of records */
-> > +                       p += bswap(p);
-> > +               si = p;
-> > +               left -=  rec_size * num_info;
-> 
-> nit: extra space here
-
-Fixed, thanks.
-
-> 
-> > +       }
-> > +}
-> > +
-> 
-> [...]
+---
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index 98e395f1baae..9e6b390aa6da 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -3235,9 +3235,23 @@ uprobe_multi_link_filter(struct uprobe_consumer *con, enum uprobe_filter_ctx ctx
+ 			 struct mm_struct *mm)
+ {
+ 	struct bpf_uprobe *uprobe;
++	struct task_struct *task, *t;
++	bool ret = false;
+ 
+ 	uprobe = container_of(con, struct bpf_uprobe, consumer);
+-	return uprobe->link->task->mm == mm;
++	task = uprobe->link->task;
++
++	rcu_read_lock();
++	for_each_thread(task, t) {
++		struct mm_struct *mm = READ_ONCE(t->mm);
++		if (mm) {
++			ret = t->mm == mm;
++			break;
++		}
++	}
++	rcu_read_unlock();
++
++	return ret;
+ }
+ 
+ static int
 
