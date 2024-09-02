@@ -1,143 +1,113 @@
-Return-Path: <bpf+bounces-38731-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38732-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A400968DE0
-	for <lists+bpf@lfdr.de>; Mon,  2 Sep 2024 20:48:50 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76F68968E13
+	for <lists+bpf@lfdr.de>; Mon,  2 Sep 2024 21:01:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C841C1F21F74
-	for <lists+bpf@lfdr.de>; Mon,  2 Sep 2024 18:48:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 28A921F229C4
+	for <lists+bpf@lfdr.de>; Mon,  2 Sep 2024 19:01:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89CB91A3A8F;
-	Mon,  2 Sep 2024 18:48:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F28041A3A9B;
+	Mon,  2 Sep 2024 19:01:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iybsLoTF"
+	dkim=pass (2048-bit key) header.d=qmon.net header.i=@qmon.net header.b="feTn4y1M"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+Received: from outbound.soverin.net (outbound.soverin.net [185.233.34.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D9B01A3A80;
-	Mon,  2 Sep 2024 18:48:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4A341A3A95
+	for <bpf@vger.kernel.org>; Mon,  2 Sep 2024 19:01:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.233.34.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725302923; cv=none; b=Z1D7AlUB5wW4mjavLSy7s0ZoLMf6KZPV8rTDk1ltC6FytsRhafb0e0tkJv+U8sNsyzUfJO9zMwC/qDKtSwhp5Tsq2rYdmFAsy+twzirj2oArKHIIqPry6q2dvfiNEIGO4iGh+7FCSEeuKl7XXOvDSn8QCN8ZGPUwgB08ufZCq90=
+	t=1725303683; cv=none; b=a7kgkQEQdiZfzIQvMdxrB5YUqSMnrJT1qeguFv3kgXCpy2aNpgxh4vhVq+6hK19SoDrahqky9DHNxWb/iK1Wnf19MBVi2Aa5EauahEPnGMRDMvGr1NhPdGFAncJByruEIJRWMywPT2D9z3IhEvDeW8/CgmYY1X5RTV9bT2jl7nA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725302923; c=relaxed/simple;
-	bh=GhnPwaANvzIEJfD7074jTlrZcF9HJ/AnfdG4A69fYnQ=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=I0nN9aY0zFESBqzdYzyKJuCe2/8k6Uw0ckaV02GTnY2V0sDjmz8vFlLnBkm8/CoAYdhUt1o2eb8iheuNwt6YM05a397rT3nagYboHSxkFv57SXse3dAiJMd6fQ38eB8TFE9cTo3tHzwgUMHMohdc3Y1c016WFTwVG7iC/O+FQWE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iybsLoTF; arc=none smtp.client-ip=209.85.221.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-374bd0da617so1546249f8f.3;
-        Mon, 02 Sep 2024 11:48:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1725302920; x=1725907720; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=MELQtSmOnmWF4IFnsIuzL6tau5qYYjPDtZMmxK7Zyb4=;
-        b=iybsLoTFlJVnuOawYmikcYIP05xAlb09FHn3UjFXNDqU0S77cLf29Hlppx6mkXljCW
-         GCuV8bjPsaM9jU9TcST7qzIsjg840yKHzC27fJbyJI+XKmVOZRSO61xWqUgYblE8c/ht
-         cASADwYoMAGdPdLxzaXqKw3zk72w0kGnNstP3qSbULjG2T7SBkvMgTjQPPHXHr7dqGoJ
-         fm65px1Ts1N5bQuk3KEsWj8sw5Bbl5eNAmOE6JkwAIHf3bXbPkkxzBA4znGS7t7ZBaMS
-         +yPAhBkhHlc9sXaJPK3+CyBpEMCR4EoExvn3M/x2HVc2TRED4kg/dGR9rNYsLWqENQwz
-         4xUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725302920; x=1725907720;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MELQtSmOnmWF4IFnsIuzL6tau5qYYjPDtZMmxK7Zyb4=;
-        b=L6GU5gEEgmubVY8XDibsN5piq2ofZWlq8nbM8LMpTRlbDuoZ9fRQJZCh6DDWtB0olR
-         SVfzyVUK1tWrU9YhdmnGfDZgcWe3ClfFVle/4toeok2naYajtPaYafnRdLSGWN2355Y3
-         V04nTJhjf0gEh2vV9I6IeSVUYC3DXoRt2TgIvNWz/Sn33BO3z4iuVh0cSkqUFWEJlnEl
-         Wffh6bAkGb6m30/N2iJDy75G8cWEjrbFPOTebwTMkX4lB3hJciGmm/uosErWCIq469x3
-         BcnxWT7nTHUcnSrl1+8OBzWUIWehiI6s/Hcgc3x8POBts18CDeL/7CxYHAORwcHBJROA
-         jXVQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWUWgsIUlqNgpKbGtrR5EupKQo+rDSX1jOoOhnJ5Ho7KWvAnwAlLzILzfDmrQNcK0a4xV4=@vger.kernel.org, AJvYcCWiKOu+4ACSq1HdrZ+FFQSMRzIOnNTpkvVmLluj0yNdh1W9JonLczsvPHf3dl6m0vGVhE93YkAwVboATuDsADsU@vger.kernel.org
-X-Gm-Message-State: AOJu0YxQev11IZF/cxFcG3zkYIok8nHbTgoBFmfseQOhouLkskH0weAO
-	EgMYDRu5uMuBaWDHjXzLQz6x/kvrOWMszbWwxWnx+VL0PzYMr8b8skh2tUKjnc8=
-X-Google-Smtp-Source: AGHT+IHuHj5iv9qM/QbYWy+Bt9iEMD4aVFI13zXUvjPKNXFR4KO37kCJfraPrjPzTfKQXpJowfxP4Q==
-X-Received: by 2002:adf:978c:0:b0:371:8dcc:7f9e with SMTP id ffacd0b85a97d-374bce9864bmr7721115f8f.2.1725302919649;
-        Mon, 02 Sep 2024 11:48:39 -0700 (PDT)
-Received: from krava ([87.202.122.118])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-374c8e4f1b3sm4485930f8f.27.2024.09.02.11.48.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Sep 2024 11:48:39 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Mon, 2 Sep 2024 21:48:35 +0300
-To: Yuan Chen <chenyuan_fl@163.com>
-Cc: andrii@kernel.org, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH] selftests/bpf: Fix procmap_query()'s params mismatch and
- compilation warning
-Message-ID: <ZtYIgzz74_OZQM7B@krava>
-References: <20240902093248.23473-1-chenyuan_fl@163.com>
+	s=arc-20240116; t=1725303683; c=relaxed/simple;
+	bh=1RAKRwSxyDGRz0efRzLAI3TLxfmnCYW6KPgMdGB5fcs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=nZSeQSlXYflRIXDxe8102oF2XpfeMSH2TAtfyerRAbhC0AwFhPKc359NaScAJCIQIBWzZsbgzZBbIlrecyBfZGMe4K1JlFWbuqS6rmautluCYymyby4eWK4VWQsuGqgIx4kPdvODQB9AUF9zjq6ZHF6e/BUqNg4QJRjYZvtmCNg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=qmon.net; spf=pass smtp.mailfrom=qmon.net; dkim=pass (2048-bit key) header.d=qmon.net header.i=@qmon.net header.b=feTn4y1M; arc=none smtp.client-ip=185.233.34.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=qmon.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qmon.net
+Received: from smtp.soverin.net (unknown [10.10.4.99])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	(No client certificate requested)
+	by outbound.soverin.net (Postfix) with ESMTPS id 4WyHtf3xvGz8t;
+	Mon,  2 Sep 2024 18:52:26 +0000 (UTC)
+Received: from smtp.soverin.net (smtp.soverin.net [10.10.4.99]) by soverin.net (Postfix) with ESMTPSA id 4WyHtd57p3z69;
+	Mon,  2 Sep 2024 18:52:25 +0000 (UTC)
+Authentication-Results: smtp.soverin.net;
+	dkim=pass (2048-bit key; unprotected) header.d=qmon.net header.i=@qmon.net header.a=rsa-sha256 header.s=soverin1 header.b=feTn4y1M;
+	dkim-atps=neutral
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qmon.net; s=soverin1;
+	t=1725303146;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=c4YxGhduz9au11cu4/u4d85pUYjN6Q9xwPA6fPbospM=;
+	b=feTn4y1MGAqcYUyvSVEy0q0xMeVYWrJ0TdAIwKe/cp/F1XnTbxE9aquLPA4b0AUOp+3Kba
+	hBPcTjZ6/bNPdJiJDdEPIsqDDifz6yJ9ali9eM40CIWMDt8jUuZnPxoBC6AWpQUM5FCiJj
+	r/GpRVPtoHISjd7UbNh7p0+ubR39iZKf7azc9a2kEXDP3eaR5PBIWdir/NCUwjxrwXEVQn
+	I8/nV3xu3bj1+lalJ77QwJnmJ2edFmZx4QNWbWmLkSB9VLBTc0jl1019q3XH2nik3rQNCf
+	5Ax7wjyEaphdEJLP4H8iePtuFZE+RnRyh0lTphjGewsNDQtYwzEQhYnlHtmp5A==
+Message-ID: <394636e7-54f8-4a93-82cc-7f949fb39aca@qmon.net>
+Date: Mon, 2 Sep 2024 19:52:25 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240902093248.23473-1-chenyuan_fl@163.com>
+Subject: Re: [PATCH bpf-next] bpftool: Fix handling enum64 in btf dump sorting
+To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, bpf@vger.kernel.org,
+ ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net, kafai@meta.com,
+ kernel-team@meta.com
+Cc: Mykyta Yatsenko <yatsenko@meta.com>
+References: <20240902171721.105253-1-mykyta.yatsenko5@gmail.com>
+From: Quentin Monnet <qmo@qmon.net>
+Content-Language: en-GB
+In-Reply-To: <20240902171721.105253-1-mykyta.yatsenko5@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spampanel-Class: ham
 
-On Mon, Sep 02, 2024 at 05:32:48PM +0800, Yuan Chen wrote:
-> From: Yuan Chen <chenyuan@kylinos.cn>
+On 2024-09-02 18:17 BST, Mykyta Yatsenko wrote:
+> From: Mykyta Yatsenko <yatsenko@meta.com>
 > 
-> When the PROCMAP_QUERY is not defined, a compilation error occurs due to the
-> mismatch of the procmap_query()'s params, procmap_query() only be called in
-> the file where the function is defined, modify the params so they can match.
+> Wrong function is used to access the first enum64 element.
+> Substituting btf_enum(t) with btf_enum64(t) for BTF_KIND_ENUM64.
 > 
-> We get a warning when build samples/bpf:
->     trace_helpers.c:252:5: warning: no previous prototype for ‘procmap_query’ [-Wmissing-prototypes]
->       252 | int procmap_query(int fd, const void *addr, __u32 query_flags, size_t *start, size_t *offset, int *flags)
->           |     ^~~~~~~~~~~~~
-> As this function is only used in the file, mark it as 'static'.
-> 
-> Signed-off-by: Yuan Chen <chenyuan@kylinos.cn>
-
-perhaps also 
-
-Fixes: 4e9e07603ecd ("selftests/bpf: make use of PROCMAP_QUERY ioctl if available")
-
-Acked-by: Jiri Olsa <jolsa@kernel.org>
-
-jirka
-
+> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
 > ---
->  tools/testing/selftests/bpf/trace_helpers.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>  tools/bpf/bpftool/btf.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
 > 
-> diff --git a/tools/testing/selftests/bpf/trace_helpers.c b/tools/testing/selftests/bpf/trace_helpers.c
-> index 1bfd881c0e07..2d742fdac6b9 100644
-> --- a/tools/testing/selftests/bpf/trace_helpers.c
-> +++ b/tools/testing/selftests/bpf/trace_helpers.c
-> @@ -249,7 +249,7 @@ int kallsyms_find(const char *sym, unsigned long long *addr)
->  #ifdef PROCMAP_QUERY
->  int env_verbosity __weak = 0;
+> diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
+> index 6789c7a4d5ca..3b57ba095ab6 100644
+> --- a/tools/bpf/bpftool/btf.c
+> +++ b/tools/bpf/bpftool/btf.c
+> @@ -561,9 +561,10 @@ static const char *btf_type_sort_name(const struct btf *btf, __u32 index, bool f
+>  	case BTF_KIND_ENUM64: {
+>  		int name_off = t->name_off;
 >  
-> -int procmap_query(int fd, const void *addr, __u32 query_flags, size_t *start, size_t *offset, int *flags)
-> +static int procmap_query(int fd, const void *addr, __u32 query_flags, size_t *start, size_t *offset, int *flags)
->  {
->  	char path_buf[PATH_MAX], build_id_buf[20];
->  	struct procmap_query q;
-> @@ -293,7 +293,7 @@ int procmap_query(int fd, const void *addr, __u32 query_flags, size_t *start, si
->  	return 0;
->  }
->  #else
-> -int procmap_query(int fd, const void *addr, size_t *start, size_t *offset, int *flags)
-> +static int procmap_query(int fd, const void *addr, __u32 query_flags, size_t *start, size_t *offset, int *flags)
->  {
->  	return -EOPNOTSUPP;
->  }
-> -- 
-> 2.46.0
-> 
-> 
+> -		/* Use name of the first element for anonymous enums if allowed */
+> -		if (!from_ref && !t->name_off && btf_vlen(t))
+> -			name_off = btf_enum(t)->name_off;
+> +		if (!from_ref && !name_off && btf_vlen(t))
+> +			name_off = btf_kind(t) == BTF_KIND_ENUM64 ?
+> +				btf_enum64(t)->name_off :
+> +				btf_enum(t)->name_off;
+>  
+>  		return btf__name_by_offset(btf, name_off);
+>  	}
+
+
+(Please don't forget to tag your patch as a v2.)
+Looks good, thanks!
+
+Acked-by: Quentin Monnet <qmo@kernel.org>
 
