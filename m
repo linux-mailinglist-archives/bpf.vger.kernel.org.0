@@ -1,117 +1,145 @@
-Return-Path: <bpf+bounces-38852-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38853-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7310996AC9A
-	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2024 01:04:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B8FFE96AC9F
+	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2024 01:06:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D6E05B23758
-	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 23:04:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 390C0B22272
+	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 23:06:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 277261D5CD2;
-	Tue,  3 Sep 2024 23:04:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BF631D5CD1;
+	Tue,  3 Sep 2024 23:06:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="PqClv0kK"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="RRWkizCs"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
+Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3B121A4E84
-	for <bpf@vger.kernel.org>; Tue,  3 Sep 2024 23:03:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 168D0126BFE
+	for <bpf@vger.kernel.org>; Tue,  3 Sep 2024 23:06:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725404640; cv=none; b=dg38azbG9+O507dRBthdfAG+6LipZ+kUrDeqPWSo36miSpKEx+xMOzGbeErMhxFTJcyR9n89IUjKU3Eogv8EXg9sri1HOneWnxv/Uvszh3LtN6L9i0WkHIxmi6IPLJ8X1p2Gkp5KsZLgKmIgQdyAXx76pjIYGAtPRCdy2e6NnbA=
+	t=1725404785; cv=none; b=f82uixyuwcnNlxlSIwHaJD0RgAtdM6mulaoGNXzpl5Yw69c/8Z/Z5Zv0fnb29YgrzlHFIcWuhbqpbEWzRkmTXY7GkSNYsdye3aY/W0HwO1Dv+GWASLW6qnUA2r0O1DYBYkwPVXdS6shGt1zq/PuuXaIB2CMq0w/WRRtotrX8VQ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725404640; c=relaxed/simple;
-	bh=AzWB2zWBnl2HTa7A0vuRTed9eq6EjywrkCnQ5fWo9DU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EBYiWfK2REqZE9IjwAjeG5GY2jb9d54zvAixzv9ovh7rCyiO0sc3NG8NHK/ZWZFS/BhLh0Tv5KZUMClnodgzkARoCDIXSsfMQzKKixFnIR20UKxu0kMAZLPPmuv3g64iGUwW3grjq3ohVIek8eSXXldJ+OivZHLVGPunbVZu5Qo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=PqClv0kK; arc=none smtp.client-ip=91.218.175.170
+	s=arc-20240116; t=1725404785; c=relaxed/simple;
+	bh=sR3YDwfr1yz5m0dk9IZrHpJQ8yeSIDRvzhDM/NkGIxY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=tx3YSW9f2nqmJo/SYNdTxaA2QP2AjIeqFbzLlnjyAhJc/gLS6ogY6/QEoQXCcHb+1HseKNPF2hAjlssFKpcQydylgZp3IeqSCMQblc6ZozlIMvjaLwAc6XGzqfR5ZnSeRgx/jaVR2yxQDlVf6MZ0gcdckgaQwcVqmaYJqTLGnnQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=RRWkizCs; arc=none smtp.client-ip=95.215.58.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Tue, 3 Sep 2024 19:03:53 -0400
+Message-ID: <504ced9b-b938-4cca-b108-28775404faa4@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1725404636;
+	t=1725404779;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=jAlPcUUI+rbY65LhMY3kDUW+5VZoPR0KoHWBmgbLJkU=;
-	b=PqClv0kKJ8hz993FGAZx520xvTkWfKVcJ2JpedEClD7ixZt9p76cxPN4HBY+IJTjipgJ2J
-	KbreLClGm/neFVOKXoQMaD6QnDTE87rO9sE0oOMeu5HTuSs0FVIkE9ZqArD14wEFwSej9p
-	+ZLv5D5wjVRwyYLiyth2TQw5dqDYFYE=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	kernel-team@meta.com, rostedt@goodmis.org, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Peter Zijlstra <peterz@infradead.org>, bpf@vger.kernel.org
-Subject: Re: [PATCH rcu 0/11] Add light-weight readers for SRCU
-Message-ID: <f4nkwsbqvpaxxqph3iucohfqy5zwn7j7u5uwppp7rp4mnx2eqj@lqxwtgboskik>
-References: <26cddadd-a79b-47b1-923e-9684cd8a7ef4@paulmck-laptop>
- <gbar5cxixgq4jtxgtzv7xjipabhqqbwdwyrtahkkws3tregdvo@edqb7ku2uhk2>
- <0359b3a4-b6db-45d9-9957-b304b4a85865@paulmck-laptop>
+	bh=sR3YDwfr1yz5m0dk9IZrHpJQ8yeSIDRvzhDM/NkGIxY=;
+	b=RRWkizCsJYS/fZQxby2NJ35uHxjdS8+kzYR2Rtr+cQoVX884Lb+9SuUEhFJSz607Hp+o8W
+	pDHfuHViRJY2pOa15A/86ZXY9lE1FULhmNgiy8+KsjsWyjWca0ouUW86xBdgOs+m/s9r3D
+	NxsumhDnQSjgtr67fFhpkGKQS7X6I0I=
+Date: Tue, 3 Sep 2024 16:06:12 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0359b3a4-b6db-45d9-9957-b304b4a85865@paulmck-laptop>
+Subject: Re: Change default cpu version from v1 to v3 in llvm20
+To: Daniel Borkmann <daniel@iogearbox.net>,
+ Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>
+References: <ac144cc8-db10-47ea-b364-c9ebf2fe69d3@linux.dev>
+ <fc2f30b5-c51b-3e2d-4282-2b22fb998285@iogearbox.net>
+ <c39622e0-a88c-4bb5-8ae4-83e138b3e2a2@linux.dev>
+ <90a00496-bcf9-358c-3b9e-e7a861728733@iogearbox.net>
+Content-Language: en-GB
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <90a00496-bcf9-358c-3b9e-e7a861728733@iogearbox.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-On Tue, Sep 03, 2024 at 03:13:40PM GMT, Paul E. McKenney wrote:
-> On Tue, Sep 03, 2024 at 05:38:05PM -0400, Kent Overstreet wrote:
-> > On Tue, Sep 03, 2024 at 09:32:51AM GMT, Paul E. McKenney wrote:
-> > > Hello!
-> > > 
-> > > This series provides light-weight readers for SRCU.  This lightness
-> > > is selected by the caller by using the new srcu_read_lock_lite() and
-> > > srcu_read_unlock_lite() flavors instead of the usual srcu_read_lock() and
-> > > srcu_read_unlock() flavors.  Although this passes significant rcutorture
-> > > testing, this should still be considered to be experimental.
-> > 
-> > This avoids memory barriers, correct?
-> 
-> Yes, there are no smp_mb() invocations in either srcu_read_lock_lite()
-> or srcu_read_unlock_lite().  As usual, nothing comes for free, so the
-> overhead is moved to the update side, and amplified, in the guise of
-> the at least two calls to synchronize_rcu().
-> 
-> > > There are a few restrictions:  (1) If srcu_read_lock_lite() is called
-> > > on a given srcu_struct structure, then no other flavor may be used on
-> > > that srcu_struct structure, before, during, or after.  (2) The _lite()
-> > > readers may only be invoked from regions of code where RCU is watching
-> > > (as in those regions in which rcu_is_watching() returns true).  (3)
-> > > There is no auto-expediting for srcu_struct structures that have
-> > > been passed to _lite() readers.  (4) SRCU grace periods for _lite()
-> > > srcu_struct structures invoke synchronize_rcu() at least twice, thus
-> > > having longer latencies than their non-_lite() counterparts.  (5) Even
-> > > with synchronize_srcu_expedited(), the resulting SRCU grace period
-> > > will invoke synchronize_rcu() at least twice, as opposed to invoking
-> > > the IPI-happy synchronize_rcu_expedited() function.  (6)  Just as with
-> > > srcu_read_lock() and srcu_read_unlock(), the srcu_read_lock_lite() and
-> > > srcu_read_unlock_lite() functions may not (repeat, *not*) be invoked
-> > > from NMI handlers (that is what the _nmisafe() interface are for).
-> > > Although one could imagine readers that were both _lite() and _nmisafe(),
-> > > one might also imagine that the read-modify-write atomic operations that
-> > > are needed by any NMI-safe SRCU read marker would make this unhelpful
-> > > from a performance perspective.
-> > 
-> > So if I'm following, this should work fine for bcachefs, and be a nifty
-> > small perforance boost.
-> 
-> Glad you like it!
-> 
-> > Can I give you an account for my test cluster? If you'd like, we can
-> > convert bcachefs to it and point it at your branch.
-> 
-> Thank you, but I will pass on more accounts.  I have a fair amount of
-> hardware at my disposal.  ;-)
 
-Well - bcachefs might be a good torture test; if you patch bcachefs to
-use the new API point me at a branch and I'll point the CI at it
+On 9/3/24 11:35 AM, Daniel Borkmann wrote:
+> On 9/3/24 4:50 PM, Yonghong Song wrote:
+>> On 9/2/24 11:52 PM, Daniel Borkmann wrote:
+>>> On 9/3/24 6:10 AM, Yonghong Song wrote:
+>>>> Hi,
+>>>>
+>>>> Suggested by Alexei, I put a llvm20 diff to make cpu=v3 as the default
+>>>> cpu version:
+>>>>     https://github.com/llvm/llvm-project/pull/107008
+>>>>
+>>>> cpu=v3 has been introduced in llvm9 (2019 H2) and the kernel cpu=v3
+>>>> support should be available around the same time although I
+>>>> cannot remember the exact kernel version.
+>>>>
+>>>> There are two motivation to move cpu version default from v1 to v3.
+>>>>
+>>>> First, to resolve correct usage of code like
+>>>>     (void)__sync_fetch_and_add(&ptr, value);
+>>>> In cpu v1/v2, the above insn generates locked add insn, and
+>>>> for cpu >= v3, the above insn generates atomic_fetch_add insn.
+>>>> The atomic_fetch_add insn is the correct way for the eventual
+>>>> insn for arm64. Otherwise, with locked add insn in arm64,
+>>>> proper barrier will be missing and incorrect results may
+>>>> be generated.
+>>>>
+>>>> Second, cpu=v3 should have better performance than cpu=v1
+>>>> in most cases. In Meta, several years ago, we have conducted
+>>>> performance evaluation to compare v1 and v3 for major bpf
+>>>> programs running in our platform and we concluded v3 is
+>>>> better than v1 in most cases and in other rare cases v1 and v3
+>>>> have the same performance. So moving to v3 can help
+>>>> performance too.
+>>>>
+>>>> If in rare cases, e.g. really old kernels, v1/v2 is the only
+>>>> option, then users can set -mcpu=v1 explicitly.
+>>>>
+>>>> Please let us know if you still have some concerns in your
+>>>> setup w.r.t. cpu v1->v3 transition.
+>>>
+>>> Sounds good to me! Is there a place somewhere in LLVM where this
+>>> can be documented for the BPF backend (along with the various
+>>> extensions), so that developers can find sth in the official LLVM
+>>> docs if they search the web? I see that riscv and some other archs
+>>> have documentation under [0] which seems to get deployed under [1].
+>>
+>> Thanks Daniel.
+>>
+>> Trying to have llvm doc for BPF backend has been discussed
+>> before. IIRC, Fangrui Song suggested this when we tried to
+>> add BPF reloc documents in Documentation/bpf/llvm_reloc.rst.
+>> Eventually we added llvm_reloc.rst to kernel since this doc
+>> is mostly interesting for kernel/bpf folks. We should add
+>> an entry in bpf_devel_QA.rst to mention that default cpu
+>> version change from v1 to v3.
+>>
+>> Not sure whether we should have the same doc in
+>> llvm.org/docs/. Let me discuss with other folks on this.
+>
+> I was mostly thinking that not everyone might be looking into
+> kernel docs (say, eBPF for Windows folks using LLVM), and at
+> least on gcc docs/wiki you'll find information & quirks about
+> gcc-bpf backend [2].
+>
+>   [2] https://gcc.gnu.org/wiki/BPFBackEnd
+
+Thanks, Daniel. Eduard and I will look into this.
+
+Yonghong
+
+>
+>>>   [0] https://github.com/llvm/llvm-project/tree/main/llvm/docs
+>>>   [1] https://llvm.org/docs/RISCV/RISCVVectorExtension.html
+>>>
+>>> Thanks,
+>>> Daniel
+>
 
