@@ -1,150 +1,143 @@
-Return-Path: <bpf+bounces-38813-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38814-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40B5296A66C
-	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 20:26:06 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB35296A677
+	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 20:27:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 72FC01C23E1B
-	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 18:26:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CFB441C242A7
+	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 18:27:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17D99191F68;
-	Tue,  3 Sep 2024 18:25:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70B1319007E;
+	Tue,  3 Sep 2024 18:27:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RdryD0+n"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="b0lVNKg8"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B95B1917EF
-	for <bpf@vger.kernel.org>; Tue,  3 Sep 2024 18:25:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9A6418FDD7
+	for <bpf@vger.kernel.org>; Tue,  3 Sep 2024 18:27:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725387952; cv=none; b=NPv/jN2dU1XmvEy06l0w+UMSCiHFE7Jk+8u5x/t0KlwpFGujCirG5+9OWzJfgBWvVdFqWR4eiqLMCHYJbIy1vNKCzCjDlZnP+22L01SYBe7/D2kgJly2WyWKc5V6QkRhif4+9RT1h/M65C9ywmkT6n1qkq0fAHZaMs9SFgA1QTk=
+	t=1725388057; cv=none; b=q31QhG1BwgLhSeMt9H+wKQQaYMX/O5fnbO4OLzGTqNNgR/VGPkWkaXFc+eidnBtR0G6WbIefwlpfr6F+NW35PK4devCTjYk5K82rmnQBa/aDMOEfVyfHBWpLmY3mrJFB4Ps2S7acOZEGXjjq722ngg0U5voRzMk9dVubynQjMss=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725387952; c=relaxed/simple;
-	bh=hJS6EaFB6prKGPaSLYwj+YKNJglp4aYVfW5lYICPAgk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=K9TM5z+e1zbHOd41A9G2AOs7jt7EWSni6KawPjyfX6C8G9nhwyWrUuAyQ1Oxc5x8rVjREvIQtB7ZDsw3CdORiu40wcoV7dxag7hLPMXNgrF/CrTRLe7ws++2fL92YFJy02YreenzvtgY8911iTWHYDNhfMlRWQd4pYUNTrVwEzk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=RdryD0+n; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1725387948;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hJS6EaFB6prKGPaSLYwj+YKNJglp4aYVfW5lYICPAgk=;
-	b=RdryD0+n5hu8t1ig0fp6Q1xQOvoD0mOlpQyVTrvp9w5ThA5Ei4sKH1iFvEEzSXdpMP9w6z
-	PBdBfALCcf0dB7iiTFodBB42UY63ehMvYhqQYfDGWyX9VXsgaUYEFQm5VX2Oo16f6/gABr
-	oe0HVkVUobFUEgjnokWdNISizC6hBlo=
-Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-367-OZYe8k1LP0ezeXn8VZ0taw-1; Tue,
- 03 Sep 2024 14:25:41 -0400
-X-MC-Unique: OZYe8k1LP0ezeXn8VZ0taw-1
-Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 5CAB919560B4;
-	Tue,  3 Sep 2024 18:25:39 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.226.38])
-	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 801FE19560AE;
-	Tue,  3 Sep 2024 18:25:34 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Tue,  3 Sep 2024 20:25:29 +0200 (CEST)
-Date: Tue, 3 Sep 2024 20:25:23 +0200
-From: Oleg Nesterov <oleg@redhat.com>
+	s=arc-20240116; t=1725388057; c=relaxed/simple;
+	bh=NBM7PZil5KRew472tvQtI7KnH7V6tKEp8uC+RSJbVBk=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=UD1imIgYFx5XE0IVWF5lZaK7LQl37BkbaI9Le+n8BBREItUTEs9OLdPgmvk1CdG2SACxXSV+mcfBRob8myezSSzTBTVLZ8rGf6x2VqS7wteQK973XLfr6zu6/wAxGKvUK1G1wolcXWCz1ipljH3SgD07xZL8MFgi5IgPc/cBovQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=b0lVNKg8; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=FCCkLjb1cCT5/ugFgoFdVZ4I9/h2EqV/qEepMCKNtnc=; b=b0lVNKg8PCZEx188LmhzfPG0rQ
+	Rc+5ajXosZSnPIoUEflMzE9rWGA0VrtXm380ZY6w4bFCfDzRKu4unf2y80kqa7euwxxAKtttUEX1e
+	U3i+JTirjr1ND85kXp046MImkMavwmuMPO8vGhL5N+q8onVeM8JJ3GRCghAna3dHL37pUigbYhb5z
+	rPBPSfjNofigFq2/aEzedU8dWP4Mu1LuQgSauYdm0hEFXcASo0gQ49me2xi09WCjr3ol7HLg3zDGC
+	tlZVGOWZOdRNgDCLtYlebMHWp8tu0bdfvpkeGZcvpjpDxXalZyJ5L2sVYOiVeUPZfJb4OYCUyMT7o
+	Lwb6yjUA==;
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1slYFS-000HZS-2x; Tue, 03 Sep 2024 20:27:25 +0200
+Received: from [178.197.248.23] (helo=linux-2.home)
+	by sslproxy03.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1slYFR-000IvJ-09;
+	Tue, 03 Sep 2024 20:27:25 +0200
+Subject: Re: [PATCH bpf-next] bpftool: Fix handling enum64 in btf dump sorting
 To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Jiri Olsa <olsajiri@gmail.com>, Andrii Nakryiko <andrii@kernel.org>,
-	linux-trace-kernel@vger.kernel.org, peterz@infradead.org,
-	rostedt@goodmis.org, mhiramat@kernel.org, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org, paulmck@kernel.org,
-	willy@infradead.org, surenb@google.com, akpm@linux-foundation.org,
-	linux-mm@kvack.org
-Subject: Re: [PATCH v4 4/8] uprobes: travers uprobe's consumer list
- locklessly under SRCU protection
-Message-ID: <20240903182523.GH17936@redhat.com>
-References: <20240829183741.3331213-5-andrii@kernel.org>
- <ZtD_x9zxLjyhS37Z@krava>
- <CAEf4Bzb3mCWK5St51bRDnQ1b-aTj=2w6bi6MkZydW48s=R+CCA@mail.gmail.com>
- <ZtHM_C1NmDSKL0pi@krava>
- <20240830143151.GC20163@redhat.com>
- <CAEf4BzbOjB9Str9-ea6pa46sRDdHJF5mb0rj1dyJquvBT-9vnw@mail.gmail.com>
- <20240830202050.GA7440@redhat.com>
- <CAEf4BzZCrchQCOPv9ToUy8coS4q6LjoLUB_c6E6cvPPquR035Q@mail.gmail.com>
- <20240831161914.GA9683@redhat.com>
- <CAEf4BzYE7+YgM7HMb-JceoC33f=irjHkj=5x46WaXdCcgTk4xg@mail.gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, kafai@meta.com,
+ kernel-team@meta.com, Mykyta Yatsenko <yatsenko@meta.com>
+References: <20240901213040.766724-1-yatsenko@meta.com>
+ <695c2a92-a79d-5f8d-e3a9-00cd11b5f961@iogearbox.net>
+ <CAEf4BzZ-_3AyvZN_0tbqYswax4Xx3fPrv_renMuxY_QLcNhcuQ@mail.gmail.com>
+From: Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <e32f8b24-c7dd-9649-f92e-54d0b6453612@iogearbox.net>
+Date: Tue, 3 Sep 2024 20:27:24 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <CAEf4BzZ-_3AyvZN_0tbqYswax4Xx3fPrv_renMuxY_QLcNhcuQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzYE7+YgM7HMb-JceoC33f=irjHkj=5x46WaXdCcgTk4xg@mail.gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27387/Tue Sep  3 10:38:04 2024)
 
-On 09/03, Andrii Nakryiko wrote:
->
-> On Sat, Aug 31, 2024 at 9:19 AM Oleg Nesterov <oleg@redhat.com> wrote:
-> >
-> > I was thinking about another seq counter incremented in register(), so
-> > that handler_chain() can detect the race with uprobe_register() and skip
-> > unapply_uprobe() in this case. This is what Peter did in one of his series.
-> > Still changes the current behaviour, but not too much.
->
-> We could do that, but then worst case, when we do detect registration
-> race, what do we do?
+On 9/3/24 6:51 PM, Andrii Nakryiko wrote:
+> On Mon, Sep 2, 2024 at 9:22 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>>
+>> On 9/1/24 11:30 PM, "Mykyta Yatsenko mykyta.yatsenko5"@gmail.com wrote:
+>>> From: Mykyta Yatsenko <yatsenko@meta.com>
+>>>
+>>> Wrong function is used to access the first enum64 element.
+>>> Substituting btf_enum(t) with btf_enum64(t) for BTF_KIND_ENUM64.
+>>>
+>>> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+>>> ---
+>>>    tools/bpf/bpftool/btf.c | 13 ++++++++++---
+>>>    1 file changed, 10 insertions(+), 3 deletions(-)
+>>>
+>>> diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
+>>> index 6789c7a4d5ca..b0f12c511bb3 100644
+>>> --- a/tools/bpf/bpftool/btf.c
+>>> +++ b/tools/bpf/bpftool/btf.c
+>>> @@ -557,16 +557,23 @@ static const char *btf_type_sort_name(const struct btf *btf, __u32 index, bool f
+>>>        const struct btf_type *t = btf__type_by_id(btf, index);
+>>>
+>>>        switch (btf_kind(t)) {
+>>> -     case BTF_KIND_ENUM:
+>>> -     case BTF_KIND_ENUM64: {
+>>> +     case BTF_KIND_ENUM: {
+>>>                int name_off = t->name_off;
+>>>
+>>>                /* Use name of the first element for anonymous enums if allowed */
+>>> -             if (!from_ref && !t->name_off && btf_vlen(t))
+>>> +             if (!from_ref && !name_off && btf_vlen(t))
+>>>                        name_off = btf_enum(t)->name_off;
+>>>
+>>>                return btf__name_by_offset(btf, name_off);
+>>>        }
+>>
+>> Small nit, could we consolidate the logic into the below? Still somewhat nicer
+>> than duplicating all of the rest.
+>>
+>> diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
+>> index 6789c7a4d5ca..aae6f5262c6a 100644
+>> --- a/tools/bpf/bpftool/btf.c
+>> +++ b/tools/bpf/bpftool/btf.c
+>> @@ -562,8 +562,10 @@ static const char *btf_type_sort_name(const struct btf *btf, __u32 index, bool f
+>>                   int name_off = t->name_off;
+>>
+>>                   /* Use name of the first element for anonymous enums if allowed */
+>> -               if (!from_ref && !t->name_off && btf_vlen(t))
+>> -                       name_off = btf_enum(t)->name_off;
+>> +               if (!from_ref && !name_off && btf_vlen(t))
+>> +                       name_off = btf_kind(t) == BTF_KIND_ENUM64 ?
+> 
+> Just fyi for the future (I don't think we need to fix this or anything
+> like that), but using BTF_KIND_xxx constants in btf_kind(t)
+> comparisons should be rare. Libbpf provides a full set of shorter
+> btf_is_xxx(t) helpers for this. So this would be just
+> `btf_is_enum64(t)`. What you did is not wrong, it's just more
+> open-coded and verbose.
 
-Do nothing and skip unapply_uprobe().
+Noted, that would have been better agree.
 
-> But as you said, this all can/should be addressed as a follow up
-> discussion.
-
-Yes, yes,
-
-> You mentioned some clean ups you wanted to do, let's
-> discuss all that as part of that?
-
-Yes, sure.
-
-And please note that in reply to myself I also mentioned that I am stupid
-and these cleanups can't help to change/improve this behaviour ;)
-
-> > The only in-kernel user of UPROBE_HANDLER_REMOVE is perf, and it is fine.
-> >
->
-> Well, BPF program can accidentally trigger this as well, but that's a
-> bug, we should fix it ASAP in the bpf tree.
-
-not sure, but...
-
-> > And in general, this change makes the API less "flexible".
->
-> it maybe makes a weird and too-flexible case a bit more work to
-> implement. Because if consumer want to be that flexible, they can
-> still define filter that will be coordinated between filter() and
-> handler() implementation.
-
-perhaps, but lets discuss this later, on top of your series.
-
-> > But once again, I agree that it would be better to apply your series first,
-> > then add the fixes in (unlikely) case it breaks something.
->
-> Yep, agreed, thanks! Will send a new version ASAP, so we have a common
-> base to work on top of.
-
-Thanks. Hopefully Peter will queue your V5 soon.
-
-Oleg.
-
+Thanks,
+Daniel
 
