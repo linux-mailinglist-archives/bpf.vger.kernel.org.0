@@ -1,192 +1,209 @@
-Return-Path: <bpf+bounces-38848-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38849-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E804896AC4F
-	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2024 00:38:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A52E96AC50
+	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2024 00:39:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 701871F257C5
-	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 22:38:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BCCA32814DD
+	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 22:39:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35CD71D5886;
-	Tue,  3 Sep 2024 22:38:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C62B1D58A7;
+	Tue,  3 Sep 2024 22:39:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="rRbHe+4Y"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KhAAp5yj"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A038186E30
-	for <bpf@vger.kernel.org>; Tue,  3 Sep 2024 22:38:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5B82168D0;
+	Tue,  3 Sep 2024 22:39:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725403128; cv=none; b=LL7YK0CkvnnPEtF5VEDEUTpZ6PkyXaFujEMycq1/Y3MrJWUM7txTZ6ktZWJXtuOYDauz3cHk3ZPdVkP2kesXen6cCDC4d7c9ZMBRXmzARjI6U9mqFtilV5bV3e5Gb8QstzpshYtogm0MQhBLFCTZ1opVL0dzUxRFuv1Jy3MENPE=
+	t=1725403152; cv=none; b=USB+bXbFavLdxwA0oWOY1JntAMxcBoP5b+RWMIJ3nRzjLYTIXTWDSL7WtqnIE0Kf3Q+jMyMBPPcN18leDjfpeypyE2WMEaMsDv/o9Yf5CQ/iz23C31aPPkUs/hMEq97eT1ceoGznJDT/ezJfNR4DDlrRmdUZSzr3QAUVH8FLgic=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725403128; c=relaxed/simple;
-	bh=X6IUOnTnRZm1y7kr//U9s+ZyMEUUkv17EGxS2BzcMjU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=S/G63FCredBXBj4VZo3UelJ4yxHnAUJ/PfyDGJ1RF6Q5GilPTWnyShRjCuy0ehQ+VdKOk1z5PAb2zvEyqdGGR2jnG3bRqwH89iWdnkq0tH5vea5GfouxHMoSFFIUaa/FiQG22f5a7e9/PED+sKXM1UU+h2oFgb0jk+1Swhx5osU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=rRbHe+4Y; arc=none smtp.client-ip=91.218.175.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <d89a6a41-c109-4033-8eba-1e11c3c6d1f6@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1725403122;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xKLTs9vE6ldTR2fYfArYae53vbo7wVi47bV19fVWdC4=;
-	b=rRbHe+4YWenvPO9Ji3Et/gOEbhIu1+RgILnfEcT/jW+31UaomOjIGHDvKjrBVHMToecpIs
-	Z/7i5QZsiWn9m0bW6UozkkePI7OunUxdhc/wiLvaPSLf4C9jfLU/WG5dKAwdMXVEF2pEDa
-	+rtOPgCyefrP62B8Sl6zMhNe5qddnUM=
-Date: Tue, 3 Sep 2024 15:38:35 -0700
+	s=arc-20240116; t=1725403152; c=relaxed/simple;
+	bh=Lpdiqv7U5WH0lEr8Eh3/GAkbxcCXk70iOpTe0x22h38=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=G7iFDu1z5fkTItIghOWZe55/KzmjaKq/XSS+RBDTUQTIYaKMDngwJb3RZ3CPTDy+o5JLVqeJ1tEtzk5EbDDP4dML7ZUwzKVohIvw25f+2Dxw3I0g/GbCAOmPKApcE8CccNEfQ7PpSA9EP6MvhZSQzBJs75TtketrTVWI2R11Clo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KhAAp5yj; arc=none smtp.client-ip=209.85.216.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-2d86f713557so3196006a91.2;
+        Tue, 03 Sep 2024 15:39:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1725403149; x=1726007949; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=i2PtT26YRiaBYasNug4rMtQJAR6q3w0Bv3mtkz5A7vg=;
+        b=KhAAp5yjpS8GwpurkUNJFsOVpx2PJP8ZvIer7qhOyAo71o7wgXrmB1qhPCW41sKK3y
+         yRmB4seXMfkR2yML9hajm1ONoGgZN26wR049LEMALnGB/PjrJ+X9gItYb7Z8OzInAbMj
+         7a2cgfkyuDR+a3H7COCIu6Up5i5egvpM0NiUw6suVorA895aTMdJoLKQptYW3r2nAGXR
+         XluZfY1nT5JWoHkc3woWw3ypSB8N4W+fqp8jtc6g4+3nHZYdolwvN5xlX2NLA98aQxzy
+         EXxvZAGABdw9k+WJFjGusI32t7mtYQ4HBrHSuQyAZsNfRhslmvMXmGlL4KIVC5oBIWvL
+         T2YA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1725403149; x=1726007949;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=i2PtT26YRiaBYasNug4rMtQJAR6q3w0Bv3mtkz5A7vg=;
+        b=wfokXaFGVeBLb3iAg50nKaJj5ang0DUP+I0CkEVGWwYCnkBIvC8ZmurITLavGfbRDy
+         OpkUen5jP6r2/QK/HEpt2zPRK/nsVArhPIg4gh21TDddlr05AcY4mCYQb2C09PQOmTS+
+         7K4+rtXQvNF8cXh+YyDKqhN9mW/ft6auIkMPg4qXK3pUBG8SPeHfq+iSLuGeS9Ppr8Qh
+         4Nho1D+T9YJZ4BtsghZRVHqzmUBlh3+uhVBMljj4spxS1uD5jvswmqGCw1oQv4D5PwZx
+         zPHxMlr4sfP9tu+WLPUtC1yPbuX2L1c21SHCExUWOR5zD6Caj4PPfFPxRytkqFzf+pAA
+         4/OA==
+X-Forwarded-Encrypted: i=1; AJvYcCUo1IIACMyWbjyHl2AY+/9kpCMvHEXD0HVGtnnVX1AmDBP22hlRrLyxtA6Di819bi7jSVXqfthcZ9p7yST8@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyx3m+Ju1Ll/HHXUwc6Jol6q4onqaHp9IXdhsrFBTllZP+vOtMs
+	wwtvqlwbRZJfibaRqY82DyLp3m/3CpiWxEJBIFS068xVT5ispzTOicHzrJ3Tj0XPjGAoFi+XZPH
+	JfYN8W5C+XDyIJH2MifkgkYtGw6U=
+X-Google-Smtp-Source: AGHT+IHqfBfyIi1sY/xSA1xbdpPbbWvmy5eqvGxffWVsRA5cwcYDa75eASwd10hegsqh0goLCXgFxIVazxTlOxZ30R8=
+X-Received: by 2002:a17:90a:bd91:b0:2cc:ef14:89e3 with SMTP id
+ 98e67ed59e1d1-2d8904ee82emr11225806a91.15.1725403149223; Tue, 03 Sep 2024
+ 15:39:09 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v2 1/2] bpf: tcp: prevent bpf_reserve_hdr_opt()
- from growing skb larger than MTU
-To: Zijian Zhang <zijianzhang@bytedance.com>,
- Amery Hung <amery.hung@bytedance.com>
-Cc: bpf@vger.kernel.org, edumazet@google.com, davem@davemloft.net,
- kuba@kernel.org, pabeni@redhat.com, dsahern@kernel.org, ast@kernel.org,
- daniel@iogearbox.net, andrii@kernel.org, eddyz87@gmail.com,
- yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
- shuah@kernel.org, xiyou.wangcong@gmail.com, wangdongdong.6@bytedance.com,
- zhoufeng.zf@bytedance.com
-References: <20240827013736.2845596-1-zijianzhang@bytedance.com>
- <20240827013736.2845596-2-zijianzhang@bytedance.com>
- <5186a69b-c53d-4afa-b3be-e6bd272d264f@linux.dev>
- <955cb3be-1dc4-4ebf-b0de-75c25f393c1e@bytedance.com>
- <c9cf1c15-5038-4c85-be80-5fff34a2df44@linux.dev>
- <3e387788-1f5a-4159-9ff5-e53e897ae41c@bytedance.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <3e387788-1f5a-4159-9ff5-e53e897ae41c@bytedance.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <20240829174232.3133883-1-andrii@kernel.org>
+In-Reply-To: <20240829174232.3133883-1-andrii@kernel.org>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 3 Sep 2024 15:38:57 -0700
+Message-ID: <CAEf4BzYdP_6L1bT5bEwp5GAwM-rKOA36C-Cwv4i8h-3pKp-nkQ@mail.gmail.com>
+Subject: Re: [PATCH v7 bpf-next 00/10] Harden and extend ELF build ID parsing logic
+To: willy@infradead.org, linux-mm@kvack.org, akpm@linux-foundation.org
+Cc: bpf@vger.kernel.org, adobriyan@gmail.com, shakeel.butt@linux.dev, 
+	hannes@cmpxchg.org, ak@linux.intel.com, osandov@osandov.com, song@kernel.org, 
+	jannh@google.com, linux-fsdevel@vger.kernel.org, 
+	Andrii Nakryiko <andrii@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 8/30/24 2:02 PM, Zijian Zhang wrote:
-> On 8/28/24 6:00 PM, Martin KaFai Lau wrote:
->> On 8/28/24 4:01 PM, Zijian Zhang wrote:
->>> On 8/28/24 2:29 PM, Martin KaFai Lau wrote:
->>>> On 8/26/24 6:37 PM, zijianzhang@bytedance.com wrote:
->>>>> From: Amery Hung <amery.hung@bytedance.com>
->>>>>
->>>>> This series prevents sockops users from accidentally causing packet
->>>>> drops. This can happen when a BPF_SOCK_OPS_HDR_OPT_LEN_CB program
->>>>> reserves different option lengths in tcp_sendmsg().
->>>>>
->>>>> Initially, sockops BPF_SOCK_OPS_HDR_OPT_LEN_CB program will be called to
->>>>> reserve a space in tcp_send_mss(), which will return the MSS for TSO.
->>>>> Then, BPF_SOCK_OPS_HDR_OPT_LEN_CB will be called in __tcp_transmit_skb()
->>>>> again to calculate the actual tcp_option_size and skb_push() the total
->>>>> header size.
->>>>>
->>>>> skb->gso_size is restored from TCP_SKB_CB(skb)->tcp_gso_size, which is
->>>>> derived from tcp_send_mss() where we first call HDR_OPT_LEN. If the
->>>>> reserved opt size is smaller than the actual header size, the len of the
->>>>> skb can exceed the MTU. As a result, ip(6)_fragment will drop the
->>>>> packet if skb->ignore_df is not set.
->>>>>
->>>>> To prevent this accidental packet drop, we need to make sure the
->>>>> second call to the BPF_SOCK_OPS_HDR_OPT_LEN_CB program reserves space
->>>>> not more than the first time. 
->>>>
->>>> iiuc, it is a bug in the bpf prog itself that did not reserve the same 
->>>> header length and caused a drop. It is not the only drop case though for an 
->>>> incorrect bpf prog. There are other cases where a bpf prog can accidentally 
->>>> drop a packet.
->>>>
->>>> Do you have an actual use case that the bpf prog cannot reserve the correct 
->>>> header length for the same sk ?
->>>
->>> That's right, it's the bug of the bpf prog itself. We are trying to have
->>> the error reported earlier in eBPF program, instead of successfully
->>> returning from bpf_sock_ops_reserve_hdr_opt but leading to packet drop
->>> at the end because of it.
->>>
->>> By adding this patch, the `remaining` variable passed to the
->>> bpf_skops_hdr_opt_len will be more precise, it takes the previously
->>> reserved size into account. As a result, if users accidentally set an
->>> option size larger than the reserved size, bpf_sock_ops_reserve_hdr_opt
->>> will return -ENOSPC instead of 0.
->>
->> Putting aside it adds more checks, this adds something pretty unique to the 
->> bpf header option comparing with other dynamic options like sack. e.g. For tp- 
->> >mss_cache, I assume it won't change since the earlier tcp_current_mss() was 
->> called?
->>
-> 
-> Agreed, this check is very unique comparing with other dynamic options.
-> How about moving the check into function bpf_skops_hdr_opt_len? It
-> already has some logic to check if the context is in tcp_current_mss.
-> Does it look more reasonable?
+On Thu, Aug 29, 2024 at 10:42=E2=80=AFAM Andrii Nakryiko <andrii@kernel.org=
+> wrote:
+>
+> The goal of this patch set is to extend existing ELF build ID parsing log=
+ic,
+> currently mostly used by BPF subsystem, with support for working in sleep=
+able
+> mode in which memory faults are allowed and can be relied upon to fetch
+> relevant parts of ELF file to find and fetch .note.gnu.build-id informati=
+on.
+>
+> This is useful and important for BPF subsystem itself, but also for
+> PROCMAP_QUERY ioctl(), built atop of /proc/<pid>/maps functionality (see =
+[0]),
+> which makes use of the same build_id_parse() functionality. PROCMAP_QUERY=
+ is
+> always called from sleepable user process context, so it doesn't have to
+> suffer from current restrictions of build_id_parse() which are due to the=
+ NMI
+> context assumption.
+>
+> Along the way, we harden the logic to avoid TOCTOU, overflow, out-of-boun=
+ds
+> access problems.  This is the very first patch, which can be backported t=
+o
+> older releases, if necessary.
+>
+> We also lift existing limitations of only working as long as ELF program
+> headers and build ID note section is contained strictly within the very f=
+irst
+> page of ELF file.
+>
+> We achieve all of the above without duplication of logic between sleepabl=
+e and
+> non-sleepable modes through freader abstraction that manages underlying f=
+olio
+> from page cache (on demand) and gives a simple to use direct memory acces=
+s
+> interface. With that, single page restrictions and adding sleepable mode
+> support is rather straightforward.
+>
+> We also extend existing set of BPF selftests with a few tests targeting b=
+uild
+> ID logic across sleepable and non-sleepabe contexts (we utilize sleepable=
+ and
+> non-sleepable uprobes for that).
+>
+>    [0] https://lore.kernel.org/linux-mm/20240627170900.1672542-4-andrii@k=
+ernel.org/
+>
+> v6->v7:
+>   - added filemap_invalidate_{lock,unlock}_shared() around read_cache_fol=
+io
+>     and kept Eduard's Reviewed-by (Eduard);
+> v5->v6:
+>   - use local phnum variable in get_build_id_32() (Jann);
+>   - switch memcmp() instead of strcmp() in parse_build_id() (Jann);
+> v4->v5:
+>   - pass proper file reference to read_cache_folio() (Shakeel);
+>   - fix another potential overflow due to two u32 additions (Andi);
+>   - add PageUptodate() check to patch #1 (Jann);
+> v3->v4:
+>   - fix few more potential overflow and out-of-bounds access issues (Andi=
+);
+>   - use purely folio-based implementation for freader (Matthew);
 
-Yes, it probably may be better to put that into the bpf_skops_hdr_opt_len(). 
-This is implementation details which is something for later after figuring out 
-if the reserved_opt_spc change is correct and needed.
+Ok, so I'm not sure what one needs to do to get Matthew's attention
+nowadays, but hopefully yet another ping might do the trick.
 
-> 
-> `reserved_opt_spc = tp->mss_cache - tcp_skb_seglen(skb)`
-> For tp->mss_cache here, yes, I also think it won't change,
+Matthew,
 
-This needs more details and clear explanation on why it is the case and why the 
-existing regular bpf prog will continue to work.
+Can you please take another look and provide your ack or nack? I did
+the conversion to folio as you requested. It would be nice if you can
+give me a courtesy of acking my patch set, if there is nothing wrong
+with it, so it can finally go in.
 
-afaik, mss_cache and tcp_skb_seglen() must be in-sync and the same between calls 
-for this to work . From thinking about it, it should be but I haven't looked at 
-all cases. Missing "- size" does not help the confidence here also.
+Thank you.
 
-Also, when "skb != NULL", I don't understand why the "MAX_TCP_OPTION_SPACE - 
-size" is still being considered. I am likely missing something here. If the 
-above formula is correct, why reserved_opt_spc is not always used for the "skb 
-!= NULL" case and still need to be compared with the "MAX_TCP_OPTION_SPACE - size"?
-
-> 
-> I am trying to get the reserved bpf hdr size. Considering other dynamic
-> options, this equation is not precise, and may change it to
-> `reserved_opt_spc = tp->mss_cache - tcp_skb_seglen(skb) - size`?
-
-"- size" is needed. The test did not catch it?
-
-> 
-> Or, not sure if adding a field in tcp_sock to precisely cache the
-> reserved bpf hdr size is a good idea?
-
-imo, adding one field in tcp_sock for this is overkill.
-
-It seems your bpf prog is randomly reserving space. If this is the case, giving 
-a fail signal in bpf_reserve_hdr_opt() does not improve the success rate for 
-your random bpf prog to reserve header. I don't think adding a field or the 
-change in this patch really solves anything in your randomly reserving space use 
-case ?
-
-> 
->>>
->>> We have a use case where we add options to some packets kind of randomly
->>> for the purpose of sampling, and accidentally set a larger option size
->>> than the reserved size. It is the problem of ourselves and takes us
->>> some effort to troubleshoot the root cause.
->>>
->>> If bpf_sock_ops_reserve_hdr_opt can return an error in this case, it
->>> could be helpful for users to avoid this mistake.
->>
->> The bpf_sk_storage can be used to decide if a sk has been sampled.
->>
->> Also, with bpf_cast_to_kern_ctx and bpf_rdonly_cast, all the checks in this 
->> patch can be done in the bpf prog itself.
->>
-> 
-> Thanks for pointing this out! Agreed, the check can be implemented in
-> eBPF progs.
-
+> v2->v3:
+>   - remove unneeded READ_ONCE()s and force phoff to u64 for 32-bit mode (=
+Andi);
+>   - moved hardening fixes to the front for easier backporting (Jann);
+>   - call freader_cleanup() from build_id_parse_buf() for consistency (Jir=
+i);
+> v1->v2:
+>   - ensure MADV_PAGEOUT works reliably by paging data in first (Shakeel);
+>   - to fix BPF CI build optionally define MADV_POPULATE_READ in selftest.
+>
+> Andrii Nakryiko (10):
+>   lib/buildid: harden build ID parsing logic
+>   lib/buildid: add single folio-based file reader abstraction
+>   lib/buildid: take into account e_phoff when fetching program headers
+>   lib/buildid: remove single-page limit for PHDR search
+>   lib/buildid: rename build_id_parse() into build_id_parse_nofault()
+>   lib/buildid: implement sleepable build_id_parse() API
+>   lib/buildid: don't limit .note.gnu.build-id to the first page in ELF
+>   bpf: decouple stack_map_get_build_id_offset() from
+>     perf_callchain_entry
+>   bpf: wire up sleepable bpf_get_stack() and bpf_get_task_stack()
+>     helpers
+>   selftests/bpf: add build ID tests
+>
+>  include/linux/bpf.h                           |   2 +
+>  include/linux/buildid.h                       |   4 +-
+>  kernel/bpf/stackmap.c                         | 131 ++++--
+>  kernel/events/core.c                          |   2 +-
+>  kernel/trace/bpf_trace.c                      |   5 +-
+>  lib/buildid.c                                 | 397 +++++++++++++-----
+>  tools/testing/selftests/bpf/Makefile          |   5 +-
+>  .../selftests/bpf/prog_tests/build_id.c       | 118 ++++++
+>  .../selftests/bpf/progs/test_build_id.c       |  31 ++
+>  tools/testing/selftests/bpf/uprobe_multi.c    |  41 ++
+>  tools/testing/selftests/bpf/uprobe_multi.ld   |  11 +
+>  11 files changed, 605 insertions(+), 142 deletions(-)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/build_id.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_build_id.c
+>  create mode 100644 tools/testing/selftests/bpf/uprobe_multi.ld
+>
+> --
+> 2.43.5
+>
 
