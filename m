@@ -1,322 +1,254 @@
-Return-Path: <bpf+bounces-38771-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38772-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1CBE969E70
-	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 14:54:44 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 282DC969EB2
+	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 15:08:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 929392858B1
-	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 12:54:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A8B251F21D77
+	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 13:08:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D85D1A7264;
-	Tue,  3 Sep 2024 12:54:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8E691CA692;
+	Tue,  3 Sep 2024 13:08:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bpGGBz98"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PRU2AiZQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A769F1CA6B6;
-	Tue,  3 Sep 2024 12:54:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.18
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725368066; cv=fail; b=F9jXxQv9481hBpLwxEngiLrUC61cHhJLLtcw0PmIgFiF0VhnvIvYJ0FpXhoImzbMrvUuP8ohbnjDQIy7lD75VjLQpmff6Aq0jG32/QB5oNtCKFhlkcj/K0dSwLkuF4Je2ieueaCPbewNDUxRCfPsA7ICll4HoR5HAvjpVT5IGEw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725368066; c=relaxed/simple;
-	bh=2SaJ/AJaxcC2YmzBYUp5QE2Q1r6mg6sFM961YwLlw0I=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=pLwmxacXsUNkZrbUeEGTmsl6aEElt9wJJYnnRwjaVYQafkL5P2Hdp27ZguAZz1Ko0CYuX32RFr9aCjDwvYi5cj4m+FRnMlTNxsqZvogttG/gUovk+untDogG2niayXvdQ8y3vMmxCC8KiydOcMWBvI3EwrEUMB5/z5oI7e+741w=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bpGGBz98; arc=fail smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1725368065; x=1756904065;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=2SaJ/AJaxcC2YmzBYUp5QE2Q1r6mg6sFM961YwLlw0I=;
-  b=bpGGBz98yPUAhROrOVdcT3J8R/aPnoSrZXvaAhYAO9W/70syX5P5JL4P
-   k7FnFHSnfyCGvI7cXHKg3TCNLVW3mGPDJjwj7A7U/Z9+Ez6MedxxQ52vQ
-   6Xcob3CeQyJiR8MW9TNy4Y6TivTO9lRjHkG6AF/8W/fNMlMd/pU3E5Tos
-   XOMUojMzYkfuvNOghNoiEog3699OjUdg8Nr8LarsiZEQdfXiwjKIMOBc8
-   9HABkbBfsrrctZf/lKLr2uk7QAOZw+QFKieYA7gY+69XDR35m1ZtKVSkj
-   dVi3w+1staiv0GIaRJopjrRNMBGpkDx8k54tUGaGY+hD/oCOuT9ABgUlQ
-   A==;
-X-CSE-ConnectionGUID: hIiDnag6RDWBPnH+/Odvaw==
-X-CSE-MsgGUID: fv79hM1jQ7Sy2iHDb/hb9Q==
-X-IronPort-AV: E=McAfee;i="6700,10204,11183"; a="24103275"
-X-IronPort-AV: E=Sophos;i="6.10,198,1719903600"; 
-   d="scan'208";a="24103275"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2024 05:54:24 -0700
-X-CSE-ConnectionGUID: gbB1itXxSHC1fPRLj0M3PA==
-X-CSE-MsgGUID: CeCrPrhATh2hcfXzYJ4B/w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.10,198,1719903600"; 
-   d="scan'208";a="95624445"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by orviesa002.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 03 Sep 2024 05:54:24 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39; Tue, 3 Sep 2024 05:54:23 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39; Tue, 3 Sep 2024 05:54:22 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39 via Frontend Transport; Tue, 3 Sep 2024 05:54:22 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.173)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.39; Tue, 3 Sep 2024 05:54:22 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=ECOstqhKG+TyVJ63VbGVeKGdqQoMmyF14nU7tZz1hyEYdEq0wZNwm5q6gHKN9Z+vP7X5hqraKDn7XrbyoTmLshpT2n1X/uTmuTj8awWZMZQru7ioFs3wOPn3x2gsOQHsmri/VWUcASLVmXwoLlkp2vBrECYHMQfd6u5Xgi7RGQ/OvkWyCChU/VRZE2S7qQRkg0QCVaRTDhb3JOllPmCqonhWAlv8hDYRgyHwoFZdgT2yqOsEsGOhIfgDJo5ZpyXpCX/Tu+2BboumVPP5mp6kO/4LbwZFgMOgHEcQN9b86Wfg8OLV67pRMcM+yKiYNuZnlW2K1z+MWyevjO4+HHXU1Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=tpuVpiwC94a+qwEZdoD/EN0lt6Uky7Yi0rIAzg74xr0=;
- b=pINcAx43kGXEYepW0cz5qnuwGV1CNQXnWJgw5tSRzbqW1v8/rH2Kv4CKLQgIvCuiZJCpcNzhvdo8OqE2IKFVEnm/g9CeKQ4e87WoioxCdY+/QrdmyDDDOB1OlR+SBeCmfsUmuj/jkovqIc6Ka63mV9PNH+IMTaWSx9PFszXNjBhB1ZuKCk4MXI9ZvO3rt54nMl0TZ812l3AemyeuZpKu/iGpXag/nCegfpAsGPXFg0jdFRU1t1f8TClNBaCgj0I4toRRvdXeGWo5OVQRzerUwFsgsCVj7X9eTZwelHiNwcg4M6rWNpzYgXf3SK4zPx4i7MxikNIFMygfOP665myvfw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from PH0PR11MB5144.namprd11.prod.outlook.com (2603:10b6:510:3e::20)
- by MW6PR11MB8365.namprd11.prod.outlook.com (2603:10b6:303:240::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7918.27; Tue, 3 Sep
- 2024 12:54:17 +0000
-Received: from PH0PR11MB5144.namprd11.prod.outlook.com
- ([fe80::5889:7208:6024:bbcf]) by PH0PR11MB5144.namprd11.prod.outlook.com
- ([fe80::5889:7208:6024:bbcf%6]) with mapi id 15.20.7918.024; Tue, 3 Sep 2024
- 12:54:17 +0000
-From: "Kuruvinakunnel, George" <george.kuruvinakunnel@intel.com>
-To: "Zaremba, Larysa" <larysa.zaremba@intel.com>,
-	"intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
-	"Nguyen, Anthony L" <anthony.l.nguyen@intel.com>
-CC: "Drewek, Wojciech" <wojciech.drewek@intel.com>, "Fijalkowski, Maciej"
-	<maciej.fijalkowski@intel.com>, Jesper Dangaard Brouer <hawk@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>, "Zaremba, Larysa"
-	<larysa.zaremba@intel.com>, "netdev@vger.kernel.org"
-	<netdev@vger.kernel.org>, "anirudh.venkataramanan@intel.com"
-	<anirudh.venkataramanan@intel.com>, John Fastabend
-	<john.fastabend@gmail.com>, Alexei Starovoitov <ast@kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Kitszel,
- Przemyslaw" <przemyslaw.kitszel@intel.com>, Eric Dumazet
-	<edumazet@google.com>, "Kubiak, Michal" <michal.kubiak@intel.com>,
-	"Samudrala, Sridhar" <sridhar.samudrala@intel.com>, "Nambiar, Amritha"
-	<amritha.nambiar@intel.com>, "Keller, Jacob E" <jacob.e.keller@intel.com>,
-	Jakub Kicinski <kuba@kernel.org>, "bpf@vger.kernel.org"
-	<bpf@vger.kernel.org>, Paolo Abeni <pabeni@redhat.com>, "David S. Miller"
-	<davem@davemloft.net>, "Karlsson, Magnus" <magnus.karlsson@intel.com>
-Subject: RE: [Intel-wired-lan] [PATCH iwl-net v4 1/6] ice: move
- netif_queue_set_napi to rtnl-protected sections
-Thread-Topic: [Intel-wired-lan] [PATCH iwl-net v4 1/6] ice: move
- netif_queue_set_napi to rtnl-protected sections
-Thread-Index: AQHa9URlOeBPOdVx1kqCSTvzc2yA0bJGFFjQ
-Date: Tue, 3 Sep 2024 12:54:16 +0000
-Message-ID: <PH0PR11MB5144737FA8516847E8356261E2932@PH0PR11MB5144.namprd11.prod.outlook.com>
-References: <20240823095933.17922-1-larysa.zaremba@intel.com>
- <20240823095933.17922-2-larysa.zaremba@intel.com>
-In-Reply-To: <20240823095933.17922-2-larysa.zaremba@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH0PR11MB5144:EE_|MW6PR11MB8365:EE_
-x-ms-office365-filtering-correlation-id: 00513af0-2d25-4d15-1594-08dccc17851e
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;ARA:13230040|376014|7416014|366016|1800799024|38070700018;
-x-microsoft-antispam-message-info: =?us-ascii?Q?CO26TVoVNht7kweFEXsu3GZbBIxf0ONkTOi83QRAGiYmCgYf0B89awhv1k0e?=
- =?us-ascii?Q?jTvk8CIz2nc+ezv+zlxKVOBh7+O0mj4cevpoATcN4unPDs+ovydOTN/ORfqF?=
- =?us-ascii?Q?MTFlA6HSehXJe9G3+IUEr6aQATUXIz5cYvRUwC1C4/YdoKXU6PecmsGhGyJ8?=
- =?us-ascii?Q?3yGgN3TqTX4sXLlFUFdm4aBp2Mf8IpMqQeJX8Tw/CLrvwztyjpMzfJ7aWEES?=
- =?us-ascii?Q?rzo3/bIHmxIIUIbNmb0Cy6Nl9J6XO2bHpPFDPcIUpFaN3UElUyVjvckhyNA4?=
- =?us-ascii?Q?Us+dm7uPTqCto/rD4079EPCvAysH/LFf5wsFBLN63ytEelml7fZMC1g/JVOU?=
- =?us-ascii?Q?suX4GdFvLfWhlN3Rxubhg78cM63mQ1h1qilqgxKMkOL22Bat2epANvs5V4zA?=
- =?us-ascii?Q?GnbXzLc+0HSOGra4H6UpXCRgAbseQdejbWUVm1hXVg7zxv33ZzA6S6cXcqpi?=
- =?us-ascii?Q?QXSA6y8VyhK/xvcvsqqWbBZavBlp3Jw/TdpUQhZtUCmX5bIHNggbYw1P7I3o?=
- =?us-ascii?Q?SM8dxn8wkpAIfcNSvF8grNgmawfVUMERkZtWV3Qdo59m/p3jM+1RO//YovuT?=
- =?us-ascii?Q?FFRkGwH2w9T2XZ1+LEzjxUlBWzyWIDGEcWQSFCXhqmcYQZgkzJVgKiYmBPZ7?=
- =?us-ascii?Q?YCTitr7r2f3apgvv4l4qjJWTi/1cuLOycUIM6dsgadFIGdLB9YYHTgW0JHiK?=
- =?us-ascii?Q?4bJ7peE4MgubpNQkLcY9VTNhUT4yISTbTTZ6B+4TTdP1AAeTlefNt7+zqixy?=
- =?us-ascii?Q?mi8EYu0Bd5nqmJ0pdF7kQVMXZGsaS7wVPtBrDMASSVeQOnHi1CjSJ2GQ9Pfd?=
- =?us-ascii?Q?z+naZS8HKPIAn1dMOdfHWU+BOQZZl3Gz/27VnUhiZn1Bzh0P9QwOxdBmnqWa?=
- =?us-ascii?Q?wfiCslev/Kmmd3eR3aJjCI8+gopV/4jiJPNyFkwf+/A67bAivcZnmEmFHcyx?=
- =?us-ascii?Q?2KFNR/q7Dpmh0i4oqdLiOa3NDyV8tZmPsrI8IRfG3hsVYOxvDbCtlzIhxZbJ?=
- =?us-ascii?Q?zO1j82KXe/DATr/ncJyrzWZRczUAnM4branc2kNvsLvbcdQt/ZWszCXkdyLt?=
- =?us-ascii?Q?5L5MAiGKvVFFDmY68Ghcre+lYHOnPpU3j20eurtLH6zZ5sb5KLNprOKtbCY+?=
- =?us-ascii?Q?3z1j+wgBfGyhrh9rOBkhwNoEGDELz0m8fwZCJ2cjEvEacWKuT+nagXW3+1GH?=
- =?us-ascii?Q?hKpBMWY6jcGuqk4H6mcaqYGe+yohlVwML0etDS8UmGpnnkWQSLTQ3EAoTISB?=
- =?us-ascii?Q?/TMecifydKULqRhPB+yearARiW/xRGMDRmOd7cq12KcDC6HRw6lrLPRg9HUm?=
- =?us-ascii?Q?pYBemN/3QM7nOIGhz1iqydKfVd8BZWYzbQJyZ6M3I31/VRrv65/26gX9dv8x?=
- =?us-ascii?Q?LlWKpsGOD26QV/n1monuN1nEJhLQjlaPZaJkEJm1Of31EXk+9g=3D=3D?=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5144.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(366016)(1800799024)(38070700018);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?njVvxqGGLBXoGJOC9bWkTBaGcvKy7s3z29wJFqwOqdJtSYYj3dszd4NJO+aA?=
- =?us-ascii?Q?3Pvq6/eSCi+790keHNCNEXydQMvONPpZ7KBj0gSgqGVh4mnzR8Z/IpwepUGk?=
- =?us-ascii?Q?Mq/etIdIQJJaPBkTUsuMinFLtfkpMdEawPRowQQUA/Vl+bTF/lkMDMdu85g8?=
- =?us-ascii?Q?L5tM7oSa+7oypbSVslEx1UhqC6w4tX3U2iwvfihJ9AHVUe3SUYyuHoHqYkuF?=
- =?us-ascii?Q?hxoyFrQcTPw6GBbcAoa4vRo+DfMQp3qbCCmJlE8gXRGafuvGneK3ZtIOifBh?=
- =?us-ascii?Q?r/cJz6KdXCCzDQ9ejLx+FjCac5bSyxb5N7hJWb+Zp5bPPnEgXn4yY4U6wld9?=
- =?us-ascii?Q?6RAqi+tI2Dpe51pwge101sZbv025sPtt02wYcbCsYiVoSe8lwXWlPyrnnyGv?=
- =?us-ascii?Q?dmDCFuDFpBCCr09N9U9m2rFyfqegNWKoAWsPVcAj+gOVLI63vDFzRPCpY0aa?=
- =?us-ascii?Q?Z0QPhZ/jN4/9GRL5Sgk6E+GFDJ2mdn5Bct6s/NqqUMc0ptR2ZP0CUR6QwOmq?=
- =?us-ascii?Q?85DcDBrP/zGLUm/0anm+oFsqn3/acOtS/49fnId9U2rQjsmhyNpbsWsSfRsm?=
- =?us-ascii?Q?VH+BilxUuL57owIyq4kQmCf6JzAoHLlzGv1V2eU1X+m0NxAL1Pd2C2hp7+RL?=
- =?us-ascii?Q?8sxuYw+HLgxp+5HQ7JqWp01Q2kdr6CSS5PV/Z/KcBJ9G/DWQEWeN3fezshXs?=
- =?us-ascii?Q?goQjoqQ0xiHxWBs2bFx+eypw4hpKtSqHBviVLd+8WyE5gO8CjQB7BJgZ0r0T?=
- =?us-ascii?Q?aNZ3Lt25e2gdC2FvGqnSL0RLkhR9rBXAOvLg8JyU6uguuheVw59ejPpGaFl8?=
- =?us-ascii?Q?Pxyg4EAztsLHYbN6H81pXefKgLp/RuhWexgPpArxPhrBRi0Sa4iWOVDJMYFv?=
- =?us-ascii?Q?sGmqnI3R3ZqSVVZs3YA6uCDTvASBKDehjMtNmqC/2kaJdtzUH2iFTsH8MTB6?=
- =?us-ascii?Q?eo2q7ikPJ8+ugj5Rd6V65hTAr73SXnBjLpUEPLdSox6neTKjILA+LDKxNt2P?=
- =?us-ascii?Q?39KACL/dKcGpXXzrU9YPCZ/nYt/BdxRUD3btC8PKzW0ymV10n0iIWO/hzdp8?=
- =?us-ascii?Q?9QakxK5cZtUS/hKtr5dCTryQq9qG/enZBVs8LUYFjj6wxbJY8AQoEMI6HQUd?=
- =?us-ascii?Q?hAqOi/wKR7Inf4vKOWToadc4NkPH+Dm4vpgwxalMU+MGnWZV5d+XTxC77aST?=
- =?us-ascii?Q?0M+TgEUmtLpX5q0eJb8MMnD45VDTCopmiQid4NLt2l9O6MTD9vMBqiWjjMh9?=
- =?us-ascii?Q?ywpSViT3TbEPHZiLHwO7JDO9cwVSrTClUo9jBtJs6UuJBpY3YIeYAMAqX8Ek?=
- =?us-ascii?Q?ta+X6oSz+C+WZPc4/pbw9Sym33ZUEvVshKRpYyqi0t73TUwTq0wDdxcnSQtq?=
- =?us-ascii?Q?bZcXkCgwP+Ef8bhu6wip6Cets612c2ACmWtMPuOUlJMd42weIioZi8QmCgqU?=
- =?us-ascii?Q?LTM+NfrAd39VYpLDNmLkKzWnGsjzdGhheLLPawXquaGkmHh7oYsl/aNfTZXm?=
- =?us-ascii?Q?IKQCNJGBUmyhon4KPWFqM7nsJ3l7TDESQxZBLvJYbCurdnE4aVrV7VH9bJe8?=
- =?us-ascii?Q?IwCHDXZ0eDvcWNPQNcEa4jKNiucUd53DbmDstpisqYm8o/EQRiVlz0WNcbvF?=
- =?us-ascii?Q?sQ=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8E8D1CA6BE
+	for <bpf@vger.kernel.org>; Tue,  3 Sep 2024 13:08:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1725368914; cv=none; b=V/5s+GT3GGU+5V2a/CTRKeJO2Ck6MEL8GJbzPHvAgld/OL4QIeGCslbAc7C82cqbiICyF0npzOpXLutYfug4HLByn5/NFbFbKmWFia2yNLOua//dkkeeTFuyzJGCnfo7ky3+dd3KtXj9XxBn7EXUBPKKZJLLUvYYmG1oJs/eRjw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1725368914; c=relaxed/simple;
+	bh=iW2LUj1+L7l/4+2Xx0qZCDZpaw5qQb9IbSBZAt6oZ1I=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=oJua1QVDQclt5d27UNsJ1Qp8mQ3g3SrRCCfiOB+45su0UoD6LuFbVOmUjMn7uQpOl3W/K/D9sTyMbEnZty8qjNxnxnBpl4JeCvWgF9vnDhNHSbkyxKb9Ee/gy9egiFFPpxHj+DIfw51MvvzFL9kqNq3+pK3qkN1mPYqU8jR4+sA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=PRU2AiZQ; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1725368911;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=lQ/LW7QLxkTvTCkZmtBerhspj1T046EuiZTpMj6cyOs=;
+	b=PRU2AiZQTsEwvmYNrp754Rxzv+2XVOkof645x0EOLvKMWHNsH0kegj4v1Wdd2dXn1dgHOv
+	DVFvHgOBd9J2M0RU/m52Om9dfjk/mQk2uZ+3WbTBiv9qNKvP9oz6GoZHDuKxU1p5WqXpLU
+	277II7UL6pen3YlbehOT21tDfS2QtnI=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-97-FGcmAST5NX2UmRa2nJ50Kw-1; Tue, 03 Sep 2024 09:08:30 -0400
+X-MC-Unique: FGcmAST5NX2UmRa2nJ50Kw-1
+Received: by mail-ed1-f71.google.com with SMTP id 4fb4d7f45d1cf-5c23fffa44eso2609113a12.1
+        for <bpf@vger.kernel.org>; Tue, 03 Sep 2024 06:08:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1725368908; x=1725973708;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=lQ/LW7QLxkTvTCkZmtBerhspj1T046EuiZTpMj6cyOs=;
+        b=VhYaLoqyC4fIdWPtm5wsBQ28eNIfxmPJCO19kbrmRJMUqDaHg8XeVa0F/t0w8lVVxJ
+         IZADUFMtmUTW4qnK1xIQJ1Zhwi3QyvIfprmr/4amGPkYAE2JCnPUbeagORMRucKCSE1x
+         0rlH01i09+sw6v2NkaRW6PA9H1m0D2W1x2Wm+86w2NC8ZTcOrxUBkqX1Yj2d6PE57Vop
+         zqly2llqFHPF09KvSzIpxyuL74rqw0c7Y+R66tiRHwfbccX7WHVQSCab7oRzo3jOtDbc
+         aW1e3patEK0kgULfS6sXozP68oNx9+QhkCcz+CcSZiE/w0U50OhuneOc/Exj7dd5KjhJ
+         ANuQ==
+X-Gm-Message-State: AOJu0YwQ86DZd5m+J1WAuDuX5K68YzkXI2K1jRmMihKru5pbPWUVtPOC
+	mg+0ABKBgeIFV88f/N5xuuAMe+A0ZT7jAM9pWNz6uLPdSwGSWkjG9WnApBbMdrgzbYv7cf6pNTM
+	sl5/957sfm/i8/Kpn3Dt2aYSQCAIiQEXQfA/GxqtKvy7xkYtHj7yh1W+dGms=
+X-Received: by 2002:a05:6402:2317:b0:5c2:439e:d6cb with SMTP id 4fb4d7f45d1cf-5c2439ed784mr5694361a12.12.1725368908293;
+        Tue, 03 Sep 2024 06:08:28 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEgd3Bk2Hh3QcgP0Uq9UP3O7Bv5qOKwbKVGzq9XVwiOJEDtiU+B/weSGlghY8Y7rAVETKTqdQ==
+X-Received: by 2002:a05:6402:2317:b0:5c2:439e:d6cb with SMTP id 4fb4d7f45d1cf-5c2439ed784mr5694316a12.12.1725368907131;
+        Tue, 03 Sep 2024 06:08:27 -0700 (PDT)
+Received: from [192.168.0.113] (185-219-167-205-static.vivo.cz. [185.219.167.205])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5c245c467e7sm4161618a12.50.2024.09.03.06.08.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 03 Sep 2024 06:08:26 -0700 (PDT)
+Message-ID: <19327b3c-efe0-4242-a8bc-5ede33570cf9@redhat.com>
+Date: Tue, 3 Sep 2024 15:08:25 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5144.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 00513af0-2d25-4d15-1594-08dccc17851e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Sep 2024 12:54:16.8870
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: DKG+gEKEOeSQIZbOsMyuOK2FhM1+M/41zJcYHYOUkHXcswzvtGqko8P3c188gZobdm0lKRivujCZs85VunI2GsZnI3mIygScVcAsewHTXMQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW6PR11MB8365
-X-OriginatorOrg: intel.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC bpf-next 1/3] libbpf: Support aliased symbols in linker
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
+ Eduard Zingerman <eddyz87@gmail.com>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Arnaldo Carvalho de Melo <acme@kernel.org>
+References: <cover.1725016029.git.vmalik@redhat.com>
+ <87e9970b63dede4a19ec62ec572e224eecc26fa3.1725016029.git.vmalik@redhat.com>
+ <ZtbwBA8CG8s--8dt@krava>
+Content-Language: en-US
+From: Viktor Malik <vmalik@redhat.com>
+In-Reply-To: <ZtbwBA8CG8s--8dt@krava>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-> -----Original Message-----
-> From: Intel-wired-lan <intel-wired-lan-bounces@osuosl.org> On Behalf Of
-> Larysa Zaremba
-> Sent: Friday, August 23, 2024 2:59 AM
-> To: intel-wired-lan@lists.osuosl.org; Nguyen, Anthony L
-> <anthony.l.nguyen@intel.com>
-> Cc: Drewek, Wojciech <wojciech.drewek@intel.com>; Fijalkowski, Maciej
-> <maciej.fijalkowski@intel.com>; Jesper Dangaard Brouer <hawk@kernel.org>;
-> Daniel Borkmann <daniel@iogearbox.net>; Zaremba, Larysa
-> <larysa.zaremba@intel.com>; netdev@vger.kernel.org;
-> anirudh.venkataramanan@intel.com; John Fastabend
-> <john.fastabend@gmail.com>; Alexei Starovoitov <ast@kernel.org>; linux-
-> kernel@vger.kernel.org; Kitszel, Przemyslaw <przemyslaw.kitszel@intel.com=
->;
-> Eric Dumazet <edumazet@google.com>; Kubiak, Michal
-> <michal.kubiak@intel.com>; Samudrala, Sridhar
-> <sridhar.samudrala@intel.com>; Nambiar, Amritha
-> <amritha.nambiar@intel.com>; Keller, Jacob E <jacob.e.keller@intel.com>;
-> Jakub Kicinski <kuba@kernel.org>; bpf@vger.kernel.org; Paolo Abeni
-> <pabeni@redhat.com>; David S. Miller <davem@davemloft.net>; Karlsson,
-> Magnus <magnus.karlsson@intel.com>
-> Subject: [Intel-wired-lan] [PATCH iwl-net v4 1/6] ice: move netif_queue_s=
-et_napi
-> to rtnl-protected sections
->=20
-> Currently, netif_queue_set_napi() is called from ice_vsi_rebuild() that i=
-s not rtnl-
-> locked when called from the reset. This creates the need to take the rtnl=
-_lock
-> just for a single function and complicates the synchronization with .ndo_=
-bpf. At
-> the same time, there no actual need to fill napi-to-queue information at =
-this exact
-> point.
->=20
-> Fill napi-to-queue information when opening the VSI and clear it when the=
- VSI is
-> being closed. Those routines are already rtnl-locked.
->=20
-> Also, rewrite napi-to-queue assignment in a way that prevents inclusion o=
-f XDP
-> queues, as this leads to out-of-bounds writes, such as one below.
->=20
-> [  +0.000004] BUG: KASAN: slab-out-of-bounds in
-> netif_queue_set_napi+0x1c2/0x1e0 [  +0.000012] Write of size 8 at addr
-> ffff889881727c80 by task bash/7047 [  +0.000006] CPU: 24 PID: 7047 Comm:
-> bash Not tainted 6.10.0-rc2+ #2 [  +0.000004] Hardware name: Intel Corpor=
-ation
-> S2600WFT/S2600WFT, BIOS SE5C620.86B.02.01.0014.082620210524
-> 08/26/2021 [  +0.000003] Call Trace:
-> [  +0.000003]  <TASK>
-> [  +0.000002]  dump_stack_lvl+0x60/0x80
-> [  +0.000007]  print_report+0xce/0x630
-> [  +0.000007]  ? __pfx__raw_spin_lock_irqsave+0x10/0x10
-> [  +0.000007]  ? __virt_addr_valid+0x1c9/0x2c0 [  +0.000005]  ?
-> netif_queue_set_napi+0x1c2/0x1e0 [  +0.000003]  kasan_report+0xe9/0x120 [
-> +0.000004]  ? netif_queue_set_napi+0x1c2/0x1e0 [  +0.000004]
-> netif_queue_set_napi+0x1c2/0x1e0 [  +0.000005]  ice_vsi_close+0x161/0x670
-> [ice] [  +0.000114]  ice_dis_vsi+0x22f/0x270 [ice] [  +0.000095]
-> ice_pf_dis_all_vsi.constprop.0+0xae/0x1c0 [ice] [  +0.000086]
-> ice_prepare_for_reset+0x299/0x750 [ice] [  +0.000087]
-> pci_dev_save_and_disable+0x82/0xd0
-> [  +0.000006]  pci_reset_function+0x12d/0x230 [  +0.000004]
-> reset_store+0xa0/0x100 [  +0.000006]  ? __pfx_reset_store+0x10/0x10 [
-> +0.000002]  ? __pfx_mutex_lock+0x10/0x10 [  +0.000004]  ?
-> __check_object_size+0x4c1/0x640 [  +0.000007]
-> kernfs_fop_write_iter+0x30b/0x4a0 [  +0.000006]  vfs_write+0x5d6/0xdf0 [
-> +0.000005]  ? fd_install+0x180/0x350 [  +0.000005]  ?
-> __pfx_vfs_write+0x10/0xA10 [  +0.000004]  ? do_fcntl+0x52c/0xcd0 [
-> +0.000004]  ? kasan_save_track+0x13/0x60 [  +0.000003]  ?
-> kasan_save_free_info+0x37/0x60 [  +0.000006]  ksys_write+0xfa/0x1d0 [
-> +0.000003]  ? __pfx_ksys_write+0x10/0x10 [  +0.000002]  ?
-> __x64_sys_fcntl+0x121/0x180 [  +0.000004]  ? _raw_spin_lock+0x87/0xe0 [
-> +0.000005]  do_syscall_64+0x80/0x170 [  +0.000007]  ?
-> _raw_spin_lock+0x87/0xe0 [  +0.000004]  ? __pfx__raw_spin_lock+0x10/0x10 =
-[
-> +0.000003]  ? file_close_fd_locked+0x167/0x230 [  +0.000005]  ?
-> syscall_exit_to_user_mode+0x7d/0x220
-> [  +0.000005]  ? do_syscall_64+0x8c/0x170 [  +0.000004]  ?
-> do_syscall_64+0x8c/0x170 [  +0.000003]  ? do_syscall_64+0x8c/0x170 [
-> +0.000003]  ? fput+0x1a/0x2c0 [  +0.000004]  ? filp_close+0x19/0x30 [
-> +0.000004]  ? do_dup2+0x25a/0x4c0 [  +0.000004]  ?
-> __x64_sys_dup2+0x6e/0x2e0 [  +0.000002]  ?
-> syscall_exit_to_user_mode+0x7d/0x220
-> [  +0.000004]  ? do_syscall_64+0x8c/0x170 [  +0.000003]  ?
-> __count_memcg_events+0x113/0x380 [  +0.000005]  ?
-> handle_mm_fault+0x136/0x820 [  +0.000005]  ?
-> do_user_addr_fault+0x444/0xa80 [  +0.000004]  ? clear_bhb_loop+0x25/0x80 =
-[
-> +0.000004]  ? clear_bhb_loop+0x25/0x80 [  +0.000002]
-> entry_SYSCALL_64_after_hwframe+0x76/0x7e
-> [  +0.000005] RIP: 0033:0x7f2033593154
->=20
-> Fixes: 080b0c8d6d26 ("ice: Fix ASSERT_RTNL() warning during certain
-> scenarios")
-> Fixes: 91fdbce7e8d6 ("ice: Add support in the driver for associating queu=
-e with
-> napi")
-> Reviewed-by: Wojciech Drewek <wojciech.drewek@intel.com>
-> Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
-> Reviewed-by: Amritha Nambiar <amritha.nambiar@intel.com>
-> Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
-> ---
->  drivers/net/ethernet/intel/ice/ice_base.c |  11 +-
-> drivers/net/ethernet/intel/ice/ice_lib.c  | 129 ++++++----------------
-> drivers/net/ethernet/intel/ice/ice_lib.h  |  10 +-
-> drivers/net/ethernet/intel/ice/ice_main.c |  17 ++-
->  4 files changed, 49 insertions(+), 118 deletions(-)
->=20
+On 9/3/24 13:16, Jiri Olsa wrote:
+> On Mon, Sep 02, 2024 at 08:58:01AM +0200, Viktor Malik wrote:
+>> It is possible to create multiple BPF programs sharing the same
+>> instructions using the compiler `__attribute__((alias("...")))`:
+>>
+>>     int BPF_PROG(prog)
+>>     {
+>>         [...]
+>>     }
+>>     int prog_alias() __attribute__((alias("prog")));
+>>
+>> This may be convenient when creating multiple programs with the same
+>> instruction set attached to different events (such as bpftrace does).
+>>
+>> One problem in this situation is that Clang doesn't generate a BTF entry
+>> for `prog_alias` which makes libbpf linker fail when processing such a
+>> BPF object.
+> 
+> this might not solve all the issues, but could we change pahole to
+> generate BTF FUNC for alias function symbols?
 
-Tested-by: George Kuruvinakunnel <george.kuruvinakunnel@intel.com>
+I don't think that would work here. First, we don't usually run pahole
+when building BPF objects, it's Clang which generates BTF for the "bpf"
+target directly. Second, AFAIK, pahole converts DWARF to BTF and
+compilers don't generate DWARF entries for alias function symbols either.
+
+Viktor
+
+> 
+> jirka
+> 
+>>
+>> This commits adds support for that by finding another symbol at the same
+>> address for which a BTF entry exists and using that entry in the linker.
+>> This allows to use the linker (e.g. via `bpftool gen object ...`) on BPF
+>> objects containing aliases.
+>>
+>> Note that this won't be sufficient for most programs as we also need to
+>> add support for handling relocations in the aliased programs. This will
+>> be added by the following commit.
+>>
+>> Signed-off-by: Viktor Malik <vmalik@redhat.com>
+>> ---
+>>  tools/lib/bpf/linker.c | 68 +++++++++++++++++++++++-------------------
+>>  1 file changed, 38 insertions(+), 30 deletions(-)
+>>
+>> diff --git a/tools/lib/bpf/linker.c b/tools/lib/bpf/linker.c
+>> index 9cd3d4109788..5ebc9ff1246e 100644
+>> --- a/tools/lib/bpf/linker.c
+>> +++ b/tools/lib/bpf/linker.c
+>> @@ -1688,6 +1688,34 @@ static bool btf_is_non_static(const struct btf_type *t)
+>>  	       || (btf_is_func(t) && btf_func_linkage(t) != BTF_FUNC_STATIC);
+>>  }
+>>  
+>> +static Elf64_Sym *find_sym_by_name(struct src_obj *obj, size_t sec_idx,
+>> +				   int sym_type, const char *sym_name)
+>> +{
+>> +	struct src_sec *symtab = &obj->secs[obj->symtab_sec_idx];
+>> +	Elf64_Sym *sym = symtab->data->d_buf;
+>> +	int i, n = symtab->shdr->sh_size / symtab->shdr->sh_entsize;
+>> +	int str_sec_idx = symtab->shdr->sh_link;
+>> +	const char *name;
+>> +
+>> +	for (i = 0; i < n; i++, sym++) {
+>> +		if (sym->st_shndx != sec_idx)
+>> +			continue;
+>> +		if (ELF64_ST_TYPE(sym->st_info) != sym_type)
+>> +			continue;
+>> +
+>> +		name = elf_strptr(obj->elf, str_sec_idx, sym->st_name);
+>> +		if (!name)
+>> +			return NULL;
+>> +
+>> +		if (strcmp(sym_name, name) != 0)
+>> +			continue;
+>> +
+>> +		return sym;
+>> +	}
+>> +
+>> +	return NULL;
+>> +}
+>> +
+>>  static int find_glob_sym_btf(struct src_obj *obj, Elf64_Sym *sym, const char *sym_name,
+>>  			     int *out_btf_sec_id, int *out_btf_id)
+>>  {
+>> @@ -1695,6 +1723,7 @@ static int find_glob_sym_btf(struct src_obj *obj, Elf64_Sym *sym, const char *sy
+>>  	const struct btf_type *t;
+>>  	const struct btf_var_secinfo *vi;
+>>  	const char *name;
+>> +	Elf64_Sym *s;
+>>  
+>>  	if (!obj->btf) {
+>>  		pr_warn("failed to find BTF info for object '%s'\n", obj->filename);
+>> @@ -1710,8 +1739,15 @@ static int find_glob_sym_btf(struct src_obj *obj, Elf64_Sym *sym, const char *sy
+>>  		 */
+>>  		if (btf_is_non_static(t)) {
+>>  			name = btf__str_by_offset(obj->btf, t->name_off);
+>> -			if (strcmp(name, sym_name) != 0)
+>> -				continue;
+>> +			if (strcmp(name, sym_name) != 0) {
+>> +				/* the symbol that we look for may not have BTF as it may
+>> +				 * be an alias of another symbol; we check if this is
+>> +				 * the original symbol and if so, we use its BTF id
+>> +				 */
+>> +				s = find_sym_by_name(obj, sym->st_shndx, STT_FUNC, name);
+>> +				if (!s || s->st_value != sym->st_value)
+>> +					continue;
+>> +			}
+>>  
+>>  			/* remember and still try to find DATASEC */
+>>  			btf_id = i;
+>> @@ -2132,34 +2168,6 @@ static int linker_append_elf_relos(struct bpf_linker *linker, struct src_obj *ob
+>>  	return 0;
+>>  }
+>>  
+>> -static Elf64_Sym *find_sym_by_name(struct src_obj *obj, size_t sec_idx,
+>> -				   int sym_type, const char *sym_name)
+>> -{
+>> -	struct src_sec *symtab = &obj->secs[obj->symtab_sec_idx];
+>> -	Elf64_Sym *sym = symtab->data->d_buf;
+>> -	int i, n = symtab->shdr->sh_size / symtab->shdr->sh_entsize;
+>> -	int str_sec_idx = symtab->shdr->sh_link;
+>> -	const char *name;
+>> -
+>> -	for (i = 0; i < n; i++, sym++) {
+>> -		if (sym->st_shndx != sec_idx)
+>> -			continue;
+>> -		if (ELF64_ST_TYPE(sym->st_info) != sym_type)
+>> -			continue;
+>> -
+>> -		name = elf_strptr(obj->elf, str_sec_idx, sym->st_name);
+>> -		if (!name)
+>> -			return NULL;
+>> -
+>> -		if (strcmp(sym_name, name) != 0)
+>> -			continue;
+>> -
+>> -		return sym;
+>> -	}
+>> -
+>> -	return NULL;
+>> -}
+>> -
+>>  static int linker_fixup_btf(struct src_obj *obj)
+>>  {
+>>  	const char *sec_name;
+>> -- 
+>> 2.46.0
+>>
+> 
+
 
