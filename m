@@ -1,146 +1,151 @@
-Return-Path: <bpf+bounces-38822-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38823-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F01D96A690
-	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 20:31:43 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D256F96A6A7
+	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 20:35:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 415B51C24285
-	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 18:31:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 115371C24477
+	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 18:35:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5779193082;
-	Tue,  3 Sep 2024 18:30:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E293F1917E3;
+	Tue,  3 Sep 2024 18:35:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XbqoL+rk"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="eeYAg6K1"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCA4A1925A5;
-	Tue,  3 Sep 2024 18:30:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4013015574F
+	for <bpf@vger.kernel.org>; Tue,  3 Sep 2024 18:35:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725388256; cv=none; b=DL2+0JEtSnoZ52O5FcPdv0aFYu1ltyLH4Q4rkCuJr9/TH9nPCQKZdYLdUImGHzN0z5cWblKBk8LwJQZ/6yKE3Rc1peFmTyRwtnyBu0LpCtdDvz5NmnjOllA+skiy/gwP6rjpRDFgTjSQaz/aLrs219iQqleIixnKTY00GyzJld8=
+	t=1725388524; cv=none; b=kPfKdy4kA84Iy8D4UHKigBZKn0B8BHhODy2Ln0tt2vVl/jcJKO/zGnUH2CJ1sSYEFK8hWVmXjg8CQYWmyaHBriTmfrUzspAGgKgGkJ4yYoNZVsc0jE7HkhKPp5hBeimDxXjlTSrZyBSg+XEB3z/F1L0uIWnFS6d8SPJXKiDdOL0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725388256; c=relaxed/simple;
-	bh=dyjQzCj4lU41lXlE9DbWo6EUkuvxpVw8oPo3yyG7zdo=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=i178AlkZXnAjYobr8VvLMsj0/ts210OjgBg7i7vT/TFzNCSjxcPd5YUJUZ/qo18djvujy5NI2hp9lXzdAft6ua612UE071SjoCE3hLMUw1Ms6s7bn8mZlkJUZ2fIH7RNxWYd86n/flnP6q6s54E30ew77z/lVbJ//o3VzVEVm6I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=XbqoL+rk; arc=none smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1725388255; x=1756924255;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=dyjQzCj4lU41lXlE9DbWo6EUkuvxpVw8oPo3yyG7zdo=;
-  b=XbqoL+rkSq93LtnVfG8usuzMO4JcX8OnzTm4/tjQeYQVQtYHckPO7Z9O
-   tzOZd/v/j5I4+ENq16kOzYRqifz+NeoVS5ewxWmA5jTJmWppGLiji6u7r
-   jEqNemrgPYLy077aZfSSw4rMT5c+tlBNeSrpcXGo1L2Rc22wD+Z7vZpWO
-   PCkDZ8htU4sh/6GjUSCNiJ5bfW5rrulKeKg3TqrSbPS7onR5cGRKTL8CQ
-   MbpWoQpGACQvl0I4YoxroIVNWY76HCFVHZhlJiomQQEQbjTfgHxGRf6iu
-   5QmGlBHF5rffNsFMtGrUYh57fKzkyeK6dJYsApJv51FUSz1i8MNiOVLiZ
-   g==;
-X-CSE-ConnectionGUID: NqfD+m2JS8ilxZblxY+yoQ==
-X-CSE-MsgGUID: TvNaPBq7QKqSHXf4VRZg3w==
-X-IronPort-AV: E=McAfee;i="6700,10204,11184"; a="24147029"
-X-IronPort-AV: E=Sophos;i="6.10,199,1719903600"; 
-   d="scan'208";a="24147029"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2024 11:30:53 -0700
-X-CSE-ConnectionGUID: R8E+XnYFQuOUkp05O6wFuw==
-X-CSE-MsgGUID: PJ2z5mu/SU6nzwqPLvoUbQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.10,199,1719903600"; 
-   d="scan'208";a="88250252"
-Received: from anguy11-upstream.jf.intel.com ([10.166.9.133])
-  by fmviesa002.fm.intel.com with ESMTP; 03 Sep 2024 11:30:52 -0700
-From: Tony Nguyen <anthony.l.nguyen@intel.com>
-To: davem@davemloft.net,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	edumazet@google.com,
-	netdev@vger.kernel.org
-Cc: Larysa Zaremba <larysa.zaremba@intel.com>,
-	anthony.l.nguyen@intel.com,
-	wojciech.drewek@intel.com,
-	michal.kubiak@intel.com,
-	jacob.e.keller@intel.com,
-	amritha.nambiar@intel.com,
-	przemyslaw.kitszel@intel.com,
-	sridhar.samudrala@intel.com,
-	maciej.fijalkowski@intel.com,
-	magnus.karlsson@intel.com,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	hawk@kernel.org,
-	john.fastabend@gmail.com,
-	bpf@vger.kernel.org,
-	Chandan Kumar Rout <chandanx.rout@intel.com>
-Subject: [PATCH net 6/6] ice: do not bring the VSI up, if it was down before the XDP setup
-Date: Tue,  3 Sep 2024 11:30:32 -0700
-Message-ID: <20240903183034.3530411-7-anthony.l.nguyen@intel.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20240903183034.3530411-1-anthony.l.nguyen@intel.com>
-References: <20240903183034.3530411-1-anthony.l.nguyen@intel.com>
+	s=arc-20240116; t=1725388524; c=relaxed/simple;
+	bh=NxFrFfd82CCA6OILly4tV9TQfSfi5DJ7xBdRB8AbJO8=;
+	h=Subject:To:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=Bg4UpisHII8238O/Cr2KJd6VUvWAbLHtdGcdS9HYBX0Jqd3UxJBcJKZoNrmVSPS2NeMVYq1ptJrxFLgWKq5G4oRAlhqT0DjYO4cdFKmd1DKerbTjnIgsvxhAd1Vd71HkGM+CqE7xUENsjse9sinfEOupCobB0RD8KBw4Zh4DFQk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=eeYAg6K1; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=2cwxTc8zSXz8LWhFThzELMFR5EjQIhNHIzE1dzCpuko=; b=eeYAg6K1WY9PFJZfRRU7ovI8mq
+	Zvak2quf54bS8MHVDfNm/XV+Huzej7srTzkpQQo6VoLdfeyFZpeLJywtKY2c3EWnsAEyotuvVdfWO
+	Zxep2DYAj85gOy4vuYLAT5RFEbKFZ8iQYPaDJlK7Qqx6dp8iUUwmDS0K5SRmDO1NKJbjFDtvVF+W1
+	tADtVl3IThsfnnS8g+eYMtR/LoCAdhYvmCZ5wrMMxC5YSMAJwrFcT/U2SoryBn03H3mDpoughqjUc
+	CIJJv2QwaVAOWuIJtxhMHPgs/K33P9JYZY6XTFVKtqvhidwlQOzenFaFWtjgMJTIIo8xZNBUeKmSy
+	ww/4+ubA==;
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1slYN5-000IKq-TT; Tue, 03 Sep 2024 20:35:19 +0200
+Received: from [178.197.248.23] (helo=linux-2.home)
+	by sslproxy05.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1slYN6-000MDO-02;
+	Tue, 03 Sep 2024 20:35:19 +0200
+Subject: Re: Change default cpu version from v1 to v3 in llvm20
+To: Yonghong Song <yonghong.song@linux.dev>,
+ Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>
+References: <ac144cc8-db10-47ea-b364-c9ebf2fe69d3@linux.dev>
+ <fc2f30b5-c51b-3e2d-4282-2b22fb998285@iogearbox.net>
+ <c39622e0-a88c-4bb5-8ae4-83e138b3e2a2@linux.dev>
+From: Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <90a00496-bcf9-358c-3b9e-e7a861728733@iogearbox.net>
+Date: Tue, 3 Sep 2024 20:35:18 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+In-Reply-To: <c39622e0-a88c-4bb5-8ae4-83e138b3e2a2@linux.dev>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27387/Tue Sep  3 10:38:04 2024)
 
-From: Larysa Zaremba <larysa.zaremba@intel.com>
+On 9/3/24 4:50 PM, Yonghong Song wrote:
+> On 9/2/24 11:52 PM, Daniel Borkmann wrote:
+>> On 9/3/24 6:10 AM, Yonghong Song wrote:
+>>> Hi,
+>>>
+>>> Suggested by Alexei, I put a llvm20 diff to make cpu=v3 as the default
+>>> cpu version:
+>>>     https://github.com/llvm/llvm-project/pull/107008
+>>>
+>>> cpu=v3 has been introduced in llvm9 (2019 H2) and the kernel cpu=v3
+>>> support should be available around the same time although I
+>>> cannot remember the exact kernel version.
+>>>
+>>> There are two motivation to move cpu version default from v1 to v3.
+>>>
+>>> First, to resolve correct usage of code like
+>>>     (void)__sync_fetch_and_add(&ptr, value);
+>>> In cpu v1/v2, the above insn generates locked add insn, and
+>>> for cpu >= v3, the above insn generates atomic_fetch_add insn.
+>>> The atomic_fetch_add insn is the correct way for the eventual
+>>> insn for arm64. Otherwise, with locked add insn in arm64,
+>>> proper barrier will be missing and incorrect results may
+>>> be generated.
+>>>
+>>> Second, cpu=v3 should have better performance than cpu=v1
+>>> in most cases. In Meta, several years ago, we have conducted
+>>> performance evaluation to compare v1 and v3 for major bpf
+>>> programs running in our platform and we concluded v3 is
+>>> better than v1 in most cases and in other rare cases v1 and v3
+>>> have the same performance. So moving to v3 can help
+>>> performance too.
+>>>
+>>> If in rare cases, e.g. really old kernels, v1/v2 is the only
+>>> option, then users can set -mcpu=v1 explicitly.
+>>>
+>>> Please let us know if you still have some concerns in your
+>>> setup w.r.t. cpu v1->v3 transition.
+>>
+>> Sounds good to me! Is there a place somewhere in LLVM where this
+>> can be documented for the BPF backend (along with the various
+>> extensions), so that developers can find sth in the official LLVM
+>> docs if they search the web? I see that riscv and some other archs
+>> have documentation under [0] which seems to get deployed under [1].
+> 
+> Thanks Daniel.
+> 
+> Trying to have llvm doc for BPF backend has been discussed
+> before. IIRC, Fangrui Song suggested this when we tried to
+> add BPF reloc documents in Documentation/bpf/llvm_reloc.rst.
+> Eventually we added llvm_reloc.rst to kernel since this doc
+> is mostly interesting for kernel/bpf folks. We should add
+> an entry in bpf_devel_QA.rst to mention that default cpu
+> version change from v1 to v3.
+> 
+> Not sure whether we should have the same doc in
+> llvm.org/docs/. Let me discuss with other folks on this.
 
-After XDP configuration is completed, we bring the interface up
-unconditionally, regardless of its state before the call to .ndo_bpf().
+I was mostly thinking that not everyone might be looking into
+kernel docs (say, eBPF for Windows folks using LLVM), and at
+least on gcc docs/wiki you'll find information & quirks about
+gcc-bpf backend [2].
 
-Preserve the information whether the interface had to be brought down and
-later bring it up only in such case.
+   [2] https://gcc.gnu.org/wiki/BPFBackEnd
 
-Fixes: efc2214b6047 ("ice: Add support for XDP")
-Reviewed-by: Wojciech Drewek <wojciech.drewek@intel.com>
-Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
-Tested-by: Chandan Kumar Rout <chandanx.rout@intel.com>
-Acked-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
----
- drivers/net/ethernet/intel/ice/ice_main.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/ethernet/intel/ice/ice_main.c b/drivers/net/ethernet/intel/ice/ice_main.c
-index 22b8ef5faf8d..c7db88b517da 100644
---- a/drivers/net/ethernet/intel/ice/ice_main.c
-+++ b/drivers/net/ethernet/intel/ice/ice_main.c
-@@ -3005,8 +3005,8 @@ ice_xdp_setup_prog(struct ice_vsi *vsi, struct bpf_prog *prog,
- 		   struct netlink_ext_ack *extack)
- {
- 	unsigned int frame_size = vsi->netdev->mtu + ICE_ETH_PKT_HDR_PAD;
--	bool if_running = netif_running(vsi->netdev);
- 	int ret = 0, xdp_ring_err = 0;
-+	bool if_running;
- 
- 	if (prog && !prog->aux->xdp_has_frags) {
- 		if (frame_size > ice_max_xdp_frame_size(vsi)) {
-@@ -3023,8 +3023,11 @@ ice_xdp_setup_prog(struct ice_vsi *vsi, struct bpf_prog *prog,
- 		return 0;
- 	}
- 
-+	if_running = netif_running(vsi->netdev) &&
-+		     !test_and_set_bit(ICE_VSI_DOWN, vsi->state);
-+
- 	/* need to stop netdev while setting up the program for Rx rings */
--	if (if_running && !test_and_set_bit(ICE_VSI_DOWN, vsi->state)) {
-+	if (if_running) {
- 		ret = ice_down(vsi);
- 		if (ret) {
- 			NL_SET_ERR_MSG_MOD(extack, "Preparing device for XDP attach failed");
--- 
-2.42.0
+>>   [0] https://github.com/llvm/llvm-project/tree/main/llvm/docs
+>>   [1] https://llvm.org/docs/RISCV/RISCVVectorExtension.html
+>>
+>> Thanks,
+>> Daniel
 
 
