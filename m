@@ -1,209 +1,246 @@
-Return-Path: <bpf+bounces-38801-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38802-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D40B96A580
-	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 19:35:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FCD396A5B1
+	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 19:46:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D0D0287291
-	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 17:35:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 934761C2309F
+	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 17:46:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C00D018FDAB;
-	Tue,  3 Sep 2024 17:35:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1138618FDDE;
+	Tue,  3 Sep 2024 17:46:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AG/jCMVN"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VMI9y+3c"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC50C18DF8B;
-	Tue,  3 Sep 2024 17:35:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8442314293;
+	Tue,  3 Sep 2024 17:46:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725384925; cv=none; b=Jw5TH20NaWi0Lr5ww0iMe4bsXglZ4q8aqLetoOsuVPk0F8ERzvhUKb2YWS309+gvsxinI4J5aQEx9cBUdmrb9Qt/naplO62lelM3BrfA1i8yUpOsnv8BUujaG5peK/CnGRm481486i9FcJ/SLxktUCa1v7Vgox6KDtLB5NBzAdk=
+	t=1725385568; cv=none; b=VfNHbaV+yx1hC+4pFZ2FMU2UrAFmwjOK2PVk3Ik8954LkCsIkCd7CoFevcCsig22xgzGFICvss6jaeSt3EurDEzSv5bcOE4llKL8BMLOaE2tSSu62o0YBhwjq2JEAs70kf+iGVsX9776HSHn3D3z+5V0ENEWHM8DYUrfurWpmrI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725384925; c=relaxed/simple;
-	bh=LQwsYC0/HXU6jv1YztlWr/faX6lsno7F23xR44vC5ss=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gsXohx9HpA1xPgCTTYmGL4iTaNQ1pj8yJTMdPxh4rNL5BG7ieQUBtYd/yGeZ2AdqRfVTzkMiEOG+jZL05ZBIvAHtF1UeaCRfIdJi4WVQQ7RpvWWXqY6Mhu4TIfK3JMj0IybxpFRrUuia8HJo2qpFdnPT83+BvBEyhnOEQa8aX1k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AG/jCMVN; arc=none smtp.client-ip=209.85.216.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-2da4ea59658so1163230a91.0;
-        Tue, 03 Sep 2024 10:35:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1725384923; x=1725989723; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=l3hUXgLjalL7lAeUT4m6rvI6dnqff1plFSiWYGGCoE0=;
-        b=AG/jCMVNwCHA4Dyii8SIMZJJ8eoDatV9yd7Gu1SPdIpYWk+sFKjQ3IGxOk5+TTErBs
-         IkFItP5ar9uOrp08u2uIoeSiX88+HZwXRl/pA7rt0Vmh3+0NZp1qTJMD2rQkNDoBFO/i
-         AmIo6nYkn73QvPVO3XLtEEWXZVbwFpol3KyrcBaNwvWlFL7sx5V6yixh831eKwXqf+yI
-         K8YpBH8d2Pf6XDGqCoLQBfDOx0JDSSPXpx/l6bjeZfvPFQfycIdKDGfWto3q++5iqQGW
-         Dx3mb2v5rrapnrwlu/JYfXDM+Jksp1nQM05vUJjkytAyYcpkF6tvfvd7PGnWRG/2fkTL
-         /cKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725384923; x=1725989723;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=l3hUXgLjalL7lAeUT4m6rvI6dnqff1plFSiWYGGCoE0=;
-        b=lUaS9iNxMGAmNKJgpPgxszrwKSlcDiYfnt+Dhj5Hl4lFEYU0kHdhMKj3LN8WOwcVwm
-         56+vt3iuNcH20rGEAbff7bpsnK+renLz1ZHPBCgG8CcRtjMSjmwpac4q47o6qMQZyeDH
-         2EwKD4QAP7YGlnsKytQA0KlY6kpmFRHinxYto1/JlqUAZS8CJ2wrf/FPGFR5rSVnn3Fa
-         Q4ujBTdChAHBCb8wRUet/Ah1FH2KxG87OlViezV+r4wOzUUgSkAl8Z8t/N4o6b5PVwMU
-         hX21Oi/ZfXfsvMVqaB8p5WfBIiqn+njKAO/7cqxKfRVboJiN1EYcMAwN0PCkIbNSWxTH
-         WzTg==
-X-Forwarded-Encrypted: i=1; AJvYcCVJWbBSZrTFdTAlUmp3aFMAPZx1j9ESP0bu7aw3IDNm0THfEnIHsAydaciQ8x9by5VbnIyDXyAFycJaXh4r@vger.kernel.org, AJvYcCVpujKKvoJw88DJQx1dUkiYrWVfZRvioiQIZXYS8+jSsZr2vu9qwwhgspT9QW9ztDSOxsBMjO44J4NIfP5aDJr4GAc8@vger.kernel.org, AJvYcCW/Wv6MuKyT3J68eud93DOFp+Aq2n9wJvPXNswkl87R+S7vncdoPb/ELcE53UYSVMhu22s=@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywc3hQjZA4+hEVmfxkFhXVQ5NsYSEaY1LJfY83yP35MitfgrJkn
-	tjqNm0es/s0wkhCl2MGkOzHM0Wu73MuT9WbY5ddT/k/p/xebKiwA00Wu4Q6y0SabFDzfKTJjuTt
-	l+u4UAUI0mY6obMT/TAr5jLFJ2Ik=
-X-Google-Smtp-Source: AGHT+IE2Caw/xhU7eXyirtFUOj3URIayxgMSRZGkemLmVzQAwmUHrOMrd18peOQe/Wv611jgoKooKYSc1l00fOUfgnU=
-X-Received: by 2002:a17:90a:6fa2:b0:2d3:bfc3:3ef3 with SMTP id
- 98e67ed59e1d1-2d88d6af3dcmr11971100a91.12.1725384923145; Tue, 03 Sep 2024
- 10:35:23 -0700 (PDT)
+	s=arc-20240116; t=1725385568; c=relaxed/simple;
+	bh=UbWu+qD9OiEDbYvW8pUQuVHvaM8F1EvQ1DpSwLabUx0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=oBW4yc4irhIiJNQkwGZzYK6QKq0ZsAGo1ulwk7q/Gbt7P0KN/N6NmP4v3SiC5091GAmQmTLzuUu6WqR43GGVCckhEVDisBlHfuUNW6th/Sip/c2hvDKOyry0AidE/0wwoy7S2zObYd51z7pcFo9Ns9+lzvHK5+rBo6/w2itGn1Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VMI9y+3c; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF43EC4CEC4;
+	Tue,  3 Sep 2024 17:46:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1725385568;
+	bh=UbWu+qD9OiEDbYvW8pUQuVHvaM8F1EvQ1DpSwLabUx0=;
+	h=From:To:Cc:Subject:Date:From;
+	b=VMI9y+3cuCuO4Qqm/iPp5KlgEpiFpya9d5ryg8lPLSGdKajCU8Jvam44ywqCdWIsh
+	 DF2a+MzvsuPOKZ/fgWnK9pcx4tvy/8VMbiSxsbJMnH9+0fl3+naOS1dH0SqfMCTiLA
+	 JvecLhFBHMlEJSekwSbazS2NxKowKEhIuYccmZekzghQIevHkHUKzur1RfV93CvPOX
+	 tFDTfmLOU/P8OPj6zvIh4gwsxTzb+IlkeyeQwjKh3jM2SVAUzdtv44UCEZBt3aLbKm
+	 ueTKzYsjh/m6J4Cz/gvx+bodY6MWIwvrvvtjslbW+L6bQ0Korqfl55rLXnY/1kizw7
+	 ET5UBvDbJdW7w==
+From: Andrii Nakryiko <andrii@kernel.org>
+To: linux-trace-kernel@vger.kernel.org,
+	peterz@infradead.org,
+	oleg@redhat.com
+Cc: rostedt@goodmis.org,
+	mhiramat@kernel.org,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	jolsa@kernel.org,
+	paulmck@kernel.org,
+	willy@infradead.org,
+	surenb@google.com,
+	akpm@linux-foundation.org,
+	linux-mm@kvack.org,
+	Andrii Nakryiko <andrii@kernel.org>
+Subject: [PATCH v5 0/8] uprobes: RCU-protected hot path optimizations
+Date: Tue,  3 Sep 2024 10:45:55 -0700
+Message-ID: <20240903174603.3554182-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240829183741.3331213-1-andrii@kernel.org> <20240829183741.3331213-5-andrii@kernel.org>
- <ZtD_x9zxLjyhS37Z@krava> <CAEf4Bzb3mCWK5St51bRDnQ1b-aTj=2w6bi6MkZydW48s=R+CCA@mail.gmail.com>
- <ZtHM_C1NmDSKL0pi@krava> <20240830143151.GC20163@redhat.com>
- <CAEf4BzbOjB9Str9-ea6pa46sRDdHJF5mb0rj1dyJquvBT-9vnw@mail.gmail.com>
- <20240830202050.GA7440@redhat.com> <CAEf4BzZCrchQCOPv9ToUy8coS4q6LjoLUB_c6E6cvPPquR035Q@mail.gmail.com>
- <20240831161914.GA9683@redhat.com> <CAEf4BzYE7+YgM7HMb-JceoC33f=irjHkj=5x46WaXdCcgTk4xg@mail.gmail.com>
-In-Reply-To: <CAEf4BzYE7+YgM7HMb-JceoC33f=irjHkj=5x46WaXdCcgTk4xg@mail.gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 3 Sep 2024 10:35:10 -0700
-Message-ID: <CAEf4Bza6SRP0ZTuOa=W8W3uM86DJKkGoTQ9itHxcdGWt1Su=-Q@mail.gmail.com>
-Subject: Re: [PATCH v4 4/8] uprobes: travers uprobe's consumer list locklessly
- under SRCU protection
-To: Oleg Nesterov <oleg@redhat.com>
-Cc: Jiri Olsa <olsajiri@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	linux-trace-kernel@vger.kernel.org, peterz@infradead.org, rostedt@goodmis.org, 
-	mhiramat@kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	paulmck@kernel.org, willy@infradead.org, surenb@google.com, 
-	akpm@linux-foundation.org, linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Tue, Sep 3, 2024 at 10:27=E2=80=AFAM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Sat, Aug 31, 2024 at 9:19=E2=80=AFAM Oleg Nesterov <oleg@redhat.com> w=
-rote:
-> >
-> > On 08/30, Andrii Nakryiko wrote:
-> > >
-> > > On Fri, Aug 30, 2024 at 1:21=E2=80=AFPM Oleg Nesterov <oleg@redhat.co=
-m> wrote:
-> > > >
-> > > > I'll probably write another email (too late for me today), but I ag=
-ree
-> > > > that "avoid register_rwsem in handler_chain" is obviously a good go=
-al,
-> > > > lets discuss the possible cleanups or even fixlets later, when this
-> > > > series is already applied.
-> > > >
-> > >
-> > > Sounds good. It seems like I'll need another revision due to missing
-> > > include, so if there is any reasonably straightforward clean up we
-> > > should do, I can just incorporate that into my series.
-> >
-> > I was thinking about another seq counter incremented in register(), so
-> > that handler_chain() can detect the race with uprobe_register() and ski=
-p
-> > unapply_uprobe() in this case. This is what Peter did in one of his ser=
-ies.
-> > Still changes the current behaviour, but not too much.
->
-> We could do that, but then worst case, when we do detect registration
-> race, what do we do? We still have to do the same. So instead of
-> polluting the logic with seq counter it's best to just codify the
-> protocol and take advantage of that.
->
-> But as you said, this all can/should be addressed as a follow up
-> discussion. You mentioned some clean ups you wanted to do, let's
-> discuss all that as part of that?
->
-> >
-> > But see below,
-> >
-> > > I still think it's fine, tbh.
-> >
-> > and perhaps you are right,
-> >
-> > > Which uprobe user violates this contract
-> > > in the kernel?
-> >
-> > The only in-kernel user of UPROBE_HANDLER_REMOVE is perf, and it is fin=
-e.
-> >
->
-> Well, BPF program can accidentally trigger this as well, but that's a
-> bug, we should fix it ASAP in the bpf tree.
->
->
-> > But there are out-of-tree users, say systemtap, I have no idea if this
-> > change can affect them.
-> >
-> > And in general, this change makes the API less "flexible".
->
-> it maybe makes a weird and too-flexible case a bit more work to
-> implement. Because if consumer want to be that flexible, they can
-> still define filter that will be coordinated between filter() and
-> handler() implementation.
->
-> >
-> > But once again, I agree that it would be better to apply your series fi=
-rst,
-> > then add the fixes in (unlikely) case it breaks something.
->
-> Yep, agreed, thanks! Will send a new version ASAP, so we have a common
-> base to work on top of.
->
-> >
-> > But. Since you are going to send another version, may I ask you to add =
-a
-> > note into the changelog to explain that this patch assumes (and enforce=
-s)
-> > the rule about handler/filter consistency?
->
-> Yep, will do. I will also leave a comment next to the filter callback
-> definition in uprobe_consumer about this.
->
+This patch set is heavily inspired by Peter Zijlstra's uprobe optimization
+patches ([0]) and continues that work, albeit trying to keep complexity to the
+minimum, and attepting to reuse existing primitives as much as possible. The
+goal here is to optimize common uprobe triggering hot path, while keeping the
+rest of locking mostly intact.
 
-Ok, I'm adding this:
+I've added uprobe_unregister_sync() into the error handling code path inside
+uprobe_unregister(). This is due to recent refactorings from Oleg Nesterov
+([1]), which necessitates this addition.
 
-diff --git a/include/linux/uprobes.h b/include/linux/uprobes.h
-index 29c935b0d504..33236d689d60 100644
---- a/include/linux/uprobes.h
-+++ b/include/linux/uprobes.h
-@@ -29,6 +29,14 @@ struct page;
- #define MAX_URETPROBE_DEPTH            64
+Except for refcounting change patch (which I stongly believe is a good
+improvement we should do and forget about quasi-refcounting schema of
+uprobe->consumers list), the rest of the changes are similar to Peter's
+initial changes in [0].
 
- struct uprobe_consumer {
-+       /*
-+        * handler() can return UPROBE_HANDLER_REMOVE to signal the need to
-+        * unregister uprobe for current process. If UPROBE_HANDLER_REMOVE =
-is
-+        * returned, filter() callback has to be implemented as well and it
-+        * should return false to "confirm" the decision to uninstall uprob=
-e
-+        * for the current process. If filter() is omitted or returns true,
-+        * UPROBE_HANDLER_REMOVE is effectively ignored.
-+        */
-        int (*handler)(struct uprobe_consumer *self, struct pt_regs *regs);
-        int (*ret_handler)(struct uprobe_consumer *self,
-                                unsigned long func,
+Main differences would be:
+  - no special RCU protection for mmap and fork handling, we just stick to
+    refcounts there, as those are infrequent and not a performance-sensitive
+    code path, while being complex and thus benefiting from proper locking;
+  - the above means we don't need to do any custom SRCU additions to handle
+    forking code path;
+  - I handled UPROBE_HANDLER_REMOVE problem in handler_chain() differently,
+    again, leveraging existing locking scheam;
+  - I kept refcount usage for uretprobe and single-stepping uprobes, I plan to
+    address that in a separate follow up patches. The plan is to avoid
+    task_work with a lockless atomic xchg()/cmpxchg()-based solution;
+  - finally, I dutifully was using SRCU throughout all the changes, and only
+    last patch switches SRCU to RCU Tasks Trace and demonstrates significant
+    performance and scalability gains from this.
 
+The changes in this patch set were tested using BPF selftests and using
+uprobe-stress ([2]) tool.
 
-> >
-> > Oleg.
-> >
+Now, for the benchmarking results. I've used the following script (which
+utilizes BPF selftests-based bench tool). The CPU used was 80-core Intel Xeon
+Gold 6138 CPU @ 2.00GHz running kernel with production-like config. I minimized
+background noise by stopping any service I could identify and stop, so results
+are pretty stable and variability is pretty small, overall.
+
+Benchmark script:
+
+#!/bin/bash
+
+set -eufo pipefail
+
+for i in uprobe-nop uretprobe-nop; do
+    for p in 1 2 4 8 16 32 64; do
+        summary=$(sudo ./bench -w3 -d5 -p$p -a trig-$i | tail -n1)
+        total=$(echo "$summary" | cut -d'(' -f1 | cut -d' ' -f3-)
+        percpu=$(echo "$summary" | cut -d'(' -f2 | cut -d')' -f1 | cut -d'/' -f1)
+        printf "%-15s (%2d cpus): %s (%s/s/cpu)\n" $i $p "$total" "$percpu"
+    done
+    echo
+done
+
+With all the lock-avoiding changes done in this patch set, we get a pretty
+decent improvement in performance and scalability of uprobes with number of
+CPUs, even though we are still nowhere near linear scalability. This is due to
+the remaining mmap_lock, which is currently taken to resolve interrupt address
+to inode+offset and then uprobe instance. And, of course, uretprobes still need
+similar RCU to avoid refcount in the hot path, which will be addressed in the
+follow up patches.
+
+BASELINE (on top of Oleg's clean up patches)
+============================================
+uprobe-nop      ( 1 cpus):    3.032 ± 0.023M/s  (  3.032M/s/cpu)
+uprobe-nop      ( 2 cpus):    3.452 ± 0.005M/s  (  1.726M/s/cpu)
+uprobe-nop      ( 4 cpus):    3.663 ± 0.005M/s  (  0.916M/s/cpu)
+uprobe-nop      ( 8 cpus):    3.718 ± 0.038M/s  (  0.465M/s/cpu)
+uprobe-nop      (16 cpus):    3.344 ± 0.008M/s  (  0.209M/s/cpu)
+uprobe-nop      (32 cpus):    2.288 ± 0.021M/s  (  0.071M/s/cpu)
+uprobe-nop      (64 cpus):    3.205 ± 0.004M/s  (  0.050M/s/cpu)
+
+uretprobe-nop   ( 1 cpus):    1.979 ± 0.005M/s  (  1.979M/s/cpu)
+uretprobe-nop   ( 2 cpus):    2.361 ± 0.005M/s  (  1.180M/s/cpu)
+uretprobe-nop   ( 4 cpus):    2.309 ± 0.002M/s  (  0.577M/s/cpu)
+uretprobe-nop   ( 8 cpus):    2.253 ± 0.001M/s  (  0.282M/s/cpu)
+uretprobe-nop   (16 cpus):    2.007 ± 0.000M/s  (  0.125M/s/cpu)
+uretprobe-nop   (32 cpus):    1.624 ± 0.003M/s  (  0.051M/s/cpu)
+uretprobe-nop   (64 cpus):    2.149 ± 0.001M/s  (  0.034M/s/cpu)
+
+Up to second-to-last patch (i.e., SRCU-based optimizations)
+===========================================================
+uprobe-nop      ( 1 cpus):    3.276 ± 0.005M/s  (  3.276M/s/cpu)
+uprobe-nop      ( 2 cpus):    4.125 ± 0.002M/s  (  2.063M/s/cpu)
+uprobe-nop      ( 4 cpus):    7.713 ± 0.002M/s  (  1.928M/s/cpu)
+uprobe-nop      ( 8 cpus):    8.097 ± 0.006M/s  (  1.012M/s/cpu)
+uprobe-nop      (16 cpus):    6.501 ± 0.056M/s  (  0.406M/s/cpu)
+uprobe-nop      (32 cpus):    4.398 ± 0.084M/s  (  0.137M/s/cpu)
+uprobe-nop      (64 cpus):    6.452 ± 0.000M/s  (  0.101M/s/cpu)
+
+uretprobe-nop   ( 1 cpus):    2.055 ± 0.001M/s  (  2.055M/s/cpu)
+uretprobe-nop   ( 2 cpus):    2.677 ± 0.000M/s  (  1.339M/s/cpu)
+uretprobe-nop   ( 4 cpus):    4.561 ± 0.003M/s  (  1.140M/s/cpu)
+uretprobe-nop   ( 8 cpus):    5.291 ± 0.002M/s  (  0.661M/s/cpu)
+uretprobe-nop   (16 cpus):    5.065 ± 0.019M/s  (  0.317M/s/cpu)
+uretprobe-nop   (32 cpus):    3.622 ± 0.003M/s  (  0.113M/s/cpu)
+uretprobe-nop   (64 cpus):    3.723 ± 0.002M/s  (  0.058M/s/cpu)
+
+RCU Tasks Trace
+===============
+uprobe-nop      ( 1 cpus):    3.396 ± 0.002M/s  (  3.396M/s/cpu)
+uprobe-nop      ( 2 cpus):    4.271 ± 0.006M/s  (  2.135M/s/cpu)
+uprobe-nop      ( 4 cpus):    8.499 ± 0.015M/s  (  2.125M/s/cpu)
+uprobe-nop      ( 8 cpus):   10.355 ± 0.028M/s  (  1.294M/s/cpu)
+uprobe-nop      (16 cpus):    7.615 ± 0.099M/s  (  0.476M/s/cpu)
+uprobe-nop      (32 cpus):    4.430 ± 0.007M/s  (  0.138M/s/cpu)
+uprobe-nop      (64 cpus):    6.887 ± 0.020M/s  (  0.108M/s/cpu)
+
+uretprobe-nop   ( 1 cpus):    2.174 ± 0.001M/s  (  2.174M/s/cpu)
+uretprobe-nop   ( 2 cpus):    2.853 ± 0.001M/s  (  1.426M/s/cpu)
+uretprobe-nop   ( 4 cpus):    4.913 ± 0.002M/s  (  1.228M/s/cpu)
+uretprobe-nop   ( 8 cpus):    5.883 ± 0.002M/s  (  0.735M/s/cpu)
+uretprobe-nop   (16 cpus):    5.147 ± 0.001M/s  (  0.322M/s/cpu)
+uretprobe-nop   (32 cpus):    3.738 ± 0.008M/s  (  0.117M/s/cpu)
+uretprobe-nop   (64 cpus):    4.397 ± 0.002M/s  (  0.069M/s/cpu)
+
+For baseline vs SRCU, peak througput increased from 3.7 M/s (million uprobe
+triggerings per second) up to about 8 M/s. For uretprobes it's a bit more
+modest with bump from 2.4 M/s to 5 M/s.
+
+For SRCU vs RCU Tasks Trace, peak throughput for uprobes increases further from
+8 M/s to 10.3 M/s (+28%!), and for uretprobes from 5.3 M/s to 5.8 M/s (+11%),
+as we have more work to do on uretprobes side.
+
+Even single-thread (no contention) performance is slightly better: 3.276 M/s to
+3.396 M/s (+3.5%) for uprobes, and 2.055 M/s to 2.174 M/s (+5.8%)
+for uretprobes.
+
+  [0] https://lore.kernel.org/linux-trace-kernel/20240711110235.098009979@infradead.org/
+  [1] https://lore.kernel.org/linux-trace-kernel/20240729134444.GA12293@redhat.com/
+  [2] https://github.com/libbpf/libbpf-bootstrap/tree/uprobe-stress
+
+v4->v5:
+  - added missing linux/rcupdate_trace.h include (Kernel Test Bot);
+  - added comment in uprobe_consumer about expected consistency between
+    handler() returning UPROBE_HANDLER_REMOVE and the need for filter() to
+    confirm the decision (Oleg);
+  - this time added Oleg's Reviewed-by;
+v3->v4:
+  - added back consumer_rwsem into consumer_del(), which was accidentally
+    omitted earlier (Jiri);
+  - left out RFC patches, we can continue discussion on v3 patch set, if
+    necessary;
+v2->v3:
+  - undid rcu and rb_node fields colocation which were causing crashes (Oleg);
+  - ensure synchronize_srcu() on registration failure in patch #4 (Oleg);
+v1->v2:
+  - added back missed kfree() in patch #1 (Oleg);
+  - forgot the rest, but there were a few small things here and there.
+
+Andrii Nakryiko (6):
+  uprobes: revamp uprobe refcounting and lifetime management
+  uprobes: protected uprobe lifetime with SRCU
+  uprobes: get rid of enum uprobe_filter_ctx in uprobe filter callbacks
+  uprobes: travers uprobe's consumer list locklessly under SRCU
+    protection
+  uprobes: perform lockless SRCU-protected uprobes_tree lookup
+  uprobes: switch to RCU Tasks Trace flavor for better performance
+
+Peter Zijlstra (2):
+  perf/uprobe: split uprobe_unregister()
+  rbtree: provide rb_find_rcu() / rb_find_add_rcu()
+
+ include/linux/rbtree.h                        |  67 +++
+ include/linux/uprobes.h                       |  28 +-
+ kernel/events/uprobes.c                       | 392 +++++++++++-------
+ kernel/trace/bpf_trace.c                      |   8 +-
+ kernel/trace/trace_uprobe.c                   |  15 +-
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   |   3 +-
+ 6 files changed, 330 insertions(+), 183 deletions(-)
+
+-- 
+2.43.5
+
 
