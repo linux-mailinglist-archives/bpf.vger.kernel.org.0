@@ -1,127 +1,117 @@
-Return-Path: <bpf+bounces-38844-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38846-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EF5596ABDE
-	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2024 00:14:00 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4566B96ABED
+	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2024 00:15:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F039A286D81
-	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 22:13:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 73FD11C24678
+	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 22:15:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85E611D58B8;
-	Tue,  3 Sep 2024 22:10:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2C531D88B8;
+	Tue,  3 Sep 2024 22:13:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OGEBxxsx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Kwt+dUH7"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0308E18FDBA;
-	Tue,  3 Sep 2024 22:10:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70CC63A267;
+	Tue,  3 Sep 2024 22:13:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725401449; cv=none; b=WmaiNxjhVy4ufB+jYq6AFyDo2JTwKixYWUDSGfaWQ+lSwdQ5q7ENraVvxcFipRJWGHCcqm/Dbatwjz2UvEEgULf47A3nqQxcio32Z6Td5jojeKVcx1xQCPbKVVNP72uLuHSfuawfxoHZDLAfiRZ/gh4X5aeeQVkfg4Pvm4Ykcv0=
+	t=1725401621; cv=none; b=JTb5cXB+l476B4YeChQQi9TZgbkx+Ok+j4s/t/YiTtwB1wz8DiHj9JN0jXJiRutVAZSa+tA5MCYeSWLgQb76edXvfnkWQeX8WNKWTYlz17SLPJjLQ10OwsSSDsbzXBhRKwyGRjRVKJ4Vi+Cvkd8smIa3APs4t3J6hRMxHxCtCqQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725401449; c=relaxed/simple;
-	bh=YToOnPwe4/lMBc4WWQWOR4PxqLZrjW8XUk2WGpI41eE=;
+	s=arc-20240116; t=1725401621; c=relaxed/simple;
+	bh=BFwV4XFqWWCv3stbm+yoKdUNt7HYzxBOKF2GDUHAz+Y=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pda8cJsRwEbzaoeB0qrD38Y7N9+vfAhq3Ue3Cf0Xu3u5COWje+ieTL9997HsoBTuYr6WbuAkqpScRXn+yF2eH2Zx1hv9QbkKKXxf9fjQnmKE3Emyh7X2KxPEFm8P8wCFu1SgCvboelKgjKDtQtzOjMBunsUhmN/hP6+NRq7qu2U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OGEBxxsx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68E05C4CEC4;
-	Tue,  3 Sep 2024 22:10:48 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=Dm3CDuCiL/QPdtdyVHojwMzYDMxTdzBZmofzeyuAh+BEfHf1mgsffwRGlLgSMWYySBKwBu6kRBrq0zEgfYpq4w/2Q/vz4rY0xgGQncFh96iY1nZKBW9oNW6HXiP1i4aaTQMkiVNNa6bqJOqeZFUB7OSpEmLo/77TKOesC0xIahE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Kwt+dUH7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A03AC4CEC5;
+	Tue,  3 Sep 2024 22:13:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1725401448;
-	bh=YToOnPwe4/lMBc4WWQWOR4PxqLZrjW8XUk2WGpI41eE=;
+	s=k20201202; t=1725401621;
+	bh=BFwV4XFqWWCv3stbm+yoKdUNt7HYzxBOKF2GDUHAz+Y=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=OGEBxxsxxFiomc9WIP8k3FtI28wTvOWbmS16bjsqc2KKzk89r6CSpn1kNpoFsunGf
-	 Uaj3DFB5j8PDhi9VUYv4Wlpv2Gf5q1ZHZbK250WQQ9NXicwfbbmp+4oG1cd2H/9cys
-	 CKDYuO2dre3iJbAm8sIUaRMiD9ZNaQvPtsowlNv7X0kgBb3sVX5DQXtMQyo/44pIlH
-	 IoVfA3VpJuSusTl5Y6hv++u2uCd6f/+g8CkVBbbkktlR9pJQIGR0Wh9+OLOArL/t7n
-	 +Cdx7HtuL3vUNt07VE9zKIl4nClf+fdGRVnCiV/F7pTcTC+MRlom0FHgYqqdT+acKb
-	 z+JvDPlDE5NMw==
+	b=Kwt+dUH7Z6nYBlPxIBkm0Vvf1XFwD5P0V3tSz9ut1EJukXQpHy14Hts52T5rNQh7y
+	 TUh3GV1D55sqi22iRQf3N3WGxXD9HgfnbqIObA5owK+MJfR+Yt0i0CM4YebON97PzQ
+	 U+DhWrkFHthwv/F7l0AwjvTSitEVrh7yFgWBpeSqChvs+P2PGVxrExHR5nv2ujNt3P
+	 dHrHLuezZSLoZEA50uXqto9tzvGPdndeJUfAvLVhF0CKh8erVWmWcmNhSTwx9bVVuT
+	 HL3iAj5f8KSrpJ/aqNjXOA4kJ+KftdDorimy0nJF2wBV0Ag6mOoGwvs85EUBkIo/LS
+	 QGK/q5Wq/A65A==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 05E4DCE1257; Tue,  3 Sep 2024 15:10:48 -0700 (PDT)
-Date: Tue, 3 Sep 2024 15:10:47 -0700
+	id D3B16CE1257; Tue,  3 Sep 2024 15:13:40 -0700 (PDT)
+Date: Tue, 3 Sep 2024 15:13:40 -0700
 From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: rcu@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-	Kernel Team <kernel-team@meta.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Alexei Starovoitov <ast@kernel.org>,
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
+	rostedt@goodmis.org, Alexei Starovoitov <ast@kernel.org>,
 	Andrii Nakryiko <andrii@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH rcu 07/11] srcu: Add srcu_read_lock_lite() and
- srcu_read_unlock_lite()
-Message-ID: <2e8c01a3-4ad7-4c4b-a697-acebdf7db8ad@paulmck-laptop>
+	Peter Zijlstra <peterz@infradead.org>, bpf@vger.kernel.org
+Subject: Re: [PATCH rcu 0/11] Add light-weight readers for SRCU
+Message-ID: <0359b3a4-b6db-45d9-9957-b304b4a85865@paulmck-laptop>
 Reply-To: paulmck@kernel.org
 References: <26cddadd-a79b-47b1-923e-9684cd8a7ef4@paulmck-laptop>
- <20240903163318.480678-7-paulmck@kernel.org>
- <CAADnVQJCRksMjpKzpNFNXR4ZggnuLN4yTmBbFCr5YW33bbwSwQ@mail.gmail.com>
+ <gbar5cxixgq4jtxgtzv7xjipabhqqbwdwyrtahkkws3tregdvo@edqb7ku2uhk2>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQJCRksMjpKzpNFNXR4ZggnuLN4yTmBbFCr5YW33bbwSwQ@mail.gmail.com>
+In-Reply-To: <gbar5cxixgq4jtxgtzv7xjipabhqqbwdwyrtahkkws3tregdvo@edqb7ku2uhk2>
 
-On Tue, Sep 03, 2024 at 12:45:23PM -0700, Alexei Starovoitov wrote:
-> On Tue, Sep 3, 2024 at 9:33 AM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > diff --git a/include/linux/srcu.h b/include/linux/srcu.h
-> > index 84daaa33ea0ab..4ba96e2cfa405 100644
-> > --- a/include/linux/srcu.h
-> > +++ b/include/linux/srcu.h
-> ...
+On Tue, Sep 03, 2024 at 05:38:05PM -0400, Kent Overstreet wrote:
+> On Tue, Sep 03, 2024 at 09:32:51AM GMT, Paul E. McKenney wrote:
+> > Hello!
+> > 
+> > This series provides light-weight readers for SRCU.  This lightness
+> > is selected by the caller by using the new srcu_read_lock_lite() and
+> > srcu_read_unlock_lite() flavors instead of the usual srcu_read_lock() and
+> > srcu_read_unlock() flavors.  Although this passes significant rcutorture
+> > testing, this should still be considered to be experimental.
 > 
-> > +static inline int srcu_read_lock_lite(struct srcu_struct *ssp) __acquires(ssp)
-> > +{
-> > +       int retval;
-> > +
-> > +       srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_LITE);
-> > +       retval = __srcu_read_lock_lite(ssp);
-> > +       rcu_try_lock_acquire(&ssp->dep_map);
-> > +       return retval;
-> > +}
-> 
-> ...
-> 
-> > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> > index 602b4b8c4b891..bab888e86b9bb 100644
-> > --- a/kernel/rcu/srcutree.c
-> > +++ b/kernel/rcu/srcutree.c
-> > +int __srcu_read_lock_lite(struct srcu_struct *ssp)
-> > +{
-> > +       int idx;
-> > +
-> > +       RCU_LOCKDEP_WARN(!rcu_is_watching(), "RCU must be watching srcu_read_lock_lite().");
-> > +       idx = READ_ONCE(ssp->srcu_idx) & 0x1;
-> > +       this_cpu_inc(ssp->sda->srcu_lock_count[idx].counter); /* Y */
-> > +       barrier(); /* Avoid leaking the critical section. */
-> > +       return idx;
-> > +}
-> > +EXPORT_SYMBOL_GPL(__srcu_read_lock_lite);
-> 
-> The use cases where smp_mb() penalty is noticeable probably will notice
-> the cost of extra call too.
-> Can the main part be in srcu.h as well to make it truly "lite" ?
-> Otherwise we'd have to rely on compilers doing LTO which may or may not happen.
+> This avoids memory barriers, correct?
 
-I vaguely recall #include issues for old-times srcu_read_lock() and
-srcu_read_unlock(), but I will try it and see what happens.
+Yes, there are no smp_mb() invocations in either srcu_read_lock_lite()
+or srcu_read_unlock_lite().  As usual, nothing comes for free, so the
+overhead is moved to the update side, and amplified, in the guise of
+the at least two calls to synchronize_rcu().
 
-In the meantime, if you are too curious for your own good...  ;-)
+> > There are a few restrictions:  (1) If srcu_read_lock_lite() is called
+> > on a given srcu_struct structure, then no other flavor may be used on
+> > that srcu_struct structure, before, during, or after.  (2) The _lite()
+> > readers may only be invoked from regions of code where RCU is watching
+> > (as in those regions in which rcu_is_watching() returns true).  (3)
+> > There is no auto-expediting for srcu_struct structures that have
+> > been passed to _lite() readers.  (4) SRCU grace periods for _lite()
+> > srcu_struct structures invoke synchronize_rcu() at least twice, thus
+> > having longer latencies than their non-_lite() counterparts.  (5) Even
+> > with synchronize_srcu_expedited(), the resulting SRCU grace period
+> > will invoke synchronize_rcu() at least twice, as opposed to invoking
+> > the IPI-happy synchronize_rcu_expedited() function.  (6)  Just as with
+> > srcu_read_lock() and srcu_read_unlock(), the srcu_read_lock_lite() and
+> > srcu_read_unlock_lite() functions may not (repeat, *not*) be invoked
+> > from NMI handlers (that is what the _nmisafe() interface are for).
+> > Although one could imagine readers that were both _lite() and _nmisafe(),
+> > one might also imagine that the read-modify-write atomic operations that
+> > are needed by any NMI-safe SRCU read marker would make this unhelpful
+> > from a performance perspective.
+> 
+> So if I'm following, this should work fine for bcachefs, and be a nifty
+> small perforance boost.
 
-One way to check the performance is to work in the other direction.  For
-example, add ndelay(10) or similar to the current srcu_read_lock_lite()
-implementation and seeing if this is visible at the system level.
+Glad you like it!
+
+> Can I give you an account for my test cluster? If you'd like, we can
+> convert bcachefs to it and point it at your branch.
+
+Thank you, but I will pass on more accounts.  I have a fair amount of
+hardware at my disposal.  ;-)
 
 							Thanx, Paul
 
