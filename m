@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-38807-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38808-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D14A96A5C2
-	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 19:48:36 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A67096A5C4
+	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 19:48:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A978BB21CBB
-	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 17:48:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7D26B1C23CF1
+	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 17:48:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FFFE190471;
-	Tue,  3 Sep 2024 17:46:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A211198858;
+	Tue,  3 Sep 2024 17:46:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Qhx6yfQQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ePac60MH"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C67A11946B4;
-	Tue,  3 Sep 2024 17:46:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D84918FDAA;
+	Tue,  3 Sep 2024 17:46:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725385584; cv=none; b=k1rCYdqHAFMsFjebVVsw2kEC4SIQz8wfP2PHcn/viwgY5aI07tq0/hUBCF35U/bOuqchqs8HocWZGsVy92rWuyEKKu0TAhAZJiMmr0e5vj6oFf9ewvTK5ZIbk5JXGfF2zE4rVrkNSzpZpojoCuadeag0earnL+9EGRxUapckqtE=
+	t=1725385588; cv=none; b=S3tT8koaN/OuMUvYqZrKOiqOF48r4NIQ7aKqaNHNSSPiKoh/gtp9JlUhto7gZ0rn/ngGHu+faLe0pc+arRx/b6T+l2vqtTXTV6pvPaZYPejwoyzKCRsSCtFb1rTOJPv4TCZ4HFiXGvkgH8XXKcXgRU0CrZ+p2yUv+aVJ8DDucPg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725385584; c=relaxed/simple;
-	bh=+g5blMcMvR/SzeXxNsO+2FR1B0Xb/4hXSLWFzum/rNc=;
+	s=arc-20240116; t=1725385588; c=relaxed/simple;
+	bh=fbkVIaD1WSV5k2O1l+qbLGEuln2w8HvLuX0+cvs5jtI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=DQCT6tV1Af3GwhSLUpLCxGwQKcZMjW5QKiR682fH2Cpv5q/w+1BpTS9GHmXH5jutmGrxwe/biTtF1158oGXoAf4082Zqc6ZxlDrDVydBHpM3cucnmHmyDg4aLji1MUxkHehCP/6hnncbkx8UTEjtDgvq8/ajAAyil4tZKUgTUcs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Qhx6yfQQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3520AC4CEC4;
-	Tue,  3 Sep 2024 17:46:24 +0000 (UTC)
+	 MIME-Version; b=mCyYbaLEgnRqKAxhD1Xzfk/jJ7DegZDJy2PPu8kUIpC4NhcPKNKd0FzZs56DQjn0+8zOlL9lWZAybfPj/OW3BGd+19Z6FxLgaVv5v88nISgA4aelpcsY/9LAS8JgUFm1A/Hn2NA8psybpeedtxMbuHqm2FBR5SqZNh2v5qRXhxE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ePac60MH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E8DAC4CEC6;
+	Tue,  3 Sep 2024 17:46:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1725385584;
-	bh=+g5blMcMvR/SzeXxNsO+2FR1B0Xb/4hXSLWFzum/rNc=;
+	s=k20201202; t=1725385587;
+	bh=fbkVIaD1WSV5k2O1l+qbLGEuln2w8HvLuX0+cvs5jtI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Qhx6yfQQFzXxpHP3LO+Fd1jKiUa4JhPuiOsfHedhqXJjYdmYOMAFnnX0y0a3/BRq/
-	 zau5ZeAS43Xbm3KxfmouEia1A2VI7ZAacfnXnGy2G/qSuGT3ISARwoujzhXSfze6iN
-	 Ob9hpzh5HONT6NCQ3pjUef3Y8joaErhmOh4R3/xZleSPb44UYga9B6QwejU9EmNibZ
-	 whpmKRFcgTiO5x5NK49n22lMdZOz/WzO+14nZyR5/uWmmvH4GI2kLb9mfR2Dcxa8/a
-	 ePAX0kEJML3yYA+dDB8kYj65pehwax5J3lyQXqe7o0/VZOTFnL1D3bm0T6IB+AEd9g
-	 h3SuCX8DXCvvA==
+	b=ePac60MHZQZol0UGw03YynNTwklAOaXlOvgQPfdFV66MYzxkSzn+Zmk4d1UTS198j
+	 zU8y2voSoi8FHy8gTAz9OTJ/tflW4leFmuRPC95QNYsdovmI8L/kSz/oHSbwosTt4l
+	 90yxAjvX0bAlHHDCz/NCCWumyGr9+oyKrPSrqZY5wXnN3jRekx9+V7cdxUl5sXMLkN
+	 qChy2ahmkKbxyNBiybflTFGhG9xQqB2nQW0rsB/wTcKY0458tc/hGBHh9VnRe/+5Oq
+	 UuYFJ19TN2rpx1y9fim9ueGgCZ24e5P73q8VPvfJvBuUviAuEuoLvMxFS4Z8cCJcb7
+	 /vMnWH9OEYinw==
 From: Andrii Nakryiko <andrii@kernel.org>
 To: linux-trace-kernel@vger.kernel.org,
 	peterz@infradead.org,
@@ -56,9 +56,9 @@ Cc: rostedt@goodmis.org,
 	akpm@linux-foundation.org,
 	linux-mm@kvack.org,
 	Andrii Nakryiko <andrii@kernel.org>
-Subject: [PATCH v5 5/8] perf/uprobe: split uprobe_unregister()
-Date: Tue,  3 Sep 2024 10:46:00 -0700
-Message-ID: <20240903174603.3554182-6-andrii@kernel.org>
+Subject: [PATCH v5 6/8] rbtree: provide rb_find_rcu() / rb_find_add_rcu()
+Date: Tue,  3 Sep 2024 10:46:01 -0700
+Message-ID: <20240903174603.3554182-7-andrii@kernel.org>
 X-Mailer: git-send-email 2.43.5
 In-Reply-To: <20240903174603.3554182-1-andrii@kernel.org>
 References: <20240903174603.3554182-1-andrii@kernel.org>
@@ -72,172 +72,102 @@ Content-Transfer-Encoding: 8bit
 
 From: Peter Zijlstra <peterz@infradead.org>
 
-With uprobe_unregister() having grown a synchronize_srcu(), it becomes
-fairly slow to call. Esp. since both users of this API call it in a
-loop.
-
-Peel off the sync_srcu() and do it once, after the loop.
-
-We also need to add uprobe_unregister_sync() into uprobe_register()'s
-error handling path, as we need to be careful about returning to the
-caller before we have a guarantee that partially attached consumer won't
-be called anymore. This is an unlikely slow path and this should be
-totally fine to be slow in the case of a failed attach.
+Much like latch_tree, add two RCU methods for the regular RB-tree,
+which can be used in conjunction with a seqcount to provide lockless
+lookups.
 
 Reviewed-by: Oleg Nesterov <oleg@redhat.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Co-developed-by: Andrii Nakryiko <andrii@kernel.org>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 ---
- include/linux/uprobes.h                       |  8 +++++--
- kernel/events/uprobes.c                       | 21 +++++++++++++------
- kernel/trace/bpf_trace.c                      |  5 ++++-
- kernel/trace/trace_uprobe.c                   |  6 +++++-
- .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  3 ++-
- 5 files changed, 32 insertions(+), 11 deletions(-)
+ include/linux/rbtree.h | 67 ++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 67 insertions(+)
 
-diff --git a/include/linux/uprobes.h b/include/linux/uprobes.h
-index 2785d1bedb74..968230d81798 100644
---- a/include/linux/uprobes.h
-+++ b/include/linux/uprobes.h
-@@ -116,7 +116,8 @@ extern unsigned long uprobe_get_trap_addr(struct pt_regs *regs);
- extern int uprobe_write_opcode(struct arch_uprobe *auprobe, struct mm_struct *mm, unsigned long vaddr, uprobe_opcode_t);
- extern struct uprobe *uprobe_register(struct inode *inode, loff_t offset, loff_t ref_ctr_offset, struct uprobe_consumer *uc);
- extern int uprobe_apply(struct uprobe *uprobe, struct uprobe_consumer *uc, bool);
--extern void uprobe_unregister(struct uprobe *uprobe, struct uprobe_consumer *uc);
-+extern void uprobe_unregister_nosync(struct uprobe *uprobe, struct uprobe_consumer *uc);
-+extern void uprobe_unregister_sync(void);
- extern int uprobe_mmap(struct vm_area_struct *vma);
- extern void uprobe_munmap(struct vm_area_struct *vma, unsigned long start, unsigned long end);
- extern void uprobe_start_dup_mmap(void);
-@@ -165,7 +166,10 @@ uprobe_apply(struct uprobe* uprobe, struct uprobe_consumer *uc, bool add)
- 	return -ENOSYS;
+diff --git a/include/linux/rbtree.h b/include/linux/rbtree.h
+index f7edca369eda..7c173aa64e1e 100644
+--- a/include/linux/rbtree.h
++++ b/include/linux/rbtree.h
+@@ -244,6 +244,42 @@ rb_find_add(struct rb_node *node, struct rb_root *tree,
+ 	return NULL;
  }
- static inline void
--uprobe_unregister(struct uprobe *uprobe, struct uprobe_consumer *uc)
-+uprobe_unregister_nosync(struct uprobe *uprobe, struct uprobe_consumer *uc)
+ 
++/**
++ * rb_find_add_rcu() - find equivalent @node in @tree, or add @node
++ * @node: node to look-for / insert
++ * @tree: tree to search / modify
++ * @cmp: operator defining the node order
++ *
++ * Adds a Store-Release for link_node.
++ *
++ * Returns the rb_node matching @node, or NULL when no match is found and @node
++ * is inserted.
++ */
++static __always_inline struct rb_node *
++rb_find_add_rcu(struct rb_node *node, struct rb_root *tree,
++		int (*cmp)(struct rb_node *, const struct rb_node *))
 +{
-+}
-+static inline void uprobe_unregister_sync(void)
- {
- }
- static inline int uprobe_mmap(struct vm_area_struct *vma)
-diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-index 97e58d160647..e9b755ddf960 100644
---- a/kernel/events/uprobes.c
-+++ b/kernel/events/uprobes.c
-@@ -1105,11 +1105,11 @@ register_for_each_vma(struct uprobe *uprobe, struct uprobe_consumer *new)
- }
- 
- /**
-- * uprobe_unregister - unregister an already registered probe.
-+ * uprobe_unregister_nosync - unregister an already registered probe.
-  * @uprobe: uprobe to remove
-  * @uc: identify which probe if multiple probes are colocated.
-  */
--void uprobe_unregister(struct uprobe *uprobe, struct uprobe_consumer *uc)
-+void uprobe_unregister_nosync(struct uprobe *uprobe, struct uprobe_consumer *uc)
- {
- 	int err;
- 
-@@ -1121,12 +1121,15 @@ void uprobe_unregister(struct uprobe *uprobe, struct uprobe_consumer *uc)
- 	/* TODO : cant unregister? schedule a worker thread */
- 	if (unlikely(err)) {
- 		uprobe_warn(current, "unregister, leaking uprobe");
--		goto out_sync;
-+		return;
- 	}
- 
- 	put_uprobe(uprobe);
-+}
-+EXPORT_SYMBOL_GPL(uprobe_unregister_nosync);
- 
--out_sync:
-+void uprobe_unregister_sync(void)
-+{
- 	/*
- 	 * Now that handler_chain() and handle_uretprobe_chain() iterate over
- 	 * uprobe->consumers list under RCU protection without holding
-@@ -1138,7 +1141,7 @@ void uprobe_unregister(struct uprobe *uprobe, struct uprobe_consumer *uc)
- 	 */
- 	synchronize_srcu(&uprobes_srcu);
- }
--EXPORT_SYMBOL_GPL(uprobe_unregister);
-+EXPORT_SYMBOL_GPL(uprobe_unregister_sync);
- 
- /**
-  * uprobe_register - register a probe
-@@ -1196,7 +1199,13 @@ struct uprobe *uprobe_register(struct inode *inode,
- 	up_write(&uprobe->register_rwsem);
- 
- 	if (ret) {
--		uprobe_unregister(uprobe, uc);
-+		uprobe_unregister_nosync(uprobe, uc);
-+		/*
-+		 * Registration might have partially succeeded, so we can have
-+		 * this consumer being called right at this time. We need to
-+		 * sync here. It's ok, it's unlikely slow path.
-+		 */
-+		uprobe_unregister_sync();
- 		return ERR_PTR(ret);
- 	}
- 
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 73c570b5988b..6b632710c98e 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -3184,7 +3184,10 @@ static void bpf_uprobe_unregister(struct bpf_uprobe *uprobes, u32 cnt)
- 	u32 i;
- 
- 	for (i = 0; i < cnt; i++)
--		uprobe_unregister(uprobes[i].uprobe, &uprobes[i].consumer);
-+		uprobe_unregister_nosync(uprobes[i].uprobe, &uprobes[i].consumer);
++	struct rb_node **link = &tree->rb_node;
++	struct rb_node *parent = NULL;
++	int c;
 +
-+	if (cnt)
-+		uprobe_unregister_sync();
++	while (*link) {
++		parent = *link;
++		c = cmp(node, parent);
++
++		if (c < 0)
++			link = &parent->rb_left;
++		else if (c > 0)
++			link = &parent->rb_right;
++		else
++			return parent;
++	}
++
++	rb_link_node_rcu(node, parent, link);
++	rb_insert_color(node, tree);
++	return NULL;
++}
++
+ /**
+  * rb_find() - find @key in tree @tree
+  * @key: key to match
+@@ -272,6 +308,37 @@ rb_find(const void *key, const struct rb_root *tree,
+ 	return NULL;
  }
  
- static void bpf_uprobe_multi_link_release(struct bpf_link *link)
-diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
-index 7eb79e0a5352..f7443e996b1b 100644
---- a/kernel/trace/trace_uprobe.c
-+++ b/kernel/trace/trace_uprobe.c
-@@ -1097,6 +1097,7 @@ static int trace_uprobe_enable(struct trace_uprobe *tu, filter_func_t filter)
- static void __probe_event_disable(struct trace_probe *tp)
- {
- 	struct trace_uprobe *tu;
-+	bool sync = false;
- 
- 	tu = container_of(tp, struct trace_uprobe, tp);
- 	WARN_ON(!uprobe_filter_is_empty(tu->tp.event->filter));
-@@ -1105,9 +1106,12 @@ static void __probe_event_disable(struct trace_probe *tp)
- 		if (!tu->uprobe)
- 			continue;
- 
--		uprobe_unregister(tu->uprobe, &tu->consumer);
-+		uprobe_unregister_nosync(tu->uprobe, &tu->consumer);
-+		sync = true;
- 		tu->uprobe = NULL;
- 	}
-+	if (sync)
-+		uprobe_unregister_sync();
- }
- 
- static int probe_event_enable(struct trace_event_call *call,
-diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-index 3c0515a27842..1fc16657cf42 100644
---- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-+++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-@@ -475,7 +475,8 @@ static void testmod_unregister_uprobe(void)
- 	mutex_lock(&testmod_uprobe_mutex);
- 
- 	if (uprobe.uprobe) {
--		uprobe_unregister(uprobe.uprobe, &uprobe.consumer);
-+		uprobe_unregister_nosync(uprobe.uprobe, &uprobe.consumer);
-+		uprobe_unregister_sync();
- 		path_put(&uprobe.path);
- 		uprobe.uprobe = NULL;
- 	}
++/**
++ * rb_find_rcu() - find @key in tree @tree
++ * @key: key to match
++ * @tree: tree to search
++ * @cmp: operator defining the node order
++ *
++ * Notably, tree descent vs concurrent tree rotations is unsound and can result
++ * in false-negatives.
++ *
++ * Returns the rb_node matching @key or NULL.
++ */
++static __always_inline struct rb_node *
++rb_find_rcu(const void *key, const struct rb_root *tree,
++	    int (*cmp)(const void *key, const struct rb_node *))
++{
++	struct rb_node *node = tree->rb_node;
++
++	while (node) {
++		int c = cmp(key, node);
++
++		if (c < 0)
++			node = rcu_dereference_raw(node->rb_left);
++		else if (c > 0)
++			node = rcu_dereference_raw(node->rb_right);
++		else
++			return node;
++	}
++
++	return NULL;
++}
++
+ /**
+  * rb_find_first() - find the first @key in @tree
+  * @key: key to match
 -- 
 2.43.5
 
