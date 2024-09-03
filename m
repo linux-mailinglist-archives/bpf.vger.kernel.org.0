@@ -1,314 +1,522 @@
-Return-Path: <bpf+bounces-38842-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38845-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EABD896ABCE
-	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2024 00:12:41 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D806796ABE7
+	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2024 00:14:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1B7781C2392B
-	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 22:12:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4D555B26933
+	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 22:14:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0362B1DA316;
-	Tue,  3 Sep 2024 22:08:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96C691D79A2;
+	Tue,  3 Sep 2024 22:11:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C5zotwSH"
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="Oy83z9Hs"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from DUZPR83CU001.outbound.protection.outlook.com (mail-northeuropeazolkn19013070.outbound.protection.outlook.com [52.103.32.70])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE5881DA2E1;
-	Tue,  3 Sep 2024 22:08:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725401316; cv=none; b=f/8qGfpYAecXWuTjynjL+FtXk5U5VvmMhp7rg+cPQ3Wjb0qinOn0p7XUoHlk84oKKLMf4XrvhgctQN/ICRvlwN2VXHUzJHkMUx25Neu8op+Pl8QYEWHEljYzKAidRhpCATmgo4MfZdU12XCHSz0FqqB6w6n9+LSXta0Nk4N6heo=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725401316; c=relaxed/simple;
-	bh=WJvWFGlKBfr1UFCnZDHbjycRp7LWitNkxwg5KciGAWM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=cKfc/Qabg069J9cGrXDZu9AftP9+0zq43Hd6n1as+Wb2PRzCFnQfwn64HWNuyqArnza83Q9nFQ2U6aEvfj0sdAopsBRD83sCVix0R7vBxOeFGhZK8+B5cGdWrnnTMnSQxXRmXitQJEGLEJStOuPcj7KnO8EKl03d3GBnAk2mUS4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C5zotwSH; arc=none smtp.client-ip=209.85.216.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-2d1daa2577bso4090400a91.2;
-        Tue, 03 Sep 2024 15:08:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1725401314; x=1726006114; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=05+oB0bcf+Hu9+RUtMLlTIM2Mu/BEj3LxW6llWiweaw=;
-        b=C5zotwSHtTfmYCS+1gENouP/6OSFCi8kkCEfrsAlO+2/zyjMgF7iUKuflMuBkJ6+KP
-         8OeUoDTc0aWJPiuHT9+I5Z4Lc6taAAzF6FW03OfgZDFMZVWQa5EDSHEqCGcNyE0+kM3D
-         PvwpN42Mp2v1IeaZ4XiBKvloqpa8u8uil2GsQRYXPn7fyG8KALjPvDsVByUnO0tr+CGA
-         JFjSudA1TyLlE/cibcF+dwLLuunCcmiJqwGMmLluDcpkNhDZVLfDRsyMSd3ixML69VUE
-         yEU0d8AQJqhunWV7exejSwWaIZ1oXS7SByV6vtFDnQYKlg64L6+0XwXAmB5J2Eztsw8I
-         hdWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725401314; x=1726006114;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=05+oB0bcf+Hu9+RUtMLlTIM2Mu/BEj3LxW6llWiweaw=;
-        b=bcwvhWCeprz7apLc53rqo25riL3PrUthntDqM9jy35xE7nQeOhUPeS/cmRHMckZtK8
-         yBoCK427RDkBiRCEiJ790+3KnyHyzNpKJdzCmVQjQD3CWkLsyZryXyD6hLQxtx1hz2YG
-         1sez/5wJZTS/0ZlCCdKFZZRVwEDG6Ra85OwAU5VtwuYWqO7XK7vgfi1yIMr5efPz7hg4
-         FPHbYp5ZX7hILCFFahJ4/mzSYPVsJGrGLMYh0u29OJwZUe6e9oT+LwN3CwASgC4Wsfm6
-         ouPcI/WdtO9eKgEwLM7VMlaqSjDCKpl4B2y8HM4rTnmBeN59Vp3E9SRfszRIYjz1QmB0
-         ZFDQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU+IG+qRDVw0LnwHm8tgPJPNsrq/zWRfPHlUh2xNe5Or9ugS7dM5fggs4ty7X4nGq0oBtE=@vger.kernel.org, AJvYcCVnvAI0crcXDuIGGmoAmc3lZtro05Vb+tQbDirsnt6QWc0nqlG0CPlCcTzCQmzHIxgLO3FkP+tjXMA/oP/P@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy1ka8p/GooxQkGf1KksoT8g7FnxcNRNPpJ2TdQ+yyc91/IOhKM
-	8MK7oKdjZlgmrkmsrX/KKqL9eDRuecZPj2oSeYZ7/lQ7JnwgfTzVaCUeiA3hypytPuyLIZGZHKi
-	ICVOwKM3oyHV5wlN+sot6OqwPcBoY5xg6
-X-Google-Smtp-Source: AGHT+IGvZoUtmLtLglqrbGXzcQ2X93GVrFFInJCAwPUq9a9ZToo0X5iXfW2raXz9m33c02yJx7iDMTumqNT2zhroDmc=
-X-Received: by 2002:a17:90b:274e:b0:2d3:cb16:c8e with SMTP id
- 98e67ed59e1d1-2d85649e92cmr19669581a91.43.1725401313781; Tue, 03 Sep 2024
- 15:08:33 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D085F1D799E;
+	Tue,  3 Sep 2024 22:11:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.103.32.70
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1725401474; cv=fail; b=u8s4T//LLGnqjXEjie1njPMoZkTTrbTy+F/yon62mm12OzJ2Kc08Y8Qwrq6Ii7WuSQ89QB9UuKFHtFGW1BXigy83DUAFoNeqCsLb2q66yeXh5jMjGtUkgUgrUrZQO47dc+HZDq7oz7IHuYhotHZEJQPvP2QYa1PnCb5LdWhg1lg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1725401474; c=relaxed/simple;
+	bh=VRMyYiFADntRaYWKa8srLMLo4ImNH1x1utvG5R4gPlM=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=l/VXWKjH32SVKy36onLNNepwDfUFV83++bYA/hX+aL/9z5Pe4WExYt63qUpTSDQ99hhCRZYsbANMEhWVKKODTbnoyPmoRwTZv0g0ARwO7cKJHd5NpDpQMTM14dKa03jV1Y9zWAfw5c8dWE0ljS3F5q8FGa2ew08Il5WHExFkzlg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=Oy83z9Hs; arc=fail smtp.client-ip=52.103.32.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=rBYN9x/nR+byNJkRZKy7NekzX/HwjJ7IsJ2NjaZOqambGpTpnUrjRODDdymtKPgY2qQRzPLF9NxZi9IwCwOw6z9lZQ5tXQUqWzeAN94czY/xMIAv5JPm19x9B80TNwMJbV7dT/Fbcfr37i0ISnNUDBPxbxLU113m3w15PlUcWHQrNVAttSZoScprjkOeCbyt1kpaXk7KZgQJooGy9Ybq3EtwzVeaQ3HR+GYnGK7y9kugyVXfcjkhJG5ZIdyYUu362Cjwun5F7PrFrLd3qoMfnAmLEz1YWmFPmF3ReqEa7VjrJq+o7QRrCzgs3XDGXFAtmiEcw7cXfWlNGpfC6+Bplw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ItkT1Oe88otzRYEIKE04ZEPRro7q4zW7CYtVfDyCBIo=;
+ b=hmtOa1+/UuvnkTMRRH2mL9/4ikAVJgN4R8HVQ56smpJcEMcmvO54PdC9teWigxb+Jy6n8EvCXDZekDdj8z9qZrmEEKKHaN0tu0VaaQvQZR2YhDaR0K8K4dxXUG5IoUeqd2hYsJ9P3AhHwZmpOptRQoMD5Smgo+ZGIbKKDl/C3dwhRBCThBlIgScW6sMyHg4jIqA4Ui4LwltwnZ6VZzvqFx+TNZeM2Ljjd+cSRFZXPpTkt7ZKYY++Jow3LhYNMhXeraDjI3Ca1B2Rbf7B2JR1SUzUy4GXo1Y7a3bcUvrflylTJpP7xax9sJ9GALsOGH22jflnqJHQRJhSfaA+bkEvog==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ItkT1Oe88otzRYEIKE04ZEPRro7q4zW7CYtVfDyCBIo=;
+ b=Oy83z9HsUyEfOCswvKwMlGseZTFXesq/oGbNEE7dl/qTJp41TEOdCxEwcDF9Prwb6/8akIBHGFUlUciAH0igasapmmGW2q8jWoOt8wqaRxBMN/38rOpZTIWkEhmR34wYREyUKykT+EyrtzKjVePlU2GxcsfGJhCvfi+2Xrjm3u2bmftMY/IbKYIs6yshqzWFGPOR4BtrGQgnixu+2wHIR+DY4Lpe9bNpIGrUmLpySfXZ21x6zk5LXSb8NbxCpya63i6/hss8+36egnfCgb6L75ES4bRYnSLOFp6lGtnDJtJJv9lbmqV/cfRN3B4YLKfFKwNYvXJmcuEmV7xstZb8LQ==
+Received: from AM6PR03MB5848.eurprd03.prod.outlook.com (2603:10a6:20b:e4::10)
+ by VI1PR03MB6335.eurprd03.prod.outlook.com (2603:10a6:800:140::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7918.27; Tue, 3 Sep
+ 2024 22:11:04 +0000
+Received: from AM6PR03MB5848.eurprd03.prod.outlook.com
+ ([fe80::4b97:bbdb:e0ac:6f7]) by AM6PR03MB5848.eurprd03.prod.outlook.com
+ ([fe80::4b97:bbdb:e0ac:6f7%5]) with mapi id 15.20.7918.024; Tue, 3 Sep 2024
+ 22:11:04 +0000
+From: Juntong Deng <juntong.deng@outlook.com>
+To: ast@kernel.org,
+	daniel@iogearbox.net,
+	john.fastabend@gmail.com,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	memxor@gmail.com,
+	snorcht@gmail.com
+Cc: bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [RFC PATCH bpf-next 2/2] selftests/bpf: Add tests for open-coded style bpf dynamic pointer iterator
+Date: Tue,  3 Sep 2024 23:09:49 +0100
+Message-ID:
+ <AM6PR03MB58485BE1C0964BFD3C3657D899932@AM6PR03MB5848.eurprd03.prod.outlook.com>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <AM6PR03MB5848C2304B17658423B4B81D99932@AM6PR03MB5848.eurprd03.prod.outlook.com>
+References: <AM6PR03MB5848C2304B17658423B4B81D99932@AM6PR03MB5848.eurprd03.prod.outlook.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN: [trO/xc8yGqM2LWABVX792NIo30jo1n3y]
+X-ClientProxiedBy: LO2P265CA0498.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:13a::23) To AM6PR03MB5848.eurprd03.prod.outlook.com
+ (2603:10a6:20b:e4::10)
+X-Microsoft-Original-Message-ID:
+ <20240903220949.82946-1-juntong.deng@outlook.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <26cddadd-a79b-47b1-923e-9684cd8a7ef4@paulmck-laptop>
-In-Reply-To: <26cddadd-a79b-47b1-923e-9684cd8a7ef4@paulmck-laptop>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 3 Sep 2024 15:08:21 -0700
-Message-ID: <CAEf4BzZ5mJH5+4j56zSKkvuRLLfcQMEbkjM-T86onZdAWtsN+g@mail.gmail.com>
-Subject: Re: [PATCH rcu 0/11] Add light-weight readers for SRCU
-To: paulmck@kernel.org
-Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com, 
-	rostedt@goodmis.org, Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Kent Overstreet <kent.overstreet@linux.dev>, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM6PR03MB5848:EE_|VI1PR03MB6335:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2e7ff9e1-d6b5-4357-cfff-08dccc654d23
+X-Microsoft-Antispam:
+	BCL:0;ARA:14566002|461199028|8060799006|15080799006|5072599009|19110799003|440099028|3412199025;
+X-Microsoft-Antispam-Message-Info:
+	L9jSLmbIMOvCKFVyCrmQ8iaiTj3fulaBVSmZWx9+xVu2uKV9CY37WlQVLLhcNhVmGM15Q+KBWvLHneby2lGhyVRd7aEshheaUGmTfiiTsQ++jK4ORPoRkwwmoryE6rfUur+a3jrmALNYmxCLoIDc7tIIl+hIrTG9jq1+R5/AM6SP0KeGhwAJQ+0lvS41jOtQMQHzpXh731ZhS2fAHIuJ+5A3QV5+9wbAgnv1kN5NPW1fbLw+ssM85qGZ+ozBQQzlmB2qI01rrXrqXahXGtL5pN1oqFJ0khGBgE0rmdPISzGP/+gVcLy56F6mAxtaDdVc5Ks2T3T03wK9YScu9grsP38AnHEnZF2UBAq88IrY5xLNLt+Z4iStGcUyNpLQ4Y4lRtfdqOP+gStl+Ve00/p0KJbU5s1M3ck/IycxFIeHluwD4toOm7WbQns1SGkZWpYj32RHN0a5Zu4jPwpwTTImasSKl42Bz5+LVfVgjEMOKKHZUO1D9WH6AuK0hQXTcG5snxEavSF4ecjeSL3rghJRHOe7snGDSqAOvnqkDQGIbJwR3b8IB0PO90oC3SVFOcFd2gmc6+G2Dcb1KYw8T1EORig0IViY7re0PhkgeVl0/vACoTBa0deNDa5LvqVG2J0SCV4wb/hEJPpkbNuMuA/0QLOYuzmtu+nt5jG3XsV/Pz8LzVipae+60yw4KtatEYmQ30iDmTe8oyDPmzjY8Ie1JA==
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?j/8f3lkBz+sHtFCcE+zKabo3OwHaahx08/cekcVCAH6s2f4UAs4JsxMSwHcU?=
+ =?us-ascii?Q?MFCXnaOfOtQ9YnHUQoI+B/8cTlKdQvrITmDpfpDfrslVKs4+nTMRJOQV5dVL?=
+ =?us-ascii?Q?E3Noi8XTGouZZUy2vShT3T6UO5eNhfudrx0AtmPFIdB1Tqbxlw6S7Z+ZPXvB?=
+ =?us-ascii?Q?NnbY+huR3g9Sfj/Le0hsN2lRppqns1Ryg33nqUDEGpkBQiC3E1eZZTVkcJsn?=
+ =?us-ascii?Q?eLIif/E/v4rTblE6vcFL2zVw1SbVG4g3QFNHr5y0Noji9vTl1UDsa/D8Pki1?=
+ =?us-ascii?Q?EphIgKsPwb0CIBJzU3Puta3TTt/Qmj9H41719FX/fkHxdvKv+5np6VGYg2+i?=
+ =?us-ascii?Q?akq7lwQkc6UDVLzazrIkAjhJVwb75elRezmvQgytsi5DKQB6GW/zfr84cGhV?=
+ =?us-ascii?Q?ptqFZktQraFJtMalkP/XPZJrMHjWmoq/+71y3YdvHf6gzfecP/mgOLahHD4i?=
+ =?us-ascii?Q?vk6kt3E2zWiqx5W5jRk7VVaw0nhOgUtZGSif5W6RbbJxrPrBrzQQxk4fgkAI?=
+ =?us-ascii?Q?nk236ojmFh0rGjfbYlXwnpmegKo36p1ujBju4a1OpYJcIwhoHAXs2UJdeXfc?=
+ =?us-ascii?Q?Zgr4eCJOhzKq1t7h5PtB+kpelT7yjyhoCm9pYjkkGjFKvZlQavAtPu58dybK?=
+ =?us-ascii?Q?XBN/vLrn6zDpvhWa/VN0l2p2XLib20Gj3Z+ETjVu6bLN5kYdC8+xSXpmks45?=
+ =?us-ascii?Q?lDIlbQRnz0Z4x6bCfK7aFqBBwu32BykOV2uW1TcHGEAlt4xQwDR6JK09GBqm?=
+ =?us-ascii?Q?Lw6acR1TVl8NabSROT7mfkkCK++BN838OE/bg9asyBS8bf1aNoi1iB3uYnRp?=
+ =?us-ascii?Q?lEH5duOL5kMRex1/zhrvZqbuMzSBYHAz2mD/NsFA0A8g/8dmTUKsh45W18cM?=
+ =?us-ascii?Q?foMkxcEWRbzaTupW+AO5gdBBS8wuUGCekhr15shqf6LTLW0Gdb/0M01gMr9R?=
+ =?us-ascii?Q?NBOljvvEzPNsTr2Z5zqJa/7aFoZ02VnOG872nb+BfGDOYIDpLVQ91xIrGPpv?=
+ =?us-ascii?Q?Vhvb1hVAkkIGPdZ+/k1H3XCm+Qlgwr55DMi4J5tHTNc3mft4YayXmMrsHTTE?=
+ =?us-ascii?Q?CrQTazFCgMJmrSp4iJu0VHWaom3fp/YwIZh8ldx9GzAcVQTYjwVjpmJ3U3Xf?=
+ =?us-ascii?Q?GiIB7r27asMBRY2vtc+LFpQgj1mixhmNJtHk6cSrfqh9QoQrYAm/TFvl7QcM?=
+ =?us-ascii?Q?FTDurU74XbGErSQGRlOKvhWT8nQZqS7qhkg1oolH4zV0S+pAtafdd22KZRXd?=
+ =?us-ascii?Q?/AZVUBn8VwkEsUyB65nz?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2e7ff9e1-d6b5-4357-cfff-08dccc654d23
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR03MB5848.eurprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Sep 2024 22:11:04.0069
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR03MB6335
 
-On Tue, Sep 3, 2024 at 9:32=E2=80=AFAM Paul E. McKenney <paulmck@kernel.org=
-> wrote:
->
-> Hello!
->
-> This series provides light-weight readers for SRCU.  This lightness
-> is selected by the caller by using the new srcu_read_lock_lite() and
-> srcu_read_unlock_lite() flavors instead of the usual srcu_read_lock() and
-> srcu_read_unlock() flavors.  Although this passes significant rcutorture
-> testing, this should still be considered to be experimental.
->
-> There are a few restrictions:  (1) If srcu_read_lock_lite() is called
-> on a given srcu_struct structure, then no other flavor may be used on
-> that srcu_struct structure, before, during, or after.  (2) The _lite()
-> readers may only be invoked from regions of code where RCU is watching
-> (as in those regions in which rcu_is_watching() returns true).  (3)
-> There is no auto-expediting for srcu_struct structures that have
-> been passed to _lite() readers.  (4) SRCU grace periods for _lite()
-> srcu_struct structures invoke synchronize_rcu() at least twice, thus
-> having longer latencies than their non-_lite() counterparts.  (5) Even
-> with synchronize_srcu_expedited(), the resulting SRCU grace period
-> will invoke synchronize_rcu() at least twice, as opposed to invoking
-> the IPI-happy synchronize_rcu_expedited() function.  (6)  Just as with
-> srcu_read_lock() and srcu_read_unlock(), the srcu_read_lock_lite() and
-> srcu_read_unlock_lite() functions may not (repeat, *not*) be invoked
-> from NMI handlers (that is what the _nmisafe() interface are for).
-> Although one could imagine readers that were both _lite() and _nmisafe(),
-> one might also imagine that the read-modify-write atomic operations that
-> are needed by any NMI-safe SRCU read marker would make this unhelpful
-> from a performance perspective.
->
-> All that said, the patches in this series are as follows:
->
-> 1.      Rename srcu_might_be_idle() to srcu_should_expedite().
->
-> 2.      Introduce srcu_gp_is_expedited() helper function.
->
-> 3.      Renaming in preparation for additional reader flavor.
->
-> 4.      Bit manipulation changes for additional reader flavor.
->
-> 5.      Standardize srcu_data pointers to "sdp" and similar.
->
-> 6.      Convert srcu_data ->srcu_reader_flavor to bit field.
->
-> 7.      Add srcu_read_lock_lite() and srcu_read_unlock_lite().
->
-> 8.      rcutorture: Expand RCUTORTURE_RDR_MASK_[12] to eight bits.
->
-> 9.      rcutorture: Add reader_flavor parameter for SRCU readers.
->
-> 10.     rcutorture: Add srcu_read_lock_lite() support to
->         rcutorture.reader_flavor.
->
-> 11.     refscale: Add srcu_read_lock_lite() support using "srcu-lite".
->
->                                                 Thanx, Paul
->
+This patch adds test cases for open-coded style bpf dynamic pointer
+iterator.
 
-Thanks Paul for working on this!
+bpf_iter_dynptr_buffer_fit is used to test the case where the buffer
+will be filled in every iteration.
 
-I applied your patches on top of all my uprobe changes (including the
-RFC patches that remove locks, optimize VMA to inode resolution, etc,
-etc; basically the fastest uprobe/uretprobe state I can get to). And
-then tested a few changes:
+bpf_iter_dynptr_buffer_remain is used to test the case where the buffer
+will be remaining in the last iteration.
 
-  - A) baseline (no SRCU-lite, RCU Tasks Trace for uprobe, normal SRCU
-for uretprobes)
-  - B) A + SRCU-lite for uretprobes (i.e., SRCU to SRCU-lite conversion)
-  - C) B + RCU Tasks Trace converted to SRCU-lite
-  - D) I also pessimized baseline by reverting RCU Tasks Trace, so
-both uprobes and uretprobes are SRCU protected. This allowed me to see
-a pure gain of SRCU-lite over SRCU for uprobes, taking RCU Tasks Trace
-performance out of the equation.
+Both of the above test cases check that the offset, read data length,
+and read data content are all correct in each iteration, and that the
+iteration loop ends correctly.
 
-In uprobes I used basically two benchmarks. One, uprobe-nop, that
-benchmarks entry uprobes (which are the fastest most optimized case,
-using RCU Tasks Trace in A and SRCU in D), and another that benchmarks
-return uprobes (uretprobes), called uretprobe-nop, which is normal
-SRCU both in A) and D). The latter uretprobe-nop benchmark basically
-combines entry and return probe overheads, because that's how
-uretprobes work.
+In addition, this patch adds test cases for failures caused by dynptr
+uninitialized, iterator uninitialized and buffer is NULL.
 
-So, below are the most meaningful comparisons. First, SRCU vs
-SRCU-lite for uretprobes:
+Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
+---
+ .../testing/selftests/bpf/bpf_experimental.h  |   9 ++
+ .../testing/selftests/bpf/prog_tests/iters.c  |  50 +++++++
+ .../selftests/bpf/progs/iters_dynptr.c        | 140 ++++++++++++++++++
+ .../bpf/progs/iters_dynptr_failure.c          | 108 ++++++++++++++
+ 4 files changed, 307 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/progs/iters_dynptr.c
+ create mode 100644 tools/testing/selftests/bpf/progs/iters_dynptr_failure.c
 
-BASELINE (A)
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-uretprobe-nop         ( 1 cpus):    1.941 =C2=B1 0.002M/s  (  1.941M/s/cpu)
-uretprobe-nop         ( 2 cpus):    3.731 =C2=B1 0.001M/s  (  1.866M/s/cpu)
-uretprobe-nop         ( 3 cpus):    5.492 =C2=B1 0.002M/s  (  1.831M/s/cpu)
-uretprobe-nop         ( 4 cpus):    7.234 =C2=B1 0.003M/s  (  1.808M/s/cpu)
-uretprobe-nop         ( 8 cpus):   13.448 =C2=B1 0.098M/s  (  1.681M/s/cpu)
-uretprobe-nop         (16 cpus):   22.905 =C2=B1 0.009M/s  (  1.432M/s/cpu)
-uretprobe-nop         (32 cpus):   44.760 =C2=B1 0.069M/s  (  1.399M/s/cpu)
-uretprobe-nop         (40 cpus):   52.986 =C2=B1 0.104M/s  (  1.325M/s/cpu)
-uretprobe-nop         (64 cpus):   43.650 =C2=B1 0.435M/s  (  0.682M/s/cpu)
-uretprobe-nop         (80 cpus):   46.831 =C2=B1 0.938M/s  (  0.585M/s/cpu)
+diff --git a/tools/testing/selftests/bpf/bpf_experimental.h b/tools/testing/selftests/bpf/bpf_experimental.h
+index b0668f29f7b3..acbc6a1916bd 100644
+--- a/tools/testing/selftests/bpf/bpf_experimental.h
++++ b/tools/testing/selftests/bpf/bpf_experimental.h
+@@ -575,6 +575,15 @@ extern int bpf_iter_css_new(struct bpf_iter_css *it,
+ extern struct cgroup_subsys_state *bpf_iter_css_next(struct bpf_iter_css *it) __weak __ksym;
+ extern void bpf_iter_css_destroy(struct bpf_iter_css *it) __weak __ksym;
+ 
++struct bpf_iter_dynptr;
++extern int bpf_iter_dynptr_new(struct bpf_iter_dynptr *it, struct bpf_dynptr *p,
++			       u32 offset, void *buffer, u32 buffer__szk) __ksym;
++extern int *bpf_iter_dynptr_next(struct bpf_iter_dynptr *it) __ksym;
++extern int bpf_iter_dynptr_set_buffer(struct bpf_iter_dynptr *it__iter,
++				      void *buffer, u32 buffer__szk) __ksym;
++extern u32 bpf_iter_dynptr_get_last_offset(struct bpf_iter_dynptr *it__iter) __ksym;
++extern void bpf_iter_dynptr_destroy(struct bpf_iter_dynptr *it) __ksym;
++
+ extern int bpf_wq_init(struct bpf_wq *wq, void *p__map, unsigned int flags) __weak __ksym;
+ extern int bpf_wq_start(struct bpf_wq *wq, unsigned int flags) __weak __ksym;
+ extern int bpf_wq_set_callback_impl(struct bpf_wq *wq,
+diff --git a/tools/testing/selftests/bpf/prog_tests/iters.c b/tools/testing/selftests/bpf/prog_tests/iters.c
+index 89ff23c4a8bc..7c17ef8eea70 100644
+--- a/tools/testing/selftests/bpf/prog_tests/iters.c
++++ b/tools/testing/selftests/bpf/prog_tests/iters.c
+@@ -21,6 +21,8 @@
+ #include "iters_css_task.skel.h"
+ #include "iters_css.skel.h"
+ #include "iters_task_failure.skel.h"
++#include "iters_dynptr.skel.h"
++#include "iters_dynptr_failure.skel.h"
+ 
+ static void subtest_num_iters(void)
+ {
+@@ -291,6 +293,50 @@ static void subtest_css_iters(void)
+ 	iters_css__destroy(skel);
+ }
+ 
++static int subtest_dynptr_iters(struct iters_dynptr *skel, const char *prog_name)
++{
++	struct bpf_program *prog;
++	int prog_fd;
++
++	prog = bpf_object__find_program_by_name(skel->obj, prog_name);
++	if (!ASSERT_OK_PTR(prog, "bpf_object__find_program_by_name"))
++		return -1;
++
++	prog_fd = bpf_program__fd(prog);
++	if (!ASSERT_GT(prog_fd, 0, "bpf_program__fd"))
++		return -1;
++
++	if (test__start_subtest(prog_name)) {
++		bpf_prog_test_run_opts(prog_fd, NULL);
++		ASSERT_EQ(skel->bss->iter_step_match, 0, "step_match");
++		ASSERT_EQ(skel->bss->iter_content_match, 0, "content_match");
++	}
++
++	return 0;
++}
++
++const char *dynptr_iter_tests[] = {
++	"bpf_iter_dynptr_buffer_fit",
++	"bpf_iter_dynptr_buffer_remain"
++};
++
++static void test_dynptr_iters(void)
++{
++	struct iters_dynptr *skel = NULL;
++	int i;
++
++	skel = iters_dynptr__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
++		return;
++
++	for (i = 0; i < ARRAY_SIZE(dynptr_iter_tests); i++) {
++		if (subtest_dynptr_iters(skel, dynptr_iter_tests[i]))
++			break;
++	}
++
++	iters_dynptr__destroy(skel);
++}
++
+ void test_iters(void)
+ {
+ 	RUN_TESTS(iters_state_safety);
+@@ -315,5 +361,9 @@ void test_iters(void)
+ 		subtest_css_task_iters();
+ 	if (test__start_subtest("css"))
+ 		subtest_css_iters();
++
++	test_dynptr_iters();
++
+ 	RUN_TESTS(iters_task_failure);
++	RUN_TESTS(iters_dynptr_failure);
+ }
+diff --git a/tools/testing/selftests/bpf/progs/iters_dynptr.c b/tools/testing/selftests/bpf/progs/iters_dynptr.c
+new file mode 100644
+index 000000000000..29a44b96f5fe
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/iters_dynptr.c
+@@ -0,0 +1,140 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include "vmlinux.h"
++#include <errno.h>
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++#include "bpf_misc.h"
++#include "bpf_experimental.h"
++
++char _license[] SEC("license") = "GPL";
++
++struct {
++	__uint(type, BPF_MAP_TYPE_RINGBUF);
++	__uint(max_entries, 4096);
++} ringbuf SEC(".maps");
++
++int iter_content_match = 0;
++int iter_step_match = 0;
++
++SEC("syscall")
++int bpf_iter_dynptr_buffer_fit(const void *ctx)
++{
++	struct bpf_iter_dynptr dynptr_it;
++	struct bpf_dynptr ptr;
++
++	char write_data[5] = {'a', 'b', 'c', 'd', 'e'};
++	char read_data1[2], read_data2[3];
++	int *read_len, offset;
++
++	bpf_ringbuf_reserve_dynptr(&ringbuf, sizeof(write_data), 0, &ptr);
++
++	bpf_dynptr_write(&ptr, 0, write_data, sizeof(write_data), 0);
++
++	bpf_iter_dynptr_new(&dynptr_it, &ptr, 0, read_data1, sizeof(read_data1));
++
++	read_len = bpf_iter_dynptr_next(&dynptr_it);
++	offset = bpf_iter_dynptr_get_last_offset(&dynptr_it);
++
++	if (read_len == NULL) {
++		iter_step_match = -1;
++		goto out;
++	}
++
++	if (*read_len != sizeof(read_data1)) {
++		iter_step_match = -1;
++		goto out;
++	}
++
++	if (offset != 0) {
++		iter_step_match = -1;
++		goto out;
++	}
++
++	if (read_data1[0] != write_data[0] || read_data1[1] != write_data[1]) {
++		iter_content_match = -1;
++		goto out;
++	}
++
++	bpf_iter_dynptr_set_buffer(&dynptr_it, read_data2, sizeof(read_data2));
++
++	read_len = bpf_iter_dynptr_next(&dynptr_it);
++	offset = bpf_iter_dynptr_get_last_offset(&dynptr_it);
++
++	if (read_len == NULL) {
++		iter_step_match = -1;
++		goto out;
++	}
++
++	if (*read_len != sizeof(read_data2)) {
++		iter_step_match = -1;
++		goto out;
++	}
++
++	if (offset != 2) {
++		iter_step_match = -1;
++		goto out;
++	}
++
++	if (read_data2[0] != write_data[2] || read_data2[1] != write_data[3] ||
++	   read_data2[2] != write_data[4]) {
++		iter_content_match = -1;
++		goto out;
++	}
++
++	read_len = bpf_iter_dynptr_next(&dynptr_it);
++	if (read_len != NULL)
++		iter_step_match = -1;
++out:
++	bpf_iter_dynptr_destroy(&dynptr_it);
++	bpf_ringbuf_discard_dynptr(&ptr, 0);
++	return 0;
++}
++
++SEC("syscall")
++int bpf_iter_dynptr_buffer_remain(const void *ctx)
++{
++	struct bpf_iter_dynptr dynptr_it;
++	struct bpf_dynptr ptr;
++
++	char write_data[1] = {'a'};
++	char read_data[2];
++	int *read_len, offset;
++
++	bpf_ringbuf_reserve_dynptr(&ringbuf, sizeof(write_data), 0, &ptr);
++
++	bpf_dynptr_write(&ptr, 0, write_data, sizeof(write_data), 0);
++
++	bpf_iter_dynptr_new(&dynptr_it, &ptr, 0, read_data, sizeof(read_data));
++
++	read_len = bpf_iter_dynptr_next(&dynptr_it);
++	offset = bpf_iter_dynptr_get_last_offset(&dynptr_it);
++
++	if (read_len == NULL) {
++		iter_step_match = -1;
++		goto out;
++	}
++
++	if (*read_len != 1) {
++		iter_step_match = -1;
++		goto out;
++	}
++
++	if (offset != 0) {
++		iter_step_match = -1;
++		goto out;
++	}
++
++	if (read_data[0] != write_data[0]) {
++		iter_content_match = -1;
++		goto out;
++	}
++
++	read_len = bpf_iter_dynptr_next(&dynptr_it);
++	if (read_len != NULL)
++		iter_step_match = -1;
++out:
++	bpf_iter_dynptr_destroy(&dynptr_it);
++	bpf_ringbuf_discard_dynptr(&ptr, 0);
++	return 0;
++}
+diff --git a/tools/testing/selftests/bpf/progs/iters_dynptr_failure.c b/tools/testing/selftests/bpf/progs/iters_dynptr_failure.c
+new file mode 100644
+index 000000000000..97bec2f39f62
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/iters_dynptr_failure.c
+@@ -0,0 +1,108 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include "vmlinux.h"
++#include <errno.h>
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++#include "bpf_misc.h"
++#include "bpf_experimental.h"
++
++char _license[] SEC("license") = "GPL";
++
++struct {
++	__uint(type, BPF_MAP_TYPE_RINGBUF);
++	__uint(max_entries, 4096);
++} ringbuf SEC(".maps");
++
++SEC("raw_tp/sys_enter")
++__failure __msg("Expected an initialized dynptr as arg #2")
++int bpf_iter_dynptr_new_uninit_dynptr(void *ctx)
++{
++	struct bpf_iter_dynptr dynptr_it;
++	struct bpf_dynptr ptr;
++	char read_data[5];
++
++	bpf_iter_dynptr_new(&dynptr_it, &ptr, 0, read_data, sizeof(read_data));
++
++	return 0;
++}
++
++SEC("raw_tp/sys_enter")
++__failure __msg("arg#3 arg#4 memory, len pair leads to invalid memory access")
++int bpf_iter_dynptr_new_null_buffer(void *ctx)
++{
++	struct bpf_iter_dynptr dynptr_it;
++	struct bpf_dynptr ptr;
++	char *read_data = NULL;
++
++	bpf_ringbuf_reserve_dynptr(&ringbuf, 10, 0, &ptr);
++
++	bpf_iter_dynptr_new(&dynptr_it, &ptr, 0, read_data, 10);
++
++	bpf_ringbuf_discard_dynptr(&ptr, 0);
++	return 0;
++}
++
++SEC("raw_tp/sys_enter")
++__failure __msg("expected an initialized iter_dynptr as arg #1")
++int bpf_iter_dynptr_next_uninit_iter(void *ctx)
++{
++	struct bpf_iter_dynptr dynptr_it;
++
++	bpf_iter_dynptr_next(&dynptr_it);
++
++	return 0;
++}
++
++SEC("raw_tp/sys_enter")
++__failure __msg("expected an initialized iter_dynptr as arg #1")
++int bpf_iter_dynptr_get_last_offset_uninit_iter(void *ctx)
++{
++	struct bpf_iter_dynptr dynptr_it;
++
++	bpf_iter_dynptr_get_last_offset(&dynptr_it);
++
++	return 0;
++}
++
++SEC("raw_tp/sys_enter")
++__failure __msg("expected an initialized iter_dynptr as arg #1")
++int bpf_iter_dynptr_set_buffer_uninit_iter(void *ctx)
++{
++	struct bpf_iter_dynptr dynptr_it;
++	char read_data[5];
++
++	bpf_iter_dynptr_set_buffer(&dynptr_it, read_data, sizeof(read_data));
++
++	return 0;
++}
++
++SEC("raw_tp/sys_enter")
++__failure __msg("arg#1 arg#2 memory, len pair leads to invalid memory access")
++int bpf_iter_dynptr_set_buffer_null_buffer(void *ctx)
++{
++	struct bpf_iter_dynptr dynptr_it;
++	struct bpf_dynptr ptr;
++	char *null_data = NULL;
++	char read_data[5];
++
++	bpf_ringbuf_reserve_dynptr(&ringbuf, 10, 0, &ptr);
++
++	bpf_iter_dynptr_new(&dynptr_it, &ptr, 0, read_data, sizeof(read_data));
++
++	bpf_iter_dynptr_set_buffer(&dynptr_it, null_data, 10);
++
++	bpf_ringbuf_discard_dynptr(&ptr, 0);
++	return 0;
++}
++
++SEC("raw_tp/sys_enter")
++__failure __msg("expected an initialized iter_dynptr as arg #1")
++int bpf_iter_dynptr_destroy_uninit_iter(void *ctx)
++{
++	struct bpf_iter_dynptr dynptr_it;
++
++	bpf_iter_dynptr_destroy(&dynptr_it);
++
++	return 0;
++}
+-- 
+2.39.2
 
-SRCU-lite for uretprobe (B)
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D
-uretprobe-nop         ( 1 cpus):    2.014 =C2=B1 0.014M/s  (  2.014M/s/cpu)
-uretprobe-nop         ( 2 cpus):    3.820 =C2=B1 0.002M/s  (  1.910M/s/cpu)
-uretprobe-nop         ( 3 cpus):    5.640 =C2=B1 0.003M/s  (  1.880M/s/cpu)
-uretprobe-nop         ( 4 cpus):    7.410 =C2=B1 0.003M/s  (  1.852M/s/cpu)
-uretprobe-nop         ( 8 cpus):   13.877 =C2=B1 0.009M/s  (  1.735M/s/cpu)
-uretprobe-nop         (16 cpus):   23.372 =C2=B1 0.022M/s  (  1.461M/s/cpu)
-uretprobe-nop         (32 cpus):   45.748 =C2=B1 0.048M/s  (  1.430M/s/cpu)
-uretprobe-nop         (40 cpus):   54.327 =C2=B1 0.093M/s  (  1.358M/s/cpu)
-uretprobe-nop         (64 cpus):   43.672 =C2=B1 0.371M/s  (  0.682M/s/cpu)
-uretprobe-nop         (80 cpus):   47.470 =C2=B1 0.753M/s  (  0.593M/s/cpu)
-
-You can see that across the board (except for noisy 64 CPU case)
-SRCU-lite is faster.
-
-
-Now, comparing A) vs C) on uprobe-nop, so we can see RCU Tasks Trace
-vs SRCU-lite for uprobes.
-
-BASELINE (A)
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-uprobe-nop            ( 1 cpus):    3.574 =C2=B1 0.004M/s  (  3.574M/s/cpu)
-uprobe-nop            ( 2 cpus):    6.735 =C2=B1 0.006M/s  (  3.368M/s/cpu)
-uprobe-nop            ( 3 cpus):   10.102 =C2=B1 0.005M/s  (  3.367M/s/cpu)
-uprobe-nop            ( 4 cpus):   13.087 =C2=B1 0.008M/s  (  3.272M/s/cpu)
-uprobe-nop            ( 8 cpus):   24.622 =C2=B1 0.031M/s  (  3.078M/s/cpu)
-uprobe-nop            (16 cpus):   41.752 =C2=B1 0.020M/s  (  2.610M/s/cpu)
-uprobe-nop            (32 cpus):   84.973 =C2=B1 0.115M/s  (  2.655M/s/cpu)
-uprobe-nop            (40 cpus):  102.229 =C2=B1 0.030M/s  (  2.556M/s/cpu)
-uprobe-nop            (64 cpus):  125.537 =C2=B1 0.045M/s  (  1.962M/s/cpu)
-uprobe-nop            (80 cpus):  143.091 =C2=B1 0.044M/s  (  1.789M/s/cpu)
-
-SRCU-lite for uprobes (C)
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-uprobe-nop            ( 1 cpus):    3.446 =C2=B1 0.010M/s  (  3.446M/s/cpu)
-uprobe-nop            ( 2 cpus):    6.411 =C2=B1 0.003M/s  (  3.206M/s/cpu)
-uprobe-nop            ( 3 cpus):    9.563 =C2=B1 0.039M/s  (  3.188M/s/cpu)
-uprobe-nop            ( 4 cpus):   12.454 =C2=B1 0.016M/s  (  3.113M/s/cpu)
-uprobe-nop            ( 8 cpus):   23.172 =C2=B1 0.013M/s  (  2.897M/s/cpu)
-uprobe-nop            (16 cpus):   39.793 =C2=B1 0.005M/s  (  2.487M/s/cpu)
-uprobe-nop            (32 cpus):   79.616 =C2=B1 0.207M/s  (  2.488M/s/cpu)
-uprobe-nop            (40 cpus):   96.851 =C2=B1 0.128M/s  (  2.421M/s/cpu)
-uprobe-nop            (64 cpus):  119.432 =C2=B1 0.146M/s  (  1.866M/s/cpu)
-uprobe-nop            (80 cpus):  135.162 =C2=B1 0.207M/s  (  1.690M/s/cpu)
-
-
-Overall, RCU Tasks Trace beats SRCU-lite, which I think is expected,
-so consider this just a confirmation. I'm not sure I'd like to switch
-from RCU Tasks Trace to SRCU-lite for uprobes part, but at least we
-have numbers to make that decision.
-
-Finally, to see SRCU vs SRCU-lite for entry uprobes improvements
-(i.e., if we never had RCU Tasks Trace). I've included a bit more
-extensive set of CPU counts for completeness.
-
-BASELINE w/ SRCU for uprobes (D)
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D
-uprobe-nop            ( 1 cpus):    3.413 =C2=B1 0.003M/s  (  3.413M/s/cpu)
-uprobe-nop            ( 2 cpus):    6.305 =C2=B1 0.003M/s  (  3.153M/s/cpu)
-uprobe-nop            ( 3 cpus):    9.442 =C2=B1 0.018M/s  (  3.147M/s/cpu)
-uprobe-nop            ( 4 cpus):   12.253 =C2=B1 0.006M/s  (  3.063M/s/cpu)
-uprobe-nop            ( 5 cpus):   15.316 =C2=B1 0.007M/s  (  3.063M/s/cpu)
-uprobe-nop            ( 6 cpus):   18.287 =C2=B1 0.030M/s  (  3.048M/s/cpu)
-uprobe-nop            ( 7 cpus):   21.378 =C2=B1 0.025M/s  (  3.054M/s/cpu)
-uprobe-nop            ( 8 cpus):   23.044 =C2=B1 0.010M/s  (  2.881M/s/cpu)
-uprobe-nop            (10 cpus):   28.778 =C2=B1 0.012M/s  (  2.878M/s/cpu)
-uprobe-nop            (12 cpus):   31.300 =C2=B1 0.016M/s  (  2.608M/s/cpu)
-uprobe-nop            (14 cpus):   36.580 =C2=B1 0.007M/s  (  2.613M/s/cpu)
-uprobe-nop            (16 cpus):   38.848 =C2=B1 0.017M/s  (  2.428M/s/cpu)
-uprobe-nop            (24 cpus):   60.298 =C2=B1 0.080M/s  (  2.512M/s/cpu)
-uprobe-nop            (32 cpus):   77.137 =C2=B1 1.957M/s  (  2.411M/s/cpu)
-uprobe-nop            (40 cpus):   89.205 =C2=B1 1.278M/s  (  2.230M/s/cpu)
-uprobe-nop            (48 cpus):   99.207 =C2=B1 0.444M/s  (  2.067M/s/cpu)
-uprobe-nop            (56 cpus):  102.399 =C2=B1 0.484M/s  (  1.829M/s/cpu)
-uprobe-nop            (64 cpus):  115.390 =C2=B1 0.972M/s  (  1.803M/s/cpu)
-uprobe-nop            (72 cpus):  127.476 =C2=B1 0.050M/s  (  1.770M/s/cpu)
-uprobe-nop            (80 cpus):  137.304 =C2=B1 0.068M/s  (  1.716M/s/cpu)
-
-SRCU-lite for uprobes (C)
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-uprobe-nop            ( 1 cpus):    3.446 =C2=B1 0.010M/s  (  3.446M/s/cpu)
-uprobe-nop            ( 2 cpus):    6.411 =C2=B1 0.003M/s  (  3.206M/s/cpu)
-uprobe-nop            ( 3 cpus):    9.563 =C2=B1 0.039M/s  (  3.188M/s/cpu)
-uprobe-nop            ( 4 cpus):   12.454 =C2=B1 0.016M/s  (  3.113M/s/cpu)
-uprobe-nop            ( 5 cpus):   15.634 =C2=B1 0.008M/s  (  3.127M/s/cpu)
-uprobe-nop            ( 6 cpus):   18.443 =C2=B1 0.018M/s  (  3.074M/s/cpu)
-uprobe-nop            ( 7 cpus):   21.793 =C2=B1 0.057M/s  (  3.113M/s/cpu)
-uprobe-nop            ( 8 cpus):   23.172 =C2=B1 0.013M/s  (  2.897M/s/cpu)
-uprobe-nop            (10 cpus):   29.430 =C2=B1 0.021M/s  (  2.943M/s/cpu)
-uprobe-nop            (12 cpus):   32.035 =C2=B1 0.008M/s  (  2.670M/s/cpu)
-uprobe-nop            (14 cpus):   37.174 =C2=B1 0.046M/s  (  2.655M/s/cpu)
-uprobe-nop            (16 cpus):   39.793 =C2=B1 0.005M/s  (  2.487M/s/cpu)
-uprobe-nop            (24 cpus):   61.656 =C2=B1 0.187M/s  (  2.569M/s/cpu)
-uprobe-nop            (32 cpus):   79.616 =C2=B1 0.207M/s  (  2.488M/s/cpu)
-uprobe-nop            (40 cpus):   96.851 =C2=B1 0.128M/s  (  2.421M/s/cpu)
-uprobe-nop            (48 cpus):  104.178 =C2=B1 0.033M/s  (  2.170M/s/cpu)
-uprobe-nop            (56 cpus):  105.689 =C2=B1 0.703M/s  (  1.887M/s/cpu)
-uprobe-nop            (64 cpus):  119.432 =C2=B1 0.146M/s  (  1.866M/s/cpu)
-uprobe-nop            (72 cpus):  127.574 =C2=B1 0.033M/s  (  1.772M/s/cpu)
-uprobe-nop            (80 cpus):  135.162 =C2=B1 0.207M/s  (  1.690M/s/cpu)
-
-So, say, at 32 threads, we get 79.6 vs 77.1, which is about 3%
-throughput win. Which is not negligible!
-
-Note that as we get to 80 cores data is more noisy (hyperthreading,
-background system noise, etc). But you can still see an improvement
-across basically the entire range.
-
-Hopefully the above data is useful.
-
-> ------------------------------------------------------------------------
->
->  Documentation/admin-guide/kernel-parameters.txt   |    4
->  b/Documentation/admin-guide/kernel-parameters.txt |    8 +
->  b/include/linux/srcu.h                            |   21 +-
->  b/include/linux/srcutree.h                        |    2
->  b/kernel/rcu/rcutorture.c                         |   28 +--
->  b/kernel/rcu/refscale.c                           |   54 +++++--
->  b/kernel/rcu/srcutree.c                           |   16 +-
->  include/linux/srcu.h                              |   86 +++++++++--
->  include/linux/srcutree.h                          |    5
->  kernel/rcu/rcutorture.c                           |   37 +++-
->  kernel/rcu/srcutree.c                             |  168 +++++++++++++++=
--------
->  11 files changed, 308 insertions(+), 121 deletions(-)
 
