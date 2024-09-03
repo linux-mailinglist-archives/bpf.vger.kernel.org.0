@@ -1,201 +1,231 @@
-Return-Path: <bpf+bounces-38750-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38751-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5AE6596935A
-	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 07:57:16 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37F63969360
+	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 07:58:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B49F282599
-	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 05:57:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 58B0B1C22FC8
+	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 05:58:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 788BA1CEAA3;
-	Tue,  3 Sep 2024 05:57:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36CA21CEACE;
+	Tue,  3 Sep 2024 05:58:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="AN80zuCh"
+	dkim=pass (2048-bit key) header.d=who-t.net header.i=@who-t.net header.b="vg6/7YIC";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="QYN2FeIg"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from fout8-smtp.messagingengine.com (fout8-smtp.messagingengine.com [103.168.172.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FF151CDFDA
-	for <bpf@vger.kernel.org>; Tue,  3 Sep 2024 05:57:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 983651CE6ED;
+	Tue,  3 Sep 2024 05:58:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725343030; cv=none; b=ZUG07TuT7rXpg9aLxCo4U4Ona94Q6r7PkS87WAn2YK2a5/vuSoPhKuMSYMESbI8P3s4ue8R7hvSM0xITx8EBCXu9yKPMmynPsBNPPiDB2v69hLxWWlBVtdnJELp+a48rnEf9JI17xeAyfjoAYSUohCWIV1vcaJMDTwfefHBCiXI=
+	t=1725343084; cv=none; b=thFxQBWPIwzph1EsjKuYrWiwosgJe1Py+DfpSTnAQxuyzgW1YJnATJkyeLBhOe1eVqS+PEL9kPJyw3eTv4Z4cHlvOnB0XvODh0DkLXcyssUn9PCjvDrVY+hprQA86nB3ctgCVVeGmJDJg/asMBbcZOJvb/6kf3mPlrbG1FkjwZo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725343030; c=relaxed/simple;
-	bh=7IJ4k0xiKfJliJv5H9Xsx1fF+waaY18Cn/t0CibK23c=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=sd2M5KpSi4RA1TQeLK4+xeUuIer2Vt4Oq/5gnjn0Byv48Z3t+4TFrHWdzf/5gr7fCfatajrGGzFUmOHDwO8tMCzgGIwFyX7TqFYwBSsYUoT6jpuB05ZZO0Isp3ZruBpQYwo2ngtTcEkXRa0I+PNlY1jOuT0ie25cTQ/AVJY6O2M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=AN80zuCh; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1725343026;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OulKu+Ua+XgCDkPp2NkymMKWxKC2v6+h4jQv0cayhhc=;
-	b=AN80zuChCz5UH3TNGD6BEazctw6hMEeZ2QGWCpQ5rWrzO6QExTHpaS0cSqp+Q51KOJ+IJC
-	lklV0V3VhnkaxfRq+XGBUd0V2G3Z+BUCKbs6/ATJWokRJQbr4gxhgtMv5bME+DY7i0L3tw
-	HTBFZxr1L0ZXzDNv8918TCsWVZhYhPA=
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
- [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-518-_eeHxlOpMUiDnUN7xQdd_g-1; Tue, 03 Sep 2024 01:57:05 -0400
-X-MC-Unique: _eeHxlOpMUiDnUN7xQdd_g-1
-Received: by mail-lf1-f71.google.com with SMTP id 2adb3069b0e04-5334824e68dso479386e87.3
-        for <bpf@vger.kernel.org>; Mon, 02 Sep 2024 22:57:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725343023; x=1725947823;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OulKu+Ua+XgCDkPp2NkymMKWxKC2v6+h4jQv0cayhhc=;
-        b=QIgGTSM8rG83kwkG6iZuA/LEt3JMLfV/f2yBI50IsqXgEZQ3FKxrIxBFRFMzDHP6MQ
-         dVe1Mf0PvF+8iCCES4YTkEvOYT3zWfgQN+14HjKRGKYyCtt9uspPNTh4Yh+EL3Gwjdr1
-         KctoeBcBCXS4Fp7aN3UqsqQ3zwWVM34oEY3LKl14SlLyskZppGpWOUe1N8hr2XUdV6+9
-         ThAYgv7mvt0yF1j960I2pBEsU5imDXIWuItAqKuQ+pqFEq7MNX7+SX3y/+c8hyI00Dyk
-         JbklvLNrvfxX50jMn6vkqvg1G8wj8KIr9S0UvIF/bcDGCBnx+IrxeIyG/Xv2OEtiBWSz
-         /Luw==
-X-Forwarded-Encrypted: i=1; AJvYcCVeoX4mAm9Wc4jK2HeDYklOu9ZB2GvhY4T+yFhqhD6L/s/7p5tgWpPWggUuTMWr6HyaCK0=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzy2XY5ykpXsQ4stSDmB1RRSH9kGvnl8iE11r7ZtfBpUpUMl0Iw
-	qe+txfF/dfUH3pNBIv/T5d2auXac34mzd++mmUGIy6Tqh4x3+z81v9FCnEffm4/4OskuH2dM2ZI
-	CfbXTOaA9h5aa3kySFugnb0h47OmC/T48BlXN4t9juO2LCxiOXXiqgV5+0Zc=
-X-Received: by 2002:a05:6512:10d6:b0:52e:f4b4:6ec1 with SMTP id 2adb3069b0e04-53546b69264mr7059366e87.46.1725343023147;
-        Mon, 02 Sep 2024 22:57:03 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHxFB4qtNd5sskXSYbEcz6OMC3E0dgwIWZc4zgCajoL8m2mO3xmDW3nfusbmcZp02ggPPRLEw==
-X-Received: by 2002:a05:6512:10d6:b0:52e:f4b4:6ec1 with SMTP id 2adb3069b0e04-53546b69264mr7059348e87.46.1725343022089;
-        Mon, 02 Sep 2024 22:57:02 -0700 (PDT)
-Received: from [192.168.0.113] (185-219-167-205-static.vivo.cz. [185.219.167.205])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a89891db42fsm634412866b.184.2024.09.02.22.57.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Sep 2024 22:57:01 -0700 (PDT)
-Message-ID: <3adea7f7-0e8d-4114-ba04-356cdf9d20d1@redhat.com>
-Date: Tue, 3 Sep 2024 07:57:00 +0200
+	s=arc-20240116; t=1725343084; c=relaxed/simple;
+	bh=ORxlrybr0miEKGUNReRTbzJyZOz1c7Aa8Ya/cInZS1U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ISmUjMUnavlq7OFWFC6K9UwgEHMJQVtaaSku/nTvvvDNP97CGwu6zDVy+D/koodJBccz0WVx4NXtdS2eM9dzeVMCTfK0SCdxWrK/4iCAKxO2W+R0zfzgOLHsCO0FXSH2uaTxiTyIEQsw1X/UjoWYeqDFJaJngjNUxGe+sp4/CRo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=who-t.net; spf=pass smtp.mailfrom=who-t.net; dkim=pass (2048-bit key) header.d=who-t.net header.i=@who-t.net header.b=vg6/7YIC; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=QYN2FeIg; arc=none smtp.client-ip=103.168.172.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=who-t.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=who-t.net
+Received: from phl-compute-07.internal (phl-compute-07.nyi.internal [10.202.2.47])
+	by mailfout.nyi.internal (Postfix) with ESMTP id A6846138030D;
+	Tue,  3 Sep 2024 01:58:01 -0400 (EDT)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-07.internal (MEProxy); Tue, 03 Sep 2024 01:58:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=who-t.net; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm3; t=1725343081; x=1725429481; bh=uXeKgWb/Nb
+	mdrKy6APCtXUQCm+rImJ9sCZU2y2bBhlU=; b=vg6/7YICBZHR9f3szRFh/cQig/
+	DNaY1aZ5JmhDIIx4KCDfhcLfPpWtP39TITjfCfKLOtSQF5KYXkAE2XuoyT9iC728
+	YtxI9UsdAGCnWpf+SVwfE8KlL8yY9uhio8RNfwQaIoE5ZJO6H2uSsYbhNqVUKnx0
+	9SHQz3oQKzbee4Aixv9RRPmOmxvfLG6mX/5UJnEITwK4Pys2/Q9aRaFL8w9G3OWO
+	3DhupZBSXzRpVgZ7V+cvewVwjGINTrSHxFCi4KrLDGJnRSJqjlpj2B9En/Vlc691
+	Gz8IoS5s0enxrSnfD4a2+SnBbPnntKAqQ0zj2jk7R091tQDfvDlzI6fy+psg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1725343081; x=1725429481; bh=uXeKgWb/NbmdrKy6APCtXUQCm+rI
+	mJ9sCZU2y2bBhlU=; b=QYN2FeIgrnp8fXXVsqgtqSdld5SwhaC0eQ7YDC0dNJIT
+	qJkbk1Y1eCYz66vhk0wKUseKlSDrSd76aj2zY28N4F9Z0OxTiLYGSDM2QB1MIhTF
+	CnVWWoCSeIUhcdKUAtE/CXB3RtxMCe1X8e1jUVAeZMRtSiR9eto/6rYVW9fzakc5
+	c5XgphBVPUXurLHzrjYPS+3Z1zZPPuWQEN3791JW1olsglwBuZ+sf95TjsdM6L+V
+	RUNYkhYW95mIDWMRJfK0KhUYU+mwcbLuHBvCWZEZ75vX4h/DmVHw3DRsLXUyunEF
+	Q3xLPICYm1UDSs3NZ9sp7CoZCycEhXE+pQsg0C1ldQ==
+X-ME-Sender: <xms:aaXWZvO2Kjs83oBigi6qXamK4OdhS7wlDQfD62GgooZm6kZlGrI33g>
+    <xme:aaXWZp9TiDv8Nu9Yk8hlDduQlWtpNJCmwf8_8kys0JKyB-kNQgNucCBx_gKj40pKm
+    aiVNuMESsWh7tjMYqM>
+X-ME-Received: <xmr:aaXWZuTMIMSn9--GEHnBrdxne9BvADl9Bevj4zH9m3MGxjXKVL5pT3DVGXRiwCVSt4daoQR0EpQ4Y-y4XiFuwTwUvGYbch5qJbtW>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrudehgedguddthecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
+    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
+    hnthhsucdlqddutddtmdenucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddv
+    necuhfhrohhmpefrvghtvghrucfjuhhtthgvrhgvrhcuoehpvghtvghrrdhhuhhtthgvrh
+    gvrhesfihhohdqthdrnhgvtheqnecuggftrfgrthhtvghrnhepkedvkeegheefjefgvddu
+    fffhveehjeffvefgiefgkefhudeifedugfetudfgtefgnecuvehluhhsthgvrhfuihiivg
+    eptdenucfrrghrrghmpehmrghilhhfrhhomhepphgvthgvrhdrhhhuthhtvghrvghrseif
+    hhhoqdhtrdhnvghtpdhnsggprhgtphhtthhopedutddpmhhouggvpehsmhhtphhouhhtpd
+    hrtghpthhtohepsggvnhhtihhssheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepjhhi
+    khhosheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepvhhisegvnhgurhhifhhtrdgtoh
+    hmpdhrtghpthhtohepshhhuhgrhheskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheptgho
+    rhgsvghtsehlfihnrdhnvghtpdhrtghpthhtoheplhhinhhugidqihhnphhuthesvhhgvg
+    hrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkshgvlhhfthgvshht
+    sehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvg
+    hlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepsghpfhesvhhgvghrrdhk
+    vghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:aaXWZjuBH9kiJCw0mc01PZhbRpTKUT6aNshhONPnQhJQ3mPn9EcWyQ>
+    <xmx:aaXWZnfMLEm0JzETI8SVFn9VGpEHAWj80Lz_Hxz3nCvYgLbUuOty0A>
+    <xmx:aaXWZv2UYJhCGfPlpzDkXF_RJTV102N5Nky9SGhLTggShHPjAI4Egw>
+    <xmx:aaXWZj9P1NhHHekCkf6heJrlO3VGD9ioaP_bEcTcYsNxIZtr-12S-g>
+    <xmx:aaXWZoVqS8ReMzE7Ij44VaqquyuzicGTLylgFfxoIjLXMAheXr8wSJtp>
+Feedback-ID: i7ce144cd:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 3 Sep 2024 01:57:58 -0400 (EDT)
+Date: Tue, 3 Sep 2024 15:57:45 +1000
+From: Peter Hutterer <peter.hutterer@who-t.net>
+To: Benjamin Tissoires <bentiss@kernel.org>
+Cc: Jiri Kosina <jikos@kernel.org>, Vicki Pfau <vi@endrift.com>,
+	Shuah Khan <shuah@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+	linux-input@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	linux-doc@vger.kernel.org
+Subject: Re: [PATCH HID 6/7] HID: bpf: Allow to control the connect mask of
+ hid-generic from BPF
+Message-ID: <20240903055745.GB968953@quokka>
+References: <20240903-hid-bpf-hid-generic-v1-0-9511a565b2da@kernel.org>
+ <20240903-hid-bpf-hid-generic-v1-6-9511a565b2da@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC bpf-next 0/3] libbpf: Add support for aliased BPF programs
-To: Alan Maguire <alan.maguire@oracle.com>, bpf@vger.kernel.org
-Cc: Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman
- <eddyz87@gmail.com>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>
-References: <cover.1725016029.git.vmalik@redhat.com>
- <92146771-8756-4259-88f0-e0b61c11ad55@oracle.com>
-From: Viktor Malik <vmalik@redhat.com>
-Content-Language: en-US
-In-Reply-To: <92146771-8756-4259-88f0-e0b61c11ad55@oracle.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240903-hid-bpf-hid-generic-v1-6-9511a565b2da@kernel.org>
 
-On 9/2/24 19:01, Alan Maguire wrote:
-> On 02/09/2024 07:58, Viktor Malik wrote:
->> TL;DR
->>
->> This adds libbpf support for creating multiple BPF programs having the
->> same instructions using symbol aliases.
->>
->> Context
->> =======
->>
->> bpftrace has so-called "wildcarded" probes which allow to attach the
->> same program to multple different attach points. For k(u)probes, this is
->> easy to do as we can leverage k(u)probe_multi, however, other program
->> types (fentry/fexit, tracepoints) don't have such features.
->>
->> Currently, what bpftrace does is that it creates a copy of the program
->> for each attach point. This naturally results in a lot of redundant code
->> in the produced BPF object.
->>
->> Proposal
->> ========
->>
->> One way to address this problem would be to use *symbol aliases*. In
->> short, they allow to have multiple symbol table entries for the same
->> address. In bpftrace, we would create them using llvm::GlobalAlias. In
->> C, it can be achieved using compiler __attribute__((alias(...))):
->>
->>     int BPF_PROG(prog)
->>     {
->>         [...]
->>     }
->>     int prog_alias() __attribute__((alias("prog")));
->>
->> When calling bpf_object__open, libbpf is currently able to discover all
->> the programs and internally does a separate copy of the instructions for
->> each aliased program. What libbpf cannot do, is perform relocations b/c
->> it assumes that each instruction belongs to a single program only. The
->> second patch of this series changes relocation collection such that it
->> records relocations for each aliased program. With that, bpftrace can
->> emit just one copy of the full program and an alias for each target
->> attach point.
->>
->> For example, considering the following bpftrace script collecting the
->> number of hits of each VFS function using fentry over a one second
->> period:
->>
->>     $ bpftrace -e 'kfunc:vfs_* { @[func] = count() } i:s:1 { exit() }'
->>     [...]
->>
->> this change will allow to reduce the size of the in-memory BPF object
->> that bpftrace generates from 60K to 9K.
->>
->> For reference, the bpftrace PoC is in [1].
->>
->> The advantage of this change is that for BPF objects without aliases, it
->> doesn't introduce any overhead.
->>
-> 
-> A few high-level questions - apologies in advance if I'm missing the
-> point here.
-> 
-> Could bpftrace use program linking to solve this issue instead? So we'd
-> have separate progs for the various attach points associated with vfs_*
-> functions, but they would all call the same global function. That
-> _should_ reduce the memory footprint of the object I think - or are
-> there issues with doing that? 
+On Tue, Sep 03, 2024 at 01:14:36AM +0900, Benjamin Tissoires wrote:
+> We make struct hid_device_id writeable and use the .driver_data field
+> of hid-generic as the connect mask.
 
-That's a good suggestion, thanks! We added subprograms to bpftrace only
-relatively recently so I didn't really think about this option. I'll
-definitely give it a try as it could be even more efficient.
+I think this needs to be spelled out a bit more: for this to work the
+driver *must* be hid-generic, otherwise this doesn't work. But I'm a bit
+confused why we have a custom fields for force/ignore driver but 
+whether the device is connected (and thus uses the driver) is hidden in
+an effectively undocumented private field of one specific driver.
 
-> I also wonder if aliasing helps memory
-> footprint fully, especially if we end up with separate copies of the
-> program for relocation purposes; won't we have separate copies in-kernel
-> then too? So I _think_ the memory utilization you're concerned about is
-> not what's running in the kernel, but the BPF object representation in
-> bpftrace; is that right?
+Wouldn't it be easier to add another boolean (or enum entry, see my
+other comment) to hid_bpf_driver? This way *how* it happens is hidden
+from the API as well - you say "hidraw only please" and the kernel does
+the rest (through hid-generic or otherwise).
 
-Yes, that is correct. libbpf will create a copy of the program for each
-symbol in PROGBITS section that it discovers (including aliases) and the
-copies will be loaded into kernel.
-
-It's mainly the footprint of the BPF object produced by bpftrace that I
-was concerned about. (The reason is that we work on ahead-of-time
-compilation so it will directly affect the size of the pre-compiled
-binaries). But the above solution using global subprograms should reduce
-the in-kernel footprint, too, so I'll try to add it and see if it would
-work for bpftrace.
-
-Thanks!
-Viktor
+Cheers,
+  Peter
 
 > 
-> Thanks!
+> This way, we can control from a HID-BPF program if a device needs to
+> be exported through hidraw and/or hid-input mainly.
 > 
-> Alan
+> This is useful in case we want to have a third party program that directly
+> talks to the hidraw node and we don't want regular input events to be
+> emitted. This third party program can load a BPF program that instructs
+> hid-generic to rebind on the device with hidraw only and then open the
+> hidraw node itself.
 > 
-
+> When the application is closed, the BPF program is unloaded and the normal
+> driver takes back the control of the device.
+> 
+> Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
+> ---
+>  drivers/hid/bpf/hid_bpf_struct_ops.c |  1 +
+>  drivers/hid/hid-core.c               | 14 ++++++++------
+>  drivers/hid/hid-generic.c            |  5 +++--
+>  3 files changed, 12 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/hid/bpf/hid_bpf_struct_ops.c b/drivers/hid/bpf/hid_bpf_struct_ops.c
+> index 1e13a22f73a1..bb755edd02f0 100644
+> --- a/drivers/hid/bpf/hid_bpf_struct_ops.c
+> +++ b/drivers/hid/bpf/hid_bpf_struct_ops.c
+> @@ -80,6 +80,7 @@ static int hid_bpf_ops_btf_struct_access(struct bpf_verifier_log *log,
+>  		WRITE_RANGE(hid_device, name, true),
+>  		WRITE_RANGE(hid_device, uniq, true),
+>  		WRITE_RANGE(hid_device, phys, true),
+> +		WRITE_RANGE(hid_device_id, driver_data, false),
+>  		WRITE_RANGE(hid_bpf_driver, force_driver, false),
+>  		WRITE_RANGE(hid_bpf_driver, ignore_driver, false),
+>  	};
+> diff --git a/drivers/hid/hid-core.c b/drivers/hid/hid-core.c
+> index 7845f0a789ec..2bd279b23aa4 100644
+> --- a/drivers/hid/hid-core.c
+> +++ b/drivers/hid/hid-core.c
+> @@ -2637,15 +2637,17 @@ EXPORT_SYMBOL_GPL(hid_compare_device_paths);
+>  
+>  static bool hid_check_device_match(struct hid_device *hdev,
+>  				   struct hid_driver *hdrv,
+> -				   const struct hid_device_id **id)
+> +				   struct hid_device_id *id)
+>  {
+> +	const struct hid_device_id *_id = hid_match_device(hdev, hdrv);
+>  	int ret;
+>  
+> -	*id = hid_match_device(hdev, hdrv);
+> -	if (!*id)
+> +	if (!_id)
+>  		return false;
+>  
+> -	ret = call_hid_bpf_driver_probe(hdev, hdrv, *id);
+> +	memcpy(id, _id, sizeof(*id));
+> +
+> +	ret = call_hid_bpf_driver_probe(hdev, hdrv, id);
+>  	if (ret)
+>  		return ret > 0;
+>  
+> @@ -2662,7 +2664,7 @@ static bool hid_check_device_match(struct hid_device *hdev,
+>  
+>  static int __hid_device_probe(struct hid_device *hdev, struct hid_driver *hdrv)
+>  {
+> -	const struct hid_device_id *id;
+> +	struct hid_device_id id;
+>  	int ret;
+>  
+>  	if (!hid_check_device_match(hdev, hdrv, &id))
+> @@ -2677,7 +2679,7 @@ static int __hid_device_probe(struct hid_device *hdev, struct hid_driver *hdrv)
+>  	hdev->driver = hdrv;
+>  
+>  	if (hdrv->probe) {
+> -		ret = hdrv->probe(hdev, id);
+> +		ret = hdrv->probe(hdev, &id);
+>  	} else { /* default probe */
+>  		ret = hid_open_report(hdev);
+>  		if (!ret)
+> diff --git a/drivers/hid/hid-generic.c b/drivers/hid/hid-generic.c
+> index f9db991d3c5a..5cd1f3a79a4b 100644
+> --- a/drivers/hid/hid-generic.c
+> +++ b/drivers/hid/hid-generic.c
+> @@ -64,11 +64,12 @@ static int hid_generic_probe(struct hid_device *hdev,
+>  	if (ret)
+>  		return ret;
+>  
+> -	return hid_hw_start(hdev, HID_CONNECT_DEFAULT);
+> +	return hid_hw_start(hdev, id->driver_data);
+>  }
+>  
+>  static const struct hid_device_id hid_table[] = {
+> -	{ HID_DEVICE(HID_BUS_ANY, HID_GROUP_ANY, HID_ANY_ID, HID_ANY_ID) },
+> +	{ HID_DEVICE(HID_BUS_ANY, HID_GROUP_ANY, HID_ANY_ID, HID_ANY_ID),
+> +		.driver_data = HID_CONNECT_DEFAULT },
+>  	{ }
+>  };
+>  MODULE_DEVICE_TABLE(hid, hid_table);
+> 
+> -- 
+> 2.46.0
+> 
 
