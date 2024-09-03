@@ -1,296 +1,314 @@
-Return-Path: <bpf+bounces-38843-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38842-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B413D96ABDA
-	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2024 00:13:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EABD896ABCE
+	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2024 00:12:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D211E1C24353
-	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 22:13:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1B7781C2392B
+	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 22:12:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0824F1DB539;
-	Tue,  3 Sep 2024 22:08:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0362B1DA316;
+	Tue,  3 Sep 2024 22:08:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="d2JmdJmS"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C5zotwSH"
 X-Original-To: bpf@vger.kernel.org
-Received: from DB3PR0202CU003.outbound.protection.outlook.com (mail-northeuropeazolkn19011075.outbound.protection.outlook.com [52.103.32.75])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95FDE1DA601;
-	Tue,  3 Sep 2024 22:08:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.103.32.75
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725401329; cv=fail; b=WUKArGMDOIE+0ayH7s2kylXZwftLd6QpLZpZ+aXjnPS+BwZB1CcLU2sanIyX4rO9iCdpa7mefY7KqYeXbTp867/DM4UKQFlINdGId9zlkg8nne249tW3yZ5Im4X7pxeg8/iwwhaKznsx1RVJqehV4lDdG9ulZ7xD9xogveQlC1o=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725401329; c=relaxed/simple;
-	bh=vh/yqItwJkDMVvkX1lubkicsB5hZvWDaRxYgpMNQc7M=;
-	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=isIvWLf7x355OCS8IFBdolDKzh/syjQjh1XTXrrUx0MxEKhEaEy8jrWz0Px8CxzykPyAZG5pIIqKIK4oVXPtCqMSoUSQfWQ4hrp87U+JUT0SOzEA4c4RbwmteQobtHpJ5U9y5cxqU74xK9nvzg7VHdggzvbsU4ZKoWbO3CI2uDw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=d2JmdJmS; arc=fail smtp.client-ip=52.103.32.75
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=ARLXixBPf2jLYwUXhHbKzyUAqE+KlDC6UHWk6AyddAdHWKQJZAag86M7gky0FVfY4xO51FupKpZa0hP/J2yt9WqfIG7BOXbhwjLCwqN5Nrlkt17/JCmAcVXFoSFpR5cVtcg3HO+zBgN3zaLnI1FjHU+wr8R+oMAAEYE9mMPqWGBfr6CXasjKFmoaV0DTL7ozx8il8YxqNSjUKeljIdgqKy0tiORedfBfnUkudMcE/opAtzgjxYbpwYmevE0ZdIx84be/pemGl1EjhtO3hpBPFxV8vnFbo8ge2JWqnYMk5a60q80+lux9/kpYXY8YzLTROwNLbDaYMcFqBjMUoJeIqA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5KzkCQAn6eSwVTstLnV1Y5vvz99ok1FCkT/1uHXqfe4=;
- b=cpiRf4OGbgTHRgaRWIyrUmJTOXIbhqEo2RzPeseUGluP79UyjPleVA9c6y2pQ3ne1hMt4OuXXQdqr5X5x+0z1lmErO2Y+XhzWwebii7xPtvcaZY6lHicBDovtJ/jkSRx0A/hFGxmxEqNRYz/0Dpuk5C1USCfWO922c4yuKMO/3FoGjUpwJHRMmMRvr2fL+aQm9/T5GJTLh+jQOrgfwkdGYC8yKCCep+TPnUQdi0wmUFnr5LIxgTDPfoU+7YGa8p898rpeD9zu7E1HV1UUzFYb6MwiEICRG3yA7J40emLJ9M4SkVz2j07pQRhTNU0dpCn4hOtRDu9fXMK0b5gBCvGoA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5KzkCQAn6eSwVTstLnV1Y5vvz99ok1FCkT/1uHXqfe4=;
- b=d2JmdJmSd/Cf9ls/Wd4wc3QJU2MKyD6JWZgR/UT3/vyiJt6fIO9Hhm9RbqicLIaPUZTR9JCgm+UWD4tDdeAN24Ph7Fb64WNBdKPWNsNHTfjNItgzlfXuEQkIVxTrCm95EHGBSjo0u4oWTD2d0FoaMMOcD9V+7dacfGQ49NBd99i5VlTrbdkU+Y3a65hUA31gmSaO4tyR9QIy1CMCcbHeJbOw45gbuadj4tmIkTFyezE3grWmjG0ieiGwEVO/oKQk9yeL6lDX+o93/XkgJiX6sSeFLzCl7hNDErMHTJVvybHDXkF9r6vQ9EdxQJdDA0b+HV2j/uj1l0FjMcC5NBVOFw==
-Received: from AM6PR03MB5848.eurprd03.prod.outlook.com (2603:10a6:20b:e4::10)
- by VI1PR03MB6335.eurprd03.prod.outlook.com (2603:10a6:800:140::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7918.27; Tue, 3 Sep
- 2024 22:08:42 +0000
-Received: from AM6PR03MB5848.eurprd03.prod.outlook.com
- ([fe80::4b97:bbdb:e0ac:6f7]) by AM6PR03MB5848.eurprd03.prod.outlook.com
- ([fe80::4b97:bbdb:e0ac:6f7%5]) with mapi id 15.20.7918.024; Tue, 3 Sep 2024
- 22:08:42 +0000
-From: Juntong Deng <juntong.deng@outlook.com>
-To: ast@kernel.org,
-	daniel@iogearbox.net,
-	john.fastabend@gmail.com,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	memxor@gmail.com,
-	snorcht@gmail.com
-Cc: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [RFC PATCH bpf-next 1/2] bpf: Add open-coded style iterator kfuncs for bpf dynamic pointers
-Date: Tue,  3 Sep 2024 23:07:25 +0100
-Message-ID:
- <AM6PR03MB5848C2304B17658423B4B81D99932@AM6PR03MB5848.eurprd03.prod.outlook.com>
-X-Mailer: git-send-email 2.39.2
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN: [rlT0C9vVUPcMddM7DvR99F4UsvYaBaTs]
-X-ClientProxiedBy: LO4P123CA0342.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:18c::23) To AM6PR03MB5848.eurprd03.prod.outlook.com
- (2603:10a6:20b:e4::10)
-X-Microsoft-Original-Message-ID:
- <20240903220725.82539-1-juntong.deng@outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE5881DA2E1;
+	Tue,  3 Sep 2024 22:08:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1725401316; cv=none; b=f/8qGfpYAecXWuTjynjL+FtXk5U5VvmMhp7rg+cPQ3Wjb0qinOn0p7XUoHlk84oKKLMf4XrvhgctQN/ICRvlwN2VXHUzJHkMUx25Neu8op+Pl8QYEWHEljYzKAidRhpCATmgo4MfZdU12XCHSz0FqqB6w6n9+LSXta0Nk4N6heo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1725401316; c=relaxed/simple;
+	bh=WJvWFGlKBfr1UFCnZDHbjycRp7LWitNkxwg5KciGAWM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=cKfc/Qabg069J9cGrXDZu9AftP9+0zq43Hd6n1as+Wb2PRzCFnQfwn64HWNuyqArnza83Q9nFQ2U6aEvfj0sdAopsBRD83sCVix0R7vBxOeFGhZK8+B5cGdWrnnTMnSQxXRmXitQJEGLEJStOuPcj7KnO8EKl03d3GBnAk2mUS4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C5zotwSH; arc=none smtp.client-ip=209.85.216.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-2d1daa2577bso4090400a91.2;
+        Tue, 03 Sep 2024 15:08:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1725401314; x=1726006114; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=05+oB0bcf+Hu9+RUtMLlTIM2Mu/BEj3LxW6llWiweaw=;
+        b=C5zotwSHtTfmYCS+1gENouP/6OSFCi8kkCEfrsAlO+2/zyjMgF7iUKuflMuBkJ6+KP
+         8OeUoDTc0aWJPiuHT9+I5Z4Lc6taAAzF6FW03OfgZDFMZVWQa5EDSHEqCGcNyE0+kM3D
+         PvwpN42Mp2v1IeaZ4XiBKvloqpa8u8uil2GsQRYXPn7fyG8KALjPvDsVByUnO0tr+CGA
+         JFjSudA1TyLlE/cibcF+dwLLuunCcmiJqwGMmLluDcpkNhDZVLfDRsyMSd3ixML69VUE
+         yEU0d8AQJqhunWV7exejSwWaIZ1oXS7SByV6vtFDnQYKlg64L6+0XwXAmB5J2Eztsw8I
+         hdWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1725401314; x=1726006114;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=05+oB0bcf+Hu9+RUtMLlTIM2Mu/BEj3LxW6llWiweaw=;
+        b=bcwvhWCeprz7apLc53rqo25riL3PrUthntDqM9jy35xE7nQeOhUPeS/cmRHMckZtK8
+         yBoCK427RDkBiRCEiJ790+3KnyHyzNpKJdzCmVQjQD3CWkLsyZryXyD6hLQxtx1hz2YG
+         1sez/5wJZTS/0ZlCCdKFZZRVwEDG6Ra85OwAU5VtwuYWqO7XK7vgfi1yIMr5efPz7hg4
+         FPHbYp5ZX7hILCFFahJ4/mzSYPVsJGrGLMYh0u29OJwZUe6e9oT+LwN3CwASgC4Wsfm6
+         ouPcI/WdtO9eKgEwLM7VMlaqSjDCKpl4B2y8HM4rTnmBeN59Vp3E9SRfszRIYjz1QmB0
+         ZFDQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU+IG+qRDVw0LnwHm8tgPJPNsrq/zWRfPHlUh2xNe5Or9ugS7dM5fggs4ty7X4nGq0oBtE=@vger.kernel.org, AJvYcCVnvAI0crcXDuIGGmoAmc3lZtro05Vb+tQbDirsnt6QWc0nqlG0CPlCcTzCQmzHIxgLO3FkP+tjXMA/oP/P@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy1ka8p/GooxQkGf1KksoT8g7FnxcNRNPpJ2TdQ+yyc91/IOhKM
+	8MK7oKdjZlgmrkmsrX/KKqL9eDRuecZPj2oSeYZ7/lQ7JnwgfTzVaCUeiA3hypytPuyLIZGZHKi
+	ICVOwKM3oyHV5wlN+sot6OqwPcBoY5xg6
+X-Google-Smtp-Source: AGHT+IGvZoUtmLtLglqrbGXzcQ2X93GVrFFInJCAwPUq9a9ZToo0X5iXfW2raXz9m33c02yJx7iDMTumqNT2zhroDmc=
+X-Received: by 2002:a17:90b:274e:b0:2d3:cb16:c8e with SMTP id
+ 98e67ed59e1d1-2d85649e92cmr19669581a91.43.1725401313781; Tue, 03 Sep 2024
+ 15:08:33 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM6PR03MB5848:EE_|VI1PR03MB6335:EE_
-X-MS-Office365-Filtering-Correlation-Id: 59cd1662-e5f2-49af-2fb8-08dccc64f89f
-X-Microsoft-Antispam:
-	BCL:0;ARA:14566002|461199028|8060799006|15080799006|5072599009|19110799003|440099028|3412199025;
-X-Microsoft-Antispam-Message-Info:
-	oGJiY+qkuLudyQ1z0ByRtgTaqxDttoigvWCvcn2jRiMfIquM5t76Nm4l86W/YPtPYtKce5jdD6s1bkpwPfGk3+DhFbOdoqaTlRFhGJw3ODaUf7zecSeaLyudk7EzKZrI5UiLN5gy9VccvJaK9OkQRhMnZZ7LS0+WQ2OdXYx9dQcYzDmU6/46m58ZmR/S69Hwi7FuEO6LOFhGJq8RWVaM7wyj54RJljF6Di4jfgFXjfrniHQDI5tp1JzxmX4Isg4IDm915arpVmsk0eQYR9ue2Nt7YVNyr6JPgbFKsiHeo7RZNRWHSZDzJBjtEbowIGxwnFwA4wmwKyjVDlDMGKg0Vkr346yss5tA0IkQ2Ofo8H1r70XFeFe4iWvKT8qxLJCOwFXlmKHR9P3wZlwxeZNqKW7Osl2pasHt7eEeSaefxgrXw01+BvNQlMpDUvHn5rPBPi519LdHsMJYY+wJM2MulOPe3LoqCdd+n8lAdf/9wO2pLfjye/msAFCeJ9AjYMGTFwVf3SPc4YRIKjGveL7SifbBCVvUWtEeqDfhaSNAroydwjhve4tpSkEtsd1bfGZmj7zfjq+BOnRGT/kxwjZEBg5w68tg5wLgbcqmKvuEQpqYE3sK0AmFMCFploILszTQ6PBv4YmWEJq6Atx2+jLHBkWSwwwaXUG+2/XSCNeZFjQi9MIOH7hL4cYjjx+xdBDGKbcKDQQgZGOfbmoDGRwB6z7vyTw98+9tgYqlLjtJ3pCMfmBVpyNgFcr6CnwEOwrvGSTKvUR5zbm5t2ROjP/TupuTahGvFfLBaqWRDYJLJO81b81+dCgAfNHizutGSotA
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?1X7Kqn5qaJYjpRVAQBSQN9XP6O9WejCVl/xUFQLSaDOW25VuDm0OOj8r8vD0?=
- =?us-ascii?Q?pVLgwU1IYl1oq3PfE8sPdQDIpGYaBI/3v0y+ShHfIC2iHqdZMEtn+Z00odqn?=
- =?us-ascii?Q?ahZLAb4ZCJ0Ey+VAmcfdaCXgKBW7mY5hnb31bKby6cnN4Y8e2gJU6hEFtmDg?=
- =?us-ascii?Q?gn/xRn8rEDTketSWXTfIX9pwGAkmSNXxzSih4iHs2oE2x31K9Rb4PWZ2Zh7r?=
- =?us-ascii?Q?MYECI49lBzPW+K+UhV0zE6qK9ipKuOmxOArTVy1L8KuxN2ROzKKG5C7bgaJF?=
- =?us-ascii?Q?NDAhhJfn/Mi4G9CDO0P/6UdWksHroEHXK3pFD8I4IlArreKm9DHhVUKWr2zl?=
- =?us-ascii?Q?1pdhH/fdxGVf3xbVcNiLAXE9d93By8UZx0TJA6Rd++ZByNooAViVtfOaPpli?=
- =?us-ascii?Q?T63DlK0eSarOqlDs3xnDX2b0w7WMLnm4II8hHmgalq2p8maHJArmrcs/scjP?=
- =?us-ascii?Q?nGaN7u5iYEWNuUE70znZxXjmshq3rihvJSFEpGzaVQwqJqMDw7j1c9HYKsYC?=
- =?us-ascii?Q?YfC/ZKVFkle+ystoGfRWwWAhUNms67CWc/CAX/YYxsfK8+Sgz0U7FW45azX4?=
- =?us-ascii?Q?6hJhnSPQOGdr9/iq0+8p/QdW7wUPWGv7vWWLf4ghmXKRziGjaMp3TGZeBYwV?=
- =?us-ascii?Q?a+RC1zTZJ7XXTHv16TQUgWIMkd0PcpX8pxKNQ/Ui4SngyEndLb7Sfhv4iUOJ?=
- =?us-ascii?Q?PxstO0+ww2TR4S3a7rCWuq+tV7aerkj230FqLNKidsSDeLBsTMzTrKZtgJEk?=
- =?us-ascii?Q?idfkPbAZAEtxkRE0iLg2sWfTHirSt5CHyRNBCYyj8oJNnG/dhl4boOzB/QkL?=
- =?us-ascii?Q?KmzWSxqPxVf6FLTMsroQFSHmjwKyJovicfLDdO324vhbVz8q/szkwwgL0uM5?=
- =?us-ascii?Q?lsbwRqqzkoNL5s+xH8oX4YsMa9yHUvM5wx6aeTvlptdinW0M5y6pl8DiEAPQ?=
- =?us-ascii?Q?gF1jyvqZ9PKhGwxZmkL+rFwrefMAPK+IBywL5J2FOTd8pSzQUFChuMvaaLHt?=
- =?us-ascii?Q?S4PG0jQXK5ZYb1uEM7tUrH6mBW97Al3ERNnTCz3KvbMe7GjHvAgsdUCQbElp?=
- =?us-ascii?Q?3sVP/UtGzqM0tlrsN2Qr4YFGt+9VkhyVNFNxzh7Bz6CJQhi4lpJMQqPNXBig?=
- =?us-ascii?Q?7VwnlcSwvy+tAE/O5Uk1voHGD7M7S7HiQpXfOc7l3fWBeMlotNW8AHID74C6?=
- =?us-ascii?Q?smS4PRAwih51Fn3KBKKpOWuBKAC6/AlPWP2IWTFaYRs/LjDp7MIQPfaZ08y3?=
- =?us-ascii?Q?PDzfWBMAlv1HcslY8VGc?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 59cd1662-e5f2-49af-2fb8-08dccc64f89f
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR03MB5848.eurprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Sep 2024 22:08:42.6348
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR03MB6335
+References: <26cddadd-a79b-47b1-923e-9684cd8a7ef4@paulmck-laptop>
+In-Reply-To: <26cddadd-a79b-47b1-923e-9684cd8a7ef4@paulmck-laptop>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 3 Sep 2024 15:08:21 -0700
+Message-ID: <CAEf4BzZ5mJH5+4j56zSKkvuRLLfcQMEbkjM-T86onZdAWtsN+g@mail.gmail.com>
+Subject: Re: [PATCH rcu 0/11] Add light-weight readers for SRCU
+To: paulmck@kernel.org
+Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com, 
+	rostedt@goodmis.org, Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Kent Overstreet <kent.overstreet@linux.dev>, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-This patch adds open coded style bpf dynamic pointer iterator kfuncs
-bpf_iter_dynptr_{new,next,destroy} for iterating over all data in the
-memory region referenced by dynamic pointer.
+On Tue, Sep 3, 2024 at 9:32=E2=80=AFAM Paul E. McKenney <paulmck@kernel.org=
+> wrote:
+>
+> Hello!
+>
+> This series provides light-weight readers for SRCU.  This lightness
+> is selected by the caller by using the new srcu_read_lock_lite() and
+> srcu_read_unlock_lite() flavors instead of the usual srcu_read_lock() and
+> srcu_read_unlock() flavors.  Although this passes significant rcutorture
+> testing, this should still be considered to be experimental.
+>
+> There are a few restrictions:  (1) If srcu_read_lock_lite() is called
+> on a given srcu_struct structure, then no other flavor may be used on
+> that srcu_struct structure, before, during, or after.  (2) The _lite()
+> readers may only be invoked from regions of code where RCU is watching
+> (as in those regions in which rcu_is_watching() returns true).  (3)
+> There is no auto-expediting for srcu_struct structures that have
+> been passed to _lite() readers.  (4) SRCU grace periods for _lite()
+> srcu_struct structures invoke synchronize_rcu() at least twice, thus
+> having longer latencies than their non-_lite() counterparts.  (5) Even
+> with synchronize_srcu_expedited(), the resulting SRCU grace period
+> will invoke synchronize_rcu() at least twice, as opposed to invoking
+> the IPI-happy synchronize_rcu_expedited() function.  (6)  Just as with
+> srcu_read_lock() and srcu_read_unlock(), the srcu_read_lock_lite() and
+> srcu_read_unlock_lite() functions may not (repeat, *not*) be invoked
+> from NMI handlers (that is what the _nmisafe() interface are for).
+> Although one could imagine readers that were both _lite() and _nmisafe(),
+> one might also imagine that the read-modify-write atomic operations that
+> are needed by any NMI-safe SRCU read marker would make this unhelpful
+> from a performance perspective.
+>
+> All that said, the patches in this series are as follows:
+>
+> 1.      Rename srcu_might_be_idle() to srcu_should_expedite().
+>
+> 2.      Introduce srcu_gp_is_expedited() helper function.
+>
+> 3.      Renaming in preparation for additional reader flavor.
+>
+> 4.      Bit manipulation changes for additional reader flavor.
+>
+> 5.      Standardize srcu_data pointers to "sdp" and similar.
+>
+> 6.      Convert srcu_data ->srcu_reader_flavor to bit field.
+>
+> 7.      Add srcu_read_lock_lite() and srcu_read_unlock_lite().
+>
+> 8.      rcutorture: Expand RCUTORTURE_RDR_MASK_[12] to eight bits.
+>
+> 9.      rcutorture: Add reader_flavor parameter for SRCU readers.
+>
+> 10.     rcutorture: Add srcu_read_lock_lite() support to
+>         rcutorture.reader_flavor.
+>
+> 11.     refscale: Add srcu_read_lock_lite() support using "srcu-lite".
+>
+>                                                 Thanx, Paul
+>
 
-The idea of bpf dynamic pointer iterator comes from skb data iterator
-[0], we need a way to get all the data in skb. Adding iterator for bpf
-dynamic pointer is a more general choice than adding separate skb data
-iterator.
+Thanks Paul for working on this!
 
-Each iteration (next) copies the data to the specified buffer and
-updates the offset, with the pointer to the length of the read data
-(errno if errors occurred) as the return value. Note that the offset
-in iterator does not affect the offset in dynamic pointer.
+I applied your patches on top of all my uprobe changes (including the
+RFC patches that remove locks, optimize VMA to inode resolution, etc,
+etc; basically the fastest uprobe/uretprobe state I can get to). And
+then tested a few changes:
 
-The bpf dynamic pointer iterator has a getter kfunc,
-bpf_iter_dynptr_get_last_offset, which is used to get the offset
-of the last iteration.
+  - A) baseline (no SRCU-lite, RCU Tasks Trace for uprobe, normal SRCU
+for uretprobes)
+  - B) A + SRCU-lite for uretprobes (i.e., SRCU to SRCU-lite conversion)
+  - C) B + RCU Tasks Trace converted to SRCU-lite
+  - D) I also pessimized baseline by reverting RCU Tasks Trace, so
+both uprobes and uretprobes are SRCU protected. This allowed me to see
+a pure gain of SRCU-lite over SRCU for uprobes, taking RCU Tasks Trace
+performance out of the equation.
 
-The bpf dynamic pointer iterator has a setter kfunc,
-bpf_iter_dynptr_set_buffer, which is used to set the buffer and buffer
-size to be used when copying data in the iteration.
+In uprobes I used basically two benchmarks. One, uprobe-nop, that
+benchmarks entry uprobes (which are the fastest most optimized case,
+using RCU Tasks Trace in A and SRCU in D), and another that benchmarks
+return uprobes (uretprobes), called uretprobe-nop, which is normal
+SRCU both in A) and D). The latter uretprobe-nop benchmark basically
+combines entry and return probe overheads, because that's how
+uretprobes work.
 
-[0]: https://lore.kernel.org/bpf/AM6PR03MB5848DE102F47F592D8B479E999A52@AM6PR03MB5848.eurprd03.prod.outlook.com/
+So, below are the most meaningful comparisons. First, SRCU vs
+SRCU-lite for uretprobes:
 
-Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
----
- kernel/bpf/helpers.c | 110 +++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 110 insertions(+)
+BASELINE (A)
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+uretprobe-nop         ( 1 cpus):    1.941 =C2=B1 0.002M/s  (  1.941M/s/cpu)
+uretprobe-nop         ( 2 cpus):    3.731 =C2=B1 0.001M/s  (  1.866M/s/cpu)
+uretprobe-nop         ( 3 cpus):    5.492 =C2=B1 0.002M/s  (  1.831M/s/cpu)
+uretprobe-nop         ( 4 cpus):    7.234 =C2=B1 0.003M/s  (  1.808M/s/cpu)
+uretprobe-nop         ( 8 cpus):   13.448 =C2=B1 0.098M/s  (  1.681M/s/cpu)
+uretprobe-nop         (16 cpus):   22.905 =C2=B1 0.009M/s  (  1.432M/s/cpu)
+uretprobe-nop         (32 cpus):   44.760 =C2=B1 0.069M/s  (  1.399M/s/cpu)
+uretprobe-nop         (40 cpus):   52.986 =C2=B1 0.104M/s  (  1.325M/s/cpu)
+uretprobe-nop         (64 cpus):   43.650 =C2=B1 0.435M/s  (  0.682M/s/cpu)
+uretprobe-nop         (80 cpus):   46.831 =C2=B1 0.938M/s  (  0.585M/s/cpu)
 
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index 3956be5d6440..1f7204b54ba9 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -2729,6 +2729,111 @@ __bpf_kfunc int bpf_dynptr_clone(const struct bpf_dynptr *p,
- 	return 0;
- }
- 
-+struct bpf_iter_dynptr {
-+	__u64 __opaque[4];
-+} __aligned(8);
-+
-+struct bpf_iter_dynptr_kern {
-+	struct bpf_dynptr_kern *dynptr;
-+	void *buffer;
-+	u32 buffer_len;
-+	u32 offset;
-+	int read_len;
-+} __aligned(8);
-+
-+__bpf_kfunc int bpf_iter_dynptr_new(struct bpf_iter_dynptr *it, struct bpf_dynptr *p,
-+				    u32 offset, void *buffer, u32 buffer__szk)
-+{
-+	struct bpf_iter_dynptr_kern *kit = (void *)it;
-+	struct bpf_dynptr_kern *ptr = (struct bpf_dynptr_kern *)p;
-+
-+	BUILD_BUG_ON(sizeof(struct bpf_iter_dynptr_kern) > sizeof(struct bpf_iter_dynptr));
-+	BUILD_BUG_ON(__alignof__(struct bpf_iter_dynptr_kern) !=
-+		     __alignof__(struct bpf_iter_dynptr));
-+
-+	if (!ptr->data)
-+		return -EINVAL;
-+
-+	if (!buffer || buffer__szk <= 0)
-+		return -EINVAL;
-+
-+	if (offset >= __bpf_dynptr_size(ptr))
-+		return -E2BIG;
-+
-+	kit->dynptr = ptr;
-+	kit->buffer = buffer;
-+	kit->buffer_len = buffer__szk;
-+	kit->offset = offset;
-+	kit->read_len = 0;
-+
-+	return 0;
-+}
-+
-+__bpf_kfunc int *bpf_iter_dynptr_next(struct bpf_iter_dynptr *it)
-+{
-+	struct bpf_iter_dynptr_kern *kit = (void *)it;
-+	int read_len, ret;
-+	u32 size;
-+
-+	if (!kit->dynptr)
-+		return NULL;
-+
-+	if (!kit->dynptr->data)
-+		return NULL;
-+
-+	if (unlikely(kit->read_len < 0))
-+		return NULL;
-+
-+	size = __bpf_dynptr_size(kit->dynptr);
-+
-+	if (kit->offset >= size)
-+		return NULL;
-+
-+	read_len = (kit->offset + kit->buffer_len > size) ? size - kit->offset : kit->buffer_len;
-+
-+	ret = bpf_dynptr_read((u64)kit->buffer, read_len, (u64)kit->dynptr, kit->offset, 0);
-+	if (unlikely(ret != 0)) {
-+		/* if errors occur in bpf_dynptr_read, the errno is returned via read_len
-+		 * and NULL is returned in the next iteration to exit the iteration loop.
-+		 */
-+		kit->read_len = ret;
-+		goto out;
-+	}
-+
-+	kit->read_len = read_len;
-+	kit->offset += read_len;
-+out:
-+	return &kit->read_len;
-+}
-+
-+__bpf_kfunc int bpf_iter_dynptr_set_buffer(struct bpf_iter_dynptr *it__iter,
-+					   void *buffer, u32 buffer__szk)
-+{
-+	struct bpf_iter_dynptr_kern *kit = (void *)it__iter;
-+
-+	if (!buffer || buffer__szk <= 0)
-+		return -EINVAL;
-+
-+	kit->buffer = buffer;
-+	kit->buffer_len = buffer__szk;
-+
-+	return 0;
-+}
-+
-+__bpf_kfunc u32 bpf_iter_dynptr_get_last_offset(struct bpf_iter_dynptr *it__iter)
-+{
-+	struct bpf_iter_dynptr_kern *kit = (void *)it__iter;
-+
-+	if (!kit->dynptr)
-+		return 0;
-+
-+	return kit->offset - kit->read_len;
-+}
-+
-+__bpf_kfunc void bpf_iter_dynptr_destroy(struct bpf_iter_dynptr *it)
-+{
-+}
-+
- __bpf_kfunc void *bpf_cast_to_kern_ctx(void *obj)
- {
- 	return obj;
-@@ -3080,6 +3185,11 @@ BTF_ID_FLAGS(func, bpf_dynptr_is_null)
- BTF_ID_FLAGS(func, bpf_dynptr_is_rdonly)
- BTF_ID_FLAGS(func, bpf_dynptr_size)
- BTF_ID_FLAGS(func, bpf_dynptr_clone)
-+BTF_ID_FLAGS(func, bpf_iter_dynptr_new, KF_ITER_NEW)
-+BTF_ID_FLAGS(func, bpf_iter_dynptr_next, KF_ITER_NEXT | KF_RET_NULL)
-+BTF_ID_FLAGS(func, bpf_iter_dynptr_get_last_offset)
-+BTF_ID_FLAGS(func, bpf_iter_dynptr_set_buffer)
-+BTF_ID_FLAGS(func, bpf_iter_dynptr_destroy, KF_ITER_DESTROY)
- BTF_ID_FLAGS(func, bpf_modify_return_test_tp)
- BTF_ID_FLAGS(func, bpf_wq_init)
- BTF_ID_FLAGS(func, bpf_wq_set_callback_impl)
--- 
-2.39.2
+SRCU-lite for uretprobe (B)
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D
+uretprobe-nop         ( 1 cpus):    2.014 =C2=B1 0.014M/s  (  2.014M/s/cpu)
+uretprobe-nop         ( 2 cpus):    3.820 =C2=B1 0.002M/s  (  1.910M/s/cpu)
+uretprobe-nop         ( 3 cpus):    5.640 =C2=B1 0.003M/s  (  1.880M/s/cpu)
+uretprobe-nop         ( 4 cpus):    7.410 =C2=B1 0.003M/s  (  1.852M/s/cpu)
+uretprobe-nop         ( 8 cpus):   13.877 =C2=B1 0.009M/s  (  1.735M/s/cpu)
+uretprobe-nop         (16 cpus):   23.372 =C2=B1 0.022M/s  (  1.461M/s/cpu)
+uretprobe-nop         (32 cpus):   45.748 =C2=B1 0.048M/s  (  1.430M/s/cpu)
+uretprobe-nop         (40 cpus):   54.327 =C2=B1 0.093M/s  (  1.358M/s/cpu)
+uretprobe-nop         (64 cpus):   43.672 =C2=B1 0.371M/s  (  0.682M/s/cpu)
+uretprobe-nop         (80 cpus):   47.470 =C2=B1 0.753M/s  (  0.593M/s/cpu)
 
+You can see that across the board (except for noisy 64 CPU case)
+SRCU-lite is faster.
+
+
+Now, comparing A) vs C) on uprobe-nop, so we can see RCU Tasks Trace
+vs SRCU-lite for uprobes.
+
+BASELINE (A)
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+uprobe-nop            ( 1 cpus):    3.574 =C2=B1 0.004M/s  (  3.574M/s/cpu)
+uprobe-nop            ( 2 cpus):    6.735 =C2=B1 0.006M/s  (  3.368M/s/cpu)
+uprobe-nop            ( 3 cpus):   10.102 =C2=B1 0.005M/s  (  3.367M/s/cpu)
+uprobe-nop            ( 4 cpus):   13.087 =C2=B1 0.008M/s  (  3.272M/s/cpu)
+uprobe-nop            ( 8 cpus):   24.622 =C2=B1 0.031M/s  (  3.078M/s/cpu)
+uprobe-nop            (16 cpus):   41.752 =C2=B1 0.020M/s  (  2.610M/s/cpu)
+uprobe-nop            (32 cpus):   84.973 =C2=B1 0.115M/s  (  2.655M/s/cpu)
+uprobe-nop            (40 cpus):  102.229 =C2=B1 0.030M/s  (  2.556M/s/cpu)
+uprobe-nop            (64 cpus):  125.537 =C2=B1 0.045M/s  (  1.962M/s/cpu)
+uprobe-nop            (80 cpus):  143.091 =C2=B1 0.044M/s  (  1.789M/s/cpu)
+
+SRCU-lite for uprobes (C)
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+uprobe-nop            ( 1 cpus):    3.446 =C2=B1 0.010M/s  (  3.446M/s/cpu)
+uprobe-nop            ( 2 cpus):    6.411 =C2=B1 0.003M/s  (  3.206M/s/cpu)
+uprobe-nop            ( 3 cpus):    9.563 =C2=B1 0.039M/s  (  3.188M/s/cpu)
+uprobe-nop            ( 4 cpus):   12.454 =C2=B1 0.016M/s  (  3.113M/s/cpu)
+uprobe-nop            ( 8 cpus):   23.172 =C2=B1 0.013M/s  (  2.897M/s/cpu)
+uprobe-nop            (16 cpus):   39.793 =C2=B1 0.005M/s  (  2.487M/s/cpu)
+uprobe-nop            (32 cpus):   79.616 =C2=B1 0.207M/s  (  2.488M/s/cpu)
+uprobe-nop            (40 cpus):   96.851 =C2=B1 0.128M/s  (  2.421M/s/cpu)
+uprobe-nop            (64 cpus):  119.432 =C2=B1 0.146M/s  (  1.866M/s/cpu)
+uprobe-nop            (80 cpus):  135.162 =C2=B1 0.207M/s  (  1.690M/s/cpu)
+
+
+Overall, RCU Tasks Trace beats SRCU-lite, which I think is expected,
+so consider this just a confirmation. I'm not sure I'd like to switch
+from RCU Tasks Trace to SRCU-lite for uprobes part, but at least we
+have numbers to make that decision.
+
+Finally, to see SRCU vs SRCU-lite for entry uprobes improvements
+(i.e., if we never had RCU Tasks Trace). I've included a bit more
+extensive set of CPU counts for completeness.
+
+BASELINE w/ SRCU for uprobes (D)
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D
+uprobe-nop            ( 1 cpus):    3.413 =C2=B1 0.003M/s  (  3.413M/s/cpu)
+uprobe-nop            ( 2 cpus):    6.305 =C2=B1 0.003M/s  (  3.153M/s/cpu)
+uprobe-nop            ( 3 cpus):    9.442 =C2=B1 0.018M/s  (  3.147M/s/cpu)
+uprobe-nop            ( 4 cpus):   12.253 =C2=B1 0.006M/s  (  3.063M/s/cpu)
+uprobe-nop            ( 5 cpus):   15.316 =C2=B1 0.007M/s  (  3.063M/s/cpu)
+uprobe-nop            ( 6 cpus):   18.287 =C2=B1 0.030M/s  (  3.048M/s/cpu)
+uprobe-nop            ( 7 cpus):   21.378 =C2=B1 0.025M/s  (  3.054M/s/cpu)
+uprobe-nop            ( 8 cpus):   23.044 =C2=B1 0.010M/s  (  2.881M/s/cpu)
+uprobe-nop            (10 cpus):   28.778 =C2=B1 0.012M/s  (  2.878M/s/cpu)
+uprobe-nop            (12 cpus):   31.300 =C2=B1 0.016M/s  (  2.608M/s/cpu)
+uprobe-nop            (14 cpus):   36.580 =C2=B1 0.007M/s  (  2.613M/s/cpu)
+uprobe-nop            (16 cpus):   38.848 =C2=B1 0.017M/s  (  2.428M/s/cpu)
+uprobe-nop            (24 cpus):   60.298 =C2=B1 0.080M/s  (  2.512M/s/cpu)
+uprobe-nop            (32 cpus):   77.137 =C2=B1 1.957M/s  (  2.411M/s/cpu)
+uprobe-nop            (40 cpus):   89.205 =C2=B1 1.278M/s  (  2.230M/s/cpu)
+uprobe-nop            (48 cpus):   99.207 =C2=B1 0.444M/s  (  2.067M/s/cpu)
+uprobe-nop            (56 cpus):  102.399 =C2=B1 0.484M/s  (  1.829M/s/cpu)
+uprobe-nop            (64 cpus):  115.390 =C2=B1 0.972M/s  (  1.803M/s/cpu)
+uprobe-nop            (72 cpus):  127.476 =C2=B1 0.050M/s  (  1.770M/s/cpu)
+uprobe-nop            (80 cpus):  137.304 =C2=B1 0.068M/s  (  1.716M/s/cpu)
+
+SRCU-lite for uprobes (C)
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+uprobe-nop            ( 1 cpus):    3.446 =C2=B1 0.010M/s  (  3.446M/s/cpu)
+uprobe-nop            ( 2 cpus):    6.411 =C2=B1 0.003M/s  (  3.206M/s/cpu)
+uprobe-nop            ( 3 cpus):    9.563 =C2=B1 0.039M/s  (  3.188M/s/cpu)
+uprobe-nop            ( 4 cpus):   12.454 =C2=B1 0.016M/s  (  3.113M/s/cpu)
+uprobe-nop            ( 5 cpus):   15.634 =C2=B1 0.008M/s  (  3.127M/s/cpu)
+uprobe-nop            ( 6 cpus):   18.443 =C2=B1 0.018M/s  (  3.074M/s/cpu)
+uprobe-nop            ( 7 cpus):   21.793 =C2=B1 0.057M/s  (  3.113M/s/cpu)
+uprobe-nop            ( 8 cpus):   23.172 =C2=B1 0.013M/s  (  2.897M/s/cpu)
+uprobe-nop            (10 cpus):   29.430 =C2=B1 0.021M/s  (  2.943M/s/cpu)
+uprobe-nop            (12 cpus):   32.035 =C2=B1 0.008M/s  (  2.670M/s/cpu)
+uprobe-nop            (14 cpus):   37.174 =C2=B1 0.046M/s  (  2.655M/s/cpu)
+uprobe-nop            (16 cpus):   39.793 =C2=B1 0.005M/s  (  2.487M/s/cpu)
+uprobe-nop            (24 cpus):   61.656 =C2=B1 0.187M/s  (  2.569M/s/cpu)
+uprobe-nop            (32 cpus):   79.616 =C2=B1 0.207M/s  (  2.488M/s/cpu)
+uprobe-nop            (40 cpus):   96.851 =C2=B1 0.128M/s  (  2.421M/s/cpu)
+uprobe-nop            (48 cpus):  104.178 =C2=B1 0.033M/s  (  2.170M/s/cpu)
+uprobe-nop            (56 cpus):  105.689 =C2=B1 0.703M/s  (  1.887M/s/cpu)
+uprobe-nop            (64 cpus):  119.432 =C2=B1 0.146M/s  (  1.866M/s/cpu)
+uprobe-nop            (72 cpus):  127.574 =C2=B1 0.033M/s  (  1.772M/s/cpu)
+uprobe-nop            (80 cpus):  135.162 =C2=B1 0.207M/s  (  1.690M/s/cpu)
+
+So, say, at 32 threads, we get 79.6 vs 77.1, which is about 3%
+throughput win. Which is not negligible!
+
+Note that as we get to 80 cores data is more noisy (hyperthreading,
+background system noise, etc). But you can still see an improvement
+across basically the entire range.
+
+Hopefully the above data is useful.
+
+> ------------------------------------------------------------------------
+>
+>  Documentation/admin-guide/kernel-parameters.txt   |    4
+>  b/Documentation/admin-guide/kernel-parameters.txt |    8 +
+>  b/include/linux/srcu.h                            |   21 +-
+>  b/include/linux/srcutree.h                        |    2
+>  b/kernel/rcu/rcutorture.c                         |   28 +--
+>  b/kernel/rcu/refscale.c                           |   54 +++++--
+>  b/kernel/rcu/srcutree.c                           |   16 +-
+>  include/linux/srcu.h                              |   86 +++++++++--
+>  include/linux/srcutree.h                          |    5
+>  kernel/rcu/rcutorture.c                           |   37 +++-
+>  kernel/rcu/srcutree.c                             |  168 +++++++++++++++=
+-------
+>  11 files changed, 308 insertions(+), 121 deletions(-)
 
