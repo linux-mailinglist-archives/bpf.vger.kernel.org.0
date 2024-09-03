@@ -1,209 +1,239 @@
-Return-Path: <bpf+bounces-38849-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38850-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A52E96AC50
-	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2024 00:39:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A266696AC95
+	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2024 01:00:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BCCA32814DD
-	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 22:39:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 599C7285ED8
+	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 23:00:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C62B1D58A7;
-	Tue,  3 Sep 2024 22:39:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KhAAp5yj"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B73C5126BF1;
+	Tue,  3 Sep 2024 23:00:08 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
+Received: from 66-220-155-179.mail-mxout.facebook.com (66-220-155-179.mail-mxout.facebook.com [66.220.155.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5B82168D0;
-	Tue,  3 Sep 2024 22:39:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE4C71D58B0
+	for <bpf@vger.kernel.org>; Tue,  3 Sep 2024 23:00:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.220.155.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725403152; cv=none; b=USB+bXbFavLdxwA0oWOY1JntAMxcBoP5b+RWMIJ3nRzjLYTIXTWDSL7WtqnIE0Kf3Q+jMyMBPPcN18leDjfpeypyE2WMEaMsDv/o9Yf5CQ/iz23C31aPPkUs/hMEq97eT1ceoGznJDT/ezJfNR4DDlrRmdUZSzr3QAUVH8FLgic=
+	t=1725404408; cv=none; b=FFmeCE3Q4mu995rqVOsExgnYHBhJednBSO304vddDToGraa5/2rGcEtiscW1H8daN91rVKmhJLwEukCSiheO3cvA6rOwUSwwfejM+i2lAfrnYcKYraTGP/wrDoBkl8u3sTl02VlCE6FUJt1qN5SbC4vnym3yqYvXdcWhDxeAezE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725403152; c=relaxed/simple;
-	bh=Lpdiqv7U5WH0lEr8Eh3/GAkbxcCXk70iOpTe0x22h38=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=G7iFDu1z5fkTItIghOWZe55/KzmjaKq/XSS+RBDTUQTIYaKMDngwJb3RZ3CPTDy+o5JLVqeJ1tEtzk5EbDDP4dML7ZUwzKVohIvw25f+2Dxw3I0g/GbCAOmPKApcE8CccNEfQ7PpSA9EP6MvhZSQzBJs75TtketrTVWI2R11Clo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KhAAp5yj; arc=none smtp.client-ip=209.85.216.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-2d86f713557so3196006a91.2;
-        Tue, 03 Sep 2024 15:39:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1725403149; x=1726007949; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=i2PtT26YRiaBYasNug4rMtQJAR6q3w0Bv3mtkz5A7vg=;
-        b=KhAAp5yjpS8GwpurkUNJFsOVpx2PJP8ZvIer7qhOyAo71o7wgXrmB1qhPCW41sKK3y
-         yRmB4seXMfkR2yML9hajm1ONoGgZN26wR049LEMALnGB/PjrJ+X9gItYb7Z8OzInAbMj
-         7a2cgfkyuDR+a3H7COCIu6Up5i5egvpM0NiUw6suVorA895aTMdJoLKQptYW3r2nAGXR
-         XluZfY1nT5JWoHkc3woWw3ypSB8N4W+fqp8jtc6g4+3nHZYdolwvN5xlX2NLA98aQxzy
-         EXxvZAGABdw9k+WJFjGusI32t7mtYQ4HBrHSuQyAZsNfRhslmvMXmGlL4KIVC5oBIWvL
-         T2YA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725403149; x=1726007949;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=i2PtT26YRiaBYasNug4rMtQJAR6q3w0Bv3mtkz5A7vg=;
-        b=wfokXaFGVeBLb3iAg50nKaJj5ang0DUP+I0CkEVGWwYCnkBIvC8ZmurITLavGfbRDy
-         OpkUen5jP6r2/QK/HEpt2zPRK/nsVArhPIg4gh21TDddlr05AcY4mCYQb2C09PQOmTS+
-         7K4+rtXQvNF8cXh+YyDKqhN9mW/ft6auIkMPg4qXK3pUBG8SPeHfq+iSLuGeS9Ppr8Qh
-         4Nho1D+T9YJZ4BtsghZRVHqzmUBlh3+uhVBMljj4spxS1uD5jvswmqGCw1oQv4D5PwZx
-         zPHxMlr4sfP9tu+WLPUtC1yPbuX2L1c21SHCExUWOR5zD6Caj4PPfFPxRytkqFzf+pAA
-         4/OA==
-X-Forwarded-Encrypted: i=1; AJvYcCUo1IIACMyWbjyHl2AY+/9kpCMvHEXD0HVGtnnVX1AmDBP22hlRrLyxtA6Di819bi7jSVXqfthcZ9p7yST8@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyx3m+Ju1Ll/HHXUwc6Jol6q4onqaHp9IXdhsrFBTllZP+vOtMs
-	wwtvqlwbRZJfibaRqY82DyLp3m/3CpiWxEJBIFS068xVT5ispzTOicHzrJ3Tj0XPjGAoFi+XZPH
-	JfYN8W5C+XDyIJH2MifkgkYtGw6U=
-X-Google-Smtp-Source: AGHT+IHqfBfyIi1sY/xSA1xbdpPbbWvmy5eqvGxffWVsRA5cwcYDa75eASwd10hegsqh0goLCXgFxIVazxTlOxZ30R8=
-X-Received: by 2002:a17:90a:bd91:b0:2cc:ef14:89e3 with SMTP id
- 98e67ed59e1d1-2d8904ee82emr11225806a91.15.1725403149223; Tue, 03 Sep 2024
- 15:39:09 -0700 (PDT)
+	s=arc-20240116; t=1725404408; c=relaxed/simple;
+	bh=POE64LdyQ4gIede4hY2KekXHPIu+BMoGqsbo6if7du0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=FlJ0U/Y7mi9V7N0YJce1rRvuzSbVM1CCpw7VIxuNFGtfXfbuA2oQDNE5gzJsgr5y9clx+ujNImMvZlbCFssJDYi5OEEvVaMV+nQyQ84ZTHvwVA3azFX/tG5vQ9hVq+PugmdqANn8StyzoHhSaJPxQN7yhD2qXgKyqdsGavMSXN4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=66.220.155.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
+Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
+	id BF99B88DE236; Tue,  3 Sep 2024 15:59:49 -0700 (PDT)
+From: Yonghong Song <yonghong.song@linux.dev>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	kernel-team@fb.com,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Daniel Hodges <hodgesd@meta.com>
+Subject: [PATCH bpf-next v2 1/2] bpf, x64: Fix a jit convergence issue
+Date: Tue,  3 Sep 2024 15:59:49 -0700
+Message-ID: <20240903225949.2066234-1-yonghong.song@linux.dev>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240829174232.3133883-1-andrii@kernel.org>
-In-Reply-To: <20240829174232.3133883-1-andrii@kernel.org>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 3 Sep 2024 15:38:57 -0700
-Message-ID: <CAEf4BzYdP_6L1bT5bEwp5GAwM-rKOA36C-Cwv4i8h-3pKp-nkQ@mail.gmail.com>
-Subject: Re: [PATCH v7 bpf-next 00/10] Harden and extend ELF build ID parsing logic
-To: willy@infradead.org, linux-mm@kvack.org, akpm@linux-foundation.org
-Cc: bpf@vger.kernel.org, adobriyan@gmail.com, shakeel.butt@linux.dev, 
-	hannes@cmpxchg.org, ak@linux.intel.com, osandov@osandov.com, song@kernel.org, 
-	jannh@google.com, linux-fsdevel@vger.kernel.org, 
-	Andrii Nakryiko <andrii@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Aug 29, 2024 at 10:42=E2=80=AFAM Andrii Nakryiko <andrii@kernel.org=
-> wrote:
->
-> The goal of this patch set is to extend existing ELF build ID parsing log=
-ic,
-> currently mostly used by BPF subsystem, with support for working in sleep=
-able
-> mode in which memory faults are allowed and can be relied upon to fetch
-> relevant parts of ELF file to find and fetch .note.gnu.build-id informati=
-on.
->
-> This is useful and important for BPF subsystem itself, but also for
-> PROCMAP_QUERY ioctl(), built atop of /proc/<pid>/maps functionality (see =
-[0]),
-> which makes use of the same build_id_parse() functionality. PROCMAP_QUERY=
- is
-> always called from sleepable user process context, so it doesn't have to
-> suffer from current restrictions of build_id_parse() which are due to the=
- NMI
-> context assumption.
->
-> Along the way, we harden the logic to avoid TOCTOU, overflow, out-of-boun=
-ds
-> access problems.  This is the very first patch, which can be backported t=
-o
-> older releases, if necessary.
->
-> We also lift existing limitations of only working as long as ELF program
-> headers and build ID note section is contained strictly within the very f=
-irst
-> page of ELF file.
->
-> We achieve all of the above without duplication of logic between sleepabl=
-e and
-> non-sleepable modes through freader abstraction that manages underlying f=
-olio
-> from page cache (on demand) and gives a simple to use direct memory acces=
-s
-> interface. With that, single page restrictions and adding sleepable mode
-> support is rather straightforward.
->
-> We also extend existing set of BPF selftests with a few tests targeting b=
-uild
-> ID logic across sleepable and non-sleepabe contexts (we utilize sleepable=
- and
-> non-sleepable uprobes for that).
->
->    [0] https://lore.kernel.org/linux-mm/20240627170900.1672542-4-andrii@k=
-ernel.org/
->
-> v6->v7:
->   - added filemap_invalidate_{lock,unlock}_shared() around read_cache_fol=
-io
->     and kept Eduard's Reviewed-by (Eduard);
-> v5->v6:
->   - use local phnum variable in get_build_id_32() (Jann);
->   - switch memcmp() instead of strcmp() in parse_build_id() (Jann);
-> v4->v5:
->   - pass proper file reference to read_cache_folio() (Shakeel);
->   - fix another potential overflow due to two u32 additions (Andi);
->   - add PageUptodate() check to patch #1 (Jann);
-> v3->v4:
->   - fix few more potential overflow and out-of-bounds access issues (Andi=
-);
->   - use purely folio-based implementation for freader (Matthew);
+Daniel Hodges reported a jit error when playing with a sched-ext program.
+The error message is:
+  unexpected jmp_cond padding: -4 bytes
 
-Ok, so I'm not sure what one needs to do to get Matthew's attention
-nowadays, but hopefully yet another ping might do the trick.
+But further investigation shows the error is actual due to failed
+convergence. The following are some analysis:
 
-Matthew,
+  ...
+  pass4, final_proglen=3D4391:
+    ...
+    20e:    48 85 ff                test   rdi,rdi
+    211:    74 7d                   je     0x290
+    213:    48 8b 77 00             mov    rsi,QWORD PTR [rdi+0x0]
+    ...
+    289:    48 85 ff                test   rdi,rdi
+    28c:    74 17                   je     0x2a5
+    28e:    e9 7f ff ff ff          jmp    0x212
+    293:    bf 03 00 00 00          mov    edi,0x3
 
-Can you please take another look and provide your ack or nack? I did
-the conversion to folio as you requested. It would be nice if you can
-give me a courtesy of acking my patch set, if there is nothing wrong
-with it, so it can finally go in.
+Note that insn at 0x211 is 2-byte cond jump insn for offset 0x7d (-125)
+and insn at 0x28e is 5-byte jmp insn with offset -129.
 
-Thank you.
+  pass5, final_proglen=3D4392:
+    ...
+    20e:    48 85 ff                test   rdi,rdi
+    211:    0f 84 80 00 00 00       je     0x297
+    217:    48 8b 77 00             mov    rsi,QWORD PTR [rdi+0x0]
+    ...
+    28d:    48 85 ff                test   rdi,rdi
+    290:    74 1a                   je     0x2ac
+    292:    eb 84                   jmp    0x218
+    294:    bf 03 00 00 00          mov    edi,0x3
 
-> v2->v3:
->   - remove unneeded READ_ONCE()s and force phoff to u64 for 32-bit mode (=
-Andi);
->   - moved hardening fixes to the front for easier backporting (Jann);
->   - call freader_cleanup() from build_id_parse_buf() for consistency (Jir=
-i);
-> v1->v2:
->   - ensure MADV_PAGEOUT works reliably by paging data in first (Shakeel);
->   - to fix BPF CI build optionally define MADV_POPULATE_READ in selftest.
->
-> Andrii Nakryiko (10):
->   lib/buildid: harden build ID parsing logic
->   lib/buildid: add single folio-based file reader abstraction
->   lib/buildid: take into account e_phoff when fetching program headers
->   lib/buildid: remove single-page limit for PHDR search
->   lib/buildid: rename build_id_parse() into build_id_parse_nofault()
->   lib/buildid: implement sleepable build_id_parse() API
->   lib/buildid: don't limit .note.gnu.build-id to the first page in ELF
->   bpf: decouple stack_map_get_build_id_offset() from
->     perf_callchain_entry
->   bpf: wire up sleepable bpf_get_stack() and bpf_get_task_stack()
->     helpers
->   selftests/bpf: add build ID tests
->
->  include/linux/bpf.h                           |   2 +
->  include/linux/buildid.h                       |   4 +-
->  kernel/bpf/stackmap.c                         | 131 ++++--
->  kernel/events/core.c                          |   2 +-
->  kernel/trace/bpf_trace.c                      |   5 +-
->  lib/buildid.c                                 | 397 +++++++++++++-----
->  tools/testing/selftests/bpf/Makefile          |   5 +-
->  .../selftests/bpf/prog_tests/build_id.c       | 118 ++++++
->  .../selftests/bpf/progs/test_build_id.c       |  31 ++
->  tools/testing/selftests/bpf/uprobe_multi.c    |  41 ++
->  tools/testing/selftests/bpf/uprobe_multi.ld   |  11 +
->  11 files changed, 605 insertions(+), 142 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/build_id.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_build_id.c
->  create mode 100644 tools/testing/selftests/bpf/uprobe_multi.ld
->
-> --
-> 2.43.5
->
+Note that insn at 0x211 is 6-byte cond jump insn now since its offset
+becomes 0x80 based on previous round (0x293 - 0x213 =3D 0x80). At the sam=
+e
+time, insn at 0x292 is a 2-byte insn since its offset is -124.
+
+pass6 will repeat the same code as in pass4. pass7 will repeat the same
+code as in pass5, and so on. This will prevent eventual convergence.
+
+Passes 1-14 are with padding =3D 0. At pass15, padding is 1 and related
+insn looks like:
+
+    211:    0f 84 80 00 00 00       je     0x297
+    217:    48 8b 77 00             mov    rsi,QWORD PTR [rdi+0x0]
+    ...
+    24d:    48 85 d2                test   rdx,rdx
+
+The similar code in pass14:
+    211:    74 7d                   je     0x290
+    213:    48 8b 77 00             mov    rsi,QWORD PTR [rdi+0x0]
+    ...
+    249:    48 85 d2                test   rdx,rdx
+    24c:    74 21                   je     0x26f
+    24e:    48 01 f7                add    rdi,rsi
+    ...
+
+Before generating the following insn,
+  250:    74 21                   je     0x273
+"padding =3D 1" enables some checking to ensure nops is either 0 or 4
+where
+  #define INSN_SZ_DIFF (((addrs[i] - addrs[i - 1]) - (prog - temp)))
+  nops =3D INSN_SZ_DIFF - 2
+
+In this specific case,
+  addrs[i] =3D 0x24e // from pass14
+  addrs[i-1] =3D 0x24d // from pass15
+  prog - temp =3D 3 // from 'test rdx,rdx' in pass15
+so
+  nops =3D -4
+and this triggers the failure.
+
+To fix the issue, we need to break cycles of je <-> jmp. For example,
+in the above case, we have
+  211:    74 7d                   je     0x290
+the offset is 0x7d. If 2-byte je insn is generated only if
+the offset is less than 0x7d (<=3D 0x7c), the cycle can be
+break and we can achieve the convergence.
+
+I did some study on other cases like je <-> je, jmp <-> je and
+jmp <-> jmp which may cause cycles. Those cases are not from actual
+reproducible cases since it is pretty hard to construct a test case
+for them. the results show that the offset <=3D 0x7b (0x7b =3D 123) shoul=
+d
+be enough to cover all cases. This patch added a new helper to generate 8=
+-bit
+cond/uncond jmp insns only if the offset range is [-128, 123].
+
+Reported-by: Daniel Hodges <hodgesd@meta.com>
+Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+---
+ arch/x86/net/bpf_jit_comp.c | 55 +++++++++++++++++++++++++++++++++++--
+ 1 file changed, 53 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+index 074b41fafbe3..63c4816ed4e7 100644
+--- a/arch/x86/net/bpf_jit_comp.c
++++ b/arch/x86/net/bpf_jit_comp.c
+@@ -64,6 +64,57 @@ static bool is_imm8(int value)
+ 	return value <=3D 127 && value >=3D -128;
+ }
+=20
++/*
++ * Let us limit the positive offset to be <=3D 124.
++ * This is to ensure eventual jit convergence For the following patterns=
+:
++ * ...
++ * pass4, final_proglen=3D4391:
++ *   ...
++ *   20e:    48 85 ff                test   rdi,rdi
++ *   211:    74 7d                   je     0x290
++ *   213:    48 8b 77 00             mov    rsi,QWORD PTR [rdi+0x0]
++ *   ...
++ *   289:    48 85 ff                test   rdi,rdi
++ *   28c:    74 17                   je     0x2a5
++ *   28e:    e9 7f ff ff ff          jmp    0x212
++ *   293:    bf 03 00 00 00          mov    edi,0x3
++ * Note that insn at 0x211 is 2-byte cond jump insn for offset 0x7d (-12=
+5)
++ * and insn at 0x28e is 5-byte jmp insn with offset -129.
++ *
++ * pass5, final_proglen=3D4392:
++ *   ...
++ *   20e:    48 85 ff                test   rdi,rdi
++ *   211:    0f 84 80 00 00 00       je     0x297
++ *   217:    48 8b 77 00             mov    rsi,QWORD PTR [rdi+0x0]
++ *   ...
++ *   28d:    48 85 ff                test   rdi,rdi
++ *   290:    74 1a                   je     0x2ac
++ *   292:    eb 84                   jmp    0x218
++ *   294:    bf 03 00 00 00          mov    edi,0x3
++ * Note that insn at 0x211 is 6-byte cond jump insn now since its offset
++ * becomes 0x80 based on previous round (0x293 - 0x213 =3D 0x80).
++ * At the same time, insn at 0x292 is a 2-byte insn since its offset is
++ * -124.
++ *
++ * pass6 will repeat the same code as in pass4 and this will prevent
++ * eventual convergence.
++ *
++ * To fix this issue, we need to break je (2->6 bytes) <-> jmp (5->2 byt=
+es)
++ * cycle in the above. In the above example that we found je offset <=3D=
+ 0x7c
++ * should work.
++ *
++ * For other cases, je <-> je needs offset <=3D 0x7b to avoid no converg=
+ence
++ * issue. For jmp <-> je and jmp <-> jmp cases, jmp offset <=3D 0x7c sho=
+uld
++ * avoid no convergence issue.
++ *
++ * Overall, let us limit the positive offset for 8bit cond/uncond jmp in=
+sn
++ * to mamximum 123 (0x7b). This way, the jit pass can eventually converg=
+e.
++ */
++static bool is_imm8_jmp_offset(int value)
++{
++	return value <=3D 123 && value >=3D -128;
++}
++
+ static bool is_simm32(s64 value)
+ {
+ 	return value =3D=3D (s64)(s32)value;
+@@ -2231,7 +2282,7 @@ st:			if (is_imm8(insn->off))
+ 				return -EFAULT;
+ 			}
+ 			jmp_offset =3D addrs[i + insn->off] - addrs[i];
+-			if (is_imm8(jmp_offset)) {
++			if (is_imm8_jmp_offset(jmp_offset)) {
+ 				if (jmp_padding) {
+ 					/* To keep the jmp_offset valid, the extra bytes are
+ 					 * padded before the jump insn, so we subtract the
+@@ -2313,7 +2364,7 @@ st:			if (is_imm8(insn->off))
+ 				break;
+ 			}
+ emit_jmp:
+-			if (is_imm8(jmp_offset)) {
++			if (is_imm8_jmp_offset(jmp_offset)) {
+ 				if (jmp_padding) {
+ 					/* To avoid breaking jmp_offset, the extra bytes
+ 					 * are padded before the actual jmp insn, so
+--=20
+2.43.5
+
 
