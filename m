@@ -1,98 +1,50 @@
-Return-Path: <bpf+bounces-38764-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38765-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19B389695AE
-	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 09:34:40 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCC2296981B
+	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 11:00:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0E28B1C232D5
-	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 07:34:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2D8F3B25FC7
+	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 09:00:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F93C1D6786;
-	Tue,  3 Sep 2024 07:34:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BAEA1C769A;
+	Tue,  3 Sep 2024 09:00:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OWS04Bb5"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YDozzlLi"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com [209.85.210.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A45F1C62B1;
-	Tue,  3 Sep 2024 07:34:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C45B41C7660;
+	Tue,  3 Sep 2024 09:00:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725348875; cv=none; b=hD35NJMEw5E47XEwl5N5tZNcEu6UwUwmX6c5fPIJwY0jdgirWuGDw/hreDuXw+GYGsEhbnS8dutACLXb6zIRRhmTlTwW7Pf9H3GxLMSdh8Tm8qmzyM/lOCX7iFrOJvPXX6X6nZabvnVrsP7UBGj0qTF0lsYhspzhiJ0WENg+moA=
+	t=1725354030; cv=none; b=l4OB2n1cXvaaeMESllLx4rjk145GolY7eEdLu+9936V32+bnxief4L99F8OpREKhiiyTVGVvYGSqmjDG+WYfevwY+IL23L40FoTs+CLZYV75t24G665/DvOPIwCu7VgMCM1qtm8ExRY/GUNbY0W/8uMWfU/fH+jwwf5N/ugC2Io=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725348875; c=relaxed/simple;
-	bh=w40eLrSBtS6klKdh9gX6KL19qx6emdBSygq3BzSs4hs=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=riF2HnUm3ss3hOFNBpjRqfZSZ4xOyEabXwx0DfPUgcVEMYh9nW7l0NulgfEDj4+491IZE030dpuR75J10IBPzC4bd+0FeQ9StcgTr/36elBPZ7Al9uYSy/JIxY9C5TVAFp3hDtWKoJ2SPYdtwhYiFDOIV+OUE7fqC/3Ca4bnnfQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OWS04Bb5; arc=none smtp.client-ip=209.85.210.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f45.google.com with SMTP id 46e09a7af769-70f6732a16dso3011743a34.3;
-        Tue, 03 Sep 2024 00:34:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1725348873; x=1725953673; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=q+dH+RZcHjqpxSRHc4esw3Xc63l/7rMXelYdHD7/OEg=;
-        b=OWS04Bb5TZBYsBMwNFdny3WJ8pmFDrWSO3KsOQdHrlA1ffrI9gd1RbnXF9g1CV+AGt
-         Nkry7wJ+97GzXvRUur4gK5qS5NPYoEaXW5R4lscVzep+dxsjbVRFNgNH0Xm3qNaGLbtG
-         ZSbYPRVeGCXiOi5l+Nc0ZFZK2g22XK/QDnaHx2S7CACTXhQIAt5w6BuPzdTO/M2RRUKK
-         j9g/e+SaCra2GGt7Am2krBzRNaujN4FspC1ZQLMgY6n3k+F4+hKgxSgqwA3dg9MzX+eg
-         nHtGWZKIWpxy4FylVcs9NQO3nmYEnYYU1sUwKPH5UuhTAor7O8m2rHorMBLbELiKgrKm
-         f6gA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725348873; x=1725953673;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=q+dH+RZcHjqpxSRHc4esw3Xc63l/7rMXelYdHD7/OEg=;
-        b=lFaYHGJ07vDFSx5GWuC/lS5XHU/R30g01TQFDwTr4Wh7pE8a+dMgb+IcXzYubVG8Oz
-         WPHIW9kXz5QGssKA/gAP/KqjTWmxd3f9FTeglzTiFwFk12Mq5Rn4Diqx/GKmRnvjZNF5
-         3RnAtR+jOBNq7WEmsx7LRWJj9/qdZLID9l5TtLaBMkWjSiAcDuoQlxdHVLUzS1SUo9JD
-         hzvD04qrxD63GJIbO7jLs0SCDKbrRFCOU4oP7la5m5/SGltL2IN9fpBSeBGwlJzRtuAq
-         4o0nlMoOZNSwFhlqtVqAsWt/uttTW0T4lI8Dmli4LRQArCEAnACAGGOOp5BDki3FGx9f
-         jlPg==
-X-Forwarded-Encrypted: i=1; AJvYcCUmar8gTXp7HiVg+SDeZ7dreomur2EWIxf2JLfHwj+fc2I6ESnwMitYxrdn6jTX5DrX6cUntlth+5ORZXNMvuc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzP8fU8WJJoVAAmC64rBSC04cxq3h9ITfaMGjUih2v1tKOEvpUr
-	BMoTatR+XG0YeGCslB3cMbfM6vL/VyCLcICtm8Krp0F4JbmTvKXy1bDFLA==
-X-Google-Smtp-Source: AGHT+IGJzk2s833FOAhv3iQ+NXrcUphB8UFBJbqARLNqBkNgWxZmJHzascz2RqQ5HEAgCCg2DhlkGA==
-X-Received: by 2002:a05:6358:6f82:b0:1b5:fcc8:49d0 with SMTP id e5c5f4694b2df-1b7e37a4fafmr1740214355d.2.1725348872849;
-        Tue, 03 Sep 2024 00:34:32 -0700 (PDT)
-Received: from localhost.localdomain (69-172-146-21.cable.teksavvy.com. [69.172.146.21])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7176882e523sm1172980b3a.164.2024.09.03.00.34.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Sep 2024 00:34:32 -0700 (PDT)
-From: Tony Ambardar <tony.ambardar@gmail.com>
-To: bpf@vger.kernel.org
-Cc: Tony Ambardar <tony.ambardar@gmail.com>,
-	linux-kselftest@vger.kernel.org,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Shuah Khan <shuah@kernel.org>,
-	Ilya Leoshkevich <iii@linux.ibm.com>,
-	Quentin Monnet <qmo@kernel.org>
-Subject: [PATCH bpf-next v5 8/8] selftests/bpf: Support cross-endian building
-Date: Tue,  3 Sep 2024 00:33:05 -0700
-Message-Id: <419d9f3b772a09f1db62b9bc484cb1e69336a444.1725347944.git.tony.ambardar@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1725347944.git.tony.ambardar@gmail.com>
-References: <cover.1725347944.git.tony.ambardar@gmail.com>
+	s=arc-20240116; t=1725354030; c=relaxed/simple;
+	bh=nSvH7njmPuveEhUVDO40rfe4HWyxx/nctaf+U0qJWBM=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=KDe1+JCHb9R8r2Cgw6Ic9CdXF7Axd6+l1+xNGv4CnSUI771xWdgkLkuwQnq+lZo4fehXpj5DZn4M4jzMl7tFaoEbpozTn9CKdCAwTyEIoDYy320fw9xThyC/0adFdbfX8Fn582Ve+OLfbRFFzLWws90bChw13GNCNqefz0GFzGA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YDozzlLi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A59FC4CEC4;
+	Tue,  3 Sep 2024 09:00:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1725354030;
+	bh=nSvH7njmPuveEhUVDO40rfe4HWyxx/nctaf+U0qJWBM=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=YDozzlLi3E7w7YXzwmP+3Z3wGQF5tRyTh9oeq/y0bOuGjpg79FEi/KYB8YrwRhPLT
+	 j27C0gt5oU2VRCg1RPt/QvPqiJcAMcWelGlA9BgZwDjTDFSEKo3c/f5/hhm10X0UH3
+	 mC2QrVxnScWkyX8sCZunjtmlT3w/DBzoCMW0e8cbr1VniL6LN0bX1PF/zEoTTOMmmj
+	 6XwtOdIWgUe0Q9VGoG6FZpeqkV6B3pSYWQICgjyVZuOv5mYmdWDFYWoJGl2I4xnVQB
+	 9QdDKuIKbqHd3U3WvOk8vudNSQFbPEGN9ml9nxifJk25q66bBzZT6Ozq77mYG9053Y
+	 /JAfsfwWpuJEQ==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 344D33805D82;
+	Tue,  3 Sep 2024 09:00:32 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -100,51 +52,51 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net 0/3] net: ethernet: ti: am65-cpsw: Fix XDP
+ implementation
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <172535403101.219489.11960916524185779932.git-patchwork-notify@kernel.org>
+Date: Tue, 03 Sep 2024 09:00:31 +0000
+References: <20240829-am65-cpsw-xdp-v1-0-ff3c81054a5e@kernel.org>
+In-Reply-To: <20240829-am65-cpsw-xdp-v1-0-ff3c81054a5e@kernel.org>
+To: Roger Quadros <rogerq@kernel.org>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+ john.fastabend@gmail.com, jpanis@baylibre.com, jacob.e.keller@intel.com,
+ s-vadapalli@ti.com, danishanwar@ti.com, vigneshr@ti.com, srk@ti.com,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org
 
-Update Makefile build rules to compile BPF programs with target endianness
-rather than host byte-order. With recent changes, this allows building the
-full selftests/bpf suite hosted on x86_64 and targeting s390x or mips64eb
-for example.
+Hello:
 
-Signed-off-by: Tony Ambardar <tony.ambardar@gmail.com>
----
- tools/testing/selftests/bpf/Makefile | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+This series was applied to netdev/net.git (main)
+by Paolo Abeni <pabeni@redhat.com>:
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 7660d19b66c2..1f21d3a0c20f 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -442,6 +442,7 @@ endef
- IS_LITTLE_ENDIAN = $(shell $(CC) -dM -E - </dev/null | \
- 			grep 'define __BYTE_ORDER__ __ORDER_LITTLE_ENDIAN__')
- MENDIAN=$(if $(IS_LITTLE_ENDIAN),-mlittle-endian,-mbig-endian)
-+BPF_TARGET_ENDIAN=$(if $(IS_LITTLE_ENDIAN),--target=bpfel,--target=bpfeb)
- 
- ifneq ($(CROSS_COMPILE),)
- CLANG_TARGET_ARCH = --target=$(notdir $(CROSS_COMPILE:%-=%))
-@@ -469,17 +470,17 @@ $(OUTPUT)/cgroup_getset_retval_hooks.o: cgroup_getset_retval_hooks.h
- # $4 - binary name
- define CLANG_BPF_BUILD_RULE
- 	$(call msg,CLNG-BPF,$4,$2)
--	$(Q)$(CLANG) $3 -O2 --target=bpf -c $1 -mcpu=v3 -o $2
-+	$(Q)$(CLANG) $3 -O2 $(BPF_TARGET_ENDIAN) -c $1 -mcpu=v3 -o $2
- endef
- # Similar to CLANG_BPF_BUILD_RULE, but with disabled alu32
- define CLANG_NOALU32_BPF_BUILD_RULE
- 	$(call msg,CLNG-BPF,$4,$2)
--	$(Q)$(CLANG) $3 -O2 --target=bpf -c $1 -mcpu=v2 -o $2
-+	$(Q)$(CLANG) $3 -O2 $(BPF_TARGET_ENDIAN) -c $1 -mcpu=v2 -o $2
- endef
- # Similar to CLANG_BPF_BUILD_RULE, but with cpu-v4
- define CLANG_CPUV4_BPF_BUILD_RULE
- 	$(call msg,CLNG-BPF,$4,$2)
--	$(Q)$(CLANG) $3 -O2 --target=bpf -c $1 -mcpu=v4 -o $2
-+	$(Q)$(CLANG) $3 -O2 $(BPF_TARGET_ENDIAN) -c $1 -mcpu=v4 -o $2
- endef
- # Build BPF object using GCC
- define GCC_BPF_BUILD_RULE
+On Thu, 29 Aug 2024 15:03:18 +0300 you wrote:
+> The XDP implementation on am65-cpsw driver is broken in many ways
+> and this series fixes it.
+> 
+> Below are the current issues that are being fixed:
+> 
+> 1)  The following XDP_DROP test from [1] stalls the interface after
+>     250 packets.
+>     ~# xdb-bench drop -m native eth0
+>     This is because new RX requests are never queued. Fix that.
+> 
+> [...]
+
+Here is the summary with links:
+  - [net,1/3] net: ethernet: ti: am65-cpsw: fix XDP_DROP, XDP_TX and XDP_REDIRECT
+    https://git.kernel.org/netdev/net/c/5e24db550bd6
+  - [net,2/3] net: ethernet: ti: am65-cpsw: Fix NULL dereference on XDP_TX
+    https://git.kernel.org/netdev/net/c/0a50c35277f9
+  - [net,3/3] net: ethernet: ti: am65-cpsw: Fix RX statistics for XDP_TX and XDP_REDIRECT
+    https://git.kernel.org/netdev/net/c/624d3291484f
+
+You are awesome, thank you!
 -- 
-2.34.1
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
