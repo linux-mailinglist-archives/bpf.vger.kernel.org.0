@@ -1,100 +1,106 @@
-Return-Path: <bpf+bounces-38839-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38840-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F87796AA53
-	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 23:38:45 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5657E96AA62
+	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 23:40:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3D3BA1F25D09
-	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 21:38:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 886F91C2470D
+	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 21:40:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32115192B68;
-	Tue,  3 Sep 2024 21:38:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A55231C9DC9;
+	Tue,  3 Sep 2024 21:40:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="f9MN7roT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="A4goTdAB"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B8451CF5FA
-	for <bpf@vger.kernel.org>; Tue,  3 Sep 2024 21:38:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 011671EBFFF;
+	Tue,  3 Sep 2024 21:40:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725399493; cv=none; b=GLL5xXedX/nGWovsshq1aRYJmyNx7NDkwIFVd/ZUhAZ+JfI895cY62csdwJnx7yC/FDc6vLLaDZ0umsceIQIyQtHzg6pJmrDlXToGHh4vtII16xpbzWUNl2zkP1sCmb1nWwWKxdqyk6Xhe6IvY5UP6IUfekHuNlpgPzELmbOqzY=
+	t=1725399616; cv=none; b=pnq/erd7W7DhDO/gIkWF5LaxupWGgICQF+a4+6e3HJWNYSI5+repj2eUQTsCom3BhkOTs7cPZ6p2PAdUm0ilw16wjNp/Nt5O333k8OjalmtwQ0jHLPbjrM6REB7y6yWDRafpGo7zEGhAB23eX2hi/IO/pBhojytizin4t0MAw4w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725399493; c=relaxed/simple;
-	bh=cGgPf5JfNAEVKnOSbYXIvdInRlTxMPFHlIJ0pyVOscY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ILt8mRRTK83dWck8sLDb1/K34h8Az/ESoDycGxppXQRcRat3hvNqvdzIZHd1fD5miF8MqnJ9PmGtA792ChKLRiUmxryz4jHQI5wRD6tErgQ4dwwyGFA+XaZgzeSwPMoTZQ586jNbYASoGY/nO3IS9ICf8bwllubxwHgw/UqqNkg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=f9MN7roT; arc=none smtp.client-ip=95.215.58.183
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Tue, 3 Sep 2024 17:38:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1725399489;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=952PcxBu4qPLrefB1WB3fF6Z6QmUkNBiQIiXRdzbJtc=;
-	b=f9MN7roTLfeCBLibXWPWmJSFKwaZ1LysJK5hbwspmAYOEQmEVJmM792/jDmZHxxX5Ih1gM
-	V7ipG9+QvIw0cDfcID28oRVP65BC3fNiii/hrOFibwDaC32V3f8Kqq31fOXMkRjSf88Qt/
-	WiuC1wOU5eg6gDR1m6ddN9eyjz2ZzOk=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	kernel-team@meta.com, rostedt@goodmis.org, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Peter Zijlstra <peterz@infradead.org>, bpf@vger.kernel.org
-Subject: Re: [PATCH rcu 0/11] Add light-weight readers for SRCU
-Message-ID: <gbar5cxixgq4jtxgtzv7xjipabhqqbwdwyrtahkkws3tregdvo@edqb7ku2uhk2>
-References: <26cddadd-a79b-47b1-923e-9684cd8a7ef4@paulmck-laptop>
+	s=arc-20240116; t=1725399616; c=relaxed/simple;
+	bh=oaZPjF2Hwc2UCWScGNmiQSzXQJql29ev4HaTxsSINYo=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=MNiq848We7MieN0YGETzK0GVCOEGb4lUd8Wy11sykZMUIr57pJNtZswBhZsdN3YmvjslR0Ee3UzcjauOltUGqZPEf6WSBexrTItlq1TVk9sfnfNvVqH3q2CNk4hLRZBiwb+CAaUwmPulWfMfhT6FaMHvhP0FWVMnF4t2VvR18v8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=A4goTdAB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD1E2C4CEC4;
+	Tue,  3 Sep 2024 21:40:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1725399615;
+	bh=oaZPjF2Hwc2UCWScGNmiQSzXQJql29ev4HaTxsSINYo=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=A4goTdABFpGLC7mNQ/iVNNtHVfhNY/snxGEsDUa98eLJzqulK3ihS0CVSipU96DK2
+	 3agJPo5pYijI12pg058sMg5p8hCcNXCEauwckXRY7h4zVH9Jd9r/OmjcWMFSD2I4Fb
+	 vhOC8d29Lh3Yq20wLvewdmOt6DL0VbQUXOC2W9xf3KIahEOFazunBtOoli4RkVFfqO
+	 TbsqMbuOmAvBRN0QJFCfV4KByNO/TvecjblgEuNrC5dms7rLuD7KEwUESkL47WEeSi
+	 fiZs89Uax1pO4oUVtn/yjeMvhWyk9fie28eRXWUDHTlk0Xr9w4DhQPgSP9ixXxLwcd
+	 a65KUuwzWJNQQ==
+Date: Tue, 3 Sep 2024 14:40:11 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Mina Almasry <almasrymina@google.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org,
+ linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+ sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ linux-arch@vger.kernel.org, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, Donald Hunter <donald.hunter@gmail.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Jonathan Corbet
+ <corbet@lwn.net>, Richard Henderson <richard.henderson@linaro.org>, Ivan
+ Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>, "James E.J. Bottomley"
+ <James.Bottomley@HansenPartnership.com>, Helge Deller <deller@gmx.de>,
+ Andreas Larsson <andreas@gaisler.com>, Jesper Dangaard Brouer
+ <hawk@kernel.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>, Steven
+ Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Arnd Bergmann
+ <arnd@arndb.de>, Steffen Klassert <steffen.klassert@secunet.com>, Herbert
+ Xu <herbert@gondor.apana.org.au>, David Ahern <dsahern@kernel.org>, Willem
+ de Bruijn <willemdebruijn.kernel@gmail.com>, "=?UTF-8?B?QmrDtnJuIFTDtnBl?=
+ =?UTF-8?B?bA==?=" <bjorn@kernel.org>, Magnus Karlsson
+ <magnus.karlsson@intel.com>, Maciej Fijalkowski
+ <maciej.fijalkowski@intel.com>, Jonathan Lemon <jonathan.lemon@gmail.com>,
+ Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel
+ Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>,
+ Sumit Semwal <sumit.semwal@linaro.org>, "Christian =?UTF-8?B?S8O2bmln?="
+ <christian.koenig@amd.com>, Pavel Begunkov <asml.silence@gmail.com>, David
+ Wei <dw@davidwei.uk>, Jason Gunthorpe <jgg@ziepe.ca>, Yunsheng Lin
+ <linyunsheng@huawei.com>, Shailend Chand <shailend@google.com>, Harshitha
+ Ramamurthy <hramamurthy@google.com>, Shakeel Butt <shakeel.butt@linux.dev>,
+ Jeroen de Borst <jeroendb@google.com>, Praveen Kaligineedi
+ <pkaligineedi@google.com>, Bagas Sanjaya <bagasdotme@gmail.com>, Christoph
+ Hellwig <hch@infradead.org>, Nikolay Aleksandrov <razor@blackwall.org>,
+ Taehee Yoo <ap420073@gmail.com>, Willem de Bruijn <willemb@google.com>,
+ Kaiyuan Zhang <kaiyuanz@google.com>
+Subject: Re: [PATCH net-next v24 08/13] net: add support for skbs with
+ unreadable frags
+Message-ID: <20240903144011.3e7135f9@kernel.org>
+In-Reply-To: <20240831004313.3713467-9-almasrymina@google.com>
+References: <20240831004313.3713467-1-almasrymina@google.com>
+	<20240831004313.3713467-9-almasrymina@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <26cddadd-a79b-47b1-923e-9684cd8a7ef4@paulmck-laptop>
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Tue, Sep 03, 2024 at 09:32:51AM GMT, Paul E. McKenney wrote:
-> Hello!
-> 
-> This series provides light-weight readers for SRCU.  This lightness
-> is selected by the caller by using the new srcu_read_lock_lite() and
-> srcu_read_unlock_lite() flavors instead of the usual srcu_read_lock() and
-> srcu_read_unlock() flavors.  Although this passes significant rcutorture
-> testing, this should still be considered to be experimental.
+On Sat, 31 Aug 2024 00:43:08 +0000 Mina Almasry wrote:
+>  static inline bool tcp_skb_can_collapse_to(const struct sk_buff *skb)
+>  {
+> -	return likely(!TCP_SKB_CB(skb)->eor);
+> +	return likely(!TCP_SKB_CB(skb)->eor && skb_frags_readable(skb));
 
-This avoids memory barriers, correct?
-
-> There are a few restrictions:  (1) If srcu_read_lock_lite() is called
-> on a given srcu_struct structure, then no other flavor may be used on
-> that srcu_struct structure, before, during, or after.  (2) The _lite()
-> readers may only be invoked from regions of code where RCU is watching
-> (as in those regions in which rcu_is_watching() returns true).  (3)
-> There is no auto-expediting for srcu_struct structures that have
-> been passed to _lite() readers.  (4) SRCU grace periods for _lite()
-> srcu_struct structures invoke synchronize_rcu() at least twice, thus
-> having longer latencies than their non-_lite() counterparts.  (5) Even
-> with synchronize_srcu_expedited(), the resulting SRCU grace period
-> will invoke synchronize_rcu() at least twice, as opposed to invoking
-> the IPI-happy synchronize_rcu_expedited() function.  (6)  Just as with
-> srcu_read_lock() and srcu_read_unlock(), the srcu_read_lock_lite() and
-> srcu_read_unlock_lite() functions may not (repeat, *not*) be invoked
-> from NMI handlers (that is what the _nmisafe() interface are for).
-> Although one could imagine readers that were both _lite() and _nmisafe(),
-> one might also imagine that the read-modify-write atomic operations that
-> are needed by any NMI-safe SRCU read marker would make this unhelpful
-> from a performance perspective.
-
-So if I'm following, this should work fine for bcachefs, and be a nifty
-small perforance boost.
-
-Can I give you an account for my test cluster? If you'd like, we can
-convert bcachefs to it and point it at your branch.
+Do you remember why this is here? Both for Rx and Tx what should matter
+is whether the "readability" matches, right? We can merge two unreadable
+messages.
 
