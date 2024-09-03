@@ -1,196 +1,191 @@
-Return-Path: <bpf+bounces-38798-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38799-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A3A1596A4EC
-	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 18:58:53 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D53D496A4FA
+	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 19:04:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 314CF1F24A55
-	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 16:58:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F41E21C23370
+	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 17:04:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B94E418BC22;
-	Tue,  3 Sep 2024 16:58:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Bm+w2FzK"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D052D18CC15;
+	Tue,  3 Sep 2024 17:04:13 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3E2717A90F
-	for <bpf@vger.kernel.org>; Tue,  3 Sep 2024 16:58:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D5D21C14;
+	Tue,  3 Sep 2024 17:04:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725382727; cv=none; b=pnv1OM1o14LwLu8V60TjnDlDhS4SPh6Bz1ru2Yq9ZhC6w6ZoP/XfmSFwe+tGYVE06GmTVS36k79QBDUxKRP21VWQn96/JVXwnXsoyClJHBdmP+rM7UOyEAz7xKTWvxFxUukFVfe9gVrRLThAkVAHb+zwO8TyTtBbiDlEyvTlIJI=
+	t=1725383053; cv=none; b=UTTRwaeLdmxLA2ZUKTAKkF/RSlXCtdM7a1EN+fI7qAVzxjofhcxVbusvQcSvZsxAjLfoM1KgzjYvPjR6SAN2jCZXkD0dxGQI5nC+OplhOYrEzrH6fWXttebB2skO9ZmkHOybbe+olwq/nLqgfmr+/CvKVB4tFlmohmUHo1DSLCY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725382727; c=relaxed/simple;
-	bh=OnEXtwX9OTWmCcgb5myyeE5pOzLFIhfy+j1a5H2iuMo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Z+axFYMx1AoBv75CuiErBJ5mqK4LbsHKts8I9MnKsXMZflDOzvhOefsuB6i/kNZ6XBkBQh9MhYZcafqCFgDcrA6emE28UNBOaWDv391WcvQAlbwI/6CT9VgaD8Le6JvBcblHcg4JcSAFy8fJx10LzeEWP+XTSEhsDvdsRgvik+I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Bm+w2FzK; arc=none smtp.client-ip=209.85.216.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1725383053; c=relaxed/simple;
+	bh=Kb50wC/hoCRwCoOcj4VfXvEouLo6N8aFx37rX4Igv94=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uvE1twLPuAPh/ci6gTzyF8tBHnizTZrR0SHJU9dECUFw4T3sIPWzuxj4B4kC//TpMrxJixyIGxwHbsfWMfXf8r6TWiCeIjIP4vaJNVFLt578Ltzo5SHS0tO5fmqkaZ7Rd1U1ExVUQ9T+mHsJLngSMD2V9lGt+eO2R+CvAXEU3nQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fomichev.me; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fomichev.me
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-2d8881850d9so2717963a91.3
-        for <bpf@vger.kernel.org>; Tue, 03 Sep 2024 09:58:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1725382725; x=1725987525; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+QEB0kuSRNEC5JtqhOMsOqdRUsT6ICW9zCcb3qQiRJk=;
-        b=Bm+w2FzKhM8iswDZIuGikvWbfxsm8dfiS07H+lzJyaxIApZ4bsuYT/isyUYiYwB0Qk
-         c4qKmzbcWKuk8akTpmUUIqV/n0J72ETzCzP0gTTPL/YwN41BFd2H2931i+71s0cKMjDE
-         CTKJYiDkeNXwHhyfdGXjecBYwWyJvAmNEMi2/xz5hGgf5GW4gjYKkf5vqXEBrt6RQYNn
-         LqdgIs0U8lXpG8mGJsnKBBOHF2sxwkTHVQHy1/lfoqEMR+xvglvo4xILI7+V75JIqWeY
-         PbHP+ws82xPPWtBFySFk7rb4Y3HyPGGoiknzMEi4jnwuCLMZv3/7AXGVuTl1ISjQHVnA
-         /jhw==
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-20693995f68so9198135ad.1;
+        Tue, 03 Sep 2024 10:04:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725382725; x=1725987525;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+QEB0kuSRNEC5JtqhOMsOqdRUsT6ICW9zCcb3qQiRJk=;
-        b=G1/CmFtJnKFMOgmCIupUoQeu/IexxFCYCwMlsl7KRnmnEmvJQT5PPuqR13fb4Gv00N
-         8xL29L+qKiE349Ywgk5gTjRHdGw/mJv0LcHjsrRGIE6vv0oArleieu+YGC/2BzOLx6Qe
-         QDapAADHsbjOAFb3B1dejQ8iZdspXRL8mMY7hpt8gqoF0lK8PQBtcVpQi//5m38G9axp
-         j/UPHwbLnCREMe25ZRX3S43T6S2OIGw/eILz/GxEd3IpbAEZMs5hgeAHa0Yo0qDGl+FN
-         x8BnJLhU08pioYRP1ATLLzYD+T31dUlToZnLuW7W0xCx9MUE8kSx0jof+pLrCz9VlQmK
-         midA==
-X-Forwarded-Encrypted: i=1; AJvYcCXMwqyr0ETEu01Ksob43wZJ5bPys3SRCvvhh8Gb0rNVERi6N7VIf5oLWNVEXMdUebRPV90=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx1fAJM83IIKl9FsL+cXEFXwtOVqEgOYKH5m3P2kUsrXwwukKre
-	3nMW5L/I9DAIM0ZnPy5KNL4mVaGQmTbdMeV/WwF6X7CBQuS23jNsySXJKTK6pZE6EmXXfvnIyMX
-	VVR7YY32kxQkl2abQUfMKNpnMwKOx0g==
-X-Google-Smtp-Source: AGHT+IEZKenWuHig7WqsBuiRnYTQiR64J8W3kOfLy3lhU5eZ8G8GX4xXk3DzXmC2s8eiqDwxu1ueR086L/skdUoLKzg=
-X-Received: by 2002:a17:90b:3812:b0:2c9:6aa9:1d76 with SMTP id
- 98e67ed59e1d1-2da62fde7efmr3119401a91.18.1725382725030; Tue, 03 Sep 2024
- 09:58:45 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1725383051; x=1725987851;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WkZ76k+RsmoQcSUxXQqUyd32+/1Llwux3no1WyFmKNY=;
+        b=goTYMbkl+yhwbuPyM7683SwSM1RTIdvJ6vItOWYsRw9utl0+kqYRXyKiYOXbfQyUAk
+         4NM1xEb/t2G8sXZwYL+ENbhZDBvYFtt0WfhXXN2evacMWKkgqLGxm0QmaRGpGcJUOzk6
+         HuDK9sLsCwxpN1GD9HuBF6Y6SVHozdxKXsNcq65kho8pFB9SzbfJa1UgH2O58O+g5vPw
+         LaOiBeyDjGfmbAoCfw37Z95Im7HbB0lH2/NIoRPHdyCCEi9wt6vkklPDq48WhBuwp0S6
+         YN+bf54TNe332H+vlX52xGA7Pomm1XubcYFMGk4nR80il+69ilRSCAhfw58NbP2p9PkQ
+         yHsw==
+X-Forwarded-Encrypted: i=1; AJvYcCVnKaSAhrcRoeE02l7Nm+Eb/j/6Vzo3oS90rmjGqvL1bCe0BNgqHPBUUJ44fDnu7wqR+FJfJB8D6YPRZZKC@vger.kernel.org, AJvYcCVs5jylmaXO2yALVslAp9bk8KNNt3aaJrCxk8zT/qDaS9wYmmyeJzsWGggHg7i7FupYGoWETXtH@vger.kernel.org, AJvYcCWiq2MDzLJuZ6A9biZtdMG8MYt8v2/lD3KOjkjiJO4qQh/mbLmaFzeVEaT3hwPIPSBgmYY=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzsXgE4tBgWU0Qz+iOVfSi86Ld+6kerPiY1LFLd1cdms/tRq1fV
+	956fxJj1KPuTMW6HvunbhjL1Zzi9vJbNkr2d44GcOT3H0pq1Xkpn9fVk2O0=
+X-Google-Smtp-Source: AGHT+IEC/oNDVBEgRcjtgGrRziLB/9VT3hq01Ir0SbzHbnfr0qbKxeamnnnnwV5VEunrkdgPn0ebaA==
+X-Received: by 2002:a17:902:dad1:b0:206:97d6:be8b with SMTP id d9443c01a7336-20697d6bf68mr33781695ad.25.1725383050534;
+        Tue, 03 Sep 2024 10:04:10 -0700 (PDT)
+Received: from localhost ([2601:646:9e00:f56e:73b6:7410:eb24:cba4])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-206aea3866dsm784975ad.153.2024.09.03.10.04.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Sep 2024 10:04:10 -0700 (PDT)
+Date: Tue, 3 Sep 2024 10:04:09 -0700
+From: Stanislav Fomichev <sdf@fomichev.me>
+To: Alexander Lobakin <aleksander.lobakin@intel.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Lorenzo Bianconi <lorenzo@kernel.org>, Daniel Xu <dxu@dxuuu.xyz>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	bpf@vger.kernel.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next 2/9] kthread: allow vararg
+ kthread_{create,run}_on_cpu()
+Message-ID: <ZtdBieFVdpT4Jsf_@mini-arch>
+References: <20240830162508.1009458-1-aleksander.lobakin@intel.com>
+ <20240830162508.1009458-3-aleksander.lobakin@intel.com>
+ <ZtJODFOYkjgRTPCh@mini-arch>
+ <235dcd89-54a6-43ca-bbb3-45dfd6db97e6@intel.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240828174608.377204-1-ihor.solodrai@pm.me> <20240828174608.377204-2-ihor.solodrai@pm.me>
- <b48f348c76dd5b724384aef7c7c067877b28ee5b.camel@gmail.com>
- <CAEf4BzaBMhb4a2Y-2_mcLmYjJ2UWQuwNF-2sPVJXo39+0ziqzw@mail.gmail.com> <xldWjE0i64YdD2vmNCSi3aJ7kls4eQT-R_EWtcnRaYIZuWvjdIBwjgGcoBYm02UHiO6bz5ZyyMtBDZXeLxC_iXkdo_PqkdWkMejoocJw5rs=@pm.me>
-In-Reply-To: <xldWjE0i64YdD2vmNCSi3aJ7kls4eQT-R_EWtcnRaYIZuWvjdIBwjgGcoBYm02UHiO6bz5ZyyMtBDZXeLxC_iXkdo_PqkdWkMejoocJw5rs=@pm.me>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 3 Sep 2024 09:58:32 -0700
-Message-ID: <CAEf4BzYWxcg5qbxr8B3OAyatrfgT8JNysUYW1=vuzjcMF6snVA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: do not update vmlinux.h unnecessarily
-To: Ihor Solodrai <ihor.solodrai@pm.me>
-Cc: Eduard Zingerman <eddyz87@gmail.com>, Alan Maguire <alan.maguire@oracle.com>, 
-	Mykyta Yatsenko <yatsenko@meta.com>, bpf@vger.kernel.org, andrii@kernel.org, ast@kernel.org, 
-	daniel@iogearbox.net, mykolal@fb.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <235dcd89-54a6-43ca-bbb3-45dfd6db97e6@intel.com>
 
-On Sat, Aug 31, 2024 at 11:18=E2=80=AFAM Ihor Solodrai <ihor.solodrai@pm.me=
-> wrote:
->
-> Andrii, Eduard,
->
-> On Friday, August 30th, 2024 at 1:34 PM, Andrii Nakryiko <andrii.nakryiko=
-@gmail.com> wrote:
->
-> [...]
->
-> > I've applied patches as is, despite them not solving the issue
-> > completely, as they are moving us in the right direction anyways. I do
-> > get slightly different BTF every single time I rebuild my kernel, so
-> > the change in patch #2 doesn't yet help me.
->
-> Thanks for applying the patches.
-> I didn't realize vmlinux.h generation is non-deterministic. Interesting.
->
-> >
-> > For libbpf headers, Ihor, can you please follow up with adding
-> > bpf_helper_defs.h as a dependency?
->
-> I've tried tracking down where bpf_helper_defs.h is coming from and
-> (assuming my analysis is correct) this header is generated by
-> `scripts/bpf_doc.py`. From the selftests/bpf point of view the
-> dependency chain is as follows:
->
->   1. vmlinux.h depends on bpftool:
->
->        $(INCLUDE_DIR)/vmlinux.h: $(VMLINUX_BTF) $(BPFTOOL) | $(INCLUDE_DI=
-R)
->
->   2. bpftool is installed for selftests via `make -C tools/bpf/bpftool in=
-stall-bin`:
->
->        BPFTOOL ?=3D $(DEFAULT_BPFTOOL)
->        $(DEFAULT_BPFTOOL): ...
->           $(Q)$(MAKE) $(submake_extras) -C $(BPFTOOLDIR) ... install-bin
->
->   3. bpftool install-bin depends on libbpf:
->
->        $(OUTPUT)bpftool: $(OBJS) $(LIBBPF)
->          ...
->        install-bin: $(OUTPUT)bpftool
->
->
->   4. $(LIBBPF) recipe runs `make -C tools/lib/bpf install_headers`,
->      which depends on $(BPF_GENERATED) which equals to $(BPF_HELPER_DEFS)
->
->        BPF_GENERATED    :=3D $(BPF_HELPER_DEFS)
->          ...
->        install_headers: $(BPF_GENERATED) $(INSTALL_SRC_HDRS) $(INSTALL_GE=
-N_HDRS)
->
->   5. Finally $(BPF_HELPER_DEFS) recipe executes the python script (in lib=
-/bpf):
->
->      $(BPF_HELPER_DEFS): $(srctree)/tools/include/uapi/linux/bpf.h
->         $(QUIET_GEN)$(srctree)/scripts/bpf_doc.py --header \
->                 --file $(srctree)/tools/include/uapi/linux/bpf.h > $(BPF_=
-HELPER_DEFS)
->
->
-> I don't see any benefit to adding bpf_helper_defs.h as a direct
-> dependency of anything in selftests/bpf. %.bpf.o already depend on
-> vmlinux.h, and unless we somehow get rid of vmlinux.h dependency on
-> bpftool, bpf_helper_defs.h should always be there at a point when
-> %.bpf.o objects are compiled.
->
+On 09/03, Alexander Lobakin wrote:
+> From: Stanislav Fomichev <sdf@fomichev.me>
+> Date: Fri, 30 Aug 2024 15:56:12 -0700
+> 
+> > On 08/30, Alexander Lobakin wrote:
+> >> Currently, kthread_{create,run}_on_cpu() doesn't support varargs like
+> >> kthread_create{,_on_node}() do, which makes them less convenient to
+> >> use.
+> >> Convert them to take varargs as the last argument. The only difference
+> >> is that they always append the CPU ID at the end and require the format
+> >> string to have an excess '%u' at the end due to that. That's still true;
+> >> meanwhile, the compiler will correctly point out to that if missing.
+> >> One more nice side effect is that you can now use the underscored
+> >> __kthread_create_on_cpu() if you want to override that rule and not
+> >> have CPU ID at the end of the name.
+> >> The current callers are not anyhow affected.
+> >>
+> >> Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
+> >> ---
+> >>  include/linux/kthread.h | 51 ++++++++++++++++++++++++++---------------
+> >>  kernel/kthread.c        | 22 ++++++++++--------
+> >>  2 files changed, 45 insertions(+), 28 deletions(-)
+> >>
+> >> diff --git a/include/linux/kthread.h b/include/linux/kthread.h
+> >> index b11f53c1ba2e..27a94e691948 100644
+> >> --- a/include/linux/kthread.h
+> >> +++ b/include/linux/kthread.h
+> >> @@ -27,11 +27,21 @@ struct task_struct *kthread_create_on_node(int (*threadfn)(void *data),
+> >>  #define kthread_create(threadfn, data, namefmt, arg...) \
+> >>  	kthread_create_on_node(threadfn, data, NUMA_NO_NODE, namefmt, ##arg)
+> >>  
+> >> -
+> >> -struct task_struct *kthread_create_on_cpu(int (*threadfn)(void *data),
+> >> -					  void *data,
+> >> -					  unsigned int cpu,
+> >> -					  const char *namefmt);
+> >> +__printf(4, 5)
+> >> +struct task_struct *__kthread_create_on_cpu(int (*threadfn)(void *data),
+> >> +					    void *data, unsigned int cpu,
+> >> +					    const char *namefmt, ...);
+> >> +
+> >> +#define kthread_create_on_cpu(threadfn, data, cpu, namefmt, ...)	   \
+> >> +	_kthread_create_on_cpu(threadfn, data, cpu, __UNIQUE_ID(cpu_),	   \
+> >> +			       namefmt, ##__VA_ARGS__)
+> >> +
+> >> +#define _kthread_create_on_cpu(threadfn, data, cpu, uc, namefmt, ...) ({   \
+> >> +	u32 uc = (cpu);							   \
+> >> +									   \
+> >> +	__kthread_create_on_cpu(threadfn, data, uc, namefmt,		   \
+> >> +				##__VA_ARGS__, uc);			   \
+> >> +})
+> >>  
+> >>  void get_kthread_comm(char *buf, size_t buf_size, struct task_struct *tsk);
+> >>  bool set_kthread_struct(struct task_struct *p);
+> >> @@ -62,25 +72,28 @@ bool kthread_is_per_cpu(struct task_struct *k);
+> >>   * @threadfn: the function to run until signal_pending(current).
+> >>   * @data: data ptr for @threadfn.
+> >>   * @cpu: The cpu on which the thread should be bound,
+> >> - * @namefmt: printf-style name for the thread. Format is restricted
+> >> - *	     to "name.*%u". Code fills in cpu number.
+> >> + * @namefmt: printf-style name for the thread. Must have an excess '%u'
+> >> + *	     at the end as kthread_create_on_cpu() fills in CPU number.
+> >>   *
+> >>   * Description: Convenient wrapper for kthread_create_on_cpu()
+> >>   * followed by wake_up_process().  Returns the kthread or
+> >>   * ERR_PTR(-ENOMEM).
+> >>   */
+> >> -static inline struct task_struct *
+> >> -kthread_run_on_cpu(int (*threadfn)(void *data), void *data,
+> >> -			unsigned int cpu, const char *namefmt)
+> >> -{
+> >> -	struct task_struct *p;
+> >> -
+> >> -	p = kthread_create_on_cpu(threadfn, data, cpu, namefmt);
+> >> -	if (!IS_ERR(p))
+> >> -		wake_up_process(p);
+> >> -
+> >> -	return p;
+> >> -}
+> >> +#define kthread_run_on_cpu(threadfn, data, cpu, namefmt, ...)		   \
+> >> +	_kthread_run_on_cpu(threadfn, data, cpu, __UNIQUE_ID(task_),	   \
+> >> +			    namefmt, ##__VA_ARGS__)
+> >> +
+> >> +#define _kthread_run_on_cpu(threadfn, data, cpu, ut, namefmt, ...)	   \
+> >> +({									   \
+> >> +	struct task_struct *ut;						   \
+> >> +									   \
+> >> +	ut = kthread_create_on_cpu(threadfn, data, cpu, namefmt,	   \
+> >> +				   ##__VA_ARGS__);			   \
+> >> +	if (!IS_ERR(ut))						   \
+> >> +		wake_up_process(ut);					   \
+> >> +									   \
+> >> +	ut;								   \
+> >> +})
+> > 
+> > Why do you need to use __UNIQUE_ID here? Presumably ({}) in _kthread_run_on_cpu
+> 
+> It will still be a -Wshadow warning if the caller has a variable with
+> the same name. I know it's enabled only on W=2, but anyway I feel like
+> we shouldn't introduce any new warnings when possible.
 
-Making sure that bpf_helper_defs.h is generated by the time .bpf.o is
-being compiled is one thing. Triggering .bpf.o regeneration when
-bpf_helper_defs.h changes is another. The second used to be important
-when we were adding new helpers, otherwise we can get compilation
-error because of missing helper definitions.
-
-This is much less of an issue today, we we might just leave it as is.
-Making sure bpf_helper_defs.h is there might be good enough.
-
->
-> >
-> > I have some ideas on how to make BTF regeneration in vmlinux.h itself
-> > unnecessary, that might help with this issue. Separately (depending on
-> > what are the negatives of the reproducible_build option) we can look
-> > into making pahole have more consistent internal BTF type ordering
-> > without negatively affecting the overall BTF dedup performance in
-> > pahole. Hopefully I can work with Ihor on this as follow ups.
->
-> I still know little about how all this machinery works, but I'd be
-> glad to help.
-
-I'd like to avoid regenerating BTF inside the vmlinux image, if
-possible. This will cut down significantly on incremental kernel build
-times. We can chat about this separately a bit later, don't worry.
-
->
-> >
-> > P.S. I also spent more time than I'm willing to admit trying to
-> > improve bpftool's BTF sorting to minimize the chance of vmlinux.h
-> > contents being different, and I think I removed a bunch of cases where
-> > we had unnecessary differences, but still, it's fundamentally
-> > non-deterministic to do everything based on type and field names,
-> > unfortunately.
->
-> [...]
->
->
+Makes sense, thanks! That's why, presumably, kthread_run uses __k name
+to avoid the warning..
 
