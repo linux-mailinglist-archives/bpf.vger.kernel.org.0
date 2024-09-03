@@ -1,102 +1,122 @@
-Return-Path: <bpf+bounces-38765-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38766-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCC2296981B
-	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 11:00:41 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1B13969927
+	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 11:35:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2D8F3B25FC7
-	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 09:00:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7377BB27D9F
+	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 09:33:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BAEA1C769A;
-	Tue,  3 Sep 2024 09:00:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75E5719F430;
+	Tue,  3 Sep 2024 09:29:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YDozzlLi"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B2+DIvPM"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C45B41C7660;
-	Tue,  3 Sep 2024 09:00:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF2171A0BC9;
+	Tue,  3 Sep 2024 09:29:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725354030; cv=none; b=l4OB2n1cXvaaeMESllLx4rjk145GolY7eEdLu+9936V32+bnxief4L99F8OpREKhiiyTVGVvYGSqmjDG+WYfevwY+IL23L40FoTs+CLZYV75t24G665/DvOPIwCu7VgMCM1qtm8ExRY/GUNbY0W/8uMWfU/fH+jwwf5N/ugC2Io=
+	t=1725355776; cv=none; b=YmMrn3B89npQS3P6ZylJ0v6ufzgxucSaiffm7R7BjFIadOOX27cKn8on/F6gm97nWgymLQvsUyP1kvdsfPAwkPwEHYn2QX+GCisEN6gcDA5+VxQfrD0CalyjTzDLlkl1RhY/Iw5gSNhMZGzWkxqlbfssE4TDfStGZkO7tfpZ5lA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725354030; c=relaxed/simple;
-	bh=nSvH7njmPuveEhUVDO40rfe4HWyxx/nctaf+U0qJWBM=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=KDe1+JCHb9R8r2Cgw6Ic9CdXF7Axd6+l1+xNGv4CnSUI771xWdgkLkuwQnq+lZo4fehXpj5DZn4M4jzMl7tFaoEbpozTn9CKdCAwTyEIoDYy320fw9xThyC/0adFdbfX8Fn582Ve+OLfbRFFzLWws90bChw13GNCNqefz0GFzGA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YDozzlLi; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A59FC4CEC4;
-	Tue,  3 Sep 2024 09:00:30 +0000 (UTC)
+	s=arc-20240116; t=1725355776; c=relaxed/simple;
+	bh=V6Ts8UeyZzyhtsfr4GKAWGTzPe6MoHhPae1lOHa7ehM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Wd3MxDaD5NUEtZDyWZ/5ZVuX+ly24+1oYAlSbhyKjJOx1OFU2SwrjjljBS3M8vCfCbzaliXvOaq00xOy+Yz7S5iNHIiiesN5EKK2c11+OHo4tDJ+A/ZcLrDa16KKZ4e5BnvyRIy1OqIfIng0hnpb+x6YP2Et/2Rcj+a3ahCVzSE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B2+DIvPM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78215C4CECA;
+	Tue,  3 Sep 2024 09:29:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1725354030;
-	bh=nSvH7njmPuveEhUVDO40rfe4HWyxx/nctaf+U0qJWBM=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=YDozzlLi3E7w7YXzwmP+3Z3wGQF5tRyTh9oeq/y0bOuGjpg79FEi/KYB8YrwRhPLT
-	 j27C0gt5oU2VRCg1RPt/QvPqiJcAMcWelGlA9BgZwDjTDFSEKo3c/f5/hhm10X0UH3
-	 mC2QrVxnScWkyX8sCZunjtmlT3w/DBzoCMW0e8cbr1VniL6LN0bX1PF/zEoTTOMmmj
-	 6XwtOdIWgUe0Q9VGoG6FZpeqkV6B3pSYWQICgjyVZuOv5mYmdWDFYWoJGl2I4xnVQB
-	 9QdDKuIKbqHd3U3WvOk8vudNSQFbPEGN9ml9nxifJk25q66bBzZT6Ozq77mYG9053Y
-	 /JAfsfwWpuJEQ==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 344D33805D82;
-	Tue,  3 Sep 2024 09:00:32 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1725355775;
+	bh=V6Ts8UeyZzyhtsfr4GKAWGTzPe6MoHhPae1lOHa7ehM=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=B2+DIvPMxoKjhFD7wiF+7h0l/cf/7MYT3BR0Zhx9vp7HBRO4mfIxwB9KqYB/sTeeC
+	 1G81qhU92qnFCiE/jliReBCBu6b2qHvBBHBVRrSMDGFA+JwuXas7widUz6aFtvxdkF
+	 4tjHzOkHd6/ex/78UYqR6cDfYnFj/Pq5XqY4K3a0iXYisf626Hp7/acc1DOSY/a6cg
+	 a2POT1sITjmIyfszLS/XUbkntiO3MqghfOGuiOpgHz9jatyaXxIOGO9cYBAqqbwA/B
+	 15wIL94JzUdR+NZ65E3bnzn2/+w0/WyZpdfxs3YRDoguIILWF4YT/rse1cCgfc4OyQ
+	 fg09k/DSfw2nw==
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-533521cd1c3so5884505e87.1;
+        Tue, 03 Sep 2024 02:29:35 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCURPe1GiCI1KlAHjuWacnN2AggN9fD1gyk1bD+ZwUYG64AxnGRywNGWag5Cn9StVlXS9OnTwbyRVOZAm4jm@vger.kernel.org, AJvYcCUe+kbF+z39BXoQTd00/AVIRb0G9WWgtpHnW+pYMXSePI7rTTfxGkh2z4JVLEKF5AXFYbA=@vger.kernel.org, AJvYcCVJtQsPA9bxFAJhxs7Wqu97RRR1Jd3NMzZhyeH2aMYTYXKFQQSrChZsfPIg0X+2myz/O95kimIAIDVhKrBU@vger.kernel.org, AJvYcCWm8dH+2mGgU1m28iGBHLiPuEDNIMKFLrowQBrxLQDyZpXS89eNlJr39QfhHIua/3u9tXIsOnbovCOfpQ==@vger.kernel.org, AJvYcCXoGibKNA6WBO2Uwc1lWZn0mYCDzk4JoZ/Mq7SW5TZJXyTrJkJq+/jhE3YWkQfhL6WSLXZB@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzs1XRcEroX/5U8GXO/VojN2TXwmV2w5zlTNAnY+4OzOIRMtVHJ
+	nKotLfvTGm9eLVMTAI+hKwNk0vRQ1SlzpXwAK5klZc51/krXyQqiEtKPF6iYICPoNLPyeZwFdwM
+	swD73640W5AAvul2H5uC7GILBnM0=
+X-Google-Smtp-Source: AGHT+IHCtdlG38E/0l7FYyhNp/Eh+agXUP/x4m9X1sDISAuGOfE6COrF1RVXR4n+XrSU6Tf+eKwYmtlidm1SXvGzdlM=
+X-Received: by 2002:a05:6512:108f:b0:533:4785:82ab with SMTP id
+ 2adb3069b0e04-53546b223d3mr10683476e87.1.1725355774159; Tue, 03 Sep 2024
+ 02:29:34 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net 0/3] net: ethernet: ti: am65-cpsw: Fix XDP
- implementation
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <172535403101.219489.11960916524185779932.git-patchwork-notify@kernel.org>
-Date: Tue, 03 Sep 2024 09:00:31 +0000
-References: <20240829-am65-cpsw-xdp-v1-0-ff3c81054a5e@kernel.org>
-In-Reply-To: <20240829-am65-cpsw-xdp-v1-0-ff3c81054a5e@kernel.org>
-To: Roger Quadros <rogerq@kernel.org>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
- john.fastabend@gmail.com, jpanis@baylibre.com, jacob.e.keller@intel.com,
- s-vadapalli@ti.com, danishanwar@ti.com, vigneshr@ti.com, srk@ti.com,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+References: <20240828083605.3093701-1-vegard.nossum@oracle.com>
+ <875xrd7h88.fsf@mail.lhotse> <d1bb2638-2e0e-44ef-b8da-9746ed532ed1@oracle.com>
+In-Reply-To: <d1bb2638-2e0e-44ef-b8da-9746ed532ed1@oracle.com>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Tue, 3 Sep 2024 18:28:57 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAT84K0RgDfLoOOLjtyCqsS19bASXRv43HF8P=C9obJPVA@mail.gmail.com>
+Message-ID: <CAK7LNAT84K0RgDfLoOOLjtyCqsS19bASXRv43HF8P=C9obJPVA@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: use objcopy to generate asm-offsets
+To: Vegard Nossum <vegard.nossum@oracle.com>
+Cc: Michael Ellerman <mpe@ellerman.id.au>, linux-kbuild@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-omap@vger.kernel.org, kvmarm@lists.linux.dev, kvm@vger.kernel.org, 
+	linux-um@lists.infradead.org, bpf@vger.kernel.org, llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello:
+On Tue, Sep 3, 2024 at 4:21=E2=80=AFPM Vegard Nossum <vegard.nossum@oracle.=
+com> wrote:
+>
+>
+> On 03/09/2024 01:45, Michael Ellerman wrote:
+> > Vegard Nossum <vegard.nossum@oracle.com> writes:
+> >> Remove the sed script and compile the C source listing structs and
+> >> offsets to an object file (instead of assembly code) that embeds C sou=
+rce
+> >> directly. Then extract the C source using objcopy.
+> >>
+> >
+> > I threw some builders at this and hit a few errors:
+>
+> Thanks, I also got the ones from kernel test robot and figured something
+> was going a bit wrong.
+>
+> There are several issues: clang wants - instead of /dev/stdout as an
+> argument to objcopy, and then gcc has some bugs that prevent the numbers
+> from appearing correctly on some architectures, also I had an extra # in
+> the COMMENT() macro which only resulted in an error on some
+> architectures. I've attached a tentative v2 that fixes these issues, but
+> I'm still trying to figure out why m68k is giving me slightly different
+> output for include/generated/asm-offsets.h and why the arc assembler
+> fails.
+>
+> In the end I'm wondering if this patch is really worth it, given all the
+> failures and little workarounds :-| If I can sort out the last few
+> failures I'll submit it as an RFC.
 
-This series was applied to netdev/net.git (main)
-by Paolo Abeni <pabeni@redhat.com>:
+This patch has zero benefit.
 
-On Thu, 29 Aug 2024 15:03:18 +0300 you wrote:
-> The XDP implementation on am65-cpsw driver is broken in many ways
-> and this series fixes it.
-> 
-> Below are the current issues that are being fixed:
-> 
-> 1)  The following XDP_DROP test from [1] stalls the interface after
->     250 packets.
->     ~# xdb-bench drop -m native eth0
->     This is because new RX requests are never queued. Fix that.
-> 
-> [...]
-
-Here is the summary with links:
-  - [net,1/3] net: ethernet: ti: am65-cpsw: fix XDP_DROP, XDP_TX and XDP_REDIRECT
-    https://git.kernel.org/netdev/net/c/5e24db550bd6
-  - [net,2/3] net: ethernet: ti: am65-cpsw: Fix NULL dereference on XDP_TX
-    https://git.kernel.org/netdev/net/c/0a50c35277f9
-  - [net,3/3] net: ethernet: ti: am65-cpsw: Fix RX statistics for XDP_TX and XDP_REDIRECT
-    https://git.kernel.org/netdev/net/c/624d3291484f
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+The current way (preprocess + sed) is faster than
+your way (preprocess + compile + objcopy) and works
+independently of tool quirks.
 
 
+
+
+
+
+
+
+--
+Best Regards
+Masahiro Yamada
 
