@@ -1,47 +1,49 @@
-Return-Path: <bpf+bounces-38850-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38851-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A266696AC95
-	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2024 01:00:14 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1316996AC96
+	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2024 01:00:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 599C7285ED8
-	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 23:00:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 459311C24878
+	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 23:00:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B73C5126BF1;
-	Tue,  3 Sep 2024 23:00:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCEED1D5CF0;
+	Tue,  3 Sep 2024 23:00:09 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from 66-220-155-179.mail-mxout.facebook.com (66-220-155-179.mail-mxout.facebook.com [66.220.155.179])
+Received: from 69-171-232-180.mail-mxout.facebook.com (69-171-232-180.mail-mxout.facebook.com [69.171.232.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE4C71D58B0
-	for <bpf@vger.kernel.org>; Tue,  3 Sep 2024 23:00:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.220.155.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39B281D58B3
+	for <bpf@vger.kernel.org>; Tue,  3 Sep 2024 23:00:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=69.171.232.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725404408; cv=none; b=FFmeCE3Q4mu995rqVOsExgnYHBhJednBSO304vddDToGraa5/2rGcEtiscW1H8daN91rVKmhJLwEukCSiheO3cvA6rOwUSwwfejM+i2lAfrnYcKYraTGP/wrDoBkl8u3sTl02VlCE6FUJt1qN5SbC4vnym3yqYvXdcWhDxeAezE=
+	t=1725404409; cv=none; b=gLAHJWSkrCzlBCDxcfBgiqEHmWzlFtBREs6hZkZaMMh0kAi8gp6BEl93xtpaMYFgKwwZEQSauSTyLyUwGLC9s2yz+KjMhKmKz7ZAO8fBttbb0eyOdqvITtCyKSzs+fW9V4A9dc4ZAg/En6LYgFBPgSjtnQOlZE0NkAB5D80HBis=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725404408; c=relaxed/simple;
-	bh=POE64LdyQ4gIede4hY2KekXHPIu+BMoGqsbo6if7du0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=FlJ0U/Y7mi9V7N0YJce1rRvuzSbVM1CCpw7VIxuNFGtfXfbuA2oQDNE5gzJsgr5y9clx+ujNImMvZlbCFssJDYi5OEEvVaMV+nQyQ84ZTHvwVA3azFX/tG5vQ9hVq+PugmdqANn8StyzoHhSaJPxQN7yhD2qXgKyqdsGavMSXN4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=66.220.155.179
+	s=arc-20240116; t=1725404409; c=relaxed/simple;
+	bh=BzolBEPaYQuDJK8cyLRmuL22aoQeq97Z56FyDLPUMcE=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=Z/8g93DrlItHcXGvKmN+3QZqEX3SKDKB01U0Wlg1YP5pZNL5vV3Rzct63NbK+HftjecaRQ/1+czrb0LaFEtoLlJqJqHkC4abwb07w622bFAdwvSkTk2Mr78ZXG+S5UGnfBqSOjZ7YYMJoAVx4uKdclRv89FFQ68IK2JJo+nokk8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=69.171.232.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
 Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-	id BF99B88DE236; Tue,  3 Sep 2024 15:59:49 -0700 (PDT)
+	id DA08F88DE24B; Tue,  3 Sep 2024 15:59:54 -0700 (PDT)
 From: Yonghong Song <yonghong.song@linux.dev>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
 	Andrii Nakryiko <andrii@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	kernel-team@fb.com,
-	Martin KaFai Lau <martin.lau@kernel.org>,
-	Daniel Hodges <hodgesd@meta.com>
-Subject: [PATCH bpf-next v2 1/2] bpf, x64: Fix a jit convergence issue
-Date: Tue,  3 Sep 2024 15:59:49 -0700
-Message-ID: <20240903225949.2066234-1-yonghong.song@linux.dev>
+	Martin KaFai Lau <martin.lau@kernel.org>
+Subject: [PATCH bpf-next v2 2/2] selftests/bpf: Add a selftest for x86 jit convergence issues
+Date: Tue,  3 Sep 2024 15:59:54 -0700
+Message-ID: <20240903225954.2066646-1-yonghong.song@linux.dev>
 X-Mailer: git-send-email 2.43.5
+In-Reply-To: <20240903225949.2066234-1-yonghong.song@linux.dev>
+References: <20240903225949.2066234-1-yonghong.song@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -50,189 +52,184 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Daniel Hodges reported a jit error when playing with a sched-ext program.
-The error message is:
-  unexpected jmp_cond padding: -4 bytes
+The core part of the selftest, i.e., the je <-> jmp cycle, mimics the
+original sched-ext bpf program. The test will fail without the
+previous patch.
 
-But further investigation shows the error is actual due to failed
-convergence. The following are some analysis:
+I tried to create some cases for other potential cycles
+(je <-> je, jmp <-> je and jmp <-> jmp) with similar pattern
+to the test in this patch, but failed. So this patch
+only contains one test for je <-> jmp cycle.
 
-  ...
-  pass4, final_proglen=3D4391:
-    ...
-    20e:    48 85 ff                test   rdi,rdi
-    211:    74 7d                   je     0x290
-    213:    48 8b 77 00             mov    rsi,QWORD PTR [rdi+0x0]
-    ...
-    289:    48 85 ff                test   rdi,rdi
-    28c:    74 17                   je     0x2a5
-    28e:    e9 7f ff ff ff          jmp    0x212
-    293:    bf 03 00 00 00          mov    edi,0x3
-
-Note that insn at 0x211 is 2-byte cond jump insn for offset 0x7d (-125)
-and insn at 0x28e is 5-byte jmp insn with offset -129.
-
-  pass5, final_proglen=3D4392:
-    ...
-    20e:    48 85 ff                test   rdi,rdi
-    211:    0f 84 80 00 00 00       je     0x297
-    217:    48 8b 77 00             mov    rsi,QWORD PTR [rdi+0x0]
-    ...
-    28d:    48 85 ff                test   rdi,rdi
-    290:    74 1a                   je     0x2ac
-    292:    eb 84                   jmp    0x218
-    294:    bf 03 00 00 00          mov    edi,0x3
-
-Note that insn at 0x211 is 6-byte cond jump insn now since its offset
-becomes 0x80 based on previous round (0x293 - 0x213 =3D 0x80). At the sam=
-e
-time, insn at 0x292 is a 2-byte insn since its offset is -124.
-
-pass6 will repeat the same code as in pass4. pass7 will repeat the same
-code as in pass5, and so on. This will prevent eventual convergence.
-
-Passes 1-14 are with padding =3D 0. At pass15, padding is 1 and related
-insn looks like:
-
-    211:    0f 84 80 00 00 00       je     0x297
-    217:    48 8b 77 00             mov    rsi,QWORD PTR [rdi+0x0]
-    ...
-    24d:    48 85 d2                test   rdx,rdx
-
-The similar code in pass14:
-    211:    74 7d                   je     0x290
-    213:    48 8b 77 00             mov    rsi,QWORD PTR [rdi+0x0]
-    ...
-    249:    48 85 d2                test   rdx,rdx
-    24c:    74 21                   je     0x26f
-    24e:    48 01 f7                add    rdi,rsi
-    ...
-
-Before generating the following insn,
-  250:    74 21                   je     0x273
-"padding =3D 1" enables some checking to ensure nops is either 0 or 4
-where
-  #define INSN_SZ_DIFF (((addrs[i] - addrs[i - 1]) - (prog - temp)))
-  nops =3D INSN_SZ_DIFF - 2
-
-In this specific case,
-  addrs[i] =3D 0x24e // from pass14
-  addrs[i-1] =3D 0x24d // from pass15
-  prog - temp =3D 3 // from 'test rdx,rdx' in pass15
-so
-  nops =3D -4
-and this triggers the failure.
-
-To fix the issue, we need to break cycles of je <-> jmp. For example,
-in the above case, we have
-  211:    74 7d                   je     0x290
-the offset is 0x7d. If 2-byte je insn is generated only if
-the offset is less than 0x7d (<=3D 0x7c), the cycle can be
-break and we can achieve the convergence.
-
-I did some study on other cases like je <-> je, jmp <-> je and
-jmp <-> jmp which may cause cycles. Those cases are not from actual
-reproducible cases since it is pretty hard to construct a test case
-for them. the results show that the offset <=3D 0x7b (0x7b =3D 123) shoul=
-d
-be enough to cover all cases. This patch added a new helper to generate 8=
--bit
-cond/uncond jmp insns only if the offset range is [-128, 123].
-
-Reported-by: Daniel Hodges <hodgesd@meta.com>
 Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
 ---
- arch/x86/net/bpf_jit_comp.c | 55 +++++++++++++++++++++++++++++++++++--
- 1 file changed, 53 insertions(+), 2 deletions(-)
+ .../selftests/bpf/prog_tests/verifier.c       |   2 +
+ .../bpf/progs/verifier_jit_convergence.c      | 128 ++++++++++++++++++
+ 2 files changed, 130 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_jit_conver=
+gence.c
 
-diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index 074b41fafbe3..63c4816ed4e7 100644
---- a/arch/x86/net/bpf_jit_comp.c
-+++ b/arch/x86/net/bpf_jit_comp.c
-@@ -64,6 +64,57 @@ static bool is_imm8(int value)
- 	return value <=3D 127 && value >=3D -128;
- }
-=20
-+/*
-+ * Let us limit the positive offset to be <=3D 124.
-+ * This is to ensure eventual jit convergence For the following patterns=
-:
-+ * ...
-+ * pass4, final_proglen=3D4391:
-+ *   ...
-+ *   20e:    48 85 ff                test   rdi,rdi
-+ *   211:    74 7d                   je     0x290
-+ *   213:    48 8b 77 00             mov    rsi,QWORD PTR [rdi+0x0]
-+ *   ...
-+ *   289:    48 85 ff                test   rdi,rdi
-+ *   28c:    74 17                   je     0x2a5
-+ *   28e:    e9 7f ff ff ff          jmp    0x212
-+ *   293:    bf 03 00 00 00          mov    edi,0x3
-+ * Note that insn at 0x211 is 2-byte cond jump insn for offset 0x7d (-12=
-5)
-+ * and insn at 0x28e is 5-byte jmp insn with offset -129.
-+ *
-+ * pass5, final_proglen=3D4392:
-+ *   ...
-+ *   20e:    48 85 ff                test   rdi,rdi
-+ *   211:    0f 84 80 00 00 00       je     0x297
-+ *   217:    48 8b 77 00             mov    rsi,QWORD PTR [rdi+0x0]
-+ *   ...
-+ *   28d:    48 85 ff                test   rdi,rdi
-+ *   290:    74 1a                   je     0x2ac
-+ *   292:    eb 84                   jmp    0x218
-+ *   294:    bf 03 00 00 00          mov    edi,0x3
-+ * Note that insn at 0x211 is 6-byte cond jump insn now since its offset
-+ * becomes 0x80 based on previous round (0x293 - 0x213 =3D 0x80).
-+ * At the same time, insn at 0x292 is a 2-byte insn since its offset is
-+ * -124.
-+ *
-+ * pass6 will repeat the same code as in pass4 and this will prevent
-+ * eventual convergence.
-+ *
-+ * To fix this issue, we need to break je (2->6 bytes) <-> jmp (5->2 byt=
-es)
-+ * cycle in the above. In the above example that we found je offset <=3D=
- 0x7c
-+ * should work.
-+ *
-+ * For other cases, je <-> je needs offset <=3D 0x7b to avoid no converg=
-ence
-+ * issue. For jmp <-> je and jmp <-> jmp cases, jmp offset <=3D 0x7c sho=
-uld
-+ * avoid no convergence issue.
-+ *
-+ * Overall, let us limit the positive offset for 8bit cond/uncond jmp in=
-sn
-+ * to mamximum 123 (0x7b). This way, the jit pass can eventually converg=
-e.
-+ */
-+static bool is_imm8_jmp_offset(int value)
+diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/te=
+sting/selftests/bpf/prog_tests/verifier.c
+index 80a90c627182..df398e714dff 100644
+--- a/tools/testing/selftests/bpf/prog_tests/verifier.c
++++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
+@@ -39,6 +39,7 @@
+ #include "verifier_int_ptr.skel.h"
+ #include "verifier_iterating_callbacks.skel.h"
+ #include "verifier_jeq_infer_not_null.skel.h"
++#include "verifier_jit_convergence.skel.h"
+ #include "verifier_ld_ind.skel.h"
+ #include "verifier_ldsx.skel.h"
+ #include "verifier_leak_ptr.skel.h"
+@@ -163,6 +164,7 @@ void test_verifier_helper_value_access(void)  { RUN(v=
+erifier_helper_value_access
+ void test_verifier_int_ptr(void)              { RUN(verifier_int_ptr); }
+ void test_verifier_iterating_callbacks(void)  { RUN(verifier_iterating_c=
+allbacks); }
+ void test_verifier_jeq_infer_not_null(void)   { RUN(verifier_jeq_infer_n=
+ot_null); }
++void test_verifier_jit_convergence(void)      { RUN(verifier_jit_converg=
+ence); }
+ void test_verifier_ld_ind(void)               { RUN(verifier_ld_ind); }
+ void test_verifier_ldsx(void)                  { RUN(verifier_ldsx); }
+ void test_verifier_leak_ptr(void)             { RUN(verifier_leak_ptr); =
+}
+diff --git a/tools/testing/selftests/bpf/progs/verifier_jit_convergence.c=
+ b/tools/testing/selftests/bpf/progs/verifier_jit_convergence.c
+new file mode 100644
+index 000000000000..fdc4ccc83c7d
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/verifier_jit_convergence.c
+@@ -0,0 +1,128 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2024 Meta Platforms, Inc. and affiliates. */
++
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++#include "bpf_misc.h"
++
++#if defined(__TARGET_ARCH_x86)
++
++struct value_t {
++	long long a[32];
++};
++
++struct {
++        __uint(type, BPF_MAP_TYPE_HASH);
++        __uint(max_entries, 1);
++        __type(key, long long);
++        __type(value, struct value_t);
++} map_hash SEC(".maps");
++
++SEC("socket")
++__description("bpf_jit_convergence je <-> jmp")
++__success __retval(0)
++__arch_x86_64
++__jited("	pushq	%rbp")
++__naked void btf_jit_convergence_je_jmp(void)
 +{
-+	return value <=3D 123 && value >=3D -128;
++	asm volatile (
++	"call %[bpf_get_prandom_u32];"
++	"if r0 =3D=3D 0 goto l20_%=3D;"
++	"if r0 =3D=3D 1 goto l21_%=3D;"
++	"if r0 =3D=3D 2 goto l22_%=3D;"
++	"if r0 =3D=3D 3 goto l23_%=3D;"
++	"if r0 =3D=3D 4 goto l24_%=3D;"
++	"call %[bpf_get_prandom_u32];"
++	"call %[bpf_get_prandom_u32];"
++"l20_%=3D:"
++"l21_%=3D:"
++"l22_%=3D:"
++"l23_%=3D:"
++"l24_%=3D:"
++	"r1 =3D 0;"
++	"*(u64 *)(r10 - 8) =3D r1;"
++	"r2 =3D r10;"
++	"r2 +=3D -8;"
++	"r1 =3D %[map_hash] ll;"
++	"call %[bpf_map_lookup_elem];"
++	"if r0 =3D=3D 0 goto l1_%=3D;"
++	"r6 =3D r0;"
++	"call %[bpf_get_prandom_u32];"
++	"r7 =3D r0;"
++	"r5 =3D r6;"
++	"if r0 !=3D 0x0 goto l12_%=3D;"
++	"call %[bpf_get_prandom_u32];"
++	"r1 =3D r0;"
++	"r2 =3D r6;"
++	"if r1 =3D=3D 0x0 goto l0_%=3D;"
++"l9_%=3D:"
++	"r2 =3D *(u64 *)(r6 + 0x0);"
++	"r2 +=3D 0x1;"
++	"*(u64 *)(r6 + 0x0) =3D r2;"
++	"goto l1_%=3D;"
++"l12_%=3D:"
++	"r1 =3D r7;"
++	"r1 +=3D 0x98;"
++	"r2 =3D r5;"
++	"r2 +=3D 0x90;"
++	"r2 =3D *(u32 *)(r2 + 0x0);"
++	"r3 =3D r7;"
++	"r3 &=3D 0x1;"
++	"r2 *=3D 0xa8;"
++	"if r3 =3D=3D 0x0 goto l2_%=3D;"
++	"r1 +=3D r2;"
++	"r1 -=3D r7;"
++	"r1 +=3D 0x8;"
++	"if r1 <=3D 0xb20 goto l3_%=3D;"
++	"r1 =3D 0x0;"
++	"goto l4_%=3D;"
++"l3_%=3D:"
++	"r1 +=3D r7;"
++"l4_%=3D:"
++	"if r1 =3D=3D 0x0 goto l8_%=3D;"
++	"goto l9_%=3D;"
++"l2_%=3D:"
++	"r1 +=3D r2;"
++	"r1 -=3D r7;"
++	"r1 +=3D 0x10;"
++	"if r1 <=3D 0xb20 goto l6_%=3D;"
++	"r1 =3D 0x0;"
++	"goto l7_%=3D;"
++"l6_%=3D:"
++	"r1 +=3D r7;"
++"l7_%=3D:"
++	"if r1 =3D=3D 0x0 goto l8_%=3D;"
++	"goto l9_%=3D;"
++"l0_%=3D:"
++	"r1 =3D 0x3;"
++	"*(u64 *)(r10 - 0x10) =3D r1;"
++	"r2 =3D r1;"
++	"goto l1_%=3D;"
++"l8_%=3D:"
++	"r1 =3D r5;"
++	"r1 +=3D 0x4;"
++	"r1 =3D *(u32 *)(r1 + 0x0);"
++	"*(u64 *)(r10 - 0x8) =3D r1;"
++"l1_%=3D:"
++	"r0 =3D 0;"
++	"exit;"
++	:
++	: __imm(bpf_get_prandom_u32),
++	  __imm(bpf_map_lookup_elem),
++	  __imm_addr(map_hash)
++	: __clobber_all);
 +}
 +
- static bool is_simm32(s64 value)
- {
- 	return value =3D=3D (s64)(s32)value;
-@@ -2231,7 +2282,7 @@ st:			if (is_imm8(insn->off))
- 				return -EFAULT;
- 			}
- 			jmp_offset =3D addrs[i + insn->off] - addrs[i];
--			if (is_imm8(jmp_offset)) {
-+			if (is_imm8_jmp_offset(jmp_offset)) {
- 				if (jmp_padding) {
- 					/* To keep the jmp_offset valid, the extra bytes are
- 					 * padded before the jump insn, so we subtract the
-@@ -2313,7 +2364,7 @@ st:			if (is_imm8(insn->off))
- 				break;
- 			}
- emit_jmp:
--			if (is_imm8(jmp_offset)) {
-+			if (is_imm8_jmp_offset(jmp_offset)) {
- 				if (jmp_padding) {
- 					/* To avoid breaking jmp_offset, the extra bytes
- 					 * are padded before the actual jmp insn, so
++#else
++
++SEC("socket")
++__description("non-x86 has no jit convergence issue, use a dummy test")
++__success
++int dummy_test(void)
++{
++	return 0;
++}
++
++#endif
++
++char _license[] SEC("license") =3D "GPL";
 --=20
 2.43.5
 
