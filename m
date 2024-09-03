@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-38808-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38809-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A67096A5C4
-	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 19:48:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0EC8F96A5C6
+	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 19:49:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7D26B1C23CF1
-	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 17:48:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B94D32833A4
+	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 17:49:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A211198858;
-	Tue,  3 Sep 2024 17:46:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E81031991DF;
+	Tue,  3 Sep 2024 17:46:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ePac60MH"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SKhNGs1D"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D84918FDAA;
-	Tue,  3 Sep 2024 17:46:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 609B41917F4;
+	Tue,  3 Sep 2024 17:46:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725385588; cv=none; b=S3tT8koaN/OuMUvYqZrKOiqOF48r4NIQ7aKqaNHNSSPiKoh/gtp9JlUhto7gZ0rn/ngGHu+faLe0pc+arRx/b6T+l2vqtTXTV6pvPaZYPejwoyzKCRsSCtFb1rTOJPv4TCZ4HFiXGvkgH8XXKcXgRU0CrZ+p2yUv+aVJ8DDucPg=
+	t=1725385591; cv=none; b=jKdv2o3DC2aHI8eSkcjdZBHDG5kFrpf9A2OsLT2p3YWnsfSG/PTljO9IKGkqVZ8dukUsdhcPHXDoA4Cx7C+PaQjK3b/h+WwU7aiacF2iWA4qEAsdtQ5Og1b+7KmVzPb04pahTwlms+KphB/IFzRlGOS1YbJo+jlKu3lDoYAdGHc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725385588; c=relaxed/simple;
-	bh=fbkVIaD1WSV5k2O1l+qbLGEuln2w8HvLuX0+cvs5jtI=;
+	s=arc-20240116; t=1725385591; c=relaxed/simple;
+	bh=RvQt+mn0Ib4bzcl2DbcJugmCiAEXvSCyxNzylfy/bEU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mCyYbaLEgnRqKAxhD1Xzfk/jJ7DegZDJy2PPu8kUIpC4NhcPKNKd0FzZs56DQjn0+8zOlL9lWZAybfPj/OW3BGd+19Z6FxLgaVv5v88nISgA4aelpcsY/9LAS8JgUFm1A/Hn2NA8psybpeedtxMbuHqm2FBR5SqZNh2v5qRXhxE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ePac60MH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E8DAC4CEC6;
-	Tue,  3 Sep 2024 17:46:27 +0000 (UTC)
+	 MIME-Version:Content-Type; b=RIA9ITuhyI6cmbjArLrXTRUqgAIB2Arf/9CLkxvQcgkBsDGtgPqUZ9uB+RccVN6ciaU3rnlVmbzNgsrjHqHAwfUu8MVFzOUZUsnA9uQYQXG7NaKRQfgZtWBxx4LecVCwzhumE+erDRZ3dzOdGoEdFR0su4Vmw5g8hOhimn/MF1g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SKhNGs1D; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2803C4CEC4;
+	Tue,  3 Sep 2024 17:46:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1725385587;
-	bh=fbkVIaD1WSV5k2O1l+qbLGEuln2w8HvLuX0+cvs5jtI=;
+	s=k20201202; t=1725385590;
+	bh=RvQt+mn0Ib4bzcl2DbcJugmCiAEXvSCyxNzylfy/bEU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ePac60MHZQZol0UGw03YynNTwklAOaXlOvgQPfdFV66MYzxkSzn+Zmk4d1UTS198j
-	 zU8y2voSoi8FHy8gTAz9OTJ/tflW4leFmuRPC95QNYsdovmI8L/kSz/oHSbwosTt4l
-	 90yxAjvX0bAlHHDCz/NCCWumyGr9+oyKrPSrqZY5wXnN3jRekx9+V7cdxUl5sXMLkN
-	 qChy2ahmkKbxyNBiybflTFGhG9xQqB2nQW0rsB/wTcKY0458tc/hGBHh9VnRe/+5Oq
-	 UuYFJ19TN2rpx1y9fim9ueGgCZ24e5P73q8VPvfJvBuUviAuEuoLvMxFS4Z8cCJcb7
-	 /vMnWH9OEYinw==
+	b=SKhNGs1DObzAy/uvZHlQgdMaLMKlO7U+tcdlSlZceAism21OBtxrovQA64NPpwVLO
+	 GcglGJsXb4iyd6KJDYJQDsda4kLcWkbICqjQlBGVEp0MWD8pt8XgkTRwbN4+H3gIDL
+	 GH9jODOs1OjLMtyK1qjE9D05z9d+2yAcnuVxw2JOkYdGy4T+qT54gF82tCTMXFukXj
+	 o8ygjUWUahKuKL8HgGYGYZhnF0SAnnsQjxYSmaUk0FvGjj7Q1paJIsaPFxifWgY8b+
+	 2xYntsad8LbEoczx4NMfU85OsVERPsaeOHQ2uDunAqe7yCZsnpzdpzm/IsvyDvKvbI
+	 fJOLjGoveDpCg==
 From: Andrii Nakryiko <andrii@kernel.org>
 To: linux-trace-kernel@vger.kernel.org,
 	peterz@infradead.org,
@@ -56,9 +56,9 @@ Cc: rostedt@goodmis.org,
 	akpm@linux-foundation.org,
 	linux-mm@kvack.org,
 	Andrii Nakryiko <andrii@kernel.org>
-Subject: [PATCH v5 6/8] rbtree: provide rb_find_rcu() / rb_find_add_rcu()
-Date: Tue,  3 Sep 2024 10:46:01 -0700
-Message-ID: <20240903174603.3554182-7-andrii@kernel.org>
+Subject: [PATCH v5 7/8] uprobes: perform lockless SRCU-protected uprobes_tree lookup
+Date: Tue,  3 Sep 2024 10:46:02 -0700
+Message-ID: <20240903174603.3554182-8-andrii@kernel.org>
 X-Mailer: git-send-email 2.43.5
 In-Reply-To: <20240903174603.3554182-1-andrii@kernel.org>
 References: <20240903174603.3554182-1-andrii@kernel.org>
@@ -68,106 +68,157 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-From: Peter Zijlstra <peterz@infradead.org>
+Another big bottleneck to scalablity is uprobe_treelock that's taken in
+a very hot path in handle_swbp(). Now that uprobes are SRCU-protected,
+take advantage of that and make uprobes_tree RB-tree look up lockless.
 
-Much like latch_tree, add two RCU methods for the regular RB-tree,
-which can be used in conjunction with a seqcount to provide lockless
-lookups.
+To make RB-tree RCU-protected lockless lookup correct, we need to take
+into account that such RB-tree lookup can return false negatives if there
+are parallel RB-tree modifications (rotations) going on. We use seqcount
+lock to detect whether RB-tree changed, and if we find nothing while
+RB-tree got modified inbetween, we just retry. If uprobe was found, then
+it's guaranteed to be a correct lookup.
+
+With all the lock-avoiding changes done, we get a pretty decent
+improvement in performance and scalability of uprobes with number of
+CPUs, even though we are still nowhere near linear scalability. This is
+due to SRCU not really scaling very well with number of CPUs on
+a particular hardware that was used for testing (80-core Intel Xeon Gold
+6138 CPU @ 2.00GHz), but also due to the remaning mmap_lock, which is
+currently taken to resolve interrupt address to inode+offset and then
+uprobe instance. And, of course, uretprobes still need similar RCU to
+avoid refcount in the hot path, which will be addressed in the follow up
+patches.
+
+Nevertheless, the improvement is good. We used BPF selftest-based
+uprobe-nop and uretprobe-nop benchmarks to get the below numbers,
+varying number of CPUs on which uprobes and uretprobes are triggered.
+
+BASELINE
+========
+uprobe-nop      ( 1 cpus):    3.032 ± 0.023M/s  (  3.032M/s/cpu)
+uprobe-nop      ( 2 cpus):    3.452 ± 0.005M/s  (  1.726M/s/cpu)
+uprobe-nop      ( 4 cpus):    3.663 ± 0.005M/s  (  0.916M/s/cpu)
+uprobe-nop      ( 8 cpus):    3.718 ± 0.038M/s  (  0.465M/s/cpu)
+uprobe-nop      (16 cpus):    3.344 ± 0.008M/s  (  0.209M/s/cpu)
+uprobe-nop      (32 cpus):    2.288 ± 0.021M/s  (  0.071M/s/cpu)
+uprobe-nop      (64 cpus):    3.205 ± 0.004M/s  (  0.050M/s/cpu)
+
+uretprobe-nop   ( 1 cpus):    1.979 ± 0.005M/s  (  1.979M/s/cpu)
+uretprobe-nop   ( 2 cpus):    2.361 ± 0.005M/s  (  1.180M/s/cpu)
+uretprobe-nop   ( 4 cpus):    2.309 ± 0.002M/s  (  0.577M/s/cpu)
+uretprobe-nop   ( 8 cpus):    2.253 ± 0.001M/s  (  0.282M/s/cpu)
+uretprobe-nop   (16 cpus):    2.007 ± 0.000M/s  (  0.125M/s/cpu)
+uretprobe-nop   (32 cpus):    1.624 ± 0.003M/s  (  0.051M/s/cpu)
+uretprobe-nop   (64 cpus):    2.149 ± 0.001M/s  (  0.034M/s/cpu)
+
+SRCU CHANGES
+============
+uprobe-nop      ( 1 cpus):    3.276 ± 0.005M/s  (  3.276M/s/cpu)
+uprobe-nop      ( 2 cpus):    4.125 ± 0.002M/s  (  2.063M/s/cpu)
+uprobe-nop      ( 4 cpus):    7.713 ± 0.002M/s  (  1.928M/s/cpu)
+uprobe-nop      ( 8 cpus):    8.097 ± 0.006M/s  (  1.012M/s/cpu)
+uprobe-nop      (16 cpus):    6.501 ± 0.056M/s  (  0.406M/s/cpu)
+uprobe-nop      (32 cpus):    4.398 ± 0.084M/s  (  0.137M/s/cpu)
+uprobe-nop      (64 cpus):    6.452 ± 0.000M/s  (  0.101M/s/cpu)
+
+uretprobe-nop   ( 1 cpus):    2.055 ± 0.001M/s  (  2.055M/s/cpu)
+uretprobe-nop   ( 2 cpus):    2.677 ± 0.000M/s  (  1.339M/s/cpu)
+uretprobe-nop   ( 4 cpus):    4.561 ± 0.003M/s  (  1.140M/s/cpu)
+uretprobe-nop   ( 8 cpus):    5.291 ± 0.002M/s  (  0.661M/s/cpu)
+uretprobe-nop   (16 cpus):    5.065 ± 0.019M/s  (  0.317M/s/cpu)
+uretprobe-nop   (32 cpus):    3.622 ± 0.003M/s  (  0.113M/s/cpu)
+uretprobe-nop   (64 cpus):    3.723 ± 0.002M/s  (  0.058M/s/cpu)
+
+Peak througput increased from 3.7 mln/s (uprobe triggerings) up to about
+8 mln/s. For uretprobes it's a bit more modest with bump from 2.4 mln/s
+to 5mln/s.
 
 Reviewed-by: Oleg Nesterov <oleg@redhat.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- include/linux/rbtree.h | 67 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 67 insertions(+)
+ kernel/events/uprobes.c | 30 ++++++++++++++++++++++++------
+ 1 file changed, 24 insertions(+), 6 deletions(-)
 
-diff --git a/include/linux/rbtree.h b/include/linux/rbtree.h
-index f7edca369eda..7c173aa64e1e 100644
---- a/include/linux/rbtree.h
-+++ b/include/linux/rbtree.h
-@@ -244,6 +244,42 @@ rb_find_add(struct rb_node *node, struct rb_root *tree,
- 	return NULL;
+diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+index e9b755ddf960..8a464cf38127 100644
+--- a/kernel/events/uprobes.c
++++ b/kernel/events/uprobes.c
+@@ -40,6 +40,7 @@ static struct rb_root uprobes_tree = RB_ROOT;
+ #define no_uprobe_events()	RB_EMPTY_ROOT(&uprobes_tree)
+ 
+ static DEFINE_RWLOCK(uprobes_treelock);	/* serialize rbtree access */
++static seqcount_rwlock_t uprobes_seqcount = SEQCNT_RWLOCK_ZERO(uprobes_seqcount, &uprobes_treelock);
+ 
+ DEFINE_STATIC_SRCU(uprobes_srcu);
+ 
+@@ -634,8 +635,11 @@ static void put_uprobe(struct uprobe *uprobe)
+ 
+ 	write_lock(&uprobes_treelock);
+ 
+-	if (uprobe_is_active(uprobe))
++	if (uprobe_is_active(uprobe)) {
++		write_seqcount_begin(&uprobes_seqcount);
+ 		rb_erase(&uprobe->rb_node, &uprobes_tree);
++		write_seqcount_end(&uprobes_seqcount);
++	}
+ 
+ 	write_unlock(&uprobes_treelock);
+ 
+@@ -701,14 +705,26 @@ static struct uprobe *find_uprobe_rcu(struct inode *inode, loff_t offset)
+ 		.offset = offset,
+ 	};
+ 	struct rb_node *node;
++	unsigned int seq;
+ 
+ 	lockdep_assert(srcu_read_lock_held(&uprobes_srcu));
+ 
+-	read_lock(&uprobes_treelock);
+-	node = rb_find(&key, &uprobes_tree, __uprobe_cmp_key);
+-	read_unlock(&uprobes_treelock);
++	do {
++		seq = read_seqcount_begin(&uprobes_seqcount);
++		node = rb_find_rcu(&key, &uprobes_tree, __uprobe_cmp_key);
++		/*
++		 * Lockless RB-tree lookups can result only in false negatives.
++		 * If the element is found, it is correct and can be returned
++		 * under RCU protection. If we find nothing, we need to
++		 * validate that seqcount didn't change. If it did, we have to
++		 * try again as we might have missed the element (false
++		 * negative). If seqcount is unchanged, search truly failed.
++		 */
++		if (node)
++			return __node_2_uprobe(node);
++	} while (read_seqcount_retry(&uprobes_seqcount, seq));
+ 
+-	return node ? __node_2_uprobe(node) : NULL;
++	return NULL;
  }
  
-+/**
-+ * rb_find_add_rcu() - find equivalent @node in @tree, or add @node
-+ * @node: node to look-for / insert
-+ * @tree: tree to search / modify
-+ * @cmp: operator defining the node order
-+ *
-+ * Adds a Store-Release for link_node.
-+ *
-+ * Returns the rb_node matching @node, or NULL when no match is found and @node
-+ * is inserted.
-+ */
-+static __always_inline struct rb_node *
-+rb_find_add_rcu(struct rb_node *node, struct rb_root *tree,
-+		int (*cmp)(struct rb_node *, const struct rb_node *))
-+{
-+	struct rb_node **link = &tree->rb_node;
-+	struct rb_node *parent = NULL;
-+	int c;
-+
-+	while (*link) {
-+		parent = *link;
-+		c = cmp(node, parent);
-+
-+		if (c < 0)
-+			link = &parent->rb_left;
-+		else if (c > 0)
-+			link = &parent->rb_right;
-+		else
-+			return parent;
-+	}
-+
-+	rb_link_node_rcu(node, parent, link);
-+	rb_insert_color(node, tree);
-+	return NULL;
-+}
-+
- /**
-  * rb_find() - find @key in tree @tree
-  * @key: key to match
-@@ -272,6 +308,37 @@ rb_find(const void *key, const struct rb_root *tree,
- 	return NULL;
- }
+ /*
+@@ -730,7 +746,7 @@ static struct uprobe *__insert_uprobe(struct uprobe *uprobe)
+ {
+ 	struct rb_node *node;
+ again:
+-	node = rb_find_add(&uprobe->rb_node, &uprobes_tree, __uprobe_cmp);
++	node = rb_find_add_rcu(&uprobe->rb_node, &uprobes_tree, __uprobe_cmp);
+ 	if (node) {
+ 		struct uprobe *u = __node_2_uprobe(node);
  
-+/**
-+ * rb_find_rcu() - find @key in tree @tree
-+ * @key: key to match
-+ * @tree: tree to search
-+ * @cmp: operator defining the node order
-+ *
-+ * Notably, tree descent vs concurrent tree rotations is unsound and can result
-+ * in false-negatives.
-+ *
-+ * Returns the rb_node matching @key or NULL.
-+ */
-+static __always_inline struct rb_node *
-+rb_find_rcu(const void *key, const struct rb_root *tree,
-+	    int (*cmp)(const void *key, const struct rb_node *))
-+{
-+	struct rb_node *node = tree->rb_node;
-+
-+	while (node) {
-+		int c = cmp(key, node);
-+
-+		if (c < 0)
-+			node = rcu_dereference_raw(node->rb_left);
-+		else if (c > 0)
-+			node = rcu_dereference_raw(node->rb_right);
-+		else
-+			return node;
-+	}
-+
-+	return NULL;
-+}
-+
- /**
-  * rb_find_first() - find the first @key in @tree
-  * @key: key to match
+@@ -755,7 +771,9 @@ static struct uprobe *insert_uprobe(struct uprobe *uprobe)
+ 	struct uprobe *u;
+ 
+ 	write_lock(&uprobes_treelock);
++	write_seqcount_begin(&uprobes_seqcount);
+ 	u = __insert_uprobe(uprobe);
++	write_seqcount_end(&uprobes_seqcount);
+ 	write_unlock(&uprobes_treelock);
+ 
+ 	return u;
 -- 
 2.43.5
 
