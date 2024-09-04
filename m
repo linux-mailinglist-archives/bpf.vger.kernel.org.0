@@ -1,175 +1,110 @@
-Return-Path: <bpf+bounces-38872-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38874-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2148996BBFA
-	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2024 14:23:03 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B13B396BC9D
+	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2024 14:41:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D12A1282D76
-	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2024 12:23:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E27E41C21730
+	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2024 12:41:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F21131D86F3;
-	Wed,  4 Sep 2024 12:22:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="C6RXMJiB"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A92D1D9D6F;
+	Wed,  4 Sep 2024 12:41:20 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 792A71D5893
-	for <bpf@vger.kernel.org>; Wed,  4 Sep 2024 12:22:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E66261D933C;
+	Wed,  4 Sep 2024 12:41:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725452576; cv=none; b=hiIrPrOqwTiiKA1C3ttKsknkHxhmCXCmzec4ndH3EyTCRKvZaSTc1Pm1Modqd0jTo8mlTI/aUB6bUsqcMSpTUNK4RkoCjeMOh6cW73M9G5kzhVso/nDXnJQ5DbovC+pnEUnT2MMGks+H5fMWRWz+/4ytFQ601tWL9vXG5iRp9Uk=
+	t=1725453680; cv=none; b=iVmZplSgkI/OYhFi/Ck9fwAC4PliGnwkExHp5xhJLPJlNNy50dlAQ+cjL6/9tK0DWIaf/hyMpE52R0ruoCqr+VcMdT7C9Zjiy5Eq2BiRjieGwwTkRoeW4ssyp3Hl+/VUHvHHEM7Isua0gp89K/Afl+4TxgfHoaytO04GAReue/E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725452576; c=relaxed/simple;
-	bh=TwNLRotfcIUKiZhz0lZ853t0S9qZH+pPEXAJ2ZfbHS8=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Ie1dOkgLp+YeJtg2XYzSzDFvB0AodOhrObM6n3b9OMTjBMZGg3SgKN8uB3Tfbuo/ysYixvLPG0sHdYYIGtLyboqua3Mb7413FF1T815qvY99j3a8VOPIuV9gli7Tx+fIgQ4pGGI3mLA7/ExHGGqxdOj1zGhWRhqrAP0DBj3liNI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=C6RXMJiB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D1803C4CEC2;
-	Wed,  4 Sep 2024 12:22:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1725452576;
-	bh=TwNLRotfcIUKiZhz0lZ853t0S9qZH+pPEXAJ2ZfbHS8=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=C6RXMJiBiP1N08G2sJ9V+Jgw60QOOaIPAobbKCQqrMXODccM11rpQuEgZKGxEfK0I
-	 Z78JKgPh+h+KevZCguhWOo8YbRyGpXViLPlEGT1Wq1xkgfnStL7yJyMUImmc7XybQy
-	 8H7AqmmkxKsZTbUhNVfX43HqSAImnTBtSzJS0jMYL7N8IIR5vMaeC8kFLNWiNmJevQ
-	 D0EKM4kyVL0ykGOzOlIw+YUeok/OkMQZsMbU7d4SrI/MTI0Y9u3pVDHjLdVjHjbHOX
-	 ByqJ034J3XtE4b0GAqMLC2mpRKXOA8JlKkrrVmFvYHBnFxbq9UmDOX/k35VNHWBntQ
-	 KNZzBBTWiY94g==
-From: Puranjay Mohan <puranjay@kernel.org>
-To: Xu Kuohai <xukuohai@huaweicloud.com>, bpf@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Catalin
- Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
-Subject: Re: [PATCH bpf-next v2] bpf, arm64: Jit BPF_CALL to direct call
- when possible
-In-Reply-To: <20240903094407.601107-1-xukuohai@huaweicloud.com>
-References: <20240903094407.601107-1-xukuohai@huaweicloud.com>
-Date: Wed, 04 Sep 2024 12:22:35 +0000
-Message-ID: <mb61pmsknsj5g.fsf@kernel.org>
+	s=arc-20240116; t=1725453680; c=relaxed/simple;
+	bh=7eB/rlYGwMuL7IZpy++WQDT8FnMlscBwvb7t0s8HaqY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=TVfl08tSfOEAjHDGa9c7SQxy6IdWRFuBBo+s9m4qFsEXX5bFAJBGD062FtKsNFWK9Bzto+SQ8+WpeVikGajEOJIotMzSfRrBr+lu3bC3XNyt5YF98ueqHb8loKnZT6VfIGWNWdAAmPp7cvhuwjBRmGez3L0ulobvVMmKzD5uGbA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4WzMY60s0Qz4f3lfj;
+	Wed,  4 Sep 2024 20:40:58 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id F1F8F1A14D6;
+	Wed,  4 Sep 2024 20:41:13 +0800 (CST)
+Received: from huawei.com (unknown [10.67.174.45])
+	by APP2 (Coremail) with SMTP id Syh0CgCHvGFdVdhmhod9AQ--.48162S2;
+	Wed, 04 Sep 2024 20:41:13 +0800 (CST)
+From: Tengda Wu <wutengda@huaweicloud.com>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Ian Rogers <irogers@google.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	kan.liang@linux.intel.com,
+	linux-perf-users@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: [PATCH -next 0/2] perf stat: Support inherit events for bperf
+Date: Wed,  4 Sep 2024 12:31:01 +0000
+Message-Id: <20240904123103.732507-1-wutengda@huaweicloud.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-	micalg=pgp-sha512; protocol="application/pgp-signature"
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:Syh0CgCHvGFdVdhmhod9AQ--.48162S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7GFy5XFyfurW8tw4xAF4ktFb_yoW3Wrb_Ga
+	4IqFyqqrWDAF92qa4ak3WrAr93XFWfZry8ta95WF45Cw4Yvr1UZF4kZryUAryrXF4UZrsx
+	Jwn5tryfuay3ujkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbxAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
+	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcVCY1x02
+	67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxV
+	AFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2
+	j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7x
+	kEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACI402YVCY1x02628vn2kIc2xKxwCY1x0262kK
+	e7AKxVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
+	02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
+	GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
+	CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v2
+	6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07
+	UAwIDUUUUU=
+X-CM-SenderInfo: pzxwv0hjgdqx5xdzvxpfor3voofrz/
 
---=-=-=
-Content-Type: text/plain
+Hi,
 
-Xu Kuohai <xukuohai@huaweicloud.com> writes:
+bperf (perf-stat --bpf-counter) has not supported inherit events
+during fork() since it was first introduced.
 
-> From: Xu Kuohai <xukuohai@huawei.com>
->
-> Currently, BPF_CALL is always jited to indirect call. When target is
-> within the range of direct call, BPF_CALL can be jited to direct call.
->
-> For example, the following BPF_CALL
->
->     call __htab_map_lookup_elem
->
-> is always jited to indirect call:
->
->     mov     x10, #0xffffffffffff18f4
->     movk    x10, #0x821, lsl #16
->     movk    x10, #0x8000, lsl #32
->     blr     x10
->
-> When the address of target __htab_map_lookup_elem is within the range of
-> direct call, the BPF_CALL can be jited to:
->
->     bl      0xfffffffffd33bc98
->
-> This patch does such jit optimization by emitting arm64 direct calls for
-> BPF_CALL when possible, indirect calls otherwise.
->
-> Without this patch, the jit works as follows.
->
-> 1. First pass
->    A. Determine jited position and size for each bpf instruction.
->    B. Computed the jited image size.
->
-> 2. Allocate jited image with size computed in step 1.
->
-> 3. Second pass
->    A. Adjust jump offset for jump instructions
->    B. Write the final image.
->
-> This works because, for a given bpf prog, regardless of where the jited
-> image is allocated, the jited result for each instruction is fixed. The
-> second pass differs from the first only in adjusting the jump offsets,
-> like changing "jmp imm1" to "jmp imm2", while the position and size of
-> the "jmp" instruction remain unchanged.
->
-> Now considering whether to jit BPF_CALL to arm64 direct or indirect call
-> instruction. The choice depends solely on the jump offset: direct call
-> if the jump offset is within 128MB, indirect call otherwise.
->
-> For a given BPF_CALL, the target address is known, so the jump offset is
-> decided by the jited address of the BPF_CALL instruction. In other words,
-> for a given bpf prog, the jited result for each BPF_CALL is determined
-> by its jited address.
->
-> The jited address for a BPF_CALL is the jited image address plus the
-> total jited size of all preceding instructions. For a given bpf prog,
-> there are clearly no BPF_CALL instructions before the first BPF_CALL
-> instruction. Since the jited result for all other instructions other
-> than BPF_CALL are fixed, the total jited size preceding the first
-> BPF_CALL is also fixed. Therefore, once the jited image is allocated,
-> the jited address for the first BPF_CALL is fixed.
->
-> Now that the jited result for the first BPF_CALL is fixed, the jited
-> results for all instructions preceding the second BPF_CALL are fixed.
-> So the jited address and result for the second BPF_CALL are also fixed.
->
-> Similarly, we can conclude that the jited addresses and results for all
-> subsequent BPF_CALL instructions are fixed.
->
-> This means that, for a given bpf prog, once the jited image is allocated,
-> the jited address and result for all instructions, including all BPF_CALL
-> instructions, are fixed.
->
-> Based on the observation, with this patch, the jit works as follows.
->
-> 1. First pass
->    Estimate the maximum jited image size. In this pass, all BPF_CALLs
->    are jited to arm64 indirect calls since the jump offsets are unknown
->    because the jited image is not allocated.
->
-> 2. Allocate jited image with size estimated in step 1.
->
-> 3. Second pass
->    A. Determine the jited result for each BPF_CALL.
->    B. Determine jited address and size for each bpf instruction.
->
-> 4. Third pass
->    A. Adjust jump offset for jump instructions.
->    B. Write the final image.
->
-> Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
+This patch series tries to add this support by:
+ 1) adding two new bpf programs to monitor task lifecycle;
+ 2) recording new tasks in the filter map dynamically;
+ 3) reusing `accum_key` of parent task for new tasks.
 
-Thanks for working on this. I have tried to reason about all the
-possible edge cases that I could think of and this looks good to me:
+Thanks,
+Tengda
 
-Reviewed-by: Puranjay Mohan <puranjay@kernel.org>
+Tengda Wu (2):
+  perf stat: Support inherit events during fork() for bperf
+  perf test: Use sqrtloop workload to test bperf event
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
+ tools/perf/tests/shell/stat_bpf_counters.sh   |  2 +-
+ tools/perf/util/bpf_counter.c                 |  9 +--
+ tools/perf/util/bpf_skel/bperf_follower.bpf.c | 75 +++++++++++++++++--
+ tools/perf/util/bpf_skel/bperf_u.h            |  5 ++
+ 4 files changed, 79 insertions(+), 12 deletions(-)
 
------BEGIN PGP SIGNATURE-----
+-- 
+2.34.1
 
-iIoEARYKADIWIQQ3wHGvVs/5bdl78BKwwPkjG3B2nQUCZthRDBQccHVyYW5qYXlA
-a2VybmVsLm9yZwAKCRCwwPkjG3B2nWV9AQD65wMoz0sXCz/RLUW6KyJR8YIFcK6t
-mv8UWc489G5qkwEAw9OU+N77tsRWeeOrAh74AKxljzEyYaTvbpqRokPNTgg=
-=Virj
------END PGP SIGNATURE-----
---=-=-=--
 
