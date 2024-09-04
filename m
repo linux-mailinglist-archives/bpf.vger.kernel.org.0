@@ -1,49 +1,49 @@
-Return-Path: <bpf+bounces-38931-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38932-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14E5896C897
-	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2024 22:32:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DCD3296C899
+	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2024 22:32:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BCF551F28575
-	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2024 20:32:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 86A6F1F284D5
+	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2024 20:32:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67CE0148833;
-	Wed,  4 Sep 2024 20:30:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFE4C155730;
+	Wed,  4 Sep 2024 20:30:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mrzNlBMF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pYnTW1ev"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1C0562A02;
-	Wed,  4 Sep 2024 20:30:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7133E62A02;
+	Wed,  4 Sep 2024 20:30:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725481831; cv=none; b=sSrkO+BPkKOG/qOr2U2LGciSlQ76G97UgEwn00wx/4ysiOuUZ13ZktTZQpCq2pBDhntp5Gig2QEIVZIUJMzFQM5QpvbuozU4EfrfZBnv8yw7D5hm/EtT8uSQZs2rrykIcqulG4A4IlGxWcwb/W7PSZqzzgMPVZVg/E087TrdW3U=
+	t=1725481832; cv=none; b=oNNGM6M+BZcvavoXflHjEKw6KXT3CIYhCDzduSFtyXQmpoVTynCUHi6XsmLF+qNt+X2WP/Tnz1pfjjAmKAPcnbUAHfgQ8yLwHUmvotQpHkGPbgpkMLUCLABEoA6SQmlBbAk5Q6RMA6gE5fKOy8dEfzwp6vbJ2+y3meKOzbLyFnI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725481831; c=relaxed/simple;
-	bh=ZDVqpTpXFqfaQOBp5jbdRI+wlIMqz5/1OVyt667YST4=;
+	s=arc-20240116; t=1725481832; c=relaxed/simple;
+	bh=2FeNiLbsQe/94HyRbvl5xiOZZe5KxKxfYZU0jFSsaPA=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=pq8qeGVDujU5WL+dfVVe7RSDiP7lruwxffpwxKDU9dpbSEyXrq5WWjsbxIkkoYKdAbvJZvA+pzLXX9tg4XmE8ED8WVz02VA+x+qejq7jbVT/bIdezY42u23q+skZeAqdQ9nTzCahJBZXbVyuSguz27JlfSCn1SM4nN8IYb/YXFI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mrzNlBMF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6BEB1C4CEC2;
-	Wed,  4 Sep 2024 20:30:30 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=rNGGeADtmzoC0QPRAoMPNTyh0UD5j0Vjkngzl9Sf/xNkvHzQrhsU6jF9+j5+tPBsADjb/bG59Uu8uFIdyDdKcR5UbGAfzj3rmt8MJUl8FpK+K7+furUQLNyM5Yd0FNQymJr0zCi7eFTMKnLb47NE8ZCl8mPbg6UqDnYzN11+gfA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pYnTW1ev; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E92F9C4CECA;
+	Wed,  4 Sep 2024 20:30:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1725481830;
-	bh=ZDVqpTpXFqfaQOBp5jbdRI+wlIMqz5/1OVyt667YST4=;
+	s=k20201202; t=1725481832;
+	bh=2FeNiLbsQe/94HyRbvl5xiOZZe5KxKxfYZU0jFSsaPA=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=mrzNlBMFEsp7n8AE5qk3UQVmKDA2R/m+wCfhYHJ0nrP0WwtV+3YLXgzPbuXARX4tv
-	 jS0KSkgsZk//TO+fCx0l2I1HVyUmV5YGRSjFieQDi5OUtXrWVhS0Sx0SNO/A6kttYI
-	 l5vNW5MU0O6oThFon7QQGUT91pTT+v13l1pU8nyZwwSQi7PboAhv/HnajNyaZEo/jL
-	 mJOM+zquArWYrloWULK9D1f2BTTl2nJeEoBHc4Kc4FfkBZAFyjGHaFcG+GlQks55lV
-	 Lnh0JpDmo63LtKdlhqwZm48SatHEJZZrRrMQwTU4xRqTDoLMBLFWpYJFAWi0P9Vio6
-	 vFgnfKqO1b2bA==
+	b=pYnTW1evBmUFfQLOcu9bV6tMSxDPPri++QwMWq2Zqnto2cF4X58zsd5rSoeKbFoEU
+	 N8VgmhFZoCisgrVozJnlDFy4wU1UuKE4EHnlXaApry33kK2CIpiJVCWNzZD9w/jC0d
+	 j+8avtmXDZafDrhzq2s2FVNZ2vF3tVwwwQJ/a/AiGmtT6fdCA+4WVljb0uToEGgJLG
+	 /mwylo/tnKrqSVp2M6OpHWW6gfp4Vb0hbjbOSick+pEnlJ1pcmkBiOXM6xLypjdem2
+	 BTn2Rbplg2hfiZ78GrBwDZg7AL8yyxOzDDwveyHcFXA9dfgHwtLvlHFvlxk7PWdxP+
+	 wqAiK1TSLIzbA==
 Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 70DFD3822D30;
-	Wed,  4 Sep 2024 20:30:32 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EB11E3822D30;
+	Wed,  4 Sep 2024 20:30:33 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -52,46 +52,49 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v3 0/4] Fix accessing first syscall argument on RV64
+Subject: Re: [PATCH] selftests: bpf: Replace sizeof(arr)/sizeof(arr[0]) with
+ ARRAY_SIZE
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <172548183128.1158691.9881712792582282151.git-patchwork-notify@kernel.org>
-Date: Wed, 04 Sep 2024 20:30:31 +0000
-References: <20240831041934.1629216-1-pulehui@huaweicloud.com>
-In-Reply-To: <20240831041934.1629216-1-pulehui@huaweicloud.com>
-To: Pu Lehui <pulehui@huaweicloud.com>
-Cc: bpf@vger.kernel.org, linux-riscv@lists.infradead.org,
- netdev@vger.kernel.org, andrii@kernel.org, bjorn@kernel.org,
- iii@linux.ibm.com, ast@kernel.org, daniel@iogearbox.net,
+ <172548183250.1158691.8977955400396448785.git-patchwork-notify@kernel.org>
+Date: Wed, 04 Sep 2024 20:30:32 +0000
+References: <20240903072559.292607-1-yangfeng59949@163.com>
+In-Reply-To: <20240903072559.292607-1-yangfeng59949@163.com>
+To: yangfeng <yangfeng59949@163.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
  martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
  yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@google.com, haoluo@google.com, jolsa@kernel.org, puranjay@kernel.org,
- palmer@dabbelt.com, pulehui@huawei.com
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
+ shuah@kernel.org, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ linux-kernel@vger.kernel.org
 
 Hello:
 
-This series was applied to bpf/bpf-next.git (master)
+This patch was applied to bpf/bpf-next.git (master)
 by Andrii Nakryiko <andrii@kernel.org>:
 
-On Sat, 31 Aug 2024 04:19:30 +0000 you wrote:
-> On RV64, as Ilya mentioned before [0], the first syscall parameter should be
-> accessed through orig_a0 (see arch/riscv64/include/asm/syscall.h),
-> otherwise it will cause selftests like bpf_syscall_macro, vmlinux,
-> test_lsm, etc. to fail on RV64.
+On Tue,  3 Sep 2024 15:25:59 +0800 you wrote:
+> From: Feng Yang <yangfeng@kylinos.cn>
 > 
-> Link: https://lore.kernel.org/bpf/20220209021745.2215452-1-iii@linux.ibm.com [0]
+> The ARRAY_SIZE macro is more compact and more formal in linux source.
 > 
-> [...]
+> Signed-off-by: Feng Yang <yangfeng@kylinos.cn>
+> ---
+>  tools/testing/selftests/bpf/prog_tests/fexit_stress.c        | 3 ++-
+>  tools/testing/selftests/bpf/prog_tests/log_buf.c             | 5 +++--
+>  .../testing/selftests/bpf/prog_tests/module_fentry_shadow.c  | 3 ++-
+>  .../bpf/prog_tests/raw_tp_writable_reject_nbd_invalid.c      | 3 ++-
+>  .../selftests/bpf/prog_tests/raw_tp_writable_test_run.c      | 5 +++--
+>  tools/testing/selftests/bpf/prog_tests/tc_opts.c             | 2 +-
+>  tools/testing/selftests/bpf/prog_tests/unpriv_bpf_disabled.c | 3 ++-
+>  tools/testing/selftests/bpf/progs/syscall.c                  | 3 ++-
+>  tools/testing/selftests/bpf/progs/test_rdonly_maps.c         | 3 ++-
+>  tools/testing/selftests/bpf/progs/verifier_bits_iter.c       | 2 +-
+>  10 files changed, 20 insertions(+), 12 deletions(-)
 
 Here is the summary with links:
-  - [bpf-next,v3,1/4] libbpf: Access first syscall argument with CO-RE direct read on s390
-    https://git.kernel.org/bpf/bpf-next/c/65ee11d9c822
-  - [bpf-next,v3,2/4] libbpf: Access first syscall argument with CO-RE direct read on arm64
-    https://git.kernel.org/bpf/bpf-next/c/ebd8ad474888
-  - [bpf-next,v3,3/4] selftests/bpf: Enable test_bpf_syscall_macro:syscall_arg1 on s390 and arm64
-    https://git.kernel.org/bpf/bpf-next/c/3a913c4d62e1
-  - [bpf-next,v3,4/4] libbpf: Fix accessing first syscall argument on RV64
-    https://git.kernel.org/bpf/bpf-next/c/13143c5816bc
+  - selftests: bpf: Replace sizeof(arr)/sizeof(arr[0]) with ARRAY_SIZE
+    https://git.kernel.org/bpf/bpf-next/c/23457b37ec3f
 
 You are awesome, thank you!
 -- 
