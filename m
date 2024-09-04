@@ -1,51 +1,52 @@
-Return-Path: <bpf+bounces-38864-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38863-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3916A96B0CF
-	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2024 07:59:58 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BA5D96B0CE
+	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2024 07:59:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5DA631C2477F
-	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2024 05:59:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 47AF21C2475F
+	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2024 05:59:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F85E13C8EA;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 120A613C697;
 	Wed,  4 Sep 2024 05:57:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="cCkM5iTT"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="rgpqpmjS"
 X-Original-To: bpf@vger.kernel.org
 Received: from relay.smtp-ext.broadcom.com (saphodev.broadcom.com [192.19.144.205])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 171991EC00B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 171D346450;
 	Wed,  4 Sep 2024 05:57:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.19.144.205
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725429448; cv=none; b=QlK0orMz7is8pOo0vowuBl24Kax98gggO80ZeYryAnDL5eE8MEB3IQGe+jcXSpwZkAhtrcHJNkKnB+fwtyGS4DYkJZVf1BA24b8iXrr417r58e3GPvmQMm33VXsTu0bQLbVXp3NmMkEGTLI3BDTZP8pAcs5dt4lvJG4rR+0r82g=
+	t=1725429448; cv=none; b=kGJLI0WEumMJT7Xg0PJJjqDf2rHb06oKszNtqQp8eU9aOTZqiyF1BiGbV7Cm1zzqZVDo6Rt2g1FWHJxgh5o+AhnU47rQfGArfqGaXPIB06ILqfQ/+j6BiOCazPqEDySoCKhOxrgzli8jAhPbRhxpf2ve84GTXJX0oWFddl83lYg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1725429448; c=relaxed/simple;
-	bh=tgvfjbzgnvr/873wdkcYCV0IFA5StEk9vAEP6gGVqgY=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=JbDjy1xkluN4VAuB+UDM1aBXM37DOzxCQ59GkEqipEK+Jr9/Tiel2Z5Yht42gdGbe9nBJKwnNxu8gKk8hrQs2zhFXMPFCBGwasTjkrnb6nm3dj/bTkghhO9TV2alJUfgj2m/9GsbuC9Na4629+aDY6xssTFYVGZe43WzG8IE8s8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=cCkM5iTT; arc=none smtp.client-ip=192.19.144.205
+	bh=50w6/RH3XOXjkapDrDTzYIqvKxCuJmVWrUDMpCPVuH8=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=tRF/QzVmSmqNGQKvoHcNmMa9x/8BpAzpTOsab+9mu+T87o3hubAI8CZECzy1sO5lMXHNIkPNHr1/16AiyKd5pxCGWI5Oe4i7im2N9Q+YsuZ2blYr2yK4xWhn47R4Et0PuaRPKsAcfH+RyPKF8jxOD/ZW0tQHm8+dqC6H4huQY80=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=rgpqpmjS; arc=none smtp.client-ip=192.19.144.205
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
 Received: from mail-lvn-it-01.lvn.broadcom.net (mail-lvn-it-01.lvn.broadcom.net [10.36.132.253])
-	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 6126AC0042ED;
+	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id D1C21C0042F1;
 	Tue,  3 Sep 2024 22:48:28 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 6126AC0042ED
+DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com D1C21C0042F1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-	s=dkimrelay; t=1725428908;
-	bh=tgvfjbzgnvr/873wdkcYCV0IFA5StEk9vAEP6gGVqgY=;
-	h=From:To:Cc:Subject:Date:From;
-	b=cCkM5iTT/YAG6wBH0XWHvUQ1avxwPhz9Q5lUzpBPOyyVQ1k5x9ra3XJPEBvaBDMs8
-	 ecXXaLsxf7QLsccIBEcKinFNJ2uEFVutf3OkuibKZ4sHNoId6IgKjmBmpfyGtFugPE
-	 D2egRV/SHWDYlCcUVRP/svnyq9Oo6fP4V/H6UT8Y=
+	s=dkimrelay; t=1725428909;
+	bh=50w6/RH3XOXjkapDrDTzYIqvKxCuJmVWrUDMpCPVuH8=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=rgpqpmjSOCTbdu+k5BC4nHodfMhlj/uza7J1VaBeF6q2+VkVnlK4SPpLIBLgj9r5g
+	 BlcOddAMrKn0M/EYNmTVDqWgPbGgbpKKMyOGX1kflIlcZesL2dC3/peZhNuJMSvWeh
+	 f3HV/lsnOnJgMapsWtf2VRtyc/RAeYNu6TgPuVGs=
 Received: from pcie-dev03.dhcp.broadcom.net (pcie-dev03.dhcp.broadcom.net [10.59.171.67])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail-lvn-it-01.lvn.broadcom.net (Postfix) with ESMTPSA id AC5AF18041C498;
-	Tue,  3 Sep 2024 22:48:27 -0700 (PDT)
+	by mail-lvn-it-01.lvn.broadcom.net (Postfix) with ESMTPSA id 2CA8B18041D1E4;
+	Tue,  3 Sep 2024 22:48:28 -0700 (PDT)
 From: jitendra.vegiraju@broadcom.com
 To: netdev@vger.kernel.org
 Cc: alexandre.torgue@foss.st.com,
@@ -76,10 +77,12 @@ Cc: alexandre.torgue@foss.st.com,
 	linux@armlinux.org.uk,
 	horms@kernel.org,
 	florian.fainelli@broadcom.com
-Subject: [net-next v5 0/5] net: stmmac: Add PCI driver support for BCM8958x
-Date: Tue,  3 Sep 2024 22:48:10 -0700
-Message-Id: <20240904054815.1341712-1-jitendra.vegiraju@broadcom.com>
+Subject: [PATCH net-next v5 1/5] net: stmmac: Add HDMA mapping for dw25gmac support
+Date: Tue,  3 Sep 2024 22:48:11 -0700
+Message-Id: <20240904054815.1341712-2-jitendra.vegiraju@broadcom.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240904054815.1341712-1-jitendra.vegiraju@broadcom.com>
+References: <20240904054815.1341712-1-jitendra.vegiraju@broadcom.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -90,147 +93,93 @@ Content-Transfer-Encoding: 8bit
 
 From: Jitendra Vegiraju <jitendra.vegiraju@broadcom.com>
 
-This patchset adds basic PCI ethernet device driver support for Broadcom
-BCM8958x Automotive Ethernet switch SoC devices.
+Add hdma configuration support in include/linux/stmmac.h file.
+The hdma configuration includes mapping of virtual DMAs to physical DMAs.
+Define a new data structure stmmac_hdma_cfg to provide the mapping.
 
-This SoC device has PCIe ethernet MAC attached to an integrated ethernet
-switch using XGMII interface. The PCIe ethernet controller is presented to
-the Linux host as PCI network device.
+Introduce new plat_stmmacenet_data::snps_id,snps_dev_id to allow glue
+drivers to specify synopsys ID and device id respectively.
+These values take precedence over reading from HW register. This facility
+provides a mechanism to use setup function from stmmac core module and yet
+override MAC.VERSION CSR if the glue driver chooses to do so.
 
-The following block diagram gives an overview of the application.
-             +=================================+
-             |       Host CPU/Linux            |
-             +=================================+
-                        || PCIe
-                        ||
-        +==========================================+
-        |           +--------------+               |
-        |           | PCIE Endpoint|               |
-        |           | Ethernet     |               |
-        |           | Controller   |               |
-        |           |   DMA        |               |
-        |           +--------------+               |
-        |           |   MAC        |   BCM8958X    |
-        |           +--------------+   SoC         |
-        |               || XGMII                   |
-        |               ||                         |
-        |           +--------------+               |
-        |           | Ethernet     |               |
-        |           | switch       |               |
-        |           +--------------+               |
-        |             || || || ||                  |
-        +==========================================+
-                      || || || || More external interfaces
+Signed-off-by: Jitendra Vegiraju <jitendra.vegiraju@broadcom.com>
+---
+ include/linux/stmmac.h | 48 ++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 48 insertions(+)
 
-The MAC block on BCM8958x is based on Synopsis XGMAC 4.00a core. This
-MAC IP introduces new DMA architecture called Hyper-DMA for virtualization
-scalability.
-
-Driver functionality specific to new MAC (DW25GMAC) is implemented in
-new file dw25gmac.c.
-
-Management of integrated ethernet switch on this SoC is not handled by
-the PCIe interface.
-This SoC device has PCIe ethernet MAC directly attached to an integrated
-ethernet switch using XGMII interface.
-
-v4->v5:
-   Summary of changes in this patch series:
-   As suggested by Serge Semin, defined common setup function for dw25gmac.
-   To accommodate early adopter DW25GMAC used in BCM8958x device, provide
-   a mechanism to override snps_id and snps_dev_id used for driver entry
-   matching in hwif.c
-
-   Patch1:
-     Added plat_stmmacenet_data::snps_id,snps_dev_id fields - Serge Semin
-   Patch2:
-     Define common setup function for dw25gmac_setup() - Serge Semin
-     Support DW25GMAC IPs with varying VDMA/PDMA count - Abhishek Chauhan
-     Allocate and initialize hdma mapping configuration data dynamically
-     based on device's VDMA/PDMA feature capabilities in dw25gmac_setup().
-     Spelling errors in commit log, lower case 0x for hex -Amit Singh Tomar
-   Patch3:
-     Glue support in hwif.c for DW25GMAC in hwif.c - Serge Semin
-     Provide an option to override snps_id and snps_dev_id when the device
-     reports version info not conformant with driver's expectations as is
-     the case with BCM8958x device. - Serge Semin
-   Patch4:
-     Remove setup function in the glue driver - Serge Semin
-     Remove unnecessary calls pci_enable_device() and pci_set_master()
-     in dwxgmac_brcm_pci_resume() - Jakub Kicinski
-     Merge variable definitions to single line - Amit Singh Tomar
-
-v3->v4:
-   Based on Serge's questions, received a confirmation from Synopsys that
-   the MAC IP is indeed the new 25GMAC design.
-   Renamed all references of XGMAC4 to 25GMAC.
-   The patch series is rearranged slightly as follows.
-   Patch1 (new): Define HDMA mapping data structure in kernel's stmmac.h
-   Patch2 (v3 Patch1): Adds dma_ops for dw25gmac in stmmac core
-       Renamed new files dwxgmac4.* to dw25gmac.* - Serge Semin
-       Defined new Synopsis version and device id macros for DW25GMAC.
-       Converted bit operations to FIELD_PREP macros - Russell King
-       Moved hwif.h to this patch, Sparse flagged warning - Simon Horman
-       Defined macros for hardcoded values TDPS etc - Serge Semin
-       Read number of PDMAs/VDMAs from hardware - Serge Semin
-   Patch3 (v3 Patch2): Hooks in hardware interface handling for dw25gmac
-       Resolved user_version quirks questions - Serge, Russell, Andrew
-       Added new stmmac_hw entry for DW25GMAC. - Serge
-       Added logic to override synopsis_dev_id by glue driver.
-   Patch4 (v3 Patch3): Adds PCI driver for BCM8958x device
-       Define bitmmap macros for hardcoded values - Andrew Lunn
-       Added per device software node - Andrew Lunn
-   Patch5(new/split): Adds BCM8958x driver to build system
-   https://lore.kernel.org/netdev/20240814221818.2612484-1-jitendra.vegiraju@broadcom.com/
-
-v2->v3:
-   Addressed v2 comments from Andrew, Jakub, Russel and Simon.
-   Based on suggestion by Russel and Andrew, added software node to create
-   phylink in fixed-link mode.
-   Moved dwxgmac4 specific functions to new files dwxgmac4.c and dwxgmac4.h
-   in stmmac core module.
-   Reorganized the code to use the existing glue logic support for xgmac in
-   hwif.c and override ops functions for dwxgmac4 specific functions.
-   The patch is split into three parts.
-     Patch#1 Adds dma_ops for dwxgmac4 in stmmac core
-     Patch#2 Hooks in the hardware interface handling for dwxgmac4
-     Patch#3 Adds PCI driver for BCM8958x device
-   https://lore.kernel.org/netdev/20240802031822.1862030-1-jitendra.vegiraju@broadcom.com/
-
-v1->v2:
-   Minor fixes to address coding style issues.
-   Sent v2 too soon by mistake, without waiting for review comments.
-   Received feedback on this version.
-   https://lore.kernel.org/netdev/20240511015924.41457-1-jitendra.vegiraju@broadcom.com/
-
-v1:  
-   https://lore.kernel.org/netdev/20240510000331.154486-1-jitendra.vegiraju@broadcom.com/
-
-Jitendra Vegiraju (5):
-  Add HDMA mapping for dw25gmac support
-  Add basic dw25gmac support in stmmac core
-  Integrate dw25gmac into stmmac hwif handling
-  Add PCI driver support for BCM8958x
-  Add BCM8958x driver to build system
-
- MAINTAINERS                                   |   8 +
- drivers/net/ethernet/stmicro/stmmac/Kconfig   |  11 +
- drivers/net/ethernet/stmicro/stmmac/Makefile  |   3 +-
- drivers/net/ethernet/stmicro/stmmac/common.h  |   4 +
- .../net/ethernet/stmicro/stmmac/dw25gmac.c    | 224 ++++++++
- .../net/ethernet/stmicro/stmmac/dw25gmac.h    |  92 ++++
- .../net/ethernet/stmicro/stmmac/dwmac-brcm.c  | 507 ++++++++++++++++++
- .../net/ethernet/stmicro/stmmac/dwxgmac2.h    |   1 +
- .../ethernet/stmicro/stmmac/dwxgmac2_core.c   |  43 ++
- .../ethernet/stmicro/stmmac/dwxgmac2_dma.c    |  31 ++
- drivers/net/ethernet/stmicro/stmmac/hwif.c    |  26 +-
- drivers/net/ethernet/stmicro/stmmac/hwif.h    |   1 +
- include/linux/stmmac.h                        |  48 ++
- 13 files changed, 997 insertions(+), 2 deletions(-)
- create mode 100644 drivers/net/ethernet/stmicro/stmmac/dw25gmac.c
- create mode 100644 drivers/net/ethernet/stmicro/stmmac/dw25gmac.h
- create mode 100644 drivers/net/ethernet/stmicro/stmmac/dwmac-brcm.c
-
+diff --git a/include/linux/stmmac.h b/include/linux/stmmac.h
+index 338991c08f00..eb8136680a7b 100644
+--- a/include/linux/stmmac.h
++++ b/include/linux/stmmac.h
+@@ -89,6 +89,51 @@ struct stmmac_mdio_bus_data {
+ 	bool needs_reset;
+ };
+ 
++/* DW25GMAC Hyper-DMA Overview
++ * Hyper-DMA allows support for large number of Virtual DMA(VDMA)
++ * channels using a smaller set of physical DMA channels(PDMA).
++ * This is supported by the mapping of VDMAs to Traffic Class(TC)
++ * and PDMA to TC in each traffic direction as shown below.
++ *
++ *        VDMAs            Traffic Class      PDMA
++ *       +--------+          +------+         +-----------+
++ *       |VDMA0   |--------->| TC0  |-------->|PDMA0/TXQ0 |
++ *TX     +--------+   |----->+------+         +-----------+
++ *Host=> +--------+   |      +------+         +-----------+ => MAC
++ *SW     |VDMA1   |---+      | TC1  |    +--->|PDMA1/TXQ1 |
++ *       +--------+          +------+    |    +-----------+
++ *       +--------+          +------+----+    +-----------+
++ *       |VDMA2   |--------->| TC2  |-------->|PDMA2/TXQ1 |
++ *       +--------+          +------+         +-----------+
++ *            .                 .                 .
++ *       +--------+          +------+         +-----------+
++ *       |VDMAn-1 |--------->| TCx-1|-------->|PDMAm/TXQm |
++ *       +--------+          +------+         +-----------+
++ *
++ *       +------+          +------+         +------+
++ *       |PDMA0 |--------->| TC0  |-------->|VDMA0 |
++ *       +------+   |----->+------+         +------+
++ *MAC => +------+   |      +------+         +------+
++ *RXQs   |PDMA1 |---+      | TC1  |    +--->|VDMA1 |  => Host
++ *       +------+          +------+    |    +------+
++ *            .                 .                 .
++ */
++
++/* Hyper-DMA mapping configuration
++ * Traffic Class associated with each VDMA/PDMA mapping
++ * is stored in corresponding array entry.
++ */
++struct stmmac_hdma_cfg {
++	u32 tx_vdmas;	/* TX VDMA count */
++	u32 rx_vdmas;	/* RX VDMA count */
++	u32 tx_pdmas;	/* TX PDMA count */
++	u32 rx_pdmas;	/* RX PDMA count */
++	u8 *tvdma_tc;	/* Tx VDMA to TC mapping array */
++	u8 *rvdma_tc;	/* Rx VDMA to TC mapping array */
++	u8 *tpdma_tc;	/* Tx PDMA to TC mapping array */
++	u8 *rpdma_tc;	/* Rx PDMA to TC mapping array */
++};
++
+ struct stmmac_dma_cfg {
+ 	int pbl;
+ 	int txpbl;
+@@ -101,6 +146,7 @@ struct stmmac_dma_cfg {
+ 	bool multi_msi_en;
+ 	bool dche;
+ 	bool atds;
++	struct stmmac_hdma_cfg *hdma_cfg;
+ };
+ 
+ #define AXI_BLEN	7
+@@ -303,5 +349,7 @@ struct plat_stmmacenet_data {
+ 	int msi_tx_base_vec;
+ 	const struct dwmac4_addrs *dwmac4_addrs;
+ 	unsigned int flags;
++	u32 snps_id;
++	u32 snps_dev_id;
+ };
+ #endif
 -- 
 2.34.1
 
