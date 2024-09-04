@@ -1,132 +1,175 @@
-Return-Path: <bpf+bounces-38871-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38872-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8AEF96B958
-	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2024 12:54:45 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2148996BBFA
+	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2024 14:23:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2022EB26674
-	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2024 10:54:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D12A1282D76
+	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2024 12:23:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB7431CF7A4;
-	Wed,  4 Sep 2024 10:54:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F21131D86F3;
+	Wed,  4 Sep 2024 12:22:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y/ih1hOv"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="C6RXMJiB"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E56713AD22;
-	Wed,  4 Sep 2024 10:54:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 792A71D5893
+	for <bpf@vger.kernel.org>; Wed,  4 Sep 2024 12:22:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725447259; cv=none; b=jtf4FyYhGu1sCveBsdBzAidqRt0Dgwgm/ZNljorzdryHzh5NMdplDGRUfJFDF0OvrfsdWECjHHuwKNrso8rf6cAh+f34t7ZARn6OB40fH7eEqdZRKIrVyyvtrHBXPNX4nDFVsA3H/HZalCVH922nnFL6cQVG2NXYFk8GYvdpVog=
+	t=1725452576; cv=none; b=hiIrPrOqwTiiKA1C3ttKsknkHxhmCXCmzec4ndH3EyTCRKvZaSTc1Pm1Modqd0jTo8mlTI/aUB6bUsqcMSpTUNK4RkoCjeMOh6cW73M9G5kzhVso/nDXnJQ5DbovC+pnEUnT2MMGks+H5fMWRWz+/4ytFQ601tWL9vXG5iRp9Uk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725447259; c=relaxed/simple;
-	bh=HhQvuwZmWKAr/jdvLk3yTQm7CYTgzuoOEywfGNZucU8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UynMmN1AAZfdLQTxRZb/xOqP+Hdt+pfzhKZ4sZ+pk+YiF0aOSIFZeZ4EdAKSfVQiuSptc73tay8VBNBdkrCvGwOvM3efYP7sPuLboe9f3Veaf7Xa25kezcvE3Y0oPdGwlMUTEXXmPQhnkmF1rQCoiPLunJm5tFD9SNk+7ghQUgM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Y/ih1hOv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA162C4CEC2;
-	Wed,  4 Sep 2024 10:54:18 +0000 (UTC)
+	s=arc-20240116; t=1725452576; c=relaxed/simple;
+	bh=TwNLRotfcIUKiZhz0lZ853t0S9qZH+pPEXAJ2ZfbHS8=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=Ie1dOkgLp+YeJtg2XYzSzDFvB0AodOhrObM6n3b9OMTjBMZGg3SgKN8uB3Tfbuo/ysYixvLPG0sHdYYIGtLyboqua3Mb7413FF1T815qvY99j3a8VOPIuV9gli7Tx+fIgQ4pGGI3mLA7/ExHGGqxdOj1zGhWRhqrAP0DBj3liNI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=C6RXMJiB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D1803C4CEC2;
+	Wed,  4 Sep 2024 12:22:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1725447258;
-	bh=HhQvuwZmWKAr/jdvLk3yTQm7CYTgzuoOEywfGNZucU8=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=Y/ih1hOvsulHiROzZk3z2FWpfbA4oQBP7lR97UxDecbdVhnsLRJxqZLfNTTUxgC4b
-	 7U2ZnFdiAi2at9+qGoZYr5H+0NP0fgV5vwXD9ZpsQTr8qQD49nECEI/19plEfa/C/a
-	 zwLsZI+0Pm9WI5DP/JTlze5JdLAvMZnfIWEtedj2FOSHVwzAvKECLcHJwbaoRY4hBN
-	 3HnaY6kQ/jJekojbifC1XhcJPTrctuW5xI7LsD8XrXo3yJNh4c2Ar2EOfSGowasw35
-	 5zI8ZXVDJ1d3Ac6GjrckDvBb/B1TWRzOcsvzQtUXshY9TMAxO9m8nboUsEP5j1dVJH
-	 JUNRHfoC8N3WQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 80515CE0D32; Wed,  4 Sep 2024 03:54:18 -0700 (PDT)
-Date: Wed, 4 Sep 2024 03:54:18 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
-	rostedt@goodmis.org, Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>, bpf@vger.kernel.org
-Subject: Re: [PATCH rcu 0/11] Add light-weight readers for SRCU
-Message-ID: <0ae7d150-7b92-4e8e-98ea-b28c3b824e11@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <26cddadd-a79b-47b1-923e-9684cd8a7ef4@paulmck-laptop>
- <gbar5cxixgq4jtxgtzv7xjipabhqqbwdwyrtahkkws3tregdvo@edqb7ku2uhk2>
- <0359b3a4-b6db-45d9-9957-b304b4a85865@paulmck-laptop>
- <f4nkwsbqvpaxxqph3iucohfqy5zwn7j7u5uwppp7rp4mnx2eqj@lqxwtgboskik>
+	s=k20201202; t=1725452576;
+	bh=TwNLRotfcIUKiZhz0lZ853t0S9qZH+pPEXAJ2ZfbHS8=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=C6RXMJiBiP1N08G2sJ9V+Jgw60QOOaIPAobbKCQqrMXODccM11rpQuEgZKGxEfK0I
+	 Z78JKgPh+h+KevZCguhWOo8YbRyGpXViLPlEGT1Wq1xkgfnStL7yJyMUImmc7XybQy
+	 8H7AqmmkxKsZTbUhNVfX43HqSAImnTBtSzJS0jMYL7N8IIR5vMaeC8kFLNWiNmJevQ
+	 D0EKM4kyVL0ykGOzOlIw+YUeok/OkMQZsMbU7d4SrI/MTI0Y9u3pVDHjLdVjHjbHOX
+	 ByqJ034J3XtE4b0GAqMLC2mpRKXOA8JlKkrrVmFvYHBnFxbq9UmDOX/k35VNHWBntQ
+	 KNZzBBTWiY94g==
+From: Puranjay Mohan <puranjay@kernel.org>
+To: Xu Kuohai <xukuohai@huaweicloud.com>, bpf@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Catalin
+ Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
+Subject: Re: [PATCH bpf-next v2] bpf, arm64: Jit BPF_CALL to direct call
+ when possible
+In-Reply-To: <20240903094407.601107-1-xukuohai@huaweicloud.com>
+References: <20240903094407.601107-1-xukuohai@huaweicloud.com>
+Date: Wed, 04 Sep 2024 12:22:35 +0000
+Message-ID: <mb61pmsknsj5g.fsf@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f4nkwsbqvpaxxqph3iucohfqy5zwn7j7u5uwppp7rp4mnx2eqj@lqxwtgboskik>
+Content-Type: multipart/signed; boundary="=-=-=";
+	micalg=pgp-sha512; protocol="application/pgp-signature"
 
-On Tue, Sep 03, 2024 at 07:03:53PM -0400, Kent Overstreet wrote:
-> On Tue, Sep 03, 2024 at 03:13:40PM GMT, Paul E. McKenney wrote:
-> > On Tue, Sep 03, 2024 at 05:38:05PM -0400, Kent Overstreet wrote:
-> > > On Tue, Sep 03, 2024 at 09:32:51AM GMT, Paul E. McKenney wrote:
-> > > > Hello!
-> > > > 
-> > > > This series provides light-weight readers for SRCU.  This lightness
-> > > > is selected by the caller by using the new srcu_read_lock_lite() and
-> > > > srcu_read_unlock_lite() flavors instead of the usual srcu_read_lock() and
-> > > > srcu_read_unlock() flavors.  Although this passes significant rcutorture
-> > > > testing, this should still be considered to be experimental.
-> > > 
-> > > This avoids memory barriers, correct?
-> > 
-> > Yes, there are no smp_mb() invocations in either srcu_read_lock_lite()
-> > or srcu_read_unlock_lite().  As usual, nothing comes for free, so the
-> > overhead is moved to the update side, and amplified, in the guise of
-> > the at least two calls to synchronize_rcu().
-> > 
-> > > > There are a few restrictions:  (1) If srcu_read_lock_lite() is called
-> > > > on a given srcu_struct structure, then no other flavor may be used on
-> > > > that srcu_struct structure, before, during, or after.  (2) The _lite()
-> > > > readers may only be invoked from regions of code where RCU is watching
-> > > > (as in those regions in which rcu_is_watching() returns true).  (3)
-> > > > There is no auto-expediting for srcu_struct structures that have
-> > > > been passed to _lite() readers.  (4) SRCU grace periods for _lite()
-> > > > srcu_struct structures invoke synchronize_rcu() at least twice, thus
-> > > > having longer latencies than their non-_lite() counterparts.  (5) Even
-> > > > with synchronize_srcu_expedited(), the resulting SRCU grace period
-> > > > will invoke synchronize_rcu() at least twice, as opposed to invoking
-> > > > the IPI-happy synchronize_rcu_expedited() function.  (6)  Just as with
-> > > > srcu_read_lock() and srcu_read_unlock(), the srcu_read_lock_lite() and
-> > > > srcu_read_unlock_lite() functions may not (repeat, *not*) be invoked
-> > > > from NMI handlers (that is what the _nmisafe() interface are for).
-> > > > Although one could imagine readers that were both _lite() and _nmisafe(),
-> > > > one might also imagine that the read-modify-write atomic operations that
-> > > > are needed by any NMI-safe SRCU read marker would make this unhelpful
-> > > > from a performance perspective.
-> > > 
-> > > So if I'm following, this should work fine for bcachefs, and be a nifty
-> > > small perforance boost.
-> > 
-> > Glad you like it!
-> > 
-> > > Can I give you an account for my test cluster? If you'd like, we can
-> > > convert bcachefs to it and point it at your branch.
-> > 
-> > Thank you, but I will pass on more accounts.  I have a fair amount of
-> > hardware at my disposal.  ;-)
-> 
-> Well - bcachefs might be a good torture test; if you patch bcachefs to
-> use the new API point me at a branch and I'll point the CI at it
+--=-=-=
+Content-Type: text/plain
 
-I am sorry, but I am getting on a plane today, am short of time, and
-won't be responsive for the inevitable issues.
+Xu Kuohai <xukuohai@huaweicloud.com> writes:
 
-But this is a very simple change, just change srcu_read_lock() and
-srcu_read_unlock() into srcu_read_lock_lite() and srcu_read_unlock_lite().
+> From: Xu Kuohai <xukuohai@huawei.com>
+>
+> Currently, BPF_CALL is always jited to indirect call. When target is
+> within the range of direct call, BPF_CALL can be jited to direct call.
+>
+> For example, the following BPF_CALL
+>
+>     call __htab_map_lookup_elem
+>
+> is always jited to indirect call:
+>
+>     mov     x10, #0xffffffffffff18f4
+>     movk    x10, #0x821, lsl #16
+>     movk    x10, #0x8000, lsl #32
+>     blr     x10
+>
+> When the address of target __htab_map_lookup_elem is within the range of
+> direct call, the BPF_CALL can be jited to:
+>
+>     bl      0xfffffffffd33bc98
+>
+> This patch does such jit optimization by emitting arm64 direct calls for
+> BPF_CALL when possible, indirect calls otherwise.
+>
+> Without this patch, the jit works as follows.
+>
+> 1. First pass
+>    A. Determine jited position and size for each bpf instruction.
+>    B. Computed the jited image size.
+>
+> 2. Allocate jited image with size computed in step 1.
+>
+> 3. Second pass
+>    A. Adjust jump offset for jump instructions
+>    B. Write the final image.
+>
+> This works because, for a given bpf prog, regardless of where the jited
+> image is allocated, the jited result for each instruction is fixed. The
+> second pass differs from the first only in adjusting the jump offsets,
+> like changing "jmp imm1" to "jmp imm2", while the position and size of
+> the "jmp" instruction remain unchanged.
+>
+> Now considering whether to jit BPF_CALL to arm64 direct or indirect call
+> instruction. The choice depends solely on the jump offset: direct call
+> if the jump offset is within 128MB, indirect call otherwise.
+>
+> For a given BPF_CALL, the target address is known, so the jump offset is
+> decided by the jited address of the BPF_CALL instruction. In other words,
+> for a given bpf prog, the jited result for each BPF_CALL is determined
+> by its jited address.
+>
+> The jited address for a BPF_CALL is the jited image address plus the
+> total jited size of all preceding instructions. For a given bpf prog,
+> there are clearly no BPF_CALL instructions before the first BPF_CALL
+> instruction. Since the jited result for all other instructions other
+> than BPF_CALL are fixed, the total jited size preceding the first
+> BPF_CALL is also fixed. Therefore, once the jited image is allocated,
+> the jited address for the first BPF_CALL is fixed.
+>
+> Now that the jited result for the first BPF_CALL is fixed, the jited
+> results for all instructions preceding the second BPF_CALL are fixed.
+> So the jited address and result for the second BPF_CALL are also fixed.
+>
+> Similarly, we can conclude that the jited addresses and results for all
+> subsequent BPF_CALL instructions are fixed.
+>
+> This means that, for a given bpf prog, once the jited image is allocated,
+> the jited address and result for all instructions, including all BPF_CALL
+> instructions, are fixed.
+>
+> Based on the observation, with this patch, the jit works as follows.
+>
+> 1. First pass
+>    Estimate the maximum jited image size. In this pass, all BPF_CALLs
+>    are jited to arm64 indirect calls since the jump offsets are unknown
+>    because the jited image is not allocated.
+>
+> 2. Allocate jited image with size estimated in step 1.
+>
+> 3. Second pass
+>    A. Determine the jited result for each BPF_CALL.
+>    B. Determine jited address and size for each bpf instruction.
+>
+> 4. Third pass
+>    A. Adjust jump offset for jump instructions.
+>    B. Write the final image.
+>
+> Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
 
-Would one of your bcachefs early adopters be up for this task?
+Thanks for working on this. I have tried to reason about all the
+possible edge cases that I could think of and this looks good to me:
 
-							Thanx, Paul
+Reviewed-by: Puranjay Mohan <puranjay@kernel.org>
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iIoEARYKADIWIQQ3wHGvVs/5bdl78BKwwPkjG3B2nQUCZthRDBQccHVyYW5qYXlA
+a2VybmVsLm9yZwAKCRCwwPkjG3B2nWV9AQD65wMoz0sXCz/RLUW6KyJR8YIFcK6t
+mv8UWc489G5qkwEAw9OU+N77tsRWeeOrAh74AKxljzEyYaTvbpqRokPNTgg=
+=Virj
+-----END PGP SIGNATURE-----
+--=-=-=--
 
