@@ -1,91 +1,98 @@
-Return-Path: <bpf+bounces-38911-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38912-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DFBA96C673
-	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2024 20:30:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D123F96C67E
+	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2024 20:32:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D25C428808F
-	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2024 18:30:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 106771C22477
+	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2024 18:32:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 617C51E410D;
-	Wed,  4 Sep 2024 18:30:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 081151DC051;
+	Wed,  4 Sep 2024 18:32:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ih7DV+zp"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="f79Oawf7"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5B091E203D;
-	Wed,  4 Sep 2024 18:29:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7E187F9
+	for <bpf@vger.kernel.org>; Wed,  4 Sep 2024 18:32:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725474599; cv=none; b=G9FQFlILrL2CY/5qEuv7Yt/ICC0zpKWEU6eauYfvmT4Ry2DiwnterMad/kp6Oh4+QLIM8joOeV6KmWSq1yMqfZg4cHpsErgEQb88rzQkTkYSqaSakG83ZSBL3gm/6bpH0ntz5uChOpt1qIFDT0CD/WyeGoP/ImvfPbN4DwzRC+E=
+	t=1725474735; cv=none; b=W+GQVD/DfV/tu0yZpatn2nYQHQvIChLlaySFLxbudJakmdHjSVgQ/BvKrOCCDlgg1Un1vBRyQyzIIjQ3SDJe7IIAyocNFDIlLNkNm2eMTzEzC5LzPUqedt5ehx20u+26RY30TcptBbG5X1Rcj1oV35Qlc5O+9FAHjYlsnNjaPq4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725474599; c=relaxed/simple;
-	bh=3osTPUwTmGcKwPH//xm+7vmLa4zw4IUoIj5wosRXRz8=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=fHf0xXbLd4PFm8GHCIpv3L2EUslArZdhMOI7y8jku+DKpqYOmrd01yxlHEPi07nMuBaYC/+D4EEpGiUeImC2SJADlItjQL0jNQ65THWA++gExFMQizp2/P6UjnyuDRAYzEFGUN6Mu2KHrAxzS/gAVdFGp1l1zWOMLKQsMmIjp14=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ih7DV+zp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2DCACC4CEC6;
-	Wed,  4 Sep 2024 18:29:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1725474599;
-	bh=3osTPUwTmGcKwPH//xm+7vmLa4zw4IUoIj5wosRXRz8=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Ih7DV+zpB9TOtau5uTgvSF3mLuNm286RYOZhYn8xv0aC59XfUJMNiHPNE7a5OSTfC
-	 +c7sugu3Gp4ProSoUZmnzAZ2wSvT89khm8HKvsdfRedjlpwrlG7QEd5zNOkYwCyOpL
-	 zWcSTJaCtSk4EmnJvF0HVEfAFxwR/qcqGDTJCYCXWpSCWzioQ0qw7c1S0PcnLnsFen
-	 eej7v5viNV5x2dm5diii+e+PHrLoUPesbwU+zBOVE00K0M/DUNJ8+oGIzaQaX+Lltm
-	 nivJFQ0yV8CptgeVIko+jJHy9itRq2d+Tq7zVgq2zwPg5nLMDWu1NajMJTouQDAJBp
-	 9BW8ud+/G311g==
-Date: Wed, 4 Sep 2024 11:29:57 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Alexander Lobakin <aleksander.lobakin@intel.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Lorenzo
- Bianconi <lorenzo@kernel.org>, Daniel Xu <dxu@dxuuu.xyz>, John Fastabend
- <john.fastabend@gmail.com>, Jesper Dangaard Brouer <hawk@kernel.org>,
- "Martin KaFai Lau" <martin.lau@linux.dev>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
- <pabeni@redhat.com>, <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH bpf-next 0/9] bpf: cpumap: enable GRO for XDP_PASS
- frames
-Message-ID: <20240904112957.3aaaa734@kernel.org>
-In-Reply-To: <03634fe4-8c2f-432e-ae6e-08928d167b1f@intel.com>
-References: <20240830162508.1009458-1-aleksander.lobakin@intel.com>
-	<20240903135158.7031a3ab@kernel.org>
-	<f23131c1-aae2-4c04-a60e-801ed1970be8@intel.com>
-	<20240904075041.2467995c@kernel.org>
-	<03634fe4-8c2f-432e-ae6e-08928d167b1f@intel.com>
+	s=arc-20240116; t=1725474735; c=relaxed/simple;
+	bh=yuNjCFg6QY3nNk/dHMjjmAy4f2MMVkJPQcU4NfgJY0o=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=XmXoCsAGMYCO0sfO0AjaBQ1AinNjm/jgpg06Ow+IMbip37YB9WxAbSTo4fhsj2KkB73JqA+S3Er1tqHBJspNI7AMMi7zWDE1mIPUtVaNR+zUZH5sEB1rb7Xk8uJS2Ej6rCHm6dWxBSdSSIOutMMIViXC7GeNtET8uvbIXojv8Q0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=f79Oawf7; arc=none smtp.client-ip=91.218.175.184
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <a18f6bb9-2b9e-4f30-9cb4-20c326cf49b6@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1725474732;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=j8AOXrdwT/O/K3D9ppH06Q4ftwmV3k/sIys8nSkB+5M=;
+	b=f79Oawf7mSqDPKJXIQr2RR8fuZlHrldHWHZ0OyffzynhqjFboL0zlwQWcZYl2uznK0ByOH
+	q1A77qDC6d2TOkT/K8OyV9LJboEcZTOiaWnkPBNVdj0fLAUXNWHQqJgZGUhtf3e1Np+knJ
+	AXU23NMyXQn2asHBoYHtmHBliZUq/Xw=
+Date: Wed, 4 Sep 2024 11:32:07 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH bpf-next v2 1/2] bpf, x64: Fix a jit convergence issue
+Content-Language: en-GB
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>,
+ Daniel Hodges <hodgesd@meta.com>
+References: <20240903225949.2066234-1-yonghong.song@linux.dev>
+ <CAADnVQ+iqrfTgvPieBz8cTpdUdU94tTrFW88xttwthqmtx2Qwg@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <CAADnVQ+iqrfTgvPieBz8cTpdUdU94tTrFW88xttwthqmtx2Qwg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, 4 Sep 2024 17:13:59 +0200 Alexander Lobakin wrote:
-> >> I could say that gro_cells also "abuses" NAPI the same way, don't you
-> >> think?  
-> > 
-> > "same way"? :] Does it allocate a fake netdev, use NAPI as a threading
-> > abstraction or add extra fields to napi_struct ?   
-> 
-> Wait wait wait, you said "NAPI IRQ related logics doesn't fit here". I
-> could say the same for gro_cells -- IRQ related NAPI logics doesn't fit
-> there. gro_cells is an SW abstraction.
 
-Yes, that 1/4th of my complaint does indeed apply :)
+On 9/4/24 9:56 AM, Alexei Starovoitov wrote:
+> On Tue, Sep 3, 2024 at 4:00 PM Yonghong Song <yonghong.song@linux.dev> wrote:
+>>
+>> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+>> index 074b41fafbe3..63c4816ed4e7 100644
+>> --- a/arch/x86/net/bpf_jit_comp.c
+>> +++ b/arch/x86/net/bpf_jit_comp.c
+>> @@ -64,6 +64,57 @@ static bool is_imm8(int value)
+>>          return value <= 127 && value >= -128;
+>>   }
+>>
+>> +/*
+>> + * Let us limit the positive offset to be <= 124.
+> I think the comment will read better if the above says "<= 123",
+> since that's the final outcome.
+> 124 above is a bit confusing.
+> I can tweak while applying if you agree.
 
-> A fake netdev is used by multiple drivers to use GRO, you know that
-> (popular for wireless drivers). They also conflict with the queue config
-> effort.
+Correct. Let us do "<= 123".
 
-And it did cause us some issues when changing netdev_priv() already.
+>
+>> + * to mamximum 123 (0x7b). This way, the jit pass can eventually converge.
+> Can fix this typo too.
+
+Sounds good.
+
+Since I need to change test in the second patch (enabling tests for arm64/s390),
+let me send v3 to address all comments.
+
 
