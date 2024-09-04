@@ -1,173 +1,143 @@
-Return-Path: <bpf+bounces-38899-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38900-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67EF396C352
-	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2024 18:03:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78FF296C41F
+	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2024 18:28:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F366286EA4
-	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2024 16:03:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D696280F13
+	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2024 16:28:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D982C1E00AF;
-	Wed,  4 Sep 2024 16:03:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6E0A1E00A0;
+	Wed,  4 Sep 2024 16:28:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="eG8D18s8"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="S8HgVlYj"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D17BE1E00A0
-	for <bpf@vger.kernel.org>; Wed,  4 Sep 2024 16:03:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52A461DFE14;
+	Wed,  4 Sep 2024 16:28:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725465784; cv=none; b=A3+ZDYJKcyfHHYU+Ibu+w+AdotCNEBkWAawgZolyDhiaY0TuAVpvTe4CDaH7rwnsglcLFdZtuj1RWS4gASMJP7rGFFUU5qaeLKWoQ8d5aOso8WF/jQaZuDp3Q9MUHlXC8xrq7OjeqJ3vSclQUAgqAsssMxihQaC4zEz0stvMx4Y=
+	t=1725467296; cv=none; b=lL4TyyhZYHZ7vPGb1pJA5J34PJ040zjE2gb64W7DK9QMe4/5+p8MJ/HjIR3tKCieTd73jjKcKhv+3bSYUBi/GvrolcYeFf8eSnXapBX+Y9uTXVE/qVdcUAEovghqkV2ChrjbSnSmPvjbAcev2IPpK3tjMUZfPe8wrysP57Ssd1o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725465784; c=relaxed/simple;
-	bh=9WYCsjkd+S6bqAIXWVgiDRc7qOONsyXGqQ1d+E/N1Uw=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=cYi1HhEmzoJ/P36GVeKEcVdn2a+lAbo9zzp5oF/hajeJiWHxoluTVVDdYsJBgMZSAOV43R0BGln/+xbSW4vmwQS2ay/yK1sYrDpHPBjnOg5VQn33tZ21QdZ4nFgSDu7OB0pjPI38KUYSohc/Y4KfdjRKA3JpxqJ0cajcOq0K5wE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=eG8D18s8; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=tPlOt+iHZTyU8ze70OH2R6WXbrCDFklcDqTAEhwjCko=; b=eG8D18s8oEIYaJWectPcv1Bx+W
-	39mecfB8drdjGbqeLOjDD29pkGyFtybtfogC/Ig34sMCKVGf3ncMaQhBgeC5UIKxM0Ntps/VAYPlA
-	gMV/9BYzjyibteF1oUqB5VkfOuJwP8FZ8Bjz6AFX77JJ0JBZQ+ejoWu4DYVVD4bKr8DhfglmJ2/Fo
-	0BIPYNdz1llYXP8vm5oFh+WQGFKzDg09lD6CMFXx50mssHuL211Wr70KnDSrrWCVVgFHkaxhrxVYT
-	RWTRPFphPAhDs5I/XvJE4o3Ke6N+sFVhLIwOF9E0wBvC0VW3GeUHPcRXiCw+eVD2VOqSSDnztRBpS
-	YEIj3JNQ==;
-Received: from sslproxy07.your-server.de ([78.47.199.104])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1slsTC-000MW8-Jg; Wed, 04 Sep 2024 18:02:58 +0200
-Received: from [178.197.248.23] (helo=linux.home)
-	by sslproxy07.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1slsTB-000LMe-25;
-	Wed, 04 Sep 2024 18:02:58 +0200
-Subject: Re: [PATCH bpf 1/4] bpf: Fix helper writes to read-only maps
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf@vger.kernel.org, kongln9170@gmail.com
-References: <20240823222033.31006-1-daniel@iogearbox.net>
- <CAEf4BzaLhBBPZWwPgTA8bRwxy-Zar07chWm4J9S55EusnH5Yzg@mail.gmail.com>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <7181ad2d-b940-8046-3a8e-25a07960eeb5@iogearbox.net>
-Date: Wed, 4 Sep 2024 18:02:57 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+	s=arc-20240116; t=1725467296; c=relaxed/simple;
+	bh=/zPKFC9ohztxO9cxzrcRiMdtFGudAYQRpa9VnD8p1qc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=fS6ZD6QoYisz8qWxELMATzglFVVV+vcqWPtTG8OfLzqWctV7znGjc3vNtRjW/5EWUHzdd6lxEL8GcET2v56yY/t5fFivyLIaRgSrsUC6KNrqT8YKdfgKppCNlkm/fJLEvr01uAXqNlvs4ZHEcQjGexPL/rTnuuFiNVVNQslB/VQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=S8HgVlYj; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1725467295; x=1757003295;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=/zPKFC9ohztxO9cxzrcRiMdtFGudAYQRpa9VnD8p1qc=;
+  b=S8HgVlYjWSZY3HptTFSjHv6DYuIiYP/6WBaLWDwwremYa98KIrMSaUxx
+   fivxgwGtfMMa5hW9Jo6xGUY64Xnsc191od0G++nlRmL/YYWmu4jaxBvJb
+   2YYNg72Nywmlvlb8+Zh9wWX7wk76Q3/gfC5s4Doh8kojt146xPjiPzD8Y
+   2jsofFoFbiZESsv1zWrSNyAw98kwmpxMTt5ZmF5rX3jdOfFK9HquWEbTW
+   8vcLtN6JNjh7WqOVbZj9+gti0qfm7SOph2avhSbvp+sK4nP0U4JfyjzOI
+   F2C7gEZOQSfIXZQYRP+y1D2YO2eN4TvDqjpQjynampvVKN3zVbGUwKySJ
+   A==;
+X-CSE-ConnectionGUID: SLK7lzT+QSumC5YuckI8ug==
+X-CSE-MsgGUID: Qr08bKpRScScdOZqXyK+dA==
+X-IronPort-AV: E=McAfee;i="6700,10204,11185"; a="46671816"
+X-IronPort-AV: E=Sophos;i="6.10,202,1719903600"; 
+   d="scan'208";a="46671816"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2024 09:28:14 -0700
+X-CSE-ConnectionGUID: 53qIhRaHSZuyRBdxaVB/6w==
+X-CSE-MsgGUID: L+nh0pMZQga/K6YJBqIITg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.10,202,1719903600"; 
+   d="scan'208";a="70118492"
+Received: from boxer.igk.intel.com ([10.102.20.173])
+  by orviesa003.jf.intel.com with ESMTP; 04 Sep 2024 09:28:11 -0700
+From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To: bpf@vger.kernel.org,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org
+Cc: netdev@vger.kernel.org,
+	magnus.karlsson@intel.com,
+	bjorn@kernel.org,
+	maciej.fijalkowski@intel.com
+Subject: [PATCH bpf-next] xsk: bump xsk_queue::queue_empty_descs in xp_can_alloc()
+Date: Wed,  4 Sep 2024 18:28:08 +0200
+Message-Id: <20240904162808.249160-1-maciej.fijalkowski@intel.com>
+X-Mailer: git-send-email 2.38.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAEf4BzaLhBBPZWwPgTA8bRwxy-Zar07chWm4J9S55EusnH5Yzg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27388/Wed Sep  4 10:40:46 2024)
 
-On 8/28/24 12:37 AM, Andrii Nakryiko wrote:
-> On Fri, Aug 23, 2024 at 3:21 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
->>
->> Lonial found an issue that despite user- and BPF-side frozen BPF map
->> (like in case of .rodata), it was still possible to write into it from
->> a BPF program side through specific helpers having ARG_PTR_TO_{LONG,INT}
->> as arguments.
->>
->> In check_func_arg() when the argument is as mentioned, the meta->raw_mode
->> is never set. Later, check_helper_mem_access(), under the case of
->> PTR_TO_MAP_VALUE as register base type, it assumes BPF_READ for the
->> subsequent call to check_map_access_type() and given the BPF map is
->> read-only it succeeds.
->>
->> The helpers really need to be annotated as ARG_PTR_TO_{LONG,INT} | MEM_UNINIT
->> when results are written into them as opposed to read out of them. The
->> latter indicates that it's okay to pass a pointer to uninitialized memory
->> as the memory is written to anyway.
->>
->> Fixes: 57c3bb725a3d ("bpf: Introduce ARG_PTR_TO_{INT,LONG} arg types")
->> Reported-by: Lonial Con <kongln9170@gmail.com>
->> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
->> ---
->>   kernel/bpf/helpers.c     | 4 ++--
->>   kernel/bpf/syscall.c     | 2 +-
->>   kernel/bpf/verifier.c    | 3 ++-
->>   kernel/trace/bpf_trace.c | 4 ++--
->>   net/core/filter.c        | 4 ++--
->>   5 files changed, 9 insertions(+), 8 deletions(-)
->>
->> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
->> index b5f0adae8293..356a58aeb79b 100644
->> --- a/kernel/bpf/helpers.c
->> +++ b/kernel/bpf/helpers.c
->> @@ -538,7 +538,7 @@ const struct bpf_func_proto bpf_strtol_proto = {
->>          .arg1_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
->>          .arg2_type      = ARG_CONST_SIZE,
->>          .arg3_type      = ARG_ANYTHING,
->> -       .arg4_type      = ARG_PTR_TO_LONG,
->> +       .arg4_type      = ARG_PTR_TO_LONG | MEM_UNINIT,
->>   };
->>
->>   BPF_CALL_4(bpf_strtoul, const char *, buf, size_t, buf_len, u64, flags,
->> @@ -566,7 +566,7 @@ const struct bpf_func_proto bpf_strtoul_proto = {
->>          .arg1_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
->>          .arg2_type      = ARG_CONST_SIZE,
->>          .arg3_type      = ARG_ANYTHING,
->> -       .arg4_type      = ARG_PTR_TO_LONG,
->> +       .arg4_type      = ARG_PTR_TO_LONG | MEM_UNINIT,
->>   };
->>
->>   BPF_CALL_3(bpf_strncmp, const char *, s1, u32, s1_sz, const char *, s2)
->> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
->> index bf6c5f685ea2..6d5942a6f41f 100644
->> --- a/kernel/bpf/syscall.c
->> +++ b/kernel/bpf/syscall.c
->> @@ -5952,7 +5952,7 @@ static const struct bpf_func_proto bpf_kallsyms_lookup_name_proto = {
->>          .arg1_type      = ARG_PTR_TO_MEM,
->>          .arg2_type      = ARG_CONST_SIZE_OR_ZERO,
->>          .arg3_type      = ARG_ANYTHING,
->> -       .arg4_type      = ARG_PTR_TO_LONG,
->> +       .arg4_type      = ARG_PTR_TO_LONG | MEM_UNINIT,
->>   };
->>
->>   static const struct bpf_func_proto *
->> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->> index d8520095ca03..70b0474e03a6 100644
->> --- a/kernel/bpf/verifier.c
->> +++ b/kernel/bpf/verifier.c
->> @@ -8877,8 +8877,9 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
->>          case ARG_PTR_TO_INT:
->>          case ARG_PTR_TO_LONG:
->>          {
->> -               int size = int_ptr_type_to_size(arg_type);
->> +               int size = int_ptr_type_to_size(base_type(arg_type));
->>
->> +               meta->raw_mode = arg_type & MEM_UNINIT;
-> 
-> given all existing ARG_PTR_TO_{INT,LONG} use cases just write into
-> that memory, why not just set meta->raw_mode unconditionally and not
-> touch helper definitions?
-> 
-> also, isn't it suspicious that int_ptr_types have PTR_TO_MAP_KEY in
-> it? key should always be immutable, so can't be written into, no?
+We have STAT_FILL_EMPTY test case in xskxceiver that tries to process
+traffic with fill queue being empty which currently fails for zero copy
+ice driver after it started to use xsk_buff_can_alloc() API. That is
+because xsk_queue::queue_empty_descs is currently only increased from
+alloc APIs and right now if driver sees that xsk_buff_pool will be
+unable to provide the requested count of buffers, it bails out early,
+skipping calls to xsk_buff_alloc{_batch}().
 
-That does not look right agree.. presumably copied over from mem_types for reading not
-writing memory (just that none of the helpers using the arg type to actually read mem).
+Mentioned statistic should be handled in xsk_buff_can_alloc() from the
+very beginning, so let's add this logic now. Do it by open coding
+xskq_cons_has_entries() and bumping queue_empty_descs in the middle when
+fill queue currently has no entries.
 
-Also, I'm currently looking into whether it's possible to just remove the ARG_PTR_TO_{INT,LONG}
-and make that a case of ARG_PTR_TO_FIXED_SIZE_MEM | MEM_UNINIT where we just specify the
-arg's size in the func proto. Two special arg cases less to look after in verifier then.
+Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+---
+ net/xdp/xsk_buff_pool.c | 11 ++++++++++-
+ net/xdp/xsk_queue.h     |  5 -----
+ 2 files changed, 10 insertions(+), 6 deletions(-)
 
-Thanks,
-Daniel
+diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
+index c0e0204b9630..29afa880ffa0 100644
+--- a/net/xdp/xsk_buff_pool.c
++++ b/net/xdp/xsk_buff_pool.c
+@@ -656,9 +656,18 @@ EXPORT_SYMBOL(xp_alloc_batch);
+ 
+ bool xp_can_alloc(struct xsk_buff_pool *pool, u32 count)
+ {
++	u32 req_count, avail_count;
++
+ 	if (pool->free_list_cnt >= count)
+ 		return true;
+-	return xskq_cons_has_entries(pool->fq, count - pool->free_list_cnt);
++	req_count = count - pool->free_list_cnt;
++
++	avail_count = xskq_cons_nb_entries(pool->fq, req_count);
++
++	if (!avail_count)
++		pool->fq->queue_empty_descs++;
++
++	return avail_count >= req_count;
+ }
+ EXPORT_SYMBOL(xp_can_alloc);
+ 
+diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
+index 6f2d1621c992..406b20dfee8d 100644
+--- a/net/xdp/xsk_queue.h
++++ b/net/xdp/xsk_queue.h
+@@ -306,11 +306,6 @@ static inline u32 xskq_cons_nb_entries(struct xsk_queue *q, u32 max)
+ 	return entries >= max ? max : entries;
+ }
+ 
+-static inline bool xskq_cons_has_entries(struct xsk_queue *q, u32 cnt)
+-{
+-	return xskq_cons_nb_entries(q, cnt) >= cnt;
+-}
+-
+ static inline bool xskq_cons_peek_addr_unchecked(struct xsk_queue *q, u64 *addr)
+ {
+ 	if (q->cached_prod == q->cached_cons)
+-- 
+2.34.1
+
 
