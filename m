@@ -1,165 +1,173 @@
-Return-Path: <bpf+bounces-38898-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38899-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AFBD96C29C
-	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2024 17:36:34 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67EF396C352
+	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2024 18:03:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D93031F263F7
-	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2024 15:36:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F366286EA4
+	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2024 16:03:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D42081DEFCB;
-	Wed,  4 Sep 2024 15:36:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D982C1E00AF;
+	Wed,  4 Sep 2024 16:03:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LHIFZiva"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="eG8D18s8"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCE0B15E90
-	for <bpf@vger.kernel.org>; Wed,  4 Sep 2024 15:36:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D17BE1E00A0
+	for <bpf@vger.kernel.org>; Wed,  4 Sep 2024 16:03:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725464188; cv=none; b=a9XhEldeqSN2J5uVvnxI3y7It+ndl40/VET9B80KNhHJxWGzGUmWlQ4J+XwFoAaho7+6uFEj0WtgBCRjc/a1vwsqR1vmmxINKeg87hNXr4LvaxFPBc0fQyTl54F5wQfdFSUq+pOMaoQWpQY6GspeZvJpo8//b/P4+BFTCCY+Jtg=
+	t=1725465784; cv=none; b=A3+ZDYJKcyfHHYU+Ibu+w+AdotCNEBkWAawgZolyDhiaY0TuAVpvTe4CDaH7rwnsglcLFdZtuj1RWS4gASMJP7rGFFUU5qaeLKWoQ8d5aOso8WF/jQaZuDp3Q9MUHlXC8xrq7OjeqJ3vSclQUAgqAsssMxihQaC4zEz0stvMx4Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725464188; c=relaxed/simple;
-	bh=YCS2ykCG3LOcxIFIyJhuAfA0say2suQLgc/4Z4QCNYo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=NCPGot15vtQ8s6w/R2P7Y7qPTMWFyyQU0k4jH5Q2cgRr1J36tR3M4DVgmCIiYKIJT1TL7yn1jPNKkGh6k6ZApIVzTLJhC9Gvn7Lc3IJnnIdj/V6q7wRrsAQj6tyqSFf4wEKJqmdTjmE7W0JBz525kABPqTbd+FZDeJwmYWl95qI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LHIFZiva; arc=none smtp.client-ip=209.85.208.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-5c260b19f71so3404669a12.1
-        for <bpf@vger.kernel.org>; Wed, 04 Sep 2024 08:36:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1725464185; x=1726068985; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AhtKfKvNtb3Y/+7j/mr1U/WAQtZqlNHMqU0kBvO3+ts=;
-        b=LHIFZivabR1Ev/EHS+7k0hyFfUCpd+MEyBKxdeBvtPKJ8Mr0RKV0RzoBLCp2xeDvKu
-         aDP3Z9Evi7bIfPHz4JN6NbPdfeHeAgTx/iYl3aCBqfH2vLT6HO1CelwmaesXUEPA/laz
-         Pjshum5gQ5DsfdxSYtyEqcwGpvmXVJxim3YuumRK6hcAcj7V7ir0daTB6lt4GqWdiReH
-         iJciQ9Vyz+B1O6BZP/oIFgLmRm6QueJzcloenQ9lLRsKwhtYFsideGMjS/6I2vuDCsRT
-         vBnl86N1PL59eS1RrbDBjyGsgpacsoMLRt2qjAPKSmD7QEkpgDL/rfoSXxOkhPitUrPD
-         sn9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725464185; x=1726068985;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=AhtKfKvNtb3Y/+7j/mr1U/WAQtZqlNHMqU0kBvO3+ts=;
-        b=U+KHS8zJrjjas4j3TU5ufRymGj3+ZsJR/tuwauSTZLQx6qV6eSSgYGoEcSAHe+eaO3
-         /V+SSILOUteLGyuGXu1Y4P40aESFlY+gKMix9bpt0A3B1wjJXeQawp4u+f5qlHlFPrdv
-         +3lSjdM58cCOwolJEhR8GIoubdgCzNDCyFPSI1nxpNI0pea6BR473DtrqItX63MR29+f
-         qaU1TxkprFcoY6sgiJFABQghw+PmIaQWoFYRQjANz7cVlHw4ft9J1+6dr9sYQR1PQuou
-         6X/F8JyylrzkQwrX+sA6UCLwoJ+iBRfkcTRrYPZHQmZpeIH4O88oAjpqeot/Gi/HqF1O
-         pYKQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWeReTu/pqMepsyb0Lt+0oV7QfowmbxM/x6pUqCfnO67xhbWMp+edGxEEftajXpquJlBMo=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz/VwKMXtlVUVTwGCWy3g3aJagJ/KqwavDd1g1X/gdyVNnszG30
-	K2o0J3az5aHFiU3W5zWT+P3XxtRE3/rTiWILQZatAwXeL7HyeZYhYyz5W40J6LvrkxOoKFY0nVO
-	FiqTbvzmG5Xgjv5zF58ZOxelMiDU=
-X-Google-Smtp-Source: AGHT+IFBb9W46HLZqO55IxgTXTEvMpDDcF9uuJoK32c9HVf/FFpiv2dkStQAsyAo+E/z3n6NaA7TmrGAGotqRhEH2zc=
-X-Received: by 2002:a17:907:e8c:b0:a86:ae0a:a52a with SMTP id
- a640c23a62f3a-a89a3821fb1mr1226155866b.55.1725464184728; Wed, 04 Sep 2024
- 08:36:24 -0700 (PDT)
+	s=arc-20240116; t=1725465784; c=relaxed/simple;
+	bh=9WYCsjkd+S6bqAIXWVgiDRc7qOONsyXGqQ1d+E/N1Uw=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=cYi1HhEmzoJ/P36GVeKEcVdn2a+lAbo9zzp5oF/hajeJiWHxoluTVVDdYsJBgMZSAOV43R0BGln/+xbSW4vmwQS2ay/yK1sYrDpHPBjnOg5VQn33tZ21QdZ4nFgSDu7OB0pjPI38KUYSohc/Y4KfdjRKA3JpxqJ0cajcOq0K5wE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=eG8D18s8; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=tPlOt+iHZTyU8ze70OH2R6WXbrCDFklcDqTAEhwjCko=; b=eG8D18s8oEIYaJWectPcv1Bx+W
+	39mecfB8drdjGbqeLOjDD29pkGyFtybtfogC/Ig34sMCKVGf3ncMaQhBgeC5UIKxM0Ntps/VAYPlA
+	gMV/9BYzjyibteF1oUqB5VkfOuJwP8FZ8Bjz6AFX77JJ0JBZQ+ejoWu4DYVVD4bKr8DhfglmJ2/Fo
+	0BIPYNdz1llYXP8vm5oFh+WQGFKzDg09lD6CMFXx50mssHuL211Wr70KnDSrrWCVVgFHkaxhrxVYT
+	RWTRPFphPAhDs5I/XvJE4o3Ke6N+sFVhLIwOF9E0wBvC0VW3GeUHPcRXiCw+eVD2VOqSSDnztRBpS
+	YEIj3JNQ==;
+Received: from sslproxy07.your-server.de ([78.47.199.104])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1slsTC-000MW8-Jg; Wed, 04 Sep 2024 18:02:58 +0200
+Received: from [178.197.248.23] (helo=linux.home)
+	by sslproxy07.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1slsTB-000LMe-25;
+	Wed, 04 Sep 2024 18:02:58 +0200
+Subject: Re: [PATCH bpf 1/4] bpf: Fix helper writes to read-only maps
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bpf@vger.kernel.org, kongln9170@gmail.com
+References: <20240823222033.31006-1-daniel@iogearbox.net>
+ <CAEf4BzaLhBBPZWwPgTA8bRwxy-Zar07chWm4J9S55EusnH5Yzg@mail.gmail.com>
+From: Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <7181ad2d-b940-8046-3a8e-25a07960eeb5@iogearbox.net>
+Date: Wed, 4 Sep 2024 18:02:57 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240724113944.75977-1-puranjay@kernel.org> <CAADnVQKXY5E11gpng=0P_YFLJZh+nmiJDLOrtv2hftvxinukFQ@mail.gmail.com>
- <mb61pjzfrsgc4.fsf@kernel.org>
-In-Reply-To: <mb61pjzfrsgc4.fsf@kernel.org>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 4 Sep 2024 08:36:13 -0700
-Message-ID: <CAADnVQKC=etEeN5z58En6anV=PTsQQNxzXmqSh-ddNWwGodTUQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: implement bpf_send_signal_pid/tgid() helpers
-To: Puranjay Mohan <puranjay@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, bpf <bpf@vger.kernel.org>, 
-	Puranjay Mohan <puranjay12@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAEf4BzaLhBBPZWwPgTA8bRwxy-Zar07chWm4J9S55EusnH5Yzg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27388/Wed Sep  4 10:40:46 2024)
 
-On Wed, Sep 4, 2024 at 6:23=E2=80=AFAM Puranjay Mohan <puranjay@kernel.org>=
- wrote:
->
-> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
->
-> Hi,
-> Sorry for the delay on this.
->
-> > On Wed, Jul 24, 2024 at 4:40=E2=80=AFAM Puranjay Mohan <puranjay@kernel=
-.org> wrote:
-> >>
-> >> Implement bpf_send_signal_pid and bpf_send_signal_tgid helpers which a=
-re
-> >> similar to bpf_send_signal_thread and bpf_send_signal helpers
-> >> respectively but can be used to send signals to other threads and
-> >> processes.
-> >
-> > Thanks for working on this!
-> > But it needs more homework.
-> >
-> >>  #define ___BPF_FUNC_MAPPER(FN, ctx...)                 \
-> >>         FN(unspec, 0, ##ctx)                            \
-> >> @@ -6006,6 +6041,8 @@ union bpf_attr {
-> >>         FN(user_ringbuf_drain, 209, ##ctx)              \
-> >>         FN(cgrp_storage_get, 210, ##ctx)                \
-> >>         FN(cgrp_storage_delete, 211, ##ctx)             \
-> >> +       FN(send_signal_pid, 212, ##ctx)         \
-> >> +       FN(send_signal_tgid, 213, ##ctx)                \
-> >
-> > We stopped adding helpers long ago.
-> > They need to be kfuncs.
-> >
-> >>         /* */
-> >>
-> >>  /* backwards-compatibility macros for users of __BPF_FUNC_MAPPER that=
- don't
-> >> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> >> index cd098846e251..f1e58122600d 100644
-> >> --- a/kernel/trace/bpf_trace.c
-> >> +++ b/kernel/trace/bpf_trace.c
-> >> @@ -839,21 +839,30 @@ static void do_bpf_send_signal(struct irq_work *=
-entry)
-> >>         put_task_struct(work->task);
-> >>  }
-> >>
-> >> -static int bpf_send_signal_common(u32 sig, enum pid_type type)
-> >> +static int bpf_send_signal_common(u32 sig, enum pid_type type, u32 pi=
-d)
-> >>  {
-> >>         struct send_signal_irq_work *work =3D NULL;
-> >> +       struct task_struct *tsk;
-> >> +
-> >> +       if (pid) {
-> >> +               tsk =3D find_task_by_vpid(pid);
-> >
-> > by vpid ?
-> >
-> > tracing bpf prog will have "random" current and "random" pidns.
-> >
-> > Should it be find_get_task vs find_task too ?
-> >
-> > Should kfunc take 'task' parameter instead
-> > received from bpf_task_from_pid() ?
-> >
-> > two kfuncs for pid/tgid is overkill. Combine into one?
->
-> So, I will add a single kfunc that can do both pid and tgid and it will
-> take the 'task' parameter received from the call to bpf_task_from_pid()
-> and a 'bool' to select pid/tgid.
+On 8/28/24 12:37 AM, Andrii Nakryiko wrote:
+> On Fri, Aug 23, 2024 at 3:21 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>>
+>> Lonial found an issue that despite user- and BPF-side frozen BPF map
+>> (like in case of .rodata), it was still possible to write into it from
+>> a BPF program side through specific helpers having ARG_PTR_TO_{LONG,INT}
+>> as arguments.
+>>
+>> In check_func_arg() when the argument is as mentioned, the meta->raw_mode
+>> is never set. Later, check_helper_mem_access(), under the case of
+>> PTR_TO_MAP_VALUE as register base type, it assumes BPF_READ for the
+>> subsequent call to check_map_access_type() and given the BPF map is
+>> read-only it succeeds.
+>>
+>> The helpers really need to be annotated as ARG_PTR_TO_{LONG,INT} | MEM_UNINIT
+>> when results are written into them as opposed to read out of them. The
+>> latter indicates that it's okay to pass a pointer to uninitialized memory
+>> as the memory is written to anyway.
+>>
+>> Fixes: 57c3bb725a3d ("bpf: Introduce ARG_PTR_TO_{INT,LONG} arg types")
+>> Reported-by: Lonial Con <kongln9170@gmail.com>
+>> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+>> ---
+>>   kernel/bpf/helpers.c     | 4 ++--
+>>   kernel/bpf/syscall.c     | 2 +-
+>>   kernel/bpf/verifier.c    | 3 ++-
+>>   kernel/trace/bpf_trace.c | 4 ++--
+>>   net/core/filter.c        | 4 ++--
+>>   5 files changed, 9 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+>> index b5f0adae8293..356a58aeb79b 100644
+>> --- a/kernel/bpf/helpers.c
+>> +++ b/kernel/bpf/helpers.c
+>> @@ -538,7 +538,7 @@ const struct bpf_func_proto bpf_strtol_proto = {
+>>          .arg1_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
+>>          .arg2_type      = ARG_CONST_SIZE,
+>>          .arg3_type      = ARG_ANYTHING,
+>> -       .arg4_type      = ARG_PTR_TO_LONG,
+>> +       .arg4_type      = ARG_PTR_TO_LONG | MEM_UNINIT,
+>>   };
+>>
+>>   BPF_CALL_4(bpf_strtoul, const char *, buf, size_t, buf_len, u64, flags,
+>> @@ -566,7 +566,7 @@ const struct bpf_func_proto bpf_strtoul_proto = {
+>>          .arg1_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
+>>          .arg2_type      = ARG_CONST_SIZE,
+>>          .arg3_type      = ARG_ANYTHING,
+>> -       .arg4_type      = ARG_PTR_TO_LONG,
+>> +       .arg4_type      = ARG_PTR_TO_LONG | MEM_UNINIT,
+>>   };
+>>
+>>   BPF_CALL_3(bpf_strncmp, const char *, s1, u32, s1_sz, const char *, s2)
+>> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+>> index bf6c5f685ea2..6d5942a6f41f 100644
+>> --- a/kernel/bpf/syscall.c
+>> +++ b/kernel/bpf/syscall.c
+>> @@ -5952,7 +5952,7 @@ static const struct bpf_func_proto bpf_kallsyms_lookup_name_proto = {
+>>          .arg1_type      = ARG_PTR_TO_MEM,
+>>          .arg2_type      = ARG_CONST_SIZE_OR_ZERO,
+>>          .arg3_type      = ARG_ANYTHING,
+>> -       .arg4_type      = ARG_PTR_TO_LONG,
+>> +       .arg4_type      = ARG_PTR_TO_LONG | MEM_UNINIT,
+>>   };
+>>
+>>   static const struct bpf_func_proto *
+>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+>> index d8520095ca03..70b0474e03a6 100644
+>> --- a/kernel/bpf/verifier.c
+>> +++ b/kernel/bpf/verifier.c
+>> @@ -8877,8 +8877,9 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+>>          case ARG_PTR_TO_INT:
+>>          case ARG_PTR_TO_LONG:
+>>          {
+>> -               int size = int_ptr_type_to_size(arg_type);
+>> +               int size = int_ptr_type_to_size(base_type(arg_type));
+>>
+>> +               meta->raw_mode = arg_type & MEM_UNINIT;
+> 
+> given all existing ARG_PTR_TO_{INT,LONG} use cases just write into
+> that memory, why not just set meta->raw_mode unconditionally and not
+> touch helper definitions?
+> 
+> also, isn't it suspicious that int_ptr_types have PTR_TO_MAP_KEY in
+> it? key should always be immutable, so can't be written into, no?
 
-why bool ?
-enum pid_type is kernel enum that is available to bpf progs
-via vmlinux.h. The prog can just pass that directly.
-Do you see any safety issue that it will pass PIDTYPE_MAX ?
-If so that can be an additional check inside kfunc.
+That does not look right agree.. presumably copied over from mem_types for reading not
+writing memory (just that none of the helpers using the arg type to actually read mem).
+
+Also, I'm currently looking into whether it's possible to just remove the ARG_PTR_TO_{INT,LONG}
+and make that a case of ARG_PTR_TO_FIXED_SIZE_MEM | MEM_UNINIT where we just specify the
+arg's size in the func proto. Two special arg cases less to look after in verifier then.
+
+Thanks,
+Daniel
 
