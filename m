@@ -1,143 +1,190 @@
-Return-Path: <bpf+bounces-38900-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38901-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78FF296C41F
-	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2024 18:28:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 583EE96C46E
+	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2024 18:52:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D696280F13
-	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2024 16:28:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7CBBD1C20B3C
+	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2024 16:52:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6E0A1E00A0;
-	Wed,  4 Sep 2024 16:28:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C3391E0B78;
+	Wed,  4 Sep 2024 16:52:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="S8HgVlYj"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="u1XC0cEM"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52A461DFE14;
-	Wed,  4 Sep 2024 16:28:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B21901DCB26;
+	Wed,  4 Sep 2024 16:52:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725467296; cv=none; b=lL4TyyhZYHZ7vPGb1pJA5J34PJ040zjE2gb64W7DK9QMe4/5+p8MJ/HjIR3tKCieTd73jjKcKhv+3bSYUBi/GvrolcYeFf8eSnXapBX+Y9uTXVE/qVdcUAEovghqkV2ChrjbSnSmPvjbAcev2IPpK3tjMUZfPe8wrysP57Ssd1o=
+	t=1725468739; cv=none; b=uxqSAbpRSLY7QkMGDJZ4PaAQH/JaJB/0kO13qa44oIr9iMigb50I/1MgwcaGnBp77eqS3eRkxayTrJVuGZdsksCi7tSESqXEfhgKOWSzEo0dW4bvnPaSTB+yDp9gbzKMA3FCfzbu9EhShO6HSSs4sjI7FhRaWcJdxfBz2KVT64k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725467296; c=relaxed/simple;
-	bh=/zPKFC9ohztxO9cxzrcRiMdtFGudAYQRpa9VnD8p1qc=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=fS6ZD6QoYisz8qWxELMATzglFVVV+vcqWPtTG8OfLzqWctV7znGjc3vNtRjW/5EWUHzdd6lxEL8GcET2v56yY/t5fFivyLIaRgSrsUC6KNrqT8YKdfgKppCNlkm/fJLEvr01uAXqNlvs4ZHEcQjGexPL/rTnuuFiNVVNQslB/VQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=S8HgVlYj; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1725467295; x=1757003295;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=/zPKFC9ohztxO9cxzrcRiMdtFGudAYQRpa9VnD8p1qc=;
-  b=S8HgVlYjWSZY3HptTFSjHv6DYuIiYP/6WBaLWDwwremYa98KIrMSaUxx
-   fivxgwGtfMMa5hW9Jo6xGUY64Xnsc191od0G++nlRmL/YYWmu4jaxBvJb
-   2YYNg72Nywmlvlb8+Zh9wWX7wk76Q3/gfC5s4Doh8kojt146xPjiPzD8Y
-   2jsofFoFbiZESsv1zWrSNyAw98kwmpxMTt5ZmF5rX3jdOfFK9HquWEbTW
-   8vcLtN6JNjh7WqOVbZj9+gti0qfm7SOph2avhSbvp+sK4nP0U4JfyjzOI
-   F2C7gEZOQSfIXZQYRP+y1D2YO2eN4TvDqjpQjynampvVKN3zVbGUwKySJ
-   A==;
-X-CSE-ConnectionGUID: SLK7lzT+QSumC5YuckI8ug==
-X-CSE-MsgGUID: Qr08bKpRScScdOZqXyK+dA==
-X-IronPort-AV: E=McAfee;i="6700,10204,11185"; a="46671816"
-X-IronPort-AV: E=Sophos;i="6.10,202,1719903600"; 
-   d="scan'208";a="46671816"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2024 09:28:14 -0700
-X-CSE-ConnectionGUID: 53qIhRaHSZuyRBdxaVB/6w==
-X-CSE-MsgGUID: L+nh0pMZQga/K6YJBqIITg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.10,202,1719903600"; 
-   d="scan'208";a="70118492"
-Received: from boxer.igk.intel.com ([10.102.20.173])
-  by orviesa003.jf.intel.com with ESMTP; 04 Sep 2024 09:28:11 -0700
-From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To: bpf@vger.kernel.org,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org
-Cc: netdev@vger.kernel.org,
-	magnus.karlsson@intel.com,
-	bjorn@kernel.org,
-	maciej.fijalkowski@intel.com
-Subject: [PATCH bpf-next] xsk: bump xsk_queue::queue_empty_descs in xp_can_alloc()
-Date: Wed,  4 Sep 2024 18:28:08 +0200
-Message-Id: <20240904162808.249160-1-maciej.fijalkowski@intel.com>
-X-Mailer: git-send-email 2.38.1
+	s=arc-20240116; t=1725468739; c=relaxed/simple;
+	bh=RGoONpYhc5Jj+VJ2EHBXmVJCVocOOPXD8LyLnGTVIis=;
+	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=S51BeJy6ny3/AQiHnYvbWkloei+umR1kl9RBp1zs9U90B+cbrJKmHXJBWcxHw9bWORiDQaEhqbwXmYfZUSXw/BYHsEP/jz7z/6UWd3z0JsZHR6a13p3WHfOaktUk+si7Oaq2wfhZkKaf67uSdU7RfDQntYhOFkgrxfeRHcssuSQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=u1XC0cEM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2FDB1C4CEC2;
+	Wed,  4 Sep 2024 16:52:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1725468739;
+	bh=RGoONpYhc5Jj+VJ2EHBXmVJCVocOOPXD8LyLnGTVIis=;
+	h=Date:From:To:Subject:Reply-To:References:In-Reply-To:From;
+	b=u1XC0cEMsnqo0n5hqzL/cowvT1eQHgx1kTrn9333VW0ZCr9uhU/sm1d48l67e9ByA
+	 AlEIue46+woBXyNYfSrzEWBR5NolpN6SW2/kG9kNMjYuDWx1U4BwUHKBgC6gASPOvH
+	 fQ1kLM/UTEMeELseqFotWI6uSoSLv6DemocUpM0nOCGIjz7DX4gOOMOglmFaj3kczq
+	 7FD6zHJ+60HtvjEXklSX0SvVQHlAD+DuTNBmyf3toEv7fA8tMOCjZ2zQmN3w85Tz+O
+	 RM6jY6bpo3mglJQJGIUPNjqkpDOSlrKgL43HLTRM+3nd2q8UxPXqBFSNxX8gYYcSGy
+	 Y8SwU9RowwL0A==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id C71C3CE0FED; Wed,  4 Sep 2024 09:52:18 -0700 (PDT)
+Date: Wed, 4 Sep 2024 09:52:18 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
+	rostedt@goodmis.org, Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Kent Overstreet <kent.overstreet@linux.dev>, bpf@vger.kernel.org
+Subject: [PATCH rcu [12/11] srcu: Allow inlining of
+ __srcu_read_{,un}lock_lite()
+Message-ID: <2821abf8-c9ce-4fed-aa58-710ad4f67b8d@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <26cddadd-a79b-47b1-923e-9684cd8a7ef4@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <26cddadd-a79b-47b1-923e-9684cd8a7ef4@paulmck-laptop>
 
-We have STAT_FILL_EMPTY test case in xskxceiver that tries to process
-traffic with fill queue being empty which currently fails for zero copy
-ice driver after it started to use xsk_buff_can_alloc() API. That is
-because xsk_queue::queue_empty_descs is currently only increased from
-alloc APIs and right now if driver sees that xsk_buff_pool will be
-unable to provide the requested count of buffers, it bails out early,
-skipping calls to xsk_buff_alloc{_batch}().
+srcu: Allow inlining of __srcu_read_{,un}lock_lite()
 
-Mentioned statistic should be handled in xsk_buff_can_alloc() from the
-very beginning, so let's add this logic now. Do it by open coding
-xskq_cons_has_entries() and bumping queue_empty_descs in the middle when
-fill queue currently has no entries.
+This commit moves __srcu_read_lock_lite() and __srcu_read_unlock_lite()
+into include/linux/srcu.h and marks them "static inline" so that they
+can be inlined into srcu_read_lock_lite() and srcu_read_unlock_lite(),
+respectively.  They are not hand-inlined due to Tree SRCU and Tiny SRCU
+having different implementations.
 
-Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
----
- net/xdp/xsk_buff_pool.c | 11 ++++++++++-
- net/xdp/xsk_queue.h     |  5 -----
- 2 files changed, 10 insertions(+), 6 deletions(-)
+Please note that this is early days for this series, and especially for
+this particular patch.  Moving these functions from the seclusion of
+kernel/rcu/srcutree.c to the more widely exposed include/linux/srcutree.h
+might have #include consequences on some yet-as-unsuspected architecture
+or combination of Kconfig options.
 
-diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
-index c0e0204b9630..29afa880ffa0 100644
---- a/net/xdp/xsk_buff_pool.c
-+++ b/net/xdp/xsk_buff_pool.c
-@@ -656,9 +656,18 @@ EXPORT_SYMBOL(xp_alloc_batch);
+Reported-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Andrii Nakryiko <andrii@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: <bpf@vger.kernel.org>
+
+diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
+index 8074138cbd624..778eb61542e18 100644
+--- a/include/linux/srcutree.h
++++ b/include/linux/srcutree.h
+@@ -209,4 +209,43 @@ void synchronize_srcu_expedited(struct srcu_struct *ssp);
+ void srcu_barrier(struct srcu_struct *ssp);
+ void srcu_torture_stats_print(struct srcu_struct *ssp, char *tt, char *tf);
  
- bool xp_can_alloc(struct xsk_buff_pool *pool, u32 count)
- {
-+	u32 req_count, avail_count;
++/*
++ * Counts the new reader in the appropriate per-CPU element of the
++ * srcu_struct.  Returns an index that must be passed to the matching
++ * srcu_read_unlock_lite().
++ *
++ * Note that this_cpu_inc() is an RCU read-side critical section either
++ * because it disables interrupts, because it is a single instruction,
++ * or because it is a read-modify-write atomic operation, depending on
++ * the whims of the architecture.
++ */
++static inline int __srcu_read_lock_lite(struct srcu_struct *ssp)
++{
++	int idx;
 +
- 	if (pool->free_list_cnt >= count)
- 		return true;
--	return xskq_cons_has_entries(pool->fq, count - pool->free_list_cnt);
-+	req_count = count - pool->free_list_cnt;
++	RCU_LOCKDEP_WARN(!rcu_is_watching(), "RCU must be watching srcu_read_lock_lite().");
++	idx = READ_ONCE(ssp->srcu_idx) & 0x1;
++	this_cpu_inc(ssp->sda->srcu_lock_count[idx].counter); /* Y */
++	barrier(); /* Avoid leaking the critical section. */
++	return idx;
++}
 +
-+	avail_count = xskq_cons_nb_entries(pool->fq, req_count);
++/*
++ * Removes the count for the old reader from the appropriate
++ * per-CPU element of the srcu_struct.  Note that this may well be a
++ * different CPU than that which was incremented by the corresponding
++ * srcu_read_lock_lite(), but it must be within the same task.
++ *
++ * Note that this_cpu_inc() is an RCU read-side critical section either
++ * because it disables interrupts, because it is a single instruction,
++ * or because it is a read-modify-write atomic operation, depending on
++ * the whims of the architecture.
++ */
++static inline void __srcu_read_unlock_lite(struct srcu_struct *ssp, int idx)
++{
++	barrier();  /* Avoid leaking the critical section. */
++	this_cpu_inc(ssp->sda->srcu_unlock_count[idx].counter);  /* Z */
++	RCU_LOCKDEP_WARN(!rcu_is_watching(), "RCU must be watching srcu_read_unlock_lite().");
++}
 +
-+	if (!avail_count)
-+		pool->fq->queue_empty_descs++;
-+
-+	return avail_count >= req_count;
+ #endif
+diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+index bab888e86b9bb..124ad43c189d6 100644
+--- a/kernel/rcu/srcutree.c
++++ b/kernel/rcu/srcutree.c
+@@ -763,47 +763,6 @@ void __srcu_read_unlock(struct srcu_struct *ssp, int idx)
  }
- EXPORT_SYMBOL(xp_can_alloc);
+ EXPORT_SYMBOL_GPL(__srcu_read_unlock);
  
-diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
-index 6f2d1621c992..406b20dfee8d 100644
---- a/net/xdp/xsk_queue.h
-+++ b/net/xdp/xsk_queue.h
-@@ -306,11 +306,6 @@ static inline u32 xskq_cons_nb_entries(struct xsk_queue *q, u32 max)
- 	return entries >= max ? max : entries;
- }
- 
--static inline bool xskq_cons_has_entries(struct xsk_queue *q, u32 cnt)
+-/*
+- * Counts the new reader in the appropriate per-CPU element of the
+- * srcu_struct.  Returns an index that must be passed to the matching
+- * srcu_read_unlock_lite().
+- *
+- * Note that this_cpu_inc() is an RCU read-side critical section either
+- * because it disables interrupts, because it is a single instruction,
+- * or because it is a read-modify-write atomic operation, depending on
+- * the whims of the architecture.
+- */
+-int __srcu_read_lock_lite(struct srcu_struct *ssp)
 -{
--	return xskq_cons_nb_entries(q, cnt) >= cnt;
--}
+-	int idx;
 -
- static inline bool xskq_cons_peek_addr_unchecked(struct xsk_queue *q, u64 *addr)
- {
- 	if (q->cached_prod == q->cached_cons)
--- 
-2.34.1
-
+-	RCU_LOCKDEP_WARN(!rcu_is_watching(), "RCU must be watching srcu_read_lock_lite().");
+-	idx = READ_ONCE(ssp->srcu_idx) & 0x1;
+-	this_cpu_inc(ssp->sda->srcu_lock_count[idx].counter); /* Y */
+-	barrier(); /* Avoid leaking the critical section. */
+-	return idx;
+-}
+-EXPORT_SYMBOL_GPL(__srcu_read_lock_lite);
+-
+-/*
+- * Removes the count for the old reader from the appropriate
+- * per-CPU element of the srcu_struct.  Note that this may well be a
+- * different CPU than that which was incremented by the corresponding
+- * srcu_read_lock_lite(), but it must be within the same task.
+- *
+- * Note that this_cpu_inc() is an RCU read-side critical section either
+- * because it disables interrupts, because it is a single instruction,
+- * or because it is a read-modify-write atomic operation, depending on
+- * the whims of the architecture.
+- */
+-void __srcu_read_unlock_lite(struct srcu_struct *ssp, int idx)
+-{
+-	barrier();  /* Avoid leaking the critical section. */
+-	this_cpu_inc(ssp->sda->srcu_unlock_count[idx].counter);  /* Z */
+-	RCU_LOCKDEP_WARN(!rcu_is_watching(), "RCU must be watching srcu_read_unlock_lite().");
+-}
+-EXPORT_SYMBOL_GPL(__srcu_read_unlock_lite);
+-
+ #ifdef CONFIG_NEED_SRCU_NMI_SAFE
+ 
+ /*
 
