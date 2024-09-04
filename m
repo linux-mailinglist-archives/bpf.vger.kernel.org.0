@@ -1,42 +1,42 @@
-Return-Path: <bpf+bounces-38889-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38882-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44B4596BFEF
-	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2024 16:19:08 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1483E96BFE4
+	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2024 16:18:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED9961F214D5
-	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2024 14:19:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C8433B25645
+	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2024 14:18:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4CFB1DEFE7;
-	Wed,  4 Sep 2024 14:17:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C2561DC1AC;
+	Wed,  4 Sep 2024 14:17:16 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9636D1DC75C;
-	Wed,  4 Sep 2024 14:17:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 108A61DC195;
+	Wed,  4 Sep 2024 14:17:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725459441; cv=none; b=WaP6AVVw57loMpUjP7v5YdLtf+nbpn2sBiydOpp08uOGZwcN0zzy8T9mvZoY8MZbgFIJX6t3++XEIirJiTvw5cM8rqLO7QKFWaZPmJ1hXr763kmPVoEBV7izse71pmJx0zjPQDsS5lwiSN8v6jqb+CtC+41SIc7WlCFxnv1FPMg=
+	t=1725459436; cv=none; b=O9kemWGS+6UWke9DB3KSjQ71LRHlVkkhPfpxU590gXO824EZG1O4jELdNPLdzWDULdylyKAess4mrW4dQm75wPEg1UQg3VvLCl6hNYgWGrEukB1eb/ux/LGuQ6Of0MUvKA3rfA2s1X/NqrlA5gM4LFHb8YTY2TYBFMf/JD6K9Vc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725459441; c=relaxed/simple;
-	bh=clDdIUEKVeiyjVQeDc44MqSrn4f4vzBWF+gE624PUIE=;
+	s=arc-20240116; t=1725459436; c=relaxed/simple;
+	bh=P1aEwb65+RNbY+g75ILEx7yadeCzbfJSxdXemOLCZhY=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Sgcumgjv4eqjgu6iSJ5/mN6fXb6diSy7kS8HyqR4IjzV57MAaIogKdkjcmgTWwL7MntUqREY24bxR2xr/SkhSPaADYhV+pF33d5UUJ8RQzYcwH1G6b+l80TVyUANi/gpt0k3awA97CQqShcc6GdowJFEO/cG6xkH4KIm831ci+A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+	 MIME-Version; b=tKkKKrluSpjGqOd7L0dwp8Hne4Cr7cA++etdShuZFnuV7pvmfjGxX+TP6lWoZjmiObypnIXVGwJI/3qHQ5ZOVmaL4f5zIZbdklIE0m1et0zktTb6OkRvwkobYDnKxkVYoD9DBRLbbKcf2kFm/fC0WAKMIgoF626DzVPXxVai/bk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4WzPgp5gVfz4f3lfj;
-	Wed,  4 Sep 2024 22:16:54 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4WzPgq59dZz4f3jdm;
+	Wed,  4 Sep 2024 22:16:55 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.252])
-	by mail.maildlp.com (Postfix) with ESMTP id A50291A0D51;
+	by mail.maildlp.com (Postfix) with ESMTP id B75D41A07B6;
 	Wed,  4 Sep 2024 22:17:10 +0800 (CST)
 Received: from ultra.huawei.com (unknown [10.90.53.71])
-	by APP3 (Coremail) with SMTP id _Ch0CgBnvIjfa9hmXCB4AQ--.21574S4;
+	by APP3 (Coremail) with SMTP id _Ch0CgBnvIjfa9hmXCB4AQ--.21574S5;
 	Wed, 04 Sep 2024 22:17:10 +0800 (CST)
 From: Pu Lehui <pulehui@huaweicloud.com>
 To: bpf@vger.kernel.org,
@@ -59,9 +59,9 @@ Cc: Andrii Nakryiko <andrii@kernel.org>,
 	Jiri Olsa <jolsa@kernel.org>,
 	Palmer Dabbelt <palmer@dabbelt.com>,
 	Pu Lehui <pulehui@huawei.com>
-Subject: [PATCH bpf-next v2 02/10] selftests/bpf: Rename fallback in bpf_dctcp to avoid naming conflict
-Date: Wed,  4 Sep 2024 14:19:43 +0000
-Message-Id: <20240904141951.1139090-3-pulehui@huaweicloud.com>
+Subject: [PATCH bpf-next v2 03/10] selftests/bpf: Disable feature-llvm for vmtest
+Date: Wed,  4 Sep 2024 14:19:44 +0000
+Message-Id: <20240904141951.1139090-4-pulehui@huaweicloud.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240904141951.1139090-1-pulehui@huaweicloud.com>
 References: <20240904141951.1139090-1-pulehui@huaweicloud.com>
@@ -72,12 +72,12 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_Ch0CgBnvIjfa9hmXCB4AQ--.21574S4
-X-Coremail-Antispam: 1UD129KBjvJXoWxCFW8GF1fAF15Zr48ZrW5ZFb_yoW5CF4kpa
-	4kZ3yYyF1xJFW3Jw17GrWqgFWFkws5XrWYkan7Wr15Ar17XryxWrs7KF4Yga9xWrZ5uwnx
-	Aas2g3s3Ar1kZ37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID:_Ch0CgBnvIjfa9hmXCB4AQ--.21574S5
+X-Coremail-Antispam: 1UD129KBjvJXoW7Aw4UZFyxJr13uFyUJr4xWFg_yoW8ur43pa
+	18G34YkFySqF1YqF1xCrWUWFWrGw4qvFWrX3WIvr90vrnxJr97Xr1xtFWjqFyfW39Iqrs3
+	Aa4IgFyavF18Z37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUUP2b4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUXw
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUWw
 	A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
 	w2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
 	W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
@@ -88,80 +88,64 @@ X-Coremail-Antispam: 1UD129KBjvJXoWxCFW8GF1fAF15Zr48ZrW5ZFb_yoW5CF4kpa
 	67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MI
 	IYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E
 	14v26F4j6r4UJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr
-	0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0I3
-	85UUUUU==
+	0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU04x
+	RDUUUUU==
 X-CM-SenderInfo: psxovxtxl6x35dzhxuhorxvhhfrp/
 
 From: Pu Lehui <pulehui@huawei.com>
 
-Recently, when compiling bpf selftests on RV64, the following
-compilation failure occurred:
+After commit b991fc520700 ("selftests/bpf: utility function to get
+program disassembly after jit"), Makefile will link libLLVM* related
+libraries to the user binary execution file when detecting that
+feature-llvm is enabled, which will cause the local vmtest to appear as
+follows mistake:
 
-progs/bpf_dctcp.c:29:21: error: redefinition of 'fallback' as different kind of symbol
-   29 | volatile const char fallback[TCP_CA_NAME_MAX];
-      |                     ^
-/workspace/tools/testing/selftests/bpf/tools/include/vmlinux.h:86812:15: note: previous definition is here
- 86812 | typedef u32 (*fallback)(u32, const unsigned char *, size_t);
+  ./test_progs: error while loading shared libraries: libLLVM-17.so.1:
+    cannot open shared object file: No such file or directory
 
-The reason is that the `fallback` symbol has been defined in
-arch/riscv/lib/crc32.c, which will cause symbol conflicts when vmlinux.h
-is included in bpf_dctcp. Let we rename `fallback` string to
-`fallback_cc` in bpf_dctcp to fix this compilation failure.
+Considering that the get_jited_program_text() function is a useful tool
+for user debugging and will not be relied upon by the entire bpf
+selftests, let's turn it off in local vmtest.
 
 Signed-off-by: Pu Lehui <pulehui@huawei.com>
 ---
- tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c | 2 +-
- tools/testing/selftests/bpf/progs/bpf_dctcp.c       | 8 ++++----
- 2 files changed, 5 insertions(+), 5 deletions(-)
+ tools/testing/selftests/bpf/Makefile  | 2 ++
+ tools/testing/selftests/bpf/vmtest.sh | 2 +-
+ 2 files changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c b/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
-index 1d494b4453f4..409a06975823 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
-@@ -285,7 +285,7 @@ static void test_dctcp_fallback(void)
- 	dctcp_skel = bpf_dctcp__open();
- 	if (!ASSERT_OK_PTR(dctcp_skel, "dctcp_skel"))
- 		return;
--	strcpy(dctcp_skel->rodata->fallback, "cubic");
-+	strcpy(dctcp_skel->rodata->fallback_cc, "cubic");
- 	if (!ASSERT_OK(bpf_dctcp__load(dctcp_skel), "bpf_dctcp__load"))
- 		goto done;
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index 9905e3739dd0..47aa4f113fed 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -197,6 +197,7 @@ OUTPUT := $(patsubst %/,%,$(OUTPUT))
+ endif
+ endif
  
-diff --git a/tools/testing/selftests/bpf/progs/bpf_dctcp.c b/tools/testing/selftests/bpf/progs/bpf_dctcp.c
-index 02f552e7fd4d..7cd73e75f52a 100644
---- a/tools/testing/selftests/bpf/progs/bpf_dctcp.c
-+++ b/tools/testing/selftests/bpf/progs/bpf_dctcp.c
-@@ -26,7 +26,7 @@ static bool before(__u32 seq1, __u32 seq2)
++ifneq ($(FORCE_FEAT_LLVM_OFF),1)
+ ifeq ($(feature-llvm),1)
+   LLVM_CFLAGS  += -DHAVE_LLVM_SUPPORT
+   LLVM_CONFIG_LIB_COMPONENTS := mcdisassembler all-targets
+@@ -209,6 +210,7 @@ ifeq ($(feature-llvm),1)
+   endif
+   LLVM_LDFLAGS += $(shell $(LLVM_CONFIG) --ldflags)
+ endif
++endif
  
- char _license[] SEC("license") = "GPL";
+ SCRATCH_DIR := $(OUTPUT)/tools
+ BUILD_DIR := $(SCRATCH_DIR)/build
+diff --git a/tools/testing/selftests/bpf/vmtest.sh b/tools/testing/selftests/bpf/vmtest.sh
+index 65d14f3bbe30..ae2e5a5ca279 100755
+--- a/tools/testing/selftests/bpf/vmtest.sh
++++ b/tools/testing/selftests/bpf/vmtest.sh
+@@ -162,7 +162,7 @@ update_selftests()
+ 	local selftests_dir="${kernel_checkout}/tools/testing/selftests/bpf"
  
--volatile const char fallback[TCP_CA_NAME_MAX];
-+volatile const char fallback_cc[TCP_CA_NAME_MAX];
- const char bpf_dctcp[] = "bpf_dctcp";
- const char tcp_cdg[] = "cdg";
- char cc_res[TCP_CA_NAME_MAX];
-@@ -71,10 +71,10 @@ void BPF_PROG(bpf_dctcp_init, struct sock *sk)
- 	struct bpf_dctcp *ca = inet_csk_ca(sk);
- 	int *stg;
+ 	cd "${selftests_dir}"
+-	${make_command}
++	FORCE_FEAT_LLVM_OFF=1 ${make_command}
  
--	if (!(tp->ecn_flags & TCP_ECN_OK) && fallback[0]) {
-+	if (!(tp->ecn_flags & TCP_ECN_OK) && fallback_cc[0]) {
- 		/* Switch to fallback */
- 		if (bpf_setsockopt(sk, SOL_TCP, TCP_CONGESTION,
--				   (void *)fallback, sizeof(fallback)) == -EBUSY)
-+				   (void *)fallback_cc, sizeof(fallback_cc)) == -EBUSY)
- 			ebusy_cnt++;
- 
- 		/* Switch back to myself and the recurred bpf_dctcp_init()
-@@ -87,7 +87,7 @@ void BPF_PROG(bpf_dctcp_init, struct sock *sk)
- 
- 		/* Switch back to fallback */
- 		if (bpf_setsockopt(sk, SOL_TCP, TCP_CONGESTION,
--				   (void *)fallback, sizeof(fallback)) == -EBUSY)
-+				   (void *)fallback_cc, sizeof(fallback_cc)) == -EBUSY)
- 			ebusy_cnt++;
- 
- 		/* Expecting -ENOTSUPP for tcp_cdg_res */
+ 	# Mount the image and copy the selftests to the image.
+ 	mount_image
 -- 
 2.34.1
 
