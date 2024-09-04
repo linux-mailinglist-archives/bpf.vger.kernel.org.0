@@ -1,164 +1,177 @@
-Return-Path: <bpf+bounces-38854-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38855-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E30BE96AD14
-	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2024 01:52:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E813196AD32
+	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2024 02:18:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6F9711F24ED6
-	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2024 23:52:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 292DD1F2554E
+	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2024 00:18:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A19F1D7985;
-	Tue,  3 Sep 2024 23:52:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 057091EBFF0;
+	Wed,  4 Sep 2024 00:18:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jQ3x1OBK"
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="CbVC1616"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
+Received: from mail-qv1-f42.google.com (mail-qv1-f42.google.com [209.85.219.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51F3D1EBFFA;
-	Tue,  3 Sep 2024 23:52:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6F4C391
+	for <bpf@vger.kernel.org>; Wed,  4 Sep 2024 00:18:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725407541; cv=none; b=qy3nT0D1Wki8g+G1KeduI7/Gn3XYhJTsC7TTGMrlQ0uWAO8wS0d1fYYpADKbePI8a001efmIo/BpKg9+Il74DBr4+m/1lx04YkIWrSL+TqRCw2GH7sleYdyJuRgV9dEbEkQaMMSeBR6w9ICgwcgjTRKyA48EPNZ9U/dm2N5mtTE=
+	t=1725409112; cv=none; b=GvF+bSNWpRGzK9ALDQckDGsM4d+KDv+vLLF6R4T2dRIE8ZLPdekBcd9rnSj7ME+7EKMBpojWZ36Mpa6RVpo7orjD9fuJVSvltxlLsTV+Kgl+nh0spZT9duROKRS9FCJx71gMMNSB+Ndaah+KsFOx3EbeQUhqj7Pt1bnG+fuVevk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725407541; c=relaxed/simple;
-	bh=Rc+LSc70d4AplQJyJ0M1PIXuutNFzZXPysC7XLw2Sqk=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=H/4MlYvp0oW6+6TQWx0ka6lim+XcrSLVeg6u8pSMJ/TTQHqUaqKldqlsA97ppb/atysb5LXceIgTaKsf7pygsAFnuCv/AYDfx2TIwYJGVvobOd4Z6HIIkXfuHc5WV7W+mwO7ZfkLFzTt6WFT+3HNE7N5xjy2jeUKZzHGS7vHp/4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jQ3x1OBK; arc=none smtp.client-ip=209.85.215.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-7cd835872ceso4089205a12.3;
-        Tue, 03 Sep 2024 16:52:20 -0700 (PDT)
+	s=arc-20240116; t=1725409112; c=relaxed/simple;
+	bh=I15BAxDBUTieWy0IZOhhAk7ed0bPxi+spKKsUPhhz08=;
+	h=Date:Message-ID:MIME-Version:Content-Type:Content-Disposition:
+	 From:To:Cc:Subject:References:In-Reply-To; b=B9EPoX0TnJzIr/bTrpsXAVV31qkzKcjgFfY7k9AjVmEH567gXCFFTyfLTdyADtYxxUSSbopYs1sr3OQ5TpLgszRNt62bvLQPoIzi3MURp+SJD+strJh7/ywL9+hXKtLJb3lIDDhUQcuAtkSmDX9B/Y8FBITwfhsyVP3CjwU99K4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=CbVC1616; arc=none smtp.client-ip=209.85.219.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
+Received: by mail-qv1-f42.google.com with SMTP id 6a1803df08f44-6c34dd6c21aso20733486d6.2
+        for <bpf@vger.kernel.org>; Tue, 03 Sep 2024 17:18:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1725407539; x=1726012339; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=DPNO5N4+9xfBeJu418CBvO1tBm6F+BZmSva4endPkkg=;
-        b=jQ3x1OBKDcYROY/Sv/IHb22p5pWNTmpsvImq1c6pCAcQTJvND2mneECxqWRQ/+u2Wa
-         kITRJjyiJhAvVHqjdhX4TxAPKkD7VJvBWU60IvUGlqGhD/pUtkqIt6EYWHaJvvvfgDOz
-         5x+Ck6ehTB2/ndTSoe+UMJAp0ahGXnWReSukIpr6Jr2cMOJ60TeSB0Pe1gwqDVlh3qzI
-         34L4TX5KkcLOUlBJAxAOyDT9acbt1XTPiXUEPznLVHyFA7F06qKiSjkTcGP83VKB+BzL
-         VUab8chR5SaV1Pks6mJk9OEbAoNaur7SOE0PGPGAAGneez21igETkxHVg/GwXyYoXwok
-         htOg==
+        d=paul-moore.com; s=google; t=1725409109; x=1726013909; darn=vger.kernel.org;
+        h=in-reply-to:references:subject:cc:to:from:content-transfer-encoding
+         :content-disposition:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=ctskL29EfLAIjmAHt2I735/optYRiZRhKdp9ltI34F8=;
+        b=CbVC1616GTFrLT1zAw2firYrSNh0M0SPwXVNQZ11//LhwuQH9hc9DuBpjDyOVo8CtK
+         hZKHdTRBZhQVrgBRcx5sv/LasrK7PYesidlY1/mLh89QM2PMRO1iUGSIAodiSXYpcJNZ
+         O86Di1daXES5wlfdY3UGDgy3NcslX/61UamGNH7BLuBX0j9mOLk4ZlQa4uY/Aj/4EMEH
+         apZSC78VwGaCQFAt8xpDcoIQXdekTKczxdw1zFNFmKyVAsAdiBcrZJjy+f6FT8Zq3Zpb
+         LVPCPL+dzYjjgHTS0LMt6eez4lDvzLw+wky0g0jD9n0fkakB3iaEFLnetHJdMIuxqu0p
+         uARw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725407539; x=1726012339;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DPNO5N4+9xfBeJu418CBvO1tBm6F+BZmSva4endPkkg=;
-        b=Rf12mJg2+W4mP89kTYPeSqY2PPKT0WR7gLfrRnOQHg01ljwy4CejnhXNGwRINIeC5C
-         EibHdDkI3fEGxqBH8HWjZjkiCh+6aGusNX+3Opi3fiaCdLlYjh0dIBFRStSMZ2gF+XMW
-         ClA5+QiL/mwmpy3mDCCMuiCCL9v5UG2eAEN2S3OWzfPI0rOSxZBoVvg3yn1N4dWuiTPb
-         E1K9sJaRcf/34/k/xi8dUuTjHYPmmGmg6hIpmyzvj6kMcKxuSkB012RqgPy7eDYleCv7
-         UjLQxGUyzfKMBTlStSyJ8NZVG0xC06WjkMGeX20FNQ2TP0r6touk8rsnOPumiRPTUcI9
-         a8cg==
-X-Forwarded-Encrypted: i=1; AJvYcCUOxf46sCcgmUIoUHNEHowgqA5wTND2cwqVjByrUIh3+fk2IH9EFFwjGDPNs26O2/lksWHYkDSNzeroyT+iwts=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyc0sjEbUofEgb/+khPGvv8BS6ZAaGNF5o6GmMrcwrdTWANI+ns
-	JR3ZuMO/AHK0JkAcD4RfwKiXHZZSnEwMZ2zWXLx8sMRy8da4GVjA
-X-Google-Smtp-Source: AGHT+IHJLokfEJGkXlSNIen638fNaPmPP1dVAFyDG92LE7LOuNQ25pqo2VEBvRPY51a+LuAFZ1GRCQ==
-X-Received: by 2002:a17:902:dad1:b0:206:a162:e18e with SMTP id d9443c01a7336-206a162e345mr36605245ad.25.1725407539286;
-        Tue, 03 Sep 2024 16:52:19 -0700 (PDT)
-Received: from kodidev-ubuntu (69-172-146-21.cable.teksavvy.com. [69.172.146.21])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-206aea65b54sm3409345ad.243.2024.09.03.16.52.18
+        d=1e100.net; s=20230601; t=1725409109; x=1726013909;
+        h=in-reply-to:references:subject:cc:to:from:content-transfer-encoding
+         :content-disposition:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ctskL29EfLAIjmAHt2I735/optYRiZRhKdp9ltI34F8=;
+        b=QtrTwwuklsrYGtI/HXmhh6jWCNMAnKfty4fosYTO9tmRbODEfuBWrPtPbsWahIR1mx
+         xvUDvNR+6XRAIYKo55Vb7P6Fqvo/Y3tXcIDIr8yM5wOivMThyNiSPOXQmGi7AKlMRMQf
+         hDTo65qxGz6hgR7Yx+XPEzpH521RgwmV2jt/CGVLfyFcuITu/tVQ0NQDzktdplsWMj9z
+         gOf2D/XLsExGnkR/WiPleL3apdd/gboqxiSpslJUWiMbx+y+NWEGZy9xzVGqD9XTjSmX
+         Htq87PcB6U57ARAASEDc2o9oXbxnYAYZ1G01IXPDRiNMRYuvtBmTbgMxx4txbl5QYUr+
+         cB0g==
+X-Forwarded-Encrypted: i=1; AJvYcCUHciLjDIB4ivgzFTqHMwdjmdXThyYBB1aiG6iJC4H9oTpHyvKMVKFY0pr8iZHj/OJD7s4=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx1h0VaxVCeZLwRyvzVe2savcFAyTm6j+HLujkeUeUSY6xb50fD
+	X+DEN37bW5QC7kjJyZP9As/W6S9oHir6OTtvGRODIXEQOgxHCLvGZPfh8ciRdw==
+X-Google-Smtp-Source: AGHT+IFYJX0OQDlnuyOuBDrX8gGL7waDJfZYhEV62tEOWfBsBjGK1AKaf/72ZP06vAhwNwcLxyT9Jg==
+X-Received: by 2002:a05:6214:4a06:b0:6c5:dc7:577c with SMTP id 6a1803df08f44-6c50dc75934mr51075426d6.2.1725409109526;
+        Tue, 03 Sep 2024 17:18:29 -0700 (PDT)
+Received: from localhost ([70.22.175.108])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6c5122edbfdsm10390956d6.108.2024.09.03.17.18.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Sep 2024 16:52:18 -0700 (PDT)
-From: Tony Ambardar <tony.ambardar@gmail.com>
-X-Google-Original-From: Tony Ambardar <Tony.Ambardar@gmail.com>
-Date: Tue, 3 Sep 2024 16:52:16 -0700
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>,
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-	Ilya Leoshkevich <iii@linux.ibm.com>,
-	Quentin Monnet <qmo@kernel.org>
-Subject: Re: [PATCH bpf-next v5 7/8] libbpf: Support creating light skeleton
- of either endianness
-Message-ID: <ZtehME2iZOzrLaNU@kodidev-ubuntu>
-References: <cover.1725347944.git.tony.ambardar@gmail.com>
- <2b2895eaf3c6ce53397c9d4c8f53d94dd817b398.1725347944.git.tony.ambardar@gmail.com>
- <CAADnVQJeQvKJeJpJVh1BkrkHeY6WOaNFTh4sru-H3=ecO=qd5g@mail.gmail.com>
+        Tue, 03 Sep 2024 17:18:29 -0700 (PDT)
+Date: Tue, 03 Sep 2024 20:18:28 -0400
+Message-ID: <0a6ba6a6dbd423b56801b84b01fa8c41@paul-moore.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+MIME-Version: 1.0 
+Content-Type: text/plain; charset=utf-8 
+Content-Disposition: inline 
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQJeQvKJeJpJVh1BkrkHeY6WOaNFTh4sru-H3=ecO=qd5g@mail.gmail.com>
+From: Paul Moore <paul@paul-moore.com>
+To: Casey Schaufler <casey@schaufler-ca.com>, casey@schaufler-ca.com, linux-security-module@vger.kernel.org
+Cc: jmorris@namei.org, serge@hallyn.com, keescook@chromium.org, john.johansen@canonical.com, penguin-kernel@i-love.sakura.ne.jp, stephen.smalley.work@gmail.com, linux-kernel@vger.kernel.org, selinux@vger.kernel.org, mic@digikod.net, apparmor@lists.ubuntu.com, bpf@vger.kernel.org
+Subject: Re: [PATCH v2 1/13] LSM: Add the lsmblob data structure.
+References: <20240830003411.16818-2-casey@schaufler-ca.com>
+In-Reply-To: <20240830003411.16818-2-casey@schaufler-ca.com>
 
-On Tue, Sep 03, 2024 at 12:57:51PM -0700, Alexei Starovoitov wrote:
-> On Tue, Sep 3, 2024 at 12:34 AM Tony Ambardar <tony.ambardar@gmail.com> wrote:
-> >
-> > @@ -1040,10 +1121,11 @@ void bpf_gen__map_update_elem(struct bpf_gen *gen, int map_idx, void *pvalue,
-> >         int zero = 0;
-> >
-> >         memset(&attr, 0, attr_size);
-> > -       pr_debug("gen: map_update_elem: idx %d\n", map_idx);
-> >
-> >         value = add_data(gen, pvalue, value_size);
-> >         key = add_data(gen, &zero, sizeof(zero));
-> > +       pr_debug("gen: map_update_elem: idx %d, value: off %d size %d\n",
-> > +                map_idx, value, value_size);
-> >
-> >         /* if (map_desc[map_idx].initial_value) {
-> >          *    if (ctx->flags & BPF_SKEL_KERNEL)
-> > @@ -1068,6 +1150,8 @@ void bpf_gen__map_update_elem(struct bpf_gen *gen, int map_idx, void *pvalue,
-> >         emit(gen, BPF_EMIT_CALL(BPF_FUNC_probe_read_kernel));
-> >
-> >         map_update_attr = add_data(gen, &attr, attr_size);
-> > +       pr_debug("gen: map_update_elem: attr: off %d size %d\n",
-> > +                map_update_attr, attr_size);
-> >         move_blob2blob(gen, attr_field(map_update_attr, map_fd), 4,
-> >                        blob_fd_array_off(gen, map_idx));
-> >         emit_rel_store(gen, attr_field(map_update_attr, key), key);
+On Aug 29, 2024 Casey Schaufler <casey@schaufler-ca.com> wrote:
 > 
-> I don't see the point of two pr_debug("gen: map_update_elem...
-> just a few lines from each other.
+> When more than one security module is exporting data to audit and
+> networking sub-systems a single 32 bit integer is no longer
+> sufficient to represent the data. Add a structure to be used instead.
 > 
-> Other than that:
-> Acked-by: Alexei Starovoitov <ast@kernel.org>
+> The lsmblob structure definition is intended to keep the LSM
+> specific information private to the individual security modules.
+> The module specific information is included in a new set of
+> header files under include/lsm. Each security module is allowed
+> to define the information included for its use in the lsmblob.
+> SELinux includes a u32 secid. Smack includes a pointer into its
+> global label list. The conditional compilation based on feature
+> inclusion is contained in the include/lsm files.
+> 
+> Suggested-by: Paul Moore <paul@paul-moore.com>
+> Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
+> Cc: apparmor@lists.ubuntu.com
+> Cc: bpf@vger.kernel.org
+> Cc: selinux@vger.kernel.org
+> Cc: linux-security-module@vger.kernel.org
+> ---
+>  include/linux/lsm/apparmor.h | 17 +++++++++++++++++
+>  include/linux/lsm/bpf.h      | 16 ++++++++++++++++
+>  include/linux/lsm/selinux.h  | 16 ++++++++++++++++
+>  include/linux/lsm/smack.h    | 17 +++++++++++++++++
+>  include/linux/security.h     | 20 ++++++++++++++++++++
+>  5 files changed, 86 insertions(+)
+>  create mode 100644 include/linux/lsm/apparmor.h
+>  create mode 100644 include/linux/lsm/bpf.h
+>  create mode 100644 include/linux/lsm/selinux.h
+>  create mode 100644 include/linux/lsm/smack.h
 
-Thanks for reviewing, Alexei. I agree those could be consolidated, and I
-tested the following patch to do so. I'll include it if another respin is
-needed, or someone else could modify during merge otherwise.
+...
 
---- a/tools/lib/bpf/gen_loader.c
-+++ b/tools/lib/bpf/gen_loader.c
-@@ -1124,8 +1124,6 @@ void bpf_gen__map_update_elem(struct bpf_gen *gen, int map_idx, void *pvalue,
+> diff --git a/include/linux/security.h b/include/linux/security.h
+> index 1390f1efb4f0..0057a22137e8 100644
+> --- a/include/linux/security.h
+> +++ b/include/linux/security.h
+> @@ -34,6 +34,10 @@
+>  #include <linux/sockptr.h>
+>  #include <linux/bpf.h>
+>  #include <uapi/linux/lsm.h>
+> +#include <linux/lsm/selinux.h>
+> +#include <linux/lsm/smack.h>
+> +#include <linux/lsm/apparmor.h>
+> +#include <linux/lsm/bpf.h>
+>  
+>  struct linux_binprm;
+>  struct cred;
+> @@ -140,6 +144,22 @@ enum lockdown_reason {
+>  	LOCKDOWN_CONFIDENTIALITY_MAX,
+>  };
+>  
+> +/* scaffolding */
+> +struct lsmblob_scaffold {
+> +	u32 secid;
+> +};
+> +
+> +/*
+> + * Data exported by the security modules
+> + */
+> +struct lsmblob {
+> +	struct lsmblob_selinux selinux;
+> +	struct lsmblob_smack smack;
+> +	struct lsmblob_apparmor apparmor;
+> +	struct lsmblob_bpf bpf;
+> +	struct lsmblob_scaffold scaffold;
+> +};
 
-        value = add_data(gen, pvalue, value_size);
-        key = add_data(gen, &zero, sizeof(zero));
--       pr_debug("gen: map_update_elem: idx %d, value: off %d size %d\n",
--                map_idx, value, value_size);
+Warning, top shelf bikeshedding follows ...
 
-        /* if (map_desc[map_idx].initial_value) {
-         *    if (ctx->flags & BPF_SKEL_KERNEL)
-@@ -1150,8 +1148,8 @@ void bpf_gen__map_update_elem(struct bpf_gen *gen, int map_idx, void *pvalue,
-        emit(gen, BPF_EMIT_CALL(BPF_FUNC_probe_read_kernel));
+I believe that historically when we've talked about the "LSM blob" we've
+usually been referring to the opaque buffers used to store LSM state that
+we attach to a number of kernel structs using the `void *security` field.
 
-        map_update_attr = add_data(gen, &attr, attr_size);
--       pr_debug("gen: map_update_elem: attr: off %d size %d\n",
--                map_update_attr, attr_size);
-+       pr_debug("gen: map_update_elem: idx %d, value: off %d size %d, attr: off %d size %d\n",
-+                map_idx, value, value_size, map_update_attr, attr_size);
-        move_blob2blob(gen, attr_field(map_update_attr, map_fd), 4,
-                       blob_fd_array_off(gen, map_idx));
-        emit_rel_store(gen, attr_field(map_update_attr, key), key);
+At least that is what I think of when I read "struct lsmblob", and I'd
+like to get ahead of the potential confusion while we still can.
 
+Casey, I'm sure you're priority is simply getting this merged and you
+likely care very little about the name (as long as it isn't too horrible),
+but what about "lsm_ref"?  Other ideas are most definitely welcome.
+
+I'm not going to comment on all the other related occurrences in the
+patchset, but all the "XXX_lsmblob_XXX" functions should be adjusted based
+on what we name the struct, e.g. "XXX_lsmref_XXX".
+
+--
+paul-moore.com
 
