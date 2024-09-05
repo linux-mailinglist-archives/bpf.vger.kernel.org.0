@@ -1,92 +1,80 @@
-Return-Path: <bpf+bounces-38964-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38965-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E72E96D11B
-	for <lists+bpf@lfdr.de>; Thu,  5 Sep 2024 10:00:32 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8359796D14A
+	for <lists+bpf@lfdr.de>; Thu,  5 Sep 2024 10:06:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 436461C24616
-	for <lists+bpf@lfdr.de>; Thu,  5 Sep 2024 08:00:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BC789B23C00
+	for <lists+bpf@lfdr.de>; Thu,  5 Sep 2024 08:06:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6428419415D;
-	Thu,  5 Sep 2024 08:00:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41DB91946A8;
+	Thu,  5 Sep 2024 08:06:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="JEEaNkXn"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VFmwyCbe"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9F2F1925BF
-	for <bpf@vger.kernel.org>; Thu,  5 Sep 2024 08:00:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38257192590;
+	Thu,  5 Sep 2024 08:06:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725523219; cv=none; b=iPUk9X5BpEkZkXpiUf93SVhIzdYhrWP3QYA9Mi9EgvRl6y3TjfL6HsBfKCOoeJVuUEnrohYE7Z+XfYcxGldllaZkkYTapiMtiFhh6ja10leLL80c+1eEuQqWpYX8MAh66U5wuoHb0ztE7xGZ16+I1IAm2h5ayucBXWHlSRosmrE=
+	t=1725523587; cv=none; b=FK+rXAUse9KA6WsYQ4GzMLl+xLoZ49127iM6SfrflGviYY4JWZ5fETt4E1DJl+wP48GMnAuPEVyw5u/dQmerO9YftnQEcH7w+LOid9ES0IigPxjA0wchAWfRh9rXgF7iTqHFice1Fi+Dd60gAUYNW1K3530O1Km+wu+XOkM6uMw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725523219; c=relaxed/simple;
-	bh=BSUExMVgIEzOBG0R8CEOmy3+yDoIc5dtgYLCVfHdhcI=;
+	s=arc-20240116; t=1725523587; c=relaxed/simple;
+	bh=WKO2UxcqMLRTRaAeeOcyehq8cryN89yN45A4vVIyDGo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=s/eBczFj407CZ4bbUVNDG7LZFAS92F4/c67IuqSyFbQqnUtO/sQlVhwjrrTWHX+MeZkZVNUU5R2gMR4WKiC7mu/3VrgERuqFy8GNDvtdUQDTtYa8x3MJmggbZcfBpTlMrvJY2mjQxfvLB2+IN9rKB24QhMAtK6fHSJVWF8hpprA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=JEEaNkXn; arc=none smtp.client-ip=209.85.218.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a8696e9bd24so69074966b.0
-        for <bpf@vger.kernel.org>; Thu, 05 Sep 2024 01:00:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1725523215; x=1726128015; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8CeWOMVsY4lOSTsqa1+JGIPgERJNf7ZpGVHqbFOMj74=;
-        b=JEEaNkXndWfn2uQrPeztfLKbush9Bc2Ws673ozUQD1xCFqimBrKQQ/7GeWpaP1eM4d
-         XuDSimqSUx3fneIJqJxu3V97gDh7MFduyYThjxG1a1OOZWRBatSU4+wG67GpI0Jrk1lN
-         1R7VcYlur49VIrMoDBx8UX+UhAKmil6FZkSx9Oq3UM4lUPc2LHdy0vybqmPYXkGCHyHu
-         rfU1Z2idI9AWOrnwfGF+GXOAPUhon2ZSIc61knamo/al/1t9rJE/B7+/hj9JMtdFn8Ne
-         R6Z3J3sfsopoNWvHSnB/kwEPkCdF95n9Wzd03QiMyCy/ickb1Y2NtF+DnrxwrSHTcelm
-         XBbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725523215; x=1726128015;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8CeWOMVsY4lOSTsqa1+JGIPgERJNf7ZpGVHqbFOMj74=;
-        b=J1+r1t5Iy2XjaZ3kufXMq+3B7JvPM/wdHHbWHyCfUHPo/Da/Q23NjV9NN6yBSEADJ+
-         X92XjZGa3C6WzTGXp7Y54ExZYeZnqpP22GELn8fMdxU8Dj0HbQ22VfGhlOdl/IlOSud3
-         d7OCZUeQGhnHJPq7fbrY8uQLOWbCTtYUJAJCaLkVX6d7RnUuLupzUHL+OarxGZwU/WBI
-         t3+TigpTSSyoK1BxVc+JwMg/s/AXV+UEwrOwBQajWvP2UT1n4tQ+7VsYdS9qsKP+NSaz
-         lh8hsJXrU7SQnBLb4MH2Xvbci/PBEVxc2wM/VPIT4PXqx5W+w5Oi3WY35HEHeyLobXLA
-         IvSw==
-X-Forwarded-Encrypted: i=1; AJvYcCXaMRRCX+n0UD6v5icEzCA+udUvL7O7g1YGU4d6SSErCvdA1sWHPWidi4coAGcNvdKeLWc=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy95dQST4lEuG2hTMZk0s100IL2jc877X9ehrdG84LH0DboRKI8
-	CDi4OgnT8ktICir3oVyyanYyEpyvMgQOHJvsNKVQmQTdoQ97oViRSlJ5dCXTrw==
-X-Google-Smtp-Source: AGHT+IFviDrxNsbRMp4ewEpx5PPQYwyxtIhIxSJX09RAM8NWfw4PRdDyWLHHUzJs7xsj3SHRzGHCRQ==
-X-Received: by 2002:a17:907:9708:b0:a80:7ce0:8b2a with SMTP id a640c23a62f3a-a897f84d44cmr2006052266b.19.1725523213892;
-        Thu, 05 Sep 2024 01:00:13 -0700 (PDT)
-Received: from google.com (172.118.147.34.bc.googleusercontent.com. [34.147.118.172])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a8a623e64e6sm97013066b.219.2024.09.05.01.00.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Sep 2024 01:00:13 -0700 (PDT)
-Date: Thu, 5 Sep 2024 08:00:09 +0000
-From: Matt Bobrowski <mattbobrowski@google.com>
-To: Shung-Hsi Yu <shung-hsi.yu@suse.com>
-Cc: Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	David Vernet <void@manifault.com>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH bpf-next] bpf: use type_may_be_null() helper for
- nullable-param check
-Message-ID: <ZtllCZOrO9b-MDtE@google.com>
-References: <20240905055233.70203-1-shung-hsi.yu@suse.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=pOEtGTHyvuIr9OvQfs8q/4QaHf/Pb/5joVke+hpE19EVt74tDevHQ6rmrHHKRldVT3CS6/GNLZXGIHy22STlcx7syq6vvobmI/j3GrT00TDceAjKPZqa2ayKLiW/6t5SrwW7lUoujrH6b0FpqGlaBTnO3C/O1/8yG87Ta/60o1A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VFmwyCbe; arc=none smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1725523586; x=1757059586;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=WKO2UxcqMLRTRaAeeOcyehq8cryN89yN45A4vVIyDGo=;
+  b=VFmwyCbevgxhEihgYTv1Qzy2Ze8kpE5NeZn+3lBihy4orMQ+bkntsYkl
+   4so/2X0Z9Wy+LqMU3PvNBh2epvhRlyJJQTeteKgQ3n3LAjFLfCLfODaUC
+   +3Wv9dKTIJHDKjTd3j44cFH54NXRW3BmbEg5+umRF//E15WpmgBpIqMFE
+   +ZYG+PoNP1MfKrpphai2e0U4pgABxdDMS3WzbqjDlQ7Q/wfqfKOfR7qDM
+   JjUEGduVdJihJomFVjOCLyXKKROESrhaWFHwkPKJUzrmI4XmJY15QPEmh
+   zcsf42ZEa6/Ob8DrIgrrEe7y0Bev7Fr6ijjd7Amy7SmaBN3eFw/2CIhWv
+   Q==;
+X-CSE-ConnectionGUID: CuhTN51TQvSC3y3+oZYZ9g==
+X-CSE-MsgGUID: dqnHl1ReTAC1gBUs2yy3aw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11185"; a="34794252"
+X-IronPort-AV: E=Sophos;i="6.10,204,1719903600"; 
+   d="scan'208";a="34794252"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2024 01:06:08 -0700
+X-CSE-ConnectionGUID: zjeypNDgQoqznjqWnM5HkA==
+X-CSE-MsgGUID: OZnSaGoFTMKmGzXZwFuFgQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.10,204,1719903600"; 
+   d="scan'208";a="65527709"
+Received: from lkp-server01.sh.intel.com (HELO 9c6b1c7d3b50) ([10.239.97.150])
+  by orviesa009.jf.intel.com with ESMTP; 05 Sep 2024 01:06:06 -0700
+Received: from kbuild by 9c6b1c7d3b50 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1sm7VD-00095l-1J;
+	Thu, 05 Sep 2024 08:06:03 +0000
+Date: Thu, 5 Sep 2024 16:05:18 +0800
+From: kernel test robot <lkp@intel.com>
+To: Sven Schnelle <svens@linux.ibm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH 6/7] tracing: add support for function argument to graph
+ tracer
+Message-ID: <202409051539.ZmGpuZIP-lkp@intel.com>
+References: <20240904065908.1009086-7-svens@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -95,84 +83,85 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240905055233.70203-1-shung-hsi.yu@suse.com>
+In-Reply-To: <20240904065908.1009086-7-svens@linux.ibm.com>
 
-On Thu, Sep 05, 2024 at 01:52:32PM +0800, Shung-Hsi Yu wrote:
-> Commit 980ca8ceeae6 ("bpf: check bpf_dummy_struct_ops program params for
-> test runs") does bitwise AND between reg_type and PTR_MAYBE_NULL, which
-> is correct, but due to type difference the compiler complains:
-> 
->   net/bpf/bpf_dummy_struct_ops.c:118:31: warning: bitwise operation between different enumeration types ('const enum bpf_reg_type' and 'enum bpf_type_flag') [-Wenum-enum-conversion]
->     118 |                 if (info && (info->reg_type & PTR_MAYBE_NULL))
->         |                              ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~
-> 
-> Workaround the warning by moving the type_may_be_null() helper from
-> verifier.c into bpf_verifier.h, and reuse it here to check whether param
-> is nullable.
-> 
-> Fixes: 980ca8ceeae6 ("bpf: check bpf_dummy_struct_ops program params for test runs")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202404241956.HEiRYwWq-lkp@intel.com/
-> Signed-off-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
-> ---
-> Due to kernel test bot not setting the correct email header
-> (reported[1]) Eduard probably never saw the report about the warning
-> (nor did it show up on Patchwork).
-> 
-> 1: https://github.com/intel/lkp-tests/issues/383
-> ---
->  include/linux/bpf_verifier.h   | 5 +++++
->  kernel/bpf/verifier.c          | 5 -----
->  net/bpf/bpf_dummy_struct_ops.c | 2 +-
->  3 files changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-> index 8458632824a4..4513372c5bc8 100644
-> --- a/include/linux/bpf_verifier.h
-> +++ b/include/linux/bpf_verifier.h
-> @@ -927,6 +927,11 @@ static inline bool type_is_sk_pointer(enum bpf_reg_type type)
->  		type == PTR_TO_XDP_SOCK;
->  }
->  
-> +static inline bool type_may_be_null(u32 type)
-> +{
-> +	return type & PTR_MAYBE_NULL;
-> +}
-> +
->
->  static inline void mark_reg_scratched(struct bpf_verifier_env *env, u32 regno)
->  {
->  	env->scratched_regs |= 1U << regno;
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index b806afeba212..53d0556fbbf3 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -383,11 +383,6 @@ static void verbose_invalid_scalar(struct bpf_verifier_env *env,
->  	verbose(env, " should have been in [%d, %d]\n", range.minval, range.maxval);
->  }
->  
-> -static bool type_may_be_null(u32 type)
-> -{
-> -	return type & PTR_MAYBE_NULL;
-> -}
-> -
->  static bool reg_not_null(const struct bpf_reg_state *reg)
->  {
->  	enum bpf_reg_type type;
-> diff --git a/net/bpf/bpf_dummy_struct_ops.c b/net/bpf/bpf_dummy_struct_ops.c
-> index 3ea52b05adfb..f71f67c6896b 100644
-> --- a/net/bpf/bpf_dummy_struct_ops.c
-> +++ b/net/bpf/bpf_dummy_struct_ops.c
-> @@ -115,7 +115,7 @@ static int check_test_run_args(struct bpf_prog *prog, struct bpf_dummy_ops_test_
->  
->  		offset = btf_ctx_arg_offset(bpf_dummy_ops_btf, func_proto, arg_no);
->  		info = find_ctx_arg_info(prog->aux, offset);
-> -		if (info && (info->reg_type & PTR_MAYBE_NULL))
-> +		if (info && type_may_be_null(info->reg_type))
+Hi Sven,
 
-Maybe as part of this clean up, we should also consider replacing all
-the open-coded & PTR_MAYBE_NULL checks with type_may_be_null() which
-we have sprinkled throughout kernel/bpf/verifier.c?
+kernel test robot noticed the following build errors:
 
-/M
+[auto build test ERROR on s390/features]
+[also build test ERROR on tip/x86/core linus/master v6.11-rc6]
+[cannot apply to rostedt-trace/for-next rostedt-trace/for-next-urgent next-20240904]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Sven-Schnelle/tracing-add-ftrace_regs-to-function_graph_enter/20240904-150232
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git features
+patch link:    https://lore.kernel.org/r/20240904065908.1009086-7-svens%40linux.ibm.com
+patch subject: [PATCH 6/7] tracing: add support for function argument to graph tracer
+config: openrisc-allnoconfig (https://download.01.org/0day-ci/archive/20240905/202409051539.ZmGpuZIP-lkp@intel.com/config)
+compiler: or1k-linux-gcc (GCC) 14.1.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240905/202409051539.ZmGpuZIP-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202409051539.ZmGpuZIP-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   In file included from include/linux/perf_event.h:52,
+                    from include/linux/trace_events.h:10,
+                    from include/trace/syscall.h:7,
+                    from include/linux/syscalls.h:93,
+                    from kernel/time/time.c:33:
+>> include/linux/ftrace.h:1013:28: error: field 'regs' has incomplete type
+    1013 |         struct ftrace_regs regs;
+         |                            ^~~~
+--
+   In file included from include/linux/perf_event.h:52,
+                    from include/linux/trace_events.h:10,
+                    from include/trace/syscall.h:7,
+                    from include/linux/syscalls.h:93,
+                    from kernel/time/hrtimer.c:30:
+>> include/linux/ftrace.h:1013:28: error: field 'regs' has incomplete type
+    1013 |         struct ftrace_regs regs;
+         |                            ^~~~
+   kernel/time/hrtimer.c:121:35: warning: initialized field overwritten [-Woverride-init]
+     121 |         [CLOCK_REALTIME]        = HRTIMER_BASE_REALTIME,
+         |                                   ^~~~~~~~~~~~~~~~~~~~~
+   kernel/time/hrtimer.c:121:35: note: (near initialization for 'hrtimer_clock_to_base_table[0]')
+   kernel/time/hrtimer.c:122:35: warning: initialized field overwritten [-Woverride-init]
+     122 |         [CLOCK_MONOTONIC]       = HRTIMER_BASE_MONOTONIC,
+         |                                   ^~~~~~~~~~~~~~~~~~~~~~
+   kernel/time/hrtimer.c:122:35: note: (near initialization for 'hrtimer_clock_to_base_table[1]')
+   kernel/time/hrtimer.c:123:35: warning: initialized field overwritten [-Woverride-init]
+     123 |         [CLOCK_BOOTTIME]        = HRTIMER_BASE_BOOTTIME,
+         |                                   ^~~~~~~~~~~~~~~~~~~~~
+   kernel/time/hrtimer.c:123:35: note: (near initialization for 'hrtimer_clock_to_base_table[7]')
+   kernel/time/hrtimer.c:124:35: warning: initialized field overwritten [-Woverride-init]
+     124 |         [CLOCK_TAI]             = HRTIMER_BASE_TAI,
+         |                                   ^~~~~~~~~~~~~~~~
+   kernel/time/hrtimer.c:124:35: note: (near initialization for 'hrtimer_clock_to_base_table[11]')
+
+
+vim +/regs +1013 include/linux/ftrace.h
+
+  1006	
+  1007	/*
+  1008	 * Structure that defines an entry function trace.
+  1009	 * It's already packed but the attribute "packed" is needed
+  1010	 * to remove extra padding at the end.
+  1011	 */
+  1012	struct ftrace_graph_ent {
+> 1013		struct ftrace_regs regs;
+  1014		unsigned long func; /* Current function */
+  1015		int depth;
+  1016	} __packed;
+  1017	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
