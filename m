@@ -1,159 +1,129 @@
-Return-Path: <bpf+bounces-39053-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39054-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 727C696E24D
-	for <lists+bpf@lfdr.de>; Thu,  5 Sep 2024 20:52:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7281A96E2BF
+	for <lists+bpf@lfdr.de>; Thu,  5 Sep 2024 21:09:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8F6C61C2307F
-	for <lists+bpf@lfdr.de>; Thu,  5 Sep 2024 18:52:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C5381F21622
+	for <lists+bpf@lfdr.de>; Thu,  5 Sep 2024 19:09:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECAEB188A16;
-	Thu,  5 Sep 2024 18:52:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B03018CBF6;
+	Thu,  5 Sep 2024 19:08:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="S21tY5rN"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BNgLQUUg"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03AEF8288C;
-	Thu,  5 Sep 2024 18:52:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE37D188017;
+	Thu,  5 Sep 2024 19:08:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725562346; cv=none; b=Dkjakll3P0H5EGGLEUgp0Qv3DyheFR5hCJ6OWUM/5Z+JA0IWGkyvyiXLN61W3murYh8fzCfyIwmh5sFqfdEq3ngXtt+5F0i0p8Uf09eoyM2VgS4kw14A2wCHoTiW56tCo4IB5jKeOSeZnIf3k7XxwfuKrNt8YYgRzE32AoQW4VM=
+	t=1725563337; cv=none; b=RKM3AB4sfDjfvY8vB0f+nJPQJMpkFGFR6iIhTeqTV5+xaY0xSk+HVp+ywJhThWb268O/zel5+PH+bHdq1Es6lQjXWdGoGKZAIn8cKWILe1UC0PVngpHW5tZDfY9fFfNsegGFJZ8R9ClGTaoWAiWpCWef5JebhQpXO03UdocpERA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725562346; c=relaxed/simple;
-	bh=BdopyJOmH9VtRvmZP+9t7/2flw2hxsb3XB0F/xi5yKg=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=Hyj73iUaqI2M7B9NiK3ORYpfdSis2t1K8NTtN80oAJj68If+Oxbo4g+hScOFaONzJa0Od8u+wZC0OahgQp0V8D0JkMPbjbbhSYFwPgUyKNNOnWgBSBGgR+6+tH9DFDcEUH+fICmh4yFAMC5kQrQrF+t+w7gjgaqz+YZAouuaBcU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=S21tY5rN; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=3JdRgnFAFmyWl8pgpB+J2k4MqOvYT4UaKoiSnuu0LXA=; b=S21tY5rN3er41xJSdwiH8OfzRy
-	Rk7tJQIyqHgyB2yyDwwOGj/edEB1ooqUmWo0LP65DzF8mx8ArPyvStghCtbRcmAWVUQKamjATRV+z
-	lC9fDNcwBwdveB4RGGUA1fSy43X+zGyH3EO51JqfwHmz8GZTPeq7XngHVlTxWvwxTHRbbT7VLmwnD
-	Z68HKHgbUc9l5eCQZaFC0l6+CVa1pev1rd1+6rOJGaGhcfV/RkQTsGb5B3exjqj3k9AC74Oy08uAL
-	13Yr5oY5iFLhJH9UKP3GGvg819BebTAOLdZKPtLxGAKdIMfoLIsqm5TZnRAXpoDIUwXa4OfBfQ95D
-	4gsrhcNg==;
-Received: from sslproxy07.your-server.de ([78.47.199.104])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1smHaY-000ODB-A9; Thu, 05 Sep 2024 20:52:14 +0200
-Received: from [178.197.248.15] (helo=linux.home)
-	by sslproxy07.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1smHaW-000Fzm-1t;
-	Thu, 05 Sep 2024 20:52:13 +0200
-Subject: Re: [PATCH bpf-next v3 00/10] Local vmtest enhancement and RV64
- enabled
-To: Pu Lehui <pulehui@huaweicloud.com>, bpf@vger.kernel.org,
- linux-riscv@lists.infradead.org, netdev@vger.kernel.org
-Cc: Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman
- <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>,
- =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
- Puranjay Mohan <puranjay@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
- Pu Lehui <pulehui@huawei.com>
-References: <20240905081401.1894789-1-pulehui@huaweicloud.com>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <e9816f7c-a603-c73e-5fcc-71bbcf6c6ca3@iogearbox.net>
-Date: Thu, 5 Sep 2024 20:52:12 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+	s=arc-20240116; t=1725563337; c=relaxed/simple;
+	bh=q1Fy017CFb6Bbpx7ghXm1lRoJCLBeFToPzSL430Hgh4=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=EmHUEV2c6IkMQB+ks3lkbC/GAntVcd0L95N6LbbDgj+8GpmtS02QV5Qks0FzUVGnfl8MrfPjQH6iDpL5LDD046ggmPxcQ5XReXF1nIi85B2V1RXxclxCcUhC9Rkd43/Q6vKcSGu1Df7p08e2A1nU/VrrZ5aOq2v7V+3M0w0goDo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BNgLQUUg; arc=none smtp.client-ip=209.85.210.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-71798a15ce5so433411b3a.0;
+        Thu, 05 Sep 2024 12:08:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1725563335; x=1726168135; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=ktRJzR4qJmV7Uc7ETcluo4W/n/wNjkmgtnZv3eXOJQY=;
+        b=BNgLQUUgMykdAH+yHdY22gyRgVRhpHvZzsCpd33J3ktZGne5H+tqkN1wlCBfCzlyyj
+         +BGzx2Ed6waxNLa+wYAUiqlElX8pc48V6c7xsjbdVe/C6KHhQY3jQDGcy3vrZUq63bEq
+         MfIwnSMDwejeGHXS/rqMqo97R2ldAlBpBsaBDeXG+UaoVpP/ISu0F5qGNJiwBw3jS2gO
+         nOatRncG96Kkt8iB93JsMMqWHpAfZ2a+w0RDD96uYUgJslPE6Q+b1fJCaxZ+BGT5BzGv
+         bYwSRDFG6VxLbz5e8YFbXKuG9vyTtP161NaFQrQrMuOL52c5v6ISefSz37kpK/7bts6F
+         wcSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1725563335; x=1726168135;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ktRJzR4qJmV7Uc7ETcluo4W/n/wNjkmgtnZv3eXOJQY=;
+        b=oua8XunWQlN1FOgvtdcvUjuSEDmctK1WgyU7hrDftD6U7eP86AjEVdZOEknims1YhJ
+         vdWcSTD+IwMvdTT/JG5x98qxS1mlDG8nTBE8Q3NEwLnM3hsjeZrBflk/PMgz6QTyoVzy
+         R3wL7lBrN+mSu7MD6F/4Ac/bT5L7iIs3oThIMgJ6c3Dv0babFSEYekvzJvDMMbERMHxq
+         CtSrebc2Cb1Zoop2ANTQQ7gsrHALaF5lIfmm8kENXfEu6t9nXbdKUeACFE51L/HQahgR
+         yMKDhoMI6pxMDMBHqCLcJkGu0gAqmp0qKhV/EB+1lYGTUmssmfozS40PYhQ8YAq3UeLe
+         P8KA==
+X-Forwarded-Encrypted: i=1; AJvYcCUiw7vM/Lh5XZ84/BONuQmrybM1UO5eml6r9EyCrE+IM9D9K1lPegEv8jZpXqE/c3G+0Q4ShIYL+ZNGfDDf@vger.kernel.org, AJvYcCUpvil8UdS1IWJXvNUCt3cSc6OlkRbt2gUlBNB1gtIc2KqSXEERLnr/mIAAqu7cfBa3HQM=@vger.kernel.org, AJvYcCVjNARCdcNAQCojYYsSwqbuqy28d0U8B12vXQ2TlSnoH8Ys8R7wJesc3ep9V7mHBr+7xpHUETJN@vger.kernel.org
+X-Gm-Message-State: AOJu0YzVt7HS0NAbMoUXbPEjZjkOUqpIyDBIYcEt4eLxjVXwHwEE+5Mm
+	+y19ls+nYkL2ohEg4cEFZ/297G/n0b9rc4734exyTgWbveAqGw+5
+X-Google-Smtp-Source: AGHT+IEK2QM0fU2Xp+jErQWrjhElHAJPMpe2WJ+fM2XLXEzFeC3RWFMokRzrCOQpIrJAmH10hvhRcQ==
+X-Received: by 2002:a05:6a20:b096:b0:1c0:f114:100c with SMTP id adf61e73a8af0-1cf1c1090d2mr404005637.17.1725563334805;
+        Thu, 05 Sep 2024 12:08:54 -0700 (PDT)
+Received: from [192.168.0.235] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-71797f6f668sm584658b3a.47.2024.09.05.12.08.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Sep 2024 12:08:54 -0700 (PDT)
+Message-ID: <2911a33d8c9f408cc8d5863c54ea0ad1eba5de38.camel@gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: use type_may_be_null() helper for
+ nullable-param check
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Shung-Hsi Yu <shung-hsi.yu@suse.com>, bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>,  Andrii Nakryiko <andrii@kernel.org>, Martin KaFai
+ Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,  Yonghong Song
+ <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, KP
+ Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo
+ <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
+ <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, David Vernet
+ <void@manifault.com>, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+  kernel test robot <lkp@intel.com>
+Date: Thu, 05 Sep 2024 12:08:49 -0700
+In-Reply-To: <20240905055233.70203-1-shung-hsi.yu@suse.com>
+References: <20240905055233.70203-1-shung-hsi.yu@suse.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.4 (3.52.4-1.fc40) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240905081401.1894789-1-pulehui@huaweicloud.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27389/Thu Sep  5 10:33:25 2024)
 
-On 9/5/24 10:13 AM, Pu Lehui wrote:
-> Patch 1-3 fix some problem about bpf selftests. Patch 4 add local rootfs
-> image support for vmtest. Patch 5 enable cross-platform testing for
-> vmtest. Patch 6-10 enable vmtest on RV64.
-> 
-> We can now perform cross platform testing for riscv64 bpf using the
-> following command:
-> 
-> PLATFORM=riscv64 CROSS_COMPILE=riscv64-linux-gnu- \
->    tools/testing/selftests/bpf/vmtest.sh \
->    -l <path of local rootfs image> -- \
->    ./test_progs -d \
->        \"$(cat tools/testing/selftests/bpf/DENYLIST.riscv64 \
->            | cut -d'#' -f1 \
->            | sed -e 's/^[[:space:]]*//' \
->                  -e 's/[[:space:]]*$//' \
->            | tr -s '\n' ',' \
->        )\"
-> 
-> For better regression, we rely on commit [0]. And since the work of riscv
-> ftrace to remove stop_machine atomic replacement is in progress, we also
-> need to revert commit [1] [2].
-> 
-> The test platform is x86_64 architecture, and the versions of relevant
-> components are as follows:
->      QEMU: 8.2.0
->      CLANG: 17.0.6 (align to BPF CI)
->      ROOTFS: ubuntu noble (generated by [3])
-> 
-> Link: https://lore.kernel.org/all/20240831071520.1630360-1-pulehui@huaweicloud.com/ [0]
-> Link: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=3308172276db [1]
-> Link: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=7caa9765465f [2]
-> Link: https://github.com/libbpf/ci/blob/main/rootfs/mkrootfs_debian.sh [3]
+On Thu, 2024-09-05 at 13:52 +0800, Shung-Hsi Yu wrote:
+> Commit 980ca8ceeae6 ("bpf: check bpf_dummy_struct_ops program params for
+> test runs") does bitwise AND between reg_type and PTR_MAYBE_NULL, which
+> is correct, but due to type difference the compiler complains:
+>=20
+>   net/bpf/bpf_dummy_struct_ops.c:118:31: warning: bitwise operation betwe=
+en different enumeration types ('const enum bpf_reg_type' and 'enum bpf_typ=
+e_flag') [-Wenum-enum-conversion]
+>     118 |                 if (info && (info->reg_type & PTR_MAYBE_NULL))
+>         |                              ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~
+>=20
+> Workaround the warning by moving the type_may_be_null() helper from
+> verifier.c into bpf_verifier.h, and reuse it here to check whether param
+> is nullable.
+>=20
+> Fixes: 980ca8ceeae6 ("bpf: check bpf_dummy_struct_ops program params for =
+test runs")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202404241956.HEiRYwWq-lkp@i=
+ntel.com/
+> Signed-off-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+> ---
 
-Nice work! Next step is upstream BPF CI integration? :)
+Thank you for this fix.
+Replacing other uses of PTR_MAYBE_NULL suggested by Matt seems like a
+good idea, but it does not preclude merge for this patch.
 
-Fwiw, all still works for me on x86-64 (*), so:
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 
-Acked-by: Daniel Borkmann <daniel@iogearbox.net>
-Tested-by: Daniel Borkmann <daniel@iogearbox.net>
+[...]
 
-(*) fresh Equinix Ubuntu instance still requires this one for vmtest.sh, but
-     that is independent of this series (and for others it seems not required)
-
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 04716a5e43f1..02dd161e5185 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -693,7 +693,7 @@ $(OUTPUT)/$(TRUNNER_BINARY): $(TRUNNER_TEST_OBJS)                   \
-                              $(TRUNNER_BPFTOOL)                         \
-                              | $(TRUNNER_BINARY)-extras
-         $$(call msg,BINARY,,$$@)
--       $(Q)$$(CC) $$(CFLAGS) $$(filter %.a %.o,$$^) $$(LDLIBS) $$(LDFLAGS) -o $$@
-+       $(Q)$$(CC) $$(CFLAGS) $(TRUNNER_LDFLAGS) $$(filter %.a %.o,$$^) $$(LDLIBS) $$(LDFLAGS) -o $$@
-         $(Q)$(RESOLVE_BTFIDS) --btf $(TRUNNER_OUTPUT)/btf_data.bpf.o $$@
-         $(Q)ln -sf $(if $2,..,.)/tools/build/bpftool/$(USE_BOOTSTRAP)bpftool \
-                    $(OUTPUT)/$(if $2,$2/)bpftool
-diff --git a/tools/testing/selftests/bpf/vmtest.sh b/tools/testing/selftests/bpf/vmtest.sh
-index 79505d294c44..afbd6b785064 100755
---- a/tools/testing/selftests/bpf/vmtest.sh
-+++ b/tools/testing/selftests/bpf/vmtest.sh
-@@ -189,7 +189,7 @@ update_selftests()
-         local selftests_dir="${kernel_checkout}/tools/testing/selftests/bpf"
-
-         cd "${selftests_dir}"
--       ${make_command}
-+       TRUNNER_LDFLAGS=-static ${make_command}
-
-         # Mount the image and copy the selftests to the image.
-         mount_image
 
