@@ -1,194 +1,155 @@
-Return-Path: <bpf+bounces-39016-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39017-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1675496D8E0
-	for <lists+bpf@lfdr.de>; Thu,  5 Sep 2024 14:41:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AFFB496D94B
+	for <lists+bpf@lfdr.de>; Thu,  5 Sep 2024 14:50:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8EEB61F28FE4
-	for <lists+bpf@lfdr.de>; Thu,  5 Sep 2024 12:41:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5B8A01F27F2A
+	for <lists+bpf@lfdr.de>; Thu,  5 Sep 2024 12:50:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F23D719B5AA;
-	Thu,  5 Sep 2024 12:41:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE90319C57F;
+	Thu,  5 Sep 2024 12:49:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Q/944Bw+"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jKpk+/+A"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com [209.85.160.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9B0419AD48;
-	Thu,  5 Sep 2024 12:41:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6E4E1991D9;
+	Thu,  5 Sep 2024 12:49:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725540074; cv=none; b=K/WgzY11Y7o2aCuVX8n2+Psvfz+aa15zvZXQvsrJzoH/XE42HFRmWUkURYrIQPpqAujp03ZZ4m3cHEWpnoJIAL0czS9ay9bTPOM5EvJ6SqLSWQph7W4BlQ3kT00rgJVi2KEsNrtTZ58zd7pjuGZ6Y1H/Ykv+oHafS1YnFuoswKA=
+	t=1725540573; cv=none; b=EXyVg4A/Sxe/dF+NLHLuBA0JT328J1XuYaMg312SanZMW4z1tIhoMiCHbi02VJmqUjYQS1p0YTApjMHCAuaQ9OACN2cpCW3zv79nJ4oaQzR2cQ43JdWO+oPAEhzxPOc+Qdh/HOzpsDVat8gZH1etlT2ax4Uuqr3K6cnP8zJYuWc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725540074; c=relaxed/simple;
-	bh=Vmi+1f/dZY2VqSgcwNZ8hfyxCiVY3aGx6vrPWR7PizU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JInSTmaj2yyhiUQ9fHUdg0a/IaZBsxAnutcqbL+UIICzSRMRjd2TE6KdaViTzeeJ1bZ4Y3kLWvnKf0F77YwV9OJVaVQfZWBFSdWg1ad/uo3mSJlb1mc5gs1I/Nns0y6gQlnzGPB3pxZ6xxKNXl08Ap792ayEw8Uxz3YaeaO/il0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Q/944Bw+; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1725540073; x=1757076073;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Vmi+1f/dZY2VqSgcwNZ8hfyxCiVY3aGx6vrPWR7PizU=;
-  b=Q/944Bw+YX9pvELdh1odWY5fiJLev1bsMsr5+KujuThiTfibEWUO1GSu
-   LV11Co7chIiPv8x4f2duFXm7iNJ7O+gyfL44dahy2Tbrx0hAEhvYDJp6c
-   LXjUf1zvA+m+lcOaGdWSX/Ow59Qiblk09SdbydHhDAK1Wnm4s+om4HY19
-   z+D23z3IlL8x2iaBgq3//QLUreFe+ftcBBA3hIeqL4g1smdef8Jy95aJD
-   5vIXdnqRCPT33MQAjGRLwlS8IpOS1u7Oly6HkYsbCIuK8y5+DNKgsWcZa
-   w64MjqaUyX6vRJ6pJVRqTCVqYrhweNWG65bfJ7ILK8nIcbJCuCMcXFaqu
-   g==;
-X-CSE-ConnectionGUID: brb8ncNWSmWrH/VYb9ICPQ==
-X-CSE-MsgGUID: vzMt2iUoTqmC7gICVhdcXg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11185"; a="34919010"
-X-IronPort-AV: E=Sophos;i="6.10,204,1719903600"; 
-   d="scan'208";a="34919010"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2024 05:41:12 -0700
-X-CSE-ConnectionGUID: g0N9q6twQTC2A0FV6dSL6w==
-X-CSE-MsgGUID: kQc8pjfKTDeNleY3Fp7LKg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.10,204,1719903600"; 
-   d="scan'208";a="65301491"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmviesa007.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2024 05:40:57 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.98)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1smBn9-00000005OYX-3K6o;
-	Thu, 05 Sep 2024 15:40:51 +0300
-Date: Thu, 5 Sep 2024 15:40:51 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Uros Bizjak <ubizjak@gmail.com>
-Cc: linux-kernel@vger.kernel.org, Dave Hansen <dave.hansen@linux.intel.com>,
-	Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-	Jani Nikula <jani.nikula@linux.intel.com>,
-	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-	Rodrigo Vivi <rodrigo.vivi@intel.com>,
-	Tvrtko Ursulin <tursulin@ursulin.net>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Hans Verkuil <hverkuil@xs4all.nl>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Eric Biggers <ebiggers@kernel.org>,
-	"Theodore Y. Ts'o" <tytso@mit.edu>,
-	Jaegeuk Kim <jaegeuk@kernel.org>,
-	"Jason A. Donenfeld" <Jason@zx2c4.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Hannes Reinecke <hare@suse.de>,
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Brendan Higgins <brendan.higgins@linux.dev>,
-	David Gow <davidgow@google.com>, Rae Moar <rmoar@google.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Jiri Pirko <jiri@resnulli.us>, Petr Mladek <pmladek@suse.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Stephen Hemminger <stephen@networkplumber.org>,
-	Jamal Hadi Salim <jhs@mojatatu.com>,
-	Cong Wang <xiyou.wangcong@gmail.com>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-	linux-media@vger.kernel.org, linux-mtd@lists.infradead.org,
-	linux-fscrypt@vger.kernel.org, linux-scsi@vger.kernel.org,
-	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	kunit-dev@googlegroups.com
-Subject: Re: [PATCH 00/18] random: Include <linux/percpu.h> and resolve
- circular include dependency
-Message-ID: <Ztmm00eLBQGtiwRM@smile.fi.intel.com>
-References: <20240905122020.872466-1-ubizjak@gmail.com>
+	s=arc-20240116; t=1725540573; c=relaxed/simple;
+	bh=c7RBUKDkdVrWL6djlFZ9hhuOHwJTYVXSlCQOXU7p9yQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=HcDKK2SeLF/QqIZ2I0zGhXuDBv0B/ubQNmU/hTTzn1liRpKlmmMDy9G9F6qlDOMF/7Oce/3PCzPW6TYnct1jKH8Ms5G7J4NTOHmXsG1q4dKIT8qa5jwTs9L55VbM3uOuLBPkHVgZkItJ80V14192ryrAy9G6iid//c5NGLkpPtM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jKpk+/+A; arc=none smtp.client-ip=209.85.160.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qt1-f175.google.com with SMTP id d75a77b69052e-457ce5fda1aso4290711cf.1;
+        Thu, 05 Sep 2024 05:49:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1725540570; x=1726145370; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=vs17e4ooftcJ84yldqyZR0DLaKNs/fDVjQanLMu3ClM=;
+        b=jKpk+/+AD+diIYlsZ4KwUlNuPiC7gtyxuIZ7REguw5CE0mJ6J2Or9yM7G4a8jIh04q
+         /IdJRr5Y7UGmajCFoDeDjmkPhQrAbyQ7sjiiCLPeyFY1qxdWnuzffpkRUu9Q1XqykTct
+         co+ExD0e8kXrh/5X/V7/5hbXezQKVMSFZU8qkvuG/Ns32BvlxryNNKaZmj2ycNvlwweb
+         YqLEP58iorx9sRkoUVcaCcj+pjCvh5Yd5X30+0gTnTDHeLLeylZK6WLzwIzZ17TP8rsy
+         vZiKNftbQ+FRe+fGpFdS3yh1Vlq3gI6Ft4cQN3buK44mJkd6yvkb+Tqox1PlmojpQGpd
+         Wsbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1725540570; x=1726145370;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vs17e4ooftcJ84yldqyZR0DLaKNs/fDVjQanLMu3ClM=;
+        b=kKj7G7J9W3FxZz5scmqGagohObQvWnOsMn67jgvcVyl6Uf23a4BL4VkyQhLM5S2K8U
+         aw7x/MeXI3NkVLTGZCSEGzfE3haxc0NEpl4ThhrQmi5YAsSn0IFDu6KBDO82IUOKq8TJ
+         DJMSbCZrL5L2h+YSlgzLtVfYwStzpiAW5+4KJxjK35cK0OW8LmYRPLSLkBjmzZd/j3Ki
+         i4NmzMRoi7wK2VPzGnlGCKeDzTK7+j9QyDT0+aIgrmmXnHqjRreJLS8VKkD/yLwtQStz
+         g2TXgxhgDiHHaEkfFtPXbhn+RqkOR2OM5+AbW5ilZLwqiOyudo6AL8aA+N6nYKg+cnxQ
+         8fmQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVYbYMFv91otj4btwVrE9Fsx6viOhXwYMF9Hu6w+0G7fA3vHOgDKd3w0rSNDeN7UCdUM1JyBd0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxJCf4pePhkYeSonDfRI3zsKMsV4usjEHbF8FGCCwGF5fWzUKRt
+	3s5CweZcThTAGm0bFfXV0rHxo2ajOwz6Fi4UC8joJIxWfVeUIpoyOVYm7cxxsvUsDytabqQWxrh
+	H7ohH+6qwK2uqdTRwUIfsq210LoBnDZ0CFVcq+/KT
+X-Google-Smtp-Source: AGHT+IG4893ExMAsuFF3XePDFM1RTqtOdBkShXu+XaIzHXAWIIi4yQzgI6vWopXnveUlxufL5mIp56EB2nG36GrW0IA=
+X-Received: by 2002:a05:6214:33c2:b0:6c3:61bd:a10 with SMTP id
+ 6a1803df08f44-6c361bd17a5mr214843096d6.16.1725540569684; Thu, 05 Sep 2024
+ 05:49:29 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240905122020.872466-1-ubizjak@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20240904162808.249160-1-maciej.fijalkowski@intel.com>
+In-Reply-To: <20240904162808.249160-1-maciej.fijalkowski@intel.com>
+From: Magnus Karlsson <magnus.karlsson@gmail.com>
+Date: Thu, 5 Sep 2024 14:49:18 +0200
+Message-ID: <CAJ8uoz0D3SfkJ8vW4d=uurLBBW33oye2+mzYJNXmQoPyM_jVfA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] xsk: bump xsk_queue::queue_empty_descs in xp_can_alloc()
+To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
+	andrii@kernel.org, netdev@vger.kernel.org, magnus.karlsson@intel.com, 
+	bjorn@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, Sep 05, 2024 at 02:17:08PM +0200, Uros Bizjak wrote:
-> There were several attempts to resolve circular include dependency
-> after the addition of percpu.h: 1c9df907da83 ("random: fix circular
-> include dependency on arm64 after addition of percpu.h"), c0842fbc1b18
-> ("random32: move the pseudo-random 32-bit definitions to prandom.h") and
-> finally d9f29deb7fe8 ("prandom: Remove unused include") that completely
-> removes inclusion of <linux/percpu.h>.
-> 
-> Due to legacy reasons, <linux/random.h> includes <linux/prandom.h>, but
-> with the commit entry remark:
-> 
-> --quote--
-> A further cleanup step would be to remove this from <linux/random.h>
-> entirely, and make people who use the prandom infrastructure include
-> just the new header file.  That's a bit of a churn patch, but grepping
-> for "prandom_" and "next_pseudo_random32" "struct rnd_state" should
-> catch most users.
-> 
-> But it turns out that that nice cleanup step is fairly painful, because
-> a _lot_ of code currently seems to depend on the implicit include of
-> <linux/random.h>, which can currently come in a lot of ways, including
-> such fairly core headfers as <linux/net.h>.
-> 
-> So the "nice cleanup" part may or may never happen.
-> --/quote--
-> 
-> __percpu tag is currently defined in include/linux/compiler_types.h,
-> so there is no direct need for the inclusion of <linux/percpu.h>.
-> However, in [1] we would like to repurpose __percpu tag as a named
-> address space qualifier, where __percpu macro uses defines from
-> <linux/percpu.h>.
-> 
-> This patch series is the "nice cleanup" part, and allows us to finally
-> include <linux/percpu.h> in prandom.h.
-> 
-> The whole series was tested by compiling the kernel for x86_64 allconfig
-> and some popular architectures, namely arm64 defconfig, powerpc defconfig
-> and loongarch defconfig.
+On Wed, 4 Sept 2024 at 18:46, Maciej Fijalkowski
+<maciej.fijalkowski@intel.com> wrote:
+>
+> We have STAT_FILL_EMPTY test case in xskxceiver that tries to process
+> traffic with fill queue being empty which currently fails for zero copy
+> ice driver after it started to use xsk_buff_can_alloc() API. That is
+> because xsk_queue::queue_empty_descs is currently only increased from
+> alloc APIs and right now if driver sees that xsk_buff_pool will be
+> unable to provide the requested count of buffers, it bails out early,
+> skipping calls to xsk_buff_alloc{_batch}().
+>
+> Mentioned statistic should be handled in xsk_buff_can_alloc() from the
+> very beginning, so let's add this logic now. Do it by open coding
+> xskq_cons_has_entries() and bumping queue_empty_descs in the middle when
+> fill queue currently has no entries.
 
-Obvious question(s) is(are):
-1) have you seen the Ingo's gigantic patch series towards resolving issues with
-the headers?
-2) if not, please look at the preliminary work and take something from there, I
-believe there are many useful changes already waiting for a couple of years to
-be applied.
+Thanks Maciej.
 
-Because I haven't found any references nor mentions of that in the cover letter
-here and explanation why it was not taking into consideration.
+Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
 
-> [1] https://lore.kernel.org/lkml/20240812115945.484051-4-ubizjak@gmail.com/
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+> Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+> ---
+>  net/xdp/xsk_buff_pool.c | 11 ++++++++++-
+>  net/xdp/xsk_queue.h     |  5 -----
+>  2 files changed, 10 insertions(+), 6 deletions(-)
+>
+> diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
+> index c0e0204b9630..29afa880ffa0 100644
+> --- a/net/xdp/xsk_buff_pool.c
+> +++ b/net/xdp/xsk_buff_pool.c
+> @@ -656,9 +656,18 @@ EXPORT_SYMBOL(xp_alloc_batch);
+>
+>  bool xp_can_alloc(struct xsk_buff_pool *pool, u32 count)
+>  {
+> +       u32 req_count, avail_count;
+> +
+>         if (pool->free_list_cnt >= count)
+>                 return true;
+> -       return xskq_cons_has_entries(pool->fq, count - pool->free_list_cnt);
+> +       req_count = count - pool->free_list_cnt;
+> +
+> +       avail_count = xskq_cons_nb_entries(pool->fq, req_count);
+> +
+> +       if (!avail_count)
+> +               pool->fq->queue_empty_descs++;
+> +
+> +       return avail_count >= req_count;
+>  }
+>  EXPORT_SYMBOL(xp_can_alloc);
+>
+> diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
+> index 6f2d1621c992..406b20dfee8d 100644
+> --- a/net/xdp/xsk_queue.h
+> +++ b/net/xdp/xsk_queue.h
+> @@ -306,11 +306,6 @@ static inline u32 xskq_cons_nb_entries(struct xsk_queue *q, u32 max)
+>         return entries >= max ? max : entries;
+>  }
+>
+> -static inline bool xskq_cons_has_entries(struct xsk_queue *q, u32 cnt)
+> -{
+> -       return xskq_cons_nb_entries(q, cnt) >= cnt;
+> -}
+> -
+>  static inline bool xskq_cons_peek_addr_unchecked(struct xsk_queue *q, u64 *addr)
+>  {
+>         if (q->cached_prod == q->cached_cons)
+> --
+> 2.34.1
+>
+>
 
