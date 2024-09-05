@@ -1,170 +1,203 @@
-Return-Path: <bpf+bounces-39055-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39056-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 216E696E308
-	for <lists+bpf@lfdr.de>; Thu,  5 Sep 2024 21:21:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99B6796E355
+	for <lists+bpf@lfdr.de>; Thu,  5 Sep 2024 21:38:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 96CCC1F2543C
-	for <lists+bpf@lfdr.de>; Thu,  5 Sep 2024 19:21:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B6BC28BEA3
+	for <lists+bpf@lfdr.de>; Thu,  5 Sep 2024 19:38:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 394CB18D65B;
-	Thu,  5 Sep 2024 19:21:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B64F18EFF8;
+	Thu,  5 Sep 2024 19:38:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="As6s0bS4"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="PgrsrglA"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
+Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED2F8154C0D;
-	Thu,  5 Sep 2024 19:21:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62C8B19C579
+	for <bpf@vger.kernel.org>; Thu,  5 Sep 2024 19:38:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725564066; cv=none; b=qjogBwyi31fzuWThhvnmfaDD2/XPKU1vFspZFvHNsgYG+d/6ChlBA4d3/davDYxM+YgvC6opDl2PU7PW0PUKYlCeZwiISjzFExWRlVrNLfFUZXDCu7K2+OzJv8LtpWzUd1K1Zsk4YiQ0UY6lXwbTNnhyodKG9aRMgofAEK8iGa4=
+	t=1725565105; cv=none; b=crWO1s6KSpfGOD9XTVs/Ar7c1BMIZqP8VsgcjnZPw6WdRidBPbbYcr43zEJ/JozIaMt+ZgjZUIs2LsFbJi/CWsBI6FMpEbSLYuvUVbwRk7qLsAjIZjw9PuOm0mJl8vK7FO8fMjdXWJQUFjfc+HROWDROyddIusaNiBy3BpyCoAQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725564066; c=relaxed/simple;
-	bh=+BzS012R6syDeqd0t9o3KQ0U5UhKeDAJauumJpcn38k=;
+	s=arc-20240116; t=1725565105; c=relaxed/simple;
+	bh=3ExggAE1QyD2DYyYaJihx7hvOUyecV4KvcpCDvMVJcM=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ujqSQb9ERShJM5A1PXZJ9OujWW2JlkY0bAhwVzYzk2l03Q4osW7kf+kHBYLsfh+4qdui7Xkomz3x7gSHl1nFyT2agHWY5TQK+3tpcB3baQnEe1QejhKesNlSO68HxTCcRn+k58lBQtCXQiTF3DDVxWSl9jASsDBDuPUz1ghT1SM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=As6s0bS4; arc=none smtp.client-ip=192.198.163.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1725564065; x=1757100065;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=+BzS012R6syDeqd0t9o3KQ0U5UhKeDAJauumJpcn38k=;
-  b=As6s0bS4tUp4wH+XfnQWOCxa1theCyWLQyHtYcnvMYRguivRxkQxl85z
-   365IP4lpBU2zzRWNcizGSFAW936Ug7oOG5mnYWfk6hB8zbBHlqiJCtBF7
-   /1nmrcY3US9RZbk2Oi8hnAmxqK3pebIm+p6HJtWdBqzre6gDNeMvPfi/6
-   z+QDnFqwbI2oWVpWvEE1+Kq3cfsxmLYJwaviPAWYdgMvnLSc7HHb3+DII
-   dwHAyd9HbZRTx7a/D9fKvK2A2LjSvv+TUFWcVc9b68NLott3obWPRAsS2
-   7pzrAWP+XVqqd1dK4bgBDx4nqNYrlFFR5pZp5m0QRqSccGZjbzzW3UYFZ
-   w==;
-X-CSE-ConnectionGUID: sYcTPaQDSeqjYIvWEFow0A==
-X-CSE-MsgGUID: 1BDko2IbT+qzvL7acijf8A==
-X-IronPort-AV: E=McAfee;i="6700,10204,11186"; a="23859638"
-X-IronPort-AV: E=Sophos;i="6.10,205,1719903600"; 
-   d="scan'208";a="23859638"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2024 12:21:02 -0700
-X-CSE-ConnectionGUID: q7v5jfmbQwi6MqIgTseAQw==
-X-CSE-MsgGUID: 7CRiBUEcRtWVIqEX6j2Dtw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.10,205,1719903600"; 
-   d="scan'208";a="88967415"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmviesa002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2024 12:21:02 -0700
-Received: from [10.212.68.73] (kliang2-mobl1.ccr.corp.intel.com [10.212.68.73])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by linux.intel.com (Postfix) with ESMTPS id 29C1520B5782;
-	Thu,  5 Sep 2024 12:21:01 -0700 (PDT)
-Message-ID: <ddfd906c-83cc-490a-a4bb-4fa43793d882@linux.intel.com>
-Date: Thu, 5 Sep 2024 15:20:59 -0400
+	 In-Reply-To:Content-Type; b=WACXGCv5eEmAZXoTknVwFTiYEhQzjIJHokBusDJTOoM96Sb4AGXAtb9FHxAVrsGL7dMkICT7IS78kD9pKm9InzfW+u2ZjKWMGvhxC+0hg0OBY1eIdKYrhEPMr6yQq97wouMUOxWyvAIsKOlJsWGCrx3nenf10toGCwAOCvI7xQI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=PgrsrglA; arc=none smtp.client-ip=95.215.58.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <c56c516a-3e9d-4e42-b5e8-527d6f4cf74b@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1725565099;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=15TQUMpjY6JMKWXQYXO/ngt/J3iHpVAz84riwxrUbNs=;
+	b=PgrsrglAig7cWcbT+SNI9TM8ILC5jf2XhQVOGXvHqla4vXjDX/mVFYps0/S3cecpG/oeL+
+	Sb6vh5y3ww9sq6wtrsDWi0rUXtqr3RYgTiMnjj1Ai3xLHU0iP28EiEuDCPXEdw7+ivtUcV
+	U5JXU2ehM/kXMTan28iae4udZvZkCjo=
+Date: Thu, 5 Sep 2024 12:38:09 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] perf/x86: fix wrong assumption that LBR is only useful
- for sampling events
-To: Andrii Nakryiko <andrii@kernel.org>, linux-perf-users@vger.kernel.org,
- peterz@infradead.org
-Cc: x86@kernel.org, mingo@redhat.com, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org, acme@kernel.org, kernel-team@meta.com,
- stable@vger.kernel.org
-References: <20240905180055.1221620-1-andrii@kernel.org>
+Subject: Re: [PATCH bpf-next v2 1/2] bpf: tcp: prevent bpf_reserve_hdr_opt()
+ from growing skb larger than MTU
+To: Zijian Zhang <zijianzhang@bytedance.com>,
+ Amery Hung <amery.hung@bytedance.com>
+Cc: bpf@vger.kernel.org, edumazet@google.com, davem@davemloft.net,
+ kuba@kernel.org, pabeni@redhat.com, dsahern@kernel.org, ast@kernel.org,
+ daniel@iogearbox.net, andrii@kernel.org, eddyz87@gmail.com,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
+ shuah@kernel.org, xiyou.wangcong@gmail.com, wangdongdong.6@bytedance.com,
+ zhoufeng.zf@bytedance.com
+References: <20240827013736.2845596-1-zijianzhang@bytedance.com>
+ <20240827013736.2845596-2-zijianzhang@bytedance.com>
+ <5186a69b-c53d-4afa-b3be-e6bd272d264f@linux.dev>
+ <955cb3be-1dc4-4ebf-b0de-75c25f393c1e@bytedance.com>
+ <c9cf1c15-5038-4c85-be80-5fff34a2df44@linux.dev>
+ <3e387788-1f5a-4159-9ff5-e53e897ae41c@bytedance.com>
+ <d89a6a41-c109-4033-8eba-1e11c3c6d1f6@linux.dev>
+ <58d770f9-18c7-435b-b14f-215482ee151f@bytedance.com>
 Content-Language: en-US
-From: "Liang, Kan" <kan.liang@linux.intel.com>
-In-Reply-To: <20240905180055.1221620-1-andrii@kernel.org>
-Content-Type: text/plain; charset=UTF-8
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <58d770f9-18c7-435b-b14f-215482ee151f@bytedance.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-
-
-On 2024-09-05 2:00 p.m., Andrii Nakryiko wrote:
-> It's incorrect to assume that LBR can/should only be used with sampling
-> events. BPF subsystem provides bpf_get_branch_snapshot() BPF helper,
-> which expects a properly setup and activated perf event which allows
-> kernel to capture LBR data.
+On 9/5/24 11:19 AM, Zijian Zhang wrote:
+> On 9/3/24 3:38 PM, Martin KaFai Lau wrote:
+>> On 8/30/24 2:02 PM, Zijian Zhang wrote:
+>>> On 8/28/24 6:00 PM, Martin KaFai Lau wrote:
+>>>> On 8/28/24 4:01 PM, Zijian Zhang wrote:
+>>>>> On 8/28/24 2:29 PM, Martin KaFai Lau wrote:
+>>>>>> On 8/26/24 6:37 PM, zijianzhang@bytedance.com wrote:
+>>>>>>> From: Amery Hung <amery.hung@bytedance.com>
+>>>>>>>
+>>>>>>> This series prevents sockops users from accidentally causing packet
+>>>>>>> drops. This can happen when a BPF_SOCK_OPS_HDR_OPT_LEN_CB program
+>>>>>>> reserves different option lengths in tcp_sendmsg().
+>>>>>>>
+>>>>>>> Initially, sockops BPF_SOCK_OPS_HDR_OPT_LEN_CB program will be called to
+>>>>>>> reserve a space in tcp_send_mss(), which will return the MSS for TSO.
+>>>>>>> Then, BPF_SOCK_OPS_HDR_OPT_LEN_CB will be called in __tcp_transmit_skb()
+>>>>>>> again to calculate the actual tcp_option_size and skb_push() the total
+>>>>>>> header size.
+>>>>>>>
+>>>>>>> skb->gso_size is restored from TCP_SKB_CB(skb)->tcp_gso_size, which is
+>>>>>>> derived from tcp_send_mss() where we first call HDR_OPT_LEN. If the
+>>>>>>> reserved opt size is smaller than the actual header size, the len of the
+>>>>>>> skb can exceed the MTU. As a result, ip(6)_fragment will drop the
+>>>>>>> packet if skb->ignore_df is not set.
+>>>>>>>
+>>>>>>> To prevent this accidental packet drop, we need to make sure the
+>>>>>>> second call to the BPF_SOCK_OPS_HDR_OPT_LEN_CB program reserves space
+>>>>>>> not more than the first time. 
+>>>>>>
+>>>>>> iiuc, it is a bug in the bpf prog itself that did not reserve the same 
+>>>>>> header length and caused a drop. It is not the only drop case though for 
+>>>>>> an incorrect bpf prog. There are other cases where a bpf prog can 
+>>>>>> accidentally drop a packet.
+>>>>>>
+>>>>>> Do you have an actual use case that the bpf prog cannot reserve the 
+>>>>>> correct header length for the same sk ?
+>>>>>
+>>>>> That's right, it's the bug of the bpf prog itself. We are trying to have
+>>>>> the error reported earlier in eBPF program, instead of successfully
+>>>>> returning from bpf_sock_ops_reserve_hdr_opt but leading to packet drop
+>>>>> at the end because of it.
+>>>>>
+>>>>> By adding this patch, the `remaining` variable passed to the
+>>>>> bpf_skops_hdr_opt_len will be more precise, it takes the previously
+>>>>> reserved size into account. As a result, if users accidentally set an
+>>>>> option size larger than the reserved size, bpf_sock_ops_reserve_hdr_opt
+>>>>> will return -ENOSPC instead of 0.
+>>>>
+>>>> Putting aside it adds more checks, this adds something pretty unique to the 
+>>>> bpf header option comparing with other dynamic options like sack. e.g. For 
+>>>> tp- >mss_cache, I assume it won't change since the earlier tcp_current_mss() 
+>>>> was called?
+>>>>
+>>>
+>>> Agreed, this check is very unique comparing with other dynamic options.
+>>> How about moving the check into function bpf_skops_hdr_opt_len? It
+>>> already has some logic to check if the context is in tcp_current_mss.
+>>> Does it look more reasonable?
+>>
+>> Yes, it probably may be better to put that into the bpf_skops_hdr_opt_len(). 
+>> This is implementation details which is something for later after figuring out 
+>> if the reserved_opt_spc change is correct and needed.
+>>
+>>>
+>>> `reserved_opt_spc = tp->mss_cache - tcp_skb_seglen(skb)`
+>>> For tp->mss_cache here, yes, I also think it won't change,
+>>
+>> This needs more details and clear explanation on why it is the case and why 
+>> the existing regular bpf prog will continue to work.
+>>
+>> afaik, mss_cache and tcp_skb_seglen() must be in-sync and the same between 
+>> calls for this to work . From thinking about it, it should be but I haven't 
+>> looked at all cases. Missing "- size" does not help the confidence here also.
+>>
+>> Also, when "skb != NULL", I don't understand why the "MAX_TCP_OPTION_SPACE - 
+>> size" is still being considered. I am likely missing something here. If the 
+>> above formula is correct, why reserved_opt_spc is not always used for the 
+>> "skb != NULL" case and still need to be compared with the 
+>> "MAX_TCP_OPTION_SPACE - size"?
+>>
 > 
-> For instance, retsnoop tool ([0]) makes an extensive use of this
-> functionality and sets up perf event as follows:
+> Cases I can think of are as follows,
+> - When it's not a GSO skb, tcp_skb_seglen will simply return skb->len,
+> it might make `tp->mss_cache - tcp_skb_seglen(skb)` a large number.
 > 
-> 	struct perf_event_attr attr;
+> - When we are in tcp_mtu_probe, tp->mss_cache will be smaller than
+> tcp_skb_seglen(skb), which makes the equation again a large number.
+
+In tcp_mtu_probe, mss_cache is (smaller) than the tcp_skb_seglen(skb)?
+
 > 
-> 	memset(&attr, 0, sizeof(attr));
-> 	attr.size = sizeof(attr);
-> 	attr.type = PERF_TYPE_HARDWARE;
-> 	attr.config = PERF_COUNT_HW_CPU_CYCLES;
-> 	attr.sample_type = PERF_SAMPLE_BRANCH_STACK;
-> 	attr.branch_sample_type = PERF_SAMPLE_BRANCH_KERNEL;
 > 
-> Commit referenced in Fixes tag broke this setup by making invalid assumption
-> that LBR is useful only for sampling events. Remove that assumption.
+> "MAX_TCP_OPTION_SPACE - size" is considered here as the strict upper
+> bound, while reserved_opt_spc is expected to be a stricter upper bound.
+> In the above or other cases, where the equation malfunctioned, we can
+> always fall back to the original bound.
+
+Make sense. Thanks for the explanation. The commit message could have used this 
+details.
+
 > 
-> Note, earlier we removed a similar assumption on AMD side of LBR support,
-> see [1] for details.
 > 
->   [0] https://github.com/anakryiko/retsnoop
->   [1] 9794563d4d05 ("perf/x86/amd: Don't reject non-sampling events with configured LBR")
+> I am not sure which way to get the reserved size is better,
+> 1. We could precisely cache the result of the reserved size, may
+> need to have a new field for it, I agree that a field in tcp_sock
+> is overkill.
 > 
-> Cc: stable@vger.kernel.org # 6.8+
-> Fixes: 85846b27072d ("perf/x86: Add PERF_X86_EVENT_NEEDS_BRANCH_STACK flag")
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> ---
->  arch/x86/events/intel/core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-> index 9e519d8a810a..f82a342b8852 100644
-> --- a/arch/x86/events/intel/core.c
-> +++ b/arch/x86/events/intel/core.c
-> @@ -3972,7 +3972,7 @@ static int intel_pmu_hw_config(struct perf_event *event)
->  			x86_pmu.pebs_aliases(event);
->  	}
->  
-> -	if (needs_branch_stack(event) && is_sampling_event(event))
-> +	if (needs_branch_stack(event))
->  		event->hw.flags  |= PERF_X86_EVENT_NEEDS_BRANCH_STACK;
+> 2. In this patch, we use an equation to infer the value of it. There are
+> some concerns with tp->mss_cache and tcp_skb_seglen(skb) here, I agree.
+> If tp->mss_cache and tcp_skb_seglen(skb) might not be in-sync, we may
+> have an underestimated reserved_opt_spc, it may break existing bpf
+> progs. If this method is preferred I will do more investigations to
+> verify it or modify the equation :)
 
-To limit the LBR for a sampling event is to avoid unnecessary branch
-stack setup for a counting event in the sample read. The above change
-should break the sample read case.
+imo, the bpf prog can always use bpf_sk_storage to add fields to a sock and 
+store the previous reserved space there. I think this is the solution you should 
+use in your use case which randomly reserves header space. Adding a field in the 
+tcp_sock feels wrong especially the only use case I am hearing so far is a bpf 
+prog randomly reserving header spaces.
 
-How about the below patch (not test)? Is it good enough for the BPF usage?
+If (2) can be convinced to be correct, improving bpf_reserve_hdr_opt() is fine 
+as long as it does not break the existing program. I expect some tests to cover 
+this.
 
-diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-index 0c9c2706d4ec..8d67cbda916b 100644
---- a/arch/x86/events/intel/core.c
-+++ b/arch/x86/events/intel/core.c
-@@ -3972,8 +3972,12 @@ static int intel_pmu_hw_config(struct perf_event
-*event)
- 		x86_pmu.pebs_aliases(event);
- 	}
-
--	if (needs_branch_stack(event) && is_sampling_event(event))
--		event->hw.flags  |= PERF_X86_EVENT_NEEDS_BRANCH_STACK;
-+	if (needs_branch_stack(event)) {
-+		/* Avoid branch stack setup for counting events in SAMPLE READ */
-+		if (is_sampling_event(event) ||
-+		    !(event->attr.sample_type & PERF_SAMPLE_READ))
-+			event->hw.flags  |= PERF_X86_EVENT_NEEDS_BRANCH_STACK;
-+	}
-
- 	if (branch_sample_counters(event)) {
- 		struct perf_event *leader, *sibling;
-
-
-Thanks,
-Kan
->  
->  	if (branch_sample_counters(event)) {
 
