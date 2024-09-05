@@ -1,42 +1,42 @@
-Return-Path: <bpf+bounces-38984-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38986-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92A5896D1A5
-	for <lists+bpf@lfdr.de>; Thu,  5 Sep 2024 10:15:56 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62F9A96D1AA
+	for <lists+bpf@lfdr.de>; Thu,  5 Sep 2024 10:16:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 47B611F2A556
-	for <lists+bpf@lfdr.de>; Thu,  5 Sep 2024 08:15:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C10C1C221CC
+	for <lists+bpf@lfdr.de>; Thu,  5 Sep 2024 08:16:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32CF0199249;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB38219D06C;
 	Thu,  5 Sep 2024 08:11:25 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0087F199251;
-	Thu,  5 Sep 2024 08:11:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B82E1993B1;
+	Thu,  5 Sep 2024 08:11:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725523884; cv=none; b=fm0qvb00GJdmEPT5IysXF+Brq+ii3UG0rdQVs27/uZagvrMtf5vy6G4XferQNX1Qpir9ZVucbDo1K1vy96kBtGDjtwUdIzeKA8p7SoDsjlGVez3fSNXENVGugB1epbeiAc/YmaCzE2Fl7E03gzyYqG64E3QyoWQ0hKUd2CgbB2g=
+	t=1725523885; cv=none; b=kb2qCabHfrG4QzI+1IWs4tkUmAQPfwI2jma3cuWpgWiVFuY2lRVAgb7aTivi8R5JzPeT8HAQWohEYVPTKwF60rt7mx1qCT4C8LHNy5W0/8k9fxj6bL3mabTb9bO8ExoR3RSsCV4gysN05fV4mPVR4k+IGARsgjjwlxynj/U3EmI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725523884; c=relaxed/simple;
-	bh=yvisZw7rSUnpiD/1gR2nXJ9X28Uo8dA8a+f9fuCjNIk=;
+	s=arc-20240116; t=1725523885; c=relaxed/simple;
+	bh=WLrY4yuwdvfDDvJX6CZddLagP+dCGzsL+3OATvAHk/A=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=dLL5UHzoaWbEFqa9qu25zGaTakk+TdeehEZ50rTWvgXKNHRz9c604y5scfUYcPESYAuLYVWtr1EAderHehvo5kaX+XnE8PhnPVRLBbSq+1EKciknEzDkuuoKk6qFmDqlFxd3SHmXc2tkaYAZp4pQQji0OwW5keLLbPnlRZKF5DA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+	 MIME-Version; b=fedexGpMg88Uw767m/W9/DEQJ+DYGxKXHKcm2qvBrg1iX66WbPU1ICq9k4Wm8M2BlhQU/m8CNo1CC02/oW/IuP7iP/YZpLVYlAjJow/xvTZDefKTa7Ttg3qOAmFZq6Wj++UKxZTqdNwfIVJd8SB8LEs/xwJLaOcJYgoYYSRU+j8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
 Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4WzsWB6bPBz4f3l24;
-	Thu,  5 Sep 2024 16:11:02 +0800 (CST)
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4WzsWF3Zdlz4f3jXS;
+	Thu,  5 Sep 2024 16:11:05 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id CC8E51A058E;
-	Thu,  5 Sep 2024 16:11:18 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 8A21B1A06DC;
+	Thu,  5 Sep 2024 16:11:20 +0800 (CST)
 Received: from ultra.huawei.com (unknown [10.90.53.71])
-	by APP1 (Coremail) with SMTP id cCh0CgD3Ii+gZ9lmMQ7AAQ--.26932S7;
+	by APP1 (Coremail) with SMTP id cCh0CgD3Ii+gZ9lmMQ7AAQ--.26932S8;
 	Thu, 05 Sep 2024 16:11:18 +0800 (CST)
 From: Pu Lehui <pulehui@huaweicloud.com>
 To: bpf@vger.kernel.org,
@@ -59,9 +59,9 @@ Cc: Andrii Nakryiko <andrii@kernel.org>,
 	Jiri Olsa <jolsa@kernel.org>,
 	Palmer Dabbelt <palmer@dabbelt.com>,
 	Pu Lehui <pulehui@huawei.com>
-Subject: [PATCH bpf-next v3 05/10] selftests/bpf: Support local rootfs image for vmtest
-Date: Thu,  5 Sep 2024 08:13:56 +0000
-Message-Id: <20240905081401.1894789-6-pulehui@huaweicloud.com>
+Subject: [PATCH bpf-next v3 06/10] selftests/bpf: Enable cross platform testing for vmtest
+Date: Thu,  5 Sep 2024 08:13:57 +0000
+Message-Id: <20240905081401.1894789-7-pulehui@huaweicloud.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240905081401.1894789-1-pulehui@huaweicloud.com>
 References: <20240905081401.1894789-1-pulehui@huaweicloud.com>
@@ -72,11 +72,11 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgD3Ii+gZ9lmMQ7AAQ--.26932S7
-X-Coremail-Antispam: 1UD129KBjvJXoWxWw1xAF4DZr48Cr4rXw1UJrb_yoW5ZrWfpa
-	1kXw1Ykr9agF13XF1fJrW8WF4rGF1kWry7G34xXrWUuwn3tFykXr1SyFWjqFW3Wa4FqrZx
-	A34SvF98uw1UA3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUPvb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+X-CM-TRANSID:cCh0CgD3Ii+gZ9lmMQ7AAQ--.26932S8
+X-Coremail-Antispam: 1UD129KBjvJXoW3AryxCFyUZFyfCrWrCFyxAFb_yoW7GF4rp3
+	y8Zw42ka48WF1Sgrn7AF409FWfGw4kZrW7Gry8Xw1UZwn7JF9Fyr9ayFWDXrsxW34Syr43
+	ZasagF90kw47Z37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUmFb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
 	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
 	Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
 	rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267
@@ -86,104 +86,157 @@ X-Coremail-Antispam: 1UD129KBjvJXoWxWw1xAF4DZr48Cr4rXw1UJrb_yoW5ZrWfpa
 	z7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2
 	AFwI0_GFv_Wryl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAq
 	x4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6r
-	W5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF
-	7I0E14v26r4UJVWxJr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14
-	v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuY
-	vjxUI-eODUUUU
+	W5MIIYY7kG6xAYrwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1I6r4UMIIF0xvE
+	2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42
+	IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2
+	KfnxnUUI43ZEXa7IUYk9N7UUUUU==
 X-CM-SenderInfo: psxovxtxl6x35dzhxuhorxvhhfrp/
 
 From: Pu Lehui <pulehui@huawei.com>
 
-Support vmtest to use local rootfs image generated by [0] that is
-consistent with BPF CI. Now we can specify the local rootfs image
-through the `-l` parameter like as follows:
+Add support cross platform testing for vmtest. The variable $ARCH in the
+current script is platform semantics, not kernel semantics. Rename it to
+$PLATFORM so that we can easily use $ARCH in cross-compilation. And drop
+`set -u` unbound variable check as we will use CROSS_COMPILE env
+variable. For now, Using PLATFORM= and CROSS_COMPILE= options will
+enable cross platform testing:
 
-  vmtest.sh -l ./libbpf-vmtest-rootfs-2024.08.22-noble-amd64.tar.zst -- ./test_progs
+  PLATFORM=<platform> CROSS_COMPILE=<toolchain> vmtest.sh -- ./test_progs
 
-Meanwhile, some descriptions have been flushed.
-
-Link: https://github.com/libbpf/ci/blob/main/rootfs/mkrootfs_debian.sh [0]
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+Tested-by: Eduard Zingerman <eddyz87@gmail.com>
 Signed-off-by: Pu Lehui <pulehui@huawei.com>
 ---
- tools/testing/selftests/bpf/README.rst |  2 --
- tools/testing/selftests/bpf/vmtest.sh  | 21 ++++++++++++++++-----
- 2 files changed, 16 insertions(+), 7 deletions(-)
+ tools/testing/selftests/bpf/vmtest.sh | 42 ++++++++++++++++++++-------
+ 1 file changed, 31 insertions(+), 11 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/README.rst b/tools/testing/selftests/bpf/README.rst
-index 9b974e425af3..4a1e74b17109 100644
---- a/tools/testing/selftests/bpf/README.rst
-+++ b/tools/testing/selftests/bpf/README.rst
-@@ -85,8 +85,6 @@ In case of linker errors when running selftests, try using static linking:
-           If you want to change pahole and llvm, you can change `PATH` environment
-           variable in the beginning of script.
- 
--.. note:: The script currently only supports x86_64 and s390x architectures.
--
- Additional information about selftest failures are
- documented here.
- 
 diff --git a/tools/testing/selftests/bpf/vmtest.sh b/tools/testing/selftests/bpf/vmtest.sh
-index 87d93f29c565..7bd2b44deb08 100755
+index 7bd2b44deb08..91f940e8ce45 100755
 --- a/tools/testing/selftests/bpf/vmtest.sh
 +++ b/tools/testing/selftests/bpf/vmtest.sh
-@@ -4,9 +4,11 @@
- set -u
+@@ -1,7 +1,6 @@
+ #!/bin/bash
+ # SPDX-License-Identifier: GPL-2.0
+ 
+-set -u
  set -e
  
--# This script currently only works for x86_64 and s390x, as
--# it is based on the VM image used by the BPF CI, which is
--# available only for these architectures.
-+# This script currently only works for the following platforms,
-+# as it is based on the VM image used by the BPF CI, which is
-+# available only for these architectures. We can also specify
-+# the local rootfs image generated by the following script:
-+# https://github.com/libbpf/ci/blob/main/rootfs/mkrootfs_debian.sh
- ARCH="$(uname -m)"
- case "${ARCH}" in
+ # This script currently only works for the following platforms,
+@@ -9,25 +8,31 @@ set -e
+ # available only for these architectures. We can also specify
+ # the local rootfs image generated by the following script:
+ # https://github.com/libbpf/ci/blob/main/rootfs/mkrootfs_debian.sh
+-ARCH="$(uname -m)"
+-case "${ARCH}" in
++PLATFORM="${PLATFORM:-$(uname -m)}"
++case "${PLATFORM}" in
  s390x)
-@@ -34,6 +36,7 @@ aarch64)
- esac
- DEFAULT_COMMAND="./test_progs"
- MOUNT_DIR="mnt"
-+LOCAL_ROOTFS_IMAGE=""
- ROOTFS_IMAGE="root.img"
+ 	QEMU_BINARY=qemu-system-s390x
+ 	QEMU_CONSOLE="ttyS1"
+-	QEMU_FLAGS=(-smp 2)
++	HOST_FLAGS=(-smp 2 -enable-kvm)
++	CROSS_FLAGS=(-smp 2)
+ 	BZIMAGE="arch/s390/boot/vmlinux"
++	ARCH="s390"
+ 	;;
+ x86_64)
+ 	QEMU_BINARY=qemu-system-x86_64
+ 	QEMU_CONSOLE="ttyS0,115200"
+-	QEMU_FLAGS=(-cpu host -smp 8)
++	HOST_FLAGS=(-cpu host -enable-kvm -smp 8)
++	CROSS_FLAGS=(-smp 8)
+ 	BZIMAGE="arch/x86/boot/bzImage"
++	ARCH="x86"
+ 	;;
+ aarch64)
+ 	QEMU_BINARY=qemu-system-aarch64
+ 	QEMU_CONSOLE="ttyAMA0,115200"
+-	QEMU_FLAGS=(-M virt,gic-version=3 -cpu host -smp 8)
++	HOST_FLAGS=(-M virt,gic-version=3 -cpu host -enable-kvm -smp 8)
++	CROSS_FLAGS=(-M virt,gic-version=3 -cpu cortex-a76 -smp 8)
+ 	BZIMAGE="arch/arm64/boot/Image"
++	ARCH="arm64"
+ 	;;
+ *)
+ 	echo "Unsupported architecture"
+@@ -41,7 +46,7 @@ ROOTFS_IMAGE="root.img"
  OUTPUT_DIR="$HOME/.bpf_selftests"
  KCONFIG_REL_PATHS=("tools/testing/selftests/bpf/config"
-@@ -69,6 +72,7 @@ or
+ 	"tools/testing/selftests/bpf/config.vm"
+-	"tools/testing/selftests/bpf/config.${ARCH}")
++	"tools/testing/selftests/bpf/config.${PLATFORM}")
+ INDEX_URL="https://raw.githubusercontent.com/libbpf/ci/master/INDEX"
+ NUM_COMPILE_JOBS="$(nproc)"
+ LOG_FILE_BASE="$(date +"bpf_selftests.%Y-%m-%d_%H-%M-%S")"
+@@ -61,6 +66,10 @@ tools/testing/selftests/bpf. e.g:
+ If no command is specified and a debug shell (-s) is not requested,
+ "${DEFAULT_COMMAND}" will be run by default.
  
- Options:
++Using PLATFORM= and CROSS_COMPILE= options will enable cross platform testing:
++
++  PLATFORM=<platform> CROSS_COMPILE=<toolchain> $0 -- ./test_progs -t test_lsm
++
+ If you build your kernel using KBUILD_OUTPUT= or O= options, these
+ can be passed as environment variables to the script:
  
-+	-l)             Specify the path to the local rootfs image.
- 	-i)		Update the rootfs image with a newer version.
- 	-d)		Update the output directory (default: ${OUTPUT_DIR})
- 	-j)		Number of jobs for compilation, similar to -j in make
-@@ -128,7 +132,11 @@ load_rootfs()
+@@ -100,7 +109,7 @@ newest_rootfs_version()
+ {
+ 	{
+ 	for file in "${!URLS[@]}"; do
+-		if [[ $file =~ ^"${ARCH}"/libbpf-vmtest-rootfs-(.*)\.tar\.zst$ ]]; then
++		if [[ $file =~ ^"${PLATFORM}"/libbpf-vmtest-rootfs-(.*)\.tar\.zst$ ]]; then
+ 			echo "${BASH_REMATCH[1]}"
+ 		fi
+ 	done
+@@ -112,7 +121,7 @@ download_rootfs()
+ 	populate_url_map
+ 
+ 	local rootfsversion="$(newest_rootfs_version)"
+-	local file="${ARCH}/libbpf-vmtest-rootfs-$rootfsversion.tar.zst"
++	local file="${PLATFORM}/libbpf-vmtest-rootfs-$rootfsversion.tar.zst"
+ 
+ 	if [[ ! -v URLS[$file] ]]; then
+ 		echo "$file not found" >&2
+@@ -253,12 +262,17 @@ EOF
  		exit 1
  	fi
  
--	download_rootfs | zstd -d | sudo tar -C "$dir" -x
-+	if [[ -n "${LOCAL_ROOTFS_IMAGE}" ]]; then
-+		cat "${LOCAL_ROOTFS_IMAGE}" | zstd -d | sudo tar -C "$dir" -x
++	if [[ "${PLATFORM}" != "$(uname -m)" ]]; then
++		QEMU_FLAGS=("${CROSS_FLAGS[@]}")
 +	else
-+		download_rootfs | zstd -d | sudo tar -C "$dir" -x
++		QEMU_FLAGS=("${HOST_FLAGS[@]}")
 +	fi
- }
++
+ 	${QEMU_BINARY} \
+ 		-nodefaults \
+ 		-display none \
+ 		-serial mon:stdio \
+ 		"${QEMU_FLAGS[@]}" \
+-		-enable-kvm \
+ 		-m 4G \
+ 		-drive file="${rootfs_img}",format=raw,index=1,media=disk,if=virtio,cache=none \
+ 		-kernel "${kernel_bzimage}" \
+@@ -389,6 +403,11 @@ main()
  
- recompile_kernel()
-@@ -342,8 +350,11 @@ main()
- 	local exit_command="poweroff -f"
- 	local debug_shell="no"
+ 	trap 'catch "$?"' EXIT
  
--	while getopts ':hskid:j:' opt; do
-+	while getopts ':hskl:id:j:' opt; do
- 		case ${opt} in
-+		l)
-+			LOCAL_ROOTFS_IMAGE="$OPTARG"
-+			;;
- 		i)
- 			update_image="yes"
- 			;;
++	if [[ "${PLATFORM}" != "$(uname -m)" ]] && [[ -z "${CROSS_COMPILE}" ]]; then
++		echo "Cross-platform testing needs to specify CROSS_COMPILE"
++		exit 1
++	fi
++
+ 	if [[ $# -eq 0  && "${debug_shell}" == "no" ]]; then
+ 		echo "No command specified, will run ${DEFAULT_COMMAND} in the vm"
+ 	else
+@@ -396,7 +415,8 @@ main()
+ 	fi
+ 
+ 	local kconfig_file="${OUTPUT_DIR}/latest.config"
+-	local make_command="make -j ${NUM_COMPILE_JOBS} KCONFIG_CONFIG=${kconfig_file}"
++	local make_command="make ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} \
++			    -j ${NUM_COMPILE_JOBS} KCONFIG_CONFIG=${kconfig_file}"
+ 
+ 	# Figure out where the kernel is being built.
+ 	# O takes precedence over KBUILD_OUTPUT.
 -- 
 2.34.1
 
