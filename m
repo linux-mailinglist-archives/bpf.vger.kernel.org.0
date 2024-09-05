@@ -1,121 +1,292 @@
-Return-Path: <bpf+bounces-39077-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39078-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD0F596E4DD
-	for <lists+bpf@lfdr.de>; Thu,  5 Sep 2024 23:17:11 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38A3996E5C6
+	for <lists+bpf@lfdr.de>; Fri,  6 Sep 2024 00:33:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7B6502853DA
-	for <lists+bpf@lfdr.de>; Thu,  5 Sep 2024 21:17:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AC8B1B23608
+	for <lists+bpf@lfdr.de>; Thu,  5 Sep 2024 22:33:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D82BE1AD413;
-	Thu,  5 Sep 2024 21:16:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D3811AD413;
+	Thu,  5 Sep 2024 22:33:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gJNfY7lo"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gewDuuRF"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA530172BDF
-	for <bpf@vger.kernel.org>; Thu,  5 Sep 2024 21:16:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C919513D638
+	for <bpf@vger.kernel.org>; Thu,  5 Sep 2024 22:33:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725571001; cv=none; b=Z0614f6iCMEiPEhmitQwnG4PSYBpdPu0fiN2GTLtd0fj2dKpOkKiJG1U3YaPm9dRM9dbRhUyiwo87GZ93vx9ev7VJe47O0yc7BkX/amJrTJr5R6b1k8jJ9SkVq5w7/jebm0lqsXIwGOEmH5ScDSRCKP1+G11XS+YVO5sOHLF49U=
+	t=1725575587; cv=none; b=Oyl/6wEcMoSB1F3fisyKU0ULIWD4ZvFU5MzzpZi01GQZEuN75S6+0TAVl8zwApO+bM+VxkrTPbxSJcqzWWUekTyO5KOjadEcT4zEGVDnF0wn4C919XzDPfSwzb+RAqfetZK5BvVGiNDJuESytZC/sMBIMqFJy2cvIyupEQbXFsY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725571001; c=relaxed/simple;
-	bh=/U56oYodVHS7dpWVocXrXDbGpMjUt9U+S2ou0QXjyos=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=T/8KKFxieEjJ1hiYB3jxgNNdziQxaqqnrTY23v9pHQ0Qo6Z2/qez2gnyQKDvVJZmR7b1CJOpBD3SD0Gty+pY06Quo9VOFKbSF/iJLWBGCrIpuilb0jB45+huMSulwGiYKb9IbBTfI5AM1lKEG6utpI0ojkiMeRjpFzNB/lAtFns=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gJNfY7lo; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1725570998;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=aCS9FGPb22Zp8YOFZ9hjWeIZgSN7BXU4B9ST/Ivvoxw=;
-	b=gJNfY7loo+6uckt5qLJS3t/wG9zrU7YN3odJ4he37lo4dTkYCZMxtF17gJXvwSkG4MBMWk
-	8DfMd3UzdB0fOgI+FzmOEhtQ4N8C/Mlpkvcf+7x0vOijvc6+8WSBN2pp6qYrMde/4NHC2X
-	O5eJcFaJmObx5gIx82nd6rMXJXB4Gy8=
-Received: from mail-oo1-f70.google.com (mail-oo1-f70.google.com
- [209.85.161.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-517-LSGTjjs8O5-0JLBGuJpC7g-1; Thu, 05 Sep 2024 17:16:37 -0400
-X-MC-Unique: LSGTjjs8O5-0JLBGuJpC7g-1
-Received: by mail-oo1-f70.google.com with SMTP id 006d021491bc7-5dfbd897bd7so1220254eaf.0
-        for <bpf@vger.kernel.org>; Thu, 05 Sep 2024 14:16:37 -0700 (PDT)
+	s=arc-20240116; t=1725575587; c=relaxed/simple;
+	bh=3vhJp0gafXSxj7qTeKBhXvIj6lC2WvRDfJr5ePsuRmQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=LwWDEWMzzAj8XnjwwJFCBmRB2Q38Y9PJfzh1gScMHuasckRyWrn/upqc5yhwXuVUPAdCx/DzIJ6ZRynF9XLnxra4MEWCPhgOyQs3Sklqb5fzBE3bOYhu477QyyxMgxouv/4QbAuctZJT1gGIcClFJM/zWEhh93/U+3jymlCgEfA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gewDuuRF; arc=none smtp.client-ip=209.85.218.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a86e5e9ff05so171654066b.1
+        for <bpf@vger.kernel.org>; Thu, 05 Sep 2024 15:33:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1725575584; x=1726180384; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Kr6KEjzL0wHorbPM+3um6VKRgvbYN5MldEnXoiOdpQY=;
+        b=gewDuuRFZrKO5gvfSCUDo6T1+ecqQKituwAi6U4KN3Iw3nAIvBr8CaG1Njl7MmJHkj
+         tIJ6Ei40prVLfnMoWv/WnawFwnHhdhR8a8w9alXxpX++ouAEvLxpmllkt2Y6rA09MzWB
+         hJKA12T50lp+HUn+vHMwgMiMNhqKBj38Jq5M5mcZjFkqHExOkU0yXfEuvS/gIKFXeTXY
+         h76U67B8f3Ml+usCzb1JIUkT2HCUt0sVBlPImDF9J8y/EPn/jTLk52Yydr0DyxHaeW/0
+         pNQ7kEvWl3YvSTaC8z/pjCoa/toliTA6riTKiIBatGId8ji/FI0WqcBmHYY2CY56vWe0
+         1/tw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725570997; x=1726175797;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aCS9FGPb22Zp8YOFZ9hjWeIZgSN7BXU4B9ST/Ivvoxw=;
-        b=ZFfpmKF8dorvDIEEff4rwmSFSdJ21aqW3zjMWSyh7+9USD3AeUcqWneIPwRBKhPFG2
-         DbO04pSXFtQi2szfgZB09c3z+jRVXAdi1e5LPLza1QEmzUkgfOFZBqlMckORuqzUtwqq
-         YuEzQU3U1xUg+WJhIoGoaHXUSoGxWgQmy/TmQ/irnTlHezBW56GxYo/SLWKC0j8mPde3
-         GpRxrGPRp9FSRQWY4AMWk9FbywLSlK3TN/RT97RNO3h4rSd1Wu+UK/m3AqVsA+PzPyjO
-         RCDHqPS6860dYY/e9AK33G18RYCbkK20p+2v9mo72m2Qxi4OV7eJYA/NsVSPfmMONUcf
-         Jw0w==
-X-Forwarded-Encrypted: i=1; AJvYcCWSgYYTs8M8E8pd0bS2BTOhZcYziTpzhVteLaq1kJ1FLWIt5FHcTS34JZnex06KoWqbbIw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxeEMi7yoiJXH7m+iTQavOHGCBEmkjY9OE7NeWJvxbYJA1FXrnP
-	MxHwC9wzqLEmn2JRz+i7KKdhEUWnHL5HX/Qu4omsZlFcyWzDPAhv9tDxepyJZrStKr+XtiAvHFn
-	8w0OZUiLEa/GUb3KswXPkSU2VKcfuCA8ylSU093ZfqOrPzWacqA==
-X-Received: by 2002:a05:6820:220f:b0:5dc:a733:d98a with SMTP id 006d021491bc7-5e1a9d3deaemr460129eaf.7.1725570997213;
-        Thu, 05 Sep 2024 14:16:37 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFcn3lC302r4cvOynTV/pTYo7UP0omv7LrahF3fXXR7CTInjmYCD99NLWRLjJz2kCarVDyMyA==
-X-Received: by 2002:a05:6820:220f:b0:5dc:a733:d98a with SMTP id 006d021491bc7-5e1a9d3deaemr460105eaf.7.1725570996900;
-        Thu, 05 Sep 2024 14:16:36 -0700 (PDT)
-Received: from x1gen2nano ([2600:1700:1ff0:d0e0::40])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6c5201e46a4sm11023736d6.53.2024.09.05.14.16.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Sep 2024 14:16:36 -0700 (PDT)
-Date: Thu, 5 Sep 2024 16:16:34 -0500
-From: Andrew Halaney <ahalaney@redhat.com>
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: Serge Semin <fancer.lancer@gmail.com>, 
-	"Russell King (Oracle)" <linux@armlinux.org.uk>, Alexandre Torgue <alexandre.torgue@foss.st.com>, 
-	Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org, 
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, Jose Abreu <joabreu@synopsys.com>, 
-	linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org, 
-	linux-stm32@st-md-mailman.stormreply.com, Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
-	netdev@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>, 
-	Sneh Shah <quic_snehshah@quicinc.com>, Vinod Koul <vkoul@kernel.org>
-Subject: Re: [PATCH RFC net-next v4 00/14] net: stmmac: convert stmmac "pcs"
- to phylink
-Message-ID: <6ktdiyivdf6pz64mck4hbxxxvvrqmyf5vabuh7zfzfpcm4cu6z@oh43gmbrs2tj>
-References: <ZrCoQZKo74zvKMhT@shell.armlinux.org.uk>
- <rq2wbrm2q3bizgxcnl6kmdiycpldjl6rllsqqgpzfhsfodnd3o@ymdfbxq2gj5j>
- <ZrM8g5KoaBi5L00b@shell.armlinux.org.uk>
- <d3yg5ammwevvcgs3zsy2fdvc45pce5ma2yujz7z2wp3vvpaim6@wgh6bb27c5tb>
- <ce42fknbcp2jxzzcx2fdjs72d3kgw2psbbasgz5zvwcvu26usi@4m4wpvo5sa77>
- <74f3f505-3781-4180-a0f3-f7beb4925b75@lunn.ch>
+        d=1e100.net; s=20230601; t=1725575584; x=1726180384;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Kr6KEjzL0wHorbPM+3um6VKRgvbYN5MldEnXoiOdpQY=;
+        b=blR30R175JwJe++T5taP4GX7QM/ZzO7J1XKQgNItSW5LtqIizCZpzRCChAZjWPHcaa
+         eRTy1+qw7t45GaWeoAd9/dZEm5J4njIujvWpEpX6UIADQCYSJnwTC4oLfMGRusZFAOwt
+         d1J8gfi5HeJIJZ7JO52KeF1BMbUhuAyEufHRAVCIs6XimvJSHds9UC20m4ZaBwOtCDGz
+         z1nqQd+Aa77lmRB9iny+7+LjgRZQwV7kxSItdjupj1sN7nTcPYa1vCGaPiDwBbC1qdg4
+         glSi/hlU2vc319ceY0vIwcYY/0sneC6PCB/PEytPCw5gDvkxpvLbHjcJaAxAhIcF/Uxx
+         lfJw==
+X-Gm-Message-State: AOJu0YzwGrTn/uEkLmsMl8tsZEkAA502zMg3nWPzJq2qN+DhZkSNTpZd
+	NOPkgPNmSKeNjstuLhDZjDkccI1jvMUh9Izc7RVufRsQgSi71SeW
+X-Google-Smtp-Source: AGHT+IGd861SMy6tZKoNUTkzRrj2GoQ91hhAeXOuj1xCDBJul6j8XFsaXHynKe0L5lOfc/anju3ubw==
+X-Received: by 2002:a17:907:7421:b0:a8a:8d81:97a8 with SMTP id a640c23a62f3a-a8a8d81aa63mr2849366b.1.1725575583154;
+        Thu, 05 Sep 2024 15:33:03 -0700 (PDT)
+Received: from [192.168.0.24] (walt-20-b2-v4wan-167837-cust573.vm13.cable.virginm.net. [80.2.18.62])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a8a7e68a345sm71680566b.121.2024.09.05.15.33.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Sep 2024 15:33:02 -0700 (PDT)
+Message-ID: <d70142da-3f08-4d5f-9556-bf442570942d@gmail.com>
+Date: Thu, 5 Sep 2024 23:33:01 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <74f3f505-3781-4180-a0f3-f7beb4925b75@lunn.ch>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next] bpftool: improve btf c dump sorting stability
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+ daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com,
+ Mykyta Yatsenko <yatsenko@meta.com>
+References: <20240905201206.648932-1-mykyta.yatsenko5@gmail.com>
+ <CAEf4BzYnrpdBcTFpA_MsM+6qyW3Cmcte9zhv2vrJsnYKQrFhAQ@mail.gmail.com>
+Content-Language: en-US
+From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+In-Reply-To: <CAEf4BzYnrpdBcTFpA_MsM+6qyW3Cmcte9zhv2vrJsnYKQrFhAQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Thu, Sep 05, 2024 at 11:00:31PM GMT, Andrew Lunn wrote:
-> > Hmmm, I'll poke the bears :)
-> 
-> Russell is away on 'medical leave', cataract surgery. It probably
-> makes sense to wait until he is back.
-> 
-
-Ahh yes, I forgot about that! Thanks for the reminder. I'll be patient
-then and hope is surgery and recovery is smooth :)
-
-Thanks,
-Andrew
+On 05/09/2024 21:31, Andrii Nakryiko wrote:
+> On Thu, Sep 5, 2024 at 1:12 PM Mykyta Yatsenko
+> <mykyta.yatsenko5@gmail.com> wrote:
+>> From: Mykyta Yatsenko <yatsenko@meta.com>
+>>
+>> Existing algorithm for BTF C dump sorting uses only types and names of
+>> the structs and unions for ordering. As dump contains structs with the
+>> same names but different contents, relative to each other ordering of
+>> those structs will be accidental.
+>> This patch addresses this problem by introducing a new sorting field
+>> that contains hash of the struct/union field names and types to
+>> disambiguate comparison of the non-unique named structs.
+>>
+> Did you check how stable generated vmlinux.h now is when just
+> rebuilding kernel with no actual changes? Does it still have some
+> variation?
+It's stable with this change, no variation at all (I tested up to about 5
+times in a row rebuilding kernel and generating vmlinux.h), though, I 
+would not
+be surprised if some edge case for same-named structs is not covered.
+It may get triggered in future by some change in kernel structures.
+> LGTM, but let's keep the btf_type_sort_name() as is? See below.
+>
+>> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+>> ---
+>>   tools/bpf/bpftool/btf.c | 93 ++++++++++++++++++++++++++++++++++-------
+>>   1 file changed, 79 insertions(+), 14 deletions(-)
+>>
+>> diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
+>> index 3b57ba095ab6..0e7151bfc3d5 100644
+>> --- a/tools/bpf/bpftool/btf.c
+>> +++ b/tools/bpf/bpftool/btf.c
+>> @@ -50,6 +50,7 @@ struct sort_datum {
+>>          int type_rank;
+>>          const char *sort_name;
+>>          const char *own_name;
+>> +       __u64 disambig_hash;
+>>   };
+>>
+>>   static const char *btf_int_enc_str(__u8 encoding)
+>> @@ -557,17 +558,6 @@ static const char *btf_type_sort_name(const struct btf *btf, __u32 index, bool f
+>>          const struct btf_type *t = btf__type_by_id(btf, index);
+>>
+>>          switch (btf_kind(t)) {
+>> -       case BTF_KIND_ENUM:
+>> -       case BTF_KIND_ENUM64: {
+>> -               int name_off = t->name_off;
+>> -
+>> -               if (!from_ref && !name_off && btf_vlen(t))
+>> -                       name_off = btf_kind(t) == BTF_KIND_ENUM64 ?
+>> -                               btf_enum64(t)->name_off :
+>> -                               btf_enum(t)->name_off;
+>> -
+>> -               return btf__name_by_offset(btf, name_off);
+>> -       }
+> Why remove this? anonymous enums will usually still have some
+> meaningful prefix for each enumerator value, and so sorting based on
+> those prefixes (effective) still seems useful for more logical
+> ordering
+Removed this just to simplify code a little bit. With the hash
+function we use for disambiguation same-named enums, enums with
+less number of elements would be pushed higher which is decent sorting 
+as well.
+I see why we would prefer to cluster enums with similar prefixes 
+together. I'll
+revert this removal in v2.
+>
+> pw-bot: cr
+>
+>>          case BTF_KIND_ARRAY:
+>>                  return btf_type_sort_name(btf, btf_array(t)->type, true);
+>>          case BTF_KIND_TYPE_TAG:
+>> @@ -584,20 +574,94 @@ static const char *btf_type_sort_name(const struct btf *btf, __u32 index, bool f
+>>          return NULL;
+>>   }
+>>
+>> +static __u64 hasher(__u64 hash, __u64 val)
+>> +{
+>> +       return hash * 31 + val;
+>> +}
+>> +
+>> +static __u64 btf_name_hasher(__u64 hash, const struct btf *btf, __u32 name_off)
+>> +{
+>> +       if (!name_off)
+>> +               return hash;
+>> +
+>> +       return hasher(hash, str_hash(btf__name_by_offset(btf, name_off)));
+>> +}
+>> +
+>> +static __u64 btf_type_disambig_hash(const struct btf *btf, __u32 index, bool include_members)
+> nit: s/index/id/ ?
+Ack
+>
+>> +{
+>> +       const struct btf_type *t = btf__type_by_id(btf, index);
+>> +       int i;
+>> +       size_t hash = 0;
+>> +
+>> +       hash = btf_name_hasher(hash, btf, t->name_off);
+>> +
+>> +       switch (btf_kind(t)) {
+>> +       case BTF_KIND_ENUM:
+>> +       case BTF_KIND_ENUM64:
+>> +               for (i = 0; i < btf_vlen(t); i++) {
+>> +                       __u32 name_off = btf_is_enum(t) ?
+>> +                               btf_enum(t)[i].name_off :
+>> +                               btf_enum64(t)[i].name_off;
+>> +
+>> +                       hash = btf_name_hasher(hash, btf, name_off);
+>> +               }
+>> +               break;
+>> +       case BTF_KIND_STRUCT:
+>> +       case BTF_KIND_UNION:
+>> +               if (!include_members)
+>> +                       break;
+>> +               for (i = 0; i < btf_vlen(t); i++) {
+>> +                       const struct btf_member *m = btf_members(t) + i;
+>> +
+>> +                       hash = btf_name_hasher(hash, btf, m->name_off);
+>> +                       /* resolve field type's name and hash it as well */
+>> +                       hash = hasher(hash, btf_type_disambig_hash(btf, m->type, false));
+>> +               }
+>> +               break;
+>> +       case BTF_KIND_TYPE_TAG:
+>> +       case BTF_KIND_CONST:
+>> +       case BTF_KIND_PTR:
+>> +       case BTF_KIND_VOLATILE:
+>> +       case BTF_KIND_RESTRICT:
+>> +       case BTF_KIND_TYPEDEF:
+>> +       case BTF_KIND_DECL_TAG:
+>> +               hash = hasher(hash, btf_type_disambig_hash(btf, t->type, include_members));
+>> +               break;
+>> +       case BTF_KIND_ARRAY: {
+>> +               struct btf_array *arr = btf_array(t);
+>> +
+>> +               hash = hasher(hash, arr->nelems);
+>> +               hash = hasher(hash, btf_type_disambig_hash(btf, arr->type, include_members));
+>> +               break;
+>> +       }
+>> +       default:
+>> +               break;
+>> +       }
+>> +       return hash;
+>> +}
+>> +
+>>   static int btf_type_compare(const void *left, const void *right)
+>>   {
+>>          const struct sort_datum *d1 = (const struct sort_datum *)left;
+>>          const struct sort_datum *d2 = (const struct sort_datum *)right;
+>>          int r;
+>>
+>> -       if (d1->type_rank != d2->type_rank)
+>> -               return d1->type_rank < d2->type_rank ? -1 : 1;
+>> +       r = d1->type_rank - d2->type_rank;
+>> +       if (r)
+>> +               return r;
+>>
+>>          r = strcmp(d1->sort_name, d2->sort_name);
+>>          if (r)
+>>                  return r;
+>>
+>> -       return strcmp(d1->own_name, d2->own_name);
+>> +       r = strcmp(d1->own_name, d2->own_name);
+>> +       if (r)
+>> +               return r;
+> when I was playing with this code I had stong desire to do something
+> like below to cut down on visual noise
+>
+> r = d1->type_rank - d2->type_rank;
+> r = r ?: strcmp(d1->sort_name, d2->sort_name);
+> r = r ?: strcmp(d1->own_name, d2->own_name);
+> if (r)
+>      return r;
+>
+> WDYT?
+Looks a little hard to parse for me (maybe a skill issue). Early exits 
+help to disregard
+context when reading the code (not sure if this makes sense), so I prefer
+them. Essentially this is the same thing as theexisting code, but more 
+compact,
+makes sense, I'll include it in v2.
+>> +
+>> +       if (d1->disambig_hash != d2->disambig_hash)
+>> +               return d1->disambig_hash < d2->disambig_hash ? -1 : 1;
+>> +
+>> +       return d1->index - d2->index;
+>>   }
+>>
+>>   static struct sort_datum *sort_btf_c(const struct btf *btf)
+>> @@ -618,6 +682,7 @@ static struct sort_datum *sort_btf_c(const struct btf *btf)
+>>                  d->type_rank = btf_type_rank(btf, i, false);
+>>                  d->sort_name = btf_type_sort_name(btf, i, false);
+>>                  d->own_name = btf__name_by_offset(btf, t->name_off);
+>> +               d->disambig_hash = btf_type_disambig_hash(btf, i, true);
+>>          }
+>>
+>>          qsort(datums, n, sizeof(struct sort_datum), btf_type_compare);
+>> --
+>> 2.46.0
+>>
 
 
