@@ -1,44 +1,44 @@
-Return-Path: <bpf+bounces-38962-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38958-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB93F96D0F1
-	for <lists+bpf@lfdr.de>; Thu,  5 Sep 2024 09:57:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5132196D0EA
+	for <lists+bpf@lfdr.de>; Thu,  5 Sep 2024 09:56:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 34DDF285BDE
-	for <lists+bpf@lfdr.de>; Thu,  5 Sep 2024 07:57:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 11C01285914
+	for <lists+bpf@lfdr.de>; Thu,  5 Sep 2024 07:56:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E06BC194AD1;
-	Thu,  5 Sep 2024 07:56:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCC59194122;
+	Thu,  5 Sep 2024 07:56:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="doEQQoTG"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="InjgB6b3"
 X-Original-To: bpf@vger.kernel.org
-Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
+Received: from out30-131.freemail.mail.aliyun.com (out30-131.freemail.mail.aliyun.com [115.124.30.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CD1319340D;
-	Thu,  5 Sep 2024 07:56:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.132
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A4EE19340B;
+	Thu,  5 Sep 2024 07:56:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725522997; cv=none; b=UnY+kKHIqDOcoJcD0ggeWGJozfzEgCxGl2CFz1BfsS/YBbyHCljmuxmXVdRLKFQWa74qyi8aTYUAuBP5+8K2DdH0/9XMPBIOMUAHP29C3kpOiC/WVbj6PrWrw0fLoVLbiRj/oiUKiRfvae1Jm8dA5N4B5lH3MHIZ2WbtvXa23Dw=
+	t=1725522994; cv=none; b=tPk8uwroS0SEKk6cbknquvBy6s2xm+WmuRAUqOqfsYFRJXDkgjlk/Chv963EIO2cWszDt1GZXRMrLIGQbLAKo7WQ49Ww2EXXzA++7RzvA+tzzgxbTBuKEcwvH3ZcIrJBILAoP/XQ+pSJlViW4N9WuFAVhD3ZMzBsWGd7H6wxvz4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725522997; c=relaxed/simple;
-	bh=67C+ySKUMFOl/Vw/EWHL5BU7fz6lIct5OzmIokYnQIQ=;
+	s=arc-20240116; t=1725522994; c=relaxed/simple;
+	bh=oJ5g20RlH+r1YZadkqhgMik60Qt05kzPuIVi50Voc/c=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Yk3T06kUhWX9e0aLjWc7YM0RZqkzu1ZLQA//De9Ba7IPXBCVFlEc57QLIN7YJuI/J6FuigDM1x7R1xpfZoNRepgIJcSPIEFWYiayV3VbDnCvbgbDQamnlerSMCuvKjbsU9HvJSVTeWT0TF4X7oCyfj66It6bPsuFbR9jAnfSyRA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=doEQQoTG; arc=none smtp.client-ip=115.124.30.132
+	 MIME-Version; b=I9qJUKjULd7w/avGWQ7nDVs8O9vzmLp694nIQUrtw4nYN4O6iqbPcLWpm4ZRlLShIDIaSfmBIISNlogbdS5G86svE8mG7Cn2UBPJ264VJ8YGqUCI/+CNvc4sMODK0jonf9sdMk9KMLjH006z5vIKD90KGT7oz/QzLWBHJuJmkt8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=InjgB6b3; arc=none smtp.client-ip=115.124.30.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
 DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=linux.alibaba.com; s=default;
-	t=1725522986; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=XIpXmKG/dvqtkO380OYf1vfqjzkl8IpnbYNB+J/73MQ=;
-	b=doEQQoTG/kdjL2Y7oLNSv/Y5ZA0ZtaZJs/d8Kl+YgCImoiCicQ+F1ePQi8tZ9J9Y4dSwb+EEY9iZtUu0rZymLtLvf/4pIsZHaGJTuh3vPHEFknPKVQlo4J2BdXQ2mHRBuF7gFsTJ+uC0KJmQhAwSkOzXUjizYAAQAYeeyTwYxss=
-Received: from localhost(mailfrom:lulie@linux.alibaba.com fp:SMTPD_---0WEKrrCP_1725522983)
+	t=1725522989; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=JKqdxuX4Wa1ORQ7kxclAATsobclvetQtCCCwpC0uu+E=;
+	b=InjgB6b3i6+KIKo+2wfWdXQiCn67ICIXq2MiYWR77x8ZKMKVEthyPLhtXQwMF9MNQEBg/NdzOKiII67GMLkzuRuXJDdP+obTZNtJbCl/bt15w45MrOnocCTnpIHDhwtWwNXRvYuzXOT4Q+g3U9AgDlTwBGqdCwRi0qOYi0Jqqos=
+Received: from localhost(mailfrom:lulie@linux.alibaba.com fp:SMTPD_---0WEKuTCT_1725522985)
           by smtp.aliyun-inc.com;
-          Thu, 05 Sep 2024 15:56:24 +0800
+          Thu, 05 Sep 2024 15:56:26 +0800
 From: Philo Lu <lulie@linux.alibaba.com>
 To: bpf@vger.kernel.org
 Cc: edumazet@google.com,
@@ -76,9 +76,9 @@ Cc: edumazet@google.com,
 	xuanzhuo@linux.alibaba.com,
 	netdev@vger.kernel.org,
 	linux-trace-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v2 1/5] bpf: Support __nullable argument suffix for tp_btf
-Date: Thu,  5 Sep 2024 15:56:18 +0800
-Message-Id: <20240905075622.66819-2-lulie@linux.alibaba.com>
+Subject: [PATCH bpf-next v2 2/5] selftests/bpf: Add test for __nullable suffix in tp_btf
+Date: Thu,  5 Sep 2024 15:56:19 +0800
+Message-Id: <20240905075622.66819-3-lulie@linux.alibaba.com>
 X-Mailer: git-send-email 2.32.0.3.g01195cf9f
 In-Reply-To: <20240905075622.66819-1-lulie@linux.alibaba.com>
 References: <20240905075622.66819-1-lulie@linux.alibaba.com>
@@ -90,134 +90,111 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Pointers passed to tp_btf were trusted to be valid, but some tracepoints
-do take NULL pointer as input, such as trace_tcp_send_reset(). Then the
-invalid memory access cannot be detected by verifier.
+Add a tracepoint with __nullable suffix in bpf_testmod, and add a
+failure load case:
 
-This patch fix it by add a suffix "__nullable" to the unreliable
-argument. The suffix is shown in btf, and PTR_MAYBE_NULL will be added
-to nullable arguments. Then users must check the pointer before use it.
+$./test_progs -t "module_attach"
+ #173/1   module_attach/handle_tp_btf_nullable_bare:OK
+ #173     module_attach:OK
+ Summary: 1/1 PASSED, 0 SKIPPED, 0 FAILED
 
-A problem here is that we use "btf_trace_##call" to search func_proto.
-As it is a typedef, argument names as well as the suffix are not
-recorded. To solve this, I use bpf_raw_event_map to find
-"__bpf_trace##template" from "btf_trace_##call", and then we can see the
-suffix.
-
-Suggested-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Philo Lu <lulie@linux.alibaba.com>
 ---
- kernel/bpf/btf.c      | 13 +++++++++++++
- kernel/bpf/verifier.c | 36 +++++++++++++++++++++++++++++++++---
- 2 files changed, 46 insertions(+), 3 deletions(-)
+ .../bpf/bpf_testmod/bpf_testmod-events.h         |  6 ++++++
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c      |  2 ++
+ .../selftests/bpf/prog_tests/module_attach.c     | 14 +++++++++++++-
+ .../bpf/progs/test_module_attach_fail.c          | 16 ++++++++++++++++
+ 4 files changed, 37 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/test_module_attach_fail.c
 
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index 1e29281653c62..157f5e1247c81 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -6385,6 +6385,16 @@ static bool prog_args_trusted(const struct bpf_prog *prog)
- 	}
+diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod-events.h b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod-events.h
+index 11ee801e75e7e..6c3b4d4f173ac 100644
+--- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod-events.h
++++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod-events.h
+@@ -34,6 +34,12 @@ DECLARE_TRACE(bpf_testmod_test_write_bare,
+ 	TP_ARGS(task, ctx)
+ );
+ 
++/* Used in bpf_testmod_test_read() to test __nullable suffix */
++DECLARE_TRACE(bpf_testmod_test_nullable_bare,
++	TP_PROTO(struct bpf_testmod_test_read_ctx *ctx__nullable),
++	TP_ARGS(ctx__nullable)
++);
++
+ #undef BPF_TESTMOD_DECLARE_TRACE
+ #ifdef DECLARE_TRACE_WRITABLE
+ #define BPF_TESTMOD_DECLARE_TRACE(call, proto, args, size) \
+diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+index c73d04bc9e9de..9649e7f09fc90 100644
+--- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
++++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+@@ -394,6 +394,8 @@ bpf_testmod_test_read(struct file *file, struct kobject *kobj,
+ 	if (bpf_testmod_loop_test(101) > 100)
+ 		trace_bpf_testmod_test_read(current, &ctx);
+ 
++	trace_bpf_testmod_test_nullable_bare(NULL);
++
+ 	/* Magic number to enable writable tp */
+ 	if (len == 64) {
+ 		struct bpf_testmod_test_writable_ctx writable = {
+diff --git a/tools/testing/selftests/bpf/prog_tests/module_attach.c b/tools/testing/selftests/bpf/prog_tests/module_attach.c
+index 6d391d95f96e0..961d8577d6fab 100644
+--- a/tools/testing/selftests/bpf/prog_tests/module_attach.c
++++ b/tools/testing/selftests/bpf/prog_tests/module_attach.c
+@@ -4,6 +4,7 @@
+ #include <test_progs.h>
+ #include <stdbool.h>
+ #include "test_module_attach.skel.h"
++#include "test_module_attach_fail.skel.h"
+ #include "testing_helpers.h"
+ 
+ static int duration;
+@@ -33,7 +34,7 @@ static int trigger_module_test_writable(int *val)
+ 	return 0;
  }
  
-+static bool prog_arg_maybe_null(const struct bpf_prog *prog, const struct btf *btf,
-+				const struct btf_param *arg)
-+{
-+	if (prog->type != BPF_PROG_TYPE_TRACING ||
-+	    prog->expected_attach_type != BPF_TRACE_RAW_TP)
-+		return false;
+-void test_module_attach(void)
++static void module_attach_succ(void)
+ {
+ 	const int READ_SZ = 456;
+ 	const int WRITE_SZ = 457;
+@@ -115,3 +116,14 @@ void test_module_attach(void)
+ cleanup:
+ 	test_module_attach__destroy(skel);
+ }
 +
-+	return btf_param_match_suffix(btf, arg, "__nullable");
++static void module_attach_fail(void)
++{
++	RUN_TESTS(test_module_attach_fail);
 +}
 +
- int btf_ctx_arg_offset(const struct btf *btf, const struct btf_type *func_proto,
- 		       u32 arg_no)
- {
-@@ -6554,6 +6564,9 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
- 	if (prog_args_trusted(prog))
- 		info->reg_type |= PTR_TRUSTED;
- 
-+	if (prog_arg_maybe_null(prog, btf, &args[arg]))
-+		info->reg_type |= PTR_MAYBE_NULL;
++void test_module_attach(void)
++{
++	module_attach_succ();
++	module_attach_fail();
++}
+diff --git a/tools/testing/selftests/bpf/progs/test_module_attach_fail.c b/tools/testing/selftests/bpf/progs/test_module_attach_fail.c
+new file mode 100644
+index 0000000000000..0f848d8f2f5e8
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/test_module_attach_fail.c
+@@ -0,0 +1,16 @@
++// SPDX-License-Identifier: GPL-2.0
 +
- 	if (tgt_prog) {
- 		enum bpf_prog_type tgt_type;
- 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 217eb0eafa2a6..9ee68ed915dfe 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -28,6 +28,7 @@
- #include <linux/cpumask.h>
- #include <linux/bpf_mem_alloc.h>
- #include <net/xdp.h>
-+#include <linux/trace_events.h>
- 
- #include "disasm.h"
- 
-@@ -21780,6 +21781,8 @@ static int check_non_sleepable_error_inject(u32 btf_id)
- 	return btf_id_set_contains(&btf_non_sleepable_error_inject, btf_id);
- }
- 
-+#define BTF_MAX_NAME_SIZE 128
++#include "vmlinux.h"
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++#include "../bpf_testmod/bpf_testmod.h"
++#include "bpf_misc.h"
 +
- int bpf_check_attach_target(struct bpf_verifier_log *log,
- 			    const struct bpf_prog *prog,
- 			    const struct bpf_prog *tgt_prog,
-@@ -21788,6 +21791,8 @@ int bpf_check_attach_target(struct bpf_verifier_log *log,
- {
- 	bool prog_extension = prog->type == BPF_PROG_TYPE_EXT;
- 	bool prog_tracing = prog->type == BPF_PROG_TYPE_TRACING;
-+	char trace_symbol[BTF_MAX_NAME_SIZE];
-+	const struct bpf_raw_event_map *btp;
- 	const char prefix[] = "btf_trace_";
- 	int ret = 0, subprog = -1, i;
- 	const struct btf_type *t;
-@@ -21795,6 +21800,7 @@ int bpf_check_attach_target(struct bpf_verifier_log *log,
- 	const char *tname;
- 	struct btf *btf;
- 	long addr = 0;
-+	char *fname;
- 	struct module *mod = NULL;
- 
- 	if (!btf_id) {
-@@ -21923,10 +21929,34 @@ int bpf_check_attach_target(struct bpf_verifier_log *log,
- 			return -EINVAL;
- 		}
- 		tname += sizeof(prefix) - 1;
--		t = btf_type_by_id(btf, t->type);
--		if (!btf_type_is_ptr(t))
--			/* should never happen in valid vmlinux build */
++SEC("tp_btf/bpf_testmod_test_nullable_bare")
++__failure __msg("invalid mem access")
++int BPF_PROG(handle_tp_btf_nullable_bare, struct bpf_testmod_test_read_ctx *nullable_ctx)
++{
++	return nullable_ctx->len;
++}
 +
-+		/* The func_proto of "btf_trace_##tname" is generated from typedef without argument
-+		 * names. Thus using bpf_raw_event_map to get argument names. For module, the module
-+		 * name is printed in "%ps" after the template function name, so use strsep to cut
-+		 * it off.
-+		 */
-+		btp = bpf_get_raw_tracepoint(tname);
-+		if (!btp)
- 			return -EINVAL;
-+		sprintf(trace_symbol, "%ps", btp->bpf_func);
-+		fname = trace_symbol;
-+		fname = strsep(&fname, " ");
-+
-+		ret = btf_find_by_name_kind(btf, fname, BTF_KIND_FUNC);
-+		if (ret < 0) {
-+			bpf_log(log, "Cannot find btf of template %s, fall back to %s%s.\n",
-+				fname, prefix, tname);
-+			t = btf_type_by_id(btf, t->type);
-+			if (!btf_type_is_ptr(t))
-+				/* should never happen in valid vmlinux build */
-+				return -EINVAL;
-+		} else {
-+			t = btf_type_by_id(btf, ret);
-+			if (!btf_type_is_func(t))
-+				/* should never happen in valid vmlinux build */
-+				return -EINVAL;
-+		}
-+
- 		t = btf_type_by_id(btf, t->type);
- 		if (!btf_type_is_func_proto(t))
- 			/* should never happen in valid vmlinux build */
++char _license[] SEC("license") = "GPL";
 -- 
 2.32.0.3.g01195cf9f
 
