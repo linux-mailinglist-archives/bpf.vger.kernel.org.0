@@ -1,151 +1,131 @@
-Return-Path: <bpf+bounces-38987-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38990-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AC2796D1AB
-	for <lists+bpf@lfdr.de>; Thu,  5 Sep 2024 10:16:12 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 186DB96D244
+	for <lists+bpf@lfdr.de>; Thu,  5 Sep 2024 10:36:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6D8771C22D05
-	for <lists+bpf@lfdr.de>; Thu,  5 Sep 2024 08:16:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4BC991C24DB2
+	for <lists+bpf@lfdr.de>; Thu,  5 Sep 2024 08:36:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4273199251;
-	Thu,  5 Sep 2024 08:11:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22D00194AE2;
+	Thu,  5 Sep 2024 08:36:17 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0E05199922;
-	Thu,  5 Sep 2024 08:11:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1EC71898E4;
+	Thu,  5 Sep 2024 08:36:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725523885; cv=none; b=BP9sS2HR6FTVFxin8qyG9iShvBDE1832vvkg5HqUqZTB5hMPX5C+4BkB2CLxQwEsM0Nx0BrwrONXTWOurN1iY+VpWoReJOymJCImAukwOMbdk/RWe+13SvAFEdxuoZ5EGDUz/6OmyxYCa4/wtiUvqahAJeUXL+lTLioB2GvHHN8=
+	t=1725525376; cv=none; b=rXurbxTrp95e6piuF6TUeMZPl0hcUqnk/XmrhSzSfHfMYae3+cpHAgcuLNVQNDdwOrRReOXtafnB1J8erCCpijglth2tBrEMym+F7oKWJGqCWyISwfVCpBTGXjLlG1g9zfiiUneMWKX4KSEmeE8ysRA8WSgnFiLaqBLlRQ0Zs/A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725523885; c=relaxed/simple;
-	bh=MAMCXxSFk/8QfgNIlep+F4klnQRMMWQm6X2qmcjw/uM=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=p890ihvffWBg9cV3JobLaWP5ZZl/C5vmCxBN5MyIuP8rKmdUb7SZ8+rYDNTbPsLMj//w2YuHWuG0INNdUcxs8n0E1SC1kuXfmBqSwCvdkv9ZFZUAyPOuA1DpEii+SADLjKgIMXaXVBrL5yqceOAqyQYcJPHQgVDUeW/Y5GmVvbs=
+	s=arc-20240116; t=1725525376; c=relaxed/simple;
+	bh=oSfYpChyPUqxzwYIuKsV5+CLXkmDQfOhI4Op599R7Z4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=E0yPVgLEHsWU+E7fL+xlGjp71EW7NMhxSWqlDXnoacSBT933+GPbNQY+hFUaLcNsBacMiyAo8/zIhqyLbxx+i9z2dBQDbXuHjhEJo+kR8p0KMKz/DBreUhR8csDmiao/qio7nVnB2K82xm09Dav9v74ZpiFeNbmVs0+G2qS0ElY=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4WzsWF6BQwz4f3jYR;
-	Thu,  5 Sep 2024 16:11:05 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id E3F0B1A018D;
-	Thu,  5 Sep 2024 16:11:20 +0800 (CST)
-Received: from ultra.huawei.com (unknown [10.90.53.71])
-	by APP1 (Coremail) with SMTP id cCh0CgD3Ii+gZ9lmMQ7AAQ--.26932S12;
-	Thu, 05 Sep 2024 16:11:20 +0800 (CST)
-From: Pu Lehui <pulehui@huaweicloud.com>
-To: bpf@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	netdev@vger.kernel.org
-Cc: Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Mykola Lysenko <mykolal@fb.com>,
-	=?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
-	Puranjay Mohan <puranjay@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Pu Lehui <pulehui@huawei.com>
-Subject: [PATCH bpf-next v3 10/10] selftests/bpf: Add description for running vmtest on RV64
-Date: Thu,  5 Sep 2024 08:14:01 +0000
-Message-Id: <20240905081401.1894789-11-pulehui@huaweicloud.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240905081401.1894789-1-pulehui@huaweicloud.com>
-References: <20240905081401.1894789-1-pulehui@huaweicloud.com>
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Wzt3v3LQhz4f3jMP;
+	Thu,  5 Sep 2024 16:35:55 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 81AAE1A0568;
+	Thu,  5 Sep 2024 16:36:10 +0800 (CST)
+Received: from [10.67.109.184] (unknown [10.67.109.184])
+	by APP4 (Coremail) with SMTP id gCh0CgDXDMl2bdlm2BnOAQ--.51109S2;
+	Thu, 05 Sep 2024 16:36:07 +0800 (CST)
+Message-ID: <cdd31b81-8171-4dd0-b336-5229559ba50f@huaweicloud.com>
+Date: Thu, 5 Sep 2024 16:36:06 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgD3Ii+gZ9lmMQ7AAQ--.26932S12
-X-Coremail-Antispam: 1UD129KBjvJXoW7urW7Jr4kAFWUJrWftF47urg_yoW8Cw4Upw
-	s5A34akr1SgF1aqF1fCrW7XF4Fqrs3XrWUGF1xGw15u3W5JFykXrn2yayjvanxuFZYvrsI
-	ya4aqFyY9w18ZaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUPqb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
-	Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
-	rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267
-	AKxVWxJr0_GcWl84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAF
-	wI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2
-	WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkE
-	bVWUJVW8JwACjcxG0xvY0x0EwIxGrwACI402YVCY1x02628vn2kIc2xKxwCY1x0262kKe7
-	AKxVW8ZVWrXwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02
-	F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_Wr
-	ylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVW8JVW5JwCI42IY6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI
-	0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x
-	07jIPfQUUUUU=
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v2 03/10] selftests/bpf: Disable feature-llvm for
+ vmtest
+To: Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org,
+ linux-riscv@lists.infradead.org, netdev@vger.kernel.org
+Cc: Andrii Nakryiko <andrii@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
+ =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+ Puranjay Mohan <puranjay@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
+ Pu Lehui <pulehui@huawei.com>
+References: <20240904141951.1139090-1-pulehui@huaweicloud.com>
+ <20240904141951.1139090-4-pulehui@huaweicloud.com>
+ <fc9a03f1809cfdd80a9a8cb7b513e32302be5a43.camel@gmail.com>
+ <1bd4056c2b311aca03b7707b077f7555db4e55d6.camel@gmail.com>
+Content-Language: en-US
+From: Pu Lehui <pulehui@huaweicloud.com>
+In-Reply-To: <1bd4056c2b311aca03b7707b077f7555db4e55d6.camel@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:gCh0CgDXDMl2bdlm2BnOAQ--.51109S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7uF4fCw1UGw4UKFW3Gr4xXrb_yoW8Ww48pa
+	yrJ3ZIkF48XFyktFsrKa48W3W5K395t3WUX34Uur1DZFn0kFnYgFZ3Kryj9a4kX39rWF43
+	Zw12gasrXr1UZ3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AF
+	wI0_GFv_Wryl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5
+	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+	0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8
+	JVWxJwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7IU0
+	s2-5UUUUU==
 X-CM-SenderInfo: psxovxtxl6x35dzhxuhorxvhhfrp/
 
-From: Pu Lehui <pulehui@huawei.com>
 
-Add description in tools/testing/selftests/bpf/README.rst
-for running vmtest on RV64.
 
-Signed-off-by: Pu Lehui <pulehui@huawei.com>
----
- tools/testing/selftests/bpf/README.rst | 32 ++++++++++++++++++++++++++
- 1 file changed, 32 insertions(+)
+On 2024/9/5 7:08, Eduard Zingerman wrote:
+> On Wed, 2024-09-04 at 12:37 -0700, Eduard Zingerman wrote:
+>> On Wed, 2024-09-04 at 14:19 +0000, Pu Lehui wrote:
+>>> From: Pu Lehui <pulehui@huawei.com>
+>>>
+>>> After commit b991fc520700 ("selftests/bpf: utility function to get
+>>> program disassembly after jit"), Makefile will link libLLVM* related
+>>> libraries to the user binary execution file when detecting that
+>>> feature-llvm is enabled, which will cause the local vmtest to appear as
+>>> follows mistake:
+>>>
+>>>    ./test_progs: error while loading shared libraries: libLLVM-17.so.1:
+>>>      cannot open shared object file: No such file or directory
+>>>
+>>> Considering that the get_jited_program_text() function is a useful tool
+>>> for user debugging and will not be relied upon by the entire bpf
+>>> selftests, let's turn it off in local vmtest.
+>>>
+>>> Signed-off-by: Pu Lehui <pulehui@huawei.com>
+>>> ---
+>>
+>> I actually don't agree.
+>> The __jited tag is supposed to be used by selftests
+>> (granted, used by a single selftest for now).
+>> Maybe add an option to forgo LLVM linkage when test_progs are compiled?
+>> Regarding base image lacking libLLVM -- I need to fix this.
+>>
+> 
+> Please consider using my commit [1] instead of this patch, it forces
+> static linking form LLVM libraries, thus avoiding issues with rootfs.
+> (This was suggested by Andrii off list).
+> 
+> [1] https://git.kernel.org/pub/scm/linux/kernel/git/ez/bpf-next.git/commit/?h=selftest-llvm-static-linking&id=263bacf2f20fbc17204fd912609e26bdf6ac5a13
 
-diff --git a/tools/testing/selftests/bpf/README.rst b/tools/testing/selftests/bpf/README.rst
-index 4a1e74b17109..776fbe3cb8f9 100644
---- a/tools/testing/selftests/bpf/README.rst
-+++ b/tools/testing/selftests/bpf/README.rst
-@@ -85,6 +85,38 @@ In case of linker errors when running selftests, try using static linking:
-           If you want to change pahole and llvm, you can change `PATH` environment
-           variable in the beginning of script.
- 
-+Running vmtest on RV64
-+======================
-+To speed up testing and avoid various dependency issues, it is recommended to
-+run vmtest in a Docker container. Before running vmtest, we need to prepare
-+Docker container and local rootfs image. The overall steps are as follows:
-+
-+1. Create Docker container as shown in link [0].
-+
-+2. Use mkrootfs_debian.sh script [1] to build local rootfs image:
-+
-+.. code-block:: console
-+
-+  $ sudo ./mkrootfs_debian.sh --arch riscv64 --distro noble
-+
-+3. Start Docker container [0] and run vmtest in the container:
-+
-+.. code-block:: console
-+
-+  $ PLATFORM=riscv64 CROSS_COMPILE=riscv64-linux-gnu- \
-+    tools/testing/selftests/bpf/vmtest.sh \
-+    -l <path of local rootfs image> -- \
-+    ./test_progs -d \
-+        \"$(cat tools/testing/selftests/bpf/DENYLIST.riscv64 \
-+            | cut -d'#' -f1 \
-+            | sed -e 's/^[[:space:]]*//' \
-+                  -e 's/[[:space:]]*$//' \
-+            | tr -s '\n' ',' \
-+        )\"
-+
-+Link: https://github.com/pulehui/riscv-bpf-vmtest.git [0]
-+Link: https://github.com/libbpf/ci/blob/main/rootfs/mkrootfs_debian.sh [1]
-+
- Additional information about selftest failures are
- documented here.
- 
--- 
-2.34.1
+Happy to see this modification only on llvm lib. I test it works good 
+and have picked this in next version. Thanks
 
 
