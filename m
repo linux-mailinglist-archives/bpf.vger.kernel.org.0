@@ -1,94 +1,128 @@
-Return-Path: <bpf+bounces-39015-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39016-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8815E96D85D
-	for <lists+bpf@lfdr.de>; Thu,  5 Sep 2024 14:24:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1675496D8E0
+	for <lists+bpf@lfdr.de>; Thu,  5 Sep 2024 14:41:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 30E591F24E6E
-	for <lists+bpf@lfdr.de>; Thu,  5 Sep 2024 12:24:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8EEB61F28FE4
+	for <lists+bpf@lfdr.de>; Thu,  5 Sep 2024 12:41:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B50A11A0733;
-	Thu,  5 Sep 2024 12:20:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F23D719B5AA;
+	Thu,  5 Sep 2024 12:41:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hgVF7yOl"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Q/944Bw+"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FFBA1A01D4;
-	Thu,  5 Sep 2024 12:20:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9B0419AD48;
+	Thu,  5 Sep 2024 12:41:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725538846; cv=none; b=pEKYVfhzSD0gV2zxg5irHEFzhgrqKpqJxVWq0RhjzypkI3H+VUT7SqBT0AA4FE+bjGf2BVeBtVu78xJjAjEX+ki2NGTm+FfdLQl/p3s3CXXiBRUFtGg845B2RqJN5QCWeLK9Oxb+XU7l8UP6s89bxpDgSDvaMJGhmNmL7BY+lcE=
+	t=1725540074; cv=none; b=K/WgzY11Y7o2aCuVX8n2+Psvfz+aa15zvZXQvsrJzoH/XE42HFRmWUkURYrIQPpqAujp03ZZ4m3cHEWpnoJIAL0czS9ay9bTPOM5EvJ6SqLSWQph7W4BlQ3kT00rgJVi2KEsNrtTZ58zd7pjuGZ6Y1H/Ykv+oHafS1YnFuoswKA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725538846; c=relaxed/simple;
-	bh=ntZah+TMe1UsnrBWws4HdTpKi38LYAnKX4lsun7p7ME=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=FGnqm3FBUtwnBSL+gRF7Bm8tWZC076cnUc4eJYxUf3FGjwuMJqGjRQ90dBqHLYl3z4XYM64K7XmxffOYX0Z6kl1ZIp1R6IrDUUqn5Sgh2LKUK5ySCS/0bL+Q9DSK6ZAIH3hP6oQoF4OkCENpt0IukZCCgc6yt1qu7zRWj3Y1Ofk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hgVF7yOl; arc=none smtp.client-ip=209.85.128.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-42bc19e94bdso5501755e9.3;
-        Thu, 05 Sep 2024 05:20:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1725538842; x=1726143642; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=L+hWQwbU8/zLn94r+/MW1PS9zt1M0q617URppC4Ogv4=;
-        b=hgVF7yOlNczOuS9OHmVBgeXEJJYTU6ZihFeV5nGhwEV4RrYUABmFOa99t1QHsuqBUi
-         BaYQKYsN/GdkhKeRc8kC+SLoEorfUcB0E58YHpGEx0IcbAFlXuwvU6/zPdwJFy3Gnfr7
-         UKPKOwStz+7IaHk1aJzkW5ZcROSrxfCtVv2+MD3f8Rjwic2explkiKS1yXRMiS1/pj5A
-         3VJv39ngYCFGqyv+IY2RO5Z1vP7FAxKTx3tstt78RqjUGLmlV0aBb44p9ISP/pE8ZKWG
-         7EnhrN6a05JFEmuiPkzIBXzmuoEC62Vi9Y7FAtknA9fuWZtZwd4RuO5+lpQlQPpN0Tkz
-         rlqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725538842; x=1726143642;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=L+hWQwbU8/zLn94r+/MW1PS9zt1M0q617URppC4Ogv4=;
-        b=F3eVtfCLhAlQ3f2LKiKLU8s7CHNlZa1e50dhCKqJg0IYSeoVLK0nGPX5GILr51RLKE
-         pJPiUeHBGksntb5x9oP18OTqDgANYuVox8iAnNayXwaVGU4hB9e/bpsPxtiVXGh/29IQ
-         vgaDbV6QsvyIUvCQjPyAW3ynL11eymsAPbpDb8WRSPTFRnFKg7AhKAW16nwjpwpN0qiB
-         6Ds+PkdUqjls5H73X1asO72jy3i6L3WMWVdxVILPLExQ7TB14HUbLStJJ+p/C3O6TWzf
-         Doov0zgVaMP7geOgT0eUtnQNJc+ezWPrGgVOZg7+UUU8g7SgrpQpYlS64Oq9yqNIzYm/
-         TcFw==
-X-Forwarded-Encrypted: i=1; AJvYcCVfF+WYn5u+GOu83cy6u2zJ08wcsRktZO6oa8/mbAY80Fa6sk1CDGDOIIYGJXCyP2pgsHw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwE9XGRoN0kaNVVcaxJTJocfsruYGdXLfyaQ4QOuFowqZqG0W0V
-	M+qQ5ZjvgeTlO0O9+cQBhneXbV2SwQw+hxrm0aTDq/d/WegONLwT4gbZ6VbwP8M=
-X-Google-Smtp-Source: AGHT+IHiG59lwYh2JBbk0IvapT98odJgbdBlY7Aa9LCCfED3V0MkOreKseQ/p2M1f9MUqWlfOGQZig==
-X-Received: by 2002:a05:600c:a4c:b0:428:17b6:bcf1 with SMTP id 5b1f17b1804b1-42c8de87c57mr57755945e9.22.1725538842283;
-        Thu, 05 Sep 2024 05:20:42 -0700 (PDT)
-Received: from fedora.iskraemeco.si ([193.77.86.250])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-42bb6e27364sm230390515e9.34.2024.09.05.05.20.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Sep 2024 05:20:41 -0700 (PDT)
-From: Uros Bizjak <ubizjak@gmail.com>
-To: linux-kernel@vger.kernel.org
-Cc: Uros Bizjak <ubizjak@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
+	s=arc-20240116; t=1725540074; c=relaxed/simple;
+	bh=Vmi+1f/dZY2VqSgcwNZ8hfyxCiVY3aGx6vrPWR7PizU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JInSTmaj2yyhiUQ9fHUdg0a/IaZBsxAnutcqbL+UIICzSRMRjd2TE6KdaViTzeeJ1bZ4Y3kLWvnKf0F77YwV9OJVaVQfZWBFSdWg1ad/uo3mSJlb1mc5gs1I/Nns0y6gQlnzGPB3pxZ6xxKNXl08Ap792ayEw8Uxz3YaeaO/il0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Q/944Bw+; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1725540073; x=1757076073;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Vmi+1f/dZY2VqSgcwNZ8hfyxCiVY3aGx6vrPWR7PizU=;
+  b=Q/944Bw+YX9pvELdh1odWY5fiJLev1bsMsr5+KujuThiTfibEWUO1GSu
+   LV11Co7chIiPv8x4f2duFXm7iNJ7O+gyfL44dahy2Tbrx0hAEhvYDJp6c
+   LXjUf1zvA+m+lcOaGdWSX/Ow59Qiblk09SdbydHhDAK1Wnm4s+om4HY19
+   z+D23z3IlL8x2iaBgq3//QLUreFe+ftcBBA3hIeqL4g1smdef8Jy95aJD
+   5vIXdnqRCPT33MQAjGRLwlS8IpOS1u7Oly6HkYsbCIuK8y5+DNKgsWcZa
+   w64MjqaUyX6vRJ6pJVRqTCVqYrhweNWG65bfJ7ILK8nIcbJCuCMcXFaqu
+   g==;
+X-CSE-ConnectionGUID: brb8ncNWSmWrH/VYb9ICPQ==
+X-CSE-MsgGUID: vzMt2iUoTqmC7gICVhdcXg==
+X-IronPort-AV: E=McAfee;i="6700,10204,11185"; a="34919010"
+X-IronPort-AV: E=Sophos;i="6.10,204,1719903600"; 
+   d="scan'208";a="34919010"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2024 05:41:12 -0700
+X-CSE-ConnectionGUID: g0N9q6twQTC2A0FV6dSL6w==
+X-CSE-MsgGUID: kQc8pjfKTDeNleY3Fp7LKg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.10,204,1719903600"; 
+   d="scan'208";a="65301491"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmviesa007.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2024 05:40:57 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.98)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1smBn9-00000005OYX-3K6o;
+	Thu, 05 Sep 2024 15:40:51 +0300
+Date: Thu, 5 Sep 2024 15:40:51 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Uros Bizjak <ubizjak@gmail.com>
+Cc: linux-kernel@vger.kernel.org, Dave Hansen <dave.hansen@linux.intel.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+	Jani Nikula <jani.nikula@linux.intel.com>,
+	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+	Rodrigo Vivi <rodrigo.vivi@intel.com>,
+	Tvrtko Ursulin <tursulin@ursulin.net>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Hans Verkuil <hverkuil@xs4all.nl>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Eric Biggers <ebiggers@kernel.org>,
+	"Theodore Y. Ts'o" <tytso@mit.edu>,
+	Jaegeuk Kim <jaegeuk@kernel.org>,
+	"Jason A. Donenfeld" <Jason@zx2c4.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Hannes Reinecke <hare@suse.de>,
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
 	Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
 	Andrii Nakryiko <andrii@kernel.org>,
 	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
 	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	bpf@vger.kernel.org
-Subject: [PATCH 13/18] bpf/tests: Include <linux/prandom.h> instead of <linux/random.h>
-Date: Thu,  5 Sep 2024 14:17:21 +0200
-Message-ID: <20240905122020.872466-14-ubizjak@gmail.com>
-X-Mailer: git-send-email 2.46.0
-In-Reply-To: <20240905122020.872466-1-ubizjak@gmail.com>
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Brendan Higgins <brendan.higgins@linux.dev>,
+	David Gow <davidgow@google.com>, Rae Moar <rmoar@google.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Jiri Pirko <jiri@resnulli.us>, Petr Mladek <pmladek@suse.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Stephen Hemminger <stephen@networkplumber.org>,
+	Jamal Hadi Salim <jhs@mojatatu.com>,
+	Cong Wang <xiyou.wangcong@gmail.com>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+	linux-media@vger.kernel.org, linux-mtd@lists.infradead.org,
+	linux-fscrypt@vger.kernel.org, linux-scsi@vger.kernel.org,
+	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	kunit-dev@googlegroups.com
+Subject: Re: [PATCH 00/18] random: Include <linux/percpu.h> and resolve
+ circular include dependency
+Message-ID: <Ztmm00eLBQGtiwRM@smile.fi.intel.com>
 References: <20240905122020.872466-1-ubizjak@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -96,44 +130,65 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240905122020.872466-1-ubizjak@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-Usage of pseudo-random functions requires inclusion of
-<linux/prandom.h> header instead of <linux/random.h>.
+On Thu, Sep 05, 2024 at 02:17:08PM +0200, Uros Bizjak wrote:
+> There were several attempts to resolve circular include dependency
+> after the addition of percpu.h: 1c9df907da83 ("random: fix circular
+> include dependency on arm64 after addition of percpu.h"), c0842fbc1b18
+> ("random32: move the pseudo-random 32-bit definitions to prandom.h") and
+> finally d9f29deb7fe8 ("prandom: Remove unused include") that completely
+> removes inclusion of <linux/percpu.h>.
+> 
+> Due to legacy reasons, <linux/random.h> includes <linux/prandom.h>, but
+> with the commit entry remark:
+> 
+> --quote--
+> A further cleanup step would be to remove this from <linux/random.h>
+> entirely, and make people who use the prandom infrastructure include
+> just the new header file.  That's a bit of a churn patch, but grepping
+> for "prandom_" and "next_pseudo_random32" "struct rnd_state" should
+> catch most users.
+> 
+> But it turns out that that nice cleanup step is fairly painful, because
+> a _lot_ of code currently seems to depend on the implicit include of
+> <linux/random.h>, which can currently come in a lot of ways, including
+> such fairly core headfers as <linux/net.h>.
+> 
+> So the "nice cleanup" part may or may never happen.
+> --/quote--
+> 
+> __percpu tag is currently defined in include/linux/compiler_types.h,
+> so there is no direct need for the inclusion of <linux/percpu.h>.
+> However, in [1] we would like to repurpose __percpu tag as a named
+> address space qualifier, where __percpu macro uses defines from
+> <linux/percpu.h>.
+> 
+> This patch series is the "nice cleanup" part, and allows us to finally
+> include <linux/percpu.h> in prandom.h.
+> 
+> The whole series was tested by compiling the kernel for x86_64 allconfig
+> and some popular architectures, namely arm64 defconfig, powerpc defconfig
+> and loongarch defconfig.
 
-Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Song Liu <song@kernel.org>
-Cc: Yonghong Song <yonghong.song@linux.dev>
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: KP Singh <kpsingh@kernel.org>
-Cc: Stanislav Fomichev <sdf@fomichev.me>
-Cc: Hao Luo <haoluo@google.com>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: bpf@vger.kernel.org
----
- lib/test_bpf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Obvious question(s) is(are):
+1) have you seen the Ingo's gigantic patch series towards resolving issues with
+the headers?
+2) if not, please look at the preliminary work and take something from there, I
+believe there are many useful changes already waiting for a couple of years to
+be applied.
 
-diff --git a/lib/test_bpf.c b/lib/test_bpf.c
-index ca4b0eea81a2..eb4a1915e4d2 100644
---- a/lib/test_bpf.c
-+++ b/lib/test_bpf.c
-@@ -14,7 +14,7 @@
- #include <linux/skbuff.h>
- #include <linux/netdevice.h>
- #include <linux/if_vlan.h>
--#include <linux/random.h>
-+#include <linux/prandom.h>
- #include <linux/highmem.h>
- #include <linux/sched.h>
- 
+Because I haven't found any references nor mentions of that in the cover letter
+here and explanation why it was not taking into consideration.
+
+> [1] https://lore.kernel.org/lkml/20240812115945.484051-4-ubizjak@gmail.com/
+
 -- 
-2.46.0
+With Best Regards,
+Andy Shevchenko
+
 
 
