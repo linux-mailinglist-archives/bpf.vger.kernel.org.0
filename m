@@ -1,42 +1,42 @@
-Return-Path: <bpf+bounces-38985-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38988-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AC1696D1A9
-	for <lists+bpf@lfdr.de>; Thu,  5 Sep 2024 10:16:06 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D587B96D1AD
+	for <lists+bpf@lfdr.de>; Thu,  5 Sep 2024 10:16:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E438F1F2A694
-	for <lists+bpf@lfdr.de>; Thu,  5 Sep 2024 08:16:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8BE1E1F2A795
+	for <lists+bpf@lfdr.de>; Thu,  5 Sep 2024 08:16:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A81419CD1E;
-	Thu,  5 Sep 2024 08:11:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 332B719D093;
+	Thu,  5 Sep 2024 08:11:26 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95BBD1993B5;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B87D1199239;
 	Thu,  5 Sep 2024 08:11:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725523885; cv=none; b=kzNGsQrW5nIjKDE6YoP0+ERXK4iWUJ2qmjKhgCmV7x/D4qwmg122rO+owEp75VuY3KpmoUTpaalFWIEbpz7HfzrDh8+wCc4d//DkiveyHQf+nEPHWHiXflxBP36f+6gHp6twUEuwLL7eR/IYZm1kXolHj76p7ThOxoP5gv/6Rhg=
+	t=1725523885; cv=none; b=cTZUo349PcFS+sJA49pT4mf7RUfl4P4Me7kv1ceg+yDzTbw8sIHWBnSbQHVWOTAtC4SfrQbcSXTTwTXvqiXP9s8a/g9u50tl5mbXUm+iwSeqsG10evwC2+hSa1gDtv1TCgE4wKOKlup91TXkGr6m9NPSXsWadluyyOuzLrH/WxU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1725523885; c=relaxed/simple;
-	bh=yYg8NBrz53EN1KPGT9VVN7I22bOthIz8uc7UGBu3Aq0=;
+	bh=SVL5KDjjfm1y6wSz98zoMSAobdagdqeHD9wjvndmd5A=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=SVzomld4kKeA/MRnkK84+xlyMne7kfWuyGM6FDl0mAaWvFPuGA1xguZWJUVC8lt2aD0YF3QwFQ0l2aEoK+xwfxbc3RlPlk4NCZfhLThAVSJKyEa8zuPrPbKv4sT1vH1o7MS/g30ccePcGlBoI1UFT/MH+ZFAsrLpeaUhmi0Mfms=
+	 MIME-Version; b=FB3rm06kjX4tzWJiSiBg8do/8bE5lwQUUsuV0kFb6rey2QP7EMtQyEOidFc9+HbRYX9/+3IiprqcNEDL49ztiH6NBRXa9jTEE3duYXXO8lYFLLR8GxbG7Rywi4qEfiZWEbtArjehLfHlHz6vSQIc2XJi9JQmdfjEzYPTcEvxpNw=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
 Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4WzsWL2ZLhz4f3jkd;
-	Thu,  5 Sep 2024 16:11:10 +0800 (CST)
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4WzsWD6JXJz4f3lDb;
+	Thu,  5 Sep 2024 16:11:04 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id B023A1A17E8;
+	by mail.maildlp.com (Postfix) with ESMTP id C5AC21A17E8;
 	Thu,  5 Sep 2024 16:11:20 +0800 (CST)
 Received: from ultra.huawei.com (unknown [10.90.53.71])
-	by APP1 (Coremail) with SMTP id cCh0CgD3Ii+gZ9lmMQ7AAQ--.26932S10;
+	by APP1 (Coremail) with SMTP id cCh0CgD3Ii+gZ9lmMQ7AAQ--.26932S11;
 	Thu, 05 Sep 2024 16:11:20 +0800 (CST)
 From: Pu Lehui <pulehui@huaweicloud.com>
 To: bpf@vger.kernel.org,
@@ -59,9 +59,9 @@ Cc: Andrii Nakryiko <andrii@kernel.org>,
 	Jiri Olsa <jolsa@kernel.org>,
 	Palmer Dabbelt <palmer@dabbelt.com>,
 	Pu Lehui <pulehui@huawei.com>
-Subject: [PATCH bpf-next v3 08/10] selftests/bpf: Add DENYLIST.riscv64
-Date: Thu,  5 Sep 2024 08:13:59 +0000
-Message-Id: <20240905081401.1894789-9-pulehui@huaweicloud.com>
+Subject: [PATCH bpf-next v3 09/10] selftests/bpf: Add riscv64 configurations to local vmtest
+Date: Thu,  5 Sep 2024 08:14:00 +0000
+Message-Id: <20240905081401.1894789-10-pulehui@huaweicloud.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240905081401.1894789-1-pulehui@huaweicloud.com>
 References: <20240905081401.1894789-1-pulehui@huaweicloud.com>
@@ -72,10 +72,10 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgD3Ii+gZ9lmMQ7AAQ--.26932S10
-X-Coremail-Antispam: 1UD129KBjvJXoW7ur48Xry3Xw4rur15tF15twb_yoW8Jw1Dpw
-	4fWryjk34fXF13tF1xCrZ2gFWrZFWkZrW8Jw10qr9xZr92yFZ7GFn7ta4rt3sxWFWrt3ya
-	ya4akryrZw40qaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID:cCh0CgD3Ii+gZ9lmMQ7AAQ--.26932S11
+X-Coremail-Antispam: 1UD129KBjvJXoW7tw4xJw13ZryDJw4kCF1xZrb_yoW8Gryxpw
+	4ruryakryFgr1agFn7CryjgFW5KFs5ur4fG3y8X343Ar1SqFyxWr93t3W8trsYgFWYqrW5
+	Aa4xKry5ur18Aa7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUUPvb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
 	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
 	Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
@@ -94,11 +94,10 @@ X-CM-SenderInfo: psxovxtxl6x35dzhxuhorxvhhfrp/
 
 From: Pu Lehui <pulehui@huawei.com>
 
-This patch adds DENYLIST.riscv64 file for riscv64. It will help BPF CI
-and local vmtest to mask failing and unsupported test cases.
+Add riscv64 configurations to local vmtest.
 
-We can use the following command to use deny list in local vmtest as
-previously mentioned by Manu.
+We can now perform cross platform testing for riscv64 bpf using the
+following command:
 
 PLATFORM=riscv64 CROSS_COMPILE=riscv64-linux-gnu- vmtest.sh \
     -l ./libbpf-vmtest-rootfs-2024.08.30-noble-riscv64.tar.zst -- \
@@ -113,19 +112,29 @@ PLATFORM=riscv64 CROSS_COMPILE=riscv64-linux-gnu- vmtest.sh \
 Tested-by: Eduard Zingerman <eddyz87@gmail.com>
 Signed-off-by: Pu Lehui <pulehui@huawei.com>
 ---
- tools/testing/selftests/bpf/DENYLIST.riscv64 | 3 +++
- 1 file changed, 3 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/DENYLIST.riscv64
+ tools/testing/selftests/bpf/vmtest.sh | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/DENYLIST.riscv64 b/tools/testing/selftests/bpf/DENYLIST.riscv64
-new file mode 100644
-index 000000000000..4fc4dfdde293
---- /dev/null
-+++ b/tools/testing/selftests/bpf/DENYLIST.riscv64
-@@ -0,0 +1,3 @@
-+# riscv64 deny list for BPF CI and local vmtest
-+exceptions					# JIT does not support exceptions
-+tailcalls/tailcall_bpf2bpf*			# JIT does not support mixing bpf2bpf and tailcalls
+diff --git a/tools/testing/selftests/bpf/vmtest.sh b/tools/testing/selftests/bpf/vmtest.sh
+index 91f940e8ce45..79505d294c44 100755
+--- a/tools/testing/selftests/bpf/vmtest.sh
++++ b/tools/testing/selftests/bpf/vmtest.sh
+@@ -34,6 +34,15 @@ aarch64)
+ 	BZIMAGE="arch/arm64/boot/Image"
+ 	ARCH="arm64"
+ 	;;
++riscv64)
++	# required qemu version v7.2.0+
++	QEMU_BINARY=qemu-system-riscv64
++	QEMU_CONSOLE="ttyS0,115200"
++	HOST_FLAGS=(-M virt -cpu host -enable-kvm -smp 8)
++	CROSS_FLAGS=(-M virt -cpu rv64,sscofpmf=true -smp 8)
++	BZIMAGE="arch/riscv/boot/Image"
++	ARCH="riscv"
++	;;
+ *)
+ 	echo "Unsupported architecture"
+ 	exit 1
 -- 
 2.34.1
 
