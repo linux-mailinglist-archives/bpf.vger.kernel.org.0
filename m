@@ -1,34 +1,34 @@
-Return-Path: <bpf+bounces-39020-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39021-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D534C96DABC
-	for <lists+bpf@lfdr.de>; Thu,  5 Sep 2024 15:48:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C63BC96DABE
+	for <lists+bpf@lfdr.de>; Thu,  5 Sep 2024 15:48:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B6321F23ADD
-	for <lists+bpf@lfdr.de>; Thu,  5 Sep 2024 13:48:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB0B91C222BE
+	for <lists+bpf@lfdr.de>; Thu,  5 Sep 2024 13:48:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F58519DF74;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 914E719DF87;
 	Thu,  5 Sep 2024 13:48:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="mR2gepy9"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="VtORgHQA"
 X-Original-To: bpf@vger.kernel.org
 Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8655E19D8A0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E784319D891
 	for <bpf@vger.kernel.org>; Thu,  5 Sep 2024 13:48:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725544103; cv=none; b=XRx8zLW1T4hgl0Hw94olx08FQvFvBYdgDq4x2Ah2LEgxzXOJSdWgaRc9X5qUVDmfFbMPLAVxORurvPB5Jscb//snL87vy1pkpaDNmD2xAPzcNhn6i7K9XihlxPqdcqnVFi7gq3NC+QjAZb9Aiq+g1XeWwBtmTqy/hZqI7tJ2Sws=
+	t=1725544104; cv=none; b=hrorlf/l7d0WG6spWwDVfKNEA5MYPedCn/OS4dnwygMH8oAti7xgeYVwvPz4doBBd5IK7/zhdTu+LXBfGfnNU55vF4NlbjoBLBVCOII8b90PBqMTPE87XwaZkpxztHp6TiKpfRPQVufc2/e/gEH1pgJPgGXvpf5o4D7adl1A97E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725544103; c=relaxed/simple;
-	bh=R+uEBjwB1QfpW3TEXj0ElvO73QWFOcpPp4sXtSfamvA=;
+	s=arc-20240116; t=1725544104; c=relaxed/simple;
+	bh=+iegLQsQf79xzbfv/IMupj3UYKbrbr2tzHmtSvPCgE0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=GL3rlfLtF5fKRJ8UKxQPPXSQYEjFiOGH10hjB2p7eOBMlacBJLaYk/C/ry8no7OuILxDnr7KmStMS+OpSXfm2msuBohXe4FIhFkFlJ62s6aLdzW7T4ZR7V8XMCd9Q9QvqeXsakg5J+fXrZO1z/oZbUMi12G+7pJYuzPJUGfYSt8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=mR2gepy9; arc=none smtp.client-ip=213.133.104.62
+	 MIME-Version; b=pt52amuJjflmQ6mriB3yLOWqi9MPOyctfTu1nsOTdpo7GHUIhJMKPdFwVlV32kuhxPq7AGPNOXNnJ1RaS1kalyJBIfhgCieYKoIFWcBFro9g9rl4Qd44JGHf+HyoChM41ERuP1MsGhlseQNnvTW2RAXW8lhp9s6NjybfRXTgxyc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=VtORgHQA; arc=none smtp.client-ip=213.133.104.62
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -36,17 +36,17 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
 	Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=WOXjDdj11i6DqGo8x8pctDnj/d0p5LO19KWjWKc6tGk=; b=mR2gepy9v025Fvy8QfT+kj5Mxy
-	hEn0EMIBdRE2tJE85HBFTWtZHvJQejWcCQ+uBS30Pu3XHUZBpUXy4QGdTLUi+obHXrC+no93u3wMb
-	vVKSe+PqbG7cmbqfD+yJZ3qJj7Wfd5PapIlXMNUKX/nZCsiUlLpYYe/lIxEjv6xxigs5JuhdCZSwb
-	5d4KJoDu1NDoPhDteQ/xIA5Qyuz2oeuVtieaQIqceNHPnYFv/lgQdZxvsQ3osrilDW3niPXTneQdR
-	EaogQqvq1MxPMRF+8R3NWXDzbmKzPMUSff5GdGElfz2qkL7VbxYJMF3fuOkPKM8qBorh8CZXtVlqV
-	WQNFu57Q==;
+	bh=ZJqeIk2KP1YmRRxCeBxuiOvztwe8C5OkxG6puCyxCXs=; b=VtORgHQAP4k/UmonSPcgT4O5vv
+	jYKJ3DKmLLt2YeUM4M+Qk7/u18n+4yAJDILNCBDlv+ZXftUl2e87Hn/fhDxo2ZQtNMSRikUvyNBxr
+	hMpprWbkbE5jA82My4yAAHqne83FXG3P+QvLYGYjTdLsmtiIjlCwuvzzX4VGdNgW8GVneCsmiNUl0
+	jsIArKdvJxwXum8roTf7o243rfz6Se64pnt9vpwvDJVMbGS8KxHrgG9we8jlLJc56IO47mELfoSOw
+	5AAL7aoswR9DzfSFOW0YxzN/xUdZqiOI5KoAxlqXc0t3GIYoA+0ewNwi/lbxTunTvSnKS0BNWgkIJ
+	01AmrRqg==;
 Received: from 23.248.197.178.dynamic.cust.swisscom.net ([178.197.248.23] helo=localhost)
 	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1smCqQ-000FDb-TI; Thu, 05 Sep 2024 15:48:18 +0200
+	id 1smCqR-000FDw-Du; Thu, 05 Sep 2024 15:48:19 +0200
 From: Daniel Borkmann <daniel@iogearbox.net>
 To: bpf@vger.kernel.org
 Cc: shung-hsi.yu@suse.com,
@@ -54,9 +54,9 @@ Cc: shung-hsi.yu@suse.com,
 	ast@kernel.org,
 	kongln9170@gmail.com,
 	Daniel Borkmann <daniel@iogearbox.net>
-Subject: [PATCH bpf-next v3 2/6] bpf: Improve check_raw_mode_ok test for MEM_UNINIT-tagged types
-Date: Thu,  5 Sep 2024 15:48:09 +0200
-Message-Id: <20240905134813.874-2-daniel@iogearbox.net>
+Subject: [PATCH bpf-next v3 3/6] bpf: Zero former ARG_PTR_TO_{LONG,INT} args in case of error
+Date: Thu,  5 Sep 2024 15:48:10 +0200
+Message-Id: <20240905134813.874-3-daniel@iogearbox.net>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20240905134813.874-1-daniel@iogearbox.net>
 References: <20240905134813.874-1-daniel@iogearbox.net>
@@ -70,74 +70,148 @@ Content-Transfer-Encoding: 8bit
 X-Authenticated-Sender: daniel@iogearbox.net
 X-Virus-Scanned: Clear (ClamAV 0.103.10/27389/Thu Sep  5 10:33:25 2024)
 
-When checking malformed helper function signatures, also take other argument
-types into account aside from just ARG_PTR_TO_UNINIT_MEM.
+For all non-tracing helpers which formerly had ARG_PTR_TO_{LONG,INT} as input
+arguments, zero the value for the case of an error as otherwise it could leak
+memory. For tracing, it is not needed given CAP_PERFMON can already read all
+kernel memory anyway hence bpf_get_func_arg() and bpf_get_func_ret() is skipped
+in here.
 
-This concerns (formerly) ARG_PTR_TO_{INT,LONG} given uninitialized memory can
-be passed there, too.
+Also, rearrange the MTU checker helpers a bit to among other nit fixes
+consolidate flag checks such that we only need to zero in one location with
+regards to malformed flag inputs.
 
-The func proto sanity check goes back to commit 435faee1aae9 ("bpf, verifier:
-add ARG_PTR_TO_RAW_STACK type"), and its purpose was to detect wrong func protos
-which had more than just one MEM_UNINIT-tagged type as arguments.
-
-The reason more than one is currently not supported is as we mark stack slots with
-STACK_MISC in check_helper_call() in case of raw mode based on meta.access_size to
-allow uninitialized stack memory to be passed to helpers when they just write into
-the buffer.
-
-Probing for base type as well as MEM_UNINIT tagging ensures that other types do not
-get missed (as it used to be the case for ARG_PTR_TO_{INT,LONG}).
-
-Fixes: 57c3bb725a3d ("bpf: Introduce ARG_PTR_TO_{INT,LONG} arg types")
-Reported-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+Fixes: 8a67f2de9b1d ("bpf: expose bpf_strtol and bpf_strtoul to all program types")
+Fixes: d7a4cb9b6705 ("bpf: Introduce bpf_strtol and bpf_strtoul helpers")
 Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
 ---
  v1 -> v2:
- - new patch (Shung-Hsi)
- v2 -> v3:
- - base_type(type) was needed also
+ - only set *mtu_len in error path (Alexei)
 
- kernel/bpf/verifier.c | 16 +++++++++++-----
- 1 file changed, 11 insertions(+), 5 deletions(-)
+ kernel/bpf/helpers.c |  2 ++
+ kernel/bpf/syscall.c |  1 +
+ net/core/filter.c    | 35 +++++++++++++++++------------------
+ 3 files changed, 20 insertions(+), 18 deletions(-)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index efd9c453399e..26240637c863 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -8296,6 +8296,12 @@ static bool arg_type_is_mem_size(enum bpf_arg_type type)
- 	       type == ARG_CONST_SIZE_OR_ZERO;
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index d2c8945e8297..c0620bad5dc8 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -523,6 +523,7 @@ BPF_CALL_4(bpf_strtol, const char *, buf, size_t, buf_len, u64, flags,
+ 	long long _res;
+ 	int err;
+ 
++	*res = 0;
+ 	err = __bpf_strtoll(buf, buf_len, flags, &_res);
+ 	if (err < 0)
+ 		return err;
+@@ -551,6 +552,7 @@ BPF_CALL_4(bpf_strtoul, const char *, buf, size_t, buf_len, u64, flags,
+ 	bool is_negative;
+ 	int err;
+ 
++	*res = 0;
+ 	err = __bpf_strtoull(buf, buf_len, flags, &_res, &is_negative);
+ 	if (err < 0)
+ 		return err;
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index feb276771c03..513b4301a0af 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -5934,6 +5934,7 @@ static const struct bpf_func_proto bpf_sys_close_proto = {
+ 
+ BPF_CALL_4(bpf_kallsyms_lookup_name, const char *, name, int, name_sz, int, flags, u64 *, res)
+ {
++	*res = 0;
+ 	if (flags)
+ 		return -EINVAL;
+ 
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 4be175f84eb9..c219385e7bb4 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -6264,18 +6264,19 @@ BPF_CALL_5(bpf_skb_check_mtu, struct sk_buff *, skb,
+ 	int skb_len, dev_len;
+ 	int mtu;
+ 
+-	if (unlikely(flags & ~(BPF_MTU_CHK_SEGS)))
+-		return -EINVAL;
+-
+-	if (unlikely(flags & BPF_MTU_CHK_SEGS && (len_diff || *mtu_len)))
++	if (unlikely((flags & ~(BPF_MTU_CHK_SEGS)) ||
++		     (flags & BPF_MTU_CHK_SEGS && (len_diff || *mtu_len)))) {
++		*mtu_len = 0;
+ 		return -EINVAL;
++	}
+ 
+ 	dev = __dev_via_ifindex(dev, ifindex);
+-	if (unlikely(!dev))
++	if (unlikely(!dev)) {
++		*mtu_len = 0;
+ 		return -ENODEV;
++	}
+ 
+ 	mtu = READ_ONCE(dev->mtu);
+-
+ 	dev_len = mtu + dev->hard_header_len;
+ 
+ 	/* If set use *mtu_len as input, L3 as iph->tot_len (like fib_lookup) */
+@@ -6286,10 +6287,10 @@ BPF_CALL_5(bpf_skb_check_mtu, struct sk_buff *, skb,
+ 		ret = BPF_MTU_CHK_RET_SUCCESS;
+ 		goto out;
+ 	}
+-	/* At this point, skb->len exceed MTU, but as it include length of all
+-	 * segments, it can still be below MTU.  The SKB can possibly get
+-	 * re-segmented in transmit path (see validate_xmit_skb).  Thus, user
+-	 * must choose if segs are to be MTU checked.
++	/* At this point, skb->len exceeds MTU, but as it includes the length
++	 * of all segments, it can still be below MTU. The skb can possibly
++	 * get re-segmented in transmit path (see validate_xmit_skb). Thus,
++	 * the user must choose if segments are to be MTU checked.
+ 	 */
+ 	if (skb_is_gso(skb)) {
+ 		ret = BPF_MTU_CHK_RET_SUCCESS;
+@@ -6299,9 +6300,7 @@ BPF_CALL_5(bpf_skb_check_mtu, struct sk_buff *, skb,
+ 			ret = BPF_MTU_CHK_RET_SEGS_TOOBIG;
+ 	}
+ out:
+-	/* BPF verifier guarantees valid pointer */
+ 	*mtu_len = mtu;
+-
+ 	return ret;
  }
  
-+static bool arg_type_is_raw_mem(enum bpf_arg_type type)
-+{
-+	return base_type(type) == ARG_PTR_TO_MEM &&
-+	       type & MEM_UNINIT;
-+}
-+
- static bool arg_type_is_release(enum bpf_arg_type type)
- {
- 	return type & OBJ_RELEASE;
-@@ -9348,15 +9354,15 @@ static bool check_raw_mode_ok(const struct bpf_func_proto *fn)
- {
- 	int count = 0;
+@@ -6314,16 +6313,18 @@ BPF_CALL_5(bpf_xdp_check_mtu, struct xdp_buff *, xdp,
+ 	int mtu, dev_len;
  
--	if (fn->arg1_type == ARG_PTR_TO_UNINIT_MEM)
-+	if (arg_type_is_raw_mem(fn->arg1_type))
- 		count++;
--	if (fn->arg2_type == ARG_PTR_TO_UNINIT_MEM)
-+	if (arg_type_is_raw_mem(fn->arg2_type))
- 		count++;
--	if (fn->arg3_type == ARG_PTR_TO_UNINIT_MEM)
-+	if (arg_type_is_raw_mem(fn->arg3_type))
- 		count++;
--	if (fn->arg4_type == ARG_PTR_TO_UNINIT_MEM)
-+	if (arg_type_is_raw_mem(fn->arg4_type))
- 		count++;
--	if (fn->arg5_type == ARG_PTR_TO_UNINIT_MEM)
-+	if (arg_type_is_raw_mem(fn->arg5_type))
- 		count++;
+ 	/* XDP variant doesn't support multi-buffer segment check (yet) */
+-	if (unlikely(flags))
++	if (unlikely(flags)) {
++		*mtu_len = 0;
+ 		return -EINVAL;
++	}
  
- 	/* We only support one arg being in raw mode at the moment,
+ 	dev = __dev_via_ifindex(dev, ifindex);
+-	if (unlikely(!dev))
++	if (unlikely(!dev)) {
++		*mtu_len = 0;
+ 		return -ENODEV;
++	}
+ 
+ 	mtu = READ_ONCE(dev->mtu);
+-
+-	/* Add L2-header as dev MTU is L3 size */
+ 	dev_len = mtu + dev->hard_header_len;
+ 
+ 	/* Use *mtu_len as input, L3 as iph->tot_len (like fib_lookup) */
+@@ -6334,9 +6335,7 @@ BPF_CALL_5(bpf_xdp_check_mtu, struct xdp_buff *, xdp,
+ 	if (xdp_len > dev_len)
+ 		ret = BPF_MTU_CHK_RET_FRAG_NEEDED;
+ 
+-	/* BPF verifier guarantees valid pointer */
+ 	*mtu_len = mtu;
+-
+ 	return ret;
+ }
+ 
 -- 
 2.43.0
 
