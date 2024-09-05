@@ -1,131 +1,110 @@
-Return-Path: <bpf+bounces-38952-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-38953-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62F2B96CDA4
-	for <lists+bpf@lfdr.de>; Thu,  5 Sep 2024 06:17:46 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5846296CDF1
+	for <lists+bpf@lfdr.de>; Thu,  5 Sep 2024 06:24:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 95BC61C2248A
-	for <lists+bpf@lfdr.de>; Thu,  5 Sep 2024 04:17:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE4D728749A
+	for <lists+bpf@lfdr.de>; Thu,  5 Sep 2024 04:24:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A20F14E2E6;
-	Thu,  5 Sep 2024 04:17:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3632B1547C4;
+	Thu,  5 Sep 2024 04:23:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kylehuey.com header.i=@kylehuey.com header.b="HSwXM8pM"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=basantfashion.com header.i=@basantfashion.com header.b="lVJcpAW2"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mod.modforum.org (mod.modforum.org [192.254.136.77])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2884848CCC
-	for <bpf@vger.kernel.org>; Thu,  5 Sep 2024 04:17:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B80313DDAA
+	for <bpf@vger.kernel.org>; Thu,  5 Sep 2024 04:23:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.254.136.77
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725509857; cv=none; b=BTr/CqKWk4exkDh/7MW9W/l6YmwMvZE6Ck+KpopUZ1FMm8gsubbgy0aNc+MVe8RyaOsswPWdxO28K+E1G6wl6CwRyEkTsS8/Exxjwqkf6X4NK4BuPR9iFOi7zPcy3o0p0dDhRA5TS4uVPFqXnPpMwUVTuoSgNSKksFn9zWiFV8M=
+	t=1725510207; cv=none; b=dudiIo7/gxd2iVMTuzxjYjqx10S8ZXhSYK8vhp5cgfnudMa3gAFf+u5sRJ8oHYcZzsBOShUTzagrp9Te7bxksD7OpxG42VZZPfeASbreSL4+O6Bc32p6paOLsGHIhFOUqMUbDa+hTMNAd74ZyoF9JhpGgRB9Xpn/bqoiyKfmnuA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725509857; c=relaxed/simple;
-	bh=Fqd5O56HcItsOWd+CIxphksTg7QoKAyjJrEQgL7KOdw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=FlHjZY0azYK+J64p8f8aQBn6WeeXAhmVu4OXrneHyZHLzbFflBDL/Y6rkdcjHvQb7skqNV7/mEWQLUxHcf9G0xMFYbQ3PJEtqAsMWyJ2S9ThYzXU/aunoSBiYaOSqS1n86BfeL/AykGV6ek+OPAupN8TmCGVczo1OjyfAbma9Og=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylehuey.com; spf=pass smtp.mailfrom=kylehuey.com; dkim=pass (2048-bit key) header.d=kylehuey.com header.i=@kylehuey.com header.b=HSwXM8pM; arc=none smtp.client-ip=209.85.208.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylehuey.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylehuey.com
-Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2f51e5f0656so2855981fa.1
-        for <bpf@vger.kernel.org>; Wed, 04 Sep 2024 21:17:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kylehuey.com; s=google; t=1725509854; x=1726114654; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sZdaH3PSCdfXqojPbX1szrhoVgPytj7gd3rO+WjcE80=;
-        b=HSwXM8pMdHb8sh9Hlu5zuOzQGNrzYgZu5Y2Q7nDXbtzZeN2thqqSd+kQQnYtM/DTJg
-         NR3DAq8Sy07l3NOCXFszyy8wUnY5sa5qwln+y02v+jk5hgccXbZ3ka0MLA4/UR49HNS5
-         ht/SyeezqV/vt1l41Jwn9Q+ul8Y9JJTD6CV5BebnZM7p5MM8bSPNAFZ89FyxR8blhsnT
-         FP0DSTLUYIMUwi7r5Nt93XoTFNDMXJOmNEkvQGZY+8PNGgvO+VR32ySBDTZXAFt0zZim
-         TmibVnhlDiWsPId0mUCw1q0THChjawUODCQOtbr3/hVElEgCZyBOxkKBs4leCyKR+POS
-         MoGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725509854; x=1726114654;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sZdaH3PSCdfXqojPbX1szrhoVgPytj7gd3rO+WjcE80=;
-        b=KXL5uD3vjUEl0CUCAHURY5ThkzvPHiW/uSUa26WED1Fq7w9W7tC1o9+Y049X6lugsS
-         iqacZnCF82X8NFAHEhx6+Hjy1cYLc2ws8XAcc9gkIR9BqdyCoTMi6QDZOtw46xzb4ggc
-         H20VZE8vLM3hvdOU3X+jfrME8VeU5QquCpxDZ23DJ2Ul9dVbd0s4bUz80poB6pfXH1lv
-         ZQmknIkdPbdJqg10QoMc9peLbq9nm/I3QW2jjcGwxkDbxrr+5b61I2jCeULOj1a+HPsz
-         vT5gl4ntSmFENeurVBnsL1XxEJLp9im6vMxcBPlUC1BnJmfcWrhHz1jQcAinIm2Wo68K
-         dFOQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWiAqzydBnNrXpsUzxRz+pCbzXK4jmrR/F2PpEO0M/mrRnhQ9pb3CfeuFJFhcxA8p/qbDY=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxAMCYb3b9SbM7tHMPDICFddw8GsB/lLNIaSx/Jk43BlmTj3/+g
-	HUW3EGcqEXn7NO5n8riKy5vhyGJWTKiHSddUmoffNzIsgUlXUGEXw9334RTGn6DDkoff2cRr4vP
-	Nkcke9UhGoCXfWMUZMNhCzxaadNyBLOCLxNI7
-X-Google-Smtp-Source: AGHT+IE73Ld+RvK+KL878z4MoxnyKJHscGUwUvnaaZmXyON2fN5Wq13RRHi88y8AHu+BjAgfFxuSSsTRy+y6fOjCcPY=
-X-Received: by 2002:ac2:4c53:0:b0:533:d3e:170a with SMTP id
- 2adb3069b0e04-53546b92ddbmr14763907e87.38.1725509853875; Wed, 04 Sep 2024
- 21:17:33 -0700 (PDT)
+	s=arc-20240116; t=1725510207; c=relaxed/simple;
+	bh=G4BItOc8k/hB4suOfWWwTOg/U0FTlHwyCNnKCLPge2w=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=m58tn6nmbzBrk2Kt+VgREiJH+Uhq8+4NqN6CT0qYyqA3VCB1Q9woOlOHym9glr9BqB3hqnRz8RYK833OVYJBcQPbJ/Hfo6jhNRn/Jom+RKFasY6VtXGkda4/0tum94R3Q13U/rA/dGFxBf/wkKOOGqm+IteiaTEQl9KnlUuln7Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=basantfashion.com; spf=pass smtp.mailfrom=basantfashion.com; dkim=pass (2048-bit key) header.d=basantfashion.com header.i=@basantfashion.com header.b=lVJcpAW2; arc=none smtp.client-ip=192.254.136.77
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=basantfashion.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=basantfashion.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=basantfashion.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+	MIME-Version:Message-ID:Date:Subject:To:From:Reply-To:Sender:Cc:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=G4BItOc8k/hB4suOfWWwTOg/U0FTlHwyCNnKCLPge2w=; b=lVJcpAW2IjM3BFQG45QluFyqc+
+	c/i+9r28cUApLYonn461Gn4n3Ax5qqeO7rmrBFe6Rx3VqAH1WE358vRgNAsy2XPmgRh5tfl2ZQuk1
+	2NCUX3K3HxOnTGU3W/C+8zve0NIV7ThBQXXXLOYSStBg04WcDM3f2q+w1oR9s9ZAiUB+KQQFmMcit
+	wgkmGrTACv+xjcWih+eM7MCNGxWeJTL8SXVaR6G8hjAsiOXzY85dHmooESB2G1jjvYLm2JT/wf0qg
+	rvgn2bDjMlA3pqW3E7J9GBl65d5BnCaAlDEkHF31U9fmhSlcVvvDTiFrGjJjXySNokn7nV36YDwua
+	bdl4SznQ==;
+Received: from [162.244.210.121] (port=53367)
+	by mod.modforum.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.93)
+	(envelope-from <kuljeet@basantfashion.com>)
+	id 1sm40p-0002Xv-02
+	for bpf@vger.kernel.org; Wed, 04 Sep 2024 23:22:27 -0500
+Reply-To: procurement@mercuira.com
+From: MERCURIA  <kuljeet@basantfashion.com>
+To: bpf@vger.kernel.org
+Subject: Request for Quote and Meeting Availability
+Date: 4 Sep 2024 21:23:23 -0700
+Message-ID: <20240904212323.44C25D61DFC73539@basantfashion.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240905031027.2567913-1-namhyung@kernel.org> <20240905031027.2567913-4-namhyung@kernel.org>
-In-Reply-To: <20240905031027.2567913-4-namhyung@kernel.org>
-From: Kyle Huey <me@kylehuey.com>
-Date: Wed, 4 Sep 2024 21:17:21 -0700
-Message-ID: <CAP045Arcn_zrQvzv+4ihCXOPgcsuMVe_VdgR-cny63POaT5g-w@mail.gmail.com>
-Subject: Re: [PATCH 3/5] perf/core: Account dropped samples from BPF
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, 
-	Kan Liang <kan.liang@linux.intel.com>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	Stephane Eranian <eranian@google.com>, Ravi Bangoria <ravi.bangoria@amd.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>, 
-	bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain;
+	charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - mod.modforum.org
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - basantfashion.com
+X-Get-Message-Sender-Via: mod.modforum.org: authenticated_id: kuljeet@basantfashion.com
+X-Authenticated-Sender: mod.modforum.org: kuljeet@basantfashion.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 
-On Wed, Sep 4, 2024 at 8:10=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> w=
-rote:
->
-> Like in the software events, the BPF overflow handler can drop samples
-> by returning 0.  Let's count the dropped samples here too.
->
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Andrii Nakryiko <andrii@kernel.org>
-> Cc: Song Liu <song@kernel.org>
-> Cc: Kyle Huey <me@kylehuey.com>
-> Cc: bpf@vger.kernel.org
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> ---
->  kernel/events/core.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/kernel/events/core.c b/kernel/events/core.c
-> index 8250e76f63358689..ba1f6b51ea26db5b 100644
-> --- a/kernel/events/core.c
-> +++ b/kernel/events/core.c
-> @@ -9808,8 +9808,10 @@ static int __perf_event_overflow(struct perf_event=
- *event,
->
->         ret =3D __perf_event_account_interrupt(event, throttle);
->
-> -       if (event->prog && !bpf_overflow_handler(event, data, regs))
-> +       if (event->prog && !bpf_overflow_handler(event, data, regs)) {
-> +               atomic64_inc(&event->dropped_samples);
->                 return ret;
-> +       }
->
->         /*
->          * XXX event_limit might not quite work as expected on inherited
-> --
-> 2.46.0.469.g59c65b2a67-goog
->
+Greetings,
 
-lgtm
+I hope you are doing great.
 
-- Kyle
+We have reviewed your products on your website, and several items=20
+have caught our interest. We would like to request a quote the=20
+following
+
+Can you ship to the United States?
+
+What are your best prices?
+
+What support do you provide?
+
+We are also interested in your services for this project.
+
+Could you let us know your availability for a virtual meeting on=20
+Zoom to discuss this project further?
+
+Please advise us on these matters so that we can prepare a=20
+meeting notice for our company executives to effectively engage=20
+with you.
+
+Thank you for your attention to this inquiry. We look forward to=20
+your prompt response.
+
+Best regards,
+
+Nina Petrova
+Procurement Manager
+Email: procurement@mercuira.com
+12 Marina View, Asia Square Tower 2, #26-01, Singapore, 018961
+Phone: +65 641 1080
 
