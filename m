@@ -1,170 +1,160 @@
-Return-Path: <bpf+bounces-39081-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39082-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1C4396E5CC
-	for <lists+bpf@lfdr.de>; Fri,  6 Sep 2024 00:38:32 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A89F396E600
+	for <lists+bpf@lfdr.de>; Fri,  6 Sep 2024 00:56:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 71623286A09
-	for <lists+bpf@lfdr.de>; Thu,  5 Sep 2024 22:38:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F2098B230EB
+	for <lists+bpf@lfdr.de>; Thu,  5 Sep 2024 22:56:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07A1A1B1D42;
-	Thu,  5 Sep 2024 22:38:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47F2A1B1425;
+	Thu,  5 Sep 2024 22:56:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iqeq+7CN"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="e3+5SU83"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D74E15532A
-	for <bpf@vger.kernel.org>; Thu,  5 Sep 2024 22:38:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3676F1482E9
+	for <bpf@vger.kernel.org>; Thu,  5 Sep 2024 22:56:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725575903; cv=none; b=Jh3rq0L7q8bRqXO6GlLpGtbiH8iYH9FilUmk3lM8eF+t1JT0f+wF6vzErkKLWlCwKS8djRDvV66QmNN8x3urBmLEacvpMvt6EiwpyXl6cfsMz5E7DGPEmmSUJJt3WDS0TguYzEI849DixDGK8sEB2jeRXS9uE9niRW0513nmCf0=
+	t=1725576986; cv=none; b=NU28JArF9pPO62pkq/4l0jTqoElqm9AsETooENc6V/E6xGgQ7jMEaEHlj7Cx2jtdT71uFldV360jIkNZHcqxNEvf4rSUXK/L8ErTN0LRSlqq5MqivdbT9qRPW/pcMc+YbasmYqLHZe2HX+SFbsRGSaGSg/Ldf4wNE6eMOCelFJQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725575903; c=relaxed/simple;
-	bh=jV5JI0fa7DNBnP9DfszJ1bTgS+IhH9H78528QNAk330=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=pBJFnMv+d98zgrwZKgyfAvRgW81NIqdSFUxBVBuYKk2ff2En5nMJ36md7OyrbpVGG++/vK3cqAevnnQWJPWWIlbeFEJUBR3QCLRf7y6FTWnQRA6dLvLk9u1Uhii9yl6YvJSPiYg2gYYmVszO+q0PSYUYd//W9HZXz3S8r+xGTRY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iqeq+7CN; arc=none smtp.client-ip=209.85.214.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-20696938f86so13621265ad.3
-        for <bpf@vger.kernel.org>; Thu, 05 Sep 2024 15:38:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1725575902; x=1726180702; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=PeHk6HViTo9DNhsXLGN76zME7pGq0rBpYUTlrSWSAV8=;
-        b=iqeq+7CNgv85MS6k3QarZUoZlv1EdFs72OaHyBrdtVmEUfDoLnLXZCfUiu6xqvBVUK
-         XSPjLJEQlqgGUG/BSpZNQ9JW6L/8dzFJ9A7ceeQcMAxS8oeprVuKRJQQmP+4WSLOeHkZ
-         6xNISXTvSKvOYHmQSuJC+wDWlMaTSqF7D0trmAqYzf2mJqhla8+c8zh9L3MoODSXZ7Nd
-         SmTllikTyUOJJEjA3S05X3jX7nHWClGVEay9ejO13wAY8uSKrY8DdakpM5kfWcw6F44N
-         SMYr3Kl0CqHmyFYm+1bQploznSy4bXB+cmXdmc4GD0VlNKMN6CoBUd5huFvBJwx5P+DJ
-         dOZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725575902; x=1726180702;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PeHk6HViTo9DNhsXLGN76zME7pGq0rBpYUTlrSWSAV8=;
-        b=BCdl8gW3vP1sxyTA9PjiLSDLi2oZufc19YTCsW6xWfMRV9X41Ah8fVzrN3MG99IfNT
-         e1B5RQIP4NED8LDWt2ETdqHK5DURBwNBg6RaENzpCJhVK7R4zicuq2IUFmc1wQPs8RmY
-         ShZ2VyXwaZQv6BucWKMD7UjMDH+FmP6o1uo3pMCbwzaAeyt3qnQU8dkMeIGeJ0hxMC0k
-         BIESrK4ZhXqlyZsvhiqOxs5/bgxICtBm+UzXbgqnjF7zrgYS8FHYIoKQ3eVgfH0BZzU0
-         wg/6KpbKLX8a6EQqEPVXQZbRrt3MdpjaBuTI1T0WnnRN7KmjeVFLyOHC8C+UdAuFOkBd
-         g+Cw==
-X-Forwarded-Encrypted: i=1; AJvYcCUTcRBozg3GXB80IE+pVfOdNSWnnvznRAVA6k3BckOrNWqbGz0AkkK7o21pqCToNRXS8hA=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyAzuVwD8A0hWijmfG/1tnrW/IX8tqIN27GUzZkZbfL+KL0lCaO
-	k6CurkAQadOLK+UmUtI0XAFr6KKBrnH/I6xPteaLUQljjFjxftMW
-X-Google-Smtp-Source: AGHT+IGQHEPTYrger4MtAvyolgCOpDPx7DtmnL4kNZJsOzoDtaebJ2J2QFttHcV3FKR98H3nuYHEkg==
-X-Received: by 2002:a17:902:ec81:b0:203:a0b4:3e28 with SMTP id d9443c01a7336-206f0552aa7mr6469055ad.27.1725575901665;
-        Thu, 05 Sep 2024 15:38:21 -0700 (PDT)
-Received: from saturn.. (c-67-188-127-15.hsd1.ca.comcast.net. [67.188.127.15])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-206ae9505acsm33067225ad.66.2024.09.05.15.38.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Sep 2024 15:38:21 -0700 (PDT)
-From: JP Kobryn <inwardvessel@gmail.com>
-To: andrii@kernel.org,
-	ast@kernel.org,
-	eddyz87@gmail.com,
-	bpf@vger.kernel.org
-Subject: [PATCH bpf-next v3 2/2] bpf/selftests: coverage for tp and perf event progs using kfuncs
-Date: Thu,  5 Sep 2024 15:38:12 -0700
-Message-ID: <20240905223812.141857-3-inwardvessel@gmail.com>
-X-Mailer: git-send-email 2.46.0
-In-Reply-To: <20240905223812.141857-1-inwardvessel@gmail.com>
-References: <20240905223812.141857-1-inwardvessel@gmail.com>
+	s=arc-20240116; t=1725576986; c=relaxed/simple;
+	bh=VEnrMsSMorwt874Ld/SkJ+xnSklvhK7OfC9v4EemOEY=;
+	h=Subject:From:To:Cc:References:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=nmXMZtOSs7u2YJ0Nzk1HnvsMwbinvuwxBUQj7P4x2J9GNPKulNidEPn7Jp6LG0ZcqdF+bzYTpQ4jT77KjqVGchZDiW4U/8BIvVW/EvmfOl/q1kQNUJOnqTCGMNcogBlR8GeMtPD5Lh5+R2RpHYbpC+QBnvYjqylr/T/VWZbE/nI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=e3+5SU83; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:Subject:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=J6SnGJBUHOu82cBdzQLHoeLg7iDhUVmLnj1zuFzbdUE=; b=e3+5SU836iE2DiplRcoslIn84f
+	hbPDC9VvGqTdOBikCJBtrt6XUpwis+6cxPDhC/tgrgjfvVoyJ2CmirASYzoSIdKPbjaQfvmJoqgeT
+	eeTQmRk58bldf5HAyB/576qovlfjEL7bjl9whJVH1h+v7S0EA045AijJpeKtk0I8b6/GobOBYCYzN
+	oQKL8f1SF5yc3Svw9LbV2Ln+lXWnfh6HvaShHTfvx3kYvefsI1fqNTI/6b3Md0jjmf+1eLiXWfz3N
+	mSicSC1L+vEF578YvjtUw1Szl9HXCnjV1XMeKvDGH4klVcjcQyEUD9CbtmI85KZg7Eari+Tm2lGsU
+	RLJqjs6A==;
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1smLOm-0002yh-VV; Fri, 06 Sep 2024 00:56:20 +0200
+Received: from [178.197.248.15] (helo=linux.home)
+	by sslproxy01.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1smLOm-0001tR-37;
+	Fri, 06 Sep 2024 00:56:20 +0200
+Subject: Re: [PATCH bpf-next v3 1/6] bpf: Fix helper writes to read-only maps
+From: Daniel Borkmann <daniel@iogearbox.net>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Shung-Hsi Yu <shung-hsi.yu@suse.com>,
+ Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ kongln9170@gmail.com
+References: <20240905134813.874-1-daniel@iogearbox.net>
+ <CAADnVQJbqoXHMsC3_67xWXpvX8CjzOoRTTA7h_kZgZNOqNVW5w@mail.gmail.com>
+ <14aa3075-2580-ab0d-e90d-bc29d435acd4@iogearbox.net>
+Message-ID: <ec71766c-d028-c88a-8a77-c9151c28670d@iogearbox.net>
+Date: Fri, 6 Sep 2024 00:56:19 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+In-Reply-To: <14aa3075-2580-ab0d-e90d-bc29d435acd4@iogearbox.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27389/Thu Sep  5 10:33:25 2024)
 
-This coverage ensures that kfuncs are allowed within tracepoint and perf
-event programs.
+On 9/5/24 10:27 PM, Daniel Borkmann wrote:
+> On 9/5/24 9:39 PM, Alexei Starovoitov wrote:
+>> On Thu, Sep 5, 2024 at 6:48 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>>> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+>>> index 3956be5d6440..d2c8945e8297 100644
+>>> --- a/kernel/bpf/helpers.c
+>>> +++ b/kernel/bpf/helpers.c
+>>> @@ -539,7 +539,9 @@ const struct bpf_func_proto bpf_strtol_proto = {
+>>>          .arg1_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
+>>>          .arg2_type      = ARG_CONST_SIZE,
+>>>          .arg3_type      = ARG_ANYTHING,
+>>> -       .arg4_type      = ARG_PTR_TO_LONG,
+>>> +       .arg4_type      = ARG_PTR_TO_FIXED_SIZE_MEM |
+>>> +                         MEM_UNINIT | MEM_ALIGNED,
+>>> +       .arg4_size      = sizeof(long),
+>>>   };
+>>>
+>>>   BPF_CALL_4(bpf_strtoul, const char *, buf, size_t, buf_len, u64, flags,
+>>> @@ -567,7 +569,9 @@ const struct bpf_func_proto bpf_strtoul_proto = {
+>>>          .arg1_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
+>>>          .arg2_type      = ARG_CONST_SIZE,
+>>>          .arg3_type      = ARG_ANYTHING,
+>>> -       .arg4_type      = ARG_PTR_TO_LONG,
+>>> +       .arg4_type      = ARG_PTR_TO_FIXED_SIZE_MEM |
+>>> +                         MEM_UNINIT | MEM_ALIGNED,
+>>> +       .arg4_size      = sizeof(unsigned long),
+>>
+>> This is not correct.
+>> ARG_PTR_TO_LONG is bpf-side "long", not kernel side "long".
+>>
+>>> -static int int_ptr_type_to_size(enum bpf_arg_type type)
+>>> -{
+>>> -       if (type == ARG_PTR_TO_INT)
+>>> -               return sizeof(u32);
+>>> -       else if (type == ARG_PTR_TO_LONG)
+>>> -               return sizeof(u64);
+>>
+>> as seen here.
+>>
+>> BPF_CALL_4(bpf_strto[u]l, ... long *, res)
+>> are buggy.
+> 
+> Right, the int_ptr_type_to_size() checks mem based on u64 vs writing
+> long in the helper which mismatches on 32bit archs.
+> 
+>> but they call __bpf_strtoll which takes 'long long' correctly.
+>>
+>> The fix for BPF_CALL_4(bpf_strto[u]l and uapi/bpf.h is orthogonal,
+>> but this patch shouldn't make the verifier see it as sizeof(long).
+> 
+> Ok, so I'll fix the BPF_CALL signatures for the affected helpers as
+> one more patch and also align arg*_size to {s,u}64 then so that there's
+> no mismatch.
 
-Signed-off-by: JP Kobryn <inwardvessel@gmail.com>
----
- .../bpf/progs/verifier_kfunc_prog_types.c     | 48 +++++++++++++++++++
- 1 file changed, 48 insertions(+)
+Not fixing up BPF_CALL signatures but aligning .arg*_size to sizeof(u64)
+would fwiw keep things as today. This has the downside that on 32bit archs
+one could end up leaking out 4b of uninit mem (as verifier assumes fixed
+64bit and in case of write there is no need to init the var as verifier
+thinks the helper will fill it all). Ugly bit is the func proto is enabled
+in bpf_base_func_proto() which is ofc available for unpriv (if someone
+actually has it turned on..).
 
-diff --git a/tools/testing/selftests/bpf/progs/verifier_kfunc_prog_types.c b/tools/testing/selftests/bpf/progs/verifier_kfunc_prog_types.c
-index cb32b0cfc84b..a509cad97e69 100644
---- a/tools/testing/selftests/bpf/progs/verifier_kfunc_prog_types.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_kfunc_prog_types.c
-@@ -47,6 +47,22 @@ int BPF_PROG(task_kfunc_syscall)
- 	return 0;
- }
- 
-+SEC("tracepoint")
-+__success
-+int BPF_PROG(task_kfunc_tracepoint)
-+{
-+	task_kfunc_load_test();
-+	return 0;
-+}
-+
-+SEC("perf_event")
-+__success
-+int BPF_PROG(task_kfunc_perf_event)
-+{
-+	task_kfunc_load_test();
-+	return 0;
-+}
-+
- /*****************
-  * cgroup kfuncs *
-  *****************/
-@@ -85,6 +101,22 @@ int BPF_PROG(cgrp_kfunc_syscall)
- 	return 0;
- }
- 
-+SEC("tracepoint")
-+__success
-+int BPF_PROG(cgrp_kfunc_tracepoint)
-+{
-+	cgrp_kfunc_load_test();
-+	return 0;
-+}
-+
-+SEC("perf_event")
-+__success
-+int BPF_PROG(cgrp_kfunc_perf_event)
-+{
-+	cgrp_kfunc_load_test();
-+	return 0;
-+}
-+
- /******************
-  * cpumask kfuncs *
-  ******************/
-@@ -120,3 +152,19 @@ int BPF_PROG(cpumask_kfunc_syscall)
- 	cpumask_kfunc_load_test();
- 	return 0;
- }
-+
-+SEC("tracepoint")
-+__success
-+int BPF_PROG(cpumask_kfunc_tracepoint)
-+{
-+	cpumask_kfunc_load_test();
-+	return 0;
-+}
-+
-+SEC("perf_event")
-+__success
-+int BPF_PROG(cpumask_kfunc_perf_event)
-+{
-+	cpumask_kfunc_load_test();
-+	return 0;
-+}
--- 
-2.46.0
+Fixing up BPF_CALL signatures for bpf_strto{u,}l where res pointer becomes
+{s,u}64 and .arg*_size fixed 8b, would be nicer, but assuming this includes
+also the uapi helper description, then we'll also have to end up adapting
+selftests (given compiler warns on ptr type mismatch) :/
 
+One option could be we fix up BPF_CALL sites, but not the uapi helper such
+that selftests stay as they are. For 64bit no change, but 32bit archs this
+will be subtle as we write beyond the passed/expected long inside the helper.
+
+Last option is to have it like in this patch to reflect actual long in
+.arg*_size still no change 64bit and 32bit becomes also correct, just
+quirk that it's not fixed/portable size. Thoughts on the options? All ugly,
+but last one looked most sane to me fwiw.
+
+Thanks,
+Daniel
 
