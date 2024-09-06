@@ -1,128 +1,148 @@
-Return-Path: <bpf+bounces-39156-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39157-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99DEC96FC6A
-	for <lists+bpf@lfdr.de>; Fri,  6 Sep 2024 21:56:52 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6045196FC90
+	for <lists+bpf@lfdr.de>; Fri,  6 Sep 2024 22:12:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 432E51F26635
-	for <lists+bpf@lfdr.de>; Fri,  6 Sep 2024 19:56:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 26194289223
+	for <lists+bpf@lfdr.de>; Fri,  6 Sep 2024 20:12:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A2C51D54EE;
-	Fri,  6 Sep 2024 19:56:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D05BA1D5CF2;
+	Fri,  6 Sep 2024 20:12:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cMpsrnvP"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="dZ5j9eRh"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C13EC1E86F
-	for <bpf@vger.kernel.org>; Fri,  6 Sep 2024 19:56:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB1751D5CDB
+	for <bpf@vger.kernel.org>; Fri,  6 Sep 2024 20:11:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725652606; cv=none; b=DlCGadQuEA8buN/JXuMKlm9dOXK0kZ5CBLHgF1erBAU/l25uIkTSkJZ19V+RMQzaJG/GKfVSrDEr+LQsDMseGGX11tUOWo+nfuvofl2mwaJnKTWG93ZyhzWg1QBPkdcQqNGyjqN6FSFSwxpxk9oep6xRc96ikHxVQYAJFEXI7bM=
+	t=1725653521; cv=none; b=gHEeSOQUyBzHIEwAYbPZOnR5yH4syRsMtQN5ybd0JwtbRL2HXO0a4+dhtxLqQfThey0kD0z9cQ53eYHcvvwbb33ilKxgj4HJm5vXDbYmG8g66GEs8RydwiSIk57vC1LkkBk/jkUfG/jJE+fMBnbFX06nsTMcnVxNZANcN4evdGc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725652606; c=relaxed/simple;
-	bh=4a6fzlyNQcN3//Xr4KTDqRo2CjoNpZHyxBjErcFS5PU=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=LVXxoAeLWsIy9gcMUgPOcmlU3abNyFa/0nmQVDKj3rbpWjMThi14z654gwizZTc7Fm9gOh94T7pl8ON+/nx74IkIZ7X/Ti/97RxCtRpd6aIaMmCej/bvcbP1C0DrGCU4J6qjtNx/YkcdIicJ4BNydl5robV6qib176rxrcIS400=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cMpsrnvP; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-206bd1c6ccdso24278845ad.3
-        for <bpf@vger.kernel.org>; Fri, 06 Sep 2024 12:56:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1725652604; x=1726257404; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=C3JOH2UmDgLh3B+/82FGOD7xOVuQVXh+D+aRA8G/qgw=;
-        b=cMpsrnvPgvIXb2N0zXxAY7c6pgob21cIbcCDK1nTLT9hgqwg00JHpviJHphKa3KYUh
-         HCMgnXg/hiqTtBVmhvfiOc2mYKORKBJgF9y2VKkhjou4HYNWE5ECclkCGuHOeano59FB
-         rL3EjHybVv5BdSlLKabwYqS8qz8vCbsiuZTkZzJO/sUqX4gSVgBWiPWpgBnRQLnkTHif
-         hc7BeNMfFn3xcuL+Ay5bFDmW0Zf51VybgXPQKh4QuAzw9tas0HH7EMrPILTwitYbAy5p
-         N4QdQbgb1ix6rgyNYUxT25ijpp3iRc0Fh5U/b66lMxqoPVliQvn64D2qbsOZryxuYOuB
-         6YEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725652604; x=1726257404;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=C3JOH2UmDgLh3B+/82FGOD7xOVuQVXh+D+aRA8G/qgw=;
-        b=Qftxmb/qdDGXjRiXEuB4fS0188Wb+urkTgCfAzaeycBZB1w0VVgQaQcSjbtJ3RVL+G
-         rh8M/51K5Nj40A1hJfwKc5jS8WowZSwXR/73FuFIxkDm5jCmv6qO6Lzwjmf021Ph4smj
-         E36vXAnKw0jXmh/IZfOrMfiL66NQRltsaYLxNyNEtOPBkqBj3NkROQpgHglS0HEoMji2
-         XEnpX2BAju7TNF0EnYEEWbfIlOmceHDOUVuFd/f0rWpZ5ptYpGG+HU7uMXVgn6Xy9mI3
-         H2GqbrrwDpHZ6NIt7c2mxu6xggzSlkDkTLdHibtNAYucZCrN+KEWAKUofTKsFzlJDBVb
-         eovQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWz/NLuEyvMAWydRxqU5VxTqJTxwIZlxGRYbJ8R4oeNPkQc4OecuauiVrijXuIUQgcrydI=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwN7UbV672UdOXxGYgsC0jdRUjMy5Mo0R2POYeT8TQCO7MUqRjG
-	pSOy/gOfQFSB4KmQYRxVrt1GkqhLZB6D2z2GL27z6oqKBy+Mb8M5
-X-Google-Smtp-Source: AGHT+IEM6uNAT3/YYUaFZLUwEGC2c0LXZLuPSb9slmYX1VIlQaLFA3cVsmRnxpbHqwPAQxj7tM08gw==
-X-Received: by 2002:a17:902:d2d2:b0:206:b79e:5780 with SMTP id d9443c01a7336-206f0507dc6mr46303305ad.24.1725652603910;
-        Fri, 06 Sep 2024 12:56:43 -0700 (PDT)
-Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-206aea55d42sm46375145ad.204.2024.09.06.12.56.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Sep 2024 12:56:43 -0700 (PDT)
-Message-ID: <6e88208543c2bf9d75d9418f304d624f542503c6.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v2] bpftool: improve btf c dump sorting
- stability
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, bpf@vger.kernel.org, 
-	ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net, kafai@meta.com, 
-	kernel-team@meta.com
-Cc: Mykyta Yatsenko <yatsenko@meta.com>
-Date: Fri, 06 Sep 2024 12:56:38 -0700
-In-Reply-To: <20240906132453.146085-1-mykyta.yatsenko5@gmail.com>
-References: <20240906132453.146085-1-mykyta.yatsenko5@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.4 (3.52.4-1.fc40) 
+	s=arc-20240116; t=1725653521; c=relaxed/simple;
+	bh=8QBwHWPseHn9+R2gvNxdlsmVdJbXAJn9wHA08sxPA0I=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=YDrPyPmh5Jy9s+UDMXyPX/Lb7+LysGyM5UMDDy59EY5O5pFgVyXKefEiiRspqMwWKfUdcgcdWqT1X0bAmf0lfG40+wvr01VmCrrfrR3w0L7tw8bTD6jW8MlfeiYFYJZ8C632JhhBL23sfWhL1h04xGsgTAY6WCzM8c4oHr2q6aE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=dZ5j9eRh; arc=none smtp.client-ip=95.215.58.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <f84e4a86-976a-4fd2-94e7-8026dc3ae56e@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1725653517;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=jhhhpzp5I00d7lFzLvbJIXA1AyZbtxT5pcsvaV59gg0=;
+	b=dZ5j9eRhml/hXYrJ+CWC/TEXyOmLVGVXzbeAoAZVZC6yTch7lMKt2sD9TWkQjDtMWX/bKB
+	8oJcONqKzITjVzbEPtGZ+csVqoa1JkvWqMOQ5K1UE4BDbT83sAxG7UQz3GUF9AZVKifKov
+	1RfrlvTrZ6Nk2NWXWR6uhn0FXJoaUCk=
+Date: Fri, 6 Sep 2024 13:11:48 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [RFC bpf-next v4 4/6] bpf: pin, translate, and unpin __uptr from
+ syscalls.
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Kui-Feng Lee <thinker.li@gmail.com>, bpf <bpf@vger.kernel.org>,
+ Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Kui-Feng Lee <sinquersw@gmail.com>, linux-mm <linux-mm@kvack.org>
+References: <20240816191213.35573-1-thinker.li@gmail.com>
+ <20240816191213.35573-5-thinker.li@gmail.com>
+ <CAADnVQLUN1XLzV0kVbXWm5TaQyH5pN4M3agha-uZoWP3Dkcw8Q@mail.gmail.com>
+ <70a1b24f-84cd-464c-8fb6-a2c52fd3d703@linux.dev>
+Content-Language: en-US
+In-Reply-To: <70a1b24f-84cd-464c-8fb6-a2c52fd3d703@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Fri, 2024-09-06 at 14:24 +0100, Mykyta Yatsenko wrote:
-> From: Mykyta Yatsenko <yatsenko@meta.com>
->=20
-> Existing algorithm for BTF C dump sorting uses only types and names of
-> the structs and unions for ordering. As dump contains structs with the
-> same names but different contents, relative to each other ordering of
-> those structs will be accidental.
-> This patch addresses this problem by introducing a new sorting field
-> that contains hash of the struct/union field names and types to
-> disambiguate comparison of the non-unique named structs.
->=20
-> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
-> ---
+On 9/4/24 3:21 PM, Martin KaFai Lau wrote:
+> On 8/28/24 4:24 PM, Alexei Starovoitov wrote:
+>>> @@ -714,6 +869,11 @@ void bpf_obj_free_fields(const struct btf_record *rec, 
+>>> void *obj)
+>>>                                  field->kptr.dtor(xchgd_field);
+>>>                          }
+>>>                          break;
+>>> +               case BPF_UPTR:
+>>> +                       if (*(void **)field_ptr)
+>>> +                               bpf_obj_unpin_uptr(field, *(void **)field_ptr);
+>>> +                       *(void **)field_ptr = NULL;
+>> This one will be called from
+>>   task_storage_delete->bpf_selem_free->bpf_obj_free_fields
+>>
+>> and even if upin was safe to do from that context
+>> we cannot just do:
+>> *(void **)field_ptr = NULL;
+>>
+>> since bpf prog might be running in parallel,
+>> it could have just read that addr and now is using it.
+>>
+>> The first thought of a way to fix this was to split
+>> bpf_obj_free_fields() into the current one plus
+>> bpf_obj_free_fields_after_gp()
+>> that will do the above unpin bit.
+>> and call the later one from bpf_selem_free_rcu()
+>> while bpf_obj_free_fields() from bpf_selem_free()
+>> will not touch uptr.
+>>
+>> But after digging further I realized that task_storage
+>> already switched to use bpf_ma, so the above won't work.
+>>
+>> So we need something similar to BPF_KPTR_REF logic:
+>> xchgd_field = (void *)xchg((unsigned long *)field_ptr, 0);
+>> and then delay of uptr unpin for that address into call_rcu.
+>>
+>> Any better ideas?
+> 
 
-Note, this is still not fully stable, e.g.:
+I think the existing reuse_now arg in the bpf_selem_free can be used. reuse_now 
+(renamed from the earlier use_trace_rcu) was added to avoid call_rcu_tasks_trace 
+for the common case.
 
-$ for i in $(seq 1 10); \
-  do touch ./kernel/bpf/verifier.c && \
-     ccache-kernel-make.sh -j23 && \
-     ./tools/bpf/bpftool/bpftool btf dump file vmlinux format c > ~/work/tm=
-p/vmlinux.h.$i; \
-  done
-  ...
-$ md5sum ~/work/tmp/vmlinux.h.* | sort -k1
-76c9b22274c4aa6253ffaafa33ceffd3  /home/eddy/work/tmp/vmlinux.h.2
-76c9b22274c4aa6253ffaafa33ceffd3  /home/eddy/work/tmp/vmlinux.h.4
-a1c90a62e6cca59869a9cdffbaa3c4de  /home/eddy/work/tmp/vmlinux.h.1
-a1c90a62e6cca59869a9cdffbaa3c4de  /home/eddy/work/tmp/vmlinux.h.10
-a1c90a62e6cca59869a9cdffbaa3c4de  /home/eddy/work/tmp/vmlinux.h.3
-a1c90a62e6cca59869a9cdffbaa3c4de  /home/eddy/work/tmp/vmlinux.h.5
-a1c90a62e6cca59869a9cdffbaa3c4de  /home/eddy/work/tmp/vmlinux.h.6
-a1c90a62e6cca59869a9cdffbaa3c4de  /home/eddy/work/tmp/vmlinux.h.7
-a1c90a62e6cca59869a9cdffbaa3c4de  /home/eddy/work/tmp/vmlinux.h.8
-a1c90a62e6cca59869a9cdffbaa3c4de  /home/eddy/work/tmp/vmlinux.h.9
+selem (in type "struct bpf_local_storage_elem") is the one exposed to the bpf prog.
 
-[...]
+bpf_selem_free knows whether a selem can be reused immediately based on the 
+caller. It is currently flagged in the reuse_now arg: "bpf_selem_free(...., bool 
+reuse_now)".
+
+If a selem cannot be reuse_now (i.e. == false), it is currently going through 
+"call_rcu_tasks_trace(&selem->rcu, bpf_selem_free_trace_rcu)". We can do 
+unpin_user_page() in the rcu callback.
+
+A selem can be reuse_now (i.e. == true) if the selem is no longer needed because 
+either its owner (i.e. the task_struct here) is going away in free_task() or the 
+bpf map is being destructed in bpf_local_storage_map_free(). No bpf prog should 
+have a hold on the selem at this point. I think for these two cases, the 
+unpin_user_page() can be directly called in bpf_selem_free().
+
+One existing bug is, from looking at patch 6, I don't think the free_task() case 
+can be "reuse_now == true" anymore because of the bpf_task_release kfunc did not 
+mark the previously obtained task_storage to be invalid:
+
+data_task = bpf_task_from_pid(parent_pid);
+ptr = bpf_task_storage_get(&datamap, data_task, 0, ...);
+bpf_task_release(data_task);
+if (!ptr)
+	return 0;
+/* The prog still holds a valid task storage ptr. */
+udata = ptr->udata;
+
+It can be fixed by marking the ref_obj_id of the "ptr". Although it is more 
+correct to make the task storage "ptr" invalid after task_release, it may break 
+the existing progs.
+
+The same issue probably is true for cgroup_storage. There is no release kfunc 
+for inode and sk, so inode and sk storage should be fine.
 
 
