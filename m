@@ -1,172 +1,99 @@
-Return-Path: <bpf+bounces-39171-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39172-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11AE296FD49
-	for <lists+bpf@lfdr.de>; Fri,  6 Sep 2024 23:25:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD58196FD50
+	for <lists+bpf@lfdr.de>; Fri,  6 Sep 2024 23:27:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3DA471C23CE1
-	for <lists+bpf@lfdr.de>; Fri,  6 Sep 2024 21:25:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 81FC11F2605C
+	for <lists+bpf@lfdr.de>; Fri,  6 Sep 2024 21:27:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE10D1591F1;
-	Fri,  6 Sep 2024 21:25:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E518B15990E;
+	Fri,  6 Sep 2024 21:27:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KfqitTXv"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="vUuR3q29"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2945513E03E;
-	Fri,  6 Sep 2024 21:25:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DC57159209
+	for <bpf@vger.kernel.org>; Fri,  6 Sep 2024 21:26:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725657920; cv=none; b=IhOEJM3E+63Sl84zdvAr4P4vZRJvgE2YnaXPaWE0t1NLVdcq71nS1Q2ycKDx43UtA5gDbA2ymIslyucCxjeWzqYQn8tOxv2Tjj1n0ShJjQZAg6oiNFuj4rKMEMJ3T/OCFCGzfzbOynaKWPo0F37jsI3ECTHcABfQvb26T8eQJsA=
+	t=1725658020; cv=none; b=H5AUibygJrRQpjE91IvEsOFeexPLS29PBL9u1ze3rqT6izDKekQ/SPL9M1+43cwyoucsMiaipnvWMaIVo7RNGM2eUG8YkHqOMBRAoiSibSlgLLjKCqIj81NZNRDt8Nj2JXm31jP5ImLVWjIEbnGirT5fUknBvc7PAbb5JIMi7KY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725657920; c=relaxed/simple;
-	bh=XrS12X3LVCHpuFplxbR859tEoneylDLhudm0aGAneS0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rIu03hx3zvvQnGu5E8ijSz8l74V2RzY5YOW1XwCBekanK0+/D9hnH0OlC7mw+OtjyaFaK80jyL7x2cnRAM6ER5wf3BUtZpSHwaNZ7XK4FUjkdjVh2OAA0kVfnzvWipzod2aauqi+smn+HNRJ8J3E1geO3NdYd7lW+BOEiq4GiBE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KfqitTXv; arc=none smtp.client-ip=209.85.216.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-2d87a0bfaa7so1844822a91.2;
-        Fri, 06 Sep 2024 14:25:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1725657918; x=1726262718; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+FDwaKnuEnniTcgz2ziX9XL1wJlzuKYqP1Mdi2IZZCw=;
-        b=KfqitTXvvUz1azFgWIzkpjzR7hpFyD3tYRrAz50M6NaEIWegYNwaStAS7BPohnV7hJ
-         SL44x5YcfpcARh01J8DOwKIlyFSZu1x9RpbQbhYDssbeQq1VlKQUB8DTC+gIlAWSFFGp
-         +1OHuvUtttqBrM7jNHMrjSPidZyDuKqRocvKhMgOgkh5P2dn7/mLsd0hsgxCxeHUr3FD
-         HzL2gX7HnryaWq5dt9qu8shb80Adi3tpM1hNo+T/tdPXKMUSs4TgvH3esVW5qXpYcM9G
-         JTdadLrVVTCLKT5n7S3YzsxY7e+ae5y8OpBy8FTUdJIBqi7b25f/pWfbznzyLD5C2A58
-         Gc0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725657918; x=1726262718;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+FDwaKnuEnniTcgz2ziX9XL1wJlzuKYqP1Mdi2IZZCw=;
-        b=fDX/gqOkfTMmGFFh+LzlZwSssK0QRdypGmLI70JHugON2ufydp40AAQ2t/YgCcBXt/
-         haUetWmgqUc4HSFFDJ7UuPrvn16b0o+c54+u8puKTZjoujQc+Xg5H5O7jc3rfyYaiLov
-         ijIpPFtBY2q8ujAeqW77eoRIpcx63265g91CuDXQvXdKYIYdEoZIrcCW3m3XT2rbS756
-         GNJ7ok2mNpa5FE1Vk1Yxv0KOCFSm+wZdz9iO1eLAoo7garkrjldccMkBwvqzvsPvjRK2
-         xe2y+Y9+C5i0VTYMkVprslb3WMhTOeUU86ajsCkxovg5CE2Q83iUrocbYHtZ+vKL1uOH
-         ziRA==
-X-Forwarded-Encrypted: i=1; AJvYcCWhW8EMMzTEzyeHQM75vqrL16d6k3/VHZK9fArcg1D3QsodMfg341RtHZbp+oRvYWWpwJpYG8TsnVQARfJ4Hye0hLA=@vger.kernel.org, AJvYcCXwM9aTtkQ3nzJPOArvRwJDqkSdORiOn8Z1aPYIySS9/a/4nNmBkZScUHqol1q4rnOQkfsp6MRv@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw1W9XGRpsK1+AavN47c4wXFv9WNISRd2Gw72PEKWQlPGIs6ho5
-	Dc+ZF5KrdH+gHAlOPtB83x1fb53Z4dhAkBu0XjsTuu+Fgm+dzssTfR0aOg1fnDhL+t8kDRaZBXZ
-	nvVs96P7opFsAdXwjLmHs32DksD0=
-X-Google-Smtp-Source: AGHT+IFC0kvWRUKeokRKj5NrR8AOqrEnCofMBiU9gIN0udm+rrhJRI9atoeeUtQCMD/fUNPy72zs/upQH/BxL7xhpKE=
-X-Received: by 2002:a17:90a:8d18:b0:2ca:5a46:cbc8 with SMTP id
- 98e67ed59e1d1-2dad50cb6f1mr4711337a91.26.1725657918482; Fri, 06 Sep 2024
- 14:25:18 -0700 (PDT)
+	s=arc-20240116; t=1725658020; c=relaxed/simple;
+	bh=qDf0sb0zPsk31XSFWnAJCXFWqxuz317WwFUOXHBUD0E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=PJeC5JTmZAuOW+6/DMhvJP1VTCUgoWobehEKQGzfASuI8C+AYvxPlB7HK7AA2cyc2e/hh1HZqDHYRKKBFxi0v+hr4Q/G09RMXgKBhfxHlOtbt6kj2fDZdDOfhYEkBOHCm5dGm6tTpX5wYdCKHZvNGpwpDcSEa0tEdlNZkyeXkFA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=vUuR3q29; arc=none smtp.client-ip=95.215.58.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <0467d279-e825-4c15-ac85-859fc6b95ee2@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1725658015;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2P9GMowORIBDHwl53frehcwBdS235SGtbdUPMq/wILw=;
+	b=vUuR3q29yw/UATf/+C5Qwr5M/xBvFNMgwkGYaZa4IpNQrHtFnaSUzJllEaS1AyWoSXLjsO
+	YZEiVnIm186jVC0u/xRV3Ht0shQhkSHon4J4DfUamS5p/AWY+H77FIakjlr4wOIYbVgQO7
+	iVFW92hsZlfGOxkZq0bqd9UOCHrLjl8=
+Date: Fri, 6 Sep 2024 14:26:46 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240905075622.66819-1-lulie@linux.alibaba.com> <20240905075622.66819-3-lulie@linux.alibaba.com>
-In-Reply-To: <20240905075622.66819-3-lulie@linux.alibaba.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 6 Sep 2024 14:25:04 -0700
-Message-ID: <CAEf4BzYOa7YDa215petHjuvKBOmuxXwTLwP+hET+7CE=DJG0JQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 2/5] selftests/bpf: Add test for __nullable
- suffix in tp_btf
-To: Philo Lu <lulie@linux.alibaba.com>
-Cc: bpf@vger.kernel.org, edumazet@google.com, rostedt@goodmis.org, 
-	mhiramat@kernel.org, mathieu.desnoyers@efficios.com, martin.lau@linux.dev, 
-	ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, eddyz87@gmail.com, 
-	song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com, 
-	kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, 
-	davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com, mykolal@fb.com, 
-	shuah@kernel.org, mcoquelin.stm32@gmail.com, alexandre.torgue@foss.st.com, 
-	thinker.li@gmail.com, juntong.deng@outlook.com, jrife@google.com, 
-	alan.maguire@oracle.com, davemarchevsky@fb.com, dxu@dxuuu.xyz, 
-	vmalik@redhat.com, cupertino.miranda@oracle.com, mattbobrowski@google.com, 
-	xuanzhuo@linux.alibaba.com, netdev@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf] sock_map: add a cond_resched() in sock_hash_free()
+To: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>
+Cc: Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
+ bpf@vger.kernel.org, eric.dumazet@gmail.com,
+ syzbot <syzkaller@googlegroups.com>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Jakub Sitnicki <jakub@cloudflare.com>, Paolo Abeni <pabeni@redhat.com>,
+ "David S . Miller" <davem@davemloft.net>,
+ Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov <ast@kernel.org>
+References: <20240906154449.3742932-1-edumazet@google.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20240906154449.3742932-1-edumazet@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Sep 5, 2024 at 12:56=E2=80=AFAM Philo Lu <lulie@linux.alibaba.com> =
-wrote:
->
-> Add a tracepoint with __nullable suffix in bpf_testmod, and add a
-> failure load case:
->
-> $./test_progs -t "module_attach"
->  #173/1   module_attach/handle_tp_btf_nullable_bare:OK
->  #173     module_attach:OK
->  Summary: 1/1 PASSED, 0 SKIPPED, 0 FAILED
->
-> Signed-off-by: Philo Lu <lulie@linux.alibaba.com>
+On 9/6/24 8:44 AM, Eric Dumazet wrote:
+> Several syzbot soft lockup reports all have in common sock_hash_free()
+> 
+> If a map with a large number of buckets is destroyed, we need to yield
+> the cpu when needed.
+> 
+> Fixes: 75e68e5bf2c7 ("bpf, sockhash: Synchronize delete from bucket list on map free")
+> Reported-by: syzbot <syzkaller@googlegroups.com>
+> Signed-off-by: Eric Dumazet <edumazet@google.com>
+> Cc: John Fastabend <john.fastabend@gmail.com>
+> Cc: Jakub Sitnicki <jakub@cloudflare.com>
 > ---
->  .../bpf/bpf_testmod/bpf_testmod-events.h         |  6 ++++++
->  .../selftests/bpf/bpf_testmod/bpf_testmod.c      |  2 ++
->  .../selftests/bpf/prog_tests/module_attach.c     | 14 +++++++++++++-
->  .../bpf/progs/test_module_attach_fail.c          | 16 ++++++++++++++++
->  4 files changed, 37 insertions(+), 1 deletion(-)
->  create mode 100644 tools/testing/selftests/bpf/progs/test_module_attach_=
-fail.c
->
+>   net/core/sock_map.c | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+> index d3dbb92153f2fe7f1ddc8e35b495533fbf60a8cb..724b6856fcc3e9fd51673d31927cfd52d5d7d0aa 100644
+> --- a/net/core/sock_map.c
+> +++ b/net/core/sock_map.c
+> @@ -1183,6 +1183,7 @@ static void sock_hash_free(struct bpf_map *map)
+>   			sock_put(elem->sk);
+>   			sock_hash_free_elem(htab, elem);
+>   		}
+> +		cond_resched();
 
-[...]
+Acked-by: Martin KaFai Lau <martin.lau@kernel.org>
 
-> +
-> +static void module_attach_fail(void)
-> +{
-> +       RUN_TESTS(test_module_attach_fail);
-> +}
-> +
-> +void test_module_attach(void)
-> +{
-> +       module_attach_succ();
-> +       module_attach_fail();
-> +}
+Jakub, may be you can directly take it to net tree ?
 
-this is not a good idea to combine existing non-RUN_TESTS test with
-RUN_TESTS. The latter is a subtest, while the former is a full test.
-Keep them separate, just add a new file for
-RUN_TESTS(test_module_attach_fail), or add them to existing
-RUN_TESTS(), whatever makes most sense.
-
-> diff --git a/tools/testing/selftests/bpf/progs/test_module_attach_fail.c =
-b/tools/testing/selftests/bpf/progs/test_module_attach_fail.c
-> new file mode 100644
-> index 0000000000000..0f848d8f2f5e8
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/test_module_attach_fail.c
-> @@ -0,0 +1,16 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#include "vmlinux.h"
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_tracing.h>
-> +#include "../bpf_testmod/bpf_testmod.h"
-> +#include "bpf_misc.h"
-> +
-> +SEC("tp_btf/bpf_testmod_test_nullable_bare")
-> +__failure __msg("invalid mem access")
-
-would be nice to confirm that register corresponding to nullable_ctx
-actually has "_or_null" suffix
-
-
-> +int BPF_PROG(handle_tp_btf_nullable_bare, struct bpf_testmod_test_read_c=
-tx *nullable_ctx)
-> +{
-> +       return nullable_ctx->len;
-> +}
-> +
-> +char _license[] SEC("license") =3D "GPL";
-> --
-> 2.32.0.3.g01195cf9f
->
->
 
