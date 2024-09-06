@@ -1,244 +1,189 @@
-Return-Path: <bpf+bounces-39112-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39113-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C682096F0C9
-	for <lists+bpf@lfdr.de>; Fri,  6 Sep 2024 12:02:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B356496F1CE
+	for <lists+bpf@lfdr.de>; Fri,  6 Sep 2024 12:44:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4EF621F2349C
-	for <lists+bpf@lfdr.de>; Fri,  6 Sep 2024 10:02:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 68A3B283A16
+	for <lists+bpf@lfdr.de>; Fri,  6 Sep 2024 10:44:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C31B71C9870;
-	Fri,  6 Sep 2024 10:02:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3A251C9EDE;
+	Fri,  6 Sep 2024 10:44:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WNc1c5GM"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nUIzAHHV"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47A9F17BBE;
-	Fri,  6 Sep 2024 10:02:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A49CE1CA681;
+	Fri,  6 Sep 2024 10:43:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725616968; cv=none; b=eU6K3P/SsULS4zd4NxFKa/GZeef8DG4w5pba5jiSqc+T7OCVBZvsGP0Eo1Do5uaQUO79wkm2Elx4IkSwhEN2DeELR+HTslF9dY0kYfWp/oIIGC/7XCg2YYOxcze+1MJYJFPayRi2Zr7MFPvd2GyzS3SxLN6YSz+vmmXh5SCMAnc=
+	t=1725619440; cv=none; b=isQSCYbI5lQ7aSCjZgH6/NYm5Ezw+p4HHDOapzceVZFK4fFshXo9aBQw0dL11M5xGttS45/RgLfGd6cP3h6Ib7jUna9FYgjRFv2/YO1Gh55ACIbRjKTydSpJDLE0S6bnT7OAHVVdxm0M2eILICJTFZ1Zhik6LLCJATSjtTluPQo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725616968; c=relaxed/simple;
-	bh=iYA90GDpqgtTo5U9amp1FTYHBndZHESotRROhndrYU0=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=EFTk/NUucpeZXDMfCD70fMeljtu4qtNFVsFbFI0uf89TEevM9l1P/R3pwyBU2JpmFnMzqNCZ8Wv0xai8GWU/2mmuwYmF6WnpYiMezz8b3SNisRfyVVXRojG9Hqga2QKSpru/eTCurDlFK0O8XWXACtMgmNEBDSs5I7HcAOeMEno=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WNc1c5GM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC978C4CEC4;
-	Fri,  6 Sep 2024 10:02:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1725616967;
-	bh=iYA90GDpqgtTo5U9amp1FTYHBndZHESotRROhndrYU0=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=WNc1c5GMH4SIZuzb1eANockt0P5pTnrLkblRvSprYWFrga6f2eDQWlb3eJYiLluJN
-	 euS7IGc+M3YKuzfBj9bWjvXR1ttNBbGDZsvAN/7EbgMbkMNPV203la4KYDc37w4NZE
-	 IygNJRkl82JmxuHqVbbWmWBsqpq7uHkMWCmMJVpKLqzGnxF60saiL9UxR8SDBD/3iz
-	 G4Kf/F7C5ARnKCRhr3IgYc3j9vRcWvKfBvdpfOptmmL0WupkSfDGzhfZjzTWgYb4hQ
-	 d0aonECpvj7sqITmF2JCDDq6OE+Z7nrGltQ3vEJ+2ulYp+CSVNPY+qnfGyO1h8xhjz
-	 8x7tbRIXiTWhA==
-Message-ID: <18eb1fcd91e7283fda1932ff72e2d0cc53dc9e56.camel@kernel.org>
-Subject: Re: [PATCH mptcp-next 1/4] bpf: Add mptcp_subflow bpf_iter
-From: Geliang Tang <geliang@kernel.org>
-To: Martin KaFai Lau <martin.lau@linux.dev>, mptcp@lists.linux.dev
-Cc: Geliang Tang <tanggeliang@kylinos.cn>, Martin KaFai Lau
-	 <martin.lau@kernel.org>, bpf <bpf@vger.kernel.org>
-Date: Fri, 06 Sep 2024 18:02:43 +0800
-In-Reply-To: <288ad1c2-501a-4319-bc1e-e7a7e276ff63@linux.dev>
-References: <cover.1725544210.git.tanggeliang@kylinos.cn>
-	 <a75fc3e8df7141ce582448d3f092871a4943fbf4.1725544210.git.tanggeliang@kylinos.cn>
-	 <288ad1c2-501a-4319-bc1e-e7a7e276ff63@linux.dev>
-Autocrypt: addr=geliang@kernel.org; prefer-encrypt=mutual;
- keydata=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
- Px+2P2cKc7LXXedb/qQ3M
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.52.3-0ubuntu1 
+	s=arc-20240116; t=1725619440; c=relaxed/simple;
+	bh=13npiUXkwzfOJhB2JYCOAs1r7RUHLxbpwFYaaeb2vzk=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZMjzkhPMrpVl5aJ2AhZPXGNhLJGoOjGn6Uls7AGsKJFSdAB9CSHGGJTTQUtd8XQjS55HxoVl9pHHZVHDGYRiDvDdvZO+Jyu/RX/SYgzVwp3ohq545T+pVjfjeiZQk4KzQ344YRGw9py6M1zs/EEzHiHceJaPkxYgz/K07ksA9h4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nUIzAHHV; arc=none smtp.client-ip=209.85.218.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a869f6ce2b9so241989066b.2;
+        Fri, 06 Sep 2024 03:43:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1725619437; x=1726224237; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=spvOS79qgV8mwzDrAPlFYte3fxVRs14tTqtz5RwNSig=;
+        b=nUIzAHHVmqFQMidY/AG/XrhnbPkqPxoa7VaU+FZUliXYp41ju8CwRvesy8JCWQ1fu5
+         B8rmFBaQoS1wMPDxdDzVMV2a88SZR0jHDQ71SBPW3d4UmcOux6flOKOYgUBpc+xWVq1y
+         v+yIkEKAWHv3yH5++sxiWPHjj22rz6xzt/ZK7LWQ9LYmaiPG33grwOzJGqmx5552CzF+
+         WHZqTGf5mlmsMRynVFyp2e0hMZCnF0ZTY/RsabQJZTGstKH+GnvSK556zYiIchrRu4vA
+         AlwBaiQzuPpnZGFTQJRHCXFxeCGKDbhw6As2z0qS6AzKDKy2Qxr5QqC5QPEy3hkxMlAp
+         q1jg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1725619437; x=1726224237;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=spvOS79qgV8mwzDrAPlFYte3fxVRs14tTqtz5RwNSig=;
+        b=bwiD/o/k+r+2bgUBsqpOv64zmvyAd4THCRyUFGVA1FRsMKXz79QMct4Z+AjaU3JAWB
+         Sqnf6XAQNPZs2zGcRwWQC8WGhaRKIlgWjl1CaM5/YiB+RJbm7P4YBjc9eCzyw38e0i4D
+         8bbfdHug51oZJZYEeMluqhidQj1r670ii+gssb9YchCeKVf9O1BvaWm4vCS+KnoWUYKD
+         SbzWGjXfX6Im0hsltmKV8ngAaHMDLDCyRNLASLheCrhmnXb9QGAJdFIl7A//03k0wLr3
+         8vlpkq+N5V/Ym4MmsCvG3LZp3dsab8ymj09EN6kVAdck23WA4Gpj1yYTurJEiymdOKNU
+         EMqw==
+X-Forwarded-Encrypted: i=1; AJvYcCW61lFfuIDeYqBSx11Bb0gO72jIvYitfxQNQGdlnh8IMXuomH7xJRidPryiQZlpca5ebvs=@vger.kernel.org, AJvYcCWqyAV5Dkc9rdF78gwDZ5qd6xac1NjqouxLP6/Cjx6yixOVhBtJsYDJ1H36O0pmgZW4HBbswa5koU9Hwakn4EG/Ikw9@vger.kernel.org
+X-Gm-Message-State: AOJu0YweKJABcDOZus7vDpb52kFidyz30CXa8J4F24NPhApTRe7cpsr0
+	RfCSv0ukGf0Ys2OHy+RHBer2klCNgzYSwoymz4dJkopOZkxshNVW
+X-Google-Smtp-Source: AGHT+IGF0IUxNM3e70nukpQtSAEDAp1EvV2pfVwvWH4IZNbBvSWHu/Eh41pR4qmGQemTIMq/mmuz9g==
+X-Received: by 2002:a17:906:d54e:b0:a86:b6ee:8747 with SMTP id a640c23a62f3a-a8a888722a4mr162280066b.43.1725619436544;
+        Fri, 06 Sep 2024 03:43:56 -0700 (PDT)
+Received: from krava ([87.202.122.118])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a8a7dc91806sm144302066b.42.2024.09.06.03.43.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Sep 2024 03:43:56 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Fri, 6 Sep 2024 13:43:53 +0300
+To: Tianyi Liu <i.pear@outlook.com>
+Cc: oleg@redhat.com, ajor@meta.com, albancrequy@linux.microsoft.com,
+	andrii.nakryiko@gmail.com, bpf@vger.kernel.org,
+	flaniel@linux.microsoft.com, linux-trace-kernel@vger.kernel.org,
+	linux@jordanrome.com, mathieu.desnoyers@efficios.com,
+	mhiramat@kernel.org, rostedt@goodmis.org
+Subject: Re: [PATCH v2] tracing/uprobe: Add missing PID filter for uretprobe
+Message-ID: <Ztrc6eJ14M26xmvr@krava>
+References: <20240830101209.GA24733@redhat.com>
+ <ME0P300MB0416522C59231B4127E23C6F9D912@ME0P300MB0416.AUSP300.PROD.OUTLOOK.COM>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ME0P300MB0416522C59231B4127E23C6F9D912@ME0P300MB0416.AUSP300.PROD.OUTLOOK.COM>
 
-Hi Martin,
-
-On Thu, 2024-09-05 at 11:24 -0700, Martin KaFai Lau wrote:
-> On 9/5/24 6:52 AM, Geliang Tang wrote:
-> > From: Geliang Tang <tanggeliang@kylinos.cn>
+On Mon, Sep 02, 2024 at 03:22:25AM +0800, Tianyi Liu wrote:
+> On Fri, Aug 30, 2024 at 18:12:41PM +0800, Oleg Nesterov wrote:
+> > The whole discussion was very confusing (yes, I too contributed to the
+> > confusion ;), let me try to summarise.
 > > 
-> > It's necessary to traverse all subflows on the conn_list of an
-> > MPTCP
-> > socket and then call kfunc to modify the fields of each subflow. In
-> > kernel space, mptcp_for_each_subflow() helper is used for this:
+> > > U(ret)probes are designed to be filterable using the PID, which is the
+> > > second parameter in the perf_event_open syscall. Currently, uprobe works
+> > > well with the filtering, but uretprobe is not affected by it.
 > > 
-> >   mptcp_for_each_subflow(msk, subflow)
-> >           kfunc(subflow);
+> > And this is correct. But the CONFIG_BPF_EVENTS code in __uprobe_perf_func()
+> > misunderstands the purpose of uprobe_perf_filter().
 > > 
-> > But in the MPTCP BPF program, this has not yet been implemented. As
-> > Martin suggested recently, this conn_list walking + modify-by-kfunc
-> > usage fits the bpf_iter use case.
+> > Lets forget about BPF for the moment. It is not that uprobe_perf_filter()
+> > does the filtering by the PID, it doesn't. We can simply kill this function
+> > and perf will work correctly. The perf layer in __uprobe_perf_func() does
+> > the filtering when perf_event->hw.target != NULL.
 > > 
-> > This patch adds a new bpf_iter type named "mptcp_subflow" to do
-> > this.
+> > So why does uprobe_perf_filter() call uprobe_perf_filter()? Not to avoid
+> > the __uprobe_perf_func() call (as the BPF code assumes), but to trigger
+> > unapply_uprobe() in handler_chain().
 > > 
-> > Suggested-by: Martin KaFai Lau <martin.lau@kernel.org>
-> > Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
-> > ---
-> >   kernel/bpf/helpers.c |  3 +++
-> >   net/mptcp/bpf.c      | 57
-> > ++++++++++++++++++++++++++++++++++++++++++++
-> >   2 files changed, 60 insertions(+)
+> > Suppose you do, say,
 > > 
-> > diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> > index b5f0adae8293..2340ba967444 100644
-> > --- a/kernel/bpf/helpers.c
-> > +++ b/kernel/bpf/helpers.c
-> > @@ -3023,6 +3023,9 @@ BTF_ID_FLAGS(func, bpf_preempt_enable)
-> >   BTF_ID_FLAGS(func, bpf_iter_bits_new, KF_ITER_NEW)
-> >   BTF_ID_FLAGS(func, bpf_iter_bits_next, KF_ITER_NEXT |
-> > KF_RET_NULL)
-> >   BTF_ID_FLAGS(func, bpf_iter_bits_destroy, KF_ITER_DESTROY)
-> > +BTF_ID_FLAGS(func, bpf_iter_mptcp_subflow_new)
-> > +BTF_ID_FLAGS(func, bpf_iter_mptcp_subflow_next)
-> > +BTF_ID_FLAGS(func, bpf_iter_mptcp_subflow_destroy)
-> >   BTF_KFUNCS_END(common_btf_ids)
-> >   
-> >   static const struct btf_kfunc_id_set common_kfunc_set = {
-> > diff --git a/net/mptcp/bpf.c b/net/mptcp/bpf.c
-> > index 9672a70c24b0..cda09bbfd617 100644
-> > --- a/net/mptcp/bpf.c
-> > +++ b/net/mptcp/bpf.c
-> > @@ -204,6 +204,63 @@ static const struct btf_kfunc_id_set
-> > bpf_mptcp_fmodret_set = {
-> >    .set   = &bpf_mptcp_fmodret_ids,
-> >   };
-> >   
-> > +struct bpf_iter__mptcp_subflow {
-> > + __bpf_md_ptr(struct bpf_iter_meta *, meta);
-> > + __bpf_md_ptr(struct mptcp_sock *, msk);
-> > + __bpf_md_ptr(struct list_head *, pos);
-> > +};
-> > +
-> > +DEFINE_BPF_ITER_FUNC(mptcp_subflow, struct bpf_iter_meta *meta,
-> > +      struct mptcp_sock *msk, struct list_head *pos)
-> > +
-> > +struct bpf_iter_mptcp_subflow {
-> > + __u64 __opaque[3];
-> > +} __attribute__((aligned(8)));
-> > +
-> > +struct bpf_iter_mptcp_subflow_kern {
-> > + struct mptcp_sock *msk;
-> > + struct list_head *pos;
-> > +} __attribute__((aligned(8)));
-> > +
-> > +__bpf_kfunc_start_defs();
-> > +
-> > +__bpf_kfunc int bpf_iter_mptcp_subflow_new(struct
-> > bpf_iter_mptcp_subflow *it,
-> > +    struct mptcp_sock *msk)
-> > +{
-> > + struct bpf_iter_mptcp_subflow_kern *kit = (void *)it;
-> > +
-> > + kit->msk = msk;
-> > + kit->pos = &msk->conn_list;
-> > + spin_lock_bh(&msk->pm.lock);
+> > 	$ perf probe -x /path/to/libc some_hot_function
+> > or
+> > 	$ perf probe -x /path/to/libc some_hot_function%return
+> > then
+> > 	$perf record -e ... -p 1
+> > 
+> > to trace the usage of some_hot_function() in the init process. Everything
+> > will work just fine if we kill uprobe_perf_filter()->uprobe_perf_filter().
+> > 
+> > But. If INIT forks a child C, dup_mm() will copy int3 installed by perf.
+> > So the child C will hit this breakpoint and cal handle_swbp/etc for no
+> > reason every time it calls some_hot_function(), not good.
+> > 
+> > That is why uprobe_perf_func() calls uprobe_perf_filter() which returns
+> > UPROBE_HANDLER_REMOVE when C hits the breakpoint. handler_chain() will
+> > call unapply_uprobe() which will remove this breakpoint from C->mm.
+> > 
+> > > We found that the filter function was not invoked when uretprobe was
+> > > initially implemented, and this has been existing for ten years.
+> > 
+> > See above, this is correct.
+> > 
+> > Note also that if you only use perf-probe + perf-record, no matter how
+> > many instances, you can even add BUG_ON(!uprobe_perf_filter(...)) into
+> > uretprobe_perf_func(). IIRC, perf doesn't use create_local_trace_uprobe().
+> > 
 > 
-> I don't think spin_lock here without unlock can be used. e.g. What if
-> bpf_iter_mptcp_subflow_new() is called twice back-to-back.
+> Thanks for the detailed explanation above, I can understand the code now. 
+> Yes, I completely misunderstood the purpose of uprobe_perf_filter, 
+> sorry for the confusion.
 > 
-> I haven't looked at the mptcp details, some questions:
-> The list is protected by msk->pm.lock?
-> What happen to the sk_lock of the msk?
-> Can this be rcu-ify? or it needs some cares when walking the
-> established TCP 
-> subflow?
-
-Thank you for your review. msk->pm.lock shouldn't be used here. The
-conn_list is not protected by msk->pm.lock. I will remove it in v2.
-
+> > ---------------------------------------------------------------------------
+> > Now lets return to BPF and this particular problem. I won't really argue
+> > with this patch, but
+> > 
+> > 	- Please change the subject and update the changelog,
+> > 	  "Fixes: c1ae5c75e103" and the whole reasoning is misleading
+> > 	  and wrong, IMO.
+> > 
+> > 	- This patch won't fix all problems because uprobe_perf_filter()
+> > 	  filters by mm, not by pid. The changelog/patch assumes that it
+> > 	  is a "PID filter", but it is not.
+> > 
+> > 	  See https://lore.kernel.org/linux-trace-kernel/20240825224018.GD3906@redhat.com/
+> > 	  If the traced process does clone(CLONE_VM), bpftrace will hit the
+> > 	  similar problem, with uprobe or uretprobe.
+> > 
+> > 	- So I still think that the "right" fix should change the
+> > 	  bpf_prog_run_array_uprobe() paths somehow, but I know nothing
+> > 	  about bpf.
 > 
+> I agree that this patch does not address the issue correctly. 
+> The PID filter should be implemented within bpf_prog_run_array_uprobe, 
+> or alternatively, bpf_prog_run_array_uprobe should be called after 
+> perf_tp_event_match to reuse the filtering mechanism provided by perf.
 > 
-> [ Please cc the bpf list. Helping to review patches is a good way to
-> contribute 
-> back to the mailing list. ]
-
-This patch is for "mptcp-next", it depends on the "new MPTCP subflow
-subtest" which is under review on the bpf list. We will send it to the
-bpf list very soon.
-
-Thanks,
--Geliang
-
+> Also, uretprobe may need UPROBE_HANDLER_REMOVE, similar to uprobe.
 > 
-> > +
-> > + return 0;
-> > +}
-> > +
-> > +__bpf_kfunc struct mptcp_subflow_context *
-> > +bpf_iter_mptcp_subflow_next(struct bpf_iter_mptcp_subflow *it)
-> > +{
-> > + struct bpf_iter_mptcp_subflow_kern *kit = (void *)it;
-> > + struct mptcp_subflow_context *subflow;
-> > + struct mptcp_sock *msk = kit->msk;
-> > +
-> > + subflow = list_entry((kit->pos)->next, struct
-> > mptcp_subflow_context, node);
-> > + if (list_entry_is_head(subflow, &msk->conn_list, node))
-> > + return NULL;
-> > +
-> > + kit->pos = &subflow->node;
-> > + return subflow;
-> > +}
-> > +
-> > +__bpf_kfunc void bpf_iter_mptcp_subflow_destroy(struct
-> > bpf_iter_mptcp_subflow *it)
-> > +{
-> > + struct bpf_iter_mptcp_subflow_kern *kit = (void *)it;
-> > + struct mptcp_sock *msk = kit->msk;
-> > +
-> > + spin_unlock_bh(&msk->pm.lock);
-> > +}
-> > +
-> > +__bpf_kfunc_end_defs();
-> > +
-> >   __diag_push();
-> >   __diag_ignore_all("-Wmissing-prototypes",
-> >      "kfuncs which will be used in BPF programs");
-> 
+> For now, please forget the original patch as we need a new solution ;)
 
+hi,
+any chance we could go with your fix until we find better solution?
+
+it's simple and it fixes most of the cases for return uprobe pid filter
+for events with bpf programs.. I know during the discussion we found
+that standard perf record path won't work if there's bpf program
+attached on the same event, but I think that likely it needs more
+changes and also it's not a common use case
+
+would you consider sending another version addressing Oleg's points
+for changelog above?
+
+thanks,
+jirka
 
