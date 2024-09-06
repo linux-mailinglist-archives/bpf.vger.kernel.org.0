@@ -1,289 +1,136 @@
-Return-Path: <bpf+bounces-39144-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39145-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B68F96F683
-	for <lists+bpf@lfdr.de>; Fri,  6 Sep 2024 16:17:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C5FA96F6E4
+	for <lists+bpf@lfdr.de>; Fri,  6 Sep 2024 16:34:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A05C31F24FF5
-	for <lists+bpf@lfdr.de>; Fri,  6 Sep 2024 14:17:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 47AED1F21C15
+	for <lists+bpf@lfdr.de>; Fri,  6 Sep 2024 14:34:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 846041D1F62;
-	Fri,  6 Sep 2024 14:16:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 430F61D1F5B;
+	Fri,  6 Sep 2024 14:32:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="De5c23xW";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="cDefjgfk"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="resg7dq+"
 X-Original-To: bpf@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41B7D1EEF9;
-	Fri,  6 Sep 2024 14:16:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A550149DFA
+	for <bpf@vger.kernel.org>; Fri,  6 Sep 2024 14:32:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725632207; cv=none; b=ZYBymUilvzhk0wnC/asr5LWP6Tqtkv/GhRAppiSLp6IWueJsJhwd54gl2PBfXbnYDRAwcsRhjev7BIlfVTa+hk4dbXvSAGkgJaTX4zdzOGDlz8F8qyGogKLZgLv5AkdMEklPIPu9hWasMijYEMC84RW6UT0FG3rtGhaspyObflw=
+	t=1725633170; cv=none; b=lfNW2nt/X2dlNOYvgwZXvZNYlhxZBjN6EbRya+YPIZlWm9eHMd6+X0gtWA5WXGwJYAuy/QhCaIRh/pBtFYDeY28Z4A9tdJzCG6sQSRBeFYKYhAC40Uy0BSKD6bZ7NwVYp2pSit2r4VGiW1jYyAcfhsZhGg/HgWnzstMB+4QNYrw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725632207; c=relaxed/simple;
-	bh=5DPoF+h1EijAJWiofVUgPO7pld2cGAEtC+ql8P6zBx0=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=DwhUfaU3T1J+oevq9D5iHm4+lTL+0j/0eeZNmZ728nVWjdJToftq5qMdWOm/RKRvFimIbM+6MvU4j0Jqm13XAWnTR0NN64X8UJXbzFT6XkahITsA2rE4AhMYKpgTx1mhobLzStNAf+pXjFdCM6ZI+4k24fjP4aMYN07ln0cF/i0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=De5c23xW; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=cDefjgfk; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Florian Kauer <florian.kauer@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1725632203;
+	s=arc-20240116; t=1725633170; c=relaxed/simple;
+	bh=7wObuzUYKk/Jf1wORPiksdz0hGzhgpgHAQ2Oz03xoz0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=lK5kUgykCA0VDHsfLbVwDhMREUHHyYwrdYIL5QHH9/1MqJcawVVenJDg+eTcrzgqaMKx5/n6hhtR1KggG83AQVKSECUAOrlq4SZdl9icXXjd7Og3r8XHZG+0l0wMMZ0+1TUjYv+8UX1c1F11R6Vxciym/bKsUQepelbMYBLugNc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=resg7dq+; arc=none smtp.client-ip=91.218.175.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <007b71a8-ccaa-43f4-a24e-903d3ee9cbec@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1725633163;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=F1z+D6rnTHlvixKu5XBWRY4qyLlh6HJytqd5jXsU3JM=;
-	b=De5c23xWRzCTr9Dn9RLVUV/L8G2F4jWkSQ8pVvDnIJXYouFqKRDAh1l8toNabEjqyeQ5YY
-	SiU0/Ikz7ECUr+E78qltK21CW4yh0aItVwijYDHpsfzSpXGn71MEIbNxcNaH4wfilEPF/Y
-	Sb+tH7MNw30JNLxty/Mbd7KwLnmEtxJpfCKZ40hvC/qbEZCfcbCSOu+NYnAdgk/NYv1XAH
-	6p+zZYZFPsyLG2sbW+/Y7QLeMnrrESpOfk3KKV96vWPloRY0Eyg9r0CbOTpVVTKaRimUPH
-	WsSzi98g2juXQ706gjkRnujB/TArZuepwLgtUlfEpNVO34S1GNwbbr2ZOA7nmg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1725632203;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=F1z+D6rnTHlvixKu5XBWRY4qyLlh6HJytqd5jXsU3JM=;
-	b=cDefjgfkis0YCljz1gwj7x9pWPErwqsrRTtCqN63yGLP2mfmzwGXLHcQs4C7fADRp6C9Cm
-	7kLlYZRZTg37rGCA==
-Date: Fri, 06 Sep 2024 16:16:26 +0200
-Subject: [PATCH net v2 2/2] bpf: selftests: send packet to devmap redirect
- XDP
+	bh=hlArAyv14ve3ZSYb1vJjZdnGSXViXb6g9ji6N7vQOKQ=;
+	b=resg7dq+n2tdJL/SSadx8hDImrWOemKuMOFn+GnnzU+JsaCrvJM5PH6xm5YqD93pivXdwa
+	LjuK9Z+Rvhl+Kft/DnY9+MZLXaSYCoi5Rb2bUZs6/2WNC5sCFa3R5l5pQjvgVFUt1shwyi
+	vfmAbe7oU2DqRhdcULpz0HCnqoUoJFM=
+Date: Fri, 6 Sep 2024 22:32:34 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Subject: Re: [PATCH bpf-next 2/4] bpf, arm64: Fix tailcall infinite loop
+ caused by freplace
+To: Puranjay Mohan <puranjay@kernel.org>, Xu Kuohai
+ <xukuohai@huaweicloud.com>, bpf@vger.kernel.org
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, toke@redhat.com,
+ martin.lau@kernel.org, yonghong.song@linux.dev, eddyz87@gmail.com,
+ iii@linux.ibm.com, kernel-patches-bot@fb.com
+References: <20240825130943.7738-1-leon.hwang@linux.dev>
+ <20240825130943.7738-3-leon.hwang@linux.dev>
+ <a9ce98d0-adfb-4ed9-8500-f378fe44d634@huaweicloud.com>
+ <0900df03-b1cd-41fb-be04-278e135cc730@linux.dev>
+ <0f3c9711-3f1c-4678-9e0a-bd825c6fb78f@huaweicloud.com>
+ <mb61ped5ysbso.fsf@kernel.org>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Leon Hwang <leon.hwang@linux.dev>
+In-Reply-To: <mb61ped5ysbso.fsf@kernel.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240906-devel-koalo-fix-ingress-ifindex-v2-2-4caa12c644b4@linutronix.de>
-References: <20240906-devel-koalo-fix-ingress-ifindex-v2-0-4caa12c644b4@linutronix.de>
-In-Reply-To: <20240906-devel-koalo-fix-ingress-ifindex-v2-0-4caa12c644b4@linutronix.de>
-To: Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, 
- "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
- Jesper Dangaard Brouer <hawk@kernel.org>, 
- John Fastabend <john.fastabend@gmail.com>, 
- Andrii Nakryiko <andrii@kernel.org>, 
- Martin KaFai Lau <martin.lau@linux.dev>, 
- Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
- Jiri Olsa <jolsa@kernel.org>, 
- =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>, 
- David Ahern <dsahern@kernel.org>, Hangbin Liu <liuhangbin@gmail.com>, 
- Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Jesper Dangaard Brouer <brouer@redhat.com>, 
- linux-kselftest@vger.kernel.org, 
- Florian Kauer <florian.kauer@linutronix.de>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=6413;
- i=florian.kauer@linutronix.de; h=from:subject:message-id;
- bh=5DPoF+h1EijAJWiofVUgPO7pld2cGAEtC+ql8P6zBx0=;
- b=owEBbQKS/ZANAwAKATKF5IolV+EkAcsmYgBm2w7GwtWu7yC2TKTi5Y09ZIrOptkC3OgftiJCS
- zH5CekIrE2JAjMEAAEKAB0WIQSG5cmCLvpm5t9g7UUyheSKJVfhJAUCZtsOxgAKCRAyheSKJVfh
- JFo8D/9nPIN101HZhRoUJRyaBRqc1Fg5WD2Dk26WuBVHcdS+Uhbi9ouuZdIc+mPvKcjSseKwz86
- CKXYK68MG8nLUjlMwSu/gSvMQkVKugBXOTAPJbFfIAzEgAWaEuPP/z6TBdNUN3O8KMJIkMC3czB
- ATFDWkWldsdl4+ek8kFY36yeEjQUXj3tHUGsMY8uMuadIFXZUdOBpX4IcCFUwi/XDW/FcdL6KKd
- 8S4NsJatzCVuRIR4ve6wSLdLnOMyslF6qYDAO4VxU18F5OOQbKM6lYgxFUv2TYeN8wrU5CUO4fL
- yG3NCgib87fXjY3heMNdBLRSz5lhG6j2zSMPMlI/41sltOmajYUQMPbrIRa+kZp5Zk2fAKlyT2r
- uX6eP/kBwhlDz+P7AEb5qIQTGAjwtm6w7FpaPxgFD/8I0kt9FbZ3Z+cLquKC+mUl6yQex48LIcr
- SlqFW86iybCnXMHyworkUN9xmsWF1fCwH0BQ/ns8LMRdz17rsy0zjCyFD/mfgfnADEvB65Y8txa
- dILUXE2zwVTQY5ULTuvYdFY83Xl8/p3otZk2CGTesurY7y6+oRiBco5OqN2wdTf2uXf7k9yhRnN
- vC6uKmQ+xLT2RHn0d0+Ng7lHJP3QiNhhPB2LGTBVqi1wRj2tNEoy+1+3s8kYNs/oKkoBORAAIIk
- DNSANF/ecc2BgcQ==
-X-Developer-Key: i=florian.kauer@linutronix.de; a=openpgp;
- fpr=F17D8B54133C2229493E64A0B5976DD65251944E
+X-Migadu-Flow: FLOW_OUT
 
-The current xdp_devmap_attach test attaches a program
-that redirects to another program via devmap.
 
-It is, however, never executed, so do that to catch
-any bugs that might occur during execution.
 
-Also, execute the same for a veth pair so that we
-also cover the non-generic path.
+On 2024/9/5 17:13, Puranjay Mohan wrote:
+> Xu Kuohai <xukuohai@huaweicloud.com> writes:
+> 
+>> On 8/27/2024 10:23 AM, Leon Hwang wrote:
+>>>
+>>>
+>>> On 26/8/24 22:32, Xu Kuohai wrote:
+>>>> On 8/25/2024 9:09 PM, Leon Hwang wrote:
+>>>>> Like "bpf, x64: Fix tailcall infinite loop caused by freplace", the same
+>>>>> issue happens on arm64, too.
+>>>>>
+>>>
+>>> [...]
+>>>
+>>>>
+>>>> This patch makes arm64 jited prologue even more complex. I've posted a
+>>>> series [1]
+>>>> to simplify the arm64 jited prologue/epilogue. I think we can fix this
+>>>> issue based
+>>>> on [1]. I'll give it a try.
+>>>>
+>>>> [1]
+>>>> https://lore.kernel.org/bpf/20240826071624.350108-1-xukuohai@huaweicloud.com/
+>>>>
+>>>
+>>> Your patch series seems great. We can fix it based on it.
+>>>
+>>> Please notify me if you have a successful try.
+>>>
+>>
+>> I think the complexity arises from having to decide whether
+>> to initialize or keep the tail counter value in the prologue.
+>>
+>> To get rid of this complexity, a straightforward idea is to
+>> move the tail call counter initialization to the entry of
+>> bpf world, and in the bpf world, we only increase and check
+>> the tail call counter, never save/restore or set it. The
+>> "entry of the bpf world" here refers to mechanisms like
+>> bpf_prog_run, bpf dispatcher, or bpf trampoline that
+>> allows bpf prog to be invoked from C function.
+>>
+>> Below is a rough POC diff for arm64 that could pass all
+>> of your tests. The tail call counter is held in callee-saved
+>> register x26, and is set to 0 by arch_run_bpf.
+> 
+> I like this approach as it removes all the complexity of handling tcc in
 
-Warning: Running this without the bugfix in this series
-will likely crash your system.
+I like this approach, too.
 
-Signed-off-by: Florian Kauer <florian.kauer@linutronix.de>
----
- .../selftests/bpf/prog_tests/xdp_devmap_attach.c   | 114 +++++++++++++++++++--
- 1 file changed, 108 insertions(+), 6 deletions(-)
+> different cases. Can we go ahead with this for arm64 and make
+> arch_run_bpf a weak function and let other architectures override this
+> if they want to use a similar approach to this and if other archs want to
+> do something else they can skip implementing arch_run_bpf.
+> 
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_devmap_attach.c b/tools/testing/selftests/bpf/prog_tests/xdp_devmap_attach.c
-index ce6812558287..c9034f8ae63b 100644
---- a/tools/testing/selftests/bpf/prog_tests/xdp_devmap_attach.c
-+++ b/tools/testing/selftests/bpf/prog_tests/xdp_devmap_attach.c
-@@ -1,6 +1,9 @@
- // SPDX-License-Identifier: GPL-2.0
-+#include <arpa/inet.h>
- #include <uapi/linux/bpf.h>
- #include <linux/if_link.h>
-+#include <network_helpers.h>
-+#include <net/if.h>
- #include <test_progs.h>
- 
- #include "test_xdp_devmap_helpers.skel.h"
-@@ -17,7 +20,7 @@ static void test_xdp_with_devmap_helpers(void)
- 		.ifindex = IFINDEX_LO,
- 	};
- 	__u32 len = sizeof(info);
--	int err, dm_fd, map_fd;
-+	int err, dm_fd, dm_fd_redir, map_fd;
- 	__u32 idx = 0;
- 
- 
-@@ -25,14 +28,11 @@ static void test_xdp_with_devmap_helpers(void)
- 	if (!ASSERT_OK_PTR(skel, "test_xdp_with_devmap_helpers__open_and_load"))
- 		return;
- 
--	dm_fd = bpf_program__fd(skel->progs.xdp_redir_prog);
--	err = bpf_xdp_attach(IFINDEX_LO, dm_fd, XDP_FLAGS_SKB_MODE, NULL);
-+	dm_fd_redir = bpf_program__fd(skel->progs.xdp_redir_prog);
-+	err = bpf_xdp_attach(IFINDEX_LO, dm_fd_redir, XDP_FLAGS_SKB_MODE, NULL);
- 	if (!ASSERT_OK(err, "Generic attach of program with 8-byte devmap"))
- 		goto out_close;
- 
--	err = bpf_xdp_detach(IFINDEX_LO, XDP_FLAGS_SKB_MODE, NULL);
--	ASSERT_OK(err, "XDP program detach");
--
- 	dm_fd = bpf_program__fd(skel->progs.xdp_dummy_dm);
- 	map_fd = bpf_map__fd(skel->maps.dm_ports);
- 	err = bpf_prog_get_info_by_fd(dm_fd, &info, &len);
-@@ -47,6 +47,23 @@ static void test_xdp_with_devmap_helpers(void)
- 	ASSERT_OK(err, "Read devmap entry");
- 	ASSERT_EQ(info.id, val.bpf_prog.id, "Match program id to devmap entry prog_id");
- 
-+	/* send a packet to trigger any potential bugs in there */
-+	char data[10] = {};
-+	DECLARE_LIBBPF_OPTS(bpf_test_run_opts, opts,
-+			    .data_in = &data,
-+			    .data_size_in = 10,
-+			    .flags = BPF_F_TEST_XDP_LIVE_FRAMES,
-+			    .repeat = 1,
-+		);
-+	err = bpf_prog_test_run_opts(dm_fd_redir, &opts);
-+	ASSERT_OK(err, "XDP test run");
-+
-+	/* wait for the packets to be flushed */
-+	kern_sync_rcu();
-+
-+	err = bpf_xdp_detach(IFINDEX_LO, XDP_FLAGS_SKB_MODE, NULL);
-+	ASSERT_OK(err, "XDP program detach");
-+
- 	/* can not attach BPF_XDP_DEVMAP program to a device */
- 	err = bpf_xdp_attach(IFINDEX_LO, dm_fd, XDP_FLAGS_SKB_MODE, NULL);
- 	if (!ASSERT_NEQ(err, 0, "Attach of BPF_XDP_DEVMAP program"))
-@@ -124,6 +141,88 @@ static void test_xdp_with_devmap_frags_helpers(void)
- 	test_xdp_with_devmap_frags_helpers__destroy(skel);
- }
- 
-+static void test_xdp_with_devmap_helpers_veth(void)
-+{
-+	struct test_xdp_with_devmap_helpers *skel;
-+	struct bpf_prog_info info = {};
-+	struct bpf_devmap_val val = {};
-+	struct nstoken *nstoken = NULL;
-+	__u32 len = sizeof(info);
-+	int err, dm_fd, dm_fd_redir, map_fd, ifindex_dst;
-+	__u32 idx = 0;
-+
-+	SYS(out_close, "ip netns add testns");
-+	nstoken = open_netns("testns");
-+	if (!ASSERT_OK_PTR(nstoken, "setns"))
-+		goto out_close;
-+
-+	SYS(out_close, "ip link add veth_src type veth peer name veth_dst");
-+	SYS(out_close, "ip link set dev veth_src up");
-+	SYS(out_close, "ip link set dev veth_dst up");
-+
-+	val.ifindex = if_nametoindex("veth_src");
-+	ifindex_dst = if_nametoindex("veth_dst");
-+	if (!ASSERT_NEQ(val.ifindex, 0, "val.ifindex") ||
-+	    !ASSERT_NEQ(ifindex_dst, 0, "ifindex_dst"))
-+		goto out_close;
-+
-+	skel = test_xdp_with_devmap_helpers__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "test_xdp_with_devmap_helpers__open_and_load"))
-+		return;
-+
-+	dm_fd_redir = bpf_program__fd(skel->progs.xdp_redir_prog);
-+	err = bpf_xdp_attach(val.ifindex, dm_fd_redir, XDP_FLAGS_DRV_MODE, NULL);
-+	if (!ASSERT_OK(err, "Attach of program with 8-byte devmap"))
-+		goto out_close;
-+
-+	dm_fd = bpf_program__fd(skel->progs.xdp_dummy_dm);
-+	map_fd = bpf_map__fd(skel->maps.dm_ports);
-+	err = bpf_prog_get_info_by_fd(dm_fd, &info, &len);
-+	if (!ASSERT_OK(err, "bpf_prog_get_info_by_fd"))
-+		goto out_close;
-+
-+	val.bpf_prog.fd = dm_fd;
-+	err = bpf_map_update_elem(map_fd, &idx, &val, 0);
-+	ASSERT_OK(err, "Add program to devmap entry");
-+
-+	err = bpf_map_lookup_elem(map_fd, &idx, &val);
-+	ASSERT_OK(err, "Read devmap entry");
-+	ASSERT_EQ(info.id, val.bpf_prog.id, "Match program id to devmap entry prog_id");
-+
-+	/* attach dummy to other side to enable reception */
-+	dm_fd = bpf_program__fd(skel->progs.xdp_dummy_prog);
-+	err = bpf_xdp_attach(ifindex_dst, dm_fd, XDP_FLAGS_DRV_MODE, NULL);
-+	if (!ASSERT_OK(err, "Attach of dummy XDP"))
-+		goto out_close;
-+
-+	/* send a packet to trigger any potential bugs in there */
-+	char data[10] = {};
-+	DECLARE_LIBBPF_OPTS(bpf_test_run_opts, opts,
-+			    .data_in = &data,
-+			    .data_size_in = 10,
-+			    .flags = BPF_F_TEST_XDP_LIVE_FRAMES,
-+			    .repeat = 1,
-+		);
-+	err = bpf_prog_test_run_opts(dm_fd_redir, &opts);
-+	ASSERT_OK(err, "XDP test run");
-+
-+	/* wait for the packets to be flushed */
-+	kern_sync_rcu();
-+
-+	err = bpf_xdp_detach(val.ifindex, XDP_FLAGS_DRV_MODE, NULL);
-+	ASSERT_OK(err, "XDP program detach");
-+
-+	err = bpf_xdp_detach(ifindex_dst, XDP_FLAGS_DRV_MODE, NULL);
-+	ASSERT_OK(err, "XDP program detach");
-+
-+out_close:
-+	if (nstoken)
-+		close_netns(nstoken);
-+	SYS_NOFAIL("ip netns del testns");
-+
-+	test_xdp_with_devmap_helpers__destroy(skel);
-+}
-+
- void serial_test_xdp_devmap_attach(void)
- {
- 	if (test__start_subtest("DEVMAP with programs in entries"))
-@@ -134,4 +233,7 @@ void serial_test_xdp_devmap_attach(void)
- 
- 	if (test__start_subtest("Verifier check of DEVMAP programs"))
- 		test_neg_xdp_devmap_helpers();
-+
-+	if (test__start_subtest("DEVMAP with programs in entries on veth"))
-+		test_xdp_with_devmap_helpers_veth();
- }
+Hi Alexei,
 
--- 
-2.39.2
+What do you think about this idea?
 
+Thanks,
+Leon
 
