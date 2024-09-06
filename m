@@ -1,82 +1,82 @@
-Return-Path: <bpf+bounces-39160-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39161-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2FFA396FCF9
-	for <lists+bpf@lfdr.de>; Fri,  6 Sep 2024 23:03:12 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E47BE96FCFA
+	for <lists+bpf@lfdr.de>; Fri,  6 Sep 2024 23:03:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4E5A91C22479
-	for <lists+bpf@lfdr.de>; Fri,  6 Sep 2024 21:03:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1D30A1C22642
+	for <lists+bpf@lfdr.de>; Fri,  6 Sep 2024 21:03:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A783156872;
-	Fri,  6 Sep 2024 21:03:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF19B14A095;
+	Fri,  6 Sep 2024 21:03:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iNFe2vos"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hsBSAGO3"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 985A71B85E1
-	for <bpf@vger.kernel.org>; Fri,  6 Sep 2024 21:03:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFC051B85DF
+	for <bpf@vger.kernel.org>; Fri,  6 Sep 2024 21:03:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725656587; cv=none; b=OB/gIUViDu64Nf+PTO1yuboYHigp5YJ23tBSdIzqQarmSZOaE/vpPoD/NMNdDzSqjITvITg/GZY8ocTU+1uwnT2d8UhlwUON9kVk5CgAWJTvkfpYHofrTh5CeRGhuOekfqANgwC55zyVGNbyMCB4B2edmn+5vppR5TY0i2aTdJY=
+	t=1725656592; cv=none; b=AVROhB9okdMIZ+BjLj0auxiK382v0rFpK03wtIouJzhbjI0gDAKWMMcx5mitdXn3rFVbLGbYtVIqS++kcQyvgRk4k4KufEdbaqKZk9ZkaiR2hhS+RRrFeaFS89aIhsmzBAlRkuojLEjQbXUdELGKBGFu68MaYglMCw5fGETCsgY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725656587; c=relaxed/simple;
-	bh=v8foNg4vJMDks0sZ4SlAFrucbYT8zjlFa/YllPKgNUY=;
+	s=arc-20240116; t=1725656592; c=relaxed/simple;
+	bh=dAyciXS0T15BJoRSf55bodkdPgiX8Q894VkkPcmn3kg=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sbUh1bgQz2xLhs5gLciNtSAaf7nlnWhauTGEfSMIvumtN0DdupE0AAib7L6z1+3bkGMHbJSCq6ctNjivVChHIb3eR41BnK3WW00LT6SKdxINezdvF0k+cyzf+WMijpABuwDcDID4pG2t/nC7bJQHYwU+s0VLrn3XV5bWr0OFQts=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iNFe2vos; arc=none smtp.client-ip=209.85.216.44
+	 To:Cc:Content-Type; b=DEWyPHI5u9djtPlssdUydRmtPsy+lgRt1p6bePDtcKsLXTKS7Ygz93LwPje1DmgNvhyZ3dI7GHMHzYN3a8uiBQX7ehV8A14XhpUm0k0DfF9R41bMVOfA4Iu0fvttBKnsP+ZyfE0aKLKIkguk2HsZnDHDu435zn9CDOuUL/OHUA8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hsBSAGO3; arc=none smtp.client-ip=209.85.216.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-2d8881850d9so2092516a91.3
-        for <bpf@vger.kernel.org>; Fri, 06 Sep 2024 14:03:05 -0700 (PDT)
+Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2d8b96c18f0so1919883a91.2
+        for <bpf@vger.kernel.org>; Fri, 06 Sep 2024 14:03:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1725656585; x=1726261385; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1725656590; x=1726261390; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=oskfa07sum0OuHUgggrzdnHKYFwP9rKJsFYmGv5VXWg=;
-        b=iNFe2vossS8GjpO0nUELcuv7JVInYeaiWlqnZ0USIfrRF5/EkbmGcY9Wz2vmLtr+Zs
-         L0zhO3TBS9eBLlr3usL89yUPOK1b29E0bdRUxGynmwaAXfOOqY/45Q1oH3x/d0bkhHsJ
-         kWRQsiHp90W0tWqgsG6U8KzJA8Utyai2qXlW+AL8fHC7lTNGblr3aQ8Vnr4jIDKxTTtF
-         +XT7DPXBtp9Wf+Nx6g8YegE4gayUAZdZ7YbzU7cZBQracJH1znzvKoQgp3r13x2ZOyJb
-         rnmI2rQarEeBfpaRj72tdyWNFC4X4tUOSMpqN+vwCFPRcXDRydM/3N/shjlbkZdYnH4b
-         eRiw==
+        bh=v5WNWbLa/RvlSRACSFrgHMQDIlWr9KLkQFngqAZoPpM=;
+        b=hsBSAGO303icdMKru+iJ+9aKFPNNEotqkoSITuCd8a3BJYpGCpoLGwYHkCAO7LkFjv
+         RzZ57dNtWmpDTGeBHCPLDzAioh0XvfxKQ4c4U8qtVGssk07nsZGZFjNf1RrtjmgCRhNW
+         x5SuGls1WKeO+YrYxrq2jPkaO/4qpa1HxldgY2XHD14mlSmbhMcwJk1Lgm0LRiWr99yn
+         EOj1I24Zdhqm3rJSQAfC/lKr9/8UunwD/NB0NjSRexfGxgF76KWaqQNDX9cm53Xz5ThO
+         hoSJ2fmx/vlxmOwxZp2wcf7wvgXxEROUnaqDZIiQNt4OiZTIAo4DSAokuFhP4wPJfNmu
+         yD0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725656585; x=1726261385;
+        d=1e100.net; s=20230601; t=1725656590; x=1726261390;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=oskfa07sum0OuHUgggrzdnHKYFwP9rKJsFYmGv5VXWg=;
-        b=q7jWHPC97+Dh7IS3mbn6l5v7/WLTrJvh7ranA8MHgqpF2qGILanrYcfq2yqQfgkWD4
-         jPN/ZwIptGswv1cF3M1FWoNW983v6uUPR601IK48LRyNvJhbkwX4Cpq3im3hHB8EZ49w
-         /Kv8lYIB4VKyM1Shl1M3yu7GsOfb3/zq68eyF/2XX/xVVcgv5CrNrvQNzqA/A5alj1bx
-         zLE5Ss3T3q5vqMNh4apz7xOjnU7ekKn04zSIm7fuGjqmB+NaOhqUicisv/wMa0Bsj5aH
-         0FIBf+HqCZSDBSEUffC/q9aII9qQUyEqFYdyHsUH6xja4KUbfiEq68rDGk9uSkuTO3jn
-         v9DA==
-X-Gm-Message-State: AOJu0YxOnirmYpkP0/wIBC/vo04Z3wLgrt1Ur921vTpAMmLifh6B+fNW
-	Qxo04dTuEuZjjlm5nORoqDJuTDbi+LNb5b6lRevgWymUkDTiQJKoPDdPw8xfdDYeZJCM9J8H0Uz
-	lmxAHM/jHGuUPp9K6htl85yni3D+5514w
-X-Google-Smtp-Source: AGHT+IHO+y75eN34ofMGP+khhDRR2MrKfSQFIzvEwbicDeRdI4UJdKXC5LeJgnBOgQzHU4VhF3EPrIrYa3apt9g+sBA=
-X-Received: by 2002:a17:90a:c295:b0:2d8:71f4:1708 with SMTP id
- 98e67ed59e1d1-2dad50228f9mr4511253a91.19.1725656584587; Fri, 06 Sep 2024
- 14:03:04 -0700 (PDT)
+        bh=v5WNWbLa/RvlSRACSFrgHMQDIlWr9KLkQFngqAZoPpM=;
+        b=WphSA+OqnFHwVN09UIVsH1rgTnu67bKgFNUb0b0tW7fhCJsebbf0KBn25S4TbkxjHB
+         sEhO8EMU0CbwdGdoXFmi+ERXOYIv03jzav2fP4CmAoq83NbYffYx4ZIJFAdTqHAXRTf+
+         NhXKq4cwxNm+bnh1XiX/Cg96KEXLgL56atOa14u1xfcoFd0tAY7dUL/0pRSGo/O/YxeZ
+         0qhqH5D6vkcYyKGlOrtOSkAAgVr2HntwWf9JQZUhYn8X9PG+03dlSHGbySlkp/cCNz3t
+         c1UreyfkIcozw2Ptp4107dI0eOlEMeHlVmDhCtepO3WA159ghpgrbbEWUvBYCywQdloB
+         NEpA==
+X-Gm-Message-State: AOJu0YxZiYYSHBOy61jgNeYAXeN+cYFjlI/awX6FVrRByf4iaQv6c7Bq
+	k2aQFdE2tKSb9GOXzmVPNu+Jfp6GNpocuWmvYYjM+udHQ0WPZ6xZp2+DpaqUfbIhV54Ikf65531
+	cYNiMVDa9+Jqekjg/fbw7V1nuvV8=
+X-Google-Smtp-Source: AGHT+IEaFsSCme/Qj3QwB0Xh18wOgJEHch0r0XRfL5cigtZLCNXpm2bZ0rh3bB4Dd+LwG8WngG2xGI1hY780Yx0NQB0=
+X-Received: by 2002:a17:90a:8a15:b0:2d8:99c4:3cd9 with SMTP id
+ 98e67ed59e1d1-2dad4de1392mr4372015a91.3.1725656590197; Fri, 06 Sep 2024
+ 14:03:10 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240906135608.26477-1-daniel@iogearbox.net> <20240906135608.26477-8-daniel@iogearbox.net>
-In-Reply-To: <20240906135608.26477-8-daniel@iogearbox.net>
+References: <20240906135608.26477-1-daniel@iogearbox.net>
+In-Reply-To: <20240906135608.26477-1-daniel@iogearbox.net>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 6 Sep 2024 14:02:52 -0700
-Message-ID: <CAEf4BzbGYLGjDyv2JBwxstnyYR9pajKoUwA6k2UtVp7G58oZCQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 8/8] selftests/bpf: Add a test case to write
- into .rodata
+Date: Fri, 6 Sep 2024 14:02:57 -0700
+Message-ID: <CAEf4BzYBJWctucR6xmv9vRGzHph36kfNuV+MgAjiS2jmp0WraQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 1/8] bpf: Fix bpf_strtol and bpf_strtoul
+ helpers for 32bit
 To: Daniel Borkmann <daniel@iogearbox.net>
 Cc: bpf@vger.kernel.org, shung-hsi.yu@suse.com, andrii@kernel.org, 
 	ast@kernel.org, kongln9170@gmail.com
@@ -86,129 +86,99 @@ Content-Transfer-Encoding: quoted-printable
 On Fri, Sep 6, 2024 at 6:56=E2=80=AFAM Daniel Borkmann <daniel@iogearbox.ne=
 t> wrote:
 >
-> Add a test case which attempts to write into .rodata section of the
-> BPF program, and for comparison this adds test cases also for .bss
-> and .data section.
+> The bpf_strtol() and bpf_strtoul() helpers are currently broken on 32bit:
 >
-> Before fix:
+> The argument type ARG_PTR_TO_LONG is BPF-side "long", not kernel-side "lo=
+ng"
+> and therefore always considered fixed 64bit no matter if 64 or 32bit unde=
+rlying
+> architecture.
 >
->   # ./vmtest.sh -- ./test_progs -t verifier_const
->   [...]
->   ./test_progs -t verifier_const
->   tester_init:PASS:tester_log_buf 0 nsec
->   process_subtest:PASS:obj_open_mem 0 nsec
->   process_subtest:PASS:specs_alloc 0 nsec
->   run_subtest:PASS:obj_open_mem 0 nsec
->   run_subtest:FAIL:unexpected_load_success unexpected success: 0
->   #465/1   verifier_const/rodata: write rejected:FAIL
->   #465/2   verifier_const/bss: write accepted:OK
->   #465/3   verifier_const/data: write accepted:OK
->   #465     verifier_const:FAIL
->   [...]
+> This contract breaks in case of the two mentioned helpers since their BPF=
+_CALL
+> definition for the helpers was added with {unsigned,}long *res. Meaning, =
+the
+> transition from BPF-side "long" (BPF program) to kernel-side "long" (BPF =
+helper)
+> breaks here.
 >
-> After fix:
+> Both helpers call __bpf_strtoll() with "long long" correctly, but later a=
+ssigning
+> the result into 32-bit "*(long *)" on 32bit architectures. From a BPF pro=
+gram
+> point of view, this means upper bits will be seen as uninitialised.
 >
->   # ./vmtest.sh -- ./test_progs -t verifier_const
->   [...]
->   ./test_progs -t verifier_const
->   #465/1   verifier_const/rodata: write rejected:OK
->   #465/2   verifier_const/bss: write accepted:OK
->   #465/3   verifier_const/data: write accepted:OK
->   #465     verifier_const:OK
->   [...]
+> Therefore, fix both BPF_CALL signatures to {s,u}64 types to fix this situ=
+ation.
 >
-> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-> Acked-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
-> ---
->  v1 -> v2:
->  - const volatile long (Andrii)
+> Now, changing also uapi/bpf.h helper documentation which generates bpf_he=
+lper_defs.h
+> for BPF programs is tricky: Changing signatures there to __{s,u}64 would =
+trigger
+> compiler warnings (incompatible pointer types passing 'long *' to paramet=
+er of type
+> '__s64 *' (aka 'long long *')) for existing BPF programs.
+>
+> Leaving the signatures as-is would be fine as from BPF program point of v=
+iew it is
+> still BPF-side "long" and thus equivalent to __{s,u}64 on 64 or 32bit und=
+erlying
+> architectures.
+>
+> Note that bpf_strtol() and bpf_strtoul() are the only helpers with this i=
+ssue.
 >
 
-LGTM
+I think the bpf_helper_defs.h (and UAPI comment) side is completely
+correct and valid. That "long" in BPF helpers is always s64 and we
+rely on that on the BPF side. So I don't think we even need to change
+anything there.
+
+Perhaps the original intent was to do arch-native long, not sure...
+But in any case, it's easy to check this in user code given we always
+have full 64-bit result.
+
+LGTM:
 
 Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
->  .../selftests/bpf/prog_tests/verifier.c       |  2 +
->  .../selftests/bpf/progs/verifier_const.c      | 42 +++++++++++++++++++
->  2 files changed, 44 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/progs/verifier_const.c
+
+
+> Fixes: d7a4cb9b6705 ("bpf: Introduce bpf_strtol and bpf_strtoul helpers")
+> Reported-by: Alexei Starovoitov <ast@kernel.org>
+> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+> Link: https://lore.kernel.org/bpf/481fcec8-c12c-9abb-8ecb-76c71c009959@io=
+gearbox.net
+> ---
+>  v3 -> v4:
+>  - added patch
 >
-> diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/te=
-sting/selftests/bpf/prog_tests/verifier.c
-> index df398e714dff..e26b5150fc43 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/verifier.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
-> @@ -21,6 +21,7 @@
->  #include "verifier_cgroup_inv_retcode.skel.h"
->  #include "verifier_cgroup_skb.skel.h"
->  #include "verifier_cgroup_storage.skel.h"
-> +#include "verifier_const.skel.h"
->  #include "verifier_const_or.skel.h"
->  #include "verifier_ctx.skel.h"
->  #include "verifier_ctx_sk_msg.skel.h"
-> @@ -146,6 +147,7 @@ void test_verifier_cfg(void)                  { RUN(v=
-erifier_cfg); }
->  void test_verifier_cgroup_inv_retcode(void)   { RUN(verifier_cgroup_inv_=
-retcode); }
->  void test_verifier_cgroup_skb(void)           { RUN(verifier_cgroup_skb)=
-; }
->  void test_verifier_cgroup_storage(void)       { RUN(verifier_cgroup_stor=
-age); }
-> +void test_verifier_const(void)                { RUN(verifier_const); }
->  void test_verifier_const_or(void)             { RUN(verifier_const_or); =
-}
->  void test_verifier_ctx(void)                  { RUN(verifier_ctx); }
->  void test_verifier_ctx_sk_msg(void)           { RUN(verifier_ctx_sk_msg)=
-; }
-> diff --git a/tools/testing/selftests/bpf/progs/verifier_const.c b/tools/t=
-esting/selftests/bpf/progs/verifier_const.c
-> new file mode 100644
-> index 000000000000..5158dbea8c43
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/verifier_const.c
-> @@ -0,0 +1,42 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2024 Isovalent */
-> +
-> +#include <linux/bpf.h>
-> +#include <bpf/bpf_helpers.h>
-> +#include "bpf_misc.h"
-> +
-> +const volatile long foo =3D 42;
-> +long bar;
-> +long bart =3D 96;
-> +
-> +SEC("tc/ingress")
-> +__description("rodata: write rejected")
-> +__failure __msg("write into map forbidden")
-> +int tcx1(struct __sk_buff *skb)
-> +{
-> +       char buff[] =3D { '8', '4', '\0' };
-> +       bpf_strtol(buff, sizeof(buff), 0, (long *)&foo);
-> +       return TCX_PASS;
-> +}
-> +
-> +SEC("tc/ingress")
-> +__description("bss: write accepted")
-> +__success
-> +int tcx2(struct __sk_buff *skb)
-> +{
-> +       char buff[] =3D { '8', '4', '\0' };
-> +       bpf_strtol(buff, sizeof(buff), 0, &bar);
-> +       return TCX_PASS;
-> +}
-> +
-> +SEC("tc/ingress")
-> +__description("data: write accepted")
-> +__success
-> +int tcx3(struct __sk_buff *skb)
-> +{
-> +       char buff[] =3D { '8', '4', '\0' };
-> +       bpf_strtol(buff, sizeof(buff), 0, &bart);
-> +       return TCX_PASS;
-> +}
-> +
-> +char LICENSE[] SEC("license") =3D "GPL";
+>  kernel/bpf/helpers.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> index 3956be5d6440..0cf42be52890 100644
+> --- a/kernel/bpf/helpers.c
+> +++ b/kernel/bpf/helpers.c
+> @@ -518,7 +518,7 @@ static int __bpf_strtoll(const char *buf, size_t buf_=
+len, u64 flags,
+>  }
+>
+>  BPF_CALL_4(bpf_strtol, const char *, buf, size_t, buf_len, u64, flags,
+> -          long *, res)
+> +          s64 *, res)
+>  {
+>         long long _res;
+>         int err;
+> @@ -543,7 +543,7 @@ const struct bpf_func_proto bpf_strtol_proto =3D {
+>  };
+>
+>  BPF_CALL_4(bpf_strtoul, const char *, buf, size_t, buf_len, u64, flags,
+> -          unsigned long *, res)
+> +          u64 *, res)
+>  {
+>         unsigned long long _res;
+>         bool is_negative;
 > --
 > 2.43.0
 >
