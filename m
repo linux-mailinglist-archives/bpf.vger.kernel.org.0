@@ -1,140 +1,91 @@
-Return-Path: <bpf+bounces-39088-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39089-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3491296E6D0
-	for <lists+bpf@lfdr.de>; Fri,  6 Sep 2024 02:27:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5519A96E726
+	for <lists+bpf@lfdr.de>; Fri,  6 Sep 2024 03:14:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 590581C213FA
-	for <lists+bpf@lfdr.de>; Fri,  6 Sep 2024 00:27:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F3EC91F24840
+	for <lists+bpf@lfdr.de>; Fri,  6 Sep 2024 01:14:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C688911CBD;
-	Fri,  6 Sep 2024 00:26:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAC0D1B960;
+	Fri,  6 Sep 2024 01:13:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZifFCMIo"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="v9pEJT8m"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD189C8CE;
-	Fri,  6 Sep 2024 00:26:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91533182C3
+	for <bpf@vger.kernel.org>; Fri,  6 Sep 2024 01:13:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725582417; cv=none; b=ngNfXirPMzfF2vT9WsB4lYVzw4WkySGeFBlI1HQQa8Xzh5x0g/hATRA3grSnIT5idmxPvQbiRzXB17JWgb5TNriC+TUCvvpJWgSNHotPaMkHO2+b2nW9++tO3APLd4uSNc8jkvTVM3A5TcA61DII4VguP+tRV8IWsv8QmMBN+cs=
+	t=1725585239; cv=none; b=VFffjZTab/SJqDbJXg9aU2PxL279Ld4HL51fuJ5HGfxGICaKv+5Nm3u7E1/uFVJrJmhk6arUWvR+N57M7Bcu7jSN3oy8vtmtGyDpspVsEJn7SWznuogkOx0E9T3Uhq7Uid5BnHj74fJw0AMzKCBi8/eCZ79gVc90623e+X4taQk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725582417; c=relaxed/simple;
-	bh=hxAybSz8cFIO8WKDNuGWqotgBbMG3yxSs2FhGNA9jEg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=h0yy/Ec3NQ3orGJGM0O21Y+m4bEBpKL8x0OUZ8fqxQY9Bytxjv272IourtQB9M6/b6heHDQDx/sgytL7oHV8dsUltcf9x/Y4l2ZTwxFl7hcREuW+H7ksv350Apc4wdw2ajDhkuut85QlN3+B/R0X7hQbuDGvXIfpoIDJQbA+UmM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZifFCMIo; arc=none smtp.client-ip=209.85.218.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a86883231b4so212949766b.3;
-        Thu, 05 Sep 2024 17:26:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1725582414; x=1726187214; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YnyJnxydptKR36Rpv71A18YSqVYOWvLP/U58TklRseA=;
-        b=ZifFCMIoFmtQCkctXicfqCdsQuTyLW8ZIPNI63Hn5aq1mYIRGz5O949MAmcAeFvKye
-         xPs3CWesDvrYirMb++IP8YeeS6CuJbE5FVJrGZWMU1K++kW+u+Juw13L2nDzY7nQcexC
-         QhF1nnXXCC3ikN+Jmh+Rnh867ewqzqP4HbM5u3N+5BbfVF6apibvyXpFbBv6tInulIfq
-         f2g5qbAcr95lLayRYcEZUdAsQHT5gD6QruIGZ5JACttg/wBt/hpJ2DF1YrgB87vcoaij
-         M1ee00a9U3qmJcEcs0IjlPKOw9O3LPtVkFckD4M/ObVKXeloIKvwC8NJBWE4Mg+ZPE3+
-         N/FQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725582414; x=1726187214;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YnyJnxydptKR36Rpv71A18YSqVYOWvLP/U58TklRseA=;
-        b=jpG7EXpA3fMfVRl9Ny75iOuwpBAtUDYusX8vILMUCvCTdWMZfaj1pQhk+ft6lm5NXR
-         tiSsOooXxJ1UiOgp+CZaJ874F3QOtIhKrRYlGoZFLd6adVV8XMTy1Nai5Ljb+y0SA/KK
-         JI1MkmRgIa+ZB76Dz6xvNvcdYScuqEreX6CDINrqgfBaQT5LhLKQK6s9PQ+yEpze+2tR
-         95oEFuE8g6h5tr/EDpFgu5BED6ey32Jr38ctYmcHMDFOSgwUyo4rJ4S3OomG8e9kcWJC
-         O4BhQd4J4qXQL5syCGQa1A2WPIWXl7IlJ1n3BvbMktkz65crldU60AS/cpLLCP9GPp/q
-         WCQw==
-X-Forwarded-Encrypted: i=1; AJvYcCUXLOCjN1GU7tOwFWFNoXMhMKGZlGebE7zsDC1+qBHELNNDv57KF8tq30aP2R9AO6/X7QIPLHYh@vger.kernel.org, AJvYcCV/j/Rm/GCscIxME6K7weqDAjIbj4HP2cshmRk7xrq0fYa2Jqo0Z9XRBpGuZnjoouXuf0TCUVxkBtPr4yFw789aIfw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzrUWcb5GzTDOA/R2lg5Rr2zuEDBsyetX04ASn5ISdR/zUvRbWb
-	l52tQmXtzFGpEXibYaiYf9dhMzdpUSnsfxGfmuyvZQ4zGb3yx8PwIvUA7DzsrFBBfpH41S1pJmv
-	eSZmfkhEwvOzJ6/742WBwqpz+QmU=
-X-Google-Smtp-Source: AGHT+IGzBOo7I+xvkS52Uc3NrrytQpaostPexMBl4O4nQaZDGoLdJpOv/5vE7ZID2d/5RTXyMGG+QIIHlc/fX2aQy/A=
-X-Received: by 2002:a17:907:7d8c:b0:a8a:6f79:d69d with SMTP id
- a640c23a62f3a-a8a885f5f48mr48989066b.22.1725582413870; Thu, 05 Sep 2024
- 17:26:53 -0700 (PDT)
+	s=arc-20240116; t=1725585239; c=relaxed/simple;
+	bh=+40/PKcAluOFhthFyit1izNfoYiHHdYw1abpmwwERqc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ErNoWlQNjcHHE6B+yzJqWbef5Q41nO0Gl3Z6LzrI9qsci50mr/iSpVlRG8Vba3ml9800kJIlk0xNggYOnWt1o9iFZcyFNrXFredTcxfzad0OO54KANVGeqsTXgo/q0mrkFDtooaW1sL/EExtUiqrH/4t3YKEqJxCOo0FTU0CZ90=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=v9pEJT8m; arc=none smtp.client-ip=91.218.175.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <8ee6b7d3-71b7-4b66-aa49-26421d9c5b78@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1725585235;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LzUdF+fiRFn6RgwFUtIzdarKamkAFDCW16qaVIlXx38=;
+	b=v9pEJT8msZi7N912djrtrxNn4xWjlap344gkT8Wy055Hw6Pmv1X9rRH20/faNByHSOHyZT
+	s2YxQ00sm6vAKLY6OGuZ6zdpUysrVHKm72pllzrRu/IO128qNXTh+h9lOWK9n3LIlsBBgA
+	vM+/DVdzTsJ51xWR+JVSoKqn8xrWvFU=
+Date: Thu, 5 Sep 2024 18:13:43 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240905075622.66819-1-lulie@linux.alibaba.com> <20240905075622.66819-4-lulie@linux.alibaba.com>
-In-Reply-To: <20240905075622.66819-4-lulie@linux.alibaba.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 5 Sep 2024 17:26:42 -0700
-Message-ID: <CAADnVQL1Z3LGc+7W1+NrffaGp7idefpbnKPQTeHS8xbQme5Paw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 3/5] tcp: Use skb__nullable in trace_tcp_send_reset
+Subject: Re: [PATCH bpf-next v2 4/5] bpf: Allow bpf_dynptr_from_skb() for
+ tp_btf
 To: Philo Lu <lulie@linux.alibaba.com>
-Cc: bpf <bpf@vger.kernel.org>, Eric Dumazet <edumazet@google.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Eddy Z <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
-	Paolo Abeni <pabeni@redhat.com>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue <alexandre.torgue@foss.st.com>, 
-	Kui-Feng Lee <thinker.li@gmail.com>, Juntong Deng <juntong.deng@outlook.com>, jrife@google.com, 
-	Alan Maguire <alan.maguire@oracle.com>, Dave Marchevsky <davemarchevsky@fb.com>, 
-	Daniel Xu <dxu@dxuuu.xyz>, Viktor Malik <vmalik@redhat.com>, 
-	Cupertino Miranda <cupertino.miranda@oracle.com>, Matt Bobrowski <mattbobrowski@google.com>, 
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Network Development <netdev@vger.kernel.org>, 
-	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Cc: bpf@vger.kernel.org, edumazet@google.com, rostedt@goodmis.org,
+ mhiramat@kernel.org, mathieu.desnoyers@efficios.com, ast@kernel.org,
+ daniel@iogearbox.net, andrii@kernel.org, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, davem@davemloft.net,
+ kuba@kernel.org, pabeni@redhat.com, mykolal@fb.com, shuah@kernel.org,
+ mcoquelin.stm32@gmail.com, alexandre.torgue@foss.st.com,
+ thinker.li@gmail.com, juntong.deng@outlook.com, jrife@google.com,
+ alan.maguire@oracle.com, davemarchevsky@fb.com, dxu@dxuuu.xyz,
+ vmalik@redhat.com, cupertino.miranda@oracle.com, mattbobrowski@google.com,
+ xuanzhuo@linux.alibaba.com, netdev@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org
+References: <20240905075622.66819-1-lulie@linux.alibaba.com>
+ <20240905075622.66819-5-lulie@linux.alibaba.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20240905075622.66819-5-lulie@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Sep 5, 2024 at 12:56=E2=80=AFAM Philo Lu <lulie@linux.alibaba.com> =
-wrote:
->
-> Replace skb with skb__nullable as the argument name. The suffix tells
-> bpf verifier through btf that the arg could be NULL and should be
-> checked in tp_btf prog.
->
-> For now, this is the only nullable argument in tcp tracepoints.
->
-> Signed-off-by: Philo Lu <lulie@linux.alibaba.com>
-> ---
->  include/trace/events/tcp.h | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
->
-> diff --git a/include/trace/events/tcp.h b/include/trace/events/tcp.h
-> index 1c8bd8e186b89..a27c4b619dffd 100644
-> --- a/include/trace/events/tcp.h
-> +++ b/include/trace/events/tcp.h
-> @@ -91,10 +91,10 @@ DEFINE_RST_REASON(FN, FN)
->  TRACE_EVENT(tcp_send_reset,
->
->         TP_PROTO(const struct sock *sk,
-> -                const struct sk_buff *skb,
-> +                const struct sk_buff *skb__nullable,
->                  const enum sk_rst_reason reason),
->
-> -       TP_ARGS(sk, skb, reason),
-> +       TP_ARGS(sk, skb__nullable, reason),
+On 9/5/24 12:56 AM, Philo Lu wrote:
+> Making tp_btf able to use bpf_dynptr_from_skb(), which is useful for skb
+> parsing, especially for non-linear paged skb data. This is achieved by
+> adding KF_TRUSTED_ARGS flag to bpf_dynptr_from_skb and registering it
+> for TRACING progs. With KF_TRUSTED_ARGS, args from fentry/fexit are
+> excluded, so that unsafe progs like fexit/__kfree_skb are not allowed.
+> 
+> We also need the skb dynptr to be read-only in tp_btf. Because
+> may_access_direct_pkt_data() returns false by default when checking
+> bpf_dynptr_from_skb, there is no need to add BPF_PROG_TYPE_TRACING to it
+> explicitly.
 
-netdev folks pls ack this patch.
+Acked-by: Martin KaFai Lau <martin.lau@kernel.org>
 
-Yes, it's a bit of a whack a mole and eventually we can get rid of it
-with a smarter verifier (likely) or smarter objtool (unlikely).
-Long term we should be able to analyze body of TP_fast_assign
-automatically and conclude whether it's handling NULL for pointer
-arguments or not. bpf verifier can easily do it for bpf code.
-We just need to compile TP_fast_assign() as a tiny bpf snippet.
-This is work in progress.
-
-For now we have to use a suffix like __nullable.
 
