@@ -1,107 +1,86 @@
-Return-Path: <bpf+bounces-39119-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39120-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B0A996F339
-	for <lists+bpf@lfdr.de>; Fri,  6 Sep 2024 13:38:54 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D4A5496F3C0
+	for <lists+bpf@lfdr.de>; Fri,  6 Sep 2024 13:56:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8CDE1B24164
-	for <lists+bpf@lfdr.de>; Fri,  6 Sep 2024 11:38:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 385B4B2671D
+	for <lists+bpf@lfdr.de>; Fri,  6 Sep 2024 11:56:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8B311CB33E;
-	Fri,  6 Sep 2024 11:38:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32DFC1CCB57;
+	Fri,  6 Sep 2024 11:55:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="JNvEDg2O"
+	dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="VP/NAXLL"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from mail.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA2D61CB31E
-	for <bpf@vger.kernel.org>; Fri,  6 Sep 2024 11:38:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C50111CBE89
+	for <bpf@vger.kernel.org>; Fri,  6 Sep 2024 11:55:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725622724; cv=none; b=jR2cvebyr74zbds/I4wPAcyUXZDbjs6gFX2OQT7JaIjIH4ToYhizr1yzGy3jK6jT8k6GTUysoG+1TxooQvD+oHEAcoeQQJHEVGsUQ3qqRC8VMnOcCaFXez3boQAXH5UJT9lTd/j3GGnCCwy+OVCL7I3uZrZymoWe2pVsQy9udIY=
+	t=1725623734; cv=none; b=XgMZDFhMepDlcktee5yCniY+X35GKd1vEAaXpwhCOxLaGQSXi2pv4etoCKi/uPoJW+p1jfQc1FbQxgDhngxZ9juHh0hII7sRbdJMY+ouVA8MOyyyzzWASpjc+a08rXQLM/OIEo5zEk3vWyYJ9FZjQWGUaBaMfhlt55He1TezLv4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725622724; c=relaxed/simple;
-	bh=3OSEMPeLSNHVCNVbKv7RAO1iD4GGzvlj38LVpMDyE9k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=C66ou09/g9vPEjb6rYVkX6VEJ1A8AuuaB/RMUlPbrnCNgfwFHdu/B/wTu0i1iS7IG1bclTMBBiHynYAvgKhs01TjERK85dmuusKK+VPnb4fw1M+YyMLOiHnQe0iPWtJP7KFXjTkc3mNVHqcAltzi03Rp4FXl9IPX5Ewipf5g85k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=JNvEDg2O; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1725622721;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3OSEMPeLSNHVCNVbKv7RAO1iD4GGzvlj38LVpMDyE9k=;
-	b=JNvEDg2OAKAtaRGouESzx3GBBJS5P/Fx2scwr76pPS7hFqMqBGg5t6K/uspFdmv60XTEVA
-	Gyk+zIsi24NCZtkcNTZMLQ1HE70nABXUBGMy7adcTDwUn8CoY5SGD7hO0hIUPGzyZN4Rb1
-	pzgRc2ZCF9+yEpGwB2ooAdi/w4JqFFw=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-329-vFBlFpdIPJGndhbMXU1yRA-1; Fri, 06 Sep 2024 07:38:40 -0400
-X-MC-Unique: vFBlFpdIPJGndhbMXU1yRA-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-42bb68e1706so15394145e9.3
-        for <bpf@vger.kernel.org>; Fri, 06 Sep 2024 04:38:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725622719; x=1726227519;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3OSEMPeLSNHVCNVbKv7RAO1iD4GGzvlj38LVpMDyE9k=;
-        b=lsAZcBxZyT9el3VlgKlfieU89Mf9Jc5dg+S27U3hWKj6haH0jjpBx+FaX2Xwb6m+dj
-         8BMZKicdu1c1aYivqKIvcvxqCD5XufPTbdukBXh1R/nJTUJRUaZTSst46GSmHCXMwhH7
-         VNfzkqUX0e7IGA2SmNw1CIcZ8DRjJzJihxOoLPVTkXpwS1b0QdSTSHt5T/aqToiLyYbd
-         2Me57uE6rsfkt/BQsMDekmO/1RhYM7iwGQjcUwB6M2/kLKn5Uab6GSEhcfsdwyzOCf0A
-         yxYV1F2zjTjLcVNIq2+lP6RhDpGrUcIO9t2FqtEl8oPJAGaeUrv6ox5GuWWNZ3KZypHg
-         zjcA==
-X-Forwarded-Encrypted: i=1; AJvYcCUxKLXjgfmIa/kCIq8D/4PyGbkck+6eF+ZhTfv4RVB2D/AM3MyObZOSbDSA7Yoo3nTDSRI=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwyoM7W20eHO5bW2JpKjJt24TlzR6R3jIuLxcddWsc72dGkdopL
-	mb1cQwN6U2uIotMLhwZSui4YvpMgL8rzsD+Pu7x5Xji2pFaPjWXNa2BeRr2ijYdvz6qSrrDA0oh
-	aLRqSRP1lQB3ZTqJsyoPrsYtM+Etg4czQ0viwnUt1sOqvI15/Jg==
-X-Received: by 2002:a05:600c:1c1b:b0:426:641f:25e2 with SMTP id 5b1f17b1804b1-42c9f9d7035mr18302885e9.25.1725622719306;
-        Fri, 06 Sep 2024 04:38:39 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEuAsg7pwxpDVtdYJ/6+D+Ph/FNa76MdgLyOilEwQ/89LMv1D0nMU3M5+amZnhf14vF76nDJg==
-X-Received: by 2002:a05:600c:1c1b:b0:426:641f:25e2 with SMTP id 5b1f17b1804b1-42c9f9d7035mr18302555e9.25.1725622718460;
-        Fri, 06 Sep 2024 04:38:38 -0700 (PDT)
-Received: from debian (2a01cb058d23d6009996916de7ed7c62.ipv6.abo.wanadoo.fr. [2a01:cb05:8d23:d600:9996:916d:e7ed:7c62])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-42ca05cc3dbsm17708455e9.20.2024.09.06.04.38.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Sep 2024 04:38:38 -0700 (PDT)
-Date: Fri, 6 Sep 2024 13:38:36 +0200
-From: Guillaume Nault <gnault@redhat.com>
-To: Ido Schimmel <idosch@nvidia.com>
-Cc: netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-	pabeni@redhat.com, edumazet@google.com, dsahern@kernel.org,
-	razor@blackwall.org, pablo@netfilter.org, kadlec@netfilter.org,
-	marcelo.leitner@gmail.com, lucien.xin@gmail.com,
-	bridge@lists.linux.dev, netfilter-devel@vger.kernel.org,
-	coreteam@netfilter.org, linux-sctp@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: Re: [PATCH net-next 08/12] ipv4: netfilter: Unmask upper DSCP bits
- in ip_route_me_harder()
-Message-ID: <ZtrpvGliOjZzPkyv@debian>
-References: <20240905165140.3105140-1-idosch@nvidia.com>
- <20240905165140.3105140-9-idosch@nvidia.com>
+	s=arc-20240116; t=1725623734; c=relaxed/simple;
+	bh=Fvu9r01oFMF84lbgsdSxY18MARRItmras5jBF9BXqMg=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=o4ZDD+FXg/7hoa1AHID5aIUnDagprfBorat9sz0F9FDuvIaNlFk+1m7NNh68HkqOAxgtJn4vPKy/1p0PBimEbw2AK+OIKRTLU1CQ1eWPVDViHphhDJotnCN7Sj/5GMrIF4Ot2cuOp1UhxVYG3GSrqqU9DJj3IsBESFaWnSYI3/o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au; spf=pass smtp.mailfrom=ellerman.id.au; dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b=VP/NAXLL; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+	s=201909; t=1725623729;
+	bh=obi7msVGRlzoEz1W/jzDgo3xBNxggqpVSzexlh/yX3U=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=VP/NAXLL0mtBCAWdRfKmUH59hbI0XQ5671PkHvQLfDTtWGcoeBpUZkW8e9dSfJQyy
+	 RjvV4yICu1kdthGqFFfhhw1omASPsfivaHmVS4m5JY3l8z9Rx6fpZxb25MOjfwgvyS
+	 dP8YM5ZBew5Bz8egnOGqV4fczan7fXvjczp2djiTvuCZhcIHXYnIywqAq0tPJqGBE6
+	 XEw9cT+krVH+3inXLYUKaxgNkIgQaQkFB53LAMSAXXeN1Cgi1pXKENN4Ldz0hRQpkG
+	 iEnB8SzRn8mtuAG2JCqzMS5r/hzO7x6y9xc2vnvZU+HEPlP9GV7hzHCI+M78dn/qSq
+	 tHrX6yAQqM/WQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4X0ZRj3N1Vz4wnw;
+	Fri,  6 Sep 2024 21:55:29 +1000 (AEST)
+From: Michael Ellerman <patch-notifications@ellerman.id.au>
+To: linuxppc-dev@lists.ozlabs.org, Abhishek Dubey <adubey@linux.ibm.com>
+Cc: naveen@kernel.org, hbathini@linux.ibm.com, mpe@ellerman.id.au, npiggin@gmail.com, mhiramat@kernel.org, bpf@vger.kernel.org
+In-Reply-To: <20240830113131.7597-1-adubey@linux.ibm.com>
+References: <20240830113131.7597-1-adubey@linux.ibm.com>
+Subject: Re: [PATCH v4 RESEND] powerpc: Replace kretprobe code with rethook on powerpc
+Message-Id: <172562357215.467568.2172858907419105155.b4-ty@ellerman.id.au>
+Date: Fri, 06 Sep 2024 21:52:52 +1000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240905165140.3105140-9-idosch@nvidia.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-On Thu, Sep 05, 2024 at 07:51:36PM +0300, Ido Schimmel wrote:
-> Unmask the upper DSCP bits when calling ip_route_output_key() so that in
-> the future it could perform the FIB lookup according to the full DSCP
-> value.
+On Fri, 30 Aug 2024 07:31:31 -0400, Abhishek Dubey wrote:
+> This is an adaptation of commit f3a112c0c40d ("x86,rethook,kprobes:
+> Replace kretprobe with rethook on x86") to powerpc.
+> 
+> Rethook follows the existing kretprobe implementation, but separates
+> it from kprobes so that it can be used by fprobe (ftrace-based
+> function entry/exit probes). As such, this patch also enables fprobe
+> to work on powerpc. The only other change compared to the existing
+> kretprobe implementation is doing the return address fixup in
+> arch_rethook_fixup_return().
+> 
+> [...]
 
-Reviewed-by: Guillaume Nault <gnault@redhat.com>
+Applied to powerpc/next.
 
+[1/1] powerpc: Replace kretprobe code with rethook on powerpc
+      https://git.kernel.org/powerpc/c/19f1bc3fb55452739dd3d56cfd06c29ecdbe3e9f
+
+cheers
 
