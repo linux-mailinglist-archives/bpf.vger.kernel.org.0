@@ -1,82 +1,82 @@
-Return-Path: <bpf+bounces-39165-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39166-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 788F496FCFE
-	for <lists+bpf@lfdr.de>; Fri,  6 Sep 2024 23:03:45 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C371E96FCFF
+	for <lists+bpf@lfdr.de>; Fri,  6 Sep 2024 23:03:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DFD401F25A2B
-	for <lists+bpf@lfdr.de>; Fri,  6 Sep 2024 21:03:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E21441C22564
+	for <lists+bpf@lfdr.de>; Fri,  6 Sep 2024 21:03:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 914651D61BE;
-	Fri,  6 Sep 2024 21:03:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC9A71CE717;
+	Fri,  6 Sep 2024 21:03:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AxwGptJe"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TL/AIq0v"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
+Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0DF71D4615
-	for <bpf@vger.kernel.org>; Fri,  6 Sep 2024 21:03:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06106481DD
+	for <bpf@vger.kernel.org>; Fri,  6 Sep 2024 21:03:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725656622; cv=none; b=NARciuYqoWlApIOTChrIlV673tzWql6JNCV6EUd62mCmeKdN4csiAZhC3OY6/cmOWQ8KA/i9lHovksYZaXYIBT3Y1mHLj58Avzck1ESd3YjpZKHuvEiio2ua+U3R2kDc9PBCR6Y9j521CEGnnD7YoOfpnqlmebU97wLchVyqQNo=
+	t=1725656625; cv=none; b=O7IqxuVOzvoCExWhil63tdyBglSyAJdkg0KODPsO0K4IbRrH7UPW9cFU7kGxhPOmT2ETZxcLkvcThGn1aEHEo+cfJzKksbuftJgfPN0J35SWrMgF1LAEG0J/MlSTrBXcZfMiWiX8f9VbK3QZsOUlXkRB3ycGJpXWwjxCnfGDDeE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725656622; c=relaxed/simple;
-	bh=VtCCRL1aRYs8ICi4b5yqsbma2NArLTo1FmVkY8WRzgs=;
+	s=arc-20240116; t=1725656625; c=relaxed/simple;
+	bh=yUW6H+jm3G6JFi4lkFBPSKHJ7M8cnkftBNvK5ILHj0Q=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bdF9/eegIuid08bcGLRGhIkK9wcZavbDwQO1bNkbgMCTMMhgfzntg/nxHZ40+FyAGs0lEDOR8nSEGIwP0J9KwgyS+99WQtrDlIKjy9S4NFDI5dAEdhj5Jehx73G9nmtbq55iKzpS5VNqmKEToAAQTaJMbOrMbjwGHEgrSEhF1QM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AxwGptJe; arc=none smtp.client-ip=209.85.216.47
+	 To:Cc:Content-Type; b=O3eJldPIrpVlchMeBX1OxS7xC/SRGMTDkuzHqv/mREM4fyUwn9M6XZomxK+LsXaETvZl54hanYZrxjnWSzxXXA4J6kXQ0gnVu+QKO89ZsHIhhHA1uYKeCyDzeDLoeXRbCv3LkQu0deeupUMg5Wg66jPnF1lkSSV7fXG2aB0Z8ZA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TL/AIq0v; arc=none smtp.client-ip=209.85.216.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-2d86f71353dso1784075a91.2
-        for <bpf@vger.kernel.org>; Fri, 06 Sep 2024 14:03:40 -0700 (PDT)
+Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-2d8abac30ddso2109574a91.0
+        for <bpf@vger.kernel.org>; Fri, 06 Sep 2024 14:03:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1725656620; x=1726261420; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1725656623; x=1726261423; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=a/vnYWVKdtRARtaowbQ5wRR6RF7owGySGnzZIGsS8cU=;
-        b=AxwGptJeFJyR1Vv385rgafTzcHaQ2FOxBtZmsAVtyBbs6Gjy/jqM4NOpJANQDRWiyC
-         y7iTcnUDyKOKcxEz8PEF0mrOyHXMPAyvAkiK4pezvo23dpi+stPa15AxaFUltkPWZlb7
-         mgpZ6XPTdVxYo0O6Bfzrga+4f4klcTOjxSsjjAGH0ypCqeCf944N3efbOODIj3FCKZJ7
-         dy9vORLrtbE2YD1u+K+PZdhht3pD7P7c6SoMqDbOw+WPQiyRVXGEAz1J5bNs2GPZ7Bs+
-         7YavGgNvXdnvAuoKxs/HVEWFQdu++HJNI4aJ3QbrLgfZclWGD/YF4nC1F3P8gfA3ugZ/
-         ZFgw==
+        bh=O8EsUMQ18WZ7zEZTc6rY3xDyNJGP2Dw6qpPGZThe+n8=;
+        b=TL/AIq0v+Hqmuzjm79Vc7681rv3VqQGT5DObH/aXe6J0ZSdk226J3DWFhae30T7kOo
+         FLt9Gi4ArpTnTW9wbg5MKsEQ0FYimD2cJUCwc8CeA/wl+sae3mh9ve3fPaz47DCI/Cf8
+         SoG+Lv2+v6fy6/nvm00Co1Iby/8axrn3gn1ZJbg2lGGyGrF2tdYgeYGiKYUjxnBMi58h
+         fw9vHMoOlL17ZPxLatM0LzTAtaXiTD28KjZgu414UaZQzgJgx5un/Z2O9H0XZ0wIjNec
+         GGFUVuvZKubzGtdZbFKbeWK/XshbWi8n3CICf/0reQLjFADC8w9S8IfJ5qYeoSvWa4Y/
+         TL3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725656620; x=1726261420;
+        d=1e100.net; s=20230601; t=1725656623; x=1726261423;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=a/vnYWVKdtRARtaowbQ5wRR6RF7owGySGnzZIGsS8cU=;
-        b=rIKb9Udt/jnb5m2GnwC/lu3BoczXsmH9B3CfxukZjIO4e0TKQLOoGmUbnFTwmbsEQR
-         KUzpc2dyNL39YmTyRkDp87pOTDMBX9Crl13Wtp8CbXB7O09S9faaPw6j/0v46a817W3D
-         WkcQbZ27oEEjHaSggpKNBiB6p62hESbqmR1E4y4xUD44IxeWAxEs+MllkCC1fWUn0Tiq
-         1D5arAUu8/Z9QGEwj3kHth7kD7RE/gguCE/so+5xbHysoLNPOFgCceUdUGFn+EIvLLMa
-         b1ygYsCCIzPmWjvUD84inXr5U9MoJRAXRs7V6ncWl8YuSM3ma0H02N+cpgLVcwEIahxj
-         uZkw==
-X-Gm-Message-State: AOJu0YyrkRvqCWya13JTMUNIiYychTAqOjalg917QDtg/2BoEsVzEZgV
-	tKybk0luUnBHJF8b9QTmXLv0oQlq1XgeNC/ED8KLfzYHkRmyhh1ERz7EN8H2lIP/dZSGu9nhIGs
-	dvPoR6Z2V2UyWAuqb2KH98Ljuah4=
-X-Google-Smtp-Source: AGHT+IFWVDuLV5UZCo1dVowRq98EmQug3t9HwYH2TYnEdL/aVqFbyV88dS+nLT1UC9X/qVbEkK4FiGlc9OJKOYLhv6A=
-X-Received: by 2002:a17:90b:2252:b0:2d8:7572:4bc1 with SMTP id
- 98e67ed59e1d1-2daffa3aaf9mr481951a91.1.1725656620016; Fri, 06 Sep 2024
- 14:03:40 -0700 (PDT)
+        bh=O8EsUMQ18WZ7zEZTc6rY3xDyNJGP2Dw6qpPGZThe+n8=;
+        b=Re+33AONa2NW1SKA+PIFGAUO3+KI+DAULsT+YQNpuSHddFHkkWZOiQ7Csht177FP1c
+         lEwSCn3wZUqGg8/Tc4J0KeGlticGkdSmibB7DX6ALffGjaiyEDa0PliCRvSHaVazeWLj
+         sFxftALusn6e6OalIR394Lz365V9vCezQ1Gi8L002PyRHBBmRZg+Mn3bOAv114+du70k
+         QP8c4fa1jwt+j7PswcY1ivJDtSzpk707GdaMaoXLzGAEQnSfN3V66cIDQy621YkzEmaZ
+         eSQLw1LzV2QSZNimAwW8xiki2Io8qUJlbAcOC3n4F9qgYk5uK/sqn+mVrXA9WgTL7h9m
+         LWWw==
+X-Gm-Message-State: AOJu0Yz06NhTFWadJ6xThpUicFTcqEHQRZran3b8nMZsVutJ18rqCT8f
+	FuqgtKYuR+cKI4lf9fLaaj4Ec95AO9rqzleDOe8gNrLLyyBHa/cNssUBdipwGCq4AQoouKxHTab
+	jvYjIJhMlMN3BN6ALSUkeD4Dh05w=
+X-Google-Smtp-Source: AGHT+IEOffX6ZGGzqYTY3yl3AA/YN+DaIyAMRN22ab3jc1bfaPIA21u7sdLTdaSkl04jRapX4/wqVi1dGqU29I2MGiQ=
+X-Received: by 2002:a17:90b:4b10:b0:2d8:abdf:2ca9 with SMTP id
+ 98e67ed59e1d1-2dad4deda66mr4122544a91.3.1725656623260; Fri, 06 Sep 2024
+ 14:03:43 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240906135608.26477-1-daniel@iogearbox.net> <20240906135608.26477-6-daniel@iogearbox.net>
-In-Reply-To: <20240906135608.26477-6-daniel@iogearbox.net>
+References: <20240906135608.26477-1-daniel@iogearbox.net> <20240906135608.26477-5-daniel@iogearbox.net>
+In-Reply-To: <20240906135608.26477-5-daniel@iogearbox.net>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 6 Sep 2024 14:03:20 -0700
-Message-ID: <CAEf4BzaPzhs_gjJEjOM-oCqps5S4Eg6qif-joOBAzyiQ9qLRew@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 6/8] selftests/bpf: Fix ARG_PTR_TO_LONG
- {half-,}uninitialized test
+Date: Fri, 6 Sep 2024 14:03:26 -0700
+Message-ID: <CAEf4Bzaf4Jsy+kibXB7UsjVrz+TmcT9SyiQ51EdVpqEhKifWEA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 5/8] bpf: Zero former ARG_PTR_TO_{LONG,INT}
+ args in case of error
 To: Daniel Borkmann <daniel@iogearbox.net>
 Cc: bpf@vger.kernel.org, shung-hsi.yu@suse.com, andrii@kernel.org, 
 	ast@kernel.org, kongln9170@gmail.com
@@ -86,50 +86,108 @@ Content-Transfer-Encoding: quoted-printable
 On Fri, Sep 6, 2024 at 6:56=E2=80=AFAM Daniel Borkmann <daniel@iogearbox.ne=
 t> wrote:
 >
-> The assumption of 'in privileged mode reads from uninitialized stack loca=
-tions
-> are permitted' is not quite correct since the verifier was probing for re=
-ad
-> access rather than write access. Both tests need to be annotated as __suc=
-cess
-> for privileged and unprivileged.
+> For all non-tracing helpers which formerly had ARG_PTR_TO_{LONG,INT} as i=
+nput
+> arguments, zero the value for the case of an error as otherwise it could =
+leak
+> memory. For tracing, it is not needed given CAP_PERFMON can already read =
+all
+> kernel memory anyway hence bpf_get_func_arg() and bpf_get_func_ret() is s=
+kipped
+> in here.
 >
+> Also, rearrange the MTU checker helpers a bit to among other nit fixes
+> consolidate flag checks such that we only need to zero in one location wi=
+th
+> regards to malformed flag inputs.
+>
+> Fixes: 8a67f2de9b1d ("bpf: expose bpf_strtol and bpf_strtoul to all progr=
+am types")
+> Fixes: d7a4cb9b6705 ("bpf: Introduce bpf_strtol and bpf_strtoul helpers")
 > Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
 > ---
->  tools/testing/selftests/bpf/progs/verifier_int_ptr.c | 5 +----
->  1 file changed, 1 insertion(+), 4 deletions(-)
+>  v1 -> v2:
+>  - only set *mtu_len in error path (Alexei)
 >
-
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-
-
-> diff --git a/tools/testing/selftests/bpf/progs/verifier_int_ptr.c b/tools=
-/testing/selftests/bpf/progs/verifier_int_ptr.c
-> index 9fc3fae5cd83..87206803c025 100644
-> --- a/tools/testing/selftests/bpf/progs/verifier_int_ptr.c
-> +++ b/tools/testing/selftests/bpf/progs/verifier_int_ptr.c
-> @@ -8,7 +8,6 @@
->  SEC("socket")
->  __description("ARG_PTR_TO_LONG uninitialized")
->  __success
-> -__failure_unpriv __msg_unpriv("invalid indirect read from stack R4 off -=
-16+0 size 8")
->  __naked void arg_ptr_to_long_uninitialized(void)
+>  kernel/bpf/helpers.c |  2 ++
+>  kernel/bpf/syscall.c |  1 +
+>  net/core/filter.c    | 35 +++++++++++++++++------------------
+>  3 files changed, 20 insertions(+), 18 deletions(-)
+>
+> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> index 0587d0c2375a..ff66a0522799 100644
+> --- a/kernel/bpf/helpers.c
+> +++ b/kernel/bpf/helpers.c
+> @@ -523,6 +523,7 @@ BPF_CALL_4(bpf_strtol, const char *, buf, size_t, buf=
+_len, u64, flags,
+>         long long _res;
+>         int err;
+>
+> +       *res =3D 0;
+>         err =3D __bpf_strtoll(buf, buf_len, flags, &_res);
+>         if (err < 0)
+>                 return err;
+> @@ -549,6 +550,7 @@ BPF_CALL_4(bpf_strtoul, const char *, buf, size_t, bu=
+f_len, u64, flags,
+>         bool is_negative;
+>         int err;
+>
+> +       *res =3D 0;
+>         err =3D __bpf_strtoull(buf, buf_len, flags, &_res, &is_negative);
+>         if (err < 0)
+>                 return err;
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index feb276771c03..513b4301a0af 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -5934,6 +5934,7 @@ static const struct bpf_func_proto bpf_sys_close_pr=
+oto =3D {
+>
+>  BPF_CALL_4(bpf_kallsyms_lookup_name, const char *, name, int, name_sz, i=
+nt, flags, u64 *, res)
 >  {
->         asm volatile ("                                 \
-> @@ -36,9 +35,7 @@ __naked void arg_ptr_to_long_uninitialized(void)
+> +       *res =3D 0;
+>         if (flags)
+>                 return -EINVAL;
 >
->  SEC("socket")
->  __description("ARG_PTR_TO_LONG half-uninitialized")
-> -/* in privileged mode reads from uninitialized stack locations are permi=
-tted */
-> -__success __failure_unpriv
-> -__msg_unpriv("invalid indirect read from stack R4 off -16+4 size 8")
-> +__success
->  __retval(0)
->  __naked void ptr_to_long_half_uninitialized(void)
->  {
-> --
-> 2.43.0
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 4be175f84eb9..c219385e7bb4 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -6264,18 +6264,19 @@ BPF_CALL_5(bpf_skb_check_mtu, struct sk_buff *, s=
+kb,
+>         int skb_len, dev_len;
+>         int mtu;
 >
+> -       if (unlikely(flags & ~(BPF_MTU_CHK_SEGS)))
+> -               return -EINVAL;
+> -
+> -       if (unlikely(flags & BPF_MTU_CHK_SEGS && (len_diff || *mtu_len)))
+> +       if (unlikely((flags & ~(BPF_MTU_CHK_SEGS)) ||
+> +                    (flags & BPF_MTU_CHK_SEGS && (len_diff || *mtu_len))=
+)) {
+> +               *mtu_len =3D 0;
+>                 return -EINVAL;
+> +       }
+
+meh, why? you have *mtu_len =3D 0 below anyways, so there is already
+duplication. I'd rather have extra *mtu_len than much more convoluted
+condition
+
+>
+>         dev =3D __dev_via_ifindex(dev, ifindex);
+> -       if (unlikely(!dev))
+> +       if (unlikely(!dev)) {
+> +               *mtu_len =3D 0;
+>                 return -ENODEV;
+> +       }
+>
+>         mtu =3D READ_ONCE(dev->mtu);
+> -
+>         dev_len =3D mtu + dev->hard_header_len;
+>
+>         /* If set use *mtu_len as input, L3 as iph->tot_len (like fib_loo=
+kup) */
+
+[...]
 
