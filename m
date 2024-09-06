@@ -1,74 +1,48 @@
-Return-Path: <bpf+bounces-39150-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39151-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F47A96F88E
-	for <lists+bpf@lfdr.de>; Fri,  6 Sep 2024 17:45:09 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2933696F9C8
+	for <lists+bpf@lfdr.de>; Fri,  6 Sep 2024 19:13:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2B8CA1F21F1C
-	for <lists+bpf@lfdr.de>; Fri,  6 Sep 2024 15:45:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 548AE1C22268
+	for <lists+bpf@lfdr.de>; Fri,  6 Sep 2024 17:13:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBF001D3192;
-	Fri,  6 Sep 2024 15:45:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0EFC1D54FC;
+	Fri,  6 Sep 2024 17:13:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="P5Voszv5"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HFog4E+D"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8A0B1D318E;
-	Fri,  6 Sep 2024 15:45:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D0C11CFEC9;
+	Fri,  6 Sep 2024 17:13:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725637505; cv=none; b=QbOTeYA7ZcUD+v0jT8CJuddOputWEvU9VOe9+htM5C0toldiLCO9OLS4Dv0V8pO8G3fqqJu2x8nVvfIYQI3eUQpcbKFcMKzy3RUYlkmVC9jlUdj9OSHupQ7EoJz6G5zFtTdlGylgZGeGi3UtHrYrbxK8EtXRF/ABZulTn3fu20g=
+	t=1725642809; cv=none; b=SMl6CXUH8QB/F0dAMA8U9BSpqhoJi5YDkz1jOtHuyI9zknLglRPznU9UPKErOn7CNbKJx0kgZ8mGH5ge7Iji4qmDx69zgX1z3tvhbeJFDppgEynwxhrPjlpu3DPEh10DpOSZNDE6lUu+AALkb/a6IfEy7xMXPB348+t7vmO6z8w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725637505; c=relaxed/simple;
-	bh=v+6PmdptN06I4wNjTeXRkYbKX2jdmJq46oAeXHd9CjM=;
+	s=arc-20240116; t=1725642809; c=relaxed/simple;
+	bh=za9hRWAJFue3qA2/8qfDjGdwgXq/W1BfL0Az38VY1kM=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=opjBYkJJ2+YwYFjw9B1kBGVE7UFwgJSjG0LarzEvxb2gxBViRLNA5W9om45nGEmDyEYYKi/D1cBkvOCPkWoAFdg0oelNZJfwDYSSI9cOg3aOOIAkNo6/Jz1IQMeppPO1LH4Nkup2t3SxOgBEnQq/Y1C3BJY6Cm0YmOEvAw6ht4A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=P5Voszv5; arc=none smtp.client-ip=209.85.210.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-718d6ad6050so678152b3a.0;
-        Fri, 06 Sep 2024 08:45:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1725637503; x=1726242303; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6qJt3dWuSS/7B+CarKMiwXcxl0tVTC+pGimSt0Bqmgk=;
-        b=P5Voszv5BetaZTHJ1HDct8VKhVYh4sTCDfmR/zQ4m8q1aepy0zwIpdaIwM728/pQs7
-         Bdi4hgSPzGmQjK8E3Ym3Wan7rSV+phuloqcdVOXL5Y78KelXGwQ7pAG026caifxQKPG0
-         EOEt++D8D95gCgk9veg4SpvxEv8Y5MLc8zRKPHfEv9D9LPsp6KJz3sn4P1A/EsNinqq5
-         pkeD8OB6DdZEJtByZpaowdga8V7r6cD0a05YIu5YsAaChRqgJf0RFTpMeS+xFhs/pDwQ
-         zXgwJ6hgRSrA+RQUEflBHxUIun+vOOVKSFmolsQ9lWRyKKE+daoIPx/wOBhck/Hk2Bpc
-         nt6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725637503; x=1726242303;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=6qJt3dWuSS/7B+CarKMiwXcxl0tVTC+pGimSt0Bqmgk=;
-        b=RvZYLFIlOVvtaEntvO/92GuedyMA7pEs85UxIEiGIoMeAE9HNUZm0tnQX+c90qNXlY
-         zlaqk8yurQiHSMyFnLqeiToacfH+6UVakHs2O0QqFBmhRyysGfGyNdXUQ88N5FqAR9jk
-         F3fu1IT5SbD9+k/hucpWMHPD7k0avXx+OuBZiOxKwujQ1iM/kKkITok8ClhfuG7Zxx05
-         ghg34vWobpgQqPvstZ/vbWVVkbIhfyRJXGHEX5ZuFjJzCeQ0pVEJfWKlRI4ytUuI5SSx
-         abkNdSXQCbJimGgLQaOn4EYL0fIVKGYsqytdrsqojm1y19zSDQ5ao5d9whB9xPNDlLhA
-         O/bg==
-X-Forwarded-Encrypted: i=1; AJvYcCWCQ/OPwqpXfe/s+ZXowmiiQ6dW+cldPpcLykznxSHQLAUOLZtAIkQn/bx+nLEf22JzM24mCYRMkBhhutM=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxyGbjFQt63Nv6YrAPMUs4ZtR6pRFvMIbaCPkgXqRvgxwVCAKwp
-	I0G0NnFs/qfPWCWDnwrtDSaykSZLARe3piprtgYJSu7B1ocPe0aw
-X-Google-Smtp-Source: AGHT+IFDHfgU9JbVYBlq+aSvZ5zwRSimx0Dro3dTyFgId2njIwo5aE1ZzLA7cptKc9zGvd0qPQf5Rg==
-X-Received: by 2002:a05:6a00:1303:b0:70d:323f:d0c6 with SMTP id d2e1a72fcca58-718d5f542b1mr3597391b3a.24.1725637502877;
-        Fri, 06 Sep 2024 08:45:02 -0700 (PDT)
-Received: from [192.168.0.106] ([183.247.1.38])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7178df6b01esm2941047b3a.75.2024.09.06.08.44.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 Sep 2024 08:45:02 -0700 (PDT)
-Message-ID: <8195c890-d862-4427-9a5c-e59cf11009e3@gmail.com>
-Date: Fri, 6 Sep 2024 23:44:57 +0800
+	 In-Reply-To:Content-Type; b=c6+eUSVwAsi9gmEkY8Dk/8OcqAeaQNlVaSeDtwEi943CrWTZt8hIzrYj2m+NtmoStOvXVUzkSztDBqeN/mM/+zOjdzEQpQzJGMra2Mk8IK0rOJmaGwHcfFRSK2nGqyNfeB8MfNLrYndPySaXsQXGDJJ4DHFGE5hbvJpBKW0/jl8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HFog4E+D; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3692C4CEC4;
+	Fri,  6 Sep 2024 17:13:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1725642808;
+	bh=za9hRWAJFue3qA2/8qfDjGdwgXq/W1BfL0Az38VY1kM=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=HFog4E+Ddyk1X/+lDS2YOD8HoYsrbiaXVWJMHDKK76Fj4BaEP3kzl/ig0ojYByIER
+	 NcQPadazN3d/t+eluRpnLIuWo/yHIXahwADGaZMRskL8z+GZKWDrGOmIfFr7+iv0EK
+	 rUaNZeOIXK5PT3mo25G0fNtbFmDY1v8bceg+7lz6S3bstEAyN9EYQ7NYsi920Bv0nn
+	 do67l2juJ/MulHR7CU9F9SvFAWj9kBc7csqzjWok+b8fsPIGrIk/iRguGUXpX6j8Jt
+	 4RkRTBPpCQsUzCjMcoBo5c/D+7B9ZffYeuI542pWftpxrmNHkI0CgUuB9sNkULkBWt
+	 bve0Tf9j1juNw==
+Message-ID: <a82d846d-ec87-4cb4-ab5f-86fee52e3124@kernel.org>
+Date: Fri, 6 Sep 2024 11:13:27 -0600
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -76,111 +50,75 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH bpf-next] bpf: Check percpu map value size first
-To: Hou Tao <houtao@huaweicloud.com>
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>
-References: <20240905171406.832962-1-chen.dylane@gmail.com>
- <fab1c1c1-a973-a32c-8936-d0d885d4b5af@huaweicloud.com>
-From: Tao Chen <chen.dylane@gmail.com>
-In-Reply-To: <fab1c1c1-a973-a32c-8936-d0d885d4b5af@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next 00/12] Unmask upper DSCP bits - part 4 (last)
+Content-Language: en-US
+To: Ido Schimmel <idosch@nvidia.com>, netdev@vger.kernel.org
+Cc: davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+ edumazet@google.com, gnault@redhat.com, razor@blackwall.org,
+ pablo@netfilter.org, kadlec@netfilter.org, marcelo.leitner@gmail.com,
+ lucien.xin@gmail.com, bridge@lists.linux.dev,
+ netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+ linux-sctp@vger.kernel.org, bpf@vger.kernel.org
+References: <20240905165140.3105140-1-idosch@nvidia.com>
+From: David Ahern <dsahern@kernel.org>
+In-Reply-To: <20240905165140.3105140-1-idosch@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-在 2024/9/6 11:20, Hou Tao 写道:
-> Hi,
+On 9/5/24 10:51 AM, Ido Schimmel wrote:
+> tl;dr - This patchset finishes to unmask the upper DSCP bits in the IPv4
+> flow key in preparation for allowing IPv4 FIB rules to match on DSCP. No
+> functional changes are expected.
 > 
-> On 9/6/2024 1:14 AM, Tao Chen wrote:
->> Percpu map is often used, but the map value size limit often ignored,
->> like issue: https://github.com/iovisor/bcc/issues/2519. Actually,
->> percpu map value size is bound by PCPU_MIN_UNIT_SZIE, so we
+> The TOS field in the IPv4 flow key ('flowi4_tos') is used during FIB
+> lookup to match against the TOS selector in FIB rules and routes.
 > 
-> s/SZIE/SIZE
-
-Hi Hou, thank you for your reply!
-My bad, i will fix it in v2.
-
->> can check the value size whether it exceeds PCPU_MIN_UNIT_SZIE first,
+> It is currently impossible for user space to configure FIB rules that
+> match on the DSCP value as the upper DSCP bits are either masked in the
+> various call sites that initialize the IPv4 flow key or along the path
+> to the FIB core.
 > 
-> The same typo here.
->> like percpu map of local_storage. Maybe the error message seems clearer
->> compared with "cannot allocate memory".
->>
->> the test case we create a percpu map with large value like:
->> struct test_t {
->>          int a[100000];
->> };
->> struct {
->>          __uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
->>          __uint(max_entries, 1);
->>          __type(key, u32);
->>          __type(value, struct test_t);
->> } start SEC(".maps");
->>
->> test on ubuntu24.04 vm:
->> libbpf: Error in bpf_create_map_xattr(start):Argument list too long(-7).
->> Retrying without BTF.
+> In preparation for adding a DSCP selector to IPv4 and IPv6 FIB rules, we
+> need to make sure the entire DSCP value is present in the IPv4 flow key.
+> This patchset finishes to unmask the upper DSCP bits by adjusting all
+> the callers of ip_route_output_key() to properly initialize the full
+> DSCP value in the IPv4 flow key.
 > 
-> Could you please convert it into a separated bpf selftest patch ?
-
-No problem, i will add test case in v2.
-
->>
->> Signed-off-by: Tao Chen <chen.dylane@gmail.com>
->> ---
->>   kernel/bpf/arraymap.c | 3 +++
->>   kernel/bpf/hashtab.c  | 3 +++
->>   2 files changed, 6 insertions(+)
->>
->> diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
->> index a43e62e2a8bb..7c3c32f156ff 100644
->> --- a/kernel/bpf/arraymap.c
->> +++ b/kernel/bpf/arraymap.c
->> @@ -73,6 +73,9 @@ int array_map_alloc_check(union bpf_attr *attr)
->>   	/* avoid overflow on round_up(map->value_size) */
->>   	if (attr->value_size > INT_MAX)
->>   		return -E2BIG;
->> +	/* percpu map value size is bound by PCPU_MIN_UNIT_SIZE */
->> +	if (percpu && attr->value_size > PCPU_MIN_UNIT_SIZE)
->> +		return -E2BIG;
->>   
->>   	return 0;
->>   }
+> No functional changes are expected as commit 1fa3314c14c6 ("ipv4:
+> Centralize TOS matching") moved the masking of the upper DSCP bits to
+> the core where 'flowi4_tos' is matched against the TOS selector.
 > 
-> Make sense. However because the map passes round_up(attr->value_size, 8)
-
-Yeah, you are right, it seems better, i will add it in v2.
-
-> to bpf_map_alloc_percpu(). Is it more reasonable to check
-> round_up(value_size) > PCPU_MIN_UNIT_SIZE instead ?
->> diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
->> index 45c7195b65ba..16d590fe1ffb 100644
->> --- a/kernel/bpf/hashtab.c
->> +++ b/kernel/bpf/hashtab.c
->> @@ -462,6 +462,9 @@ static int htab_map_alloc_check(union bpf_attr *attr)
->>   		 * kmalloc-able later in htab_map_update_elem()
->>   		 */
->>   		return -E2BIG;
->> +	/* percpu map value size is bound by PCPU_MIN_UNIT_SIZE */
->> +	if (percpu && attr->value_size > PCPU_MIN_UNIT_SIZE)
->> +		return -E2BIG;
->>   
+> Ido Schimmel (12):
+>   netfilter: br_netfilter: Unmask upper DSCP bits in
+>     br_nf_pre_routing_finish()
+>   ipv4: ip_gre: Unmask upper DSCP bits in ipgre_open()
+>   bpf: lwtunnel: Unmask upper DSCP bits in bpf_lwt_xmit_reroute()
+>   ipv4: icmp: Unmask upper DSCP bits in icmp_reply()
+>   ipv4: ip_tunnel: Unmask upper DSCP bits in ip_tunnel_bind_dev()
+>   ipv4: ip_tunnel: Unmask upper DSCP bits in ip_md_tunnel_xmit()
+>   ipv4: ip_tunnel: Unmask upper DSCP bits in ip_tunnel_xmit()
+>   ipv4: netfilter: Unmask upper DSCP bits in ip_route_me_harder()
+>   netfilter: nft_flow_offload: Unmask upper DSCP bits in
+>     nft_flow_route()
+>   netfilter: nf_dup4: Unmask upper DSCP bits in nf_dup_ipv4_route()
+>   ipv4: udp_tunnel: Unmask upper DSCP bits in udp_tunnel_dst_lookup()
+>   sctp: Unmask upper DSCP bits in sctp_v4_get_dst()
 > 
-> The percpu allocation logic is the same as the array map:
-> round_up(value_size, 8) is used.
-
-ok.
-
->>   	return 0;
->>   }
+>  net/bridge/br_netfilter_hooks.c  |  3 ++-
+>  net/core/lwt_bpf.c               |  3 ++-
+>  net/ipv4/icmp.c                  |  2 +-
+>  net/ipv4/ip_gre.c                |  3 ++-
+>  net/ipv4/ip_tunnel.c             | 11 ++++++-----
+>  net/ipv4/netfilter.c             |  3 ++-
+>  net/ipv4/netfilter/nf_dup_ipv4.c |  3 ++-
+>  net/ipv4/udp_tunnel_core.c       |  3 ++-
+>  net/netfilter/nft_flow_offload.c |  3 ++-
+>  net/sctp/protocol.c              |  3 ++-
+>  10 files changed, 23 insertions(+), 14 deletions(-)
 > 
 
+For the set:
+Reviewed-by: David Ahern <dsahern@kernel.org>
 
--- 
-Best Regards
-Dylane Chen
+
 
