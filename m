@@ -1,186 +1,108 @@
-Return-Path: <bpf+bounces-39138-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39139-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68CF996F60E
-	for <lists+bpf@lfdr.de>; Fri,  6 Sep 2024 15:56:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB37296F624
+	for <lists+bpf@lfdr.de>; Fri,  6 Sep 2024 16:01:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BC1E5B211CB
-	for <lists+bpf@lfdr.de>; Fri,  6 Sep 2024 13:56:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 034FA1C20510
+	for <lists+bpf@lfdr.de>; Fri,  6 Sep 2024 14:01:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 669D11D0488;
-	Fri,  6 Sep 2024 13:56:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D089B1CDFA4;
+	Fri,  6 Sep 2024 14:01:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="ct00P1JR"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MMv/IHBp"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B4501CF2B8
-	for <bpf@vger.kernel.org>; Fri,  6 Sep 2024 13:56:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F03741CE705
+	for <bpf@vger.kernel.org>; Fri,  6 Sep 2024 14:01:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725630984; cv=none; b=Z1oRMYbAO3W6n9pDvAtp2f9INCZn22VUKTsYYxc42k9IqlcLp6JkQeYS1H7rXSqcN4IfKx7Z78yApX5M83212mSJlxdP5jyPOpBAdlq8+GDqLy0cD0jU2yWWoMnH2HsmpiWuqozbZpYmDujt+UYT3Xbcuz+V5MWVE8VjW5ycl5k=
+	t=1725631300; cv=none; b=tYRYGiFBrhusaU+EJHTd0z5veyIxFpQ4VbHvrf/VnDip2vFROVTNBu4TX9f9AfO5bQYW8LoddtOogMjn0KqDCtXkDuy5RnRqi19np2n5uqA923O6/tSseW5n3eY0a571ig1uOYEMMEIfp2wN8kXeN5O6HlGgZiofwgE9GNWufc8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725630984; c=relaxed/simple;
-	bh=VrXzW/2RAtqjLM4Fu9WGuZA10fCiBj22p0Fs+rEwe8s=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=X/pbZmPh+c+wwc53iAVlWLNXfXTDl/X8FKzWxb4WnlDfpYX33ndDr+zB7vkO7NkFTszMizwwcPqu1eK6NMAB9+UnK3hzr+TLcjO6CDtsr0umQR+biy0Bt61/SNeQuXKC6UTkLd8XPITaUpKJlNbjHgYrFN+R7QO/146N5eDmuBQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=ct00P1JR; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:MIME-Version:
-	References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-	Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=KFNLab3cIsER8Aljjj6meWCJpb+FGLpJck1PnjUyTcQ=; b=ct00P1JRv4OwVEWK+TXy0TWgf3
-	7/LlHWXssDr7EuGIJjJ0y4h/m3vPChBX0aURxzUGlmAv2jwXZKsgcWSK18nkoNKpk5AqxHU5VZtKf
-	ETCKtpGHWjaCghgTFI5k7+uXJLh4e1iOt9bUgNhpIGc1+UzH1+46AdPbHq3meRyXzU8B0IPoX9fu2
-	7hRE5jGpmdB6v9rkmSPN0QbXIOjE5KA1Skn2gC6Mx6S/X0TeUEay0z6SJIDG3ftUxdqWPwe6p2CIb
-	q564KAS+ncrmu1/rvwfhHo/yl5ik+3QOpRtoGg1LobDGkXAeJgKcwbhposP05+rES4sHgLF1V59YZ
-	yVcuD0bA==;
-Received: from 15.248.197.178.dynamic.cust.swisscom.net ([178.197.248.15] helo=localhost)
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1smZRe-0001zp-HS; Fri, 06 Sep 2024 15:56:14 +0200
-From: Daniel Borkmann <daniel@iogearbox.net>
-To: bpf@vger.kernel.org
-Cc: shung-hsi.yu@suse.com,
-	andrii@kernel.org,
-	ast@kernel.org,
-	kongln9170@gmail.com,
-	Daniel Borkmann <daniel@iogearbox.net>
-Subject: [PATCH bpf-next v4 8/8] selftests/bpf: Add a test case to write into .rodata
-Date: Fri,  6 Sep 2024 15:56:08 +0200
-Message-Id: <20240906135608.26477-8-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20240906135608.26477-1-daniel@iogearbox.net>
-References: <20240906135608.26477-1-daniel@iogearbox.net>
+	s=arc-20240116; t=1725631300; c=relaxed/simple;
+	bh=H9Qvvrts7066PRTQiTdtz7Ndcp7RKGYi8p8LT9X2boA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RqFadHxoK/fZ9OlAzB8/qoI23WwwhA5inBmm67UQh2Dtsqcz/xuf26EyIQdVdVi2/hO0jFnuwVu/Iv7kC3hn9w0oyGOFOq9Uj3DTx1JQdFJCh1Bi485mrMFTo2hnzO/e2Lg6Y4bC6EtL8CzUTNSF9BEBG67jAPx9VeBqqbhNFk0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=MMv/IHBp; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1725631297;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=H9Qvvrts7066PRTQiTdtz7Ndcp7RKGYi8p8LT9X2boA=;
+	b=MMv/IHBp0+sgtSayIpCeaSYj22+gNT2RidcllNXg9f80LxaJaOhCwHomwR8AxHvhEK2//O
+	ebD89rpgS/D8FlbGoEEuO1QQb3RNRqwRuU9zqoySOD10WT1v9TH06K1tYhl8yfc3ORVw7Y
+	ShVBdtlPVJdEyjUzMJzFCrTZa5z2CoU=
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
+ [209.85.167.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-287-4DWWwcGYNsm6pMNjgFXkbg-1; Fri, 06 Sep 2024 10:01:36 -0400
+X-MC-Unique: 4DWWwcGYNsm6pMNjgFXkbg-1
+Received: by mail-lf1-f72.google.com with SMTP id 2adb3069b0e04-53659c3c9bdso567287e87.3
+        for <bpf@vger.kernel.org>; Fri, 06 Sep 2024 07:01:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1725631295; x=1726236095;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=H9Qvvrts7066PRTQiTdtz7Ndcp7RKGYi8p8LT9X2boA=;
+        b=faz+tESFROeqiW+h+crJcW8wWUL7rLqtzurdHI7VgzRMo7YYVZRNSZMcqSO15Hu371
+         SDVQlb5oYc9l7P8C1k/JACCxKtibrUUw0qrhdkTldru0k7fTn9uNE06hGyxzMai7n79H
+         Pwb28R1vbWivfihhk32FcyLiTqYsgXUTt8Ce3DjeD5s0lhyScrCyYbMTZbmu/InL/OBj
+         40uvc+laesVxGWl3ZY3BbN86HDpVYcF1MkT26a1ESp31DyNKOZwqydeekmLBamfZTpD2
+         c5ZJce4bYEkEH60L0D5EIvIx/ULIjv6iligmV765cS1sQ9WB5w04u7CulZsrqq/waNqe
+         mcOg==
+X-Forwarded-Encrypted: i=1; AJvYcCV4eN6ZUES7PtAwbrT9xzNRG0aiw3aHABYjRTAGLObY1XtPawgf4+xuhkk/WbO47HvlD4M=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyfu/zf+ugVLFZpoTBXPeUIHgqZ8EObYDybXC0vawigVZPzS2QE
+	gDGeeN1hR7sczsLXNE2M6LvLwfpm2fqLUDIrUujPhPWrKNm9bGaY8T5cqOAwpM481o3Kt7OcuT9
+	o4KEX7WHstLrl8s8lC9CwGC47sBcaEHlePLuD6QURnXirmeVFow==
+X-Received: by 2002:a05:6512:b24:b0:535:3d15:e718 with SMTP id 2adb3069b0e04-536587fcf0fmr1730148e87.50.1725631294278;
+        Fri, 06 Sep 2024 07:01:34 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IESh5ryxYIDRtv0PMqngwp2r/5lvvEI+2l0OS3wHQLQGUs23BzE3eAyNjglC8gFpKq8yS+EfQ==
+X-Received: by 2002:a05:6512:b24:b0:535:3d15:e718 with SMTP id 2adb3069b0e04-536587fcf0fmr1730009e87.50.1725631291471;
+        Fri, 06 Sep 2024 07:01:31 -0700 (PDT)
+Received: from debian (2a01cb058d23d6009996916de7ed7c62.ipv6.abo.wanadoo.fr. [2a01:cb05:8d23:d600:9996:916d:e7ed:7c62])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-42ca05ccc27sm21647655e9.13.2024.09.06.07.01.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Sep 2024 07:01:30 -0700 (PDT)
+Date: Fri, 6 Sep 2024 16:01:28 +0200
+From: Guillaume Nault <gnault@redhat.com>
+To: Ido Schimmel <idosch@nvidia.com>
+Cc: netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+	pabeni@redhat.com, edumazet@google.com, dsahern@kernel.org,
+	razor@blackwall.org, pablo@netfilter.org, kadlec@netfilter.org,
+	marcelo.leitner@gmail.com, lucien.xin@gmail.com,
+	bridge@lists.linux.dev, netfilter-devel@vger.kernel.org,
+	coreteam@netfilter.org, linux-sctp@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH net-next 06/12] ipv4: ip_tunnel: Unmask upper DSCP bits
+ in ip_md_tunnel_xmit()
+Message-ID: <ZtsLOBY/jZi7rrvT@debian>
+References: <20240905165140.3105140-1-idosch@nvidia.com>
+ <20240905165140.3105140-7-idosch@nvidia.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27390/Fri Sep  6 10:38:06 2024)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240905165140.3105140-7-idosch@nvidia.com>
 
-Add a test case which attempts to write into .rodata section of the
-BPF program, and for comparison this adds test cases also for .bss
-and .data section.
+On Thu, Sep 05, 2024 at 07:51:34PM +0300, Ido Schimmel wrote:
+> Unmask the upper DSCP bits when initializing an IPv4 flow key via
+> ip_tunnel_init_flow() before passing it to ip_route_output_key() so that
+> in the future we could perform the FIB lookup according to the full DSCP
+> value.
 
-Before fix:
-
-  # ./vmtest.sh -- ./test_progs -t verifier_const
-  [...]
-  ./test_progs -t verifier_const
-  tester_init:PASS:tester_log_buf 0 nsec
-  process_subtest:PASS:obj_open_mem 0 nsec
-  process_subtest:PASS:specs_alloc 0 nsec
-  run_subtest:PASS:obj_open_mem 0 nsec
-  run_subtest:FAIL:unexpected_load_success unexpected success: 0
-  #465/1   verifier_const/rodata: write rejected:FAIL
-  #465/2   verifier_const/bss: write accepted:OK
-  #465/3   verifier_const/data: write accepted:OK
-  #465     verifier_const:FAIL
-  [...]
-
-After fix:
-
-  # ./vmtest.sh -- ./test_progs -t verifier_const
-  [...]
-  ./test_progs -t verifier_const
-  #465/1   verifier_const/rodata: write rejected:OK
-  #465/2   verifier_const/bss: write accepted:OK
-  #465/3   verifier_const/data: write accepted:OK
-  #465     verifier_const:OK
-  [...]
-
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Acked-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
----
- v1 -> v2:
- - const volatile long (Andrii)
-
- .../selftests/bpf/prog_tests/verifier.c       |  2 +
- .../selftests/bpf/progs/verifier_const.c      | 42 +++++++++++++++++++
- 2 files changed, 44 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/verifier_const.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/testing/selftests/bpf/prog_tests/verifier.c
-index df398e714dff..e26b5150fc43 100644
---- a/tools/testing/selftests/bpf/prog_tests/verifier.c
-+++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
-@@ -21,6 +21,7 @@
- #include "verifier_cgroup_inv_retcode.skel.h"
- #include "verifier_cgroup_skb.skel.h"
- #include "verifier_cgroup_storage.skel.h"
-+#include "verifier_const.skel.h"
- #include "verifier_const_or.skel.h"
- #include "verifier_ctx.skel.h"
- #include "verifier_ctx_sk_msg.skel.h"
-@@ -146,6 +147,7 @@ void test_verifier_cfg(void)                  { RUN(verifier_cfg); }
- void test_verifier_cgroup_inv_retcode(void)   { RUN(verifier_cgroup_inv_retcode); }
- void test_verifier_cgroup_skb(void)           { RUN(verifier_cgroup_skb); }
- void test_verifier_cgroup_storage(void)       { RUN(verifier_cgroup_storage); }
-+void test_verifier_const(void)                { RUN(verifier_const); }
- void test_verifier_const_or(void)             { RUN(verifier_const_or); }
- void test_verifier_ctx(void)                  { RUN(verifier_ctx); }
- void test_verifier_ctx_sk_msg(void)           { RUN(verifier_ctx_sk_msg); }
-diff --git a/tools/testing/selftests/bpf/progs/verifier_const.c b/tools/testing/selftests/bpf/progs/verifier_const.c
-new file mode 100644
-index 000000000000..5158dbea8c43
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/verifier_const.c
-@@ -0,0 +1,42 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2024 Isovalent */
-+
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include "bpf_misc.h"
-+
-+const volatile long foo = 42;
-+long bar;
-+long bart = 96;
-+
-+SEC("tc/ingress")
-+__description("rodata: write rejected")
-+__failure __msg("write into map forbidden")
-+int tcx1(struct __sk_buff *skb)
-+{
-+	char buff[] = { '8', '4', '\0' };
-+	bpf_strtol(buff, sizeof(buff), 0, (long *)&foo);
-+	return TCX_PASS;
-+}
-+
-+SEC("tc/ingress")
-+__description("bss: write accepted")
-+__success
-+int tcx2(struct __sk_buff *skb)
-+{
-+	char buff[] = { '8', '4', '\0' };
-+	bpf_strtol(buff, sizeof(buff), 0, &bar);
-+	return TCX_PASS;
-+}
-+
-+SEC("tc/ingress")
-+__description("data: write accepted")
-+__success
-+int tcx3(struct __sk_buff *skb)
-+{
-+	char buff[] = { '8', '4', '\0' };
-+	bpf_strtol(buff, sizeof(buff), 0, &bart);
-+	return TCX_PASS;
-+}
-+
-+char LICENSE[] SEC("license") = "GPL";
--- 
-2.43.0
+Reviewed-by: Guillaume Nault <gnault@redhat.com>
 
 
