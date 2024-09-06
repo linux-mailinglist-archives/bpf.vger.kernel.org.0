@@ -1,184 +1,135 @@
-Return-Path: <bpf+bounces-39141-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39142-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33AA896F653
-	for <lists+bpf@lfdr.de>; Fri,  6 Sep 2024 16:08:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AB24E96F679
+	for <lists+bpf@lfdr.de>; Fri,  6 Sep 2024 16:16:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BA9EF285653
-	for <lists+bpf@lfdr.de>; Fri,  6 Sep 2024 14:08:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6A265286B4C
+	for <lists+bpf@lfdr.de>; Fri,  6 Sep 2024 14:16:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CD8C1CFED6;
-	Fri,  6 Sep 2024 14:08:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D409C1D04B4;
+	Fri,  6 Sep 2024 14:16:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ubmNvtCp"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="gFqGsySk";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="R2Q+vklh"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3D7E1CB31D;
-	Fri,  6 Sep 2024 14:08:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F02DD19E7FF;
+	Fri,  6 Sep 2024 14:16:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725631728; cv=none; b=PgY8NJY9csfoMrA4QJW6cVsOtmB3MUv2NGOsCbjgQl/asqfq7piVmVafg7fjOtojTyVqLFrr6ut64qyjEtdffovbjTjNxhh5Vkm8GHoIea48ItDOB4nWnDXm7mxR92IuRMxM/dSnXCpIdIiW8WuUXkQH8HfxqBIMDnlJaP/BF4k=
+	t=1725632205; cv=none; b=Ayqr7+Mb0ic3wmpOHp1voD/TX5sB8E94gnaIbfXHfQjhl7RdyrAjj+qvKg16du7AGtL707X5+ha2PCJpXZzMXDK0FAsSnQ6FKIyrY8UqGwyk723HBjvYfXiNUOMenUSuLJxNx8BbqVqDXmvoXuiVldaJBvR/Khjt5vPHHLmCaak=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725631728; c=relaxed/simple;
-	bh=/y/UqiYNJYSj4YSmig75Z6o0Ghm1ajTdKXOuhrekOdw=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=ZpKQV1hBkWaClK5CpkxWpXw5KBjmslB3vx/+GsmZk4go8wIVrmMy8XzPK+rYJ+OU+Yx7Zucfe4jjh5Dro4LGVv1kFwIUe2b6+CtxeeV19W9VvlU77QHcMh7r9AWwh63s463DAFzMstPM3RtIb0WpRt+hWYhNvkodtPdxK7dsOsg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ubmNvtCp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD70CC4CEC4;
-	Fri,  6 Sep 2024 14:08:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1725631728;
-	bh=/y/UqiYNJYSj4YSmig75Z6o0Ghm1ajTdKXOuhrekOdw=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=ubmNvtCpilRHsj7Xus8YQDC2qoYGmQPAc/rDpn0Ua6FyW8HYP74hBOgiTDR4T6pNg
-	 tifCHe+EZY2kTYEna4qDRUKZBGRFchsF0ZKmp+NryT9czXh8UKs2xlp8csFNhSLFry
-	 NLQPYIrTiBp4/hJYa1AHXmtlcFwEUm0Ot+T9TI0cX279T6xjPBR3DM23UUfVvAEXXL
-	 BXxT22OgAkKQV/dIUJYeQ7c+Auja5BD6B0NvFEG56xxdk7/KupNitwHgX6/PWEn5ZV
-	 r4u3souSQqQZN4iDDWJTANGKoT8yfw8Bz4a06eTK27LM00yG+/wACjAI9W5UzCpSP2
-	 AUH/Z+EwRgchw==
-From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To: Pu Lehui <pulehui@huaweicloud.com>, Daniel Borkmann
- <daniel@iogearbox.net>, bpf@vger.kernel.org,
- linux-riscv@lists.infradead.org, netdev@vger.kernel.org
-Cc: Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman
- <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>, Puranjay Mohan
- <puranjay@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Martin KaFai
- Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song
- <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, KP
- Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo
- <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Palmer Dabbelt
- <palmer@dabbelt.com>, Pu Lehui <pulehui@huawei.com>
-Subject: Re: [PATCH bpf-next v3 00/10] Local vmtest enhancement and RV64
- =?utf-8?Q?enabled=F0=9F=98=81?=
-In-Reply-To: <540dd7eb-1099-4c38-8004-1cb556b0b9be@huaweicloud.com>
-References: <20240905081401.1894789-1-pulehui@huaweicloud.com>
- <e9816f7c-a603-c73e-5fcc-71bbcf6c6ca3@iogearbox.net>
- <540dd7eb-1099-4c38-8004-1cb556b0b9be@huaweicloud.com>
-Date: Fri, 06 Sep 2024 16:08:44 +0200
-Message-ID: <87bk10g9hv.fsf@all.your.base.are.belong.to.us>
+	s=arc-20240116; t=1725632205; c=relaxed/simple;
+	bh=8nwCI7w7G19jZLwfkBD0ekkM2ohaR/RW6frdGyNyCms=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=D/MWVQcnZNLmN6nJYQbKlHpjl9z0TlEFxqeeFaEdMJWcNsCCV8kGgeaSJns0Tk/h2J1VDUX4La+9AochkgD1CA5U4FOkLshk8lN7HzBCCwHJctup/DSbKq6elnH/r6LugoJlbaQoAl/Wg0DQ/v8oZJfw0yO+dECnYcVH/UEW/j0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=gFqGsySk; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=R2Q+vklh; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Florian Kauer <florian.kauer@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1725632202;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=UpbKsEr6u87l1eJRzDjfnxvEOGeeHA+R0XZxE7JwcWI=;
+	b=gFqGsySk24RvRugaQDl8OMDeCH6BQAINf0yriBPlMd2A8NOBUkvBRtah4ypU0yBOOTcTSo
+	Xl5zI/5obkJFhjg0ncNuu2fN7hGqrG2pljW0S8/p4q/sg8rfcnLeQE5F5aFqijCE8JVjx6
+	GPvk28/81X85GoKJc+Aq+fsr94RZJ0Pyw/dYML9RciimGQJe2d4WM+Zi+GG9X897X7iibE
+	iBfBlq43OU+FT56Hh6HBylEVyyTGTf99APf4wbqlQibGlKKupkkce7Zo0cYIMetYBHxKXP
+	Kn2o1x3zBMF6cBy/seNp/dMPwIcHKpvgvVKwQY5bNJ3ltyvPR3kpF7SBKcDWew==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1725632202;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=UpbKsEr6u87l1eJRzDjfnxvEOGeeHA+R0XZxE7JwcWI=;
+	b=R2Q+vklhyqttoyUdM5vzk6HwA011IxoU0xI553Cbd5ELYeTyKdJVObL1cfQ9zuQqDoSj2S
+	iByyXviBIyQPuuCA==
+Subject: [PATCH net v2 0/2] bpf: devmap: provide rxq after redirect
+Date: Fri, 06 Sep 2024 16:16:24 +0200
+Message-Id: <20240906-devel-koalo-fix-ingress-ifindex-v2-0-4caa12c644b4@linutronix.de>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIALgO22YC/42NQQ6CMBBFr0Jm7Zi2oqSuvIdhAcwAE0lrWmwwp
+ He34QQu3/8//+0QOQhHuFc7BE4SxbsC5lTBMHduYhQqDEaZWll1ReLEC758t3gcZUNxU+AYUUZ
+ xxBv21tgL1Y2m/gbl5R24zA7DExyv0JZwlrj68D2sSR/V34KkUSNp0ylq6sHY4bGI+6zBO9nOx
+ NDmnH+l3gKj1wAAAA==
+To: Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, 
+ "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
+ Jesper Dangaard Brouer <hawk@kernel.org>, 
+ John Fastabend <john.fastabend@gmail.com>, 
+ Andrii Nakryiko <andrii@kernel.org>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, 
+ Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+ Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+ Jiri Olsa <jolsa@kernel.org>, 
+ =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>, 
+ David Ahern <dsahern@kernel.org>, Hangbin Liu <liuhangbin@gmail.com>, 
+ Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Jesper Dangaard Brouer <brouer@redhat.com>, 
+ linux-kselftest@vger.kernel.org, 
+ Florian Kauer <florian.kauer@linutronix.de>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=980;
+ i=florian.kauer@linutronix.de; h=from:subject:message-id;
+ bh=8nwCI7w7G19jZLwfkBD0ekkM2ohaR/RW6frdGyNyCms=;
+ b=owEBbQKS/ZANAwAKATKF5IolV+EkAcsmYgBm2w6+IurT5S5lIccHtsN7RdH3Dacfe5fDPFOmx
+ uB6/FY7TkaJAjMEAAEKAB0WIQSG5cmCLvpm5t9g7UUyheSKJVfhJAUCZtsOvgAKCRAyheSKJVfh
+ JACbEADJqtAhCavFErlA0jU/euOVnU5jh6H9vnzwaZteXqoKAtTgeLgSk31X7PRpoiFgqtQIjq/
+ mIXh+KSp0EBULyJ9KgLGQqU93AVrghPYpoQ+7vKcwLTOyauO2OWbvYW81KhekNJGahQ8kMN+dJV
+ WACRLUdj99BcxrsdHNkLgN5GYBxy6i1QvzfYQwXXVFEKGls3Y/orq5iF9VfXUz+7dGsuQv4MNGr
+ 0SuKa1Z2LfThhdzcSqEkfE0Boflpuj2wcSLKnBdP8uC7KjkWrraSkUX3toZWwOl6SCT6rzz7EXX
+ 6nuCnI0eju7hckka0yEpxAmIwMIlZwHq4L2Noxtrb03ZWWCf+vhhu115VMOrdBqpkJx8wWAfyCy
+ JNhQaRYB/zqPrS8juI41p8SBAUu4SkW1AegsqfH7q36NwA1zugJIIIOuJRsGG+dnMImI0A+OW/D
+ ancoRgB8sTBj9gOXjBF2NaTNzkmKZHR0Dy3OtTVYkBR96KDUOmsiVGZc+6yykndRwGWgtl5DpPY
+ 7Plb2abrAuYT4ldGxgtfCrHK8xdOfKekudGswH2P7AUt1JWf8XE1Kp0A5LEziZdhRCWdstiHp7q
+ EfQy8SWd6UtnUJhQATx/a1dGZ27TvbNnhUoNPF/7siuAcyaTu8VcH0wFZfXfaiTdhbCfC4U/MIG
+ Y6zcfz+phavarnw==
+X-Developer-Key: i=florian.kauer@linutronix.de; a=openpgp;
+ fpr=F17D8B54133C2229493E64A0B5976DD65251944E
 
-Lehui, Daniel!
+rxq contains a pointer to the device from where
+the redirect happened. Currently, the BPF program
+that was executed after a redirect via BPF_MAP_TYPE_DEVMAP*
+does not have it set.
 
-Pu Lehui <pulehui@huaweicloud.com> writes:
+Add bugfix and related selftest.
 
-> On 2024/9/6 2:52, Daniel Borkmann wrote:
->> On 9/5/24 10:13 AM, Pu Lehui wrote:
->>> Patch 1-3 fix some problem about bpf selftests. Patch 4 add local rootfs
->>> image support for vmtest. Patch 5 enable cross-platform testing for
->>> vmtest. Patch 6-10 enable vmtest on RV64.
->>>
->>> We can now perform cross platform testing for riscv64 bpf using the
->>> following command:
->>>
->>> PLATFORM=3Driscv64 CROSS_COMPILE=3Driscv64-linux-gnu- \
->>> =C2=A0=C2=A0 tools/testing/selftests/bpf/vmtest.sh \
->>> =C2=A0=C2=A0 -l <path of local rootfs image> -- \
->>> =C2=A0=C2=A0 ./test_progs -d \
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 \"$(cat tools/testing/selftests/bp=
-f/DENYLIST.riscv64 \
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | cut -d'#=
-' -f1 \
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | sed -e '=
-s/^[[:space:]]*//' \
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 -e 's/[[:space:]]*$//' \
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | tr -s '\=
-n' ',' \
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 )\"
->>>
->>> For better regression, we rely on commit [0]. And since the work of ris=
-cv
->>> ftrace to remove stop_machine atomic replacement is in progress, we also
->>> need to revert commit [1] [2].
->>>
->>> The test platform is x86_64 architecture, and the versions of relevant
->>> components are as follows:
->>> =C2=A0=C2=A0=C2=A0=C2=A0 QEMU: 8.2.0
->>> =C2=A0=C2=A0=C2=A0=C2=A0 CLANG: 17.0.6 (align to BPF CI)
->>> =C2=A0=C2=A0=C2=A0=C2=A0 ROOTFS: ubuntu noble (generated by [3])
->>>
->>> Link:=20
->>> https://lore.kernel.org/all/20240831071520.1630360-1-pulehui@huaweiclou=
-d.com/ [0]
->>> Link:=20
->>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/comm=
-it/?id=3D3308172276db [1]
->>> Link:=20
->>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/comm=
-it/?id=3D7caa9765465f [2]
->>> Link: https://github.com/libbpf/ci/blob/main/rootfs/mkrootfs_debian.sh=
-=20
->>> [3]
->>=20
->> Nice work! Next step is upstream BPF CI integration? :)
->
-> CC Bj=C3=B6rn=F0=9F=98=81
+Signed-off-by: Florian Kauer <florian.kauer@linutronix.de>
+---
+Changes in v2:
+- changed fixes tag
+- added selftest
+- Link to v1: https://lore.kernel.org/r/20240905-devel-koalo-fix-ingress-ifindex-v1-1-d12a0d74c29c@linutronix.de
 
-Indeed, very nice work! Every year is "The year of RISC-V BPF CI
-integration". :-P
+---
+Florian Kauer (2):
+      bpf: devmap: provide rxq after redirect
+      bpf: selftests: send packet to devmap redirect XDP
 
-> Yeah, that's what we're most looking forward to and we've been trying to=
-=20
-> move forward with that. There are currently several options, but they=20
-> are not very suitable yet.
->
-> 1. Cross-platform testing with subset of tests (test_verifier +=20
-> test_progs), it will cost a bit more time.
->
-> x86_64 host:
-> Summary: 536/3594 PASSED, 68 SKIPPED, 0 FAILED
-> real    30m 18.88s
-> user    6m 52.97s
-> sys     21m 3.03s
->
-> 2. Cross-platform testing will parallel mode, it will meet flaky=20
-> problems while the time consume looks good.
->
-> x86_64 host:
-> real    7m 45.42s
-> user    6m 13.59s
-> sys     15m 41.12s
->
-> 3. Real board testing, which relies on Hypervisor Extension to enable=20
-> kvm on qemu. We are still trying to find a suitable board.
+ kernel/bpf/devmap.c                                |  11 +-
+ .../selftests/bpf/prog_tests/xdp_devmap_attach.c   | 114 +++++++++++++++++++--
+ 2 files changed, 115 insertions(+), 10 deletions(-)
+---
+base-commit: 8e69c96df771ab469cec278edb47009351de4da6
+change-id: 20240905-devel-koalo-fix-ingress-ifindex-b9293d471db6
 
-There's a board coming out soonish with H -- let's hope it doesn't suck!
-;-)
+Best regards,
+-- 
+Florian Kauer <florian.kauer@linutronix.de>
 
-I have a CI running, that's runs all the BPF tests (and the rest of
-kselftest) on various trees/branches, and it takes *hours* on QEMU TCG
-[1] (the GH CI doesn't report fail/ok in the UI, so you need to download
-the logs [2] -- filename *kselftest-bpf*).
-
-Obviously this is a no-go for pre-commit/patchwork CI, but for, say,
-a longer release test (post-commit), spending a couple of hours on a
-test would probably be OK.
-
-If there's a post-commit CI running somewhere, maybe we could plug in
-RISC-V BPF QEMU TCG tests there? ...and then when we get proper H
-machines, we can add RISC-V to Meta's PW CI as well.
-
-Daniel, is there a "release test CI" running, or is that mostly manual
-work?
-
-Bj=C3=B6rn
-
-
-[1] https://github.com/linux-riscv/linux-riscv/actions/runs/10725237865/job=
-/29742632222#step:5:30
-[2] https://github.com/linux-riscv/linux-riscv/actions/runs/10725237865/art=
-ifacts/1899421897
 
