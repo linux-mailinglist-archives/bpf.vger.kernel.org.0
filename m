@@ -1,45 +1,48 @@
-Return-Path: <bpf+bounces-39190-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39191-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D6767970086
-	for <lists+bpf@lfdr.de>; Sat,  7 Sep 2024 09:03:42 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BD48970257
+	for <lists+bpf@lfdr.de>; Sat,  7 Sep 2024 15:20:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9405F2814E6
-	for <lists+bpf@lfdr.de>; Sat,  7 Sep 2024 07:03:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 389871F22B55
+	for <lists+bpf@lfdr.de>; Sat,  7 Sep 2024 13:20:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7079645979;
-	Sat,  7 Sep 2024 07:03:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C97115B995;
+	Sat,  7 Sep 2024 13:20:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dECZPJeb"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1605818030
-	for <bpf@vger.kernel.org>; Sat,  7 Sep 2024 07:03:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B23D9148FFC;
+	Sat,  7 Sep 2024 13:20:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725692620; cv=none; b=Q2zWtWRc+M3bSGCruXMENSENvwVsdumcaKXTX449PX/7XkOZQlHvpWNPKomHXY9XpNRjtRR162ersAWM2zNbzSePZOc3yQSxlB7X1eaP6DnzRUdoUhHFo3l4uxiWrmjCZV3pK68AFK6Nqhzh1Wtmxti0fpH04RbEv263oxNKnsg=
+	t=1725715239; cv=none; b=pkMshanVZDK13vucxN7rcYmcYccpEDXQQgK+/rhBC5mryBgMMmzsjfHWb6sYJc1tVC31hDdu4tYYFmsk3M1yh5fze1kkj5BdCjU8794RRqLDj/knFk2+AUqfg5iDAB3o68kpulcs2PIZNb39G3+4ilsxn46BM4XAekI7gDkTV7M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725692620; c=relaxed/simple;
-	bh=8abuypkhjh8PEkT2kR1o3zPeeG26kVYdJxJSq1loRLA=;
+	s=arc-20240116; t=1725715239; c=relaxed/simple;
+	bh=NVFeRPMzdjF/2jRLXwfSJYyA1VrDqtyaMCaBaRYj2IA=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tCC9SsXIjsNPAqX+KysEWMhvuQjPYMB1uUYfI2FWXJB81Mo/TJEypomkA4bt5388oY5hIAgHK5HhGcXMNQqHy79r1Jw2jaZtSFo7Am9+KKCRJy6ISriiHcsZrPMc8KHxJqXx7WqKRb/dbjNEf0DICTldMjuozJ9iFYP7GGWyisM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4X13w52pFrz4f3jsf
-	for <bpf@vger.kernel.org>; Sat,  7 Sep 2024 15:03:17 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 8E9451A1305
-	for <bpf@vger.kernel.org>; Sat,  7 Sep 2024 15:03:32 +0800 (CST)
-Received: from [10.67.111.192] (unknown [10.67.111.192])
-	by APP1 (Coremail) with SMTP id cCh0CgAHMy_B+ttmAEF1Ag--.15767S2;
-	Sat, 07 Sep 2024 15:03:30 +0800 (CST)
-Message-ID: <c8fc7c23-443a-4a6a-b06e-ce7f8f3de748@huaweicloud.com>
-Date: Sat, 7 Sep 2024 15:03:33 +0800
+	 In-Reply-To:Content-Type; b=qGIDFiKwG7hGm4u8hstfVqq+wI9dxDTC1NFZ2NfL80o9r7ocvfr8UmKqc8mxb9AsIyStAOqfCU2G/0R5PA6BR41E9kQCSRcyMaMP2PJTVNaoALCpapoYreQe8xctGz1wnzeAxrgkrpkJ4KrMihaGnTHSmZp1O5XOCXJKWWDwRUs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dECZPJeb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21A51C4CEC6;
+	Sat,  7 Sep 2024 13:20:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1725715239;
+	bh=NVFeRPMzdjF/2jRLXwfSJYyA1VrDqtyaMCaBaRYj2IA=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=dECZPJeb/KspeZrban7JgcA4CQyN7QEqXqY47Fy3otp55vU7/HVi78eGgeieSOl2i
+	 PZfN1J3RocoCIeaWrvDudHHhbANKDcMFSlWMECC2iV9PdScikIJPqhXnlhM/uSulRf
+	 m01mgtLlldBcaIgjgO37yA8BfExXUcAjmF9iU0kfCn4Yxz10Uo4JlKke07aJBYA0l3
+	 6+ttBdUxPlioCJDUR78Tsz/R9dRDtZd/QkSNCt/jtEGatpOjyTtmO15I712saEas2T
+	 TN+evJnlVcV1HkyKEEJdWgbDrSa0DwTsp6BoINf9qARXEuqa3+ARvtqdasRwKm90H5
+	 IEbYWQBpTKgFw==
+Message-ID: <0c9ff8b4-9e69-41cc-a622-2aea11def2e2@kernel.org>
+Date: Sat, 7 Sep 2024 15:20:33 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -47,115 +50,102 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next 2/4] bpf, arm64: Fix tailcall infinite loop
- caused by freplace
+Subject: Re: [RFC PATCH v3 35/37] kvx: Add IPI driver
+To: Yann Sionneau <ysionneau@kalrayinc.com>, linux-kernel@vger.kernel.org,
+ Thomas Gleixner <tglx@linutronix.de>
+Cc: Jonathan Borne <jborne@kalrayinc.com>,
+ Julian Vetter <jvetter@kalrayinc.com>,
+ Clement Leger <clement@clement-leger.fr>,
+ Guillaume Thouvenin <thouveng@gmail.com>, Luc Michel <luc@lmichel.fr>,
+ Jules Maselbas <jmaselbas@zdiv.net>, bpf@vger.kernel.org
+References: <20240722094226.21602-1-ysionneau@kalrayinc.com>
+ <20240722094226.21602-36-ysionneau@kalrayinc.com>
+ <cbd74fa5-d4ad-4ed0-a680-6ff5e3b8ff84@kernel.org>
+ <42e7d388-a4c8-42f9-bf2f-001871a7d948@kalrayinc.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
 Content-Language: en-US
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- Leon Hwang <leon.hwang@linux.dev>
-Cc: Puranjay Mohan <puranjay@kernel.org>, bpf <bpf@vger.kernel.org>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vu?=
- =?UTF-8?Q?sen?= <toke@redhat.com>, Martin KaFai Lau <martin.lau@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>, Eddy Z <eddyz87@gmail.com>,
- Ilya Leoshkevich <iii@linux.ibm.com>, kernel-patches-bot@fb.com
-References: <20240825130943.7738-1-leon.hwang@linux.dev>
- <20240825130943.7738-3-leon.hwang@linux.dev>
- <a9ce98d0-adfb-4ed9-8500-f378fe44d634@huaweicloud.com>
- <0900df03-b1cd-41fb-be04-278e135cc730@linux.dev>
- <0f3c9711-3f1c-4678-9e0a-bd825c6fb78f@huaweicloud.com>
- <mb61ped5ysbso.fsf@kernel.org>
- <007b71a8-ccaa-43f4-a24e-903d3ee9cbec@linux.dev>
- <CAADnVQJcxX=X=MRqg9ToharLAfvMWLVptTU2x9YW6cNt5BsWdw@mail.gmail.com>
-From: Xu Kuohai <xukuohai@huaweicloud.com>
-In-Reply-To: <CAADnVQJcxX=X=MRqg9ToharLAfvMWLVptTU2x9YW6cNt5BsWdw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgAHMy_B+ttmAEF1Ag--.15767S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7tr48CrW8KFyUXF1DJFy8AFb_yoW5Jr47pF
-	y8Xay3Ka1UJr1UAr1Iyw1xXa43t34UXry5Wrn8Kr18Gr90vF1rJF4rKr45uF9xWr4IkF42
-	qr47Wa9xua4UAw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvjb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AF
-	wI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
-	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43
-	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
-	0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
-	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUF1
-	v3UUUUU
-X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <42e7d388-a4c8-42f9-bf2f-001871a7d948@kalrayinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On 9/6/2024 11:24 PM, Alexei Starovoitov wrote:
-> On Fri, Sep 6, 2024 at 7:32 AM Leon Hwang <leon.hwang@linux.dev> wrote:
->>
->>
->>
->> On 2024/9/5 17:13, Puranjay Mohan wrote:
->>> Xu Kuohai <xukuohai@huaweicloud.com> writes:
->>>
->>>> On 8/27/2024 10:23 AM, Leon Hwang wrote:
->>>>>
->>>>>
->>>>> On 26/8/24 22:32, Xu Kuohai wrote:
->>>>>> On 8/25/2024 9:09 PM, Leon Hwang wrote:
->>>>>>> Like "bpf, x64: Fix tailcall infinite loop caused by freplace", the same
->>>>>>> issue happens on arm64, too.
->>>>>>>
->>>>>
->>>>> [...]
->>>>>
->>>>>>
->>>>>> This patch makes arm64 jited prologue even more complex. I've posted a
->>>>>> series [1]
->>>>>> to simplify the arm64 jited prologue/epilogue. I think we can fix this
->>>>>> issue based
->>>>>> on [1]. I'll give it a try.
->>>>>>
->>>>>> [1]
->>>>>> https://lore.kernel.org/bpf/20240826071624.350108-1-xukuohai@huaweicloud.com/
->>>>>>
->>>>>
->>>>> Your patch series seems great. We can fix it based on it.
->>>>>
->>>>> Please notify me if you have a successful try.
->>>>>
->>>>
->>>> I think the complexity arises from having to decide whether
->>>> to initialize or keep the tail counter value in the prologue.
->>>>
->>>> To get rid of this complexity, a straightforward idea is to
->>>> move the tail call counter initialization to the entry of
->>>> bpf world, and in the bpf world, we only increase and check
->>>> the tail call counter, never save/restore or set it. The
->>>> "entry of the bpf world" here refers to mechanisms like
->>>> bpf_prog_run, bpf dispatcher, or bpf trampoline that
->>>> allows bpf prog to be invoked from C function.
->>>>
->>>> Below is a rough POC diff for arm64 that could pass all
->>>> of your tests. The tail call counter is held in callee-saved
->>>> register x26, and is set to 0 by arch_run_bpf.
->>>
->>> I like this approach as it removes all the complexity of handling tcc in
->>
->> I like this approach, too.
->>
->>> different cases. Can we go ahead with this for arm64 and make
->>> arch_run_bpf a weak function and let other architectures override this
->>> if they want to use a similar approach to this and if other archs want to
->>> do something else they can skip implementing arch_run_bpf.
->>>
->>
->> Hi Alexei,
->>
->> What do you think about this idea?
+On 23/08/2024 16:46, Yann Sionneau wrote:
+> Hello Krzysztof,
 > 
-> This was discussed before and no, we're not going to add an extra tcc init
-> to bpf_prog_run and penalize everybody for this niche case.
+> On 22/07/2024 14:39, Krzysztof Kozlowski wrote:
+>> On 22/07/2024 11:41, ysionneau@kalrayinc.com wrote:
+>>> From: Yann Sionneau <ysionneau@kalrayinc.com>
+>>>
+>>> [...]
+>>> +
+>>> +int __init kvx_ipi_ctrl_init(struct device_node *node,
+>>> +			     struct device_node *parent)
+>>> +{
+>>> +	int ret;
+>>> +	unsigned int ipi_irq;
+>>> +	void __iomem *ipi_base;
+>>> +
+>>> +	BUG_ON(!node);
+>> Fix your code instead.
+> 
+> I am not sure I understand your comment here, I don't have the control over what the kernel passes to my driver, do I?
 
-+1, we should avoid hacking jit and adding complexity just for a niche case.
+In general you have. Investigate the path and check whether NULL is
+allowed. If it is allowed, then this should be handled correctly and
+gracefully. If it is not allowed, then BUG_ON() is not welcomed in general.
+
+> 
+> On the other hand, "node" being the node that matches the compatible, maybe it can never be NULL, is that what you're saying?
+
+I don't remember the context anymore. You responded one month after my
+review. But if this is about matching, then obviously this cannot happen
+for DT platforms. If this can be matched via different methods then it
+should not be BUG_ON...
+
+
+Best regards,
+Krzysztof
 
 
