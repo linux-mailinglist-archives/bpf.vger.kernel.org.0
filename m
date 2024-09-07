@@ -1,218 +1,123 @@
-Return-Path: <bpf+bounces-39193-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39194-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5CE5A9703E5
-	for <lists+bpf@lfdr.de>; Sat,  7 Sep 2024 21:19:33 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CEF5D970473
+	for <lists+bpf@lfdr.de>; Sun,  8 Sep 2024 01:11:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F908283F8F
-	for <lists+bpf@lfdr.de>; Sat,  7 Sep 2024 19:19:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E71841C20FF8
+	for <lists+bpf@lfdr.de>; Sat,  7 Sep 2024 23:10:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E12E165F1C;
-	Sat,  7 Sep 2024 19:19:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2442216A935;
+	Sat,  7 Sep 2024 23:10:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="PKMP+T1n"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XdmPObxu"
 X-Original-To: bpf@vger.kernel.org
-Received: from AUS01-ME3-obe.outbound.protection.outlook.com (mail-me3aus01olkn2105.outbound.protection.outlook.com [40.92.63.105])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC0E63B1A2;
-	Sat,  7 Sep 2024 19:19:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.63.105
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725736768; cv=fail; b=jF3kNZcwnUtoGErG7tWpr7Iyrq07Umylq7BzuzRgCEv5X9ZhdBRzh+vYOrmiSKUz+1zO0FII9NN5k/3fbmOL6N0J6lPPpsaD9ZEQ5o294rQCUtSIDUi3E/C5t+45kD3Gz02TvqI+3xsgy2fWoRbsw132g78Cp9PgQqZbfNllIDk=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725736768; c=relaxed/simple;
-	bh=Ivz/VH5EQXx2iPkApFCpJ7RZPzbzn+tMBWvoqeouxXE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=qOF82Rm5sDuJ+QkhrnHqunAXMEIT4zTqR0B/irks2jQXainGhR5Y3LYFEkvXFxDMSJycawNW3rlIHuAcOR29QcKsZUYmKms3zhCBhdC92nLNNvsVTz/VCDLWeezLWkY7grKbImECQDOL9VYNu/4tjLs4J85YKVyo2cv9e+IWgEQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=PKMP+T1n; arc=fail smtp.client-ip=40.92.63.105
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=xoPeSkSZVQ1wbtcVtqnciP5Devp7bc6KRrX+rOZpMFyuMPnzrC7T0ae62pWLWLrzJ9QvBQt+5Sr/lkWqYzH5jGqLwt0qKlw1wpDGk+nR4L1vgXfeJEMpZF1gGroenrvcpFb83tsy0TxixiTh/u/7BU60GCgdZyrnMUpLLwlxzxL0WnFGyz9rl/oxfwlzZxHXDUA9eY5/PEladPEGZ88sRmYBjr1vXGHvPd8aRaFYDw7k1Icn6KzfzrzUCA9NyqduZH5fL6CZfs+5JrpIVBEzg6tfS49JEvMU/BhYfizXZFIxjJH34ycFcqBxzXUREF5BeCORaz3gsttC9aItqvDgdg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=v9xcSxuVmBJpkP9HiZgcvDfmQZWGEzc1HF1XUhMPX+k=;
- b=dt/0siRn6MJrXqev/n81WXmr6pZefD6JNRwzfj9w2Avba3Joi0AWFJbvezpo1GEnA9sxbFslp7HIFptHn3G9JHxvSYTZceIezScH7x9/XB/2G6NuNEVgSDF38rXAGqT3NpKvm5KiVljC5VguckDhTmzhxyXPj0ESdmj9YelMsmZQtMpDOIDlD8NU0BGBrD9VBtvMYal2LcKVUrbSf316WZMD2I0lPPOzphjaRjMRXn98wOGvbpEwFT3ca4JpPahm68E4bI7xH7uS2SH6Ym0ghjlOwhaH51r4OKYdQHSMeOserEYuGEsbklOM9i3aJPTfsmquqr7KL1V9hMlkyKdf+Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=v9xcSxuVmBJpkP9HiZgcvDfmQZWGEzc1HF1XUhMPX+k=;
- b=PKMP+T1nFPQEE1DHSF1Iq0W7hAUkJ9Bd+yF0IyEGNx7XW+BDv2uW8Dbsw0Zj5dPYG7kgGZa6ieTKNZmXhBqLgAfwKh+cTfoFVN0zAfFBQenG7W8AuwtqiQO2FCToSxjBmcfsN+olTLrcjrVusywKkNpvl0B9tzC9K9VMk5o9lYZw9K/ESs4hTFCO/zdBHekXUU6w+AejqfajEB1EV2U1IrFKT/zYZRmGZv70inwFKPauNf8lDEWOI87MFbZM5jIvWcPBKUguMkTZybtTcQPjDT8TEBsUT1LNbcGNDE476AWUvU8u4TZ+Z7DopFNCvdwyKyAk/BjDxbhizPZpEI87Tw==
-Received: from ME0P300MB0416.AUSP300.PROD.OUTLOOK.COM (2603:10c6:220:22a::20)
- by SY0P300MB0026.AUSP300.PROD.OUTLOOK.COM (2603:10c6:10:222::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7939.22; Sat, 7 Sep
- 2024 19:19:20 +0000
-Received: from ME0P300MB0416.AUSP300.PROD.OUTLOOK.COM
- ([fe80::f5dd:ff41:ef28:710e]) by ME0P300MB0416.AUSP300.PROD.OUTLOOK.COM
- ([fe80::f5dd:ff41:ef28:710e%5]) with mapi id 15.20.7939.017; Sat, 7 Sep 2024
- 19:19:20 +0000
-From: Tianyi Liu <i.pear@outlook.com>
-To: olsajiri@gmail.com,
-	oleg@redhat.com
-Cc: ajor@meta.com,
-	albancrequy@linux.microsoft.com,
-	andrii.nakryiko@gmail.com,
-	bpf@vger.kernel.org,
-	flaniel@linux.microsoft.com,
-	i.pear@outlook.com,
-	linux-trace-kernel@vger.kernel.org,
-	linux@jordanrome.com,
-	mathieu.desnoyers@efficios.com,
-	mhiramat@kernel.org,
-	rostedt@goodmis.org
-Subject: Re: [PATCH v2] tracing/uprobe: Add missing PID filter for uretprobe
-Date: Sun,  8 Sep 2024 03:19:01 +0800
-Message-ID:
- <ME0P300MB0416A96545165A39507DF6429D9F2@ME0P300MB0416.AUSP300.PROD.OUTLOOK.COM>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1645814F109;
+	Sat,  7 Sep 2024 23:10:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1725750651; cv=none; b=ayAGWqs8sbVOoCMpGuAynGV3zgkqpjioGbe3z92OGIu/zVzOwqMWSkeSSq8aF/D1LebgwD9l0EvY6pI4z1F26pNk3O8f09aIzP5r6jMfQ+kh+otpin6JgqwKfT9QyUtMP7S91LrNoItOOrZlmje4R73PJ7O5kBiN3D726/b0Nio=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1725750651; c=relaxed/simple;
+	bh=l2kQYB77bC2AxhU+af9yBzS2fBMywHuBKH/qnAgGpeI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=V+/iEeW1mqsJ7QMETA22jvwDd9CkxmlglHVrQlkXYUzlfsmalXAdY12MB5DsOmNTqOcedMh9oV3eT/zmthCpsvaRjzUx6VsFX1FT3QwuQ/eIPzAMnAtmK14efoMeXDnd22dqRi2dPXeJsE1R/1XGygWHBJMdw5BPSL0WYeSR8J4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XdmPObxu; arc=none smtp.client-ip=209.85.128.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-42bbbff40bbso26789415e9.2;
+        Sat, 07 Sep 2024 16:10:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1725750648; x=1726355448; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=yT3dqWHm/QQeGC3GsIPG3eqkFd/IFt3zVxvD83TpSdU=;
+        b=XdmPObxut5yFEMq/QCe3Qm3ntSLmdMQUfuLuxE7KIMA3RHB0ytU7u9nQZaVV/6LrDA
+         ZmIaMlFs3O3wPtBc7/OaD4mPW7j8ti5doSe4nMqxT7Cj4MD/2Ln2g/6XkP+z3XrmiiQS
+         S0QrBKdnUsoJ9M+kmHbMR9+sn3/OwQgVyugAT7m6a1+b07aqgCyPdhjd8Ak8e44rwZ60
+         asJKlRmAUVXWNOm2I1jLZirKCwwOHT8XPk4h3kk6eTuCC1jm/HyX6BTbrmffE70jc4rQ
+         t32OIv36/Op5NS64Yd1tP6qxPyu2icIRvkK78psXh4X45+bNKARQZ24G+aDff3DARkS1
+         Qxyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1725750648; x=1726355448;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=yT3dqWHm/QQeGC3GsIPG3eqkFd/IFt3zVxvD83TpSdU=;
+        b=qGDgPSNv6pSeUMi3CJbB48mBsaNfpj2zO7HwuvZnp8enyC6vqx4ESbUt2Obi525a2T
+         j0pukeAXoJeStkTeu3bYQx5tz9hqQeCUhbLl6Z/QEFncn2OXO3P+oTdLgY6XbeWt0/dH
+         U/xyq53WIo2IhLUL/JKY1E3DxmbnjIqLncIvX6fb7K1fQuS8X3eLKARI3VSF6e1PdLN0
+         Y8Vl06DZxpaWSuZumtyY9HwULazKASzEOMvC7+v+gE8CQ2rt8lKkFype0J6DU1xS6Nwv
+         pmijqExig69d0IQagbx2wW35hGr8ESWTkqB01/X31JNEvP3zdB6DR2x8idaTXzdVL7bB
+         0NYQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU/DGkur4YwHWShaqb2vy+5G0+iMXxMhaqDJGidmdIr/mboWUQREqVZLv9uvdVtOSjplA2fZsvQF3nZ7Hcd@vger.kernel.org, AJvYcCUxPWxv5Z4DPxc3JN+HtNXije7z578SvDjOBnLNt6QE8XlWhY8pYBBcxyrgWUM1qSxMIcgXSy+ULGf7t+AEBVI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyK+E+cQ/2Tvv1dB+/BWW6g0a3LSAbOc6hYfuzf3EX+iCLd0ZIH
+	NBcTHRbB9Y+Us/dUuD0GCkzxpggM8Lo3oOCx6PD6C2ZNgrCNWqvn
+X-Google-Smtp-Source: AGHT+IGRlh7xezCJGsZisParei4WZZPnc8M77SkuN4s19NYt8Sx7WPkDUFWcZGbzQ038g0whCgsHAg==
+X-Received: by 2002:a5d:4b47:0:b0:374:c56c:fbb4 with SMTP id ffacd0b85a97d-378895c9ee0mr4444881f8f.22.1725750647370;
+        Sat, 07 Sep 2024 16:10:47 -0700 (PDT)
+Received: from void.void ([141.226.8.125])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-378956d363asm2232537f8f.72.2024.09.07.16.10.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 07 Sep 2024 16:10:47 -0700 (PDT)
+From: Andrew Kreimer <algonell@gmail.com>
+To: Quentin Monnet <qmo@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>
+Cc: bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org,
+	Andrew Kreimer <algonell@gmail.com>,
+	Matthew Wilcox <willy@infradead.org>
+Subject: [PATCH] bpftool: Fix a typo
+Date: Sun,  8 Sep 2024 02:10:10 +0300
+Message-ID: <20240907231028.53027-1-algonell@gmail.com>
 X-Mailer: git-send-email 2.46.0
-In-Reply-To: <Ztrc6eJ14M26xmvr@krava>
-References: <Ztrc6eJ14M26xmvr@krava>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN: [vjd+KF+tVjxSr1QDyApUGJdkmM8RHWciF5VmTN20n3Xst9aTzlrfOg==]
-X-ClientProxiedBy: SI1PR02CA0025.apcprd02.prod.outlook.com
- (2603:1096:4:1f4::13) To ME0P300MB0416.AUSP300.PROD.OUTLOOK.COM
- (2603:10c6:220:22a::20)
-X-Microsoft-Original-Message-ID: <20240907191901.8665-1-i.pear@outlook.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: ME0P300MB0416:EE_|SY0P300MB0026:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2e4e0ff0-aac6-4ed0-e6a8-08dccf71f90e
-X-Microsoft-Antispam:
-	BCL:0;ARA:14566002|19110799003|15080799006|5072599009|8060799006|461199028|3412199025|440099028|4302099013|1602099012|1710799026;
-X-Microsoft-Antispam-Message-Info:
-	MMMtZixOnSSU6r+K1qVcA9glrK3C4mI2fuBthsR93QMTqqwEYu1Qmdu6gmmXwuURloXoajFPhaw6BroiRXJ8ee4Zr9+Bf6l1FmKyKSsK6RuYSZ8MUjXA30oUqwnY3e7hyxdpBc13oPXSfWZhVt0nGEAzB+jhXBwGesRX2bEisaWdwoUYW/WaBYmzo6CJB18Jtza9OkbGkyVP8D/DXM2d/w/FnzBmqGjrXPTEx0gS5aYmdJTsurEaGRLlbzeETMGOwHVcqZ1kR/r1UMLFdfHlhK5NQEfo6K1HgNRTK97RrKC/Xg40XUAfG8ETbjexOgerMFmT8tLJUdCb1IUjxEjqh8tdKMxATJJkz91ruwzFALI0u5No9Q8ZCAF5k8oyjr2kjefslKQKvbbzpejWzul8eTkZUszPStJhyERxDTkYEBAjC1IagY7QSYovPzamZrkcQbZzrfWiY3TS6lpi3WyanAf+E32vhETu1Yof7ppso6wWDamaWLHmcDKgjq1r0ieW9OqEyRHQVkwsgNoHm+Zso+MR9aq5Z+oarJzhevCjFCFsotfLqdEpVj2iFQ/Q777WhftRjVF8uDVjiWQqIUlwYO0x8V4X+wQjZBMz2rCbQl2G/6deXG1U2Ajs6wTRhG38BYa0jFWUoN6yN0jbrWBgAPTs1eptDK3PFV1aIB4ohwYm78mo9vZByNdOlht0hqQDzY+9uQQfzrxsY3UPzfwMFByr56z/RbqTp7bjzt/isYYPhO6VOAE3Tu08+sFqqeSCERVX0ZH1eEJG8nJ4F5GPcDu4aaxkzdcFw0MY6nrunkitIcnf/O12Rm47Swh53JdH7sczeHLAgFzVkMNWP1oUEIAnuP43NZusMuq+m0g+FKo8zrcE9aGsn8G/76MU17TUFfzoUGFvamFdPPyHgOSd8w==
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?/o0hp8Y1Y7r2uKdBbE23yALfGXpOzDz03B1cFOs5H7YIfMqarHrYWZu+TOfl?=
- =?us-ascii?Q?+u8odvUOB0okc/mmQCBypM01ao9HQ7csjRKqwkTaHzZ9sFhCQI6rpeHam4ej?=
- =?us-ascii?Q?hIeI42GM+ofGZcbAd7IwasEUFii930N5qK9qF3mNLOMbthq8TZUzeYZQNbNG?=
- =?us-ascii?Q?Xy+O0M4HPx+l8mpRiyZQBQLir6Dqbd5Yr+3F+S4Qdnu1ZDhWNC1ln6AxPT4A?=
- =?us-ascii?Q?yOKz+cdJpUF4wozb7TdKRUm3Ttg1zeurGjtWTjk/RnZUrXOVStMPXESvy5cL?=
- =?us-ascii?Q?zev7I6vjliLHJImoJV2FEBNuN5LLfcC6H5BWuRP0g8Mv5tVABWDBcV7vgGG6?=
- =?us-ascii?Q?WXKk8jZoRFDdkb0b0VW0JiJD68iOmzhJVZerS2pHaq1UIoMErgzjFyMIohNS?=
- =?us-ascii?Q?j8yBv5+Jvs9LYDUDJhuPEElXDzl3Ecv1lsDm1zwEcedITLCVyWX7qbI3FCq0?=
- =?us-ascii?Q?cnHOJ/+D6g3nSffpz8QNLkL6hBKj8aWXCGAsnVyvbwOQiYez0sV2QAurnmJV?=
- =?us-ascii?Q?RumdLh88JAEwlvRgWC5PEgzFYAAnCFNB/R9vtiZFpiCEw8gbmeP+CC5mi3/2?=
- =?us-ascii?Q?kuMv/xEayZro8ZlAiDFLccbiNGu08g5qOqaT+zqjd+Lsfv6kHlIwWskJDCgH?=
- =?us-ascii?Q?2mGBaqeNJS1k9RQZZm7W3maDNa7L5nD8tKKmPEBMEr6oAIXRUaNFXq7fObt/?=
- =?us-ascii?Q?tooVnUhSAlxA66I2wMeVPIahPRtXkXaCTNdnCthoXnqA8xqPOrj7cjlMCCdq?=
- =?us-ascii?Q?Hb8r7s8glY9XwF9e/HLiw/3ldbYOc3wdWEPuCFa+1jEuy4GYHtGF9T1R3Wbx?=
- =?us-ascii?Q?bsCMJsQPqN5mQKIkIFFbU0ABQuo+MSrNTnBfw2iK6cxL1WWSZY02eJ52Kpok?=
- =?us-ascii?Q?INl7gy7xNcQMDdcyi3A7Rqw10N4VjeNfAtMx3tcTpOsp3HIgH/P1rkNz07cN?=
- =?us-ascii?Q?zxQ7yc9NMcdlTSThY+xaCuI4e8M7FwBHPTe0n6+LpKH1/Fmx4TDkveP8Mj0T?=
- =?us-ascii?Q?P7bFRy1YOpZzcWwiOf1oX2L3diZHQGJRPBGlSzRFxLCiKp1Za7OJVmKwl/GE?=
- =?us-ascii?Q?s+MZN+Q5ZSHRICXzMNR504Wjg5FEasXRvdIzZJXkqNiZhyKJX9BBWr7c8e62?=
- =?us-ascii?Q?hfArH/Ps9AdxiiSYUYlwwgxmP8ywIKcSZ11SiWWIXFTcL8ymbrkxdhXzocLL?=
- =?us-ascii?Q?SH+TXZQec4tq5DcK4atN4kHprFXm1wYtjYHgiR/sIpSjGcVQKWP9E/QvBML4?=
- =?us-ascii?Q?tEH7pQsfIIKMUkoOQGZEFt/oIz6g65TruuyTz4czug=3D=3D?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2e4e0ff0-aac6-4ed0-e6a8-08dccf71f90e
-X-MS-Exchange-CrossTenant-AuthSource: ME0P300MB0416.AUSP300.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Sep 2024 19:19:20.2701
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SY0P300MB0026
+Content-Transfer-Encoding: 8bit
 
-On Mon, Sep 06, 2024 at 18:43:00AM +0800, Jiri Olsa wrote:
+Fix a typo in documentation.
 
-SNIP
+Reported-by: Matthew Wilcox <willy@infradead.org>
+Signed-off-by: Andrew Kreimer <algonell@gmail.com>
+---
+ tools/bpf/bpftool/Documentation/bpftool-gen.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> > > ---------------------------------------------------------------------------
-> > > Now lets return to BPF and this particular problem. I won't really argue
-> > > with this patch, but
-> > > 
-> > > 	- Please change the subject and update the changelog,
-> > > 	  "Fixes: c1ae5c75e103" and the whole reasoning is misleading
-> > > 	  and wrong, IMO.
-> > > 
-> > > 	- This patch won't fix all problems because uprobe_perf_filter()
-> > > 	  filters by mm, not by pid. The changelog/patch assumes that it
-> > > 	  is a "PID filter", but it is not.
-> > > 
-> > > 	  See https://lore.kernel.org/linux-trace-kernel/20240825224018.GD3906@redhat.com/
-> > > 	  If the traced process does clone(CLONE_VM), bpftrace will hit the
-> > > 	  similar problem, with uprobe or uretprobe.
-> > > 
-> > > 	- So I still think that the "right" fix should change the
-> > > 	  bpf_prog_run_array_uprobe() paths somehow, but I know nothing
-> > > 	  about bpf.
-> > 
-> > I agree that this patch does not address the issue correctly. 
-> > The PID filter should be implemented within bpf_prog_run_array_uprobe, 
-> > or alternatively, bpf_prog_run_array_uprobe should be called after 
-> > perf_tp_event_match to reuse the filtering mechanism provided by perf.
-> > 
-> > Also, uretprobe may need UPROBE_HANDLER_REMOVE, similar to uprobe.
-> > 
-> > For now, please forget the original patch as we need a new solution ;)
-> 
-> hi,
-> any chance we could go with your fix until we find better solution?
-> 
-> it's simple and it fixes most of the cases for return uprobe pid filter
-> for events with bpf programs.. I know during the discussion we found
-> that standard perf record path won't work if there's bpf program
-> attached on the same event, but I think that likely it needs more
-> changes and also it's not a common use case
-> 
-> would you consider sending another version addressing Oleg's points
-> for changelog above?
+diff --git a/tools/bpf/bpftool/Documentation/bpftool-gen.rst b/tools/bpf/bpftool/Documentation/bpftool-gen.rst
+index c768e6d4ae09..6c3f98c64cee 100644
+--- a/tools/bpf/bpftool/Documentation/bpftool-gen.rst
++++ b/tools/bpf/bpftool/Documentation/bpftool-gen.rst
+@@ -172,7 +172,7 @@ bpftool gen min_core_btf *INPUT* *OUTPUT* *OBJECT* [*OBJECT*...]
+     CO-RE based application, turning the application portable to different
+     kernel versions.
+ 
+-    Check examples bellow for more information how to use it.
++    Check examples below for more information how to use it.
+ 
+ bpftool gen help
+     Print short help message.
+-- 
+2.46.0
 
-My pleasure, I'll resend the updated patch in a new thread.
-
-Based on previous discussions, `uprobe_perf_filter` acts as a preliminary
-filter that removes breakpoints when they are no longer needed.
-More complex filtering mechanisms related to perf are implemented in
-perf-specific paths.
-
-From my understanding, the original patch attempted to partially implement
-UPROBE_HANDLER_REMOVE (since it didn't actually remove the breakpoint but
-only prevented it from entering the BPF-related code).
-I'm trying to provide a complete implementation, i.e., removing the
-breakpoint when `uprobe_perf_filter` returns false, similar to how uprobe
-functions. However, this would require merging the following functions,
-because they will almost be the same:
-
-uprobe_perf_func / uretprobe_perf_func
-uprobe_dispatcher / uretprobe_dispatcher
-handler_chain / handle_uretprobe_chain
-
-I'm not sure why the paths of uprobe and uretprobe are entirely different.
-I suspect that uretprobe might have been implemented later than uprobe and
-was only partially implemented.
-
-Oleg, do you have more insights on this?
-In your opinion, does uretprobe need UPROBE_HANDLER_REMOVE?
-If so, is it a good idea to merge the paths of uprobe and uretprobe?
-
-Regardless, if we only need a temporary and incomplete fix, I will modify
-only the commit message according to Oleg's suggestions and resend it.
-
-I'm aware that using `uprobe_perf_filter` in `uretprobe_perf_func` is not
-the solution for BPF filtering. I'm just trying to alleviate the issue
-in some simple cases.
-
-Sorry for the late reply as I spent a long time looking at the details
-discussed above.
-
-Thanks,
 
