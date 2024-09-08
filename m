@@ -1,204 +1,159 @@
-Return-Path: <bpf+bounces-39203-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39204-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF6E0970860
-	for <lists+bpf@lfdr.de>; Sun,  8 Sep 2024 17:17:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9382397093C
+	for <lists+bpf@lfdr.de>; Sun,  8 Sep 2024 20:41:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 99EB91F219F4
-	for <lists+bpf@lfdr.de>; Sun,  8 Sep 2024 15:17:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 838651C20E5B
+	for <lists+bpf@lfdr.de>; Sun,  8 Sep 2024 18:41:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB95117332A;
-	Sun,  8 Sep 2024 15:17:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28FC717624F;
+	Sun,  8 Sep 2024 18:41:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m0uHsgcR"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NbGviJRo"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com [209.85.219.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C61D1487F1;
-	Sun,  8 Sep 2024 15:17:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2905526281
+	for <bpf@vger.kernel.org>; Sun,  8 Sep 2024 18:41:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725808642; cv=none; b=X+PaZsvHdkDGKGNi8eC9HUnUoD1V0A+A9/j4Wu/1VsR+/fxsF4dwdVA4335uk1vReFbEGj4VjqQ+6Y+FnhtAxQypttZgki2ZktIfn1sz+8tX9UFztc8EPIorgKdDfGMsZw8dlTdX+rkJKbwpzojUlipcPOXalIJfaF8h0tejnNs=
+	t=1725820882; cv=none; b=TX3l6PTmhKoDE7umxrPFdkMFRGx3481qKRBCgjGYo03gIQGUdVXwwndd73oOznebQ1e+H6R2KTzE+CvUb9ua64yLq2MgZVw7qkLHVD4hI9iheNmM2r9W2rczqCABcgPTSAOige95IfckVTO1+0rDDgJ+j6UTzBF3buJfFBZ0/20=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725808642; c=relaxed/simple;
-	bh=hVjgUKusbVBPprpt143SVZ7B/OMrtw61kI00W3VV/Zc=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=t2/0dJNF2v2lcjG9kZ8UoDn9KloSDVmVn53Ki89fGGEr5o1jAfyvou+cTkOs0KAohLcxqV+z6Uz3jVFJQNRwIpe+HaUhC0fD2Ro98KlNByO/O2ItLs7Zm1XykS66K/8bsEtYN+gKPP7kL8ZKrfnkJb39B+GKMXvO3oPmELiFeAs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=m0uHsgcR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 179FFC4CEC5;
-	Sun,  8 Sep 2024 15:17:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1725808642;
-	bh=hVjgUKusbVBPprpt143SVZ7B/OMrtw61kI00W3VV/Zc=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=m0uHsgcRFn6NfT8z80S67WbbKSEKby8GbTb/NitaCzghveveOrd97FvMJbsnUbDaM
-	 6Msvttf1R/8B25RXk6Eu8DYsw4NurmerwEwaUI5+BztmmCgfPokW8F/bif0ukwaWQg
-	 /nWx+3EQmFIpxhoV8XG+QPE3wjtbHsf3s0R+2WKX+OPJgOsh2QDieI7dg8SYDNP/1g
-	 dubytga6H+iq/cqSNnmZDyez9afAjWT1Nl/b6vEaQJv2ZbPzap0NJBQDysY+v37pkg
-	 jnAkvOeT4x8YGBSTYWgRO32vrlLnQud1tYuFMd9EDo6r4Aa3UQW90Nkk0JKiNHgjGF
-	 OyeftEpA2U4Fg==
-Date: Mon, 9 Sep 2024 00:17:18 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Sven Schnelle <svens@linux.ibm.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>, Mark Rutland
- <mark.rutland@arm.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- bpf@vger.kernel.org
-Subject: Re: [PATCH 4/7] Add print_function_args()
-Message-Id: <20240909001718.ffbfc2ac8b7888a94735720f@kernel.org>
-In-Reply-To: <20240904065908.1009086-5-svens@linux.ibm.com>
-References: <20240904065908.1009086-1-svens@linux.ibm.com>
-	<20240904065908.1009086-5-svens@linux.ibm.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1725820882; c=relaxed/simple;
+	bh=l3ByEftHhCbxweU0TTVrICzZR1Aci2uYbQdXS/CUaa0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Content-Type; b=S5X4dFqjtpsspbNn46n6qZkQmJ1pQ82RP19UJyHA1ucmjUhUNCVnHbWNbSqiRl95WMs/287oSCpDx8ByJUk0d8jIeJihSJp5zC1MPvJWEt7CcNKlaNeP7Jnd0wTauB9Rh20pc04NgLvYNUQ0X92bDpd82AXDCVqLDhFlvW6uJPM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NbGviJRo; arc=none smtp.client-ip=209.85.219.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-e1a8e305da0so3898055276.3
+        for <bpf@vger.kernel.org>; Sun, 08 Sep 2024 11:41:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1725820880; x=1726425680; darn=vger.kernel.org;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QBQ7Pbvx+LcujbvVUbk/lB9kFOBJ6MldeIYBaFqODws=;
+        b=NbGviJRonEoZSDPMggk2hwcR1THx7txkHV+A+qUwT8COPM3kPe9mlpVVrKb3XdE1ZD
+         bqEZlG6hPQVYSWZNe6GdYJcvjzQNerV2y45rC4OoMleUGjFjjSQ+WrXSYqJRjfcjsftl
+         6N/qYd3m4jYxwRDD0hNuuOaNzNRCi9QRsvzYDTYsqz+iUobfJERnY8VHOP/CA4rwp6mY
+         q9AvtARnA3quFzKEUeOKlKzxX+8ql0DoSWLer5Q1yzA3ub1qBmMDX5bGqld0xfD6u1eP
+         QiPvzwV+pl4tEVuIekzhruVo/wRLngoWgfohHPpVzfzyXuxaVhfyNLw4xTXVfyuu2sC0
+         00Ig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1725820880; x=1726425680;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QBQ7Pbvx+LcujbvVUbk/lB9kFOBJ6MldeIYBaFqODws=;
+        b=dzXjm9OdDSxXUv+Vs3BgON12IuJABFuQYu22DizVJbqc8R9r8BDb60su00erPWc3/7
+         J6S8OA/xJZVC68JXCv8+CrgU47A4g6AhmxaJtwj/OOUZ8ZnXw/wWsWEXegKBsWFkiwtL
+         OeZLtVy4Rdu0KoDEbTdT3AXxLE6KFFcl6M7A/z2SsVZ1EJZHdj5WQCrFIG7fG2M1FOyD
+         BUcJ0nBv9XGjVA9JuOQRlMACev3BZTTGXKk6Bkn6NO06YmCUMLZNPWi0ae7Jmww4XgJc
+         QKcxsimaK5N+1IPmZLClBINDS/VTWyTlGbdqh0zRhZYuJANO8Dr9+bYEf4t4c/Ygejot
+         Jmkw==
+X-Forwarded-Encrypted: i=1; AJvYcCX9sag3wuO8w0zFPz/rjawg4lRWWTpVG7iMl1Z+r+CCKGddKHLMADDdnGBNIHm2dRT8dM8=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz5grQ+P7d6qG1Z0s7v7NSBhR2C1cmZNdBfwSDVV5C+ApU0JJP6
+	km2QVrRa8//qlDjA0E1b1IdXC1AXGY/ShFXjuLkoTo7Ce4ghQ7WTa/OrCmxrWIORKU5qKhyEqe0
+	KX/ERzL+X0YIqVpVEh5ZvE2tlWiFtxQ==
+X-Google-Smtp-Source: AGHT+IHtRrrHKYuULyBDBqHFjos1LGJbWW8cwSAG01FYidwrLQMWBvWOCjVqgZa/MP61jyj+clui/e8sAGXTPMFw1Ag=
+X-Received: by 2002:a05:6902:2382:b0:e1d:33f1:cb91 with SMTP id
+ 3f1490d57ef6-e1d34a37ccfmr9460172276.39.1725820879946; Sun, 08 Sep 2024
+ 11:41:19 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+References: <CAJxriS06VxYSaCoo0WT2LtUPPwXopyMHr=-FyR5qRoeGWguBZg@mail.gmail.com>
+ <b9262f12-73e8-a090-1197-2cf380ba3cea@huaweicloud.com> <72cac21d-f973-a40c-35de-cc7942ecae06@huaweicloud.com>
+ <CAK3+h2zrDfOdouk5_uPrM2iwbTkMg3DecKJ7ro037F2hdK26fg@mail.gmail.com>
+In-Reply-To: <CAK3+h2zrDfOdouk5_uPrM2iwbTkMg3DecKJ7ro037F2hdK26fg@mail.gmail.com>
+From: Vincent Li <vincent.mc.li@gmail.com>
+Date: Sun, 8 Sep 2024 11:41:08 -0700
+Message-ID: <CAK3+h2xEJpfDm2=ucwm8FQ_A0v3NbOY4uER3jXHiygrmku+=7Q@mail.gmail.com>
+Subject: Re: Using BPF_MAP_TYPE_LPM_TRIE for string matching
+To: Hou Tao <houtao@huaweicloud.com>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed,  4 Sep 2024 08:58:58 +0200
-Sven Schnelle <svens@linux.ibm.com> wrote:
-
-> Add a function to decode argument types with the help of BTF. Will
-> be used to display arguments in the function and function graph
-> tracer.
-> 
-> Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
-> ---
->  kernel/trace/trace_output.c | 68 +++++++++++++++++++++++++++++++++++++
->  kernel/trace/trace_output.h |  9 +++++
->  2 files changed, 77 insertions(+)
-> 
-> diff --git a/kernel/trace/trace_output.c b/kernel/trace/trace_output.c
-> index d8b302d01083..70405c4cceb6 100644
-> --- a/kernel/trace/trace_output.c
-> +++ b/kernel/trace/trace_output.c
-> @@ -12,8 +12,11 @@
->  #include <linux/sched/clock.h>
->  #include <linux/sched/mm.h>
->  #include <linux/idr.h>
-> +#include <linux/btf.h>
-> +#include <linux/bpf.h>
->  
->  #include "trace_output.h"
-> +#include "trace_btf.h"
->  
->  /* must be a power of 2 */
->  #define EVENT_HASHSIZE	128
-> @@ -669,6 +672,71 @@ int trace_print_lat_context(struct trace_iterator *iter)
->  	return !trace_seq_has_overflowed(s);
->  }
->  
-> +#ifdef CONFIG_FUNCTION_TRACE_ARGS
-> +void print_function_args(struct trace_seq *s, struct ftrace_regs *fregs,
-> +			 unsigned long func)
-> +{
-> +	const struct btf_param *param;
-> +	const struct btf_type *t;
-> +	const char *param_name;
-> +	char name[KSYM_NAME_LEN];
-> +	unsigned long arg;
-> +	struct btf *btf;
-> +	s32 tid, nr = 0;
-> +	int i;
-> +
-> +	trace_seq_printf(s, "(");
-> +
-> +	if (!ftrace_regs_has_args(fregs))
-> +		goto out;
-> +	if (lookup_symbol_name(func, name))
-> +		goto out;
-> +
-> +	btf = bpf_get_btf_vmlinux();
-> +	if (IS_ERR_OR_NULL(btf))
-> +		goto out;
-> +
-> +	t = btf_find_func_proto(name, &btf);
-> +	if (IS_ERR_OR_NULL(t))
-> +		goto out;
-> +
-> +	param = btf_get_func_param(t, &nr);
-> +	if (!param)
-> +		goto out_put;
-> +
-> +	for (i = 0; i < nr; i++) {
-> +		arg = ftrace_regs_get_argument(fregs, i);
-> +
-> +		param_name = btf_name_by_offset(btf, param[i].name_off);
-> +		if (param_name)
-> +			trace_seq_printf(s, "%s = ", param_name);
-> +		t = btf_type_skip_modifiers(btf, param[i].type, &tid);
-> +		if (!t)
-> +			continue;
-> +		switch (BTF_INFO_KIND(t->info)) {
-> +		case BTF_KIND_PTR:
-> +			trace_seq_printf(s, "0x%lx", arg);
-> +			break;
-> +		case BTF_KIND_INT:
-> +			trace_seq_printf(s, "%ld", arg);
-
-Don't we check the size and signed? :)
-
-> +			break;
-> +		case BTF_KIND_ENUM:
-> +			trace_seq_printf(s, "%ld", arg);
-
-nit: %d? (enum is equal to the int type)
-
-BTW, this series splits the patches by coding, not functionality.
-For the first review, it is OK. But eventually those should be merged.
-
-Thank you,
-
-> +			break;
-> +		default:
-> +			trace_seq_printf(s, "0x%lx (%d)", arg, BTF_INFO_KIND(param[i].type));
-> +			break;
-> +		}
-> +		if (i < nr - 1)
-> +			trace_seq_printf(s, ", ");
-> +	}
-> +out_put:
-> +	btf_put(btf);
-> +out:
-> +	trace_seq_printf(s, ")");
-> +}
-> +#endif
-> +
->  /**
->   * ftrace_find_event - find a registered event
->   * @type: the type of event to look for
-> diff --git a/kernel/trace/trace_output.h b/kernel/trace/trace_output.h
-> index dca40f1f1da4..a21d8ce606f7 100644
-> --- a/kernel/trace/trace_output.h
-> +++ b/kernel/trace/trace_output.h
-> @@ -41,5 +41,14 @@ extern struct rw_semaphore trace_event_sem;
->  #define SEQ_PUT_HEX_FIELD(s, x)				\
->  	trace_seq_putmem_hex(s, &(x), sizeof(x))
->  
-> +#ifdef CONFIG_FUNCTION_TRACE_ARGS
-> +void print_function_args(struct trace_seq *s, struct ftrace_regs *fregs,
-> +			 unsigned long func);
-> +#else
-> +static inline void print_function_args(struct trace_seq *s, struct ftrace_regs *fregs,
-> +				       unsigned long func) {
-> +	trace_seq_puts(s, "()");
-> +}
-> +#endif
->  #endif
->  
-> -- 
-> 2.43.0
-> 
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+On Sat, Sep 7, 2024 at 4:33=E2=80=AFPM Vincent Li <vincent.mc.li@gmail.com>=
+ wrote:
+>
+> Hi Tao,
+>
+> Sorry to hijack this old email thread :)
+>
+> On Mon, Dec 25, 2023 at 5:39=E2=80=AFPM Hou Tao <houtao@huaweicloud.com> =
+wrote:
+> >
+> >
+> >
+> > On 12/25/2023 10:24 PM, Hou Tao wrote:
+> > > Hi,
+> > >
+> > > On 12/22/2023 8:05 PM, Dominic wrote:
+> > >> Can BPF_MAP_TYPE_LPM_TRIE be used for string matching? I tried it bu=
+t
+> > >> the matching doesn't work as expected.
+> > > Yes. LPM_TRIE will work for string matching.  Did you setup the key s=
+ize
+> > > of the map and the prefixlen field of bpf_lpm_trie_key correctly ?
+> > > Because the unit of key_size is in-bytes and it should be the maximal
+> > > length of these strings, but the unit of prefixlen is in-bits and it =
+is
+> > > the length of string expressed in bits. And could you share the steps=
+ on
+> > > how you used it ?
+> >
+> > Forgot to mention the trick when using LPM_TRIE for string matching.
+> > Because LPM_TRIE uses longest prefix matching to find the target
+> > element, so using the string abcd as key to lookup LPM_TRIE will match
+> > the string abc saved in LPM_TRIE and it is not we wanted. To fix that,
+> > we need to add the terminated null byte of the string to the key, so th=
+e
+> > string abc\0 will not be the prefix of the string abcd\0. The code
+> > snippet looks as follows.
+> >
+> > map_fd =3D bpf_map_create(BPF_MAP_TYPE_LPM_TRIE, name,
+> > sizeof(bpf_lpm_trie_key) + max_string_length + 1, value_size,
+> > max_entries, &opts);
+> >
+> > key.prefixlen =3D (strlen(str) + 1) * 8;
+> > memcpy(key.data, str, strlen(str) + 1);
+> > bpf_map_update_elem(map_fd, &key, &value, BPF_NOEXIST);
+> >
+>
+> I have a use case where I want to run an XDP program to parse the DNS
+> packet to get the query domain name, then lookup the domain name in
+> bpf map to decide if the query is allowed or not. For example if the
+> LPM_TRIE map is pre-populated with "example.com", then  queries like
+> "foo.example.com", "bar.example.com" should be matched, right?
+>
+> I haven't gone that far yet because  I haven't got a string match in
+> hash map working, but that LPM_TRIE map would be my end goal.
+>
+> Here is the hash map string not matching problem
+> https://github.com/vincentmli/xdp-tools/issues/2,  am I missing
+> something about string terminator '\0'?
+>
+Sorry for the noise, my hash string key inserted from user space
+missed characters like  "wwwbpfirenet" should have been
+"3www6bpfire3net"
+>
+> > >
+> > >> Thanks & Regards,
+> > >> Dominic
+> > >>
+> > >> .
+> > >
+> > > .
+> >
+> >
 
