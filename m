@@ -1,159 +1,116 @@
-Return-Path: <bpf+bounces-39204-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39205-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9382397093C
-	for <lists+bpf@lfdr.de>; Sun,  8 Sep 2024 20:41:28 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7EB54970962
+	for <lists+bpf@lfdr.de>; Sun,  8 Sep 2024 21:19:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 838651C20E5B
-	for <lists+bpf@lfdr.de>; Sun,  8 Sep 2024 18:41:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 044DFB2125A
+	for <lists+bpf@lfdr.de>; Sun,  8 Sep 2024 19:19:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28FC717624F;
-	Sun,  8 Sep 2024 18:41:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DEC21531F9;
+	Sun,  8 Sep 2024 19:19:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NbGviJRo"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FnpikwOU"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com [209.85.219.176])
+Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2905526281
-	for <bpf@vger.kernel.org>; Sun,  8 Sep 2024 18:41:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 575F4178364
+	for <bpf@vger.kernel.org>; Sun,  8 Sep 2024 19:19:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725820882; cv=none; b=TX3l6PTmhKoDE7umxrPFdkMFRGx3481qKRBCgjGYo03gIQGUdVXwwndd73oOznebQ1e+H6R2KTzE+CvUb9ua64yLq2MgZVw7qkLHVD4hI9iheNmM2r9W2rczqCABcgPTSAOige95IfckVTO1+0rDDgJ+j6UTzBF3buJfFBZ0/20=
+	t=1725823156; cv=none; b=Dj+4sA+MDkEkDBXocAABwD5TxSudEcZ1aE4qwjhwhmcmjjPhqW7ta6MAjHCOrpMSPofAWkw15YRstUZQyZPHLAzEk2em/ZdF+pPUAhyP/sKoj/oTKlM4pVZUxqxZdgMQgSIBQCwQYgV9XLglPQVCVcPjzjzVD/ar5PH/LLBrUV0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725820882; c=relaxed/simple;
-	bh=l3ByEftHhCbxweU0TTVrICzZR1Aci2uYbQdXS/CUaa0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Content-Type; b=S5X4dFqjtpsspbNn46n6qZkQmJ1pQ82RP19UJyHA1ucmjUhUNCVnHbWNbSqiRl95WMs/287oSCpDx8ByJUk0d8jIeJihSJp5zC1MPvJWEt7CcNKlaNeP7Jnd0wTauB9Rh20pc04NgLvYNUQ0X92bDpd82AXDCVqLDhFlvW6uJPM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NbGviJRo; arc=none smtp.client-ip=209.85.219.176
+	s=arc-20240116; t=1725823156; c=relaxed/simple;
+	bh=0WYYOzS8jMWl/ka8o6magKugT6OF5Ittik41kzAYtOw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UmPG+QlbFEYdAx36Oa9WEGJiSEH8+jVNa2MLJ2Rqp4InEWXD4WwrjxnRtfIufqQDxoqCPxHT7fLR3uFgpTF2YUbRJT2NMQUndc17eAWB1+I3k09xd2DJfXU+IsQgVTizjoySXBeKe6q92pdAYdhqUa2N/Penr9zSz5ToaF0liFc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FnpikwOU; arc=none smtp.client-ip=209.85.215.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-e1a8e305da0so3898055276.3
-        for <bpf@vger.kernel.org>; Sun, 08 Sep 2024 11:41:20 -0700 (PDT)
+Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-6e7b121be30so2351342a12.1
+        for <bpf@vger.kernel.org>; Sun, 08 Sep 2024 12:19:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1725820880; x=1726425680; darn=vger.kernel.org;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QBQ7Pbvx+LcujbvVUbk/lB9kFOBJ6MldeIYBaFqODws=;
-        b=NbGviJRonEoZSDPMggk2hwcR1THx7txkHV+A+qUwT8COPM3kPe9mlpVVrKb3XdE1ZD
-         bqEZlG6hPQVYSWZNe6GdYJcvjzQNerV2y45rC4OoMleUGjFjjSQ+WrXSYqJRjfcjsftl
-         6N/qYd3m4jYxwRDD0hNuuOaNzNRCi9QRsvzYDTYsqz+iUobfJERnY8VHOP/CA4rwp6mY
-         q9AvtARnA3quFzKEUeOKlKzxX+8ql0DoSWLer5Q1yzA3ub1qBmMDX5bGqld0xfD6u1eP
-         QiPvzwV+pl4tEVuIekzhruVo/wRLngoWgfohHPpVzfzyXuxaVhfyNLw4xTXVfyuu2sC0
-         00Ig==
+        d=gmail.com; s=20230601; t=1725823154; x=1726427954; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Egzeqfy7fD83mG5DtqxFRURS74OykOxBDgmT9EJn+EM=;
+        b=FnpikwOUYlVuvRiFHRgrFLSRLyWEITbtLQidir4OcUWAx/q8YuXK1zBvoeDUSh8SVN
+         JN/+qmY8vC3r565hPDnbMv6MsONy7b/oy8lE6DEc1ezDQMM7+Evf+LDnzo9NNjeOnvA8
+         N0O7su2eWxSgTkDTCr+n0IaDe/uHfGG7ezbtRJStTU6AtN0sOufTp9pWQ3jkY+FDulbS
+         0Y4t7hrLLh3I+mJ69itcyka9yGkF/bWtRDW22Vr/V0nJJ+YL5QrJVSA4U6yvpvUxLZgP
+         734aaQiew8l6CqA92Nhj5FlOBJTrJtDOl+sy/4/DTlz7k4C2ZuZiLuJpMXhxo3U/DkBZ
+         Q77Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725820880; x=1726425680;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QBQ7Pbvx+LcujbvVUbk/lB9kFOBJ6MldeIYBaFqODws=;
-        b=dzXjm9OdDSxXUv+Vs3BgON12IuJABFuQYu22DizVJbqc8R9r8BDb60su00erPWc3/7
-         J6S8OA/xJZVC68JXCv8+CrgU47A4g6AhmxaJtwj/OOUZ8ZnXw/wWsWEXegKBsWFkiwtL
-         OeZLtVy4Rdu0KoDEbTdT3AXxLE6KFFcl6M7A/z2SsVZ1EJZHdj5WQCrFIG7fG2M1FOyD
-         BUcJ0nBv9XGjVA9JuOQRlMACev3BZTTGXKk6Bkn6NO06YmCUMLZNPWi0ae7Jmww4XgJc
-         QKcxsimaK5N+1IPmZLClBINDS/VTWyTlGbdqh0zRhZYuJANO8Dr9+bYEf4t4c/Ygejot
-         Jmkw==
-X-Forwarded-Encrypted: i=1; AJvYcCX9sag3wuO8w0zFPz/rjawg4lRWWTpVG7iMl1Z+r+CCKGddKHLMADDdnGBNIHm2dRT8dM8=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz5grQ+P7d6qG1Z0s7v7NSBhR2C1cmZNdBfwSDVV5C+ApU0JJP6
-	km2QVrRa8//qlDjA0E1b1IdXC1AXGY/ShFXjuLkoTo7Ce4ghQ7WTa/OrCmxrWIORKU5qKhyEqe0
-	KX/ERzL+X0YIqVpVEh5ZvE2tlWiFtxQ==
-X-Google-Smtp-Source: AGHT+IHtRrrHKYuULyBDBqHFjos1LGJbWW8cwSAG01FYidwrLQMWBvWOCjVqgZa/MP61jyj+clui/e8sAGXTPMFw1Ag=
-X-Received: by 2002:a05:6902:2382:b0:e1d:33f1:cb91 with SMTP id
- 3f1490d57ef6-e1d34a37ccfmr9460172276.39.1725820879946; Sun, 08 Sep 2024
- 11:41:19 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1725823154; x=1726427954;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Egzeqfy7fD83mG5DtqxFRURS74OykOxBDgmT9EJn+EM=;
+        b=GEy60tRlMBCOmi2zwfkrJVvJc+VXo14hxcuvs+ezGtKSk2dUNNp54iLOrZnDIQHpLn
+         Wb2hYLaE71ZzxMj4S1Gr8fLR9GKhEvIp5nppZFpPt84CSLZpKOHmTKfGom2SJ4E4wSb0
+         S6HF+TqovUpJCy7lDQIyzoqsFcZ7MKPzQa70Sq21cENpDtne3sW6hmMtmGhfuNcVNIw8
+         4DVjsPGCGwIGZA83VHWDpG7oS8VuxEvO8nfvPbMLjCLKWlJyOhsAaD1j/eX5Omf6+/a5
+         LCsTFyz3wx9KWLQzRQub5Pvmtyo1aeSpVwH4AcfK8wNVyNrCjTucUxxMsuV2A6g2yJNV
+         E22w==
+X-Forwarded-Encrypted: i=1; AJvYcCU21GKlbYbAlhkR4Nb9kDGgVWqWBXzNZ0iTuN1SzcMj2hFIVwQfXpSoGTOmacKoA63ofJA=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzC750n5+GRWIxRuwdDo95GhbzWvlalzF9PXwGd4/l8KnE9zCpG
+	D4AuDkkkv3bsHOLUCj9r9aW0cnMB72C8O0DgMt1ZxVjVH0ezsc1E
+X-Google-Smtp-Source: AGHT+IEnNb8VHXpMDDgreiCL+ZRH5sy8dOFRcBVvaQgLLc+h3PrEt5bU+d6NtNW1RRUuWX82xMbzjg==
+X-Received: by 2002:a17:90a:fd13:b0:2d8:9a0c:36c0 with SMTP id 98e67ed59e1d1-2dad4efdcb9mr7302080a91.8.1725823154432;
+        Sun, 08 Sep 2024 12:19:14 -0700 (PDT)
+Received: from localhost ([2601:647:6881:9060:4334:4d08:284:9405])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2db04988c97sm2993731a91.55.2024.09.08.12.19.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 08 Sep 2024 12:19:13 -0700 (PDT)
+Date: Sun, 8 Sep 2024 12:19:12 -0700
+From: Cong Wang <xiyou.wangcong@gmail.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Priya Bala Govindasamy <pgovind2@uci.edu>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+	Hsin-Wei Hung <hsinweih@uci.edu>,
+	Ardalan Amiri Sani <ardalan@uci.edu>
+Subject: Re: Possible deadlock in pcpu_freelist_pop
+Message-ID: <Zt34sPvu9mO4Tcgv@pop-os.localdomain>
+References: <CAPPBnEa1_pZ6W24+WwtcNFvTUHTHO7KUmzEbOcMqxp+m2o15qQ@mail.gmail.com>
+ <CAADnVQLAHwsa+2C6j9+UC6ScrDaN9Fjqv1WjB1pP9AzJLhKuLQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAJxriS06VxYSaCoo0WT2LtUPPwXopyMHr=-FyR5qRoeGWguBZg@mail.gmail.com>
- <b9262f12-73e8-a090-1197-2cf380ba3cea@huaweicloud.com> <72cac21d-f973-a40c-35de-cc7942ecae06@huaweicloud.com>
- <CAK3+h2zrDfOdouk5_uPrM2iwbTkMg3DecKJ7ro037F2hdK26fg@mail.gmail.com>
-In-Reply-To: <CAK3+h2zrDfOdouk5_uPrM2iwbTkMg3DecKJ7ro037F2hdK26fg@mail.gmail.com>
-From: Vincent Li <vincent.mc.li@gmail.com>
-Date: Sun, 8 Sep 2024 11:41:08 -0700
-Message-ID: <CAK3+h2xEJpfDm2=ucwm8FQ_A0v3NbOY4uER3jXHiygrmku+=7Q@mail.gmail.com>
-Subject: Re: Using BPF_MAP_TYPE_LPM_TRIE for string matching
-To: Hou Tao <houtao@huaweicloud.com>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQLAHwsa+2C6j9+UC6ScrDaN9Fjqv1WjB1pP9AzJLhKuLQ@mail.gmail.com>
 
-On Sat, Sep 7, 2024 at 4:33=E2=80=AFPM Vincent Li <vincent.mc.li@gmail.com>=
- wrote:
->
-> Hi Tao,
->
-> Sorry to hijack this old email thread :)
->
-> On Mon, Dec 25, 2023 at 5:39=E2=80=AFPM Hou Tao <houtao@huaweicloud.com> =
-wrote:
+On Thu, Sep 05, 2024 at 11:40:06AM -0700, Alexei Starovoitov wrote:
+> On Thu, Sep 5, 2024 at 11:37 AM Priya Bala Govindasamy <pgovind2@uci.edu> wrote:
 > >
-> >
-> >
-> > On 12/25/2023 10:24 PM, Hou Tao wrote:
-> > > Hi,
-> > >
-> > > On 12/22/2023 8:05 PM, Dominic wrote:
-> > >> Can BPF_MAP_TYPE_LPM_TRIE be used for string matching? I tried it bu=
-t
-> > >> the matching doesn't work as expected.
-> > > Yes. LPM_TRIE will work for string matching.  Did you setup the key s=
-ize
-> > > of the map and the prefixlen field of bpf_lpm_trie_key correctly ?
-> > > Because the unit of key_size is in-bytes and it should be the maximal
-> > > length of these strings, but the unit of prefixlen is in-bits and it =
-is
-> > > the length of string expressed in bits. And could you share the steps=
- on
-> > > how you used it ?
-> >
-> > Forgot to mention the trick when using LPM_TRIE for string matching.
-> > Because LPM_TRIE uses longest prefix matching to find the target
-> > element, so using the string abcd as key to lookup LPM_TRIE will match
-> > the string abc saved in LPM_TRIE and it is not we wanted. To fix that,
-> > we need to add the terminated null byte of the string to the key, so th=
-e
-> > string abc\0 will not be the prefix of the string abcd\0. The code
-> > snippet looks as follows.
-> >
-> > map_fd =3D bpf_map_create(BPF_MAP_TYPE_LPM_TRIE, name,
-> > sizeof(bpf_lpm_trie_key) + max_string_length + 1, value_size,
-> > max_entries, &opts);
-> >
-> > key.prefixlen =3D (strlen(str) + 1) * 8;
-> > memcpy(key.data, str, strlen(str) + 1);
-> > bpf_map_update_elem(map_fd, &key, &value, BPF_NOEXIST);
-> >
->
-> I have a use case where I want to run an XDP program to parse the DNS
-> packet to get the query domain name, then lookup the domain name in
-> bpf map to decide if the query is allowed or not. For example if the
-> LPM_TRIE map is pre-populated with "example.com", then  queries like
-> "foo.example.com", "bar.example.com" should be matched, right?
->
-> I haven't gone that far yet because  I haven't got a string match in
-> hash map working, but that LPM_TRIE map would be my end goal.
->
-> Here is the hash map string not matching problem
-> https://github.com/vincentmli/xdp-tools/issues/2,  am I missing
-> something about string terminator '\0'?
->
-Sorry for the noise, my hash string key inserted from user space
-missed characters like  "wwwbpfirenet" should have been
-"3www6bpfire3net"
->
-> > >
-> > >> Thanks & Regards,
-> > >> Dominic
-> > >>
-> > >> .
-> > >
-> > > .
-> >
-> >
+> > SEC("kprobe/__pcpu_freelist_pop+0x58c")
+> 
+> We should disallow such recursion in the verifier.
+> All these "bugs" are hard to prioritize as bugs.
+> When people shot themselves in the foot there will be pain.
+
+diff --git a/kernel/bpf/percpu_freelist.c b/kernel/bpf/percpu_freelist.c
+index 034cf87b54e9..14c9fcf81ac6 100644
+--- a/kernel/bpf/percpu_freelist.c
++++ b/kernel/bpf/percpu_freelist.c
+@@ -187,6 +187,7 @@ struct pcpu_freelist_node *__pcpu_freelist_pop(struct pcpu_freelist *s)
+                return ___pcpu_freelist_pop_nmi(s);
+        return ___pcpu_freelist_pop(s);
+ }
++NOKPROBE_SYMBOL(__pcpu_freelist_pop);
+
+ struct pcpu_freelist_node *pcpu_freelist_pop(struct pcpu_freelist *s)
+ {
+
 
