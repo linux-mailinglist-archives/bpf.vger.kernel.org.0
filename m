@@ -1,192 +1,140 @@
-Return-Path: <bpf+bounces-39201-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39202-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBE099707BA
-	for <lists+bpf@lfdr.de>; Sun,  8 Sep 2024 15:15:52 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20D289707E9
+	for <lists+bpf@lfdr.de>; Sun,  8 Sep 2024 16:00:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E6652821AE
-	for <lists+bpf@lfdr.de>; Sun,  8 Sep 2024 13:15:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6A682281D5E
+	for <lists+bpf@lfdr.de>; Sun,  8 Sep 2024 14:00:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCC0A165F00;
-	Sun,  8 Sep 2024 13:15:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F393B16FF41;
+	Sun,  8 Sep 2024 14:00:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="EBNAZskn"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dFMq+FJo"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71FA429CF7
-	for <bpf@vger.kernel.org>; Sun,  8 Sep 2024 13:15:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34D2EA2D;
+	Sun,  8 Sep 2024 14:00:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725801346; cv=none; b=AzTscQ3XMHWt7E/gEcExzziQlR2+cq59DcL0IunYoKBC8P3Jb95cNQtc6XIkeC6Z2ODmly+0Ltz6Kw+0nvYakx9ECdVO1Rc3JcYlH8Me1oy5ijPdyqjkosaxvyLf27DVz5ptjLZAHNy7K6Qhd+r53VFb4DY+pSO1KRoTQcsxaTI=
+	t=1725804029; cv=none; b=VNFgxgolLn6tbaBScNqwlC0nboylYuLYKOOywM3rfUpJLDtrvNpeETLqWAWZTY+14ZuJycMVQ5o8+Pbeqd17qyEGeEzgFQZ/6QiE8ugn5G0KWN6Rs1TT+HVYPivScpIOlOLiAICqxZlcJtclKwx2cIceKBMEg8N9c5eX1dfwBsk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725801346; c=relaxed/simple;
-	bh=flp398FQwtD1DXl5k5Df/Di+UWpPWTlqrKlw6S2PvK8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UAoPZOpQpXyT+A4q4KgJSZPrQKZ5fcF1LYtkZwhZFTWdQf+p/VfHkUOLgv43fzZ0GKN8jQG2DAUC5I9WVHMmgKQcUrUWGEbaynyzGhlC/51wFRu9t+tYhXllMYdWE64vMs7JSoUzCD1/kzSvhIoFHazDjTN24bpo5QyPKnhR7vs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=EBNAZskn; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1725801343;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rlhyC8f8RgkRd2STTLE66pLfIsnslSspQq1pJPbLQzA=;
-	b=EBNAZskn2P7dq+/Nh08K5AtwXbJeAffelDSgVqCfMoD6F2CoUJBfBrPcWs+JDVAYXWERSw
-	mX8YyyUxtoPHVrEV1xgbFaL9+qkyh0YmhK7F50vCCcWQVbuEczm1S2tFTL/jjN3fYL6+yQ
-	VWsthXgxsidA5JnWvra/7S3pv/bNM8w=
-Received: from mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-15-c-cTmO5cOI6TE0h7hkQw5A-1; Sun,
- 08 Sep 2024 09:15:39 -0400
-X-MC-Unique: c-cTmO5cOI6TE0h7hkQw5A-1
-Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id AC01B19560BF;
-	Sun,  8 Sep 2024 13:15:36 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.19])
-	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 688C03000239;
-	Sun,  8 Sep 2024 13:15:32 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Sun,  8 Sep 2024 15:15:25 +0200 (CEST)
-Date: Sun, 8 Sep 2024 15:15:20 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-To: Tianyi Liu <i.pear@outlook.com>
-Cc: olsajiri@gmail.com, ajor@meta.com, albancrequy@linux.microsoft.com,
-	andrii.nakryiko@gmail.com, bpf@vger.kernel.org,
-	flaniel@linux.microsoft.com, linux-trace-kernel@vger.kernel.org,
-	linux@jordanrome.com, mathieu.desnoyers@efficios.com,
-	mhiramat@kernel.org, rostedt@goodmis.org
-Subject: Re: [PATCH v2] tracing/uprobe: Add missing PID filter for uretprobe
-Message-ID: <20240908131519.GA21236@redhat.com>
-References: <Ztrc6eJ14M26xmvr@krava>
- <ME0P300MB0416A96545165A39507DF6429D9F2@ME0P300MB0416.AUSP300.PROD.OUTLOOK.COM>
+	s=arc-20240116; t=1725804029; c=relaxed/simple;
+	bh=Y2NDtCjVER93A9w2ReGNK7/dzcf+hFjKCrvUyF4u80E=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=LO+dIGdVlAD4LilFD5/V09HQGylrrXskcYKji80Ml4uYyv37/RtnJuBt6zbhXTS6MguSUjZi3WfHumODlbKMHbtvsFA5iCENUTtJ/NFTwNCdYW6R+PjiQ7LPe3To8LVc8YQiUWbLTKHoYEUviDJ5ZzzLpOxumIPBvzaYiB/LFcM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dFMq+FJo; arc=none smtp.client-ip=209.85.214.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-2054feabfc3so30093325ad.1;
+        Sun, 08 Sep 2024 07:00:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1725804027; x=1726408827; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=7pj0AerlWB+eF4qNe7zKXJKWx1M/nXwU17bMun+xn84=;
+        b=dFMq+FJo275m23g/1KxemJXU8v6vG8cbNXebAJI+KZSkBz3KZ88Of5dxDm99lwKUUX
+         IO4WMhp0rFq0YCHfIwszARGYNTtasOf5PEpU2h57Mx3ePEthJOocFA/8rEvLqh1uIT8o
+         4h+YHwEkzh1iRSUWd4w2B9XSmf54Re6BzT7QzmsKfXh8TI3ytJxZcMITTncKK/r/adO9
+         KxlNygdBj7myE5q3yDoMhBN17Uv8WetUDyN9A5YygSo0Jnhygt5jDOeUTLKGMNAZzZKy
+         cetI52fgF9McpUEEQP/rI3KenyeSgRh5rJL2V1Joclm0Jzw9dOuwD1Z6cIR+Z2fAfcI5
+         95uA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1725804027; x=1726408827;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7pj0AerlWB+eF4qNe7zKXJKWx1M/nXwU17bMun+xn84=;
+        b=JxYm5xNxHYCValTGpcQ9y1ttzPJDCEwuqt86frADrHQtcPXDXhQR2zE1PHVcw7s/Pj
+         y4PbAUC4ND6UNkA40AYmUMcnyuVLMBbXvpn2TBaf2KDp/guIQvCdoFgiE9VBwm1yEnCQ
+         mURmwT9la0YIGMRHDwCnuVYYNkBPuGFJ2Qek64g+z8ekercR5QexCYDz+UJujBYDxMbx
+         l8cVguMkc+soSOobfsiVIjQ9GcMulYbSn0exe9I5CF9Cw33leYJZkb8AcqcO8lrYqsYa
+         FyoRYeb7iKh0S2nWv+4EC28hrrXn9Z3F+Y7IEdaJZRdjzDHgdDIg2V65PcEQzpW79Cke
+         O/PA==
+X-Forwarded-Encrypted: i=1; AJvYcCVQHRk2W23/1Qb7qIELzZyq1xZZr15KsyZOrzVNFl44+9QP7NwOBlblGtKmTqqUD+zFUfI=@vger.kernel.org, AJvYcCX9r45aLPpS1tl0WI1I0/GskJbzyjoNanzKH169kFir3u7xBPc/ycIhIIv9+TDNMueHG49uZaohxFTSuuLs@vger.kernel.org
+X-Gm-Message-State: AOJu0YwqB9oHEZ8KnpskJj+kDBN//L/lLmmDdAd9ioSvHqiM+GMLEyg7
+	AQiFUs43QA/VUsYu+b3NBpyDe/FawaIQUW8gX7O1+KNu96cn4kx/
+X-Google-Smtp-Source: AGHT+IHbKGBuA+EAxRn/bKTjAwZ/cMAEbkBNM60vx74Q24qVyty3SApZob0+FbTm5Ul8OtxMM30rjg==
+X-Received: by 2002:a17:903:23c9:b0:206:a913:9697 with SMTP id d9443c01a7336-206f0612ef6mr82267335ad.43.1725804026367;
+        Sun, 08 Sep 2024 07:00:26 -0700 (PDT)
+Received: from visitorckw-System-Product-Name.. ([140.113.216.168])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20710e328aasm20379895ad.91.2024.09.08.07.00.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 08 Sep 2024 07:00:24 -0700 (PDT)
+From: Kuan-Wei Chiu <visitorckw@gmail.com>
+To: qmo@kernel.org
+Cc: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	jserv@ccns.ncku.edu.tw,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Kuan-Wei Chiu <visitorckw@gmail.com>
+Subject: [PATCH] bpftool: Fix undefined behavior caused by shifting into the sign bit
+Date: Sun,  8 Sep 2024 22:00:09 +0800
+Message-Id: <20240908140009.3149781-1-visitorckw@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ME0P300MB0416A96545165A39507DF6429D9F2@ME0P300MB0416.AUSP300.PROD.OUTLOOK.COM>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
+Content-Transfer-Encoding: 8bit
 
-On 09/08, Tianyi Liu wrote:
->
-> On Mon, Sep 06, 2024 at 18:43:00AM +0800, Jiri Olsa wrote:
->
-> > would you consider sending another version addressing Oleg's points
-> > for changelog above?
->
-> My pleasure, I'll resend the updated patch in a new thread.
->
-> Based on previous discussions, `uprobe_perf_filter` acts as a preliminary
-> filter that removes breakpoints when they are no longer needed.
+Replace shifts of '1' with '1U' in bitwise operations within
+__show_dev_tc_bpf() to prevent undefined behavior caused by shifting
+into the sign bit of a signed integer. By using '1U', the operations
+are explicitly performed on unsigned integers, avoiding potential
+integer overflow or sign-related issues.
 
-Well. Not only. See the usage of consumer_filter() and filter_chain() in
-register_for_each_vma().
+Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
+---
+ tools/bpf/bpftool/net.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-> More complex filtering mechanisms related to perf are implemented in
-> perf-specific paths.
-
-The perf paths in __uprobe_perf_func() do the filtering based on
-perf_event->hw.target, that is all.
-
-But uprobe_perf_filter() or any other consumer->filter() simply can't rely
-on pid/task, it has to check ->mm.
-
-> From my understanding, the original patch attempted to partially implement
-> UPROBE_HANDLER_REMOVE (since it didn't actually remove the breakpoint but
-> only prevented it from entering the BPF-related code).
-
-Confused...
-
-Your patch can help bpftrace although it (or any other change in
-trace_uprobe.c) can't not actually fix all the problems with bpf/filtering
-even if we forget about ret-probes.
-
-And I don't understand how this relates to UPROBE_HANDLER_REMOVE...
-
-> I'm trying to provide a complete implementation, i.e., removing the
-> breakpoint when `uprobe_perf_filter` returns false, similar to how uprobe
-> functions. However, this would require merging the following functions,
-> because they will almost be the same:
->
-> uprobe_perf_func / uretprobe_perf_func
-> uprobe_dispatcher / uretprobe_dispatcher
-> handler_chain / handle_uretprobe_chain
-
-Sorry, I don't understand... Yes, uprobe_dispatcher and uretprobe_dispatcher
-can share more code or even unified, but
-
-> I suspect that uretprobe might have been implemented later than uprobe
-
-Yes,
-
-> and was only partially implemented.
-
-what do you mean?
-
-But whatever you meant, I agree that this code doesn't look pretty and can
-be cleanuped.
-
-> In your opinion, does uretprobe need UPROBE_HANDLER_REMOVE?
-
-Probably. But this has absolutely nothing to do with the filtering problem?
-Can we discuss this separately?
-
-> I'm aware that using `uprobe_perf_filter` in `uretprobe_perf_func` is not
-> the solution for BPF filtering. I'm just trying to alleviate the issue
-> in some simple cases.
-
-Agreed.
-
--------------------------------------------------------------------------------
-To summarise.
-
-This code is very old, and it was written for /usr/bin/perf which attaches
-to the tracepoint. So multiple instances of perf-record will share the same
-consumer/trace_event_call/filter. uretprobe_perf_func() doesn't call
-uprobe_perf_filter() because (if /usr/bin/perf is the only user) in the likely
-case it would burn CPU and return true. Quite possibly this design was not
-optimal from the very beginning, I simply can't recall why the is_ret_probe()
-consumer has ->handler != NULL, but it was not buggy.
-
-Now we have bpf, create_local_trace_uprobe(), etc. So lets add another
-uprobe_perf_filter() into uretprobe_perf_func() as your patch did.
-
-Then we can probably change uprobe_handle_trampoline() to do
-unapply_uprobe() if all the ret-handlers return UPROBE_HANDLER_REMOVE, like
-handler_chain() does.
-
-Then we can probably cleanup/simplify trace_uprobe.c, in partucular we can
-change alloc_trace_uprobe()
-
--	tu->consumer.handler = uprobe_dispatcher;
--	if (is_ret)
--		tu->consumer.ret_handler = uretprobe_dispatcher;
-+	if (is_ret)
-+		tu->consumer.ret_handler = uretprobe_dispatcher;
-+	else
-+		tu->consumer.handler = uprobe_dispatcher;
-
-and do more (including unrelated) cleanups.
-
-But lets do this step-by-step.
-
-And lets not mix the filtering issues with the UPROBE_HANDLER_REMOVE logic,
-to me this adds the unnecessary confusion.
-
-Oleg.
+diff --git a/tools/bpf/bpftool/net.c b/tools/bpf/bpftool/net.c
+index 968714b4c3d4..ad2ea6cf2db1 100644
+--- a/tools/bpf/bpftool/net.c
++++ b/tools/bpf/bpftool/net.c
+@@ -482,9 +482,9 @@ static void __show_dev_tc_bpf(const struct ip_devname_ifindex *dev,
+ 		if (prog_flags[i] || json_output) {
+ 			NET_START_ARRAY("prog_flags", "%s ");
+ 			for (j = 0; prog_flags[i] && j < 32; j++) {
+-				if (!(prog_flags[i] & (1 << j)))
++				if (!(prog_flags[i] & (1U << j)))
+ 					continue;
+-				NET_DUMP_UINT_ONLY(1 << j);
++				NET_DUMP_UINT_ONLY(1U << j);
+ 			}
+ 			NET_END_ARRAY("");
+ 		}
+@@ -493,9 +493,9 @@ static void __show_dev_tc_bpf(const struct ip_devname_ifindex *dev,
+ 			if (link_flags[i] || json_output) {
+ 				NET_START_ARRAY("link_flags", "%s ");
+ 				for (j = 0; link_flags[i] && j < 32; j++) {
+-					if (!(link_flags[i] & (1 << j)))
++					if (!(link_flags[i] & (1U << j)))
+ 						continue;
+-					NET_DUMP_UINT_ONLY(1 << j);
++					NET_DUMP_UINT_ONLY(1U << j);
+ 				}
+ 				NET_END_ARRAY("");
+ 			}
+-- 
+2.34.1
 
 
