@@ -1,140 +1,204 @@
-Return-Path: <bpf+bounces-39202-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39203-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20D289707E9
-	for <lists+bpf@lfdr.de>; Sun,  8 Sep 2024 16:00:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF6E0970860
+	for <lists+bpf@lfdr.de>; Sun,  8 Sep 2024 17:17:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6A682281D5E
-	for <lists+bpf@lfdr.de>; Sun,  8 Sep 2024 14:00:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 99EB91F219F4
+	for <lists+bpf@lfdr.de>; Sun,  8 Sep 2024 15:17:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F393B16FF41;
-	Sun,  8 Sep 2024 14:00:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB95117332A;
+	Sun,  8 Sep 2024 15:17:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dFMq+FJo"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m0uHsgcR"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34D2EA2D;
-	Sun,  8 Sep 2024 14:00:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C61D1487F1;
+	Sun,  8 Sep 2024 15:17:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725804029; cv=none; b=VNFgxgolLn6tbaBScNqwlC0nboylYuLYKOOywM3rfUpJLDtrvNpeETLqWAWZTY+14ZuJycMVQ5o8+Pbeqd17qyEGeEzgFQZ/6QiE8ugn5G0KWN6Rs1TT+HVYPivScpIOlOLiAICqxZlcJtclKwx2cIceKBMEg8N9c5eX1dfwBsk=
+	t=1725808642; cv=none; b=X+PaZsvHdkDGKGNi8eC9HUnUoD1V0A+A9/j4Wu/1VsR+/fxsF4dwdVA4335uk1vReFbEGj4VjqQ+6Y+FnhtAxQypttZgki2ZktIfn1sz+8tX9UFztc8EPIorgKdDfGMsZw8dlTdX+rkJKbwpzojUlipcPOXalIJfaF8h0tejnNs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725804029; c=relaxed/simple;
-	bh=Y2NDtCjVER93A9w2ReGNK7/dzcf+hFjKCrvUyF4u80E=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=LO+dIGdVlAD4LilFD5/V09HQGylrrXskcYKji80Ml4uYyv37/RtnJuBt6zbhXTS6MguSUjZi3WfHumODlbKMHbtvsFA5iCENUTtJ/NFTwNCdYW6R+PjiQ7LPe3To8LVc8YQiUWbLTKHoYEUviDJ5ZzzLpOxumIPBvzaYiB/LFcM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dFMq+FJo; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-2054feabfc3so30093325ad.1;
-        Sun, 08 Sep 2024 07:00:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1725804027; x=1726408827; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=7pj0AerlWB+eF4qNe7zKXJKWx1M/nXwU17bMun+xn84=;
-        b=dFMq+FJo275m23g/1KxemJXU8v6vG8cbNXebAJI+KZSkBz3KZ88Of5dxDm99lwKUUX
-         IO4WMhp0rFq0YCHfIwszARGYNTtasOf5PEpU2h57Mx3ePEthJOocFA/8rEvLqh1uIT8o
-         4h+YHwEkzh1iRSUWd4w2B9XSmf54Re6BzT7QzmsKfXh8TI3ytJxZcMITTncKK/r/adO9
-         KxlNygdBj7myE5q3yDoMhBN17Uv8WetUDyN9A5YygSo0Jnhygt5jDOeUTLKGMNAZzZKy
-         cetI52fgF9McpUEEQP/rI3KenyeSgRh5rJL2V1Joclm0Jzw9dOuwD1Z6cIR+Z2fAfcI5
-         95uA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725804027; x=1726408827;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7pj0AerlWB+eF4qNe7zKXJKWx1M/nXwU17bMun+xn84=;
-        b=JxYm5xNxHYCValTGpcQ9y1ttzPJDCEwuqt86frADrHQtcPXDXhQR2zE1PHVcw7s/Pj
-         y4PbAUC4ND6UNkA40AYmUMcnyuVLMBbXvpn2TBaf2KDp/guIQvCdoFgiE9VBwm1yEnCQ
-         mURmwT9la0YIGMRHDwCnuVYYNkBPuGFJ2Qek64g+z8ekercR5QexCYDz+UJujBYDxMbx
-         l8cVguMkc+soSOobfsiVIjQ9GcMulYbSn0exe9I5CF9Cw33leYJZkb8AcqcO8lrYqsYa
-         FyoRYeb7iKh0S2nWv+4EC28hrrXn9Z3F+Y7IEdaJZRdjzDHgdDIg2V65PcEQzpW79Cke
-         O/PA==
-X-Forwarded-Encrypted: i=1; AJvYcCVQHRk2W23/1Qb7qIELzZyq1xZZr15KsyZOrzVNFl44+9QP7NwOBlblGtKmTqqUD+zFUfI=@vger.kernel.org, AJvYcCX9r45aLPpS1tl0WI1I0/GskJbzyjoNanzKH169kFir3u7xBPc/ycIhIIv9+TDNMueHG49uZaohxFTSuuLs@vger.kernel.org
-X-Gm-Message-State: AOJu0YwqB9oHEZ8KnpskJj+kDBN//L/lLmmDdAd9ioSvHqiM+GMLEyg7
-	AQiFUs43QA/VUsYu+b3NBpyDe/FawaIQUW8gX7O1+KNu96cn4kx/
-X-Google-Smtp-Source: AGHT+IHbKGBuA+EAxRn/bKTjAwZ/cMAEbkBNM60vx74Q24qVyty3SApZob0+FbTm5Ul8OtxMM30rjg==
-X-Received: by 2002:a17:903:23c9:b0:206:a913:9697 with SMTP id d9443c01a7336-206f0612ef6mr82267335ad.43.1725804026367;
-        Sun, 08 Sep 2024 07:00:26 -0700 (PDT)
-Received: from visitorckw-System-Product-Name.. ([140.113.216.168])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20710e328aasm20379895ad.91.2024.09.08.07.00.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 08 Sep 2024 07:00:24 -0700 (PDT)
-From: Kuan-Wei Chiu <visitorckw@gmail.com>
-To: qmo@kernel.org
-Cc: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	jserv@ccns.ncku.edu.tw,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Kuan-Wei Chiu <visitorckw@gmail.com>
-Subject: [PATCH] bpftool: Fix undefined behavior caused by shifting into the sign bit
-Date: Sun,  8 Sep 2024 22:00:09 +0800
-Message-Id: <20240908140009.3149781-1-visitorckw@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1725808642; c=relaxed/simple;
+	bh=hVjgUKusbVBPprpt143SVZ7B/OMrtw61kI00W3VV/Zc=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=t2/0dJNF2v2lcjG9kZ8UoDn9KloSDVmVn53Ki89fGGEr5o1jAfyvou+cTkOs0KAohLcxqV+z6Uz3jVFJQNRwIpe+HaUhC0fD2Ro98KlNByO/O2ItLs7Zm1XykS66K/8bsEtYN+gKPP7kL8ZKrfnkJb39B+GKMXvO3oPmELiFeAs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=m0uHsgcR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 179FFC4CEC5;
+	Sun,  8 Sep 2024 15:17:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1725808642;
+	bh=hVjgUKusbVBPprpt143SVZ7B/OMrtw61kI00W3VV/Zc=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=m0uHsgcRFn6NfT8z80S67WbbKSEKby8GbTb/NitaCzghveveOrd97FvMJbsnUbDaM
+	 6Msvttf1R/8B25RXk6Eu8DYsw4NurmerwEwaUI5+BztmmCgfPokW8F/bif0ukwaWQg
+	 /nWx+3EQmFIpxhoV8XG+QPE3wjtbHsf3s0R+2WKX+OPJgOsh2QDieI7dg8SYDNP/1g
+	 dubytga6H+iq/cqSNnmZDyez9afAjWT1Nl/b6vEaQJv2ZbPzap0NJBQDysY+v37pkg
+	 jnAkvOeT4x8YGBSTYWgRO32vrlLnQud1tYuFMd9EDo6r4Aa3UQW90Nkk0JKiNHgjGF
+	 OyeftEpA2U4Fg==
+Date: Mon, 9 Sep 2024 00:17:18 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Sven Schnelle <svens@linux.ibm.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>, Mark Rutland
+ <mark.rutland@arm.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ bpf@vger.kernel.org
+Subject: Re: [PATCH 4/7] Add print_function_args()
+Message-Id: <20240909001718.ffbfc2ac8b7888a94735720f@kernel.org>
+In-Reply-To: <20240904065908.1009086-5-svens@linux.ibm.com>
+References: <20240904065908.1009086-1-svens@linux.ibm.com>
+	<20240904065908.1009086-5-svens@linux.ibm.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Replace shifts of '1' with '1U' in bitwise operations within
-__show_dev_tc_bpf() to prevent undefined behavior caused by shifting
-into the sign bit of a signed integer. By using '1U', the operations
-are explicitly performed on unsigned integers, avoiding potential
-integer overflow or sign-related issues.
+On Wed,  4 Sep 2024 08:58:58 +0200
+Sven Schnelle <svens@linux.ibm.com> wrote:
 
-Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
----
- tools/bpf/bpftool/net.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+> Add a function to decode argument types with the help of BTF. Will
+> be used to display arguments in the function and function graph
+> tracer.
+> 
+> Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
+> ---
+>  kernel/trace/trace_output.c | 68 +++++++++++++++++++++++++++++++++++++
+>  kernel/trace/trace_output.h |  9 +++++
+>  2 files changed, 77 insertions(+)
+> 
+> diff --git a/kernel/trace/trace_output.c b/kernel/trace/trace_output.c
+> index d8b302d01083..70405c4cceb6 100644
+> --- a/kernel/trace/trace_output.c
+> +++ b/kernel/trace/trace_output.c
+> @@ -12,8 +12,11 @@
+>  #include <linux/sched/clock.h>
+>  #include <linux/sched/mm.h>
+>  #include <linux/idr.h>
+> +#include <linux/btf.h>
+> +#include <linux/bpf.h>
+>  
+>  #include "trace_output.h"
+> +#include "trace_btf.h"
+>  
+>  /* must be a power of 2 */
+>  #define EVENT_HASHSIZE	128
+> @@ -669,6 +672,71 @@ int trace_print_lat_context(struct trace_iterator *iter)
+>  	return !trace_seq_has_overflowed(s);
+>  }
+>  
+> +#ifdef CONFIG_FUNCTION_TRACE_ARGS
+> +void print_function_args(struct trace_seq *s, struct ftrace_regs *fregs,
+> +			 unsigned long func)
+> +{
+> +	const struct btf_param *param;
+> +	const struct btf_type *t;
+> +	const char *param_name;
+> +	char name[KSYM_NAME_LEN];
+> +	unsigned long arg;
+> +	struct btf *btf;
+> +	s32 tid, nr = 0;
+> +	int i;
+> +
+> +	trace_seq_printf(s, "(");
+> +
+> +	if (!ftrace_regs_has_args(fregs))
+> +		goto out;
+> +	if (lookup_symbol_name(func, name))
+> +		goto out;
+> +
+> +	btf = bpf_get_btf_vmlinux();
+> +	if (IS_ERR_OR_NULL(btf))
+> +		goto out;
+> +
+> +	t = btf_find_func_proto(name, &btf);
+> +	if (IS_ERR_OR_NULL(t))
+> +		goto out;
+> +
+> +	param = btf_get_func_param(t, &nr);
+> +	if (!param)
+> +		goto out_put;
+> +
+> +	for (i = 0; i < nr; i++) {
+> +		arg = ftrace_regs_get_argument(fregs, i);
+> +
+> +		param_name = btf_name_by_offset(btf, param[i].name_off);
+> +		if (param_name)
+> +			trace_seq_printf(s, "%s = ", param_name);
+> +		t = btf_type_skip_modifiers(btf, param[i].type, &tid);
+> +		if (!t)
+> +			continue;
+> +		switch (BTF_INFO_KIND(t->info)) {
+> +		case BTF_KIND_PTR:
+> +			trace_seq_printf(s, "0x%lx", arg);
+> +			break;
+> +		case BTF_KIND_INT:
+> +			trace_seq_printf(s, "%ld", arg);
 
-diff --git a/tools/bpf/bpftool/net.c b/tools/bpf/bpftool/net.c
-index 968714b4c3d4..ad2ea6cf2db1 100644
---- a/tools/bpf/bpftool/net.c
-+++ b/tools/bpf/bpftool/net.c
-@@ -482,9 +482,9 @@ static void __show_dev_tc_bpf(const struct ip_devname_ifindex *dev,
- 		if (prog_flags[i] || json_output) {
- 			NET_START_ARRAY("prog_flags", "%s ");
- 			for (j = 0; prog_flags[i] && j < 32; j++) {
--				if (!(prog_flags[i] & (1 << j)))
-+				if (!(prog_flags[i] & (1U << j)))
- 					continue;
--				NET_DUMP_UINT_ONLY(1 << j);
-+				NET_DUMP_UINT_ONLY(1U << j);
- 			}
- 			NET_END_ARRAY("");
- 		}
-@@ -493,9 +493,9 @@ static void __show_dev_tc_bpf(const struct ip_devname_ifindex *dev,
- 			if (link_flags[i] || json_output) {
- 				NET_START_ARRAY("link_flags", "%s ");
- 				for (j = 0; link_flags[i] && j < 32; j++) {
--					if (!(link_flags[i] & (1 << j)))
-+					if (!(link_flags[i] & (1U << j)))
- 						continue;
--					NET_DUMP_UINT_ONLY(1 << j);
-+					NET_DUMP_UINT_ONLY(1U << j);
- 				}
- 				NET_END_ARRAY("");
- 			}
+Don't we check the size and signed? :)
+
+> +			break;
+> +		case BTF_KIND_ENUM:
+> +			trace_seq_printf(s, "%ld", arg);
+
+nit: %d? (enum is equal to the int type)
+
+BTW, this series splits the patches by coding, not functionality.
+For the first review, it is OK. But eventually those should be merged.
+
+Thank you,
+
+> +			break;
+> +		default:
+> +			trace_seq_printf(s, "0x%lx (%d)", arg, BTF_INFO_KIND(param[i].type));
+> +			break;
+> +		}
+> +		if (i < nr - 1)
+> +			trace_seq_printf(s, ", ");
+> +	}
+> +out_put:
+> +	btf_put(btf);
+> +out:
+> +	trace_seq_printf(s, ")");
+> +}
+> +#endif
+> +
+>  /**
+>   * ftrace_find_event - find a registered event
+>   * @type: the type of event to look for
+> diff --git a/kernel/trace/trace_output.h b/kernel/trace/trace_output.h
+> index dca40f1f1da4..a21d8ce606f7 100644
+> --- a/kernel/trace/trace_output.h
+> +++ b/kernel/trace/trace_output.h
+> @@ -41,5 +41,14 @@ extern struct rw_semaphore trace_event_sem;
+>  #define SEQ_PUT_HEX_FIELD(s, x)				\
+>  	trace_seq_putmem_hex(s, &(x), sizeof(x))
+>  
+> +#ifdef CONFIG_FUNCTION_TRACE_ARGS
+> +void print_function_args(struct trace_seq *s, struct ftrace_regs *fregs,
+> +			 unsigned long func);
+> +#else
+> +static inline void print_function_args(struct trace_seq *s, struct ftrace_regs *fregs,
+> +				       unsigned long func) {
+> +	trace_seq_puts(s, "()");
+> +}
+> +#endif
+>  #endif
+>  
+> -- 
+> 2.43.0
+> 
+
+
 -- 
-2.34.1
-
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
