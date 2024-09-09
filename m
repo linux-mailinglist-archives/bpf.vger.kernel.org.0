@@ -1,49 +1,49 @@
-Return-Path: <bpf+bounces-39375-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39376-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 015F8972586
-	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 01:00:59 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23706972597
+	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 01:10:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BEEB7285008
-	for <lists+bpf@lfdr.de>; Mon,  9 Sep 2024 23:00:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C08A01F24840
+	for <lists+bpf@lfdr.de>; Mon,  9 Sep 2024 23:10:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FA7818E340;
-	Mon,  9 Sep 2024 23:00:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2A5B18DF64;
+	Mon,  9 Sep 2024 23:10:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CVSO/dy3"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ABm2xHoT"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15C8318E03E;
-	Mon,  9 Sep 2024 23:00:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AF0818CBF0
+	for <bpf@vger.kernel.org>; Mon,  9 Sep 2024 23:10:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725922832; cv=none; b=CEJ5j2w7ij+xmBbWOM8HJbXuIo3Lo1bsv8ODp7V7Ox5U465wnbuq8SG/HpCclC//+5FG9iSJ5I7qklo6qg1CldX6XVeWa0/cNXXCQMGTvyWTgZFOiQeAAatkQUcsA2MYlTiJsP3cpsyB+d4Wk2U4ypVpfxxJi+a7A5yMBBBz25Y=
+	t=1725923428; cv=none; b=MPa9M4qKyekXtnukXV0q8EkTBYvn60xSW1UsQbGE72kp9RGtvQNVXvuMsLEaj4/vDmfLw3CGXm5YIPkkoxAAbXzWhSJbs3kHz0qq34f7SeDUQ37kK8UWxt/EKtmjQWUamlMWZBCOvi9JdwE3IN8V7fEUkENvJR6vmEEAWncm+8w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725922832; c=relaxed/simple;
-	bh=FVU+e0uUbeUPEEjSwOVvbkcKHW7sTPraTqYrzbKWPJY=;
+	s=arc-20240116; t=1725923428; c=relaxed/simple;
+	bh=pbx8EbEiVNMPEomtLEOvCNuR3jKXT+D+TW9zAn3BEHI=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=GCNlW/TQF+FLD0qEAgvmff8PzfSqKeK3b9kySUjDK+74YDV7IuBVLfyrtCvlY5idFlZ4af/LkDpxH41XWcIKT92yrmTuxLLxs6DIQkCe4a8L2rm3G03E963O4EvYUAarU5f5Gfozeej3oL0afWC4cd00Ch23aoSurtApN8s3s8M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CVSO/dy3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 810EEC4CEC5;
-	Mon,  9 Sep 2024 23:00:31 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=pa07Dz2++yRxFAny2rWAQ8rG6/cV8Zh05LtZIRW2XpWWKyplSfCstJlG1LDkDw6MGdJAqd5wf6oYkvszVvwtEIsRePCptJybERndBmVN+bI7Nq2xUOdLaJHSArCRc/+bdQOPgupxAeuWBnag1QbOYajQjAux12TxO7+os99dk+0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ABm2xHoT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8E86C4CEC5;
+	Mon,  9 Sep 2024 23:10:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1725922831;
-	bh=FVU+e0uUbeUPEEjSwOVvbkcKHW7sTPraTqYrzbKWPJY=;
+	s=k20201202; t=1725923427;
+	bh=pbx8EbEiVNMPEomtLEOvCNuR3jKXT+D+TW9zAn3BEHI=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=CVSO/dy3Z8HTdqeZ6UhpD6jeA21IOUm+ADrcbcUDNwL8SQqarICs1QJTolnMCPSSH
-	 /YNSnvwLH15bOYy8ge7MdEbuD1ROCv2VGNcDgDT9/McMIYUKjldRMEQx/di0toq0zC
-	 T8jugT7TLBx5dSeZOdIhIGruN89/LTNNhqaPW11CMzcOWUv+T0q7TpEJSxSP5fRC+F
-	 jmUZ98BV60SmzLlyH+l+iG9UYcTSfE8HFJJur0E8s69qRaFVNQgkee36+kZlzke1gg
-	 mRY1rU7ul3H3G70t9CBhJoXQ2c4BIIjFTTfQWoPdfebF9FMTyisT1EQdcu6iPkoxni
-	 zIn3hpf1sDUYg==
+	b=ABm2xHoT+l4ByUKmmDSQtHjtjG6HeDTWhIcw7m+ShbxOfHMcL541KmEgJE2MoEdNI
+	 yBoG9WbsZMAX5eXjd4Pz0AAPqRWzs5hBYEJbxV3pcXsHaGCPgtUKahorucVNgZBYXz
+	 ytvPPDdcitFXaqj2eBh71421ONaLAP0iKQNtR2fzyfDmWo63TwECAHBeI90lGPPDfV
+	 IqPsmrnG1BG6mhnzYPJBjFRPfb6ctm19QUTxfQnDMOZ+vAP140vyNZX66bxKp+FLhE
+	 MXe+8X1ENf+uxY/QvAFePft1ioZOPzq/XPIYfOM2MUNr/ls+eMYCAXN13kq/iBmTn7
+	 QxeEHaTXoCwXg==
 Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id ADFCC3806654;
-	Mon,  9 Sep 2024 23:00:33 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EAE123806654;
+	Mon,  9 Sep 2024 23:10:29 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -52,42 +52,44 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf] bpf: Fix error message on kfunc arg type mismatch
+Subject: Re: [PATCH bpf-next v2] libbpf: fix some typos in comments
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <172592283251.3949024.7942929079715382663.git-patchwork-notify@kernel.org>
-Date: Mon, 09 Sep 2024 23:00:32 +0000
-References: <20240909133909.1315460-1-maxim@isovalent.com>
-In-Reply-To: <20240909133909.1315460-1-maxim@isovalent.com>
-To: Maxim Mikityanskiy <maxtram95@gmail.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
- andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me,
- haoluo@google.com, jolsa@kernel.org, mykolal@fb.com, shuah@kernel.org,
- maxim@isovalent.com, alan.maguire@oracle.com, memxor@gmail.com,
- andreimatei1@gmail.com, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
+ <172592342877.3950880.9473045380967973405.git-patchwork-notify@kernel.org>
+Date: Mon, 09 Sep 2024 23:10:28 +0000
+References: <20240909225952.30324-1-yunwei356@gmail.com>
+In-Reply-To: <20240909225952.30324-1-yunwei356@gmail.com>
+To: Yusheng Zheng <yunwei356@gmail.com>
+Cc: bpf@vger.kernel.org, alexei.starovoitov@gmail.com, andrii@kernel.org,
+ eddyz87@gmail.com, ast@kernel.org, daniel@iogearbox.net,
+ martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
+ john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
+ haoluo@google.com, jolsa@kernel.org
 
 Hello:
 
 This patch was applied to bpf/bpf-next.git (master)
 by Andrii Nakryiko <andrii@kernel.org>:
 
-On Mon,  9 Sep 2024 16:39:09 +0300 you wrote:
-> When "arg#%d expected pointer to ctx, but got %s" error is printed, both
-> template parts actually point to the type of the argument, therefore, it
-> will also say "but got PTR", regardless of what was the actual register
-> type.
+On Mon,  9 Sep 2024 22:59:52 +0000 you wrote:
+> Fix some spelling errors in the code comments of libbpf:
 > 
-> Fix the message to print the register type in the second part of the
-> template, change the existing test to adapt to the new format, and add a
-> new test to test the case when arg is a pointer to context, but reg is a
-> scalar.
+> betwen -> between
+> paremeters -> parameters
+> knowning -> knowing
+> definiton -> definition
+> compatiblity -> compatibility
+> overriden -> overridden
+> occured -> occurred
+> proccess -> process
+> managment -> management
+> nessary -> necessary
 > 
 > [...]
 
 Here is the summary with links:
-  - [bpf] bpf: Fix error message on kfunc arg type mismatch
-    https://git.kernel.org/bpf/bpf-next/c/bee109b7b3e5
+  - [bpf-next,v2] libbpf: fix some typos in comments
+    https://git.kernel.org/bpf/bpf-next/c/41d0c4677fee
 
 You are awesome, thank you!
 -- 
