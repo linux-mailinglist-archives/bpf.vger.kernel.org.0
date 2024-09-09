@@ -1,122 +1,246 @@
-Return-Path: <bpf+bounces-39309-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39310-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 716DB9718BB
-	for <lists+bpf@lfdr.de>; Mon,  9 Sep 2024 13:53:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 670709718CE
+	for <lists+bpf@lfdr.de>; Mon,  9 Sep 2024 13:57:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8EC0A1C22C66
-	for <lists+bpf@lfdr.de>; Mon,  9 Sep 2024 11:53:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 204AC283D10
+	for <lists+bpf@lfdr.de>; Mon,  9 Sep 2024 11:57:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F20FC1B9B2B;
-	Mon,  9 Sep 2024 11:52:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 021BB1B5ED9;
+	Mon,  9 Sep 2024 11:57:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Oc1eCbt7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EunNC8rt"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86AD81B652E
-	for <bpf@vger.kernel.org>; Mon,  9 Sep 2024 11:52:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 788941B6521;
+	Mon,  9 Sep 2024 11:57:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725882725; cv=none; b=S+Bcdgc/Kv74MocXYcLwiD/8nPEMR9rtSC6S3HJyDXt/MKQvUu/0Wk9EjdLaW9J1vrLGcnak0jmpjFYBVIinj+wpJ5UNeH5NWY7PDYt/n6Jvq73bQ7Txqf6M5yiZxPPFgKQqjuxVUtYTxGDwLUNkn6kyJgyIB209G5kMm+I1qLw=
+	t=1725883034; cv=none; b=kl2bZaPIovThEVFO3qJ4EomWdHeL/wANOs+Ksgj/aTgOYTQDWtEq8X2Ya9Mjo3m44JHKTlQPVhw7M4ndCg29271sP6vvvqP6SSln8kdUuUjL/kK3PpZslTttM4zmDAscweOglR2e86HQ2V9bk2+3MRyAftBdmjyPSFtbucKYHtI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725882725; c=relaxed/simple;
-	bh=EiC8OQDhRuRRnspMrUz355VI1ThpTLym3dvoV13glgc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aSIzNcMOn+1csiYiE3Ap81w+6+kqxwEdYpCuMh6RBVh6YcCv57tdYANHc0rNP5fTp9gbVq7tffX6Ck5Dug5WetvtL9jSbkLC2HbGPUEwPnXTSE1eOeXfNUdLhj8F1wXZxCKCltETdpeQYBV6Jf0RWViEoGNhJrWvZAYDxdCbKe8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Oc1eCbt7; arc=none smtp.client-ip=209.85.208.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2f75c205e4aso21074361fa.0
-        for <bpf@vger.kernel.org>; Mon, 09 Sep 2024 04:52:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1725882721; x=1726487521; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Lq5kjTXazkMKiLd8iRoej7o/kDO4fOput9ybJCZQfQo=;
-        b=Oc1eCbt7YmtevVACe1C1kNw8j9295MpmM2s9EYW/+YTVyqlOoO22rLaBQkMsSC3v0X
-         oQ/Mh+oNwziyq4oDmKbgWPACCi/4BHP3wyy6uPNxvYaKxe6u4NORP37fc0QFt9rpsuEu
-         4Ei/n/Mtyzh5RuLQHtVAdpYP2iU44rcqYaC7V8aYfs9xqOW1igpfVEHX7MbRNyJiQOzN
-         BlW6ERBAWhfY5YzER73mnLD8QYEb8bza8XfLWBqD461lrgcLERygnY8yFMr60/eNJmsg
-         uQPJlCWKOc9mUF0j9UHEg/tMzz4z6B9QaQoLS/b/qQpUZjKi10WXPzDv6R0SgtXSwNbI
-         vHgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725882721; x=1726487521;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Lq5kjTXazkMKiLd8iRoej7o/kDO4fOput9ybJCZQfQo=;
-        b=f6ZFLe1vNeQ2vIASwd3yGWkaQCkpTnMtuejnIFKieBdMnkdxgO8plGd3IYgZXd6xtl
-         T2szSREbLmdjYi/DThTeDB48ayeL2XmjdWhmaN31f14HQidYsXPlXBn+Qjmdz8UM8Oos
-         Gzqku79SNFbEMochq8PYcOt78omc2mBkPWZEN+7cG3OygEqFiggUCd7PnjOhDPfO62Vh
-         1Pl5H8Kg3AYUy8hSOyTDsCCtjeCxTtGFAMu/hzTT+d5LvIE7c0Mg+I58vtA1kKVZDnZM
-         ClZ4WL3yMNgnnAmlJ7grt86/n82X8GKRycTAYK0ESQJ1Afeyyc+WPUFQPOnO2Ei+Tydf
-         Syuw==
-X-Gm-Message-State: AOJu0YwLWCEPXm/CktWq4gtr1E2pXliDojF1LDIUQ7qfIkT5Fc71p4u4
-	KhXjRCJpWWMF2vkbfTAbzZ2AxRNkhJlQxuMbK2tYR3iefAPrQ7zNB73USMIS59s=
-X-Google-Smtp-Source: AGHT+IFdaoJccYZZ2yEfkDsNa2E4IuN3airm5H9G53hmkVPTnFbd6dKUbvsKY3/zOsDpVqXpjLkl2Q==
-X-Received: by 2002:a2e:a552:0:b0:2f3:e2fd:aede with SMTP id 38308e7fff4ca-2f751f5e4bbmr82554011fa.31.1725882720413;
-        Mon, 09 Sep 2024 04:52:00 -0700 (PDT)
-Received: from u94a (1-174-29-79.dynamic-ip.hinet.net. [1.174.29.79])
-        by smtp.gmail.com with ESMTPSA id ca18e2360f4ac-82aa76a6ad5sm139386039f.43.2024.09.09.04.51.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Sep 2024 04:52:00 -0700 (PDT)
-Date: Mon, 9 Sep 2024 19:51:54 +0800
-From: Shung-Hsi Yu <shung-hsi.yu@suse.com>
-To: Daniel Borkmann <daniel@iogearbox.net>
-Cc: bpf@vger.kernel.org, andrii@kernel.org, ast@kernel.org, 
-	kongln9170@gmail.com
-Subject: Re: [PATCH bpf-next v4 3/8] bpf: Fix helper writes to read-only maps
-Message-ID: <i4jixqefn3wb5vsepxcdarux7olysohgvb3yalm3reglovpesi@en5kud6i5xfb>
-References: <20240906135608.26477-1-daniel@iogearbox.net>
- <20240906135608.26477-3-daniel@iogearbox.net>
+	s=arc-20240116; t=1725883034; c=relaxed/simple;
+	bh=Xs1ma3py/kYQl+X+Z1t4uxsWvuP6OYkETY78e8ZgRGc=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=nZ+Z9z518AxjYvIXmRI7Tek3LNf2bSFT98f+ci1Q6of6xlGICln0iupEIAIMj0nIhL14c6cCD1flUnFX4DBRAOhZ8FYyro/L+L6nX7VUrHuTdJR0T4MaJeGJQzHLg4dIaQT/pejbEew87wKYoMSIWHG/hb5ATjcjK+csOcSlpt4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EunNC8rt; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F040FC4CEC5;
+	Mon,  9 Sep 2024 11:57:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1725883034;
+	bh=Xs1ma3py/kYQl+X+Z1t4uxsWvuP6OYkETY78e8ZgRGc=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+	b=EunNC8rtl0pHf0fMNVqfew4abZDFXZd9Euf//3xorzLJsPEwXXptrJEaFFooTq02+
+	 Ma2/HmtZh1BMoT4o8sv5QX11wBFvdgnPQXU8RnoTqFnfWrrjqPuT2v9C7ZqLSu2ZDH
+	 V36dsM8KBFh2LX/tBIBiIR1ktKXLy46DtofdSCK7SQaLjdgp4eJPloF8KISw6WtyCD
+	 RvIEkolAxl9RdRvVW+sAaaDQXm/ye1y/Di+qQw/xPwh9wSBkC3u3WNQmun9NOHbk5I
+	 PgFxaDItCfAV5eZkd8yAGNfdL82IGPHFHU6Zqf8jwXm5UuQGkDp6EegE6GKhUxftm7
+	 6X7v/r4x2JtSA==
+Message-ID: <332e79e8eb212de91c848ef0d99a2f3326a8153f.camel@kernel.org>
+Subject: Re: [PATCH mptcp-next v2 1/4] bpf: Add mptcp_subflow bpf_iter
+From: Geliang Tang <geliang@kernel.org>
+To: mptcp@lists.linux.dev
+Cc: Geliang Tang <tanggeliang@kylinos.cn>, bpf <bpf@vger.kernel.org>, Martin
+ KaFai Lau <martin.lau@kernel.org>
+Date: Mon, 09 Sep 2024 19:57:10 +0800
+In-Reply-To: <a4a0e759b9f82a17ddd2eac68f6cd99788248683.1725845619.git.tanggeliang@kylinos.cn>
+References: <cover.1725845619.git.tanggeliang@kylinos.cn>
+	 <a4a0e759b9f82a17ddd2eac68f6cd99788248683.1725845619.git.tanggeliang@kylinos.cn>
+Autocrypt: addr=geliang@kernel.org; prefer-encrypt=mutual;
+ keydata=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
+ Px+2P2cKc7LXXedb/qQ3M
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.52.3-0ubuntu1 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240906135608.26477-3-daniel@iogearbox.net>
+Content-Transfer-Encoding: 8bit
 
-On Fri, Sep 06, 2024 at 03:56:03PM GMT, Daniel Borkmann wrote:
-> Lonial found an issue that despite user- and BPF-side frozen BPF map
-> (like in case of .rodata), it was still possible to write into it from
-> a BPF program side through specific helpers having ARG_PTR_TO_{LONG,INT}
-> as arguments.
+On Mon, 2024-09-09 at 09:36 +0800, Geliang Tang wrote:
+> From: Geliang Tang <tanggeliang@kylinos.cn>
 > 
-> In check_func_arg() when the argument is as mentioned, the meta->raw_mode
-> is never set. Later, check_helper_mem_access(), under the case of
-> PTR_TO_MAP_VALUE as register base type, it assumes BPF_READ for the
-> subsequent call to check_map_access_type() and given the BPF map is
-> read-only it succeeds.
+> It's necessary to traverse all subflows on the conn_list of an MPTCP
+> socket and then call kfunc to modify the fields of each subflow. In
+> kernel space, mptcp_for_each_subflow() helper is used for this:
 > 
-> The helpers really need to be annotated as ARG_PTR_TO_{LONG,INT} | MEM_UNINIT
-> when results are written into them as opposed to read out of them. The
-> latter indicates that it's okay to pass a pointer to uninitialized memory
-> as the memory is written to anyway.
+> 	mptcp_for_each_subflow(msk, subflow)
+> 		kfunc(subflow);
 > 
-> However, ARG_PTR_TO_{LONG,INT} is a special case of ARG_PTR_TO_FIXED_SIZE_MEM
-> just with additional alignment requirement. So it is better to just get
-> rid of the ARG_PTR_TO_{LONG,INT} special cases altogether and reuse the
-> fixed size memory types. For this, add MEM_ALIGNED to additionally ensure
-> alignment given these helpers write directly into the args via *<ptr> = val.
-> The .arg*_size has been initialized reflecting the actual sizeof(*<ptr>).
+> But in the MPTCP BPF program, this has not yet been implemented. As
+> Martin suggested recently, this conn_list walking + modify-by-kfunc
+> usage fits the bpf_iter use case. So this patch adds a new bpf_iter
+> type named "mptcp_subflow" to do this and implements its helpers
+> bpf_iter_mptcp_subflow_new()/_next()/_destroy().
 > 
-> MEM_ALIGNED can only be used in combination with MEM_FIXED_SIZE annotated
-> argument types, since in !MEM_FIXED_SIZE cases the verifier does not know
-> the buffer size a priori and therefore cannot blindly write *<ptr> = val.
+> Then bpf_for_each() for mptcp_subflow can be used in BPF program like
+> this:
 > 
-> Fixes: 57c3bb725a3d ("bpf: Introduce ARG_PTR_TO_{INT,LONG} arg types")
-> Reported-by: Lonial Con <kongln9170@gmail.com>
-> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+> 	bpf_rcu_read_lock();
+> 	bpf_for_each(mptcp_subflow, subflow, msk)
+> 		kfunc(subflow);
+> 	bpf_rcu_read_unlock();
+> 
+> Suggested-by: Martin KaFai Lau <martin.lau@kernel.org>
+> Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
+> ---
+>  net/mptcp/bpf.c      | 51
+> ++++++++++++++++++++++++++++++++++++++++++++
+>  net/mptcp/protocol.h |  6 ++++++
+>  2 files changed, 57 insertions(+)
+> 
+> diff --git a/net/mptcp/bpf.c b/net/mptcp/bpf.c
+> index 9672a70c24b0..799264119891 100644
+> --- a/net/mptcp/bpf.c
+> +++ b/net/mptcp/bpf.c
+> @@ -204,10 +204,59 @@ static const struct btf_kfunc_id_set
+> bpf_mptcp_fmodret_set = {
+>  	.set   = &bpf_mptcp_fmodret_ids,
+>  };
+>  
+> +struct bpf_iter__mptcp_subflow {
+> +	__bpf_md_ptr(struct bpf_iter_meta *, meta);
+> +	__bpf_md_ptr(struct mptcp_sock *, msk);
+> +	__bpf_md_ptr(struct list_head *, pos);
+> +};
 
-Agree with Andrii's suggestion in silbing thread. That said, logic-wise LGTM
+This bpf_iter__mptcp_subflow struct should be dropped too.
 
-Acked-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+> +
+> +struct bpf_iter_mptcp_subflow {
+> +	__u64 __opaque[2];
+> +} __attribute__((aligned(8)));
+> +
+> +struct bpf_iter_mptcp_subflow_kern {
+> +	struct mptcp_sock *msk;
+> +	struct list_head *pos;
+> +} __attribute__((aligned(8)));
+> +
+>  __diag_push();
+>  __diag_ignore_all("-Wmissing-prototypes",
+>  		  "kfuncs which will be used in BPF programs");
+
+Duplicate with __bpf_kfunc_start_defs/__bpf_kfunc_end_defs,
+__diag_push, __diag_pop and __diag_ignore_all should be dropped.
+
+>  
+> +__bpf_kfunc_start_defs();
+> +
+> +__bpf_kfunc int bpf_iter_mptcp_subflow_new(struct
+> bpf_iter_mptcp_subflow *it,
+> +					   struct mptcp_sock *msk)
+> +{
+> +	struct bpf_iter_mptcp_subflow_kern *kit = (void *)it;
+> +
+> +	if (!msk)
+> +		return -EINVAL;
+> +
+> +	kit->msk = msk;
+> +	kit->pos = &msk->conn_list;
+> +	return 0;
+> +}
+> +
+> +__bpf_kfunc struct mptcp_subflow_context *
+> +bpf_iter_mptcp_subflow_next(struct bpf_iter_mptcp_subflow *it)
+> +{
+> +	struct bpf_iter_mptcp_subflow_kern *kit = (void *)it;
+> +	struct mptcp_subflow_context *subflow;
+> +	struct mptcp_sock *msk = kit->msk;
+> +
+> +	subflow = list_entry((kit->pos)->next, struct
+> mptcp_subflow_context, node);
+> +	if (!msk || list_entry_is_head(subflow, &msk->conn_list,
+> node))
+> +		return NULL;
+> +
+> +	kit->pos = &subflow->node;
+> +	return subflow;
+> +}
+> +
+> +__bpf_kfunc void bpf_iter_mptcp_subflow_destroy(struct
+> bpf_iter_mptcp_subflow *it)
+> +{
+> +}
+> +
+>  __bpf_kfunc struct mptcp_subflow_context *
+>  bpf_mptcp_subflow_ctx_by_pos(const struct mptcp_sched_data *data,
+> unsigned int pos)
+>  {
+> @@ -221,6 +270,8 @@ __bpf_kfunc bool
+> bpf_mptcp_subflow_queues_empty(struct sock *sk)
+>  	return tcp_rtx_queue_empty(sk);
+>  }
+>  
+> +__bpf_kfunc_end_defs();
+> +
+>  __diag_pop();
+>  
+>  BTF_KFUNCS_START(bpf_mptcp_sched_kfunc_ids)
+> diff --git a/net/mptcp/protocol.h b/net/mptcp/protocol.h
+> index d25d2dac88a5..b3f5254e3c0d 100644
+> --- a/net/mptcp/protocol.h
+> +++ b/net/mptcp/protocol.h
+> @@ -715,6 +715,12 @@ void mptcp_subflow_queue_clean(struct sock *sk,
+> struct sock *ssk);
+>  void mptcp_sock_graft(struct sock *sk, struct socket *parent);
+>  u64 mptcp_wnd_end(const struct mptcp_sock *msk);
+>  void mptcp_set_timeout(struct sock *sk);
+> +struct bpf_iter_mptcp_subflow;
+> +int bpf_iter_mptcp_subflow_new(struct bpf_iter_mptcp_subflow *it,
+> +			       struct mptcp_sock *msk);
+> +struct mptcp_subflow_context *
+> +bpf_iter_mptcp_subflow_next(struct bpf_iter_mptcp_subflow *it);
+> +void bpf_iter_mptcp_subflow_destroy(struct bpf_iter_mptcp_subflow
+> *it);
+
+No need to add these declarations, since "-Wmissing-declarations" is
+ignored in __bpf_kfunc_start_defs.
+
+Will update in v3.
+
+Thanks,
+-Geliang
+
+>  bool bpf_mptcp_subflow_queues_empty(struct sock *sk);
+>  struct mptcp_subflow_context *
+>  bpf_mptcp_subflow_ctx_by_pos(const struct mptcp_sched_data *data,
+> unsigned int pos);
+
 
