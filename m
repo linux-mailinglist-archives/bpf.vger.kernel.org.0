@@ -1,382 +1,165 @@
-Return-Path: <bpf+bounces-39361-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39362-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDFAC972433
-	for <lists+bpf@lfdr.de>; Mon,  9 Sep 2024 23:07:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D8F39972463
+	for <lists+bpf@lfdr.de>; Mon,  9 Sep 2024 23:18:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0E4E91C22DFA
-	for <lists+bpf@lfdr.de>; Mon,  9 Sep 2024 21:07:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1759C1C2306E
+	for <lists+bpf@lfdr.de>; Mon,  9 Sep 2024 21:18:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63E7118B493;
-	Mon,  9 Sep 2024 21:07:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC25E17085C;
+	Mon,  9 Sep 2024 21:18:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="3vUo1Q6E";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="/LDxeoDB"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="YXSkttQG"
 X-Original-To: bpf@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88366178CC8;
-	Mon,  9 Sep 2024 21:07:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54E2818C351;
+	Mon,  9 Sep 2024 21:18:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725916035; cv=none; b=GP46+VEkOIEi9z/BdPj/ff4ekMRLz7bt0ou5tBjDD3ab1SN431w8XBiPiMuCtjM2o+8RhZ0zETCwrzm2CjThorpeTnHCkCdgVBmjVr2XHKwl2BIjNSt+BL7XXdRDqalst4InS81SvbZQEsvKyehIun0GFCoUjGHeFvJcbg6SzZ4=
+	t=1725916690; cv=none; b=XvytmOCWtSciqo4YnMqwcOfwOod5607zLMngv1ox7DKc24ykLHeTRTxW73MiGg6D6/p/ybAErWb29jdHBctox5VqOApv0CD2wW+KwFKLWPN4IRr5KHylpPyLn/f+uHzO0am27ENcOaKe1FV07fS8iZ9s6HYDxXo1bdmZMS4NBCc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725916035; c=relaxed/simple;
-	bh=l8RFvQvy45dX+U0oegyvg58M7Rrq3sg++EAnk6lwz18=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=Py6LVygj+fnJKo6dD6UW3AZKcdclCVrPOSfwUbFRStR4V4DSLdVolYkH/0i0iQ+HmrhXiZ2JyDz7+W1AjkkNjTrE/VcPK/cYhBfx9xwcOURTgRlxC/PoKTbAsWQa+pn2oymP0n9KJCxXN8tb6Tybl2Mn8AYNkNKZK/ebrPF+YPk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=3vUo1Q6E; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=/LDxeoDB; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Florian Kauer <florian.kauer@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1725916031;
+	s=arc-20240116; t=1725916690; c=relaxed/simple;
+	bh=iZXEicXf2JMTARYTOOY+s6HNBfaRa9aGSN/7vqWjwDA=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=p0vT6K3PMjQdURjJlHDWDQLvupyMCl3RuHNn4MeQeKAIYhgSnq8xsxSxh//eOesKo9oE39eRC6zXPkGj8fLayXRlx9eeCBYiZHDuUieVy6GE0GpiGDWdbRyWHCxaG4DMaeVBJVZ4a8TTlG2bpaPcCZiDkY1Rqn7h38LqdkFjCNc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=YXSkttQG; arc=none smtp.client-ip=217.70.183.195
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id A32DC60005;
+	Mon,  9 Sep 2024 21:18:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1725916685;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=1kuFpZpWeJWLvsFXiLDVH/pZ9m0VjY5XQDuskkb2mAM=;
-	b=3vUo1Q6EXItFr13CRNwbWKKJtU6Hww57YiIn+2xN4REBYC5yd7xH9rjruLxgF/v+0ZiPrl
-	P9+eHskEH5lX74Pmwh4ZFeSmnCV7rsKBsS8QVv3wqrOCWah0Hb0GE9Ltt7djJg7o+dgBmi
-	86y70v/niGghHnd5HkSEimy3V8Nt/w8hb8GH4XsM5ZTojaNu/7US6gFtu52wrfOw0WjzbC
-	f07y6gROwFfFLJFTEWbDysEgCKfDP1268p7hwjFRvxUNdnhgHSQFlCvUCRp3Qr9N+8j705
-	BVMSrRZjhoHJ2CwGtG4/FUpWixhoQo6LKal1rqNXuMdV7MpFko0pEpC26bfYWA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1725916031;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=1kuFpZpWeJWLvsFXiLDVH/pZ9m0VjY5XQDuskkb2mAM=;
-	b=/LDxeoDBmDjAhCiKgTGYiZZcEB7fhduAM/H8aUl6UDxr0xSSoMxeSgRmOpaL32OxeVFQ8l
-	S5Pu+nKunF8/eNCg==
-Date: Mon, 09 Sep 2024 23:06:56 +0200
-Subject: [PATCH] bpf: devmap: allow for repeated redirect
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HXH7SELfdOSStCN609S/Bql3tY3XiIjnrc2Xlvt1w2o=;
+	b=YXSkttQGYgp/+sep7xbSgg7rzLebLQOddl9eY/m5cTXsKUu4rcwfY7QwOWlv9wht6umnzL
+	07wrjt531H405o4Lszl5ytE+BwOCYDPh7z3R0nTlJYdBGa4XyvaBw7YNTQDylKV/NJk0/j
+	YXtltBjyIHhmL1oUv2QhTBppfQDIVPqRiTyrh9MNm92wClJQgZtnteNr6ZanoeWCMcfMbO
+	fPif8C/v1sXbg8yhgrGMn7nCIVde5YzssJpn7iVFnrUHuDyFsOeVMV1EqbG/3Cwk2CDTWs
+	xlmnFkmxj1xXwCwYDQ8ED1Rx3rgXiboXc/84zeuybsie0lk3Y9N+zpsfxKxdNw==
+Date: Mon, 9 Sep 2024 23:18:00 +0200
+From: Maxime Chevallier <maxime.chevallier@bootlin.com>
+To: "Alexis =?UTF-8?B?TG90aG9yw6k=?= (eBPF Foundation)"
+ <alexis.lothore@bootlin.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai
+ Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu
+ <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
+ <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
+ Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa
+ <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan
+ <shuah@kernel.org>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski
+ <kuba@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>, Lorenzo
+ Bianconi <lorenzo@kernel.org>, ebpf@linuxfoundation.org, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>, linux-kernel@vger.kernel.org,
+ bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ netdev@vger.kernel.org
+Subject: Re: [PATCH bpf-next] selftests/bpf: convert test_xdp_features.sh to
+ test_progs
+Message-ID: <20240909231800.72b6b328@fedora.home>
+In-Reply-To: <20240909-convert_xdp_tests-v1-1-925be5fbee3c@bootlin.com>
+References: <20240909-convert_xdp_tests-v1-1-925be5fbee3c@bootlin.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.3.0 (GTK 3.24.43; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240909-devel-koalo-fix-redirect-v1-1-2dd90771146c@linutronix.de>
-X-B4-Tracking: v=1; b=H4sIAHBj32YC/yWNS47CMBBErxJ5jaW202m7cxXEom03g8Un4GTQS
- Ii7jwXLV6V69TKrtqqrmYeXafqsa11uHdxuMPkktx+1tXQ2HjwCA9uiT73Y8yKXxR7rn21aatO
- 8WYpIIxMjT870+b1p7z/q/eHLTR+//WH7huYuWz51/zwQ+ygaArrgg47JS0KJGf1ECUgiOUAQ+
- HiTrGrzcr3WbR6iEmemcgzB9U0HzT5ELQkDAI+TK4pFyBze73+dDLyY7AAAAA==
-To: =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>, 
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
- Andrii Nakryiko <andrii@kernel.org>, 
- Martin KaFai Lau <martin.lau@linux.dev>, 
- Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, 
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
- Jiri Olsa <jolsa@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
- Jakub Kicinski <kuba@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>, 
- Steven Rostedt <rostedt@goodmis.org>, 
- Masami Hiramatsu <mhiramat@kernel.org>, 
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
- Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
- netdev@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
- xdp-newbies@vger.kernel.org, Florian Kauer <florian.kauer@linutronix.de>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=9305;
- i=florian.kauer@linutronix.de; h=from:subject:message-id;
- bh=l8RFvQvy45dX+U0oegyvg58M7Rrq3sg++EAnk6lwz18=;
- b=owEBbQKS/ZANAwAKATKF5IolV+EkAcsmYgBm32N6bYwzjxIcqtwZW1gMChPXvtpHV838n/Cyr
- kZTFXonTlWJAjMEAAEKAB0WIQSG5cmCLvpm5t9g7UUyheSKJVfhJAUCZt9jegAKCRAyheSKJVfh
- JA1eD/0dsqc5m+40sYaRFDVVF0isNkFzOaiZELOETddXJlgJaFRlZf/0+cFJ4d0/T0NeZvFbShs
- 7OvTqG6vIB4t+DNw/U7Xrcii8BOw4mDT0l9XCtL2HbNsFmvE7YiwdAcD2XZKO7+f5oO5lgASvqF
- TjKsPwGNXWhdOwe+CaxBLVUdp05I384VokgWpvTTOcFpQjqouBS+pEEdsaY+gH8GmCfKK7QHCgn
- o5GFnGFClsl0BcjkesZVx+csc4tUVPWxNTmo8wJso+sr7FvMqPiBsSKKKrXWs7qVrY9QX+egvS4
- M+8fT+gJJLuQifJaLx2mQCAKnupFirQuO381ITgGV6ygAx9RPQhLJuTxW4evPOEXXHtW6ow6CDy
- hp0tjXSYO2VUMNf88kus7ZBaI/ZOr3lReNVdLChfD1NquVPC5MONiU/S6wL+Mj7ubFeIv4HKdfh
- YDkQBW2mWaG4Bx6Y4rn2N6It11pNhNn9Sw6QjKtVuu2g3j31t/8hvPvSE6X48ZK5k7dkVdeeYAc
- zpgdLDG9AGSIuJyZf/wU9D0cJrOlFMhPs6Yois7Nw7/safH9YJVobtPtXxMlwhGLCfmcmY0wFWz
- P1Fq0oFsNMnWVKBIccptupym5VtsnLjmHvFULB87BX4UV+6+FIVe0XeQkU1M1gmvipsYqfvXhLt
- lLrrTNPqFq6uMmw==
-X-Developer-Key: i=florian.kauer@linutronix.de; a=openpgp;
- fpr=F17D8B54133C2229493E64A0B5976DD65251944E
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: maxime.chevallier@bootlin.com
 
-Currently, returning XDP_REDIRECT from a xdp/devmap program
-is considered as invalid action and an exception is traced.
+Hi Alexis,
 
-While it might seem counterintuitive to redirect in a xdp/devmap
-program (why not just redirect to the correct interface in the
-first program?), we faced several use cases where supporting
-this would be very useful.
+On Mon, 09 Sep 2024 22:02:07 +0200
+Alexis Lothor=C3=A9 (eBPF Foundation) <alexis.lothore@bootlin.com> wrote:
 
-Most importantly, they occur when the first redirect is used
-with the BPF_F_BROADCAST flag. Using this together with xdp/devmap
-programs, enables to perform different actions on clones of
-the same incoming frame. In that case, it is often useful
-to redirect either to a different CPU or device AFTER the cloning.
+> test_xdp_features.sh is a shell script allowing to test that xdp features
+> advertised by an interface are indeed delivered. The test works by starti=
+ng
+> two instance of the same program, both attaching specific xdp programs to
+> each side of a veth link, and then make those programs manage packets and
+> collect stats to check whether tested XDP feature is indeed delivered or
+> not. However this test is not integrated in test_progs framework and so c=
+an
+> not run automatically in CI.
+>=20
+> Rewrite test_xdp_features to integrate it in test_progs so it can run
+> automatically in CI. The main changes brought by the rewrite are the
+> following:
+> - instead of running to separated processes (each one managing either the
+>   tester veth or the DUT vet), run a single process
+> - slightly change testing direction (v0 is the tester in local namespace,
+>   v1 is the Device Under Test in remote namespace)
+> - group all tests previously managed by test_xdp_features as subtests (one
+>   per tested XDP feature). As a consequence, run only once some steps
+>   instead of once per subtest (eg: starting/stopping the udp server). On
+>   the contrary, make sure that each subtest properly cleans up its state
+>   (ie detach xdp programs, reset test stats, etc)
+> - since there is now a single process, get rid of the "control" tcp chann=
+el
+>   used to configure DUT. Configuring the DUT now only consists in switchi=
+ng
+>   to DUT network namespace and run the relevant commands
+> - since there is no more control channel, get rid of TLVs, keep only the
+>   CMD_ECHO packet type, and set it as a magic
+> - simplify network setup: use only ipv6 instead of both ipv4 and ipv6,
+>   force static neighbours instead of waiting for autoconfiguration, do not
+>   force gro (fetch xdp features only once xdp programs are loaded instead)
+>=20
+> The existing XDP programs are reused, with some minor changes:
+> - tester and dut stats maps are converted to global variables for easier
+>   usage
+> - programs do not use TLV struct anymore but the magic replacing the echo
+>   command
+> - avoid to accidentally make tests pass: drop packets instead of forwardi=
+ng
+>   them to userspace when they do not match the expected payload
+>=20
+> Signed-off-by: Alexis Lothor=C3=A9 (eBPF Foundation) <alexis.lothore@boot=
+lin.com>
 
-For example:
-- Replicate the frame (for redundancy according to IEEE 802.1CB FRER)
-  and then use the second redirect with a cpumap to select
-  the path-specific egress queue.
+I'm far for having reviewed the whole patch, but I do have one comment
+below :)
 
-- Also, one of the paths might need an encapsulation that
-  exceeds the MTU. So a second redirect can be used back
-  to the ingress interface to send an ICMP FRAG_NEEDED packet.
+[...]
 
-- For OAM purposes, you might want to send one frame with
-  OAM information back, while the original frame in passed forward.
+> +static void *run_dut_echo_thread(void *arg)
+> +{
+> +	struct test_data *t =3D (struct test_data *)arg;
+> +	__u32 magic;
+> +
+> +	while (!t->quit_dut_echo_thread) {
+> +		struct sockaddr_storage addr;
+> +		socklen_t addrlen;
+> +		size_t n;
+> +
+> +		n =3D recvfrom(t->echo_server_sock, &magic, sizeof(magic),
+> +			     MSG_WAITALL, (struct sockaddr *)&addr, &addrlen);
+> +		if (n !=3D sizeof(magic)) {
+> +			usleep(LOOP_DELAY_US);
+> +			continue;
+> +		}
+> +
+> +		if (htonl(magic) !=3D CMD_ECHO)
+> +			continue;
 
-To enable these use cases, add the XDP_REDIRECT case to
-dev_map_bpf_prog_run. Also, when this is called from inside
-xdp_do_flush, the redirect might add further entries to the
-flush lists that are currently processed. Therefore, loop inside
-xdp_do_flush until no more additional redirects were added.
+Shouldn't it be ntohl here ? The former code used the ntohs helper for
+that command, and you're sending the magic in send_echo_msg with a
+htonl() so I guess here you might want to convert the value back to
+host endianness.
 
-Signed-off-by: Florian Kauer <florian.kauer@linutronix.de>
----
- include/linux/bpf.h        |  4 ++--
- include/trace/events/xdp.h | 10 ++++++----
- kernel/bpf/devmap.c        | 37 +++++++++++++++++++++++++++--------
- net/core/filter.c          | 48 +++++++++++++++++++++++++++-------------------
- 4 files changed, 65 insertions(+), 34 deletions(-)
+Thanks,
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 3b94ec161e8c..1b57cbabf199 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -2498,7 +2498,7 @@ struct sk_buff;
- struct bpf_dtab_netdev;
- struct bpf_cpu_map_entry;
- 
--void __dev_flush(struct list_head *flush_list);
-+void __dev_flush(struct list_head *flush_list, int *redirects);
- int dev_xdp_enqueue(struct net_device *dev, struct xdp_frame *xdpf,
- 		    struct net_device *dev_rx);
- int dev_map_enqueue(struct bpf_dtab_netdev *dst, struct xdp_frame *xdpf,
-@@ -2740,7 +2740,7 @@ static inline struct bpf_token *bpf_token_get_from_fd(u32 ufd)
- 	return ERR_PTR(-EOPNOTSUPP);
- }
- 
--static inline void __dev_flush(struct list_head *flush_list)
-+static inline void __dev_flush(struct list_head *flush_list, int *redirects)
- {
- }
- 
-diff --git a/include/trace/events/xdp.h b/include/trace/events/xdp.h
-index a7e5452b5d21..fba2c457e727 100644
---- a/include/trace/events/xdp.h
-+++ b/include/trace/events/xdp.h
-@@ -269,9 +269,9 @@ TRACE_EVENT(xdp_devmap_xmit,
- 
- 	TP_PROTO(const struct net_device *from_dev,
- 		 const struct net_device *to_dev,
--		 int sent, int drops, int err),
-+		 int sent, int drops, int redirects, int err),
- 
--	TP_ARGS(from_dev, to_dev, sent, drops, err),
-+	TP_ARGS(from_dev, to_dev, sent, drops, redirects, err),
- 
- 	TP_STRUCT__entry(
- 		__field(int, from_ifindex)
-@@ -279,6 +279,7 @@ TRACE_EVENT(xdp_devmap_xmit,
- 		__field(int, to_ifindex)
- 		__field(int, drops)
- 		__field(int, sent)
-+		__field(int, redirects)
- 		__field(int, err)
- 	),
- 
-@@ -288,16 +289,17 @@ TRACE_EVENT(xdp_devmap_xmit,
- 		__entry->to_ifindex	= to_dev->ifindex;
- 		__entry->drops		= drops;
- 		__entry->sent		= sent;
-+		__entry->redirects	= redirects;
- 		__entry->err		= err;
- 	),
- 
- 	TP_printk("ndo_xdp_xmit"
- 		  " from_ifindex=%d to_ifindex=%d action=%s"
--		  " sent=%d drops=%d"
-+		  " sent=%d drops=%d redirects=%d"
- 		  " err=%d",
- 		  __entry->from_ifindex, __entry->to_ifindex,
- 		  __print_symbolic(__entry->act, __XDP_ACT_SYM_TAB),
--		  __entry->sent, __entry->drops,
-+		  __entry->sent, __entry->drops, __entry->redirects,
- 		  __entry->err)
- );
- 
-diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
-index 7878be18e9d2..89bdec49ea40 100644
---- a/kernel/bpf/devmap.c
-+++ b/kernel/bpf/devmap.c
-@@ -334,7 +334,8 @@ static int dev_map_hash_get_next_key(struct bpf_map *map, void *key,
- static int dev_map_bpf_prog_run(struct bpf_prog *xdp_prog,
- 				struct xdp_frame **frames, int n,
- 				struct net_device *tx_dev,
--				struct net_device *rx_dev)
-+				struct net_device *rx_dev,
-+				int *redirects)
- {
- 	struct xdp_txq_info txq = { .dev = tx_dev };
- 	struct xdp_rxq_info rxq = { .dev = rx_dev };
-@@ -359,6 +360,13 @@ static int dev_map_bpf_prog_run(struct bpf_prog *xdp_prog,
- 			else
- 				frames[nframes++] = xdpf;
- 			break;
-+		case XDP_REDIRECT:
-+			err = xdp_do_redirect(rx_dev, &xdp, xdp_prog);
-+			if (unlikely(err))
-+				xdp_return_frame_rx_napi(xdpf);
-+			else
-+				*redirects += 1;
-+			break;
- 		default:
- 			bpf_warn_invalid_xdp_action(NULL, xdp_prog, act);
- 			fallthrough;
-@@ -373,7 +381,7 @@ static int dev_map_bpf_prog_run(struct bpf_prog *xdp_prog,
- 	return nframes; /* sent frames count */
- }
- 
--static void bq_xmit_all(struct xdp_dev_bulk_queue *bq, u32 flags)
-+static void bq_xmit_all(struct xdp_dev_bulk_queue *bq, u32 flags, int *redirects)
- {
- 	struct net_device *dev = bq->dev;
- 	unsigned int cnt = bq->count;
-@@ -390,8 +398,10 @@ static void bq_xmit_all(struct xdp_dev_bulk_queue *bq, u32 flags)
- 		prefetch(xdpf);
- 	}
- 
-+	int new_redirects = 0;
- 	if (bq->xdp_prog) {
--		to_send = dev_map_bpf_prog_run(bq->xdp_prog, bq->q, cnt, dev, bq->dev_rx);
-+		to_send = dev_map_bpf_prog_run(bq->xdp_prog, bq->q, cnt, dev, bq->dev_rx,
-+				&new_redirects);
- 		if (!to_send)
- 			goto out;
- 	}
-@@ -413,19 +423,21 @@ static void bq_xmit_all(struct xdp_dev_bulk_queue *bq, u32 flags)
- 
- out:
- 	bq->count = 0;
--	trace_xdp_devmap_xmit(bq->dev_rx, dev, sent, cnt - sent, err);
-+	*redirects += new_redirects;
-+	trace_xdp_devmap_xmit(bq->dev_rx, dev, sent, cnt - sent - new_redirects,
-+			new_redirects, err);
- }
- 
- /* __dev_flush is called from xdp_do_flush() which _must_ be signalled from the
-  * driver before returning from its napi->poll() routine. See the comment above
-  * xdp_do_flush() in filter.c.
-  */
--void __dev_flush(struct list_head *flush_list)
-+void __dev_flush(struct list_head *flush_list, int *redirects)
- {
- 	struct xdp_dev_bulk_queue *bq, *tmp;
- 
- 	list_for_each_entry_safe(bq, tmp, flush_list, flush_node) {
--		bq_xmit_all(bq, XDP_XMIT_FLUSH);
-+		bq_xmit_all(bq, XDP_XMIT_FLUSH, redirects);
- 		bq->dev_rx = NULL;
- 		bq->xdp_prog = NULL;
- 		__list_del_clearprev(&bq->flush_node);
-@@ -458,8 +470,17 @@ static void bq_enqueue(struct net_device *dev, struct xdp_frame *xdpf,
- {
- 	struct xdp_dev_bulk_queue *bq = this_cpu_ptr(dev->xdp_bulkq);
- 
--	if (unlikely(bq->count == DEV_MAP_BULK_SIZE))
--		bq_xmit_all(bq, 0);
-+	if (unlikely(bq->count == DEV_MAP_BULK_SIZE)) {
-+		int redirects = 0;
-+
-+		bq_xmit_all(bq, 0, &redirects);
-+
-+		/* according to comment above xdp_do_flush() in
-+		 * filter.c, xdp_do_flush is always called at
-+		 * the end of the NAPI anyway, so no need to act
-+		 * on the redirects here
-+		 */
-+	}
- 
- 	/* Ingress dev_rx will be the same for all xdp_frame's in
- 	 * bulk_queue, because bq stored per-CPU and must be flushed
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 8569cd2482ee..b33fc0b1444a 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -4287,14 +4287,18 @@ static const struct bpf_func_proto bpf_xdp_adjust_meta_proto = {
- void xdp_do_flush(void)
- {
- 	struct list_head *lh_map, *lh_dev, *lh_xsk;
-+	int redirect;
- 
--	bpf_net_ctx_get_all_used_flush_lists(&lh_map, &lh_dev, &lh_xsk);
--	if (lh_dev)
--		__dev_flush(lh_dev);
--	if (lh_map)
--		__cpu_map_flush(lh_map);
--	if (lh_xsk)
--		__xsk_map_flush(lh_xsk);
-+	do {
-+		redirect = 0;
-+		bpf_net_ctx_get_all_used_flush_lists(&lh_map, &lh_dev, &lh_xsk);
-+		if (lh_dev)
-+			__dev_flush(lh_dev, &redirect);
-+		if (lh_map)
-+			__cpu_map_flush(lh_map);
-+		if (lh_xsk)
-+			__xsk_map_flush(lh_xsk);
-+	} while (redirect > 0);
- }
- EXPORT_SYMBOL_GPL(xdp_do_flush);
- 
-@@ -4303,20 +4307,24 @@ void xdp_do_check_flushed(struct napi_struct *napi)
- {
- 	struct list_head *lh_map, *lh_dev, *lh_xsk;
- 	bool missed = false;
-+	int redirect;
- 
--	bpf_net_ctx_get_all_used_flush_lists(&lh_map, &lh_dev, &lh_xsk);
--	if (lh_dev) {
--		__dev_flush(lh_dev);
--		missed = true;
--	}
--	if (lh_map) {
--		__cpu_map_flush(lh_map);
--		missed = true;
--	}
--	if (lh_xsk) {
--		__xsk_map_flush(lh_xsk);
--		missed = true;
--	}
-+	do {
-+		redirect = 0;
-+		bpf_net_ctx_get_all_used_flush_lists(&lh_map, &lh_dev, &lh_xsk);
-+		if (lh_dev) {
-+			__dev_flush(lh_dev, &redirect);
-+			missed = true;
-+		}
-+		if (lh_map) {
-+			__cpu_map_flush(lh_map);
-+			missed = true;
-+		}
-+		if (lh_xsk) {
-+			__xsk_map_flush(lh_xsk);
-+			missed = true;
-+		}
-+	} while (redirect > 0);
- 
- 	WARN_ONCE(missed, "Missing xdp_do_flush() invocation after NAPI by %ps\n",
- 		  napi->poll);
-
----
-base-commit: 8e69c96df771ab469cec278edb47009351de4da6
-change-id: 20240909-devel-koalo-fix-redirect-684639694951
-prerequisite-patch-id: 6928ae7741727e3b2ab4a8c4256b06a861040a01
-
-Best regards,
--- 
-Florian Kauer <florian.kauer@linutronix.de>
-
+Maxime
 
