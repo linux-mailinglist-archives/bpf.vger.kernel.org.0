@@ -1,246 +1,246 @@
-Return-Path: <bpf+bounces-39310-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39311-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 670709718CE
-	for <lists+bpf@lfdr.de>; Mon,  9 Sep 2024 13:57:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0867D9718ED
+	for <lists+bpf@lfdr.de>; Mon,  9 Sep 2024 14:08:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 204AC283D10
-	for <lists+bpf@lfdr.de>; Mon,  9 Sep 2024 11:57:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B5BAA283E79
+	for <lists+bpf@lfdr.de>; Mon,  9 Sep 2024 12:08:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 021BB1B5ED9;
-	Mon,  9 Sep 2024 11:57:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EunNC8rt"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C81F1B5EDE;
+	Mon,  9 Sep 2024 12:08:20 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 788941B6521;
-	Mon,  9 Sep 2024 11:57:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BE7B29CE8
+	for <bpf@vger.kernel.org>; Mon,  9 Sep 2024 12:08:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725883034; cv=none; b=kl2bZaPIovThEVFO3qJ4EomWdHeL/wANOs+Ksgj/aTgOYTQDWtEq8X2Ya9Mjo3m44JHKTlQPVhw7M4ndCg29271sP6vvvqP6SSln8kdUuUjL/kK3PpZslTttM4zmDAscweOglR2e86HQ2V9bk2+3MRyAftBdmjyPSFtbucKYHtI=
+	t=1725883699; cv=none; b=Z18lj1XAeods03DXk3XBtPGKQxclroa9EpzLg721L9b194itnZinElJZpVdK7biJwid3iS65NBYF0+lhti/ODRfZnbXqvRPmDO0vMI/jfN1KT8mGQe/icvIlHcyN2LWUwDuVmxeaFT9gN02a7hULqPYcgPkhctwor0yAQy3c3L8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725883034; c=relaxed/simple;
-	bh=Xs1ma3py/kYQl+X+Z1t4uxsWvuP6OYkETY78e8ZgRGc=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=nZ+Z9z518AxjYvIXmRI7Tek3LNf2bSFT98f+ci1Q6of6xlGICln0iupEIAIMj0nIhL14c6cCD1flUnFX4DBRAOhZ8FYyro/L+L6nX7VUrHuTdJR0T4MaJeGJQzHLg4dIaQT/pejbEew87wKYoMSIWHG/hb5ATjcjK+csOcSlpt4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EunNC8rt; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F040FC4CEC5;
-	Mon,  9 Sep 2024 11:57:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1725883034;
-	bh=Xs1ma3py/kYQl+X+Z1t4uxsWvuP6OYkETY78e8ZgRGc=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=EunNC8rtl0pHf0fMNVqfew4abZDFXZd9Euf//3xorzLJsPEwXXptrJEaFFooTq02+
-	 Ma2/HmtZh1BMoT4o8sv5QX11wBFvdgnPQXU8RnoTqFnfWrrjqPuT2v9C7ZqLSu2ZDH
-	 V36dsM8KBFh2LX/tBIBiIR1ktKXLy46DtofdSCK7SQaLjdgp4eJPloF8KISw6WtyCD
-	 RvIEkolAxl9RdRvVW+sAaaDQXm/ye1y/Di+qQw/xPwh9wSBkC3u3WNQmun9NOHbk5I
-	 PgFxaDItCfAV5eZkd8yAGNfdL82IGPHFHU6Zqf8jwXm5UuQGkDp6EegE6GKhUxftm7
-	 6X7v/r4x2JtSA==
-Message-ID: <332e79e8eb212de91c848ef0d99a2f3326a8153f.camel@kernel.org>
-Subject: Re: [PATCH mptcp-next v2 1/4] bpf: Add mptcp_subflow bpf_iter
-From: Geliang Tang <geliang@kernel.org>
-To: mptcp@lists.linux.dev
-Cc: Geliang Tang <tanggeliang@kylinos.cn>, bpf <bpf@vger.kernel.org>, Martin
- KaFai Lau <martin.lau@kernel.org>
-Date: Mon, 09 Sep 2024 19:57:10 +0800
-In-Reply-To: <a4a0e759b9f82a17ddd2eac68f6cd99788248683.1725845619.git.tanggeliang@kylinos.cn>
-References: <cover.1725845619.git.tanggeliang@kylinos.cn>
-	 <a4a0e759b9f82a17ddd2eac68f6cd99788248683.1725845619.git.tanggeliang@kylinos.cn>
-Autocrypt: addr=geliang@kernel.org; prefer-encrypt=mutual;
- keydata=mQINBGWKTg4BEAC/Subk93zbjSYPahLCGMgjylhY/s/R2ebALGJFp13MPZ9qWlbVC8O+X
- lU/4reZtYKQ715MWe5CwJGPyTACILENuXY0FyVyjp/jl2u6XYnpuhw1ugHMLNJ5vbuwkc1I29nNe8
- wwjyafN5RQV0AXhKdvofSIryqm0GIHIH/+4bTSh5aB6mvsrjUusB5MnNYU4oDv2L8MBJStqPAQRLl
- P9BWcKKA7T9SrlgAr0VsFLIOkKOQPVTCnYxn7gfKogH52nkPAFqNofVB6AVWBpr0RTY7OnXRBMInM
- HcjVG4I/NFn8Cc7oaGaWHqX/yHAufJKUsldieQVFd7C/SI8jCUXdkZxR0Tkp0EUzkRc/TS1VwWHav
- 0x3oLSy/LGHfRaIC/MqdGVqgCnm6wapUt7f/JHloyIyKJBGBuHCLMpN6n/kNkSCzyZKV7h6Vw1OL5
- 18p0U3Optyakoh95KiJsKzcd3At/eftQGlNn5WDflHV1+oMdW2sRgfVDPrYeEcYI5IkTc3LRO6ucp
- VCm9/+poZSHSXMI/oJ6iXMJE8k3/aQz+EEjvc2z0p9aASJPzx0XTTC4lciTvGj62z62rGUlmEIvU2
- 3wWH37K2EBNoq+4Y0AZsSvMzM+CcTo25hgPaju1/A8ErZsLhP7IyFT17ARj/Et0G46JRsbdlVJ/Pv
- X+XIOc2mpqx/QARAQABtCVHZWxpYW5nIFRhbmcgPGdlbGlhbmcudGFuZ0BsaW51eC5kZXY+iQJUBB
- MBCgA+FiEEZiKd+VhdGdcosBcafnvtNTGKqCkFAmWKTg4CGwMFCRLMAwAFCwkIBwIGFQoJCAsCBBY
- CAwECHgECF4AACgkQfnvtNTGKqCmS+A/9Fec0xGLcrHlpCooiCnNH0RsXOVPsXRp2xQiaOV4vMsvh
- G5AHaQLb3v0cUr5JpfzMzNpEkaBQ/Y8Oj5hFOORhTyCZD8tY1aROs8WvbxqvbGXHnyVwqy7AdWelP
- +0lC0DZW0kPQLeel8XvLnm9Wm3syZgRGxiM/J7PqVcjujUb6SlwfcE3b2opvsHW9AkBNK7v8wGIcm
- BA3pS1O0/anP/xD5s5L7LIMADVB9MqQdeLdFU+FFdafmKSmcP9A2qKHAvPBUuQo3xoBOZR3DMqXIP
- kNCBfQGkAx5tm1XYli1u3r5tp5QCRbY5LSkntMNJJh0eWLU8I+zF6NWhqNhHYRD3zc1tiXlG5E0ob
- pX02Dy25SE2zB3abCRdAK30nCI4lMyMCcyaeFqvf6uhiugLiuEPRRRdJDWICOLw6KOFmxWmue1F71
- k08nj5PQMWQUX3X2K6jiOuoodYwnie/9NsH3DBHIVzVPWASFd6JkZ21i9Ng4ie+iQAveRTCeCCF6V
- RORJR0R8d7mI9+1eqhNeKzs21gQPVf/KBEIpwPFDjOdTwS/AEQQyhB+5ALeYpNgfKl2p30C20VRfJ
- GBaTc4ReUXh9xbUx5OliV69iq9nIVIyculTUsbrZX81Gz6UlbuSzWc4JclWtXf8/QcOK31wputde7
- Fl1BTSR4eWJcbE5Iz2yzgQu0IUdlbGlhbmcgVGFuZyA8Z2VsaWFuZ0BrZXJuZWwub3JnPokCVAQTA
- QoAPhYhBGYinflYXRnXKLAXGn577TUxiqgpBQJlqclXAhsDBQkSzAMABQsJCAcCBhUKCQgLAgQWAg
- MBAh4BAheAAAoJEH577TUxiqgpaGkP/3+VDnbu3HhZvQJYw9a5Ob/+z7WfX4lCMjUvVz6AAiM2atD
- yyUoDIv0fkDDUKvqoU9BLU93oiPjVzaR48a1/LZ+RBE2mzPhZF201267XLMFBylb4dyQZxqbAsEhV
- c9VdjXd4pHYiRTSAUqKqyamh/geIIpJz/cCcDLvX4sM/Zjwt/iQdvCJ2eBzunMfouzryFwLGcOXzx
- OwZRMOBgVuXrjGVB52kYu1+K90DtclewEgvzWmS9d057CJztJZMXzvHfFAQMgJC7DX4paYt49pNvh
- cqLKMGNLPsX06OR4G+4ai0JTTzIlwVJXuo+uZRFQyuOaSmlSjEsiQ/WsGdhILldV35RiFKe/ojQNd
- 4B4zREBe3xT+Sf5keyAmO/TG14tIOCoGJarkGImGgYltTTTM6rIk/wwo9FWshgKAmQyEEiSzHTSnX
- cGbalD3Do89YRmdG+5eP7HQfsG+VWdn8IH6qgIvSt8GOw6RfSP7omMXvXji1VrbWG4LOFYcsKTN+d
- GDhl8LmU0y44HejkCzYj/b28MvNTiRVfucrmZMGgI8L5A4ZwQ3Inv7jY13GZSvTb7PQIbqMcb1P3S
- qWJFodSwBg9oSw21b+T3aYG3z3MRCDXDlZAJONELx32rPMdBva8k+8L+K8gc7uNVH4jkMPkP9jPnV
- Px+2P2cKc7LXXedb/qQ3M
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.52.3-0ubuntu1 
+	s=arc-20240116; t=1725883699; c=relaxed/simple;
+	bh=B9eaUrfVHfqM4h4DnAyw7ffTPPKszgOqg7jIZqgIWNE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=bocPFL8FcABx+/Wyij0LMQ1LK0tQ5yNjiJnSj+atHcFml6wiD2JzSIbKdUpfo9qE5Amg9nIzpm+Vz83RzBSGe0CiXk67Jsv+hD3MnRFuQ4oNhvYYeq0Xmt/VBAnsBg2qZLBVtrHLIlFkHHrItZa8hJxS2aEx61eIazfpO+4MI38=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4X2QZf5tdtz4f3jkV
+	for <bpf@vger.kernel.org>; Mon,  9 Sep 2024 20:07:54 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 5C9A01A018D
+	for <bpf@vger.kernel.org>; Mon,  9 Sep 2024 20:08:05 +0800 (CST)
+Received: from [10.67.111.192] (unknown [10.67.111.192])
+	by APP1 (Coremail) with SMTP id cCh0CgA3Yy8k5d5miw5CAw--.54961S2;
+	Mon, 09 Sep 2024 20:08:05 +0800 (CST)
+Message-ID: <0fc08a50-8812-4932-bb85-9d81cedf142a@huaweicloud.com>
+Date: Mon, 9 Sep 2024 20:08:08 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v2 2/4] bpf, arm64: Fix tailcall infinite loop
+ caused by freplace
+Content-Language: en-US
+To: Leon Hwang <leon.hwang@linux.dev>, bpf@vger.kernel.org
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, toke@redhat.com,
+ martin.lau@kernel.org, yonghong.song@linux.dev, puranjay@kernel.org,
+ eddyz87@gmail.com, iii@linux.ibm.com, kernel-patches-bot@fb.com
+References: <20240901133856.64367-1-leon.hwang@linux.dev>
+ <20240901133856.64367-3-leon.hwang@linux.dev>
+ <fb6ed3e4-7ef2-4b7d-af7e-bf928d835fe9@linux.dev>
+ <64c3f174-1dfb-409b-bc11-d7379c09e0ae@huaweicloud.com>
+ <cac838d2-9590-4bef-bb58-b56f97881fde@linux.dev>
+From: Xu Kuohai <xukuohai@huaweicloud.com>
+In-Reply-To: <cac838d2-9590-4bef-bb58-b56f97881fde@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgA3Yy8k5d5miw5CAw--.54961S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxXFy8ur15ZrW8JFW7AF1fWFg_yoWrKF15pF
+	y8X3ZxJFZ8Xr92yw42qr40qryayw4kJwn8Xr95W34rAr9FvrnF9FWUWryj9F98ur4rGr1j
+	qr1jgrZ3urW8Jr7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
+	14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
+	ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
+	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1
+	7KsUUUUUU==
+X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
 
-On Mon, 2024-09-09 at 09:36 +0800, Geliang Tang wrote:
-> From: Geliang Tang <tanggeliang@kylinos.cn>
+On 9/9/2024 6:38 PM, Leon Hwang wrote:
 > 
-> It's necessary to traverse all subflows on the conn_list of an MPTCP
-> socket and then call kfunc to modify the fields of each subflow. In
-> kernel space, mptcp_for_each_subflow() helper is used for this:
 > 
-> 	mptcp_for_each_subflow(msk, subflow)
-> 		kfunc(subflow);
+> On 9/9/24 17:02, Xu Kuohai wrote:
+>> On 9/8/2024 9:01 PM, Leon Hwang wrote:
+>>>
+>>>
+>>> On 1/9/24 21:38, Leon Hwang wrote:
+>>>> Like "bpf, x64: Fix tailcall infinite loop caused by freplace", the same
+>>>> issue happens on arm64, too.
+>>>>
+>>>> For example:
+>>>>
+>>>> tc_bpf2bpf.c:
+>>>>
+>>>> // SPDX-License-Identifier: GPL-2.0
+>>>> \#include <linux/bpf.h>
+>>>> \#include <bpf/bpf_helpers.h>
+>>>>
+>>>> __noinline
+>>>> int subprog_tc(struct __sk_buff *skb)
+>>>> {
+>>>>      return skb->len * 2;
+>>>> }
+>>>>
+>>>> SEC("tc")
+>>>> int entry_tc(struct __sk_buff *skb)
+>>>> {
+>>>>      return subprog(skb);
+>>>> }
+>>>>
+>>>> char __license[] SEC("license") = "GPL";
+>>>>
+>>>> tailcall_bpf2bpf_hierarchy_freplace.c:
+>>>>
+>>>> // SPDX-License-Identifier: GPL-2.0
+>>>> \#include <linux/bpf.h>
+>>>> \#include <bpf/bpf_helpers.h>
+>>>>
+>>>> struct {
+>>>>      __uint(type, BPF_MAP_TYPE_PROG_ARRAY);
+>>>>      __uint(max_entries, 1);
+>>>>      __uint(key_size, sizeof(__u32));
+>>>>      __uint(value_size, sizeof(__u32));
+>>>> } jmp_table SEC(".maps");
+>>>>
+>>>> int count = 0;
+>>>>
+>>>> static __noinline
+>>>> int subprog_tail(struct __sk_buff *skb)
+>>>> {
+>>>>      bpf_tail_call_static(skb, &jmp_table, 0);
+>>>>      return 0;
+>>>> }
+>>>>
+>>>> SEC("freplace")
+>>>> int entry_freplace(struct __sk_buff *skb)
+>>>> {
+>>>>      count++;
+>>>>      subprog_tail(skb);
+>>>>      subprog_tail(skb);
+>>>>      return count;
+>>>> }
+>>>>
+>>>> char __license[] SEC("license") = "GPL";
+>>>>
+>>>> The attach target of entry_freplace is subprog_tc, and the tail callee
+>>>> in subprog_tail is entry_tc.
+>>>>
+>>>> Then, the infinite loop will be entry_tc -> entry_tc ->
+>>>> entry_freplace ->
+>>>> subprog_tail --tailcall-> entry_tc, because tail_call_cnt in
+>>>> entry_freplace will count from zero for every time of entry_freplace
+>>>> execution.
+>>>>
+>>>> This patch fixes the issue by avoiding touching tail_call_cnt at
+>>>> prologue when it's subprog or freplace prog.
+>>>>
+>>>> Then, when freplace prog attaches to entry_tc, it has to initialize
+>>>> tail_call_cnt and tail_call_cnt_ptr, because its target is main prog and
+>>>> its target's prologue hasn't initialize them before the attach hook.
+>>>>
+>>>> So, this patch uses x7 register to tell freplace prog that its target
+>>>> prog is main prog or not.
+>>>>
+>>>> Meanwhile, while tail calling to a freplace prog, it is required to
+>>>> reset x7 register to prevent re-initializing tail_call_cnt at freplace
+>>>> prog's prologue.
+>>>>
+>>>> Fixes: 1c123c567fb1 ("bpf: Resolve fext program type when checking
+>>>> map compatibility")
+>>>> Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
+>>>> ---
+>>>>    arch/arm64/net/bpf_jit_comp.c | 44 +++++++++++++++++++++++++++++++----
+>>>>    1 file changed, 39 insertions(+), 5 deletions(-)
+>>>>
+>>> Hi Puranjay and Kuohai,
+>>>
+>>> As it's not recommended to introduce arch_bpf_run(), this is my approach
+>>> to fix the niche case on arm64.
+>>>
+>>> Do you have any better idea to fix it?
+>>>
+>>
+>> IIUC, the recommended appraoch is to teach verifier to reject the
+>> freplace + tailcall combination. If this combiation is allowed, we
+>> will face more than just this issue. For example, what happens if
+>> a freplace prog is attached to tail callee? The freplace prog is not
+>> reachable through the tail call, right?
+>>
 > 
-> But in the MPTCP BPF program, this has not yet been implemented. As
-> Martin suggested recently, this conn_list walking + modify-by-kfunc
-> usage fits the bpf_iter use case. So this patch adds a new bpf_iter
-> type named "mptcp_subflow" to do this and implements its helpers
-> bpf_iter_mptcp_subflow_new()/_next()/_destroy().
+> It's to reject the freplace + tailcall combination partially, see "bpf,
+> x64: Fix tailcall infinite loop caused by freplace". (Oh, I should
+> separate the rejection to a standalone patch.)
+> It rejects the case that freplace prog has tailcall and its attach
+> target has no tailcall.
 > 
-> Then bpf_for_each() for mptcp_subflow can be used in BPF program like
-> this:
+> As for your example, it depends on:
 > 
-> 	bpf_rcu_read_lock();
-> 	bpf_for_each(mptcp_subflow, subflow, msk)
-> 		kfunc(subflow);
-> 	bpf_rcu_read_unlock();
+>                  freplace       target    reject?
+> Has tailcall?     YES            NO        YES
+> Has tailcall?     YES            YES       NO
+> Has tailcall?     NO             YES       NO
+> Has tailcall?     NO             YES       NO
 > 
-> Suggested-by: Martin KaFai Lau <martin.lau@kernel.org>
-> Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
-> ---
->  net/mptcp/bpf.c      | 51
-> ++++++++++++++++++++++++++++++++++++++++++++
->  net/mptcp/protocol.h |  6 ++++++
->  2 files changed, 57 insertions(+)
+> Then, freplace prog can be tail callee always. I haven't seen any bad
+> case when freplace prog is tail callee.
+>
+
+Here is a concrete case. prog1 tail calls prog2, and prog2_new is
+attached to prog2 via freplace.
+
+SEC("tc")
+int prog1(struct __sk_buff *skb)
+{
+         bpf_tail_call_static(skb, &progs, 0); // tail call prog2
+         return 0;
+}
+
+SEC("tc")
+int prog2(struct __sk_buff *skb)
+{
+         return 0;
+}
+
+SEC("freplace")
+int prog2_new(struct __sk_buff *skb) // target is prog2
+{
+         return 0;
+}
+
+In this case, prog2_new is not reachable, since the tail call
+target in prog2 is start address of prog2  + TAIL_CALL_OFFSET,
+which locates behind freplace/fentry callsite of prog2.
+
+> I'm not planning to disable freplace + tailcall combination totally,
+> because I use this combination in an in-house XDP project of my company.
 > 
-> diff --git a/net/mptcp/bpf.c b/net/mptcp/bpf.c
-> index 9672a70c24b0..799264119891 100644
-> --- a/net/mptcp/bpf.c
-> +++ b/net/mptcp/bpf.c
-> @@ -204,10 +204,59 @@ static const struct btf_kfunc_id_set
-> bpf_mptcp_fmodret_set = {
->  	.set   = &bpf_mptcp_fmodret_ids,
->  };
->  
-> +struct bpf_iter__mptcp_subflow {
-> +	__bpf_md_ptr(struct bpf_iter_meta *, meta);
-> +	__bpf_md_ptr(struct mptcp_sock *, msk);
-> +	__bpf_md_ptr(struct list_head *, pos);
-> +};
-
-This bpf_iter__mptcp_subflow struct should be dropped too.
-
-> +
-> +struct bpf_iter_mptcp_subflow {
-> +	__u64 __opaque[2];
-> +} __attribute__((aligned(8)));
-> +
-> +struct bpf_iter_mptcp_subflow_kern {
-> +	struct mptcp_sock *msk;
-> +	struct list_head *pos;
-> +} __attribute__((aligned(8)));
-> +
->  __diag_push();
->  __diag_ignore_all("-Wmissing-prototypes",
->  		  "kfuncs which will be used in BPF programs");
-
-Duplicate with __bpf_kfunc_start_defs/__bpf_kfunc_end_defs,
-__diag_push, __diag_pop and __diag_ignore_all should be dropped.
-
->  
-> +__bpf_kfunc_start_defs();
-> +
-> +__bpf_kfunc int bpf_iter_mptcp_subflow_new(struct
-> bpf_iter_mptcp_subflow *it,
-> +					   struct mptcp_sock *msk)
-> +{
-> +	struct bpf_iter_mptcp_subflow_kern *kit = (void *)it;
-> +
-> +	if (!msk)
-> +		return -EINVAL;
-> +
-> +	kit->msk = msk;
-> +	kit->pos = &msk->conn_list;
-> +	return 0;
-> +}
-> +
-> +__bpf_kfunc struct mptcp_subflow_context *
-> +bpf_iter_mptcp_subflow_next(struct bpf_iter_mptcp_subflow *it)
-> +{
-> +	struct bpf_iter_mptcp_subflow_kern *kit = (void *)it;
-> +	struct mptcp_subflow_context *subflow;
-> +	struct mptcp_sock *msk = kit->msk;
-> +
-> +	subflow = list_entry((kit->pos)->next, struct
-> mptcp_subflow_context, node);
-> +	if (!msk || list_entry_is_head(subflow, &msk->conn_list,
-> node))
-> +		return NULL;
-> +
-> +	kit->pos = &subflow->node;
-> +	return subflow;
-> +}
-> +
-> +__bpf_kfunc void bpf_iter_mptcp_subflow_destroy(struct
-> bpf_iter_mptcp_subflow *it)
-> +{
-> +}
-> +
->  __bpf_kfunc struct mptcp_subflow_context *
->  bpf_mptcp_subflow_ctx_by_pos(const struct mptcp_sched_data *data,
-> unsigned int pos)
->  {
-> @@ -221,6 +270,8 @@ __bpf_kfunc bool
-> bpf_mptcp_subflow_queues_empty(struct sock *sk)
->  	return tcp_rtx_queue_empty(sk);
->  }
->  
-> +__bpf_kfunc_end_defs();
-> +
->  __diag_pop();
->  
->  BTF_KFUNCS_START(bpf_mptcp_sched_kfunc_ids)
-> diff --git a/net/mptcp/protocol.h b/net/mptcp/protocol.h
-> index d25d2dac88a5..b3f5254e3c0d 100644
-> --- a/net/mptcp/protocol.h
-> +++ b/net/mptcp/protocol.h
-> @@ -715,6 +715,12 @@ void mptcp_subflow_queue_clean(struct sock *sk,
-> struct sock *ssk);
->  void mptcp_sock_graft(struct sock *sk, struct socket *parent);
->  u64 mptcp_wnd_end(const struct mptcp_sock *msk);
->  void mptcp_set_timeout(struct sock *sk);
-> +struct bpf_iter_mptcp_subflow;
-> +int bpf_iter_mptcp_subflow_new(struct bpf_iter_mptcp_subflow *it,
-> +			       struct mptcp_sock *msk);
-> +struct mptcp_subflow_context *
-> +bpf_iter_mptcp_subflow_next(struct bpf_iter_mptcp_subflow *it);
-> +void bpf_iter_mptcp_subflow_destroy(struct bpf_iter_mptcp_subflow
-> *it);
-
-No need to add these declarations, since "-Wmissing-declarations" is
-ignored in __bpf_kfunc_start_defs.
-
-Will update in v3.
-
-Thanks,
--Geliang
-
->  bool bpf_mptcp_subflow_queues_empty(struct sock *sk);
->  struct mptcp_subflow_context *
->  bpf_mptcp_subflow_ctx_by_pos(const struct mptcp_sched_data *data,
-> unsigned int pos);
+> Thanks,
+> Leon
 
 
