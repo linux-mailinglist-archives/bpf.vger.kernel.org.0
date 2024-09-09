@@ -1,96 +1,75 @@
-Return-Path: <bpf+bounces-39318-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39319-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8AF0C971B3D
-	for <lists+bpf@lfdr.de>; Mon,  9 Sep 2024 15:39:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B0B2971C2B
+	for <lists+bpf@lfdr.de>; Mon,  9 Sep 2024 16:12:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B6849B24175
-	for <lists+bpf@lfdr.de>; Mon,  9 Sep 2024 13:39:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A6FEB1C223A4
+	for <lists+bpf@lfdr.de>; Mon,  9 Sep 2024 14:12:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF6F01BA261;
-	Mon,  9 Sep 2024 13:39:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB8471BA278;
+	Mon,  9 Sep 2024 14:11:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cNqEHDzr"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LSLQYJUl"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B2D51B81C7;
-	Mon,  9 Sep 2024 13:39:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9C501B3F23;
+	Mon,  9 Sep 2024 14:11:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725889158; cv=none; b=HQi5S74qNlhDlpjl95n8m8hlAANx9RF5J7gDkk23R5uO5g03C5F70W5Szy4CK3SaRFI54o4DgNUc747/rAU7PKuGQypRfert6SjBdGvhnmxA07OrXrz4VFJpBnFJdi5aHtXhOF6SRRfUYYIV+9YUiS9llZsdadwm6Gz69lEwdug=
+	t=1725891107; cv=none; b=UQD4Tm3LugTtQwGjoGYQ9b2sQilnWrSQzB85qxqHnmMQvzXfClsefjUAobxcDNuYZvBnUw2vza2HNJjtdV05piWv9feoDryqaaamfGFvbwjobARxxopDpgerybKVzXW/rWZho6ATr/sJ9mPxs3GK6zKc2+iqAIwie8j3BJy1i20=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725889158; c=relaxed/simple;
-	bh=P+txpUs+etwM7T1Fu5+oQtVqHtHb6MUAtCqODZcuq0k=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=kPFRuIEtIGloUKFbwtR9ZM6Zdn4+XS7XCYwy9kKENQcaDePaeGYAWb66dQ8Itcl+cixeZFoVqFYk0vfvrCqp410inBbroXI5xD/anWhDo8f9HFe7Yb6vAS06jcyjIsHSn7lytJgicayi6T4+r/G2BbX0F/i535x998dkmdDpu5o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cNqEHDzr; arc=none smtp.client-ip=209.85.218.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a8d100e9ce0so359845166b.2;
-        Mon, 09 Sep 2024 06:39:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1725889155; x=1726493955; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=bUR1CdDBpg41gmQu5vompAiQxqeBHLu70Tv+AY+j3eo=;
-        b=cNqEHDzrmBRGAaXclLfgeVjILSmeQJxQ2YpM73dWIArZJqK6Pe4MEyElRTSmSZszf/
-         DLMlVMfz8M+XpCgIis9RuFm6dPVmzpRF3EYT3hUOzJPp3r8P9x6lmGk9FJMQHjAiRyHc
-         il1agYXxoawjopdoKUOUh5c+bAuSaWS8D3sOyXYpdnV6fYhG7Os2NmlbUEk/80RkCkJj
-         JMQfn38GiH+UG8GYSwwGjSRYkoMm/38ZpvpbUJzxDTy2eEng53TRLiJ7Ld4LO1ZbgC+6
-         rEF4j1Gm8x/EN9bU/NVLibeEPaunOaoJUNR83EMTza0ZG2QJO6mdzmZRAnUt2WH9/5by
-         ODWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725889155; x=1726493955;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=bUR1CdDBpg41gmQu5vompAiQxqeBHLu70Tv+AY+j3eo=;
-        b=PZwpCtAzZfybnkh4JAXNC4Sv23LNKIpNyHkTWuURVUGJYm8P1Rm6FgIQPSRB2xC2/A
-         0R+NlIYmEiXIr02HGCikslhq35WKcjvHA3KfTfZMkxBYG63W+WrGzdBQxb4eub5UmGbw
-         2MqyxzaDNhbn/uIV/p0NxOO+UBxaoQbgmUrZATEZUOZ5SBdCQdNZmgLwkIU78E6mXS5q
-         PhCKFIxYQPLh5LolHerbKfM2bleQs3DI+uDhxXz2ttru+jflZZh4bGC0dGkyiNUA1Vzl
-         ZM7oireKOVtR26ASo9hjPGUjGzFrhg7vUFFdTuZjVZ/1ScJe1e0sCBWBppdphftq2G7i
-         WDEg==
-X-Forwarded-Encrypted: i=1; AJvYcCW4td0t/ZJFXP4mDxkvSc0xzMejNc96uvS++XCOI3LMFnE7pzTGBTvuuqrnQRikLVS4ghYc+/hjfO1QsWU9LMc+@vger.kernel.org, AJvYcCWL46Ft9qD23cfyYUNiCpKdEpPJlVWpbLs8ZXYWO8KP9SDkyllr7z1Cgs2c+ojiqqaRecs=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz3hON8oM19rSXrCJYgname/r+mOfga56Yld3soqd3c467WDts0
-	lZYGmPxx5iEkt8xIQgTBjEHkKPA5Hu6F8wBBCXLVuNOrU6VGQJ3r
-X-Google-Smtp-Source: AGHT+IGTigvRhr57x5xBTWV0MZ/j6Z6060Vjm/787QJdKy1RuP5wEWW5FuN/+riZL8NG6gWKlOy0zQ==
-X-Received: by 2002:a17:907:706:b0:a72:69e8:f039 with SMTP id a640c23a62f3a-a8a885bfd71mr1146385866b.12.1725889154347;
-        Mon, 09 Sep 2024 06:39:14 -0700 (PDT)
-Received: from localhost (19.tor-exit.nothingtohide.nl. [192.42.116.216])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a8d2595119bsm343955766b.61.2024.09.09.06.39.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Sep 2024 06:39:14 -0700 (PDT)
-From: Maxim Mikityanskiy <maxtram95@gmail.com>
-X-Google-Original-From: Maxim Mikityanskiy <maxim@isovalent.com>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>
-Cc: John Fastabend <john.fastabend@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Shuah Khan <shuah@kernel.org>,
-	Maxim Mikityanskiy <maxim@isovalent.com>,
-	Alan Maguire <alan.maguire@oracle.com>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-	Andrei Matei <andreimatei1@gmail.com>,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH bpf] bpf: Fix error message on kfunc arg type mismatch
-Date: Mon,  9 Sep 2024 16:39:09 +0300
-Message-ID: <20240909133909.1315460-1-maxim@isovalent.com>
-X-Mailer: git-send-email 2.46.0
+	s=arc-20240116; t=1725891107; c=relaxed/simple;
+	bh=23oZwDhbdCQqpo72g74qTnX1DdfPshP6HhiuWn4ZdOE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=IZNRmiiM0KgrarFP/UFLXqAwYHHh6LbQNbYlK+/7hbLYmuXrSPEi+2AHxpV6m/YkN/F7wNEHVuVITYPhgMPEid0zqUxO+xvgh7LHBW5blQZwCqw0HhXy4teXrwB7lOR08OnQjfCaOVU03X9DtOixD3VOivGlUklDdxt91jCREZs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LSLQYJUl; arc=none smtp.client-ip=192.198.163.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1725891105; x=1757427105;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=23oZwDhbdCQqpo72g74qTnX1DdfPshP6HhiuWn4ZdOE=;
+  b=LSLQYJUlaApB8eT5m5IwXqGvxHPp9taTd8KC9O4KUOqmZUr6buxf5NmP
+   n+AM9Q7uYYgNBAzTgiKqE/6Ju9LsPxdYwnoN0iOKjm8zHEj+R8GAUBeUN
+   KqJrVrYtuRjiGxVTxCHol6b9eOF/Kq2DV/IbuMAeReiiSQ91I/vRSsXfn
+   r7WgHRqE8sxPuRt92jLaDgkE7lEfCf9wBjeOfEZz68tUnioPLLBiqYs7L
+   FYaVl6b3uGSGXczMfn3ny3bKL8oelSq2zFyrL3lYUdM2eosglYX67rpT8
+   dxuivNb2w8XQnC0FtF5TkBrmrf70PPwDZKGk+Pd2MI1A1sJj5yvWOZ8La
+   Q==;
+X-CSE-ConnectionGUID: BBuLm+gHSiSyCHPKSyYiJg==
+X-CSE-MsgGUID: LPjecEUcSaCZgtKyHoMymw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11190"; a="24782702"
+X-IronPort-AV: E=Sophos;i="6.10,214,1719903600"; 
+   d="scan'208";a="24782702"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2024 07:11:45 -0700
+X-CSE-ConnectionGUID: fv2J4nK5QiiIc4s+/qlwZA==
+X-CSE-MsgGUID: bRc2KOZhRVK59to2BM7oyQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.10,214,1719903600"; 
+   d="scan'208";a="104138052"
+Received: from boxer.igk.intel.com ([10.102.20.173])
+  by orviesa001.jf.intel.com with ESMTP; 09 Sep 2024 07:11:43 -0700
+From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To: bpf@vger.kernel.org,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org
+Cc: netdev@vger.kernel.org,
+	magnus.karlsson@intel.com,
+	bjorn@kernel.org,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Subject: [PATCH bpf-next] selftests: xsk: read current MAX_SKB_FRAGS from sysctl knob
+Date: Mon,  9 Sep 2024 16:11:10 +0200
+Message-Id: <20240909141110.284967-1-maciej.fijalkowski@intel.com>
+X-Mailer: git-send-email 2.38.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -99,81 +78,101 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-When "arg#%d expected pointer to ctx, but got %s" error is printed, both
-template parts actually point to the type of the argument, therefore, it
-will also say "but got PTR", regardless of what was the actual register
-type.
+Currently, xskxceiver assumes that MAX_SKB_FRAGS value is always 17
+which is not true - since the introduction of BIG TCP this can now take
+any value between 17 to 45 via CONFIG_MAX_SKB_FRAGS.
 
-Fix the message to print the register type in the second part of the
-template, change the existing test to adapt to the new format, and add a
-new test to test the case when arg is a pointer to context, but reg is a
-scalar.
+Adjust the TOO_MANY_FRAGS test case to read the currently configured
+MAX_SKB_FRAGS value by reading it from /proc/sys/net/core/max_skb_frags.
 
-Fixes: 00b85860feb8 ("bpf: Rewrite kfunc argument handling")
-Signed-off-by: Maxim Mikityanskiy <maxim@isovalent.com>
+Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 ---
- kernel/bpf/verifier.c                               | 3 ++-
- tools/testing/selftests/bpf/prog_tests/kfunc_call.c | 1 +
- tools/testing/selftests/bpf/progs/kfunc_call_fail.c | 7 +++++++
- tools/testing/selftests/bpf/verifier/calls.c        | 2 +-
- 4 files changed, 11 insertions(+), 2 deletions(-)
+ tools/testing/selftests/bpf/xskxceiver.c | 41 +++++++++++++++++++++---
+ tools/testing/selftests/bpf/xskxceiver.h |  1 -
+ 2 files changed, 36 insertions(+), 6 deletions(-)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index d8520095ca03..8b9f0a2981d4 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -11948,7 +11948,8 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
- 		switch (kf_arg_type) {
- 		case KF_ARG_PTR_TO_CTX:
- 			if (reg->type != PTR_TO_CTX) {
--				verbose(env, "arg#%d expected pointer to ctx, but got %s\n", i, btf_type_str(t));
-+				verbose(env, "arg#%d expected pointer to ctx, but got %s\n",
-+					i, reg_type_str(env, reg->type));
- 				return -EINVAL;
- 			}
- 
-diff --git a/tools/testing/selftests/bpf/prog_tests/kfunc_call.c b/tools/testing/selftests/bpf/prog_tests/kfunc_call.c
-index 5b743212292f..f79c8e53cb3e 100644
---- a/tools/testing/selftests/bpf/prog_tests/kfunc_call.c
-+++ b/tools/testing/selftests/bpf/prog_tests/kfunc_call.c
-@@ -68,6 +68,7 @@ static struct kfunc_test_params kfunc_tests[] = {
- 	TC_FAIL(kfunc_call_test_get_mem_fail_oob, 0, "min value is outside of the allowed memory range"),
- 	TC_FAIL(kfunc_call_test_get_mem_fail_not_const, 0, "is not a const"),
- 	TC_FAIL(kfunc_call_test_mem_acquire_fail, 0, "acquire kernel function does not return PTR_TO_BTF_ID"),
-+	TC_FAIL(kfunc_call_test_pointer_arg_type_mismatch, 0, "arg#0 expected pointer to ctx, but got scalar"),
- 
- 	/* success cases */
- 	TC_TEST(kfunc_call_test1, 12),
-diff --git a/tools/testing/selftests/bpf/progs/kfunc_call_fail.c b/tools/testing/selftests/bpf/progs/kfunc_call_fail.c
-index 4b0b7b79cdfb..08fae306539c 100644
---- a/tools/testing/selftests/bpf/progs/kfunc_call_fail.c
-+++ b/tools/testing/selftests/bpf/progs/kfunc_call_fail.c
-@@ -150,4 +150,11 @@ int kfunc_call_test_mem_acquire_fail(struct __sk_buff *skb)
- 	return ret;
+diff --git a/tools/testing/selftests/bpf/xskxceiver.c b/tools/testing/selftests/bpf/xskxceiver.c
+index 92af633faea8..595b6da26897 100644
+--- a/tools/testing/selftests/bpf/xskxceiver.c
++++ b/tools/testing/selftests/bpf/xskxceiver.c
+@@ -325,6 +325,25 @@ static bool ifobj_zc_avail(struct ifobject *ifobject)
+ 	return zc_avail;
  }
  
-+SEC("?tc")
-+int kfunc_call_test_pointer_arg_type_mismatch(struct __sk_buff *skb)
++#define MAX_SKB_FRAGS_PATH "/proc/sys/net/core/max_skb_frags"
++static unsigned int get_max_skb_frags(void)
 +{
-+	bpf_kfunc_call_test_pass_ctx((void *)10);
-+	return 0;
++	unsigned int max_skb_frags = 0;
++	FILE *file;
++
++	file = fopen(MAX_SKB_FRAGS_PATH, "r");
++	if (!file) {
++		ksft_print_msg("Error opening %s\n", MAX_SKB_FRAGS_PATH);
++		return 0;
++	}
++
++	if (fscanf(file, "%u", &max_skb_frags) != 1)
++		ksft_print_msg("Error reading %s\n", MAX_SKB_FRAGS_PATH);
++
++	fclose(file);
++	return max_skb_frags;
 +}
 +
- char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/verifier/calls.c b/tools/testing/selftests/bpf/verifier/calls.c
-index d0cdd156cd55..7afc2619ab14 100644
---- a/tools/testing/selftests/bpf/verifier/calls.c
-+++ b/tools/testing/selftests/bpf/verifier/calls.c
-@@ -76,7 +76,7 @@
- 	},
- 	.prog_type = BPF_PROG_TYPE_SCHED_CLS,
- 	.result = REJECT,
--	.errstr = "arg#0 expected pointer to ctx, but got PTR",
-+	.errstr = "arg#0 expected pointer to ctx, but got fp",
- 	.fixup_kfunc_btf_id = {
- 		{ "bpf_kfunc_call_test_pass_ctx", 2 },
- 	},
+ static struct option long_options[] = {
+ 	{"interface", required_argument, 0, 'i'},
+ 	{"busy-poll", no_argument, 0, 'b'},
+@@ -2245,13 +2264,22 @@ static int testapp_poll_rxq_tmout(struct test_spec *test)
+ 
+ static int testapp_too_many_frags(struct test_spec *test)
+ {
+-	struct pkt pkts[2 * XSK_DESC__MAX_SKB_FRAGS + 2] = {};
++	struct pkt *pkts;
+ 	u32 max_frags, i;
++	int ret;
+ 
+-	if (test->mode == TEST_MODE_ZC)
++	if (test->mode == TEST_MODE_ZC) {
+ 		max_frags = test->ifobj_tx->xdp_zc_max_segs;
+-	else
+-		max_frags = XSK_DESC__MAX_SKB_FRAGS;
++	} else {
++		max_frags = get_max_skb_frags();
++		if (!max_frags)
++			return TEST_FAILURE;
++		max_frags += 1;
++	}
++
++	pkts = calloc(2 * max_frags + 2, sizeof(struct pkt));
++	if (!pkts)
++		return TEST_FAILURE;
+ 
+ 	test->mtu = MAX_ETH_JUMBO_SIZE;
+ 
+@@ -2281,7 +2309,10 @@ static int testapp_too_many_frags(struct test_spec *test)
+ 	pkts[2 * max_frags + 1].valid = true;
+ 
+ 	pkt_stream_generate_custom(test, pkts, 2 * max_frags + 2);
+-	return testapp_validate_traffic(test);
++	ret = testapp_validate_traffic(test);
++
++	free(pkts);
++	return ret;
+ }
+ 
+ static int xsk_load_xdp_programs(struct ifobject *ifobj)
+diff --git a/tools/testing/selftests/bpf/xskxceiver.h b/tools/testing/selftests/bpf/xskxceiver.h
+index 885c948c5d83..e46e823f6a1a 100644
+--- a/tools/testing/selftests/bpf/xskxceiver.h
++++ b/tools/testing/selftests/bpf/xskxceiver.h
+@@ -55,7 +55,6 @@
+ #define XSK_UMEM__LARGE_FRAME_SIZE (3 * 1024)
+ #define XSK_UMEM__MAX_FRAME_SIZE (4 * 1024)
+ #define XSK_DESC__INVALID_OPTION (0xffff)
+-#define XSK_DESC__MAX_SKB_FRAGS 18
+ #define HUGEPAGE_SIZE (2 * 1024 * 1024)
+ #define PKT_DUMP_NB_TO_PRINT 16
+ #define RUN_ALL_TESTS UINT_MAX
 -- 
-2.46.0
+2.34.1
 
 
