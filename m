@@ -1,72 +1,72 @@
-Return-Path: <bpf+bounces-39263-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39264-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45BEA970F60
-	for <lists+bpf@lfdr.de>; Mon,  9 Sep 2024 09:14:43 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C07A970F62
+	for <lists+bpf@lfdr.de>; Mon,  9 Sep 2024 09:14:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E47F81F226E2
-	for <lists+bpf@lfdr.de>; Mon,  9 Sep 2024 07:14:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 455671C21FCB
+	for <lists+bpf@lfdr.de>; Mon,  9 Sep 2024 07:14:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E704A1AF4D8;
-	Mon,  9 Sep 2024 07:14:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89AA61AF4F1;
+	Mon,  9 Sep 2024 07:14:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RgE8pnH+"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ngPK6jln"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
+Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29C761AED25;
-	Mon,  9 Sep 2024 07:14:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACCFC1AD9F7;
+	Mon,  9 Sep 2024 07:14:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725866067; cv=none; b=ChBH7HAe4qFSFojDjyA2C/hxdV5aBWv4eSW5LQ8zZT3CD7dZEq+XKv+2ZrRwTPrRA9USkuJKSASCdRH/VFRSRjw/rJu7EqgZPTlWuzykPL0Eznaq/stH36dXNgTph5OMx7JtCJND0hGwiFEtIxcoBuy4Fjla/btUQA7xCAUjVdk=
+	t=1725866073; cv=none; b=bK/5n864/c2bW9hvMKPmKNBWsaSX8Px6EY0Qlw8RJSqCEVY+7FcVGbj3Zzd2LxDZD4woZb1x/qFHqfxotcfH6Om7wGETAIUA6mBqAVCrdpN/CKWq76BpupT9Ii2EV+IEPDBONCUgz2r/CfT//c6gh/V/bzIOu89ZVuSP8fJt0eg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725866067; c=relaxed/simple;
-	bh=uA6HsZP/i8UtmILmp565d0iqwTuGFJo/YlQsR8nNgkc=;
+	s=arc-20240116; t=1725866073; c=relaxed/simple;
+	bh=PhZgrCcGMCZTOviiJZgUafvaXQRszMaBXduQ+jC25xw=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=g41xY6twXaMMocQSWeQHYDSHq14jXX3HCew/Oa9N8GLJTWiNypGyGJnJzPj7z9vr18BRiHZ2OsaAyoZxMz9BskXRfE/9Us+4CBEsu4kDrvcgCPYjh7H4qY8sgoUgsIkOKGZOQO5IyQjy/kOddqE5BhtSN6GCmr2s1wkHZySaoIM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RgE8pnH+; arc=none smtp.client-ip=209.85.215.172
+	 MIME-Version; b=pTgFiaRj6Ljp7O4Pqfpl5DqgaA2HvJQEFMm2uUbwA6t5xHksIqZs4hbi1qbO/A/pHwPjOEtCFkT/e+5NItUV11kCi2QmOCgfaA+txjjHldQSzzY4/vP+mnw3Yop4ZkWWR/EulFYQXn2XJjJoJBwAsGL88CUDtYzn4bzn7p74Tzg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ngPK6jln; arc=none smtp.client-ip=209.85.216.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-7d666fb3fb9so1411144a12.0;
-        Mon, 09 Sep 2024 00:14:25 -0700 (PDT)
+Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-2d88690837eso3082395a91.2;
+        Mon, 09 Sep 2024 00:14:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1725866065; x=1726470865; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1725866070; x=1726470870; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=qgn+JQxnIdqI9RCqO1MoOoWKE5oepwpbv1VA1abxv/c=;
-        b=RgE8pnH+TuVyLmfxuIxm4mvKN5f6vSKx31qheN426gS5UCYDYKCIHQjq2HFOanqscy
-         YvyOI1I03GkIZea2gpK1biZBeXU1NVsVtE6G+x5fx8+Nj3M7tmVJ026IBcaPD3IiNksA
-         /HZ6QmRtZcOjLR23fz/o9n7bPZOibouKSUp6U786zCcaj7RJH2WqMVhsOsAMrM+CkAJ8
-         rdRD+40bOiJhXLHepzHYabtN1yuViS+tUWa1ME3+4W+09fM59zuX+TbMNEd3zSHWmasQ
-         YbtbE6Ci3Yo1t+rTItFETQDo15bD5CnLJ6yLvb9ZNu1nivPhGSJaolNrgGlSd5Fs2ZS5
-         M0qA==
+        bh=Ox67GsEmznfzwYrs9TCYyMXCYDvlYTDtJe/AR94Qk2g=;
+        b=ngPK6jlnVP0DNg8lAN9j6BgbDlcNxltQWAbf/qRsiMJdrmqsCqbsxiumdBf7uXXHGc
+         MIu9g0EG/WDaP7RD3Wq5DRFCruigtG0/mnPWNewre0ndGl9DwBGkBlgCZ3bWnGhGEXjx
+         1mMMKYX7E7FI5qT0UNrk81h5oUHAcgUlWyS+hnBjTFcXErpAHyM0HFzAi4swb/lb19BL
+         +ylTaHFkGRuOnN8vccHkIfgnR9oeSrViDyDFnYP5np1B0Pj6KTB3tnpvaUMU5E+jMq3r
+         Z8oEsZx+B224x1w3Fu4RU3KpQvtbeF4BxStkZ3C2+qOR/rizuMneaAsqSwQn8eJ9Ki/u
+         cQxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725866065; x=1726470865;
+        d=1e100.net; s=20230601; t=1725866070; x=1726470870;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=qgn+JQxnIdqI9RCqO1MoOoWKE5oepwpbv1VA1abxv/c=;
-        b=tT5xBKYDFjFZL+T/AUp68fqpqbQgk9HvXvB5BCYJ3jRFEmynBzgdTFk1HXDJ92gcZI
-         Rl79UUaoCu6LpU/l9T7hCA1j1vb8CwtrBsuMoNY9681qjE+HCyjX2f3jZc0qcAsYj5xo
-         pFW4Db/fEkUQmuoWDmH73KXLYprHTZfZkepznbkkXjoahjghwDiSs2JlyBWs0JkpwhKT
-         893edK9+Y7CKJS75oHCCAT7IwHUtYxCxVgQfyhAOhAyewvjJOZcoY5szXi5agFsUyfND
-         cLdQPY2yevzzaQT9f8pnbZ0fLeMCV0VZkT2Eu8k2saELlanCb9ZsmQkoxj6wilg1xuZo
-         79pw==
-X-Forwarded-Encrypted: i=1; AJvYcCXJzUdJGetLI0q3itI3bh/2nAs/WfqGKPld3I1XROFfiw1mhsQKhp+CKB1hkAAveMxf6Q62tuOiVSTXqzU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxCdjup/lrbrAoc6PtpKkWO3cqdipt1pMKzIrTBxpAUMbqHGW4O
-	0E6V4v3SGpKu6zOEBJ73J5lSN85/Emljoo2ZfvH1uTgg4YKmKhuG
-X-Google-Smtp-Source: AGHT+IG1HOLavIEKor96Se94Y9lBECxGBzj9ZToR2ekM7COf2mZZ4x0mjBM+ILCSX6ktgrC7xK6p9A==
-X-Received: by 2002:a17:902:dac1:b0:202:4bd9:aea5 with SMTP id d9443c01a7336-206b833f304mr295354815ad.14.1725866065415;
-        Mon, 09 Sep 2024 00:14:25 -0700 (PDT)
+        bh=Ox67GsEmznfzwYrs9TCYyMXCYDvlYTDtJe/AR94Qk2g=;
+        b=NkUH0kY7PC0QZcaicYYC1AgaA0palQOWGSYpwixyCR0vm8WcFnknQqjHNtYHIXPnwr
+         zgmrI3bIJadsBO9aoJ9SfwZ+O8r/RJSaKX4UEJuNNz9SwQj2nDG2hO64MUW598KzpT41
+         jCXUXjiGD4koW9YGC4cM1VCNPeXBPgVRxkHLu9hgNG3LpGokgxudNiwl2QezNydnJplJ
+         t1yDttIhdQ/NhjXXt7tNnP9HSraEyGk+w6mefKKRTNvNOKjrUa7O25Q14GZMPll9y8vk
+         YTx8aHyhpV/b3h8FecZ55Dsftq6QH11kSDJEX8FiVo4JstNA5HTT72LGyUVJjhMsKYz+
+         f1iQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVoagLl5n8PzoItP0meWmZX9wXlCMGiRkyVuRgnaqSbwn+WT+pE+kM+s+lK5hUCg5G3j1RnwVQmzmfsfBs=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzZTqdX4P3jqIUMSbaBgojZBXH1tx/wWIwSOj0lvAjIo523y97T
+	hzJXm5wMVgV18m3/kR1LHA1t9Z3HD09k3y7RcWFoaFw0VhkGA4vRiFa6Ug==
+X-Google-Smtp-Source: AGHT+IE18KtsTfvAw3HJuXhjvFzWfRFmqEH0c1tetlbkIQxeu8RF5ygobPHQ6ulxxSuHBl079d9M0g==
+X-Received: by 2002:a17:90a:2c04:b0:2d8:bec7:930a with SMTP id 98e67ed59e1d1-2dad511611cmr7608543a91.40.1725866069565;
+        Mon, 09 Sep 2024 00:14:29 -0700 (PDT)
 Received: from localhost ([116.198.225.81])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20710e32775sm28402125ad.77.2024.09.09.00.14.24
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2db04966b6asm3780870a91.39.2024.09.09.00.14.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Sep 2024 00:14:25 -0700 (PDT)
+        Mon, 09 Sep 2024 00:14:29 -0700 (PDT)
 From: Tao Chen <chen.dylane@gmail.com>
 To: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
@@ -82,9 +82,9 @@ Cc: bpf@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Tao Chen <chen.dylane@gmail.com>,
 	jinke han <jinkehan@didiglobal.com>
-Subject: [v2 PATCH bpf-next 1/2] bpf: Check percpu map value size first
-Date: Mon,  9 Sep 2024 15:13:45 +0800
-Message-Id: <20240909071346.1300093-2-chen.dylane@gmail.com>
+Subject: [v2 PATCH bpf-next 2/2] bpf/selftests: Check errno when percpu map value size exceeds
+Date: Mon,  9 Sep 2024 15:13:46 +0800
+Message-Id: <20240909071346.1300093-3-chen.dylane@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240909071346.1300093-1-chen.dylane@gmail.com>
 References: <20240909071346.1300093-1-chen.dylane@gmail.com>
@@ -96,48 +96,95 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Percpu map is often used, but the map value size limit often ignored,
-like issue: https://github.com/iovisor/bcc/issues/2519. Actually,
-percpu map value size is bound by PCPU_MIN_UNIT_SIZE, so we
-can check the value size whether it exceeds PCPU_MIN_UNIT_SIZE first,
-like percpu map of local_storage. Maybe the error message seems clearer
-compared with "cannot allocate memory".
+This test case checks the errno message when percpu map value size
+exceeds PCPU_MIN_UNIT_SIZE.
+
+root@debian:~# ./test_progs -t map_init
+ #160/1   map_init/pcpu_map_init:OK
+ #160/2   map_init/pcpu_lru_map_init:OK
+ #160/3   map_init/pcpu map value size:OK
+ #160     map_init:OK
+Summary: 1/3 PASSED, 0 SKIPPED, 0 FAILED
 
 Signed-off-by: Tao Chen <chen.dylane@gmail.com>
 Signed-off-by: jinke han <jinkehan@didiglobal.com>
 ---
- kernel/bpf/arraymap.c | 3 +++
- kernel/bpf/hashtab.c  | 3 +++
- 2 files changed, 6 insertions(+)
+ .../selftests/bpf/prog_tests/map_init.c       | 32 +++++++++++++++++++
+ .../selftests/bpf/progs/test_map_init.c       |  6 ++++
+ 2 files changed, 38 insertions(+)
 
-diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
-index a43e62e2a8bb..79660e3fca4c 100644
---- a/kernel/bpf/arraymap.c
-+++ b/kernel/bpf/arraymap.c
-@@ -73,6 +73,9 @@ int array_map_alloc_check(union bpf_attr *attr)
- 	/* avoid overflow on round_up(map->value_size) */
- 	if (attr->value_size > INT_MAX)
- 		return -E2BIG;
-+	/* percpu map value size is bound by PCPU_MIN_UNIT_SIZE */
-+	if (percpu && round_up(attr->value_size, 8) > PCPU_MIN_UNIT_SIZE)
-+		return -E2BIG;
+diff --git a/tools/testing/selftests/bpf/prog_tests/map_init.c b/tools/testing/selftests/bpf/prog_tests/map_init.c
+index 14a31109dd0e..7f1a6fa3679f 100644
+--- a/tools/testing/selftests/bpf/prog_tests/map_init.c
++++ b/tools/testing/selftests/bpf/prog_tests/map_init.c
+@@ -6,6 +6,7 @@
+ 
+ #define TEST_VALUE 0x1234
+ #define FILL_VALUE 0xdeadbeef
++#define PCPU_MIN_UNIT_SIZE 32768
+ 
+ static int nr_cpus;
+ static int duration;
+@@ -118,6 +119,35 @@ static int check_values_one_cpu(pcpu_map_value_t *value, map_value_t expected)
  
  	return 0;
  }
-diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-index 45c7195b65ba..b14b87463ee0 100644
---- a/kernel/bpf/hashtab.c
-+++ b/kernel/bpf/hashtab.c
-@@ -462,6 +462,9 @@ static int htab_map_alloc_check(union bpf_attr *attr)
- 		 * kmalloc-able later in htab_map_update_elem()
- 		 */
- 		return -E2BIG;
-+	/* percpu map value size is bound by PCPU_MIN_UNIT_SIZE */
-+	if (percpu && round_up(attr->value_size, 8) > PCPU_MIN_UNIT_SIZE)
-+		return -E2BIG;
++/*
++ * percpu map value size is bound by PCPU_MIN_UNIT_SIZE
++ * check the errno when the value exceed PCPU_MIN_UNIT_SIZE
++ */
++static void test_pcpu_map_value_size(void)
++{
++	struct test_map_init *skel;
++	int err;
++	int value_sz = PCPU_MIN_UNIT_SIZE + 1;
++	enum bpf_map_type map_types[] = { BPF_MAP_TYPE_PERCPU_ARRAY,
++					  BPF_MAP_TYPE_PERCPU_HASH,
++					  BPF_MAP_TYPE_LRU_PERCPU_HASH };
++	for (int i = 0; i < ARRAY_SIZE(map_types); i++) {
++		skel = test_map_init__open();
++		if (!ASSERT_OK_PTR(skel, "skel_open"))
++			return;
++		err = bpf_map__set_type(skel->maps.hashmap2, map_types[i]);
++		if (!ASSERT_OK(err, "bpf_map__set_type"))
++			goto error;
++		err = bpf_map__set_value_size(skel->maps.hashmap2, value_sz);
++		if (!ASSERT_OK(err, "bpf_map__set_value_size"))
++			goto error;
++
++		err = test_map_init__load(skel);
++		ASSERT_EQ(err, -E2BIG, "skel_load");
++error:
++		test_map_init__destroy(skel);
++	}
++}
  
- 	return 0;
+ /* Add key=1 elem with values set for all CPUs
+  * Delete elem key=1
+@@ -211,4 +241,6 @@ void test_map_init(void)
+ 		test_pcpu_map_init();
+ 	if (test__start_subtest("pcpu_lru_map_init"))
+ 		test_pcpu_lru_map_init();
++	if (test__start_subtest("pcpu map value size"))
++		test_pcpu_map_value_size();
  }
+diff --git a/tools/testing/selftests/bpf/progs/test_map_init.c b/tools/testing/selftests/bpf/progs/test_map_init.c
+index c89d28ead673..7a772cbf0570 100644
+--- a/tools/testing/selftests/bpf/progs/test_map_init.c
++++ b/tools/testing/selftests/bpf/progs/test_map_init.c
+@@ -15,6 +15,12 @@ struct {
+ 	__type(value, __u64);
+ } hashmap1 SEC(".maps");
+ 
++struct {
++	__uint(type, BPF_MAP_TYPE_HASH);
++	__uint(max_entries, 1);
++	__type(key, __u32);
++	__type(value, __u64);
++} hashmap2 SEC(".maps");
+ 
+ SEC("tp/syscalls/sys_enter_getpgid")
+ int sysenter_getpgid(const void *ctx)
 -- 
 2.25.1
 
