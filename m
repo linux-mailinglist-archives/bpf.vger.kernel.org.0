@@ -1,248 +1,143 @@
-Return-Path: <bpf+bounces-39324-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39325-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E15B971DA6
-	for <lists+bpf@lfdr.de>; Mon,  9 Sep 2024 17:12:13 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DEB4B971E8C
+	for <lists+bpf@lfdr.de>; Mon,  9 Sep 2024 17:57:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 59C0D1C22F81
-	for <lists+bpf@lfdr.de>; Mon,  9 Sep 2024 15:12:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 22B40B22E0A
+	for <lists+bpf@lfdr.de>; Mon,  9 Sep 2024 15:57:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 338B91C68F;
-	Mon,  9 Sep 2024 15:12:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16C6B139587;
+	Mon,  9 Sep 2024 15:57:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="Sc/IMzhX"
+	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="bOIXjvAE"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CAC81C683;
-	Mon,  9 Sep 2024 15:12:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7096842AAB;
+	Mon,  9 Sep 2024 15:57:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725894725; cv=none; b=EOswOc9siYnk1tNLiCagJGH2HNtrJ6nVzVBeecZAycuPn2p7WgHql5eA1JAgOlzr6J/ZPWC/czLZXQ+8X7RgGoAAtSH6qy02ctfoxK0UjX1kK2Sx5/3py1rKngQ8HQtCYerEUpJ23LxF8J+Ad9leWeauEm+nno6qiTMFHPloTko=
+	t=1725897461; cv=none; b=OIjnTCE1bOutrAMHPJyeVtEKXTD/JXHtLNjJCTAQRF67QuwgE9W9RCtQi4zldxQE1VOaKg8+AZZQ+k1TX4Bkk8G/mJH/6Qp7uRN5Qh77wC6dxuyvL0YSh36VoHCAcAYO8TG2jHncyEgxTtGoVAuTerjDlyt2X0hZcS2tRStlE2g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725894725; c=relaxed/simple;
-	bh=c7YvUH84AlumiDtIrio1hThdvteHMEAg8VTnwNP3vHc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Xuk+KOp8PeZYwDMxJiSodXy/EBZmP+jpCxwYEdQlalNj+G+X+lHRh75DwzPa9yWHo/IuNx8hu+4dPdNyeUZYHLU3h/vOxElHweNk4yrrXwvOZj+37IzO2JL2jd/U+hi3eEb3fuX7pw9B0R2/ivR1DxRcEOtSnCA4YWic4IGOB/g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=Sc/IMzhX; arc=none smtp.client-ip=167.114.26.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-	s=smtpout1; t=1725894714;
-	bh=c7YvUH84AlumiDtIrio1hThdvteHMEAg8VTnwNP3vHc=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=Sc/IMzhXLu36YaYhkAE3zpwxZxsmgRydJSMBgXazLABBcFdivkUQcX/Nky1m9Okst
-	 2cPsii6n9FN5ymmfrlOZ6FmTdZvBmD9+eReLdo396pjv8WMvPAmkStNH/pNWehd9Gl
-	 K7ibQ1yB2kUfmhK1E3d7uphByCYfVooQWr7qmIM9soWZnkOaE/oD6e3CErp6CZFjb2
-	 xGffIACes2q1NoEm0Yn9iZCFh70omRIpJpWB1ShoZ4ToC0FkUPnlqRUjamtiqt24c+
-	 aC7vWHqojzbsw5uudYx9+/iz/GuvSakBt5tRX5IvUm3fus3SUx38BGoyxuZMo6oQ6g
-	 TNRzodG4zDgeg==
-Received: from [172.16.0.134] (96-127-217-162.qc.cable.ebox.net [96.127.217.162])
-	by smtpout.efficios.com (Postfix) with ESMTPSA id 4X2Vfx67y3z1KWR;
-	Mon,  9 Sep 2024 11:11:53 -0400 (EDT)
-Message-ID: <1f442f99-92cd-41d6-8dd2-1f4780f2e556@efficios.com>
-Date: Mon, 9 Sep 2024 11:11:39 -0400
+	s=arc-20240116; t=1725897461; c=relaxed/simple;
+	bh=oacz5eggXwzY8M8S+vaeXmwUAnxLro5Rgw36NkVBL04=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Zc4FkrrnIem7KiF9FMh3Lna0eNetvNputn8S8CNHbMFDFlktRuM5nyG52MVwWYgPcBmfZat/vh+59CeCFeXYWfbgR38PF1C4f2YybP+6lGNPiczDPwkLf2Q0zFgtjPauOCOciZDq1aMnmHrddUhEt1FjGOxwbeii5yq0alNcBUU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b=bOIXjvAE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA2F1C4CEC8;
+	Mon,  9 Sep 2024 15:57:33 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="bOIXjvAE"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+	t=1725897452;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bbWr4vi9pa8+Cqp83onNnmk1v5W+k1MGPgiQ/1MwNSc=;
+	b=bOIXjvAESpiyWOLfxiXwIhAtPOG1y1+0opyH9Q87ZwFnbiPRA4b3wNogUcxJqtsfJjafy2
+	EIPyfn290ab/wumQZS8/Njm/fN604qRqGzCtPRB3Oi6XyRiwcddBL2PngABSxf1zQ6eimS
+	KerTR+BY/Q0Rag++udJH9dHwTPIZMJ8=
+Received: 
+	by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 242879eb (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+	Mon, 9 Sep 2024 15:57:32 +0000 (UTC)
+Date: Mon, 9 Sep 2024 17:57:31 +0200
+From: "Jason A. Donenfeld" <Jason@zx2c4.com>
+To: Uros Bizjak <ubizjak@gmail.com>
+Cc: x86@kernel.org, linux-crypto@vger.kernel.org,
+	intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+	linux-media@vger.kernel.org, linux-mtd@lists.infradead.org,
+	linux-fscrypt@vger.kernel.org, linux-scsi@vger.kernel.org,
+	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Jani Nikula <jani.nikula@linux.intel.com>,
+	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+	Rodrigo Vivi <rodrigo.vivi@intel.com>,
+	Tvrtko Ursulin <tursulin@ursulin.net>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Hans Verkuil <hverkuil@xs4all.nl>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Eric Biggers <ebiggers@kernel.org>,
+	"Theodore Y. Ts'o" <tytso@mit.edu>,
+	Jaegeuk Kim <jaegeuk@kernel.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Hannes Reinecke <hare@suse.de>,
+	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Brendan Higgins <brendan.higgins@linux.dev>,
+	David Gow <davidgow@google.com>, Rae Moar <rmoar@google.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Jiri Pirko <jiri@resnulli.us>, Petr Mladek <pmladek@suse.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Stephen Hemminger <stephen@networkplumber.org>,
+	Jamal Hadi Salim <jhs@mojatatu.com>,
+	Cong Wang <xiyou.wangcong@gmail.com>,
+	Kent Overstreet <kent.overstreet@linux.dev>
+Subject: Re: [PATCH RESEND v2 00/19] random: Resolve circular include
+ dependency and include <linux/percpu.h>
+Message-ID: <Zt8a6_RwLG2pEnZ6@zx2c4.com>
+References: <20240909075641.258968-1-ubizjak@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 3/5] tracing/bpf-trace: Add support for faultable
- tracepoints
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>,
- Masami Hiramatsu <mhiramat@kernel.org>, linux-kernel@vger.kernel.org,
- Peter Zijlstra <peterz@infradead.org>, Alexei Starovoitov <ast@kernel.org>,
- Yonghong Song <yhs@fb.com>, "Paul E . McKenney" <paulmck@kernel.org>,
- Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Namhyung Kim <namhyung@kernel.org>, bpf@vger.kernel.org,
- Joel Fernandes <joel@joelfernandes.org>, linux-trace-kernel@vger.kernel.org,
- Michael Jeanson <mjeanson@efficios.com>
-References: <20240828144153.829582-1-mathieu.desnoyers@efficios.com>
- <20240828144153.829582-4-mathieu.desnoyers@efficios.com>
- <CAEf4BzZERq7qwf0TWYFaXzE6d+L+Y6UY+ahteikro_eugJGxWw@mail.gmail.com>
-Content-Language: en-US
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-In-Reply-To: <CAEf4BzZERq7qwf0TWYFaXzE6d+L+Y6UY+ahteikro_eugJGxWw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240909075641.258968-1-ubizjak@gmail.com>
 
-On 2024-09-04 21:21, Andrii Nakryiko wrote:
-> On Wed, Aug 28, 2024 at 7:42 AM Mathieu Desnoyers
-> <mathieu.desnoyers@efficios.com> wrote:
->>
->> In preparation for converting system call enter/exit instrumentation
->> into faultable tracepoints, make sure that bpf can handle registering to
->> such tracepoints by explicitly disabling preemption within the bpf
->> tracepoint probes to respect the current expectations within bpf tracing
->> code.
->>
->> This change does not yet allow bpf to take page faults per se within its
->> probe, but allows its existing probes to connect to faultable
->> tracepoints.
->>
->> Link: https://lore.kernel.org/lkml/20231002202531.3160-1-mathieu.desnoyers@efficios.com/
->> Co-developed-by: Michael Jeanson <mjeanson@efficios.com>
->> Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
->> Signed-off-by: Michael Jeanson <mjeanson@efficios.com>
->> Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
->> Cc: Steven Rostedt <rostedt@goodmis.org>
->> Cc: Masami Hiramatsu <mhiramat@kernel.org>
->> Cc: Peter Zijlstra <peterz@infradead.org>
->> Cc: Alexei Starovoitov <ast@kernel.org>
->> Cc: Yonghong Song <yhs@fb.com>
->> Cc: Paul E. McKenney <paulmck@kernel.org>
->> Cc: Ingo Molnar <mingo@redhat.com>
->> Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
->> Cc: Mark Rutland <mark.rutland@arm.com>
->> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
->> Cc: Namhyung Kim <namhyung@kernel.org>
->> Cc: bpf@vger.kernel.org
->> Cc: Joel Fernandes <joel@joelfernandes.org>
->> ---
->> Changes since v4:
->> - Use DEFINE_INACTIVE_GUARD.
->> - Add brackets to multiline 'if' statements.
->> Changes since v5:
->> - Rebased on v6.11-rc5.
->> - Pass the TRACEPOINT_MAY_FAULT flag directly to tracepoint_probe_register_prio_flags.
->> ---
->>   include/trace/bpf_probe.h | 21 ++++++++++++++++-----
->>   kernel/trace/bpf_trace.c  |  2 +-
->>   2 files changed, 17 insertions(+), 6 deletions(-)
->>
->> diff --git a/include/trace/bpf_probe.h b/include/trace/bpf_probe.h
->> index a2ea11cc912e..cc96dd1e7c3d 100644
->> --- a/include/trace/bpf_probe.h
->> +++ b/include/trace/bpf_probe.h
->> @@ -42,16 +42,27 @@
->>   /* tracepoints with more than 12 arguments will hit build error */
->>   #define CAST_TO_U64(...) CONCATENATE(__CAST, COUNT_ARGS(__VA_ARGS__))(__VA_ARGS__)
->>
->> -#define __BPF_DECLARE_TRACE(call, proto, args)                         \
->> +#define __BPF_DECLARE_TRACE(call, proto, args, tp_flags)               \
->>   static notrace void                                                    \
->>   __bpf_trace_##call(void *__data, proto)                                        \
->>   {                                                                      \
->> -       CONCATENATE(bpf_trace_run, COUNT_ARGS(args))(__data, CAST_TO_U64(args));        \
->> +       DEFINE_INACTIVE_GUARD(preempt_notrace, bpf_trace_guard);        \
->> +                                                                       \
->> +       if ((tp_flags) & TRACEPOINT_MAY_FAULT) {                        \
->> +               might_fault();                                          \
->> +               activate_guard(preempt_notrace, bpf_trace_guard)();     \
->> +       }                                                               \
->> +                                                                       \
->> +       CONCATENATE(bpf_trace_run, COUNT_ARGS(args))(__data, CAST_TO_U64(args)); \
->>   }
->>
->>   #undef DECLARE_EVENT_CLASS
->>   #define DECLARE_EVENT_CLASS(call, proto, args, tstruct, assign, print) \
->> -       __BPF_DECLARE_TRACE(call, PARAMS(proto), PARAMS(args))
->> +       __BPF_DECLARE_TRACE(call, PARAMS(proto), PARAMS(args), 0)
->> +
->> +#undef DECLARE_EVENT_CLASS_MAY_FAULT
->> +#define DECLARE_EVENT_CLASS_MAY_FAULT(call, proto, args, tstruct, assign, print) \
->> +       __BPF_DECLARE_TRACE(call, PARAMS(proto), PARAMS(args), TRACEPOINT_MAY_FAULT)
->>
->>   /*
->>    * This part is compiled out, it is only here as a build time check
->> @@ -105,13 +116,13 @@ static inline void bpf_test_buffer_##call(void)                           \
->>
->>   #undef DECLARE_TRACE
->>   #define DECLARE_TRACE(call, proto, args)                               \
->> -       __BPF_DECLARE_TRACE(call, PARAMS(proto), PARAMS(args))          \
->> +       __BPF_DECLARE_TRACE(call, PARAMS(proto), PARAMS(args), 0)       \
->>          __DEFINE_EVENT(call, call, PARAMS(proto), PARAMS(args), 0)
->>
->>   #undef DECLARE_TRACE_WRITABLE
->>   #define DECLARE_TRACE_WRITABLE(call, proto, args, size) \
->>          __CHECK_WRITABLE_BUF_SIZE(call, PARAMS(proto), PARAMS(args), size) \
->> -       __BPF_DECLARE_TRACE(call, PARAMS(proto), PARAMS(args)) \
->> +       __BPF_DECLARE_TRACE(call, PARAMS(proto), PARAMS(args), 0) \
->>          __DEFINE_EVENT(call, call, PARAMS(proto), PARAMS(args), size)
->>
->>   #include TRACE_INCLUDE(TRACE_INCLUDE_FILE)
->> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
->> index c77eb80cbd7f..ed07283d505b 100644
->> --- a/kernel/trace/bpf_trace.c
->> +++ b/kernel/trace/bpf_trace.c
->> @@ -2473,7 +2473,7 @@ int bpf_probe_register(struct bpf_raw_event_map *btp, struct bpf_raw_tp_link *li
->>
->>          return tracepoint_probe_register_prio_flags(tp, (void *)btp->bpf_func,
->>                                                      link, TRACEPOINT_DEFAULT_PRIO,
->> -                                                   TRACEPOINT_MAY_EXIST);
->> +                                                   TRACEPOINT_MAY_EXIST | (tp->flags & TRACEPOINT_MAY_FAULT));
->>   }
->>
->>   int bpf_probe_unregister(struct bpf_raw_event_map *btp, struct bpf_raw_tp_link *link)
->> --
->> 2.39.2
->>
->>
+Hi Uros,
+
+On Mon, Sep 09, 2024 at 09:53:43AM +0200, Uros Bizjak wrote:
+> a) Substitutes the inclusion of <linux/random.h> with the
+> inclusion of <linux/prandom.h> where needed (patches 1 - 17).
 > 
-> I wonder if it would be better to just do this, instead of that
-> preempt guard. I think we don't strictly need preemption to be
-> disabled, we just need to stay on the same CPU, just like we do that
-> for many other program types.
-
-I'm worried about introducing any kind of subtle synchronization
-change in this series, and moving from preempt-off to migrate-disable
-definitely falls under that umbrella.
-
-I would recommend auditing all uses of this_cpu_*() APIs to make sure
-accesses to per-cpu data structures are using atomics and not just using
-operations that expect use of preempt-off to prevent concurrent threads
-from updating to the per-cpu data concurrently.
-
-So what you are suggesting may be a good idea, but I prefer to leave
-this kind of change to a separate bpf-specific series, and I would
-leave this work to someone who knows more about ebpf than me.
-
-Thanks,
-
-Mathieu
-
+> b) Removes legacy inclusion of <linux/prandom.h> from
+> <linux/random.h> (patch 18).
 > 
-> We'll need some more BPF-specific plumbing to fully support faultable
-> (sleepable) tracepoints, but this should unblock your work, unless I'm
-> missing something. And we can take it from there, once your patches
-> land, to take advantage of faultable tracepoints in the BPF ecosystem.
-> 
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index b69a39316c0c..415639b7c7a4 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -2302,7 +2302,8 @@ void __bpf_trace_run(struct bpf_raw_tp_link
-> *link, u64 *args)
->          struct bpf_run_ctx *old_run_ctx;
->          struct bpf_trace_run_ctx run_ctx;
-> 
-> -       cant_sleep();
-> +       migrate_disable();
-> +
->          if (unlikely(this_cpu_inc_return(*(prog->active)) != 1)) {
->                  bpf_prog_inc_misses_counter(prog);
->                  goto out;
-> @@ -2318,6 +2319,8 @@ void __bpf_trace_run(struct bpf_raw_tp_link
-> *link, u64 *args)
->          bpf_reset_run_ctx(old_run_ctx);
->   out:
->          this_cpu_dec(*(prog->active));
-> +
-> +       migrate_enable();
->   }
+> c) Includes <linux/percpu.h> in <linux/prandom.h> (patch 19).
+ 
+Thanks for doing this. That seems like a fine initiative to me. (I'm
+also curious about the future percpu changes you've got planned.)
 
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
+Tree-wise, were you expecting me to take this through random.git? And if
+so, what timeframe did you have in mind? For 6.12 next week (can you
+poke folks for acks in time?), or punt it for 6.13? Or did you have a
+different tree in mind for treewide changes (in which case, I'll send
+you an ack for the [p]random.h changes).
 
+Regards,
+Jason
 
