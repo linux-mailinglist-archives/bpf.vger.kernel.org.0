@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-39275-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39276-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A248A971021
-	for <lists+bpf@lfdr.de>; Mon,  9 Sep 2024 09:48:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 80201971029
+	for <lists+bpf@lfdr.de>; Mon,  9 Sep 2024 09:48:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 61A1B282F99
-	for <lists+bpf@lfdr.de>; Mon,  9 Sep 2024 07:48:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0DD471F22D30
+	for <lists+bpf@lfdr.de>; Mon,  9 Sep 2024 07:48:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F13041B1409;
-	Mon,  9 Sep 2024 07:47:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F9621B253B;
+	Mon,  9 Sep 2024 07:47:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="upgC1/tM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZXpYvmdB"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76A241B143D;
-	Mon,  9 Sep 2024 07:47:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DC0C1B14F8;
+	Mon,  9 Sep 2024 07:47:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725868031; cv=none; b=MN5cpjlSGvOKNfjsJAVXyhYzBSknSX5fEZp0622T9O8bOb9p36781mAaUkqLDYMonV4XPTRd5sfV49SmTOfTNQNaAUefrlqTaAPvgmNnnaTBmwZnzRC2Gj1qc2FaM177Mk/F3iYEziSL+HExSI6ThnxVw7ZdiGCJFcSOsLcKWMM=
+	t=1725868042; cv=none; b=qNBbtSN1ZAiBu4EfwMCeIxFO1L2TGtbSpOknubE4id2GZH04k1CPz0GgdydKbDTiala39+pspK/OBIzekUYNFiLF1XvLH4MdnpUewH0dkAzbt/gAEEPmMaxmMhyILs/AiEudAttF5oZhGao8FqFxPQVSZILz4FjZd/3+tS2Y2B8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725868031; c=relaxed/simple;
-	bh=RU1guL+oeamaHcos0dxdcHWw1bg8Cmx/4IIKvNEPfcM=;
+	s=arc-20240116; t=1725868042; c=relaxed/simple;
+	bh=PEISwKvon8efj26pn461xWp2eb5EhQQ9wpFEP/2ywWc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=pk2D2His+qvzQgFmJt5/NPkPqUJd8f98heY/HIBlTeE5JH6UVIBuxCeQzwkbrnEmEgt6/7pA5Brl7gcjGlM5AoQHtKYYdNaLrej8BaCJGOYLlnskffrRcqOQIFfUO30ESVq719VDwEdkniPV4zkJauSxLUadQnExRIavoQx+CAA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=upgC1/tM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0418AC4CEC5;
-	Mon,  9 Sep 2024 07:47:06 +0000 (UTC)
+	 MIME-Version; b=DH4Tb/h44C6Uq43HlQjQq+j8zpnwg6DeIefB+uJEXxtMGlyASVor/yZWAGzaiIDsWJfCGL2piaKqaovg93wwVaTEeumtHrwmlLHkQJ4+7OvU2hfbdFAZUxoY5FT7BalUG+FtfXR9JZ7eyZ2/ZbJWI+pNbwHYslR8UpVYWvzH4fc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZXpYvmdB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58560C4CEC8;
+	Mon,  9 Sep 2024 07:47:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1725868031;
-	bh=RU1guL+oeamaHcos0dxdcHWw1bg8Cmx/4IIKvNEPfcM=;
+	s=k20201202; t=1725868042;
+	bh=PEISwKvon8efj26pn461xWp2eb5EhQQ9wpFEP/2ywWc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=upgC1/tM4mfKa9ONxXNoEkLId4JVdQBgYAJkjL0vb9v5IJoEIpT/jCD4T8c2rdcbu
-	 vglugM+Feiv+25YaC2YUdTFNMc+TXQm71eMYVp77fgU+4WOEktCarEZ4YrHzK45U2n
-	 fE2An136niRsX7jnQ6wFNmfh0aCqDsUyQbG38CyCX5RVPhaas3wiu2eH1pyE7yNR/F
-	 HM+DUIn8IiZjrfYA2X65CZVJysYhKS36t62R/EnPRMTjsAMIzMGhq2FEg+qTkopz2x
-	 ugJhXzojZH0AbC5iUs7/u3MJNasKXWTooLPeDSixcv034RB4taCCWbfDPsVVuLg2sW
-	 QR28iSsY9WUrA==
+	b=ZXpYvmdBEIxQnyKn576dsBfBJPQCdgsodtlXtHUtUSOOdWcmr2sitEWf3jHJHlG67
+	 WMQawbC5kSX1epBLCGLq6F6MuibW9RdK4zQ3FysK+H8JmvEwKldoZfBkQo9PJuxup+
+	 wr+5Rb22+8ONdwN0ldwBsuxI9H6irkHc3pXEnf0swI/SkIRqU23VgeB8BA/Iy1yHwz
+	 An0gVZ7rdlHGWGXWXzZaC6I4em6xeqPns8jP4B4K6wJwnI79Rk3SALbDtU6jbuZWjn
+	 rhSOpAeMPTqJR70GfvEhyyRGQ0ZBF6R97wRNOLZhK0Dy/UiPwN2KB1u4UbG2oeTsF+
+	 Vdf0lJFFNu0Sw==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Oleg Nesterov <oleg@redhat.com>,
 	Peter Zijlstra <peterz@infradead.org>,
@@ -59,9 +59,9 @@ Cc: bpf@vger.kernel.org,
 	Masami Hiramatsu <mhiramat@kernel.org>,
 	linux-kernel@vger.kernel.org,
 	linux-trace-kernel@vger.kernel.org
-Subject: [PATCHv3 6/7] selftests/bpf: Add uprobe session cookie test
-Date: Mon,  9 Sep 2024 09:45:53 +0200
-Message-ID: <20240909074554.2339984-7-jolsa@kernel.org>
+Subject: [PATCHv3 7/7] selftests/bpf: Add uprobe session recursive test
+Date: Mon,  9 Sep 2024 09:45:54 +0200
+Message-ID: <20240909074554.2339984-8-jolsa@kernel.org>
 X-Mailer: git-send-email 2.46.0
 In-Reply-To: <20240909074554.2339984-1-jolsa@kernel.org>
 References: <20240909074554.2339984-1-jolsa@kernel.org>
@@ -73,124 +73,153 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Adding uprobe session test that verifies the cookie value
-get properly propagated from entry to return program.
+Adding uprobe session test that verifies the cookie value is stored
+properly when single uprobe-ed function is executed recursively.
 
 Acked-by: Andrii Nakryiko <andrii@kernel.org>
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- .../bpf/prog_tests/uprobe_multi_test.c        | 31 ++++++++++++
- .../bpf/progs/uprobe_multi_session_cookie.c   | 48 +++++++++++++++++++
- 2 files changed, 79 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/uprobe_multi_session_cookie.c
+ .../bpf/prog_tests/uprobe_multi_test.c        | 57 +++++++++++++++++++
+ .../progs/uprobe_multi_session_recursive.c    | 44 ++++++++++++++
+ 2 files changed, 101 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/progs/uprobe_multi_session_recursive.c
 
 diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c b/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-index cc32288bfe26..8f56066a0195 100644
+index 8f56066a0195..71d1fc00b2f4 100644
 --- a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
 +++ b/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-@@ -7,6 +7,7 @@
- #include "uprobe_multi_bench.skel.h"
+@@ -8,6 +8,7 @@
  #include "uprobe_multi_usdt.skel.h"
  #include "uprobe_multi_session.skel.h"
-+#include "uprobe_multi_session_cookie.skel.h"
+ #include "uprobe_multi_session_cookie.skel.h"
++#include "uprobe_multi_session_recursive.skel.h"
  #include "bpf/libbpf_internal.h"
  #include "testing_helpers.h"
  #include "../sdt.h"
-@@ -660,6 +661,34 @@ static void test_session_skel_api(void)
- 	uprobe_multi_session__destroy(skel);
+@@ -34,6 +35,12 @@ noinline void usdt_trigger(void)
+ 	STAP_PROBE(test, pid_filter_usdt);
  }
  
-+static void test_session_cookie_skel_api(void)
++noinline void uprobe_session_recursive(int i)
 +{
-+	struct uprobe_multi_session_cookie *skel = NULL;
-+	int err;
++	if (i)
++		uprobe_session_recursive(i - 1);
++}
 +
-+	skel = uprobe_multi_session_cookie__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "uprobe_multi_session_cookie__open_and_load"))
+ struct child {
+ 	int go[2];
+ 	int c2p[2]; /* child -> parent channel */
+@@ -689,6 +696,54 @@ static void test_session_cookie_skel_api(void)
+ 	uprobe_multi_session_cookie__destroy(skel);
+ }
+ 
++static void test_session_recursive_skel_api(void)
++{
++	struct uprobe_multi_session_recursive *skel = NULL;
++	int i, err;
++
++	skel = uprobe_multi_session_recursive__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "uprobe_multi_session_recursive__open_and_load"))
 +		goto cleanup;
 +
 +	skel->bss->pid = getpid();
 +
-+	err = uprobe_multi_session_cookie__attach(skel);
-+	if (!ASSERT_OK(err, "uprobe_multi_session_cookie__attach"))
++	err = uprobe_multi_session_recursive__attach(skel);
++	if (!ASSERT_OK(err, "uprobe_multi_session_recursive__attach"))
 +		goto cleanup;
 +
-+	/* trigger all probes */
-+	uprobe_multi_func_1();
-+	uprobe_multi_func_2();
-+	uprobe_multi_func_3();
++	for (i = 0; i < ARRAY_SIZE(skel->bss->test_uprobe_cookie_entry); i++)
++		skel->bss->test_uprobe_cookie_entry[i] = i + 1;
 +
-+	ASSERT_EQ(skel->bss->test_uprobe_1_result, 1, "test_uprobe_1_result");
-+	ASSERT_EQ(skel->bss->test_uprobe_2_result, 2, "test_uprobe_2_result");
-+	ASSERT_EQ(skel->bss->test_uprobe_3_result, 3, "test_uprobe_3_result");
++	uprobe_session_recursive(5);
++
++	/*
++	 *                                         entry uprobe:
++	 * uprobe_session_recursive(5) {             *cookie = 1, return 0
++	 *   uprobe_session_recursive(4) {           *cookie = 2, return 1
++	 *     uprobe_session_recursive(3) {         *cookie = 3, return 0
++	 *       uprobe_session_recursive(2) {       *cookie = 4, return 1
++	 *         uprobe_session_recursive(1) {     *cookie = 5, return 0
++	 *           uprobe_session_recursive(0) {   *cookie = 6, return 1
++	 *                                          return uprobe:
++	 *           } i = 0                          not executed
++	 *         } i = 1                            test_uprobe_cookie_return[0] = 5
++	 *       } i = 2                              not executed
++	 *     } i = 3                                test_uprobe_cookie_return[1] = 3
++	 *   } i = 4                                  not executed
++	 * } i = 5                                    test_uprobe_cookie_return[2] = 1
++	 */
++
++	ASSERT_EQ(skel->bss->idx_entry, 6, "idx_entry");
++	ASSERT_EQ(skel->bss->idx_return, 3, "idx_return");
++
++	ASSERT_EQ(skel->bss->test_uprobe_cookie_return[0], 5, "test_uprobe_cookie_return[0]");
++	ASSERT_EQ(skel->bss->test_uprobe_cookie_return[1], 3, "test_uprobe_cookie_return[1]");
++	ASSERT_EQ(skel->bss->test_uprobe_cookie_return[2], 1, "test_uprobe_cookie_return[2]");
 +
 +cleanup:
-+	uprobe_multi_session_cookie__destroy(skel);
++	uprobe_multi_session_recursive__destroy(skel);
 +}
 +
  static void test_bench_attach_uprobe(void)
  {
  	long attach_start_ns = 0, attach_end_ns = 0;
-@@ -750,4 +779,6 @@ void test_uprobe_multi_test(void)
- 		test_attach_api_fails();
- 	if (test__start_subtest("session"))
+@@ -781,4 +836,6 @@ void test_uprobe_multi_test(void)
  		test_session_skel_api();
-+	if (test__start_subtest("session_cookie"))
-+		test_session_cookie_skel_api();
+ 	if (test__start_subtest("session_cookie"))
+ 		test_session_cookie_skel_api();
++	if (test__start_subtest("session_cookie_recursive"))
++		test_session_recursive_skel_api();
  }
-diff --git a/tools/testing/selftests/bpf/progs/uprobe_multi_session_cookie.c b/tools/testing/selftests/bpf/progs/uprobe_multi_session_cookie.c
+diff --git a/tools/testing/selftests/bpf/progs/uprobe_multi_session_recursive.c b/tools/testing/selftests/bpf/progs/uprobe_multi_session_recursive.c
 new file mode 100644
-index 000000000000..5befdf944dc6
+index 000000000000..8fbcd69fae22
 --- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/uprobe_multi_session_cookie.c
-@@ -0,0 +1,48 @@
++++ b/tools/testing/selftests/bpf/progs/uprobe_multi_session_recursive.c
+@@ -0,0 +1,44 @@
 +// SPDX-License-Identifier: GPL-2.0
 +#include <linux/bpf.h>
 +#include <bpf/bpf_helpers.h>
 +#include <bpf/bpf_tracing.h>
 +#include <stdbool.h>
 +#include "bpf_kfuncs.h"
++#include "bpf_misc.h"
 +
 +char _license[] SEC("license") = "GPL";
 +
 +int pid = 0;
 +
-+__u64 test_uprobe_1_result = 0;
-+__u64 test_uprobe_2_result = 0;
-+__u64 test_uprobe_3_result = 0;
++int idx_entry = 0;
++int idx_return = 0;
 +
-+static int check_cookie(__u64 val, __u64 *result)
++__u64 test_uprobe_cookie_entry[6];
++__u64 test_uprobe_cookie_return[3];
++
++static int check_cookie(void)
 +{
-+	__u64 *cookie;
++	__u64 *cookie = bpf_session_cookie();
 +
++	if (bpf_session_is_return()) {
++		if (idx_return >= ARRAY_SIZE(test_uprobe_cookie_return))
++			return 1;
++		test_uprobe_cookie_return[idx_return++] = *cookie;
++		return 0;
++	}
++
++	if (idx_entry >= ARRAY_SIZE(test_uprobe_cookie_entry))
++		return 1;
++	*cookie = test_uprobe_cookie_entry[idx_entry];
++	return idx_entry++ % 2;
++}
++
++
++SEC("uprobe.session//proc/self/exe:uprobe_session_recursive")
++int uprobe_recursive(struct pt_regs *ctx)
++{
 +	if (bpf_get_current_pid_tgid() >> 32 != pid)
 +		return 1;
 +
-+	cookie = bpf_session_cookie();
-+
-+	if (bpf_session_is_return())
-+		*result = *cookie == val ? val : 0;
-+	else
-+		*cookie = val;
-+	return 0;
-+}
-+
-+SEC("uprobe.session//proc/self/exe:uprobe_multi_func_1")
-+int uprobe_1(struct pt_regs *ctx)
-+{
-+	return check_cookie(1, &test_uprobe_1_result);
-+}
-+
-+SEC("uprobe.session//proc/self/exe:uprobe_multi_func_2")
-+int uprobe_2(struct pt_regs *ctx)
-+{
-+	return check_cookie(2, &test_uprobe_2_result);
-+}
-+
-+SEC("uprobe.session//proc/self/exe:uprobe_multi_func_3")
-+int uprobe_3(struct pt_regs *ctx)
-+{
-+	return check_cookie(3, &test_uprobe_3_result);
++	return check_cookie();
 +}
 -- 
 2.46.0
