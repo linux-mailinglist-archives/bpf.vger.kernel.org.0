@@ -1,93 +1,115 @@
-Return-Path: <bpf+bounces-39303-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39304-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C8C6971463
-	for <lists+bpf@lfdr.de>; Mon,  9 Sep 2024 11:50:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4259D971523
+	for <lists+bpf@lfdr.de>; Mon,  9 Sep 2024 12:18:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 75A661C23065
-	for <lists+bpf@lfdr.de>; Mon,  9 Sep 2024 09:50:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6EC381C21BC0
+	for <lists+bpf@lfdr.de>; Mon,  9 Sep 2024 10:18:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D47361B3B3A;
-	Mon,  9 Sep 2024 09:50:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="CDmhO7aB"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DA9B1B3F1B;
+	Mon,  9 Sep 2024 10:18:12 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6778C1B373B;
-	Mon,  9 Sep 2024 09:50:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B11A176FDF;
+	Mon,  9 Sep 2024 10:18:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725875408; cv=none; b=B1Xj+Uxeb/tvEkF0dfUS3hvESCIkPJDWOzGa7Q7xmmhFS3mYYanxl2zQiu1pVjizOy5uGsMNdmxxpQzVO6TWy7xY0ZL8byIosu1y1BJU1McYmJ2CZ5LEMHAU3/A8AhVNpc9eyuOzgdXXdq705Y4e5rL4UCXPfZ9kzHoTYBIiraE=
+	t=1725877092; cv=none; b=V49j2ZYf/dfIiXrz1zrBO8rDs4AEkCraDY1KrWkbw3EK8Zzu5K/36H2xoky3A1dMRlL/rjJ0iEsKP+TfDQvTGRLENjM3WBFIbkLaummA0WOUmQAPSvwgsePfzRYBdJ1TorhQ2x1juOeQVDsTauEE/0A/NJDpxZXp8y100xIbwxw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725875408; c=relaxed/simple;
-	bh=YNEEoZK0F87nnuxlA8ZOVCpm884g6LkdLyjxpguwzQ8=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Z2ZJCYOmD6OfofwX5ZKOUw0rop0BtCpwmVR6KeoT3VsilpCCMUGU/rpPE3hulFEj8hJ9lSEW/WfJmdcbNErtXCc3UVPtsVrsdKD++aRdQPJsj7GbKOgfAo1OdqPVreprDYYzxINUCrhn12tQ9fjup73k/tV6Kx9J7LE8pIxTTTo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=CDmhO7aB; arc=none smtp.client-ip=217.70.183.196
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id BC657E0009;
-	Mon,  9 Sep 2024 09:50:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1725875403;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+n6jIuUoupEYC9it7jynGsfYtTffkj9K1qGvau67Xdk=;
-	b=CDmhO7aBGHlWdZiCpFPQW01csa4AVN722IUzlJyMVnxEH6+cWYz86FQ8OxAiz2420sGBW8
-	n4mM+Xeiq3XWkr26A66LjKTVKEUcOwxxzuN8fGsnQz+MqezxXXmz8FbHupp2jM5wyNTII+
-	3/91pxDCRwhqKtCdAH7UM0lrmRZqVlt6K8TzvIooik6D1oYcZ1zX5et1JOwT+nQJm6Sr0O
-	ftBYMd31fOBewjDuxkkM8qGAf9Y06pe0J0ErzX7ejhx+ytUd7NOMW8PgcUl1M1pLMJnA/s
-	PTf2WOuAATZlWj1jXZgZy4p/5p8WR6R3Z9x84E9Svbgp4FU5N3qoihxdVLR7wQ==
-Date: Mon, 9 Sep 2024 11:50:01 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Uros Bizjak <ubizjak@gmail.com>
-Cc: x86@kernel.org, linux-crypto@vger.kernel.org,
- intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
- linux-media@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-fscrypt@vger.kernel.org, linux-scsi@vger.kernel.org,
- bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
- kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org, Richard
- Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
-Subject: Re: [PATCH RESEND v2 06/19] mtd: tests: Include <linux/prandom.h>
- instead of <linux/random.h>
-Message-ID: <20240909115001.2b05a5ce@xps-13>
-In-Reply-To: <20240909075641.258968-7-ubizjak@gmail.com>
-References: <20240909075641.258968-1-ubizjak@gmail.com>
-	<20240909075641.258968-7-ubizjak@gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1725877092; c=relaxed/simple;
+	bh=2rZWOLEKKBjccInvTK0Y4YWoPsH6kyP74H/6EZNYrBU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fIfase93oLn1fb19woUUdYS6OirksGbOehnBTGavW5kZnEOcDkIWPcRBm5qEL0c1kipV6ikojMpOQ52+GQZz9migCa9kat/cAmXPEke7rBSyq5jh1MSuZvZqdjgr39SFcaLZo8FzrY6dFuC8Iotr/zDpiAAW52ogSQS4MM6+lTg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F2748FEC;
+	Mon,  9 Sep 2024 03:18:37 -0700 (PDT)
+Received: from J2N7QTR9R3 (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BCFE03F66E;
+	Mon,  9 Sep 2024 03:18:06 -0700 (PDT)
+Date: Mon, 9 Sep 2024 11:18:01 +0100
+From: Mark Rutland <mark.rutland@arm.com>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: "Liao, Chang" <liaochang1@huawei.com>, catalin.marinas@arm.com,
+	will@kernel.org, mhiramat@kernel.org, oleg@redhat.com,
+	peterz@infradead.org, puranjay@kernel.org, ast@kernel.org,
+	andrii@kernel.org, xukuohai@huawei.com, revest@chromium.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH] arm64: insn: Simulate nop and push instruction for
+ better uprobe performance
+Message-ID: <Zt7LWaoZ0PTFqVLF@J2N7QTR9R3>
+References: <20240814080356.2639544-1-liaochang1@huawei.com>
+ <Zr3RN4zxF5XPgjEB@J2N7QTR9R3>
+ <f95fc55b-2f17-7333-2eae-52caae46f8b2@huawei.com>
+ <8cc13794-30a7-a30b-2ac9-4d151499d184@huawei.com>
+ <ZtrN4eWwrSWTMGmD@J2N7QTR9R3>
+ <CAEf4BzYn3EkVVk4dnWMBMKa16y_ZFvQp3ZcdM44a2LeS08S6FQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzYn3EkVVk4dnWMBMKa16y_ZFvQp3ZcdM44a2LeS08S6FQ@mail.gmail.com>
 
-Hi Uros,
+On Fri, Sep 06, 2024 at 10:46:00AM -0700, Andrii Nakryiko wrote:
+> On Fri, Sep 6, 2024 at 2:39 AM Mark Rutland <mark.rutland@arm.com> wrote:
+> >
+> > On Tue, Aug 27, 2024 at 07:33:55PM +0800, Liao, Chang wrote:
+> > > Hi, Mark
+> > >
+> > > Would you like to discuss this patch further, or do you still believe emulating
+> > > STP to push FP/LR into the stack in kernel is not a good idea?
+> >
+> > I'm happy with the NOP emulation in principle, so please send a new
+> > version with *just* the NOP emulation, and I can review that.
+> 
+> Let's definitely start with that, this is important for faster USDT tracing.
+> 
+> > Regarding STP emulation, I stand by my earlier comments, and in addition
+> > to those comments, AFAICT it's currently unsafe to use any uaccess
+> > routine in the uprobe BRK handler anyway, so that's moot. The uprobe BRK
+> > handler runs with preemption disabled and IRQs (and all other maskable
+> > exceptions) masked, and faults cannot be handled. IIUC
+> > CONFIG_DEBUG_ATOMIC_SLEEP should scream about that.
+> 
+> This part I don't really get, and this might be some very
+> ARM64-specific issue, so I'm sorry ahead of time.
+> 
+> But in general, at the lowest level uprobes work in two logical steps.
+> First, there is a breakpoint that user space hits, kernel gets
+> control, and if VMA which hit breakpoint might contain uprobe, kernel
+> sets TIF_UPROBE thread flag and exits. This is the only part that's in
+> hard IRQ context. See uprobe_notify_resume() and comments around it.
+> 
+> Then uprobe infrastructure gets called in user context on the way back
+> to user space. This is where we confirm that this is uprobe/uretprobe
+> hit, and, if supported, perform instruction emulation.
+> 
+> So I'm wondering if your above comment refers to instruction emulation
+> within the first part of uprobe handling? If yes, then, no, that's not
+> where emulation will happen.
 
-ubizjak@gmail.com wrote on Mon,  9 Sep 2024 09:53:49 +0200:
+You're right -- I had misunderstood that the emulation happened during
+handling of the breakpoint, rather than on the return-to-userspace path.
+Looking at the arm64 entry code, the way uprobe_notify_resume() is
+plumbed in is safe as it happens after we've re-enabled preemption and
+unmasked other exceptions.
 
-> Substitute the inclusion of <linux/random.h> header with
-> <linux/prandom.h> to allow the removal of legacy inclusion
-> of <linux/prandom.h> from <linux/random.h>.
+Sorry about that.
 
-Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
+For the moment I'd still prefer to get the NOP case out of the way
+first, so I'll review the NOP-only patch shortly.
 
->=20
-> Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
-> Cc: Miquel Raynal <miquel.raynal@bootlin.com>
-> Cc: Richard Weinberger <richard@nod.at>
-> Cc: Vignesh Raghavendra <vigneshr@ti.com>
-
-Miqu=C3=A8l
+Mark.
 
