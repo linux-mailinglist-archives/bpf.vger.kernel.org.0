@@ -1,108 +1,100 @@
-Return-Path: <bpf+bounces-39340-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39341-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4527E972216
-	for <lists+bpf@lfdr.de>; Mon,  9 Sep 2024 20:50:33 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E4B297224E
+	for <lists+bpf@lfdr.de>; Mon,  9 Sep 2024 21:04:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D3EF6B23519
-	for <lists+bpf@lfdr.de>; Mon,  9 Sep 2024 18:50:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E0F4028425D
+	for <lists+bpf@lfdr.de>; Mon,  9 Sep 2024 19:04:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C032189B85;
-	Mon,  9 Sep 2024 18:50:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DBFD17588;
+	Mon,  9 Sep 2024 19:04:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nU1/hJML"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CKWJNlbp"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f68.google.com (mail-ej1-f68.google.com [209.85.218.68])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31B6014B06C;
-	Mon,  9 Sep 2024 18:50:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.68
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3797188CC8;
+	Mon,  9 Sep 2024 19:04:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725907816; cv=none; b=WCiZbrxDHLLQRc1zj9dPR+ZDe6nWWYH2jMB4+qcQCtJb3WWq92fVQVwXRkAp1xLbs+wWoR5XaMk/dL8SQUGV/uuZlPmLdG+/LnXjmQ9N9od1gnAGMsEorHSDRin1GyAPcDusx1hOB9r+oPC4lGATYPuSHtNkyMzfkCggGU7SM0Y=
+	t=1725908674; cv=none; b=D+HEncAzoWOLsIAdFv8lbJdx9KKaIPHd2jYMF0TG42VJKpy4JXVnOQodHo+hQXHmPptbD+yKOu4E6mvKFjBgBkqUSICm85vXhxdYQDEdK+ZHkJptdAlmFs1lsNKgpKnhaT5cp6+kUpAY4tXIK8IGKeSQFWA+azVq1xspFhkD+YQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725907816; c=relaxed/simple;
-	bh=E9QvcpCK/AczsQKiUIKx4WlGhSu8jNlkE7CliIwoHyo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gBkK2BfP7M77Pzkpt0jydDLjlmXfBCKay5JOZX5C1a97UHaV8aLCPyr+pWJOGWLshsysikAGmliUr14ih/SDOAg0+6uEl5FFFSF6y5PGCocl2xsOe0GwgPfu54XkVVUesA09fmOgARcWL3t8/q2owGoFdXpW5s26BaySjfS/+3Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nU1/hJML; arc=none smtp.client-ip=209.85.218.68
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f68.google.com with SMTP id a640c23a62f3a-a8d404c7634so220609566b.3;
-        Mon, 09 Sep 2024 11:50:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1725907813; x=1726512613; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=E9QvcpCK/AczsQKiUIKx4WlGhSu8jNlkE7CliIwoHyo=;
-        b=nU1/hJMLYU0w70lsmFb2diXhLoQEweyKDhKTqOpFjNyTULKJWk5//61lu2xh7j+ljg
-         YTVHowtfAPXeI+8Yn7VFLMyFtGfJFYNWi65Z+E7vE1gRFPKHSpD3uJXM9iMEPkaeQCOD
-         HCkwicfXK3CxSTx4KBqjqw7M0EykCg4GcEsXqK7XajH29EyWP3m0oynyPMeP5mzWHmsn
-         kV169e8bJqaZ3PlyLGjoobj7U9hIgTZRojOhBWTl9yS2ayOMoQKNHP7bd1AiIFsRTPhO
-         eWxu+Hy1dDuxoUEerwKKao6MaNb5EeqboB2cVP5EvEejGCY6jQEniV/ZbPjs4NEoRprJ
-         kMEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725907813; x=1726512613;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=E9QvcpCK/AczsQKiUIKx4WlGhSu8jNlkE7CliIwoHyo=;
-        b=ariCAzaKG/ZNGv3lsmS0fo0XLjp/77i9NvJzakDwwPZ96c5qHak/v9AvcOEDqzhJ3S
-         KOdSfwm8dJ6D8YF9bP84MNp3knf6jjj0oF31/dcXlyEDwcV/98k0cGQm6PZoZxEIl8ZM
-         Lypzm3JHckxD9Dg8hTiuWtMDMUPRzovwGTrvD/g8k83Q8dTw8wvoiTmUDDe9Zalb/y7R
-         y82XVE16DVpmA+wEHWkwKVZRViDEZrc8pfS6mHHmDS9Bqz5UIfdVX4KyvNXC02yKSJWr
-         bOFNaQYYSY7KdqgFri8zAbmPM01/TYCRHfQ/jNbPRqaEByTkxn8T4YnFZ8c9yzfivEo+
-         tq7g==
-X-Forwarded-Encrypted: i=1; AJvYcCU4CZW2T7Nm+EYdfpcrjHXggPP/OewGmnDJLbgULDA7Ck4fwhRgau+q9rXlxYQYUBVnPGSt5KTMGtsWM1l3xp1X@vger.kernel.org, AJvYcCV5n3Wef2pT+buLoxB7HKlG3GtHVSUJNOjgCdmEb0QYvVtr4d7s4t5m0PyPrO9fMx6Ilss=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz0uMaNpqbbpFPXlQNaqnLxS5DbOnxVspdNd6hT0RJ8GVtNQSPc
-	JWlWXMHG88mDE/6HPFZd2naMXrWp7FfG7uOXA1Szz77gnr1rBhxiVBXedCDHgXCxTJBQWxuv53l
-	cWh7OiY6ztfOaDGdchGKtYLm6hgU=
-X-Google-Smtp-Source: AGHT+IGRvYurTlg+hKN2TFEclUHFiO8OC7Fk/k9mCgZqjE12/fkQkXGXcKWfVAJqMHHRl9GdYyP9cw0Ckd/gi2bok9Q=
-X-Received: by 2002:a17:906:c156:b0:a8d:4631:83b0 with SMTP id
- a640c23a62f3a-a8d46318711mr474421266b.5.1725907813142; Mon, 09 Sep 2024
- 11:50:13 -0700 (PDT)
+	s=arc-20240116; t=1725908674; c=relaxed/simple;
+	bh=RAY+RZcuHomsSGFISszKdVRLeO9WN27ZaWTimUnKDEQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=I/K7601M8yEDCE39oJBfePek726rn0XbTO2m/zGf3trW5RQ5ptjQa5Q2OMtEk+ure0itSJxkJwDA7XQU1GiIzFbe3rQh5qp5pre68G5rxMewwZl1+zgcbBgtQxG927LacMJ8YuLTm4sbAS9QoXTfL3ttlPuaF55cCPzGPY2pnTo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CKWJNlbp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A0B4C4CEC5;
+	Mon,  9 Sep 2024 19:04:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1725908673;
+	bh=RAY+RZcuHomsSGFISszKdVRLeO9WN27ZaWTimUnKDEQ=;
+	h=From:To:Cc:Subject:Date:From;
+	b=CKWJNlbpuJ3eefYyZgHMobwxY/9Eo39l3wh4flNv5U3BvI9DnlyCflL1H2chKZSi1
+	 sKUiWQ7eF09ym8hoHc/XTkoc5+aUfwhV9UHtR/wve65/hPnmDR3+SY+kuH9S5OeqnN
+	 MdwKaiLEzmUkNJnYZesZA/KSId6zRC/XXiQbHMHxgnccFgASfvSajr041xdLZXdSJG
+	 m8+KV4HcVoOzx5pszz7LowKPfqP5FbfKaFffDa0hmOfQ/fdgba5yMt2dQrqeTay1z6
+	 Oq0Qb5a4WG9ogGtRVoexaKaemfFJCAm4IWUzHU12lCaIqzPgFYSOzsf0ljMh/R+Iq9
+	 /A34IV+CeLXSA==
+From: Andrii Nakryiko <andrii@kernel.org>
+To: bpf@vger.kernel.org,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	martin.lau@kernel.org
+Cc: akpm@linux-foundation.org,
+	linux-perf-users@vger.kernel.org,
+	jolsa@kernel.org,
+	song@kernel.org,
+	Andrii Nakryiko <andrii@kernel.org>
+Subject: [PATCH bpf-next] MAINTAINERS: record lib/buildid.c as owned by BPF subsystem
+Date: Mon,  9 Sep 2024 12:04:26 -0700
+Message-ID: <20240909190426.2229940-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240909133909.1315460-1-maxim@isovalent.com>
-In-Reply-To: <20240909133909.1315460-1-maxim@isovalent.com>
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Mon, 9 Sep 2024 20:49:36 +0200
-Message-ID: <CAP01T75fUTwyM_0c6c6CD9mcMqgnMqvbfjrKRFEvrVs+pdHm1w@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf: Fix error message on kfunc arg type mismatch
-To: Maxim Mikityanskiy <maxtram95@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
-	Maxim Mikityanskiy <maxim@isovalent.com>, Alan Maguire <alan.maguire@oracle.com>, 
-	Andrei Matei <andreimatei1@gmail.com>, bpf@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-On Mon, 9 Sept 2024 at 15:39, Maxim Mikityanskiy <maxtram95@gmail.com> wrote:
->
-> When "arg#%d expected pointer to ctx, but got %s" error is printed, both
-> template parts actually point to the type of the argument, therefore, it
-> will also say "but got PTR", regardless of what was the actual register
-> type.
->
-> Fix the message to print the register type in the second part of the
-> template, change the existing test to adapt to the new format, and add a
-> new test to test the case when arg is a pointer to context, but reg is a
-> scalar.
->
-> Fixes: 00b85860feb8 ("bpf: Rewrite kfunc argument handling")
-> Signed-off-by: Maxim Mikityanskiy <maxim@isovalent.com>
-> ---
+Build ID fetching code originated from ([0]), and is still both owned
+and heavily relied upon by BPF subsystem.
 
-Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Fix the original omission in [0] to record this fact in MAINTAINERS.
+
+  [0] bd7525dacd7e ("bpf: Move stack_map_get_build_id into lib")
+
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+---
+ MAINTAINERS | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index f328373463b0..a86834bb4c25 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -4098,6 +4098,7 @@ F:	include/uapi/linux/btf*
+ F:	include/uapi/linux/filter.h
+ F:	kernel/bpf/
+ F:	kernel/trace/bpf_trace.c
++F:	lib/buildid.c
+ F:	lib/test_bpf.c
+ F:	net/bpf/
+ F:	net/core/filter.c
+@@ -4218,6 +4219,7 @@ L:	bpf@vger.kernel.org
+ S:	Maintained
+ F:	kernel/bpf/stackmap.c
+ F:	kernel/trace/bpf_trace.c
++F:	lib/buildid.c
+ 
+ BROADCOM ASP 2.0 ETHERNET DRIVER
+ M:	Justin Chen <justin.chen@broadcom.com>
+-- 
+2.43.5
+
 
