@@ -1,49 +1,49 @@
-Return-Path: <bpf+bounces-39374-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39375-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54F21972583
-	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 01:00:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 015F8972586
+	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 01:00:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D39221F24421
-	for <lists+bpf@lfdr.de>; Mon,  9 Sep 2024 23:00:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BEEB7285008
+	for <lists+bpf@lfdr.de>; Mon,  9 Sep 2024 23:00:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49CDF18E053;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FA7818E340;
 	Mon,  9 Sep 2024 23:00:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZCu9h0bw"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CVSO/dy3"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDAD318E029;
-	Mon,  9 Sep 2024 23:00:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15C8318E03E;
+	Mon,  9 Sep 2024 23:00:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725922831; cv=none; b=jhQRCMZvQyS0ZQ+u+a0F2ti1rEZmn29yAtdl7ubg3AVHuFT9+G0+CMyh6XDO62dsXqu8oeElZCpV6VEBNdUMcG4t3YXhky7QoMJ6W0GUxPO1YDcat1WM+FfMfY647o/GkmnoxcABzdOCdy4QP6OrF+A5mhZA4PU/Xa+AVBgXkgQ=
+	t=1725922832; cv=none; b=CEJ5j2w7ij+xmBbWOM8HJbXuIo3Lo1bsv8ODp7V7Ox5U465wnbuq8SG/HpCclC//+5FG9iSJ5I7qklo6qg1CldX6XVeWa0/cNXXCQMGTvyWTgZFOiQeAAatkQUcsA2MYlTiJsP3cpsyB+d4Wk2U4ypVpfxxJi+a7A5yMBBBz25Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725922831; c=relaxed/simple;
-	bh=pf7xzqP7Y1hsXvR+kYPtuMst3jnXUpiYLj5ZARh5Zao=;
+	s=arc-20240116; t=1725922832; c=relaxed/simple;
+	bh=FVU+e0uUbeUPEEjSwOVvbkcKHW7sTPraTqYrzbKWPJY=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=vBrCb9aNmzrPrhtcfmpMQClEv/ygL+/W1U3lbWUCw2qVZVZX618/Lx2CU8nqioJAvYCRjHaF7NqF+OVGzADh7vRTLnxQvUkGUM7sr/VZ0w4gJ7pNW+tbRwc0gKFbdn5WnZci+H1buXO9w73doj2RApAJyoij9Y/OFuHCoVZ7Dyc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZCu9h0bw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C6E0C4CECA;
-	Mon,  9 Sep 2024 23:00:30 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=GCNlW/TQF+FLD0qEAgvmff8PzfSqKeK3b9kySUjDK+74YDV7IuBVLfyrtCvlY5idFlZ4af/LkDpxH41XWcIKT92yrmTuxLLxs6DIQkCe4a8L2rm3G03E963O4EvYUAarU5f5Gfozeej3oL0afWC4cd00Ch23aoSurtApN8s3s8M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CVSO/dy3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 810EEC4CEC5;
+	Mon,  9 Sep 2024 23:00:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1725922830;
-	bh=pf7xzqP7Y1hsXvR+kYPtuMst3jnXUpiYLj5ZARh5Zao=;
+	s=k20201202; t=1725922831;
+	bh=FVU+e0uUbeUPEEjSwOVvbkcKHW7sTPraTqYrzbKWPJY=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=ZCu9h0bwTASNqqTCcK9ADR++pqNCxqT+3R3uZ19QWQ2OtpzQ6ThhsKIj+rPD2scdG
-	 OBNZct0I+lA4/I4Vsp3gxH/01f7VoyD2KDAhTcbZT6sAKeFnFte3VmK8vj1KVHjJt+
-	 FXppGqFp42cSnhDdDWvy9dEXDKIceMSjKYGnXICpDgO4ZRkmZwBTP/TAjMouQTx5ji
-	 YQQTh+g1EbA++vWz6YjXPXUtLBew03kDS5FMyeRGUByCQur1N6+/eMmIbm/hsqXMIz
-	 DFOaEDuBk6p2dMft4E8is5MoYmvmgF3Ct84zBexKmLjI6mn558h3nNKLaHGHEe/eki
-	 CjKuCOG0pLL2A==
+	b=CVSO/dy3Z8HTdqeZ6UhpD6jeA21IOUm+ADrcbcUDNwL8SQqarICs1QJTolnMCPSSH
+	 /YNSnvwLH15bOYy8ge7MdEbuD1ROCv2VGNcDgDT9/McMIYUKjldRMEQx/di0toq0zC
+	 T8jugT7TLBx5dSeZOdIhIGruN89/LTNNhqaPW11CMzcOWUv+T0q7TpEJSxSP5fRC+F
+	 jmUZ98BV60SmzLlyH+l+iG9UYcTSfE8HFJJur0E8s69qRaFVNQgkee36+kZlzke1gg
+	 mRY1rU7ul3H3G70t9CBhJoXQ2c4BIIjFTTfQWoPdfebF9FMTyisT1EQdcu6iPkoxni
+	 zIn3hpf1sDUYg==
 Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 7105B3806654;
-	Mon,  9 Sep 2024 23:00:32 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id ADFCC3806654;
+	Mon,  9 Sep 2024 23:00:33 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -52,39 +52,42 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2] bpftool: Fix typos
+Subject: Re: [PATCH bpf] bpf: Fix error message on kfunc arg type mismatch
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <172592283100.3949024.11403579453952470139.git-patchwork-notify@kernel.org>
-Date: Mon, 09 Sep 2024 23:00:31 +0000
-References: <20240909092452.4293-1-algonell@gmail.com>
-In-Reply-To: <20240909092452.4293-1-algonell@gmail.com>
-To: Andrew Kreimer <algonell@gmail.com>
-Cc: qmo@kernel.org, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
- willy@infradead.org
+ <172592283251.3949024.7942929079715382663.git-patchwork-notify@kernel.org>
+Date: Mon, 09 Sep 2024 23:00:32 +0000
+References: <20240909133909.1315460-1-maxim@isovalent.com>
+In-Reply-To: <20240909133909.1315460-1-maxim@isovalent.com>
+To: Maxim Mikityanskiy <maxtram95@gmail.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
+ andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me,
+ haoluo@google.com, jolsa@kernel.org, mykolal@fb.com, shuah@kernel.org,
+ maxim@isovalent.com, alan.maguire@oracle.com, memxor@gmail.com,
+ andreimatei1@gmail.com, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
 
 Hello:
 
 This patch was applied to bpf/bpf-next.git (master)
 by Andrii Nakryiko <andrii@kernel.org>:
 
-On Mon,  9 Sep 2024 12:24:41 +0300 you wrote:
-> Fix typos in documentation.
+On Mon,  9 Sep 2024 16:39:09 +0300 you wrote:
+> When "arg#%d expected pointer to ctx, but got %s" error is printed, both
+> template parts actually point to the type of the argument, therefore, it
+> will also say "but got PTR", regardless of what was the actual register
+> type.
 > 
-> Reported-by: Matthew Wilcox <willy@infradead.org>
-> Reported-by: Quentin Monnet <qmo@kernel.org>
-> Signed-off-by: Andrew Kreimer <algonell@gmail.com>
-> ---
->  tools/bpf/bpftool/Documentation/bpftool-gen.rst | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Fix the message to print the register type in the second part of the
+> template, change the existing test to adapt to the new format, and add a
+> new test to test the case when arg is a pointer to context, but reg is a
+> scalar.
+> 
+> [...]
 
 Here is the summary with links:
-  - [v2] bpftool: Fix typos
-    https://git.kernel.org/bpf/bpf-next/c/f028d7716cde
+  - [bpf] bpf: Fix error message on kfunc arg type mismatch
+    https://git.kernel.org/bpf/bpf-next/c/bee109b7b3e5
 
 You are awesome, thank you!
 -- 
