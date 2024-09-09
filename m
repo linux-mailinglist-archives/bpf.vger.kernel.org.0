@@ -1,145 +1,180 @@
-Return-Path: <bpf+bounces-39358-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39359-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0100D972383
-	for <lists+bpf@lfdr.de>; Mon,  9 Sep 2024 22:19:56 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3ACE99723DA
+	for <lists+bpf@lfdr.de>; Mon,  9 Sep 2024 22:39:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A13791F22776
-	for <lists+bpf@lfdr.de>; Mon,  9 Sep 2024 20:19:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 521371C23761
+	for <lists+bpf@lfdr.de>; Mon,  9 Sep 2024 20:39:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 731F518A6B1;
-	Mon,  9 Sep 2024 20:17:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBE6818C03E;
+	Mon,  9 Sep 2024 20:39:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T0DeMMUT"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ki7jgxZU"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A37783CF51;
-	Mon,  9 Sep 2024 20:17:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8683318B493;
+	Mon,  9 Sep 2024 20:39:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725913049; cv=none; b=lB6dAOBszQqTjDgr17uPBI2kjOTht/ghhH0E04jiYd8aFzy9axC2x85sgviXVFDhY6ThnCTznrkXBkc4b4VNfAJTMKWzN/1pYOL/ist9AscCiAm0NZPGD/4aPPr4fsjejXxrWekw6IsjAmVr02gl3gr4ayWzgS5RB911RRnknvg=
+	t=1725914349; cv=none; b=cEtZYMi3WNXKYfZApqnc+Djlxtsm4uPXXnYSosg/HZ7ihlHV7OD6tFM6Adqaw5FqmClIBbE2cKHRnLS6JX6QyClsd3caI6aLr/V1sqVMHJauUvbcmZNNqNWvHm3kC+Q11Kd2mKL5GgzmtNNNOdTSJT5LCfeH/7TSyjdXs7T+UnY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725913049; c=relaxed/simple;
-	bh=hzfShMQccDc4LYR7FP2dJtytwGECHP5jAW8uCsotgbk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CMjVkuGjUtrnK0QWxlpz+N4tf5ntAN8gJ+gsb32s3kLl+rVfJgnIbtffKTec7t75Jxqb+VYsZoXaiIip7C6CiMYFWSiVjQ+shqwhvnO5N0KNfp5qGZ+czUojUzzDFMTDdufrXwWnwgljmLeDWuo4XcYtpZ7z/zJyz6cwn0T09h0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=T0DeMMUT; arc=none smtp.client-ip=209.85.216.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-2da4e84c198so3228230a91.0;
-        Mon, 09 Sep 2024 13:17:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1725913047; x=1726517847; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Q3J/pOxBJfE44Fc1eGonfzqzJd/0X96Q4NPw3q0cYhY=;
-        b=T0DeMMUTdwiKvHc4yDPOopcR/8PPOf//pu/3Y1zAAef8Kwpo/6dVnOefn1P65Gv+Ts
-         cK2x1EK2AGA7L+EPakpuu8sQ3BIV6oT1xaBWbFZkBjUtj9EBi03TMGjYqup+1aMQ7GSW
-         mPLbfH5Cep8WdV65MQXPB18XuKxiVqXwqhVYlGQArczt1WDe3FYh/img59q2s9BZMbGN
-         y2kxrz3BtMB2vKPsCjIvf5lqEp0PIPwRzpD0grsEMJk969ifVVCreO1hrP6JP/1od0g3
-         VZiQ061F0ekWHDqxnpMQwfQ6lWHHUEKHTev7qWxfvHBT95GO3k67T10LxQmlnxYkl3DW
-         afVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725913047; x=1726517847;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Q3J/pOxBJfE44Fc1eGonfzqzJd/0X96Q4NPw3q0cYhY=;
-        b=pVl1qPEcyaAXefINqccpkvBLaMuP6lhbauY+KcKeDf6toIeBhinb+uOSn9r2Dhe4FV
-         4cnt3UQnIo1+ABp6z2FMVTf7dsxlC2mpSL0wO8RN471e1u/eO7OxHgP1uzV5QEGIB4+o
-         981/tQHwetZRbKhJCbcs8ErDMrFl0h07Iobc/gjIfonWyHKPOb4iRhCtjpMAgmd/10gg
-         R/O2ZJmAlICPqFDP9qqUpP/ZMgo++0oDKbpwt51wdwUMglHmWTOxTBM/sAQLd/GXHWk4
-         MT4x9q0nNJF3OPNMlzaF4XoYS8B9gLV/ZNLenmF5Ri+08Bf1eQ71yUJ2hCFpMKRgE91Q
-         U9Ow==
-X-Forwarded-Encrypted: i=1; AJvYcCW8xITKx6h/IalDV5AJMOeZcIPnrcPVN5SlAsIoxieg/VBUoJzxbFPD3lriLpv47fzWTlyOmkQoGdNNRPBn@vger.kernel.org, AJvYcCXHIokq70STlBIzcENANBhGPxTMCOueO3N2t79zXJrHzgBFrIdgGY7Z4Vf6xMaLCXypslw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxLmYZ9Tgq86+5EuxERkAgpqubdarcOZHgvGBpLM7K1QFcCyCnl
-	+phiNCFlHMjYVtrE2kMOLnebDVZ1xy/bcDiPEQM+4KBJla/KXMs5t48MysJ3CFGyht3w4Oh/QfE
-	8JwKsBtHL7kQzakIwznN+xHF+Zvo=
-X-Google-Smtp-Source: AGHT+IEEqqi/v/1XOT4ozzVk6WxRuIh7KOl1QeQUBIOTbkc8W+9XVH6HJlozksCuqGRlB5Hx8a4EOIYYc+KSx/XgUAc=
-X-Received: by 2002:a17:90b:4c4d:b0:2d8:adea:9940 with SMTP id
- 98e67ed59e1d1-2daffa7d692mr9987611a91.16.1725913046869; Mon, 09 Sep 2024
- 13:17:26 -0700 (PDT)
+	s=arc-20240116; t=1725914349; c=relaxed/simple;
+	bh=+J2ZDO7XXPFMPQ8okrUFarcI2IZ4bQuVJchMzMjP6Cw=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=Ka9zk6D+cKJcov+xnD9zz7zkPunpHlmi8AmbDyiBB082qKm7tk9hDfrgiAVrVnQZ/cGnFWI8Tg5uaE8aCLc1h/KZbVvlJ4Z637kEm0nivA3SyyV2JLbqCsJXs+ZgW+ecmESUbiZ25S6n+FZBLYmWgfZK9HaW1epq9hzNdYokhNc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ki7jgxZU; arc=none smtp.client-ip=198.175.65.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1725914348; x=1757450348;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=+J2ZDO7XXPFMPQ8okrUFarcI2IZ4bQuVJchMzMjP6Cw=;
+  b=ki7jgxZUQFrnlhY/szwASC7Gq6KgGWNAs3qgxvycHRPB/pjJx0DMm/cv
+   YAMiuutxppD/0oimDwlJjAQoqPpZXp8eGJtUSjOnbpytsdVRbddLfQtfJ
+   TPz+42iEDmrOQnhIn3J10m8s3FQWPSP5xOhdYIo/jtll4ytqFvTtZuU+q
+   e6IOrPx17PoJTBkz4/AcUlt3l3GHm+jg723m3WR7/blsiMZ+Fa6NK3OEF
+   0wbRCvmk8Eyz6tje4P5myCeiWaCBSquhIjddr/5veycXIELL3oJYD48Z3
+   w3NZrxEi4krFi54FOiU7TGGcaB9wm838ebhg1M1iJBH+RxTleZjInF94T
+   w==;
+X-CSE-ConnectionGUID: S8OMR9KNS+Ko4VGpxwCU3g==
+X-CSE-MsgGUID: E8lK/RBlSp2kwwXKuxYaUA==
+X-IronPort-AV: E=McAfee;i="6700,10204,11190"; a="24787125"
+X-IronPort-AV: E=Sophos;i="6.10,215,1719903600"; 
+   d="scan'208";a="24787125"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2024 13:39:01 -0700
+X-CSE-ConnectionGUID: E8ESHPY+T2GmMuSiR2rO8w==
+X-CSE-MsgGUID: ZWSZ7nDJSIeLAGX8dAxg7g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.10,215,1719903600"; 
+   d="scan'208";a="67054826"
+Received: from anguy11-upstream.jf.intel.com ([10.166.9.133])
+  by fmviesa010.fm.intel.com with ESMTP; 09 Sep 2024 13:38:51 -0700
+From: Tony Nguyen <anthony.l.nguyen@intel.com>
+To: davem@davemloft.net,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	edumazet@google.com,
+	netdev@vger.kernel.org
+Cc: Sriram Yagnaraman <sriram.yagnaraman@ericsson.com>,
+	anthony.l.nguyen@intel.com,
+	sven.auhagen@voleatech.de,
+	maciej.fijalkowski@intel.com,
+	magnus.karlsson@intel.com,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	hawk@kernel.org,
+	john.fastabend@gmail.com,
+	bpf@vger.kernel.org,
+	Kurt Kanzenbach <kurt@linutronix.de>,
+	George Kuruvinakunnel <george.kuruvinakunnel@intel.com>
+Subject: [PATCH net 5/5] igb: Always call igb_xdp_ring_update_tail() under Tx lock
+Date: Mon,  9 Sep 2024 13:38:41 -0700
+Message-ID: <20240909203842.3109822-6-anthony.l.nguyen@intel.com>
+X-Mailer: git-send-email 2.46.0.522.gc50d79eeffbf
+In-Reply-To: <20240909203842.3109822-1-anthony.l.nguyen@intel.com>
+References: <20240909203842.3109822-1-anthony.l.nguyen@intel.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240909071346.1300093-1-chen.dylane@gmail.com> <20240909071346.1300093-2-chen.dylane@gmail.com>
-In-Reply-To: <20240909071346.1300093-2-chen.dylane@gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 9 Sep 2024 13:17:14 -0700
-Message-ID: <CAEf4BzacVxXwM7LaKu7Mj7toZuXc1+TF6-j-z+fZ85dXiUg0oA@mail.gmail.com>
-Subject: Re: [v2 PATCH bpf-next 1/2] bpf: Check percpu map value size first
-To: Tao Chen <chen.dylane@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Hou Tao <houtao1@huawei.com>, Yonghong Song <yonghong.song@linux.dev>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	jinke han <jinkehan@didiglobal.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Mon, Sep 9, 2024 at 12:14=E2=80=AFAM Tao Chen <chen.dylane@gmail.com> wr=
-ote:
->
-> Percpu map is often used, but the map value size limit often ignored,
-> like issue: https://github.com/iovisor/bcc/issues/2519. Actually,
-> percpu map value size is bound by PCPU_MIN_UNIT_SIZE, so we
-> can check the value size whether it exceeds PCPU_MIN_UNIT_SIZE first,
-> like percpu map of local_storage. Maybe the error message seems clearer
-> compared with "cannot allocate memory".
->
-> Signed-off-by: Tao Chen <chen.dylane@gmail.com>
-> Signed-off-by: jinke han <jinkehan@didiglobal.com>
+From: Sriram Yagnaraman <sriram.yagnaraman@est.tech>
 
-names in SOB should be capitalized
+Always call igb_xdp_ring_update_tail() under __netif_tx_lock, add a comment
+and lockdep assert to indicate that. This is needed to share the same TX
+ring between XDP, XSK and slow paths. Furthermore, the current XDP
+implementation is racy on tail updates.
 
-the check is useful, so:
+Fixes: 9cbc948b5a20 ("igb: add XDP support")
+Signed-off-by: Sriram Yagnaraman <sriram.yagnaraman@est.tech>
+[Kurt: Add lockdep assert and fixes tag]
+Signed-off-by: Kurt Kanzenbach <kurt@linutronix.de>
+Acked-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Tested-by: George Kuruvinakunnel <george.kuruvinakunnel@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+---
+ drivers/net/ethernet/intel/igb/igb_main.c | 17 +++++++++++++----
+ 1 file changed, 13 insertions(+), 4 deletions(-)
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
+diff --git a/drivers/net/ethernet/intel/igb/igb_main.c b/drivers/net/ethernet/intel/igb/igb_main.c
+index 9dc7c60838ed..1ef4cb871452 100644
+--- a/drivers/net/ethernet/intel/igb/igb_main.c
++++ b/drivers/net/ethernet/intel/igb/igb_main.c
+@@ -33,6 +33,7 @@
+ #include <linux/bpf_trace.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/etherdevice.h>
++#include <linux/lockdep.h>
+ #ifdef CONFIG_IGB_DCA
+ #include <linux/dca.h>
+ #endif
+@@ -2914,8 +2915,11 @@ static int igb_xdp(struct net_device *dev, struct netdev_bpf *xdp)
+ 	}
+ }
+ 
++/* This function assumes __netif_tx_lock is held by the caller. */
+ static void igb_xdp_ring_update_tail(struct igb_ring *ring)
+ {
++	lockdep_assert_held(&txring_txq(ring)->_xmit_lock);
++
+ 	/* Force memory writes to complete before letting h/w know there
+ 	 * are new descriptors to fetch.
+ 	 */
+@@ -3000,11 +3004,11 @@ static int igb_xdp_xmit(struct net_device *dev, int n,
+ 		nxmit++;
+ 	}
+ 
+-	__netif_tx_unlock(nq);
+-
+ 	if (unlikely(flags & XDP_XMIT_FLUSH))
+ 		igb_xdp_ring_update_tail(tx_ring);
+ 
++	__netif_tx_unlock(nq);
++
+ 	return nxmit;
+ }
+ 
+@@ -8864,12 +8868,14 @@ static void igb_put_rx_buffer(struct igb_ring *rx_ring,
+ 
+ static int igb_clean_rx_irq(struct igb_q_vector *q_vector, const int budget)
+ {
++	unsigned int total_bytes = 0, total_packets = 0;
+ 	struct igb_adapter *adapter = q_vector->adapter;
+ 	struct igb_ring *rx_ring = q_vector->rx.ring;
+-	struct sk_buff *skb = rx_ring->skb;
+-	unsigned int total_bytes = 0, total_packets = 0;
+ 	u16 cleaned_count = igb_desc_unused(rx_ring);
++	struct sk_buff *skb = rx_ring->skb;
++	int cpu = smp_processor_id();
+ 	unsigned int xdp_xmit = 0;
++	struct netdev_queue *nq;
+ 	struct xdp_buff xdp;
+ 	u32 frame_sz = 0;
+ 	int rx_buf_pgcnt;
+@@ -8997,7 +9003,10 @@ static int igb_clean_rx_irq(struct igb_q_vector *q_vector, const int budget)
+ 	if (xdp_xmit & IGB_XDP_TX) {
+ 		struct igb_ring *tx_ring = igb_xdp_tx_queue_mapping(adapter);
+ 
++		nq = txring_txq(tx_ring);
++		__netif_tx_lock(nq, cpu);
+ 		igb_xdp_ring_update_tail(tx_ring);
++		__netif_tx_unlock(nq);
+ 	}
+ 
+ 	u64_stats_update_begin(&rx_ring->rx_syncp);
+-- 
+2.42.0
 
-> ---
->  kernel/bpf/arraymap.c | 3 +++
->  kernel/bpf/hashtab.c  | 3 +++
->  2 files changed, 6 insertions(+)
->
-> diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
-> index a43e62e2a8bb..79660e3fca4c 100644
-> --- a/kernel/bpf/arraymap.c
-> +++ b/kernel/bpf/arraymap.c
-> @@ -73,6 +73,9 @@ int array_map_alloc_check(union bpf_attr *attr)
->         /* avoid overflow on round_up(map->value_size) */
->         if (attr->value_size > INT_MAX)
->                 return -E2BIG;
-> +       /* percpu map value size is bound by PCPU_MIN_UNIT_SIZE */
-> +       if (percpu && round_up(attr->value_size, 8) > PCPU_MIN_UNIT_SIZE)
-> +               return -E2BIG;
->
->         return 0;
->  }
-> diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-> index 45c7195b65ba..b14b87463ee0 100644
-> --- a/kernel/bpf/hashtab.c
-> +++ b/kernel/bpf/hashtab.c
-> @@ -462,6 +462,9 @@ static int htab_map_alloc_check(union bpf_attr *attr)
->                  * kmalloc-able later in htab_map_update_elem()
->                  */
->                 return -E2BIG;
-> +       /* percpu map value size is bound by PCPU_MIN_UNIT_SIZE */
-> +       if (percpu && round_up(attr->value_size, 8) > PCPU_MIN_UNIT_SIZE)
-> +               return -E2BIG;
->
->         return 0;
->  }
-> --
-> 2.25.1
->
 
