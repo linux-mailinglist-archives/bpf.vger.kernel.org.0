@@ -1,145 +1,113 @@
-Return-Path: <bpf+bounces-39312-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39313-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D800971921
-	for <lists+bpf@lfdr.de>; Mon,  9 Sep 2024 14:16:42 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B3F14971945
+	for <lists+bpf@lfdr.de>; Mon,  9 Sep 2024 14:25:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DF9DF286670
-	for <lists+bpf@lfdr.de>; Mon,  9 Sep 2024 12:16:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 682991F2217D
+	for <lists+bpf@lfdr.de>; Mon,  9 Sep 2024 12:25:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 997FF1B78E1;
-	Mon,  9 Sep 2024 12:16:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C72211B78F9;
+	Mon,  9 Sep 2024 12:24:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="ltDLlhXf"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Owt3Lkx+"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D88361B375C
-	for <bpf@vger.kernel.org>; Mon,  9 Sep 2024 12:16:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56C761779B8
+	for <bpf@vger.kernel.org>; Mon,  9 Sep 2024 12:24:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725884196; cv=none; b=HeGloEA3zzFVwruU9vZLQR+S1XKEg7O76rzYoG8v3wNekqAjgTmvsyPodP8M/Sz29Y0+32JFWUKlfFCQ3/ZglaVJkVB5ElZCfiNwl9QwRganhLeD4LFb4KvypjbVs782WzANTvIPdCXyBsv9kx2++3ZeCH+itMUwB++cGujwU+g=
+	t=1725884696; cv=none; b=jG7gjNc9rK+VsevYvPLkE5UCFwb+JNKV3nH98w9kBtqVoOdMmABu4Coq9glYCi5BnM75aK1U38uJC7HNPvsf8hu+N3F0OSdAuufW3uQzIRZJU+odIdyIoqpqS4skZNCznLzyt+EdiG7jpDuYsseW71+XEcIshjBraC2m2C/Olns=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725884196; c=relaxed/simple;
-	bh=cOL5C0CEj+6nZ3F3zE9KRP2Wg/y6Y4f/HIvvxnUXu0s=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=d4xtWnpaoFujNxI8edNWpA2zdD6+RrwhdgvF2Sxsx1gEq4hqg3iGBVmLQaaIsR3ngULt2SuB4Q3+ON7h5sDmaAqyY92maLWYDbJmB5TEjTVkBTbiO8qd/wfg6BLNgn1oRd7DS7fI347oCwhNwqt8ao8lqP8IR+2XiZVYTvYwHC0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=ltDLlhXf; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=kgvFIuLDce4hK0QNfKrLUHZfVIvskWHvzuLVj/RZnfY=; b=ltDLlhXfrO5sqkVZ9PNHnvW+oK
-	2OSdM28X8BbxdDOCzgREnQHyd1DnfwuSD6mVYqviuapzO5dByAKwf5wkvm/0Lo+RUoOmuk7NfT/C4
-	+p2p8M6OxNJyGzSrH/rQ+EgjLFtoPag8wW1JUHcr/J4vz/dQEFzQxZEkmYCwoGSws8KqBRTqOh6ct
-	N+/pd4Z9qoGysUgRdWH71Jq6I151lJpIyKiUaq9oQo+Q2+rMju+3i25+FfWPqlVkHDu2EGuRjHQIP
-	/HbgK6H75KmeY3zSB82+oXfMXAYxqoP8ijVsGEH2WqWrG8Pm7rqX4L9xqGEP44sg/UU9SO3GP6Y0I
-	z7KhtmsQ==;
-Received: from sslproxy07.your-server.de ([78.47.199.104])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1sndJf-000Kn4-Ck; Mon, 09 Sep 2024 14:16:23 +0200
-Received: from [178.197.249.12] (helo=linux.home)
-	by sslproxy07.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1sndJe-000EpQ-1C;
-	Mon, 09 Sep 2024 14:16:22 +0200
-Subject: Re: [PATCH bpf-next v4 5/8] bpf: Zero former ARG_PTR_TO_{LONG,INT}
- args in case of error
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Shung-Hsi Yu <shung-hsi.yu@suse.com>,
- Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- kongln9170@gmail.com
+	s=arc-20240116; t=1725884696; c=relaxed/simple;
+	bh=qbd9clm6ZaYmfnu/T/GAs+LGauF4KDaQQfG33kp+ZiQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bRbVanC2tKJZLmYzmnGm9fYs8WIfFYdJHLnLWtGbxRRb5CLem3UVI6xGxbr+HXQPNDQtnUt3yukkCYqnU5Y+RqOLjEIDbCxiyBxZpSEgvxOrfxESSGBnR3t6kPEvD/yu9Uc1BeXIsNBmF8cRbt1tDyVR5t1hQuS+ZHEprWNKLJA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Owt3Lkx+; arc=none smtp.client-ip=209.85.167.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-536584f6c84so3945348e87.0
+        for <bpf@vger.kernel.org>; Mon, 09 Sep 2024 05:24:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1725884692; x=1726489492; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=y8O1MECMS6vYU5/wY9YLnw9CPhcIj1REa6kn0lOjiOo=;
+        b=Owt3Lkx+eGGNae5FkFGGW85pREezfTVpl/qh/y9fjb3gV8XOcSV6sWIFn8va5ti+jF
+         xGMT00JQWy/nmwvt6HnX7BN8s0aPTi0RnZjCbne+Q7JSyY2y0tsd+rdBW9LmfueJdTAQ
+         Oz2TmPWvABssknYC4RMOmcGAuj8mOrZ73H6LVc7GN1tVnmdq499ZnkSLaT8hHgf956BQ
+         PJ9W5lqZN4QQQWTjWdpqgIdzkjFKhO69/RdofZkbqpmhi+/0BQUvBpXI+RTDWGIIUWO5
+         5sGQhjAd/DKkAWplz0lk7TJ8zyToX/H0RFjmNrGRHIPz6pXRCdpEpk+mReXNkWnQhonb
+         R7jA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1725884692; x=1726489492;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=y8O1MECMS6vYU5/wY9YLnw9CPhcIj1REa6kn0lOjiOo=;
+        b=vPVjJEZ53/wSE2PgUzA9RwaLNI4ArOBu6x9Dfu1vem8qt7lJNft+T+TQYH7Q57XOca
+         DxdOSTZmc5LNjmfTKP8p5ssIqJZhRO30nOX8QTKRstSlYsUnZBmihI08Alv/2XgTQA9B
+         Lj0y9sejkwzF11B7haYP6MmlCEUm1eyA/DuffljzXeG/KySEyjV2pcwLGcuOAlPeZpmG
+         h9U/hP05fNsdACVH8D7vMTr5SOeWZnBNd3ZOzyOD0cBawO5IPsOnXrEHcEmaN/ipxt9f
+         40iKYcWYdAc9Mt4CE6xFkfIwW+uF2pJme3h36B2CakHfzpJcfPCaO+ooeGuGHjwWAS4C
+         vgfQ==
+X-Gm-Message-State: AOJu0YyeYny3GVUQA7pLa+wU8LESeSAFSvJ4slmaok+LilIPD3i2a4aM
+	nb9pTj6bN2iDC3zpOEVAEPgJpOp5u+oJO1NzK/2tFZGedkiC1sq+8fE+CxWLB2Uc1sHGHxQ3JTk
+	3epI=
+X-Google-Smtp-Source: AGHT+IF/WiX+uUFAWp3HrDKxMKzEMIO61VTydEnEwXU5GF3ZULTuvGja6+COKnUuxmwRvhFBnCppfQ==
+X-Received: by 2002:a05:6512:3987:b0:52f:244:206f with SMTP id 2adb3069b0e04-53658809f15mr6740612e87.53.1725884692231;
+        Mon, 09 Sep 2024 05:24:52 -0700 (PDT)
+Received: from u94a (1-174-29-79.dynamic-ip.hinet.net. [1.174.29.79])
+        by smtp.gmail.com with ESMTPSA id 8926c6da1cb9f-4d09451dbebsm1076603173.17.2024.09.09.05.24.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Sep 2024 05:24:51 -0700 (PDT)
+Date: Mon, 9 Sep 2024 20:24:45 +0800
+From: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+To: Daniel Borkmann <daniel@iogearbox.net>
+Cc: bpf@vger.kernel.org, andrii@kernel.org, ast@kernel.org, 
+	kongln9170@gmail.com
+Subject: Re: [PATCH bpf-next v4 4/8] bpf: Improve check_raw_mode_ok test for
+ MEM_UNINIT-tagged types
+Message-ID: <3lw4bugtgnznmxm3hebolgyfpyicd2vzsfjkmlhc5jd6dkpu6k@wy4l3ztrs3ux>
 References: <20240906135608.26477-1-daniel@iogearbox.net>
- <20240906135608.26477-5-daniel@iogearbox.net>
- <CAADnVQ+GSCAPC7v787c4poFY4ku=L9q1cn1d=A3YhVRUomoVrQ@mail.gmail.com>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <fb38bb54-c59b-ba36-821f-f7dfcaa390cc@iogearbox.net>
-Date: Mon, 9 Sep 2024 14:16:22 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+ <20240906135608.26477-4-daniel@iogearbox.net>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAADnVQ+GSCAPC7v787c4poFY4ku=L9q1cn1d=A3YhVRUomoVrQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27393/Mon Sep  9 10:29:16 2024)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240906135608.26477-4-daniel@iogearbox.net>
 
-On 9/7/24 12:35 AM, Alexei Starovoitov wrote:
-> On Fri, Sep 6, 2024 at 6:56 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
->>
->> -       if (unlikely(flags & ~(BPF_MTU_CHK_SEGS)))
->> -               return -EINVAL;
->> -
->> -       if (unlikely(flags & BPF_MTU_CHK_SEGS && (len_diff || *mtu_len)))
->> +       if (unlikely((flags & ~(BPF_MTU_CHK_SEGS)) ||
->> +                    (flags & BPF_MTU_CHK_SEGS && (len_diff || *mtu_len)))) {
->> +               *mtu_len = 0;
->>                  return -EINVAL;
->> +       }
->>
->>          dev = __dev_via_ifindex(dev, ifindex);
->> -       if (unlikely(!dev))
->> +       if (unlikely(!dev)) {
->> +               *mtu_len = 0;
->>                  return -ENODEV;
->> +       }
+On Fri, Sep 06, 2024 at 03:56:04PM GMT, Daniel Borkmann wrote:
+> When checking malformed helper function signatures, also take other argument
+> types into account aside from just ARG_PTR_TO_UNINIT_MEM.
 > 
-> I don't understand this mtu_len clearing.
+> This concerns (formerly) ARG_PTR_TO_{INT,LONG} given uninitialized memory can
+> be passed there, too.
 > 
-> My earlier comment was that mtu is in&out argument.
-> The program has to set it to something. It cannot be uninit.
-> So zeroing it on error looks very odd.
+> The func proto sanity check goes back to commit 435faee1aae9 ("bpf, verifier:
+> add ARG_PTR_TO_RAW_STACK type"), and its purpose was to detect wrong func protos
+> which had more than just one MEM_UNINIT-tagged type as arguments.
 > 
-> In that sense the patch 3 looks wrong. Instead of:
+> The reason more than one is currently not supported is as we mark stack slots with
+> STACK_MISC in check_helper_call() in case of raw mode based on meta.access_size to
+> allow uninitialized stack memory to be passed to helpers when they just write into
+> the buffer.
 > 
-> @@ -6346,7 +6346,9 @@ static const struct bpf_func_proto
-> bpf_skb_check_mtu_proto = {
->          .ret_type       = RET_INTEGER,
->          .arg1_type      = ARG_PTR_TO_CTX,
->          .arg2_type      = ARG_ANYTHING,
-> -       .arg3_type      = ARG_PTR_TO_INT,
-> +       .arg3_type      = ARG_PTR_TO_FIXED_SIZE_MEM |
-> +                         MEM_UNINIT | MEM_ALIGNED,
-> +       .arg3_size      = sizeof(u32),
+> Probing for base type as well as MEM_UNINIT tagging ensures that other types do not
+> get missed (as it used to be the case for ARG_PTR_TO_{INT,LONG}).
 > 
-> MEM_UNINIT should be removed, because
-> bpf_xdp_check_mtu, bpf_skb_check_mtu will read it.
-> 
-> If there is a program out there that calls this helper without
-> initializing mtu_len it will be rejected after we fix it,
-> but I think that's a good thing.
-> Passing random mtu_len and let helper do:
-> 
-> skb_len = *mtu_len ? *mtu_len + dev->hard_header_len : skb->len;
-> 
-> is just bad.
+> Fixes: 57c3bb725a3d ("bpf: Introduce ARG_PTR_TO_{INT,LONG} arg types")
+> Reported-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
 
-Ok, fair. Removing MEM_UNINIT sounds reasonable, was mostly thinking
-that even if its garbage MTU being passed in, mtu_len gets filled in
-either case (BPF_MTU_CHK_RET_{SUCCESS,FRAG_NEEDED}) assuming no invalid
-ifindex e.g.:
-
-   __u32 mtu_len;
-   bpf_skb_check_mtu(skb, skb->ifindex, &mtu_len, 0, 0);
-
-Will spin a v5 then.
-
-Thanks,
-Daniel
+Acked-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
 
