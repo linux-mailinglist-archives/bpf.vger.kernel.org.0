@@ -1,129 +1,155 @@
-Return-Path: <bpf+bounces-39418-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39419-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F20D972D5C
-	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 11:21:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94847972D71
+	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 11:24:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5C5CB1C2442C
-	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 09:21:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 57BB3285284
+	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 09:24:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 455D718953A;
-	Tue, 10 Sep 2024 09:21:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66775188CA8;
+	Tue, 10 Sep 2024 09:24:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="f2L83AY+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QpITt1oN"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE1F1188CBD;
-	Tue, 10 Sep 2024 09:21:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6C461862B8;
+	Tue, 10 Sep 2024 09:24:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725960074; cv=none; b=HILjoBMRHZwgj0S4kSOny1/JZtloz4Edh0R/8zIgMMQC7KNKXQJPymv/A1C4hddYuh8trudIfuxjTS9093vvM5wpe/hb0BEh8D9HY3Jw7D9kdpImq6ASPNdKT5Fg76CqBfkHfaQ2MTN7NesIMB9h3qiFlr6fYuAosiGm25qdo6s=
+	t=1725960251; cv=none; b=m3hQSLLid++3aIAAv3qLseKFpxfBIPZ0OjjQTvo/av+/fEktJMKt6ZFOd1gOpR8sh9Kb811P7zPNbD2XlDjB5xrfZFXg3BEWTfqaRdw9vQQ2BN8N2tahI6LMOLuFWkrUnnZ53J5Hq13jhN7uNihAU+IE6VXf7ScN2uVsTYLTwTw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725960074; c=relaxed/simple;
-	bh=RUqJ9tzaeKLVaKizK8HJaDC8VZ9gvBxJs3B6tN136nM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CoZJufnYx+HK/GceQi4oqcAKA7Pztxhy1u3e+h8+gieIu/kkTFeHnhwqgZIXGyU3l4cBhzQzAs4s6PhOp8etcM1whYvt5GlFp9RsoO6ducE5ORF0vV2FZK+LITQt5XML/9f1t4T8GPIbJEm+IZb3q+GCDQ07E1KGD/YDzKu6CkU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=f2L83AY+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 857D2C4CEC3;
-	Tue, 10 Sep 2024 09:21:10 +0000 (UTC)
+	s=arc-20240116; t=1725960251; c=relaxed/simple;
+	bh=q7XPAagp/JPud80GLii65MDVEGWN1lLrpC+Q7P3qjVs=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=OV5bF8foLy6hk6zI61MbZ/qiAF+OGUwAE7u1A4teIcQwrpIG4fAXXVMB9NrvO1nmhQR29TTTKvtsqwQ/hDqbJLgkd4KVmOTBkbIKU4q1zrSUfoBm1OWDbt6LxLBqcWlqgHuHJX7SUpUoH175MlYY9XAiQSqv0ontxfFbr1Z10lc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QpITt1oN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB274C4CEC3;
+	Tue, 10 Sep 2024 09:24:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1725960074;
-	bh=RUqJ9tzaeKLVaKizK8HJaDC8VZ9gvBxJs3B6tN136nM=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=f2L83AY+Xya1hBflVtW4Gjq//v7mqcjYvnejFzhUZXBINCMe/v3sP94ihvWZY8TcH
-	 5j6Om4KxbcvNDSjTw1m2He5KjiKL0KO/0cD5AfczCeLkpTlL/FjVDI6zEw5KeFijnr
-	 ba/uzqs1aStHTRFGsRLQely2jm3JK4WqMpFfNxyfcepHy3RE78rXR/S9yGfaKVYVga
-	 BHJL0n+doEzPScgzAKlhDQQpV8a7kZk6iOg41+n0LVnW2VchITNoG3LnBcj5fqDFLv
-	 EyLMxKzP9ZlBh8/EW04+n1IUxVzu3P+E+7PWqy7uikT36ACnMMpvPC9LT2XPv9Prh/
-	 UzbYvlEIv/mww==
-Message-ID: <b6bef740-8feb-4a50-91a0-e705b5361df9@kernel.org>
-Date: Tue, 10 Sep 2024 10:21:08 +0100
+	s=k20201202; t=1725960250;
+	bh=q7XPAagp/JPud80GLii65MDVEGWN1lLrpC+Q7P3qjVs=;
+	h=From:Subject:Date:To:Cc:From;
+	b=QpITt1oNHtiXMDeSbQRnCYfoQqmfuRJtkF33sF7v7DOkgFMq+w1iP2RPuvuGUOGJQ
+	 8kAGNqdsY7kN25ZVWKngBbNYe/4UxRxXY+iYgPkmJamb9gY6T0jwTydxQBm4JZntIK
+	 HSRcQXDuMAx6lhrGFOfI97LE3FTiG3ntORa2sHTgjY0HIWNC5eLTaX0FAZ8Qpb0RhZ
+	 GtnvePk+eeWvheF+tOjCJMz5Uyi56inxzOEvAdCbJQIfGxXlZ7cHwmqG+YunzrdOAP
+	 W83dGoSFTOWSDXsHcN5eAVFe2QnyXJ77CvometssMm5jSsIjil1jkRVGw61BohZkvW
+	 utLm1MolMkKfw==
+From: Roger Quadros <rogerq@kernel.org>
+Subject: [PATCH net-next v4 0/6] net: ethernet: ti: am65-cpsw: Add multi
+ queue RX support
+Date: Tue, 10 Sep 2024 12:23:57 +0300
+Message-Id: <20240910-am65-cpsw-multi-rx-v4-0-077fa6403043@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] bpftool: Fix undefined behavior caused by shifting into
- the sign bit
-To: Kuan-Wei Chiu <visitorckw@gmail.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
- jserv@ccns.ncku.edu.tw, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240908140009.3149781-1-visitorckw@gmail.com>
- <4a42a392-590d-4b90-a21d-df4290d86204@kernel.org>
- <Zt4Oc+4/DPqDSsoN@visitorckw-System-Product-Name>
-From: Quentin Monnet <qmo@kernel.org>
-Content-Language: en-GB
-In-Reply-To: <Zt4Oc+4/DPqDSsoN@visitorckw-System-Product-Name>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAC0Q4GYC/33NQQ6CMBQE0KuYrv3mU6BFV97DuKDtrzZqIS0ih
+ nB3GzZqJC4nk3kzskjBUWS71cgC9S66xqdQrFdMn2t/InAmZcaRFyhQQH0TJeg2PuB2v3YOwgB
+ WCW0rQ3VJiqVhG8i6YUYPzFMHnoaOHVNzdrFrwnN+67O5/wf3GSCgxEKhVsIavb9Q8HTdNOE0e
+ z3/MHi1aPBk6Hy71UpKo0rxY+RvQ2K+aOTJsFmmTSXQGsm/jGmaXuRyA21HAQAA
+To: "David S. Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, Siddharth Vadapalli <s-vadapalli@ti.com>, 
+ Julien Panis <jpanis@baylibre.com>, Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, 
+ Jesper Dangaard Brouer <hawk@kernel.org>, 
+ John Fastabend <john.fastabend@gmail.com>
+Cc: Simon Horman <horms@kernel.org>, Andrew Lunn <andrew@lunn.ch>, 
+ Joe Damato <jdamato@fastly.com>, srk@ti.com, vigneshr@ti.com, 
+ danishanwar@ti.com, pekka Varis <p-varis@ti.com>, netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org, 
+ bpf@vger.kernel.org, Roger Quadros <rogerq@kernel.org>
+X-Mailer: b4 0.14.1
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2670; i=rogerq@kernel.org;
+ h=from:subject:message-id; bh=q7XPAagp/JPud80GLii65MDVEGWN1lLrpC+Q7P3qjVs=;
+ b=owEBbQKS/ZANAwAIAdJaa9O+djCTAcsmYgBm4BA0Za3QLGXOejHQi/umCfw73L4Wynx2DjZ6G
+ y/Na0KTS5WJAjMEAAEIAB0WIQRBIWXUTJ9SeA+rEFjSWmvTvnYwkwUCZuAQNAAKCRDSWmvTvnYw
+ k6cmEACuwPO5dORXhbjaS68uUP5gAOB+Gt2TVWd2b2cOxRdGjY205hKsYyjHFWsjjUeiF0CJOCo
+ SpLOv6W0r+P6U8vJKc5YQUxjKE6l0niqm+UWbRwFE4XxgIPY4nmXSRaL/Lqq/7/SIzCteQjtjXu
+ bv6lwNHdDH6yEf/nKSci5i0gxqJgD1imD0oX2Au2Lbpv+ngoNg3JnoYS6TszSIg4+JZFLys0S58
+ +/Qw1gOjPAPbhrazj+Goh0WGSRZYp5QCrFT0wM7j4J03Kp4+ERLsgKcRcKruf0tYJhw6zX8p/mO
+ Mseb/JDopoXPpPmtlwk9X1m92YFjOgZ0kQuKzJPor2wNIJ9pzoXoEY2mJtHNLWiZWRwodgP1be5
+ NFnkkrVRo2Nz2u2bHRrO+qsRU3Q3xqGasK5gR9r7AjqI0V28wd0rZCg3cytcJRjXuW6EkuTtkUX
+ CsS9dMFUx8oRIMWIUqxwOKNOqxLg2X51fY+cOHmdnxzWp1fQ3E2ZepplH2JHJTdHBtxN3ToVv4x
+ oKZ0IgDLOI8nzt5FvDi6hx0zNWs43WpoTN1ehVo6BqGeUdvaxfuTyVn/56Qifus0HX7U09JK6jw
+ YJqxi6hLubKEqt9cxCXRsMFMrbcFxdheNK06sr5F5Tj6DLNTmB5mDdIkQORqet/mP06vFmlXs0m
+ szC98p1a50y9AyA==
+X-Developer-Key: i=rogerq@kernel.org; a=openpgp;
+ fpr=412165D44C9F52780FAB1058D25A6BD3BE763093
 
-2024-09-09 04:52 UTC+0800 ~ Kuan-Wei Chiu <visitorckw@gmail.com>
-> On Sun, Sep 08, 2024 at 08:48:40PM +0100, Quentin Monnet wrote:
->> On 08/09/2024 15:00, Kuan-Wei Chiu wrote:
->>> Replace shifts of '1' with '1U' in bitwise operations within
->>> __show_dev_tc_bpf() to prevent undefined behavior caused by shifting
->>> into the sign bit of a signed integer. By using '1U', the operations
->>> are explicitly performed on unsigned integers, avoiding potential
->>> integer overflow or sign-related issues.
->>>
->>> Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
->>
->>
->> Looks good, thank you.
->>
->> Acked-by: Quentin Monnet <qmo@kernel.org>
->>
->> How did you find these?
-> 
-> TL;DR: I discovered this issue through code review.
-> 
-> I am a student developer trying to contribute to the Linux kernel. I
-> was attempting to compile bpftool with ubsan enabled, and while running
-> ./bpftool net list, I encountered the following error message:
-> 
-> net.c:827:2: runtime error: null pointer passed as argument 1, which is declared to never be null
-> 
-> This prompted me to review the code in net.c, and during that process,
-> I unexpectedly came across the bug that this patch addresses.
+Hi,
 
+am65-cpsw can support up to 8 queues at Rx. So far we have
+been using only one queue (i.e. default flow) for all RX traffic.
 
-Nice
+This series adds multi-queue support. The driver starts with
+1 RX queue by default. User can increase the RX queues via ethtool,
+e.g. 'ethtool -L ethx rx <N>'
 
+The series also adds regmap and regfield support to some of the
+ALE registers. It adds Policer/Classifier registers and fields.
 
-> 
-> As for the ubsan complaint mentioned above, it was triggered because
-> qsort is being called as qsort(NULL, 0, ...) when netfilter has no
-> entries to display. In glibc, qsort is marked with __nonnull ((1, 4)).
-> However, I found conflicting information on cppreference.com [1], which
-> states that when count is zero, both ptr and comp can be NULL. This
-> confused me, so I will need to check the C standard to clarify this. If
-> it turns out that qsort(NULL, 0, ...) is invalid, I will submit a
-> separate patch to fix it.
+Converting the existing ALE control APIs to regfields can be a separate
+exercise.
 
+Some helper functions are added to read/write to the Policer/Classifier
+registers and a default Classifier setup function is added that
+routes packets based on their PCP/DSCP priority to different RX queues.
 
-OK, thanks for looking into it!
+Signed-off-by: Roger Quadros <rogerq@kernel.org>
+---
+Changes in v4:
+- Use single macro AM65_CPSW_MAX_QUEUES for both TX and RX queues
+  to simplify code
+- reuse am65_cpsw_get/set_per_queue_coalesce for am65_cpsw_get/set_coalesce.
+- return -EINVAL if unsupported tx/rx_coalesce_usecs in
+  am65_cpsw_set_coalesce.
+- reverse Xmas tree declaration order fixes in cpsw_ale
+- Link to v3: https://lore.kernel.org/r/20240703-am65-cpsw-multi-rx-v3-0-f11cd860fd72@kernel.org
 
+Changes in v3:
+- code style fixes
+- squashed patches 5 and 6
+- added comment about priority to thread mapping table.
+- Added Reviewed-by Simon Horman.
+- Link to v2: https://lore.kernel.org/r/20240628-am65-cpsw-multi-rx-v2-0-c399cb77db56@kernel.org
 
-> 
-> BTW, should this patch include a Fixes tag and a Cc @stable?
-> 
+Changes in v2:
+- rebase to net/next
+- fixed RX stall issue during iperf
+- Link to v1: https://lore.kernel.org/r/20240606-am65-cpsw-multi-rx-v1-0-0704b0cb6fdc@kernel.org
 
-We could maybe have used a Fixes:, but the patch is merged already so 
-never mind. As for stable, I don't think this is necessary. I don't 
-believe we can hit the undefined behaviour today; and we encourage 
-people to package bpftool from the GitHub mirror anyway, where your 
-patch will land soon.
+---
+Roger Quadros (6):
+      net: ethernet: ti: am65-cpsw: Introduce multi queue Rx
+      net: ethernet: ti: cpsw_ale: use regfields for ALE registers
+      net: ethernet: ti: cpsw_ale: use regfields for number of Entries and Policers
+      net: ethernet: ti: cpsw_ale: add Policer and Thread control register fields
+      net: ethernet: ti: cpsw_ale: add policer/classifier helpers and setup defaults
+      net: ethernet: ti: am65-cpsw: setup priority to flow mapping
 
-Thanks,
-Quentin
+ drivers/net/ethernet/ti/am65-cpsw-ethtool.c |  75 +++---
+ drivers/net/ethernet/ti/am65-cpsw-nuss.c    | 388 ++++++++++++++++------------
+ drivers/net/ethernet/ti/am65-cpsw-nuss.h    |  39 +--
+ drivers/net/ethernet/ti/cpsw_ale.c          | 287 ++++++++++++++++++--
+ drivers/net/ethernet/ti/cpsw_ale.h          |  62 ++++-
+ 5 files changed, 594 insertions(+), 257 deletions(-)
+---
+base-commit: bfba7bc8b7c2c100b76edb3a646fdce256392129
+change-id: 20240606-am65-cpsw-multi-rx-fb6cf8dea5eb
+
+Best regards,
+-- 
+Roger Quadros <rogerq@kernel.org>
+
 
