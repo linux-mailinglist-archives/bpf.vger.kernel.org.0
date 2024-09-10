@@ -1,261 +1,182 @@
-Return-Path: <bpf+bounces-39536-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39537-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B06EB97446C
-	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 23:00:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B1CE97447D
+	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 23:03:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D2F291C25326
-	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 21:00:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2FB521C20CCB
+	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 21:03:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78ECC1AAE35;
-	Tue, 10 Sep 2024 20:59:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A8AC1AB52D;
+	Tue, 10 Sep 2024 21:03:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="XnQgkFa9";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="l3IFiJbH"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="lqlkbteB"
 X-Original-To: bpf@vger.kernel.org
-Received: from fhigh6-smtp.messagingengine.com (fhigh6-smtp.messagingengine.com [103.168.172.157])
+Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6F491A7AF5;
-	Tue, 10 Sep 2024 20:59:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.157
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDD4E1A7AE2
+	for <bpf@vger.kernel.org>; Tue, 10 Sep 2024 21:03:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726001996; cv=none; b=mB9Fjp2ubuql3TsSeVOQhO0T6nUEP833zBDe7B76DN1wHc6CKPbRm+qX7lD16P6ci+03CNtfOeGMWE0iIQwaB+1LjhnLkCthL/2rM3DY0oySxMUsbejB/4MngTfCMglV75OKtCR2/CkMcvpkJyNpdl0y1H2VCGZ/0yoknxlAEmQ=
+	t=1726002195; cv=none; b=PUtHhsTviRGkFyAcNJtLFeSXtz2m/kHX/pkVmAH8uWg9okgeuHpD/qVYIsci7JKyUKhn4nX1bURirZEpKQjOeMH2wt2t6QzrIabbv/M8qxHD0Ge00nJvQ+sgyFSPnxmKxWeV/WhtoZSw+GMBHK5xaJWQmiWtCQrlFVO3XP+YHus=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726001996; c=relaxed/simple;
-	bh=hpL9ZdGA2gm98swxaaHVvRD9QSsK84D3RZxupu+kGU4=;
+	s=arc-20240116; t=1726002195; c=relaxed/simple;
+	bh=hlEYni8fOLnkCWMm8r07WgYSK1hynH9xu0T5bSqq5No=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=R/6NI1p1XzbKrBJD6DpBWl15uERtHeabJIBbcqH39quF7XGtQYNnx1OJ8ZKFJlJIi8VY/mrjwoVZkbX7opFVwsN6oNXBxBsi5O/kiR7nxKUk3psD3zHAkN9v8MhNEauUAADZeK9xKxkMnWw3/l00kH1D7DWBTevc4E9hutjUt5Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=XnQgkFa9; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=l3IFiJbH; arc=none smtp.client-ip=103.168.172.157
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
-Received: from phl-compute-08.internal (phl-compute-08.phl.internal [10.202.2.48])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id 0DAD8114017F;
-	Tue, 10 Sep 2024 16:59:54 -0400 (EDT)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-08.internal (MEProxy); Tue, 10 Sep 2024 16:59:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm3; t=1726001994;
-	 x=1726088394; bh=hzv2BsnnQ9fdXaJsvN7avfDB7W4UEo8ZjQhFk392AnY=; b=
-	XnQgkFa9N2tCOjhDBQNpIgzwWUL3m1FwqdhnLGc52Foz/LKK37h0V/1z/R6F0ui/
-	5SIMKdDaShCdufFp2UNUaMfQbZylY7RsaxlRKdRPOgeeRC38JZyfYpxUn4+4VH+q
-	x2onCWsDWUL+EkeOw+f/bXHgh15C0Xk9lyODIc1xFyx/WJMUbTL+GMvhEmLeMxYa
-	/IXvWAlb2rfxe7ZKF4foCQxu2FOIn/k44v9pZLo9H6oc/LTigpiaqK9a4JOzZx9N
-	InQwPfGiG3G2E3AkJGdoVJi+b4TLpmd9M5N4Ywfyp9HFryyFWnP1phK4VY7L0B9e
-	OmdF8fILRAu+Wg89MBPz/Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1726001994; x=
-	1726088394; bh=hzv2BsnnQ9fdXaJsvN7avfDB7W4UEo8ZjQhFk392AnY=; b=l
-	3IFiJbHOrS1TXM2zXWAzL1078NCSqZIZyUojDgf/fJV6crKbcS1nqe8+l60Rt4Kh
-	D+GcKOtYVIw6SXT7A9/EIQi53G43KMehGQbB3AkpD9SisKvyPy+e9rI5eyEVVjqo
-	b3LiBN3xZmfGHU+dYIPP7O3fa200Gc5v0GWJOs68RIW4RGKjRGpdEViGBwiPjy2d
-	nprHxFeP7b3U4xjMvMq5+JrHBfhXpqmwySqUpggnSaEmhyG69gQu7DLlIK3lxbE0
-	4+4ykBAJ8a3wHhG1bhSZFKODV54bjNCQwVgBgUOkeC0RFLGFGF9DbwsX6xN2Viw7
-	31EPjfhthig1wl93FBLLw==
-X-ME-Sender: <xms:SbPgZtGcn4N7g8h2ur_w6gvHMIVZisf4wjRn0VMmXyjn3U2WZ1MiyQ>
-    <xme:SbPgZiWne4gzlAsaWk4r6OiA6tXFX8VYacEURdAzDS9otsULLXTQuP7Fw8ql6JKoH
-    GWpcqAgJoGvaEUenA>
-X-ME-Received: <xmr:SbPgZvLATVg3IUJJ1KNWwk5KoYpijAfWNn9Ov1V35MDp9KVnRf37_Q8BBhM100BlHo9-FR0PIrLIiJZBw21PjtZBVUIqtRXVY-gRimhDv12M1w>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrudeiledgudegiecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
-    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
-    hnthhsucdlqddutddtmdenfghrlhcuvffnffculdejtddmnecujfgurhepfffhvfevuffk
-    fhggtggugfgjsehtkefstddttdejnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguh
-    esugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhepteffteekjeejueejueetfffh
-    vddujeeiueeijedutdfgjeffhfegkefggfeggfetnecuffhomhgrihhnpehrihhnghgsuh
-    hfrdhmrghpnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhho
-    mhepugiguhesugiguhhuuhdrgiihiidpnhgspghrtghpthhtohepudelpdhmohguvgepsh
-    hmthhpohhuthdprhgtphhtthhopegrlhgvgigvihdrshhtrghrohhvohhithhovhesghhm
-    rghilhdrtghomhdprhgtphhtthhopegvugguhiiikeejsehgmhgrihhlrdgtohhmpdhrtg
-    hpthhtoheprghnughrihhisehkvghrnhgvlhdrohhrghdprhgtphhtthhopegurghnihgv
-    lhesihhoghgvrghrsghogidrnhgvthdprhgtphhtthhopegrshhtsehkvghrnhgvlhdroh
-    hrghdprhgtphhtthhopehshhhurghhsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehj
-    ohhhnhdrfhgrshhtrggsvghnugesghhmrghilhdrtghomhdprhgtphhtthhopehmrghrth
-    hinhdrlhgruheslhhinhhugidruggvvhdprhgtphhtthhopehsohhngheskhgvrhhnvghl
-    rdhorhhg
-X-ME-Proxy: <xmx:SbPgZjH_b3SoQiwp4L0LSFK6xoEA0QlrYlXUiCrrw7ABs4D9y1aoPA>
-    <xmx:SbPgZjVyZS5si3_NOc1UZk-Qf1hjDV2ispd3RvXTLUuC1ojbpWuKtg>
-    <xmx:SbPgZuPaj6UdPn7YSHPHM1asD1DgyGpHQs3h5ocwv1vgsnMD99gLSQ>
-    <xmx:SbPgZi22ydKr6LEHB6tcKcC8qHpeIQNZIzdr2cNei1TaTLPGU0aNWg>
-    <xmx:SrPgZiZHdRgu6CikIT_e8EfIbeLUouFPAkKBwdDXlXuwUS7V1-HV8AJ2>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 10 Sep 2024 16:59:50 -0400 (EDT)
-Date: Tue, 10 Sep 2024 14:59:48 -0600
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Eddy Z <eddyz87@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov <ast@kernel.org>, 
-	Shuah Khan <shuah@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Mykola Lysenko <mykolal@fb.com>, LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, Kernel Team <kernel-team@meta.com>
-Subject: Re: [PATCH bpf-next] bpf: ringbuf: Support consuming
- BPF_MAP_TYPE_RINGBUF from prog
-Message-ID: <ip35p7p3hkskenndnbxt6gghzyfzmwdswo3mfaqisac7r57rlq@kqpp5ftzsdxi>
-References: <18a9ddacc99bb95e9802f8ad1e81214433df496c.1725929645.git.dxu@dxuuu.xyz>
- <CAADnVQKyfZ2-qCvmqG8z919ggdOszEjTs04H=cTGOZTi-zhx7Q@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=FaADKzI2IC0ccMdcrtI2Ia7eI9a3W7nKmTTUAbFeAQOMMR7U1q4WctaEhmq4LwJjDnI3uzF4yh8IaUU0L0CRFpAz7to4A3wf88DcVr8Tb5DwToJjteyNgsBGUTZQbxrYjERKxjrs2iBdvfd8L7scV3H/qKiaBh5iGql/PZIj4cE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=lqlkbteB; arc=none smtp.client-ip=95.215.58.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Tue, 10 Sep 2024 21:02:59 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1726002188;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gsVo8obNrl4B56Z1DT7qfsDEPK0f8VCrizIedNb7y58=;
+	b=lqlkbteBtNaegQrtJh9zP/apV9nd3yEsmo007zqH75d5V6vUQ+CtnidmkHezK0hXYKelBz
+	dXx+Vq+b6qBzXhs6vxVYZox9qjdiUfdKtyxkSGlTVXorDNFDAJ+Md0xb5+JrTSk8NnOvIF
+	PdQbNdNyyxODjdSz5WPSi9YE7sBVB+E=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Roman Gushchin <roman.gushchin@linux.dev>
+To: Chen Ridong <chenridong@huaweicloud.com>
+Cc: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	Chen Ridong <chenridong@huawei.com>, martin.lau@linux.dev,
+	ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
+	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+	haoluo@google.com, jolsa@kernel.org, tj@kernel.org,
+	lizefan.x@bytedance.com, hannes@cmpxchg.org, bpf@vger.kernel.org,
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/1] cgroup: fix deadlock caused by cgroup_mutex and
+ cpu_hotplug_lock
+Message-ID: <ZuC0A98pxYc3TODM@google.com>
+References: <20240817093334.6062-1-chenridong@huawei.com>
+ <20240817093334.6062-2-chenridong@huawei.com>
+ <kz6e3oadkmrl7elk6z765t2hgbcqbd2fxvb2673vbjflbjxqck@suy4p2mm7dvw>
+ <07501c67-3b18-48e3-8929-e773d8d6920f@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQKyfZ2-qCvmqG8z919ggdOszEjTs04H=cTGOZTi-zhx7Q@mail.gmail.com>
+In-Reply-To: <07501c67-3b18-48e3-8929-e773d8d6920f@huaweicloud.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, Sep 10, 2024 at 11:36:36AM GMT, Alexei Starovoitov wrote:
-> On Mon, Sep 9, 2024 at 5:55â€¯PM Daniel Xu <dxu@dxuuu.xyz> wrote:
-> >
-> > Right now there exists prog produce / userspace consume and userspace
-> > produce / prog consume support. But it is also useful to have prog
-> > produce / prog consume.
-> >
-> > For example, we want to track the latency overhead of cpumap in
-> > production. Since we need to store enqueue timestamps somewhere and
-> > cpumap is MPSC, we need an MPSC data structure to shadow cpumap. BPF
-> > ringbuf is such a data structure. Rather than reimplement (possibly
-> > poorly) a custom ringbuffer in BPF, extend the existing interface to
-> > allow the final quadrant of ringbuf usecases to be filled. Note we
-> > ignore userspace to userspace use case - there is no need to involve
-> > kernel for that.
-> >
-> > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
-> > ---
-> >  kernel/bpf/verifier.c                         |  6 +-
-> >  tools/testing/selftests/bpf/Makefile          |  3 +-
-> >  .../selftests/bpf/prog_tests/ringbuf.c        | 50 +++++++++++++++
-> >  .../bpf/progs/test_ringbuf_bpf_to_bpf.c       | 64 +++++++++++++++++++
-> >  4 files changed, 120 insertions(+), 3 deletions(-)
-> >  create mode 100644 tools/testing/selftests/bpf/progs/test_ringbuf_bpf_to_bpf.c
-> >
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index 53d0556fbbf3..56bfe559f228 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -9142,7 +9142,8 @@ static int check_map_func_compatibility(struct bpf_verifier_env *env,
-> >                     func_id != BPF_FUNC_ringbuf_query &&
-> >                     func_id != BPF_FUNC_ringbuf_reserve_dynptr &&
-> >                     func_id != BPF_FUNC_ringbuf_submit_dynptr &&
-> > -                   func_id != BPF_FUNC_ringbuf_discard_dynptr)
-> > +                   func_id != BPF_FUNC_ringbuf_discard_dynptr &&
-> > +                   func_id != BPF_FUNC_user_ringbuf_drain)
-> >                         goto error;
-> >                 break;
-> >         case BPF_MAP_TYPE_USER_RINGBUF:
-> > @@ -9276,7 +9277,8 @@ static int check_map_func_compatibility(struct bpf_verifier_env *env,
-> >                         goto error;
-> >                 break;
-> >         case BPF_FUNC_user_ringbuf_drain:
-> > -               if (map->map_type != BPF_MAP_TYPE_USER_RINGBUF)
-> > +               if (map->map_type != BPF_MAP_TYPE_USER_RINGBUF &&
-> > +                   map->map_type != BPF_MAP_TYPE_RINGBUF)
-> >                         goto error;
+On Tue, Sep 10, 2024 at 09:31:41AM +0800, Chen Ridong wrote:
 > 
-> I think it should work.
 > 
-> Andrii,
+> On 2024/9/9 22:19, Michal Koutný wrote:
+> > On Sat, Aug 17, 2024 at 09:33:34AM GMT, Chen Ridong <chenridong@huawei.com> wrote:
+> > > The reason for this issue is cgroup_mutex and cpu_hotplug_lock are
+> > > acquired in different tasks, which may lead to deadlock.
+> > > It can lead to a deadlock through the following steps:
+> > > 1. A large number of cpusets are deleted asynchronously, which puts a
+> > >     large number of cgroup_bpf_release works into system_wq. The max_active
+> > >     of system_wq is WQ_DFL_ACTIVE(256). Consequently, all active works are
+> > >     cgroup_bpf_release works, and many cgroup_bpf_release works will be put
+> > >     into inactive queue. As illustrated in the diagram, there are 256 (in
+> > >     the acvtive queue) + n (in the inactive queue) works.
+> > > 2. Setting watchdog_thresh will hold cpu_hotplug_lock.read and put
+> > >     smp_call_on_cpu work into system_wq. However step 1 has already filled
+> > >     system_wq, 'sscs.work' is put into inactive queue. 'sscs.work' has
+> > >     to wait until the works that were put into the inacvtive queue earlier
+> > >     have executed (n cgroup_bpf_release), so it will be blocked for a while.
+> > > 3. Cpu offline requires cpu_hotplug_lock.write, which is blocked by step 2.
+> > > 4. Cpusets that were deleted at step 1 put cgroup_release works into
+> > >     cgroup_destroy_wq. They are competing to get cgroup_mutex all the time.
+> > >     When cgroup_metux is acqured by work at css_killed_work_fn, it will
+> > >     call cpuset_css_offline, which needs to acqure cpu_hotplug_lock.read.
+> > >     However, cpuset_css_offline will be blocked for step 3.
+> > > 5. At this moment, there are 256 works in active queue that are
+> > >     cgroup_bpf_release, they are attempting to acquire cgroup_mutex, and as
+> > >     a result, all of them are blocked. Consequently, sscs.work can not be
+> > >     executed. Ultimately, this situation leads to four processes being
+> > >     blocked, forming a deadlock.
+> > > 
+> > > system_wq(step1)		WatchDog(step2)			cpu offline(step3)	cgroup_destroy_wq(step4)
+> > > ...
+> > > 2000+ cgroups deleted asyn
+> > > 256 actives + n inactives
+> > > 				__lockup_detector_reconfigure
+> > > 				P(cpu_hotplug_lock.read)
+> > > 				put sscs.work into system_wq
+> > > 256 + n + 1(sscs.work)
+> > > sscs.work wait to be executed
+> > > 				warting sscs.work finish
+> > > 								percpu_down_write
+> > > 								P(cpu_hotplug_lock.write)
+> > > 								...blocking...
+> > > 											css_killed_work_fn
+> > > 											P(cgroup_mutex)
+> > > 											cpuset_css_offline
+> > > 											P(cpu_hotplug_lock.read)
+> > > 											...blocking...
+> > > 256 cgroup_bpf_release
+> > > mutex_lock(&cgroup_mutex);
+> > > ..blocking...
+> > 
+> > Thanks, Ridong, for laying this out.
+> > Let me try to extract the core of the deps above.
+> > 
+> > The correct lock ordering is: cgroup_mutex then cpu_hotplug_lock.
+> > However, the smp_call_on_cpu() under cpus_read_lock may lead to
+> > a deadlock (ABBA over those two locks).
+> > 
 > 
-> do you see any issues with such use?
+> That's right.
 > 
-> >                 break;
-> >         case BPF_FUNC_get_stackid:
-> > diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-> > index 9905e3739dd0..233109843d4d 100644
-> > --- a/tools/testing/selftests/bpf/Makefile
-> > +++ b/tools/testing/selftests/bpf/Makefile
-> > @@ -503,7 +503,8 @@ LINKED_SKELS := test_static_linked.skel.h linked_funcs.skel.h               \
-> >  LSKELS := fentry_test.c fexit_test.c fexit_sleep.c atomics.c           \
-> >         trace_printk.c trace_vprintk.c map_ptr_kern.c                   \
-> >         core_kern.c core_kern_overflow.c test_ringbuf.c                 \
-> > -       test_ringbuf_n.c test_ringbuf_map_key.c test_ringbuf_write.c
-> > +       test_ringbuf_n.c test_ringbuf_map_key.c test_ringbuf_write.c    \
-> > +       test_ringbuf_bpf_to_bpf.c
-> 
-> Do you need it to be lskel ?
-> 
-> Regular skels are either to debug.
+> > This is OK
+> > 	thread T					system_wq worker
+> > 	
+> > 	  						lock(cgroup_mutex) (II)
+> > 							...
+> > 							unlock(cgroup_mutex)
+> > 	down(cpu_hotplug_lock.read)
+> > 	smp_call_on_cpu
+> > 	  queue_work_on(cpu, system_wq, scss) (I)
+> > 							scss.func
+> > 	  wait_for_completion(scss)
+> > 	up(cpu_hotplug_lock.read)
+> > 
+> > However, there is no ordering between (I) and (II) so they can also happen
+> > in opposite
+> > 
+> > 	thread T					system_wq worker
+> > 	
+> > 	down(cpu_hotplug_lock.read)
+> > 	smp_call_on_cpu
+> > 	  queue_work_on(cpu, system_wq, scss) (I)
+> > 	  						lock(cgroup_mutex)  (II)
+> > 							...
+> > 							unlock(cgroup_mutex)
+> > 							scss.func
+> > 	  wait_for_completion(scss)
+> > 	up(cpu_hotplug_lock.read)
+> > 
+> > And here the thread T + system_wq worker effectively call
+> > cpu_hotplug_lock and cgroup_mutex in the wrong order. (And since they're
+> > two threads, it won't be caught by lockdep.)
+> > 
+> > By that reasoning any holder of cgroup_mutex on system_wq makes system
+> > susceptible to a deadlock (in presence of cpu_hotplug_lock waiting
+> > writers + cpuset operations). And the two work items must meet in same
+> > worker's processing hence probability is low (zero?) with less than
+> > WQ_DFL_ACTIVE items.
 
-I'm actually unsure the difference, still. But all the other tests in
-the file were using lskel so I just copy/pasted.
+Right, I'm on the same page. Should we document then somewhere that
+the cgroup mutex can't be locked from a system wq context?
 
-> 
-> Also pls split selftest into a separate patch.
+I think thus will also make the Fixes tag more meaningful.
 
-Ack.
-
-> 
-> >
-> >  # Generate both light skeleton and libbpf skeleton for these
-> >  LSKELS_EXTRA := test_ksyms_module.c test_ksyms_weak.c kfunc_call_test.c \
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/ringbuf.c b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
-> > index da430df45aa4..3e7955573ac5 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/ringbuf.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
-> > @@ -17,6 +17,7 @@
-> >  #include "test_ringbuf_n.lskel.h"
-> >  #include "test_ringbuf_map_key.lskel.h"
-> >  #include "test_ringbuf_write.lskel.h"
-> > +#include "test_ringbuf_bpf_to_bpf.lskel.h"
-> >
-> >  #define EDONE 7777
-> >
-> > @@ -497,6 +498,53 @@ static void ringbuf_map_key_subtest(void)
-> >         test_ringbuf_map_key_lskel__destroy(skel_map_key);
-> >  }
-> >
-> > +static void ringbuf_bpf_to_bpf_subtest(void)
-> > +{
-> > +       struct test_ringbuf_bpf_to_bpf_lskel *skel;
-> > +       int err, i;
-> > +
-> > +       skel = test_ringbuf_bpf_to_bpf_lskel__open();
-> > +       if (!ASSERT_OK_PTR(skel, "test_ringbuf_bpf_to_bpf_lskel__open"))
-> > +               return;
-> > +
-> > +       skel->maps.ringbuf.max_entries = getpagesize();
-> > +       skel->bss->pid = getpid();
-> > +
-> > +       err = test_ringbuf_bpf_to_bpf_lskel__load(skel);
-> > +       if (!ASSERT_OK(err, "test_ringbuf_bpf_to_bpf_lskel__load"))
-> > +               goto cleanup;
-> > +
-> > +       ringbuf = ring_buffer__new(skel->maps.ringbuf.map_fd, NULL, NULL, NULL);
-> > +       if (!ASSERT_OK_PTR(ringbuf, "ring_buffer__new"))
-> > +               goto cleanup;
-> > +
-> > +       err = test_ringbuf_bpf_to_bpf_lskel__attach(skel);
-> > +       if (!ASSERT_OK(err, "test_ringbuf_bpf_to_bpf_lskel__attach"))
-> > +               goto cleanup_ringbuf;
-> > +
-> > +       /* Produce N_SAMPLES samples in the ring buffer by calling getpid() */
-> > +       skel->bss->value = SAMPLE_VALUE;
-> > +       for (i = 0; i < N_SAMPLES; i++)
-> > +               syscall(__NR_getpgid);
-> > +
-> > +       /* Trigger bpf-side consumption */
-> > +       syscall(__NR_prctl);
-> 
-> This might conflict with other selftests that run in parallel.
-> 
-> Just load the skel and bpf_prog_run(prog_fd).
-> No need to attach anywhere in the kernel.
-
-Ack.
-
-> 
-> pw-bot: cr
+Thank you!
 
