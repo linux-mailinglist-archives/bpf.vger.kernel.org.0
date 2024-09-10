@@ -1,88 +1,132 @@
-Return-Path: <bpf+bounces-39473-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39474-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB98E973B62
-	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 17:19:39 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E0B7973B91
+	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 17:23:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6252628312D
-	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 15:19:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 28DFA1F22B48
+	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 15:23:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCE3A19EEA6;
-	Tue, 10 Sep 2024 15:18:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49196194132;
+	Tue, 10 Sep 2024 15:21:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="MT8weMhT"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dtERHhjZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5B4E19E80F
-	for <bpf@vger.kernel.org>; Tue, 10 Sep 2024 15:18:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AAD3187FFF
+	for <bpf@vger.kernel.org>; Tue, 10 Sep 2024 15:21:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725981527; cv=none; b=JPd9F/uWwA3Ro5Pw2eEkpBlBa0zXaVJSFRrtF4K9wOUie0uNBSlbOybxYPsFcD1vwgaaFTTVOA93IQ8reCZtkbsAhiey+oaCb0egF339ZjYEmti1LxSjaQS6Jiejdd1kncMPqndhU6um/sl0oJGCoOgjBVUrE3MVFFujqQ0E9jM=
+	t=1725981706; cv=none; b=h/SuOJUJjBlbM6mOjr4AWnIi/Gp0sstdJ1bxqAdkaiL+k2bcawdbURrw3li1UhbncvsvgApRTSCsF3w63N00zU9iLFYpQTLfYnGHOR/E8VgrUDjpE29tTYKnmJJEeKIYzZtHvVJUANDXZHjX19e5Y0ZU+ZKt7rC4rWsnNAgLFCw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725981527; c=relaxed/simple;
-	bh=1ZHmz5tAPwT7ChCsujP+PfDX84n2wxfAT+nKWuLNoNw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gd8DVw35iolM+HmN4E0xG8bdKCQEJnYTFPh5seOjDnn+uQ5lvqwy+2W1Bbg6DtCb+e8kQAaOk6nSUNxrgoXTfnt9BkcIDOSKpNRdFd0G6uP6W4quRKCC4Acl3ujsuCoWCHeOoiKomjLEM3E17XO+I8t52o98LREo1XFYAyEwlrA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=MT8weMhT; arc=none smtp.client-ip=95.215.58.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <ff27a7ba-e3b3-4cd9-85a8-55c10756df5d@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1725981522;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=eghQv2fgMn8zup51cmGB1QrSDKSaS9pXVEAuhgUpeWw=;
-	b=MT8weMhTYqIZj0sq7lPXPNX0kqqPyCa7eID84eHRQVTkRX7K049qrcuCvz7v2LP2XmiNwa
-	88mPY6a9ZQg9NZgccpm/4vFsa5WBZePWvgWRzbDQuLLDdmIdPJBjyrJpLR9Ra1t9GttDtj
-	IUcGnfhM5/nPyVcecDPUlc/17jMLoes=
-Date: Tue, 10 Sep 2024 08:18:33 -0700
+	s=arc-20240116; t=1725981706; c=relaxed/simple;
+	bh=PQ5LU9UEwcUPGxe8JP+NGItM/IBKDakkr1bMgIY404Q=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=DzzVMyxXnPPb4eoLetoryIwjO8plKjlZqZytuJdUxr9rF+1M6TWOHTNQloiQnsy4p7JyFsP9FkI4XfnYuQm/dVMnojtceC0KTpYJ3iCIMXbSth8BTeb5h5/bCjE2ecv/5Hr+34ntxXtAD5GOPJY/EhQHfSOCrrhay5k2ZYgCa5U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dtERHhjZ; arc=none smtp.client-ip=209.85.128.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-42ca6ba750eso24628445e9.0
+        for <bpf@vger.kernel.org>; Tue, 10 Sep 2024 08:21:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1725981703; x=1726586503; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+8byPQIRp2MV8C+Ltmp2JHMjxLIhgdasJFKY2Uh6aig=;
+        b=dtERHhjZ4wWu/si/AOMkl2sSzCc4/xRaFmYaH0heulPkk4NLAGcDWmpvPVOEwpHjhn
+         cy2QDA7B87JNxUZ2VWVi3itA1aC4cT+3b+YqC9xcAnKBuPArGqtf8nCNDVNWCn8iV8pP
+         LqgB2r/yqWEDI5SGRaRWqGU91r71NaHrUDriWg6KvK+up4SQi46jRzzI5hSc1p3G4T9O
+         I1as35OZR6rkwO8bb5DSYqa9pTEnK9oJlYwAeWn4nKrFpTRhnFuqSY+z0FFuPDH4Vnaq
+         SgYLcqHdz1ncUrd1iwEK0nX988B8M3GmnUxU4FuDYEvo+XuwDMrG0AlaSO3XekSnM5C9
+         ut9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1725981703; x=1726586503;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+8byPQIRp2MV8C+Ltmp2JHMjxLIhgdasJFKY2Uh6aig=;
+        b=m9Nk+iYmHMHsXNcAZDdZR93r1e76EqAa1buZj/KDQvXwHW7QaZfTT9rmwJMKy925aG
+         gTDBfcRMcF8tmiPXvL1dJe1caO/+Z1n+uPoifAvKBtJ/mQrQ2lURErpw4wDjMVA6nZhx
+         ekG3+aTEsOuXcNZwy8lgEOhHeVt0RvpCxomp2MgHOF5ta4GDA2m7gEWnETcMUJ0eBnnN
+         idvyKsX44drQJ/rEb5LX3RVJv2TSBCcrnvMHbRCKAuSbsQRtOMu1VUSdJzyZ+FlISOFN
+         BFNTa3w/A5LEKVSrpQRfRrW4td/oNdHVgjf0prGQmyfko0djdj1ZcC7bCHTA2h8YQDNv
+         jXGg==
+X-Forwarded-Encrypted: i=1; AJvYcCXhKmTNGe8TM2j68+AxhpUtZwyApth0RUX/NKGvz6SuyHA3HBR04ZYUvz4p+8HmJx6Hyz4=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwEcqltntZjzon4AF5GUUL38QR7s04rNE0zkFNcB5wSZJCIFc/0
+	HI+d6o0Kkpk4U/kLSr3Y5NNvgTLPgTzqdiPC/TCcbBPBGKNrg1KEEpGGT2Spq7nRu6kBdS4vM5C
+	edrG36eqzlAUzFe4NiuoHQUkBbjY=
+X-Google-Smtp-Source: AGHT+IEH6Kexq6tRaMQiA9lzHuofWAF7yWFi8g8X6dTiiRSq2BiqcKXCI68k7oNjiVcvWrIeO1e3l1WucP9TPSm7LUo=
+X-Received: by 2002:a05:600c:1d18:b0:42c:b98d:b993 with SMTP id
+ 5b1f17b1804b1-42cbddbd807mr22225665e9.2.1725981703198; Tue, 10 Sep 2024
+ 08:21:43 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: Kernel oops caused by signed divide
-Content-Language: en-GB
-To: Dave Thaler <dthaler1968@googlemail.com>,
- 'Alexei Starovoitov' <alexei.starovoitov@gmail.com>,
- 'Zac Ecob' <zacecob@protonmail.com>, 'Daniel Borkmann' <daniel@iogearbox.net>
-Cc: bpf@vger.kernel.org
 References: <tPJLTEh7S_DxFEqAI2Ji5MBSoZVg7_G-Py2iaZpAaWtM961fFTWtsnlzwvTbzBzaUzwQAoNATXKUlt0LZOFgnDcIyKCswAnAGdUF3LBrhGQ=@protonmail.com>
- <CAADnVQ+o1jPQwxP9G9Xb=ZSEQDKKq1m1awpovKWdVRMNf8sgdg@mail.gmail.com>
- <1058c69c-3e2c-4c0b-b777-2b0460f443f9@linux.dev>
- <18d101db038f$f3c2d400$db487c00$@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <18d101db038f$f3c2d400$db487c00$@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+ <CAADnVQ+o1jPQwxP9G9Xb=ZSEQDKKq1m1awpovKWdVRMNf8sgdg@mail.gmail.com> <1058c69c-3e2c-4c0b-b777-2b0460f443f9@linux.dev>
+In-Reply-To: <1058c69c-3e2c-4c0b-b777-2b0460f443f9@linux.dev>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 10 Sep 2024 08:21:30 -0700
+Message-ID: <CAADnVQJPnCvttM+yitHbLRNoPUPs6EK+5VG=-SDP3LVdD70jyg@mail.gmail.com>
+Subject: Re: Kernel oops caused by signed divide
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: Zac Ecob <zacecob@protonmail.com>, Daniel Borkmann <daniel@iogearbox.net>, 
+	"bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Tue, Sep 10, 2024 at 7:21=E2=80=AFAM Yonghong Song <yonghong.song@linux.=
+dev> wrote:
+>
+>
+> On 9/9/24 10:29 AM, Alexei Starovoitov wrote:
+> > On Mon, Sep 9, 2024 at 10:21=E2=80=AFAM Zac Ecob <zacecob@protonmail.co=
+m> wrote:
+> >> Hello,
+> >>
+> >> I recently received a kernel 'oops' about a divide error.
+> >> After some research, it seems that the 'div64_s64' function used for t=
+he 'MOD'/'REM' instructions boils down to an 'idiv'.
+> >>
+> >> The 'dividend' is set to INT64_MIN, and the 'divisor' to -1, then beca=
+use of two's complement, there is no corresponding positive value, causing =
+the error (at least to my understanding).
+> >>
+> >>
+> >> Apologies if this is already known / not a relevant concern.
+> > Thanks for the report. This is a new issue.
+> >
+> > Yonghong,
+> >
+> > it's related to the new signed div insn.
+> > It sounds like we need to update chk_and_div[] part of
+> > the verifier to account for signed div differently.
+>
+> In verifier, we have
+>    /* [R,W]x div 0 -> 0 */
+>    /* [R,W]x mod 0 -> [R,W]x */
 
-On 9/10/24 7:44 AM, Dave Thaler wrote:
-> Yonghong Song wrote:
-> [...]
->> In verifier, we have
->>     /* [R,W]x div 0 -> 0 */
->>     /* [R,W]x mod 0 -> [R,W]x */
->>
->> What the value for
->>     Rx_a sdiv Rx_b -> ?
->> where Rx_a = INT64_MIN and Rx_b = -1?
->>
->> Should we just do
->>     INT64_MIN sdiv -1 -> -1
->> or some other values?
-> What happens for BPF_NEG INT64_MIN?
+the verifier is doing what hw does. In this case this is arm64 behavior.
 
-Right. This is equivalent to INT64_MIN/-1. Indeed, we need check and protect for this case as well.
+> What the value for
+>    Rx_a sdiv Rx_b -> ?
+> where Rx_a =3D INT64_MIN and Rx_b =3D -1?
 
+Why does it matter what Rx_a contains ?
+
+What cpus do in this case?
+
+> Should we just do
+>    INT64_MIN sdiv -1 -> -1
+> or some other values?
+>
 
