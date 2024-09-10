@@ -1,188 +1,132 @@
-Return-Path: <bpf+bounces-39503-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39504-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCCB0973F7F
-	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 19:28:56 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 996A09740D6
+	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 19:42:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 883CE281B4B
-	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 17:28:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4F2B21F219DC
+	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 17:42:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3CB61B5831;
-	Tue, 10 Sep 2024 17:22:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48EE41A38CA;
+	Tue, 10 Sep 2024 17:40:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ln4xrwHL"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F1/WsbYn"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 269CB1A2C00;
-	Tue, 10 Sep 2024 17:22:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B23418EFCE;
+	Tue, 10 Sep 2024 17:40:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725988974; cv=none; b=IydZ3m334lSePeCWS7y3V75TRJZtF4cJ8/rBvsfwTy3oHSnNwrm87A7pQBD8t8jrJCx8vx9vA/aRAxuVcH56F3tWuicuypqd68d8l/b0pxyNamk6FDeJ9QIAeqOCvRHMM8mLJInLZh/Q2t/jgG2hz2jG9yb/kZrmPsS8BHv01Pw=
+	t=1725990007; cv=none; b=Rnz5T4KEHTO3/xUnF2BvhRIdonoouZOqWcVx9N8HVbEcpG3zyEqOuVWDtbzVlXKphEJbCSBSgaL66a+YHO/7im+WdxFIumcTrx2wvN3izqh9wskvz335vUi8t2jotBo3Hjcgw4GZ4jHunXMUTlpChYfogRKTMti+fg2T9V979qY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725988974; c=relaxed/simple;
-	bh=BkY5Luu0WhLdsyeuGQ+H6TC8pg0hNLFLBkB8fjvJxX4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tG01vgdMBbDZOBnj4wUACz5naox7dK4kTvAmSmaqEPYmv895N6/2wy5/j8IqA4+HWZyDGBjDA9QTV4zkWzS1LAHpTPvkJFXq3WbKokcKb857Rl/JMIqxrVEwDyjTEJSpUTvcdGy8dv1IaiSTFz4mZDkGMon5JNn/0OdZr/1httM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ln4xrwHL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9BEDBC4CEC3;
-	Tue, 10 Sep 2024 17:22:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1725988973;
-	bh=BkY5Luu0WhLdsyeuGQ+H6TC8pg0hNLFLBkB8fjvJxX4=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Ln4xrwHLb9dTP1GWSiLYmtZWK1n4SOwR0gKS4AVCN6ed5fZsJRB1GPUSYZQm6V12N
-	 zSU9Fju2idL7wBLvRfCPpegdLLEIcPgyBV/LPVTvcNUkBeBMjYa9W0H7PawUxrL/sy
-	 UXvDjp4L5QBKYeR0WhdRWrr4LocANTXqJi5DpA7h4SNYU0YDkuPLBHVG3pcJKBYs0b
-	 UNchPRC01lWAHW+aN0Q1tVwg/1avCHE4N3/RIjIKYKLbPdHouMLrlr38utZV1usSTe
-	 bPtVE05Zz17iEWDU6dYaRfr+crCC85cT8JxTnRA5V+YCoRtHsmQWr1jn8zLYpjNc4R
-	 RgCPKdGfyIBbQ==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Larysa Zaremba <larysa.zaremba@intel.com>,
-	Wojciech Drewek <wojciech.drewek@intel.com>,
-	Jacob Keller <jacob.e.keller@intel.com>,
-	Chandan Kumar Rout <chandanx.rout@intel.com>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	Tony Nguyen <anthony.l.nguyen@intel.com>,
-	Sasha Levin <sashal@kernel.org>,
-	przemyslaw.kitszel@intel.com,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	hawk@kernel.org,
-	john.fastabend@gmail.com,
-	intel-wired-lan@lists.osuosl.org,
-	netdev@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.10 18/18] ice: check for XDP rings instead of bpf program when unconfiguring
-Date: Tue, 10 Sep 2024 13:22:03 -0400
-Message-ID: <20240910172214.2415568-18-sashal@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240910172214.2415568-1-sashal@kernel.org>
-References: <20240910172214.2415568-1-sashal@kernel.org>
+	s=arc-20240116; t=1725990007; c=relaxed/simple;
+	bh=fAdgRQqpGF7RrnEDWmOd1mWZuXS+ow/1DruDV+THMfE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=SZKfIGDtFTM7RquHA0vD41GMIKFqdC9T5NsZpEVA5J9N9kxX/svxYLGG+kEBycaIKt7BNahyy6htKMH9ZOiu6bNaq29fsrc4y+LDzzJjMumax5IBehSVXHAlgkjelVeJl4B2MPYlgzqkEPDuEPMjkBbdnCp00kxIPyXXU8U6pD4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=F1/WsbYn; arc=none smtp.client-ip=209.85.216.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2d8abac30ddso788390a91.0;
+        Tue, 10 Sep 2024 10:40:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1725990006; x=1726594806; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6MGMSWaKWiTq5sp3rVspTPEpv9ZUFzlH0jxiAqGXIZA=;
+        b=F1/WsbYnXVj7p+rR44oIzkynACN07XQWQl0xxZpGg+Zt70F2vDY+YrPOnieK7LR8sr
+         aYLXZmlngqq1EayDFLqyC6mpYSPwDYfYw2+L9QmwkYm/FJrl3ONxZ8JIVuYRIzmykC6Y
+         D1LY0t4NNYv0W0ysDk2KiZ+NASM0HneqqiJKbrGCDL7+FqLyZkp3ynlp0Ey+IJleDQMw
+         zSyWs9VBXI7Hr1C86adIpaYYv+oqGpHRdmF+67Xca4UPjTxKZY5s7b+nE5babZaeXOdL
+         82IrvC0DN2xjSD9nxExI8l0wpMj///FcPCkjPHGw1cYb5i1dGs2seP6rjbOFbOdxWgIV
+         LfUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1725990006; x=1726594806;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6MGMSWaKWiTq5sp3rVspTPEpv9ZUFzlH0jxiAqGXIZA=;
+        b=Xi+guyFcoJqiCf1X9nJuU3uXJHoUCehZSZbJf020kY7+T/26kMVH2DHuCA/ff+4IJg
+         36t+SxrjFhOY6pRp8hGbTM64Lfr5mta0F0YsDGTAf2kmE6TrisuuNTXkzlCQjCZpeL9D
+         MCrf26FsyxHstdBpTKiqW5jIUrDq2L+5kgkZ+y83PXxVniMbTxtsVlHTO7ecznN6jOtP
+         iBhMt7Ul1kPcH4KDLfTwtQQ9dxMeW8kO4QcAs8Y5/WclZmMBAst2389tT7wXir3JvWaG
+         hajAubZrXv19rEJrXiDoIFuyyVVfq90OlegRaSy6Mpot6OfwHZZeC7TUBXntXVI9o5he
+         MuMw==
+X-Forwarded-Encrypted: i=1; AJvYcCUJ4A/KP8n+tD8ruogqNf0MOjZv6gJ9q3FrephD9a+FP1gpFoaTmTbGmreMLqe7JyIeacVW77ysXOQYPguT@vger.kernel.org, AJvYcCVAjK/CXJShrg/v4XPaC7PZVWSS4qqMIWERQ+WM1kkAf2wVxqK0cPt1ha4yqozaDqMEp2QDUZaIkOzCFmKXmcGtKQI=@vger.kernel.org, AJvYcCW/+cz1IzCDxyixCHHaPv3rLrXxlsI9jLUGwBNbUYonLwvD+IphfngiqiBETV5oCdv/0uw=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw3PYzcqt2cx5TyH9JhWfbIJN7lMe/UxqsOQY74UhnEyz3rfMlB
+	8EQmhIPVdnPD857ksBoT8mK9OFf4qXvbaBS0XZf+sQVw0k+PJhfXT0uoBEADHRIIp6Nj+CX0xjd
+	GHVXj3F8Pw/7WONwoqj73FUxxbKwUXg==
+X-Google-Smtp-Source: AGHT+IFwC9/bCAtbu3BnylH0CaBZ+SRVRLEkQ5XJ/W+s4bXXcz8vdJqdDoPjvCD04EyRJE9iF2bP4Zao7wQxr2ZufXs=
+X-Received: by 2002:a17:90a:66c6:b0:2d8:8252:f675 with SMTP id
+ 98e67ed59e1d1-2db83087f69mr355236a91.39.1725990005526; Tue, 10 Sep 2024
+ 10:40:05 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.10.9
-Content-Transfer-Encoding: 8bit
+References: <20240903174603.3554182-9-andrii@kernel.org> <172554860322.2215.10385397228202759078.tip-bot2@tip-bot2>
+ <CAEf4BzbytuSpro9wT7cZY2Qf98zpDz+V0hTwwKP3ZDa866s1tA@mail.gmail.com> <ZuAhUHqAA-ejpN3X@gmail.com>
+In-Reply-To: <ZuAhUHqAA-ejpN3X@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 10 Sep 2024 10:39:53 -0700
+Message-ID: <CAEf4BzZihPPiReE3anhrVOzjoZW5v4vFVouK_Arm8vJexCTT4g@mail.gmail.com>
+Subject: Re: [tip: perf/core] uprobes: switch to RCU Tasks Trace flavor for
+ better performance
+To: Ingo Molnar <mingo@kernel.org>
+Cc: "Peter Zijlstra (Intel)" <peterz@infradead.org>, linux-tip-commits@vger.kernel.org, 
+	Andrii Nakryiko <andrii@kernel.org>, Oleg Nesterov <oleg@redhat.com>, x86@kernel.org, 
+	linux-kernel@vger.kernel.org, "Paul E . McKenney" <paulmck@kernel.org>, 
+	bpf <bpf@vger.kernel.org>, Jiri Olsa <jolsa@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Larysa Zaremba <larysa.zaremba@intel.com>
+On Tue, Sep 10, 2024 at 3:37=E2=80=AFAM Ingo Molnar <mingo@kernel.org> wrot=
+e:
+>
+>
+> * Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+>
+> > On Thu, Sep 5, 2024 at 8:03=E2=80=AFAM tip-bot2 for Andrii Nakryiko
+> > <tip-bot2@linutronix.de> wrote:
+> > >
+> > > The following commit has been merged into the perf/core branch of tip=
+:
+> > >
+> > > Commit-ID:     c4d4569c41f9cda745cfd1d8089ea3d3526bafe5
+> > > Gitweb:        https://git.kernel.org/tip/c4d4569c41f9cda745cfd1d8089=
+ea3d3526bafe5
+> > > Author:        Andrii Nakryiko <andrii@kernel.org>
+> > > AuthorDate:    Tue, 03 Sep 2024 10:46:03 -07:00
+> > > Committer:     Peter Zijlstra <peterz@infradead.org>
+> > > CommitterDate: Thu, 05 Sep 2024 16:56:15 +02:00
+> > >
+> >
+> > Hm... This commit landed in perf/core, but is gone now (the rest of
+> > patches is still there). Any idea what happened?
+>
+> Yeah, I'm getting this build failure:
+>
+>      kernel/events/uprobes.c:1158:9: error: implicit declaration of funct=
+ion =E2=80=98synchronize_rcu_tasks_trace=E2=80=99; did you mean =E2=80=98sy=
+nchronize_rcu_tasks=E2=80=99? [-Werror=3Dimplicit-function-declaration]
+>
+> on x86-64 defconfig, when applied to today's perf/core.
+>
 
-[ Upstream commit f50c68763436bc8f805712a7c5ceaf58cfcf5f07 ]
+I see, I need to add `select TASKS_TRACE_RCU` to UPROBES kconfig, I'll
+fix it up and send this patch separately.
 
-If VSI rebuild is pending, .ndo_bpf() can attach/detach the XDP program on
-VSI without applying new ring configuration. When unconfiguring the VSI, we
-can encounter the state in which there is an XDP program but no XDP rings
-to destroy or there will be XDP rings that need to be destroyed, but no XDP
-program to indicate their presence.
+Next time please let me know ASAP about issues with my patches so I
+can fix stuff like this quickly.
 
-When unconfiguring, rely on the presence of XDP rings rather then XDP
-program, as they better represent the current state that has to be
-destroyed.
-
-Reviewed-by: Wojciech Drewek <wojciech.drewek@intel.com>
-Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
-Tested-by: Chandan Kumar Rout <chandanx.rout@intel.com>
-Acked-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/net/ethernet/intel/ice/ice_lib.c  | 4 ++--
- drivers/net/ethernet/intel/ice/ice_main.c | 4 ++--
- drivers/net/ethernet/intel/ice/ice_xsk.c  | 6 +++---
- 3 files changed, 7 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/net/ethernet/intel/ice/ice_lib.c b/drivers/net/ethernet/intel/ice/ice_lib.c
-index 7629b0190578..73d03535561a 100644
---- a/drivers/net/ethernet/intel/ice/ice_lib.c
-+++ b/drivers/net/ethernet/intel/ice/ice_lib.c
-@@ -2426,7 +2426,7 @@ void ice_vsi_decfg(struct ice_vsi *vsi)
- 		dev_err(ice_pf_to_dev(pf), "Failed to remove RDMA scheduler config for VSI %u, err %d\n",
- 			vsi->vsi_num, err);
- 
--	if (ice_is_xdp_ena_vsi(vsi))
-+	if (vsi->xdp_rings)
- 		/* return value check can be skipped here, it always returns
- 		 * 0 if reset is in progress
- 		 */
-@@ -2528,7 +2528,7 @@ static void ice_vsi_release_msix(struct ice_vsi *vsi)
- 		for (q = 0; q < q_vector->num_ring_tx; q++) {
- 			ice_write_itr(&q_vector->tx, 0);
- 			wr32(hw, QINT_TQCTL(vsi->txq_map[txq]), 0);
--			if (ice_is_xdp_ena_vsi(vsi)) {
-+			if (vsi->xdp_rings) {
- 				u32 xdp_txq = txq + vsi->num_xdp_txq;
- 
- 				wr32(hw, QINT_TQCTL(vsi->txq_map[xdp_txq]), 0);
-diff --git a/drivers/net/ethernet/intel/ice/ice_main.c b/drivers/net/ethernet/intel/ice/ice_main.c
-index f16d13e9ff6e..448b854d1128 100644
---- a/drivers/net/ethernet/intel/ice/ice_main.c
-+++ b/drivers/net/ethernet/intel/ice/ice_main.c
-@@ -7222,7 +7222,7 @@ int ice_down(struct ice_vsi *vsi)
- 	if (tx_err)
- 		netdev_err(vsi->netdev, "Failed stop Tx rings, VSI %d error %d\n",
- 			   vsi->vsi_num, tx_err);
--	if (!tx_err && ice_is_xdp_ena_vsi(vsi)) {
-+	if (!tx_err && vsi->xdp_rings) {
- 		tx_err = ice_vsi_stop_xdp_tx_rings(vsi);
- 		if (tx_err)
- 			netdev_err(vsi->netdev, "Failed stop XDP rings, VSI %d error %d\n",
-@@ -7239,7 +7239,7 @@ int ice_down(struct ice_vsi *vsi)
- 	ice_for_each_txq(vsi, i)
- 		ice_clean_tx_ring(vsi->tx_rings[i]);
- 
--	if (ice_is_xdp_ena_vsi(vsi))
-+	if (vsi->xdp_rings)
- 		ice_for_each_xdp_txq(vsi, i)
- 			ice_clean_tx_ring(vsi->xdp_rings[i]);
- 
-diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.c b/drivers/net/ethernet/intel/ice/ice_xsk.c
-index 240a7bec242b..c2aa6f589937 100644
---- a/drivers/net/ethernet/intel/ice/ice_xsk.c
-+++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
-@@ -39,7 +39,7 @@ static void ice_qp_reset_stats(struct ice_vsi *vsi, u16 q_idx)
- 	       sizeof(vsi_stat->rx_ring_stats[q_idx]->rx_stats));
- 	memset(&vsi_stat->tx_ring_stats[q_idx]->stats, 0,
- 	       sizeof(vsi_stat->tx_ring_stats[q_idx]->stats));
--	if (ice_is_xdp_ena_vsi(vsi))
-+	if (vsi->xdp_rings)
- 		memset(&vsi->xdp_rings[q_idx]->ring_stats->stats, 0,
- 		       sizeof(vsi->xdp_rings[q_idx]->ring_stats->stats));
- }
-@@ -52,7 +52,7 @@ static void ice_qp_reset_stats(struct ice_vsi *vsi, u16 q_idx)
- static void ice_qp_clean_rings(struct ice_vsi *vsi, u16 q_idx)
- {
- 	ice_clean_tx_ring(vsi->tx_rings[q_idx]);
--	if (ice_is_xdp_ena_vsi(vsi))
-+	if (vsi->xdp_rings)
- 		ice_clean_tx_ring(vsi->xdp_rings[q_idx]);
- 	ice_clean_rx_ring(vsi->rx_rings[q_idx]);
- }
-@@ -194,7 +194,7 @@ static int ice_qp_dis(struct ice_vsi *vsi, u16 q_idx)
- 	err = ice_vsi_stop_tx_ring(vsi, ICE_NO_RESET, 0, tx_ring, &txq_meta);
- 	if (!fail)
- 		fail = err;
--	if (ice_is_xdp_ena_vsi(vsi)) {
-+	if (vsi->xdp_rings) {
- 		struct ice_tx_ring *xdp_ring = vsi->xdp_rings[q_idx];
- 
- 		memset(&txq_meta, 0, sizeof(txq_meta));
--- 
-2.43.0
-
+> Thanks,
+>
+>         Ingo
 
