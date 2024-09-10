@@ -1,247 +1,232 @@
-Return-Path: <bpf+bounces-39516-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39517-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8020974212
-	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 20:25:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B3FE197424A
+	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 20:36:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA531286E96
-	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 18:25:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BDDEC1C21004
+	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 18:36:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 608181A4E70;
-	Tue, 10 Sep 2024 18:25:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 729661A3A8D;
+	Tue, 10 Sep 2024 18:36:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D1NxHkmy"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VpI0s8HZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6789116F27F
-	for <bpf@vger.kernel.org>; Tue, 10 Sep 2024 18:25:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CD0719ABAB;
+	Tue, 10 Sep 2024 18:36:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725992729; cv=none; b=S+u/Ox+XzN1mhRHYOKuJY4dQBlKVFf++2OTvFLGA1YLd01jl9dl3UZK666LPO7dY0fYFJCelfFTHKX3vcMFT+phBPHvBD+5Su/tDGnhJDhIz7Eap+ZRKbJjAHDSPQ4kSsOeqhYoovEtl2PXixMiyBtz6q9pudX7vQLUyTwGa9ws=
+	t=1725993411; cv=none; b=c4pv7kUnHcHT7BbIlgq6Jh3DiJZA/8o85S3w5zz54yB9THHD8y3AIOVSfDIHG/A+uRtsUJpRBDkt+lrQXBR4aiKKtm3qH/ZExnBOKwHoGjXTh75ZIIVeUOSNMZe4+1/z7ktE4kcmC5WJbgArFNz9YthOooXG294afo/TKlH2BRI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725992729; c=relaxed/simple;
-	bh=M0BXL/kfziWjFfouxBa+08k0YoAdhjonziKucITEDH0=;
+	s=arc-20240116; t=1725993411; c=relaxed/simple;
+	bh=5arPnfjWXyrdjAiStwnmxxVrYLXAOszSZun7VfbWVkQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uPsCRSq3g4mHY3BksP8IeJ4Bv5H7M6hTqj3SSPibZ25UnUKctQTD3x5UKumMRfJE156ivYxELXcP3JaJ8jjbUT7tX8U1fWW6wDqz/LTWsaqDZOz8o/0SZM85L/OD54HRURIjibPJHiLdrn1GCO4tsAue7bZdG7z4NTP747AsJA4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=D1NxHkmy; arc=none smtp.client-ip=209.85.214.178
+	 To:Cc:Content-Type; b=QfpuufD35Y1aLM+vH8KEBdDwHHif9lvIe1Yc+bo0eJ2vW1zVRGKtx7wXUhHK7WUoq5r1G0GIhUAx/YKrSccn5gihv2J010ICtifbc17/I6Nm7QWNB6YAOFrH7eZROWwlwyMEjcFWVVJY9NZ5qvEAC3nbJmVNGpXh7ZrLDk/IFIg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VpI0s8HZ; arc=none smtp.client-ip=209.85.128.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-2068acc8b98so54636705ad.3
-        for <bpf@vger.kernel.org>; Tue, 10 Sep 2024 11:25:28 -0700 (PDT)
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-42bbffe38e6so45494875e9.0;
+        Tue, 10 Sep 2024 11:36:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1725992728; x=1726597528; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1725993407; x=1726598207; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=6GS0DjTCbOCdHzd3qB5AGsShbg7Sx/xCaoDPcaSaVGg=;
-        b=D1NxHkmykDhVFowyKWqiHlA2SUsreEWn/HWjK/kbi+Lp88UIDpav6S+I+aS4VEiz7s
-         RZbHXAvCc3IkT7iPFu3AMcLz/RHPj5ap1nRVw4SkdN6Hn1VqapjtxgYQ1BEw/OBorkdj
-         gZlsPqexrliMBMK0huQeGZ8vSM6vGIP0Vm6xiMzmk2pTNFcOZdNGm74dU5SkyhyAU8NT
-         wJybx09Pa/s+e/1NEWxYGn9k1xp1+7EJjHGqsRQDasFuWPPAYHDDuzQ4YpTmWeLpLE/I
-         ZK5DY/7JEJR2HKB5XL6nMHezrtTjxJAWGbCrgJzdjbsn2uIrwTUC/lezwzgJDK/F2GsJ
-         LB1A==
+        bh=iYRpFrjXySEQ18BBsNAf9S1gTbcM24j9KXPIlWQ1vuQ=;
+        b=VpI0s8HZ0TFv/ATbPhicbNcBmS0W0Bt388GRvYZct3diCQA7zNkLKa3wlCZXiDKRAM
+         3QWRnGqqFjDNYQYUb2m7FzEcwauHEbSNcU7ZyL0JtRKZMyGs6MHvF2m9ujmp8c+JtjRA
+         GWi7CWIfYh/XCJgg6gko6GQ/HNUFq+4N6cJg4i1xVSzgr+rCKUFT3Y0K264yeVPjuGlf
+         CgQMyZ1GfcvfW5TpfFPz4iF1gAUjJJ8WYAHEJNI8w0SBEN4oxYTsw+rk7iQ5wdCQFCAq
+         gWP5P6dXEqtx7eAygUA+q4lIobzQfot+QA3Pq/OKkxk567kYs3apuYeUX+dBTNlzCLM2
+         UQGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725992728; x=1726597528;
+        d=1e100.net; s=20230601; t=1725993407; x=1726598207;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=6GS0DjTCbOCdHzd3qB5AGsShbg7Sx/xCaoDPcaSaVGg=;
-        b=ne9jJaRaKPWiP1NqRnKYI3hnp6F3VZVQL20JlenDDBjrCtEs/owRaUQqSqFP5bh2ki
-         F1t16vLiaiDJmKO8kmD4oHH0tF+EP84TXjfeUtMQRHrccC2eVWkMpFDNJJGW4ZEYNQky
-         h0E3FRn4hwlDsfZx+m7yv621gkZ7G3QFD8fZg8Sa9EJ8G2MT+UFVm83+wluVqVLaiFvq
-         ujnHshUVU0y0nF8H8B8hfwgXr6MdK6pRM3+bEcPZz32aVLbbJSn8KfCDyXhy8fDkW6In
-         oZmrLVDU8ODmnFJUCKAPfuCttNlngzFzhgkmi/Xix+FY7Ss1qfHp+eNDsqEWut9PLESi
-         FyGQ==
-X-Gm-Message-State: AOJu0YxPm1IomR/TVSUCGsyEju3wYkzqpNmCl7dGNOCZH38wu0mSMZV/
-	gM5PnlT5+6KStsNTSXE6jJQLJSERS1D6Pfa0QAXzv4KaqQyj10r4YhalPdVih7JOMh9Uqk3KGHk
-	e7vRre2CLZIcojgJJ7vlAtSwQBWI=
-X-Google-Smtp-Source: AGHT+IFu+upH9Fk32auU5/XabVzfdgG+CnYHMchqKeFwQmcV9fsksrrcbR7WowkXi/26LvHsf2Fenzim6jFEpOYgASo=
-X-Received: by 2002:a17:90b:3943:b0:2d8:b075:7862 with SMTP id
- 98e67ed59e1d1-2daffa3a79bmr14393161a91.5.1725992727591; Tue, 10 Sep 2024
- 11:25:27 -0700 (PDT)
+        bh=iYRpFrjXySEQ18BBsNAf9S1gTbcM24j9KXPIlWQ1vuQ=;
+        b=IgzhQmiU1GlRPtVNh/+PBTH10XxVtAouWaDJfXOBE/IgPjhZF4gX27up4fnrFGO8aZ
+         cM1FBUW4WOssVFjl5TnoX10h+Cw5wLG61kj5/HspACnS+WvvWzusZANmhEcpsxxTEVhc
+         ihNBkLPN+U63WBTGFRbbLNzj8M/GCcghVPD9VYTJKUxRvbnjy140aRgZcyrkXkgEFguJ
+         oEMkDtCNbQ3IXhyNUtbNkbKgfDmZa3PlbGi3iUAlJlVu93aIKMT6Gtmt+5dM55En4M+G
+         uO3B6uZjNuv3hB/Upv9ki38f+3kWHNPpcIn7//xM1k+8md0htLHMjhU1iSxooP9/pdDr
+         PPCw==
+X-Forwarded-Encrypted: i=1; AJvYcCU4464F4gLJlLPIbBK73RaPnYH3A4izfVRbXBjVHajObmmC4OeNnKhOS55nUXsYEO4hX8E=@vger.kernel.org, AJvYcCU6QJXmm+ZPvm124IEJaE6B2ByFu5EHiGXrXo6FfvL8oCmSWyDF6O8QV7/iOR3Q76Q0VQh2RLX+BHGZ7PQX@vger.kernel.org, AJvYcCXJP4ryuZM5b9gYS3ZqdAMUcuz6aGAYrCqWbwQeQHEgjjmj2L/nGpkGTJ67OYR7K4CslwqHvcW/AzdQpcQnw/ub@vger.kernel.org
+X-Gm-Message-State: AOJu0YwI3znqWGRsDiEgnbhkRF6hD8yFEPmbz7lQTAsgec4/cN9j8OGu
+	mFyPA/r0xMWMde5C4BiG2ZOm1jI+JLeohlrtHf047anDW5zvyUR+v7E6LoqW5am8U6H2QN2dW21
+	LLwUju6Qz171ibffqqmK+WtjS15c=
+X-Google-Smtp-Source: AGHT+IGRAF8g5vIzk5OEwG2I52Fe8R45W5VN7LuD0YP/b6qKQUcXnfP6Y2kD8iMsVdSn99NR0m2d+eIBmWVKHqdWpAo=
+X-Received: by 2002:a5d:4fc4:0:b0:374:c23a:2ce8 with SMTP id
+ ffacd0b85a97d-37892727bddmr6460616f8f.52.1725993407426; Tue, 10 Sep 2024
+ 11:36:47 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240910034306.3122378-1-yonghong.song@linux.dev>
- <CAEf4BzbsYn-b7YiKZ0MPW9_VLzDq38Jv8UkocfMLVje_SAmENA@mail.gmail.com>
- <CAEf4BzZC3FyP06p-H8JhQVJqOTRfjLSfNpHBZn3hN2WRfypDsw@mail.gmail.com>
- <84f2c314-980c-4e01-bcaa-dafb62a934f3@linux.dev> <CAEf4BzahXi9t+Y883iCTDrAkcr2DEy0he-NW+jg9yT3TXH6NUA@mail.gmail.com>
- <e9b9db08-7ad4-47e0-be4d-6cd85eed854e@linux.dev>
-In-Reply-To: <e9b9db08-7ad4-47e0-be4d-6cd85eed854e@linux.dev>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 10 Sep 2024 11:25:15 -0700
-Message-ID: <CAEf4Bzb7i9p-4f+1NLpNU6Wx2AkYywwbWtzCrMyoi5HK0=QbyQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: Use fake pt_regs when doing bpf syscall
- tracepoint tracing
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Salvatore Benedetto <salvabenedetto@meta.com>
+References: <18a9ddacc99bb95e9802f8ad1e81214433df496c.1725929645.git.dxu@dxuuu.xyz>
+In-Reply-To: <18a9ddacc99bb95e9802f8ad1e81214433df496c.1725929645.git.dxu@dxuuu.xyz>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 10 Sep 2024 11:36:36 -0700
+Message-ID: <CAADnVQKyfZ2-qCvmqG8z919ggdOszEjTs04H=cTGOZTi-zhx7Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: ringbuf: Support consuming
+ BPF_MAP_TYPE_RINGBUF from prog
+To: Daniel Xu <dxu@dxuuu.xyz>
+Cc: Eddy Z <eddyz87@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov <ast@kernel.org>, Shuah Khan <shuah@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Mykola Lysenko <mykolal@fb.com>, LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, Kernel Team <kernel-team@meta.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Sep 10, 2024 at 11:22=E2=80=AFAM Yonghong Song <yonghong.song@linux=
-.dev> wrote:
+On Mon, Sep 9, 2024 at 5:55=E2=80=AFPM Daniel Xu <dxu@dxuuu.xyz> wrote:
 >
+> Right now there exists prog produce / userspace consume and userspace
+> produce / prog consume support. But it is also useful to have prog
+> produce / prog consume.
 >
-> On 9/10/24 9:50 AM, Andrii Nakryiko wrote:
-> > On Tue, Sep 10, 2024 at 8:25=E2=80=AFAM Yonghong Song <yonghong.song@li=
-nux.dev> wrote:
-> >>
-> >> On 9/9/24 10:42 PM, Andrii Nakryiko wrote:
-> >>> On Mon, Sep 9, 2024 at 10:34=E2=80=AFPM Andrii Nakryiko
-> >>> <andrii.nakryiko@gmail.com> wrote:
-> >>>> On Mon, Sep 9, 2024 at 8:43=E2=80=AFPM Yonghong Song <yonghong.song@=
-linux.dev> wrote:
-> >>>>> Salvatore Benedetto reported an issue that when doing syscall trace=
-point
-> >>>>> tracing the kernel stack is empty. For example, using the following
-> >>>>> command line
-> >>>>>     bpftrace -e 'tracepoint:syscalls:sys_enter_read { print("Kernel=
- Stack\n"); print(kstack()); }'
-> >>>>> the output will be
-> >>>>> =3D=3D=3D
-> >>>>>     Kernel Stack
-> >>>>> =3D=3D=3D
-> >>>>>
-> >>>>> Further analysis shows that pt_regs used for bpf syscall tracepoint
-> >>>>> tracing is from the one constructed during user->kernel transition.
-> >>>>> The call stack looks like
-> >>>>>     perf_syscall_enter+0x88/0x7c0
-> >>>>>     trace_sys_enter+0x41/0x80
-> >>>>>     syscall_trace_enter+0x100/0x160
-> >>>>>     do_syscall_64+0x38/0xf0
-> >>>>>     entry_SYSCALL_64_after_hwframe+0x76/0x7e
-> >>>>>
-> >>>>> The ip address stored in pt_regs is from user space hence no kernel
-> >>>>> stack is printed.
-> >>>>>
-> >>>>> To fix the issue, we need to use kernel address from pt_regs.
-> >>>>> In kernel repo, there are already a few cases like this. For exampl=
-e,
-> >>>>> in kernel/trace/bpf_trace.c, several perf_fetch_caller_regs(fake_re=
-gs_ptr)
-> >>>>> instances are used to supply ip address or use ip address to constr=
-uct
-> >>>>> call stack.
-> >>>>>
-> >>>>> The patch follows the above example by using a fake pt_regs.
-> >>>>> The pt_regs is stored in local stack since the syscall tracepoint
-> >>>>> tracing is in process context and there are no possibility that
-> >>>>> different concurrent syscall tracepoint tracing could mess up with =
-each
-> >>>>> other. This is similar to a perf_fetch_caller_regs() use case in
-> >>>>> kernel/trace/trace_event_perf.c with function perf_ftrace_function_=
-call()
-> >>>>> where a local pt_regs is used.
-> >>>>>
-> >>>>> With this patch, for the above bpftrace script, I got the following=
- output
-> >>>>> =3D=3D=3D
-> >>>>>     Kernel Stack
-> >>>>>
-> >>>>>           syscall_trace_enter+407
-> >>>>>           syscall_trace_enter+407
-> >>>>>           do_syscall_64+74
-> >>>>>           entry_SYSCALL_64_after_hwframe+75
-> >>>>> =3D=3D=3D
-> >>>>>
-> >>>>> Reported-by: Salvatore Benedetto <salvabenedetto@meta.com>
-> >>>>> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
-> >>>>> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
-> >>>>> ---
-> >>>>>    kernel/trace/trace_syscalls.c | 5 ++++-
-> >>>>>    1 file changed, 4 insertions(+), 1 deletion(-)
-> >>>>>
-> >>>> Note, we need to solve the same for perf_call_bpf_exit().
-> >>>>
-> >>>> pw-bot: cr
-> >>>>
-> >>> BTW, we lived with this bug for years, so I suggest basing your fix o=
-n
-> >>> top of bpf-next/master, no bpf/master, which will give people a bit o=
-f
-> >>> time to validate that the fix works as expected and doesn't produce
-> >>> any undesirable side effects, before this makes it into the final
-> >>> Linux release.
-> >> Yes, I did. See I indeed use 'bpf-next' in subject above.
-> > Huh, strange, I actually tried to apply your patch to bpf-next/master
-> > and it didn't apply cleanly. It did apply to bpf/master, though, which
-> > is why I assumed you based it off of bpf/master.
+> For example, we want to track the latency overhead of cpumap in
+> production. Since we need to store enqueue timestamps somewhere and
+> cpumap is MPSC, we need an MPSC data structure to shadow cpumap. BPF
+> ringbuf is such a data structure. Rather than reimplement (possibly
+> poorly) a custom ringbuffer in BPF, extend the existing interface to
+> allow the final quadrant of ringbuf usecases to be filled. Note we
+> ignore userspace to userspace use case - there is no need to involve
+> kernel for that.
 >
-> Interesting. The following is my git history:
+> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> ---
+>  kernel/bpf/verifier.c                         |  6 +-
+>  tools/testing/selftests/bpf/Makefile          |  3 +-
+>  .../selftests/bpf/prog_tests/ringbuf.c        | 50 +++++++++++++++
+>  .../bpf/progs/test_ringbuf_bpf_to_bpf.c       | 64 +++++++++++++++++++
+>  4 files changed, 120 insertions(+), 3 deletions(-)
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_ringbuf_bpf_to=
+_bpf.c
 >
-> 7b71206057440d9559ecb9cd02d891f46927b272 (HEAD -> trace_syscall) bpf: Use=
- fake pt_regs when doing bpf syscall tracepoint tracing
-> 41d0c4677feee1ea063e0f2c2af72dc953b1f1cc (origin/master, origin/HEAD, mas=
-ter) libbpf: Fix some typos in comments
-> 72d8508ecd3b081dba03ec00930c6b07c1ad55d3 MAINTAINERS: BPF ARC JIT: Update=
- my e-mail address
-> bee109b7b3e50739b88252a219fa07ecd78ad628 bpf: Fix error message on kfunc =
-arg type mismatch
-> ...
->
-> Not sure what is going on ...
->
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 53d0556fbbf3..56bfe559f228 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -9142,7 +9142,8 @@ static int check_map_func_compatibility(struct bpf_=
+verifier_env *env,
+>                     func_id !=3D BPF_FUNC_ringbuf_query &&
+>                     func_id !=3D BPF_FUNC_ringbuf_reserve_dynptr &&
+>                     func_id !=3D BPF_FUNC_ringbuf_submit_dynptr &&
+> -                   func_id !=3D BPF_FUNC_ringbuf_discard_dynptr)
+> +                   func_id !=3D BPF_FUNC_ringbuf_discard_dynptr &&
+> +                   func_id !=3D BPF_FUNC_user_ringbuf_drain)
+>                         goto error;
+>                 break;
+>         case BPF_MAP_TYPE_USER_RINGBUF:
+> @@ -9276,7 +9277,8 @@ static int check_map_func_compatibility(struct bpf_=
+verifier_env *env,
+>                         goto error;
+>                 break;
+>         case BPF_FUNC_user_ringbuf_drain:
+> -               if (map->map_type !=3D BPF_MAP_TYPE_USER_RINGBUF)
+> +               if (map->map_type !=3D BPF_MAP_TYPE_USER_RINGBUF &&
+> +                   map->map_type !=3D BPF_MAP_TYPE_RINGBUF)
+>                         goto error;
 
-Doesn't matter, maybe my local bpf-next/master branch was screwed up.
-Just send a v2 when you are ready and I'll try again :)
+I think it should work.
+
+Andrii,
+
+do you see any issues with such use?
+
+>                 break;
+>         case BPF_FUNC_get_stackid:
+> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftes=
+ts/bpf/Makefile
+> index 9905e3739dd0..233109843d4d 100644
+> --- a/tools/testing/selftests/bpf/Makefile
+> +++ b/tools/testing/selftests/bpf/Makefile
+> @@ -503,7 +503,8 @@ LINKED_SKELS :=3D test_static_linked.skel.h linked_fu=
+ncs.skel.h               \
+>  LSKELS :=3D fentry_test.c fexit_test.c fexit_sleep.c atomics.c          =
+ \
+>         trace_printk.c trace_vprintk.c map_ptr_kern.c                   \
+>         core_kern.c core_kern_overflow.c test_ringbuf.c                 \
+> -       test_ringbuf_n.c test_ringbuf_map_key.c test_ringbuf_write.c
+> +       test_ringbuf_n.c test_ringbuf_map_key.c test_ringbuf_write.c    \
+> +       test_ringbuf_bpf_to_bpf.c
+
+Do you need it to be lskel ?
+
+Regular skels are either to debug.
+
+Also pls split selftest into a separate patch.
 
 >
-> >
-> >>>>> diff --git a/kernel/trace/trace_syscalls.c b/kernel/trace/trace_sys=
-calls.c
-> >>>>> index 9c581d6da843..063f51952d49 100644
-> >>>>> --- a/kernel/trace/trace_syscalls.c
-> >>>>> +++ b/kernel/trace/trace_syscalls.c
-> >>>>> @@ -559,12 +559,15 @@ static int perf_call_bpf_enter(struct trace_e=
-vent_call *call, struct pt_regs *re
-> >>>> let's also drop struct pt_regs * argument into
-> >>>> perf_call_bpf_{enter,exit}(), they are not actually used anymore
-> >>>>
-> >>>>>                   int syscall_nr;
-> >>>>>                   unsigned long args[SYSCALL_DEFINE_MAXARGS];
-> >>>>>           } __aligned(8) param;
-> >>>>> +       struct pt_regs fake_regs;
-> >>>>>           int i;
-> >>>>>
-> >>>>>           BUILD_BUG_ON(sizeof(param.ent) < sizeof(void *));
-> >>>>>
-> >>>>>           /* bpf prog requires 'regs' to be the first member in the=
- ctx (a.k.a. &param) */
-> >>>>> -       *(struct pt_regs **)&param =3D regs;
-> >>>>> +       memset(&fake_regs, 0, sizeof(fake_regs));
-> >>>> sizeof(struct pt_regs) =3D=3D 168 on x86-64, and on arm64 it's a who=
-pping
-> >>>> 336 bytes, so these memset(0) calls are not free for sure.
-> >>>>
-> >>>> But we don't need to do this unnecessary work all the time.
-> >>>>
-> >>>> I initially was going to suggest to use get_bpf_raw_tp_regs() from
-> >>>> kernel/trace/bpf_trace.c to get a temporary pt_regs that was already
-> >>>> memset(0) and used to initialize these minimal "fake regs".
-> >>>>
-> >>>> But, it turns out we don't need to do even that. Note
-> >>>> perf_trace_buf_alloc(), it has `struct pt_regs **` second argument,
-> >>>> and if you pass a valid pointer there, it will return "fake regs"
-> >>>> struct to be used. We already use that functionality in
-> >>>> perf_trace_##call in include/trace/perf.h (i.e., non-syscall
-> >>>> tracepoints), so this seems to be a perfect fit.
-> >>>>
-> >>>>> +       perf_fetch_caller_regs(&fake_regs);
-> >>>>> +       *(struct pt_regs **)&param =3D &fake_regs;
-> >>>>>           param.syscall_nr =3D rec->nr;
-> >>>>>           for (i =3D 0; i < sys_data->nb_args; i++)
-> >>>>>                   param.args[i] =3D rec->args[i];
-> >>>>> --
-> >>>>> 2.43.5
-> >>>>>
+>  # Generate both light skeleton and libbpf skeleton for these
+>  LSKELS_EXTRA :=3D test_ksyms_module.c test_ksyms_weak.c kfunc_call_test.=
+c \
+> diff --git a/tools/testing/selftests/bpf/prog_tests/ringbuf.c b/tools/tes=
+ting/selftests/bpf/prog_tests/ringbuf.c
+> index da430df45aa4..3e7955573ac5 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/ringbuf.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
+> @@ -17,6 +17,7 @@
+>  #include "test_ringbuf_n.lskel.h"
+>  #include "test_ringbuf_map_key.lskel.h"
+>  #include "test_ringbuf_write.lskel.h"
+> +#include "test_ringbuf_bpf_to_bpf.lskel.h"
+>
+>  #define EDONE 7777
+>
+> @@ -497,6 +498,53 @@ static void ringbuf_map_key_subtest(void)
+>         test_ringbuf_map_key_lskel__destroy(skel_map_key);
+>  }
+>
+> +static void ringbuf_bpf_to_bpf_subtest(void)
+> +{
+> +       struct test_ringbuf_bpf_to_bpf_lskel *skel;
+> +       int err, i;
+> +
+> +       skel =3D test_ringbuf_bpf_to_bpf_lskel__open();
+> +       if (!ASSERT_OK_PTR(skel, "test_ringbuf_bpf_to_bpf_lskel__open"))
+> +               return;
+> +
+> +       skel->maps.ringbuf.max_entries =3D getpagesize();
+> +       skel->bss->pid =3D getpid();
+> +
+> +       err =3D test_ringbuf_bpf_to_bpf_lskel__load(skel);
+> +       if (!ASSERT_OK(err, "test_ringbuf_bpf_to_bpf_lskel__load"))
+> +               goto cleanup;
+> +
+> +       ringbuf =3D ring_buffer__new(skel->maps.ringbuf.map_fd, NULL, NUL=
+L, NULL);
+> +       if (!ASSERT_OK_PTR(ringbuf, "ring_buffer__new"))
+> +               goto cleanup;
+> +
+> +       err =3D test_ringbuf_bpf_to_bpf_lskel__attach(skel);
+> +       if (!ASSERT_OK(err, "test_ringbuf_bpf_to_bpf_lskel__attach"))
+> +               goto cleanup_ringbuf;
+> +
+> +       /* Produce N_SAMPLES samples in the ring buffer by calling getpid=
+() */
+> +       skel->bss->value =3D SAMPLE_VALUE;
+> +       for (i =3D 0; i < N_SAMPLES; i++)
+> +               syscall(__NR_getpgid);
+> +
+> +       /* Trigger bpf-side consumption */
+> +       syscall(__NR_prctl);
+
+This might conflict with other selftests that run in parallel.
+
+Just load the skel and bpf_prog_run(prog_fd).
+No need to attach anywhere in the kernel.
+
+pw-bot: cr
 
