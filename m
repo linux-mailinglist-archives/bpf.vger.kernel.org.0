@@ -1,126 +1,142 @@
-Return-Path: <bpf+bounces-39425-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39428-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 044D2972D8B
-	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 11:26:25 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1A16972F39
+	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 11:50:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1F7661C24786
-	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 09:26:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8E0DEB27782
+	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 09:50:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33492190664;
-	Tue, 10 Sep 2024 09:24:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F308313AD09;
+	Tue, 10 Sep 2024 09:49:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AkzD7+Gm"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="CR998XMH"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4385188A09;
-	Tue, 10 Sep 2024 09:24:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 744CFEEC9;
+	Tue, 10 Sep 2024 09:49:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725960281; cv=none; b=sdryvADuRTgquiGCJGwYG2ACZJXZIDRxUSZjelKyKSi7dsaXHgT7DYz+YsgO/0Yc1E3f0hUSoTCFGSzGYQTfegtGa1M2IBLt5D21Zlw/4tbw/8B59QWPdwFhKia/dpR8XMATEhRf+2Ps5vFvQQ79Hjpi1D849xYg1ARooEqwKfA=
+	t=1725961752; cv=none; b=p5QhvFYo14QoauMdAwrQsGERIjBYn8u2iKg0I3L6092pzoUwGg7plLtTZ0d+Pqb5Ftk0UQstALhg75F8pwEpvx/SX+bN5SCuey7IHGj5qPeKf/KVJcbp5uFk8MN/hyqhn/hF4b+Ot4/mkck0SjBruGXybTcbiSKe8GFi6/gazR0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725960281; c=relaxed/simple;
-	bh=XkhzSnvw+5dFkNxwBsvjI0GFrEiYS/TMYTriwXBUSCs=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=MVUaahOCnk5rjZt+/L2InQh0mWnqDoelbtOokJQTwg7xnmr3+LP3l6iSF0PnZvWsPgG7BzE5cHD+0lAATf0TkXKc6dHz6wl/p2sJkUVhEuVeKy+1I2CM2j2cNakWbacEjVq0jRRs7R9GlMUUvjenWXAeplsjdp19R1mXu2yk9EY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AkzD7+Gm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DFC37C4CECE;
-	Tue, 10 Sep 2024 09:24:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1725960281;
-	bh=XkhzSnvw+5dFkNxwBsvjI0GFrEiYS/TMYTriwXBUSCs=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=AkzD7+Gm2B6J5qwAVqJf5gcYNcMTZYuBjRo8G1W1BM43z9gfU6w6lrTBkRcvVyqxI
-	 5B1d0yJ9A4Czyp5VCS2k0Z0R/skxEZI5cj115tKQi7kazhSLzPtQLTO/vryaPl2mBg
-	 NdoQqWKEtdIK2vom3jfUqMw0nr8VlCu+NeOLyPMS2GwoLeh5N3ARxk1gGVuYS/7QDY
-	 i+FHilALLUC7U4R3EFhXpuOJiJHyO4s7DgqnVgNuEUAfrCriJCWelSNtQGZO2ibuhk
-	 OyDfQQFKTaiG5JHkBiqG/R8m5a1mXnTx3THbiST+kzZ4mVVCPBQZXX/NjlB4+U0+Gv
-	 9hYaLnA71WIYQ==
-From: Roger Quadros <rogerq@kernel.org>
-Date: Tue, 10 Sep 2024 12:24:03 +0300
-Subject: [PATCH net-next v4 6/6] net: ethernet: ti: am65-cpsw: setup
- priority to flow mapping
+	s=arc-20240116; t=1725961752; c=relaxed/simple;
+	bh=lupSH6x0eVPPc8WQr7Gn4FRJWeqYOhgQHJaEvPAegDA=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=RRxONc8ashmh3C+EAO0R5QyMohaZ+8l+NH4I5z7XN3QXq4Km9YSdNiuD1Bp/M/2Gfc6U1UsZ2H8/cnISpU0V9d2evgH64nb8ETlVKSA6fdNPmArRIhgBDm3BwbrhENMNNibCnwBETzkBdczFCHVT66GX/Cow4Dja7sv6q/Elyw4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=CR998XMH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F069EC4CEC3;
+	Tue, 10 Sep 2024 09:49:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1725961752;
+	bh=lupSH6x0eVPPc8WQr7Gn4FRJWeqYOhgQHJaEvPAegDA=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=CR998XMH+6WfGtsfXtqm76USuVSnRoud04L9dOcP3ODRj7irp/R+oalI2m/VpUahv
+	 xK7E10+WFP3I1g2wqCkjhDxtS+bcGVx9C0At3BT4D+ZUnkqGpBZTXyGC4e0JhPxUcm
+	 ucNYys1KQ+bTyxXa9bIAuBLNmPTeDXWz7ecxMKWw=
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: stable@vger.kernel.org
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	patches@lists.linux.dev,
+	Xi Wang <xii@google.com>,
+	Song Liu <song@kernel.org>,
+	bpf@vger.kernel.org,
+	Namhyung Kim <namhyung@kernel.org>,
+	Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 6.10 177/375] perf lock contention: Fix spinlock and rwlock accounting
+Date: Tue, 10 Sep 2024 11:29:34 +0200
+Message-ID: <20240910092628.425618468@linuxfoundation.org>
+X-Mailer: git-send-email 2.46.0
+In-Reply-To: <20240910092622.245959861@linuxfoundation.org>
+References: <20240910092622.245959861@linuxfoundation.org>
+User-Agent: quilt/0.67
+X-stable: review
+X-Patchwork-Hint: ignore
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240910-am65-cpsw-multi-rx-v4-6-077fa6403043@kernel.org>
-References: <20240910-am65-cpsw-multi-rx-v4-0-077fa6403043@kernel.org>
-In-Reply-To: <20240910-am65-cpsw-multi-rx-v4-0-077fa6403043@kernel.org>
-To: "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, Siddharth Vadapalli <s-vadapalli@ti.com>, 
- Julien Panis <jpanis@baylibre.com>, Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, 
- Jesper Dangaard Brouer <hawk@kernel.org>, 
- John Fastabend <john.fastabend@gmail.com>
-Cc: Simon Horman <horms@kernel.org>, Andrew Lunn <andrew@lunn.ch>, 
- Joe Damato <jdamato@fastly.com>, srk@ti.com, vigneshr@ti.com, 
- danishanwar@ti.com, pekka Varis <p-varis@ti.com>, netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org, 
- bpf@vger.kernel.org, Roger Quadros <rogerq@kernel.org>
-X-Mailer: b4 0.14.1
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1093; i=rogerq@kernel.org;
- h=from:subject:message-id; bh=XkhzSnvw+5dFkNxwBsvjI0GFrEiYS/TMYTriwXBUSCs=;
- b=owEBbQKS/ZANAwAIAdJaa9O+djCTAcsmYgBm4BA1N2SGIUlwRTcoPwYtwPHf2/tDs/B+nkSnf
- AQAY/VesceJAjMEAAEIAB0WIQRBIWXUTJ9SeA+rEFjSWmvTvnYwkwUCZuAQNQAKCRDSWmvTvnYw
- k2GlD/0YzBOgrE5fWuCktTv3MeJymXE1u9zY86fsC7rkXokxs63yMs2CbbxEFpC1b3f1NQHdM5s
- xzT2e0keX2H4cTFrTuzbJ2GDvv1+aMqL9UuvgXeUkU4wfliYUATWZvolm/u7jLKhu7BGISA9le5
- VGmSkyA94GlGxTi36SraoUEVIymCgDiZB7Rhyxoagf0edrHlP+ECMGN6aXFrUrxea6LFZ6g0g4K
- lToZ9GOG7O5OxlbPqpMUKvVu9ORRrpO3iJvUqYkU1lc66pVURBJEw4U1E0QEbG8wf9fLKjf7wXn
- bU5H8Yg66JjDAwd9JdWWyuQ7eXhF2DrqtYAC0Dt82fHuSG7BGrl317QdmjHa8YcTV3g4MnIx7xy
- V9kUf8tCx6e9ChgYNtyuR7GFEZVlH9q4tyFVHVN5L+d5T7KjisNtwf0Za+zqAc94K5EiRaRXW7I
- InlXiDE/gsUFwqrZ6gIs829YhyBm5YM9BTlQ+BvXIna+xydvbUfpu/mN3oUWl3Jiq/9s6QPKR8I
- rTskpnQG+P3oy0/xlgGGDClRpenrc9fvDvO2vWkh1HLjGK1pFW3KPeQRxBcxZA7AMStNXheVvs0
- cxcKCgxBwuFq3/8G9lhbYQ2GvOZuYnmqEghy15+0MOdgQlS/5F6+49Kyo/q57CDdCSPLvyVEqPE
- uvp+NKU9Ni4BsRg==
-X-Developer-Key: i=rogerq@kernel.org; a=openpgp;
- fpr=412165D44C9F52780FAB1058D25A6BD3BE763093
+Content-Transfer-Encoding: 8bit
 
-Now that we support multiple RX queues, enable default priority
-to flow mapping so that higher priority packets come on higher
-channels (flows).
+6.10-stable review patch.  If anyone has any objections, please let me know.
 
-The Classifier checks for PCP/DSCP priority in the packet and
-routes them to the appropriate flow.
+------------------
 
-Signed-off-by: Roger Quadros <rogerq@kernel.org>
-Reviewed-by: Simon Horman <horms@kernel.org>
+From: Namhyung Kim <namhyung@kernel.org>
+
+[ Upstream commit 287bd5cf06e0f2c02293ce942777ad1f18059ed3 ]
+
+The spinlock and rwlock use a single-element per-cpu array to track
+current locks due to performance reason.  But this means the key is
+always available and it cannot simply account lock stats in the array
+because some of them are invalid.
+
+In fact, the contention_end() program in the BPF invalidates the entry
+by setting the 'lock' value to 0 instead of deleting the entry for the
+hashmap.  So it should skip entries with the lock value of 0 in the
+account_end_timestamp().
+
+Otherwise, it'd have spurious high contention on an idle machine:
+
+  $ sudo perf lock con -ab -Y spinlock sleep 3
+   contended   total wait     max wait     avg wait         type   caller
+
+           8      4.72 s       1.84 s     590.46 ms     spinlock   rcu_core+0xc7
+           8      1.87 s       1.87 s     233.48 ms     spinlock   process_one_work+0x1b5
+           2      1.87 s       1.87 s     933.92 ms     spinlock   worker_thread+0x1a2
+           3      1.81 s       1.81 s     603.93 ms     spinlock   tmigr_update_events+0x13c
+           2      1.72 s       1.72 s     861.98 ms     spinlock   tick_do_update_jiffies64+0x25
+           6     42.48 us     13.02 us      7.08 us     spinlock   futex_q_lock+0x2a
+           1     13.03 us     13.03 us     13.03 us     spinlock   futex_wake+0xce
+           1     11.61 us     11.61 us     11.61 us     spinlock   rcu_core+0xc7
+
+I don't believe it has contention on a spinlock longer than 1 second.
+After this change, it only reports some small contentions.
+
+  $ sudo perf lock con -ab -Y spinlock sleep 3
+   contended   total wait     max wait     avg wait         type   caller
+
+           4    133.51 us     43.29 us     33.38 us     spinlock   tick_do_update_jiffies64+0x25
+           4     69.06 us     31.82 us     17.27 us     spinlock   process_one_work+0x1b5
+           2     50.66 us     25.77 us     25.33 us     spinlock   rcu_core+0xc7
+           1     28.45 us     28.45 us     28.45 us     spinlock   rcu_core+0xc7
+           1     24.77 us     24.77 us     24.77 us     spinlock   tmigr_update_events+0x13c
+           1     23.34 us     23.34 us     23.34 us     spinlock   raw_spin_rq_lock_nested+0x15
+
+Fixes: b5711042a1c8 ("perf lock contention: Use per-cpu array map for spinlocks")
+Reported-by: Xi Wang <xii@google.com>
+Cc: Song Liu <song@kernel.org>
+Cc: bpf@vger.kernel.org
+Link: https://lore.kernel.org/r/20240828052953.1445862-1-namhyung@kernel.org
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
-Changelog:
-v4:
-- no change
-v3:
-- added Reviewed-by Simon Horman
----
- drivers/net/ethernet/ti/am65-cpsw-nuss.c | 3 +++
+ tools/perf/util/bpf_lock_contention.c | 3 +++
  1 file changed, 3 insertions(+)
 
-diff --git a/drivers/net/ethernet/ti/am65-cpsw-nuss.c b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-index 76e62351b30b..cbe99017cbfa 100644
---- a/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-+++ b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-@@ -2500,6 +2500,9 @@ static int am65_cpsw_nuss_init_rx_chns(struct am65_cpsw_common *common)
- 		}
- 	}
+diff --git a/tools/perf/util/bpf_lock_contention.c b/tools/perf/util/bpf_lock_contention.c
+index b4cb3fe5cc25..bc4e92c0c08b 100644
+--- a/tools/perf/util/bpf_lock_contention.c
++++ b/tools/perf/util/bpf_lock_contention.c
+@@ -286,6 +286,9 @@ static void account_end_timestamp(struct lock_contention *con)
+ 			goto next;
  
-+	/* setup classifier to route priorities to flows */
-+	cpsw_ale_classifier_setup_default(common->ale, common->rx_ch_num_flows);
+ 		for (int i = 0; i < total_cpus; i++) {
++			if (cpu_data[i].lock == 0)
++				continue;
 +
- err:
- 	i = devm_add_action(dev, am65_cpsw_nuss_free_rx_chns, common);
- 	if (i) {
-
+ 			update_lock_stat(stat_fd, -1, end_ts, aggr_mode,
+ 					 &cpu_data[i]);
+ 		}
 -- 
-2.34.1
+2.43.0
+
+
 
 
