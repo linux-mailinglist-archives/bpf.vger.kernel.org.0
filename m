@@ -1,130 +1,144 @@
-Return-Path: <bpf+bounces-39511-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39512-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 360E89741C9
-	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 20:13:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC1169741CB
+	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 20:14:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E002D1F27060
-	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 18:13:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5FD3B287A7C
+	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 18:14:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 054821A0B0D;
-	Tue, 10 Sep 2024 18:13:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A57F1A4B99;
+	Tue, 10 Sep 2024 18:14:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="rfUAc5ln"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="abLtyT08"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 972301990D7
-	for <bpf@vger.kernel.org>; Tue, 10 Sep 2024 18:12:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2169E1A38F4
+	for <bpf@vger.kernel.org>; Tue, 10 Sep 2024 18:14:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725991981; cv=none; b=icEzKiz/uM+TNF+wGS3vBAVN0vUUJeiglrwtNqCfKnIA8Qy0c6IjHEDC1TXydCfGbsPRiYQcxYf6FoPaMjF0YNiKfo0sWowcKlq7EBT1bG3bkOJrK3xvMXzPUl4fJqEOHt5o1tSb9IpmGa4X7L5jp+ayN746uoipCjTS24b8R8Q=
+	t=1725992054; cv=none; b=fvANXyqS/IcRaEvzkzN+RYkJ3/wCjKt2tOdLkNjfA57RRDpf81sLzBsYlYtJ3eUcxgZhnH/RgDNCq664axKVzgP3c5pM6+SY/wJPMAy/YbXAZnn8kzoZxL8EsBsP0tRpGWKNNa9yKd6y//qD4T2ZF8GE2qI5q2JKzx5o/MgDzvM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725991981; c=relaxed/simple;
-	bh=l+XAHITzXMLlmACUGto0i5TcIyat/5wnW+YH037Q+iQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ktKkU7xTef4WwQ35GpLwl7cUgLIITTdmGnLaSQvKVEHCv9Zu7ThOVlBkJ9Pqd1BdmWn5vQFESSqGmEEZW2qMqGdEqUxH3g6eGs1+uLd715zTeW8CVCmUkOEaN/mJ0eF2TaZ03esAtBfGBg1EWRgF/JqoI8dZcPXlJmJaA+GUyfw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=rfUAc5ln; arc=none smtp.client-ip=91.218.175.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <70c5db56-4117-4820-9089-f6a6bfe92e2f@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1725991976;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=B7f8MS/o8Rj5iP3/ibYA87XvITyOcKRgrFyPVnWPu/k=;
-	b=rfUAc5lnvIwqIlpRDw5lGEiPOwiBTupKmfqnEAWWFAuB++1HUB6nVT/emnAnvFV7scUAbf
-	pr0Aeh/Vg4II5mPOLHX/IF4AhxUP9Jp9JroJz2FNl7LlZ5C9kIiMgAPXETtRsiHhtr4haf
-	99a2Tp3I9dbzEXYXpI4+RB5EY1RudEU=
-Date: Tue, 10 Sep 2024 11:12:52 -0700
+	s=arc-20240116; t=1725992054; c=relaxed/simple;
+	bh=PN/bOVC7EhD+DKOp8i3e+Nf4juy6xA9SZtiS34NdjWg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=D6QwxODRJ+vyWrf9FNlfSCXaSu6nUy8PDxRUJjHfKTKhr/yZJjpKhLmjXgU+QfKvkDPUeBZeH5ER1B8bmtQV//IqZjITk6gPKwtA2pL3NpDBMrASEBsVZMtuQhhVt/ZxL85kSMPmkQixKzZDcxJTLErnRsWl0z1k52IqT4ZwTGM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=abLtyT08; arc=none smtp.client-ip=209.85.167.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-53661d95508so31510e87.1
+        for <bpf@vger.kernel.org>; Tue, 10 Sep 2024 11:14:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1725992051; x=1726596851; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PN/bOVC7EhD+DKOp8i3e+Nf4juy6xA9SZtiS34NdjWg=;
+        b=abLtyT0856J3HiEMvWqwwBa1k6zmHgTCdGHw5zBu+zunSbmN2sOPwnmyinZH+nj7Cg
+         kFm/iWQ9/CxrPl15wLJNFAZ2yxRlZIXoB4XXaS91DTIMr6PTRyGBhmcCIbHgPiyksVaw
+         p3TRE9KPKKDaQqpuN0jNnZWc2BesLo46xQLO7Z/LteItYbhQMTv0WUcVh/VmP8rUSF94
+         gkewLIDoGe9X5du//E3Y+ijhhEZgShqpd391R9IMGgLQO/FRi8r2+gwAGXPHFunErljw
+         bAwBBDRBkev0NhqgZ+Nnzxcr1LPk5Ov7/dITj6b/8k+k3i0b3ZA9fe0yerNkZdPwpMHG
+         LK2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1725992051; x=1726596851;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PN/bOVC7EhD+DKOp8i3e+Nf4juy6xA9SZtiS34NdjWg=;
+        b=KMdFjCQmsmNJvD5lINdsHKNNIjpYmDq8p481ZhJyxCN016SQ4ZdLGvoIJgaV3+dgLq
+         5eooT0/V/TNYo9ZUFZkjd/+f0T8OOCSkKGyPN6qMOD2R6auUnOHis2iZZQAiS92fXryI
+         8V86fBz2kqAPkaQBZKg6dheqHhDANMBQ7aejRMoydz9S60YPPP+e3A16YqeyL3/GTnhS
+         S6z4FtIOh/1GgXZHXvzVFNdveQZnNSwmuyE14LVKKVo3kCsHIBf7/sRbcrTPuHkuTCRz
+         +4Xxl406G+ZXbWJKj5lV1fJ97Xbs4o40o7ImIhbshCWPKg8/hTpwybgG/GoGi7782FgX
+         awow==
+X-Forwarded-Encrypted: i=1; AJvYcCUIP1JZiPizyghr7B/yqC7g+ZCjuw6GH3CFGF6gkjp9dzHbJS4+5PX7V/B4zNBbt8doEEk=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzxsneCKClLNagx34b7SHYPklPwXVpJz1FRCLa5bfSwq0wQH9wd
+	aJ+CeiPSId5j1Hrb/2xMbhc0gulrqdzpWQ2fWfLh6PXa3GPemvKGG5jrGovYnY2qlChVp4FlvfU
+	HY09XoR15/gbKfeWiCnRpWgvFhJC8s+KAZNnV
+X-Google-Smtp-Source: AGHT+IHJzZW54ZelEpqtjg5sNSpim2OEz6bcZdRlXJladf0hM3rQAiAdQOYywo77wa6LK0FC2fDMu1023QrWMkIipaU=
+X-Received: by 2002:a05:6512:318e:b0:536:52dc:291f with SMTP id
+ 2adb3069b0e04-536743b4463mr19813e87.1.1725992050488; Tue, 10 Sep 2024
+ 11:14:10 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: Kernel oops caused by signed divide
-Content-Language: en-GB
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Dave Thaler <dthaler1968@googlemail.com>,
- Zac Ecob <zacecob@protonmail.com>, Daniel Borkmann <daniel@iogearbox.net>,
- bpf <bpf@vger.kernel.org>
-References: <tPJLTEh7S_DxFEqAI2Ji5MBSoZVg7_G-Py2iaZpAaWtM961fFTWtsnlzwvTbzBzaUzwQAoNATXKUlt0LZOFgnDcIyKCswAnAGdUF3LBrhGQ=@protonmail.com>
- <CAADnVQ+o1jPQwxP9G9Xb=ZSEQDKKq1m1awpovKWdVRMNf8sgdg@mail.gmail.com>
- <1058c69c-3e2c-4c0b-b777-2b0460f443f9@linux.dev>
- <18d101db038f$f3c2d400$db487c00$@gmail.com>
- <ff27a7ba-e3b3-4cd9-85a8-55c10756df5d@linux.dev>
- <CAADnVQKNG-EAv6t-CuCWCOX-Tm9=b6fHD3bwWgJirnQ93V=tzw@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <CAADnVQKNG-EAv6t-CuCWCOX-Tm9=b6fHD3bwWgJirnQ93V=tzw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <20240906051205.530219-1-andrii@kernel.org> <CAG48ez1+Y+ifc3HfG=E5j+g=RwtzH2TiE4mAC2TZxS52idkRZg@mail.gmail.com>
+ <CAEf4BzazZSUtJ9vPd6Xj4539MCebctOZJmO7xmdUhoQiv5mBFg@mail.gmail.com>
+In-Reply-To: <CAEf4BzazZSUtJ9vPd6Xj4539MCebctOZJmO7xmdUhoQiv5mBFg@mail.gmail.com>
+From: Jann Horn <jannh@google.com>
+Date: Tue, 10 Sep 2024 20:13:32 +0200
+Message-ID: <CAG48ez2+v4pADNgUjdq8aOvyJAUHOudSre=Q5RpN1sfj2aByaw@mail.gmail.com>
+Subject: Re: [PATCH 0/2] uprobes,mm: speculative lockless VMA-to-uprobe lookup
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org, 
+	peterz@infradead.org, oleg@redhat.com, rostedt@goodmis.org, 
+	mhiramat@kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	jolsa@kernel.org, paulmck@kernel.org, willy@infradead.org, surenb@google.com, 
+	akpm@linux-foundation.org, linux-mm@kvack.org, mjguzik@gmail.com, 
+	brauner@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Tue, Sep 10, 2024 at 7:58=E2=80=AFPM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+> On Tue, Sep 10, 2024 at 9:06=E2=80=AFAM Jann Horn <jannh@google.com> wrot=
+e:
+> > On Fri, Sep 6, 2024 at 7:12=E2=80=AFAM Andrii Nakryiko <andrii@kernel.o=
+rg> wrote:
+> > > Implement speculative (lockless) resolution of VMA to inode to uprobe=
+,
+> > > bypassing the need to take mmap_lock for reads, if possible. Patch #1=
+ by Suren
+> > > adds mm_struct helpers that help detect whether mm_struct were change=
+d, which
+> > > is used by uprobe logic to validate that speculative results can be t=
+rusted
+> > > after all the lookup logic results in a valid uprobe instance.
+> >
+> > Random thought: It would be nice if you could skip the MM stuff
+> > entirely and instead go through the GUP-fast path, but I guess going
+> > from a uprobe-created anon page to the corresponding uprobe is hard...
+> > but maybe if you used the anon_vma pointer as a lookup key to find the
+> > uprobe, it could work? Though then you'd need hooks in the anon_vma
+> > code... maybe not such a great idea.
+>
+> So I'm not crystal clear on all the details here, so maybe you can
+> elaborate a bit. But keep in mind that a) there could be multiple
+> uprobes within a single user page, so lookup has to take at least
+> offset within the page into account somehow. But also b) single uprobe
 
-On 9/10/24 8:21 AM, Alexei Starovoitov wrote:
-> On Tue, Sep 10, 2024 at 8:18 AM Yonghong Song <yonghong.song@linux.dev> wrote:
->>
->> On 9/10/24 7:44 AM, Dave Thaler wrote:
->>> Yonghong Song wrote:
->>> [...]
->>>> In verifier, we have
->>>>      /* [R,W]x div 0 -> 0 */
->>>>      /* [R,W]x mod 0 -> [R,W]x */
->>>>
->>>> What the value for
->>>>      Rx_a sdiv Rx_b -> ?
->>>> where Rx_a = INT64_MIN and Rx_b = -1?
->>>>
->>>> Should we just do
->>>>      INT64_MIN sdiv -1 -> -1
->>>> or some other values?
->>> What happens for BPF_NEG INT64_MIN?
->> Right. This is equivalent to INT64_MIN/-1. Indeed, we need check and protect for this case as well.
-> why? what's wrong with bpf_neg -1 ?
+I think anonymous pages have the same pgoff numbering as file pages;
+so the page's mapping and pgoff pointers together should almost give
+you the same amount of information as what you are currently looking
+for (the file and the offset inside it), except that you'd get an
+anon_vma pointer corresponding to the file instead of directly getting
+the file.
 
-I think you are right. 'bpf_neg <num>' should not cause any exception.
-In this particular case 'bpf_neg LLONG_MIN' equals LLONG_MIN.
+> can be installed in many independent anon VMAs across many processes.
+> So anon vma itself can't be part of the key.
 
-On arm64,
+Yeah, I guess to make that work you'd have to somehow track which
+anon_vmas exist for which mappings.
 
-# cat t4.c
-#include <stdio.h>
-#include <limits.h>
-int main(void) {
-   volatile long long a = LLONG_MIN;
-   printf("-a = %lld\n", -a);
-   return 0;
-}
-# gcc -O2 t4.c && ./a.out
--a = -9223372036854775808
+(An anon_vma is tied to one specific file, see anon_vma_compatible().)
 
-In the above -a also equals LLONG_MIN.
+> Though maybe we could have left some sort of "cookie" stashed
+> somewhere to help with lookup. But then again, multiple uprobes per
+> page.
+>
+> It does feel like lockless VMA to inode resolution would be a cleaner
+> solution, let's see if we can get there somehow.
 
-On x86, we get the same result.
-
-$ uname -a
-Linux ... #1 SMP Wed Jun  5 06:21:21 PDT 2024 x86_64 x86_64 x86_64 GNU/Linux
-$ cat t4.c
-#include <stdio.h>
-#include <limits.h>
-int main(void) {
-   volatile long long a = LLONG_MIN;
-   printf("-a = %lld\n", -a);
-   return 0;
-}
-$ gcc -O2 t4.c && ./a.out
--a = -9223372036854775808
-$ clang -O2 t4.c && ./a.out
--a = -9223372036854775808
-
-
-
+Mh, yes, I was just thinking it would be nice if we could keep this
+lockless complexity out of the mmap locking code... but I guess it's
+not much more straightforward than what you're doing.
 
