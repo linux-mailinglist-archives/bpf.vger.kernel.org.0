@@ -1,144 +1,201 @@
-Return-Path: <bpf+bounces-39512-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39513-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC1169741CB
-	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 20:14:21 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 97A229741FF
+	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 20:22:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5FD3B287A7C
-	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 18:14:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 270231F27293
+	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 18:22:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A57F1A4B99;
-	Tue, 10 Sep 2024 18:14:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 669F61A38FD;
+	Tue, 10 Sep 2024 18:22:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="abLtyT08"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="qxQg25Gz"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2169E1A38F4
-	for <bpf@vger.kernel.org>; Tue, 10 Sep 2024 18:14:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2537D16EB42
+	for <bpf@vger.kernel.org>; Tue, 10 Sep 2024 18:22:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725992054; cv=none; b=fvANXyqS/IcRaEvzkzN+RYkJ3/wCjKt2tOdLkNjfA57RRDpf81sLzBsYlYtJ3eUcxgZhnH/RgDNCq664axKVzgP3c5pM6+SY/wJPMAy/YbXAZnn8kzoZxL8EsBsP0tRpGWKNNa9yKd6y//qD4T2ZF8GE2qI5q2JKzx5o/MgDzvM=
+	t=1725992561; cv=none; b=mMWX0ZhTk4RlKlqy/eal7NNKNuCuEkvBct0lrTq3U0YhqlfPwQyO9ji/6NauMhxPeKDsaueWotW2sUrkBbh7F/kZFHFky8uEmzwxRX0blfnB4imxslPUewlzqlcsN6GUWji2sWPdK3baImpWX3jv4nQc53vU3LvtcyqScvJz4Ts=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725992054; c=relaxed/simple;
-	bh=PN/bOVC7EhD+DKOp8i3e+Nf4juy6xA9SZtiS34NdjWg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=D6QwxODRJ+vyWrf9FNlfSCXaSu6nUy8PDxRUJjHfKTKhr/yZJjpKhLmjXgU+QfKvkDPUeBZeH5ER1B8bmtQV//IqZjITk6gPKwtA2pL3NpDBMrASEBsVZMtuQhhVt/ZxL85kSMPmkQixKzZDcxJTLErnRsWl0z1k52IqT4ZwTGM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=abLtyT08; arc=none smtp.client-ip=209.85.167.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-53661d95508so31510e87.1
-        for <bpf@vger.kernel.org>; Tue, 10 Sep 2024 11:14:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1725992051; x=1726596851; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PN/bOVC7EhD+DKOp8i3e+Nf4juy6xA9SZtiS34NdjWg=;
-        b=abLtyT0856J3HiEMvWqwwBa1k6zmHgTCdGHw5zBu+zunSbmN2sOPwnmyinZH+nj7Cg
-         kFm/iWQ9/CxrPl15wLJNFAZ2yxRlZIXoB4XXaS91DTIMr6PTRyGBhmcCIbHgPiyksVaw
-         p3TRE9KPKKDaQqpuN0jNnZWc2BesLo46xQLO7Z/LteItYbhQMTv0WUcVh/VmP8rUSF94
-         gkewLIDoGe9X5du//E3Y+ijhhEZgShqpd391R9IMGgLQO/FRi8r2+gwAGXPHFunErljw
-         bAwBBDRBkev0NhqgZ+Nnzxcr1LPk5Ov7/dITj6b/8k+k3i0b3ZA9fe0yerNkZdPwpMHG
-         LK2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725992051; x=1726596851;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PN/bOVC7EhD+DKOp8i3e+Nf4juy6xA9SZtiS34NdjWg=;
-        b=KMdFjCQmsmNJvD5lINdsHKNNIjpYmDq8p481ZhJyxCN016SQ4ZdLGvoIJgaV3+dgLq
-         5eooT0/V/TNYo9ZUFZkjd/+f0T8OOCSkKGyPN6qMOD2R6auUnOHis2iZZQAiS92fXryI
-         8V86fBz2kqAPkaQBZKg6dheqHhDANMBQ7aejRMoydz9S60YPPP+e3A16YqeyL3/GTnhS
-         S6z4FtIOh/1GgXZHXvzVFNdveQZnNSwmuyE14LVKKVo3kCsHIBf7/sRbcrTPuHkuTCRz
-         +4Xxl406G+ZXbWJKj5lV1fJ97Xbs4o40o7ImIhbshCWPKg8/hTpwybgG/GoGi7782FgX
-         awow==
-X-Forwarded-Encrypted: i=1; AJvYcCUIP1JZiPizyghr7B/yqC7g+ZCjuw6GH3CFGF6gkjp9dzHbJS4+5PX7V/B4zNBbt8doEEk=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzxsneCKClLNagx34b7SHYPklPwXVpJz1FRCLa5bfSwq0wQH9wd
-	aJ+CeiPSId5j1Hrb/2xMbhc0gulrqdzpWQ2fWfLh6PXa3GPemvKGG5jrGovYnY2qlChVp4FlvfU
-	HY09XoR15/gbKfeWiCnRpWgvFhJC8s+KAZNnV
-X-Google-Smtp-Source: AGHT+IHJzZW54ZelEpqtjg5sNSpim2OEz6bcZdRlXJladf0hM3rQAiAdQOYywo77wa6LK0FC2fDMu1023QrWMkIipaU=
-X-Received: by 2002:a05:6512:318e:b0:536:52dc:291f with SMTP id
- 2adb3069b0e04-536743b4463mr19813e87.1.1725992050488; Tue, 10 Sep 2024
- 11:14:10 -0700 (PDT)
+	s=arc-20240116; t=1725992561; c=relaxed/simple;
+	bh=iZL8n5uqSK/+UEFSp/VnOeRGpFUtz2Bda+1cpa9+VLE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=mbRULO2joB9mKBufjChNISwGbAX8uFQzqtgJ8A53+RSo9xKg5idGqMu4y/0yWzKHRoogwJ5kWVzq9DhB5nKRkGzaCWEgudgL4XSkEsDcikSVVw7zVmuPFuIIL0NzElwYi0RJuOsAsE7leJHC0veI83/Jhs+LTDIMWCes9b+p8cU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=qxQg25Gz; arc=none smtp.client-ip=95.215.58.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <e9b9db08-7ad4-47e0-be4d-6cd85eed854e@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1725992557;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=atZTWMHl+WTc90LCpjcEK8EE2yIT0vb/9Y28SEqO9Is=;
+	b=qxQg25GzgG3eD3irV+vdYbPKB+Feo7lEXi5LbuDv3yi7H8ER+GxxiBDGbjoTf8c/3A6WGQ
+	HCFFTBRb6KhSt8FqZzaFvnBbpKkLqRQ2xUtltfZ2kwGwK+EyjwHsq/fxJIfi58Y4pjSsSy
+	hdrUZQKinbbh9Q3/ZpNwvenJZ5+LI98=
+Date: Tue, 10 Sep 2024 11:22:31 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240906051205.530219-1-andrii@kernel.org> <CAG48ez1+Y+ifc3HfG=E5j+g=RwtzH2TiE4mAC2TZxS52idkRZg@mail.gmail.com>
- <CAEf4BzazZSUtJ9vPd6Xj4539MCebctOZJmO7xmdUhoQiv5mBFg@mail.gmail.com>
-In-Reply-To: <CAEf4BzazZSUtJ9vPd6Xj4539MCebctOZJmO7xmdUhoQiv5mBFg@mail.gmail.com>
-From: Jann Horn <jannh@google.com>
-Date: Tue, 10 Sep 2024 20:13:32 +0200
-Message-ID: <CAG48ez2+v4pADNgUjdq8aOvyJAUHOudSre=Q5RpN1sfj2aByaw@mail.gmail.com>
-Subject: Re: [PATCH 0/2] uprobes,mm: speculative lockless VMA-to-uprobe lookup
+Subject: Re: [PATCH bpf-next] bpf: Use fake pt_regs when doing bpf syscall
+ tracepoint tracing
+Content-Language: en-GB
 To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org, 
-	peterz@infradead.org, oleg@redhat.com, rostedt@goodmis.org, 
-	mhiramat@kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	jolsa@kernel.org, paulmck@kernel.org, willy@infradead.org, surenb@google.com, 
-	akpm@linux-foundation.org, linux-mm@kvack.org, mjguzik@gmail.com, 
-	brauner@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ kernel-team@fb.com, Martin KaFai Lau <martin.lau@kernel.org>,
+ Salvatore Benedetto <salvabenedetto@meta.com>
+References: <20240910034306.3122378-1-yonghong.song@linux.dev>
+ <CAEf4BzbsYn-b7YiKZ0MPW9_VLzDq38Jv8UkocfMLVje_SAmENA@mail.gmail.com>
+ <CAEf4BzZC3FyP06p-H8JhQVJqOTRfjLSfNpHBZn3hN2WRfypDsw@mail.gmail.com>
+ <84f2c314-980c-4e01-bcaa-dafb62a934f3@linux.dev>
+ <CAEf4BzahXi9t+Y883iCTDrAkcr2DEy0he-NW+jg9yT3TXH6NUA@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <CAEf4BzahXi9t+Y883iCTDrAkcr2DEy0he-NW+jg9yT3TXH6NUA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, Sep 10, 2024 at 7:58=E2=80=AFPM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
-> On Tue, Sep 10, 2024 at 9:06=E2=80=AFAM Jann Horn <jannh@google.com> wrot=
-e:
-> > On Fri, Sep 6, 2024 at 7:12=E2=80=AFAM Andrii Nakryiko <andrii@kernel.o=
-rg> wrote:
-> > > Implement speculative (lockless) resolution of VMA to inode to uprobe=
-,
-> > > bypassing the need to take mmap_lock for reads, if possible. Patch #1=
- by Suren
-> > > adds mm_struct helpers that help detect whether mm_struct were change=
-d, which
-> > > is used by uprobe logic to validate that speculative results can be t=
-rusted
-> > > after all the lookup logic results in a valid uprobe instance.
-> >
-> > Random thought: It would be nice if you could skip the MM stuff
-> > entirely and instead go through the GUP-fast path, but I guess going
-> > from a uprobe-created anon page to the corresponding uprobe is hard...
-> > but maybe if you used the anon_vma pointer as a lookup key to find the
-> > uprobe, it could work? Though then you'd need hooks in the anon_vma
-> > code... maybe not such a great idea.
+
+On 9/10/24 9:50 AM, Andrii Nakryiko wrote:
+> On Tue, Sep 10, 2024 at 8:25 AM Yonghong Song <yonghong.song@linux.dev> wrote:
+>>
+>> On 9/9/24 10:42 PM, Andrii Nakryiko wrote:
+>>> On Mon, Sep 9, 2024 at 10:34 PM Andrii Nakryiko
+>>> <andrii.nakryiko@gmail.com> wrote:
+>>>> On Mon, Sep 9, 2024 at 8:43 PM Yonghong Song <yonghong.song@linux.dev> wrote:
+>>>>> Salvatore Benedetto reported an issue that when doing syscall tracepoint
+>>>>> tracing the kernel stack is empty. For example, using the following
+>>>>> command line
+>>>>>     bpftrace -e 'tracepoint:syscalls:sys_enter_read { print("Kernel Stack\n"); print(kstack()); }'
+>>>>> the output will be
+>>>>> ===
+>>>>>     Kernel Stack
+>>>>> ===
+>>>>>
+>>>>> Further analysis shows that pt_regs used for bpf syscall tracepoint
+>>>>> tracing is from the one constructed during user->kernel transition.
+>>>>> The call stack looks like
+>>>>>     perf_syscall_enter+0x88/0x7c0
+>>>>>     trace_sys_enter+0x41/0x80
+>>>>>     syscall_trace_enter+0x100/0x160
+>>>>>     do_syscall_64+0x38/0xf0
+>>>>>     entry_SYSCALL_64_after_hwframe+0x76/0x7e
+>>>>>
+>>>>> The ip address stored in pt_regs is from user space hence no kernel
+>>>>> stack is printed.
+>>>>>
+>>>>> To fix the issue, we need to use kernel address from pt_regs.
+>>>>> In kernel repo, there are already a few cases like this. For example,
+>>>>> in kernel/trace/bpf_trace.c, several perf_fetch_caller_regs(fake_regs_ptr)
+>>>>> instances are used to supply ip address or use ip address to construct
+>>>>> call stack.
+>>>>>
+>>>>> The patch follows the above example by using a fake pt_regs.
+>>>>> The pt_regs is stored in local stack since the syscall tracepoint
+>>>>> tracing is in process context and there are no possibility that
+>>>>> different concurrent syscall tracepoint tracing could mess up with each
+>>>>> other. This is similar to a perf_fetch_caller_regs() use case in
+>>>>> kernel/trace/trace_event_perf.c with function perf_ftrace_function_call()
+>>>>> where a local pt_regs is used.
+>>>>>
+>>>>> With this patch, for the above bpftrace script, I got the following output
+>>>>> ===
+>>>>>     Kernel Stack
+>>>>>
+>>>>>           syscall_trace_enter+407
+>>>>>           syscall_trace_enter+407
+>>>>>           do_syscall_64+74
+>>>>>           entry_SYSCALL_64_after_hwframe+75
+>>>>> ===
+>>>>>
+>>>>> Reported-by: Salvatore Benedetto <salvabenedetto@meta.com>
+>>>>> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+>>>>> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+>>>>> ---
+>>>>>    kernel/trace/trace_syscalls.c | 5 ++++-
+>>>>>    1 file changed, 4 insertions(+), 1 deletion(-)
+>>>>>
+>>>> Note, we need to solve the same for perf_call_bpf_exit().
+>>>>
+>>>> pw-bot: cr
+>>>>
+>>> BTW, we lived with this bug for years, so I suggest basing your fix on
+>>> top of bpf-next/master, no bpf/master, which will give people a bit of
+>>> time to validate that the fix works as expected and doesn't produce
+>>> any undesirable side effects, before this makes it into the final
+>>> Linux release.
+>> Yes, I did. See I indeed use 'bpf-next' in subject above.
+> Huh, strange, I actually tried to apply your patch to bpf-next/master
+> and it didn't apply cleanly. It did apply to bpf/master, though, which
+> is why I assumed you based it off of bpf/master.
+
+Interesting. The following is my git history:
+
+7b71206057440d9559ecb9cd02d891f46927b272 (HEAD -> trace_syscall) bpf: Use fake pt_regs when doing bpf syscall tracepoint tracing
+41d0c4677feee1ea063e0f2c2af72dc953b1f1cc (origin/master, origin/HEAD, master) libbpf: Fix some typos in comments
+72d8508ecd3b081dba03ec00930c6b07c1ad55d3 MAINTAINERS: BPF ARC JIT: Update my e-mail address
+bee109b7b3e50739b88252a219fa07ecd78ad628 bpf: Fix error message on kfunc arg type mismatch
+...
+
+Not sure what is going on ...
+   
+
 >
-> So I'm not crystal clear on all the details here, so maybe you can
-> elaborate a bit. But keep in mind that a) there could be multiple
-> uprobes within a single user page, so lookup has to take at least
-> offset within the page into account somehow. But also b) single uprobe
-
-I think anonymous pages have the same pgoff numbering as file pages;
-so the page's mapping and pgoff pointers together should almost give
-you the same amount of information as what you are currently looking
-for (the file and the offset inside it), except that you'd get an
-anon_vma pointer corresponding to the file instead of directly getting
-the file.
-
-> can be installed in many independent anon VMAs across many processes.
-> So anon vma itself can't be part of the key.
-
-Yeah, I guess to make that work you'd have to somehow track which
-anon_vmas exist for which mappings.
-
-(An anon_vma is tied to one specific file, see anon_vma_compatible().)
-
-> Though maybe we could have left some sort of "cookie" stashed
-> somewhere to help with lookup. But then again, multiple uprobes per
-> page.
->
-> It does feel like lockless VMA to inode resolution would be a cleaner
-> solution, let's see if we can get there somehow.
-
-Mh, yes, I was just thinking it would be nice if we could keep this
-lockless complexity out of the mmap locking code... but I guess it's
-not much more straightforward than what you're doing.
+>>>>> diff --git a/kernel/trace/trace_syscalls.c b/kernel/trace/trace_syscalls.c
+>>>>> index 9c581d6da843..063f51952d49 100644
+>>>>> --- a/kernel/trace/trace_syscalls.c
+>>>>> +++ b/kernel/trace/trace_syscalls.c
+>>>>> @@ -559,12 +559,15 @@ static int perf_call_bpf_enter(struct trace_event_call *call, struct pt_regs *re
+>>>> let's also drop struct pt_regs * argument into
+>>>> perf_call_bpf_{enter,exit}(), they are not actually used anymore
+>>>>
+>>>>>                   int syscall_nr;
+>>>>>                   unsigned long args[SYSCALL_DEFINE_MAXARGS];
+>>>>>           } __aligned(8) param;
+>>>>> +       struct pt_regs fake_regs;
+>>>>>           int i;
+>>>>>
+>>>>>           BUILD_BUG_ON(sizeof(param.ent) < sizeof(void *));
+>>>>>
+>>>>>           /* bpf prog requires 'regs' to be the first member in the ctx (a.k.a. &param) */
+>>>>> -       *(struct pt_regs **)&param = regs;
+>>>>> +       memset(&fake_regs, 0, sizeof(fake_regs));
+>>>> sizeof(struct pt_regs) == 168 on x86-64, and on arm64 it's a whopping
+>>>> 336 bytes, so these memset(0) calls are not free for sure.
+>>>>
+>>>> But we don't need to do this unnecessary work all the time.
+>>>>
+>>>> I initially was going to suggest to use get_bpf_raw_tp_regs() from
+>>>> kernel/trace/bpf_trace.c to get a temporary pt_regs that was already
+>>>> memset(0) and used to initialize these minimal "fake regs".
+>>>>
+>>>> But, it turns out we don't need to do even that. Note
+>>>> perf_trace_buf_alloc(), it has `struct pt_regs **` second argument,
+>>>> and if you pass a valid pointer there, it will return "fake regs"
+>>>> struct to be used. We already use that functionality in
+>>>> perf_trace_##call in include/trace/perf.h (i.e., non-syscall
+>>>> tracepoints), so this seems to be a perfect fit.
+>>>>
+>>>>> +       perf_fetch_caller_regs(&fake_regs);
+>>>>> +       *(struct pt_regs **)&param = &fake_regs;
+>>>>>           param.syscall_nr = rec->nr;
+>>>>>           for (i = 0; i < sys_data->nb_args; i++)
+>>>>>                   param.args[i] = rec->args[i];
+>>>>> --
+>>>>> 2.43.5
+>>>>>
 
