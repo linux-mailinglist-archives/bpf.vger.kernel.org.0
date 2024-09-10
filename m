@@ -1,231 +1,112 @@
-Return-Path: <bpf+bounces-39466-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39467-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06DB3973A70
-	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 16:48:00 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23579973A73
+	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 16:48:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7CB541F26871
-	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 14:47:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 564921C24775
+	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 14:48:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DED8F1A3BAE;
-	Tue, 10 Sep 2024 14:44:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 611BE196D81;
+	Tue, 10 Sep 2024 14:44:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d1a24Ert"
+	dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="IXC4uti4"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CE371A38F9;
-	Tue, 10 Sep 2024 14:44:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96DEB19580F
+	for <bpf@vger.kernel.org>; Tue, 10 Sep 2024 14:44:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725979454; cv=none; b=qb3lleWqEeSihxYgvx3ocQlOKGEVuwWIO58yDdurvEF1juVeeNoGGGFlNgUIB63DtzKaTduhj+6JweAyK+pX8KIAbiKYT/3N62tAWI5TaFF+Mj5ccp4EH7Iz7fH6NZ8uMV0PW1tsh/VClbduSBk9jEcur+LqOUUb0+yVPdvVawo=
+	t=1725979477; cv=none; b=JPxXDnQZX9OzQ7yxDTVJ0b1PPKZLGA81lk41ALAuO+/jAwYqR3172WjdB1xKfNLYXjeyjM1hbE22jBANyGZC7Oshi9NW/Pu4TueVBzyaKe6cndJEhUlH80rTfiE0NzFbcycX8wQTgPPRE5NW51baHzcK9S0c1bBF4/X8dEnn1B0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725979454; c=relaxed/simple;
-	bh=LmBG5BHGYdWXIOucMdHZKe5DqBhFcqK07cXblfY/l0Y=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=rGPjdzdkS3RXHs3L3wc36SQsbeWpb5oY/ptTnwa6NO5ABskypcqMF8oarKUHaW8OfVjDEiQCp8ehWp+ibNY8+XHCHjLPdzV7wJ8VTpwmf34hO8DTvvPtfOPqO9FyixTjFaiwNdLHekxSaqmkw3HkgZwy8RUHs4d1x7MfNU8LqXA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d1a24Ert; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34A45C4CECE;
-	Tue, 10 Sep 2024 14:44:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1725979453;
-	bh=LmBG5BHGYdWXIOucMdHZKe5DqBhFcqK07cXblfY/l0Y=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=d1a24ErtDm70VPJ1/SWrFe5tAMR7WPpUaynaU3xdzRJTFV6sMH/ZMS2vVQVQ5ybcm
-	 XKSbbcnmgj7TU6/AKRlHMD2reEwlnm35yz5Hoo78ogb05GU+YWQZYO4O6pw8uIfkqj
-	 3CpU2eVxPebHErmS4Wr79PocLsi3ugvrBl7mKq0u8U4wzQpc3cclViAhEcypGaydvp
-	 MbI7w+7erasZTqeKKwRJ0Bq1DpUF9QhqtWKa9Bgu5bDki1q6jIsIXa/NHtN+ervRu/
-	 B21zyh92Tlv+1p4aMJiRmo1eNfDuTQkH882m7B8bfE1tcM8jYdc/nCE5q81cwYojM5
-	 klx6jykHzcasg==
-From: Benjamin Tissoires <bentiss@kernel.org>
-Date: Tue, 10 Sep 2024 23:43:47 +0900
-Subject: [PATCH HID v2 11/11] selftests/hid: add test to disable hid-input
+	s=arc-20240116; t=1725979477; c=relaxed/simple;
+	bh=M+gbX08xWZHTyhMFgI1jc6jQrIG8wpnxP0pi1aThYRo=;
+	h=From:To:Cc:References:In-Reply-To:Subject:Date:Message-ID:
+	 MIME-Version:Content-Type; b=f9UlXDNfMoOhMTQS1CxvSGYsWTCvIPUsg8iviGVt4uf8mmBu29Xn/f17GXhMfkZkXjasByt3UsRwV1ks3aQtxfJCnRnO8Y19AoTeZ6KT9iwFtrcc6BstJ1W85Ce/hbMbwxy2eGqTPR3bpXhe+JNrmrg3miHIzoEYlib8X81ASkI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com; spf=pass smtp.mailfrom=googlemail.com; dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=IXC4uti4; arc=none smtp.client-ip=209.85.210.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=googlemail.com
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-718d8d6af8fso3581355b3a.3
+        for <bpf@vger.kernel.org>; Tue, 10 Sep 2024 07:44:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20230601; t=1725979476; x=1726584276; darn=vger.kernel.org;
+        h=content-language:thread-index:content-transfer-encoding
+         :mime-version:message-id:date:subject:in-reply-to:references:cc:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=UL+Ho0G8dW9EgFhxZAvylDVs+oNzNpFxQWWf5vaHYfM=;
+        b=IXC4uti4Ihdonj64MSiJp1yme+PMwfER6roojnfuvZmM559ZSs2fxA5g2Q2W/3khAW
+         ztZ3adJHQlFYe4EzVF1mkzcX+N1/F6OwtF2FDVsCaJwB0kgFoGhvD71mJeyLMO8+wNbV
+         I+lmVb2hTLLJlmnQ0awdeu8M1MZF3Wic9lhXsZDTPACyzRPsEtnoQKROR5mMeo8cnyvD
+         4Bvas+cLxi5uZOiRsXvf7gxm2LbzectcVR70AeXsoD5IzAoQw7o31rSQHBG5OlEJ/dzz
+         G8Hrj82uN2JsjOzi92Ag0sHY8tNviMq/9cGBThiCF0Uw+XbihH9k6fkam1pZ427fbIl3
+         Pyxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1725979476; x=1726584276;
+        h=content-language:thread-index:content-transfer-encoding
+         :mime-version:message-id:date:subject:in-reply-to:references:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=UL+Ho0G8dW9EgFhxZAvylDVs+oNzNpFxQWWf5vaHYfM=;
+        b=YZSHt9oM9C1CD8D4XcFUwWHAAWjXG0BFYcK8/yh8cVBKXyzSfVV5CTUVj48ZLBtZWd
+         1WQU7hr+IqdqUcllwWqroFHeH090ZudVKc25L1xwpp+JY3a0CZVKFD+B48EBA/J2FIFl
+         /yqEoD/jFjI1SpArmrikYV9ZSvtbYGimymdOV++rhE12DJlwI8ZQHrYaiNmOah05iY6i
+         Ht8n/kBBpm/PYJ0jkytmrBgAXHpuoyoXEUihiuniyP+whETp3wSMrNOrcGwCndM8dgFa
+         UlLpfsRzZSlHQRZhPt9RmL+hLbsl9buCav56YjcnfkUK1y4CxMExv5GX2HmfPKrX2n51
+         N7VA==
+X-Gm-Message-State: AOJu0YywjTMjWSv0VpG2YZyzbRTekaFBKwuvlSpNO0mhMS1hrtNuT/tk
+	8+cOWX48c61YwmBAgDxqi1jiZnuY64QgMCKA9UnSmEWuz1Jba/Ws1sQOeIIY
+X-Google-Smtp-Source: AGHT+IESBKhGyp0ly7ai9HHRxLSWGnyRKPL2tzRVtQikIcNHilg+ERKG9Wp5EHnKXRYr6eCaOe4EEw==
+X-Received: by 2002:a05:6a21:168b:b0:1cf:2438:c9e3 with SMTP id adf61e73a8af0-1cf5e09689amr1296777637.16.1725979475673;
+        Tue, 10 Sep 2024 07:44:35 -0700 (PDT)
+Received: from ArmidaleLaptop (64-119-15-123.fiber.ric.network. [64.119.15.123])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-71908fe2441sm1454627b3a.51.2024.09.10.07.44.35
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 10 Sep 2024 07:44:35 -0700 (PDT)
+From: Dave Thaler <dthaler1968@googlemail.com>
+X-Google-Original-From: "Dave Thaler" <dthaler1968@gmail.com>
+To: "'Yonghong Song'" <yonghong.song@linux.dev>,
+	"'Alexei Starovoitov'" <alexei.starovoitov@gmail.com>,
+	"'Zac Ecob'" <zacecob@protonmail.com>,
+	"'Daniel Borkmann'" <daniel@iogearbox.net>
+Cc: <bpf@vger.kernel.org>
+References: <tPJLTEh7S_DxFEqAI2Ji5MBSoZVg7_G-Py2iaZpAaWtM961fFTWtsnlzwvTbzBzaUzwQAoNATXKUlt0LZOFgnDcIyKCswAnAGdUF3LBrhGQ=@protonmail.com> <CAADnVQ+o1jPQwxP9G9Xb=ZSEQDKKq1m1awpovKWdVRMNf8sgdg@mail.gmail.com> <1058c69c-3e2c-4c0b-b777-2b0460f443f9@linux.dev>
+In-Reply-To: <1058c69c-3e2c-4c0b-b777-2b0460f443f9@linux.dev>
+Subject: RE: Kernel oops caused by signed divide
+Date: Tue, 10 Sep 2024 07:44:33 -0700
+Message-ID: <18d101db038f$f3c2d400$db487c00$@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain;
+	charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240910-hid-bpf-hid-generic-v2-11-083dfc189e97@kernel.org>
-References: <20240910-hid-bpf-hid-generic-v2-0-083dfc189e97@kernel.org>
-In-Reply-To: <20240910-hid-bpf-hid-generic-v2-0-083dfc189e97@kernel.org>
-To: Jiri Kosina <jikos@kernel.org>, 
- Peter Hutterer <peter.hutterer@who-t.net>, Vicki Pfau <vi@endrift.com>, 
- Shuah Khan <shuah@kernel.org>
-Cc: linux-input@vger.kernel.org, linux-kselftest@vger.kernel.org, 
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
- Benjamin Tissoires <bentiss@kernel.org>
-X-Mailer: b4 0.14.1
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1725979428; l=5547;
- i=bentiss@kernel.org; s=20230215; h=from:subject:message-id;
- bh=LmBG5BHGYdWXIOucMdHZKe5DqBhFcqK07cXblfY/l0Y=;
- b=0EYf1JyMDXPcGWcDKNKveACXh9M/f/oJ1DKRuDRxRsjir8szlhhgA+1DLiD8hRQ+kSHCgpOMe
- 56E2fUVaOkdAO24gPrhGHVcCacPQRl0wHVtYn6ZvXktAWdBnt9hJer/
-X-Developer-Key: i=bentiss@kernel.org; a=ed25519;
- pk=7D1DyAVh6ajCkuUTudt/chMuXWIJHlv2qCsRkIizvFw=
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQF9UZIBIzpsIoIccFtpL0UiWnR2xwFVGHnBAkqJ6fWy738PwA==
+Content-Language: en-us
 
-Add a test for the newly enabled feature to control the connect_mask
-of hid-generic.
+Yonghong Song wrote: 
+[...]
+> In verifier, we have
+>    /* [R,W]x div 0 -> 0 */
+>    /* [R,W]x mod 0 -> [R,W]x */
+> 
+> What the value for
+>    Rx_a sdiv Rx_b -> ?
+> where Rx_a = INT64_MIN and Rx_b = -1?
+> 
+> Should we just do
+>    INT64_MIN sdiv -1 -> -1
+> or some other values?
 
-Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
+What happens for BPF_NEG INT64_MIN?
 
----
-
-changes in v2:
-- amended for the new API
----
- tools/testing/selftests/hid/hid_bpf.c              | 60 +++++++++++++++++++++-
- tools/testing/selftests/hid/progs/hid.c            |  1 +
- .../testing/selftests/hid/progs/hid_bpf_helpers.h  |  1 +
- 3 files changed, 61 insertions(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/hid/hid_bpf.c b/tools/testing/selftests/hid/hid_bpf.c
-index edc061b38528..41cacc30ef8b 100644
---- a/tools/testing/selftests/hid/hid_bpf.c
-+++ b/tools/testing/selftests/hid/hid_bpf.c
-@@ -4,6 +4,38 @@
- #include "hid_common.h"
- #include <bpf/bpf.h>
- 
-+static const __u8 mouse_rdesc[] = {
-+	0x05, 0x01,  /* .Usage Page (Generic Desktop)        0  */
-+	0x09, 0x02,  /* .Usage (Mouse)                       2  */
-+	0xa1, 0x01,  /* .Collection (Application)            4  */
-+	0x09, 0x02,  /* ..Usage (Mouse)                      6  */
-+	0xa1, 0x02,  /* ..Collection (Logical)               8  */
-+	0x09, 0x01,  /* ...Usage (Pointer)                   10 */
-+	0xa1, 0x00,  /* ...Collection (Physical)             12 */
-+	0x05, 0x09,  /* ....Usage Page (Button)              14 */
-+	0x19, 0x01,  /* ....Usage Minimum (1)                16 */
-+	0x29, 0x03,  /* ....Usage Maximum (3)                18 */
-+	0x15, 0x00,  /* ....Logical Minimum (0)              20 */
-+	0x25, 0x01,  /* ....Logical Maximum (1)              22 */
-+	0x75, 0x01,  /* ....Report Size (1)                  24 */
-+	0x95, 0x03,  /* ....Report Count (3)                 26 */
-+	0x81, 0x02,  /* ....Input (Data,Var,Abs)             28 */
-+	0x75, 0x05,  /* ....Report Size (5)                  30 */
-+	0x95, 0x01,  /* ....Report Count (1)                 32 */
-+	0x81, 0x03,  /* ....Input (Cnst,Var,Abs)             34 */
-+	0x05, 0x01,  /* ....Usage Page (Generic Desktop)     36 */
-+	0x09, 0x30,  /* ....Usage (X)                        38 */
-+	0x09, 0x31,  /* ....Usage (Y)                        40 */
-+	0x15, 0x81,  /* ....Logical Minimum (-127)           42 */
-+	0x25, 0x7f,  /* ....Logical Maximum (127)            44 */
-+	0x75, 0x08,  /* ....Report Size (8)                  46 */
-+	0x95, 0x02,  /* ....Report Count (2)                 48 */
-+	0x81, 0x06,  /* ....Input (Data,Var,Rel)             50 */
-+	0xc0,        /* ...End Collection                    52 */
-+	0xc0,        /* ..End Collection                     53 */
-+	0xc0,        /* .End Collection                      54 */
-+};
-+
- struct hid_hw_request_syscall_args {
- 	__u8 data[10];
- 	unsigned int hid;
-@@ -59,6 +91,8 @@ struct specific_device {
- 	__u16 bus;
- 	__u32 vid;
- 	__u32 pid;
-+	const __u8 *rdesc;
-+	const size_t rdesc_size;
- };
- 
- FIXTURE_SETUP(hid_bpf)
-@@ -72,11 +106,15 @@ FIXTURE_SETUP(hid_bpf)
- 		.bus = BUS_BLUETOOTH,
- 		.vid = 0x05ac,  /* USB_VENDOR_ID_APPLE */
- 		.pid = 0x022c,  /* USB_DEVICE_ID_APPLE_ALU_WIRELESS_ANSI */
-+		.rdesc = mouse_rdesc,
-+		.rdesc_size = sizeof(mouse_rdesc),
- 	}, {
- 		.test_name = "*",
- 		.bus = BUS_USB,
- 		.vid = 0x0001,
- 		.pid = 0x0a36,
-+		.rdesc = rdesc,
-+		.rdesc_size = sizeof(rdesc),
- 	}};
- 
- 	for (int i = 0; i < ARRAY_SIZE(devices); i++) {
-@@ -88,7 +126,7 @@ FIXTURE_SETUP(hid_bpf)
- 	ASSERT_OK_PTR(match);
- 
- 	err = setup_uhid(_metadata, &self->hid, match->bus, match->vid, match->pid,
--			 rdesc, sizeof(rdesc));
-+			 match->rdesc, match->rdesc_size);
- 	ASSERT_OK(err);
- }
- 
-@@ -914,6 +952,24 @@ static bool is_using_driver(struct __test_metadata *_metadata, struct uhid_devic
- 	return found;
- }
- 
-+static bool has_hid_input(struct uhid_device *hid)
-+{
-+	char input[1024];
-+	DIR *d;
-+
-+	sprintf(input, "/sys/bus/hid/devices/%04X:%04X:%04X.%04X/input",
-+		hid->bus, hid->vid, hid->pid, hid->hid_id);
-+
-+	d = opendir(input);
-+	if (d) {
-+		closedir(d);
-+
-+		return true;
-+	}
-+
-+	return false;
-+}
-+
- /*
-  * Attach hid_driver_probe to the given uhid device,
-  * check that the device is now using hid-generic.
-@@ -927,10 +983,12 @@ TEST_F(hid_bpf, test_hid_driver_probe)
- 	};
- 
- 	ASSERT_TRUE(is_using_driver(_metadata, &self->hid, "apple"));
-+	ASSERT_TRUE(has_hid_input(&self->hid)) TH_LOG("input node not found");
- 
- 	LOAD_PROGRAMS(progs);
- 
- 	ASSERT_TRUE(is_using_driver(_metadata, &self->hid, "hid-generic"));
-+	ASSERT_FALSE(has_hid_input(&self->hid)) TH_LOG("input node unexpectly found");
- }
- 
- /*
-diff --git a/tools/testing/selftests/hid/progs/hid.c b/tools/testing/selftests/hid/progs/hid.c
-index 9b22e9a0e658..7e24bec8ef43 100644
---- a/tools/testing/selftests/hid/progs/hid.c
-+++ b/tools/testing/selftests/hid/progs/hid.c
-@@ -603,6 +603,7 @@ SEC("?struct_ops.s/hid_rdesc_fixup")
- int BPF_PROG(hid_test_driver_probe, struct hid_bpf_ctx *hid_ctx)
- {
- 	hid_ctx->hid->quirks |= HID_QUIRK_IGNORE_SPECIAL_DRIVER;
-+	hid_ctx->hid->quirks |= HID_QUIRK_IGNORE_HIDINPUT;
- 	return 0;
- }
- 
-diff --git a/tools/testing/selftests/hid/progs/hid_bpf_helpers.h b/tools/testing/selftests/hid/progs/hid_bpf_helpers.h
-index 1a645684a117..9c3cfd61d992 100644
---- a/tools/testing/selftests/hid/progs/hid_bpf_helpers.h
-+++ b/tools/testing/selftests/hid/progs/hid_bpf_helpers.h
-@@ -91,6 +91,7 @@ struct hid_bpf_ops {
- #endif
- 
- #define HID_QUIRK_IGNORE_SPECIAL_DRIVER		BIT(22)
-+#define HID_QUIRK_IGNORE_HIDINPUT		BIT(23)
- 
- /* following are kfuncs exported by HID for HID-BPF */
- extern __u8 *hid_bpf_get_data(struct hid_bpf_ctx *ctx,
-
--- 
-2.46.0
+Dave
 
 
