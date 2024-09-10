@@ -1,311 +1,171 @@
-Return-Path: <bpf+bounces-39549-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39550-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5876974619
-	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 00:43:26 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D548974690
+	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 01:46:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8744B2881C4
-	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 22:43:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CC116B24995
+	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 23:46:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3A7B1AC422;
-	Tue, 10 Sep 2024 22:43:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD66B1B532B;
+	Tue, 10 Sep 2024 23:44:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iCCbEUdt"
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="OIVcS2r1";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Inov3oyk"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fout4-smtp.messagingengine.com (fout4-smtp.messagingengine.com [103.168.172.147])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 099311F951
-	for <bpf@vger.kernel.org>; Tue, 10 Sep 2024 22:43:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E77B91B29D2;
+	Tue, 10 Sep 2024 23:44:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.147
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726008199; cv=none; b=mbCO7qZhLXOxR7GBUZ3yFvQtr97ivmht2osl6uW4BPC8ldRWp9R/Qt4bH+ybIK/AWovWHwewpbJdnrW8GM+7IDOJB5YPftD22nMEyf/JIlNBsJxwqrDu1XZKDeNgHdqEo+LLtfGe/wEioMmk5uIAcQ+boZudWAej3zQSikI59T0=
+	t=1726011884; cv=none; b=AUjFgVW3jHTuKpFIAyupEUNDty2t3mFBKdSU0rM9yBedoo6HKFlXJ9fLZqtPHWwV0W2mglTnFA0wt4HfRmXjWZimugqRLntQsulkOHRMEaNzCgkptg/kYc85Bml6d7Y6VmXdgk0l5qyn7eLRlhPLyN7ViuXLpVOwpT3FimsRMis=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726008199; c=relaxed/simple;
-	bh=oSBtw/955kb3ftstqAmcicdRUSCLWMxjEPyBobDwnB0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=MpmXoSSH45PzhKihoIzzoj3bTJAJOVobH8/bQDhaHtTU2bHVzo09SzJLxw6gTWoTG8V9ZB4OLg+wTF/u2YFBvR02kGDAuAKkF4ddUIg8fQmgRfs9BDpXlIIorZRkswbYzSTxHc2JcvIwjBJGCu8yuG8D02SDRQw6jIV/SmLwnwA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iCCbEUdt; arc=none smtp.client-ip=209.85.216.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-2d885019558so4186579a91.2
-        for <bpf@vger.kernel.org>; Tue, 10 Sep 2024 15:43:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1726008197; x=1726612997; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6zfczPxGhF83yn11mLvcyAyrzgs09dGYabDxobet3qQ=;
-        b=iCCbEUdtsHKyYGGJtAW7vCi3JVFh2M1vRGVqnFbyi3djD1+YC9vzbDyvy6ydiUfv/K
-         OQJXGut0ewVrwFUXnRV8/o0O42mp2Hd9zK9nWkigtrzBnbXB5LbrEokBOnGRqeSOIzNh
-         KSNLcZV73GULsj4hawQNSEePQ3DD5e185g2eTMHxAG48KSKo6uJSZFmo3HB8BOIpuRhn
-         7NSMZee/wFSaMq9B4Ii8MJRIlXyLWeRodlftrYwpHqYAzBeYMJX/4kbvujxj4RxbN6Ln
-         /gPeptXqekBhsekWABwqLyIpGpHZypBf7uhfRpQIAcX/VhrTWwwTMCOinN/IAZEN4d+C
-         5/ug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726008197; x=1726612997;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6zfczPxGhF83yn11mLvcyAyrzgs09dGYabDxobet3qQ=;
-        b=CWlxOGmpsDi2rEE1bbRmznLeSDejHlY1L9IUn49PW7g4U8pZUaBytehkoqPrfH0vEv
-         1xtMcL+w6RUwcP97CdPAllh30I5x8vS/DiT3Hy18pbTDWUWxpddrPlf1qWotdJRQH1lI
-         fVNwyAojvXHZiFRJciisPop7i/t3d4ClpctxIJDIkrhRCf8tozIMD2JzT3rHvIGrctdG
-         MrcwxYialFIqt97owsC/ekRTu+y25EEjALLo4UIllo0D17qIrYN74ld9gjbZNepHSR9A
-         WFP8YHnKOiYOUp+dPzkefT+nDkSZvPO6YWcRLFB357sBMM4jHGAdmJ2BhYskwh/Fvo0P
-         y8fQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXV6lwow8ksYFJTfvVSIitX9sic9R/kmLUTha+wvNnsNWJyTDXpCEDacGHZukDF6XvNoKM=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy9Z2SXzAxtrJe7LahK3cylU8ktKrE+nDN3AGqM4UjYuFUrh4Ft
-	3RGoQSWuOSJFOOncQ7hJ3POwJTK69yi07acTp36k5ubKTxpOpfJS8V5V/UcCVi3yBLVjMcbARnD
-	M5gXFCkQEwB9vLhrlyNlv4c3t1blgVluI
-X-Google-Smtp-Source: AGHT+IE4lBn2oxi3D+9Neg9IN7kZZbssFkHy/ec5ohbTPI5fIY/fcW4eT3kCgHTyAx696Rlm9VAOq4gRnMaD5x6BPjE=
-X-Received: by 2002:a17:90b:388b:b0:2d3:d09a:630e with SMTP id
- 98e67ed59e1d1-2dad5083440mr16723683a91.1.1726008197138; Tue, 10 Sep 2024
- 15:43:17 -0700 (PDT)
+	s=arc-20240116; t=1726011884; c=relaxed/simple;
+	bh=NJRdyDt4ArtkhmucN0ADGasD7WAmAy2gcQoa3OuTEro=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XOmH1X4Zo2WJp+UqfL/PnvGJFoTY5QOjNjb84uzqu74fuW1t2kU1q9tCtMkMDfRr9BgRJ3dwrIU8DrHPqE8dCUjpO46gBhEy/hwWgLzw1dK8QFU4RMLI0hOPPnmqZ3+IYS9vi6hI9iizjx7KdDv2etK0LykPw+JyLcfboyMFeX8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=OIVcS2r1; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Inov3oyk; arc=none smtp.client-ip=103.168.172.147
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
+Received: from phl-compute-12.internal (phl-compute-12.phl.internal [10.202.2.52])
+	by mailfout.phl.internal (Postfix) with ESMTP id 0F50313801C0;
+	Tue, 10 Sep 2024 19:44:41 -0400 (EDT)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-12.internal (MEProxy); Tue, 10 Sep 2024 19:44:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1726011881;
+	 x=1726098281; bh=7UKGu1SR/PBsryXACn9wUHAYZcr8DaV+dHj6lNuogFw=; b=
+	OIVcS2r1Aud15229JwgZnwxT3mBmneFNGw0BhwEg1/ITv7i3nkj9/kXakxeYGBkC
+	+TFkwXvg46EHuyOMNZHO2tDpa6U9KuO8c0KEkM45J+KDn9+n04cjh/JEW2gO2cHV
+	tNRdrthYmKSFkRc2ODDNH2kx0+PEPHQSQug0cAuVmhbHPI1Vqmgo3yfwM5zHFNKt
+	0o0ShbyyHWTUVZ3fAPhukxfGwy+Gmicov1d3mpl08YEdmJ+A7WgST11I4ktJUA72
+	SFYnbFovXc/d4aUcPcaTcbT9rHhW1ntVQjhlsWAL8TbfvaGqPINuiQrfTWrfFwR+
+	thh+GO784N1Squpemht2yw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1726011881; x=
+	1726098281; bh=7UKGu1SR/PBsryXACn9wUHAYZcr8DaV+dHj6lNuogFw=; b=I
+	nov3oykubRyvFUL238D2FQ/tN8Cz70Iq/eN9jHNgzSMMWVnaRTO6sHZJI9TxhKNf
+	il/5Wk/5Er+Of0inHWAFpdBFJAhL0NxKg8CqHuWcRjAYbip0AA6klGnXpvJUdksy
+	vb5P8IUjixWQAYwPabHaLKXgbHNRTyPWUCAWVZowixT/qXhdKfR5UMtgny2Akdrm
+	1ZrQ236v+tnxs5x0NrLp89xaFU67ErIlqC/YWkOQKpYqUQARWaEKFA+T8PxRWrLl
+	Ccjx8DJxrCoE5CBWbOM7jLFzGzC02ur9oQvEjA49CDAX2fdFKpywfSZYlw9sufVH
+	b/UoTGiPBYx5qKu+aHePQ==
+X-ME-Sender: <xms:6NngZvexNvWHH_w3EwaDDjHw_FDhYxNI-3wIYzE8iOJsetfLaxpgEQ>
+    <xme:6NngZlPM1xWKKKhgyAwcfu2DNPqRJAY27abVucXtgKXf8Pdt3S25RdE8KkR9vJaxi
+    IFEay2iD5x-avcAlw>
+X-ME-Received: <xmr:6NngZojpWHyQrkkKZRu4dk2HBBx1p9ZWopb8PZh4EImW4cR3LGIdUqzucaLJ0onHwU0Ya_sSKmxep215SW7UABGhtuVqE7XTUTU36mGzUPN7tQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrudejtddgvdegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
+    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
+    htshculddquddttddmnegfrhhlucfvnfffucdljedtmdenucfjughrpeffhffvvefukfhf
+    gggtugfgjgestheksfdttddtjeenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihuse
+    gugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpedtgfeuueeukeeikefgieeukeff
+    leetkeekkeeggeffvedtvdejueehueeuleefteenucevlhhushhtvghrufhiiigvpedtne
+    curfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiiipdhnsggprhgt
+    phhtthhopedvtddpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtoheprghnughrihhird
+    hnrghkrhihihhkohesghhmrghilhdrtghomhdprhgtphhtthhopegrlhgvgigvihdrshht
+    rghrohhvohhithhovhesghhmrghilhdrtghomhdprhgtphhtthhopegvugguhiiikeejse
+    hgmhgrihhlrdgtohhmpdhrtghpthhtoheprghnughrihhisehkvghrnhgvlhdrohhrghdp
+    rhgtphhtthhopegurghnihgvlhesihhoghgvrghrsghogidrnhgvthdprhgtphhtthhope
+    grshhtsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehshhhurghhsehkvghrnhgvlhdr
+    ohhrghdprhgtphhtthhopehjohhhnhdrfhgrshhtrggsvghnugesghhmrghilhdrtghomh
+    dprhgtphhtthhopehmrghrthhinhdrlhgruheslhhinhhugidruggvvh
+X-ME-Proxy: <xmx:6NngZg8L71HmBOBoLv1wtNrsHY5RwO7HXkNgYOo5jSZzCxcf1ProMw>
+    <xmx:6NngZrvzzhZi3sYRyo4_ykKOyJiDqdRudCs9NHec39zRWf-mcadWFw>
+    <xmx:6NngZvFkYgBn7Rm9aQExLNG0HO7qsxsBfGPbhu3c38ajtr2FUn_oMA>
+    <xmx:6NngZiMSXw_t2r7Sg_BFpPGXu6vnI83rksuUHcEz-KL0yh8tFXLvsw>
+    <xmx:6dngZkP7UAAdT9-bYkHVmo429bErfwgctEYsJA4oXFvb8R1L2stEdSby>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 10 Sep 2024 19:44:38 -0400 (EDT)
+Date: Tue, 10 Sep 2024 17:44:36 -0600
+From: Daniel Xu <dxu@dxuuu.xyz>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov <ast@kernel.org>, 
+	Shuah Khan <shuah@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Mykola Lysenko <mykolal@fb.com>, LKML <linux-kernel@vger.kernel.org>, 
+	"bpf@vger.kernel.org" <bpf@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, Kernel Team <kernel-team@meta.com>
+Subject: Re: [PATCH bpf-next] bpf: ringbuf: Support consuming
+ BPF_MAP_TYPE_RINGBUF from prog
+Message-ID: <rsdwvah5ov3itchsgkwgleihswoycoal5vjbeql2wbqoz5noiz@myk2atnnjaub>
+References: <18a9ddacc99bb95e9802f8ad1e81214433df496c.1725929645.git.dxu@dxuuu.xyz>
+ <CAADnVQKyfZ2-qCvmqG8z919ggdOszEjTs04H=cTGOZTi-zhx7Q@mail.gmail.com>
+ <CAEf4Bza5Fiw2rZ5T7=zRwVk1Ct1Mgm7Gpa8w+NJVPZf8keY_9Q@mail.gmail.com>
+ <vru2zgphyfywjcqikolwotsfun2bgtrnfmwvfls5ra4tznsydr@46w5rq7gqepz>
+ <4ec8e15b-c44b-41d7-b337-32d17306d67b@app.fastmail.com>
+ <CAEf4BzbHqKD87KTSmFUMokXEaAa70xNs96QqfWBHjFbuE5PL=w@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <tPJLTEh7S_DxFEqAI2Ji5MBSoZVg7_G-Py2iaZpAaWtM961fFTWtsnlzwvTbzBzaUzwQAoNATXKUlt0LZOFgnDcIyKCswAnAGdUF3LBrhGQ=@protonmail.com>
- <CAADnVQ+o1jPQwxP9G9Xb=ZSEQDKKq1m1awpovKWdVRMNf8sgdg@mail.gmail.com>
- <1058c69c-3e2c-4c0b-b777-2b0460f443f9@linux.dev> <CAADnVQJPnCvttM+yitHbLRNoPUPs6EK+5VG=-SDP3LVdD70jyg@mail.gmail.com>
- <b1619bd1-807a-44b7-bfe7-fc053a8122eb@linux.dev> <CAADnVQLaOCrxqz7rBjeTJe0EUyAGwtjDKQugyKmFdMGT5=XN4g@mail.gmail.com>
- <6d0e66f9-db1c-444c-b899-1961b41de7c5@linux.dev> <CAADnVQLwZNQkViS-c=BA-2Y7+0pqEpo78Otx9SPjaScF0CGvEw@mail.gmail.com>
-In-Reply-To: <CAADnVQLwZNQkViS-c=BA-2Y7+0pqEpo78Otx9SPjaScF0CGvEw@mail.gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 10 Sep 2024 15:43:03 -0700
-Message-ID: <CAEf4BzacmZ_Coua8iqhzmZoSwFW2+i=fMM2=QhywO1w1Kt0vMA@mail.gmail.com>
-Subject: Re: Kernel oops caused by signed divide
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Yonghong Song <yonghong.song@linux.dev>, Zac Ecob <zacecob@protonmail.com>, 
-	Daniel Borkmann <daniel@iogearbox.net>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzbHqKD87KTSmFUMokXEaAa70xNs96QqfWBHjFbuE5PL=w@mail.gmail.com>
 
-On Tue, Sep 10, 2024 at 2:53=E2=80=AFPM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Tue, Sep 10, 2024 at 12:32=E2=80=AFPM Yonghong Song <yonghong.song@lin=
-ux.dev> wrote:
+On Tue, Sep 10, 2024 at 03:21:04PM GMT, Andrii Nakryiko wrote:
+> On Tue, Sep 10, 2024 at 3:16 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
 > >
 > >
-> > On 9/10/24 11:25 AM, Alexei Starovoitov wrote:
-> > > On Tue, Sep 10, 2024 at 11:02=E2=80=AFAM Yonghong Song <yonghong.song=
-@linux.dev> wrote:
-> > >>
-> > >> On 9/10/24 8:21 AM, Alexei Starovoitov wrote:
-> > >>> On Tue, Sep 10, 2024 at 7:21=E2=80=AFAM Yonghong Song <yonghong.son=
-g@linux.dev> wrote:
-> > >>>> On 9/9/24 10:29 AM, Alexei Starovoitov wrote:
-> > >>>>> On Mon, Sep 9, 2024 at 10:21=E2=80=AFAM Zac Ecob <zacecob@protonm=
-ail.com> wrote:
-> > >>>>>> Hello,
-> > >>>>>>
-> > >>>>>> I recently received a kernel 'oops' about a divide error.
-> > >>>>>> After some research, it seems that the 'div64_s64' function used=
- for the 'MOD'/'REM' instructions boils down to an 'idiv'.
-> > >>>>>>
-> > >>>>>> The 'dividend' is set to INT64_MIN, and the 'divisor' to -1, the=
-n because of two's complement, there is no corresponding positive value, ca=
-using the error (at least to my understanding).
-> > >>>>>>
-> > >>>>>>
-> > >>>>>> Apologies if this is already known / not a relevant concern.
-> > >>>>> Thanks for the report. This is a new issue.
-> > >>>>>
-> > >>>>> Yonghong,
-> > >>>>>
-> > >>>>> it's related to the new signed div insn.
-> > >>>>> It sounds like we need to update chk_and_div[] part of
-> > >>>>> the verifier to account for signed div differently.
-> > >>>> In verifier, we have
-> > >>>>      /* [R,W]x div 0 -> 0 */
-> > >>>>      /* [R,W]x mod 0 -> [R,W]x */
-> > >>> the verifier is doing what hw does. In this case this is arm64 beha=
-vior.
-> > >> Okay, I see. I tried on a arm64 machine it indeed hehaves like the a=
-bove.
-> > >>
-> > >> # uname -a
-> > >> Linux ... #1 SMP PREEMPT_DYNAMIC Thu Aug  1 06:58:32 PDT 2024 aarch6=
-4 aarch64 aarch64 GNU/Linux
-> > >> # cat t2.c
-> > >> #include <stdio.h>
-> > >> #include <limits.h>
-> > >> int main(void) {
-> > >>     volatile long long a =3D 5;
-> > >>     volatile long long b =3D 0;
-> > >>     printf("a/b =3D %lld\n", a/b);
-> > >>     return 0;
-> > >> }
-> > >> # cat t3.c
-> > >> #include <stdio.h>
-> > >> #include <limits.h>
-> > >> int main(void) {
-> > >>     volatile long long a =3D 5;
-> > >>     volatile long long b =3D 0;
-> > >>     printf("a%%b =3D %lld\n", a%b);
-> > >>     return 0;
-> > >> }
-> > >> # gcc -O2 t2.c && ./a.out
-> > >> a/b =3D 0
-> > >> # gcc -O2 t3.c && ./a.out
-> > >> a%b =3D 5
-> > >>
-> > >> on arm64, clang18 compiled binary has the same result
-> > >>
-> > >> # clang -O2 t2.c && ./a.out
-> > >> a/b =3D 0
-> > >> # clang -O2 t3.c && ./a.out
-> > >> a%b =3D 5
-> > >>
-> > >> The same source code, compiled on x86_64 with -O2 as well,
-> > >> it generates:
-> > >>     Floating point exception (core dumped)
-> > >>
-> > >>>> What the value for
-> > >>>>      Rx_a sdiv Rx_b -> ?
-> > >>>> where Rx_a =3D INT64_MIN and Rx_b =3D -1?
-> > >>> Why does it matter what Rx_a contains ?
-> > >> It does matter. See below:
-> > >>
-> > >> on arm64:
-> > >>
-> > >> # cat t1.c
-> > >> #include <stdio.h>
-> > >> #include <limits.h>
-> > >> int main(void) {
-> > >>     volatile long long a =3D LLONG_MIN;
-> > >>     volatile long long b =3D -1;
-> > >>     printf("a/b =3D %lld\n", a/b);
-> > >>     return 0;
-> > >> }
-> > >> # clang -O2 t1.c && ./a.out
-> > >> a/b =3D -9223372036854775808
-> > >> # gcc -O2 t1.c && ./a.out
-> > >> a/b =3D -9223372036854775808
-> > >>
-> > >> So the result of a/b is LLONG_MIN
-> > >>
-> > >> The same code will cause exception on x86_64:
-> > >>
-> > >> $ uname -a
-> > >> Linux ... #1 SMP Wed Jun  5 06:21:21 PDT 2024 x86_64 x86_64 x86_64 G=
-NU/Linux
-> > >> [yhs@devvm1513.prn0 ~]$ gcc -O2 t1.c && ./a.out
-> > >> Floating point exception (core dumped)
-> > >> [yhs@devvm1513.prn0 ~]$ clang -O2 t1.c && ./a.out
-> > >> Floating point exception (core dumped)
-> > >>
-> > >> So this is what we care about.
-> > >>
-> > >> So I guess we can follow arm64 result too.
-> > >>
-> > >>> What cpus do in this case?
-> > >> See above. arm64 produces *some* result while x64 cause exception.
-> > >> We do need to special handle for LLONG_MIN/(-1) case.
-> > > My point about Rx_a that idiv will cause out-of-range exception
-> > > for many other values than Rx_a =3D=3D INT64_MIN.
-> > > I'm not sure that divisor -1 is the only such case either.
-> > > Probably is, since intuitively -2 and all other divisors should fit f=
-ine.
-> > > So the check likely needs Rx_b =3D=3D -1 and a check for high bit in =
-Rx_a ?
 > >
-> > Looks like only Rx_a =3D=3D INT64_MIN may cause the problem.
-> > All other Rx_a numbers (from INT64_MIN+1 to INT64_MAX)
-> > should be okay. Some selective testing below on x64 host:
+> > On Tue, Sep 10, 2024, at 2:07 PM, Daniel Xu wrote:
+> > > On Tue, Sep 10, 2024 at 01:41:41PM GMT, Andrii Nakryiko wrote:
+> > >> On Tue, Sep 10, 2024 at 11:36 AM Alexei Starovoitov
+> > [...]
+> > >
+> > >>
+> > >> Also, Daniel, can you please make sure that dynptr we return for each
+> > >> sample is read-only? We shouldn't let consumer BPF program ability to
+> > >> corrupt ringbuf record headers (accidentally or otherwise).
+> > >
+> > > Sure.
 > >
-> > $ cat t5.c
-> > #include <stdio.h>
-> > #include <limits.h>
+> > So the sample is not read-only. But I think prog is prevented from messing
+> > with header regardless.
 > >
-> > unsigned long long res;
-> > int main(void) {
-> >    volatile long long a;
-> >    long long i;
-> >    for (i =3D LLONG_MIN + 1; i <=3D LLONG_MIN + 100; i++) {
-> >      volatile long long b =3D -1;
-> >      a =3D i;
-> >      res +=3D (unsigned long long)(a/b);
-> >    }
-> >    for (i =3D LLONG_MAX - 100; i <=3D LLONG_MAX - 1; i++) {
->
-> Changing this test to i <=3D LLONG_MAX
-> and compiling with gcc -O0 or clang -O2 or clang -O0
-> is causing an exception,
-> because 'a' becomes LLONG_MIN.
-> Compilers are doing some odd code gen.
-> I don't understand how 'i' can wrap this way.
->
-> >      volatile long long b =3D -1;
-> >      a =3D i;
-> >      res +=3D (unsigned long long)(a/b);
-> >    }
-> >    printf("res =3D %llx\n", res);
-> >    return 0;
-> > }
-> > $ gcc -O2 t5.c && ./a.out
-> > res =3D 64
+> > __bpf_user_ringbuf_peek() returns sample past the header:
 > >
-> > So I think it should be okay if the range is from LLONG_MIN + 1
-> > to LLONG_MAX - 1.
+> >         *sample = (void *)((uintptr_t)rb->data +
+> >                            (uintptr_t)((cons_pos + BPF_RINGBUF_HDR_SZ) & rb->mask));
 > >
-> > Now for LLONG_MAX/(-1)
+> > dynptr is initialized with the above ptr:
 > >
-> > $ cat t6.c
-> > #include <stdio.h>
-> > #include <limits.h>
-> > int main(void) {
-> >    volatile long long a =3D LLONG_MAX;
-> >    volatile long long b =3D -1;
-> >    printf("a/b =3D %lld\n", a/b);
-> >    return 0;
-> > }
-> > $ gcc -O2 t6.c && ./a.out
-> > a/b =3D -9223372036854775807
+> >         bpf_dynptr_init(&dynptr, sample, BPF_DYNPTR_TYPE_LOCAL, 0, size);
 > >
-> > It is okay too. So I think LLONG_MIN/(-1) is the only case
-> > we should take care of.
->
-> The test shows that that's the case, but I still can wrap
-> my head around that only LLONG_MIN/(-1) is a problem.
->
-> Any math experts can explain this?
->
+> > So I don't think there's a way for the prog to access the header thru the dynptr.
+> >
+> 
+> By "header" I mean 8 bytes that precede each submitted ringbuf record.
+> That header is part of ringbuf data area. Given user space can set
+> consumer_pos to arbitrary value, kernel can return arbitrary part of
+> ringbuf data area, including that 8 byte header. If that data is
+> writable, it's easy to screw up that header and crash another BPF
+> program that reserves/submits a new record. User space can only read
+> data area for BPF ringbuf, and so we rely heavily on a tight control
+> of who can write what into those 8 bytes.
 
-Not a math expert, but this is because LLONG_MIN / (-1) needs to be
--LLONG_MIN, right? But -LLONG_MIN is not representable in 2-complement
-representation, because positive and negative sides are not
-"symmetrical":
+Ah, ok. I think I understand.
 
-LLONG_MIN =3D -9,223,372,036,854,775,808
-LLONG_MAX=3D 9,223,372,036,854,775,807
-
--LLONG_MIN would be 9,223,372,036,854,775,808, which is beyond the
-representable range for 64-bit signed integer.
-
-That's why Dave asked about BPF_NEG for LLONG_MIN, it's a similar
-problem, its result is unrepresentable value. So in practice
--LLONG_MIN =3D=3D LLONG_MIN :)
-
-$ cat main.c
-#include <stdio.h>
-#include <stdint.h>
-
-int main()
-{
-        long long x =3D INT64_MIN;
-
-        printf("%lld %llx %llx\n", x, x, -x);
-
-        return 0;
-}
-$ cc main.c && ./a.out
--9223372036854775808 8000000000000000 8000000000000000
+Given this and your other comments about rb->busy, what about enforcing
+bpf_user_ringbuf_drain() NAND mmap? I think the use cases here are
+different enough where this makes sense.
 
