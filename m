@@ -1,326 +1,250 @@
-Return-Path: <bpf+bounces-39390-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39391-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AA7997266C
-	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 02:55:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B60EF97269B
+	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 03:32:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DF8041F24DBA
-	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 00:55:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E7DD91C22884
+	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 01:32:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A35CD6CDC8;
-	Tue, 10 Sep 2024 00:55:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="BPIPk2sg";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="idH1ovM8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D24F0136643;
+	Tue, 10 Sep 2024 01:31:52 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from fout6-smtp.messagingengine.com (fout6-smtp.messagingengine.com [103.168.172.149])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C304823AB;
-	Tue, 10 Sep 2024 00:55:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.149
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35D2A5695;
+	Tue, 10 Sep 2024 01:31:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725929710; cv=none; b=dTyjb7DAnm50jR65l074eaabZ3SNiNDqtdiI+u5us1iF2eQ/grrYBpyc7i9saSMG/KxYqcj1p20fkUYZVw+BzI8QBRlr1hrNmDcWWInU7krlUyN6x/PZduF3IFcwV/EM7ymZADByMIH+p7thInbXGDr17lcpRWG2UrDoc8/z4cs=
+	t=1725931912; cv=none; b=rqvBoXL/fJw0TEoLjLK1gKdycYFxFN2I+H+WMKsT7U2WH1FY/6Wa6UW13awJsSEhvTsUkzE9wHEQnBou/oCsgetgaSZgjVWx1V4K3fNcbEYZd2HPTuguyIVn8iIfRKFr8z3TtXoDwgmq4FN+1L46H/BaDinmeRt3bRBCO8unJO0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725929710; c=relaxed/simple;
-	bh=7TAk0PYd+/kgFJ65jdPi3CyfGRtcJdBhAoMcPCN9Nbc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=bZQluf3MzvA5XM2g+h/Yvesov+2PYJVWNlAyxvi++D4/gH7rZzk1pbfmz338XyZjlQ4K61Eyz6sRNIxAmUBSz2ovMoqSpYpc78ADIDU8yD2kEm5JqTEQZ0wShG+NflDjIwxlggatsUSLtJU0qbpGHoZe/QbewGnThzA32ZwEtss=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=BPIPk2sg; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=idH1ovM8; arc=none smtp.client-ip=103.168.172.149
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
-Received: from phl-compute-05.internal (phl-compute-05.phl.internal [10.202.2.45])
-	by mailfout.phl.internal (Postfix) with ESMTP id DA2461380299;
-	Mon,  9 Sep 2024 20:55:06 -0400 (EDT)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-05.internal (MEProxy); Mon, 09 Sep 2024 20:55:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
-	:to; s=fm3; t=1725929706; x=1726016106; bh=Wg5xZP0V6We1FuxhlwgQo
-	yCPN1ooTx+DvSYkmNc5izo=; b=BPIPk2sg8gCwXp+awGOBaJZlKFa6HBdKP0IOc
-	F7WuA5LQLGuu2snXonOqL7M8SZ/UkxIPszXdk/mrkxHs64DiNR4h+S5vv/NSsfCP
-	JWKeknWzb8815HOniOQniiaegIEnRmAFSDuNHjoTCJfeDor/ERR/LGbbFv9vBkhE
-	/N539rCcqSGKZHak7m2KfTDTz+G2T7rBJb1yIxmvCCNbXbBe1o70AjzLFVVWATxa
-	crzdHmk2Eq/0XqXCC0fv5x3ax4C4MgANUsy4HTm4q5vFBD8hKZaoxNax7lIK63JB
-	R1G3qLqOwoy+lSI96sCReZ1dDDuhdFz3YbdRDftPqNUKPy4qg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm1; t=1725929706; x=1726016106; bh=Wg5xZP0V6We1FuxhlwgQoyCPN1oo
-	Tx+DvSYkmNc5izo=; b=idH1ovM8yob87nUah3Dg6reRoa7yOWDBBlg3pcZa+b7S
-	JC23H4acBr6aF8gqN2L5z+PIDQgj0XSqrA7mrI5/++YI+S8q4X71HqByGBN5dDwe
-	hmfV8AjOIQNUJcz53/wBKNEyLJrLEvF3uFVs+yDycNZOqPTZAmK9INLlVWaSfFbs
-	zYDTzIpuhHe9ZA+eIEOo02vl6YT5PliKRbEuEk2qJeTvxnJmTW5S2o63W/gilcCG
-	hX9PFUiuOapeFJTPNDuKv65tNmLh4xehIuyljToANgKr8sPlmU1dBbieuWBmzrS4
-	/oSSPwD2Lc00uD7WTFfViGEofCvCK5JSy1yYc0uO/A==
-X-ME-Sender: <xms:6pjfZsSQws83NLU758ztaSEOYWs7x8hL4JVHgVzoTJs016zaqVJhhw>
-    <xme:6pjfZpzXjfg2iBBBdMrvAYnHANhX02-PzQM6StOc2kS6srrZPLdfLW6jrrEdIbzbj
-    DTqwL8PxRfg9gEDUw>
-X-ME-Received: <xmr:6pjfZp1NS0cGvVfkzr5utGkXp7jht16OtT8lCa5LD2gfoYVLPgqkddYCaGHIacF3pfh6Nqv9Vyldwr2o6HioV4HCE1wmLcaWEa77jWx-7jPgfogQcXOv>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrudeikedggeduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
-    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdlje
-    dtmdenucfjughrpefhvfevufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeffrghn
-    ihgvlhcuighuuceougiguhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhepff
-    eiteeuffetffefieefgeejheejgfevudffhffgleejtefghfevvddvkeejhfdunecuffho
-    mhgrihhnpehrihhnghgsuhhfrdhmrghpnecuvehluhhsthgvrhfuihiivgeptdenucfrrg
-    hrrghmpehmrghilhhfrhhomhepugiguhesugiguhhuuhdrgiihiidpnhgspghrtghpthht
-    ohepudekpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopegvugguhiiikeejsehgmh
-    grihhlrdgtohhmpdhrtghpthhtoheprghnughrihhisehkvghrnhgvlhdrohhrghdprhgt
-    phhtthhopegurghnihgvlhesihhoghgvrghrsghogidrnhgvthdprhgtphhtthhopegrsh
-    htsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehshhhurghhsehkvghrnhgvlhdrohhr
-    ghdprhgtphhtthhopehjohhhnhdrfhgrshhtrggsvghnugesghhmrghilhdrtghomhdprh
-    gtphhtthhopehmrghrthhinhdrlhgruheslhhinhhugidruggvvhdprhgtphhtthhopehs
-    ohhngheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohephihonhhghhhonhhgrdhsohhngh
-    eslhhinhhugidruggvvh
-X-ME-Proxy: <xmx:6pjfZgCGavqUtgMquzh7Ngi6U4a79hwvKqf4xvwhjl4r2LTvFKyw3A>
-    <xmx:6pjfZljSAhjlsuSelaGXWsIgGmfAp1UscmXT2C83fpIywimD-57VzQ>
-    <xmx:6pjfZso7NXxxj0LsM2uzKzwK09MoG2_CIbaOvd54SGvuAASXGATcmA>
-    <xmx:6pjfZoiCN3MPID3SQ1Z732EdQuB6faVPZEn7BJo9SD4rV4S23QRj0g>
-    <xmx:6pjfZuYKuP_i-Yafyy58pZKz_BnvCof9S-xept3OZEalBERROn5neJi3>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 9 Sep 2024 20:55:03 -0400 (EDT)
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: eddyz87@gmail.com,
-	andrii@kernel.org,
-	daniel@iogearbox.net,
-	ast@kernel.org,
-	shuah@kernel.org
-Cc: john.fastabend@gmail.com,
-	martin.lau@linux.dev,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	mykolal@fb.com,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	kernel-team@meta.com
-Subject: [PATCH bpf-next] bpf: ringbuf: Support consuming BPF_MAP_TYPE_RINGBUF from prog
-Date: Mon,  9 Sep 2024 18:54:52 -0600
-Message-ID: <18a9ddacc99bb95e9802f8ad1e81214433df496c.1725929645.git.dxu@dxuuu.xyz>
-X-Mailer: git-send-email 2.46.0
+	s=arc-20240116; t=1725931912; c=relaxed/simple;
+	bh=S7Z1cGFHh5sWS+TsBJHRcmpg3hVPKg/xmER13R9dUE0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=toISx8iRFRcQq+7kOMXZZ1da7k8DAzU6nYRpy/+eAspuIFrJ82hhcpXgTwQRgY8r+YzJpSRHBiFEJ/3xkpzw6MLm6WyIRXF389pg9dPN9tovpsSHD/dXRsDTYFXyFe8CGX6vSMkiwtmIGaupQpx2tO8893nYhhikWWncMdOdKq8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4X2mPs0kTwz4f3kvh;
+	Tue, 10 Sep 2024 09:31:29 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 4061F1A07B6;
+	Tue, 10 Sep 2024 09:31:45 +0800 (CST)
+Received: from [10.67.109.79] (unknown [10.67.109.79])
+	by APP4 (Coremail) with SMTP id gCh0CgCXzMh9od9mInePAw--.1036S2;
+	Tue, 10 Sep 2024 09:31:43 +0800 (CST)
+Message-ID: <07501c67-3b18-48e3-8929-e773d8d6920f@huaweicloud.com>
+Date: Tue, 10 Sep 2024 09:31:41 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/1] cgroup: fix deadlock caused by cgroup_mutex and
+ cpu_hotplug_lock
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+ Chen Ridong <chenridong@huawei.com>
+Cc: martin.lau@linux.dev, ast@kernel.org, daniel@iogearbox.net,
+ andrii@kernel.org, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@google.com, haoluo@google.com, jolsa@kernel.org, tj@kernel.org,
+ lizefan.x@bytedance.com, hannes@cmpxchg.org, roman.gushchin@linux.dev,
+ bpf@vger.kernel.org, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240817093334.6062-1-chenridong@huawei.com>
+ <20240817093334.6062-2-chenridong@huawei.com>
+ <kz6e3oadkmrl7elk6z765t2hgbcqbd2fxvb2673vbjflbjxqck@suy4p2mm7dvw>
+Content-Language: en-US
+From: Chen Ridong <chenridong@huaweicloud.com>
+In-Reply-To: <kz6e3oadkmrl7elk6z765t2hgbcqbd2fxvb2673vbjflbjxqck@suy4p2mm7dvw>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgCXzMh9od9mInePAw--.1036S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3Jw4UtFWUJw1rGF45uF1fCrg_yoWxGF17pr
+	s0vw1UKF48Wr1v9ayvgayaqFWFkw4vgF47JFZ5Jw1jyrW3Xr12vr129r4YvFZ7Gr93Zrn0
+	vay3Zr90gas8trJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6r1S6rWUM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
+	14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWr
+	XwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
+	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0
+	s2-5UUUUU==
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
-Right now there exists prog produce / userspace consume and userspace
-produce / prog consume support. But it is also useful to have prog
-produce / prog consume.
 
-For example, we want to track the latency overhead of cpumap in
-production. Since we need to store enqueue timestamps somewhere and
-cpumap is MPSC, we need an MPSC data structure to shadow cpumap. BPF
-ringbuf is such a data structure. Rather than reimplement (possibly
-poorly) a custom ringbuffer in BPF, extend the existing interface to
-allow the final quadrant of ringbuf usecases to be filled. Note we
-ignore userspace to userspace use case - there is no need to involve
-kernel for that.
 
-Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
----
- kernel/bpf/verifier.c                         |  6 +-
- tools/testing/selftests/bpf/Makefile          |  3 +-
- .../selftests/bpf/prog_tests/ringbuf.c        | 50 +++++++++++++++
- .../bpf/progs/test_ringbuf_bpf_to_bpf.c       | 64 +++++++++++++++++++
- 4 files changed, 120 insertions(+), 3 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/progs/test_ringbuf_bpf_to_bpf.c
+On 2024/9/9 22:19, Michal Koutný wrote:
+> On Sat, Aug 17, 2024 at 09:33:34AM GMT, Chen Ridong <chenridong@huawei.com> wrote:
+>> The reason for this issue is cgroup_mutex and cpu_hotplug_lock are
+>> acquired in different tasks, which may lead to deadlock.
+>> It can lead to a deadlock through the following steps:
+>> 1. A large number of cpusets are deleted asynchronously, which puts a
+>>     large number of cgroup_bpf_release works into system_wq. The max_active
+>>     of system_wq is WQ_DFL_ACTIVE(256). Consequently, all active works are
+>>     cgroup_bpf_release works, and many cgroup_bpf_release works will be put
+>>     into inactive queue. As illustrated in the diagram, there are 256 (in
+>>     the acvtive queue) + n (in the inactive queue) works.
+>> 2. Setting watchdog_thresh will hold cpu_hotplug_lock.read and put
+>>     smp_call_on_cpu work into system_wq. However step 1 has already filled
+>>     system_wq, 'sscs.work' is put into inactive queue. 'sscs.work' has
+>>     to wait until the works that were put into the inacvtive queue earlier
+>>     have executed (n cgroup_bpf_release), so it will be blocked for a while.
+>> 3. Cpu offline requires cpu_hotplug_lock.write, which is blocked by step 2.
+>> 4. Cpusets that were deleted at step 1 put cgroup_release works into
+>>     cgroup_destroy_wq. They are competing to get cgroup_mutex all the time.
+>>     When cgroup_metux is acqured by work at css_killed_work_fn, it will
+>>     call cpuset_css_offline, which needs to acqure cpu_hotplug_lock.read.
+>>     However, cpuset_css_offline will be blocked for step 3.
+>> 5. At this moment, there are 256 works in active queue that are
+>>     cgroup_bpf_release, they are attempting to acquire cgroup_mutex, and as
+>>     a result, all of them are blocked. Consequently, sscs.work can not be
+>>     executed. Ultimately, this situation leads to four processes being
+>>     blocked, forming a deadlock.
+>>
+>> system_wq(step1)		WatchDog(step2)			cpu offline(step3)	cgroup_destroy_wq(step4)
+>> ...
+>> 2000+ cgroups deleted asyn
+>> 256 actives + n inactives
+>> 				__lockup_detector_reconfigure
+>> 				P(cpu_hotplug_lock.read)
+>> 				put sscs.work into system_wq
+>> 256 + n + 1(sscs.work)
+>> sscs.work wait to be executed
+>> 				warting sscs.work finish
+>> 								percpu_down_write
+>> 								P(cpu_hotplug_lock.write)
+>> 								...blocking...
+>> 											css_killed_work_fn
+>> 											P(cgroup_mutex)
+>> 											cpuset_css_offline
+>> 											P(cpu_hotplug_lock.read)
+>> 											...blocking...
+>> 256 cgroup_bpf_release
+>> mutex_lock(&cgroup_mutex);
+>> ..blocking...
+> 
+> Thanks, Ridong, for laying this out.
+> Let me try to extract the core of the deps above.
+> 
+> The correct lock ordering is: cgroup_mutex then cpu_hotplug_lock.
+> However, the smp_call_on_cpu() under cpus_read_lock may lead to
+> a deadlock (ABBA over those two locks).
+> 
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 53d0556fbbf3..56bfe559f228 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -9142,7 +9142,8 @@ static int check_map_func_compatibility(struct bpf_verifier_env *env,
- 		    func_id != BPF_FUNC_ringbuf_query &&
- 		    func_id != BPF_FUNC_ringbuf_reserve_dynptr &&
- 		    func_id != BPF_FUNC_ringbuf_submit_dynptr &&
--		    func_id != BPF_FUNC_ringbuf_discard_dynptr)
-+		    func_id != BPF_FUNC_ringbuf_discard_dynptr &&
-+		    func_id != BPF_FUNC_user_ringbuf_drain)
- 			goto error;
- 		break;
- 	case BPF_MAP_TYPE_USER_RINGBUF:
-@@ -9276,7 +9277,8 @@ static int check_map_func_compatibility(struct bpf_verifier_env *env,
- 			goto error;
- 		break;
- 	case BPF_FUNC_user_ringbuf_drain:
--		if (map->map_type != BPF_MAP_TYPE_USER_RINGBUF)
-+		if (map->map_type != BPF_MAP_TYPE_USER_RINGBUF &&
-+		    map->map_type != BPF_MAP_TYPE_RINGBUF)
- 			goto error;
- 		break;
- 	case BPF_FUNC_get_stackid:
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 9905e3739dd0..233109843d4d 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -503,7 +503,8 @@ LINKED_SKELS := test_static_linked.skel.h linked_funcs.skel.h		\
- LSKELS := fentry_test.c fexit_test.c fexit_sleep.c atomics.c 		\
- 	trace_printk.c trace_vprintk.c map_ptr_kern.c 			\
- 	core_kern.c core_kern_overflow.c test_ringbuf.c			\
--	test_ringbuf_n.c test_ringbuf_map_key.c test_ringbuf_write.c
-+	test_ringbuf_n.c test_ringbuf_map_key.c test_ringbuf_write.c    \
-+	test_ringbuf_bpf_to_bpf.c
- 
- # Generate both light skeleton and libbpf skeleton for these
- LSKELS_EXTRA := test_ksyms_module.c test_ksyms_weak.c kfunc_call_test.c \
-diff --git a/tools/testing/selftests/bpf/prog_tests/ringbuf.c b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
-index da430df45aa4..3e7955573ac5 100644
---- a/tools/testing/selftests/bpf/prog_tests/ringbuf.c
-+++ b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
-@@ -17,6 +17,7 @@
- #include "test_ringbuf_n.lskel.h"
- #include "test_ringbuf_map_key.lskel.h"
- #include "test_ringbuf_write.lskel.h"
-+#include "test_ringbuf_bpf_to_bpf.lskel.h"
- 
- #define EDONE 7777
- 
-@@ -497,6 +498,53 @@ static void ringbuf_map_key_subtest(void)
- 	test_ringbuf_map_key_lskel__destroy(skel_map_key);
- }
- 
-+static void ringbuf_bpf_to_bpf_subtest(void)
-+{
-+	struct test_ringbuf_bpf_to_bpf_lskel *skel;
-+	int err, i;
-+
-+	skel = test_ringbuf_bpf_to_bpf_lskel__open();
-+	if (!ASSERT_OK_PTR(skel, "test_ringbuf_bpf_to_bpf_lskel__open"))
-+		return;
-+
-+	skel->maps.ringbuf.max_entries = getpagesize();
-+	skel->bss->pid = getpid();
-+
-+	err = test_ringbuf_bpf_to_bpf_lskel__load(skel);
-+	if (!ASSERT_OK(err, "test_ringbuf_bpf_to_bpf_lskel__load"))
-+		goto cleanup;
-+
-+	ringbuf = ring_buffer__new(skel->maps.ringbuf.map_fd, NULL, NULL, NULL);
-+	if (!ASSERT_OK_PTR(ringbuf, "ring_buffer__new"))
-+		goto cleanup;
-+
-+	err = test_ringbuf_bpf_to_bpf_lskel__attach(skel);
-+	if (!ASSERT_OK(err, "test_ringbuf_bpf_to_bpf_lskel__attach"))
-+		goto cleanup_ringbuf;
-+
-+	/* Produce N_SAMPLES samples in the ring buffer by calling getpid() */
-+	skel->bss->value = SAMPLE_VALUE;
-+	for (i = 0; i < N_SAMPLES; i++)
-+		syscall(__NR_getpgid);
-+
-+	/* Trigger bpf-side consumption */
-+	syscall(__NR_prctl);
-+
-+	/* Check correct number samples were consumed */
-+	if (!ASSERT_EQ(skel->bss->round_tripped, N_SAMPLES, "round_tripped"))
-+		goto cleanup_ringbuf;
-+
-+	/* Check all samples were consumed */
-+	err = ring_buffer__consume(ringbuf);
-+	if (!ASSERT_EQ(err, 0, "rb_consume"))
-+		goto cleanup_ringbuf;
-+
-+cleanup_ringbuf:
-+	ring_buffer__free(ringbuf);
-+cleanup:
-+	test_ringbuf_bpf_to_bpf_lskel__destroy(skel);
-+}
-+
- void test_ringbuf(void)
- {
- 	if (test__start_subtest("ringbuf"))
-@@ -507,4 +555,6 @@ void test_ringbuf(void)
- 		ringbuf_map_key_subtest();
- 	if (test__start_subtest("ringbuf_write"))
- 		ringbuf_write_subtest();
-+	if (test__start_subtest("ringbuf_bpf_to_bpf"))
-+		ringbuf_bpf_to_bpf_subtest();
- }
-diff --git a/tools/testing/selftests/bpf/progs/test_ringbuf_bpf_to_bpf.c b/tools/testing/selftests/bpf/progs/test_ringbuf_bpf_to_bpf.c
-new file mode 100644
-index 000000000000..378154922024
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_ringbuf_bpf_to_bpf.c
-@@ -0,0 +1,64 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/bpf.h>
-+#include <unistd.h>
-+#include <bpf/bpf_helpers.h>
-+#include "bpf_misc.h"
-+
-+struct sample {
-+	long value;
-+};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_RINGBUF);
-+} ringbuf SEC(".maps");
-+
-+int pid = 0;
-+long value = 0;
-+int round_tripped = 0;
-+
-+SEC("fentry/" SYS_PREFIX "sys_getpgid")
-+int test_ringbuf_bpf_to_bpf_produce(void *ctx)
-+{
-+	int cur_pid = bpf_get_current_pid_tgid() >> 32;
-+	struct sample *sample;
-+
-+	if (cur_pid != pid)
-+		return 0;
-+
-+	sample = bpf_ringbuf_reserve(&ringbuf, sizeof(*sample), 0);
-+	if (!sample)
-+		return 0;
-+	sample->value = value;
-+
-+	bpf_ringbuf_submit(sample, 0);
-+	return 0;
-+}
-+
-+static long consume_cb(struct bpf_dynptr *dynptr, void *context)
-+{
-+	struct sample *sample = NULL;
-+
-+	sample = bpf_dynptr_data(dynptr, 0, sizeof(*sample));
-+	if (!sample)
-+		return 0;
-+
-+	if (sample->value == value)
-+		round_tripped++;
-+
-+	return 0;
-+}
-+
-+SEC("fentry/" SYS_PREFIX "sys_prctl")
-+int test_ringbuf_bpf_to_bpf_consume(void *ctx)
-+{
-+	int cur_pid = bpf_get_current_pid_tgid() >> 32;
-+
-+	if (cur_pid != pid)
-+		return 0;
-+
-+	bpf_user_ringbuf_drain(&ringbuf, consume_cb, NULL, 0);
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.46.0
+That's right.
+
+> This is OK
+> 	thread T					system_wq worker
+> 	
+> 	  						lock(cgroup_mutex) (II)
+> 							...
+> 							unlock(cgroup_mutex)
+> 	down(cpu_hotplug_lock.read)
+> 	smp_call_on_cpu
+> 	  queue_work_on(cpu, system_wq, scss) (I)
+> 							scss.func
+> 	  wait_for_completion(scss)
+> 	up(cpu_hotplug_lock.read)
+> 
+> However, there is no ordering between (I) and (II) so they can also happen
+> in opposite
+> 
+> 	thread T					system_wq worker
+> 	
+> 	down(cpu_hotplug_lock.read)
+> 	smp_call_on_cpu
+> 	  queue_work_on(cpu, system_wq, scss) (I)
+> 	  						lock(cgroup_mutex)  (II)
+> 							...
+> 							unlock(cgroup_mutex)
+> 							scss.func
+> 	  wait_for_completion(scss)
+> 	up(cpu_hotplug_lock.read)
+> 
+> And here the thread T + system_wq worker effectively call
+> cpu_hotplug_lock and cgroup_mutex in the wrong order. (And since they're
+> two threads, it won't be caught by lockdep.)
+> 
+> By that reasoning any holder of cgroup_mutex on system_wq makes system
+> susceptible to a deadlock (in presence of cpu_hotplug_lock waiting
+> writers + cpuset operations). And the two work items must meet in same
+> worker's processing hence probability is low (zero?) with less than
+> WQ_DFL_ACTIVE items.
+> 
+> (And more generally, any lock that is ordered before cpu_hotplug_lock
+> should not be taken in system_wq work functions. Or at least such works
+> items should not saturate WQ_DFL_ACTIVE workers.)
+> 
+> Wrt other uses of cgroup_mutex, I only see
+>    bpf_map_free_in_work
+>      queue_work(system_unbound_wq)
+>        bpf_map_free_deferred
+>          ops->map_free == cgroup_storage_map_free
+>            cgroup_lock()
+> which is safe since it uses a different workqueue than system_wq.
+> 
+>> To fix the problem, place cgroup_bpf_release works on cgroup_destroy_wq,
+>> which can break the loop and solve the problem.
+> 
+> Yes, it moves the problematic cgroup_mutex holder away from system_wq
+> and cgroup_destroy_wq could not cause similar problems because there are
+> no explicit waiter for particular work items or its flushing.
+> 
+> 
+>> System wqs are for misc things which shouldn't create a large number
+>> of concurrent work items.  If something is going to generate
+>>> WQ_DFL_ACTIVE(256) concurrent work
+>> items, it should use its own dedicated workqueue.
+> 
+> Actually, I'm not sure (because I lack workqueue knowledge) if producing
+> less than WQ_DFL_ACTIVE work items completely eliminates the chance of
+> two offending work items producing the wrong lock ordering.
+> 
+
+If producing less than WQ_DFL_ACTIVE work items, it won't lead to a 
+deadlock. Because scss.func can be executed and doesn't have to wait for 
+work that holds cgroup_mutex to be completed. Therefore, the probability 
+is low and this issue can only be reproduced under pressure test.
+
+> 
+>> Fixes: 4bfc0bb2c60e ("bpf: decouple the lifetime of cgroup_bpf from cgroup itself")
+> 
+> I'm now indifferent whether this is needed (perhaps in the sense it is
+> the _latest_ of multiple changes that contributed to possibility of this
+> deadlock scenario).
+> 
+> 
+>> Link: https://lore.kernel.org/cgroups/e90c32d2-2a85-4f28-9154-09c7d320cb60@huawei.com/T/#t
+>> Signed-off-by: Chen Ridong <chenridong@huawei.com>
+>> ---
+>>   kernel/bpf/cgroup.c             | 2 +-
+>>   kernel/cgroup/cgroup-internal.h | 1 +
+>>   kernel/cgroup/cgroup.c          | 2 +-
+>>   3 files changed, 3 insertions(+), 2 deletions(-)
+> 
+> I have convinved myself now that you can put
+> 
+> Reviewed-by: Michal Koutný <mkoutny@suse.com>
+> 
+> Regards,
+> Michal
+
+Thank you very much.
+
+Best Regards,
+Ridong
 
 
