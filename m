@@ -1,267 +1,261 @@
-Return-Path: <bpf+bounces-39535-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39536-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A560E974467
-	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 22:58:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B06EB97446C
+	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 23:00:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C96DA1C25074
-	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 20:58:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D2F291C25326
+	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 21:00:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EA4F1AAE20;
-	Tue, 10 Sep 2024 20:58:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78ECC1AAE35;
+	Tue, 10 Sep 2024 20:59:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AXT1uW35"
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="XnQgkFa9";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="l3IFiJbH"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fhigh6-smtp.messagingengine.com (fhigh6-smtp.messagingengine.com [103.168.172.157])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58E85175D4A;
-	Tue, 10 Sep 2024 20:58:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6F491A7AF5;
+	Tue, 10 Sep 2024 20:59:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.157
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726001906; cv=none; b=omYzom1uCCSgYwc2IIF631Vo5hvEjxYeWD9/UPzJH2OnSVq2bdfiw/+V3a165UI7LtcMm17uL5fkOjpFd3Ys07sBaZJ564inmqWV8LVa4VLgLE6qs7TgR2Zznu8nrbUNarbCFPNqhO4tdevVCtmlWbr03/4S9GAY2DqqX+Lq73I=
+	t=1726001996; cv=none; b=mB9Fjp2ubuql3TsSeVOQhO0T6nUEP833zBDe7B76DN1wHc6CKPbRm+qX7lD16P6ci+03CNtfOeGMWE0iIQwaB+1LjhnLkCthL/2rM3DY0oySxMUsbejB/4MngTfCMglV75OKtCR2/CkMcvpkJyNpdl0y1H2VCGZ/0yoknxlAEmQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726001906; c=relaxed/simple;
-	bh=0M2cahX01JCcUlUOeIR6y6jKS3Uqr4MlbjeurlmXh9A=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=RBIC+ZhVO8ERQMimYi9yRf7VA7Ixfm5bLgD2F+QSx5iR1Qy0a9GFjB7i+0pzH/GhoTUd4iIDEb7ZKYoIcziTBgXlt07yZ7h7dI5HPlCq/5sL1gToIPZAKInk8VFL/KM623pDSj8CQneBPUwBU3y2l6JHmwx3TxbrH7KlMpWBK+w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AXT1uW35; arc=none smtp.client-ip=209.85.216.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-2daaa9706a9so916215a91.1;
-        Tue, 10 Sep 2024 13:58:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1726001904; x=1726606704; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RZZkUf2WC6mfIlygG90tFs2dYgOhX5oqJ1ZGT74jCV0=;
-        b=AXT1uW35VpgcmbwflIa/N1Gon2ljboAVmwSJa8Ah2xXEx4T4Osur8tem4EM4jhW214
-         DVQRAzgr127wLXIqCuXje4qhfIo+PuRFEkIqETNMvER8NVbXztEYeBYD4Z42bzcsUNgg
-         TmnOqeI9aHt7JIjLN0lmfgF7TQ/XO+gpYx+jlxKin9eSYF1pPrY4iDSNRD9ciGAf+Pv6
-         Z4Hknw1bHLuFaIroqzL2QFpILfCDC19BgMvZfQY8p6Xs3hGg4lf5QHEJn5IgQEtVV9LB
-         nGHr62+ixBudCboZMWGTXX6bHaPtl+P9vyRYRVRfHfoHnIhNVCzMg+NbYN3+muw8QidM
-         +TQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726001904; x=1726606704;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RZZkUf2WC6mfIlygG90tFs2dYgOhX5oqJ1ZGT74jCV0=;
-        b=f8QOeM7puBNqlDmuJW29u63wkPN5opBOsYFIbFp0KZqKsZu8zMlM2nnKtcW7CsOKv9
-         8cbg4PkZT7Xil8d9DulGJ3uIVfP9dnd64UlY/eTBsHFau+YTt8kcwXH0RqR8/fGbH/rC
-         LocShh+B9jjipKY0+KwV3zGhfsiyn5fxplgkmqcagm39vp8iW1PQl1VCT0uJt+yNF253
-         oEJTts824vOsgzmwNHEm1da/Zb48RWgg8FELTLHCbPACtyq9xRPlyzgeAwvGHlcn+z+z
-         UjN3B4cwUX/RJTF1/RQbK42R+bP+l6F7SqMLU306L+vXqVFUSarumXkusqthSm5NsnQZ
-         oE3g==
-X-Forwarded-Encrypted: i=1; AJvYcCVRRipicU+WP5lRciPCtTJ6tV6s4hrC4+rQ2FamFR0nSUuu+iIJ9bywwsOYG9PDouN3nAcYuALYDdT4bbn7Ig==@vger.kernel.org, AJvYcCWB8QQ9QJ4Dm5F8/oVY40wunZiQXzLEKe01AbORnZacUpf8X0sPUJ5T/+37ygUh9BzonB8Q7vsso3qLzyvjL0QZ6Oth@vger.kernel.org, AJvYcCWOyqlQHyfJflt+2XPLCPpojX8sgLU16H25+sk3aIKVL3uIvxvFN1x3mgzZjYp9uXM4WLI=@vger.kernel.org, AJvYcCWeaDFLsVz0fLGut8A/fDa/MKHNaOIlmWnP8rWdJ7KdOhBB/f7FWMdsQt+cRnXGuCze3NBUA2+Sg96cLyoG@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz75sAJlVdLTDC6HkOi9B116U8nkKHIEIattEwHTqY02+hDLEdg
-	0chF1TGvow2sQpHAwBItmLN3dtIKc2sKwyTyV7UloG3wC7XOAK/f9HZaPZuKOaQpt3AX83v/k+C
-	AEd4ueShgUs5Oz4OE5ty3i94Hc60=
-X-Google-Smtp-Source: AGHT+IFlYwX3ooMzADHl3WRC56Z25rc41qODOOier4HGtUasmVGD5FRx8r8/jNu4rZMhmraa47eo2BEJ07U35fQBNJg=
-X-Received: by 2002:a17:90a:f004:b0:2d8:d254:6cda with SMTP id
- 98e67ed59e1d1-2db82fec7admr1019356a91.20.1726001904425; Tue, 10 Sep 2024
- 13:58:24 -0700 (PDT)
+	s=arc-20240116; t=1726001996; c=relaxed/simple;
+	bh=hpL9ZdGA2gm98swxaaHVvRD9QSsK84D3RZxupu+kGU4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=R/6NI1p1XzbKrBJD6DpBWl15uERtHeabJIBbcqH39quF7XGtQYNnx1OJ8ZKFJlJIi8VY/mrjwoVZkbX7opFVwsN6oNXBxBsi5O/kiR7nxKUk3psD3zHAkN9v8MhNEauUAADZeK9xKxkMnWw3/l00kH1D7DWBTevc4E9hutjUt5Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=XnQgkFa9; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=l3IFiJbH; arc=none smtp.client-ip=103.168.172.157
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
+Received: from phl-compute-08.internal (phl-compute-08.phl.internal [10.202.2.48])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id 0DAD8114017F;
+	Tue, 10 Sep 2024 16:59:54 -0400 (EDT)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-08.internal (MEProxy); Tue, 10 Sep 2024 16:59:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1726001994;
+	 x=1726088394; bh=hzv2BsnnQ9fdXaJsvN7avfDB7W4UEo8ZjQhFk392AnY=; b=
+	XnQgkFa9N2tCOjhDBQNpIgzwWUL3m1FwqdhnLGc52Foz/LKK37h0V/1z/R6F0ui/
+	5SIMKdDaShCdufFp2UNUaMfQbZylY7RsaxlRKdRPOgeeRC38JZyfYpxUn4+4VH+q
+	x2onCWsDWUL+EkeOw+f/bXHgh15C0Xk9lyODIc1xFyx/WJMUbTL+GMvhEmLeMxYa
+	/IXvWAlb2rfxe7ZKF4foCQxu2FOIn/k44v9pZLo9H6oc/LTigpiaqK9a4JOzZx9N
+	InQwPfGiG3G2E3AkJGdoVJi+b4TLpmd9M5N4Ywfyp9HFryyFWnP1phK4VY7L0B9e
+	OmdF8fILRAu+Wg89MBPz/Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1726001994; x=
+	1726088394; bh=hzv2BsnnQ9fdXaJsvN7avfDB7W4UEo8ZjQhFk392AnY=; b=l
+	3IFiJbHOrS1TXM2zXWAzL1078NCSqZIZyUojDgf/fJV6crKbcS1nqe8+l60Rt4Kh
+	D+GcKOtYVIw6SXT7A9/EIQi53G43KMehGQbB3AkpD9SisKvyPy+e9rI5eyEVVjqo
+	b3LiBN3xZmfGHU+dYIPP7O3fa200Gc5v0GWJOs68RIW4RGKjRGpdEViGBwiPjy2d
+	nprHxFeP7b3U4xjMvMq5+JrHBfhXpqmwySqUpggnSaEmhyG69gQu7DLlIK3lxbE0
+	4+4ykBAJ8a3wHhG1bhSZFKODV54bjNCQwVgBgUOkeC0RFLGFGF9DbwsX6xN2Viw7
+	31EPjfhthig1wl93FBLLw==
+X-ME-Sender: <xms:SbPgZtGcn4N7g8h2ur_w6gvHMIVZisf4wjRn0VMmXyjn3U2WZ1MiyQ>
+    <xme:SbPgZiWne4gzlAsaWk4r6OiA6tXFX8VYacEURdAzDS9otsULLXTQuP7Fw8ql6JKoH
+    GWpcqAgJoGvaEUenA>
+X-ME-Received: <xmr:SbPgZvLATVg3IUJJ1KNWwk5KoYpijAfWNn9Ov1V35MDp9KVnRf37_Q8BBhM100BlHo9-FR0PIrLIiJZBw21PjtZBVUIqtRXVY-gRimhDv12M1w>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrudeiledgudegiecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
+    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
+    hnthhsucdlqddutddtmdenfghrlhcuvffnffculdejtddmnecujfgurhepfffhvfevuffk
+    fhggtggugfgjsehtkefstddttdejnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguh
+    esugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhepteffteekjeejueejueetfffh
+    vddujeeiueeijedutdfgjeffhfegkefggfeggfetnecuffhomhgrihhnpehrihhnghgsuh
+    hfrdhmrghpnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhho
+    mhepugiguhesugiguhhuuhdrgiihiidpnhgspghrtghpthhtohepudelpdhmohguvgepsh
+    hmthhpohhuthdprhgtphhtthhopegrlhgvgigvihdrshhtrghrohhvohhithhovhesghhm
+    rghilhdrtghomhdprhgtphhtthhopegvugguhiiikeejsehgmhgrihhlrdgtohhmpdhrtg
+    hpthhtoheprghnughrihhisehkvghrnhgvlhdrohhrghdprhgtphhtthhopegurghnihgv
+    lhesihhoghgvrghrsghogidrnhgvthdprhgtphhtthhopegrshhtsehkvghrnhgvlhdroh
+    hrghdprhgtphhtthhopehshhhurghhsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehj
+    ohhhnhdrfhgrshhtrggsvghnugesghhmrghilhdrtghomhdprhgtphhtthhopehmrghrth
+    hinhdrlhgruheslhhinhhugidruggvvhdprhgtphhtthhopehsohhngheskhgvrhhnvghl
+    rdhorhhg
+X-ME-Proxy: <xmx:SbPgZjH_b3SoQiwp4L0LSFK6xoEA0QlrYlXUiCrrw7ABs4D9y1aoPA>
+    <xmx:SbPgZjVyZS5si3_NOc1UZk-Qf1hjDV2ispd3RvXTLUuC1ojbpWuKtg>
+    <xmx:SbPgZuPaj6UdPn7YSHPHM1asD1DgyGpHQs3h5ocwv1vgsnMD99gLSQ>
+    <xmx:SbPgZi22ydKr6LEHB6tcKcC8qHpeIQNZIzdr2cNei1TaTLPGU0aNWg>
+    <xmx:SrPgZiZHdRgu6CikIT_e8EfIbeLUouFPAkKBwdDXlXuwUS7V1-HV8AJ2>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 10 Sep 2024 16:59:50 -0400 (EDT)
+Date: Tue, 10 Sep 2024 14:59:48 -0600
+From: Daniel Xu <dxu@dxuuu.xyz>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Eddy Z <eddyz87@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov <ast@kernel.org>, 
+	Shuah Khan <shuah@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Mykola Lysenko <mykolal@fb.com>, LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, Kernel Team <kernel-team@meta.com>
+Subject: Re: [PATCH bpf-next] bpf: ringbuf: Support consuming
+ BPF_MAP_TYPE_RINGBUF from prog
+Message-ID: <ip35p7p3hkskenndnbxt6gghzyfzmwdswo3mfaqisac7r57rlq@kqpp5ftzsdxi>
+References: <18a9ddacc99bb95e9802f8ad1e81214433df496c.1725929645.git.dxu@dxuuu.xyz>
+ <CAADnVQKyfZ2-qCvmqG8z919ggdOszEjTs04H=cTGOZTi-zhx7Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240906051205.530219-1-andrii@kernel.org> <20240906051205.530219-3-andrii@kernel.org>
- <CAG48ez2G1Pf_RRRT0av=6r_4HcLZu6QMgveepk-ENo=PkaZC1w@mail.gmail.com>
- <CAEf4Bzb+ShZqcj9EKQB8U9tyaJ1LoOpRxd24v76FuPJP-=dkNg@mail.gmail.com> <CAJuCfpEhCm3QoZqemO=bX0snO16fxOssMWzLsiewkioiRV_aOA@mail.gmail.com>
-In-Reply-To: <CAJuCfpEhCm3QoZqemO=bX0snO16fxOssMWzLsiewkioiRV_aOA@mail.gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 10 Sep 2024 13:58:10 -0700
-Message-ID: <CAEf4Bzbh_HWuHEZqHZ7MHFLtp+jFf2yiCWyd-RqY-hvm09d5Ow@mail.gmail.com>
-Subject: Re: [PATCH 2/2] uprobes: add speculative lockless VMA-to-inode-to-uprobe
- resolution
-To: Suren Baghdasaryan <surenb@google.com>
-Cc: Christian Brauner <brauner@kernel.org>, Jann Horn <jannh@google.com>, 
-	Liam Howlett <liam.howlett@oracle.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	linux-trace-kernel@vger.kernel.org, peterz@infradead.org, oleg@redhat.com, 
-	rostedt@goodmis.org, mhiramat@kernel.org, bpf@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, jolsa@kernel.org, paulmck@kernel.org, 
-	willy@infradead.org, akpm@linux-foundation.org, linux-mm@kvack.org, 
-	mjguzik@gmail.com, Miklos Szeredi <miklos@szeredi.hu>, Amir Goldstein <amir73il@gmail.com>, 
-	linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQKyfZ2-qCvmqG8z919ggdOszEjTs04H=cTGOZTi-zhx7Q@mail.gmail.com>
 
-On Tue, Sep 10, 2024 at 9:32=E2=80=AFAM Suren Baghdasaryan <surenb@google.c=
-om> wrote:
->
-> On Mon, Sep 9, 2024 at 2:29=E2=80=AFPM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
+On Tue, Sep 10, 2024 at 11:36:36AM GMT, Alexei Starovoitov wrote:
+> On Mon, Sep 9, 2024 at 5:55 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
 > >
-> > On Mon, Sep 9, 2024 at 6:13=E2=80=AFAM Jann Horn <jannh@google.com> wro=
-te:
-> > >
-> > > On Fri, Sep 6, 2024 at 7:12=E2=80=AFAM Andrii Nakryiko <andrii@kernel=
-.org> wrote:
-> > > > Given filp_cachep is already marked SLAB_TYPESAFE_BY_RCU, we can sa=
-fely
-> > > > access vma->vm_file->f_inode field locklessly under just rcu_read_l=
-ock()
-> > >
-> > > No, not every file is SLAB_TYPESAFE_BY_RCU - see for example
-> > > ovl_mmap(), which uses backing_file_mmap(), which does
-> > > vma_set_file(vma, file) where "file" comes from ovl_mmap()'s
-> > > "realfile", which comes from file->private_data, which is set in
-> > > ovl_open() to the return value of ovl_open_realfile(), which comes
-> > > from backing_file_open(), which allocates a file with
-> > > alloc_empty_backing_file(), which uses a normal kzalloc() without any
-> > > RCU stuff, with this comment:
-> > >
-> > >  * This is only for kernel internal use, and the allocate file must n=
-ot be
-> > >  * installed into file tables or such.
-> > >
-> > > And when a backing_file is freed, you can see on the path
-> > > __fput() -> file_free()
-> > > that files with FMODE_BACKING are directly freed with kfree(), no RCU=
- delay.
+> > Right now there exists prog produce / userspace consume and userspace
+> > produce / prog consume support. But it is also useful to have prog
+> > produce / prog consume.
 > >
-> > Good catch on FMODE_BACKING, I didn't realize there is this exception, =
-thanks!
+> > For example, we want to track the latency overhead of cpumap in
+> > production. Since we need to store enqueue timestamps somewhere and
+> > cpumap is MPSC, we need an MPSC data structure to shadow cpumap. BPF
+> > ringbuf is such a data structure. Rather than reimplement (possibly
+> > poorly) a custom ringbuffer in BPF, extend the existing interface to
+> > allow the final quadrant of ringbuf usecases to be filled. Note we
+> > ignore userspace to userspace use case - there is no need to involve
+> > kernel for that.
 > >
-> > I think the way forward would be to detect that the backing file is in
-> > FMODE_BACKING and fall back to mmap_lock-protected code path.
+> > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> > ---
+> >  kernel/bpf/verifier.c                         |  6 +-
+> >  tools/testing/selftests/bpf/Makefile          |  3 +-
+> >  .../selftests/bpf/prog_tests/ringbuf.c        | 50 +++++++++++++++
+> >  .../bpf/progs/test_ringbuf_bpf_to_bpf.c       | 64 +++++++++++++++++++
+> >  4 files changed, 120 insertions(+), 3 deletions(-)
+> >  create mode 100644 tools/testing/selftests/bpf/progs/test_ringbuf_bpf_to_bpf.c
 > >
-> > I guess I have the question to Liam and Suren, do you think it would
-> > be ok to add another bool after `bool detached` in struct
-> > vm_area_struct (guarded by CONFIG_PER_VMA_LOCK), or should we try to
-> > add an extra bit into vm_flags_t? The latter would work without
-> > CONFIG_PER_VMA_LOCK, but I don't know what's acceptable with mm folks.
-> >
-> > This flag can be set in vma_set_file() when swapping backing file and
-> > wherever else vma->vm_file might be set/updated (I need to audit the
-> > code).
->
-> I understand that this would work but I'm not very eager to leak
-> vm_file attributes like FMODE_BACKING into vm_area_struct.
-> Instead maybe that exception can be avoided? Treating all vm_files
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index 53d0556fbbf3..56bfe559f228 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -9142,7 +9142,8 @@ static int check_map_func_compatibility(struct bpf_verifier_env *env,
+> >                     func_id != BPF_FUNC_ringbuf_query &&
+> >                     func_id != BPF_FUNC_ringbuf_reserve_dynptr &&
+> >                     func_id != BPF_FUNC_ringbuf_submit_dynptr &&
+> > -                   func_id != BPF_FUNC_ringbuf_discard_dynptr)
+> > +                   func_id != BPF_FUNC_ringbuf_discard_dynptr &&
+> > +                   func_id != BPF_FUNC_user_ringbuf_drain)
+> >                         goto error;
+> >                 break;
+> >         case BPF_MAP_TYPE_USER_RINGBUF:
+> > @@ -9276,7 +9277,8 @@ static int check_map_func_compatibility(struct bpf_verifier_env *env,
+> >                         goto error;
+> >                 break;
+> >         case BPF_FUNC_user_ringbuf_drain:
+> > -               if (map->map_type != BPF_MAP_TYPE_USER_RINGBUF)
+> > +               if (map->map_type != BPF_MAP_TYPE_USER_RINGBUF &&
+> > +                   map->map_type != BPF_MAP_TYPE_RINGBUF)
+> >                         goto error;
+> 
+> I think it should work.
+> 
+> Andrii,
+> 
+> do you see any issues with such use?
+> 
+> >                 break;
+> >         case BPF_FUNC_get_stackid:
+> > diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+> > index 9905e3739dd0..233109843d4d 100644
+> > --- a/tools/testing/selftests/bpf/Makefile
+> > +++ b/tools/testing/selftests/bpf/Makefile
+> > @@ -503,7 +503,8 @@ LINKED_SKELS := test_static_linked.skel.h linked_funcs.skel.h               \
+> >  LSKELS := fentry_test.c fexit_test.c fexit_sleep.c atomics.c           \
+> >         trace_printk.c trace_vprintk.c map_ptr_kern.c                   \
+> >         core_kern.c core_kern_overflow.c test_ringbuf.c                 \
+> > -       test_ringbuf_n.c test_ringbuf_map_key.c test_ringbuf_write.c
+> > +       test_ringbuf_n.c test_ringbuf_map_key.c test_ringbuf_write.c    \
+> > +       test_ringbuf_bpf_to_bpf.c
+> 
+> Do you need it to be lskel ?
+> 
+> Regular skels are either to debug.
 
-I agree, that would be best, of course. It seems like [1] was an
-optimization to avoid kfree_rcu() calls, not sure how big of a deal it
-is to undo that, given we do have a use case that calls for it now.
-Let's see what Christian thinks.
+I'm actually unsure the difference, still. But all the other tests in
+the file were using lskel so I just copy/pasted.
 
-> equally as RCU-safe would be a much simpler solution. I see that this
-> exception was introduced in [1] and I don't know if this was done for
-> performance reasons or something else. Christian, CCing you here to
-> please clarify.
->
-> [1] https://lore.kernel.org/all/20231005-sakralbau-wappnen-f5c31755ed70@b=
-rauner/
->
+> 
+> Also pls split selftest into a separate patch.
+
+Ack.
+
+> 
 > >
-> > >
-> > > So the RCU-ness of "struct file" is an implementation detail of the
-> > > VFS, and you can't rely on it for ->vm_file unless you get the VFS to
-> > > change how backing file lifetimes work, which might slow down some
-> > > other workload, or you find a way to figure out whether you're dealin=
-g
-> > > with a backing file without actually accessing the file.
-> > >
-> > > > +static struct uprobe *find_active_uprobe_speculative(unsigned long=
- bp_vaddr)
-> > > > +{
-> > > > +       const vm_flags_t flags =3D VM_HUGETLB | VM_MAYEXEC | VM_MAY=
-SHARE;
-> > > > +       struct mm_struct *mm =3D current->mm;
-> > > > +       struct uprobe *uprobe;
-> > > > +       struct vm_area_struct *vma;
-> > > > +       struct file *vm_file;
-> > > > +       struct inode *vm_inode;
-> > > > +       unsigned long vm_pgoff, vm_start;
-> > > > +       int seq;
-> > > > +       loff_t offset;
-> > > > +
-> > > > +       if (!mmap_lock_speculation_start(mm, &seq))
-> > > > +               return NULL;
-> > > > +
-> > > > +       rcu_read_lock();
-> > > > +
-> > > > +       vma =3D vma_lookup(mm, bp_vaddr);
-> > > > +       if (!vma)
-> > > > +               goto bail;
-> > > > +
-> > > > +       vm_file =3D data_race(vma->vm_file);
-> > >
-> > > A plain "data_race()" says "I'm fine with this load tearing", but
-> > > you're relying on this load not tearing (since you access the vm_file
-> > > pointer below).
-> > > You're also relying on the "struct file" that vma->vm_file points to
-> > > being populated at this point, which means you need CONSUME semantics
-> > > here, which READ_ONCE() will give you, and something like RELEASE
-> > > semantics on any pairing store that populates vma->vm_file, which
-> > > means they'd all have to become something like smp_store_release()).
+> >  # Generate both light skeleton and libbpf skeleton for these
+> >  LSKELS_EXTRA := test_ksyms_module.c test_ksyms_weak.c kfunc_call_test.c \
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/ringbuf.c b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
+> > index da430df45aa4..3e7955573ac5 100644
+> > --- a/tools/testing/selftests/bpf/prog_tests/ringbuf.c
+> > +++ b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
+> > @@ -17,6 +17,7 @@
+> >  #include "test_ringbuf_n.lskel.h"
+> >  #include "test_ringbuf_map_key.lskel.h"
+> >  #include "test_ringbuf_write.lskel.h"
+> > +#include "test_ringbuf_bpf_to_bpf.lskel.h"
 > >
-> > vma->vm_file should be set in VMA before it is installed and is never
-> > modified afterwards, isn't that the case? So maybe no extra barrier
-> > are needed and READ_ONCE() would be enough.
+> >  #define EDONE 7777
 > >
-> > >
-> > > You might want to instead add another recheck of the sequence count
-> > > (which would involve at least a read memory barrier after the
-> > > preceding patch is fixed) after loading the ->vm_file pointer to
-> > > ensure that no one was concurrently changing the ->vm_file pointer
-> > > before you do memory accesses through it.
-> > >
-> > > > +       if (!vm_file || (vma->vm_flags & flags) !=3D VM_MAYEXEC)
-> > > > +               goto bail;
-> > >
-> > > missing data_race() annotation on the vma->vm_flags access
+> > @@ -497,6 +498,53 @@ static void ringbuf_map_key_subtest(void)
+> >         test_ringbuf_map_key_lskel__destroy(skel_map_key);
+> >  }
 > >
-> > ack
-> >
-> > >
-> > > > +       vm_inode =3D data_race(vm_file->f_inode);
-> > >
-> > > As noted above, this doesn't work because you can't rely on having RC=
-U
-> > > lifetime for the file. One *very* ugly hack you could do, if you thin=
-k
-> > > this code is so performance-sensitive that you're willing to do fairl=
-y
-> > > atrocious things here, would be to do a "yes I am intentionally doing
-> > > a UAF read and I know the address might not even be mapped at this
-> > > point, it's fine, trust me" pattern, where you use
-> > > copy_from_kernel_nofault(), kind of like in prepend_copy() in
-> > > fs/d_path.c, and then immediately recheck the sequence count before
-> > > doing *anything* with this vm_inode pointer you just loaded.
-> > >
-> > >
-> >
-> > yeah, let's leave it as a very unfortunate plan B and try to solve it
-> > a bit cleaner.
-> >
-> >
-> > >
-> > > > +       vm_pgoff =3D data_race(vma->vm_pgoff);
-> > > > +       vm_start =3D data_race(vma->vm_start);
-> > > > +
-> > > > +       offset =3D (loff_t)(vm_pgoff << PAGE_SHIFT) + (bp_vaddr - v=
-m_start);
-> > > > +       uprobe =3D find_uprobe_rcu(vm_inode, offset);
-> > > > +       if (!uprobe)
-> > > > +               goto bail;
-> > > > +
-> > > > +       /* now double check that nothing about MM changed */
-> > > > +       if (!mmap_lock_speculation_end(mm, seq))
-> > > > +               goto bail;
-> > > > +
-> > > > +       rcu_read_unlock();
-> > > > +
-> > > > +       /* happy case, we speculated successfully */
-> > > > +       return uprobe;
-> > > > +bail:
-> > > > +       rcu_read_unlock();
-> > > > +       return NULL;
-> > > > +}
+> > +static void ringbuf_bpf_to_bpf_subtest(void)
+> > +{
+> > +       struct test_ringbuf_bpf_to_bpf_lskel *skel;
+> > +       int err, i;
+> > +
+> > +       skel = test_ringbuf_bpf_to_bpf_lskel__open();
+> > +       if (!ASSERT_OK_PTR(skel, "test_ringbuf_bpf_to_bpf_lskel__open"))
+> > +               return;
+> > +
+> > +       skel->maps.ringbuf.max_entries = getpagesize();
+> > +       skel->bss->pid = getpid();
+> > +
+> > +       err = test_ringbuf_bpf_to_bpf_lskel__load(skel);
+> > +       if (!ASSERT_OK(err, "test_ringbuf_bpf_to_bpf_lskel__load"))
+> > +               goto cleanup;
+> > +
+> > +       ringbuf = ring_buffer__new(skel->maps.ringbuf.map_fd, NULL, NULL, NULL);
+> > +       if (!ASSERT_OK_PTR(ringbuf, "ring_buffer__new"))
+> > +               goto cleanup;
+> > +
+> > +       err = test_ringbuf_bpf_to_bpf_lskel__attach(skel);
+> > +       if (!ASSERT_OK(err, "test_ringbuf_bpf_to_bpf_lskel__attach"))
+> > +               goto cleanup_ringbuf;
+> > +
+> > +       /* Produce N_SAMPLES samples in the ring buffer by calling getpid() */
+> > +       skel->bss->value = SAMPLE_VALUE;
+> > +       for (i = 0; i < N_SAMPLES; i++)
+> > +               syscall(__NR_getpgid);
+> > +
+> > +       /* Trigger bpf-side consumption */
+> > +       syscall(__NR_prctl);
+> 
+> This might conflict with other selftests that run in parallel.
+> 
+> Just load the skel and bpf_prog_run(prog_fd).
+> No need to attach anywhere in the kernel.
+
+Ack.
+
+> 
+> pw-bot: cr
 
