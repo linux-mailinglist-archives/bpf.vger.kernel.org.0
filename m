@@ -1,123 +1,183 @@
-Return-Path: <bpf+bounces-39507-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39508-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 303A897416D
-	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 19:59:33 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63CE897418C
+	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 20:02:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E2D7D2888FF
-	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 17:59:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E44ED1F26B3A
+	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 18:02:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F8B91A4AD7;
-	Tue, 10 Sep 2024 17:58:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04D5119E802;
+	Tue, 10 Sep 2024 18:02:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TsGSQcVD"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="i9Z6OuPM"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-176.mta0.migadu.com (out-176.mta0.migadu.com [91.218.175.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E4A81A2C0D;
-	Tue, 10 Sep 2024 17:58:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AD8479B84
+	for <bpf@vger.kernel.org>; Tue, 10 Sep 2024 18:02:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725991138; cv=none; b=uT75TMCcI4fFGQbPwXypGtnFA82WT9TpgLYuDlNSS0DJFjD8RY2bWbK4FjIsRMV5NbxpoCXM9dgKvLOe0TB17Xwy9CUBSeM2AN6r6KH20dHKfoIhx6psHtA/hbPY6dSF1wMHhiDCimI1M5YF/ve7yM1xbYUKk+F9F77fbO6TCzY=
+	t=1725991363; cv=none; b=FtRNCHqrdpKtJvqIJUWxlmPBzNttQGF7UoxMrBkpddx6WDjEA4Ihmmeonn5aQrAnbji3IwISqqwy6okA68YqdeJCLU3xNC0r2XJ46JlqMoktTRJAPG3Rnr5iBULBZJSWSQqnmmby57lftrhlY9oK5YyRdeaNmasNhGMx21FXYOA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725991138; c=relaxed/simple;
-	bh=GjEfxluKTJVRF/DjHSV9HalaftsH0waQ1mRxQ+bwGd0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=R3sL5gigCQYEM2Cpqrb00/LVFO2IQ02KFchfJaL+oIFG1K9OdJSQHN8O6vp0DgKGbm0jA5qtgBSym4J9j1p1bPNYCUDKlkgjQCAOaee5ZcCnGE3w+Cfm3j6wh/smDgXLqSb7+LoVbVdukhxOqOH0xAfXNagCFWJQM6JmOUlFn6M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TsGSQcVD; arc=none smtp.client-ip=209.85.215.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-7cd967d8234so3810025a12.2;
-        Tue, 10 Sep 2024 10:58:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1725991136; x=1726595936; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GjEfxluKTJVRF/DjHSV9HalaftsH0waQ1mRxQ+bwGd0=;
-        b=TsGSQcVDPplNK0k5HdvIQ1V9vq/8iHqVp1MRFIrwlO8iKL0MmUM6XQPqhVf5T47m+a
-         Aj2gOu1sIHQwXABQhTB3Jwe0S9mZhMvHwBP+GKc79jbqsOOW4sfm/Gf/PTukasbCNQe4
-         RqD2E8P9oPfoIaLe/SvBaxXksDwyFgc8dO3FwMEonTo9HdDrUaU+El+cqPyowVu6UUIa
-         GipXqnnftZc03ibi8YOmhtmGIDeeKv95uKoft8LyQ+kwJgHE7K8J7457dOuiOvUMmvfw
-         jrH7wYnRJ+xCcJr9hF9bAwxgWrouB8i9MrjfbwaSgiczXMxa/fOOxgPR1p+iGUfKVFd8
-         Ydsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725991136; x=1726595936;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GjEfxluKTJVRF/DjHSV9HalaftsH0waQ1mRxQ+bwGd0=;
-        b=CipgBw0P4UB1oeOZMpwz2174eukJ8YqAdqNSMY7MBtTpI6tFloM5E20jLdUXmrRisr
-         +T+8d9ukwM6PPBeMtt5ZaxNcdVa+BopklMrVGtwGnvHEcZlMYlwjTluDC3dNLrTzivWp
-         fl44Wbu0mNT9isxjVkmMjN+NImoR/f/2yDuSqH/O8xZNzNj0G9CpHQDjxUrLghBmtD9y
-         Hiu3U+Ay6B9Q+qFFHkieiyT74AnK53Ve1PdjiAS/HUAzK0TCtO+EN00YLxmJKm2WBGPC
-         /ZL+1LK3XUO9w1KlAzNqAVzSTop9TXjMfeiaZg4LUHCYcHjMr+cfC8ubJi/C5oqwy06C
-         bgRg==
-X-Forwarded-Encrypted: i=1; AJvYcCVRwi8kWFKD0Pzoni/Tyt62a0GUUN3ZnKkEi+bGSsuZvri4VKGa+VODpYjiWAoe/ssGIaKWnoaasrkhDLD8Bl9591Ks@vger.kernel.org, AJvYcCWn1xvtN3iHY9u8/VFvS9cWNTc9NUmy+NAgftZLXk8JJVuU21MDy/wn9DAiV4X7kxRhOnQ=@vger.kernel.org, AJvYcCXA6Q93YY0JNg+Qac76WAAXlNe/5s+TF0BLSoPFwlemraK5QNp7RbJ7G//MH5wO334smQSw7umsUicH5PAO@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz+0BFwKNP/XjxTdKo8i3vDEq+3MwiW6TLDpDWost8x7cYBrFk0
-	aHmRdXvK0JUO4PzQhYgsAQhTKw/SaHBq8mgIu7zsjYqXNioJ0lBgVz52tCFbpWyNIVM6N4kKkOs
-	LfyelbouAOGBmIE6IBOui/07MEeg=
-X-Google-Smtp-Source: AGHT+IFNXrrVPS1asK6Ez1I46sSg3pMZ8OK2Mpk2mTEoVt5umC/wSIE0wWN0Ozv5MLC/PZQn/zRdVhrtnobU1pfO/ig=
-X-Received: by 2002:a05:6a20:e68e:b0:1cc:e14b:cf3b with SMTP id
- adf61e73a8af0-1cf5e0f65d9mr1617076637.27.1725991136326; Tue, 10 Sep 2024
- 10:58:56 -0700 (PDT)
+	s=arc-20240116; t=1725991363; c=relaxed/simple;
+	bh=iuE3T94G6uRYx5lJP01PK3jCtP90hm1UXt1vCDw/9/w=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=oAU8R1b5+gwY9sCgSVdiwtCwcSV7HlGxnk+eOnwIwyQR9WiQ9dIbju0FWGlGpofS5y5S1h1sb2DWTnS8tNv5Nq8yI+sg3XlhkOlbVZjtTOt4Hj0j8y5nT/IMD7/DDn4SqJukpLgf4zMCm4sXEjR8WBRuvkC2+9kH4El0n3qI4a4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=i9Z6OuPM; arc=none smtp.client-ip=91.218.175.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <b1619bd1-807a-44b7-bfe7-fc053a8122eb@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1725991358;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=AGNEc+6AgMpi4iLzBNEpw7v3QYyvXgx+aeBZJ7ozxBY=;
+	b=i9Z6OuPMfR2Hkt4+dV17HgPSMA1gs9zWgHc1O3D253FF2wnB7e8Tw1FZe300BgLWKQjZxz
+	xTwYnTCv9URlL3aiQvnfaw0GJGwOJMPbVenGHTlYVqSIi16NlgDSZ7yojlrfww9KL/o3fB
+	jsMoe4kA1cUYoisZdj3SRal13eKrA9A=
+Date: Tue, 10 Sep 2024 11:02:33 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240906051205.530219-1-andrii@kernel.org> <CAG48ez1+Y+ifc3HfG=E5j+g=RwtzH2TiE4mAC2TZxS52idkRZg@mail.gmail.com>
-In-Reply-To: <CAG48ez1+Y+ifc3HfG=E5j+g=RwtzH2TiE4mAC2TZxS52idkRZg@mail.gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 10 Sep 2024 10:58:44 -0700
-Message-ID: <CAEf4BzazZSUtJ9vPd6Xj4539MCebctOZJmO7xmdUhoQiv5mBFg@mail.gmail.com>
-Subject: Re: [PATCH 0/2] uprobes,mm: speculative lockless VMA-to-uprobe lookup
-To: Jann Horn <jannh@google.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org, 
-	peterz@infradead.org, oleg@redhat.com, rostedt@goodmis.org, 
-	mhiramat@kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	jolsa@kernel.org, paulmck@kernel.org, willy@infradead.org, surenb@google.com, 
-	akpm@linux-foundation.org, linux-mm@kvack.org, mjguzik@gmail.com, 
-	brauner@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: Kernel oops caused by signed divide
+Content-Language: en-GB
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Zac Ecob <zacecob@protonmail.com>, Daniel Borkmann
+ <daniel@iogearbox.net>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+References: <tPJLTEh7S_DxFEqAI2Ji5MBSoZVg7_G-Py2iaZpAaWtM961fFTWtsnlzwvTbzBzaUzwQAoNATXKUlt0LZOFgnDcIyKCswAnAGdUF3LBrhGQ=@protonmail.com>
+ <CAADnVQ+o1jPQwxP9G9Xb=ZSEQDKKq1m1awpovKWdVRMNf8sgdg@mail.gmail.com>
+ <1058c69c-3e2c-4c0b-b777-2b0460f443f9@linux.dev>
+ <CAADnVQJPnCvttM+yitHbLRNoPUPs6EK+5VG=-SDP3LVdD70jyg@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <CAADnVQJPnCvttM+yitHbLRNoPUPs6EK+5VG=-SDP3LVdD70jyg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, Sep 10, 2024 at 9:06=E2=80=AFAM Jann Horn <jannh@google.com> wrote:
+
+On 9/10/24 8:21 AM, Alexei Starovoitov wrote:
+> On Tue, Sep 10, 2024 at 7:21 AM Yonghong Song <yonghong.song@linux.dev> wrote:
+>>
+>> On 9/9/24 10:29 AM, Alexei Starovoitov wrote:
+>>> On Mon, Sep 9, 2024 at 10:21 AM Zac Ecob <zacecob@protonmail.com> wrote:
+>>>> Hello,
+>>>>
+>>>> I recently received a kernel 'oops' about a divide error.
+>>>> After some research, it seems that the 'div64_s64' function used for the 'MOD'/'REM' instructions boils down to an 'idiv'.
+>>>>
+>>>> The 'dividend' is set to INT64_MIN, and the 'divisor' to -1, then because of two's complement, there is no corresponding positive value, causing the error (at least to my understanding).
+>>>>
+>>>>
+>>>> Apologies if this is already known / not a relevant concern.
+>>> Thanks for the report. This is a new issue.
+>>>
+>>> Yonghong,
+>>>
+>>> it's related to the new signed div insn.
+>>> It sounds like we need to update chk_and_div[] part of
+>>> the verifier to account for signed div differently.
+>> In verifier, we have
+>>     /* [R,W]x div 0 -> 0 */
+>>     /* [R,W]x mod 0 -> [R,W]x */
+> the verifier is doing what hw does. In this case this is arm64 behavior.
+
+Okay, I see. I tried on a arm64 machine it indeed hehaves like the above.
+
+# uname -a
+Linux ... #1 SMP PREEMPT_DYNAMIC Thu Aug  1 06:58:32 PDT 2024 aarch64 aarch64 aarch64 GNU/Linux
+# cat t2.c
+#include <stdio.h>
+#include <limits.h>
+int main(void) {
+   volatile long long a = 5;
+   volatile long long b = 0;
+   printf("a/b = %lld\n", a/b);
+   return 0;
+}
+# cat t3.c
+#include <stdio.h>
+#include <limits.h>
+int main(void) {
+   volatile long long a = 5;
+   volatile long long b = 0;
+   printf("a%%b = %lld\n", a%b);
+   return 0;
+}
+# gcc -O2 t2.c && ./a.out
+a/b = 0
+# gcc -O2 t3.c && ./a.out
+a%b = 5
+
+on arm64, clang18 compiled binary has the same result
+
+# clang -O2 t2.c && ./a.out
+a/b = 0
+# clang -O2 t3.c && ./a.out
+a%b = 5
+
+The same source code, compiled on x86_64 with -O2 as well,
+it generates:
+   Floating point exception (core dumped)
+
 >
-> On Fri, Sep 6, 2024 at 7:12=E2=80=AFAM Andrii Nakryiko <andrii@kernel.org=
-> wrote:
-> > Implement speculative (lockless) resolution of VMA to inode to uprobe,
-> > bypassing the need to take mmap_lock for reads, if possible. Patch #1 b=
-y Suren
-> > adds mm_struct helpers that help detect whether mm_struct were changed,=
- which
-> > is used by uprobe logic to validate that speculative results can be tru=
-sted
-> > after all the lookup logic results in a valid uprobe instance.
+>> What the value for
+>>     Rx_a sdiv Rx_b -> ?
+>> where Rx_a = INT64_MIN and Rx_b = -1?
+> Why does it matter what Rx_a contains ?
+
+It does matter. See below:
+
+on arm64:
+
+# cat t1.c
+#include <stdio.h>
+#include <limits.h>
+int main(void) {
+   volatile long long a = LLONG_MIN;
+   volatile long long b = -1;
+   printf("a/b = %lld\n", a/b);
+   return 0;
+}
+# clang -O2 t1.c && ./a.out
+a/b = -9223372036854775808
+# gcc -O2 t1.c && ./a.out
+a/b = -9223372036854775808
+
+So the result of a/b is LLONG_MIN
+
+The same code will cause exception on x86_64:
+
+$ uname -a
+Linux ... #1 SMP Wed Jun  5 06:21:21 PDT 2024 x86_64 x86_64 x86_64 GNU/Linux
+[yhs@devvm1513.prn0 ~]$ gcc -O2 t1.c && ./a.out
+Floating point exception (core dumped)
+[yhs@devvm1513.prn0 ~]$ clang -O2 t1.c && ./a.out
+Floating point exception (core dumped)
+
+So this is what we care about.
+
+So I guess we can follow arm64 result too.
+
 >
-> Random thought: It would be nice if you could skip the MM stuff
-> entirely and instead go through the GUP-fast path, but I guess going
-> from a uprobe-created anon page to the corresponding uprobe is hard...
-> but maybe if you used the anon_vma pointer as a lookup key to find the
-> uprobe, it could work? Though then you'd need hooks in the anon_vma
-> code... maybe not such a great idea.
+> What cpus do in this case?
 
-So I'm not crystal clear on all the details here, so maybe you can
-elaborate a bit. But keep in mind that a) there could be multiple
-uprobes within a single user page, so lookup has to take at least
-offset within the page into account somehow. But also b) single uprobe
-can be installed in many independent anon VMAs across many processes.
-So anon vma itself can't be part of the key.
+See above. arm64 produces *some* result while x64 cause exception.
+We do need to special handle for LLONG_MIN/(-1) case.
 
-Though maybe we could have left some sort of "cookie" stashed
-somewhere to help with lookup. But then again, multiple uprobes per
-page.
-
-It does feel like lockless VMA to inode resolution would be a cleaner
-solution, let's see if we can get there somehow.
+>
+>> Should we just do
+>>     INT64_MIN sdiv -1 -> -1
+>> or some other values?
+>>
 
