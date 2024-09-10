@@ -1,222 +1,142 @@
-Return-Path: <bpf+bounces-39484-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39485-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA428973DB8
-	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 18:50:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0260D973DC8
+	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 18:53:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 627C4287E37
-	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 16:50:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 349031C25352
+	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 16:53:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A6CC1A0B1A;
-	Tue, 10 Sep 2024 16:50:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 870BE1A2570;
+	Tue, 10 Sep 2024 16:53:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="muZULz8h"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dWMZaZXr"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84ACE1755C
-	for <bpf@vger.kernel.org>; Tue, 10 Sep 2024 16:50:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E89611A0734;
+	Tue, 10 Sep 2024 16:53:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725987019; cv=none; b=Xck/CefmIsyOpmhjKUeP03H0L4gpv8kNpMX8Fqe8A3xlGivtGh1mPz6Lyj+eQgURzVJdBdUyE2wNummlasss6VUZC+StCUO3mlgbh2oRQVC86421Mvf98LoZzvqGnU62Pn6++/KQqvbREnwF8g5tXaCgk4NcGvZR7TiEUrAsHzs=
+	t=1725987203; cv=none; b=qzDfmXrAmm8DnrhLrnmuuiQNKVO5kwg3/LouoVgMKREvFr1+HXWWPeCEQWqz691nlMR+oMAbHvqk3nDP/GKW+kUkrJuF+31PzctcAnZbtwn0Bv9LijlNpqVC7GkC80FYo9avd/QPPez6zOm6XY6pU0OkxoIilX50D1U6DTCnDFE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725987019; c=relaxed/simple;
-	bh=c7t024PgeN7gkge8kn5x8zfDtzM4Uft0+SfIptbevig=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fus1KH0iKhKA4qE20rG0I+2DIRnnTGBPKFbtRT+BFYxx+ZKDauvtdjA9wI7WkcjEw+OBavgme9LACujR7A523FZugv1v9Z1cfKf8VidAbU654wX2C0OlffxklQB1Y3Tgi17gU6R2DStufvNizdyQuJDHZU5Wq2PhKw9RMom2ZAE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=muZULz8h; arc=none smtp.client-ip=209.85.210.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-718f28f77f4so951590b3a.1
-        for <bpf@vger.kernel.org>; Tue, 10 Sep 2024 09:50:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1725987017; x=1726591817; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dvpo0mZSQm60y6SR0A4vHyLf3g2SPJ7H4f/ISe2Ssxk=;
-        b=muZULz8hzVacoEkVIt+ERnMXoFnVlOz1iO1G8LQ3tXjzv6RwYfpblRO6xISaPXK/pE
-         GKjhbIW8YOSUiwnQ2kQ8aLyd6KqPeeaNRat9QPykNEaEBbS3ykH82LEpDsuXsd4+L0VW
-         9pmjdcXbs7FNTjsXp+RlLwIUYghWbiuAADqiZcFtm6hiEFlchn7DAmaGpF7FnswLp97a
-         uiQNTyNivr0iNew8Tz0v2ak/Gpjqtr5yAPR5RBKVZupN14PzL5EmTiUwCpQvW/eo0ULf
-         9qE9NOkN04HOyN9D8yPRLM3c5d3Iq5i5PpN95U9odTz2bZI7fdpRPkodTEZLP/KKEXFB
-         qVAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725987017; x=1726591817;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dvpo0mZSQm60y6SR0A4vHyLf3g2SPJ7H4f/ISe2Ssxk=;
-        b=S+F22uOgn9DjBXZH95uCnGSIi9LDsxvxlD3/NyNc+8l+iENmcnI+5pS0cRRAbMUy4S
-         4pTqEbJ5B73xzfJND0j2X1/IpLefQ12ARjwwXbSHmhbbytEAsoDLcwA4enTlK6RgLeui
-         giPO7a7YAmRmDUXjecjfXuc3lHq1hJdxY6QS6dF+1XmfWQH3bLLcuQ6fOaeHGVdUr0A5
-         +cPXOGkTlAjVmnyO41FwruOo30Hae0QJXxYS0ZE3hFesskkMH/wd5qBDQPK6P3qg0T5K
-         FdcskumpgixcygUFb4cascagJ+cdIXgL8LAi/Zn0vRu5LZyXCljRzURBTUn5DCEyGBWh
-         Fpbw==
-X-Gm-Message-State: AOJu0YyfZxt+KSgZs68Vq6r24JUN54KN3xjP+gApCMFuNqwojTekfKBz
-	TJzO1OA7/7ECRht8V4rmP3l953PxQi/KWGm62X2iUM8w7XPqz/W0YZMckcCB5QAVDpLRE5xJGE2
-	SA+RshrIXwY86LKrUxGioi4jmMYc=
-X-Google-Smtp-Source: AGHT+IGdXUrBi+Pcpdh3JCuZOOdWoXPjq0vbFUlh3a4Q+ie/8R/xyifO06osbQpseEn2zCQ7CpfsWmp+yQktxl9gDu0=
-X-Received: by 2002:a05:6a20:d526:b0:1cc:df27:54e8 with SMTP id
- adf61e73a8af0-1cf62932ffcmr586057637.0.1725987016590; Tue, 10 Sep 2024
- 09:50:16 -0700 (PDT)
+	s=arc-20240116; t=1725987203; c=relaxed/simple;
+	bh=2Rpn8Njt73fgw3DpGP8vD/PC06yNfALDsBx2YphgNLk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=KHk9Q6ZnEjomp4imXb9aB/bMGbCPWc59uosf3dJNBjVLxfmJq/j2aX1pf8cn6RU308kJlMgPY0FRduWqcHW2iGJG50oygZZAdrMDbjkNf53C27E2Hoq0sss6xUdmxU94Pv2aP03FZO3ltEdP49uZY2lrLXueeWkLwQFoNxc1MQU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dWMZaZXr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0086AC4CEC3;
+	Tue, 10 Sep 2024 16:53:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1725987202;
+	bh=2Rpn8Njt73fgw3DpGP8vD/PC06yNfALDsBx2YphgNLk=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=dWMZaZXrjxOa5UfU0zNTGeflGVHGoxKjDWGYbqB/N/FZee6+lQ7/X5JRVZc8wEbXF
+	 oR7Wr4opmQKKC7N3t0qZFmDw2eZDiQI9f6tHPSvK5vzcXl/PC7IR/81+creMcDPp6t
+	 i1kypKi+eNuICldPess4KnvBra2Pu7RqH1ZcFXlb8s3wfAXwV+y33BLlCqS3G2Cs0h
+	 KzuAxDt324Tx8+081+QWY8Ci6XCsdftsM0of89hzhribYcrPI48YtNvLWIknTGACgt
+	 L+mYBqq0zp6SWGK5lbAc7+ghEbRdaHfM2dItvHNYSxyve9CPdcesWkphFf4Xl9Os07
+	 jGSuNnQ2rUGPw==
+Message-ID: <b60928c6-19c5-473c-8f13-532ed3fd3b3a@kernel.org>
+Date: Tue, 10 Sep 2024 17:53:16 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240910034306.3122378-1-yonghong.song@linux.dev>
- <CAEf4BzbsYn-b7YiKZ0MPW9_VLzDq38Jv8UkocfMLVje_SAmENA@mail.gmail.com>
- <CAEf4BzZC3FyP06p-H8JhQVJqOTRfjLSfNpHBZn3hN2WRfypDsw@mail.gmail.com> <84f2c314-980c-4e01-bcaa-dafb62a934f3@linux.dev>
-In-Reply-To: <84f2c314-980c-4e01-bcaa-dafb62a934f3@linux.dev>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 10 Sep 2024 09:50:04 -0700
-Message-ID: <CAEf4BzahXi9t+Y883iCTDrAkcr2DEy0he-NW+jg9yT3TXH6NUA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: Use fake pt_regs when doing bpf syscall
- tracepoint tracing
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Salvatore Benedetto <salvabenedetto@meta.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] perf build: Autodetect minimum required llvm-dev
+ version
+To: James Clark <james.clark@linaro.org>, linux-perf-users@vger.kernel.org,
+ sesse@google.com, acme@kernel.org
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+ Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ "Liang, Kan" <kan.liang@linux.intel.com>,
+ Nathan Chancellor <nathan@kernel.org>,
+ Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling
+ <morbo@google.com>, Justin Stitt <justinstitt@google.com>,
+ "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
+ Changbin Du <changbin.du@huawei.com>, Guilherme Amadio <amadio@gentoo.org>,
+ Leo Yan <leo.yan@arm.com>, Manu Bretelle <chantr4@gmail.com>,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org, llvm@lists.linux.dev
+References: <20240910140405.568791-1-james.clark@linaro.org>
+ <b2e813c4-be89-457d-8c38-38849177ec93@kernel.org>
+ <307568b9-9b6b-4eaa-973c-8f88538b8545@linaro.org>
+From: Quentin Monnet <qmo@kernel.org>
+Content-Language: en-GB
+In-Reply-To: <307568b9-9b6b-4eaa-973c-8f88538b8545@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Tue, Sep 10, 2024 at 8:25=E2=80=AFAM Yonghong Song <yonghong.song@linux.=
-dev> wrote:
->
->
-> On 9/9/24 10:42 PM, Andrii Nakryiko wrote:
-> > On Mon, Sep 9, 2024 at 10:34=E2=80=AFPM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> >> On Mon, Sep 9, 2024 at 8:43=E2=80=AFPM Yonghong Song <yonghong.song@li=
-nux.dev> wrote:
-> >>> Salvatore Benedetto reported an issue that when doing syscall tracepo=
-int
-> >>> tracing the kernel stack is empty. For example, using the following
-> >>> command line
-> >>>    bpftrace -e 'tracepoint:syscalls:sys_enter_read { print("Kernel St=
-ack\n"); print(kstack()); }'
-> >>> the output will be
-> >>> =3D=3D=3D
-> >>>    Kernel Stack
-> >>> =3D=3D=3D
-> >>>
-> >>> Further analysis shows that pt_regs used for bpf syscall tracepoint
-> >>> tracing is from the one constructed during user->kernel transition.
-> >>> The call stack looks like
-> >>>    perf_syscall_enter+0x88/0x7c0
-> >>>    trace_sys_enter+0x41/0x80
-> >>>    syscall_trace_enter+0x100/0x160
-> >>>    do_syscall_64+0x38/0xf0
-> >>>    entry_SYSCALL_64_after_hwframe+0x76/0x7e
-> >>>
-> >>> The ip address stored in pt_regs is from user space hence no kernel
-> >>> stack is printed.
-> >>>
-> >>> To fix the issue, we need to use kernel address from pt_regs.
-> >>> In kernel repo, there are already a few cases like this. For example,
-> >>> in kernel/trace/bpf_trace.c, several perf_fetch_caller_regs(fake_regs=
-_ptr)
-> >>> instances are used to supply ip address or use ip address to construc=
-t
-> >>> call stack.
-> >>>
-> >>> The patch follows the above example by using a fake pt_regs.
-> >>> The pt_regs is stored in local stack since the syscall tracepoint
-> >>> tracing is in process context and there are no possibility that
-> >>> different concurrent syscall tracepoint tracing could mess up with ea=
-ch
-> >>> other. This is similar to a perf_fetch_caller_regs() use case in
-> >>> kernel/trace/trace_event_perf.c with function perf_ftrace_function_ca=
-ll()
-> >>> where a local pt_regs is used.
-> >>>
-> >>> With this patch, for the above bpftrace script, I got the following o=
-utput
-> >>> =3D=3D=3D
-> >>>    Kernel Stack
-> >>>
-> >>>          syscall_trace_enter+407
-> >>>          syscall_trace_enter+407
-> >>>          do_syscall_64+74
-> >>>          entry_SYSCALL_64_after_hwframe+75
-> >>> =3D=3D=3D
-> >>>
-> >>> Reported-by: Salvatore Benedetto <salvabenedetto@meta.com>
-> >>> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
-> >>> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
-> >>> ---
-> >>>   kernel/trace/trace_syscalls.c | 5 ++++-
-> >>>   1 file changed, 4 insertions(+), 1 deletion(-)
-> >>>
-> >> Note, we need to solve the same for perf_call_bpf_exit().
-> >>
-> >> pw-bot: cr
-> >>
-> > BTW, we lived with this bug for years, so I suggest basing your fix on
-> > top of bpf-next/master, no bpf/master, which will give people a bit of
-> > time to validate that the fix works as expected and doesn't produce
-> > any undesirable side effects, before this makes it into the final
-> > Linux release.
->
-> Yes, I did. See I indeed use 'bpf-next' in subject above.
+2024-09-10 16:11 UTC+0100 ~ James Clark <james.clark@linaro.org>
+> 
+> 
+> On 9/10/24 15:27, Quentin Monnet wrote:
+>> 2024-09-10 15:04 UTC+0100 ~ James Clark <james.clark@linaro.org>
+>>> The new LLVM addr2line feature requires a minimum version of 13 to
+>>> compile. Add a feature check for the version so that NO_LLVM=1 doesn't
+>>> need to be explicitly added. Leave the existing llvm feature check
+>>> intact because it's used by tools other than Perf.
+>>>
+>>> This fixes the following compilation error when the llvm-dev version
+>>> doesn't match:
+>>>
+>>>    util/llvm-c-helpers.cpp: In function 'char* 
+>>> llvm_name_for_code(dso*, const char*, u64)':
+>>>    util/llvm-c-helpers.cpp:178:21: error: 
+>>> 'std::remove_reference_t<llvm::DILineInfo>' {aka 'struct 
+>>> llvm::DILineInfo'} has no member named 'StartAddress'
+>>>      178 |   addr, res_or_err->StartAddress ? *res_or_err- 
+>>> >StartAddress : 0);
+>>>
+>>> Fixes: c3f8644c21df ("perf report: Support LLVM for addr2line()")
+>>> Signed-off-by: James Clark <james.clark@linaro.org>
+>>> ---
+>>>   tools/build/Makefile.feature           |  2 +-
+>>>   tools/build/feature/Makefile           |  9 +++++++++
+>>>   tools/build/feature/test-llvm-perf.cpp | 14 ++++++++++++++
+>>>   tools/perf/Makefile.config             |  6 +++---
+>>>   4 files changed, 27 insertions(+), 4 deletions(-)
+>>>   create mode 100644 tools/build/feature/test-llvm-perf.cpp
+>>>
+>>> diff --git a/tools/build/Makefile.feature b/tools/build/Makefile.feature
+>>> index 0717e96d6a0e..427a9389e26c 100644
+>>> --- a/tools/build/Makefile.feature
+>>> +++ b/tools/build/Makefile.feature
+>>> @@ -136,7 +136,7 @@ FEATURE_DISPLAY ?=              \
+>>>            libunwind              \
+>>>            libdw-dwarf-unwind     \
+>>>            libcapstone            \
+>>> -         llvm                   \
+>>> +         llvm-perf              \
+>>
+>> Hi! Just a quick question, why remove "llvm" from the list, here?
+>>
+>> Quentin
+> 
+> Just because with respect to the linked fixes: commit, it wasn't 
+> actually there before. It was added just for addr2line so it should 
+> probably be llvm-perf rather than the generic one.
+> 
+> But yes we can add llvm output if it's useful, but could probably be a 
+> separate commit.
+> 
 
-Huh, strange, I actually tried to apply your patch to bpf-next/master
-and it didn't apply cleanly. It did apply to bpf/master, though, which
-is why I assumed you based it off of bpf/master.
 
->
-> >
-> >>> diff --git a/kernel/trace/trace_syscalls.c b/kernel/trace/trace_sysca=
-lls.c
-> >>> index 9c581d6da843..063f51952d49 100644
-> >>> --- a/kernel/trace/trace_syscalls.c
-> >>> +++ b/kernel/trace/trace_syscalls.c
-> >>> @@ -559,12 +559,15 @@ static int perf_call_bpf_enter(struct trace_eve=
-nt_call *call, struct pt_regs *re
-> >> let's also drop struct pt_regs * argument into
-> >> perf_call_bpf_{enter,exit}(), they are not actually used anymore
-> >>
-> >>>                  int syscall_nr;
-> >>>                  unsigned long args[SYSCALL_DEFINE_MAXARGS];
-> >>>          } __aligned(8) param;
-> >>> +       struct pt_regs fake_regs;
-> >>>          int i;
-> >>>
-> >>>          BUILD_BUG_ON(sizeof(param.ent) < sizeof(void *));
-> >>>
-> >>>          /* bpf prog requires 'regs' to be the first member in the ct=
-x (a.k.a. &param) */
-> >>> -       *(struct pt_regs **)&param =3D regs;
-> >>> +       memset(&fake_regs, 0, sizeof(fake_regs));
-> >> sizeof(struct pt_regs) =3D=3D 168 on x86-64, and on arm64 it's a whopp=
-ing
-> >> 336 bytes, so these memset(0) calls are not free for sure.
-> >>
-> >> But we don't need to do this unnecessary work all the time.
-> >>
-> >> I initially was going to suggest to use get_bpf_raw_tp_regs() from
-> >> kernel/trace/bpf_trace.c to get a temporary pt_regs that was already
-> >> memset(0) and used to initialize these minimal "fake regs".
-> >>
-> >> But, it turns out we don't need to do even that. Note
-> >> perf_trace_buf_alloc(), it has `struct pt_regs **` second argument,
-> >> and if you pass a valid pointer there, it will return "fake regs"
-> >> struct to be used. We already use that functionality in
-> >> perf_trace_##call in include/trace/perf.h (i.e., non-syscall
-> >> tracepoints), so this seems to be a perfect fit.
-> >>
-> >>> +       perf_fetch_caller_regs(&fake_regs);
-> >>> +       *(struct pt_regs **)&param =3D &fake_regs;
-> >>>          param.syscall_nr =3D rec->nr;
-> >>>          for (i =3D 0; i < sys_data->nb_args; i++)
-> >>>                  param.args[i] =3D rec->args[i];
-> >>> --
-> >>> 2.43.5
-> >>>
+It wasn't there before, but you're not removing the rest of the "llvm" 
+feature, so I'd expect that part to stay as well? But I don't mind much. 
+We use the "llvm" feature in bpftool, but beyond that, I don't 
+personally need it to be displayed in tools/build/Makefile.feature, so 
+no need to respin for that :)
+
+Thanks,
+Quentin
 
