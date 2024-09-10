@@ -1,528 +1,166 @@
-Return-Path: <bpf+bounces-39443-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39444-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E3AA973972
-	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 16:10:36 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 532C397397D
+	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 16:13:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 531581C20FEA
-	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 14:10:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C8A0F1F26D76
+	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 14:13:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3630193078;
-	Tue, 10 Sep 2024 14:10:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9E7D1946BC;
+	Tue, 10 Sep 2024 14:13:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PCPfp3aa"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eqBdauAM"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37473192D96;
-	Tue, 10 Sep 2024 14:10:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4572F188CBB;
+	Tue, 10 Sep 2024 14:13:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725977430; cv=none; b=TTZjDrM/pJiOzEaPdlLGRCOyWMSfRRwLLrrZy0HZY7b8SMRRYhsKhWjgZOdxkb11U49sP7JdcqGExYTayglhtKaxONKhYQhJmi+r4xOxbqTAAhwE2uCRAiL8NcA1AFk1A2SJC8il74TeX5/UY+7VlZakdJYSbQABTSiuAQ3ECos=
+	t=1725977601; cv=none; b=XLjvtNlyk7qutK71NdPGvsO6k17udREOoj/sJu6g/HTEQROWyHjzcVVFDwzjYSXKu62pT6tL0pzOnvCEFvXb0DfTKgBTJjXKwPvISiz3lsiXN4a6QzYR1TprWC04y/5koDYYYcJXEq3dF9KoM60G+E/84to+b0gPK+M/v8Cd6kE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725977430; c=relaxed/simple;
-	bh=h/O3M38dEFZbWIdzDVU3kKgk0U7HIj4A/riQroo8tdA=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=F43t8qjdl/derDg4ykMCqN7hBdQ3P4IALx46ep90XRWvj8z9m4iLVbZtEsN4xT5T0sAovkOND7lgoqrxBVl9v5YbPyiJruUeI3P+GP/IJM+UKEHVF8XiW1bvJ0aeUyNW6720f+PlWdBmF8ucXhWlcMX1Ow+ZjIvUAh6sCI4iJHk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PCPfp3aa; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D25B5C4CEC3;
-	Tue, 10 Sep 2024 14:10:25 +0000 (UTC)
+	s=arc-20240116; t=1725977601; c=relaxed/simple;
+	bh=EY6C6vC2fDW5kBoYe1ZRGlO69fKhrWNRx78fdUOVLH0=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=YFW3Mftwd6B/M2vUTR8kn26tRvXfSp70l5TIEW+5lobtYGk3GjjBCouxW4uLNjQsH7PgzXg5H9mrdKtTbQebdQVLCi7x/JaWBZ6kLZwIu2Pl50ck2wBQIYKfzVOrANsiuD8/5GiS7H9oft7yRt1DPleC5UdbjQaByFWL2yX2iok=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eqBdauAM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 643EEC4CEC3;
+	Tue, 10 Sep 2024 14:13:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1725977429;
-	bh=h/O3M38dEFZbWIdzDVU3kKgk0U7HIj4A/riQroo8tdA=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=PCPfp3aaAluR8vKKI+y7cT2aOHa+mfQ/XzYrS/YpoBj2Qgmq1qsRPXHbYcMx5TxwQ
-	 5ESScS3W5FTRC5VAaDG8T76hQYzZyxjLO/Z43dcfr9n2DNIqh/6KFaop5LclatIwKv
-	 05j0fcgDfzWXJH3Xsl5cLe8X9zuRLeZCL/02bFgVlYmzFvVIMwspmbPrXHvatiXR+i
-	 5ooFq+O3DQDOFo6dkYW1OOjjJsjdt/mEWEOxXXBdjLCQH4hPzQYUNDgsldpCbcCZ9g
-	 Usj3/9NufQZ1w4dTx2SDd/eghuUmALGrLXjdLxxveLr4ReAk2QS6B9PlBW+/W7Kfzc
-	 q3MW7POXf1dnA==
-Date: Tue, 10 Sep 2024 23:10:23 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Jiri Olsa <jolsa@kernel.org>
-Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>, Song Liu
- <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, John Fastabend
- <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>, Stanislav
- Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Steven Rostedt
- <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>,
- linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCHv3 1/7] uprobe: Add support for session consumer
-Message-Id: <20240910231023.6b168ca06d98dfc3842cf2eb@kernel.org>
-In-Reply-To: <20240909074554.2339984-2-jolsa@kernel.org>
-References: <20240909074554.2339984-1-jolsa@kernel.org>
-	<20240909074554.2339984-2-jolsa@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=k20201202; t=1725977601;
+	bh=EY6C6vC2fDW5kBoYe1ZRGlO69fKhrWNRx78fdUOVLH0=;
+	h=From:Subject:Date:To:Cc:From;
+	b=eqBdauAMqqCsiuy6fpjVOTN71eKCkwV9f43DGVMFIaZBdCQ7bVzA9ZkJPNg+w3Yby
+	 NgtqdPgvKlr3zSHZyNgRC9GKq9Der930IECgw9xU/xSZKqIY5UgrhUqPhGeZwCjZ0Z
+	 ZsrlsGI9ZtUNDF2rgc/E8wxlP4jJkxvjOnDKo6jaCuVmilxnJWbX9wragzOefdJv0V
+	 w3MvlKr14SU+8zNNl19wSToA0ifayETp9HWyY1CvsXoT5KTfQ4hblft1M1xAVS0O81
+	 Igbomssb1GygoJl1rDiwgotmLcDgbYOBanX2ts11c8ug9TyFRLyoc/2O515LIIFs+m
+	 0LvYA4v7fUYLQ==
+From: "Matthieu Baerts (NGI0)" <matttbe@kernel.org>
+Subject: [PATCH bpf-next/net v5 0/3] selftests/bpf: new MPTCP subflow
+ subtest
+Date: Tue, 10 Sep 2024 16:12:58 +0200
+Message-Id: <20240910-upstream-bpf-next-20240506-mptcp-subflow-test-v5-0-2c664a7da47c@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAOtT4GYC/5XPwU7DMAwG4FeZcsaQpU7b7MR7IA5J6mwRWxolW
+ Rma+u6EChhopx6t3/p++8oyJU+Z7TZXlmjy2Y+hDvJhw+xBhz2BH+rMBBfIJW/hHHNJpE9gooN
+ AlwK/0SkWGyGfjTuO71AoF3CaXNtKNE43rJoxkfOXpe+F/QhPgQp7renB5zKmj+WYabvsfOPdy
+ t5pCxxIGGsGh6qX3fMbpUDHxzHtl6pJ/OXVWl5UHjn2Vijs64N3fHPjO96s5Zuv681gxYCq1qg
+ 7Hm98z+VaHisvDFrdKoVKNf/4eZ4/Ac/s4LIWAgAA
+To: mptcp@lists.linux.dev, Mat Martineau <martineau@kernel.org>, 
+ Geliang Tang <geliang@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+ Eduard Zingerman <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>, 
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+ Yonghong Song <yonghong.song@linux.dev>, 
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+ Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>
+Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
+ bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+ "Matthieu Baerts (NGI0)" <matttbe@kernel.org>, 
+ Nicolas Rybowski <nicolas.rybowski@tessares.net>, 
+ Martin KaFai Lau <martin.lau@kernel.org>, Geliang Tang <geliang@kernel.org>
+X-Mailer: b4 0.14.1
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3477; i=matttbe@kernel.org;
+ h=from:subject:message-id; bh=EY6C6vC2fDW5kBoYe1ZRGlO69fKhrWNRx78fdUOVLH0=;
+ b=owEBbQKS/ZANAwAIAfa3gk9CaaBzAcsmYgBm4FP6e5Bh0Pe45sPEbqyoxtomJKdLusq6++O6m
+ 6FZ6oKhy26JAjMEAAEIAB0WIQToy4X3aHcFem4n93r2t4JPQmmgcwUCZuBT+gAKCRD2t4JPQmmg
+ c3vIEADmiFZuICUM3vrvYZm5gz0vZts5fZPDDFipnAkCvz1BzYpTOptUEJpY5jdnJqui1isYYbs
+ B5YmEDQKQ20q1ygtMetXM1JuggFS2YOX1gLsGgr5Ssc2UkfOV6ZqDZ5LG6RTy+FMTgz+xF30nVH
+ obBnTzw++PPttYuK1QuF1C5tFWNAxCr5csri4rk3FfM4c8rZQlujA6nwYOZOVrhLCULiTNPot8o
+ sRb7JNnWwrkBO3rJJ1VJRH8hXvP5xxR696JIQYhIiNTHxp2ezVZFmehtMerITc+UlRrcLyxzaSm
+ ivSwkdLlLM5Px1PICMrxl9mEbSt4JAdzd8Hfv4t2qZc47VlJVpRaE+YBFgwMatpUZ8U9Kb/v8Zk
+ mwYBZq3viSjVBZzRBTCKsPn0m+wc/SY7Zvv6E2d6huVucGWLaVki5MhC/iqZLGVeX+H3wBtsTGI
+ Rhi/wb3mZTPK/j95Zk/4Rux/ev+wMl1Orf1eMTssqcZqGLsNPgXVSlecqvm5Bk/5ppJUW15DGDh
+ yw/7Sjhjdt9uGYoEva1rRPcQswzGwsBl8WApCvS14dDz7PTeKLDULF95CODSO6W9HDLso7CZeHO
+ 6BT1ANxLok7hMHFzqqsxmI1AhfFRvXvNHv+0YH+rpHOArozdI/cHlFTCCKIQob+sWMc4R6wk8Ca
+ twD6O+W+PNiZz7g==
+X-Developer-Key: i=matttbe@kernel.org; a=openpgp;
+ fpr=E8CB85F76877057A6E27F77AF6B7824F4269A073
 
-On Mon,  9 Sep 2024 09:45:48 +0200
-Jiri Olsa <jolsa@kernel.org> wrote:
+In this series from Geliang, modifying MPTCP BPF selftests, we have:
 
-> Adding support for uprobe consumer to be defined as session and have
-> new behaviour for consumer's 'handler' and 'ret_handler' callbacks.
-> 
-> The session means that 'handler' and 'ret_handler' callbacks are
-> connected in a way that allows to:
-> 
->   - control execution of 'ret_handler' from 'handler' callback
->   - share data between 'handler' and 'ret_handler' callbacks
-> 
-> The session is enabled by setting new 'session' bool field to true
-> in uprobe_consumer object.
-> 
-> We use return_consumer object to keep track of consumers with
-> 'ret_handler'. This object also carries the shared data between
-> 'handler' and and 'ret_handler' callbacks.
-> 
-> The control of 'ret_handler' callback execution is done via return
-> value of the 'handler' callback. This patch adds new 'ret_handler'
-> return value (2) which means to ignore ret_handler callback.
-> 
-> Actions on 'handler' callback return values are now:
-> 
->   0 - execute ret_handler (if it's defined)
->   1 - remove uprobe
->   2 - do nothing (ignore ret_handler)
-> 
-> The session concept fits to our common use case where we do filtering
-> on entry uprobe and based on the result we decide to run the return
-> uprobe (or not).
+- A new MPTCP subflow BPF program setting socket options per subflow: it
+  looks better to have this old test program in the BPF selftests to
+  track regressions and to serve as example.
 
-OK, so this allows uprobes handler to record any input parameter and
-access it from ret_handler as fprobe's private entry data, right?
+  Note: Nicolas is no longer working at Tessares, but he did this work
+  while working for them, and his email address is no longer available.
 
-The code looks good to me.
+- A new hook in the same BPF program to do the verification step.
 
-Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+- A new MPTCP BPF subtest validating the new BPF program added in the
+  first patch, with the help of the new hook added in the second patch.
 
-trace_uprobe should also support $argN in retuprobe.
+Signed-off-by: Matthieu Baerts (NGI0) <matttbe@kernel.org>
+---
+Changes in v5:
+- See the individual changelog for more details about them
+- Patch 1/3: set TCP on the 2nd subflow
+- Patch 2/3: new
+- Patch 3/3: use the BPF program from patch 2/3 to do the validation
+             instead of using ss.
+- Link to v4: https://lore.kernel.org/r/20240805-upstream-bpf-next-20240506-mptcp-subflow-test-v4-0-2b4ca6994993@kernel.org
 
-https://lore.kernel.org/all/170952365552.229804.224112990211602895.stgit@devnote2/
+Changes in v4:
+- Drop former patch 2/3: MPTCP's pm_nl_ctl requires a new header file:
+  - I will check later if it is possible to avoid having duplicated
+    header files in tools/include/uapi, but no need to block this series
+    for that. Patch 2/3 can be added later if needed.
+- Patch 2/2: skip the test if 'ip mptcp' is not available.
+- Link to v3: https://lore.kernel.org/r/20240703-upstream-bpf-next-20240506-mptcp-subflow-test-v3-0-ebdc2d494049@kernel.org
 
-Thank you,
+Changes in v3:
+- Sorry for the delay between v2 and v3, this series was conflicting
+  with the "add netns helpers", but it looks like it is on hold:
+  https://lore.kernel.org/cover.1715821541.git.tanggeliang@kylinos.cn
+- Patch 1/3 includes "bpf_tracing_net.h", introduced in between.
+- New patch 2/3: "selftests/bpf: Add mptcp pm_nl_ctl link".
+- Patch 3/3: use the tool introduced in patch 2/3 + SYS_NOFAIL() helper.
+- Link to v2: https://lore.kernel.org/r/20240509-upstream-bpf-next-20240506-mptcp-subflow-test-v2-0-4048c2948665@kernel.org
 
-> 
-> It's also convenient to share the data between session callbacks.
-> 
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  include/linux/uprobes.h                       |  17 ++-
->  kernel/events/uprobes.c                       | 132 ++++++++++++++----
->  kernel/trace/bpf_trace.c                      |   6 +-
->  kernel/trace/trace_uprobe.c                   |  12 +-
->  .../selftests/bpf/bpf_testmod/bpf_testmod.c   |   2 +-
->  5 files changed, 133 insertions(+), 36 deletions(-)
-> 
-> diff --git a/include/linux/uprobes.h b/include/linux/uprobes.h
-> index 2b294bf1881f..557901e04624 100644
-> --- a/include/linux/uprobes.h
-> +++ b/include/linux/uprobes.h
-> @@ -24,7 +24,7 @@ struct notifier_block;
->  struct page;
->  
->  #define UPROBE_HANDLER_REMOVE		1
-> -#define UPROBE_HANDLER_MASK		1
-> +#define UPROBE_HANDLER_IGNORE		2
->  
->  #define MAX_URETPROBE_DEPTH		64
->  
-> @@ -37,13 +37,16 @@ struct uprobe_consumer {
->  	 * for the current process. If filter() is omitted or returns true,
->  	 * UPROBE_HANDLER_REMOVE is effectively ignored.
->  	 */
-> -	int (*handler)(struct uprobe_consumer *self, struct pt_regs *regs);
-> +	int (*handler)(struct uprobe_consumer *self, struct pt_regs *regs, __u64 *data);
->  	int (*ret_handler)(struct uprobe_consumer *self,
->  				unsigned long func,
-> -				struct pt_regs *regs);
-> +				struct pt_regs *regs, __u64 *data);
->  	bool (*filter)(struct uprobe_consumer *self, struct mm_struct *mm);
->  
->  	struct list_head cons_node;
-> +	bool session;
-> +
-> +	__u64 id;	/* set when uprobe_consumer is registered */
->  };
->  
->  #ifdef CONFIG_UPROBES
-> @@ -83,14 +86,22 @@ struct uprobe_task {
->  	unsigned int			depth;
->  };
->  
-> +struct return_consumer {
-> +	__u64	cookie;
-> +	__u64	id;
-> +};
-> +
->  struct return_instance {
->  	struct uprobe		*uprobe;
->  	unsigned long		func;
->  	unsigned long		stack;		/* stack pointer */
->  	unsigned long		orig_ret_vaddr; /* original return address */
->  	bool			chained;	/* true, if instance is nested */
-> +	int			consumers_cnt;
->  
->  	struct return_instance	*next;		/* keep as stack */
-> +
-> +	struct return_consumer	consumers[] __counted_by(consumers_cnt);
->  };
->  
->  enum rp_check {
-> diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-> index 4b7e590dc428..9e971f86afdf 100644
-> --- a/kernel/events/uprobes.c
-> +++ b/kernel/events/uprobes.c
-> @@ -67,6 +67,8 @@ struct uprobe {
->  	loff_t			ref_ctr_offset;
->  	unsigned long		flags;
->  
-> +	unsigned int		consumers_cnt;
-> +
->  	/*
->  	 * The generic code assumes that it has two members of unknown type
->  	 * owned by the arch-specific code:
-> @@ -826,8 +828,12 @@ static struct uprobe *alloc_uprobe(struct inode *inode, loff_t offset,
->  
->  static void consumer_add(struct uprobe *uprobe, struct uprobe_consumer *uc)
->  {
-> +	static atomic64_t id;
-> +
->  	down_write(&uprobe->consumer_rwsem);
->  	list_add_rcu(&uc->cons_node, &uprobe->consumers);
-> +	uc->id = (__u64) atomic64_inc_return(&id);
-> +	uprobe->consumers_cnt++;
->  	up_write(&uprobe->consumer_rwsem);
->  }
->  
-> @@ -839,6 +845,7 @@ static void consumer_del(struct uprobe *uprobe, struct uprobe_consumer *uc)
->  {
->  	down_write(&uprobe->consumer_rwsem);
->  	list_del_rcu(&uc->cons_node);
-> +	uprobe->consumers_cnt--;
->  	up_write(&uprobe->consumer_rwsem);
->  }
->  
-> @@ -1786,6 +1793,30 @@ static struct uprobe_task *get_utask(void)
->  	return current->utask;
->  }
->  
-> +static size_t ri_size(int consumers_cnt)
-> +{
-> +	struct return_instance *ri;
-> +
-> +	return sizeof(*ri) + sizeof(ri->consumers[0]) * consumers_cnt;
-> +}
-> +
-> +static struct return_instance *alloc_return_instance(int consumers_cnt)
-> +{
-> +	struct return_instance *ri;
-> +
-> +	ri = kzalloc(ri_size(consumers_cnt), GFP_KERNEL);
-> +	if (ri)
-> +		ri->consumers_cnt = consumers_cnt;
-> +	return ri;
-> +}
-> +
-> +static struct return_instance *dup_return_instance(struct return_instance *old)
-> +{
-> +	size_t size = ri_size(old->consumers_cnt);
-> +
-> +	return kmemdup(old, size, GFP_KERNEL);
-> +}
-> +
->  static int dup_utask(struct task_struct *t, struct uprobe_task *o_utask)
->  {
->  	struct uprobe_task *n_utask;
-> @@ -1798,11 +1829,10 @@ static int dup_utask(struct task_struct *t, struct uprobe_task *o_utask)
->  
->  	p = &n_utask->return_instances;
->  	for (o = o_utask->return_instances; o; o = o->next) {
-> -		n = kmalloc(sizeof(struct return_instance), GFP_KERNEL);
-> +		n = dup_return_instance(o);
->  		if (!n)
->  			return -ENOMEM;
->  
-> -		*n = *o;
->  		/*
->  		 * uprobe's refcnt has to be positive at this point, kept by
->  		 * utask->return_instances items; return_instances can't be
-> @@ -1895,39 +1925,35 @@ static void cleanup_return_instances(struct uprobe_task *utask, bool chained,
->  	utask->return_instances = ri;
->  }
->  
-> -static void prepare_uretprobe(struct uprobe *uprobe, struct pt_regs *regs)
-> +static void prepare_uretprobe(struct uprobe *uprobe, struct pt_regs *regs,
-> +			      struct return_instance *ri)
->  {
-> -	struct return_instance *ri;
->  	struct uprobe_task *utask;
->  	unsigned long orig_ret_vaddr, trampoline_vaddr;
->  	bool chained;
->  
->  	if (!get_xol_area())
-> -		return;
-> +		goto free;
->  
->  	utask = get_utask();
->  	if (!utask)
-> -		return;
-> +		goto free;
->  
->  	if (utask->depth >= MAX_URETPROBE_DEPTH) {
->  		printk_ratelimited(KERN_INFO "uprobe: omit uretprobe due to"
->  				" nestedness limit pid/tgid=%d/%d\n",
->  				current->pid, current->tgid);
-> -		return;
-> +		goto free;
->  	}
->  
->  	/* we need to bump refcount to store uprobe in utask */
->  	if (!try_get_uprobe(uprobe))
-> -		return;
-> -
-> -	ri = kmalloc(sizeof(struct return_instance), GFP_KERNEL);
-> -	if (!ri)
-> -		goto fail;
-> +		goto free;
->  
->  	trampoline_vaddr = uprobe_get_trampoline_vaddr();
->  	orig_ret_vaddr = arch_uretprobe_hijack_return_addr(trampoline_vaddr, regs);
->  	if (orig_ret_vaddr == -1)
-> -		goto fail;
-> +		goto put;
->  
->  	/* drop the entries invalidated by longjmp() */
->  	chained = (orig_ret_vaddr == trampoline_vaddr);
-> @@ -1945,7 +1971,7 @@ static void prepare_uretprobe(struct uprobe *uprobe, struct pt_regs *regs)
->  			 * attack from user-space.
->  			 */
->  			uprobe_warn(current, "handle tail call");
-> -			goto fail;
-> +			goto put;
->  		}
->  		orig_ret_vaddr = utask->return_instances->orig_ret_vaddr;
->  	}
-> @@ -1960,9 +1986,10 @@ static void prepare_uretprobe(struct uprobe *uprobe, struct pt_regs *regs)
->  	utask->return_instances = ri;
->  
->  	return;
-> -fail:
-> -	kfree(ri);
-> +put:
->  	put_uprobe(uprobe);
-> +free:
-> +	kfree(ri);
->  }
->  
->  /* Prepare to single-step probed instruction out of line. */
-> @@ -2114,35 +2141,78 @@ static struct uprobe *find_active_uprobe_rcu(unsigned long bp_vaddr, int *is_swb
->  	return uprobe;
->  }
->  
-> +static struct return_consumer *
-> +return_consumer_next(struct return_instance *ri, struct return_consumer *ric)
-> +{
-> +	return ric ? ric + 1 : &ri->consumers[0];
-> +}
-> +
-> +static struct return_consumer *
-> +return_consumer_find(struct return_instance *ri, int *iter, int id)
-> +{
-> +	struct return_consumer *ric;
-> +	int idx = *iter;
-> +
-> +	for (ric = &ri->consumers[idx]; idx < ri->consumers_cnt; idx++, ric++) {
-> +		if (ric->id == id) {
-> +			*iter = idx + 1;
-> +			return ric;
-> +		}
-> +	}
-> +	return NULL;
-> +}
-> +
->  static void handler_chain(struct uprobe *uprobe, struct pt_regs *regs)
->  {
->  	struct uprobe_consumer *uc;
->  	int remove = UPROBE_HANDLER_REMOVE;
-> -	bool need_prep = false; /* prepare return uprobe, when needed */
-> +	struct return_consumer *ric = NULL;
-> +	struct return_instance *ri = NULL;
->  	bool has_consumers = false;
->  
->  	current->utask->auprobe = &uprobe->arch;
->  
->  	list_for_each_entry_srcu(uc, &uprobe->consumers, cons_node,
->  				 srcu_read_lock_held(&uprobes_srcu)) {
-> +		__u64 cookie = 0;
->  		int rc = 0;
->  
->  		if (uc->handler) {
-> -			rc = uc->handler(uc, regs);
-> -			WARN(rc & ~UPROBE_HANDLER_MASK,
-> +			rc = uc->handler(uc, regs, &cookie);
-> +			WARN(rc < 0 || rc > 2,
->  				"bad rc=0x%x from %ps()\n", rc, uc->handler);
->  		}
->  
-> -		if (uc->ret_handler)
-> -			need_prep = true;
-> -
-> +		/*
-> +		 * The handler can return following values:
-> +		 * 0 - execute ret_handler (if it's defined)
-> +		 * 1 - remove uprobe
-> +		 * 2 - do nothing (ignore ret_handler)
-> +		 */
->  		remove &= rc;
->  		has_consumers = true;
-> +
-> +		if (rc == 0 && uc->ret_handler) {
-> +			/*
-> +			 * Preallocate return_instance object optimistically with
-> +			 * all possible consumers, so we allocate just once.
-> +			 */
-> +			if (!ri) {
-> +				ri = alloc_return_instance(uprobe->consumers_cnt);
-> +				if (!ri)
-> +					return;
-> +			}
-> +			ric = return_consumer_next(ri, ric);
-> +			ric->cookie = cookie;
-> +			ric->id = uc->id;
-> +		}
->  	}
->  	current->utask->auprobe = NULL;
->  
-> -	if (need_prep && !remove)
-> -		prepare_uretprobe(uprobe, regs); /* put bp at return */
-> +	if (ri && !remove)
-> +		prepare_uretprobe(uprobe, regs, ri); /* put bp at return */
-> +	else
-> +		kfree(ri);
->  
->  	if (remove && has_consumers) {
->  		down_read(&uprobe->register_rwsem);
-> @@ -2160,15 +2230,25 @@ static void handler_chain(struct uprobe *uprobe, struct pt_regs *regs)
->  static void
->  handle_uretprobe_chain(struct return_instance *ri, struct pt_regs *regs)
->  {
-> +	struct return_consumer *ric = NULL;
->  	struct uprobe *uprobe = ri->uprobe;
->  	struct uprobe_consumer *uc;
-> -	int srcu_idx;
-> +	int srcu_idx, iter = 0;
->  
->  	srcu_idx = srcu_read_lock(&uprobes_srcu);
->  	list_for_each_entry_srcu(uc, &uprobe->consumers, cons_node,
->  				 srcu_read_lock_held(&uprobes_srcu)) {
-> +		/*
-> +		 * If we don't find return consumer, it means uprobe consumer
-> +		 * was added after we hit uprobe and return consumer did not
-> +		 * get registered in which case we call the ret_handler only
-> +		 * if it's not session consumer.
-> +		 */
-> +		ric = return_consumer_find(ri, &iter, uc->id);
-> +		if (!ric && uc->session)
-> +			continue;
->  		if (uc->ret_handler)
-> -			uc->ret_handler(uc, ri->func, regs);
-> +			uc->ret_handler(uc, ri->func, regs, ric ? &ric->cookie : NULL);
->  	}
->  	srcu_read_unlock(&uprobes_srcu, srcu_idx);
->  }
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index ac0a01cc8634..de241503c8fb 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -3332,7 +3332,8 @@ uprobe_multi_link_filter(struct uprobe_consumer *con, struct mm_struct *mm)
->  }
->  
->  static int
-> -uprobe_multi_link_handler(struct uprobe_consumer *con, struct pt_regs *regs)
-> +uprobe_multi_link_handler(struct uprobe_consumer *con, struct pt_regs *regs,
-> +			  __u64 *data)
->  {
->  	struct bpf_uprobe *uprobe;
->  
-> @@ -3341,7 +3342,8 @@ uprobe_multi_link_handler(struct uprobe_consumer *con, struct pt_regs *regs)
->  }
->  
->  static int
-> -uprobe_multi_link_ret_handler(struct uprobe_consumer *con, unsigned long func, struct pt_regs *regs)
-> +uprobe_multi_link_ret_handler(struct uprobe_consumer *con, unsigned long func, struct pt_regs *regs,
-> +			      __u64 *data)
->  {
->  	struct bpf_uprobe *uprobe;
->  
-> diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
-> index f7443e996b1b..11103dde897b 100644
-> --- a/kernel/trace/trace_uprobe.c
-> +++ b/kernel/trace/trace_uprobe.c
-> @@ -88,9 +88,11 @@ static struct trace_uprobe *to_trace_uprobe(struct dyn_event *ev)
->  static int register_uprobe_event(struct trace_uprobe *tu);
->  static int unregister_uprobe_event(struct trace_uprobe *tu);
->  
-> -static int uprobe_dispatcher(struct uprobe_consumer *con, struct pt_regs *regs);
-> +static int uprobe_dispatcher(struct uprobe_consumer *con, struct pt_regs *regs,
-> +			     __u64 *data);
->  static int uretprobe_dispatcher(struct uprobe_consumer *con,
-> -				unsigned long func, struct pt_regs *regs);
-> +				unsigned long func, struct pt_regs *regs,
-> +				__u64 *data);
->  
->  #ifdef CONFIG_STACK_GROWSUP
->  static unsigned long adjust_stack_addr(unsigned long addr, unsigned int n)
-> @@ -1500,7 +1502,8 @@ trace_uprobe_register(struct trace_event_call *event, enum trace_reg type,
->  	}
->  }
->  
-> -static int uprobe_dispatcher(struct uprobe_consumer *con, struct pt_regs *regs)
-> +static int uprobe_dispatcher(struct uprobe_consumer *con, struct pt_regs *regs,
-> +			     __u64 *data)
->  {
->  	struct trace_uprobe *tu;
->  	struct uprobe_dispatch_data udd;
-> @@ -1530,7 +1533,8 @@ static int uprobe_dispatcher(struct uprobe_consumer *con, struct pt_regs *regs)
->  }
->  
->  static int uretprobe_dispatcher(struct uprobe_consumer *con,
-> -				unsigned long func, struct pt_regs *regs)
-> +				unsigned long func, struct pt_regs *regs,
-> +				__u64 *data)
->  {
->  	struct trace_uprobe *tu;
->  	struct uprobe_dispatch_data udd;
-> diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-> index 1fc16657cf42..e91ff5b285f0 100644
-> --- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-> +++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-> @@ -421,7 +421,7 @@ static struct bin_attribute bin_attr_bpf_testmod_file __ro_after_init = {
->  
->  static int
->  uprobe_ret_handler(struct uprobe_consumer *self, unsigned long func,
-> -		   struct pt_regs *regs)
-> +		   struct pt_regs *regs, __u64 *data)
->  
->  {
->  	regs->ax  = 0x12345678deadbeef;
-> -- 
-> 2.46.0
-> 
+Changes in v2:
+- Previous patches 1/4 and 2/4 have been dropped from this series:
+  - 1/4: "selftests/bpf: Handle SIGINT when creating netns":
+    - A new version, more generic and no longer specific to MPTCP BPF
+      selftest will be sent later, as part of a new series. (Alexei)
+  - 2/4: "selftests/bpf: Add RUN_MPTCP_TEST macro":
+    - Removed, not to hide helper functions in macros. (Alexei)
+- The commit message of patch 1/2 has been clarified to avoid some
+  possible confusions spot by Alexei.
+- Link to v1: https://lore.kernel.org/r/20240507-upstream-bpf-next-20240506-mptcp-subflow-test-v1-0-e2bcbdf49857@kernel.org
 
+---
+Geliang Tang (2):
+      selftests/bpf: Add getsockopt to inspect mptcp subflow
+      selftests/bpf: Add mptcp subflow subtest
 
+Nicolas Rybowski (1):
+      selftests/bpf: Add mptcp subflow example
+
+ MAINTAINERS                                       |   2 +-
+ tools/testing/selftests/bpf/prog_tests/mptcp.c    | 126 +++++++++++++++++++++
+ tools/testing/selftests/bpf/progs/mptcp_bpf.h     |  42 +++++++
+ tools/testing/selftests/bpf/progs/mptcp_subflow.c | 128 ++++++++++++++++++++++
+ 4 files changed, 297 insertions(+), 1 deletion(-)
+---
+base-commit: 6b083650a37318112fb60c65fbb6070584f53d93
+change-id: 20240506-upstream-bpf-next-20240506-mptcp-subflow-test-faef6654bfa3
+
+Best regards,
 -- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Matthieu Baerts (NGI0) <matttbe@kernel.org>
+
 
