@@ -1,182 +1,135 @@
-Return-Path: <bpf+bounces-39398-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39399-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64CDA972759
-	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 04:52:16 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D2D99727B4
+	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 05:43:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 287432858F4
-	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 02:52:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B2DA41C237BF
+	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 03:43:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C05B914EC58;
-	Tue, 10 Sep 2024 02:52:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mxMb8dV9"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4EF67E101;
+	Tue, 10 Sep 2024 03:43:25 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
+Received: from 69-171-232-180.mail-mxout.facebook.com (69-171-232-180.mail-mxout.facebook.com [69.171.232.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8EAD13B28D;
-	Tue, 10 Sep 2024 02:52:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48E7A24205
+	for <bpf@vger.kernel.org>; Tue, 10 Sep 2024 03:43:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=69.171.232.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725936728; cv=none; b=hv4jT7b68Cu0IFgouFXWAj3WGXGr5DomskXJUHFd9hE8AFtysPwl9vtQ2YzzYrfWnY0nTe9lbJiD5UaYm30ACbpL36nQvZoVKkSbdpmvAVmk/BY2lNMbw0VjeD0b/va1XRw1DMMJWGXYJ2OjlZ3ZPWNezy2OuyHuHJdhdxPk+Mw=
+	t=1725939805; cv=none; b=gsD8ajsERzqD0RTcO0ZZmHsBRpDi8WIhKz4jX8G4sqMs9ypvIzWFSPXHXJqN96MPUbrlvEFlaaq0LmBH8AKbC291wYnUfQ3m0msPiJWT/I6gd3DXQ62/dr+ZGB2oz7mjJlwC7ndTuEhITPH1107TnIn6BpJIfsUV5WkQOpq0c9U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725936728; c=relaxed/simple;
-	bh=WpMA1kEs9Y7I7e4gxgXkW3C671npPx44YdItCYUBqJ8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=l6ReZYDC14cbZDClGyRJrnubSvTZASLVcKwB9+7KhJQl23vdMxJ5qPeDkTrEcZm3Fy3bXF6E0EugvcXmYwnVwTL7kCdVLW+w1MSI7XEbPYydbRW3gKrbMNp0ROODO8md8GDxa7DCjeUVHm8nH12qHhqHkpxyTtYnCHgK5lGK9tg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mxMb8dV9; arc=none smtp.client-ip=209.85.221.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-374c4d4f219so135856f8f.1;
-        Mon, 09 Sep 2024 19:52:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1725936725; x=1726541525; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eQttAVB45yzTKj++0cYWkihAYzlOnNEiTmI1J5Prwyg=;
-        b=mxMb8dV9oRH1Ex8ix81NRV8dorTy5q++qsAy6xIsnn2VK7N1lXj7dijK9LeFZTQbuI
-         1skGncGteRDBk+h+JbcOEtUi6YbmmI+c+bKcHwYfDfrTfnu13GqbI6hdxcgnLrfgo81o
-         AaF0zZFyNBw00gtLzHEJk7bRTe6E27NHf3yrDuuk31VsS3XGENsoUqP3311IlPxr8v3q
-         bst/gxbexgFcIbk+Dtb+n7I6Yk6QiPtcvey3a3sLR4yGrM1T3KzlQWAesu8JX6BNQzbN
-         idEa83OLv1lG7z41SVgsvKkos4i8ufG42/Ni111kKDgompv80tud0uDx/8s51UCz2Ywm
-         D5xw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725936725; x=1726541525;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=eQttAVB45yzTKj++0cYWkihAYzlOnNEiTmI1J5Prwyg=;
-        b=Sby+iZ+fPplgX9SsyFVcJs6eG1mPeROi0FtRo303kqlucetyV1yZvsyFqUZNwZ/3TS
-         L592nAaH9lZBoer6wVESEr5PG0p0nVFLMAIshLOpKPf3ADldisn6Jpxfril2L2V3eoOa
-         JCx8ze6fEXZ+8rVDuSScpdY9+U1+jhA51A2E35ED1/nB8+hh0fDefVs8ZeVD7F7Y3+hA
-         cHsVK9y77X06RuzZ8g7dD8q85OkZK4f07Omybm9A9axYCHPTYqR/bFGDK0/czHcHTEQG
-         LAxw54KyGMSWPnaz5oZDNTTB2pw+OeyLsR7jareHHCtCTC2B/6+YR+BQKbAzZZcHIQoC
-         9kJQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW5juLvRE9DALUoWH7/AdTFBuQ7oekzAVe0nR44knMqYOI5CFY9OcxxK2nNNr0Vx57LDUdjW88qwJMqJxjH@vger.kernel.org, AJvYcCXOZUIvsg5WUmg/A77PmmbVEKmzaoFxoi/rDLgdcAVu7dt44ibn2KDTBBYp15fkzixJ5OY=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx2mz0ZnQTFD8teK1BjxMZOjz70Z1MCoM7HGBLTVQ4efj4jBVLV
-	tZmrO7YV/qldZ+lF53f+CxuuYg/FRTHClnpaV1tccjCqzljQPtUBkQWXmXZhHaecTzHOnLWJzz5
-	G0ISyx4RKwKNlh5M0OkoQzbOgGOw=
-X-Google-Smtp-Source: AGHT+IEPh9ScgrXAKldrieTgqRzsP4QbioBjV/CKb84XXP+ccZWvtBKZhTSspJrQZLTBQWY5KwWzVjo4FgDdHs6ZTf4=
-X-Received: by 2002:adf:f792:0:b0:378:7de9:3716 with SMTP id
- ffacd0b85a97d-378895c4aa9mr7523902f8f.8.1725936724600; Mon, 09 Sep 2024
- 19:52:04 -0700 (PDT)
+	s=arc-20240116; t=1725939805; c=relaxed/simple;
+	bh=E+g14WRHJZqJRntUmlng0XFOrU3z/E4rapwtwvI7q6w=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=reo8r3KqcgDXv4gHTo4PFfG0VJfHqi8LmYMl0JK6RfnTscgJGz8wwUgMS5TAtRK0YS9zkdP3RlN9iewQpYfYDwqEgGw0n3MjqYLb9Yr8Ah+Doou5Q+U9ei3ySIEe7PS9HaWQ4uMRx645fISeVacjj7CAAUJAkeEKcg/ndNSrKoU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=69.171.232.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
+Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
+	id 964BC8C9597F; Mon,  9 Sep 2024 20:43:06 -0700 (PDT)
+From: Yonghong Song <yonghong.song@linux.dev>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	kernel-team@fb.com,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Salvatore Benedetto <salvabenedetto@meta.com>
+Subject: [PATCH bpf-next] bpf: Use fake pt_regs when doing bpf syscall tracepoint tracing
+Date: Mon,  9 Sep 2024 20:43:06 -0700
+Message-ID: <20240910034306.3122378-1-yonghong.song@linux.dev>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240909224903.3498207-1-andrii@kernel.org> <20240909224903.3498207-2-andrii@kernel.org>
-In-Reply-To: <20240909224903.3498207-2-andrii@kernel.org>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 9 Sep 2024 19:51:53 -0700
-Message-ID: <CAADnVQLB2b5Uh-qthnCOfJk+v+ty1nQh6LjMDkzjt1BPtGOVZA@mail.gmail.com>
-Subject: Re: [PATCH 1/3] uprobes: allow put_uprobe() from non-sleepable
- softirq context
-To: Andrii Nakryiko <andrii@kernel.org>
-Cc: linux-trace-kernel <linux-trace-kernel@vger.kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Oleg Nesterov <oleg@redhat.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
-	"Paul E. McKenney" <paulmck@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Sep 9, 2024 at 3:49=E2=80=AFPM Andrii Nakryiko <andrii@kernel.org> =
-wrote:
->
-> Currently put_uprobe() might trigger mutex_lock()/mutex_unlock(), which
-> makes it unsuitable to be called from more restricted context like softir=
-q.
->
-> Let's make put_uprobe() agnostic to the context in which it is called,
-> and use work queue to defer the mutex-protected clean up steps.
->
-> To avoid unnecessarily increasing the size of struct uprobe, we colocate
-> work_struct in parallel with rb_node and rcu, both of which are unused
-> by the time we get to schedule clean up work.
->
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> ---
->  kernel/events/uprobes.c | 30 +++++++++++++++++++++++++++---
->  1 file changed, 27 insertions(+), 3 deletions(-)
->
-> diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-> index a2e6a57f79f2..377bd524bc8b 100644
-> --- a/kernel/events/uprobes.c
-> +++ b/kernel/events/uprobes.c
-> @@ -27,6 +27,7 @@
->  #include <linux/shmem_fs.h>
->  #include <linux/khugepaged.h>
->  #include <linux/rcupdate_trace.h>
-> +#include <linux/workqueue.h>
->
->  #include <linux/uprobes.h>
->
-> @@ -54,14 +55,20 @@ DEFINE_STATIC_PERCPU_RWSEM(dup_mmap_sem);
->  #define UPROBE_COPY_INSN       0
->
->  struct uprobe {
-> -       struct rb_node          rb_node;        /* node in the rb tree */
-> +       union {
-> +               struct {
-> +                       struct rb_node          rb_node;        /* node i=
-n the rb tree */
-> +                       struct rcu_head         rcu;
-> +               };
-> +               /* work is used only during freeing, rcu and rb_node are =
-unused at that point */
-> +               struct work_struct work;
-> +       };
->         refcount_t              ref;
->         struct rw_semaphore     register_rwsem;
->         struct rw_semaphore     consumer_rwsem;
->         struct list_head        pending_list;
->         struct list_head        consumers;
->         struct inode            *inode;         /* Also hold a ref to ino=
-de */
-> -       struct rcu_head         rcu;
->         loff_t                  offset;
->         loff_t                  ref_ctr_offset;
->         unsigned long           flags;
-> @@ -620,11 +627,28 @@ static inline bool uprobe_is_active(struct uprobe *=
-uprobe)
->         return !RB_EMPTY_NODE(&uprobe->rb_node);
->  }
->
-> +static void uprobe_free_deferred(struct work_struct *work)
-> +{
-> +       struct uprobe *uprobe =3D container_of(work, struct uprobe, work)=
-;
-> +
-> +       /*
-> +        * If application munmap(exec_vma) before uprobe_unregister()
-> +        * gets called, we don't get a chance to remove uprobe from
-> +        * delayed_uprobe_list from remove_breakpoint(). Do it here.
-> +        */
-> +       mutex_lock(&delayed_uprobe_lock);
-> +       delayed_uprobe_remove(uprobe, NULL);
-> +       mutex_unlock(&delayed_uprobe_lock);
-> +
-> +       kfree(uprobe);
-> +}
-> +
->  static void uprobe_free_rcu(struct rcu_head *rcu)
->  {
->         struct uprobe *uprobe =3D container_of(rcu, struct uprobe, rcu);
->
-> -       kfree(uprobe);
-> +       INIT_WORK(&uprobe->work, uprobe_free_deferred);
-> +       schedule_work(&uprobe->work);
->  }
->
->  static void put_uprobe(struct uprobe *uprobe)
+Salvatore Benedetto reported an issue that when doing syscall tracepoint
+tracing the kernel stack is empty. For example, using the following
+command line
+  bpftrace -e 'tracepoint:syscalls:sys_enter_read { print("Kernel Stack\n=
+"); print(kstack()); }'
+the output will be
+=3D=3D=3D
+  Kernel Stack
+=3D=3D=3D
 
-It seems put_uprobe hunk was lost, since the patch is not doing
-what commit log describes.
+Further analysis shows that pt_regs used for bpf syscall tracepoint
+tracing is from the one constructed during user->kernel transition.
+The call stack looks like
+  perf_syscall_enter+0x88/0x7c0
+  trace_sys_enter+0x41/0x80
+  syscall_trace_enter+0x100/0x160
+  do_syscall_64+0x38/0xf0
+  entry_SYSCALL_64_after_hwframe+0x76/0x7e
+
+The ip address stored in pt_regs is from user space hence no kernel
+stack is printed.
+
+To fix the issue, we need to use kernel address from pt_regs.
+In kernel repo, there are already a few cases like this. For example,
+in kernel/trace/bpf_trace.c, several perf_fetch_caller_regs(fake_regs_ptr=
+)
+instances are used to supply ip address or use ip address to construct
+call stack.
+
+The patch follows the above example by using a fake pt_regs.
+The pt_regs is stored in local stack since the syscall tracepoint
+tracing is in process context and there are no possibility that
+different concurrent syscall tracepoint tracing could mess up with each
+other. This is similar to a perf_fetch_caller_regs() use case in
+kernel/trace/trace_event_perf.c with function perf_ftrace_function_call()
+where a local pt_regs is used.
+
+With this patch, for the above bpftrace script, I got the following outpu=
+t
+=3D=3D=3D
+  Kernel Stack
+
+        syscall_trace_enter+407
+        syscall_trace_enter+407
+        do_syscall_64+74
+        entry_SYSCALL_64_after_hwframe+75
+=3D=3D=3D
+
+Reported-by: Salvatore Benedetto <salvabenedetto@meta.com>
+Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+---
+ kernel/trace/trace_syscalls.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/trace/trace_syscalls.c b/kernel/trace/trace_syscalls.=
+c
+index 9c581d6da843..063f51952d49 100644
+--- a/kernel/trace/trace_syscalls.c
++++ b/kernel/trace/trace_syscalls.c
+@@ -559,12 +559,15 @@ static int perf_call_bpf_enter(struct trace_event_c=
+all *call, struct pt_regs *re
+ 		int syscall_nr;
+ 		unsigned long args[SYSCALL_DEFINE_MAXARGS];
+ 	} __aligned(8) param;
++	struct pt_regs fake_regs;
+ 	int i;
+=20
+ 	BUILD_BUG_ON(sizeof(param.ent) < sizeof(void *));
+=20
+ 	/* bpf prog requires 'regs' to be the first member in the ctx (a.k.a. &=
+param) */
+-	*(struct pt_regs **)&param =3D regs;
++	memset(&fake_regs, 0, sizeof(fake_regs));
++	perf_fetch_caller_regs(&fake_regs);
++	*(struct pt_regs **)&param =3D &fake_regs;
+ 	param.syscall_nr =3D rec->nr;
+ 	for (i =3D 0; i < sys_data->nb_args; i++)
+ 		param.args[i] =3D rec->args[i];
+--=20
+2.43.5
+
 
