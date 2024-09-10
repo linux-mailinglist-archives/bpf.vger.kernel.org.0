@@ -1,113 +1,169 @@
-Return-Path: <bpf+bounces-39468-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39469-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 015EF973A7E
-	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 16:49:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A0EC973AA9
+	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 16:55:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AE608282504
-	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 14:49:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C2839289077
+	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 14:55:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 333B1199957;
-	Tue, 10 Sep 2024 14:47:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 021F419755E;
+	Tue, 10 Sep 2024 14:55:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aKbJ3Q5g"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Bt/hZ6KX"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD0CA19992A;
-	Tue, 10 Sep 2024 14:47:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B07F189903;
+	Tue, 10 Sep 2024 14:55:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725979660; cv=none; b=VBq1nonHd+zLZBubEN30uDLMCn4alPR+sRvPN53W26e4KCe9kSfyzo6V1YdUrb+6yMARRm/Aqcz8IrOdB9XuAAV/auLOgB5/SvkDR6gLOlMIgLFAXazgKUNZ9YwauQTIrc+mxMh38DnFBDBTRWkRa1VPZ/vVlwpgf9OsSjjkUcc=
+	t=1725980135; cv=none; b=D62i2AeObanv2yyOKB4awIPTn8io6e5z6G10IWOlq1u5J0QTrpgvtnvD8MlIgsZoepOqcaFGoYguAcYTUTWOqp2sWNMjXwwgu83+dyRr1qaji49LZGbZJvDNF9ZZVO1ucZQvub/ts6Hu/j3H2892a3IJmNl6JZBM5uaQMxkY+tE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725979660; c=relaxed/simple;
-	bh=8aGhRDd28YHNWYtdIHgqzl4BLz13MpLBeZUqJSWKbRg=;
+	s=arc-20240116; t=1725980135; c=relaxed/simple;
+	bh=U1H5UjDwEAvnyXdqEJPmbXEa33TZuT0QfjD2PpoqWa8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SOZsl1NeyXzwR8ji3sZk1YbcAdYnegNIlhEHBMvAJLG1bpY+MMtBnmJA7WuvfwHWFkH4Z2t0G6PDC+R0u5v3w87DmmCp6+XnWiPjo4HCCEzdlrFa4HxOwbapWJXCO26FnY2rOKMnOFBxcWF9MlR/3JP3g7xXkpZxopHzVmYTymA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aKbJ3Q5g; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F23BC4CEC4;
-	Tue, 10 Sep 2024 14:47:36 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=iKAu+DR86C3Za+wRSaBfO+7m2Q2qGSRV6hfKnGOKxBkJk1wKAb4rA/NT40eU6lt5JeU1Fpyk0E7HMjdvoACXePQd85eb8SjTApTpJOYvEbdRwiFRgjdnE7r7oNxPwRB2TQZS249FG10IbBteEy5C/Mw0MduD87LkH/rTqprKO88=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Bt/hZ6KX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC009C4CEC3;
+	Tue, 10 Sep 2024 14:55:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1725979660;
-	bh=8aGhRDd28YHNWYtdIHgqzl4BLz13MpLBeZUqJSWKbRg=;
+	s=k20201202; t=1725980135;
+	bh=U1H5UjDwEAvnyXdqEJPmbXEa33TZuT0QfjD2PpoqWa8=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=aKbJ3Q5g2NF1noT8deAAdAyfuwIpSYF15RvNse+uyy6ccyiZZoujAUBywkvktZEtn
-	 9q6qEusqC4dSDl+suD1cNEhsr9kjFSKdGKMhkdYiw1zQB+yy7D6obAI0yzbrPQP42S
-	 xUhuXmHh69QaJTIdKNDfXORPssgGQS2HP/T/xHxOrvERN23iqSNGCru3Kv/Oa4c1Z0
-	 hshoKCzgpjrIxLspKw6hqSJ7ALNSA2q2sfIs1kY+J2z2sqTtcswDuboXnVktct6iaz
-	 e+TYYl/eFD9D5Kz6dbwklOCd54wvSdR2i4+Q3jOEFUxwZ3+55bsehEFK+VEgopmvQ4
-	 xIcrL/t/6GPAw==
-Message-ID: <c18fefbb-b22f-475f-9912-63162bf84765@kernel.org>
-Date: Tue, 10 Sep 2024 15:47:34 +0100
+	b=Bt/hZ6KXwP+aol2aTvTh5LXiCvjSWI5d8SoV/ZC4RRmrXQKPVWfDg6S1Btf8jvgyU
+	 2stb8pYRbkGPKk504CbatNriAAW04RUPBWeFr6ASd6hkhG6iHDtFXFifLTFo4Y0joV
+	 Do06HD2a94IsXFc+Hg4NQ2tZ7DN6kiF82eQf17qpTm1l/tcqusLxT2Fg3oIN1fCrKS
+	 YmlDX7Cfa8eBzKgAkzZxXb/J9/Kx1LPJjteqYlg6sAU6Pwc7Tiib3RkXmNPOcaqkeR
+	 5XhUJFYil6y7Dv7U8F/dZa6IQ5JU4T23BxDbzIzVT4vrvDVr5OQjRLm6GDt72WR2DF
+	 mAAqwj4OglWmg==
+Message-ID: <77443af4-c16e-4bcc-84bd-d808f12b9770@kernel.org>
+Date: Tue, 10 Sep 2024 16:55:29 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] bpftool: Fix undefined behavior in qsort(NULL, 0, ...)
-To: Kuan-Wei Chiu <visitorckw@gmail.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org, jserv@ccns.ncku.edu.tw
-References: <20240910125826.3172950-1-visitorckw@gmail.com>
-From: Quentin Monnet <qmo@kernel.org>
+User-Agent: Mozilla Thunderbird Beta
+Subject: Re: [PATCH bpf-next/net v5 3/3] selftests/bpf: Add mptcp subflow
+ subtest
 Content-Language: en-GB
-In-Reply-To: <20240910125826.3172950-1-visitorckw@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: mptcp@lists.linux.dev, Mat Martineau <martineau@kernel.org>,
+ Geliang Tang <geliang@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Eduard Zingerman <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>
+Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+ bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <20240910-upstream-bpf-next-20240506-mptcp-subflow-test-v5-0-2c664a7da47c@kernel.org>
+ <20240910-upstream-bpf-next-20240506-mptcp-subflow-test-v5-3-2c664a7da47c@kernel.org>
+From: Matthieu Baerts <matttbe@kernel.org>
+Autocrypt: addr=matttbe@kernel.org; keydata=
+ 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
+ lzVbFe7fduHbABmYz9cefQpO7wDE/Q==
+Organization: NGI0 Core
+In-Reply-To: <20240910-upstream-bpf-next-20240506-mptcp-subflow-test-v5-3-2c664a7da47c@kernel.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-2024-09-10 20:58 UTC+0800 ~ Kuan-Wei Chiu <visitorckw@gmail.com>
-> When netfilter has no entry to display, qsort is called with
-> qsort(NULL, 0, ...). This results in undefined behavior, as UBSan
-> reports:
+Hello,
+
+On 10/09/2024 16:13, Matthieu Baerts (NGI0) wrote:
+> From: Geliang Tang <tanggeliang@kylinos.cn>
 > 
-> net.c:827:2: runtime error: null pointer passed as argument 1, which is declared to never be null
+> This patch adds a subtest named test_subflow in test_mptcp to load and
+> verify the newly added MPTCP subflow BPF program. To goal is to make
+> sure it is possible to set different socket options per subflows, while
+> the userspace socket interface only lets the application to set the same
+> socket options for the whole MPTCP connection and its multiple subflows.
 > 
-> Although the C standard does not explicitly state whether calling qsort
-> with a NULL pointer when the size is 0 constitutes undefined behavior,
-> Section 7.1.4 of the C standard (Use of library functions) mentions:
-> 
-> "Each of the following statements applies unless explicitly stated
-> otherwise in the detailed descriptions that follow: If an argument to a
-> function has an invalid value (such as a value outside the domain of
-> the function, or a pointer outside the address space of the program, or
-> a null pointer, or a pointer to non-modifiable storage when the
-> corresponding parameter is not const-qualified) or a type (after
-> promotion) not expected by a function with variable number of
-> arguments, the behavior is undefined."
-> 
-> To avoid this, add an early return when nf_link_count is 0 to prevent
-> calling qsort with a NULL pointer.
-> 
-> Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
-> ---
->   tools/bpf/bpftool/net.c | 3 +++
->   1 file changed, 3 insertions(+)
-> 
-> diff --git a/tools/bpf/bpftool/net.c b/tools/bpf/bpftool/net.c
-> index 968714b4c3d4..13e098fa295a 100644
-> --- a/tools/bpf/bpftool/net.c
-> +++ b/tools/bpf/bpftool/net.c
-> @@ -824,6 +824,9 @@ static void show_link_netfilter(void)
->   		nf_link_count++;
->   	}
->   
-> +	if (!nf_link_count)
-> +		return;
+> To check that, a client and a server are started in a dedicated netns,
+> with veth interfaces to simulate multiple paths. They will exchange data
+> to allow the creation of an additional subflow.
+
+(...)
+
+> diff --git a/tools/testing/selftests/bpf/prog_tests/mptcp.c b/tools/testing/selftests/bpf/prog_tests/mptcp.c
+> index d2ca32fa3b21..c30f032edaca 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/mptcp.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/mptcp.c
+> @@ -335,10 +339,132 @@ static void test_mptcpify(void)
+>  	close(cgroup_fd);
+>  }
+
+(...)
+
+> +static void wait_for_new_subflows(int fd)
+> +{
+> +	socklen_t len;
+> +	u8 subflows;
+> +	int err, i;
 > +
->   	qsort(nf_link_info, nf_link_count, sizeof(*nf_link_info), netfilter_link_compar);
+> +	len = sizeof(subflows);
+> +	/* Wait max 1 sec for new subflows to be created */
+> +	for (i = 0; i < 10; i++) {
+> +		err = getsockopt(fd, SOL_MPTCP, MPTCP_INFO, &subflows, &len);
+> +		if (!err && subflows > 0)
+> +			break;
+> +
+> +		sleep(0.1);
 
-Thanks! As the issue is calling qsort() with a NULL pointer, could you 
-please make the check on nf_link_info rather than nf_link_count? I'd 
-find it easier to follow.
+As reported by the CI, we are not in Python, usleep() should be used
+here. I missed that one during my review. I will send a new version with
+the fix tomorrow. Sorry for the noise.
 
-Quentin
+Cheers,
+Matt
+-- 
+Sponsored by the NGI0 Core fund.
+
 
