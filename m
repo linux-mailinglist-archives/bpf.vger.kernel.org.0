@@ -1,198 +1,160 @@
-Return-Path: <bpf+bounces-39401-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39402-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 216369728EA
-	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 07:35:00 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4EE239728EE
+	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 07:37:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 469A51C23C90
-	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 05:34:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EA2B0B21297
+	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 05:37:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73F40168488;
-	Tue, 10 Sep 2024 05:34:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4747175D5F;
+	Tue, 10 Sep 2024 05:37:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RXSLNlz0"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Jb/M3JU0"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95FEC38DD3
-	for <bpf@vger.kernel.org>; Tue, 10 Sep 2024 05:34:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A3B5167265;
+	Tue, 10 Sep 2024 05:37:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725946494; cv=none; b=KeNW5Gw+/GXpnAJRLcK4Ylpcs6MLTprH1sGWmbFH4YJwasZhG7IAo8E7i8Xh2bpb9SczOdpkXrjSvntriWDb9lSy4bYYVlwjIaIJHss3gQI9KDRUu0yhUtwbdCaucxjHEhFG4MilbVwMlNAUnvk6szG/cinZ2m++QQYtMLQyzSs=
+	t=1725946657; cv=none; b=GoPHrrXfct1+pz9tuvqCmjSwatrzc241h6j6VHo3+4M8wUhDhWcfXgFE/ytgQMm0MnQHqN4+w27UFlq9git9k7ebDulPpIZJ/z6nnm4XNRALdcuduxuoTYDRCIapk4VJL0OXTqn9jUK9RCZG1REaAVN8Wpo4lyM7BQ2WbiMRVVs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725946494; c=relaxed/simple;
-	bh=howereNxlkBVEnKWe/QkDJ3amw/e/HMhNX/4JKdnjUU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=cT7RoZL1LUG4dB18eD24mjvxXPAd/cZrs6dnSvpNfRek4gcul8bth0LcFEIrWmkJQPQK5D8FAcYL8BGHooKeznUR+AeNBDthR2I6VlOzmgFfAc5Ht2ysbG4z7nmOVv56d6VsbiZmrYBwrBMZBjy2OZZZ7vM0n2evG1SzvEP7hgU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RXSLNlz0; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-20688fbaeafso51146715ad.0
-        for <bpf@vger.kernel.org>; Mon, 09 Sep 2024 22:34:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1725946492; x=1726551292; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AhTUjTD86TCrmLO5C7uW2hV/MRzN3xQr2+GboTKWvIA=;
-        b=RXSLNlz0QYQRChmmqlkBrbToJ46TdQlEnNwZX5h6KItv7IYWKpdGX4kfYRlprnpPrb
-         Oyud6Br7gXRDXmKY9uGe3K/T8ZtZtyIVQgKbjIPz2KGoZrRKKR0dkOhuh3PxHnSOrrs4
-         RTxl4YHAepJJyIduCHnb6Skx9fjgXf0xIIZ5pd/NMMsolZYP1LfBPG3rf1RLp5d6dHpb
-         uCkhNkND4jIY/lSvlFDjn7+8Ad2YbcfoQ7zBNZlRYU8brSGWiYzcKOMWka+xmYiva5og
-         JasY5H3wjEtw6RwVPxjXJ/DUOwNqB2lCLYJT9+fxF+UM8YAZppZ6wceg1H+TKrAI7AJA
-         YBgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725946492; x=1726551292;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=AhTUjTD86TCrmLO5C7uW2hV/MRzN3xQr2+GboTKWvIA=;
-        b=QjklF2Opp+xJAQjsrYe5tdwPMuLxGcuLq9QrZ7LAJfdJ8R6jWD6w5i/704I8os80GG
-         7w8GJl0dCjWf2sI2Z0TLSmNdVFveC0WKIzijKN1b1IsEU87o/bLwJ5Q/tB/7KacJ8cuG
-         gYlCz5EEaTtOCn+7ReySF12q8wEsZcj7s16qA8c8ZjZArPGQvhdV0ziVSOLF12BlzKH9
-         O8Q5uRkb7urqY305yMKuruwONhMGpsw8XaWTS0jNcVftHcKehTZv7K50DN3KoGINUJoB
-         eWsTEOiNUCTttj386HwfaVQht0pJ4HRfHoFhAe5Hq1E3qGLldzoCdHdeuKvcSEoUGYEE
-         t2Vw==
-X-Gm-Message-State: AOJu0YzHf13vpwqTR/oUonzjICZzde7zSQ2l8F2WIttQoxLX//irqWrb
-	SFs6yAf1FM3ZDs/8/ZMi2sk02aB9mihC8W0fMcUs1bU97y0tSYeO2TpTAP6QdRxyS3Mr+6cN9Qi
-	0s8zlv57iWPSrb/uSo5E4BG5/v+Puueg9
-X-Google-Smtp-Source: AGHT+IHoxrUzdsSF/89pmfjDLynoo+82Fh/dIyxFneRrVPYnek9+8bEcDyPnNVTFyehiKnwm95yJEJ3ZGLHWT263jaw=
-X-Received: by 2002:a17:902:c401:b0:207:16b9:808c with SMTP id
- d9443c01a7336-20716b98155mr128893035ad.1.1725946491582; Mon, 09 Sep 2024
- 22:34:51 -0700 (PDT)
+	s=arc-20240116; t=1725946657; c=relaxed/simple;
+	bh=D5TYavM29ltridmAsCsO8PzJ/nzNH0IhkjhLoU87B1Y=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=B40pJV+dKKc+ecUBlmNYc8KDKwjjzFS17I89j8iBePOkXSwU9zIfO0LtAKObVIhSBrFXPhNlrNSueriGny7i1hmeS+Lv63+vf39b2dFYgPUrmhyCCRUxsstpz2qjZtexSzhNlWSwF0tlJbSVbPuFMc1txbV/rsMD/ABiAs8/7sA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Jb/M3JU0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06FE0C4CEC3;
+	Tue, 10 Sep 2024 05:37:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1725946656;
+	bh=D5TYavM29ltridmAsCsO8PzJ/nzNH0IhkjhLoU87B1Y=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=Jb/M3JU04RjAlCYKSqVHue2EQuRIqTq2kyBE1AFwZKgOXv+NOx8MvUXdIMkIVmZeF
+	 FkRMc/6q8eijqY+KID39U+RlEWUzJRpRX3iSa0gBS1mGvVBD6iQ7tGigEB1FD/XytO
+	 wPWOPbOxyIPSlpGFgj8/X2XK6Mx4L7QDJ+pqiUkb7VyszzhJH60ndn5dXtOeMvgHzS
+	 7dzt7wiP0BWE5/eI2tlq58zRNREAJyWqURpdWBwOJYmfAv3WhfIjN9g5MoqCy6sO3L
+	 U31j2Xn4tn45rVGwz2YWJED1FEMJmhrX5f6aNPAdulgysopZMz9IcYQJBYJ/Pji1i0
+	 q7CJ8VoPMbqXw==
+From: Geliang Tang <geliang@kernel.org>
+To: mptcp@lists.linux.dev
+Cc: Geliang Tang <tanggeliang@kylinos.cn>,
+	bpf <bpf@vger.kernel.org>,
+	Martin KaFai Lau <martin.lau@kernel.org>
+Subject: [PATCH mptcp-next v3 1/5] bpf: Add mptcp_subflow bpf_iter
+Date: Tue, 10 Sep 2024 13:37:23 +0800
+Message-ID: <026dce3d6903ad189e4b0518a64b60c910e660c0.1725946276.git.tanggeliang@kylinos.cn>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <cover.1725946276.git.tanggeliang@kylinos.cn>
+References: <cover.1725946276.git.tanggeliang@kylinos.cn>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240910034306.3122378-1-yonghong.song@linux.dev>
-In-Reply-To: <20240910034306.3122378-1-yonghong.song@linux.dev>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 9 Sep 2024 22:34:39 -0700
-Message-ID: <CAEf4BzbsYn-b7YiKZ0MPW9_VLzDq38Jv8UkocfMLVje_SAmENA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: Use fake pt_regs when doing bpf syscall
- tracepoint tracing
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Salvatore Benedetto <salvabenedetto@meta.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Mon, Sep 9, 2024 at 8:43=E2=80=AFPM Yonghong Song <yonghong.song@linux.d=
-ev> wrote:
->
-> Salvatore Benedetto reported an issue that when doing syscall tracepoint
-> tracing the kernel stack is empty. For example, using the following
-> command line
->   bpftrace -e 'tracepoint:syscalls:sys_enter_read { print("Kernel Stack\n=
-"); print(kstack()); }'
-> the output will be
-> =3D=3D=3D
->   Kernel Stack
-> =3D=3D=3D
->
-> Further analysis shows that pt_regs used for bpf syscall tracepoint
-> tracing is from the one constructed during user->kernel transition.
-> The call stack looks like
->   perf_syscall_enter+0x88/0x7c0
->   trace_sys_enter+0x41/0x80
->   syscall_trace_enter+0x100/0x160
->   do_syscall_64+0x38/0xf0
->   entry_SYSCALL_64_after_hwframe+0x76/0x7e
->
-> The ip address stored in pt_regs is from user space hence no kernel
-> stack is printed.
->
-> To fix the issue, we need to use kernel address from pt_regs.
-> In kernel repo, there are already a few cases like this. For example,
-> in kernel/trace/bpf_trace.c, several perf_fetch_caller_regs(fake_regs_ptr=
-)
-> instances are used to supply ip address or use ip address to construct
-> call stack.
->
-> The patch follows the above example by using a fake pt_regs.
-> The pt_regs is stored in local stack since the syscall tracepoint
-> tracing is in process context and there are no possibility that
-> different concurrent syscall tracepoint tracing could mess up with each
-> other. This is similar to a perf_fetch_caller_regs() use case in
-> kernel/trace/trace_event_perf.c with function perf_ftrace_function_call()
-> where a local pt_regs is used.
->
-> With this patch, for the above bpftrace script, I got the following outpu=
-t
-> =3D=3D=3D
->   Kernel Stack
->
->         syscall_trace_enter+407
->         syscall_trace_enter+407
->         do_syscall_64+74
->         entry_SYSCALL_64_after_hwframe+75
-> =3D=3D=3D
->
-> Reported-by: Salvatore Benedetto <salvabenedetto@meta.com>
-> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
-> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
-> ---
->  kernel/trace/trace_syscalls.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
->
+From: Geliang Tang <tanggeliang@kylinos.cn>
 
-Note, we need to solve the same for perf_call_bpf_exit().
+It's necessary to traverse all subflows on the conn_list of an MPTCP
+socket and then call kfunc to modify the fields of each subflow. In
+kernel space, mptcp_for_each_subflow() helper is used for this:
 
-pw-bot: cr
+	mptcp_for_each_subflow(msk, subflow)
+		kfunc(subflow);
 
-> diff --git a/kernel/trace/trace_syscalls.c b/kernel/trace/trace_syscalls.=
-c
-> index 9c581d6da843..063f51952d49 100644
-> --- a/kernel/trace/trace_syscalls.c
-> +++ b/kernel/trace/trace_syscalls.c
-> @@ -559,12 +559,15 @@ static int perf_call_bpf_enter(struct trace_event_c=
-all *call, struct pt_regs *re
+But in the MPTCP BPF program, this has not yet been implemented. As
+Martin suggested recently, this conn_list walking + modify-by-kfunc
+usage fits the bpf_iter use case. So this patch adds a new bpf_iter
+type named "mptcp_subflow" to do this and implements its helpers
+bpf_iter_mptcp_subflow_new()/_next()/_destroy().
 
-let's also drop struct pt_regs * argument into
-perf_call_bpf_{enter,exit}(), they are not actually used anymore
+Then bpf_for_each() for mptcp_subflow can be used in BPF program like
+this:
 
->                 int syscall_nr;
->                 unsigned long args[SYSCALL_DEFINE_MAXARGS];
->         } __aligned(8) param;
-> +       struct pt_regs fake_regs;
->         int i;
->
->         BUILD_BUG_ON(sizeof(param.ent) < sizeof(void *));
->
->         /* bpf prog requires 'regs' to be the first member in the ctx (a.=
-k.a. &param) */
-> -       *(struct pt_regs **)&param =3D regs;
-> +       memset(&fake_regs, 0, sizeof(fake_regs));
+	bpf_rcu_read_lock();
+	bpf_for_each(mptcp_subflow, subflow, msk)
+		kfunc(subflow);
+	bpf_rcu_read_unlock();
 
-sizeof(struct pt_regs) =3D=3D 168 on x86-64, and on arm64 it's a whopping
-336 bytes, so these memset(0) calls are not free for sure.
+Suggested-by: Martin KaFai Lau <martin.lau@kernel.org>
+Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
+---
+ net/mptcp/bpf.c | 47 +++++++++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 43 insertions(+), 4 deletions(-)
 
-But we don't need to do this unnecessary work all the time.
+diff --git a/net/mptcp/bpf.c b/net/mptcp/bpf.c
+index 6414824402e6..350672e24a3d 100644
+--- a/net/mptcp/bpf.c
++++ b/net/mptcp/bpf.c
+@@ -201,9 +201,48 @@ static const struct btf_kfunc_id_set bpf_mptcp_fmodret_set = {
+ 	.set   = &bpf_mptcp_fmodret_ids,
+ };
+ 
+-__diag_push();
+-__diag_ignore_all("-Wmissing-prototypes",
+-		  "kfuncs which will be used in BPF programs");
++struct bpf_iter_mptcp_subflow {
++	__u64 __opaque[2];
++} __attribute__((aligned(8)));
++
++struct bpf_iter_mptcp_subflow_kern {
++	struct mptcp_sock *msk;
++	struct list_head *pos;
++} __attribute__((aligned(8)));
++
++__bpf_kfunc_start_defs();
++
++__bpf_kfunc int bpf_iter_mptcp_subflow_new(struct bpf_iter_mptcp_subflow *it,
++					   struct mptcp_sock *msk)
++{
++	struct bpf_iter_mptcp_subflow_kern *kit = (void *)it;
++
++	if (!msk)
++		return -EINVAL;
++
++	kit->msk = msk;
++	kit->pos = &msk->conn_list;
++	return 0;
++}
++
++__bpf_kfunc struct mptcp_subflow_context *
++bpf_iter_mptcp_subflow_next(struct bpf_iter_mptcp_subflow *it)
++{
++	struct bpf_iter_mptcp_subflow_kern *kit = (void *)it;
++	struct mptcp_subflow_context *subflow;
++	struct mptcp_sock *msk = kit->msk;
++
++	subflow = list_entry((kit->pos)->next, struct mptcp_subflow_context, node);
++	if (!msk || list_entry_is_head(subflow, &msk->conn_list, node))
++		return NULL;
++
++	kit->pos = &subflow->node;
++	return subflow;
++}
++
++__bpf_kfunc void bpf_iter_mptcp_subflow_destroy(struct bpf_iter_mptcp_subflow *it)
++{
++}
+ 
+ __bpf_kfunc struct mptcp_subflow_context *
+ bpf_mptcp_subflow_ctx_by_pos(const struct mptcp_sched_data *data, unsigned int pos)
+@@ -218,7 +257,7 @@ __bpf_kfunc bool bpf_mptcp_subflow_queues_empty(struct sock *sk)
+ 	return tcp_rtx_queue_empty(sk);
+ }
+ 
+-__diag_pop();
++__bpf_kfunc_end_defs();
+ 
+ BTF_KFUNCS_START(bpf_mptcp_sched_kfunc_ids)
+ BTF_ID_FLAGS(func, mptcp_subflow_set_scheduled)
+-- 
+2.43.0
 
-I initially was going to suggest to use get_bpf_raw_tp_regs() from
-kernel/trace/bpf_trace.c to get a temporary pt_regs that was already
-memset(0) and used to initialize these minimal "fake regs".
-
-But, it turns out we don't need to do even that. Note
-perf_trace_buf_alloc(), it has `struct pt_regs **` second argument,
-and if you pass a valid pointer there, it will return "fake regs"
-struct to be used. We already use that functionality in
-perf_trace_##call in include/trace/perf.h (i.e., non-syscall
-tracepoints), so this seems to be a perfect fit.
-
-> +       perf_fetch_caller_regs(&fake_regs);
-> +       *(struct pt_regs **)&param =3D &fake_regs;
->         param.syscall_nr =3D rec->nr;
->         for (i =3D 0; i < sys_data->nb_args; i++)
->                 param.args[i] =3D rec->args[i];
-> --
-> 2.43.5
->
 
