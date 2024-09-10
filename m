@@ -1,181 +1,254 @@
-Return-Path: <bpf+bounces-39547-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39548-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9391B9745E0
-	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 00:22:16 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E112B9745F7
+	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 00:27:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D713281A36
-	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 22:22:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 09B951C218EF
+	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 22:27:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7256D1ABEBB;
-	Tue, 10 Sep 2024 22:22:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D67551ABED0;
+	Tue, 10 Sep 2024 22:27:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Zx+/qlr0"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25B351917E3;
-	Tue, 10 Sep 2024 22:22:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF6CA1A3BAF
+	for <bpf@vger.kernel.org>; Tue, 10 Sep 2024 22:27:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726006930; cv=none; b=TKmKhoKl/WYlS4BNvQ/LqDsR4inJJbJwj1U9KzngXa7onO3vg7MO3uRWfPtvAZcx/zNQRw6aBqJTb63nmm38SbYJijwHbRmftJ/v/Ge1tMyD/JLuOS4+L55Ebg/wg4yFl+KOsnWt6ymMCJ717Q3rBHSbmid5NcC1innjWIDfxPI=
+	t=1726007271; cv=none; b=Z0HW4ajefngnihlyHnU0HhBajQVAczIoysF8pgB8bpSsSV8xpkzFDj7GLh/eVZe9eopdAbcw/zLoMdCuZBLslNR4hOeo9GckS/zOkGtIjSKHvnrpes4cfsk2Bysgpw7jXZTHJF6lRhmDG71FhKKq9dVdSZegCfqj9beOsXGKYCE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726006930; c=relaxed/simple;
-	bh=UtL5BjmdXLGd0AEVqxERJo5BFzbUysyLUH/ujTqsGWk=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=QxVDnDs4onXjBacSuwkAFfgjjoD4gFzLOV98UE+gS/bthxo7IsawWG6Omu/DLHa+Gi+RATiJWaOtT5PvNZQWkNpIuh07AMZjgt4U8BmlIv3YB1mplxPusJHARldq9g9IymSFAxCt+XkrGF4Di/qbTFsxlqjMxSUkBJuRLSeiJuA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 438E3C4CEC3;
-	Tue, 10 Sep 2024 22:22:08 +0000 (UTC)
-Date: Tue, 10 Sep 2024 18:22:09 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, bpf <bpf@vger.kernel.org>, Linux
- trace kernel <linux-trace-kernel@vger.kernel.org>, adubey@linux.ibm.com,
- "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, KP Singh
- <kpsingh@chromium.org>, linux-arm-kernel
- <linux-arm-kernel@lists.infradead.org>, Mark Rutland
- <mark.rutland@arm.com>, Will Deacon <will@kernel.org>, Alexei Starovoitov
- <ast@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>, Florent Revest
- <revest@chromium.org>, Puranjay Mohan <puranjay@kernel.org>
-Subject: Re: Unsupported CONFIG_FPROBE and CONFIG_RETHOOK on ARM64
-Message-ID: <20240910182209.65ab3452@gandalf.local.home>
-In-Reply-To: <CAEf4BzZRV6h5nitTyQ_zah6wWMBZD6QQBbTCWyPVzkPpS42sgg@mail.gmail.com>
-References: <CAEf4BzaYyEftmRmt6FswrTOsb9FuQMtzuDXD4OJMO7Ein2ZRGg@mail.gmail.com>
-	<CAEf4BzasRqeAY3ZpBDbjyWSKUriZgUf4U_YoQNSSutKhX5g2kw@mail.gmail.com>
-	<20240910145431.20e9d2e5@gandalf.local.home>
-	<CAEf4BzZRV6h5nitTyQ_zah6wWMBZD6QQBbTCWyPVzkPpS42sgg@mail.gmail.com>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1726007271; c=relaxed/simple;
+	bh=rtl5lz75g//6GZz2E/qYpcRAAJWHtEV0sk/MVqhSUGI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=tpfm4fzn6rqVhf4mQBM7O0XfpEc+erniedEve8rOUbFWBmnFz8fiUzagd0BG3se57Pknwu3alRAz1sbH1R7Dc+A9L5VDusg0sF1Oyzt+2fuQCzDqeKheyig6ke8orDWt1oH3u8JIC1EXKkhMcFUx7bSc2FrcVizwJVn2LUw4Rjg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Zx+/qlr0; arc=none smtp.client-ip=209.85.216.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-2d892997913so3986202a91.3
+        for <bpf@vger.kernel.org>; Tue, 10 Sep 2024 15:27:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1726007269; x=1726612069; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NyrPouafs4ttfN/YM/aNJX43UazVE3fubGWh0jcGbps=;
+        b=Zx+/qlr0OWOBne2x/TCLMMOxbiF7bKVC3AUNzLiXf7VZ5MWHbfUukUArvleOvbMPsv
+         LypJjJEfVUiuQ1Y/ajG9jEugctJK45TKgIsj5zOwpiJ3byPX+Q4cyOVmX+Q/07/zs7jR
+         hwHu5jpV0cchZAdOJiUqVsHqm8I7BRfxZWUCrDsaCX8fjhUVf6HoydGBDzUHhQpQs4ka
+         Qp+4OGXHpO+Oi6BJD3LNfxHuoHY9iMSqBPX1HjwPK04Yta494TJdgsRTdaqP4tdXo8pE
+         h3XB98YkRJA/pwNwfRZJXWG7kRyLcTOjVqq0+6jG22mXYVb90VCEB4MuIiJ+Cg5BcBpu
+         63Fw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1726007269; x=1726612069;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NyrPouafs4ttfN/YM/aNJX43UazVE3fubGWh0jcGbps=;
+        b=Av7x6hbqiAnY70Dooj4uW2Eywo8sXL1vGJ8sKvyogKRePWqWUvzTQzqs2a5ZuqrHb2
+         eXidUtpe+YpvfkXJTiICC8UHdn+yYbXTiW1Qy99Os2fpKuK2RhDNfgn/ctHinWCPG0IH
+         pG2ZIWilrBEFE77ZEreP7cX501tp/XSyt229eGBfEiegyPdKqD3bzggY6AqEYBUP/bbO
+         3sx3MCYKFR5FE30XeE4DB9X3+fPrr8QVj9cpN4PKPu4HWJMb4nKtciZ9oLPH+Rg6X58M
+         cOnNi2k/CV64pK3iQP6TizkvBRDfULkK9SVkpnZ7uHViGhIS8A/Bjkzr7JTwWlXvGMwe
+         0gCQ==
+X-Gm-Message-State: AOJu0YyEK8eZOEeuYb3tQLn1LP770YIvE3S//Ob80vj1xazo4uz4Bnib
+	RgQ4aS7T5Ak1nWB0y+Y7xQAmuDmuOgG/wKANKeS+9OLsIZi656T0iPfBDY4WypbjS+a9TsGQlb7
+	2hB8OalOejp0dPPJP3qx5f87FUfo=
+X-Google-Smtp-Source: AGHT+IEmMSx0LMrXI5Zibf9fdZ9/BBcnNLKlYSn+m+ed3IN6a+cDBrURPiNyOGC1ND8c3JKh5mLtyps195YP4ATtkCw=
+X-Received: by 2002:a17:90b:38cc:b0:2d1:ca16:5555 with SMTP id
+ 98e67ed59e1d1-2dad50f9e56mr19893161a91.37.1726007269131; Tue, 10 Sep 2024
+ 15:27:49 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+References: <20240910214037.3663272-1-yonghong.song@linux.dev>
+In-Reply-To: <20240910214037.3663272-1-yonghong.song@linux.dev>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 10 Sep 2024 15:27:35 -0700
+Message-ID: <CAEf4BzbTTx1sCAbMd17rdcLtu4pVHTaJvHdscA3SU+uEJzDAJw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2] bpf: Use fake pt_regs when doing bpf syscall
+ tracepoint tracing
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Salvatore Benedetto <salvabenedetto@meta.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 10 Sep 2024 13:29:57 -0700
-Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+On Tue, Sep 10, 2024 at 2:40=E2=80=AFPM Yonghong Song <yonghong.song@linux.=
+dev> wrote:
+>
+> Salvatore Benedetto reported an issue that when doing syscall tracepoint
+> tracing the kernel stack is empty. For example, using the following
+> command line
+>   bpftrace -e 'tracepoint:syscalls:sys_enter_read { print("Kernel Stack\n=
+"); print(kstack()); }'
+>   bpftrace -e 'tracepoint:syscalls:sys_exit_read { print("Kernel Stack\n"=
+); print(kstack()); }'
+> the output for both commands is
+> =3D=3D=3D
+>   Kernel Stack
+> =3D=3D=3D
+>
+> Further analysis shows that pt_regs used for bpf syscall tracepoint
+> tracing is from the one constructed during user->kernel transition.
+> The call stack looks like
+>   perf_syscall_enter+0x88/0x7c0
+>   trace_sys_enter+0x41/0x80
+>   syscall_trace_enter+0x100/0x160
+>   do_syscall_64+0x38/0xf0
+>   entry_SYSCALL_64_after_hwframe+0x76/0x7e
+>
+> The ip address stored in pt_regs is from user space hence no kernel
+> stack is printed.
+>
+> To fix the issue, kernel address from pt_regs is required.
+> In kernel repo, there are already a few cases like this. For example,
+> in kernel/trace/bpf_trace.c, several perf_fetch_caller_regs(fake_regs_ptr=
+)
+> instances are used to supply ip address or use ip address to construct
+> call stack.
+>
+> Instead of allocate fake_regs in the stack which may consume
+> a lot of bytes, the function perf_trace_buf_alloc() in
+> perf_syscall_{enter, exit}() is leveraged to create fake_regs,
+> which will be passed to perf_call_bpf_{enter,exit}().
+>
+> For the above bpftrace script, I got the following output with this patch=
+:
+> for tracepoint:syscalls:sys_enter_read
+> =3D=3D=3D
+>   Kernel Stack
+>
+>         syscall_trace_enter+407
+>         syscall_trace_enter+407
+>         do_syscall_64+74
+>         entry_SYSCALL_64_after_hwframe+75
+> =3D=3D=3D
+> and for tracepoint:syscalls:sys_exit_read
+> =3D=3D=3D
+> Kernel Stack
+>
+>         syscall_exit_work+185
+>         syscall_exit_work+185
 
-> On Tue, Sep 10, 2024 at 11:54=E2=80=AFAM Steven Rostedt <rostedt@goodmis.=
-org> wrote:
-> >
-> > On Tue, 10 Sep 2024 11:23:29 -0700
-> > Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
-> > =20
-> > > Does Linus have to be in CC to get any reply here? Come on, it's been
-> > > almost a full week. =20
-> >
-> > Just FYI, an email like this does piss people off. You are getting upset
-> > for waiting "almost a full week"? A full week is what we tell people to=
- =20
->=20
-> A full week to get a response to a question? Yes, I find it way too
-> long. I didn't ask for some complicated code review, did I? I don't
-> know who "we" are and where "we" tell people, but I disagree that one
-> week is acceptable latency to coordinate stuff like this across
-> multiple subsystems.
+this duplication is unfortunate, but we have the same with non-syscall
+tracepoint, so it's not really a new "issue"
 
-Why do I have to answer to you? Once I saw the "ARM64" in the subject, it
-immediately went down in priority and honesty, I didn't even read it as I'm
-not the ARM64 maintainer. I did skim it to see if my name was mentioned as
-I usually try to do with emails, but when it wasn't I ignored it.
+>         syscall_exit_to_user_mode+305
+>         do_syscall_64+118
+>         entry_SYSCALL_64_after_hwframe+75
+> =3D=3D=3D
+>
+> Reported-by: Salvatore Benedetto <salvabenedetto@meta.com>
+> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+> ---
+>  kernel/trace/trace_syscalls.c | 12 ++++++++----
+>  1 file changed, 8 insertions(+), 4 deletions(-)
+>
 
->=20
-> "pointing out"? You and Masami are maintainers of linux-trace tree,
-> and rethook is part of that. Masami's original code was the one in
+Looks great, thank you!
 
-Yes, but I don't touch arm code. Masami sometimes does (as is the case
-here), but it is when we work with the arm maintainers.
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
-> question and I did expect a rather quick reply from him. If not
-> Masami, then you would have a context as well. Who else should I be
-> asking?
-
-The arm64 maintainers as they are the ones that maintain that code.
-
->=20
-> If ARM64 folks somehow have more context, it wouldn't be that hard to
-> mention and redirect, instead of ghosting my email.
-
-You should know they have more context because they are the actual
-maintainers. I shouldn't have to point that out to you.
-
- $ wget -O /tmp/t.patch https://lore.kernel.org/bpf/164338038439.2429999.17=
-564843625400931820.stgit@devnote2/raw
- $ ./scripts/get_maintainer.pl t.patch
-Catalin Marinas <catalin.marinas@arm.com> (maintainer:ARM64 PORT (AARCH64 A=
-RCHITECTURE),commit_signer:2/6=3D33%)
-Will Deacon <will@kernel.org> (maintainer:ARM64 PORT (AARCH64 ARCHITECTURE)=
-,commit_signer:5/6=3D83%)
-Puranjay Mohan <puranjay@kernel.org> (commit_signer:5/6=3D83%,authored:3/6=
-=3D50%,added_lines:30/255=3D12%)
-Mark Rutland <mark.rutland@arm.com> (commit_signer:4/6=3D67%,authored:2/6=
-=3D33%,added_lines:105/255=3D41%,removed_lines:47/49=3D96%)
-"Madhavan T. Venkataraman" <madvenka@linux.microsoft.com> (commit_signer:2/=
-6=3D33%)
-chenqiwu <qiwuchen55@gmail.com> (authored:1/6=3D17%,added_lines:120/255=3D4=
-7%)
-linux-arm-kernel@lists.infradead.org (moderated list:ARM64 PORT (AARCH64 AR=
-CHITECTURE))
-linux-kernel@vger.kernel.org (open list)
-bpf@vger.kernel.org (open list:BPF [MISC]:Keyword:(?:\b|_)bpf(?:\b|_))
-
-Neither my name nor Masami's shows up.
-
->=20
-> >
-> > Funny part is, I was just about to start reviewing Masami's fprobe patc=
-hes
-> > when I read this. Now I feel reluctant to. I'll do it anyway because th=
-ey
-> > are Masami's patches, but if they were yours, I would have pushed it of=
-f a
-> > week or two with that attitude. =20
->=20
-> (I'll ignore all the personal stuff)
-
-Maybe you shouldn't ignore it. If you think you can get answers by jumping
-immediately to "I'm going to tell on you to Linus", you may want to rethink
-your approach. A simple "Hey Steve and Masami, what's going on?" would be
-the "human" thing to do. Especially since you appear to be mad at us for
-not replying to an email about code we do not maintain.
-
-Sorry, but you're not my boss, I don't have to reply to any of your emails.
-
->=20
-> You are probably talking about [0]. But I was asking about [1], i.e.,
-> adding HAVE_RETHOOK support to ARM64. Despite all your emotions above,
-> can I still get a meaningful answer as for why that wasn't landed and
-> what prevents it from landing right now before Masami's 20-patch
-> series lands?
->=20
->   [0] https://lore.kernel.org/linux-trace-kernel/172398527264.293426.2050=
-093948411376857.stgit@devnote2/
->   [1] https://lore.kernel.org/bpf/164338038439.2429999.175648436254009318=
-20.stgit@devnote2/
->=20
-> >
-> > Again, just letting you know.
-
-Because [1] isn't something I maintain. So I ignored it.
-
- arch/arm64/Kconfig                            |    1=20
- arch/arm64/include/asm/stacktrace.h           |    2 -
- arch/arm64/kernel/probes/Makefile             |    1=20
- arch/arm64/kernel/probes/rethook.c            |   25 +++++++
- arch/arm64/kernel/probes/rethook_trampoline.S |   87 +++++++++++++++++++++=
-++++
- arch/arm64/kernel/stacktrace.c                |    7 ++
-
-None of that would go through my tree unless an arm64 maintainer asked.
-
-In fact, I need a bunch of acks from all maintainers of the architectures
-that are touched by [0] before I can pull it in. Which means it will likely
-not make this merge window.
-
--- Steve
+> diff --git a/kernel/trace/trace_syscalls.c b/kernel/trace/trace_syscalls.=
+c
+> index 9c581d6da843..785733245ead 100644
+> --- a/kernel/trace/trace_syscalls.c
+> +++ b/kernel/trace/trace_syscalls.c
+> @@ -564,6 +564,7 @@ static int perf_call_bpf_enter(struct trace_event_cal=
+l *call, struct pt_regs *re
+>         BUILD_BUG_ON(sizeof(param.ent) < sizeof(void *));
+>
+>         /* bpf prog requires 'regs' to be the first member in the ctx (a.=
+k.a. &param) */
+> +       perf_fetch_caller_regs(regs);
+>         *(struct pt_regs **)&param =3D regs;
+>         param.syscall_nr =3D rec->nr;
+>         for (i =3D 0; i < sys_data->nb_args; i++)
+> @@ -575,6 +576,7 @@ static void perf_syscall_enter(void *ignore, struct p=
+t_regs *regs, long id)
+>  {
+>         struct syscall_metadata *sys_data;
+>         struct syscall_trace_enter *rec;
+> +       struct pt_regs *fake_regs;
+>         struct hlist_head *head;
+>         unsigned long args[6];
+>         bool valid_prog_array;
+> @@ -602,7 +604,7 @@ static void perf_syscall_enter(void *ignore, struct p=
+t_regs *regs, long id)
+>         size =3D ALIGN(size + sizeof(u32), sizeof(u64));
+>         size -=3D sizeof(u32);
+>
+> -       rec =3D perf_trace_buf_alloc(size, NULL, &rctx);
+> +       rec =3D perf_trace_buf_alloc(size, &fake_regs, &rctx);
+>         if (!rec)
+>                 return;
+>
+> @@ -611,7 +613,7 @@ static void perf_syscall_enter(void *ignore, struct p=
+t_regs *regs, long id)
+>         memcpy(&rec->args, args, sizeof(unsigned long) * sys_data->nb_arg=
+s);
+>
+>         if ((valid_prog_array &&
+> -            !perf_call_bpf_enter(sys_data->enter_event, regs, sys_data, =
+rec)) ||
+> +            !perf_call_bpf_enter(sys_data->enter_event, fake_regs, sys_d=
+ata, rec)) ||
+>             hlist_empty(head)) {
+>                 perf_swevent_put_recursion_context(rctx);
+>                 return;
+> @@ -666,6 +668,7 @@ static int perf_call_bpf_exit(struct trace_event_call=
+ *call, struct pt_regs *reg
+>         } __aligned(8) param;
+>
+>         /* bpf prog requires 'regs' to be the first member in the ctx (a.=
+k.a. &param) */
+> +       perf_fetch_caller_regs(regs);
+>         *(struct pt_regs **)&param =3D regs;
+>         param.syscall_nr =3D rec->nr;
+>         param.ret =3D rec->ret;
+> @@ -676,6 +679,7 @@ static void perf_syscall_exit(void *ignore, struct pt=
+_regs *regs, long ret)
+>  {
+>         struct syscall_metadata *sys_data;
+>         struct syscall_trace_exit *rec;
+> +       struct pt_regs *fake_regs;
+>         struct hlist_head *head;
+>         bool valid_prog_array;
+>         int syscall_nr;
+> @@ -701,7 +705,7 @@ static void perf_syscall_exit(void *ignore, struct pt=
+_regs *regs, long ret)
+>         size =3D ALIGN(sizeof(*rec) + sizeof(u32), sizeof(u64));
+>         size -=3D sizeof(u32);
+>
+> -       rec =3D perf_trace_buf_alloc(size, NULL, &rctx);
+> +       rec =3D perf_trace_buf_alloc(size, &fake_regs, &rctx);
+>         if (!rec)
+>                 return;
+>
+> @@ -709,7 +713,7 @@ static void perf_syscall_exit(void *ignore, struct pt=
+_regs *regs, long ret)
+>         rec->ret =3D syscall_get_return_value(current, regs);
+>
+>         if ((valid_prog_array &&
+> -            !perf_call_bpf_exit(sys_data->exit_event, regs, rec)) ||
+> +            !perf_call_bpf_exit(sys_data->exit_event, fake_regs, rec)) |=
+|
+>             hlist_empty(head)) {
+>                 perf_swevent_put_recursion_context(rctx);
+>                 return;
+> --
+> 2.43.5
+>
 
