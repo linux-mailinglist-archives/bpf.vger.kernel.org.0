@@ -1,126 +1,169 @@
-Return-Path: <bpf+bounces-39429-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39430-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40CCD973462
-	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 12:40:22 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A9DB97352E
+	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 12:46:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 73FCE1C24F8F
-	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 10:40:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 94BB41F25F40
+	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 10:46:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB2D21917E4;
-	Tue, 10 Sep 2024 10:37:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Lo6KqNoh"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45F671917C2;
+	Tue, 10 Sep 2024 10:44:59 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D34D21917C2;
-	Tue, 10 Sep 2024 10:37:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F07BA46444;
+	Tue, 10 Sep 2024 10:44:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725964631; cv=none; b=An99Mun1pWu7Ue1Jsbcc/h27aQFSpl8cdO7DO1QVBAFVcYTQBKBprqO+uj7DdRDAzZ4UYpv6dNXh1YJOb+R4Wd0Fv7msQk5ORi70BqKT87CIH3j9r0AT4d8GohaptXjMuCD0m6Wmw22baoSDpxVNeHi2lMklgMAjAZZ62NjIrs4=
+	t=1725965098; cv=none; b=f6eTPSoq/hD6tfkwTr1X7WCnDipoHQWfdmtV7+ue9txRJ+QnQf3uo93r7tUpxrI4PYsH1hndNlHs+GI47cKtRuychri0Mi4xDzhMTF301PZghgPEOegMqdia3WsFAk/wzMcIIf95OsOw5cTrLe23TmRepmvVrOPaaKUrXc7qRRc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725964631; c=relaxed/simple;
-	bh=/5y2J5n+r5mgeGrIde6ZYT6sCQYYNRnC8UhTFG6YJGg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Sp3MNCKKEsto+NFKxdSwv5QJLeFoztnU94dHJCys9oQ8SQRbnjJdnUlpskSLJLNY4psLhyfXHet3DBtGZ5FATVjMI4nJVgVqg/duroxqTFNvt8OW+g8SNPAwyq6Ma4K+0cId8gZcwwEbUO4Gi9wAK5+MZQm15Bldaq9EAA8W3HY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Lo6KqNoh; arc=none smtp.client-ip=209.85.128.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-42cacabd2e0so5319685e9.3;
-        Tue, 10 Sep 2024 03:37:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1725964628; x=1726569428; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xu1lNcJUo/xU0OnY1NyGxCMOv270XnBlVpGeaBK8klg=;
-        b=Lo6KqNoh4/u3Ox30oYYbiSHI0KBxaJfbadJpTexYbhuii/Y/QochdmkFQs1IAjky0i
-         QShDUSGxKKO78YBroFyBONU34YyNmHltExhMuO4TVF2T4tPSsDrrbI5FfgMqthVvcJZ/
-         UZ93850xms+qY9p1L2m9ARzvlZx7HMX7mvC/F79pg+1DJkxLLdVfqHcjEiFiY0Zs22Ew
-         VuGr5uDEcDOgAWhugUrRgLtaZLu1Ngh/JmghhLMyR2a8d7unSodSvtUWhOiMf7IpjmPQ
-         OWWTfJOBx4sQKEYL7xHuYvd/lEY+WsNLGjq0wHSP70Gm9Sz8wfZK9Vby6WbAcMorjK+i
-         77lg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725964628; x=1726569428;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xu1lNcJUo/xU0OnY1NyGxCMOv270XnBlVpGeaBK8klg=;
-        b=KgakJMSiagvs+i1w7GKL+q+ewXQM1n1JoZgfacgyoKlxHesscc4TWcX18cdaf+Qy8b
-         ht9WLGM1w/Ay6Imx/WAhVZJk67itw12Z4Yag8IpTb78URi3tbLnfWQLVu1kZwXW6XOHv
-         tngbwM7/G8x0q+wYWBU/3NcqQzQTmJ59pBl8YBB3JeFO/AG+jPUJCgx3Mqz7RZMAKCwC
-         j8HgfgTeuP4O1fSrsNZpjgQ//ba3xfCN/hrW4WxNNZP13Aockxzuni5rjL1gNaIvnwWS
-         yWyPMXBOuDds5fdp+a24QEWUuPUbGV4Z8sDkKmaoZkArFLawYCru/1AiOoKT/Cp2eQbL
-         b+vA==
-X-Forwarded-Encrypted: i=1; AJvYcCU/sABatN/5moUmdYTLmgbh02fAcxnnTc522O6tG+QDhUxe5tdhUFlTg4KXC9y1SHN/iXs=@vger.kernel.org, AJvYcCWpGtLwMgSeqyCC2R6kH1O9jq8Bz/qtbm0WHOBiyqOAYfABdZCvwmycIDJBig0jtD3fxJI3Lze4MTrjCHFxFOrfZ+s=@vger.kernel.org, AJvYcCXqtZSIyEiPHaxQ3VXwX8NgVx24mttpq5qxzixAcjlAFXYCogydLODhtT+XBmu8bycZQRzAaTJ506Os0vJo@vger.kernel.org
-X-Gm-Message-State: AOJu0YxOXLYZaLqhzKofBoN0zm8QeDvN6obOgad75fHu3wsXN80sxcNh
-	yOOx3wRWzllL8xTgomyDCnoCQ6JpDBbslgr7jq4eJrfpecDLxv/r
-X-Google-Smtp-Source: AGHT+IEnF6/WGdCMUXV4UAmj4y+0SdZAu0kY2k92ECXrXgN6LclTZ1rXp5B5G2q/7u7PSCRcIHAh4Q==
-X-Received: by 2002:a05:600c:3c88:b0:42b:a2fd:3e52 with SMTP id 5b1f17b1804b1-42c9f9d6e65mr105129875e9.22.1725964627370;
-        Tue, 10 Sep 2024 03:37:07 -0700 (PDT)
-Received: from gmail.com (1F2EF544.nat.pool.telekom.hu. [31.46.245.68])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-42cb3098dbdsm86638525e9.33.2024.09.10.03.37.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Sep 2024 03:37:06 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date: Tue, 10 Sep 2024 12:37:04 +0200
-From: Ingo Molnar <mingo@kernel.org>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-	linux-tip-commits@vger.kernel.org,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Oleg Nesterov <oleg@redhat.com>, x86@kernel.org,
-	linux-kernel@vger.kernel.org,
-	"Paul E . McKenney" <paulmck@kernel.org>, bpf <bpf@vger.kernel.org>,
-	Jiri Olsa <jolsa@kernel.org>
-Subject: Re: [tip: perf/core] uprobes: switch to RCU Tasks Trace flavor for
- better performance
-Message-ID: <ZuAhUHqAA-ejpN3X@gmail.com>
-References: <20240903174603.3554182-9-andrii@kernel.org>
- <172554860322.2215.10385397228202759078.tip-bot2@tip-bot2>
- <CAEf4BzbytuSpro9wT7cZY2Qf98zpDz+V0hTwwKP3ZDa866s1tA@mail.gmail.com>
+	s=arc-20240116; t=1725965098; c=relaxed/simple;
+	bh=F8sISKqp3IEU8uMytKNoaGuZbOEzp2sNMpq+JwuhFk0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=bXaAl3vj0bYxyro30eMtw23Q5OWsK/b1uKsFlOFf+WftW4NJvViiEWPyAybVOrJU3g6MyjGOm086QRoGxKKThnYzjQ98U+JiCKwNuhxgZ91PhspCZHdp4g1WqdM8iOvv8oDwKe66DTNAbvU+uHqR9pG66wKYbB36O8MhK7G52Fw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.234])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4X30gr3F0jz2Dc4S;
+	Tue, 10 Sep 2024 18:44:24 +0800 (CST)
+Received: from dggpemf200006.china.huawei.com (unknown [7.185.36.61])
+	by mail.maildlp.com (Postfix) with ESMTPS id 7AD5E1402E0;
+	Tue, 10 Sep 2024 18:44:52 +0800 (CST)
+Received: from [10.67.120.129] (10.67.120.129) by
+ dggpemf200006.china.huawei.com (7.185.36.61) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Tue, 10 Sep 2024 18:44:51 +0800
+Message-ID: <95e6c282-1e4f-458b-9e40-9b626d64b3bd@huawei.com>
+Date: Tue, 10 Sep 2024 18:44:51 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v25 00/13] Device Memory TCP
+To: Mina Almasry <almasrymina@google.com>
+CC: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-doc@vger.kernel.org>, <linux-alpha@vger.kernel.org>,
+	<linux-mips@vger.kernel.org>, <linux-parisc@vger.kernel.org>,
+	<sparclinux@vger.kernel.org>, <linux-trace-kernel@vger.kernel.org>,
+	<linux-arch@vger.kernel.org>, <bpf@vger.kernel.org>,
+	<linux-kselftest@vger.kernel.org>, <linux-media@vger.kernel.org>,
+	<dri-devel@lists.freedesktop.org>, Donald Hunter <donald.hunter@gmail.com>,
+	Jakub Kicinski <kuba@kernel.org>, "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Jonathan
+ Corbet <corbet@lwn.net>, Richard Henderson <richard.henderson@linaro.org>,
+	Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, "James E.J. Bottomley"
+	<James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>,
+	Andreas Larsson <andreas@gaisler.com>, Jesper Dangaard Brouer
+	<hawk@kernel.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>, Steven
+ Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Arnd Bergmann
+	<arnd@arndb.de>, Steffen Klassert <steffen.klassert@secunet.com>, Herbert Xu
+	<herbert@gondor.apana.org.au>, David Ahern <dsahern@kernel.org>, Willem de
+ Bruijn <willemdebruijn.kernel@gmail.com>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=
+	<bjorn@kernel.org>, Magnus Karlsson <magnus.karlsson@intel.com>, Maciej
+ Fijalkowski <maciej.fijalkowski@intel.com>, Jonathan Lemon
+	<jonathan.lemon@gmail.com>, Shuah Khan <shuah@kernel.org>, Alexei Starovoitov
+	<ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, John Fastabend
+	<john.fastabend@gmail.com>, Sumit Semwal <sumit.semwal@linaro.org>,
+	=?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, Pavel Begunkov
+	<asml.silence@gmail.com>, David Wei <dw@davidwei.uk>, Jason Gunthorpe
+	<jgg@ziepe.ca>, Shailend Chand <shailend@google.com>, Harshitha Ramamurthy
+	<hramamurthy@google.com>, Shakeel Butt <shakeel.butt@linux.dev>, Jeroen de
+ Borst <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>,
+	Bagas Sanjaya <bagasdotme@gmail.com>, Christoph Hellwig <hch@infradead.org>,
+	Nikolay Aleksandrov <razor@blackwall.org>, Taehee Yoo <ap420073@gmail.com>
+References: <20240909054318.1809580-1-almasrymina@google.com>
+ <42c202e6-8c4c-494f-8c28-17d66ed75880@huawei.com>
+ <CAHS8izMX+9F1NngbPx6w7ikKR9TgPvm+jMwZ8168NJYhFC7sVQ@mail.gmail.com>
+Content-Language: en-US
+From: Yunsheng Lin <linyunsheng@huawei.com>
+In-Reply-To: <CAHS8izMX+9F1NngbPx6w7ikKR9TgPvm+jMwZ8168NJYhFC7sVQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzbytuSpro9wT7cZY2Qf98zpDz+V0hTwwKP3ZDa866s1tA@mail.gmail.com>
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemf200006.china.huawei.com (7.185.36.61)
 
-
-* Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
-
-> On Thu, Sep 5, 2024 at 8:03 AM tip-bot2 for Andrii Nakryiko
-> <tip-bot2@linutronix.de> wrote:
-> >
-> > The following commit has been merged into the perf/core branch of tip:
-> >
-> > Commit-ID:     c4d4569c41f9cda745cfd1d8089ea3d3526bafe5
-> > Gitweb:        https://git.kernel.org/tip/c4d4569c41f9cda745cfd1d8089ea3d3526bafe5
-> > Author:        Andrii Nakryiko <andrii@kernel.org>
-> > AuthorDate:    Tue, 03 Sep 2024 10:46:03 -07:00
-> > Committer:     Peter Zijlstra <peterz@infradead.org>
-> > CommitterDate: Thu, 05 Sep 2024 16:56:15 +02:00
-> >
+On 2024/9/10 0:54, Mina Almasry wrote:
+> On Mon, Sep 9, 2024 at 4:21 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>>
+>> On 2024/9/9 13:43, Mina Almasry wrote:
+>>
+>>>
+>>> Perf - page-pool benchmark:
+>>> ---------------------------
+>>>
+>>> bench_page_pool_simple.ko tests with and without these changes:
+>>> https://pastebin.com/raw/ncHDwAbn
+>>>
+>>> AFAIK the number that really matters in the perf tests is the
+>>> 'tasklet_page_pool01_fast_path Per elem'. This one measures at about 8
+>>> cycles without the changes but there is some 1 cycle noise in some
+>>> results.
+>>>
+>>> With the patches this regresses to 9 cycles with the changes but there
+>>> is 1 cycle noise occasionally running this test repeatedly.
+>>>
+>>> Lastly I tried disable the static_branch_unlikely() in
+>>> netmem_is_net_iov() check. To my surprise disabling the
+>>> static_branch_unlikely() check reduces the fast path back to 8 cycles,
+>>> but the 1 cycle noise remains.
+>>
+>> Sorry for the late report, as I was adding a testing page_pool ko basing
+>> on [1] to avoid introducing performance regression when fixing the bug in
+>> [2].
+>> I used it to test the performance impact of devmem patchset for page_pool
+>> too, it seems there might be some noticable performance impact quite stably
+>> for the below testcases, about 5%~16% performance degradation as below in
+>> the arm64 system:
+>>
 > 
-> Hm... This commit landed in perf/core, but is gone now (the rest of
-> patches is still there). Any idea what happened?
+> Correct me if I'm wrong here, but on the surface here it seems that
+> you're re-reporting a known issue. Consensus seems to be that it's a
+> non-issue.
+> 
+> In v6 I reported that the bench_page_pool_simple.ko test reports a 1
+> cycle regression with these patches, from 8->9 cycles. That is roughly
+> consistent with the 5-15% you're reporting.
 
-Yeah, I'm getting this build failure:
+From the description above in the cover letter, I thought the performance
+data using the out of tree testing ko is not stable enough to justify the
+performance impact.
 
-     kernel/events/uprobes.c:1158:9: error: implicit declaration of function ‘synchronize_rcu_tasks_trace’; did you mean ‘synchronize_rcu_tasks’? [-Werror=implicit-function-declaration]
+> 
+> I root caused the reason for the regression to be the
+> netmem_is_net_iov() check in the fast path. I removed this regression
+> in v7 (see the change log) by conditionally compiling the check in
+> that function.
+> 
+> In v8, Pavel/Jens/David pushed back on the ifdef check. See this
+> entire thread, but in particular this response from Jens:
 
-on x86-64 defconfig, when applied to today's perf/core.
+It seemed the main objection is about how to enable this feature
+for the io_uring?
 
-Thanks,
+And it seemed that you had added the CONFIG_NET_DEVMEM for this
+devmem thing, why not use it for that?
 
-	Ingo
+> 
+> https://lore.kernel.org/lkml/11f52113-7b67-4b45-ba1d-29b070050cec@kernel.dk/
+> 
+> Seems consensus that it's 'not really worth it in this scenario'.
+
+I was only reading through the above thread, it didn't seemed to
+reach to consensus as Jesper pointed out the performance impact
+for the XDP DROP case in the same thread.
+
+https://lore.kernel.org/lkml/779b9542-4170-483a-af54-ca0dd471f774@kernel.org/
+
+> 
 
