@@ -1,207 +1,182 @@
-Return-Path: <bpf+bounces-39397-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39398-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0149C97274B
-	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 04:41:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64CDA972759
+	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 04:52:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 259701C21EF8
-	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 02:41:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 287432858F4
+	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 02:52:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDEC914B083;
-	Tue, 10 Sep 2024 02:41:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C05B914EC58;
+	Tue, 10 Sep 2024 02:52:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A5hUyK2D"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mxMb8dV9"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5D01EEC9;
-	Tue, 10 Sep 2024 02:41:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8EAD13B28D;
+	Tue, 10 Sep 2024 02:52:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725936069; cv=none; b=rzP6FBS3UIaeZFvrzUa+d+MvRN9gEFEGl8F++/io3jzbx1EkDqZt4GBZKE/C/zRJcVgStgR25rIIUrXQD96pOiR7zK3s4hHConYHhMPJCjQB80aeGFt+sBgdeAeT1jJ6vuJvSPr2xPSti4TVn+2tqX3jERtcs6IOumme09qwWc8=
+	t=1725936728; cv=none; b=hv4jT7b68Cu0IFgouFXWAj3WGXGr5DomskXJUHFd9hE8AFtysPwl9vtQ2YzzYrfWnY0nTe9lbJiD5UaYm30ACbpL36nQvZoVKkSbdpmvAVmk/BY2lNMbw0VjeD0b/va1XRw1DMMJWGXYJ2OjlZ3ZPWNezy2OuyHuHJdhdxPk+Mw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725936069; c=relaxed/simple;
-	bh=nWes8kfGZZ0DxHx5CireQtMsrNwijVuS52bKHNj1d/0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OnOlvZCV1XSZeGFlPv3MMRrsUQHGPDc1Tf0Ma9Nv3CRhkW13MAPRL44BhhuwZAz4/J5KyQ+bj5Z+VQGbOBGv9FAbRnRP/VXivTQgUR0TgZ78XrrOlrNP1WZlHzPEMXnWfa4RhuMBqXfyQqpeA1Mj4QEi+C86XEcwoErYWY8iHDA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A5hUyK2D; arc=none smtp.client-ip=209.85.216.54
+	s=arc-20240116; t=1725936728; c=relaxed/simple;
+	bh=WpMA1kEs9Y7I7e4gxgXkW3C671npPx44YdItCYUBqJ8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=l6ReZYDC14cbZDClGyRJrnubSvTZASLVcKwB9+7KhJQl23vdMxJ5qPeDkTrEcZm3Fy3bXF6E0EugvcXmYwnVwTL7kCdVLW+w1MSI7XEbPYydbRW3gKrbMNp0ROODO8md8GDxa7DCjeUVHm8nH12qHhqHkpxyTtYnCHgK5lGK9tg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mxMb8dV9; arc=none smtp.client-ip=209.85.221.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-2d8818337a5so4316255a91.1;
-        Mon, 09 Sep 2024 19:41:07 -0700 (PDT)
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-374c4d4f219so135856f8f.1;
+        Mon, 09 Sep 2024 19:52:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1725936067; x=1726540867; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1725936725; x=1726541525; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=t41SFseR1z7B7tlXMb4jMI4WxF9ePCcDI0zy2hB3TZA=;
-        b=A5hUyK2D/IrXcnK0WvRz1cM7nXG+LzoZusWPFdJun40KmT6y6WgCcDgO9QpqTbBBxb
-         H8YD2j/gioFEUI4ds9EAwPT3evvm+OT69ltYfh/j49ARBbp83N9KYpC7OXbHva9NNs7w
-         VXH2lGz4nOA4ajJSKTrlmjYgqFpXXyIgE10bRtshxCBAV8pd83UzupfBCzrLSUwmFC04
-         zytCulVjkrHvaA7mFcEnZTnkB4yLeVXaKFh0JMK3goN5dVrdRQVg5YlU+Cz7llEKXREj
-         RaxvTUeRA3yNpqDppCDBno9vjyXpcp5256Uy0aQBJzSJiEfFHfaW15AEc5U7gQKlItdT
-         ZXJQ==
+        bh=eQttAVB45yzTKj++0cYWkihAYzlOnNEiTmI1J5Prwyg=;
+        b=mxMb8dV9oRH1Ex8ix81NRV8dorTy5q++qsAy6xIsnn2VK7N1lXj7dijK9LeFZTQbuI
+         1skGncGteRDBk+h+JbcOEtUi6YbmmI+c+bKcHwYfDfrTfnu13GqbI6hdxcgnLrfgo81o
+         AaF0zZFyNBw00gtLzHEJk7bRTe6E27NHf3yrDuuk31VsS3XGENsoUqP3311IlPxr8v3q
+         bst/gxbexgFcIbk+Dtb+n7I6Yk6QiPtcvey3a3sLR4yGrM1T3KzlQWAesu8JX6BNQzbN
+         idEa83OLv1lG7z41SVgsvKkos4i8ufG42/Ni111kKDgompv80tud0uDx/8s51UCz2Ywm
+         D5xw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725936067; x=1726540867;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=t41SFseR1z7B7tlXMb4jMI4WxF9ePCcDI0zy2hB3TZA=;
-        b=M2Kb8DrIIszzHFbGk8zVZHQtFK09BLPIdd1N2hUP9MeTHQ+lca8DynFq8b2rj93gd+
-         yahdHLa9UECf61OvRTKUEjaRID0JqCeiFFrCf43G5WlPFS0u12z3aG9D4e0E63fsN6gq
-         gz0SYFQ/NRdWdck8Yj/cVPy4P6Pr+eWASoAXAZJgNan3oChj+scBcqCQFlgc7l5z6/qc
-         sE/7KxV0kxTD9d4IaA/a7xoe3gbLrD2bVC2dgMRT/Mr5X6tg1GbGYuUtTiEUaawUE5AV
-         pHbOWNBmYG/ECw8l5AareGeu04Xlw3hW7TBwr6wKXj4P9EPm4TOhhmZf/lQSCbSIWCLd
-         lvpw==
-X-Forwarded-Encrypted: i=1; AJvYcCX0TbFMr6rGXSMiNYtBLqT4VYf46LBf6PSs3pu7oJMPHgCdhCNX7H8JKluTIevmoDkTiRloDpldZKAItCXj@vger.kernel.org, AJvYcCXDdc2aZky/SlhA8k3PM0bX1K65krOhfg/+4RaUBwinf/n+UUTY/fj5nmh0YguNV7geWBA=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwRc1Ji3xnQyTleczZSKFft+pPVAGCoHlp/zW8TLhAXJfKPKW3+
-	BYWYAnC4tiJmFa19UZ7Fb7rRtZSowyeJOPqtO0Hnog46QEutb0rk
-X-Google-Smtp-Source: AGHT+IEOPo/Z6Yjxj3QT5JZ057/fHsmON8dB1weV/meD9gJ+kbRfmbDhIELB3vgpUFfDQlPAkP/tTw==
-X-Received: by 2002:a17:90a:ba96:b0:2c9:36bf:ba6f with SMTP id 98e67ed59e1d1-2db67181b2cmr2370686a91.3.1725936067014;
-        Mon, 09 Sep 2024 19:41:07 -0700 (PDT)
-Received: from [0.0.0.0] ([5.34.218.148])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2db0498cf1csm5191014a91.57.2024.09.09.19.41.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Sep 2024 19:41:06 -0700 (PDT)
-Message-ID: <56c22b26-6c76-44fa-a8be-e71a515a4e7a@gmail.com>
-Date: Tue, 10 Sep 2024 10:40:57 +0800
+        d=1e100.net; s=20230601; t=1725936725; x=1726541525;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=eQttAVB45yzTKj++0cYWkihAYzlOnNEiTmI1J5Prwyg=;
+        b=Sby+iZ+fPplgX9SsyFVcJs6eG1mPeROi0FtRo303kqlucetyV1yZvsyFqUZNwZ/3TS
+         L592nAaH9lZBoer6wVESEr5PG0p0nVFLMAIshLOpKPf3ADldisn6Jpxfril2L2V3eoOa
+         JCx8ze6fEXZ+8rVDuSScpdY9+U1+jhA51A2E35ED1/nB8+hh0fDefVs8ZeVD7F7Y3+hA
+         cHsVK9y77X06RuzZ8g7dD8q85OkZK4f07Omybm9A9axYCHPTYqR/bFGDK0/czHcHTEQG
+         LAxw54KyGMSWPnaz5oZDNTTB2pw+OeyLsR7jareHHCtCTC2B/6+YR+BQKbAzZZcHIQoC
+         9kJQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW5juLvRE9DALUoWH7/AdTFBuQ7oekzAVe0nR44knMqYOI5CFY9OcxxK2nNNr0Vx57LDUdjW88qwJMqJxjH@vger.kernel.org, AJvYcCXOZUIvsg5WUmg/A77PmmbVEKmzaoFxoi/rDLgdcAVu7dt44ibn2KDTBBYp15fkzixJ5OY=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx2mz0ZnQTFD8teK1BjxMZOjz70Z1MCoM7HGBLTVQ4efj4jBVLV
+	tZmrO7YV/qldZ+lF53f+CxuuYg/FRTHClnpaV1tccjCqzljQPtUBkQWXmXZhHaecTzHOnLWJzz5
+	G0ISyx4RKwKNlh5M0OkoQzbOgGOw=
+X-Google-Smtp-Source: AGHT+IEPh9ScgrXAKldrieTgqRzsP4QbioBjV/CKb84XXP+ccZWvtBKZhTSspJrQZLTBQWY5KwWzVjo4FgDdHs6ZTf4=
+X-Received: by 2002:adf:f792:0:b0:378:7de9:3716 with SMTP id
+ ffacd0b85a97d-378895c4aa9mr7523902f8f.8.1725936724600; Mon, 09 Sep 2024
+ 19:52:04 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [v2 PATCH bpf-next 2/2] bpf/selftests: Check errno when percpu
- map value size exceeds
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Hou Tao <houtao1@huawei.com>, Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org, jinke han <jinkehan@didiglobal.com>
-References: <20240909071346.1300093-1-chen.dylane@gmail.com>
- <20240909071346.1300093-3-chen.dylane@gmail.com>
- <CAEf4BzZ94RvYGJ6GYib-5o_PLukq3x+ygHinBYMecqvXiEMxLg@mail.gmail.com>
-From: Tao Chen <chen.dylane@gmail.com>
-In-Reply-To: <CAEf4BzZ94RvYGJ6GYib-5o_PLukq3x+ygHinBYMecqvXiEMxLg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20240909224903.3498207-1-andrii@kernel.org> <20240909224903.3498207-2-andrii@kernel.org>
+In-Reply-To: <20240909224903.3498207-2-andrii@kernel.org>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 9 Sep 2024 19:51:53 -0700
+Message-ID: <CAADnVQLB2b5Uh-qthnCOfJk+v+ty1nQh6LjMDkzjt1BPtGOVZA@mail.gmail.com>
+Subject: Re: [PATCH 1/3] uprobes: allow put_uprobe() from non-sleepable
+ softirq context
+To: Andrii Nakryiko <andrii@kernel.org>
+Cc: linux-trace-kernel <linux-trace-kernel@vger.kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Oleg Nesterov <oleg@redhat.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
+	"Paul E. McKenney" <paulmck@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-在 2024/9/10 04:16, Andrii Nakryiko 写道:
-> On Mon, Sep 9, 2024 at 12:14 AM Tao Chen <chen.dylane@gmail.com> wrote:
->>
->> This test case checks the errno message when percpu map value size
->> exceeds PCPU_MIN_UNIT_SIZE.
->>
->> root@debian:~# ./test_progs -t map_init
->>   #160/1   map_init/pcpu_map_init:OK
->>   #160/2   map_init/pcpu_lru_map_init:OK
->>   #160/3   map_init/pcpu map value size:OK
->>   #160     map_init:OK
->> Summary: 1/3 PASSED, 0 SKIPPED, 0 FAILED
->>
->> Signed-off-by: Tao Chen <chen.dylane@gmail.com>
->> Signed-off-by: jinke han <jinkehan@didiglobal.com>
->> ---
->>   .../selftests/bpf/prog_tests/map_init.c       | 32 +++++++++++++++++++
->>   .../selftests/bpf/progs/test_map_init.c       |  6 ++++
->>   2 files changed, 38 insertions(+)
->>
->> diff --git a/tools/testing/selftests/bpf/prog_tests/map_init.c b/tools/testing/selftests/bpf/prog_tests/map_init.c
->> index 14a31109dd0e..7f1a6fa3679f 100644
->> --- a/tools/testing/selftests/bpf/prog_tests/map_init.c
->> +++ b/tools/testing/selftests/bpf/prog_tests/map_init.c
->> @@ -6,6 +6,7 @@
->>
->>   #define TEST_VALUE 0x1234
->>   #define FILL_VALUE 0xdeadbeef
->> +#define PCPU_MIN_UNIT_SIZE 32768
->>
->>   static int nr_cpus;
->>   static int duration;
->> @@ -118,6 +119,35 @@ static int check_values_one_cpu(pcpu_map_value_t *value, map_value_t expected)
->>
->>          return 0;
->>   }
->> +/*
->> + * percpu map value size is bound by PCPU_MIN_UNIT_SIZE
->> + * check the errno when the value exceed PCPU_MIN_UNIT_SIZE
->> + */
->> +static void test_pcpu_map_value_size(void)
->> +{
->> +       struct test_map_init *skel;
->> +       int err;
->> +       int value_sz = PCPU_MIN_UNIT_SIZE + 1;
->> +       enum bpf_map_type map_types[] = { BPF_MAP_TYPE_PERCPU_ARRAY,
->> +                                         BPF_MAP_TYPE_PERCPU_HASH,
->> +                                         BPF_MAP_TYPE_LRU_PERCPU_HASH };
->> +       for (int i = 0; i < ARRAY_SIZE(map_types); i++) {
->> +               skel = test_map_init__open();
->> +               if (!ASSERT_OK_PTR(skel, "skel_open"))
->> +                       return;
->> +               err = bpf_map__set_type(skel->maps.hashmap2, map_types[i]);
->> +               if (!ASSERT_OK(err, "bpf_map__set_type"))
->> +                       goto error;
->> +               err = bpf_map__set_value_size(skel->maps.hashmap2, value_sz);
->> +               if (!ASSERT_OK(err, "bpf_map__set_value_size"))
->> +                       goto error;
->> +
->> +               err = test_map_init__load(skel);
->> +               ASSERT_EQ(err, -E2BIG, "skel_load");
-> 
-> This is quite an overkill to test map creation. It will be much more
-> straightforward to just use low-level bpf_map_create() API, can you
-> please make use of that instead?
-> 
-> pw-bot: cr
-> 
+On Mon, Sep 9, 2024 at 3:49=E2=80=AFPM Andrii Nakryiko <andrii@kernel.org> =
+wrote:
+>
+> Currently put_uprobe() might trigger mutex_lock()/mutex_unlock(), which
+> makes it unsuitable to be called from more restricted context like softir=
+q.
+>
+> Let's make put_uprobe() agnostic to the context in which it is called,
+> and use work queue to defer the mutex-protected clean up steps.
+>
+> To avoid unnecessarily increasing the size of struct uprobe, we colocate
+> work_struct in parallel with rb_node and rcu, both of which are unused
+> by the time we get to schedule clean up work.
+>
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> ---
+>  kernel/events/uprobes.c | 30 +++++++++++++++++++++++++++---
+>  1 file changed, 27 insertions(+), 3 deletions(-)
+>
+> diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+> index a2e6a57f79f2..377bd524bc8b 100644
+> --- a/kernel/events/uprobes.c
+> +++ b/kernel/events/uprobes.c
+> @@ -27,6 +27,7 @@
+>  #include <linux/shmem_fs.h>
+>  #include <linux/khugepaged.h>
+>  #include <linux/rcupdate_trace.h>
+> +#include <linux/workqueue.h>
+>
+>  #include <linux/uprobes.h>
+>
+> @@ -54,14 +55,20 @@ DEFINE_STATIC_PERCPU_RWSEM(dup_mmap_sem);
+>  #define UPROBE_COPY_INSN       0
+>
+>  struct uprobe {
+> -       struct rb_node          rb_node;        /* node in the rb tree */
+> +       union {
+> +               struct {
+> +                       struct rb_node          rb_node;        /* node i=
+n the rb tree */
+> +                       struct rcu_head         rcu;
+> +               };
+> +               /* work is used only during freeing, rcu and rb_node are =
+unused at that point */
+> +               struct work_struct work;
+> +       };
+>         refcount_t              ref;
+>         struct rw_semaphore     register_rwsem;
+>         struct rw_semaphore     consumer_rwsem;
+>         struct list_head        pending_list;
+>         struct list_head        consumers;
+>         struct inode            *inode;         /* Also hold a ref to ino=
+de */
+> -       struct rcu_head         rcu;
+>         loff_t                  offset;
+>         loff_t                  ref_ctr_offset;
+>         unsigned long           flags;
+> @@ -620,11 +627,28 @@ static inline bool uprobe_is_active(struct uprobe *=
+uprobe)
+>         return !RB_EMPTY_NODE(&uprobe->rb_node);
+>  }
+>
+> +static void uprobe_free_deferred(struct work_struct *work)
+> +{
+> +       struct uprobe *uprobe =3D container_of(work, struct uprobe, work)=
+;
+> +
+> +       /*
+> +        * If application munmap(exec_vma) before uprobe_unregister()
+> +        * gets called, we don't get a chance to remove uprobe from
+> +        * delayed_uprobe_list from remove_breakpoint(). Do it here.
+> +        */
+> +       mutex_lock(&delayed_uprobe_lock);
+> +       delayed_uprobe_remove(uprobe, NULL);
+> +       mutex_unlock(&delayed_uprobe_lock);
+> +
+> +       kfree(uprobe);
+> +}
+> +
+>  static void uprobe_free_rcu(struct rcu_head *rcu)
+>  {
+>         struct uprobe *uprobe =3D container_of(rcu, struct uprobe, rcu);
+>
+> -       kfree(uprobe);
+> +       INIT_WORK(&uprobe->work, uprobe_free_deferred);
+> +       schedule_work(&uprobe->work);
+>  }
+>
+>  static void put_uprobe(struct uprobe *uprobe)
 
-Ok, i will use the bpf_map_create API in v3.
-
->> +error:
->> +               test_map_init__destroy(skel);
->> +       }
->> +}
->>
->>   /* Add key=1 elem with values set for all CPUs
->>    * Delete elem key=1
->> @@ -211,4 +241,6 @@ void test_map_init(void)
->>                  test_pcpu_map_init();
->>          if (test__start_subtest("pcpu_lru_map_init"))
->>                  test_pcpu_lru_map_init();
->> +       if (test__start_subtest("pcpu map value size"))
->> +               test_pcpu_map_value_size();
->>   }
->> diff --git a/tools/testing/selftests/bpf/progs/test_map_init.c b/tools/testing/selftests/bpf/progs/test_map_init.c
->> index c89d28ead673..7a772cbf0570 100644
->> --- a/tools/testing/selftests/bpf/progs/test_map_init.c
->> +++ b/tools/testing/selftests/bpf/progs/test_map_init.c
->> @@ -15,6 +15,12 @@ struct {
->>          __type(value, __u64);
->>   } hashmap1 SEC(".maps");
->>
->> +struct {
->> +       __uint(type, BPF_MAP_TYPE_HASH);
->> +       __uint(max_entries, 1);
->> +       __type(key, __u32);
->> +       __type(value, __u64);
->> +} hashmap2 SEC(".maps");
->>
->>   SEC("tp/syscalls/sys_enter_getpgid")
->>   int sysenter_getpgid(const void *ctx)
->> --
->> 2.25.1
->>
-
-
--- 
-Best Regards
-Dylane Chen
+It seems put_uprobe hunk was lost, since the patch is not doing
+what commit log describes.
 
