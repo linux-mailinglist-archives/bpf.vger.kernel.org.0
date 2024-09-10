@@ -1,50 +1,50 @@
-Return-Path: <bpf+bounces-39423-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39424-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89F6E972D83
-	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 11:25:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9AC1972D86
+	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 11:26:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 432C328524D
-	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 09:25:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 780622866FE
+	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 09:26:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19EFE1862B8;
-	Tue, 10 Sep 2024 09:24:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D88218FDCC;
+	Tue, 10 Sep 2024 09:24:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HYTVlggZ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h9Xm7KY2"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AF9B1891A1;
-	Tue, 10 Sep 2024 09:24:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBDFD1891A1;
+	Tue, 10 Sep 2024 09:24:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725960271; cv=none; b=ZTAzYIyV8bvxwpfiTPWlO9cMO7mJlQdYU/gt3ELSXSrv4t05ZABrNp+Rkb3o3H9XA+jrWUyxmQP+1zNNnxugyl28mtqL0zyO9RHrv6T+cQSVt2fDGsdEXhIHiEAw6uydr/tKxQlSNJLk434MmyJCvbafTevESnYaST9B1GlbhZ4=
+	t=1725960276; cv=none; b=RmyYEOxF285hGNGuQl/i6II4LlGBmr+pTFB2pXbp87IYI8rX9Y0oZskEhwhkmWYNBlH+PT4q3AMKZi5OYC8I4aHtj800votis49SVzZc6Bm//iegxxXHw/MePa6uML6G/7ZpzlbDLfG4plzGSN1/U+Co+vQ3Wpzz14NKDXRPne4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725960271; c=relaxed/simple;
-	bh=5EGPy5Ci3JV09svqH6z3s9p0uaptNCwmvPw8SljHsN8=;
+	s=arc-20240116; t=1725960276; c=relaxed/simple;
+	bh=Qd0j7HD4DsmaZ5Rx4eSfD1A4i/7ZLHtFqt+DVyDB9E4=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=na1S7GOruuU8lN5NXkLawIgzNo4015f8dmrHwOkFcKCSjawsAdzL4dOWxOmrICdFo9E2COVSqxGpMfp1oTIsfyTlBHom9ChN563WWmKPDXdigmH738pII5x1bMNjnOdnNdq7V/YWvGOajIMTNbCgd5MLxnend5UAWVh8WpNhImo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HYTVlggZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9819EC4CEC6;
-	Tue, 10 Sep 2024 09:24:26 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=K5ypMbPYNG/AcEZ/yjAz4l7hNcQahJ18onzGHm9BgXwxb/gO5QDtVx0HhDT6goE37Y165d3ooNv+pgwWiNTuFOB1lVwdKUdadfiaVBvugGL2IoX+EV0SQZ/siuCndVdlYZRzPekwFwnglnxL7aGhFkXmF5XbJcZyWuY1UH6ZL4k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=h9Xm7KY2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC38AC4CEC6;
+	Tue, 10 Sep 2024 09:24:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1725960271;
-	bh=5EGPy5Ci3JV09svqH6z3s9p0uaptNCwmvPw8SljHsN8=;
+	s=k20201202; t=1725960276;
+	bh=Qd0j7HD4DsmaZ5Rx4eSfD1A4i/7ZLHtFqt+DVyDB9E4=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=HYTVlggZXxBETx1+KJUp6ZW4lQmnBYn54RyP4keM+jDaWELa3EpcwHcCu7BwnUjDM
-	 tHTLkbBhqZmxkmRGBCdqx+2jAVjaJn6yMvWSELUakkPefIudWFKyrK1VKUAJQdYa1y
-	 ADDZH+s1ZpPTgNIjkcbjVcrDScrGaNfWVqJfzbqdzM8Y5vTjLxdVr3jiTSONfk/gsw
-	 B7sH58zx2F0mRujjPTKuoBBLfZtpVcDbe16KcKCxHMeTe/7thl8j6hdtosfa1cWTIt
-	 toXPETJL3kmeAKn7EK3yN4U6H5N0/3xOjCLc6/wjEw/7E79X0P4mt2KuO3fKx7FHae
-	 g9uHwslUYNfAw==
+	b=h9Xm7KY2LeC0G3Ro51ESXTcIn03hjj3rmvEAjYGOWDzbF4BGONEUWD2QtSQkfHw7f
+	 +35WRy8TtbVHa4mGGJl8UcHNwIsHdD1568YxZgdii24mgeuXSelrdTpcnMRfZi8aNX
+	 SVYTwUKzpx0HLsv4qPrGp6LhA2MOMGrkMFpSLf60/LOGERx1WBNUspKAMKC0C0+xfe
+	 EHxC3t1fYLaODbexPVVAW89O94daOU9nG/TYhq6PLCuqh0ERVI/uZeWppAKKivwoGP
+	 2fVD1Q+fS4AFJIW63HUiBZf2X4Lvjz9mJwy8CcuqIQRkEYJfa1pjGbeJcA/NU5gZ4I
+	 FF1dFcEwq85Jg==
 From: Roger Quadros <rogerq@kernel.org>
-Date: Tue, 10 Sep 2024 12:24:01 +0300
-Subject: [PATCH net-next v4 4/6] net: ethernet: ti: cpsw_ale: add Policer
- and Thread control register fields
+Date: Tue, 10 Sep 2024 12:24:02 +0300
+Subject: [PATCH net-next v4 5/6] net: ethernet: ti: cpsw_ale: add
+ policer/classifier helpers and setup defaults
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -53,7 +53,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240910-am65-cpsw-multi-rx-v4-4-077fa6403043@kernel.org>
+Message-Id: <20240910-am65-cpsw-multi-rx-v4-5-077fa6403043@kernel.org>
 References: <20240910-am65-cpsw-multi-rx-v4-0-077fa6403043@kernel.org>
 In-Reply-To: <20240910-am65-cpsw-multi-rx-v4-0-077fa6403043@kernel.org>
 To: "David S. Miller" <davem@davemloft.net>, 
@@ -69,194 +69,171 @@ Cc: Simon Horman <horms@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
  linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org, 
  bpf@vger.kernel.org, Roger Quadros <rogerq@kernel.org>
 X-Mailer: b4 0.14.1
-X-Developer-Signature: v=1; a=openpgp-sha256; l=6052; i=rogerq@kernel.org;
- h=from:subject:message-id; bh=5EGPy5Ci3JV09svqH6z3s9p0uaptNCwmvPw8SljHsN8=;
- b=owEBbQKS/ZANAwAIAdJaa9O+djCTAcsmYgBm4BA1Fhl/vOhzLfkjqknXapB1A3vfDn30qvgMI
- 8r1NioujliJAjMEAAEIAB0WIQRBIWXUTJ9SeA+rEFjSWmvTvnYwkwUCZuAQNQAKCRDSWmvTvnYw
- k/QAEACuZI/s7aPFga+cWiHB852Epq+F0US9rk+LKjFgr/3dp2SMu6ALuNq/uSkrxkIfMDiLA6I
- 16pMNg4MzYOYRBuOUrl9oTfBB72nSdH4f8uIPG4giT8Q44aLoac8p+6JosqaAls+IcRWNYE33uB
- 8idvvsPcJdO2DKxMGvGdRacY4fXX2ueXnKfXQ/1NdS5NHCyMOPNZOx/B1ZWJauN6GSg9TlIIVLo
- TpVU6jgU8EIs2OPyAkePGFmagg90rzDllHmA8RrtVoWiAEi52h5bUAhAdX9YXPD+dDpPNNcWFw1
- a19OZW9j1lA2FT+Vze/CMGDO3pri41yf7NMvlpN5gdrEZIRrSydhLaEUO+DTqXiDtrrlL5sAFsY
- LaNImmd7z0waNFfrQBovYwgaVzthXqgxaO5xIdhfbL2tqYLOeNEZI0iymRNxzL8LAp53BpCRMgR
- OpNBm3hQHKK8k3fkFfA7sAgXoOYHuYJOJ+YimdSaZO4acqf3WebmyhanXihQLmRW1J+pJ6mcF6V
- jWTAXqnbTEYucdan5xuymA55McD9ZU2PTgFzBuxp9LtyUeqNuiuc+mn5vYr535XO8bBNT3HuU0q
- uRz62ZKRjXCofE1vAtA6rntqxXgFKCkhF/U6PeLPurjOJBWD1gPrSgzwnBWVRZTG9moOumt8sD6
- TXbN/73omP92blg==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=6095; i=rogerq@kernel.org;
+ h=from:subject:message-id; bh=Qd0j7HD4DsmaZ5Rx4eSfD1A4i/7ZLHtFqt+DVyDB9E4=;
+ b=owEBbQKS/ZANAwAIAdJaa9O+djCTAcsmYgBm4BA19Dv6aUGGhiRP/9HmBWT31pBFuWkt766K4
+ iEGBPK/B2OJAjMEAAEIAB0WIQRBIWXUTJ9SeA+rEFjSWmvTvnYwkwUCZuAQNQAKCRDSWmvTvnYw
+ k8WxD/0TYNHXhre4sESpo35jaaE1UYSad+WWq9bcfoWBsa2moRkS6xNjwNAgj863BqRK0CkIe9j
+ S/u4M7Kxia5OStjHBBESqYDeW5Kh0McoJ2yM+IwlbB07VmbSYA2VK8Y+Fav0/Lv7wOAS4JPKJmP
+ tud0HFC0kjwrP6x1uTjjV6bjQqqfxkjfGJWO4Pg+NiWcpJM2AyUfa4zs2jhRUZQNdWUwik9IwTA
+ 7cVvvLPejGxyXbPNDkG8NAI1IQjwKpyI+dTqyQGafp1jObWCHBxGwsXZmXB3PuuJw3HfZIKnQgL
+ y3Ce1cqghs1oj+3cO68eH86FcGUHC0GUQ5DU/tbr7LBqUa2NdGvUHQtOmEB9wn99KVK0+xK+iF2
+ J0QBSZwY8FKVgHUEdPCLvIZz8UOrJPN146+CaFhQpelYd7TDKd7BK9JC/vs0sCOLqvtMgKvMdmF
+ +EOA/0Yrc0WLasQvwzyI54io2m2VvZPtQMH7IA9RtWL9kGfGVZlnyhk+xYaLzmXOhznijaS2np2
+ F5E7JsKqA9uBT/rs7bBPIZyaK/+bOvYqLH0fSic8wugyve9yPktAQ19yDRZcmVxUbx5T6mjvTjF
+ WtSInZSPHFnx30EE1k0UHhLppkCUtTf0wKTQZY+5ed1kxEb8C3v5KN7YHf8DeCF6EmTPoFJqGn/
+ J2BESV/EwYzBZHg==
 X-Developer-Key: i=rogerq@kernel.org; a=openpgp;
  fpr=412165D44C9F52780FAB1058D25A6BD3BE763093
 
-Adds regfileds for Policer registers and Thread mapping/control registers.
+The Policer registers in the ALE register space are just shadow registers
+and use an index field in the policer table control register to read/write
+to the actual Polier registers.
+Add helper functions to Read and Write to Policer registers.
+
+Also add a helper function to set the thread value to classifier/policer
+mapping. Any packet that first matches the classifier will be sent to the
+thread (flow) that is set in the classifier to thread mapping table.
+If not set then it goes to the default flow.
+
+Default behaviour is to have 8 classifiers to map 8 DSCP/PCP
+priorities to N receive threads (flows). N depends on number of
+RX channels enabled for the port.
+As per the standard [1] User prioritie 1 (Background) and 2 (Spare) have
+lower priority than the user priority 0 (default). User priority 1 being
+of the lowest priority.
+
+[1] IEEE802.1D-2004, IEEE Standard for Local and metropolitan area networks
+Table G-2 - Traffic type acronyms
+Table G-3 - Defining traffic types
 
 Signed-off-by: Roger Quadros <rogerq@kernel.org>
-Reviewed-by: Simon Horman <horms@kernel.org>
 ---
 Changelog:
 v4:
 - no change
 v3:
-- added Reviewed-by Simon Horman
+- squashed 2 patches into 1
+- added comment explaining the default thread to priority mapping table
+- typo fix "classifer"->"classifier"
 ---
- drivers/net/ethernet/ti/cpsw_ale.c | 86 ++++++++++++++++++++++++++++++++++++++
- drivers/net/ethernet/ti/cpsw_ale.h | 41 ++++++++++++++++++
- 2 files changed, 127 insertions(+)
+ drivers/net/ethernet/ti/cpsw_ale.c | 94 ++++++++++++++++++++++++++++++++++++++
+ drivers/net/ethernet/ti/cpsw_ale.h |  1 +
+ 2 files changed, 95 insertions(+)
 
 diff --git a/drivers/net/ethernet/ti/cpsw_ale.c b/drivers/net/ethernet/ti/cpsw_ale.c
-index 9e45470b4eb9..aafe1210de52 100644
+index aafe1210de52..0d5d8917c70b 100644
 --- a/drivers/net/ethernet/ti/cpsw_ale.c
 +++ b/drivers/net/ethernet/ti/cpsw_ale.c
-@@ -46,6 +46,24 @@
- #define ALE_UNKNOWNVLAN_FORCE_UNTAG_EGRESS	0x9C
- #define ALE_VLAN_MASK_MUX(reg)			(0xc0 + (0x4 * (reg)))
- 
-+#define ALE_POLICER_PORT_OUI		0x100
-+#define ALE_POLICER_DA_SA		0x104
-+#define ALE_POLICER_VLAN		0x108
-+#define ALE_POLICER_ETHERTYPE_IPSA	0x10c
-+#define ALE_POLICER_IPDA		0x110
-+#define ALE_POLICER_PIR			0x118
-+#define ALE_POLICER_CIR			0x11c
-+#define ALE_POLICER_TBL_CTL		0x120
-+#define ALE_POLICER_CTL			0x124
-+#define ALE_POLICER_TEST_CTL		0x128
-+#define ALE_POLICER_HIT_STATUS		0x12c
-+#define ALE_THREAD_DEF			0x134
-+#define ALE_THREAD_CTL			0x138
-+#define ALE_THREAD_VAL			0x13c
+@@ -1627,3 +1627,97 @@ u32 cpsw_ale_get_num_entries(struct cpsw_ale *ale)
+ {
+ 	return ale ? ale->params.ale_entries : 0;
+ }
 +
-+#define ALE_POLICER_TBL_WRITE_ENABLE	BIT(31)
-+#define ALE_POLICER_TBL_INDEX_MASK	GENMASK(4, 0)
++/* Reads the specified policer index into ALE POLICER registers */
++static void cpsw_ale_policer_read_idx(struct cpsw_ale *ale, u32 idx)
++{
++	idx &= ALE_POLICER_TBL_INDEX_MASK;
++	writel_relaxed(idx, ale->params.ale_regs + ALE_POLICER_TBL_CTL);
++}
 +
- #define AM65_CPSW_ALE_THREAD_DEF_REG 0x134
- 
- /* ALE_AGING_TIMER */
-@@ -1306,6 +1324,74 @@ static const struct reg_field ale_fields_cpsw_nu[] = {
- 	/* CPSW_ALE_STATUS_REG */
- 	[ALE_ENTRIES]	= REG_FIELD(ALE_STATUS, 0, 7),
- 	[ALE_POLICERS]	= REG_FIELD(ALE_STATUS, 8, 15),
-+	/* CPSW_ALE_POLICER_PORT_OUI_REG */
-+	[POL_PORT_MEN]	= REG_FIELD(ALE_POLICER_PORT_OUI, 31, 31),
-+	[POL_TRUNK_ID]	= REG_FIELD(ALE_POLICER_PORT_OUI, 30, 30),
-+	[POL_PORT_NUM]	= REG_FIELD(ALE_POLICER_PORT_OUI, 25, 25),
-+	[POL_PRI_MEN]	= REG_FIELD(ALE_POLICER_PORT_OUI, 19, 19),
-+	[POL_PRI_VAL]	= REG_FIELD(ALE_POLICER_PORT_OUI, 16, 18),
-+	[POL_OUI_MEN]	= REG_FIELD(ALE_POLICER_PORT_OUI, 15, 15),
-+	[POL_OUI_INDEX]	= REG_FIELD(ALE_POLICER_PORT_OUI, 0, 5),
++/* Writes the ALE POLICER registers into the specified policer index */
++static void cpsw_ale_policer_write_idx(struct cpsw_ale *ale, u32 idx)
++{
++	idx &= ALE_POLICER_TBL_INDEX_MASK;
++	idx |= ALE_POLICER_TBL_WRITE_ENABLE;
++	writel_relaxed(idx, ale->params.ale_regs + ALE_POLICER_TBL_CTL);
++}
 +
-+	/* CPSW_ALE_POLICER_DA_SA_REG */
-+	[POL_DST_MEN]	= REG_FIELD(ALE_POLICER_DA_SA, 31, 31),
-+	[POL_DST_INDEX]	= REG_FIELD(ALE_POLICER_DA_SA, 16, 21),
-+	[POL_SRC_MEN]	= REG_FIELD(ALE_POLICER_DA_SA, 15, 15),
-+	[POL_SRC_INDEX]	= REG_FIELD(ALE_POLICER_DA_SA, 0, 5),
++/* enables/disables the custom thread value for the specified policer index */
++static void cpsw_ale_policer_thread_idx_enable(struct cpsw_ale *ale, u32 idx,
++					       u32 thread_id, bool enable)
++{
++	regmap_field_write(ale->fields[ALE_THREAD_CLASS_INDEX], idx);
++	regmap_field_write(ale->fields[ALE_THREAD_VALUE], thread_id);
++	regmap_field_write(ale->fields[ALE_THREAD_ENABLE], enable ? 1 : 0);
++}
 +
-+	/* CPSW_ALE_POLICER_VLAN_REG */
-+	[POL_OVLAN_MEN]		= REG_FIELD(ALE_POLICER_VLAN, 31, 31),
-+	[POL_OVLAN_INDEX]	= REG_FIELD(ALE_POLICER_VLAN, 16, 21),
-+	[POL_IVLAN_MEN]		= REG_FIELD(ALE_POLICER_VLAN, 15, 15),
-+	[POL_IVLAN_INDEX]	= REG_FIELD(ALE_POLICER_VLAN, 0, 5),
++/* Disable all policer entries and thread mappings */
++static void cpsw_ale_policer_reset(struct cpsw_ale *ale)
++{
++	int i;
 +
-+	/* CPSW_ALE_POLICER_ETHERTYPE_IPSA_REG */
-+	[POL_ETHERTYPE_MEN]	= REG_FIELD(ALE_POLICER_ETHERTYPE_IPSA, 31, 31),
-+	[POL_ETHERTYPE_INDEX]	= REG_FIELD(ALE_POLICER_ETHERTYPE_IPSA, 16, 21),
-+	[POL_IPSRC_MEN]		= REG_FIELD(ALE_POLICER_ETHERTYPE_IPSA, 15, 15),
-+	[POL_IPSRC_INDEX]	= REG_FIELD(ALE_POLICER_ETHERTYPE_IPSA, 0, 5),
++	for (i = 0; i < ale->params.num_policers ; i++) {
++		cpsw_ale_policer_read_idx(ale, i);
++		regmap_field_write(ale->fields[POL_PORT_MEN], 0);
++		regmap_field_write(ale->fields[POL_PRI_MEN], 0);
++		regmap_field_write(ale->fields[POL_OUI_MEN], 0);
++		regmap_field_write(ale->fields[POL_DST_MEN], 0);
++		regmap_field_write(ale->fields[POL_SRC_MEN], 0);
++		regmap_field_write(ale->fields[POL_OVLAN_MEN], 0);
++		regmap_field_write(ale->fields[POL_IVLAN_MEN], 0);
++		regmap_field_write(ale->fields[POL_ETHERTYPE_MEN], 0);
++		regmap_field_write(ale->fields[POL_IPSRC_MEN], 0);
++		regmap_field_write(ale->fields[POL_IPDST_MEN], 0);
++		regmap_field_write(ale->fields[POL_EN], 0);
++		regmap_field_write(ale->fields[POL_RED_DROP_EN], 0);
++		regmap_field_write(ale->fields[POL_YELLOW_DROP_EN], 0);
++		regmap_field_write(ale->fields[POL_PRIORITY_THREAD_EN], 0);
 +
-+	/* CPSW_ALE_POLICER_IPDA_REG */
-+	[POL_IPDST_MEN]		= REG_FIELD(ALE_POLICER_IPDA, 31, 31),
-+	[POL_IPDST_INDEX]	= REG_FIELD(ALE_POLICER_IPDA, 16, 21),
++		cpsw_ale_policer_thread_idx_enable(ale, i, 0, 0);
++	}
++}
 +
-+	/* CPSW_ALE_POLICER_TBL_CTL_REG */
-+	/**
-+	 * REG_FIELDS not defined for this as fields cannot be correctly
-+	 * used independently
++/* Default classifier is to map 8 user priorities to N receive channels */
++void cpsw_ale_classifier_setup_default(struct cpsw_ale *ale, int num_rx_ch)
++{
++	int pri, idx;
++	/* IEEE802.1D-2004, Standard for Local and metropolitan area networks
++	 *    Table G-2 - Traffic type acronyms
++	 *    Table G-3 - Defining traffic types
++	 * User priority values 1 and 2 effectively communicate a lower
++	 * priority than 0. In the below table 0 is assigned to higher priority
++	 * thread than 1 and 2 wherever possible.
++	 * The below table maps which thread the user priority needs to be
++	 * sent to for a given number of threads (RX channels). Upper threads
++	 * have higher priority.
++	 * e.g. if number of threads is 8 then user priority 0 will map to
++	 * pri_thread_map[8-1][0] i.e. thread 2
 +	 */
++	int pri_thread_map[8][8] = {	{ 0, 0, 0, 0, 0, 0, 0, 0, },
++					{ 0, 0, 0, 0, 1, 1, 1, 1, },
++					{ 0, 0, 0, 0, 1, 1, 2, 2, },
++					{ 1, 0, 0, 1, 2, 2, 3, 3, },
++					{ 1, 0, 0, 1, 2, 3, 4, 4, },
++					{ 1, 0, 0, 2, 3, 4, 5, 5, },
++					{ 1, 0, 0, 2, 3, 4, 5, 6, },
++					{ 2, 0, 1, 3, 4, 5, 6, 7, } };
 +
-+	/* CPSW_ALE_POLICER_CTL_REG */
-+	[POL_EN]		= REG_FIELD(ALE_POLICER_CTL, 31, 31),
-+	[POL_RED_DROP_EN]	= REG_FIELD(ALE_POLICER_CTL, 29, 29),
-+	[POL_YELLOW_DROP_EN]	= REG_FIELD(ALE_POLICER_CTL, 28, 28),
-+	[POL_YELLOW_THRESH]	= REG_FIELD(ALE_POLICER_CTL, 24, 26),
-+	[POL_POL_MATCH_MODE]	= REG_FIELD(ALE_POLICER_CTL, 22, 23),
-+	[POL_PRIORITY_THREAD_EN] = REG_FIELD(ALE_POLICER_CTL, 21, 21),
-+	[POL_MAC_ONLY_DEF_DIS]	= REG_FIELD(ALE_POLICER_CTL, 20, 20),
++	cpsw_ale_policer_reset(ale);
 +
-+	/* CPSW_ALE_POLICER_TEST_CTL_REG */
-+	[POL_TEST_CLR]		= REG_FIELD(ALE_POLICER_TEST_CTL, 31, 31),
-+	[POL_TEST_CLR_RED]	= REG_FIELD(ALE_POLICER_TEST_CTL, 30, 30),
-+	[POL_TEST_CLR_YELLOW]	= REG_FIELD(ALE_POLICER_TEST_CTL, 29, 29),
-+	[POL_TEST_CLR_SELECTED]	= REG_FIELD(ALE_POLICER_TEST_CTL, 28, 28),
-+	[POL_TEST_ENTRY]	= REG_FIELD(ALE_POLICER_TEST_CTL, 0, 4),
++	/* use first 8 classifiers to map 8 (DSCP/PCP) priorities to channels */
++	for (pri = 0; pri < 8; pri++) {
++		idx = pri;
 +
-+	/* CPSW_ALE_POLICER_HIT_STATUS_REG */
-+	[POL_STATUS_HIT]	= REG_FIELD(ALE_POLICER_HIT_STATUS, 31, 31),
-+	[POL_STATUS_HIT_RED]	= REG_FIELD(ALE_POLICER_HIT_STATUS, 30, 30),
-+	[POL_STATUS_HIT_YELLOW]	= REG_FIELD(ALE_POLICER_HIT_STATUS, 29, 29),
++		/* Classifier 'idx' match on priority 'pri' */
++		cpsw_ale_policer_read_idx(ale, idx);
++		regmap_field_write(ale->fields[POL_PRI_VAL], pri);
++		regmap_field_write(ale->fields[POL_PRI_MEN], 1);
++		cpsw_ale_policer_write_idx(ale, idx);
 +
-+	/* CPSW_ALE_THREAD_DEF_REG */
-+	[ALE_DEFAULT_THREAD_EN]		= REG_FIELD(ALE_THREAD_DEF, 15, 15),
-+	[ALE_DEFAULT_THREAD_VAL]	= REG_FIELD(ALE_THREAD_DEF, 0, 5),
-+
-+	/* CPSW_ALE_THREAD_CTL_REG */
-+	[ALE_THREAD_CLASS_INDEX] = REG_FIELD(ALE_THREAD_CTL, 0, 4),
-+
-+	/* CPSW_ALE_THREAD_VAL_REG */
-+	[ALE_THREAD_ENABLE]	= REG_FIELD(ALE_THREAD_VAL, 15, 15),
-+	[ALE_THREAD_VALUE]	= REG_FIELD(ALE_THREAD_VAL, 0, 5),
- };
- 
- static const struct cpsw_ale_dev_id cpsw_ale_id_match[] = {
++		/* Map Classifier 'idx' to thread provided by the map */
++		cpsw_ale_policer_thread_idx_enable(ale, idx,
++						   pri_thread_map[num_rx_ch - 1][pri],
++						   1);
++	}
++}
 diff --git a/drivers/net/ethernet/ti/cpsw_ale.h b/drivers/net/ethernet/ti/cpsw_ale.h
-index e12bb2caf016..2cb76acc6d16 100644
+index 2cb76acc6d16..1e4e9a3dd234 100644
 --- a/drivers/net/ethernet/ti/cpsw_ale.h
 +++ b/drivers/net/ethernet/ti/cpsw_ale.h
-@@ -36,6 +36,47 @@ enum ale_fields {
- 	MAJOR_VER,
- 	ALE_ENTRIES,
- 	ALE_POLICERS,
-+	POL_PORT_MEN,
-+	POL_TRUNK_ID,
-+	POL_PORT_NUM,
-+	POL_PRI_MEN,
-+	POL_PRI_VAL,
-+	POL_OUI_MEN,
-+	POL_OUI_INDEX,
-+	POL_DST_MEN,
-+	POL_DST_INDEX,
-+	POL_SRC_MEN,
-+	POL_SRC_INDEX,
-+	POL_OVLAN_MEN,
-+	POL_OVLAN_INDEX,
-+	POL_IVLAN_MEN,
-+	POL_IVLAN_INDEX,
-+	POL_ETHERTYPE_MEN,
-+	POL_ETHERTYPE_INDEX,
-+	POL_IPSRC_MEN,
-+	POL_IPSRC_INDEX,
-+	POL_IPDST_MEN,
-+	POL_IPDST_INDEX,
-+	POL_EN,
-+	POL_RED_DROP_EN,
-+	POL_YELLOW_DROP_EN,
-+	POL_YELLOW_THRESH,
-+	POL_POL_MATCH_MODE,
-+	POL_PRIORITY_THREAD_EN,
-+	POL_MAC_ONLY_DEF_DIS,
-+	POL_TEST_CLR,
-+	POL_TEST_CLR_RED,
-+	POL_TEST_CLR_YELLOW,
-+	POL_TEST_CLR_SELECTED,
-+	POL_TEST_ENTRY,
-+	POL_STATUS_HIT,
-+	POL_STATUS_HIT_RED,
-+	POL_STATUS_HIT_YELLOW,
-+	ALE_DEFAULT_THREAD_EN,
-+	ALE_DEFAULT_THREAD_VAL,
-+	ALE_THREAD_CLASS_INDEX,
-+	ALE_THREAD_ENABLE,
-+	ALE_THREAD_VALUE,
- 	/* terminator */
- 	ALE_FIELDS_MAX,
- };
+@@ -193,5 +193,6 @@ int cpsw_ale_vlan_add_modify(struct cpsw_ale *ale, u16 vid, int port_mask,
+ int cpsw_ale_vlan_del_modify(struct cpsw_ale *ale, u16 vid, int port_mask);
+ void cpsw_ale_set_unreg_mcast(struct cpsw_ale *ale, int unreg_mcast_mask,
+ 			      bool add);
++void cpsw_ale_classifier_setup_default(struct cpsw_ale *ale, int num_rx_ch);
+ 
+ #endif
 
 -- 
 2.34.1
