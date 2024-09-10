@@ -1,82 +1,82 @@
-Return-Path: <bpf+bounces-39386-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39387-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 80409972606
-	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 02:03:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F3B8972608
+	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 02:03:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AD25D1C2347F
-	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 00:03:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 91A451C2341F
+	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 00:03:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 427A02F3B;
-	Tue, 10 Sep 2024 00:03:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55E321DFE8;
+	Tue, 10 Sep 2024 00:03:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S9AA1e2B"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="P4tlgYu4"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
+Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 516A229A5;
-	Tue, 10 Sep 2024 00:03:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BDF029A5;
+	Tue, 10 Sep 2024 00:03:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725926592; cv=none; b=ZLBXKhtHSJV7O5+/lZZZDgvniugCE+mEfI9c66FP4zFUJQxRQMzE4twBZ7+uaC578BBich1xU7NjHJM1F74N5W7bDvMy4iWzKSzASFfBXzfsBI3jrUW9m/7uZeavSPPfxeX4ie/M0oexmXrZr5Li4Ev/zoSxncaW/5+rWQl/Ehg=
+	t=1725926597; cv=none; b=JBo3splHuh8EP528KyNJYLy76rya+yTxK1NQ+M03KXn+ZYO1L1lgrkVeFHNvW1vPm0coxtdxMH/LJBydo0K301ETJS18Cw9mahZUP23XcT9OKuch0WcBvbHIpWiANy9oU7lrIAWtngwsgArxkaxqPCbBbVBCkuBZGTDHBcqSlJU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725926592; c=relaxed/simple;
-	bh=fNbW5VQJv2KiALwisGPfVfx3yL5JVzNmx2yxw+sAx3E=;
+	s=arc-20240116; t=1725926597; c=relaxed/simple;
+	bh=RVU/WXgoPWforUjJ0oVD1VRfrBNg19UyZXAgKVK9VaI=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=GFE6tAOMe//itRiaukTy9mUsyu6w1OHmFB3XB4h2IKeDIrJt1R0rrAVx2ZFHI7+fENoINhf1pn1KpVOt6/HNAKr/A8ppSY/jvgrA2+Fm3LEfagWfaQUOrywCTV72tEnsDNXcsqFTtzsYvjWl+u6LdTYpFhumJ+vw8wHG57XYDkY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=S9AA1e2B; arc=none smtp.client-ip=209.85.215.170
+	 To:Cc:Content-Type; b=jiFy5Y5+VgUcONNV1KZMttS1CMg6HwnT887d+b9Xq7UtM8ob2RZWeAGGgIt2IlLjtP9Z6Zjqb1K+1GN5zGhPASIgxQvl/gg3bz0wG0BHWvSuKwP5q2rhgAroljuXMTi+1goncjdj+L/e1ErlgxRNIYUFUsyG3RD3Is/24WsVqc8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=P4tlgYu4; arc=none smtp.client-ip=209.85.216.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-7d4f85766f0so86272a12.2;
-        Mon, 09 Sep 2024 17:03:11 -0700 (PDT)
+Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-2d8a4bad409so3439462a91.0;
+        Mon, 09 Sep 2024 17:03:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1725926590; x=1726531390; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1725926596; x=1726531396; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Xf9ULe6jsxG188hJeNVVqnkWBFrA7j3PQqhf5n/c+xI=;
-        b=S9AA1e2B/RbXNoCPnDusqe4nZYQ9Iw6QXTmUMj8Ym7UQ0Bwid9JPrCKw0hBrwfnkCf
-         jtnYH7KJzWUBeM0XSXiY1eDHN7Ea6utZ9q9Q0j+igY3YVwhoQovQZyTuKE3DQi7/fEly
-         QI9cSy+ZVIfbbxALoU0ITqb/MD2F4Jqkb/GXm+/0BvubYov912DtBFHABWjKqz+TPbbg
-         eV6WZWb7X5F2e/OrjKk2B5XQ516l5kVWEy/6sHx7EBvHWGTj5fMFrvpcTLxUwLwdJs+0
-         20++fJXXEswGZlZTovQ9EAPXOnHGKzXjDN/7xkj8eom9Wd7QPXKOGf+OAIH57SVRDkpf
-         XgqQ==
+        bh=vX07L4MyH3UtAmhVXaceT+nqL4USjSuMhroAMQ1kAWc=;
+        b=P4tlgYu4+Rggz79cGvtSrRN0yDNASRnFGzHcVsPBLDXXV5MOhsOLTrqY9f5OrB47pM
+         KUdhp00J5E/mapo+kbwRRgz6iudmJsWbtTRev2Y1iN+xthCpotSeHwS0J/7VW24z0Gfc
+         4EtgQxKyzyYKF39uucTGe0d909jGhGbjFEm22thKCDdN4s/iXUcJ/a50KB9vqrDrJZh0
+         tCXhMVJ0V+5iSCRa/JQABCT2hKoVHeqG15LwW31nbLujxBsIcts01bDcAhf4HkdhUruN
+         Azt5VIij5o0Krt0o15yjwcoeNtvWT+ZWdruOlPHeuJMIOVsWGAQZnUiVGo7EQAjgnFuZ
+         6+Pg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725926590; x=1726531390;
+        d=1e100.net; s=20230601; t=1725926596; x=1726531396;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Xf9ULe6jsxG188hJeNVVqnkWBFrA7j3PQqhf5n/c+xI=;
-        b=c9bdG7yEXW3U2IF96TQX6fKrdviWaCCc7zldo5pHkEMb4T7UF1mYzA5vqlOtWbCCdS
-         h6oB3YCqiUAU8jTeyJVAEy43MyWP3VXgVoJmlA+Mpus3ObwZnlifKY4zTPw+53QTsSJA
-         /TkEI400nf+bR/7NrTJmT+QRZK4jqeiZszDHsmgayW6mD4dEdEzXsZ1q+S6vkFWMRsY6
-         7ivZ+SEwAigBlC9VAdY+pL/1FzX7856Bxt9FLTxrDc+/v+6bTgZ2rwBlTyVWotwIRF1Z
-         Flrd4uiVRsFbuMUy60MVawLlDXGeXaEGmLb0Gnkxy4AbmuF0QH+vyXydKCEOH444ziTb
-         KvEA==
-X-Forwarded-Encrypted: i=1; AJvYcCULr/pZtj3X+Q48yCAFXA2u8ZNHvm0VnNL28eY9/LB/63tVz30csnb0c1JxGDR/3LxYDGs=@vger.kernel.org, AJvYcCVttrhh4Sc4hRKoW1eDHhC2czxDZdeL3nXtD9k+9xhXb7vf1WIvaqzL1kLBrYsLdl2626XIi3w2EQfHROAEmNvhjYqH@vger.kernel.org, AJvYcCWhxeirEmtm1PSRCuIHWNGn9H2FGGq2c3o6SI9f5KXs5ZwCZost4s+YnB1DHouV19Jd8AZJZO8EHDG1IsNT@vger.kernel.org
-X-Gm-Message-State: AOJu0YzmZOcjKB8yi1HlVgEiX7QCJrmysiTXCprj9ZBT76TS17IOSUPf
-	XDA26jP8qKpIi3PlNa+cVIJpwQVag7iW+dFHMwjkkMj+8MFyyywJwd13/6jH60Nbac+72L2Tt3F
-	0qid/gNf824fFtSG9wkp53gyNzY0=
-X-Google-Smtp-Source: AGHT+IFvXB8mLD6dJwZP3Pf15H9sUUYVkpsnD3HQyjTliH6BBIO2jlNj3+UCaP6yigz66S7v2K2ky8JAh/+0mc3Wmns=
-X-Received: by 2002:a17:90a:1fc9:b0:2d8:8d60:a198 with SMTP id
- 98e67ed59e1d1-2dafd0c0076mr10852213a91.37.1725926590486; Mon, 09 Sep 2024
- 17:03:10 -0700 (PDT)
+        bh=vX07L4MyH3UtAmhVXaceT+nqL4USjSuMhroAMQ1kAWc=;
+        b=wC3ky7EqCJ9M4eBwLt1cVoH0T4Bbr7v3qqZDO0tnK6Gek7Lp9dIPgg9gT5hezbZWrR
+         Mgh3M5QXlD2rghv2k6CLeR1/61NZ50RcEjkpmlEi7qqclzI/jHFqCmM/Jpr0fL8qozwR
+         4afi2ajBSBnvX/5s6Qmh/qmmdWbSxty7v0Jm1Hk22KW70qmy5JBhBf0Wjogf/0BckAXH
+         l1OFYz7r/tX1k0qGiRI66UK/wLmU8eX/++8nnrqs/xyuI6FxbbbZimtBjc1CyYNocCnZ
+         q/jQ1U7EBF9TbsRDF6oaJzJmR31BsIi6mZ8gyRBTFfTC3YY+c/yj7q3PpyypJzwIZSJp
+         0RLQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUep8tuSlHY4t4yXYTdOA6A3vlsLscZdD8weUyHARC49w88XflLB4iibq/+HzUlKhEp3lY=@vger.kernel.org, AJvYcCUs42Ts3HRBtLS4FCL58Yz5Ab/fW7mplMWcUKiiS84Tqrp4mf/vflHRzRarTyShds+efrbDlHCS4C4OI5phduXFl8bS@vger.kernel.org, AJvYcCW8yh7sxTRx7GMExj9rEeNgMhJJ7fuWQ/mpT2yO76J2XIIdlDOHreH4WiK3/qhYzLyeBxZ047L3mZLSeeC+@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw/Bj5NWZxzAB/vUNNeTBUhuIl/pmoJ7yq/ab1Gex/ClsoPmqDG
+	L8OACfCEEHZ8Ot9hmckagO1mCDUu71vO5M+Fnvt9JKusl9/kLpoQJWFlM/iwSRjRWmKqeK2chhb
+	0RHcwIWeuMZXvQDq6vUNJaRdJGek=
+X-Google-Smtp-Source: AGHT+IFf8sUPFNRoE6HG/5otm81c0UQzsaXRgNB9WUVkQnJGtqaVmqSOeqk7BwoGLjGAl+cQ5lj4P0iXwUrikTB/aZg=
+X-Received: by 2002:a17:90b:1b4b:b0:2c8:64a:5f77 with SMTP id
+ 98e67ed59e1d1-2dad5196e14mr12806819a91.37.1725926595585; Mon, 09 Sep 2024
+ 17:03:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240909201652.319406-1-mathieu.desnoyers@efficios.com> <20240909201652.319406-9-mathieu.desnoyers@efficios.com>
-In-Reply-To: <20240909201652.319406-9-mathieu.desnoyers@efficios.com>
+References: <20240909201652.319406-1-mathieu.desnoyers@efficios.com> <20240909201652.319406-5-mathieu.desnoyers@efficios.com>
+In-Reply-To: <20240909201652.319406-5-mathieu.desnoyers@efficios.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 9 Sep 2024 17:02:58 -0700
-Message-ID: <CAEf4Bza07qWL1o9Y-ZZddrsH-hm6nse7855bjpCurAZvf5C_2w@mail.gmail.com>
-Subject: Re: [PATCH 8/8] tracing/bpf: Add might_fault check to syscall probes
+Date: Mon, 9 Sep 2024 17:03:02 -0700
+Message-ID: <CAEf4BzZUgLaK8r5VK4VmfQTEKZ13qDEGUEEdeKJeZYc_96KCTw@mail.gmail.com>
+Subject: Re: [PATCH 4/8] tracing/bpf: guard syscall probe with preempt_notrace
 To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 Cc: Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
 	linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, 
@@ -91,9 +91,13 @@ Content-Transfer-Encoding: quoted-printable
 On Mon, Sep 9, 2024 at 1:17=E2=80=AFPM Mathieu Desnoyers
 <mathieu.desnoyers@efficios.com> wrote:
 >
-> Add a might_fault() check to validate that the bpf sys_enter/sys_exit
-> probe callbacks are indeed called from a context where page faults can
-> be handled.
+> In preparation for allowing system call enter/exit instrumentation to
+> handle page faults, make sure that bpf can handle this change by
+> explicitly disabling preemption within the bpf system call tracepoint
+> probes to respect the current expectations within bpf tracing code.
+>
+> This change does not yet allow bpf to take page faults per se within its
+> probe, but allows its existing probes to adapt to the upcoming change.
 >
 > Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 > Cc: Michael Jeanson <mjeanson@efficios.com>
@@ -112,29 +116,42 @@ On Mon, Sep 9, 2024 at 1:17=E2=80=AFPM Mathieu Desnoyers
 > Cc: bpf@vger.kernel.org
 > Cc: Joel Fernandes <joel@joelfernandes.org>
 > ---
->  include/trace/bpf_probe.h | 1 +
->  1 file changed, 1 insertion(+)
+>  include/trace/bpf_probe.h | 11 ++++++++++-
+>  1 file changed, 10 insertions(+), 1 deletion(-)
 >
 
 LGTM.
 
 Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
+
 > diff --git a/include/trace/bpf_probe.h b/include/trace/bpf_probe.h
-> index 211b98d45fc6..099df5c3e38a 100644
+> index c85bbce5aaa5..211b98d45fc6 100644
 > --- a/include/trace/bpf_probe.h
 > +++ b/include/trace/bpf_probe.h
-> @@ -57,6 +57,7 @@ __bpf_trace_##call(void *__data, proto)                =
+> @@ -53,8 +53,17 @@ __bpf_trace_##call(void *__data, proto)               =
                        \
->  static notrace void                                                    \
->  __bpf_trace_##call(void *__data, proto)                                 =
+>  #define DECLARE_EVENT_CLASS(call, proto, args, tstruct, assign, print) \
+>         __BPF_DECLARE_TRACE(call, PARAMS(proto), PARAMS(args))
+>
+> +#define __BPF_DECLARE_TRACE_SYSCALL(call, proto, args)                 \
+> +static notrace void                                                    \
+> +__bpf_trace_##call(void *__data, proto)                                 =
        \
->  {                                                                      \
-> +       might_fault();                                                  \
->         guard(preempt_notrace)();                                       \
->         CONCATENATE(bpf_trace_run, COUNT_ARGS(args))(__data, CAST_TO_U64(=
+> +{                                                                      \
+> +       guard(preempt_notrace)();                                       \
+> +       CONCATENATE(bpf_trace_run, COUNT_ARGS(args))(__data, CAST_TO_U64(=
 args));        \
->  }
+> +}
+> +
+>  #undef DECLARE_EVENT_SYSCALL_CLASS
+> -#define DECLARE_EVENT_SYSCALL_CLASS DECLARE_EVENT_CLASS
+> +#define DECLARE_EVENT_SYSCALL_CLASS(call, proto, args, tstruct, assign, =
+print) \
+> +       __BPF_DECLARE_TRACE_SYSCALL(call, PARAMS(proto), PARAMS(args))
+>
+>  /*
+>   * This part is compiled out, it is only here as a build time check
 > --
 > 2.39.2
 >
