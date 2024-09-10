@@ -1,142 +1,197 @@
-Return-Path: <bpf+bounces-39438-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39439-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 894D7973824
-	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 14:58:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id F3E429738AE
+	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 15:31:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4CC0F289201
-	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 12:58:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B449B285AB6
+	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 13:31:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55C22191F9E;
-	Tue, 10 Sep 2024 12:58:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29A97192B76;
+	Tue, 10 Sep 2024 13:31:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XRMu7Oz2"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TdzymwCa"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
+Received: from mail-qk1-f175.google.com (mail-qk1-f175.google.com [209.85.222.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AE7C1EB2F;
-	Tue, 10 Sep 2024 12:58:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 339D61EB2F;
+	Tue, 10 Sep 2024 13:31:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725973117; cv=none; b=GvhohFbuVhUVkfNA03EldEuGABw8BYK7yoNTlheupTzuM/UteO7Wway98QlrAw6rEkmgyJplFy1domxJ5kMOkJh09PIBzgX5aoMnbrg21a9FOMrEoyOOhSI4g8ZMLuFO4vqaRZw8M4bdRlT9gsrF4lG4hmfs1wAKNcmt8sgO8PM=
+	t=1725975065; cv=none; b=sbL4Q2wi7VtHkAPDNXYGewvvNM0b9HxnSLYEn05gNst5FXvVblx1U8p264ONP50S1/PmlPFk8JPoOooYh7hY7N2H8AE1JS3ba9tvoSbxg9OeYLfAQSFwPzdgj9vjewOnnGnYDXZzHR3oWGdmc4pYm9FWfKV7F+q5A8THpV+h964=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725973117; c=relaxed/simple;
-	bh=5gPskckxp1UZ/XMepxRnnd8/OYzrY0Fe4nPWYZHp+Cc=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=OHMqRAdc0lFzyN1oxmR2vFaT6yYs+M30WFMciXB0oqRKYSApK7OVwNmpRr/uFBY8md1zFAK2PySI55nKLi1apW9vAXlx3/X+Jh9Yw6h2zwUVYY8X4HLeVo7h2Q1NJHFrsw3G7tcGC2E/CUcB2RBOOpBPE6+fnZ/MyU5XeSOFT6o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XRMu7Oz2; arc=none smtp.client-ip=209.85.216.54
+	s=arc-20240116; t=1725975065; c=relaxed/simple;
+	bh=kRjHz7epwOUJHqWVRokIi0ie2XYhwI8RqMuyt+eJmDE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=loML1TIxO04aoG+Yw0lpYUKMwdHMmhjffcYQwSNaXM/3HD2JJDpiRav3hljFRYCWdyz8e6v1PY1lqVfVbFZ+1kUrntUlhGc5l8K/9heMMRDvqNI8RSUkGlb4LW7aJrHsF3wCKa49JnmW74qzaZ+qzagRvWkD7kxWDhltFE+nHhE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TdzymwCa; arc=none smtp.client-ip=209.85.222.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-2d8818337a5so4659085a91.1;
-        Tue, 10 Sep 2024 05:58:36 -0700 (PDT)
+Received: by mail-qk1-f175.google.com with SMTP id af79cd13be357-7a9c3a4e809so50461585a.2;
+        Tue, 10 Sep 2024 06:31:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1725973116; x=1726577916; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Xyel3imRxFpwdfOO24O3J/3zDsAOJUckvL1hBK+vtmY=;
-        b=XRMu7Oz2EGuyVnuZy5stnnOJ7Cd1NtYdoAcP+3jwOJti2EqxtoDqzm2sX1XQvBKGQy
-         fyxXvAV34GIfcWB2DgodUg3BjU0PUBwsE4SJ6uH9PK3RsQDUY8C0BOHXWvNi0Lws4HxD
-         lcRv2YXAb1MDjSa2OCLqoct86HWYnaFTh92M++QkuAg5+u9h2RuyCNPhPEUTtH6g7fPC
-         J5z3l49rOaKFXOuiKJkx86VHx0uLM2S5tRWS2JXzrbv1NZcOqdrxGlT+1bZU/h5z/0bB
-         yt1IPydLGDVsRLnxXILFdb8UGvfsCMZY8erD7hbnXW73ZzKRpqg4hoZViXZoA9HFq5yQ
-         G1xw==
+        d=gmail.com; s=20230601; t=1725975063; x=1726579863; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=vAs4JBrfNs6zZ0N76deFNoJwlS2JixdwwSmEsk3usgo=;
+        b=TdzymwCaVoEiCAael5l3khjvv48p5fBC/cqBrkFQ5ykzCUEmiC9TklwAMvYtkSG827
+         ao4FktDh0TArjRtjgNrbTvggKL3/eIx9Stzah36Ahf+BbVd/eIq/ZcjszN9jTjOBkdz5
+         RrXcjWXMpWsmC6b+YQBf/u2C2wFSyHQVZqKn+MAvumZmc047Tvo7pm12Fa+prszUMfd/
+         wJqewcHPQVEndCK4AJbHps+v9OwoVRaIkv4K4YyZuozHe/9jQDlkBWXdaV8grFaHxNoM
+         teBWSGH7TP1GHphAw0UKD1qXK2WjvQxhU1x54ARY0kRiOTUcNhFDzNfXq4OZ14vLcKlI
+         eUmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725973116; x=1726577916;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1725975063; x=1726579863;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Xyel3imRxFpwdfOO24O3J/3zDsAOJUckvL1hBK+vtmY=;
-        b=EwpGUs4+SMFW+dJFKeSD9LZFVX/H9jRvWQawZdXO+DogQeZhBQwhE/vIqIwYbfSdVK
-         SNbWoPzUdZmJfyU265YOr/2pCvGmhbIheTuEgf46VdJ/1M7i5qdskjEkh76T5HWpYn1i
-         +W8/F/Qv3gqxsEeDUfIakPQodelI/E6qFYzIW64fCYDlMGvIYXmy0sWklHQy9lGa1xeT
-         rR4mYFIyaiL+wLfZb+YIS9NnrU3kJqlU7EKKg4PHJ1hzm8MRnRtzjnU5OBkX6OVFe31V
-         0ajJukpPswZ1kssg0Yui8WRm0HFvSyJx1Q3jegyeAUAoeyA4SSQblYh9/yOgoE0GVxiI
-         H0Iw==
-X-Forwarded-Encrypted: i=1; AJvYcCVMl3f3IGAYOGr95o1wOdOYVq3O/YLyxmYIbGRF8y4PHwC/6x5nEUE3VHhVjqZrUj6PW/Um5FzLLTH9moPL@vger.kernel.org, AJvYcCWRnqX28FuSTHT8TQeqkGt2yQV636may/tooyamdP2OqW7GaEO3Oqr5aH2o2KhdoCfRtqw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxQGm9ZkbirITimQfzeHxzbNepIZG8oMeFry0V3VSgceyQ1tTfF
-	oFbwX1lu088NAAAd8NVmIMTH/LTd8Q5hwu0ynGYKBiOTL4Hrre8g
-X-Google-Smtp-Source: AGHT+IE7ob/q4REwITMiP9KAyvcXSHODWgpuTUkOwhOiNL+e1rPHjMwDYF+qlOzPcYjq25Bw5ZM+Sg==
-X-Received: by 2002:a17:90a:2c4a:b0:2d8:719d:98a2 with SMTP id 98e67ed59e1d1-2db671989damr4480758a91.7.1725973115573;
-        Tue, 10 Sep 2024 05:58:35 -0700 (PDT)
-Received: from visitorckw-System-Product-Name.. ([140.113.216.168])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2db04988470sm6301628a91.54.2024.09.10.05.58.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Sep 2024 05:58:34 -0700 (PDT)
-From: Kuan-Wei Chiu <visitorckw@gmail.com>
-To: qmo@kernel.org
-Cc: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	jserv@ccns.ncku.edu.tw,
-	Kuan-Wei Chiu <visitorckw@gmail.com>
-Subject: [PATCH] bpftool: Fix undefined behavior in qsort(NULL, 0, ...)
-Date: Tue, 10 Sep 2024 20:58:26 +0800
-Message-Id: <20240910125826.3172950-1-visitorckw@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        bh=vAs4JBrfNs6zZ0N76deFNoJwlS2JixdwwSmEsk3usgo=;
+        b=c5rL+bSoDItv+2znGEbNV7nAT8WoQiXU892tJD1IZY7HJLN+aBa8dPbEQ8Dxgph/O5
+         0PlPPXeSeBwMM4yBd2qmxNB+84xaziantm+PLOAnGGoZCuGWMzplAhYIRNSVLrVuwuIc
+         Gip/B0Y2N2Pmxh+1RAOHw9Wc+oIAsQ3tTXE7zek/N8VclM3JFq4SWDzmKmE3L8PsQhd+
+         4rEjL3I/e6YWL2mU8b0Et4Xfr/w/Eu7qTmLU66VoNrmup9xkqr4FOREFMtV6CTFoybiP
+         wAkzDuNOXZmbXj71WXsSXZsPoOHMo3tN3E9jqHcRJ5ICC2sXUrd+/O4wOvsgzXaWO+BB
+         Z1WA==
+X-Forwarded-Encrypted: i=1; AJvYcCXjrok+8SxiDRVRx0QbpzYra9sFQAtqzxFVfVXdlFzRKCU6tL5gn3E2cNEmftdBs5/mD8F127A=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzwIK73WUwWZhWIpbwEhRPdqBygm87x+NhwSTvzLKam5iGpRpzd
+	tsUhrUAmDgPLitz4/xHtciyOWJYp0tz1fsKWzr7W0H4zQ3r395AMfunXhjbNBz9AZav6/VCpZM8
+	grRWbq8fB4uWhNMuP53QS0EXd1K4=
+X-Google-Smtp-Source: AGHT+IFkazSJoizNEunDwAuUSymYU/v45DR8DMvyaf4jL4F1ClpkNqq1+TNoJSYphCUYt7TFaTu8ikgUQMzXmOzRL30=
+X-Received: by 2002:a05:6214:2c08:b0:6c5:1453:8bfb with SMTP id
+ 6a1803df08f44-6c528519a2cmr144643536d6.38.1725975063016; Tue, 10 Sep 2024
+ 06:31:03 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240910124129.289874-1-maciej.fijalkowski@intel.com>
+In-Reply-To: <20240910124129.289874-1-maciej.fijalkowski@intel.com>
+From: Magnus Karlsson <magnus.karlsson@gmail.com>
+Date: Tue, 10 Sep 2024 15:30:51 +0200
+Message-ID: <CAJ8uoz3tx60yLdwujSa2kmAvB+i7tj+HL-BAHgdcRMrXuq_fVA@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next] selftests: xsk: read current MAX_SKB_FRAGS
+ from sysctl knob
+To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
+	andrii@kernel.org, netdev@vger.kernel.org, magnus.karlsson@intel.com, 
+	bjorn@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-When netfilter has no entry to display, qsort is called with
-qsort(NULL, 0, ...). This results in undefined behavior, as UBSan
-reports:
+On Tue, 10 Sept 2024 at 14:41, Maciej Fijalkowski
+<maciej.fijalkowski@intel.com> wrote:
+>
+> Currently, xskxceiver assumes that MAX_SKB_FRAGS value is always 17
+> which is not true - since the introduction of BIG TCP this can now take
+> any value between 17 to 45 via CONFIG_MAX_SKB_FRAGS.
+>
+> Adjust the TOO_MANY_FRAGS test case to read the currently configured
+> MAX_SKB_FRAGS value by reading it from /proc/sys/net/core/max_skb_frags.
+> If running system does not provide that sysctl file then let us try
+> running the test with a default value.
 
-net.c:827:2: runtime error: null pointer passed as argument 1, which is declared to never be null
+Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
 
-Although the C standard does not explicitly state whether calling qsort
-with a NULL pointer when the size is 0 constitutes undefined behavior,
-Section 7.1.4 of the C standard (Use of library functions) mentions:
-
-"Each of the following statements applies unless explicitly stated
-otherwise in the detailed descriptions that follow: If an argument to a
-function has an invalid value (such as a value outside the domain of
-the function, or a pointer outside the address space of the program, or
-a null pointer, or a pointer to non-modifiable storage when the
-corresponding parameter is not const-qualified) or a type (after
-promotion) not expected by a function with variable number of
-arguments, the behavior is undefined."
-
-To avoid this, add an early return when nf_link_count is 0 to prevent
-calling qsort with a NULL pointer.
-
-Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
----
- tools/bpf/bpftool/net.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/tools/bpf/bpftool/net.c b/tools/bpf/bpftool/net.c
-index 968714b4c3d4..13e098fa295a 100644
---- a/tools/bpf/bpftool/net.c
-+++ b/tools/bpf/bpftool/net.c
-@@ -824,6 +824,9 @@ static void show_link_netfilter(void)
- 		nf_link_count++;
- 	}
- 
-+	if (!nf_link_count)
-+		return;
-+
- 	qsort(nf_link_info, nf_link_count, sizeof(*nf_link_info), netfilter_link_compar);
- 
- 	for (id = 0; id < nf_link_count; id++) {
--- 
-2.34.1
-
+> Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+> ---
+>
+> v2: instead of failing the test case when reading frag value from sysctl
+>     file did not succeed, use a default count and proceed with test [Magnus]
+>
+>  tools/testing/selftests/bpf/xskxceiver.c | 43 +++++++++++++++++++++---
+>  tools/testing/selftests/bpf/xskxceiver.h |  1 -
+>  2 files changed, 38 insertions(+), 6 deletions(-)
+>
+> diff --git a/tools/testing/selftests/bpf/xskxceiver.c b/tools/testing/selftests/bpf/xskxceiver.c
+> index 92af633faea8..11f047b8af75 100644
+> --- a/tools/testing/selftests/bpf/xskxceiver.c
+> +++ b/tools/testing/selftests/bpf/xskxceiver.c
+> @@ -325,6 +325,25 @@ static bool ifobj_zc_avail(struct ifobject *ifobject)
+>         return zc_avail;
+>  }
+>
+> +#define MAX_SKB_FRAGS_PATH "/proc/sys/net/core/max_skb_frags"
+> +static unsigned int get_max_skb_frags(void)
+> +{
+> +       unsigned int max_skb_frags = 0;
+> +       FILE *file;
+> +
+> +       file = fopen(MAX_SKB_FRAGS_PATH, "r");
+> +       if (!file) {
+> +               ksft_print_msg("Error opening %s\n", MAX_SKB_FRAGS_PATH);
+> +               return 0;
+> +       }
+> +
+> +       if (fscanf(file, "%u", &max_skb_frags) != 1)
+> +               ksft_print_msg("Error reading %s\n", MAX_SKB_FRAGS_PATH);
+> +
+> +       fclose(file);
+> +       return max_skb_frags;
+> +}
+> +
+>  static struct option long_options[] = {
+>         {"interface", required_argument, 0, 'i'},
+>         {"busy-poll", no_argument, 0, 'b'},
+> @@ -2245,13 +2264,24 @@ static int testapp_poll_rxq_tmout(struct test_spec *test)
+>
+>  static int testapp_too_many_frags(struct test_spec *test)
+>  {
+> -       struct pkt pkts[2 * XSK_DESC__MAX_SKB_FRAGS + 2] = {};
+> +       struct pkt *pkts;
+>         u32 max_frags, i;
+> +       int ret;
+>
+> -       if (test->mode == TEST_MODE_ZC)
+> +       if (test->mode == TEST_MODE_ZC) {
+>                 max_frags = test->ifobj_tx->xdp_zc_max_segs;
+> -       else
+> -               max_frags = XSK_DESC__MAX_SKB_FRAGS;
+> +       } else {
+> +               max_frags = get_max_skb_frags();
+> +               if (!max_frags) {
+> +                       ksft_print_msg("Couldn't retrieve MAX_SKB_FRAGS from system, using default (17) value\n");
+> +                       max_frags = 17;
+> +               }
+> +               max_frags += 1;
+> +       }
+> +
+> +       pkts = calloc(2 * max_frags + 2, sizeof(struct pkt));
+> +       if (!pkts)
+> +               return TEST_FAILURE;
+>
+>         test->mtu = MAX_ETH_JUMBO_SIZE;
+>
+> @@ -2281,7 +2311,10 @@ static int testapp_too_many_frags(struct test_spec *test)
+>         pkts[2 * max_frags + 1].valid = true;
+>
+>         pkt_stream_generate_custom(test, pkts, 2 * max_frags + 2);
+> -       return testapp_validate_traffic(test);
+> +       ret = testapp_validate_traffic(test);
+> +
+> +       free(pkts);
+> +       return ret;
+>  }
+>
+>  static int xsk_load_xdp_programs(struct ifobject *ifobj)
+> diff --git a/tools/testing/selftests/bpf/xskxceiver.h b/tools/testing/selftests/bpf/xskxceiver.h
+> index 885c948c5d83..e46e823f6a1a 100644
+> --- a/tools/testing/selftests/bpf/xskxceiver.h
+> +++ b/tools/testing/selftests/bpf/xskxceiver.h
+> @@ -55,7 +55,6 @@
+>  #define XSK_UMEM__LARGE_FRAME_SIZE (3 * 1024)
+>  #define XSK_UMEM__MAX_FRAME_SIZE (4 * 1024)
+>  #define XSK_DESC__INVALID_OPTION (0xffff)
+> -#define XSK_DESC__MAX_SKB_FRAGS 18
+>  #define HUGEPAGE_SIZE (2 * 1024 * 1024)
+>  #define PKT_DUMP_NB_TO_PRINT 16
+>  #define RUN_ALL_TESTS UINT_MAX
+> --
+> 2.34.1
+>
+>
 
