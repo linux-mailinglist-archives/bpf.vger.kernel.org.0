@@ -1,218 +1,106 @@
-Return-Path: <bpf+bounces-39481-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39482-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FC4D973CC9
-	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 17:56:36 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A7A97973CF6
+	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 18:07:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2ADB71C24861
-	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 15:56:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4E0E8B230C1
+	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 16:07:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03EFE1A00C5;
-	Tue, 10 Sep 2024 15:56:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5716D1A0706;
+	Tue, 10 Sep 2024 16:06:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F4/GvzsM"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="2oscGzwR"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4B8C14F12C;
-	Tue, 10 Sep 2024 15:56:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6460F19F480
+	for <bpf@vger.kernel.org>; Tue, 10 Sep 2024 16:06:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725983787; cv=none; b=HUkNd1UCXnfoxfSyuKF3r/taUAx+hXwwvuQKUb4NLHWkCr24d5dRuDwiYpBI46Ig+HHNejsjanZKrUh3fppWqjidkQ0J4yWV9M3fxA8D16N/m57GMo9aD3vrUgtA88Ni1mqwstXyJqlM44VuomCB2/evMr5KDyzkJKn5SPjUTWM=
+	t=1725984414; cv=none; b=W1UMTWvQUa85GzjC9w9QGXdCF7xvYEfk/GXn/Oogba2xaOl3i8o4hP9uX2gZxhbPWc1Tkm/0ajPKSN6PwiWwNsLkOBbNLDicGwFd5CqKUuGXF1ONqDrvrVFbwYmMJ7KTP4+xQcOJaraUGFJoH6zQw9bvVQFHYReEHROQXZT7bSo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725983787; c=relaxed/simple;
-	bh=RmjvCuPJxR1h7+htFpSDFvemsvqOLZ0jJXC9aMgghLE=;
+	s=arc-20240116; t=1725984414; c=relaxed/simple;
+	bh=9Rp+ZaWePBqTv+7CDLYdQhLyxwC0Y6Goq+cudkph1u8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=WoCI3wYn79dkt6Z4tNQskBLzNgEp1Mx4IZB68/zkY6NCmew1wmzsPBPGTIIuvqSrNsDc54WX25IaEnsN35QwqMM8/g9yuHve3QbXKPsGpPqDp1nTgjMwhO9mbymKrZ+BP3FfuFesnPJXekAEQiP4WHK0SNJbtkpxzzXg4l15lmI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=F4/GvzsM; arc=none smtp.client-ip=209.85.221.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-374c5bab490so4260647f8f.1;
-        Tue, 10 Sep 2024 08:56:25 -0700 (PDT)
+	 To:Cc:Content-Type; b=VYk069Rz67DiXCElnEKMqJzeLOPcyzq2geffUGB4UX13GzYsR/et1TE+haU/qox+ne2ok7yFVBiqzkpaRvCt3Jc+4RMMHa+JCKCiQVG6KYsWU1yVhQIuxnpcpqW9HsvMOdkz4J7VZPQ1ccmv7Bmq0DJgO+b01ftFOmVZCqsbYqE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=2oscGzwR; arc=none smtp.client-ip=209.85.208.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-5c247dd0899so13124a12.1
+        for <bpf@vger.kernel.org>; Tue, 10 Sep 2024 09:06:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1725983784; x=1726588584; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1725984412; x=1726589212; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=gJaBuk9O8XTeUn+tXdjD8n8fSiu133fBeIfYRY7Bi8E=;
-        b=F4/GvzsMqv16UblS13ZoDMyx3aPb7HogfAe4TXUDnDKRZ51j/vr5Qb+kFAiQkxDlGB
-         R7H5/UmeFvW06k1N9qM2GYtcSXvs3N+wRtduwZufSB7vSrXSULdbHfzgqnjNdJgQnRfp
-         MSUQpXMPvVMtyNcmlb9OqkmN/GMiRlr5Z+ykXGqcc/ysgbraukIZOgjwswfExnrCglhj
-         iaBStooQivzDv8Ga+jf9uV6r2ABx31jswApmvom2gf9kjdeAylFcvZIRXwsGJP7No/e4
-         cPYOvnR66pM8SqZrkIM66pnR4h2UoTfpLVmm6DGCpOwdxd/IFo8mSSarjHxsLQHir2Mh
-         Bfuw==
+        bh=9Rp+ZaWePBqTv+7CDLYdQhLyxwC0Y6Goq+cudkph1u8=;
+        b=2oscGzwR4onXmHbtOk7T7sHnwdGHNxaTaPXyKSYKb+/w/iPXbn2//jfK1OoPvhAAWQ
+         kbT3m3utsrQfKXjVDv+BE3OXjkp3RVkS1bZlvWP4HLztW/Z7S9YCJfW298ag4QEb0gWA
+         jRCcNY0lx9HiRUIktMboyEGdBsyfkLskNjNMs0RQyThW5rzNk9L6oXV5P+BIBB+UbQYo
+         cgxsfV4Kr/kvrLzqoCGkYUmxHwYKHjvMOLJjQybOyf0T5LV7MO75rYZIz2PgyjJntZGt
+         TtqphhEmEj2bwoSGVgtkKxWn9+8xUA2oz7QqkWjRoSNGMx/ZMNtQZYQ2pPcya4t1ptVm
+         eraQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725983784; x=1726588584;
+        d=1e100.net; s=20230601; t=1725984412; x=1726589212;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=gJaBuk9O8XTeUn+tXdjD8n8fSiu133fBeIfYRY7Bi8E=;
-        b=d4IlM4JlnIbCkJ3qsu5rR4Tn9FMt0Iim8RrZukJscW03u2WnLI+iQlw9RSTmyePX2I
-         nmhtiSAYN3h5HfgByH7sMURL/z35cnyS6au50bUiqC4vTtrJIoTA/D9bekwdoWL0ER82
-         yAw0VbjeEOe06+luazENecAnFQHRvRKhaD7W4KT4TvWqJFvrVwVMb8xSb1geWWWQ3LCt
-         9CewY5w3Wwjy8Or958MBgjwIgvVYJFsWPZFctMsbGatBIDNojDgQcb+w7zz+rZIBYc39
-         R9ACA6PRneAAGba0hyzZRzMUxtB29LNKQHCSxGVwXPa5dVyA8Z8WDaXNBFv2XMUrD1uB
-         e5ew==
-X-Forwarded-Encrypted: i=1; AJvYcCUoOUdrnIOeeqe3acGZjxEsphep6osDikV8tCnOAIkUJl1SFb78MJen4+6CA42tCw+EkHcPMX3wFfFekZq/SLPieak5@vger.kernel.org, AJvYcCV3v0/p8xSVyBR6/G6LwlBDUHF+R96qOaKFPdn8Cp8re3uYjwYoqH2ZirWYNtK2/qW3QwU=@vger.kernel.org, AJvYcCWyh/KlYYYCAc3Ux+e12izPnUH1Di+ftI2CJd8fVKJwE3HoCCjxnRrEA9yT3ucGWZYF9srckEPQW1zityFW@vger.kernel.org
-X-Gm-Message-State: AOJu0YzR9XGtta1l8LI9GtnaKnK2JcWYfmQANvPKyWNsxEc01wr0wUXl
-	DVq1ePp2iivNZrTtpeSOCslE2pgnftzCGnofid+GGWwD2br2i7Ab2Flg+iQDPljkULhOdAhZZN/
-	+tSM58LDezNXcxBOyN7X+M0zET8w=
-X-Google-Smtp-Source: AGHT+IE4X4eyk/q1xl+//vS/ZQL+Hjg0B9t+SUyldVyNCcpm+SBgpHzZIZChEdvXKzArZSo8NFhjma/7C1UTyUKoLoQ=
-X-Received: by 2002:a05:6000:1ac7:b0:374:c6b6:c656 with SMTP id
- ffacd0b85a97d-378a8a3de4cmr2838167f8f.21.1725983784086; Tue, 10 Sep 2024
- 08:56:24 -0700 (PDT)
+        bh=9Rp+ZaWePBqTv+7CDLYdQhLyxwC0Y6Goq+cudkph1u8=;
+        b=C8/eKtLEcqoS6SEyLf+H6zXIbb440lw1wNRDNok5DxyxEBeho+/Jdk7dhZCxeRFeC+
+         fNGAjQoC94DKm1LdC/RyviVrKYeK22oUTxp+yV2aRO+NGtXawf400CB6NFX4jEbWf7UI
+         M1ubfy+HhKKDw67QFOJV/WgYyKrOL/Z7M5NKc69NCF4oSTUhhXtQJF6M1oVsNdqz8WiB
+         wmqoKnoC4ui9N8YvyTnMesKFaVy0IYSnFfDdyFbGQtbblOyy0biHivK+qI9FrUT7Myk5
+         9m+0uD7girSPVg7Ebrcg4ZjqGxrjGs2S2MhkuoE41mSpsiq3wlMMVwT7fPPr52zubn5f
+         YBTQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXnxwLfTVf/odQltYBDflAUlWBeG8GZU8C0YQjZkXu4rFsexUEr4FvYyu5f4weQb4TNQPA=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwhFpkRg4V6aatc/z1ZFbJJ5nqvqxce1N0lHZa6FA7FtvubXkaX
+	SUYr/5xjJSqR/hGU7rMoWxNIZgGhgTARCBMP9UbYv2WCve3r1fq9KH6yPUNL7Kc6BzibLYfhhCx
+	eXVK4gqG2yMK6NGCWGVVSze3qFsTMBoJCdJPq
+X-Google-Smtp-Source: AGHT+IHx0FXXNOSwDc/a2GkEEO0nN6J5e6WRL/WX5poMnRTVWbyacane/wtmnLr+FEV9BbUT65Gm5/vLnAoiz2/SvOA=
+X-Received: by 2002:a05:6402:1ec4:b0:59f:9f59:9b07 with SMTP id
+ 4fb4d7f45d1cf-5c4029ef54amr299933a12.4.1725984410772; Tue, 10 Sep 2024
+ 09:06:50 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240909224903.3498207-1-andrii@kernel.org> <20240909224903.3498207-2-andrii@kernel.org>
- <CAADnVQLB2b5Uh-qthnCOfJk+v+ty1nQh6LjMDkzjt1BPtGOVZA@mail.gmail.com> <CAEf4Bzap+_fpXjfcnnqz7EH9=bGokpFbnoK==_YDWH855qx7=g@mail.gmail.com>
-In-Reply-To: <CAEf4Bzap+_fpXjfcnnqz7EH9=bGokpFbnoK==_YDWH855qx7=g@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 10 Sep 2024 08:56:13 -0700
-Message-ID: <CAADnVQ+v2PXWurcpt7xGiKf32HqaBWmFiZgjb2TGJg-rJGWjSg@mail.gmail.com>
-Subject: Re: [PATCH 1/3] uprobes: allow put_uprobe() from non-sleepable
- softirq context
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, 
-	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
-	Oleg Nesterov <oleg@redhat.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
-	"Paul E. McKenney" <paulmck@kernel.org>
+References: <20240906051205.530219-1-andrii@kernel.org>
+In-Reply-To: <20240906051205.530219-1-andrii@kernel.org>
+From: Jann Horn <jannh@google.com>
+Date: Tue, 10 Sep 2024 18:06:12 +0200
+Message-ID: <CAG48ez1+Y+ifc3HfG=E5j+g=RwtzH2TiE4mAC2TZxS52idkRZg@mail.gmail.com>
+Subject: Re: [PATCH 0/2] uprobes,mm: speculative lockless VMA-to-uprobe lookup
+To: Andrii Nakryiko <andrii@kernel.org>
+Cc: linux-trace-kernel@vger.kernel.org, peterz@infradead.org, oleg@redhat.com, 
+	rostedt@goodmis.org, mhiramat@kernel.org, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, jolsa@kernel.org, paulmck@kernel.org, 
+	willy@infradead.org, surenb@google.com, akpm@linux-foundation.org, 
+	linux-mm@kvack.org, mjguzik@gmail.com, brauner@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Sep 9, 2024 at 10:13=E2=80=AFPM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Mon, Sep 9, 2024 at 7:52=E2=80=AFPM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Mon, Sep 9, 2024 at 3:49=E2=80=AFPM Andrii Nakryiko <andrii@kernel.o=
-rg> wrote:
-> > >
-> > > Currently put_uprobe() might trigger mutex_lock()/mutex_unlock(), whi=
-ch
-> > > makes it unsuitable to be called from more restricted context like so=
-ftirq.
-> > >
-> > > Let's make put_uprobe() agnostic to the context in which it is called=
-,
-> > > and use work queue to defer the mutex-protected clean up steps.
-> > >
-> > > To avoid unnecessarily increasing the size of struct uprobe, we coloc=
-ate
-> > > work_struct in parallel with rb_node and rcu, both of which are unuse=
-d
-> > > by the time we get to schedule clean up work.
-> > >
-> > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > > ---
-> > >  kernel/events/uprobes.c | 30 +++++++++++++++++++++++++++---
-> > >  1 file changed, 27 insertions(+), 3 deletions(-)
-> > >
-> > > diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-> > > index a2e6a57f79f2..377bd524bc8b 100644
-> > > --- a/kernel/events/uprobes.c
-> > > +++ b/kernel/events/uprobes.c
-> > > @@ -27,6 +27,7 @@
-> > >  #include <linux/shmem_fs.h>
-> > >  #include <linux/khugepaged.h>
-> > >  #include <linux/rcupdate_trace.h>
-> > > +#include <linux/workqueue.h>
-> > >
-> > >  #include <linux/uprobes.h>
-> > >
-> > > @@ -54,14 +55,20 @@ DEFINE_STATIC_PERCPU_RWSEM(dup_mmap_sem);
-> > >  #define UPROBE_COPY_INSN       0
-> > >
-> > >  struct uprobe {
-> > > -       struct rb_node          rb_node;        /* node in the rb tre=
-e */
-> > > +       union {
-> > > +               struct {
-> > > +                       struct rb_node          rb_node;        /* no=
-de in the rb tree */
-> > > +                       struct rcu_head         rcu;
-> > > +               };
-> > > +               /* work is used only during freeing, rcu and rb_node =
-are unused at that point */
-> > > +               struct work_struct work;
-> > > +       };
-> > >         refcount_t              ref;
-> > >         struct rw_semaphore     register_rwsem;
-> > >         struct rw_semaphore     consumer_rwsem;
-> > >         struct list_head        pending_list;
-> > >         struct list_head        consumers;
-> > >         struct inode            *inode;         /* Also hold a ref to=
- inode */
-> > > -       struct rcu_head         rcu;
-> > >         loff_t                  offset;
-> > >         loff_t                  ref_ctr_offset;
-> > >         unsigned long           flags;
-> > > @@ -620,11 +627,28 @@ static inline bool uprobe_is_active(struct upro=
-be *uprobe)
-> > >         return !RB_EMPTY_NODE(&uprobe->rb_node);
-> > >  }
-> > >
-> > > +static void uprobe_free_deferred(struct work_struct *work)
-> > > +{
-> > > +       struct uprobe *uprobe =3D container_of(work, struct uprobe, w=
-ork);
-> > > +
-> > > +       /*
-> > > +        * If application munmap(exec_vma) before uprobe_unregister()
-> > > +        * gets called, we don't get a chance to remove uprobe from
-> > > +        * delayed_uprobe_list from remove_breakpoint(). Do it here.
-> > > +        */
-> > > +       mutex_lock(&delayed_uprobe_lock);
-> > > +       delayed_uprobe_remove(uprobe, NULL);
-> > > +       mutex_unlock(&delayed_uprobe_lock);
-> > > +
-> > > +       kfree(uprobe);
-> > > +}
-> > > +
-> > >  static void uprobe_free_rcu(struct rcu_head *rcu)
-> > >  {
-> > >         struct uprobe *uprobe =3D container_of(rcu, struct uprobe, rc=
-u);
-> > >
-> > > -       kfree(uprobe);
-> > > +       INIT_WORK(&uprobe->work, uprobe_free_deferred);
-> > > +       schedule_work(&uprobe->work);
-> > >  }
-> > >
-> > >  static void put_uprobe(struct uprobe *uprobe)
-> >
-> > It seems put_uprobe hunk was lost, since the patch is not doing
-> > what commit log describes.
->
->
-> Hmm, put_uprobe() has:
->
-> call_srcu(&uprobes_srcu, &uprobe->rcu, uprobe_free_rcu);
->
-> at the end (see [0], which added that), so we do schedule_work() in
-> RCU callback, similarly to what we do with bpf_map freeing in the BPF
-> subsystem.
->
-> This patch set is based on the latest tip/perf/core (and also assuming
-> the RCU Tasks Trace patch that mysteriously disappeared is actually
-> there, hopefully it will just as magically be restored).
->
->   [0] https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/commit/=
-?h=3Dperf/core&id=3D8617408f7a01e94ce1f73e40a7704530e5dfb25c
+On Fri, Sep 6, 2024 at 7:12=E2=80=AFAM Andrii Nakryiko <andrii@kernel.org> =
+wrote:
+> Implement speculative (lockless) resolution of VMA to inode to uprobe,
+> bypassing the need to take mmap_lock for reads, if possible. Patch #1 by =
+Suren
+> adds mm_struct helpers that help detect whether mm_struct were changed, w=
+hich
+> is used by uprobe logic to validate that speculative results can be trust=
+ed
+> after all the lookup logic results in a valid uprobe instance.
 
-I'm still not following.
-put_uprobe() did delayed_uprobe_remove() and this patch is doing it again.
-
-The commit log implies that mutex+delayed_uprobe_remove should be removed
-from put_uprobe(), but that's not what the patch is doing.
+Random thought: It would be nice if you could skip the MM stuff
+entirely and instead go through the GUP-fast path, but I guess going
+from a uprobe-created anon page to the corresponding uprobe is hard...
+but maybe if you used the anon_vma pointer as a lookup key to find the
+uprobe, it could work? Though then you'd need hooks in the anon_vma
+code... maybe not such a great idea.
 
