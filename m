@@ -1,159 +1,199 @@
-Return-Path: <bpf+bounces-39531-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39532-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8E4A974412
-	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 22:30:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 518EE974433
+	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 22:42:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E4F881C258CC
-	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 20:30:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 844E61C2457B
+	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 20:42:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDA591A01BD;
-	Tue, 10 Sep 2024 20:30:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23BFF1AAE37;
+	Tue, 10 Sep 2024 20:41:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jmoP+Rqy"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Fwr4Lyay"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
+Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2715817E47A;
-	Tue, 10 Sep 2024 20:30:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 283571AAE20;
+	Tue, 10 Sep 2024 20:41:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726000215; cv=none; b=YawX084n4/zDC1VRyCXsqrGqcKhAwvgM5OmDsm68Sb5BUKZALOGZRNOwjWX/UnmjLJVFXiH/8AzneEcl5dBv5mRkUQvPlVbv8EKV1jh3oRU1NwHzrFZL+YSW9cYdg5cH+lADtduyDvjwT+3rt7gmmNJhu/Ykdfwa+jEM6cpeVS4=
+	t=1726000918; cv=none; b=jZOXcYo/0Ezjnbi770Z5mOj82H5/x+8bLIaiAhF8WCTvxO123NK2v/8IOjZuuEQ8TfebdsD12qTyyuPg85dgO+8Th9UVGn/vm5sX9eGj5rZoUggz8wlKrnHJd/UxXoQMbEC+p6E+cgMGbO6gw1wMM9hirGQGXCN+YIHhsruyjEE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726000215; c=relaxed/simple;
-	bh=v8gTBVjNnqYwu3Pw3VQOCMKtImQMPaFLV+vwQblcnxw=;
+	s=arc-20240116; t=1726000918; c=relaxed/simple;
+	bh=tPFUvXEr4a8sFcl5Hbk+e1WdoaCv9UY6H2M6UNXz3dI=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=NcyewfHdcsrIwTSC39iFoGhSuIl2n9E+VCP7to7Gr8J6iA2+/10pRtxAj1guwaC3dJNH7zjXr5v8p3V8pV6mYfZiKYsJruGGiUYTzZkDv5ipFnrMC1Tr5hZzlADg9w4OzEBvwmG0NyS82dfsT7IYnLVfAsK7k85W3ROZqhfLIwY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jmoP+Rqy; arc=none smtp.client-ip=209.85.216.49
+	 To:Cc:Content-Type; b=GU/ZctBunkzEnVwwo36VqALks/99WlBdbdDdngXVq60rSWL42fLsw1W0tgVMmjncKL+gQPeLDiuFjW10s+leD5lYnlKRTjn5aaS3l7uxtz7LSGUXlCC+RYYHYuLGOoqUR/J7WbdLvG7yIzaxY77RKmep2gFtLwq8XBgJ3sVWa+g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Fwr4Lyay; arc=none smtp.client-ip=209.85.215.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-2d8818337a5so148313a91.1;
-        Tue, 10 Sep 2024 13:30:13 -0700 (PDT)
+Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-70b2421471aso3991972a12.0;
+        Tue, 10 Sep 2024 13:41:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1726000213; x=1726605013; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1726000916; x=1726605716; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=MGo6g06afncOxRgwlHjfQsLQi+fAv0wLc9CyNHxJx80=;
-        b=jmoP+RqyimXyEMyNq3f61DaagbC5AsU6gs8XbFheOO62dyKKjcgyGYZovJYbgNVASh
-         f+Q7l9ChF16sqvOWKn4Ao4H/jZnmVEB2lyCQfH1ZaMDYOnrpzDWjb8vGxQ0XgMg7O4Dv
-         ED1gpZz9lzvwSwZYJHZNaTvnMHQy5r682/make1iiWKNQe1G4glgbzo4tYbUhiwNHJ4E
-         4hi4Rz05jdJ3etF6ksa66/p5f8DvVI+PmOgPD19yEXBW1X9AYPeJIO2SK+RmZ6Y7Qcye
-         tygmFN+qFBkKLUakgfDqkXLcgGMdo6bJB8qfRwTH9SU30WFO8FZOzHB5e+rxPE2VXXCp
-         VT0g==
+        bh=ZFOb87C5H/oGKVNSdsgwbM5DcJSf5yVJvXgC2bcG+Ac=;
+        b=Fwr4Lyayfzf2VC0Z4iZAMEYH1eoKGtcdiXhMcHKq43/CH9yR5eNlqA30ZrDEj+DfRH
+         0G9XaGP9RKyzQwzLJ76D0c+vMum/441EREMqjG9zvvC8A/1aYgX+pxbKv5U8gKFdU3Rg
+         kmd2Dg2JQwVpNQIFrNPITuFMdgZ7IgcGDMpY22cQEAIaTnftl9zKwwjlG91LMtJOeMAK
+         gLfhLYMJ/DYdel2q6qNgMxN2oXg8BHWgk8ZGGD1+JU4WFHAIsyp5hGwdsM6dVr2stICS
+         SiQCf3w/c7sY6YH4G99584PX96MqdtE83ueZhyZsXbl63hSdb8enZbuaXDk8+lnhUZHy
+         E8Ng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726000213; x=1726605013;
+        d=1e100.net; s=20230601; t=1726000916; x=1726605716;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=MGo6g06afncOxRgwlHjfQsLQi+fAv0wLc9CyNHxJx80=;
-        b=RIDbMr21lzU8Mmlcx1sc/2w/voKgOEBtQB3KF2kjsup0P70wfH9xYuu87Qjr13Ltel
-         S1SswYXgUIlkpY2o6XKq7W8aWyr5429x9HvEQf8YrhhhZp9R6Gxt7dAHdIUk8vYyoXsL
-         0H+eiNuISGU+lekTKjh/5GELvQw6UfsHiEHIkKPQhlNopvmzP5DjRPdZVqwrj4eHgmJD
-         4GGgpjebCBBRKgAWZhRKptBRzQtqMwjhMvAdwClLdyhPRnQNlYBrl6+K+SpRWuHiKaXf
-         csfXv288oj5zID6kCjTo69/X5MOLZ8pI/OunkXDSdri4OQCrEUEhwt9OX+DVfOZY4aY5
-         8XDQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVsNbUpTXkV5nqTduqLiQUtfsrxSUmNalpPLwyh+cxKPPas3OAo523CaRjz5kdYV0pF7WkS7HWYbJexvbmDhe8kgy5I@vger.kernel.org, AJvYcCWdgz5blo9h8fC3RuVxCN/25lDwUmtu/pv90tcoGMxHr+hEoVC0Zn8Tq4/F71vcDmLubiM=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxmOzDQBgDAp3pXuHWlj5o6mlKM13WVsgv5kc+LikDyHFKBjTsp
-	WT+zPLKmrgly9BwiLIyX2JAoeum7VRgZxRB2Q3arkC5ATuopqlBEdcj+3QHnQ7Ez34JKZai/nUA
-	vPIipjpd8t4R4tI7g+QSKq/IORAY=
-X-Google-Smtp-Source: AGHT+IEwu4ncjp25K1LDFGx5fKhENimNGrXJYCgI651iKudL+fFitsYRPgn1Z4hH+OYQudQOPgqI1sorAlQLUZHJOnw=
-X-Received: by 2002:a17:90a:2c0f:b0:2d8:25ce:e6e3 with SMTP id
- 98e67ed59e1d1-2db6718d8b4mr6971409a91.5.1726000212616; Tue, 10 Sep 2024
- 13:30:12 -0700 (PDT)
+        bh=ZFOb87C5H/oGKVNSdsgwbM5DcJSf5yVJvXgC2bcG+Ac=;
+        b=VfroqPd3snPosNvyZeey9v6WFR5p2avP/3DkWypq3PYge6xvEo+I0Oayoqdwo91lnr
+         QGvbn6Zr4fIjvNMxQjm4lRtEWk3zn5MBQSUcFLk7aq6G3F1N4rOuJY7LY1x5ge3JEjfJ
+         dYbcZITOTPFUUElGPwnyn21TL0Bn3/UzCh0++JBD6Ng20+12r4VseuXTTSahXZffGCY2
+         szyDKIpICMXEaQB7LqPjalpMkzZFBqyKf8ZchvvMMcOHzV26WiQZ1+b5nCk624N6xd2p
+         KEP7XFWhYAnNqWoBvHRCkPXjY31bfpm2hfmiV0pvGgMVK/SpLzRmBUVsoYP7FRnalJaO
+         dGsg==
+X-Forwarded-Encrypted: i=1; AJvYcCVDcdyrSCGl2JE+FCL940BDS6fYUHvP0Ukr5a00lPUO5PsMkhjsptJm+CfNk/FbmlnQIfwFaBRtFg4amONO@vger.kernel.org, AJvYcCW7laN3izLbvqr5qgJZ1pAti/lZL3dcfKFq2jxHspZDl8+EcwIFINRwTQE19oDmtcxTC3s=@vger.kernel.org, AJvYcCWaXAc9x5IREN+Nlo08mboXGm2LUYb3KI6b4GjsBlAobrXWaV4PTn7gmIpMtYpNDKrb28XXWSbk2M+34RCpghL4@vger.kernel.org
+X-Gm-Message-State: AOJu0YwkXl5hF0lH8Z/nzXYEIAqk5L+4ScNIoMOxkgTBxBwyYwaaIO6x
+	IjgYsQjbP9hI8B5CIisWRYZHV7U9xx9hIlbyGfRmbkVd1BgLgiMxIV19KxjxlCRzHYlCr+IL5e2
+	SbdmIIxidL8wsb8baLreKPT0Wf07y6g==
+X-Google-Smtp-Source: AGHT+IGW9uVkefg8yACg9x9N30/Cr1tq1hV6jWPbHGGjUEg003GoDm9nF+bOKw6FBfAIXrLj3LoVJuFRWlf4OcgeSQE=
+X-Received: by 2002:a17:90b:4a4e:b0:2d8:cd04:c8f0 with SMTP id
+ 98e67ed59e1d1-2dad5136fa5mr14049568a91.39.1726000916345; Tue, 10 Sep 2024
+ 13:41:56 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAEf4BzaYyEftmRmt6FswrTOsb9FuQMtzuDXD4OJMO7Ein2ZRGg@mail.gmail.com>
- <CAEf4BzasRqeAY3ZpBDbjyWSKUriZgUf4U_YoQNSSutKhX5g2kw@mail.gmail.com> <20240910145431.20e9d2e5@gandalf.local.home>
-In-Reply-To: <20240910145431.20e9d2e5@gandalf.local.home>
+References: <18a9ddacc99bb95e9802f8ad1e81214433df496c.1725929645.git.dxu@dxuuu.xyz>
+ <CAADnVQKyfZ2-qCvmqG8z919ggdOszEjTs04H=cTGOZTi-zhx7Q@mail.gmail.com>
+In-Reply-To: <CAADnVQKyfZ2-qCvmqG8z919ggdOszEjTs04H=cTGOZTi-zhx7Q@mail.gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 10 Sep 2024 13:29:57 -0700
-Message-ID: <CAEf4BzZRV6h5nitTyQ_zah6wWMBZD6QQBbTCWyPVzkPpS42sgg@mail.gmail.com>
-Subject: Re: Unsupported CONFIG_FPROBE and CONFIG_RETHOOK on ARM64
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Linux trace kernel <linux-trace-kernel@vger.kernel.org>, adubey@linux.ibm.com, 
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, KP Singh <kpsingh@chromium.org>, 
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Will Deacon <will@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Florent Revest <revest@chromium.org>, 
-	Puranjay Mohan <puranjay@kernel.org>
+Date: Tue, 10 Sep 2024 13:41:41 -0700
+Message-ID: <CAEf4Bza5Fiw2rZ5T7=zRwVk1Ct1Mgm7Gpa8w+NJVPZf8keY_9Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: ringbuf: Support consuming
+ BPF_MAP_TYPE_RINGBUF from prog
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Daniel Xu <dxu@dxuuu.xyz>, Eddy Z <eddyz87@gmail.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Alexei Starovoitov <ast@kernel.org>, Shuah Khan <shuah@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Mykola Lysenko <mykolal@fb.com>, LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, Kernel Team <kernel-team@meta.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Sep 10, 2024 at 11:54=E2=80=AFAM Steven Rostedt <rostedt@goodmis.or=
-g> wrote:
+On Tue, Sep 10, 2024 at 11:36=E2=80=AFAM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> On Tue, 10 Sep 2024 11:23:29 -0700
-> Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> On Mon, Sep 9, 2024 at 5:55=E2=80=AFPM Daniel Xu <dxu@dxuuu.xyz> wrote:
+> >
+> > Right now there exists prog produce / userspace consume and userspace
+> > produce / prog consume support. But it is also useful to have prog
+> > produce / prog consume.
+> >
+> > For example, we want to track the latency overhead of cpumap in
+> > production. Since we need to store enqueue timestamps somewhere and
+> > cpumap is MPSC, we need an MPSC data structure to shadow cpumap. BPF
+> > ringbuf is such a data structure. Rather than reimplement (possibly
+> > poorly) a custom ringbuffer in BPF, extend the existing interface to
+> > allow the final quadrant of ringbuf usecases to be filled. Note we
+> > ignore userspace to userspace use case - there is no need to involve
+> > kernel for that.
+> >
+> > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> > ---
+> >  kernel/bpf/verifier.c                         |  6 +-
+> >  tools/testing/selftests/bpf/Makefile          |  3 +-
+> >  .../selftests/bpf/prog_tests/ringbuf.c        | 50 +++++++++++++++
+> >  .../bpf/progs/test_ringbuf_bpf_to_bpf.c       | 64 +++++++++++++++++++
+> >  4 files changed, 120 insertions(+), 3 deletions(-)
+> >  create mode 100644 tools/testing/selftests/bpf/progs/test_ringbuf_bpf_=
+to_bpf.c
+> >
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index 53d0556fbbf3..56bfe559f228 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -9142,7 +9142,8 @@ static int check_map_func_compatibility(struct bp=
+f_verifier_env *env,
+> >                     func_id !=3D BPF_FUNC_ringbuf_query &&
+> >                     func_id !=3D BPF_FUNC_ringbuf_reserve_dynptr &&
+> >                     func_id !=3D BPF_FUNC_ringbuf_submit_dynptr &&
+> > -                   func_id !=3D BPF_FUNC_ringbuf_discard_dynptr)
+> > +                   func_id !=3D BPF_FUNC_ringbuf_discard_dynptr &&
+> > +                   func_id !=3D BPF_FUNC_user_ringbuf_drain)
+> >                         goto error;
+> >                 break;
+> >         case BPF_MAP_TYPE_USER_RINGBUF:
+> > @@ -9276,7 +9277,8 @@ static int check_map_func_compatibility(struct bp=
+f_verifier_env *env,
+> >                         goto error;
+> >                 break;
+> >         case BPF_FUNC_user_ringbuf_drain:
+> > -               if (map->map_type !=3D BPF_MAP_TYPE_USER_RINGBUF)
+> > +               if (map->map_type !=3D BPF_MAP_TYPE_USER_RINGBUF &&
+> > +                   map->map_type !=3D BPF_MAP_TYPE_RINGBUF)
+> >                         goto error;
 >
-> > Does Linus have to be in CC to get any reply here? Come on, it's been
-> > almost a full week.
+> I think it should work.
 >
-> Just FYI, an email like this does piss people off. You are getting upset
-> for waiting "almost a full week"? A full week is what we tell people to
-
-A full week to get a response to a question? Yes, I find it way too
-long. I didn't ask for some complicated code review, did I? I don't
-know who "we" are and where "we" tell people, but I disagree that one
-week is acceptable latency to coordinate stuff like this across
-multiple subsystems.
-
-I understand that life happens, and sometimes times are busier than
-normal, but then a quick reply along the lines "sorry, busy, will get
-back later" would be nice and completely normal, and I don't think
-it's too much to ask.
-
-And having said that, there were replies to other emails on the
-mailing list from you and Masami, and even reviews for patches that
-were posted way after my email. So I do believe that everyone is busy,
-but I don't buy not having time to write a quick reply.
-
-> wait if they don't get a response. And your email was directed to multipl=
-e
-> people. Then pointing out myself and Masami because we didn't respond? We
-> are not arm64 maintainers, and that email looked more directed at them.
-
-"pointing out"? You and Masami are maintainers of linux-trace tree,
-and rethook is part of that. Masami's original code was the one in
-question and I did expect a rather quick reply from him. If not
-Masami, then you would have a context as well. Who else should I be
-asking?
-
-If ARM64 folks somehow have more context, it wouldn't be that hard to
-mention and redirect, instead of ghosting my email.
-
+> Andrii,
 >
-> Funny part is, I was just about to start reviewing Masami's fprobe patche=
-s
-> when I read this. Now I feel reluctant to. I'll do it anyway because they
-> are Masami's patches, but if they were yours, I would have pushed it off =
-a
-> week or two with that attitude.
-
-(I'll ignore all the personal stuff)
-
-You are probably talking about [0]. But I was asking about [1], i.e.,
-adding HAVE_RETHOOK support to ARM64. Despite all your emotions above,
-can I still get a meaningful answer as for why that wasn't landed and
-what prevents it from landing right now before Masami's 20-patch
-series lands?
-
-  [0] https://lore.kernel.org/linux-trace-kernel/172398527264.293426.205009=
-3948411376857.stgit@devnote2/
-  [1] https://lore.kernel.org/bpf/164338038439.2429999.17564843625400931820=
-.stgit@devnote2/
-
+> do you see any issues with such use?
 >
-> Again, just letting you know.
->
-> -- Steve
+
+Not from a quick glance. Both ringbufs have the same memory layout, so
+user_ringbuf_drain() should probably work fine for normal BPF ringbuf
+(and either way bpf_user_ringbuf_drain() has to protect from malicious
+user space, so its code is pretty unassuming).
+
+We should make it very explicit, though, that the user is responsible
+for making sure that bpf_user_ringbuf_drain() will not be called
+simultaneously in two threads, kernel or user space.
+
+Also, Daniel, can you please make sure that dynptr we return for each
+sample is read-only? We shouldn't let consumer BPF program ability to
+corrupt ringbuf record headers (accidentally or otherwise).
+
+And as a thought exercise. I wonder what would it take to have an
+open-coded iterator returning these read-only dynptrs for each
+consumed record? Maybe we already have all the pieces together. So
+consider looking into that as well.
+
+P.S. And yeah "user_" part in helper name is kind of unfortunate given
+it will work for both ringbufs. Can/should we add some sort of alias
+for this helper so it can be used with both bpf_user_ringbuf_drain()
+and bpf_ringbuf_drain() names?
+
+
+> >                 break;
+> >         case BPF_FUNC_get_stackid:
+> > diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selft=
+ests/bpf/Makefile
+> > index 9905e3739dd0..233109843d4d 100644
+> > --- a/tools/testing/selftests/bpf/Makefile
+> > +++ b/tools/testing/selftests/bpf/Makefile
+> > @@ -503,7 +503,8 @@ LINKED_SKELS :=3D test_static_linked.skel.h linked_=
+funcs.skel.h               \
+> >  LSKELS :=3D fentry_test.c fexit_test.c fexit_sleep.c atomics.c        =
+   \
+> >         trace_printk.c trace_vprintk.c map_ptr_kern.c                  =
+ \
+> >         core_kern.c core_kern_overflow.c test_ringbuf.c                =
+ \
+> > -       test_ringbuf_n.c test_ringbuf_map_key.c test_ringbuf_write.c
+> > +       test_ringbuf_n.c test_ringbuf_map_key.c test_ringbuf_write.c   =
+ \
+> > +       test_ringbuf_bpf_to_bpf.c
+
+[...]
 
