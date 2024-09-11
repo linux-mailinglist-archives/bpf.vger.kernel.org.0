@@ -1,193 +1,171 @@
-Return-Path: <bpf+bounces-39620-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39621-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5451A9756A4
-	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 17:15:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E8A79756AE
+	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 17:16:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 17F8F2843B9
-	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 15:15:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F0AD2812DC
+	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 15:16:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B02C1ABECA;
-	Wed, 11 Sep 2024 15:15:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D42851AB6D4;
+	Wed, 11 Sep 2024 15:16:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Mt9uNK37"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="etI66wkz"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12EB319755E
-	for <bpf@vger.kernel.org>; Wed, 11 Sep 2024 15:15:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C8922AE90;
+	Wed, 11 Sep 2024 15:16:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726067704; cv=none; b=QRdLqeMlhVT0LlboEz+cWMhj/loWlIuXQS7xqlQHXdG6uy5AUdFjYm40hWgqeTVMTCe0dqIA7DJnhaDLFULOo30k8cy5SqGZ1gSvPuhqXzNan8I4PNtdH2a8gdyi0GArE1dR2EpgXf9Pr5O6oqcRfeoQRf4CjX6r44HKgNa5pYA=
+	t=1726067806; cv=none; b=CxZx/MoLU4t/pNpeYAqUrzwKucWmQKBz5XUmV8RGT6RYc6FWRx+ySfx8aYCI1kA5lM+dlmGpjRAefVZsIN8CgJi0lItyHxLYFl0avXXO/+CdQdFoH/xO3fYquRhS5wyeca8pq69Eq8m9NpjqR81bLWYTOiaAW/7L6mw/I+2puUg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726067704; c=relaxed/simple;
-	bh=OoWoV8eDEUuV8LgpMPEp9VSrXiPCH7zgP4MR8eYo9Ds=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=IKINhyL7xuoRVuPjQtJokKxTaQMFlmFRcIg0rOnElJJCxSJbLBQ/LoDppwUDM/R9qqdFiZfoSEUQitWtFKI9tAjllY4/DTFz7utMn4poIMSQVjUWizNqtpeAlLSasAp6d6+zCOtg6RvejrNGeOemvSfvCYrh6EnvOhNcHANAolQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Mt9uNK37; arc=none smtp.client-ip=91.218.175.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <1013fea7-b913-480c-a642-b8aaa71e3ac1@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1726067699;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fLZzYXqKjI6JGI6nPb/prSGgwFiSf2/aeGquh+CqmwI=;
-	b=Mt9uNK37ZiSKfOOyNq3caUpDINz0jFAhA395kQrv4mC+32VDoWA8/jK3s4ajy+Zr8DHixZ
-	ZwPsiJuhQsvvsGnw8LEywUfG4H8GgfD06VeaiJb5iYjoKOQavNb1CE9dA7tjyXXPy50P7O
-	09ERM3SqLjzc5X2kXTGpHFqKVerH7Kk=
-Date: Wed, 11 Sep 2024 08:14:50 -0700
+	s=arc-20240116; t=1726067806; c=relaxed/simple;
+	bh=S+MvNjtO0ytOudQaCNbsEFFb/f2LYmj39wai1aL4pbU=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=pvM6SaVPYKoR+zDIP6zOjgOPyfHR3Sb8HIEZlyJDHmls/9dBxznwUl6ZrdynVssfm4p2ls9n4rjSRnNKO6T5krMlX6Yoau6g/JhsiCPj1i5SGyxGaII5cOVamSxQKwKdHYrHrtIK0IvGAK01T2NbPPlX5rnBbnAQGX5px5Smhpg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=etI66wkz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8AB90C4CEC0;
+	Wed, 11 Sep 2024 15:16:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1726067806;
+	bh=S+MvNjtO0ytOudQaCNbsEFFb/f2LYmj39wai1aL4pbU=;
+	h=From:Subject:Date:To:Cc:From;
+	b=etI66wkzVA4DEZzh4ZOwPMEyvpurFg1rMqz64QmiUxP7q7RaqXxrHzbjYkSmYhXOD
+	 I+byxGp/zIwheE17qys15yy+LZycgbZGGIIFNCE7tkKG9Pu3ajXUozNFSn6IYGg+48
+	 VDobE1s4j5oHjMnIifx0I1j18lSkkgmCphts7iKYggJIHjI9+5iikISMh1bGTCCk2g
+	 CmZVwp8Qyp+TzPIvkE0+Zstzh4kTvkVzmwNrTAHsTZKp+aIYBmCZ7VLm73mrqCO/Nf
+	 wHqygbR7GG2mAD5WAcKuX3yUY1baEdr1IjuHEDtH1Q4ELuXTFeqlOEzKvYwiXNr1Vm
+	 dEnsrN7beSTIQ==
+From: "Matthieu Baerts (NGI0)" <matttbe@kernel.org>
+Subject: [PATCH bpf-next/net v6 0/3] selftests/bpf: new MPTCP subflow
+ subtest
+Date: Wed, 11 Sep 2024 17:16:15 +0200
+Message-Id: <20240911-upstream-bpf-next-20240506-mptcp-subflow-test-v6-0-7872294c466b@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next 1/2] bpf: Fix a sdiv overflow issue
-Content-Language: en-GB
-To: Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- kernel-team@fb.com, Martin KaFai Lau <martin.lau@kernel.org>,
- Zac Ecob <zacecob@protonmail.com>, dthaler1968@googlemail.com
-References: <20240911044017.2261738-1-yonghong.song@linux.dev>
- <bf721309-0bf7-667c-16c9-b2601e033fe7@iogearbox.net>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <bf721309-0bf7-667c-16c9-b2601e033fe7@iogearbox.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAD+04WYC/5XPQW7DIBAF0KtErEuL8YBNV71HlQXgIUFNsAXET
+ RT57iVWW7fyysvRH70/cycJo8dEXnd3EnH0yfehDPJpR+xRhwNS35WZcMaBCSbpZUg5oj5TMzg
+ a8Jrpb3Qesh1ouhh36j9pxpSp0+ikFGCcrkkxh4jOX+e+d/IjvATMZF/So0+5j7f5mLGad77xZ
+ mPvWFFGkRtrOgeqFc3bB8aAp+c+Huaqkf/l1VaeFx4YtJYraMuDK75e+IbVW/n6cb3pLO9AlRq
+ 14mHhWya28lB4bsBqqRQoVa94sfCqYlt58eCtlKCbTkNj//HTNH0B2RMgoXUCAAA=
+To: mptcp@lists.linux.dev, Mat Martineau <martineau@kernel.org>, 
+ Geliang Tang <geliang@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+ Eduard Zingerman <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>, 
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+ Yonghong Song <yonghong.song@linux.dev>, 
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+ Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>
+Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
+ bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+ "Matthieu Baerts (NGI0)" <matttbe@kernel.org>, 
+ Martin KaFai Lau <martin.lau@kernel.org>, Geliang Tang <geliang@kernel.org>
+X-Mailer: b4 0.14.1
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3750; i=matttbe@kernel.org;
+ h=from:subject:message-id; bh=S+MvNjtO0ytOudQaCNbsEFFb/f2LYmj39wai1aL4pbU=;
+ b=owEBbQKS/ZANAwAIAfa3gk9CaaBzAcsmYgBm4bRYFg84oWNrBXx+cmmchIQ++h1C1EtARPeHm
+ eofBNvf4JCJAjMEAAEIAB0WIQToy4X3aHcFem4n93r2t4JPQmmgcwUCZuG0WAAKCRD2t4JPQmmg
+ c8nREADLwqZoyLMp383gck64X1CAIasXJH6nbJJ1Eosx7sH1f9Xl2iEq8T5om8VOz29bcm0uVJq
+ xVRFM9Z6tcb+UZ9CFHc1NNnKkF9kzRPLswD3CCqfw6vi3cutOJcJfnwdJ0nBMAwXpeknJs07DDt
+ 4tfhJ8d4EMxMDQjzabuImRUA4VQov7gC1p7KWOxKk5iIO1zCU5jyZePue+aUEr8py0gDmwhCErc
+ +TASZo16CUIDdUGG4dSQDGk4MvZX6ThsgLBf/JNtlKVnWHrt2iDEi3JSHuKOsXbY9YzIHuadvss
+ Kjxyubh5JPu7f6Z0uFXPAmhS0OfpLm6/PkQsK44PLH49La1B1tIuh8tIY06fmoiW7wKSy8pmIOT
+ xbGZaWSFDC+30jlg+o09SsGg6ukOJxEAv0xXF3o8SoQfFIZfq03JMyEqczrWk4i6fWamfSsSA1g
+ 9LK8mrnBLN3aO93vHTjvFlWuAKztwKyf3oTkXneeVo8Hjo+AF5ooMybPLWclh/ySExOfghkWrXl
+ l58YGye4/P5ah90yJh+w9NwOHRjZY9cE4jeISe85T4hgguGuxM9e/htWUhmjs4ypQGsGV4tpPMJ
+ dO+UvQHojbYid1Y8FQnPAb9aU4u+ShdmqNUsx+BHEd3YJ8O89A3cI869Htxqu72bOwPzbDj4RdB
+ srmm/D2iFKMQ8hA==
+X-Developer-Key: i=matttbe@kernel.org; a=openpgp;
+ fpr=E8CB85F76877057A6E27F77AF6B7824F4269A073
 
+In this series from Geliang, modifying MPTCP BPF selftests, we have:
 
-On 9/11/24 7:18 AM, Daniel Borkmann wrote:
-> On 9/11/24 6:40 AM, Yonghong Song wrote:
->> Zac Ecob reported a problem where a bpf program may cause kernel 
->> crash due
->> to the following error:
->>    Oops: divide error: 0000 [#1] PREEMPT SMP KASAN PTI
->>
->> The failure is due to the below signed divide:
->>    LLONG_MIN/-1 where LLONG_MIN equals to -9,223,372,036,854,775,808.
->> LLONG_MIN/-1 is supposed to give a positive number 
->> 9,223,372,036,854,775,808,
->> but it is impossible since for 64-bit system, the maximum positive
->> number is 9,223,372,036,854,775,807. On x86_64, LLONG_MIN/-1 will
->> cause a kernel exception. On arm64, the result for LLONG_MIN/-1 is
->> LLONG_MIN.
->>
->> So for 64-bit signed divide (sdiv), some additional insns are patched
->> to check LLONG_MIN/-1 pattern. If such a pattern does exist, the result
->> will be LLONG_MIN. Otherwise, it follows normal sdiv operation.
->
-> I presume this could be follow-up but it would also need an update to [0]
-> to describe the behavior.
->
->   [0] Documentation/bpf/standardization/instruction-set.rst
+- A new MPTCP subflow BPF program setting socket options per subflow: it
+  looks better to have this old test program in the BPF selftests to
+  track regressions and to serve as example.
 
-I will do this as a follow-up. Will cover all cases including this patch
-plus existing patched insn to handle r1/r2 and r1%r2 where runtime check r2
-could be 0.
+  Note: Nicolas is no longer working at Tessares, but he did this work
+  while working for them, and his email address is no longer available.
 
->
->>    [1] 
->> https://lore.kernel.org/bpf/tPJLTEh7S_DxFEqAI2Ji5MBSoZVg7_G-Py2iaZpAaWtM961fFTWtsnlzwvTbzBzaUzwQAoNATXKUlt0LZOFgnDcIyKCswAnAGdUF3LBrhGQ=@protonmail.com/
->>
->> Reported-by: Zac Ecob <zacecob@protonmail.com>
->> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
->> ---
->>   kernel/bpf/verifier.c | 29 ++++++++++++++++++++++++++---
->>   1 file changed, 26 insertions(+), 3 deletions(-)
->>
->> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->> index f35b80c16cda..d77f1a05a065 100644
->> --- a/kernel/bpf/verifier.c
->> +++ b/kernel/bpf/verifier.c
->> @@ -20506,6 +20506,7 @@ static int do_misc_fixups(struct 
->> bpf_verifier_env *env)
->>               insn->code == (BPF_ALU | BPF_DIV | BPF_X)) {
->>               bool is64 = BPF_CLASS(insn->code) == BPF_ALU64;
->>               bool isdiv = BPF_OP(insn->code) == BPF_DIV;
->> +            bool is_sdiv64 = is64 && isdiv && insn->off == 1;
->>               struct bpf_insn *patchlet;
->>               struct bpf_insn chk_and_div[] = {
->>                   /* [R,W]x div 0 -> 0 */
->> @@ -20525,10 +20526,32 @@ static int do_misc_fixups(struct 
->> bpf_verifier_env *env)
->>                   BPF_JMP_IMM(BPF_JA, 0, 0, 1),
->>                   BPF_MOV32_REG(insn->dst_reg, insn->dst_reg),
->>               };
->> +            struct bpf_insn chk_and_sdiv64[] = {
->> +                /* Rx sdiv 0 -> 0 */
->> +                BPF_RAW_INSN(BPF_JMP | BPF_JNE | BPF_K, insn->src_reg,
->> +                         0, 2, 0),
->> +                BPF_ALU32_REG(BPF_XOR, insn->dst_reg, insn->dst_reg),
->> +                BPF_JMP_IMM(BPF_JA, 0, 0, 8),
->> +                /* LLONG_MIN sdiv -1 -> LLONG_MIN */
->> +                BPF_RAW_INSN(BPF_JMP | BPF_JNE | BPF_K, insn->src_reg,
->> +                         0, 6, -1),
->> +                BPF_LD_IMM64(insn->src_reg, LLONG_MIN),
->> +                BPF_RAW_INSN(BPF_JMP | BPF_JNE | BPF_X, insn->dst_reg,
->> +                         insn->src_reg, 2, 0),
->> +                BPF_MOV64_IMM(insn->src_reg, -1),
->> +                BPF_JMP_IMM(BPF_JA, 0, 0, 2),
->> +                BPF_MOV64_IMM(insn->src_reg, -1),
->
-> Looks good, we could probably shrink this snippet via BPF_REG_AX ?
-> Untested, like below:
->
-> +                /* Rx sdiv 0 -> 0 */
-> +                BPF_RAW_INSN(BPF_JMP | BPF_JNE | BPF_K, 
-> insn->src_reg, 0, 2, 0),
-> +                BPF_ALU32_REG(BPF_XOR, insn->dst_reg, insn->dst_reg),
-> +                BPF_JMP_IMM(BPF_JA, 0, 0, 5),
-> +                /* LLONG_MIN sdiv -1 -> LLONG_MIN */
-> +                BPF_RAW_INSN(BPF_JMP | BPF_JNE | BPF_K, 
-> insn->src_reg, 0, 2, -1),
-> +                BPF_LD_IMM64(BPF_REG_AX, LLONG_MIN),
-> +                BPF_RAW_INSN(BPF_JMP | BPF_JEQ | BPF_X, 
-> insn->dst_reg, BPF_REG_AX, 1, 0),
-> +                *insn,
->
-> Then we don't need to restore the src_reg in both paths.
+- A new hook in the same BPF program to do the verification step.
 
-Indeed, this is much simpler. I forgot to use BPF_REG_AX somehow...
+- A new MPTCP BPF subtest validating the new BPF program added in the
+  first patch, with the help of the new hook added in the second patch.
 
->
->> +                *insn,
->> +            };
->
-> Have you also looked into rejecting this pattern upfront on load when 
-> its a known
-> constant as we do with div by 0 in check_alu_op()?
+Signed-off-by: Matthieu Baerts (NGI0) <matttbe@kernel.org>
+---
+Changes in v6:
+- Patch 3/3: use usleep() instead of sleep()
+- Series: rebased on top of bpf-next/net
+- Link to v5: https://lore.kernel.org/r/20240910-upstream-bpf-next-20240506-mptcp-subflow-test-v5-0-2c664a7da47c@kernel.org
 
-We probably cannot do this for this sdiv case. For example,
-r1/0 or r1%0 can be rejected by verifier.
-But r1/-1 cannot be rejected as most likely r1 is not a constant LLONG_MIN.
-But if the divisor is constant -1, we can patch insn to handle case r1/-1.
+Changes in v5:
+- See the individual changelog for more details about them
+- Patch 1/3: set TCP on the 2nd subflow
+- Patch 2/3: new
+- Patch 3/3: use the BPF program from patch 2/3 to do the validation
+             instead of using ss.
+- Series: rebased on top of bpf-next/net
+- Link to v4: https://lore.kernel.org/r/20240805-upstream-bpf-next-20240506-mptcp-subflow-test-v4-0-2b4ca6994993@kernel.org
 
->
-> Otherwise lgtm if this is equivalent to arm64 as you describe.
->
->> -            patchlet = isdiv ? chk_and_div : chk_and_mod;
->> -            cnt = isdiv ? ARRAY_SIZE(chk_and_div) :
->> -                      ARRAY_SIZE(chk_and_mod) - (is64 ? 2 : 0);
->> +            if (is_sdiv64) {
->> +                patchlet = chk_and_sdiv64;
->> +                cnt = ARRAY_SIZE(chk_and_sdiv64);
->> +            } else {
->> +                patchlet = isdiv ? chk_and_div : chk_and_mod;
->> +                cnt = isdiv ? ARRAY_SIZE(chk_and_div) :
->> +                          ARRAY_SIZE(chk_and_mod) - (is64 ? 2 : 0);
->> +            }
->>                 new_prog = bpf_patch_insn_data(env, i + delta, 
->> patchlet, cnt);
->>               if (!new_prog)
->>
->
+Changes in v4:
+- Drop former patch 2/3: MPTCP's pm_nl_ctl requires a new header file:
+  - I will check later if it is possible to avoid having duplicated
+    header files in tools/include/uapi, but no need to block this series
+    for that. Patch 2/3 can be added later if needed.
+- Patch 2/2: skip the test if 'ip mptcp' is not available.
+- Link to v3: https://lore.kernel.org/r/20240703-upstream-bpf-next-20240506-mptcp-subflow-test-v3-0-ebdc2d494049@kernel.org
+
+Changes in v3:
+- Sorry for the delay between v2 and v3, this series was conflicting
+  with the "add netns helpers", but it looks like it is on hold:
+  https://lore.kernel.org/cover.1715821541.git.tanggeliang@kylinos.cn
+- Patch 1/3 includes "bpf_tracing_net.h", introduced in between.
+- New patch 2/3: "selftests/bpf: Add mptcp pm_nl_ctl link".
+- Patch 3/3: use the tool introduced in patch 2/3 + SYS_NOFAIL() helper.
+- Link to v2: https://lore.kernel.org/r/20240509-upstream-bpf-next-20240506-mptcp-subflow-test-v2-0-4048c2948665@kernel.org
+
+Changes in v2:
+- Previous patches 1/4 and 2/4 have been dropped from this series:
+  - 1/4: "selftests/bpf: Handle SIGINT when creating netns":
+    - A new version, more generic and no longer specific to MPTCP BPF
+      selftest will be sent later, as part of a new series. (Alexei)
+  - 2/4: "selftests/bpf: Add RUN_MPTCP_TEST macro":
+    - Removed, not to hide helper functions in macros. (Alexei)
+- The commit message of patch 1/2 has been clarified to avoid some
+  possible confusions spot by Alexei.
+- Link to v1: https://lore.kernel.org/r/20240507-upstream-bpf-next-20240506-mptcp-subflow-test-v1-0-e2bcbdf49857@kernel.org
+
+---
+Geliang Tang (2):
+      selftests/bpf: Add getsockopt to inspect mptcp subflow
+      selftests/bpf: Add mptcp subflow subtest
+
+Nicolas Rybowski (1):
+      selftests/bpf: Add mptcp subflow example
+
+ MAINTAINERS                                       |   2 +-
+ tools/testing/selftests/bpf/prog_tests/mptcp.c    | 127 +++++++++++++++++++++
+ tools/testing/selftests/bpf/progs/mptcp_bpf.h     |  42 +++++++
+ tools/testing/selftests/bpf/progs/mptcp_subflow.c | 128 ++++++++++++++++++++++
+ 4 files changed, 298 insertions(+), 1 deletion(-)
+---
+base-commit: 23dc9867329c72b48e5039ac93fbf50d9099cdb3
+change-id: 20240506-upstream-bpf-next-20240506-mptcp-subflow-test-faef6654bfa3
+
+Best regards,
+-- 
+Matthieu Baerts (NGI0) <matttbe@kernel.org>
+
 
