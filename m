@@ -1,175 +1,216 @@
-Return-Path: <bpf+bounces-39554-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39555-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4963C97475F
-	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 02:28:11 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7259697476E
+	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 02:38:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C99F01F27470
-	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 00:28:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD627287C16
+	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 00:38:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98D5CDF71;
-	Wed, 11 Sep 2024 00:28:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2626C147;
+	Wed, 11 Sep 2024 00:38:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Rs1AqrJ2"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="U+3sbUgC"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86DA5B65C;
-	Wed, 11 Sep 2024 00:27:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB358BA20;
+	Wed, 11 Sep 2024 00:38:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726014481; cv=none; b=QZ1iscR9PVGSHKdti+nj076z/UfllCFACjOtzOaWWGoL/4icV6SpBO7/0ZvhlDIuONkWacU14bxF4NrExPF9ni+8KL0RFu7HNx88wWxMsFpY87uYnEEIqhuC5SFZZXJjYC/L/Jr4kpLO215rjYfqg740sX81lizaSAstzn0lrGI=
+	t=1726015085; cv=none; b=VEGGFQD3V/8VVpqMXrdOP1pVuxsgOBQ9NSLVlXstAVFwD0/7SAsjUxPRvRcbS8w9zNCgaQnRLXlrLrW6sIlBlNjXnDNSEX3dppjl6NKyhhk9wXqUna3yh7O+ZoUpfgfpoYmsc6L8R+fSQPEkpm7WBnSNkX7C+ZaZpHlIvk5olxI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726014481; c=relaxed/simple;
-	bh=NrJDu9mEpFS1AmpGjH0DyXRmAqRkxkvNYWJ+v29pVBg=;
+	s=arc-20240116; t=1726015085; c=relaxed/simple;
+	bh=ntNZy9gVp+g/S3Rw9fj9t5cY/QvmijBzVHjXxrMusB8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rcJme+M1CC42GeGOSS9zGDCF44GEJLDjpAy61rMpMMGMgak7189Q5fCb8ZIjPy64uxTswUXATHLZJaL0u6z3o1TpXe7AFql51Bl9kQfIlqf8WM664JtIEFm334C+HbJ3hzC8aOs0a4feh1XucDHmkr6SkjOtaFTnxKJtCfEVs+k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Rs1AqrJ2; arc=none smtp.client-ip=209.85.128.45
+	 To:Cc:Content-Type; b=uM0ZgEku6uCdsnW+Zo5zgpKH3ihYJTlcyhPZz2DseSstP8+myLbHWq2aU0GB5fbNcscGf+tQToVITfWQ0/xUsLpodv9DUs75KIEV7gaQfES0ofSae3I0Y3qPGay3V15IFUmxs06abaB3CT0U7eLTSFVmZRj1XNWrDYPtFSw0OXU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=U+3sbUgC; arc=none smtp.client-ip=209.85.216.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-42cb1758e41so32245695e9.1;
-        Tue, 10 Sep 2024 17:27:59 -0700 (PDT)
+Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-2d87f34a650so264371a91.1;
+        Tue, 10 Sep 2024 17:38:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1726014478; x=1726619278; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1726015083; x=1726619883; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4G6htZmT/2OcXeGPBRBMMe5AADfAbOwvpNDLSDJ2pR0=;
-        b=Rs1AqrJ237+S7ChFiwAH/esxmNk4lp+2QRBf+D8lRd51WI3aKMalh3yXCdwQFtNG5j
-         oJUHDHUXdjSAwx0nNQXdmkE9JA4kOMaARUUa2KabvJPfbe5yWKnDLwFJ5QxnJAnjDqR8
-         rsYEb18CLB5KwU6ulfwfOUNkXEdrIFw9BFQhLM7SEVG1B8APTbd4mzAj9GaJ7887zToS
-         mLnZyYNtlSJwMOyISpq99wV8fcDlvpWiupUbogEbor8RYMSbOSeZFXf+4I0w8PNCdiC8
-         HE2q+EN8QaVmUdluhFdxYNQ9pgzAJInB3hr73Hr2gAQ/RLQFmn1LqX/822aCSxI0dNDB
-         1pRA==
+        bh=8uEZF446y8UFXekIc+a8WzDSWW2PtnQSzLmBNm4ligQ=;
+        b=U+3sbUgCx4uaXyEdmsWaqy2u5SsJGlgqPABlKryNMEojJKY6s9SrLZFoApzam2cA6Q
+         jlCVLvAfTFoT/An2GY21u8fLAXNgVUNVT4JKxS+SyQDTdEbXgLbDvH+7gkRD0dWqeeFA
+         Mg9yyIDsFsx2i7lrJvN6mum+jQWaO9qMXfVBqxBm6ferPxaE6dBBb0mAGOCNGIacTswG
+         JAKzGKq2i9cmhua3309aXxuDdHJohJdkHYUd04Km19Xsa054zN4L6zXDcP0KbN1ef5D+
+         zwr3zW+5e7jM04FsQa4XitIcG+2yEJxlainO1kY4wdV2ttuh6gCMfEmDKyi3RPEKG4PJ
+         oc2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726014478; x=1726619278;
+        d=1e100.net; s=20230601; t=1726015083; x=1726619883;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=4G6htZmT/2OcXeGPBRBMMe5AADfAbOwvpNDLSDJ2pR0=;
-        b=LtmK/0OO9C2HeePqu7Ul3CnAg/CE63hXShBps2NdrA99M0H/4vFKQLJVrEqIwnbhmy
-         Z6V6dHyth+HLvmzvj39Cj7F25S6ahRXgk1jY8hSLC79L/1h4E0tLEkJ5kxsUbU5D8H1S
-         GsfE1t4IiKS5XipkjEYeFbsmwKYaWAk07dz3///MhYBLLW9pdrqdQ5ZoA9mFC00Wf+VY
-         M0OaloOce0UhxR/Aea8YJ14eHRN/grVV8qhseVVRu4oRAxHU+G+S+Pu2HhqqMDPEj4ds
-         ypjZt12cMYgryhN0NK1oPpaQ1EX7ykaFh6ifoBfHNIlZLvbiK5Gxaytnd0MysZmBvuWo
-         ejfQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU3keSs2QaTYfRn0vknJnmvpAlb3P6rxNS2y0gZ3XN777LKqGZHxHewgT2g3T7SZdvrVps=@vger.kernel.org, AJvYcCXbKCH/bA+EfC4fBrqI+fhI7dLkYdSnVcwkMUSch7xRQ81vhzxHORmMH2SeYgpG8H90qYmz3BQWQhIWIUARcg==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw/1voAbGwFGQfGx3g2YiEgOC+QQqR32GDFa2kYaadcSMr52SLQ
-	hq0nF+FVJqrOGkXZlOwTCh+oOK+Jz8DJIpGHWZMGbWIG+yNjQP5ayv6jJ3waDKxlZ0pqfkOPz+A
-	2jAfza0KYN27rmHXPBdVSgtDP47Q=
-X-Google-Smtp-Source: AGHT+IHwJFWF6RxNiu9vVCXQmuzDa865/DIVQv/Pt4mgdRYAXkfoTXIAxRs5nhL80CtYqi67RErDr704Zfs90RK9RUA=
-X-Received: by 2002:a05:600c:4451:b0:426:6308:e2f0 with SMTP id
- 5b1f17b1804b1-42cae76cfa5mr91418565e9.26.1726014477550; Tue, 10 Sep 2024
- 17:27:57 -0700 (PDT)
+        bh=8uEZF446y8UFXekIc+a8WzDSWW2PtnQSzLmBNm4ligQ=;
+        b=t1Ru26E/V1FDtQXwtI/VE0bKwsNBLd/6rQ4TTFVeF6058e3y0Wg7hTqZZJz+YEP+2X
+         bQICC6kPf8jvCaa5Xbel5CXNFrc3EylDhw4hURAxIvCPJb7xkOmzBjFV1RfsjFFnk4KL
+         yo8v9q/Qsbtf0t4B/ylCYjRVkRhPGM/wqShDsTFkNwF/Zb9yOIlmZpK/zK3/P3spB3F5
+         JuSUsAF/fTL1Xhy0v12UQR85gWJ/3YlhvMPMIEpm6+P7oiX5Op2o0HxGLrgf90smT59I
+         zf0MnxqQUMAPnQSrTU1q0hPE+bXb6J6tALVksutytChqz6EIxxmucP3PQ00EVrM2ygEC
+         0fow==
+X-Forwarded-Encrypted: i=1; AJvYcCVkwTa8vph99b8QseOjmWAzBOls5zsdzRNWKc167lQ+BYhD43XdwGGJe3LUsC+OtSVsORaHg8O6AEcRi+ZWjxCe9nkm@vger.kernel.org, AJvYcCXVKnYknE3qCpMgpGjzPs1USdtY6mIdoyg0kS2S9hhUKWKBEcZToMbWfsa9qOKGPAZNodI=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywd4mBeOg7LF9sbbvwCyn8ofmRu22C3vO/FX5ohlWbc39tKeKp5
+	5DX1lYz67QY70Y9UTDCBGqVxMibiMsscYNe/9fEbrKzdXoSdyQP9NCBhChJeUp3F/Cp4VuHStQg
+	ZPK8grT4QieVM8hF3cn43hBl62H0=
+X-Google-Smtp-Source: AGHT+IFnbUMH/jPJGv8/7u9/NdR5/gZOu8WSCGPmPN2WhoZ8cAttEWKZ6YQCtrpiSiUXBTNFm2K8o01919ma3jNBt2o=
+X-Received: by 2002:a17:90a:c705:b0:2d8:b043:9414 with SMTP id
+ 98e67ed59e1d1-2db671fc520mr7565215a91.18.1726015083010; Tue, 10 Sep 2024
+ 17:38:03 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240829174232.3133883-1-andrii@kernel.org> <CAEf4BzYdP_6L1bT5bEwp5GAwM-rKOA36C-Cwv4i8h-3pKp-nkQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzYdP_6L1bT5bEwp5GAwM-rKOA36C-Cwv4i8h-3pKp-nkQ@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 10 Sep 2024 17:27:45 -0700
-Message-ID: <CAADnVQLCh=D5vFTPQfYai3pW9EFGGjYwG9s+T-r-5a2-rj7kBw@mail.gmail.com>
-Subject: Re: [PATCH v7 bpf-next 00/10] Harden and extend ELF build ID parsing logic
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Matthew Wilcox <willy@infradead.org>, linux-mm <linux-mm@kvack.org>, 
-	Andrew Morton <akpm@linux-foundation.org>, bpf <bpf@vger.kernel.org>, 
-	Alexey Dobriyan <adobriyan@gmail.com>, shakeel.butt@linux.dev, 
-	Johannes Weiner <hannes@cmpxchg.org>, Andi Kleen <ak@linux.intel.com>, 
-	Omar Sandoval <osandov@osandov.com>, Song Liu <song@kernel.org>, Jann Horn <jannh@google.com>, 
-	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>
+References: <CAEf4BzaYyEftmRmt6FswrTOsb9FuQMtzuDXD4OJMO7Ein2ZRGg@mail.gmail.com>
+ <CAEf4BzasRqeAY3ZpBDbjyWSKUriZgUf4U_YoQNSSutKhX5g2kw@mail.gmail.com> <20240911091343.77c60bc2e5d96cbfd8787c19@kernel.org>
+In-Reply-To: <20240911091343.77c60bc2e5d96cbfd8787c19@kernel.org>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 10 Sep 2024 17:37:48 -0700
+Message-ID: <CAEf4BzbdxSbaK1V10j8t_rjG4ZnYsFQLqPrBSswR8KhjmC=5cg@mail.gmail.com>
+Subject: Re: Unsupported CONFIG_FPROBE and CONFIG_RETHOOK on ARM64
+To: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>, bpf <bpf@vger.kernel.org>, 
+	Linux trace kernel <linux-trace-kernel@vger.kernel.org>, adubey@linux.ibm.com, 
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, KP Singh <kpsingh@chromium.org>, 
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Will Deacon <will@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Florent Revest <revest@chromium.org>, 
+	Puranjay Mohan <puranjay@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Sep 3, 2024 at 3:39=E2=80=AFPM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Thu, Aug 29, 2024 at 10:42=E2=80=AFAM Andrii Nakryiko <andrii@kernel.o=
+On Tue, Sep 10, 2024 at 5:13=E2=80=AFPM Masami Hiramatsu <mhiramat@kernel.o=
 rg> wrote:
+>
+> On Tue, 10 Sep 2024 11:23:29 -0700
+> Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+>
+> > + arm ML and maintainers
 > >
-> > The goal of this patch set is to extend existing ELF build ID parsing l=
-ogic,
-> > currently mostly used by BPF subsystem, with support for working in sle=
-epable
-> > mode in which memory faults are allowed and can be relied upon to fetch
-> > relevant parts of ELF file to find and fetch .note.gnu.build-id informa=
-tion.
-> >
-> > This is useful and important for BPF subsystem itself, but also for
-> > PROCMAP_QUERY ioctl(), built atop of /proc/<pid>/maps functionality (se=
-e [0]),
-> > which makes use of the same build_id_parse() functionality. PROCMAP_QUE=
-RY is
-> > always called from sleepable user process context, so it doesn't have t=
-o
-> > suffer from current restrictions of build_id_parse() which are due to t=
-he NMI
-> > context assumption.
-> >
-> > Along the way, we harden the logic to avoid TOCTOU, overflow, out-of-bo=
-unds
-> > access problems.  This is the very first patch, which can be backported=
- to
-> > older releases, if necessary.
-> >
-> > We also lift existing limitations of only working as long as ELF progra=
-m
-> > headers and build ID note section is contained strictly within the very=
- first
-> > page of ELF file.
-> >
-> > We achieve all of the above without duplication of logic between sleepa=
-ble and
-> > non-sleepable modes through freader abstraction that manages underlying=
- folio
-> > from page cache (on demand) and gives a simple to use direct memory acc=
-ess
-> > interface. With that, single page restrictions and adding sleepable mod=
+> > On Wed, Sep 4, 2024 at 6:02=E2=80=AFPM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> > >
+> > > Hey,
+> > >
+> > > I just recently realized that we are still missing multi-kprobe
+> > > support for ARM64, which depends on CONFIG_FPROBE. And CONFIG_FPROBE
+> > > seems to require CONFIG_HAVE_RETHOOK, which, it turns out, is not
+> > > implemented for ARM64.
+> > >
+> > > It took me a while to realize what's going on, as I roughly remembere=
+d
+> > > (and confirmed through lore search) that Masami's original rethook
+> > > patches had arm64-specific bits. Long story short:
+> > >
+> > > 0f8f8030038a Revert "arm64: rethook: Add arm64 rethook implementation=
+"
+> > > 83acdce68949 arm64: rethook: Add arm64 rethook implementation
+> > >
+> > > The patch was landed and then reverted. I found some discussion onlin=
 e
-> > support is rather straightforward.
+> > > and it seems like the plan was to land arch-specific bits shortly
+> > > after bpf-next PR.
+> > >
+> > > But it seems like that never happened. Why?
+> > >
+> > > I see s390x, RISC-V, loongarch (I'm not even mentioning x86-64) all
+> > > have CONFIG_HAVE_RETHOOK, even powerpc is getting one (see [0]), it
+> > > seems. How come ARM64 is the one left out?
+> > >
+> > > Can anyone please provide some context? And if that's just an
+> > > oversight, can we prioritize landing this for ARM64 ASAP?
+> > >
+> > >   [0] https://lore.kernel.org/bpf/20240830113131.7597-1-adubey@linux.=
+ibm.com/
+> > >
 > >
-> > We also extend existing set of BPF selftests with a few tests targeting=
- build
-> > ID logic across sleepable and non-sleepabe contexts (we utilize sleepab=
-le and
-> > non-sleepable uprobes for that).
+> > Masami, Steven,
 > >
-> >    [0] https://lore.kernel.org/linux-mm/20240627170900.1672542-4-andrii=
-@kernel.org/
-> >
-> > v6->v7:
-> >   - added filemap_invalidate_{lock,unlock}_shared() around read_cache_f=
-olio
-> >     and kept Eduard's Reviewed-by (Eduard);
-> > v5->v6:
-> >   - use local phnum variable in get_build_id_32() (Jann);
-> >   - switch memcmp() instead of strcmp() in parse_build_id() (Jann);
-> > v4->v5:
-> >   - pass proper file reference to read_cache_folio() (Shakeel);
-> >   - fix another potential overflow due to two u32 additions (Andi);
-> >   - add PageUptodate() check to patch #1 (Jann);
-> > v3->v4:
-> >   - fix few more potential overflow and out-of-bounds access issues (An=
-di);
-> >   - use purely folio-based implementation for freader (Matthew);
+> > Does Linus have to be in CC to get any reply here? Come on, it's been
+> > almost a full week.
 >
-> Ok, so I'm not sure what one needs to do to get Matthew's attention
-> nowadays, but hopefully yet another ping might do the trick.
->
-> Matthew,
->
-> Can you please take another look and provide your ack or nack? I did
-> the conversion to folio as you requested. It would be nice if you can
-> give me a courtesy of acking my patch set, if there is nothing wrong
-> with it, so it can finally go in.
+> Sorry about bothering you, let me check that. But I think we eventually
 
-Looks like no further comments from Matthew or anyone else.
+You don't bother me, but I'd appreciate a bit more timely replies in
+the future, if that's OK.
 
-I'll take another look through the set before applying to bpf-next.
+> need my fprobe-on-fgraph patch which allows all architecture uses ftrace_=
+regs
+> instead of pt_regs for ftrace/fgraph users. That allows arm64 to implemen=
+t
+> fprobe.
+
+Ok, thanks for a bit more context. I understand the end goal with
+fprobe-on-fgraph, but see below.
+
+>
+> >
+> > Maybe ARM64 folks have some context?... And hopefully desire to see
+> > this through so that ARM64 doesn't stick out as a lesser-supported
+> > platform as far as tracing goes compared to loongarch, s390x, and
+> > powerpc (which just landed rethook support, see [2]).
+>
+> I think lesser-supported or not is not a matter, but they need to keep
+> their architecutre healthy. Mark said that the current rethook
+> implementation is not acceptable because arm64 can not manually generate
+
+I don't see Mark's reply in the link you sent. But did he refer to the
+code in kprobes_trampoline.S or is it something different?
+
+By lesser-supported I mean that a very important functionality (BPF
+multi-kprobe, which relies on CONFIG_FPROBE and thus
+{HAVE|CONFIG}_RETHOOK) is currently still missing. And whether x86-64
+support landed more than 2 years ago (end of March 2022), the second
+practically most popular (and thus important for tools and such) ARM64
+platform still doesn't have this functionality.
+
+And that's limiting, BPF multi-kprobes are a huge improvement in
+tooling usability. So while I get the desire to have a clean and nice
+end goal, and that it might take a bit longer to get everything right.
+But, maybe, landing a stop-gap solution meanwhile (especially as
+isolated and thus easily backportable as the patch [0] you referenced)
+is an OK path forward?
+
+I'm just lacking full understanding on what exactly the issue is/was,
+and that's why I'm asking all these questions. I'm not sure if [0] is
+just broken for some subtle reason, or it is just suboptimal in some
+sense (performance, code duplication, whatnot)?
+
+
+  [0] https://lore.kernel.org/bpf/164338038439.2429999.17564843625400931820=
+.stgit@devnote2/
+
+> pt_regs. So we need to use ftrace_regs for that.
+> So eventually, we need my fprobe series.
+>
+> https://lore.kernel.org/bpf/164338038439.2429999.17564843625400931820.stg=
+it@devnote2/
+>
+> Thank you,
+>
+> >
+> > Note that there was already an implementation (see [1]), but for some
+> > reason it never made it.
+> >
+> >   [1] https://lore.kernel.org/bpf/164338038439.2429999.1756484362540093=
+1820.stgit@devnote2/
+> >   [2] https://lore.kernel.org/bpf/172562357215.467568.21728589074191051=
+55.b4-ty@ellerman.id.au/
+> >
+> > >
+> > > -- Andrii
+>
+>
+> --
+> Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
