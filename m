@@ -1,296 +1,213 @@
-Return-Path: <bpf+bounces-39624-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39625-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8FDA9756B9
-	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 17:18:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A80C79756CF
+	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 17:19:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 84292281ABA
-	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 15:17:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 52C1E1F21424
+	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 15:19:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6719E1AE035;
-	Wed, 11 Sep 2024 15:17:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 114941AC8A1;
+	Wed, 11 Sep 2024 15:18:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jfXzu1kT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M+2YFp+J"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4A241AB531;
-	Wed, 11 Sep 2024 15:17:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AF6B1AB6F0;
+	Wed, 11 Sep 2024 15:18:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726067821; cv=none; b=VoqZKP0ZXhXOp6ZZMqZ/JQhu7PYh8kcJW1CoaIm8+Wfl3sKiYgCfG8onrITF/RATJK63sfHECFcPyywgTiRlgojEx0WxidNodzWsMmlAcYp7R0sJf/j+kDOgE2rRno1xnBKLyirgp5rCyUCxtCEwNeWaXbsdKCbLbs/iwuZoEoE=
+	t=1726067933; cv=none; b=sydyEL2rY4IWPa24uq34RkSKhvSe+PvNLlLf5Q0FlKeJB1eyw+/BdL2CiyJD+izrAvZabDuN7lMJUFGRbXlKaZjpREHefCH+F/MCFI99O1e9bxeQ6vxJGwLIJowsTL74jNDlNHQV7fIGCa7BZg5tXREZUWcEXgddKCsAFDq+sQo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726067821; c=relaxed/simple;
-	bh=rvyB/8VmwsZWv2v7ySK7UI/1A/6GmFKbw04BuegBh08=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=XXMGqmmdhbYplSy5tQFSEkRWsINNsY3Jbb2dBFRipfEOoKCIevvml/TOnTRykRzMcdMqwhEIBCXuCJWgRFSTp+sQxKebYqXnoz5Q1JYCGs+7RFKPpL4T0itiwvsgljXP1tMf2RSujt56yGQ1VLfIxPKJyEk1BPBrmqDhn0CYnu4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jfXzu1kT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6385AC4CEC0;
-	Wed, 11 Sep 2024 15:16:56 +0000 (UTC)
+	s=arc-20240116; t=1726067933; c=relaxed/simple;
+	bh=dIMTjUUU6Z+9RVyokzndesj6W8X7N4m9fc53dLvlP88=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=gR93kHGqkcwXkkKZ7BYuD/FqkOuinSEaO218GI2Vfgsi18/95cuWXzJVg6fJUi1jE8EialzciWs+qhDpD7dTx2F8B9Ybk3k75tMhzlOBY7Ym5wBsPYuvZDpZVquR/8Lk78Dx7Fli2bLdYmaDBc8uQkv3NKHl5egGkTGwQ3Vreyw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M+2YFp+J; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38B85C4CEC0;
+	Wed, 11 Sep 2024 15:18:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1726067820;
-	bh=rvyB/8VmwsZWv2v7ySK7UI/1A/6GmFKbw04BuegBh08=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=jfXzu1kTnOh0ndVtWIz3OPxKqWdxWX87OKoCoF1n04Ulp6P5gdkKIj5REKOvrEgR6
-	 yRdjlU+W5r1KtxE0vNUMqJ5I3GcWO3v3shGUKTPfmCd6lATdiBSLeZnaPXgqaXfUMf
-	 WeZ2FNepwVYiiQeqnqwNgNudpM2qR6DUD8fT6/J0pIVCsZQzVPW779j6VYDDat3Ub+
-	 qj0y1LI+sjtnSWcLyaV6XcJOc/zJpRkHCLKFJL7sjlOMZVUUQkVoMf8T0Ne1zCUBKO
-	 l94Xjg35yUZls65OlDC8zzMrrIdi4BKKaDatxaqjbwLab/Gz+45BdriSs7+/kTBg/j
-	 OSaOhfceOGzFA==
-From: "Matthieu Baerts (NGI0)" <matttbe@kernel.org>
-Date: Wed, 11 Sep 2024 17:16:18 +0200
-Subject: [PATCH bpf-next/net v6 3/3] selftests/bpf: Add mptcp subflow
- subtest
+	s=k20201202; t=1726067933;
+	bh=dIMTjUUU6Z+9RVyokzndesj6W8X7N4m9fc53dLvlP88=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=M+2YFp+Jfs373JDhFk6aFPyisWNPDkvgBdhWdiHTa8+1cxhN6kvtNXDIC8JZzUEs9
+	 jotL9FYDXo05Hg5u+Hcrt4x2ilKB5TDwzeOg2pNdfz67HlRM75frRCYmPa6Pbj2J5q
+	 amh44oTixkfp6AZplnP4U9FBNe9VCZKt70j+7aCsoW9+gkBjbRgBRmBaaXIDPSfl0S
+	 1++1jhpqYsaDoDrPhA6Tem3zCgumFqpbsDimb77BXuH0VmxCnMmHWq64o6KyGbs56T
+	 X+0Ly9Uli8JxGCXAsBzqwTtxmXoA5emY/Tc/EqDzVARleqVW4H0rDjhtDygr9+IA1G
+	 DZKhrv7M3kQ5g==
+Date: Thu, 12 Sep 2024 00:18:48 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>, bpf <bpf@vger.kernel.org>, Linux
+ trace kernel <linux-trace-kernel@vger.kernel.org>, adubey@linux.ibm.com,
+ "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, KP Singh
+ <kpsingh@chromium.org>, linux-arm-kernel
+ <linux-arm-kernel@lists.infradead.org>, Mark Rutland
+ <mark.rutland@arm.com>, Will Deacon <will@kernel.org>, Alexei Starovoitov
+ <ast@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>, Florent Revest
+ <revest@chromium.org>, Puranjay Mohan <puranjay@kernel.org>
+Subject: Re: Unsupported CONFIG_FPROBE and CONFIG_RETHOOK on ARM64
+Message-Id: <20240912001848.d9629a1579ea3ef6531a9a0b@kernel.org>
+In-Reply-To: <CAEf4BzbdxSbaK1V10j8t_rjG4ZnYsFQLqPrBSswR8KhjmC=5cg@mail.gmail.com>
+References: <CAEf4BzaYyEftmRmt6FswrTOsb9FuQMtzuDXD4OJMO7Ein2ZRGg@mail.gmail.com>
+	<CAEf4BzasRqeAY3ZpBDbjyWSKUriZgUf4U_YoQNSSutKhX5g2kw@mail.gmail.com>
+	<20240911091343.77c60bc2e5d96cbfd8787c19@kernel.org>
+	<CAEf4BzbdxSbaK1V10j8t_rjG4ZnYsFQLqPrBSswR8KhjmC=5cg@mail.gmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240911-upstream-bpf-next-20240506-mptcp-subflow-test-v6-3-7872294c466b@kernel.org>
-References: <20240911-upstream-bpf-next-20240506-mptcp-subflow-test-v6-0-7872294c466b@kernel.org>
-In-Reply-To: <20240911-upstream-bpf-next-20240506-mptcp-subflow-test-v6-0-7872294c466b@kernel.org>
-To: mptcp@lists.linux.dev, Mat Martineau <martineau@kernel.org>, 
- Geliang Tang <geliang@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
- Eduard Zingerman <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>, 
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, 
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
- Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>
-Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
- bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
- "Matthieu Baerts (NGI0)" <matttbe@kernel.org>, 
- Geliang Tang <geliang@kernel.org>
-X-Mailer: b4 0.14.1
-X-Developer-Signature: v=1; a=openpgp-sha256; l=6367; i=matttbe@kernel.org;
- h=from:subject:message-id; bh=jl0fkReOPsHzDsa1dsyKuB9rta8BrobgXpXnIKQtdD8=;
- b=owEBbQKS/ZANAwAIAfa3gk9CaaBzAcsmYgBm4bRYeiAzV9g4F+34V6euaZ0+AU0EvStXMJeI9
- 5KzTNZrs6SJAjMEAAEIAB0WIQToy4X3aHcFem4n93r2t4JPQmmgcwUCZuG0WAAKCRD2t4JPQmmg
- c7V2D/9TWXLNLbSixXiR1q79qX535CSD/cj9KCmk8nvWCY2a4ruQ3GawiDg6oNIVQ+MRj2aqZmX
- yW04e/Pb44t+1vTIik4ToE07aSHqTBcAHuPA5oQbbCvy4FfIEZyNMoBKt/L2PPO1BqbedOej7PF
- A0RSdpxGxIiCt5EZxkkZoUgiELIkdfdDPhl1ayvjeicPmhdWzP2sKtrY82pjPcHSEZ8zNVmqH3o
- ww9Lz6Fk8jc/VGutLx9zGQaTALGNi9uFWCS9UCrIHdb9FYvXcf3nGYfu8/At2NEF2HMgRWBEVlt
- n8gLaLJt13mpBOVkB7T9y9NwEKw5NMMGdGd9yx6DjxN8C0QFDvXPMm6ne52D8dQcoHgFGP3o8LX
- mtYjPuXA0NRuSW3M1XdlG7X+Tyu5ljxM5CMvQrPmdE4grqm5xLad9XIT+DpDWX+6nLGxalLAA7l
- TPx21Rer8Q1JmG0xAaz11/ylsTr+/aTHbsy4YKY8iuDG6rxl+jJIoIpdJz4OqfSf3sq3AzaRebd
- 1GnR39zp1fBbu8JhTtJYdO18QCvoLmimjXsXaQqzOAs7C5FCB0dWenTLGjQVsV05P0+hFyd8tGG
- 0ok1uPl51DuAwXMwk9g1iViCO6NL5gBkJJ1W68ERpLTv4Z2ytJH4xDCPo1LtRpcX72uOURjdvyN
- grvPyEeSAXS1DaQ==
-X-Developer-Key: i=matttbe@kernel.org; a=openpgp;
- fpr=E8CB85F76877057A6E27F77AF6B7824F4269A073
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-From: Geliang Tang <tanggeliang@kylinos.cn>
+On Tue, 10 Sep 2024 17:37:48 -0700
+Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
 
-This patch adds a subtest named test_subflow in test_mptcp to load and
-verify the newly added MPTCP subflow BPF program. To goal is to make
-sure it is possible to set different socket options per subflows, while
-the userspace socket interface only lets the application to set the same
-socket options for the whole MPTCP connection and its multiple subflows.
+> On Tue, Sep 10, 2024 at 5:13 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> >
+> > On Tue, 10 Sep 2024 11:23:29 -0700
+> > Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> >
+> > > + arm ML and maintainers
+> > >
+> > > On Wed, Sep 4, 2024 at 6:02 PM Andrii Nakryiko
+> > > <andrii.nakryiko@gmail.com> wrote:
+> > > >
+> > > > Hey,
+> > > >
+> > > > I just recently realized that we are still missing multi-kprobe
+> > > > support for ARM64, which depends on CONFIG_FPROBE. And CONFIG_FPROBE
+> > > > seems to require CONFIG_HAVE_RETHOOK, which, it turns out, is not
+> > > > implemented for ARM64.
+> > > >
+> > > > It took me a while to realize what's going on, as I roughly remembered
+> > > > (and confirmed through lore search) that Masami's original rethook
+> > > > patches had arm64-specific bits. Long story short:
+> > > >
+> > > > 0f8f8030038a Revert "arm64: rethook: Add arm64 rethook implementation"
+> > > > 83acdce68949 arm64: rethook: Add arm64 rethook implementation
+> > > >
+> > > > The patch was landed and then reverted. I found some discussion online
+> > > > and it seems like the plan was to land arch-specific bits shortly
+> > > > after bpf-next PR.
+> > > >
+> > > > But it seems like that never happened. Why?
+> > > >
+> > > > I see s390x, RISC-V, loongarch (I'm not even mentioning x86-64) all
+> > > > have CONFIG_HAVE_RETHOOK, even powerpc is getting one (see [0]), it
+> > > > seems. How come ARM64 is the one left out?
+> > > >
+> > > > Can anyone please provide some context? And if that's just an
+> > > > oversight, can we prioritize landing this for ARM64 ASAP?
+> > > >
+> > > >   [0] https://lore.kernel.org/bpf/20240830113131.7597-1-adubey@linux.ibm.com/
+> > > >
+> > >
+> > > Masami, Steven,
+> > >
+> > > Does Linus have to be in CC to get any reply here? Come on, it's been
+> > > almost a full week.
+> >
+> > Sorry about bothering you, let me check that. But I think we eventually
+> 
+> You don't bother me, but I'd appreciate a bit more timely replies in
+> the future, if that's OK.
+> 
+> > need my fprobe-on-fgraph patch which allows all architecture uses ftrace_regs
+> > instead of pt_regs for ftrace/fgraph users. That allows arm64 to implement
+> > fprobe.
+> 
+> Ok, thanks for a bit more context. I understand the end goal with
+> fprobe-on-fgraph, but see below.
+> 
+> >
+> > >
+> > > Maybe ARM64 folks have some context?... And hopefully desire to see
+> > > this through so that ARM64 doesn't stick out as a lesser-supported
+> > > platform as far as tracing goes compared to loongarch, s390x, and
+> > > powerpc (which just landed rethook support, see [2]).
+> >
+> > I think lesser-supported or not is not a matter, but they need to keep
+> > their architecutre healthy. Mark said that the current rethook
+> > implementation is not acceptable because arm64 can not manually generate
+> 
+> I don't see Mark's reply in the link you sent. But did he refer to the
+> code in kprobes_trampoline.S or is it something different?
 
-To check that, a client and a server are started in a dedicated netns,
-with veth interfaces to simulate multiple paths. They will exchange data
-to allow the creation of an additional subflow.
+Sorry, here it is: https://lkml.org/lkml/2022/4/12/2233
 
-When the different subflows are being created, the new MPTCP subflow BPF
-program will set some socket options: marks and TCP CC. The validation
-is done by the same program, when the userspace checks the value of the
-modified socket options. On the userspace side, it will see that the
-default values are still being used on the MPTCP connection, while the
-BPF program will see different options set per subflow of the same MPTCP
-connection.
+> 
+> By lesser-supported I mean that a very important functionality (BPF
+> multi-kprobe, which relies on CONFIG_FPROBE and thus
+> {HAVE|CONFIG}_RETHOOK) is currently still missing. And whether x86-64
+> support landed more than 2 years ago (end of March 2022), the second
+> practically most popular (and thus important for tools and such) ARM64
+> platform still doesn't have this functionality.
+> 
+> And that's limiting, BPF multi-kprobes are a huge improvement in
+> tooling usability.
 
-Closes: https://github.com/multipath-tcp/mptcp_net-next/issues/76
-Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
-Reviewed-by: Mat Martineau <martineau@kernel.org>
-Signed-off-by: Matthieu Baerts (NGI0) <matttbe@kernel.org>
----
-Notes:
- - v2 -> v3:
-   - Use './mptcp_pm_nl_ctl' instead of 'ip mptcp', not supported by the
-     BPF CI running IPRoute 5.5.0.
-   - Use SYS_NOFAIL() in _ss_search() instead of calling system()
- - v3 -> v4:
-   - Drop './mptcp_pm_nl_ctl', but skip this new test if 'ip mptcp' is
-     not supported.
- - v4 -> v5:
-   - Note that this new test is no longer skipped on the BPF CI, because
-     'ip mptcp' is now supported after the switch from Ubuntu 20.04 to
-     22.04.
-   - Update the commit message, reflecting the latest version.
-   - The validations are no longer done using 'ss', but using the new
-     BPF program added in the previous patch, to reduce the use of
-     external dependences. (Martin)
- - v5 -> v6:
-   - Use usleep() instead of sleep().
----
- tools/testing/selftests/bpf/prog_tests/mptcp.c | 127 +++++++++++++++++++++++++
- 1 file changed, 127 insertions(+)
+Sorry for inconvenient. But I think this transformation is really
+important.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/mptcp.c b/tools/testing/selftests/bpf/prog_tests/mptcp.c
-index d2ca32fa3b21..c76a0d8c8f93 100644
---- a/tools/testing/selftests/bpf/prog_tests/mptcp.c
-+++ b/tools/testing/selftests/bpf/prog_tests/mptcp.c
-@@ -5,12 +5,17 @@
- #include <linux/const.h>
- #include <netinet/in.h>
- #include <test_progs.h>
-+#include <unistd.h>
- #include "cgroup_helpers.h"
- #include "network_helpers.h"
- #include "mptcp_sock.skel.h"
- #include "mptcpify.skel.h"
-+#include "mptcp_subflow.skel.h"
- 
- #define NS_TEST "mptcp_ns"
-+#define ADDR_1	"10.0.1.1"
-+#define ADDR_2	"10.0.1.2"
-+#define PORT_1	10001
- 
- #ifndef IPPROTO_MPTCP
- #define IPPROTO_MPTCP 262
-@@ -335,10 +340,132 @@ static void test_mptcpify(void)
- 	close(cgroup_fd);
- }
- 
-+static int endpoint_init(char *flags)
-+{
-+	SYS(fail, "ip -net %s link add veth1 type veth peer name veth2", NS_TEST);
-+	SYS(fail, "ip -net %s addr add %s/24 dev veth1", NS_TEST, ADDR_1);
-+	SYS(fail, "ip -net %s link set dev veth1 up", NS_TEST);
-+	SYS(fail, "ip -net %s addr add %s/24 dev veth2", NS_TEST, ADDR_2);
-+	SYS(fail, "ip -net %s link set dev veth2 up", NS_TEST);
-+	if (SYS_NOFAIL("ip -net %s mptcp endpoint add %s %s", NS_TEST, ADDR_2, flags)) {
-+		printf("'ip mptcp' not supported, skip this test.\n");
-+		test__skip();
-+		goto fail;
-+	}
-+
-+	return 0;
-+fail:
-+	return -1;
-+}
-+
-+static void wait_for_new_subflows(int fd)
-+{
-+	socklen_t len;
-+	u8 subflows;
-+	int err, i;
-+
-+	len = sizeof(subflows);
-+	/* Wait max 1 sec for new subflows to be created */
-+	for (i = 0; i < 10; i++) {
-+		err = getsockopt(fd, SOL_MPTCP, MPTCP_INFO, &subflows, &len);
-+		if (!err && subflows > 0)
-+			break;
-+
-+		usleep(100000); /* 0.1s */
-+	}
-+}
-+
-+static void run_subflow(void)
-+{
-+	int server_fd, client_fd, err;
-+	char new[TCP_CA_NAME_MAX];
-+	char cc[TCP_CA_NAME_MAX];
-+	unsigned int mark;
-+	socklen_t len;
-+
-+	server_fd = start_mptcp_server(AF_INET, ADDR_1, PORT_1, 0);
-+	if (!ASSERT_OK_FD(server_fd, "start_mptcp_server"))
-+		return;
-+
-+	client_fd = connect_to_fd(server_fd, 0);
-+	if (!ASSERT_OK_FD(client_fd, "connect_to_fd"))
-+		goto close_server;
-+
-+	send_byte(client_fd);
-+	wait_for_new_subflows(client_fd);
-+
-+	len = sizeof(mark);
-+	err = getsockopt(client_fd, SOL_SOCKET, SO_MARK, &mark, &len);
-+	if (ASSERT_OK(err, "getsockopt(client_fd, SO_MARK)"))
-+		ASSERT_EQ(mark, 0, "mark");
-+
-+	len = sizeof(new);
-+	err = getsockopt(client_fd, SOL_TCP, TCP_CONGESTION, new, &len);
-+	if (ASSERT_OK(err, "getsockopt(client_fd, TCP_CONGESTION)")) {
-+		get_msk_ca_name(cc);
-+		ASSERT_STREQ(new, cc, "cc");
-+	}
-+
-+	close(client_fd);
-+close_server:
-+	close(server_fd);
-+}
-+
-+static void test_subflow(void)
-+{
-+	int cgroup_fd, prog_fd, err;
-+	struct mptcp_subflow *skel;
-+	struct nstoken *nstoken;
-+	struct bpf_link *link;
-+
-+	cgroup_fd = test__join_cgroup("/mptcp_subflow");
-+	if (!ASSERT_OK_FD(cgroup_fd, "join_cgroup: mptcp_subflow"))
-+		return;
-+
-+	skel = mptcp_subflow__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_open_load: mptcp_subflow"))
-+		goto close_cgroup;
-+
-+	skel->bss->pid = getpid();
-+
-+	err = mptcp_subflow__attach(skel);
-+	if (!ASSERT_OK(err, "skel_attach: mptcp_subflow"))
-+		goto skel_destroy;
-+
-+	prog_fd = bpf_program__fd(skel->progs.mptcp_subflow);
-+	err = bpf_prog_attach(prog_fd, cgroup_fd, BPF_CGROUP_SOCK_OPS, 0);
-+	if (!ASSERT_OK(err, "prog_attach"))
-+		goto skel_destroy;
-+
-+	nstoken = create_netns();
-+	if (!ASSERT_OK_PTR(nstoken, "create_netns: mptcp_subflow"))
-+		goto skel_destroy;
-+
-+	if (endpoint_init("subflow") < 0)
-+		goto close_netns;
-+
-+	link = bpf_program__attach_cgroup(skel->progs._getsockopt_subflow,
-+					  cgroup_fd);
-+	if (!ASSERT_OK_PTR(link, "getsockopt prog"))
-+		goto close_netns;
-+
-+	run_subflow();
-+
-+	bpf_link__destroy(link);
-+close_netns:
-+	cleanup_netns(nstoken);
-+skel_destroy:
-+	mptcp_subflow__destroy(skel);
-+close_cgroup:
-+	close(cgroup_fd);
-+}
-+
- void test_mptcp(void)
- {
- 	if (test__start_subtest("base"))
- 		test_base();
- 	if (test__start_subtest("mptcpify"))
- 		test_mptcpify();
-+	if (test__start_subtest("subflow"))
-+		test_subflow();
- }
+> So while I get the desire to have a clean and nice
+> end goal, and that it might take a bit longer to get everything right.
+> But, maybe, landing a stop-gap solution meanwhile (especially as
+> isolated and thus easily backportable as the patch [0] you referenced)
+> is an OK path forward?
+
+I had not realized that the PSTATE register was not saved correctly
+at that point. This is one reason why I decided to move in the
+current fprobe-on-fgraph direction.
+
+> 
+> I'm just lacking full understanding on what exactly the issue is/was,
+> and that's why I'm asking all these questions. I'm not sure if [0] is
+> just broken for some subtle reason, or it is just suboptimal in some
+> sense (performance, code duplication, whatnot)?
+
+If [0] was not broken, I pushed it and the current pt_regs to ftrace_regs
+series is separated series. But it was broken. So I tried to find the
+correct way to fix it, and finally introduced the current fprobe on 
+fgraph series. performance improvement is just a side effect.
+
+Thank you,
+
+> 
+> 
+>   [0] https://lore.kernel.org/bpf/164338038439.2429999.17564843625400931820.stgit@devnote2/
+> 
+> > pt_regs. So we need to use ftrace_regs for that.
+> > So eventually, we need my fprobe series.
+> >
+> > https://lore.kernel.org/bpf/164338038439.2429999.17564843625400931820.stgit@devnote2/
+> >
+> > Thank you,
+> >
+> > >
+> > > Note that there was already an implementation (see [1]), but for some
+> > > reason it never made it.
+> > >
+> > >   [1] https://lore.kernel.org/bpf/164338038439.2429999.17564843625400931820.stgit@devnote2/
+> > >   [2] https://lore.kernel.org/bpf/172562357215.467568.2172858907419105155.b4-ty@ellerman.id.au/
+> > >
+> > > >
+> > > > -- Andrii
+> >
+> >
+> > --
+> > Masami Hiramatsu (Google) <mhiramat@kernel.org>
+
 
 -- 
-2.45.2
-
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
