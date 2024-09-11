@@ -1,313 +1,175 @@
-Return-Path: <bpf+bounces-39553-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39554-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B627897475D
-	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 02:27:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4963C97475F
+	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 02:28:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 795A528802A
-	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 00:27:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C99F01F27470
+	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 00:28:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77DF0B660;
-	Wed, 11 Sep 2024 00:27:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98D5CDF71;
+	Wed, 11 Sep 2024 00:28:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SrJ62WVZ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Rs1AqrJ2"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53731AD5B;
-	Wed, 11 Sep 2024 00:27:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86DA5B65C;
+	Wed, 11 Sep 2024 00:27:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726014443; cv=none; b=iJGkr2F7EDT/Zl9F6PfrlnVv3qSOpzByS/kcr3N6qxPvz8ryNgnY8LWVgeLWAXG4Euycg9eH4HqInvNlI/+4GcPjPrmpDZ6Wyb/v0aURypPzw5pSz+x7+OXLmZmsc68E+GqqwDATwmeRbSd4Im8GPlpur1D0k8hGM0CeaEnc5Js=
+	t=1726014481; cv=none; b=QZ1iscR9PVGSHKdti+nj076z/UfllCFACjOtzOaWWGoL/4icV6SpBO7/0ZvhlDIuONkWacU14bxF4NrExPF9ni+8KL0RFu7HNx88wWxMsFpY87uYnEEIqhuC5SFZZXJjYC/L/Jr4kpLO215rjYfqg740sX81lizaSAstzn0lrGI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726014443; c=relaxed/simple;
-	bh=O2yLQewcaZ8vIU7ujdubIxdY+3q6dsNeU3j7kfVCkOA=;
+	s=arc-20240116; t=1726014481; c=relaxed/simple;
+	bh=NrJDu9mEpFS1AmpGjH0DyXRmAqRkxkvNYWJ+v29pVBg=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=E1Iy1cq09hCo+CnYt13q/d1qlNDw8FS9Z4ho5Ivu4mSMszCykx7b8d2Fp8L8CUve6Q8Nv/1wFMbgDq/bunPlo9hCZau999IrFIM+3HhchuDHVRSBq7s7fc07ipGBqLMdYf8Z/LRoUhGEfT3pZtElVxFE97su5WBaViq7xx8dSDc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SrJ62WVZ; arc=none smtp.client-ip=209.85.216.49
+	 To:Cc:Content-Type; b=rcJme+M1CC42GeGOSS9zGDCF44GEJLDjpAy61rMpMMGMgak7189Q5fCb8ZIjPy64uxTswUXATHLZJaL0u6z3o1TpXe7AFql51Bl9kQfIlqf8WM664JtIEFm334C+HbJ3hzC8aOs0a4feh1XucDHmkr6SkjOtaFTnxKJtCfEVs+k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Rs1AqrJ2; arc=none smtp.client-ip=209.85.128.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-2d87f34a650so260236a91.1;
-        Tue, 10 Sep 2024 17:27:21 -0700 (PDT)
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-42cb1758e41so32245695e9.1;
+        Tue, 10 Sep 2024 17:27:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1726014440; x=1726619240; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1726014478; x=1726619278; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=B3G46MS/GN1BRk1GDqS+0a3Dqj+XZN03OuynBKhipNo=;
-        b=SrJ62WVZnAvaqGwXesPz92utRT7UCcciJTyMk+bjCg2jjXl+25Pu1ReBRrYe9h4Umv
-         fL0O/AvGeX3fyCYySm6zsZzX/EmpHFevj90/iOhlweMeQycVCPZlGkdrptRQRcMCFvQV
-         w7IO4Q9FRYle1sUA8V8XDIrNKZJ6XmlNH92dYvQMwO46y8XP23OGS4u8Wn41VzoUiYI+
-         BgwaHxmXPhcH8vE5DbUQVeBZVAqtmDxSDB33x6vGP3ImXCekNp0xaYH6ObftbK8jX+W7
-         W3Mu22fxA6bE7XoOuulc0PbFShddzx0kAKuO2CU1vaWaw0wPYjpdA33BJsLJn/TOqPe+
-         jPfw==
+        bh=4G6htZmT/2OcXeGPBRBMMe5AADfAbOwvpNDLSDJ2pR0=;
+        b=Rs1AqrJ237+S7ChFiwAH/esxmNk4lp+2QRBf+D8lRd51WI3aKMalh3yXCdwQFtNG5j
+         oJUHDHUXdjSAwx0nNQXdmkE9JA4kOMaARUUa2KabvJPfbe5yWKnDLwFJ5QxnJAnjDqR8
+         rsYEb18CLB5KwU6ulfwfOUNkXEdrIFw9BFQhLM7SEVG1B8APTbd4mzAj9GaJ7887zToS
+         mLnZyYNtlSJwMOyISpq99wV8fcDlvpWiupUbogEbor8RYMSbOSeZFXf+4I0w8PNCdiC8
+         HE2q+EN8QaVmUdluhFdxYNQ9pgzAJInB3hr73Hr2gAQ/RLQFmn1LqX/822aCSxI0dNDB
+         1pRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726014440; x=1726619240;
+        d=1e100.net; s=20230601; t=1726014478; x=1726619278;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=B3G46MS/GN1BRk1GDqS+0a3Dqj+XZN03OuynBKhipNo=;
-        b=E2j1/1/65iurzjHD7PH2uW6JzZnSCfQ+pu1ZNXtPFYprHCoYEL39DEl/UP3LCRNL1l
-         Up4jXT0SE+PQES+T+QHbPPstsEFZWLKb56qOX65WlJQWABsxd9Wx1IHGZF1470McDaKq
-         DPO99UGlAeZc4C5aVTa9jT++iRChcDeaJmbCGZuZZdGW492KlVmtHeqqIkpUp9ylvs1s
-         BPN1m7mcv9y7PmPRib4UTca7UP57Sa42A3n6NZ+KQTlvKeU8UoaaRrvMWnLUamIXap1H
-         8yJB6VvzHWY4K94DxVbFbncHSbqEburGLz4n7EB7XNH3sVURtvYq2QWAoLUqqAbxZ5jc
-         YaCQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV32JGoOnKpRCGTsw6cO+NLhUTUou25cWzvwWWEx/Llknf7dDwgQhxRqki+XaYJGIR83wg=@vger.kernel.org, AJvYcCWWI+rC6Q3CLdnUuWRow1gFZee5/J//jJ5apAf/30ihmxBteedNsZecvb6YFM8pRRqnWlo7wef+inYG6yOujo9HO+80@vger.kernel.org
-X-Gm-Message-State: AOJu0YxjpLyeZCwvvMUuLZYA5WJGI82C0Nh+UjfVx8nRpBLV0i3FGTTt
-	dPXJvCF30yAUKXqgfWkHtc8aZJsD8HAEEe8NgZdO+H3d4ImIhKI+CbCRWroVhShHvdyHfOSc8SL
-	HZkhkbUITB/PDVJVaTcAVuqjAl9A=
-X-Google-Smtp-Source: AGHT+IGh1U+VrPkE+xUyC1wGNgrtRAwe6Jw7TUurE36BNPnKB7qGowjg+hLoplVIH7fmY3hj+wATDFppB4Z9CqlWgps=
-X-Received: by 2002:a17:90a:ba96:b0:2c9:36bf:ba6f with SMTP id
- 98e67ed59e1d1-2db67181b2cmr6966104a91.3.1726014440425; Tue, 10 Sep 2024
- 17:27:20 -0700 (PDT)
+        bh=4G6htZmT/2OcXeGPBRBMMe5AADfAbOwvpNDLSDJ2pR0=;
+        b=LtmK/0OO9C2HeePqu7Ul3CnAg/CE63hXShBps2NdrA99M0H/4vFKQLJVrEqIwnbhmy
+         Z6V6dHyth+HLvmzvj39Cj7F25S6ahRXgk1jY8hSLC79L/1h4E0tLEkJ5kxsUbU5D8H1S
+         GsfE1t4IiKS5XipkjEYeFbsmwKYaWAk07dz3///MhYBLLW9pdrqdQ5ZoA9mFC00Wf+VY
+         M0OaloOce0UhxR/Aea8YJ14eHRN/grVV8qhseVVRu4oRAxHU+G+S+Pu2HhqqMDPEj4ds
+         ypjZt12cMYgryhN0NK1oPpaQ1EX7ykaFh6ifoBfHNIlZLvbiK5Gxaytnd0MysZmBvuWo
+         ejfQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU3keSs2QaTYfRn0vknJnmvpAlb3P6rxNS2y0gZ3XN777LKqGZHxHewgT2g3T7SZdvrVps=@vger.kernel.org, AJvYcCXbKCH/bA+EfC4fBrqI+fhI7dLkYdSnVcwkMUSch7xRQ81vhzxHORmMH2SeYgpG8H90qYmz3BQWQhIWIUARcg==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw/1voAbGwFGQfGx3g2YiEgOC+QQqR32GDFa2kYaadcSMr52SLQ
+	hq0nF+FVJqrOGkXZlOwTCh+oOK+Jz8DJIpGHWZMGbWIG+yNjQP5ayv6jJ3waDKxlZ0pqfkOPz+A
+	2jAfza0KYN27rmHXPBdVSgtDP47Q=
+X-Google-Smtp-Source: AGHT+IHwJFWF6RxNiu9vVCXQmuzDa865/DIVQv/Pt4mgdRYAXkfoTXIAxRs5nhL80CtYqi67RErDr704Zfs90RK9RUA=
+X-Received: by 2002:a05:600c:4451:b0:426:6308:e2f0 with SMTP id
+ 5b1f17b1804b1-42cae76cfa5mr91418565e9.26.1726014477550; Tue, 10 Sep 2024
+ 17:27:57 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAEf4BzaYyEftmRmt6FswrTOsb9FuQMtzuDXD4OJMO7Ein2ZRGg@mail.gmail.com>
- <CAEf4BzasRqeAY3ZpBDbjyWSKUriZgUf4U_YoQNSSutKhX5g2kw@mail.gmail.com>
- <20240910145431.20e9d2e5@gandalf.local.home> <CAEf4BzZRV6h5nitTyQ_zah6wWMBZD6QQBbTCWyPVzkPpS42sgg@mail.gmail.com>
- <20240910182209.65ab3452@gandalf.local.home>
-In-Reply-To: <20240910182209.65ab3452@gandalf.local.home>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 10 Sep 2024 17:27:06 -0700
-Message-ID: <CAEf4Bzb12RE6QvLLb1ptSedO2Q2zEZCvxM73BcKXUodJpi5tiw@mail.gmail.com>
-Subject: Re: Unsupported CONFIG_FPROBE and CONFIG_RETHOOK on ARM64
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Linux trace kernel <linux-trace-kernel@vger.kernel.org>, adubey@linux.ibm.com, 
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, KP Singh <kpsingh@chromium.org>, 
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Will Deacon <will@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Florent Revest <revest@chromium.org>, 
-	Puranjay Mohan <puranjay@kernel.org>
+References: <20240829174232.3133883-1-andrii@kernel.org> <CAEf4BzYdP_6L1bT5bEwp5GAwM-rKOA36C-Cwv4i8h-3pKp-nkQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzYdP_6L1bT5bEwp5GAwM-rKOA36C-Cwv4i8h-3pKp-nkQ@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 10 Sep 2024 17:27:45 -0700
+Message-ID: <CAADnVQLCh=D5vFTPQfYai3pW9EFGGjYwG9s+T-r-5a2-rj7kBw@mail.gmail.com>
+Subject: Re: [PATCH v7 bpf-next 00/10] Harden and extend ELF build ID parsing logic
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Matthew Wilcox <willy@infradead.org>, linux-mm <linux-mm@kvack.org>, 
+	Andrew Morton <akpm@linux-foundation.org>, bpf <bpf@vger.kernel.org>, 
+	Alexey Dobriyan <adobriyan@gmail.com>, shakeel.butt@linux.dev, 
+	Johannes Weiner <hannes@cmpxchg.org>, Andi Kleen <ak@linux.intel.com>, 
+	Omar Sandoval <osandov@osandov.com>, Song Liu <song@kernel.org>, Jann Horn <jannh@google.com>, 
+	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Sep 10, 2024 at 3:22=E2=80=AFPM Steven Rostedt <rostedt@goodmis.org=
-> wrote:
+On Tue, Sep 3, 2024 at 3:39=E2=80=AFPM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> On Tue, 10 Sep 2024 13:29:57 -0700
-> Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
->
-> > On Tue, Sep 10, 2024 at 11:54=E2=80=AFAM Steven Rostedt <rostedt@goodmi=
-s.org> wrote:
-> > >
-> > > On Tue, 10 Sep 2024 11:23:29 -0700
-> > > Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > > Does Linus have to be in CC to get any reply here? Come on, it's be=
-en
-> > > > almost a full week.
-> > >
-> > > Just FYI, an email like this does piss people off. You are getting up=
-set
-> > > for waiting "almost a full week"? A full week is what we tell people =
-to
+> On Thu, Aug 29, 2024 at 10:42=E2=80=AFAM Andrii Nakryiko <andrii@kernel.o=
+rg> wrote:
 > >
-> > A full week to get a response to a question? Yes, I find it way too
-> > long. I didn't ask for some complicated code review, did I? I don't
-> > know who "we" are and where "we" tell people, but I disagree that one
-> > week is acceptable latency to coordinate stuff like this across
-> > multiple subsystems.
->
-> Why do I have to answer to you? Once I saw the "ARM64" in the subject, it
-> immediately went down in priority and honesty, I didn't even read it as I=
-'m
-> not the ARM64 maintainer. I did skim it to see if my name was mentioned a=
-s
-> I usually try to do with emails, but when it wasn't I ignored it.
-
-So, in the end, it wasn't "And we are busy getting ready for
-Plumbers.", but rather you didn't find the right keywords in my email,
-right? "Masami" and "Steven" would be the right keywords, but
-"CONFIG_FPROBE" and "CONFIG_RETHOOK" aren't. Good to know.
-
->
+> > The goal of this patch set is to extend existing ELF build ID parsing l=
+ogic,
+> > currently mostly used by BPF subsystem, with support for working in sle=
+epable
+> > mode in which memory faults are allowed and can be relied upon to fetch
+> > relevant parts of ELF file to find and fetch .note.gnu.build-id informa=
+tion.
 > >
-> > "pointing out"? You and Masami are maintainers of linux-trace tree,
-> > and rethook is part of that. Masami's original code was the one in
->
-> Yes, but I don't touch arm code. Masami sometimes does (as is the case
-> here), but it is when we work with the arm maintainers.
-
-And? Did I ask you to write that code? Or review that code? Or did I
-ask the context on why a portion of the patch set didn't end up
-upstream, while the rest did. The patch set submitted by Masami and
-signed off by and tested by you. Was it too much to expect that either
-you or Masami will have a quick answer? I'm sorry, I didn't know you
-don't really read emails addressed *directly* to you in email's To:,
-my bad assuming as much.
-
->
-> > question and I did expect a rather quick reply from him. If not
-> > Masami, then you would have a context as well. Who else should I be
-> > asking?
->
-> The arm64 maintainers as they are the ones that maintain that code.
-
-Even if I misrouted the question (which I still don't believe I did),
-is it above you to point it out and CC the right people?
-
->
+> > This is useful and important for BPF subsystem itself, but also for
+> > PROCMAP_QUERY ioctl(), built atop of /proc/<pid>/maps functionality (se=
+e [0]),
+> > which makes use of the same build_id_parse() functionality. PROCMAP_QUE=
+RY is
+> > always called from sleepable user process context, so it doesn't have t=
+o
+> > suffer from current restrictions of build_id_parse() which are due to t=
+he NMI
+> > context assumption.
 > >
-> > If ARM64 folks somehow have more context, it wouldn't be that hard to
-> > mention and redirect, instead of ghosting my email.
->
-> You should know they have more context because they are the actual
-> maintainers. I shouldn't have to point that out to you.
-
-Maybe they do, maybe they don't. I'm relying and using
-kprobes/kretprobes, and I still don't have a clear understanding of
-all the nuances and differences of k[ret]probes, rethook, fprobe, and
-ftrace, and what works with what. Call me dumb. I don't expect ARM64
-maintainers to know these nuances. They are experts in
-ARM64-specifics, not in a tracing layer, I presume.
-
->
->  $ wget -O /tmp/t.patch https://lore.kernel.org/bpf/164338038439.2429999.=
-17564843625400931820.stgit@devnote2/raw
->  $ ./scripts/get_maintainer.pl t.patch
-> Catalin Marinas <catalin.marinas@arm.com> (maintainer:ARM64 PORT (AARCH64=
- ARCHITECTURE),commit_signer:2/6=3D33%)
-> Will Deacon <will@kernel.org> (maintainer:ARM64 PORT (AARCH64 ARCHITECTUR=
-E),commit_signer:5/6=3D83%)
-> Puranjay Mohan <puranjay@kernel.org> (commit_signer:5/6=3D83%,authored:3/=
-6=3D50%,added_lines:30/255=3D12%)
-> Mark Rutland <mark.rutland@arm.com> (commit_signer:4/6=3D67%,authored:2/6=
-=3D33%,added_lines:105/255=3D41%,removed_lines:47/49=3D96%)
-> "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com> (commit_signer:=
-2/6=3D33%)
-> chenqiwu <qiwuchen55@gmail.com> (authored:1/6=3D17%,added_lines:120/255=
-=3D47%)
-> linux-arm-kernel@lists.infradead.org (moderated list:ARM64 PORT (AARCH64 =
-ARCHITECTURE))
-> linux-kernel@vger.kernel.org (open list)
-> bpf@vger.kernel.org (open list:BPF [MISC]:Keyword:(?:\b|_)bpf(?:\b|_))
->
-> Neither my name nor Masami's shows up.
-
-$ vim wget -O /tmp/t.patch
-https://lore.kernel.org/bpf/164338038439.2429999.17564843625400931820.stgit=
-@devnote2/raw
-$ grep -E 'Masami|Steven' /tmp/t.patch
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-        Masami Hiramatsu <mhiramat@kernel.org>, netdev@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-
-Furthermore,
-
-$ git grep 'config RETHOOK'
-kernel/trace/Kconfig:config RETHOOK
-
-$ scripts/get_maintainer.pl kernel/trace/Kconfig
-Steven Rostedt <rostedt@goodmis.org> (maintainer:TRACING)
-Masami Hiramatsu <mhiramat@kernel.org> (maintainer:TRACING)
-Mathieu Desnoyers <mathieu.desnoyers@efficios.com> (reviewer:TRACING)
-linux-kernel@vger.kernel.org (open list:TRACING)
-linux-trace-kernel@vger.kernel.org (open list:TRACING)
-
-You can define your responsibilities as narrow as you'd like. I was
-asking a question about the RETHOOK patchset/feature overall and why a
-portion of the original patch set is missing, in particular.
-
->
+> > Along the way, we harden the logic to avoid TOCTOU, overflow, out-of-bo=
+unds
+> > access problems.  This is the very first patch, which can be backported=
+ to
+> > older releases, if necessary.
 > >
-> > >
-> > > Funny part is, I was just about to start reviewing Masami's fprobe pa=
-tches
-> > > when I read this. Now I feel reluctant to. I'll do it anyway because =
-they
-> > > are Masami's patches, but if they were yours, I would have pushed it =
-off a
-> > > week or two with that attitude.
+> > We also lift existing limitations of only working as long as ELF progra=
+m
+> > headers and build ID note section is contained strictly within the very=
+ first
+> > page of ELF file.
 > >
-> > (I'll ignore all the personal stuff)
->
-> Maybe you shouldn't ignore it. If you think you can get answers by jumpin=
-g
-> immediately to "I'm going to tell on you to Linus", you may want to rethi=
-nk
-
-No I don't, and I'd hate to have to do that. Which is why I didn't CC
-Linus. And I get that stuff slips through sometimes, as I said. But I
-don't get your absolutely overblown reaction to a question born out of
-frustration of being ignored.
-
-> your approach. A simple "Hey Steve and Masami, what's going on?" would be
-> the "human" thing to do. Especially since you appear to be mad at us for
-
-Don't project, Steven. I'm not mad, though definitely frustrated by a
-very unresponsive ML and its maintainers.
-
-I tried a "hey Masami" approach in [0], and it didn't help much, unfortunat=
-ely.
-
-And it's not the first time I'm ghosted on this mailing list. Would
-you say 4.5 months not getting any reply to [1] is long enough?
-Though, let me guess, it's x86-specific and you don't have anything to
-do with this, right? Going forward I'll consult get_maintainer.pl
-every time to check if you are *NOT* responsible for something, my
-bad. I didn't live by get_maintainer.pl up until now.
-
-  [0] https://lore.kernel.org/bpf/CAEf4BzbbVRGROtRn8PM4h1493avHMggz1kSDDJca=
-NZ1USO_eVw@mail.gmail.com
-  [1] https://lore.kernel.org/linux-trace-kernel/20240425000211.708557-1-an=
-drii@kernel.org/
-
-> not replying to an email about code we do not maintain.
->
-> Sorry, but you're not my boss, I don't have to reply to any of your email=
-s.
-
-I didn't say I am, not sure where you got that from. But I did expect
-a bit more ownership from you as a linux-trace tree maintainer. I'm
-sorry.
-
->
+> > We achieve all of the above without duplication of logic between sleepa=
+ble and
+> > non-sleepable modes through freader abstraction that manages underlying=
+ folio
+> > from page cache (on demand) and gives a simple to use direct memory acc=
+ess
+> > interface. With that, single page restrictions and adding sleepable mod=
+e
+> > support is rather straightforward.
 > >
-> > You are probably talking about [0]. But I was asking about [1], i.e.,
-> > adding HAVE_RETHOOK support to ARM64. Despite all your emotions above,
-> > can I still get a meaningful answer as for why that wasn't landed and
-> > what prevents it from landing right now before Masami's 20-patch
-> > series lands?
+> > We also extend existing set of BPF selftests with a few tests targeting=
+ build
+> > ID logic across sleepable and non-sleepabe contexts (we utilize sleepab=
+le and
+> > non-sleepable uprobes for that).
 > >
-> >   [0] https://lore.kernel.org/linux-trace-kernel/172398527264.293426.20=
-50093948411376857.stgit@devnote2/
-> >   [1] https://lore.kernel.org/bpf/164338038439.2429999.1756484362540093=
-1820.stgit@devnote2/
+> >    [0] https://lore.kernel.org/linux-mm/20240627170900.1672542-4-andrii=
+@kernel.org/
 > >
-> > >
-> > > Again, just letting you know.
+> > v6->v7:
+> >   - added filemap_invalidate_{lock,unlock}_shared() around read_cache_f=
+olio
+> >     and kept Eduard's Reviewed-by (Eduard);
+> > v5->v6:
+> >   - use local phnum variable in get_build_id_32() (Jann);
+> >   - switch memcmp() instead of strcmp() in parse_build_id() (Jann);
+> > v4->v5:
+> >   - pass proper file reference to read_cache_folio() (Shakeel);
+> >   - fix another potential overflow due to two u32 additions (Andi);
+> >   - add PageUptodate() check to patch #1 (Jann);
+> > v3->v4:
+> >   - fix few more potential overflow and out-of-bounds access issues (An=
+di);
+> >   - use purely folio-based implementation for freader (Matthew);
 >
-> Because [1] isn't something I maintain. So I ignored it.
+> Ok, so I'm not sure what one needs to do to get Matthew's attention
+> nowadays, but hopefully yet another ping might do the trick.
+>
+> Matthew,
+>
+> Can you please take another look and provide your ack or nack? I did
+> the conversion to folio as you requested. It would be nice if you can
+> give me a courtesy of acking my patch set, if there is nothing wrong
+> with it, so it can finally go in.
 
-Yes, you are doing a great job at ignoring stuff. That I understood
-very well, thank you.
+Looks like no further comments from Matthew or anyone else.
 
->
->  arch/arm64/Kconfig                            |    1
->  arch/arm64/include/asm/stacktrace.h           |    2 -
->  arch/arm64/kernel/probes/Makefile             |    1
->  arch/arm64/kernel/probes/rethook.c            |   25 +++++++
->  arch/arm64/kernel/probes/rethook_trampoline.S |   87 +++++++++++++++++++=
-++++++
->  arch/arm64/kernel/stacktrace.c                |    7 ++
->
-> None of that would go through my tree unless an arm64 maintainer asked.
->
-> In fact, I need a bunch of acks from all maintainers of the architectures
-> that are touched by [0] before I can pull it in. Which means it will like=
-ly
-> not make this merge window.
->
-> -- Steve
+I'll take another look through the set before applying to bpf-next.
 
