@@ -1,109 +1,195 @@
-Return-Path: <bpf+bounces-39664-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39665-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CBA82975C3E
-	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 23:10:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id EA276975C51
+	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 23:15:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 68454B22B10
-	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 21:10:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 64CA9B223CF
+	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 21:15:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D600814F10F;
-	Wed, 11 Sep 2024 21:10:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 169701531C0;
+	Wed, 11 Sep 2024 21:15:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jG6/nCAA"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="HAkJNKQr"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B4A813D52A;
-	Wed, 11 Sep 2024 21:10:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2D1043144;
+	Wed, 11 Sep 2024 21:15:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726089020; cv=none; b=Vfekkdesr8ZNNV3lCwfSk7R/2kxAQjBIm5M8JP8aLxs8pMTE4vijD4X539h5Dt4dQlSB/47T8y8n8zlRr0vXLcVqaOIKeGShRIR8846KN10t/J9Os0M4RgO45gUON4sIkEBHiEeA+Shu7kHjNVeZqUCFY8lYb5DjWqiFjA4V2os=
+	t=1726089335; cv=none; b=m+gRSNyUZ9yZpzXnw+1aoMAJxbBnl409FZr79dRj+G4vLL/KPDkhiF3xCHzxj9Hos5pC7v2XmsP2xhmvdvhF6EirpB2EVhGVzvBQWw8yv3b9DzaqgO9gl5VOdguAu017nVrTINT0lL8Zwhp4yblUR4b8fGIBPKAa+9uR0jjTo9Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726089020; c=relaxed/simple;
-	bh=jxu1thKXJqrT04deZKVKAfMKLEIWcMCyBfEV7yX6IZs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Qgh23d//0ss7V728XQ53NlwIbBeLopg9WLUZWSa+BpsKW6oM1JJ0ix6pguJDthF4tl/m1fLIWkEtoawDkRbxNu9elOTiB/43Kx1j4zCfAoeMiktaPZ8B8Gpw/CO/LtwH7sk/VHDyMmaNpk4Ai9eNKdnxVFVl3tHAFoG9ZW/EkrQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jG6/nCAA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8816EC4CEC0;
-	Wed, 11 Sep 2024 21:10:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1726089020;
-	bh=jxu1thKXJqrT04deZKVKAfMKLEIWcMCyBfEV7yX6IZs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=jG6/nCAAh0eaIzFJdJ3qfqR+/qWu6FBSKF2kR2/U5pNh/PrskMTIVJfxM79SIkimx
-	 oJNLfiM6Du4xHaEdKDHtBihY0cBqXfJk7N7sI+4Nscd+lsu3M9jtRJ5zRzBqU4Dsvw
-	 3zqQKt2NKyLBE8jXOFD2yMcI+1OqoaCHGjFquVp02TB2oHmZkluWWdhbfALpSlUC0v
-	 3Q3LFF4qHqbf0daUsIQbzZs6hcZPLShh/MSfn9sVkGzrW9MWoLkv81iUXzTgvTkjap
-	 rG5QpiWcrV2/DwmZ1YED5Qz0sgpq3rF0RLiiMO1F2AMQ17LmK8dzy0m6VGraAayT9C
-	 lgGDzx+SlF/0A==
-Date: Wed, 11 Sep 2024 14:10:17 -0700
-From: Nathan Chancellor <nathan@kernel.org>
-To: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Martin KaFai Lau <martin.lau@linux.dev>, bpf@vger.kernel.org,
-	linux-arch@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
-	linux-kernel@vger.kernel.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	Nick Desaulniers <ndesaulniers@google.com>, llvm@lists.linux.dev
-Subject: Re: [PATCH 3/3] btf: require pahole 1.21+ for DEBUG_INFO_BTF with
- default DWARF version
-Message-ID: <20240911211017.GB2659844@thelio-3990X>
-References: <20240911110401.598586-1-masahiroy@kernel.org>
- <20240911110401.598586-3-masahiroy@kernel.org>
+	s=arc-20240116; t=1726089335; c=relaxed/simple;
+	bh=aiD4jhs3FNjaxej74Kkim9aO3yEkdJdFx125jZtqfoU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=RHfKkE1mxYV3AHMx3G7Evw7zvuOEpT7ZmNP5+OE0FDdkK6WHjk+1M2osaQkIsudL5nGUuEBe5/vS7PFg8J4+p3uQk4EYjNLVy8S6ari2dr3DED92x3v5nqxyPYbZJRbxSI9Gh0DmMvhV4tM/u0R7vOiN/SlIqIuLXQwP/JE9tGM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=HAkJNKQr; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:MIME-Version:
+	Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References;
+	bh=lMzcWWA+32JebC4lylEGT5XwBsI22pFn2wLTuzdXq00=; b=HAkJNKQr4KBd4s7PeQ9YfwGj8J
+	Rt6kDy/2CrPL+ismsJp3v4JlYm0IrH//fql/4W0288/eH3bgtguvBZfJjhiM/wz717LZBq/oZqOXc
+	ARhnAztLyp32QhHNjM+1t22UhnY8DwiUqT/BbvFqCMurcuYvSydBWf5deZM0vmlaRU1GVYqxv7Tbr
+	vfGLMbjT0zXvYkh4+hclqlp6MDmoQaXyYuRa1QH+h3XZnNLJrT/93dfvhWW45GMQDN+QQF8hJLGDY
+	13n9Bu4OEYZfZW8YFVrWKWygJ6vTyVdayYIPYMLpYUmn17caWovYDl5PNFLfLQphVZ640eLlumy5x
+	83eKsOYQ==;
+Received: from 55.249.197.178.dynamic.cust.swisscom.net ([178.197.249.55] helo=localhost)
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1soUgQ-000AhQ-R0; Wed, 11 Sep 2024 23:15:26 +0200
+From: Daniel Borkmann <daniel@iogearbox.net>
+To: davem@davemloft.net
+Cc: kuba@kernel.org,
+	pabeni@redhat.com,
+	edumazet@google.com,
+	daniel@iogearbox.net,
+	ast@kernel.org,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	netdev@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: pull-request: bpf-next 2024-09-11
+Date: Wed, 11 Sep 2024 23:15:25 +0200
+Message-Id: <20240911211525.13834-1-daniel@iogearbox.net>
+X-Mailer: git-send-email 2.21.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240911110401.598586-3-masahiroy@kernel.org>
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27395/Wed Sep 11 10:32:20 2024)
 
-On Wed, Sep 11, 2024 at 08:03:58PM +0900, Masahiro Yamada wrote:
-> As described in commit 42d9b379e3e1 ("lib/Kconfig.debug: Allow BTF +
-> DWARF5 with pahole 1.21+"), the combination of CONFIG_DEBUG_INFO_BTF
-> and CONFIG_DEBUG_INFO_DWARF5 requires pahole 1.21+.
-> 
-> GCC 11+ and Clang 14+ default to DWARF 5 when the -g flag is passed.
-> For the same reason, the combination of CONFIG_DEBUG_INFO_BTF and
-> CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT is also likely to require
-> pahole 1.21+. (At least, it is uncertain whether the requirement is
-> pahole 1.16+ or 1.21+.)
-> 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Hi David, hi Jakub, hi Paolo, hi Eric,
 
-Indeed, I think this is a safer, longterm dependency, until we bump the
-minimum versions to the ones listed in the commit message, unless there
-is DWARF6 by that point :)
+The following pull-request contains BPF updates for your *net-next* tree.
 
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+We've added 12 non-merge commits during the last 16 day(s) which contain
+a total of 20 files changed, 228 insertions(+), 30 deletions(-).
 
-> ---
-> 
->  lib/Kconfig.debug | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> index eff408a88dfd..011a7abc68a8 100644
-> --- a/lib/Kconfig.debug
-> +++ b/lib/Kconfig.debug
-> @@ -380,7 +380,7 @@ config DEBUG_INFO_BTF
->  	depends on !GCC_PLUGIN_RANDSTRUCT || COMPILE_TEST
->  	depends on BPF_SYSCALL
->  	depends on PAHOLE_VERSION >= 116
-> -	depends on !DEBUG_INFO_DWARF5 || PAHOLE_VERSION >= 121
-> +	depends on DEBUG_INFO_DWARF4 || PAHOLE_VERSION >= 121
->  	# pahole uses elfutils, which does not have support for Hexagon relocations
->  	depends on !HEXAGON
->  	help
-> -- 
-> 2.43.0
-> 
+There's a minor merge conflict in netkit driver, resolve as follows
+(https://lore.kernel.org/bpf/2444df33-cd03-a929-9ce8-3cf1376d3f78@iogearbox.net):
+
+  	dev->priv_flags |= IFF_LIVE_ADDR_CHANGE;
+  	dev->priv_flags |= IFF_PHONY_HEADROOM;
+  	dev->priv_flags |= IFF_NO_QUEUE;
++ 	dev->priv_flags |= IFF_DISABLE_NETPOLL;
+ +	dev->lltx = true;
+  
+  	dev->ethtool_ops = &netkit_ethtool_ops;
+  	dev->netdev_ops  = &netkit_netdev_ops;
+
+The main changes are:
+
+1) Enable bpf_dynptr_from_skb for tp_btf such that this can be used to easily
+   parse skbs in BPF programs attached to tracepoints, from Philo Lu.
+
+2) Add a cond_resched() point in BPF's sock_hash_free() as there have been
+   several syzbot soft lockup reports recently, from Eric Dumazet.
+
+3) Fix xsk_buff_can_alloc() to account for queue_empty_descs which got noticed
+   when zero copy ice driver started to use it, from Maciej Fijalkowski.
+
+4) Move the xdp:xdp_cpumap_kthread tracepoint before cpumap pushes skbs up via
+   netif_receive_skb_list() to better measure latencies, from Daniel Xu.
+
+5) Follow-up to disable netpoll support from netkit, from Daniel Borkmann.
+
+6) Improve xsk selftests to not assume a fixed MAX_SKB_FRAGS of 17 but instead
+   gather the actual value via /proc/sys/net/core/max_skb_frags, also from
+   Maciej Fijalkowski.
+
+Please consider pulling these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git tags/for-netdev
+
+Thanks a lot!
+
+Also thanks to reporters, reviewers and testers of commits in this pull-request:
+
+Breno Leitao, Cong Wang, Jakub Kicinski, Jakub Sitnicki, Jesper Dangaard 
+Brouer, John Fastabend, Magnus Karlsson, Martin KaFai Lau, Nikolay 
+Aleksandrov, Stanislav Fomichev, syzbot
+
+----------------------------------------------------------------
+
+The following changes since commit f8fdda9e4f988c210b1e4519a28ddbf7d29b0038:
+
+  Merge branch 'tc-adjust-network-header-after-2nd-vlan-push' (2024-08-27 11:37:46 +0200)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git tags/for-netdev
+
+for you to fetch changes up to b1339be951ad31947ae19bc25cb08769bf255100:
+
+  sock_map: Add a cond_resched() in sock_hash_free() (2024-09-11 22:16:04 +0200)
+
+----------------------------------------------------------------
+bpf-next-for-netdev
+
+----------------------------------------------------------------
+Daniel Borkmann (1):
+      netkit: Disable netpoll support
+
+Daniel Xu (1):
+      bpf, cpumap: Move xdp:xdp_cpumap_kthread tracepoint before rcv
+
+Eric Dumazet (1):
+      sock_map: Add a cond_resched() in sock_hash_free()
+
+Maciej Fijalkowski (2):
+      xsk: Bump xsk_queue::queue_empty_descs in xp_can_alloc()
+      selftests/xsk: Read current MAX_SKB_FRAGS from sysctl knob
+
+Martin KaFai Lau (1):
+      Merge branch 'bpf: Allow skb dynptr for tp_btf'
+
+Philo Lu (5):
+      bpf: Support __nullable argument suffix for tp_btf
+      selftests/bpf: Add test for __nullable suffix in tp_btf
+      tcp: Use skb__nullable in trace_tcp_send_reset
+      bpf: Allow bpf_dynptr_from_skb() for tp_btf
+      selftests/bpf: Expand skb dynptr selftests for tp_btf
+
+Simon Horman (1):
+      bpf, sockmap: Correct spelling skmsg.c
+
+Yaxin Chen (1):
+      tcp_bpf: Remove an unused parameter for bpf_tcp_ingress()
+
+ drivers/net/netkit.c                               |  1 +
+ include/trace/events/tcp.h                         | 12 +++---
+ kernel/bpf/btf.c                                   |  3 ++
+ kernel/bpf/cpumap.c                                |  6 ++-
+ kernel/bpf/verifier.c                              | 36 ++++++++++++++++--
+ net/core/filter.c                                  |  3 +-
+ net/core/skmsg.c                                   |  2 +-
+ net/core/sock_map.c                                |  1 +
+ net/ipv4/tcp_bpf.c                                 |  4 +-
+ net/xdp/xsk_buff_pool.c                            | 10 ++++-
+ net/xdp/xsk_queue.h                                |  5 ---
+ .../selftests/bpf/bpf_testmod/bpf_testmod-events.h |  6 +++
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c        |  2 +
+ tools/testing/selftests/bpf/prog_tests/dynptr.c    | 37 ++++++++++++++++++-
+ .../selftests/bpf/prog_tests/tp_btf_nullable.c     | 14 +++++++
+ tools/testing/selftests/bpf/progs/dynptr_fail.c    | 25 +++++++++++++
+ tools/testing/selftests/bpf/progs/dynptr_success.c | 23 ++++++++++++
+ .../selftests/bpf/progs/test_tp_btf_nullable.c     | 24 ++++++++++++
+ tools/testing/selftests/bpf/xskxceiver.c           | 43 +++++++++++++++++++---
+ tools/testing/selftests/bpf/xskxceiver.h           |  1 -
+ 20 files changed, 228 insertions(+), 30 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/tp_btf_nullable.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_tp_btf_nullable.c
 
