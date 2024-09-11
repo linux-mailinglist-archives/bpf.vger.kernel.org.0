@@ -1,159 +1,143 @@
-Return-Path: <bpf+bounces-39557-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39558-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2A61974774
-	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 02:40:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 360AC97477D
+	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 02:44:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 484B1B22532
-	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 00:40:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 689E01C255DE
+	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 00:44:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E43F111AD;
-	Wed, 11 Sep 2024 00:40:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC054125DB;
+	Wed, 11 Sep 2024 00:44:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gAqLdDgc"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MI9KT42/"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C08FFBA34;
-	Wed, 11 Sep 2024 00:40:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0628FCA62;
+	Wed, 11 Sep 2024 00:44:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726015212; cv=none; b=LhUNTxtkp9n0Jv27dcaMEsF+SyaWwQyeePb20jk91RAgNRcONfZ4QZmm6/gSgD/etr94Ju1yx5nXXAnZh4pobtkIR7ETvmAQ0vfPGZm8i5r+FMnek56GLOYgB3p+lQwkUUy/VY8CPrDn4ToWTpUWCXDY+wWOAlBB9lyv49IjciQ=
+	t=1726015468; cv=none; b=mjS9qw4g1fHuwWcjXXsMX8dag8yueQqvBh9CxCVWeFtmkvgAomUMRPitk8jFXwQf7ixr4b+P89D3vRnV6SFEIM088NzCjcxLlXJ5x5nDQ9jipvFf60tUho5gV1XhwpBvE2g1LAA3Ny6OoSOcSiwfniNmIDhwJT6dpvUvjkYg04o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726015212; c=relaxed/simple;
-	bh=QLwcaMVruy9zpYJfsfOookQYzXe1DE2QTOt7Wl9Wl4Q=;
+	s=arc-20240116; t=1726015468; c=relaxed/simple;
+	bh=FcTDMieK61+L94Iv3lWs3uGBZiqaLqFbGjthUE0jfuE=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pRTVL9vAusH+AwDajsRUfMbPfT/ypEXGmwZ0nnv+uYBN0RPkva5agF0+jlhVuBidykwEEnWdFp+3BWexwnBbX7LvpTh7RCqaAZhRlg7ZxBmltsirGtjvO7Ocu2LcGCfVBbRnz0k84C+VypWpk/2LMFhLWozoUxoKvV+vBjhllM4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gAqLdDgc; arc=none smtp.client-ip=209.85.216.49
+	 To:Cc:Content-Type; b=Gck/6Uc0+TWML/La2f154tRn3r7ry0uopEvT2juxIMYYIUopbMU8FojQX3g/Yo3l8CZLdqkmW9hi5oyqRJFTid6frVFvjqkZ0D9SKdgJAswmswm7tYXJ1jUQxwT17RUqtCPE4C1/eK5pO4dMK2m5Ocz3v/+oqBD4MyQqTLQtvH8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MI9KT42/; arc=none smtp.client-ip=209.85.216.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-2d8a744aa9bso3944922a91.3;
-        Tue, 10 Sep 2024 17:40:10 -0700 (PDT)
+Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2d8a4bad409so4246995a91.0;
+        Tue, 10 Sep 2024 17:44:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1726015210; x=1726620010; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1726015466; x=1726620266; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=I3vMPaIxZaNOUIvl2fat9zWSKjWy7xROeEjq/hPQ8Lg=;
-        b=gAqLdDgcBwqXfBsGMWIG0IGXpjev0kjbxouIbr1VJeSmkeKSVPdC9gUvj0cfZWtNNq
-         pD6cefQn6egWusWb81OMgQ0nP8uT89ruxvKFdOKYtL5RBO10AHNoAsvGtKBpZpfH80TO
-         CEQiqJbe848/qe9SxopkjEhGOBXoz9M8h+MPB1+V6NUkHQDMcOFVnncQkVyYSf/Z7RCx
-         Xu1Hw1rhPnU29cpEsiIdXebGRY0sp3icvD+Hq82FCOitasis9TEzLP//1b3J/BRFOKRo
-         BzkK/UWxGbOpiat8o6E2bXsEGaDEnMmkvRjlszlWKBnuyRkIVKTL8eZWvs9kKgtRqn2e
-         zgYA==
+        bh=haJk1tz8+Zb+6ojTw7BhoTCfZ+DeE2XVR4RtK09O8WE=;
+        b=MI9KT42/JjBlMyScu95akN3lUluyUilSPhItl6hIEb9uzMRp5bz7Tw4N0SVzQ2B3V/
+         LCmNhos0FVOp36/7DmWo8+2orDeGcxpmx+sN0P3D1MsI8/V9iZ0co5A/gvhappwYt2Uj
+         d9QU9xdvYqahfv+y6LtFIyLW1VI/zrMic4raEanlFXPxChjJu4a8LRwGVeRq2+60/k/H
+         QLXw35m9zKqnamuu/xGmTTNY944d6pBIC0GPUhqSUJh5+JP/AKikx2bEs8zYWHMQETqa
+         3NvjUXnMTzVyHbp+QTHc+C/SG5uPw2jC/wA/5+2F9k0OEcNqQb1Pg9lrVj6r+S+OuYjm
+         zJGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726015210; x=1726620010;
+        d=1e100.net; s=20230601; t=1726015466; x=1726620266;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=I3vMPaIxZaNOUIvl2fat9zWSKjWy7xROeEjq/hPQ8Lg=;
-        b=vZjTnTMj54dOdMe/XKGeBPK5Xs/8pyc9RBOOlRyDzKsidMXpQeUhqSGNZ7ePYJ14br
-         spuT4IbMF/8APR2TZQG0Z1Std3qb3OxbhEv2A2xMdOHdl1WHM401itLE1HozQQW1yR2B
-         ZoWjC/6gb/FIAQ1QmwAIefO6xqF0VgH0FQoMc1Dftb7GEvc8dLbtyDfsiBAYPZqI6CAC
-         ZUlO3nBlzn7fGTJXPBoX6XPOGUvrzhzkRK+ZCjbO2U/c40OfUKAFKzOEcns4KS5Y1nW0
-         5tPuVO6SvBFg8lc1zTTUbkrmYqiAgPLQ47y0rhxF5xXP/5P+l3WCG7SU+21T9IkggWG2
-         3P0Q==
-X-Forwarded-Encrypted: i=1; AJvYcCU412zlXnV8Luhkmqyd9s5Z//Ddw+IFxDxiz+DIFEBaAEDgAdWDtS352BwrHq8gSpZ/6W0=@vger.kernel.org, AJvYcCUFpK4sYWHqIpZ4uFfd5/fKuKI8r+GZyPJPlmQEoHuD4cEWT++8U3wyRiUcsWm6cZmghYI5VrLEMpV1d5SklKDz@vger.kernel.org, AJvYcCXFrw7HgVOC4MAUtawxeLgozrtz3XK4xtxRTXFXsE6OYuk8nFRGgDhuHeXhGFgrXtanCRWvwzHIUxEJ1IqP@vger.kernel.org
-X-Gm-Message-State: AOJu0YzS+x8kYHnIpNA2G07+KTP8G4Sm1YM8zyqQcndDtA0thKftN7Kl
-	tvUSrwzG/QGO71TbXSY4OSEiLCLujK/3lywf+jUYQeBbJKfA3XfsFgV67J+ibslj6qKFuLarzc/
-	Civcdf2GS24C9oAHLzuGEr4zVEKo=
-X-Google-Smtp-Source: AGHT+IEXMnpf7YAQTErmB6/1ki5x9Rxunx8T7K3K2uJAG+nU2r58oMC3iTj92ONSRr0LK1VAhWmWDKhaAg0RWjrjFPQ=
-X-Received: by 2002:a17:90a:fd13:b0:2d3:c34e:2fda with SMTP id
- 98e67ed59e1d1-2dad4efe241mr15104870a91.14.1726015210053; Tue, 10 Sep 2024
- 17:40:10 -0700 (PDT)
+        bh=haJk1tz8+Zb+6ojTw7BhoTCfZ+DeE2XVR4RtK09O8WE=;
+        b=GU8CD7/Grr/WRtMk6323JQS+bgSvVPcjXXwet/1cJDnSB3zAm5tpi+sxy6zunTGqEs
+         V5aHEOlHsM52ie18sQyvL7v9dJiakNyLM1R9KoDAHl2KyNpUNPoZ6SBrO47qsBRHPwND
+         WDMd/SCN2q1gogB0iKTJA4k/VnTvKft8u5kQLmPzBzmkacdaaNVL1MAMIPtVPgPmYanV
+         G4111EqQfWp+pp36/HpvhoV9KFipUOIYQwHLwzPlnLmO+RoIYwyuM3rRfR0GK3uMljW0
+         TNAd1LljvZeE43zxi6Hn6afiIMWAnwnRl4M3sotnDL1ErmVNM0Zf0gE2p4eF9gXA8Sxg
+         Xv8A==
+X-Forwarded-Encrypted: i=1; AJvYcCVlrfRJDd+S6bf18yYYX8hq5UlZG1g0Ux8A8/YTamplB86djPncQ0RwwdKfvHwBcvyUv+VvsxXjQC3/3OBY2ZQ/GDBU@vger.kernel.org, AJvYcCXEXtFhyzmeKW5PJ7tfIvtPkQSj5/PydDp9Tsc8RTpRlSCcN1d/UF2BqcTg5H1l1aqDfI0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxHAcDuqt2ZF3+Lw0vy1BQUerF0s5dUjubXIuk4ibX+/108E/Ed
+	FTnWJNjdnvjpyxK1h/9AA7v397PStFuNwKYeQ3RP5UZpv+oB8ZOXqPFZJCqf+W+O8gL8nEEUbJ0
+	BZT4clXFmDCSqcdXkuXFX34A82Jc=
+X-Google-Smtp-Source: AGHT+IEbcl34fe0St6atUp2AGhE70G/pITb9zBr/6Q5f1xxWHHvaYtRh1SIgkeo8YXSIwi0tvQtmOquHgR49J3wTaHw=
+X-Received: by 2002:a17:90a:8d07:b0:2d8:8f24:bd88 with SMTP id
+ 98e67ed59e1d1-2dad50d25cfmr15469204a91.14.1726015466005; Tue, 10 Sep 2024
+ 17:44:26 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <18a9ddacc99bb95e9802f8ad1e81214433df496c.1725929645.git.dxu@dxuuu.xyz>
- <CAADnVQKyfZ2-qCvmqG8z919ggdOszEjTs04H=cTGOZTi-zhx7Q@mail.gmail.com>
- <CAEf4Bza5Fiw2rZ5T7=zRwVk1Ct1Mgm7Gpa8w+NJVPZf8keY_9Q@mail.gmail.com>
- <vru2zgphyfywjcqikolwotsfun2bgtrnfmwvfls5ra4tznsydr@46w5rq7gqepz>
- <4ec8e15b-c44b-41d7-b337-32d17306d67b@app.fastmail.com> <CAEf4BzbHqKD87KTSmFUMokXEaAa70xNs96QqfWBHjFbuE5PL=w@mail.gmail.com>
- <rsdwvah5ov3itchsgkwgleihswoycoal5vjbeql2wbqoz5noiz@myk2atnnjaub>
-In-Reply-To: <rsdwvah5ov3itchsgkwgleihswoycoal5vjbeql2wbqoz5noiz@myk2atnnjaub>
+References: <CAEf4BzaYyEftmRmt6FswrTOsb9FuQMtzuDXD4OJMO7Ein2ZRGg@mail.gmail.com>
+ <CAEf4BzasRqeAY3ZpBDbjyWSKUriZgUf4U_YoQNSSutKhX5g2kw@mail.gmail.com>
+ <20240910145431.20e9d2e5@gandalf.local.home> <CAEf4BzZRV6h5nitTyQ_zah6wWMBZD6QQBbTCWyPVzkPpS42sgg@mail.gmail.com>
+ <20240911093949.40e65804d0e517a1fa1cba11@kernel.org>
+In-Reply-To: <20240911093949.40e65804d0e517a1fa1cba11@kernel.org>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 10 Sep 2024 17:39:55 -0700
-Message-ID: <CAEf4BzbKoyja2ErsusUcK8YaS1Rqm0VmBzwsNtQtM1-XHDhD7g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: ringbuf: Support consuming
- BPF_MAP_TYPE_RINGBUF from prog
-To: Daniel Xu <dxu@dxuuu.xyz>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Eduard Zingerman <eddyz87@gmail.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Alexei Starovoitov <ast@kernel.org>, Shuah Khan <shuah@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Mykola Lysenko <mykolal@fb.com>, LKML <linux-kernel@vger.kernel.org>, 
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, Kernel Team <kernel-team@meta.com>
+Date: Tue, 10 Sep 2024 17:44:11 -0700
+Message-ID: <CAEf4BzY2_HN36Lvy9p2s57tGet3ft_1oT6d690vwu4JMgOd9XA@mail.gmail.com>
+Subject: Re: Unsupported CONFIG_FPROBE and CONFIG_RETHOOK on ARM64
+To: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>, bpf <bpf@vger.kernel.org>, 
+	Linux trace kernel <linux-trace-kernel@vger.kernel.org>, adubey@linux.ibm.com, 
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, KP Singh <kpsingh@chromium.org>, 
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Will Deacon <will@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Florent Revest <revest@chromium.org>, 
+	Puranjay Mohan <puranjay@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Sep 10, 2024 at 4:44=E2=80=AFPM Daniel Xu <dxu@dxuuu.xyz> wrote:
+On Tue, Sep 10, 2024 at 5:39=E2=80=AFPM Masami Hiramatsu <mhiramat@kernel.o=
+rg> wrote:
 >
-> On Tue, Sep 10, 2024 at 03:21:04PM GMT, Andrii Nakryiko wrote:
-> > On Tue, Sep 10, 2024 at 3:16=E2=80=AFPM Daniel Xu <dxu@dxuuu.xyz> wrote=
-:
-> > >
-> > >
-> > >
-> > > On Tue, Sep 10, 2024, at 2:07 PM, Daniel Xu wrote:
-> > > > On Tue, Sep 10, 2024 at 01:41:41PM GMT, Andrii Nakryiko wrote:
-> > > >> On Tue, Sep 10, 2024 at 11:36=E2=80=AFAM Alexei Starovoitov
-> > > [...]
-> > > >
-> > > >>
-> > > >> Also, Daniel, can you please make sure that dynptr we return for e=
-ach
-> > > >> sample is read-only? We shouldn't let consumer BPF program ability=
- to
-> > > >> corrupt ringbuf record headers (accidentally or otherwise).
-> > > >
-> > > > Sure.
-> > >
-> > > So the sample is not read-only. But I think prog is prevented from me=
-ssing
-> > > with header regardless.
-> > >
-> > > __bpf_user_ringbuf_peek() returns sample past the header:
-> > >
-> > >         *sample =3D (void *)((uintptr_t)rb->data +
-> > >                            (uintptr_t)((cons_pos + BPF_RINGBUF_HDR_SZ=
-) & rb->mask));
-> > >
-> > > dynptr is initialized with the above ptr:
-> > >
-> > >         bpf_dynptr_init(&dynptr, sample, BPF_DYNPTR_TYPE_LOCAL, 0, si=
-ze);
-> > >
-> > > So I don't think there's a way for the prog to access the header thru=
- the dynptr.
-> > >
-> >
-> > By "header" I mean 8 bytes that precede each submitted ringbuf record.
-> > That header is part of ringbuf data area. Given user space can set
-> > consumer_pos to arbitrary value, kernel can return arbitrary part of
-> > ringbuf data area, including that 8 byte header. If that data is
-> > writable, it's easy to screw up that header and crash another BPF
-> > program that reserves/submits a new record. User space can only read
-> > data area for BPF ringbuf, and so we rely heavily on a tight control
-> > of who can write what into those 8 bytes.
+> On Tue, 10 Sep 2024 13:29:57 -0700
+> Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
 >
-> Ah, ok. I think I understand.
+> > You are probably talking about [0]. But I was asking about [1], i.e.,
+> > adding HAVE_RETHOOK support to ARM64. Despite all your emotions above,
+> > can I still get a meaningful answer as for why that wasn't landed and
+> > what prevents it from landing right now before Masami's 20-patch
+> > series lands?
 >
-> Given this and your other comments about rb->busy, what about enforcing
-> bpf_user_ringbuf_drain() NAND mmap? I think the use cases here are
-> different enough where this makes sense.
+> As I replied to your last email, Mark discovered that [1] is incorrect.
+>  From the bpf perspective, it may be fine that struct pt_regs is missing
+>  some architecture-specific registers, but from an API perspective,
+>  it is a problem.
+>
+> Actually kretprobes on arm64 still does not do it correctly, but I also
+> know most of users does not care. So currently I keep it as it is. But
+> after fixing this issue on fprobe. I would like to update kretprobe so
+> that it will use sw-breakpoint to handle it. It will increase the overhea=
+d
+> of kretprobe, but it should be replaced by fprobe at that moment.
 
-You mean disabling user-space mmap()? TBH, I'd like to understand the
-use case first before we make such decisions. Maybe what you need is
-not really a BPF ringbuf? Can you give us a bit more details on what
-you are trying to achieve?
+Ok, given kretprobes already have this issue, can we add this support
+for BPF multi-kprobe/kretprobe only? We can have an extra Kconfig
+option or whatever necessary. It's sad that we don't have entire
+feature just because a few registers can't be set (and I bet no BPF
+users ever reads those registers from pt_regs). It's not the first,
+nor last case where pt_regs isn't complete (e.g., tracepoints set only
+a few fields in pt_regs, the rest are zero; and that's fine).
+
+>
+> Thank you,
+>
+> >
+> >   [0] https://lore.kernel.org/linux-trace-kernel/172398527264.293426.20=
+50093948411376857.stgit@devnote2/
+> >   [1] https://lore.kernel.org/bpf/164338038439.2429999.1756484362540093=
+1820.stgit@devnote2/
+> >
+> > >
+> > > Again, just letting you know.
+> > >
+> > > -- Steve
+>
+>
+> --
+> Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
