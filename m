@@ -1,161 +1,193 @@
-Return-Path: <bpf+bounces-39619-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39620-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58631975645
-	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 16:59:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5451A9756A4
+	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 17:15:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 18E092824D7
-	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 14:59:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 17F8F2843B9
+	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 15:15:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 919A61A7ADE;
-	Wed, 11 Sep 2024 14:59:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B02C1ABECA;
+	Wed, 11 Sep 2024 15:15:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E7vFI/9t"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Mt9uNK37"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 677BA18EFC6;
-	Wed, 11 Sep 2024 14:59:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12EB319755E
+	for <bpf@vger.kernel.org>; Wed, 11 Sep 2024 15:15:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726066757; cv=none; b=KGB4R7D6x61VMJSdXYAHQPulmWJXRJcRe4RqCHSVDItmQy6wuZoZoADUJoEj9xbXwMv8KZ/dFxPbQxJuuGfA8IuWalGjkvzjjsGpxGXVNYFM2MpkLPIolBZdTyCTE2mH2npiFhjd9UFVNwtGKASsN+4ZZAWgLVMCubCIZfAB9CA=
+	t=1726067704; cv=none; b=QRdLqeMlhVT0LlboEz+cWMhj/loWlIuXQS7xqlQHXdG6uy5AUdFjYm40hWgqeTVMTCe0dqIA7DJnhaDLFULOo30k8cy5SqGZ1gSvPuhqXzNan8I4PNtdH2a8gdyi0GArE1dR2EpgXf9Pr5O6oqcRfeoQRf4CjX6r44HKgNa5pYA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726066757; c=relaxed/simple;
-	bh=EqeoGGKYxejcimh8ipTluV/rKmHEBTKVxt+XCWO4Ng8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=YWWpFfFzQlKKejvQGWbKCBkKUxnfhPSI8DZoq7ILpARd+c64nMakFGfQR1+dY5QnDKqfqzqXq+MsGZdxHc1a16WVjVp5bcXpfQDLbngLuCvUKtlt3fCNekOA281Uptv8yhsANsHxfWM3OLFey3Fn4qSP+ECPoeoi05qtCbJRe3I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E7vFI/9t; arc=none smtp.client-ip=209.85.128.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-42cb9a0c300so19585385e9.0;
-        Wed, 11 Sep 2024 07:59:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1726066753; x=1726671553; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=+vPknzLVW9/P4LhuPBju+jLE/L8k7OTaPSStuKbZs4E=;
-        b=E7vFI/9ttMzyIP/Ll4ISB9WIUzYFtF/A3qdEuObyeTxRSyzFff2F80AavIAfVRpS/H
-         pSzf9C4P8rZMjNWTSQVZOi+UMu3KF0vGEJcut57fy3xzaLkSyYM/UEh5XL4Vh25EJXAq
-         RtmA7guwF+HKuI5ik9CHt+pPPBBzH145STBUJq+i8rzWno5z0UasYaeXA9BfjO1Deo4L
-         CUYmB9/Qm0ik2y3Pzqe3zH3aaF4sOOY3tf4WvBU6NyadTH46jLl7qyjw7XtpIqyQdKIb
-         rBsgSjtEHhXvQIqfmVSNGcIrQTWA0XrKWeLK92sJl1aQjnG1Y8txppubXD0Yy66Cw1RL
-         iXJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726066753; x=1726671553;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+vPknzLVW9/P4LhuPBju+jLE/L8k7OTaPSStuKbZs4E=;
-        b=ojIqBDN/EeLuG7lmsKiK7xvBX0WNQ8OLCzmCY+lVmmURZClKL9vnPwiJvZn8cmfNnm
-         6bPRwBa8kctNycvREYm74nKTARtaN5eV2m5XK3a0UZwq9xCtupYltMm89H/c+QjFIT65
-         7MQy6j+RzXvvY02V1RJe4erpteIbqFKhO2s5GpjVm2V0+S/1egtMWgsd5Ta9ZdNGDPO5
-         no1wISU919Wp9OrTy34bh8iYkXqKYQg1xFNAtSrTpKs472hzfuZpJ77ICjzK2DjkVzNS
-         JVjj1QB6ymZt25LnBaKJSn3P5WJJ1iHv6vW/va2LuSTCmEFLa2bN68q4A3dZZ/A8T0dw
-         S/9g==
-X-Forwarded-Encrypted: i=1; AJvYcCUHfadbpEutBGkbGRsmdSm0asC1jKE+mbTCfH01+HYJim2JOJrSNGHZU6n8zby+ZGb8fCtLuoceRWA=@vger.kernel.org
-X-Gm-Message-State: AOJu0YySLXCMAO/qrdDHbrb+SrsMY/tvN9h58BOVoFvGGTQIfiBqaxmp
-	qrOoyVChzNuB2cwZKQtid0GksO/aYVFP7tKNqIgL+t+97pevSNxeuzaNTg==
-X-Google-Smtp-Source: AGHT+IHbbMGDnBgiMdzBb7jXm6RmAw/LVu9dMUGLWDMnWSKu2Ind9p2nouMzQpdZnkzO2L2E7nfssw==
-X-Received: by 2002:a05:600c:1d1f:b0:42c:b22e:fc23 with SMTP id 5b1f17b1804b1-42ccd32dde5mr24665565e9.15.1726066753011;
-        Wed, 11 Sep 2024 07:59:13 -0700 (PDT)
-Received: from imac.fritz.box ([2a02:8010:60a0:0:68be:b85e:1dba:191c])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-378956d35e5sm11843507f8f.76.2024.09.11.07.59.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Sep 2024 07:59:11 -0700 (PDT)
-From: Donald Hunter <donald.hunter@gmail.com>
-To: bpf@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>
-Cc: Jonathan Corbet <corbet@lwn.net>,
-	Donald Hunter <donald.hunter@gmail.com>
-Subject: [PATCH bpf-next v1] docs/bpf: Add missing BPF program types to docs
-Date: Wed, 11 Sep 2024 15:59:08 +0100
-Message-ID: <20240911145908.34680-1-donald.hunter@gmail.com>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1726067704; c=relaxed/simple;
+	bh=OoWoV8eDEUuV8LgpMPEp9VSrXiPCH7zgP4MR8eYo9Ds=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=IKINhyL7xuoRVuPjQtJokKxTaQMFlmFRcIg0rOnElJJCxSJbLBQ/LoDppwUDM/R9qqdFiZfoSEUQitWtFKI9tAjllY4/DTFz7utMn4poIMSQVjUWizNqtpeAlLSasAp6d6+zCOtg6RvejrNGeOemvSfvCYrh6EnvOhNcHANAolQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Mt9uNK37; arc=none smtp.client-ip=91.218.175.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <1013fea7-b913-480c-a642-b8aaa71e3ac1@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1726067699;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fLZzYXqKjI6JGI6nPb/prSGgwFiSf2/aeGquh+CqmwI=;
+	b=Mt9uNK37ZiSKfOOyNq3caUpDINz0jFAhA395kQrv4mC+32VDoWA8/jK3s4ajy+Zr8DHixZ
+	ZwPsiJuhQsvvsGnw8LEywUfG4H8GgfD06VeaiJb5iYjoKOQavNb1CE9dA7tjyXXPy50P7O
+	09ERM3SqLjzc5X2kXTGpHFqKVerH7Kk=
+Date: Wed, 11 Sep 2024 08:14:50 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [PATCH bpf-next 1/2] bpf: Fix a sdiv overflow issue
+Content-Language: en-GB
+To: Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ kernel-team@fb.com, Martin KaFai Lau <martin.lau@kernel.org>,
+ Zac Ecob <zacecob@protonmail.com>, dthaler1968@googlemail.com
+References: <20240911044017.2261738-1-yonghong.song@linux.dev>
+ <bf721309-0bf7-667c-16c9-b2601e033fe7@iogearbox.net>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <bf721309-0bf7-667c-16c9-b2601e033fe7@iogearbox.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-Update the table of program types in the libbpf documentation with the
-recently added program types.
 
-Signed-off-by: Donald Hunter <donald.hunter@gmail.com>
----
- Documentation/bpf/libbpf/program_types.rst | 29 +++++++++++++++++++---
- 1 file changed, 25 insertions(+), 4 deletions(-)
+On 9/11/24 7:18 AM, Daniel Borkmann wrote:
+> On 9/11/24 6:40 AM, Yonghong Song wrote:
+>> Zac Ecob reported a problem where a bpf program may cause kernel 
+>> crash due
+>> to the following error:
+>>    Oops: divide error: 0000 [#1] PREEMPT SMP KASAN PTI
+>>
+>> The failure is due to the below signed divide:
+>>    LLONG_MIN/-1 where LLONG_MIN equals to -9,223,372,036,854,775,808.
+>> LLONG_MIN/-1 is supposed to give a positive number 
+>> 9,223,372,036,854,775,808,
+>> but it is impossible since for 64-bit system, the maximum positive
+>> number is 9,223,372,036,854,775,807. On x86_64, LLONG_MIN/-1 will
+>> cause a kernel exception. On arm64, the result for LLONG_MIN/-1 is
+>> LLONG_MIN.
+>>
+>> So for 64-bit signed divide (sdiv), some additional insns are patched
+>> to check LLONG_MIN/-1 pattern. If such a pattern does exist, the result
+>> will be LLONG_MIN. Otherwise, it follows normal sdiv operation.
+>
+> I presume this could be follow-up but it would also need an update to [0]
+> to describe the behavior.
+>
+>   [0] Documentation/bpf/standardization/instruction-set.rst
 
-diff --git a/Documentation/bpf/libbpf/program_types.rst b/Documentation/bpf/libbpf/program_types.rst
-index 63bb88846e50..fa80a82d5681 100644
---- a/Documentation/bpf/libbpf/program_types.rst
-+++ b/Documentation/bpf/libbpf/program_types.rst
-@@ -121,6 +121,8 @@ described in more detail in the footnotes.
- +-------------------------------------------+----------------------------------------+----------------------------------+-----------+
- | ``BPF_PROG_TYPE_LWT_XMIT``                |                                        | ``lwt_xmit``                     |           |
- +-------------------------------------------+----------------------------------------+----------------------------------+-----------+
-+| ``BPF_PROG_TYPE_NETFILTER``               |                                        | ``netfilter``                    |           |
-++-------------------------------------------+----------------------------------------+----------------------------------+-----------+
- | ``BPF_PROG_TYPE_PERF_EVENT``              |                                        | ``perf_event``                   |           |
- +-------------------------------------------+----------------------------------------+----------------------------------+-----------+
- | ``BPF_PROG_TYPE_RAW_TRACEPOINT_WRITABLE`` |                                        | ``raw_tp.w+`` [#rawtp]_          |           |
-@@ -131,11 +133,23 @@ described in more detail in the footnotes.
- +                                           +                                        +----------------------------------+-----------+
- |                                           |                                        | ``raw_tracepoint+``              |           |
- +-------------------------------------------+----------------------------------------+----------------------------------+-----------+
--| ``BPF_PROG_TYPE_SCHED_ACT``               |                                        | ``action``                       |           |
-+| ``BPF_PROG_TYPE_SCHED_ACT``               |                                        | ``action`` [#tc_legacy]_         |           |
- +-------------------------------------------+----------------------------------------+----------------------------------+-----------+
--| ``BPF_PROG_TYPE_SCHED_CLS``               |                                        | ``classifier``                   |           |
-+| ``BPF_PROG_TYPE_SCHED_CLS``               |                                        | ``classifier`` [#tc_legacy]_     |           |
- +                                           +                                        +----------------------------------+-----------+
--|                                           |                                        | ``tc``                           |           |
-+|                                           |                                        | ``tc`` [#tc_legacy]_             |           |
-++                                           +----------------------------------------+----------------------------------+-----------+
-+|                                           | ``BPF_NETKIT_PRIMARY``                 | ``netkit/primary``               |           |
-++                                           +----------------------------------------+----------------------------------+-----------+
-+|                                           | ``BPF_NETKIT_PEER``                    | ``netkit/peer``                  |           |
-++                                           +----------------------------------------+----------------------------------+-----------+
-+|                                           | ``BPF_TCX_INGRESS``                    | ``tc/ingress``                   |           |
-++                                           +----------------------------------------+----------------------------------+-----------+
-+|                                           | ``BPF_TCX_EGRESS``                     | ``tc/egress``                    |           |
-++                                           +----------------------------------------+----------------------------------+-----------+
-+|                                           | ``BPF_TCX_INGRESS``                    | ``tcx/ingress``                  |           |
-++                                           +----------------------------------------+----------------------------------+-----------+
-+|                                           | ``BPF_TCX_EGRESS``                     | ``tcx/egress``                   |           |
- +-------------------------------------------+----------------------------------------+----------------------------------+-----------+
- | ``BPF_PROG_TYPE_SK_LOOKUP``               | ``BPF_SK_LOOKUP``                      | ``sk_lookup``                    |           |
- +-------------------------------------------+----------------------------------------+----------------------------------+-----------+
-@@ -155,7 +169,9 @@ described in more detail in the footnotes.
- +-------------------------------------------+----------------------------------------+----------------------------------+-----------+
- | ``BPF_PROG_TYPE_SOCK_OPS``                | ``BPF_CGROUP_SOCK_OPS``                | ``sockops``                      |           |
- +-------------------------------------------+----------------------------------------+----------------------------------+-----------+
--| ``BPF_PROG_TYPE_STRUCT_OPS``              |                                        | ``struct_ops+``                  |           |
-+| ``BPF_PROG_TYPE_STRUCT_OPS``              |                                        | ``struct_ops+`` [#struct_ops]_   |           |
-++                                           +                                        +----------------------------------+-----------+
-+|                                           |                                        | ``struct_ops.s+`` [#struct_ops]_ | Yes       |
- +-------------------------------------------+----------------------------------------+----------------------------------+-----------+
- | ``BPF_PROG_TYPE_SYSCALL``                 |                                        | ``syscall``                      | Yes       |
- +-------------------------------------------+----------------------------------------+----------------------------------+-----------+
-@@ -209,5 +225,10 @@ described in more detail in the footnotes.
-               ``a-zA-Z0-9_.*?``.
- .. [#lsm] The ``lsm`` attachment format is ``lsm[.s]/<hook>``.
- .. [#rawtp] The ``raw_tp`` attach format is ``raw_tracepoint[.w]/<tracepoint>``.
-+.. [#tc_legacy] The ``tc``, ``classifier`` and ``action`` attach types are deprecated, use
-+                ``tcx/*`` instead.
-+.. [#struct_ops] The ``struct_ops`` attach format is ``struct_ops[.s]/<name>``, but name appears
-+                 to be ignored. The attachments are defined in a struct initializer that is
-+                 tagged with ``SEC(".struct_ops[.link]")``.
- .. [#tp] The ``tracepoint`` attach format is ``tracepoint/<category>/<name>``.
- .. [#iter] The ``iter`` attach format is ``iter[.s]/<struct-name>``.
--- 
-2.45.2
+I will do this as a follow-up. Will cover all cases including this patch
+plus existing patched insn to handle r1/r2 and r1%r2 where runtime check r2
+could be 0.
 
+>
+>>    [1] 
+>> https://lore.kernel.org/bpf/tPJLTEh7S_DxFEqAI2Ji5MBSoZVg7_G-Py2iaZpAaWtM961fFTWtsnlzwvTbzBzaUzwQAoNATXKUlt0LZOFgnDcIyKCswAnAGdUF3LBrhGQ=@protonmail.com/
+>>
+>> Reported-by: Zac Ecob <zacecob@protonmail.com>
+>> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+>> ---
+>>   kernel/bpf/verifier.c | 29 ++++++++++++++++++++++++++---
+>>   1 file changed, 26 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+>> index f35b80c16cda..d77f1a05a065 100644
+>> --- a/kernel/bpf/verifier.c
+>> +++ b/kernel/bpf/verifier.c
+>> @@ -20506,6 +20506,7 @@ static int do_misc_fixups(struct 
+>> bpf_verifier_env *env)
+>>               insn->code == (BPF_ALU | BPF_DIV | BPF_X)) {
+>>               bool is64 = BPF_CLASS(insn->code) == BPF_ALU64;
+>>               bool isdiv = BPF_OP(insn->code) == BPF_DIV;
+>> +            bool is_sdiv64 = is64 && isdiv && insn->off == 1;
+>>               struct bpf_insn *patchlet;
+>>               struct bpf_insn chk_and_div[] = {
+>>                   /* [R,W]x div 0 -> 0 */
+>> @@ -20525,10 +20526,32 @@ static int do_misc_fixups(struct 
+>> bpf_verifier_env *env)
+>>                   BPF_JMP_IMM(BPF_JA, 0, 0, 1),
+>>                   BPF_MOV32_REG(insn->dst_reg, insn->dst_reg),
+>>               };
+>> +            struct bpf_insn chk_and_sdiv64[] = {
+>> +                /* Rx sdiv 0 -> 0 */
+>> +                BPF_RAW_INSN(BPF_JMP | BPF_JNE | BPF_K, insn->src_reg,
+>> +                         0, 2, 0),
+>> +                BPF_ALU32_REG(BPF_XOR, insn->dst_reg, insn->dst_reg),
+>> +                BPF_JMP_IMM(BPF_JA, 0, 0, 8),
+>> +                /* LLONG_MIN sdiv -1 -> LLONG_MIN */
+>> +                BPF_RAW_INSN(BPF_JMP | BPF_JNE | BPF_K, insn->src_reg,
+>> +                         0, 6, -1),
+>> +                BPF_LD_IMM64(insn->src_reg, LLONG_MIN),
+>> +                BPF_RAW_INSN(BPF_JMP | BPF_JNE | BPF_X, insn->dst_reg,
+>> +                         insn->src_reg, 2, 0),
+>> +                BPF_MOV64_IMM(insn->src_reg, -1),
+>> +                BPF_JMP_IMM(BPF_JA, 0, 0, 2),
+>> +                BPF_MOV64_IMM(insn->src_reg, -1),
+>
+> Looks good, we could probably shrink this snippet via BPF_REG_AX ?
+> Untested, like below:
+>
+> +                /* Rx sdiv 0 -> 0 */
+> +                BPF_RAW_INSN(BPF_JMP | BPF_JNE | BPF_K, 
+> insn->src_reg, 0, 2, 0),
+> +                BPF_ALU32_REG(BPF_XOR, insn->dst_reg, insn->dst_reg),
+> +                BPF_JMP_IMM(BPF_JA, 0, 0, 5),
+> +                /* LLONG_MIN sdiv -1 -> LLONG_MIN */
+> +                BPF_RAW_INSN(BPF_JMP | BPF_JNE | BPF_K, 
+> insn->src_reg, 0, 2, -1),
+> +                BPF_LD_IMM64(BPF_REG_AX, LLONG_MIN),
+> +                BPF_RAW_INSN(BPF_JMP | BPF_JEQ | BPF_X, 
+> insn->dst_reg, BPF_REG_AX, 1, 0),
+> +                *insn,
+>
+> Then we don't need to restore the src_reg in both paths.
+
+Indeed, this is much simpler. I forgot to use BPF_REG_AX somehow...
+
+>
+>> +                *insn,
+>> +            };
+>
+> Have you also looked into rejecting this pattern upfront on load when 
+> its a known
+> constant as we do with div by 0 in check_alu_op()?
+
+We probably cannot do this for this sdiv case. For example,
+r1/0 or r1%0 can be rejected by verifier.
+But r1/-1 cannot be rejected as most likely r1 is not a constant LLONG_MIN.
+But if the divisor is constant -1, we can patch insn to handle case r1/-1.
+
+>
+> Otherwise lgtm if this is equivalent to arm64 as you describe.
+>
+>> -            patchlet = isdiv ? chk_and_div : chk_and_mod;
+>> -            cnt = isdiv ? ARRAY_SIZE(chk_and_div) :
+>> -                      ARRAY_SIZE(chk_and_mod) - (is64 ? 2 : 0);
+>> +            if (is_sdiv64) {
+>> +                patchlet = chk_and_sdiv64;
+>> +                cnt = ARRAY_SIZE(chk_and_sdiv64);
+>> +            } else {
+>> +                patchlet = isdiv ? chk_and_div : chk_and_mod;
+>> +                cnt = isdiv ? ARRAY_SIZE(chk_and_div) :
+>> +                          ARRAY_SIZE(chk_and_mod) - (is64 ? 2 : 0);
+>> +            }
+>>                 new_prog = bpf_patch_insn_data(env, i + delta, 
+>> patchlet, cnt);
+>>               if (!new_prog)
+>>
+>
 
