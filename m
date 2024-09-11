@@ -1,198 +1,211 @@
-Return-Path: <bpf+bounces-39562-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39563-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DDF5974871
-	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 05:07:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 383249748A8
+	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 05:31:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 117AD1F26F3A
-	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 03:07:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5C7831C24F5B
+	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 03:31:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2B8C2D057;
-	Wed, 11 Sep 2024 03:07:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6B373BBC1;
+	Wed, 11 Sep 2024 03:31:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="CTnssbu3";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="E//nWLKo"
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+Received: from fhigh2-smtp.messagingengine.com (fhigh2-smtp.messagingengine.com [103.168.172.153])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EB6C282F7;
-	Wed, 11 Sep 2024 03:07:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05B3E225D7;
+	Wed, 11 Sep 2024 03:31:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.153
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726024034; cv=none; b=SPiSIICAi8rUuMW8rLrOSVQn2+y2ID5V4exlOFdto1Tl0ISo0CRxh/lFrEJlxnuuaURenhjUfV+JgoTx9PDcbg2P42TajB0OT3dxJ92EmteSeg7Sb6wgb3qavcvmBWLEBcbyUiGvYPgywf8l089Ljke7Bp5EosdklEZvCZb8U2Y=
+	t=1726025511; cv=none; b=JldarTqvi+WYfLf3fjvORP4s819YtWe+dNJNcbki0C6eMqZF9i6DkkcWlBmRATB/QDhlBr/h0l2fSjikeX6SlxBGE9TW7sP3uWapKZDhH1jhtCOFqRMinnQ5Y1Qqm8u9N/IJIMGkyfDdIN2mxcU2CHub4hlMXzgbGU4KyFkD6gM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726024034; c=relaxed/simple;
-	bh=940mgBJmC6hbA6r1sSviHQQZ1ds93etAldQvIvPZcbY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=HQ5Ch6CwG/50Mgty0dgMBEzPvfDo3S8jw+xk83GAMGtlWB522DBx9bcQOIBl9E6y80NTSR01loxUmYY5anRTzSIBSx0pYwq4dXFIp2BP0rpr+YQ1BmrX7rMFanTMr0rpE8n0i2vNRebPbTgepaJVttUxa+ksXUjGQakuXWgmRnA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.194])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4X3QST5v5mzyRRM;
-	Wed, 11 Sep 2024 11:06:01 +0800 (CST)
-Received: from kwepemd200013.china.huawei.com (unknown [7.221.188.133])
-	by mail.maildlp.com (Postfix) with ESMTPS id 46D811402E2;
-	Wed, 11 Sep 2024 11:07:08 +0800 (CST)
-Received: from [10.67.110.108] (10.67.110.108) by
- kwepemd200013.china.huawei.com (7.221.188.133) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.34; Wed, 11 Sep 2024 11:06:58 +0800
-Message-ID: <f96eda54-9fb1-31a0-b138-cde0716f11f1@huawei.com>
-Date: Wed, 11 Sep 2024 11:06:57 +0800
+	s=arc-20240116; t=1726025511; c=relaxed/simple;
+	bh=fh2mQQHN0+JyXsYmenNkWGkkjGx3ocELSgZ/ZIqwhUY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=We89M14djEJdth07Zh2LWKq2yEW9PDowJoyaPuxn4Ri1yU0BuY04H9+2TweXsnpjymGcVUuo2ksNF5sjJawvErS4DlDdhF+D6mM40OdPzT4xNNx7NgMPcrqKoJ2T/fwPGQTNb3283auoMbBEZoHoskwBozuDxWvnph6yazJ23Ws=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=CTnssbu3; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=E//nWLKo; arc=none smtp.client-ip=103.168.172.153
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
+Received: from phl-compute-05.internal (phl-compute-05.phl.internal [10.202.2.45])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id 1BB4511400BB;
+	Tue, 10 Sep 2024 23:31:47 -0400 (EDT)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-05.internal (MEProxy); Tue, 10 Sep 2024 23:31:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1726025507;
+	 x=1726111907; bh=dvDVMkbr7rfR+VCNGEE7NMGR6SEz2dyK7e21kWURShA=; b=
+	CTnssbu3B6AtV3bXj661ntr/y/rpB6O/OZ45GMLskMx4TyAEliyU8GSs14vITv4W
+	TrH8fzyrI4mvjdE13BEq0qI0wfiodvMqDofQzAlbifl9tSzWyQFWuZnpWVhSodos
+	my5TLcq6QTJaO5KjwzBKLb1G8w7KMvczjMgFjk7EJsNIKAuQTVKdsgW+kkgxGB6S
+	UqUAT0tp8uTfbxekCz98Uo7d6b41LMgwMQaiIGx1EyH8TCQ8vlJ3zMka8Fmqj322
+	cl3+owVuIwTT2WKAZ9oN8h16PnzRCcO5Hy/leziW0fUgkJdLnlSXj4wDCeSKRNdP
+	K/9bZ/ua6/aw05zKP89EIQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1726025507; x=
+	1726111907; bh=dvDVMkbr7rfR+VCNGEE7NMGR6SEz2dyK7e21kWURShA=; b=E
+	//nWLKoadYIePtJ3R+0d8frhqggwmLTDQNZAWUveLZc7cvfea1Mlv8+qiLF2i/5A
+	Q96SnL2EOuMq4So4VZyoF2A0geWZ0nkSTX9BwAwJbu7B281npUMILl6KHwLMwCWv
+	LQdXIP4YdyyXaKvDj9SIUS/IhHJvY3c2llVe4xX3C6go9Y7KkdFAlOw/bS1yyY+/
+	ZVbvcVnH6XZcGfwJQfrQOxt8oMzeZxqHvNEUv735NIscPpHaTlmJdlQP8vUIrghC
+	2HHlNtX7tiT5Pra2fhEgwzvMIoaKnNXeYXh2sXj6jLRtQYOz/fZZ4lQNNtZZDgBN
+	o/ocqKwGGwbOYJmb0okTQ==
+X-ME-Sender: <xms:Ig_hZgc-UibDzIpSgn1os821_tjPU_6mtuPws7Z3S33H5keeFQ1yNg>
+    <xme:Ig_hZiPPKL3gSzA_gy5XtCVqBysTLlaRZPOckL2wKNOU1s49HB5MRBYPL1-W5UkEI
+    0ehz6voKQ6AaPxGOw>
+X-ME-Received: <xmr:Ig_hZhj8HXoIG3s1CG7eEdDT_WgN_3ifMlELoT6y3obuMu7W5v7mf8zn3vMAeKnrnccq03F4tUVCo5aKK8uJbDoTXMaTrHOMTv1tJlHd1V2cLg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrudejtddgjedtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
+    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
+    htshculddquddttddmnegfrhhlucfvnfffucdljedtmdenucfjughrpeffhffvvefukfhf
+    gggtugfgjgestheksfdttddtjeenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihuse
+    gugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpedtgfeuueeukeeikefgieeukeff
+    leetkeekkeeggeffvedtvdejueehueeuleefteenucevlhhushhtvghrufhiiigvpedtne
+    curfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiiipdhnsggprhgt
+    phhtthhopedvtddpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtoheprghnughrihhird
+    hnrghkrhihihhkohesghhmrghilhdrtghomhdprhgtphhtthhopegrlhgvgigvihdrshht
+    rghrohhvohhithhovhesghhmrghilhdrtghomhdprhgtphhtthhopegvugguhiiikeejse
+    hgmhgrihhlrdgtohhmpdhrtghpthhtoheprghnughrihhisehkvghrnhgvlhdrohhrghdp
+    rhgtphhtthhopegurghnihgvlhesihhoghgvrghrsghogidrnhgvthdprhgtphhtthhope
+    grshhtsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehshhhurghhsehkvghrnhgvlhdr
+    ohhrghdprhgtphhtthhopehjohhhnhdrfhgrshhtrggsvghnugesghhmrghilhdrtghomh
+    dprhgtphhtthhopehmrghrthhinhdrlhgruheslhhinhhugidruggvvh
+X-ME-Proxy: <xmx:Ig_hZl9SRWqJlxlQUmUvRc9-qKX-cHiiTlyT7g_3S90qiOE53EhD6g>
+    <xmx:Ig_hZsswXRUWAiEu-0LeBecg-chMObhr5fITv0QDA2dcNs3JaPbwJg>
+    <xmx:Ig_hZsHEjlg0Et9_0xlHeRwDC0zg8UBO_lacLrbyzWyLv16sz9bf9Q>
+    <xmx:Ig_hZrO9GCydkYdnqRAAtx4KSUAmLq6uG5z4ZQSe-YhFn8a3_9Zt1w>
+    <xmx:Iw_hZtMMXVUBcRodGF11Hrlx4FwGUkDjkkqX_TKsNzhLxHq-m46M2PUq>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 10 Sep 2024 23:31:44 -0400 (EDT)
+Date: Tue, 10 Sep 2024 21:31:43 -0600
+From: Daniel Xu <dxu@dxuuu.xyz>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov <ast@kernel.org>, 
+	Shuah Khan <shuah@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Mykola Lysenko <mykolal@fb.com>, LKML <linux-kernel@vger.kernel.org>, 
+	"bpf@vger.kernel.org" <bpf@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, Kernel Team <kernel-team@meta.com>
+Subject: Re: [PATCH bpf-next] bpf: ringbuf: Support consuming
+ BPF_MAP_TYPE_RINGBUF from prog
+Message-ID: <cz7qwrujjiunv3yydkfamfm5mkis5xdy4vg4odwatchjoaoolk@zzithxrzdxkv>
+References: <18a9ddacc99bb95e9802f8ad1e81214433df496c.1725929645.git.dxu@dxuuu.xyz>
+ <CAADnVQKyfZ2-qCvmqG8z919ggdOszEjTs04H=cTGOZTi-zhx7Q@mail.gmail.com>
+ <CAEf4Bza5Fiw2rZ5T7=zRwVk1Ct1Mgm7Gpa8w+NJVPZf8keY_9Q@mail.gmail.com>
+ <vru2zgphyfywjcqikolwotsfun2bgtrnfmwvfls5ra4tznsydr@46w5rq7gqepz>
+ <4ec8e15b-c44b-41d7-b337-32d17306d67b@app.fastmail.com>
+ <CAEf4BzbHqKD87KTSmFUMokXEaAa70xNs96QqfWBHjFbuE5PL=w@mail.gmail.com>
+ <rsdwvah5ov3itchsgkwgleihswoycoal5vjbeql2wbqoz5noiz@myk2atnnjaub>
+ <CAEf4BzbKoyja2ErsusUcK8YaS1Rqm0VmBzwsNtQtM1-XHDhD7g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.2
-Subject: Re: [PATCH] arm64: uprobes: Simulate STP for pushing fp/lr into user
- stack
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-CC: <catalin.marinas@arm.com>, <will@kernel.org>, <mhiramat@kernel.org>,
-	<oleg@redhat.com>, <peterz@infradead.org>, <ast@kernel.org>,
-	<puranjay@kernel.org>, <andrii@kernel.org>, <mark.rutland@arm.com>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	<linux-trace-kernel@vger.kernel.org>, <bpf@vger.kernel.org>
-References: <20240910060407.1427716-1-liaochang1@huawei.com>
- <CAEf4BzZ3trjMWjvWX4Zy1GzW5RN1ihXZSnLZax7V-mCzAUg2cg@mail.gmail.com>
-From: "Liao, Chang" <liaochang1@huawei.com>
-In-Reply-To: <CAEf4BzZ3trjMWjvWX4Zy1GzW5RN1ihXZSnLZax7V-mCzAUg2cg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemd200013.china.huawei.com (7.221.188.133)
+In-Reply-To: <CAEf4BzbKoyja2ErsusUcK8YaS1Rqm0VmBzwsNtQtM1-XHDhD7g@mail.gmail.com>
 
-
-
-在 2024/9/11 4:54, Andrii Nakryiko 写道:
-> On Mon, Sep 9, 2024 at 11:14 PM Liao Chang <liaochang1@huawei.com> wrote:
->>
->> This patch is the second part of a series to improve the selftest bench
->> of uprobe/uretprobe [0]. The lack of simulating 'stp fp, lr, [sp, #imm]'
->> significantly impact uprobe/uretprobe performance at function entry in
->> most user cases. Profiling results below reveals the STP that executes
->> in the xol slot and trap back to kernel, reduce redis RPS and increase
->> the time of string grep obviously.
->>
->> On Kunpeng916 (Hi1616), 4 NUMA nodes, 64 Arm64 cores@2.4GHz.
->>
->> Redis GET (higher is better)
->> ----------------------------
->> No uprobe: 49149.71 RPS
->> Single-stepped STP: 46750.82 RPS
->> Emulated STP: 48981.19 RPS
->>
->> Redis SET (larger is better)
->> ----------------------------
->> No uprobe: 49761.14 RPS
->> Single-stepped STP: 45255.01 RPS
->> Emulated stp: 48619.21 RPS
->>
->> Grep (lower is better)
->> ----------------------
->> No uprobe: 2.165s
->> Single-stepped STP: 15.314s
->> Emualted STP: 2.216s
->>
->> Additionally, a profiling of the entry instruction for all leaf and
->> non-leaf function, the ratio of 'stp fp, lr, [sp, #imm]' is larger than
->> 50%. So simulting the STP on the function entry is a more viable option
->> for uprobe.
->>
->> In the first version [1], it used a uaccess routine to simulate the STP
->> that push fp/lr into stack, which use double STTR instructions for
->> memory store. But as Mark pointed out, this approach can't simulate the
->> correct single-atomicity and ordering properties of STP, especiallly
->> when it interacts with MTE, POE, etc. So this patch uses a more complex
+On Tue, Sep 10, 2024 at 05:39:55PM GMT, Andrii Nakryiko wrote:
+> On Tue, Sep 10, 2024 at 4:44 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
+> >
+> > On Tue, Sep 10, 2024 at 03:21:04PM GMT, Andrii Nakryiko wrote:
+> > > On Tue, Sep 10, 2024 at 3:16 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
+> > > >
+> > > >
+> > > >
+> > > > On Tue, Sep 10, 2024, at 2:07 PM, Daniel Xu wrote:
+> > > > > On Tue, Sep 10, 2024 at 01:41:41PM GMT, Andrii Nakryiko wrote:
+> > > > >> On Tue, Sep 10, 2024 at 11:36 AM Alexei Starovoitov
+> > > > [...]
+> > > > >
+> > > > >>
+> > > > >> Also, Daniel, can you please make sure that dynptr we return for each
+> > > > >> sample is read-only? We shouldn't let consumer BPF program ability to
+> > > > >> corrupt ringbuf record headers (accidentally or otherwise).
+> > > > >
+> > > > > Sure.
+> > > >
+> > > > So the sample is not read-only. But I think prog is prevented from messing
+> > > > with header regardless.
+> > > >
+> > > > __bpf_user_ringbuf_peek() returns sample past the header:
+> > > >
+> > > >         *sample = (void *)((uintptr_t)rb->data +
+> > > >                            (uintptr_t)((cons_pos + BPF_RINGBUF_HDR_SZ) & rb->mask));
+> > > >
+> > > > dynptr is initialized with the above ptr:
+> > > >
+> > > >         bpf_dynptr_init(&dynptr, sample, BPF_DYNPTR_TYPE_LOCAL, 0, size);
+> > > >
+> > > > So I don't think there's a way for the prog to access the header thru the dynptr.
+> > > >
+> > >
+> > > By "header" I mean 8 bytes that precede each submitted ringbuf record.
+> > > That header is part of ringbuf data area. Given user space can set
+> > > consumer_pos to arbitrary value, kernel can return arbitrary part of
+> > > ringbuf data area, including that 8 byte header. If that data is
+> > > writable, it's easy to screw up that header and crash another BPF
+> > > program that reserves/submits a new record. User space can only read
+> > > data area for BPF ringbuf, and so we rely heavily on a tight control
+> > > of who can write what into those 8 bytes.
+> >
+> > Ah, ok. I think I understand.
+> >
+> > Given this and your other comments about rb->busy, what about enforcing
+> > bpf_user_ringbuf_drain() NAND mmap? I think the use cases here are
+> > different enough where this makes sense.
 > 
-> Does all those effects matter if the thread is stopped after
-> breakpoint? This is pushing to stack, right? Other threads are not
-> supposed to access that memory anyways (not the well-defined ones, at
-> least, I suppose). Do we really need all these complications for
+> You mean disabling user-space mmap()? TBH, I'd like to understand the
+> use case first before we make such decisions. Maybe what you need is
+> not really a BPF ringbuf? Can you give us a bit more details on what
+> you are trying to achieve?
 
-I have raised the same question in my reply to Mark. Since the STP
-simulation focuses on the uprobe/uretprob at function entry, which
-push two registers onto *stack*. I believe it might not require strict
-alignment with the exact property of STP. However, as you know, Mark
-stand by his comments about STP simulation, which is why I send this
-patch out. Although the gain is not good as the uaccess version, it
-still offer some better result than the current XOL code.
+BPF cpumap, under the hood, has one MPSC ring buffer (ptr_ring) for each
+entry in the cpumap. When a prog redirects to an entry in the cpumap,
+the machinery queues up the xdp frame onto the destination CPU ptr_ring.
+This can occur on any cpu, thus multi-producer. On processing side,
+there is only the kthread created by the cpumap entry and bound to the
+specific cpu that is consuming entries. So single consumer.
 
-> uprobes? We use a similar approach in x86-64, see emulate_push_stack()
-> in arch/x86/kernel/uprobes.c and it works great in practice (and has
+Goal is to track the latency overhead added from ptr_ring and the
+kthread (versus softirq where is less overhead). Ideally we want p50,
+p90, p95, p99 percentiles.
 
-Yes, I've noticed the X86 routine. Actually. The CPU-specific difference
-lies in Arm64 CPUs with PAN enabled. Due to security reasons, it doesn't
-support STP (storing pairs of registers to memory) when accessing userpsace
-address. This leads to kernel has to use STTR instructions (storing single
-register to unprivileged memory) twice, which can't meet the atomicity
-and ordering properties of original STP at userspace. In future, if Arm64
-would add some instruction for storing pairs of registers to unprivileged
-memory, it ought to replace this inefficient approach.
+To do this, we need to track every single entry enqueue time as well as
+dequeue time - events that occur in the tail are quite important.
 
-> been for years by now). Would be nice to keep things simple knowing
-> that this is specifically for this rather well-defined and restricted
-> uprobe/uretprobe use case.
-> 
-> Sorry, I can't help reviewing this, but I have a hunch that we might
-> be over-killing it with this approach, no?
+Since ptr_ring is also a ring buffer, I thought it would be easy,
+reliable, and fast to just create a "shadow" ring buffer. Every time
+producer enqueues entries, I'd enqueue the same number of current
+timestamp onto shadow RB. Same thing on consumer side, except dequeue
+and calculate timestamp delta.
 
-This approach fails to obtain the max benefit from simuation indeed.
+I was originally planning on writing my own lockless ring buffer in pure
+BPF (b/c spinlocks cannot be used w/ tracepoints yet) but was hoping I
+could avoid that with this patch.
 
-> 
-> 
->> and inefficient approach that acquires user stack pages, maps them to
->> kernel address space, and allows kernel to use STP directly push fp/lr
->> into the stack pages.
->>
->> xol-stp
->> -------
->> uprobe-nop      ( 1 cpus):    1.566 ± 0.006M/s  (  1.566M/s/cpu)
->> uprobe-push     ( 1 cpus):    0.868 ± 0.001M/s  (  0.868M/s/cpu)
->> uprobe-ret      ( 1 cpus):    1.629 ± 0.001M/s  (  1.629M/s/cpu)
->> uretprobe-nop   ( 1 cpus):    0.871 ± 0.001M/s  (  0.871M/s/cpu)
->> uretprobe-push  ( 1 cpus):    0.616 ± 0.001M/s  (  0.616M/s/cpu)
->> uretprobe-ret   ( 1 cpus):    0.878 ± 0.002M/s  (  0.878M/s/cpu)
->>
->> simulated-stp
->> -------------
->> uprobe-nop      ( 1 cpus):    1.544 ± 0.001M/s  (  1.544M/s/cpu)
->> uprobe-push     ( 1 cpus):    1.128 ± 0.002M/s  (  1.128M/s/cpu)
->> uprobe-ret      ( 1 cpus):    1.550 ± 0.005M/s  (  1.550M/s/cpu)
->> uretprobe-nop   ( 1 cpus):    0.872 ± 0.004M/s  (  0.872M/s/cpu)
->> uretprobe-push  ( 1 cpus):    0.714 ± 0.001M/s  (  0.714M/s/cpu)
->> uretprobe-ret   ( 1 cpus):    0.896 ± 0.001M/s  (  0.896M/s/cpu)
->>
->> The profiling results based on the upstream kernel with spinlock
->> optimization patches [2] reveals the simulation of STP increase the
->> uprobe-push throughput by 29.3% (from 0.868M/s/cpu to 1.1238M/s/cpu) and
->> uretprobe-push by 15.9% (from 0.616M/s/cpu to 0.714M/s/cpu).
->>
->> [0] https://lore.kernel.org/all/CAEf4BzaO4eG6hr2hzXYpn+7Uer4chS0R99zLn02ezZ5YruVuQw@mail.gmail.com/
->> [1] https://lore.kernel.org/all/Zr3RN4zxF5XPgjEB@J2N7QTR9R3/
->> [2] https://lore.kernel.org/all/20240815014629.2685155-1-liaochang1@huawei.com/
->>
->> Signed-off-by: Liao Chang <liaochang1@huawei.com>
->> ---
->>  arch/arm64/include/asm/insn.h            |  1 +
->>  arch/arm64/kernel/probes/decode-insn.c   | 16 +++++
->>  arch/arm64/kernel/probes/decode-insn.h   |  1 +
->>  arch/arm64/kernel/probes/simulate-insn.c | 89 ++++++++++++++++++++++++
->>  arch/arm64/kernel/probes/simulate-insn.h |  1 +
->>  arch/arm64/kernel/probes/uprobes.c       | 21 ++++++
->>  arch/arm64/lib/insn.c                    |  5 ++
->>  7 files changed, 134 insertions(+)
->>
-> 
-> [...]
-> 
-> 
-
--- 
-BR
-Liao, Chang
+About disabling user-space mmap: yeah, that's what I was suggesting. I
+think it'd be a bit odd if you wanted BPF RB to support consumption from
+both userspace && prog at the same time. And since draining from prog is
+new functionality (and thus the NAND isn't a regression), you could
+relax the restriction later without issues.
 
