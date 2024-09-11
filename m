@@ -1,245 +1,213 @@
-Return-Path: <bpf+bounces-39580-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39583-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2807D97495A
-	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 06:43:52 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E07D9749FC
+	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 07:57:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3B9BF28160E
-	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 04:43:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 870BC1F26921
+	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 05:57:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2040754F8C;
-	Wed, 11 Sep 2024 04:43:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C6F66F2FD;
+	Wed, 11 Sep 2024 05:57:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="DEH+eF2a";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="LX9q9qim"
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="rijKneC/";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="rijKneC/";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=obs-cr.20230601.gappssmtp.com header.i=@obs-cr.20230601.gappssmtp.com header.b="iZBfKWOU"
 X-Original-To: bpf@vger.kernel.org
-Received: from flow4-smtp.messagingengine.com (flow4-smtp.messagingengine.com [103.168.172.139])
+Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CBFB39AEB;
-	Wed, 11 Sep 2024 04:43:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.139
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC45A37171
+	for <bpf@vger.kernel.org>; Wed, 11 Sep 2024 05:57:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=50.223.129.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726029822; cv=none; b=R6jy5M62GbZOXHuLgQnLxpI0drWy5EyVgoy97TdmotVkTw2XWJinjHNtqwVQ0lLtsaQ3dAUJ6mBiCdxxy52UuP8NqlCrpv6rXNwrft9zGDQdHCVC13B7SEjIxM978ibcInMTAxWiXXG41kNewvLwq86jUi7+GEeh+GiTmvQOVXo=
+	t=1726034259; cv=none; b=ogkOE1Avwc2nNH6nmNteKF8LyBAzZbSaMbuw7OYoNobHUiFpeLDAfrDilNg6WkLz5AEWWTZ6KolNzWyS8Zit9l4eJxzMc1Pt8X0hvNs+Ff+k+hllgItCl6yWGFaEjclVrcy5FTGOy7YppF2Mo2uScCn0GcTZEBKqv3tv8ZnjJ18=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726029822; c=relaxed/simple;
-	bh=5WJmlUpv4uarehRVhZPvsD4DxEp0exdQL0oR9rX1viQ=;
-	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=BSrlA3C0JUxUSYkcYy1Rt5TyqUBTqQchkps3RiL5R+t/7WuYFYLSrPDIKLIfTyHAPD2idICjV455kzB2N29EWiAkwZr148DNlatECOx762qpzY5jj4rmOEQdBul/ljFCtK+TjMQgSjMlbqep/zWRp7iytSlSxPqrXQ7nmWeEyMU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=DEH+eF2a; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=LX9q9qim; arc=none smtp.client-ip=103.168.172.139
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
-Received: from phl-compute-03.internal (phl-compute-03.phl.internal [10.202.2.43])
-	by mailflow.phl.internal (Postfix) with ESMTP id 2F9A22002F0;
-	Wed, 11 Sep 2024 00:43:39 -0400 (EDT)
-Received: from phl-imap-08 ([10.202.2.84])
-  by phl-compute-03.internal (MEProxy); Wed, 11 Sep 2024 00:43:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm3; t=1726029819;
-	 x=1726037019; bh=U9YHIYH7MDBn8W8m5ipffYcdOZHKNXYCU4csAZFBp0E=; b=
-	DEH+eF2apJ98APgQPYNh6XK2m04O63eL+8sF5i84xFMQzIqX/d+dYYEOy+GbalG9
-	RBoxkO+Wb7x6qitIUKJfeuVi/h/wl5tkvofP7pli+zyRRDT9zlxRZ7yDEL799Tkq
-	sjNOJ9y+HDMgiijlJIfLpXFqsQtDVJZ0UTpvZ96ySqIwFcqYPyUKy+MqiuqqPeJf
-	sfgp5vjcA/1UPX74v7G5dTTJo/VxKdi6vo8H3NmYHS3R9aAXYT8aQKiKlxhxw8/a
-	CwnWM5ne6295Mo5HER9qsKzdEzbh4W/VE6DodyQA/352i6exJrDKIo/U0VXlBL8b
-	1jhe26IDKj7xjGuPndO0jw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1726029819; x=
-	1726037019; bh=U9YHIYH7MDBn8W8m5ipffYcdOZHKNXYCU4csAZFBp0E=; b=L
-	X9q9qimlwytCr3wy6RA8JWzTHF1PgCsvxU860sGMMA79qsULmzRRCwAFjkMCtXJB
-	+Xmr3JRi7DJEI9BAos8cPR3bXS90IgMJ4tAXw8LB0xLWFTSqOLwdcvYp2+TKSrPQ
-	4kfZm1speIONlYJjI7z0S0kgAk5NT1zayt5xe+gmn1t4Uex0fMCJZ40LOOHlxvw5
-	mDiWbZMW6AqNaXWftwSzHf8CnxF5IOyE3bquDZDGJSe8YGUSc078T08uRmKpVJ+M
-	TlY147lf0miNsRTSq9+BKpBlBizRDuTfsc8+ugJ2fSqkq8nINU3QusnKkFU1+bXQ
-	h0AMY7dG5p3bNeu3i+JBA==
-X-ME-Sender: <xms:-h_hZnVHLkV6mN97PjZRXqceB6Z5mDZ2YJSLeru-OZkHO0vbuMi5Kw>
-    <xme:-h_hZvmmuaYz2KzfoieYhR2XT1nUh2i9uiLgIJEH2U5iZQhBNs1qjtqTnQGdkyz2E
-    2oh9v2febItXn-UyA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrudejtddgkeeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
-    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
-    htshculddquddttddmnegfrhhlucfvnfffucdlfeehmdenucfjughrpefoggffhffvvefk
-    jghfufgtgfesthhqredtredtjeenucfhrhhomhepfdffrghnihgvlhcuighufdcuoegugi
-    husegugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpefgleeitefgvefffedufefh
-    ffdtieetgeetgeegheeufeeufeekgfefueffvefhffenucevlhhushhtvghrufhiiigvpe
-    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiiipdhnsggp
-    rhgtphhtthhopedvuddpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtohepmhihkhholh
-    grlhesfhgsrdgtohhmpdhrtghpthhtohepshgufhesfhhomhhitghhvghvrdhmvgdprhgt
-    phhtthhopegrlhgvgigvihdrshhtrghrohhvohhithhovhesghhmrghilhdrtghomhdprh
-    gtphhtthhopegrnhgurhhiihdrnhgrkhhrhihikhhosehgmhgrihhlrdgtohhmpdhrtghp
-    thhtohepvgguugihiiekjeesghhmrghilhdrtghomhdprhgtphhtthhopehjohhhnhdrfh
-    grshhtrggsvghnugesghhmrghilhdrtghomhdprhgtphhtthhopehhrgholhhuohesghho
-    ohhglhgvrdgtohhmpdhrtghpthhtohepuggrnhhivghlsehiohhgvggrrhgsohigrdhnvg
-    htpdhrtghpthhtoheprghnughrihhisehkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:-h_hZjYm_JsKU-SWJKhPpHRf7HWtCOSPBCgDn8nzsSGKcm_vp1fIFQ>
-    <xmx:-h_hZiU1XEdfk4qEEiTkQhBsliDp5bOXeBQ6jnFiE8rl1xpZj55SFQ>
-    <xmx:-h_hZhmjYYpmDMXp2qtu_tZQzOf6Tm1OUPntjnpJnzKBZ_fagGcxUQ>
-    <xmx:-h_hZveDDS4Ebten0B46D8YD2SXxZ72BGY9TvNJrMPJY1BrQkAddgQ>
-    <xmx:-x_hZspB9AnDHwaJNIMKwExFdXvRGlhbATh1-oGx7fGBCDDPhr5WxSF7>
-Feedback-ID: i6a694271:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id 732FC18A0065; Wed, 11 Sep 2024 00:43:38 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
+	s=arc-20240116; t=1726034259; c=relaxed/simple;
+	bh=FQs3i+NI97L9kxsfDiszgO/vX5t3NWmJsYjKNV82LnE=;
+	h=From:To:Date:Message-ID:MIME-Version:CC:Subject:Content-Type; b=W4NlKC9uo+fp4m4YVJ+TVivPVqsvtOFzjVfQ/qV3+SFak2QyuMZhrNvGLVEkIz7Ku2BePIYK4V9dPjSXBTi1jjpaZ9iKjsjIhmOepGbcgYWO7DKaqasPYpMgjAUkD+gpff85fR/YmUuBwa8PMS2lCVp8jbelMZcRbx5r6Kgogfc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=obs.cr; spf=pass smtp.mailfrom=ietf.org; dkim=pass (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b=rijKneC/; dkim=pass (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b=rijKneC/; dkim=fail (2048-bit key) header.d=obs-cr.20230601.gappssmtp.com header.i=@obs-cr.20230601.gappssmtp.com header.b=iZBfKWOU reason="signature verification failed"; arc=none smtp.client-ip=50.223.129.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=obs.cr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ietf.org
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+	by ietfa.amsl.com (Postfix) with ESMTP id 91AA8C1D4A80
+	for <bpf@vger.kernel.org>; Tue, 10 Sep 2024 22:50:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+	t=1726033840; bh=FQs3i+NI97L9kxsfDiszgO/vX5t3NWmJsYjKNV82LnE=;
+	h=From:To:Date:CC:Subject:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe;
+	b=rijKneC/Ifmel9Za1uZspjYJHVdLy0OFl5Dk0IEDj4ADJqTrW3WBZA14gkqAdM0ul
+	 mzQQ5cyQqh9FQxettlWu6YO8XYCxWHDYV1GZUBCyIapJfevOayidTaf1o2WnIl7aFV
+	 /jtKR+IEPcaHcEFdsk6kiI6UqJag9RUh+DiB0a1w=
+X-Mailbox-Line: From bpf-bounces+bpf=vger.kernel.org@ietf.org  Tue Sep 10 22:50:40 2024
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+	by ietfa.amsl.com (Postfix) with ESMTP id 7FD46C1D4A78
+	for <bpf@vger.kernel.org>; Tue, 10 Sep 2024 22:50:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+	t=1726033840; bh=FQs3i+NI97L9kxsfDiszgO/vX5t3NWmJsYjKNV82LnE=;
+	h=From:To:Date:CC:Subject:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe;
+	b=rijKneC/Ifmel9Za1uZspjYJHVdLy0OFl5Dk0IEDj4ADJqTrW3WBZA14gkqAdM0ul
+	 mzQQ5cyQqh9FQxettlWu6YO8XYCxWHDYV1GZUBCyIapJfevOayidTaf1o2WnIl7aFV
+	 /jtKR+IEPcaHcEFdsk6kiI6UqJag9RUh+DiB0a1w=
+X-Original-To: bpf@ietfa.amsl.com
+Delivered-To: bpf@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+	by ietfa.amsl.com (Postfix) with ESMTP id E4B49C1CAE9F
+	for <bpf@ietfa.amsl.com>; Tue, 10 Sep 2024 22:50:37 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -6.907
+X-Spam-Level: 
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+	header.d=obs-cr.20230601.gappssmtp.com
+Received: from mail.ietf.org ([50.223.129.194])
+	by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id cvu9x0xJiqYx for <bpf@ietfa.amsl.com>;
+	Tue, 10 Sep 2024 22:50:37 -0700 (PDT)
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com
+ [IPv6:2607:f8b0:4864:20::72e])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by ietfa.amsl.com (Postfix) with ESMTPS id 697E6C14CE53
+	for <bpf@ietf.org>; Tue, 10 Sep 2024 22:50:36 -0700 (PDT)
+Received: by mail-qk1-x72e.google.com with SMTP id
+ af79cd13be357-7a9ad15d11bso350821385a.0
+        for <bpf@ietf.org>; Tue, 10 Sep 2024 22:50:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=obs-cr.20230601.gappssmtp.com; s=20230601; t=1726033835;
+ x=1726638635; darn=ietf.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=KKMHrpR5X9WXAcYhedLYlZ3oPCaG5UH+cdvsRKtIGFk=;
+        b=iZBfKWOUhpKDPIteyDRUJWv7N+hWTj3l+jmhMmcHt8B/AFLmw7+1RZfEUbs+b19ZTs
+         8oLUGsm2H92yVCfiMjSV7PngXwL2DWOCT+zyXnDLJjurcjduKdiHS89yA2i4VgxWKdh/
+         YTcoEf/WfFrBgym9Qd3x6hXg+fKFqh4RyRP1aSXMoNzu6FeBpMfcD/T2BLJGp6TjtPcu
+         1eksiXVOhEPCQcvpzLSNcflSKg9RT3ekbHkkIwHYWWRfs0pE5uAeQQNXgGEAZ1kpq7tX
+         egIcdL5mxoFwpeb2WE5RQV5gboBgJjB/xUYNd13e45rPGVON/SynkfPllTvG3DbEEUX1
+         2M8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1726033835; x=1726638635;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=KKMHrpR5X9WXAcYhedLYlZ3oPCaG5UH+cdvsRKtIGFk=;
+        b=Tl9dJCmsdTOIyPKQDeFM12nGXNcr0DDyOWN8zqkjpIXz/mb4lJLZOYXHfQirPDLxrZ
+         xzJyiVpXElrGgbSqDByujAtTehF4ap4sccHUAxlKJuEfhKwqfz0rTDsc5q7bnyiwXqdt
+         N/syi9l9QrmEVrKeYe2QFKe2LAiERJpmE8ITVYl5DoMzQiYdlnpNYnwEUXRNuNBugbk/
+         PnE/jtr4kX+Ldyj0LtcjHub3tIjWWDmxy8wdmpu0IPtJiaZuUC8044c+VRVV8+UZlPdM
+         c5poKpRGVV4uCnxqyQah/SK3TlEy+ZpVs9rXx3kNiN5dJW5/STW4f5k2ehJMO3xOdvtt
+         4KxA==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCUrXrjJSKpiiVpnyzECuSZOQC+EN7KnINPC1w0dCJ/ZQinEDq0RVP+RILIaOeseoTHT3+8=@ietf.org
+X-Gm-Message-State: AOJu0YxvewoevXnMgVYoZ0SneIwYwLRqX/2bDOf3s3q4Pfc1SyutyaWn
+	JX16ySrxbdO7t8ZEUKHqz/y86/Nrz01JDEgKKxR2nWlniufj7aCsL1S2JemCuLt7qIb5xUB2ux3
+	W
+X-Google-Smtp-Source: 
+ AGHT+IH1+5WzwhvwUxARcN34XPKfWywXQLulDvz6VObaTDekveqtRbPPEVcL0Rs2wBbEp6fEEeMclA==
+X-Received: by 2002:a05:620a:1996:b0:7a9:a63a:9f5e with SMTP id
+ af79cd13be357-7a9a63aadbdmr2658262485a.41.1726033835371;
+        Tue, 10 Sep 2024 22:50:35 -0700 (PDT)
+Received: from ininer.rhod.uc.edu ([129.137.96.15])
+        by smtp.gmail.com with ESMTPSA id
+ af79cd13be357-7a9a7a040dbsm378999185a.86.2024.09.10.22.50.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Sep 2024 22:50:35 -0700 (PDT)
+From: Will Hawkins <hawkinsw@obs.cr>
+To: bpf@vger.kernel.org,
+	bpf@ietf.org
+Date: Wed, 11 Sep 2024 01:50:32 -0400
+Message-ID: <20240911055033.2084881-1-hawkinsw@obs.cr>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Date: Tue, 10 Sep 2024 21:43:18 -0700
-From: "Daniel Xu" <dxu@dxuuu.xyz>
-To: "Andrii Nakryiko" <andrii.nakryiko@gmail.com>,
- "Jesper Dangaard Brouer" <hawk@kernel.org>
-Cc: "Alexei Starovoitov" <alexei.starovoitov@gmail.com>,
- "Eduard Zingerman" <eddyz87@gmail.com>,
- "Andrii Nakryiko" <andrii@kernel.org>,
- "Daniel Borkmann" <daniel@iogearbox.net>,
- "Alexei Starovoitov" <ast@kernel.org>, "Shuah Khan" <shuah@kernel.org>,
- "John Fastabend" <john.fastabend@gmail.com>,
- "Martin KaFai Lau" <martin.lau@linux.dev>, "Song Liu" <song@kernel.org>,
- "Yonghong Song" <yonghong.song@linux.dev>, "KP Singh" <kpsingh@kernel.org>,
- "Stanislav Fomichev" <sdf@fomichev.me>, "Hao Luo" <haoluo@google.com>,
- "Jiri Olsa" <jolsa@kernel.org>, "Mykola Lysenko" <mykolal@fb.com>,
- LKML <linux-kernel@vger.kernel.org>,
- "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
- "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>,
- "Kernel Team" <kernel-team@meta.com>
-Message-Id: <8a088e49-2b40-4a04-ae16-57cdddde09bc@app.fastmail.com>
-In-Reply-To: 
- <cz7qwrujjiunv3yydkfamfm5mkis5xdy4vg4odwatchjoaoolk@zzithxrzdxkv>
-References: 
- <18a9ddacc99bb95e9802f8ad1e81214433df496c.1725929645.git.dxu@dxuuu.xyz>
- <CAADnVQKyfZ2-qCvmqG8z919ggdOszEjTs04H=cTGOZTi-zhx7Q@mail.gmail.com>
- <CAEf4Bza5Fiw2rZ5T7=zRwVk1Ct1Mgm7Gpa8w+NJVPZf8keY_9Q@mail.gmail.com>
- <vru2zgphyfywjcqikolwotsfun2bgtrnfmwvfls5ra4tznsydr@46w5rq7gqepz>
- <4ec8e15b-c44b-41d7-b337-32d17306d67b@app.fastmail.com>
- <CAEf4BzbHqKD87KTSmFUMokXEaAa70xNs96QqfWBHjFbuE5PL=w@mail.gmail.com>
- <rsdwvah5ov3itchsgkwgleihswoycoal5vjbeql2wbqoz5noiz@myk2atnnjaub>
- <CAEf4BzbKoyja2ErsusUcK8YaS1Rqm0VmBzwsNtQtM1-XHDhD7g@mail.gmail.com>
- <cz7qwrujjiunv3yydkfamfm5mkis5xdy4vg4odwatchjoaoolk@zzithxrzdxkv>
-Subject: Re: [PATCH bpf-next] bpf: ringbuf: Support consuming BPF_MAP_TYPE_RINGBUF from
- prog
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Message-ID-Hash: NYGPNGPCOPIUCTGGBVSC3WFBGNQUGD6F
+X-Message-ID-Hash: NYGPNGPCOPIUCTGGBVSC3WFBGNQUGD6F
+X-MailFrom: hawkinsw@obs.cr
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation; nonmember-moderation; administrivia;
+ implicit-dest; max-recipients; max-size; news-moderation; no-subject;
+ digests; suspicious-header
+CC: Will Hawkins <hawkinsw@obs.cr>
+X-Mailman-Version: 3.3.9rc4
+Precedence: list
+Subject: =?utf-8?q?=5BBpf=5D_=5BPATCH_v2=5D_docs/bpf=3A_Add_constant_values_for_linka?=
+	=?utf-8?q?ges?=
+Archived-At: 
+ <https://mailarchive.ietf.org/arch/msg/bpf/RfgLleAeE1-6mvC8cKWJMcHJEKY>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf>
+List-Help: <mailto:bpf-request@ietf.org?subject=help>
+List-Owner: <mailto:bpf-owner@ietf.org>
+List-Post: <mailto:bpf@ietf.org>
+X-Mailman-Copy: yes
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 
-[cc Jesper]
-
-On Tue, Sep 10, 2024, at 8:31 PM, Daniel Xu wrote:
-> On Tue, Sep 10, 2024 at 05:39:55PM GMT, Andrii Nakryiko wrote:
->> On Tue, Sep 10, 2024 at 4:44=E2=80=AFPM Daniel Xu <dxu@dxuuu.xyz> wro=
-te:
->> >
->> > On Tue, Sep 10, 2024 at 03:21:04PM GMT, Andrii Nakryiko wrote:
->> > > On Tue, Sep 10, 2024 at 3:16=E2=80=AFPM Daniel Xu <dxu@dxuuu.xyz>=
- wrote:
->> > > >
->> > > >
->> > > >
->> > > > On Tue, Sep 10, 2024, at 2:07 PM, Daniel Xu wrote:
->> > > > > On Tue, Sep 10, 2024 at 01:41:41PM GMT, Andrii Nakryiko wrote:
->> > > > >> On Tue, Sep 10, 2024 at 11:36=E2=80=AFAM Alexei Starovoitov
->> > > > [...]
->> > > > >
->> > > > >>
->> > > > >> Also, Daniel, can you please make sure that dynptr we return=
- for each
->> > > > >> sample is read-only? We shouldn't let consumer BPF program a=
-bility to
->> > > > >> corrupt ringbuf record headers (accidentally or otherwise).
->> > > > >
->> > > > > Sure.
->> > > >
->> > > > So the sample is not read-only. But I think prog is prevented f=
-rom messing
->> > > > with header regardless.
->> > > >
->> > > > __bpf_user_ringbuf_peek() returns sample past the header:
->> > > >
->> > > >         *sample =3D (void *)((uintptr_t)rb->data +
->> > > >                            (uintptr_t)((cons_pos + BPF_RINGBUF_=
-HDR_SZ) & rb->mask));
->> > > >
->> > > > dynptr is initialized with the above ptr:
->> > > >
->> > > >         bpf_dynptr_init(&dynptr, sample, BPF_DYNPTR_TYPE_LOCAL,=
- 0, size);
->> > > >
->> > > > So I don't think there's a way for the prog to access the heade=
-r thru the dynptr.
->> > > >
->> > >
->> > > By "header" I mean 8 bytes that precede each submitted ringbuf re=
-cord.
->> > > That header is part of ringbuf data area. Given user space can set
->> > > consumer_pos to arbitrary value, kernel can return arbitrary part=
- of
->> > > ringbuf data area, including that 8 byte header. If that data is
->> > > writable, it's easy to screw up that header and crash another BPF
->> > > program that reserves/submits a new record. User space can only r=
-ead
->> > > data area for BPF ringbuf, and so we rely heavily on a tight cont=
-rol
->> > > of who can write what into those 8 bytes.
->> >
->> > Ah, ok. I think I understand.
->> >
->> > Given this and your other comments about rb->busy, what about enfor=
-cing
->> > bpf_user_ringbuf_drain() NAND mmap? I think the use cases here are
->> > different enough where this makes sense.
->>=20
->> You mean disabling user-space mmap()? TBH, I'd like to understand the
->> use case first before we make such decisions. Maybe what you need is
->> not really a BPF ringbuf? Can you give us a bit more details on what
->> you are trying to achieve?
->
-> BPF cpumap, under the hood, has one MPSC ring buffer (ptr_ring) for ea=
-ch
-> entry in the cpumap. When a prog redirects to an entry in the cpumap,
-> the machinery queues up the xdp frame onto the destination CPU ptr_rin=
-g.
-> This can occur on any cpu, thus multi-producer. On processing side,
-> there is only the kthread created by the cpumap entry and bound to the
-> specific cpu that is consuming entries. So single consumer.
->
-> Goal is to track the latency overhead added from ptr_ring and the
-> kthread (versus softirq where is less overhead). Ideally we want p50,
-> p90, p95, p99 percentiles.
->
-> To do this, we need to track every single entry enqueue time as well as
-> dequeue time - events that occur in the tail are quite important.
->
-> Since ptr_ring is also a ring buffer, I thought it would be easy,
-> reliable, and fast to just create a "shadow" ring buffer. Every time
-> producer enqueues entries, I'd enqueue the same number of current
-> timestamp onto shadow RB. Same thing on consumer side, except dequeue
-> and calculate timestamp delta.
->
-> I was originally planning on writing my own lockless ring buffer in pu=
-re
-> BPF (b/c spinlocks cannot be used w/ tracepoints yet) but was hoping I
-> could avoid that with this patch.
-
-[...]
-
-Alternatively, could add a u64 timestamp to xdp_frame, which makes all
-this tracking inline (and thus more reliable). But I'm not sure how prec=
-ious
-the space in that struct is - I see some references online saying most d=
-rivers
-save 128B headroom. I also see:
-
-        #define XDP_PACKET_HEADROOM 256
-
-Could probably amortize the timestamp read by setting it in
-bq_flush_to_queue().
+TWFrZSB0aGUgdmFsdWVzIG9mIHRoZSBzeW1ib2xpYyBjb25zdGFudHMgdGhhdCBkZWZpbmUgdGhl
+IHZhbGlkIGxpbmthZ2VzDQpmb3IgZnVuY3Rpb25zIGFuZCB2YXJpYWJsZXMgZXhwbGljaXQuDQoN
+ClNpZ25lZC1vZmYtYnk6IFdpbGwgSGF3a2lucyA8aGF3a2luc3dAb2JzLmNyPg0KLS0tDQogICAg
+djEgLT4gdjI6DQogICAgICAtIFJlZm9ybWF0IHRvIG1hdGNoIHN0eWxlIGluIEJQRiBJU0EgZG9j
+dW1lbnQNCiAgICAgIC0gQWRkIGluZm9ybWF0aW9uIGFib3V0IEJURl9WQVJfR0xPQkFMX0VYVEVS
+Tg0KDQogRG9jdW1lbnRhdGlvbi9icGYvYnRmLnJzdCB8IDM5ICsrKysrKysrKysrKysrKysrKysr
+KysrKysrKysrKysrKysrLS0tLQ0KIDEgZmlsZSBjaGFuZ2VkLCAzNSBpbnNlcnRpb25zKCspLCA0
+IGRlbGV0aW9ucygtKQ0KDQpkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi9icGYvYnRmLnJzdCBi
+L0RvY3VtZW50YXRpb24vYnBmL2J0Zi5yc3QNCmluZGV4IDI1N2E3ZTFjZGY1ZC4uOTMwNjAyODNi
+NmZkIDEwMDY0NA0KLS0tIGEvRG9jdW1lbnRhdGlvbi9icGYvYnRmLnJzdA0KKysrIGIvRG9jdW1l
+bnRhdGlvbi9icGYvYnRmLnJzdA0KQEAgLTM2OCw3ICszNjgsNyBAQCBObyBhZGRpdGlvbmFsIHR5
+cGUgZGF0YSBmb2xsb3cgYGBidGZfdHlwZWBgLg0KICAgKiBgYGluZm8ua2luZF9mbGFnYGA6IDAN
+CiAgICogYGBpbmZvLmtpbmRgYDogQlRGX0tJTkRfRlVOQw0KICAgKiBgYGluZm8udmxlbmBgOiBs
+aW5rYWdlIGluZm9ybWF0aW9uIChCVEZfRlVOQ19TVEFUSUMsIEJURl9GVU5DX0dMT0JBTA0KLSAg
+ICAgICAgICAgICAgICAgICBvciBCVEZfRlVOQ19FWFRFUk4pDQorICAgICAgICAgICAgICAgICAg
+IG9yIEJURl9GVU5DX0VYVEVSTiAtIHNlZSA6cmVmOmBCVEZfRnVuY3Rpb25fTGlua2FnZV9Db25z
+dGFudHNgKQ0KICAgKiBgYHR5cGVgYDogYSBCVEZfS0lORF9GVU5DX1BST1RPIHR5cGUNCiANCiBO
+byBhZGRpdGlvbmFsIHR5cGUgZGF0YSBmb2xsb3cgYGBidGZfdHlwZWBgLg0KQEAgLTQyNCw5ICs0
+MjQsOCBAQCBmb2xsb3dpbmcgZGF0YTo6DQogICAgICAgICBfX3UzMiAgIGxpbmthZ2U7DQogICAg
+IH07DQogDQotYGBzdHJ1Y3QgYnRmX3ZhcmBgIGVuY29kaW5nOg0KLSAgKiBgYGxpbmthZ2VgYDog
+Y3VycmVudGx5IG9ubHkgc3RhdGljIHZhcmlhYmxlIDAsIG9yIGdsb2JhbGx5IGFsbG9jYXRlZA0K
+LSAgICAgICAgICAgICAgICAgdmFyaWFibGUgaW4gRUxGIHNlY3Rpb25zIDENCitgYGJ0Zl92YXIu
+bGlua2FnZWBgIG1heSB0YWtlIHRoZSB2YWx1ZXM6IEJURl9WQVJfU1RBVElDLCBCVEZfVkFSX0dM
+T0JBTF9BTExPQ0FURUQgb3IgQlRGX1ZBUl9HTE9CQUxfRVhURVJOIC0NCitzZWUgOnJlZjpgQlRG
+X1Zhcl9MaW5rYWdlX0NvbnN0YW50c2AuDQogDQogTm90IGFsbCB0eXBlIG9mIGdsb2JhbCB2YXJp
+YWJsZXMgYXJlIHN1cHBvcnRlZCBieSBMTFZNIGF0IHRoaXMgcG9pbnQuDQogVGhlIGZvbGxvd2lu
+ZyBpcyBjdXJyZW50bHkgYXZhaWxhYmxlOg0KQEAgLTU0OSw2ICs1NDgsMzggQEAgVGhlIGBgYnRm
+X2VudW02NGBgIGVuY29kaW5nOg0KIElmIHRoZSBvcmlnaW5hbCBlbnVtIHZhbHVlIGlzIHNpZ25l
+ZCBhbmQgdGhlIHNpemUgaXMgbGVzcyB0aGFuIDgsDQogdGhhdCB2YWx1ZSB3aWxsIGJlIHNpZ24g
+ZXh0ZW5kZWQgaW50byA4IGJ5dGVzLg0KIA0KKzIuMyBDb25zdGFudCBWYWx1ZXMNCistLS0tLS0t
+LS0tLS0tLS0tLS0tDQorDQorLi4gX0JURl9GdW5jdGlvbl9MaW5rYWdlX0NvbnN0YW50czoNCisN
+CisyLjMuMSBGdW5jdGlvbiBMaW5rYWdlIENvbnN0YW50IFZhbHVlcw0KK35+fn5+fn5+fn5+fn5+
+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+DQorLi4gdGFibGU6OiBGdW5jdGlvbiBMaW5rYWdlIFZh
+bHVlcyBhbmQgTWVhbmluZ3MNCisNCisgID09PT09PT09PT09PT09PT09PT0gID09PT09ICA9PT09
+PT09PT09PQ0KKyAga2luZCAgICAgICAgICAgICAgICAgdmFsdWUgIGRlc2NyaXB0aW9uDQorICA9
+PT09PT09PT09PT09PT09PT09ICA9PT09PSAgPT09PT09PT09PT0NCisgIGBgQlRGX0ZVTkNfU1RB
+VElDYGAgIDB4MCAgICBkZWZpbml0aW9uIG9mIHN1YnByb2dyYW0gbm90IHZpc2libGUgb3V0c2lk
+ZSBjb250YWluaW5nIGNvbXBpbGF0aW9uIHVuaXQNCisgIGBgQlRGX0ZVTkNfR0xPQkFMYGAgIDB4
+MSAgICBkZWZpbml0aW9uIG9mIHN1YnByb2dyYW0gdmlzaWJsZSBvdXRzaWRlIGNvbnRhaW5pbmcg
+Y29tcGlsYXRpb24gdW5pdA0KKyAgYGBCVEZfRlVOQ19FWFRFUk5gYCAgMHgyICAgIGRlY2xhcmF0
+aW9uIG9mIGEgc3VicHJvZ3JhbSB3aG9zZSBkZWZpbml0aW9uIGlzIG91dHNpZGUgdGhlIGNvbnRh
+aW5pbmcgY29tcGlsYXRpb24gdW5pdA0KKyAgPT09PT09PT09PT09PT09PT09PSAgPT09PT0gID09
+PT09PT09PT09DQorDQorDQorLi4gX0JURl9WYXJfTGlua2FnZV9Db25zdGFudHM6DQorDQorMi4z
+LjIgVmFyaWFibGUgTGlua2FnZSBDb25zdGFudCBWYWx1ZXMNCit+fn5+fn5+fn5+fn5+fn5+fn5+
+fn5+fn5+fn5+fn5+fn5+fn5+fg0KKy4uIHRhYmxlOjogVmFyaWFibGUgTGlua2FnZSBWYWx1ZXMg
+YW5kIE1lYW5pbmdzDQorDQorICA9PT09PT09PT09PT09PT09PT09PT09PT09PT09ICA9PT09PSAg
+PT09PT09PT09PT0NCisgIGtpbmQgICAgICAgICAgICAgICAgICAgICAgICAgIHZhbHVlICBkZXNj
+cmlwdGlvbg0KKyAgPT09PT09PT09PT09PT09PT09PT09PT09PT09PSAgPT09PT0gID09PT09PT09
+PT09DQorICBgYEJURl9WQVJfU1RBVElDYGAgICAgICAgICAgICAweDAgICAgZGVmaW5pdGlvbiBv
+ZiBnbG9iYWwgdmFyaWFibGUgbm90IHZpc2libGUgb3V0c2lkZSBjb250YWluaW5nIGNvbXBpbGF0
+aW9uIHVuaXQNCisgIGBgQlRGX1ZBUl9HTE9CQUxfQUxMT0NBVEVEYGAgIDB4MSAgICBkZWZpbml0
+aW9uIG9mIGdsb2JhbCB2YXJpYWJsZSB2aXNpYmxlIG91dHNpZGUgY29udGFpbmluZyBjb21waWxh
+dGlvbiB1bml0DQorICBgYEJURl9WQVJfR0xPQkFMX0VYVEVSTmBgICAgICAweDIgICAgZGVjbGFy
+YXRpb24gb2YgZ2xvYmFsIHZhcmlhYmxlIHdob3NlIGRlZmluaXRpb24gaXMgb3V0c2lkZSB0aGUg
+Y29udGFpbmluZyBjb21waWxhdGlvbiB1bml0DQorICA9PT09PT09PT09PT09PT09PT09PT09PT09
+PT09ICA9PT09PSAgPT09PT09PT09PT0NCisNCiAzLiBCVEYgS2VybmVsIEFQSQ0KID09PT09PT09
+PT09PT09PT09DQogDQotLSANCjIuNDUuMg0KDQotLSAKQnBmIG1haWxpbmcgbGlzdCAtLSBicGZA
+aWV0Zi5vcmcKVG8gdW5zdWJzY3JpYmUgc2VuZCBhbiBlbWFpbCB0byBicGYtbGVhdmVAaWV0Zi5v
+cmcK
 
