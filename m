@@ -1,204 +1,102 @@
-Return-Path: <bpf+bounces-39617-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39618-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69510975610
-	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 16:52:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 767B997561A
+	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 16:54:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 29753286BA0
-	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 14:52:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A93A31C267C5
+	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 14:54:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 049F3187FEB;
-	Wed, 11 Sep 2024 14:52:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 749391A2C0C;
+	Wed, 11 Sep 2024 14:54:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q5/g+Bx2"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m3R9T62L"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8390B8F6C
-	for <bpf@vger.kernel.org>; Wed, 11 Sep 2024 14:52:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C202115C13F
+	for <bpf@vger.kernel.org>; Wed, 11 Sep 2024 14:54:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726066321; cv=none; b=CzQ51+up4ZtgLkv9VMZ9jA4RnhSYQs6bhmRjNjXfC+AOQoeiA7hWmCm6pHGujV8Qg8Q+F7EeJy8dfEh/ub57LxTnyCVQWDIoNdlbLXlty5GH8RZHS4VizSxVRSAdKxBfyBqH++VGwHTNzbOair80WuD4Czk8d2IYC0edEDr6qMY=
+	t=1726066474; cv=none; b=A9kwBT3UEloDFx+SWdyoPJb1KbLHlnrwDxMt7EthdhkddXvf/a5IUbOlYaIwFB6YOCetPetAZA3o3dsoaJRmyPrJ9ae82ai0rwH2Lz4gClTf+DrPyzE/9QDPyDu1+3vkl5+KeOxAILzH8I5pwKwfG7D0bKepdNy7GHCWbZ1UjZY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726066321; c=relaxed/simple;
-	bh=K8ChxVpV0Fh2LTxYbIo+ulW9aqVBzAGGLCXbXQfBpQU=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=CXXDUsxMVcXFsQj1HTUlVv2CYsWbXxxaf2Rl5Efk/WkU85fHZ77L427ZNzkJOjMIsjt2wAxJG/OSxUxdNrqdt+tKTcEu28ouWqrSomyH9PRnUXu9xppMJPnQdlUtFB+5jjtUeYvFYBrz/TOLKvPcMqTxJgxFJvKZWTGVdGd8H+s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q5/g+Bx2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7DDEC4CEC0;
-	Wed, 11 Sep 2024 14:51:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1726066321;
-	bh=K8ChxVpV0Fh2LTxYbIo+ulW9aqVBzAGGLCXbXQfBpQU=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Q5/g+Bx2fwtHXKtaiTggZBMxE94TcSpNN4SINTeIU0d/aYrYK2yY4Rd/4RoIkwYsm
-	 MarATmdDcZjj+yIs8wfFn0MSAmWz8PSRWAvxgoAYVuy0kuvBJ+32bbAvLSPkXbzv83
-	 4zC0HLUQh7aJkf+yyQEyGtoeYqX9WJ79/ekjtBt3YzmVZLt1LsWwUApWc0KlHx/Y2P
-	 G22m4WUnoOzp9AqDaGzEiOdJbq+ksZ9VDC4H1slLw8bOvixxB2aKMYnXX7kDxUUrAu
-	 aYfxcT9TyYEltqasR0LPsfFW3fzNS0uio/fk+8KZc44r5uzNCFuIlWlqFkEh18Uu2i
-	 o8XHMy0gQO5gg==
-Date: Wed, 11 Sep 2024 23:51:56 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Daniel Xu <dlxu@meta.com>, Andrii Nakryiko <andrii@kernel.org>,
- "bot+bpf-ci@kernel.org" <bot+bpf-ci@kernel.org>, kernel-ci
- <kernel-ci@meta.com>, "daniel@iogearbox.net" <daniel@iogearbox.net>,
- "martin.lau@linux.dev" <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH v13 00/20] tracing: fprobe: function_graph:
- Multi-function graph and fprobe on fgraph
-Message-Id: <20240911235156.4673a9c90494dbf10eb9cccd@kernel.org>
-In-Reply-To: <CAEf4BzaTn=thAkznx3UHyevgtTQG=hGfW54EWDGR8PHyQk91WA@mail.gmail.com>
-References: <172398527264.293426.2050093948411376857.stgit@devnote2>
-	<2b4d25f8fa99ae5a329f5164b6c79b81f1a4cc78688dcf5470d601f3612264ea@mail.kernel.org>
-	<20240819095807.171eade07ba02ae871e4c4aa@kernel.org>
-	<MN2PR15MB34883ABBB55D78B4E15758EDAD8C2@MN2PR15MB3488.namprd15.prod.outlook.com>
-	<20240820101727.3631125acf3c98c7bc7050db@kernel.org>
-	<CAEf4BzaTn=thAkznx3UHyevgtTQG=hGfW54EWDGR8PHyQk91WA@mail.gmail.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1726066474; c=relaxed/simple;
+	bh=1cJtQoJtpI0ilZVSejOK4bxruWxBsYod1aKaB8hmPH0=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=EiJNimzMCXk4xw+9eWfiXGAfTx9CCHeJedU1WGfSnDRA2JuiIfKrlx83JioFLSvb2ywoysCf76Mjvo/A+GHdiLVVCny6wY9NJ40qcATXBFYFIrtojlATMS+PijOeUBdJgqkYqONns//91+RaLWZcS6Nml7IK0VMKGGrdhbzHxWM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=m3R9T62L; arc=none smtp.client-ip=209.85.210.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-71798661a52so797537b3a.0
+        for <bpf@vger.kernel.org>; Wed, 11 Sep 2024 07:54:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1726066470; x=1726671270; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:to:from:subject:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1cJtQoJtpI0ilZVSejOK4bxruWxBsYod1aKaB8hmPH0=;
+        b=m3R9T62L0syMjHMYs8xC2SuElKRMuvJUTi3XFsdD8ZOZJugFELgjABuxFZreJltm6e
+         JpV76LDHi6Sx0StK7IKcumqKFeJm8MAg73OYVB33dFov42btvKTB31mthN8hKPpxPu+E
+         bKPp8sy+iEHvnoaIDwwtCmlbmcMinOwMaRJFQ4JhetvSexN7n05/mlfol3AqosD5dqO6
+         jYWFQGKxP5B2YGK4u37WP9PYquGIinDpUeeDUhiKZuzMYq7/S8D6w9kEZCwIWjY8BTPy
+         eu4J8+bZT3gXgWuyEZHhoGODHSPOj3dz9lhflO7z99OJLDi2gAL3Pd16dR9MWu0BY0dp
+         EHJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1726066470; x=1726671270;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=1cJtQoJtpI0ilZVSejOK4bxruWxBsYod1aKaB8hmPH0=;
+        b=nQ08AfEn70kHDi/V498Ex5KNGFRYVdqObDElqs934iFcY5EMAfy8PZb7abMrag+wBa
+         b2IXDPwYy/q1Lpn6hdwNphbX8MBUEHXFN3hbIgqqbOFpgPKq+HX61my4hbmqPxy646xE
+         3Rr8tkroaxHGVxArB8xl919iRnaQNeKnew+iXxCYQMlV1xAmhgT7SQ7tUX0/yHQQweIM
+         eTB7IZi0dQ5/GWnm05NcgkZigO4TosFydOAqR5L+xa01xAFAjGFrTWwjiVqJvJ3eOHHb
+         stZNkYwkOZGgnA8xr7k4HarO1TiP/GXKw9ddqj+G96dTioNuqF8nlUfdt/zRxg6Ekm8d
+         +HlQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW9eK7wt1+DHejGdXxazE5aGJFOeIyG3KDIzNDG1B25biE/SCfK2NNtPn36cnLOtVkbnEQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw5UOtIPh6Go5QXF07hIVFwa062kH+jNuPSUK2OdxzT3crCnNVN
+	EA9Y+YZ4S1glQgmHQ3COUDxV5b4jmLu9YpLnHOLa/DA3l3xSXgE1
+X-Google-Smtp-Source: AGHT+IEXXTOoTFB5mpDDSnVR1+lv3cR1Nm2BA2yE8XUCPunbtIfjQmMbotzQVYZfoOqx1DsaqDM2+A==
+X-Received: by 2002:a05:6a00:66e4:b0:707:fa61:1c6a with SMTP id d2e1a72fcca58-71907f0f6ddmr9961129b3a.10.1726066469724;
+        Wed, 11 Sep 2024 07:54:29 -0700 (PDT)
+Received: from [192.168.0.235] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7190f888a78sm2810936b3a.140.2024.09.11.07.54.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Sep 2024 07:54:29 -0700 (PDT)
+Message-ID: <67451140439fafa1bae3e3b010d2c6b9969696a1.camel@gmail.com>
+Subject: Re: [PATCH] Fix a bug in ebpf verifier
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: lonial con <kongln9170@gmail.com>, bpf@vger.kernel.org
+Date: Wed, 11 Sep 2024 07:54:24 -0700
+In-Reply-To: <1726037521-18232-1-git-send-email-kongln9170@gmail.com>
+References: <1726037521-18232-1-git-send-email-kongln9170@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.4 (3.52.4-1.fc40) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0
 
-On Mon, 19 Aug 2024 19:48:23 -0700
-Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+On Wed, 2024-09-11 at 14:52 +0800, lonial con wrote:
+> In find_equal_scalars(), it should not copy the reg->subreg_def, otherwis=
+e a bug will occur when the program flag has BPF_F_TEST_RND_HI32.
+>=20
+> Reported-by: Lonial Con <kongln9170@gmail.com>
+> Signed-off-by: Lonial Con <kongln9170@gmail.com>
+> ---
 
-> +bpf
-> 
-> On Mon, Aug 19, 2024 at 6:17 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> >
-> > On Mon, 19 Aug 2024 15:56:39 +0000
-> > Daniel Xu <dlxu@meta.com> wrote:
-> >
-> > > [sorry for outlook top post]
-> > >
-> > > Hi Masami,
-> > >
-> > > test_progs is checked into kernel tree. There should be source files in selftests
-> > > for the test names. For example, for fill_link_info/kprobe_multi_invalid_ubuff
-> > > failure:
-> > >
-> > > $ find . -name "*fill_link_info*"
-> > > ./tools/testing/selftests/bpf/prog_tests/fill_link_info.c
-> > > ./tools/testing/selftests/bpf/progs/test_fill_link_info.c
-> > >
-> > > veristat I'm less famiiar with. My understanding is that it checks for verifier
-> > > regressions. Skimming your patchset, it's not obvious to me why verifier
-> > > would regress. If you have issues debugging that, we can poke Andrii for
-> > > help.
-> >
-> > Thanks for the information! Hmm, maybe kprobe_multi_testmod_check might check the
-> > register which is not supported on the ftrace_regs. But I also don't have any idea
-> 
-> This test is getting IP of the function using bpf_get_func_ip()
-> helper. If that somehow started returning wrong value on arm64/s390x,
-> then the test will basically not find expected addresses
+Hello,
 
-Ah, bpf_get_func_ip() may get PC register in pt_regs. ftrace_regs doesn't
-have it. Hmm, but that information should be injected by bpf side because 
-ftrace_regs -> pt_regs converted in trace_bpf, and the handler should know
-the IP.
+could you please write a selftest for this fix?
+(please let me know if you need some intro on BPF selftests).
 
-> 
-> > about veristat. Is that also checks all pt_regs? Andrii, do you have any idea?
-> 
-> I wouldn't worry about veristat, your changes shouldn't regress BPF
-> verifier logic, so it's probably just an artifact of our BPF CI setup.
-> The above test regression seems much more worrying.
+[...]
 
-OK, trying to fix that. Maybe [07/20] caused this issue.
-
-Thank you,
-
-> 
-> 
-> >
-> > Thank you,
-> >
-> > >
-> > > Thanks,
-> > > Daniel
-> > >
-> > >
-> > > ________________________________
-> > > From: Masami Hiramatsu <mhiramat@kernel.org>
-> > > Sent: Sunday, August 18, 2024 5:58 PM
-> > > To: bot+bpf-ci@kernel.org <bot+bpf-ci@kernel.org>
-> > > Cc: kernel-ci <kernel-ci@meta.com>; andrii@kernel.org <andrii@kernel.org>; daniel@iogearbox.net <daniel@iogearbox.net>; martin.lau@linux.dev <martin.lau@linux.dev>
-> > > Subject: Re: [PATCH v13 00/20] tracing: fprobe: function_graph: Multi-function graph and fprobe on fgraph
-> > >
-> > > Hi,
-> > >
-> > > Where can I get the test programs? I would like to check what the programs
-> > > actually expected.
-> > >
-> > > On Sun, 18 Aug 2024 13:51:30 +0000 (UTC)
-> > > bot+bpf-ci@kernel.org wrote:
-> > >
-> > > > Dear patch submitter,
-> > > >
-> > > > CI has tested the following submission:
-> > > > Status:     FAILURE
-> > > > Name:       [v13,00/20] tracing: fprobe: function_graph: Multi-function graph and fprobe on fgraph
-> > > > Patchwork:  https://patchwork.kernel.org/project/netdevbpf/list/?series=880630&state=*
-> > > > Matrix:     https://github.com/kernel-patches/bpf/actions/runs/10440799833
-> > > >
-> > > > Failed jobs:
-> > > > test_progs-aarch64-gcc: https://github.com/kernel-patches/bpf/actions/runs/10440799833/job/28911439106
-> > > > test_progs_no_alu32-aarch64-gcc: https://github.com/kernel-patches/bpf/actions/runs/10440799833/job/28911439234
-> > > > test_progs-s390x-gcc: https://github.com/kernel-patches/bpf/actions/runs/10440799833/job/28911405063
-> > > > test_progs_no_alu32-s390x-gcc: https://github.com/kernel-patches/bpf/actions/runs/10440799833/job/28911404959
-> > > > veristat-x86_64-gcc: https://github.com/kernel-patches/bpf/actions/runs/10440799833/job/28911401263
-> > > >
-> > > > First test_progs failure (test_progs-aarch64-gcc):
-> > > > #126 kprobe_multi_testmod_test
-> > > > serial_test_kprobe_multi_testmod_test:PASS:load_kallsyms_local 0 nsec
-> > > > #126/1 kprobe_multi_testmod_test/testmod_attach_api_syms
-> > > > test_testmod_attach_api:PASS:fentry_raw_skel_load 0 nsec
-> > > > trigger_module_test_read:PASS:testmod_file_open 0 nsec
-> > > > test_testmod_attach_api:PASS:trigger_read 0 nsec
-> > > > kprobe_multi_testmod_check:FAIL:kprobe_test1_result unexpected kprobe_test1_result: actual 0 != expected 1
-> > > > kprobe_multi_testmod_check:FAIL:kprobe_test2_result unexpected kprobe_test2_result: actual 0 != expected 1
-> > > > kprobe_multi_testmod_check:FAIL:kprobe_test3_result unexpected kprobe_test3_result: actual 0 != expected 1
-> > > > kprobe_multi_testmod_check:FAIL:kretprobe_test1_result unexpected kretprobe_test1_result: actual 0 != expected 1
-> > > > kprobe_multi_testmod_check:FAIL:kretprobe_test2_result unexpected kretprobe_test2_result: actual 0 != expected 1
-> > > > kprobe_multi_testmod_check:FAIL:kretprobe_test3_result unexpected kretprobe_test3_result: actual 0 != expected 1
-> > > > #126/2 kprobe_multi_testmod_test/testmod_attach_api_addrs
-> > > > test_testmod_attach_api_addrs:PASS:ksym_get_addr_local 0 nsec
-> > > > test_testmod_attach_api_addrs:PASS:ksym_get_addr_local 0 nsec
-> > > > test_testmod_attach_api_addrs:PASS:ksym_get_addr_local 0 nsec
-> > > > test_testmod_attach_api:PASS:fentry_raw_skel_load 0 nsec
-> > > > trigger_module_test_read:PASS:testmod_file_open 0 nsec
-> > > > test_testmod_attach_api:PASS:trigger_read 0 nsec
-> > > > kprobe_multi_testmod_check:FAIL:kprobe_test1_result unexpected kprobe_test1_result: actual 0 != expected 1
-> > > > kprobe_multi_testmod_check:FAIL:kprobe_test2_result unexpected kprobe_test2_result: actual 0 != expected 1
-> > > > kprobe_multi_testmod_check:FAIL:kprobe_test3_result unexpected kprobe_test3_result: actual 0 != expected 1
-> > > > kprobe_multi_testmod_check:FAIL:kretprobe_test1_result unexpected kretprobe_test1_result: actual 0 != expected 1
-> > > > kprobe_multi_testmod_check:FAIL:kretprobe_test2_result unexpected kretprobe_test2_result: actual 0 != expected 1
-> > > > kprobe_multi_testmod_check:FAIL:kretprobe_test3_result unexpected kretprobe_test3_result: actual 0 != expected 1
-> > > >
-> > > >
-> > > > Please note: this email is coming from an unmonitored mailbox. If you have
-> > > > questions or feedback, please reach out to the Meta Kernel CI team at
-> > > > kernel-ci@meta.com.
-> > >
-> > >
-> > > --
-> > > Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> >
-> >
-> > --
-> > Masami Hiramatsu (Google) <mhiramat@kernel.org>
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
