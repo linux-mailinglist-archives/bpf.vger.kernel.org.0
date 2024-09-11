@@ -1,288 +1,153 @@
-Return-Path: <bpf+bounces-39603-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39604-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F11E697506F
-	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 13:06:06 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A6399750CC
+	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 13:28:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AF42F28E3C1
-	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 11:06:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B5D441F2467C
+	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 11:28:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 878BD186607;
-	Wed, 11 Sep 2024 11:05:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0D89187338;
+	Wed, 11 Sep 2024 11:28:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="V7VtAthN"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E86B37DA81
-	for <bpf@vger.kernel.org>; Wed, 11 Sep 2024 11:05:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B23AC185606
+	for <bpf@vger.kernel.org>; Wed, 11 Sep 2024 11:28:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726052758; cv=none; b=oMSMdzCXPPh66Ra25uzVu6scaxxzlrDMru3sfD4Q2Z1ilhQuaj72jBv3nUSz1Tr2DRwKCG205TJvQWFNh8QZVcmkxvMUbPIJXKQST9SiaMJkNnEtsMiekPyajmubUzbNSongHGHNm5kkugBkJJvsFcIgJaoQhaUryIVi6FGYbWA=
+	t=1726054127; cv=none; b=N6tn3ecbuqev2CPBFqUGsvnxc4l1qyOgkCvi5Trl+ehy6QEW7IgoWnz91/EMxPsJ4HrSMF8eT0Of0X/fGniL/QalWkinV/9XsWUaovpMLyvs2xRdRc452v2yK+4WxJ6JNYgtNrQJ++aBNodrtw2q/X0uSHeASuSBrZzmeXaMACo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726052758; c=relaxed/simple;
-	bh=zyD9fHM3lQEUOQxwhYfV3DKmxeEisgL7x6qFE2HyTn8=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=IROlaOdfP6GlHMR2TCDPPAd7D+uUhM/b8XQOwW3IEwqxbK7PkQg3DEUADxPPmpwE8Fv7dODYE4q/wlUduuM2rZySxNhKLPai+dfvqp0NURPCrTnR+k8v3X+9e9wZRuUzCryOgsHnWvGWZJWm3LRUR19OJsz1+/l+95DHj2cp+08=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4X3d5r1KFPz4f3l23
-	for <bpf@vger.kernel.org>; Wed, 11 Sep 2024 19:05:36 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 6A38A1A07B6
-	for <bpf@vger.kernel.org>; Wed, 11 Sep 2024 19:05:52 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP4 (Coremail) with SMTP id gCh0CgAXTMiMeeFmB9sSBA--.4297S6;
-	Wed, 11 Sep 2024 19:05:52 +0800 (CST)
-From: Hou Tao <houtao@huaweicloud.com>
-To: bpf@vger.kernel.org
-Cc: Martin KaFai Lau <martin.lau@linux.dev>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Hao Luo <haoluo@google.com>,
-	Yonghong Song <yonghong.song@linux.dev>,
+	s=arc-20240116; t=1726054127; c=relaxed/simple;
+	bh=4qh5VK526gLJCKyAtpJ7CQCiCpZ0f2OJAqyu4PMcOqU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HEQ6Q94658M2HOMskAnVCXIkpoGuOTbwrTNsW2GUt7FYPghfCTCG+tO8rAOnSidEN1/xkVfIORzS4i3HQLvpRI+Tcc4TKzkd+AKwMW911TsYey/e+ZPHoA2i+tkRf554leFG64Do7SaK3yeqGQ6Za7wD0FDRwlf4JVOPBXpwEMY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=V7VtAthN; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1726054124;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BAmyKuMNqITkrSfy8qg6MUrMSNseX/neKbDPXn2drV8=;
+	b=V7VtAthN2A8O8xNfvsAEfNryZ055gRwbYY0WCydaT3GVNLfvLFtO0AaSKR++YGbb6n1YGl
+	twZ6DDeXzdtTp3N9VN3fnxHq9I9pit3zJq/fNTDpw2v0ORTYzWnkzmzo2KUJcRw0Ty9hhM
+	4Y3RUT9E+96/iLNkMw7to/CcVF1PU6o=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-269-Pezm6WkaNTmQh7Hpj-SxNA-1; Wed, 11 Sep 2024 07:28:43 -0400
+X-MC-Unique: Pezm6WkaNTmQh7Hpj-SxNA-1
+Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2f77be8ff40so7263061fa.0
+        for <bpf@vger.kernel.org>; Wed, 11 Sep 2024 04:28:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1726054122; x=1726658922;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BAmyKuMNqITkrSfy8qg6MUrMSNseX/neKbDPXn2drV8=;
+        b=wa75W6YsJnpIsY/O4yX0AXri5497fjKzhNql7eSESJ0jq/bST4FvReBe4wDOtKWEO0
+         XeGlMN3Y+u8ieejD7hkoqyv3dsa71tItQ7asbAQqFVJX0c3fSDOzSlf/rIrSLKd1AfJ4
+         TuIL022aIvFR9+LatDtavL7u1hfnNQ3cXHwioZHJvYfyY9FTC6vpqK7q+jJBV8Tqi9e7
+         jAe0MOYcuO8DVTHyisPNWQUwHk7GaUe/XzNN/VM0OsecVf0kVh69AG1MaNVzwfYSvsvt
+         vjktOpS0QD+pAJx/sARARv1EN2egbXJiVk+RoCjLvpy0MaEoeOSv4o3uHsbZaAAd1nRh
+         mliQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWK/pY2h5iSwWjo5upepl/G0xnhB1ACjxFucnhuLhLFKcswqWrBwjDOz9qRCJCr0X4jxuw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzDQdpasLjzZSL/DoCDJg/TJWdjXotv1YJQSOBAFemD0DfEIHTT
+	6gSJ9fKIgYjBw7C0E2FxSn9gPhuK7dEgkVAtSHlk16+CB9qiFj5vZr0OUqdQnQ62Mwv3PMEz8gg
+	7DqOMWuSxyYZDZAPlg9hl+w6TRsO+lY2SkXNMzpQ1M1jbLzutyw==
+X-Received: by 2002:a2e:b8c5:0:b0:2f7:603c:ef99 with SMTP id 38308e7fff4ca-2f7603cf586mr90361921fa.16.1726054121555;
+        Wed, 11 Sep 2024 04:28:41 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGIKTns3rMOAydZQgVabYfA2U4q50Qe0gkibAVCl1FWXltjSMrzgK/bbPrPG4mSYk55jQJFUg==
+X-Received: by 2002:a2e:b8c5:0:b0:2f7:603c:ef99 with SMTP id 38308e7fff4ca-2f7603cf586mr90361621fa.16.1726054120483;
+        Wed, 11 Sep 2024 04:28:40 -0700 (PDT)
+Received: from redhat.com ([2a02:14f:1ec:a3d1:80b4:b3a2:70bf:9d18])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5c3ebd8c4c6sm5307012a12.86.2024.09.11.04.28.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Sep 2024 04:28:39 -0700 (PDT)
+Date: Wed, 11 Sep 2024 07:28:36 -0400
+From: "Michael S. Tsirkin" <mst@redhat.com>
+To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc: netdev@vger.kernel.org, Jason Wang <jasowang@redhat.com>,
+	Eugenio =?iso-8859-1?Q?P=E9rez?= <eperezma@redhat.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
 	John Fastabend <john.fastabend@gmail.com>,
-	Kui-Feng Lee <thinker.li@gmail.com>,
-	houtao1@huawei.com,
-	xukuohai@huawei.com
-Subject: [RESEND][PATCH bpf 2/2] selftests/bpf: Add more test case for field flattening
-Date: Wed, 11 Sep 2024 19:05:57 +0800
-Message-Id: <20240911110557.2759801-3-houtao@huaweicloud.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20240911110557.2759801-1-houtao@huaweicloud.com>
-References: <20240911110557.2759801-1-houtao@huaweicloud.com>
+	virtualization@lists.linux.dev, bpf@vger.kernel.org
+Subject: Re: [PATCH net-next 03/13] virtio_ring: packed: harden dma unmap for
+ indirect
+Message-ID: <20240911072537-mutt-send-email-mst@kernel.org>
+References: <20240820073330.9161-1-xuanzhuo@linux.alibaba.com>
+ <20240820073330.9161-4-xuanzhuo@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgAXTMiMeeFmB9sSBA--.4297S6
-X-Coremail-Antispam: 1UD129KBjvJXoW3XFy8tr1UGF4xuF1xuF48JFb_yoWxJw1Dpa
-	48X34vkrWxtF1fG34UCa97GFWSgw1kZFW5Wr90k34avFW7tr97ZF48K3WUJr1YgrZYgw1x
-	Aryvvws3Wa1kCF7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUPFb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUXw
-	A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-	w2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-	W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-	6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
-	Ij6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_
-	Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AFwI
-	0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG
-	67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MI
-	IYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E
-	14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJV
-	W8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUFSdy
-	UUUUU
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240820073330.9161-4-xuanzhuo@linux.alibaba.com>
 
-From: Hou Tao <houtao1@huawei.com>
+As gcc luckily noted:
 
-Add three success test cases to test the flattening of array of nested
-struct. For these three tests, the number of special fields in map is
-BTF_FIELDS_MAX, but the array is defined in structs with different
-nested level.
+On Tue, Aug 20, 2024 at 03:33:20PM +0800, Xuan Zhuo wrote:
+> @@ -1617,23 +1617,24 @@ static void detach_buf_packed(struct vring_virtqueue *vq,
+>  	}
+>  
+>  	if (vq->indirect) {
+> +		struct vring_desc_extra *extra;
+>  		u32 len;
+>  
+>  		/* Free the indirect table, if any, now that it's unmapped. */
+> -		desc = state->indir_desc;
+> -		if (!desc)
 
-Add one failure test case for the flattening as well. In the test case,
-the number of special fields in map is BTF_FIELDS_MAX + 1. It will make
-btf_parse_fields() in map_create() return -E2BIG, the creation of map
-will succeed, but the load of program will fail because the btf_record
-is invalid for the map.
+desc is no longer initialized here
 
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
- .../selftests/bpf/prog_tests/cpumask.c        |  1 +
- .../selftests/bpf/progs/cpumask_failure.c     | 35 +++++++++
- .../selftests/bpf/progs/cpumask_success.c     | 78 ++++++++++++++++++-
- 3 files changed, 112 insertions(+), 2 deletions(-)
+> +		extra = state->indir;
+> +		if (!extra)
+>  			return;
+>  
+>  		if (vring_need_unmap_buffer(vq)) {
+>  			len = vq->packed.desc_extra[id].len;
+>  			for (i = 0; i < len / sizeof(struct vring_packed_desc);
+>  					i++)
+> -				vring_unmap_desc_packed(vq, &desc[i]);
+> +				vring_unmap_extra_packed(vq, &extra[i]);
+>  		}
+>  		kfree(desc);
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/cpumask.c b/tools/testing/selftests/bpf/prog_tests/cpumask.c
-index 2570bd4b0cb2..e58a04654238 100644
---- a/tools/testing/selftests/bpf/prog_tests/cpumask.c
-+++ b/tools/testing/selftests/bpf/prog_tests/cpumask.c
-@@ -23,6 +23,7 @@ static const char * const cpumask_success_testcases[] = {
- 	"test_global_mask_array_l2_rcu",
- 	"test_global_mask_nested_rcu",
- 	"test_global_mask_nested_deep_rcu",
-+	"test_global_mask_nested_deep_array_rcu",
- 	"test_cpumask_weight",
- };
- 
-diff --git a/tools/testing/selftests/bpf/progs/cpumask_failure.c b/tools/testing/selftests/bpf/progs/cpumask_failure.c
-index a988d2823b52..e9cb93ce9533 100644
---- a/tools/testing/selftests/bpf/progs/cpumask_failure.c
-+++ b/tools/testing/selftests/bpf/progs/cpumask_failure.c
-@@ -10,6 +10,21 @@
- 
- char _license[] SEC("license") = "GPL";
- 
-+struct kptr_nested_array_2 {
-+	struct bpf_cpumask __kptr * mask;
-+};
-+
-+struct kptr_nested_array_1 {
-+	/* Make btf_parse_fields() in map_create() return -E2BIG */
-+	struct kptr_nested_array_2 d_2[BTF_FIELDS_MAX + 1];
-+};
-+
-+struct kptr_nested_array {
-+	struct kptr_nested_array_1 d_1;
-+};
-+
-+private(MASK_NESTED) static struct kptr_nested_array global_mask_nested_array;
-+
- /* Prototype for all of the program trace events below:
-  *
-  * TRACE_EVENT(task_newtask,
-@@ -187,3 +202,23 @@ int BPF_PROG(test_global_mask_rcu_no_null_check, struct task_struct *task, u64 c
- 
- 	return 0;
- }
-+
-+SEC("tp_btf/task_newtask")
-+__failure __msg("has no valid kptr")
-+int BPF_PROG(test_invalid_nested_array, struct task_struct *task, u64 clone_flags)
-+{
-+	struct bpf_cpumask *local, *prev;
-+
-+	local = create_cpumask();
-+	if (!local)
-+		return 0;
-+
-+	prev = bpf_kptr_xchg(&global_mask_nested_array.d_1.d_2[BTF_FIELDS_MAX].mask, local);
-+	if (prev) {
-+		bpf_cpumask_release(prev);
-+		err = 3;
-+		return 0;
-+	}
-+
-+	return 0;
-+}
-diff --git a/tools/testing/selftests/bpf/progs/cpumask_success.c b/tools/testing/selftests/bpf/progs/cpumask_success.c
-index fd8106831c32..c634a34dec51 100644
---- a/tools/testing/selftests/bpf/progs/cpumask_success.c
-+++ b/tools/testing/selftests/bpf/progs/cpumask_success.c
-@@ -31,11 +31,59 @@ struct kptr_nested_deep {
- 	struct kptr_nested_pair ptr_pairs[3];
- };
- 
-+struct kptr_nested_deep_array_1_2 {
-+	int dummy;
-+	struct bpf_cpumask __kptr * mask[BTF_FIELDS_MAX];
-+};
-+
-+struct kptr_nested_deep_array_1_1 {
-+	int dummy;
-+	struct kptr_nested_deep_array_1_2 d_2;
-+};
-+
-+struct kptr_nested_deep_array_1 {
-+	long dummy;
-+	struct kptr_nested_deep_array_1_1 d_1;
-+};
-+
-+struct kptr_nested_deep_array_2_2 {
-+	long dummy[2];
-+	struct bpf_cpumask __kptr * mask;
-+};
-+
-+struct kptr_nested_deep_array_2_1 {
-+	int dummy;
-+	struct kptr_nested_deep_array_2_2 d_2[BTF_FIELDS_MAX];
-+};
-+
-+struct kptr_nested_deep_array_2 {
-+	long dummy;
-+	struct kptr_nested_deep_array_2_1 d_1;
-+};
-+
-+struct kptr_nested_deep_array_3_2 {
-+	long dummy[2];
-+	struct bpf_cpumask __kptr * mask;
-+};
-+
-+struct kptr_nested_deep_array_3_1 {
-+	int dummy;
-+	struct kptr_nested_deep_array_3_2 d_2;
-+};
-+
-+struct kptr_nested_deep_array_3 {
-+	long dummy;
-+	struct kptr_nested_deep_array_3_1 d_1[BTF_FIELDS_MAX];
-+};
-+
- private(MASK) static struct bpf_cpumask __kptr * global_mask_array[2];
- private(MASK) static struct bpf_cpumask __kptr * global_mask_array_l2[2][1];
- private(MASK) static struct bpf_cpumask __kptr * global_mask_array_one[1];
- private(MASK) static struct kptr_nested global_mask_nested[2];
- private(MASK_DEEP) static struct kptr_nested_deep global_mask_nested_deep;
-+private(MASK_1) static struct kptr_nested_deep_array_1 global_mask_nested_deep_array_1;
-+private(MASK_2) static struct kptr_nested_deep_array_2 global_mask_nested_deep_array_2;
-+private(MASK_3) static struct kptr_nested_deep_array_3 global_mask_nested_deep_array_3;
- 
- static bool is_test_task(void)
- {
-@@ -543,12 +591,21 @@ static int _global_mask_array_rcu(struct bpf_cpumask **mask0,
- 		goto err_exit;
- 	}
- 
--	/* [<mask 0>, NULL] */
--	if (!*mask0 || *mask1) {
-+	/* [<mask 0>, *] */
-+	if (!*mask0) {
- 		err = 2;
- 		goto err_exit;
- 	}
- 
-+	if (!mask1)
-+		goto err_exit;
-+
-+	/* [*, NULL] */
-+	if (*mask1) {
-+		err = 3;
-+		goto err_exit;
-+	}
-+
- 	local = create_cpumask();
- 	if (!local) {
- 		err = 9;
-@@ -631,6 +688,23 @@ int BPF_PROG(test_global_mask_nested_deep_rcu, struct task_struct *task, u64 clo
- 	return 0;
- }
- 
-+SEC("tp_btf/task_newtask")
-+int BPF_PROG(test_global_mask_nested_deep_array_rcu, struct task_struct *task, u64 clone_flags)
-+{
-+	int i;
-+
-+	for (i = 0; i < BTF_FIELDS_MAX; i++)
-+		_global_mask_array_rcu(&global_mask_nested_deep_array_1.d_1.d_2.mask[i], NULL);
-+
-+	for (i = 0; i < BTF_FIELDS_MAX; i++)
-+		_global_mask_array_rcu(&global_mask_nested_deep_array_2.d_1.d_2[i].mask, NULL);
-+
-+	for (i = 0; i < BTF_FIELDS_MAX; i++)
-+		_global_mask_array_rcu(&global_mask_nested_deep_array_3.d_1[i].d_2.mask, NULL);
-+
-+	return 0;
-+}
-+
- SEC("tp_btf/task_newtask")
- int BPF_PROG(test_cpumask_weight, struct task_struct *task, u64 clone_flags)
- {
--- 
-2.29.2
+
+but freed here
+
+> -		state->indir_desc = NULL;
+> +		state->indir = NULL;
+>  	} else if (ctx) {
+> -		*ctx = state->indir_desc;
+> +		*ctx = state->indir;
+>  	}
+>  }
+
+
+It seems unlikely this was always 0 on all paths with even
+a small amount of stress, so now I question how this was tested.
+Besides, do not ignore compiler warnings, and do not tweak code
+to just make compiler shut up - they are your friend.
+
+>  
+> -- 
+> 2.32.0.3.g01195cf9f
 
 
