@@ -1,49 +1,49 @@
-Return-Path: <bpf+bounces-39653-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39654-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B25C975BC3
-	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 22:30:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E4AD8975BC5
+	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 22:31:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 558B7287402
-	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 20:30:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ABA1B287D38
+	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 20:31:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A02F91BA894;
-	Wed, 11 Sep 2024 20:30:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBD521BB684;
+	Wed, 11 Sep 2024 20:30:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IhubHLa9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OPTyhD/o"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2798B1B9B46
-	for <bpf@vger.kernel.org>; Wed, 11 Sep 2024 20:30:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CB76149C7D;
+	Wed, 11 Sep 2024 20:30:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726086632; cv=none; b=b6xco69QLlEGZqN7EuS+wQ1zB2XfFIGLzE+8cCnB6X5nRbHltr7sKJrcpajuD0aSC6ZpC/j7eEs4B6LlSz4K8cinGhLo2SwPdOJlJjo+Ft0uGkkcX08pff3c4wxmiUycZk6RvCRiHckPQm80jHNc+DB42Ipfzy9PQ17OdmejBkE=
+	t=1726086634; cv=none; b=h7RDqqGq5u2ytlXAjKQJLdpadBtzhKqT5d/caKJWIj7iSeBu6lDXW9vMknsA0a5NmNXp/3AqzfKtgEKT+23FPUr+5dXn4yjl+vAnaC01r5NA3cWvQ10OOGZwOT+2ij2fw1ZuLSpw9eQcJl0J4Rrg44ciFBf7wLVbkWWnh2zRSKE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726086632; c=relaxed/simple;
-	bh=sKArP0iv7ydz3yZZcqe+lyIpwBxjqgB2ECOMgi8C0lA=;
+	s=arc-20240116; t=1726086634; c=relaxed/simple;
+	bh=cd9B3CJ7RITvKXV5XucMYw0PCZE9UfOa701bR2XG7Eo=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=tVqU2rMiFlJu8jBg3gr8QEFkjiUJXnA4zVIf4jdRvWnNTgNYzEp76VsjSjEcaR0D3M6HNtdWYgrb6hu1PzVcas9ghR9Ns+AwHhM3JUHWpsNo2Sb7Ubw4F6e3SAFYe5Caz3ryKpt6zQKj0j/c7mnf6K45ySNae7z7PxCcLQjYJ+o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IhubHLa9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9BDF5C4CECC;
-	Wed, 11 Sep 2024 20:30:30 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=H+4HfrjMxHUjIvOg1dJplZlr5/29LqFXUfKmmR/WwZbAte+hcKt8/mYnIIBuzZzXzibreU3gS7EsMmcdk3WuIUwRR7VjnuH6woO14KyTeFTfr3sExaWu0JDbtD7PKd88wkSrjW1AVqJOBOIpXvbcj78CM5isuYVb2FIjZkV7A/g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OPTyhD/o; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5F90C4CEC0;
+	Wed, 11 Sep 2024 20:30:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1726086630;
-	bh=sKArP0iv7ydz3yZZcqe+lyIpwBxjqgB2ECOMgi8C0lA=;
+	s=k20201202; t=1726086633;
+	bh=cd9B3CJ7RITvKXV5XucMYw0PCZE9UfOa701bR2XG7Eo=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=IhubHLa9nvR0Usny3SFEDAzsaOgS009CLeU7K0/TE8EyPK4++qLuLGWy8gshOnWR4
-	 C+9hbOmn+iDyJRpaL1EX/hN6354swkLFw5yvlXpu/UHvHF7E6EZ60rsCQidOF/gQhC
-	 xPN23d71xaQAzcTlrn8DhxsDAdaJyVTNkPSsaVQFHwI6M2GU4zxHxCTqDjdcWxYaNi
-	 aWzxAkr1vPhaeBS31+v0NKfeiFqmFsdYU+20r6znyNxaBPAA1YKctlfGNociK2sZwf
-	 v0z+5NyJwZZ8SL4H4TedxzOskOCh2z4FjUlBvYc1ZUyFwGyfxJEYwPUB/Zcy6PpoVU
-	 +TxvhsJE0mBnw==
+	b=OPTyhD/oUJEePiOW04v7g+I0p4Hf187/bLse9970iBnE7ZIPJKraWvuVPhvPjXZtC
+	 wKcjgAyFr1Hs1RK3/cJbTup/TU3Pme8QU0V2IWxlxmlAGfjchzfODnqouBBs9zGhZb
+	 cVYZRarshBImviVhct6Pwe2XN4fRtpOOk2lo/qULhcUC+EgJzAEmq2i+zFBB4Gwy5A
+	 gPoiO9IET4TRDdf6pvJKc7JjzQw6XavuwWYp7HqdC+rS6PtGC8Xe8VfwUfvwCxrgUq
+	 9j95U3rvk30bcD/+jM2+SPJufzGyyr9zQ5Kni24yZP2xuA7zBW3u6PJXmeujaBdg9c
+	 vZFKH3q3Lmb3Q==
 Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EB0043806656;
-	Wed, 11 Sep 2024 20:30:32 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 340983806656;
+	Wed, 11 Sep 2024 20:30:36 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -52,40 +52,42 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v2] bpf: Use fake pt_regs when doing bpf syscall
- tracepoint tracing
+Subject: Re: [PATCH bpf] sock_map: add a cond_resched() in sock_hash_free()
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <172608663176.1037972.15071231307249153305.git-patchwork-notify@kernel.org>
-Date: Wed, 11 Sep 2024 20:30:31 +0000
-References: <20240910214037.3663272-1-yonghong.song@linux.dev>
-In-Reply-To: <20240910214037.3663272-1-yonghong.song@linux.dev>
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
- daniel@iogearbox.net, kernel-team@fb.com, martin.lau@kernel.org,
- salvabenedetto@meta.com
+ <172608663475.1037972.14564220776253114097.git-patchwork-notify@kernel.org>
+Date: Wed, 11 Sep 2024 20:30:34 +0000
+References: <20240906154449.3742932-1-edumazet@google.com>
+In-Reply-To: <20240906154449.3742932-1-edumazet@google.com>
+To: Eric Dumazet <edumazet@google.com>
+Cc: davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+ daniel@iogearbox.net, ast@kernel.org, martin.lau@linux.dev,
+ andrii@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
+ eric.dumazet@gmail.com, syzkaller@googlegroups.com, john.fastabend@gmail.com,
+ jakub@cloudflare.com
 
 Hello:
 
-This patch was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
+This patch was applied to bpf/bpf-next.git (net)
+by Daniel Borkmann <daniel@iogearbox.net>:
 
-On Tue, 10 Sep 2024 14:40:37 -0700 you wrote:
-> Salvatore Benedetto reported an issue that when doing syscall tracepoint
-> tracing the kernel stack is empty. For example, using the following
-> command line
->   bpftrace -e 'tracepoint:syscalls:sys_enter_read { print("Kernel Stack\n"); print(kstack()); }'
->   bpftrace -e 'tracepoint:syscalls:sys_exit_read { print("Kernel Stack\n"); print(kstack()); }'
-> the output for both commands is
-> ===
->   Kernel Stack
-> ===
+On Fri,  6 Sep 2024 15:44:49 +0000 you wrote:
+> Several syzbot soft lockup reports all have in common sock_hash_free()
+> 
+> If a map with a large number of buckets is destroyed, we need to yield
+> the cpu when needed.
+> 
+> Fixes: 75e68e5bf2c7 ("bpf, sockhash: Synchronize delete from bucket list on map free")
+> Reported-by: syzbot <syzkaller@googlegroups.com>
+> Signed-off-by: Eric Dumazet <edumazet@google.com>
+> Cc: John Fastabend <john.fastabend@gmail.com>
+> Cc: Jakub Sitnicki <jakub@cloudflare.com>
 > 
 > [...]
 
 Here is the summary with links:
-  - [bpf-next,v2] bpf: Use fake pt_regs when doing bpf syscall tracepoint tracing
-    https://git.kernel.org/bpf/bpf-next/c/376bd59e2a04
+  - [bpf] sock_map: add a cond_resched() in sock_hash_free()
+    https://git.kernel.org/bpf/bpf-next/c/b1339be951ad
 
 You are awesome, thank you!
 -- 
