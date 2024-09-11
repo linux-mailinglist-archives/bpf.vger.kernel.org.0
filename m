@@ -1,195 +1,198 @@
-Return-Path: <bpf+bounces-39665-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39666-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA276975C51
-	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 23:15:45 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C70D0975C7C
+	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 23:35:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 64CA9B223CF
-	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 21:15:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8F22A284976
+	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 21:35:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 169701531C0;
-	Wed, 11 Sep 2024 21:15:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D51F1AB6D4;
+	Wed, 11 Sep 2024 21:35:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="HAkJNKQr"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I/SYNjoe"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2D1043144;
-	Wed, 11 Sep 2024 21:15:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EA60149003;
+	Wed, 11 Sep 2024 21:35:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726089335; cv=none; b=m+gRSNyUZ9yZpzXnw+1aoMAJxbBnl409FZr79dRj+G4vLL/KPDkhiF3xCHzxj9Hos5pC7v2XmsP2xhmvdvhF6EirpB2EVhGVzvBQWw8yv3b9DzaqgO9gl5VOdguAu017nVrTINT0lL8Zwhp4yblUR4b8fGIBPKAa+9uR0jjTo9Q=
+	t=1726090512; cv=none; b=Z2gVU84iQxN2vdrgINJj91Ks9o3RecXLiKyedVhYhncMEADry24VK1mYmACFfga0ONvWlQP5BNBpEhq81aVr+Ob+6IbYJuW+ZMABeZ3ilL4knLEnxxOoPE2INCOXX7FzCEvbrxEAgQ6jiJIu9dgASc8vumOJiS6Md+hCGn8nxdw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726089335; c=relaxed/simple;
-	bh=aiD4jhs3FNjaxej74Kkim9aO3yEkdJdFx125jZtqfoU=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=RHfKkE1mxYV3AHMx3G7Evw7zvuOEpT7ZmNP5+OE0FDdkK6WHjk+1M2osaQkIsudL5nGUuEBe5/vS7PFg8J4+p3uQk4EYjNLVy8S6ari2dr3DED92x3v5nqxyPYbZJRbxSI9Gh0DmMvhV4tM/u0R7vOiN/SlIqIuLXQwP/JE9tGM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=HAkJNKQr; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:MIME-Version:
-	Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:In-Reply-To:References;
-	bh=lMzcWWA+32JebC4lylEGT5XwBsI22pFn2wLTuzdXq00=; b=HAkJNKQr4KBd4s7PeQ9YfwGj8J
-	Rt6kDy/2CrPL+ismsJp3v4JlYm0IrH//fql/4W0288/eH3bgtguvBZfJjhiM/wz717LZBq/oZqOXc
-	ARhnAztLyp32QhHNjM+1t22UhnY8DwiUqT/BbvFqCMurcuYvSydBWf5deZM0vmlaRU1GVYqxv7Tbr
-	vfGLMbjT0zXvYkh4+hclqlp6MDmoQaXyYuRa1QH+h3XZnNLJrT/93dfvhWW45GMQDN+QQF8hJLGDY
-	13n9Bu4OEYZfZW8YFVrWKWygJ6vTyVdayYIPYMLpYUmn17caWovYDl5PNFLfLQphVZ640eLlumy5x
-	83eKsOYQ==;
-Received: from 55.249.197.178.dynamic.cust.swisscom.net ([178.197.249.55] helo=localhost)
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1soUgQ-000AhQ-R0; Wed, 11 Sep 2024 23:15:26 +0200
-From: Daniel Borkmann <daniel@iogearbox.net>
-To: davem@davemloft.net
-Cc: kuba@kernel.org,
-	pabeni@redhat.com,
-	edumazet@google.com,
-	daniel@iogearbox.net,
-	ast@kernel.org,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	netdev@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: pull-request: bpf-next 2024-09-11
-Date: Wed, 11 Sep 2024 23:15:25 +0200
-Message-Id: <20240911211525.13834-1-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
+	s=arc-20240116; t=1726090512; c=relaxed/simple;
+	bh=MydnGImg1onEloD9oWqIoE/nw9qPew4bJNLmTScXE4o=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=uy9Q895lHbkgV6+Z50E+sN1R4O4ZKznCUBDIKAtAO/ru2LpSYpNnGccJ3oQKJ174PM+66yw6v+DeTQ3/GzJ8+439OAe7IACzTE6CA11Wy0P74k+Y9q3YurlAB5ojdvaGdbm3pzLoK+lLE5FQ2HIzXRTOQKClVKuZfvP8CqZ9hTM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=I/SYNjoe; arc=none smtp.client-ip=209.85.216.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-2d8a744aa9bso174224a91.3;
+        Wed, 11 Sep 2024 14:35:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1726090510; x=1726695310; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=T+jEybtqgHr3PVAiuDdOVn7cuVbpZHXqKxPkgKvDJyU=;
+        b=I/SYNjoeNG7/IZc7B6pSAvtRuh1BPZy47GWxOSvs4ZV/26GliJa8h9hsZ3g6XNbDrT
+         hf+PlJbYaiXrIZ6V86bK6gXfG373IpocdmHzZ8H5nBMOwuKKj0a/yp3fiQA3xI25Rjdo
+         ELH+YXFXQE1f3DndXDSedSj61YowKJV2pFnwTtwDL8+ER16As4hRBbh7Y3VmidqHM+PP
+         56XKroPTDNKzbSF6q5CKLc2IGqGCbtTNZgluBBxPSH3XVUCM6r78a9Do63bycRNCSQkt
+         wpzujLxzfUF5CYbal/I9ZUKtrcW1W97Ow/k68mP6vA00EmHO/3XM+2/hAUdaRI94Vpv0
+         p5hA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1726090510; x=1726695310;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=T+jEybtqgHr3PVAiuDdOVn7cuVbpZHXqKxPkgKvDJyU=;
+        b=heHGPIGNaYDPbHe/E7HSlN8uVKcZsESD3csIaNYw/abyKyOfemuP9aOXJAYYTk6auz
+         BM0CtJGYhgcYAQMIt0p1Cn3sw9CD0KJaXh77N0XXrcdsUxynqIfp6w3kDBafpd6cm/Y3
+         lDKnwQwR+8dPMxRWq4Y1I0G+SVQEWQkl9NLzlm0fRCMnwz7hKja0E9NpXXPy+pWe8fSN
+         ECraOn1/JlJJaj9fTrafy/+E+irAJ+TkKX/4b0EMc6S/vhIfFUXKX1VWg5Kz3vMFwFie
+         DTi8SH7v5sl5gY96//UsN7k1WDMh2Asb7P2lpXH0LXQ7bXsgVhZ9A4/Fp02OfWGDGdui
+         jVtA==
+X-Forwarded-Encrypted: i=1; AJvYcCUuamRxlGhEC6T6ThsQFcwpEFjWhS/JWoVL1UOyVL9QWiMO1bu/dqSvdXDKr4YfahPbFBOQNM9kFtJFQKxIeqrKQRFh@vger.kernel.org, AJvYcCVvfGqB1sUq0N6g3hTJG7uV+0j7cjJ8gzRLBI6ZUP674agONvegdPm7QV9hID8458j2rlg=@vger.kernel.org, AJvYcCXtJzYdoXbGX5LiA79UrykwRISpS+gJrCoORIPgrCKCjX+rSSj2Hs2/MDiYie8axclqCKvdtO4vEwpHvHHg@vger.kernel.org
+X-Gm-Message-State: AOJu0YxtpXWMTWMpVsrIr0Z0g2mWiXq88M+yLkanIP4bVNBP21Wb6zZp
+	jV221u1JTlXkDGMnirmcoz88xCFMlUrN9rGoc8t/gSwID1GgLU2mpYkPLdfayXwsarWUOa+Pccn
+	8WDIEBLbj86HWtQJLs0BKf0bAnD0=
+X-Google-Smtp-Source: AGHT+IGpXC3R7Ca0taMUwh/MVl1yLymIr33cDWnZgZwGWtPi5Mtd23oK4XL2nH75+xxRhAVXb0qYJbp+sa10tNeg9ro=
+X-Received: by 2002:a17:90b:17c5:b0:2c4:b0f0:8013 with SMTP id
+ 98e67ed59e1d1-2db9ffbfbf2mr650796a91.11.1726090510597; Wed, 11 Sep 2024
+ 14:35:10 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27395/Wed Sep 11 10:32:20 2024)
+References: <20240906051205.530219-1-andrii@kernel.org> <20240906051205.530219-2-andrii@kernel.org>
+ <CAG48ez2hAQBj-VnimJBd3M-ioANVTk+ZQXYWD+j9G+ip2K_nfw@mail.gmail.com> <CAJuCfpFAvsMsBTBMaK5sHFkLQPrfE0nb401gEb2hmN2rbjza6g@mail.gmail.com>
+In-Reply-To: <CAJuCfpFAvsMsBTBMaK5sHFkLQPrfE0nb401gEb2hmN2rbjza6g@mail.gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Wed, 11 Sep 2024 14:34:58 -0700
+Message-ID: <CAEf4BzbzDjKbSZz4U+L_F3V-abXY3stgen2UhpQ1Tvba5owFcw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] mm: introduce mmap_lock_speculation_{start|end}
+To: Suren Baghdasaryan <surenb@google.com>
+Cc: Jann Horn <jannh@google.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	linux-trace-kernel@vger.kernel.org, peterz@infradead.org, oleg@redhat.com, 
+	rostedt@goodmis.org, mhiramat@kernel.org, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, jolsa@kernel.org, paulmck@kernel.org, 
+	willy@infradead.org, akpm@linux-foundation.org, linux-mm@kvack.org, 
+	mjguzik@gmail.com, brauner@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi David, hi Jakub, hi Paolo, hi Eric,
+On Mon, Sep 9, 2024 at 7:09=E2=80=AFPM Suren Baghdasaryan <surenb@google.co=
+m> wrote:
+>
+> On Mon, Sep 9, 2024 at 5:35=E2=80=AFAM Jann Horn <jannh@google.com> wrote=
+:
+> >
+> > On Fri, Sep 6, 2024 at 7:12=E2=80=AFAM Andrii Nakryiko <andrii@kernel.o=
+rg> wrote:
+> > > +static inline bool mmap_lock_speculation_end(struct mm_struct *mm, i=
+nt seq)
+> > > +{
+> > > +       /* Pairs with RELEASE semantics in inc_mm_lock_seq(). */
+> > > +       return seq =3D=3D smp_load_acquire(&mm->mm_lock_seq);
+> > > +}
+> >
+> > A load-acquire can't provide "end of locked section" semantics - a
+> > load-acquire is a one-way barrier, you can basically use it for
+> > "acquire lock" semantics but not for "release lock" semantics, because
+> > the CPU will prevent reordering the load with *later* loads but not
+> > with *earlier* loads. So if you do:
+> >
+> > mmap_lock_speculation_start()
+> > [locked reads go here]
+> > mmap_lock_speculation_end()
+> >
+> > then the CPU is allowed to reorder your instructions like this:
+> >
+> > mmap_lock_speculation_start()
+> > mmap_lock_speculation_end()
+> > [locked reads go here]
+> >
+> > so the lock is broken.
+>
+> Hi Jann,
+> Thanks for the review!
+> Yeah, you are right, we do need an smp_rmb() before we compare
+> mm->mm_lock_seq with the stored seq.
+>
+> Otherwise reads might get reordered this way:
+>
+> CPU1                        CPU2
+> mmap_lock_speculation_start() // seq =3D mm->mm_lock_seq
+> reloaded_seq =3D mm->mm_lock_seq; // reordered read
+>                                  mmap_write_lock() // inc_mm_lock_seq(mm)
+>                                  vma->vm_file =3D ...;
+>                                  mmap_write_unlock() // inc_mm_lock_seq(m=
+m)
+> <speculate>
+> mmap_lock_speculation_end() // return (reloaded_seq =3D=3D seq)
+>
+> >
+> > >  static inline void mmap_write_lock(struct mm_struct *mm)
+> > >  {
+> > >         __mmap_lock_trace_start_locking(mm, true);
+> > >         down_write(&mm->mmap_lock);
+> > > +       inc_mm_lock_seq(mm);
+> > >         __mmap_lock_trace_acquire_returned(mm, true, true);
+> > >  }
+> >
+> > Similarly, inc_mm_lock_seq(), which does a store-release, can only
+> > provide "release lock" semantics, not "take lock" semantics, because
+> > the CPU can reorder it with later stores; for example, this code:
+> >
+> > inc_mm_lock_seq()
+> > [locked stuff goes here]
+> > inc_mm_lock_seq()
+> >
+> > can be reordered into this:
+> >
+> > [locked stuff goes here]
+> > inc_mm_lock_seq()
+> > inc_mm_lock_seq()
+> >
+> > so the lock is broken.
+>
+> Ugh, yes. We do need smp_wmb() AFTER the inc_mm_lock_seq(). Whenever
 
-The following pull-request contains BPF updates for your *net-next* tree.
+Suren, can you share with me an updated patch for mm_lock_seq with the
+right memory barriers? Do you think this might have a noticeable
+impact on performance? What sort of benchmark do mm folks use to
+quantify changes like that?
 
-We've added 12 non-merge commits during the last 16 day(s) which contain
-a total of 20 files changed, 228 insertions(+), 30 deletions(-).
-
-There's a minor merge conflict in netkit driver, resolve as follows
-(https://lore.kernel.org/bpf/2444df33-cd03-a929-9ce8-3cf1376d3f78@iogearbox.net):
-
-  	dev->priv_flags |= IFF_LIVE_ADDR_CHANGE;
-  	dev->priv_flags |= IFF_PHONY_HEADROOM;
-  	dev->priv_flags |= IFF_NO_QUEUE;
-+ 	dev->priv_flags |= IFF_DISABLE_NETPOLL;
- +	dev->lltx = true;
-  
-  	dev->ethtool_ops = &netkit_ethtool_ops;
-  	dev->netdev_ops  = &netkit_netdev_ops;
-
-The main changes are:
-
-1) Enable bpf_dynptr_from_skb for tp_btf such that this can be used to easily
-   parse skbs in BPF programs attached to tracepoints, from Philo Lu.
-
-2) Add a cond_resched() point in BPF's sock_hash_free() as there have been
-   several syzbot soft lockup reports recently, from Eric Dumazet.
-
-3) Fix xsk_buff_can_alloc() to account for queue_empty_descs which got noticed
-   when zero copy ice driver started to use it, from Maciej Fijalkowski.
-
-4) Move the xdp:xdp_cpumap_kthread tracepoint before cpumap pushes skbs up via
-   netif_receive_skb_list() to better measure latencies, from Daniel Xu.
-
-5) Follow-up to disable netpoll support from netkit, from Daniel Borkmann.
-
-6) Improve xsk selftests to not assume a fixed MAX_SKB_FRAGS of 17 but instead
-   gather the actual value via /proc/sys/net/core/max_skb_frags, also from
-   Maciej Fijalkowski.
-
-Please consider pulling these changes from:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git tags/for-netdev
-
-Thanks a lot!
-
-Also thanks to reporters, reviewers and testers of commits in this pull-request:
-
-Breno Leitao, Cong Wang, Jakub Kicinski, Jakub Sitnicki, Jesper Dangaard 
-Brouer, John Fastabend, Magnus Karlsson, Martin KaFai Lau, Nikolay 
-Aleksandrov, Stanislav Fomichev, syzbot
-
-----------------------------------------------------------------
-
-The following changes since commit f8fdda9e4f988c210b1e4519a28ddbf7d29b0038:
-
-  Merge branch 'tc-adjust-network-header-after-2nd-vlan-push' (2024-08-27 11:37:46 +0200)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git tags/for-netdev
-
-for you to fetch changes up to b1339be951ad31947ae19bc25cb08769bf255100:
-
-  sock_map: Add a cond_resched() in sock_hash_free() (2024-09-11 22:16:04 +0200)
-
-----------------------------------------------------------------
-bpf-next-for-netdev
-
-----------------------------------------------------------------
-Daniel Borkmann (1):
-      netkit: Disable netpoll support
-
-Daniel Xu (1):
-      bpf, cpumap: Move xdp:xdp_cpumap_kthread tracepoint before rcv
-
-Eric Dumazet (1):
-      sock_map: Add a cond_resched() in sock_hash_free()
-
-Maciej Fijalkowski (2):
-      xsk: Bump xsk_queue::queue_empty_descs in xp_can_alloc()
-      selftests/xsk: Read current MAX_SKB_FRAGS from sysctl knob
-
-Martin KaFai Lau (1):
-      Merge branch 'bpf: Allow skb dynptr for tp_btf'
-
-Philo Lu (5):
-      bpf: Support __nullable argument suffix for tp_btf
-      selftests/bpf: Add test for __nullable suffix in tp_btf
-      tcp: Use skb__nullable in trace_tcp_send_reset
-      bpf: Allow bpf_dynptr_from_skb() for tp_btf
-      selftests/bpf: Expand skb dynptr selftests for tp_btf
-
-Simon Horman (1):
-      bpf, sockmap: Correct spelling skmsg.c
-
-Yaxin Chen (1):
-      tcp_bpf: Remove an unused parameter for bpf_tcp_ingress()
-
- drivers/net/netkit.c                               |  1 +
- include/trace/events/tcp.h                         | 12 +++---
- kernel/bpf/btf.c                                   |  3 ++
- kernel/bpf/cpumap.c                                |  6 ++-
- kernel/bpf/verifier.c                              | 36 ++++++++++++++++--
- net/core/filter.c                                  |  3 +-
- net/core/skmsg.c                                   |  2 +-
- net/core/sock_map.c                                |  1 +
- net/ipv4/tcp_bpf.c                                 |  4 +-
- net/xdp/xsk_buff_pool.c                            | 10 ++++-
- net/xdp/xsk_queue.h                                |  5 ---
- .../selftests/bpf/bpf_testmod/bpf_testmod-events.h |  6 +++
- .../selftests/bpf/bpf_testmod/bpf_testmod.c        |  2 +
- tools/testing/selftests/bpf/prog_tests/dynptr.c    | 37 ++++++++++++++++++-
- .../selftests/bpf/prog_tests/tp_btf_nullable.c     | 14 +++++++
- tools/testing/selftests/bpf/progs/dynptr_fail.c    | 25 +++++++++++++
- tools/testing/selftests/bpf/progs/dynptr_success.c | 23 ++++++++++++
- .../selftests/bpf/progs/test_tp_btf_nullable.c     | 24 ++++++++++++
- tools/testing/selftests/bpf/xskxceiver.c           | 43 +++++++++++++++++++---
- tools/testing/selftests/bpf/xskxceiver.h           |  1 -
- 20 files changed, 228 insertions(+), 30 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/tp_btf_nullable.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_tp_btf_nullable.c
+> we use inc_mm_lock_seq() for "take lock" semantics, it's preceded by a
+> down_write(&mm->mmap_lock) with implied ACQUIRE ordering. So I thought
+> we can use it but I realize now that this reordering is still
+> possible:
+> CPU1                        CPU2
+>                                  mmap_write_lock()
+>                                        down_write(&mm->mmap_lock);
+>                                        vma->vm_file =3D ...;
+>
+> mmap_lock_speculation_start() // seq =3D mm->mm_lock_seq
+> <speculate>
+> mmap_lock_speculation_end() // return (mm->mm_lock_seq =3D=3D seq)
+>
+>                                        inc_mm_lock_seq(mm);
+>                                  mmap_write_unlock() // inc_mm_lock_seq(m=
+m)
+>
+> Is that what you were describing?
+> Thanks,
+> Suren.
+>
+> >
+> > For "taking a lock" with a memory store, or "dropping a lock" with a
+> > memory load, you need heavier memory barriers, see
+> > Documentation/memory-barriers.txt.
 
