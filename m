@@ -1,171 +1,147 @@
-Return-Path: <bpf+bounces-39550-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39551-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D548974690
-	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 01:46:40 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DD4197472C
+	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 02:13:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CC116B24995
-	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2024 23:46:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 237F7285BD2
+	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 00:13:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD66B1B532B;
-	Tue, 10 Sep 2024 23:44:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 693D410F2;
+	Wed, 11 Sep 2024 00:13:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="OIVcS2r1";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Inov3oyk"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pHNNcMuv"
 X-Original-To: bpf@vger.kernel.org
-Received: from fout4-smtp.messagingengine.com (fout4-smtp.messagingengine.com [103.168.172.147])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E77B91B29D2;
-	Tue, 10 Sep 2024 23:44:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.147
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E037E161;
+	Wed, 11 Sep 2024 00:13:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726011884; cv=none; b=AUjFgVW3jHTuKpFIAyupEUNDty2t3mFBKdSU0rM9yBedoo6HKFlXJ9fLZqtPHWwV0W2mglTnFA0wt4HfRmXjWZimugqRLntQsulkOHRMEaNzCgkptg/kYc85Bml6d7Y6VmXdgk0l5qyn7eLRlhPLyN7ViuXLpVOwpT3FimsRMis=
+	t=1726013629; cv=none; b=HcnhjmMNZo2lDZcMA2KFj7AFoxSBkbXcYdW5eUnPhbkRjvQuP1dQnBZcejT40cKLcou0NjlDXFTacmBXJxuxkaU1sGJNtptG8qa9v6dhN0sXRS13MpyPZfhLMAbPtUAxgqM5ZbgmvBAzY8cmTX+VtA+prXaVcBWntni9ISCjP6A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726011884; c=relaxed/simple;
-	bh=NJRdyDt4ArtkhmucN0ADGasD7WAmAy2gcQoa3OuTEro=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XOmH1X4Zo2WJp+UqfL/PnvGJFoTY5QOjNjb84uzqu74fuW1t2kU1q9tCtMkMDfRr9BgRJ3dwrIU8DrHPqE8dCUjpO46gBhEy/hwWgLzw1dK8QFU4RMLI0hOPPnmqZ3+IYS9vi6hI9iizjx7KdDv2etK0LykPw+JyLcfboyMFeX8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=OIVcS2r1; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Inov3oyk; arc=none smtp.client-ip=103.168.172.147
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
-Received: from phl-compute-12.internal (phl-compute-12.phl.internal [10.202.2.52])
-	by mailfout.phl.internal (Postfix) with ESMTP id 0F50313801C0;
-	Tue, 10 Sep 2024 19:44:41 -0400 (EDT)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-12.internal (MEProxy); Tue, 10 Sep 2024 19:44:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm3; t=1726011881;
-	 x=1726098281; bh=7UKGu1SR/PBsryXACn9wUHAYZcr8DaV+dHj6lNuogFw=; b=
-	OIVcS2r1Aud15229JwgZnwxT3mBmneFNGw0BhwEg1/ITv7i3nkj9/kXakxeYGBkC
-	+TFkwXvg46EHuyOMNZHO2tDpa6U9KuO8c0KEkM45J+KDn9+n04cjh/JEW2gO2cHV
-	tNRdrthYmKSFkRc2ODDNH2kx0+PEPHQSQug0cAuVmhbHPI1Vqmgo3yfwM5zHFNKt
-	0o0ShbyyHWTUVZ3fAPhukxfGwy+Gmicov1d3mpl08YEdmJ+A7WgST11I4ktJUA72
-	SFYnbFovXc/d4aUcPcaTcbT9rHhW1ntVQjhlsWAL8TbfvaGqPINuiQrfTWrfFwR+
-	thh+GO784N1Squpemht2yw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1726011881; x=
-	1726098281; bh=7UKGu1SR/PBsryXACn9wUHAYZcr8DaV+dHj6lNuogFw=; b=I
-	nov3oykubRyvFUL238D2FQ/tN8Cz70Iq/eN9jHNgzSMMWVnaRTO6sHZJI9TxhKNf
-	il/5Wk/5Er+Of0inHWAFpdBFJAhL0NxKg8CqHuWcRjAYbip0AA6klGnXpvJUdksy
-	vb5P8IUjixWQAYwPabHaLKXgbHNRTyPWUCAWVZowixT/qXhdKfR5UMtgny2Akdrm
-	1ZrQ236v+tnxs5x0NrLp89xaFU67ErIlqC/YWkOQKpYqUQARWaEKFA+T8PxRWrLl
-	Ccjx8DJxrCoE5CBWbOM7jLFzGzC02ur9oQvEjA49CDAX2fdFKpywfSZYlw9sufVH
-	b/UoTGiPBYx5qKu+aHePQ==
-X-ME-Sender: <xms:6NngZvexNvWHH_w3EwaDDjHw_FDhYxNI-3wIYzE8iOJsetfLaxpgEQ>
-    <xme:6NngZlPM1xWKKKhgyAwcfu2DNPqRJAY27abVucXtgKXf8Pdt3S25RdE8KkR9vJaxi
-    IFEay2iD5x-avcAlw>
-X-ME-Received: <xmr:6NngZojpWHyQrkkKZRu4dk2HBBx1p9ZWopb8PZh4EImW4cR3LGIdUqzucaLJ0onHwU0Ya_sSKmxep215SW7UABGhtuVqE7XTUTU36mGzUPN7tQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrudejtddgvdegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
-    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
-    htshculddquddttddmnegfrhhlucfvnfffucdljedtmdenucfjughrpeffhffvvefukfhf
-    gggtugfgjgestheksfdttddtjeenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihuse
-    gugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpedtgfeuueeukeeikefgieeukeff
-    leetkeekkeeggeffvedtvdejueehueeuleefteenucevlhhushhtvghrufhiiigvpedtne
-    curfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiiipdhnsggprhgt
-    phhtthhopedvtddpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtoheprghnughrihhird
-    hnrghkrhihihhkohesghhmrghilhdrtghomhdprhgtphhtthhopegrlhgvgigvihdrshht
-    rghrohhvohhithhovhesghhmrghilhdrtghomhdprhgtphhtthhopegvugguhiiikeejse
-    hgmhgrihhlrdgtohhmpdhrtghpthhtoheprghnughrihhisehkvghrnhgvlhdrohhrghdp
-    rhgtphhtthhopegurghnihgvlhesihhoghgvrghrsghogidrnhgvthdprhgtphhtthhope
-    grshhtsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehshhhurghhsehkvghrnhgvlhdr
-    ohhrghdprhgtphhtthhopehjohhhnhdrfhgrshhtrggsvghnugesghhmrghilhdrtghomh
-    dprhgtphhtthhopehmrghrthhinhdrlhgruheslhhinhhugidruggvvh
-X-ME-Proxy: <xmx:6NngZg8L71HmBOBoLv1wtNrsHY5RwO7HXkNgYOo5jSZzCxcf1ProMw>
-    <xmx:6NngZrvzzhZi3sYRyo4_ykKOyJiDqdRudCs9NHec39zRWf-mcadWFw>
-    <xmx:6NngZvFkYgBn7Rm9aQExLNG0HO7qsxsBfGPbhu3c38ajtr2FUn_oMA>
-    <xmx:6NngZiMSXw_t2r7Sg_BFpPGXu6vnI83rksuUHcEz-KL0yh8tFXLvsw>
-    <xmx:6dngZkP7UAAdT9-bYkHVmo429bErfwgctEYsJA4oXFvb8R1L2stEdSby>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 10 Sep 2024 19:44:38 -0400 (EDT)
-Date: Tue, 10 Sep 2024 17:44:36 -0600
-From: Daniel Xu <dxu@dxuuu.xyz>
+	s=arc-20240116; t=1726013629; c=relaxed/simple;
+	bh=kLX/MNy8LQx6pmAYAL9htFO1I0OjK3ouK59utdKuxMk=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=AdsR5yxW6FvXAQ9GGt2S6Jlz3H9OjE6zBW23o8GwP+nuteL7qkbSj7/d3VVGrCjLJ4m7UNVE7MLLSrmaCXz/Ft3quQRl30bvzlwHiFUnmPZi4/nDl3l9to4TbBF+IEI4lf9ve60GyW9OUb8uQ31uwy/uM4ItfUgR/IpAE9TbWbM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pHNNcMuv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1A65C4CECC;
+	Wed, 11 Sep 2024 00:13:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1726013628;
+	bh=kLX/MNy8LQx6pmAYAL9htFO1I0OjK3ouK59utdKuxMk=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=pHNNcMuvkBf22Ht5hikTfK5DrtdlvONrgq+Q+6nKmjhExO6WVUe/kBGnuo3JGq9bS
+	 S8gt5ghMPw+mci8KHjIQ1rxS5h0OcuirDrr7GalNd+3ErN2lqn8DDvJzIUFLzjITS8
+	 eeZ6xLKzupTg9uAoMxUEg6edxvm4ufEse6W5d47LS+P6nMHwAxxESW+lZMcme4Z5Um
+	 VGxFo81QheOp/odPOD+jEm3Tlgek/0Dau48+7mokshFPbfpxZIUuy4cdnVBmQUsM7C
+	 2fBGcD+h9rguDIms/xW+FoPWXhK7iCAH09Z9cUgg/x31zP6Z86RyB7MUWGLCiE+BUF
+	 MippYztjimdtw==
+Date: Wed, 11 Sep 2024 09:13:43 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov <ast@kernel.org>, 
-	Shuah Khan <shuah@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Mykola Lysenko <mykolal@fb.com>, LKML <linux-kernel@vger.kernel.org>, 
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, Kernel Team <kernel-team@meta.com>
-Subject: Re: [PATCH bpf-next] bpf: ringbuf: Support consuming
- BPF_MAP_TYPE_RINGBUF from prog
-Message-ID: <rsdwvah5ov3itchsgkwgleihswoycoal5vjbeql2wbqoz5noiz@myk2atnnjaub>
-References: <18a9ddacc99bb95e9802f8ad1e81214433df496c.1725929645.git.dxu@dxuuu.xyz>
- <CAADnVQKyfZ2-qCvmqG8z919ggdOszEjTs04H=cTGOZTi-zhx7Q@mail.gmail.com>
- <CAEf4Bza5Fiw2rZ5T7=zRwVk1Ct1Mgm7Gpa8w+NJVPZf8keY_9Q@mail.gmail.com>
- <vru2zgphyfywjcqikolwotsfun2bgtrnfmwvfls5ra4tznsydr@46w5rq7gqepz>
- <4ec8e15b-c44b-41d7-b337-32d17306d67b@app.fastmail.com>
- <CAEf4BzbHqKD87KTSmFUMokXEaAa70xNs96QqfWBHjFbuE5PL=w@mail.gmail.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>, bpf <bpf@vger.kernel.org>, Linux
+ trace kernel <linux-trace-kernel@vger.kernel.org>, adubey@linux.ibm.com,
+ "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, KP Singh
+ <kpsingh@chromium.org>, linux-arm-kernel
+ <linux-arm-kernel@lists.infradead.org>, Mark Rutland
+ <mark.rutland@arm.com>, Will Deacon <will@kernel.org>, Alexei Starovoitov
+ <ast@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>, Florent Revest
+ <revest@chromium.org>, Puranjay Mohan <puranjay@kernel.org>
+Subject: Re: Unsupported CONFIG_FPROBE and CONFIG_RETHOOK on ARM64
+Message-Id: <20240911091343.77c60bc2e5d96cbfd8787c19@kernel.org>
+In-Reply-To: <CAEf4BzasRqeAY3ZpBDbjyWSKUriZgUf4U_YoQNSSutKhX5g2kw@mail.gmail.com>
+References: <CAEf4BzaYyEftmRmt6FswrTOsb9FuQMtzuDXD4OJMO7Ein2ZRGg@mail.gmail.com>
+	<CAEf4BzasRqeAY3ZpBDbjyWSKUriZgUf4U_YoQNSSutKhX5g2kw@mail.gmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzbHqKD87KTSmFUMokXEaAa70xNs96QqfWBHjFbuE5PL=w@mail.gmail.com>
 
-On Tue, Sep 10, 2024 at 03:21:04PM GMT, Andrii Nakryiko wrote:
-> On Tue, Sep 10, 2024 at 3:16 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
+On Tue, 10 Sep 2024 11:23:29 -0700
+Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+
+> + arm ML and maintainers
+> 
+> On Wed, Sep 4, 2024 at 6:02 PM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
 > >
+> > Hey,
 > >
+> > I just recently realized that we are still missing multi-kprobe
+> > support for ARM64, which depends on CONFIG_FPROBE. And CONFIG_FPROBE
+> > seems to require CONFIG_HAVE_RETHOOK, which, it turns out, is not
+> > implemented for ARM64.
 > >
-> > On Tue, Sep 10, 2024, at 2:07 PM, Daniel Xu wrote:
-> > > On Tue, Sep 10, 2024 at 01:41:41PM GMT, Andrii Nakryiko wrote:
-> > >> On Tue, Sep 10, 2024 at 11:36 AM Alexei Starovoitov
-> > [...]
-> > >
-> > >>
-> > >> Also, Daniel, can you please make sure that dynptr we return for each
-> > >> sample is read-only? We shouldn't let consumer BPF program ability to
-> > >> corrupt ringbuf record headers (accidentally or otherwise).
-> > >
-> > > Sure.
+> > It took me a while to realize what's going on, as I roughly remembered
+> > (and confirmed through lore search) that Masami's original rethook
+> > patches had arm64-specific bits. Long story short:
 > >
-> > So the sample is not read-only. But I think prog is prevented from messing
-> > with header regardless.
+> > 0f8f8030038a Revert "arm64: rethook: Add arm64 rethook implementation"
+> > 83acdce68949 arm64: rethook: Add arm64 rethook implementation
 > >
-> > __bpf_user_ringbuf_peek() returns sample past the header:
+> > The patch was landed and then reverted. I found some discussion online
+> > and it seems like the plan was to land arch-specific bits shortly
+> > after bpf-next PR.
 > >
-> >         *sample = (void *)((uintptr_t)rb->data +
-> >                            (uintptr_t)((cons_pos + BPF_RINGBUF_HDR_SZ) & rb->mask));
+> > But it seems like that never happened. Why?
 > >
-> > dynptr is initialized with the above ptr:
+> > I see s390x, RISC-V, loongarch (I'm not even mentioning x86-64) all
+> > have CONFIG_HAVE_RETHOOK, even powerpc is getting one (see [0]), it
+> > seems. How come ARM64 is the one left out?
 > >
-> >         bpf_dynptr_init(&dynptr, sample, BPF_DYNPTR_TYPE_LOCAL, 0, size);
+> > Can anyone please provide some context? And if that's just an
+> > oversight, can we prioritize landing this for ARM64 ASAP?
 > >
-> > So I don't think there's a way for the prog to access the header thru the dynptr.
+> >   [0] https://lore.kernel.org/bpf/20240830113131.7597-1-adubey@linux.ibm.com/
 > >
 > 
-> By "header" I mean 8 bytes that precede each submitted ringbuf record.
-> That header is part of ringbuf data area. Given user space can set
-> consumer_pos to arbitrary value, kernel can return arbitrary part of
-> ringbuf data area, including that 8 byte header. If that data is
-> writable, it's easy to screw up that header and crash another BPF
-> program that reserves/submits a new record. User space can only read
-> data area for BPF ringbuf, and so we rely heavily on a tight control
-> of who can write what into those 8 bytes.
+> Masami, Steven,
+> 
+> Does Linus have to be in CC to get any reply here? Come on, it's been
+> almost a full week.
 
-Ah, ok. I think I understand.
+Sorry about bothering you, let me check that. But I think we eventually
+need my fprobe-on-fgraph patch which allows all architecture uses ftrace_regs
+instead of pt_regs for ftrace/fgraph users. That allows arm64 to implement
+fprobe.
 
-Given this and your other comments about rb->busy, what about enforcing
-bpf_user_ringbuf_drain() NAND mmap? I think the use cases here are
-different enough where this makes sense.
+> 
+> Maybe ARM64 folks have some context?... And hopefully desire to see
+> this through so that ARM64 doesn't stick out as a lesser-supported
+> platform as far as tracing goes compared to loongarch, s390x, and
+> powerpc (which just landed rethook support, see [2]).
+
+I think lesser-supported or not is not a matter, but they need to keep 
+their architecutre healthy. Mark said that the current rethook
+implementation is not acceptable because arm64 can not manually generate
+pt_regs. So we need to use ftrace_regs for that.
+So eventually, we need my fprobe series.
+
+https://lore.kernel.org/bpf/164338038439.2429999.17564843625400931820.stgit@devnote2/
+
+Thank you,
+
+> 
+> Note that there was already an implementation (see [1]), but for some
+> reason it never made it.
+> 
+>   [1] https://lore.kernel.org/bpf/164338038439.2429999.17564843625400931820.stgit@devnote2/
+>   [2] https://lore.kernel.org/bpf/172562357215.467568.2172858907419105155.b4-ty@ellerman.id.au/
+> 
+> >
+> > -- Andrii
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
