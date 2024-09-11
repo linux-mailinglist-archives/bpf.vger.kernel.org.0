@@ -1,95 +1,125 @@
-Return-Path: <bpf+bounces-39608-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39609-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AC31975490
-	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 15:52:05 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2AFFB9754F7
+	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 16:07:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 604202839D7
-	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 13:52:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E5CEC28636C
+	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 14:07:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D975018DF97;
-	Wed, 11 Sep 2024 13:50:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D96D19AD6E;
+	Wed, 11 Sep 2024 14:07:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rbAbuFEX"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ui2yWa6X"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EC3D18593F;
-	Wed, 11 Sep 2024 13:50:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E81F83FB30;
+	Wed, 11 Sep 2024 14:07:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726062630; cv=none; b=mWYwlEIU/IsaY/fSUaFGgEfdhqhZMhDoU4lliKM3RYrqnoK8A5RHg+qp9DAHu71zzQl8kja7YZFV8TLBSYRenBcwK3+gK7oMJbbqwpQyZb4qGsJh1I/oKSXQOa8JX5ZZADfoJPyVV0opg3IMh4mqqgEqXi/wM+oO5WM+8OjNYFM=
+	t=1726063645; cv=none; b=E/XDH7Fod9M3nH1svMa4mSxz6AXDsApXEcVh4ImeGw4v0jtSLhtWsCH9mdFxXlk752XCIi/7p6Gk1KFiF/rRm1zgEb6auRgBkhI3gBG6bUwCCsFIha47x245/ltACHSHy1YrTjsjwQmZeHIOSOpxlk5KmF3hnEWyJwsea3icQBg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726062630; c=relaxed/simple;
-	bh=S7446+9lkYYtrrftnee+FNljo0veD58VbH7E7EawyhU=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=qveHBYdoM3QoRZsYyGTYdOdghlD9GF3tXohkx/1//kRNDmGzO2llaFXVRV/cLSZARpDOVNdqXoyZntRNqWudBrh/Mf1ph+O53K6GXq2ENHYOx5N3mCjC0FiWMxxNdEJWce3CjiUPCbd8P7yEo5hXI3GfbBMtMkpBL1ti04lVMMs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rbAbuFEX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0D8AC4CEC0;
-	Wed, 11 Sep 2024 13:50:29 +0000 (UTC)
+	s=arc-20240116; t=1726063645; c=relaxed/simple;
+	bh=r0VvpXAuRXJx3vp8kOdxd9EfYvbZyCGak9YTxgXyHb8=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=TFlmKhu9N5v3SGTbHFQs/NY2ibxnbOJ5g3Ji1L2idV5S+FJ9lDh+8gLWXz7MRFsnp+X/KARJoDaavmj4WeEgurKZoeC6pYculpjQITgR9hpYrkzmLS+gTwIB/TcjTE0K5JwI0eMS2SmpvuMPichnqEPvZVRPHlVVT/GW7SOoO00=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ui2yWa6X; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2AF78C4CEC0;
+	Wed, 11 Sep 2024 14:07:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1726062629;
-	bh=S7446+9lkYYtrrftnee+FNljo0veD58VbH7E7EawyhU=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=rbAbuFEXj4+/y8J3MEcthkL9RWaWL2UvpGshV4JtjkmkDoTplnuedh7tXb2EP2bDL
-	 f7XHdJV/z5Bnqdc8vzUdsmkOPwmWbHA3k2RFiA3xS1l0PfvYAc7jmln25sqIHuLHEm
-	 uWtQtvgw7Z05qr/q2zCAynIJE3y+czaXiGZCcLZGmXpjvnsjpHf1g8NxJ+t2wqf8lw
-	 P2Tg9fPp/C6mzzY6Oq1DK42djSoAlw4G1DqT/YLlELAXh2Cp17UFCGA81KJ2h+7EWv
-	 EMHQaLrcyltvMSg8W5otxL8EEZt8HI/n4CLKo0N+6nOORpfjkuMfjs1v7JyJsctO1C
-	 yA4xGN2j9axEQ==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 33C993806656;
-	Wed, 11 Sep 2024 13:50:32 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1726063644;
+	bh=r0VvpXAuRXJx3vp8kOdxd9EfYvbZyCGak9YTxgXyHb8=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=Ui2yWa6X7iHBcYX32/ca4LD22AvNygh2Ug4YOmwLYA9yyXx6mvGowmxulmtdIU2HZ
+	 W+eIT5oLdMpjIRTHHDNABHENAX4LrY3RvFufefCYRfDH8UKXZ0JmeI3PodOXZ4fu+r
+	 QIWBke5DZvVffSmhdVEaUwJmdixtmqDoRNoeWAiPv4ZgtS8AG/GjkL/sgWWoXLWBep
+	 foHnfwi4hoHXJOgofT1LDz+ndLl3HX4N/RRQW15jECNO8X/8vPLvxU+tFh+/Ac7MgK
+	 2oJU9c8wORLWW0N7a/mm88UM2faha4DMEe2cuF3WTLsD4OSUlCsaM4rVX3pZijbx3R
+	 c/iR8ZWcJNT/A==
+Date: Wed, 11 Sep 2024 09:07:21 -0500
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Frank Li <Frank.Li@nxp.com>
+Cc: Richard Zhu <hongxing.zhu@nxp.com>,
+	Lucas Stach <l.stach@pengutronix.de>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	NXP Linux Team <linux-imx@nxp.com>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, linux-pci@vger.kernel.org,
+	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	devicetree@vger.kernel.org, Qianqiang Liu <qianqiang.liu@163.com>
+Subject: Re: [PATCH v8 11/11] PCI: imx6: Add i.MX8Q PCIe root complex (RC)
+ support
+Message-ID: <20240911140721.GA630378@bhelgaas>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2 bpf-next] selftests: xsk: read current MAX_SKB_FRAGS from
- sysctl knob
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <172606263103.924230.15052310270717202282.git-patchwork-notify@kernel.org>
-Date: Wed, 11 Sep 2024 13:50:31 +0000
-References: <20240910124129.289874-1-maciej.fijalkowski@intel.com>
-In-Reply-To: <20240910124129.289874-1-maciej.fijalkowski@intel.com>
-To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
- andrii@kernel.org, netdev@vger.kernel.org, magnus.karlsson@intel.com,
- bjorn@kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240729-pci2_upstream-v8-11-b68ee5ef2b4d@nxp.com>
 
-Hello:
+[+cc Qianqiang]
 
-This patch was applied to bpf/bpf-next.git (net)
-by Daniel Borkmann <daniel@iogearbox.net>:
-
-On Tue, 10 Sep 2024 14:41:29 +0200 you wrote:
-> Currently, xskxceiver assumes that MAX_SKB_FRAGS value is always 17
-> which is not true - since the introduction of BIG TCP this can now take
-> any value between 17 to 45 via CONFIG_MAX_SKB_FRAGS.
+On Mon, Jul 29, 2024 at 04:18:18PM -0400, Frank Li wrote:
+> From: Richard Zhu <hongxing.zhu@nxp.com>
 > 
-> Adjust the TOO_MANY_FRAGS test case to read the currently configured
-> MAX_SKB_FRAGS value by reading it from /proc/sys/net/core/max_skb_frags.
-> If running system does not provide that sysctl file then let us try
-> running the test with a default value.
+> Implement i.MX8Q (i.MX8QM, i.MX8QXP, and i.MX8DXL) PCIe RC support. While
+> the controller resembles that of iMX8MP, the PHY differs significantly.
+> Notably, there's a distinction between PCI bus addresses and CPU addresses.
 > 
-> [...]
+> Introduce IMX_PCIE_FLAG_CPU_ADDR_FIXUP in drvdata::flags to indicate driver
+> need the cpu_addr_fixup() callback to facilitate CPU address to PCI bus
+> address conversion according to "ranges" property.
 
-Here is the summary with links:
-  - [v2,bpf-next] selftests: xsk: read current MAX_SKB_FRAGS from sysctl knob
-    https://git.kernel.org/bpf/bpf-next/c/d41905b3bb89
+> +static u64 imx_pcie_cpu_addr_fixup(struct dw_pcie *pcie, u64 cpu_addr)
+> +{
+> +	struct imx_pcie *imx_pcie = to_imx_pcie(pcie);
+> +	struct dw_pcie_rp *pp = &pcie->pp;
+> +	struct resource_entry *entry;
+> +	unsigned int offset;
+> +
+> +	if (!(imx_pcie->drvdata->flags & IMX_PCIE_FLAG_CPU_ADDR_FIXUP))
+> +		return cpu_addr;
+> +
+> +	entry = resource_list_first_type(&pp->bridge->windows, IORESOURCE_MEM);
+> +	offset = entry->offset;
+> +	return (cpu_addr - offset);
+> +}
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+I'm sure that with enough effort, we could prove "entry" cannot be
+NULL here, but I'm not sure I want to spend the effort, and we're
+going to end up with more patches like this:
 
+  https://lore.kernel.org/r/20240911125055.58555-1-qianqiang.liu@163.com
 
+I propose this minor change:
+
+  entry = resource_list_first_type(&pp->bridge->windows, IORESOURCE_MEM);
+  if (!entry)
+    return cpu_addr;
+
+  return cpu_addr - entry->offset;
+
+I still think we should get rid of the .cpu_addr_fixup() callback if
+possible.  But that's a discussion for another day.
+
+Bjorn
 
