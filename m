@@ -1,211 +1,148 @@
-Return-Path: <bpf+bounces-39563-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39564-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 383249748A8
-	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 05:31:59 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73E8B9748B7
+	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 05:37:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5C7831C24F5B
-	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 03:31:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 31BE12882A3
+	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 03:37:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6B373BBC1;
-	Wed, 11 Sep 2024 03:31:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 077683D96D;
+	Wed, 11 Sep 2024 03:37:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="CTnssbu3";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="E//nWLKo"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="EjQ51H5o"
 X-Original-To: bpf@vger.kernel.org
-Received: from fhigh2-smtp.messagingengine.com (fhigh2-smtp.messagingengine.com [103.168.172.153])
+Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05B3E225D7;
-	Wed, 11 Sep 2024 03:31:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.153
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A571282F7;
+	Wed, 11 Sep 2024 03:37:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.97
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726025511; cv=none; b=JldarTqvi+WYfLf3fjvORP4s819YtWe+dNJNcbki0C6eMqZF9i6DkkcWlBmRATB/QDhlBr/h0l2fSjikeX6SlxBGE9TW7sP3uWapKZDhH1jhtCOFqRMinnQ5Y1Qqm8u9N/IJIMGkyfDdIN2mxcU2CHub4hlMXzgbGU4KyFkD6gM=
+	t=1726025847; cv=none; b=niSsasjA85q8yzEWTj9B8P1HuPWS34BzofIh5oSSSlcL2bbc0Moz3ezNooN2pqhqZOM66Ntv1ez+ZClUrbaDjhNqAHCCERhRziZ9SedTbnGnuXZpuwV7E5XAxb1kQA0E12N0HQGoyVapHhw+iPLgbS6XGnV4Uh4PUMs3uC1VakY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726025511; c=relaxed/simple;
-	bh=fh2mQQHN0+JyXsYmenNkWGkkjGx3ocELSgZ/ZIqwhUY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=We89M14djEJdth07Zh2LWKq2yEW9PDowJoyaPuxn4Ri1yU0BuY04H9+2TweXsnpjymGcVUuo2ksNF5sjJawvErS4DlDdhF+D6mM40OdPzT4xNNx7NgMPcrqKoJ2T/fwPGQTNb3283auoMbBEZoHoskwBozuDxWvnph6yazJ23Ws=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=CTnssbu3; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=E//nWLKo; arc=none smtp.client-ip=103.168.172.153
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
-Received: from phl-compute-05.internal (phl-compute-05.phl.internal [10.202.2.45])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id 1BB4511400BB;
-	Tue, 10 Sep 2024 23:31:47 -0400 (EDT)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-05.internal (MEProxy); Tue, 10 Sep 2024 23:31:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm3; t=1726025507;
-	 x=1726111907; bh=dvDVMkbr7rfR+VCNGEE7NMGR6SEz2dyK7e21kWURShA=; b=
-	CTnssbu3B6AtV3bXj661ntr/y/rpB6O/OZ45GMLskMx4TyAEliyU8GSs14vITv4W
-	TrH8fzyrI4mvjdE13BEq0qI0wfiodvMqDofQzAlbifl9tSzWyQFWuZnpWVhSodos
-	my5TLcq6QTJaO5KjwzBKLb1G8w7KMvczjMgFjk7EJsNIKAuQTVKdsgW+kkgxGB6S
-	UqUAT0tp8uTfbxekCz98Uo7d6b41LMgwMQaiIGx1EyH8TCQ8vlJ3zMka8Fmqj322
-	cl3+owVuIwTT2WKAZ9oN8h16PnzRCcO5Hy/leziW0fUgkJdLnlSXj4wDCeSKRNdP
-	K/9bZ/ua6/aw05zKP89EIQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1726025507; x=
-	1726111907; bh=dvDVMkbr7rfR+VCNGEE7NMGR6SEz2dyK7e21kWURShA=; b=E
-	//nWLKoadYIePtJ3R+0d8frhqggwmLTDQNZAWUveLZc7cvfea1Mlv8+qiLF2i/5A
-	Q96SnL2EOuMq4So4VZyoF2A0geWZ0nkSTX9BwAwJbu7B281npUMILl6KHwLMwCWv
-	LQdXIP4YdyyXaKvDj9SIUS/IhHJvY3c2llVe4xX3C6go9Y7KkdFAlOw/bS1yyY+/
-	ZVbvcVnH6XZcGfwJQfrQOxt8oMzeZxqHvNEUv735NIscPpHaTlmJdlQP8vUIrghC
-	2HHlNtX7tiT5Pra2fhEgwzvMIoaKnNXeYXh2sXj6jLRtQYOz/fZZ4lQNNtZZDgBN
-	o/ocqKwGGwbOYJmb0okTQ==
-X-ME-Sender: <xms:Ig_hZgc-UibDzIpSgn1os821_tjPU_6mtuPws7Z3S33H5keeFQ1yNg>
-    <xme:Ig_hZiPPKL3gSzA_gy5XtCVqBysTLlaRZPOckL2wKNOU1s49HB5MRBYPL1-W5UkEI
-    0ehz6voKQ6AaPxGOw>
-X-ME-Received: <xmr:Ig_hZhj8HXoIG3s1CG7eEdDT_WgN_3ifMlELoT6y3obuMu7W5v7mf8zn3vMAeKnrnccq03F4tUVCo5aKK8uJbDoTXMaTrHOMTv1tJlHd1V2cLg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrudejtddgjedtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
-    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
-    htshculddquddttddmnegfrhhlucfvnfffucdljedtmdenucfjughrpeffhffvvefukfhf
-    gggtugfgjgestheksfdttddtjeenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihuse
-    gugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpedtgfeuueeukeeikefgieeukeff
-    leetkeekkeeggeffvedtvdejueehueeuleefteenucevlhhushhtvghrufhiiigvpedtne
-    curfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiiipdhnsggprhgt
-    phhtthhopedvtddpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtoheprghnughrihhird
-    hnrghkrhihihhkohesghhmrghilhdrtghomhdprhgtphhtthhopegrlhgvgigvihdrshht
-    rghrohhvohhithhovhesghhmrghilhdrtghomhdprhgtphhtthhopegvugguhiiikeejse
-    hgmhgrihhlrdgtohhmpdhrtghpthhtoheprghnughrihhisehkvghrnhgvlhdrohhrghdp
-    rhgtphhtthhopegurghnihgvlhesihhoghgvrghrsghogidrnhgvthdprhgtphhtthhope
-    grshhtsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehshhhurghhsehkvghrnhgvlhdr
-    ohhrghdprhgtphhtthhopehjohhhnhdrfhgrshhtrggsvghnugesghhmrghilhdrtghomh
-    dprhgtphhtthhopehmrghrthhinhdrlhgruheslhhinhhugidruggvvh
-X-ME-Proxy: <xmx:Ig_hZl9SRWqJlxlQUmUvRc9-qKX-cHiiTlyT7g_3S90qiOE53EhD6g>
-    <xmx:Ig_hZsswXRUWAiEu-0LeBecg-chMObhr5fITv0QDA2dcNs3JaPbwJg>
-    <xmx:Ig_hZsHEjlg0Et9_0xlHeRwDC0zg8UBO_lacLrbyzWyLv16sz9bf9Q>
-    <xmx:Ig_hZrO9GCydkYdnqRAAtx4KSUAmLq6uG5z4ZQSe-YhFn8a3_9Zt1w>
-    <xmx:Iw_hZtMMXVUBcRodGF11Hrlx4FwGUkDjkkqX_TKsNzhLxHq-m46M2PUq>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 10 Sep 2024 23:31:44 -0400 (EDT)
-Date: Tue, 10 Sep 2024 21:31:43 -0600
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov <ast@kernel.org>, 
-	Shuah Khan <shuah@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Mykola Lysenko <mykolal@fb.com>, LKML <linux-kernel@vger.kernel.org>, 
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, Kernel Team <kernel-team@meta.com>
-Subject: Re: [PATCH bpf-next] bpf: ringbuf: Support consuming
- BPF_MAP_TYPE_RINGBUF from prog
-Message-ID: <cz7qwrujjiunv3yydkfamfm5mkis5xdy4vg4odwatchjoaoolk@zzithxrzdxkv>
-References: <18a9ddacc99bb95e9802f8ad1e81214433df496c.1725929645.git.dxu@dxuuu.xyz>
- <CAADnVQKyfZ2-qCvmqG8z919ggdOszEjTs04H=cTGOZTi-zhx7Q@mail.gmail.com>
- <CAEf4Bza5Fiw2rZ5T7=zRwVk1Ct1Mgm7Gpa8w+NJVPZf8keY_9Q@mail.gmail.com>
- <vru2zgphyfywjcqikolwotsfun2bgtrnfmwvfls5ra4tznsydr@46w5rq7gqepz>
- <4ec8e15b-c44b-41d7-b337-32d17306d67b@app.fastmail.com>
- <CAEf4BzbHqKD87KTSmFUMokXEaAa70xNs96QqfWBHjFbuE5PL=w@mail.gmail.com>
- <rsdwvah5ov3itchsgkwgleihswoycoal5vjbeql2wbqoz5noiz@myk2atnnjaub>
- <CAEf4BzbKoyja2ErsusUcK8YaS1Rqm0VmBzwsNtQtM1-XHDhD7g@mail.gmail.com>
+	s=arc-20240116; t=1726025847; c=relaxed/simple;
+	bh=pcNpwywcyIEWLgb/rkhZ1bhZN5kJv39O4SYeNb89Oro=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Ei0KYKp9b4BbpamfuHtx21TSNMFVDPYN4/oB7I9NECWblv/qSVr21ELXnXREh/YrGn0kDeQwPI1vpkZ0FcIscNiu9+O1Zqm2/+hwvk2PlcHRVCTla+2RiVxZiDecEt1oHc+KrLXxN0rV4bY6I9iT2lgKfQ0Vh40wqJ3FOXtogBo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=EjQ51H5o; arc=none smtp.client-ip=115.124.30.97
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1726025842; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=AZ4UdEBxNssNLlu4rmjUD1+Uig6aAgZmp+sRlcEzI3g=;
+	b=EjQ51H5oqxs0OPvWraRy62zLoA4SXS8hPZKBIwv0mKvnh8XrwydB3m9x9PI9ASjJYVdiSlihe3ak7WYvovWHYr5/auXx+Hp4bQwO3tYP9VzTmRH970z24kRVdm8m+tQT/SIHnyr6p8U5a9I2sVXCibTo0cp+11qYmXuaH3q2BYA=
+Received: from localhost(mailfrom:lulie@linux.alibaba.com fp:SMTPD_---0WEmJNZH_1726025839)
+          by smtp.aliyun-inc.com;
+          Wed, 11 Sep 2024 11:37:20 +0800
+From: Philo Lu <lulie@linux.alibaba.com>
+To: bpf@vger.kernel.org
+Cc: edumazet@google.com,
+	rostedt@goodmis.org,
+	mhiramat@kernel.org,
+	mathieu.desnoyers@efficios.com,
+	martin.lau@linux.dev,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	davem@davemloft.net,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	mykolal@fb.com,
+	shuah@kernel.org,
+	mcoquelin.stm32@gmail.com,
+	alexandre.torgue@foss.st.com,
+	thinker.li@gmail.com,
+	juntong.deng@outlook.com,
+	jrife@google.com,
+	alan.maguire@oracle.com,
+	davemarchevsky@fb.com,
+	dxu@dxuuu.xyz,
+	vmalik@redhat.com,
+	cupertino.miranda@oracle.com,
+	mattbobrowski@google.com,
+	xuanzhuo@linux.alibaba.com,
+	netdev@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org
+Subject: [PATCH bpf-next v3 0/5] bpf: Allow skb dynptr for tp_btf
+Date: Wed, 11 Sep 2024 11:37:14 +0800
+Message-Id: <20240911033719.91468-1-lulie@linux.alibaba.com>
+X-Mailer: git-send-email 2.32.0.3.g01195cf9f
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzbKoyja2ErsusUcK8YaS1Rqm0VmBzwsNtQtM1-XHDhD7g@mail.gmail.com>
 
-On Tue, Sep 10, 2024 at 05:39:55PM GMT, Andrii Nakryiko wrote:
-> On Tue, Sep 10, 2024 at 4:44 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
-> >
-> > On Tue, Sep 10, 2024 at 03:21:04PM GMT, Andrii Nakryiko wrote:
-> > > On Tue, Sep 10, 2024 at 3:16 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
-> > > >
-> > > >
-> > > >
-> > > > On Tue, Sep 10, 2024, at 2:07 PM, Daniel Xu wrote:
-> > > > > On Tue, Sep 10, 2024 at 01:41:41PM GMT, Andrii Nakryiko wrote:
-> > > > >> On Tue, Sep 10, 2024 at 11:36 AM Alexei Starovoitov
-> > > > [...]
-> > > > >
-> > > > >>
-> > > > >> Also, Daniel, can you please make sure that dynptr we return for each
-> > > > >> sample is read-only? We shouldn't let consumer BPF program ability to
-> > > > >> corrupt ringbuf record headers (accidentally or otherwise).
-> > > > >
-> > > > > Sure.
-> > > >
-> > > > So the sample is not read-only. But I think prog is prevented from messing
-> > > > with header regardless.
-> > > >
-> > > > __bpf_user_ringbuf_peek() returns sample past the header:
-> > > >
-> > > >         *sample = (void *)((uintptr_t)rb->data +
-> > > >                            (uintptr_t)((cons_pos + BPF_RINGBUF_HDR_SZ) & rb->mask));
-> > > >
-> > > > dynptr is initialized with the above ptr:
-> > > >
-> > > >         bpf_dynptr_init(&dynptr, sample, BPF_DYNPTR_TYPE_LOCAL, 0, size);
-> > > >
-> > > > So I don't think there's a way for the prog to access the header thru the dynptr.
-> > > >
-> > >
-> > > By "header" I mean 8 bytes that precede each submitted ringbuf record.
-> > > That header is part of ringbuf data area. Given user space can set
-> > > consumer_pos to arbitrary value, kernel can return arbitrary part of
-> > > ringbuf data area, including that 8 byte header. If that data is
-> > > writable, it's easy to screw up that header and crash another BPF
-> > > program that reserves/submits a new record. User space can only read
-> > > data area for BPF ringbuf, and so we rely heavily on a tight control
-> > > of who can write what into those 8 bytes.
-> >
-> > Ah, ok. I think I understand.
-> >
-> > Given this and your other comments about rb->busy, what about enforcing
-> > bpf_user_ringbuf_drain() NAND mmap? I think the use cases here are
-> > different enough where this makes sense.
-> 
-> You mean disabling user-space mmap()? TBH, I'd like to understand the
-> use case first before we make such decisions. Maybe what you need is
-> not really a BPF ringbuf? Can you give us a bit more details on what
-> you are trying to achieve?
+This makes bpf_dynptr_from_skb usable for tp_btf, so that we can easily
+parse skb in tracepoints. This has been discussed in [0], and Martin
+suggested to use dynptr (instead of helpers like bpf_skb_load_bytes).
 
-BPF cpumap, under the hood, has one MPSC ring buffer (ptr_ring) for each
-entry in the cpumap. When a prog redirects to an entry in the cpumap,
-the machinery queues up the xdp frame onto the destination CPU ptr_ring.
-This can occur on any cpu, thus multi-producer. On processing side,
-there is only the kthread created by the cpumap entry and bound to the
-specific cpu that is consuming entries. So single consumer.
+For safety, skb dynptr shouldn't be used in fentry/fexit. This is achieved
+by add KF_TRUSTED_ARGS flag in bpf_dynptr_from_skb defination, because
+pointers passed by tracepoint are trusted (PTR_TRUSTED) while those of
+fentry/fexit are not.
 
-Goal is to track the latency overhead added from ptr_ring and the
-kthread (versus softirq where is less overhead). Ideally we want p50,
-p90, p95, p99 percentiles.
+Another problem raises that NULL pointers could be passed to tracepoint,
+such as trace_tcp_send_reset, and we need to recognize them. This is done
+by add a "__nullable" suffix in the func_proto of the tracepoint,
+discussed in [1].
 
-To do this, we need to track every single entry enqueue time as well as
-dequeue time - events that occur in the tail are quite important.
+2 Test cases are added, one for "__nullable" suffix, and the other for
+using skb dynptr in tp_btf.
 
-Since ptr_ring is also a ring buffer, I thought it would be easy,
-reliable, and fast to just create a "shadow" ring buffer. Every time
-producer enqueues entries, I'd enqueue the same number of current
-timestamp onto shadow RB. Same thing on consumer side, except dequeue
-and calculate timestamp delta.
+changelog
+v2 -> v3 (Andrii Nakryiko):
+ Patch 1:
+  - Remove prog type check in prog_arg_maybe_null()
+  - Add bpf_put_raw_tracepoint() after get()
+  - Use kallsyms_lookup() instead of sprintf("%ps")
+ Patch 2: Add separate test "tp_btf_nullable", and use full failure msg
+v1 -> v2:
+ - Add "__nullable" suffix support (Alexei Starovoitov)
+ - Replace "struct __sk_buff*" with "void*" in test (Martin KaFai Lau)
 
-I was originally planning on writing my own lockless ring buffer in pure
-BPF (b/c spinlocks cannot be used w/ tracepoints yet) but was hoping I
-could avoid that with this patch.
+[0]
+https://lore.kernel.org/all/20240205121038.41344-1-lulie@linux.alibaba.com/T/
+[1]
+https://lore.kernel.org/all/20240430121805.104618-1-lulie@linux.alibaba.com/T/
 
-About disabling user-space mmap: yeah, that's what I was suggesting. I
-think it'd be a bit odd if you wanted BPF RB to support consumption from
-both userspace && prog at the same time. And since draining from prog is
-new functionality (and thus the NAND isn't a regression), you could
-relax the restriction later without issues.
+Philo Lu (5):
+  bpf: Support __nullable argument suffix for tp_btf
+  selftests/bpf: Add test for __nullable suffix in tp_btf
+  tcp: Use skb__nullable in trace_tcp_send_reset
+  bpf: Allow bpf_dynptr_from_skb() for tp_btf
+  selftests/bpf: Expand skb dynptr selftests for tp_btf
+
+ include/trace/events/tcp.h                    | 12 +++----
+ kernel/bpf/btf.c                              |  9 +++++
+ kernel/bpf/verifier.c                         | 36 ++++++++++++++++---
+ net/core/filter.c                             |  3 +-
+ .../bpf/bpf_testmod/bpf_testmod-events.h      |  6 ++++
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  2 ++
+ .../testing/selftests/bpf/prog_tests/dynptr.c | 36 +++++++++++++++++--
+ .../bpf/prog_tests/tp_btf_nullable.c          | 14 ++++++++
+ .../testing/selftests/bpf/progs/dynptr_fail.c | 25 +++++++++++++
+ .../selftests/bpf/progs/dynptr_success.c      | 23 ++++++++++++
+ .../bpf/progs/test_tp_btf_nullable.c          | 24 +++++++++++++
+ 11 files changed, 177 insertions(+), 13 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/tp_btf_nullable.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_tp_btf_nullable.c
+
+--
+2.32.0.3.g01195cf9f
+
 
