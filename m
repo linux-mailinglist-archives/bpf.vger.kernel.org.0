@@ -1,157 +1,188 @@
-Return-Path: <bpf+bounces-39642-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39643-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 044AE975975
-	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 19:33:08 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44F70975978
+	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 19:34:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD14D282542
-	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 17:33:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A42F6B21B84
+	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 17:34:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEA0D1B1D5E;
-	Wed, 11 Sep 2024 17:33:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BBFD1B3B27;
+	Wed, 11 Sep 2024 17:34:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="UDPV4Fd8"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="JswkxbU2"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
+Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 918BF1B29A3
-	for <bpf@vger.kernel.org>; Wed, 11 Sep 2024 17:32:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEAA719CC15
+	for <bpf@vger.kernel.org>; Wed, 11 Sep 2024 17:34:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726075981; cv=none; b=T5kFuPaQUUtM5WNTEcU/Rxhe6Lxb2K015rvAvaytwseMMky1pZUtaMUU5OLOw/IOwoKjJHN6SdMN4RatXofKCZFHptS711e9fYdu+QGIAxz2ftbQUJbcTDa2yqfOk1VxEpQxvFhYojIAMpRakq7M+3BerQJUnUH6p/a5e0OxR1k=
+	t=1726076045; cv=none; b=iI/+ikTMFFYLj7p6XL/KUoYDBSzZ1rOVZilEX0i6jbx43rWnDKr0UDCVHIUm/dYtaqA7Ora1VrX12wVnNVrPSlAUdlB6kJ9SYsIal80ytMr5p/obUC7CmSTX1M7klzX8ENhgerB9DD25tK9N3K/RfJC9JNtlsyV/m1MUHGOhqrU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726075981; c=relaxed/simple;
-	bh=56D9C4W/82Vl3+4H89O/gBwf1O6YdX34X3FTlWqBjIg=;
+	s=arc-20240116; t=1726076045; c=relaxed/simple;
+	bh=ADWMV/I7PLbTMRzO2ohvog05sKANIhJw045KoKiwBzM=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QSxv4SCLLdIbqamtOMoYT0plllQXwXIcYknZiTFUnv15nc0gjlhfwj7s9/uAYv/+CI/9eeb3ozau3wtvCfNNVst7rJCBF0V7hIWx7vXw3+yNbGH1W7fiMxCmRkXxK4jHF/Ljgtbljlk9hq1qtx4USAkplhoIB4c8It7PEeV1tR8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=UDPV4Fd8; arc=none smtp.client-ip=91.218.175.182
+	 In-Reply-To:Content-Type; b=fu7ZY1sOf91l35oDCd5+Txu5xqK6J0hcYYClcc6y7g4dC7oG9yuuC/jfr2qA/bywEuEh2EnZPwMwuXVIzPcOdDIPjXssVjmlcO0GIbfU2Z4WDZs1s6tRPG9gTAVo3ainJxKFXWMR3DsPcR3nGt6d8VbNfgdw8tcht5y/w8YFyzs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=JswkxbU2; arc=none smtp.client-ip=95.215.58.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <505da3cf-4dbf-4cbf-8881-62dcca76b878@linux.dev>
+Message-ID: <8047db0c-39eb-4b98-89e4-f0822805c309@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1726075977;
+	t=1726076040;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=/IYjlp/o3wEWCHx6azoDNE5McKpzo2fw+LXGObwXJDw=;
-	b=UDPV4Fd80wqhHiHPqayWH6WOzDjs9tMY18rB9o8diRE8q6OTkqEdA0yVxv0ho1ZAjx5DcX
-	49cyQxLeec1AXwQQ79VvfkBL640E36tyQ6QIzONIQc8Qq5RfPz2H9O52JsamE9UvIHbAG/
-	0diXJKCSsb6pifTBSp/IlzwCk+X8KXQ=
-Date: Wed, 11 Sep 2024 10:32:51 -0700
+	bh=XHalqKbvZbOtWyamwKtGLymNQ5l/tzEX6wRT+G1VD8U=;
+	b=JswkxbU25MFkIWcSkH0RXhnzmZRmEClO+nWuNt8VfY5NR99TnGeP3iicd8FRhyNEyGEx03
+	CPn7+Kn4y/YXMT5luiRCeneDVNlBLz4+Bqb53w1PWjAyDCbsXwOeB3AujiiFCWhbPxHkMu
+	qJDl64Ay8Dw/iAF+FsISwgp+ynH25NY=
+Date: Wed, 11 Sep 2024 10:33:49 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next 1/2] bpf: Fix a sdiv overflow issue
-Content-Language: en-GB
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- kernel-team@fb.com, Martin KaFai Lau <martin.lau@kernel.org>,
- Zac Ecob <zacecob@protonmail.com>
-References: <20240911044017.2261738-1-yonghong.song@linux.dev>
- <CAEf4Bzb26NF9=+k_+=pC8wwojsK_Y5kBwLMFVGC34oGQRXy25w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 5/5] selftests/bpf: Expand skb dynptr
+ selftests for tp_btf
+To: Philo Lu <lulie@linux.alibaba.com>
+Cc: bpf@vger.kernel.org, edumazet@google.com, rostedt@goodmis.org,
+ mhiramat@kernel.org, mathieu.desnoyers@efficios.com, ast@kernel.org,
+ daniel@iogearbox.net, andrii@kernel.org, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, davem@davemloft.net,
+ kuba@kernel.org, pabeni@redhat.com, mykolal@fb.com, shuah@kernel.org,
+ mcoquelin.stm32@gmail.com, alexandre.torgue@foss.st.com,
+ thinker.li@gmail.com, juntong.deng@outlook.com, jrife@google.com,
+ alan.maguire@oracle.com, davemarchevsky@fb.com, dxu@dxuuu.xyz,
+ vmalik@redhat.com, cupertino.miranda@oracle.com, mattbobrowski@google.com,
+ xuanzhuo@linux.alibaba.com, netdev@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org
+References: <20240911033719.91468-1-lulie@linux.alibaba.com>
+ <20240911033719.91468-6-lulie@linux.alibaba.com>
+Content-Language: en-US
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <CAEf4Bzb26NF9=+k_+=pC8wwojsK_Y5kBwLMFVGC34oGQRXy25w@mail.gmail.com>
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20240911033719.91468-6-lulie@linux.alibaba.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Migadu-Flow: FLOW_OUT
 
+On 9/10/24 8:37 PM, Philo Lu wrote:
+> Add 3 test cases for skb dynptr used in tp_btf:
+> - test_dynptr_skb_tp_btf: use skb dynptr in tp_btf and make sure it is
+>    read-only.
+> - skb_invalid_ctx_fentry/skb_invalid_ctx_fexit: bpf_dynptr_from_skb
+>    should fail in fentry/fexit.
+> 
+> In test_dynptr_skb_tp_btf, to trigger the tracepoint in kfree_skb,
+> test_pkt_access is used for its test_run, as in kfree_skb.c. Because the
+> test process is different from others, a new setup type is defined,
+> i.e., SETUP_SKB_PROG_TP.
+> 
+> The result is like:
+> $ ./test_progs -t 'dynptr/test_dynptr_skb_tp_btf'
+>    #84/14   dynptr/test_dynptr_skb_tp_btf:OK
+>    #84      dynptr:OK
+>    #127     kfunc_dynptr_param:OK
+>    Summary: 2/1 PASSED, 0 SKIPPED, 0 FAILED
+> 
+> $ ./test_progs -t 'dynptr/skb_invalid_ctx_f'
+>    #84/85   dynptr/skb_invalid_ctx_fentry:OK
+>    #84/86   dynptr/skb_invalid_ctx_fexit:OK
+>    #84      dynptr:OK
+>    #127     kfunc_dynptr_param:OK
+>    Summary: 2/2 PASSED, 0 SKIPPED, 0 FAILED
+> 
+> Also fix two coding style nits (change spaces to tabs).
+> 
+> Signed-off-by: Philo Lu <lulie@linux.alibaba.com>
+> ---
+>   .../testing/selftests/bpf/prog_tests/dynptr.c | 36 +++++++++++++++++--
+>   .../testing/selftests/bpf/progs/dynptr_fail.c | 25 +++++++++++++
+>   .../selftests/bpf/progs/dynptr_success.c      | 23 ++++++++++++
+>   3 files changed, 82 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/bpf/prog_tests/dynptr.c b/tools/testing/selftests/bpf/prog_tests/dynptr.c
+> index 7cfac53c0d58d..ba40be8b1c4ef 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/dynptr.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/dynptr.c
+> @@ -9,6 +9,7 @@
+>   enum test_setup_type {
+>   	SETUP_SYSCALL_SLEEP,
+>   	SETUP_SKB_PROG,
+> +	SETUP_SKB_PROG_TP,
+>   };
+>   
+>   static struct {
+> @@ -28,6 +29,7 @@ static struct {
+>   	{"test_dynptr_clone", SETUP_SKB_PROG},
+>   	{"test_dynptr_skb_no_buff", SETUP_SKB_PROG},
+>   	{"test_dynptr_skb_strcmp", SETUP_SKB_PROG},
+> +	{"test_dynptr_skb_tp_btf", SETUP_SKB_PROG_TP},
+>   };
+>   
+>   static void verify_success(const char *prog_name, enum test_setup_type setup_type)
+> @@ -35,7 +37,7 @@ static void verify_success(const char *prog_name, enum test_setup_type setup_typ
+>   	struct dynptr_success *skel;
+>   	struct bpf_program *prog;
+>   	struct bpf_link *link;
+> -       int err;
+> +	int err;
+>   
+>   	skel = dynptr_success__open();
+>   	if (!ASSERT_OK_PTR(skel, "dynptr_success__open"))
+> @@ -47,7 +49,7 @@ static void verify_success(const char *prog_name, enum test_setup_type setup_typ
+>   	if (!ASSERT_OK_PTR(prog, "bpf_object__find_program_by_name"))
+>   		goto cleanup;
+>   
+> -       bpf_program__set_autoload(prog, true);
+> +	bpf_program__set_autoload(prog, true);
+>   
+>   	err = dynptr_success__load(skel);
+>   	if (!ASSERT_OK(err, "dynptr_success__load"))
+> @@ -87,6 +89,36 @@ static void verify_success(const char *prog_name, enum test_setup_type setup_typ
+>   
+>   		break;
+>   	}
+> +	case SETUP_SKB_PROG_TP:
+> +	{
+> +		struct __sk_buff skb = {};
+> +		struct bpf_object *obj;
+> +		int aux_prog_fd;
+> +
+> +		/* Just use its test_run to trigger kfree_skb tracepoint */
+> +		err = bpf_prog_test_load("./test_pkt_access.bpf.o", BPF_PROG_TYPE_SCHED_CLS,
+> +					 &obj, &aux_prog_fd);
+> +		if (!ASSERT_OK(err, "prog_load sched cls"))
+> +			goto cleanup;
+> +
+> +		LIBBPF_OPTS(bpf_test_run_opts, topts,
+> +			    .data_in = &pkt_v4,
+> +			    .data_size_in = sizeof(pkt_v4),
+> +			    .ctx_in = &skb,
+> +			    .ctx_size_in = sizeof(skb),
+> +		);
+> +
+> +		link = bpf_program__attach(prog);
+> +		if (!ASSERT_OK_PTR(link, "bpf_program__attach"))
+> +			goto cleanup;
+> +
+> +		err = bpf_prog_test_run_opts(aux_prog_fd, &topts);
 
-On 9/11/24 10:17 AM, Andrii Nakryiko wrote:
-> On Tue, Sep 10, 2024 at 9:40 PM Yonghong Song <yonghong.song@linux.dev> wrote:
->> Zac Ecob reported a problem where a bpf program may cause kernel crash due
->> to the following error:
->>    Oops: divide error: 0000 [#1] PREEMPT SMP KASAN PTI
->>
->> The failure is due to the below signed divide:
->>    LLONG_MIN/-1 where LLONG_MIN equals to -9,223,372,036,854,775,808.
->> LLONG_MIN/-1 is supposed to give a positive number 9,223,372,036,854,775,808,
->> but it is impossible since for 64-bit system, the maximum positive
->> number is 9,223,372,036,854,775,807. On x86_64, LLONG_MIN/-1 will
->> cause a kernel exception. On arm64, the result for LLONG_MIN/-1 is
->> LLONG_MIN.
->>
->> So for 64-bit signed divide (sdiv), some additional insns are patched
->> to check LLONG_MIN/-1 pattern. If such a pattern does exist, the result
->> will be LLONG_MIN. Otherwise, it follows normal sdiv operation.
->>
->>    [1] https://lore.kernel.org/bpf/tPJLTEh7S_DxFEqAI2Ji5MBSoZVg7_G-Py2iaZpAaWtM961fFTWtsnlzwvTbzBzaUzwQAoNATXKUlt0LZOFgnDcIyKCswAnAGdUF3LBrhGQ=@protonmail.com/
->>
->> Reported-by: Zac Ecob <zacecob@protonmail.com>
->> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
->> ---
->>   kernel/bpf/verifier.c | 29 ++++++++++++++++++++++++++---
->>   1 file changed, 26 insertions(+), 3 deletions(-)
->>
->> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->> index f35b80c16cda..d77f1a05a065 100644
->> --- a/kernel/bpf/verifier.c
->> +++ b/kernel/bpf/verifier.c
->> @@ -20506,6 +20506,7 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
->>                      insn->code == (BPF_ALU | BPF_DIV | BPF_X)) {
->>                          bool is64 = BPF_CLASS(insn->code) == BPF_ALU64;
->>                          bool isdiv = BPF_OP(insn->code) == BPF_DIV;
->> +                       bool is_sdiv64 = is64 && isdiv && insn->off == 1;
->>                          struct bpf_insn *patchlet;
->>                          struct bpf_insn chk_and_div[] = {
->>                                  /* [R,W]x div 0 -> 0 */
->> @@ -20525,10 +20526,32 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
->>                                  BPF_JMP_IMM(BPF_JA, 0, 0, 1),
->>                                  BPF_MOV32_REG(insn->dst_reg, insn->dst_reg),
->>                          };
->> +                       struct bpf_insn chk_and_sdiv64[] = {
->> +                               /* Rx sdiv 0 -> 0 */
->> +                               BPF_RAW_INSN(BPF_JMP | BPF_JNE | BPF_K, insn->src_reg,
->> +                                            0, 2, 0),
->> +                               BPF_ALU32_REG(BPF_XOR, insn->dst_reg, insn->dst_reg),
->> +                               BPF_JMP_IMM(BPF_JA, 0, 0, 8),
->> +                               /* LLONG_MIN sdiv -1 -> LLONG_MIN */
->> +                               BPF_RAW_INSN(BPF_JMP | BPF_JNE | BPF_K, insn->src_reg,
->> +                                            0, 6, -1),
->> +                               BPF_LD_IMM64(insn->src_reg, LLONG_MIN),
-> wouldn't it be simpler and faster to just check if insn->dst_reg ==
-> -1, and if yes, just negate src_reg? Regardless of src_reg value this
-> should be correct because by definition division by -1 is a negation.
-> WDYT?
+bpf_link__destroy(link) is needed. I fixed it and applied. Thanks.
 
-Yes. This should work! It utilized special property that -INT_MIN == INT_MIN and
--LLONG_MIN == LLONG_MIN.
-
-For module like Reg%(-1), the result will be always 0 for both 32- or 64-bit operation.
-
->
->> +                               BPF_RAW_INSN(BPF_JMP | BPF_JNE | BPF_X, insn->dst_reg,
->> +                                            insn->src_reg, 2, 0),
->> +                               BPF_MOV64_IMM(insn->src_reg, -1),
->> +                               BPF_JMP_IMM(BPF_JA, 0, 0, 2),
->> +                               BPF_MOV64_IMM(insn->src_reg, -1),
->> +                               *insn,
->> +                       };
->>
->> -                       patchlet = isdiv ? chk_and_div : chk_and_mod;
->> -                       cnt = isdiv ? ARRAY_SIZE(chk_and_div) :
->> -                                     ARRAY_SIZE(chk_and_mod) - (is64 ? 2 : 0);
->> +                       if (is_sdiv64) {
->> +                               patchlet = chk_and_sdiv64;
->> +                               cnt = ARRAY_SIZE(chk_and_sdiv64);
->> +                       } else {
->> +                               patchlet = isdiv ? chk_and_div : chk_and_mod;
->> +                               cnt = isdiv ? ARRAY_SIZE(chk_and_div) :
->> +                                             ARRAY_SIZE(chk_and_mod) - (is64 ? 2 : 0);
->> +                       }
->>
->>                          new_prog = bpf_patch_insn_data(env, i + delta, patchlet, cnt);
->>                          if (!new_prog)
->> --
->> 2.43.5
->>
+> +
+> +		if (!ASSERT_OK(err, "test_run"))
+> +			goto cleanup;
+> +
+> +		break;
+> +	}
+>   	}
 
