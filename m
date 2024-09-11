@@ -1,152 +1,130 @@
-Return-Path: <bpf+bounces-39633-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39634-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35EB59758F2
-	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 19:02:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5638197590B
+	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 19:07:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BC198287A84
-	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 17:02:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 898C71C23081
+	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 17:07:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCCB81AED3F;
-	Wed, 11 Sep 2024 17:02:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF8F01AF4D7;
+	Wed, 11 Sep 2024 17:07:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="YoZ5O8ph"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TLycDx/N"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7327C1B12D6
-	for <bpf@vger.kernel.org>; Wed, 11 Sep 2024 17:02:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18FA8156993
+	for <bpf@vger.kernel.org>; Wed, 11 Sep 2024 17:07:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726074128; cv=none; b=WrsV8tzeeftHPz4whm+/VxWq8n4xfdqww1hurXM8QUEpMVat0MOvSa6kJgxTmtBzzMsGMv+PAeUQLuRrY+5gwyn4Hhm6+AitGAVXhOf5ctpDl4t0Qu508KDHKAkGsyZw6P2wxjQQnjtj/qdlBED+xQurQROi5UA4Nq1xs/uUF78=
+	t=1726074461; cv=none; b=mjXIuKp+jEiuSsR1nCgYbdiq0IUxVOHktqUW4ebcZLLVDCqsvtamYlgQcENYeNNtNn3P3S0M2DS72dhSk0ClEsX5VyAgSK9ZHMiFkq8epDAFhrqteZiwvSO7PsiXSi3ApBJsuxU/Cfbnr/MjXo1Arj1CKcFRhdm1bGwJ01IB7hQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726074128; c=relaxed/simple;
-	bh=NHCGG8kTZ58HpAe0h8dEd2z7nqwYXf9TLD7A0x5z4So=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=p9AcYP9o9KetC+/cSGwh5An+85HBwy4m7t3BMKDYp2htB34rM55RcSggUrnJD2/crDlLsSggZwURxfWJpwmFQgPninutH3PfdEIOkB7+bh8FbDMPRBLeGuQO8q4QDG4E+zM5ggUoT7BB7bWPgVu3YpCwE6KAQ3fGI4jWmxgwZbI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=YoZ5O8ph; arc=none smtp.client-ip=91.218.175.183
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <b409b810-8081-4d9b-8333-6a85081f20b8@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1726074120;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3QDWyW+oFXMyTUfKygXJGfUc3y7wM7LVWfgE2RPtjHo=;
-	b=YoZ5O8ph7djq3kltLuQi+4X+4oZZt+7d53qW8Xmphow0lTeYcMqLHKirP5+C35XI4We+Kw
-	MG/hUOtGOh5nPiwDPKiRTAufM7KMOmuWbSOEKMy1rXJomC/AiJvDk4kdeK8RRw0OG8zeZo
-	N10VqbqV0nscAcKxI3+fHW0Ukik8YI4=
-Date: Wed, 11 Sep 2024 10:01:54 -0700
+	s=arc-20240116; t=1726074461; c=relaxed/simple;
+	bh=kfrMd54Rv/tbx21SsUF9VnOm9SWGmYotr1h3DVHPyMU=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=nRj4gpV0Psm8HeVJ6C75O+o7dy8pYvo55XwFXiBV5kNnPYNhVGu5EdOQ4Y4HqAD/lWXOPh38ftIzbKjeRqTm2xld60TimsQ/ryGAOmCTXbCronAJZnepBarU9LUcKtnwx2pXL0eu7APCMJ6PLoZ6aXd448oSc4QuxZCtYv+QZv4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TLycDx/N; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-205659dc63aso1291815ad.1
+        for <bpf@vger.kernel.org>; Wed, 11 Sep 2024 10:07:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1726074459; x=1726679259; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=zF9LoJCEnED01Pht5QgiZ9Hpag4b3bpwdJaTk8J38Zw=;
+        b=TLycDx/NFw3mZrdXkk3u0QEKbxvcRVpnvIMvvrcS5HlHQmukRoFnPSngUXnNelnKAc
+         Iyd/e1Alz7eG1iTUJ+xTCyoLOKZ0fIcC+oW9qkY4OA5tEG+P+DAwZy1w563Lj8NqACuZ
+         LZuW4ZVeRZfzOzN6E3qghajUNIm2iTr94BQFZZvAljSgNKTvKLv//agVj5YBXT2rJsws
+         SEYLenN2F+GGUcYm5syjEqXbZzKLpjVYNeCiyd9J0hMgquS1ColBQJhYvLMtDv1Zhlkx
+         dc37j7UL/Rz/8SW/sMZJWqs010J+y62i1SQBboPGCDFNIWZi38fGu4eA66vAlSF45M0k
+         5GXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1726074459; x=1726679259;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=zF9LoJCEnED01Pht5QgiZ9Hpag4b3bpwdJaTk8J38Zw=;
+        b=UUuiORRKBTcGANgljitSf/wcyy/xRyrSAbe5Vwx1g9cl1k0NGbFMSh6wJH/1Ft9Elv
+         eYC11Fo3AXqK5n8kkNY1zM0jtxMXInfiWW66iDV4EZgj4aulnIExRu1xxcMKOViZA/yn
+         a90j8ziL5si/D8b+LnTW4k5WwLYYnH46jzc0CjPV2QxnBKTIr2j65evT/q9C9bM+CLRr
+         svQEEnX9zW33Mw6KwvpOWfSyWJnLl/vO3Iu2iDzb7o0a4RH1LBxY5v1fO2APNtmtGbTv
+         KgGp0qq/HTTA+kd87nfos2Ig7OxEFIAp/guIXxV9InsEZe7a2V7smY8YLE/llFUvogAB
+         hgKA==
+X-Forwarded-Encrypted: i=1; AJvYcCXl7ro6CyDVmCPK036RHr5hSIDNAwCjjO6XQeNqbX/mXN5b1IfQf1jIhASmYjfDthneX2c=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyDcUGgbB8oeGdEyLEszhgg3/VqjbhvVAmQkl9VHW1eSwTGraGI
+	ZvJsupAmoHIfLJDOH9Ura7+3y9oXGwfIWCuEAdrOJB6444Sy4dsV
+X-Google-Smtp-Source: AGHT+IFpABIqDd5iG10twknQYGKQPUFF21BR0iELbixv2DQNdT0uVtR8PDpaU/xopjiYPgKYUtBKeg==
+X-Received: by 2002:a05:6a21:3a84:b0:1cf:4705:9483 with SMTP id adf61e73a8af0-1cf5e1570b0mr5901028637.36.1726074459062;
+        Wed, 11 Sep 2024 10:07:39 -0700 (PDT)
+Received: from [192.168.0.235] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-719090ae309sm3193388b3a.164.2024.09.11.10.07.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Sep 2024 10:07:38 -0700 (PDT)
+Message-ID: <4a46fa4393545f54a76f0ffd2fa19d3f0a978d1f.camel@gmail.com>
+Subject: Re: [RESEND][PATCH bpf 2/2] selftests/bpf: Add more test case for
+ field flattening
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Hou Tao <houtao@huaweicloud.com>, bpf@vger.kernel.org
+Cc: Martin KaFai Lau <martin.lau@linux.dev>, Alexei Starovoitov
+ <alexei.starovoitov@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, Song
+ Liu <song@kernel.org>, Hao Luo <haoluo@google.com>, Yonghong Song
+ <yonghong.song@linux.dev>, Daniel Borkmann <daniel@iogearbox.net>, KP Singh
+ <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Jiri Olsa
+ <jolsa@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Kui-Feng Lee
+ <thinker.li@gmail.com>, houtao1@huawei.com, xukuohai@huawei.com
+Date: Wed, 11 Sep 2024 10:07:33 -0700
+In-Reply-To: <20240911110557.2759801-3-houtao@huaweicloud.com>
+References: <20240911110557.2759801-1-houtao@huaweicloud.com>
+	 <20240911110557.2759801-3-houtao@huaweicloud.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.4 (3.52.4-1.fc40) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next 1/2] bpf: Fix a sdiv overflow issue
-Content-Language: en-GB
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>,
- Zac Ecob <zacecob@protonmail.com>
-References: <20240911044017.2261738-1-yonghong.song@linux.dev>
- <CAADnVQL=s8dZ1qAnMUnFxCY4WRuhcHFOGPRtL8zsEvySZN8ReA@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <CAADnVQL=s8dZ1qAnMUnFxCY4WRuhcHFOGPRtL8zsEvySZN8ReA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
+On Wed, 2024-09-11 at 19:05 +0800, Hou Tao wrote:
 
-On 9/11/24 8:52 AM, Alexei Starovoitov wrote:
-> On Tue, Sep 10, 2024 at 9:40 PM Yonghong Song <yonghong.song@linux.dev> wrote:
->> Zac Ecob reported a problem where a bpf program may cause kernel crash due
->> to the following error:
->>    Oops: divide error: 0000 [#1] PREEMPT SMP KASAN PTI
->>
->> The failure is due to the below signed divide:
->>    LLONG_MIN/-1 where LLONG_MIN equals to -9,223,372,036,854,775,808.
->> LLONG_MIN/-1 is supposed to give a positive number 9,223,372,036,854,775,808,
->> but it is impossible since for 64-bit system, the maximum positive
->> number is 9,223,372,036,854,775,807. On x86_64, LLONG_MIN/-1 will
->> cause a kernel exception. On arm64, the result for LLONG_MIN/-1 is
->> LLONG_MIN.
->>
->> So for 64-bit signed divide (sdiv), some additional insns are patched
->> to check LLONG_MIN/-1 pattern. If such a pattern does exist, the result
->> will be LLONG_MIN. Otherwise, it follows normal sdiv operation.
->>
->>    [1] https://lore.kernel.org/bpf/tPJLTEh7S_DxFEqAI2Ji5MBSoZVg7_G-Py2iaZpAaWtM961fFTWtsnlzwvTbzBzaUzwQAoNATXKUlt0LZOFgnDcIyKCswAnAGdUF3LBrhGQ=@protonmail.com/
->>
->> Reported-by: Zac Ecob <zacecob@protonmail.com>
->> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
->> ---
->>   kernel/bpf/verifier.c | 29 ++++++++++++++++++++++++++---
->>   1 file changed, 26 insertions(+), 3 deletions(-)
->>
->> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->> index f35b80c16cda..d77f1a05a065 100644
->> --- a/kernel/bpf/verifier.c
->> +++ b/kernel/bpf/verifier.c
->> @@ -20506,6 +20506,7 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
->>                      insn->code == (BPF_ALU | BPF_DIV | BPF_X)) {
->>                          bool is64 = BPF_CLASS(insn->code) == BPF_ALU64;
->>                          bool isdiv = BPF_OP(insn->code) == BPF_DIV;
->> +                       bool is_sdiv64 = is64 && isdiv && insn->off == 1;
-> I suspect signed mod has the same issue.
+[...]
 
-Okay, you are correct. 64bit mod has the same problem.
+> diff --git a/tools/testing/selftests/bpf/progs/cpumask_failure.c b/tools/=
+testing/selftests/bpf/progs/cpumask_failure.c
+> index a988d2823b52..e9cb93ce9533 100644
+> --- a/tools/testing/selftests/bpf/progs/cpumask_failure.c
+> +++ b/tools/testing/selftests/bpf/progs/cpumask_failure.c
+> @@ -10,6 +10,21 @@
+> =20
+>  char _license[] SEC("license") =3D "GPL";
+> =20
+> +struct kptr_nested_array_2 {
+> +	struct bpf_cpumask __kptr * mask;
+> +};
+> +
+> +struct kptr_nested_array_1 {
+> +	/* Make btf_parse_fields() in map_create() return -E2BIG */
+> +	struct kptr_nested_array_2 d_2[BTF_FIELDS_MAX + 1];
 
-On x86_64,
+Hi Huo,
 
-$ cat t10.c
-#include <stdio.h>
-#include <limits.h>
-int main(void) {
-   volatile long long a = LLONG_MIN;
-   volatile long long b = -1;
-   printf("a%%b = %lld\n", a%b);
-   return 0;
-}
-$ gcc -O2 t10.c && ./a.out
-Floating point exception (core dumped)
+I think some headers are missing, I see the following error when
+compiling this test:
 
-I tried the same thing with bpf inline asm and the kernel crashed.
+progs/cpumask_failure.c:19:33: error: use of undeclared identifier 'BTF_FIE=
+LDS_MAX'; did you mean 'BTF_KIND_MAX'?
+   19 |         struct kptr_nested_array_2 d_2[BTF_FIELDS_MAX + 1];
+      |                                        ^~~~~~~~~~~~~~
+      |                                        BTF_KIND_MAX
 
-On arm64,
-the compiled binary can run successfully and the result is
-a%b = 0
+[...]
 
-> Also is it only a 64-bit ? 32-bit sdiv/smod are also affected, no?
-
-Yes, 32bit sdiv/smod also affect.
-
-On x86,
-
-$ cat t11.c
-#include <stdio.h>
-#include <limits.h>
-int main(void) {
-   volatile int a = INT_MIN;
-   volatile int b = -1;
-   printf("a/b = %d\n", a/b);
-   return 0;
-}
-$ gcc -O2 t11.c && ./a.out
-Floating point exception (core dumped)
-
-On arm64,
-   a/b = -2147483648  // INT_MIN
-   a%b = 0
-
->
-> pw-bot: cr
 
