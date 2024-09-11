@@ -1,142 +1,152 @@
-Return-Path: <bpf+bounces-39632-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39633-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5624F97587C
-	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 18:34:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35EB59758F2
+	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 19:02:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6DBD91C239EC
-	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 16:34:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BC198287A84
+	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2024 17:02:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29B8A1AE873;
-	Wed, 11 Sep 2024 16:34:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCCB81AED3F;
+	Wed, 11 Sep 2024 17:02:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Cke0NNEi"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="YoZ5O8ph"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D7901A3AB8;
-	Wed, 11 Sep 2024 16:33:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7327C1B12D6
+	for <bpf@vger.kernel.org>; Wed, 11 Sep 2024 17:02:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726072439; cv=none; b=QfszJNOkGr1b7pAiK1fg8BOGMhDqxs8V6NAH8W8JaM4PQB19KsEDbJEpo/1u+tHWAXYK834zqzDGaJFq2fiWDdc2dvPoa7iOO0kdGplmmIw/DKAvmKowcdWNqUJJB3oPT9mD4T5ypWCv9WnwRjDaCPIIDvcTj+9nUCBsbDgxU40=
+	t=1726074128; cv=none; b=WrsV8tzeeftHPz4whm+/VxWq8n4xfdqww1hurXM8QUEpMVat0MOvSa6kJgxTmtBzzMsGMv+PAeUQLuRrY+5gwyn4Hhm6+AitGAVXhOf5ctpDl4t0Qu508KDHKAkGsyZw6P2wxjQQnjtj/qdlBED+xQurQROi5UA4Nq1xs/uUF78=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726072439; c=relaxed/simple;
-	bh=me2IwCdr0YPbwk7LPVsZk6xYX4lHvRc5w/WlwEq5Ot0=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=LUHNmTXVZX+PjYJC00IFNHFVdNqsUj7ROHp2ldUqZLJVZWTD++JAkHCOqU2gXIJcmc4TD9ulJ9K2gm1ikDKlXi6yVzagVkHeH8QbR0j7sb1pQR18zYTCH+zlnCdNrahG/Adtriou0JdDe1iP2mWrY5P7E5Ap5UDYIrv4S0c3reI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Cke0NNEi; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C99A8C4CEC0;
-	Wed, 11 Sep 2024 16:33:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1726072439;
-	bh=me2IwCdr0YPbwk7LPVsZk6xYX4lHvRc5w/WlwEq5Ot0=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=Cke0NNEiY/Ntdi9DzOQWVIx2io2HmhtOE9Tfn/DtPR7XxhJ2nNd/qGrWUEHNo0Hu7
-	 jtXTkS39wkSgMp5MdfGtAdXasMqWFKucOTqwcKosQ2zT355Tkz1r45LHx34oa7hkMk
-	 PFYXqcEQJnAV98EKJ1fw8P67GORnJ/TU3U6pBOKSv42z/bTShuyl5xPhDFjVxyN9fQ
-	 3ZH2P8eMrByP8jTwXRBuAAT/mdCh4dEwC15fTixvA8LXqKJ/yDKBmitZw+BBY/475u
-	 M9thXb3k+g7hf2aRQkbAExivGG3g//uIsLFPSQ3l2XLhQkkGqPbGlheoEpDTYSCfcE
-	 xxQja9Fio1UyQ==
-Date: Wed, 11 Sep 2024 11:33:56 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Frank Li <Frank.li@nxp.com>
-Cc: Richard Zhu <hongxing.zhu@nxp.com>,
-	Lucas Stach <l.stach@pengutronix.de>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, linux-pci@vger.kernel.org,
-	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	devicetree@vger.kernel.org, Qianqiang Liu <qianqiang.liu@163.com>
-Subject: Re: [PATCH v8 11/11] PCI: imx6: Add i.MX8Q PCIe root complex (RC)
- support
-Message-ID: <20240911163356.GA643833@bhelgaas>
+	s=arc-20240116; t=1726074128; c=relaxed/simple;
+	bh=NHCGG8kTZ58HpAe0h8dEd2z7nqwYXf9TLD7A0x5z4So=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=p9AcYP9o9KetC+/cSGwh5An+85HBwy4m7t3BMKDYp2htB34rM55RcSggUrnJD2/crDlLsSggZwURxfWJpwmFQgPninutH3PfdEIOkB7+bh8FbDMPRBLeGuQO8q4QDG4E+zM5ggUoT7BB7bWPgVu3YpCwE6KAQ3fGI4jWmxgwZbI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=YoZ5O8ph; arc=none smtp.client-ip=91.218.175.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <b409b810-8081-4d9b-8333-6a85081f20b8@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1726074120;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3QDWyW+oFXMyTUfKygXJGfUc3y7wM7LVWfgE2RPtjHo=;
+	b=YoZ5O8ph7djq3kltLuQi+4X+4oZZt+7d53qW8Xmphow0lTeYcMqLHKirP5+C35XI4We+Kw
+	MG/hUOtGOh5nPiwDPKiRTAufM7KMOmuWbSOEKMy1rXJomC/AiJvDk4kdeK8RRw0OG8zeZo
+	N10VqbqV0nscAcKxI3+fHW0Ukik8YI4=
+Date: Wed, 11 Sep 2024 10:01:54 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZuG1BfhQpd9GajNH@lizhi-Precision-Tower-5810>
+Subject: Re: [PATCH bpf-next 1/2] bpf: Fix a sdiv overflow issue
+Content-Language: en-GB
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>,
+ Zac Ecob <zacecob@protonmail.com>
+References: <20240911044017.2261738-1-yonghong.song@linux.dev>
+ <CAADnVQL=s8dZ1qAnMUnFxCY4WRuhcHFOGPRtL8zsEvySZN8ReA@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <CAADnVQL=s8dZ1qAnMUnFxCY4WRuhcHFOGPRtL8zsEvySZN8ReA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, Sep 11, 2024 at 11:19:33AM -0400, Frank Li wrote:
-> On Wed, Sep 11, 2024 at 09:07:21AM -0500, Bjorn Helgaas wrote:
-> > [+cc Qianqiang]
-> >
-> > On Mon, Jul 29, 2024 at 04:18:18PM -0400, Frank Li wrote:
-> > > From: Richard Zhu <hongxing.zhu@nxp.com>
-> > >
-> > > Implement i.MX8Q (i.MX8QM, i.MX8QXP, and i.MX8DXL) PCIe RC support. While
-> > > the controller resembles that of iMX8MP, the PHY differs significantly.
-> > > Notably, there's a distinction between PCI bus addresses and CPU addresses.
-> > >
-> > > Introduce IMX_PCIE_FLAG_CPU_ADDR_FIXUP in drvdata::flags to indicate driver
-> > > need the cpu_addr_fixup() callback to facilitate CPU address to PCI bus
-> > > address conversion according to "ranges" property.
-> >
-> > > +static u64 imx_pcie_cpu_addr_fixup(struct dw_pcie *pcie, u64 cpu_addr)
-> > > +{
-> > > +	struct imx_pcie *imx_pcie = to_imx_pcie(pcie);
-> > > +	struct dw_pcie_rp *pp = &pcie->pp;
-> > > +	struct resource_entry *entry;
-> > > +	unsigned int offset;
-> > > +
-> > > +	if (!(imx_pcie->drvdata->flags & IMX_PCIE_FLAG_CPU_ADDR_FIXUP))
-> > > +		return cpu_addr;
-> > > +
-> > > +	entry = resource_list_first_type(&pp->bridge->windows, IORESOURCE_MEM);
-> > > +	offset = entry->offset;
-> > > +	return (cpu_addr - offset);
-> > > +}
-> >
-> > I'm sure that with enough effort, we could prove "entry" cannot be
-> > NULL here, but I'm not sure I want to spend the effort, and we're
-> > going to end up with more patches like this:
-> >
-> >   https://lore.kernel.org/r/20240911125055.58555-1-qianqiang.liu@163.com
-> >
-> > I propose this minor change:
-> >
-> >   entry = resource_list_first_type(&pp->bridge->windows, IORESOURCE_MEM);
-> >   if (!entry)
-> >     return cpu_addr;
-> >
-> >   return cpu_addr - entry->offset;
-> >
-> > I still think we should get rid of the .cpu_addr_fixup() callback if
-> > possible.  But that's a discussion for another day.
-> 
-> Stop these fake alarm from some tools's scan. entry never be NULL here.
-> I am working on EP side by involve a "ranges" support like RC side.
-> 
-> Or just omit this kinds of patches.
 
-As I said initially, we probably *could* prove that "entry" can never
-be NULL here, but why should I have to spend the effort to do that?
-The "windows" list is not even built in this file, so it's not
-trivial.  And even if "entry" can't be NULL now, what's to prevent
-that assumption from breaking in the future?
+On 9/11/24 8:52 AM, Alexei Starovoitov wrote:
+> On Tue, Sep 10, 2024 at 9:40 PM Yonghong Song <yonghong.song@linux.dev> wrote:
+>> Zac Ecob reported a problem where a bpf program may cause kernel crash due
+>> to the following error:
+>>    Oops: divide error: 0000 [#1] PREEMPT SMP KASAN PTI
+>>
+>> The failure is due to the below signed divide:
+>>    LLONG_MIN/-1 where LLONG_MIN equals to -9,223,372,036,854,775,808.
+>> LLONG_MIN/-1 is supposed to give a positive number 9,223,372,036,854,775,808,
+>> but it is impossible since for 64-bit system, the maximum positive
+>> number is 9,223,372,036,854,775,807. On x86_64, LLONG_MIN/-1 will
+>> cause a kernel exception. On arm64, the result for LLONG_MIN/-1 is
+>> LLONG_MIN.
+>>
+>> So for 64-bit signed divide (sdiv), some additional insns are patched
+>> to check LLONG_MIN/-1 pattern. If such a pattern does exist, the result
+>> will be LLONG_MIN. Otherwise, it follows normal sdiv operation.
+>>
+>>    [1] https://lore.kernel.org/bpf/tPJLTEh7S_DxFEqAI2Ji5MBSoZVg7_G-Py2iaZpAaWtM961fFTWtsnlzwvTbzBzaUzwQAoNATXKUlt0LZOFgnDcIyKCswAnAGdUF3LBrhGQ=@protonmail.com/
+>>
+>> Reported-by: Zac Ecob <zacecob@protonmail.com>
+>> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+>> ---
+>>   kernel/bpf/verifier.c | 29 ++++++++++++++++++++++++++---
+>>   1 file changed, 26 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+>> index f35b80c16cda..d77f1a05a065 100644
+>> --- a/kernel/bpf/verifier.c
+>> +++ b/kernel/bpf/verifier.c
+>> @@ -20506,6 +20506,7 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
+>>                      insn->code == (BPF_ALU | BPF_DIV | BPF_X)) {
+>>                          bool is64 = BPF_CLASS(insn->code) == BPF_ALU64;
+>>                          bool isdiv = BPF_OP(insn->code) == BPF_DIV;
+>> +                       bool is_sdiv64 = is64 && isdiv && insn->off == 1;
+> I suspect signed mod has the same issue.
 
-I don't think there's anything wrong with checking for NULL here, and
-it avoids copy/pasting this somewhere where it *does* matter.  So I'm
-in favor of this kind of patch.
+Okay, you are correct. 64bit mod has the same problem.
 
-Bjorn
+On x86_64,
+
+$ cat t10.c
+#include <stdio.h>
+#include <limits.h>
+int main(void) {
+   volatile long long a = LLONG_MIN;
+   volatile long long b = -1;
+   printf("a%%b = %lld\n", a%b);
+   return 0;
+}
+$ gcc -O2 t10.c && ./a.out
+Floating point exception (core dumped)
+
+I tried the same thing with bpf inline asm and the kernel crashed.
+
+On arm64,
+the compiled binary can run successfully and the result is
+a%b = 0
+
+> Also is it only a 64-bit ? 32-bit sdiv/smod are also affected, no?
+
+Yes, 32bit sdiv/smod also affect.
+
+On x86,
+
+$ cat t11.c
+#include <stdio.h>
+#include <limits.h>
+int main(void) {
+   volatile int a = INT_MIN;
+   volatile int b = -1;
+   printf("a/b = %d\n", a/b);
+   return 0;
+}
+$ gcc -O2 t11.c && ./a.out
+Floating point exception (core dumped)
+
+On arm64,
+   a/b = -2147483648  // INT_MIN
+   a%b = 0
+
+>
+> pw-bot: cr
 
