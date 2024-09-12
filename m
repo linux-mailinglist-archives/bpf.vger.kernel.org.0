@@ -1,117 +1,240 @@
-Return-Path: <bpf+bounces-39726-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39727-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 332EC976C23
-	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2024 16:30:43 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CEEF976C4D
+	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2024 16:40:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 659511C23EB3
-	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2024 14:30:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E4091C237FF
+	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2024 14:40:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C44F81AE845;
-	Thu, 12 Sep 2024 14:30:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C3F51B982B;
+	Thu, 12 Sep 2024 14:40:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="aNCGov2V";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="3EKcb1I7"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Bg0+aSFx"
 X-Original-To: bpf@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF9FE1A288;
-	Thu, 12 Sep 2024 14:30:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AF581B9821
+	for <bpf@vger.kernel.org>; Thu, 12 Sep 2024 14:40:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726151436; cv=none; b=qDRNHy0rcK2bOtcUzgZ2Ww1NOhDfK5Cnw+RuVfSt8FmM+UxsKh8ec5YN1lD7bskQKLXc021NkYw/uFyA/SFQV0DURnjjnZa7bHjcTGyJyDArFQOHzyQHrwp0CSx4ESGVasJSTdMiF9FrG98KvDBwdxBLGg5VJNGpDjIV80FWeUM=
+	t=1726152030; cv=none; b=cNMiI8nbQUw7G1cS8OUPzfGisPo/Wb2FduqIrtPYsbiDy/MmBZ9kte4uyXNJyHbzF1tA+cjavhoCZdJU7eB3Qb22ZmNnMjiK0hSjDnoWT8eEsDhUocAcnIYw0LngHeTnDy6Fn+BMXVkv4A5XU7/lTY/W0avpdfmMFGBN/S2cgXQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726151436; c=relaxed/simple;
-	bh=c9BNPsL77m1gQNF1oxGnA6X84UuD3I9ZPTkZK7KMHYE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Dyn5aRvjbEaiVk3itkgkqLUkY9pNprGDVHL+vNhfE7yUeRsXUjQigogslkf5/30hZ1Xikg7rRG/LTvZ74wNjPuUzohJVl3OAyFDwIUGez/jOWvpLZ7NXUc2AKc1fyr379xprzq/HlYgFn3iOvejlqdfbH3Bi0MTD80Ba8MrCMRk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=aNCGov2V; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=3EKcb1I7; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Thu, 12 Sep 2024 16:30:29 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1726151431;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YMoxcCQIasVaG6BJNCbOIJ88x2l5R7R9pyvVhbXBFnc=;
-	b=aNCGov2VgbjIooThREsfzPjpq3/+0RsA2TGGPjCizETv00FQWtsB4EGS1kZ+srN0bM6mvT
-	Kl1EfcYeaHZVa4zl76A1cpSVEGu2T/WYZA0mqljxyu8N8fYTxJFhcahR713Hhc47HYRNI3
-	G5AdSUP8ncjj/IaLqxfZCnJCdtHk1MifeZ632iTp33zIfDGI8f7Q3oLp9aCWGzdYDnwum+
-	eUOg6lA4h6wbSOKSZBv1R+jdutsZKNbPs96R5keQU0Ku+Sp76kjaQvuIVjl9Wj52ADoA7v
-	RyyKfKM9ipabZNUsjP/Xj8X30AVKi5gPM1XawjaY+7rUECH/aLjD4GvSzEaSeg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1726151431;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YMoxcCQIasVaG6BJNCbOIJ88x2l5R7R9pyvVhbXBFnc=;
-	b=3EKcb1I7TH/mpczaBA3bRNietzZphMO2D0yDuHkW49ln5odOfqWdI3pNwB2EaH8n3LlaRC
-	O2NsyIyIY+oop/Dw==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Breno Leitao <leitao@debian.org>
-Cc: Vadim Fedorenko <vadim.fedorenko@linux.dev>,
-	Jakub Kicinski <kuba@kernel.org>, andrii@kernel.org, ast@kernel.org,
-	syzbot <syzbot+08811615f0e17bc6708b@syzkaller.appspotmail.com>,
-	bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-	eddyz87@gmail.com, haoluo@google.com, hawk@kernel.org,
-	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org,
-	linux-kernel@vger.kernel.org, martin.lau@linux.dev,
-	netdev@vger.kernel.org, sdf@fomichev.me, song@kernel.org,
-	syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
-Subject: Re: [PATCH net-net] tun: Assign missing bpf_net_context.
-Message-ID: <20240912143029.x5iudw-g@linutronix.de>
-References: <000000000000adb970061c354f06@google.com>
- <20240702114026.1e1f72b7@kernel.org>
- <20240703122758.i6lt_jii@linutronix.de>
- <20240703120143.43cc1770@kernel.org>
- <20240912-simple-fascinating-mackerel-8fe7c0@devvm32600>
- <20240912122847.x70_LgN_@linutronix.de>
- <20240912-hypnotic-messy-leopard-f1d2b0@leitao>
- <9a2a1cce-8d92-4d10-87ea-4cdf1934d5fb@linux.dev>
- <20240912-organic-spoonbill-of-discourse-ad2e6e@leitao>
+	s=arc-20240116; t=1726152030; c=relaxed/simple;
+	bh=2GAMA2wga5q83MIxaFeUhTVeystc4aIJZXNdVreotSo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=sLrlQZUhb0tPwaByd1xrj9J/WyfH1Xa496Cl96DaSxyMNpDCxRAcQRbKx2cQCbW4yOHZleytm0RWsB3uNVHf4SWIeNgXZXBbWvuHd9bRhutnoxfiCqv4RZ1HfXS0KluBlqP/Z1zFBDRxZRfkvqm2y7y2iZRq7B3N6vNvqLEHloE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Bg0+aSFx; arc=none smtp.client-ip=209.85.208.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-5c3c3b63135so1077621a12.3
+        for <bpf@vger.kernel.org>; Thu, 12 Sep 2024 07:40:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1726152027; x=1726756827; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5HCOSxLBQO0ZNj9zMDpIm//SGoaox3LS+lXNzO9wMv4=;
+        b=Bg0+aSFxkcD0tLwUhViqrvOqAoTfdmXsJE804ecUui6jhpDtwVhBx0qC+EZazUyrYH
+         u4JBq80tHl+B/067Jo2pzHIwuZhRm4EE84eCg9xU60fBc83Tgyb5vZvfDpD7zdxBPxcu
+         MrwKiAH2bdswUO1eWulq6kDsYljyJNg6/MF+6eh25yW03VUQxxclLJKNqNcu0b06n/Z/
+         2YuttJAYx4FHhx6tXR9rbmHSj1nEc/Uk6ugWboOEeDSOOUOUj38Plksgh8ypbe7IRm0j
+         bQHXSVQKwN43PRPdWeoexpLTO5OHWbGqBwZP9RhyAjXSLeYywGeD7EYfupHujb65TUTA
+         S/rw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1726152027; x=1726756827;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5HCOSxLBQO0ZNj9zMDpIm//SGoaox3LS+lXNzO9wMv4=;
+        b=BeEGWiTnR+OWmvkgvC5kUVcTyNQJWX7XZV5EsSbALTEXI9ucURHRYuLmw45SJAp2ZW
+         H4jApF5No8pZQ1ZzJTCyEZ2/OWyacnHoifAV9woT8Vz+sXmwdbS3R6Hg/XboxeSXi+34
+         d8TjVQcCwtINM+uaixlIkXNSM23aYPBWeKjmzTtACIzrbD8ICdqR1QO2y2ADB7K5sKSp
+         4EaMsWtGkI+1Z0G0U7ITnerC/B/benlCC3TJ4pIfXjPnoXmSsx6Wo8Otb1KfHz8dYY6a
+         dESKuFikWOasZAMU/yIhOEVXm2zMB8UcgnwMjchUYG/QEcl4dOz5hALSzqWeQGbPojK4
+         ohVw==
+X-Gm-Message-State: AOJu0Yx76ZbQ9JGWaXZ1Nv7ugY1oaGs2gr9uhg7d5DntsOrAs9FBLOBV
+	fgLfCDb36EQk66oM/gNPZOKEMWc1rpYJQWzA5X0p+gvZFx25WHnVmWZYBJR4YAw2FeYMTuUpheI
+	RqcpJYUh2kH74/B1GTPyk0lEjvciJWEmu0b4=
+X-Google-Smtp-Source: AGHT+IEcacQg1tcjEt61Sv2UwL8S2KDGhYN50F3arAvL+x3r4k8z3mX3vo9SDvXSZtJ8hip2f/QBYx08RNuL5yAXTfU=
+X-Received: by 2002:a05:6402:1d53:b0:5c2:7570:3a2a with SMTP id
+ 4fb4d7f45d1cf-5c413e1ee8cmr2438566a12.17.1726152026666; Thu, 12 Sep 2024
+ 07:40:26 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240912-organic-spoonbill-of-discourse-ad2e6e@leitao>
+References: <1726037521-18232-1-git-send-email-kongln9170@gmail.com>
+ <67451140439fafa1bae3e3b010d2c6b9969696a1.camel@gmail.com>
+ <CAH6SPwj6=zu8fLNLwZ06fTso9634GV6ku21xpyzN+bwvrOevFg@mail.gmail.com>
+ <62b54401510477eebdb6e1272ba4308ee121c215.camel@gmail.com> <CAH6SPwjoACNcNBWCjYauSMYCFOUAys10uH-xM6mF8_Q79D0Yow@mail.gmail.com>
+In-Reply-To: <CAH6SPwjoACNcNBWCjYauSMYCFOUAys10uH-xM6mF8_Q79D0Yow@mail.gmail.com>
+From: lonial con <kongln9170@gmail.com>
+Date: Thu, 12 Sep 2024 22:40:15 +0800
+Message-ID: <CAH6SPwhUnn9-nNz9fpX3YGeA9WHT_BA5UzNgS5wYMqO=+8Ly_A@mail.gmail.com>
+Subject: Re: [PATCH] Fix a bug in ebpf verifier
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2024-09-12 07:19:54 [-0700], Breno Leitao wrote:
-> Hello Vadim,
-> 
-> On Thu, Sep 12, 2024 at 02:32:55PM +0100, Vadim Fedorenko wrote:
-> > On 12/09/2024 14:17, Breno Leitao wrote:
-> > > @@ -72,6 +73,7 @@ static netdev_tx_t netkit_xmit(struct sk_buff *skb, struct net_device *dev)
-> > >   	struct net_device *peer;
-> > >   	int len = skb->len;
-> > > +	bpf_net_ctx = bpf_net_ctx_set(&__bpf_net_ctx);
-> > >   	rcu_read_lock();
-> > 
-> > Hi Breno,
-> > 
-> > looks like bpf_net_ctx should be set under rcu read lock...
-> 
-> Why exactly?
-> 
-> I saw in some examples where bpf_net_ctx_set() was set inside the
-> rcu_read_lock(), but, I was not able to come up with justification to do
-> the same. Would you mind elaborating why this might be needed inside the
-> lock?
+Hi,
 
-It might have been done due to simpler nesting or other reasons but
-there is no requirement to do this under RCU protection. The assignment
-and cleanup is always performed task-local.
+I tried to build this environment, but it seems that it needs kvm
+support. For me, it is very troublesome to prepare a kvm environment.
+So could you please write this selftest?
 
-> Thanks for the review,
-> --breno
+Thanks,
+Lonial Con
 
-Sebastian
+
+lonial con <kongln9170@gmail.com> =E4=BA=8E2024=E5=B9=B49=E6=9C=8812=E6=97=
+=A5=E5=91=A8=E5=9B=9B 21:31=E5=86=99=E9=81=93=EF=BC=9A
+>
+> Hi,
+>
+> I tried to build this environment, but it seems that it needs kvm support=
+. For me, it is very troublesome to prepare a kvm environment. So could you=
+ please write this selftest?
+>
+> Thanks,
+> Lonial Con
+>
+> Eduard Zingerman <eddyz87@gmail.com> =E4=BA=8E2024=E5=B9=B49=E6=9C=8812=
+=E6=97=A5=E5=91=A8=E5=9B=9B 12:31=E5=86=99=E9=81=93=EF=BC=9A
+>>
+>> On Thu, 2024-09-12 at 10:53 +0800, lonial con wrote:
+>>
+>> > I have never written a selftest before. I wrote a simple POC to
+>> > demonstrate this bug. This POC can crash the Linux kernel 6.6.50. I
+>> > think the ebpf code in the POC will be helpful for writing a
+>> > selftest.
+>>
+>> Well all depends on how familiar you want to get with selftests
+>> infrastructure :) Here is a promised intro. If you don't want to
+>> bother, please let me know, I can write the selftest.
+>> If you do want to bother, feel free to ask any questions.
+>>
+>>  ***
+>>
+>> Please find a minimal recipe allowing to compile and run selftests in
+>> a chroot at the bottom of this email. You would probably want to
+>> adjust it, e.g. setup a user matching your local user inside chroot
+>> and do a bind mount for sources directory etc.
+>>
+>> After setting up the environment you will have to write the test.
+>>
+>> BPF selftests reside in the following directory:
+>> - tools/testing/selftests/bpf/
+>>
+>> Nowadays we mostly add selftests to test_progs executable and use
+>> bpftool skeletons / libbpf to simplify maps and programs creation.
+>>
+>> The files located under prog_tests/ directory are compiled as host
+>> programs, the files located under progs/ are compiled as BPF programs
+>> (and libbpf skeletons are generated for these programs).
+>> Skeletons generated for files from progs/ are used in tests declared
+>> in prog_tests/.
+>>
+>> Your POC structure:
+>> - sets up a few maps
+>> - sets up data for ringbuf
+>> - loads and runs BPF program
+>>
+>> You can look at a selftests that have similar structure, e.g.:
+>> - tools/testing/selftests/bpf/prog_tests/ringbuf.c
+>> - tools/testing/selftests/bpf/progs/test_ringbuf.c
+>>
+>> Interesting parts of the 'prog_tests/ringbuf.c':
+>>
+>>     // this includes skeleton generated by bpftool
+>>     #include "test_ringbuf.lskel.h"
+>>
+>>     static void ringbuf_subtest(void)
+>>     {
+>>         ...
+>>         // use generated methods to setup maps and programs
+>>         skel =3D test_ringbuf_lskel__open();
+>>         ...
+>>         err =3D test_ringbuf_lskel__load(skel);
+>>
+>>         // you can do bpf_prog_run here as well
+>>     }
+>>
+>>     // build system automatically wires up functions
+>>     // void test_*(void) as entry points for tests
+>>     // executed by test_progs binary
+>>     void test_ringbuf(void)
+>>     {
+>>         // needed for tests filtering, e.g. -t option for test_progs
+>>         if (test__start_subtest("ringbuf"))
+>>                 ringbuf_subtest();
+>>         ...
+>>     }
+>>
+>>
+>>  *** chroot selftests build/run recipe follows ***
+>>
+>> # First, setup the bullseye chroot
+>> sudo /usr/sbin/debootstrap --variant=3Dbuildd --arch=3Damd64 bullseye bu=
+llseye-chroot/ http://deb.debian.org/debian
+>>
+>> # provide {dev,proc} for chroot
+>> sudo mount --rbind /dev ./bullseye-chroot/dev/
+>> sudo mount --make-rslave ./bullseye-chroot/dev/
+>> sudo mount -t proc proc ./bullseye-chroot/proc/
+>>
+>> # enter chroot
+>> sudo chroot ./bullseye-chroot
+>>
+>> # Install build tools
+>> apt install build-essential bc flex bison git libelf-dev libssl-dev \
+>>     docutils-common rsync curl zstd qemu-system-x86 sudo cmake \
+>>     libdw-dev lsb-release wget software-properties-common gnupg e2fsprog=
+s
+>>
+>> # Install fresh clang-18 snapshot, the llvm.sh sets up some repos
+>> curl https://apt.llvm.org/llvm.sh --output /tmp/llvm.sh
+>> bash /tmp/llvm.sh 18
+>> apt install clang-tools-18
+>> ln -s /usr/bin/clang-18 /usr/bin/clang
+>> ln -s /usr/bin/llvm-strip-18 /usr/bin/llvm-strip
+>>
+>> # that would be /root inside chroot
+>> cd $HOME
+>>
+>> # Get and compile pahole, use instructions from:
+>> # https://git.kernel.org/pub/scm/devel/pahole/pahole.git/about/
+>> git clone https://git.kernel.org/pub/scm/devel/pahole/pahole.git
+>> cd pahole
+>> git submodule update --init --recursive
+>> mkdir build
+>> cd build
+>> cmake -D__LIB=3Dlib ..
+>> make -j
+>> # make it available system-wide
+>> ln -s $(realpath pahole) /usr/local/bin/
+>>
+>> cd $HOME
+>> git clone --depth=3D1 https://git.kernel.org/pub/scm/linux/kernel/git/bp=
+f/bpf-next.git
+>>
+>> # Run vmtests, this should download rootfs, build kernel and tests, run =
+test_verifier
+>> # vmtest.sh would ask for root password to mount rootfs image
+>> cd bpf-next/tools/testing/selftests/bpf
+>> ./vmtest.sh -- ./test_verifier
+>>
+>> # And now run test_progs
+>> ./vmtest.sh -- ./test_progs
+>>
+>> # One can filter tests too
+>> ./vmtest.sh -- ./test_progs -t ringbuf
+>>
 
