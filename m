@@ -1,68 +1,66 @@
-Return-Path: <bpf+bounces-39690-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39691-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A29629760E3
-	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2024 08:00:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 380A79760F2
+	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2024 08:06:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1EC11B2205F
-	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2024 06:00:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6A6611C21C4C
+	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2024 06:06:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20C0618B48C;
-	Thu, 12 Sep 2024 05:59:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86FB818950A;
+	Thu, 12 Sep 2024 06:06:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hX/tlpSC"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b="Dut6C6Eb"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95300188927;
-	Thu, 12 Sep 2024 05:59:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C2EF5028C;
+	Thu, 12 Sep 2024 06:06:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726120789; cv=none; b=EM5slDdUw7wG/h+LSmIpZeO+SXtF0nR3nuSXBT/RNJDUdNRMf92KMB8eRKykUJJSjrvtyuOyY6Xnc9/763sdHu2qadfQnBYv5gi748jyISDZ+nKjUDgbrhRQy7VaENG904XJQJQE3Zqz7VRuhmARvHrDTsqXZ+3X0MYA8mY4/j8=
+	t=1726121206; cv=none; b=OPFLUE/o6e+3T2Tb2pvD9KtIFWj+a8m24fO3ZKe3qtrP6Svz8Lsx/QLYhit8BOT+8waWYyirCcr/CBu1rT7obiDjRmf+FIoB0LPFX3Uu4KD+91WDgbjFS4adXSHvLoPCoZc3z71duEe33djb1EbtuoSrRFVF2RVBxoWcRrWLb5Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726120789; c=relaxed/simple;
-	bh=pdGCoDLFknytFHxTBZchFqbIFEPSKZ3Zw/2AcW44moI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dDgYKep+aGmAzaGmp8wwAam6ul4pGIkbDoovxoDj335KQcPiQkcr5WEzre1P4xcsOfNkYXGCqJkLcDgBSoJI6ieqPNY7H6WAqVegPx45unklPwtNtmW2HW62FZZ6P7N09t75Hg4PjTFqJB1Ynv3dUjrS0r26nyPQnFet68/StM0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hX/tlpSC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E54C8C4CEC3;
-	Thu, 12 Sep 2024 05:59:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1726120789;
-	bh=pdGCoDLFknytFHxTBZchFqbIFEPSKZ3Zw/2AcW44moI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=hX/tlpSCw22C5Ky+HJ5qpqOQ2efapTaR1qLD0HzzH3EKyTmmt3FgxC2ANKfF81WZd
-	 H6ZJhBApc6Ks5hlOrhiAUYmpRhr73yimCgyJ3llNHzbACgCoJzDCEg4cIIjR9nb2Mp
-	 BP8Ci/yji6UH/Uz6g8PnZLjS49piVKCIMZ3ENywKcgtI4UrWRCifGpFvYA5r4oPiYr
-	 1MovcyP5eG3DlNS/5IfUHbuKweg7KwIiV9PzdctnwWSrTfOgcl8BA7QcKqiZp3vSVN
-	 rmy19Hh3DE4S/gmZ+wSp2U4PFk80f1Yuh72UKYKXsXP4pPWHywzbdwVRoIpM5S89Fg
-	 vshqC6kmwYjPA==
-Date: Wed, 11 Sep 2024 19:59:48 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Chen Ridong <chenridong@huaweicloud.com>
-Cc: Roman Gushchin <roman.gushchin@linux.dev>,
-	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-	Chen Ridong <chenridong@huawei.com>, martin.lau@linux.dev,
-	ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
-	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-	haoluo@google.com, jolsa@kernel.org, lizefan.x@bytedance.com,
-	hannes@cmpxchg.org, bpf@vger.kernel.org, cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/1] cgroup: fix deadlock caused by cgroup_mutex and
- cpu_hotplug_lock
-Message-ID: <ZuKDVMTvy5Q8evSx@slm.duckdns.org>
-References: <20240817093334.6062-1-chenridong@huawei.com>
- <20240817093334.6062-2-chenridong@huawei.com>
- <kz6e3oadkmrl7elk6z765t2hgbcqbd2fxvb2673vbjflbjxqck@suy4p2mm7dvw>
- <07501c67-3b18-48e3-8929-e773d8d6920f@huaweicloud.com>
- <ZuC0A98pxYc3TODM@google.com>
- <ZuC3femqBNufgX1D@slm.duckdns.org>
- <83cea8c6-d2f8-42f2-990e-80412ebf296e@huaweicloud.com>
+	s=arc-20240116; t=1726121206; c=relaxed/simple;
+	bh=mN+R3ToxhkuxGdCM/aq45jOkr3+/T3AE3qU1LI66plA=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=jzmRXal8z/FS1sfw8Qup1byplC0/gc7oOYZw9jEmrBrC/jquKyBFPHpxyYC9B+fhgHy7ukc/9DffURjhgcqEg4g35mvteZa3fI4825PtWjgc8FXVTcv/RUPoAsA9bIwtybif42DJ3GslkHkjG9JO7prdRJT7TJMocmsWKrQUwlk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=hmeau.com header.i=@hmeau.com header.b=Dut6C6Eb; arc=none smtp.client-ip=144.6.53.87
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
+	s=formenos; h=In-Reply-To:Content-Type:MIME-Version:Message-ID:Subject:Cc:To:
+	From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:References:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=3xlRzXI9yb+oNIsqCP0Wa4u5a4LZve9QqMy4C7Th5mc=; b=Dut6C6EbXHKl46S1QMOW38R/r8
+	3ekj8fbSVpa3M/4/NfVU0/L2n4YksdJhPe6RCzswqcuWg3XU0BC0sZSZebL3LtKud0noRiobvGk3s
+	s/vCZiFAoEpUs3s3m9eG2GLI2hq9hOkVu+/Pyiz7KuUe6mkob8ueP+ie3hXBRJSLcpskkGSmRSJDN
+	qrau35IL7NHMtOaOM/vu6KRhLjNPt0bgnC3Zh6h5EfMCiahs5z3wgoDQcFxfm3fN4JbbCQ9+0fccb
+	D2WcU7+AMLG+HPRlw3XBvisLeOAhLALpq8oK72eukqxOqnZIqQZ9rgtSG88tBc821hJ2S4hROU7Jq
+	VRGE9A6w==;
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
+	id 1socoG-001u5Y-2v;
+	Thu, 12 Sep 2024 14:06:19 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Thu, 12 Sep 2024 14:06:18 +0800
+Date: Thu, 12 Sep 2024 14:06:18 +0800
+From: Herbert Xu <herbert@gondor.apana.org.au>
+To: Uros Bizjak <ubizjak@gmail.com>
+Cc: x86@kernel.org, linux-crypto@vger.kernel.org,
+	intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+	linux-media@vger.kernel.org, linux-mtd@lists.infradead.org,
+	linux-fscrypt@vger.kernel.org, linux-scsi@vger.kernel.org,
+	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+	ubizjak@gmail.com, davem@davemloft.net
+Subject: Re: [PATCH RESEND v2 02/19] crypto: testmgr: Include
+ <linux/prandom.h> instead of <linux/random.h>
+Message-ID: <ZuKE2sffS3wddU3-@gondor.apana.org.au>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -71,16 +69,24 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <83cea8c6-d2f8-42f2-990e-80412ebf296e@huaweicloud.com>
+In-Reply-To: <20240909075641.258968-3-ubizjak@gmail.com>
+X-Newsgroups: apana.lists.os.linux.cryptoapi,apana.lists.os.linux.kernel,apana.lists.os.linux.scsi
 
-On Thu, Sep 12, 2024 at 09:33:23AM +0800, Chen Ridong wrote:
-> I will add a patch do document that.
-> Should we modify WQ_DFL_ACTIVE(256 now)? Maybe 1024 is acceptable?
+Uros Bizjak <ubizjak@gmail.com> wrote:
+> Substitute the inclusion of <linux/random.h> header with
+> <linux/prandom.h> to allow the removal of legacy inclusion
+> of <linux/prandom.h> from <linux/random.h>.
+> 
+> Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+> Cc: Herbert Xu <herbert@gondor.apana.org.au>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> ---
+> crypto/testmgr.c | 2 +-
+> 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Yeah, let's bump it.
-
-Thanks.
-
+Acked-by: Herbert Xu <herbert@gondor.apana.org.au>
 -- 
-tejun
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
 
