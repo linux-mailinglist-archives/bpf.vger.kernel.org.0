@@ -1,152 +1,292 @@
-Return-Path: <bpf+bounces-39683-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39684-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB2EE975F88
-	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2024 05:03:36 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44A9D975F89
+	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2024 05:06:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8FE0228A934
-	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2024 03:03:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 97D2C1F22CFF
+	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2024 03:06:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6658F3987D;
-	Thu, 12 Sep 2024 03:03:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BBED7603A;
+	Thu, 12 Sep 2024 03:06:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FHwGQ4WA"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fGmNITUo"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6EE826AC1
-	for <bpf@vger.kernel.org>; Thu, 12 Sep 2024 03:03:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD2AC22EE5;
+	Thu, 12 Sep 2024 03:06:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726110210; cv=none; b=ThVWFUnUUUNMSPyIQiKC3DoJ6/dEjRPDQ19KAhWa0qhopQ9ZejANGUT+PqFNMD8RHDtcF2eybrV9u569J0gQRb0W1fjwEfYijAYlHsimSmMFRVboUTAZV5whqGAgNNmjjwfhQ3KOnpFZz5BzWZHRZ20TA7ZYzPBtwP875tNurcA=
+	t=1726110372; cv=none; b=u1MeZl9UkN27/CK/piKXA6qmz0SvWHWFJp8fgSvlzMUOKQtV+0v87gD0Jbmrjl7NmW76pIviVYL0SJhDKwxoxMEU7EXTI/MEsRwjT8uG2W9gx9QoZ6GHFIdlpijSmKAXYFfWLwIBvatsACVLIXaSyfWwXM8BkkKP08+2scHPOrw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726110210; c=relaxed/simple;
-	bh=W/VH9NTaOf0aTAiXk8NdXVFsx9uqrNF7U9vq45cKzNg=;
+	s=arc-20240116; t=1726110372; c=relaxed/simple;
+	bh=0YdpvGTczmIbRkZk+V7qWJYh5oR6u9o2xOsH6ZmNXXw=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=COHUMl6XvAFl9FjT3/ELSgsZEhi1AOdRc36CEXtQNKWWmAKUKcq8pd7cbeYFsW7yFdQLa56BcSV6xGMQD62bY1iVMHk0ru7R6PpLuzd+7AQX4fAP2QxHnQtcZqjcJqCMdOoEH0LYw5GW9RdEmcp0BEgi5gaCc5EqvLkG3kog/hc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FHwGQ4WA; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-206e614953aso5434265ad.1
-        for <bpf@vger.kernel.org>; Wed, 11 Sep 2024 20:03:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1726110208; x=1726715008; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=KwFNGMTmSFjLUAlrr6tSeFuAnm8N5stpHYJgSW61zJw=;
-        b=FHwGQ4WAbOFdzbze0pPt/9nGDVb4Doitz7RaqymITPy/tFicCtoWIEyC2M6CZxSf+W
-         CMFyN4VAtA2LngPqcNPKEZtEuHPkYjqK9NA2FVCb95MVrgwLofaQv4sx0WIOKo9xQjyj
-         uKTgA01+njmoUcVx3E4ptlJ4mNDksiSHmam9zUfLboqhXzsGYt6B4D/+k1mX28S2n83d
-         HRIe/D/j7KEeRCmcsn4Iw6DDprkaMgCfN+D/Bo6svMMX1y6sOKsG1WO3eqAZW5Nz2ZtZ
-         4Eox5cB9GHpVlU5JkJKhxqk89NJGMHTdw1XQ4+H6BPKWKdjzf0XRPC5rt/nzcke0BIrO
-         BS+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726110208; x=1726715008;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=KwFNGMTmSFjLUAlrr6tSeFuAnm8N5stpHYJgSW61zJw=;
-        b=du9+43VxHek8y5n87l8NyuQIXtUWEjE5meWeRh/t6nLKDGrJMemij8lvHGTMlwEDKw
-         VfxWGs+sLFP2csVVXdgQSs3lIcIujXXuaR1QMqwKGblFNcgOTQrv5R9D49c17TpO0XYa
-         F3SM/Y0uQwMkoUt/Y45Y9mvNzygd3wf1JnI7+TO9266jSvgPvSg31HAALcDc8TjOHLWf
-         qZ+c0EcL7JMmxpEyOYucdOgFGODS2YEOgdNMRZDvvxhsX//onajnRgaiy0kAYlmLiY54
-         D1npArJlAOTrzih/HhlaLN5/gjv5FI1eTnJhAIDqych4UlSP1R6opSeakc8JyzWOPCDD
-         xSmA==
-X-Forwarded-Encrypted: i=1; AJvYcCVqPIc/fl8QrXc6IE85EHtYpIsPd2KY+73D5HI+prfwJClSnEgBMduGnOoiHWnQFWOmlkY=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwPr1D1wlMvmiND5shaSOId8Z3mbuIJMLKyXz3wtp4mM1ZIRr8y
-	ZMTcTlm4A/mE9SSwfI9PXi/ZI2W//vIAHwxMeVZO5RHcR6lzKGMd
-X-Google-Smtp-Source: AGHT+IGeDADxWqkdBgYPzDIgb3IEMp7UQHafkU5vpLdHqPDKtBbhXV2cS+7LI6NPEdLQNjseHdxt9Q==
-X-Received: by 2002:a17:902:d54a:b0:202:9b7:1dc with SMTP id d9443c01a7336-2076e44ba5emr18724645ad.54.1726110207639;
-        Wed, 11 Sep 2024 20:03:27 -0700 (PDT)
-Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2076af253d5sm5992945ad.10.2024.09.11.20.03.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Sep 2024 20:03:27 -0700 (PDT)
-Message-ID: <9a7d4f5ff0ea8af86a6d7a5b630c38cb7ecc2075.camel@gmail.com>
-Subject: Re: [RESEND][PATCH bpf 1/2] bpf: Check the remaining info_cnt
- before repeating btf fields
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Hou Tao <houtao@huaweicloud.com>, bpf@vger.kernel.org
-Cc: Martin KaFai Lau <martin.lau@linux.dev>, Alexei Starovoitov
- <alexei.starovoitov@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, Song
- Liu <song@kernel.org>, Hao Luo <haoluo@google.com>, Yonghong Song
- <yonghong.song@linux.dev>, Daniel Borkmann <daniel@iogearbox.net>, KP Singh
- <kpsingh@kernel.org>, Jiri Olsa <jolsa@kernel.org>, John Fastabend
- <john.fastabend@gmail.com>, Kui-Feng Lee <thinker.li@gmail.com>, 
- houtao1@huawei.com, xukuohai@huawei.com
-Date: Wed, 11 Sep 2024 20:03:22 -0700
-In-Reply-To: <99c3bd09-054a-2c7c-7c6f-f1c613444f1f@huaweicloud.com>
-References: <20240911110557.2759801-1-houtao@huaweicloud.com>
-	 <20240911110557.2759801-2-houtao@huaweicloud.com>
-	 <16794f86fd1030d923e3ab7356c5ff3617b2b193.camel@gmail.com>
-	 <99c3bd09-054a-2c7c-7c6f-f1c613444f1f@huaweicloud.com>
+	 Content-Type:MIME-Version; b=QUx7m5t1QjR4OB6FM1SwgqOD2TusIhpFtgPDSYIUpmESNXdfh/zA5UywwQhjar3qQKKjxZWAcH81PIbzCvGzSuo19C7/xUi9K2ERHjW89934RGpptf95qTrzkjYkrg5yiqnCJnPte3f36wli8SbwyczFnXXKpmu6ZqL0lUj9JSQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fGmNITUo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88997C4CEC0;
+	Thu, 12 Sep 2024 03:06:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1726110371;
+	bh=0YdpvGTczmIbRkZk+V7qWJYh5oR6u9o2xOsH6ZmNXXw=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+	b=fGmNITUogNiddUa8fMEm/Du/GPFk+ZI6fQZZBg28vmUuxWvK/iuNg/o9lckWeVQaP
+	 mwafMe0sLeDTbbrKZIoiiOwi13skYVkEXE5mN+LLR89DS/mMc3TrZMRGRkFigqHNpn
+	 RFbDfjyzuLWK9TcqX4kV3iypo39Xgb19U0SCRpNGDnxQtb/wiKinhOJtoUF9l0fTRB
+	 1o0s6/C/D0mwy1IIPe38XDA+eK75DdQhMIysVYq4GG4fJzdQTehdODV9so3/mWNQym
+	 +3ttizTB4ePj5v9dBT2FL4VNMjuFAXIQR3M2O3lfndL6r9Teiz234D+0L+zwa3+LU3
+	 9Q/cimbbmsq2w==
+Message-ID: <914e4b84caae7fc14ace9dc6e82a6f94e4cdd4dc.camel@kernel.org>
+Subject: Re: [PATCH mptcp-next v3 1/5] bpf: Add mptcp_subflow bpf_iter
+From: Geliang Tang <geliang@kernel.org>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: mptcp@lists.linux.dev, Geliang Tang <tanggeliang@kylinos.cn>, bpf
+	 <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@kernel.org>
+Date: Thu, 12 Sep 2024 11:06:05 +0800
+In-Reply-To: <CAEf4BzamHdsUnRJN1sVA2rrotug8dFOrSUdE6GZAaF83nU58Og@mail.gmail.com>
+References: <cover.1725946276.git.tanggeliang@kylinos.cn>
+	 <026dce3d6903ad189e4b0518a64b60c910e660c0.1725946276.git.tanggeliang@kylinos.cn>
+	 <CAEf4BzamHdsUnRJN1sVA2rrotug8dFOrSUdE6GZAaF83nU58Og@mail.gmail.com>
+Autocrypt: addr=geliang@kernel.org; prefer-encrypt=mutual;
+ keydata=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
+ Px+2P2cKc7LXXedb/qQ3M
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.4 (3.52.4-1.fc40) 
+User-Agent: Evolution 3.52.3-0ubuntu1 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Thu, 2024-09-12 at 09:20 +0800, Hou Tao wrote:
+Hi Andrii,
 
-[...]
+On Wed, 2024-09-11 at 14:00 -0700, Andrii Nakryiko wrote:
+> On Mon, Sep 9, 2024 at 10:37 PM Geliang Tang <geliang@kernel.org>
+> wrote:
+> > 
+> > From: Geliang Tang <tanggeliang@kylinos.cn>
+> > 
+> > It's necessary to traverse all subflows on the conn_list of an
+> > MPTCP
+> > socket and then call kfunc to modify the fields of each subflow. In
+> > kernel space, mptcp_for_each_subflow() helper is used for this:
+> > 
+> >         mptcp_for_each_subflow(msk, subflow)
+> >                 kfunc(subflow);
+> > 
+> > But in the MPTCP BPF program, this has not yet been implemented. As
+> > Martin suggested recently, this conn_list walking + modify-by-kfunc
+> > usage fits the bpf_iter use case. So this patch adds a new bpf_iter
+> > type named "mptcp_subflow" to do this and implements its helpers
+> > bpf_iter_mptcp_subflow_new()/_next()/_destroy().
+> > 
+> > Then bpf_for_each() for mptcp_subflow can be used in BPF program
+> > like
+> > this:
+> > 
+> >         bpf_rcu_read_lock();
+> >         bpf_for_each(mptcp_subflow, subflow, msk)
+> >                 kfunc(subflow);
+> >         bpf_rcu_read_unlock();
+> > 
+> > Suggested-by: Martin KaFai Lau <martin.lau@kernel.org>
+> > Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
+> > ---
+> >  net/mptcp/bpf.c | 47 +++++++++++++++++++++++++++++++++++++++++++--
+> > --
+> >  1 file changed, 43 insertions(+), 4 deletions(-)
+> > 
+> 
+> Not sure why, but only this patch made it to the BPF mailing list?
+> Did
+> you cc bpf@vger on all patches?
 
-> > > @@ -3592,6 +3592,12 @@ static int btf_find_nested_struct(const struct=
- btf *btf, const struct btf_type *
-> > >  		info[i].off +=3D off;
-> > > =20
-> > >  	if (nelems > 1) {
-> > > +		/* The type of struct size or variable size is u32,
-> > > +		 * so the multiplication will not overflow.
-> > > +		 */
-> > > +		if (ret * nelems > info_cnt)
-> > > +			return -E2BIG;
-> > > +
-> > >  		err =3D btf_repeat_fields(info, ret, nelems - 1, t->size);
-> > >  		if (err =3D=3D 0)
-> > >  			ret *=3D nelems;
-> >=20
-> > btf_repeat_fields(struct btf_field_info *info,
-> >                   u32 field_cnt, u32 repeat_cnt, u32 elem_size)
-> >=20
-> > copies field "field_cnt * repeat_cnt" times,
-> > in this case field_cnt =3D=3D ret, repeat_cnt =3D=3D nelems - 1,
-> > should the check be "ret * (nelems - 1) > info_cnt"?
->=20
-> No. The number of available btf_field_info is info_cnt,
-> btf_find_struct_field() has already used ret fields, and there are still
-> ret * (nelems - 1) fields waiting for repetition, so checking ret *
-> nelems against info_cnt is correct.
+This patch is for "mptcp-next" [1], it depends on the "new MPTCP
+subflow subtest" which is under review on the bpf list. We will send it
+to the bpf list very soon.
 
-Please bear with me. Here is btf_repeat_fields():
+[1]
+https://patchwork.kernel.org/project/mptcp/cover/cover.1726023577.git.tanggeliang@kylinos.cn/
 
-    static int btf_repeat_fields(struct btf_field_info *info,
-                     u32 field_cnt, u32 repeat_cnt, u32 elem_size)
-    {
-        u32 i, j;
-        u32 cur;
-        ...
-        cur =3D field_cnt;
-        for (i =3D 0; i < repeat_cnt; i++) {
-            ...
-            for (j =3D 0; j < field_cnt; j++)
-                info[cur++].off +=3D (i + 1) * elem_size;
-        }
-        ...
-    }
+> 
+> > diff --git a/net/mptcp/bpf.c b/net/mptcp/bpf.c
+> > index 6414824402e6..350672e24a3d 100644
+> > --- a/net/mptcp/bpf.c
+> > +++ b/net/mptcp/bpf.c
+> > @@ -201,9 +201,48 @@ static const struct btf_kfunc_id_set
+> > bpf_mptcp_fmodret_set = {
+> >         .set   = &bpf_mptcp_fmodret_ids,
+> >  };
+> > 
+> > -__diag_push();
+> > -__diag_ignore_all("-Wmissing-prototypes",
+> > -                 "kfuncs which will be used in BPF programs");
+> > +struct bpf_iter_mptcp_subflow {
+> > +       __u64 __opaque[2];
+> > +} __attribute__((aligned(8)));
+> > +
+> > +struct bpf_iter_mptcp_subflow_kern {
+> > +       struct mptcp_sock *msk;
+> > +       struct list_head *pos;
+> > +} __attribute__((aligned(8)));
+> > +
+> > +__bpf_kfunc_start_defs();
+> > +
+> > +__bpf_kfunc int bpf_iter_mptcp_subflow_new(struct
+> > bpf_iter_mptcp_subflow *it,
+> > +                                          struct mptcp_sock *msk)
+> > +{
+> > +       struct bpf_iter_mptcp_subflow_kern *kit = (void *)it;
+> > +
+> > +       if (!msk)
+> > +               return -EINVAL;
+> 
+> you still need to initialize at least kit->msk to NULL to prevent
+> next
+> implementation below doing the wrong thing
+> 
+> keep in mind, iterator constructor returning error doesn't prevent
+> BPF
+> program from still calling next() and destroy(), so implementation
+> has
+> to set iterator state such that next can return NULL if iterator was
+> never successfully initialized
+> 
 
-The range for 'cur' is [field_cnt .. field_cnt * repeat_cnt].
-Meaning that at-least 'field_cnt * repeat_cnt' entries are necessary
-in the 'info' array.
-Given parameters passed to the function, this is 'ret * (nelems - 1)'.
-What do I miss?
+I'll move "kit->msk = msk;" earlier like this:
+
+{
+        struct bpf_iter_mptcp_subflow_kern *kit = (void *)it;
+
+        kit->msk = msk;
+        if (!msk)
+                return -EINVAL;
+
+        kit->pos = &msk->conn_list;
+        return 0;
+}
+
+> pw-bot: cr
+> 
+> > +
+> > +       kit->msk = msk;
+> > +       kit->pos = &msk->conn_list;
+> > +       return 0;
+> > +}
+> > +
+> > +__bpf_kfunc struct mptcp_subflow_context *
+> > +bpf_iter_mptcp_subflow_next(struct bpf_iter_mptcp_subflow *it)
+> > +{
+> > +       struct bpf_iter_mptcp_subflow_kern *kit = (void *)it;
+> > +       struct mptcp_subflow_context *subflow;
+> > +       struct mptcp_sock *msk = kit->msk;
+> > +
+> 
+> you should check if (!msk) early here, before accessing kit->pos-
+> >next below
+> 
+> > +       subflow = list_entry((kit->pos)->next, struct
+> > mptcp_subflow_context, node);
+> 
+> nit: why () around kit->pos?
+> 
+> > +       if (!msk || list_entry_is_head(subflow, &msk->conn_list,
+> > node))
+> 
+> as I mentioned, !msk check seems too late. Maybe list_entry_is_head()
+> is a bit too late as well?
+
+We can use list_is_last() to check kit->pos earlier. But here we use
+list_entry_is_head(), it should be after list_entry().
+
+I'll move "if (!msk)" check earlier like this:
+
+{
+        struct bpf_iter_mptcp_subflow_kern *kit = (void *)it;
+        struct mptcp_subflow_context *subflow;
+        struct mptcp_sock *msk = kit->msk;
+
+        if (!msk)
+                return NULL;
+
+        subflow = list_entry(kit->pos->next, struct
+mptcp_subflow_context, node);
+        if (!subflow || list_entry_is_head(subflow, &msk->conn_list,
+node))
+                return NULL;
+
+        kit->pos = &subflow->node;
+        return subflow;
+}
+
+Thanks,
+-Geliang
+
+> 
+> > +               return NULL;
+> > +
+> > +       kit->pos = &subflow->node;
+> > +       return subflow;
+> > +}
+> > +
+> > +__bpf_kfunc void bpf_iter_mptcp_subflow_destroy(struct
+> > bpf_iter_mptcp_subflow *it)
+> > +{
+> > +}
+> > 
+> >  __bpf_kfunc struct mptcp_subflow_context *
+> >  bpf_mptcp_subflow_ctx_by_pos(const struct mptcp_sched_data *data,
+> > unsigned int pos)
+> > @@ -218,7 +257,7 @@ __bpf_kfunc bool
+> > bpf_mptcp_subflow_queues_empty(struct sock *sk)
+> >         return tcp_rtx_queue_empty(sk);
+> >  }
+> > 
+> > -__diag_pop();
+> > +__bpf_kfunc_end_defs();
+> > 
+> >  BTF_KFUNCS_START(bpf_mptcp_sched_kfunc_ids)
+> >  BTF_ID_FLAGS(func, mptcp_subflow_set_scheduled)
+> > --
+> > 2.43.0
+> > 
+> > 
 
 
