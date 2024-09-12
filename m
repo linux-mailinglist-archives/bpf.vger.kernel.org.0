@@ -1,133 +1,86 @@
-Return-Path: <bpf+bounces-39780-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39781-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 219679775B8
-	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 01:54:13 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 073E89775CC
+	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 01:58:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1BFB28602C
-	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2024 23:54:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A4A0D1F2416B
+	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2024 23:58:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF6BA1C2DC2;
-	Thu, 12 Sep 2024 23:54:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB3B11C32F9;
+	Thu, 12 Sep 2024 23:58:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dHAOBOZt"
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="BQqPl3vC"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 472CB18891D
-	for <bpf@vger.kernel.org>; Thu, 12 Sep 2024 23:54:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BC8E192B73;
+	Thu, 12 Sep 2024 23:57:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726185247; cv=none; b=HvBbItay70LL2TSVXsoMpHk41wcnFrRzeFC+j9FIeNKhwmKs5GkLBEYr7Hv/lVA1lElaswVdHOIkUKAtgQAiemTulGLqn43MuVWWKfjdBiSH49gW0RoMLpmI+pIpzZFs9V9c74iD98ZuZWDJP8QubqQhRvTQSwQA9e/MH18PTyY=
+	t=1726185482; cv=none; b=GA2kAh3Qg+TVXTXhRw3VdWRdmeFso2XFDnBjPKK/VeneTWssryTjlkv2qfK77qP0y5yJmEoHLxbq81bzTlvKzq3z1r+L5gIv5wdgkvaWi1suzuNajvxdGKAv0lc8Ebjk3yDbMmF+tl9dy6NRO8UJJPP7FhlCZj1diJpIih3Keok=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726185247; c=relaxed/simple;
-	bh=z5djP4fmdHMvifKs2U3p7Sua9IHiAaY9SAwNM7dxI64=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=U4tdBEbLokMWkBynbL5JdNRr55yMXWZNLuqd4ImVFbox8GOXbAY8kEZm7+O1qYLieVnuH5l4szYUU1RyQwo4eZyPQ4SAAymffw2zRA+K6znH5gXEUAc9EMzYyR445w78l5/N3c3fKF3QTgbEsRjZB6Uf2vg6YECNqop6zWizrj8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dHAOBOZt; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B4FAC4CEC3;
-	Thu, 12 Sep 2024 23:54:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1726185246;
-	bh=z5djP4fmdHMvifKs2U3p7Sua9IHiAaY9SAwNM7dxI64=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=dHAOBOZtt+FvWHt32qo2dVtHbtc47x23AnW78/vxw1ywWSmZQP2ptCnojqS+FGe0o
-	 R/jVUd5s+1vrWPMDOU3I5XywpnWVksPXBrVHdNHGq7bPFEFI4uVy0XBWCYD4It+LMj
-	 4iVs19FBsp3rtAnLvL/oQKYjexerTCCMKHYfOqDQUAL6RnVACbSpN5dZ9g+vjWQNX2
-	 2zvbSO5VMruPiAPHXvoHjWH5MzyqZvAFZsSpIZA2i8OcoKsZeJjDEvlsnfMdX5qBQk
-	 6Yeg7wJloyAQ1xVxpbDVLaAJps5k/o5/nPHnRArx2iOibbMcLBYZt5HjmFeMoQryiN
-	 DOGvgfCHZHKJw==
-Date: Fri, 13 Sep 2024 08:54:02 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+	s=arc-20240116; t=1726185482; c=relaxed/simple;
+	bh=wzS7NWwfBAD5/gcp4BhtXmqxKlcXVYKgAbXgTM+fYVU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hya7tj7pSqHS0UV0g8fqfQE09rrC7YdBLeSLG79sskBxbc0YUQbWyfMQ+gbaTIQ2syr2hiFQdgfm2+APA7CqQkl+0nKEZhNpMuYJrUwcIJn1oQsUCYfS3dFuGbx+3lUtCHFlhhgyFrl2aivqwB8W2LuYUJfyko6MnaeZ+gKY9hI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=BQqPl3vC; arc=none smtp.client-ip=62.89.141.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=+uTreIPhEeUbUdLeE/WmAwK4uMRYmdo43yIVGufOawY=; b=BQqPl3vCxsPbn5xJyC4ewYDMWY
+	UUlqQJeLirOQeSSvN8xlc2BHt6UrJxH+JI+J0PCyfjbMJDphVsunfRYEaBLm9xo3O8a/yawoP6YP5
+	0lPM0mxm8nQh59QZpL3abOfTJqYvQPVxaAFitNeQtugK2TrF5HpcZQZ9E6YNyH8po+tjpHHQe8h6U
+	p1bKYIIJ40UmGfsusWIIybH2RHmI6GpK67LtvVOh3+YWbNcQn8u9aLnhVoTRwgOg2AIyZdHO9aeQ7
+	LeewfnqdhmN/5+oALfKV+SG0fkF5qL6kRMtbxRKntCcqfLbophqIwVTVVfojIM+DS9U4GcycqCOdh
+	GO5Ih51A==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.98 #2 (Red Hat Linux))
+	id 1sothE-0000000BoCw-3fim;
+	Thu, 12 Sep 2024 23:57:56 +0000
+Date: Fri, 13 Sep 2024 00:57:56 +0100
+From: Al Viro <viro@zeniv.linux.org.uk>
 To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: kernel-ci@meta.com, bot+bpf-ci@kernel.org, andrii@kernel.org,
- daniel@iogearbox.net, martin.lau@linux.dev, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH v14 00/19] tracing: fprobe: function_graph:
- Multi-function graph and fprobe on fgraph
-Message-Id: <20240913085402.9e5b2c506a8973b099679d04@kernel.org>
-In-Reply-To: <CAEf4BzZgAkSkMd6Vk3m1D-0AVqXp06PaBPr+2L7Dd3WRgJ8JvA@mail.gmail.com>
-References: <172615368656.133222.2336770908714920670.stgit@devnote2>
-	<0170cd7d95df0583770c385c1e11bd27dfacf618b71b6e723f0952efc0ce9040@mail.kernel.org>
-	<CAEf4BzZgAkSkMd6Vk3m1D-0AVqXp06PaBPr+2L7Dd3WRgJ8JvA@mail.gmail.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Cc: viro@kernel.org, brauner@kernel.org, bpf@vger.kernel.org,
+	ast@kernel.org, daniel@iogearbox.net, martin.lau@kernel.org,
+	linux-fsdevel@vger.kernel.org, torvalds@linux-foundation.org,
+	Andrii Nakryiko <andrii@kernel.org>
+Subject: Re: [PATCH bpf-next 0/8] BPF follow ups to struct fd refactorings
+Message-ID: <20240912235756.GN1049718@ZenIV>
+References: <20240813230300.915127-1-andrii@kernel.org>
+ <CAEf4BzY4v6D9gusa+fkY1qg4m-yT8VVFg2Y-++BdrheQMp+j6Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzY4v6D9gusa+fkY1qg4m-yT8VVFg2Y-++BdrheQMp+j6Q@mail.gmail.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
-On Thu, 12 Sep 2024 11:41:17 -0700
-Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+On Tue, Aug 27, 2024 at 03:55:28PM -0700, Andrii Nakryiko wrote:
+> > They were also merged into bpf-next/for-next so they can get early testing in
+> > linux-next.
 
-> + BPF ML
+Umm...  I see that stuff in bpf-next/struct_fd, but not in your for-next.
+
+> Can you guys please take a look and let us know if this looks sane and
+> fine to you? I kept Al's patches mostly intact (see my notes in the
+> cover letter above), and patch #3 does the refactoring I proposed
+> earlier, keeping explicit fdput() temporarily, until Al's
+> __bpf_map_get() refactoring which allows and nice and simple CLASS(fd)
+> conversion.
 > 
-> On Thu, Sep 12, 2024 at 8:35 AM <bot+bpf-ci@kernel.org> wrote:
-> >
-> > Dear patch submitter,
-> >
-> > CI has tested the following submission:
-> > Status:     FAILURE
-> > Name:       [v14,00/19] tracing: fprobe: function_graph: Multi-function graph and fprobe on fgraph
-> > Patchwork:  https://patchwork.kernel.org/project/netdevbpf/list/?series=889822&state=*
-> > Matrix:     https://github.com/kernel-patches/bpf/actions/runs/10833792984
-> >
-> > Failed jobs:
-> > test_progs-aarch64-gcc: https://github.com/kernel-patches/bpf/actions/runs/10833792984/job/30061791397
-> > test_progs_no_alu32-aarch64-gcc: https://github.com/kernel-patches/bpf/actions/runs/10833792984/job/30061791836
-> > test_progs-s390x-gcc: https://github.com/kernel-patches/bpf/actions/runs/10833792984/job/30061757062
-> > test_progs_no_alu32-s390x-gcc: https://github.com/kernel-patches/bpf/actions/runs/10833792984/job/30061757809
-> >
-> > First test_progs failure (test_progs-aarch64-gcc):
-> > #132 kprobe_multi_testmod_test
-> > serial_test_kprobe_multi_testmod_test:PASS:load_kallsyms_local 0 nsec
-> > #132/1 kprobe_multi_testmod_test/testmod_attach_api_syms
-> > test_testmod_attach_api:PASS:fentry_raw_skel_load 0 nsec
-> > trigger_module_test_read:PASS:testmod_file_open 0 nsec
-> > test_testmod_attach_api:PASS:trigger_read 0 nsec
-> > kprobe_multi_testmod_check:FAIL:kprobe_test1_result unexpected kprobe_test1_result: actual 0 != expected 1
-> > kprobe_multi_testmod_check:FAIL:kprobe_test2_result unexpected kprobe_test2_result: actual 0 != expected 1
-> > kprobe_multi_testmod_check:FAIL:kprobe_test3_result unexpected kprobe_test3_result: actual 0 != expected 1
-> > kprobe_multi_testmod_check:FAIL:kretprobe_test1_result unexpected kretprobe_test1_result: actual 0 != expected 1
-> > kprobe_multi_testmod_check:FAIL:kretprobe_test2_result unexpected kretprobe_test2_result: actual 0 != expected 1
-> > kprobe_multi_testmod_check:FAIL:kretprobe_test3_result unexpected kretprobe_test3_result: actual 0 != expected 1
-> > #132/2 kprobe_multi_testmod_test/testmod_attach_api_addrs
-> > test_testmod_attach_api_addrs:PASS:ksym_get_addr_local 0 nsec
-> > test_testmod_attach_api_addrs:PASS:ksym_get_addr_local 0 nsec
-> > test_testmod_attach_api_addrs:PASS:ksym_get_addr_local 0 nsec
-> > test_testmod_attach_api:PASS:fentry_raw_skel_load 0 nsec
-> > trigger_module_test_read:PASS:testmod_file_open 0 nsec
-> > test_testmod_attach_api:PASS:trigger_read 0 nsec
-> > kprobe_multi_testmod_check:FAIL:kprobe_test1_result unexpected kprobe_test1_result: actual 0 != expected 1
-> > kprobe_multi_testmod_check:FAIL:kprobe_test2_result unexpected kprobe_test2_result: actual 0 != expected 1
-> > kprobe_multi_testmod_check:FAIL:kprobe_test3_result unexpected kprobe_test3_result: actual 0 != expected 1
-> > kprobe_multi_testmod_check:FAIL:kretprobe_test1_result unexpected kretprobe_test1_result: actual 0 != expected 1
-> > kprobe_multi_testmod_check:FAIL:kretprobe_test2_result unexpected kretprobe_test2_result: actual 0 != expected 1
-> > kprobe_multi_testmod_check:FAIL:kretprobe_test3_result unexpected kretprobe_test3_result: actual 0 != expected 1
-> >
-> 
-> Seems like this selftest is still broken. Please let me know if you
-> need help with building and running BPF selftests to reproduce this
-> locally.
+> I think we end up at exactly what the end goal of the original series
+> is: using CLASS(fd, ...) throughout with all the benefits.
 
-Thanks, It will be helpful. Also I would like to know, is there any 
-debug mode (like print more debug logs)?
-
-Thank you,
-
-> 
-> >
-> > Please note: this email is coming from an unmonitored mailbox. If you have
-> > questions or feedback, please reach out to the Meta Kernel CI team at
-> > kernel-ci@meta.com.
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Looks sane.
 
