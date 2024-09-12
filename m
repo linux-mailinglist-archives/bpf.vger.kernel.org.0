@@ -1,149 +1,125 @@
-Return-Path: <bpf+bounces-39764-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39765-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C39A977270
-	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2024 21:51:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 90A839772A4
+	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2024 22:17:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9E7651F2551C
-	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2024 19:51:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 39AF51F2431A
+	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2024 20:17:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CB621C233E;
-	Thu, 12 Sep 2024 19:46:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E1201C1747;
+	Thu, 12 Sep 2024 20:17:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jiTsuioA"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="WULTLVTq"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4999188001
-	for <bpf@vger.kernel.org>; Thu, 12 Sep 2024 19:46:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 724701BE860;
+	Thu, 12 Sep 2024 20:17:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726170365; cv=none; b=ORaODGBHaPQrnqiyPgMmNBxRRC476+aGWufVgssObvwnYgEII83dQXOjt4jX/zX8ujWyJ88EnBb42dZWWotclfTkJTclS16X33yH3nKhOC6fk9BTENv1jFUhGZq74mzDYGFjTu7M0k8Ynb6GJKF708fb+SjyBEXF+ztF2IX33N8=
+	t=1726172240; cv=none; b=Wbs4BmeTpyVBIFp3D8OJfrg4teQ4uY8c44/v4ZMxC12hdYjx6qCAHCpZLlTOSSMZ7xiv8X0ITya0G8LpPlOBm4QGHD5vkswwIVyH3BuPOhb4Uy3Q8ZAHfsXGrca0QyK0T0kH2V6iGZnkDqMbRv71L4qqN1xmbTx0Xt/C2/LfXVs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726170365; c=relaxed/simple;
-	bh=SZ7lCL7bBfHqITtnSZIthLQrMlmoCZpNPEsvgNnKG4E=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=lsDsAmmWvvcIwXgWBKIf50dDYp7IFbmj9hVUeiB+3g5kgwQAW8jbqfY7b8E4xl9UmIgJD++lnHB9kt/OifNqZl79bot0QWjUKTw8BNcGib4UzOJ4fAzEpujsVN0FAdLEd/jqub1jYU/Kwc+6E+/U9uoVFp4Zvk8xyyh7hrGyAT0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jiTsuioA; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-2059204f448so13212185ad.0
-        for <bpf@vger.kernel.org>; Thu, 12 Sep 2024 12:46:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1726170363; x=1726775163; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=SZ7lCL7bBfHqITtnSZIthLQrMlmoCZpNPEsvgNnKG4E=;
-        b=jiTsuioAkqguoMR1ViHOVAa4413LOM8KogRQXP32b/IjZCQLD7qNX4KrleDMzEOBiI
-         GdwFg37iUG3bMz9W2kAG9YN+ILvU6GDasw0q9ed+7jgJzVU8AUoQHGLpvDFmc+1+t6nM
-         mwlAaknNz1Q2cGLMVKXJwoYMU+BncVOS3HOb0fkVGv3NJOWGc2Tx1VZECjn/bawlAWVp
-         mLijl9FA6OHRsl6OkC89bK2JoFgBfL0yx66O2BLmuYT6K6U8QCBaQCHP7POv2L0xfvn/
-         Huiw3VoG9LeSbdTeNq30eDYvqwR7l426y1zAzTd0tJKITt33Lp5yLyOHc4IhOyW3vNRD
-         rW/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726170363; x=1726775163;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=SZ7lCL7bBfHqITtnSZIthLQrMlmoCZpNPEsvgNnKG4E=;
-        b=pcS/Ylujl/G72fSD301SPehb6uVUMW2Usyj51dbLxYRodv2dIMt6os5n1I/0QBF8Ic
-         RIG8xT8FLJUd4kLW012JswTBSdvRGQZT7VfkO/iniUfoRw4/sVIpO4pkDngAcVRAW84i
-         QwsBTW0PVYuTot8Gbtd0uzODIYN62BBBqeYP0CC84SdhE6nIMnZqFIkwwynhf0yUbboH
-         MHoch/of522P277JaMcHv2Dalm4xv/3WK/4subYsP1TLzZ1DEdQg+ACFGXmer4T153Q+
-         qzRG33WG6+xrNlYWevk7S7INlYn9VA6HeRZEk47G9pgBiNf2ERYIgiaonim4tu8xXddV
-         DxjQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUiKTChIp0CBSCz2gP0ADcVFnvlI6WNGEvuQCRHdLHqB0J9G1NQn/7q1BdZ3SSxwQAE2VM=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwMaKvCxHg27gLM+zcSfnr4wrWa1BuUZA7c2GnRI4HUPfeSeBYp
-	YRl1wE6UB5+aIri6XasCyIJzlo5yc5hHgFw/onTTnFh2uH3fiLet
-X-Google-Smtp-Source: AGHT+IHyJ1PaYElg6DXROJC5ZzObu5NQWqpmEfqDZw5ilE/A/ADgeZHCQ7sgH6xzP9ZCziv8R5ya3g==
-X-Received: by 2002:a17:902:cecd:b0:206:b960:2e97 with SMTP id d9443c01a7336-2076e4128femr62596365ad.45.1726170362703;
-        Thu, 12 Sep 2024 12:46:02 -0700 (PDT)
-Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2076afdd086sm17533625ad.181.2024.09.12.12.46.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Sep 2024 12:46:02 -0700 (PDT)
-Message-ID: <e1229dd76486134e9555d791e4892927f4346bb7.camel@gmail.com>
-Subject: Re: [RESEND][PATCH bpf 1/2] bpf: Check the remaining info_cnt
- before repeating btf fields
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Thinker Li <thinker.li@gmail.com>
-Cc: Hou Tao <houtao@huaweicloud.com>, bpf@vger.kernel.org, Martin KaFai Lau
- <martin.lau@linux.dev>, Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
- Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>, Hao Luo
- <haoluo@google.com>, Yonghong Song <yonghong.song@linux.dev>, Daniel
- Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>, Jiri Olsa
- <jolsa@kernel.org>, John Fastabend <john.fastabend@gmail.com>,
- houtao1@huawei.com, xukuohai@huawei.com
-Date: Thu, 12 Sep 2024 12:45:57 -0700
-In-Reply-To: <CAFVMQ6Q64aFM7xCW_htrU0dpB+S+eEXYLSeUufTgg_eB5DEN4g@mail.gmail.com>
-References: <20240911110557.2759801-1-houtao@huaweicloud.com>
-	 <20240911110557.2759801-2-houtao@huaweicloud.com>
-	 <16794f86fd1030d923e3ab7356c5ff3617b2b193.camel@gmail.com>
-	 <CAFVMQ6Q64aFM7xCW_htrU0dpB+S+eEXYLSeUufTgg_eB5DEN4g@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.4 (3.52.4-1.fc40) 
+	s=arc-20240116; t=1726172240; c=relaxed/simple;
+	bh=8a+l0yLQWur4LKXx0doeTxIU/vtMw8YiiyuXqMHBOm8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=laDS/M1DBoa02t3/aIzsmBy/Jt62e3TeNcSPNyPCUEUKqZFwjDPU7wHPUCtZl/ta3WyOoyxGG42cbJBVc6aaBaGeqZ9GAbabbhMrKxy5pyNeofZ0Lxb32W+03qw/SGD3WAVCa72QS20TxS2/0l60LWjlC1Q7CpZUattGLGur76s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=WULTLVTq; arc=none smtp.client-ip=217.70.183.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 882071C0006;
+	Thu, 12 Sep 2024 20:17:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1726172235;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7FHWP2eO7j89fwZAZ2ZAC37i/e8x92BhFYNL0dz2678=;
+	b=WULTLVTq388DEtesiWaluvko106Vc8fjvhyDgcRAkDTUIiVTQUDeS7cQsYUzzRQgRINdNH
+	aP/VJwKcLnrdxdT5kcepfLfN6O77qjqXgcNWQZApBtwB4PTxD6wA0/mEUVHs5s0VwBfIL+
+	E/UFoGRbRqYBZYTCe1INUtZULUN1aQcvpnIi2nRABJLc/u8p8zAF3OrHOC/zI1V4vTMMM8
+	YyUtV7IRT55KKuowZHylQ9bNrlL5jR3aCXWDyLn9W3ZZc77a785ZD1tVmRGd8pFvFbXjrW
+	j6XWVYAg5bHMbNwzMseRWtT/hDbC79IQ60SA5lPxk+wgpzU12RdIUcfdzNZHqg==
+Message-ID: <fb7db9a9-5b9a-4b77-8dc6-f30b839bec27@bootlin.com>
+Date: Thu, 12 Sep 2024 22:17:13 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v2] selftests/bpf: convert test_xdp_features.sh
+ to test_progs
+To: Simon Horman <horms@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
+ Shuah Khan <shuah@kernel.org>, "David S. Miller" <davem@davemloft.net>,
+ Jakub Kicinski <kuba@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>,
+ Lorenzo Bianconi <lorenzo@kernel.org>,
+ Maxime Chevallier <maxime.chevallier@bootlin.com>, ebpf@linuxfoundation.org,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, netdev@vger.kernel.org
+References: <20240910-convert_xdp_tests-v2-1-a46367c9d038@bootlin.com>
+ <20240911141824.GZ572255@kernel.org>
+From: =?UTF-8?Q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
+Content-Language: en-US
+In-Reply-To: <20240911141824.GZ572255@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: alexis.lothore@bootlin.com
 
-On Thu, 2024-09-12 at 21:13 +0200, Thinker Li wrote:
+Hi Simon,
+
+On 9/11/24 16:18, Simon Horman wrote:
 
 [...]
 
-> > > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> > > index a4e4f8d43ecf..9a4a074d26f5 100644
-> > > --- a/kernel/bpf/btf.c
-> > > +++ b/kernel/bpf/btf.c
-> > > @@ -3592,6 +3592,12 @@ static int btf_find_nested_struct(const struct=
- btf *btf, const struct btf_type *
-> > > =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0info[i].off +=
-=3D off;
-> > > =C2=A0=20
-> > > =C2=A0 =C2=A0 =C2=A0 =C2=A0if (nelems > 1) {
-> > > +=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0/* The type of struc=
-t size or variable size is u32,
-> > > +=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 * so the multiplica=
-tion will not overflow.
-> > > +=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 */
-> > > +=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0if (ret * nelems > i=
-nfo_cnt)
-> > > +=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0return -E2BIG;
-> > > +
-> > > =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0err =3D btf_re=
-peat_fields(info, ret, nelems - 1, t->size);
-> > > =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0if (err =3D=3D=
- 0)
-> > > =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0ret *=3D nelems;
-> >=20
-> >=20
-> > btf_repeat_fields(struct btf_field_info *info,
-> > =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 u32 fiel=
-d_cnt, u32 repeat_cnt, u32 elem_size)
-> >=20
-> > copies field "field_cnt * repeat_cnt" times,
-> > in this case field_cnt =3D=3D ret, repeat_cnt =3D=3D nelems - 1,
-> > should the check be "ret * (nelems - 1) > info_cnt"?
-> >=20
-> > I suggest to add info_cnt as a parameter of btf_repeat_fields() and do
-> > this check there. So that the check won't be forgotten again if
-> > btf_repeat_fields() is used elsewhere. Wdyt?
-> >=20
->=20
-> Should not this check be moved before the earlier for-loop?
+>> diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_features.c b/tools/testing/selftests/bpf/prog_tests/xdp_features.c
+>> new file mode 100644
+>> index 000000000000..bcb36a2d2767
+>> --- /dev/null
+>> +++ b/tools/testing/selftests/bpf/prog_tests/xdp_features.c
+>> @@ -0,0 +1,446 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +
+>> +/**
+>> + * Test XDP features
+>> + *
+>> + * Sets up a veth pair, and for each xdp feature under test:
+>> + * - asks the tested interface its xdp capabilities through bpf_xdp_query
+>> + * - attach and run some specific programs on both interfaces to check if
+>> + *   announced capability is respected
+>> + */
+> 
+> Hi Alexis,
+> 
+> This is neither a full review nor an issue that needs to block progress.
+> But, FWIIW, the comment above is not a Kernel doc, yet starts with '/**'.
+> I suggest that it should start with '/*' instead.
 
-Shouldn't the check for 'ret <=3D 0' be enough to make sure the for-loop
-is fine?
+ACK. I'll wait for more comments on the series, and add the fix to the
+corresponding revision, if any.
 
+Thanks,
+
+Alexis
+
+-- 
+Alexis Lothoré, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
 
