@@ -1,135 +1,178 @@
-Return-Path: <bpf+bounces-39750-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39751-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B45A6976E46
-	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2024 17:57:00 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7AB7976E93
+	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2024 18:21:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 097D3B228CC
-	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2024 15:56:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 052511C23A6A
+	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2024 16:21:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AF2B1B9850;
-	Thu, 12 Sep 2024 15:56:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03558149C50;
+	Thu, 12 Sep 2024 16:20:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ULRB1NGU"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 230E91898F8;
-	Thu, 12 Sep 2024 15:56:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA1583A1DB
+	for <bpf@vger.kernel.org>; Thu, 12 Sep 2024 16:20:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726156610; cv=none; b=VakQXOLjqfJoXsMiIrtb6iBXbiTi7DQvhK2lgld8/hGphpK8MVfxFRxATRtHgRD/s62TDovhTgvMbvVPSAg1sqsMN69cCc1xr/AWkop6MFReilxtpzLEM0xRkpxDjQu0YWYAoASItPgJPCvqXPhlcHJwIHHKVIiA1xCR85eq4BI=
+	t=1726158056; cv=none; b=REvdEeJaZbTDEWmjyrs4Ifoav26uTHf0YuI7DiWr4ee4PPWjeXdplD2jqOCiKyn99GKqDV0eTza3O7hQZ+jr013VGuK3lcJlMyKOcsKQPQYtjtJdCUFQdFH76JlOh13rAMxrEAc4DO/WKwpBkApLVLEhpP6lYYWoUT6XSvsPGrw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726156610; c=relaxed/simple;
-	bh=g49SySub1/dItFepy17pW9UeExN0v3axhuVwMBKg6Ck=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=IizGM+XdEIYBxgJLdM8mnkvJgGtg40pW6CrQ20OWUP4gtX5u5y9rxLNucFWjd3sWsN9FYRjBpNyffGbuAsa7ms4IlNBciDbNQyA92wa6t4ABAsol55jZFVQ57TcNIleDLVObNBI8rPxvZ74rFmlAXDxPiLGClwALlYXrgEJkSjc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-5c3cdba33b0so1319713a12.1;
-        Thu, 12 Sep 2024 08:56:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726156607; x=1726761407;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=yGaUXUnd+3YrSKr0uQW+5rH8w8R3hUvGqKU6U5pnEgc=;
-        b=wSfTNMaxsNzsSqBav1cH6Z/wpxhPX8FHaqDum16PbRiWsjJWX4QvpJse6/Yk4ivklq
-         KtsPtMHZNy3yElxLQ/PU6xUw//sGeU62JcZdR0WEEByZqqhxEpiDs5leUDCbTe6pgxsR
-         NJFM201sNzMNMDtYe3PBbZfkfN2bGqn7O5NctUR7tdMRny2sQjAjs2BLbRPz4QU28asp
-         Jt69l4wPY5rfUnU6DHOGYxkCN25CBQFqcFFAy6KxnNF6ZChLcn0F/KF3vErcSNNe6pgr
-         SeB2xL4I1ZC5zaf8iYpHzqTFaXgPjAvTGTSKMznPZd1qHipfxz1/JoT7Y5dw3FvT43l3
-         Yixw==
-X-Forwarded-Encrypted: i=1; AJvYcCUGzeV1AjP1YrHeIagdkYStj36smkC6TyVALLscwvGhZ3SEEbsuKVEXzdTK3XkoZkFdfP0=@vger.kernel.org, AJvYcCVlCIn8hf7/wR2FhIoDbCYS9YAL0/2s22vZRewutrXqmoa2KIPBp8Csw33NJY/tbtMSd9mpy+ESFAfBRVEW@vger.kernel.org, AJvYcCWnMa7FxSkF4gyjEFpxwGkDjyeynpvBlarqqqXPnV1nbRaKPdAXecinFTsf9/HoD4A7apmb+kJq@vger.kernel.org
-X-Gm-Message-State: AOJu0YydK3DRqA3IOhzV3FBrGZ798KoCHGL1jNhaMaZmmRY1+2s/0fYA
-	6Fb3FBgZX30yDBMSJq+Hfj3OPFIrhF/N0qHIf/T1U2htUrMIAI0L
-X-Google-Smtp-Source: AGHT+IFEVLSg4hnq7/mj2dYIi3u+/01S44Pby+SK9xvZ2fN4+LAa4p7Jwb3LPSybIGLkNSik8PPO2g==
-X-Received: by 2002:a05:6402:3510:b0:57c:c166:ba6 with SMTP id 4fb4d7f45d1cf-5c413e2000fmr2150556a12.19.1726156606522;
-        Thu, 12 Sep 2024 08:56:46 -0700 (PDT)
-Received: from localhost (fwdproxy-lla-007.fbsv.net. [2a03:2880:30ff:7::face:b00c])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5c3ebd8c4c6sm6668081a12.86.2024.09.12.08.56.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Sep 2024 08:56:45 -0700 (PDT)
-From: Breno Leitao <leitao@debian.org>
-To: kuba@kernel.org,
-	bpf@vger.kernel.org,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Nikolay Aleksandrov <razor@blackwall.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Paolo Abeni <pabeni@redhat.com>,
+	s=arc-20240116; t=1726158056; c=relaxed/simple;
+	bh=61FjxYnFqoZjOQnqRNBNaBrHVxuHKhvfYWTDzANo+5E=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dLkVZBxrGXLXUuEEEOii1bAHZ72eWFysXxDw97lTx9VMkdpb4ZGCjfcr4dQLZ1kc8eSuZLIEQte6LA/CABXzt9bvnVSPzNIn6HVpMYwEkf/1zbSIx0uLAtZgd93OqAH4Uar3rYn3ldo8YAbtJqH7IcmLeDHUzL8DrzsqtFyK3i4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ULRB1NGU; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1726158053;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Ig6fjTDvlYtMVYhCJ7RrIH/6U1AxI1tHu5V3SG2FN9M=;
+	b=ULRB1NGUQT2YU3QND+wDKfYxNT4lcJkb6t5PL9paMTaM8UpVNKADrmdxsHMFb2+eSWMCCe
+	ra7sVYhrnly1CE9CJMxDNbF03wINVBrquSSAW+lNq9Eu4PzCtwn1BYvJW6GFflJRcngnuO
+	mDhiikF+snzLoXJA2ji3hu6YqewOuOA=
+Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-568-V78Nc_s2NjqbgP2OY2heiA-1; Thu,
+ 12 Sep 2024 12:20:52 -0400
+X-MC-Unique: V78Nc_s2NjqbgP2OY2heiA-1
+Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 107A61955F3C;
+	Thu, 12 Sep 2024 16:20:49 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.62])
+	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 959B61956052;
+	Thu, 12 Sep 2024 16:20:42 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Thu, 12 Sep 2024 18:20:37 +0200 (CEST)
+Date: Thu, 12 Sep 2024 18:20:29 +0200
+From: Oleg Nesterov <oleg@redhat.com>
+To: Jiri Olsa <jolsa@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>,
 	Alexei Starovoitov <ast@kernel.org>,
-	=?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: vadim.fedorenko@linux.dev,
-	andrii@kernel.org,
-	netdev@vger.kernel.org (open list:BPF [NETKIT] (BPF-programmable network device)),
-	linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH net] netkit: Assign missing bpf_net_context
-Date: Thu, 12 Sep 2024 08:56:19 -0700
-Message-ID: <20240912155620.1334587-1-leitao@debian.org>
-X-Mailer: git-send-email 2.43.5
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@chromium.org>,
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCHv3 1/7] uprobe: Add support for session consumer
+Message-ID: <20240912162028.GD27648@redhat.com>
+References: <20240909074554.2339984-1-jolsa@kernel.org>
+ <20240909074554.2339984-2-jolsa@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240909074554.2339984-2-jolsa@kernel.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
 
-During the introduction of struct bpf_net_context handling for
-XDP-redirect, the netkit driver has been missed, which also requires it
-because NETKIT_REDIRECT invokes skb_do_redirect() which is accessing the
-per-CPU variables. Otherwise we see the following crash:
+On 09/09, Jiri Olsa wrote:
+>
+>  static void handler_chain(struct uprobe *uprobe, struct pt_regs *regs)
+>  {
+>  	struct uprobe_consumer *uc;
+>  	int remove = UPROBE_HANDLER_REMOVE;
+> -	bool need_prep = false; /* prepare return uprobe, when needed */
+> +	struct return_consumer *ric = NULL;
+> +	struct return_instance *ri = NULL;
+>  	bool has_consumers = false;
+>
+>  	current->utask->auprobe = &uprobe->arch;
+>
+>  	list_for_each_entry_srcu(uc, &uprobe->consumers, cons_node,
+>  				 srcu_read_lock_held(&uprobes_srcu)) {
+> +		__u64 cookie = 0;
+>  		int rc = 0;
+>
+>  		if (uc->handler) {
+> -			rc = uc->handler(uc, regs);
+> -			WARN(rc & ~UPROBE_HANDLER_MASK,
+> +			rc = uc->handler(uc, regs, &cookie);
+> +			WARN(rc < 0 || rc > 2,
+>  				"bad rc=0x%x from %ps()\n", rc, uc->handler);
+>  		}
+>
+> -		if (uc->ret_handler)
+> -			need_prep = true;
+> -
+> +		/*
+> +		 * The handler can return following values:
+> +		 * 0 - execute ret_handler (if it's defined)
+> +		 * 1 - remove uprobe
+> +		 * 2 - do nothing (ignore ret_handler)
+> +		 */
+>  		remove &= rc;
+>  		has_consumers = true;
+> +
+> +		if (rc == 0 && uc->ret_handler) {
 
-	BUG: kernel NULL pointer dereference, address: 0000000000000038
-	bpf_redirect()
-	netkit_xmit()
-	dev_hard_start_xmit()
+should we enter this block if uc->handler == NULL?
 
-Set the bpf_net_context before invoking netkit_xmit() program within the
-netkit driver.
+> +			/*
+> +			 * Preallocate return_instance object optimistically with
+> +			 * all possible consumers, so we allocate just once.
+> +			 */
+> +			if (!ri) {
+> +				ri = alloc_return_instance(uprobe->consumers_cnt);
 
-Fixes: 401cb7dae813 ("net: Reference bpf_redirect_info via task_struct on PREEMPT_RT.")
-Signed-off-by: Breno Leitao <leitao@debian.org>
-Acked-by: Daniel Borkmann <daniel@iogearbox.net>
-Reviewed-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
- drivers/net/netkit.c | 3 +++
- 1 file changed, 3 insertions(+)
+This doesn't look right...
 
-diff --git a/drivers/net/netkit.c b/drivers/net/netkit.c
-index 16789cd446e9..3f4187102e77 100644
---- a/drivers/net/netkit.c
-+++ b/drivers/net/netkit.c
-@@ -65,6 +65,7 @@ static struct netkit *netkit_priv(const struct net_device *dev)
- 
- static netdev_tx_t netkit_xmit(struct sk_buff *skb, struct net_device *dev)
- {
-+	struct bpf_net_context __bpf_net_ctx, *bpf_net_ctx;
- 	struct netkit *nk = netkit_priv(dev);
- 	enum netkit_action ret = READ_ONCE(nk->policy);
- 	netdev_tx_t ret_dev = NET_XMIT_SUCCESS;
-@@ -72,6 +73,7 @@ static netdev_tx_t netkit_xmit(struct sk_buff *skb, struct net_device *dev)
- 	struct net_device *peer;
- 	int len = skb->len;
- 
-+	bpf_net_ctx = bpf_net_ctx_set(&__bpf_net_ctx);
- 	rcu_read_lock();
- 	peer = rcu_dereference(nk->peer);
- 	if (unlikely(!peer || !(peer->flags & IFF_UP) ||
-@@ -110,6 +112,7 @@ static netdev_tx_t netkit_xmit(struct sk_buff *skb, struct net_device *dev)
- 		break;
- 	}
- 	rcu_read_unlock();
-+	bpf_net_ctx_clear(bpf_net_ctx);
- 	return ret_dev;
- }
- 
--- 
-2.43.5
+Suppose we have a single consumer C1, so uprobe->consumers_cnt == 1 and
+alloc_return_instance() allocates return_instance with for a single consumer,
+so that only ri->consumers[0] is valid.
+
+Right after that uprobe_register()->consumer_add() adds another consumer
+C2 with ->ret_handler != NULL.
+
+On the next iteration return_consumer_next() will return the invalid addr
+== &ri->consumers[1].
+
+perhaps this needs krealloc() ?
+
+> +				if (!ri)
+> +					return;
+
+Not sure we should simply return if kzalloc fails... at least it would be better
+to clear current->utask->auprobe.
+
+> +	if (ri && !remove)
+> +		prepare_uretprobe(uprobe, regs, ri); /* put bp at return */
+> +	else
+> +		kfree(ri);
+
+Well, if ri != NULL then remove is not possible, afaics... ri != NULL means
+that at least one ->handler() returned rc = 0, thus "remove" must be zero.
+
+So it seems you can just do
+
+	if (ri)
+		prepare_uretprobe(...);
+
+
+Didn't read other parts of your patch yet ;)
+
+Oleg.
 
 
