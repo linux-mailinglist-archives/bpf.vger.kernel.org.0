@@ -1,107 +1,323 @@
-Return-Path: <bpf+bounces-39754-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39755-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76FA2976FA7
-	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2024 19:38:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50359976FD8
+	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2024 19:54:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D5EBFB23F04
-	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2024 17:38:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D4EFC1F25298
+	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2024 17:54:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF7191B9850;
-	Thu, 12 Sep 2024 17:38:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7CF51BF7F9;
+	Thu, 12 Sep 2024 17:54:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kxzRbW16"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="URDyy9E4"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EED331B1402
-	for <bpf@vger.kernel.org>; Thu, 12 Sep 2024 17:38:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5BEE189526;
+	Thu, 12 Sep 2024 17:54:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726162712; cv=none; b=kdMz1AQNkfxx0tJ2KA35JLCBMrP/5KuuIu5EoXslG+/JRJ/HBd2FvSEcAf0Ft/7whmsznk9quTN/a1IV9t9MwqCfBClhE/6xYAXnY+rQyB9DyYgG/HJQJWt0vvQ7TfxHBHuvTrSut2G2QwGlkGjXA5wBe5RgdUu3DvTFTTpyskE=
+	t=1726163663; cv=none; b=lkZKOgyagzUPYPhP3wxJErH9XBSzUKrWe+FPUkDErUCKooEv84lCao8rd1aHHzZ5sa7hZuKWZ+zZ/eFAYWTB+Z6X9r/OqoCnHOv63aR4eBr5XTOtaw4yQt0ymAO8q0Q5qBwWDxcZ47J2lK+KtajiyQ/VcBA9eKUR9ohAnd2uToI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726162712; c=relaxed/simple;
-	bh=MOyUa1k1u1CWnozqPfppk2/0afQ3LCgD6ew53gDJ0lo=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=VY8BbVdGVaacbJmUMd2hx0pToasbQ/0v8iD6hOv4vLLtodBPn7kfqixRv6PRNfXf9NcGohDN5AB0pfEkjyVLuRIRv3/OpZQNeu0V0xfRjWbyVsTJHvP1FwgPF64CkeaY3JHemRQsWz54zC4xt70+Fshgj0qUaxMOlyuhzPaXNnM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kxzRbW16; arc=none smtp.client-ip=209.85.215.182
+	s=arc-20240116; t=1726163663; c=relaxed/simple;
+	bh=ZGpQPaBFuEV+YoNpMCj27zCrCaWjnrStrM1jKZMyO/g=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=NX9Tl63tC9DyuKXSn4k3tQSdP9x/rixfxELdG7DWadpuYsHgTUJByh4OGPB3qyquBONpu2AyzyehuZQXQEwLnvHjYJ3g13NdQnKIUF0nSz+x+LXBNi0hH+plgLx1Lxj+IY/uXd/R27FlFdJqyBGpYsEZ+dbhx4t4Gky3PPZWvHA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=URDyy9E4; arc=none smtp.client-ip=209.85.214.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-7c1324be8easo1707685a12.1
-        for <bpf@vger.kernel.org>; Thu, 12 Sep 2024 10:38:30 -0700 (PDT)
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1fc47abc040so11944355ad.0;
+        Thu, 12 Sep 2024 10:54:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1726162710; x=1726767510; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=MOyUa1k1u1CWnozqPfppk2/0afQ3LCgD6ew53gDJ0lo=;
-        b=kxzRbW16whFB5+J2sh2Lpu0b7qrHBfYFx0TF/njtzHwPlWEh7L/DLkjzQRxDku1Gtk
-         ABBmXa59+Di/1ia8jPU5nkPRx7NklZ1O5hXO/Lo6RC92CX6Bmfo9YU/V31urfZSqIpsk
-         1JaTUGJmQGiHdIco6hnVc6bkS6jcdBkFKmGDJDUoBIOe8OW1lhB1n6EphZUojbcZNtA+
-         Qga2TaPLUUTRli1VypyJo0XMQxxbQBbtoxmGjG3ZxypjVyFbZYKR+HXo2HJVYPcbkygA
-         ibVkc+BGc/pdQVCyaCZVQZspehAO2v6/kUCPYoht9nDWk1sT33jnPjDsOOcz1v2TWhj2
-         TjzA==
+        d=gmail.com; s=20230601; t=1726163661; x=1726768461; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pnI/woVTgkNTSrRDHq2roOu8tQNQ4D8UQtZh3Y6WuYw=;
+        b=URDyy9E4jhSxoayM2h6QzUo4PEbQzKr4vgQJFQXns2ik3Zj1S85mQCxwBDETDVINfM
+         IzOyVrmW4ExnHGPD6gzOiayXSp5hGTlPoUM/adlqJpTrjWV3Jz6QSBgcfoZc7mwUJFw5
+         nc0M8wwJWJFNl9aL4QA9w74GnEl1neZdiq4YFQsWGWs7NlcBj8h23OfrRQazbVh6ezi2
+         nuyZg5imlwr3CBSjOWsqWGaINYECAljMGfvzDWDrrvX36BvvInJFlY3g1gXIeCJi/zX0
+         Hr7/P1WSx+BSkEEpmSQS2iX6KZ/ss8TnJl/pNVV9Rhb9OO8JJEk+6TuZBRTh9OFq2DUa
+         gydg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726162710; x=1726767510;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=MOyUa1k1u1CWnozqPfppk2/0afQ3LCgD6ew53gDJ0lo=;
-        b=Gsz9dMUK7vHWVkUzMtjcYWdBB7PAUjqFiQNd0AAs1mdqjO/KpGSQjPXjFrcoqRSDbq
-         kcAVizhxylDO6ALmKu1U41WjfE52xB8mAo3g5z3sIy2BUudJ0jW0eQkKbDtrbx/apUfE
-         vEOsYCLmlB1U/za4jIPceyy2gkZq0bSti7iax6xU6SMU7QhAXow0eBA9g7EFaZoH4MpN
-         AHjPiAgst1uI/Uahr1dssBt7D/qYdmcdzCaQQpX1R15ic08aVdHX+FRfOG8cx72cm/Zr
-         zQHyzGPe3t5iFm4CcrDQZ+fmhrsSzr9ENq3XBTjeafIrQm9Cpn9e8PQTgPLxD8nuye+c
-         Cf7w==
-X-Gm-Message-State: AOJu0Yz6rzJFw2lNfrOKZFO1r2+gYfjFe9c3jmfpIvSEJPq/qforOZ+i
-	89po2dMnYkgrRZxTUhH7v/4NFls7pSJNN/u/EY9ybc3rxRqnQGYE
-X-Google-Smtp-Source: AGHT+IHDYCvaLpeAbggNjuZkL2ayOttEnDud7XDg1orpJnkRAzZvBpmdX2m3FIcvddfcKXjiX435cg==
-X-Received: by 2002:a17:90b:88f:b0:2d8:73ba:9444 with SMTP id 98e67ed59e1d1-2db9fc54271mr6172459a91.5.1726162709920;
-        Thu, 12 Sep 2024 10:38:29 -0700 (PDT)
-Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2db04966bc0sm10723806a91.45.2024.09.12.10.38.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Sep 2024 10:38:29 -0700 (PDT)
-Message-ID: <0c614e854d9cb3f6abaeb40016cabec01a4126f7.camel@gmail.com>
-Subject: Re: [PATCH] Fix a bug in ebpf verifier
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: lonial con <kongln9170@gmail.com>
-Cc: bpf@vger.kernel.org
-Date: Thu, 12 Sep 2024 10:38:23 -0700
-In-Reply-To: <CAH6SPwhUnn9-nNz9fpX3YGeA9WHT_BA5UzNgS5wYMqO=+8Ly_A@mail.gmail.com>
-References: <1726037521-18232-1-git-send-email-kongln9170@gmail.com>
-	 <67451140439fafa1bae3e3b010d2c6b9969696a1.camel@gmail.com>
-	 <CAH6SPwj6=zu8fLNLwZ06fTso9634GV6ku21xpyzN+bwvrOevFg@mail.gmail.com>
-	 <62b54401510477eebdb6e1272ba4308ee121c215.camel@gmail.com>
-	 <CAH6SPwjoACNcNBWCjYauSMYCFOUAys10uH-xM6mF8_Q79D0Yow@mail.gmail.com>
-	 <CAH6SPwhUnn9-nNz9fpX3YGeA9WHT_BA5UzNgS5wYMqO=+8Ly_A@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.4 (3.52.4-1.fc40) 
+        d=1e100.net; s=20230601; t=1726163661; x=1726768461;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pnI/woVTgkNTSrRDHq2roOu8tQNQ4D8UQtZh3Y6WuYw=;
+        b=kJ4L8LDRZ5KOv6FznRUBvXN2yGGpLa8L26S3tG4W7o2AKJFEG+S3jZUnzqKJ9yy7is
+         uq9ydoNQKMArDnN440xsFNSaDwHRnyUvkUKOZXKEABeEtrAR22uwN6ec/eaDysoAc0YU
+         iPUkDh0CmXhym4LNajI8oyQ3IB9wojJ50w00In2F4jDVcX0XOU9STWsdmyW/ydElqT7n
+         xIBhYkpE5sF8QDIMwjjJwN8ucynSKQ0+Gi9LZJ8Nnzxi1pY4SIsSCD6htOg83Tb4dwJo
+         r6SMpgMK1tOnGvmwqE5Vq5V/23Vdenk9OKuba4c5XQpqw4gXuzbSj7n8PXZaeFPB06X1
+         WCAA==
+X-Forwarded-Encrypted: i=1; AJvYcCUIYzqBvk5qbBwfJn20njQkIc/7Zz8u/0SMz9ggUYP7clz+F6l8zzZQRFuvQ+4rduX1Nn+/7g3A5h5+HddbNA==@vger.kernel.org, AJvYcCW6aJExT+KJxvtsNA71iQAZnqZLLB3e/X4kKL1T5GFJ0OcqrHrJtScpxdHPBhkAL2qrBXBJtIOXiot2w7MlQyLPpuCS@vger.kernel.org, AJvYcCWnElpWAsnXg1FOPNrAGqPKstJeAC/vI39uVArCuY2UJQ3/fwBsgI71qlmA45eVKqjRsg3shfphl9sPMQha@vger.kernel.org, AJvYcCXln2qRS1EIwva7m/HGt1pyth9wFctlV1iQx3SW+dXRvvfSeUCTZoVjmJc9BKPNZ4oUWP4=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxAR1rSvIs9m2k330FQawXPaHMwQyPBHVEvujLphv81eZ7Y3gHs
+	7PM5J26TbOuZF8EOJLT4/Sj3mo3oJX/+V5EES2IQhcSj9LW38jRQG8lAQp+wX5CB7WHMUoLPn+k
+	SsdtZKDWh9pqtHLtufme7KjGWAMLMXg==
+X-Google-Smtp-Source: AGHT+IF5Dr9dgApZdKn5lLwhFKi8T2rVtPmatqXg6u6KtfnDgDB7BVjPS6bSH+Hg14686iMVSU6nPTe/fII7VydFM+c=
+X-Received: by 2002:a17:902:f68e:b0:205:7829:9d83 with SMTP id
+ d9443c01a7336-2076e412fafmr36150895ad.38.1726163660914; Thu, 12 Sep 2024
+ 10:54:20 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20240906051205.530219-1-andrii@kernel.org> <20240906051205.530219-3-andrii@kernel.org>
+ <CAG48ez2G1Pf_RRRT0av=6r_4HcLZu6QMgveepk-ENo=PkaZC1w@mail.gmail.com>
+ <CAEf4Bzb+ShZqcj9EKQB8U9tyaJ1LoOpRxd24v76FuPJP-=dkNg@mail.gmail.com>
+ <CAJuCfpEhCm3QoZqemO=bX0snO16fxOssMWzLsiewkioiRV_aOA@mail.gmail.com>
+ <CAEf4Bzbh_HWuHEZqHZ7MHFLtp+jFf2yiCWyd-RqY-hvm09d5Ow@mail.gmail.com> <20240912-urenkel-umorientieren-c27ce893af09@brauner>
+In-Reply-To: <20240912-urenkel-umorientieren-c27ce893af09@brauner>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 12 Sep 2024 10:54:09 -0700
+Message-ID: <CAEf4BzbMN49GXu3B83=k=4vKpLts9Rk8xt50i_xzQL_Tht4m5g@mail.gmail.com>
+Subject: Re: [PATCH 2/2] uprobes: add speculative lockless VMA-to-inode-to-uprobe
+ resolution
+To: Christian Brauner <brauner@kernel.org>
+Cc: Suren Baghdasaryan <surenb@google.com>, Jann Horn <jannh@google.com>, 
+	Liam Howlett <liam.howlett@oracle.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	linux-trace-kernel@vger.kernel.org, peterz@infradead.org, oleg@redhat.com, 
+	rostedt@goodmis.org, mhiramat@kernel.org, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, jolsa@kernel.org, paulmck@kernel.org, 
+	willy@infradead.org, akpm@linux-foundation.org, linux-mm@kvack.org, 
+	mjguzik@gmail.com, Miklos Szeredi <miklos@szeredi.hu>, Amir Goldstein <amir73il@gmail.com>, 
+	linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2024-09-12 at 22:40 +0800, lonial con wrote:
-> Hi,
->=20
-> I tried to build this environment, but it seems that it needs kvm
-> support. For me, it is very troublesome to prepare a kvm environment.
-> So could you please write this selftest?
+On Thu, Sep 12, 2024 at 4:17=E2=80=AFAM Christian Brauner <brauner@kernel.o=
+rg> wrote:
+>
+> On Tue, Sep 10, 2024 at 01:58:10PM GMT, Andrii Nakryiko wrote:
+> > On Tue, Sep 10, 2024 at 9:32=E2=80=AFAM Suren Baghdasaryan <surenb@goog=
+le.com> wrote:
+> > >
+> > > On Mon, Sep 9, 2024 at 2:29=E2=80=AFPM Andrii Nakryiko
+> > > <andrii.nakryiko@gmail.com> wrote:
+> > > >
+> > > > On Mon, Sep 9, 2024 at 6:13=E2=80=AFAM Jann Horn <jannh@google.com>=
+ wrote:
+> > > > >
+> > > > > On Fri, Sep 6, 2024 at 7:12=E2=80=AFAM Andrii Nakryiko <andrii@ke=
+rnel.org> wrote:
+> > > > > > Given filp_cachep is already marked SLAB_TYPESAFE_BY_RCU, we ca=
+n safely
+> > > > > > access vma->vm_file->f_inode field locklessly under just rcu_re=
+ad_lock()
+> > > > >
+> > > > > No, not every file is SLAB_TYPESAFE_BY_RCU - see for example
+> > > > > ovl_mmap(), which uses backing_file_mmap(), which does
+> > > > > vma_set_file(vma, file) where "file" comes from ovl_mmap()'s
+> > > > > "realfile", which comes from file->private_data, which is set in
+> > > > > ovl_open() to the return value of ovl_open_realfile(), which come=
+s
+> > > > > from backing_file_open(), which allocates a file with
+> > > > > alloc_empty_backing_file(), which uses a normal kzalloc() without=
+ any
+> > > > > RCU stuff, with this comment:
+> > > > >
+> > > > >  * This is only for kernel internal use, and the allocate file mu=
+st not be
+> > > > >  * installed into file tables or such.
+> > > > >
+> > > > > And when a backing_file is freed, you can see on the path
+> > > > > __fput() -> file_free()
+> > > > > that files with FMODE_BACKING are directly freed with kfree(), no=
+ RCU delay.
+> > > >
+> > > > Good catch on FMODE_BACKING, I didn't realize there is this excepti=
+on, thanks!
+> > > >
+> > > > I think the way forward would be to detect that the backing file is=
+ in
+> > > > FMODE_BACKING and fall back to mmap_lock-protected code path.
+> > > >
+> > > > I guess I have the question to Liam and Suren, do you think it woul=
+d
+> > > > be ok to add another bool after `bool detached` in struct
+> > > > vm_area_struct (guarded by CONFIG_PER_VMA_LOCK), or should we try t=
+o
+> > > > add an extra bit into vm_flags_t? The latter would work without
+> > > > CONFIG_PER_VMA_LOCK, but I don't know what's acceptable with mm fol=
+ks.
+> > > >
+> > > > This flag can be set in vma_set_file() when swapping backing file a=
+nd
+> > > > wherever else vma->vm_file might be set/updated (I need to audit th=
+e
+> > > > code).
+> > >
+> > > I understand that this would work but I'm not very eager to leak
+> > > vm_file attributes like FMODE_BACKING into vm_area_struct.
+> > > Instead maybe that exception can be avoided? Treating all vm_files
+> >
+> > I agree, that would be best, of course. It seems like [1] was an
+> > optimization to avoid kfree_rcu() calls, not sure how big of a deal it
+> > is to undo that, given we do have a use case that calls for it now.
+> > Let's see what Christian thinks.
+>
+> Do you just mean?
+>
+> diff --git a/fs/file_table.c b/fs/file_table.c
+> index 7ce4d5dac080..03e58b28e539 100644
+> --- a/fs/file_table.c
+> +++ b/fs/file_table.c
+> @@ -68,7 +68,7 @@ static inline void file_free(struct file *f)
+>         put_cred(f->f_cred);
+>         if (unlikely(f->f_mode & FMODE_BACKING)) {
+>                 path_put(backing_file_user_path(f));
+> -               kfree(backing_file(f));
+> +               kfree_rcu(backing_file(f));
+>         } else {
+>                 kmem_cache_free(filp_cachep, f);
+>         }
+>
+> Then the only thing you can do with FMODE_BACKING is to skip it. I think
+> that should be fine since backing files right now are only used by
+> overlayfs and I don't think the kfree_rcu() will be a performance issue.
 
-Ok, no problem.
+Yes, something along those lines. Ok, great, if it's ok to add back
+kfree_rcu(), then I think that resolves the main problem I was running
+into. I'll incorporate adding back RCU-delated freeing as a separate
+patch into the future patch set, thanks!
 
->=20
-> Thanks,
-> Lonial Con
-
-[...]
-
+>
+> >
+> > > equally as RCU-safe would be a much simpler solution. I see that this
+> > > exception was introduced in [1] and I don't know if this was done for
+> > > performance reasons or something else. Christian, CCing you here to
+> > > please clarify.
+> > >
+> > > [1] https://lore.kernel.org/all/20231005-sakralbau-wappnen-f5c31755ed=
+70@brauner/
+> > >
+> > > >
+> > > > >
+> > > > > So the RCU-ness of "struct file" is an implementation detail of t=
+he
+> > > > > VFS, and you can't rely on it for ->vm_file unless you get the VF=
+S to
+> > > > > change how backing file lifetimes work, which might slow down som=
+e
+> > > > > other workload, or you find a way to figure out whether you're de=
+aling
+> > > > > with a backing file without actually accessing the file.
+> > > > >
+> > > > > > +static struct uprobe *find_active_uprobe_speculative(unsigned =
+long bp_vaddr)
+> > > > > > +{
+> > > > > > +       const vm_flags_t flags =3D VM_HUGETLB | VM_MAYEXEC | VM=
+_MAYSHARE;
+> > > > > > +       struct mm_struct *mm =3D current->mm;
+> > > > > > +       struct uprobe *uprobe;
+> > > > > > +       struct vm_area_struct *vma;
+> > > > > > +       struct file *vm_file;
+> > > > > > +       struct inode *vm_inode;
+> > > > > > +       unsigned long vm_pgoff, vm_start;
+> > > > > > +       int seq;
+> > > > > > +       loff_t offset;
+> > > > > > +
+> > > > > > +       if (!mmap_lock_speculation_start(mm, &seq))
+> > > > > > +               return NULL;
+> > > > > > +
+> > > > > > +       rcu_read_lock();
+> > > > > > +
+> > > > > > +       vma =3D vma_lookup(mm, bp_vaddr);
+> > > > > > +       if (!vma)
+> > > > > > +               goto bail;
+> > > > > > +
+> > > > > > +       vm_file =3D data_race(vma->vm_file);
+> > > > >
+> > > > > A plain "data_race()" says "I'm fine with this load tearing", but
+> > > > > you're relying on this load not tearing (since you access the vm_=
+file
+> > > > > pointer below).
+> > > > > You're also relying on the "struct file" that vma->vm_file points=
+ to
+> > > > > being populated at this point, which means you need CONSUME seman=
+tics
+> > > > > here, which READ_ONCE() will give you, and something like RELEASE
+> > > > > semantics on any pairing store that populates vma->vm_file, which
+> > > > > means they'd all have to become something like smp_store_release(=
+)).
+> > > >
+> > > > vma->vm_file should be set in VMA before it is installed and is nev=
+er
+> > > > modified afterwards, isn't that the case? So maybe no extra barrier
+> > > > are needed and READ_ONCE() would be enough.
+> > > >
+> > > > >
+> > > > > You might want to instead add another recheck of the sequence cou=
+nt
+> > > > > (which would involve at least a read memory barrier after the
+> > > > > preceding patch is fixed) after loading the ->vm_file pointer to
+> > > > > ensure that no one was concurrently changing the ->vm_file pointe=
+r
+> > > > > before you do memory accesses through it.
+> > > > >
+> > > > > > +       if (!vm_file || (vma->vm_flags & flags) !=3D VM_MAYEXEC=
+)
+> > > > > > +               goto bail;
+> > > > >
+> > > > > missing data_race() annotation on the vma->vm_flags access
+> > > >
+> > > > ack
+> > > >
+> > > > >
+> > > > > > +       vm_inode =3D data_race(vm_file->f_inode);
+> > > > >
+> > > > > As noted above, this doesn't work because you can't rely on havin=
+g RCU
+> > > > > lifetime for the file. One *very* ugly hack you could do, if you =
+think
+> > > > > this code is so performance-sensitive that you're willing to do f=
+airly
+> > > > > atrocious things here, would be to do a "yes I am intentionally d=
+oing
+> > > > > a UAF read and I know the address might not even be mapped at thi=
+s
+> > > > > point, it's fine, trust me" pattern, where you use
+> > > > > copy_from_kernel_nofault(), kind of like in prepend_copy() in
+> > > > > fs/d_path.c, and then immediately recheck the sequence count befo=
+re
+> > > > > doing *anything* with this vm_inode pointer you just loaded.
+> > > > >
+> > > > >
+> > > >
+> > > > yeah, let's leave it as a very unfortunate plan B and try to solve =
+it
+> > > > a bit cleaner.
+> > > >
+> > > >
+> > > > >
+> > > > > > +       vm_pgoff =3D data_race(vma->vm_pgoff);
+> > > > > > +       vm_start =3D data_race(vma->vm_start);
+> > > > > > +
+> > > > > > +       offset =3D (loff_t)(vm_pgoff << PAGE_SHIFT) + (bp_vaddr=
+ - vm_start);
+> > > > > > +       uprobe =3D find_uprobe_rcu(vm_inode, offset);
+> > > > > > +       if (!uprobe)
+> > > > > > +               goto bail;
+> > > > > > +
+> > > > > > +       /* now double check that nothing about MM changed */
+> > > > > > +       if (!mmap_lock_speculation_end(mm, seq))
+> > > > > > +               goto bail;
+> > > > > > +
+> > > > > > +       rcu_read_unlock();
+> > > > > > +
+> > > > > > +       /* happy case, we speculated successfully */
+> > > > > > +       return uprobe;
+> > > > > > +bail:
+> > > > > > +       rcu_read_unlock();
+> > > > > > +       return NULL;
+> > > > > > +}
 
