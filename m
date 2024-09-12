@@ -1,125 +1,150 @@
-Return-Path: <bpf+bounces-39765-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39766-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90A839772A4
-	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2024 22:17:32 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE0E697733E
+	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2024 23:00:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 39AF51F2431A
-	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2024 20:17:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 48DCCB22A1A
+	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2024 21:00:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E1201C1747;
-	Thu, 12 Sep 2024 20:17:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 574581C230C;
+	Thu, 12 Sep 2024 20:59:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="WULTLVTq"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="fwSk6H6F"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oa1-f52.google.com (mail-oa1-f52.google.com [209.85.160.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 724701BE860;
-	Thu, 12 Sep 2024 20:17:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76DAF1C174A
+	for <bpf@vger.kernel.org>; Thu, 12 Sep 2024 20:59:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726172240; cv=none; b=Wbs4BmeTpyVBIFp3D8OJfrg4teQ4uY8c44/v4ZMxC12hdYjx6qCAHCpZLlTOSSMZ7xiv8X0ITya0G8LpPlOBm4QGHD5vkswwIVyH3BuPOhb4Uy3Q8ZAHfsXGrca0QyK0T0kH2V6iGZnkDqMbRv71L4qqN1xmbTx0Xt/C2/LfXVs=
+	t=1726174790; cv=none; b=pGdCnn6cIdfpqaZPOC8vNouslPnsB9RjS02f5/aFCKRCJsVzEbs5c04CkyXNUPlTj3fYnVYvl/RagRYxecfVTGfh9EHp0SdIP/1LlYzL8ksFmgT7fCNVUmUoArIdaj2dH0cUSDaLbLHcY0xoNHLCw5MHftcTkADDLix9goGwyXk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726172240; c=relaxed/simple;
-	bh=8a+l0yLQWur4LKXx0doeTxIU/vtMw8YiiyuXqMHBOm8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=laDS/M1DBoa02t3/aIzsmBy/Jt62e3TeNcSPNyPCUEUKqZFwjDPU7wHPUCtZl/ta3WyOoyxGG42cbJBVc6aaBaGeqZ9GAbabbhMrKxy5pyNeofZ0Lxb32W+03qw/SGD3WAVCa72QS20TxS2/0l60LWjlC1Q7CpZUattGLGur76s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=WULTLVTq; arc=none smtp.client-ip=217.70.183.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 882071C0006;
-	Thu, 12 Sep 2024 20:17:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1726172235;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7FHWP2eO7j89fwZAZ2ZAC37i/e8x92BhFYNL0dz2678=;
-	b=WULTLVTq388DEtesiWaluvko106Vc8fjvhyDgcRAkDTUIiVTQUDeS7cQsYUzzRQgRINdNH
-	aP/VJwKcLnrdxdT5kcepfLfN6O77qjqXgcNWQZApBtwB4PTxD6wA0/mEUVHs5s0VwBfIL+
-	E/UFoGRbRqYBZYTCe1INUtZULUN1aQcvpnIi2nRABJLc/u8p8zAF3OrHOC/zI1V4vTMMM8
-	YyUtV7IRT55KKuowZHylQ9bNrlL5jR3aCXWDyLn9W3ZZc77a785ZD1tVmRGd8pFvFbXjrW
-	j6XWVYAg5bHMbNwzMseRWtT/hDbC79IQ60SA5lPxk+wgpzU12RdIUcfdzNZHqg==
-Message-ID: <fb7db9a9-5b9a-4b77-8dc6-f30b839bec27@bootlin.com>
-Date: Thu, 12 Sep 2024 22:17:13 +0200
+	s=arc-20240116; t=1726174790; c=relaxed/simple;
+	bh=cAbAdJfAWvXcMGzLQXEJz8mvDAf9C94T25Rumz8sqaY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YRtNxed9q7Svt4xPoFS4zRqB60a2BNIbkyihRQ4OcpnfB3bsx+8BFAj2ho67yWYhZDsxCxJ64PibHxYhli+DQEwNt6GSW1I2XnWIcsPu9CJq3TSj7h6Ojzn4glFFFK55cTSy/KKhjwd+L2gbep7LnnA/Z9im/3dsPV0ljWRXXOg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=fwSk6H6F; arc=none smtp.client-ip=209.85.160.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-oa1-f52.google.com with SMTP id 586e51a60fabf-277f19ee2a2so784818fac.1
+        for <bpf@vger.kernel.org>; Thu, 12 Sep 2024 13:59:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1726174788; x=1726779588; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=8mM5Z0KLUO8efTiZgA6ECQxJ5r+uA/1F2hapQlso44M=;
+        b=fwSk6H6FwFSImla2JI4db2pKAihE3YGTsdT6hM7GiyLo8SRYVdzhLPUrn5lI0G4KXC
+         bKOqdpt9tLhJkQoG9TJfdFqctjoJXVjK+WS4grWX2SGXuPat7AvL/3nTrGb9ZU1e5pTk
+         8wsnnRYD0GJAqvSAq7s0OHt8leWJKpEMZvvtvTBK5bvZmBROM1v0Lzt30OoCjXXDqiCj
+         RuOdhh8EBGO+/mX+EJN8eT99KItxRnyvsgtua7OzQ0XEftb2ryV6PFR9a1oi6UO8TshT
+         H+H2WCqRy/z3JHygHgUcpjaDm3rt7rHd3EMcEeuuVKkk55Vd97MD1X4vqC+qVKehiOC2
+         cHig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1726174788; x=1726779588;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8mM5Z0KLUO8efTiZgA6ECQxJ5r+uA/1F2hapQlso44M=;
+        b=olFzsViugqniAZjqXdOce/ZvWfMAEzTSLK2WozoN8r4XWbWsaEIm+5EIS4zl9o86GQ
+         5H3VxG1FXTB6v/Vh9zV4Lboah7gUHtE0C0GNsXvbEwUF1MidWQSXqZLb25YEvoDdbuWY
+         F7QeSfmt6nywgQXwFAroUUKL/dZlkoqpVRZ04nt3PsQWzN5WMsxcx/+xmncunTbxuTjZ
+         +uYUS+JPyDyE9lm1sILHKI1c2LavPlKptsFyu9KJh/bTDTHmdGUE/2MLzkHwArj7kag7
+         hIHWaJnuU0TiTp8EBI4CfpnrI9f2XjDYxNNQ4OJF1Trs1R1PXMGphNCuVxRu12P25zZ4
+         0kDg==
+X-Forwarded-Encrypted: i=1; AJvYcCVQcNVsKeaRH9o5gDtMJFaWKbyEArro75b9L2DLU3HPYcIxQKqYsIQumrFZDQi/sK1gvu0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwWfs7xWX6sLjGc8MRSFkDHhtFQRP+/puOCPQhmrGPkuTpcMxCT
+	7fdK2ZmBLnqrp6F0BVLbOsmj9MLNQtucHyJ1VXR2V7ZhrgG4rTG5eqn/kq9zjA==
+X-Google-Smtp-Source: AGHT+IFM1AXJ051IzPPqsl49dRXV3EAPdU7MADRa2Tisd07EWLACnR0AfN41J2K91Abg++8l1F9PzA==
+X-Received: by 2002:a05:6870:610c:b0:27b:6267:61b0 with SMTP id 586e51a60fabf-27c3f603118mr3165118fac.32.1726174787877;
+        Thu, 12 Sep 2024 13:59:47 -0700 (PDT)
+Received: from google.com (30.64.135.34.bc.googleusercontent.com. [34.135.64.30])
+        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-27ba3f3f125sm3276542fac.25.2024.09.12.13.59.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Sep 2024 13:59:47 -0700 (PDT)
+Date: Thu, 12 Sep 2024 13:59:42 -0700
+From: Justin Stitt <justinstitt@google.com>
+To: Yafang Shao <laoar.shao@gmail.com>
+Cc: akpm@linux-foundation.org, torvalds@linux-foundation.org, 
+	alx@kernel.org, ebiederm@xmission.com, alexei.starovoitov@gmail.com, 
+	rostedt@goodmis.org, catalin.marinas@arm.com, penguin-kernel@i-love.sakura.ne.jp, 
+	linux-mm@kvack.org, linux-fsdevel@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org, audit@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	selinux@vger.kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, Paul Moore <paul@paul-moore.com>, Eric Paris <eparis@redhat.com>
+Subject: Re: [PATCH v8 2/8] auditsc: Replace memcpy() with strscpy()
+Message-ID: <u42f2oneitzqmzh2tvwokzjxawj6utitu7rongurqeiglkvkvc@ryjktmvutysi>
+References: <20240828030321.20688-1-laoar.shao@gmail.com>
+ <20240828030321.20688-3-laoar.shao@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v2] selftests/bpf: convert test_xdp_features.sh
- to test_progs
-To: Simon Horman <horms@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
- Shuah Khan <shuah@kernel.org>, "David S. Miller" <davem@davemloft.net>,
- Jakub Kicinski <kuba@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>,
- Lorenzo Bianconi <lorenzo@kernel.org>,
- Maxime Chevallier <maxime.chevallier@bootlin.com>, ebpf@linuxfoundation.org,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
- linux-kselftest@vger.kernel.org, netdev@vger.kernel.org
-References: <20240910-convert_xdp_tests-v2-1-a46367c9d038@bootlin.com>
- <20240911141824.GZ572255@kernel.org>
-From: =?UTF-8?Q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
-Content-Language: en-US
-In-Reply-To: <20240911141824.GZ572255@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: alexis.lothore@bootlin.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240828030321.20688-3-laoar.shao@gmail.com>
 
-Hi Simon,
+Hi,
 
-On 9/11/24 16:18, Simon Horman wrote:
-
-[...]
-
->> diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_features.c b/tools/testing/selftests/bpf/prog_tests/xdp_features.c
->> new file mode 100644
->> index 000000000000..bcb36a2d2767
->> --- /dev/null
->> +++ b/tools/testing/selftests/bpf/prog_tests/xdp_features.c
->> @@ -0,0 +1,446 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +
->> +/**
->> + * Test XDP features
->> + *
->> + * Sets up a veth pair, and for each xdp feature under test:
->> + * - asks the tested interface its xdp capabilities through bpf_xdp_query
->> + * - attach and run some specific programs on both interfaces to check if
->> + *   announced capability is respected
->> + */
+On Wed, Aug 28, 2024 at 11:03:15AM GMT, Yafang Shao wrote:
+> Using strscpy() to read the task comm ensures that the name is
+> always NUL-terminated, regardless of the source string. This approach also
+> facilitates future extensions to the task comm.
 > 
-> Hi Alexis,
+> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> Acked-by: Paul Moore <paul@paul-moore.com>
+> Cc: Eric Paris <eparis@redhat.com>
+> ---
+>  kernel/auditsc.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 > 
-> This is neither a full review nor an issue that needs to block progress.
-> But, FWIIW, the comment above is not a Kernel doc, yet starts with '/**'.
-> I suggest that it should start with '/*' instead.
+> diff --git a/kernel/auditsc.c b/kernel/auditsc.c
+> index 6f0d6fb6523f..e4ef5e57dde9 100644
+> --- a/kernel/auditsc.c
+> +++ b/kernel/auditsc.c
+> @@ -2730,7 +2730,7 @@ void __audit_ptrace(struct task_struct *t)
+>  	context->target_uid = task_uid(t);
+>  	context->target_sessionid = audit_get_sessionid(t);
+>  	security_task_getsecid_obj(t, &context->target_sid);
+> -	memcpy(context->target_comm, t->comm, TASK_COMM_LEN);
+> +	strscpy(context->target_comm, t->comm);
+>  }
+>  
+>  /**
+> @@ -2757,7 +2757,7 @@ int audit_signal_info_syscall(struct task_struct *t)
+>  		ctx->target_uid = t_uid;
+>  		ctx->target_sessionid = audit_get_sessionid(t);
+>  		security_task_getsecid_obj(t, &ctx->target_sid);
+> -		memcpy(ctx->target_comm, t->comm, TASK_COMM_LEN);
+> +		strscpy(ctx->target_comm, t->comm);
+>  		return 0;
+>  	}
+>  
+> @@ -2778,7 +2778,7 @@ int audit_signal_info_syscall(struct task_struct *t)
+>  	axp->target_uid[axp->pid_count] = t_uid;
+>  	axp->target_sessionid[axp->pid_count] = audit_get_sessionid(t);
+>  	security_task_getsecid_obj(t, &axp->target_sid[axp->pid_count]);
+> -	memcpy(axp->target_comm[axp->pid_count], t->comm, TASK_COMM_LEN);
+> +	strscpy(axp->target_comm[axp->pid_count], t->comm);
+>  	axp->pid_count++;
+>  
+>  	return 0;
+> -- 
+> 2.43.5
+> 
 
-ACK. I'll wait for more comments on the series, and add the fix to the
-corresponding revision, if any.
+Good usage of two-argument strscpy(). This helps towards [1].
 
-Thanks,
+Reviewed-by: Justin Stitt <justinstitt@google.com>
 
-Alexis
+[1]: https://github.com/KSPP/linux/issues/90
 
--- 
-Alexis Lothoré, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
-
+Thanks
+Justin
 
