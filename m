@@ -1,98 +1,111 @@
-Return-Path: <bpf+bounces-39722-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39723-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3865E976B2C
-	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2024 15:50:45 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1087F976BD1
+	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2024 16:20:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F133F282911
-	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2024 13:50:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 607FAB21269
+	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2024 14:20:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E0A41AD276;
-	Thu, 12 Sep 2024 13:50:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ix72SX3A"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19BF21AD9CB;
+	Thu, 12 Sep 2024 14:20:03 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E53651A4E89;
-	Thu, 12 Sep 2024 13:50:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14BDE2209B;
+	Thu, 12 Sep 2024 14:19:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726149033; cv=none; b=oIIejGeGWJEatQ4dHaV1Geqvp9JpjBH2uQtOIzUcGtumX664VbpDPiSudZEe/Skm5JQFSQSX1Hp8KZrN7k3hQJP2HIgNVfueknmALjM+giqAkxMvwdjQxDQmLkIcY/S5t8J2Wi46y8nzxh8G2wlXPNCKrmbV/skho8Vas4lKxzA=
+	t=1726150802; cv=none; b=SOneohNmOVnNTL65LvlWscPcd3LReNCH7Dm3ttzsD4pIm/qSdH1a3yw5pk4MKWeaeWrK7aHQUNVCCVwc8UHOqJsLLoh0iroBCdwGSLimA97y4FYsZ9mauqMFnL6dDrcU3RUop0qYNNKyzfKzTs/+1R4M3EZ/D6cZYz21El0OwpU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726149033; c=relaxed/simple;
-	bh=GbVxCpbItfv5RKig6nCXjTfDmTD0G9RZJB5PwbQiktA=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=pnLroVX8mW5l/xkTHNIA3QD3cSFCUOF3GGS+ah7Z2e/wbK5bCGU+uVrmmei9MeK1NATKxu1sA86gjlSQSKRSYql/Zs2ni6vFLx8GcTa9Uz+WhCu7+Q/kKAYPZ7l/tlPMHJVZAVkQnrIKQuiw59YnbGq3Zlkk78EQQbouX+DS0hc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ix72SX3A; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84BD8C4CEC4;
-	Thu, 12 Sep 2024 13:50:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1726149032;
-	bh=GbVxCpbItfv5RKig6nCXjTfDmTD0G9RZJB5PwbQiktA=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=ix72SX3AzaymkHMoXyajEOhuBrwkBW93Eq1wXSk7jMZXfPs/2CeBFlReOKs5umg1S
-	 ayMJCudXJHbKqu++liHqc9jj8P0DeeOYs7M1wIe4FOd2MMZ+5C4Z9QxIe3L7OPaMSS
-	 tZPoySPAbh97PxqUPhZH+wzrygKqWmCK3w+Y/eivJx9wkSfOtGanCCd/jORyAdPzzW
-	 Ine7EGJ8bbjuFsf5QoCvORGnFcogYqh/QDS6HFrS5ZHGXo5P/3/qK47uo6BVABYxAe
-	 KiXCJfHGcS4v1WE2bQogsXMLAUu2cRVxxSPXmgpXLso6FY1bkMc1UqK6pek/IthsqO
-	 53aAJp2CCplMw==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EAFD93822D1B;
-	Thu, 12 Sep 2024 13:50:34 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1726150802; c=relaxed/simple;
+	bh=4/3k8eSBLVRxWjjDz4zpjcNLnIc/Iyi2JVGo4hJT5vY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ij8bmPdsRu2RM6kKluGVTy3Ptk0AaQszzGLIHjDXbAOGaoBrAbUYt6cZK6wGyUo1rHIBKO7BUFUpytIgtk64GbdupxJimZf99SvXpCdKb44PeiUv2kMLETMIM2L3GEv/s3jqRFiTxLSJlOMuLnBoUcs8grq+j/3f5dkm5w/TLFA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a8d43657255so148753166b.0;
+        Thu, 12 Sep 2024 07:19:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1726150798; x=1726755598;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sMB0zTs8cLiRSiVrxlZ0xkuyxGcJBoqexzlsqpyjifc=;
+        b=gkzLGv5AS5XT94Ijp47wL4CFu461GyaJyKBI77n0JY/mQw2J4PqgjYXNYABISBCqWT
+         c0IhdU3Dz10PTLiLyTISfzwjn0tiai9xKJtPfQuBxxGM4zyNp4oPS4FV+uF64G+t3UN7
+         4oCSwd8lENmjjPUWrqy7FPSd0KGlImbQLqQf4ubq8c2dfnzHGVfwwaCTd10Dlw4p1FBZ
+         BwfyjJLLCtqrHuMsvkaKAT3e527d6CIwRGmd6Lkd3YzFKUTb8PGuq59rCIxVDJX6doqp
+         H6lAyd+YH0HStG83x/+uccsakomx5wyRt85uKAoHEJZ3WLl/ks1D0YFkrXzze6+S4xZ3
+         kwfQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV/BoKm5jcV9jnJREiFpmKkeRgMa9lyUFAhKwGtlh14gdDmyfQ27cvhPD0xBI6t6aTfln8=@vger.kernel.org, AJvYcCVAV5AvfZy8Y+NI2zR2eYnAkaoJUEkFIzkUhWM9841dNHXBhx76GtnZjVPIoakW6zplebaL2LD1@vger.kernel.org, AJvYcCXrf+BlAGTTTv96N7LygtvV1Ev2R284hyfyrQTrxGQWgkrGRL7JmXdp0XssPL33BIC8rhbI9ibGjC31F9ly@vger.kernel.org
+X-Gm-Message-State: AOJu0YxE9jPRoIw5ouaVKjYesBjAstda3wwWcFOjYgZvs30V9hxJySrV
+	WbR474t9xHJW4TqHQNl5SKFknIq9tf5pYVCuuJCLlkrU98ujn6hi
+X-Google-Smtp-Source: AGHT+IGVJBZNSgTp+xRvrjPYefM1Zf0fuwu6vuda7SmUnzN9agjv/WRe7/dOg5spQ/6xxYY3rjbnHw==
+X-Received: by 2002:a17:907:3e0d:b0:a86:b042:585a with SMTP id a640c23a62f3a-a902970d12bmr277494866b.57.1726150797582;
+        Thu, 12 Sep 2024 07:19:57 -0700 (PDT)
+Received: from gmail.com (fwdproxy-lla-116.fbsv.net. [2a03:2880:30ff:74::face:b00c])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a9013376712sm197716266b.53.2024.09.12.07.19.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Sep 2024 07:19:56 -0700 (PDT)
+Date: Thu, 12 Sep 2024 07:19:54 -0700
+From: Breno Leitao <leitao@debian.org>
+To: Vadim Fedorenko <vadim.fedorenko@linux.dev>
+Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Jakub Kicinski <kuba@kernel.org>, andrii@kernel.org, ast@kernel.org,
+	syzbot <syzbot+08811615f0e17bc6708b@syzkaller.appspotmail.com>,
+	bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+	eddyz87@gmail.com, haoluo@google.com, hawk@kernel.org,
+	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org,
+	linux-kernel@vger.kernel.org, martin.lau@linux.dev,
+	netdev@vger.kernel.org, sdf@fomichev.me, song@kernel.org,
+	syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
+Subject: Re: [PATCH net-net] tun: Assign missing bpf_net_context.
+Message-ID: <20240912-organic-spoonbill-of-discourse-ad2e6e@leitao>
+References: <000000000000adb970061c354f06@google.com>
+ <20240702114026.1e1f72b7@kernel.org>
+ <20240703122758.i6lt_jii@linutronix.de>
+ <20240703120143.43cc1770@kernel.org>
+ <20240912-simple-fascinating-mackerel-8fe7c0@devvm32600>
+ <20240912122847.x70_LgN_@linutronix.de>
+ <20240912-hypnotic-messy-leopard-f1d2b0@leitao>
+ <9a2a1cce-8d92-4d10-87ea-4cdf1934d5fb@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net] net: netfilter: move nf flowtable bpf initialization
- in nf_flow_table_module_init()
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <172614903350.1599668.9030316910275563985.git-patchwork-notify@kernel.org>
-Date: Thu, 12 Sep 2024 13:50:33 +0000
-References: <20240911-nf-flowtable-bpf-modprob-fix-v1-1-f9fc075aafc3@kernel.org>
-In-Reply-To: <20240911-nf-flowtable-bpf-modprob-fix-v1-1-f9fc075aafc3@kernel.org>
-To: Lorenzo Bianconi <lorenzo@kernel.org>
-Cc: pablo@netfilter.org, kadlec@netfilter.org, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, ast@kernel.org,
- daniel@iogearbox.net, memxor@gmail.com, fw@strlen.de,
- netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
- netdev@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9a2a1cce-8d92-4d10-87ea-4cdf1934d5fb@linux.dev>
 
-Hello:
+Hello Vadim,
 
-This patch was applied to netdev/net.git (main)
-by Paolo Abeni <pabeni@redhat.com>:
-
-On Wed, 11 Sep 2024 17:37:30 +0200 you wrote:
-> Move nf flowtable bpf initialization in nf_flow_table module load
-> routine since nf_flow_table_bpf is part of nf_flow_table module and not
-> nf_flow_table_inet one. This patch allows to avoid the following kernel
-> warning running the reproducer below:
+On Thu, Sep 12, 2024 at 02:32:55PM +0100, Vadim Fedorenko wrote:
+> On 12/09/2024 14:17, Breno Leitao wrote:
+> > @@ -72,6 +73,7 @@ static netdev_tx_t netkit_xmit(struct sk_buff *skb, struct net_device *dev)
+> >   	struct net_device *peer;
+> >   	int len = skb->len;
+> > +	bpf_net_ctx = bpf_net_ctx_set(&__bpf_net_ctx);
+> >   	rcu_read_lock();
 > 
-> $modprobe nf_flow_table_inet
-> $rmmod nf_flow_table_inet
-> $modprobe nf_flow_table_inet
-> modprobe: ERROR: could not insert 'nf_flow_table_inet': Invalid argument
+> Hi Breno,
 > 
-> [...]
+> looks like bpf_net_ctx should be set under rcu read lock...
 
-Here is the summary with links:
-  - [net] net: netfilter: move nf flowtable bpf initialization in nf_flow_table_module_init()
-    https://git.kernel.org/netdev/net/c/3e705251d998
+Why exactly?
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+I saw in some examples where bpf_net_ctx_set() was set inside the
+rcu_read_lock(), but, I was not able to come up with justification to do
+the same. Would you mind elaborating why this might be needed inside the
+lock?
 
-
+Thanks for the review,
+--breno
 
