@@ -1,158 +1,124 @@
-Return-Path: <bpf+bounces-39771-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39772-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EECD797739D
-	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2024 23:29:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BD969773C9
+	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2024 23:49:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3FBCEB23CA6
-	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2024 21:28:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B63581F24C49
+	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2024 21:49:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60ACF1C3F04;
-	Thu, 12 Sep 2024 21:28:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEF771C2312;
+	Thu, 12 Sep 2024 21:49:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="hBuSp432"
+	dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b="Yq99cS9w"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com [209.85.167.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail-40133.protonmail.ch (mail-40133.protonmail.ch [185.70.40.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3818B1C2DD6
-	for <bpf@vger.kernel.org>; Thu, 12 Sep 2024 21:28:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77A2BA5F
+	for <bpf@vger.kernel.org>; Thu, 12 Sep 2024 21:49:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726176495; cv=none; b=TulZNLKkg2Af3i5nItldu+vwZV9EOCCzZWo1UWuLSNDaCdUHRW8lkCrpIf/gaF1e4nbt1x2b8lwRpGl3kV6bh+EffdCvLlUtVKJTR2A4+cGRfrt+HBK2HeW37nIQsALwoEOnVg3/qnerWibLxIgi4NK5MPhB6RdPdhllgy3zG68=
+	t=1726177749; cv=none; b=QeGMsQAJ/TFJwupoF+uUPZ+qcy1via++9fM01ETUoe2XF4YBafun+SUt+T5CydofrzwOEz6Jrz1I49/tpmnOnE54yAr68g6JzoRlgeqLgX77sqvpM3gVtHzYmzshwRdKTEgAT37eYMrNy3xdCq8IMwdyIVyd9G943MAoOPB6vkM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726176495; c=relaxed/simple;
-	bh=5JkxikacpkxMhEfI8RHLq4pR2MZVCxlyp/YT3slkSRQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pMF47CR1FQ1StRe18+2Ukxw+Qpj/mbPRfKdDsHiFkJdf+67WvhC9mE3WAAwFAhmZJRb3kUquGds3F6DCzgmBxANFl3qrfBgcHlGp2FL628ZpKEdCXCmNPB4rVW0EUtPxg8AeOJZcV0XZ25gm2gAcy2Sety3MNiQ/5NiV34jUb8k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=hBuSp432; arc=none smtp.client-ip=209.85.167.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-oi1-f171.google.com with SMTP id 5614622812f47-3dd16257b7bso549336b6e.1
-        for <bpf@vger.kernel.org>; Thu, 12 Sep 2024 14:28:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1726176493; x=1726781293; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=EVBoJCNLRR8X5TrQ/I9maABRhanYWycmzMG9wsr9TFk=;
-        b=hBuSp432GHht2giE25DmEt4Cf4MyyXdMBywe3F91wAfmdryRhF9JH9NgXeB+Jb8/Hn
-         9DsHN3jfCJstrCsyAqCDCQD1h8qXEl62enET1NHGmaByruOye1ktTAjCdxSUIYXs+ud4
-         6g7VRGrd1kwY70V8jYR7TvuKzKUh5rf67Z+NNvo9eU9+85QbSvQ9mXpBNmBNc3p3rW3c
-         SFO0lfubi4hqca9oBKQ13fQxopWMeO+pZN1BrKVodc/537N+w6BdrdBH9hSPp7Vef5x1
-         5bDOy9iFf09EB55g2Xn2RGkr7x5yWDBmj+TmTk1V3S/Cmc26w1ao1KyACatjWEKRDEoY
-         EV9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726176493; x=1726781293;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EVBoJCNLRR8X5TrQ/I9maABRhanYWycmzMG9wsr9TFk=;
-        b=EhWmFzsZ1L3SUMKtXoZinVpcec3IDwTtvZohg/6RoxhSD2r3u8C3y4J7WA95QH6Hly
-         Gy6iRFR+m3isHs7INazXwut2HNMnoqp1XBfAEF1aOQEgtar5XXSsVR1yKVWq76AiZ+6o
-         L3rkmE5qP3T55cMik6LSoQ+pEQXcQq+HSKpCiaAMXHTAxaZxAmX4b8ejuy1tNLUMxKqo
-         FZmQ3rLaOz3ZKpRKAb+WtIEqPBZ0PrsrMVaTwXItrQkBc/8RhJksxSUqvbloEXQWitKT
-         ndgz6mKDP14c++evxnRByahNfYNKJrEeO/dvunKAU6y6sY0rEkl9bkT46EzGwkCk+apC
-         +t+g==
-X-Forwarded-Encrypted: i=1; AJvYcCWLbp2mE4yoJawClS18r0+Aj7iO7xoORn4ZvdiKC505a7tYAKLAQ/ixjpsLzt3PL5nrEnQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzH6Xb6vzHeW2mbllwVL6ihlLaMKA6c3eMyTnvgCVzRqU7i/Qgi
-	N65gh5fikrT3GWz9ok/6cuPMqZ26X3v48+vKJtDk0YpnM3TQlh8A2JhSUfm+kA==
-X-Google-Smtp-Source: AGHT+IE+PplQfr1wmi1rPq6cfJUOVee5axfQ/fpUSWcQDWuQhtkqeGRwdyj65KxYO5B4v8hXLcmStg==
-X-Received: by 2002:a05:6808:10c1:b0:3e0:6809:ab18 with SMTP id 5614622812f47-3e071a8f33emr2960910b6e.13.1726176493194;
-        Thu, 12 Sep 2024 14:28:13 -0700 (PDT)
-Received: from google.com (30.64.135.34.bc.googleusercontent.com. [34.135.64.30])
-        by smtp.gmail.com with ESMTPSA id 5614622812f47-3e039c05857sm2544147b6e.45.2024.09.12.14.28.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Sep 2024 14:28:12 -0700 (PDT)
-Date: Thu, 12 Sep 2024 14:28:10 -0700
-From: Justin Stitt <justinstitt@google.com>
-To: Yafang Shao <laoar.shao@gmail.com>
-Cc: akpm@linux-foundation.org, torvalds@linux-foundation.org, 
-	alx@kernel.org, ebiederm@xmission.com, alexei.starovoitov@gmail.com, 
-	rostedt@goodmis.org, catalin.marinas@arm.com, penguin-kernel@i-love.sakura.ne.jp, 
-	linux-mm@kvack.org, linux-fsdevel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, audit@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	selinux@vger.kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, Daniel Vetter <daniel.vetter@ffwll.ch>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>
-Subject: Re: [PATCH v8 8/8] drm: Replace strcpy() with strscpy()
-Message-ID: <qqpiar6nlyuill6eng7safauo2xzzpx46cv6wku4xe42qsw47m@rirhsxrdzm2z>
-References: <20240828030321.20688-1-laoar.shao@gmail.com>
- <20240828030321.20688-9-laoar.shao@gmail.com>
+	s=arc-20240116; t=1726177749; c=relaxed/simple;
+	bh=qayd9Jzrx3FblkVqzTe5R0bZ1b5w2tkz3itaIUpr1Hs=;
+	h=Date:To:From:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=BczYjCheA0LAm1tUUz+uONYs7qG5BLCJ0m62h5X/TrhVZ0a6zj1idRpK9dbio3Y0O1GyCw6dtz4IrgKEhsUJ7mNntWsUgRCiWn1NzjEGe09RzoBGLBuIspUkuXGT8U1KrCznP6ycNv/VkbMGYONGySb5ZpsfScpGu30cIdolh3U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me; spf=pass smtp.mailfrom=pm.me; dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b=Yq99cS9w; arc=none smtp.client-ip=185.70.40.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pm.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me;
+	s=protonmail3; t=1726177739; x=1726436939;
+	bh=QgbCGsDoNw8Ffoae4RzOqJXJMZjnjerEeYJVIxdKZLk=;
+	h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
+	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
+	b=Yq99cS9wSuGbiUKZkaHMsSupGVef0wok4+ZD7sO11e1DwNX/xXdRbMKWQd2A4OZg9
+	 i3tAQlyHm1t4h96tS8M82v9V2xKXFWrzKEeALTGaqmKYXIU24lTrxz8msheYkJOZ4U
+	 DibEzdvIdcxvlxMe8SP9DNqco8AH7dBsXu0D5+Vk3woMdWJ05CGGyOg5S2FtTPYf6p
+	 rY3zRrX2zE5zmBc6F5a5F3j842kHaB3km362UYMkXMkfYnBiHF3DO16xUXG805lhBI
+	 oaf/rd4PKa94uHhXM0mQvVQJa4ZivxVqOH6WkS1ADFZG2AUkcwdMlw9RKP9pC70/Gy
+	 1kO/QmaX/ofhA==
+Date: Thu, 12 Sep 2024 21:48:52 +0000
+To: bpf@vger.kernel.org, andrii@kernel.org
+From: Ihor Solodrai <ihor.solodrai@pm.me>
+Cc: ast@kernel.org, daniel@iogearbox.net, eddyz87@gmail.com, mykolal@fb.com
+Subject: [PATCH bpf-next] libbpf: add bpf_object__token_fd accessor
+Message-ID: <20240912214849.3102215-1-ihor.solodrai@pm.me>
+Feedback-ID: 27520582:user:proton
+X-Pm-Message-ID: e0bf4356cfc1d7710ea2ed494326b368118c69b9
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240828030321.20688-9-laoar.shao@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
+Add a LIBBPF_API function to retrieve the token_fd from a bpf_object.
 
-On Wed, Aug 28, 2024 at 11:03:21AM GMT, Yafang Shao wrote:
-> To prevent erros from occurring when the src string is longer than the
-> dst string in strcpy(), we should use strscpy() instead. This
-> approach also facilitates future extensions to the task comm.
-> 
-> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-> Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-> Cc: Maxime Ripard <mripard@kernel.org>
-> Cc: Thomas Zimmermann <tzimmermann@suse.de>
-> Cc: David Airlie <airlied@gmail.com>
-> ---
->  drivers/gpu/drm/drm_framebuffer.c     | 2 +-
->  drivers/gpu/drm/i915/i915_gpu_error.c | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/drm_framebuffer.c b/drivers/gpu/drm/drm_framebuffer.c
-> index 888aadb6a4ac..2d6993539474 100644
-> --- a/drivers/gpu/drm/drm_framebuffer.c
-> +++ b/drivers/gpu/drm/drm_framebuffer.c
-> @@ -868,7 +868,7 @@ int drm_framebuffer_init(struct drm_device *dev, struct drm_framebuffer *fb,
->  	INIT_LIST_HEAD(&fb->filp_head);
->  
->  	fb->funcs = funcs;
-> -	strcpy(fb->comm, current->comm);
-> +	strscpy(fb->comm, current->comm);
->  
->  	ret = __drm_mode_object_add(dev, &fb->base, DRM_MODE_OBJECT_FB,
->  				    false, drm_framebuffer_free);
-> diff --git a/drivers/gpu/drm/i915/i915_gpu_error.c b/drivers/gpu/drm/i915/i915_gpu_error.c
+Without this accessor, if user needs a token FD they have to get it
+manually via bpf_token_create, even though a token might have been
+already created by bpf_object_load.
 
-There are other strcpy() in this file but it seems all control paths to
-the copies themselves stem from string literals, so it is probably fine
-not to also change those ones. But, if a v9 is required and you're
-feeling up to it, we should probably replace them too, as per [1].
+Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+Signed-off-by: Ihor Solodrai <ihor.solodrai@pm.me>
+---
+ tools/lib/bpf/libbpf.c   | 5 +++++
+ tools/lib/bpf/libbpf.h   | 2 ++
+ tools/lib/bpf/libbpf.map | 1 +
+ 3 files changed, 8 insertions(+)
+
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 84d4ec0e1f60..e9ac950ce2ff 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -9059,6 +9059,11 @@ unsigned int bpf_object__kversion(const struct bpf_o=
+bject *obj)
+ =09return obj ? obj->kern_version : 0;
+ }
+=20
++int bpf_object__token_fd(const struct bpf_object *obj)
++{
++=09return obj ? obj->token_fd : -1;
++}
++
+ struct btf *bpf_object__btf(const struct bpf_object *obj)
+ {
+ =09return obj ? obj->btf : NULL;
+diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+index 6917653ef9fa..5cd143e83f95 100644
+--- a/tools/lib/bpf/libbpf.h
++++ b/tools/lib/bpf/libbpf.h
+@@ -294,6 +294,8 @@ LIBBPF_API const char *bpf_object__name(const struct bp=
+f_object *obj);
+ LIBBPF_API unsigned int bpf_object__kversion(const struct bpf_object *obj)=
+;
+ LIBBPF_API int bpf_object__set_kversion(struct bpf_object *obj, __u32 kern=
+_version);
+=20
++LIBBPF_API int bpf_object__token_fd(const struct bpf_object *obj);
++
+ struct btf;
+ LIBBPF_API struct btf *bpf_object__btf(const struct bpf_object *obj);
+ LIBBPF_API int bpf_object__btf_fd(const struct bpf_object *obj);
+diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+index 8f0d9ea3b1b4..0096e483f7eb 100644
+--- a/tools/lib/bpf/libbpf.map
++++ b/tools/lib/bpf/libbpf.map
+@@ -423,6 +423,7 @@ LIBBPF_1.5.0 {
+ =09=09btf__relocate;
+ =09=09bpf_map__autoattach;
+ =09=09bpf_map__set_autoattach;
++=09=09bpf_object__token_fd;
+ =09=09bpf_program__attach_sockmap;
+ =09=09ring__consume_n;
+ =09=09ring_buffer__consume_n;
+--=20
+2.34.1
 
 
-> index 96c6cafd5b9e..afa9dae39378 100644
-> --- a/drivers/gpu/drm/i915/i915_gpu_error.c
-> +++ b/drivers/gpu/drm/i915/i915_gpu_error.c
-> @@ -1412,7 +1412,7 @@ static bool record_context(struct i915_gem_context_coredump *e,
->  	rcu_read_lock();
->  	task = pid_task(ctx->pid, PIDTYPE_PID);
->  	if (task) {
-> -		strcpy(e->comm, task->comm);
-> +		strscpy(e->comm, task->comm);
->  		e->pid = task->pid;
->  	}
->  	rcu_read_unlock();
-> -- 
-> 2.43.5
-> 
->
-
-
-Reviewed-by: Justin Stitt <justinstitt@google.com>
-
-[1]: https://www.kernel.org/doc/html/latest/process/deprecated.html#strcpy
-
-Thanks
-Justin
 
