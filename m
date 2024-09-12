@@ -1,295 +1,138 @@
-Return-Path: <bpf+bounces-39768-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39769-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76234977347
-	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2024 23:04:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75CC797736B
+	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2024 23:15:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DDA982839CC
-	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2024 21:04:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 39084285385
+	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2024 21:15:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB59F1C1AA4;
-	Thu, 12 Sep 2024 21:04:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62B1A1C2441;
+	Thu, 12 Sep 2024 21:14:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Z0Q1MNMh"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="TgrAtnXr"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com [209.85.167.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC1281BB691
-	for <bpf@vger.kernel.org>; Thu, 12 Sep 2024 21:04:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3116B1BC06E
+	for <bpf@vger.kernel.org>; Thu, 12 Sep 2024 21:14:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726175060; cv=none; b=qM42P6Q5O3IWg36WjSFnMIR4CllJDXhDbsYywggrTMjQ7JqI0w2i8sTjEh3l2sLAMBz5vA3KvlWknsEssbC8S8ZJgGOI3JwOJJ+dYkAoKUpL1ulO0tbDQLIjdQGmNzkqEQEqJRIxbuceHwORMuCBjZZZdoqW2FhQ1wXvyN/46ck=
+	t=1726175695; cv=none; b=oB4XBrw8NyhV8qSTBdlw2F+UNcOfPvX3ec++zK4Q1h9QJUN18j+IY+PMtSo380VWEyrfVsW8/nbo7S34lENeoiGoA2Ih+SYj5/GeaZTZ5KdbqyUtHbJal1ahxpMownc1/XYMAMRosu73VAjwAHQigNHsjidGC/zrWV6KSnVtvSI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726175060; c=relaxed/simple;
-	bh=vM4ejuzZFoGQ4IIqaqzuyaHUU/1X4Ko8fl7eEhkQ/UU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PPL2EAe8/pqEzdEiW5zZT5VyzTWSiK5jMc7pbMHOHgy/gz65+OpHJAQSpaKhfhbcr02Oy0un6TRxhaTjVM+vhqJ+KGZIpAxzZAknD2h9ByafJ2WnUtBB8dwArIxMKMf1CqECd/cDJhU9vXWi0Qp4Al3qHRfxJ5HRUcgTmfSvYf4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Z0Q1MNMh; arc=none smtp.client-ip=209.85.208.53
+	s=arc-20240116; t=1726175695; c=relaxed/simple;
+	bh=peVnoRwbqecr/0PJF00iv4hFysL5tmps7T44YTBQn1E=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SQgWrM96zZG/RVjVsVIKKoBuSv32m/+KcbhRGq79Q5EWoM7suyZj2Pe1hn3tZDueLfAavcbhteZUOTcu/dWXE5whfLyQGRAeZiBwxrk8sCYJN5yvKDhXTzdlkjal9h/P+6BR3+NJqee0CJ9HDxDar8u1J0M+kwcR0l5j0q/YHOs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=TgrAtnXr; arc=none smtp.client-ip=209.85.167.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-5c24374d8b6so3292a12.1
-        for <bpf@vger.kernel.org>; Thu, 12 Sep 2024 14:04:18 -0700 (PDT)
+Received: by mail-oi1-f170.google.com with SMTP id 5614622812f47-3e0402a98caso669059b6e.3
+        for <bpf@vger.kernel.org>; Thu, 12 Sep 2024 14:14:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1726175057; x=1726779857; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Z9VsB68MQof9g4wA1cKKKrr59DMnuyJ0zAwUPhXjwPI=;
-        b=Z0Q1MNMhdGcLjS/s2eLQVEwqfCz+U/DXu4wqoIZ6xY22Bq0Kxcuyv3ASr2L/LKbWZi
-         L0UV4Ul8yAd+T76vlyB7FZGpvNT+3KYe7t+xUT4BXfJanG5Y6O068hjTZrDfaCXNspQr
-         OZxnV7Q/B262+8wcg5Wu9ODYjA4kqRBO/bvOh+KAjeTFz/4eQDD/A7MaHelg20Q73OJV
-         Z6osNAPdyYPvzeGqG/QMBvYbOvRMud9HAjI+pyZ3LqYP+JlhE56zGnOsmklYHEMAIbjr
-         TsNy+sYUAW6eKGEUu00E8+VWuTwoAnb8JCd7NRCmMk9Y5kXXAxTJlGun7CFk817q8+FI
-         qLvA==
+        d=google.com; s=20230601; t=1726175691; x=1726780491; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=2EO0qmaSPp73jvXnTs7TJzCKL8q51LBbEbQNyisfg4c=;
+        b=TgrAtnXr/7OJjvCVwZLNYSuwZYI+CkWtp53jxLr5DY6OZMrP9OBl6+HAyQk39Vmnoh
+         qqFlvNt44CLztfbZrj0FuRCR2iGPcc5KwKMipprl2samIjPIUTwaC70Mb9o7pSqUALGS
+         Y1XgtxzCoN2PV7HZ0F2hE5CbBIAFQWCEhapMSPTvKUjbbG/dkBUb37F4sJm/Y1dxF/Fr
+         W6/AXeohOW30JF1yMFMif9gq8qYKoFtgGFkSwa9AId0I5wgxwi5PemXv+4fDECM9suBZ
+         3A3nv5hCG0cMhnOLAQ3WtQ+XBjSLOF1Q0kJvhR5D+s+tgs3yeGY0AdbQe17Y81c19wFz
+         +PjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726175057; x=1726779857;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Z9VsB68MQof9g4wA1cKKKrr59DMnuyJ0zAwUPhXjwPI=;
-        b=nrGprPraAPCWjA/9IPBA6G2wqcLt/BVG9dS3EA+0p/zZIDCcFj7WdDzFpMzLu2wARC
-         6dsCHxBWsyivh6WmR3Qu6joztr72VCnrRlxCqjTAkw8LcZwrt9Q9rOl5L6cr99X2W3D9
-         tEBEL4B3PGEYgbp1VRgB0Fd8WzxqeBthKwtx1SYB/DgFw52WkciVACDgscR90MPd09ia
-         q/zd6ocFAZbT1eIejob8kTaM2SRVSzm6L5Z8Ap9uVUGXuTHwjclL0JK/NG3oQ5Punkm+
-         d7OSz0LCS4Z7DqyhRF0Ts8K2Ft0pvIii5D84sPr3JP8rn907sXRSreeoTqLfHPqz2WTb
-         VGvg==
-X-Forwarded-Encrypted: i=1; AJvYcCVlNxb2DoX12VgUrSI/A/BYzD6x7I0JT7kMdgwYpJ8mb6W3ucfBOUfzSIpAg6Ab21G14qA=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwBQLHvP/8LtLGp3T3UF1AAoTtElkBRx28uOnZoBwZH3Dkk4Sw6
-	eH1AddM+4t9xby9LvHmulEEqTZEaXvQwuKF1n5zBzcTR4jDR/L6eRsAwb+APF5LnOAdOVhnGqJr
-	WMSViaN7nnQaKTNsRq2a931FVna/iXCIiCej9
-X-Google-Smtp-Source: AGHT+IFLf7AFcbkAtsWFWFjzpfStlqHufGs3sxLk2dIi+9wgBc3dInwrl75rUyYqCfZRJ/a24Knz1XzFxhyJ/z86Zyo=
-X-Received: by 2002:a05:6402:27c7:b0:5c2:5641:af79 with SMTP id
- 4fb4d7f45d1cf-5c414384e17mr488780a12.0.1726175055955; Thu, 12 Sep 2024
- 14:04:15 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1726175691; x=1726780491;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2EO0qmaSPp73jvXnTs7TJzCKL8q51LBbEbQNyisfg4c=;
+        b=JccjKviyyAQMxX4IkFf0SajV7NMmI7k4kVMNaqyJ83IwuOY6mT818t5uzi18termcE
+         dgSmDk03tMf46J1pETqbZ3NFfTyvsw6CmmkkmzE5bhXp6qfyOJq+vcLVTFU/jUHLl3ju
+         owYBAf8b0R4WXtkwWzTc2x3z5QFOVOjDCHcBtTSTo8d73gOjfWgzziirdvH3iI6Y/Qxz
+         lpTvZi9LhXtf7e/VdUTwMiiEBrB8nwdDiIJbAISptg0CiGrO9+dl5YYElBI8uAyATzCZ
+         hq9to3BpT1YJofwir15tym66EpFrhgzyHIbyROJr+l0qfvEBfsJ793Oryl9r0tO3PvYc
+         kSmQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWVPscCyXJ3Av+73qjRwSTk26zxJrE6oSh1VPlKzvWfQ3UBAlOgHWXnOMbdomcZc6JLgr4=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz/0Eo8LTK9OzbMne21P+UwvZTWgzL2ViIEJc9wxYKj2JZoH02R
+	xfJV2F94WVSj9KoJOGPR1pdzQMR5SySfzeJgQpTsgSkeWqPYqfRICafL8bUe/Q==
+X-Google-Smtp-Source: AGHT+IEXhrO73skogk/s/nT+zYKnKQ0Yub0DnxaAiKfl03Q20IYpu3fPe1nRti4noHn1qI7LW/QNUg==
+X-Received: by 2002:a05:6808:399b:b0:3d9:3a2f:959e with SMTP id 5614622812f47-3e0719ee561mr3950771b6e.0.1726175691128;
+        Thu, 12 Sep 2024 14:14:51 -0700 (PDT)
+Received: from google.com (30.64.135.34.bc.googleusercontent.com. [34.135.64.30])
+        by smtp.gmail.com with ESMTPSA id 006d021491bc7-5e1cab53594sm2250200eaf.43.2024.09.12.14.14.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Sep 2024 14:14:50 -0700 (PDT)
+Date: Thu, 12 Sep 2024 14:14:47 -0700
+From: Justin Stitt <justinstitt@google.com>
+To: Yafang Shao <laoar.shao@gmail.com>
+Cc: akpm@linux-foundation.org, torvalds@linux-foundation.org, 
+	alx@kernel.org, ebiederm@xmission.com, alexei.starovoitov@gmail.com, 
+	rostedt@goodmis.org, catalin.marinas@arm.com, penguin-kernel@i-love.sakura.ne.jp, 
+	linux-mm@kvack.org, linux-fsdevel@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org, audit@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	selinux@vger.kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, Quentin Monnet <qmo@kernel.org>
+Subject: Re: [PATCH v8 4/8] bpftool: Ensure task comm is always NUL-terminated
+Message-ID: <ozoyqz5a7zssggowambojv4x6fbhdl6iqjopgnycca223jm6sz@pdzdmshhdgwn>
+References: <20240828030321.20688-1-laoar.shao@gmail.com>
+ <20240828030321.20688-5-laoar.shao@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAJuCfpFFqqUWYOob_WYG_aY=PurnKvZjxznnx7V0=ESbNzHr_w@mail.gmail.com>
- <20240912210222.186542-1-surenb@google.com>
-In-Reply-To: <20240912210222.186542-1-surenb@google.com>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Thu, 12 Sep 2024 14:04:00 -0700
-Message-ID: <CAJuCfpGgoSYmGSdcf+fZF1mUeNo-M=fzfk7G6ATs5-0TT+zkfQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] mm: introduce mmap_lock_speculation_{start|end}
-To: linux-trace-kernel@vger.kernel.org, peterz@infradead.org, oleg@redhat.com
-Cc: rostedt@goodmis.org, mhiramat@kernel.org, bpf@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, jolsa@kernel.org, paulmck@kernel.org, 
-	willy@infradead.org, akpm@linux-foundation.org, linux-mm@kvack.org, 
-	mjguzik@gmail.com, brauner@kernel.org, jannh@google.com, andrii@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240828030321.20688-5-laoar.shao@gmail.com>
 
-On Thu, Sep 12, 2024 at 2:02=E2=80=AFPM Suren Baghdasaryan <surenb@google.c=
-om> wrote:
->
-> Add helper functions to speculatively perform operations without
-> read-locking mmap_lock, expecting that mmap_lock will not be
-> write-locked and mm is not modified from under us.
+Hi,
 
-Here you go. I hope I got the ordering right this time around, but I
-would feel much better if Jann reviewed it before it's included in
-your next patchset :)
-Thanks,
-Suren.
-
->
-> Suggested-by: Peter Zijlstra <peterz@infradead.org>
-> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+On Wed, Aug 28, 2024 at 11:03:17AM GMT, Yafang Shao wrote:
+> Let's explicitly ensure the destination string is NUL-terminated. This way,
+> it won't be affected by changes to the source string.
+> 
+> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> Reviewed-by: Quentin Monnet <qmo@kernel.org>
 > ---
-> Changes since v1 [1]:
-> - Made memory barriers in inc_mm_lock_seq and mmap_lock_speculation_end
-> more strict, per Jann Horn
->
-> [1] https://lore.kernel.org/all/20240906051205.530219-2-andrii@kernel.org=
-/
->
->  include/linux/mm_types.h  |  3 ++
->  include/linux/mmap_lock.h | 74 ++++++++++++++++++++++++++++++++-------
->  kernel/fork.c             |  3 --
->  3 files changed, 65 insertions(+), 15 deletions(-)
->
-> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-> index 6e3bdf8e38bc..5d8cdebd42bc 100644
-> --- a/include/linux/mm_types.h
-> +++ b/include/linux/mm_types.h
-> @@ -887,6 +887,9 @@ struct mm_struct {
->                  * Roughly speaking, incrementing the sequence number is
->                  * equivalent to releasing locks on VMAs; reading the seq=
-uence
->                  * number can be part of taking a read lock on a VMA.
-> +                * Incremented every time mmap_lock is write-locked/unloc=
-ked.
-> +                * Initialized to 0, therefore odd values indicate mmap_l=
-ock
-> +                * is write-locked and even values that it's released.
->                  *
->                  * Can be modified under write mmap_lock using RELEASE
->                  * semantics.
-> diff --git a/include/linux/mmap_lock.h b/include/linux/mmap_lock.h
-> index de9dc20b01ba..a281519d0c12 100644
-> --- a/include/linux/mmap_lock.h
-> +++ b/include/linux/mmap_lock.h
-> @@ -71,39 +71,86 @@ static inline void mmap_assert_write_locked(const str=
-uct mm_struct *mm)
->  }
->
->  #ifdef CONFIG_PER_VMA_LOCK
-> +static inline void init_mm_lock_seq(struct mm_struct *mm)
-> +{
-> +       mm->mm_lock_seq =3D 0;
-> +}
-> +
->  /*
-> - * Drop all currently-held per-VMA locks.
-> - * This is called from the mmap_lock implementation directly before rele=
-asing
-> - * a write-locked mmap_lock (or downgrading it to read-locked).
-> - * This should normally NOT be called manually from other places.
-> - * If you want to call this manually anyway, keep in mind that this will=
- release
-> - * *all* VMA write locks, including ones from further up the stack.
-> + * Increment mm->mm_lock_seq when mmap_lock is write-locked (ACQUIRE sem=
-antics)
-> + * or write-unlocked (RELEASE semantics).
->   */
-> -static inline void vma_end_write_all(struct mm_struct *mm)
-> +static inline void inc_mm_lock_seq(struct mm_struct *mm, bool acquire)
->  {
->         mmap_assert_write_locked(mm);
->         /*
->          * Nobody can concurrently modify mm->mm_lock_seq due to exclusiv=
-e
->          * mmap_lock being held.
-> -        * We need RELEASE semantics here to ensure that preceding stores=
- into
-> -        * the VMA take effect before we unlock it with this store.
-> -        * Pairs with ACQUIRE semantics in vma_start_read().
->          */
-> -       smp_store_release(&mm->mm_lock_seq, mm->mm_lock_seq + 1);
-> +
-> +       if (acquire) {
-> +               WRITE_ONCE(mm->mm_lock_seq, mm->mm_lock_seq + 1);
-> +               /*
-> +                * For ACQUIRE semantics we should ensure no following st=
-ores are
-> +                * reordered to appear before the mm->mm_lock_seq modific=
-ation.
-> +                */
-> +               smp_wmb();
-> +       } else {
-> +               /*
-> +                * We need RELEASE semantics here to ensure that precedin=
-g stores
-> +                * into the VMA take effect before we unlock it with this=
- store.
-> +                * Pairs with ACQUIRE semantics in vma_start_read().
-> +                */
-> +               smp_store_release(&mm->mm_lock_seq, mm->mm_lock_seq + 1);
-> +       }
-> +}
-> +
-> +static inline bool mmap_lock_speculation_start(struct mm_struct *mm, int=
- *seq)
-> +{
-> +       /* Pairs with RELEASE semantics in inc_mm_lock_seq(). */
-> +       *seq =3D smp_load_acquire(&mm->mm_lock_seq);
-> +       /* Allow speculation if mmap_lock is not write-locked */
-> +       return (*seq & 1) =3D=3D 0;
-> +}
-> +
-> +static inline bool mmap_lock_speculation_end(struct mm_struct *mm, int s=
-eq)
-> +{
-> +       /* Pairs with ACQUIRE semantics in inc_mm_lock_seq(). */
-> +       smp_rmb();
-> +       return seq =3D=3D READ_ONCE(mm->mm_lock_seq);
->  }
-> +
->  #else
-> -static inline void vma_end_write_all(struct mm_struct *mm) {}
-> +static inline void init_mm_lock_seq(struct mm_struct *mm) {}
-> +static inline void inc_mm_lock_seq(struct mm_struct *mm, bool acquire) {=
-}
-> +static inline bool mmap_lock_speculation_start(struct mm_struct *mm, int=
- *seq) { return false; }
-> +static inline bool mmap_lock_speculation_end(struct mm_struct *mm, int s=
-eq) { return false; }
->  #endif
->
-> +/*
-> + * Drop all currently-held per-VMA locks.
-> + * This is called from the mmap_lock implementation directly before rele=
-asing
-> + * a write-locked mmap_lock (or downgrading it to read-locked).
-> + * This should normally NOT be called manually from other places.
-> + * If you want to call this manually anyway, keep in mind that this will=
- release
-> + * *all* VMA write locks, including ones from further up the stack.
-> + */
-> +static inline void vma_end_write_all(struct mm_struct *mm)
-> +{
-> +       inc_mm_lock_seq(mm, false);
-> +}
-> +
->  static inline void mmap_init_lock(struct mm_struct *mm)
->  {
->         init_rwsem(&mm->mmap_lock);
-> +       init_mm_lock_seq(mm);
->  }
->
->  static inline void mmap_write_lock(struct mm_struct *mm)
->  {
->         __mmap_lock_trace_start_locking(mm, true);
->         down_write(&mm->mmap_lock);
-> +       inc_mm_lock_seq(mm, true);
->         __mmap_lock_trace_acquire_returned(mm, true, true);
->  }
->
-> @@ -111,6 +158,7 @@ static inline void mmap_write_lock_nested(struct mm_s=
-truct *mm, int subclass)
->  {
->         __mmap_lock_trace_start_locking(mm, true);
->         down_write_nested(&mm->mmap_lock, subclass);
-> +       inc_mm_lock_seq(mm, true);
->         __mmap_lock_trace_acquire_returned(mm, true, true);
->  }
->
-> @@ -120,6 +168,8 @@ static inline int mmap_write_lock_killable(struct mm_=
-struct *mm)
->
->         __mmap_lock_trace_start_locking(mm, true);
->         ret =3D down_write_killable(&mm->mmap_lock);
-> +       if (!ret)
-> +               inc_mm_lock_seq(mm, true);
->         __mmap_lock_trace_acquire_returned(mm, true, ret =3D=3D 0);
->         return ret;
->  }
-> diff --git a/kernel/fork.c b/kernel/fork.c
-> index 61070248a7d3..c86e87ed172b 100644
-> --- a/kernel/fork.c
-> +++ b/kernel/fork.c
-> @@ -1259,9 +1259,6 @@ static struct mm_struct *mm_init(struct mm_struct *=
-mm, struct task_struct *p,
->         seqcount_init(&mm->write_protect_seq);
->         mmap_init_lock(mm);
->         INIT_LIST_HEAD(&mm->mmlist);
-> -#ifdef CONFIG_PER_VMA_LOCK
-> -       mm->mm_lock_seq =3D 0;
-> -#endif
->         mm_pgtables_bytes_init(mm);
->         mm->map_count =3D 0;
->         mm->locked_vm =3D 0;
->
-> base-commit: 015bdfcb183759674ba1bd732c3393014e35708b
-> --
-> 2.46.0.662.g92d0881bb0-goog
->
+>  tools/bpf/bpftool/pids.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/tools/bpf/bpftool/pids.c b/tools/bpf/bpftool/pids.c
+> index 9b898571b49e..23f488cf1740 100644
+> --- a/tools/bpf/bpftool/pids.c
+> +++ b/tools/bpf/bpftool/pids.c
+> @@ -54,6 +54,7 @@ static void add_ref(struct hashmap *map, struct pid_iter_entry *e)
+>  		ref = &refs->refs[refs->ref_cnt];
+>  		ref->pid = e->pid;
+>  		memcpy(ref->comm, e->comm, sizeof(ref->comm));
+> +		ref->comm[sizeof(ref->comm) - 1] = '\0';
+
+...
+
+>  		refs->ref_cnt++;
+>  
+>  		return;
+> @@ -77,6 +78,7 @@ static void add_ref(struct hashmap *map, struct pid_iter_entry *e)
+>  	ref = &refs->refs[0];
+>  	ref->pid = e->pid;
+>  	memcpy(ref->comm, e->comm, sizeof(ref->comm));
+> +	ref->comm[sizeof(ref->comm) - 1] = '\0';
+
+Excuse my ignorance, do we not have a strscpy() equivalent usable in bpf
+code?
+
+>  	refs->ref_cnt = 1;
+>  	refs->has_bpf_cookie = e->has_bpf_cookie;
+>  	refs->bpf_cookie = e->bpf_cookie;
+> -- 
+> 2.43.5
+> 
+
+Thanks
+Justin
 
