@@ -1,182 +1,248 @@
-Return-Path: <bpf+bounces-39729-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39730-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 610D5976CEE
-	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2024 17:03:52 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7C38976D08
+	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2024 17:08:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D71061F258BD
-	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2024 15:03:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 82970281DDD
+	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2024 15:08:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F22C21ACDE3;
-	Thu, 12 Sep 2024 15:03:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C2121B14E9;
+	Thu, 12 Sep 2024 15:08:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="liNZV9aV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oCNG4ldg"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 798367DA62;
-	Thu, 12 Sep 2024 15:03:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECF5D18EFF3;
+	Thu, 12 Sep 2024 15:08:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726153422; cv=none; b=PCLp75NnngYM9BkQgbDrEDEsZs2inpW4A+iUEI3n4zO0MtZToVQTB2cTtKDBmMdVSgpFpxEMAqZi5IO+nTqxCJ+EJFraD5+KoYdqs8eSKYqjGNHVCVUWzIwCCkjQxn8JwqYaEropb8kFVl2ZOH33wgdb1Du+EEGbHxPcebFUaFA=
+	t=1726153694; cv=none; b=QdPenp6kN7bD1sC2jojT7B02gjeAlXJACUwr9c6TR5Ywwx6O4lRIhP/sFX9p+4MfbXYhrm6xI0R68ReWTFKIleQoukQUxcZzV3q6Jq34zv2jTxsmsnRFiBgl4P2eh0iaaWSRLDsB0fyxDb3rq9E81ZAB2U5i1KTo/B1FBsHacKk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726153422; c=relaxed/simple;
-	bh=FS7VowP6VcwbfSE/69Yg1n5VFPIhrlBX+o8c6BCsi/Q=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=acTcFPm81OHSBtBsO3f0yPQ+ag6OblwI3M3N3TNnl2DWOaAtC98MITCeM+oC3nwICnuSIXequ9zL2qIe/bZpCZvV3ZbEWqBbybGUOhW3mi4XJgMwdzbhk/vhjczPg/Sn3RNQq5pZVM5hOafEDUpzTiipIcZfrG1AUfBtYsS18Jc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=liNZV9aV; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=MfQwa2aIAfoK5dYYHltwSoHa2s4oTNuzjDGGZa7ERak=; b=liNZV9aVtezOd3XCB+U5oCb17n
-	FheNiQVMungeEsyHZ3e2aNuB0TuQGMQdl87pNImvJ9giiO6xQ1GVFrMhbYk7ijPcg8KPlD1Hm1X9Q
-	5T9ECw41V3m32Elw9GRoiiiayIE3IGeRSTcBv2i4QraDHqf7S0tEE/Rz7hbOl0bxbe9qEt4Pb0tPu
-	bPewtmWfOb3n5ilo0GaZqtsgz55yeU4oAIRu2d5wjhidxI5Og+rnf8ax/JorCbdu+0gsFP41bXdrM
-	iAKxMSCfwONdGePx1aoiQtQy6HbuSrU/Fj5+rEZW/r5s3037y15f75tBIOduCZHm36QS4bbM9zcWN
-	7r4693SQ==;
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1solLp-000Iqs-9X; Thu, 12 Sep 2024 17:03:17 +0200
-Received: from [178.197.249.55] (helo=linux.home)
-	by sslproxy05.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1solLo-0007la-1f;
-	Thu, 12 Sep 2024 17:03:15 +0200
-Subject: Re: [PATCH net-net] tun: Assign missing bpf_net_context.
-To: Breno Leitao <leitao@debian.org>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: Jakub Kicinski <kuba@kernel.org>, razor@blackwall.org, andrii@kernel.org,
- ast@kernel.org,
- syzbot <syzbot+08811615f0e17bc6708b@syzkaller.appspotmail.com>,
- bpf@vger.kernel.org, davem@davemloft.net, eddyz87@gmail.com,
- haoluo@google.com, hawk@kernel.org, john.fastabend@gmail.com,
- jolsa@kernel.org, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
- martin.lau@linux.dev, netdev@vger.kernel.org, sdf@fomichev.me,
- song@kernel.org, syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
-References: <000000000000adb970061c354f06@google.com>
- <20240702114026.1e1f72b7@kernel.org> <20240703122758.i6lt_jii@linutronix.de>
- <20240703120143.43cc1770@kernel.org>
- <20240912-simple-fascinating-mackerel-8fe7c0@devvm32600>
- <20240912122847.x70_LgN_@linutronix.de>
- <20240912-hypnotic-messy-leopard-f1d2b0@leitao>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <ccd708bf-580a-3d24-e5be-4e7dc12e7b39@iogearbox.net>
-Date: Thu, 12 Sep 2024 17:03:15 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+	s=arc-20240116; t=1726153694; c=relaxed/simple;
+	bh=d1BX0b2TE/IDP66A92f7CdUTq3nc1QKZ2uuKh0zE2Z8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=mcB7qmtEEB5+MKVKPOA7Ico7kQYdm2F5Pl5i1TaOIBihPgtvziYCql5ZyuHtXVdlZxoi9qXhdaWRoTMFuBmZzkEd1km5wv+48RlC6O3SaoovkLNOABandW8y+CJq3kvjq2bH2C20kYP102lrM+zTD6QczeF+5wSdPbjrBQEdRzE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oCNG4ldg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ACC92C4CEC3;
+	Thu, 12 Sep 2024 15:08:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1726153693;
+	bh=d1BX0b2TE/IDP66A92f7CdUTq3nc1QKZ2uuKh0zE2Z8=;
+	h=From:To:Cc:Subject:Date:From;
+	b=oCNG4ldgQHBLOyCvcUNzcX++WhkAdciHXdwqFfafuKr/7MEhA+r5xLVPGiOJpd/Yc
+	 U8CWRivn04IQFfMfio9A/iM5hbGyzfgpGKrabefl1mo1I7r3bnn2h8hlBK1NH2QfgX
+	 KX/zUDUIRqCpa8hW0H7X4Yw5dwuK6mxrA3hwbkGcn441jxXvr6+cN58h9ozo+YxU97
+	 mYkdPrkiG/pEBos/oIiaP6cLwRYERbcx5ExU55WRIw70WXeq3hRzR2E99HHN/e2xb8
+	 kpzLhLxO2h98dkUsTrCGfHYzttKNbqYuLBk2YmW3RWEldVNCudQ9NbEAxfdF9aca7c
+	 2yvRd2Oiw1/Gw==
+From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Florent Revest <revest@chromium.org>
+Cc: linux-trace-kernel@vger.kernel.org,
+	LKML <linux-kernel@vger.kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	bpf <bpf@vger.kernel.org>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Alan Maguire <alan.maguire@oracle.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Guo Ren <guoren@kernel.org>,
+	linux-arch@vger.kernel.org
+Subject: [PATCH v14 00/19] tracing: fprobe: function_graph: Multi-function graph and fprobe on fgraph
+Date: Fri, 13 Sep 2024 00:08:06 +0900
+Message-Id: <172615368656.133222.2336770908714920670.stgit@devnote2>
+X-Mailer: git-send-email 2.34.1
+User-Agent: StGit/0.19
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240912-hypnotic-messy-leopard-f1d2b0@leitao>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27396/Thu Sep 12 10:46:40 2024)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On 9/12/24 3:17 PM, Breno Leitao wrote:
-> On Thu, Sep 12, 2024 at 02:28:47PM +0200, Sebastian Andrzej Siewior wrote:
->> On 2024-09-12 05:06:36 [-0700], Breno Leitao wrote:
->>> Hello Sebastian, Jakub,
->> Hi,
->>
->>> I've seen some crashes in 6.11-rc7 that seems related to 401cb7dae8130
->>> ("net: Reference bpf_redirect_info via task_struct on PREEMPT_RT.").
->>>
->>> Basically bpf_net_context is NULL, and it is being dereferenced by
->>> bpf_net_ctx->ri.kern_flags (offset 0x38) in the following code.
->>>
->>> 	static inline struct bpf_redirect_info *bpf_net_ctx_get_ri(void)
->>> 	{
->>> 		struct bpf_net_context *bpf_net_ctx = bpf_net_ctx_get();
->>> 		if (!(bpf_net_ctx->ri.kern_flags & BPF_RI_F_RI_INIT)) {
->>>
->>> That said, it means that bpf_net_ctx_get() is returning NULL.
->>>
->>> This stack is coming from the bpf function bpf_redirect()
->>> 	BPF_CALL_2(bpf_redirect, u32, ifindex, u64, flags)
->>> 	{
->>> 	      struct bpf_redirect_info *ri = bpf_net_ctx_get_ri();
->>>
->>>
->>> Since I don't think there is XDP involved, I wondering if we need some
->>> preotection before calling bpf_redirect()
->>
->> This origins in netkit_xmit(). If my memory serves me, then Daniel told
->> me that netkit is not doing any redirect and therefore does not need
->> "this". This must have been during one of the first "designs"/ versions.
-> 
-> Right, I've seen several crashes related to this, and in all of them it
-> is through netkit_xmit() -> netkit_run() ->  bpf_prog_run()
-> 
->> If you are saying, that this is possible then something must be done.
->> Either assign a context or reject the bpf program.
-> 
-> If we want to assign a context, do you meant something like the
-> following?
-> 
-> Author: Breno Leitao <leitao@debian.org>
-> Date:   Thu Sep 12 06:11:28 2024 -0700
-> 
->      netkit: Assign missing bpf_net_context.
->      
->      During the introduction of struct bpf_net_context handling for
->      XDP-redirect, the netkit driver has been missed.
->      
->      Set the bpf_net_context before invoking netkit_xmit() program within the
->      netkit driver.
->      
->      Fixes: 401cb7dae8130 ("net: Reference bpf_redirect_info via task_struct on PREEMPT_RT.")
->      Signed-off-by: Breno Leitao <leitao@debian.org>
+Hi,
 
-Oh well, quite annoying that we need this context now everywhere also outside of XDP :(
-Sebastian, do you see any way where this could be noop for !PREEMPT_RT?
+Here is the 14th version of the series to re-implement the fprobe on
+function-graph tracer. The previous version is;
 
-Anyway, fix looks good to me, thanks!
+https://lore.kernel.org/all/172398527264.293426.2050093948411376857.stgit@devnote2/
 
-Acked-by: Daniel Borkmann <daniel@iogearbox.net>
+This version is based on trace-v6.11-rc6.
 
-> diff --git a/drivers/net/netkit.c b/drivers/net/netkit.c
-> index 79232f5cc088..f8af57b7a1e8 100644
-> --- a/drivers/net/netkit.c
-> +++ b/drivers/net/netkit.c
-> @@ -65,6 +65,7 @@ static struct netkit *netkit_priv(const struct net_device *dev)
->   
->   static netdev_tx_t netkit_xmit(struct sk_buff *skb, struct net_device *dev)
->   {
-> +	struct bpf_net_context __bpf_net_ctx, *bpf_net_ctx;
->   	struct netkit *nk = netkit_priv(dev);
->   	enum netkit_action ret = READ_ONCE(nk->policy);
->   	netdev_tx_t ret_dev = NET_XMIT_SUCCESS;
-> @@ -72,6 +73,7 @@ static netdev_tx_t netkit_xmit(struct sk_buff *skb, struct net_device *dev)
->   	struct net_device *peer;
->   	int len = skb->len;
->   
-> +	bpf_net_ctx = bpf_net_ctx_set(&__bpf_net_ctx);
->   	rcu_read_lock();
->   	peer = rcu_dereference(nk->peer);
->   	if (unlikely(!peer || !(peer->flags & IFF_UP) ||
-> @@ -110,6 +112,7 @@ static netdev_tx_t netkit_xmit(struct sk_buff *skb, struct net_device *dev)
->   		break;
->   	}
->   	rcu_read_unlock();
-> +	bpf_net_ctx_clear(bpf_net_ctx);
->   	return ret_dev;
->   }
-> 
+I dropped already committed bugfix patch, also add RISC-V support of
+ftrace_regs APIs(ftrace_regs_get_return_address() and ftrace_partial_regs()).
 
+Overview
+--------
+This series rewrites the fprobe on this function-graph.
+The purposes of this change are;
+
+ 1) Remove dependency of the rethook from fprobe so that we can reduce
+   the return hook code and shadow stack.
+
+ 2) Make 'ftrace_regs' the common trace interface for the function
+   boundary.
+
+1) Currently we have 2(or 3) different function return hook codes,
+ the function-graph tracer and rethook (and legacy kretprobe).
+ But since this  is redundant and needs double maintenance cost,
+ I would like to unify those. From the user's viewpoint, function-
+ graph tracer is very useful to grasp the execution path. For this
+ purpose, it is hard to use the rethook in the function-graph
+ tracer, but the opposite is possible. (Strictly speaking, kretprobe
+ can not use it because it requires 'pt_regs' for historical reasons.)
+
+2) Now the fprobe provides the 'pt_regs' for its handler, but that is
+ wrong for the function entry and exit. Moreover, depending on the
+ architecture, there is no way to accurately reproduce 'pt_regs'
+ outside of interrupt or exception handlers. This means fprobe should
+ not use 'pt_regs' because it does not use such exceptions.
+ (Conversely, kprobe should use 'pt_regs' because it is an abstract
+  interface of the software breakpoint exception.)
+
+This series changes fprobe to use function-graph tracer for tracing
+function entry and exit, instead of mixture of ftrace and rethook.
+Unlike the rethook which is a per-task list of system-wide allocated
+nodes, the function graph's ret_stack is a per-task shadow stack.
+Thus it does not need to set 'nr_maxactive' (which is the number of
+pre-allocated nodes).
+Also the handlers will get the 'ftrace_regs' instead of 'pt_regs'.
+Since eBPF mulit_kprobe/multi_kretprobe events still use 'pt_regs' as
+their register interface, this changes it to convert 'ftrace_regs' to
+'pt_regs'. Of course this conversion makes an incomplete 'pt_regs',
+so users must access only registers for function parameters or
+return value. 
+
+Design
+------
+Instead of using ftrace's function entry hook directly, the new fprobe
+is built on top of the function-graph's entry and return callbacks
+with 'ftrace_regs'.
+
+Since the fprobe requires access to 'ftrace_regs', the architecture
+must support CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS and
+CONFIG_HAVE_FTRACE_GRAPH_FUNC, which enables to call function-graph
+entry callback with 'ftrace_regs', and also
+CONFIG_HAVE_FUNCTION_GRAPH_FREGS, which passes the ftrace_regs to
+return_to_handler.
+
+All fprobes share a single function-graph ops (means shares a common
+ftrace filter) similar to the kprobe-on-ftrace. This needs another
+layer to find corresponding fprobe in the common function-graph
+callbacks, but has much better scalability, since the number of
+registered function-graph ops is limited.
+
+In the entry callback, the fprobe runs its entry_handler and saves the
+address of 'fprobe' on the function-graph's shadow stack as data. The
+return callback decodes the data to get the 'fprobe' address, and runs
+the exit_handler.
+
+The fprobe introduces two hash-tables, one is for entry callback which
+searches fprobes related to the given function address passed by entry
+callback. The other is for a return callback which checks if the given
+'fprobe' data structure pointer is still valid. Note that it is
+possible to unregister fprobe before the return callback runs. Thus
+the address validation must be done before using it in the return
+callback.
+
+Download
+--------
+This series can be applied against the ftrace/for-next branch in
+linux-trace tree.
+
+This series can also be found below branch.
+
+https://git.kernel.org/pub/scm/linux/kernel/git/mhiramat/linux.git/log/?h=topic/fprobe-on-fgraph
+
+Thank you,
+
+---
+
+Masami Hiramatsu (Google) (19):
+      tracing: Add a comment about ftrace_regs definition
+      tracing: Rename ftrace_regs_return_value to ftrace_regs_get_return_value
+      function_graph: Pass ftrace_regs to entryfunc
+      function_graph: Replace fgraph_ret_regs with ftrace_regs
+      function_graph: Pass ftrace_regs to retfunc
+      fprobe: Use ftrace_regs in fprobe entry handler
+      fprobe: Use ftrace_regs in fprobe exit handler
+      tracing: Add ftrace_partial_regs() for converting ftrace_regs to pt_regs
+      tracing: Add ftrace_fill_perf_regs() for perf event
+      tracing/fprobe: Enable fprobe events with CONFIG_DYNAMIC_FTRACE_WITH_ARGS
+      bpf: Enable kprobe_multi feature if CONFIG_FPROBE is enabled
+      ftrace: Add CONFIG_HAVE_FTRACE_GRAPH_FUNC
+      fprobe: Rewrite fprobe on function-graph tracer
+      tracing: Fix function timing profiler to initialize hashtable
+      tracing/fprobe: Remove nr_maxactive from fprobe
+      selftests: ftrace: Remove obsolate maxactive syntax check
+      selftests/ftrace: Add a test case for repeating register/unregister fprobe
+      Documentation: probes: Update fprobe on function-graph tracer
+      fgraph: Skip recording calltime/rettime if it is not nneeded
+
+
+ Documentation/trace/fprobe.rst                     |   42 +
+ arch/arm64/Kconfig                                 |    2 
+ arch/arm64/include/asm/ftrace.h                    |   47 +
+ arch/arm64/kernel/asm-offsets.c                    |   12 
+ arch/arm64/kernel/entry-ftrace.S                   |   32 +
+ arch/arm64/kernel/ftrace.c                         |   20 +
+ arch/loongarch/Kconfig                             |    4 
+ arch/loongarch/include/asm/ftrace.h                |   32 -
+ arch/loongarch/kernel/asm-offsets.c                |   12 
+ arch/loongarch/kernel/ftrace_dyn.c                 |   10 
+ arch/loongarch/kernel/mcount.S                     |   17 -
+ arch/loongarch/kernel/mcount_dyn.S                 |   14 
+ arch/powerpc/Kconfig                               |    1 
+ arch/powerpc/include/asm/ftrace.h                  |   15 
+ arch/powerpc/kernel/trace/ftrace.c                 |    2 
+ arch/powerpc/kernel/trace/ftrace_64_pg.c           |   10 
+ arch/riscv/Kconfig                                 |    3 
+ arch/riscv/include/asm/ftrace.h                    |   43 +
+ arch/riscv/kernel/ftrace.c                         |   17 +
+ arch/riscv/kernel/mcount.S                         |   24 -
+ arch/s390/Kconfig                                  |    3 
+ arch/s390/include/asm/ftrace.h                     |   39 +
+ arch/s390/kernel/asm-offsets.c                     |    6 
+ arch/s390/kernel/mcount.S                          |    9 
+ arch/x86/Kconfig                                   |    4 
+ arch/x86/include/asm/ftrace.h                      |   37 +
+ arch/x86/kernel/ftrace.c                           |   50 +-
+ arch/x86/kernel/ftrace_32.S                        |   15 
+ arch/x86/kernel/ftrace_64.S                        |   17 -
+ include/linux/fprobe.h                             |   57 +-
+ include/linux/ftrace.h                             |  136 ++++
+ kernel/trace/Kconfig                               |   23 +
+ kernel/trace/bpf_trace.c                           |   19 -
+ kernel/trace/fgraph.c                              |   96 ++-
+ kernel/trace/fprobe.c                              |  638 ++++++++++++++------
+ kernel/trace/ftrace.c                              |   10 
+ kernel/trace/trace.h                               |    6 
+ kernel/trace/trace_fprobe.c                        |  147 ++---
+ kernel/trace/trace_functions_graph.c               |   10 
+ kernel/trace/trace_irqsoff.c                       |    6 
+ kernel/trace/trace_probe_tmpl.h                    |    2 
+ kernel/trace/trace_sched_wakeup.c                  |    6 
+ kernel/trace/trace_selftest.c                      |   11 
+ lib/test_fprobe.c                                  |   51 --
+ samples/fprobe/fprobe_example.c                    |    4 
+ .../test.d/dynevent/add_remove_fprobe_repeat.tc    |   19 +
+ .../ftrace/test.d/dynevent/fprobe_syntax_errors.tc |    4 
+ 47 files changed, 1167 insertions(+), 617 deletions(-)
+ create mode 100644 tools/testing/selftests/ftrace/test.d/dynevent/add_remove_fprobe_repeat.tc
+
+--
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
