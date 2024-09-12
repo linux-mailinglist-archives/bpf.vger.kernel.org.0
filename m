@@ -1,237 +1,135 @@
-Return-Path: <bpf+bounces-39749-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39750-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7252976D5D
-	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2024 17:14:51 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B45A6976E46
+	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2024 17:57:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D9FB91C239BF
-	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2024 15:14:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 097D3B228CC
+	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2024 15:56:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC0281BB6A7;
-	Thu, 12 Sep 2024 15:11:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZK9CCC9M"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AF2B1B9850;
+	Thu, 12 Sep 2024 15:56:51 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A4D13D556;
-	Thu, 12 Sep 2024 15:11:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 230E91898F8;
+	Thu, 12 Sep 2024 15:56:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726153905; cv=none; b=Bgxk6LXqrnKDrgtvjN39ILpjrI+078jaY+6ewcqCDXOTCrNIbqFpQkrn0Prq7MKW2aw/zXb8u8l0veHx22eIntXTFsm1TgsE587XlKH9UhkYtqnDO8fIq1aOHKj0bjddFkGLkFUUJvIaGP+Dsn2asILwBcirs+96JYBVLIO07qw=
+	t=1726156610; cv=none; b=VakQXOLjqfJoXsMiIrtb6iBXbiTi7DQvhK2lgld8/hGphpK8MVfxFRxATRtHgRD/s62TDovhTgvMbvVPSAg1sqsMN69cCc1xr/AWkop6MFReilxtpzLEM0xRkpxDjQu0YWYAoASItPgJPCvqXPhlcHJwIHHKVIiA1xCR85eq4BI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726153905; c=relaxed/simple;
-	bh=amoRD0d8bJ/7dPaqGBhYcBhuedEEvM42PqERJ3MQPSg=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=W/AOwAQNAzpZHp7mCiysQj5sUsPZdK0K4hfhObR4tUJuB1lIqYgiT3ZRxpUHReMKpx1PR19VlRMkoL93vaym43wNLqX79uI3cJ02tyoRtzoB/6qb46uxzqtI9QFldO/a5cXsnzPKt+aZkE5nozjLWXudnSmIsNAxBBqFw6H7VOQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZK9CCC9M; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0BEA7C4CEC3;
-	Thu, 12 Sep 2024 15:11:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1726153904;
-	bh=amoRD0d8bJ/7dPaqGBhYcBhuedEEvM42PqERJ3MQPSg=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ZK9CCC9Mt3C2f0oXIJhhtFzWAfokK+GK2NlgFQW41ye9g1X8QC+/UECeN7RWCYuAS
-	 gKZ3kB48r4791FUCDaAgtCW5Dba4KrXKUPuzUmHHV7qLtmoy9ndpY9QgGsE8qL7VpI
-	 uHmWWHigBAZQSCyffbAGIrxhkwNqCDb3U33CQgOFWfn8Si8N/izXvgBn8+T8ErtY6w
-	 lWukascOsXO5OdG9mXztT1t+oll7k8Fn1w+ErPjz60vcTUbooygkyBILFUeuCPH7+f
-	 xrIkFXzj94VFXHvQRmX2NaiapAh61O3zuemBHL5kjyMD1lkZdeEKDqHM0sT0t2YZzM
-	 qbu3JfTZFAENw==
-From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Florent Revest <revest@chromium.org>
-Cc: linux-trace-kernel@vger.kernel.org,
-	LKML <linux-kernel@vger.kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	bpf <bpf@vger.kernel.org>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	s=arc-20240116; t=1726156610; c=relaxed/simple;
+	bh=g49SySub1/dItFepy17pW9UeExN0v3axhuVwMBKg6Ck=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=IizGM+XdEIYBxgJLdM8mnkvJgGtg40pW6CrQ20OWUP4gtX5u5y9rxLNucFWjd3sWsN9FYRjBpNyffGbuAsa7ms4IlNBciDbNQyA92wa6t4ABAsol55jZFVQ57TcNIleDLVObNBI8rPxvZ74rFmlAXDxPiLGClwALlYXrgEJkSjc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-5c3cdba33b0so1319713a12.1;
+        Thu, 12 Sep 2024 08:56:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1726156607; x=1726761407;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=yGaUXUnd+3YrSKr0uQW+5rH8w8R3hUvGqKU6U5pnEgc=;
+        b=wSfTNMaxsNzsSqBav1cH6Z/wpxhPX8FHaqDum16PbRiWsjJWX4QvpJse6/Yk4ivklq
+         KtsPtMHZNy3yElxLQ/PU6xUw//sGeU62JcZdR0WEEByZqqhxEpiDs5leUDCbTe6pgxsR
+         NJFM201sNzMNMDtYe3PBbZfkfN2bGqn7O5NctUR7tdMRny2sQjAjs2BLbRPz4QU28asp
+         Jt69l4wPY5rfUnU6DHOGYxkCN25CBQFqcFFAy6KxnNF6ZChLcn0F/KF3vErcSNNe6pgr
+         SeB2xL4I1ZC5zaf8iYpHzqTFaXgPjAvTGTSKMznPZd1qHipfxz1/JoT7Y5dw3FvT43l3
+         Yixw==
+X-Forwarded-Encrypted: i=1; AJvYcCUGzeV1AjP1YrHeIagdkYStj36smkC6TyVALLscwvGhZ3SEEbsuKVEXzdTK3XkoZkFdfP0=@vger.kernel.org, AJvYcCVlCIn8hf7/wR2FhIoDbCYS9YAL0/2s22vZRewutrXqmoa2KIPBp8Csw33NJY/tbtMSd9mpy+ESFAfBRVEW@vger.kernel.org, AJvYcCWnMa7FxSkF4gyjEFpxwGkDjyeynpvBlarqqqXPnV1nbRaKPdAXecinFTsf9/HoD4A7apmb+kJq@vger.kernel.org
+X-Gm-Message-State: AOJu0YydK3DRqA3IOhzV3FBrGZ798KoCHGL1jNhaMaZmmRY1+2s/0fYA
+	6Fb3FBgZX30yDBMSJq+Hfj3OPFIrhF/N0qHIf/T1U2htUrMIAI0L
+X-Google-Smtp-Source: AGHT+IFEVLSg4hnq7/mj2dYIi3u+/01S44Pby+SK9xvZ2fN4+LAa4p7Jwb3LPSybIGLkNSik8PPO2g==
+X-Received: by 2002:a05:6402:3510:b0:57c:c166:ba6 with SMTP id 4fb4d7f45d1cf-5c413e2000fmr2150556a12.19.1726156606522;
+        Thu, 12 Sep 2024 08:56:46 -0700 (PDT)
+Received: from localhost (fwdproxy-lla-007.fbsv.net. [2a03:2880:30ff:7::face:b00c])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5c3ebd8c4c6sm6668081a12.86.2024.09.12.08.56.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Sep 2024 08:56:45 -0700 (PDT)
+From: Breno Leitao <leitao@debian.org>
+To: kuba@kernel.org,
+	bpf@vger.kernel.org,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	Alan Maguire <alan.maguire@oracle.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Guo Ren <guoren@kernel.org>,
-	linux-arch@vger.kernel.org
-Subject: [PATCH v14 19/19] fgraph: Skip recording calltime/rettime if it is not nneeded
-Date: Fri, 13 Sep 2024 00:11:38 +0900
-Message-Id: <172615389864.133222.14452329708227900626.stgit@devnote2>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <172615368656.133222.2336770908714920670.stgit@devnote2>
-References: <172615368656.133222.2336770908714920670.stgit@devnote2>
-User-Agent: StGit/0.19
+	Nikolay Aleksandrov <razor@blackwall.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	=?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: vadim.fedorenko@linux.dev,
+	andrii@kernel.org,
+	netdev@vger.kernel.org (open list:BPF [NETKIT] (BPF-programmable network device)),
+	linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH net] netkit: Assign missing bpf_net_context
+Date: Thu, 12 Sep 2024 08:56:19 -0700
+Message-ID: <20240912155620.1334587-1-leitao@debian.org>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+During the introduction of struct bpf_net_context handling for
+XDP-redirect, the netkit driver has been missed, which also requires it
+because NETKIT_REDIRECT invokes skb_do_redirect() which is accessing the
+per-CPU variables. Otherwise we see the following crash:
 
-Skip recording calltime and rettime if the fgraph_ops does not need it.
-This is a kind of performance optimization for fprobe. Since the fprobe
-user does not use these entries, recording timestamp in fgraph is just
-a overhead (e.g. eBPF, ftrace). So introduce the skip_timestamp flag,
-and all fgraph_ops sets this flag, skip recording calltime and rettime.
+	BUG: kernel NULL pointer dereference, address: 0000000000000038
+	bpf_redirect()
+	netkit_xmit()
+	dev_hard_start_xmit()
 
-Here is the performance results measured by
- tools/testing/selftests/bpf/benchs/run_bench_trigger.sh
+Set the bpf_net_context before invoking netkit_xmit() program within the
+netkit driver.
 
-Without this:
-kprobe-multi   :    5.700 ± 0.065M/s
-kretprobe-multi:    4.239 ± 0.006M/s
-
-With skip-timestamp:
-kprobe-multi   :    6.265 ± 0.033M/s	+9.91%
-kretprobe-multi:    4.758 ± 0.009M/s	+12.24%
-
-Suggested-by: Jiri Olsa <olsajiri@gmail.com>
-Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Fixes: 401cb7dae813 ("net: Reference bpf_redirect_info via task_struct on PREEMPT_RT.")
+Signed-off-by: Breno Leitao <leitao@debian.org>
+Acked-by: Daniel Borkmann <daniel@iogearbox.net>
+Reviewed-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
- Changes in v11:
-  - Simplify it to be symmetric on push and pop. (Thus the timestamp
-    getting place is a bit shifted.)
- Changes in v10:
-  - Add likely() to skipping timestamp.
- Changes in v9:
-  - Newly added.
----
- include/linux/ftrace.h |    2 ++
- kernel/trace/fgraph.c  |   36 +++++++++++++++++++++++++++++++++---
- kernel/trace/fprobe.c  |    1 +
- 3 files changed, 36 insertions(+), 3 deletions(-)
+ drivers/net/netkit.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
-index 63fb91088a23..bab6fabb3fa1 100644
---- a/include/linux/ftrace.h
-+++ b/include/linux/ftrace.h
-@@ -1160,6 +1160,8 @@ struct fgraph_ops {
- 	void				*private;
- 	trace_func_graph_ent_t		saved_func;
- 	int				idx;
-+	/* If skip_timestamp is true, this does not record timestamps. */
-+	bool				skip_timestamp;
- };
+diff --git a/drivers/net/netkit.c b/drivers/net/netkit.c
+index 16789cd446e9..3f4187102e77 100644
+--- a/drivers/net/netkit.c
++++ b/drivers/net/netkit.c
+@@ -65,6 +65,7 @@ static struct netkit *netkit_priv(const struct net_device *dev)
  
- void *fgraph_reserve_data(int idx, int size_bytes);
-diff --git a/kernel/trace/fgraph.c b/kernel/trace/fgraph.c
-index 6a3e2db16aa4..c116a92839ae 100644
---- a/kernel/trace/fgraph.c
-+++ b/kernel/trace/fgraph.c
-@@ -174,6 +174,7 @@ int ftrace_graph_active;
+ static netdev_tx_t netkit_xmit(struct sk_buff *skb, struct net_device *dev)
+ {
++	struct bpf_net_context __bpf_net_ctx, *bpf_net_ctx;
+ 	struct netkit *nk = netkit_priv(dev);
+ 	enum netkit_action ret = READ_ONCE(nk->policy);
+ 	netdev_tx_t ret_dev = NET_XMIT_SUCCESS;
+@@ -72,6 +73,7 @@ static netdev_tx_t netkit_xmit(struct sk_buff *skb, struct net_device *dev)
+ 	struct net_device *peer;
+ 	int len = skb->len;
  
- static struct fgraph_ops *fgraph_array[FGRAPH_ARRAY_SIZE];
- static unsigned long fgraph_array_bitmask;
-+static bool fgraph_skip_timestamp;
- 
- /* LRU index table for fgraph_array */
- static int fgraph_lru_table[FGRAPH_ARRAY_SIZE];
-@@ -557,7 +558,11 @@ ftrace_push_return_trace(unsigned long ret, unsigned long func,
- 		return -EBUSY;
++	bpf_net_ctx = bpf_net_ctx_set(&__bpf_net_ctx);
+ 	rcu_read_lock();
+ 	peer = rcu_dereference(nk->peer);
+ 	if (unlikely(!peer || !(peer->flags & IFF_UP) ||
+@@ -110,6 +112,7 @@ static netdev_tx_t netkit_xmit(struct sk_buff *skb, struct net_device *dev)
+ 		break;
  	}
- 
--	calltime = trace_clock_local();
-+	/* This is not really 'likely' but for keeping the least path to be faster. */
-+	if (likely(fgraph_skip_timestamp))
-+		calltime = 0LL;
-+	else
-+		calltime = trace_clock_local();
- 
- 	offset = READ_ONCE(current->curr_ret_stack);
- 	ret_stack = RET_STACK(current, offset);
-@@ -728,6 +733,12 @@ ftrace_pop_return_trace(struct ftrace_graph_ret *trace, unsigned long *ret,
- 	*ret = ret_stack->ret;
- 	trace->func = ret_stack->func;
- 	trace->calltime = ret_stack->calltime;
-+	/* This is not really 'likely' but for keeping the least path to be faster. */
-+	if (likely(!trace->calltime))
-+		trace->rettime = 0LL;
-+	else
-+		trace->rettime = trace_clock_local();
-+
- 	trace->overrun = atomic_read(&current->trace_overrun);
- 	trace->depth = current->curr_ret_depth;
- 	/*
-@@ -788,7 +799,6 @@ __ftrace_return_to_handler(struct ftrace_regs *fregs, unsigned long frame_pointe
- 		return (unsigned long)panic;
- 	}
- 
--	trace.rettime = trace_clock_local();
- 	if (fregs)
- 		ftrace_regs_set_instruction_pointer(fregs, ret);
- 
-@@ -1248,6 +1258,24 @@ static void ftrace_graph_disable_direct(bool disable_branch)
- 	fgraph_direct_gops = &fgraph_stub;
+ 	rcu_read_unlock();
++	bpf_net_ctx_clear(bpf_net_ctx);
+ 	return ret_dev;
  }
  
-+static void update_fgraph_skip_timestamp(void)
-+{
-+	int i;
-+
-+	for (i = 0; i < FGRAPH_ARRAY_SIZE; i++) {
-+		struct fgraph_ops *gops = fgraph_array[i];
-+
-+		if (gops == &fgraph_stub)
-+			continue;
-+
-+		if (!gops->skip_timestamp) {
-+			fgraph_skip_timestamp = false;
-+			return;
-+		}
-+	}
-+	fgraph_skip_timestamp = true;
-+}
-+
- int register_ftrace_graph(struct fgraph_ops *gops)
- {
- 	int command = 0;
-@@ -1271,6 +1299,7 @@ int register_ftrace_graph(struct fgraph_ops *gops)
- 	gops->idx = i;
- 
- 	ftrace_graph_active++;
-+	update_fgraph_skip_timestamp();
- 
- 	if (ftrace_graph_active == 2)
- 		ftrace_graph_disable_direct(true);
-@@ -1303,6 +1332,7 @@ int register_ftrace_graph(struct fgraph_ops *gops)
- 		ftrace_graph_active--;
- 		gops->saved_func = NULL;
- 		fgraph_lru_release_index(i);
-+		update_fgraph_skip_timestamp();
- 	}
- out:
- 	mutex_unlock(&ftrace_lock);
-@@ -1326,8 +1356,8 @@ void unregister_ftrace_graph(struct fgraph_ops *gops)
- 		goto out;
- 
- 	fgraph_array[gops->idx] = &fgraph_stub;
--
- 	ftrace_graph_active--;
-+	update_fgraph_skip_timestamp();
- 
- 	if (!ftrace_graph_active)
- 		command = FTRACE_STOP_FUNC_RET;
-diff --git a/kernel/trace/fprobe.c b/kernel/trace/fprobe.c
-index 5a0b4ef52fa7..b108d26d7ee5 100644
---- a/kernel/trace/fprobe.c
-+++ b/kernel/trace/fprobe.c
-@@ -345,6 +345,7 @@ NOKPROBE_SYMBOL(fprobe_return);
- static struct fgraph_ops fprobe_graph_ops = {
- 	.entryfunc	= fprobe_entry,
- 	.retfunc	= fprobe_return,
-+	.skip_timestamp = true,
- };
- static int fprobe_graph_active;
- 
+-- 
+2.43.5
 
 
