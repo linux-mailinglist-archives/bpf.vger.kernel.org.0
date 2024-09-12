@@ -1,223 +1,179 @@
-Return-Path: <bpf+bounces-39756-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39757-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2827976FDC
-	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2024 19:57:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3797976FE3
+	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2024 19:59:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 038E51F25043
-	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2024 17:57:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4714E1F25466
+	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2024 17:59:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 962E71BF305;
-	Thu, 12 Sep 2024 17:57:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BC181BF336;
+	Thu, 12 Sep 2024 17:59:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Hz7zPrrT"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BrpAMqQ/"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4478450FA;
-	Thu, 12 Sep 2024 17:57:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54048149C50
+	for <bpf@vger.kernel.org>; Thu, 12 Sep 2024 17:59:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726163867; cv=none; b=rW9zgHGwcprdGZvoNkO7ERL4KD+rflrOJxXj4Y0Mou3PmQy0L75rHR1qFhpf/2TAvW2lmRRPz6XCv5hZ4v7/wVozBLNoXitHnSA/Fb3eEGclpv7ziH1BvSoschVq4dB0vnSRfNnkKXviWPRIpCwoPeh3bIL0rcibemp8jAR2T0Q=
+	t=1726163985; cv=none; b=YfcC+rahEd74Q9pR/IMqoir5BUinsedakkVhPZHNwPZOS6Tzar0dHzlBtGHKhXkCRju2fDBkuX6Tj9VvT5tmwiiHmpx0Ue3OktzQ6BLh/v2ifVZixM/iXqX83Qprpa2AIPU9k/QOzlXhFdYQklaWFCwf0vzREMmboWQvbZzBbA4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726163867; c=relaxed/simple;
-	bh=gRNIKQe8LPHbkpainpuCj1mpKe3jnYTWPByOYplkE7I=;
+	s=arc-20240116; t=1726163985; c=relaxed/simple;
+	bh=bJSW95k4SI9TqyKRmpnTh4QHPlMKq51/JTTOWXfr0fQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TGyvGQS8fdehr2cmNzNUr5RL8xVMNvsQzPl7fg0IUgp6JLeOgBAlxr/UqQWlSwkT4d/G14AtLQuJv2DriMmUiyKd9iC3jz5+FaNHqkj1XRUIn/qE2mCTQQpvOA/TBNAe1h84iiKF45T3FPKTiYkrkd5E62F+p6nXbq0qjUa658M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Hz7zPrrT; arc=none smtp.client-ip=209.85.216.50
+	 To:Cc:Content-Type; b=a2kK0MafUnQlo44Lc2yin9qbbgqyJSFcp1XYcv13rF+JhO9QzHVuDERt0GPv6tHwfC5s7cfFh3DiPpI+g2isVDQeZ7v3WujgyHrkccaEbUE0xtEgvcW+FlaDzu0Rwx7MT0MU8pOTZAUDtu6G6dmraIgepsc3vfz3OsJjmPT8Bg8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BrpAMqQ/; arc=none smtp.client-ip=209.85.214.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-2d8a4bad409so940477a91.0;
-        Thu, 12 Sep 2024 10:57:45 -0700 (PDT)
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-2053616fa36so15123655ad.0
+        for <bpf@vger.kernel.org>; Thu, 12 Sep 2024 10:59:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1726163865; x=1726768665; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1726163983; x=1726768783; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=yAxla2V/jbE96IFDHkffqVnvDP474rGr0BFWJRieBj4=;
-        b=Hz7zPrrTwKOMGtiq4H+2l9cTyv72yJQ3c7PWVtw3Xb6pT0rRrAl7hn+toY9ppqSF+l
-         8T/TGtaVpyXhrmo9nLrgQQDTSx9l0NVU7h9ZOAAdY3RdEKB4fmh+q5E6wBcbtBlgmY+9
-         Ji5ChlSxlb0msVPikyH3nRT69qQkum4BE2DBnTfg9PZfNIqHN9XBtmXT4bTUtG8FEtCs
-         tnvLVENUmQyNilGmvPHUofoSYgaN10oqmEHAmXOFyfbr+ilsyGNIUYbuyKl4pBxUhgsX
-         M43QPwwQPEh9ZU310lh19biOxOfSt/7yMXQZJ/4rUhH5F8JuTbkJW/KS4uICARcJZF5b
-         d/6A==
+        bh=36hDrNEGkVjRxMXLT0Bx+OvHmCCXvAQjZdWAQF9RF3c=;
+        b=BrpAMqQ/sb2dRYdIdybsFe8fMmKnXrTauYFkMeP+6vT3slJDQztgNDIYCZ7yhYEEEN
+         h8gOdqykjyITvzEqtUacHdL/SeM6ynMhMEKN0R+vnjOLJO3cwiYankwa0+4+exCxRev3
+         W/mUUGK3C6RHvxbmPkn/IqnrmBQujryuapO7+yys14FPqHvUXy/wZowFqIc9eKTk3jbe
+         twBK7W8Nb01aWwbjHmITjXDGo+3qAjjhAnDRbTYtnLmChk9+rhKXSOr2bEMoKqUmDjiv
+         xkAxCu4Stq7vF+4AXKU4U9sNitbnNCQMLjh/KJ5NRaUXwADpepizdtypu0r4cewP9Onf
+         wngA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726163865; x=1726768665;
+        d=1e100.net; s=20230601; t=1726163983; x=1726768783;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=yAxla2V/jbE96IFDHkffqVnvDP474rGr0BFWJRieBj4=;
-        b=BLzDOJ+eIu12TbVod6fGapOpDfp9uMh2dMbid/VNq5uTqkq3w2ROzU4PoQdidcGRbD
-         sQhM6MnUD3FQgSjpVTYY4ec652KaiFbeNZnhOxCRTlH7AkXJ0BHECbGOnGTVGymVJT1V
-         0a7pmHiRmiwPFV8OkworkWI5zv89WKSB3ScUiZPsxq3nNSanspYKnMgbGdnp53L5pSa8
-         dtpyaFQuWfjZx9YxnyeNNFA3z5Hd02KPJvtBhDUBpL/9jAzl5Z4p1QzZazl8Ng5n4Msc
-         jwIGJoiN/ilFL0FG4bg6Eh8vjdKCxw7/WDnOhqKSfR3sbNQKcgtnif0/ZzCxufv790q+
-         WjvQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVhVdLKIVo9DvSliYVtDSDVl4quvKBiQZHOspdytJiMk1RkUbfm8aanGgcu98ku54iaAW7o/wSRnEo=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwZ4wF6Dq2tpneFd111u2ODeyqtKKNMrK8lHTG+NjrqAvwl8nAO
-	8uilK6pzlezCayjIuRS3QgmCConsUdoDdVu3XL+eTWkgAWsw0Crf01YdRIdziTlMqyp6c2KmtU3
-	+v9nBrbe5+x997KmMf7c7HAgu3fw=
-X-Google-Smtp-Source: AGHT+IFCxGmCPTnEc/uS/G3IMnElnGyhiHYr0464wQ6QkNgEa8mKcQr/ztZ51OuzeEYuYsaWyVNxrsxDl4guLZ3koYY=
-X-Received: by 2002:a17:90a:114f:b0:2c8:64a:5f77 with SMTP id
- 98e67ed59e1d1-2dba0084dabmr4186190a91.37.1726163864936; Thu, 12 Sep 2024
- 10:57:44 -0700 (PDT)
+        bh=36hDrNEGkVjRxMXLT0Bx+OvHmCCXvAQjZdWAQF9RF3c=;
+        b=snl9/lrPwPKN05ZYD47Cs95NAvEsoMs2o1kvzWFDWGnPopS93SPXLK/12kDAcOVoof
+         1EWfVlQF/sVIyZw7HtPYs/xdV9Y3B6YEJMQ8g5X6TScWV7jqRJr0E9RuZe9LjcY/8gaN
+         tSeB/3J7XV8trwpxhC9V6hFvY4HDdVy0lrVgDgQY0KM/VOC5F4tHlxtWO90cjgVt/26X
+         gVVCd+n0i6T+crynSJwWFVg3BrSPnFmMvUd/F3aIO1LCPT8QHKD2im1rkio6M+wbtStQ
+         aHFXtictpecTRTn6HwvNZgfPNLdemLZq6NbjtQPQ7BGhRk1IXCGtyBHcJlljmQPEQ5QY
+         iqrw==
+X-Forwarded-Encrypted: i=1; AJvYcCWtTwyy3HOOUQkXmjMjADfawOEhO+JvVeKyQnpzf4yyJVP8pgh2YodW4A43sbU/qMo/S/U=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yynspl2wm5EXLAjVcmFqMEYrJG9z1wFOBK7xdz4PxhNXzXQLPTQ
+	NiUk/ZparnoxBIl2Y7WdZpSl87jnliOAPFCg68vs9qORwPYCKRXg7D9/Z8qAvwN1aYcEkWkf8qX
+	1lu3gLnLtei9BdwkrFHYyxJS5LbY=
+X-Google-Smtp-Source: AGHT+IGgBehpAhsM18ThhZx5XBj7hqvjDVeOorjbSrWJVL1PC4XIT8mau41VB/9ACMWBdRNPwyeLnk2q+TaydN7sTdQ=
+X-Received: by 2002:a17:902:e5c3:b0:205:709e:1949 with SMTP id
+ d9443c01a7336-2076e421fd0mr57553175ad.57.1726163983510; Thu, 12 Sep 2024
+ 10:59:43 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240912095944.6386-1-donald.hunter@gmail.com>
-In-Reply-To: <20240912095944.6386-1-donald.hunter@gmail.com>
+References: <20240906135608.26477-1-daniel@iogearbox.net> <20240906135608.26477-5-daniel@iogearbox.net>
+ <CAADnVQ+GSCAPC7v787c4poFY4ku=L9q1cn1d=A3YhVRUomoVrQ@mail.gmail.com>
+ <fb38bb54-c59b-ba36-821f-f7dfcaa390cc@iogearbox.net> <a86eb76d-f52f-dee4-e5d2-87e45de3e16f@iogearbox.net>
+In-Reply-To: <a86eb76d-f52f-dee4-e5d2-87e45de3e16f@iogearbox.net>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 12 Sep 2024 10:57:32 -0700
-Message-ID: <CAEf4BzYv-q5tCfKXSFDuq-dpjVLZ9S59ow3Mk4-Ug7pJtJuD6g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2] docs/bpf: Add missing BPF program types to docs
-To: Donald Hunter <donald.hunter@gmail.com>
-Cc: bpf@vger.kernel.org, linux-doc@vger.kernel.org, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Jonathan Corbet <corbet@lwn.net>
+Date: Thu, 12 Sep 2024 10:59:31 -0700
+Message-ID: <CAEf4BzbYwfEaoG8TQrncjeG6RSD5TO04baAM=t9aqShVnbn8vg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 5/8] bpf: Zero former ARG_PTR_TO_{LONG,INT}
+ args in case of error
+To: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf <bpf@vger.kernel.org>, 
+	Shung-Hsi Yu <shung-hsi.yu@suse.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, kongln9170@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Sep 12, 2024 at 2:59=E2=80=AFAM Donald Hunter <donald.hunter@gmail.=
-com> wrote:
+On Thu, Sep 12, 2024 at 2:47=E2=80=AFAM Daniel Borkmann <daniel@iogearbox.n=
+et> wrote:
 >
-> Update the table of program types in the libbpf documentation with the
-> recently added program types.
+> On 9/9/24 2:16 PM, Daniel Borkmann wrote:
+> > On 9/7/24 12:35 AM, Alexei Starovoitov wrote:
+> >> On Fri, Sep 6, 2024 at 6:56=E2=80=AFAM Daniel Borkmann <daniel@iogearb=
+ox.net> wrote:
+> >>>
+> >>> -       if (unlikely(flags & ~(BPF_MTU_CHK_SEGS)))
+> >>> -               return -EINVAL;
+> >>> -
+> >>> -       if (unlikely(flags & BPF_MTU_CHK_SEGS && (len_diff || *mtu_le=
+n)))
+> >>> +       if (unlikely((flags & ~(BPF_MTU_CHK_SEGS)) ||
+> >>> +                    (flags & BPF_MTU_CHK_SEGS && (len_diff || *mtu_l=
+en)))) {
+> >>> +               *mtu_len =3D 0;
+> >>>                  return -EINVAL;
+> >>> +       }
+> >>>
+> >>>          dev =3D __dev_via_ifindex(dev, ifindex);
+> >>> -       if (unlikely(!dev))
+> >>> +       if (unlikely(!dev)) {
+> >>> +               *mtu_len =3D 0;
+> >>>                  return -ENODEV;
+> >>> +       }
+> >>
+> >> I don't understand this mtu_len clearing.
+> >>
+> >> My earlier comment was that mtu is in&out argument.
+> >> The program has to set it to something. It cannot be uninit.
+> >> So zeroing it on error looks very odd.
+> >>
+> >> In that sense the patch 3 looks wrong. Instead of:
+> >>
+> >> @@ -6346,7 +6346,9 @@ static const struct bpf_func_proto
+> >> bpf_skb_check_mtu_proto =3D {
+> >>          .ret_type       =3D RET_INTEGER,
+> >>          .arg1_type      =3D ARG_PTR_TO_CTX,
+> >>          .arg2_type      =3D ARG_ANYTHING,
+> >> -       .arg3_type      =3D ARG_PTR_TO_INT,
+> >> +       .arg3_type      =3D ARG_PTR_TO_FIXED_SIZE_MEM |
+> >> +                         MEM_UNINIT | MEM_ALIGNED,
+> >> +       .arg3_size      =3D sizeof(u32),
+> >>
+> >> MEM_UNINIT should be removed, because
+> >> bpf_xdp_check_mtu, bpf_skb_check_mtu will read it.
+> >>
+> >> If there is a program out there that calls this helper without
+> >> initializing mtu_len it will be rejected after we fix it,
+> >> but I think that's a good thing.
+> >> Passing random mtu_len and let helper do:
+> >>
+> >> skb_len =3D *mtu_len ? *mtu_len + dev->hard_header_len : skb->len;
+> >>
+> >> is just bad.
+> >
+> > Ok, fair. Removing MEM_UNINIT sounds reasonable, was mostly thinking
+> > that even if its garbage MTU being passed in, mtu_len gets filled in
+> > either case (BPF_MTU_CHK_RET_{SUCCESS,FRAG_NEEDED}) assuming no invalid
+> > ifindex e.g.:
+> >
+> >    __u32 mtu_len;
+> >    bpf_skb_check_mtu(skb, skb->ifindex, &mtu_len, 0, 0);
 >
-> Signed-off-by: Donald Hunter <donald.hunter@gmail.com>
-> ---
->  Documentation/bpf/libbpf/program_types.rst | 30 +++++++++++++++++++---
->  1 file changed, 26 insertions(+), 4 deletions(-)
+> Getting back at this, removing MEM_UNINIT needs more verifier rework:
+> MEM_UNINIT right now implies two things actually: i) write into memory,
+> ii) memory does not have to be initialized. If we lift MEM_UNINIT, it
+> then becomes: i) read into memory, ii) memory must be initialized.
 >
-> diff --git a/Documentation/bpf/libbpf/program_types.rst b/Documentation/b=
-pf/libbpf/program_types.rst
-> index 63bb88846e50..09bb834aa827 100644
-> --- a/Documentation/bpf/libbpf/program_types.rst
-> +++ b/Documentation/bpf/libbpf/program_types.rst
-> @@ -121,6 +121,8 @@ described in more detail in the footnotes.
->  +-------------------------------------------+---------------------------=
--------------+----------------------------------+-----------+
->  | ``BPF_PROG_TYPE_LWT_XMIT``                |                           =
-             | ``lwt_xmit``                     |           |
->  +-------------------------------------------+---------------------------=
--------------+----------------------------------+-----------+
-> +| ``BPF_PROG_TYPE_NETFILTER``               |                           =
-             | ``netfilter``                    |           |
-> ++-------------------------------------------+---------------------------=
--------------+----------------------------------+-----------+
->  | ``BPF_PROG_TYPE_PERF_EVENT``              |                           =
-             | ``perf_event``                   |           |
->  +-------------------------------------------+---------------------------=
--------------+----------------------------------+-----------+
->  | ``BPF_PROG_TYPE_RAW_TRACEPOINT_WRITABLE`` |                           =
-             | ``raw_tp.w+`` [#rawtp]_          |           |
-> @@ -131,11 +133,23 @@ described in more detail in the footnotes.
->  +                                           +                           =
-             +----------------------------------+-----------+
->  |                                           |                           =
-             | ``raw_tracepoint+``              |           |
->  +-------------------------------------------+---------------------------=
--------------+----------------------------------+-----------+
-> -| ``BPF_PROG_TYPE_SCHED_ACT``               |                           =
-             | ``action``                       |           |
-> +| ``BPF_PROG_TYPE_SCHED_ACT``               |                           =
-             | ``action`` [#tc_legacy]_         |           |
->  +-------------------------------------------+---------------------------=
--------------+----------------------------------+-----------+
-> -| ``BPF_PROG_TYPE_SCHED_CLS``               |                           =
-             | ``classifier``                   |           |
-> +| ``BPF_PROG_TYPE_SCHED_CLS``               |                           =
-             | ``classifier`` [#tc_legacy]_     |           |
->  +                                           +                           =
-             +----------------------------------+-----------+
-> -|                                           |                           =
-             | ``tc``                           |           |
-> +|                                           |                           =
-             | ``tc`` [#tc_legacy]_             |           |
-> ++                                           +---------------------------=
--------------+----------------------------------+-----------+
-> +|                                           | ``BPF_NETKIT_PRIMARY``    =
-             | ``netkit/primary``               |           |
-> ++                                           +---------------------------=
--------------+----------------------------------+-----------+
-> +|                                           | ``BPF_NETKIT_PEER``       =
-             | ``netkit/peer``                  |           |
-> ++                                           +---------------------------=
--------------+----------------------------------+-----------+
-> +|                                           | ``BPF_TCX_INGRESS``       =
-             | ``tc/ingress``                   |           |
-> ++                                           +---------------------------=
--------------+----------------------------------+-----------+
-> +|                                           | ``BPF_TCX_EGRESS``        =
-             | ``tc/egress``                    |           |
-> ++                                           +---------------------------=
--------------+----------------------------------+-----------+
-> +|                                           | ``BPF_TCX_INGRESS``       =
-             | ``tcx/ingress``                  |           |
-> ++                                           +---------------------------=
--------------+----------------------------------+-----------+
-> +|                                           | ``BPF_TCX_EGRESS``        =
-             | ``tcx/egress``                   |           |
->  +-------------------------------------------+---------------------------=
--------------+----------------------------------+-----------+
->  | ``BPF_PROG_TYPE_SK_LOOKUP``               | ``BPF_SK_LOOKUP``         =
-             | ``sk_lookup``                    |           |
->  +-------------------------------------------+---------------------------=
--------------+----------------------------------+-----------+
-> @@ -155,7 +169,9 @@ described in more detail in the footnotes.
->  +-------------------------------------------+---------------------------=
--------------+----------------------------------+-----------+
->  | ``BPF_PROG_TYPE_SOCK_OPS``                | ``BPF_CGROUP_SOCK_OPS``   =
-             | ``sockops``                      |           |
->  +-------------------------------------------+---------------------------=
--------------+----------------------------------+-----------+
-> -| ``BPF_PROG_TYPE_STRUCT_OPS``              |                           =
-             | ``struct_ops+``                  |           |
-> +| ``BPF_PROG_TYPE_STRUCT_OPS``              |                           =
-             | ``struct_ops+`` [#struct_ops]_   |           |
-> ++                                           +                           =
-             +----------------------------------+-----------+
-> +|                                           |                           =
-             | ``struct_ops.s+`` [#struct_ops]_ | Yes       |
->  +-------------------------------------------+---------------------------=
--------------+----------------------------------+-----------+
->  | ``BPF_PROG_TYPE_SYSCALL``                 |                           =
-             | ``syscall``                      | Yes       |
->  +-------------------------------------------+---------------------------=
--------------+----------------------------------+-----------+
-> @@ -209,5 +225,11 @@ described in more detail in the footnotes.
->                ``a-zA-Z0-9_.*?``.
->  .. [#lsm] The ``lsm`` attachment format is ``lsm[.s]/<hook>``.
->  .. [#rawtp] The ``raw_tp`` attach format is ``raw_tracepoint[.w]/<tracep=
-oint>``.
-> +.. [#tc_legacy] The ``tc``, ``classifier`` and ``action`` attach types a=
-re deprecated, use
-> +                ``tcx/*`` instead.
-> +.. [#struct_ops] The ``struct_ops`` attach format is ``struct_ops[.s]/<n=
-ame>``, but ``name`` is
-
-I slightly modified this to:
-
-The ``struct_ops`` attach format supports ``struct_ops[.s]/<name>``
-convention, but ...
-
-Pushed to bpf-next, thanks.
-
-> +                 ignored and it is recommended to just use ``SEC("struct=
-_ops[.s]")``. The
-> +                 attachments are defined in a struct initializer that is=
- tagged with
-> +                 ``SEC(".struct_ops[.link]")``.
->  .. [#tp] The ``tracepoint`` attach format is ``tracepoint/<category>/<na=
-me>``.
->  .. [#iter] The ``iter`` attach format is ``iter[.s]/<struct-name>``.
-> --
-> 2.45.2
+> This means that for bpf_*_check_mtu() we're readding the issue we're
+> trying to fix, that is, it would then be able to write back into things
+> like .rodata maps.
 >
+> My suggestion is for this series is to go with MEM_UNINIT tag and
+> clearing on error case to avoid leaking, and then in a subsequent
+> series to break up MEM_UNINIT in the verifier into two properties:
+> MEM_WRITE and MEM_UNINIT to better declare intent of the helpers. Then
+> the bpf_*_check_mtu() will have MEM_WRITE but not MEM_UNINIT.
+>
+> Thoughts? (If preference is to further extend this series, I can also
+> look into that ofc.)
+
+We have MEM_RDONLY which literally means that memory is meant to be
+only consumed for reading. Will this solve these issues?
+
+>
+> Thanks,
+> Daniel
 
