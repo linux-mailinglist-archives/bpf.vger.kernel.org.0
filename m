@@ -1,120 +1,145 @@
-Return-Path: <bpf+bounces-39860-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39861-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA6E197891A
-	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 21:49:00 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FCAE978938
+	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 22:00:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 632D51F230FE
-	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 19:49:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA437285BE4
+	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 20:00:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 498E514830D;
-	Fri, 13 Sep 2024 19:48:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB96A126F2A;
+	Fri, 13 Sep 2024 20:00:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CDcvzDSU"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="tFm9xIc9"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D4564A06;
-	Fri, 13 Sep 2024 19:48:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A72BDBA2E
+	for <bpf@vger.kernel.org>; Fri, 13 Sep 2024 20:00:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726256932; cv=none; b=B96U/XEmDrEpsNtYFK5HQL++3XNsmWfp5CeqnsHdTrIn89fMQZAgo7TkVEcge8lxXJRBqLLBRSftGSTfbhk8v7mKkOXyyUfHRMmIu+TgRudEd8zPxFr0lm6AQ6oPzwrCOk4lQg/EL4+VMdv1M914MoR709Qiy/VFyY0Mx/sIAGo=
+	t=1726257622; cv=none; b=Qf/KqD3e1JP4A6g9lmoPTUFAEKe09f72nBxBMMoxRhnL9P2ksxR5LC8/27noJw6QT8lSFFDkeai5jFai1az1kcOF7quvXKGcekxFn9aQl2UkC6Z31or08U+ol4n557s9D7/4RDeX5AEwJSPL1TeJNnq80GMttqSshSKMudjL3b8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726256932; c=relaxed/simple;
-	bh=wXx6gycub3wwaBxUU3Rpj/KlRbaF2yP/lASR3+ACbBk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=iqe0pkPV3yVs7lgT+J8V+BRMxqb6kcJyh2wR70eOdLWDS9kgzH+3xnDgX0CBPUIeNo77AizZDLGG4z3hSxQbNkiP+Fbkx/EQkfaVATRdJ6pP1vuR+KT+10Fpibu5M29sD5tJS76ujc5kmx+tQi2jmLI2o6gl6exk4/RIZcixcw8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CDcvzDSU; arc=none smtp.client-ip=209.85.221.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-375e5c12042so1440335f8f.3;
-        Fri, 13 Sep 2024 12:48:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1726256929; x=1726861729; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wXx6gycub3wwaBxUU3Rpj/KlRbaF2yP/lASR3+ACbBk=;
-        b=CDcvzDSUpS+EUwvAnsz7OPuCP1OT4LtSuNCrJ6Q00NEG9WtP9wDgu+Y4Bf1MGuEMPF
-         /JFDmHGRb8/j9TpwvjvphH29wx8BUzHWKQgViiaLUQsvlKRItqhaUxaMomO/rOeq4MuD
-         CTg8x3CsUW2fyJqp5bFReqfL03iWla9d0gfohVv6natnMkQgSLqC47tRaAT5he5DxE04
-         LSif5X5mohvRR4WjoBTTWYzTrMknmhdf/wM6q4bq5Tbvgmxld54Rd0Usu0Uawj+QrHJb
-         Si9wz215W1Dxu8hUBC8ItJwy+duhuc9J930OuzuaTRybSZblzJRjzTwqWacm0h6mnXQJ
-         ft1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726256929; x=1726861729;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wXx6gycub3wwaBxUU3Rpj/KlRbaF2yP/lASR3+ACbBk=;
-        b=Kb8q7BDFtEIGTb2y5UYfT6UK9z03HPO3urHYaWsQE1R5Q5qUn6LSEU/PRPwUqYx+3j
-         ya40TqKa72tPbykh3B4Doi71kw3AbKsXWVU7bWFXOtq5dMFx4yZxHDtUpBY2SYmxLEKu
-         lxfCjzgzjYY30ZvaH+m9vw9SHobhgqvydzxEQJ36Cwes38SjQVYR2bdsZdaidVE3bXPX
-         NchSE4pARMiMOFJZYciZYWCh+Eke3n83W5sdTUn6llHflQH0Q+6nF/avxeGb7bqpTZ65
-         ABWHZvz7KAAd0mYCC5By+Y/HKQ/dXl6bVJZgWqEmrG9G+/yP+kV2WmK44jdsndK9LSnQ
-         5EcQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU345LYxQrO6efZpCd+OpHC4c2b7uZYVdwJsRpp59JK/DfOKhDHZl6dqK7Cd38Rh6cJcYA=@vger.kernel.org, AJvYcCWofrATTgI5Ce6hPlCdLNl4MiTMOlJJ4JAMJiBdFWR7Te3vtQVp93PF4LD0L1eBVC1cduAZOGE0@vger.kernel.org
-X-Gm-Message-State: AOJu0YwPj+XDn516Xl1U3ugkmy7SmJ3hDGszmP5JCjtDouBHyMxrSL5f
-	YHCMdizuHS7fOtpxPFs72mDgKaFwqBuksSMlnfn78cONKxspVmn1HTg+ypwLFXL9uzI7HeuWlPv
-	ilv3QA1pEWVMmsP9yayjqy6s7Ixg=
-X-Google-Smtp-Source: AGHT+IH8W9syhiarFLSK3Fjj/YKDt2NVpTG2U4vHTeBbkIoBtlQfC46UefLlGFgRTVDOOIGuvDF5QDu3CeDPWQYT+0M=
-X-Received: by 2002:a05:6000:1f89:b0:374:c040:b00e with SMTP id
- ffacd0b85a97d-378c2d5a827mr4487423f8f.39.1726256929310; Fri, 13 Sep 2024
- 12:48:49 -0700 (PDT)
+	s=arc-20240116; t=1726257622; c=relaxed/simple;
+	bh=hHIJssMqJKRZCUO151MGYXNIrkTEnsXq25qjh58/yP0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=YJhseueyh+RYsPQZs/N/SvDDDtXLGqCVPfp6yhQ3FyL4s2Y4jWU5inP4SI73viHEmzWtA1h+UUIpKfZH6CngYK/7k9vmnPcimvwTokxPUPKtPyJ6fEn5bHdi7w5BkvhEpHxfGm+IYFdiw68DtVaoqd24ijFQGyb5/BbsoolFICA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=tFm9xIc9; arc=none smtp.client-ip=95.215.58.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <d162c454-702c-40bd-b1dd-a70fe476e1d7@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1726257617;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=jHiT5w/EE6pfdmmxsdrVrO7gpmtb07Jmd0iikIYue4Q=;
+	b=tFm9xIc9KC4SwhsT0Rzjm4wa3paIQatjW0T5bP+mSMlCyjaZiFOOzqNHg2eahegb8muOsB
+	ADolFo2Joqyiws4rfuVwgEMVoyWrMeLeik4kVMV2uCnc2fpj4zh+jHBTQBeAaX+MzSoWL9
+	roL3ZCXGYxSvE/8lOQXpB0NHN7i1Ye4=
+Date: Fri, 13 Sep 2024 13:00:10 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240911191019.296480-1-maciej.fijalkowski@intel.com> <CAJ8uoz2yjB7nj495x3CuiwHfuU+T0g3MXy4DScG2iT6gtkQsqg@mail.gmail.com>
-In-Reply-To: <CAJ8uoz2yjB7nj495x3CuiwHfuU+T0g3MXy4DScG2iT6gtkQsqg@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 13 Sep 2024 12:48:37 -0700
-Message-ID: <CAADnVQKUsT3vU_bcPYBNbnD-W5+CkyEcshW7e2c0Ayj-G1D0HA@mail.gmail.com>
-Subject: Re: [PATCH bpf] xsk: fix batch alloc API on non-coherent systems
-To: Magnus Karlsson <magnus.karlsson@gmail.com>, Jakub Kicinski <kuba@kernel.org>
-Cc: Maciej Fijalkowski <maciej.fijalkowski@intel.com>, bpf <bpf@vger.kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Network Development <netdev@vger.kernel.org>, 
-	"Karlsson, Magnus" <magnus.karlsson@intel.com>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
-	Dries De Winter <ddewinter@synamedia.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next v3 1/2] bpf: Fix a sdiv overflow issue
+Content-Language: en-GB
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>,
+ Zac Ecob <zacecob@protonmail.com>
+References: <20240913150326.1187788-1-yonghong.song@linux.dev>
+ <CAADnVQ+RgqfSTOoWVVokk5zXkeUE1ZxF_neH=HMyKwEeFAJ_aA@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <CAADnVQ+RgqfSTOoWVVokk5zXkeUE1ZxF_neH=HMyKwEeFAJ_aA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Sep 12, 2024 at 4:04=E2=80=AFAM Magnus Karlsson
-<magnus.karlsson@gmail.com> wrote:
->
-> On Wed, 11 Sept 2024 at 21:10, Maciej Fijalkowski
-> <maciej.fijalkowski@intel.com> wrote:
-> >
-> > In cases when synchronizing DMA operations is necessary,
-> > xsk_buff_alloc_batch() returns a single buffer instead of the requested
-> > count. This puts the pressure on drivers that use batch API as they hav=
-e
-> > to check for this corner case on their side and take care of allocation=
-s
-> > by themselves, which feels counter productive. Let us improve the core
-> > by looping over xp_alloc() @max times when slow path needs to be taken.
-> >
-> > Another issue with current interface, as spotted and fixed by Dries, wa=
-s
-> > that when driver called xsk_buff_alloc_batch() with @max =3D=3D 0, for =
-slow
-> > path case it still allocated and returned a single buffer, which should
-> > not happen. By introducing the logic from first paragraph we kill two
-> > birds with one stone and address this problem as well.
->
-> Thanks Maciej and Dries for finding and fixing this.
->
-> Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
 
-We already did the last bpf and bpf-next/net PRs before the merge window,
-so reassigning to netdev.
+On 9/13/24 12:44 PM, Alexei Starovoitov wrote:
+> On Fri, Sep 13, 2024 at 8:03 AM Yonghong Song <yonghong.song@linux.dev> wrote:
+>> +                               BPF_RAW_INSN((is64 ? BPF_ALU64 : BPF_ALU) |
+>> +                                            BPF_OP(BPF_ADD) | BPF_K, BPF_REG_AX,
+>> +                                            0, 0, 1),
+>> +                               BPF_RAW_INSN((is64 ? BPF_JMP : BPF_JMP32) |
+>> +                                            BPF_JGT | BPF_K, BPF_REG_AX,
+>> +                                            0, 4, 1),
+>> +                               BPF_RAW_INSN((is64 ? BPF_JMP : BPF_JMP32) |
+>> +                                            BPF_JEQ | BPF_K, BPF_REG_AX,
+>> +                                            0, 1, 0),
+>> +                               BPF_RAW_INSN((is64 ? BPF_ALU64 : BPF_ALU) |
+>> +                                            BPF_OP(BPF_MOV) | BPF_K, insn->dst_reg,
+>> +                                            0, 0, 0),
+>> +                               /* BPF_NEG(LLONG_MIN) == -LLONG_MIN == LLONG_MIN */
+>> +                               BPF_RAW_INSN((is64 ? BPF_ALU64 : BPF_ALU) |
+>> +                                            BPF_OP(BPF_NEG) | BPF_K, insn->dst_reg,
+> lgtm, but all of BPF_OP(..) are confusing.
+> What's the point?
+> We use BPF_OP(insn->code) to reuse the code when we create a new opcode,
+> but BPF_OP(BPF_NEG) == BPF_NEG and BPF_OP(BPF_MOV) == BPF_MOV, so why?
 
-Acked-by: Alexei Starovoitov <ast@kernel.org>
+Sorry, I focused on the algorithm and missed this one. Yes, changing
+BPF_OP(BPF_NEG) to BPF_NEG and other similar cases are correct.
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 69b8d91f5136..068f763dcefb 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -20510,7 +20510,7 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
+                         struct bpf_insn *patchlet;
+                         struct bpf_insn chk_and_sdiv[] = {
+                                 BPF_RAW_INSN((is64 ? BPF_ALU64 : BPF_ALU) |
+-                                            BPF_OP(BPF_NEG) | BPF_K, insn->dst_reg,
++                                            BPF_NEG | BPF_K, insn->dst_reg,
+                                              0, 0, 0),
+                         };
+                         struct bpf_insn chk_and_smod[] = {
+@@ -20565,7 +20565,7 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
+                                  */
+                                 BPF_MOV64_REG(BPF_REG_AX, insn->src_reg),
+                                 BPF_RAW_INSN((is64 ? BPF_ALU64 : BPF_ALU) |
+-                                            BPF_OP(BPF_ADD) | BPF_K, BPF_REG_AX,
++                                            BPF_ADD | BPF_K, BPF_REG_AX,
+                                              0, 0, 1),
+                                 BPF_RAW_INSN((is64 ? BPF_JMP : BPF_JMP32) |
+                                              BPF_JGT | BPF_K, BPF_REG_AX,
+@@ -20574,11 +20574,11 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
+                                              BPF_JEQ | BPF_K, BPF_REG_AX,
+                                              0, 1, 0),
+                                 BPF_RAW_INSN((is64 ? BPF_ALU64 : BPF_ALU) |
+-                                            BPF_OP(BPF_MOV) | BPF_K, insn->dst_reg,
++                                            BPF_MOV | BPF_K, insn->dst_reg,
+                                              0, 0, 0),
+                                 /* BPF_NEG(LLONG_MIN) == -LLONG_MIN == LLONG_MIN */
+                                 BPF_RAW_INSN((is64 ? BPF_ALU64 : BPF_ALU) |
+-                                            BPF_OP(BPF_NEG) | BPF_K, insn->dst_reg,
++                                            BPF_NEG | BPF_K, insn->dst_reg,
+                                              0, 0, 0),
+                                 BPF_JMP_IMM(BPF_JA, 0, 0, 1),
+                                 *insn,
+@@ -20588,7 +20588,7 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
+                                 /* [R,W]x mod -1 -> 0 */
+                                 BPF_MOV64_REG(BPF_REG_AX, insn->src_reg),
+                                 BPF_RAW_INSN((is64 ? BPF_ALU64 : BPF_ALU) |
+-                                            BPF_OP(BPF_ADD) | BPF_K, BPF_REG_AX,
++                                            BPF_ADD | BPF_K, BPF_REG_AX,
+                                              0, 0, 1),
+                                 BPF_RAW_INSN((is64 ? BPF_JMP : BPF_JMP32) |
+
+>
+> If I'm not missing anything I can remove these BPF_OP wrapping when applying.
+> wdyt?
+
+Yes, pelase do. Thanks!
+
 
