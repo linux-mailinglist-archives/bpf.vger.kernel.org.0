@@ -1,62 +1,54 @@
-Return-Path: <bpf+bounces-39783-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39784-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D2139775F3
-	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 02:18:49 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 313339775FB
+	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 02:19:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 54A07286075
-	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 00:18:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B2819B232B4
+	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 00:19:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C2D210F7;
-	Fri, 13 Sep 2024 00:18:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C447C10E3;
+	Fri, 13 Sep 2024 00:19:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="APGBleqb"
+	dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b="EUcVWq7J"
 X-Original-To: bpf@vger.kernel.org
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+Received: from mail-40134.protonmail.ch (mail-40134.protonmail.ch [185.70.40.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B39997E6;
-	Fri, 13 Sep 2024 00:18:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F39B17E6
+	for <bpf@vger.kernel.org>; Fri, 13 Sep 2024 00:19:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.134
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726186722; cv=none; b=axXI3Bo3Ce8ny0Qp2ako9Ox4/rOqp1zCH3Hy/bQZml/vQTp4Kqv34CcT/4zpanqpPtRp+YRapX+tb/xHHS2anrAxxtcOllgOWHEchXn//spvC45Rafqw/fhfz90pZpQLOW/5Ia3KBo7DWh9xuRALwNijrjwWdnt92y2vWlh3usk=
+	t=1726186751; cv=none; b=kxqaBKusehHbgZ7zzCteJnRjuy9XnhIuhXHj1drRKWxUcxfoPyar5xgW6z4rSdMV4oSGkV4ZJ8ErfdRUQEVHRYqFj+zOwfFrzJdfOm30tweftTY9cHHa5fl1lzKT1bNEHHMLEuvD3ij/3dIaVWzwFJ+C1VtppacERA3W3ir4E5Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726186722; c=relaxed/simple;
-	bh=ta9UGHqsKIT/CmwWwUupJscP6n4DdkOjUD4jjj8Sfhk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ylslaj+oFuv3WPorGAyFQlk7dSO3QpGqn/M7kc00BA9V5El/5bT9JEtWjdmSV94HYYmhw7NOAP0sGQoKZOgqEZFwAEnqd06OoVyeHP95TYeOyheyoLPlBA43tMbJf5SRIFqLRcMLp7MtJJ2ZNP+KbnjcFPJVwQrekjNZ9p3WwBY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=APGBleqb; arc=none smtp.client-ip=62.89.141.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description;
-	bh=I3f0tKoE21HkuJlvVi1WDV1pzooCugULc3vdTAczGWM=; b=APGBleqb+CYEYKeA0FLWrjb27p
-	xpCvJObDASkMHo8SzENu7/M8vtyoXD7RjklhmyAHusDznQw69ZJFZgTZ9TcNfxwX1+16dz9i0Q2xg
-	MgAmMwLpBYIfacuJWr0qGZJL9UMoQdfdTKxSu/MrKgFp0t33KaENTN/Z3WCP8sjyJyRyZKW2RXdJm
-	rsXJpVURCa31Ubphtd8ltCvZe/AcqsY51Q+zdSZruxgganSui3J1//Mn1r4vJv74xUGpE0l1agKhO
-	xmNM5n7F0rwmwWgPk+BNzkLWefLrutXl8Ew2WkgW4kO3TesfcPnk99EPW+OAbDOVhAr3+C02VdqUw
-	ncVbsG8Q==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.98 #2 (Red Hat Linux))
-	id 1sou1F-0000000BoYh-2RFu;
-	Fri, 13 Sep 2024 00:18:37 +0000
-Date: Fri, 13 Sep 2024 01:18:37 +0100
-From: Al Viro <viro@zeniv.linux.org.uk>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: viro@kernel.org, brauner@kernel.org, bpf@vger.kernel.org,
-	ast@kernel.org, daniel@iogearbox.net, martin.lau@kernel.org,
-	linux-fsdevel@vger.kernel.org, torvalds@linux-foundation.org,
-	Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: [PATCH bpf-next 0/8] BPF follow ups to struct fd refactorings
-Message-ID: <20240913001837.GO1049718@ZenIV>
-References: <20240813230300.915127-1-andrii@kernel.org>
- <CAEf4BzY4v6D9gusa+fkY1qg4m-yT8VVFg2Y-++BdrheQMp+j6Q@mail.gmail.com>
- <20240912235756.GN1049718@ZenIV>
- <CAEf4BzZpkZfkpHozso8myJ=2kOxto0fXPew=XVLu=wXi8bi4iw@mail.gmail.com>
+	s=arc-20240116; t=1726186751; c=relaxed/simple;
+	bh=C4jA1h7wuOR+3LJkBGT/J7Oq6MJTOyJEBQU3FMGekDM=;
+	h=Date:To:From:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=dH3KmScYYu2AqVa1Vr+nftfZevOiIogYijKtZsrunYMwTIdOBWLwGl25bzh8jT1vENzkWqBjy2ijX/dDcvy114u4lAUTZcWzUufdah8fdW8ShrB7UuwrKwPJFDDcjQqD//wVHLSHGfFabceKkIaMeWcPosdH+McRW/w/TGETbLY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me; spf=pass smtp.mailfrom=pm.me; dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b=EUcVWq7J; arc=none smtp.client-ip=185.70.40.134
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pm.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me;
+	s=protonmail3; t=1726186747; x=1726445947;
+	bh=ojicEVzTtZCVcMKd8X6DQKr9PmRn79q/0YsnmvRznL0=;
+	h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
+	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
+	b=EUcVWq7JdLfZN2rNSKE0L2WLZqvSyzaGcJXPChh3DuYRXwfz6tZoijdwSL+YYyqoU
+	 T0ISBJlw+oKLSXfmSo24qzoKbTgaNSx+zcjvBu84VJIz1vOmc58dNxA7jC53suxrUH
+	 1UeZBGVXUFO3an+0PagNZKMp0cl5fPE5Mcsar7UeF90w5nXZukjMcytK4XxOf6/KAJ
+	 1cZ6QOmqLQgcSsJb2SIkTheXpRiJs36IVre0HUcp8tyP15meLhjIyhvwoHerctxYDm
+	 JYPMS6go+5wm+IAa2IPdEo9IQR6sAxDDVWbjbY2WFksX9f4NNvvKcr6o9BmovlORGV
+	 xVf16NHfck3/w==
+Date: Fri, 13 Sep 2024 00:19:02 +0000
+To: bpf@vger.kernel.org, andrii@kernel.org
+From: Ihor Solodrai <ihor.solodrai@pm.me>
+Cc: ast@kernel.org, daniel@iogearbox.net, eddyz87@gmail.com, mykolal@fb.com
+Subject: [PATCH bpf-next v2] libbpf: add bpf_object__token_fd accessor
+Message-ID: <20240913001858.3345583-1-ihor.solodrai@pm.me>
+Feedback-ID: 27520582:user:proton
+X-Pm-Message-ID: d1b00b467f0e2ffc21cf5a1e681a7b37fdbf7ff8
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -64,24 +56,75 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzZpkZfkpHozso8myJ=2kOxto0fXPew=XVLu=wXi8bi4iw@mail.gmail.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Sep 12, 2024 at 05:10:57PM -0700, Andrii Nakryiko wrote:
-> On Thu, Sep 12, 2024 at 4:57 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
-> >
-> > On Tue, Aug 27, 2024 at 03:55:28PM -0700, Andrii Nakryiko wrote:
-> > > > They were also merged into bpf-next/for-next so they can get early testing in
-> > > > linux-next.
-> >
-> > Umm...  I see that stuff in bpf-next/struct_fd, but not in your for-next.
-> 
-> We have a new process with for-next and my merge was probably
-> accidentally dropped at some point... But there was definitely a
-> period of time when these patches were in for-next, so they got some
-> compile-testing already and should be good to go.
+Add a LIBBPF_API function to retrieve the token_fd from a bpf_object.
 
-I should've pushed the base branch into #for-next; mea culpa...
+Without this accessor, if user needs a token FD they have to get it
+manually via bpf_token_create, even though a token might have been
+already created by bpf_object__load.
+
+Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+Signed-off-by: Ihor Solodrai <ihor.solodrai@pm.me>
+---
+ tools/lib/bpf/libbpf.c   | 5 +++++
+ tools/lib/bpf/libbpf.h   | 8 ++++++++
+ tools/lib/bpf/libbpf.map | 1 +
+ 3 files changed, 14 insertions(+)
+
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 84d4ec0e1f60..219facd0e66e 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -9059,6 +9059,11 @@ unsigned int bpf_object__kversion(const struct bpf_o=
+bject *obj)
+ =09return obj ? obj->kern_version : 0;
+ }
+=20
++int bpf_object__token_fd(const struct bpf_object *obj)
++{
++=09return obj->token_fd ?: -1;
++}
++
+ struct btf *bpf_object__btf(const struct bpf_object *obj)
+ {
+ =09return obj ? obj->btf : NULL;
+diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+index 6917653ef9fa..eaf1021b08ea 100644
+--- a/tools/lib/bpf/libbpf.h
++++ b/tools/lib/bpf/libbpf.h
+@@ -294,6 +294,14 @@ LIBBPF_API const char *bpf_object__name(const struct b=
+pf_object *obj);
+ LIBBPF_API unsigned int bpf_object__kversion(const struct bpf_object *obj)=
+;
+ LIBBPF_API int bpf_object__set_kversion(struct bpf_object *obj, __u32 kern=
+_version);
+=20
++/**
++ * @brief **bpf_object__token_fd** is an accessor to token FD that is
++ * created on **bpf_object__load()**
++ * @param obj Pointer to a valid BPF object
++ * @return Token FD or -1 if it wasn't set
++ */
++LIBBPF_API int bpf_object__token_fd(const struct bpf_object *obj);
++
+ struct btf;
+ LIBBPF_API struct btf *bpf_object__btf(const struct bpf_object *obj);
+ LIBBPF_API int bpf_object__btf_fd(const struct bpf_object *obj);
+diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+index 8f0d9ea3b1b4..0096e483f7eb 100644
+--- a/tools/lib/bpf/libbpf.map
++++ b/tools/lib/bpf/libbpf.map
+@@ -423,6 +423,7 @@ LIBBPF_1.5.0 {
+ =09=09btf__relocate;
+ =09=09bpf_map__autoattach;
+ =09=09bpf_map__set_autoattach;
++=09=09bpf_object__token_fd;
+ =09=09bpf_program__attach_sockmap;
+ =09=09ring__consume_n;
+ =09=09ring_buffer__consume_n;
+--=20
+2.34.1
+
+
 
