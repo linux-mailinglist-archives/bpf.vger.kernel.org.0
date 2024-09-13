@@ -1,128 +1,178 @@
-Return-Path: <bpf+bounces-39822-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39823-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED8B6977EE5
-	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 13:53:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E0B4B977F4C
+	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 14:10:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A6BD31F21A5B
-	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 11:53:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6CEB11F20F0A
+	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 12:10:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD6161D88A8;
-	Fri, 13 Sep 2024 11:52:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3F4F1D933F;
+	Fri, 13 Sep 2024 12:10:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DvcZhikQ"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="tJ/HlPiy"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCFC61D6C7F
-	for <bpf@vger.kernel.org>; Fri, 13 Sep 2024 11:52:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37FB61C175F;
+	Fri, 13 Sep 2024 12:10:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.119
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726228376; cv=none; b=cCdWQN+dO20l6l0JfJQzYdp2ApdxRjrf5OSEOuV5UZteguGZCj8DeaWl4bc33ojAnCaLGOaq/Dve9kNvLE/jT8joEis4PZ+nNkz6BxrsE/s65akqaHA0A2PB6iSt86jZp6QMl3A0leZC35ftjpcBg/Y7i7y6cOPm5WfYE0yjgok=
+	t=1726229439; cv=none; b=gsSFQ3rOondOT3FgrWT90cZA7fznPcTn+Kk3KfRLLDdgQ+LXMUjKI61mRNozUnQHw4pGZRPUNjrbt9twmWb8jXtXmaps0envqfe8a9vO5wXZzBl8EDlJ6OWX43nJpZVos7FzJ0ZFnqqFHCBuURRQmdtb6PqAnyLVEiHLNLuVE2w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726228376; c=relaxed/simple;
-	bh=pMCipnQS2GEzxtn5f/uJ+jzhSgUq2j2uXgI3jBB5eCI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CH6Ki+P6USKBRpLUEgYy+M30qSDCsPmNKeQHXHJbvt3IjPz9kyu04QdBjWb5+Gw7RUjxA2svIy6A4OQZ9o9I4CwtFkR0CxfuOB0SZcfBkgo3bwwaxtoNFB8dBD+s05UC70Li6ibL+LqXZSRBv3ZrkG9lSGWCucNuCMFLsli+9YE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=DvcZhikQ; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1726228374;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kjWhGkYRLL4AoRfx/SSMTKGWIse43z4bAnG3BFGqR34=;
-	b=DvcZhikQ0I/oSeStepD2bgto/U/7KWCHWUxjdjXmA88fNqqOo1FtX5uYhiTvy94iJJu52T
-	FY6a+dAwGwcW/ttX8NJ+9KA44/ig33NaTgi7MBXaSaA+x1gi/TytQnchungMcsFJ2QPr+K
-	F9ZsotFNeS1dRYibEtrzH1zA4pr16NA=
-Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-549-rBokVC_iPJ6RNTN59bqzpw-1; Fri,
- 13 Sep 2024 07:52:50 -0400
-X-MC-Unique: rBokVC_iPJ6RNTN59bqzpw-1
-Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 995611955F07;
-	Fri, 13 Sep 2024 11:52:47 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.226.25])
-	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 9F46519560AB;
-	Fri, 13 Sep 2024 11:52:41 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Fri, 13 Sep 2024 13:52:35 +0200 (CEST)
-Date: Fri, 13 Sep 2024 13:52:28 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-To: Jiri Olsa <jolsa@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@chromium.org>,
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCHv3 1/7] uprobe: Add support for session consumer
-Message-ID: <20240913115228.GE19305@redhat.com>
-References: <20240909074554.2339984-1-jolsa@kernel.org>
- <20240909074554.2339984-2-jolsa@kernel.org>
+	s=arc-20240116; t=1726229439; c=relaxed/simple;
+	bh=eKQp8WFIivIlz81KoAc08q+LcLeM6mnKsSpVWLX81KQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ZPk5nlogtF4lF05ltEOrEshELdUND6KSuaqlCgRxgOo0GvcmhVLXQxhUqA1qN8Z2vTh+HUcsHC2jsqRkuES0xhATiS+X+ixXu6d8ehNWf29i8w1gAcsnJfCg4jHRfHNDXj+1GECyWV5vtf4gDTz3O5zSdxHt0rdTYQtnzh6Efvg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=tJ/HlPiy; arc=none smtp.client-ip=115.124.30.119
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1726229428; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=p9RxojJzKbhCDZ6wrWjhZvZmrSV8ktXcTQ8diFhFAdU=;
+	b=tJ/HlPiy+ZyoFbPBKnvDUHx6+Cle+ChCWkuhjl90CaCOBTCE056za0+UMx2H8fg6Q+o2XdSnRwCU7Qqw29lJTVsvqtDE8765m4PFSjewyKqRy8TREl8bqt1UlcKpvX4yarc299pOhcvU1AChfK1r8It0yvGHIu/VgRMN47mpiMU=
+Received: from 30.221.128.100(mailfrom:lulie@linux.alibaba.com fp:SMTPD_---0WEurYQC_1726229425)
+          by smtp.aliyun-inc.com;
+          Fri, 13 Sep 2024 20:10:26 +0800
+Message-ID: <8d5469d2-7525-420b-b506-8de2ecf04734@linux.alibaba.com>
+Date: Fri, 13 Sep 2024 20:10:24 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240909074554.2339984-2-jolsa@kernel.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 3/3] bpf: Add sk_lookup test to use ORIGDSTADDR cmsg.
+To: Tiago Lam <tiagolam@cloudflare.com>, "David S. Miller"
+ <davem@davemloft.net>, David Ahern <dsahern@kernel.org>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>,
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
+ Shuah Khan <shuah@kernel.org>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ Jakub Sitnicki <jakub@cloudflare.com>, kernel-team@cloudflare.com
+References: <20240913-reverse-sk-lookup-v1-0-e721ea003d4c@cloudflare.com>
+ <20240913-reverse-sk-lookup-v1-3-e721ea003d4c@cloudflare.com>
+From: Philo Lu <lulie@linux.alibaba.com>
+In-Reply-To: <20240913-reverse-sk-lookup-v1-3-e721ea003d4c@cloudflare.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On 09/09, Jiri Olsa wrote:
->
-> @@ -37,13 +37,16 @@ struct uprobe_consumer {
->  	 * for the current process. If filter() is omitted or returns true,
->  	 * UPROBE_HANDLER_REMOVE is effectively ignored.
->  	 */
-> -	int (*handler)(struct uprobe_consumer *self, struct pt_regs *regs);
-> +	int (*handler)(struct uprobe_consumer *self, struct pt_regs *regs, __u64 *data);
->  	int (*ret_handler)(struct uprobe_consumer *self,
->  				unsigned long func,
-> -				struct pt_regs *regs);
-> +				struct pt_regs *regs, __u64 *data);
+Hi Tiago,
 
-And... I won't insist, but I'd suggest to do this in a separate patch
-which should also update the current users in bpf_trace.c, trace_uprobe.c
-and bpf_testmod.c.
+On 2024/9/13 17:39, Tiago Lam wrote:
+> This patch reuses the framework already in place for sk_lookup, allowing
+> it now to send a reply from the server fd directly, instead of having to
+> create a socket bound to the original destination address and reply from
+> there. It does this by passing the source address and port from where to
+> reply from in a IP_ORIGDSTADDR ancilliary message passed in sendmsg.
+> 
+> Signed-off-by: Tiago Lam <tiagolam@cloudflare.com>
+> ---
+>   tools/testing/selftests/bpf/prog_tests/sk_lookup.c | 70 +++++++++++++++-------
+>   1 file changed, 48 insertions(+), 22 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/bpf/prog_tests/sk_lookup.c b/tools/testing/selftests/bpf/prog_tests/sk_lookup.c
+> index ae87c00867ba..b99aff2e3976 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/sk_lookup.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/sk_lookup.c
+> @@ -75,6 +75,7 @@ struct test {
+>   	struct inet_addr listen_at;
+>   	enum server accept_on;
+>   	bool reuseport_has_conns; /* Add a connected socket to reuseport group */
+> +	bool dont_bind_reply; /* Don't bind, send direct from server fd. */
+>   };
+>   
+>   struct cb_opts {
+> @@ -363,7 +364,7 @@ static void v4_to_v6(struct sockaddr_storage *ss)
+>   	memset(&v6->sin6_addr.s6_addr[0], 0, 10);
+>   }
+>   
+> -static int udp_recv_send(int server_fd)
+> +static int udp_recv_send(int server_fd, bool dont_bind_reply)
+>   {
+>   	char cmsg_buf[CMSG_SPACE(sizeof(struct sockaddr_storage))];
+>   	struct sockaddr_storage _src_addr = { 0 };
+> @@ -415,26 +416,41 @@ static int udp_recv_send(int server_fd)
+>   		v4_to_v6(dst_addr);
+>   	}
+>   
+> -	/* Reply from original destination address. */
+> -	fd = start_server_addr(SOCK_DGRAM, dst_addr, sizeof(*dst_addr), NULL);
+> -	if (!ASSERT_OK_FD(fd, "start_server_addr")) {
+> -		log_err("failed to create tx socket");
+> -		return -1;
+> -	}
+> +	if (dont_bind_reply) {
+> +		/* Reply directly from server fd, specifying the source address and/or
+> +		 * port in struct msghdr.
+> +		 */
+> +		n = sendmsg(server_fd, &msg, 0);
+> +		if (CHECK(n <= 0, "sendmsg", "failed\n")) {
+> +			log_err("failed to send echo reply");
+> +			return -1;
+> +		}
+> +	} else {
+> +		/* Reply from original destination address. */
+> +		fd = socket(dst_addr->ss_family, SOCK_DGRAM, 0);
+> +		if (CHECK(fd < 0, "socket", "failed\n")) {
+> +			log_err("failed to create tx socket");
+> +			return -1;
+> +		}
+>   
+Just curious, why not use start_server_addr() here like before?
 
-Then it would be easier to review the next "functional" change. But this
-is minor, feel free to ignore.
+> -	msg.msg_control = NULL;
+> -	msg.msg_controllen = 0;
+> -	n = sendmsg(fd, &msg, 0);
+> -	if (CHECK(n <= 0, "sendmsg", "failed\n")) {
+> -		log_err("failed to send echo reply");
+> -		ret = -1;
+> -		goto out;
+> -	}
+> +		ret = bind(fd, (struct sockaddr *)dst_addr, sizeof(*dst_addr));
+> +		if (CHECK(ret, "bind", "failed\n")) {
+> +			log_err("failed to bind tx socket");
+> +			close(fd);
+> +			return ret;
+> +		}
+>   
+> -	ret = 0;
+> -out:
+> -	close(fd);
+> -	return ret;
+> +		msg.msg_control = NULL;
+> +		msg.msg_controllen = 0;
+> +		n = sendmsg(fd, &msg, 0);
+> +		if (CHECK(n <= 0, "sendmsg", "failed\n")) {
+> +			log_err("failed to send echo reply");
+> +			close(fd);
+> +			return -1;
+> +		}
+> +
+> +		close(fd);
+> +	}
 
+nit: "return 0" missed.
 
-Finally, imo this documentation in handler_chain()
+>   }
+>   
 
-		/*
-		 * The handler can return following values:
-		 * 0 - execute ret_handler (if it's defined)
-		 * 1 - remove uprobe
-		 * 2 - do nothing (ignore ret_handler)
-		 */
-
-should be moved to uprobes.h and explain UPROBE_HANDLER_REMOVE/IGNORE there.
-
-And note that "remove uprobe" is misleading, it should say something
-like "remove the breakpoint from current->mm".
-
-Oleg.
+-- 
+Philo
 
 
