@@ -1,533 +1,178 @@
-Return-Path: <bpf+bounces-39838-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39839-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D0DB97833C
-	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 17:03:54 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC0049784A1
+	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 17:21:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CFD65281FE2
-	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 15:03:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 60D33B270C0
+	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 15:21:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D62C02BD0D;
-	Fri, 13 Sep 2024 15:03:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3829F82C60;
+	Fri, 13 Sep 2024 15:14:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RGoKlFqM"
 X-Original-To: bpf@vger.kernel.org
-Received: from 69-171-232-181.mail-mxout.facebook.com (69-171-232-181.mail-mxout.facebook.com [69.171.232.181])
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0515218054
-	for <bpf@vger.kernel.org>; Fri, 13 Sep 2024 15:03:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=69.171.232.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B428824A1;
+	Fri, 13 Sep 2024 15:14:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726239826; cv=none; b=Rk/rUYkpejcYotjM6SOIWWq4GMyrzsuyBG7gxrKT4GZxrJt8ijRyrCl6JkB/zHFn9mgdZnCafMY6R/cKBflMBBgY8/BMLtkDJAR6GvccqSQKzC2rn0geKgwJAooow+cIfaa5XUtADIwB0r3vVAPEavLT/TwTFSJfz9h7whMGgK0=
+	t=1726240470; cv=none; b=nP2CmZcMkBI9RDQmJV71Xf2jgrpeIjVeS9vo+Lx8B9nHdWtU6UEIvnhiaq1Z1Y7i/m16WfADOYs+TjNL94qR2JglI0HKXAylKNfDgcYGSgo3FyxuPWApCJ5zLcmxsa0FLiEqKjCyXPwqcAsqD8Px2zkiAhjqhdH/gtMjIUbo38c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726239826; c=relaxed/simple;
-	bh=v5h8DAu/1EkTfrIYD91GTbqmSuscyvLc9FRs0gDCd5E=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ddzdlPpt4qTUy8alQN8umeLcQDmp9qjTjv4HnaQB1fp4bXvweenhG2qKRXpFG7IUkUqGWIjSPAz3JGls/rP9LHEKBkqoCedW/ZuitENWeQB96lETKeN81EGLSxhs6g4YANeTXOMLIuRJIlLjJHLL3W13nFlgKBLPwHUtrxxJUAM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=69.171.232.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
-Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-	id 1BBE48EB8AC5; Fri, 13 Sep 2024 08:03:32 -0700 (PDT)
-From: Yonghong Song <yonghong.song@linux.dev>
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	kernel-team@fb.com,
-	Martin KaFai Lau <martin.lau@kernel.org>
-Subject: [PATCH bpf-next v3 2/2] selftests/bpf: Add tests for sdiv/smod overflow cases
-Date: Fri, 13 Sep 2024 08:03:32 -0700
-Message-ID: <20240913150332.1188102-1-yonghong.song@linux.dev>
-X-Mailer: git-send-email 2.43.5
-In-Reply-To: <20240913150326.1187788-1-yonghong.song@linux.dev>
-References: <20240913150326.1187788-1-yonghong.song@linux.dev>
+	s=arc-20240116; t=1726240470; c=relaxed/simple;
+	bh=g4jBOHib7DDLDufNgs9as3beAZdFvYAq+LxQwq6bJIg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=u29dMzvkG5aLQdAq1+T5fj7bfi2VVkBYYnlTbyE7B1wBkyWNDRbXJjlYS0V5ha4SeLrA3LZ6ohHb/aBx9OE21PhnH+VD9VUhUQBMchONq1ugoqzCdXsHT71rJKD9WYoLfy8gzKpN3tWZulbrJBAkahoybIeBk0eUhmeIU3YqNJ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RGoKlFqM; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-206f9b872b2so23237955ad.3;
+        Fri, 13 Sep 2024 08:14:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1726240468; x=1726845268; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sTqRxpnsELCRZthgAUNY/2NziO6J5/9jQZ2ah9jAKF0=;
+        b=RGoKlFqMgeU9qHR9s+f5M0Dy1YqOaghWcHRRw8eFZnU9aiKFhUeiwbLvBBIlHEGtX/
+         PCau5LU4P/4xQOTqR6WKuSJaT9cWZizVP3pOTvypu8HsM9hLmIO56VCQVaYzJzBuyFwa
+         tbKGJ6rctsf56gLoyZWHSq0ph9tzc+TOe+Zk6CKVokQmHBVSZ0q0kg2bl6kmBbhAE5Zb
+         bRtuCY93FY+KS2Xq954LiDJbwBYeDfN8UQ+m5gfGC0EyZxQPCJVsPgxAr1d4mIIJ2JUV
+         69mDR8TaNfNZvlH9Q/sgCAJXtdiyF577PUAOhu5EWTiBh7l+WNd64UYEpPUbYXLvakat
+         iqfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1726240468; x=1726845268;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=sTqRxpnsELCRZthgAUNY/2NziO6J5/9jQZ2ah9jAKF0=;
+        b=jBjn3F8kTL3H76Mt86RORTLIHoSC8dWgziw9FU+2of/WB8MRHQgXBJp2hdTYY7BD78
+         R7wQbNUgbg/dZ/uqzAwEKMY15lsm0FcTgj1wqevb1uGxq2NVWxnzKf2hMEtavpurOl4y
+         ic4Lap7l0ZdEEW1wFm+OdtGmsDlK+9+qPl54skrfyY2jG2MW5eEq4rWubhdbDrgVPxNC
+         GbCZWDcXOzWN1UVL0UIlWT4Dg2P7Orj6JDflWXr7UmQeeF66HJl9EbCT8OcZYx/3NboF
+         1IM5ERCReZhg5vfXRpyxfoHJgLxZrl4zfjHmqfHzsVqIvcTJdY+TQqj5wvAhx7VE7Pnq
+         AgIA==
+X-Forwarded-Encrypted: i=1; AJvYcCUlCO++LV5w4qZzhv2dV3o1oVQIJCQLia7WLSZmNxP2IfCu5d5Pn62Zd/bfhAQQ59hxPHg=@vger.kernel.org, AJvYcCVyEmBgFkwdj2K9TUiFPyq57R9eGYp/43b10EAiolaP/pww8MUNKRHtgrEaT8o69GRW1v5Gbw1v1E1QI8Mp@vger.kernel.org
+X-Gm-Message-State: AOJu0YxxF4yrdMh5XIrclgS1vAzevPMvkbU9DgZoUX28G4C6/ekBDJOG
+	8Jx8b0Fp2lWl6nmosW/4EsY3tPpMrsaj3K82UcJmhJgX1E9Pf8iO
+X-Google-Smtp-Source: AGHT+IGiszi5u/D2JmGS2Ec+IKq8GqyWeaf3SUz5xBSUd1WMfC8UDHQC75fRy58VHrpkoUvgUKelHA==
+X-Received: by 2002:a17:903:986:b0:1fb:6294:2e35 with SMTP id d9443c01a7336-2076e4854f3mr94126525ad.50.1726240467968;
+        Fri, 13 Sep 2024 08:14:27 -0700 (PDT)
+Received: from [192.168.50.122] ([117.147.91.189])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2076af25683sm29343895ad.17.2024.09.13.08.14.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 13 Sep 2024 08:14:27 -0700 (PDT)
+Message-ID: <0e26d4c9-3e14-4bf9-85d3-86131e6a07f8@gmail.com>
+Date: Fri, 13 Sep 2024 23:14:17 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next] libbpf: Fix expected_attach_type set when kernel
+ not support
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman
+ <eddyz87@gmail.com>, Daniel Borkmann <daniel@iogearbox.net>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240913121627.153898-1-chen.dylane@gmail.com>
+ <ZuRCO3_075wY2zbG@krava>
+From: Tao Chen <chen.dylane@gmail.com>
+In-Reply-To: <ZuRCO3_075wY2zbG@krava>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Subtests are added to exercise the patched code which handles
-  - LLONG_MIN/-1
-  - INT_MIN/-1
-  - LLONG_MIN%-1
-  - INT_MIN%-1
-where -1 could be an immediate or in a register.
-Without the previous patch, all these cases will crash the kernel on
-x86_64 platform.
+在 2024/9/13 21:48, Jiri Olsa 写道:
+> On Fri, Sep 13, 2024 at 08:16:27PM +0800, Tao Chen wrote:
+>> The commit "5902da6d8a52" set expected_attach_type again with
+>> filed of bpf_program after libpf_prepare_prog_load, which makes
+>> expected_attach_type = 0 no sense when kenrel not support the
+>> attach_type feature, so fix it.
+>>
+>> Fixes: 5902da6d8a52 ("libbpf: Add uprobe multi link support to bpf_program__attach_usdt")
+>> Signed-off-by: Tao Chen <chen.dylane@gmail.com>
+>> ---
+>>   tools/lib/bpf/libbpf.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+>> index 219facd0e66e..9035edf763a3 100644
+>> --- a/tools/lib/bpf/libbpf.c
+>> +++ b/tools/lib/bpf/libbpf.c
+>> @@ -7343,7 +7343,7 @@ static int libbpf_prepare_prog_load(struct bpf_program *prog,
+>>   
+>>   	/* old kernels might not support specifying expected_attach_type */
+>>   	if ((def & SEC_EXP_ATTACH_OPT) && !kernel_supports(prog->obj, FEAT_EXP_ATTACH_TYPE))
+>> -		opts->expected_attach_type = 0;
+>> +		prog->expected_attach_type = 0;
+>>   
+>>   	if (def & SEC_SLEEPABLE)
+>>   		opts->prog_flags |= BPF_F_SLEEPABLE;
+>> -- 
+>> 2.25.1
+>>
+> 
+> good catch! thanks
+> 
+> I can't remember why it was needed, perhaps we should go back to where it
+> was before?
+> 
+> I'm guessing prog->expected_attach_type might not get updated properly and
+> that might cause issues, not sure
+> 
+> thanks,
+> jirka
+> 
+> 
+> ---
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 219facd0e66e..df2244397ba1 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -7353,7 +7353,7 @@ static int libbpf_prepare_prog_load(struct bpf_program *prog,
+>   
+>   	/* special check for usdt to use uprobe_multi link */
+>   	if ((def & SEC_USDT) && kernel_supports(prog->obj, FEAT_UPROBE_MULTI_LINK))
+> -		prog->expected_attach_type = BPF_TRACE_UPROBE_MULTI;
+> +		opts->expected_attach_type = BPF_TRACE_UPROBE_MULTI;
+>   
+>   	if ((def & SEC_ATTACH_BTF) && !prog->attach_btf_id) {
+>   		int btf_obj_fd = 0, btf_type_id = 0, err;
+> @@ -7443,6 +7443,7 @@ static int bpf_object_load_prog(struct bpf_object *obj, struct bpf_program *prog
+>   	load_attr.attach_btf_id = prog->attach_btf_id;
+>   	load_attr.kern_version = kern_version;
+>   	load_attr.prog_ifindex = prog->prog_ifindex;
+> +	load_attr.expected_attach_type = prog->expected_attach_type;
+>   
+>   	/* specify func_info/line_info only if kernel supports them */
+>   	if (obj->btf && btf__fd(obj->btf) >= 0 && kernel_supports(obj, FEAT_BTF_FUNC)) {
+> @@ -7474,9 +7475,6 @@ static int bpf_object_load_prog(struct bpf_object *obj, struct bpf_program *prog
+>   		insns_cnt = prog->insns_cnt;
+>   	}
+>   
+> -	/* allow prog_prepare_load_fn to change expected_attach_type */
+> -	load_attr.expected_attach_type = prog->expected_attach_type;
+> -
+>   	if (obj->gen_loader) {
+>   		bpf_gen__prog_load(obj->gen_loader, prog->type, prog->name,
+>   				   license, insns, insns_cnt, &load_attr,
 
-Additional tests are added to use small values (e.g. -5/-1, 5%-1, etc.)
-in order to exercise the additional logic with patched insns.
 
-Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
----
- .../selftests/bpf/progs/verifier_sdiv.c       | 439 ++++++++++++++++++
- 1 file changed, 439 insertions(+)
+Hi, Jiri, thank you for your reply.
+It looks better your way, i will send it in v2.
 
-diff --git a/tools/testing/selftests/bpf/progs/verifier_sdiv.c b/tools/te=
-sting/selftests/bpf/progs/verifier_sdiv.c
-index 2a2271cf0294..148d2299e5b4 100644
---- a/tools/testing/selftests/bpf/progs/verifier_sdiv.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_sdiv.c
-@@ -1,6 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
-=20
- #include <linux/bpf.h>
-+#include <limits.h>
- #include <bpf/bpf_helpers.h>
- #include "bpf_misc.h"
-=20
-@@ -770,6 +771,444 @@ __naked void smod64_zero_divisor(void)
- "	::: __clobber_all);
- }
-=20
-+SEC("socket")
-+__description("SDIV64, overflow r/r, LLONG_MIN/-1")
-+__success __retval(1)
-+__arch_x86_64
-+__xlated("0: r2 =3D 0x8000000000000000")
-+__xlated("2: r3 =3D -1")
-+__xlated("3: r4 =3D r2")
-+__xlated("4: r11 =3D r3")
-+__xlated("5: r11 +=3D 1")
-+__xlated("6: if r11 > 0x1 goto pc+4")
-+__xlated("7: if r11 =3D=3D 0x0 goto pc+1")
-+__xlated("8: r2 =3D 0")
-+__xlated("9: r2 =3D -r2")
-+__xlated("10: goto pc+1")
-+__xlated("11: r2 s/=3D r3")
-+__xlated("12: r0 =3D 0")
-+__xlated("13: if r2 !=3D r4 goto pc+1")
-+__xlated("14: r0 =3D 1")
-+__xlated("15: exit")
-+__naked void sdiv64_overflow_rr(void)
-+{
-+	asm volatile ("					\
-+	r2 =3D %[llong_min] ll;				\
-+	r3 =3D -1;					\
-+	r4 =3D r2;					\
-+	r2 s/=3D r3;					\
-+	r0 =3D 0;						\
-+	if r2 !=3D r4 goto +1;				\
-+	r0 =3D 1;						\
-+	exit;						\
-+"	:
-+	: __imm_const(llong_min, LLONG_MIN)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SDIV64, r/r, small_val/-1")
-+__success __retval(-5)
-+__arch_x86_64
-+__xlated("0: r2 =3D 5")
-+__xlated("1: r3 =3D -1")
-+__xlated("2: r11 =3D r3")
-+__xlated("3: r11 +=3D 1")
-+__xlated("4: if r11 > 0x1 goto pc+4")
-+__xlated("5: if r11 =3D=3D 0x0 goto pc+1")
-+__xlated("6: r2 =3D 0")
-+__xlated("7: r2 =3D -r2")
-+__xlated("8: goto pc+1")
-+__xlated("9: r2 s/=3D r3")
-+__xlated("10: r0 =3D r2")
-+__xlated("11: exit")
-+__naked void sdiv64_rr_divisor_neg_1(void)
-+{
-+	asm volatile ("					\
-+	r2 =3D 5;						\
-+	r3 =3D -1;					\
-+	r2 s/=3D r3;					\
-+	r0 =3D r2;					\
-+	exit;						\
-+"	:
-+	:
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SDIV64, overflow r/i, LLONG_MIN/-1")
-+__success __retval(1)
-+__arch_x86_64
-+__xlated("0: r2 =3D 0x8000000000000000")
-+__xlated("2: r4 =3D r2")
-+__xlated("3: r2 =3D -r2")
-+__xlated("4: r0 =3D 0")
-+__xlated("5: if r2 !=3D r4 goto pc+1")
-+__xlated("6: r0 =3D 1")
-+__xlated("7: exit")
-+__naked void sdiv64_overflow_ri(void)
-+{
-+	asm volatile ("					\
-+	r2 =3D %[llong_min] ll;				\
-+	r4 =3D r2;					\
-+	r2 s/=3D -1;					\
-+	r0 =3D 0;						\
-+	if r2 !=3D r4 goto +1;				\
-+	r0 =3D 1;						\
-+	exit;						\
-+"	:
-+	: __imm_const(llong_min, LLONG_MIN)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SDIV64, r/i, small_val/-1")
-+__success __retval(-5)
-+__arch_x86_64
-+__xlated("0: r2 =3D 5")
-+__xlated("1: r4 =3D r2")
-+__xlated("2: r2 =3D -r2")
-+__xlated("3: r0 =3D r2")
-+__xlated("4: exit")
-+__naked void sdiv64_ri_divisor_neg_1(void)
-+{
-+	asm volatile ("					\
-+	r2 =3D 5;						\
-+	r4 =3D r2;					\
-+	r2 s/=3D -1;					\
-+	r0 =3D r2;					\
-+	exit;						\
-+"	:
-+	:
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SDIV32, overflow r/r, INT_MIN/-1")
-+__success __retval(1)
-+__arch_x86_64
-+__xlated("0: w2 =3D -2147483648")
-+__xlated("1: w3 =3D -1")
-+__xlated("2: w4 =3D w2")
-+__xlated("3: r11 =3D r3")
-+__xlated("4: w11 +=3D 1")
-+__xlated("5: if w11 > 0x1 goto pc+4")
-+__xlated("6: if w11 =3D=3D 0x0 goto pc+1")
-+__xlated("7: w2 =3D 0")
-+__xlated("8: w2 =3D -w2")
-+__xlated("9: goto pc+1")
-+__xlated("10: w2 s/=3D w3")
-+__xlated("11: r0 =3D 0")
-+__xlated("12: if w2 !=3D w4 goto pc+1")
-+__xlated("13: r0 =3D 1")
-+__xlated("14: exit")
-+__naked void sdiv32_overflow_rr(void)
-+{
-+	asm volatile ("					\
-+	w2 =3D %[int_min];				\
-+	w3 =3D -1;					\
-+	w4 =3D w2;					\
-+	w2 s/=3D w3;					\
-+	r0 =3D 0;						\
-+	if w2 !=3D w4 goto +1;				\
-+	r0 =3D 1;						\
-+	exit;						\
-+"	:
-+	: __imm_const(int_min, INT_MIN)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SDIV32, r/r, small_val/-1")
-+__success __retval(5)
-+__arch_x86_64
-+__xlated("0: w2 =3D -5")
-+__xlated("1: w3 =3D -1")
-+__xlated("2: w4 =3D w2")
-+__xlated("3: r11 =3D r3")
-+__xlated("4: w11 +=3D 1")
-+__xlated("5: if w11 > 0x1 goto pc+4")
-+__xlated("6: if w11 =3D=3D 0x0 goto pc+1")
-+__xlated("7: w2 =3D 0")
-+__xlated("8: w2 =3D -w2")
-+__xlated("9: goto pc+1")
-+__xlated("10: w2 s/=3D w3")
-+__xlated("11: w0 =3D w2")
-+__xlated("12: exit")
-+__naked void sdiv32_rr_divisor_neg_1(void)
-+{
-+	asm volatile ("					\
-+	w2 =3D -5;					\
-+	w3 =3D -1;					\
-+	w4 =3D w2;					\
-+	w2 s/=3D w3;					\
-+	w0 =3D w2;					\
-+	exit;						\
-+"	:
-+	:
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SDIV32, overflow r/i, INT_MIN/-1")
-+__success __retval(1)
-+__arch_x86_64
-+__xlated("0: w2 =3D -2147483648")
-+__xlated("1: w4 =3D w2")
-+__xlated("2: w2 =3D -w2")
-+__xlated("3: r0 =3D 0")
-+__xlated("4: if w2 !=3D w4 goto pc+1")
-+__xlated("5: r0 =3D 1")
-+__xlated("6: exit")
-+__naked void sdiv32_overflow_ri(void)
-+{
-+	asm volatile ("					\
-+	w2 =3D %[int_min];				\
-+	w4 =3D w2;					\
-+	w2 s/=3D -1;					\
-+	r0 =3D 0;						\
-+	if w2 !=3D w4 goto +1;				\
-+	r0 =3D 1;						\
-+	exit;						\
-+"	:
-+	: __imm_const(int_min, INT_MIN)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SDIV32, r/i, small_val/-1")
-+__success __retval(-5)
-+__arch_x86_64
-+__xlated("0: w2 =3D 5")
-+__xlated("1: w4 =3D w2")
-+__xlated("2: w2 =3D -w2")
-+__xlated("3: w0 =3D w2")
-+__xlated("4: exit")
-+__naked void sdiv32_ri_divisor_neg_1(void)
-+{
-+	asm volatile ("					\
-+	w2 =3D 5;						\
-+	w4 =3D w2;					\
-+	w2 s/=3D -1;					\
-+	w0 =3D w2;					\
-+	exit;						\
-+"	:
-+	:
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SMOD64, overflow r/r, LLONG_MIN/-1")
-+__success __retval(0)
-+__arch_x86_64
-+__xlated("0: r2 =3D 0x8000000000000000")
-+__xlated("2: r3 =3D -1")
-+__xlated("3: r4 =3D r2")
-+__xlated("4: r11 =3D r3")
-+__xlated("5: r11 +=3D 1")
-+__xlated("6: if r11 > 0x1 goto pc+3")
-+__xlated("7: if r11 =3D=3D 0x1 goto pc+3")
-+__xlated("8: w2 =3D 0")
-+__xlated("9: goto pc+1")
-+__xlated("10: r2 s%=3D r3")
-+__xlated("11: r0 =3D r2")
-+__xlated("12: exit")
-+__naked void smod64_overflow_rr(void)
-+{
-+	asm volatile ("					\
-+	r2 =3D %[llong_min] ll;				\
-+	r3 =3D -1;					\
-+	r4 =3D r2;					\
-+	r2 s%%=3D r3;					\
-+	r0 =3D r2;					\
-+	exit;						\
-+"	:
-+	: __imm_const(llong_min, LLONG_MIN)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SMOD64, r/r, small_val/-1")
-+__success __retval(0)
-+__arch_x86_64
-+__xlated("0: r2 =3D 5")
-+__xlated("1: r3 =3D -1")
-+__xlated("2: r4 =3D r2")
-+__xlated("3: r11 =3D r3")
-+__xlated("4: r11 +=3D 1")
-+__xlated("5: if r11 > 0x1 goto pc+3")
-+__xlated("6: if r11 =3D=3D 0x1 goto pc+3")
-+__xlated("7: w2 =3D 0")
-+__xlated("8: goto pc+1")
-+__xlated("9: r2 s%=3D r3")
-+__xlated("10: r0 =3D r2")
-+__xlated("11: exit")
-+__naked void smod64_rr_divisor_neg_1(void)
-+{
-+	asm volatile ("					\
-+	r2 =3D 5;						\
-+	r3 =3D -1;					\
-+	r4 =3D r2;					\
-+	r2 s%%=3D r3;					\
-+	r0 =3D r2;					\
-+	exit;						\
-+"	:
-+	:
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SMOD64, overflow r/i, LLONG_MIN/-1")
-+__success __retval(0)
-+__arch_x86_64
-+__xlated("0: r2 =3D 0x8000000000000000")
-+__xlated("2: r4 =3D r2")
-+__xlated("3: w2 =3D 0")
-+__xlated("4: r0 =3D r2")
-+__xlated("5: exit")
-+__naked void smod64_overflow_ri(void)
-+{
-+	asm volatile ("					\
-+	r2 =3D %[llong_min] ll;				\
-+	r4 =3D r2;					\
-+	r2 s%%=3D -1;					\
-+	r0 =3D r2;					\
-+	exit;						\
-+"	:
-+	: __imm_const(llong_min, LLONG_MIN)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SMOD64, r/i, small_val/-1")
-+__success __retval(0)
-+__arch_x86_64
-+__xlated("0: r2 =3D 5")
-+__xlated("1: r4 =3D r2")
-+__xlated("2: w2 =3D 0")
-+__xlated("3: r0 =3D r2")
-+__xlated("4: exit")
-+__naked void smod64_ri_divisor_neg_1(void)
-+{
-+	asm volatile ("					\
-+	r2 =3D 5;						\
-+	r4 =3D r2;					\
-+	r2 s%%=3D -1;					\
-+	r0 =3D r2;					\
-+	exit;						\
-+"	:
-+	:
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SMOD32, overflow r/r, INT_MIN/-1")
-+__success __retval(0)
-+__arch_x86_64
-+__xlated("0: w2 =3D -2147483648")
-+__xlated("1: w3 =3D -1")
-+__xlated("2: w4 =3D w2")
-+__xlated("3: r11 =3D r3")
-+__xlated("4: w11 +=3D 1")
-+__xlated("5: if w11 > 0x1 goto pc+3")
-+__xlated("6: if w11 =3D=3D 0x1 goto pc+4")
-+__xlated("7: w2 =3D 0")
-+__xlated("8: goto pc+1")
-+__xlated("9: w2 s%=3D w3")
-+__xlated("10: goto pc+1")
-+__xlated("11: w2 =3D w2")
-+__xlated("12: r0 =3D r2")
-+__xlated("13: exit")
-+__naked void smod32_overflow_rr(void)
-+{
-+	asm volatile ("					\
-+	w2 =3D %[int_min];				\
-+	w3 =3D -1;					\
-+	w4 =3D w2;					\
-+	w2 s%%=3D w3;					\
-+	r0 =3D r2;					\
-+	exit;						\
-+"	:
-+	: __imm_const(int_min, INT_MIN)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SMOD32, r/r, small_val/-1")
-+__success __retval(0)
-+__arch_x86_64
-+__xlated("0: w2 =3D -5")
-+__xlated("1: w3 =3D -1")
-+__xlated("2: w4 =3D w2")
-+__xlated("3: r11 =3D r3")
-+__xlated("4: w11 +=3D 1")
-+__xlated("5: if w11 > 0x1 goto pc+3")
-+__xlated("6: if w11 =3D=3D 0x1 goto pc+4")
-+__xlated("7: w2 =3D 0")
-+__xlated("8: goto pc+1")
-+__xlated("9: w2 s%=3D w3")
-+__xlated("10: goto pc+1")
-+__xlated("11: w2 =3D w2")
-+__xlated("12: r0 =3D r2")
-+__xlated("13: exit")
-+__naked void smod32_rr_divisor_neg_1(void)
-+{
-+	asm volatile ("					\
-+	w2 =3D -5;				\
-+	w3 =3D -1;					\
-+	w4 =3D w2;					\
-+	w2 s%%=3D w3;					\
-+	r0 =3D r2;					\
-+	exit;						\
-+"	:
-+	:
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SMOD32, overflow r/i, INT_MIN/-1")
-+__success __retval(0)
-+__arch_x86_64
-+__xlated("0: w2 =3D -2147483648")
-+__xlated("1: w4 =3D w2")
-+__xlated("2: w2 =3D 0")
-+__xlated("3: r0 =3D r2")
-+__xlated("4: exit")
-+__naked void smod32_overflow_ri(void)
-+{
-+	asm volatile ("					\
-+	w2 =3D %[int_min];				\
-+	w4 =3D w2;					\
-+	w2 s%%=3D -1;					\
-+	r0 =3D r2;					\
-+	exit;						\
-+"	:
-+	: __imm_const(int_min, INT_MIN)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SMOD32, r/i, small_val/-1")
-+__success __retval(0)
-+__arch_x86_64
-+__xlated("0: w2 =3D 5")
-+__xlated("1: w4 =3D w2")
-+__xlated("2: w2 =3D 0")
-+__xlated("3: w0 =3D w2")
-+__xlated("4: exit")
-+__naked void smod32_ri_divisor_neg_1(void)
-+{
-+	asm volatile ("					\
-+	w2 =3D 5;						\
-+	w4 =3D w2;					\
-+	w2 s%%=3D -1;					\
-+	w0 =3D w2;					\
-+	exit;						\
-+"	:
-+	:
-+	: __clobber_all);
-+}
-+
- #else
-=20
- SEC("socket")
---=20
-2.43.5
-
+-- 
+Best Regards
+Dylane Chen
 
