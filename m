@@ -1,128 +1,166 @@
-Return-Path: <bpf+bounces-39870-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39871-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7076D978B5F
-	for <lists+bpf@lfdr.de>; Sat, 14 Sep 2024 00:26:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51478978B6B
+	for <lists+bpf@lfdr.de>; Sat, 14 Sep 2024 00:33:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 32F711F23A4A
-	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 22:26:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA95E1F22F9E
+	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 22:33:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82D991714C6;
-	Fri, 13 Sep 2024 22:26:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90CA014B965;
+	Fri, 13 Sep 2024 22:33:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BCuznCCg"
+	dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b="ECr00oCH"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail-4322.protonmail.ch (mail-4322.protonmail.ch [185.70.43.22])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B50A74A21;
-	Fri, 13 Sep 2024 22:26:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 571EDD502
+	for <bpf@vger.kernel.org>; Fri, 13 Sep 2024 22:33:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726266378; cv=none; b=rVMUvCNq87b8utT3q+T9Yg277JXYp6asLtyendewcxJmiThH+GUfGKF43maK/ufWKlXezey/SDmOGPYVP7wFrBG7beNGytRVYcEIk3c+12i9Y8sPGLTcgo4ehP6JWxwft9MiE+y4fiEK+9CWpb7uxscS91s+uQlOq4BozQlk3mE=
+	t=1726266810; cv=none; b=FKq/x8F0aD0pD/8GmkBmSNUv5NJkuAd5u4dqgTDC4cUZFm/4FSO0AzL/pVWx7/rokEC9ISehS5OOG+B1//NjCbst75Y9Hk58OtdFqDcyzk9eXXqIBycmtR9XZ7pizksUlsXaFPVHumugLujOqAdhlMi3RxB8eC8VS40TUDSa1KU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726266378; c=relaxed/simple;
-	bh=9cJQyS5tckhCBfLGqyRval8t4KISO8g7HDnpONuphig=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=r22vN5Ee/P8jT58nQ5fqyxunIKVWyY4AdLSdR15rTolN3ZMJOP29JzWf18TmRbMMXsyz+aWkKdc3XTRFek+HW9ozwS6KpYldTsSJMeEWpHBDHPkc63LQ7pIYJsGdXgEUTuDhGz5CLpUPsg37NP9amnXWR+Gal+BI7QBU+9Sp4UI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BCuznCCg; arc=none smtp.client-ip=209.85.216.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-2d8abac30ddso2220042a91.0;
-        Fri, 13 Sep 2024 15:26:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1726266376; x=1726871176; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=577wDrVMlYw6/7vSWbBSE5NWOXmotjfe7aI48K4g2gs=;
-        b=BCuznCCgRG6N+RfoukMKKSuxRPnr9VBTuWUTOEk6Xlt7ifUsnSczuStl+hZYU7InBm
-         bB1zWDxLHVPJuXvDw2pOJOwhcRBRMthsgMwmW8FcqIYrt6p3YGS1EOLaUao1zBfERLi6
-         OtdpV5js/fs4QIoY5nJHKsv8Cpq7H7cdkhcJuJ/7Pjz3NuC6B315qYn8WfvqM0QrDfzI
-         NWYgc9InAOqXJTCkrLJTohHWfQrtLO6vDVkZrH0Vj9Jze5OK7EjKEOSimZ/MKXzlRlGA
-         AkY4MGSK4sdQX2cgp106YcBz9C7eLKX84WL0K8arFjt8TWGKmJwycgdtcarfwyEEJOWt
-         lRRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726266376; x=1726871176;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=577wDrVMlYw6/7vSWbBSE5NWOXmotjfe7aI48K4g2gs=;
-        b=MSCPj237F0ltuNUyvkCIcXvPyTq35ds8lvKm1XqHBgZ3faELOPpqoKB2+CjhFtQAVN
-         rDK2eVwpak2ZpRYX4xzSdeypkhYdHXQkSnYHlge5C83CoZcFJnoPo2gtjUcWS/rsra/5
-         pvZ9VfR0s84diu8AcD8xExFBzqcVSOPpdJQ+pDHJZOtnuUiLycoDgqKG9eaRqeh89sEr
-         eGuENFTcZ70oLl/nKq5dxY5vTCpVleQ6OQEi9uAxEjadnY73N17Cx0VIwVt0j+pFnE39
-         G7+NQlgmtVrNrXA7pdX6gBxkcA3YhRXGo3Ybjipst38gtd/HcIftENXsdhpjw4VGg4gw
-         Lq1w==
-X-Forwarded-Encrypted: i=1; AJvYcCUrCQ6+6S9oDhD1kpsiaLkWq35qNp8kg/QSVxbWNetrywfqOM10UhU9nKC9JkphSb4Sg7I=@vger.kernel.org, AJvYcCXvA9kvFMI5nGzuyPnCx174XQ0HBHK04P1BK3dD/8BvU8nvFHkA8TQBJ/jK+n8rUu6MWXMh93m6H9p1nIDe@vger.kernel.org
-X-Gm-Message-State: AOJu0YzHIIgzA2hYivBpzFVV8mOj70/9iIEzU5NAAMXR6G6LtduyekCG
-	wcfOQsXXvDQNqVMPgH0TBTcSTk3r9kg0aVBfkQUal4O5hLJUgVWjEAjwvkskcqUF/VOoigO2ZIH
-	EKcI4ti0eMoVINzhbBUXjgCAsC7WejQ==
-X-Google-Smtp-Source: AGHT+IHvnwtB3+stKJHSsZVtQW2oiRmiz6NV/Jr4tCbAT1Zn462bwAj8DwFN1UoHGTNK6F8Ml/KmyNQAj0Pwqb1YGmk=
-X-Received: by 2002:a17:90b:886:b0:2ca:2c4b:476 with SMTP id
- 98e67ed59e1d1-2db9ffbcb61mr9072136a91.10.1726266375883; Fri, 13 Sep 2024
- 15:26:15 -0700 (PDT)
+	s=arc-20240116; t=1726266810; c=relaxed/simple;
+	bh=6C/UR3aBIp1eT8HzNif8PqrDlmzBp87upRMXVbznqEI=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=l+JM3qFsSmSa/JPz/LyCnEMX4y4rqhgHtKtKuM3MkZ4/xyUiVaDQ5ZkU4Yi2Myq8/bQ6eeWEwYupKAxYJHUdDmyhIlu+PboRxdDGdGk9skSPN7Pp+fIZZ/N5zu4yMHgiHsLTSEQFYaXvp+tBJZE12mBeWt6sO8t6z9opd0YH/TM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me; spf=pass smtp.mailfrom=pm.me; dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b=ECr00oCH; arc=none smtp.client-ip=185.70.43.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pm.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me;
+	s=protonmail3; t=1726266805; x=1726526005;
+	bh=cMEdYYm/zQ4ib6nW+Cxx9aZjUyWf8wlIfSwBKqgh7Ng=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=ECr00oCHzZ8bhqmVSQvffYr3OLdhf9KcPvYLGcrvGnJvYxkpSHP9IvnGUQ+078sJ0
+	 jIM11sX/S3/JuH/P/bS0zHTPQlRt5sZWSJYGTDlk4hN4ZS6C5tFogm8AVtZa0zahMb
+	 osudRJh7Ob8/uw60aw5xC7j1YH74K4iUX9VjwG0UHm6gjGZV0oCBLhQJ0bCJ8IoIAz
+	 793YGvLaoAQdz/u0nXPKZZ0BB8a5Ll0DlPwNTvemOPWgDLkts7g8QzOGPbE4Q5yKF+
+	 krMvOUElxsc9h47Bg9bAWxDxfVJ6FA0gHgZYykUDxw3Qs2J5kPdgvg+PxEiZOUUJPl
+	 dqtqd9PaukDzg==
+Date: Fri, 13 Sep 2024 22:33:20 +0000
+To: =?utf-8?Q?Bj=C3=B6rn_T=C3=B6pel?= <bjorn@kernel.org>
+From: Ihor Solodrai <ihor.solodrai@pm.me>
+Cc: andrii.nakryiko@gmail.com, bpf@vger.kernel.org, ast@kernel.org, eddyz87@gmail.com, daniel@iogearbox.net, mykolal@fb.com, Anders Roxell <anders.roxell@linaro.org>, patchwork-bot+netdevbpf@kernel.org
+Subject: Re: [PATCH bpf-next v4] selftests/bpf: use auto-dependencies for test objects
+Message-ID: <Q3BN2kW9Kgy6LkrDOwnyY4Pv7_YF8fInLCd2_QA3LimKYM3wD64kRdnwp7blwG2dI_s7UGnfUae-4_dOmuTrxpYCi32G_KTzB3PfmxIerH8=@pm.me>
+In-Reply-To: <877cbfwqre.fsf@all.your.base.are.belong.to.us>
+References: <VJihUTnvtwEgv_mOnpfy7EgD9D2MPNoHO-MlANeLIzLJPGhDeyOuGKIYyKgk0O6KPjfM-MuhtvPwZcngN8WFqbTnTRyCSMc2aMZ1ODm1T_g=@pm.me> <172141323037.13293.5496223993427449959.git-patchwork-notify@kernel.org> <877cbfwqre.fsf@all.your.base.are.belong.to.us>
+Feedback-ID: 27520582:user:proton
+X-Pm-Message-ID: 36979acc2c453f638e5b7816cd84ef3ac5d0971e
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240913173759.1316390-1-masahiroy@kernel.org>
-In-Reply-To: <20240913173759.1316390-1-masahiroy@kernel.org>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 13 Sep 2024 15:26:04 -0700
-Message-ID: <CAEf4Bzawf_EgHyHB+-=2U6eyJtBDVHVQ+Nx1JFw+TTbNSqSmuA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] btf: remove redundant CONFIG_BPF test in scripts/link-vmlinux.sh
-To: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Martin KaFai Lau <martin.lau@linux.dev>, bpf@vger.kernel.org, 
-	Andrii Nakryiko <andrii@kernel.org>, linux-kernel@vger.kernel.org, 
-	Nathan Chancellor <nathan@kernel.org>, Alan Maguire <alan.maguire@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Sep 13, 2024 at 10:38=E2=80=AFAM Masahiro Yamada <masahiroy@kernel.=
-org> wrote:
->
-> CONFIG_DEBUG_INFO_BTF depends on CONFIG_BPF_SYSCALL, which in turn
-> selects CONFIG_BPF.
->
-> When CONFIG_DEBUG_INFO_BTF=3Dy, CONFIG_BPF=3Dy is always met.
->
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-> ---
->
+On Friday, September 13th, 2024 at 7:51 AM, Bj=C3=B6rn T=C3=B6pel <bjorn@ke=
+rnel.org> wrote:
 
-Masahiro,
+> I'm getting some build regressions for out-of-tree selftest build with
+> this patch on bpf-next/master. I'm building the selftests from the
+> selftest root, typically:
+>=20
+> make O=3D/output/foo SKIP_TARGETS=3D"" \
+> KSFT_INSTALL_PATH=3D/output/foo/kselftest \
+> -C tools/testing/selftests install
+>=20
+> and then package the whole output kselftest directory, and use that to
+> populate the DUT.
+>=20
+> Reverting this patch, resolves the issues.
+>=20
+> Two issues:
+>=20
+> 1. The install target fails, resulting in many test scripts not copied
+> to the install directory (e.g. test_kmod.sh).
+> 2. Building "all" target fails the second time.
+>=20
+> To reproduce, do the following:
+>=20
+> Pre-requisite
+> Build the kernel for yourfavorite arch -- my is RISC-V at moment ;-)
+>=20
+> make O=3D/output/foo defconfig
+> make O=3D/output/foo kselftest-merge
+> make O=3D/output/foo
+> make O=3D/output/foo headers
+>=20
+> 1. Install fail
+> make O=3D/output/foo TARGETS=3Dbpf SKIP_TARGETS=3D"" \
+> KSFT_INSTALL_PATH=3D/output/foo/kselftest \
+> -C tools/testing/selftests install
+>=20
+> 2. Build "all" fails the second time
+> make O=3D/output/foo TARGETS=3Dbpf SKIP_TARGETS=3D"" \
+> KSFT_INSTALL_PATH=3D/output/foo/kselftest \
+> -C tools/testing/selftests
+>=20
+> make O=3D/output/foo TARGETS=3Dbpf SKIP_TARGETS=3D"" \
+> KSFT_INSTALL_PATH=3D/output/foo/kselftest \
+> -C tools/testing/selftests
+>=20
+>=20
+> Any ideas on a workaround?
 
-Are you planning to take this through your tree, or you'd prefer us
-routing it through bpf-next?
+Hi Bj=C3=B6rn.
 
-> (no changes since v1)
->
->  scripts/link-vmlinux.sh | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
-> index bd196944e350..cfffc41e20ed 100755
-> --- a/scripts/link-vmlinux.sh
-> +++ b/scripts/link-vmlinux.sh
-> @@ -288,7 +288,7 @@ strip_debug=3D
->  vmlinux_link vmlinux
->
->  # fill in BTF IDs
-> -if is_enabled CONFIG_DEBUG_INFO_BTF && is_enabled CONFIG_BPF; then
-> +if is_enabled CONFIG_DEBUG_INFO_BTF; then
->         info BTFIDS vmlinux
->         ${RESOLVE_BTFIDS} vmlinux
->  fi
-> --
-> 2.43.0
->
+I was able to reproduce the problem on bpf-next/master.
+
+I found that in commit
+https://git.kernel.org/bpf/bpf-next/c/f957c230e173 [1] the file
+tools/testing/selftests/bpf/test_skb_cgroup_id.sh was deleted, but not
+removed from the TEST_PROGS list in tools/testing/selftests/bpf/Makefile
+
+Because of that rsync command (invoked by install target) fails:
+
+    rsync: [sender] link_stat "/opt/linux/tools/testing/selftests/bpf/test_=
+skb_cgroup_id.sh" failed: No such file or directory (2)
+    rsync error: some files/attrs were not transferred (see previous errors=
+) (code 23) at main.c(1333) [sender=3D3.2.3]
+    make[1]: *** [../lib.mk:175: install] Error 23
+    make[1]: Leaving directory '/opt/linux/tools/testing/selftests/bpf'
+    make: *** [Makefile:259: install] Error 2
+    make: Leaving directory '/opt/linux/tools/testing/selftests'
+
+
+After I removed test_skb_cgroup_id.sh from TEST_PROGS list, the
+install target completed successfully.
+
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests=
+/bpf/Makefile
+index f04af11df8eb..df75f1beb731 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -132,7 +132,6 @@ TEST_PROGS :=3D test_kmod.sh \
+        test_tunnel.sh \
+        test_lwt_seg6local.sh \
+        test_lirc_mode2.sh \
+-       test_skb_cgroup_id.sh \
+        test_flow_dissector.sh \
+        test_xdp_vlan_mode_generic.sh \
+        test_xdp_vlan_mode_native.sh \
+
+Could you please check on your side if this helps? Maybe there are
+other issues.
+
+[1] https://lore.kernel.org/bpf/20240813-convert_cgroup_tests-v4-4-a33c0345=
+8cf6@bootlin.com/
+
+>=20
+> (And not related to this patch; It's annoying that "bpf" is the default
+> SKIP_TARGETS in kselftest. A bit meh 2024. ;-))
+>=20
+>=20
+> Bj=C3=B6rn
+>=20
+
 
