@@ -1,216 +1,195 @@
-Return-Path: <bpf+bounces-39833-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39834-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65AE597817F
-	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 15:50:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AAF69782D6
+	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 16:44:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E91CA1F21AEE
-	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 13:50:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 29E071C22847
+	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 14:44:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C55A1DA313;
-	Fri, 13 Sep 2024 13:50:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF87928DC1;
+	Fri, 13 Sep 2024 14:44:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gMHj37mU"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="SDdo1olv"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 048C743144
-	for <bpf@vger.kernel.org>; Fri, 13 Sep 2024 13:50:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5BFD4D5BD
+	for <bpf@vger.kernel.org>; Fri, 13 Sep 2024 14:44:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726235402; cv=none; b=fFMnjpLfu1aQPFXChsqDuECV+erFHANxXUUHdhI+T7lMRenbdVMnH4YLfhIlfT3irLgnRO0ob7XMH18ODXgiUxSZB1xi03LEfoQ7UDBxgxlP/ZJ01nGiZzFqGNMfkC2XomyvV3wXq0g8xc7ANh2bMIJBvs8kiskPr/xFH4TtppI=
+	t=1726238659; cv=none; b=H1VmclGnncIJhI/S/D/IYY/21pPHGTVkpenwRudsIfpNSVZtjJOuB/xNshirYEVNX+HUlB7x0+bS7jb0WUg4hcYdY8on444MoJhEoHlnQx/UT175sYbwqocuHs7rB7MYdRD793IZMeHNSv7aZlwOji/cqWhgmvtRRlT4/6hGrlY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726235402; c=relaxed/simple;
-	bh=GrfsLses5J04wyGvYuLX5YF+IzblJF/SBuqS6MXBzBI=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=XayiXPrZUYpuiJs7ILaGTm73AMtyS2dMZqtOtzZZOoptyCWsdRC5IKu6qiTiOgf49yke1wJkZKkrdS6aXxPinYrxcAJ6jvu3pdEXomeAqUXytsrMf9xcNwiUloMp3L3EPMPBzhOdz2nAhYjK7EOiu7uLoud/mnWtWXtDwvQPkq0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gMHj37mU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B60BC4CEC0;
-	Fri, 13 Sep 2024 13:49:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1726235401;
-	bh=GrfsLses5J04wyGvYuLX5YF+IzblJF/SBuqS6MXBzBI=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=gMHj37mUcZrXJ2dDBn3I58fVKMWysa8nTYDCFhCvmFt4BvIJJtwgK7ezlAvXuUsZg
-	 LQ0/pvEwuuxmEh1gDDDOVHnBLc+ArTAAvS3pSXzg+O7MMtzuzWVPn9ANSrUM3Gz35C
-	 9RwbChHBT2F8WfKpDlcOfLEobj5AJvXd79GxT208ZZ21caRrHbHYvGRP6F2WPcykaG
-	 qxmQlDc8kzkVDFPiLUBVzQM7eYtRfhfzgCCq7C0IZCdtfgNyu9qgaRUX8jKbRxQ/SW
-	 nlgkbt93a7nOMynpzbJd82tpjEJ8WYvSu9mSuSobYlQGUFTR0bio0hRUrXC9fyJLPX
-	 IoCTcUXvKTs4w==
-Date: Fri, 13 Sep 2024 22:49:57 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, kernel-ci@meta.com,
- bot+bpf-ci@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
- martin.lau@linux.dev, bpf <bpf@vger.kernel.org>, Jiri Olsa
- <jolsa@kernel.org>
-Subject: Re: [PATCH v14 00/19] tracing: fprobe: function_graph:
- Multi-function graph and fprobe on fgraph
-Message-Id: <20240913224957.5bfa380429020f3cbe9eeb63@kernel.org>
-In-Reply-To: <20240913214515.894c868a1ef4968550553b86@kernel.org>
-References: <172615368656.133222.2336770908714920670.stgit@devnote2>
-	<0170cd7d95df0583770c385c1e11bd27dfacf618b71b6e723f0952efc0ce9040@mail.kernel.org>
-	<CAEf4BzZgAkSkMd6Vk3m1D-0AVqXp06PaBPr+2L7Dd3WRgJ8JvA@mail.gmail.com>
-	<20240913085402.9e5b2c506a8973b099679d04@kernel.org>
-	<CAEf4BzZEoNHgcLDPTPQ=yyQTZtEZoVrGbBbeTf3vqe_wcpS6EA@mail.gmail.com>
-	<20240913175935.bb0892ab1e6052efc12c6423@kernel.org>
-	<20240913214515.894c868a1ef4968550553b86@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1726238659; c=relaxed/simple;
+	bh=yxbS5ZgLlXhg5bw9EbtSOOdwW659qsXhQuCcfA1VLMk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=nVGPI2EKnGbJjPzNsxlTsKBi0hy7gWFjYNSUJznuwZW811TvZTW/MfyK8Ooa1I8gOXSFPSWkbvOHcet8Swrwe7QRfxgueyc7h7aHtLxyEnoqmhSbRxNmZgXOB55lPovEZicUoW44ZsAYpIWcnrlnwdDAtBIR2e/k/yOpnFym9mE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=SDdo1olv; arc=none smtp.client-ip=209.85.218.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a8a789c4fc5so543691966b.0
+        for <bpf@vger.kernel.org>; Fri, 13 Sep 2024 07:44:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1726238655; x=1726843455; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BWAX9MKC9+qpP4rTaNc34KRGg6ko5WHRfsEjNewEvO8=;
+        b=SDdo1olvF6fZ/z4Fbe/hhbgwTwDkKim4mAsTl6NjAmZ4yaUZOk9YpKhWqG2afJkwMn
+         ers833ZJHqQ7tElMK5GubKzdZNHB+Jp4fh2/Hmb+829lXRSxVYRhf9DBmb3ixGYF9PKi
+         LcRN4OG6ESYyNqr8O/Pky7WzlD5C9JNyRMy9EPR5MbTLXF9bmQkJqaEehfgIkCR1ndS+
+         BybLf6iOMyRWQBItbcvv7caichNNr87XWK9gppuAUMhev/e4YaLgDPXouxThS1rHrgod
+         uxRz0wA++lq0INU6gYtsT9EbtOUjcRpBsKmNgqy53keK2m7PayXRg3LzI/XZGz1EXb1a
+         4QLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1726238655; x=1726843455;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BWAX9MKC9+qpP4rTaNc34KRGg6ko5WHRfsEjNewEvO8=;
+        b=HCSWlYF04wMBkKBLOGErHOm++Puh4PRx1fD1hdyV8nkh2uY5Tl+yEerFwB/7xnTS0X
+         96mqf1EGYuhaKnC9dLP3M0wRKUWLGPgxbOLVT/QGhO0ZfoLLmHAFsdeJT1SP74FgXNkA
+         WwUN/b/QgzWZz/B+8JrDXjd+BA+lGm0SboR+8NZW8pqsK9/Do4KIdfKVQUAZ+skrKBp5
+         xRv5wIULHXBExG7PSbA3Kjkx+YZdI4N+wo10Sy37naVLmFHiTWmtebtu/ItDNaOGh97J
+         vPnbWv7zYlg6A49IgV7Q6o9igmv1l2H2upZaAg32fX3H2VnI1nLJIK/OL281tXIp13W9
+         ucbw==
+X-Forwarded-Encrypted: i=1; AJvYcCW4jkN19v6ZVV0a7rjfHE4f+O6QNxg2+1Z7LgfboboBxcaSIG2ItUGHduP2Z/tU5TUecLw=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw8QxBNivaXF9WkH3v29Mozk0KUN5TlXn8taHGIzyyoQIpXLJpr
+	EFe0FxOdsBKBBJ7X039UgKqM7YBRja8ttrhCK+niWm+Aa7z2YGNWfWY+YNMKjqDjaug9rTOh1uI
+	FSLx6A0ouWaopG4F3vm7s3O/DsgMsl2A8U8uB
+X-Google-Smtp-Source: AGHT+IGE+Jp/rSNl8CHAKVPj7rH64h80c1EZux4OwllcyyhQIQurPUP9+TGcdKNzyP6cFI3y2UMMZ38TUPBCji5KOKg=
+X-Received: by 2002:a17:907:9809:b0:a8d:29b7:ece3 with SMTP id
+ a640c23a62f3a-a902a8f0940mr691888166b.33.1726238654450; Fri, 13 Sep 2024
+ 07:44:14 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+References: <20240823085313.75419-1-zhoufeng.zf@bytedance.com>
+ <CANn89i+ZsktuirATK0nhUmJu+TiqB9Kbozh+HhmCiP3qdnW3Ew@mail.gmail.com>
+ <173d3b06-57ed-4e2e-9034-91b99f41512b@linux.dev> <CANn89iLKcOBBHXMSduV-DXYZfDCKAZyySggKFnQMpKH3p_Ureg@mail.gmail.com>
+ <6c75215b-0bdc-4b5a-b267-6dce0faec496@bytedance.com>
+In-Reply-To: <6c75215b-0bdc-4b5a-b267-6dce0faec496@bytedance.com>
+From: Eric Dumazet <edumazet@google.com>
+Date: Fri, 13 Sep 2024 16:44:03 +0200
+Message-ID: <CANn89i+9GmBLCdgsfH=WWe-tyFYpiO27wONyxaxiU6aOBC6G8g@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH bpf-next v2] bpf: Fix bpf_get/setsockopt to
+ tos not take effect when TCP over IPv4 via INET6 API
+To: Feng Zhou <zhoufeng.zf@bytedance.com>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>, davem@davemloft.net, kuba@kernel.org, 
+	pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
+	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev, 
+	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
+	haoluo@google.com, jolsa@kernel.org, dsahern@kernel.org, 
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
+	yangzhenze@bytedance.com, wangdongdong.6@bytedance.com, 
+	YiFei Zhu <zhuyifei@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 13 Sep 2024 21:45:15 +0900
-Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
+On Tue, Aug 27, 2024 at 10:08=E2=80=AFAM Feng Zhou <zhoufeng.zf@bytedance.c=
+om> wrote:
+>
+> =E5=9C=A8 2024/8/24 02:53, Eric Dumazet =E5=86=99=E9=81=93:
+> > On Fri, Aug 23, 2024 at 8:49=E2=80=AFPM Martin KaFai Lau <martin.lau@li=
+nux.dev> wrote:
+> >>
+> >> On 8/23/24 6:35 AM, Eric Dumazet wrote:
+> >>> On Fri, Aug 23, 2024 at 10:53=E2=80=AFAM Feng zhou <zhoufeng.zf@byted=
+ance.com> wrote:
+> >>>>
+> >>>> From: Feng Zhou <zhoufeng.zf@bytedance.com>
+> >>>>
+> >>>> when TCP over IPv4 via INET6 API, bpf_get/setsockopt with ipv4 will
+> >>>> fail, because sk->sk_family is AF_INET6. With ipv6 will success, not
+> >>>> take effect, because inet_csk(sk)->icsk_af_ops is ipv6_mapped and
+> >>>> use ip_queue_xmit, inet_sk(sk)->tos.
+> >>>>
+> >>>> So bpf_get/setsockopt needs add the judgment of this case. Just chec=
+k
+> >>>> "inet_csk(sk)->icsk_af_ops =3D=3D &ipv6_mapped".
+> >>>>
+> >>>> | Reported-by: kernel test robot <lkp@intel.com>
+> >>>> | Closes: https://lore.kernel.org/oe-kbuild-all/202408152034.lw9Ilsj=
+6-lkp@intel.com/
+> >>>> Signed-off-by: Feng Zhou <zhoufeng.zf@bytedance.com>
+> >>>> ---
+> >>>> Changelog:
+> >>>> v1->v2: Addressed comments from kernel test robot
+> >>>> - Fix compilation error
+> >>>> Details in here:
+> >>>> https://lore.kernel.org/bpf/202408152058.YXAnhLgZ-lkp@intel.com/T/
+> >>>>
+> >>>>    include/net/tcp.h   | 2 ++
+> >>>>    net/core/filter.c   | 6 +++++-
+> >>>>    net/ipv6/tcp_ipv6.c | 6 ++++++
+> >>>>    3 files changed, 13 insertions(+), 1 deletion(-)
+> >>>>
+> >>>> diff --git a/include/net/tcp.h b/include/net/tcp.h
+> >>>> index 2aac11e7e1cc..ea673f88c900 100644
+> >>>> --- a/include/net/tcp.h
+> >>>> +++ b/include/net/tcp.h
+> >>>> @@ -493,6 +493,8 @@ struct request_sock *cookie_tcp_reqsk_alloc(cons=
+t struct request_sock_ops *ops,
+> >>>>                                               struct tcp_options_rec=
+eived *tcp_opt,
+> >>>>                                               int mss, u32 tsoff);
+> >>>>
+> >>>> +bool is_tcp_sock_ipv6_mapped(struct sock *sk);
+> >>>> +
+> >>>>    #if IS_ENABLED(CONFIG_BPF)
+> >>>>    struct bpf_tcp_req_attrs {
+> >>>>           u32 rcv_tsval;
+> >>>> diff --git a/net/core/filter.c b/net/core/filter.c
+> >>>> index ecf2ddf633bf..02a825e35c4d 100644
+> >>>> --- a/net/core/filter.c
+> >>>> +++ b/net/core/filter.c
+> >>>> @@ -5399,7 +5399,11 @@ static int sol_ip_sockopt(struct sock *sk, in=
+t optname,
+> >>>>                             char *optval, int *optlen,
+> >>>>                             bool getopt)
+> >>>>    {
+> >>>> -       if (sk->sk_family !=3D AF_INET)
+> >>>> +       if (sk->sk_family !=3D AF_INET
+> >>>> +#if IS_BUILTIN(CONFIG_IPV6)
+> >>>> +           && !is_tcp_sock_ipv6_mapped(sk)
+> >>>> +#endif
+> >>>> +           )
+> >>>>                   return -EINVAL;
+> >>>
+> >>> This does not look right to me.
+> >>>
+> >>> I would remove the test completely.
+> >>>
+> >>> SOL_IP socket options are available on AF_INET6 sockets just fine.
+> >>
+> >> Good point on the SOL_IP options.
+> >>
+> >> The sk could be neither AF_INET nor AF_INET6. e.g. the bpf_get/setsock=
+opt
+> >> calling from the bpf_lsm's socket_post_create). so the AF_INET test is=
+ still needed.
+> >>
+> >
+> > OK, then I suggest using sk_is_inet() helper.
+> >
+> >> Adding "&& sk->sk_family !=3D AF_INET6" should do. From ipv6_setsockop=
+t, I think
+> >> it also needs to consider the "sk->sk_type !=3D SOCK_RAW".
+> >>
+> >> Please add a test in the next re-spin.
+> >>
+> >> pw-bot: cr
+>
+> Thanks for your suggestion, I will add it in the next version.
 
-> On Fri, 13 Sep 2024 17:59:35 +0900
-> Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
-> 
-> > > 
-> > > Taking failing output from the test:
-> > > 
-> > > > > > kprobe_multi_testmod_check:FAIL:kretprobe_test3_result unexpected kretprobe_test3_result: actual 0 != expected 1
-> > > 
-> > > kretprobe_test3_result is a sort of identifier for a test condition,
-> > > you can find a corresponding line in user space .c file grepping for
-> > > that:
-> > > 
-> > > ASSERT_EQ(skel->bss->kretprobe_testmod_test3_result, 1,
-> > > "kretprobe_test3_result");
-> > > 
-> > > Most probably the problem is in:
-> > > 
-> > > __u64 addr = bpf_get_func_ip(ctx);
-> > 
-> > Yeah, and as I replyed to another thread, the problem is
-> > that the ftrace entry_ip is not symbol ip.
-> > 
-> > We have ftrace_call_adjust() arch function for reverse
-> > direction (symbol ip to ftrace entry ip) but what we need
-> > here is the reverse translate function (ftrace entry to symbol)
-> > 
-> > The easiest way is to use kallsyms to find it, but this is
-> > a bit costful (but it just increase bsearch in several levels).
-> > Other possible options are
-> > 
-> >  - Change bpf_kprobe_multi_addrs_cmp() to accept a range
-> >    of address. [sym_addr, sym_addr + offset) returns true,
-> >    bpf_kprobe_multi_cookie() can find the entry address.
-> >    The offset depends on arch, but 16 is enough.
-> 
-> Oops. no, this bpf_kprobe_multi_cookie() is used only for storing
-> test data. Not a general problem solving. (I saw kprobe_multi_check())
-> 
-> So solving problem is much costly, we need to put more arch-
-> dependent in bpf_trace, and make sure it does reverse translation
-> of ftrace_call_adjust(). (this means if you expand arch support,
-> you need to add such implementation)
+Gentle ping.
 
-OK, can you try this one?
-
-
-From 81bc599911507215aa9faa1077a601880cbd654a Mon Sep 17 00:00:00 2001
-From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Date: Fri, 13 Sep 2024 21:43:46 +0900
-Subject: [PATCH] bpf: Add get_entry_ip() for arm64
-
-Add get_entry_ip() implementation for arm64. This is based on
-the information in ftrace_call_adjust() for arm64.
-
-Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
----
- kernel/trace/bpf_trace.c | 64 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 64 insertions(+)
-
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index deb629f4a510..b0cf6e5b8965 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -1066,6 +1066,70 @@ static unsigned long get_entry_ip(unsigned long fentry_ip)
- 		fentry_ip -= ENDBR_INSN_SIZE;
- 	return fentry_ip;
- }
-+#elif defined (CONFIG_ARM64)
-+#include <asm/insn.h>
-+
-+static unsigned long get_entry_ip(unsigned long fentry_ip)
-+{
-+	u32 insn;
-+
-+	/*
-+	 * When using patchable-function-entry without pre-function NOPS, ftrace
-+	 * entry is the address of the first NOP after the function entry point.
-+	 *
-+	 * The compiler has either generated:
-+	 *
-+	 * func+00:	func:	NOP		// To be patched to MOV X9, LR
-+	 * func+04:		NOP		// To be patched to BL <caller>
-+	 *
-+	 * Or:
-+	 *
-+	 * func-04:		BTI	C
-+	 * func+00:	func:	NOP		// To be patched to MOV X9, LR
-+	 * func+04:		NOP		// To be patched to BL <caller>
-+	 *
-+	 * The fentry_ip is the address of `BL <caller>` which is at `func + 4`
-+	 * bytes in either case.
-+	 */
-+	if (!IS_ENABLED(CONFIG_DYNAMIC_FTRACE_WITH_CALL_OPS))
-+		return fentry_ip - AARCH64_INSN_SIZE;
-+
-+	/*
-+	 * When using patchable-function-entry with pre-function NOPs, BTI is
-+	 * a bit different.
-+	 *
-+	 * func+00:	func:	NOP		// To be patched to MOV X9, LR
-+	 * func+04:		NOP		// To be patched to BL <caller>
-+	 *
-+	 * Or:
-+	 *
-+	 * func+00:	func:	BTI	C
-+	 * func+04:		NOP		// To be patched to MOV X9, LR
-+	 * func+08:		NOP		// To be patched to BL <caller>
-+	 *
-+	 * The fentry_ip is the address of `BL <caller>` which is at either
-+	 * `func + 4` or `func + 8` depends on whether there is a BTI.
-+	 */
-+
-+	/* If there is no BTI, the func address should be one instruction before. */
-+	if (!IS_ENABLED(CONFIG_ARM64_BTI_KERNEL))
-+		return fentry_ip - AARCH64_INSN_SIZE;
-+
-+	/* We want to be extra safe in case entry ip is on the page edge,
-+	 * but otherwise we need to avoid get_kernel_nofault()'s overhead.
-+	 */
-+	if ((fentry_ip & ~PAGE_MASK) < AARCH64_INSN_SIZE * 2) {
-+		if (get_kernel_nofault(insn, (u32 *)(fentry_ip - AARCH64_INSN_SIZE * 2)))
-+			return fentry_ip - AARCH64_INSN_SIZE;
-+	} else {
-+		insn = *(u32 *)(fentry_ip - AARCH64_INSN_SIZE * 2);
-+	}
-+
-+	if (aarch64_insn_is_bti(le32_to_cpu((__le32)insn)))
-+		return fentry_ip - AARCH64_INSN_SIZE * 2;
-+
-+	return fentry_ip - AARCH64_INSN_SIZE;
-+}
- #else
- #define get_entry_ip(fentry_ip) fentry_ip
- #endif
--- 
-2.34.1
-
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Have you sent the new version ?
 
