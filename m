@@ -1,126 +1,124 @@
-Return-Path: <bpf+bounces-39808-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39809-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07CE2977BE3
-	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 11:09:12 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C06C1977C02
+	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 11:15:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 97321B27EA1
-	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 09:09:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 82015288676
+	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 09:15:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 660691D79A7;
-	Fri, 13 Sep 2024 09:08:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 036201D6DD5;
+	Fri, 13 Sep 2024 09:15:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Dbapdw/V"
+	dkim=pass (2048-bit key) header.d=blackwall-org.20230601.gappssmtp.com header.i=@blackwall-org.20230601.gappssmtp.com header.b="hcW6oCG7"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 705771D6DC1
-	for <bpf@vger.kernel.org>; Fri, 13 Sep 2024 09:08:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 754D7187350
+	for <bpf@vger.kernel.org>; Fri, 13 Sep 2024 09:15:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726218512; cv=none; b=DsLi9K9s0nmOIVRMwt9lU0CNPnqC68mSqymaHKIQVdWozmSsikj+qxx6diNa4NMgwnXDH6n8d3c78UfdoNPyVbaCP8WW4BPV/2yHnlLDnLAnvzb8zYpFpr+JT8AoYq3OPHMgBaWmSfB1eH4jUB4B3RHoIzXrqwCzw29VJnouIg4=
+	t=1726218938; cv=none; b=dl/xZL0mgmtcv5QuWSLcK0fIU+oOYwpYsD/J4lkhcyzAhFtTzKK1mX8CQ96xxlrsPN0PgyeBcHKgCjjSFHS7VGzc2dLZAyusLz1gS8m3Kkyguh76FQ/yktC5pBxedJVycXNC0+2+PvO8Kq8hsdAUG78PSQNwpKCu3EfQptNT6eA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726218512; c=relaxed/simple;
-	bh=R+wc8evpmc4HT9aDiFp/1Wi2uhv80z4+DZFRw6CYiEM=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=fUokepIUg28amHAcArvKpmZI71HcX0Wdy8vQs45hRbAri80g9Zw1uZEZsmtQwGiDJHsRRw7H6Ylhhh/VBpZddxe79mZcbtIJly+wZIcKEQ7RbRSKoPTdC9r4tjaz3JUkFuMj5ycU2cnJ8ROtVhquxvEutKjRzmDtThIey9EHIx0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Dbapdw/V; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1726218509;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=N/qu/Mi6P96nxbNpRLmW/hvyLUcdhuJ0IeIbk9BzPBs=;
-	b=Dbapdw/VIX4JgJNBkO8qbYx+A3AB4ycwKBazoiMPid02Gkq6pK/0kJenJsSjGZ2UFDGX+6
-	a5z4h4mo9KyOA9hRMPTHj46eTI+jful7YF6cVvkqS2xTu4JeZS2YWGiEY24C105Kc4xcKK
-	AUNzTAH202H2qJit4zp3j0yVo2d6RIA=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-527-CffJHuoINEywwSil6SLO0Q-1; Fri, 13 Sep 2024 05:08:28 -0400
-X-MC-Unique: CffJHuoINEywwSil6SLO0Q-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-374c9b0daf3so304076f8f.1
-        for <bpf@vger.kernel.org>; Fri, 13 Sep 2024 02:08:27 -0700 (PDT)
+	s=arc-20240116; t=1726218938; c=relaxed/simple;
+	bh=yjxj0FSJpzDqTDqbkb+Ys5lDxT533fcsCSKxOxLDXqE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=czNilRDgTFjEKZcI4ETJB5mb7c6LxmMQbVa3LzjeSuCwcOIi8WkU5MiLuJsVoS0+NDBptgYyGXnbNI4AEWuEdshkwWG7aTK7u1WTNWUpTi1uoDCgPwouhNkiH1K+kEK2bFZ2Efj2pAS0TynaJmy8rkIK6GmyKR2l0ciCKnDMNrs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=blackwall.org; spf=none smtp.mailfrom=blackwall.org; dkim=pass (2048-bit key) header.d=blackwall-org.20230601.gappssmtp.com header.i=@blackwall-org.20230601.gappssmtp.com header.b=hcW6oCG7; arc=none smtp.client-ip=209.85.208.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=blackwall.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=blackwall.org
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-5c255e3c327so2239337a12.1
+        for <bpf@vger.kernel.org>; Fri, 13 Sep 2024 02:15:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=blackwall-org.20230601.gappssmtp.com; s=20230601; t=1726218935; x=1726823735; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=zP7o2lXiLqDCW/l4Y6N12juw+Nevs/iHS84Bz9Lspa0=;
+        b=hcW6oCG7UsWg8lqj1SfpbfEYgFYHzvc8MRSQFB/afVCmLbLYKL3MiCqkl0d2emVWYd
+         nvRqV4ojd/+Jau6JFuxvGJQ/zAcn/TBhb30ud/kQU0eMb7Syuge/REB/v+24vztNWFQf
+         oPaCyMD344Upcg6J8Hz/T0hGkfk0G423DJ6z3OEjZkU+UGNtPTgX8MxtjITkyWu8OByq
+         ZJSitXmGPA08O1Z+lpNt3Qfkew2x93D1PmszK16drxktOqGBp3kKx4CzlqY/3o44X35c
+         deotYhfUvTwHgmYn3VNqPtXGtRdfKuFoA6b/7OJ1O/aWJcJRNKrPSx1mVk/UtVnhEOF2
+         eB7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726218507; x=1726823307;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=N/qu/Mi6P96nxbNpRLmW/hvyLUcdhuJ0IeIbk9BzPBs=;
-        b=Q+x6YA4GgDZyMZKAZ26bZdKgeS4l+gUvUMbEY98QqZ2jbaOfx0MIPKqqf4D7+1F6V6
-         iYvS2PT9PlMFOkiMMuJm3+K4m7QFwg3LRSvoe+cYTVS1MrNYcGmnSrTBBdCVyXLeTs/I
-         2VUlAZv4nU83Zvf12Bc/zW6peLG6yHdxOpX6NoHpHwKxAsD9wL2ffhxgpVCrpe7oDh07
-         hDnwAKKVz06q+xj/Xx4HM5OSNA6n1nRYUMmcu78K8LQfQo4lsbEXll3voOoHlVB5RRa2
-         NLQanAYsFcOJSRbm1D5whOKZf8/LhgWD+AH4WPwEN5oN/UlzBb9lrXsh61sqKIG+0wvc
-         Oh2Q==
-X-Forwarded-Encrypted: i=1; AJvYcCV2zhmB29jB/w76dhGlQMVZL5zS6xXafdcvtrGeP+BMW9pfHP7agdv8swimRqfqtHxZm8E=@vger.kernel.org
-X-Gm-Message-State: AOJu0YymBffSs8BCPGnBN3JDq39iz/bliDmDjGh79sJHSfvy//B7c1ma
-	7WLsRSSTaEOlsmRBSOjEWDgF6yVVNdTtkZNFEos6uDMtDHF0T69S4UnliQu/GekXmOR4LH0A/j8
-	CC8bYtZRsGufqXMjomwnvNnYLLvHz0GS6Py0XO6cfs0xhATCqgQ==
-X-Received: by 2002:adf:b197:0:b0:377:2df4:55f6 with SMTP id ffacd0b85a97d-378d61e2710mr999151f8f.17.1726218506866;
-        Fri, 13 Sep 2024 02:08:26 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGYpp0G2XEPwQQL2G5P5Kh9FZsdJniPGQziF4Dl1Aah6cU2OdRkxvRBB8oV8kLCyUEwA2lFYg==
-X-Received: by 2002:adf:b197:0:b0:377:2df4:55f6 with SMTP id ffacd0b85a97d-378d61e2710mr999107f8f.17.1726218505680;
-        Fri, 13 Sep 2024 02:08:25 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3789567625esm16331716f8f.64.2024.09.13.02.08.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Sep 2024 02:08:25 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id DE0EF152C68B; Fri, 13 Sep 2024 11:08:22 +0200 (CEST)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To: Breno Leitao <leitao@debian.org>, kuba@kernel.org, bpf@vger.kernel.org,
- Daniel Borkmann <daniel@iogearbox.net>, Nikolay Aleksandrov
- <razor@blackwall.org>, "David S. Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Alexei
- Starovoitov <ast@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: vadim.fedorenko@linux.dev, andrii@kernel.org, "open list:BPF [NETKIT]
- (BPF-programmable network device)" <netdev@vger.kernel.org>, open list
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net] netkit: Assign missing bpf_net_context
-In-Reply-To: <20240912155620.1334587-1-leitao@debian.org>
-References: <20240912155620.1334587-1-leitao@debian.org>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date: Fri, 13 Sep 2024 11:08:22 +0200
-Message-ID: <87ikuzc455.fsf@toke.dk>
+        d=1e100.net; s=20230601; t=1726218935; x=1726823735;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zP7o2lXiLqDCW/l4Y6N12juw+Nevs/iHS84Bz9Lspa0=;
+        b=IxWFIz5AeeA53bmVNStcFGD075BdTifQxty9sR0RrP4CQT9M7x1+s4hjepUz87Uqx6
+         O3jrL1xoA1qQgztu7/IBBjh11FRz+NdwsoYVXVx7spxOJqB8RuAb4gJlwBnPOu70GYpw
+         gamddd1xTjx//S34S9fPGB6OunypZpu7hDgGMEdpbYxMxeCVulPzExlzLNIooVI+EB6p
+         hzl2yR2Kn2y96tdU7pqgIduTeelISqgUvpFTzT5ieG0TLragPRF2VCRp1kHetd43Tk3Z
+         sglUnZyIutgc6DLC94Y1ByDZD+ThUyiulgXW0p7E1Z7KyRbLaV+ojYYR7yheuuTF0teQ
+         7izQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXFtODDvV1bBT5xIQdH5psD8vDZEkJnpn9v/QrCZKS+le9xkgSBYF2O0fxfrroUzCQzJe4=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy1onVIarbZ12ifGzciZBy6pNv+AllZ77yCQ5Vk0q6INIAJjGze
+	IT+GXYhqfRenueYMUO1aKrm6ft9oTkNXrq+8RHTMKD5egSMxL8nMpLJin2GeT/U=
+X-Google-Smtp-Source: AGHT+IFVFni4KQY31tZpsekaGm1UaBb7ZpdiuaYbjs6baOy/7SSOoWK2lsopYFzaF0hFcAvrJOrKow==
+X-Received: by 2002:a17:907:3e1d:b0:a83:8591:7505 with SMTP id a640c23a62f3a-a902966f459mr584642266b.59.1726218933949;
+        Fri, 13 Sep 2024 02:15:33 -0700 (PDT)
+Received: from [192.168.0.148] ([93.93.8.5])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a8d25c72e9asm849536866b.115.2024.09.13.02.15.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 13 Sep 2024 02:15:33 -0700 (PDT)
+Message-ID: <8cf0b25f-2b7f-478e-af14-b0ebd5905a79@blackwall.org>
+Date: Fri, 13 Sep 2024 12:15:30 +0300
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net] netkit: Assign missing bpf_net_context
+To: Breno Leitao <leitao@debian.org>, kuba@kernel.org, bpf@vger.kernel.org,
+ Daniel Borkmann <daniel@iogearbox.net>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
+ =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: vadim.fedorenko@linux.dev, andrii@kernel.org,
+ "open list:BPF [NETKIT] (BPF-programmable network device)"
+ <netdev@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
+References: <20240912155620.1334587-1-leitao@debian.org>
+Content-Language: en-US
+From: Nikolay Aleksandrov <razor@blackwall.org>
+In-Reply-To: <20240912155620.1334587-1-leitao@debian.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Breno Leitao <leitao@debian.org> writes:
-
+On 9/12/24 18:56, Breno Leitao wrote:
 > During the introduction of struct bpf_net_context handling for
 > XDP-redirect, the netkit driver has been missed, which also requires it
 > because NETKIT_REDIRECT invokes skb_do_redirect() which is accessing the
 > per-CPU variables. Otherwise we see the following crash:
->
+> 
 > 	BUG: kernel NULL pointer dereference, address: 0000000000000038
 > 	bpf_redirect()
 > 	netkit_xmit()
 > 	dev_hard_start_xmit()
->
+> 
 > Set the bpf_net_context before invoking netkit_xmit() program within the
 > netkit driver.
->
-> Fixes: 401cb7dae813 ("net: Reference bpf_redirect_info via task_struct on=
- PREEMPT_RT.")
+> 
+> Fixes: 401cb7dae813 ("net: Reference bpf_redirect_info via task_struct on PREEMPT_RT.")
 > Signed-off-by: Breno Leitao <leitao@debian.org>
 > Acked-by: Daniel Borkmann <daniel@iogearbox.net>
 > Reviewed-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> ---
+>  drivers/net/netkit.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
 
-Reviewed-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+
+Acked-by: Nikolay Aleksandrov <razor@blackwall.org>
+
 
 
