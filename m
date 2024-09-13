@@ -1,227 +1,135 @@
-Return-Path: <bpf+bounces-39848-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39851-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C3979787C0
-	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 20:24:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id DB7DD9788BF
+	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 21:18:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 789CEB2337E
-	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 18:24:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 81684B24A9B
+	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 19:18:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88B0B130ADA;
-	Fri, 13 Sep 2024 18:24:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A08D4146D6E;
+	Fri, 13 Sep 2024 19:18:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="NHAVNtU2"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="faw8jARN"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9BCD12C54B
-	for <bpf@vger.kernel.org>; Fri, 13 Sep 2024 18:24:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D186414659D
+	for <bpf@vger.kernel.org>; Fri, 13 Sep 2024 19:18:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726251865; cv=none; b=HNRHOXWqPw+W/W1I/YDH11eGCe4fjM1hj0y2AHHmqvQ63O5nrEsCSvGzd/2Ndly/By/pQYVHWlhuP/EfFk+neY+xkonXrxH3RvZSZuIeA0Af+m57A0ZvvwBUGCYNZxCj7KcUyjINKQq6/ne6d/ScF0poUZYHEE4V4Pem72j6lbI=
+	t=1726255088; cv=none; b=gQmqw+f6+p3CKzTaGzI+wCNHhxPaVD4bKNyH3RwwxLxhmef2wJP6IpaoS1AurK+e6e6Vy3m9SZOl+sc8KB5D19H5ngqQMRqJyXnq8+XBEcTAKSUb73Kv8W97krBXYOVPKUdxB1TB33nkTcSYQunoHi6vBK3gfo9qBCCNQGY9/HM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726251865; c=relaxed/simple;
-	bh=FMnCn4o2qdaSUXi73ndLZFMOMrjiifMev7x7oJtFz8M=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KpTOuoa2Qautwuk8fNqnh+0NyIFPhXUEoe5ubmy/jvNa0BOKp+eNPuA/3YEPrl33BNk7ydEBr90SnMxSBk60uT/TCrojIIGVqpc9hTAdHSS+bnIeuPQ2D4pEygvhBTN4u5Q38CU6pn0ibFuJwgEkHsL6lL/ywJmN3uwxluiJy+s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=NHAVNtU2; arc=none smtp.client-ip=95.215.58.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <d17da5b6-6273-4c2c-abd7-99378723866e@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1726251861;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=STET5AXaIIGQswDEEBI7EGCg3LCwzAn8DRb4QZJG3wQ=;
-	b=NHAVNtU2cEONxvAu5BGBDbSFgBqCccPGRmQmvrLsgOs+A5Y6y+mOVEcHed8JXsQMwAlnzo
-	Fx1QOCna/Rmoh6YMKAt9XOlXOML0A1aj9hMU4nMbomT7DJR6V7Tj+J5EKWTaNeRYpm14pB
-	7Wzjx/uoB51Yp0VvQ297kU+shUjruG0=
-Date: Fri, 13 Sep 2024 11:24:09 -0700
+	s=arc-20240116; t=1726255088; c=relaxed/simple;
+	bh=GkU/3wq0lI0FMDz0p3eQjWKnRYZeGNjVNQr/Po48UBU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=DfHZZn73UPF3/Kj4xwXAjVYyhGr1D2mZCfQN0e0OT+IYotwp6P7bAfOCpv20CpHNLYV6uGKI15pSZ9GdmemRWOCj5riajKg/buwuX1zSHPlq0ISNVhJgk6OdsVMrpOotTMmxHU07IcNmmXDTmBU5MOkDsR8bqZ8D8iWfUy0yMVA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=faw8jARN; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:MIME-Version:
+	Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References;
+	bh=UEZhs96GwHSzA8jZJd6eQCK5jEWwHxJpMnAA7q4zyIk=; b=faw8jARN/ceA9jw7hsWZskzTZf
+	+CooljJjyoOjWRUJam+H99FMWbsO7xvm8E+XZ7CIx6VPs6CkseRlmxcQg+ry2uYh71oIozNBuhZM6
+	UKbIQHhR2pXbdoCXV4V7BdBDClLNPKUFzvFm5m6qJFHbji4rCdiUTJvymKrTnF/sQf90DaDPs4FRP
+	H2Sj3ByRfVfQs9nRnFQVLZk5JZ9Cp6QQxpO1cjLVqDa3vI3xLwof5FZCaszBkHtyyNEib+KgrTcFz
+	W53EgWPhKkctS7eUtzJTndR8I0q7RCvEQ2fg2+lDNCBW2vipLGzXoDR0MI10YVLSbkSVO+wM+J1uM
+	HfrWzbDA==;
+Received: from 43.249.197.178.dynamic.cust.swisscom.net ([178.197.249.43] helo=localhost)
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1spBno-000KsY-Gz; Fri, 13 Sep 2024 21:17:56 +0200
+From: Daniel Borkmann <daniel@iogearbox.net>
+To: bpf@vger.kernel.org
+Cc: shung-hsi.yu@suse.com,
+	andrii@kernel.org,
+	ast@kernel.org,
+	kongln9170@gmail.com,
+	Daniel Borkmann <daniel@iogearbox.net>
+Subject: [PATCH bpf-next v5 1/9] bpf: Fix bpf_strtol and bpf_strtoul helpers for 32bit
+Date: Fri, 13 Sep 2024 21:17:46 +0200
+Message-Id: <20240913191754.13290-1-daniel@iogearbox.net>
+X-Mailer: git-send-email 2.21.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [RFC PATCH 2/3] ipv6: Run a reverse sk_lookup on sendmsg.
-To: Tiago Lam <tiagolam@cloudflare.com>
-Cc: "David S. Miller" <davem@davemloft.net>, David Ahern
- <dsahern@kernel.org>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
- Shuah Khan <shuah@kernel.org>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
- linux-kselftest@vger.kernel.org, Jakub Sitnicki <jakub@cloudflare.com>,
- kernel-team@cloudflare.com
-References: <20240913-reverse-sk-lookup-v1-0-e721ea003d4c@cloudflare.com>
- <20240913-reverse-sk-lookup-v1-2-e721ea003d4c@cloudflare.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20240913-reverse-sk-lookup-v1-2-e721ea003d4c@cloudflare.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27397/Fri Sep 13 10:48:01 2024)
 
-On 9/13/24 2:39 AM, Tiago Lam wrote:
-> This follows the same rationale provided for the ipv4 counterpart, where
-> it now runs a reverse socket lookup when source addresses and/or ports
-> are changed, on sendmsg, to check whether egress traffic should be
-> allowed to go through or not.
-> 
-> As with ipv4, the ipv6 sendmsg path is also extended here to support the
-> IPV6_ORIGDSTADDR ancilliary message to be able to specify a source
-> address/port.
-> 
-> Suggested-by: Jakub Sitnicki <jakub@cloudflare.com>
-> Signed-off-by: Tiago Lam <tiagolam@cloudflare.com>
-> ---
->   net/ipv6/datagram.c | 76 +++++++++++++++++++++++++++++++++++++++++++++++++++++
->   net/ipv6/udp.c      |  8 ++++--
->   2 files changed, 82 insertions(+), 2 deletions(-)
-> 
-> diff --git a/net/ipv6/datagram.c b/net/ipv6/datagram.c
-> index fff78496803d..4214dda1c320 100644
-> --- a/net/ipv6/datagram.c
-> +++ b/net/ipv6/datagram.c
-> @@ -756,6 +756,27 @@ void ip6_datagram_recv_ctl(struct sock *sk, struct msghdr *msg,
->   }
->   EXPORT_SYMBOL_GPL(ip6_datagram_recv_ctl);
->   
-> +static inline bool reverse_sk_lookup(struct flowi6 *fl6, struct sock *sk,
-> +				     struct in6_addr *saddr, __be16 sport)
-> +{
-> +	if (static_branch_unlikely(&bpf_sk_lookup_enabled) &&
-> +	    (saddr && sport) &&
-> +	    (ipv6_addr_cmp(&sk->sk_v6_rcv_saddr, saddr) || inet_sk(sk)->inet_sport != sport)) {
-> +		struct sock *sk_egress;
-> +
-> +		bpf_sk_lookup_run_v6(sock_net(sk), IPPROTO_UDP, &fl6->daddr, fl6->fl6_dport,
-> +				     saddr, ntohs(sport), 0, &sk_egress);
+The bpf_strtol() and bpf_strtoul() helpers are currently broken on 32bit:
 
-iirc, in the ingress path, the sk could also be selected by a tc bpf prog doing 
-bpf_sk_assign. Then this re-run on sk_lookup may give an incorrect result?
+The argument type ARG_PTR_TO_LONG is BPF-side "long", not kernel-side "long"
+and therefore always considered fixed 64bit no matter if 64 or 32bit underlying
+architecture.
 
-In general, is it necessary to rerun any bpf prog if the user space has 
-specified the IP[v6]_ORIGDSTADDR.
+This contract breaks in case of the two mentioned helpers since their BPF_CALL
+definition for the helpers was added with {unsigned,}long *res. Meaning, the
+transition from BPF-side "long" (BPF program) to kernel-side "long" (BPF helper)
+breaks here.
 
-> +		if (!IS_ERR_OR_NULL(sk_egress) &&
-> +		    atomic64_read(&sk_egress->sk_cookie) == atomic64_read(&sk->sk_cookie))
-> +			return true;
-> +
-> +		net_info_ratelimited("No reverse socket lookup match for local addr %pI6:%d remote addr %pI6:%d\n",
-> +				     &saddr, ntohs(sport), &fl6->daddr, ntohs(fl6->fl6_dport));
-> +	}
-> +
-> +	return false;
-> +}
-> +
->   int ip6_datagram_send_ctl(struct net *net, struct sock *sk,
->   			  struct msghdr *msg, struct flowi6 *fl6,
->   			  struct ipcm6_cookie *ipc6)
-> @@ -844,7 +865,62 @@ int ip6_datagram_send_ctl(struct net *net, struct sock *sk,
->   
->   			break;
->   		    }
-> +		case IPV6_ORIGDSTADDR:
-> +			{
-> +			struct sockaddr_in6 *sockaddr_in;
-> +			struct net_device *dev = NULL;
-> +
-> +			if (cmsg->cmsg_len < CMSG_LEN(sizeof(struct sockaddr_in6))) {
-> +				err = -EINVAL;
-> +				goto exit_f;
-> +			}
-> +
-> +			sockaddr_in = (struct sockaddr_in6 *)CMSG_DATA(cmsg);
-> +
-> +			addr_type = __ipv6_addr_type(&sockaddr_in->sin6_addr);
-> +
-> +			if (addr_type & IPV6_ADDR_LINKLOCAL)
-> +				return -EINVAL;
-> +
-> +			/* If we're egressing with a different source address and/or port, we
-> +			 * perform a reverse socket lookup.  The rationale behind this is that we
-> +			 * can allow return UDP traffic that has ingressed through sk_lookup to
-> +			 * also egress correctly. In case the reverse lookup fails, we
-> +			 * continue with the normal path.
-> +			 *
-> +			 * The lookup is performed if either source address and/or port changed, and
-> +			 * neither is "0".
-> +			 */
-> +			if (reverse_sk_lookup(fl6, sk, &sockaddr_in->sin6_addr,
-> +					      sockaddr_in->sin6_port)) {
-> +				/* Override the source port and address to use with the one we
-> +				 * got in cmsg and bail early.
-> +				 */
-> +				fl6->saddr = sockaddr_in->sin6_addr;
-> +				fl6->fl6_sport = sockaddr_in->sin6_port;
-> +				break;
-> +			}
->   
-> +			if (addr_type != IPV6_ADDR_ANY) {
-> +				int strict = __ipv6_addr_src_scope(addr_type) <= IPV6_ADDR_SCOPE_LINKLOCAL;
-> +
-> +				if (!ipv6_can_nonlocal_bind(net, inet_sk(sk)) &&
-> +				    !ipv6_chk_addr_and_flags(net,
-> +							     &sockaddr_in->sin6_addr,
-> +							     dev, !strict, 0,
-> +							     IFA_F_TENTATIVE) &&
-> +				    !ipv6_chk_acast_addr_src(net, dev,
-> +							     &sockaddr_in->sin6_addr))
-> +					err = -EINVAL;
-> +				else
-> +					fl6->saddr = sockaddr_in->sin6_addr;
-> +			}
-> +
-> +			if (err)
-> +				goto exit_f;
-> +
-> +			break;
-> +			}
->   		case IPV6_FLOWINFO:
->   			if (cmsg->cmsg_len < CMSG_LEN(4)) {
->   				err = -EINVAL;
-> diff --git a/net/ipv6/udp.c b/net/ipv6/udp.c
-> index 6602a2e9cdb5..6121cbb71ad3 100644
-> --- a/net/ipv6/udp.c
-> +++ b/net/ipv6/udp.c
-> @@ -1476,6 +1476,12 @@ int udpv6_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
->   
->   	fl6->flowi6_uid = sk->sk_uid;
->   
-> +	/* We use fl6's daddr and fl6_sport in the reverse sk_lookup done
-> +	 * within ip6_datagram_send_ctl() now.
-> +	 */
-> +	fl6->daddr = *daddr;
-> +	fl6->fl6_sport = inet->inet_sport;
-> +
->   	if (msg->msg_controllen) {
->   		opt = &opt_space;
->   		memset(opt, 0, sizeof(struct ipv6_txoptions));
-> @@ -1511,10 +1517,8 @@ int udpv6_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
->   
->   	fl6->flowi6_proto = sk->sk_protocol;
->   	fl6->flowi6_mark = ipc6.sockc.mark;
-> -	fl6->daddr = *daddr;
->   	if (ipv6_addr_any(&fl6->saddr) && !ipv6_addr_any(&np->saddr))
->   		fl6->saddr = np->saddr;
-> -	fl6->fl6_sport = inet->inet_sport;
->   
->   	if (cgroup_bpf_enabled(CGROUP_UDP6_SENDMSG) && !connected) {
->   		err = BPF_CGROUP_RUN_PROG_UDP6_SENDMSG_LOCK(sk,
-> 
+Both helpers call __bpf_strtoll() with "long long" correctly, but later assigning
+the result into 32-bit "*(long *)" on 32bit architectures. From a BPF program
+point of view, this means upper bits will be seen as uninitialised.
+
+Therefore, fix both BPF_CALL signatures to {s,u}64 types to fix this situation.
+
+Now, changing also uapi/bpf.h helper documentation which generates bpf_helper_defs.h
+for BPF programs is tricky: Changing signatures there to __{s,u}64 would trigger
+compiler warnings (incompatible pointer types passing 'long *' to parameter of type
+'__s64 *' (aka 'long long *')) for existing BPF programs.
+
+Leaving the signatures as-is would be fine as from BPF program point of view it is
+still BPF-side "long" and thus equivalent to __{s,u}64 on 64 or 32bit underlying
+architectures.
+
+Note that bpf_strtol() and bpf_strtoul() are the only helpers with this issue.
+
+Fixes: d7a4cb9b6705 ("bpf: Introduce bpf_strtol and bpf_strtoul helpers")
+Reported-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Link: https://lore.kernel.org/bpf/481fcec8-c12c-9abb-8ecb-76c71c009959@iogearbox.net
+---
+ v3 -> v4:
+ - added patch
+
+ kernel/bpf/helpers.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index 3956be5d6440..0cf42be52890 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -518,7 +518,7 @@ static int __bpf_strtoll(const char *buf, size_t buf_len, u64 flags,
+ }
+ 
+ BPF_CALL_4(bpf_strtol, const char *, buf, size_t, buf_len, u64, flags,
+-	   long *, res)
++	   s64 *, res)
+ {
+ 	long long _res;
+ 	int err;
+@@ -543,7 +543,7 @@ const struct bpf_func_proto bpf_strtol_proto = {
+ };
+ 
+ BPF_CALL_4(bpf_strtoul, const char *, buf, size_t, buf_len, u64, flags,
+-	   unsigned long *, res)
++	   u64 *, res)
+ {
+ 	unsigned long long _res;
+ 	bool is_negative;
+-- 
+2.43.0
 
 
