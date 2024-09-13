@@ -1,124 +1,120 @@
-Return-Path: <bpf+bounces-39859-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39860-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D498978915
-	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 21:44:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA6E197891A
+	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 21:49:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B79C21C22CE4
-	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 19:44:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 632D51F230FE
+	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 19:49:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAF6D1474BC;
-	Fri, 13 Sep 2024 19:44:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 498E514830D;
+	Fri, 13 Sep 2024 19:48:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SrdLjmlm"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CDcvzDSU"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C55D984DE4
-	for <bpf@vger.kernel.org>; Fri, 13 Sep 2024 19:44:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D4564A06;
+	Fri, 13 Sep 2024 19:48:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726256655; cv=none; b=Eb/pfB9rxqe6aJuIMHiXvrx504+Wb+I4BcOSyfeDKbd2ba20co8kbMrCZtuU5bz7h64jMS1RRsWrcrbtibJThOrM9tdZtHP1mQ1xSQ5f+M/pkYDH5TdQFcHQhq76KMkpsu3NGglS8ueIUMIfHEbDLQnkDW2R8GepDYCwAP7htpU=
+	t=1726256932; cv=none; b=B96U/XEmDrEpsNtYFK5HQL++3XNsmWfp5CeqnsHdTrIn89fMQZAgo7TkVEcge8lxXJRBqLLBRSftGSTfbhk8v7mKkOXyyUfHRMmIu+TgRudEd8zPxFr0lm6AQ6oPzwrCOk4lQg/EL4+VMdv1M914MoR709Qiy/VFyY0Mx/sIAGo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726256655; c=relaxed/simple;
-	bh=WDqChenHl39+IOAZ5EkSyJdJoNGnpuFYJgXoGpCO6QA=;
+	s=arc-20240116; t=1726256932; c=relaxed/simple;
+	bh=wXx6gycub3wwaBxUU3Rpj/KlRbaF2yP/lASR3+ACbBk=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mEC8Q6HzkssUalq6XCTQSIiPYBGY//dLna2wkGV7rfOZrjLuHd3Kn5rC+Lal/KcCr0vQiRvhLyf8DjyXNCCPVJUem43S4V2lVXESv9noSzWK6lieXxIMII0ZZ/9OgyzqWptQZ1FthPI7BJdmO7wKGMWnaOcdHvcwZ6hbYXfs+9g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SrdLjmlm; arc=none smtp.client-ip=209.85.221.54
+	 To:Cc:Content-Type; b=iqe0pkPV3yVs7lgT+J8V+BRMxqb6kcJyh2wR70eOdLWDS9kgzH+3xnDgX0CBPUIeNo77AizZDLGG4z3hSxQbNkiP+Fbkx/EQkfaVATRdJ6pP1vuR+KT+10Fpibu5M29sD5tJS76ujc5kmx+tQi2jmLI2o6gl6exk4/RIZcixcw8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CDcvzDSU; arc=none smtp.client-ip=209.85.221.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-374c1963cb6so1724453f8f.3
-        for <bpf@vger.kernel.org>; Fri, 13 Sep 2024 12:44:13 -0700 (PDT)
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-375e5c12042so1440335f8f.3;
+        Fri, 13 Sep 2024 12:48:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1726256652; x=1726861452; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1726256929; x=1726861729; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=2teaB/SNolWfLn7iNKZSt8/xKyIJgK9ssBPsBFCoN6c=;
-        b=SrdLjmlmq5g+yf+uUF6rs+1x7SAqhAsjEczoMGRybbuj5R1e8gUPeyg8Qe4SFDRaZU
-         pchKDsTR+S1O2qFd9efhhOLfYKOOYPpx+tv31uOkRMS0NSGnA/16chToSG4mfqs55QBG
-         +U/dPOA5fKzFslJyFBc9wKrNZ51tbuYZIN1YeBjiWWYsFUcNR1F03bh+nZncClqgor14
-         cNPZrFuSmCpokiUrlUuIKcdUrFF7GbjC9DLYb+bVWxS7/ZS1Wbfl3wj8lrFi4/7beFW8
-         umsJHsHMupn2T3mGFcHy4XIrSRtz9L0oSBzpNJIshBCUK7ONTWNz88ElGj4RisFb6/Au
-         uoBQ==
+        bh=wXx6gycub3wwaBxUU3Rpj/KlRbaF2yP/lASR3+ACbBk=;
+        b=CDcvzDSUpS+EUwvAnsz7OPuCP1OT4LtSuNCrJ6Q00NEG9WtP9wDgu+Y4Bf1MGuEMPF
+         /JFDmHGRb8/j9TpwvjvphH29wx8BUzHWKQgViiaLUQsvlKRItqhaUxaMomO/rOeq4MuD
+         CTg8x3CsUW2fyJqp5bFReqfL03iWla9d0gfohVv6natnMkQgSLqC47tRaAT5he5DxE04
+         LSif5X5mohvRR4WjoBTTWYzTrMknmhdf/wM6q4bq5Tbvgmxld54Rd0Usu0Uawj+QrHJb
+         Si9wz215W1Dxu8hUBC8ItJwy+duhuc9J930OuzuaTRybSZblzJRjzTwqWacm0h6mnXQJ
+         ft1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726256652; x=1726861452;
+        d=1e100.net; s=20230601; t=1726256929; x=1726861729;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=2teaB/SNolWfLn7iNKZSt8/xKyIJgK9ssBPsBFCoN6c=;
-        b=rMpTVmkuERMJLuAYl+C2F/wy9B9aSdNhNfD0qzlxl9fPq9Mdng6vF/CSe5CJZRJ3oP
-         Y0SaOwgJkVdgyQDtdOJtpGpTungk7lLqGTzVGaokWLuAK7l5mr0fYJzSdNF3oRDj4CAD
-         YLxeZU9ZJOJ66Cj9fZdlf722KW7igU2BBDS/bMax9qaYBegYIzm7kzvFSjxGD/ajt/AR
-         eWiZKcCz1lwRHVvJM/u6lCmiEeKec9wSOogECvgML88VPTmjPt5cOqasswG0yjEF2Ztn
-         1oQieGgkPKWya3aM5/1zuwc8izuWczCvlzUrH7g68YEh/BI85nXNnLeIaJTDZg+OB9FU
-         CZdQ==
-X-Gm-Message-State: AOJu0YxWSTNv8Y9WRvL+ejoKDjsQJWuCsA9hETy4MTw6u42/+ig8TV+K
-	vULp5WZzoDy5SnqZYu7/yZYIvDW/F12LRrvygEUuz0v0HXQWpN9mJyZcKPqsv12Cz4SzJSgE+rk
-	SGojiAek8iC2sYW4Kp1B5eLZbifk=
-X-Google-Smtp-Source: AGHT+IG9ohVuu+z4/pM7chNqDLfv7tT8/xK4ANn53VKA6t737CLpx2FpPUR7KRmGZphRKMVHDqa0zRY9LpLQ0OpZvjA=
-X-Received: by 2002:adf:e684:0:b0:374:c56c:fbb4 with SMTP id
- ffacd0b85a97d-378c2d0627dmr4421750f8f.22.1726256651603; Fri, 13 Sep 2024
- 12:44:11 -0700 (PDT)
+        bh=wXx6gycub3wwaBxUU3Rpj/KlRbaF2yP/lASR3+ACbBk=;
+        b=Kb8q7BDFtEIGTb2y5UYfT6UK9z03HPO3urHYaWsQE1R5Q5qUn6LSEU/PRPwUqYx+3j
+         ya40TqKa72tPbykh3B4Doi71kw3AbKsXWVU7bWFXOtq5dMFx4yZxHDtUpBY2SYmxLEKu
+         lxfCjzgzjYY30ZvaH+m9vw9SHobhgqvydzxEQJ36Cwes38SjQVYR2bdsZdaidVE3bXPX
+         NchSE4pARMiMOFJZYciZYWCh+Eke3n83W5sdTUn6llHflQH0Q+6nF/avxeGb7bqpTZ65
+         ABWHZvz7KAAd0mYCC5By+Y/HKQ/dXl6bVJZgWqEmrG9G+/yP+kV2WmK44jdsndK9LSnQ
+         5EcQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU345LYxQrO6efZpCd+OpHC4c2b7uZYVdwJsRpp59JK/DfOKhDHZl6dqK7Cd38Rh6cJcYA=@vger.kernel.org, AJvYcCWofrATTgI5Ce6hPlCdLNl4MiTMOlJJ4JAMJiBdFWR7Te3vtQVp93PF4LD0L1eBVC1cduAZOGE0@vger.kernel.org
+X-Gm-Message-State: AOJu0YwPj+XDn516Xl1U3ugkmy7SmJ3hDGszmP5JCjtDouBHyMxrSL5f
+	YHCMdizuHS7fOtpxPFs72mDgKaFwqBuksSMlnfn78cONKxspVmn1HTg+ypwLFXL9uzI7HeuWlPv
+	ilv3QA1pEWVMmsP9yayjqy6s7Ixg=
+X-Google-Smtp-Source: AGHT+IH8W9syhiarFLSK3Fjj/YKDt2NVpTG2U4vHTeBbkIoBtlQfC46UefLlGFgRTVDOOIGuvDF5QDu3CeDPWQYT+0M=
+X-Received: by 2002:a05:6000:1f89:b0:374:c040:b00e with SMTP id
+ ffacd0b85a97d-378c2d5a827mr4487423f8f.39.1726256929310; Fri, 13 Sep 2024
+ 12:48:49 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240913150326.1187788-1-yonghong.song@linux.dev>
-In-Reply-To: <20240913150326.1187788-1-yonghong.song@linux.dev>
+References: <20240911191019.296480-1-maciej.fijalkowski@intel.com> <CAJ8uoz2yjB7nj495x3CuiwHfuU+T0g3MXy4DScG2iT6gtkQsqg@mail.gmail.com>
+In-Reply-To: <CAJ8uoz2yjB7nj495x3CuiwHfuU+T0g3MXy4DScG2iT6gtkQsqg@mail.gmail.com>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 13 Sep 2024 12:44:00 -0700
-Message-ID: <CAADnVQ+RgqfSTOoWVVokk5zXkeUE1ZxF_neH=HMyKwEeFAJ_aA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 1/2] bpf: Fix a sdiv overflow issue
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>, 
-	Zac Ecob <zacecob@protonmail.com>
+Date: Fri, 13 Sep 2024 12:48:37 -0700
+Message-ID: <CAADnVQKUsT3vU_bcPYBNbnD-W5+CkyEcshW7e2c0Ayj-G1D0HA@mail.gmail.com>
+Subject: Re: [PATCH bpf] xsk: fix batch alloc API on non-coherent systems
+To: Magnus Karlsson <magnus.karlsson@gmail.com>, Jakub Kicinski <kuba@kernel.org>
+Cc: Maciej Fijalkowski <maciej.fijalkowski@intel.com>, bpf <bpf@vger.kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Network Development <netdev@vger.kernel.org>, 
+	"Karlsson, Magnus" <magnus.karlsson@intel.com>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
+	Dries De Winter <ddewinter@synamedia.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Sep 13, 2024 at 8:03=E2=80=AFAM Yonghong Song <yonghong.song@linux.=
-dev> wrote:
+On Thu, Sep 12, 2024 at 4:04=E2=80=AFAM Magnus Karlsson
+<magnus.karlsson@gmail.com> wrote:
 >
-> +                               BPF_RAW_INSN((is64 ? BPF_ALU64 : BPF_ALU)=
- |
-> +                                            BPF_OP(BPF_ADD) | BPF_K, BPF=
-_REG_AX,
-> +                                            0, 0, 1),
-> +                               BPF_RAW_INSN((is64 ? BPF_JMP : BPF_JMP32)=
- |
-> +                                            BPF_JGT | BPF_K, BPF_REG_AX,
-> +                                            0, 4, 1),
-> +                               BPF_RAW_INSN((is64 ? BPF_JMP : BPF_JMP32)=
- |
-> +                                            BPF_JEQ | BPF_K, BPF_REG_AX,
-> +                                            0, 1, 0),
-> +                               BPF_RAW_INSN((is64 ? BPF_ALU64 : BPF_ALU)=
- |
-> +                                            BPF_OP(BPF_MOV) | BPF_K, ins=
-n->dst_reg,
-> +                                            0, 0, 0),
-> +                               /* BPF_NEG(LLONG_MIN) =3D=3D -LLONG_MIN =
-=3D=3D LLONG_MIN */
-> +                               BPF_RAW_INSN((is64 ? BPF_ALU64 : BPF_ALU)=
- |
-> +                                            BPF_OP(BPF_NEG) | BPF_K, ins=
-n->dst_reg,
+> On Wed, 11 Sept 2024 at 21:10, Maciej Fijalkowski
+> <maciej.fijalkowski@intel.com> wrote:
+> >
+> > In cases when synchronizing DMA operations is necessary,
+> > xsk_buff_alloc_batch() returns a single buffer instead of the requested
+> > count. This puts the pressure on drivers that use batch API as they hav=
+e
+> > to check for this corner case on their side and take care of allocation=
+s
+> > by themselves, which feels counter productive. Let us improve the core
+> > by looping over xp_alloc() @max times when slow path needs to be taken.
+> >
+> > Another issue with current interface, as spotted and fixed by Dries, wa=
+s
+> > that when driver called xsk_buff_alloc_batch() with @max =3D=3D 0, for =
+slow
+> > path case it still allocated and returned a single buffer, which should
+> > not happen. By introducing the logic from first paragraph we kill two
+> > birds with one stone and address this problem as well.
+>
+> Thanks Maciej and Dries for finding and fixing this.
+>
+> Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
 
-lgtm, but all of BPF_OP(..) are confusing.
-What's the point?
-We use BPF_OP(insn->code) to reuse the code when we create a new opcode,
-but BPF_OP(BPF_NEG) =3D=3D BPF_NEG and BPF_OP(BPF_MOV) =3D=3D BPF_MOV, so w=
-hy?
+We already did the last bpf and bpf-next/net PRs before the merge window,
+so reassigning to netdev.
 
-If I'm not missing anything I can remove these BPF_OP wrapping when applyin=
-g.
-wdyt?
+Acked-by: Alexei Starovoitov <ast@kernel.org>
 
