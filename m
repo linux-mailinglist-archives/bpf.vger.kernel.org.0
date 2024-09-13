@@ -1,178 +1,122 @@
-Return-Path: <bpf+bounces-39823-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39824-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0B4B977F4C
-	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 14:10:48 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE5D2977FAF
+	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 14:18:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6CEB11F20F0A
-	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 12:10:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7D6BCB289E3
+	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 12:18:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3F4F1D933F;
-	Fri, 13 Sep 2024 12:10:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75D9E1DA0F5;
+	Fri, 13 Sep 2024 12:16:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="tJ/HlPiy"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CbHOZ0kb"
 X-Original-To: bpf@vger.kernel.org
-Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37FB61C175F;
-	Fri, 13 Sep 2024 12:10:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.119
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0B5B1D88D3;
+	Fri, 13 Sep 2024 12:16:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726229439; cv=none; b=gsSFQ3rOondOT3FgrWT90cZA7fznPcTn+Kk3KfRLLDdgQ+LXMUjKI61mRNozUnQHw4pGZRPUNjrbt9twmWb8jXtXmaps0envqfe8a9vO5wXZzBl8EDlJ6OWX43nJpZVos7FzJ0ZFnqqFHCBuURRQmdtb6PqAnyLVEiHLNLuVE2w=
+	t=1726229811; cv=none; b=l/T/HE16DVD0qw1RZx6c73fAgASKsPlZOOtpitAVDIIC/HwNytVBDnTEArKoMfDU3PF4NjOPYDGifWWy88hNDt0icXhLGYAqNW7LhaqfF9u5K79bYzbrM3h+og0izfVMfvYMNsQH4cHcc+ra2ubDVC0/XWKNEBZrxBNCbRZqX5A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726229439; c=relaxed/simple;
-	bh=eKQp8WFIivIlz81KoAc08q+LcLeM6mnKsSpVWLX81KQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZPk5nlogtF4lF05ltEOrEshELdUND6KSuaqlCgRxgOo0GvcmhVLXQxhUqA1qN8Z2vTh+HUcsHC2jsqRkuES0xhATiS+X+ixXu6d8ehNWf29i8w1gAcsnJfCg4jHRfHNDXj+1GECyWV5vtf4gDTz3O5zSdxHt0rdTYQtnzh6Efvg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=tJ/HlPiy; arc=none smtp.client-ip=115.124.30.119
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1726229428; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=p9RxojJzKbhCDZ6wrWjhZvZmrSV8ktXcTQ8diFhFAdU=;
-	b=tJ/HlPiy+ZyoFbPBKnvDUHx6+Cle+ChCWkuhjl90CaCOBTCE056za0+UMx2H8fg6Q+o2XdSnRwCU7Qqw29lJTVsvqtDE8765m4PFSjewyKqRy8TREl8bqt1UlcKpvX4yarc299pOhcvU1AChfK1r8It0yvGHIu/VgRMN47mpiMU=
-Received: from 30.221.128.100(mailfrom:lulie@linux.alibaba.com fp:SMTPD_---0WEurYQC_1726229425)
-          by smtp.aliyun-inc.com;
-          Fri, 13 Sep 2024 20:10:26 +0800
-Message-ID: <8d5469d2-7525-420b-b506-8de2ecf04734@linux.alibaba.com>
-Date: Fri, 13 Sep 2024 20:10:24 +0800
+	s=arc-20240116; t=1726229811; c=relaxed/simple;
+	bh=O0hIV/6nB2rRddlD11VmsyTXzTX0q92fiXgW3yR8Qfo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=EQ3/rM5IApzvZ84v2ZVnSFO30NujQp5MJ7VkJLIvNHlWqOhzMKXEqlJOOUfCQ469IfEBWqHc2NGfKtjXzrRukqBgLiHgbrQ7tGgnwXXdoXybJJpxmYnzKOkln8PRTdrIOoC7FfdBIryF34h/UoR+W8g5zUxEMwoeywQQeeqzE18=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CbHOZ0kb; arc=none smtp.client-ip=209.85.210.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-7178df70f28so1618454b3a.2;
+        Fri, 13 Sep 2024 05:16:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1726229809; x=1726834609; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=cbCGTiN11FXVDbAkkViGrjdz04Y2hBtYS4VFXBmy4tQ=;
+        b=CbHOZ0kbAkcxJIxpXVJjsFqukNKI3KuIGXH+F2yEgjfQI/pjY83hRqmj3wJ9p2v+1Y
+         F2XAy9YaUvTLaurhaRG9BoIRi6TYrXjafPq4UA9rdNaWa+FYPvq/w+Vo7bG8dd6HH7IK
+         we1YgnRCbNY58FuJ/5O4NPvvoLTqyyxuadcRuZRQ17b+D+mVQNSk1TZzr+JwmWWUHCeK
+         h3+sLJqrOPKSqoeb+Cr21DGepnhKOeYH3Q2AOLHM6U/CbFuZ5jPT3BsR7tQhqyZ4KhhW
+         SO0rGjBNkHlyo2wV5q9nlQOwH//OlYE8zN3q+iv7uZJQYsrn2yvXT+EXjrExNURlDyeK
+         Ydww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1726229809; x=1726834609;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=cbCGTiN11FXVDbAkkViGrjdz04Y2hBtYS4VFXBmy4tQ=;
+        b=SHov920XHjseYxbm88XMIHdvuAElXmDSxH1pUIz2Govo0SCFsNr8ne/2FfaT9Gua2M
+         IZgMd0ITbqRssYG0moiI4tk8yhnuPnjVQnFTf3HWJjb8PMKAfrjKZ5eysz3V3OnekYtW
+         0v+y/eLPVbbmIE201BaRtSpLW5r0XLK8MQ1bTRBDeeIU5LCEVL+83DYxf4UFNsu0Hki4
+         agK5nZqJY2TazIls34dtGdEfGY42KC4O6F6QAmY8s721hCYcZEpyPpEsbxz/d4Ij0ZA+
+         7Ll0dzxJCA+OSrHzVxcNjKwEnIuC9i6u0bVT9KHwmQcSL0jPNGYLGVmcmJZEXkG7AumC
+         OPPA==
+X-Forwarded-Encrypted: i=1; AJvYcCUohlnkzPwf+xywZCEpVvJERHdC6JegmN+x5X0kfxYRlaUTggaolN0aeCkzY5M9dXE9Chik0ettPDsT0/E=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwVN/Fwqx6Zawki9UdAeDYGNEsvIlomJcAGkQQdrDpjM61atRip
+	JIMFeaUd+jtMSaD3sMM+N41y2XopAT45vyvfNF14R/ODKeHhNx6r
+X-Google-Smtp-Source: AGHT+IGEntuO0AfIyn2/27Csp9RurnaARnS88M+fUAOsKJoNa02/MLOdAFJCt2QX9JfbWN6i+OsKzg==
+X-Received: by 2002:a05:6a00:2daa:b0:717:9154:b5b6 with SMTP id d2e1a72fcca58-7192606ce9emr9929623b3a.7.1726229808646;
+        Fri, 13 Sep 2024 05:16:48 -0700 (PDT)
+Received: from localhost ([116.198.225.81])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7190909252esm5986331b3a.124.2024.09.13.05.16.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Sep 2024 05:16:48 -0700 (PDT)
+From: Tao Chen <chen.dylane@gmail.com>
+To: Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>
+Cc: bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Tao Chen <chen.dylane@gmail.com>
+Subject: [PATCH bpf-next] libbpf: Fix expected_attach_type set when kernel not support
+Date: Fri, 13 Sep 2024 20:16:27 +0800
+Message-Id: <20240913121627.153898-1-chen.dylane@gmail.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 3/3] bpf: Add sk_lookup test to use ORIGDSTADDR cmsg.
-To: Tiago Lam <tiagolam@cloudflare.com>, "David S. Miller"
- <davem@davemloft.net>, David Ahern <dsahern@kernel.org>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>,
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
- Shuah Khan <shuah@kernel.org>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
- Jakub Sitnicki <jakub@cloudflare.com>, kernel-team@cloudflare.com
-References: <20240913-reverse-sk-lookup-v1-0-e721ea003d4c@cloudflare.com>
- <20240913-reverse-sk-lookup-v1-3-e721ea003d4c@cloudflare.com>
-From: Philo Lu <lulie@linux.alibaba.com>
-In-Reply-To: <20240913-reverse-sk-lookup-v1-3-e721ea003d4c@cloudflare.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-Hi Tiago,
+The commit "5902da6d8a52" set expected_attach_type again with
+filed of bpf_program after libpf_prepare_prog_load, which makes
+expected_attach_type = 0 no sense when kenrel not support the
+attach_type feature, so fix it.
 
-On 2024/9/13 17:39, Tiago Lam wrote:
-> This patch reuses the framework already in place for sk_lookup, allowing
-> it now to send a reply from the server fd directly, instead of having to
-> create a socket bound to the original destination address and reply from
-> there. It does this by passing the source address and port from where to
-> reply from in a IP_ORIGDSTADDR ancilliary message passed in sendmsg.
-> 
-> Signed-off-by: Tiago Lam <tiagolam@cloudflare.com>
-> ---
->   tools/testing/selftests/bpf/prog_tests/sk_lookup.c | 70 +++++++++++++++-------
->   1 file changed, 48 insertions(+), 22 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/sk_lookup.c b/tools/testing/selftests/bpf/prog_tests/sk_lookup.c
-> index ae87c00867ba..b99aff2e3976 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/sk_lookup.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/sk_lookup.c
-> @@ -75,6 +75,7 @@ struct test {
->   	struct inet_addr listen_at;
->   	enum server accept_on;
->   	bool reuseport_has_conns; /* Add a connected socket to reuseport group */
-> +	bool dont_bind_reply; /* Don't bind, send direct from server fd. */
->   };
->   
->   struct cb_opts {
-> @@ -363,7 +364,7 @@ static void v4_to_v6(struct sockaddr_storage *ss)
->   	memset(&v6->sin6_addr.s6_addr[0], 0, 10);
->   }
->   
-> -static int udp_recv_send(int server_fd)
-> +static int udp_recv_send(int server_fd, bool dont_bind_reply)
->   {
->   	char cmsg_buf[CMSG_SPACE(sizeof(struct sockaddr_storage))];
->   	struct sockaddr_storage _src_addr = { 0 };
-> @@ -415,26 +416,41 @@ static int udp_recv_send(int server_fd)
->   		v4_to_v6(dst_addr);
->   	}
->   
-> -	/* Reply from original destination address. */
-> -	fd = start_server_addr(SOCK_DGRAM, dst_addr, sizeof(*dst_addr), NULL);
-> -	if (!ASSERT_OK_FD(fd, "start_server_addr")) {
-> -		log_err("failed to create tx socket");
-> -		return -1;
-> -	}
-> +	if (dont_bind_reply) {
-> +		/* Reply directly from server fd, specifying the source address and/or
-> +		 * port in struct msghdr.
-> +		 */
-> +		n = sendmsg(server_fd, &msg, 0);
-> +		if (CHECK(n <= 0, "sendmsg", "failed\n")) {
-> +			log_err("failed to send echo reply");
-> +			return -1;
-> +		}
-> +	} else {
-> +		/* Reply from original destination address. */
-> +		fd = socket(dst_addr->ss_family, SOCK_DGRAM, 0);
-> +		if (CHECK(fd < 0, "socket", "failed\n")) {
-> +			log_err("failed to create tx socket");
-> +			return -1;
-> +		}
->   
-Just curious, why not use start_server_addr() here like before?
+Fixes: 5902da6d8a52 ("libbpf: Add uprobe multi link support to bpf_program__attach_usdt")
+Signed-off-by: Tao Chen <chen.dylane@gmail.com>
+---
+ tools/lib/bpf/libbpf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> -	msg.msg_control = NULL;
-> -	msg.msg_controllen = 0;
-> -	n = sendmsg(fd, &msg, 0);
-> -	if (CHECK(n <= 0, "sendmsg", "failed\n")) {
-> -		log_err("failed to send echo reply");
-> -		ret = -1;
-> -		goto out;
-> -	}
-> +		ret = bind(fd, (struct sockaddr *)dst_addr, sizeof(*dst_addr));
-> +		if (CHECK(ret, "bind", "failed\n")) {
-> +			log_err("failed to bind tx socket");
-> +			close(fd);
-> +			return ret;
-> +		}
->   
-> -	ret = 0;
-> -out:
-> -	close(fd);
-> -	return ret;
-> +		msg.msg_control = NULL;
-> +		msg.msg_controllen = 0;
-> +		n = sendmsg(fd, &msg, 0);
-> +		if (CHECK(n <= 0, "sendmsg", "failed\n")) {
-> +			log_err("failed to send echo reply");
-> +			close(fd);
-> +			return -1;
-> +		}
-> +
-> +		close(fd);
-> +	}
-
-nit: "return 0" missed.
-
->   }
->   
-
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 219facd0e66e..9035edf763a3 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -7343,7 +7343,7 @@ static int libbpf_prepare_prog_load(struct bpf_program *prog,
+ 
+ 	/* old kernels might not support specifying expected_attach_type */
+ 	if ((def & SEC_EXP_ATTACH_OPT) && !kernel_supports(prog->obj, FEAT_EXP_ATTACH_TYPE))
+-		opts->expected_attach_type = 0;
++		prog->expected_attach_type = 0;
+ 
+ 	if (def & SEC_SLEEPABLE)
+ 		opts->prog_flags |= BPF_F_SLEEPABLE;
 -- 
-Philo
+2.25.1
 
 
