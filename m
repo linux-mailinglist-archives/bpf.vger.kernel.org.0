@@ -1,34 +1,34 @@
-Return-Path: <bpf+bounces-39850-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39854-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED22E9788BE
-	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 21:18:40 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 778389788C2
+	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 21:18:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AE18E28208B
-	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 19:18:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2F90E1F27277
+	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 19:18:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 928BE1465A4;
-	Fri, 13 Sep 2024 19:18:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9AAB14EC60;
+	Fri, 13 Sep 2024 19:18:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="Wv81IBgu"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="pZZt8veJ"
 X-Original-To: bpf@vger.kernel.org
 Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D182113CA95
-	for <bpf@vger.kernel.org>; Fri, 13 Sep 2024 19:18:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10C881465BB
+	for <bpf@vger.kernel.org>; Fri, 13 Sep 2024 19:18:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726255088; cv=none; b=T621hvFB4VAEzE/6HpvDUDQ1iorIWgmwfeUwMLd+yk1JUjvgk1kawOYDAap8mFYOxwrL0qPjD4ya5A2W1cG+WgLulh+TDl17y2Ot/SQlojpjhM7tqRG1MPzaFn+YejDfQmRsYae4ox1q4+C1BeRszJiGxVuywvxnrWi7zEQDMp0=
+	t=1726255089; cv=none; b=uVKYfhm65Deracfvm5yL5DnTfJ/ts2ouy8AQPxdj+sLtBniU6bemI2Iw6wGTL5fsRiOzhgDGLRefv5yXaSqLmWnsqiJJngQNBE3qdPSTdwAy74dwlI5MBmAUZA0dKRJrmtbCSSjEo9m/SHUF+P6/n1EDM4VMJuCpPTkooDmZqkQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726255088; c=relaxed/simple;
-	bh=ORl4hNc32SsUUH+NwlTl4kncaiTd4ua7zpfv/PvlFPU=;
+	s=arc-20240116; t=1726255089; c=relaxed/simple;
+	bh=tqVhCuKttfHGe1D8ATqnRxHcdKZ0g7rVW73pyF+nZmg=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=LMnu6WikGEuRUNMd4Cnxq6udA7L3HNsmGdbqp750M4HGWAX7ozI9AhMEHqXmxDYU7mxov29ZFBQS/SCU+LET4EQqKyVj5gM0OMGzgwoLb8xfVt7CmbefF1pkJoIo+NtJa/8hSoQBeydPLCtU5VsBlms9T7Kj0L2L2wCyb/ep/7U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=Wv81IBgu; arc=none smtp.client-ip=213.133.104.62
+	 MIME-Version; b=t7lEPym8H8Kz865P7Zm0nS0a8FL1kf0IHwAoq9mgvPIOR/jpuU1nkFAmTO9svtkZrC1P4TFzRVpBGYN919KjbCv3pkJzOQoMOkdXXOXloQt43M1RWuIC3Xi+Ip0CtPTrKF15XZqXSyaNQxXQS3LWjK4Rkashmu/JtOOoHRHYZWo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=pZZt8veJ; arc=none smtp.client-ip=213.133.104.62
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -36,17 +36,17 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
 	Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=Blkz5bdoUpZVxEBl2D7JEOHaZQSZLI389yCBO5TYRJA=; b=Wv81IBgu8/UofOUw8vmPQOM+2O
-	MysGjjalN0EVC8gAKkOWrnpKbSNUQPbID0R1yFFl5J+3Ykd7fjUapMrf/BhdibuyTx5zcQRyk8C7E
-	QGuKAbsEeCOG8opnm7TSWIrmK3l75rcH4hyPlp+M/O69w56GmMC+AHmw994PdIszfCIfVM4G0sWtw
-	zhlKLQJqet/Yc7BLx8waHLWE9TCrX9nP0D68mONOPdYQBvKpzW01Sjvou0jMM6vrOgwHshgFetHmu
-	g1y8SNj2t8ZpHJlHKRXN1zGUxCS/g30CkW4+vW0s9c5NfdRcKPvmTCfrKFRwL2mTgALZ/TSFoU9fH
-	eXJXO8Uw==;
+	bh=AAtj9JLGDxtpcxaeY/2V71wLfkpscKXXsBJTDdgmJaw=; b=pZZt8veJbW5GSWcE79fFZOFAoS
+	mhBdsnF55cGamRJG0vAniDILexJJIGKNqThF0hLEUKjihuvGKJFAeSXfoh0rdfeNx6WqcIkTSBXOu
+	6EyTs7DpmjKYhUnNGt+AdTuZOLJ2/QBXm91FyWvXXRQoT/2wQd3E1TUVzsm1R+6nx4rMV6oiKW0m+
+	ZqgRsBOMQUicdl9Csxx2xQiATf25z3fAMgjN+jzw8Yq9jT2OTV/9TWHMGSTsEZmlnqQ9hSKkdNvN+
+	ZNuCgsIHOldRxw+A14D8RweTXZZRXy0yRvkseJCZaa1euaCGEgk4F2oEERn/+uK+WDQm/WXJxzAPl
+	JPvDUJ+g==;
 Received: from 43.249.197.178.dynamic.cust.swisscom.net ([178.197.249.43] helo=localhost)
 	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1spBnp-000Ksr-Ly; Fri, 13 Sep 2024 21:17:57 +0200
+	id 1spBnq-000Kt1-99; Fri, 13 Sep 2024 21:17:58 +0200
 From: Daniel Borkmann <daniel@iogearbox.net>
 To: bpf@vger.kernel.org
 Cc: shung-hsi.yu@suse.com,
@@ -54,9 +54,9 @@ Cc: shung-hsi.yu@suse.com,
 	ast@kernel.org,
 	kongln9170@gmail.com,
 	Daniel Borkmann <daniel@iogearbox.net>
-Subject: [PATCH bpf-next v5 3/9] bpf: Fix helper writes to read-only maps
-Date: Fri, 13 Sep 2024 21:17:48 +0200
-Message-Id: <20240913191754.13290-3-daniel@iogearbox.net>
+Subject: [PATCH bpf-next v5 4/9] bpf: Improve check_raw_mode_ok test for MEM_UNINIT-tagged types
+Date: Fri, 13 Sep 2024 21:17:49 +0200
+Message-Id: <20240913191754.13290-4-daniel@iogearbox.net>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20240913191754.13290-1-daniel@iogearbox.net>
 References: <20240913191754.13290-1-daniel@iogearbox.net>
@@ -70,245 +70,76 @@ Content-Transfer-Encoding: 8bit
 X-Authenticated-Sender: daniel@iogearbox.net
 X-Virus-Scanned: Clear (ClamAV 0.103.10/27397/Fri Sep 13 10:48:01 2024)
 
-Lonial found an issue that despite user- and BPF-side frozen BPF map
-(like in case of .rodata), it was still possible to write into it from
-a BPF program side through specific helpers having ARG_PTR_TO_{LONG,INT}
-as arguments.
+When checking malformed helper function signatures, also take other argument
+types into account aside from just ARG_PTR_TO_UNINIT_MEM.
 
-In check_func_arg() when the argument is as mentioned, the meta->raw_mode
-is never set. Later, check_helper_mem_access(), under the case of
-PTR_TO_MAP_VALUE as register base type, it assumes BPF_READ for the
-subsequent call to check_map_access_type() and given the BPF map is
-read-only it succeeds.
+This concerns (formerly) ARG_PTR_TO_{INT,LONG} given uninitialized memory can
+be passed there, too.
 
-The helpers really need to be annotated as ARG_PTR_TO_{LONG,INT} | MEM_UNINIT
-when results are written into them as opposed to read out of them. The
-latter indicates that it's okay to pass a pointer to uninitialized memory
-as the memory is written to anyway.
+The func proto sanity check goes back to commit 435faee1aae9 ("bpf, verifier:
+add ARG_PTR_TO_RAW_STACK type"), and its purpose was to detect wrong func protos
+which had more than just one MEM_UNINIT-tagged type as arguments.
 
-However, ARG_PTR_TO_{LONG,INT} is a special case of ARG_PTR_TO_FIXED_SIZE_MEM
-just with additional alignment requirement. So it is better to just get
-rid of the ARG_PTR_TO_{LONG,INT} special cases altogether and reuse the
-fixed size memory types. For this, add MEM_ALIGNED to additionally ensure
-alignment given these helpers write directly into the args via *<ptr> = val.
-The .arg*_size has been initialized reflecting the actual sizeof(*<ptr>).
+The reason more than one is currently not supported is as we mark stack slots with
+STACK_MISC in check_helper_call() in case of raw mode based on meta.access_size to
+allow uninitialized stack memory to be passed to helpers when they just write into
+the buffer.
 
-MEM_ALIGNED can only be used in combination with MEM_FIXED_SIZE annotated
-argument types, since in !MEM_FIXED_SIZE cases the verifier does not know
-the buffer size a priori and therefore cannot blindly write *<ptr> = val.
+Probing for base type as well as MEM_UNINIT tagging ensures that other types do not
+get missed (as it used to be the case for ARG_PTR_TO_{INT,LONG}).
 
 Fixes: 57c3bb725a3d ("bpf: Introduce ARG_PTR_TO_{INT,LONG} arg types")
-Reported-by: Lonial Con <kongln9170@gmail.com>
+Reported-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
 Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
 Acked-by: Andrii Nakryiko <andrii@kernel.org>
 Acked-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
 ---
  v1 -> v2:
- - switch to MEM_FIXED_SIZE
- v3 -> v4:
- - fixed 64bit in strto{u,}l (Alexei)
- v4 -> v5:
- - line breaks (Andrii)
+ - new patch (Shung-Hsi)
+ v2 -> v3:
+ - base_type(type) was needed also
 
- include/linux/bpf.h      |  7 +++++--
- kernel/bpf/helpers.c     |  6 ++++--
- kernel/bpf/syscall.c     |  3 ++-
- kernel/bpf/verifier.c    | 41 +++++-----------------------------------
- kernel/trace/bpf_trace.c |  6 ++++--
- net/core/filter.c        |  6 ++++--
- 6 files changed, 24 insertions(+), 45 deletions(-)
+ kernel/bpf/verifier.c | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 6f87fb014fba..6a61ed4266b6 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -695,6 +695,11 @@ enum bpf_type_flag {
- 	/* DYNPTR points to xdp_buff */
- 	DYNPTR_TYPE_XDP		= BIT(16 + BPF_BASE_TYPE_BITS),
- 
-+	/* Memory must be aligned on some architectures, used in combination with
-+	 * MEM_FIXED_SIZE.
-+	 */
-+	MEM_ALIGNED		= BIT(17 + BPF_BASE_TYPE_BITS),
-+
- 	__BPF_TYPE_FLAG_MAX,
- 	__BPF_TYPE_LAST_FLAG	= __BPF_TYPE_FLAG_MAX - 1,
- };
-@@ -732,8 +737,6 @@ enum bpf_arg_type {
- 	ARG_ANYTHING,		/* any (initialized) argument is ok */
- 	ARG_PTR_TO_SPIN_LOCK,	/* pointer to bpf_spin_lock */
- 	ARG_PTR_TO_SOCK_COMMON,	/* pointer to sock_common */
--	ARG_PTR_TO_INT,		/* pointer to int */
--	ARG_PTR_TO_LONG,	/* pointer to long */
- 	ARG_PTR_TO_SOCKET,	/* pointer to bpf_sock (fullsock) */
- 	ARG_PTR_TO_BTF_ID,	/* pointer to in-kernel struct */
- 	ARG_PTR_TO_RINGBUF_MEM,	/* pointer to dynamically reserved ringbuf memory */
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index 5404bb964d83..5e97fdc6b20f 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -537,7 +537,8 @@ const struct bpf_func_proto bpf_strtol_proto = {
- 	.arg1_type	= ARG_PTR_TO_MEM | MEM_RDONLY,
- 	.arg2_type	= ARG_CONST_SIZE,
- 	.arg3_type	= ARG_ANYTHING,
--	.arg4_type	= ARG_PTR_TO_LONG,
-+	.arg4_type	= ARG_PTR_TO_FIXED_SIZE_MEM | MEM_UNINIT | MEM_ALIGNED,
-+	.arg4_size	= sizeof(s64),
- };
- 
- BPF_CALL_4(bpf_strtoul, const char *, buf, size_t, buf_len, u64, flags,
-@@ -563,7 +564,8 @@ const struct bpf_func_proto bpf_strtoul_proto = {
- 	.arg1_type	= ARG_PTR_TO_MEM | MEM_RDONLY,
- 	.arg2_type	= ARG_CONST_SIZE,
- 	.arg3_type	= ARG_ANYTHING,
--	.arg4_type	= ARG_PTR_TO_LONG,
-+	.arg4_type	= ARG_PTR_TO_FIXED_SIZE_MEM | MEM_UNINIT | MEM_ALIGNED,
-+	.arg4_size	= sizeof(u64),
- };
- 
- BPF_CALL_3(bpf_strncmp, const char *, s1, u32, s1_sz, const char *, s2)
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 6988e432fc3d..a7cd3719e26a 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -5954,7 +5954,8 @@ static const struct bpf_func_proto bpf_kallsyms_lookup_name_proto = {
- 	.arg1_type	= ARG_PTR_TO_MEM,
- 	.arg2_type	= ARG_CONST_SIZE_OR_ZERO,
- 	.arg3_type	= ARG_ANYTHING,
--	.arg4_type	= ARG_PTR_TO_LONG,
-+	.arg4_type	= ARG_PTR_TO_FIXED_SIZE_MEM | MEM_UNINIT | MEM_ALIGNED,
-+	.arg4_size	= sizeof(u64),
- };
- 
- static const struct bpf_func_proto *
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index f35b80c16cda..2d8af74994ae 100644
+index 2d8af74994ae..6e61248e73a1 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
-@@ -8301,16 +8301,6 @@ static bool arg_type_is_dynptr(enum bpf_arg_type type)
- 	return base_type(type) == ARG_PTR_TO_DYNPTR;
+@@ -8291,6 +8291,12 @@ static bool arg_type_is_mem_size(enum bpf_arg_type type)
+ 	       type == ARG_CONST_SIZE_OR_ZERO;
  }
  
--static int int_ptr_type_to_size(enum bpf_arg_type type)
--{
--	if (type == ARG_PTR_TO_INT)
--		return sizeof(u32);
--	else if (type == ARG_PTR_TO_LONG)
--		return sizeof(u64);
--
--	return -EINVAL;
--}
--
- static int resolve_map_arg_type(struct bpf_verifier_env *env,
- 				 const struct bpf_call_arg_meta *meta,
- 				 enum bpf_arg_type *arg_type)
-@@ -8383,16 +8373,6 @@ static const struct bpf_reg_types mem_types = {
- 	},
- };
++static bool arg_type_is_raw_mem(enum bpf_arg_type type)
++{
++	return base_type(type) == ARG_PTR_TO_MEM &&
++	       type & MEM_UNINIT;
++}
++
+ static bool arg_type_is_release(enum bpf_arg_type type)
+ {
+ 	return type & OBJ_RELEASE;
+@@ -9340,15 +9346,15 @@ static bool check_raw_mode_ok(const struct bpf_func_proto *fn)
+ {
+ 	int count = 0;
  
--static const struct bpf_reg_types int_ptr_types = {
--	.types = {
--		PTR_TO_STACK,
--		PTR_TO_PACKET,
--		PTR_TO_PACKET_META,
--		PTR_TO_MAP_KEY,
--		PTR_TO_MAP_VALUE,
--	},
--};
--
- static const struct bpf_reg_types spin_lock_types = {
- 	.types = {
- 		PTR_TO_MAP_VALUE,
-@@ -8453,8 +8433,6 @@ static const struct bpf_reg_types *compatible_reg_types[__BPF_ARG_TYPE_MAX] = {
- 	[ARG_PTR_TO_SPIN_LOCK]		= &spin_lock_types,
- 	[ARG_PTR_TO_MEM]		= &mem_types,
- 	[ARG_PTR_TO_RINGBUF_MEM]	= &ringbuf_mem_types,
--	[ARG_PTR_TO_INT]		= &int_ptr_types,
--	[ARG_PTR_TO_LONG]		= &int_ptr_types,
- 	[ARG_PTR_TO_PERCPU_BTF_ID]	= &percpu_btf_ptr_types,
- 	[ARG_PTR_TO_FUNC]		= &func_ptr_types,
- 	[ARG_PTR_TO_STACK]		= &stack_ptr_types,
-@@ -9017,9 +8995,11 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
- 		 */
- 		meta->raw_mode = arg_type & MEM_UNINIT;
- 		if (arg_type & MEM_FIXED_SIZE) {
--			err = check_helper_mem_access(env, regno,
--						      fn->arg_size[arg], false,
--						      meta);
-+			err = check_helper_mem_access(env, regno, fn->arg_size[arg], false, meta);
-+			if (err)
-+				return err;
-+			if (arg_type & MEM_ALIGNED)
-+				err = check_ptr_alignment(env, reg, 0, fn->arg_size[arg], true);
- 		}
- 		break;
- 	case ARG_CONST_SIZE:
-@@ -9044,17 +9024,6 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
- 		if (err)
- 			return err;
- 		break;
--	case ARG_PTR_TO_INT:
--	case ARG_PTR_TO_LONG:
--	{
--		int size = int_ptr_type_to_size(arg_type);
--
--		err = check_helper_mem_access(env, regno, size, false, meta);
--		if (err)
--			return err;
--		err = check_ptr_alignment(env, reg, 0, size, true);
--		break;
--	}
- 	case ARG_PTR_TO_CONST_STR:
- 	{
- 		err = check_reg_const_str(env, reg, regno);
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 98e395f1baae..843bb0ca6f20 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -1202,7 +1202,8 @@ static const struct bpf_func_proto bpf_get_func_arg_proto = {
- 	.ret_type	= RET_INTEGER,
- 	.arg1_type	= ARG_PTR_TO_CTX,
- 	.arg2_type	= ARG_ANYTHING,
--	.arg3_type	= ARG_PTR_TO_LONG,
-+	.arg3_type	= ARG_PTR_TO_FIXED_SIZE_MEM | MEM_UNINIT | MEM_ALIGNED,
-+	.arg3_size	= sizeof(u64),
- };
+-	if (fn->arg1_type == ARG_PTR_TO_UNINIT_MEM)
++	if (arg_type_is_raw_mem(fn->arg1_type))
+ 		count++;
+-	if (fn->arg2_type == ARG_PTR_TO_UNINIT_MEM)
++	if (arg_type_is_raw_mem(fn->arg2_type))
+ 		count++;
+-	if (fn->arg3_type == ARG_PTR_TO_UNINIT_MEM)
++	if (arg_type_is_raw_mem(fn->arg3_type))
+ 		count++;
+-	if (fn->arg4_type == ARG_PTR_TO_UNINIT_MEM)
++	if (arg_type_is_raw_mem(fn->arg4_type))
+ 		count++;
+-	if (fn->arg5_type == ARG_PTR_TO_UNINIT_MEM)
++	if (arg_type_is_raw_mem(fn->arg5_type))
+ 		count++;
  
- BPF_CALL_2(get_func_ret, void *, ctx, u64 *, value)
-@@ -1218,7 +1219,8 @@ static const struct bpf_func_proto bpf_get_func_ret_proto = {
- 	.func		= get_func_ret,
- 	.ret_type	= RET_INTEGER,
- 	.arg1_type	= ARG_PTR_TO_CTX,
--	.arg2_type	= ARG_PTR_TO_LONG,
-+	.arg2_type	= ARG_PTR_TO_FIXED_SIZE_MEM | MEM_UNINIT | MEM_ALIGNED,
-+	.arg2_size	= sizeof(u64),
- };
- 
- BPF_CALL_1(get_func_arg_cnt, void *, ctx)
-diff --git a/net/core/filter.c b/net/core/filter.c
-index ecf2ddf633bf..d0550c87e520 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -6346,7 +6346,8 @@ static const struct bpf_func_proto bpf_skb_check_mtu_proto = {
- 	.ret_type	= RET_INTEGER,
- 	.arg1_type      = ARG_PTR_TO_CTX,
- 	.arg2_type      = ARG_ANYTHING,
--	.arg3_type      = ARG_PTR_TO_INT,
-+	.arg3_type      = ARG_PTR_TO_FIXED_SIZE_MEM | MEM_UNINIT | MEM_ALIGNED,
-+	.arg3_size	= sizeof(u32),
- 	.arg4_type      = ARG_ANYTHING,
- 	.arg5_type      = ARG_ANYTHING,
- };
-@@ -6357,7 +6358,8 @@ static const struct bpf_func_proto bpf_xdp_check_mtu_proto = {
- 	.ret_type	= RET_INTEGER,
- 	.arg1_type      = ARG_PTR_TO_CTX,
- 	.arg2_type      = ARG_ANYTHING,
--	.arg3_type      = ARG_PTR_TO_INT,
-+	.arg3_type      = ARG_PTR_TO_FIXED_SIZE_MEM | MEM_UNINIT | MEM_ALIGNED,
-+	.arg3_size	= sizeof(u32),
- 	.arg4_type      = ARG_ANYTHING,
- 	.arg5_type      = ARG_ANYTHING,
- };
+ 	/* We only support one arg being in raw mode at the moment,
 -- 
 2.43.0
 
