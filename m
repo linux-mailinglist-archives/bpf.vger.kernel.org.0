@@ -1,124 +1,130 @@
-Return-Path: <bpf+bounces-39809-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39810-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C06C1977C02
-	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 11:15:52 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 480CC977C37
+	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 11:32:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 82015288676
-	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 09:15:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 654F1B224B1
+	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 09:32:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 036201D6DD5;
-	Fri, 13 Sep 2024 09:15:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF0201D67A6;
+	Fri, 13 Sep 2024 09:32:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=blackwall-org.20230601.gappssmtp.com header.i=@blackwall-org.20230601.gappssmtp.com header.b="hcW6oCG7"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="AdJlqcEY"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 754D7187350
-	for <bpf@vger.kernel.org>; Fri, 13 Sep 2024 09:15:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C68F61BDA90
+	for <bpf@vger.kernel.org>; Fri, 13 Sep 2024 09:32:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726218938; cv=none; b=dl/xZL0mgmtcv5QuWSLcK0fIU+oOYwpYsD/J4lkhcyzAhFtTzKK1mX8CQ96xxlrsPN0PgyeBcHKgCjjSFHS7VGzc2dLZAyusLz1gS8m3Kkyguh76FQ/yktC5pBxedJVycXNC0+2+PvO8Kq8hsdAUG78PSQNwpKCu3EfQptNT6eA=
+	t=1726219952; cv=none; b=hJk6thgut1RADiAk183kPhsoA65i5YxOHZKSxdTwLbryobygq9akbO1rOfshOzTfrgGontPd9QXU87bLUaaK76DKS+gSHwxaNwhr8AL6ZH4vqMO/376qZ1V4VeNMseCxZTNpqf5wzZNXt7DzmfCwhRNmm4ui29M6rFFkuMg0a2Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726218938; c=relaxed/simple;
-	bh=yjxj0FSJpzDqTDqbkb+Ys5lDxT533fcsCSKxOxLDXqE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=czNilRDgTFjEKZcI4ETJB5mb7c6LxmMQbVa3LzjeSuCwcOIi8WkU5MiLuJsVoS0+NDBptgYyGXnbNI4AEWuEdshkwWG7aTK7u1WTNWUpTi1uoDCgPwouhNkiH1K+kEK2bFZ2Efj2pAS0TynaJmy8rkIK6GmyKR2l0ciCKnDMNrs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=blackwall.org; spf=none smtp.mailfrom=blackwall.org; dkim=pass (2048-bit key) header.d=blackwall-org.20230601.gappssmtp.com header.i=@blackwall-org.20230601.gappssmtp.com header.b=hcW6oCG7; arc=none smtp.client-ip=209.85.208.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=blackwall.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=blackwall.org
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-5c255e3c327so2239337a12.1
-        for <bpf@vger.kernel.org>; Fri, 13 Sep 2024 02:15:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=blackwall-org.20230601.gappssmtp.com; s=20230601; t=1726218935; x=1726823735; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zP7o2lXiLqDCW/l4Y6N12juw+Nevs/iHS84Bz9Lspa0=;
-        b=hcW6oCG7UsWg8lqj1SfpbfEYgFYHzvc8MRSQFB/afVCmLbLYKL3MiCqkl0d2emVWYd
-         nvRqV4ojd/+Jau6JFuxvGJQ/zAcn/TBhb30ud/kQU0eMb7Syuge/REB/v+24vztNWFQf
-         oPaCyMD344Upcg6J8Hz/T0hGkfk0G423DJ6z3OEjZkU+UGNtPTgX8MxtjITkyWu8OByq
-         ZJSitXmGPA08O1Z+lpNt3Qfkew2x93D1PmszK16drxktOqGBp3kKx4CzlqY/3o44X35c
-         deotYhfUvTwHgmYn3VNqPtXGtRdfKuFoA6b/7OJ1O/aWJcJRNKrPSx1mVk/UtVnhEOF2
-         eB7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726218935; x=1726823735;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zP7o2lXiLqDCW/l4Y6N12juw+Nevs/iHS84Bz9Lspa0=;
-        b=IxWFIz5AeeA53bmVNStcFGD075BdTifQxty9sR0RrP4CQT9M7x1+s4hjepUz87Uqx6
-         O3jrL1xoA1qQgztu7/IBBjh11FRz+NdwsoYVXVx7spxOJqB8RuAb4gJlwBnPOu70GYpw
-         gamddd1xTjx//S34S9fPGB6OunypZpu7hDgGMEdpbYxMxeCVulPzExlzLNIooVI+EB6p
-         hzl2yR2Kn2y96tdU7pqgIduTeelISqgUvpFTzT5ieG0TLragPRF2VCRp1kHetd43Tk3Z
-         sglUnZyIutgc6DLC94Y1ByDZD+ThUyiulgXW0p7E1Z7KyRbLaV+ojYYR7yheuuTF0teQ
-         7izQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXFtODDvV1bBT5xIQdH5psD8vDZEkJnpn9v/QrCZKS+le9xkgSBYF2O0fxfrroUzCQzJe4=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy1onVIarbZ12ifGzciZBy6pNv+AllZ77yCQ5Vk0q6INIAJjGze
-	IT+GXYhqfRenueYMUO1aKrm6ft9oTkNXrq+8RHTMKD5egSMxL8nMpLJin2GeT/U=
-X-Google-Smtp-Source: AGHT+IFVFni4KQY31tZpsekaGm1UaBb7ZpdiuaYbjs6baOy/7SSOoWK2lsopYFzaF0hFcAvrJOrKow==
-X-Received: by 2002:a17:907:3e1d:b0:a83:8591:7505 with SMTP id a640c23a62f3a-a902966f459mr584642266b.59.1726218933949;
-        Fri, 13 Sep 2024 02:15:33 -0700 (PDT)
-Received: from [192.168.0.148] ([93.93.8.5])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a8d25c72e9asm849536866b.115.2024.09.13.02.15.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Sep 2024 02:15:33 -0700 (PDT)
-Message-ID: <8cf0b25f-2b7f-478e-af14-b0ebd5905a79@blackwall.org>
-Date: Fri, 13 Sep 2024 12:15:30 +0300
+	s=arc-20240116; t=1726219952; c=relaxed/simple;
+	bh=cIVkaDlafyz17Lv00EsE5GUygASztsmlwwverOYBNZc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oJMVttnVzhcx9rXgH3bWYpA74+eB/j4+0VT14+Yal8Jf9Ipj02p0z1KA2/hrF6oKbVhb2cIGy4S+edtT5KHbC56qNKiJOTQWt9Zf25IxKph+mtaaM7/fnshi8XfVTc58tE+eybG461pTOtgnGAFLwJ+3DpU6NgvpHc2eSX5rvrE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=AdJlqcEY; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1726219949;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=icP+9T+nckSCW+51d5IyXV2vWbgpkam3VDgb48zcQBk=;
+	b=AdJlqcEYIWXZPjv4ybJDDFCzFZaVBZ/Qkq/CHExKoMQpzWkAAkUTZE6QwymaI5MDFkxbhs
+	fYqs+TMlT6L+L7bNaxFKpy/HZscrARTduknW8j0v9s7YOcHHe/yJ3FFEE8F7HlQjIeWFtS
+	6OqKB/IsQjol27tiv+GrOXDP6H2UB90=
+Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-122-ChSwSbbTOymr1SyfvELLRg-1; Fri,
+ 13 Sep 2024 05:32:23 -0400
+X-MC-Unique: ChSwSbbTOymr1SyfvELLRg-1
+Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id D0A9C1955F10;
+	Fri, 13 Sep 2024 09:32:20 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.226.25])
+	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 952353001D10;
+	Fri, 13 Sep 2024 09:32:14 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Fri, 13 Sep 2024 11:32:09 +0200 (CEST)
+Date: Fri, 13 Sep 2024 11:32:01 +0200
+From: Oleg Nesterov <oleg@redhat.com>
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Peter Zijlstra <peterz@infradead.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@chromium.org>,
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCHv3 1/7] uprobe: Add support for session consumer
+Message-ID: <20240913093201.GA19305@redhat.com>
+References: <20240909074554.2339984-1-jolsa@kernel.org>
+ <20240909074554.2339984-2-jolsa@kernel.org>
+ <20240912163539.GE27648@redhat.com>
+ <ZuP5dyfgT0PHaf_4@krava>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net] netkit: Assign missing bpf_net_context
-To: Breno Leitao <leitao@debian.org>, kuba@kernel.org, bpf@vger.kernel.org,
- Daniel Borkmann <daniel@iogearbox.net>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
- =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: vadim.fedorenko@linux.dev, andrii@kernel.org,
- "open list:BPF [NETKIT] (BPF-programmable network device)"
- <netdev@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
-References: <20240912155620.1334587-1-leitao@debian.org>
-Content-Language: en-US
-From: Nikolay Aleksandrov <razor@blackwall.org>
-In-Reply-To: <20240912155620.1334587-1-leitao@debian.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZuP5dyfgT0PHaf_4@krava>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
 
-On 9/12/24 18:56, Breno Leitao wrote:
-> During the introduction of struct bpf_net_context handling for
-> XDP-redirect, the netkit driver has been missed, which also requires it
-> because NETKIT_REDIRECT invokes skb_do_redirect() which is accessing the
-> per-CPU variables. Otherwise we see the following crash:
-> 
-> 	BUG: kernel NULL pointer dereference, address: 0000000000000038
-> 	bpf_redirect()
-> 	netkit_xmit()
-> 	dev_hard_start_xmit()
-> 
-> Set the bpf_net_context before invoking netkit_xmit() program within the
-> netkit driver.
-> 
-> Fixes: 401cb7dae813 ("net: Reference bpf_redirect_info via task_struct on PREEMPT_RT.")
-> Signed-off-by: Breno Leitao <leitao@debian.org>
-> Acked-by: Daniel Borkmann <daniel@iogearbox.net>
-> Reviewed-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> ---
->  drivers/net/netkit.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
+On 09/13, Jiri Olsa wrote:
+>
+> On Thu, Sep 12, 2024 at 06:35:39PM +0200, Oleg Nesterov wrote:
+> > >  	list_for_each_entry_srcu(uc, &uprobe->consumers, cons_node,
+> > >  				 srcu_read_lock_held(&uprobes_srcu)) {
+> > > +		/*
+> > > +		 * If we don't find return consumer, it means uprobe consumer
+> > > +		 * was added after we hit uprobe and return consumer did not
+> > > +		 * get registered in which case we call the ret_handler only
+> > > +		 * if it's not session consumer.
+> > > +		 */
+> > > +		ric = return_consumer_find(ri, &iter, uc->id);
+> > > +		if (!ric && uc->session)
+> > > +			continue;
+> > >  		if (uc->ret_handler)
+> > > -			uc->ret_handler(uc, ri->func, regs);
+> > > +			uc->ret_handler(uc, ri->func, regs, ric ? &ric->cookie : NULL);
+> >
+> > So why do we need the new uc->session member and the uc->session above ?
+> >
+> > If return_consumer_find() returns NULL, uc->ret_handler(..., NULL) can handle
+> > this case itself?
+>
+> I tried to explain that in the comment above.. we do not want to
+> execute session ret_handler at all in this case, because its entry
+> counterpart did not run
 
+I understand, but the session ret_handler(..., __u64 *data) can simply do
 
-Acked-by: Nikolay Aleksandrov <razor@blackwall.org>
+	// my ->handler() didn't run or it didn't return 0
+	if (!data)
+		return;
 
+at the start?
+
+Oleg.
 
 
