@@ -1,110 +1,103 @@
-Return-Path: <bpf+bounces-39828-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39830-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DFDE8978118
-	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 15:26:01 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 015CE978156
+	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 15:39:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 25CCC1C226F4
-	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 13:26:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AB50B1F216D6
+	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 13:39:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DA521DB943;
-	Fri, 13 Sep 2024 13:25:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E22AB1DB555;
+	Fri, 13 Sep 2024 13:38:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Bs/fFwqb"
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E09881DA62B;
-	Fri, 13 Sep 2024 13:25:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58C231D6C7A;
+	Fri, 13 Sep 2024 13:38:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726233939; cv=none; b=d2r6H5eJW3kug5SezqrgsB6uEkJ57DcOMwJRtykhvS2E1o91GyN1ZRLhXh2caRZc1zhKkRTjNnLSoo3E6vOOE/hFKpwC7134pFxZNK2y8mXAwbU6++vuh/BOD0HAnuhAfWd8SP0PsQzjdQ/kbv+96jV+sIrDoSB0YQXsnVRh3eE=
+	t=1726234738; cv=none; b=MUZYsl3k4gBNfwOwaEKJ2TjoRyQSyAPaeby9/WPi9m5fqCvzBr0Ceiy+ZN1FsunKGslofnB/8BVaK9sVutMfZ2njcmEEaOnVZLN6r/jacwma8XhAkUzIkIw6RAVoUaTC1Ngp8tgFNpl1Nq5ouH/j+zrxQ3c/9W/NDuAdrdSD+e4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726233939; c=relaxed/simple;
-	bh=VFN9R0auFtHfIEJzSpEEh6qLV1o1M/nq69Fch1WZ5wo=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=mcmOAIS1q8STogpedgsi4WAK1XPfaCDEA7BtrlLo+TAdPQo/clXBZpZolP/+CeQFxKtmGBgiFPKMPyS9Djd3Nh/QmJGPy5fQIHkE8oi9D8vgIJHEuvsEobK35Eqaf2HvE2kpVTph6x54JT/0S5eWlupN9BCezbk7HNyvgXXHHkQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.194])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4X4w412nbqzmV6L;
-	Fri, 13 Sep 2024 21:23:29 +0800 (CST)
-Received: from kwepemd100013.china.huawei.com (unknown [7.221.188.163])
-	by mail.maildlp.com (Postfix) with ESMTPS id 6BF6F1401F0;
-	Fri, 13 Sep 2024 21:25:34 +0800 (CST)
-Received: from huawei.com (10.67.174.121) by kwepemd100013.china.huawei.com
- (7.221.188.163) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.34; Fri, 13 Sep
- 2024 21:25:33 +0800
-From: Chen Ridong <chenridong@huawei.com>
-To: <martin.lau@linux.dev>, <ast@kernel.org>, <daniel@iogearbox.net>,
-	<andrii@kernel.org>, <eddyz87@gmail.com>, <song@kernel.org>,
-	<yonghong.song@linux.dev>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
-	<sdf@google.com>, <haoluo@google.com>, <jolsa@kernel.org>, <tj@kernel.org>,
-	<lizefan.x@bytedance.com>, <hannes@cmpxchg.org>, <roman.gushchin@linux.dev>
-CC: <bpf@vger.kernel.org>, <cgroups@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-Subject: [PATCH v4 3/3] workqueue: Adjust WQ_MAX_ACTIVE from 512 to 2048
-Date: Fri, 13 Sep 2024 13:17:20 +0000
-Message-ID: <20240913131720.1762188-4-chenridong@huawei.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240913131720.1762188-1-chenridong@huawei.com>
-References: <20240913131720.1762188-1-chenridong@huawei.com>
+	s=arc-20240116; t=1726234738; c=relaxed/simple;
+	bh=/KYBSsDBCUsu+s6eKQzz/C+xxOtD1VUVkICShhczuto=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=PdhHl2bzhdJb5TXUPM/PmIqt76ySRJBp0k4DU0L89zGzqJf5b/QM8eN8od9d/NuQiU6nJC4dNwzgarXfzYzxT1NbIzZn+W5CEhXJ0Bq6rIms5Mg7T9Ys/qfMLj1aXKL8ZJA0zs6csFEDCKBWgfk40IGrs2yaV6BzaVXjunM4Ff8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Bs/fFwqb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34808C4CEC0;
+	Fri, 13 Sep 2024 13:38:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1726234738;
+	bh=/KYBSsDBCUsu+s6eKQzz/C+xxOtD1VUVkICShhczuto=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=Bs/fFwqbdW6dlxBnItsXK36LvRQXPXcToYHuJUWFx6tvZ+ExVwLy+TlJyf+jFxlf0
+	 68TsjIdQub/qzqSm6R/Ym1o0APmC8da4YOjZOgiFrHMPvaoAFDTNyXnf2dpdDFRnQJ
+	 md/lYpfK1c1N0fV3phv+O+kGwE02CYfXL2IBShc7hbPsmaA/TWfbExj5Ji4GOyxRGh
+	 LQLWGUfT/Xz/oZYLO81dyF2eBXZsz8gqdtK9usPTcPGRUDDQcpoAW0qEMUedfirquF
+	 7i83vW4pBF0H8OiPYo6E8W8fQfM7wKjMzuqLAU61rjuq2g+Tv2tkrQMWYBgAkeHijU
+	 +I64sUZR7hjsQ==
+From: Benjamin Tissoires <bentiss@kernel.org>
+To: Jiri Kosina <jikos@kernel.org>, 
+ Peter Hutterer <peter.hutterer@who-t.net>, Vicki Pfau <vi@endrift.com>, 
+ Shuah Khan <shuah@kernel.org>, Benjamin Tissoires <bentiss@kernel.org>
+Cc: linux-input@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+In-Reply-To: <20240910-hid-bpf-hid-generic-v2-0-083dfc189e97@kernel.org>
+References: <20240910-hid-bpf-hid-generic-v2-0-083dfc189e97@kernel.org>
+Subject: Re: (subset) [PATCH HID v2 00/11] HID: bpf: add a new hook to
+ control hid-generic
+Message-Id: <172623473588.1192461.11090201509053454593.b4-ty@kernel.org>
+Date: Fri, 13 Sep 2024 15:38:55 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemd100013.china.huawei.com (7.221.188.163)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.14.1
 
-WQ_MAX_ACTIVE is currently set to 512, which was established approximately
-15 yeas ago. However, with the significant increase in machine sizes and
-capabilities, the previous limit of 256 concurrent tasks is no longer
-sufficient. Therefore, we propose to increase WQ_MAX_ACTIVE to 2048.
-and WQ_DFL_ACTIVE is 1024 now.
+On Tue, 10 Sep 2024 23:43:36 +0900, Benjamin Tissoires wrote:
+> This is a slight change from the fundamentals of HID-BPF.
+> In theory, HID-BPF is abstract to the kernel itself, and makes
+> only changes at the HID level (through report descriptors or
+> events emitted to/from the device).
+> 
+> However, we have seen a few use cases where HID-BPF might interact with
+> the running kernel when the target device is already handled by a
+> specific device.
+> 
+> [...]
 
-Signed-off-by: Chen Ridong <chenridong@huawei.com>
----
- Documentation/core-api/workqueue.rst | 4 ++--
- include/linux/workqueue.h            | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+Applied to hid/hid.git (for-6.12/bpf), thanks!
 
-diff --git a/Documentation/core-api/workqueue.rst b/Documentation/core-api/workqueue.rst
-index 338b25e86f8c..b66b55d35c9c 100644
---- a/Documentation/core-api/workqueue.rst
-+++ b/Documentation/core-api/workqueue.rst
-@@ -245,8 +245,8 @@ CPU which can be assigned to the work items of a wq. For example, with
- at the same time per CPU. This is always a per-CPU attribute, even for
- unbound workqueues.
- 
--The maximum limit for ``@max_active`` is 512 and the default value used
--when 0 is specified is 256. These values are chosen sufficiently high
-+The maximum limit for ``@max_active`` is 2048 and the default value used
-+when 0 is specified is 1024. These values are chosen sufficiently high
- such that they are not the limiting factor while providing protection in
- runaway cases.
- 
-diff --git a/include/linux/workqueue.h b/include/linux/workqueue.h
-index 59c2695e12e7..b0dc957c3e56 100644
---- a/include/linux/workqueue.h
-+++ b/include/linux/workqueue.h
-@@ -412,7 +412,7 @@ enum wq_flags {
- };
- 
- enum wq_consts {
--	WQ_MAX_ACTIVE		= 512,	  /* I like 512, better ideas? */
-+	WQ_MAX_ACTIVE		= 2048,	  /* I like 2048, better ideas? */
- 	WQ_UNBOUND_MAX_ACTIVE	= WQ_MAX_ACTIVE,
- 	WQ_DFL_ACTIVE		= WQ_MAX_ACTIVE / 2,
- 
+[01/11] HID: bpf: move HID-BPF report descriptor fixup earlier
+        https://git.kernel.org/hid/hid/c/f10a11b7b599
+[02/11] HID: core: save one kmemdup during .probe()
+        https://git.kernel.org/hid/hid/c/6941754dbbc7
+[03/11] HID: core: remove one more kmemdup on .probe()
+        https://git.kernel.org/hid/hid/c/4fe29f36d2a3
+[04/11] HID: bpf: allow write access to quirks field in struct hid_device
+        https://git.kernel.org/hid/hid/c/b722f588adc6
+[05/11] selftests/hid: add dependency on hid_common.h
+        https://git.kernel.org/hid/hid/c/3d816765e12e
+[06/11] selftests/hid: cleanup C tests by adding a common struct uhid_device
+        https://git.kernel.org/hid/hid/c/28023a0f99d1
+[07/11] selftests/hid: allow to parametrize bus/vid/pid/rdesc on the test device
+        https://git.kernel.org/hid/hid/c/10d3147f9bb1
+[08/11] HID: add per device quirk to force bind to hid-generic
+        https://git.kernel.org/hid/hid/c/d030f826ea47
+[09/11] selftests/hid: add test for assigning a given device to hid-generic
+        https://git.kernel.org/hid/hid/c/10929078201f
+
+Cheers,
 -- 
-2.34.1
+Benjamin Tissoires <bentiss@kernel.org>
 
 
