@@ -1,281 +1,172 @@
-Return-Path: <bpf+bounces-39867-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39868-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 419CD978A85
-	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 23:24:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 873AE978AAD
+	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 23:37:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6665E1C2135E
-	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 21:24:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 152901F21032
+	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 21:37:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAFFF154435;
-	Fri, 13 Sep 2024 21:23:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EBEC15539D;
+	Fri, 13 Sep 2024 21:37:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NSAYFy9E"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KTspgCEE"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFB15BA50
-	for <bpf@vger.kernel.org>; Fri, 13 Sep 2024 21:23:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 940CC1E884;
+	Fri, 13 Sep 2024 21:37:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726262632; cv=none; b=tloIexbVy75haIJosr9XbHEmFVz095sDDgfnPoGln08oiJ8RfuUMmgePMsPhLS918EUMoJz9X280K4Q8EcJdsnL6YEXUS/2mQvUd3KggrrRdjTvZHVen2kF8uPMf0cX1wHn17xZ1927ss7sXoAaWdxLYQ+sUyVm6bzMxPqRnQdU=
+	t=1726263427; cv=none; b=DOH0vIY3kJrXGVq2e2KTCIAhmm9WsJisWeZYvEbmuy62IgbJiH/wte6niVuaCd+bntu33cFeXNWW9Aah7abvMgSlr02U2fIjNm+XfCROrFWYvXEkxVK31TgBmJh4ajgppMGe0GoEzF61Qm99eKJrdMl+J7y+b9ZEba3wtzcUpKc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726262632; c=relaxed/simple;
-	bh=dDUYPHEHXMsRYbiIFPCOgUy7V8RCFDhl7CuuCq1mHAE=;
+	s=arc-20240116; t=1726263427; c=relaxed/simple;
+	bh=vb+rHDerVoW5b0X5DQj9tZH6EoL//ykjxLDpApsZaWI=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=RhUmudVxk1xI9vub51SHM+wGrD2s0i5huFkZUqu4AeLgY1GQ3CIVOfo1rsHilw2Z3RejHL4QCdAciG+weGY8WmkxOmywqJubj8UP9Kqea5ZLcBmfKmAxnRs4Bk1pLhxAWBbp1dQ7qHzn6+4oD7/P+zfdD5ys8n0TkSqyzdBxEN4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NSAYFy9E; arc=none smtp.client-ip=209.85.215.173
+	 To:Cc:Content-Type; b=se7E4C1zWgNY+FVnEWqxVN5muNVHpxBlXk+f2iiOxkCPMIe2ZAPa4EWUgsGucQSXy9nQGwASfp0gdMkjjs3FgD2X4dRF6k69HPabIxRWuQX8MoBy+agvSye2uk6eGLNtU3nBJJQiyweo3AGP3lMLWoJP2nQUOmEM+xZmZDWNL8o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KTspgCEE; arc=none smtp.client-ip=209.85.216.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-7d4fbe62bf5so873223a12.0
-        for <bpf@vger.kernel.org>; Fri, 13 Sep 2024 14:23:50 -0700 (PDT)
+Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-2d86f71353dso1930511a91.2;
+        Fri, 13 Sep 2024 14:37:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1726262630; x=1726867430; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1726263425; x=1726868225; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=aT5adoUswyp6Oe7Nyk+LrQiCC6lu4vqnYI9zQ2NqOxk=;
-        b=NSAYFy9Ec3vh+f6sHObu9qn7+9MSviGstdDQG8qy49WWLm6VtwgAxjuh8sQHW+CZfX
-         Kz2/OnRqnEP1m2r3D3wWgWd/gnNQLyyp6GB9iK5NTxBM+mMy2sAD6uU+jH+7qViPFab3
-         FSwqOn90MkT6Flxyk4KfWLND+XaZiglDolaWq3/4R9cbqz1vcFmd+5Y4zhGdJ2Fukg46
-         vb1rWk7IYSua941Z5t0GaKExslNFfGEiiYUtwb4eAN1HNmW4Vu42n4rafN0EIfz/k4Qk
-         ZnzF7ge5o0f1GVxtsnsiFB5PNiegHAlLaCbUmJyEXBICOHVAUrdm6DHYvlDIm/eYbBKd
-         TuIw==
+        bh=ufuODkYRAPVANRv1dPBGY6G0b9qqTcEIHXtDX+U2lRw=;
+        b=KTspgCEEdKH80GiOAYw+4j2CEy5Rfjt90hy5Hd+pjjVouG51ha2hZXLlp23defAs/a
+         1OzQDAAzSel38AB0AhBxt2X9pWg5Swvp+/+nLb9JVdfNdTbcnLtWN1JNBj9biUM0tJXb
+         l6IzxWKo9VJbcpIFs1/7XtxAOaBI6PR67itDk6cknAChDUB2YeA4+GqWMbyNIgsvXCbC
+         XRMwBLPRcoVTZoEXTMPGVLKfY9+fnX1FnCMoa9A+HlbmePUHngIObD11yT2GA+pwFr5J
+         OKEUeQ+xT4cKQu7VbmjAYSuiPmaJJMsm1i2CtNvY3VxO5ihORfGZI/mKKIp4SHjGpoL0
+         WrTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726262630; x=1726867430;
+        d=1e100.net; s=20230601; t=1726263425; x=1726868225;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=aT5adoUswyp6Oe7Nyk+LrQiCC6lu4vqnYI9zQ2NqOxk=;
-        b=kUrnnJ03U3t3ZyRC8XsKOKKj8ZSxsk887KGbBmpjagEhP9UmznKpWTDBbjGzUw0rpE
-         fuoPQ9l/IvGWeZDaZmPgTPIDlRKMi73LhVCr/E2Nq1iG+p7Vcigj2ZECnWx1mBZloFp/
-         uPiypCh0DXlddU1R/TeU7WDe6S9DPv0MPVkAzb+KcNFA6zbNQIW06/l5n2+PT3LaiCun
-         yUHYb9Pl9TFElRN+rei+Ayx9nNiMdoZBcfAz93aEZqG22J7RyrG55b+tA+/YHcjvQKjr
-         OgjB9FsSXFl6zouG5d0y0x6y0YQ0WVqmgp4mdLhMie0j0c+fgGUCzhZzEwmr6Z4LaIw0
-         2dXA==
-X-Forwarded-Encrypted: i=1; AJvYcCVDmHPELfrepYytqraeHK4ku2bBarRcawTlEs4F5TcV6FABQAfi+w/M71rcLqR2t1ORiK8=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxgdj7ddW9mUtx+UJTqh4d//sPOIubw258ss/EP2afnmT3j6Mnv
-	7pvif7h0oGZOplvFHUYtzxi5NV9uqfeHHpDtCnMNI+34Yn4lqi8YRR09QlBweBmA+m9TwQcIJHl
-	/GRNmYqyvUacanc1wAsznOF4ytSw=
-X-Google-Smtp-Source: AGHT+IGSxsUDqs68DJ6NkTjNEpB1AkCqjW8Wl4QWO76JPF+xmI4Z7WHX1hn4VzZNwjI3ylmXq0TpXv6HiXTsUEqPgRE=
-X-Received: by 2002:a17:90b:3790:b0:2d8:9253:dffc with SMTP id
- 98e67ed59e1d1-2dbb9e1d335mr5273948a91.19.1726262630109; Fri, 13 Sep 2024
- 14:23:50 -0700 (PDT)
+        bh=ufuODkYRAPVANRv1dPBGY6G0b9qqTcEIHXtDX+U2lRw=;
+        b=HWKifG54XysD3d52PmLd/dY7shoL0Ah3qDNgKw2ft3l5uHOCWHgsylDfaZEngs7qYu
+         lzFRFMIQr8xpa8FZkSWaDJjtN+MIH07iclJGTJ8iF+fxw2ld5M2VigD7Mn6JBZo0nqLx
+         mpEIzer1y00nJPx9MuwD7TF0sZbvA/tEOaD/aKgY7l4ELBjC09MOwRGMNJ0CV++AsDRC
+         0hvAmbQ0T6UXwEYtLIw97W4qbnJlfVK9pdGV/xs4tGIVTaSkeZ+SK6CoY6AUgFfCxzqQ
+         5OUjIPTdlo1GlCyFuHOf21OaMvKiD6SR9gJ+G7f3C07otgTxPIGoXfN5hehsxVgprlPN
+         /S8Q==
+X-Forwarded-Encrypted: i=1; AJvYcCV66e+3Z8DhUiZxjXP5U0ndvJdhoCxGLYqlCEGaQB3SuV9VIow+sv1VUMw3SRK01LHz2AE=@vger.kernel.org, AJvYcCWme7GTiFCg/ocpwTRpApdsgpNTsez5G8Q70k5vW+idYJNf95sOMp9JPWDH+GoZ13TQHqYLcN+uiKM7ahod@vger.kernel.org
+X-Gm-Message-State: AOJu0YwskOAk7AYBMXxZ0wA6tpsbQVGn34YNz86oFKN83MFINxALAHH2
+	9QmuTqj5QB5XGLjlwxJQDPiGec7SIBOjXZ7JbbqmL3z378iePa0/sVC8K0HWwFTDRRM+1i7FYC/
+	pvuMBG+nPvCFifKGnUK5QY2TVNo8=
+X-Google-Smtp-Source: AGHT+IEFKApS///oMb0n1UxSVQ36wqC+1R1mMCqxzCL4yxI+RigDDVRsD36joNxkerIubYatgYfo906sEC/GVrJjcSQ=
+X-Received: by 2002:a17:90a:a598:b0:2d8:f515:3169 with SMTP id
+ 98e67ed59e1d1-2db9ff79c90mr7418409a91.6.1726263424810; Fri, 13 Sep 2024
+ 14:37:04 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <172615368656.133222.2336770908714920670.stgit@devnote2>
- <0170cd7d95df0583770c385c1e11bd27dfacf618b71b6e723f0952efc0ce9040@mail.kernel.org>
- <CAEf4BzZgAkSkMd6Vk3m1D-0AVqXp06PaBPr+2L7Dd3WRgJ8JvA@mail.gmail.com>
- <20240913085402.9e5b2c506a8973b099679d04@kernel.org> <CAEf4BzZEoNHgcLDPTPQ=yyQTZtEZoVrGbBbeTf3vqe_wcpS6EA@mail.gmail.com>
- <20240913175935.bb0892ab1e6052efc12c6423@kernel.org> <20240913214515.894c868a1ef4968550553b86@kernel.org>
- <20240913224957.5bfa380429020f3cbe9eeb63@kernel.org>
-In-Reply-To: <20240913224957.5bfa380429020f3cbe9eeb63@kernel.org>
+References: <20240910174312.3646590-1-andrii@kernel.org>
+In-Reply-To: <20240910174312.3646590-1-andrii@kernel.org>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 13 Sep 2024 14:23:38 -0700
-Message-ID: <CAEf4BzaCixhyFHH1Ut56sCLh2n-twtP6_0YPUcvv9dP+GXF-DA@mail.gmail.com>
-Subject: Re: [PATCH v14 00/19] tracing: fprobe: function_graph: Multi-function
- graph and fprobe on fgraph
-To: Masami Hiramatsu <mhiramat@kernel.org>, Jiri Olsa <jolsa@kernel.org>
-Cc: kernel-ci@meta.com, bot+bpf-ci@kernel.org, andrii@kernel.org, 
-	daniel@iogearbox.net, martin.lau@linux.dev, bpf <bpf@vger.kernel.org>
+Date: Fri, 13 Sep 2024 14:36:52 -0700
+Message-ID: <CAEf4BzaVW_HXTCJDx=iHs9AJOSaUQq3Bwg+hFc3FCdqxb5Ah6Q@mail.gmail.com>
+Subject: Re: [PATCH] uprobes: switch to RCU Tasks Trace flavor for better performance
+To: Andrii Nakryiko <andrii@kernel.org>, peterz@infradead.org, mingo@kernel.org
+Cc: linux-trace-kernel@vger.kernel.org, oleg@redhat.com, rostedt@goodmis.org, 
+	mhiramat@kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	jolsa@kernel.org, paulmck@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Sep 13, 2024 at 6:50=E2=80=AFAM Masami Hiramatsu <mhiramat@kernel.o=
-rg> wrote:
+On Tue, Sep 10, 2024 at 10:43=E2=80=AFAM Andrii Nakryiko <andrii@kernel.org=
+> wrote:
 >
-> On Fri, 13 Sep 2024 21:45:15 +0900
-> Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
+> This patch switches uprobes SRCU usage to RCU Tasks Trace flavor, which
+> is optimized for more lightweight and quick readers (at the expense of
+> slower writers, which for uprobes is a fine tradeof) and has better
+> performance and scalability with number of CPUs.
 >
-> > On Fri, 13 Sep 2024 17:59:35 +0900
-> > Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
-> >
-> > > >
-> > > > Taking failing output from the test:
-> > > >
-> > > > > > > kprobe_multi_testmod_check:FAIL:kretprobe_test3_result unexpe=
-cted kretprobe_test3_result: actual 0 !=3D expected 1
-> > > >
-> > > > kretprobe_test3_result is a sort of identifier for a test condition=
-,
-> > > > you can find a corresponding line in user space .c file grepping fo=
-r
-> > > > that:
-> > > >
-> > > > ASSERT_EQ(skel->bss->kretprobe_testmod_test3_result, 1,
-> > > > "kretprobe_test3_result");
-> > > >
-> > > > Most probably the problem is in:
-> > > >
-> > > > __u64 addr =3D bpf_get_func_ip(ctx);
-> > >
-> > > Yeah, and as I replyed to another thread, the problem is
-> > > that the ftrace entry_ip is not symbol ip.
-> > >
-> > > We have ftrace_call_adjust() arch function for reverse
-> > > direction (symbol ip to ftrace entry ip) but what we need
-> > > here is the reverse translate function (ftrace entry to symbol)
-> > >
-> > > The easiest way is to use kallsyms to find it, but this is
-> > > a bit costful (but it just increase bsearch in several levels).
-> > > Other possible options are
-> > >
-> > >  - Change bpf_kprobe_multi_addrs_cmp() to accept a range
-> > >    of address. [sym_addr, sym_addr + offset) returns true,
-> > >    bpf_kprobe_multi_cookie() can find the entry address.
-> > >    The offset depends on arch, but 16 is enough.
-> >
-> > Oops. no, this bpf_kprobe_multi_cookie() is used only for storing
-> > test data. Not a general problem solving. (I saw kprobe_multi_check())
-> >
-> > So solving problem is much costly, we need to put more arch-
-> > dependent in bpf_trace, and make sure it does reverse translation
-> > of ftrace_call_adjust(). (this means if you expand arch support,
-> > you need to add such implementation)
+> Similarly to baseline vs SRCU, we've benchmarked SRCU-based
+> implementation vs RCU Tasks Trace implementation.
 >
-> OK, can you try this one?
+> SRCU
+> =3D=3D=3D=3D
+> uprobe-nop      ( 1 cpus):    3.276 =C2=B1 0.005M/s  (  3.276M/s/cpu)
+> uprobe-nop      ( 2 cpus):    4.125 =C2=B1 0.002M/s  (  2.063M/s/cpu)
+> uprobe-nop      ( 4 cpus):    7.713 =C2=B1 0.002M/s  (  1.928M/s/cpu)
+> uprobe-nop      ( 8 cpus):    8.097 =C2=B1 0.006M/s  (  1.012M/s/cpu)
+> uprobe-nop      (16 cpus):    6.501 =C2=B1 0.056M/s  (  0.406M/s/cpu)
+> uprobe-nop      (32 cpus):    4.398 =C2=B1 0.084M/s  (  0.137M/s/cpu)
+> uprobe-nop      (64 cpus):    6.452 =C2=B1 0.000M/s  (  0.101M/s/cpu)
 >
-
-I'm running out of time today, so I won't have time to try this, sorry.
-
-But see my last reply, I think adjusting link->addrs once before
-attachment is the way to go. It gives us fast and simple lookups at
-runtime.
-
-In my last reply I assumed that we won't need to keep a copy of
-original addrs (because we can dynamically adjust for
-bpf_kprobe_multi_link_fill_link_info()), but I now realize that we do
-need that for bpf_get_func_ip() anyways.
-
-Still, I'd rather have an extra link->adj_addrs with a copy and do a
-quick and simple lookup at runtime. So I suggest going with that. At
-the very worst case it's a few kilobytes of memory for thousands of
-attached functions, no big deal, IMO.
-
-It's vastly better than maintaining arch-specific reverse of
-ftrace_call_adjust(), isn't it?
-
-Jiri, any opinion here?
-
+> uretprobe-nop   ( 1 cpus):    2.055 =C2=B1 0.001M/s  (  2.055M/s/cpu)
+> uretprobe-nop   ( 2 cpus):    2.677 =C2=B1 0.000M/s  (  1.339M/s/cpu)
+> uretprobe-nop   ( 4 cpus):    4.561 =C2=B1 0.003M/s  (  1.140M/s/cpu)
+> uretprobe-nop   ( 8 cpus):    5.291 =C2=B1 0.002M/s  (  0.661M/s/cpu)
+> uretprobe-nop   (16 cpus):    5.065 =C2=B1 0.019M/s  (  0.317M/s/cpu)
+> uretprobe-nop   (32 cpus):    3.622 =C2=B1 0.003M/s  (  0.113M/s/cpu)
+> uretprobe-nop   (64 cpus):    3.723 =C2=B1 0.002M/s  (  0.058M/s/cpu)
 >
-> From 81bc599911507215aa9faa1077a601880cbd654a Mon Sep 17 00:00:00 2001
-> From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-> Date: Fri, 13 Sep 2024 21:43:46 +0900
-> Subject: [PATCH] bpf: Add get_entry_ip() for arm64
+> RCU Tasks Trace
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> uprobe-nop      ( 1 cpus):    3.396 =C2=B1 0.002M/s  (  3.396M/s/cpu)
+> uprobe-nop      ( 2 cpus):    4.271 =C2=B1 0.006M/s  (  2.135M/s/cpu)
+> uprobe-nop      ( 4 cpus):    8.499 =C2=B1 0.015M/s  (  2.125M/s/cpu)
+> uprobe-nop      ( 8 cpus):   10.355 =C2=B1 0.028M/s  (  1.294M/s/cpu)
+> uprobe-nop      (16 cpus):    7.615 =C2=B1 0.099M/s  (  0.476M/s/cpu)
+> uprobe-nop      (32 cpus):    4.430 =C2=B1 0.007M/s  (  0.138M/s/cpu)
+> uprobe-nop      (64 cpus):    6.887 =C2=B1 0.020M/s  (  0.108M/s/cpu)
 >
-> Add get_entry_ip() implementation for arm64. This is based on
-> the information in ftrace_call_adjust() for arm64.
+> uretprobe-nop   ( 1 cpus):    2.174 =C2=B1 0.001M/s  (  2.174M/s/cpu)
+> uretprobe-nop   ( 2 cpus):    2.853 =C2=B1 0.001M/s  (  1.426M/s/cpu)
+> uretprobe-nop   ( 4 cpus):    4.913 =C2=B1 0.002M/s  (  1.228M/s/cpu)
+> uretprobe-nop   ( 8 cpus):    5.883 =C2=B1 0.002M/s  (  0.735M/s/cpu)
+> uretprobe-nop   (16 cpus):    5.147 =C2=B1 0.001M/s  (  0.322M/s/cpu)
+> uretprobe-nop   (32 cpus):    3.738 =C2=B1 0.008M/s  (  0.117M/s/cpu)
+> uretprobe-nop   (64 cpus):    4.397 =C2=B1 0.002M/s  (  0.069M/s/cpu)
 >
-> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> Peak throughput for uprobes increases from 8 mln/s to 10.3 mln/s
+> (+28%!), and for uretprobes from 5.3 mln/s to 5.8 mln/s (+11%), as we
+> have more work to do on uretprobes side.
+>
+> Even single-thread (no contention) performance is slightly better: 3.276
+> mln/s to 3.396 mln/s (+3.5%) for uprobes, and 2.055 mln/s to 2.174 mln/s
+> (+5.8%) for uretprobes.
+>
+> We also select TASKS_TRACE_RCU for UPROBES in Kconfig due to the new
+> dependency.
+>
+> Reviewed-by: Oleg Nesterov <oleg@redhat.com>
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 > ---
->  kernel/trace/bpf_trace.c | 64 ++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 64 insertions(+)
+>  arch/Kconfig            |  1 +
+>  kernel/events/uprobes.c | 38 ++++++++++++++++----------------------
+>  2 files changed, 17 insertions(+), 22 deletions(-)
 >
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index deb629f4a510..b0cf6e5b8965 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -1066,6 +1066,70 @@ static unsigned long get_entry_ip(unsigned long fe=
-ntry_ip)
->                 fentry_ip -=3D ENDBR_INSN_SIZE;
->         return fentry_ip;
->  }
-> +#elif defined (CONFIG_ARM64)
-> +#include <asm/insn.h>
-> +
-> +static unsigned long get_entry_ip(unsigned long fentry_ip)
-> +{
-> +       u32 insn;
-> +
-> +       /*
-> +        * When using patchable-function-entry without pre-function NOPS,=
- ftrace
-> +        * entry is the address of the first NOP after the function entry=
- point.
-> +        *
-> +        * The compiler has either generated:
-> +        *
-> +        * func+00:     func:   NOP             // To be patched to MOV X=
-9, LR
-> +        * func+04:             NOP             // To be patched to BL <c=
-aller>
-> +        *
-> +        * Or:
-> +        *
-> +        * func-04:             BTI     C
-> +        * func+00:     func:   NOP             // To be patched to MOV X=
-9, LR
-> +        * func+04:             NOP             // To be patched to BL <c=
-aller>
-> +        *
-> +        * The fentry_ip is the address of `BL <caller>` which is at `fun=
-c + 4`
-> +        * bytes in either case.
-> +        */
-> +       if (!IS_ENABLED(CONFIG_DYNAMIC_FTRACE_WITH_CALL_OPS))
-> +               return fentry_ip - AARCH64_INSN_SIZE;
-> +
-> +       /*
-> +        * When using patchable-function-entry with pre-function NOPs, BT=
-I is
-> +        * a bit different.
-> +        *
-> +        * func+00:     func:   NOP             // To be patched to MOV X=
-9, LR
-> +        * func+04:             NOP             // To be patched to BL <c=
-aller>
-> +        *
-> +        * Or:
-> +        *
-> +        * func+00:     func:   BTI     C
-> +        * func+04:             NOP             // To be patched to MOV X=
-9, LR
-> +        * func+08:             NOP             // To be patched to BL <c=
-aller>
-> +        *
-> +        * The fentry_ip is the address of `BL <caller>` which is at eith=
-er
-> +        * `func + 4` or `func + 8` depends on whether there is a BTI.
-> +        */
-> +
-> +       /* If there is no BTI, the func address should be one instruction=
- before. */
-> +       if (!IS_ENABLED(CONFIG_ARM64_BTI_KERNEL))
-> +               return fentry_ip - AARCH64_INSN_SIZE;
-> +
-> +       /* We want to be extra safe in case entry ip is on the page edge,
-> +        * but otherwise we need to avoid get_kernel_nofault()'s overhead=
-.
-> +        */
-> +       if ((fentry_ip & ~PAGE_MASK) < AARCH64_INSN_SIZE * 2) {
-> +               if (get_kernel_nofault(insn, (u32 *)(fentry_ip - AARCH64_=
-INSN_SIZE * 2)))
-> +                       return fentry_ip - AARCH64_INSN_SIZE;
-> +       } else {
-> +               insn =3D *(u32 *)(fentry_ip - AARCH64_INSN_SIZE * 2);
-> +       }
-> +
-> +       if (aarch64_insn_is_bti(le32_to_cpu((__le32)insn)))
-> +               return fentry_ip - AARCH64_INSN_SIZE * 2;
-> +
-> +       return fentry_ip - AARCH64_INSN_SIZE;
-> +}
->  #else
->  #define get_entry_ip(fentry_ip) fentry_ip
->  #endif
-> --
-> 2.34.1
->
->
->
-> --
-> Masami Hiramatsu (Google) <mhiramat@kernel.org>
+
+Just in case this slipped through the cracks (and is not just waiting
+its turn to be applied), ping. It would be nice to have this patch
+with the rest of uprobe patches from the original patch set to go in
+together. Thanks!
+
+> diff --git a/arch/Kconfig b/arch/Kconfig
+> index 975dd22a2dbd..a0df3f3dc484 100644
+> --- a/arch/Kconfig
+> +++ b/arch/Kconfig
+> @@ -126,6 +126,7 @@ config KPROBES_ON_FTRACE
+>  config UPROBES
+>         def_bool n
+>         depends on ARCH_SUPPORTS_UPROBES
+> +       select TASKS_TRACE_RCU
+>         help
+>           Uprobes is the user-space counterpart to kprobes: they
+>           enable instrumentation applications (such as 'perf probe')
+
+[...]
 
