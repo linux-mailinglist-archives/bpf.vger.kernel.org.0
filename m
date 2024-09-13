@@ -1,130 +1,193 @@
-Return-Path: <bpf+bounces-39810-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39811-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 480CC977C37
-	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 11:32:44 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3DF1977C44
+	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 11:36:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 654F1B224B1
-	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 09:32:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1A9DD1C24902
+	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 09:36:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF0201D67A6;
-	Fri, 13 Sep 2024 09:32:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="AdJlqcEY"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA4B31D79AA;
+	Fri, 13 Sep 2024 09:35:59 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C68F61BDA90
-	for <bpf@vger.kernel.org>; Fri, 13 Sep 2024 09:32:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E03B175D45;
+	Fri, 13 Sep 2024 09:35:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726219952; cv=none; b=hJk6thgut1RADiAk183kPhsoA65i5YxOHZKSxdTwLbryobygq9akbO1rOfshOzTfrgGontPd9QXU87bLUaaK76DKS+gSHwxaNwhr8AL6ZH4vqMO/376qZ1V4VeNMseCxZTNpqf5wzZNXt7DzmfCwhRNmm4ui29M6rFFkuMg0a2Y=
+	t=1726220159; cv=none; b=pwnTLeJbFnS3TxZlV8iym5tRfZqI6ECiNRvM2zR257xZaYmDLyjDDIjDyVaMZ1e2wCbxhukm+O/0UwcxI8DqVO2fBhcS8fvWbKyOp1uqkSU7ARz6pPcz+gi89rfltRHN+h4PislRIvb+AtqiJJVh9jr7UkflHnDwXK5mO9SBhbg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726219952; c=relaxed/simple;
-	bh=cIVkaDlafyz17Lv00EsE5GUygASztsmlwwverOYBNZc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oJMVttnVzhcx9rXgH3bWYpA74+eB/j4+0VT14+Yal8Jf9Ipj02p0z1KA2/hrF6oKbVhb2cIGy4S+edtT5KHbC56qNKiJOTQWt9Zf25IxKph+mtaaM7/fnshi8XfVTc58tE+eybG461pTOtgnGAFLwJ+3DpU6NgvpHc2eSX5rvrE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=AdJlqcEY; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1726219949;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=icP+9T+nckSCW+51d5IyXV2vWbgpkam3VDgb48zcQBk=;
-	b=AdJlqcEYIWXZPjv4ybJDDFCzFZaVBZ/Qkq/CHExKoMQpzWkAAkUTZE6QwymaI5MDFkxbhs
-	fYqs+TMlT6L+L7bNaxFKpy/HZscrARTduknW8j0v9s7YOcHHe/yJ3FFEE8F7HlQjIeWFtS
-	6OqKB/IsQjol27tiv+GrOXDP6H2UB90=
-Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-122-ChSwSbbTOymr1SyfvELLRg-1; Fri,
- 13 Sep 2024 05:32:23 -0400
-X-MC-Unique: ChSwSbbTOymr1SyfvELLRg-1
-Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id D0A9C1955F10;
-	Fri, 13 Sep 2024 09:32:20 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.226.25])
-	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 952353001D10;
-	Fri, 13 Sep 2024 09:32:14 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Fri, 13 Sep 2024 11:32:09 +0200 (CEST)
-Date: Fri, 13 Sep 2024 11:32:01 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Peter Zijlstra <peterz@infradead.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@chromium.org>,
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCHv3 1/7] uprobe: Add support for session consumer
-Message-ID: <20240913093201.GA19305@redhat.com>
-References: <20240909074554.2339984-1-jolsa@kernel.org>
- <20240909074554.2339984-2-jolsa@kernel.org>
- <20240912163539.GE27648@redhat.com>
- <ZuP5dyfgT0PHaf_4@krava>
+	s=arc-20240116; t=1726220159; c=relaxed/simple;
+	bh=Kq+ZW0trtXLDeahV2skxFysYfWalXik5sgiriea1S1s=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=o0bX++E4YPY13b37aXb6CQJGcfvc34bfzdPndJn1GPkvAUUk3hik3uj1OnoqZRhu6djGCp4t36XkI92hGODs7S+Xv8CiLEEQoLFPkIULGZPvltZlbRC00oUV++LVh6jiJgq4dFM14yDpKBaL/GMRb4A57Q/RjwV2FYA1UZ57PHw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.162.112])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4X4q0m4b9zz2CpYn;
+	Fri, 13 Sep 2024 17:35:20 +0800 (CST)
+Received: from dggpemf200006.china.huawei.com (unknown [7.185.36.61])
+	by mail.maildlp.com (Postfix) with ESMTPS id 79E181402CE;
+	Fri, 13 Sep 2024 17:35:52 +0800 (CST)
+Received: from [10.67.120.129] (10.67.120.129) by
+ dggpemf200006.china.huawei.com (7.185.36.61) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Fri, 13 Sep 2024 17:35:51 +0800
+Message-ID: <00c41a5b-6a5b-4ee1-b0e2-eae819e3cf3b@huawei.com>
+Date: Fri, 13 Sep 2024 17:35:51 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZuP5dyfgT0PHaf_4@krava>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC 2/2] page_pool: fix IOMMU crash when driver has already
+ unbound
+To: Mina Almasry <almasrymina@google.com>
+CC: <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>,
+	<liuyonglong@huawei.com>, <fanghaiqing@huawei.com>, Robin Murphy
+	<robin.murphy@arm.com>, Alexander Duyck <alexander.duyck@gmail.com>, IOMMU
+	<iommu@lists.linux.dev>, Wei Fang <wei.fang@nxp.com>, Shenwei Wang
+	<shenwei.wang@nxp.com>, Clark Wang <xiaoning.wang@nxp.com>, Eric Dumazet
+	<edumazet@google.com>, Tony Nguyen <anthony.l.nguyen@intel.com>, Przemek
+ Kitszel <przemyslaw.kitszel@intel.com>, Alexander Lobakin
+	<aleksander.lobakin@intel.com>, Alexei Starovoitov <ast@kernel.org>, Daniel
+ Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>, Saeed Mahameed
+	<saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Tariq Toukan
+	<tariqt@nvidia.com>, Felix Fietkau <nbd@nbd.name>, Lorenzo Bianconi
+	<lorenzo@kernel.org>, Ryder Lee <ryder.lee@mediatek.com>, Shayne Chen
+	<shayne.chen@mediatek.com>, Sean Wang <sean.wang@mediatek.com>, Kalle Valo
+	<kvalo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Andrew
+ Morton <akpm@linux-foundation.org>, Ilias Apalodimas
+	<ilias.apalodimas@linaro.org>, <imx@lists.linux.dev>,
+	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<intel-wired-lan@lists.osuosl.org>, <bpf@vger.kernel.org>,
+	<linux-rdma@vger.kernel.org>, <linux-wireless@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>,
+	<linux-mm@kvack.org>
+References: <20240912124514.2329991-1-linyunsheng@huawei.com>
+ <20240912124514.2329991-3-linyunsheng@huawei.com>
+ <CAHS8izPc8fy08mL1RJtnxiOvTx=Uk037Q5SKobC80jQocEKMJQ@mail.gmail.com>
+Content-Language: en-US
+From: Yunsheng Lin <linyunsheng@huawei.com>
+In-Reply-To: <CAHS8izPc8fy08mL1RJtnxiOvTx=Uk037Q5SKobC80jQocEKMJQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemf200006.china.huawei.com (7.185.36.61)
 
-On 09/13, Jiri Olsa wrote:
->
-> On Thu, Sep 12, 2024 at 06:35:39PM +0200, Oleg Nesterov wrote:
-> > >  	list_for_each_entry_srcu(uc, &uprobe->consumers, cons_node,
-> > >  				 srcu_read_lock_held(&uprobes_srcu)) {
-> > > +		/*
-> > > +		 * If we don't find return consumer, it means uprobe consumer
-> > > +		 * was added after we hit uprobe and return consumer did not
-> > > +		 * get registered in which case we call the ret_handler only
-> > > +		 * if it's not session consumer.
-> > > +		 */
-> > > +		ric = return_consumer_find(ri, &iter, uc->id);
-> > > +		if (!ric && uc->session)
-> > > +			continue;
-> > >  		if (uc->ret_handler)
-> > > -			uc->ret_handler(uc, ri->func, regs);
-> > > +			uc->ret_handler(uc, ri->func, regs, ric ? &ric->cookie : NULL);
-> >
-> > So why do we need the new uc->session member and the uc->session above ?
-> >
-> > If return_consumer_find() returns NULL, uc->ret_handler(..., NULL) can handle
-> > this case itself?
->
-> I tried to explain that in the comment above.. we do not want to
-> execute session ret_handler at all in this case, because its entry
-> counterpart did not run
+On 2024/9/12 22:25, Mina Almasry wrote:
+> On Thu, Sep 12, 2024 at 5:51 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>>
+>> Networking driver with page_pool support may hand over page
+>> still with dma mapping to network stack and try to reuse that
+>> page after network stack is done with it and passes it back
+>> to page_pool to avoid the penalty of dma mapping/unmapping.
+>> With all the caching in the network stack, some pages may be
+>> held in the network stack without returning to the page_pool
+>> soon enough, and with VF disable causing the driver unbound,
+>> the page_pool does not stop the driver from doing it's
+>> unbounding work, instead page_pool uses workqueue to check
+>> if there is some pages coming back from the network stack
+>> periodically, if there is any, it will do the dma unmmapping
+>> related cleanup work.
+>>
+>> As mentioned in [1], attempting DMA unmaps after the driver
+>> has already unbound may leak resources or at worst corrupt
+>> memory. Fundamentally, the page pool code cannot allow DMA
+>> mappings to outlive the driver they belong to.
+>>
+>> Currently it seems there are at least two cases that the page
+>> is not released fast enough causing dma unmmapping done after
+>> driver has already unbound:
+>> 1. ipv4 packet defragmentation timeout: this seems to cause
+>>    delay up to 30 secs:
+>>
+>> 2. skb_defer_free_flush(): this may cause infinite delay if
+>>    there is no triggering for net_rx_action().
+>>
+>> In order not to do the dma unmmapping after driver has already
+>> unbound and stall the unloading of the networking driver, add
+>> the pool->items array to record all the pages including the ones
+>> which are handed over to network stack, so the page_pool can
+>> do the dma unmmapping for those pages when page_pool_destroy()
+>> is called.
+>>
+> 
+> The approach in this patch is a bit complicated. I wonder if there is
+> something simpler that we can do. From reading the thread, it seems
+> the issue is that in __page_pool_release_page_dma we're calling
+> dma_unmap_page_attrs() on a pool->p.dev that has been deleted via
+> device_del, right?
+> 
+> Why not consider pool->p.dev unusable if pool->destroy_cnt > 0? I.e.
+> in __page_pool_release_page_dma, we can skip dma_unmap_page_attrs() if
+> destry_cnt > 0?
 
-I understand, but the session ret_handler(..., __u64 *data) can simply do
+The skipping is already done for __dma_sync_single_for_device() in this
+patch, but not for dma_unmap_page_attrs(), see the clearing of dma_sync
+in page_pool_destroy().
 
-	// my ->handler() didn't run or it didn't return 0
-	if (!data)
-		return;
+> 
+> More generally, probably any use of pool->p.dev may be invalid if
+> page_pool_destroy has been called. The call sites can be scrubbed for
+> latent bugs.
 
-at the start?
+As mentioned in commit log, attempting DMA unmaps after the driver has
+already unbound may leak resources or at worst corrupt memory.
+The skipping only avoid corrupting memory, but not leaking resources, as
+there may be bounce buffer or iova resources before the dma mapping as my
+understanding.
 
-Oleg.
+And when page_pool_destroy() is called, there is currently no way to
+tell if the device is going to be invalid or not.
 
+> 
+> The hard part is handling the concurrency. I'm not so sure we can fix
+> this without introducing some synchronization between the
+> page_pool_destroy seeing the device go away and the code paths using
+> the device. Are these being called from the fast paths? Jespers
+> benchmark can tell for sure if there is any impact on the fast path.
+
+It depends on what your definition of fast path here, there are three
+kinds of fast path for page pool as my understanding.
+
+For the first and second fast path, the synchronization cost is the
+rcu read lock overhead introduced in patch 1.
+
+For the third fast path when we need to refill from or flush to the
+page allocator, the added overhead is the page_pool_item_add() and
+page_pool_item_del() calling as my understanding.
+
+Will provide the performance data in the next version.
+
+> 
+>> Note, the devmem patchset seems to make the bug harder to fix
+>> and to backport too, this patch does not consider fixing the
+>> case for devmem yet.
+>>
+> 
+> FWIW from a quick look I did not see anything in this patch that is
+> extremely hard to port to netmem. AFAICT the issue is that you skipped
+> changing page_pool to page_pool_items in net_iov. Once that is done, I
+> think the rest should be straightforward.
+
+Does page_pool_item_uninit() need to handle 'netmem' case?
+
+How does the devmem handle the case net_iov being cached in network stack
+when the driver has already unbound? I am supposing there is a device for
+dma_buf_unmap_attachment_unlocked(), and is it possible that the device
+become invalid too when the driver has unbound? If yes, doesn't it have a
+similar problem as the case of normal page?
+
+> 
 
