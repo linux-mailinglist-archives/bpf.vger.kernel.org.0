@@ -1,145 +1,99 @@
-Return-Path: <bpf+bounces-39861-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39862-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FCAE978938
-	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 22:00:29 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0AC609789DC
+	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 22:20:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA437285BE4
-	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 20:00:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AB1941F25F18
+	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 20:20:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB96A126F2A;
-	Fri, 13 Sep 2024 20:00:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09A57146593;
+	Fri, 13 Sep 2024 20:20:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="tFm9xIc9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UYgodzzC"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A72BDBA2E
-	for <bpf@vger.kernel.org>; Fri, 13 Sep 2024 20:00:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8783247A73
+	for <bpf@vger.kernel.org>; Fri, 13 Sep 2024 20:20:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726257622; cv=none; b=Qf/KqD3e1JP4A6g9lmoPTUFAEKe09f72nBxBMMoxRhnL9P2ksxR5LC8/27noJw6QT8lSFFDkeai5jFai1az1kcOF7quvXKGcekxFn9aQl2UkC6Z31or08U+ol4n557s9D7/4RDeX5AEwJSPL1TeJNnq80GMttqSshSKMudjL3b8=
+	t=1726258828; cv=none; b=gfVF3a+usL03v+OlX0abG8D16qLdXfYlrCaKRyTMuU7aCUiSf3dyyTqVRy3R5YmV029utPRVT/23kEIwqIEdAGIhgj5T/Ld/Tci5vE4wdCfCYrQLYGaCXaotmntU3L6QHXH7jtxw2gwOTudWAtXTHNBKxKx2O7s8gIAzQXTeUFQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726257622; c=relaxed/simple;
-	bh=hHIJssMqJKRZCUO151MGYXNIrkTEnsXq25qjh58/yP0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=YJhseueyh+RYsPQZs/N/SvDDDtXLGqCVPfp6yhQ3FyL4s2Y4jWU5inP4SI73viHEmzWtA1h+UUIpKfZH6CngYK/7k9vmnPcimvwTokxPUPKtPyJ6fEn5bHdi7w5BkvhEpHxfGm+IYFdiw68DtVaoqd24ijFQGyb5/BbsoolFICA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=tFm9xIc9; arc=none smtp.client-ip=95.215.58.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <d162c454-702c-40bd-b1dd-a70fe476e1d7@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1726257617;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jHiT5w/EE6pfdmmxsdrVrO7gpmtb07Jmd0iikIYue4Q=;
-	b=tFm9xIc9KC4SwhsT0Rzjm4wa3paIQatjW0T5bP+mSMlCyjaZiFOOzqNHg2eahegb8muOsB
-	ADolFo2Joqyiws4rfuVwgEMVoyWrMeLeik4kVMV2uCnc2fpj4zh+jHBTQBeAaX+MzSoWL9
-	roL3ZCXGYxSvE/8lOQXpB0NHN7i1Ye4=
-Date: Fri, 13 Sep 2024 13:00:10 -0700
+	s=arc-20240116; t=1726258828; c=relaxed/simple;
+	bh=WfaS/GVYlh1UDTn6E5gmliKjyRBLzsixBq9gyQAsqLI=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=AEbzj42izA2mgpc/+N7KCMG1XPReETfoyaFcHsKUmp0mpUdPemNbajA2NDRuJPdD50gw9gQ+ZSJGpIF2Iq3kEtjS25n0Z+bk8R0K0fxD4Oob44Bxc8zqKAJIcnQkvZwp8QYsX/VaUhubcKpxmIvuQbfmQbidAqNHbvb1UotTJ2Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UYgodzzC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE52DC4CEC0;
+	Fri, 13 Sep 2024 20:20:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1726258827;
+	bh=WfaS/GVYlh1UDTn6E5gmliKjyRBLzsixBq9gyQAsqLI=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=UYgodzzCUvIlaXzxNxOVNd27shTiledszfHO8QgihMEaMaa1sWC4jXmYqzWtGzP/d
+	 dE8c9BV4d+B+UBRdLxtDs6zbFGqrsgs30MVZWPYqcSKT+yw3hnva7TWC1MWHejusei
+	 pT02i3y3LgJmXIoENOoQ1Gf1EhK+D1clEDTmx7sO8YamBW/DhZJTjSTg6aMcXU/cq9
+	 bGAdGPMGggZwpbVF3jdaRy5V/N0uQouoKJACzulzFqmptfkw065RMeVKHW2l+UoqyI
+	 QrxBTo6NSllAIJsBwCF/gRXDsRqZ01StakyA3C0wUOwmjLGMNymmmmKHV+g6Xoyvbv
+	 mPxJ9niRUqzDQ==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 70DA53806655;
+	Fri, 13 Sep 2024 20:20:30 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v3 1/2] bpf: Fix a sdiv overflow issue
-Content-Language: en-GB
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>,
- Zac Ecob <zacecob@protonmail.com>
-References: <20240913150326.1187788-1-yonghong.song@linux.dev>
- <CAADnVQ+RgqfSTOoWVVokk5zXkeUE1ZxF_neH=HMyKwEeFAJ_aA@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <CAADnVQ+RgqfSTOoWVVokk5zXkeUE1ZxF_neH=HMyKwEeFAJ_aA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Subject: Re: [PATCH bpf-next v3 1/2] bpf: Fix a sdiv overflow issue
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <172625882927.2356446.15293915996403720668.git-patchwork-notify@kernel.org>
+Date: Fri, 13 Sep 2024 20:20:29 +0000
+References: <20240913150326.1187788-1-yonghong.song@linux.dev>
+In-Reply-To: <20240913150326.1187788-1-yonghong.song@linux.dev>
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+ daniel@iogearbox.net, kernel-team@fb.com, martin.lau@kernel.org,
+ zacecob@protonmail.com
 
+Hello:
 
-On 9/13/24 12:44 PM, Alexei Starovoitov wrote:
-> On Fri, Sep 13, 2024 at 8:03 AM Yonghong Song <yonghong.song@linux.dev> wrote:
->> +                               BPF_RAW_INSN((is64 ? BPF_ALU64 : BPF_ALU) |
->> +                                            BPF_OP(BPF_ADD) | BPF_K, BPF_REG_AX,
->> +                                            0, 0, 1),
->> +                               BPF_RAW_INSN((is64 ? BPF_JMP : BPF_JMP32) |
->> +                                            BPF_JGT | BPF_K, BPF_REG_AX,
->> +                                            0, 4, 1),
->> +                               BPF_RAW_INSN((is64 ? BPF_JMP : BPF_JMP32) |
->> +                                            BPF_JEQ | BPF_K, BPF_REG_AX,
->> +                                            0, 1, 0),
->> +                               BPF_RAW_INSN((is64 ? BPF_ALU64 : BPF_ALU) |
->> +                                            BPF_OP(BPF_MOV) | BPF_K, insn->dst_reg,
->> +                                            0, 0, 0),
->> +                               /* BPF_NEG(LLONG_MIN) == -LLONG_MIN == LLONG_MIN */
->> +                               BPF_RAW_INSN((is64 ? BPF_ALU64 : BPF_ALU) |
->> +                                            BPF_OP(BPF_NEG) | BPF_K, insn->dst_reg,
-> lgtm, but all of BPF_OP(..) are confusing.
-> What's the point?
-> We use BPF_OP(insn->code) to reuse the code when we create a new opcode,
-> but BPF_OP(BPF_NEG) == BPF_NEG and BPF_OP(BPF_MOV) == BPF_MOV, so why?
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-Sorry, I focused on the algorithm and missed this one. Yes, changing
-BPF_OP(BPF_NEG) to BPF_NEG and other similar cases are correct.
+On Fri, 13 Sep 2024 08:03:26 -0700 you wrote:
+> Zac Ecob reported a problem where a bpf program may cause kernel crash due
+> to the following error:
+>   Oops: divide error: 0000 [#1] PREEMPT SMP KASAN PTI
+> 
+> The failure is due to the below signed divide:
+>   LLONG_MIN/-1 where LLONG_MIN equals to -9,223,372,036,854,775,808.
+> LLONG_MIN/-1 is supposed to give a positive number 9,223,372,036,854,775,808,
+> but it is impossible since for 64-bit system, the maximum positive
+> number is 9,223,372,036,854,775,807. On x86_64, LLONG_MIN/-1 will
+> cause a kernel exception. On arm64, the result for LLONG_MIN/-1 is
+> LLONG_MIN.
+> 
+> [...]
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 69b8d91f5136..068f763dcefb 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -20510,7 +20510,7 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
-                         struct bpf_insn *patchlet;
-                         struct bpf_insn chk_and_sdiv[] = {
-                                 BPF_RAW_INSN((is64 ? BPF_ALU64 : BPF_ALU) |
--                                            BPF_OP(BPF_NEG) | BPF_K, insn->dst_reg,
-+                                            BPF_NEG | BPF_K, insn->dst_reg,
-                                              0, 0, 0),
-                         };
-                         struct bpf_insn chk_and_smod[] = {
-@@ -20565,7 +20565,7 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
-                                  */
-                                 BPF_MOV64_REG(BPF_REG_AX, insn->src_reg),
-                                 BPF_RAW_INSN((is64 ? BPF_ALU64 : BPF_ALU) |
--                                            BPF_OP(BPF_ADD) | BPF_K, BPF_REG_AX,
-+                                            BPF_ADD | BPF_K, BPF_REG_AX,
-                                              0, 0, 1),
-                                 BPF_RAW_INSN((is64 ? BPF_JMP : BPF_JMP32) |
-                                              BPF_JGT | BPF_K, BPF_REG_AX,
-@@ -20574,11 +20574,11 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
-                                              BPF_JEQ | BPF_K, BPF_REG_AX,
-                                              0, 1, 0),
-                                 BPF_RAW_INSN((is64 ? BPF_ALU64 : BPF_ALU) |
--                                            BPF_OP(BPF_MOV) | BPF_K, insn->dst_reg,
-+                                            BPF_MOV | BPF_K, insn->dst_reg,
-                                              0, 0, 0),
-                                 /* BPF_NEG(LLONG_MIN) == -LLONG_MIN == LLONG_MIN */
-                                 BPF_RAW_INSN((is64 ? BPF_ALU64 : BPF_ALU) |
--                                            BPF_OP(BPF_NEG) | BPF_K, insn->dst_reg,
-+                                            BPF_NEG | BPF_K, insn->dst_reg,
-                                              0, 0, 0),
-                                 BPF_JMP_IMM(BPF_JA, 0, 0, 1),
-                                 *insn,
-@@ -20588,7 +20588,7 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
-                                 /* [R,W]x mod -1 -> 0 */
-                                 BPF_MOV64_REG(BPF_REG_AX, insn->src_reg),
-                                 BPF_RAW_INSN((is64 ? BPF_ALU64 : BPF_ALU) |
--                                            BPF_OP(BPF_ADD) | BPF_K, BPF_REG_AX,
-+                                            BPF_ADD | BPF_K, BPF_REG_AX,
-                                              0, 0, 1),
-                                 BPF_RAW_INSN((is64 ? BPF_JMP : BPF_JMP32) |
+Here is the summary with links:
+  - [bpf-next,v3,1/2] bpf: Fix a sdiv overflow issue
+    https://git.kernel.org/bpf/bpf-next/c/7dd34d7b7dcf
+  - [bpf-next,v3,2/2] selftests/bpf: Add tests for sdiv/smod overflow cases
+    https://git.kernel.org/bpf/bpf-next/c/a18062d54a0b
 
->
-> If I'm not missing anything I can remove these BPF_OP wrapping when applying.
-> wdyt?
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Yes, pelase do. Thanks!
 
 
