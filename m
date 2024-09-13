@@ -1,45 +1,46 @@
-Return-Path: <bpf+bounces-39844-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39845-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B6F99786F3
-	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 19:38:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE1EA9786F5
+	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 19:38:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1165D2893F2
-	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 17:38:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5CD9C1F265E9
+	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2024 17:38:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72662126C01;
-	Fri, 13 Sep 2024 17:38:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77B7984FA0;
+	Fri, 13 Sep 2024 17:38:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lUxT3s6H"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vKNexT7r"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF3B884DE4;
-	Fri, 13 Sep 2024 17:38:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE551127E37;
+	Fri, 13 Sep 2024 17:38:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726249093; cv=none; b=BWAxINyB1pWWefiIN8z6gQv4GynumAOjnaHibaTUXyjanLxMFOhmZ+Ppf+5yL++FRUh7rzzeI/1IUz5nCPu+OwDXMxHi5Bawpqa6XsKqNekfnyBmew01MEpESRGauASzYrclGlADRF66sTTE65aHuQo5AIUa6rv2fq3/G3Ga0uo=
+	t=1726249095; cv=none; b=ZMsurs8MHkOudHeUAs0sNp5+ytCLMt2xumH2KVU3F5WeIip13SpXQrcmWmgoOqURcyn9zjy+vUm78hhNYKkS1tfWZssteN/mn2rTSiQuQxssuG9PvPrvQnskZZrRq+FJ4hca1+COggo0tlguSMxZDTD3lJypITbOO0GnbqXU2KM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726249093; c=relaxed/simple;
-	bh=I+tgPGcNyQ3ZM4zl7pvLglfqbeE9rNgxmVIivGERz4w=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Cpe3QzXOMgeIH9UuWSEWuE2/4oDxmVnmHje6Uwfk9grI/rML3ZBm6CaL8goNlCAb55j33GmYimOOArw7/Xx47l/uP0yzH5CGDbLOgBSK84WmVf3ab+XoCt2sUf833PmZTEllYVOHJ19QTT2t2Hk0toiKkX1ES4g8UHULt/Jqh+o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lUxT3s6H; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7CA0C4CEC7;
-	Fri, 13 Sep 2024 17:38:10 +0000 (UTC)
+	s=arc-20240116; t=1726249095; c=relaxed/simple;
+	bh=TBH2wsToIsF16KSPe6aeBkrv6pQbn74kXUUgJaabJ7E=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=PZA7MFH/TE3QBrGrgOGJ6QdRjalgIzkSO2Iu6jhlipLjvyLkbBdGE7Q9cJANzi3c75HZLVCZQhoYgseQFNaYRpJuoz1OKFCYeeICCEfF6XucAy2ioLUrf4mZ5ez6qi35l9eM87cuy9vdlhJ0qXMfQb6Wsevv+LFe6usiuU7i+hs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vKNexT7r; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDBB1C4CECC;
+	Fri, 13 Sep 2024 17:38:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1726249092;
-	bh=I+tgPGcNyQ3ZM4zl7pvLglfqbeE9rNgxmVIivGERz4w=;
-	h=From:To:Cc:Subject:Date:From;
-	b=lUxT3s6H/eXZVSKHV3828BoeS3nPxQUsCc6zIyEP7pG1rpfdXVm3uo7jWU73fQ7++
-	 K4IEhhFoKiwKWhY/I85JssiCqNvbhddnE/ahDKphpqZa7YWthhJFpbG36yx2gnYfcV
-	 mNWZOLGn1FxHEMOlvyUymCcJRjBM3h/4jZ1Q5nvdkj7Ng6cWVGmo+yBiD91ykZH9Eu
-	 gp1FSnca4ctm5VMdu3bvvy6T+/MNkPy4NqalIqPpVah8ct07tJkYAM/G+vB2Kby2Cm
-	 EkZTE6qr2R+N8K5y83fQCDdWLTadpgPfBclouXhcz+sgNlNiX4V/Sh4g+Zu1aHmUF4
-	 k0u/GZYuC9A7Q==
+	s=k20201202; t=1726249094;
+	bh=TBH2wsToIsF16KSPe6aeBkrv6pQbn74kXUUgJaabJ7E=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=vKNexT7r1Q9BSFs/Cpz5zAJwysd7XYglQupaYhPj+ijeN/2t4DDJNU37bW1J3kw4+
+	 ji5W46u0nyPk0CWhodEIdf6+dXEgw37IPQeHDtzBvwzrgWJ/myn5Z1obPQmcxJGtvH
+	 JtAFtxB8uHIoCmRyqony2ebafcPlUxTsaEey97pHv/IF81VBcy0SwoS1p9Pl9soIbH
+	 Bsc5idvEDkjpqRiB6L9wLWTSAxxpJfejP6dZ7LG+rHR8zOR9saJJhMb5eaKiAA+f0G
+	 SAcdCotKKsz6elxUOXphhADvEmE73zW6835gxtQxaqqSD0nzkGinS0veCb1DSBj7Dy
+	 f0E/AGfaQBnEA==
 From: Masahiro Yamada <masahiroy@kernel.org>
 To: Martin KaFai Lau <martin.lau@linux.dev>,
 	bpf@vger.kernel.org
@@ -48,10 +49,12 @@ Cc: Andrii Nakryiko <andrii@kernel.org>,
 	Nathan Chancellor <nathan@kernel.org>,
 	Masahiro Yamada <masahiroy@kernel.org>,
 	Alan Maguire <alan.maguire@oracle.com>
-Subject: [PATCH v2 1/3] btf: remove redundant CONFIG_BPF test in scripts/link-vmlinux.sh
-Date: Sat, 14 Sep 2024 02:37:52 +0900
-Message-ID: <20240913173759.1316390-1-masahiroy@kernel.org>
+Subject: [PATCH v2 2/3] btf: move pahole check in scripts/link-vmlinux.sh to lib/Kconfig.debug
+Date: Sat, 14 Sep 2024 02:37:53 +0900
+Message-ID: <20240913173759.1316390-2-masahiroy@kernel.org>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240913173759.1316390-1-masahiroy@kernel.org>
+References: <20240913173759.1316390-1-masahiroy@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -60,10 +63,32 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-CONFIG_DEBUG_INFO_BTF depends on CONFIG_BPF_SYSCALL, which in turn
-selects CONFIG_BPF.
+When DEBUG_INFO_DWARF5 is selected, pahole 1.21+ is required to enable
+DEBUG_INFO_BTF.
 
-When CONFIG_DEBUG_INFO_BTF=y, CONFIG_BPF=y is always met.
+When DEBUG_INFO_DWARF4 or DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT is selected,
+DEBUG_INFO_BTF can be enabled without pahole installed, but a build error
+will occur in scripts/link-vmlinux.sh:
+
+    LD      .tmp_vmlinux1
+  BTF: .tmp_vmlinux1: pahole (pahole) is not available
+  Failed to generate BTF for vmlinux
+  Try to disable CONFIG_DEBUG_INFO_BTF
+
+We did not guard DEBUG_INFO_BTF by PAHOLE_VERSION when previously
+discussed [1].
+
+However, commit 613fe1692377 ("kbuild: Add CONFIG_PAHOLE_VERSION")
+added CONFIG_PAHOLE_VERSION after all. Now several CONFIG options, as
+well as the combination of DEBUG_INFO_BTF and DEBUG_INFO_DWARF5, are
+guarded by PAHOLE_VERSION.
+
+The remaining compile-time check in scripts/link-vmlinux.sh now appears
+to be an awkward inconsistency.
+
+This commit adopts Nathan's original work.
+
+[1]: https://lore.kernel.org/lkml/20210111180609.713998-1-natechancellor@gmail.com/
 
 Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
@@ -71,24 +96,60 @@ Acked-by: Andrii Nakryiko <andrii@kernel.org>
 Reviewed-by: Nathan Chancellor <nathan@kernel.org>
 ---
 
-(no changes since v1)
+Changes in v2:
+  - Reword the help message per Alan
 
- scripts/link-vmlinux.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ lib/Kconfig.debug       |  6 ++++--
+ scripts/link-vmlinux.sh | 12 ------------
+ 2 files changed, 4 insertions(+), 14 deletions(-)
 
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 5e2f30921cb2..bdf822bc1bab 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -379,13 +379,15 @@ config DEBUG_INFO_BTF
+ 	depends on !DEBUG_INFO_SPLIT && !DEBUG_INFO_REDUCED
+ 	depends on !GCC_PLUGIN_RANDSTRUCT || COMPILE_TEST
+ 	depends on BPF_SYSCALL
++	depends on PAHOLE_VERSION >= 116
+ 	depends on !DEBUG_INFO_DWARF5 || PAHOLE_VERSION >= 121
+ 	# pahole uses elfutils, which does not have support for Hexagon relocations
+ 	depends on !HEXAGON
+ 	help
+ 	  Generate deduplicated BTF type information from DWARF debug info.
+-	  Turning this on expects presence of pahole tool, which will convert
+-	  DWARF type info into equivalent deduplicated BTF type info.
++	  Turning this on requires pahole v1.16 or later (v1.21 or later to
++	  support DWARF 5), which will convert DWARF type info into equivalent
++	  deduplicated BTF type info.
+ 
+ config PAHOLE_HAS_SPLIT_BTF
+ 	def_bool PAHOLE_VERSION >= 119
 diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
-index bd196944e350..cfffc41e20ed 100755
+index cfffc41e20ed..53bd4b727e21 100755
 --- a/scripts/link-vmlinux.sh
 +++ b/scripts/link-vmlinux.sh
-@@ -288,7 +288,7 @@ strip_debug=
- vmlinux_link vmlinux
+@@ -111,20 +111,8 @@ vmlinux_link()
+ # ${1} - vmlinux image
+ gen_btf()
+ {
+-	local pahole_ver
+ 	local btf_data=${1}.btf.o
  
- # fill in BTF IDs
--if is_enabled CONFIG_DEBUG_INFO_BTF && is_enabled CONFIG_BPF; then
-+if is_enabled CONFIG_DEBUG_INFO_BTF; then
- 	info BTFIDS vmlinux
- 	${RESOLVE_BTFIDS} vmlinux
- fi
+-	if ! [ -x "$(command -v ${PAHOLE})" ]; then
+-		echo >&2 "BTF: ${1}: pahole (${PAHOLE}) is not available"
+-		return 1
+-	fi
+-
+-	pahole_ver=$(${PAHOLE} --version | sed -E 's/v([0-9]+)\.([0-9]+)/\1\2/')
+-	if [ "${pahole_ver}" -lt "116" ]; then
+-		echo >&2 "BTF: ${1}: pahole version $(${PAHOLE} --version) is too old, need at least v1.16"
+-		return 1
+-	fi
+-
+ 	info BTF "${btf_data}"
+ 	LLVM_OBJCOPY="${OBJCOPY}" ${PAHOLE} -J ${PAHOLE_FLAGS} ${1}
+ 
 -- 
 2.43.0
 
