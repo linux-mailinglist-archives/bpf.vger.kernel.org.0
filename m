@@ -1,98 +1,101 @@
-Return-Path: <bpf+bounces-39894-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39895-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92D6E978FE5
-	for <lists+bpf@lfdr.de>; Sat, 14 Sep 2024 12:12:49 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DBED978FFC
+	for <lists+bpf@lfdr.de>; Sat, 14 Sep 2024 12:32:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B72581C21E82
-	for <lists+bpf@lfdr.de>; Sat, 14 Sep 2024 10:12:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 385921F22CC2
+	for <lists+bpf@lfdr.de>; Sat, 14 Sep 2024 10:32:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4D421CEAA7;
-	Sat, 14 Sep 2024 10:12:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D8571CEE8F;
+	Sat, 14 Sep 2024 10:32:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HFNWIMHx"
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="H48Ifsl9"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FE1513B280;
-	Sat, 14 Sep 2024 10:12:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B6851474B9
+	for <bpf@vger.kernel.org>; Sat, 14 Sep 2024 10:32:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726308763; cv=none; b=GCjZqSjyNAiio4iX1STW0vP2umOoy2Nq0MSlegRIF7Z+/Svb+IN4okZyv0dkdRayh+2mTZaxMoYcG6cappJRfyoA4WwT4D3EkvPmHwIGeCH1SfPWMy3q0vO9mE4J+GxcGU3sMBedV5R4XIFH6UMCBDwBaCdb4/d+K1u9m0hWIR4=
+	t=1726309962; cv=none; b=Hz07p+H61RzaqH57Zz5O7maiY5ysFAAl5wp9ibELjJ8vAjx06pDVwmrdW1CIIjJcwBWsqnSVtncIP8ZpTBGLOg1K/+08QqxLYFITmy36yahAHSr3r98nMZD1/Zs0S4h2cJJpqTjKEOvS/kD4QVX9/WNxD8Xjz9Aj97ED44BLhy0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726308763; c=relaxed/simple;
-	bh=/wvBbstadsYKOA9TpfXl2WOHHiShhGngkgmK4RiUXLw=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=IWdDwk9heiNxn5EMovmIKu0Uik1IQvWZmSrqaDk0BWQt+4zkss/F3hNJjLJAfq1744s4vVjtG2CidFjB2CtsUfJa3GlYiFSP+admoZ7EQ9ODRvxLqOW1XQY2MHIrh34gP+RWtGaSeFfYQ3XbVUQHGdtpKxF2+nBp3jHL8j8drXw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HFNWIMHx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57F77C4CEC0;
-	Sat, 14 Sep 2024 10:12:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1726308762;
-	bh=/wvBbstadsYKOA9TpfXl2WOHHiShhGngkgmK4RiUXLw=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=HFNWIMHx+Mp4SXtPRaZxlvwChVk+C78KCG6SdHsfv588X2fJ5uHjGgwP/us9QxZHX
-	 VuZo2GwKAlbFiz3zv5vr1slcWQx3KChCJ5Nuk6GW6rBnZi3XEW2si1IM6PtFJihtMd
-	 HsyoqWTQt7fiant+Z/BwsIGBgXsLRBtF5iSgXWQFK5i91sGi3cJVCFX+eBUTB62jqt
-	 TSLYQAhHO88oiZw/3Pe4hAbIBBpSZzlMo0f8Bdh6VNxm6SaoYrljh8UgqgWU7cbcIs
-	 a3OEaMK8pwQJ4SVGDlQJR2xONd0OOm47t0RxcB76i6bpbEbfrSirp1OgeS0szPR1e8
-	 KLtKgDmsfyiDg==
-Message-ID: <b623745d19dd1d9743674def8d565ef779ef0952.camel@kernel.org>
-Subject: Re: [PATCH mptcp-next v5 1/5] bpf: Add mptcp_subflow bpf_iter
-From: Geliang Tang <geliang@kernel.org>
-To: Martin KaFai Lau <martin.lau@linux.dev>, Matthieu Baerts
-	 <matttbe@kernel.org>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, mptcp@lists.linux.dev, 
- Geliang Tang <tanggeliang@kylinos.cn>, bpf@vger.kernel.org, Martin KaFai
- Lau <martin.lau@kernel.org>
-Date: Sat, 14 Sep 2024 18:12:36 +0800
-In-Reply-To: <766062c8fd8920dcc51e7ab2c097541d96bb8ab8.camel@kernel.org>
-References: <cover.1726132802.git.tanggeliang@kylinos.cn>
-	 <5e5b91efc6e06a90fb4d2440ddcbe9b55ee464be.1726132802.git.tanggeliang@kylinos.cn>
-	 <CAEf4BzaVzVhoqhzpq-FD5GGJT1wW5=LbZ4ADs2+NdLO5rcJMMw@mail.gmail.com>
-	 <a9bd9aa00c702f98d86f5d7acd305cc477a4c91b.camel@kernel.org>
-	 <CAEf4Bza4qtP5EVOk08XmGOjWgy1-671gciK5j5vg5Lr=5ggm0Q@mail.gmail.com>
-	 <849457c0-5a34-4d5d-9c4f-ba004809269b@linux.dev>
-	 <766062c8fd8920dcc51e7ab2c097541d96bb8ab8.camel@kernel.org>
-Autocrypt: addr=geliang@kernel.org; prefer-encrypt=mutual;
- keydata=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
- Px+2P2cKc7LXXedb/qQ3M
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.52.3-0ubuntu1 
+	s=arc-20240116; t=1726309962; c=relaxed/simple;
+	bh=DdYB00ibTxT+QJRCxLcc/asgoMEjnRMB60l7urVdFTo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=WhlvtgxJApbFpBqa1QNB6tyDUvA+kpRIyiafp/rH4l7LZTbtHdNwmI1Qr4j0FxXcw8meRGy3B9bc8MVL9X2UBCo6WD1QLaOkjYieECEYrkqJBx3ykTwO+c6hLudlyEKMjOdDKNDO+96subHJkJygG0Z1u1Nt+BAQX5HXKIHAw/c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=H48Ifsl9; arc=none smtp.client-ip=209.85.210.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-717934728adso2282412b3a.2
+        for <bpf@vger.kernel.org>; Sat, 14 Sep 2024 03:32:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1726309960; x=1726914760; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=yoScSacKs8+apMRHN8PMRjEmtp//jkcASgSvFvAksOc=;
+        b=H48Ifsl9Mi+sjKnBeoN3uI4sUCUDqRWSlgRb1MthfWaUSorboOfNxpOIei6sJ0WYHp
+         uxCC9iQza3QYs0bnPby45hYajaFJ5kmsMqkryb8/GDjh6/Z6uVDBMdHErYyC5/+ez4+H
+         j9eg8Ueg/ROzZlveompWIqq/aMJCShCAw4btV3Q9hwvNij3gz0zq8s6PmkEfDgrhcBgG
+         FwVT1qdgR1mIZzo49ZShjAmXjyvxe1uC6m1cXG93tLakFUXr2aR7hOqqcx0BoKbwtj+B
+         ytAq7N4zyAYMDxm8ELu+SYS9hA4Qa8hfuQXt8vjYFPTU4nc8KIBuAhHtNcgaM3hbXM7y
+         Ul6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1726309960; x=1726914760;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=yoScSacKs8+apMRHN8PMRjEmtp//jkcASgSvFvAksOc=;
+        b=dobPdW/r1kxZrd9kRpj1CnwkzhElxdbI5H4AyDv3FZcY+WzNoXfTMu2Dk0RvjGOnWm
+         YBkelAaMjExorFMALjwi73xeVzEu7oXEQZPtgieDNzhNIlFOD+VpBzIL2Wbr0i2s81hd
+         qPhDcp7uXj6ra7mafgukh28M1EXYsSicSsw3OYAxED+JdToRsp5ma5PtZJ/szAW8Lead
+         XlQT0LUM3vstQbZvkcMKyk+j5t2RKFL2RiblmdFbs2uWKZ8/O/h/Lak/EbYmm/jaEqMr
+         fUBNHzPN1ZK02NIDVrbhMFc9f7osE/8qT356PWsZddRdMfDZMc7cIqT3uLexmXwxaZMR
+         Bw4A==
+X-Forwarded-Encrypted: i=1; AJvYcCWdsZyWUqbNIR3vqgz5QyRCDBmtqxAEHvy1u7OyJ8QGkoAK2C4rSxp/xDEAo9Hud5/aNOw=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yws/cxZCdknZDhxRf9XaxhvrDY79Kj7nTF56Sr6wPfVffQMY8lx
+	oRJB/iSYDt5FNSRmj7d8a71jnG4XVm1Rv/t2QHkLOxY5fIYIhB8nmyjefLKQasM=
+X-Google-Smtp-Source: AGHT+IHyOQXstBZ/vgJqI3gYOTidc2uIM7hZ/h3P9ag32Q0XCBusk2SPUr0cj7hP+LUn4iRsjuZYeA==
+X-Received: by 2002:a05:6a21:e8f:b0:1cf:4458:8b0d with SMTP id adf61e73a8af0-1cf75ec54f8mr12394722637.11.1726309959601;
+        Sat, 14 Sep 2024 03:32:39 -0700 (PDT)
+Received: from C02F52LSML85.bytedance.net ([203.208.167.149])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-71944ab50cbsm788332b3a.53.2024.09.14.03.32.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 14 Sep 2024 03:32:39 -0700 (PDT)
+From: Feng zhou <zhoufeng.zf@bytedance.com>
+To: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	mykolal@fb.com,
+	shuah@kernel.org,
+	alan.maguire@oracle.com
+Cc: netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	yangzhenze@bytedance.com,
+	wangdongdong.6@bytedance.com,
+	zhoufeng.zf@bytedance.com
+Subject: [PATCH bpf-next v3 0/2] Fix bpf_get/setsockopt failed when TCP over IPv4 via INET6 API
+Date: Sat, 14 Sep 2024 18:32:24 +0800
+Message-Id: <20240914103226.71109-1-zhoufeng.zf@bytedance.com>
+X-Mailer: git-send-email 2.39.3 (Apple Git-146)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -101,153 +104,37 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-On Sat, 2024-09-14 at 16:40 +0800, Geliang Tang wrote:
-> Hi Martin, Andrii, Matt,
-> 
-> On Fri, 2024-09-13 at 17:41 -0700, Martin KaFai Lau wrote:
-> > On 9/13/24 1:57 PM, Andrii Nakryiko wrote:
-> > > > > > +__bpf_kfunc int bpf_iter_mptcp_subflow_new(struct
-> > > > > > bpf_iter_mptcp_subflow *it,
-> > > > > > +                                          struct
-> > > > > > mptcp_sock
-> > > > > > *msk)
-> > > > > > +{
-> > > > > > +       struct bpf_iter_mptcp_subflow_kern *kit = (void
-> > > > > > *)it;
-> > > > > > +
-> > > > > > +       kit->msk = msk;
-> > > > > > +       if (!msk)
-> > > > > > +               return -EINVAL;
-> > > > > > +
-> > > > > > +       kit->pos = &msk->conn_list;
-> > > > > > +       return 0;
-> > > > > > +}
-> > 
-> > [ ... ]
-> > 
-> > > > > >   BTF_KFUNCS_START(bpf_mptcp_sched_kfunc_ids)
-> > > > > > +BTF_ID_FLAGS(func, bpf_iter_mptcp_subflow_new)
-> > > > > 
-> > > > > I'm not 100% sure, but I suspect you might need to specify
-> > > > > KF_TRUSTED_ARGS here to ensure that `struct mptcp_sock *msk`
-> > > > > is
-> > > > > a
-> > 
-> > +1
-> 
-> So we must add KF_TRUSTED_ARGS flag, right?
-> 
-> > 
-> > > > > > @@ -241,6 +286,8 @@ static int __init
-> > > > > > bpf_mptcp_kfunc_init(void)
-> > > > > >          int ret;
-> > > > > > 
-> > > > > >          ret =
-> > > > > > register_btf_fmodret_id_set(&bpf_mptcp_fmodret_set);
-> > > > > > +       ret = ret ?:
-> > > > > > register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING,
-> > > > > > +
-> > > > > > &bpf_mptcp_sched_kfunc_set);
-> > 
-> > This cannot be used in tracing.
-> 
-> Actually, we don’t need to use mptcp_subflow bpf_iter in tracing.
-> 
-> We plan to use it in MPTCP BPF packet schedulers, which are not
-> tracing, but "struct_ops" types. And they work well with
-> KF_TRUSTED_ARGS flag in bpf_iter_mptcp_subflow_new:
-> 
-> BTF_ID_FLAGS(func, bpf_iter_mptcp_subflow_new, KF_ITER_NEW |
-> KF_TRUSTED_ARGS);
-> 
-> An example of the scheduler is:
-> 
-> SEC("struct_ops")
-> int BPF_PROG(bpf_first_get_subflow, struct mptcp_sock *msk,
->              struct mptcp_sched_data *data)
-> {
->         struct mptcp_subflow_context *subflow;
-> 
->         bpf_rcu_read_lock();
->         bpf_for_each(mptcp_subflow, subflow, msk) {
->                 mptcp_subflow_set_scheduled(subflow, true);
->                 break;
->         }
->         bpf_rcu_read_unlock();
-> 
->         return 0;
-> }
-> 
-> SEC(".struct_ops")
-> struct mptcp_sched_ops first = { 
->         .init           = (void *)mptcp_sched_first_init,
->         .release        = (void *)mptcp_sched_first_release,
->         .get_subflow    = (void *)bpf_first_get_subflow,
->         .name           = "bpf_first",
-> };
-> 
-> But BPF mptcp_sched_ops code has not been merged into bpf-next yet,
-> so
-> I simply test this bpf_for_each(mptcp_subflow) in tracing since I
-> noticed other bpf_iter selftests are using tracing too:
-> 
-> progs/iters_task.c
-> SEC("fentry.s/" SYS_PREFIX "sys_getpgid")
-> 
-> progs/iters_css.c
-> SEC("fentry.s/" SYS_PREFIX "sys_getpgid")
-> 
-> If this bpf_for_each(mptcp_subflow) can only be used in struct_ops, I
-> will try to move the selftest into a struct_ops.
-> 
-> > 
-> > Going back to my earlier question in v1. How is the msk->conn_list
-> > protected?
-> > 
-> 
-> msk->conn_list is protected by msk socket lock. (@Matt, am I right?)
-> We
-> use this in kernel code:
-> 
-> 	struct sock *sk = (struct sock *)msk;
-> 
-> 	lock_sock(sk);
-> 	kfunc(&msk->conn_list);
-> 	release_sock(sk);
-> 
-> If so, should we also use lock_sock/release_sock in
-> bpf_iter_mptcp_subflow_next()?
+From: Feng Zhou <zhoufeng.zf@bytedance.com>
 
-bpf_for_each(mptcp_subflow) is expected to be used in the get_subflow()
-interface of mptcp_sched_ops to traverse all subflows and then pick one
-subflow to send data. This interface is invoked in
-mptcp_sched_get_send(), here the msk socket lock is hold already:
+When TCP over IPv4 via INET6 API, sk->sk_family is AF_INET6, but it is a v4 pkt.
+inet_csk(sk)->icsk_af_ops is ipv6_mapped and use ip_queue_xmit. Some sockopt did
+not take effect, such as tos.
 
-int mptcp_sched_get_send(struct mptcp_sock *msk)
-{
-        struct mptcp_subflow_context *subflow;
-        struct mptcp_sched_data data;
+0001: Use sk_is_inet helper to fix it.
+0002: Setget_sockopt add a test for tcp over ipv4 via ipv6.
 
-        msk_owned_by_me(msk);
+Changelog:
+v2->v3: Addressed comments from Eric Dumazet
+- Use sk_is_inet() helper
+Details in here:
+https://lore.kernel.org/bpf/CANn89i+9GmBLCdgsfH=WWe-tyFYpiO27wONyxaxiU6aOBC6G8g@mail.gmail.com/T/
 
-	... ...
+v1->v2: Addressed comments from kernel test robot
+- Fix compilation error
+Details in here:
+https://lore.kernel.org/bpf/202408152058.YXAnhLgZ-lkp@intel.com/T/
 
-        mptcp_for_each_subflow(msk, subflow) {
-                if (READ_ONCE(subflow->scheduled))
-                        return 0;
-        }
+Feng Zhou (2):
+  bpf: Fix bpf_get/setsockopt to tos not take effect when TCP over IPv4
+    via INET6 API
+  selftests/bpf: Setget_sockopt add a test for tcp over ipv4 via ipv6
 
-        data.reinject = false;
-        if (msk->sched == &mptcp_sched_default || !msk->sched)
-                return mptcp_sched_default_get_subflow(msk, &data);
-        return msk->sched->get_subflow(msk, &data);
-}
+ net/core/filter.c                             |  7 +++-
+ .../selftests/bpf/prog_tests/setget_sockopt.c | 33 +++++++++++++++++++
+ .../selftests/bpf/progs/setget_sockopt.c      | 13 ++++++--
+ 3 files changed, 49 insertions(+), 4 deletions(-)
 
-So no need to hold msk socket lock again in BPF schedulers. This means
-we can walk the conn_list without any lock. bpf_rcu_read_lock() and
-bpf_rcu_read_unlock() can be dropped in BPF schedulers too. Am I right?
-
-Thanks,
--Geliang
+-- 
+2.30.2
 
 
