@@ -1,99 +1,114 @@
-Return-Path: <bpf+bounces-39886-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39887-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70AEF978D01
-	for <lists+bpf@lfdr.de>; Sat, 14 Sep 2024 05:10:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C9B3978DD1
+	for <lists+bpf@lfdr.de>; Sat, 14 Sep 2024 07:29:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A58CB285C2D
-	for <lists+bpf@lfdr.de>; Sat, 14 Sep 2024 03:10:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A766D1C22580
+	for <lists+bpf@lfdr.de>; Sat, 14 Sep 2024 05:29:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F16F1759F;
-	Sat, 14 Sep 2024 03:10:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38A8C179654;
+	Sat, 14 Sep 2024 05:26:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Cve48Wgn"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NTmTbFyc"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7F6B8462;
-	Sat, 14 Sep 2024 03:10:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99FD3171E76;
+	Sat, 14 Sep 2024 05:26:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726283429; cv=none; b=aaxEzm5Lo/slwVn9zVGl8cBqjIHIVzQhk5/WIyfiCyn7oSSApSeGC7Fm996wMtlTETi5YtUNG8HKTJ2RFDSVmyot6TUxkHWpbK7gCad8rM3rFinu8rQ8QH8nze24Eq/tEuSgqCiRAAgH5+TrK6iE7kp6Ol3vfT3G11hn2HHwk2s=
+	t=1726291566; cv=none; b=Rvv6NGvRrY1X3wvh/Wp1aI/qdmXYinAJHX4LfQGDSerP1PqMKPNRQZtKxNJz6UTJDyMskL4iaMGD0HVZodMitEHa5il29BLzsl8GGEAbz8//iERqVyHT1+ie9THBpDRVfvp3DmDjYqAX21PtFZISw5VfpJNyQeYDxcf9SczR3rY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726283429; c=relaxed/simple;
-	bh=DyEgc3d/VLDrSlr8tQW+qSGWD4Nni9C1Kv9VIi8oNpw=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=ur+YJYqj72B0L7gwLLAF4aCsqd0AOiB2hO90GczTHOf7D6c3TB+P65eeSh4tKMu9eiCAH1fY1wehvf5C0ZDVZZK5yXqgX1HSOGGEIBJP9RxCjl8PZe67OGmNg7TxN2zYFJpiCIYNQOq136Ti6ApSYA3y4OJCnYOYVY71xl57VzM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Cve48Wgn; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B17FC4CEC0;
-	Sat, 14 Sep 2024 03:10:29 +0000 (UTC)
+	s=arc-20240116; t=1726291566; c=relaxed/simple;
+	bh=SptWBzVXVMO961EGzmJjmAEgdxo1I93o+UdFRaq7ucE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=upYeUFOACZ/x/1x4IsppVElnbdIl3bPEY5Bj9GJScHjM3eZGBz6tJh+bvm7UPg1SKNeBt/Txb69jyssKs0/88S5XY/TNO6tPDHZ4XTzWqXVkxPhvG5iFGwt9khV6AWnqn4m96cBWf1ZXd2PcEbZELSTU+UsVZpEzTOA35f5We1s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NTmTbFyc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B04DC4CEC0;
+	Sat, 14 Sep 2024 05:26:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1726283429;
-	bh=DyEgc3d/VLDrSlr8tQW+qSGWD4Nni9C1Kv9VIi8oNpw=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=Cve48WgnXe4vwJT4UKVVv7wSXBjqhttPghwiZA+UlsBYmg3FneeInkpC052Fzg/xh
-	 2GPGp4qRxBDaYPGlwnnzmEIn9qiY0gsQ5TpS8iDIuuo8+jjjzsBlkwN46344tWRNFE
-	 uKbXaFjRX7CU3znNoKjcpgewi7Sngz7NHvglvhTnr95ggVWeQYlsAPePLLYez44gsV
-	 VfPrIqr3Vum+xIxJ1vE8iYFu160VwpKeMr3ovJwUir5iWs1dq7yXWjyWHgrbt29ZzF
-	 YCHUcI9VALX/eD2LF0Q/mqFu4GK7s+lydUNGpw2aXLxgGBsB46dDP/RCkkAtiPh7AB
-	 Vjhbb2gVN58/w==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EB2403806655;
-	Sat, 14 Sep 2024 03:10:31 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1726291566;
+	bh=SptWBzVXVMO961EGzmJjmAEgdxo1I93o+UdFRaq7ucE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=NTmTbFycChuNMeGaHfPrZmdAbuR5rxnULYrzBMhnfK/wtKHPS/qqAmyyZeXvpq76l
+	 OZDesFb/Fk8aDRwmHVHmxht5iPzLdXFYWxrDuI0SXIYok06vZ306PCyMjzvvqUDf66
+	 jXxrfS9f5Qa/rZ8RsooguQeIAbcuy3+v6JIAd0Er2ICI71PnPiIit071LMRh3rcLDn
+	 MXJRDmnFZSsT6cpRAjBIGeGwuoxk68peuSdB0Rp8SzX7sBu7hcdv274Uu2I5OPc39R
+	 R0jU03EkR3UXdLvoJ19RrVmRogZ13XJGk+U+hEcDgtZ1Qiwf6MugG7PEgY7htLmJXX
+	 0vCmtwSocQ+sw==
+Date: Sat, 14 Sep 2024 07:26:01 +0200
+From: Benjamin Tissoires <bentiss@kernel.org>
+To: Jiri Kosina <jikos@kernel.org>, 
+	Peter Hutterer <peter.hutterer@who-t.net>, Vicki Pfau <vi@endrift.com>, Shuah Khan <shuah@kernel.org>
+Cc: linux-input@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: (subset) [PATCH HID v2 00/11] HID: bpf: add a new hook to
+ control hid-generic
+Message-ID: <7al2grhs6qatjmxk2tft6widqfjwnklfljpppufy4ee62cehcy@peo2shxwyk5b>
+References: <20240910-hid-bpf-hid-generic-v2-0-083dfc189e97@kernel.org>
+ <172623473588.1192461.11090201509053454593.b4-ty@kernel.org>
+ <etbeblypdylnngwuwjfqkmkduk4iup7uq4c5zkwrssoi6u7jvg@gtf3gpzrloii>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2 1/3] btf: remove redundant CONFIG_BPF test in
- scripts/link-vmlinux.sh
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <172628343077.2438539.18220678074751617298.git-patchwork-notify@kernel.org>
-Date: Sat, 14 Sep 2024 03:10:30 +0000
-References: <20240913173759.1316390-1-masahiroy@kernel.org>
-In-Reply-To: <20240913173759.1316390-1-masahiroy@kernel.org>
-To: Masahiro Yamada <masahiroy@kernel.org>
-Cc: martin.lau@linux.dev, bpf@vger.kernel.org, andrii@kernel.org,
- linux-kernel@vger.kernel.org, nathan@kernel.org, alan.maguire@oracle.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <etbeblypdylnngwuwjfqkmkduk4iup7uq4c5zkwrssoi6u7jvg@gtf3gpzrloii>
 
-Hello:
-
-This series was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
-
-On Sat, 14 Sep 2024 02:37:52 +0900 you wrote:
-> CONFIG_DEBUG_INFO_BTF depends on CONFIG_BPF_SYSCALL, which in turn
-> selects CONFIG_BPF.
+On Sep 13 2024, Benjamin Tissoires wrote:
+> On Sep 13 2024, Benjamin Tissoires wrote:
+> > On Tue, 10 Sep 2024 23:43:36 +0900, Benjamin Tissoires wrote:
+> > > This is a slight change from the fundamentals of HID-BPF.
+> > > In theory, HID-BPF is abstract to the kernel itself, and makes
+> > > only changes at the HID level (through report descriptors or
+> > > events emitted to/from the device).
+> > > 
+> > > However, we have seen a few use cases where HID-BPF might interact with
+> > > the running kernel when the target device is already handled by a
+> > > specific device.
+> > > 
+> > > [...]
+> > 
+> > Applied to hid/hid.git (for-6.12/bpf), thanks!
+> > 
+> > [01/11] HID: bpf: move HID-BPF report descriptor fixup earlier
+> >         https://git.kernel.org/hid/hid/c/f10a11b7b599
+> > [02/11] HID: core: save one kmemdup during .probe()
+> >         https://git.kernel.org/hid/hid/c/6941754dbbc7
+> > [03/11] HID: core: remove one more kmemdup on .probe()
+> >         https://git.kernel.org/hid/hid/c/4fe29f36d2a3
+> > [04/11] HID: bpf: allow write access to quirks field in struct hid_device
+> >         https://git.kernel.org/hid/hid/c/b722f588adc6
+> > [05/11] selftests/hid: add dependency on hid_common.h
+> >         https://git.kernel.org/hid/hid/c/3d816765e12e
+> > [06/11] selftests/hid: cleanup C tests by adding a common struct uhid_device
+> >         https://git.kernel.org/hid/hid/c/28023a0f99d1
+> > [07/11] selftests/hid: allow to parametrize bus/vid/pid/rdesc on the test device
+> >         https://git.kernel.org/hid/hid/c/10d3147f9bb1
+> > [08/11] HID: add per device quirk to force bind to hid-generic
+> >         https://git.kernel.org/hid/hid/c/d030f826ea47
+> > [09/11] selftests/hid: add test for assigning a given device to hid-generic
+> >         https://git.kernel.org/hid/hid/c/10929078201f
+> > 
 > 
-> When CONFIG_DEBUG_INFO_BTF=y, CONFIG_BPF=y is always met.
+> Just for completeness, I've dropped 10/11 and 11/11 when applying the
+> series because even if they are working it's unclear if the use case is
+> rock solid, like the first one is.
 > 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-> 
-> [...]
+> The patches are still on the LKML, so if anyone believes they required
+> it, we can alwasy pull them in later.
 
-Here is the summary with links:
-  - [v2,1/3] btf: remove redundant CONFIG_BPF test in scripts/link-vmlinux.sh
-    https://git.kernel.org/bpf/bpf-next/c/c980dc9c67a9
-  - [v2,2/3] btf: move pahole check in scripts/link-vmlinux.sh to lib/Kconfig.debug
-    https://git.kernel.org/bpf/bpf-next/c/42450f7a9086
-  - [v2,3/3] btf: require pahole 1.21+ for DEBUG_INFO_BTF with default DWARF version
-    https://git.kernel.org/bpf/bpf-next/c/5277d130947b
+And I just dropped them from for-next, I had some KASAN issues in the
+testsuite, meaning that something is off in the memory allocation/free.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Cheers,
+Benjamin
 
