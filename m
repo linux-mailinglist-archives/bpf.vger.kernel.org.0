@@ -1,114 +1,122 @@
-Return-Path: <bpf+bounces-39901-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39902-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64A949790CB
-	for <lists+bpf@lfdr.de>; Sat, 14 Sep 2024 14:53:36 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5FBB979107
+	for <lists+bpf@lfdr.de>; Sat, 14 Sep 2024 15:37:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 91A391C218A2
-	for <lists+bpf@lfdr.de>; Sat, 14 Sep 2024 12:53:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 56EC3B225C6
+	for <lists+bpf@lfdr.de>; Sat, 14 Sep 2024 13:37:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A8E91CF5F1;
-	Sat, 14 Sep 2024 12:53:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F7BE1CFEA2;
+	Sat, 14 Sep 2024 13:37:06 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B60021CEE8B
-	for <bpf@vger.kernel.org>; Sat, 14 Sep 2024 12:53:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11F361993B0
+	for <bpf@vger.kernel.org>; Sat, 14 Sep 2024 13:37:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726318408; cv=none; b=k0VlMYAxtri6zE8fIeZ5Sx0dwFXmOSVh1Pi9it/jKATqs4X5GCO2IIzBgYIlwJaVnXzDKHL4FPQXtCJgSHCG3Q62Jd6K+LZ//SKGOLD7hldCpGwvxawRQDoA96mSBSaSx1Hq6yt45ZzaLcrH4YcLfXpaBT3j4iOO7BrIQ1j+o+s=
+	t=1726321026; cv=none; b=Ub8wowuz8WNs/h+hLPnvZ5y9L3/X20nVfWRl8n2U3BLQOyOoqr7mSJYbTcEDhUPtJuX2JJMa2AXBfFxh4ilSK8ZhLfeE+uWZ/ZMvIPy/ssGCJ7548eUefO1X8lYmYdH/oR5361mh5J+A1cxiVTmEWq2nfJwLhvwRye+OGvl0DpE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726318408; c=relaxed/simple;
-	bh=x1c/B9JEwm9g84doycaGXlC6PcXPJ3MueHEJYFHIOPw=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=WVNrS9i1orJ4k44WX0++wu6ncmQu0MdmTdbhO/S20kzl1R/X5zovQ4mb8BiGNCI+470npBnLMgvdvHw35pWLWqv3PEKwh9g/C/sF4UNZ9QVNPVqX8b3hsW2WrNTxcDBYXOfariAb5STTIWcrb+yvXLg9oNh+7A4CKg3pWB8dbvA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3a04bf03b1aso71842985ab.1
-        for <bpf@vger.kernel.org>; Sat, 14 Sep 2024 05:53:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726318406; x=1726923206;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=P0IaeqC0xzTKfLcN35IGn0kAeoUdvSRjq4JfhcPM5Uk=;
-        b=VB6IRMHmaCKdg7TlGkdWE8VYSoMOzpsObY9694EsN16nouwdV2hA+3M/8v6lw/GFeM
-         PvT+t+QhF/WuYiL3YGPRWhUXAGyLpVY2uxLHpq97Jv7dNZgwFV3TaBl8QvBiL/4/wFvy
-         kFaiHxhIOtlifE/OfCaCoZcWZvUKySHoO1Wq3vzuSrBKS3R2d+YGD0IsA/RomFgAH7GA
-         I2D+MnaV9WZqRJRdCEbDy6OC732pG4bIUm7lUdqEtGEaf5eYneDi9BV0P9ZXuomWK71w
-         MR41/XKY2V7aXPKPSYC94T9pVQimn4JgwHiL8IJokawC5sQJYSqkjs3ewiNICrB5ylzu
-         X1CA==
-X-Forwarded-Encrypted: i=1; AJvYcCW8+oApHIBE/w+OpRi9zwy8+YHwybrVxePSLraUUctdOinncFHet2Uu6ulZT4C/dQbq1Zs=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxbEipqfH23eAH1j+BEBRRrh/w612YOxZvlEIr9Yp4AhXnG6CG4
-	v10MhsD4veXxVK8S6WdcvJyFng19YyvDcjj4mDTrRo1s/fyehgOUwMsdh1fJfkhed7AlU1sRbNB
-	lgOnI28fajODzGj+8JewgspoJGN5Bi/jB/E70+MlHhx0DrNNTFTx+saw=
-X-Google-Smtp-Source: AGHT+IHUvMWY5osWpQCXP6DIiRrQsd6q7ToBzRZ7Azunv0aziNlR2h7wY8X0/TeDUwAboqJiREUQZMWa7WIhr5d5ms7mJYrFcrAP
+	s=arc-20240116; t=1726321026; c=relaxed/simple;
+	bh=3dSIdK5seyPK72CLXSK5qfh+89ibrollUZuYT54QfVw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=rF/YrkJj1SEIwWxqYUzgwibL+uzziVdXmXws5HlDliYyWPo0XQ9iH7eEPgXRg01lVj98kX4mwhwHyci2GuuC1DcTYnebgWSoTXsZvslBXBhUKcc12nMnIW6/41NynvC+QBEWu5EibLFsfyQJp6d6zRFIIRGxX4Z41FqoAc9X84I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4X5XJq5kYrz4f3jXc
+	for <bpf@vger.kernel.org>; Sat, 14 Sep 2024 21:36:43 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 6696E1A018D
+	for <bpf@vger.kernel.org>; Sat, 14 Sep 2024 21:36:59 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.124.27])
+	by APP4 (Coremail) with SMTP id gCh0CgDHR8R3keVmnUI4BQ--.14337S4;
+	Sat, 14 Sep 2024 21:36:57 +0800 (CST)
+From: Hou Tao <houtao@huaweicloud.com>
+To: bpf@vger.kernel.org
+Cc: Martin KaFai Lau <martin.lau@linux.dev>,
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Hao Luo <haoluo@google.com>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Jiri Olsa <jolsa@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Amery Hung <amery.hung@bytedance.com>,
+	Dave Marchevsky <davemarchevsky@fb.com>,
+	houtao1@huawei.com,
+	xukuohai@huawei.com
+Subject: [PATCH bpf v2 0/2] Check the remaining info_cnt before repeating btf fields
+Date: Sat, 14 Sep 2024 21:37:01 +0800
+Message-Id: <20240914133703.1920767-1-houtao@huaweicloud.com>
+X-Mailer: git-send-email 2.29.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:13a2:b0:39f:6180:afca with SMTP id
- e9e14a558f8ab-3a08491196bmr122016345ab.13.1726318405792; Sat, 14 Sep 2024
- 05:53:25 -0700 (PDT)
-Date: Sat, 14 Sep 2024 05:53:25 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000058c9de062213d3ad@google.com>
-Subject: [syzbot] Monthly bpf report (Sep 2024)
-From: syzbot <syzbot+list124fe6638bb6df321a31@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgDHR8R3keVmnUI4BQ--.14337S4
+X-Coremail-Antispam: 1UD129KBjvdXoW7GF1kXFyrKw4ktw17CFy8Krg_yoWkArXE9F
+	WFkr95WF48Z3ZrKFy0gFnaqFyDKrW8uryUJFyDA3sFkw1UZw4UGF4vkryrJryUXayDXr9x
+	CFsrCa9Yqr47ZjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbxkYFVCjjxCrM7AC8VAFwI0_Xr0_Wr1l1xkIjI8I6I8E6xAIw20E
+	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8IcVCY1x02
+	67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267
+	AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80
+	ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4
+	AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
+	14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWr
+	XwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
+	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0
+	s2-5UUUUU==
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-Hello bpf maintainers/developers,
+From: Hou Tao <houtao1@huawei.com>
 
-This is a 31-day syzbot report for the bpf subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/bpf
+Hi,
 
-During the period, 7 new issues were detected and 0 were fixed.
-In total, 45 issues are still open and 270 have been fixed so far.
+The patch set adds the missed check again info_cnt when flattening the
+array of nested struct. The problem was spotted when developing dynptr
+key support for hash map. Patch #1 adds the missed check and patch #2
+adds three success test cases and one failure test case for the problem.
 
-Some of the still happening issues:
+Comments are always welcome.
 
-Ref  Crashes Repro Title
-<1>  19833   Yes   possible deadlock in trie_delete_elem
-                   https://syzkaller.appspot.com/bug?extid=9d95beb2a3c260622518
-<2>  15949   Yes   KASAN: slab-out-of-bounds Read in btf_datasec_check_meta
-                   https://syzkaller.appspot.com/bug?extid=cc32304f6487ebff9b70
-<3>  9068    Yes   possible deadlock in task_fork_fair
-                   https://syzkaller.appspot.com/bug?extid=1a93ee5d329e97cfbaff
-<4>  1539    Yes   possible deadlock in __bpf_ringbuf_reserve
-                   https://syzkaller.appspot.com/bug?extid=850aaf14624dc0c6d366
-<5>  230     Yes   KMSAN: uninit-value in ___bpf_prog_run (4)
-                   https://syzkaller.appspot.com/bug?extid=853242d9c9917165d791
-<6>  155     Yes   possible deadlock in __queue_map_get
-                   https://syzkaller.appspot.com/bug?extid=8bdfc2c53fb2b63e1871
-<7>  132     No    possible deadlock in trie_update_elem
-                   https://syzkaller.appspot.com/bug?extid=ea624e536fee669a05cf
-<8>  50      Yes   possible deadlock in queue_stack_map_push_elem
-                   https://syzkaller.appspot.com/bug?extid=252bc5c744d0bba917e1
-<9>  49      Yes   INFO: rcu detected stall in sys_clone (8)
-                   https://syzkaller.appspot.com/bug?extid=c4c6c3dc10cc96bcf723
-<10> 44      Yes   possible deadlock in __stack_map_get
-                   https://syzkaller.appspot.com/bug?extid=dddd99ae26c656485d89
+Change Log:
+v2:
+ * patch #1: check info_cnt in btf_repeat_fields()
+ * patch #2: use a hard-coded number instead of BTF_FIELDS_MAX, because
+             BTF_FIELDS_MAX is not always available in vmlinux.h (e.g.,
+	     for llvm 17/18)
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+v1: https://lore.kernel.org/bpf/20240911110557.2759801-1-houtao@huaweicloud.com/T/#t
 
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
+Hou Tao (2):
+  bpf: Check the remaining info_cnt before repeating btf fields
+  selftests/bpf: Add more test case for field flattening
 
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
+ kernel/bpf/btf.c                              | 14 +++-
+ .../selftests/bpf/prog_tests/cpumask.c        |  1 +
+ .../selftests/bpf/progs/cpumask_common.h      |  5 ++
+ .../selftests/bpf/progs/cpumask_failure.c     | 35 +++++++++
+ .../selftests/bpf/progs/cpumask_success.c     | 78 ++++++++++++++++++-
+ 5 files changed, 127 insertions(+), 6 deletions(-)
 
-You may send multiple commands in a single email message.
+-- 
+2.29.2
+
 
