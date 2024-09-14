@@ -1,215 +1,246 @@
-Return-Path: <bpf+bounces-39897-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39898-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29573979008
-	for <lists+bpf@lfdr.de>; Sat, 14 Sep 2024 12:33:39 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 165BE97901E
+	for <lists+bpf@lfdr.de>; Sat, 14 Sep 2024 12:54:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4EB201C2215F
-	for <lists+bpf@lfdr.de>; Sat, 14 Sep 2024 10:33:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 897D91F2305F
+	for <lists+bpf@lfdr.de>; Sat, 14 Sep 2024 10:54:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52CD81CF5FC;
-	Sat, 14 Sep 2024 10:33:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FA2B1CEACC;
+	Sat, 14 Sep 2024 10:54:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="YRkBn9Ss"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="refMkUEC"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 263ED1CEAC3
-	for <bpf@vger.kernel.org>; Sat, 14 Sep 2024 10:32:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DD6A17CA1D
+	for <bpf@vger.kernel.org>; Sat, 14 Sep 2024 10:54:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726309979; cv=none; b=d46uZO8ZWMQBBbKQsA0pgK1jwcEm3WrtVBelcqAHvIp5Qv394fJl44WnvBVkREN2yvUJYt4TWxT6+HoG1XPI36sp2GvrfWDoq3IfHFC+neEQOn0uhnwfxkQo4TXcUzOYM3C3+87cdBggmRzA1J73Ftc2t6X82yb5DUs2Fq/qzsU=
+	t=1726311258; cv=none; b=XMQbbNeftJDqdxOE0Q6Ptq1ndImkQedUNW7wrZa1+Y1b1VvtmREp0rwrSWkEZZzLZgEz5JxsD3Vw6rfnrIgrh7kmUVpYLXLtOPsfklM5LwGfAdGNQR7+PteGIQ/4H3QF8TdUJrY/o3ftCQyAWCQ1g8iUPuuxe830DJzkUuH/ojc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726309979; c=relaxed/simple;
-	bh=m6tganteey5Zg+ZqOOxN3LGGrsmpJmws608jYsU4v9Q=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=eXXqSMzzxiQ7JYkjBiPM/ugZ3QCW81FjNsq2hqgNO62SJBLR18a/q8qJWFfPRriG8mTSUXvEFrYw6ndIsqkyEGva5BV8pSvq8vkMntuz6AudHDLDXwGqKEfA4z5M2DHMjron8EGiUA1pnMTEz8tVuCZdfgJ+btpEshJ9Ty2yT5E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=YRkBn9Ss; arc=none smtp.client-ip=209.85.210.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-7191ee537cbso2178391b3a.2
-        for <bpf@vger.kernel.org>; Sat, 14 Sep 2024 03:32:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1726309976; x=1726914776; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2wKJ6T8lzrG3Rgs6AhFQqgnkeWhWEchyLf0I6JJ+l9w=;
-        b=YRkBn9Ssnea4wzVsgFxbSa6SpUnr31dRWq86B8ztJytn/Zben3too/SnZLkaWpjD55
-         KPvjtuZ1xSRSVhEliXtzzLgYfMUz0CQRsrDBwxScQ3lqCCzkUDMhLQnAaWf3UwKp8y5a
-         IhZaQ2pKutl0fdD0cYKS/UyZ46OiWRafrp26utdmDy5CvsVBoCRm6i2i3n9WHf/jkzCp
-         /QkoJ7ZrRRe30lN03gEEC/zXO0pIsPcJWrbAlzbpy57kJEXpKF+dHDWRlLUzlZRULGms
-         qMzKnYfDSx0W2RvOpHMVlKrh96pvhHIwKK4Q1ux0OzFT6IOV/N2LXGVSxy9zG1zKZsDG
-         U4Cg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726309976; x=1726914776;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2wKJ6T8lzrG3Rgs6AhFQqgnkeWhWEchyLf0I6JJ+l9w=;
-        b=MGa24zWtjGv9gczbItbZlqUYvoMlOXnfB1gR0o/HGJSwUt37ul9RhuR/vAnB3/Dz5W
-         6ayvarnMeQ0qBhcXwCA79261ApnbzgVHldUZF0PLKVjZDfWU2aLYAKiRB22d+5dMB28z
-         XefHeVqYwaWGq5HR77ITQV4AVnFcwDv6VMUUE7kxwDYKSx1rmVTXkRGvZa1LZAOnsfqB
-         sCE1VX/K9SnqQaY5ChynM8f58gAI4zuKW/1A1TX76hzqntGTDNJ69Cv7iwpvxmD9ReQ0
-         XuP3lz1thSwIcA+HL5T63jrdhS8Ir4dqKDdtPm3VIoTgnS7TkouFiY96wyiq2HLL7gja
-         +V8g==
-X-Forwarded-Encrypted: i=1; AJvYcCVdecuR5+zFHZYbAKdFbwmEK8S6+ibWAue8IykJWMMplof7LNXnamm6L+CFvAPZL8yiHAs=@vger.kernel.org
-X-Gm-Message-State: AOJu0YybnN2hzBw8kVihQotLY4C5Z+lUTF4yoXtvsa1dojfLx3AjoFTf
-	kg3STy8v480Om3U0jWCcxNFoC82pIhGi3Yu8NJg4BxQYYpWFExv6RGG6FM0eVXU=
-X-Google-Smtp-Source: AGHT+IF8FZ62F3t14kxbTqWQfHm1EgOf2TO1sWKDgesgw76UlXpQC6XKw5Ig4N3rdi4YJTYevfZbNg==
-X-Received: by 2002:a05:6a00:812:b0:70d:1b48:e362 with SMTP id d2e1a72fcca58-719262065e5mr13240001b3a.26.1726309976169;
-        Sat, 14 Sep 2024 03:32:56 -0700 (PDT)
-Received: from C02F52LSML85.bytedance.net ([203.208.167.149])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-71944ab50cbsm788332b3a.53.2024.09.14.03.32.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 14 Sep 2024 03:32:55 -0700 (PDT)
-From: Feng zhou <zhoufeng.zf@bytedance.com>
-To: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	mykolal@fb.com,
-	shuah@kernel.org,
-	alan.maguire@oracle.com
-Cc: netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	yangzhenze@bytedance.com,
-	wangdongdong.6@bytedance.com,
-	zhoufeng.zf@bytedance.com
-Subject: [PATCH bpf-next v3 2/2] selftests/bpf: Setget_sockopt add a test for tcp over ipv4 via ipv6
-Date: Sat, 14 Sep 2024 18:32:26 +0800
-Message-Id: <20240914103226.71109-3-zhoufeng.zf@bytedance.com>
-X-Mailer: git-send-email 2.39.3 (Apple Git-146)
-In-Reply-To: <20240914103226.71109-1-zhoufeng.zf@bytedance.com>
-References: <20240914103226.71109-1-zhoufeng.zf@bytedance.com>
+	s=arc-20240116; t=1726311258; c=relaxed/simple;
+	bh=7m/stVyb+5mVPAroEs00KIzk7Tm/JggDRFLvobm5C7A=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=M0e8bO+jcx2M+GQIta4sZRcrC/4La+sozdLI1+ucDAsffm11keK9gFM1k7syvBlrwFLVMVi2ybd4m6dX9BXuBAzB8PyrXpe/7SQDWBRhqBq8iVhfnJsx3bgC52C/KXUMnbTQeIeYzMEZwr9HkhYuD1cNygWmxPFof2V30IrAF7s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=refMkUEC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78FBEC4CEC0;
+	Sat, 14 Sep 2024 10:54:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1726311258;
+	bh=7m/stVyb+5mVPAroEs00KIzk7Tm/JggDRFLvobm5C7A=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=refMkUECzoLa6waav+UHnodS7ROgtq08ND3730zibkQN/TlBm176USC+33Foo2idx
+	 dUUcbAMbMKFWjCTDADGaOu+eWMMIVRyAftUZtQwsgxuKUlMtFFt7HTm334FHJKo8ik
+	 aNeQTOmfKpic7Gh/TDSStoYc28e+avMqJUjne+mtXjsnp7D1MxnCPJ4ocSrKMv00gY
+	 nS9KLASN0hgaCfLnWK9ZJ041/RGIbFOeGReTXhJyHqVZAccrkyZgZzeejBvbbvX7eK
+	 HNX7v8WL48CSqNvajgHTgfJxO4TkcBgDSW26ytFFv0fyGLu1pERL64daLl5kzX75rI
+	 OdDi2qhgYGXVw==
+From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+To: Ihor Solodrai <ihor.solodrai@pm.me>
+Cc: andrii.nakryiko@gmail.com, bpf@vger.kernel.org, ast@kernel.org,
+ eddyz87@gmail.com, daniel@iogearbox.net, mykolal@fb.com, Anders Roxell
+ <anders.roxell@linaro.org>, patchwork-bot+netdevbpf@kernel.org
+Subject: Re: [PATCH bpf-next v4] selftests/bpf: use auto-dependencies for
+ test objects
+In-Reply-To: <Q3BN2kW9Kgy6LkrDOwnyY4Pv7_YF8fInLCd2_QA3LimKYM3wD64kRdnwp7blwG2dI_s7UGnfUae-4_dOmuTrxpYCi32G_KTzB3PfmxIerH8=@pm.me>
+References: <VJihUTnvtwEgv_mOnpfy7EgD9D2MPNoHO-MlANeLIzLJPGhDeyOuGKIYyKgk0O6KPjfM-MuhtvPwZcngN8WFqbTnTRyCSMc2aMZ1ODm1T_g=@pm.me>
+ <172141323037.13293.5496223993427449959.git-patchwork-notify@kernel.org>
+ <877cbfwqre.fsf@all.your.base.are.belong.to.us>
+ <Q3BN2kW9Kgy6LkrDOwnyY4Pv7_YF8fInLCd2_QA3LimKYM3wD64kRdnwp7blwG2dI_s7UGnfUae-4_dOmuTrxpYCi32G_KTzB3PfmxIerH8=@pm.me>
+Date: Sat, 14 Sep 2024 12:54:14 +0200
+Message-ID: <87seu2a4kp.fsf@all.your.base.are.belong.to.us>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-From: Feng Zhou <zhoufeng.zf@bytedance.com>
+Ihor Solodrai <ihor.solodrai@pm.me> writes:
 
-This patch adds a test for TCP over IPv4 via INET6 API.
+> On Friday, September 13th, 2024 at 7:51 AM, Bj=C3=B6rn T=C3=B6pel <bjorn@=
+kernel.org> wrote:
+>
+>> I'm getting some build regressions for out-of-tree selftest build with
+>> this patch on bpf-next/master. I'm building the selftests from the
+>> selftest root, typically:
+>>=20
+>> make O=3D/output/foo SKIP_TARGETS=3D"" \
+>> KSFT_INSTALL_PATH=3D/output/foo/kselftest \
+>> -C tools/testing/selftests install
+>>=20
+>> and then package the whole output kselftest directory, and use that to
+>> populate the DUT.
+>>=20
+>> Reverting this patch, resolves the issues.
+>>=20
+>> Two issues:
+>>=20
+>> 1. The install target fails, resulting in many test scripts not copied
+>> to the install directory (e.g. test_kmod.sh).
+>> 2. Building "all" target fails the second time.
+>>=20
+>> To reproduce, do the following:
+>>=20
+>> Pre-requisite
+>> Build the kernel for yourfavorite arch -- my is RISC-V at moment ;-)
+>>=20
+>> make O=3D/output/foo defconfig
+>> make O=3D/output/foo kselftest-merge
+>> make O=3D/output/foo
+>> make O=3D/output/foo headers
+>>=20
+>> 1. Install fail
+>> make O=3D/output/foo TARGETS=3Dbpf SKIP_TARGETS=3D"" \
+>> KSFT_INSTALL_PATH=3D/output/foo/kselftest \
+>> -C tools/testing/selftests install
+>>=20
+>> 2. Build "all" fails the second time
+>> make O=3D/output/foo TARGETS=3Dbpf SKIP_TARGETS=3D"" \
+>> KSFT_INSTALL_PATH=3D/output/foo/kselftest \
+>> -C tools/testing/selftests
+>>=20
+>> make O=3D/output/foo TARGETS=3Dbpf SKIP_TARGETS=3D"" \
+>> KSFT_INSTALL_PATH=3D/output/foo/kselftest \
+>> -C tools/testing/selftests
+>>=20
+>>=20
+>> Any ideas on a workaround?
+>
+> Hi Bj=C3=B6rn.
+>
+> I was able to reproduce the problem on bpf-next/master.
+>
+> I found that in commit
+> https://git.kernel.org/bpf/bpf-next/c/f957c230e173 [1] the file
+> tools/testing/selftests/bpf/test_skb_cgroup_id.sh was deleted, but not
+> removed from the TEST_PROGS list in tools/testing/selftests/bpf/Makefile
+>
+> Because of that rsync command (invoked by install target) fails:
+>
+>     rsync: [sender] link_stat "/opt/linux/tools/testing/selftests/bpf/tes=
+t_skb_cgroup_id.sh" failed: No such file or directory (2)
+>     rsync error: some files/attrs were not transferred (see previous erro=
+rs) (code 23) at main.c(1333) [sender=3D3.2.3]
+>     make[1]: *** [../lib.mk:175: install] Error 23
+>     make[1]: Leaving directory '/opt/linux/tools/testing/selftests/bpf'
+>     make: *** [Makefile:259: install] Error 2
+>     make: Leaving directory '/opt/linux/tools/testing/selftests'
+>
+>
+> After I removed test_skb_cgroup_id.sh from TEST_PROGS list, the
+> install target completed successfully.
+>
+> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftes=
+ts/bpf/Makefile
+> index f04af11df8eb..df75f1beb731 100644
+> --- a/tools/testing/selftests/bpf/Makefile
+> +++ b/tools/testing/selftests/bpf/Makefile
+> @@ -132,7 +132,6 @@ TEST_PROGS :=3D test_kmod.sh \
+>         test_tunnel.sh \
+>         test_lwt_seg6local.sh \
+>         test_lirc_mode2.sh \
+> -       test_skb_cgroup_id.sh \
+>         test_flow_dissector.sh \
+>         test_xdp_vlan_mode_generic.sh \
+>         test_xdp_vlan_mode_native.sh \
+>
+> Could you please check on your side if this helps? Maybe there are
+> other issues.
 
-Signed-off-by: Feng Zhou <zhoufeng.zf@bytedance.com>
----
- .../selftests/bpf/prog_tests/setget_sockopt.c | 33 +++++++++++++++++++
- .../selftests/bpf/progs/setget_sockopt.c      | 13 ++++++--
- 2 files changed, 43 insertions(+), 3 deletions(-)
+I don't even get that far in the "install" target. When I revert the
+patch, I get to the issue you describe above (trying to install
+non-existing file).
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/setget_sockopt.c b/tools/testing/selftests/bpf/prog_tests/setget_sockopt.c
-index 7d4a9b3d3722..3cad92128e60 100644
---- a/tools/testing/selftests/bpf/prog_tests/setget_sockopt.c
-+++ b/tools/testing/selftests/bpf/prog_tests/setget_sockopt.c
-@@ -15,8 +15,11 @@
- 
- #define CG_NAME "/setget-sockopt-test"
- 
-+#define INT_PORT	8008
-+
- static const char addr4_str[] = "127.0.0.1";
- static const char addr6_str[] = "::1";
-+static const char addr6_any_str[] = "::";
- static struct setget_sockopt *skel;
- static int cg_fd;
- 
-@@ -67,6 +70,35 @@ static void test_tcp(int family)
- 	ASSERT_EQ(bss->nr_binddev, 2, "nr_bind");
- }
- 
-+static void test_tcp_over_ipv4_via_ipv6(void)
-+{
-+	struct setget_sockopt__bss *bss = skel->bss;
-+	int sfd, cfd;
-+
-+	memset(bss, 0, sizeof(*bss));
-+	skel->bss->test_tcp_over_ipv4_via_ipv6 = 1;
-+
-+	sfd = start_server(AF_INET6, SOCK_STREAM,
-+			   addr6_any_str, INT_PORT, 0);
-+	if (!ASSERT_GE(sfd, 0, "start_server"))
-+		return;
-+
-+	cfd = connect_to_addr_str(AF_INET, SOCK_STREAM, addr4_str, INT_PORT, NULL);
-+	if (!ASSERT_GE(cfd, 0, "connect_to_addr_str")) {
-+		close(sfd);
-+		return;
-+	}
-+	close(sfd);
-+	close(cfd);
-+
-+	ASSERT_EQ(bss->nr_listen, 1, "nr_listen");
-+	ASSERT_EQ(bss->nr_connect, 1, "nr_connect");
-+	ASSERT_EQ(bss->nr_active, 1, "nr_active");
-+	ASSERT_EQ(bss->nr_passive, 1, "nr_passive");
-+	ASSERT_EQ(bss->nr_socket_post_create, 2, "nr_socket_post_create");
-+	ASSERT_EQ(bss->nr_binddev, 2, "nr_bind");
-+}
-+
- static void test_udp(int family)
- {
- 	struct setget_sockopt__bss *bss = skel->bss;
-@@ -191,6 +223,7 @@ void test_setget_sockopt(void)
- 	test_udp(AF_INET);
- 	test_ktls(AF_INET6);
- 	test_ktls(AF_INET);
-+	test_tcp_over_ipv4_via_ipv6();
- 
- done:
- 	setget_sockopt__destroy(skel);
-diff --git a/tools/testing/selftests/bpf/progs/setget_sockopt.c b/tools/testing/selftests/bpf/progs/setget_sockopt.c
-index 60518aed1ffc..ff834d94dd23 100644
---- a/tools/testing/selftests/bpf/progs/setget_sockopt.c
-+++ b/tools/testing/selftests/bpf/progs/setget_sockopt.c
-@@ -20,6 +20,7 @@ int nr_connect;
- int nr_binddev;
- int nr_socket_post_create;
- int nr_fin_wait1;
-+int test_tcp_over_ipv4_via_ipv6;
- 
- struct sockopt_test {
- 	int opt;
-@@ -262,9 +263,15 @@ static int bpf_test_sockopt(void *ctx, struct sock *sk)
- 		if (n != ARRAY_SIZE(sol_ip_tests))
- 			return -1;
- 	} else {
--		n = bpf_loop(ARRAY_SIZE(sol_ipv6_tests), bpf_test_ipv6_sockopt, &lc, 0);
--		if (n != ARRAY_SIZE(sol_ipv6_tests))
--			return -1;
-+		if (test_tcp_over_ipv4_via_ipv6) {
-+			n = bpf_loop(ARRAY_SIZE(sol_ip_tests), bpf_test_ip_sockopt, &lc, 0);
-+			if (n != ARRAY_SIZE(sol_ip_tests))
-+				return -1;
-+		} else {
-+			n = bpf_loop(ARRAY_SIZE(sol_ipv6_tests), bpf_test_ipv6_sockopt, &lc, 0);
-+			if (n != ARRAY_SIZE(sol_ipv6_tests))
-+				return -1;
-+		}
- 	}
- 
- 	return 0;
--- 
-2.30.2
+Here's an excerpt from a failed "install":
 
+  |   BINARY   test_progs
+  |   BINARY   test_progs-no_alu32
+  |   BINARY   test_progs-cpuv4
+  | make[1]: Leaving directory '/home/bjorn/src/linux/linux/tools/testing/s=
+elftests/bpf'
+
+At this point the "all" target is complete; All good, and the "install"
+is started.=20
+
+  | mkdir -p /home/bjorn/output/foo/kselftest/kselftest
+  | install -m 744 kselftest/module.sh /home/bjorn/output/foo/kselftest/kse=
+lftest/
+  | install -m 744 kselftest/runner.sh /home/bjorn/output/foo/kselftest/kse=
+lftest/
+  | install -m 744 kselftest/prefix.pl /home/bjorn/output/foo/kselftest/kse=
+lftest/
+  | install -m 744 kselftest/ktap_helpers.sh /home/bjorn/output/foo/kselfte=
+st/kselftest/
+  | install -m 744 kselftest/ksft.py /home/bjorn/output/foo/kselftest/kself=
+test/
+  | install -m 744 run_kselftest.sh /home/bjorn/output/foo/kselftest/
+  | rm -f /home/bjorn/output/foo/kselftest/kselftest-list.txt
+
+This is from the top-level "tools/testing/selftests/Makefile", and we
+enter the BPF directory for "install".
+
+  | make[1]: Entering directory '/home/bjorn/src/linux/linux/tools/testing/=
+selftests/bpf'
+  |=20
+  | Auto-detecting system features:
+  | ...                                    llvm: [ OFF ]
+  |=20
+  |   LINK-BPF [test_progs] test_static_linked.bpf.o
+  |   LINK-BPF [test_progs] linked_funcs.bpf.o
+  |   LINK-BPF [test_progs] linked_vars.bpf.o
+  |   LINK-BPF [test_progs] linked_maps.bpf.o
+  |   LINK-BPF [test_progs] test_subskeleton.bpf.o
+  |   LINK-BPF [test_progs] test_subskeleton_lib.bpf.o
+  | ...
+  |   EXT-COPY [test_maps]
+  | make[1]: *** No rule to make target 'atomics.lskel.h', needed by '/home=
+/bjorn/output/foo/kselftest/bpf/atomics.test.o'.  Stop.
+  | make[1]: *** Waiting for unfinished jobs....
+  | make[1]: Leaving directory '/home/bjorn/src/linux/linux/tools/testing/s=
+elftests/bpf'
+  | make: *** [Makefile:259: install] Error 2
+  | make: Leaving directory '/home/bjorn/src/linux/linux/tools/testing/self=
+tests'
+
+...and for some reason the auto-dependencies decides to re-build, and
+fails.
+
+So, unfortunately it's something else related to your patch.
+
+A reproducer:
+  | $ docker run --rm -it --volume ${PWD}:/build/my-linux ghcr.io/linux-ris=
+cv/pw-builder bash -l
+  | # cd /build/my-linux
+  | # cat > ./build.sh <<EOF
+  | #!/bin/bash
+  | set -euo pipefail
+  |=20
+  | rm -rf /output/foo
+  | mkdir -p /output/foo
+  |=20
+  | export PATH=3D\$(echo \$PATH | tr : "\n"| grep -v ^/opt | tr "\n" :)
+  |=20
+  | make -j \$((\$(nproc)-1)) O=3D/output/foo defconfig
+  | make -j \$((\$(nproc)-1)) O=3D/output/foo kselftest-merge
+  | make -j \$((\$(nproc)-1)) O=3D/output/foo
+  | make -j \$((\$(nproc)-1)) O=3D/output/foo headers
+  | make -j \$((\$(nproc)-1)) O=3D/output/foo TARGETS=3Dbpf SKIP_TARGETS=3D=
+"" KSFT_INSTALL_PATH=3D/output/foo/kselftest -C tools/testing/selftests ins=
+tall
+  | EOF
+  |=20
+  | # chmod +x ./build.sh
+  | # ./build.sh
+
+
+Bj=C3=B6rn
 
