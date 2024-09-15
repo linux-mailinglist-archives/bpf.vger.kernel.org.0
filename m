@@ -1,246 +1,251 @@
-Return-Path: <bpf+bounces-39916-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39917-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id F02F49794A2
-	for <lists+bpf@lfdr.de>; Sun, 15 Sep 2024 06:47:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95ED39795DC
+	for <lists+bpf@lfdr.de>; Sun, 15 Sep 2024 11:09:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 36DCEB210A2
-	for <lists+bpf@lfdr.de>; Sun, 15 Sep 2024 04:47:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 471B61F2260A
+	for <lists+bpf@lfdr.de>; Sun, 15 Sep 2024 09:09:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2098C16415;
-	Sun, 15 Sep 2024 04:47:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FBB11C3F21;
+	Sun, 15 Sep 2024 09:09:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b="UngRAzTU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YMGT1Ck7"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-4316.protonmail.ch (mail-4316.protonmail.ch [185.70.43.16])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C99B1B85CD
-	for <bpf@vger.kernel.org>; Sun, 15 Sep 2024 04:47:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77AAF2232A;
+	Sun, 15 Sep 2024 09:09:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726375669; cv=none; b=WJ+VYjY8KXsN3R9OcJN2sl14MqmESTwAkfuo9kgVujP/RNSrqwqgZksAJGPI9oM7UnkOG5IEqrDl1e74S6w8ko6CH83VtPbEIW8hraHe9q+LIJtMGowksDaezx0t2h7NVh7r4mwrRATzr/xR6T5kanz9Ap87hiY7js10yi8bO0U=
+	t=1726391377; cv=none; b=IfyxbujA5Bap8c+1rXn4ENU7q63gw9Gjl0yUU6Ckbjet6jL4yrHp/vYvcYXT6thIqZ2iZtc4pPZ15SctcIARZYXYY903m+9d8BVq3j2NY1FpWQDTQrtYndmAVqQfuFybUgmD0HX3SppbEBUkhnl11pVw7LMReUZ5ruotc+bhdbA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726375669; c=relaxed/simple;
-	bh=4Ow+CTqUHx2vkfDMOJoEZJ6Ib0f8U4FB7OAUrHCzenM=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=bDK+bsehdotuOM3Mwi/e04zGuxivDbviU/YPgsr5CGoVevCZ7QeggNZqTl3E1bE2JpR8ENb9r/ZGabqGAaaBl46xN3eWZJ4tujHP+WhiFOTBzI31J7aDwSDGG3bOchFrUsEsU7FrqLqlfAkTlsa8bKI18XpiUj/Qthqn1WrL3DM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me; spf=pass smtp.mailfrom=pm.me; dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b=UngRAzTU; arc=none smtp.client-ip=185.70.43.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pm.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me;
-	s=protonmail3; t=1726375659; x=1726634859;
-	bh=67l83c4xFSPyJ5YMXi2veOdQO6Qoq51fJeJwi6EiGu0=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=UngRAzTUuvh6JVVsbB2xWX20jx6xVgIbMId4ASKK3paJPcu+SRNRrjWUgXgiiBk3o
-	 3oKSBXf10AbPa0i04Bf2gcYWwIcBIeQpAC0rYrKrOdkX8Js6n0fp/Z6oO8DmqxKzAf
-	 e5Pzac7vXNMgXcHxc/O0SZb8VJKiF2w6CpUgqWkKTiVe5y9SPokkoNDhJUhLUmQt6T
-	 p3L0QUWrR+UYVtbJJqyHnRxo0V1XC9CSobDj8Rx3PiIof8qybpnh/8n4PP8eI+nmS1
-	 aRHlpOq49u1eIZ5XIIK1BtnRewyCw7Xf0lDlmdXIg4mx9Q7kXypBZfP36J7SP2lGsB
-	 E11uwgW0oommw==
-Date: Sun, 15 Sep 2024 04:47:34 +0000
-To: =?utf-8?Q?Bj=C3=B6rn_T=C3=B6pel?= <bjorn@kernel.org>
-From: Ihor Solodrai <ihor.solodrai@pm.me>
-Cc: andrii.nakryiko@gmail.com, bpf@vger.kernel.org, ast@kernel.org, eddyz87@gmail.com, daniel@iogearbox.net, mykolal@fb.com, Anders Roxell <anders.roxell@linaro.org>, patchwork-bot+netdevbpf@kernel.org
-Subject: Re: [PATCH bpf-next v4] selftests/bpf: use auto-dependencies for test objects
-Message-ID: <CIjrhJwoIqMc2IhuppVqh4ZtJGbx8kC8rc9PHhAIU6RccnWT4I04F_EIr4GxQwxZe89McuGJlCnUk9UbkdvWtSJjAsd7mHmnTy9F8K2TLZM=@pm.me>
-In-Reply-To: <87seu2a4kp.fsf@all.your.base.are.belong.to.us>
-References: <VJihUTnvtwEgv_mOnpfy7EgD9D2MPNoHO-MlANeLIzLJPGhDeyOuGKIYyKgk0O6KPjfM-MuhtvPwZcngN8WFqbTnTRyCSMc2aMZ1ODm1T_g=@pm.me> <172141323037.13293.5496223993427449959.git-patchwork-notify@kernel.org> <877cbfwqre.fsf@all.your.base.are.belong.to.us> <Q3BN2kW9Kgy6LkrDOwnyY4Pv7_YF8fInLCd2_QA3LimKYM3wD64kRdnwp7blwG2dI_s7UGnfUae-4_dOmuTrxpYCi32G_KTzB3PfmxIerH8=@pm.me> <87seu2a4kp.fsf@all.your.base.are.belong.to.us>
-Feedback-ID: 27520582:user:proton
-X-Pm-Message-ID: 15083ee248842ec9b907ecdca99f70294cc0bcf6
+	s=arc-20240116; t=1726391377; c=relaxed/simple;
+	bh=PfG93IMfGk/tJFUBVfpKGNKl+KLnekwfT46OFqQ47a4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=dRxnIRKLc0Brse5RejvnnJEpepusk8ybiFObn0Qo9yb+0lMpOhuEsRHhUEVSp0k6EopmePWHu567g9z8/07X7X6SzYPiQ9a2t96bZvncNp7yQqPRhqrI+aGc90C60UrNYOEaQAp5o6H05MG8+PykJ50siH0OcZ83RDfoW0nRnhk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YMGT1Ck7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1C47C4CEC3;
+	Sun, 15 Sep 2024 09:09:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1726391377;
+	bh=PfG93IMfGk/tJFUBVfpKGNKl+KLnekwfT46OFqQ47a4=;
+	h=From:To:Cc:Subject:Date:From;
+	b=YMGT1Ck77inNk/C6Ps9aU23pSkZeeVPUfuhGObhKeKHSUx67/nneFBnHTzRVpFyIH
+	 m32hwAG50t4hsgJ/Zzj6zUaLoRzFazE0y+wVIZTlC5EtUObqSLSPua5EORIsQwItvD
+	 uHuhma2YfTvJwgCCwBjdTfEGYATMPO2P1YxGE7ZgxZPH7CqYQNkueEwqI27A4NyLXg
+	 +v14+6B/gAV4a7xaAYI8p7sHFneDhH77HkqAwf5bLquXFQxHONVZwXAfucGf7JuC8u
+	 Zw8prnVG+bG5/1udh6e0qZrn3UQDRoBohX0qA8QIwSsQg69TmkrjO+WB6n4vBRwBQc
+	 uxmidhIsAkVTQ==
+From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Florent Revest <revest@chromium.org>
+Cc: linux-trace-kernel@vger.kernel.org,
+	LKML <linux-kernel@vger.kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	bpf <bpf@vger.kernel.org>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Alan Maguire <alan.maguire@oracle.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Guo Ren <guoren@kernel.org>,
+	linux-arch@vger.kernel.org
+Subject: [PATCH v15 00/19] tracing: fprobe: function_graph: Multi-function graph and fprobe on fgraph
+Date: Sun, 15 Sep 2024 18:09:30 +0900
+Message-Id: <172639136989.366111.11359590127009702129.stgit@devnote2>
+X-Mailer: git-send-email 2.34.1
+User-Agent: StGit/0.19
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On Saturday, September 14th, 2024 at 3:54 AM, Bj=C3=B6rn T=C3=B6pel <bjorn@=
-kernel.org> wrote:
+Hi,
 
-[...]
+Here is the 15th version of the series to re-implement the fprobe on
+function-graph tracer. The previous version is;
 
-> >=20
-> > Could you please check on your side if this helps? Maybe there are
-> > other issues.
->=20
->=20
-> I don't even get that far in the "install" target. When I revert the
-> patch, I get to the issue you describe above (trying to install
-> non-existing file).
->=20
-> Here's an excerpt from a failed "install":
->=20
-> | BINARY test_progs
-> | BINARY test_progs-no_alu32
-> | BINARY test_progs-cpuv4
-> | make[1]: Leaving directory '/home/bjorn/src/linux/linux/tools/testing/s=
-elftests/bpf'
->=20
-> At this point the "all" target is complete; All good, and the "install"
-> is started.
->=20
-> | mkdir -p /home/bjorn/output/foo/kselftest/kselftest
-> | install -m 744 kselftest/module.sh /home/bjorn/output/foo/kselftest/kse=
-lftest/
-> | install -m 744 kselftest/runner.sh /home/bjorn/output/foo/kselftest/kse=
-lftest/
-> | install -m 744 kselftest/prefix.pl /home/bjorn/output/foo/kselftest/kse=
-lftest/
-> | install -m 744 kselftest/ktap_helpers.sh /home/bjorn/output/foo/kselfte=
-st/kselftest/
-> | install -m 744 kselftest/ksft.py /home/bjorn/output/foo/kselftest/kself=
-test/
-> | install -m 744 run_kselftest.sh /home/bjorn/output/foo/kselftest/
-> | rm -f /home/bjorn/output/foo/kselftest/kselftest-list.txt
->=20
-> This is from the top-level "tools/testing/selftests/Makefile", and we
-> enter the BPF directory for "install".
->=20
-> | make[1]: Entering directory '/home/bjorn/src/linux/linux/tools/testing/=
-selftests/bpf'
-> |
-> | Auto-detecting system features:
-> | ... llvm: [ OFF ]
-> |
-> | LINK-BPF [test_progs] test_static_linked.bpf.o
-> | LINK-BPF [test_progs] linked_funcs.bpf.o
-> | LINK-BPF [test_progs] linked_vars.bpf.o
-> | LINK-BPF [test_progs] linked_maps.bpf.o
-> | LINK-BPF [test_progs] test_subskeleton.bpf.o
-> | LINK-BPF [test_progs] test_subskeleton_lib.bpf.o
-> | ...
-> | EXT-COPY [test_maps]
-> | make[1]: *** No rule to make target 'atomics.lskel.h', needed by '/home=
-/bjorn/output/foo/kselftest/bpf/atomics.test.o'. Stop.
-> | make[1]: *** Waiting for unfinished jobs....
-> | make[1]: Leaving directory '/home/bjorn/src/linux/linux/tools/testing/s=
-elftests/bpf'
-> | make: *** [Makefile:259: install] Error 2
-> | make: Leaving directory '/home/bjorn/src/linux/linux/tools/testing/self=
-tests'
->=20
-> ...and for some reason the auto-dependencies decides to re-build, and
-> fails.
->=20
-> So, unfortunately it's something else related to your patch.
+https://lore.kernel.org/all/172615368656.133222.2336770908714920670.stgit@devnote2/
 
-Bj=C3=B6rn,
+This version rebased on Steve's calltime change[1] instead of the last
+patch in the previous series, and adds a bpf patch to add get_entry_ip()
+for arm64. Note that [1] is not included in this series, so please use
+the git branch[2].
 
-I think I figured out the cause of the issue, but some details and a
-proper solution are unclear yet.
+[1] https://lore.kernel.org/all/20240914214805.779822616@goodmis.org/
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/mhiramat/linux.git/log/?h=topic/fprobe-on-fgraph
 
-In generated %.test.d makefiles some dependencies (in particular
-%.skel.h) are referred to by filename as opposed to full path. For
-example:
+Overview
+--------
+This series rewrites the fprobe on this function-graph.
+The purposes of this change are;
 
-    $ cat /output/foo/kselftest/bpf/cpuv4/atomics.test.d
-    /output/foo/kselftest/bpf/cpuv4/atomics.test.o: \
-     /opt/linux/tools/testing/selftests/bpf/prog_tests/atomics.c \
-     [...]
-     /opt/linux/tools/testing/selftests/bpf/trace_helpers.h \
-     /opt/linux/tools/testing/selftests/bpf/testing_helpers.h atomics.lskel=
-.h \  # <-- THIS
-     /output/foo/kselftest/bpf/tools/include/bpf/skel_internal.h \
-     /output/foo/kselftest/bpf/tools/include/bpf/bpf.h
+ 1) Remove dependency of the rethook from fprobe so that we can reduce
+   the return hook code and shadow stack.
 
-This is of course a problem, because make needs to know how to build a
-target with this exact name. And in the patch it was (partially)
-solved by this piece:
+ 2) Make 'ftrace_regs' the common trace interface for the function
+   boundary.
 
-+# When the compiler generates a %.d file, only skel basenames (not
-+# full paths) are specified as prerequisites for corresponding %.o
-+# file. This target makes %.skel.h basename dependent on full paths,
-+# linking generated %.d dependency with actual %.skel.h files.
-+$(notdir %.skel.h): $(TRUNNER_OUTPUT)/%.skel.h
-+=09@true
+1) Currently we have 2(or 3) different function return hook codes,
+ the function-graph tracer and rethook (and legacy kretprobe).
+ But since this  is redundant and needs double maintenance cost,
+ I would like to unify those. From the user's viewpoint, function-
+ graph tracer is very useful to grasp the execution path. For this
+ purpose, it is hard to use the rethook in the function-graph
+ tracer, but the opposite is possible. (Strictly speaking, kretprobe
+ can not use it because it requires 'pt_regs' for historical reasons.)
 
-This links %.skel.h to /output/foo/kselftest/bpf/no_alu32/%.skel.h and alik=
-e.
+2) Now the fprobe provides the 'pt_regs' for its handler, but that is
+ wrong for the function entry and exit. Moreover, depending on the
+ architecture, there is no way to accurately reproduce 'pt_regs'
+ outside of interrupt or exception handlers. This means fprobe should
+ not use 'pt_regs' because it does not use such exceptions.
+ (Conversely, kprobe should use 'pt_regs' because it is an abstract
+  interface of the software breakpoint exception.)
 
-Your build is breaking because there is no such rule for
-%.lskel.h and %.subskel.h, which are trivial to add:
+This series changes fprobe to use function-graph tracer for tracing
+function entry and exit, instead of mixture of ftrace and rethook.
+Unlike the rethook which is a per-task list of system-wide allocated
+nodes, the function graph's ret_stack is a per-task shadow stack.
+Thus it does not need to set 'nr_maxactive' (which is the number of
+pre-allocated nodes).
+Also the handlers will get the 'ftrace_regs' instead of 'pt_regs'.
+Since eBPF mulit_kprobe/multi_kretprobe events still use 'pt_regs' as
+their register interface, this changes it to convert 'ftrace_regs' to
+'pt_regs'. Of course this conversion makes an incomplete 'pt_regs',
+so users must access only registers for function parameters or
+return value. 
 
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -628,6 +628,12 @@ $(TRUNNER_BPF_SKELS_LINKED): $(TRUNNER_OUTPUT)/%: $$$$=
-(%-deps) $(BPFTOOL) | $(TR
- $(notdir %.skel.h): $(TRUNNER_OUTPUT)/%.skel.h
-        @true
-=20
-+$(notdir %.lskel.h): $(TRUNNER_OUTPUT)/%.lskel.h
-+       @true
-+
-+$(notdir %.subskel.h): $(TRUNNER_OUTPUT)/%.subskel.h
-+       @true
-+
- endif
+Design
+------
+Instead of using ftrace's function entry hook directly, the new fprobe
+is built on top of the function-graph's entry and return callbacks
+with 'ftrace_regs'.
 
-With this change a command below completed for me in the environment
-you shared:
+Since the fprobe requires access to 'ftrace_regs', the architecture
+must support CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS and
+CONFIG_HAVE_FTRACE_GRAPH_FUNC, which enables to call function-graph
+entry callback with 'ftrace_regs', and also
+CONFIG_HAVE_FUNCTION_GRAPH_FREGS, which passes the ftrace_regs to
+return_to_handler.
 
-     $ make -j \$((\$(nproc)-1)) O=3D/output/foo TARGETS=3Dbpf SKIP_TARGETS=
-=3D"" KSFT_INSTALL_PATH=3D/output/foo/kselftest -C tools/testing/selftests =
-install
+All fprobes share a single function-graph ops (means shares a common
+ftrace filter) similar to the kprobe-on-ftrace. This needs another
+layer to find corresponding fprobe in the common function-graph
+callbacks, but has much better scalability, since the number of
+registered function-graph ops is limited.
+
+In the entry callback, the fprobe runs its entry_handler and saves the
+address of 'fprobe' on the function-graph's shadow stack as data. The
+return callback decodes the data to get the 'fprobe' address, and runs
+the exit_handler.
+
+The fprobe introduces two hash-tables, one is for entry callback which
+searches fprobes related to the given function address passed by entry
+callback. The other is for a return callback which checks if the given
+'fprobe' data structure pointer is still valid. Note that it is
+possible to unregister fprobe before the return callback runs. Thus
+the address validation must be done before using it in the return
+callback.
+
+Download
+--------
+This series can be applied against the ftrace/for-next branch in
+linux-trace tree.
+
+This series can also be found below branch.
+
+https://git.kernel.org/pub/scm/linux/kernel/git/mhiramat/linux.git/log/?h=topic/fprobe-on-fgraph
+
+Thank you,
+
+---
+
+Masami Hiramatsu (Google) (19):
+      tracing: Add a comment about ftrace_regs definition
+      tracing: Rename ftrace_regs_return_value to ftrace_regs_get_return_value
+      function_graph: Pass ftrace_regs to entryfunc
+      function_graph: Replace fgraph_ret_regs with ftrace_regs
+      function_graph: Pass ftrace_regs to retfunc
+      fprobe: Use ftrace_regs in fprobe entry handler
+      fprobe: Use ftrace_regs in fprobe exit handler
+      tracing: Add ftrace_partial_regs() for converting ftrace_regs to pt_regs
+      tracing: Add ftrace_fill_perf_regs() for perf event
+      tracing/fprobe: Enable fprobe events with CONFIG_DYNAMIC_FTRACE_WITH_ARGS
+      bpf: Enable kprobe_multi feature if CONFIG_FPROBE is enabled
+      ftrace: Add CONFIG_HAVE_FTRACE_GRAPH_FUNC
+      fprobe: Rewrite fprobe on function-graph tracer
+      tracing: Fix function timing profiler to initialize hashtable
+      tracing/fprobe: Remove nr_maxactive from fprobe
+      selftests: ftrace: Remove obsolate maxactive syntax check
+      selftests/ftrace: Add a test case for repeating register/unregister fprobe
+      Documentation: probes: Update fprobe on function-graph tracer
+      bpf: Add get_entry_ip() for arm64
 
 
-What is a mystery to me is why this was not an issue for simple `make
--C tool/testing/selftests/bpf`. And also why in the environment I
-tried yesterday I didn't get the failure you're seeing.
+ Documentation/trace/fprobe.rst                     |   42 +
+ arch/arm64/Kconfig                                 |    2 
+ arch/arm64/include/asm/ftrace.h                    |   47 +
+ arch/arm64/kernel/asm-offsets.c                    |   12 
+ arch/arm64/kernel/entry-ftrace.S                   |   32 +
+ arch/arm64/kernel/ftrace.c                         |   20 +
+ arch/loongarch/Kconfig                             |    4 
+ arch/loongarch/include/asm/ftrace.h                |   32 -
+ arch/loongarch/kernel/asm-offsets.c                |   12 
+ arch/loongarch/kernel/ftrace_dyn.c                 |   10 
+ arch/loongarch/kernel/mcount.S                     |   17 -
+ arch/loongarch/kernel/mcount_dyn.S                 |   14 
+ arch/powerpc/Kconfig                               |    1 
+ arch/powerpc/include/asm/ftrace.h                  |   15 
+ arch/powerpc/kernel/trace/ftrace.c                 |    2 
+ arch/powerpc/kernel/trace/ftrace_64_pg.c           |   10 
+ arch/riscv/Kconfig                                 |    3 
+ arch/riscv/include/asm/ftrace.h                    |   43 +
+ arch/riscv/kernel/ftrace.c                         |   17 +
+ arch/riscv/kernel/mcount.S                         |   24 -
+ arch/s390/Kconfig                                  |    3 
+ arch/s390/include/asm/ftrace.h                     |   39 +
+ arch/s390/kernel/asm-offsets.c                     |    6 
+ arch/s390/kernel/mcount.S                          |    9 
+ arch/x86/Kconfig                                   |    4 
+ arch/x86/include/asm/ftrace.h                      |   37 +
+ arch/x86/kernel/ftrace.c                           |   50 +-
+ arch/x86/kernel/ftrace_32.S                        |   15 
+ arch/x86/kernel/ftrace_64.S                        |   17 -
+ include/linux/fprobe.h                             |   57 +-
+ include/linux/ftrace.h                             |  134 ++++
+ kernel/trace/Kconfig                               |   23 +
+ kernel/trace/bpf_trace.c                           |   83 ++-
+ kernel/trace/fgraph.c                              |   60 +-
+ kernel/trace/fprobe.c                              |  637 ++++++++++++++------
+ kernel/trace/ftrace.c                              |   10 
+ kernel/trace/trace.h                               |    6 
+ kernel/trace/trace_fprobe.c                        |  147 ++---
+ kernel/trace/trace_functions_graph.c               |   10 
+ kernel/trace/trace_irqsoff.c                       |    6 
+ kernel/trace/trace_probe_tmpl.h                    |    2 
+ kernel/trace/trace_sched_wakeup.c                  |    6 
+ kernel/trace/trace_selftest.c                      |   11 
+ lib/test_fprobe.c                                  |   51 --
+ samples/fprobe/fprobe_example.c                    |    4 
+ .../test.d/dynevent/add_remove_fprobe_repeat.tc    |   19 +
+ .../ftrace/test.d/dynevent/fprobe_syntax_errors.tc |    4 
+ 47 files changed, 1195 insertions(+), 614 deletions(-)
+ create mode 100644 tools/testing/selftests/ftrace/test.d/dynevent/add_remove_fprobe_repeat.tc
 
-Do you happen to have a Dockerfile of ghcr.io/linux-riscv/pw-builder ?
-If possible, I'd like to look at it and compare with my local
-environment.
-
-The other issue that I'll have to think about is the unnecessary
-re-builds that you've noticed. I suspect this happens due to the same
-reason: a generated dependency on X.skel.h can't find a file in
-current directory (because it was put to /output/foo), and so rebuild
-is triggered. I'll have to come up with a workaround.
-
-
-Bj=C3=B6rn, please try a change suggested above and let me know if it helps=
-.
-
-I will investigate these problems more, and there will definitely be a
-follow up patch.
-
-Thank you for reporting.
-
->=20
-> A reproducer:
-> | $ docker run --rm -it --volume ${PWD}:/build/my-linux ghcr.io/linux-ris=
-cv/pw-builder bash -l
-> | # cd /build/my-linux
-> | # cat > ./build.sh <<EOF
->=20
-> | #!/bin/bash
-> | set -euo pipefail
-> |
-> | rm -rf /output/foo
-> | mkdir -p /output/foo
-> |
-> | export PATH=3D\$(echo \$PATH | tr : "\n"| grep -v ^/opt | tr "\n" :)
-> |
-> | make -j \$((\$(nproc)-1)) O=3D/output/foo defconfig
-> | make -j \$((\$(nproc)-1)) O=3D/output/foo kselftest-merge
-> | make -j \$((\$(nproc)-1)) O=3D/output/foo
-> | make -j \$((\$(nproc)-1)) O=3D/output/foo headers
-> | make -j \$((\$(nproc)-1)) O=3D/output/foo TARGETS=3Dbpf SKIP_TARGETS=3D=
-"" KSFT_INSTALL_PATH=3D/output/foo/kselftest -C tools/testing/selftests ins=
-tall
-> | EOF
-> |
-> | # chmod +x ./build.sh
-> | # ./build.sh
-
-And thank you for a reproducer, very helpful.
-
+--
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
