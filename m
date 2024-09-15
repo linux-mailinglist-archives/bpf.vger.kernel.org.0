@@ -1,393 +1,263 @@
-Return-Path: <bpf+bounces-39937-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39938-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9DABF97966C
-	for <lists+bpf@lfdr.de>; Sun, 15 Sep 2024 13:23:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0822F9796C0
+	for <lists+bpf@lfdr.de>; Sun, 15 Sep 2024 15:00:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 10C721F21B5F
-	for <lists+bpf@lfdr.de>; Sun, 15 Sep 2024 11:23:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 89A8F1F2137C
+	for <lists+bpf@lfdr.de>; Sun, 15 Sep 2024 13:00:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B2E51C463E;
-	Sun, 15 Sep 2024 11:22:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9FBF1C57B8;
+	Sun, 15 Sep 2024 13:00:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="V6dcpZQW"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from out-175.mta1.migadu.com (out-175.mta1.migadu.com [95.215.58.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9757946C;
-	Sun, 15 Sep 2024 11:22:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F53B2941B
+	for <bpf@vger.kernel.org>; Sun, 15 Sep 2024 13:00:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726399376; cv=none; b=rodpaqWQiQl+13n0t6+IA6bZRzn38LO370wtiaSFi1fyqunpiFvVXpC00MZW8Dhb3nxpa7gZcwfIa/ni3kirVZjtvZV8+HsOFHRA3K9Q9ID8TqSEegES8rUtjdmcDnb5xSCqjzXXPapXEM6pdpTpsKEyHKGSenRg04/Rcj8fIMc=
+	t=1726405246; cv=none; b=QSkKas9y4gqoobFM8AOfkcdcQhy/zdynAp1mdLhU0haXnrHIiUG0kDFnNOZ3mveveVeh/tpL/R3kfsrQBdB1lj5iV2dYVSTTn8UHZmgfwQWMQ559CLumFFiWW4hcSe1tU+QM3OwzY29eqYslD6Zuw+mA9vXMU/BUZuRrplaybMU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726399376; c=relaxed/simple;
-	bh=uT7dYy8AvRHuggYm5OMjAWImOq1Oypr6/tBNhMKQexg=;
+	s=arc-20240116; t=1726405246; c=relaxed/simple;
+	bh=w6kywzMynfuPimCaflIOAbGc+lOaljaMMTS2qrZD5RM=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=lbnH/NwWXzUOpR9sqvwaGwxf87WytXoYEmnpTWrcB4QtWe26enml5a4bul3bP2Z69HU0qXAqGr1TfslHWRjAhkXN8qsVrpS6Dnww3+RwII3JD4flrmwaO5OPIOP9jyQOR03GrUgndnoin1MvLA+le9YdUoNqqxeQ82X4e0DtETU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4X65HQ3gnDz4f3jcn;
-	Sun, 15 Sep 2024 19:22:26 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 2DC3C1A06D7;
-	Sun, 15 Sep 2024 19:22:42 +0800 (CST)
-Received: from [10.67.110.36] (unknown [10.67.110.36])
-	by APP2 (Coremail) with SMTP id Syh0CgB3q2CAw+ZmO5OJBQ--.64672S2;
-	Sun, 15 Sep 2024 19:22:41 +0800 (CST)
-Message-ID: <f9a89c7e-f4d5-4496-a15e-3a697fbc3ad4@huaweicloud.com>
-Date: Sun, 15 Sep 2024 19:22:40 +0800
+	 In-Reply-To:Content-Type; b=JjxCv/e8Jx0om00ejzRfdJ/38xXhb4x3io/DeYatWL2XFOxaNQdku4TLjNHYXnZ4ebKVMmY3LmL8ott7Bb6R9tXUxxsfVzAbX2vbmLhh2NgKPYXGONjRiZ/1c6Gxu7/jlMAUihkqPDzTbQM6bamOdsFGQyV80W3X/G+BXnG9mBo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=V6dcpZQW; arc=none smtp.client-ip=95.215.58.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <ec660430-b342-4823-8771-3599a1724c10@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1726405241;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+KXH5Ig5S93ZxpWQes/Ut9wka/7FmFKVOE8jNUySYwU=;
+	b=V6dcpZQWMKnp6Eot2sVPj1fgp8s5idz48OzWla/u5cfMT2/SsAZ/LG7PvxoH8hwzH3K4LM
+	mV1RwpGoMBp7WHJ6Ba0FwX/ltDgfqmCJlitmulq5fzZTvIdDfPB/yEGS7Sco2WJj66QTpZ
+	NIrcjBzaqhjCLy4WnET35x1qNwcPs7g=
+Date: Sun, 15 Sep 2024 21:00:31 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -next v2 1/2] perf stat: Support inherit events during
- fork() for bperf
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, song@kernel.org,
- Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
- Adrian Hunter <adrian.hunter@intel.com>, kan.liang@linux.intel.com,
- linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org
-References: <20240905115918.772234-1-wutengda@huaweicloud.com>
- <20240905115918.772234-2-wutengda@huaweicloud.com>
- <ZuXPn-VIkmH7iitG@google.com>
+Subject: Re: [PATCH bpf-next v2 1/4] bpf, x64: Fix tailcall infinite loop
+ caused by freplace
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+ Martin KaFai Lau <martin.lau@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>, Puranjay Mohan
+ <puranjay@kernel.org>, Xu Kuohai <xukuohai@huaweicloud.com>,
+ Eddy Z <eddyz87@gmail.com>, Ilya Leoshkevich <iii@linux.ibm.com>,
+ kernel-patches-bot@fb.com
+References: <20240901133856.64367-1-leon.hwang@linux.dev>
+ <20240901133856.64367-2-leon.hwang@linux.dev>
+ <CAADnVQJ0yz-VcFCJ0v4+LXGNDOgu1jYoSGHzywnszDjTrRSE7Q@mail.gmail.com>
 Content-Language: en-US
-From: Tengda Wu <wutengda@huaweicloud.com>
-In-Reply-To: <ZuXPn-VIkmH7iitG@google.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Leon Hwang <leon.hwang@linux.dev>
+In-Reply-To: <CAADnVQJ0yz-VcFCJ0v4+LXGNDOgu1jYoSGHzywnszDjTrRSE7Q@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:Syh0CgB3q2CAw+ZmO5OJBQ--.64672S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3AF4UXr13Kry8uFyUJrWxtFb_yoWDJF4fpF
-	WkC3Wqkr4Fqry7Wwn0qw4DuFnav34xurW5urn3K3ySyF1kArn3K34xGFW293W3ZrnrCF1S
-	vr1jkw4UC3yDJ3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvjb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AF
-	wI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
-	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43
-	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
-	0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
-	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUF1
-	v3UUUUU
-X-CM-SenderInfo: pzxwv0hjgdqx5xdzvxpfor3voofrz/
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
 
 
-On 2024/9/15 2:02, Namhyung Kim wrote:
-> Hello,
+On 2024/9/14 03:28, Alexei Starovoitov wrote:
+> On Sun, Sep 1, 2024 at 6:41 AM Leon Hwang <leon.hwang@linux.dev> wrote:
+>>
+>> @@ -573,10 +575,13 @@ int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type t,
+>>
+>>         /*
+>>          * See emit_prologue(), for IBT builds the trampoline hook is preceded
+>> -        * with an ENDBR instruction.
+>> +        * with an ENDBR instruction and 3 bytes tail_call_cnt initialization
+>> +        * instruction.
+>>          */
+>>         if (is_endbr(*(u32 *)ip))
+>>                 ip += ENDBR_INSN_SIZE;
+>> +       if (is_bpf_text_address((long)ip))
+>> +               ip += X86_POKE_EXTRA;
 > 
-> On Thu, Sep 05, 2024 at 11:59:17AM +0000, Tengda Wu wrote:
->> bperf has a nice ability to share PMUs, but it still does not support
->> inherit events during fork(), resulting in some deviations in its stat
->> results compared with perf.
->>
->> perf stat result:
->>   $ ./perf stat -e cycles,instructions -- ./perf test -w sqrtloop
->>
->>    Performance counter stats for './perf test -w sqrtloop':
->>
->>        2,316,038,116      cycles
->>        2,859,350,725      instructions                     #    1.23  insn per cycle
->>
->>          1.009603637 seconds time elapsed
->>
->>          1.004196000 seconds user
->>          0.003950000 seconds sys
->>
->> bperf stat result:
->>   $ ./perf stat --bpf-counters -e cycles,instructions -- ./perf test -w sqrtloop
->>
->>    Performance counter stats for './perf test -w sqrtloop':
->>
->>           18,762,093      cycles
->>           23,487,766      instructions                     #    1.25  insn per cycle
->>
->>          1.008913769 seconds time elapsed
->>
->>          1.003248000 seconds user
->>          0.004069000 seconds sys
->>
->> In order to support event inheritance, two new bpf programs are added
->> to monitor the fork and exit of tasks respectively. When a task is
->> created, add it to the filter map to enable counting, and reuse the
->> `accum_key` of its parent task to count together with the parent task.
->> When a task exits, remove it from the filter map to disable counting.
->>
->> After support:
->>   $ ./perf stat --bpf-counters -e cycles,instructions -- ./perf test -w sqrtloop
->>
->>    Performance counter stats for './perf test -w sqrtloop':
->>
->>        2,316,543,537      cycles
->>        2,859,677,779      instructions                     #    1.23  insn per cycle
->>
->>          1.009566332 seconds time elapsed
->>
->>          1.004414000 seconds user
->>          0.003545000 seconds sys
->>
->> Signed-off-by: Tengda Wu <wutengda@huaweicloud.com>
->> ---
->>  tools/perf/util/bpf_counter.c                 | 32 +++++++--
->>  tools/perf/util/bpf_skel/bperf_follower.bpf.c | 70 +++++++++++++++++--
->>  tools/perf/util/bpf_skel/bperf_u.h            |  5 ++
->>  3 files changed, 94 insertions(+), 13 deletions(-)
->>
->> diff --git a/tools/perf/util/bpf_counter.c b/tools/perf/util/bpf_counter.c
->> index 7a8af60e0f51..94aa46f50052 100644
->> --- a/tools/perf/util/bpf_counter.c
->> +++ b/tools/perf/util/bpf_counter.c
->> @@ -394,6 +394,7 @@ static int bperf_check_target(struct evsel *evsel,
->>  }
->>  
->>  static	struct perf_cpu_map *all_cpu_map;
->> +static __u32 filter_entry_cnt;
->>  
->>  static int bperf_reload_leader_program(struct evsel *evsel, int attr_map_fd,
->>  				       struct perf_event_attr_map_entry *entry)
->> @@ -444,12 +445,31 @@ static int bperf_reload_leader_program(struct evsel *evsel, int attr_map_fd,
->>  	return err;
->>  }
->>  
->> +/* Attach programs on demand according to filter types to reduce overhead */
->> +static int bperf_attach_follower_program(struct bperf_follower_bpf *skel,
->> +					 enum bperf_filter_type filter_type)
->> +{
->> +	struct bpf_link *link;
->> +	int err = 0;
->> +
->> +	if (filter_type == BPERF_FILTER_PID ||
->> +	    filter_type == BPERF_FILTER_TGID)
->> +		err = bperf_follower_bpf__attach(skel);
->> +	else {
->> +		link = bpf_program__attach(skel->progs.fexit_XXX);
->> +		if (IS_ERR(link))
->> +			err = PTR_ERR(link);
->> +	}
->> +
->> +	return err;
->> +}
->> +
->>  static int bperf__load(struct evsel *evsel, struct target *target)
->>  {
->>  	struct perf_event_attr_map_entry entry = {0xffffffff, 0xffffffff};
->>  	int attr_map_fd, diff_map_fd = -1, err;
->>  	enum bperf_filter_type filter_type;
->> -	__u32 filter_entry_cnt, i;
->> +	__u32 i;
->>  
->>  	if (bperf_check_target(evsel, target, &filter_type, &filter_entry_cnt))
->>  		return -1;
->> @@ -529,9 +549,6 @@ static int bperf__load(struct evsel *evsel, struct target *target)
->>  	/* set up reading map */
->>  	bpf_map__set_max_entries(evsel->follower_skel->maps.accum_readings,
->>  				 filter_entry_cnt);
->> -	/* set up follower filter based on target */
->> -	bpf_map__set_max_entries(evsel->follower_skel->maps.filter,
->> -				 filter_entry_cnt);
->>  	err = bperf_follower_bpf__load(evsel->follower_skel);
->>  	if (err) {
->>  		pr_err("Failed to load follower skeleton\n");
->> @@ -543,6 +560,7 @@ static int bperf__load(struct evsel *evsel, struct target *target)
->>  	for (i = 0; i < filter_entry_cnt; i++) {
->>  		int filter_map_fd;
->>  		__u32 key;
->> +		struct bperf_filter_value fval = { i, 0 };
->>  
->>  		if (filter_type == BPERF_FILTER_PID ||
->>  		    filter_type == BPERF_FILTER_TGID)
->> @@ -553,12 +571,12 @@ static int bperf__load(struct evsel *evsel, struct target *target)
->>  			break;
->>  
->>  		filter_map_fd = bpf_map__fd(evsel->follower_skel->maps.filter);
->> -		bpf_map_update_elem(filter_map_fd, &key, &i, BPF_ANY);
->> +		bpf_map_update_elem(filter_map_fd, &key, &fval, BPF_ANY);
->>  	}
->>  
->>  	evsel->follower_skel->bss->type = filter_type;
->>  
->> -	err = bperf_follower_bpf__attach(evsel->follower_skel);
->> +	err = bperf_attach_follower_program(evsel->follower_skel, filter_type);
->>  
->>  out:
->>  	if (err && evsel->bperf_leader_link_fd >= 0)
->> @@ -623,7 +641,7 @@ static int bperf__read(struct evsel *evsel)
->>  	bperf_sync_counters(evsel);
->>  	reading_map_fd = bpf_map__fd(skel->maps.accum_readings);
->>  
->> -	for (i = 0; i < bpf_map__max_entries(skel->maps.accum_readings); i++) {
->> +	for (i = 0; i < filter_entry_cnt; i++) {
->>  		struct perf_cpu entry;
->>  		__u32 cpu;
->>  
->> diff --git a/tools/perf/util/bpf_skel/bperf_follower.bpf.c b/tools/perf/util/bpf_skel/bperf_follower.bpf.c
->> index f193998530d4..32b944f28776 100644
->> --- a/tools/perf/util/bpf_skel/bperf_follower.bpf.c
->> +++ b/tools/perf/util/bpf_skel/bperf_follower.bpf.c
->> @@ -5,6 +5,8 @@
->>  #include <bpf/bpf_tracing.h>
->>  #include "bperf_u.h"
->>  
->> +#define MAX_ENTRIES 102400
->> +
->>  struct {
->>  	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
->>  	__uint(key_size, sizeof(__u32));
->> @@ -22,7 +24,9 @@ struct {
->>  struct {
->>  	__uint(type, BPF_MAP_TYPE_HASH);
->>  	__uint(key_size, sizeof(__u32));
->> -	__uint(value_size, sizeof(__u32));
->> +	__uint(value_size, sizeof(struct bperf_filter_value));
->> +	__uint(max_entries, MAX_ENTRIES);
->> +	__uint(map_flags, BPF_F_NO_PREALLOC);
->>  } filter SEC(".maps");
->>  
->>  enum bperf_filter_type type = 0;
->> @@ -33,14 +37,15 @@ int BPF_PROG(fexit_XXX)
->>  {
->>  	struct bpf_perf_event_value *diff_val, *accum_val;
->>  	__u32 filter_key, zero = 0;
->> -	__u32 *accum_key;
->> +	__u32 accum_key;
->> +	struct bperf_filter_value *fval;
->>  
->>  	if (!enabled)
->>  		return 0;
->>  
->>  	switch (type) {
->>  	case BPERF_FILTER_GLOBAL:
->> -		accum_key = &zero;
->> +		accum_key = zero;
->>  		goto do_add;
->>  	case BPERF_FILTER_CPU:
->>  		filter_key = bpf_get_smp_processor_id();
->> @@ -55,16 +60,20 @@ int BPF_PROG(fexit_XXX)
->>  		return 0;
->>  	}
->>  
->> -	accum_key = bpf_map_lookup_elem(&filter, &filter_key);
->> -	if (!accum_key)
->> +	fval = bpf_map_lookup_elem(&filter, &filter_key);
->> +	if (!fval)
->>  		return 0;
->>  
->> +	accum_key = fval->accum_key;
->> +	if (fval->exited)
->> +		bpf_map_delete_elem(&filter, &filter_key);
->> +
->>  do_add:
->>  	diff_val = bpf_map_lookup_elem(&diff_readings, &zero);
->>  	if (!diff_val)
->>  		return 0;
->>  
->> -	accum_val = bpf_map_lookup_elem(&accum_readings, accum_key);
->> +	accum_val = bpf_map_lookup_elem(&accum_readings, &accum_key);
->>  	if (!accum_val)
->>  		return 0;
->>  
->> @@ -75,4 +84,53 @@ int BPF_PROG(fexit_XXX)
->>  	return 0;
->>  }
->>  
->> +/* The program is only used for PID or TGID filter types. */
->> +SEC("tp_btf/task_newtask")
->> +int BPF_PROG(on_newtask, struct task_struct *task, __u64 clone_flags)
->> +{
->> +	__u32 parent_pid, child_pid;
->> +	struct bperf_filter_value *parent_fval;
->> +	struct bperf_filter_value child_fval = { 0 };
->> +
->> +	if (!enabled)
->> +		return 0;
->> +
->> +	parent_pid = bpf_get_current_pid_tgid() >> 32;
->> +	child_pid = task->pid;
+> This is a foot gun.
+> bpf_arch_text_poke() is used not only at the beginning of the function.
+> So unconditional ip += 3 is not just puzzling with 'what is this for',
+> but dangerous and wasteful...
 > 
-> Should it use pid or tgid depending on the filter type?
+>> @@ -2923,6 +2930,8 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *rw_im
+>>                  */
+>>                 if (is_endbr(*(u32 *)orig_call))
+>>                         orig_call += ENDBR_INSN_SIZE;
+>> +               if (is_bpf_text_address((long)orig_call))
+>> +                       orig_call += X86_POKE_EXTRA;
+>>                 orig_call += X86_PATCH_SIZE;
+>>         }
 > 
-> Thanks,
-> Namhyung
-
-Oh, it should. I just find two issues here: 
-One is that the task pid added under the TGID type will not be used by sched_switch prog,
-causing memory waste in map.
-Another is that using tgid to search for tasks under the PID type may find nothing, which
-would miss some child task counts.
-
-I'll fix them in the next version.
-
-Thank you for pointing this out.
-Tengda
-
+> ..this bit needs to be hacked too...
 > 
->> +
->> +	/* Check if the current task is one of the target tasks to be counted */
->> +	parent_fval = bpf_map_lookup_elem(&filter, &parent_pid);
->> +	if (!parent_fval)
->> +		return 0;
->> +
->> +	/* Start counting for the new task by adding it into filter map,
->> +	 * inherit the accum key of its parent task so that they can be
->> +	 * counted together.
->> +	 */
->> +	child_fval.accum_key = parent_fval->accum_key;
->> +	child_fval.exited = 0;
->> +	bpf_map_update_elem(&filter, &child_pid, &child_fval, BPF_NOEXIST);
->> +
->> +	return 0;
->> +}
->> +
->> +/* The program is only used for PID or TGID filter types. */
->> +SEC("tp_btf/sched_process_exit")
->> +int BPF_PROG(on_exittask, struct task_struct *task)
->> +{
->> +	__u32 pid;
->> +	struct bperf_filter_value *fval;
->> +
->> +	if (!enabled)
->> +		return 0;
->> +
->> +	/* Stop counting for this task by removing it from filter map */
->> +	pid = task->pid;
->> +	fval = bpf_map_lookup_elem(&filter, &pid);
->> +	if (fval)
->> +		fval->exited = 1;
->> +
->> +	return 0;
->> +}
->> +
->>  char LICENSE[] SEC("license") = "Dual BSD/GPL";
->> diff --git a/tools/perf/util/bpf_skel/bperf_u.h b/tools/perf/util/bpf_skel/bperf_u.h
->> index 1ce0c2c905c1..4a4a753980be 100644
->> --- a/tools/perf/util/bpf_skel/bperf_u.h
->> +++ b/tools/perf/util/bpf_skel/bperf_u.h
->> @@ -11,4 +11,9 @@ enum bperf_filter_type {
->>  	BPERF_FILTER_TGID,
->>  };
->>  
->> +struct bperf_filter_value {
->> +	__u32 accum_key;
->> +	__u8 exited;
->> +};
->> +
->>  #endif /* __BPERF_STAT_U_H */
->> -- 
->> 2.34.1
->>
+>> @@ -3025,6 +3034,7 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *rw_im
+>>                 /* remember return value in a stack for bpf prog to access */
+>>                 emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_0, -8);
+>>                 im->ip_after_call = image + (prog - (u8 *)rw_image);
+>> +               emit_nops(&prog, X86_POKE_EXTRA);
+>>                 emit_nops(&prog, X86_PATCH_SIZE);
+> 
+> And this is just pure waste of kernel code and cpu run-time.
+> 
+> You're adding 3 byte nop for no reason at all.
+> 
+> See commit e21aa341785c ("bpf: Fix fexit trampoline.")
+> that added:
+>                 int err = bpf_arch_text_poke(im->ip_after_call, BPF_MOD_JUMP,
+>                                              NULL, im->ip_epilogue);
+> logic that is patching bpf trampoline in the middle of it.
+> (not at the start).
+> 
+> Because of unconditional +=3 in bpf_arch_text_poke() every trampoline
+> will have to waste nop3 ?
+> No.
+> 
+> Please fix freplace and tail call combination without
+> this kind of unacceptable shortcuts.
+> 
+> I very much prefer to stop hacking into JITs and trampolines because
+> tailcalls and freplace don't work well together.
+> 
+> We cannot completely disable that combination because libxdp
+> is using freplace to populate chain of progs the main prog is calling
+> and these freplace progs might be doing tailcall,
+> but we can still prevent such infinite loop that you describe in commit log:
+> entry_tc -> subprog_tc -> entry_freplace -> subprog_tail --tailcall-> entry_tc
+> in the verifier without resorting to JIT hacks.
+> 
+> pw-bot: cr
 
+IIUC, it's going to prevent this niche case at update/attach time, that
+a prog cannot be updated to prog_array map and be extended by freplace
+prog at the same time.
+
+More specific explanation:
+
+1. If a prog has been updated to prog_array, it and its subprog cannot
+   be extended by freplace prog.
+2. If a prog or its subprog has been extended by freplace prog, it
+   cannot be updated to prog_array map.
+
+Then, I do a POC[0] to prevent this niche case. And the POC does not
+break any selftest.
+
+[0] https://github.com/kernel-patches/bpf/pull/7732
+
+Here's the diff of the POC.
+
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 0c3893c471711..b864b37e67c17 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1483,6 +1483,8 @@ struct bpf_prog_aux {
+ 	bool xdp_has_frags;
+ 	bool exception_cb;
+ 	bool exception_boundary;
++	bool is_extended; /* true if extended by freplace program */
++	atomic_t tail_callee_cnt;
+ 	struct bpf_arena *arena;
+ 	/* BTF_KIND_FUNC_PROTO for valid attach_btf_id */
+ 	const struct btf_type *attach_func_proto;
+diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
+index 79660e3fca4c1..be41240d4fb3a 100644
+--- a/kernel/bpf/arraymap.c
++++ b/kernel/bpf/arraymap.c
+@@ -951,18 +951,27 @@ static void *prog_fd_array_get_ptr(struct bpf_map
+*map,
+ 	if (IS_ERR(prog))
+ 		return prog;
+
+-	if (!bpf_prog_map_compatible(map, prog)) {
++	if (!bpf_prog_map_compatible(map, prog) || prog->aux->is_extended) {
++		/* Extended prog can not be tail callee. It's to prevent a
++		 * potential infinite loop like:
++		 * tail callee prog entry -> tail callee prog subprog ->
++		 * freplace prog entry --tailcall-> tail callee prog entry.
++		 */
+ 		bpf_prog_put(prog);
+ 		return ERR_PTR(-EINVAL);
+ 	}
+
++	atomic_inc(&prog->aux->tail_callee_cnt);
+ 	return prog;
+ }
+
+ static void prog_fd_array_put_ptr(struct bpf_map *map, void *ptr, bool
+need_defer)
+ {
++	struct bpf_prog *prog = ptr;
++
+ 	/* bpf_prog is freed after one RCU or tasks trace grace period */
+-	bpf_prog_put(ptr);
++	atomic_dec(&prog->aux->tail_callee_cnt);
++	bpf_prog_put(prog);
+ }
+
+ static u32 prog_fd_array_sys_lookup_elem(void *ptr)
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 8a4117f6d7610..be829016d8182 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -3292,8 +3292,11 @@ static void bpf_tracing_link_release(struct
+bpf_link *link)
+ 	bpf_trampoline_put(tr_link->trampoline);
+
+ 	/* tgt_prog is NULL if target is a kernel function */
+-	if (tr_link->tgt_prog)
++	if (tr_link->tgt_prog) {
++		if (link->prog->type == BPF_PROG_TYPE_EXT)
++			tr_link->tgt_prog->aux->is_extended = false;
+ 		bpf_prog_put(tr_link->tgt_prog);
++	}
+ }
+
+ static void bpf_tracing_link_dealloc(struct bpf_link *link)
+@@ -3498,6 +3501,18 @@ static int bpf_tracing_prog_attach(struct
+bpf_prog *prog,
+ 		tgt_prog = prog->aux->dst_prog;
+ 	}
+
++	if (prog->type == BPF_PROG_TYPE_EXT &&
++	    atomic_read(&tgt_prog->aux->tail_callee_cnt)) {
++		/* Program extensions can not extend target prog when the target
++		 * prog has been updated to any prog_array map as tail callee.
++		 * It's to prevent a potential infinite loop like:
++		 * tgt prog entry -> tgt prog subprog -> freplace prog entry
++		 * --tailcall-> tgt prog entry.
++		 */
++		err = -EINVAL;
++		goto out_unlock;
++	}
++
+ 	err = bpf_link_prime(&link->link.link, &link_primer);
+ 	if (err)
+ 		goto out_unlock;
+@@ -3523,6 +3538,8 @@ static int bpf_tracing_prog_attach(struct bpf_prog
+*prog,
+ 	if (prog->aux->dst_trampoline && tr != prog->aux->dst_trampoline)
+ 		/* we allocated a new trampoline, so free the old one */
+ 		bpf_trampoline_put(prog->aux->dst_trampoline);
++	if (prog->type == BPF_PROG_TYPE_EXT)
++		tgt_prog->aux->is_extended = true;
+
+ 	prog->aux->dst_prog = NULL;
+ 	prog->aux->dst_trampoline = NULL;
+
+Thanks,
+Leon
 
