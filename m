@@ -1,263 +1,135 @@
-Return-Path: <bpf+bounces-39938-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39939-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0822F9796C0
-	for <lists+bpf@lfdr.de>; Sun, 15 Sep 2024 15:00:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A1BCD9796E8
+	for <lists+bpf@lfdr.de>; Sun, 15 Sep 2024 15:51:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 89A8F1F2137C
-	for <lists+bpf@lfdr.de>; Sun, 15 Sep 2024 13:00:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 62CB0281D76
+	for <lists+bpf@lfdr.de>; Sun, 15 Sep 2024 13:51:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9FBF1C57B8;
-	Sun, 15 Sep 2024 13:00:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB33A1C6F70;
+	Sun, 15 Sep 2024 13:51:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="V6dcpZQW"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DRkIar9R"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-175.mta1.migadu.com (out-175.mta1.migadu.com [95.215.58.175])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F53B2941B
-	for <bpf@vger.kernel.org>; Sun, 15 Sep 2024 13:00:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39C3914286;
+	Sun, 15 Sep 2024 13:51:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726405246; cv=none; b=QSkKas9y4gqoobFM8AOfkcdcQhy/zdynAp1mdLhU0haXnrHIiUG0kDFnNOZ3mveveVeh/tpL/R3kfsrQBdB1lj5iV2dYVSTTn8UHZmgfwQWMQ559CLumFFiWW4hcSe1tU+QM3OwzY29eqYslD6Zuw+mA9vXMU/BUZuRrplaybMU=
+	t=1726408307; cv=none; b=l25oO3nSugrL4w2e8KRuJzjSDagayyv4pArfoylr8SXYNWOgCVvr/dUWsROBmkUOBbzBjHCaAmlVSyfO5ccPYqJ1NLl7uqoalE+j1SVLxYGUvh4zzcp6H7pu4C/uRXAu5tLyo2994tceLb5Kx7Mo3ynSGpOBwqw3m8IZaQfH1MA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726405246; c=relaxed/simple;
-	bh=w6kywzMynfuPimCaflIOAbGc+lOaljaMMTS2qrZD5RM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JjxCv/e8Jx0om00ejzRfdJ/38xXhb4x3io/DeYatWL2XFOxaNQdku4TLjNHYXnZ4ebKVMmY3LmL8ott7Bb6R9tXUxxsfVzAbX2vbmLhh2NgKPYXGONjRiZ/1c6Gxu7/jlMAUihkqPDzTbQM6bamOdsFGQyV80W3X/G+BXnG9mBo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=V6dcpZQW; arc=none smtp.client-ip=95.215.58.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <ec660430-b342-4823-8771-3599a1724c10@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1726405241;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+KXH5Ig5S93ZxpWQes/Ut9wka/7FmFKVOE8jNUySYwU=;
-	b=V6dcpZQWMKnp6Eot2sVPj1fgp8s5idz48OzWla/u5cfMT2/SsAZ/LG7PvxoH8hwzH3K4LM
-	mV1RwpGoMBp7WHJ6Ba0FwX/ltDgfqmCJlitmulq5fzZTvIdDfPB/yEGS7Sco2WJj66QTpZ
-	NIrcjBzaqhjCLy4WnET35x1qNwcPs7g=
-Date: Sun, 15 Sep 2024 21:00:31 +0800
+	s=arc-20240116; t=1726408307; c=relaxed/simple;
+	bh=q7WJquAI08+CAD5lP6bdNehob9Dq1wPKxQPjeFRtiiI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rcnXow0D86xKJDLQFT7GN7xZvlyF4TJg5Y6ilnHy2FZbX8T72QS0DVTHPUNAni0VoaCwpXv6t6dXOMOd+Nxk/VHg8n+PRJ7GlwXKvRI8bejnK+W4qKLEHMR8bAUzXa5KzHXDJ5BkA5Zn4ErnysMN7aCKHY2PVumxjZyfzCnNOr8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DRkIar9R; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 666C4C4CEC3;
+	Sun, 15 Sep 2024 13:51:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1726408306;
+	bh=q7WJquAI08+CAD5lP6bdNehob9Dq1wPKxQPjeFRtiiI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=DRkIar9RFkBNG39Lg4VF36+C0l1NwYSaEE09Z1SxGxc6M4S+jx9O3QiS3XE0iEOXa
+	 dugg4+gux8cHvhMy415EwhG2oqeI29OZXErerIPWPPLxGdjDxioHvmSB5SFgMR8cmZ
+	 GF890/YHKLL0YWKx3z2y3nIavnufDvUSXph8DwoVC1aciO37Nuj9Dl/4U3xgMBW1Vr
+	 QqbWqbJwbZ+B8JLq+POjgebhgVzaYSVrG+oX+aypioA+ScnFYEAUCNxQIIMCRKMIR8
+	 1d75vfMvgyrvMLYGrv0O59GREHzSdXP1f5IYJf2XBPq1KtNNCfQ4hdGzn/h6TRc0iB
+	 7g69hrbWPmj5g==
+Date: Sun, 15 Sep 2024 16:48:27 +0300
+From: Mike Rapoport <rppt@kernel.org>
+To: Ard Biesheuvel <ardb@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+	Borislav Petkov <bp@alien8.de>, Brian Cain <bcain@quicinc.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Christoph Hellwig <hch@infradead.org>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
+	Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Michal Simek <monstr@monstr.eu>, Oleg Nesterov <oleg@redhat.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Richard Weinberger <richard@nod.at>,
+	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
+	Stafford Horne <shorne@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>,
+	bpf@vger.kernel.org, linux-alpha@vger.kernel.org,
+	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+	linux-mips@vger.kernel.org, linux-mm@kvack.org,
+	linux-modules@vger.kernel.org, linux-openrisc@vger.kernel.org,
+	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+	linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+	linux-trace-kernel@vger.kernel.org, linux-um@lists.infradead.org,
+	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
+	sparclinux@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH v3 7/8] execmem: add support for cache of large ROX pages
+Message-ID: <Zublq4tR0q7lvicK@kernel.org>
+References: <20240909064730.3290724-1-rppt@kernel.org>
+ <20240909064730.3290724-8-rppt@kernel.org>
+ <CAMj1kXG_Z=7B_eDAk3vhtDjfcnka3AoSKNzvFQDzpvYY2EyVfg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v2 1/4] bpf, x64: Fix tailcall infinite loop
- caused by freplace
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
- Martin KaFai Lau <martin.lau@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>, Puranjay Mohan
- <puranjay@kernel.org>, Xu Kuohai <xukuohai@huaweicloud.com>,
- Eddy Z <eddyz87@gmail.com>, Ilya Leoshkevich <iii@linux.ibm.com>,
- kernel-patches-bot@fb.com
-References: <20240901133856.64367-1-leon.hwang@linux.dev>
- <20240901133856.64367-2-leon.hwang@linux.dev>
- <CAADnVQJ0yz-VcFCJ0v4+LXGNDOgu1jYoSGHzywnszDjTrRSE7Q@mail.gmail.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Leon Hwang <leon.hwang@linux.dev>
-In-Reply-To: <CAADnVQJ0yz-VcFCJ0v4+LXGNDOgu1jYoSGHzywnszDjTrRSE7Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMj1kXG_Z=7B_eDAk3vhtDjfcnka3AoSKNzvFQDzpvYY2EyVfg@mail.gmail.com>
 
+Hi Ard,
 
-
-On 2024/9/14 03:28, Alexei Starovoitov wrote:
-> On Sun, Sep 1, 2024 at 6:41 AM Leon Hwang <leon.hwang@linux.dev> wrote:
->>
->> @@ -573,10 +575,13 @@ int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type t,
->>
->>         /*
->>          * See emit_prologue(), for IBT builds the trampoline hook is preceded
->> -        * with an ENDBR instruction.
->> +        * with an ENDBR instruction and 3 bytes tail_call_cnt initialization
->> +        * instruction.
->>          */
->>         if (is_endbr(*(u32 *)ip))
->>                 ip += ENDBR_INSN_SIZE;
->> +       if (is_bpf_text_address((long)ip))
->> +               ip += X86_POKE_EXTRA;
+On Fri, Sep 13, 2024 at 05:00:42PM +0200, Ard Biesheuvel wrote:
+> Hi Mike,
 > 
-> This is a foot gun.
-> bpf_arch_text_poke() is used not only at the beginning of the function.
-> So unconditional ip += 3 is not just puzzling with 'what is this for',
-> but dangerous and wasteful...
+> On Mon, 9 Sept 2024 at 08:51, Mike Rapoport <rppt@kernel.org> wrote:
+
+...
+
+> > +static void execmem_fill_trapping_insns(void *ptr, size_t size, bool writable)
+> > +{
+> > +       if (execmem_info->fill_trapping_insns)
+> > +               execmem_info->fill_trapping_insns(ptr, size, writable);
+> > +       else
+> > +               memset(ptr, 0, size);
 > 
->> @@ -2923,6 +2930,8 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *rw_im
->>                  */
->>                 if (is_endbr(*(u32 *)orig_call))
->>                         orig_call += ENDBR_INSN_SIZE;
->> +               if (is_bpf_text_address((long)orig_call))
->> +                       orig_call += X86_POKE_EXTRA;
->>                 orig_call += X86_PATCH_SIZE;
->>         }
+> Does this really have to be a function pointer with a runtime check?
 > 
-> ..this bit needs to be hacked too...
-> 
->> @@ -3025,6 +3034,7 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *rw_im
->>                 /* remember return value in a stack for bpf prog to access */
->>                 emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_0, -8);
->>                 im->ip_after_call = image + (prog - (u8 *)rw_image);
->> +               emit_nops(&prog, X86_POKE_EXTRA);
->>                 emit_nops(&prog, X86_PATCH_SIZE);
-> 
-> And this is just pure waste of kernel code and cpu run-time.
-> 
-> You're adding 3 byte nop for no reason at all.
-> 
-> See commit e21aa341785c ("bpf: Fix fexit trampoline.")
-> that added:
->                 int err = bpf_arch_text_poke(im->ip_after_call, BPF_MOD_JUMP,
->                                              NULL, im->ip_epilogue);
-> logic that is patching bpf trampoline in the middle of it.
-> (not at the start).
-> 
-> Because of unconditional +=3 in bpf_arch_text_poke() every trampoline
-> will have to waste nop3 ?
-> No.
-> 
-> Please fix freplace and tail call combination without
-> this kind of unacceptable shortcuts.
-> 
-> I very much prefer to stop hacking into JITs and trampolines because
-> tailcalls and freplace don't work well together.
-> 
-> We cannot completely disable that combination because libxdp
-> is using freplace to populate chain of progs the main prog is calling
-> and these freplace progs might be doing tailcall,
-> but we can still prevent such infinite loop that you describe in commit log:
-> entry_tc -> subprog_tc -> entry_freplace -> subprog_tail --tailcall-> entry_tc
-> in the verifier without resorting to JIT hacks.
-> 
-> pw-bot: cr
+> This could just be a __weak definition, with the arch providing an
+> override if the memset() is not appropriate.
 
-IIUC, it's going to prevent this niche case at update/attach time, that
-a prog cannot be updated to prog_array map and be extended by freplace
-prog at the same time.
+I prefer to keep this a method in execmem_info rather that have a __weak
+definition that architectures can override.
 
-More specific explanation:
+This is not on the hot path, so I don't think a runtime check here would
+matter. Still, I can fill in a default with memset at init time.
 
-1. If a prog has been updated to prog_array, it and its subprog cannot
-   be extended by freplace prog.
-2. If a prog or its subprog has been extended by freplace prog, it
-   cannot be updated to prog_array map.
-
-Then, I do a POC[0] to prevent this niche case. And the POC does not
-break any selftest.
-
-[0] https://github.com/kernel-patches/bpf/pull/7732
-
-Here's the diff of the POC.
-
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 0c3893c471711..b864b37e67c17 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1483,6 +1483,8 @@ struct bpf_prog_aux {
- 	bool xdp_has_frags;
- 	bool exception_cb;
- 	bool exception_boundary;
-+	bool is_extended; /* true if extended by freplace program */
-+	atomic_t tail_callee_cnt;
- 	struct bpf_arena *arena;
- 	/* BTF_KIND_FUNC_PROTO for valid attach_btf_id */
- 	const struct btf_type *attach_func_proto;
-diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
-index 79660e3fca4c1..be41240d4fb3a 100644
---- a/kernel/bpf/arraymap.c
-+++ b/kernel/bpf/arraymap.c
-@@ -951,18 +951,27 @@ static void *prog_fd_array_get_ptr(struct bpf_map
-*map,
- 	if (IS_ERR(prog))
- 		return prog;
-
--	if (!bpf_prog_map_compatible(map, prog)) {
-+	if (!bpf_prog_map_compatible(map, prog) || prog->aux->is_extended) {
-+		/* Extended prog can not be tail callee. It's to prevent a
-+		 * potential infinite loop like:
-+		 * tail callee prog entry -> tail callee prog subprog ->
-+		 * freplace prog entry --tailcall-> tail callee prog entry.
-+		 */
- 		bpf_prog_put(prog);
- 		return ERR_PTR(-EINVAL);
- 	}
-
-+	atomic_inc(&prog->aux->tail_callee_cnt);
- 	return prog;
- }
-
- static void prog_fd_array_put_ptr(struct bpf_map *map, void *ptr, bool
-need_defer)
- {
-+	struct bpf_prog *prog = ptr;
-+
- 	/* bpf_prog is freed after one RCU or tasks trace grace period */
--	bpf_prog_put(ptr);
-+	atomic_dec(&prog->aux->tail_callee_cnt);
-+	bpf_prog_put(prog);
- }
-
- static u32 prog_fd_array_sys_lookup_elem(void *ptr)
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 8a4117f6d7610..be829016d8182 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -3292,8 +3292,11 @@ static void bpf_tracing_link_release(struct
-bpf_link *link)
- 	bpf_trampoline_put(tr_link->trampoline);
-
- 	/* tgt_prog is NULL if target is a kernel function */
--	if (tr_link->tgt_prog)
-+	if (tr_link->tgt_prog) {
-+		if (link->prog->type == BPF_PROG_TYPE_EXT)
-+			tr_link->tgt_prog->aux->is_extended = false;
- 		bpf_prog_put(tr_link->tgt_prog);
-+	}
- }
-
- static void bpf_tracing_link_dealloc(struct bpf_link *link)
-@@ -3498,6 +3501,18 @@ static int bpf_tracing_prog_attach(struct
-bpf_prog *prog,
- 		tgt_prog = prog->aux->dst_prog;
- 	}
-
-+	if (prog->type == BPF_PROG_TYPE_EXT &&
-+	    atomic_read(&tgt_prog->aux->tail_callee_cnt)) {
-+		/* Program extensions can not extend target prog when the target
-+		 * prog has been updated to any prog_array map as tail callee.
-+		 * It's to prevent a potential infinite loop like:
-+		 * tgt prog entry -> tgt prog subprog -> freplace prog entry
-+		 * --tailcall-> tgt prog entry.
-+		 */
-+		err = -EINVAL;
-+		goto out_unlock;
-+	}
-+
- 	err = bpf_link_prime(&link->link.link, &link_primer);
- 	if (err)
- 		goto out_unlock;
-@@ -3523,6 +3538,8 @@ static int bpf_tracing_prog_attach(struct bpf_prog
-*prog,
- 	if (prog->aux->dst_trampoline && tr != prog->aux->dst_trampoline)
- 		/* we allocated a new trampoline, so free the old one */
- 		bpf_trampoline_put(prog->aux->dst_trampoline);
-+	if (prog->type == BPF_PROG_TYPE_EXT)
-+		tgt_prog->aux->is_extended = true;
-
- 	prog->aux->dst_prog = NULL;
- 	prog->aux->dst_trampoline = NULL;
-
-Thanks,
-Leon
+-- 
+Sincerely yours,
+Mike.
 
