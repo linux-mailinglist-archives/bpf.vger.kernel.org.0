@@ -1,159 +1,127 @@
-Return-Path: <bpf+bounces-39966-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39967-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC559979990
-	for <lists+bpf@lfdr.de>; Mon, 16 Sep 2024 01:30:28 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45B6A979998
+	for <lists+bpf@lfdr.de>; Mon, 16 Sep 2024 01:42:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F0F9C1C22392
-	for <lists+bpf@lfdr.de>; Sun, 15 Sep 2024 23:30:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A04B3B22624
+	for <lists+bpf@lfdr.de>; Sun, 15 Sep 2024 23:42:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB5E313D2A9;
-	Sun, 15 Sep 2024 23:30:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90D66130A47;
+	Sun, 15 Sep 2024 23:42:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="lvf+qAV+"
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="rh/93whM"
 X-Original-To: bpf@vger.kernel.org
 Received: from mail.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92C7B13B590;
-	Sun, 15 Sep 2024 23:30:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29A8E17BA7;
+	Sun, 15 Sep 2024 23:42:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726443018; cv=none; b=nvGu90V1QYVjMbI6foAPA/Q9sowrEZ6xary19FWZbYlWDBq98rQh8+uFhHkrTxLShCHDiA9f2zsxf5D+ykYH7aMtyhoFDvngO9Y3he8G+uCmL37bkt3geo8ClHntbEa6FPA/PWiMvdaujDUBNVR9slAG6Zc2Lh4WLN5J9P/19A0=
+	t=1726443729; cv=none; b=PNFwvjl9Ucykp2/9pz1wQGtnDlgNvU6n09p5V4uqtLlEgBtzmRlnt2dOJ0rvFvw/1t6qv/yBtjV063nbiD7jTgvRlw8yCP0kl8jh9y8OX5EY1T+M3irjXDVBt910S4B0YrbgPD+IZ/G91BWn96skjVsZVD93cuTyYt4a7hj2SFA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726443018; c=relaxed/simple;
-	bh=fNi8iRIHBUc/y5xpNdMAWcrLKlYdm2FtKG98edSv+Lg=;
+	s=arc-20240116; t=1726443729; c=relaxed/simple;
+	bh=R0GPPeKHAbFbXFW+ljpOdYlAFUC/6BJEokBZh4E9gB0=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Tv2XY886dfu94HotQxqEpIhJzdpLc7MqZTNUbDQYk2Z877i9c86eGoU4nr83xim5yAcWZ9yxEzfVBjJnqefI9e3EQru/C15JMOGeuIqpHrr0K94X+G0kDkKoIVbnYoXbgjAPvJPsOT/ci0qVw1Cc4GcvX2DCPxmfBFzSqsZoUbE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=lvf+qAV+; arc=none smtp.client-ip=150.107.74.76
+	 MIME-Version:Content-Type; b=qw7Ep/I+nkmX3+ba83OeGy76QDwuO/5RDBpcV4yDiYOToyTyoU6sVwnsPVci8g0SXbmEheKzV8nE/t1AsJR4/ThbIRpblCuCk2bAFk+M+pKyhAR8hXj1ceNPZP+zLwsCzO2mWYO0x/EOAQaKgnHu6YcFqHsYOfNPzPrJYf/XiPU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=rh/93whM; arc=none smtp.client-ip=150.107.74.76
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1726443013;
-	bh=Y1h5tBB4yQZthgHIVPPlEF11vZNIxCjyn316QTsFtvk=;
+	s=201702; t=1726443723;
+	bh=N62nmdW/mIjLgwLjyQ9RXaf/g2kvV724xrfZkUHciBw=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=lvf+qAV+hi6Tjgll66dQTIDb7P/Ov87EbW4wTv3DtGR/V3XlVKR/hNvox0WA2aozw
-	 smfCQHGVOApxgg6UtLuyfSAyRT8pYZou4Ttg+b7/6aq8pgVOprk40fY2YeahimlJ/c
-	 zwHAPRoqYu9L91TKcHZQse9WL3fVAVIpGNYxT1aQo1VlP67t/hFhpnHqT4WoZ3/008
-	 UNs9CiW5BJVig19dOG9N2cjhd2diyFs2eHF+oZHPWcqWePtmLC32iBhQlNek1IP/yZ
-	 fnwpfCOQUWtwodvRMFBnFaMOFeAiX+J4ZalM6NVBnB9HCTgm4/pHkb5DgDL1/KvTDD
-	 Ktj52D8/H1Dag==
+	b=rh/93whMBR8iPEyWGJzyBu9wqjXpsq7y3VA4+hODh1AIJrS+Hd5MoNa1QcLFQy0kX
+	 7CBe7B2O7nPi3pHGSK8CJ44D7vNczODVnzWFcGCllqHwHceUpz3OkDhw1bhxoRmLce
+	 QwBgfRakRnzEfXYl4xykZxDRz9GlucoAZVQ6a8oW09D4VlaPYuBJTq0lZu5ueCn6TR
+	 XH4xdt5JG2/TjovRdm8T39h6DS6WX4NX00kQIh5MyvNWnVwOL8IWvHAIMhQw9sSxNt
+	 b2+W6U0kxyaK+XUJe25sDKtF1xu/dwkOgQh0alaoglDlruoHAxRMQwSWcAanTOXQO/
+	 /QacaJEjSSc0g==
 Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4X6PR92HCsz4x8H;
-	Mon, 16 Sep 2024 09:30:13 +1000 (AEST)
-Date: Mon, 16 Sep 2024 09:30:12 +1000
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4X6Phn4Xw7z4x8H;
+	Mon, 16 Sep 2024 09:42:01 +1000 (AEST)
+Date: Mon, 16 Sep 2024 09:42:01 +1000
 From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: David Chinner <david@fromorbit.com>, Al Viro <viro@zeniv.linux.org.uk>
+To: Christian Brauner <brauner@kernel.org>, Al Viro
+ <viro@zeniv.linux.org.uk>
 Cc: Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov
- <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, "Darrick J. Wong"
- <djwong@kernel.org>, <linux-xfs@vger.kernel.org>, bpf
- <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>, Linux Kernel
- Mailing List <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, Aleksa Sarai
+ <cyphar@cyphar.com>, bpf <bpf@vger.kernel.org>, Networking
+ <netdev@vger.kernel.org>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
  <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the bpf-next tree
-Message-ID: <20240916093012.3a4dbb3f@canb.auug.org.au>
-In-Reply-To: <20240913135551.4156251c@canb.auug.org.au>
-References: <20240913135551.4156251c@canb.auug.org.au>
+Subject: Re: linux-next: manual merge of the bpf-next tree with the
+ vfs-brauner tree
+Message-ID: <20240916094201.212c3b23@canb.auug.org.au>
+In-Reply-To: <20240814105629.0ad9631b@canb.auug.org.au>
+References: <20240814105629.0ad9631b@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/n+py4hQiflHSYe1wuWUP..Q";
+Content-Type: multipart/signed; boundary="Sig_/Ed2Nn8F8WPVJvnATdGlcyLf";
  protocol="application/pgp-signature"; micalg=pgp-sha256
 
---Sig_/n+py4hQiflHSYe1wuWUP..Q
+--Sig_/Ed2Nn8F8WPVJvnATdGlcyLf
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
 
 Hi all,
 
-On Fri, 13 Sep 2024 13:55:51 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
+On Wed, 14 Aug 2024 10:56:29 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
 wrote:
 >
-> After merging the bpf-next tree, today's linux-next build (powerpc
-> ppc64_defconfig) failed like this:
+> Today's linux-next merge of the bpf-next tree got a conflict in:
 >=20
-> fs/xfs/xfs_exchrange.c: In function 'xfs_ioc_commit_range':
-> fs/xfs/xfs_exchrange.c:938:19: error: 'struct fd' has no member named 'fi=
-le'
->   938 |         if (!file1.file)
->       |                   ^
-> fs/xfs/xfs_exchrange.c:940:26: error: 'struct fd' has no member named 'fi=
-le'
->   940 |         fxr.file1 =3D file1.file;
->       |                          ^
+>   fs/coda/inode.c
 >=20
-> Caused by commit
+> between commit:
+>=20
+>   626c2be9822d ("coda: use param->file for FSCONFIG_SET_FD")
+>=20
+> from the vfs-brauner tree and commit:
 >=20
 >   1da91ea87aef ("introduce fd_file(), convert all accessors to it.")
 >=20
-> interacting with commit
+> from the bpf-next tree.
 >=20
->   398597c3ef7f ("xfs: introduce new file range commit ioctls")
->=20
-> I have applied the following patch for today.
->=20
-> From: Stephen Rothwell <sfr@canb.auug.org.au>
-> Date: Fri, 13 Sep 2024 13:53:35 +1000
-> Subject: [PATCH] fix up 3 for "introduce fd_file(), convert all accessors=
- to
->  it."
->=20
-> interacting with commit "xfs: introduce new file range commit ioctls"
-> from the xfs tree.
->=20
-> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> ---
->  fs/xfs/xfs_exchrange.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->=20
-> diff --git a/fs/xfs/xfs_exchrange.c b/fs/xfs/xfs_exchrange.c
-> index 39fe02a8deac..75cb53f090d1 100644
-> --- a/fs/xfs/xfs_exchrange.c
-> +++ b/fs/xfs/xfs_exchrange.c
-> @@ -935,9 +935,9 @@ xfs_ioc_commit_range(
->  	fxr.file2_ctime.tv_nsec	=3D kern_f->file2_ctime_nsec;
-> =20
->  	file1 =3D fdget(args.file1_fd);
-> -	if (!file1.file)
-> +	if (fd_empty(file1))
->  		return -EBADF;
-> -	fxr.file1 =3D file1.file;
-> +	fxr.file1 =3D fd_file(file1);
-> =20
->  	error =3D xfs_exchange_range(&fxr);
->  	fdput(file1);
-> --=20
-> 2.45.2
+> I fixed it up (the former removed the code modified by the latter, so I
+> used the former) and can carry the fix as necessary. This is now fixed
+> as far as linux-next is concerned, but any non trivial conflicts should
+> be mentioned to your upstream maintainer when your tree is submitted for
+> merging.  You may also want to consider cooperating with the maintainer
+> of the conflicting tree to minimise any particularly complex conflicts.
 
-This is now required in the merge of the vfs tree.
+This is now a conflict between the vfs tree and the vfs-branuer tree.
+
 --=20
 Cheers,
 Stephen Rothwell
 
---Sig_/n+py4hQiflHSYe1wuWUP..Q
+--Sig_/Ed2Nn8F8WPVJvnATdGlcyLf
 Content-Type: application/pgp-signature
 Content-Description: OpenPGP digital signature
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmbnbgQACgkQAVBC80lX
-0GxOmQf9EqVOabb35jmctfoGwKoCRx2hkULOJK0zMnSI5LXbUbGgjybTQ/hQ3xY2
-dPkX0WvpfX2EaGvAAPgqjLrUvKOtAvEWMwzXnwXNimeGI8oDAc0j45X4BekNrkmJ
-rr53OSCgdTX/VgT1r/aHSW+XGmvG4fUiK2IDZRytHUMaiwr8uNtuqaEakqYHmfKW
-WC01w7FkTBxH/n21XTRXmbGt/9nh0r0IhhBBi9jBXF2obZ8NytYxbOUdUmSuh2tj
-WyBBVM6DwKU6RGAcadhvpySOdy/zwhfGjW5fvnAs29nKXc0KeFrp1uH+KELF305S
-r0SvOJVp1H6c55YzStwo1Sg2PWSQwA==
-=q4nB
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmbncMkACgkQAVBC80lX
+0GwuvQf/dvsPxheb2d2OlHJSqWC9TwnVGKJmNFVej4FdL3DNp08Ok6+Yj29PsP/2
+vnSGMQFxpZVEOSXnlSl5Yhk5UksSc91AWpdO6358xekh2vG2GvltByCc3JdkaCNn
+1jIDsvIXEkeRyKIT7XR3yrLvwe+yOsIcY7Q36/jjp8ndIl/Uo4ExSZuYGFRXPARh
+cUVLI0ROJGGWGr68WUoggHcEu1WaeekyQnpelYHTtP0p6m7MREBdDvLKfPiSfOMz
+Xoi5bWYcoJ2Hz+N7w6VZU9SxRFIpRVgb/BBkxQ7vMGOkHVXF139N4ZZoAA6z1rP1
+M0OZiYi0PHNlNA2x6/hWjW/s7eSM/w==
+=f/Ds
 -----END PGP SIGNATURE-----
 
---Sig_/n+py4hQiflHSYe1wuWUP..Q--
+--Sig_/Ed2Nn8F8WPVJvnATdGlcyLf--
 
