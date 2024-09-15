@@ -1,99 +1,115 @@
-Return-Path: <bpf+bounces-39913-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39914-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12F5F979456
-	for <lists+bpf@lfdr.de>; Sun, 15 Sep 2024 04:11:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38C6F979458
+	for <lists+bpf@lfdr.de>; Sun, 15 Sep 2024 04:11:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 36CE51C21F57
-	for <lists+bpf@lfdr.de>; Sun, 15 Sep 2024 02:11:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E3EF4281CA7
+	for <lists+bpf@lfdr.de>; Sun, 15 Sep 2024 02:11:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2826F6FDC;
-	Sun, 15 Sep 2024 02:11:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4AD2D2FF;
+	Sun, 15 Sep 2024 02:11:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="ZSxLVEQG";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="bRrscKeM"
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="M6zI7PDB";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="hjF2QSM3"
 X-Original-To: bpf@vger.kernel.org
-Received: from fhigh5-smtp.messagingengine.com (fhigh5-smtp.messagingengine.com [103.168.172.156])
+Received: from fout1-smtp.messagingengine.com (fout1-smtp.messagingengine.com [103.168.172.144])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A40E710E0;
-	Sun, 15 Sep 2024 02:11:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.156
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89F438F49;
+	Sun, 15 Sep 2024 02:11:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.144
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726366288; cv=none; b=Uhjc39RebHXYXWqerckl5KT1Q29OyJJzSBv2s7weeKrWqv+S7H4n/0v7saDsul4ieQgxUwixm7mvqnWWeva8G/+WyV6cwOhQ1riA3l6libmTdKsCuqJp7T/pGsokWBrKGsz99rrZmY6Iouy4C/puhszG8D6YN6psIi0pa63Ptvk=
+	t=1726366291; cv=none; b=YAkB3Xi8H1vFRkREYOPJ4j0CgV4srYslNkDCl+mlhvDHwoeGrQYO3wPh7gWD7y5T08MreC05cw8mhsacH78mOpmqYyqj6Ud5idgfZo3eX23cVLp95x8iigQsbbDv2uCKS3PCJTkrJm+1zTlRJb9TTmJTU3KJ57vxZffLVVQb6NY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726366288; c=relaxed/simple;
-	bh=ONOOvc7H8puUY7BFSVYSGAUeQBINEpTL1Lo1rB2QMQQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=DW03nsvqwVt6HITftzpQCWdr4wafxjcCABNWTjYYRdEoZtsb04qQdv7Et33G3iqxFg/sZXxbGm2f+L66d7eZ7xG8d4tu94TTN9EhCNDqdqP+GlI+IwHz8boweuYEV3mXekh/LsDyVDFrBrUdG4vIIs9mGs7q18Bq5q+WV03nPBo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=ZSxLVEQG; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=bRrscKeM; arc=none smtp.client-ip=103.168.172.156
+	s=arc-20240116; t=1726366291; c=relaxed/simple;
+	bh=2I9Pk3oKd1JIpM2WDUNQbhw5iX+9J9DK6KWOPDVqBlQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=rqUWOmgifO7quL0oHij5rJjIMocU55HLrUoVE/KVqqeFufZhQZTsWaVGtODbrYxXl9HCdUFQ9+mIST3soeNuERfonDyWr77k6tjiaI65YzJXnheDO9mUNjK2IgR8i6b1BVkj06v4JEcmTbqrclWGJyZUjyyeV3zSIEnEksy0lj4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=M6zI7PDB; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=hjF2QSM3; arc=none smtp.client-ip=103.168.172.144
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
-Received: from phl-compute-11.internal (phl-compute-11.phl.internal [10.202.2.51])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id 9E69511401A0;
-	Sat, 14 Sep 2024 22:11:25 -0400 (EDT)
+Received: from phl-compute-04.internal (phl-compute-04.phl.internal [10.202.2.44])
+	by mailfout.phl.internal (Postfix) with ESMTP id AAD4E1380261;
+	Sat, 14 Sep 2024 22:11:28 -0400 (EDT)
 Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-11.internal (MEProxy); Sat, 14 Sep 2024 22:11:25 -0400
+  by phl-compute-04.internal (MEProxy); Sat, 14 Sep 2024 22:11:28 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
 	:cc:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
-	:to; s=fm3; t=1726366285; x=1726452685; bh=vH1L6GVdqbgklROtASIhg
-	ZjcgZUvBW19IlqBQp/sQHU=; b=ZSxLVEQGSHhOehoordsoHKNBDc33Y24eWRAr/
-	6mjvwWnOf2aC2OJH3l8jJH9QnXqhXb7+M99ooqXhk6LEN6NfNF2cl2IRIvkUfAIF
-	rrLP9kw+V5kbBbZtz+DZCyNqcFW/LOKYs/e9wcYRIr5EgJg0QHKZzRxvCclComGw
-	is7Mje0s91U+rYUr5xJOb2Qu2mrETym1l6TuJKeA8w/zpiEJWoP7wIsP+GJRP5DL
-	g+QD2pHWrjdxbGNXmHs3YN7XzheABxnnlk/6oPr/NShXbyp7TyVsCr8QX6iAQ9iO
-	5UUjjmlzQJdRPyjeGYwykeVB6wvoj/3CPRkXaz/hhvjeRYYeA==
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to; s=fm3; t=1726366288; x=
+	1726452688; bh=0JULU38YKiGhwgv9FdaunOkEi9F+OYarXOVhKIE8ef8=; b=M
+	6zI7PDBy3/XwCv0RmmsVuC+eL8u3RkohWrHb1OLy8GbcQVInrwcUQn8whMkwKKab
+	DIlLh6uQPUzrHhfBa1fENXdL+LDChCCstCJ2VDIYhOliPulVYj/z32/ugnUBRJ2F
+	ZbaEJ3SXiG77d5SxP9rUpwXES53r0ipB5nf8MFzGoSZ+Rbr8+TSmi9qoQ0nGjdle
+	tKG98p2lbz/Ga8s42tTihxB55oCllMkwUPnjc6flEtVutiUl75QHn/YUi8aruxRS
+	V2K7LyOi1bGoCFLz9DXtwMUtDxtNzowwcQ5RXqh3T3qCqMxrCEHecUY4EWIGwdIu
+	DTRR99zbgzMN5rcuAHfQQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-transfer-encoding
 	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm1; t=1726366285; x=1726452685; bh=vH1L6GVdqbgklROtASIhgZjcgZUv
-	BW19IlqBQp/sQHU=; b=bRrscKeMASPGwemLb3oRhR3glwepBxgJjsgPpHQ1xl/z
-	KicRhGodhMHYN4q/nfaU772ke6sHYaGAhc/SVm7q4O6eNte+lka/8aDczdgzDekK
-	79DIKkZzNexIMZkyQJS/x9XsRFW3ic7ZKkYnXGwP8Y+Aucprc0BJCrrOAd7m93rg
-	kPah3fmHC/iTnlXJUQHPB8Z3qXRp8VwXyc0nMC2xVU8Y3TaZ42KwkO5lUfqOU3qf
-	x9M+EvOn7OVKbhW7U73eGa6I6RC4sOIf1AKnW1wfJS9SNy7bNECLcXcN4N+sVlOy
-	jIAsFjbzRNjQqik0Yk9OgTQizLuMbCI97pY6YM8Mdw==
-X-ME-Sender: <xms:TULmZt19tIVrlDovXt1bSMDPfHvw9kbhBMe8a88cJgj9aVupGdpTKQ>
-    <xme:TULmZkFBoAxN6XvHnPiMLnDVdn0eKLyv4Z_Af6JbjKut24Bz_ePAtbx8tSPN9c3bl
-    bqsF2YdaP-AWPFR9g>
-X-ME-Received: <xmr:TULmZt6GKNgVAa1MEmgne28RyQ1GILDm1JxTZZzd3nIKdfMv0eab5xwjafjmURhhocCEcPnQBh-um1CXhC2Li9dtmOX6HmdM9o03OSRfaDXscXtR9RcN>
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1726366288; x=
+	1726452688; bh=0JULU38YKiGhwgv9FdaunOkEi9F+OYarXOVhKIE8ef8=; b=h
+	jF2QSM3wRAZNdE+kwsuTm53Sdb9gJpzGVS7OuUVCqlwvTC7BpfLBKQUGjaAQJd75
+	PlAIexi36G/gIfaoPLej9WTrN9W8jcp+5z5o7F9kReflkKgmRSHLeG3oI5WffbhY
+	J631QJrcDE+IIF0AMC1aXpTBW+B3YbZhbGqi2AzBf9TG3PWzEL+tZFUbIxauUl6H
+	DcrDq3N5AS9AXewt+06Fl/+NjA7qbc1x5IEGUddtHv0Cxzo4slbacKWgp0zYul4/
+	s8E7pQRu73yAiBtbxMismh6xM/JIlLKhXedSACKiChcq8WhJbGsziEbLYPr5L7FG
+	3FAFjkOOJbu7FOa1iyvyg==
+X-ME-Sender: <xms:UELmZm2WfdwGQFP3SGVN0v4L5MYAetX09OGY1kGyUNTEuBTpgrETlw>
+    <xme:UELmZpEWETGzyQmxjcYaR--1ywwNGpxQ9B1YZOIv9Tz6u1frg_yjCLvqSE_qufw8o
+    R6j0srx3MK8SuD2Tw>
+X-ME-Received: <xmr:UELmZu45mcGgQMiA8IR9nf5BeS20izaOyZS6y3glZVCwd4U9igMhzOAX49AWtGs_AyEZDpK682j2rC5kMuYClz6AyTEPerjSyR1UUAHAbu3OtdxbW2xf>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrudekuddgheejucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
     rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdlje
-    dtmdenucfjughrpefhvfevufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeffrghn
-    ihgvlhcuighuuceougiguhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhepvd
-    eggfetgfelhefhueefkeduvdfguedvhfegleejudduffffgfetueduieeikeejnecuvehl
-    uhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepugiguhesugiguh
-    huuhdrgiihiidpnhgspghrtghpthhtohepiedpmhhouggvpehsmhhtphhouhhtpdhrtghp
-    thhtohepsghpfhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuh
-    igqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhn
-    uhigqdhkshgvlhhfthgvshhtsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoh
-    eprghstheskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprghnughrihhisehkvghrnhgv
-    lhdrohhrghdprhgtphhtthhopehkvghrnhgvlhdqthgvrghmsehmvghtrgdrtghomh
-X-ME-Proxy: <xmx:TULmZq1M-I_0VwVuxg2RzdA7U-2bMQP1tbrKNPEC2VZvj8mBZNsaYw>
-    <xmx:TULmZgHYW1O9gryDRPO6Rd6SIIYFW2TOqNd6gB8VIoNEmceBlRuMMQ>
-    <xmx:TULmZr96_oGKgPoHjpVFoIlMSfYNAzBIQtmRFYIp0QEdwnHKuU4Ejg>
-    <xmx:TULmZtluUzihLJoU1gpkv3xacZWYd6urXJflpdyKEzQcVuDW0j05lA>
-    <xmx:TULmZl4UYe-DMFzHbTE8VCQ6t_44Q-XdaI-w_34_7i0gpWrMUxoTxH2d>
+    dtmdenucfjughrpefhvfevufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeff
+    rghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnh
+    epgfefgfegjefhudeikedvueetffelieefuedvhfehjeeljeejkefgffeghfdttdetnecu
+    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepugiguhesug
+    iguhhuuhdrgiihiidpnhgspghrtghpthhtohepudehpdhmohguvgepshhmthhpohhuthdp
+    rhgtphhtthhopegurghnihgvlhesihhoghgvrghrsghogidrnhgvthdprhgtphhtthhope
+    grshhtsehkvghrnhgvlhdrohhrghdprhgtphhtthhopegrnhgurhhiiheskhgvrhhnvghl
+    rdhorhhgpdhrtghpthhtohepjhhohhhnrdhfrghsthgrsggvnhgusehgmhgrihhlrdgtoh
+    hmpdhrtghpthhtohepmhgrrhhtihhnrdhlrghusehlihhnuhigrdguvghvpdhrtghpthht
+    ohepvgguugihiiekjeesghhmrghilhdrtghomhdprhgtphhtthhopehsohhngheskhgvrh
+    hnvghlrdhorhhgpdhrtghpthhtohephihonhhghhhonhhgrdhsohhngheslhhinhhugidr
+    uggvvhdprhgtphhtthhopehkphhsihhnghhhsehkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:UELmZn3qlCjNh30pPkki5XFsdGZVV1Q2pzkwejD9chZWqfyjtxCwpg>
+    <xmx:UELmZpHpk98xTTMIKKrwN8uxvHUYo4hXA-q-yPyOOKumL2y2QoOFSA>
+    <xmx:UELmZg9VZaZYBBKEjNpVZDvDZtHbrmsKbfrDokZE7iRv-NL5J4jAGA>
+    <xmx:UELmZulCAsKhvugSGmTpIsmyzB6P4Y1ccRXKAO7n4s4W-Lv1YVLSLg>
+    <xmx:UELmZrFnjtZpGijtn1l63Lkm1j6Qf100A6tTrKbxkM6OEl3jYjnB3Fd8>
 Feedback-ID: i6a694271:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 14 Sep 2024 22:11:23 -0400 (EDT)
+ 14 Sep 2024 22:11:25 -0400 (EDT)
 From: Daniel Xu <dxu@dxuuu.xyz>
-To: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
+To: daniel@iogearbox.net,
 	ast@kernel.org,
 	andrii@kernel.org
-Cc: kernel-team@meta.com
-Subject: [PATCH bpf-next 0/2] Support eliding map lookup nullness
-Date: Sat, 14 Sep 2024 20:11:10 -0600
-Message-ID: <cover.1726366145.git.dxu@dxuuu.xyz>
+Cc: john.fastabend@gmail.com,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	kernel-team@meta.com
+Subject: [PATCH bpf-next 1/2] bpf: verifier: Support eliding map lookup nullness
+Date: Sat, 14 Sep 2024 20:11:11 -0600
+Message-ID: <25457cde1da9a4d387fdb3ee4628cd5a4ca97590.1726366145.git.dxu@dxuuu.xyz>
 X-Mailer: git-send-email 2.46.0
+In-Reply-To: <cover.1726366145.git.dxu@dxuuu.xyz>
+References: <cover.1726366145.git.dxu@dxuuu.xyz>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -102,7 +118,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This patch allows progs to elide a null check on statically known map
+This commit allows progs to elide a null check on statically known map
 lookup keys. In other words, if the verifier can statically prove that
 the lookup will be in-bounds, allow the prog to drop the null check.
 
@@ -124,14 +140,99 @@ desirable for the programmer to express: "this lookup should never fail,
 and if it does, it means I messed up the code". By omitting the null
 check, the programmer can "ask" the verifier to double check the logic.
 
-Daniel Xu (2):
-  bpf: verifier: Support eliding map lookup nullness
-  bpf: selftests: verifier: Add nullness elision tests
+Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+---
+ kernel/bpf/verifier.c | 56 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 56 insertions(+)
 
- kernel/bpf/verifier.c                         |  56 +++++++
- .../bpf/progs/verifier_array_access.c         | 143 ++++++++++++++++++
- 2 files changed, 199 insertions(+)
-
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 7df5c29293a4..5b5ae3c1a456 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -282,6 +282,7 @@ struct bpf_call_arg_meta {
+ 	u32 ret_btf_id;
+ 	u32 subprogno;
+ 	struct btf_field *kptr_field;
++	long const_map_key;
+ };
+ 
+ struct bpf_kfunc_call_arg_meta {
+@@ -10414,6 +10415,45 @@ static void update_loop_inline_state(struct bpf_verifier_env *env, u32 subprogno
+ 				 state->callback_subprogno == subprogno);
+ }
+ 
++/* Returns whether or not the given map type can potentially elide
++ * lookup return value nullness check. This is possible if the key
++ * is statically known.
++ */
++static bool can_elide_value_nullness(enum bpf_map_type type)
++{
++	switch (type) {
++	case BPF_MAP_TYPE_ARRAY:
++	case BPF_MAP_TYPE_PERCPU_ARRAY:
++		return true;
++	default:
++		return false;
++	}
++}
++
++/* Returns constant key value if possible, else -1 */
++static long get_constant_map_key(struct bpf_verifier_env *env,
++				 struct bpf_reg_state *key)
++{
++	struct bpf_func_state *state = func(env, key);
++	struct bpf_reg_state *reg;
++	int stack_off;
++	int slot;
++	int spi;
++
++	if (!tnum_is_const(key->var_off))
++		return -1;
++
++	stack_off = key->off + key->var_off.value;
++	slot = -stack_off - 1;
++	spi = slot / BPF_REG_SIZE;
++	reg = &state->stack[spi].spilled_ptr;
++
++	if (!tnum_is_const(reg->var_off))
++		return -1;
++
++	return reg->var_off.value;
++}
++
+ static int get_helper_proto(struct bpf_verifier_env *env, int func_id,
+ 			    const struct bpf_func_proto **ptr)
+ {
+@@ -10511,6 +10551,15 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+ 			env->insn_aux_data[insn_idx].storage_get_func_atomic = true;
+ 	}
+ 
++	/* Logically we are trying to check on key register state before
++	 * the helper is called, so process here. Otherwise argument processing
++	 * may clobber the spilled key values.
++	 */
++	regs = cur_regs(env);
++	if (func_id == BPF_FUNC_map_lookup_elem)
++		meta.const_map_key = get_constant_map_key(env, &regs[BPF_REG_2]);
++
++
+ 	meta.func_id = func_id;
+ 	/* check args */
+ 	for (i = 0; i < MAX_BPF_FUNC_REG_ARGS; i++) {
+@@ -10771,6 +10820,13 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+ 				"kernel subsystem misconfigured verifier\n");
+ 			return -EINVAL;
+ 		}
++
++		if (func_id == BPF_FUNC_map_lookup_elem &&
++		    can_elide_value_nullness(meta.map_ptr->map_type) &&
++		    meta.const_map_key >= 0 &&
++		    meta.const_map_key < meta.map_ptr->max_entries)
++			ret_flag &= ~PTR_MAYBE_NULL;
++
+ 		regs[BPF_REG_0].map_ptr = meta.map_ptr;
+ 		regs[BPF_REG_0].map_uid = meta.map_uid;
+ 		regs[BPF_REG_0].type = PTR_TO_MAP_VALUE | ret_flag;
 -- 
 2.46.0
 
