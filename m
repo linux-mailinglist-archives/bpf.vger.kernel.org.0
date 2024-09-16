@@ -1,489 +1,446 @@
-Return-Path: <bpf+bounces-40009-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40010-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCA7F97A8DE
-	for <lists+bpf@lfdr.de>; Mon, 16 Sep 2024 23:41:44 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73A2D97A9A3
+	for <lists+bpf@lfdr.de>; Tue, 17 Sep 2024 01:32:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D629F1C21EDE
-	for <lists+bpf@lfdr.de>; Mon, 16 Sep 2024 21:41:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4B5731C2724A
+	for <lists+bpf@lfdr.de>; Mon, 16 Sep 2024 23:32:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F54615E5DC;
-	Mon, 16 Sep 2024 21:41:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68039158A2E;
+	Mon, 16 Sep 2024 23:32:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="M4KV0ZjF"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="IPyYuuwQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0B6BF9DA;
-	Mon, 16 Sep 2024 21:41:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 986B9143722
+	for <bpf@vger.kernel.org>; Mon, 16 Sep 2024 23:32:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726522896; cv=none; b=IoZP4S+rSFN42VQOjVy3lNJbmzadJowfEWAgVT4+gWcEboENXA3MVecCKc1Cqf3y2t5uWgOkjgpdSrz5YYaR/yHXDRqDld/rjouBjQaxldfkroApKpsaOMDsfTa1KuclODMhltMs39IsMfaVktgcDKx3+NmQ0MT5W9EM2uRovGE=
+	t=1726529567; cv=none; b=BngT7iy5SwDtSiKu3iDA9J5RrUT8+s1AlxRWs1pnpVKukpk226HrAXf/AO+Z98P3nKtnE1g1IC6qqZ/CyKc0HyC0I77kqwPZc5noEW6L56NQ3boWlJsELS/SkjzfEssh9Djfqf5q58I0ij4ZeUlNfv7MEj4PIQqi1nYrNJIQHSg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726522896; c=relaxed/simple;
-	bh=1zRsZgrfyFa7VrC3dlcujk2pReT4Go7ohujWLrGRzCU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tQMweUNx/NMUK1/sbFWdSWxFOsXTVqUuJkjrtiqa3x1aBBgbJMNq0QpEI7ZoEUwBoZO0lATtm3dTOTQ5WZh4HtxE+Yq+Yc4/hnZHgftpu8boKDwIQIihilXBRvJNngvxWbozNVKl6mDd2YVE9Uqicg1lT/FzNAZD5yMt1XeR4+k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=M4KV0ZjF; arc=none smtp.client-ip=192.198.163.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1726522895; x=1758058895;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=1zRsZgrfyFa7VrC3dlcujk2pReT4Go7ohujWLrGRzCU=;
-  b=M4KV0ZjFYYsPCxU5/1gEUpvkcJO7LMarti8HXyrG7tdZ1TzOEzp4p2J0
-   SaoytnXnDI+m6ckcHsiUmi/C85FYDJtHuIfHl981pDDmQ6Xx/904ykT0I
-   pKHk8jICk28aLlQcuk9ZUkS2mbR6ylD6TmDkIqPJVUnhtm8Bd3S9hUA85
-   vqCWxjjZdyiMYAfU9qj+uGkOgerAsZownEQPx5uR3xuE2sHahYkH4Bt5I
-   JTc3F2BSC8BIZqe4zvCvEnv6H1p/2CtO1mDDOAzNT0vSlvOusOYo6j62q
-   aG9KembLQ1Gb9BTWyrtqWijBXwW8cPqufbq4SIvmt5zUmrO9lB/dFSb+9
-   w==;
-X-CSE-ConnectionGUID: k5xm13biRSqt/M4Fsdzxvw==
-X-CSE-MsgGUID: JFzSZmVLTnqVN0nRMLObkQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11197"; a="28278909"
-X-IronPort-AV: E=Sophos;i="6.10,233,1719903600"; 
-   d="scan'208";a="28278909"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2024 14:41:34 -0700
-X-CSE-ConnectionGUID: m89t8977TSy3Gh4LyZRpEg==
-X-CSE-MsgGUID: er0W4ujrT3uAcRlLZbf7kQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.10,233,1719903600"; 
-   d="scan'208";a="106456492"
-Received: from lkp-server01.sh.intel.com (HELO 53e96f405c61) ([10.239.97.150])
-  by orviesa001.jf.intel.com with ESMTP; 16 Sep 2024 14:41:29 -0700
-Received: from kbuild by 53e96f405c61 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1sqJTK-000AWV-2G;
-	Mon, 16 Sep 2024 21:41:26 +0000
-Date: Tue, 17 Sep 2024 05:41:18 +0800
-From: kernel test robot <lkp@intel.com>
-To: Hari Bathini <hbathini@linux.ibm.com>,
-	linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, bpf@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	"Naveen N. Rao" <naveen@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Vishal Chourasia <vishalc@linux.ibm.com>,
-	Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>
-Subject: Re: [PATCH v5 17/17] powerpc64/bpf: Add support for bpf trampolines
-Message-ID: <202409170544.6d1odaN2-lkp@intel.com>
-References: <20240915205648.830121-18-hbathini@linux.ibm.com>
+	s=arc-20240116; t=1726529567; c=relaxed/simple;
+	bh=SPtdiIyfNANrl9FF5m1x7BfDT/+sAltGRKt9GKfd7Vo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=id3k4bYJyIjz4TjoBdZHMxFe8M7037U/aKKBpO4r1H5v03sPopqZEtkflkPP5aSquBoNeVR9cKKIDM5twZzYkJ31BfOU5PqgrKf8dUsLwM3oBmfdqEZmFyXneLyjtusBD6ycxxcjvzONmV/MNBXgaO+DX3WdK1dfdPZNCZ1stJY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=IPyYuuwQ; arc=none smtp.client-ip=209.85.215.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-7d4fa972cbeso3882460a12.2
+        for <bpf@vger.kernel.org>; Mon, 16 Sep 2024 16:32:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1726529565; x=1727134365; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Z9mUVHMAavcUxKnLNiLYFc/iky/HnjZfCcQFKHlZayo=;
+        b=IPyYuuwQR365L4BnH1vgXap7IHeJYE+7kAcs1W1m5TgB4EYDNZn353fWGcJ5hC64Vv
+         oCWYDM3SkaEaivpjXa+f9fXzcuCHMo6Rfk8oFOe3tTcTw9Jtgq5pkunHc7uo2uw4WD7R
+         ni416nwiAi85DQZmnqaPTUmPbPZvIFXq5+zj0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1726529565; x=1727134365;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Z9mUVHMAavcUxKnLNiLYFc/iky/HnjZfCcQFKHlZayo=;
+        b=S/CwFQOgGIe7m44LApvSYQ081SLdf1arqI4Mu+E2uOuzEk9/MgXQ08X3wOH26dzf0t
+         30ql6J8n23mtig3Pbvc34Wrcn+XQKZhMi/rjfyylHnyYHq0+gjyrWx3EXn6BqUMkqe51
+         SSh1nVTs9yor8d9OozzfOjztTEadnYE4V4NqX0Ttvd9hwQWRqRQZHAe3u/sqERQnABrF
+         CAXSCAc/k/pS0UYAtVSvvfwAOs0iriT3H3CZqf3SN4vp4NzP+A50Xly37qOeGqMHMXhx
+         pVpnQK6kB5yNMc5KId1Si+kgr3oFQzTPDuagmQaf0M6fNbnwFll7SufNMM8NTAgKsXyI
+         +5eA==
+X-Forwarded-Encrypted: i=1; AJvYcCUllgc2phykJLToMJ3473UGv+3auIUG+7GGGyUJ+/o7NaeTqg1qtr2px4q6ex8NiXcda1s=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxwtBVqiCdVoxwXCBFmVAUmuynlivjlfim0K14UdhaDjNAnrNs+
+	biwlsf+UX+eF3CnbW52A7RQVhy12ZP0LUBUNCZw53GEo/d+MyvISCRiSHa64shin9jtps1u8PQq
+	irzcIsq056FRyD6byHy6sO4sM0XSV7GEWZm0q
+X-Google-Smtp-Source: AGHT+IE72MFyllzN0ozCXMGgr1MGi103ntb9aa1icB+w7Su1bkHJaYgfDvvRt+ybuNJ1tdHngYO6KpJTNc4763XH4NM=
+X-Received: by 2002:a05:6a21:1707:b0:1cf:6c65:68d with SMTP id
+ adf61e73a8af0-1cf762382d3mr25137092637.46.1726529564812; Mon, 16 Sep 2024
+ 16:32:44 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240915205648.830121-18-hbathini@linux.ibm.com>
+References: <20240904054815.1341712-1-jitendra.vegiraju@broadcom.com>
+ <20240904054815.1341712-3-jitendra.vegiraju@broadcom.com> <mhfssgiv7unjlpve45rznyzr72llvchcwzk4f7obnvp5edijqc@ilmxqr5gaktb>
+In-Reply-To: <mhfssgiv7unjlpve45rznyzr72llvchcwzk4f7obnvp5edijqc@ilmxqr5gaktb>
+From: Jitendra Vegiraju <jitendra.vegiraju@broadcom.com>
+Date: Mon, 16 Sep 2024 16:32:33 -0700
+Message-ID: <CAMdnO-+CcCAezDXLwTe7fEZPQH6_B1zLD2g1J6uWiKi12vOxzg@mail.gmail.com>
+Subject: Re: [PATCH net-next v5 2/5] net: stmmac: Add basic dw25gmac support
+ in stmmac core
+To: Serge Semin <fancer.lancer@gmail.com>
+Cc: netdev@vger.kernel.org, alexandre.torgue@foss.st.com, joabreu@synopsys.com, 
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, 
+	mcoquelin.stm32@gmail.com, bcm-kernel-feedback-list@broadcom.com, 
+	richardcochran@gmail.com, ast@kernel.org, daniel@iogearbox.net, 
+	hawk@kernel.org, john.fastabend@gmail.com, rmk+kernel@armlinux.org.uk, 
+	ahalaney@redhat.com, xiaolei.wang@windriver.com, rohan.g.thomas@intel.com, 
+	Jianheng.Zhang@synopsys.com, linux-kernel@vger.kernel.org, 
+	linux-stm32@st-md-mailman.stormreply.com, 
+	linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org, andrew@lunn.ch, 
+	linux@armlinux.org.uk, horms@kernel.org, florian.fainelli@broadcom.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Hari,
+Hi Serge,
 
-kernel test robot noticed the following build warnings:
+On Tue, Sep 10, 2024 at 12:25=E2=80=AFPM Serge Semin <fancer.lancer@gmail.c=
+om> wrote:
+>
+> > +static u32 decode_vdma_count(u32 regval)
+> > +{
+> > +     /* compressed encoding for vdma count
+> > +      * regval: VDMA count
+> > +      * 0-15  : 1 - 16
+> > +      * 16-19 : 20, 24, 28, 32
+> > +      * 20-23 : 40, 48, 56, 64
+> > +      * 24-27 : 80, 96, 112, 128
+> > +      */
+> > +     if (regval < 16)
+> > +             return regval + 1;
+> > +     return (4 << ((regval - 16) / 4)) * ((regval % 4) + 5);
+>
+> The shortest code isn't always the best one. This one gives me a
+> headache in trying to decipher whether it really matches to what is
+> described in the comment. What about just:
+>
+>         if (regval < 16) /* Direct mapping */
+>                 return regval + 1;
+>         else if (regval < 20) /* 20, 24, 28, 32 */
+>                 return 20 + (regval - 16) * 4;
+>         else if (regval < 24) /* 40, 48, 56, 64 */
+>                 return 40 + (regval - 20) * 8;
+>         else if (regval < 28) /* 80, 96, 112, 128 */
+>                 return 80 + (regval - 24) * 16;
+>
+> ?
+Couldn't agree more :)
+Thanks, I will replace it with your code, which is definitely more readable=
+.
 
-[auto build test WARNING on powerpc/next]
-[also build test WARNING on powerpc/fixes masahiroy-kbuild/for-next masahiroy-kbuild/fixes linus/master v6.11 next-20240916]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+>
+> > +}
+> > +
+> > +static void dw25gmac_read_hdma_limits(void __iomem *ioaddr,
+> > +                                   struct stmmac_hdma_cfg *hdma)
+> > +{
+> > +     u32 hw_cap;
+> > +
+> > +     /* Get VDMA/PDMA counts from HW */
+> > +     hw_cap =3D readl(ioaddr + XGMAC_HW_FEATURE2);
+>
+>
+> > +     hdma->tx_vdmas =3D decode_vdma_count(FIELD_GET(XXVGMAC_HWFEAT_VDM=
+A_TXCNT,
+> > +                                                  hw_cap));
+> > +     hdma->rx_vdmas =3D decode_vdma_count(FIELD_GET(XXVGMAC_HWFEAT_VDM=
+A_RXCNT,
+> > +                                                  hw_cap));
+> > +     hdma->tx_pdmas =3D FIELD_GET(XGMAC_HWFEAT_TXQCNT, hw_cap) + 1;
+> > +     hdma->rx_pdmas =3D FIELD_GET(XGMAC_HWFEAT_RXQCNT, hw_cap) + 1;
+>
+> Hmm, these are the Tx/Rx DMA-channels and Tx/Rx MTL-queues count
+> fields. Can't you just use the
+> dma_features::{number_tx_channel,number_tx_queues} and
+> dma_features::{number_rx_channel,number_rx_queues} fields to store the
+> retrieved data?
+>
+> Moreover why not to add the code above to the dwxgmac2_get_hw_feature() m=
+ethod?
+>
+Thanks, I missed the reuse of existing fields.
+However, since the VDMA count has a slightly bigger bitmask, we need to ext=
+ract
+VDMA channel count as per DW25GMAC spec.
+Instead of duplicating dwxgmac2_get_hw_feature(), should we add wrapper for
+dw25gmac, something like the following?
+dw25gmac_get_hw_feature(ioaddr, dma_cap)
+{
+    u32 hw_cap;
+    int rc;
+    rc =3D dwxgmac2_get_hw_feature(ioaddr, dma_cap);
+    /* Get VDMA counts from HW */
+    hw_cap =3D readl(ioaddr + XGMAC_HW_FEATURE2);
+   dma_cap->num_tx_channels =3D
+decode_vdma_count(FIELD_GET(XXVGMAC_HWFEAT_VDMA_TXCNT,
+     hw_cap));
+   dma_cap->num_rx_channels =3D
+decode_vdma_count(FIELD_GET(XXVGMAC_HWFEAT_VDMA_RXCNT,
+     hw_cap));
+   return rc;
+}
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Hari-Bathini/powerpc-trace-Account-for-fpatchable-function-entry-support-by-toolchain/20240916-050056
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git next
-patch link:    https://lore.kernel.org/r/20240915205648.830121-18-hbathini%40linux.ibm.com
-patch subject: [PATCH v5 17/17] powerpc64/bpf: Add support for bpf trampolines
-config: powerpc-allyesconfig (https://download.01.org/0day-ci/archive/20240917/202409170544.6d1odaN2-lkp@intel.com/config)
-compiler: clang version 20.0.0git (https://github.com/llvm/llvm-project bf684034844c660b778f0eba103582f582b710c9)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240917/202409170544.6d1odaN2-lkp@intel.com/reproduce)
+> > +}
+> > +
+> > +int dw25gmac_hdma_cfg_init(struct stmmac_priv *priv)
+> > +{
+> > +     struct plat_stmmacenet_data *plat =3D priv->plat;
+> > +     struct device *dev =3D priv->device;
+> > +     struct stmmac_hdma_cfg *hdma;
+> > +     int i;
+> > +
+> > +     hdma =3D devm_kzalloc(dev,
+> > +                         sizeof(*plat->dma_cfg->hdma_cfg),
+> > +                         GFP_KERNEL);
+> > +     if (!hdma)
+> > +             return -ENOMEM;
+> > +
+> > +     dw25gmac_read_hdma_limits(priv->ioaddr, hdma);
+> > +
+> > +     hdma->tvdma_tc =3D devm_kzalloc(dev,
+> > +                                   sizeof(*hdma->tvdma_tc) * hdma->tx_=
+vdmas,
+> > +                                   GFP_KERNEL);
+> > +     if (!hdma->tvdma_tc)
+> > +             return -ENOMEM;
+> > +
+> > +     hdma->rvdma_tc =3D devm_kzalloc(dev,
+> > +                                   sizeof(*hdma->rvdma_tc) * hdma->rx_=
+vdmas,
+> > +                                   GFP_KERNEL);
+> > +     if (!hdma->rvdma_tc)
+> > +             return -ENOMEM;
+> > +
+> > +     hdma->tpdma_tc =3D devm_kzalloc(dev,
+> > +                                   sizeof(*hdma->tpdma_tc) * hdma->tx_=
+pdmas,
+> > +                                   GFP_KERNEL);
+> > +     if (!hdma->tpdma_tc)
+> > +             return -ENOMEM;
+> > +
+> > +     hdma->rpdma_tc =3D devm_kzalloc(dev,
+> > +                                   sizeof(*hdma->rpdma_tc) * hdma->rx_=
+pdmas,
+> > +                                   GFP_KERNEL);
+> > +     if (!hdma->rpdma_tc)
+> > +             return -ENOMEM;
+> > +
+>
+> > +     /* Initialize one-to-one mapping for each of the used queues */
+> > +     for (i =3D 0; i < plat->tx_queues_to_use; i++) {
+> > +             hdma->tvdma_tc[i] =3D i;
+> > +             hdma->tpdma_tc[i] =3D i;
+> > +     }
+> > +     for (i =3D 0; i < plat->rx_queues_to_use; i++) {
+> > +             hdma->rvdma_tc[i] =3D i;
+> > +             hdma->rpdma_tc[i] =3D i;
+> > +     }
+>
+> So the Traffic Class ID is initialized for the
+> tx_queues_to_use/rx_queues_to_use number of channels only, right? What
+> about the Virtual and Physical DMA-channels with numbers greater than
+> these values?
+>
+You have brought up a question that applies to remaining comments in
+this file as well.
+How the VDMA/PDMA mapping is used depends on the device/glue driver.
+For example in
+our SoC the remaining VDMAs are meant to be used with SRIOV virtual
+functions and not
+all of them are available for physical function.
+Since additional VDMAs/PDMAs remain unused in hardware I let them stay at t=
+heir
+default values. No traffic is expected to be mapped to unused V/PDMAs.
+ I couldn't think of a reason for it to be an issue from a driver perspecti=
+ve.
+Please let me know, if I am missing something or we need to address a
+use case with bigger scope.
+The responses for following comments also depend on what approach we take h=
+ere.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202409170544.6d1odaN2-lkp@intel.com/
+> > +     plat->dma_cfg->hdma_cfg =3D hdma;
+> > +
+> > +     return 0;
+> > +}
+> > +
+> > +
+> > +void dw25gmac_dma_init(void __iomem *ioaddr,
+> > +                    struct stmmac_dma_cfg *dma_cfg)
+> > +{
+> > +     u32 value;
+> > +     u32 i;
+> > +
+> > +     value =3D readl(ioaddr + XGMAC_DMA_SYSBUS_MODE);
+> > +     value &=3D ~(XGMAC_AAL | XGMAC_EAME);
+> > +     if (dma_cfg->aal)
+> > +             value |=3D XGMAC_AAL;
+> > +     if (dma_cfg->eame)
+> > +             value |=3D XGMAC_EAME;
+> > +     writel(value, ioaddr + XGMAC_DMA_SYSBUS_MODE);
+> > +
+> > +     for (i =3D 0; i < dma_cfg->hdma_cfg->tx_vdmas; i++) {
+> > +             value =3D rd_dma_ch_ind(ioaddr, MODE_TXDESCCTRL, i);
+> > +             value &=3D ~XXVGMAC_TXDCSZ;
+> > +             value |=3D FIELD_PREP(XXVGMAC_TXDCSZ,
+> > +                                 XXVGMAC_TXDCSZ_256BYTES);
+> > +             value &=3D ~XXVGMAC_TDPS;
+> > +             value |=3D FIELD_PREP(XXVGMAC_TDPS, XXVGMAC_TDPS_HALF);
+> > +             wr_dma_ch_ind(ioaddr, MODE_TXDESCCTRL, i, value);
+> > +     }
+> > +
+> > +     for (i =3D 0; i < dma_cfg->hdma_cfg->rx_vdmas; i++) {
+> > +             value =3D rd_dma_ch_ind(ioaddr, MODE_RXDESCCTRL, i);
+> > +             value &=3D ~XXVGMAC_RXDCSZ;
+> > +             value |=3D FIELD_PREP(XXVGMAC_RXDCSZ,
+> > +                                 XXVGMAC_RXDCSZ_256BYTES);
+> > +             value &=3D ~XXVGMAC_RDPS;
+> > +             value |=3D FIELD_PREP(XXVGMAC_TDPS, XXVGMAC_RDPS_HALF);
+> > +             wr_dma_ch_ind(ioaddr, MODE_RXDESCCTRL, i, value);
+> > +     }
+> > +
+>
+> > +     for (i =3D 0; i < dma_cfg->hdma_cfg->tx_pdmas; i++) {
+> > +             value =3D rd_dma_ch_ind(ioaddr, MODE_TXEXTCFG, i);
+> > +             value &=3D ~(XXVGMAC_TXPBL | XXVGMAC_TPBLX8_MODE);
+> > +             if (dma_cfg->pblx8)
+> > +                     value |=3D XXVGMAC_TPBLX8_MODE;
+> > +             value |=3D FIELD_PREP(XXVGMAC_TXPBL, dma_cfg->pbl);
+> > +             wr_dma_ch_ind(ioaddr, MODE_TXEXTCFG, i, value);
+> > +             xgmac4_tp2tc_map(ioaddr, i, dma_cfg->hdma_cfg->tpdma_tc[i=
+]);
+> > +     }
+> > +
+> > +     for (i =3D 0; i < dma_cfg->hdma_cfg->rx_pdmas; i++) {
+> > +             value =3D rd_dma_ch_ind(ioaddr, MODE_RXEXTCFG, i);
+> > +             value &=3D ~(XXVGMAC_RXPBL | XXVGMAC_RPBLX8_MODE);
+> > +             if (dma_cfg->pblx8)
+> > +                     value |=3D XXVGMAC_RPBLX8_MODE;
+> > +             value |=3D FIELD_PREP(XXVGMAC_RXPBL, dma_cfg->pbl);
+> > +             wr_dma_ch_ind(ioaddr, MODE_RXEXTCFG, i, value);
+> > +             xgmac4_rp2tc_map(ioaddr, i, dma_cfg->hdma_cfg->rpdma_tc[i=
+]);
+>
+> What if tx_pdmas doesn't match plat_stmmacenet_data::tx_queues_to_use
+> and rx_pdmas doesn't match to plat_stmmacenet_data::rx_queues_to_use?
+>
+> If they don't then you'll get out of the initialized tpdma_tc/rpdma_tc
+> fields and these channels will be pre-initialized with the zero TC. Is
+> that what expected? I doubt so.
+>
+As mentioned in the previous response the remaining resources are unused
+and no traffic is mapped to those resources.
 
-All warnings (new ones prefixed by >>):
+> > +     }
+> > +}
+> > +
+>
+> > +void dw25gmac_dma_init_tx_chan(struct stmmac_priv *priv,
+> > +                            void __iomem *ioaddr,
+> > +                            struct stmmac_dma_cfg *dma_cfg,
+> > +                            dma_addr_t dma_addr, u32 chan)
+> > +{
+> > +     u32 value;
+> > +
+>
+> > +     value =3D readl(ioaddr + XGMAC_DMA_CH_TX_CONTROL(chan));
+> > +     value &=3D ~XXVGMAC_TVDMA2TCMP;
+> > +     value |=3D FIELD_PREP(XXVGMAC_TVDMA2TCMP,
+> > +                         dma_cfg->hdma_cfg->tvdma_tc[chan]);
+> > +     writel(value, ioaddr + XGMAC_DMA_CH_TX_CONTROL(chan));
+>
+> Please note this will have only first
+> plat_stmmacenet_data::{tx_queues_to_use,rx_queues_to_use} VDMA
+> channels initialized. Don't you have much more than just 4 channels?
+>
+Yes, there are 32 VDMA channels on this device. In our application the
+additional channels are partitioned for use with SRIOV virtual functions.
+Similar to PDMA comment above, the additional VDMAs are not enabled,
+and left in default state.
+My thinking is, when another 25gmac device comes along that requires a
+different mapping we may need to add the ability to set the mapping in
+glue driver.
+We can support this by adding a check in dw25gmac_setup()
+@@ -1708,8 +1708,10 @@ int dw25gmac_setup(struct stmmac_priv *priv)
+        mac->mii.clk_csr_shift =3D 19;
+        mac->mii.clk_csr_mask =3D GENMASK(21, 19);
 
-   In file included from arch/powerpc/net/bpf_jit_comp.c:11:
-   In file included from arch/powerpc/include/asm/cacheflush.h:7:
-   In file included from include/linux/mm.h:2228:
-   include/linux/vmstat.h:500:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
-     500 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
-     501 |                            item];
-         |                            ~~~~
-   include/linux/vmstat.h:507:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
-     507 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
-     508 |                            NR_VM_NUMA_EVENT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/vmstat.h:514:36: warning: arithmetic between different enumeration types ('enum node_stat_item' and 'enum lru_list') [-Wenum-enum-conversion]
-     514 |         return node_stat_name(NR_LRU_BASE + lru) + 3; // skip "nr_"
-         |                               ~~~~~~~~~~~ ^ ~~~
-   include/linux/vmstat.h:519:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
-     519 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
-     520 |                            NR_VM_NUMA_EVENT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/vmstat.h:528:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
-     528 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
-     529 |                            NR_VM_NUMA_EVENT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~~
->> arch/powerpc/net/bpf_jit_comp.c:872:70: warning: variable 'r4_off' is uninitialized when used here [-Wuninitialized]
-     872 |                         bpf_trampoline_setup_tail_call_cnt(image, ctx, func_frame_offset, r4_off);
-         |                                                                                           ^~~~~~
-   arch/powerpc/net/bpf_jit_comp.c:654:87: note: initialize the variable 'r4_off' to silence this warning
-     654 |         int regs_off, nregs_off, ip_off, run_ctx_off, retval_off, nvr_off, alt_lr_off, r4_off;
-         |                                                                                              ^
-         |                                                                                               = 0
-   6 warnings generated.
+-       /* Allocate and initialize hdma mapping */
+-       return dw25gmac_hdma_cfg_init(priv);
++       /* Allocate and initialize hdma mapping, if not done by glue driver=
+. */
++       if (!priv->plat->dma_cfg->hdma_cfg)
++               return dw25gmac_hdma_cfg_init(priv);
++       return 0;
+ }
 
-
-vim +/r4_off +872 arch/powerpc/net/bpf_jit_comp.c
-
-   647	
-   648	static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *rw_image,
-   649						 void *rw_image_end, void *ro_image,
-   650						 const struct btf_func_model *m, u32 flags,
-   651						 struct bpf_tramp_links *tlinks,
-   652						 void *func_addr)
-   653	{
-   654		int regs_off, nregs_off, ip_off, run_ctx_off, retval_off, nvr_off, alt_lr_off, r4_off;
-   655		int i, ret, nr_regs, bpf_frame_size = 0, bpf_dummy_frame_size = 0, func_frame_offset;
-   656		struct bpf_tramp_links *fmod_ret = &tlinks[BPF_TRAMP_MODIFY_RETURN];
-   657		struct bpf_tramp_links *fentry = &tlinks[BPF_TRAMP_FENTRY];
-   658		struct bpf_tramp_links *fexit = &tlinks[BPF_TRAMP_FEXIT];
-   659		struct codegen_context codegen_ctx, *ctx;
-   660		u32 *image = (u32 *)rw_image;
-   661		ppc_inst_t branch_insn;
-   662		u32 *branches = NULL;
-   663		bool save_ret;
-   664	
-   665		if (IS_ENABLED(CONFIG_PPC32))
-   666			return -EOPNOTSUPP;
-   667	
-   668		nr_regs = m->nr_args;
-   669		/* Extra registers for struct arguments */
-   670		for (i = 0; i < m->nr_args; i++)
-   671			if (m->arg_size[i] > SZL)
-   672				nr_regs += round_up(m->arg_size[i], SZL) / SZL - 1;
-   673	
-   674		if (nr_regs > MAX_BPF_FUNC_ARGS)
-   675			return -EOPNOTSUPP;
-   676	
-   677		ctx = &codegen_ctx;
-   678		memset(ctx, 0, sizeof(*ctx));
-   679	
-   680		/*
-   681		 * Generated stack layout:
-   682		 *
-   683		 * func prev back chain         [ back chain        ]
-   684		 *                              [                   ]
-   685		 * bpf prog redzone/tailcallcnt [ ...               ] 64 bytes (64-bit powerpc)
-   686		 *                              [                   ] --
-   687		 * LR save area                 [ r0 save (64-bit)  ]   | header
-   688		 *                              [ r0 save (32-bit)  ]   |
-   689		 * dummy frame for unwind       [ back chain 1      ] --
-   690		 *                              [ padding           ] align stack frame
-   691		 *       r4_off                 [ r4 (tailcallcnt)  ] optional - 32-bit powerpc
-   692		 *       alt_lr_off             [ real lr (ool stub)] optional - actual lr
-   693		 *                              [ r26               ]
-   694		 *       nvr_off                [ r25               ] nvr save area
-   695		 *       retval_off             [ return value      ]
-   696		 *                              [ reg argN          ]
-   697		 *                              [ ...               ]
-   698		 *       regs_off               [ reg_arg1          ] prog ctx context
-   699		 *       nregs_off              [ args count        ]
-   700		 *       ip_off                 [ traced function   ]
-   701		 *                              [ ...               ]
-   702		 *       run_ctx_off            [ bpf_tramp_run_ctx ]
-   703		 *                              [ reg argN          ]
-   704		 *                              [ ...               ]
-   705		 *       param_save_area        [ reg_arg1          ] min 8 doublewords, per ABI
-   706		 *                              [ TOC save (64-bit) ] --
-   707		 *                              [ LR save (64-bit)  ]   | header
-   708		 *                              [ LR save (32-bit)  ]   |
-   709		 * bpf trampoline frame	        [ back chain 2      ] --
-   710		 *
-   711		 */
-   712	
-   713		/* Minimum stack frame header */
-   714		bpf_frame_size = STACK_FRAME_MIN_SIZE;
-   715	
-   716		/*
-   717		 * Room for parameter save area.
-   718		 *
-   719		 * As per the ABI, this is required if we call into the traced
-   720		 * function (BPF_TRAMP_F_CALL_ORIG):
-   721		 * - if the function takes more than 8 arguments for the rest to spill onto the stack
-   722		 * - or, if the function has variadic arguments
-   723		 * - or, if this functions's prototype was not available to the caller
-   724		 *
-   725		 * Reserve space for at least 8 registers for now. This can be optimized later.
-   726		 */
-   727		bpf_frame_size += (nr_regs > 8 ? nr_regs : 8) * SZL;
-   728	
-   729		/* Room for struct bpf_tramp_run_ctx */
-   730		run_ctx_off = bpf_frame_size;
-   731		bpf_frame_size += round_up(sizeof(struct bpf_tramp_run_ctx), SZL);
-   732	
-   733		/* Room for IP address argument */
-   734		ip_off = bpf_frame_size;
-   735		if (flags & BPF_TRAMP_F_IP_ARG)
-   736			bpf_frame_size += SZL;
-   737	
-   738		/* Room for args count */
-   739		nregs_off = bpf_frame_size;
-   740		bpf_frame_size += SZL;
-   741	
-   742		/* Room for args */
-   743		regs_off = bpf_frame_size;
-   744		bpf_frame_size += nr_regs * SZL;
-   745	
-   746		/* Room for return value of func_addr or fentry prog */
-   747		retval_off = bpf_frame_size;
-   748		save_ret = flags & (BPF_TRAMP_F_CALL_ORIG | BPF_TRAMP_F_RET_FENTRY_RET);
-   749		if (save_ret)
-   750			bpf_frame_size += SZL;
-   751	
-   752		/* Room for nvr save area */
-   753		nvr_off = bpf_frame_size;
-   754		bpf_frame_size += 2 * SZL;
-   755	
-   756		/* Optional save area for actual LR in case of ool ftrace */
-   757		if (IS_ENABLED(CONFIG_PPC_FTRACE_OUT_OF_LINE)) {
-   758			alt_lr_off = bpf_frame_size;
-   759			bpf_frame_size += SZL;
-   760		}
-   761	
-   762		if (IS_ENABLED(CONFIG_PPC32)) {
-   763			if (nr_regs < 2) {
-   764				r4_off = bpf_frame_size;
-   765				bpf_frame_size += SZL;
-   766			} else {
-   767				r4_off = regs_off + SZL;
-   768			}
-   769		}
-   770	
-   771		/* Padding to align stack frame, if any */
-   772		bpf_frame_size = round_up(bpf_frame_size, SZL * 2);
-   773	
-   774		/* Dummy frame size for proper unwind - includes 64-bytes red zone for 64-bit powerpc */
-   775		bpf_dummy_frame_size = STACK_FRAME_MIN_SIZE + 64;
-   776	
-   777		/* Offset to the traced function's stack frame */
-   778		func_frame_offset = bpf_dummy_frame_size + bpf_frame_size;
-   779	
-   780		/* Create dummy frame for unwind, store original return value */
-   781		EMIT(PPC_RAW_STL(_R0, _R1, PPC_LR_STKOFF));
-   782		/* Protect red zone where tail call count goes */
-   783		EMIT(PPC_RAW_STLU(_R1, _R1, -bpf_dummy_frame_size));
-   784	
-   785		/* Create our stack frame */
-   786		EMIT(PPC_RAW_STLU(_R1, _R1, -bpf_frame_size));
-   787	
-   788		/* 64-bit: Save TOC and load kernel TOC */
-   789		if (IS_ENABLED(CONFIG_PPC64_ELF_ABI_V2) && !IS_ENABLED(CONFIG_PPC_KERNEL_PCREL)) {
-   790			EMIT(PPC_RAW_STD(_R2, _R1, 24));
-   791			PPC64_LOAD_PACA();
-   792		}
-   793	
-   794		/* 32-bit: save tail call count in r4 */
-   795		if (IS_ENABLED(CONFIG_PPC32) && nr_regs < 2)
-   796			EMIT(PPC_RAW_STL(_R4, _R1, r4_off));
-   797	
-   798		bpf_trampoline_save_args(image, ctx, func_frame_offset, nr_regs, regs_off);
-   799	
-   800		/* Save our return address */
-   801		EMIT(PPC_RAW_MFLR(_R3));
-   802		if (IS_ENABLED(CONFIG_PPC_FTRACE_OUT_OF_LINE))
-   803			EMIT(PPC_RAW_STL(_R3, _R1, alt_lr_off));
-   804		else
-   805			EMIT(PPC_RAW_STL(_R3, _R1, bpf_frame_size + PPC_LR_STKOFF));
-   806	
-   807		/*
-   808		 * Save ip address of the traced function.
-   809		 * We could recover this from LR, but we will need to address for OOL trampoline,
-   810		 * and optional GEP area.
-   811		 */
-   812		if (IS_ENABLED(CONFIG_PPC_FTRACE_OUT_OF_LINE) || flags & BPF_TRAMP_F_IP_ARG) {
-   813			EMIT(PPC_RAW_LWZ(_R4, _R3, 4));
-   814			EMIT(PPC_RAW_SLWI(_R4, _R4, 6));
-   815			EMIT(PPC_RAW_SRAWI(_R4, _R4, 6));
-   816			EMIT(PPC_RAW_ADD(_R3, _R3, _R4));
-   817			EMIT(PPC_RAW_ADDI(_R3, _R3, 4));
-   818		}
-   819	
-   820		if (flags & BPF_TRAMP_F_IP_ARG)
-   821			EMIT(PPC_RAW_STL(_R3, _R1, ip_off));
-   822	
-   823		if (IS_ENABLED(CONFIG_PPC_FTRACE_OUT_OF_LINE))
-   824			/* Fake our LR for unwind */
-   825			EMIT(PPC_RAW_STL(_R3, _R1, bpf_frame_size + PPC_LR_STKOFF));
-   826	
-   827		/* Save function arg count -- see bpf_get_func_arg_cnt() */
-   828		EMIT(PPC_RAW_LI(_R3, nr_regs));
-   829		EMIT(PPC_RAW_STL(_R3, _R1, nregs_off));
-   830	
-   831		/* Save nv regs */
-   832		EMIT(PPC_RAW_STL(_R25, _R1, nvr_off));
-   833		EMIT(PPC_RAW_STL(_R26, _R1, nvr_off + SZL));
-   834	
-   835		if (flags & BPF_TRAMP_F_CALL_ORIG) {
-   836			PPC_LI_ADDR(_R3, (unsigned long)im);
-   837			ret = bpf_jit_emit_func_call_rel(image, ro_image, ctx,
-   838							 (unsigned long)__bpf_tramp_enter);
-   839			if (ret)
-   840				return ret;
-   841		}
-   842	
-   843		for (i = 0; i < fentry->nr_links; i++)
-   844			if (invoke_bpf_prog(image, ro_image, ctx, fentry->links[i], regs_off, retval_off,
-   845					    run_ctx_off, flags & BPF_TRAMP_F_RET_FENTRY_RET))
-   846				return -EINVAL;
-   847	
-   848		if (fmod_ret->nr_links) {
-   849			branches = kcalloc(fmod_ret->nr_links, sizeof(u32), GFP_KERNEL);
-   850			if (!branches)
-   851				return -ENOMEM;
-   852	
-   853			if (invoke_bpf_mod_ret(image, ro_image, ctx, fmod_ret, regs_off, retval_off,
-   854					       run_ctx_off, branches)) {
-   855				ret = -EINVAL;
-   856				goto cleanup;
-   857			}
-   858		}
-   859	
-   860		/* Call the traced function */
-   861		if (flags & BPF_TRAMP_F_CALL_ORIG) {
-   862			/*
-   863			 * The address in LR save area points to the correct point in the original function
-   864			 * with both PPC_FTRACE_OUT_OF_LINE as well as with traditional ftrace instruction
-   865			 * sequence
-   866			 */
-   867			EMIT(PPC_RAW_LL(_R3, _R1, bpf_frame_size + PPC_LR_STKOFF));
-   868			EMIT(PPC_RAW_MTCTR(_R3));
-   869	
-   870			/* Replicate tail_call_cnt before calling the original BPF prog */
-   871			if (flags & BPF_TRAMP_F_TAIL_CALL_CTX)
- > 872				bpf_trampoline_setup_tail_call_cnt(image, ctx, func_frame_offset, r4_off);
-   873	
-   874			/* Restore args */
-   875			bpf_trampoline_restore_args_stack(image, ctx, func_frame_offset, nr_regs, regs_off);
-   876	
-   877			/* Restore TOC for 64-bit */
-   878			if (IS_ENABLED(CONFIG_PPC64_ELF_ABI_V2) && !IS_ENABLED(CONFIG_PPC_KERNEL_PCREL))
-   879				EMIT(PPC_RAW_LD(_R2, _R1, 24));
-   880			EMIT(PPC_RAW_BCTRL());
-   881			if (IS_ENABLED(CONFIG_PPC64_ELF_ABI_V2) && !IS_ENABLED(CONFIG_PPC_KERNEL_PCREL))
-   882				PPC64_LOAD_PACA();
-   883	
-   884			/* Store return value for bpf prog to access */
-   885			EMIT(PPC_RAW_STL(_R3, _R1, retval_off));
-   886	
-   887			/* Restore updated tail_call_cnt */
-   888			if (flags & BPF_TRAMP_F_TAIL_CALL_CTX)
-   889				bpf_trampoline_restore_tail_call_cnt(image, ctx, func_frame_offset, r4_off);
-   890	
-   891			/* Reserve space to patch branch instruction to skip fexit progs */
-   892			im->ip_after_call = &((u32 *)ro_image)[ctx->idx];
-   893			EMIT(PPC_RAW_NOP());
-   894		}
-   895	
-   896		/* Update branches saved in invoke_bpf_mod_ret with address of do_fexit */
-   897		for (i = 0; i < fmod_ret->nr_links && image; i++) {
-   898			if (create_cond_branch(&branch_insn, &image[branches[i]],
-   899					       (unsigned long)&image[ctx->idx], COND_NE << 16)) {
-   900				ret = -EINVAL;
-   901				goto cleanup;
-   902			}
-   903	
-   904			image[branches[i]] = ppc_inst_val(branch_insn);
-   905		}
-   906	
-   907		for (i = 0; i < fexit->nr_links; i++)
-   908			if (invoke_bpf_prog(image, ro_image, ctx, fexit->links[i], regs_off, retval_off,
-   909					    run_ctx_off, false)) {
-   910				ret = -EINVAL;
-   911				goto cleanup;
-   912			}
-   913	
-   914		if (flags & BPF_TRAMP_F_CALL_ORIG) {
-   915			im->ip_epilogue = &((u32 *)ro_image)[ctx->idx];
-   916			PPC_LI_ADDR(_R3, im);
-   917			ret = bpf_jit_emit_func_call_rel(image, ro_image, ctx,
-   918							 (unsigned long)__bpf_tramp_exit);
-   919			if (ret)
-   920				goto cleanup;
-   921		}
-   922	
-   923		if (flags & BPF_TRAMP_F_RESTORE_REGS)
-   924			bpf_trampoline_restore_args_regs(image, ctx, nr_regs, regs_off);
-   925	
-   926		/* Restore return value of func_addr or fentry prog */
-   927		if (save_ret)
-   928			EMIT(PPC_RAW_LL(_R3, _R1, retval_off));
-   929	
-   930		/* Restore nv regs */
-   931		EMIT(PPC_RAW_LL(_R26, _R1, nvr_off + SZL));
-   932		EMIT(PPC_RAW_LL(_R25, _R1, nvr_off));
-   933	
-   934		/* Epilogue */
-   935		if (IS_ENABLED(CONFIG_PPC64_ELF_ABI_V2) && !IS_ENABLED(CONFIG_PPC_KERNEL_PCREL))
-   936			EMIT(PPC_RAW_LD(_R2, _R1, 24));
-   937		if (flags & BPF_TRAMP_F_SKIP_FRAME) {
-   938			/* Skip the traced function and return to parent */
-   939			EMIT(PPC_RAW_ADDI(_R1, _R1, func_frame_offset));
-   940			EMIT(PPC_RAW_LL(_R0, _R1, PPC_LR_STKOFF));
-   941			EMIT(PPC_RAW_MTLR(_R0));
-   942			EMIT(PPC_RAW_BLR());
-   943		} else {
-   944			if (IS_ENABLED(CONFIG_PPC_FTRACE_OUT_OF_LINE)) {
-   945				EMIT(PPC_RAW_LL(_R0, _R1, alt_lr_off));
-   946				EMIT(PPC_RAW_MTLR(_R0));
-   947				EMIT(PPC_RAW_ADDI(_R1, _R1, func_frame_offset));
-   948				EMIT(PPC_RAW_LL(_R0, _R1, PPC_LR_STKOFF));
-   949				EMIT(PPC_RAW_BLR());
-   950			} else {
-   951				EMIT(PPC_RAW_LL(_R0, _R1, bpf_frame_size + PPC_LR_STKOFF));
-   952				EMIT(PPC_RAW_MTCTR(_R0));
-   953				EMIT(PPC_RAW_ADDI(_R1, _R1, func_frame_offset));
-   954				EMIT(PPC_RAW_LL(_R0, _R1, PPC_LR_STKOFF));
-   955				EMIT(PPC_RAW_MTLR(_R0));
-   956				EMIT(PPC_RAW_BCTR());
-   957			}
-   958		}
-   959	
-   960		/* Make sure the trampoline generation logic doesn't overflow */
-   961		if (image && WARN_ON_ONCE(&image[ctx->idx] > (u32 *)rw_image_end - BPF_INSN_SAFETY)) {
-   962			ret = -EFAULT;
-   963			goto cleanup;
-   964		}
-   965		ret = ctx->idx * 4 + BPF_INSN_SAFETY * 4;
-   966	
-   967	cleanup:
-   968		kfree(branches);
-   969		return ret;
-   970	}
-   971	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> > +
+> > +     writel(upper_32_bits(dma_addr),
+> > +            ioaddr + XGMAC_DMA_CH_TxDESC_HADDR(chan));
+> > +     writel(lower_32_bits(dma_addr),
+> > +            ioaddr + XGMAC_DMA_CH_TxDESC_LADDR(chan));
+> > +}
+> > +
+> > +void dw25gmac_dma_init_rx_chan(struct stmmac_priv *priv,
+> > +                            void __iomem *ioaddr,
+> > +                            struct stmmac_dma_cfg *dma_cfg,
+> > +                            dma_addr_t dma_addr, u32 chan)
+> > +{
+> > +     u32 value;
+> > +
+>
+> > +     value =3D readl(ioaddr + XGMAC_DMA_CH_RX_CONTROL(chan));
+> > +     value &=3D ~XXVGMAC_RVDMA2TCMP;
+> > +     value |=3D FIELD_PREP(XXVGMAC_RVDMA2TCMP,
+> > +                         dma_cfg->hdma_cfg->rvdma_tc[chan]);
+> > +     writel(value, ioaddr + XGMAC_DMA_CH_RX_CONTROL(chan));
+>
+> The same question.
+>
+> > +
+> > +     writel(upper_32_bits(dma_addr),
+> > +            ioaddr + XGMAC_DMA_CH_RxDESC_HADDR(chan));
+> > +     writel(lower_32_bits(dma_addr),
+> > +            ioaddr + XGMAC_DMA_CH_RxDESC_LADDR(chan));
+> > +}
+>
+> These methods are called for each
+> plat_stmmacenet_data::{tx_queues_to_use,rx_queues_to_use}
+> DMA-channel/Queue. The static mapping means you'll have each
+> PDMA/Queue assigned a static traffic class ID corresponding to the
+> channel ID. Meanwhile the VDMA channels are supposed to be initialized
+> with the TC ID corresponding to the matching PDMA ID.
+>
+> The TC ID in this case is passed as the DMA/Queue channel ID. Then the
+> Tx/Rx DMA-channels init methods can be converted to:
+>
+> dw25gmac_dma_init_Xx_chan(chan)
+> {
+>         /* Map each chan-th VDMA to the single chan PDMA by assigning
+>          * the static TC ID.
+>          */
+>         for (i =3D chan; i < Xx_vdmas; i +=3D (Xx_vdmas / Xx_queues_to_us=
+e)) {
+>                 /* Initialize VDMA channels */
+>                 XXVGMAC_TVDMA2TCMP =3D chan;
+>         }
+>
+>         /* Assign the static TC ID to the specified PDMA channel */
+>         xgmac4_rp2tc_map(chan, chan)
+> }
+>
+> , where X=3D{t,r}.
+>
+> Thus you can redistribute the loops implemented in dw25gmac_dma_init()
+> to the respective Tx/Rx DMA-channel init methods.
+>
+> Am I missing something?
+I think your visualization of HDMA may be going beyond the application
+I understand.
+We are allocating a VDMA for each of the TX/RX channels. The use of
+additional VDMAs
+depends on how the device is partitioned for virtualization.
+In the non-SRIOV case the remaining VDMAs will remain unused.
+Please let me know if I missed your question.
+>
+> -Serge()
+>
+> > [...]
 
