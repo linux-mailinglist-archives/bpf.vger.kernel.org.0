@@ -1,67 +1,67 @@
-Return-Path: <bpf+bounces-40010-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40011-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73A2D97A9A3
-	for <lists+bpf@lfdr.de>; Tue, 17 Sep 2024 01:32:58 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8D4997A9B3
+	for <lists+bpf@lfdr.de>; Tue, 17 Sep 2024 01:44:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4B5731C2724A
-	for <lists+bpf@lfdr.de>; Mon, 16 Sep 2024 23:32:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 33F0A28B873
+	for <lists+bpf@lfdr.de>; Mon, 16 Sep 2024 23:44:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68039158A2E;
-	Mon, 16 Sep 2024 23:32:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 318CA15B0EB;
+	Mon, 16 Sep 2024 23:44:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="IPyYuuwQ"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="dvnvwGYH"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 986B9143722
-	for <bpf@vger.kernel.org>; Mon, 16 Sep 2024 23:32:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34FBAA95E
+	for <bpf@vger.kernel.org>; Mon, 16 Sep 2024 23:43:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726529567; cv=none; b=BngT7iy5SwDtSiKu3iDA9J5RrUT8+s1AlxRWs1pnpVKukpk226HrAXf/AO+Z98P3nKtnE1g1IC6qqZ/CyKc0HyC0I77kqwPZc5noEW6L56NQ3boWlJsELS/SkjzfEssh9Djfqf5q58I0ij4ZeUlNfv7MEj4PIQqi1nYrNJIQHSg=
+	t=1726530239; cv=none; b=nAbySO4sbFgxEWMAJIxSqphhzZmfbat6nr5HzXMRBxGYciFUqOsu4Px9dox3kaxz9hsq9pB0bOcxM9yaIo0VVfYvebJ4BOKj+084m/ObkXSXVflwiyq5v46XFwcZny/OcK1X7n5jlkmAfdqfdAjt/+Lyw7gOpCfQnpnOWuGCQBE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726529567; c=relaxed/simple;
-	bh=SPtdiIyfNANrl9FF5m1x7BfDT/+sAltGRKt9GKfd7Vo=;
+	s=arc-20240116; t=1726530239; c=relaxed/simple;
+	bh=u1YaqZN14RDCxXBWc2qMTsW1Xw5ZOEH0WziLR4ejItA=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=id3k4bYJyIjz4TjoBdZHMxFe8M7037U/aKKBpO4r1H5v03sPopqZEtkflkPP5aSquBoNeVR9cKKIDM5twZzYkJ31BfOU5PqgrKf8dUsLwM3oBmfdqEZmFyXneLyjtusBD6ycxxcjvzONmV/MNBXgaO+DX3WdK1dfdPZNCZ1stJY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=IPyYuuwQ; arc=none smtp.client-ip=209.85.215.181
+	 To:Cc:Content-Type; b=tXfbSP+QQv7qfPN01fR/y4xaWmZcw49K0jmC0ZNqOwTHpQmI5kS7iZdG1KTQTKg+xh2Ad3lksX/JpJfBOqoVXAFS9uFZ0IZcr0pVsYIJSnh0JXs0zMtYyD/5EquoMr/2xmGF85zXsBxdoIaQrrheJCD3nO2ErGG814NH61UuOjk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=dvnvwGYH; arc=none smtp.client-ip=209.85.210.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-7d4fa972cbeso3882460a12.2
-        for <bpf@vger.kernel.org>; Mon, 16 Sep 2024 16:32:45 -0700 (PDT)
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-71911585911so4327842b3a.3
+        for <bpf@vger.kernel.org>; Mon, 16 Sep 2024 16:43:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1726529565; x=1727134365; darn=vger.kernel.org;
+        d=broadcom.com; s=google; t=1726530237; x=1727135037; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Z9mUVHMAavcUxKnLNiLYFc/iky/HnjZfCcQFKHlZayo=;
-        b=IPyYuuwQR365L4BnH1vgXap7IHeJYE+7kAcs1W1m5TgB4EYDNZn353fWGcJ5hC64Vv
-         oCWYDM3SkaEaivpjXa+f9fXzcuCHMo6Rfk8oFOe3tTcTw9Jtgq5pkunHc7uo2uw4WD7R
-         ni416nwiAi85DQZmnqaPTUmPbPZvIFXq5+zj0=
+        bh=77kXHk0CwQMaJZ+QC7si1m6ucR6ldM5v4PVuuUisH0I=;
+        b=dvnvwGYHn7pi05SR0M3CVtoMz/5RlSpDyU1R73TRnRdchAZHRQg9XZgLVpTDXrvyNJ
+         4a/WZ5Q8jemQRy6chbFdHfx3VrifTFoikwuP1T7Cn4i6FerHN8w3Qkw4MuJIQNpsdus3
+         cmP3j6neWpsmAmRneUbOFuywdzsjv4ewiFCGY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726529565; x=1727134365;
+        d=1e100.net; s=20230601; t=1726530237; x=1727135037;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Z9mUVHMAavcUxKnLNiLYFc/iky/HnjZfCcQFKHlZayo=;
-        b=S/CwFQOgGIe7m44LApvSYQ081SLdf1arqI4Mu+E2uOuzEk9/MgXQ08X3wOH26dzf0t
-         30ql6J8n23mtig3Pbvc34Wrcn+XQKZhMi/rjfyylHnyYHq0+gjyrWx3EXn6BqUMkqe51
-         SSh1nVTs9yor8d9OozzfOjztTEadnYE4V4NqX0Ttvd9hwQWRqRQZHAe3u/sqERQnABrF
-         CAXSCAc/k/pS0UYAtVSvvfwAOs0iriT3H3CZqf3SN4vp4NzP+A50Xly37qOeGqMHMXhx
-         pVpnQK6kB5yNMc5KId1Si+kgr3oFQzTPDuagmQaf0M6fNbnwFll7SufNMM8NTAgKsXyI
-         +5eA==
-X-Forwarded-Encrypted: i=1; AJvYcCUllgc2phykJLToMJ3473UGv+3auIUG+7GGGyUJ+/o7NaeTqg1qtr2px4q6ex8NiXcda1s=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxwtBVqiCdVoxwXCBFmVAUmuynlivjlfim0K14UdhaDjNAnrNs+
-	biwlsf+UX+eF3CnbW52A7RQVhy12ZP0LUBUNCZw53GEo/d+MyvISCRiSHa64shin9jtps1u8PQq
-	irzcIsq056FRyD6byHy6sO4sM0XSV7GEWZm0q
-X-Google-Smtp-Source: AGHT+IE72MFyllzN0ozCXMGgr1MGi103ntb9aa1icB+w7Su1bkHJaYgfDvvRt+ybuNJ1tdHngYO6KpJTNc4763XH4NM=
-X-Received: by 2002:a05:6a21:1707:b0:1cf:6c65:68d with SMTP id
- adf61e73a8af0-1cf762382d3mr25137092637.46.1726529564812; Mon, 16 Sep 2024
- 16:32:44 -0700 (PDT)
+        bh=77kXHk0CwQMaJZ+QC7si1m6ucR6ldM5v4PVuuUisH0I=;
+        b=uv8m1ocl5U+N1/2n6onxpLUfqzxrIliAvjmtNTZQqRjiwc7r54shqc5C4JvcKqJUap
+         /2G4LhqB0Wd9upzBtFpHOX4Gr+gVGMDMxBkR4btzN0Tqnd4kGXnkPa60CpRTmhLlfvkL
+         8LywcRxqeKMdvi0c2bvip2UAkF3sCydPrtwvmgl8PkFNEELNdjB4/AHe3gT5YTrfAdM3
+         lSyQz8N4GY8mh3BAii5eHTKdw1O7ygghB0dvgA8vOT+QZIp1EgPxtqpThFOqZ49K03bp
+         Pn7emBPArnPRDnN4Szdsw5oZTSzQKvwcrccyzyOsSWDNx3D7nx78lWLG71PbrCBi1bnL
+         X3vw==
+X-Forwarded-Encrypted: i=1; AJvYcCVJT6g2Duq/M132yiCoFKEJI1vNbEsnOX9uqKm8JwlFM68anZuMc4uY5Vdc2TrzvZ4uX9g=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwPQ99K+9HDa9qfuCPqZwFiaE3xzbwXAOQ+bPUQzo6eWXsD2AFN
+	+Y4EtzFLJtRmQ0o450GoC2HNRfdGPJXW3QI7N2uKAC6TOEvVJn61b/6bfHm3rWiIvPxC1c2ryZj
+	f/jyCqRWwMKsirZWV70zKVE8PrwSQEQBHet98
+X-Google-Smtp-Source: AGHT+IGUjIkkpfK0iPlFkg8EaL4VmYJF0nBRgVTT/N67tb3/JDKoTTnfr1O/z7MIgDN2Z5Ml2NWgrfR4hsIHoHZwgA0=
+X-Received: by 2002:a05:6a00:198d:b0:714:2014:d783 with SMTP id
+ d2e1a72fcca58-7192605a0b1mr24314029b3a.2.1726530237339; Mon, 16 Sep 2024
+ 16:43:57 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -69,13 +69,12 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20240904054815.1341712-1-jitendra.vegiraju@broadcom.com>
- <20240904054815.1341712-3-jitendra.vegiraju@broadcom.com> <mhfssgiv7unjlpve45rznyzr72llvchcwzk4f7obnvp5edijqc@ilmxqr5gaktb>
-In-Reply-To: <mhfssgiv7unjlpve45rznyzr72llvchcwzk4f7obnvp5edijqc@ilmxqr5gaktb>
+ <20240904054815.1341712-5-jitendra.vegiraju@broadcom.com> <zv2yxt4aw2wscvmcaadll5gmiswhlgdiesuny2ge7ufhs3xyjn@d7oxhj63qiey>
+In-Reply-To: <zv2yxt4aw2wscvmcaadll5gmiswhlgdiesuny2ge7ufhs3xyjn@d7oxhj63qiey>
 From: Jitendra Vegiraju <jitendra.vegiraju@broadcom.com>
-Date: Mon, 16 Sep 2024 16:32:33 -0700
-Message-ID: <CAMdnO-+CcCAezDXLwTe7fEZPQH6_B1zLD2g1J6uWiKi12vOxzg@mail.gmail.com>
-Subject: Re: [PATCH net-next v5 2/5] net: stmmac: Add basic dw25gmac support
- in stmmac core
+Date: Mon, 16 Sep 2024 16:43:45 -0700
+Message-ID: <CAMdnO-JBU6k7a4UZa6jOWCk1un9ub9dSS40y8cW+jOWdMupQUQ@mail.gmail.com>
+Subject: Re: [PATCH net-next v5 4/5] net: stmmac: Add PCI driver support for BCM8958x
 To: Serge Semin <fancer.lancer@gmail.com>
 Cc: netdev@vger.kernel.org, alexandre.torgue@foss.st.com, joabreu@synopsys.com, 
 	davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, 
@@ -90,357 +89,193 @@ Cc: netdev@vger.kernel.org, alexandre.torgue@foss.st.com, joabreu@synopsys.com,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi Serge,
-
-On Tue, Sep 10, 2024 at 12:25=E2=80=AFPM Serge Semin <fancer.lancer@gmail.c=
+Hi Serge
+Thanks for reviewing the patches.
+On Tue, Sep 10, 2024 at 12:52=E2=80=AFPM Serge Semin <fancer.lancer@gmail.c=
 om> wrote:
 >
-> > +static u32 decode_vdma_count(u32 regval)
-> > +{
-> > +     /* compressed encoding for vdma count
-> > +      * regval: VDMA count
-> > +      * 0-15  : 1 - 16
-> > +      * 16-19 : 20, 24, 28, 32
-> > +      * 20-23 : 40, 48, 56, 64
-> > +      * 24-27 : 80, 96, 112, 128
-> > +      */
-> > +     if (regval < 16)
-> > +             return regval + 1;
-> > +     return (4 << ((regval - 16) / 4)) * ((regval % 4) + 5);
+> On Tue, Sep 03, 2024 at 10:48:14PM -0700, jitendra.vegiraju@broadcom.com =
+wrote:
+> > From: Jitendra Vegiraju <jitendra.vegiraju@broadcom.com>
+> >
 >
-> The shortest code isn't always the best one. This one gives me a
-> headache in trying to decipher whether it really matches to what is
-> described in the comment. What about just:
+> > +#define READ_POLL_DELAY_US                   100
+> > +#define READ_POLL_TIMEOUT_US                 10000
 >
->         if (regval < 16) /* Direct mapping */
->                 return regval + 1;
->         else if (regval < 20) /* 20, 24, 28, 32 */
->                 return 20 + (regval - 16) * 4;
->         else if (regval < 24) /* 40, 48, 56, 64 */
->                 return 40 + (regval - 20) * 8;
->         else if (regval < 28) /* 80, 96, 112, 128 */
->                 return 80 + (regval - 24) * 16;
+> These macros are unused. Why do you need them here?
 >
-> ?
-Couldn't agree more :)
-Thanks, I will replace it with your code, which is definitely more readable=
-.
-
+Thanks, missed the cleaning these up.
+> > +#define DWMAC_125MHZ                         125000000
+> > +#define DWMAC_250MHZ                         250000000
 >
-> > +}
+> Drop these and use the literals directly.
+>
+Ack
+> > +#define BRCM_XGMAC_NUM_VLAN_FILTERS          32
 > > +
-> > +static void dw25gmac_read_hdma_limits(void __iomem *ioaddr,
-> > +                                   struct stmmac_hdma_cfg *hdma)
-> > +{
-> > +     u32 hw_cap;
+> > +/* TX and RX Queue counts */
+> > +#define BRCM_TX_Q_COUNT                              4
+> > +#define BRCM_RX_Q_COUNT                              4
 > > +
-> > +     /* Get VDMA/PDMA counts from HW */
-> > +     hw_cap =3D readl(ioaddr + XGMAC_HW_FEATURE2);
 >
+> > +#define BRCM_XGMAC_DMA_TX_SIZE                       1024
+> > +#define BRCM_XGMAC_DMA_RX_SIZE                       1024
 >
-> > +     hdma->tx_vdmas =3D decode_vdma_count(FIELD_GET(XXVGMAC_HWFEAT_VDM=
-A_TXCNT,
-> > +                                                  hw_cap));
-> > +     hdma->rx_vdmas =3D decode_vdma_count(FIELD_GET(XXVGMAC_HWFEAT_VDM=
-A_RXCNT,
-> > +                                                  hw_cap));
-> > +     hdma->tx_pdmas =3D FIELD_GET(XGMAC_HWFEAT_TXQCNT, hw_cap) + 1;
-> > +     hdma->rx_pdmas =3D FIELD_GET(XGMAC_HWFEAT_RXQCNT, hw_cap) + 1;
+> Unused.
 >
-> Hmm, these are the Tx/Rx DMA-channels and Tx/Rx MTL-queues count
-> fields. Can't you just use the
-> dma_features::{number_tx_channel,number_tx_queues} and
-> dma_features::{number_rx_channel,number_rx_queues} fields to store the
-> retrieved data?
->
-> Moreover why not to add the code above to the dwxgmac2_get_hw_feature() m=
-ethod?
->
-Thanks, I missed the reuse of existing fields.
-However, since the VDMA count has a slightly bigger bitmask, we need to ext=
-ract
-VDMA channel count as per DW25GMAC spec.
-Instead of duplicating dwxgmac2_get_hw_feature(), should we add wrapper for
-dw25gmac, something like the following?
-dw25gmac_get_hw_feature(ioaddr, dma_cap)
-{
-    u32 hw_cap;
-    int rc;
-    rc =3D dwxgmac2_get_hw_feature(ioaddr, dma_cap);
-    /* Get VDMA counts from HW */
-    hw_cap =3D readl(ioaddr + XGMAC_HW_FEATURE2);
-   dma_cap->num_tx_channels =3D
-decode_vdma_count(FIELD_GET(XXVGMAC_HWFEAT_VDMA_TXCNT,
-     hw_cap));
-   dma_cap->num_rx_channels =3D
-decode_vdma_count(FIELD_GET(XXVGMAC_HWFEAT_VDMA_RXCNT,
-     hw_cap));
-   return rc;
-}
-
-> > +}
-> > +
-> > +int dw25gmac_hdma_cfg_init(struct stmmac_priv *priv)
+Ack
+> > +static void dwxgmac_brcm_common_default_data(struct plat_stmmacenet_da=
+ta *plat)
 > > +{
-> > +     struct plat_stmmacenet_data *plat =3D priv->plat;
-> > +     struct device *dev =3D priv->device;
-> > +     struct stmmac_hdma_cfg *hdma;
 > > +     int i;
 > > +
-> > +     hdma =3D devm_kzalloc(dev,
-> > +                         sizeof(*plat->dma_cfg->hdma_cfg),
-> > +                         GFP_KERNEL);
-> > +     if (!hdma)
-> > +             return -ENOMEM;
-> > +
-> > +     dw25gmac_read_hdma_limits(priv->ioaddr, hdma);
-> > +
-> > +     hdma->tvdma_tc =3D devm_kzalloc(dev,
-> > +                                   sizeof(*hdma->tvdma_tc) * hdma->tx_=
-vdmas,
-> > +                                   GFP_KERNEL);
-> > +     if (!hdma->tvdma_tc)
-> > +             return -ENOMEM;
-> > +
-> > +     hdma->rvdma_tc =3D devm_kzalloc(dev,
-> > +                                   sizeof(*hdma->rvdma_tc) * hdma->rx_=
-vdmas,
-> > +                                   GFP_KERNEL);
-> > +     if (!hdma->rvdma_tc)
-> > +             return -ENOMEM;
-> > +
-> > +     hdma->tpdma_tc =3D devm_kzalloc(dev,
-> > +                                   sizeof(*hdma->tpdma_tc) * hdma->tx_=
-pdmas,
-> > +                                   GFP_KERNEL);
-> > +     if (!hdma->tpdma_tc)
-> > +             return -ENOMEM;
-> > +
-> > +     hdma->rpdma_tc =3D devm_kzalloc(dev,
-> > +                                   sizeof(*hdma->rpdma_tc) * hdma->rx_=
-pdmas,
-> > +                                   GFP_KERNEL);
-> > +     if (!hdma->rpdma_tc)
-> > +             return -ENOMEM;
-> > +
+> > +     plat->has_xgmac =3D 1;
+> > +     plat->force_sf_dma_mode =3D 1;
+> > +     plat->mac_port_sel_speed =3D SPEED_10000;
 >
-> > +     /* Initialize one-to-one mapping for each of the used queues */
-> > +     for (i =3D 0; i < plat->tx_queues_to_use; i++) {
-> > +             hdma->tvdma_tc[i] =3D i;
-> > +             hdma->tpdma_tc[i] =3D i;
-> > +     }
-> > +     for (i =3D 0; i < plat->rx_queues_to_use; i++) {
-> > +             hdma->rvdma_tc[i] =3D i;
-> > +             hdma->rpdma_tc[i] =3D i;
-> > +     }
+> > +     plat->clk_ptp_rate =3D DWMAC_125MHZ;
+> > +     plat->clk_ref_rate =3D DWMAC_250MHZ;
 >
-> So the Traffic Class ID is initialized for the
-> tx_queues_to_use/rx_queues_to_use number of channels only, right? What
-> about the Virtual and Physical DMA-channels with numbers greater than
-> these values?
+> Just 125000000 and 250000000. There is no need in defining the macro
+> with the names matching the numerical literals.
 >
-You have brought up a question that applies to remaining comments in
-this file as well.
-How the VDMA/PDMA mapping is used depends on the device/glue driver.
-For example in
-our SoC the remaining VDMAs are meant to be used with SRIOV virtual
-functions and not
-all of them are available for physical function.
-Since additional VDMAs/PDMAs remain unused in hardware I let them stay at t=
-heir
-default values. No traffic is expected to be mapped to unused V/PDMAs.
- I couldn't think of a reason for it to be an issue from a driver perspecti=
-ve.
-Please let me know, if I am missing something or we need to address a
-use case with bigger scope.
-The responses for following comments also depend on what approach we take h=
-ere.
+Ack
+> > +static int dwxgmac_brcm_default_data(struct pci_dev *pdev,
+> > +                                  struct plat_stmmacenet_data *plat)
+> > +{
+> > +     /* Set common default data first */
+> > +     dwxgmac_brcm_common_default_data(plat);
+> > +
+> > +     plat->snps_id =3D DW25GMAC_CORE_4_00;
+> > +     plat->snps_dev_id =3D DW25GMAC_ID;
+> > +     plat->bus_id =3D 0;
+> > +     plat->phy_addr =3D 0;
+>
+> > +     plat->phy_interface =3D PHY_INTERFACE_MODE_USXGMII;
+>
+> Really, USXGMII? Universal Serial XGMII? Synopsys call it just XGMII:
+> https://www.synopsys.com/dw/ipdir.php?ds=3Ddwc_25g_ethernet_mac_ip
+>
+Thanks for pointing out. It was a misunderstanding on our part.
+I will change it to XGMII and add corresponding handling for XGMII in
+stmmac_mac_link_up().
 
-> > +     plat->dma_cfg->hdma_cfg =3D hdma;
+> > +
+>
+> > +     plat->msi_mac_vec =3D BRCM_XGMAC_MSI_MAC_VECTOR;
+> > +     plat->msi_rx_base_vec =3D BRCM_XGMAC_MSI_RX_VECTOR_START;
+> > +     plat->msi_tx_base_vec =3D BRCM_XGMAC_MSI_TX_VECTOR_START;
+>
+> Please see my next comments about these fields utilization.
+>
+Ack
 > > +
 > > +     return 0;
 > > +}
 > > +
+> > +static struct dwxgmac_brcm_pci_info dwxgmac_brcm_pci_info =3D {
+> > +     .setup =3D dwxgmac_brcm_default_data,
+> > +};
 > > +
-> > +void dw25gmac_dma_init(void __iomem *ioaddr,
-> > +                    struct stmmac_dma_cfg *dma_cfg)
+> > +static void brcm_config_misc_regs(struct pci_dev *pdev,
+> > +                               struct brcm_priv_data *brcm_priv)
 > > +{
-> > +     u32 value;
-> > +     u32 i;
+> > +     pci_write_config_dword(pdev, XGMAC_PCIE_CFG_MSIX_ADDR_MATCH_LOW,
+> > +                            XGMAC_PCIE_CFG_MSIX_ADDR_MATCH_LO_VALUE);
+> > +     pci_write_config_dword(pdev, XGMAC_PCIE_CFG_MSIX_ADDR_MATCH_HIGH,
+> > +                            XGMAC_PCIE_CFG_MSIX_ADDR_MATCH_HI_VALUE);
 > > +
-> > +     value =3D readl(ioaddr + XGMAC_DMA_SYSBUS_MODE);
-> > +     value &=3D ~(XGMAC_AAL | XGMAC_EAME);
-> > +     if (dma_cfg->aal)
-> > +             value |=3D XGMAC_AAL;
-> > +     if (dma_cfg->eame)
-> > +             value |=3D XGMAC_EAME;
-> > +     writel(value, ioaddr + XGMAC_DMA_SYSBUS_MODE);
+> > +     misc_iowrite(brcm_priv, XGMAC_PCIE_MISC_MSIX_ADDR_MATCH_LO_OFFSET=
+,
+> > +                  XGMAC_PCIE_MISC_MSIX_ADDR_MATCH_LO_VALUE);
+> > +     misc_iowrite(brcm_priv, XGMAC_PCIE_MISC_MSIX_ADDR_MATCH_HI_OFFSET=
+,
+> > +                  XGMAC_PCIE_MISC_MSIX_ADDR_MATCH_HI_VALUE);
 > > +
-> > +     for (i =3D 0; i < dma_cfg->hdma_cfg->tx_vdmas; i++) {
-> > +             value =3D rd_dma_ch_ind(ioaddr, MODE_TXDESCCTRL, i);
-> > +             value &=3D ~XXVGMAC_TXDCSZ;
-> > +             value |=3D FIELD_PREP(XXVGMAC_TXDCSZ,
-> > +                                 XXVGMAC_TXDCSZ_256BYTES);
-> > +             value &=3D ~XXVGMAC_TDPS;
-> > +             value |=3D FIELD_PREP(XXVGMAC_TDPS, XXVGMAC_TDPS_HALF);
-> > +             wr_dma_ch_ind(ioaddr, MODE_TXDESCCTRL, i, value);
-> > +     }
-> > +
-> > +     for (i =3D 0; i < dma_cfg->hdma_cfg->rx_vdmas; i++) {
-> > +             value =3D rd_dma_ch_ind(ioaddr, MODE_RXDESCCTRL, i);
-> > +             value &=3D ~XXVGMAC_RXDCSZ;
-> > +             value |=3D FIELD_PREP(XXVGMAC_RXDCSZ,
-> > +                                 XXVGMAC_RXDCSZ_256BYTES);
-> > +             value &=3D ~XXVGMAC_RDPS;
-> > +             value |=3D FIELD_PREP(XXVGMAC_TDPS, XXVGMAC_RDPS_HALF);
-> > +             wr_dma_ch_ind(ioaddr, MODE_RXDESCCTRL, i, value);
-> > +     }
-> > +
->
-> > +     for (i =3D 0; i < dma_cfg->hdma_cfg->tx_pdmas; i++) {
-> > +             value =3D rd_dma_ch_ind(ioaddr, MODE_TXEXTCFG, i);
-> > +             value &=3D ~(XXVGMAC_TXPBL | XXVGMAC_TPBLX8_MODE);
-> > +             if (dma_cfg->pblx8)
-> > +                     value |=3D XXVGMAC_TPBLX8_MODE;
-> > +             value |=3D FIELD_PREP(XXVGMAC_TXPBL, dma_cfg->pbl);
-> > +             wr_dma_ch_ind(ioaddr, MODE_TXEXTCFG, i, value);
-> > +             xgmac4_tp2tc_map(ioaddr, i, dma_cfg->hdma_cfg->tpdma_tc[i=
-]);
-> > +     }
-> > +
-> > +     for (i =3D 0; i < dma_cfg->hdma_cfg->rx_pdmas; i++) {
-> > +             value =3D rd_dma_ch_ind(ioaddr, MODE_RXEXTCFG, i);
-> > +             value &=3D ~(XXVGMAC_RXPBL | XXVGMAC_RPBLX8_MODE);
-> > +             if (dma_cfg->pblx8)
-> > +                     value |=3D XXVGMAC_RPBLX8_MODE;
-> > +             value |=3D FIELD_PREP(XXVGMAC_RXPBL, dma_cfg->pbl);
-> > +             wr_dma_ch_ind(ioaddr, MODE_RXEXTCFG, i, value);
-> > +             xgmac4_rp2tc_map(ioaddr, i, dma_cfg->hdma_cfg->rpdma_tc[i=
-]);
->
-> What if tx_pdmas doesn't match plat_stmmacenet_data::tx_queues_to_use
-> and rx_pdmas doesn't match to plat_stmmacenet_data::rx_queues_to_use?
->
-> If they don't then you'll get out of the initialized tpdma_tc/rpdma_tc
-> fields and these channels will be pre-initialized with the zero TC. Is
-> that what expected? I doubt so.
->
-As mentioned in the previous response the remaining resources are unused
-and no traffic is mapped to those resources.
-
-> > +     }
+> > +     /* Enable Switch Link */
+> > +     misc_iowrite(brcm_priv, XGMAC_PCIE_MISC_MII_CTRL_OFFSET,
+> > +                  XGMAC_PCIE_MISC_MII_CTRL_PAUSE_RX |
+> > +                  XGMAC_PCIE_MISC_MII_CTRL_PAUSE_TX |
+> > +                  XGMAC_PCIE_MISC_MII_CTRL_LINK_UP);
 > > +}
 > > +
->
-> > +void dw25gmac_dma_init_tx_chan(struct stmmac_priv *priv,
-> > +                            void __iomem *ioaddr,
-> > +                            struct stmmac_dma_cfg *dma_cfg,
-> > +                            dma_addr_t dma_addr, u32 chan)
+> > +static int brcm_config_multi_msi(struct pci_dev *pdev,
+> > +                              struct plat_stmmacenet_data *plat,
+> > +                              struct stmmac_resources *res)
 > > +{
-> > +     u32 value;
+> > +     int ret, i;
 > > +
 >
-> > +     value =3D readl(ioaddr + XGMAC_DMA_CH_TX_CONTROL(chan));
-> > +     value &=3D ~XXVGMAC_TVDMA2TCMP;
-> > +     value |=3D FIELD_PREP(XXVGMAC_TVDMA2TCMP,
-> > +                         dma_cfg->hdma_cfg->tvdma_tc[chan]);
-> > +     writel(value, ioaddr + XGMAC_DMA_CH_TX_CONTROL(chan));
+> > +     if (plat->msi_rx_base_vec >=3D STMMAC_MSI_VEC_MAX ||
+> > +         plat->msi_tx_base_vec >=3D STMMAC_MSI_VEC_MAX) {
 >
-> Please note this will have only first
-> plat_stmmacenet_data::{tx_queues_to_use,rx_queues_to_use} VDMA
-> channels initialized. Don't you have much more than just 4 channels?
+> Please see my next comment about these fields and STMMAC_MSI_VEC_MAX
+> utilization.
 >
-Yes, there are 32 VDMA channels on this device. In our application the
-additional channels are partitioned for use with SRIOV virtual functions.
-Similar to PDMA comment above, the additional VDMAs are not enabled,
-and left in default state.
-My thinking is, when another 25gmac device comes along that requires a
-different mapping we may need to add the ability to set the mapping in
-glue driver.
-We can support this by adding a check in dw25gmac_setup()
-@@ -1708,8 +1708,10 @@ int dw25gmac_setup(struct stmmac_priv *priv)
-        mac->mii.clk_csr_shift =3D 19;
-        mac->mii.clk_csr_mask =3D GENMASK(21, 19);
-
--       /* Allocate and initialize hdma mapping */
--       return dw25gmac_hdma_cfg_init(priv);
-+       /* Allocate and initialize hdma mapping, if not done by glue driver=
-. */
-+       if (!priv->plat->dma_cfg->hdma_cfg)
-+               return dw25gmac_hdma_cfg_init(priv);
-+       return 0;
- }
-
+Ack
+> > +             dev_err(&pdev->dev, "%s: Invalid RX & TX vector defined\n=
+",
+> > +                     __func__);
+> > +             return -EINVAL;
+> > +     }
 > > +
-> > +     writel(upper_32_bits(dma_addr),
-> > +            ioaddr + XGMAC_DMA_CH_TxDESC_HADDR(chan));
-> > +     writel(lower_32_bits(dma_addr),
-> > +            ioaddr + XGMAC_DMA_CH_TxDESC_LADDR(chan));
-> > +}
+> > +     ret =3D pci_alloc_irq_vectors(pdev, 2, STMMAC_MSI_VEC_MAX,
+> > +                                 PCI_IRQ_MSI | PCI_IRQ_MSIX);
+> > +     if (ret < 0) {
+> > +             dev_err(&pdev->dev, "%s: multi MSI enablement failed\n",
+> > +                     __func__);
+> > +             return ret;
+> > +     }
 > > +
-> > +void dw25gmac_dma_init_rx_chan(struct stmmac_priv *priv,
-> > +                            void __iomem *ioaddr,
-> > +                            struct stmmac_dma_cfg *dma_cfg,
-> > +                            dma_addr_t dma_addr, u32 chan)
-> > +{
-> > +     u32 value;
+> > +     /* For RX MSI */
+> > +     for (i =3D 0; i < plat->rx_queues_to_use; i++)
+> > +             res->rx_irq[i] =3D pci_irq_vector(pdev,
+> > +                                             plat->msi_rx_base_vec + i=
+ * 2);
+> > +
+> > +     /* For TX MSI */
+> > +     for (i =3D 0; i < plat->tx_queues_to_use; i++)
+> > +             res->tx_irq[i] =3D pci_irq_vector(pdev,
+> > +                                             plat->msi_tx_base_vec + i=
+ * 2);
 > > +
 >
-> > +     value =3D readl(ioaddr + XGMAC_DMA_CH_RX_CONTROL(chan));
-> > +     value &=3D ~XXVGMAC_RVDMA2TCMP;
-> > +     value |=3D FIELD_PREP(XXVGMAC_RVDMA2TCMP,
-> > +                         dma_cfg->hdma_cfg->rvdma_tc[chan]);
-> > +     writel(value, ioaddr + XGMAC_DMA_CH_RX_CONTROL(chan));
+> > +     if (plat->msi_mac_vec < STMMAC_MSI_VEC_MAX)
+> > +             res->irq =3D pci_irq_vector(pdev, plat->msi_mac_vec);
 >
-> The same question.
+> What if msi_mac_vec is greater than STMMAC_MSI_VEC_MAX? Will your
+> device work without delivering the MAC IRQs? I doubt so.
 >
+> In anyway see my next comment.
+>
+Ack
 > > +
-> > +     writel(upper_32_bits(dma_addr),
-> > +            ioaddr + XGMAC_DMA_CH_RxDESC_HADDR(chan));
-> > +     writel(lower_32_bits(dma_addr),
-> > +            ioaddr + XGMAC_DMA_CH_RxDESC_LADDR(chan));
-> > +}
+> > +static int dwxgmac_brcm_pci_probe(struct pci_dev *pdev,
+> > +                               const struct pci_device_id *id)
 >
-> These methods are called for each
-> plat_stmmacenet_data::{tx_queues_to_use,rx_queues_to_use}
-> DMA-channel/Queue. The static mapping means you'll have each
-> PDMA/Queue assigned a static traffic class ID corresponding to the
-> channel ID. Meanwhile the VDMA channels are supposed to be initialized
-> with the TC ID corresponding to the matching PDMA ID.
+> > +     plat->msi_mac_vec =3D STMMAC_MSI_VEC_MAX;
+> > +     plat->msi_wol_vec =3D STMMAC_MSI_VEC_MAX;
+> > +     plat->msi_lpi_vec =3D STMMAC_MSI_VEC_MAX;
+> > +     plat->msi_sfty_ce_vec =3D STMMAC_MSI_VEC_MAX;
+> > +     plat->msi_sfty_ue_vec =3D STMMAC_MSI_VEC_MAX;
+> > +     plat->msi_rx_base_vec =3D STMMAC_MSI_VEC_MAX;
+> > +     plat->msi_tx_base_vec =3D STMMAC_MSI_VEC_MAX;
 >
-> The TC ID in this case is passed as the DMA/Queue channel ID. Then the
-> Tx/Rx DMA-channels init methods can be converted to:
+> Please don't use these fields and the STMMAC_MSI_VEC_MAX macro. Either
+> have the BRCM_XGMAC_MSI* macros utilized directly or define the
+> device-specific data in the glue driver (in brcm_priv_data if you
+> wish). Really the MSI vectors aren't related to any DW *MAC IP-core
+> these are the pure vendor platform-specific settings.
 >
-> dw25gmac_dma_init_Xx_chan(chan)
-> {
->         /* Map each chan-th VDMA to the single chan PDMA by assigning
->          * the static TC ID.
->          */
->         for (i =3D chan; i < Xx_vdmas; i +=3D (Xx_vdmas / Xx_queues_to_us=
-e)) {
->                 /* Initialize VDMA channels */
->                 XXVGMAC_TVDMA2TCMP =3D chan;
->         }
+> The fields originally have been introduced by the Intel developers,
+> who AFAICS just found it easier to extend the generic platform-data
+> structure instead of introducing the new Intel MAC-specific data.
 >
->         /* Assign the static TC ID to the specified PDMA channel */
->         xgmac4_rp2tc_map(chan, chan)
-> }
+> I am going to drop these fields in a future cleanup patchset so to
+> reduce the plat_stmmacenet_data structure complexity.
 >
-> , where X=3D{t,r}.
->
-> Thus you can redistribute the loops implemented in dw25gmac_dma_init()
-> to the respective Tx/Rx DMA-channel init methods.
->
-> Am I missing something?
-I think your visualization of HDMA may be going beyond the application
-I understand.
-We are allocating a VDMA for each of the TX/RX channels. The use of
-additional VDMAs
-depends on how the device is partitioned for virtualization.
-In the non-SRIOV case the remaining VDMAs will remain unused.
-Please let me know if I missed your question.
->
-> -Serge()
+Thanks for the explanation. Will follow your guidelines in next patch.
+> -Serge(y)
 >
 > > [...]
 
