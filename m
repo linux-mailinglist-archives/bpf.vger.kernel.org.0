@@ -1,187 +1,238 @@
-Return-Path: <bpf+bounces-40001-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40002-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1ED5C97A306
-	for <lists+bpf@lfdr.de>; Mon, 16 Sep 2024 15:41:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B202D97A502
+	for <lists+bpf@lfdr.de>; Mon, 16 Sep 2024 17:13:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4E4DA1C2223A
-	for <lists+bpf@lfdr.de>; Mon, 16 Sep 2024 13:41:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6FA64291675
+	for <lists+bpf@lfdr.de>; Mon, 16 Sep 2024 15:13:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFC2C15624D;
-	Mon, 16 Sep 2024 13:41:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDA4E158853;
+	Mon, 16 Sep 2024 15:13:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="vqL6fg5f"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OLdzBrwt"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2DDE153BC1
-	for <bpf@vger.kernel.org>; Mon, 16 Sep 2024 13:41:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726494074; cv=none; b=CpXzBbLbWw8iI6oGSpohdjoF2Pfq3Lha8ucBzmzQ7BeySgazWYPTR0nrs1m6qqbr65Dw/gCPtl7aDf2H2QncaWPXgsUd4agW0RSN4C1gfRa/SoZK422Q8L/jMlYvxDnDnjFqLOIIeBHcMiACMI0FUrKUDd5DYd/CAsy7NtzDzH0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726494074; c=relaxed/simple;
-	bh=7zffz6f9+9dTXuU7HF30nwxvwdmDiNFzFtwvqDSpArI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bgo7KW8Jk3U8FSoW8+wKdrxGrKrVuxlMjr2e1qv4XW09Or68eO2l99Y2gMdlDEVP2dr3mV/tJSgYuHm6kaVflWDiAc31TmTVqN0nztKwJeCthP5AAyBSBjcDxwvz9Cx0ubjFdR72CMfZsqilI19JyZeyj/hoDB/iBjNkmT/X4Jo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=vqL6fg5f; arc=none smtp.client-ip=209.85.208.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2f75c205e4aso47386841fa.0
-        for <bpf@vger.kernel.org>; Mon, 16 Sep 2024 06:41:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1726494071; x=1727098871; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=7zffz6f9+9dTXuU7HF30nwxvwdmDiNFzFtwvqDSpArI=;
-        b=vqL6fg5fX9xskL+ICEsoxzww5oooOp3/j95Wm5OUZq2Uyb1Hm9hL6UBeTnnnuFT/FK
-         5zArrpiMG+lY2SgpvyNi/hskZKiUZD4VdbG2HR+uhOe9q1/nJNV6t0yHZHpUpuJOcpuX
-         17XF8OjvHG/EmDozbcM64DLR28Fy37ixdyZc3qtHTiwlrmZXNnrS/+AwnTp4ohO864nu
-         rT+lLhu7Iok/0ypm90KkS6w7cv89DA3+EjR1VvP9ALKZrYMhy+2BKCZSRjMlCf1STtp4
-         IWjQ/zYuX8PNgU8SEdZXgNAHDGuUnkaCiLMYCxlZta0cdN1PGCVMt4MhJ5xOti/PYl0j
-         c4Tg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726494071; x=1727098871;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7zffz6f9+9dTXuU7HF30nwxvwdmDiNFzFtwvqDSpArI=;
-        b=peCeHSVkLCGgkJY6VqQdD7maCfIcyoffhkZrmFMFrpmxenEBpxZkDKtlXXPUo7YB9W
-         MpI3Az4iCsWiVKYdyLC1231wtftaBpDI4frSz+6+HhJIW0nsdZGChEOInBTlTUBgbnhW
-         ass/rOd4/qfsQfiKM90JydsXrHk4MAR5Q3klbrJTzPeSAEccasY4ahe2/MePCdobjNqQ
-         NpsdWGfewvz2iwy5ZGeEAsycW+i3TYi+heX8aq3ZbgBOV6rOJ35jr3NHlON6a8ZD++iW
-         C7ydW1IT9fVjrXWSfAumIq7v5/Uh+uPnzE7TNtXWNqKo+EXiQl9l24i39juQBYxTCiBf
-         BX9A==
-X-Forwarded-Encrypted: i=1; AJvYcCWf/Ny51wC3eo1Ra97y5sTkl4sH75O9ealC0N/RWHvinutWFCPfxuZGH/vOMXzshP1oJpA=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxLkNngFMI8CRGQPWs1goDn/L77tT6JLwhIA7ctKtXjXxPRzp1U
-	mG5mt9PRWX/2cSKy64K8CUvik00tqKuU3lN5fQEE1ke1K1DvKKrrfCKco8B2j80IuR13jbMkHjv
-	LxSD+sfPYYeUrYl/Ry+MxSVsQ6n9hpOwyOynL
-X-Google-Smtp-Source: AGHT+IGTuz1T5cFsX11jGTdj9wC64zoFaE8zfr1y1SF9nXJUH8c6kxf77d2bSRijJg6lfnRABIn/50xST1PXnkCH4TM=
-X-Received: by 2002:a05:651c:1501:b0:2f7:65b0:ff29 with SMTP id
- 38308e7fff4ca-2f787f431demr69122171fa.38.1726494070387; Mon, 16 Sep 2024
- 06:41:10 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B231615747A;
+	Mon, 16 Sep 2024 15:13:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.13
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1726499626; cv=fail; b=Z4tqRzPCOOJhwaRFvWFq6HNxK/pSlFKtJBE+miHMqOxxX1YTatEw6lTPosHpGYl5xyauT4Nq2sqDU2Ti2a4zGqNs+ppHei/6+ns2QXoQA0TUOtJXlAEafwONn+JoPeYcncOF+PqZBQ9FmGQNHU5t23X5B5ea/6cUrZ/FeAG+2Tk=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1726499626; c=relaxed/simple;
+	bh=Kyt9Oo6TXYzGlg6lCKWSG9T3p+HUhM+nub21ejdwEuc=;
+	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=tVDsVoF6zPd8OkSGaVRwlFNAKJKUIf/8MZ4eJfQxgIp9gKIKgA4ZWmGO8+RGkARXk8lZ+SpKAQrSjSJwCyJvj0uTtxF+7RVuhtdBXqtx/YO387t31PB6lC1pqCbPISCx5UNUjshNk/NRcKrzDzxSTeOs2QgwQfp/VT+GUJNBs9E=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OLdzBrwt; arc=fail smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1726499625; x=1758035625;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=Kyt9Oo6TXYzGlg6lCKWSG9T3p+HUhM+nub21ejdwEuc=;
+  b=OLdzBrwts+fab7T1iIN58X0TXAQKmi2bIGCagg5qhMMR7fXb1PY1Vpyr
+   QHEnHGx472eibqkFTwS+NwC8mz8dWOQ8fUPDiiGhBTLFqKW2KWM5N6wez
+   qRpNz6OKJoLVNfqy4sdM5FjRVX/Q/uXmgrjOLRo5kZJSBbx/6ialrAkLg
+   Z6V/537B66ONF9n6WeXiTjELX15/hfj4k741LmFNshjtLZB11U2Zoxeog
+   zDfAl4NAsLWZ4XyarAxc5x4rwXaEBLtkAubv8s/qGjdsNlUE+TTqAsdRb
+   n2rMgYhx4sZ34lS3/vOlL94AkL6s0q3NPJsdZlKiv6k0dnIwhDVQv48pr
+   w==;
+X-CSE-ConnectionGUID: GATTpOuVS4WNQMvcs7A7cg==
+X-CSE-MsgGUID: lKkmsYt8Tjq6E4ZxUNjFaw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11197"; a="28241343"
+X-IronPort-AV: E=Sophos;i="6.10,233,1719903600"; 
+   d="scan'208";a="28241343"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2024 08:13:43 -0700
+X-CSE-ConnectionGUID: 3WBHoEzpR7miOvDwAl2dIA==
+X-CSE-MsgGUID: daxkdDlmSN6eO/Bo6JHl6Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.10,233,1719903600"; 
+   d="scan'208";a="68864436"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orviesa009.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 16 Sep 2024 08:13:43 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39; Mon, 16 Sep 2024 08:13:42 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39; Mon, 16 Sep 2024 08:13:42 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39 via Frontend Transport; Mon, 16 Sep 2024 08:13:42 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.173)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.39; Mon, 16 Sep 2024 08:13:41 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=N8/x4KP4ajRQO21/074DGHA8m5RZ62wb1uuU+ggHFrmAeJxIZtskJnMybk/38IzzXercLjz83kz90NgDJDEWYbQJiPt9mWP2OEnuqYpll3NNdFdCDjZhj5HX+Os+5XyNA/lg7Bbrbtm8KbjEj6ch7Z5dM4VAgHtauOfogq/sbEfBqEoTT1RCHUxGXoD5mWXNHjaT2dTjpXAbWLl4RlYNL2kwgrgSEHBTwjMmA0/C8IcYV1L4QynEAp+GQuyuoI627N1g2q+Dbdp3A2xKZ50Reu76+wo/arow5hOTKxMU/PPhpCch3a6V9RGQpC0/PLg5wIJ0iFAYWJJvZF7OL+eu9w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=zgpApaTn9/A/Aq4QmFxrB29/9uUd8iNFTjiturUbjeY=;
+ b=KkbEJ7gsJ9YRj5+DT5w/OUwpfH/w5k/9ETPVNZBBt4DfqnAhCH1mvSbxdz4+l0bx+amxgItykxo7rMiIbME35JNitmiqYQ5NCc+swvNi9Lv0wH+1LLZmXqHUI91ShgCRgeABup6EZtG0R1CJgreQHNLKna6G5LdRj797fnmHAXNd5Za1deL8N30pl9rx9RKG21BCXq6Hr7hrwgRdsxnGpumUHiVxG15M/DpKCKtarv+DF5qvwjC9uks2l2L8e5Qfuq3a5Y9RbIYhiDhWiWa7mlilB+MGbbwSEPWN/pbtldIrFobNIz2lhaeG2CENN56H7saZ7r1dJ14vD08fLWOU9g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DS0PR11MB8718.namprd11.prod.outlook.com (2603:10b6:8:1b9::20)
+ by MW4PR11MB5823.namprd11.prod.outlook.com (2603:10b6:303:186::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7962.24; Mon, 16 Sep
+ 2024 15:13:38 +0000
+Received: from DS0PR11MB8718.namprd11.prod.outlook.com
+ ([fe80::4b3b:9dbe:f68c:d808]) by DS0PR11MB8718.namprd11.prod.outlook.com
+ ([fe80::4b3b:9dbe:f68c:d808%4]) with mapi id 15.20.7962.022; Mon, 16 Sep 2024
+ 15:13:37 +0000
+Message-ID: <c5977a24-ba1e-4089-a74e-4b94ca239d36@intel.com>
+Date: Mon, 16 Sep 2024 17:10:49 +0200
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC/RFT v2 0/3] Introduce GRO support to cpumap codebase
+To: Lorenzo Bianconi <lorenzo@kernel.org>
+CC: <bpf@vger.kernel.org>, <kuba@kernel.org>, <ast@kernel.org>,
+	<daniel@iogearbox.net>, <andrii@kernel.org>, <dxu@dxuuu.xyz>,
+	<john.fastabend@gmail.com>, <hawk@kernel.org>, <martin.lau@linux.dev>,
+	<davem@davemloft.net>, <edumazet@google.com>, <pabeni@redhat.com>,
+	<netdev@vger.kernel.org>, <lorenzo.bianconi@redhat.com>
+References: <cover.1726480607.git.lorenzo@kernel.org>
+From: Alexander Lobakin <aleksander.lobakin@intel.com>
+Content-Language: en-US
+In-Reply-To: <cover.1726480607.git.lorenzo@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: ZR2P278CA0078.CHEP278.PROD.OUTLOOK.COM
+ (2603:10a6:910:65::13) To DS0PR11MB8718.namprd11.prod.outlook.com
+ (2603:10b6:8:1b9::20)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <00000000000079eebe05fa2ea9ad@google.com> <CANiq72mor1BkxpAT=v0EsQJN-7fvMjo9K5ooVk1x7ZbBDEyn8g@mail.gmail.com>
- <CACT4Y+aMdct_tjSYsBvvtGoDji6feOiANogRbp3N41qkzU+5CQ@mail.gmail.com>
- <CANiq72nm2dU2o_x_GQ5SdsXaK6yZiDXG2hXEYMykViEAZvuMqQ@mail.gmail.com>
- <CACT4Y+YyYnwg4a1zjTnBU=t0x5Brt1rGuzz-5pXf2Fz3cKf4FQ@mail.gmail.com>
- <CANiq72=vMydenfkxQx4X7kYvHD0cHzNK19xxxqow3WcLStsdRA@mail.gmail.com>
- <CACT4Y+ZrwXB1W31Rr7rUUOoW15YbKfnC0khY9KnNk8FTf5uQnA@mail.gmail.com> <CANiq72=pZy6RzomqbKtM5Ky43+Y0y3c1HQkbwrpS-1FHcEqYqg@mail.gmail.com>
-In-Reply-To: <CANiq72=pZy6RzomqbKtM5Ky43+Y0y3c1HQkbwrpS-1FHcEqYqg@mail.gmail.com>
-From: Dmitry Vyukov <dvyukov@google.com>
-Date: Mon, 16 Sep 2024 15:40:58 +0200
-Message-ID: <CACT4Y+aJ4VX5j_Lz7QDb8ynz6vAn_n8d2AM1M5=NUc0ZBUp-dA@mail.gmail.com>
-Subject: Re: [syzbot] upstream boot error: BUG: unable to handle kernel NULL
- pointer dereference in __dabt_svc
-To: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc: syzkaller@googlegroups.com, alex.gaynor@gmail.com, 
-	andriy.shevchenko@linux.intel.com, bjorn3_gh@protonmail.com, 
-	boqun.feng@gmail.com, bpf@vger.kernel.org, gary@garyguo.net, 
-	linux-kernel@vger.kernel.org, linux@rasmusvillemoes.dk, ojeda@kernel.org, 
-	pmladek@suse.com, rostedt@goodmis.org, rust-for-linux@vger.kernel.org, 
-	senozhatsky@chromium.org, syzkaller-bugs@googlegroups.com, wedsonaf@gmail.com, 
-	Joe Perches <joe@perches.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS0PR11MB8718:EE_|MW4PR11MB5823:EE_
+X-MS-Office365-Filtering-Correlation-Id: 328036c5-b599-4c81-9bec-08dcd66223df
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|366016|7416014|376014;
+X-Microsoft-Antispam-Message-Info: =?utf-8?B?eE5UZmVqbDg3OTVYSTdmVzd3Ri84SXBmQjc0RkY5cjNzZ1A5TFRCOVY4bTBz?=
+ =?utf-8?B?SFVteklBSldYcTB0TkZnWXR1cUR1TitJMFBRMkFvZXlCcXhtTDR6WWl3eUQw?=
+ =?utf-8?B?Z0o4QzI4K2hTa3RMTWhudEN3dWlVMTQ2QzFabWNoT05LTXRMVVhzRGk1N280?=
+ =?utf-8?B?bDZReDFvTEN2YVpvRno1MjlKSmJTMm8zVHlRTjArajA0SXM0QzJlTXVjdFVy?=
+ =?utf-8?B?MW9VOEcrTjdPYTRLK1NXc3Rlb0Qvdno4TWpleVhnTzV4ZFVvRWUzQkROZUdm?=
+ =?utf-8?B?bTA3ZndobXlNVE0zTXJqR0tLSXFteEptSkNJZndqcjFxZjdUcWlsSkxlYUM5?=
+ =?utf-8?B?bUhsWkRXc2hqQWxkZVJFanEyTEc4d1lGUUt3NjFVQ29tMHRqamlIV25jNk4z?=
+ =?utf-8?B?ck55dmg4djA1cC9SSzVJN2ZHMmJjTEhWUWwwKzhvZDV0Z09GbG9JUHhrKytx?=
+ =?utf-8?B?SWpaeUhFeGoxRjdhSEZmTkJDRUsrUlo2THV0VkVyaW1jS1NIUW8zclpTQ2ly?=
+ =?utf-8?B?dGUwSWZKaG9XZWdHQ3dlR2IzVXlxS0ljRHA5ZTBhZXc1QUJsZ3Q4R05NWnpF?=
+ =?utf-8?B?ZlhoUk5MRUljRDFKcDB4Ulh3UUZ4YmtvU3FwaDA3YlMzOTUxYzIwK1hOd1FY?=
+ =?utf-8?B?Qk9NT0dVTmRINFlmSmJyYUZtNytveERJK1FtU3NKN2orUDh1ZEgxMmtISW0r?=
+ =?utf-8?B?VWFhaVF1SWR5eWFwd0RrenY1KzdDMlg1YXVsZm42cDgvRHdtQ09WZWc1eTFj?=
+ =?utf-8?B?Wi9pSHlmYXhidU50aUhwYVhiYTlzZ003Z1V3VE1aUU9IYTM0a24rcThqQ0tZ?=
+ =?utf-8?B?Q2xwM3RHV2oxUkM2UzZySG9Jd3pycEhpdGMzdDdUOVAzYTBnN242Vk9FYyty?=
+ =?utf-8?B?cmpYWG9lUE9oNVN5SnkwVUl4VUEvMFVzRlh0d0NxZmVkeWpUTWUzVmxIOWw4?=
+ =?utf-8?B?eTN5aHpHZFhjME15d2xqdFhiKzdDeXdXak1YRVJDUDlyVlR6dFFZT1JzbTZB?=
+ =?utf-8?B?QzYyQkdlQWdXeTNqTm83aWM2R0hvem9UMjhCQ3NGQlBHK2xBUTFOcFdHUVQz?=
+ =?utf-8?B?N2wzWjU3T0J4aG9yVW1pRGl5enRqdnhBWFZHVkxJOFl5M1ZSdDFpMlphUE9h?=
+ =?utf-8?B?NDlxWHhIQVkrc290S2N1elliOE95Z05wMUZIZDQxQmlCS0VobW9EYzBKTUdo?=
+ =?utf-8?B?YWFzSDFQR055bXVVN3o4OU1yQW5jUmZmS1JtcmxyTm42UWZlV3p6QVNVNjB3?=
+ =?utf-8?B?L1dUWkJyYkJkUzgwbkl1aFlLQjdRV0RQM2MwU2RmeFhlMk02NnY4QnBOdkVD?=
+ =?utf-8?B?Zmp4eHhGSXBFWVcrL2hmL3VjRDUrdXdXQXBUUDVRRzQweU5IV1BtTDFRWlQ4?=
+ =?utf-8?B?eW1VREhZRVEydkJnaHFHejdRVmxXQVo0K3k2TGsrRDhCUXpZMUMyRFpGcGNW?=
+ =?utf-8?B?WWQzWGIrNEFPVXdobExLbEFDV0xPRGxiZVhQdkhBdndIbmZYazZNZXIwbCsr?=
+ =?utf-8?B?UXRyd253K3J0WXBxdnBBWGxhS2JSNnM3QkVYTzFYYndBR2Z4cmQ4TnlYalpB?=
+ =?utf-8?B?ajlKUm9FM1o1UlloTTRRY3N5S2hyODllTldPbDVNVVFhLzZLa0lIWVE0ekdy?=
+ =?utf-8?B?aGxpUFZqUjE5cWhaejNHU1NyRHNqbGtYZ0dKajlLT2kyMGZTd01KcDVQd0NW?=
+ =?utf-8?B?ODBYOUxHMUFNYWFQVmdJWmxaN2ttUjREb0t5OXRnOGJWVWJkWnBYYU9XQkVT?=
+ =?utf-8?B?RUZORTMzOHBNMGtjRDN6ZkNNQ1F2ZWV5a1ZkcVNtUFhZTDFkQWZMOVI3WTRV?=
+ =?utf-8?B?UXlxRHJxVmowRXhVV3dpUT09?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB8718.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(7416014)(376014);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?eTVNVzhCdUJCRzRJeDBOYUJaQU4yM3hBTnZHSWNscm5KZ3ZLQkJ3dys0UmZs?=
+ =?utf-8?B?WWd4WElhTVpuTWJPcGg0ZFViQ1NDb1paamNaNDlKNUpDM1VEMnQrS3Ztemxu?=
+ =?utf-8?B?ME1lTEpFbHpOcHBNYk1JU1VVM1kycldINmNZZnVUdUpCM2dFbE9Zeis1dUQ0?=
+ =?utf-8?B?YmZWVnB1ckxtSFlJWjM0MFV5azh3SmtLL2lrODVDWWhiQkY0QU1lM2ZXNWxr?=
+ =?utf-8?B?WWE4OUgzNmxxNlpleG1kcnR6SHRRYUlsUldhUHNFTnlLZ2tMaHJFQTM0VHg1?=
+ =?utf-8?B?bVBDWDArQmVRYVhlYWFoTU9sU0ZJcUlUejdKSmxzaURZdGh5cFE2WENBdlV4?=
+ =?utf-8?B?c0Y1YVI4VVEyWUlydUVKUm9zQ2QvTUdDMnViWTRUdkw0VkZ3Z3Y1dDMyUU9J?=
+ =?utf-8?B?ZnM2VktTNVZJcWFscU5LSXdpQytXT0puanhya1pwVi83SGF6b25jZDROVUZu?=
+ =?utf-8?B?ajEvbDRydEE5ek10M2tOZWlBUThRYmVzWlhHUUZwMzBkMWJzYTlDeUl0M2tt?=
+ =?utf-8?B?U0E1bUNaWTVhYnVPeHR0bFc5eFhQTDdWbndremE0emxBMmhyQ0E2MGpXL3Y4?=
+ =?utf-8?B?YXplYjhqeXJUUzV1UlVkYjhRMWMvWjdRWVBzYk5qdXhTVk1FSGVsUS9mdENp?=
+ =?utf-8?B?Z05OUHArWTF3REUxZkhtYW05YTU5Z3JvS0FnZFVLdHJhcE9WZ29pS1BGLzRY?=
+ =?utf-8?B?am96MU5SYThwbGVyNkllbUdlSkhycFo3VlIyNngxNWMwcGJsQzRzajZKT3pE?=
+ =?utf-8?B?NkVhVUoreDhMVkpLZWFkeFFrUmhuK0JJSlhJYVlqa3hYREFzSldyTWVSalVz?=
+ =?utf-8?B?R20vWXg3SXBMdVpGMEsyLy9URWgvVDZSOWQ4K254bmdMcGhTTUliME1MLzdx?=
+ =?utf-8?B?YWszdXVaREVrSTU3Q1YwZkRFampwT1IvRTZGNzlwcnhCWjlmNE5CdW5hamdI?=
+ =?utf-8?B?M2J5NkFNeGxUZGFrR2dYNFdWbFJlcEo3OVY0WStVN1orQlpoSWxLM21nN1Fi?=
+ =?utf-8?B?Rm8zNkgxbGZiMEg4WWc4M3RRQVpSbG9GZ0srRmFYSHJoK1Q0SllPQStla2lR?=
+ =?utf-8?B?c29McEtHUVpYNVd6YklwdHpNZEI3cEdjaXFYT1ExaUJjaGxlVXNNYXk1TnZn?=
+ =?utf-8?B?QWMwU0hObDlXTlhTdWluWmlId0kzMkgvLzRvcTBhaStXWFpDbnZBMEMwSENZ?=
+ =?utf-8?B?NXFkYXF6emtkcWYvYzd5Ni9vdUFyWWt1ajBvNWI4Wm1rOFQ3b0xQWHNSRk9r?=
+ =?utf-8?B?M3UvMW5qWUhLV0VFL3ltVk1yNXJ6TXdETjBQcU5qUVpwWFZDcEZQbFFGdDBt?=
+ =?utf-8?B?SE5UN3lwaTJKZ0p4WVM4YWRTMEFqNVo3eEFZSkRTb21Tdk5RL1VVN2ZDczZ5?=
+ =?utf-8?B?QTREVjFMMWVBVzJDd2ZNMEhsMFUyREE2MzVsSlRUL3hGYWg2OVJkME56V1VL?=
+ =?utf-8?B?RWwzOVFZMmJwYlRHdDVyRVZXbEV3TElqQlhWUHdUdUFZR0gzTjBuamJNYm4v?=
+ =?utf-8?B?Mmk5bjlndUFQa2s3VUZ6bXhDMnVzU2ozUE9RZUx5ei93TkIwNTB5aStIQkRV?=
+ =?utf-8?B?TkpJcGFLWmlNRFFObHIwZGt3MW1LMGdiSkQvU1pURWxmdDQyVGo3N3Q2STVT?=
+ =?utf-8?B?UEVKQXN1WHVpSXpZNm1ERWpUcTd5Sk82UTc3VitYVmtGcVR6c24veHk4L1li?=
+ =?utf-8?B?RTJNemZ6ZU5TeG11ZTJRV1d0YUt2aGlmVDJBWURGVjdPTTZzMFNJQ3JJWjZL?=
+ =?utf-8?B?eWxkUjZFSldlUzRaZkxWVkl6Y3AxMjkzb3E0cUZMWHZBS3ErWUtad3JHVFE0?=
+ =?utf-8?B?NTRLazdBdS9OV1hVaHN1RmN2WVlSc21KMDRJb2hoWlNUWnFpejVuK3JlZ1Fo?=
+ =?utf-8?B?Mk4wUnJRSmxUS0k2SXlPZDJ2SHdVVzNHYm03V045aUg1bTRpUEJsYVJUV3h6?=
+ =?utf-8?B?eWt1Y25pcno4S01iZTcwbTdTSFpnMnllSzhJQlVHa3NCUWt3SmRTc3Bvd3pO?=
+ =?utf-8?B?SmNuNVFvZUhDZmZZTUxEUWJEeXQ5b001L3d1SzN6YUdVYmJtSlc0ZkUwYnRE?=
+ =?utf-8?B?T1FQSVI5SmR3YVpKTVV2VWhNeVZVaWtmbmlmWHYwanRJN1Z6ZmFGVU9JMUIr?=
+ =?utf-8?B?amloWG13QzJWbGNac1ZuWDJ6dDlmL1h2WTVWUUtORlc2S1FlZzFoQ05YR0h1?=
+ =?utf-8?B?RFE9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 328036c5-b599-4c81-9bec-08dcd66223df
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB8718.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2024 15:13:37.8130
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: rpkS7nN7FdQcfpnzNFXQEkbYFKCA0jGCQRAQ8S86Ne9bHCaJtGmeTd9l6fx0QfkRNN+tTqrbQxEuQTmWuOz2fGAxy9EaVrJy6jjMGzyuslA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR11MB5823
+X-OriginatorOrg: intel.com
 
-On Wed, 26 Apr 2023 at 13:37, Miguel Ojeda
-<miguel.ojeda.sandonis@gmail.com> wrote:
-> > I understand your intentions and they make sense.
->
-> Thanks! I am glad you agree it may have some value -- please see below
-> for details.
->
-> > But adding this logic to syzbot won't help thousands of users of
-> > get_maintainer.pl and dozens of other testing systems. There also will
->
-> I haven't said otherwise -- as I said, I think it would be nice to
-> have this be part of the kernel itself. :)
->
-> > be a bit of get_maintainer.pl inside of syzbot code, so now all kernel
-> > developers will need to be aware of it and also submit changes to
-> > syzbot when they want to change maintainers logic.
-> >
-> > I think this also equally applies to all other users of K:.
-> > And a number of them had similar complaints re how K; works.
->
-> Yeah, I would imagine so.
->
-> > I am thinking if K: should actually apply just to patches and be
-> > ignored for source files?
->
-> I considered that -- for things like Rust, it could make sense, but
-> perhaps somebody is already using `K:` to match files they do care
-> about, rather than `F:`. So we would need to ask others, but I think
-> it is fine.
->
-> > If there are files that belong to "rust" (or "bpf" or any other user
-> > of K:), then I think these should be just listed explicitly in the
-> > subsystem (that should be a limited set of files that can be
-> > enumerated with wildcards).
->
-> Yes, at least for Rust, modulo omissions, we match files explicitly
-> with `F:`. We have a couple unimportant omissions, e.g.
-> `.rustfmt.toml`, but I can send a patch.
->
-> Personally, I have always seen `F:` files (and `N:`-matched ones) as
-> having more weight than `K:`-matched ones, i.e. I saw `K:` as more of
-> a "it depends on what it matches -- discretion needed".
->
-> From a quick look, most `K:`-using subsystems seem to list `F:` and
-> `N:` as I would expect.
->
-> > It's also reasonable to apply K: to patches.
->
-> Yes, definitely, for Rust, that is our main use case, i.e. it is
-> mainly why we wanted to have the `K:` entry: to catch changes to
-> things that are tagged with "Rust" in C files (early on, at least).
->
-> It is particularly important for us, since we are also considering
-> having more of these annotations in the future.
->
-> > But if a random source file happened to mention "rust" somewhere once,
-> > I am not sure you want to be CCed on all issues in that file.
-> > Does it sound reasonable?
->
-> For Rust, yes, that would probably work for us. Not sure for all
-> subsystems using `K:`, though.
->
-> Having said that, I suggested including the kernel config too in this
-> decision (i.e. not for the patches case, but for testers finding
-> runtime issues), because it adds information: it leaves reports out
-> when something is not even enabled but matched via `K:`, but still
-> allows a Cc when matched via `K:` and enabled. It is, of course, still
-> potentially a false positive, but some subsystems may want to hear
-> about those.
->
-> For instance, for Rust, this would be fine early on, since we don't
-> expect many to have `RUST=y` to begin with, and thus the odd false
-> positive report via `K:` is fine. Later on, this heuristic may change,
-> and we may not change those matches anymore (especially since, by
-> then, the goal is that subsystems would be taking care of their own
-> Rust bits).
->
-> This is what I was suggesting to then put in `get_maintainer.pl`, e.g.
-> a `--bot` option (or `--runtime`, or `--config-based-filtering`, or
-> similar) option. Then the bots can add that option on their side.
->
-> Thanks again for considering this!
+From: Lorenzo Bianconi <lorenzo@kernel.org>
+Date: Mon, 16 Sep 2024 12:13:42 +0200
 
-Was looking at what's the status of this, and if we need to file a
-feature request for syzbot.
-Turns out Joe Perches fixed this a bit ago by adding
---keywords-in-file flag (off by default):
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=71ca5ee18708c1f9f086e20ac0a657009bcfe43a
+> Add GRO support to cpumap codebase moving the cpu_map_entry kthread to a
+> NAPI-kthread pinned on the selected cpu.
+> 
+> Changes in rfc v2:
+> - get rid of dummy netdev dependency
+> 
+> Lorenzo Bianconi (3):
+>   net: Add napi_init_for_gro routine
+>   net: add napi_threaded_poll to netdevice.h
+>   bpf: cpumap: Add gro support
 
-I think that's the right thing to do. syzbot won't be confused by
-widely matched K: patterns with sending reports (since it runs
-get_maintainers.pl on files).
+Oh okay, so it's still uses a NAPI.
+When I'm back from the conferences (next week), I might rebase and send
+the solution where I only use the GRO part of it, i.e. no
+napi_schedule()/poll()/napi_complete() logics.
+
+> 
+>  include/linux/netdevice.h |   3 +
+>  kernel/bpf/cpumap.c       | 123 ++++++++++++++++----------------------
+>  net/core/dev.c            |  27 ++++++---
+>  3 files changed, 73 insertions(+), 80 deletions(-)
+
+Thanks,
+Olek
 
