@@ -1,71 +1,71 @@
-Return-Path: <bpf+bounces-39989-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39990-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9599979E3F
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CAF67979E3E
 	for <lists+bpf@lfdr.de>; Mon, 16 Sep 2024 11:18:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 44D1FB22FC3
-	for <lists+bpf@lfdr.de>; Mon, 16 Sep 2024 09:18:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8E5E5281510
+	for <lists+bpf@lfdr.de>; Mon, 16 Sep 2024 09:18:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B501014A4E9;
-	Mon, 16 Sep 2024 09:18:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 604A914A62A;
+	Mon, 16 Sep 2024 09:18:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UsJuCXQ3"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I/GlrFEI"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF1EF1494CF
-	for <bpf@vger.kernel.org>; Mon, 16 Sep 2024 09:18:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90CC24AEF2
+	for <bpf@vger.kernel.org>; Mon, 16 Sep 2024 09:18:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726478301; cv=none; b=WIz4PjsR4XhD6eFIUxBpckd3/u7TkbVlIZ22rUKtuK7iHSt8cHCKBYzjUmelDXYrY5fFjtWk3hRC3ArddgacRHP/CNK3GYGIL4rf1qPMNtV8AZWC6CeCIp3wxmTNvqaNV5Pq0GyyOnDFfb1w+gGyaEC5EMEc9Yhtmw0+5pIcn3o=
+	t=1726478301; cv=none; b=oiRJ0x6Omt/WHkVKC4FJCRBlkBxgU3iP3FMG7upDwsYg9jANeJds7oUG2Qzu0+lAsdnz/Yij4beJ5KSXcyfeXq67qzVwOVbDyvhNEXo5rL5X5HcyjncW0+bbeUC4Ra3kj4wdN0UBs3KyMSI3AsAH99IoMihKsZXmQZcXDKeeoZ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1726478301; c=relaxed/simple;
-	bh=Ae9QwDopzJTnytsNNCMQdMvvJAR7HEi7/xjmZEOVzHI=;
+	bh=vXB1ltdueuJTPO9Ur04wBgDjbhC/Js9Buiqj+gYXNOc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=uxUj/O33bubh9ZAz/OgzoPxtGEh52DF31Du/RaTaj6LapvJIwE6511uVJ/VMabbnsugXlj7cAXnZzmtDTv6B8mkb46yybZZi1h6O+dg2M7yTb8KzWN16QF/g7TTSo77Ny1qghZdwEeKcq/4hEGnyo7zbmTdzcJ5FmopCxT29zUI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UsJuCXQ3; arc=none smtp.client-ip=209.85.214.176
+	 MIME-Version; b=UMpaP22ldgX14rrjKa467icBEiLg0gISMO8LMB2hVOq2uZQiYq0xsyfKI4m084EYzTfZ2kU3rlWt/CRKBYXZsBh68aShpVPkruS49Gzw0TlpLLSAzm29JR+Rqw7p3V0SRKZ7Ny+E1oz3ZiX4Y3lYsc19ePp2Ak85IIkCSGXzd+o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=I/GlrFEI; arc=none smtp.client-ip=209.85.214.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-201d5af11a4so47033585ad.3
-        for <bpf@vger.kernel.org>; Mon, 16 Sep 2024 02:18:19 -0700 (PDT)
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-2055a3f80a4so27222535ad.2
+        for <bpf@vger.kernel.org>; Mon, 16 Sep 2024 02:18:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20230601; t=1726478299; x=1727083099; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=wohpFGdgdGWZ71ddt6kBAYLO4PksGhnaccJ5XelkzB8=;
-        b=UsJuCXQ3L4vZAdA78GAgcA4QeQCCwzF9er0krAQuSHzPD3O88j3GSdUsQ8Va/fUcs/
-         Za/bxvijelzzWS6+MjOUwLI1o4sXVNKDnLsxd3a/+Yc7GtHMNjiqHYUXutXDtAiIguBv
-         hwXWYwJy6Av9lC5u4q99ZmSUoqoVRZKSmuWX80ND+SPjKm5WhmHlQNAuKRQjkl0vbwBR
-         zgsSFA+crdgiuE8Km5Qq1j0ZtPYfdfaKFl8vXqDkapNH3m3TwNnINkmAZ/viNBG/P3tb
-         U4J1lC5Y9pGrIYQ5g9yobim4hhLr+qb9sE4kt6hcJ908IzjNFaMFgJLo7UJyw0yHbElX
-         FF3w==
+        bh=PbxFz7dV+ZWVbIZIwQdM92e5BVqo4TzVLga0n5ZdWjQ=;
+        b=I/GlrFEItO2GYoWsqJaQLAwrjRpWUoK3+6kNzcSorLLk/B4aDi7OmHNrcyhh5wLJSU
+         pURzp8SxJiVwR5aixFZ0vwrcFM48vspQeh+0EDeAqAb4tBu9CfuSgTIAb2U2mInR7GGp
+         TFA/23GhTV3Lz8Q0P205hIgOsVcBs90EAX1fWyQN0xGvHgAj4rbRnjvFc5wGx09Jj9G0
+         AxETUxO8Ur5RZM4r+atmZInaYbAWf3X91CiKhXMyc4xqsa0XOFaOxY2YkE5kODutZnNT
+         89rAPZhhPHkRiMqDp59RceSQhFu/sFN2a+K6iXNFCllGg7Elvyzr1IuGveMnMsVr4PFj
+         nGbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1726478299; x=1727083099;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=wohpFGdgdGWZ71ddt6kBAYLO4PksGhnaccJ5XelkzB8=;
-        b=V9aTxcbZbC1B4ImSX57fjfOVpchPVMs31zYIwYyBjo/D3bBylg0P9HO74aIUBzRviA
-         DXYaKZ4agr6X28wqF94BaXgu4EbcgNVskKSd58iP5YRel+cAKizylpm0i/FISXcF2y8P
-         yKYf3GL0AcfYrogE3EMV+/09UMMpiuUuxtLLcxdY1sSlwiZ1wxtiF5thZyVA7qUdk/Sp
-         jiyjdCbN4gh6a8vBBBPs0tiipJWC0R1cmH9T+kg8/ouM8hsR61lyGynD2stIcbhcbX2I
-         0DE1cuNVEzXt92J8lFrgyqpB1dvBzLkZIPaM0mjr2G0zmmD3/HqwkgCu6RIsosTQveT9
-         XebA==
-X-Gm-Message-State: AOJu0Ywot7O40A2VhhCfMg3jZGGCXbQukzEvCelJO1HcuKj+6Waf8Tkm
-	QhG7rea3zXkDvkdMGCVSrEYMegHqpxV+0OlyJtP1qOuFNT4Z5nK1V26Cxw==
-X-Google-Smtp-Source: AGHT+IGTYmjX01dC96m1VY9uAnIXrP4MVVn02LTpib0O/GsdsKtHkmh2u0uBV9ZN61w7uGKKvvE7kw==
-X-Received: by 2002:a17:902:d2ca:b0:206:c2f4:afb7 with SMTP id d9443c01a7336-2076e36db8cmr194234095ad.26.1726478298736;
-        Mon, 16 Sep 2024 02:18:18 -0700 (PDT)
+        bh=PbxFz7dV+ZWVbIZIwQdM92e5BVqo4TzVLga0n5ZdWjQ=;
+        b=hw5o2BrJL32qK1H77W66t4tARRanvkLQhGYV7Xa7nd/Xj5hvkf1azz5UZqaWjhQZ2f
+         x0vkCBBYJqiFRQ1wHc1j2f8IZd1p3MuR1XLWcs6RLd8xq+qlnLLumUDTfYu4tCOpQD7j
+         A2hVVLsJk46cWvZM0qhmoD6l/PnuLHyolnX3pm6kde/lcityTYl1Qm1i4E/FjVaTv20R
+         lkccAMnGA/YDSzfMdLxW6bigV4OPyNqfAbb2qxXmmpdtZ87MmEm8iwP9bnejpokEa2oO
+         3DZPbY9fCnKJ2x17c/WhvP4hQ5XE7uoZJdtEDziXFNVVHC4JTf62rRDZ831yf3HPHftW
+         vjVg==
+X-Gm-Message-State: AOJu0YzyqF6qHmGPpSu6NQb0c8twHn9WLRPL4rZSH5LYUXHvtPRTBNBx
+	z7afKIFoMuyjl2owWWmGV2J9YOyA8C3SGEcoBtaoRRxXY+dnO2w0lkTkfw==
+X-Google-Smtp-Source: AGHT+IHD/k9jIP+Hsb+wcBHraD2Ehqtais5TIxtz2CIjmmKPgunztZxyf8msaTpmQbuScVvXo7iRug==
+X-Received: by 2002:a17:902:c411:b0:206:b7b8:1f0e with SMTP id d9443c01a7336-2076e319544mr217856865ad.1.1726478299528;
+        Mon, 16 Sep 2024 02:18:19 -0700 (PDT)
 Received: from honey-badger.. ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-207945da63fsm32882195ad.38.2024.09.16.02.18.17
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-207945da63fsm32882195ad.38.2024.09.16.02.18.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Sep 2024 02:18:18 -0700 (PDT)
+        Mon, 16 Sep 2024 02:18:19 -0700 (PDT)
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org
@@ -76,9 +76,9 @@ Cc: andrii@kernel.org,
 	yonghong.song@linux.dev,
 	arnaldo.melo@gmail.com,
 	Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH bpf-next v1 2/4] bpf: __bpf_fastcall for bpf_get_smp_processor_id in uapi
-Date: Mon, 16 Sep 2024 02:17:10 -0700
-Message-ID: <20240916091712.2929279-3-eddyz87@gmail.com>
+Subject: [PATCH bpf-next v1 3/4] bpf: use KF_FASTCALL to mark kfuncs supporting fastcall contract
+Date: Mon, 16 Sep 2024 02:17:11 -0700
+Message-ID: <20240916091712.2929279-4-eddyz87@gmail.com>
 X-Mailer: git-send-email 2.46.0
 In-Reply-To: <20240916091712.2929279-1-eddyz87@gmail.com>
 References: <20240916091712.2929279-1-eddyz87@gmail.com>
@@ -90,44 +90,60 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Since [1] kernel supports __bpf_fastcall attribute for helper function
-bpf_get_smp_processor_id(). Update uapi definition for this helper in
-order to have this attribute in the generated bpf_helper_defs.h
-
-[1] commit 91b7fbf3936f ("bpf, x86, riscv, arm: no_caller_saved_registers for bpf_get_smp_processor_id()")
+In order to allow pahole add btf_decl_tag("bpf_fastcall") for kfuncs
+supporting bpf_fastcall, mark such functions with KF_FASTCALL in
+id_set8 objects.
 
 Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 ---
- include/uapi/linux/bpf.h       | 2 ++
- tools/include/uapi/linux/bpf.h | 2 ++
- 2 files changed, 4 insertions(+)
+ include/linux/btf.h   | 1 +
+ kernel/bpf/helpers.c  | 4 ++--
+ kernel/bpf/verifier.c | 5 +----
+ 3 files changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index c3a5728db115..fd1f59c6d1de 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -1970,6 +1970,8 @@ union bpf_attr {
-  * 		program.
-  * 	Return
-  * 		The SMP id of the processor running the program.
-+ * 	Attributes
-+ * 		__bpf_fastcall
-  *
-  * long bpf_skb_store_bytes(struct sk_buff *skb, u32 offset, const void *from, u32 len, u64 flags)
-  * 	Description
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index f329ee44627a..22b041c81276 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -1970,6 +1970,8 @@ union bpf_attr {
-  * 		program.
-  * 	Return
-  * 		The SMP id of the processor running the program.
-+ * 	Attributes
-+ * 		__bpf_fastcall
-  *
-  * long bpf_skb_store_bytes(struct sk_buff *skb, u32 offset, const void *from, u32 len, u64 flags)
-  * 	Description
+diff --git a/include/linux/btf.h b/include/linux/btf.h
+index b8a583194c4a..631060e3ad14 100644
+--- a/include/linux/btf.h
++++ b/include/linux/btf.h
+@@ -75,6 +75,7 @@
+ #define KF_ITER_NEXT    (1 << 9) /* kfunc implements BPF iter next method */
+ #define KF_ITER_DESTROY (1 << 10) /* kfunc implements BPF iter destructor */
+ #define KF_RCU_PROTECTED (1 << 11) /* kfunc should be protected by rcu cs when they are invoked */
++#define KF_FASTCALL     (1 << 12) /* kfunc supports bpf_fastcall protocol */
+ 
+ /*
+  * Tag marking a kernel function as a kfunc. This is meant to minimize the
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index 3956be5d6440..d80632405148 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -3052,8 +3052,8 @@ BTF_ID(func, bpf_cgroup_release_dtor)
+ #endif
+ 
+ BTF_KFUNCS_START(common_btf_ids)
+-BTF_ID_FLAGS(func, bpf_cast_to_kern_ctx)
+-BTF_ID_FLAGS(func, bpf_rdonly_cast)
++BTF_ID_FLAGS(func, bpf_cast_to_kern_ctx, KF_FASTCALL)
++BTF_ID_FLAGS(func, bpf_rdonly_cast, KF_FASTCALL)
+ BTF_ID_FLAGS(func, bpf_rcu_read_lock)
+ BTF_ID_FLAGS(func, bpf_rcu_read_unlock)
+ BTF_ID_FLAGS(func, bpf_dynptr_slice, KF_RET_NULL)
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index f35b80c16cda..80a9c73137b8 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -16199,10 +16199,7 @@ static u32 kfunc_fastcall_clobber_mask(struct bpf_kfunc_call_arg_meta *meta)
+ /* Same as verifier_inlines_helper_call() but for kfuncs, see comment above */
+ static bool is_fastcall_kfunc_call(struct bpf_kfunc_call_arg_meta *meta)
+ {
+-	if (meta->btf == btf_vmlinux)
+-		return meta->func_id == special_kfunc_list[KF_bpf_cast_to_kern_ctx] ||
+-		       meta->func_id == special_kfunc_list[KF_bpf_rdonly_cast];
+-	return false;
++	return meta->kfunc_flags & KF_FASTCALL;
+ }
+ 
+ /* LLVM define a bpf_fastcall function attribute.
 -- 
 2.46.0
 
