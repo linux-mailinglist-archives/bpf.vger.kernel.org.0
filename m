@@ -1,47 +1,47 @@
-Return-Path: <bpf+bounces-40003-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40004-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD93997A76C
-	for <lists+bpf@lfdr.de>; Mon, 16 Sep 2024 20:47:51 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9833D97A7F0
+	for <lists+bpf@lfdr.de>; Mon, 16 Sep 2024 21:49:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 554EB285191
-	for <lists+bpf@lfdr.de>; Mon, 16 Sep 2024 18:47:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 342C5B2A9DA
+	for <lists+bpf@lfdr.de>; Mon, 16 Sep 2024 19:49:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECE4D15B57D;
-	Mon, 16 Sep 2024 18:47:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CEA115C13C;
+	Mon, 16 Sep 2024 19:49:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ABtgotaV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uKyZzvZZ"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E58614264A;
-	Mon, 16 Sep 2024 18:47:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 061611DFE4;
+	Mon, 16 Sep 2024 19:49:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726512463; cv=none; b=ibF/lI1TmbNF+fVVb1GG11Rr0mXtOnASdTfxTelp13TtOxvD6ogJ+yRjWYFYWXAtyQSHebIa0yepIHMwLECtsahrgqglaXlE5fCW8grgVGmLUmvmHFyMsNWV4v09DX+JXIUepFMyRlwD9U7UMp3flJ8MvtvFc3z0NWdMl4EkCR4=
+	t=1726516165; cv=none; b=kx6CVoXpCzCsjBk3nhsWNiYRGgx4/yMcqILPTupaKodChUK1ZE2YVMQc+O6ufHlLhBXD3QAoVqvrVStWhd9EBrOEnehab6HySM+MEzJ+AvwBd4Wwk7D/gpK8YugLchviq6C9C5jrRWHk9xZ8d76DnMBhsZ2bl56HL65rLEXveCk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726512463; c=relaxed/simple;
-	bh=YONIu19JZeROs0DNZfx7fAzpgVhaKHDQf+Xd3Y0Y7jw=;
+	s=arc-20240116; t=1726516165; c=relaxed/simple;
+	bh=McvvxzRP1A7708isAh7bwsxm3tBEaTW9AN2krh/AmvA=;
 	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=clH/61lZ9FLh95KCwoqdBq733MYSiomPYzrHT2Ol1XX/KvpM4XtznwwuyvY08Q0ishsahj/LdBzgcij28I1XWOcU+BcGX4aX3F+IDXLvFCjMmN31wO/IQ21N35JlVnMxw+7ELOKeXumbpkqvo6yHOr/zE3taMQZ5NpomHms70L4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ABtgotaV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30299C4CEC4;
-	Mon, 16 Sep 2024 18:47:36 +0000 (UTC)
+	 Mime-Version:Content-Type; b=AZ2K5IESiuCfxdkfMszAei4eG7fbt0Qw3qXHbGIvicyLj1L346sn1AML9OluHDVGbCrDVYm9IoliKU3qTmsAa/KETSLicuKpALgdxnuODFixGKLR8Y/59uUbu/K9bfdKjCuWZis382WNdLKjNJXLFpdVO+vWB1fv0/gsEbvGDj8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uKyZzvZZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5EB40C4CEC4;
+	Mon, 16 Sep 2024 19:49:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1726512463;
-	bh=YONIu19JZeROs0DNZfx7fAzpgVhaKHDQf+Xd3Y0Y7jw=;
+	s=k20201202; t=1726516164;
+	bh=McvvxzRP1A7708isAh7bwsxm3tBEaTW9AN2krh/AmvA=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=ABtgotaVgCYOmMXISzBoxSvfF476n8+kLCfxtoSgQhtz5c4K6gBVrEmzHUQWOqe5+
-	 jXO6Mk8V+sE+dqNgNFjg7IQD1dZ+0vKMUjul15ZkSz0RS92YUclRdSwqSVAHdkRMWF
-	 X4xgAnw33lEZJsk+N8Rp5l+Xo32sK7zAtUby7Lti6ccllCU2qW+3JEht/h8xoGKevW
-	 bVQm6TSM7ruQ92ef17SSV69c5A5CAn7Vry97UE6zJYK8PS6N06Kn4HTJ7idZB9L/Sl
-	 CE2f5M846jUQxnAa3PiIg7SGXcp0146XaJA3wPx1HzL6Ukw7fsLJfXN9bjzzFoK7MZ
-	 2fG+yB0LjTVEQ==
-Date: Tue, 17 Sep 2024 03:47:32 +0900
+	b=uKyZzvZZ1Jd4KscVOwGwGJiJPydODCJg5MhxYf+DNQKbGYXXz6Up4b4VBbX7B89XW
+	 7IQbPHvszOFAuebbQM1iZugwsGLh2DbKPd8nnoxiRidb/8ayT4PuDKF7CApgI3kxGU
+	 1xI9NKkar7tProD5gHbWKCz5P7NoM7Ip96FkNXacWzCMbDo8Z02gx85N/yUNT2VOSG
+	 rsWfMBrQZfaW+RFSfaKTCd70Bpq44yZ6eWAIT9iltZtPQ/4GmSegRRD6F0tGJWs/9w
+	 jIqtrxqd1TtOHBkSq67HLChfJE/UZthB2WO2oQY0yMIWf+wSIdlYSt6KHa2imeMcUp
+	 P8BFHdZY4sOYA==
+Date: Tue, 17 Sep 2024 04:49:16 +0900
 From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 Cc: Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
@@ -51,14 +51,12 @@ Cc: Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
  Rutland <mark.rutland@arm.com>, Alexander Shishkin
  <alexander.shishkin@linux.intel.com>, Namhyung Kim <namhyung@kernel.org>,
  Andrii Nakryiko <andrii.nakryiko@gmail.com>, bpf@vger.kernel.org, Joel
- Fernandes <joel@joelfernandes.org>, linux-trace-kernel@vger.kernel.org,
- Michael Jeanson <mjeanson@efficios.com>
-Subject: Re: [PATCH 2/8] tracing/ftrace: guard syscall probe with
- preempt_notrace
-Message-Id: <20240917034732.67af2533dec577f96bdb36f8@kernel.org>
-In-Reply-To: <20240909201652.319406-3-mathieu.desnoyers@efficios.com>
+ Fernandes <joel@joelfernandes.org>, linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/8] tracing: Allow system call tracepoints to handle
+ page faults
+Message-Id: <20240917044916.c615d25eb4fecc9818d3d376@kernel.org>
+In-Reply-To: <20240909201652.319406-1-mathieu.desnoyers@efficios.com>
 References: <20240909201652.319406-1-mathieu.desnoyers@efficios.com>
-	<20240909201652.319406-3-mathieu.desnoyers@efficios.com>
 X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -69,30 +67,50 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Mon,  9 Sep 2024 16:16:46 -0400
+On Mon,  9 Sep 2024 16:16:44 -0400
 Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
 
-> In preparation for allowing system call enter/exit instrumentation to
-> handle page faults, make sure that ftrace can handle this change by
-> explicitly disabling preemption within the ftrace system call tracepoint
-> probes to respect the current expectations within ftrace ring buffer
-> code.
+> Wire up the system call tracepoints with Tasks Trace RCU to allow
+> the ftrace, perf, and eBPF tracers to handle page faults.
 > 
-> This change does not yet allow ftrace to take page faults per se within
-> its probe, but allows its existing probes to adapt to the upcoming
-> change.
+> This series does the initial wire-up allowing tracers to handle page
+> faults, but leaves out the actual handling of said page faults as future
+> work.
+> 
+> This series was compile and runtime tested with ftrace and perf syscall
+> tracing and raw syscall tracing, adding a WARN_ON_ONCE() in the
+> generated code to validate that the intended probes are used for raw
+> syscall tracing. The might_fault() added within those probes validate
+> that they are called from a context where handling a page fault is OK.
 
-OK, this looks good to me.
+I think this series itself is valuable.
+However, I'm still not sure that why ftrace needs to handle page faults.
+This allows syscall trace-event itself to handle page faults, but the
+raw-syscall/syscall events only accesses registers, right?
 
-Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+I think that the page faults happen only when dereference those registers
+as a pointer to the data structure, and currently that is done by probes
+like eprobe and fprobe. In order to handle faults in those probes, we
+need to change how those writes data in per-cpu ring buffer.
+
+Currently, those probes reserves an entry on ring buffer and writes the
+dereferenced data on the entry, and commits it. So during this reserve-
+write-commit operation, this still disables preemption. So we need a
+another buffer for dereference on the stack and copy it.
 
 Thank you,
 
+
 > 
-> Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Cc: Michael Jeanson <mjeanson@efficios.com>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Masami Hiramatsu <mhiramat@kernel.org>
+> For ebpf, this series is compile-tested only.
+> 
+> This series replaces the "Faultable Tracepoints v6" series found at [1].
+> 
+> Thanks,
+> 
+> Mathieu
+> 
+> Link: https://lore.kernel.org/lkml/20240828144153.829582-1-mathieu.desnoyers@efficios.com/ # [1]
 > Cc: Peter Zijlstra <peterz@infradead.org>
 > Cc: Alexei Starovoitov <ast@kernel.org>
 > Cc: Yonghong Song <yhs@fb.com>
@@ -105,121 +123,31 @@ Thank you,
 > Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
 > Cc: bpf@vger.kernel.org
 > Cc: Joel Fernandes <joel@joelfernandes.org>
-> ---
->  include/trace/trace_events.h  | 38 ++++++++++++++++++++++++++++-------
->  kernel/trace/trace_syscalls.c | 12 +++++++++++
->  2 files changed, 43 insertions(+), 7 deletions(-)
+> Cc: linux-trace-kernel@vger.kernel.org
 > 
-> diff --git a/include/trace/trace_events.h b/include/trace/trace_events.h
-> index 8bcbb9ee44de..0228d9ed94a3 100644
-> --- a/include/trace/trace_events.h
-> +++ b/include/trace/trace_events.h
-> @@ -263,6 +263,9 @@ static struct trace_event_fields trace_event_fields_##call[] = {	\
->  	tstruct								\
->  	{} };
->  
-> +#undef DECLARE_EVENT_SYSCALL_CLASS
-> +#define DECLARE_EVENT_SYSCALL_CLASS DECLARE_EVENT_CLASS
-> +
->  #undef DEFINE_EVENT_PRINT
->  #define DEFINE_EVENT_PRINT(template, name, proto, args, print)
->  
-> @@ -396,11 +399,11 @@ static inline notrace int trace_event_get_offsets_##call(		\
->  
->  #include "stages/stage6_event_callback.h"
->  
-> -#undef DECLARE_EVENT_CLASS
-> -#define DECLARE_EVENT_CLASS(call, proto, args, tstruct, assign, print)	\
-> -									\
-> +
-> +#undef __DECLARE_EVENT_CLASS
-> +#define __DECLARE_EVENT_CLASS(call, proto, args, tstruct, assign, print) \
->  static notrace void							\
-> -trace_event_raw_event_##call(void *__data, proto)			\
-> +do_trace_event_raw_event_##call(void *__data, proto)			\
->  {									\
->  	struct trace_event_file *trace_file = __data;			\
->  	struct trace_event_data_offsets_##call __maybe_unused __data_offsets;\
-> @@ -425,15 +428,34 @@ trace_event_raw_event_##call(void *__data, proto)			\
->  									\
->  	trace_event_buffer_commit(&fbuffer);				\
->  }
-> +
-> +#undef DECLARE_EVENT_CLASS
-> +#define DECLARE_EVENT_CLASS(call, proto, args, tstruct, assign, print)	\
-> +__DECLARE_EVENT_CLASS(call, PARAMS(proto), PARAMS(args), PARAMS(tstruct), \
-> +		      PARAMS(assign), PARAMS(print))			\
-> +static notrace void							\
-> +trace_event_raw_event_##call(void *__data, proto)			\
-> +{									\
-> +	do_trace_event_raw_event_##call(__data, args);			\
-> +}
-> +
-> +#undef DECLARE_EVENT_SYSCALL_CLASS
-> +#define DECLARE_EVENT_SYSCALL_CLASS(call, proto, args, tstruct, assign, print) \
-> +__DECLARE_EVENT_CLASS(call, PARAMS(proto), PARAMS(args), PARAMS(tstruct), \
-> +		      PARAMS(assign), PARAMS(print))			\
-> +static notrace void							\
-> +trace_event_raw_event_##call(void *__data, proto)			\
-> +{									\
-> +	guard(preempt_notrace)();					\
-> +	do_trace_event_raw_event_##call(__data, args);			\
-> +}
-> +
->  /*
->   * The ftrace_test_probe is compiled out, it is only here as a build time check
->   * to make sure that if the tracepoint handling changes, the ftrace probe will
->   * fail to compile unless it too is updated.
->   */
->  
-> -#undef DECLARE_EVENT_SYSCALL_CLASS
-> -#define DECLARE_EVENT_SYSCALL_CLASS DECLARE_EVENT_CLASS
-> -
->  #undef DEFINE_EVENT
->  #define DEFINE_EVENT(template, call, proto, args)			\
->  static inline void ftrace_test_probe_##call(void)			\
-> @@ -443,6 +465,8 @@ static inline void ftrace_test_probe_##call(void)			\
->  
->  #include TRACE_INCLUDE(TRACE_INCLUDE_FILE)
->  
-> +#undef __DECLARE_EVENT_CLASS
-> +
->  #include "stages/stage7_class_define.h"
->  
->  #undef DECLARE_EVENT_CLASS
-> diff --git a/kernel/trace/trace_syscalls.c b/kernel/trace/trace_syscalls.c
-> index 067f8e2b930f..abf0e0b7cd0b 100644
-> --- a/kernel/trace/trace_syscalls.c
-> +++ b/kernel/trace/trace_syscalls.c
-> @@ -299,6 +299,12 @@ static void ftrace_syscall_enter(void *data, struct pt_regs *regs, long id)
->  	int syscall_nr;
->  	int size;
->  
-> +	/*
-> +	 * Syscall probe called with preemption enabled, but the ring
-> +	 * buffer and per-cpu data require preemption to be disabled.
-> +	 */
-> +	guard(preempt_notrace)();
-> +
->  	syscall_nr = trace_get_syscall_nr(current, regs);
->  	if (syscall_nr < 0 || syscall_nr >= NR_syscalls)
->  		return;
-> @@ -338,6 +344,12 @@ static void ftrace_syscall_exit(void *data, struct pt_regs *regs, long ret)
->  	struct trace_event_buffer fbuffer;
->  	int syscall_nr;
->  
-> +	/*
-> +	 * Syscall probe called with preemption enabled, but the ring
-> +	 * buffer and per-cpu data require preemption to be disabled.
-> +	 */
-> +	guard(preempt_notrace)();
-> +
->  	syscall_nr = trace_get_syscall_nr(current, regs);
->  	if (syscall_nr < 0 || syscall_nr >= NR_syscalls)
->  		return;
+> Mathieu Desnoyers (8):
+>   tracing: Declare system call tracepoints with TRACE_EVENT_SYSCALL
+>   tracing/ftrace: guard syscall probe with preempt_notrace
+>   tracing/perf: guard syscall probe with preempt_notrace
+>   tracing/bpf: guard syscall probe with preempt_notrace
+>   tracing: Allow system call tracepoints to handle page faults
+>   tracing/ftrace: Add might_fault check to syscall probes
+>   tracing/perf: Add might_fault check to syscall probes
+>   tracing/bpf: Add might_fault check to syscall probes
+> 
+>  include/linux/tracepoint.h      | 87 +++++++++++++++++++++++++--------
+>  include/trace/bpf_probe.h       | 13 +++++
+>  include/trace/define_trace.h    |  5 ++
+>  include/trace/events/syscalls.h |  4 +-
+>  include/trace/perf.h            | 43 ++++++++++++++--
+>  include/trace/trace_events.h    | 61 +++++++++++++++++++++--
+>  init/Kconfig                    |  1 +
+>  kernel/entry/common.c           |  4 +-
+>  kernel/trace/trace_syscalls.c   | 36 ++++++++++++--
+>  9 files changed, 218 insertions(+), 36 deletions(-)
+> 
 > -- 
 > 2.39.2
-> 
 
 
 -- 
