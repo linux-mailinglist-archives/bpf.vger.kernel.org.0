@@ -1,64 +1,99 @@
-Return-Path: <bpf+bounces-39970-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-39971-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F08BC9799E2
-	for <lists+bpf@lfdr.de>; Mon, 16 Sep 2024 03:54:27 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFA7B979A20
+	for <lists+bpf@lfdr.de>; Mon, 16 Sep 2024 05:45:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 720BE1F20EFC
-	for <lists+bpf@lfdr.de>; Mon, 16 Sep 2024 01:54:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 82ED32834B6
+	for <lists+bpf@lfdr.de>; Mon, 16 Sep 2024 03:45:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1D901BC4E;
-	Mon, 16 Sep 2024 01:53:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C1CA1AAA5;
+	Mon, 16 Sep 2024 03:45:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="YcjW6nRB";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="TqFhDi+B"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from fhigh5-smtp.messagingengine.com (fhigh5-smtp.messagingengine.com [103.168.172.156])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E038DDAD;
-	Mon, 16 Sep 2024 01:53:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEDD817C8D;
+	Mon, 16 Sep 2024 03:45:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.156
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726451634; cv=none; b=HdoPj4oh/AkNCT47pSYu/TpkYITkE0atmUfuKFMx288qIvn/XL756mOy4q2j+dDM4Vb6kuKu96jwvzstwHWlxHvl+JuirlfPyHPiDV7x8WJqM9Oiq5wx4V1TFpoNKfXiq4Y+1nhY1U4XcBdy8CkEz4LLQtd3t2F+1CRrPCYEbBU=
+	t=1726458335; cv=none; b=UsYWj4lO1kVgfUAH8G0WUqy3iF2/nhqZ5pY4sFxasyaxlro7oo4fgOSltM4mO+8J3JmG7fUkNZnFYxpn/3LhNVZT51Oh1XFE6XRhHlSpEVFhIk5yqDNXmfYsljxQaay6IS/q0khicOWzvfr/j2ufPB0h8ZyiX4b7tkeGqUAPImU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726451634; c=relaxed/simple;
-	bh=iq25zN/1fAllIBHLNn/L+clDUrU36h3yvFzfKev23wM=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=lHhT7RH3XDzQGbuOifaNq45NqQQWt6rGUsS253bbhFycx4PKxdCs5kQd+k/VJE4x9WqIMWUuy8pmaPFEL58gmAAaDFhm965nZtxox4UdomtF/UK8NnM1vfWMxU2xWI3/omicIJW72syEGSGe9cO2enAwMolXXlOVqp/qm3gma0M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4X6ScP2KBqz4f3jHx;
-	Mon, 16 Sep 2024 09:53:25 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id C56331A0359;
-	Mon, 16 Sep 2024 09:53:41 +0800 (CST)
-Received: from huawei.com (unknown [10.67.174.45])
-	by APP4 (Coremail) with SMTP id gCh0CgCXy8eZj+dmP_LGBQ--.63146S4;
-	Mon, 16 Sep 2024 09:53:41 +0800 (CST)
-From: Tengda Wu <wutengda@huaweicloud.com>
-To: Peter Zijlstra <peterz@infradead.org>,
-	Namhyung Kim <namhyung@kernel.org>
-Cc: song@kernel.org,
-	Ingo Molnar <mingo@redhat.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Ian Rogers <irogers@google.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	kan.liang@linux.intel.com,
-	linux-perf-users@vger.kernel.org,
+	s=arc-20240116; t=1726458335; c=relaxed/simple;
+	bh=+DFATm44i28dku+78qvbyfJBvwDt+vgP2HoVzuiriYw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=CXoZeAuhgn/Fgofe0ycbbDjZDk1mos7WICSAmus1+ghtak8mC0yPJfm3kweSviZWD6u1v5eyCFwqBk32nu/pAe/gwpy8QXYfTOHI1ZBdRJFkPhQ5j355T+zRSbUw8bVvo7kNfoBgZJ4gbexa4fuDey92eCdvOZr06hkju/lqDYg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=YcjW6nRB; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=TqFhDi+B; arc=none smtp.client-ip=103.168.172.156
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
+Received: from phl-compute-11.internal (phl-compute-11.phl.internal [10.202.2.51])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id C72271140220;
+	Sun, 15 Sep 2024 23:45:32 -0400 (EDT)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-11.internal (MEProxy); Sun, 15 Sep 2024 23:45:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:cc:content-transfer-encoding:content-type:date:date:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to; s=fm3; t=1726458332; x=1726544732; bh=CYUslildIcZmhzPunqphu
+	aYk+sw/SS7ddUpsTZJAaQ8=; b=YcjW6nRBombij0kNrOACJqmBVtzugEVlW+pkw
+	ba6sYQhJeXjnwis/UsTFs+VDzqX3LTvUGgJDaPXOjQTiEBystErj7vyjF/yCLR6M
+	gesAGtTOCzi4rcM47u10riT1K5MmN6/zlyPmN/uR4J/IiFMxLEmaBE8gxSJCURRC
+	xqvIBFiwQL8scXFcStj3bKP5cEQ073gJ+cyuRRXiNvOAGROKk6wRcahJqaZnPjai
+	1qIGkO1/JwDI7gA6iYWMurD4R13p5gQDHA28ioQrHxrICH3YaEYsaXAvvQC4kCEy
+	6AjvS62293V6BV4kAClPGmgze7wvFVDYuhGDpG2Uyl6YOnUIA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1726458332; x=1726544732; bh=CYUslildIcZmhzPunqphuaYk+sw/
+	SS7ddUpsTZJAaQ8=; b=TqFhDi+BlrDc2sFJjB7PH56bRrcjmQiYWI2qBs6TdjDi
+	/Z2+9tSYeUYP3EysESMMC4Vhl+agvZgU+VD3VEp7mjZbaa2Dezm93b/6eBrw/yAD
+	RSVLW9t9ZekvpCEVIHbh0lr9YOtoFVXmb6pcpa0Elg3ZCNKeNyI5z49Z0Hg3aU//
+	bsBVilPQ9zQNGcTVxfgLra4tD+nd59Cqbkrvq4GwBQGteNerB9nqgVynHhhcY9fQ
+	wOn8gnk4alnsNCJ3l00ClVjn/nZf/c8hoDDF0+Bxs9GFs51fQY6MtrM0sEemUT8m
+	cnY/tgMaUHOfh+aUM5mii8s8OMYpNumXq2cuA9hGnw==
+X-ME-Sender: <xms:3KnnZo59B6vWtm0Fa4d3oW6CXxOGTxpdNctqzj5IiO4wcnx9-AaAow>
+    <xme:3KnnZp4l3LdFTyYfDjeoznEVLxRigGt3ejX_R1dTuzLA8SXUCr_bbXax84nsqTdwZ
+    V2ixtSC2rkLef6pVA>
+X-ME-Received: <xmr:3KnnZndQkLu1W1uQJNBu0dhNnKDrie7xB5dXiqZXI64YcbZ9L-q0U3rENuYJyiaoyA9LueqgZZ0xv6OC1Z-udg5AYylG-zca5k3lOMSdsIvm6xDO0Lkv>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrudekgedgjeeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
+    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdlje
+    dtmdenucfjughrpefhvfevufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeffrghn
+    ihgvlhcuighuuceougiguhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhepvd
+    eggfetgfelhefhueefkeduvdfguedvhfegleejudduffffgfetueduieeikeejnecuvehl
+    uhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepugiguhesugiguh
+    huuhdrgiihiidpnhgspghrtghpthhtohepiedpmhhouggvpehsmhhtphhouhhtpdhrtghp
+    thhtohepsghpfhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuh
+    igqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhn
+    uhigqdhkshgvlhhfthgvshhtsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoh
+    eprghstheskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprghnughrihhisehkvghrnhgv
+    lhdrohhrghdprhgtphhtthhopehkvghrnhgvlhdqthgvrghmsehmvghtrgdrtghomh
+X-ME-Proxy: <xmx:3KnnZtKYVCnfuqiOs2yQUFfU-LWhKxxjhXx4rl832BpVZQOnv6BM_g>
+    <xmx:3KnnZsKBLdSO5zCIvR9YCmK65NFrGvFE_Y6i9eQn-wpd9SrtJSEyTQ>
+    <xmx:3KnnZuwns5VAutlA-ndqtnyh02tm2RGMnGbPjiTyIoezNfSO9wAdpg>
+    <xmx:3KnnZgKZU5sg-EjS4qU4K7z8yO23lp5srvmNeTWObZjCBeGgOLpmbw>
+    <xmx:3KnnZk9ip0vHCn3X73Lf7oL1KPcRok68AbTlc59xNGTuSvr1mruvVD68>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 15 Sep 2024 23:45:31 -0400 (EDT)
+From: Daniel Xu <dxu@dxuuu.xyz>
+To: bpf@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: [PATCH -next v3 2/2] perf test: Use sqrtloop workload to test bperf event
-Date: Mon, 16 Sep 2024 01:43:18 +0000
-Message-Id: <20240916014318.267709-3-wutengda@huaweicloud.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240916014318.267709-1-wutengda@huaweicloud.com>
-References: <20240916014318.267709-1-wutengda@huaweicloud.com>
+	linux-kselftest@vger.kernel.org,
+	ast@kernel.org,
+	andrii@kernel.org
+Cc: kernel-team@meta.com
+Subject: [PATCH bpf-next v2 0/2] Support eliding map lookup nullness
+Date: Sun, 15 Sep 2024 21:45:18 -0600
+Message-ID: <cover.1726458273.git.dxu@dxuuu.xyz>
+X-Mailer: git-send-email 2.46.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -66,49 +101,49 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgCXy8eZj+dmP_LGBQ--.63146S4
-X-Coremail-Antispam: 1UD129KBjvdXoW7Jr47AFyktw13CrW8Zw18Xwb_yoW3AFg_GF
-	WxXrn7tw4fA3srtrn5Kan5Ar1xXrWfZFykGr1rWF13C390kFy5GFyDZr98A34rWws3t393
-	Wwn7tr1Sya17KjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbDAYFVCjjxCrM7AC8VAFwI0_Wr0E3s1l1xkIjI8I6I8E6xAIw20E
-	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l82xGYIkIc2x26280x7IE14v26r15M2
-	8IrcIa0xkI8VCY1x0267AKxVW5JVCq3wA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK
-	021l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r
-	4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
-	GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx
-	0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWU
-	JVW8JwACjcxG0xvY0x0EwIxGrwACI402YVCY1x02628vn2kIc2xKxwCY1x0262kKe7AKxV
-	WUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E
-	14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIx
-	kGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAF
-	wI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r
-	4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UCZXrU
-	UUUU=
-X-CM-SenderInfo: pzxwv0hjgdqx5xdzvxpfor3voofrz/
 
-Replace `brstack` workload with `sqrtloop` workload, because `sqrtloop`
-workload contains fork(), which is suitable for testing the bperf event
-inheritance feature.
+This patch allows progs to elide a null check on statically known map
+lookup keys. In other words, if the verifier can statically prove that
+the lookup will be in-bounds, allow the prog to drop the null check.
 
-Signed-off-by: Tengda Wu <wutengda@huaweicloud.com>
----
- tools/perf/tests/shell/stat_bpf_counters.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This is useful for two reasons:
 
-diff --git a/tools/perf/tests/shell/stat_bpf_counters.sh b/tools/perf/tests/shell/stat_bpf_counters.sh
-index f250b7d6f773..831f02add75e 100755
---- a/tools/perf/tests/shell/stat_bpf_counters.sh
-+++ b/tools/perf/tests/shell/stat_bpf_counters.sh
-@@ -4,7 +4,7 @@
- 
- set -e
- 
--workload="perf test -w brstack"
-+workload="perf test -w sqrtloop"
- 
- # check whether $2 is within +/- 20% of $1
- compare_number()
+1. Large numbers of nullness checks (especially when they cannot fail)
+   unnecessarily pushes prog towards BPF_COMPLEXITY_LIMIT_JMP_SEQ.
+2. It forms a tighter contract between programmer and verifier.
+
+For (1), bpftrace is starting to make heavier use of percpu scratch
+maps. As a result, for user scripts with large number of unrolled loops,
+we are starting to hit jump complexity verification errors.  These
+percpu lookups cannot fail anyways, as we only use static key values.
+Eliding nullness probably results in less work for verifier as well.
+
+For (2), percpu scratch maps are often used as a larger stack, as the
+currrent stack is limited to 512 bytes. In these situations, it is
+desirable for the programmer to express: "this lookup should never fail,
+and if it does, it means I messed up the code". By omitting the null
+check, the programmer can "ask" the verifier to double check the logic.
+
+Changes from v1:
+* Added a check for when R2 is not a ptr to stack
+* Added a check for when stack is uninitialized (no stack slot yet)
+* Fix spinlock reg id bumping
+* Updated existing tests to account for null elision
+* Added test case for when R2 can be both const and non-const
+
+Daniel Xu (2):
+  bpf: verifier: Support eliding map lookup nullness
+  bpf: selftests: verifier: Add nullness elision tests
+
+ kernel/bpf/verifier.c                         |  64 ++++++-
+ tools/testing/selftests/bpf/progs/iters.c     |  14 +-
+ .../selftests/bpf/progs/map_kptr_fail.c       |   2 +-
+ .../bpf/progs/verifier_array_access.c         | 166 ++++++++++++++++++
+ .../selftests/bpf/progs/verifier_map_in_map.c |   2 +-
+ .../testing/selftests/bpf/verifier/map_kptr.c |   2 +-
+ 6 files changed, 239 insertions(+), 11 deletions(-)
+
 -- 
-2.34.1
+2.46.0
 
 
