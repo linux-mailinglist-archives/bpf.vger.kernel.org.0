@@ -1,175 +1,197 @@
-Return-Path: <bpf+bounces-40014-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40015-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AF0497AABC
-	for <lists+bpf@lfdr.de>; Tue, 17 Sep 2024 06:27:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBE4A97AAC7
+	for <lists+bpf@lfdr.de>; Tue, 17 Sep 2024 06:40:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A73CAB238D8
-	for <lists+bpf@lfdr.de>; Tue, 17 Sep 2024 04:27:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 58025285A74
+	for <lists+bpf@lfdr.de>; Tue, 17 Sep 2024 04:40:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D3244085D;
-	Tue, 17 Sep 2024 04:26:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CCF74436E;
+	Tue, 17 Sep 2024 04:40:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kAUrAFcU"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QinRfGhV"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82E2E2905;
-	Tue, 17 Sep 2024 04:26:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5BD727473;
+	Tue, 17 Sep 2024 04:40:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726547215; cv=none; b=VAmOI/oj5m/o77R1nMOlzKphIWowIfhG9iz4ntZPAHBISWqzbSFN51tKuGoZdkeFC8JLrbV19Ksz9KFOPkziQEv/IzuhXd/N2xzPg7dxfkuofezOd39dniBYxuIMWaYjufezSCFF+zl1QLASfEaiNTdRF9eK2h2fXDkwI9I9FeI=
+	t=1726548015; cv=none; b=sYmkEjoxaCbCn5B8hTp3SfMbtWSSQRpS2DXXS/4GY78G6evOMJMVyQMaTHo9zFsmrTg+x2bUpycAbw+xNJqUFlvF3IQyNnWC32B8rRXpQjwaZ39UJmosNPSrkzeXuXddkEwNpi/f+W89Ng1JCSSxv6R8JicCRdoyXGgT1Y6M3iw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726547215; c=relaxed/simple;
-	bh=4ZFZc9C2fBPRpspSfYhuXwhE6eMkHz2Vj8rrsEUo4c8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=S62ZEjHCHLd2LbtRfSztvE5aMJG1hpVDR8gFHsreWvEOce8zq1xUy+BbhGVa/f4czijiUjY3xpxrsRJPmwE/xDjX6r4HEWGAabYoZVAU59UB6YiOUjGSF+EhsxcqUJcODaKLDNOkbctvuOPem9Nkvdy9HrZ1D4tWwrpOQ/Vuhcw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kAUrAFcU; arc=none smtp.client-ip=209.85.128.176
+	s=arc-20240116; t=1726548015; c=relaxed/simple;
+	bh=CG9TYl6xocSzcYJJoi1xTaKGt4Fy2IBNRupoEwgeoTw=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=OJrJhIxoEPB3FN1mCY8IgIvN89xKXpxxVedny9zKbha0LOrdi//XSAlmj+jfhBxcYSyMVEIp8Sj2yAlimDhkO8oowHskz1L091mSYV4V7O9maZCJAQkQOI1EWYbLKx8NDxEjPdCJppET+2tTV9q3nYe4kEfEjAMz8qa4yBMvHc8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QinRfGhV; arc=none smtp.client-ip=209.85.214.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-6ddcce88701so17092407b3.1;
-        Mon, 16 Sep 2024 21:26:53 -0700 (PDT)
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-2053525bd90so35047065ad.0;
+        Mon, 16 Sep 2024 21:40:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1726547212; x=1727152012; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HK5OvXUfL0mdyUzKxKKdl/JIXJEJP8SVVNlRoZdQOtU=;
-        b=kAUrAFcUYeBWvsZXsWVx5U6jjCwzS+I+q/tdXVTJ9d1eeT+ONcF7TJXHdAIifnB3CY
-         TI5gmwWFa6Y5VvBupCI9KReju0JS8xg1cS3dJNm5Nw1xGbWnM91ZC8y6Kb7ARmYHNsZV
-         99fR2ngAYQuVWklSSRSmgfZdQBHF3YdE2MUe7i3MHqMwGebgT262YQ17HhcasOByIWaz
-         WbBfZ0vz+Pqas8RAJ0o6vfm+c7yW5Kees7Uka49N99bmDUzPtqF6pO2Da1F2rJ81MJCP
-         bz80JtY9+t2RAN5z0YZomlhcQIsVL+6tg5gYXOp6V92dCrNSQYwAmLxhJYMz87m5N2i0
-         ZuyA==
+        d=gmail.com; s=20230601; t=1726548013; x=1727152813; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=6Xi3Le89ZCorv8WOuDMesnSd+PNRXsJ+vYBCnGClhdg=;
+        b=QinRfGhVkad4kzXEjDn/jGAm/hPgU/PMfsnKQ/uTQu2FlJCkGAawKWWYu98YeJ5VR2
+         27jZ0YxGYvGzWGWbR7m1bSsSzmrlWa9xxhey5ZTpPM1iMc/6GpXsARNrsMLaFgt44SpE
+         F8iKQs6jAC+PsR44g+hFC5BZ3fKEcgCbq/rfn1wQin7i3UwKIOFvTWqWwtLBRc7QpOOO
+         Yh57MhU5iw7HZHsE8MAOt+UPZ5OGsEX5OblJJc44/cwXpv0wyPow8qUg7I/w12v0VJpS
+         JklWEM4bli1o2XzjXoujP5yWBE53NwuSojkKNmF//ik/ezhdgXpCnwp2mq+pZzoFfXSB
+         u6Qw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726547212; x=1727152012;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HK5OvXUfL0mdyUzKxKKdl/JIXJEJP8SVVNlRoZdQOtU=;
-        b=Tz+PJ+FRdCQbmymOruJQQ942ktTr8ddPEy4F3qcBJK2OS2eFFbJTDRKM+Hl4/PbLMJ
-         WkP9twG8URzZLuHmEzVhOlo/fCmlqYyJqW2RyNSszx8Alag9n/v2giw3OU8LuSOh/V/g
-         OqDvL+DaQ4/IXLfydXYIU9Jtj8CYkhv59vnU6Ubm58J6NF5IIDPA9oJJXRy/NFLNaTm1
-         iGXQRKcfqosuQFibJQYOyEqnXMVdlQT9/EHpOj+HfP0a/iT7iDwDluXh17x01DYOPqUO
-         k7QgHjJXxhjUJsdCcfNH6QUZaV4ibBUiQRsGEY4FmrsUXRKQXSM9HNssDWWwB+i1tWs9
-         p1sg==
-X-Forwarded-Encrypted: i=1; AJvYcCUZMrU3ZACrhNwnjGNdp17HgvWXf21mUwJ39kDr4jY5LpoF4SNpSQa3OpCz6LwXI81LRiQ=@vger.kernel.org, AJvYcCVrtIso5qMwi/vuoLH47c1FlyNlLXBDO86Shzt6H+I47VsvfgOdjaVRDUUSQv5yKKUrigu3hLxc@vger.kernel.org
-X-Gm-Message-State: AOJu0YzPxmNbmdrCqfIbI84yH78sJjLc7OvkaFP/5j+Qh/x/8uL+3/km
-	Fsb0r0HStiuVndTyTEFWTPS0zE4bYwMvnlWxSCc/09aVuEfzr2OqkZhr09qLHvklkixpXUDTMOq
-	mkAWBP1S5j7UQvs3h2cr5a1kq/jI=
-X-Google-Smtp-Source: AGHT+IFJujNJfsjLdz6+oDqP3asNL9dMW4qhf/8p2vrP5kxp98FHHFuPjoA9KaoacJeuj5iIMjIOBLfYuummjOALWrk=
-X-Received: by 2002:a05:690c:6904:b0:6dd:ba98:5c3d with SMTP id
- 00721157ae682-6ddba985da6mr69383937b3.14.1726547212198; Mon, 16 Sep 2024
- 21:26:52 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1726548013; x=1727152813;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6Xi3Le89ZCorv8WOuDMesnSd+PNRXsJ+vYBCnGClhdg=;
+        b=ugMxi2OlQvfn2b7iwsDiAT1jFU6XCNXtouuKN2pZtIIkFP3uT8+qiKLzzdVqrzkbnP
+         MdxifvDRbF5dVreSiwNauLdeTmvLqgHMWmNfc3lN5KgAU6Cx5m7Ct8Ng+y+JRNrBM6An
+         moD72A9r06eGZa0aNwKqKucZLwruF+LLgJUOlDu0EnE3vw34GuhmdFjtnqwB1wZysbhC
+         3Jkp2vE/21shiXPwJTocCntJVRwuoo7mGeekPy7qDEB7MsFZLzycZFr/YsLUXOKUYlQW
+         nlN5d+t57aMfHI3OcWJa0iOQjnv02OgkhihJrliUd9KQ7a/5mWF2gviBxnQRnfnbEAAr
+         WTsA==
+X-Forwarded-Encrypted: i=1; AJvYcCUGKVicsbqLkOagqPnSxORcEl8RMS3fOEnfJWMeb+b5zYmjCq1YALjShxnm0zM2MjY4SVtA90P5@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy3tvbvzoKZGosZ6Ho7WRIWiAdQY+uvwC+jvP1tOuln1cUmoy26
+	AOqTyJhVHYpToeKMTn+VBh7STawacB+pqHoeR8+yT+ka0YdPFFtg
+X-Google-Smtp-Source: AGHT+IGqdeLeQsB5OnpU8yF2oIlfkjGO+qPJU2oc1cqdrn52ml71uSDVcw5XqBQ1cJdRp6ww5Nf6GA==
+X-Received: by 2002:a17:903:41c9:b0:206:b915:58e with SMTP id d9443c01a7336-20781d6197emr212058305ad.22.1726548012769;
+        Mon, 16 Sep 2024 21:40:12 -0700 (PDT)
+Received: from [192.168.0.235] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-207946d4eadsm43355235ad.124.2024.09.16.21.40.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Sep 2024 21:40:12 -0700 (PDT)
+Message-ID: <fc3059de61eeeff33af1b22cb68edcad6759b25f.camel@gmail.com>
+Subject: Re: [PATCH dwarves v1] pahole: generate "bpf_fastcall" decl tags
+ for eligible kfuncs
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Alan Maguire <alan.maguire@oracle.com>, dwarves@vger.kernel.org, 
+	arnaldo.melo@gmail.com
+Cc: bpf@vger.kernel.org, kernel-team@fb.com, ast@kernel.org,
+ daniel@iogearbox.net,  andrii@kernel.org, yonghong.song@linux.dev,
+ martin.lau@linux.dev
+Date: Mon, 16 Sep 2024 21:40:07 -0700
+In-Reply-To: <dcaf46c8-68d2-455f-955b-311785cf2827@oracle.com>
+References: <20240916091921.2929615-1-eddyz87@gmail.com>
+	 <dcaf46c8-68d2-455f-955b-311785cf2827@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.4 (3.52.4-1.fc40) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240916055011.16655-1-jiwonaid0@gmail.com> <05707e9e-08ac-4ee1-b910-883f8b4b2636@blackwall.org>
-In-Reply-To: <05707e9e-08ac-4ee1-b910-883f8b4b2636@blackwall.org>
-From: =?UTF-8?B?6rmA7KeA7JuQ?= <jiwonaid0@gmail.com>
-Date: Tue, 17 Sep 2024 13:26:41 +0900
-Message-ID: <CAKaoOqc4PMobrxo-Sz5-1RTG-Qkf+GjDnqyp0zbEUmyDtFu5Zw@mail.gmail.com>
-Subject: Re: [PATCH net] bondig: Add bond_xdp_check for bond_xdp_xmit in bond_main.c
-To: Nikolay Aleksandrov <razor@blackwall.org>
-Cc: jv@jvosburgh.net, andy@greyhouse.net, davem@davemloft.net, 
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, ast@kernel.org, 
-	daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com, 
-	joamaki@gmail.com, netdev@vger.kernel.org, bpf@vger.kernel.org, 
-	syzbot+c187823a52ed505b2257@syzkaller.appspotmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Sep 16, 2024 at 5:48=E2=80=AFPM Nikolay Aleksandrov <razor@blackwal=
-l.org> wrote:
->
-> On 16/09/2024 08:50, Jiwon Kim wrote:
-> > Add bond_xdp_check to ensure the bond interface is in a valid state.
-> >
-> > syzbot reported WARNING in bond_xdp_get_xmit_slave.
-> > In bond_xdp_get_xmit_slave, the comment says
-> > /* Should never happen. Mode guarded by bond_xdp_check() */.
-> > However, it does not check the status when entering bond_xdp_xmit.
-> >
-> > Reported-by: syzbot+c187823a52ed505b2257@syzkaller.appspotmail.com
-> > Closes: https://syzkaller.appspot.com/bug?extid=3Dc187823a52ed505b2257
-> > Fixes: 9e2ee5c7e7c3 ("net, bonding: Add XDP support to the bonding driv=
-er")
-> > Signed-off-by: Jiwon Kim <jiwonaid0@gmail.com>
+On Mon, 2024-09-16 at 11:16 +0100, Alan Maguire wrote:
+
+[...]
+
+> hi Eduard,
+>=20
+> you've added support for multiple declaration tags as part of this, but
+> I wonder if we could go slightly further to simplify any additional
+> future KF_* flags -> decl tag needs?
+>=20
+> Specifically if we had an array of <set8 flags, tag name> mappings such
+> that we can add support for new declaration tags by simply adding a new
+> flag and declaration tag string. When checking flags value in
+> btf_encoder__tag_kfunc(), we'd just walk the array entries, and for each
+> matching flag add the associated decl tag. Would that work?
+
+Hi Alan,
+
+That would be something like below.
+It works, but looks a bit over-complicated for my taste, wdyt?
+
+--- 8< ----------------------------------------
+iff --git a/btf_encoder.c b/btf_encoder.c
+index ae059e0..b6178c3 100644
+--- a/btf_encoder.c
++++ b/btf_encoder.c
+@@ -39,7 +39,6 @@
+ #define BTF_ID_SET8_PFX                "__BTF_ID__set8__"
+ #define BTF_SET8_KFUNCS                (1 << 0)
+ #define BTF_KFUNC_TYPE_TAG     "bpf_kfunc"
+-#define BTF_FASTCALL_TAG       "bpf_fastcall"
+ #define KF_FASTCALL            (1 << 12)
+=20
+ struct btf_id_and_flag {
+@@ -1534,6 +1533,15 @@ static int add_kfunc_decl_tag(struct btf *btf, const=
+ char *tag, __u32 id, const
+        return 0;
+ }
+=20
++enum kf_bit_nums {
++       KF_BIT_NUM_FASTCALL =3D 12,
++       KF_BIT_NUM_FASTCALL_NR
++};
++
++static const char *kfunc_tags[KF_BIT_NUM_FASTCALL_NR] =3D {
++       [KF_BIT_NUM_FASTCALL] =3D "bpf_fastcall"
++};
++
+ static int btf_encoder__tag_kfunc(struct btf_encoder *encoder, struct gobu=
+ffer *funcs, const char *kfunc, __u32 flags)
+ {
+        struct btf_func key =3D { .name =3D kfunc };
+@@ -1559,8 +1567,11 @@ static int btf_encoder__tag_kfunc(struct btf_encoder=
+ *encoder, struct gobuffer *
+        err =3D add_kfunc_decl_tag(btf, BTF_KFUNC_TYPE_TAG, target->type_id=
+, kfunc);
+        if (err < 0)
+                return err;
+-       if (flags & KF_FASTCALL) {
+-               err =3D add_kfunc_decl_tag(btf, BTF_FASTCALL_TAG, target->t=
+ype_id, kfunc);
++
++       for (uint32_t i =3D 0; i < KF_BIT_NUM_FASTCALL_NR; i++) {
++                if (!(flags & (1u << i)) || !kfunc_tags[i])
++                       continue;
++               err =3D add_kfunc_decl_tag(btf, kfunc_tags[i], target->type=
+_id, kfunc);
+                if (err < 0)
+                        return err;
+        }
+---------------------------------------- >8 ---
+
+>=20
 > > ---
-> >  drivers/net/bonding/bond_main.c | 33 ++++++++++++++++++---------------
-> >  1 file changed, 18 insertions(+), 15 deletions(-)
-> >
->
-> How did you figure the problem is there? Did you take any time to actuall=
-y
-> understand it? This patch doesn't fix anything, the warning can be easily
-> triggered with it. The actual fix is to remove that WARN_ON() altogether
-> and downgrade the netdev_err() to a ratelimited version. The reason is th=
-at
-> we can always get to a state where at least 1 bond device has xdp program
-> installed which increases bpf_master_redirect_enabled_key and another bon=
-d
-> device which uses xdpgeneric, then install an ebpf program that simply
-> returns ACT_TX on xdpgeneric bond's slave and voila - you get the warning=
-.
->
-> setup is[1]:
->  $ ip l add veth0 type veth peer veth1
->  $ ip l add veth3 type veth peer veth4
->  $ ip l add bond0 type bond mode 6 # <- transmit-alb mode, unsupported by=
- xdp
->  $ ip l add bond1 type bond # <- rr mode by default, supported by xdp
->  $ ip l set veth0 master bond1
->  $ ip l set bond1 up
->  $ ip l set dev bond1 xdpdrv object tx_xdp.o section xdp_tx # <- we need =
-xdpdrv program to increase the static key, more below
->  $ ip l set veth3 master bond0
->  $ ip l set bond0 up
->  $ ip l set veth4 up
->  $ ip l set veth3 xdpgeneric object tx_xdp.o section xdp_tx # <- now we'l=
-l hit the codepath we need after veth3 Rx's a packet
->
->
-> If you take the time to look at the call stack and the actual code, you'l=
-l
-> see it goes something like (for the xdpgeneric bond slave, veth3):
-> ...
-> bpf_prog_run_generic_xdp() for veth3
->  -> bpf_prog_run_xdp()
->    -> __bpf_prog_run() # return ACT_TX
->      -> xdp_master_redirect() # called because we have ACT_TX && netif_is=
-_bond_slave(xdp->rxq->dev)
->        -> master->netdev_ops->ndo_xdp_get_xmit_slave(master, xdp); # and =
-here we go, WARN_ON()
->
-> I've had a patch for awhile now about this and have taken the time to loo=
-k into it.
-> I guess it's time to dust it off and send it out for review. :)
->
-> Thanks,
->  Nik
+> >  btf_encoder.c | 59 +++++++++++++++++++++++++++++++++++++--------------
+> >  1 file changed, 43 insertions(+), 16 deletions(-)
+> >=20
+> > diff --git a/btf_encoder.c b/btf_encoder.c
+> > index 8a2d92e..ae059e0 100644
+> > --- a/btf_encoder.c
+> > +++ b/btf_encoder.c
+> > @@ -39,15 +39,19 @@
+> >  #define BTF_ID_SET8_PFX		"__BTF_ID__set8__"
+> >  #define BTF_SET8_KFUNCS		(1 << 0)
+> >  #define BTF_KFUNC_TYPE_TAG	"bpf_kfunc"
+> > +#define BTF_FASTCALL_TAG	"bpf_fastcall"
+> > +#define KF_FASTCALL		(1 << 12)
+> > +
+>=20
+> probably need an #ifndef KF_FASTCALL/#endif here once this makes it into
+> uapi.
 
-Hi Nikolay,
+kfunc flags are defined in include/linux/btf.h so these should not be
+visible in the uapi/linux/btf.h, unless I'm confused.
 
-Thank you for taking the time to provide a detailed setup and call
-stack analysis.
-Would you be handling the new patch? If you don't mind, may I revise
-this patch to
+>=20
+>=20
+> > +struct btf_id_and_flag {
+> > +        uint32_t id;
+> > +        uint32_t flags;
+> > +};
 
-- Replace with net_ratelimit()
-- Remove the WARN_ON()
-- Update the comment appropriately
+[...]
 
-Thanks again for your insights and patience.
-
-Sincerely,
-
-Jiwon Kim
 
