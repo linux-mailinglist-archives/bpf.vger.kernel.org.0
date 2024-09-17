@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-40028-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40029-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2851797AD1A
-	for <lists+bpf@lfdr.de>; Tue, 17 Sep 2024 10:51:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2634397AD1C
+	for <lists+bpf@lfdr.de>; Tue, 17 Sep 2024 10:52:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 505B91C234E9
-	for <lists+bpf@lfdr.de>; Tue, 17 Sep 2024 08:51:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C4A811F24E96
+	for <lists+bpf@lfdr.de>; Tue, 17 Sep 2024 08:52:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9494A15B98F;
-	Tue, 17 Sep 2024 08:51:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D64615ADAB;
+	Tue, 17 Sep 2024 08:51:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Vyx8liOH"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CC+8OGXx"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10EAE1531DB;
-	Tue, 17 Sep 2024 08:51:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0DCB158875;
+	Tue, 17 Sep 2024 08:51:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726563095; cv=none; b=dAMj2fJre8ywqJqpQkO/xV9R06vwudsftc6HtBFaCeLnDsWN/b8kK2RzN0P1Hn+NfCWG+T4/9poNdcknk6T4fMFmVV/bqGqW8XbkpqJIUac9w7Ecc+0HHm3lyqSXPyFZcsjrzXhZkljAKPGFVzqyBtouD5mW2dHxJ3bdgcSx3F4=
+	t=1726563107; cv=none; b=WjBOswwZ4+6pxwcolVPTWuHFOkye8LdsGLehOsdSYMe3zamFMmOSDzfSjb8qPnTqfR2FNny+XiteVAR9N5tLPnSSnyajs9uBZlA5PJ+i5GQyBWnh+3PdkjxbXOQhxbLWx8SveADaOnqoyomJMbvU/kkxQnYU91L70m01shnlSnI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726563095; c=relaxed/simple;
-	bh=CPerKjyUxXsQem1//02PfSk7GL1ToGqym/zky5T6kMw=;
+	s=arc-20240116; t=1726563107; c=relaxed/simple;
+	bh=qzy+FMkoW/u33RpdnvGiDT4W8kM5LMJuThnvREeYUfM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=JrM2CGHNsBU/Pi+Io3+AHxhsiZjL2AjJ0onf1kQETM1nDaoYm4fLwyHu71GX/Gb2R4yWSVZ0egBlivQIyv4FU6EL2VbzPIJ6ttx6PMcWit71GSSZeI/sgB/hWynAvVb7Yljxth0QMeT6VagLWQxupa+TTw/QgZCtB1hZHTW6LSE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Vyx8liOH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42C0AC4CEC5;
-	Tue, 17 Sep 2024 08:51:29 +0000 (UTC)
+	 MIME-Version; b=Bg8albLKYZbMLm86uaLXPglFw9MykEDl7liOCo/tMdXUEFilFDyhm5+tnzQgCkTeBqXkYZ67AZx6vI4qhcsDxQrGi6KwZV8rK2nHLK+gQTcQn77gYBcRfPmytqtqcMd2rZKj5QGV0oSnyIB5JxlY0hMTU3WQnwZdP5gKmjZotBg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CC+8OGXx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 709F0C4CEC5;
+	Tue, 17 Sep 2024 08:51:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1726563094;
-	bh=CPerKjyUxXsQem1//02PfSk7GL1ToGqym/zky5T6kMw=;
+	s=k20201202; t=1726563107;
+	bh=qzy+FMkoW/u33RpdnvGiDT4W8kM5LMJuThnvREeYUfM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Vyx8liOHTixui+kIOZ8huwdmz0eYibNSQyKvdXsc7214UiUn7NyoC2oHdrFJUdnke
-	 z2nA49abu/A1XbvJEb+wO0ZWN+qk6NBnWa9hwIAPMNluSagAnwwISQI3VkaeosKCC0
-	 N5JCKruLs/+vHo6Ap3zNgtMwHAQXZjbDK6lc5g/s61/BvQ3cRONRTItjQQ32amQjck
-	 bV7oJjFm4J7kGgWPfvyEUH9DhIotd3TybBnIWCMmHVEJNu6tKtwpzaaJ+DnrrOYdqk
-	 8dk/53IiCtYqwJuVJjsjU0HNfdXwZtUBhb5groC2RubcXKDkU56FSgONPQ4nWY/ulL
-	 IDVC27xL5ZwiQ==
+	b=CC+8OGXxxK1sD89z6KBWUx84gH20ODy20SLJUdrOPeYv7KKCQrFeq6UgvvvEDP/I9
+	 u8Q1GWiGaiy/2ckhIVS5ChA3UGcXylJEa78u85RQZRBhaAEptMbBToBGQvFNNnxyBv
+	 A/SrAaW22dEcjzw4eJ7CUGhOwCye0dBuNlie7/Hmlk9t3h+aoSuho7lK4Swj8dyDVq
+	 QDfRYsDU62eBlaB4myP8CZIYJPP9tRbuKecgNGQ47Gp9QllSARJ8LDBdBvRlqpGr1k
+	 9h0ncS6LoeSl49Qqd9/4bWZfZiSwJdzkqx6n1OM5TEEc5pXbuEl2bOue8jq7B6tbEk
+	 w82yCQ/MimBsw==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Oleg Nesterov <oleg@redhat.com>,
 	Peter Zijlstra <peterz@infradead.org>,
@@ -59,9 +59,9 @@ Cc: bpf@vger.kernel.org,
 	Masami Hiramatsu <mhiramat@kernel.org>,
 	linux-kernel@vger.kernel.org,
 	linux-trace-kernel@vger.kernel.org
-Subject: [PATCHv4 05/14] bpf: Allow return values 0 and 1 for uprobe/kprobe session
-Date: Tue, 17 Sep 2024 10:50:15 +0200
-Message-ID: <20240917085024.765883-6-jolsa@kernel.org>
+Subject: [PATCHv4 06/14] libbpf: Fix uretprobe.multi.s programs auto attachment
+Date: Tue, 17 Sep 2024 10:50:16 +0200
+Message-ID: <20240917085024.765883-7-jolsa@kernel.org>
 X-Mailer: git-send-email 2.46.0
 In-Reply-To: <20240917085024.765883-1-jolsa@kernel.org>
 References: <20240917085024.765883-1-jolsa@kernel.org>
@@ -73,34 +73,34 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The uprobe and kprobe session program can return only 0 or 1,
-instruct verifier to check for that.
+As reported by Andrii we don't currently recognize uretprobe.multi.s
+programs as return probes due to using (wrong) strcmp function.
 
+Using str_has_pfx() instead to match uretprobe.multi prefix.
+
+Tests are passing, because the return program was executed
+as entry program and all counts were incremented properly.
+
+Reported-by: Andrii Nakryiko <andrii@kernel.org>
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Link: https://lore.kernel.org/bpf/20240910125336.3056271-1-jolsa@kernel.org
 ---
- kernel/bpf/verifier.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ tools/lib/bpf/libbpf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index d8520095ca03..988858fc37e5 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -15668,6 +15668,16 @@ static int check_return_code(struct bpf_verifier_env *env, int regno, const char
- 			return -ENOTSUPP;
- 		}
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 274441674f92..6917d4a0bd4e 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -11684,7 +11684,7 @@ static int attach_uprobe_multi(const struct bpf_program *prog, long cookie, stru
+ 		ret = 0;
  		break;
-+	case BPF_PROG_TYPE_KPROBE:
-+		switch (env->prog->expected_attach_type) {
-+		case BPF_TRACE_KPROBE_SESSION:
-+		case BPF_TRACE_UPROBE_SESSION:
-+			range = retval_range(0, 1);
-+			break;
-+		default:
-+			return 0;
-+		}
-+		break;
- 	case BPF_PROG_TYPE_SK_LOOKUP:
- 		range = retval_range(SK_DROP, SK_PASS);
+ 	case 3:
+-		opts.retprobe = strcmp(probe_type, "uretprobe.multi") == 0;
++		opts.retprobe = str_has_pfx(probe_type, "uretprobe.multi");
+ 		*link = bpf_program__attach_uprobe_multi(prog, -1, binary_path, func_name, &opts);
+ 		ret = libbpf_get_error(*link);
  		break;
 -- 
 2.46.0
