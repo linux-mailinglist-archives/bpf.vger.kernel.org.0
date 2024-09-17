@@ -1,132 +1,175 @@
-Return-Path: <bpf+bounces-40013-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40014-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D92197AA86
-	for <lists+bpf@lfdr.de>; Tue, 17 Sep 2024 06:01:09 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AF0497AABC
+	for <lists+bpf@lfdr.de>; Tue, 17 Sep 2024 06:27:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0DB94B2A789
-	for <lists+bpf@lfdr.de>; Tue, 17 Sep 2024 04:01:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A73CAB238D8
+	for <lists+bpf@lfdr.de>; Tue, 17 Sep 2024 04:27:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2A8A364BE;
-	Tue, 17 Sep 2024 04:00:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D3244085D;
+	Tue, 17 Sep 2024 04:26:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V8feKbRA"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kAUrAFcU"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D822126281
-	for <bpf@vger.kernel.org>; Tue, 17 Sep 2024 04:00:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82E2E2905;
+	Tue, 17 Sep 2024 04:26:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726545659; cv=none; b=TYuhFN+MrM4IGpxDvKJKcoo450mEaLCWemFVZdFJJPGWrAj7TTywsB5j/wgD/Sj9x65THKkzXA513+7hLWm/s6ykYx4nY13zV7ZfIBZgsfUfTC0+8dWM2vMHJjQl+uuv7qyqzE0wTwYHJvXWYTWGAu8LDxrVa04qgQK39aJtlk8=
+	t=1726547215; cv=none; b=VAmOI/oj5m/o77R1nMOlzKphIWowIfhG9iz4ntZPAHBISWqzbSFN51tKuGoZdkeFC8JLrbV19Ksz9KFOPkziQEv/IzuhXd/N2xzPg7dxfkuofezOd39dniBYxuIMWaYjufezSCFF+zl1QLASfEaiNTdRF9eK2h2fXDkwI9I9FeI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726545659; c=relaxed/simple;
-	bh=2mT8KGFebWG+AULllknbMLjU0lTdyLFDptjcHqYQn7U=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=hJSqUxuYQvItxLBiY1/k0fs/MPLoc9EjeaKUwonUqOEN/RG6eoUg+OG08p7k1q75AX+RgsavV1V1Z6CSRIx6zSlAHI+UGVrpBfpBE+ieOVUI2b2OTWT0LTaN0+tNgD4G9nQsSzF/W5OFAx/b0oW5O4a3sCH3/fuVieDaAvmpl2A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V8feKbRA; arc=none smtp.client-ip=209.85.210.176
+	s=arc-20240116; t=1726547215; c=relaxed/simple;
+	bh=4ZFZc9C2fBPRpspSfYhuXwhE6eMkHz2Vj8rrsEUo4c8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=S62ZEjHCHLd2LbtRfSztvE5aMJG1hpVDR8gFHsreWvEOce8zq1xUy+BbhGVa/f4czijiUjY3xpxrsRJPmwE/xDjX6r4HEWGAabYoZVAU59UB6YiOUjGSF+EhsxcqUJcODaKLDNOkbctvuOPem9Nkvdy9HrZ1D4tWwrpOQ/Vuhcw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kAUrAFcU; arc=none smtp.client-ip=209.85.128.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-7191f58054aso4234214b3a.0
-        for <bpf@vger.kernel.org>; Mon, 16 Sep 2024 21:00:57 -0700 (PDT)
+Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-6ddcce88701so17092407b3.1;
+        Mon, 16 Sep 2024 21:26:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1726545657; x=1727150457; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=uRXfbSdFSZ2HXbXPn/8w1OsVGkZ0RIFT5CDEX8AaCuY=;
-        b=V8feKbRAVwdE4CguwFHVBNMEjr45+D5kG141X1fLNIwsBV+rYh4JXzRWlqi7oL04i+
-         n6xJQfmb9gKjbm9KReiOgL3to91SXNJAzSoPNrp/jcduFDqDeOVaqOL3Vtk5mZEDgTqD
-         aUNYw58w2rTdUncPVXm5246ZZivUa8h0z1STDjJhkSzSkbEVFb9NSFX0kqJ8BD3Klagt
-         WbFoSE+aWlyC9V2ERoAP6y9fBa/lZCd/fMtmE6gbl8vBDSkgL8yQeobRCdybHYR/ZN3U
-         Z568W+RNHn6eZGiUrk2oy20y8tAh4zkjTJ6ph/2G0tkIIQzSYWKxInInJTfX5Km60FQF
-         1wVA==
+        d=gmail.com; s=20230601; t=1726547212; x=1727152012; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HK5OvXUfL0mdyUzKxKKdl/JIXJEJP8SVVNlRoZdQOtU=;
+        b=kAUrAFcUYeBWvsZXsWVx5U6jjCwzS+I+q/tdXVTJ9d1eeT+ONcF7TJXHdAIifnB3CY
+         TI5gmwWFa6Y5VvBupCI9KReju0JS8xg1cS3dJNm5Nw1xGbWnM91ZC8y6Kb7ARmYHNsZV
+         99fR2ngAYQuVWklSSRSmgfZdQBHF3YdE2MUe7i3MHqMwGebgT262YQ17HhcasOByIWaz
+         WbBfZ0vz+Pqas8RAJ0o6vfm+c7yW5Kees7Uka49N99bmDUzPtqF6pO2Da1F2rJ81MJCP
+         bz80JtY9+t2RAN5z0YZomlhcQIsVL+6tg5gYXOp6V92dCrNSQYwAmLxhJYMz87m5N2i0
+         ZuyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726545657; x=1727150457;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=uRXfbSdFSZ2HXbXPn/8w1OsVGkZ0RIFT5CDEX8AaCuY=;
-        b=CqjcFtpJ1CQjiEQ4GQR3BS/gERp52mJmkaMlOZiBPzgYYTqdY05urgpKhRIvRvfDP6
-         3JWljPzUkhOr7iGH8TGvpwyyRA7xjGNQc1CPrmV+svu9lwsptmex3I2l65Plz0gnLyyc
-         gse2RgMi/vhc/DLPq/PF+uBTK6FIUd9oWKpflFqqjnv2+TKEAk6sdgu7dAajM0BoCM27
-         WQOkvWVcgpQlikJQGF1d0XjAf+NTO9yrGKogF3cIzn8he1gySXtXXRkq9r2w9Rau1LGt
-         Ty3tvg8wT0JN5zYBll8tTlRl555Z9bmmmKSjdL7RXV2wO8uVx+0RYvQdz0n+FjKA8ciF
-         xjsg==
-X-Forwarded-Encrypted: i=1; AJvYcCWzQeqK2HVau9rvDJAbNnJeIMrBweVNAa0epmZQjlV084O82EwIB+40Zet763qNlGsOF4o=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyJcAeKOMUeTh0ljqogBAehbyETT4ACPi4YlMNMMljg5LwG1SNS
-	mNGgEvE7F67G375mXXrdsSCuKtId6RFqlR0uT3cd4CQ9jrjBAER2XWJujQ==
-X-Google-Smtp-Source: AGHT+IFGxdGQvNsO18cELOL8L8tKXvmpDtiCPpf630la7ZsLWyIkjRVzMzN3eWCH0a3BPHCUUq4dPw==
-X-Received: by 2002:a05:6a21:6e41:b0:1c3:fc87:374e with SMTP id adf61e73a8af0-1cf764c255bmr25570800637.41.1726545656820;
-        Mon, 16 Sep 2024 21:00:56 -0700 (PDT)
-Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-71944bc4270sm4392501b3a.201.2024.09.16.21.00.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Sep 2024 21:00:56 -0700 (PDT)
-Message-ID: <dbf5eb3056eabbd44775d526a64b53e1a43b9f59.camel@gmail.com>
-Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: set vpath in Makefile to
- search for skels
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Ihor Solodrai <ihor.solodrai@pm.me>, bpf@vger.kernel.org
-Cc: andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net, mykolal@fb.com,
-  bjorn@kernel.org
-Date: Mon, 16 Sep 2024 21:00:51 -0700
-In-Reply-To: <20240916195919.1872371-2-ihor.solodrai@pm.me>
-References: <20240916195919.1872371-1-ihor.solodrai@pm.me>
-	 <20240916195919.1872371-2-ihor.solodrai@pm.me>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.4 (3.52.4-1.fc40) 
+        d=1e100.net; s=20230601; t=1726547212; x=1727152012;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HK5OvXUfL0mdyUzKxKKdl/JIXJEJP8SVVNlRoZdQOtU=;
+        b=Tz+PJ+FRdCQbmymOruJQQ942ktTr8ddPEy4F3qcBJK2OS2eFFbJTDRKM+Hl4/PbLMJ
+         WkP9twG8URzZLuHmEzVhOlo/fCmlqYyJqW2RyNSszx8Alag9n/v2giw3OU8LuSOh/V/g
+         OqDvL+DaQ4/IXLfydXYIU9Jtj8CYkhv59vnU6Ubm58J6NF5IIDPA9oJJXRy/NFLNaTm1
+         iGXQRKcfqosuQFibJQYOyEqnXMVdlQT9/EHpOj+HfP0a/iT7iDwDluXh17x01DYOPqUO
+         k7QgHjJXxhjUJsdCcfNH6QUZaV4ibBUiQRsGEY4FmrsUXRKQXSM9HNssDWWwB+i1tWs9
+         p1sg==
+X-Forwarded-Encrypted: i=1; AJvYcCUZMrU3ZACrhNwnjGNdp17HgvWXf21mUwJ39kDr4jY5LpoF4SNpSQa3OpCz6LwXI81LRiQ=@vger.kernel.org, AJvYcCVrtIso5qMwi/vuoLH47c1FlyNlLXBDO86Shzt6H+I47VsvfgOdjaVRDUUSQv5yKKUrigu3hLxc@vger.kernel.org
+X-Gm-Message-State: AOJu0YzPxmNbmdrCqfIbI84yH78sJjLc7OvkaFP/5j+Qh/x/8uL+3/km
+	Fsb0r0HStiuVndTyTEFWTPS0zE4bYwMvnlWxSCc/09aVuEfzr2OqkZhr09qLHvklkixpXUDTMOq
+	mkAWBP1S5j7UQvs3h2cr5a1kq/jI=
+X-Google-Smtp-Source: AGHT+IFJujNJfsjLdz6+oDqP3asNL9dMW4qhf/8p2vrP5kxp98FHHFuPjoA9KaoacJeuj5iIMjIOBLfYuummjOALWrk=
+X-Received: by 2002:a05:690c:6904:b0:6dd:ba98:5c3d with SMTP id
+ 00721157ae682-6ddba985da6mr69383937b3.14.1726547212198; Mon, 16 Sep 2024
+ 21:26:52 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20240916055011.16655-1-jiwonaid0@gmail.com> <05707e9e-08ac-4ee1-b910-883f8b4b2636@blackwall.org>
+In-Reply-To: <05707e9e-08ac-4ee1-b910-883f8b4b2636@blackwall.org>
+From: =?UTF-8?B?6rmA7KeA7JuQ?= <jiwonaid0@gmail.com>
+Date: Tue, 17 Sep 2024 13:26:41 +0900
+Message-ID: <CAKaoOqc4PMobrxo-Sz5-1RTG-Qkf+GjDnqyp0zbEUmyDtFu5Zw@mail.gmail.com>
+Subject: Re: [PATCH net] bondig: Add bond_xdp_check for bond_xdp_xmit in bond_main.c
+To: Nikolay Aleksandrov <razor@blackwall.org>
+Cc: jv@jvosburgh.net, andy@greyhouse.net, davem@davemloft.net, 
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, ast@kernel.org, 
+	daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com, 
+	joamaki@gmail.com, netdev@vger.kernel.org, bpf@vger.kernel.org, 
+	syzbot+c187823a52ed505b2257@syzkaller.appspotmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2024-09-16 at 19:59 +0000, Ihor Solodrai wrote:
+On Mon, Sep 16, 2024 at 5:48=E2=80=AFPM Nikolay Aleksandrov <razor@blackwal=
+l.org> wrote:
+>
+> On 16/09/2024 08:50, Jiwon Kim wrote:
+> > Add bond_xdp_check to ensure the bond interface is in a valid state.
+> >
+> > syzbot reported WARNING in bond_xdp_get_xmit_slave.
+> > In bond_xdp_get_xmit_slave, the comment says
+> > /* Should never happen. Mode guarded by bond_xdp_check() */.
+> > However, it does not check the status when entering bond_xdp_xmit.
+> >
+> > Reported-by: syzbot+c187823a52ed505b2257@syzkaller.appspotmail.com
+> > Closes: https://syzkaller.appspot.com/bug?extid=3Dc187823a52ed505b2257
+> > Fixes: 9e2ee5c7e7c3 ("net, bonding: Add XDP support to the bonding driv=
+er")
+> > Signed-off-by: Jiwon Kim <jiwonaid0@gmail.com>
+> > ---
+> >  drivers/net/bonding/bond_main.c | 33 ++++++++++++++++++---------------
+> >  1 file changed, 18 insertions(+), 15 deletions(-)
+> >
+>
+> How did you figure the problem is there? Did you take any time to actuall=
+y
+> understand it? This patch doesn't fix anything, the warning can be easily
+> triggered with it. The actual fix is to remove that WARN_ON() altogether
+> and downgrade the netdev_err() to a ratelimited version. The reason is th=
+at
+> we can always get to a state where at least 1 bond device has xdp program
+> installed which increases bpf_master_redirect_enabled_key and another bon=
+d
+> device which uses xdpgeneric, then install an ebpf program that simply
+> returns ACT_TX on xdpgeneric bond's slave and voila - you get the warning=
+.
+>
+> setup is[1]:
+>  $ ip l add veth0 type veth peer veth1
+>  $ ip l add veth3 type veth peer veth4
+>  $ ip l add bond0 type bond mode 6 # <- transmit-alb mode, unsupported by=
+ xdp
+>  $ ip l add bond1 type bond # <- rr mode by default, supported by xdp
+>  $ ip l set veth0 master bond1
+>  $ ip l set bond1 up
+>  $ ip l set dev bond1 xdpdrv object tx_xdp.o section xdp_tx # <- we need =
+xdpdrv program to increase the static key, more below
+>  $ ip l set veth3 master bond0
+>  $ ip l set bond0 up
+>  $ ip l set veth4 up
+>  $ ip l set veth3 xdpgeneric object tx_xdp.o section xdp_tx # <- now we'l=
+l hit the codepath we need after veth3 Rx's a packet
+>
+>
+> If you take the time to look at the call stack and the actual code, you'l=
+l
+> see it goes something like (for the xdpgeneric bond slave, veth3):
+> ...
+> bpf_prog_run_generic_xdp() for veth3
+>  -> bpf_prog_run_xdp()
+>    -> __bpf_prog_run() # return ACT_TX
+>      -> xdp_master_redirect() # called because we have ACT_TX && netif_is=
+_bond_slave(xdp->rxq->dev)
+>        -> master->netdev_ops->ndo_xdp_get_xmit_slave(master, xdp); # and =
+here we go, WARN_ON()
+>
+> I've had a patch for awhile now about this and have taken the time to loo=
+k into it.
+> I guess it's time to dust it off and send it out for review. :)
+>
+> Thanks,
+>  Nik
 
-[...]
+Hi Nikolay,
 
-> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftes=
-ts/bpf/Makefile
-> index df75f1beb731..365740f24d2e 100644
-> --- a/tools/testing/selftests/bpf/Makefile
-> +++ b/tools/testing/selftests/bpf/Makefile
-> @@ -622,10 +622,11 @@ $(TRUNNER_BPF_SKELS_LINKED): $(TRUNNER_OUTPUT)/%: $=
-$$$(%-deps) $(BPFTOOL) | $(TR
-> =20
->  # When the compiler generates a %.d file, only skel basenames (not
->  # full paths) are specified as prerequisites for corresponding %.o
-> -# file. This target makes %.skel.h basename dependent on full paths,
-> -# linking generated %.d dependency with actual %.skel.h files.
-> -$(notdir %.skel.h): $(TRUNNER_OUTPUT)/%.skel.h
-> -	@true
-> +# file. vpath directives below instruct make to search for skel files
-> +# in TRUNNER_OUTPUT, if they are not present in the working directory.
-> +vpath %.skel.h $(TRUNNER_OUTPUT)
-> +vpath %.lskel.h $(TRUNNER_OUTPUT)
-> +vpath %.subskel.h $(TRUNNER_OUTPUT)
-> =20
->  endif
+Thank you for taking the time to provide a detailed setup and call
+stack analysis.
+Would you be handling the new patch? If you don't mind, may I revise
+this patch to
 
-When I try this patch, the following happens after first full tests build:
+- Replace with net_ratelimit()
+- Remove the WARN_ON()
+- Update the comment appropriately
 
-$ touch progs/verifier_and.c; make -j test_progs
+Thanks again for your insights and patience.
 
-  CLNG-BPF [test_progs] verifier_and.bpf.o
-  CLNG-BPF [test_progs-no_alu32] verifier_and.bpf.o
-  CLNG-BPF [test_progs-cpuv4] verifier_and.bpf.o
-  GEN-SKEL [test_progs] verifier_and.skel.h
-  GEN-SKEL [test_progs-no_alu32] verifier_and.skel.h
-  GEN-SKEL [test_progs-cpuv4] verifier_and.skel.h
-  TEST-OBJ [test_progs] verifier.test.o
-  BINARY   test_progs
+Sincerely,
 
-Note that multiple binaries are built.
-
+Jiwon Kim
 
