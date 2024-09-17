@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-40027-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40028-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C41497AD18
-	for <lists+bpf@lfdr.de>; Tue, 17 Sep 2024 10:51:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2851797AD1A
+	for <lists+bpf@lfdr.de>; Tue, 17 Sep 2024 10:51:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3F16F1C21156
-	for <lists+bpf@lfdr.de>; Tue, 17 Sep 2024 08:51:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 505B91C234E9
+	for <lists+bpf@lfdr.de>; Tue, 17 Sep 2024 08:51:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69A571591EA;
-	Tue, 17 Sep 2024 08:51:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9494A15B98F;
+	Tue, 17 Sep 2024 08:51:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HV4undIu"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Vyx8liOH"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD2D514BFBF;
-	Tue, 17 Sep 2024 08:51:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10EAE1531DB;
+	Tue, 17 Sep 2024 08:51:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726563083; cv=none; b=W+WydSc0aF/aPoVB1tPQUqByUa7//NtVg2XBPohonIq8MwKUbeNlHt/tg0t7DQ0M9a0m9kMhwCo7q9X8oK7PcvjrQB55S8pMoFuYGfhK7Qeoisc1/mVZZsRxkmHl9kQmkTFgoqUovRcHG7VS6Sfkzlc0EWs+5SDWqyzY+hP3DDY=
+	t=1726563095; cv=none; b=dAMj2fJre8ywqJqpQkO/xV9R06vwudsftc6HtBFaCeLnDsWN/b8kK2RzN0P1Hn+NfCWG+T4/9poNdcknk6T4fMFmVV/bqGqW8XbkpqJIUac9w7Ecc+0HHm3lyqSXPyFZcsjrzXhZkljAKPGFVzqyBtouD5mW2dHxJ3bdgcSx3F4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726563083; c=relaxed/simple;
-	bh=E5ksyVpxSxCr84wbzqQecnCcRAmkbzdRXeqaxZgzDAk=;
+	s=arc-20240116; t=1726563095; c=relaxed/simple;
+	bh=CPerKjyUxXsQem1//02PfSk7GL1ToGqym/zky5T6kMw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=hjHKFudTedRDUOXuc7PRczjODkr+l7FyRk8IQUZWl3huRI7MAlMus1ADlDEztBwiHwgC+R8ekRDy1v9OQYdPDajMx6qMNS6Ukjna022Cv75FBTOapaYcUx9Q2EClVTZUXNorH6nWFGxKSW/zDNKCnRJr+LrV5cJ5Z7IisifyudU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HV4undIu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A74D8C4CEC5;
-	Tue, 17 Sep 2024 08:51:17 +0000 (UTC)
+	 MIME-Version; b=JrM2CGHNsBU/Pi+Io3+AHxhsiZjL2AjJ0onf1kQETM1nDaoYm4fLwyHu71GX/Gb2R4yWSVZ0egBlivQIyv4FU6EL2VbzPIJ6ttx6PMcWit71GSSZeI/sgB/hWynAvVb7Yljxth0QMeT6VagLWQxupa+TTw/QgZCtB1hZHTW6LSE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Vyx8liOH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42C0AC4CEC5;
+	Tue, 17 Sep 2024 08:51:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1726563082;
-	bh=E5ksyVpxSxCr84wbzqQecnCcRAmkbzdRXeqaxZgzDAk=;
+	s=k20201202; t=1726563094;
+	bh=CPerKjyUxXsQem1//02PfSk7GL1ToGqym/zky5T6kMw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=HV4undIuFFhagswIduRHdKj+/C0WeX/RVy8WqGPRx0pIJH6ZlwwYOAmC2FOq9YAfF
-	 paiFkPLgG4D5OCt7n8yXI/ZFdHXbJalZLoXm0UnVGzXAgm8anExBBPPL3c/whrw8UG
-	 bkCFQfYJa+F7eCO19NMdW03vJIXjTJotB4CpF0lszHEoJkU6dVI+8wqWrexcIurWs4
-	 rs/ZbmY1u2OmRQyQle5vBtd8i7YKJNSH72OTRoJbj9RLs5387uoon1DF5YzhickQMQ
-	 4tBUYzP+WAeEK2wO72JnY/wf0lOrlDWbH6dA17gkrNORBjYw4UTDj2rOJU9Jsm9HU1
-	 NMIH5c7P85oxg==
+	b=Vyx8liOHTixui+kIOZ8huwdmz0eYibNSQyKvdXsc7214UiUn7NyoC2oHdrFJUdnke
+	 z2nA49abu/A1XbvJEb+wO0ZWN+qk6NBnWa9hwIAPMNluSagAnwwISQI3VkaeosKCC0
+	 N5JCKruLs/+vHo6Ap3zNgtMwHAQXZjbDK6lc5g/s61/BvQ3cRONRTItjQQ32amQjck
+	 bV7oJjFm4J7kGgWPfvyEUH9DhIotd3TybBnIWCMmHVEJNu6tKtwpzaaJ+DnrrOYdqk
+	 8dk/53IiCtYqwJuVJjsjU0HNfdXwZtUBhb5groC2RubcXKDkU56FSgONPQ4nWY/ulL
+	 IDVC27xL5ZwiQ==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Oleg Nesterov <oleg@redhat.com>,
 	Peter Zijlstra <peterz@infradead.org>,
@@ -59,9 +59,9 @@ Cc: bpf@vger.kernel.org,
 	Masami Hiramatsu <mhiramat@kernel.org>,
 	linux-kernel@vger.kernel.org,
 	linux-trace-kernel@vger.kernel.org
-Subject: [PATCHv4 04/14] bpf: Add support for uprobe multi session context
-Date: Tue, 17 Sep 2024 10:50:14 +0200
-Message-ID: <20240917085024.765883-5-jolsa@kernel.org>
+Subject: [PATCHv4 05/14] bpf: Allow return values 0 and 1 for uprobe/kprobe session
+Date: Tue, 17 Sep 2024 10:50:15 +0200
+Message-ID: <20240917085024.765883-6-jolsa@kernel.org>
 X-Mailer: git-send-email 2.46.0
 In-Reply-To: <20240917085024.765883-1-jolsa@kernel.org>
 References: <20240917085024.765883-1-jolsa@kernel.org>
@@ -73,103 +73,35 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Placing bpf_session_run_ctx layer in between bpf_run_ctx and
-bpf_uprobe_multi_run_ctx, so the session data can be retrieved
-from uprobe_multi link.
+The uprobe and kprobe session program can return only 0 or 1,
+instruct verifier to check for that.
 
-Plus granting session kfuncs access to uprobe session programs.
-
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- kernel/trace/bpf_trace.c | 23 +++++++++++++++--------
- 1 file changed, 15 insertions(+), 8 deletions(-)
+ kernel/bpf/verifier.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 63ea457af16a..b6f377f1ce5f 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -3186,7 +3186,7 @@ struct bpf_uprobe_multi_link {
- };
- 
- struct bpf_uprobe_multi_run_ctx {
--	struct bpf_run_ctx run_ctx;
-+	struct bpf_session_run_ctx session_ctx;
- 	unsigned long entry_ip;
- 	struct bpf_uprobe *uprobe;
- };
-@@ -3299,10 +3299,15 @@ static const struct bpf_link_ops bpf_uprobe_multi_link_lops = {
- 
- static int uprobe_prog_run(struct bpf_uprobe *uprobe,
- 			   unsigned long entry_ip,
--			   struct pt_regs *regs)
-+			   struct pt_regs *regs,
-+			   bool is_return, void *data)
- {
- 	struct bpf_uprobe_multi_link *link = uprobe->link;
- 	struct bpf_uprobe_multi_run_ctx run_ctx = {
-+		.session_ctx = {
-+			.is_return = is_return,
-+			.data = data,
-+		},
- 		.entry_ip = entry_ip,
- 		.uprobe = uprobe,
- 	};
-@@ -3321,7 +3326,7 @@ static int uprobe_prog_run(struct bpf_uprobe *uprobe,
- 
- 	migrate_disable();
- 
--	old_run_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);
-+	old_run_ctx = bpf_set_run_ctx(&run_ctx.session_ctx.run_ctx);
- 	err = bpf_prog_run(link->link.prog, regs);
- 	bpf_reset_run_ctx(old_run_ctx);
- 
-@@ -3351,7 +3356,7 @@ uprobe_multi_link_handler(struct uprobe_consumer *con, struct pt_regs *regs,
- 	int ret;
- 
- 	uprobe = container_of(con, struct bpf_uprobe, consumer);
--	ret = uprobe_prog_run(uprobe, instruction_pointer(regs), regs);
-+	ret = uprobe_prog_run(uprobe, instruction_pointer(regs), regs, false, data);
- 	if (uprobe->session)
- 		return ret ? UPROBE_HANDLER_IGNORE : UPROBE_HANDLER_IWANTMYCOOKIE;
- 	return ret;
-@@ -3370,14 +3375,15 @@ uprobe_multi_link_ret_handler(struct uprobe_consumer *con, unsigned long func, s
- 	 */
- 	if (uprobe->session && !data)
- 		return 0;
--	return uprobe_prog_run(uprobe, func, regs);
-+	return uprobe_prog_run(uprobe, func, regs, true, data);
- }
- 
- static u64 bpf_uprobe_multi_entry_ip(struct bpf_run_ctx *ctx)
- {
- 	struct bpf_uprobe_multi_run_ctx *run_ctx;
- 
--	run_ctx = container_of(current->bpf_ctx, struct bpf_uprobe_multi_run_ctx, run_ctx);
-+	run_ctx = container_of(current->bpf_ctx, struct bpf_uprobe_multi_run_ctx,
-+			       session_ctx.run_ctx);
- 	return run_ctx->entry_ip;
- }
- 
-@@ -3385,7 +3391,8 @@ static u64 bpf_uprobe_multi_cookie(struct bpf_run_ctx *ctx)
- {
- 	struct bpf_uprobe_multi_run_ctx *run_ctx;
- 
--	run_ctx = container_of(current->bpf_ctx, struct bpf_uprobe_multi_run_ctx, run_ctx);
-+	run_ctx = container_of(current->bpf_ctx, struct bpf_uprobe_multi_run_ctx,
-+			       session_ctx.run_ctx);
- 	return run_ctx->uprobe->cookie;
- }
- 
-@@ -3579,7 +3586,7 @@ static int bpf_kprobe_multi_filter(const struct bpf_prog *prog, u32 kfunc_id)
- 	if (!btf_id_set8_contains(&kprobe_multi_kfunc_set_ids, kfunc_id))
- 		return 0;
- 
--	if (!is_kprobe_session(prog))
-+	if (!is_kprobe_session(prog) && !is_uprobe_session(prog))
- 		return -EACCES;
- 
- 	return 0;
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index d8520095ca03..988858fc37e5 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -15668,6 +15668,16 @@ static int check_return_code(struct bpf_verifier_env *env, int regno, const char
+ 			return -ENOTSUPP;
+ 		}
+ 		break;
++	case BPF_PROG_TYPE_KPROBE:
++		switch (env->prog->expected_attach_type) {
++		case BPF_TRACE_KPROBE_SESSION:
++		case BPF_TRACE_UPROBE_SESSION:
++			range = retval_range(0, 1);
++			break;
++		default:
++			return 0;
++		}
++		break;
+ 	case BPF_PROG_TYPE_SK_LOOKUP:
+ 		range = retval_range(SK_DROP, SK_PASS);
+ 		break;
 -- 
 2.46.0
 
