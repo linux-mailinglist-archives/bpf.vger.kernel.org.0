@@ -1,246 +1,242 @@
-Return-Path: <bpf+bounces-40060-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40062-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55A2997BA97
-	for <lists+bpf@lfdr.de>; Wed, 18 Sep 2024 12:10:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2842C97BBB2
+	for <lists+bpf@lfdr.de>; Wed, 18 Sep 2024 13:41:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C971283300
-	for <lists+bpf@lfdr.de>; Wed, 18 Sep 2024 10:10:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4DA751C21744
+	for <lists+bpf@lfdr.de>; Wed, 18 Sep 2024 11:41:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D68F017C98D;
-	Wed, 18 Sep 2024 10:10:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="ghp2YblM"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3924718858E;
+	Wed, 18 Sep 2024 11:41:31 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from out30-131.freemail.mail.aliyun.com (out30-131.freemail.mail.aliyun.com [115.124.30.131])
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90BD5EACD;
-	Wed, 18 Sep 2024 10:10:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB8422628C;
+	Wed, 18 Sep 2024 11:41:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726654215; cv=none; b=S5g3CH5uGWLhcHxaSiUKgBsjrq9bailW+YN55ccAtLbrC3Ktm1jt2OAaeFjU2WLyJ2Oo0eMu1kwyF8252ij0MruKUWhUvW/fq4BR4g2NFmIG93zXy0CAM9gRPXIKEwozKGITCJB6HlawIutAWD+hqOIg7njQG9q9Ln0q9MKkshk=
+	t=1726659690; cv=none; b=B0frwtEG2L55H0dt7w5m/aoPOdcaSgTHXzfJGDkvtWUW1AFLA99kfagoFR1N9l29OdxM0c4rhqLS5RBfmuUtzK0KqKJyLiLEJbqc1dphsSUyFY5fEvgZqZIU6sfBCHFq88kYKAdTz94tUZfoEBoksr7968bsy/gnX8Vz74H7vdE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726654215; c=relaxed/simple;
-	bh=j3uHUw8hZJe9e65FGbFo4XsUUmBgZynKAOmtydmKK64=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=AIawzdMLy8+MtLs5kHw2DRVvpAOAiHNQOXSUdQdLDbT8OG9gCv59/XjgcY3SBjob28putybzLaPa7Wvg/KaV7Y4FU8RALgYJw+Ajpj/JeFFVXuPAo6OIJ693ixrQ2SB7nfdttTf/8AWUqYqGApzpV9HY3f5opMMoi6NyGRwDIgA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=ghp2YblM; arc=none smtp.client-ip=115.124.30.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1726654208; h=From:To:Subject:Date:Message-Id;
-	bh=OIaeQekPFzr0Twj4nwSV1xS3+7dgPbM9J97vdUwshuQ=;
-	b=ghp2YblMswD01z0zeMK+J/AOdYkF7dgd/rHePImRxGMLWb2Rv3J96qajSye53hLjIUdrrTPRphHD2anpo83vDHDuPKpeF3BpEOW520xs+XQpie1FxsWOnwSGRSE5gSz2yjh1zgqnG7AvPJmX5GfIRVsNCyU0Zw7Jy5kZPzX3hww=
-Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0WFDs-zd_1726654204)
-          by smtp.aliyun-inc.com;
-          Wed, 18 Sep 2024 18:10:08 +0800
-From: "D. Wythe" <alibuda@linux.alibaba.com>
-To: kgraul@linux.ibm.com,
-	wenjia@linux.ibm.com,
-	jaka@linux.ibm.com,
-	wintera@linux.ibm.com,
-	guwen@linux.alibaba.com
-Cc: kuba@kernel.org,
-	davem@davemloft.net,
-	netdev@vger.kernel.org,
-	linux-s390@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	tonylu@linux.alibaba.com,
-	pabeni@redhat.com,
-	edumazet@google.com,
-	bpf@vger.kernel.org
-Subject: [RFC PATCH net-next] net/smc: Introduce a hook to modify syn_smc at runtime
-Date: Wed, 18 Sep 2024 18:10:04 +0800
-Message-Id: <1726654204-61655-1-git-send-email-alibuda@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+	s=arc-20240116; t=1726659690; c=relaxed/simple;
+	bh=yZqA0HU97VRFkqkKbQCUl5SiXbIKmeGlKqj5Gqax0fs=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=srsX8jBOu5iQdXDpeLvqto8Yd+/IlRDRWF32jKfmTQKObb/Hgm0az7LJ+nB2w84Qg1flU48GXUyMKN+wRaiA/uDaeTwtrzmO4gOkOIOpQhwPLjw6x/q6oJcHoCymONd0nUfYdtqkrsms3RkmRVoF0wiQpbSgBC6OO2yXcZ3OIBs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4X7x8r3ylrzyRhL;
+	Wed, 18 Sep 2024 19:23:08 +0800 (CST)
+Received: from dggpemf200006.china.huawei.com (unknown [7.185.36.61])
+	by mail.maildlp.com (Postfix) with ESMTPS id A7D5B1400DD;
+	Wed, 18 Sep 2024 19:24:24 +0800 (CST)
+Received: from localhost.localdomain (10.90.30.45) by
+ dggpemf200006.china.huawei.com (7.185.36.61) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Wed, 18 Sep 2024 19:24:24 +0800
+From: Yunsheng Lin <linyunsheng@huawei.com>
+To: <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>
+CC: <liuyonglong@huawei.com>, <fanghaiqing@huawei.com>,
+	<zhangkun09@huawei.com>, Yunsheng Lin <linyunsheng@huawei.com>, Alexander
+ Lobakin <aleksander.lobakin@intel.com>, Robin Murphy <robin.murphy@arm.com>,
+	Alexander Duyck <alexander.duyck@gmail.com>, IOMMU <iommu@lists.linux.dev>,
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend
+	<john.fastabend@gmail.com>, Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	<netdev@vger.kernel.org>, <intel-wired-lan@lists.osuosl.org>,
+	<bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>
+Subject: [PATCH net 0/2] fix two bugs related to page_pool
+Date: Wed, 18 Sep 2024 19:18:23 +0800
+Message-ID: <20240918111826.863596-1-linyunsheng@huawei.com>
+X-Mailer: git-send-email 2.30.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemf200006.china.huawei.com (7.185.36.61)
 
-From: "D. Wythe" <alibuda@linux.alibaba.com>
+Patch 1 fix a possible time window problem for page_pool.
+Patch 2 fix the kernel crash problem at iommu_get_dma_domain
+reported in [1].
 
-The introduction of IPPROTO_SMC enables eBPF programs to determine
-whether to use SMC based on the context of socket creation, such as
-network namespaces, PID and comm name, etc.
+When page_pool_put_unrefed_netmem() is called with allow_direct
+being true, there is added checking overhead introduced in patch
+1, which seem to be no noticeable performance impact.
 
-As a subsequent enhancement, this patch introduces a new hook for eBPF
-programs that allows decisions on whether to use SMC or not at runtime,
-including but not limited to local/remote IP address or ports. In
-simpler words, this feature allows modifications to syn_smc through eBPF
-programs before the TCP three-way handshake got established.
+When page_pool_put_unrefed_netmem() is called with allow_direct
+being false, there is a rcu read lock overhead introduced in
+patch 1, and the overhead is about 13ns using the below test code,
+but 'time_bench_page_pool02_ptr_ring' only show about 2ns overhead,
+which is about 2% degradation.
 
-Thanks to kfunc for making it easier for us to implement this feature in
-SMC.
-
-Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
----
- include/linux/tcp.h  |  4 ++-
- net/ipv4/tcp_input.c |  4 +--
- net/smc/af_smc.c     | 69 ++++++++++++++++++++++++++++++++++++++++++++++------
- 3 files changed, 66 insertions(+), 11 deletions(-)
-
-diff --git a/include/linux/tcp.h b/include/linux/tcp.h
-index 6a5e08b..d028d76 100644
---- a/include/linux/tcp.h
-+++ b/include/linux/tcp.h
-@@ -478,7 +478,9 @@ struct tcp_sock {
- #endif
- #if IS_ENABLED(CONFIG_SMC)
- 	bool	syn_smc;	/* SYN includes SMC */
--	bool	(*smc_hs_congested)(const struct sock *sk);
-+	void	(*smc_openreq_init)(struct request_sock *req,
-+			     const struct tcp_options_received *rx_opt,
-+			     struct sk_buff *skb, const struct sock *sk);
- #endif
- 
- #if defined(CONFIG_TCP_MD5SIG) || defined(CONFIG_TCP_AO)
-diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
-index e37488d..e33e2a0 100644
---- a/net/ipv4/tcp_input.c
-+++ b/net/ipv4/tcp_input.c
-@@ -7029,8 +7029,8 @@ static void tcp_openreq_init(struct request_sock *req,
- 	ireq->ir_num = ntohs(tcp_hdr(skb)->dest);
- 	ireq->ir_mark = inet_request_mark(sk, skb);
- #if IS_ENABLED(CONFIG_SMC)
--	ireq->smc_ok = rx_opt->smc_ok && !(tcp_sk(sk)->smc_hs_congested &&
--			tcp_sk(sk)->smc_hs_congested(sk));
-+	if (ireq->smc_ok && tcp_sk(sk)->smc_openreq_init)
-+		tcp_sk(sk)->smc_openreq_init(req, rx_opt, skb, sk);
- #endif
- }
- 
-diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
-index 0316217..003b2ac 100644
---- a/net/smc/af_smc.c
-+++ b/net/smc/af_smc.c
-@@ -70,6 +70,15 @@
- static void smc_tcp_listen_work(struct work_struct *);
- static void smc_connect_work(struct work_struct *);
- 
-+__bpf_hook_start();
-+
-+__weak noinline int select_syn_smc(const struct sock *sk, struct sockaddr *peer)
++static int time_bench_rcu(
++       struct time_bench_record *rec, void *data)
 +{
-+	return 1;
++       uint64_t loops_cnt = 0;
++       int i;
++
++       time_bench_start(rec);
++       /** Loop to measure **/
++       for (i = 0; i < rec->loops; i++) {
++               rcu_read_lock();
++               loops_cnt++;
++               barrier(); /* avoid compiler to optimize this loop */
++               rcu_read_unlock();
++       }
++       time_bench_stop(rec, loops_cnt);
++       return loops_cnt;
 +}
-+
-+__bpf_hook_end();
-+
- int smc_nl_dump_hs_limitation(struct sk_buff *skb, struct netlink_callback *cb)
- {
- 	struct smc_nl_dmp_ctx *cb_ctx = smc_nl_dmp_ctx(cb);
-@@ -156,19 +165,41 @@ static struct sock *smc_tcp_syn_recv_sock(const struct sock *sk,
- 	return NULL;
+
+When page_pool need to be refilled from or flushed to the page allocator,
+the added overhead is the page_pool_item_add() and page_pool_item_del()
+calling overhead, using below patch to enable Jesper's testing running in
+arm64, the overhead is 0~20ns, which is quite variable 
+
+Before this patchset:
+root@(none)$ taskset -c 1 insmod bench_page_pool_simple.ko
+[  136.641453] bench_page_pool_simple: Loaded
+[  136.722560] time_bench: Type:for_loop Per elem: 0 cycles(tsc) 0.769 ns (step:0) - (measurement period time:0.076968720 sec time_interval:76968720) - (invoke count:100000000 tsc_interval:7696855)
+[  137.317006] time_bench: Type:atomic_inc Per elem: 0 cycles(tsc) 5.771 ns (step:0) - (measurement period time:0.577164350 sec time_interval:577164350) - (invoke count:100000000 tsc_interval:57716429)
+[  137.480852] time_bench: Type:lock Per elem: 1 cycles(tsc) 14.621 ns (step:0) - (measurement period time:0.146218730 sec time_interval:146218730) - (invoke count:10000000 tsc_interval:14621868)
+[  138.842377] time_bench: Type:rcu Per elem: 1 cycles(tsc) 13.444 ns (step:0) - (measurement period time:1.344419820 sec time_interval:1344419820) - (invoke count:100000000 tsc_interval:134441975)
+[  138.859656] bench_page_pool_simple: time_bench_page_pool01_fast_path(): Cannot use page_pool fast-path
+[  139.132102] time_bench: Type:no-softirq-page_pool01 Per elem: 2 cycles(tsc) 26.315 ns (step:0) - (measurement period time:0.263151430 sec time_interval:263151430) - (invoke count:10000000 tsc_interval:26315135)
+[  139.150769] bench_page_pool_simple: time_bench_page_pool02_ptr_ring(): Cannot use page_pool fast-path
+[  139.910642] time_bench: Type:no-softirq-page_pool02 Per elem: 7 cycles(tsc) 75.066 ns (step:0) - (measurement period time:0.750663200 sec time_interval:750663200) - (invoke count:10000000 tsc_interval:75066312)
+[  139.929312] bench_page_pool_simple: time_bench_page_pool03_slow(): Cannot use page_pool fast-path
+[  141.673951] time_bench: Type:no-softirq-page_pool03 Per elem: 17 cycles(tsc) 173.578 ns (step:0) - (measurement period time:1.735781610 sec time_interval:1735781610) - (invoke count:10000000 tsc_interval:173578155)
+[  141.692970] bench_page_pool_simple: pp_tasklet_handler(): in_serving_softirq fast-path
+[  141.700874] bench_page_pool_simple: time_bench_page_pool01_fast_path(): in_serving_softirq fast-path
+[  141.973638] time_bench: Type:tasklet_page_pool01_fast_path Per elem: 2 cycles(tsc) 26.364 ns (step:0) - (measurement period time:0.263645150 sec time_interval:263645150) - (invoke count:10000000 tsc_interval:26364508)
+[  141.992912] bench_page_pool_simple: time_bench_page_pool02_ptr_ring(): in_serving_softirq fast-path
+[  142.531745] time_bench: Type:tasklet_page_pool02_ptr_ring Per elem: 5 cycles(tsc) 52.980 ns (step:0) - (measurement period time:0.529801250 sec time_interval:529801250) - (invoke count:10000000 tsc_interval:52980119)
+[  142.550933] bench_page_pool_simple: time_bench_page_pool03_slow(): in_serving_softirq fast-path
+[  144.297646] time_bench: Type:tasklet_page_pool03_slow Per elem: 17 cycles(tsc) 173.802 ns (step:0) - (measurement period time:1.738029000 sec time_interval:1738029000) - (invoke count:10000000 tsc_interval:173802894)
+
+After this patchset:
+root@(none)$ taskset -c 1 insmod bench_page_pool_simple.ko
+[  149.865799] bench_page_pool_simple: Loaded
+[  149.946907] time_bench: Type:for_loop Per elem: 0 cycles(tsc) 0.769 ns (step:0) - (measurement period time:0.076965620 sec time_interval:76965620) - (invoke count:100000000 tsc_interval:7696556)
+[  150.722282] time_bench: Type:atomic_inc Per elem: 0 cycles(tsc) 7.580 ns (step:0) - (measurement period time:0.758094660 sec time_interval:758094660) - (invoke count:100000000 tsc_interval:75809459)
+[  150.886335] time_bench: Type:lock Per elem: 1 cycles(tsc) 14.640 ns (step:0) - (measurement period time:0.146405830 sec time_interval:146405830) - (invoke count:10000000 tsc_interval:14640578)
+[  152.249454] time_bench: Type:rcu Per elem: 1 cycles(tsc) 13.460 ns (step:0) - (measurement period time:1.346009570 sec time_interval:1346009570) - (invoke count:100000000 tsc_interval:134600951)
+[  152.266734] bench_page_pool_simple: time_bench_page_pool01_fast_path(): Cannot use page_pool fast-path
+[  152.537046] time_bench: Type:no-softirq-page_pool01 Per elem: 2 cycles(tsc) 26.100 ns (step:0) - (measurement period time:0.261007670 sec time_interval:261007670) - (invoke count:10000000 tsc_interval:26100761)
+[  152.555714] bench_page_pool_simple: time_bench_page_pool02_ptr_ring(): Cannot use page_pool fast-path
+[  153.342212] time_bench: Type:no-softirq-page_pool02 Per elem: 7 cycles(tsc) 77.729 ns (step:0) - (measurement period time:0.777293380 sec time_interval:777293380) - (invoke count:10000000 tsc_interval:77729331)
+[  153.360881] bench_page_pool_simple: time_bench_page_pool03_slow(): Cannot use page_pool fast-path
+[  155.287747] time_bench: Type:no-softirq-page_pool03 Per elem: 19 cycles(tsc) 191.800 ns (step:0) - (measurement period time:1.918007990 sec time_interval:1918007990) - (invoke count:10000000 tsc_interval:191800791)
+[  155.306766] bench_page_pool_simple: pp_tasklet_handler(): in_serving_softirq fast-path
+[  155.314670] bench_page_pool_simple: time_bench_page_pool01_fast_path(): in_serving_softirq fast-path
+[  155.584313] time_bench: Type:tasklet_page_pool01_fast_path Per elem: 2 cycles(tsc) 26.052 ns (step:0) - (measurement period time:0.260524810 sec time_interval:260524810) - (invoke count:10000000 tsc_interval:26052476)
+[  155.603588] bench_page_pool_simple: time_bench_page_pool02_ptr_ring(): in_serving_softirq fast-path
+[  156.183214] time_bench: Type:tasklet_page_pool02_ptr_ring Per elem: 5 cycles(tsc) 57.059 ns (step:0) - (measurement period time:0.570594850 sec time_interval:570594850) - (invoke count:10000000 tsc_interval:57059478)
+[  156.202402] bench_page_pool_simple: time_bench_page_pool03_slow(): in_serving_softirq fast-path
+[  158.045594] time_bench: Type:tasklet_page_pool03_slow Per elem: 18 cycles(tsc) 183.450 ns (step:0) - (measurement period time:1.834507700 sec time_interval:1834507700) - (invoke count:10000000 tsc_interval:183450764)
+
+Patch for time_bench.h enable the out of tree testing on arm64 system:
+@@ -101,6 +101,7 @@ struct time_bench_cpu {
+  *  CPUID clears the high 32-bits of all (rax/rbx/rcx/rdx)
+  */
+ static __always_inline uint64_t tsc_start_clock(void) {
++#if defined(__i386__) || defined(__x86_64__)
+        /* See: Intel Doc #324264 */
+        unsigned hi, lo;
+        asm volatile (
+@@ -111,9 +112,13 @@ static __always_inline uint64_t tsc_start_clock(void) {
+                "%rax", "%rbx", "%rcx", "%rdx");
+        //FIXME: on 32bit use clobbered %eax + %edx
+        return ((uint64_t)lo) | (((uint64_t)hi) << 32);
++#else
++       return get_cycles();
++#endif
  }
- 
--static bool smc_hs_congested(const struct sock *sk)
-+static void smc_openreq_init(struct request_sock *req,
-+			     const struct tcp_options_received *rx_opt,
-+			     struct sk_buff *skb, const struct sock *sk)
- {
-+	struct inet_request_sock *ireq = inet_rsk(req);
-+	struct sockaddr_storage rmt_sockaddr = {0};
- 	const struct smc_sock *smc;
- 
- 	smc = smc_clcsock_user_data(sk);
- 
- 	if (!smc)
--		return true;
-+		return;
- 
--	if (workqueue_congested(WORK_CPU_UNBOUND, smc_hs_wq))
--		return true;
-+	if (smc->limit_smc_hs && workqueue_congested(WORK_CPU_UNBOUND, smc_hs_wq))
-+		goto out_no_smc;
- 
--	return false;
-+	rmt_sockaddr.ss_family = sk->sk_family;
-+
-+	if (rmt_sockaddr.ss_family == AF_INET) {
-+		struct sockaddr_in *rmt4_sockaddr =  (struct sockaddr_in *)&rmt_sockaddr;
-+
-+		rmt4_sockaddr->sin_addr.s_addr = ireq->ir_rmt_addr;
-+		rmt4_sockaddr->sin_port	= ireq->ir_rmt_port;
-+	} else {
-+		struct sockaddr_in6 *rmt6_sockaddr =  (struct sockaddr_in6 *)&rmt_sockaddr;
-+
-+		rmt6_sockaddr->sin6_addr = ireq->ir_v6_rmt_addr;
-+		rmt6_sockaddr->sin6_port = ireq->ir_rmt_port;
-+	}
-+
-+	ireq->smc_ok = select_syn_smc(sk, (struct sockaddr *)&rmt_sockaddr);
-+	return;
-+out_no_smc:
-+	ireq->smc_ok = 0;
-+	return;
+
+ static __always_inline uint64_t tsc_stop_clock(void) {
++#if defined(__i386__) || defined(__x86_64__)
+        /* See: Intel Doc #324264 */
+        unsigned hi, lo;
+        asm volatile(
+@@ -123,6 +128,9 @@ static __always_inline uint64_t tsc_stop_clock(void) {
+                "CPUID\n\t": "=r" (hi), "=r" (lo)::
+                "%rax", "%rbx", "%rcx", "%rdx");
+        return ((uint64_t)lo) | (((uint64_t)hi) << 32);
++#else
++       return get_cycles();
++#endif
  }
- 
- struct smc_hashinfo smc_v4_hashinfo = {
-@@ -1671,7 +1702,7 @@ int smc_connect(struct socket *sock, struct sockaddr *addr,
- 	}
- 
- 	smc_copy_sock_settings_to_clc(smc);
--	tcp_sk(smc->clcsock->sk)->syn_smc = 1;
-+	tcp_sk(smc->clcsock->sk)->syn_smc = select_syn_smc(sk, addr);
- 	if (smc->connect_nonblock) {
- 		rc = -EALREADY;
- 		goto out;
-@@ -2650,8 +2681,7 @@ int smc_listen(struct socket *sock, int backlog)
- 
- 	inet_csk(smc->clcsock->sk)->icsk_af_ops = &smc->af_ops;
- 
--	if (smc->limit_smc_hs)
--		tcp_sk(smc->clcsock->sk)->smc_hs_congested = smc_hs_congested;
-+	tcp_sk(smc->clcsock->sk)->smc_openreq_init = smc_openreq_init;
- 
- 	rc = kernel_listen(smc->clcsock, backlog);
- 	if (rc) {
-@@ -3475,6 +3505,20 @@ static void __net_exit smc_net_stat_exit(struct net *net)
- 	.exit = smc_net_stat_exit,
- };
- 
-+BTF_SET8_START(bpf_smc_fmodret_ids)
-+BTF_ID_FLAGS(func, select_syn_smc)
-+BTF_SET8_END(bpf_smc_fmodret_ids)
-+
-+static const struct btf_kfunc_id_set bpf_smc_fmodret_set = {
-+	.owner = THIS_MODULE,
-+	.set   = &bpf_smc_fmodret_ids,
-+};
-+
-+static int __init bpf_smc_kfunc_init(void)
-+{
-+	return register_btf_fmodret_id_set(&bpf_smc_fmodret_set);
-+}
-+
- static int __init smc_init(void)
+
+ /* Notes for RDTSC and RDTSCP
+@@ -186,10 +194,14 @@ enum {
+
+ static __always_inline unsigned long long p_rdpmc(unsigned in)
  {
- 	int rc;
-@@ -3574,8 +3618,17 @@ static int __init smc_init(void)
- 		pr_err("%s: smc_inet_init fails with %d\n", __func__, rc);
- 		goto out_ulp;
- 	}
-+
-+	rc = bpf_smc_kfunc_init();
-+	if (rc) {
-+		pr_err("%s: bpf_smc_kfunc_init fails with %d\n", __func__, rc);
-+		goto out_inet;
-+	}
-+
- 	static_branch_enable(&tcp_have_smc);
- 	return 0;
-+out_inet:
-+	smc_inet_exit();
- out_ulp:
- 	tcp_unregister_ulp(&smc_ulp_ops);
- out_lo:
++#if defined(__i386__) || defined(__x86_64__)
+        unsigned d, a;
+
+        asm volatile("rdpmc" : "=d" (d), "=a" (a) : "c" (in) : "memory");
+        return ((unsigned long long)d << 32) | a;
++#else
++       return 0;
++#endif
+ }
+
+ /* These PMU counter needs to be enabled, but I don't have the
+@@ -216,7 +228,11 @@ static __always_inline unsigned long long pmc_clk(void)
+ #define MSR_IA32_PCM2 0x400000C3
+ inline uint64_t msr_inst(unsigned long long *msr_result)
+ {
++#if defined(__i386__) || defined(__x86_64__)
+        return rdmsrl_safe(MSR_IA32_PCM0, msr_result);
++#else
++       return 0;
++#endif
+ }
+
+1. https://lore.kernel.org/lkml/8067f204-1380-4d37-8ffd-007fc6f26738@kernel.org/T/
+
+CC: Alexander Lobakin <aleksander.lobakin@intel.com>
+CC: Robin Murphy <robin.murphy@arm.com>
+CC: Alexander Duyck <alexander.duyck@gmail.com>
+CC: IOMMU <iommu@lists.linux.dev>
+
+Yunsheng Lin (2):
+  page_pool: fix timing for checking and disabling napi_local
+  page_pool: fix IOMMU crash when driver has already unbound
+
+ drivers/net/ethernet/freescale/fec_main.c     |   8 +-
+ drivers/net/ethernet/intel/iavf/iavf_txrx.c   |   6 +-
+ drivers/net/ethernet/intel/idpf/idpf_txrx.c   |  14 +-
+ drivers/net/ethernet/intel/libeth/rx.c        |   2 +-
+ .../net/ethernet/mellanox/mlx5/core/en/xdp.c  |   3 +-
+ drivers/net/netdevsim/netdev.c                |   6 +-
+ drivers/net/wireless/mediatek/mt76/mt76.h     |   2 +-
+ include/linux/mm_types.h                      |   2 +-
+ include/linux/skbuff.h                        |   1 +
+ include/net/libeth/rx.h                       |   3 +-
+ include/net/netmem.h                          |  10 +-
+ include/net/page_pool/helpers.h               |  11 +
+ include/net/page_pool/types.h                 |  15 +-
+ net/core/devmem.c                             |   4 +-
+ net/core/netmem_priv.h                        |   5 +-
+ net/core/page_pool.c                          | 188 +++++++++++++++---
+ net/core/page_pool_priv.h                     |  10 +-
+ net/core/skbuff.c                             |   3 +-
+ net/core/xdp.c                                |   3 +-
+ 19 files changed, 238 insertions(+), 58 deletions(-)
+
 -- 
-1.8.3.1
+2.33.0
 
 
