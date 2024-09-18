@@ -1,179 +1,160 @@
-Return-Path: <bpf+bounces-40066-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40067-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D6A597BDAB
-	for <lists+bpf@lfdr.de>; Wed, 18 Sep 2024 16:07:49 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DCC6197BE26
+	for <lists+bpf@lfdr.de>; Wed, 18 Sep 2024 16:42:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C2B221C221E5
-	for <lists+bpf@lfdr.de>; Wed, 18 Sep 2024 14:07:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E75D1F220EF
+	for <lists+bpf@lfdr.de>; Wed, 18 Sep 2024 14:42:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E61418B473;
-	Wed, 18 Sep 2024 14:07:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 041CD1BB6B2;
+	Wed, 18 Sep 2024 14:42:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HMedvZJR"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Nb04d4PT"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C6D118A6DB;
-	Wed, 18 Sep 2024 14:07:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C66BC1BAEE6;
+	Wed, 18 Sep 2024 14:42:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726668458; cv=none; b=OQ1ph/K01g9gXEEBiIyMqnS3inQMi2jn8PztEQJInPr3dNY1qe5Z7UwXS9rHXt4zhYbrRDDHNjsm74ZtTeHNx0d4ajEP8d6xYKi6DDaD6PdoDkeN0A1BErNITE8ChbS4Uhd2+7S94wminwaGECoBpF7z2kY0MNhroex9wagz5Xc=
+	t=1726670550; cv=none; b=VvI2LxV2N4lQHRPuhenu3i6EY3+k3KP25iIDkBwDRCb2qCJ5Q9CwtThFxQctbCbJ5JVjzhx8q3dhbY8RgkDFTV5yd1ZQixAGU9XCs47rXz5HBkGaJGZlU5IONwYj6MFDbymyTjDBi/PccwA0LQZ7I/UgVJF0HG2HA0dIz9zFfNY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726668458; c=relaxed/simple;
-	bh=0VL0a3WZNBu3lnikVkXDU/US1Zxg3JW7usdy+pnkQys=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=s5DBLZKZtRfiP3M1EjDzi0MhWTEF42em2I++TighCZwScGExuS6SD1JSvEqM6lcA+q+7w+AZ5H8BxtNgVGykEX6Blqu145NyU/z5MJP6RKaMp1R+JGMSc4BjOT8swW/2xVCrsG5yggX8JuySSp7qs+L2ZRR/Wxg2puK7R5kFHts=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HMedvZJR; arc=none smtp.client-ip=209.85.128.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-6b747f2e2b7so54835087b3.3;
-        Wed, 18 Sep 2024 07:07:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1726668456; x=1727273256; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0jghMkTEcbjlD4OE1ywGj7BxBKpwmV/lECXNj48rxHA=;
-        b=HMedvZJRJjwZYgQSDOlMh3VXVk3AIMEfVAX7ygyZL84jr0dwCEdNe5KcohILtFhvGL
-         GGer+KpvS6hZIAQhnIWnIsbNHO0+G8u6VCt0KdJ7+nLJ2wXXPaRgFZ7HHVriA5/b1ZHS
-         sYvfU3Ja8iE4yIIF7mzFr/4TT44jABFi8jjUEC7zf+IgEOyFoXF+rqm8qxv7rZRJ2d4I
-         RPMNHYQaxOVZdC3casEtNw0S0aoMOp93Rqo0Kfjz/c0pQS57/ONiRHJtt9X44aR5jRn+
-         h2jqFJ5XR9IsXCcecen3U/RiRUOINQBVLhPctE4IBMa/VkKtgPxO/plLXyIezHolS0rM
-         9/xw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726668456; x=1727273256;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0jghMkTEcbjlD4OE1ywGj7BxBKpwmV/lECXNj48rxHA=;
-        b=O85VlNMmKbdGWVPp2+y9V8vQt6sjyGo6ai98wPSE28pO8HwaLMFHbzRwY8ygNBPLIU
-         4m1xfJm29kwcngNJTaE7PgjTZTQM4wT4w9MGE+04rbhEh+RDqtgL9zE2R6y+cOsLCtsP
-         fqPVeVjX/y3VeMNoDjhu17hHiTx9TnzxtVGV/g8G6pe3qdp6VtO5kP9F8XLIeXdkGIk1
-         dOKCJ1Sw1EwA5Yl5RS630jUC1QVTN/0XokiFLJ5vZsXzSO3v5CJV69pK+QP9M03PYrpf
-         RPBkcAx3Yty9Q8LZJ/3nKktFWpGKxNgIsqKd1jq47eCEitA84zjuNwCiR4yHlkqB+xIF
-         w78w==
-X-Forwarded-Encrypted: i=1; AJvYcCV4OoKonqTkl077m0wQF1rVv155Tak17hlCqxTUYvxM6THVDY3HF9/ANdsjZl8ZGH08aSE=@vger.kernel.org, AJvYcCWJTNAPNYB2hXInEh9k/OcziqAYLxll5lbVS4PKmkQXO8beYx27Ucd2ijXDtAIhdR9RFEU21PD1l4Uuqvop@vger.kernel.org, AJvYcCWqFpmee7xHRYduMOYZuVwv5To4et/An5ouL3U2LPiJNBSbUx35aDFRyjXcsk2gSR83CKfqi4sV@vger.kernel.org
-X-Gm-Message-State: AOJu0YzkxbEdlepiW4+Hcgk4kB7tVfVeqFSVGRKHuJ+yi5ggLUyu/lA9
-	L1TA6haVh0I1cyokK3n/5Jkqag6f72nNFiCJ3ggEAYqWrFyfka/66tH6EVgJiRHV692EZhBN3G7
-	pNsaQmJz8jXzzlxwIsdA6pobaQX1lC268
-X-Google-Smtp-Source: AGHT+IEPYZ/AGU3WeOEb8yIO/jp0/diGMF4lCbfcmFw62ZeScK7svyOFn5uIVh2cTML4YNoOIYkBwlfIF/cW4XgHBGE=
-X-Received: by 2002:a05:690c:6305:b0:6db:e213:580b with SMTP id
- 00721157ae682-6dbe21359camr105883427b3.36.1726668455897; Wed, 18 Sep 2024
- 07:07:35 -0700 (PDT)
+	s=arc-20240116; t=1726670550; c=relaxed/simple;
+	bh=f6DO9H9tbPadLV/AmMWoIvT7LPqXcop24V18dsnD8vo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FQegAAWmHErJO70EtXZW6w/98bNEswbsYXfU/6vU0ELreebW+CRDcnqeOgpa5KMOerKxFEu0veKvzdb6HtPcsN0rWUMZvhtOA+7i2h4LzlxZ+6Lp51vh2B3xjpVufBegMSbPjwUi8BU3phtC6x3/CaKDyrOBF2Qi1HFnP9t+imY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Nb04d4PT; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1726670549; x=1758206549;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=f6DO9H9tbPadLV/AmMWoIvT7LPqXcop24V18dsnD8vo=;
+  b=Nb04d4PT/EFuRd22htC3110pJV12b0sP4okNNA/tU8M86F2UpCsJSNtd
+   V29Gnw1c2JR1AzXMTlUlQyeUm1az5JffCP07628uh/yoNr+NGshq6LthB
+   9W2ZEpDhAN96IIoCDhwVj3EG7i4P7K0fFpzy37+TslKpryx6k+WPPCm6K
+   lEFL4RUTT4XF6ZDhlfoRV1hRjKBlGfc9TahQ05u/QzNiW6SdFd0iE0cpg
+   oOiaPot+3R6vBl8SJbiyDfxA4jWRU/qa/4FQ6pWr33pxsVHmWLIMoyQcB
+   YSuCx1DIXuktVBviH6BZf6R6v9PLNj4QIrs5t83+aEl4JAbslYyBXz973
+   Q==;
+X-CSE-ConnectionGUID: 1Nqbf2+wTR+mvS8BVAYn/Q==
+X-CSE-MsgGUID: wQTfSd89SFuKHITLs5ztOA==
+X-IronPort-AV: E=McAfee;i="6700,10204,11199"; a="36255024"
+X-IronPort-AV: E=Sophos;i="6.10,239,1719903600"; 
+   d="scan'208";a="36255024"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2024 07:42:27 -0700
+X-CSE-ConnectionGUID: 4A/Qk+DiRdul4OYr8AZigA==
+X-CSE-MsgGUID: 6d1nul30RZG2Lo5fGPjqjA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.10,239,1719903600"; 
+   d="scan'208";a="100312619"
+Received: from lkp-server01.sh.intel.com (HELO 53e96f405c61) ([10.239.97.150])
+  by orviesa002.jf.intel.com with ESMTP; 18 Sep 2024 07:42:22 -0700
+Received: from kbuild by 53e96f405c61 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1sqvsp-000CJe-18;
+	Wed, 18 Sep 2024 14:42:19 +0000
+Date: Wed, 18 Sep 2024 22:41:43 +0800
+From: kernel test robot <lkp@intel.com>
+To: Liao Chang <liaochang1@huawei.com>, mhiramat@kernel.org,
+	oleg@redhat.com, andrii@kernel.org, peterz@infradead.org,
+	mingo@redhat.com, acme@kernel.org, namhyung@kernel.org,
+	mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+	jolsa@kernel.org, irogers@google.com, adrian.hunter@intel.com,
+	kan.liang@linux.intel.com
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH] uprobes: Improve the usage of xol slots for better
+ scalability
+Message-ID: <202409182246.UMkGsMXl-lkp@intel.com>
+References: <20240918012752.2045713-1-liaochang1@huawei.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240918083545.9591-1-jiwonaid0@gmail.com> <ebef9a36-d060-4df3-b139-3dda4a84484a@blackwall.org>
-In-Reply-To: <ebef9a36-d060-4df3-b139-3dda4a84484a@blackwall.org>
-From: Jiwon Kim <jiwonaid0@gmail.com>
-Date: Wed, 18 Sep 2024 23:07:24 +0900
-Message-ID: <CAKaoOqdCh41iBbzuZjx3mJpOXBh0aaLmBRd7Pz9jjwBFLqAifg@mail.gmail.com>
-Subject: Re: [PATCH net v2] bonding: Add net_ratelimit for bond_xdp_get_xmit_slave
- in bond_main.c
-To: Nikolay Aleksandrov <razor@blackwall.org>
-Cc: jv@jvosburgh.net, andy@greyhouse.net, davem@davemloft.net, 
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, ast@kernel.org, 
-	daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com, 
-	joamaki@gmail.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org, syzbot+c187823a52ed505b2257@syzkaller.appspotmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240918012752.2045713-1-liaochang1@huawei.com>
 
-On Wed, Sep 18, 2024 at 6:51=E2=80=AFPM Nikolay Aleksandrov <razor@blackwal=
-l.org> wrote:
->
-> On 18/09/2024 11:35, Jiwon Kim wrote:
-> > Add net_ratelimit to reduce warnings and logs.
-> > This addresses the WARNING in bond_xdp_get_xmit_slave reported by syzbo=
-t.
-> >
->
-> This commit message is severely lacking. I did the heavy lifting and gave=
- you
-> detailed analysis of the problem, please describe the actual issue and wh=
-y
-> this is ok to do. Also the subject is confusing, it should give a concise
-> summary of what the patch is trying to do and please don't include filena=
-mes in it.
-> You can take a look at other commits for examples.
->
-> > Setup:
-> >     # Need xdp_tx_prog with return XDP_TX;
-> >     ip l add veth0 type veth peer veth1
-> >     ip l add veth3 type veth peer veth4
-> >     ip l add bond0 type bond mode 6 # <- BOND_MODE_ALB, unsupported by =
-xdp
-> >     ip l add bond1 type bond # <- BOND_MODE_ROUNDROBIN by default
-> >     ip l set veth0 master bond1
-> >     ip l set bond1 up
-> >     ip l set dev bond1 xdpdrv object tx_xdp.o section xdp_tx
-> >     ip l set veth3 master bond0
-> >     ip l set bond0 up
-> >     ip l set veth4 up
-> >     ip l set veth3 xdpgeneric object tx_xdp.o section xdp_tx
->
-> Care to explain why this setup would trigger anything?
->
-> >
-> > Reported-by: syzbot+c187823a52ed505b2257@syzkaller.appspotmail.com
-> > Closes: https://syzkaller.appspot.com/bug?extid=3Dc187823a52ed505b2257
-> > Fixes: 9e2ee5c7e7c3 ("net, bonding: Add XDP support to the bonding driv=
-er")
-> > Signed-off-by: Jiwon Kim <jiwonaid0@gmail.com>
-> > ---
-> > v2: Change the patch to fix bond_xdp_get_xmit_slave
-> > ---
-> >  drivers/net/bonding/bond_main.c | 9 ++++++---
-> >  1 file changed, 6 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond=
-_main.c
-> > index b560644ee1b1..91b9cbdcf274 100644
-> > --- a/drivers/net/bonding/bond_main.c
-> > +++ b/drivers/net/bonding/bond_main.c
-> > @@ -5610,9 +5610,12 @@ bond_xdp_get_xmit_slave(struct net_device *bond_=
-dev, struct xdp_buff *xdp)
-> >               break;
-> >
-> >       default:
-> > -             /* Should never happen. Mode guarded by bond_xdp_check() =
-*/
-> > -             netdev_err(bond_dev, "Unknown bonding mode %d for xdp xmi=
-t\n", BOND_MODE(bond));
-> > -             WARN_ON_ONCE(1);
-> > +             /* This might occur when a bond device increases bpf_mast=
-er_redirect_enabled_key,
-> > +              * and another bond device with XDP_TX and bond slave.
-> > +              */
->
-> The comment is confusing and needs to be reworded or dropped altogether.
->
-> > +             if (net_ratelimit())
-> > +                     netdev_err(bond_dev, "Unknown bonding mode %d for=
- xdp xmit\n",
-> > +                                BOND_MODE(bond));
-> >               return NULL;
-> >       }
-> >
->
+Hi Liao,
 
-Hi Nikolay,
+kernel test robot noticed the following build errors:
 
-I have taken the time to review your feedback and have sent [PATCH net
-v3] for your consideration.
-Please take a look when you have a moment.
+[auto build test ERROR on tip/perf/core]
+[cannot apply to perf-tools-next/perf-tools-next perf-tools/perf-tools linus/master acme/perf/core v6.11 next-20240918]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Thank you so much!
+url:    https://github.com/intel-lab-lkp/linux/commits/Liao-Chang/uprobes-Improve-the-usage-of-xol-slots-for-better-scalability/20240918-093915
+base:   tip/perf/core
+patch link:    https://lore.kernel.org/r/20240918012752.2045713-1-liaochang1%40huawei.com
+patch subject: [PATCH] uprobes: Improve the usage of xol slots for better scalability
+config: arm-defconfig (https://download.01.org/0day-ci/archive/20240918/202409182246.UMkGsMXl-lkp@intel.com/config)
+compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project f28c006a5895fc0e329fe15fead81e37457cb1d1)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240918/202409182246.UMkGsMXl-lkp@intel.com/reproduce)
 
-Sincerely,
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202409182246.UMkGsMXl-lkp@intel.com/
 
-Jiwon Kim
+All errors (new ones prefixed by >>):
+
+   In file included from arch/arm/probes/uprobes/actions-arm.c:10:
+>> include/linux/uprobes.h:81:2: error: unknown type name 'refcount_t'
+           refcount_t                      slot_ref;
+           ^
+   1 error generated.
+
+
+vim +/refcount_t +81 include/linux/uprobes.h
+
+    58	
+    59	/*
+    60	 * uprobe_task: Metadata of a task while it singlesteps.
+    61	 */
+    62	struct uprobe_task {
+    63		enum uprobe_task_state		state;
+    64	
+    65		union {
+    66			struct {
+    67				struct arch_uprobe_task	autask;
+    68				unsigned long		vaddr;
+    69			};
+    70	
+    71			struct {
+    72				struct callback_head	dup_xol_work;
+    73				unsigned long		dup_xol_addr;
+    74			};
+    75		};
+    76	
+    77		struct uprobe			*active_uprobe;
+    78		unsigned long			xol_vaddr;
+    79	
+    80		struct list_head		gc;
+  > 81		refcount_t			slot_ref;
+    82		int				insn_slot;
+    83	
+    84		struct arch_uprobe              *auprobe;
+    85	
+    86		struct return_instance		*return_instances;
+    87		unsigned int			depth;
+    88	};
+    89	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
