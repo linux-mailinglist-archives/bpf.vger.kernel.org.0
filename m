@@ -1,140 +1,135 @@
-Return-Path: <bpf+bounces-40053-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40054-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DCDF97B896
-	for <lists+bpf@lfdr.de>; Wed, 18 Sep 2024 09:33:46 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE8CB97B8AA
+	for <lists+bpf@lfdr.de>; Wed, 18 Sep 2024 09:45:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DD36B1F22097
-	for <lists+bpf@lfdr.de>; Wed, 18 Sep 2024 07:33:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 572CFB2407F
+	for <lists+bpf@lfdr.de>; Wed, 18 Sep 2024 07:45:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CDD516A956;
-	Wed, 18 Sep 2024 07:33:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AE681714A9;
+	Wed, 18 Sep 2024 07:45:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gtucker.io header.i=@gtucker.io header.b="g3CMuhbs"
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="OinEsvUR"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AADA4273DC;
-	Wed, 18 Sep 2024 07:33:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96D351514C6
+	for <bpf@vger.kernel.org>; Wed, 18 Sep 2024 07:45:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726644819; cv=none; b=AXW0fwwdBcD9kpV8GKFLA8t44ZGxfbOp+6WSwwAQao5HRul30KqPZZiIVVgtG66aDeUDIA2tjyf86/IjE41hEGQJSSy8TnOaBsZ6KDmLYuEZ3MLHBilLDPfJyO/30BYX7OTBmcMeAH8AxakoNcEBebOUGLPnX9mWke/smNyW928=
+	t=1726645541; cv=none; b=ss/9WffN4j2GL+w0WYj8QlQnnuqf3Qf0Lq2JP9O9S3p6Ia/dwYYkzVNwhq1JRHB7N034PZZgBXAiSFt920HftwuHC5c3I3M+W12qv/54pwFQr7yhruo+PFGcsBSMytWA1zlSxN0IZGHVaNZhWRESI26tZ8i1SCk2bEs6rLbiYUo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726644819; c=relaxed/simple;
-	bh=KDWSO/DlRC22nIf1l+JdQKl0mmC4pDrhGOX9s3FmLtU=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=juZ5o/3WGTX7C+JeWPpETWAJjnfMm0PClm6wftBntZMtG2Rucc+IuwINV0iqZp1rnscbiuADCBSyCslUmRtWvbf8A7T3A3QtRGycNCBkDvNGkl3TAzCAVootu3tN3O1hVSHuPYvrUawg1cJSWgRGXfRa1WtMdH+F6eZhnzgsEWg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gtucker.io; spf=pass smtp.mailfrom=gtucker.io; dkim=pass (2048-bit key) header.d=gtucker.io header.i=@gtucker.io header.b=g3CMuhbs; arc=none smtp.client-ip=217.70.183.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gtucker.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gtucker.io
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 1DBD020009;
-	Wed, 18 Sep 2024 07:33:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gtucker.io; s=gm1;
-	t=1726644813;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1BGtCYOQcOECE4KEQhNC5Aph6S84pDq76u98tDqbbS0=;
-	b=g3CMuhbsnZqxP5ZdE9M0GmBkodlm/f5cgZdPJbGcQbMI6zoGvjEzwCLC59BfFh8vVX5Ja3
-	iqpVlJuYbsbrHoThh0P81XEn1dRrY3HbU4WlDcTWZ3rtLbPFUPwE3RqwI91mKZo8+Fjbcb
-	oDvyLirXjsJilYWKSGvlQFhOOLHmaSozYmc6TTQpDp2PCiUmUkAbD9AcU+JqUvuS5Ck+YN
-	FkRjgOT0H2HEensyYWVrKpkg/1qu6SgeSvx3pK3vcw3krRAJtMokZFREKv65m8xyc+VSRd
-	oP2sMRZpMOdll0f/SoLBbYTJP9NpVu37XrHBeOTELLRSeuRaE7eBy0xOXtdg/A==
-Message-ID: <da705c5d-9263-46dc-993e-dffee25969a3@gtucker.io>
-Date: Wed, 18 Sep 2024 09:33:28 +0200
+	s=arc-20240116; t=1726645541; c=relaxed/simple;
+	bh=8cbZTCDd4mL+ru6kg5Gf3qUptfO0w/oF9SJAxiqHGio=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=qEeineVtkL/ZBFqqd8kNIsByeXgJ66WPZKtZCcBk+gSVPC+QC0B4H5ZeKK+QWr5MwGxohdHhM9c2oJ91bZG9etNkaeAhBTP2ExTpYQnGjar/vOjeDOJMk0nUzK8yyb3TevB5SjVANmyeeepxGFi9YUYemdcuOAve+kQ4LgAcLfs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=OinEsvUR; arc=none smtp.client-ip=209.85.214.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-2068a7c9286so55536685ad.1
+        for <bpf@vger.kernel.org>; Wed, 18 Sep 2024 00:45:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1726645538; x=1727250338; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=+I7dUgrSuHMQdwaXopkdXCgHbnd+bfTOM+bzbwYhISo=;
+        b=OinEsvUR0ZuftFGWF7ydpG/DYZM77aYld2BTT/0RyB3Goa7YtZNqlBV4S/VC6n6TIP
+         +YBfao6n/EFRllA4w6LGNEgGjafW+EZXDyJQ9qBdY4laL5tvw05GfJSHtrYGx2Cb5nxu
+         FEeKerguC46ur/RGfwQ2Jh8hywu1QHpGdicbX4Khxu2gwtnyaranvRuW6l61dcvhpbU+
+         nABMOHBEQ6DjCyYLbOskA7rDSftrXSi8//lCCfujxpg6M+9y4Dj5LbRAkAlkCuVS4u8V
+         EW/nXW0o7uijBmI7Tgf31GdHFIkOq67Kb1aAKczX6qAuRDZapzIEgvP1DzgJ6shXgnhx
+         N6eQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1726645538; x=1727250338;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+I7dUgrSuHMQdwaXopkdXCgHbnd+bfTOM+bzbwYhISo=;
+        b=EXsabKVs5slRq/opcFqxvQ/UqnYBxQw8q8WP8frGUC8Cu+l/7/WfLyhCOgukpo3cgs
+         /21VRFqIzYno9kzfA24frQthd48xrIGJijct5rM1PdB8vs0/uK6YuPCFjqgKqo+3w1rk
+         vQ0SeMakOUbH8Z4y3oBst6qRyp9aa3sMpohT8HQLq8MmUP5TPyvrkaQSfKuZ9zgcAKnz
+         3QHcRleKaJT2ihYiKuK8UrEyOO5W42267E+Cb6U6UnTI8XcAl0A8sokTJysjtrf1VbDX
+         aZefzhkc0AasswXYjQpuCqR5q96kIT5BR3gOpdOycrxIkQnNbUnBi8irXWI1zy8AhMKH
+         IBWQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWTR0cYZwvuiEvf9xN2cPWsA4liHq/ynDtcFu1U2xZglkFpVHoKr5IhklkbeEjHEQ0ZNtg=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzgw3Kb8GJAEDcNIDG06dbZ3D6mUFA02OdC+0SEpCf0Ge1+kbK2
+	RQi9JuCBKqeX/H4YXdZ1KlABag1FT+CuRJ4Uz73Eefpsf7Y/cawo/UWZc2VC8N8=
+X-Google-Smtp-Source: AGHT+IFpSIeGa39ByCsIFwY+HDxOIoRC8C0L3buusq68sEAHO+OkhE4RObZ1rPjsBZYe0iYf4cPzmQ==
+X-Received: by 2002:a17:902:ec85:b0:205:82d5:2368 with SMTP id d9443c01a7336-20782b7c5f3mr358418875ad.49.1726645537888;
+        Wed, 18 Sep 2024 00:45:37 -0700 (PDT)
+Received: from C02F52LSML85.bytedance.net ([203.208.167.149])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20794747379sm60412995ad.288.2024.09.18.00.45.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Sep 2024 00:45:37 -0700 (PDT)
+From: Feng zhou <zhoufeng.zf@bytedance.com>
+To: martin.lau@linux.dev,
+	daniel@iogearbox.net,
+	john.fastabend@gmail.com,
+	ast@kernel.org,
+	andrii@kernel.org,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	mykolal@fb.com,
+	shuah@kernel.org,
+	geliang@kernel.org,
+	laoar.shao@gmail.com
+Cc: netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	yangzhenze@bytedance.com,
+	wangdongdong.6@bytedance.com,
+	zhoufeng.zf@bytedance.com
+Subject: [PATCH bpf-next v2 0/2] Cgroup skb add helper to get net_cls's classid
+Date: Wed, 18 Sep 2024 15:45:13 +0800
+Message-Id: <20240918074516.5697-1-zhoufeng.zf@bytedance.com>
+X-Mailer: git-send-email 2.39.3 (Apple Git-146)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Plumbers Testing MC potential topic: specialised toolchains
-Content-Language: en-US
-From: Guillaume Tucker <gtucker@gtucker.io>
-To: Nathan Chancellor <nathan@kernel.org>
-Cc: Nick Desaulniers <ndesaulniers@google.com>,
- Miguel Ojeda <ojeda@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Arnd Bergmann <arnd@arndb.de>, llvm@lists.linux.dev,
- rust-for-linux@vger.kernel.org, yurinnick@meta.com, bpf@vger.kernel.org,
- Sasha Levin <sashal@kernel.org>, Shuah Khan <skhan@linuxfoundation.org>,
- automated-testing@lists.yoctoproject.org
-References: <f80acb84-1d98-44d3-84b7-d976de77d8ce@gtucker.io>
- <20240709053031.GB2120498@thelio-3990X>
- <e0b6e4b6-549a-43dc-bc76-3f8488cf5dd2@gtucker.io>
-In-Reply-To: <e0b6e4b6-549a-43dc-bc76-3f8488cf5dd2@gtucker.io>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-GND-Sasl: gtucker@gtucker.io
+Content-Transfer-Encoding: 8bit
 
-Hello,
+From: Feng Zhou <zhoufeng.zf@bytedance.com>
 
-On 14/07/2024 1:03 am, Guillaume Tucker wrote:
->>> very interested to hear whether people feel it would be
->>> beneficial to work towards a more exhaustive solution supported
->>> upstream: kernel.org Docker images or something close such as
->>> Dockerfiles in Git or another type of images with all the
->>> dependencies included.  How does that sound?
->> A few thoughts around this:
->>
->> Having first party Dockerfiles could be useful but how would they be
->> used? Perhaps building a kernel in such a container could be plumbed
->> into Kbuild, such that the container manager could be invoked to build
->> the image if it does not exist then build the kernel in that image? This
->> might be a lofty idea but it would remove a lot of the friction of using
->> containers to build the kernel so that more people would adopt it?
-> That's a great idea, and I think it's why having a live
-> discussion at Plumbers would make sense as it's going to be
-> harder to reach answers in a thread like this.
+0001: Cgroup skb add bpf_skb_cgroup_classid_proto.
+0002: Add a testcase for it.
 
-In fact I went ahead and made a small PoC for this as an experiment:
+Feng Zhou (2):
+  bpf: cg_skb add get classid helper
+  bpf, selftests: Add test case for cgroup skb to get net_cls classid
+    helpers
 
-     https://gitlab.com/gtucker/linux/-/commits/linux-6.7-make-container
+Changelog:
+v1->v2: Addressed comments from Martin KaFai Lau
+- Just bpf_skb_cgroup_classid_proto.
+- Add a testcase.
+Details in here:
+https://lore.kernel.org/lkml/20240814095038.64523-1-zhoufeng.zf@bytedance.com/T/
 
->> Another aspect of this is discoverability. I think a big problem with a
->> project like TuxMake is that while it is developed for the kernel
->> community, it is not a first party project, so without word of mouth,
->> there is not a great way for other people to hear about it.
->>
->> I think it would be a good idea to try and solicit feedback from the
->> greater kernel community at large to ensure that whatever solution is
->> decided on will work for both testing systems and
->> developers/maintainers. I think that a first party solution for having a
->> consistent and easy to set up/work with build environment has been
->> needed for some time but unfortunately, I am not sure how much
->> discussion around this problem has happened directly with those folks.
-> Yes, that was my intention here with this thread to start
-> widening the audience with the upstream community.  My
-> understanding is that the issue hasn't been suitably framed to
-> enable constructive discussion yet.  I'll consider submitting a
-> proposal for the Toolchain track next.
-> 
->>> [1]https://lpc.events/event/18/contributions/1665/
->>> [2]https://hub.docker.com/u/tuxmake
->>> [3]https://www.linaro.org/blog/tuxmake-building-linux-with-kernel-org-toolchains/
->> As an aside, consider using me as a point of contact for anything
->> ClangBuiltLinux related instead of Nick going forward, he has stepped
->> away to focus on LLVM libc for the immediate future.
-> Noted, thank you.
-> 
->> Thanks a lot for bring up this topic. I think it is important to work on
->> and I look forward to talking through this at Plumbers.
-> That would be greatly appreciated.  Many thanks already for your
-> insightful feedback.
+ net/core/filter.c                             |  4 +
+ .../bpf/prog_tests/cg_skb_get_classid.c       | 87 +++++++++++++++++++
+ .../selftests/bpf/progs/cg_skb_get_classid.c  | 19 ++++
+ 3 files changed, 110 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/cg_skb_get_classid.c
+ create mode 100644 tools/testing/selftests/bpf/progs/cg_skb_get_classid.c
 
-The talk is happening today, slides are available:
+-- 
+2.30.2
 
-     https://lpc.events/event/18/contributions/1928/
-
-I'll reply later this week with a follow-up from the live
-discussions at Plumbers and maybe this will lead to some RFCs or
-a few patches.
-
-Thanks,
-Guillaume
 
