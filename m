@@ -1,137 +1,392 @@
-Return-Path: <bpf+bounces-40049-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40050-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2A0897B3D5
-	for <lists+bpf@lfdr.de>; Tue, 17 Sep 2024 19:53:22 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3049497B696
+	for <lists+bpf@lfdr.de>; Wed, 18 Sep 2024 03:38:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 966B928400E
-	for <lists+bpf@lfdr.de>; Tue, 17 Sep 2024 17:53:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 78919B29C4D
+	for <lists+bpf@lfdr.de>; Wed, 18 Sep 2024 01:38:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 480C874068;
-	Tue, 17 Sep 2024 17:53:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V0egb5HB"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0DB4B658;
+	Wed, 18 Sep 2024 01:38:16 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71CB9200A3
-	for <bpf@vger.kernel.org>; Tue, 17 Sep 2024 17:53:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9565723B0;
+	Wed, 18 Sep 2024 01:38:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726595595; cv=none; b=VtgLHPeWWNaMYzf2L7EmcixExGDX6qhKfki82NgHBKj5y1kG0P05JN+BgH2pWFvSV7CYDD8Ptn1jmbwYHzgUl/eYZorsgMvzurjhFxUoIQEM7Xx1ZRch32LejWhHeKGrTDitnzCmXNLvvJNAQkJ4hMrU1iHsaw0DTmpkuUWP9fI=
+	t=1726623496; cv=none; b=r/NEiPVnO7W72Z68WGRpW29C3yhg0aBt3XxsCtbLmKaqyXU1yxlhYmgfxj3uBgWb01iXDg67IHM7rFWIaB7hcDjCRwBlUlB5GccH5X4QS0C7I9v5bFWefKVUzQniaYLfBPehWqMtVfIpEW6kwqvXUw8o8rOL76AkZWyK0SNtL0c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726595595; c=relaxed/simple;
-	bh=Gqg7lPIoygATenk89nY/lBVzy4LAZSGjw8PGjtYSCSA=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=OGjFkZh0VumGx+ZaoYywcwDmD/KmlKHXWZCrlnD0I4D3laneHXScZOoKcpMCtEmivMrVGNo4JpZess8LJjJmPW8BaPWxVZGU9ZGRH8yiHpIno7bKuxr9MDxQPCwiAc3rEvlyvzM/Y4hUSrR8M/n59Jc/kmcllp48J/3AMTMVKAs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V0egb5HB; arc=none smtp.client-ip=209.85.215.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-7db238d07b3so4735408a12.2
-        for <bpf@vger.kernel.org>; Tue, 17 Sep 2024 10:53:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1726595594; x=1727200394; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=UdR/KyCa6z7pTbS4F7tDsuB5dcYlP0jCNbK/Kuxy5fI=;
-        b=V0egb5HB1kmnoXImVj/dLU6b+Jkdn+B9oTutiy4H5aU6aZITo3CdlCImd/uJzMDY1X
-         IzGNBA7rZ8zoFgGdsZd38q3jKVJi64ELIXKMuXpissse8IBPhyC5SzGtEL6dkik1IhHo
-         sGrMe8N/pv+7NgRwpu215YK/DN7Dw8I87KhyBhw5AKvA/BjYUnc3LSvfyWIq1fbZfqry
-         ek2TXvpiGd9qbdTLLE0od8n4B49tm3yf7zqWrX9KHs6VX80p78zB4YCcpUGbNJxJZu9O
-         8K4VYywyG3OTfDNiptuDPsV3L7AtSu6shcbLx8thEyMlZNvQ47QMTgr2c6pU+tlhfwSN
-         EcNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726595594; x=1727200394;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=UdR/KyCa6z7pTbS4F7tDsuB5dcYlP0jCNbK/Kuxy5fI=;
-        b=IeyyDovAj3zdHa1TB1SMMBD3xWbV26oTdR+PE5ND+LARN8Z2u4/JPbqF7vk7n4xkL2
-         obxtkAQKfCOgZd+GRao/H6eDCJDNXRnmWZPyNFUV6q09+1ipX+Vs0Bo55OqC+XVlLHKV
-         Xa1nT7UVQNtF55KwkYSUyG1SaH2jDgbH47Vz0Yn8RqSi12Z4cj4OtkHfiGRWoL5NxGU5
-         bzDgzZ/7pZbgAJRFw4Kf+EDKSbF4tu6IWZ0pwYcuwIA7S2dSzu+juKtaApXjjJUsduyw
-         D3scI9LmANBia6MvX5kWMqVUAnUI4HVJzIe5xl7x5/CS2awQc0WCGKYZC8HCj8nxr5E0
-         hMBw==
-X-Gm-Message-State: AOJu0Ywd0IoNUQzG2qUnBZxDB4TMD3cyKfuwVXgUaUel84TFqxtNriBz
-	v5Ew6mXLsuJD4O2zdNiUgAjgOg/vu9Ni7ubRu/ixksgoGF0Zh+vn
-X-Google-Smtp-Source: AGHT+IGZmzcklPwUb9QXwcPc0s7VC5kpUiFnYlFX34c9Y5Uf2NVrRInhO8EUs6z1uIrDK1M6GnpTJw==
-X-Received: by 2002:a05:6a21:3a85:b0:1cf:2a35:6d21 with SMTP id adf61e73a8af0-1cf764ae838mr30628440637.45.1726595593728;
-        Tue, 17 Sep 2024 10:53:13 -0700 (PDT)
-Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-71944a98087sm5438144b3a.9.2024.09.17.10.53.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Sep 2024 10:53:12 -0700 (PDT)
-Message-ID: <66f06b3323d17ddff2534649306be9f86aa60b5b.camel@gmail.com>
-Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: set vpath in Makefile to
- search for skels
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Ihor Solodrai <ihor.solodrai@pm.me>
-Cc: bpf@vger.kernel.org, andrii@kernel.org, ast@kernel.org,
- daniel@iogearbox.net,  mykolal@fb.com, bjorn@kernel.org
-Date: Tue, 17 Sep 2024 10:53:03 -0700
-In-Reply-To: <p_YHaXjA1ci8khO7PzqJph62Huednrj7sb4zUJLrAaLUuZin6wKAJoqSl2Z32FIJs05h7FdiFHK1t4tkUem1J1ZEuD_99APjQ8zKlfOZNjs=@pm.me>
-References: <20240916195919.1872371-1-ihor.solodrai@pm.me>
-	 <20240916195919.1872371-2-ihor.solodrai@pm.me>
-	 <dbf5eb3056eabbd44775d526a64b53e1a43b9f59.camel@gmail.com>
-	 <p_YHaXjA1ci8khO7PzqJph62Huednrj7sb4zUJLrAaLUuZin6wKAJoqSl2Z32FIJs05h7FdiFHK1t4tkUem1J1ZEuD_99APjQ8zKlfOZNjs=@pm.me>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.4 (3.52.4-1.fc40) 
+	s=arc-20240116; t=1726623496; c=relaxed/simple;
+	bh=6h/5sh8g6PzXThSEboHpnwPsFdNAKItWhvM2XS4n8Xo=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=RPW2E+ce3IKqsSI2A/uraCSTMBVsW5BnPQk9w7am/H3eq6GehTIitI4iHmefhVQBmRmFeQRcPEKs5vO0UC6k7B8UbEGb2zglkEFXEMBpu6Rwdoz/tQDkGaWh9wgecex27Tj0KVbnIYCJ0XEceeEczHIfBPByvoqYEV2AR4Yis0g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.48])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4X7h9W0CFlzFqn6;
+	Wed, 18 Sep 2024 09:37:51 +0800 (CST)
+Received: from kwepemd200013.china.huawei.com (unknown [7.221.188.133])
+	by mail.maildlp.com (Postfix) with ESMTPS id 726961800A0;
+	Wed, 18 Sep 2024 09:38:04 +0800 (CST)
+Received: from huawei.com (10.67.174.28) by kwepemd200013.china.huawei.com
+ (7.221.188.133) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.34; Wed, 18 Sep
+ 2024 09:38:01 +0800
+From: Liao Chang <liaochang1@huawei.com>
+To: <mhiramat@kernel.org>, <oleg@redhat.com>, <andrii@kernel.org>,
+	<peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
+	<namhyung@kernel.org>, <mark.rutland@arm.com>,
+	<alexander.shishkin@linux.intel.com>, <jolsa@kernel.org>,
+	<irogers@google.com>, <adrian.hunter@intel.com>, <kan.liang@linux.intel.com>
+CC: <linux-kernel@vger.kernel.org>, <linux-trace-kernel@vger.kernel.org>,
+	<linux-perf-users@vger.kernel.org>, <bpf@vger.kernel.org>
+Subject: [PATCH] uprobes: Improve the usage of xol slots for better scalability
+Date: Wed, 18 Sep 2024 01:27:52 +0000
+Message-ID: <20240918012752.2045713-1-liaochang1@huawei.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemd200013.china.huawei.com (7.221.188.133)
 
-On Tue, 2024-09-17 at 15:04 +0000, Ihor Solodrai wrote:
+The kprobe handler allocates xol slot from xol_area and quickly release
+it in the single-step handler. The atomic operations on the xol bitmap
+and slot_count lead to expensive cache line bouncing between multiple
+CPUs. Given the xol slot is on the hot path for kprobe and kretprobe
+handling, the profiling results on some Arm64 machine show that nearly
+80% of cycles are spent on this. So optimizing xol slot usage will
+become important to scalability after the Andrii's series land.
 
-[...]
+This patch address this scalability issues from two perspectives:
 
-> Eduard, I've just tried on master (without this patch)
->=20
->     $ touch progs/verifier_and.c; make -j test_progs
->=20
-> and I get a similar sequence:
->=20
->     CLNG-BPF [test_progs] verifier_and.bpf.o
->     GEN-SKEL [test_progs] verifier_and.skel.h
->     CLNG-BPF [test_progs-cpuv4] verifier_and.bpf.o
->     GEN-SKEL [test_progs-cpuv4] verifier_and.skel.h
->     CLNG-BPF [test_progs-no_alu32] verifier_and.bpf.o
->     GEN-SKEL [test_progs-no_alu32] verifier_and.skel.h
->     TEST-OBJ [test_progs] verifier.test.o
->     BINARY   test_progs
->     TEST-OBJ [test_progs-no_alu32] verifier.test.o
->     EXT-COPY [test_progs-no_alu32] urandom_read bpf_testmod.ko bpf_test_n=
-o_cfi.ko liburandom_read.so xdp_synproxy sign-file uprobe_multi ima_setup.s=
-h verify_sig_setup.sh btf_dump_test_case_bitfields.c btf_dump_test_case_mul=
-tidim.c btf_dump_test_case_namespacing.c btf_dump_test_case_ordering.c btf_=
-dump_test_case_packing.c btf_dump_test_case_padding.c btf_dump_test_case_sy=
-ntax.c
->     BINARY   test_progs-no_alu32
->     TEST-OBJ [test_progs-cpuv4] verifier.test.o
->     EXT-COPY [test_progs-cpuv4] urandom_read bpf_testmod.ko bpf_test_no_c=
-fi.ko liburandom_read.so xdp_synproxy sign-file uprobe_multi ima_setup.sh v=
-erify_sig_setup.sh btf_dump_test_case_bitfields.c btf_dump_test_case_multid=
-im.c btf_dump_test_case_namespacing.c btf_dump_test_case_ordering.c btf_dum=
-p_test_case_packing.c btf_dump_test_case_padding.c btf_dump_test_case_synta=
-x.c
->     BINARY   test_progs-cpuv4
->=20
->=20
-> %.bpf.o -> %.skel.h -> %.test.o have to be built for each TRUNNER,
-> right? And then each TRUNNER needs to be rebuilt because of %.test.o
-> change. Using vpath for skels doesn't change this behavior.
->=20
-> Maybe I'm missing something, let me know.
->=20
+- Allocated xol slot is now saved in the thread associated utask data.
+  It allows to reuse it throughout the therad's lifetime. This avoid
+  the frequent atomic operation on the slot bitmap and slot_count of
+  xol_area data, which is the major negative impact on scalability.
 
-Hm, right, sorry for the noise.
+- A garbage collection routine xol_recycle_insn_slot() is introduced to
+  reclaim unused xol slots. utask instances that own xol slot but
+  haven't reclaimed them are linked in a linked list. When xol_area runs
+  out of slots, the garbage collection routine travel the list to free
+  one slot. Allocated xol slots is marked as unused in single-step
+  handler. While the marking relies on the refcount of utask instance,
+  due to thread can't run on multiple CPUs at same time, therefore, it
+  is unlikely CPUs take the refcount of same utask, minimizing cache
+  line bouncing.
+
+  Upon thread exit, the utask is deleted from the linked-list, and the
+  associated xol slot will be free.
+
+Signed-off-by: Liao Chang <liaochang1@huawei.com>
+---
+ include/linux/uprobes.h |   4 +
+ kernel/events/uprobes.c | 173 ++++++++++++++++++++++++++++++----------
+ 2 files changed, 135 insertions(+), 42 deletions(-)
+
+diff --git a/include/linux/uprobes.h b/include/linux/uprobes.h
+index e6f4e73125ff..87fa24c74eb8 100644
+--- a/include/linux/uprobes.h
++++ b/include/linux/uprobes.h
+@@ -77,6 +77,10 @@ struct uprobe_task {
+ 	struct uprobe			*active_uprobe;
+ 	unsigned long			xol_vaddr;
+ 
++	struct list_head		gc;
++	refcount_t			slot_ref;
++	int				insn_slot;
++
+ 	struct arch_uprobe              *auprobe;
+ 
+ 	struct return_instance		*return_instances;
+diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+index 86fcb2386ea2..5ba1bd3ad27f 100644
+--- a/kernel/events/uprobes.c
++++ b/kernel/events/uprobes.c
+@@ -111,6 +111,12 @@ struct xol_area {
+ 	 * the vma go away, and we must handle that reasonably gracefully.
+ 	 */
+ 	unsigned long 			vaddr;		/* Page(s) of instruction slots */
++	struct list_head		gc_list;	/* The list for the
++							   garbage slots */
++	spinlock_t			list_lock;	/* Hold for
++							   list_add_rcu() and
++							   list_del_rcu() on
++							   gc_list */
+ };
+ 
+ static void uprobe_warn(struct task_struct *t, const char *msg)
+@@ -1557,6 +1563,8 @@ static struct xol_area *__create_xol_area(unsigned long vaddr)
+ 
+ 	area->vaddr = vaddr;
+ 	init_waitqueue_head(&area->wq);
++	INIT_LIST_HEAD(&area->gc_list);
++	spin_lock_init(&area->list_lock);
+ 	/* Reserve the 1st slot for get_trampoline_vaddr() */
+ 	set_bit(0, area->bitmap);
+ 	atomic_set(&area->slot_count, 1);
+@@ -1613,37 +1621,91 @@ void uprobe_dup_mmap(struct mm_struct *oldmm, struct mm_struct *newmm)
+ 	}
+ }
+ 
++static __always_inline
++struct uprobe_task *test_and_get_task_slot(struct uprobe_task *utask)
++{
++	return refcount_inc_not_zero(&utask->slot_ref) ? utask : NULL;
++}
++
++static __always_inline
++struct uprobe_task *test_and_put_task_slot(struct uprobe_task *utask)
++{
++	return refcount_dec_if_one(&utask->slot_ref) ? utask : NULL;
++}
++
++static __always_inline
++void put_task_slot(struct uprobe_task *utask)
++{
++	refcount_dec(&utask->slot_ref);
++}
++
++static __always_inline
++void get_task_slot(struct uprobe_task *utask)
++{
++	refcount_inc(&utask->slot_ref);
++}
++
++/*
++ * xol_recycle_insn_slot - recycle a slot from the garbage collection list.
++ */
++static int xol_recycle_insn_slot(struct xol_area *area)
++{
++	struct uprobe_task *utask;
++	int slot = UINSNS_PER_PAGE;
++
++	rcu_read_lock();
++	list_for_each_entry_rcu(utask, &area->gc_list, gc) {
++		/*
++		 * The utask associated slot is in-use or recycling when
++		 * utask associated slot_ref is not one.
++		 */
++		if (test_and_put_task_slot(utask)) {
++			slot = utask->insn_slot;
++			utask->insn_slot = UINSNS_PER_PAGE;
++			clear_bit(slot, area->bitmap);
++			atomic_dec(&area->slot_count);
++			get_task_slot(utask);
++			break;
++		}
++	}
++	rcu_read_unlock();
++
++	return slot;
++}
++
+ /*
+  *  - search for a free slot.
+  */
+-static unsigned long xol_take_insn_slot(struct xol_area *area)
++static int xol_take_insn_slot(struct xol_area *area)
+ {
+-	unsigned long slot_addr;
+ 	int slot_nr;
+ 
+ 	do {
+ 		slot_nr = find_first_zero_bit(area->bitmap, UINSNS_PER_PAGE);
+-		if (slot_nr < UINSNS_PER_PAGE) {
+-			if (!test_and_set_bit(slot_nr, area->bitmap))
+-				break;
++		if (slot_nr == UINSNS_PER_PAGE)
++			slot_nr = xol_recycle_insn_slot(area);
++
++		if (slot_nr == UINSNS_PER_PAGE)
++			wait_event(area->wq,
++				   (atomic_read(&area->slot_count) <
++				    UINSNS_PER_PAGE));
++		else if (!test_and_set_bit(slot_nr, area->bitmap))
++			break;
+ 
+-			slot_nr = UINSNS_PER_PAGE;
+-			continue;
+-		}
+-		wait_event(area->wq, (atomic_read(&area->slot_count) < UINSNS_PER_PAGE));
++		slot_nr = UINSNS_PER_PAGE;
+ 	} while (slot_nr >= UINSNS_PER_PAGE);
+ 
+-	slot_addr = area->vaddr + (slot_nr * UPROBE_XOL_SLOT_BYTES);
+ 	atomic_inc(&area->slot_count);
+ 
+-	return slot_addr;
++	return slot_nr;
+ }
+ 
+ /*
+  * xol_get_insn_slot - allocate a slot for xol.
+  * Returns the allocated slot address or 0.
+  */
+-static unsigned long xol_get_insn_slot(struct uprobe *uprobe)
++static unsigned long xol_get_insn_slot(struct uprobe_task *utask,
++				       struct uprobe *uprobe)
+ {
+ 	struct xol_area *area;
+ 	unsigned long xol_vaddr;
+@@ -1652,16 +1714,45 @@ static unsigned long xol_get_insn_slot(struct uprobe *uprobe)
+ 	if (!area)
+ 		return 0;
+ 
+-	xol_vaddr = xol_take_insn_slot(area);
+-	if (unlikely(!xol_vaddr))
++	/*
++	 * The utask associated slot is recycling when utask associated
++	 * slot_ref is zero.
++	 */
++	if (!test_and_get_task_slot(utask))
+ 		return 0;
+ 
++	if (utask->insn_slot == UINSNS_PER_PAGE) {
++		utask->insn_slot = xol_take_insn_slot(area);
++		spin_lock(&area->list_lock);
++		list_add_rcu(&utask->gc, &area->gc_list);
++		spin_unlock(&area->list_lock);
++	}
++
++	xol_vaddr = area->vaddr + (utask->insn_slot * UPROBE_XOL_SLOT_BYTES);
++
+ 	arch_uprobe_copy_ixol(area->pages[0], xol_vaddr,
+ 			      &uprobe->arch.ixol, sizeof(uprobe->arch.ixol));
+ 
+ 	return xol_vaddr;
+ }
+ 
++/*
++ * xol_delay_free_insn_slot - Make the slot available for garbage collection
++ */
++static void xol_delay_free_insn_slot(void)
++{
++	struct xol_area *area = current->mm->uprobes_state.xol_area;
++
++	/*
++	 * This refcount would't cause expensive cache line bouncing
++	 * between CPUs, as it is unlikely that multiple CPUs take the
++	 * slot_ref of same utask.
++	 */
++	put_task_slot(current->utask);
++	if (waitqueue_active(&area->wq))
++		wake_up(&area->wq);
++}
++
+ /*
+  * xol_free_insn_slot - If slot was earlier allocated by
+  * @xol_get_insn_slot(), make the slot available for
+@@ -1670,35 +1761,31 @@ static unsigned long xol_get_insn_slot(struct uprobe *uprobe)
+ static void xol_free_insn_slot(struct task_struct *tsk)
+ {
+ 	struct xol_area *area;
+-	unsigned long vma_end;
+-	unsigned long slot_addr;
++	unsigned long flags;
++	int slot_nr;
+ 
+ 	if (!tsk->mm || !tsk->mm->uprobes_state.xol_area || !tsk->utask)
+ 		return;
+ 
+-	slot_addr = tsk->utask->xol_vaddr;
+-	if (unlikely(!slot_addr))
+-		return;
+-
+ 	area = tsk->mm->uprobes_state.xol_area;
+-	vma_end = area->vaddr + PAGE_SIZE;
+-	if (area->vaddr <= slot_addr && slot_addr < vma_end) {
+-		unsigned long offset;
+-		int slot_nr;
+-
+-		offset = slot_addr - area->vaddr;
+-		slot_nr = offset / UPROBE_XOL_SLOT_BYTES;
+-		if (slot_nr >= UINSNS_PER_PAGE)
+-			return;
+ 
+-		clear_bit(slot_nr, area->bitmap);
+-		atomic_dec(&area->slot_count);
+-		smp_mb__after_atomic(); /* pairs with prepare_to_wait() */
+-		if (waitqueue_active(&area->wq))
+-			wake_up(&area->wq);
++	spin_lock_irqsave(&area->list_lock, flags);
++	list_del_rcu(&tsk->utask->gc);
++	spin_unlock_irqrestore(&area->list_lock, flags);
++	synchronize_rcu();
+ 
+-		tsk->utask->xol_vaddr = 0;
+-	}
++	slot_nr = tsk->utask->insn_slot;
++	if (unlikely(slot_nr == UINSNS_PER_PAGE))
++		return;
++
++	tsk->utask->insn_slot = UINSNS_PER_PAGE;
++	clear_bit(slot_nr, area->bitmap);
++	atomic_dec(&area->slot_count);
++	smp_mb__after_atomic(); /* pairs with prepare_to_wait() */
++	if (waitqueue_active(&area->wq))
++		wake_up(&area->wq);
++
++	tsk->utask->xol_vaddr = 0;
+ }
+ 
+ void __weak arch_uprobe_copy_ixol(struct page *page, unsigned long vaddr,
+@@ -1779,8 +1866,12 @@ void uprobe_free_utask(struct task_struct *t)
+  */
+ static struct uprobe_task *get_utask(void)
+ {
+-	if (!current->utask)
++	if (!current->utask) {
+ 		current->utask = kzalloc(sizeof(struct uprobe_task), GFP_KERNEL);
++		current->utask->insn_slot = UINSNS_PER_PAGE;
++		INIT_LIST_HEAD(&current->utask->gc);
++		refcount_set(&current->utask->slot_ref, 1);
++	}
+ 	return current->utask;
+ }
+ 
+@@ -1978,7 +2069,7 @@ pre_ssout(struct uprobe *uprobe, struct pt_regs *regs, unsigned long bp_vaddr)
+ 	if (!try_get_uprobe(uprobe))
+ 		return -EINVAL;
+ 
+-	xol_vaddr = xol_get_insn_slot(uprobe);
++	xol_vaddr = xol_get_insn_slot(utask, uprobe);
+ 	if (!xol_vaddr) {
+ 		err = -ENOMEM;
+ 		goto err_out;
+@@ -1988,10 +2079,8 @@ pre_ssout(struct uprobe *uprobe, struct pt_regs *regs, unsigned long bp_vaddr)
+ 	utask->vaddr = bp_vaddr;
+ 
+ 	err = arch_uprobe_pre_xol(&uprobe->arch, regs);
+-	if (unlikely(err)) {
+-		xol_free_insn_slot(current);
++	if (unlikely(err))
+ 		goto err_out;
+-	}
+ 
+ 	utask->active_uprobe = uprobe;
+ 	utask->state = UTASK_SSTEP;
+@@ -2340,7 +2429,7 @@ static void handle_singlestep(struct uprobe_task *utask, struct pt_regs *regs)
+ 	put_uprobe(uprobe);
+ 	utask->active_uprobe = NULL;
+ 	utask->state = UTASK_RUNNING;
+-	xol_free_insn_slot(current);
++	xol_delay_free_insn_slot();
+ 
+ 	spin_lock_irq(&current->sighand->siglock);
+ 	recalc_sigpending(); /* see uprobe_deny_signal() */
+-- 
+2.34.1
 
 
