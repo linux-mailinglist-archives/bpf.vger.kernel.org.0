@@ -1,157 +1,246 @@
-Return-Path: <bpf+bounces-40059-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40060-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A8D697BA59
-	for <lists+bpf@lfdr.de>; Wed, 18 Sep 2024 11:51:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55A2997BA97
+	for <lists+bpf@lfdr.de>; Wed, 18 Sep 2024 12:10:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2251F1F23D1B
-	for <lists+bpf@lfdr.de>; Wed, 18 Sep 2024 09:51:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C971283300
+	for <lists+bpf@lfdr.de>; Wed, 18 Sep 2024 10:10:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EE7317C7A5;
-	Wed, 18 Sep 2024 09:51:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D68F017C98D;
+	Wed, 18 Sep 2024 10:10:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=blackwall-org.20230601.gappssmtp.com header.i=@blackwall-org.20230601.gappssmtp.com header.b="js5NuPoK"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="ghp2YblM"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out30-131.freemail.mail.aliyun.com (out30-131.freemail.mail.aliyun.com [115.124.30.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 176646FCC
-	for <bpf@vger.kernel.org>; Wed, 18 Sep 2024 09:51:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90BD5EACD;
+	Wed, 18 Sep 2024 10:10:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726653073; cv=none; b=rnIe9YBIHQLikGHBIEm6Ywoaj2wsrP+Kn1SRPMfP8iBsI3fscRLtfUotkLqeHasF32/U+RGWnWSCF2a6YSpF03SivPasacUsfuMv9euFGsEFcCKUFav3uZGktvdXSnd+W20n3FKe0tJgcLx2I1ij9VZgHDE7dFHYRuzpMCvMIXk=
+	t=1726654215; cv=none; b=S5g3CH5uGWLhcHxaSiUKgBsjrq9bailW+YN55ccAtLbrC3Ktm1jt2OAaeFjU2WLyJ2Oo0eMu1kwyF8252ij0MruKUWhUvW/fq4BR4g2NFmIG93zXy0CAM9gRPXIKEwozKGITCJB6HlawIutAWD+hqOIg7njQG9q9Ln0q9MKkshk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726653073; c=relaxed/simple;
-	bh=YYveKDNyLV/O+GuIZezG/H+dg/pEIjQTXZMwxfSjq/M=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gUMSyqXByUXH99DRRTv5u76MdZzZwpHqNCbismS9Ul2VmJcXPUL3Rak0etltc7Vjit5AHamdxjtjuLMBnxhvlEorP6QM5QS1gGL5gtC4SJx4Y2KWobHf6qvfqiof5JYb65/coaCypwxiDtvLmsS3F+8ljSXGvz51K2ZMUQ1YOPc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=blackwall.org; spf=none smtp.mailfrom=blackwall.org; dkim=pass (2048-bit key) header.d=blackwall-org.20230601.gappssmtp.com header.i=@blackwall-org.20230601.gappssmtp.com header.b=js5NuPoK; arc=none smtp.client-ip=209.85.218.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=blackwall.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=blackwall.org
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a8a7596b7dfso102667066b.0
-        for <bpf@vger.kernel.org>; Wed, 18 Sep 2024 02:51:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=blackwall-org.20230601.gappssmtp.com; s=20230601; t=1726653068; x=1727257868; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=U5Lz1QWVFmZd2N1NR4+boEn5JCoZBGXe5wWgia0cON4=;
-        b=js5NuPoKWQ3/7Er/hcnJ06/MjTq1CnwJN0fwvs/Wtell0wWMwxV5iaJDLb3gcroNKj
-         ZJ7sp9EWEhWHfZG9wAuDNeOMUn5UninPRsjKJzL4u8RGacMfsV0dRLQaGeIvlRJfLiSl
-         OrZopnQPbGCK5MtP+YcAAqPP50RmOUOXwCCLfsT1cMmm0OFMg/l9aB3oJpXyamXHeJPw
-         JqvVcQ9q6kZ/hqM1DGrXahR2ZeE90O+Cfz8QlGRMpSiNe5A6eNmdIIc4fgtO38m4a2bl
-         Xx+oP0oB9B416DZnj3VY0uOGodn2k9t+XH1+CvuAqrYSQrL23cS0Rg5maAxbbbmwbIia
-         LmNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726653068; x=1727257868;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=U5Lz1QWVFmZd2N1NR4+boEn5JCoZBGXe5wWgia0cON4=;
-        b=OlS9hgOqG931ORCcsDk8/deNsRZ5yW/dvrMVg3dtSktMJK4BzbVKkJpDzh5QNkzB2w
-         ++qnZK0o2eVq/hVcAFYIccbS7hL0m8V0X+b0s+dh+6aqqK6mibtFj26kRW183B3uy3hH
-         zMmDm6KJbCkyFcqrZS802g8ebjtlmRmESx0mM7cXjGl9XYGSHh51RUadmZPlq19MGWge
-         WG/188Rx7ZPkzHCKAmg5ZLmk/nHSk64QUp9cdJOrbqLMr6pgQgWl115QaFE3OFulU4Sd
-         USbt5bCEsJpGQEda4Fsq0wrg+zLIxTftSgxD0AFBsP1ofCLUIAYe1mCDup3QXts75Dqq
-         w6Rg==
-X-Forwarded-Encrypted: i=1; AJvYcCU+RE6TBBj9YTnFQ75EKpLqHcY0NR2gQJvK/BzT/E24MHSS1RkueFEsHC2xsq9WMP2LX7E=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyJAZAPWDVT4o7XzYy0OXbrbMNT3qFcLzJXHZpYGEwRJmqWYAbG
-	iuKwEt0djXnW3fFuPCLUUIkdTMYMLS8faGWaXHjiCAAQRkl9sgubzDqfDSF4mcXrF8zwsptpcrS
-	DMNs=
-X-Google-Smtp-Source: AGHT+IGh+5daTFsNyDKlbll7KebWFSlnclyKmAwqiRqpM+wguKxxuLaiVoIA7Zfzj5R3BOYGBvdN6A==
-X-Received: by 2002:a17:907:3f91:b0:a8d:5f69:c839 with SMTP id a640c23a62f3a-a8ffabbcc0cmr2879337466b.15.1726653068106;
-        Wed, 18 Sep 2024 02:51:08 -0700 (PDT)
-Received: from [192.168.0.245] ([62.73.69.208])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a90612df75csm568606066b.149.2024.09.18.02.51.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Sep 2024 02:51:07 -0700 (PDT)
-Message-ID: <ebef9a36-d060-4df3-b139-3dda4a84484a@blackwall.org>
-Date: Wed, 18 Sep 2024 12:51:06 +0300
+	s=arc-20240116; t=1726654215; c=relaxed/simple;
+	bh=j3uHUw8hZJe9e65FGbFo4XsUUmBgZynKAOmtydmKK64=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=AIawzdMLy8+MtLs5kHw2DRVvpAOAiHNQOXSUdQdLDbT8OG9gCv59/XjgcY3SBjob28putybzLaPa7Wvg/KaV7Y4FU8RALgYJw+Ajpj/JeFFVXuPAo6OIJ693ixrQ2SB7nfdttTf/8AWUqYqGApzpV9HY3f5opMMoi6NyGRwDIgA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=ghp2YblM; arc=none smtp.client-ip=115.124.30.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1726654208; h=From:To:Subject:Date:Message-Id;
+	bh=OIaeQekPFzr0Twj4nwSV1xS3+7dgPbM9J97vdUwshuQ=;
+	b=ghp2YblMswD01z0zeMK+J/AOdYkF7dgd/rHePImRxGMLWb2Rv3J96qajSye53hLjIUdrrTPRphHD2anpo83vDHDuPKpeF3BpEOW520xs+XQpie1FxsWOnwSGRSE5gSz2yjh1zgqnG7AvPJmX5GfIRVsNCyU0Zw7Jy5kZPzX3hww=
+Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0WFDs-zd_1726654204)
+          by smtp.aliyun-inc.com;
+          Wed, 18 Sep 2024 18:10:08 +0800
+From: "D. Wythe" <alibuda@linux.alibaba.com>
+To: kgraul@linux.ibm.com,
+	wenjia@linux.ibm.com,
+	jaka@linux.ibm.com,
+	wintera@linux.ibm.com,
+	guwen@linux.alibaba.com
+Cc: kuba@kernel.org,
+	davem@davemloft.net,
+	netdev@vger.kernel.org,
+	linux-s390@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	tonylu@linux.alibaba.com,
+	pabeni@redhat.com,
+	edumazet@google.com,
+	bpf@vger.kernel.org
+Subject: [RFC PATCH net-next] net/smc: Introduce a hook to modify syn_smc at runtime
+Date: Wed, 18 Sep 2024 18:10:04 +0800
+Message-Id: <1726654204-61655-1-git-send-email-alibuda@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net v2] bonding: Add net_ratelimit for
- bond_xdp_get_xmit_slave in bond_main.c
-To: Jiwon Kim <jiwonaid0@gmail.com>, jv@jvosburgh.net, andy@greyhouse.net,
- davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
- john.fastabend@gmail.com, joamaki@gmail.com
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org, syzbot+c187823a52ed505b2257@syzkaller.appspotmail.com
-References: <20240918083545.9591-1-jiwonaid0@gmail.com>
-Content-Language: en-US
-From: Nikolay Aleksandrov <razor@blackwall.org>
-In-Reply-To: <20240918083545.9591-1-jiwonaid0@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
 
-On 18/09/2024 11:35, Jiwon Kim wrote:
-> Add net_ratelimit to reduce warnings and logs.
-> This addresses the WARNING in bond_xdp_get_xmit_slave reported by syzbot.
-> 
+From: "D. Wythe" <alibuda@linux.alibaba.com>
 
-This commit message is severely lacking. I did the heavy lifting and gave you
-detailed analysis of the problem, please describe the actual issue and why
-this is ok to do. Also the subject is confusing, it should give a concise
-summary of what the patch is trying to do and please don't include filenames in it.
-You can take a look at other commits for examples.
+The introduction of IPPROTO_SMC enables eBPF programs to determine
+whether to use SMC based on the context of socket creation, such as
+network namespaces, PID and comm name, etc.
 
-> Setup:
->     # Need xdp_tx_prog with return XDP_TX;
->     ip l add veth0 type veth peer veth1
->     ip l add veth3 type veth peer veth4
->     ip l add bond0 type bond mode 6 # <- BOND_MODE_ALB, unsupported by xdp
->     ip l add bond1 type bond # <- BOND_MODE_ROUNDROBIN by default
->     ip l set veth0 master bond1
->     ip l set bond1 up
->     ip l set dev bond1 xdpdrv object tx_xdp.o section xdp_tx
->     ip l set veth3 master bond0
->     ip l set bond0 up
->     ip l set veth4 up
->     ip l set veth3 xdpgeneric object tx_xdp.o section xdp_tx
+As a subsequent enhancement, this patch introduces a new hook for eBPF
+programs that allows decisions on whether to use SMC or not at runtime,
+including but not limited to local/remote IP address or ports. In
+simpler words, this feature allows modifications to syn_smc through eBPF
+programs before the TCP three-way handshake got established.
 
-Care to explain why this setup would trigger anything?
+Thanks to kfunc for making it easier for us to implement this feature in
+SMC.
 
-> 
-> Reported-by: syzbot+c187823a52ed505b2257@syzkaller.appspotmail.com
-> Closes: https://syzkaller.appspot.com/bug?extid=c187823a52ed505b2257
-> Fixes: 9e2ee5c7e7c3 ("net, bonding: Add XDP support to the bonding driver")
-> Signed-off-by: Jiwon Kim <jiwonaid0@gmail.com>
-> ---
-> v2: Change the patch to fix bond_xdp_get_xmit_slave
-> ---
->  drivers/net/bonding/bond_main.c | 9 ++++++---
->  1 file changed, 6 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
-> index b560644ee1b1..91b9cbdcf274 100644
-> --- a/drivers/net/bonding/bond_main.c
-> +++ b/drivers/net/bonding/bond_main.c
-> @@ -5610,9 +5610,12 @@ bond_xdp_get_xmit_slave(struct net_device *bond_dev, struct xdp_buff *xdp)
->  		break;
->  
->  	default:
-> -		/* Should never happen. Mode guarded by bond_xdp_check() */
-> -		netdev_err(bond_dev, "Unknown bonding mode %d for xdp xmit\n", BOND_MODE(bond));
-> -		WARN_ON_ONCE(1);
-> +		/* This might occur when a bond device increases bpf_master_redirect_enabled_key,
-> +		 * and another bond device with XDP_TX and bond slave.
-> +		 */
+Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
+---
+ include/linux/tcp.h  |  4 ++-
+ net/ipv4/tcp_input.c |  4 +--
+ net/smc/af_smc.c     | 69 ++++++++++++++++++++++++++++++++++++++++++++++------
+ 3 files changed, 66 insertions(+), 11 deletions(-)
 
-The comment is confusing and needs to be reworded or dropped altogether.
-
-> +		if (net_ratelimit())
-> +			netdev_err(bond_dev, "Unknown bonding mode %d for xdp xmit\n",
-> +				   BOND_MODE(bond));
->  		return NULL;
->  	}
->  
+diff --git a/include/linux/tcp.h b/include/linux/tcp.h
+index 6a5e08b..d028d76 100644
+--- a/include/linux/tcp.h
++++ b/include/linux/tcp.h
+@@ -478,7 +478,9 @@ struct tcp_sock {
+ #endif
+ #if IS_ENABLED(CONFIG_SMC)
+ 	bool	syn_smc;	/* SYN includes SMC */
+-	bool	(*smc_hs_congested)(const struct sock *sk);
++	void	(*smc_openreq_init)(struct request_sock *req,
++			     const struct tcp_options_received *rx_opt,
++			     struct sk_buff *skb, const struct sock *sk);
+ #endif
+ 
+ #if defined(CONFIG_TCP_MD5SIG) || defined(CONFIG_TCP_AO)
+diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
+index e37488d..e33e2a0 100644
+--- a/net/ipv4/tcp_input.c
++++ b/net/ipv4/tcp_input.c
+@@ -7029,8 +7029,8 @@ static void tcp_openreq_init(struct request_sock *req,
+ 	ireq->ir_num = ntohs(tcp_hdr(skb)->dest);
+ 	ireq->ir_mark = inet_request_mark(sk, skb);
+ #if IS_ENABLED(CONFIG_SMC)
+-	ireq->smc_ok = rx_opt->smc_ok && !(tcp_sk(sk)->smc_hs_congested &&
+-			tcp_sk(sk)->smc_hs_congested(sk));
++	if (ireq->smc_ok && tcp_sk(sk)->smc_openreq_init)
++		tcp_sk(sk)->smc_openreq_init(req, rx_opt, skb, sk);
+ #endif
+ }
+ 
+diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
+index 0316217..003b2ac 100644
+--- a/net/smc/af_smc.c
++++ b/net/smc/af_smc.c
+@@ -70,6 +70,15 @@
+ static void smc_tcp_listen_work(struct work_struct *);
+ static void smc_connect_work(struct work_struct *);
+ 
++__bpf_hook_start();
++
++__weak noinline int select_syn_smc(const struct sock *sk, struct sockaddr *peer)
++{
++	return 1;
++}
++
++__bpf_hook_end();
++
+ int smc_nl_dump_hs_limitation(struct sk_buff *skb, struct netlink_callback *cb)
+ {
+ 	struct smc_nl_dmp_ctx *cb_ctx = smc_nl_dmp_ctx(cb);
+@@ -156,19 +165,41 @@ static struct sock *smc_tcp_syn_recv_sock(const struct sock *sk,
+ 	return NULL;
+ }
+ 
+-static bool smc_hs_congested(const struct sock *sk)
++static void smc_openreq_init(struct request_sock *req,
++			     const struct tcp_options_received *rx_opt,
++			     struct sk_buff *skb, const struct sock *sk)
+ {
++	struct inet_request_sock *ireq = inet_rsk(req);
++	struct sockaddr_storage rmt_sockaddr = {0};
+ 	const struct smc_sock *smc;
+ 
+ 	smc = smc_clcsock_user_data(sk);
+ 
+ 	if (!smc)
+-		return true;
++		return;
+ 
+-	if (workqueue_congested(WORK_CPU_UNBOUND, smc_hs_wq))
+-		return true;
++	if (smc->limit_smc_hs && workqueue_congested(WORK_CPU_UNBOUND, smc_hs_wq))
++		goto out_no_smc;
+ 
+-	return false;
++	rmt_sockaddr.ss_family = sk->sk_family;
++
++	if (rmt_sockaddr.ss_family == AF_INET) {
++		struct sockaddr_in *rmt4_sockaddr =  (struct sockaddr_in *)&rmt_sockaddr;
++
++		rmt4_sockaddr->sin_addr.s_addr = ireq->ir_rmt_addr;
++		rmt4_sockaddr->sin_port	= ireq->ir_rmt_port;
++	} else {
++		struct sockaddr_in6 *rmt6_sockaddr =  (struct sockaddr_in6 *)&rmt_sockaddr;
++
++		rmt6_sockaddr->sin6_addr = ireq->ir_v6_rmt_addr;
++		rmt6_sockaddr->sin6_port = ireq->ir_rmt_port;
++	}
++
++	ireq->smc_ok = select_syn_smc(sk, (struct sockaddr *)&rmt_sockaddr);
++	return;
++out_no_smc:
++	ireq->smc_ok = 0;
++	return;
+ }
+ 
+ struct smc_hashinfo smc_v4_hashinfo = {
+@@ -1671,7 +1702,7 @@ int smc_connect(struct socket *sock, struct sockaddr *addr,
+ 	}
+ 
+ 	smc_copy_sock_settings_to_clc(smc);
+-	tcp_sk(smc->clcsock->sk)->syn_smc = 1;
++	tcp_sk(smc->clcsock->sk)->syn_smc = select_syn_smc(sk, addr);
+ 	if (smc->connect_nonblock) {
+ 		rc = -EALREADY;
+ 		goto out;
+@@ -2650,8 +2681,7 @@ int smc_listen(struct socket *sock, int backlog)
+ 
+ 	inet_csk(smc->clcsock->sk)->icsk_af_ops = &smc->af_ops;
+ 
+-	if (smc->limit_smc_hs)
+-		tcp_sk(smc->clcsock->sk)->smc_hs_congested = smc_hs_congested;
++	tcp_sk(smc->clcsock->sk)->smc_openreq_init = smc_openreq_init;
+ 
+ 	rc = kernel_listen(smc->clcsock, backlog);
+ 	if (rc) {
+@@ -3475,6 +3505,20 @@ static void __net_exit smc_net_stat_exit(struct net *net)
+ 	.exit = smc_net_stat_exit,
+ };
+ 
++BTF_SET8_START(bpf_smc_fmodret_ids)
++BTF_ID_FLAGS(func, select_syn_smc)
++BTF_SET8_END(bpf_smc_fmodret_ids)
++
++static const struct btf_kfunc_id_set bpf_smc_fmodret_set = {
++	.owner = THIS_MODULE,
++	.set   = &bpf_smc_fmodret_ids,
++};
++
++static int __init bpf_smc_kfunc_init(void)
++{
++	return register_btf_fmodret_id_set(&bpf_smc_fmodret_set);
++}
++
+ static int __init smc_init(void)
+ {
+ 	int rc;
+@@ -3574,8 +3618,17 @@ static int __init smc_init(void)
+ 		pr_err("%s: smc_inet_init fails with %d\n", __func__, rc);
+ 		goto out_ulp;
+ 	}
++
++	rc = bpf_smc_kfunc_init();
++	if (rc) {
++		pr_err("%s: bpf_smc_kfunc_init fails with %d\n", __func__, rc);
++		goto out_inet;
++	}
++
+ 	static_branch_enable(&tcp_have_smc);
+ 	return 0;
++out_inet:
++	smc_inet_exit();
+ out_ulp:
+ 	tcp_unregister_ulp(&smc_ulp_ops);
+ out_lo:
+-- 
+1.8.3.1
 
 
