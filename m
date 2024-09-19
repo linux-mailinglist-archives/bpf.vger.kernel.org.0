@@ -1,163 +1,248 @@
-Return-Path: <bpf+bounces-40074-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40075-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90DBF97C2C3
-	for <lists+bpf@lfdr.de>; Thu, 19 Sep 2024 04:05:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 529A697C2CC
+	for <lists+bpf@lfdr.de>; Thu, 19 Sep 2024 04:15:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B52901C210E7
-	for <lists+bpf@lfdr.de>; Thu, 19 Sep 2024 02:05:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0C0DB282E82
+	for <lists+bpf@lfdr.de>; Thu, 19 Sep 2024 02:15:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C036B1DA4C;
-	Thu, 19 Sep 2024 02:05:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD28E33985;
+	Thu, 19 Sep 2024 02:15:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Sb0ya/pA"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JAl1DphR"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB979F9CB;
-	Thu, 19 Sep 2024 02:05:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04D1124205
+	for <bpf@vger.kernel.org>; Thu, 19 Sep 2024 02:15:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726711514; cv=none; b=gk0EG3RpGL4VCQeFVuWEE6qShJI4PCnfmSdYZBzSWdS2LIFje6g6BDnTVNgiNVX2Wrbrh42OtfIsZ2szNHVX34RyDgN0F2UyaOEGSG7xJ4Q3FX7ADgx9WP0TeC8axy1jRMPlP8hmizdiOjUcrpuHheMeOkkcc4veA0zkZqkjHzo=
+	t=1726712113; cv=none; b=izjDPws5UpAf9QgYPB9k0kvgB//R4nqANlW+eVnzkHXKfWpNaOHWyCXovG6mZdk0U+gTgurzmJHj5PQR+PthB++1eIqXYOTF2G4fQoPXqviq8UpSVDRoJArzPpY4KRNECwH8ScpVaVzssQr7dBLY8666k7sVWLNAXBR2BpOmTjM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726711514; c=relaxed/simple;
-	bh=N8FdTUGuNmyq2lJnYRM2xWPYHgj7Ddsxz1LbksvKpKs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=H1rhHJ+QLKO3Hxsuxv77yKhCyXgrwkEh7ro2teStzMrT0cVdJ+LIrzZlMN5cKavOGo9ardWqJAicJjtZLt9MVVLdVnXXubNLWPePxkeBcMxfvv3AU33JpTlA3U+7JyiAiFK8BXl4Qp8IvHjxC1JVZKqe0biwSqZKh8hJ7eeggWg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Sb0ya/pA; arc=none smtp.client-ip=209.85.214.174
+	s=arc-20240116; t=1726712113; c=relaxed/simple;
+	bh=XotQEDvYC71Eap8gVTyX47P8mTp7NiIkkIj0Yijsg4I=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=MhPtSiIH7jXR2KG8M0AcIpOGZG7UDzU7/lJGg+lsaacls5FKdeKujrsQiMo77O7G+KSuhMAtJCL6lsPUeOE0AmVXtgzmNpGHh+rPaJhD4fJjIjK+DFgJv2SJgbY8ITbcRaSfTJ5d7wKYP6OSI2YHTqGD9VT9rAx36rnqJaTWOdE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JAl1DphR; arc=none smtp.client-ip=209.85.214.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-20570b42f24so4420785ad.1;
-        Wed, 18 Sep 2024 19:05:12 -0700 (PDT)
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-20543fdb7acso3324935ad.1
+        for <bpf@vger.kernel.org>; Wed, 18 Sep 2024 19:15:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1726711512; x=1727316312; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GZDcfVUFW8U6sCU8KMMZQLNLYtDHuq8VjwOV5ohHb+s=;
-        b=Sb0ya/pA6O8ttMQy0IVQGUq6CHt6CqSOTo3cNbAEzD2PAz0SYJzG+5vnz05DBwK+bB
-         7U4IAAJP6g48ll0Jsoys5Fw+gJMUnzloNTjFtXWmTObvrUZwUZMOFeUyUosBZmBhK7So
-         SFBEmpyJzcS9vzlpzPprS1Ivk5AXKyT5YAV4lod7KW7P5W5qivSKWp4PoEyv5mVvJriB
-         sMjXlGYw03CVshRPJi7p6tSTix2BKyYpm87ryYUBvsKAi8vqtcGrXalcuQ7IPJPAaWrf
-         DYm0tG4ZkufLDcl54Qg6DlnxjwL3FA1G8XW9V2LZsc3mtt7H7SsX/k7B5I3BS23kRufL
-         vrNw==
+        d=gmail.com; s=20230601; t=1726712111; x=1727316911; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=73pJF0giD1vlqSF2aJbI/7GMbDFvyq6eU64/u/16fL4=;
+        b=JAl1DphRFobT+F1YW/b/ZuDO8wg9xSFuCuRWOBDALgIsWzRUMemtmIPgR5U/yHiede
+         fASef0DE0fSghRC3vIfOE40a4uISG2zeWlxCBUPZ7zgS2zGT4VYZlX4hFgIViScXPgLF
+         hQ6PQT0Zkn6cnlmgISDjj+e94OQvW4khSn0TBzcbaEjAzP0TaMP2WSmbcdjypyrMbWLx
+         GaABOCmtZFZ2BMKukaYzCrz+UeAJCfvGaEDrmEp1VlgYnyxfN0oVjC75+Kd2WZQBQo9Y
+         Vj2dZhmGzUp1RPuGoJBysMTXrbn62YKbWcwbGIbm9cVejF1h4ST5KuB4YwRCM9aV6ZTm
+         Z65A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726711512; x=1727316312;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=GZDcfVUFW8U6sCU8KMMZQLNLYtDHuq8VjwOV5ohHb+s=;
-        b=EXvN3D9uAklY9eEoEerZeT7NbRd798VrcyxPqF2/EjPwwrPnCypZa4axFBgPls59+x
-         W2u90ikRR0d511OkP9EzcBj1MXpppXUNjZszEbEZ8GljG5K74QsFvkrdrdIYdjsgy+9E
-         plqgcCHJf3uy49XBP3ifMU/gf8m+EdV7BiyOPWCSmjxWY7p9LYbjqo7hhC5wyB2ufURq
-         D1ZRLcoocWCd9ba3Oviacp40VhANzd3CBeFBdsGXtH4n94aEZVRIzYBz1gqKt+iy1DY1
-         2M2HfWbdxfTsuTm/Az4S0U4fqerIoKmchXOMy/S09UxTox3TNCoU9Mtd25mhY/HkpbTs
-         bKZg==
-X-Forwarded-Encrypted: i=1; AJvYcCXL1vxvbhmIm5l2pcwYEqAresRffxxF5P4vgXvAsQV0G1gp84YbMtGbQpKJC7Z4l/V7ormwReXH9kBHr8s=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw3MAdeBDCDTXAgvNkjZ9y+XK40cjOwsESm9chCGkcTgjz2onDK
-	/76MdMaHF264bwv1cz8O3gkcKlxZT53Ypf7SXb5JyXFQdSdt4gTW
-X-Google-Smtp-Source: AGHT+IF4E97Dq5yWY5wvxtNtVfE2yTUsUnMNtZ5I5HWN1h1PX0a+yOSHv7UiQtzqHc3Jzgo5UcswbA==
-X-Received: by 2002:a17:902:da85:b0:205:3aa8:f22f with SMTP id d9443c01a7336-2076e3f8e09mr391127755ad.46.1726711511886;
-        Wed, 18 Sep 2024 19:05:11 -0700 (PDT)
-Received: from [0.0.0.0] ([154.16.27.191])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7db499935c5sm8086893a12.68.2024.09.18.19.05.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Sep 2024 19:05:11 -0700 (PDT)
-Message-ID: <8bcac2c4-80fc-4807-9e77-5dc253b10568@gmail.com>
-Date: Thu, 19 Sep 2024 10:05:03 +0800
+        d=1e100.net; s=20230601; t=1726712111; x=1727316911;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=73pJF0giD1vlqSF2aJbI/7GMbDFvyq6eU64/u/16fL4=;
+        b=Af8EvZskZMN5W2egyPMZ5L+XVQhuw9rkfyOEGyOVXUQ0XZCyB8n7ZZTxWKr4GskiMh
+         wIMhx5j+nt7ycmhpLLMeGXisc/yyLTmh/FRlB87eXU1XGD9EwRlxV+XrPBBv3eHQI533
+         ecYPHS3glkPaU3LWpansq7PEoCK4hcbA1bO+XASMkyk+YpMulYOWtiXHLXwRZUd9x/PN
+         GyNzyAvQOPsAAss8yqu3dlSPMy/L4kxdsQgCG+/YQearZCVuQ6dEnDYulzGbQyPydtzt
+         9wNtR9+lH+oS02j3NhxZ5Ed6GkjfiEly77cr6DiIG25QkqfMryxuhZmfXEIdKUc1jEjf
+         pdgw==
+X-Forwarded-Encrypted: i=1; AJvYcCVGAuDNEqDSE4y1hza7U9BW6+s4rbFmJWq81Wf9l8wCJ52/8yP2SkZZwWt8oSMVsc392PY=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxUeCpQqNrRD/CFxobP+becBrw9cUF8K9YY+EtkFs/gcWSmT4mu
+	wrXQVt1FZHQAv5Gks9b2Um+rxO26rCSH05ElITOaxYVXtJtBDRhK
+X-Google-Smtp-Source: AGHT+IGoqnErPiRbmoQbqxQhMDwvg1+HrnOVQrDFSWurTERTjSI3K+OewG+D6/0xzoQNSGU25diM0A==
+X-Received: by 2002:a17:902:f641:b0:206:b399:2f2f with SMTP id d9443c01a7336-2078296a9e6mr318574635ad.47.1726712111150;
+        Wed, 18 Sep 2024 19:15:11 -0700 (PDT)
+Received: from [192.168.0.235] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-207946017e1sm71040415ad.100.2024.09.18.19.15.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Sep 2024 19:15:10 -0700 (PDT)
+Message-ID: <733608c444d491bd3d94d974441c856f7ba64fb1.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v2] selftests/bpf: emit top frequent code lines
+ in veristat
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, bpf@vger.kernel.org, 
+	ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net, kafai@meta.com, 
+	kernel-team@meta.com
+Cc: Mykyta Yatsenko <yatsenko@meta.com>
+Date: Wed, 18 Sep 2024 19:15:05 -0700
+In-Reply-To: <20240918203925.150231-1-mykyta.yatsenko5@gmail.com>
+References: <20240918203925.150231-1-mykyta.yatsenko5@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.4 (3.52.4-1.fc40) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v3] libbpf: Fix expected_attach_type set when
- kernel not support
-To: Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman
- <eddyz87@gmail.com>, Daniel Borkmann <daniel@iogearbox.net>,
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240914154040.276933-1-chen.dylane@gmail.com>
-From: Tao Chen <chen.dylane@gmail.com>
-In-Reply-To: <20240914154040.276933-1-chen.dylane@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
 
-在 2024/9/14 23:40, Tao Chen 写道:
-> The commit "5902da6d8a52" set expected_attach_type again with
-> field of bpf_program after libpf_prepare_prog_load, which makes
-> expected_attach_type = 0 no sense when kenrel not support the
-> attach_type feature, so fix it.
-> 
-> Fixes: 5902da6d8a52 ("libbpf: Add uprobe multi link support to bpf_program__attach_usdt")
-> Suggested-by: Jiri Olsa <jolsa@kernel.org>
-> Signed-off-by: Tao Chen <chen.dylane@gmail.com>
-> ---
->   tools/lib/bpf/libbpf.c | 12 ++++++++----
->   1 file changed, 8 insertions(+), 4 deletions(-)
-> 
-> Change list:
-> - v2 -> v3:
->      - update BPF_TRACE_UPROBE_MULTI both in prog and opts suggedted by
->        Andrri
-> - v1 -> v2:
->      - restore the original initialization way suggested by Jiri
-> 
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 219facd0e66e..a78e24ff354b 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -7352,8 +7352,14 @@ static int libbpf_prepare_prog_load(struct bpf_program *prog,
->   		opts->prog_flags |= BPF_F_XDP_HAS_FRAGS;
->   
->   	/* special check for usdt to use uprobe_multi link */
-> -	if ((def & SEC_USDT) && kernel_supports(prog->obj, FEAT_UPROBE_MULTI_LINK))
-> +	if ((def & SEC_USDT) && kernel_supports(prog->obj, FEAT_UPROBE_MULTI_LINK)) {
-> +		/* for BPF_TRACE_KPROBE_MULTI, user might want to query exected_attach_type
-> +		 * in prog, and expected_attach_type we set in kenrel is from opts, so we
-> +		 * update both.
-> +		 */
->   		prog->expected_attach_type = BPF_TRACE_UPROBE_MULTI;
-> +		opts->expected_attach_type = BPF_TRACE_UPROBE_MULTI;
+On Wed, 2024-09-18 at 21:39 +0100, Mykyta Yatsenko wrote:
+> From: Mykyta Yatsenko <yatsenko@meta.com>
+>=20
+> Production BPF programs are increasing in number of instructions and stat=
+es
+> to the point, where optimising verification process for them is necessary
+> to avoid running into instruction limit. Authors of those BPF programs
+> need to analyze verifier output, for example, collecting the most
+> frequent source code lines to understand which part of the program has
+> the biggest verification cost.
+>=20
+> This patch introduces `--top-src-lines` flag in veristat.
+> `--top-src-lines=3DN` makes veristat output N the most popular sorce code
+> lines, parsed from verification log.
+>=20
+> An example:
+> ```
+> $ sudo ./veristat --log-size=3D1000000000 --top-src-lines=3D4  pyperf600.=
+bpf.o
+> Processing 'pyperf600.bpf.o'...
+> Top source lines (on_event):
+>  4697: (pyperf.h:0)	=20
+>  2334: (pyperf.h:326)	event->stack[i] =3D *symbol_id;=20
+>  2334: (pyperf.h:118)	pidData->offsets.String_data);=20
+>  1176: (pyperf.h:92)	bpf_probe_read_user(&frame->f_back,=20
+> ...
+> ```
+>=20
+> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+
+I think this is a cool feature!
+It's a bit of a shame that we don't collect information like this in
+the verifier itself, where it would be simpler to do (e.g. associate a
+counter with each instruction, or with each jump target).
+
+[...]
+
+> +static int print_top_src_lines(char * const buf, size_t buf_sz, const ch=
+ar *prog_name)
+> +{
+> +	int lines_cap =3D 1;
+> +	int lines_size =3D 0;
+> +	char **lines;
+> +	char *line =3D NULL;
+> +	char *state;
+> +	struct line_cnt *freq =3D NULL;
+> +	struct line_cnt *cur;
+> +	int unique_lines;
+> +	int err;
+
+Note:
+  when compiling with clang 20.0.0git the following warning is reported:
+
+veristat.c:957:14: error: variable 'err' is used uninitialized whenever 'fo=
+r' loop exits because its condition is false [-Werror,-Wsometimes-uninitial=
+ized]
+  957 |         for (i =3D 0; i < min(unique_lines, env.top_src_lines); ++i=
+) {
+      |                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+veristat.c:972:9: note: uninitialized use occurs here
+  972 |         return err;
+      |
+  ...
+veristat.c:903:9: note: initialize the variable 'err' to silence this warni=
+ng
+  903 |         int err;
+      |                ^
+      |                 =3D 0
+
+Also, a nitpick: declarations should be sorted in a "reverse Christmas
+tree" order (at-least that's what Andrii enforces :).
+
+> +	int i;
+> +
+> +	lines =3D calloc(lines_cap, sizeof(char *));
+
+Nitpick: here and in a few places below use sizeof(*<array>), e.g.:
+         calloc(lines_cap, sizeof(*lines))
+
+> +	if (!lines)
+> +		return -ENOMEM;
+> +
+> +	while ((line =3D strtok_r(line ? NULL : buf, "\n", &state))) {
+> +		if (strncmp(line, "; ", 2))
+> +			continue;
+> +		line +=3D 2;
+> +
+> +		if (lines_size =3D=3D lines_cap) {
+> +			char **tmp;
+> +
+> +			lines_cap *=3D 2;
+> +			tmp =3D realloc(lines, lines_cap * sizeof(char *));
+> +			if (!tmp) {
+> +				err =3D -ENOMEM;
+> +				goto cleanup;
+> +			}
+> +			lines =3D tmp;
+> +		}
+> +		lines[lines_size] =3D line;
+> +		lines_size++;
 > +	}
->   
->   	if ((def & SEC_ATTACH_BTF) && !prog->attach_btf_id) {
->   		int btf_obj_fd = 0, btf_type_id = 0, err;
-> @@ -7443,6 +7449,7 @@ static int bpf_object_load_prog(struct bpf_object *obj, struct bpf_program *prog
->   	load_attr.attach_btf_id = prog->attach_btf_id;
->   	load_attr.kern_version = kern_version;
->   	load_attr.prog_ifindex = prog->prog_ifindex;
-> +	load_attr.expected_attach_type = prog->expected_attach_type;
->   
->   	/* specify func_info/line_info only if kernel supports them */
->   	if (obj->btf && btf__fd(obj->btf) >= 0 && kernel_supports(obj, FEAT_BTF_FUNC)) {
-> @@ -7474,9 +7481,6 @@ static int bpf_object_load_prog(struct bpf_object *obj, struct bpf_program *prog
->   		insns_cnt = prog->insns_cnt;
->   	}
->   
-> -	/* allow prog_prepare_load_fn to change expected_attach_type */
-> -	load_attr.expected_attach_type = prog->expected_attach_type;
-> -
->   	if (obj->gen_loader) {
->   		bpf_gen__prog_load(obj->gen_loader, prog->type, prog->name,
->   				   license, insns, insns_cnt, &load_attr,
+> +
+> +	if (!lines_size)
+> +		goto cleanup;
+> +
+> +	qsort(lines, lines_size, sizeof(char *), str_cmp);
+> +
+> +	freq =3D calloc(lines_size, sizeof(struct line_cnt));
+> +	if (!freq) {
+> +		err =3D -ENOMEM;
+> +		goto cleanup;
+> +	}
+> +
+> +	cur =3D freq;
+> +	cur->line =3D lines[0];
+> +	cur->cnt =3D 1;
+> +	for (i =3D 1; i < lines_size; ++i) {
+> +		if (strcmp(lines[i], cur->line)) {
+> +			cur++;
+> +			cur->line =3D lines[i];
+> +			cur->cnt =3D 0;
+> +		}
+> +		cur->cnt++;
+> +	}
+> +	unique_lines =3D cur - freq + 1;
+> +
+> +	qsort(freq, unique_lines, sizeof(struct line_cnt), line_cnt_cmp);
+> +
+> +	printf("Top source lines (%s):\n", prog_name);
+> +	for (i =3D 0; i < min(unique_lines, env.top_src_lines); ++i) {
+> +		char *src_code;
+> +		char *src_line;
+> +
+> +		src_code =3D strtok_r(freq[i].line, "@", &state);
 
-Hi, guys, please review this patch again, the previous versions:
-v1:
-https://lore.kernel.org/bpf/20240913121627.153898-1-chen.dylane@gmail.com/
-v2:
-https://lore.kernel.org/bpf/20240913164355.176021-1-chen.dylane@gmail.com/
+Does verifier guarantee presence of '@' for each source comment line?
 
--- 
-Best Regards
-Dylane Chen
+> +		src_line =3D strtok_r(NULL, "\0", &state);
+> +		if (src_line)
+
+The '.line' string is null-terminated, can 'src_line' ever be NULL?
+
+> +			printf("%5d: (%s)\t%s\n", freq[i].cnt, src_line + 1, src_code);
+> +		else
+> +			printf("%5d: %s\n", freq[i].cnt, src_code);
+> +	}
+> +
+> +cleanup:
+> +	free(freq);
+> +	free(lines);
+> +	return err;
+> +}
+> +
+
+[...]
+
+
 
