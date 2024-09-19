@@ -1,148 +1,266 @@
-Return-Path: <bpf+bounces-40101-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40102-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54A7297C905
-	for <lists+bpf@lfdr.de>; Thu, 19 Sep 2024 14:21:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0118197C953
+	for <lists+bpf@lfdr.de>; Thu, 19 Sep 2024 14:37:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 07D4C1F229DA
-	for <lists+bpf@lfdr.de>; Thu, 19 Sep 2024 12:21:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 793501F21A9F
+	for <lists+bpf@lfdr.de>; Thu, 19 Sep 2024 12:37:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8716319DF47;
-	Thu, 19 Sep 2024 12:20:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1321619DF95;
+	Thu, 19 Sep 2024 12:37:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="WM72yw3b"
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+Received: from out30-118.freemail.mail.aliyun.com (out30-118.freemail.mail.aliyun.com [115.124.30.118])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2751B18893D;
-	Thu, 19 Sep 2024 12:20:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30A5D19D08C;
+	Thu, 19 Sep 2024 12:37:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.118
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726748454; cv=none; b=kIj/pMLTI1cUE4GMYVz7i6/fbwKk1zNuMW34PU/DPlo1DD64o+PNMRRKlj/U2rc5TeUgDz4lXmGPH5oeHQtWquX9JSqnhjynmkaplECT2KBcDcd/v6OZCv/Ne/tQtKx/VDojOdCPvBKH9Q/Hd0LTx7dhTY926RI6lSjuPzAkM0w=
+	t=1726749427; cv=none; b=tF/1+r9aG3F9B04rZMS0GfRAYZ7youw/1JJYiFBRpul8J5t3cva6wqwKZIrLoGXvjRFi4d2uX1EYJx82NPWUNasZJMeXswLR0Wm0GnLSg6r9Jk4/vv2GwhpAXRlJx/opBJn37Z2htZnLbEAgub62sbRgpq9Hl0XNHToksFLSWWs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726748454; c=relaxed/simple;
-	bh=oTYc/p2t/iTSK5+cXS3Sc0LDuFrjEIBTQIdwaJDT9C4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=HeQ7Xj1sKNDad7xQZh7R4OJFBCvhflj4xPFz9GgkvWbjYGi6a0VsDo//VJC0Kz1MbpRZqvzOS0wLeWbt+XvygMIvKmbIN6zfvvUHtesppCZm3ep+CveeeX8h4ZfqegPCsfrne+gTnKsNYnITCGv114I69n0tbi3lGunvnrNdG9U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.254])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4X8ZLT5NVFzpVsg;
-	Thu, 19 Sep 2024 20:18:41 +0800 (CST)
-Received: from kwepemd200013.china.huawei.com (unknown [7.221.188.133])
-	by mail.maildlp.com (Postfix) with ESMTPS id 8EC1218010F;
-	Thu, 19 Sep 2024 20:20:45 +0800 (CST)
-Received: from [10.67.110.108] (10.67.110.108) by
- kwepemd200013.china.huawei.com (7.221.188.133) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.34; Thu, 19 Sep 2024 20:20:44 +0800
-Message-ID: <7a6ba3f3-dffa-cdac-73c7-074505ea4b44@huawei.com>
-Date: Thu, 19 Sep 2024 20:20:43 +0800
+	s=arc-20240116; t=1726749427; c=relaxed/simple;
+	bh=N2WynsJqV7oDSGGbemSMNH57TnUsdtuBktnsJkKy5CE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=QqsNGdV13Mb1QouCulk4+5pshVnqTKQxJ1D7gCuSABQTV4HTIBJhPur7Y5nm/2CaizOz8flnjd2+t2ns8TyjSwl41vTz5Dd5U5LApStUFIS+5nvJNUGvD6Umg+dOlrb0drVcnqSHC2CgYMh+Z4L+hIf3LXet4PHigDFrQL3iIJ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=WM72yw3b; arc=none smtp.client-ip=115.124.30.118
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1726749414; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=aBKZsM/fHRggoyYOEWRaAoMcXXznHZBlGeUHWJKN660=;
+	b=WM72yw3bmRzYz+mojppiYvXzsUVUpsh5cq/70oFpdUH/S0M8mC2z0UYV0XSu6DFcNyvtX/oaaXAT6N2Fv4vz75GCyXQELvbzuZ383UYtcnw9s22UPRwz7HbnFf1UX26uaqfIHGhn2fLVmGpxPh5nCIUfbnk8XePhlepdufTSTMU=
+Received: from 30.221.101.105(mailfrom:guangguan.wang@linux.alibaba.com fp:SMTPD_---0WFHgF5L_1726749412)
+          by smtp.aliyun-inc.com;
+          Thu, 19 Sep 2024 20:36:54 +0800
+Message-ID: <f9db0ec5-c779-4627-9e1f-0f6af98d2de5@linux.alibaba.com>
+Date: Thu, 19 Sep 2024 20:36:52 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.2
-Subject: Re: [PATCH] uprobes: Improve the usage of xol slots for better
- scalability
-To: Andi Kleen <ak@linux.intel.com>
-CC: <mhiramat@kernel.org>, <oleg@redhat.com>, <andrii@kernel.org>,
-	<peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
-	<namhyung@kernel.org>, <mark.rutland@arm.com>,
-	<alexander.shishkin@linux.intel.com>, <jolsa@kernel.org>,
-	<irogers@google.com>, <adrian.hunter@intel.com>, <kan.liang@linux.intel.com>,
-	<linux-kernel@vger.kernel.org>, <linux-trace-kernel@vger.kernel.org>,
-	<linux-perf-users@vger.kernel.org>, <bpf@vger.kernel.org>
-References: <20240918012752.2045713-1-liaochang1@huawei.com>
- <87jzf9b12w.fsf@linux.intel.com>
-From: "Liao, Chang" <liaochang1@huawei.com>
-In-Reply-To: <87jzf9b12w.fsf@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemd200013.china.huawei.com (7.221.188.133)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH net-next] net/smc: Introduce a hook to modify syn_smc
+ at runtime
+To: "D. Wythe" <alibuda@linux.alibaba.com>, kgraul@linux.ibm.com,
+ wenjia@linux.ibm.com, jaka@linux.ibm.com, wintera@linux.ibm.com,
+ guwen@linux.alibaba.com
+Cc: kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+ linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
+ tonylu@linux.alibaba.com, pabeni@redhat.com, edumazet@google.com,
+ bpf@vger.kernel.org
+References: <1726654204-61655-1-git-send-email-alibuda@linux.alibaba.com>
+Content-Language: en-US
+From: Guangguan Wang <guangguan.wang@linux.alibaba.com>
+In-Reply-To: <1726654204-61655-1-git-send-email-alibuda@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
 
 
-在 2024/9/18 20:25, Andi Kleen 写道:
-> Liao Chang <liaochang1@huawei.com> writes:
->> +
->> +/*
->> + * xol_recycle_insn_slot - recycle a slot from the garbage collection list.
->> + */
->> +static int xol_recycle_insn_slot(struct xol_area *area)
->> +{
->> +	struct uprobe_task *utask;
->> +	int slot = UINSNS_PER_PAGE;
->> +
->> +	rcu_read_lock();
->> +	list_for_each_entry_rcu(utask, &area->gc_list, gc) {
->> +		/*
->> +		 * The utask associated slot is in-use or recycling when
->> +		 * utask associated slot_ref is not one.
->> +		 */
->> +		if (test_and_put_task_slot(utask)) {
->> +			slot = utask->insn_slot;
->> +			utask->insn_slot = UINSNS_PER_PAGE;
->> +			clear_bit(slot, area->bitmap);
->> +			atomic_dec(&area->slot_count);
->> +			get_task_slot(utask);
+On 2024/9/18 18:10, D. Wythe wrote:
+> From: "D. Wythe" <alibuda@linux.alibaba.com>
 > 
-> Doesn't this need some annotation to make ThreadSanitizer happy?
-
-Hi, Andi
-
-Sorry, I know nothing about the ThreadSanitizer and related annotation,
-could you provide some information about it, thanks.
-
-> Would be good to have some commentary why doing so
-> many write operations with merely a rcu_read_lock as protection is safe.
-> It might be safer to put some write type operations under a real lock. 
-> Also it is unclear how the RCU grace period for utasks is enforced.
-
-You are right, but I think using atomic refcount routine might be a more
-suitable apprach for this scenario. The slot_ret field of utask instance
-is used to track the status of insn_slot. slot_ret supports three values.
-A value of 2 means the utask associated insn_slot is currently in use by
-uprobe. A value of 1 means the slot is no being used by uprobe. A value
-of 0 means the slot has been reclaimed. So in some term, the atomic refcount
-routine test_and_pout_task_slot() also avoid the racing when writing to
-the utask instance, providing additional status information about insn_slot.
-
-BTW, You reminded me that since it might recycle the slot after deleting the
-utask from the garbage collection list, so it's necessary to use
-test_and_put_task_slot() to avoid the racing on the stale utask. the correct
-code might be something like this:
-
-@@ -1771,16 +1783,16 @@ static void xol_free_insn_slot(struct task_struct *tsk)
-
-        spin_lock_irqsave(&area->list_lock, flags);
-        list_del_rcu(&tsk->utask->gc);
-+       /* Ensure the slot is not in use or reclaimed on other CPU */
-+       if (test_and_put_task_slot(tsk->utask)) {
-+               clear_bit(tsk->utask->insn_slot, area->bitmap);
-+               atomic_dec(&area->slot_count);
-+               tsk->utask->insn_slot = UINSNS_PER_PAGE;
-+               get_task_slot(tsk->utask);
-+       }
-        spin_unlock_irqrestore(&area->list_lock, flags);
-        synchronize_rcu();
-
-If I've made any mistakes about RCU usage, please don't hesitate to corret me.
-Thank you in advance.
-
+> The introduction of IPPROTO_SMC enables eBPF programs to determine
+> whether to use SMC based on the context of socket creation, such as
+> network namespaces, PID and comm name, etc.
 > 
+> As a subsequent enhancement, this patch introduces a new hook for eBPF
+> programs that allows decisions on whether to use SMC or not at runtime,
+> including but not limited to local/remote IP address or ports. In
+> simpler words, this feature allows modifications to syn_smc through eBPF
+> programs before the TCP three-way handshake got established.
 > 
-> -Andi
+> Thanks to kfunc for making it easier for us to implement this feature in
+> SMC.
 > 
+> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
 
--- 
-BR
-Liao, Chang
+Hi D. Wythe, 
+
+I think it is a good feature to have for more flexible using of SMC.
+
+It is also a good solution for the problem we met before:
+Some services are not correctly handled TCP syn packet with SMC experimental option in head.
+The TCP connections to such services can not be successfully established through SMC. Thus, a
+program can not using SMC and accessing the services mentioned above in the same time.
+With this feature, by filter the port to the services metioned above, it is possible for
+programes both using SMC and accessing the services metioned above.
+
+> ---
+>  include/linux/tcp.h  |  4 ++-
+>  net/ipv4/tcp_input.c |  4 +--
+>  net/smc/af_smc.c     | 69 ++++++++++++++++++++++++++++++++++++++++++++++------
+>  3 files changed, 66 insertions(+), 11 deletions(-)
+> 
+> diff --git a/include/linux/tcp.h b/include/linux/tcp.h
+> index 6a5e08b..d028d76 100644
+> --- a/include/linux/tcp.h
+> +++ b/include/linux/tcp.h
+> @@ -478,7 +478,9 @@ struct tcp_sock {
+>  #endif
+>  #if IS_ENABLED(CONFIG_SMC)
+>  	bool	syn_smc;	/* SYN includes SMC */
+> -	bool	(*smc_hs_congested)(const struct sock *sk);
+> +	void	(*smc_openreq_init)(struct request_sock *req,
+> +			     const struct tcp_options_received *rx_opt,
+> +			     struct sk_buff *skb, const struct sock *sk);
+>  #endif
+>  
+>  #if defined(CONFIG_TCP_MD5SIG) || defined(CONFIG_TCP_AO)
+> diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
+> index e37488d..e33e2a0 100644
+> --- a/net/ipv4/tcp_input.c
+> +++ b/net/ipv4/tcp_input.c
+> @@ -7029,8 +7029,8 @@ static void tcp_openreq_init(struct request_sock *req,
+>  	ireq->ir_num = ntohs(tcp_hdr(skb)->dest);
+>  	ireq->ir_mark = inet_request_mark(sk, skb);
+>  #if IS_ENABLED(CONFIG_SMC)
+> -	ireq->smc_ok = rx_opt->smc_ok && !(tcp_sk(sk)->smc_hs_congested &&
+> -			tcp_sk(sk)->smc_hs_congested(sk));
+> +	if (ireq->smc_ok && tcp_sk(sk)->smc_openreq_init)Should be rx_opt->smc_ok?
+
+> +		tcp_sk(sk)->smc_openreq_init(req, rx_opt, skb, sk);
+>  #endif
+>  }
+>  
+> diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
+> index 0316217..003b2ac 100644
+> --- a/net/smc/af_smc.c
+> +++ b/net/smc/af_smc.c
+> @@ -70,6 +70,15 @@
+>  static void smc_tcp_listen_work(struct work_struct *);
+>  static void smc_connect_work(struct work_struct *);
+>  
+> +__bpf_hook_start();
+> +
+> +__weak noinline int select_syn_smc(const struct sock *sk, struct sockaddr *peer)
+> +{
+> +	return 1;
+> +}
+> +
+> +__bpf_hook_end();
+> +
+>  int smc_nl_dump_hs_limitation(struct sk_buff *skb, struct netlink_callback *cb)
+>  {
+>  	struct smc_nl_dmp_ctx *cb_ctx = smc_nl_dmp_ctx(cb);
+> @@ -156,19 +165,41 @@ static struct sock *smc_tcp_syn_recv_sock(const struct sock *sk,
+>  	return NULL;
+>  }
+>  
+> -static bool smc_hs_congested(const struct sock *sk)
+> +static void smc_openreq_init(struct request_sock *req,
+> +			     const struct tcp_options_received *rx_opt,
+> +			     struct sk_buff *skb, const struct sock *sk)
+>  {
+> +	struct inet_request_sock *ireq = inet_rsk(req);
+> +	struct sockaddr_storage rmt_sockaddr = {0};
+>  	const struct smc_sock *smc;
+>  
+>  	smc = smc_clcsock_user_data(sk);
+>  
+>  	if (!smc)
+> -		return true;
+> +		return;
+It is better goto out_no_smc rather than return to explicitly set ireq->smc_ok to 0.
+
+>  
+> -	if (workqueue_congested(WORK_CPU_UNBOUND, smc_hs_wq))
+> -		return true;
+> +	if (smc->limit_smc_hs && workqueue_congested(WORK_CPU_UNBOUND, smc_hs_wq))
+> +		goto out_no_smc;
+>  
+> -	return false;
+> +	rmt_sockaddr.ss_family = sk->sk_family;
+> +
+> +	if (rmt_sockaddr.ss_family == AF_INET) {
+> +		struct sockaddr_in *rmt4_sockaddr =  (struct sockaddr_in *)&rmt_sockaddr;
+> +
+> +		rmt4_sockaddr->sin_addr.s_addr = ireq->ir_rmt_addr;
+> +		rmt4_sockaddr->sin_port	= ireq->ir_rmt_port;
+> +	} else {
+> +		struct sockaddr_in6 *rmt6_sockaddr =  (struct sockaddr_in6 *)&rmt_sockaddr;
+> +
+> +		rmt6_sockaddr->sin6_addr = ireq->ir_v6_rmt_addr;
+> +		rmt6_sockaddr->sin6_port = ireq->ir_rmt_port;
+> +	}
+> +
+> +	ireq->smc_ok = select_syn_smc(sk, (struct sockaddr *)&rmt_sockaddr);
+> +	return;
+> +out_no_smc:
+> +	ireq->smc_ok = 0;
+> +	return;
+>  }
+>  
+>  struct smc_hashinfo smc_v4_hashinfo = {
+> @@ -1671,7 +1702,7 @@ int smc_connect(struct socket *sock, struct sockaddr *addr,
+>  	}
+>  
+>  	smc_copy_sock_settings_to_clc(smc);
+> -	tcp_sk(smc->clcsock->sk)->syn_smc = 1;
+> +	tcp_sk(smc->clcsock->sk)->syn_smc = select_syn_smc(sk, addr);
+>  	if (smc->connect_nonblock) {
+>  		rc = -EALREADY;
+>  		goto out;
+> @@ -2650,8 +2681,7 @@ int smc_listen(struct socket *sock, int backlog)
+>  
+>  	inet_csk(smc->clcsock->sk)->icsk_af_ops = &smc->af_ops;
+>  
+> -	if (smc->limit_smc_hs)
+> -		tcp_sk(smc->clcsock->sk)->smc_hs_congested = smc_hs_congested;
+> +	tcp_sk(smc->clcsock->sk)->smc_openreq_init = smc_openreq_init;
+>  
+>  	rc = kernel_listen(smc->clcsock, backlog);
+>  	if (rc) {
+> @@ -3475,6 +3505,20 @@ static void __net_exit smc_net_stat_exit(struct net *net)
+>  	.exit = smc_net_stat_exit,
+>  };
+>  
+> +BTF_SET8_START(bpf_smc_fmodret_ids)
+> +BTF_ID_FLAGS(func, select_syn_smc)
+> +BTF_SET8_END(bpf_smc_fmodret_ids)
+> +
+> +static const struct btf_kfunc_id_set bpf_smc_fmodret_set = {
+> +	.owner = THIS_MODULE,
+> +	.set   = &bpf_smc_fmodret_ids,
+> +};
+> +
+> +static int __init bpf_smc_kfunc_init(void)
+> +{
+> +	return register_btf_fmodret_id_set(&bpf_smc_fmodret_set);
+> +}
+Does it have unregister function? Is it OK for repeate register when reload the smc module?
+
+Thanks,
+Guangguan Wang
+> +
+>  static int __init smc_init(void)
+>  {
+>  	int rc;
+> @@ -3574,8 +3618,17 @@ static int __init smc_init(void)
+>  		pr_err("%s: smc_inet_init fails with %d\n", __func__, rc);
+>  		goto out_ulp;
+>  	}
+> +
+> +	rc = bpf_smc_kfunc_init();
+> +	if (rc) {
+> +		pr_err("%s: bpf_smc_kfunc_init fails with %d\n", __func__, rc);
+> +		goto out_inet;
+> +	}
+> +
+>  	static_branch_enable(&tcp_have_smc);
+>  	return 0;
+> +out_inet:
+> +	smc_inet_exit();
+>  out_ulp:
+>  	tcp_unregister_ulp(&smc_ulp_ops);
+>  out_lo:
 
