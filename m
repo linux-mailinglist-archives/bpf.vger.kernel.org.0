@@ -1,159 +1,144 @@
-Return-Path: <bpf+bounces-40094-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40086-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C960597C78B
-	for <lists+bpf@lfdr.de>; Thu, 19 Sep 2024 11:50:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0CF8997C73E
+	for <lists+bpf@lfdr.de>; Thu, 19 Sep 2024 11:43:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 69FA51F297D4
-	for <lists+bpf@lfdr.de>; Thu, 19 Sep 2024 09:50:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3FF171C26734
+	for <lists+bpf@lfdr.de>; Thu, 19 Sep 2024 09:43:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E51C01A2850;
-	Thu, 19 Sep 2024 09:46:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CA6719D8B5;
+	Thu, 19 Sep 2024 09:43:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CcqknQbZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from forward204a.mail.yandex.net (forward204a.mail.yandex.net [178.154.239.89])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f193.google.com (mail-pg1-f193.google.com [209.85.215.193])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B071319F410;
-	Thu, 19 Sep 2024 09:46:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.154.239.89
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 665FE19D086;
+	Thu, 19 Sep 2024 09:42:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726739202; cv=none; b=k7wDsLb7ZtaIhutVudr3RDQAb5cj4ZOSDzb6G5K480rwptTASh4nymGSBtG141nsdMvf7sILDrQcCjWWSGT2ywi8GjVhfxfw4x/PuhVrl78ZLQ8grFPelKEnDayGbf/1YRIp6S3zrgcYQZJhVlJOni6cw7Sb9m7IlxAuHZjZujo=
+	t=1726738981; cv=none; b=Ie4Zm8Hr3BkpBrPSJBq0dvYX60bz6RgxImBEPW07EieucSeIEDqpbEKiE/nnuy7Qn9rQxu90b4OoaSwwgp2E2Kihe5LdwzMfiTuU5Jj4oMp4TSoMbeogj4eguwiVY6B5FgN1lLEdXWZtm4cf3MBmg+RL7nO7WzMEmKGtGpXCUbI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726739202; c=relaxed/simple;
-	bh=tpQTyP4bsW+xYGpbc3ZzzLGWMe3rTKm8zVurmTlQnes=;
-	h=From:Content-Type:Mime-Version:Subject:Message-Id:Date:Cc:To; b=G0LINNNRm7X0STtAXyoMEx5Txdj9XUChVbMzCWvrRDY7rILnsTA31QDhKWnH6c2kE+hknYEJCx8tU2ZfstDfwCUycFNfQijnML2iZwa/af6Bvr4EfKl6gHMwcTb3u5pwYvR8uPeDAf1he48r88WFciloFyZjBp/ReTlmlDRQSbE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lobanov.in; spf=pass smtp.mailfrom=lobanov.in; arc=none smtp.client-ip=178.154.239.89
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lobanov.in
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lobanov.in
-Received: from forward100a.mail.yandex.net (forward100a.mail.yandex.net [IPv6:2a02:6b8:c0e:500:1:45:d181:d100])
-	by forward204a.mail.yandex.net (Yandex) with ESMTPS id DD85E66C4E;
-	Thu, 19 Sep 2024 12:41:01 +0300 (MSK)
-Received: from mail-nwsmtp-smtp-production-main-18.iva.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-18.iva.yp-c.yandex.net [IPv6:2a02:6b8:c0c:ea3:0:640:29cf:0])
-	by forward100a.mail.yandex.net (Yandex) with ESMTPS id 540D546D43;
-	Thu, 19 Sep 2024 12:40:54 +0300 (MSK)
-Received: by mail-nwsmtp-smtp-production-main-18.iva.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id peKTgRXOjSw0-XUFzZ0ey;
-	Thu, 19 Sep 2024 12:40:53 +0300
-X-Yandex-Fwd: 1
-Authentication-Results: mail-nwsmtp-smtp-production-main-18.iva.yp-c.yandex.net; dkim=pass
-From: "Sergey V. Lobanov" <sergey@lobanov.in>
-Content-Type: text/plain;
-	charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+	s=arc-20240116; t=1726738981; c=relaxed/simple;
+	bh=celzY8OV4GMmy/RwTNyebjUESHinD4fwKxA7pGOfvoU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Qd6SgVy4gbTlOBhS5Q45LBlxeVJmm1UQzVEoGfC3uzlgsUK5AIVpoe5Dqst7U11KD4wYKPUvot9qtZ+nA6oVMc9FeZR4VmQO1A4amXa7dSQ8TyOEUX9F3cCCu7iu0a6Xsz55lWUKmtgiAqMcfQpzuKJ7qXqXkg4FNsRo/Q3lK58=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CcqknQbZ; arc=none smtp.client-ip=209.85.215.193
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f193.google.com with SMTP id 41be03b00d2f7-7d50e865b7aso499580a12.0;
+        Thu, 19 Sep 2024 02:42:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1726738963; x=1727343763; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=KYn484j8l4FCD86Dl+kKDGHdgRbar+9TjSd1oUL2FFI=;
+        b=CcqknQbZJzeGD0S2dDUJFD0044+Ut9MwErZ06m0awwAIDxY2xM+m9hg6q+Ig+r8oRq
+         2bxbBkFa95qriOlCR4xGNSM9D+CVBFwTI+4z8b1OQ4bWjQtX7JACquePrBb/DH4Rio/h
+         m/YGkv0L+ukgpSvjjGevCOYyVZWWjdwJD57MB54nh6O/dJqiog2PIVU1wnxwAeY2qVJ8
+         TdoRNJJPmmsC9vzvwgJICkoF0xLdrH6ZlBEO/PqMDACEaN5AWF0UDn+ob8atDhs3usFc
+         YxI3Nzx3LUnoanJgn1f7qRHU1WBpgJjb5v7q76M4R8bVPNJjGB8pDH3JjpxMi71kmtiv
+         U6HQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1726738963; x=1727343763;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=KYn484j8l4FCD86Dl+kKDGHdgRbar+9TjSd1oUL2FFI=;
+        b=C7M1p8p15fcox8urxPTl2/v6QaINqlYgtwDUjcs5IX9P2odZ08vHjFF6toK5qU6pdO
+         oFWGS76Z23hqURWOAh3CLszByXR9r1JSGE1/XVj/uvq93fuIp54/l3P1TRD6cxMQcnw1
+         IOTTJyakkBM8KW2Rk+Id1x6ACKPtnuP0DqkF1qco5NTB6qgyKBOEKtlUbhDOnyNJ3LUu
+         N22lg1to34ueO4OiXorDL5sUpAxHOFEWHuRzliBGYBMI6o0xHAIqwal+K4LDz+MZgv3a
+         joo2k6+ZkANR4sbNjmWSRkn2fBtQSQSo1ebC8Kc06QPIDcSuAMlCkdPw4I0/yFcTMF03
+         8Qtw==
+X-Forwarded-Encrypted: i=1; AJvYcCWKKe7cmywuhMYdYmxDLiUJ07zi0hxRrIYWhhvmg1UDtTWfZtIpms+uKqE6IV3VRbLh4us=@vger.kernel.org, AJvYcCWob41+jFDV9DUUqTpMAGiz1OgkR/bwmNrpgsx9XrtWfohxo3Sod/BysYZkpWM7/Ri3QZcWvwihkvVjVkkH@vger.kernel.org, AJvYcCWzdKv4F09P8hIzY8S68/FMtVotytIzGFpknZdSVFvzYzudVoZ81Dbcr5HCuIB+5DhtANpiEIDk@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx2n22WI8cL4YHcFnQ6tFqbtwvnDIomn40JdrOac8AgsAIKWVpb
+	B2zDJ3QG2xXIZuPKCDKUmAfGO8aU6MuBlcUA86vV5qbx8c1to9Cb
+X-Google-Smtp-Source: AGHT+IGb5ZU6hI8x7OU7TGOVzz/mHBUwDrNmLwrlL6zCEh9MoU1jeUCZWXuDESCdHl3IaNx99lX7vQ==
+X-Received: by 2002:a05:6a21:a24c:b0:1d2:eb9d:9973 with SMTP id adf61e73a8af0-1d2eb9d9d4dmr10157500637.39.1726738963469;
+        Thu, 19 Sep 2024 02:42:43 -0700 (PDT)
+Received: from localhost.localdomain ([43.129.25.208])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-71944ab4b36sm7927086b3a.47.2024.09.19.02.42.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Sep 2024 02:42:43 -0700 (PDT)
+From: Menglong Dong <menglong8.dong@gmail.com>
+X-Google-Original-From: Menglong Dong <dongml2@chinatelecom.cn>
+To: edumazet@google.com
+Cc: davem@davemloft.net,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	dsahern@kernel.org,
+	steffen.klassert@secunet.com,
+	herbert@gondor.apana.org.au,
+	dongml2@chinatelecom.cn,
+	bigeasy@linutronix.de,
+	toke@redhat.com,
+	idosch@nvidia.com,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: [RFC PATCH net-next 0/7] net: ip: add drop reasons to input route
+Date: Thu, 19 Sep 2024 17:41:40 +0800
+Message-Id: <20240919094147.328737-1-dongml2@chinatelecom.cn>
+X-Mailer: git-send-email 2.39.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.200.91.1.1\))
-Subject: BUG: Kernel OOPS in __bpf_prog_offload_destroy (6.10, 6.11, bpf-next,
- x86_64/aarch64)
-Message-Id: <2194F884-8028-4018-AA64-848405757119@lobanov.in>
-Date: Thu, 19 Sep 2024 11:40:41 +0200
-Cc: "Sergey V. Lobanov" <sergey@lobanov.in>,
- netdev@vger.kernel.org
-To: bpf@vger.kernel.org
-X-Mailer: Apple Mail (2.3774.200.91.1.1)
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-Hi,
+In this series, we mainly add some skb drop reasons to the input path of
+ip routing.
 
-I've found kernel oops during device deletion (ip link del veth0) after =
-attaching and detaching device bounded XDP bpf program. When this oops =
-happens, host doesn=E2=80=99t function correctly (new processes can=E2=80=99=
-t start, can=E2=80=99t login via ssh and so on).
+The function ip_route_input_noref() is used commonly, and its return value
+is used by the caller sometimes. So, it's not easy to make it return skb
+drop reasons. Instead, we add the pointer of the drop reason to the
+function arguments of it. And we do the same things to
+ip_route_input_rcu() and ip_route_input_slow().
 
-BPF compiler is GCC 14.2.0. CXX is compiler (for loader) is GCC 14.2.0
+The errno from fib_validate_source() is -EINVAL or -EXDEV, and -EXDEV is
+used in ip_rcv_finish_core() to increase the LINUX_MIB_IPRPFILTER. For
+this case, we can check it by
+"drop_reason == SKB_DROP_REASON_IP_RPFILTER" instead. Therefore, we can
+make fib_validate_source() return -reason. Meanwhile, we make
+ip_route_input_mc() and ip_mc_validate_source() return drop reason.
 
-It happens in kernels: 6.10.9, 6.11.0, bpf-next master branch (commit =
-5277d130947ba8c0d54c16eed89eb97f0b6d2e5a) on x86_64 and aarch64 hosts.
+Following new skb drop reasons are added:
 
-Call trace (kernel 6.11.0, aarch64):
-[  584.364169] Unable to handle kernel paging request at virtual address =
-ffff80008b565038
-[  584.364236] Mem abort info:
-[  584.364242]   ESR =3D 0x0000000096000007
-[  584.364248]   EC =3D 0x25: DABT (current EL), IL =3D 32 bits
-[  584.364256]   SET =3D 0, FnV =3D 0
-[  584.364270]   EA =3D 0, S1PTW =3D 0
-[  584.364276]   FSC =3D 0x07: level 3 translation fault
-[  584.364283] Data abort info:
-[  584.364289]   ISV =3D 0, ISS =3D 0x00000007, ISS2 =3D 0x00000000
-[  584.364297]   CM =3D 0, WnR =3D 0, TnD =3D 0, TagAccess =3D 0
-[  584.364305]   GCS =3D 0, Overlay =3D 0, DirtyBit =3D 0, Xs =3D 0
-[  584.364313] swapper pgtable: 4k pages, 48-bit VAs, =
-pgdp=3D000000015ab5d000
-[  584.364323] [ffff80008b565038] pgd=3D100000015bdf0003, =
-p4d=3D100000015bdf0003, pud=3D100000015bdf1003, pmd=3D10000000ab84a003, =
-pte=3D0000000000000000
-[  584.364360] Internal error: Oops: 0000000096000007 [#1] SMP
-[  584.364387] Modules linked in: veth xt_nat xt_tcpudp xt_conntrack =
-nft_chain_nat xt_MASQUERADE nf_nat nf_conntrack_netlink nf_conntrack =
-nf_defrag_ipv6 nf_defrag_ipv4 xfrm_user xfrm_algo xt_addrtype nft_compat =
-nf_tables br_netfilter bridge stp llc overlay qrtr cfg80211 binfmt_misc =
-virtio_snd snd_pcm snd_timer nls_iso8859_1 snd soundcore input_leds =
-joydev apple_mfi_fastcharge dm_multipath efi_pstore nfnetlink dmi_sysfs =
-virtiofs ip_tables x_tables autofs4 hid_generic usbhid hid btrfs =
-blake2b_generic raid10 raid456 async_raid6_recov async_memcpy async_pq =
-async_xor async_tx xor xor_neon raid6_pq libcrc32c raid1 raid0 =
-crct10dif_ce polyval_ce polyval_generic ghash_ce sm4 sha3_ce sha2_ce =
-sha256_arm64 sha1_ce virtio_rng virtio_gpu xhci_pci virtio_dma_buf =
-xhci_pci_renesas aes_neon_bs aes_neon_blk aes_ce_blk aes_ce_cipher
-[  584.364667] CPU: 1 UID: 0 PID: 6070 Comm: ip Not tainted =
-6.11.0-061100-generic #202409151536
-[  584.364678] Hardware name: Apple Inc. Apple Virtualization Generic =
-Platform, BIOS 2020.41.1.0.0 10/04/2023
-[  584.364691] pstate: 21400005 (nzCv daif +PAN -UAO -TCO +DIT -SSBS =
-BTYPE=3D--)
-[  584.364701] pc : __bpf_prog_offload_destroy+0x24/0xc8
-[  584.364745] lr : __bpf_offload_dev_netdev_unregister+0x318/0x438
-[  584.364754] sp : ffff80008b64b1b0
-[  584.364766] x29: ffff80008b64b1b0 x28: ffff0000c0355e00 x27: =
-0000000000000008
-[  584.364781] x26: ffff80008394bcf8 x25: 0000000000000008 x24: =
-ffff0000c6b71058
-[  584.364791] x23: ffff0000c6b71000 x22: ffff0000c0d95018 x21: =
-0000000000000000
-[  584.364802] x20: ffff80008b565000 x19: ffff0000c0d94ff8 x18: =
-ffff80008b61d0a0
-[  584.364813] x17: 0000000000000000 x16: 0000000000000000 x15: =
-0000000000000000
-[  584.364823] x14: 0000000000000000 x13: 0000000000000000 x12: =
-0000000000000000
-[  584.364834] x11: 0000000000000000 x10: 949c93cdb28287d2 x9 : =
-ffff8000803abc30
-[  584.364844] x8 : ffff000042c844a8 x7 : 0000000000000000 x6 : =
-0000000000000000
-[  584.364854] x5 : 0000000000000000 x4 : 0000000000000000 x3 : =
-0000000000000000
-[  584.364865] x2 : 0000000000000000 x1 : ffff0000c0270500 x0 : =
-ffff80008b565000
-[  584.364875] Call trace:
-[  584.364881]  __bpf_prog_offload_destroy+0x24/0xc8
-[  584.364889]  __bpf_offload_dev_netdev_unregister+0x318/0x438
-[  584.364898]  bpf_dev_bound_netdev_unregister+0x8c/0x138
-[  584.364906]  unregister_netdevice_many_notify+0x1f0/0x760
-[  584.364928]  rtnl_dellink+0x1b4/0x3e8
-[  584.364935]  rtnetlink_rcv_msg+0x140/0x420
-[  584.364944]  netlink_rcv_skb+0x6c/0x160
-[  584.364978]  rtnetlink_rcv+0x24/0x50
-[  584.364985]  netlink_unicast+0x340/0x3a0
-[  584.364993]  netlink_sendmsg+0x270/0x480
-[  584.365007]  __sock_sendmsg+0x80/0x108
-[  584.365018]  ____sys_sendmsg+0x294/0x360
-[  584.365025]  ___sys_sendmsg+0xbc/0x140
-[  584.365033]  __sys_sendmsg+0x94/0x120
-[  584.365041]  __arm64_sys_sendmsg+0x30/0x60
-[  584.365052]  invoke_syscall+0x70/0x120
-[  584.365071]  el0_svc_common.constprop.0+0x4c/0x140
-[  584.365079]  do_el0_svc+0x28/0x60
-[  584.365086]  el0_svc+0x44/0x1b0
-[  584.365097]  el0t_64_sync_handler+0x148/0x160
-[  584.365106]  el0t_64_sync+0x1b0/0x1b8
-[  584.365113] Code: 910003fd a90153f3 aa0003f4 f90013f5 (f9401c00)=20
-[  584.365123] ---[ end trace 0000000000000000 ]=E2=80=94
+  SKB_DROP_REASON_IP_LOCAL_SOURCE
+  SKB_DROP_REASON_IP_INVALID_SOURCE
+  SKB_DROP_REASON_IP_INVALID_DEST
+  SKB_DROP_REASON_IP_LOCALNET
 
---
-Sergey=
+Menglong Dong (7):
+  net: ip: add drop reason to ip_route_input_noref()
+  net: ip: add drop reason to ip_route_input_rcu()
+  net: ip: add drop reason to ip_route_input_slow()
+  net: ip: make fib_validate_source() return drop reason
+  net: ip: make ip_route_input_mc() return drop reason
+  net: ip: make ip_mc_validate_source() return drop reason
+  net: ip: fix typo in the doc of SKB_DROP_REASON_IP_INNOROUTES
+
+ drivers/net/ipvlan/ipvlan_l3s.c |   2 +-
+ include/net/dropreason-core.h   |  21 +++++-
+ include/net/route.h             |  12 ++--
+ net/core/lwt_bpf.c              |   2 +-
+ net/ipv4/arp.c                  |   2 +-
+ net/ipv4/fib_frontend.c         |  19 ++++--
+ net/ipv4/ip_fragment.c          |   2 +-
+ net/ipv4/ip_input.c             |  11 ++--
+ net/ipv4/route.c                | 111 +++++++++++++++++++++-----------
+ net/ipv4/xfrm4_input.c          |   2 +-
+ net/ipv4/xfrm4_protocol.c       |   2 +-
+ 11 files changed, 122 insertions(+), 64 deletions(-)
+
+-- 
+2.39.5
+
 
