@@ -1,134 +1,111 @@
-Return-Path: <bpf+bounces-40108-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40109-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB3D297CEB1
-	for <lists+bpf@lfdr.de>; Thu, 19 Sep 2024 23:05:04 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF19197CEBB
+	for <lists+bpf@lfdr.de>; Thu, 19 Sep 2024 23:18:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DD8131C2234D
-	for <lists+bpf@lfdr.de>; Thu, 19 Sep 2024 21:05:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 282E1B220DD
+	for <lists+bpf@lfdr.de>; Thu, 19 Sep 2024 21:18:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C1FF14D280;
-	Thu, 19 Sep 2024 21:04:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03C5E1419A9;
+	Thu, 19 Sep 2024 21:17:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tMIiZugO"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Zjsyjf/y"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E87C8143880;
-	Thu, 19 Sep 2024 21:04:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEA5422612
+	for <bpf@vger.kernel.org>; Thu, 19 Sep 2024 21:17:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726779894; cv=none; b=ECFxxjIR2M4/5jUKYcuyDaX6fdnJ/Mr0vIhA9ZD9dnUq87baPtRX3uv0gqeWtYanIMSgu0uLO2P/Yl2NDJflQHy2QB5CWZjPZmuAOaTnZaKVdIE+tXZhBlxwTbM/S3WZGcqBvCncfdCjZPbR1G/nR8/LKc4sDCayr39MDOo68uE=
+	t=1726780674; cv=none; b=eyplvZG91YP+g2X6f6nKhJUSJjccXcVQggsDUBxosZDOhihP7wTy0jMkeiQm8zG2ABjwE9OcJO8F2QQTEV5r4mg6VTW/AF75O1LuFLIPBeXaw/pvJngpoM/LVywmjzYDOepIwdDxIAXNLc36J3FaVGmsIjwkrWphX3Cjx2rspJE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726779894; c=relaxed/simple;
-	bh=8rmdkhy7mle9GnzKV59Fez0ZiYJ5ItopN5knD5heul0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OtyYZc7s5Uxt8DM+T0cTTfhOMr3D9EHvO0SYMpgQDF1Ti6hwlyk9stQSEMjdC/zRdsllEovRTM3voQPeGjyGBad3gvWTWx8FkiKMRdJFC7vkefK+ql02oMk+vLEat5mHD3XD+lGVh8oA7aObgHbxWy+AhZK8kZ+td5+EUPcEagc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tMIiZugO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7DAEC4CEC4;
-	Thu, 19 Sep 2024 21:04:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1726779893;
-	bh=8rmdkhy7mle9GnzKV59Fez0ZiYJ5ItopN5knD5heul0=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=tMIiZugOhjzqgyUpW7HkIMb94kB3G/IoEOWJvEfIibHaCL2W6lxj/6dAy50ww3Upd
-	 5BuV7yd7+xf0LnJlLA6shnOsl4ybtmmnw4qRRAcxcVdTlQQO8CjzRoHuaAPl0cnLci
-	 KyO838TcaL8c8mfnqC3Fcz2LQ0BjvUfx2U9ux0XAeez0raNOeRSjsGu9186hqHSozD
-	 ekcF76hWo/vt3sl8iQ7tBHFkSTET2nmVrmZCljeeCkxJkkq5cSQY3mp+XWQ6e0oYMf
-	 Qo62AxytxEW4fp+yzCDxcmUUB+Wme/iNSXIqef4vFQ/XRD6jqsRg+/Yl4tOtEC8q6k
-	 c8Ol4+tfmgDUA==
-Message-ID: <0e8c7a7a-0e2a-42ec-adbc-b29f6a514517@kernel.org>
-Date: Thu, 19 Sep 2024 23:04:43 +0200
+	s=arc-20240116; t=1726780674; c=relaxed/simple;
+	bh=3e/ldCppbzIZhbUc3nGQGHuSz7LYIi+xVArqOB65To4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=o9zOmfqCPd3MPenuD/DwYQUrLNcUObWoMRXnAmQsRSQedUJXcFtOsp4XWOu56UL2REMaTn3Lsy3jfrrqkG+zFhsKW6K8t1H9vuTQSqWxe0cMUU/YZ+8yB5EGnVd3Md1gkH3r7KbIoCEZ1CKn2nAr5KpB/fz+1E6cUL3dkn++1tM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Zjsyjf/y; arc=none smtp.client-ip=209.85.128.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-42cb6f3a5bcso15951885e9.2
+        for <bpf@vger.kernel.org>; Thu, 19 Sep 2024 14:17:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1726780671; x=1727385471; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gv4batBtoDBjI0QZrQGt5I5mDqayFHqTcFgRwPmQOHE=;
+        b=Zjsyjf/ykcZPZKZ2aNz5/IxCsUVZV8pVNW1HTA8up8VjZlobjxlbS20nIwo+3FKHB0
+         vZib3IJNcd/LHCnu0q4zpT/3U4favEkuEftnLVsr4mIwuybddAgyimY2SVtXilE8I0UG
+         m6t1kIWrtmPKfYUJ8TLBKIvOBy5kFu9x04/VROklBpjIY3IUGdeX3acdmOMbbHRjl+bf
+         S8pLUp3rWIP+ogFu5Z6krrywwldGlWKtDLhB+yt8hpTNnZcjFtw28E0bZyjSpELaxuXd
+         oTOqSSrP79GnOBXdT3EimcqPeCB4C2lfcdtXojID/IBX0Yvt96+1saBTG6GbBpYbM4Bw
+         QdlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1726780671; x=1727385471;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gv4batBtoDBjI0QZrQGt5I5mDqayFHqTcFgRwPmQOHE=;
+        b=WFn7mE6vXk72N3mkhVzlZH7MFv1RLcfxHnWVqQT11O29AywKCbzx0D1CsDf/OETCL1
+         3s70t0AHsCOOMygwIkhYGfR32h9KCFTcDX3Hk+tPq4Ws9WqwJ4xBwcKcyGSVsSbhLnHY
+         cjgSPf7lLjLUshLZk7ZqAo4UNqBq1obvgK0gHhGozzUzIkOagkldeXtu0xCBr3ChNDWW
+         ajj1QEf0O6QNPrHCUKun6QV1+cI7wW7hVSlOeCgMvaTHvSz2sNM1MhCvGZBVLWdvr4sZ
+         XUQ5tI3l2Ea99Jcgprj+tKF4hwTOQxMFMAk2/qEIEOIKOI0/Ca3I7nQgF7C+NgnQYRO5
+         jUcw==
+X-Forwarded-Encrypted: i=1; AJvYcCWUJ2um94uZaTt62u77GRcteEs/XrW+4a6vdzh7k3A/Gn940aaQYNiV9xYNYnyYvo0QcVI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwQZqyh7g87oioWZxH+t1XW6aLVDb3ay7XMzOmrzBwy2RliWFmj
+	w9tbQe4IxDo6hz5nX606qtwB3TLCQ3uORmaphjcp6hQFxLEveZvxV6IdV+6aFkB+IVBHqsbxM2Y
+	YuL+T/uovZ2iMT2+bOalg59VOZHQ=
+X-Google-Smtp-Source: AGHT+IEMTDECO9j+7tG9YqxF/m0OjCU76OHbS1/+5MuEYAGVPMGKe75KHU3ejEWo/zjFzun22abe8mcakhZLM2DQsWs=
+X-Received: by 2002:a05:600c:1908:b0:42c:c8be:4215 with SMTP id
+ 5b1f17b1804b1-42e7abe3ef3mr5635275e9.4.1726780670968; Thu, 19 Sep 2024
+ 14:17:50 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net 2/2] page_pool: fix IOMMU crash when driver has
- already unbound
-To: Yunsheng Lin <linyunsheng@huawei.com>,
- Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Cc: davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
- liuyonglong@huawei.com, fanghaiqing@huawei.com, zhangkun09@huawei.com,
- Robin Murphy <robin.murphy@arm.com>,
- Alexander Duyck <alexander.duyck@gmail.com>, IOMMU <iommu@lists.linux.dev>,
- Wei Fang <wei.fang@nxp.com>, Shenwei Wang <shenwei.wang@nxp.com>,
- Clark Wang <xiaoning.wang@nxp.com>, Eric Dumazet <edumazet@google.com>,
- Tony Nguyen <anthony.l.nguyen@intel.com>,
- Przemek Kitszel <przemyslaw.kitszel@intel.com>,
- Alexander Lobakin <aleksander.lobakin@intel.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- John Fastabend <john.fastabend@gmail.com>, Saeed Mahameed
- <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
- Tariq Toukan <tariqt@nvidia.com>, Felix Fietkau <nbd@nbd.name>,
- Lorenzo Bianconi <lorenzo@kernel.org>, Ryder Lee <ryder.lee@mediatek.com>,
- Shayne Chen <shayne.chen@mediatek.com>, Sean Wang <sean.wang@mediatek.com>,
- Kalle Valo <kvalo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Andrew Morton <akpm@linux-foundation.org>, imx@lists.linux.dev,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- intel-wired-lan@lists.osuosl.org, bpf@vger.kernel.org,
- linux-rdma@vger.kernel.org, linux-wireless@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
- linux-mm@kvack.org
-References: <20240918111826.863596-1-linyunsheng@huawei.com>
- <20240918111826.863596-3-linyunsheng@huawei.com>
- <CAC_iWjK=G7Oo5=pN2QunhasgDC6NyC1L+96jigX7u9ad+PbYng@mail.gmail.com>
- <894a3c2c-22f9-45b9-a82b-de7320066b42@kernel.org>
- <cdfecd37-31d7-42d2-a8d8-92008285b42e@huawei.com>
-Content-Language: en-US
-From: Jesper Dangaard Brouer <hawk@kernel.org>
-In-Reply-To: <cdfecd37-31d7-42d2-a8d8-92008285b42e@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20240919195454.73358-1-kerneljasonxing@gmail.com>
+In-Reply-To: <20240919195454.73358-1-kerneljasonxing@gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 19 Sep 2024 23:17:39 +0200
+Message-ID: <CAADnVQJUd_1y-Ecgw3pgd6z2jw6=ZEm5wnxQqwUnhCobw752fQ@mail.gmail.com>
+Subject: Re: [PATCH bpf] bpf: syscall_nrs: fix no previous prototype for "syscall_defines"
+To: Jason Xing <kerneljasonxing@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>, 
+	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	bpf <bpf@vger.kernel.org>, Jason Xing <kernelxing@tencent.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Thu, Sep 19, 2024 at 9:55=E2=80=AFPM Jason Xing <kerneljasonxing@gmail.c=
+om> wrote:
+>
+> From: Jason Xing <kernelxing@tencent.com>
+>
+> In some environments (gcc treated as error in W=3D1, which is default), i=
+f we
+> make -C samples/bpf/, it will be stopped because of
+> "no previous prototype" error like this:
+>
+>   ../samples/bpf/syscall_nrs.c:7:6:
+>   error: no previous prototype for =E2=80=98syscall_defines=E2=80=99 [-We=
+rror=3Dmissing-prototypes]
+>    void syscall_defines(void)
+>         ^~~~~~~~~~~~~~~
 
+samples/bpf/ doesn't accept patches any more.
+If this samples/test is useful, refactor it to the test_progs framework.
+Otherwise delete it.
 
-On 19/09/2024 13.15, Yunsheng Lin wrote:
-> On 2024/9/19 17:42, Jesper Dangaard Brouer wrote:
->>
->> On 18/09/2024 19.06, Ilias Apalodimas wrote:
->>>> In order not to do the dma unmmapping after driver has already
->>>> unbound and stall the unloading of the networking driver, add
->>>> the pool->items array to record all the pages including the ones
->>>> which are handed over to network stack, so the page_pool can
->>>> do the dma unmmapping for those pages when page_pool_destroy()
->>>> is called.
->>>
->>> So, I was thinking of a very similar idea. But what do you mean by
->>> "all"? The pages that are still in caches (slow or fast) of the pool
->>> will be unmapped during page_pool_destroy().
->>
->> I really dislike this idea of having to keep track of all outstanding pages.
->>
->> I liked Jakub's idea of keeping the netdev around for longer.
->>
->> This is all related to destroying the struct device that have points to
->> the DMA engine, right?
-> 
-> Yes, the problem seems to be that when device_del() is called, there is
-> no guarantee hw behind the 'struct device ' will be usable even if we
-> call get_device() on it.
-> 
->>
->> Why don't we add an API that allow netdev to "give" struct device to
->> page_pool.  And then the page_poll will take over when we can safely
->> free the stuct device?
-> 
-> By 'allow netdev to "give" struct device to page_pool', does it mean
-> page_pool become the driver for the device?
-> If yes, it seems that is similar to jakub's idea, as both seems to stall
-> the calling of device_del() by not returning when the driver unloading.
-
-Yes, this is what I mean. (That is why I mentioned Jakub's idea).
-
-
-> If no, it seems that the problem is still existed when the driver for
-> the device has unbound after device_del() is called.
+pw-bot: cr
 
