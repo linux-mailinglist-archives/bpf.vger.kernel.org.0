@@ -1,124 +1,114 @@
-Return-Path: <bpf+bounces-40093-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40085-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E63BF97C75C
-	for <lists+bpf@lfdr.de>; Thu, 19 Sep 2024 11:46:03 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5EE1397C73B
+	for <lists+bpf@lfdr.de>; Thu, 19 Sep 2024 11:43:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 571B9B2714A
-	for <lists+bpf@lfdr.de>; Thu, 19 Sep 2024 09:46:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A0BD1F29C57
+	for <lists+bpf@lfdr.de>; Thu, 19 Sep 2024 09:43:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B73719E96B;
-	Thu, 19 Sep 2024 09:43:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F3D119D084;
+	Thu, 19 Sep 2024 09:42:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="B0/2UBAw"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WNvFUZlI"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f195.google.com (mail-pf1-f195.google.com [209.85.210.195])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE81919DF4C;
-	Thu, 19 Sep 2024 09:43:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C76019CC18;
+	Thu, 19 Sep 2024 09:42:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726739014; cv=none; b=V3pDta3vXl35ds6zBhKZS78jd60w6AbbjEYC0cfIxk8wbI5AFQVPLj+ui8reQgXF9+aNJmlm6HgfruGh6XoSmvvim5+3YozstTm7UYDad+XIs7Zxz9LR5Jd3WrpcIYLYRLnFMvQwI98Oc5pLjPTX9cHkRSOX4lUaAsnJFNYgz78=
+	t=1726738970; cv=none; b=hqfYgqMYD9ebtPO4yEurFsuNykFLFRz8qFqONYx5ULlNN1rqWrcugiV517Xp6CPN37KH7DOeVtxgJ57xnDkuXvRy4+v6uxRt5Crv7m7OpcCNSULjMnq/i5gtH/ODkwL8QHzN/6m7q6tU5PlO2Dm/8XdKVg/bHDFFzn6+/H1H1UI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726739014; c=relaxed/simple;
-	bh=ieuL/O3/265wxoAQ9SYV+ZrakZmm8ntMC/lUQH0jiok=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=cKEACobH1/UN+n3A7VHuszoE2Z64RCbB2VNw874z8rNTkCLjsMjG1zvzdB6dTP2jg4G5yAB5wseD9PjGTt/eQd9mKKwKLJ6htFqA4hN8umiltBJQ3end5Px2BveoAyL6AIpx3gZrPCKSFk5M4I+1v7/ZD7q16LHP1X1pfIT39YQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=B0/2UBAw; arc=none smtp.client-ip=209.85.210.195
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f195.google.com with SMTP id d2e1a72fcca58-71798a15ce5so1357626b3a.0;
-        Thu, 19 Sep 2024 02:43:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1726738993; x=1727343793; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Rfr8GHfpAnekQQsJ9DXbNrw9ejSWEOElOr5R5vluBYQ=;
-        b=B0/2UBAwma0VutdNcINHEGSOz7zx/GIYaWWqDwYJA/iu0aDIEJmvcqj1wHE/JHyjXb
-         JLpawxRcFngs7m6CXEdnxAUhwqhN11Bwza70UuFiInPyChXyBXDSvGyXKl1jZVnb4xUR
-         qckkYBy8TzwGVcajZRQLbnd6tv+mIZXyoBqkmtFvKX2qTY/3Ccii1vxBwkm5e4K42PlL
-         9Cgg4xvva9Fyl9MixcYHi34QPZ42fk+0MVQABvAQc8VU0XtySWMp5rViVR+ku9GxpAhJ
-         +bKUpB8O6vY1i4jT5Kp/Rxv/Tbs+dgSTl5fxCAlwHRlUfNzDsoXOm4Dn0xau098EqZz+
-         9RYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726738993; x=1727343793;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Rfr8GHfpAnekQQsJ9DXbNrw9ejSWEOElOr5R5vluBYQ=;
-        b=TO/Pm7fxQvUAxN7vrcididwKo9qHEdSpJIW8eCX2qd9ExR2KrkveO1hY7/hp6PaIqG
-         wNjSGZ4NewfcylRoCqNBiFTey+jqSubbxm01dHerqltY57/+F53dllk5UI/yvvyvPQwR
-         l4g7Vnvgyd7RcuMW/tk7LQFV6ZYrDdw1BDZz+gUKIPvUiCuRA8Y+HMF7pBzIMG+pF79c
-         +NgpsjT+PeCqxcpFWk6r8Ciy65NP98i636+m4h/Riyu1bv5bZO59DOaoHkLsKGq1A8Hn
-         ig1Wu2qVQMwIe+HQT+mDTeHmq+rYHi74jwIvKGvABYVSfe9tZIo5FNogVm2EZod/uNxP
-         hOiw==
-X-Forwarded-Encrypted: i=1; AJvYcCW0IW4s1r3KDnokPEXiSOvxGhwn1WRsMLGJIKNcnSd10b8rCBk5mJ/yw81+5t1zPndzRoEp3mW6Pp137Rfi@vger.kernel.org, AJvYcCWfRaAYKmkMcv0ayAm15K9GyjhZFruwJmOtYStj620FxS04OewKd2kn6oLQP6rBoSbxmrVHSWNk@vger.kernel.org, AJvYcCXGA7MWWWtfSDFCLjaHMF7bm2LG9tLNE1iBbGGJkIdQJ24OHLVNEOpFTRebhvSvYbGKzhQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzuKV8ZB5nmkeIaM983T6H6BAvWXpazuSzs0sM/XbsM4GCzvQ93
-	Z6zVgxETDRDYh8rs3cjOpRuCM9t4AXTAS2vF7KczE/IBdYEO4356
-X-Google-Smtp-Source: AGHT+IFX1KD+RvJbrJVzp6geUXTu7trq7flY/gtaClnP3+TUmI1zNKnGzoDcQrqHbOfBTw4UhC+0rw==
-X-Received: by 2002:a05:6a21:168d:b0:1cf:6d67:fe55 with SMTP id adf61e73a8af0-1d2fca179c2mr3744940637.5.1726738992908;
-        Thu, 19 Sep 2024 02:43:12 -0700 (PDT)
-Received: from localhost.localdomain ([43.129.25.208])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-71944ab4b36sm7927086b3a.47.2024.09.19.02.43.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Sep 2024 02:43:12 -0700 (PDT)
-From: Menglong Dong <menglong8.dong@gmail.com>
-X-Google-Original-From: Menglong Dong <dongml2@chinatelecom.cn>
-To: edumazet@google.com
-Cc: davem@davemloft.net,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	dsahern@kernel.org,
-	steffen.klassert@secunet.com,
-	herbert@gondor.apana.org.au,
-	dongml2@chinatelecom.cn,
-	bigeasy@linutronix.de,
-	toke@redhat.com,
-	idosch@nvidia.com,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: [RFC PATCH net-next 7/7] net: ip: fix typo in the doc of SKB_DROP_REASON_IP_INNOROUTES
-Date: Thu, 19 Sep 2024 17:41:47 +0800
-Message-Id: <20240919094147.328737-8-dongml2@chinatelecom.cn>
-X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20240919094147.328737-1-dongml2@chinatelecom.cn>
-References: <20240919094147.328737-1-dongml2@chinatelecom.cn>
+	s=arc-20240116; t=1726738970; c=relaxed/simple;
+	bh=4mBPJ1/8ZHYMdSjeFFRdSDpez+20eaW5Qpk0ZxpyplE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=kNuGi9S+av7C4E8wr7aXz7xR3RtpcW46GtTtpNlrEltq/Gut2mu/LJn7Z54KS+bkpJZ10m0KKYfeAGG0kdJlgjGjgG7Gs2E1g/0X0B3iOD1az2JV656+RPUg73A0jF+sw8t/zOjoxRw0QVAM6YRg/Ey4TE9TmFx99PAgnGfEDoA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WNvFUZlI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBC7FC4CEC4;
+	Thu, 19 Sep 2024 09:42:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1726738970;
+	bh=4mBPJ1/8ZHYMdSjeFFRdSDpez+20eaW5Qpk0ZxpyplE=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=WNvFUZlIeZCdtFKQ6JJfXg22qRTupBYLgnu8Znpgj7u9GzB9cb+oCuqkGaUUFXqZg
+	 u3FLl6T6Dc6z14wmNEhM9sxXlKK/hnTLT7l41VAHBzniRkxJuoPGhWwQEozIgpKcqn
+	 e0kS1YGW5Ob7pUpRgtI7MbGmwk2xVRYMaz+rj6ubfII71lcBL9BipnzLBPVQDxC0s+
+	 6tii01Hw8+gMcMOU9sr4JhVfid9pQ8djWVDTMMnYh2tWVR7phPjsbZwqdPYB+N9hdB
+	 cnocJ45KkOqJzUN/IKhO7vvYPYCr6HhVzm91jSPJ6/m++FZ0VQT1lV4F/UgLqGCLlU
+	 /zO3c8TS5wTbA==
+Message-ID: <894a3c2c-22f9-45b9-a82b-de7320066b42@kernel.org>
+Date: Thu, 19 Sep 2024 11:42:40 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net 2/2] page_pool: fix IOMMU crash when driver has
+ already unbound
+To: Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+ Yunsheng Lin <linyunsheng@huawei.com>
+Cc: davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+ liuyonglong@huawei.com, fanghaiqing@huawei.com, zhangkun09@huawei.com,
+ Robin Murphy <robin.murphy@arm.com>,
+ Alexander Duyck <alexander.duyck@gmail.com>, IOMMU <iommu@lists.linux.dev>,
+ Wei Fang <wei.fang@nxp.com>, Shenwei Wang <shenwei.wang@nxp.com>,
+ Clark Wang <xiaoning.wang@nxp.com>, Eric Dumazet <edumazet@google.com>,
+ Tony Nguyen <anthony.l.nguyen@intel.com>,
+ Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+ Alexander Lobakin <aleksander.lobakin@intel.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ John Fastabend <john.fastabend@gmail.com>, Saeed Mahameed
+ <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+ Tariq Toukan <tariqt@nvidia.com>, Felix Fietkau <nbd@nbd.name>,
+ Lorenzo Bianconi <lorenzo@kernel.org>, Ryder Lee <ryder.lee@mediatek.com>,
+ Shayne Chen <shayne.chen@mediatek.com>, Sean Wang <sean.wang@mediatek.com>,
+ Kalle Valo <kvalo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Andrew Morton <akpm@linux-foundation.org>, imx@lists.linux.dev,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ intel-wired-lan@lists.osuosl.org, bpf@vger.kernel.org,
+ linux-rdma@vger.kernel.org, linux-wireless@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
+ linux-mm@kvack.org
+References: <20240918111826.863596-1-linyunsheng@huawei.com>
+ <20240918111826.863596-3-linyunsheng@huawei.com>
+ <CAC_iWjK=G7Oo5=pN2QunhasgDC6NyC1L+96jigX7u9ad+PbYng@mail.gmail.com>
+Content-Language: en-US
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <CAC_iWjK=G7Oo5=pN2QunhasgDC6NyC1L+96jigX7u9ad+PbYng@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-This is a copy error, and SKB_DROP_REASON_IP_INNOROUTES should correspond
-to IPSTATS_MIB_INADDRERRORS in the comment. Just fix it
 
-Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
----
- include/net/dropreason-core.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 18/09/2024 19.06, Ilias Apalodimas wrote:
+>> In order not to do the dma unmmapping after driver has already
+>> unbound and stall the unloading of the networking driver, add
+>> the pool->items array to record all the pages including the ones
+>> which are handed over to network stack, so the page_pool can
+>> do the dma unmmapping for those pages when page_pool_destroy()
+>> is called.
+>
+> So, I was thinking of a very similar idea. But what do you mean by
+> "all"? The pages that are still in caches (slow or fast) of the pool
+> will be unmapped during page_pool_destroy().
 
-diff --git a/include/net/dropreason-core.h b/include/net/dropreason-core.h
-index 3d1b09f70bbd..a68235240f6a 100644
---- a/include/net/dropreason-core.h
-+++ b/include/net/dropreason-core.h
-@@ -366,7 +366,7 @@ enum skb_drop_reason {
- 	SKB_DROP_REASON_IP_INADDRERRORS,
- 	/**
- 	 * @SKB_DROP_REASON_IP_INNOROUTES: network unreachable, corresponding to
--	 * IPSTATS_MIB_INADDRERRORS
-+	 * IPSTATS_MIB_INNOROUTES
- 	 */
- 	SKB_DROP_REASON_IP_INNOROUTES,
- 	/** @SKB_DROP_REASON_IP_LOCAL_SOURCE: the source ip is local */
--- 
-2.39.5
+I really dislike this idea of having to keep track of all outstanding pages.
 
+I liked Jakub's idea of keeping the netdev around for longer.
+
+This is all related to destroying the struct device that have points to
+the DMA engine, right?
+
+Why don't we add an API that allow netdev to "give" struct device to
+page_pool.  And then the page_poll will take over when we can safely
+free the stuct device?
+
+--Jesper
 
