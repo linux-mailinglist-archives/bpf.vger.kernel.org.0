@@ -1,129 +1,127 @@
-Return-Path: <bpf+bounces-40096-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40097-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF8DF97C85E
-	for <lists+bpf@lfdr.de>; Thu, 19 Sep 2024 13:13:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 072E997C86A
+	for <lists+bpf@lfdr.de>; Thu, 19 Sep 2024 13:15:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F29DE1C252A4
-	for <lists+bpf@lfdr.de>; Thu, 19 Sep 2024 11:13:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 39CBC1C2555A
+	for <lists+bpf@lfdr.de>; Thu, 19 Sep 2024 11:15:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 187FD19D88D;
-	Thu, 19 Sep 2024 11:13:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="K4sa8IFl"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54C9119D89A;
+	Thu, 19 Sep 2024 11:15:19 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0617E19D069;
-	Thu, 19 Sep 2024 11:13:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.156.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C91319D88C;
+	Thu, 19 Sep 2024 11:15:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726744392; cv=none; b=XMPYXgoJiSp3CEea8qiO67c10hIX6IM0N22OeKwACUL+mL1KnKjq29/8vfgnz55/0WEGUqLPKz1yniBsp428FxscU1FF7nH0kLoe1dzhs32Mnaro7p7IQBs6LmgH3vYLfngdktWXc0Zq1iiKRjo7CjIeuZCbNnc2mU76BsRO824=
+	t=1726744519; cv=none; b=fv8ApJ+36r9H5oyWVI7U5dlDoRGe6N9w8/wdB6Kwaf9Aj0AZuGpdSB9Nk2XyWwut3Gl971Ap2Gs6jNtqGCAJavY1VNMFxZjD3snH/azwZd4YvUkUYH2/ogrMjpPX/UwkNQYS8l+nUj96BPZ4IdQc0HqS4KSExsPYLz1a2iPhPSk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726744392; c=relaxed/simple;
-	bh=mSW5lrlRXkBe3hdDmc5mspa++Cwa8m7fyWTdlSWbjLI=;
-	h=Date:From:To:CC:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=XS9u58WSsh4IbiRKS5T5IITVbYOCK8wgmFaiMjoAFdofcUZ/udZA8K5+rvsnnHP62P5W0WgSDUZ9z4nP1fjAq3kKsIUWNSlhf/DxEY3mXaBOlwd7HEE98reqdi2DK3AsEz7lbz4sxztWv7kzcS+97Ivfytmk4sw03zJ7INt72Ys=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=K4sa8IFl; arc=none smtp.client-ip=67.231.156.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-	by mx0b-0016f401.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 48J9FxlA010349;
-	Thu, 19 Sep 2024 04:12:44 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
-	cc:content-type:date:from:message-id:mime-version:subject:to; s=
-	pfpt0220; bh=4VXw//KqD9XDky/B2uSXxs9gq021yHn+0xx/I/0/7RU=; b=K4s
-	a8IFl/tTqP/Ew7Xa4hxhUpdzxy7pzKBkroAO1MrD4djWPjDfwPdrdGGlDBpSQL7C
-	fBiiZiidy5NQo/2OUVn9esxm+8YnDnTG32cJDUKX3o2I8GX0MLWgy0ucLOlYImh9
-	TD6xzZb2iO+6MPgS9oM3Yaz4iEDACYWmdtNaZb2sDMxmyauk3qGqklNoH6j0F7Gg
-	tv61SzaWbLDBRB6cQMNleDKbx+QaTUrl4JLsaw9H2eDRmU3/x+5e5GqGcq/de+q2
-	yoi1bfB3xkFAoiQ6FIo5mf/xj0FWF1VtCQ2x5UzDRG6l3sdWTVmOOJrfw9x3n+X7
-	up0o54XWcn7ZGm87jAw==
-Received: from dc5-exch05.marvell.com ([199.233.59.128])
-	by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 41rh5mgg18-8
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 19 Sep 2024 04:12:44 -0700 (PDT)
-Received: from DC5-EXCH05.marvell.com (10.69.176.209) by
- DC5-EXCH05.marvell.com (10.69.176.209) with Microsoft SMTP Server
+	s=arc-20240116; t=1726744519; c=relaxed/simple;
+	bh=RbDtzFY4xR7hRu6Pf3a1C6ue6w6zG+4Zddlf2w/ZKJ8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=RF8EFl6HhyI6J43zTf7oCZLC/15LLxZ20AQtsd9gUJPyZlRqAEYE+sGvJipyCdF014anUyVx1RfdiUVH04wIA9vld5jJ46zVoOm3I4+Bl1dQcRosPKEvCTbd76JfaR8P0JKM15fbe721tFqjDp5zeczckzyjIzDUJoWVvfT3E9A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4X8XwS0qCqz2DcFV;
+	Thu, 19 Sep 2024 19:14:32 +0800 (CST)
+Received: from dggpemf200006.china.huawei.com (unknown [7.185.36.61])
+	by mail.maildlp.com (Postfix) with ESMTPS id BC8361A016C;
+	Thu, 19 Sep 2024 19:15:11 +0800 (CST)
+Received: from [10.67.120.129] (10.67.120.129) by
+ dggpemf200006.china.huawei.com (7.185.36.61) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.4; Thu, 19 Sep 2024 04:12:37 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH05.marvell.com
- (10.69.176.209) with Microsoft SMTP Server id 15.2.1544.4 via Frontend
- Transport; Thu, 19 Sep 2024 04:12:37 -0700
-Received: from test-OptiPlex-Tower-Plus-7010 (unknown [10.29.37.157])
-	by maili.marvell.com (Postfix) with SMTP id BD9FB3F7088;
-	Thu, 19 Sep 2024 04:12:32 -0700 (PDT)
-Date: Thu, 19 Sep 2024 16:42:31 +0530
-From: Subbaraya Sundeep <sbhatta@marvell.com>
-To: Wei Fang <wei.fang@nxp.com>
-CC: <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <claudiu.manoil@nxp.com>,
-        <vladimir.oltean@nxp.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <hawk@kernel.org>, <john.fastabend@gmail.com>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <bpf@vger.kernel.org>, <stable@vger.kernel.org>, <imx@lists.linux.dev>
-Subject: Re: [PATCH net 3/3] net: enetc: reset xdp_tx_in_flight when updating
- bpf program
-Message-ID: <ZuwHHx2HiRlRipkw@test-OptiPlex-Tower-Plus-7010>
+ 15.2.1544.11; Thu, 19 Sep 2024 19:15:11 +0800
+Message-ID: <cdfecd37-31d7-42d2-a8d8-92008285b42e@huawei.com>
+Date: Thu, 19 Sep 2024 19:15:11 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-X-Proofpoint-ORIG-GUID: 9N_ww12_J25Yyry8OhKS8Urjg7gQOvsI
-X-Proofpoint-GUID: 9N_ww12_J25Yyry8OhKS8Urjg7gQOvsI
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
- definitions=2024-09-06_09,2024-09-06_01,2024-09-02_01
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net 2/2] page_pool: fix IOMMU crash when driver has
+ already unbound
+To: Jesper Dangaard Brouer <hawk@kernel.org>, Ilias Apalodimas
+	<ilias.apalodimas@linaro.org>
+CC: <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>,
+	<liuyonglong@huawei.com>, <fanghaiqing@huawei.com>, <zhangkun09@huawei.com>,
+	Robin Murphy <robin.murphy@arm.com>, Alexander Duyck
+	<alexander.duyck@gmail.com>, IOMMU <iommu@lists.linux.dev>, Wei Fang
+	<wei.fang@nxp.com>, Shenwei Wang <shenwei.wang@nxp.com>, Clark Wang
+	<xiaoning.wang@nxp.com>, Eric Dumazet <edumazet@google.com>, Tony Nguyen
+	<anthony.l.nguyen@intel.com>, Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+	Alexander Lobakin <aleksander.lobakin@intel.com>, Alexei Starovoitov
+	<ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, John Fastabend
+	<john.fastabend@gmail.com>, Saeed Mahameed <saeedm@nvidia.com>, Leon
+ Romanovsky <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>, Felix Fietkau
+	<nbd@nbd.name>, Lorenzo Bianconi <lorenzo@kernel.org>, Ryder Lee
+	<ryder.lee@mediatek.com>, Shayne Chen <shayne.chen@mediatek.com>, Sean Wang
+	<sean.wang@mediatek.com>, Kalle Valo <kvalo@kernel.org>, Matthias Brugger
+	<matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
+	<angelogioacchino.delregno@collabora.com>, Andrew Morton
+	<akpm@linux-foundation.org>, <imx@lists.linux.dev>, <netdev@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <intel-wired-lan@lists.osuosl.org>,
+	<bpf@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+	<linux-wireless@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-mediatek@lists.infradead.org>, <linux-mm@kvack.org>
+References: <20240918111826.863596-1-linyunsheng@huawei.com>
+ <20240918111826.863596-3-linyunsheng@huawei.com>
+ <CAC_iWjK=G7Oo5=pN2QunhasgDC6NyC1L+96jigX7u9ad+PbYng@mail.gmail.com>
+ <894a3c2c-22f9-45b9-a82b-de7320066b42@kernel.org>
+Content-Language: en-US
+From: Yunsheng Lin <linyunsheng@huawei.com>
+In-Reply-To: <894a3c2c-22f9-45b9-a82b-de7320066b42@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemf200006.china.huawei.com (7.185.36.61)
 
-On 2024-09-19 at 14:11:04, Wei Fang (wei.fang@nxp.com) wrote:
-> When running "xdp-bench tx eno0" to test the XDP_TX feature of ENETC
-> on LS1028A, it was found that if the command was re-run multiple times,
-> Rx could not receive the frames, and the result of xdo-bench showed
-> that the rx rate was 0.
+On 2024/9/19 17:42, Jesper Dangaard Brouer wrote:
 > 
-> root@ls1028ardb:~# ./xdp-bench tx eno0
-> Hairpinning (XDP_TX) packets on eno0 (ifindex 3; driver fsl_enetc)
-> Summary                      2046 rx/s                  0 err,drop/s
-> Summary                         0 rx/s                  0 err,drop/s
-> Summary                         0 rx/s                  0 err,drop/s
-> Summary                         0 rx/s                  0 err,drop/s
+> On 18/09/2024 19.06, Ilias Apalodimas wrote:
+>>> In order not to do the dma unmmapping after driver has already
+>>> unbound and stall the unloading of the networking driver, add
+>>> the pool->items array to record all the pages including the ones
+>>> which are handed over to network stack, so the page_pool can
+>>> do the dma unmmapping for those pages when page_pool_destroy()
+>>> is called.
+>>
+>> So, I was thinking of a very similar idea. But what do you mean by
+>> "all"? The pages that are still in caches (slow or fast) of the pool
+>> will be unmapped during page_pool_destroy().
 > 
-> By observing the Rx PIR and CIR registers, we found that CIR is always
-> equal to 0x7FF and PIR is always 0x7FE, which means that the Rx ring
-> is full and can no longer accommodate other Rx frames. Therefore, it
-> is obvious that the RX BD ring has not been cleaned up.
+> I really dislike this idea of having to keep track of all outstanding pages.
 > 
-> Further analysis of the code revealed that the Rx BD ring will only
-> be cleaned if the "cleaned_cnt > xdp_tx_in_flight" condition is met.
-> Therefore, some debug logs were added to the driver and the current
-> values of cleaned_cnt and xdp_tx_in_flight were printed when the Rx
-> BD ring was full. The logs are as follows.
+> I liked Jakub's idea of keeping the netdev around for longer.
 > 
-> [  178.762419] [XDP TX] >> cleaned_cnt:1728, xdp_tx_in_flight:2140
-> [  178.771387] [XDP TX] >> cleaned_cnt:1941, xdp_tx_in_flight:2110
-> [  178.776058] [XDP TX] >> cleaned_cnt:1792, xdp_tx_in_flight:2110
-> 
-> From the results, we can see that the maximum value of xdp_tx_in_flight
-> has reached 2140. However, the size of the Rx BD ring is only 2048. This
-> is incredible, so checked the code again and found that the driver did
-> not reset xdp_tx_in_flight when installing or uninstalling bpf program,
-> resulting in xdp_tx_in_flight still retaining the value after the last
-> command was run.
-> 
-> Fixes: c33bfaf91c4c ("net: enetc: set up XDP program under enetc_reconfigure()")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Wei Fang <wei.fang@nxp.com>
+> This is all related to destroying the struct device that have points to
+> the DMA engine, right?
 
-Reviewed-by: Subbaraya Sundeep <sbhatta@marvell.com>
+Yes, the problem seems to be that when device_del() is called, there is
+no guarantee hw behind the 'struct device ' will be usable even if we
+call get_device() on it.
 
-Thanks,
-Sundeep
+> 
+> Why don't we add an API that allow netdev to "give" struct device to
+> page_pool.  And then the page_poll will take over when we can safely
+> free the stuct device?
+
+By 'allow netdev to "give" struct device to page_pool', does it mean
+page_pool become the driver for the device?
+If yes, it seems that is similar to jakub's idea, as both seems to stall
+the calling of device_del() by not returning when the driver unloading.
+If no, it seems that the problem is still existed when the driver for
+the device has unbound after device_del() is called.
+
+> 
+> --Jesper
 
