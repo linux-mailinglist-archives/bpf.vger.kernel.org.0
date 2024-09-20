@@ -1,286 +1,216 @@
-Return-Path: <bpf+bounces-40120-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40121-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6871F97D209
-	for <lists+bpf@lfdr.de>; Fri, 20 Sep 2024 09:49:59 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66FBC97D26B
+	for <lists+bpf@lfdr.de>; Fri, 20 Sep 2024 10:19:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2665728204B
-	for <lists+bpf@lfdr.de>; Fri, 20 Sep 2024 07:49:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B9904B23FC9
+	for <lists+bpf@lfdr.de>; Fri, 20 Sep 2024 08:19:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1B64558BA;
-	Fri, 20 Sep 2024 07:49:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0505762EB;
+	Fri, 20 Sep 2024 08:19:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MYYovQTK"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="HFscIqC1";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="zNJAtQ61"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B240B4D9FB;
-	Fri, 20 Sep 2024 07:49:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726818593; cv=none; b=QTgo6sqS2okGIoZ8Y8smliZr87JvyFExgGLuVfZiYdTFnsdzG7pUrzDEgPIs1yWU7NiJzmVm6A3IB3pkzN7UKkBx1FLJkdNZx4kB0eAzsfGimkshMwQe2qkD+FZ0nxcUlR24j6tC1Ttrc0jiocpo1Ol8j81qlX+lrGKp0/UmNzg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726818593; c=relaxed/simple;
-	bh=KWLDpztzVbYK1KBMhhpMWgMtRWDVoN5Lkrnz32H+YjA=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=LjpTjKFEzVRyz+FbW5BpVtv1MLX3g3HfdzF5ng2jOgNUoSPcpJeIzu2vQQv5MGJDnMvHBVzAOvoqCg5N11g65ccRmLLdUe7YzjG/6IdILckz+hUX6/7Z5KHPCougqmtfFDef3sFpdOhI8KbFxvZ5Ryl91j2Q4mhxlpLpmbIhFsY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MYYovQTK; arc=none smtp.client-ip=209.85.215.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-7db908c9c83so822615a12.2;
-        Fri, 20 Sep 2024 00:49:51 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7CD4487BF;
+	Fri, 20 Sep 2024 08:19:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1726820357; cv=fail; b=dR3e/tfxZV/1FcVZ1aTtjTrm+uBqT+FWirrpu1/Uv1kvXUB8xdNyKbgLCzyIAVKCSyynPhRAmmxN15y4ChPu6PljpSIeVk+WiTIRvb76EKhtMKK8libUBV6wZ8NqTByUnHzy8RT1fCxXKBT+OAZD75e4tJJjUkaMrWyqDB9lWEM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1726820357; c=relaxed/simple;
+	bh=avs3G9Dv2J5iF5l1n9x21JdKk74/bGSyOSsm9F8DxyA=;
+	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=fzLpSp5iQn9NaGnC9ma9GAa079iiChX3bt9amadNLSiLd+0WKP6KEv29yrTiGCNkrYL4jyvIEbepuhL/IK0XJ85betnAsB53mfFICt+9hBxC3URNK/SNBoaOuJ3H+nSXlGhhCDf0qXo2BlT8oI+6qEIwLFg6J1ltftcKyjG+6LA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=HFscIqC1; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=zNJAtQ61; arc=fail smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 48K7tXEs027904;
+	Fri, 20 Sep 2024 08:19:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=
+	from:to:cc:subject:date:message-id:content-transfer-encoding
+	:content-type:mime-version; s=corp-2023-11-20; bh=wqk7SAbKnY/inv
+	SffrLGsMdOcexyjVbqJCASDXZrx78=; b=HFscIqC1pGaIHl3NTrSlHbSJeC0vV7
+	Tcq+n+h16+j+xRdPWGzzfU8lo7qxnBnepay0fAQgAJjbv15qAHw4MoNQMZ2Ga8fe
+	vlEvNCrgWBzLHrwxsHRrBIUoFzqk+RBraR8bTCpxu4tZ00naW/00wGEvYABl8BkN
+	LppO0GpREuXHnoK73813bOXJBFGYTQkjKVJV+uuRZRTen8Mdw88e0816bsuYrxYi
+	v9XRYGzl1NNOFkSFLD1et8NVI0PCsYecKlfdkVS7DSfAx3QVyiizbxzZAMayJGV5
+	aOxINaFIDmQQKOjyiuLepup42M2P5tyc3LZy6YreBng3nAFF4LUDTIqg==
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 41n3rx62j5-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 20 Sep 2024 08:19:12 +0000 (GMT)
+Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 48K5mrbM018222;
+	Fri, 20 Sep 2024 08:19:11 GMT
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2171.outbound.protection.outlook.com [104.47.56.171])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 41nyd1jmya-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 20 Sep 2024 08:19:11 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=CFwbtVo4xp8e/LWsCFIVf9BIw2Eh+86Ncd2nyyQLSAZ0RFKrJYeg7BImwI1B6r9oI+WMDYLNkVbk7wCQApzAHZUNPUplwSaYJWeRkAXh7QursAMn7YrnbPh66xaCJc+LFNktjk/kJOk5ZsCDt/Gu3w5SodqOba0Se3+zLgLA/sVve/TdZXJgTXe3ObsFFsBYkeG63b0PFN/DaiA2XWUEPOzdHTnhBdWSLx78aRKCHrMyCbul3oRnGBHvzjZf4oGxWT7HyaF09tTPkJG/C+zerUqczuWh2C6lACYHrzp9+7QzUJY9L1ewO3vcmxW+JCGZpD/uGk2ID6h4Zorn/7JPqQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=wqk7SAbKnY/invSffrLGsMdOcexyjVbqJCASDXZrx78=;
+ b=WFgYNfnEAEu2MHFMi4/xkthfUonwrAP/yhMtYfK6tyKGoLLLiUXGkSKhX6HmgrEy1olQ+CeRkwMcBETxHwMc2TV7yI+DHMk7oXkLdkn/6sQDqFAyGBZjJP8PS2oCbSUNxEU68/xBbJhVOS+lUnEtRU+pHsH4dWN8WfByqDgqi3H2aXfY2T97hwJJt4agSvI5eTe5EHfPLnEkDBn98bUgOJn4sXMcC1G+DN2goBpstuD5gcjV/CNJH00vnjWXEzyK9gmr5GeZqG6FIxWAS8dZt23E1fkBnHf+xAnRZk9VBq/+M4L8upI/fu0oOCRCmR5EPCzx9A0Kb6FG0iuNWxK/cg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1726818591; x=1727423391; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Oe+h4uk3Jrp0ffDd+CRexEyHhRh2av2HRgIHFJhluXo=;
-        b=MYYovQTKer42fr+Pu+9XSCObD+bmP2Dg+7Z9gou7zLHZcexW0F6IqPBqFcbXL+Ksqk
-         9pJIkf4dz2qSGVwz3qu7H9e9dNifDSDNZD94cgUrOLSHcXiyI2cXI+e5oyNFzH234w/+
-         gFnsgilx4M5EBiRCkG8cSdL6YPLtELxmnVvObJ4vZC10gYBtLyXSUMYxLNnime28jFka
-         7UYfvQC89LIUFjvv2LJB7FnyNvRlmkvM73Sj2nPlp4rbyMYUuSpwMCehxrfXaNgloWRf
-         dfPt8cTx6Zb3N/m76YrTEDeF4Jvr95sYjGKnj8aKUJEz+ZVS6CBMFU1ug6qRNReQFDqc
-         42mw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726818591; x=1727423391;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Oe+h4uk3Jrp0ffDd+CRexEyHhRh2av2HRgIHFJhluXo=;
-        b=Rjinkt8RJVl+kcc8eFqLyjq2CzUEnCdlLLNRsoVAHDPiWCOVLAzMn/JcwaIxmt/Q8N
-         ZR+gMY8yK7n4S5Sa5YO5kS2C/Z8M0Sb38flDI7sTWBmtJge9jthM7xKLHMsRt7IG18vI
-         7w4cM3pL1Jl5UazZwn1MhNO+U/J/gZQYgtIv0zkvOuC6H1RggY3oO4pBSFPHkt+JIWzU
-         OYW0duiGtoRzVFlR+EN3Mc+Dd+2i0Jf1QwJC9uIJUpNe+Fiq5gd/aY7Elul/hyBX5al5
-         Ai8jLNPzoa2EFYDJ+LKjVl7GYEFwgvHCvbX9BY656XQy5CYl87CgOE16p/Jigw9gqw+S
-         hmBw==
-X-Forwarded-Encrypted: i=1; AJvYcCUpVRoEphru+fczBpillwIW34RoALg53/6zBBYTwhJjtlV5bFu5nnmRAm465phkoW0lh+Cp8+xB2PYi3gpEarA=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyzUruPzyg/OTzIiCCv6zju7sCmiB6f/LafBgztSJgRcmo56bnQ
-	Tc37lnpdlMTzEOkwUG3SNrN7ylVyBHBxSXJo1G2xRY+wOYqHbgcQq2PzkA==
-X-Google-Smtp-Source: AGHT+IF0wXFZ5zT8dZVr/RFuwJJhx/R9KlLvE34+6aNfluIBlpNgagp69AeFE1t9bUot/HPYG8Tyfg==
-X-Received: by 2002:a05:6a21:398c:b0:1cf:9a86:a29b with SMTP id adf61e73a8af0-1d30a9000admr3411896637.20.1726818590593;
-        Fri, 20 Sep 2024 00:49:50 -0700 (PDT)
-Received: from localhost.localdomain (69-172-146-21.cable.teksavvy.com. [69.172.146.21])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20794600fe8sm90481625ad.68.2024.09.20.00.49.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Sep 2024 00:49:50 -0700 (PDT)
-From: Tony Ambardar <tony.ambardar@gmail.com>
-To: bpf@vger.kernel.org
-Cc: Tony Ambardar <tony.ambardar@gmail.com>,
-	linux-kselftest@vger.kernel.org,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Shuah Khan <shuah@kernel.org>,
-	Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	Viktor Malik <vmalik@redhat.com>
-Subject: [PATCH bpf-next v1 3/3] tools/bpf, selftests/bpf : Sync btf_ids.h to tools
-Date: Fri, 20 Sep 2024 00:49:13 -0700
-Message-Id: <728fd3a356ae5f9a0c0a84d8b9fc6af1bcd22c1d.1726806756.git.tony.ambardar@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1726806756.git.tony.ambardar@gmail.com>
-References: <cover.1726806756.git.tony.ambardar@gmail.com>
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wqk7SAbKnY/invSffrLGsMdOcexyjVbqJCASDXZrx78=;
+ b=zNJAtQ61kl04SOZaQZtetDCeHM1xY+Hb2IuAYC4poL5m/ddjrEDUHomVJG3Znx+mLyH1GlGieQZbOOFgpMnZkQUMIy4/VmTVDb/Wb6etX5rsuhrUMX7f8OXkenGYFi3XXIl9+xi5QrQjmu8UJtEJ/n/DO/xdeppiEzlMa0JYvf4=
+Received: from PH8PR10MB6597.namprd10.prod.outlook.com (2603:10b6:510:226::20)
+ by DM4PR10MB6037.namprd10.prod.outlook.com (2603:10b6:8:bb::6) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.8005.9; Fri, 20 Sep 2024 08:19:07 +0000
+Received: from PH8PR10MB6597.namprd10.prod.outlook.com
+ ([fe80::6874:4af6:bf0a:6ca]) by PH8PR10MB6597.namprd10.prod.outlook.com
+ ([fe80::6874:4af6:bf0a:6ca%3]) with mapi id 15.20.8005.006; Fri, 20 Sep 2024
+ 08:19:07 +0000
+From: Stephen Brennan <stephen.s.brennan@oracle.com>
+To: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: bpf@vger.kernel.org, dwarves@vger.kernel.org,
+        linux-debuggers@vger.kernel.org,
+        Stephen Brennan <stephen.s.brennan@oracle.com>,
+        Alan Maguire <alan.maguire@oracle.com>
+Subject: [PATCH dwarves v2 0/4] Emit global variables in BTF
+Date: Fri, 20 Sep 2024 01:18:57 -0700
+Message-ID: <20240920081903.13473-1-stephen.s.brennan@oracle.com>
+X-Mailer: git-send-email 2.43.5
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: VI1PR07CA0160.eurprd07.prod.outlook.com
+ (2603:10a6:802:16::47) To PH8PR10MB6597.namprd10.prod.outlook.com
+ (2603:10b6:510:226::20)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH8PR10MB6597:EE_|DM4PR10MB6037:EE_
+X-MS-Office365-Filtering-Correlation-Id: f787c6f2-28a6-4670-6f4a-08dcd94ce55f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|376014|366016;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?Wnmen940nw2RCFtbwcqnoYz7g6l1yJCzVuRjHt17PPrKVlLLH1RU/YcycWRn?=
+ =?us-ascii?Q?+/eWr7UCcpZ8aBz6FPo8k+lYaHpKEtZNwupubsOlx0EddEzk0Q3AsGAxRCvw?=
+ =?us-ascii?Q?CfZVFNT3RDq8HmVOE4QFQef6a7oy5oML2+m1a37zaxMkTpISudlCYZ9TOzjG?=
+ =?us-ascii?Q?DMZvkVuYrG08RvKgjLo97eOEs3gZWfgfokNebZruP7Bi4tJJLhxd9q/eziSG?=
+ =?us-ascii?Q?snlT30ALLCPEVkrQFJtz/2lsoEOtSGTj6XNt081VVC6DHHo1XXIbdZ3F3Pu2?=
+ =?us-ascii?Q?Yu3rHkLUGHoaHkFaLDjXoR3W+uzLaSbaCXjkeqrQ2ivzhnBJ311FHKyX3lx2?=
+ =?us-ascii?Q?jOoOfzxkVGnQLfRiqzkd3jC5HMvdq0BhmfQwYcfyWBXTwpVNGqx9PEj63yxq?=
+ =?us-ascii?Q?+tT3ZYnvnO6t4raYlZItw6MXTpE8vmYanZjKdUoMgs/wNs5kQjrqBNB9++cB?=
+ =?us-ascii?Q?QZUFko4g6wrx2A1pHWmDCWndCAMO01V04dfwbOa1633PtoFOeI7I6FVtlCtU?=
+ =?us-ascii?Q?W7UxAzA4rQfw6A5bunFSNSpojWM9h8a9d9BAnLOULjpl2Fp0Jf3y4oFlUGnn?=
+ =?us-ascii?Q?IYQnWG4sO+83p5aycXsBlOa+o5TtDwDJ+j8d+TPQV4HUSCrvK3U88HZ1eEJg?=
+ =?us-ascii?Q?m7d6oNz2bCrTpM2D1uoO3lCOYjCN2eaXtjZ5MHS2wJWKWNpcJ2PUewxVCAvA?=
+ =?us-ascii?Q?buIeXTHnhMLW4R4qAXzrtX6GVFS3OzldjlaLpU0UHQ0w/CpiMkA6TS3hSCI3?=
+ =?us-ascii?Q?nopiiyxIcnW08HFu2r6uGO5ZaTaSS9k+horwaJhPrudVyuuv2hlnQeim/huw?=
+ =?us-ascii?Q?NKZlcJBJ3l4NguWOx1y/QrVKTdY64sGsu51XrsZKc95zIETpvpAjgdr3B6EN?=
+ =?us-ascii?Q?KEDvmUZ42l97d4GTnn4bzjCWRxAMOC8Ik2CxVG4SWVgLqVwZ7V0rbSU5CXVD?=
+ =?us-ascii?Q?/SGm69j+zvJyDvXM01NQ8cwAQ8BAVbJnZPgl1eVMOgfrUcOcvtkKfYe4APWE?=
+ =?us-ascii?Q?EFWh4vIwFTJYIFsZ8NK3d8kqbq+4EYcEs06Iqp+WGLLMF5i4OShnuwvz5GN8?=
+ =?us-ascii?Q?e7v23iK1tujoLsYd+lj/99ltBWUs5iKqPRPePMFHeSdo1pHhp2JBQXd/OX2N?=
+ =?us-ascii?Q?a6jlv1pvK5/O/6EIFjMw/KjoIVhUyUag+BWtjTInKpSqHV2mlJRErqsogom2?=
+ =?us-ascii?Q?Z8gpk5VDGjmVmdYK1dl3cdrqNCdSpR8tMNW8ZYO2mDkDSBFuYwKyNeMC7qoM?=
+ =?us-ascii?Q?V/CX9Xi70KiATMGKbb3qcupj7cyNolZahbs9hgF9uQ=3D=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR10MB6597.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(366016);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?jIcbFu7Uh8T/siU/2G5itixG+PfcitcGn1x/FuM0oj4SNmla5l9FeB7L3xF4?=
+ =?us-ascii?Q?X8ALTGFX1WmMRqt0B/HETLMPUczVkxT/M41sItzorPPQWMSeFH4aMCwONXQ2?=
+ =?us-ascii?Q?XESfJ9vkbIT3DiuYr7E3fb39ElENn4xHj/GVY/MDE7c9NNlEONAU7OoqcGN5?=
+ =?us-ascii?Q?lcN5bDBUWYdu4ePYa/TDveCvjx5WARKVVbbBscfG+w+JujmCHIkEdtHDHorQ?=
+ =?us-ascii?Q?p9xmWqUcTuCgzNlMzTAWE38iY4uxeX5pVQVKL93MMQsY0MQvwZ6eKTiYJPTk?=
+ =?us-ascii?Q?FqqQY5SeRRJQHWq2rwnTRb25wBeTQt9Avsr30ta36DpgEzE9e4H5/ZYYOU8I?=
+ =?us-ascii?Q?gI4uGs43DXeDjvo69c//O+Kknf65EUY65kQTStV5LkyzMsIJ78gRGj4f5AgY?=
+ =?us-ascii?Q?hE3Us/36Dm9D9odfTvMfwaJ/1l0Euc/az7znmtwWaQunkNZnOGOs1g64dtFS?=
+ =?us-ascii?Q?ghAGzvHfjw+ZvIvjYGS9iySMkcZwuJBg2udIMMCsoCVCUQz1M57F7LjVKAAA?=
+ =?us-ascii?Q?BJ7fRgS0IDIRA5EXKwJnuEHlGDmSLxWuOiamspAHp0hvl42uFnlevOvbLNJL?=
+ =?us-ascii?Q?Um0jwLBLWYTbTzFJLxVGP32oB1u+3bujE+KQNLn1HjH56+MLRPFal5ORouej?=
+ =?us-ascii?Q?1RFmZHsu2liOKfJ58flO8N5diRhdEYSAQx9FuRypSF/4dprC1IZzdtTGC4mg?=
+ =?us-ascii?Q?KSzy88xwJfN+lsR6mVf5tIyNaf/mlTqQgzy2yHt2LybHx7Hw2DupdL1VHqYb?=
+ =?us-ascii?Q?l8vjOtzOlqJnoqxBsRb/xFQiHQ3YOm7OE1qNPIr2U4V76Tl/U5TRFNo23yrM?=
+ =?us-ascii?Q?PQJSpR+DmAG27SfqTkvWI3pyBJ/m5g9LyXCjfZYDJnnbLv4zU7ruTW2z2Vf8?=
+ =?us-ascii?Q?3iO6/jdmhAPHTAamP46NERxDLyQw8FD/y3tsbVWlxUPUxYNN6bmyp4FkDI+V?=
+ =?us-ascii?Q?Vmo6UnaWqmMV++nqj7rUrUs1dvj0fEhtZchiMqzHMNiyectsNNla4w8iCTzN?=
+ =?us-ascii?Q?BsaFcwTNV838Fj/SP3h9cWBhbukCjfk2z+lJmCcWZOoSvrFXtjr8x4A5UVsH?=
+ =?us-ascii?Q?DXk8KIUZxA+xUBV+zloAF639QQqPkmad1UdXzLt1rb+L7GOFR7R8moVIUjEB?=
+ =?us-ascii?Q?aPwg8HEu9Y+QgRP3N8HqdSevW7GDrGMlXdkv7mqlQYUWQh81vOFB6X9BhJ34?=
+ =?us-ascii?Q?TjdwwvP3GMw6eY3G53ulNUsTbQzf6v6NEVpRtnQ+I3UFkqWwOZQ5i9I0wtw1?=
+ =?us-ascii?Q?+a2G/RPclbeMQeodVYVFBFWplJa1+mjpcUP95ig8xYIxmBmizQaBRfqveOqt?=
+ =?us-ascii?Q?1doMF+3o0DpqF0kDrFJ7sQ8uFYNlyfsFFsfrFqmnxxJVfJt5qUl/0zEG8jL6?=
+ =?us-ascii?Q?E8Cf6M5T1PBllx0OeSTGmRoicdshirgY8oDQwSiR0cLjSwm85SFZw8BDqBlo?=
+ =?us-ascii?Q?xXD6z/Tl6IZUCYN05hekIcS1+dsuVqEjea4BJqHhKqA5Hb5rI2QFeCgBv/Uf?=
+ =?us-ascii?Q?9h3G5tFx+OmtxM/QvUR/oQLkQAX5+Ex8M95kSaDRj6e7osCrFC5d+jAaNkp1?=
+ =?us-ascii?Q?TYtZvgK/4efCRuVGbKOcPGOCHac3lDyuHHlc/tQ0QuOf540BTFHaJiv5E65w?=
+ =?us-ascii?Q?Jw=3D=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	n4gH/oaNpo9hLOYQWzvqDXPPch1/JPQGbM0i1GCEjCIBzR9OK0G3XaGbqY7RqLoInXh62byYkEIAu58+S6G1syTz09FAqdCpQ9gGAXJHzIJXbmGkFVnx3XEGhcHDcJ38yAdYDMwdb8+YABApZJk9+XlSnuG2rcK1H6PbnZbpG+El8GtRKNAotRj2MffIdyGbgo0rA6EtksmzsDHpuPP5aYScyd0N0vNFrtFV+DWv3pBgsRTKDA9b0LlSrkZQie1M73/nTQZOJCZb9QO+4brfxsx1BdkYT5Ys28lQ7TRgiiuFdTDWFNyUrtR1wJe05StuUbZaTz2dLKZA0F0WSf4Xc1Mp/TdzAqtHltKUmpNyhsTJEI2Yc3S/U5O7ERVOy0lOd3LY+Rzn6rTaK2XB+jVKw0AIW6K+ZTA90/Q6c7JcnOWRPcSfltg8HbxtmjlzP8KtZdhSSQkr8U7E80MHE7JMPGPeRxppKA4IAeJVeIJYdvXHddJ4hFrWftO1QSu7hRb+VqyjeyO3TD9o9nw76vJ8ijYeaUp9pjeFNJBp5J6XSYZRPLAWlcXBcI8BkYW4YSwp8LtwZ6ZV0uG0qcMpTHEutJKy4dvYDCHnXwlBFj7UAl8=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f787c6f2-28a6-4670-6f4a-08dcd94ce55f
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR10MB6597.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Sep 2024 08:19:06.9535
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: xl3pMOUUVTfZvIzWX7z0UKU1E8pP42BnO/4mntGkvDxFqiE7LlWjkvfnqYZ28z5fQcSPxP4voVcCpt6s6Xgc6yIv4xqUxMz0X+DALn7h/Sw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR10MB6037
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.60.29
+ definitions=2024-09-20_03,2024-09-19_01,2024-09-02_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
+ spamscore=0 mlxscore=0 phishscore=0 malwarescore=0 bulkscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2408220000 definitions=main-2409200058
+X-Proofpoint-GUID: lsIHuohGZUWUcl19PqcxB9R56Bo79Hns
+X-Proofpoint-ORIG-GUID: lsIHuohGZUWUcl19PqcxB9R56Bo79Hns
 
-Update to include latest changes, including BTF_SET8 support and correct
-alignment of .BTF_ids sections, and remove the now-redundant alignment fix
-introduced in 3effc06a4dde ("selftests/bpf: Fix alignment of .BTF_ids").
+Hello all,
 
-CC: Jean-Philippe Brucker <jean-philippe@linaro.org>
-Signed-off-by: Tony Ambardar <tony.ambardar@gmail.com>
----
- tools/include/linux/btf_ids.h                 | 80 +++++++++++++++++--
- .../selftests/bpf/prog_tests/resolve_btfids.c |  6 --
- 2 files changed, 74 insertions(+), 12 deletions(-)
+This is v2 of the series to add global variables to pahole's generated BTF.
+Please see v1's cover letter for more justification and background. I've
+incorporated Alan's feedback and added a forgotten Cc for the bpf list.
 
-diff --git a/tools/include/linux/btf_ids.h b/tools/include/linux/btf_ids.h
-index 72ea363d434d..3ba37d00e3ae 100644
---- a/tools/include/linux/btf_ids.h
-+++ b/tools/include/linux/btf_ids.h
-@@ -10,6 +10,9 @@ struct btf_id_set {
- 	u32 ids[];
- };
- 
-+/* This flag implies BTF_SET8 holds kfunc(s) */
-+#define BTF_SET8_KFUNCS		(1 << 0)
-+
- struct btf_id_set8 {
- 	u32 cnt;
- 	u32 flags;
-@@ -21,7 +24,8 @@ struct btf_id_set8 {
- 
- #ifdef CONFIG_DEBUG_INFO_BTF
- 
--#include <linux/compiler.h> /* for __PASTE */
-+#include <linux/compiler.h> /* for __PASTE and __maybe_unused */
-+#include <linux/stringify.h>
- 
- /*
-  * Following macros help to define lists of BTF IDs placed
-@@ -35,7 +39,7 @@ struct btf_id_set8 {
- 
- #define BTF_IDS_SECTION ".BTF_ids"
- 
--#define ____BTF_ID(symbol)				\
-+#define ____BTF_ID(symbol, word)			\
- asm(							\
- ".pushsection " BTF_IDS_SECTION ",\"a\";       \n"	\
- ".local " #symbol " ;                          \n"	\
-@@ -43,10 +47,11 @@ asm(							\
- ".size  " #symbol ", 4;                        \n"	\
- #symbol ":                                     \n"	\
- ".zero 4                                       \n"	\
-+word							\
- ".popsection;                                  \n");
- 
--#define __BTF_ID(symbol) \
--	____BTF_ID(symbol)
-+#define __BTF_ID(symbol, word) \
-+	____BTF_ID(symbol, word)
- 
- #define __ID(prefix) \
- 	__PASTE(__PASTE(prefix, __COUNTER__), __LINE__)
-@@ -56,7 +61,14 @@ asm(							\
-  * to 4 zero bytes.
-  */
- #define BTF_ID(prefix, name) \
--	__BTF_ID(__ID(__BTF_ID__##prefix##__##name##__))
-+	__BTF_ID(__ID(__BTF_ID__##prefix##__##name##__), "")
-+
-+#define ____BTF_ID_FLAGS(prefix, name, flags) \
-+	__BTF_ID(__ID(__BTF_ID__##prefix##__##name##__), ".long " #flags "\n")
-+#define __BTF_ID_FLAGS(prefix, name, flags, ...) \
-+	____BTF_ID_FLAGS(prefix, name, flags)
-+#define BTF_ID_FLAGS(prefix, name, ...) \
-+	__BTF_ID_FLAGS(prefix, name, ##__VA_ARGS__, 0)
- 
- /*
-  * The BTF_ID_LIST macro defines pure (unsorted) list
-@@ -76,6 +88,7 @@ asm(							\
- #define __BTF_ID_LIST(name, scope)			\
- asm(							\
- ".pushsection " BTF_IDS_SECTION ",\"a\";       \n"	\
-+".balign 4, 0;                                 \n"	\
- "." #scope " " #name ";                        \n"	\
- #name ":;                                      \n"	\
- ".popsection;                                  \n");
-@@ -155,10 +168,58 @@ asm(							\
- ".popsection;                                 \n");	\
- extern struct btf_id_set name;
- 
-+/*
-+ * The BTF_SET8_START/END macros pair defines sorted list of
-+ * BTF IDs and their flags plus its members count, with the
-+ * following layout:
-+ *
-+ * BTF_SET8_START(list)
-+ * BTF_ID_FLAGS(type1, name1, flags)
-+ * BTF_ID_FLAGS(type2, name2, flags)
-+ * BTF_SET8_END(list)
-+ *
-+ * __BTF_ID__set8__list:
-+ * .zero 8
-+ * list:
-+ * __BTF_ID__type1__name1__3:
-+ * .zero 4
-+ * .word (1 << 0) | (1 << 2)
-+ * __BTF_ID__type2__name2__5:
-+ * .zero 4
-+ * .word (1 << 3) | (1 << 1) | (1 << 2)
-+ *
-+ */
-+#define __BTF_SET8_START(name, scope, flags)		\
-+__BTF_ID_LIST(name, local)				\
-+asm(							\
-+".pushsection " BTF_IDS_SECTION ",\"a\";       \n"	\
-+"." #scope " __BTF_ID__set8__" #name ";        \n"	\
-+"__BTF_ID__set8__" #name ":;                   \n"	\
-+".zero 4                                       \n"	\
-+".long " __stringify(flags)                   "\n"	\
-+".popsection;                                  \n");
-+
-+#define BTF_SET8_START(name)				\
-+__BTF_SET8_START(name, local, 0)
-+
-+#define BTF_SET8_END(name)				\
-+asm(							\
-+".pushsection " BTF_IDS_SECTION ",\"a\";      \n"	\
-+".size __BTF_ID__set8__" #name ", .-" #name "  \n"	\
-+".popsection;                                 \n");	\
-+extern struct btf_id_set8 name;
-+
-+#define BTF_KFUNCS_START(name)				\
-+__BTF_SET8_START(name, local, BTF_SET8_KFUNCS)
-+
-+#define BTF_KFUNCS_END(name)				\
-+BTF_SET8_END(name)
-+
- #else
- 
--#define BTF_ID_LIST(name) static u32 __maybe_unused name[5];
-+#define BTF_ID_LIST(name) static u32 __maybe_unused name[64];
- #define BTF_ID(prefix, name)
-+#define BTF_ID_FLAGS(prefix, name, ...)
- #define BTF_ID_UNUSED
- #define BTF_ID_LIST_GLOBAL(name, n) u32 __maybe_unused name[n];
- #define BTF_ID_LIST_SINGLE(name, prefix, typename) static u32 __maybe_unused name[1];
-@@ -166,6 +227,10 @@ extern struct btf_id_set name;
- #define BTF_SET_START(name) static struct btf_id_set __maybe_unused name = { 0 };
- #define BTF_SET_START_GLOBAL(name) static struct btf_id_set __maybe_unused name = { 0 };
- #define BTF_SET_END(name)
-+#define BTF_SET8_START(name) static struct btf_id_set8 __maybe_unused name = { 0 };
-+#define BTF_SET8_END(name)
-+#define BTF_KFUNCS_START(name) static struct btf_id_set8 __maybe_unused name = { .flags = BTF_SET8_KFUNCS };
-+#define BTF_KFUNCS_END(name)
- 
- #endif /* CONFIG_DEBUG_INFO_BTF */
- 
-@@ -215,5 +280,8 @@ MAX_BTF_TRACING_TYPE,
- };
- 
- extern u32 btf_tracing_ids[];
-+extern u32 bpf_cgroup_btf_id[];
-+extern u32 bpf_local_storage_map_btf_id[];
-+extern u32 btf_bpf_map_id[];
- 
- #endif
-diff --git a/tools/testing/selftests/bpf/prog_tests/resolve_btfids.c b/tools/testing/selftests/bpf/prog_tests/resolve_btfids.c
-index 51544372f52e..c3c021e3783e 100644
---- a/tools/testing/selftests/bpf/prog_tests/resolve_btfids.c
-+++ b/tools/testing/selftests/bpf/prog_tests/resolve_btfids.c
-@@ -28,12 +28,6 @@ struct symbol test_symbols[] = {
- 	{ "func",    BTF_KIND_FUNC,    -1 },
- };
- 
--/* Align the .BTF_ids section to 4 bytes */
--asm (
--".pushsection " BTF_IDS_SECTION " ,\"a\"; \n"
--".balign 4, 0;                            \n"
--".popsection;                             \n");
--
- BTF_ID_LIST(test_list_local)
- BTF_ID_UNUSED
- BTF_ID(typedef, S)
+Thanks,
+Stephen
+
+v1: https://lore.kernel.org/dwarves/20240912190827.230176-1-stephen.s.brennan@oracle.com/
+
+Stephen Brennan (4):
+  dutil: return ELF section name when looked up by index
+  dwarf_loader: add "artificial" and "top_level" variable flags
+  btf_encoder: cache all ELF section info
+  btf_encoder: add global_var feature to encode globals
+
+ btf_encoder.c      | 373 ++++++++++++++++++++++-----------------------
+ btf_encoder.h      |   8 +
+ dutil.c            |  14 +-
+ dutil.h            |   2 +-
+ dwarf_loader.c     |  12 +-
+ dwarves.h          |   3 +
+ man-pages/pahole.1 |   8 +-
+ pahole.c           |  11 +-
+ 8 files changed, 228 insertions(+), 203 deletions(-)
+
 -- 
-2.34.1
+2.43.5
 
 
