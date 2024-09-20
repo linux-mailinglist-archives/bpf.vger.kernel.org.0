@@ -1,119 +1,105 @@
-Return-Path: <bpf+bounces-40110-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40111-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9D0997CEC1
-	for <lists+bpf@lfdr.de>; Thu, 19 Sep 2024 23:24:21 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD22697CF91
+	for <lists+bpf@lfdr.de>; Fri, 20 Sep 2024 02:13:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 91C872847FF
-	for <lists+bpf@lfdr.de>; Thu, 19 Sep 2024 21:24:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6013A1F2572A
+	for <lists+bpf@lfdr.de>; Fri, 20 Sep 2024 00:13:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B949142911;
-	Thu, 19 Sep 2024 21:24:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9755EC4;
+	Fri, 20 Sep 2024 00:13:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HoXGmzp7"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H2TyFKWB"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-io1-f49.google.com (mail-io1-f49.google.com [209.85.166.49])
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE7B722612
-	for <bpf@vger.kernel.org>; Thu, 19 Sep 2024 21:24:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C632636D
+	for <bpf@vger.kernel.org>; Fri, 20 Sep 2024 00:13:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726781056; cv=none; b=IktSMRzdk6sS77KzG+50+nxTfjLquZLVorpzaqqLnkubPPMhiuSf10ADabU1PphIJWr/7U6Mm6ybt5j/rFzyXUFRpVkQa3c/6IFkaJF5ZUOajyt//Qz6d0se4eqZo/hJJaSqcKhzQScuY9nJFrqowrAOZzUD3T6junlOVBilQaw=
+	t=1726791220; cv=none; b=fHDxdS2w+tTcmlZbGugzCHsy53gajXVbaBZoyWad/5Ggat9SGHhWBWcNG7Ou1MsWVbXJ6JZH0VfVXyNk+vU2ke1h/5pBEdRMPpd5uptMkuU7qF3J5bnnwakT7qoN48DfzGWDGK+qyHPqz8NJNAIAg/ImWHb+7xmbCrKZXypROwE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726781056; c=relaxed/simple;
-	bh=i4cofNc4QSLYmftHrIGhDbC5XKHyVvmG9AEFCRK5XV4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZW4TUt56INcuF1yBSlhp4PYdwBRoY2b3Kw15CuIvd9bPq4sOIqG97F9OZhVJMTbsja4HZoRnvu2yYiLVJI0cPrZ/ICFroD9sMgmiWP+hPBIo3HPocyjC/kObh5kkBE0dfC5l6eTTW543VM4MszrqoIFF7abJnVSpFC307SbaGBc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HoXGmzp7; arc=none smtp.client-ip=209.85.166.49
+	s=arc-20240116; t=1726791220; c=relaxed/simple;
+	bh=cgW+dFKC/xkYkFIpODmEaKl+l7c0FKHGOEhU4Nr5eqs=;
+	h=Date:From:To:Message-ID:Subject:MIME-Version:Content-Type:
+	 Content-Disposition; b=Y67RpnB+wBYCCqvsFu2Mb+CK+LiqudGE/o2FuztnrnXnOGSGSCl+vfHLEo1e9i63z/1adfT4zTwymRobRJmMTE3N4jpfRSt3Sd1XMDgcREjBfsW3L39YEQ7VEFRemeHm5tQ2mKVtzPcZkDBaHeI8pN1b1YEUjP/o6I231U29QXY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=H2TyFKWB; arc=none smtp.client-ip=209.85.128.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f49.google.com with SMTP id ca18e2360f4ac-82aab679b7bso57281939f.0
-        for <bpf@vger.kernel.org>; Thu, 19 Sep 2024 14:24:14 -0700 (PDT)
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-42ca4e0299eso11493225e9.2
+        for <bpf@vger.kernel.org>; Thu, 19 Sep 2024 17:13:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1726781054; x=1727385854; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vzQ9GI76Y+xtbahPXv7Bxudt/pSfvuD/ZX9c+u3usv4=;
-        b=HoXGmzp7sFaTL3VWzCpuCGcBt2KaU5JtkOeuZCa2a9aN+Wn2YhuykU70+eYLt3htlz
-         hCFzuH9KxVoYnko6L2TLLl97FIdMnLxWvycOLGUo/nJ+jHaDurIFMlXr6dLBcFPNsSv2
-         Td2vkqEjsaWHTb92PENz4177mAID4NRHjw0tWbcw+4zj2LumSYC0mJ2768UL3h82jrJA
-         Uh/6vfJkIZVr5xCzBXxPPoJAwEm1Du4CaYo2S+MbYH8vNM0LOLcYK3GhvLhQhHGNG+7I
-         aQLUAfjk8EcTUtEkic4e8Ft+ufzixp+hA7hEkcvihQXaIfF8T313v5bLx8Az3tCkicG7
-         zJhg==
+        d=gmail.com; s=20230601; t=1726791217; x=1727396017; darn=vger.kernel.org;
+        h=content-disposition:content-transfer-encoding:mime-version:subject
+         :message-id:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=fEizFaqqVm2V8DQJk8ULPTfOPs94QeCIfJgPSVXTRCI=;
+        b=H2TyFKWB0hux8iS5UuN/4WWaPErtEUdkqvGoYfrEBLNKwC8SQRrm5q3hJfss6T7tJe
+         g6H1lS/hj2iXjDJI3713V3GAk/i1lOhj7r6ugonIoClGgFx6iKbQKPiWJP7Ja5etVekv
+         ttLRvHN8QwAgizqoaVaCyGBqbr2FROaiUdfwDrT+iBW4S71LKDCUw7HkZYzhKpipac+N
+         8jzXoeXYpHRpY/iA5Ga26uahZs07tNFi5aRX6TRTqm0ETbp6/5DPb8XOTNbXPDX8vtlY
+         hhPtMN1qtVKPaW4T4stYD2FuWRtq98p+yGxqoyBvqCpUg3Ur2ApRW6B6EVI+kK+M/o9r
+         xRBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726781054; x=1727385854;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vzQ9GI76Y+xtbahPXv7Bxudt/pSfvuD/ZX9c+u3usv4=;
-        b=ezCH2aLFofdUdC4rQkFqFgZquTX+Wm7n2Xj8V026CmUG3RUT3f8vWQaaGgxzHpmfeE
-         LxYanz1t/yXKjgL/YVEzV2FcNCHQ9pRjze9a/DAj5tU55mWsrB8/nDnBCYvusF+WjJTZ
-         Lss8dpgvLXBkRAleaThfODVtEMzqlVS5mjf3sli5kqMAvsToH1utY6/pwtJ43fe3yIIy
-         J91AFa+2XpwYhj7rducjQG6aVZis2lCc0yG7AfPmNkhiHWccJlJQ5Yz6ha3j2A+Xs4cw
-         y4BQBDEQFhUOpA+jBlyWu+UQIfv5QfM9eOFr6R+JAqZAtoLKbax3o00kxGl4VLuryIIF
-         NMtA==
-X-Forwarded-Encrypted: i=1; AJvYcCUvRxJqQYdhA2lrKgQK5tCaUHyM4eFhZ6+hjTSVLtbLXUP1w2yY+dAPYScH3qJdEGTSJiY=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwM+rCniHtbhFyXDxliSFnKwVCWs5skawtbfbTkeZ+8SAtW3e+Z
-	uguub/OANj4NFYSxhxDK+AYPrG3ja/KTWBvqkQAg1hShnp3aLl7OGk93TN31Kp1K2JbqZXQ67s0
-	Wb8UvwtWftEKti+m3QIEzoF9M0V9IZvYy4pFojg==
-X-Google-Smtp-Source: AGHT+IEnDC8RIT5tfKYyUwXyvmqCST2dgSkuXtXjUeLFpaCXSkx4+mZrrHmYx6BwviJc/SdUUQgyCbi9Dc5ah4xxGFg=
-X-Received: by 2002:a92:c24c:0:b0:39d:351a:d0a2 with SMTP id
- e9e14a558f8ab-3a0c9d90b95mr4501735ab.25.1726781053711; Thu, 19 Sep 2024
- 14:24:13 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1726791217; x=1727396017;
+        h=content-disposition:content-transfer-encoding:mime-version:subject
+         :message-id:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fEizFaqqVm2V8DQJk8ULPTfOPs94QeCIfJgPSVXTRCI=;
+        b=J2SPGnSN7F5g7zQT1FscISuqN8H9EXlfchbsSBEwvMf6NFyupT7UAxQAdjvFw+YyjH
+         amdkrN+dWm/TcH+hsXzQVxN2KRD6PBWOqpvo9v8KEswYtXiKMyTVkkknYNodd1/tnOIX
+         Pve5Iorq5CctYqO4m+SwP1LqOXtZzjCpJI+S8tePAhsxhAgLVlaqjDw8aCBDlJhWpSd6
+         2CK63uLFih8hai6iwtgpFNyTR/WEWayhdRFlAFfbCdmndpUZ46276O5uAAj72Zn3EzP8
+         OXKZkUOBJyOhrduhYQ4W1Qo9NqR9cMf/JtXhdK0mRXnZnHk4pCQbunRxzT5o1oRcFlxL
+         d7uQ==
+X-Gm-Message-State: AOJu0YwTcNqzZbIXECFXc8O2zCF0yoMQp50+kni+GvlmZ1Qo2PxNtbuT
+	n7vLs2b863iJ/sNGi2zXU+uoE2gRizVKaHz7wG6Rwty1pFPwRigNMO6Www==
+X-Google-Smtp-Source: AGHT+IEoyx85GPAfXVwPI60mt73nyeeEOgLqw7SSmp+2IofwSYtdP6gzq/3tTpc1kNj+AZeiYdxGSA==
+X-Received: by 2002:a05:600c:4f55:b0:426:593c:9361 with SMTP id 5b1f17b1804b1-42e7c193efbmr3591255e9.26.1726791216865;
+        Thu, 19 Sep 2024 17:13:36 -0700 (PDT)
+Received: from laptop (a95-93-247-17.cpe.netcabo.pt. [95.93.247.17])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-42e7ae5fce0sm8020835e9.10.2024.09.19.17.13.36
+        for <bpf@vger.kernel.org>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 19 Sep 2024 17:13:36 -0700 (PDT)
+Date: Fri, 20 Sep 2024 01:13:35 +0100
+From: =?utf-8?Q?Sebasti=C3=A3o_Amaro?= <sebassamaro97@gmail.com>
+To: "=?utf-8?Q?bpf=40vger.kernel.org?=" <bpf@vger.kernel.org>
+Message-ID: <0102A73F-5317-4412-8E74-921CF146531E@getmailspring.com>
+Subject: Maximum amount of uprobes and uprobe and uprobe_ret relation
+X-Mailer: Mailspring
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240919195454.73358-1-kerneljasonxing@gmail.com> <CAADnVQJUd_1y-Ecgw3pgd6z2jw6=ZEm5wnxQqwUnhCobw752fQ@mail.gmail.com>
-In-Reply-To: <CAADnVQJUd_1y-Ecgw3pgd6z2jw6=ZEm5wnxQqwUnhCobw752fQ@mail.gmail.com>
-From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Thu, 19 Sep 2024 23:23:37 +0200
-Message-ID: <CAL+tcoBn24=Wz8=iB49RwsEwJWqY7ztHWBEya+wbvcJQ10i=XQ@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf: syscall_nrs: fix no previous prototype for "syscall_defines"
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>, 
-	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	bpf <bpf@vger.kernel.org>, Jason Xing <kernelxing@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-On Thu, Sep 19, 2024 at 11:17=E2=80=AFPM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Thu, Sep 19, 2024 at 9:55=E2=80=AFPM Jason Xing <kerneljasonxing@gmail=
-.com> wrote:
-> >
-> > From: Jason Xing <kernelxing@tencent.com>
-> >
-> > In some environments (gcc treated as error in W=3D1, which is default),=
- if we
-> > make -C samples/bpf/, it will be stopped because of
-> > "no previous prototype" error like this:
-> >
-> >   ../samples/bpf/syscall_nrs.c:7:6:
-> >   error: no previous prototype for =E2=80=98syscall_defines=E2=80=99 [-=
-Werror=3Dmissing-prototypes]
-> >    void syscall_defines(void)
-> >         ^~~~~~~~~~~~~~~
->
-> samples/bpf/ doesn't accept patches any more.
+Hi everyone=21
+I have two questions related to user function probes:
+=46irstly, I am trying to have a process attach more than 1024 uprobes,
+however, I am getting the error: =22failed to create BP=46 link for
+perf=5Fevent =46D 1023: -24 (Too many open files)=22 even after changing
+ulimit -n to 4096  github issue=5B1=5D.
+Secondly, I am running some tests with uprobe and uprobe=5Fret in multipl=
+e
+functions in the redis binary, but I am noticing that when counting the
+times the uprobes and uprobes=5Fret are called, in the end they do not
+match 1 to 1. Either individually (a uprobe/uprobe=5Fret in the same
+function), or the total sum. Is this a predictable behaviour=3F
+I am tracing several functions in such as =5B2=5D.
 
-Thanks for your reminder. I didn't know that.
+=5B1=5Dhttps://github.com/libbpf/libbpf-rs/issues/942
+=5B2=5Dhttps://github.com/redis/redis/blob/3a3cacfefabf8ced79b448169319ce=
+49cca2bfb7/src/rdb.c=23L1782
 
-> If this samples/test is useful, refactor it to the test_progs framework.
-> Otherwise delete it.
-
-I'm trying to use the samples/test to do some tests to verify if some
-functions like bpf_sock_ops_cb_flags_set() can work. Then I
-encountered the issue as this patch said.
+Thank you, and Best Regards,
+Sebasti=C3=A3o Amaro
 
