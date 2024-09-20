@@ -1,128 +1,194 @@
-Return-Path: <bpf+bounces-40146-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40147-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F134097D9DC
-	for <lists+bpf@lfdr.de>; Fri, 20 Sep 2024 21:38:03 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9742997DA7E
+	for <lists+bpf@lfdr.de>; Sat, 21 Sep 2024 00:05:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 90B521F2362E
-	for <lists+bpf@lfdr.de>; Fri, 20 Sep 2024 19:38:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C3E71F21E4B
+	for <lists+bpf@lfdr.de>; Fri, 20 Sep 2024 22:05:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D43918453F;
-	Fri, 20 Sep 2024 19:37:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B409D18453F;
+	Fri, 20 Sep 2024 22:05:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KQwlWKNM"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jfWUoVDW"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f177.google.com (mail-il1-f177.google.com [209.85.166.177])
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30257183CDC
-	for <bpf@vger.kernel.org>; Fri, 20 Sep 2024 19:37:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4F971EA6F;
+	Fri, 20 Sep 2024 22:05:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726861054; cv=none; b=aHlAOiYq6rlU1DWLys/SssWCl2a6yNVwBzWsU+wtH0El+bT1D1zx5ClUM6xHYibZaKzCDNs3/KTHUGgaiDXIkBeEI6CCy98UHUPFRSujPJqgFT7C7RVEs3WZsZExFzumLAcol3+8T1R+tCyt1e9lFNJDhPGPSB8NUx1JfjuvBLs=
+	t=1726869944; cv=none; b=R8FSO3Ip4rpfvTND4jEJuqVBvfkp1yFXvbiL2qJFQ8ZEFpwxTZWRTF8EGc685NLMeNyF6H4foKFHLziEv9rnwZwTix5zeM3t718lf0wgMH+YvXuF9Xd0qwb+t5+q0t8GoWl+9z0YpFJqoee0lD21Oz6FKvxTkf4RX/uDMJtCRh8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726861054; c=relaxed/simple;
-	bh=KKpR6TQAtMqQFHVkpqLTBzPw9tA8aIdIeS3DeolCA8Q=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mVeT69u2hbj4kwM3YLmfbNtHXDvtGyL6U1kgjIX3oiIEe6aquEYFU5QeOzZ9WXMWjs/F4OM2x1qHuV4KWtTY/f9OYMJ9d9C0kgLGgje8LzHOqt01gLmO9yokejOBMHr9F/Fq12CecQ6XMU61Lqtlbh/nBuDrkkAhnHzaEoR4tkE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KQwlWKNM; arc=none smtp.client-ip=209.85.166.177
+	s=arc-20240116; t=1726869944; c=relaxed/simple;
+	bh=H/4w5FLbbZLWbGyLRGOT4UzmyRmBUjq6fzlFcWlHc2g=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=ijMOZSC7E9d14ZfP14E1F3wqFNFalgF9tTFpp8Xam0ofzfCzMairEYBdOlU28Cxn3WsFxKgviRq3gq0RPmo6+3Y1eogwDN674aszXp3rp9OvAKAIqjKV+qVn1RpAAoQ6SFHhFaKMkJnNjx9t2tLZ5M4qLhcDulVWQzVim6be/kw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jfWUoVDW; arc=none smtp.client-ip=209.85.214.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f177.google.com with SMTP id e9e14a558f8ab-3a08555642cso10405475ab.1
-        for <bpf@vger.kernel.org>; Fri, 20 Sep 2024 12:37:31 -0700 (PDT)
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-2054feabfc3so24987145ad.1;
+        Fri, 20 Sep 2024 15:05:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1726861051; x=1727465851; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hm+q2TXJTzPGQ26XwIEpZAOEZBdXyJb7YnisbTfeHB8=;
-        b=KQwlWKNMG200gdcJPyCkIv333pBjpZxMG8MMwTLFj015rHG4EncEXXny6A02JS04UZ
-         W6qAzE9tbRQse+TedU/xoqv0etw+QviZylVMPwAPCxSVaGB9wsrRKleg5XdixEAMswZG
-         Vg8Y1Nr2Mn7gQvgrD53+76bQlFRG0n0QxV/mr56uI5/WhxCC5GNHAaSVuHq7WzZolsxh
-         4pQOqBhof+V+upWjtOXaakBgkUhSOmF5ZEWsONLACNHg2lAzI16mhbxCLRWzUizx0ibf
-         2Ou/2zljDoMCkZ/1J81YI+JEFxuyMWc6I4Suw+ImKmDZSRLVAgHWX+zPgHClXvNN1bHZ
-         GXhw==
+        d=gmail.com; s=20230601; t=1726869942; x=1727474742; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=G5wq1lw5wjCE0kL7PAoVymCcvATcPRjXhjMM7XRmRKc=;
+        b=jfWUoVDW4VxqbbeCX7M+WuPNJY/7IAr6i8ThjH1QXpmnev+KR4++8PuSyFFDw+gAIH
+         1+nPiDsD5bGWHGZ2qPRSDz1vlrorF173zXrdju1TLbT+9GIvlw4AEB2947tAn2QoCizz
+         1NeBb7tpTYIsIBuT6nClRXPe3kriHLg0Gmxu9kQFSDDNmSC93QJxICIkHY6MEAw0R4xd
+         fL9cdsoCDCP8E5T3UigS+DdUPvsMGu+oFRkDdp4gRApRa8kfgTUiOGt7v9orQVNjR/S0
+         Ay0PJqthTmmRrgjCyJT1mSsHb+rM+JWhkLJ66lZfN6ZSOkOd6bRyadb5uwgVpx/M+sk5
+         PftQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726861051; x=1727465851;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hm+q2TXJTzPGQ26XwIEpZAOEZBdXyJb7YnisbTfeHB8=;
-        b=hdU8JaKV9TkxxqRXirzOvykoDhtntwJwm9YeVi+xP25cyYORZwGKlPOuIBnhIEkdY+
-         7u5WHC9vWr7GUztuYNmS/EgnvXz1itBQTHrAJlUTa8L0clD7t9JR5dT6uWq9PnzVLTXj
-         dU9kDf7eyz7sjE2OD0svBXlS5zBHuNYWBJV0ld9TvZBKnTRADhpBfnM5cr189veQ+hnR
-         6rKCpGezP4z+U/xvd3R7WBfnQerGp0AbNhcM4Z8nF5MGD9woQsfv019VngLXC+1L4TcJ
-         dSJFVvxLzhjZWma4QfOHlIJe1jhqZUprJTfG88rbp3fGTxsL3QuT+17kMEmnVOXKBw8r
-         k7Hg==
-X-Forwarded-Encrypted: i=1; AJvYcCWQn4V2tXbEtN6a5iBwxb3DSnNgGmHNxrsTwD5GD8NhiJfivSoTxkVHH3ErT0wNg6o+C1g=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzYxmp5URVlfp5mjhT47qNmeqBdMVhgMDr1Dbc0h6YUb2JNE9IR
-	YEkxTiP4VmA2phKP1QJdcGK5mPQkv80JEbw3hDG8rmfmYuRwHhqkcBVvOsuHB99cLz9D7sY2h/3
-	3wpQOqKt0+oyJw9okvQauo5avBXA=
-X-Google-Smtp-Source: AGHT+IFJ0d/LQ4eBoNTyfITzaFuFS+Yz2ifPJ/n6oXp81CXV7Tb5no3BWBdbbeSLZeJlkMtmk9WeZiyKN7RXrDeBrTQ=
-X-Received: by 2002:a05:6e02:1d0e:b0:3a0:ab71:ed27 with SMTP id
- e9e14a558f8ab-3a0c8cbfebemr51719365ab.14.1726861051236; Fri, 20 Sep 2024
- 12:37:31 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1726869942; x=1727474742;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=G5wq1lw5wjCE0kL7PAoVymCcvATcPRjXhjMM7XRmRKc=;
+        b=JdXK5eDMKGDbQsnue/BIe/3KQAbCBYZ5FhXScZafqQFYRa0rIdFIfUghDUU3pgcPpe
+         70GlQ5yylwp5uTSkfT+6UGy9uvoGHR75nSQzmgjtLtOOe/z//LrLnzOcGcSgM2PrAC/4
+         KdbV9TbkJJF5x0OZhCD+ILQeTe1QJacPg0YypXiBNzZn0Aj0+q0m2kVRbMLoTjG58x+r
+         uLtvSBEbQNXSN9gplCBg4gCJBTwfUOZ1keb3G2h7ksBggQn1LUn5fyecmZueeRQ2lh0a
+         l79+JNiPi55e4DBC6GSWd7oF7FDMi3RimvBZ6JHK6y+IoCLOciDS7JCy96LqM+RnIlG2
+         XmGw==
+X-Forwarded-Encrypted: i=1; AJvYcCU8YzBGLlE9G3db5z2NSxW/pyZBLPa3XzaBrUBwHVSb9Dgf8AJk/vXR5JJuksgUuMonjLJ5SY2XyHxG1/yr@vger.kernel.org, AJvYcCVDXm8+2AeD1kfZv6cbqrBuiTc6G4OxjfiluUy3eID215HSQafxSpd+F9eH0LvcyVCtPP7FRc9oJxhCAKUmDslL@vger.kernel.org, AJvYcCXkTQveX8r66/Kg4KzSh/rdsPQqNWWYQcbnlQaeSyg/uOZYO6hvEn8xQUl4PYgoyhze/2Y=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzbYu+YKc3XSNx64xsVNWlQrwe6b+LKA40PmeJlQIKtTZ9f0Qq7
+	ok/qBMFMsQuUDpDYKeRNbQR6AQzXsaeBJIiC0ollGzPL3Jq0ckli
+X-Google-Smtp-Source: AGHT+IFZCO+86n9yLwACZAASLlSETdKiO04pznmV+OUnNrKBUc1gUnlR+6lIG721pm3BYGECCK+DWg==
+X-Received: by 2002:a17:902:f546:b0:202:301f:36fd with SMTP id d9443c01a7336-208d980bfb0mr56320825ad.18.1726869941964;
+        Fri, 20 Sep 2024 15:05:41 -0700 (PDT)
+Received: from [192.168.0.235] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-207946d150fsm99236645ad.153.2024.09.20.15.05.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Sep 2024 15:05:41 -0700 (PDT)
+Message-ID: <a1b7e902e6f8be05f7d42bf340484b64583e1389.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/2] bpf: verifier: Support eliding map
+ lookup nullness
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Daniel Xu <dxu@dxuuu.xyz>, daniel@iogearbox.net, shuah@kernel.org, 
+	andrii@kernel.org, ast@kernel.org
+Cc: john.fastabend@gmail.com, martin.lau@linux.dev, song@kernel.org, 
+ yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me,
+ haoluo@google.com,  jolsa@kernel.org, mykolal@fb.com, bpf@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+ kernel-team@meta.com
+Date: Fri, 20 Sep 2024 15:05:35 -0700
+In-Reply-To: <3b54139f8d4877e0487daebdd799c3878ee27ed0.1726458273.git.dxu@dxuuu.xyz>
+References: <cover.1726458273.git.dxu@dxuuu.xyz>
+	 <3b54139f8d4877e0487daebdd799c3878ee27ed0.1726458273.git.dxu@dxuuu.xyz>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.4 (3.52.4-1.fc40) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240919195454.73358-1-kerneljasonxing@gmail.com> <CAADnVQJUd_1y-Ecgw3pgd6z2jw6=ZEm5wnxQqwUnhCobw752fQ@mail.gmail.com>
-In-Reply-To: <CAADnVQJUd_1y-Ecgw3pgd6z2jw6=ZEm5wnxQqwUnhCobw752fQ@mail.gmail.com>
-From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Fri, 20 Sep 2024 21:36:54 +0200
-Message-ID: <CAL+tcoDEpGq3NfYgavc=wwgsMch=L7mh9-0J8tWv2Sv1MWCH+w@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf: syscall_nrs: fix no previous prototype for "syscall_defines"
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>, 
-	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	bpf <bpf@vger.kernel.org>, Jason Xing <kernelxing@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Sep 19, 2024 at 11:17=E2=80=AFPM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Thu, Sep 19, 2024 at 9:55=E2=80=AFPM Jason Xing <kerneljasonxing@gmail=
-.com> wrote:
-> >
-> > From: Jason Xing <kernelxing@tencent.com>
-> >
-> > In some environments (gcc treated as error in W=3D1, which is default),=
- if we
-> > make -C samples/bpf/, it will be stopped because of
-> > "no previous prototype" error like this:
-> >
-> >   ../samples/bpf/syscall_nrs.c:7:6:
-> >   error: no previous prototype for =E2=80=98syscall_defines=E2=80=99 [-=
-Werror=3Dmissing-prototypes]
-> >    void syscall_defines(void)
-> >         ^~~~~~~~~~~~~~~
->
-> samples/bpf/ doesn't accept patches any more.
-> If this samples/test is useful, refactor it to the test_progs framework.
-> Otherwise delete it.
->
-> pw-bot: cr
+On Sun, 2024-09-15 at 21:45 -0600, Daniel Xu wrote:
+> This commit allows progs to elide a null check on statically known map
+> lookup keys. In other words, if the verifier can statically prove that
+> the lookup will be in-bounds, allow the prog to drop the null check.
+>=20
+> This is useful for two reasons:
+>=20
+> 1. Large numbers of nullness checks (especially when they cannot fail)
+>    unnecessarily pushes prog towards BPF_COMPLEXITY_LIMIT_JMP_SEQ.
+> 2. It forms a tighter contract between programmer and verifier.
+>=20
+> For (1), bpftrace is starting to make heavier use of percpu scratch
+> maps. As a result, for user scripts with large number of unrolled loops,
+> we are starting to hit jump complexity verification errors.  These
+> percpu lookups cannot fail anyways, as we only use static key values.
+> Eliding nullness probably results in less work for verifier as well.
+>=20
+> For (2), percpu scratch maps are often used as a larger stack, as the
+> currrent stack is limited to 512 bytes. In these situations, it is
+> desirable for the programmer to express: "this lookup should never fail,
+> and if it does, it means I messed up the code". By omitting the null
+> check, the programmer can "ask" the verifier to double check the logic.
 
-After reconsidering what Alexei said, I still feel we could take this
-patch? It is because:
-1) the patch itself  is more of a fix instead of optimization,
-2)as long as samples/bpf exists in the kernel, we cannot easily let
-it(issues) go and ignore it.
+Nit: maybe add a few lines why tools/testing/selftests/bpf/progs/iters.c
+     has to be changed.
 
-Applying such a patch won't cause any further confusion, right? As we
-can see, it's like a fix which does not introduce anything new here.
+[...]
 
-What do you bpf maintainers think?
+> +/* Returns constant key value if possible, else -1 */
+> +static long get_constant_map_key(struct bpf_verifier_env *env,
+> +				 struct bpf_reg_state *key)
+> +{
+> +	struct bpf_func_state *state =3D func(env, key);
+> +	struct bpf_reg_state *reg;
+> +	int stack_off;
+> +	int slot;
+> +	int spi;
+> +
+> +	if (key->type !=3D PTR_TO_STACK)
+> +		return -1;
+> +	if (!tnum_is_const(key->var_off))
+> +		return -1;
+> +
+> +	stack_off =3D key->off + key->var_off.value;
+> +	slot =3D -stack_off - 1;
+> +	if (slot >=3D state->allocated_stack)
+> +		/* Stack uninitialized */
+> +		return -1;
 
-Thanks,
-Jason
+I'm not sure verifier guarantees that key->off is negative.
+E.g. the following simple program:
+
+    0: (b7) r1 =3D 16                       ; R1_w=3D16
+    1: (bf) r2 =3D r10                      ; R2_w=3Dfp0 R10=3Dfp0
+    2: (0f) r2 +=3D r1
+    mark_precise: frame0: last_idx 2 first_idx 0 subseq_idx -1=20
+    mark_precise: frame0: regs=3Dr1 stack=3D before 1: (bf) r2 =3D r10
+    mark_precise: frame0: regs=3Dr1 stack=3D before 0: (b7) r1 =3D 16
+    3: R1_w=3D16 R2_w=3Dfp16
+
+=3D> I think 'slot' should be checked to be >=3D 0.
+
+> +
+> +	spi =3D slot / BPF_REG_SIZE;
+> +	reg =3D &state->stack[spi].spilled_ptr;
+> +	if (!tnum_is_const(reg->var_off))
+> +		/* Stack value not statically known */
+> +		return -1;
+> +
+> +	return reg->var_off.value;
+> +}
+> +
+>  static int get_helper_proto(struct bpf_verifier_env *env, int func_id,
+>  			    const struct bpf_func_proto **ptr)
+>  {
+> @@ -10511,6 +10557,15 @@ static int check_helper_call(struct bpf_verifier=
+_env *env, struct bpf_insn *insn
+>  			env->insn_aux_data[insn_idx].storage_get_func_atomic =3D true;
+>  	}
+> =20
+> +	/* Logically we are trying to check on key register state before
+> +	 * the helper is called, so process here. Otherwise argument processing
+> +	 * may clobber the spilled key values.
+> +	 */
+> +	regs =3D cur_regs(env);
+> +	if (func_id =3D=3D BPF_FUNC_map_lookup_elem)
+> +		meta.const_map_key =3D get_constant_map_key(env, &regs[BPF_REG_2]);
+
+Nit: there is a long 'switch (func_id)' slightly below this point,
+     maybe move this check there?
+
+> +
+> +
+>  	meta.func_id =3D func_id;
+>  	/* check args */
+>  	for (i =3D 0; i < MAX_BPF_FUNC_REG_ARGS; i++) {
+
+[...]
+
 
