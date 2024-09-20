@@ -1,206 +1,135 @@
-Return-Path: <bpf+bounces-40138-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40139-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76A3197D791
-	for <lists+bpf@lfdr.de>; Fri, 20 Sep 2024 17:37:51 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE38C97D8BC
+	for <lists+bpf@lfdr.de>; Fri, 20 Sep 2024 18:58:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 411BC2846C5
-	for <lists+bpf@lfdr.de>; Fri, 20 Sep 2024 15:37:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7ACAFB21DAA
+	for <lists+bpf@lfdr.de>; Fri, 20 Sep 2024 16:57:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09F0D17C22B;
-	Fri, 20 Sep 2024 15:37:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 800C01802AB;
+	Fri, 20 Sep 2024 16:57:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nmf7IF0k"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="P9YTrZY4"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D691F4ED;
-	Fri, 20 Sep 2024 15:37:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50C3417E01B
+	for <bpf@vger.kernel.org>; Fri, 20 Sep 2024 16:57:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726846663; cv=none; b=eGuAfpk2XxhGAvYRHR5cbxi8xXz9mRWw13ghADwmjDJgOwKl/dpt46qyqarIs27kODIWFhITZp4Fr5w7IzeqALSp+M6akpCoAC8OTuFojzNtWtixafs2wZzGZQYrhZJlu3x1ob73OobTP0YHuEO0ypmpCBlCR3e7GCY8BIEfDFo=
+	t=1726851470; cv=none; b=ZIYoQGwoYHzxoarFR79W8SZVxZsRUqI2N5I2s7fzvNAO+SZ9XlasYSZ/kez/a5MunYrBS/03Bvx9H31R7ljLNfr6aTyBSeczY34OEJV52pPrRufGkR6ZZjULJjVqlx+BSbV9vkGIb4yOoBcwmwt07lC4Z/RIvKOy/fAoh5RNPfQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726846663; c=relaxed/simple;
-	bh=IBNi5+etZxBxaJtA4MvHJd8EcTOHUlXwvzlgxQMIVZo=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=nMEsYXyfH71aVKAKUYPQ/qKelCMfkMHiuDwpdSupRLabXmLoJC1j8gUhtI+8Z7Obbg2oMJ2HpLCCTGxoVnbSFZJGGpDflxenBt1a8iIoz/mmH0QtuzjxIVXrZyDvYjSNZWZ88AH3zHqvniOEPvMDFMvWvc2E80i7fNCMzZpiFQU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nmf7IF0k; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-2053525bd90so22108685ad.0;
-        Fri, 20 Sep 2024 08:37:41 -0700 (PDT)
+	s=arc-20240116; t=1726851470; c=relaxed/simple;
+	bh=0VndrB7wUbmZML5AQ3UnMNv6I2BM2u35xkfH2xKB9Z8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EMx236EuiOBAgni0tam/VI9L9/CQ1vTl/ZeeuLw9fPmaBSdCbd7g06RF9tJAv1ZXqy06QhTCZLszx/4EQt5O4QAnamj/w19B+etoFVWqSSGe2o0a8Gy9Q9mstIfaW76p7KdXqpKlXRyNo4vc5/PIRR142PcqHql7MTjY8r1GYTI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=P9YTrZY4; arc=none smtp.client-ip=209.85.128.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-42cd46f3a26so19857435e9.2
+        for <bpf@vger.kernel.org>; Fri, 20 Sep 2024 09:57:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1726846661; x=1727451461; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=vZPEWZoZN6gyioYEDJsWWtC09rzdzpFL6+7dviCo3C8=;
-        b=nmf7IF0kWlXHbCbay3kjoBkYO18pg0nz0C2Ta62e6yDxF7lm3IwU7paR1gdBGC8tBd
-         ckGk1sGiqNlSFpmNMH9hWUuepTtRvQcmHQ7bxFzhJ6rTNGfg0OewXID0QZXf5fW/ozsd
-         R8TAemCwUb5NGeRE+UythzrBp3QudvSWxPW3bw8TzkphOs8e1lauJEIuKgn4QKmZv4ln
-         CVfZljwpp9XDRgB/8E3TnZpvp/HvFWSsFCb23ok+6eXs+IdqUCqQpaT1lyZ0mm0Lhyff
-         oRDX/K0uVuw6n1vMXiYjOKyoAvTPhSS9Jule1Q1pnL2Ly3kwdGtKovXs8L5MWqJUxKT3
-         PP3A==
+        d=cloudflare.com; s=google09082023; t=1726851466; x=1727456266; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=cPGcaGILxwhfTJ1AkidUV1js05svfUGNV2qC8S2ASMs=;
+        b=P9YTrZY4DK5p/LuSg3f+iCc8bfAAkYHSkjjmzXerwyMe3vn+n+dHTrZweFZn7aHp8g
+         EhVLEMSIr5RfKLUcOe04gAhe7pbr1oeemudYbWLD2a39CHhmHSWuGHzP3R4zxr+pMXeK
+         1OYB3jSArecRbuHK62VJN6QkxeKkinTX00YGjpGGKL+g2sPIJ6T+J9b0sD9S4RuyzyZz
+         mI+GMqWt2lokLMaVRlMEUKX9rEca6xCO4HcdV3YGQ8ety15beBnNBEnwZeGQ//TyGYp1
+         FdutSJ91DwzS/kJ4/1chZ1yRLlIBZpGLyTp1WU7eYP0l7HQ0nYS5AaLACcXonFkq1MHj
+         sfFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726846661; x=1727451461;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vZPEWZoZN6gyioYEDJsWWtC09rzdzpFL6+7dviCo3C8=;
-        b=gi1tFA7SzO3F/6m/BxqB5zNfq0Hb3x4MhHEEjSNAdBH1cxjOAT0XXWXdl1jDalLS0C
-         AXhjyP2GouGe5+Uje0l2t44VGjg9RDY3ukhqTE8nk4wykDlLQGk+F1RiRK27F7zJ5pxL
-         0gGIw0qtRxUFKJ1WLoLhu8ze/lpGHE44CeTnEAASy+yt5p7Pjsn7c3bJXvIWL6UNpsMh
-         WBWdM0QWyizPOlZlYBOfjzKkuNxvgOMBufssTWXyRww71krqQIHHT82qDyBrz48U5bky
-         nQUKO3Dv7lJdFj8692M6hNXFxBYuCJMSIQAGkWp90hjzsIVH5f8p//ec0GPptccSCVmD
-         g2+g==
-X-Forwarded-Encrypted: i=1; AJvYcCUad4OiGRFbBbYs2tFyOtC3L0KZ08TqyNkwUOiaGFODC4TRXJo+nOgK1vh5fFyHv9CyHraDlhTaPLyq+9E=@vger.kernel.org, AJvYcCV3/hz7Vyzj75xuQZoQbZo4ZP3pyO10fA7vPNvp1fLv2lWBva1z5+T7w/+VLHB05bOsu0PELmWmZitMxA==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy154+7n5Agnf5HblGja1bW8oUvpdYUcI7Ubo3ADq+w+7SpUAnb
-	H2Bt1ioKnX/PeYZeZkgmd0M/Epxkwm1RYQy+zH8iR8V6WJl6x9WJ
-X-Google-Smtp-Source: AGHT+IGPosCOh7nMMAoZzPbV+Z8FF/maBKEqdN9fsZINhjrwcKMd3EXETF6KUBqarQWAqD8AXU9C9A==
-X-Received: by 2002:a17:903:2c8:b0:207:625:cf04 with SMTP id d9443c01a7336-208d8565119mr52721765ad.52.1726846661158;
-        Fri, 20 Sep 2024 08:37:41 -0700 (PDT)
-Received: from localhost ([116.198.225.81])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-207945da8a3sm95990985ad.56.2024.09.20.08.37.39
+        d=1e100.net; s=20230601; t=1726851467; x=1727456267;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cPGcaGILxwhfTJ1AkidUV1js05svfUGNV2qC8S2ASMs=;
+        b=ks9a6jNnwIWstdRe89qa/h3m1m9/cA86t7awcJ4/bZL1IQTaTCM5E8wEPiJUgzYMFU
+         4VnXct7tQHMSL/9nkaTmHtbivYe38Qx4+wdTK6bctvEzDiD4GV0QUPQmgEkaVqp2YabT
+         2u9O2+WtlW2CzJwERRcaYI2Ar3gJMY5bGvhytCOz31GC8b2AVCNpqMhO3/6U2OTIxfDV
+         9RdjyXu22A0zwSGXWB5fJ1R2nQOQvxFFtlhhrMZJDCpc5N7sRkWSj+yJ2mBnot0Dpdm4
+         H/AhJOdf/RT83eL7QTyHvO+3qtwjLTEa2JwWK9twV2ilKCacIS3ek5R1TSwXEAxBGHAV
+         HSZg==
+X-Forwarded-Encrypted: i=1; AJvYcCWMP3QmkcPGj15J7UYzHa5PBjozoPBN7YFyKgEmvT+0rdmfr8PGbIqrgMNrp6Xo3qTcUgs=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyVG3BSfcNH4bwfwQvlo/I6hj0QaqRfLymqz9RjwKVi0/qha/+2
+	Q181mvQOdElS3Odf7s64aWLOITfetiFfS/IFem6KzaekG/E/gLWQSxCxtvmEqvo=
+X-Google-Smtp-Source: AGHT+IH47FhS6BitJFEObpSEKWNYV6OlALdb/YS1wlurIrhxIx0joR4JwIU0GtIJDWKAkg4lShG/Ig==
+X-Received: by 2002:a05:600c:1e25:b0:42c:b6e4:e3ac with SMTP id 5b1f17b1804b1-42e7abe228fmr29196115e9.3.1726851465308;
+        Fri, 20 Sep 2024 09:57:45 -0700 (PDT)
+Received: from GHGHG14 ([2a09:bac5:50ca:432::6b:72])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-42e7540e464sm54855295e9.4.2024.09.20.09.57.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Sep 2024 08:37:40 -0700 (PDT)
-From: Tao Chen <chen.dylane@gmail.com>
-To: Alexei Starovoitov <ast@kernel.org>,
+        Fri, 20 Sep 2024 09:57:44 -0700 (PDT)
+Date: Fri, 20 Sep 2024 17:57:30 +0100
+From: Tiago Lam <tiagolam@cloudflare.com>
+To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	David Ahern <dsahern@kernel.org>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
 	Andrii Nakryiko <andrii@kernel.org>,
 	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
 	Yonghong Song <yonghong.song@linux.dev>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	x86@kernel.org,
-	"H . Peter Anvin" <hpa@zytor.com>
-Cc: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	sparclinux@vger.kernel.org,
-	Tao Chen <chen.dylane@gmail.com>
-Subject: [PATCH bpf-next 2/2] bpf: Add BPF_CALL_FUNC* to simplify code
-Date: Fri, 20 Sep 2024 23:37:06 +0800
-Message-Id: <20240920153706.919154-1-chen.dylane@gmail.com>
-X-Mailer: git-send-email 2.25.1
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	Jakub Sitnicki <jakub@cloudflare.com>, kernel-team@cloudflare.com
+Subject: Re: [RFC PATCH 1/3] ipv4: Run a reverse sk_lookup on sendmsg.
+Message-ID: <Zu2pev10zUAEnbYm@GHGHG14>
+References: <20240913-reverse-sk-lookup-v1-0-e721ea003d4c@cloudflare.com>
+ <20240913-reverse-sk-lookup-v1-1-e721ea003d4c@cloudflare.com>
+ <66eacb6317540_29b986294b5@willemb.c.googlers.com.notmuch>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <66eacb6317540_29b986294b5@willemb.c.googlers.com.notmuch>
 
-No logic changed, like macro BPF_CALL_IMM, add BPF_CALL_FUNC/_FUNC_ARGS
-to simplify code.
+On Wed, Sep 18, 2024 at 08:45:23AM -0400, Willem de Bruijn wrote:
+> Tiago Lam wrote:
+> > In order to check if egress traffic should be allowed through, we run a
+> > reverse socket lookup (i.e. normal socket lookup with the src/dst
+> > addresses and ports reversed) to check if the corresponding ingress
+> > traffic is allowed in.
+> 
+> The subject and this description makes it sound that the change always
+> runs a reverse sk_lookup on sendmsg.
+> 
+> It also focuses on the mechanism, rather than the purpose.
+> 
+> The feature here adds IP_ORIGDSTADDR as a way to respond from a
+> user configured address. With the sk_lookup limited to this new
+> special case, as a safety to allow it.
+> 
+> If I read this correctly, I suggest rewording the cover letter and
+> commit to make this intent and behavior more explicit.
+> 
 
-Signed-off-by: Tao Chen <chen.dylane@gmail.com>
----
- arch/sparc/net/bpf_jit_comp_64.c | 2 +-
- arch/x86/net/bpf_jit_comp.c      | 2 +-
- arch/x86/net/bpf_jit_comp32.c    | 5 ++---
- include/linux/filter.h           | 4 ++++
- kernel/bpf/core.c                | 6 +++---
- 5 files changed, 11 insertions(+), 8 deletions(-)
+I think that makes sense, given this is really about two things:
+1. Allowing users to use IP_ORIGDSTADDR to set src address and/or port
+on sendmsg();
+2. When they do, allow for that return traffic to exit without any extra
+configuration, thus limiting how users can take advantage of this new
+functionality.
 
-diff --git a/arch/sparc/net/bpf_jit_comp_64.c b/arch/sparc/net/bpf_jit_comp_64.c
-index 73bf0aea8baf..076b1f216360 100644
---- a/arch/sparc/net/bpf_jit_comp_64.c
-+++ b/arch/sparc/net/bpf_jit_comp_64.c
-@@ -1213,7 +1213,7 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx)
- 	/* function call */
- 	case BPF_JMP | BPF_CALL:
- 	{
--		u8 *func = ((u8 *)__bpf_call_base) + imm;
-+		u8 *func = BPF_CALL_FUNC(imm);
- 
- 		ctx->saw_call = true;
- 
-diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index 06b080b61aa5..052e5cc65fc0 100644
---- a/arch/x86/net/bpf_jit_comp.c
-+++ b/arch/x86/net/bpf_jit_comp.c
-@@ -2126,7 +2126,7 @@ st:			if (is_imm8(insn->off))
- 		case BPF_JMP | BPF_CALL: {
- 			u8 *ip = image + addrs[i - 1];
- 
--			func = (u8 *) __bpf_call_base + imm32;
-+			func = BPF_CALL_FUNC(imm32);
- 			if (tail_call_reachable) {
- 				LOAD_TAIL_CALL_CNT_PTR(bpf_prog->aux->stack_depth);
- 				ip += 7;
-diff --git a/arch/x86/net/bpf_jit_comp32.c b/arch/x86/net/bpf_jit_comp32.c
-index de0f9e5f9f73..f7277639bd2c 100644
---- a/arch/x86/net/bpf_jit_comp32.c
-+++ b/arch/x86/net/bpf_jit_comp32.c
-@@ -1627,8 +1627,7 @@ static int emit_kfunc_call(const struct bpf_prog *bpf_prog, u8 *end_addr,
- 	/* mov dword ptr [ebp+off],eax */
- 	if (fm->ret_size)
- 		end_addr -= 3;
--
--	jmp_offset = (u8 *)__bpf_call_base + insn->imm - end_addr;
-+	jmp_offset = BPF_CALL_FUNC(insn->imm) - end_addr;
- 	if (!is_simm32(jmp_offset)) {
- 		pr_err("unsupported BPF kernel function jmp_offset:%lld\n",
- 		       jmp_offset);
-@@ -2103,7 +2102,7 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image,
- 				break;
- 			}
- 
--			func = (u8 *) __bpf_call_base + imm32;
-+			func = BPF_CALL_FUNC(imm32);
- 			jmp_offset = func - (image + addrs[i]);
- 
- 			if (!imm32 || !is_simm32(jmp_offset)) {
-diff --git a/include/linux/filter.h b/include/linux/filter.h
-index 99b6fc83825b..d06526decc6d 100644
---- a/include/linux/filter.h
-+++ b/include/linux/filter.h
-@@ -461,6 +461,10 @@ static inline bool insn_is_cast_user(const struct bpf_insn *insn)
- 
- #define BPF_CALL_IMM(x)	((void *)(x) - (void *)__bpf_call_base)
- 
-+#define BPF_CALL_FUNC(x)	((x) + (u8 *)__bpf_call_base)
-+
-+#define BPF_CALL_FUNC_ARGS(x)	((x) + (u8 *)__bpf_call_base_args)
-+
- #define BPF_EMIT_CALL(FUNC)					\
- 	((struct bpf_insn) {					\
- 		.code  = BPF_JMP | BPF_CALL,			\
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 4e07cc057d6f..f965f0d586f3 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -1278,7 +1278,7 @@ int bpf_jit_get_func_addr(const struct bpf_prog *prog,
- 		 * and the helper with imm relative to it are both in core
- 		 * kernel.
- 		 */
--		addr = (u8 *)__bpf_call_base + imm;
-+		addr = BPF_CALL_FUNC(imm);
- 	}
- 
- 	*func_addr = (unsigned long)addr;
-@@ -2007,12 +2007,12 @@ static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn)
- 		 * preserves BPF_R6-BPF_R9, and stores return value
- 		 * into BPF_R0.
- 		 */
--		BPF_R0 = (__bpf_call_base + insn->imm)(BPF_R1, BPF_R2, BPF_R3,
-+		BPF_R0 = BPF_CALL_FUNC(insn->imm)(BPF_R1, BPF_R2, BPF_R3,
- 						       BPF_R4, BPF_R5);
- 		CONT;
- 
- 	JMP_CALL_ARGS:
--		BPF_R0 = (__bpf_call_base_args + insn->imm)(BPF_R1, BPF_R2,
-+		BPF_R0 = BPF_CALL_FUNC_ARGS(insn->imm)(BPF_R1, BPF_R2,
- 							    BPF_R3, BPF_R4,
- 							    BPF_R5,
- 							    insn + insn->off + 1);
--- 
-2.43.0
+I've made a few changes which hopefully makes that clearer in v2, which
+I'm sending shortly. Thanks for these suggestions!
 
+Tiago.
 
