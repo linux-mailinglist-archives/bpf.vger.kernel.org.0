@@ -1,151 +1,134 @@
-Return-Path: <bpf+bounces-40116-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40117-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9574B97D14B
-	for <lists+bpf@lfdr.de>; Fri, 20 Sep 2024 08:43:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 504D497D203
+	for <lists+bpf@lfdr.de>; Fri, 20 Sep 2024 09:49:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52DD3287F6D
-	for <lists+bpf@lfdr.de>; Fri, 20 Sep 2024 06:43:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 83DD31C2286B
+	for <lists+bpf@lfdr.de>; Fri, 20 Sep 2024 07:49:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07AB9433CF;
-	Fri, 20 Sep 2024 06:43:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30A30502B1;
+	Fri, 20 Sep 2024 07:49:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=blackwall-org.20230601.gappssmtp.com header.i=@blackwall-org.20230601.gappssmtp.com header.b="QB/yFY1M"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RtXOAGT+"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E95DA38F9C
-	for <bpf@vger.kernel.org>; Fri, 20 Sep 2024 06:43:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6964418C31;
+	Fri, 20 Sep 2024 07:49:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726814623; cv=none; b=TTQaF0CbIYgwKaJdx4Bqal4tPwRZ6tCtH2H/NdbVOKPsvJ3VOmRwySiynsAA47KJYjHek6XFh5qkYCQk7H9rCYy3G+0ifY0uJSGrzrcl63XOe40Qpq9NHA5ZTXrT1HElC4x4XzQ/urGLy1FiscmJ/Tb4cr7VueddinnlIqbuogI=
+	t=1726818569; cv=none; b=lPfMPZ2qE/wmQjJehXY784tskHH4FMpYxxg1PdM97uEUHq1rrI6BpwBnYnFNeUURpnRX9Ey7QrYtH6osXsBehn+HP93kV4U1I8s9xAspyK/h2Pqo9XRuzq5Hvq6Zux1KL9HVnmFhi1sjTO2pgtFGHZAlAy2QQPlCu1cmaJrfSyw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726814623; c=relaxed/simple;
-	bh=sOxxjmVIf9DK1JAPwTVAbAeOHGayuH0y2cxXhJoEjJs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Cu37r9jKn0CwQs4RqIEdXYSasLIWkz6SPqrcGBjKaM+5CsEWbThlwCUMTpC4TCRlgwXQ6bp0quKCLnFYSieY/bk4+pINHZtp5aoad1HrY69x0Qg8xRoX06B/YmDMUoB/7RtOxYgPQz3qpjjozZdhkYzxbDrRsu8WiBA2p0cEPhI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=blackwall.org; spf=none smtp.mailfrom=blackwall.org; dkim=pass (2048-bit key) header.d=blackwall-org.20230601.gappssmtp.com header.i=@blackwall-org.20230601.gappssmtp.com header.b=QB/yFY1M; arc=none smtp.client-ip=209.85.167.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=blackwall.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=blackwall.org
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-5365928acd0so1875690e87.2
-        for <bpf@vger.kernel.org>; Thu, 19 Sep 2024 23:43:41 -0700 (PDT)
+	s=arc-20240116; t=1726818569; c=relaxed/simple;
+	bh=exVcaMmnOCbzyNCCepDUxO+71CE0l3N2mM32mayVI5Q=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=cmTUZIdzAYAfZ4j6EESHCBc1Tw0n4aqDxbUnBRBPi5Thi/aCOvTfbOTnDcr0ooOBvbm/JHIij7c9R+LAD6R+S8eeDOzZL1YXrVtcpgUj1TjV+euQPlaT+pL3392VBJdge9S7mMw4SdTSIkASK/SfzKpkawMkaEpgMXgsinF7MMU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RtXOAGT+; arc=none smtp.client-ip=209.85.214.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-205722ba00cso15695135ad.0;
+        Fri, 20 Sep 2024 00:49:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=blackwall-org.20230601.gappssmtp.com; s=20230601; t=1726814620; x=1727419420; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=LLaE4A8HWomqnZxKIsBh6iXXcm0J13/3tg8Vb7IGkgU=;
-        b=QB/yFY1M86Pyo+0JMY2IrcKxjNPPaV/JKUA4jYV5ZDhiKcc2IeNxoGiAfPqIuVWmju
-         zA3edRbxcLfJ3H3wtl28mU9XT8YvVsz9wD36eCwHqiujbDaKuIGzdGUlvGn9TRDu+1Eg
-         3SCr+3IO1nzr1er4GN3DOxQbApbRzVjyRYcXx3/Y/KBPZc/wgyv4979jgEM79oVehAUQ
-         e/UDKp4/L7B1hmywYE8V6Cu5dXwqNOwv0aSxZWYKThUy0Zc1+L8JS/prv8kAixQw7t1Q
-         Oyn1hoM5Ar5pc30bHM+zLzhLYBR2YAkTXMz4hzgU0mVoPxKSdeH5YAD6FkCJddhREEf4
-         6m5w==
+        d=gmail.com; s=20230601; t=1726818567; x=1727423367; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=1UdNBZl5nUJpkhU2F12KMNNuC+DdtU919TP/+dp/q6s=;
+        b=RtXOAGT+u7pVD2DdIrawshilqT/87vHNckGvCKBYiJXFsRZsVs58M3g1qmF/cA9rGt
+         oINcUnbrYyfJ7N0S0BHGnzhnTcMspGGjVTCT59M3gTzm88yiP+HG1r05Dn3OxiIfyZBQ
+         +7LaATmlKnoQr8wDDkLIvIiiB4GEGTXl/M+SBzZ3ELp24dlo8DWEelkj9WHKmF+p2SAJ
+         mP+8qaVeZ9s1n9L5h60hgHhrpkSfRNJznH6DMN/D6vwF/XeYkom6OkUhQGfcB7bzjZG2
+         Jwkp42tXBT73/o60VmjhXUUPpUCfG6kxT1ZkOqSnxAZI+HlhuE4JYFXnsVTz6r2QQAm+
+         PTfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726814620; x=1727419420;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=LLaE4A8HWomqnZxKIsBh6iXXcm0J13/3tg8Vb7IGkgU=;
-        b=EPsnq1pW0aIs0HiGJnMXxdHY3KqAYjrkCIXCnFOlJ86B15drtxEGGmR6AOwMhp19Gy
-         AHZbKUGW+6wzPHuUDY/LxYOI1nLZRfsu9uh3fr/lgpLBjNh0BqhUVw+q9oBTRZOIt16E
-         nOxXl5r0Wg3jP6cE1lbageDeAzgDBhkdWEbZetZCSzZoTOsYHfJ5CZCgMd5xdXE0Zpjg
-         4d7pTgR+EuGA6ALVas8HYIrztEGCVxBmqNKace2NBEc+HlD4OtZGkneQxC97QR4Vv4Jm
-         A0mBACjnGDBFA4Ml3mXYe+n6qHg9vLB6Yu1A3wYX+DzP2Rz5CfBtyARXoHIjTL9AR2UF
-         FDAQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUQ/muSPpHYzn5rjcoKqf3zgrRouGm3ftLSqKduyWpj0D2jyRFj78JBZbQ0MC5fUlH9mQI=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxATFEkO6+Ynjq4jwgRHuDbtFb9nx0CiNJgRx4rfDLT+GU9MQdO
-	KKM6S22ycSN0i3n5xu0HASdh7QBHXNTKvtiLjXmQSx5pbWE5F4HwFxsipqd+zTM=
-X-Google-Smtp-Source: AGHT+IFYc/zDgQiOV93CNO/o/R1jy+aordDFcbQRV8R86JE7XcZO4DTMEjkiBq8Mwj3Lv/fNs3rUBg==
-X-Received: by 2002:a05:6512:39c4:b0:536:581c:9d9f with SMTP id 2adb3069b0e04-536ad16b327mr692425e87.24.1726814619733;
-        Thu, 19 Sep 2024 23:43:39 -0700 (PDT)
-Received: from [192.168.0.245] ([62.73.69.208])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a90613304dasm797860266b.197.2024.09.19.23.43.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Sep 2024 23:43:39 -0700 (PDT)
-Message-ID: <8dfc3125-b4fd-4209-89c5-a5a85a1d65a6@blackwall.org>
-Date: Fri, 20 Sep 2024 09:43:37 +0300
+        d=1e100.net; s=20230601; t=1726818567; x=1727423367;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1UdNBZl5nUJpkhU2F12KMNNuC+DdtU919TP/+dp/q6s=;
+        b=NmhhPnL9H2eTL1Et3mKFcHURswuf6NfOJsSuQjKvOa5fLwo+8MUD9nGKtYAyMZLFtQ
+         /MEoHnXl79Gg6bhgz0nvg74KZovpRy/Zx5KKEzzDSl++gvgzCaRF0fqc9P7Q8Dgq+UJE
+         YuwLVCocvx0i+2OeH1ObFF56k3cnGfBsRoa2kdOaUFLI3yNjVbCBwvp8eJiL9c6nghot
+         CUpmFoC0YtrD3IomYeYPRsvwPSPArZbPZw2QzPSx09lWdda8ZttZIZGTDpZbWiReY7CJ
+         QfcU39hir3TIOncnwB2HnzCT0QgmgB/qe0bKShICP4ChYbYfCdphKkaQ8WkKzMDVIeAz
+         SoyQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXdpx32OjlPNwqp34JvZLyofHMObffIu0wUkahpucxVoJBst5su1mY9C2FweCYfYa5Ndofy/vhf2/qlTR+RzVg=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxUMB3iLoIK7t+n6EkimAKkih4uw2W7DfTaFytdg9RNH7/6zrmX
+	lJ0eyn1OzYiq3rgsYwV143F0zGxioptSOvtMuRL1h7L//2CuqH4HgeQBuQ==
+X-Google-Smtp-Source: AGHT+IHIwYuw4Bd1m0b8sV5QQOS2TPfXkuxB1hnS5LNeunYLentUU751qZ57A5yvbso3tI4ZKuT+8g==
+X-Received: by 2002:a17:902:ecc5:b0:206:a6fe:2359 with SMTP id d9443c01a7336-208d97f0184mr17762075ad.1.1726818567143;
+        Fri, 20 Sep 2024 00:49:27 -0700 (PDT)
+Received: from localhost.localdomain (69-172-146-21.cable.teksavvy.com. [69.172.146.21])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20794600fe8sm90481625ad.68.2024.09.20.00.49.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Sep 2024 00:49:26 -0700 (PDT)
+From: Tony Ambardar <tony.ambardar@gmail.com>
+To: bpf@vger.kernel.org
+Cc: Tony Ambardar <tony.ambardar@gmail.com>,
+	linux-kselftest@vger.kernel.org,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	Viktor Malik <vmalik@redhat.com>
+Subject: [PATCH bpf-next v1 0/3] Improve .BTF_ids patching and alignment
+Date: Fri, 20 Sep 2024 00:49:10 -0700
+Message-Id: <cover.1726806756.git.tony.ambardar@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net v3] bonding: Fix unnecessary warnings and logs from
- bond_xdp_get_xmit_slave()
-To: Jiwon Kim <jiwonaid0@gmail.com>, jv@jvosburgh.net, andy@greyhouse.net,
- davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
- john.fastabend@gmail.com, joamaki@gmail.com
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org, syzbot+c187823a52ed505b2257@syzkaller.appspotmail.com
-References: <20240918140602.18644-1-jiwonaid0@gmail.com>
-Content-Language: en-US
-From: Nikolay Aleksandrov <razor@blackwall.org>
-In-Reply-To: <20240918140602.18644-1-jiwonaid0@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 18/09/2024 17:06, Jiwon Kim wrote:
-> syzbot reported a WARNING in bond_xdp_get_xmit_slave. To reproduce
-> this[1], one bond device (bond1) has xdpdrv, which increases
-> bpf_master_redirect_enabled_key. Another bond device (bond0) which is
-> unsupported by XDP but its slave (veth3) has xdpgeneric that returns
-> XDP_TX. This triggers WARN_ON_ONCE() from the xdp_master_redirect().
-> To reduce unnecessary warnings and improve log management, we need to
-> delete the WARN_ON_ONCE() and add ratelimit to the netdev_err().
-> 
-> [1] Steps to reproduce:
->     # Needs tx_xdp with return XDP_TX;
->     ip l add veth0 type veth peer veth1
->     ip l add veth3 type veth peer veth4
->     ip l add bond0 type bond mode 6 # BOND_MODE_ALB, unsupported by XDP
->     ip l add bond1 type bond # BOND_MODE_ROUNDROBIN by default
->     ip l set veth0 master bond1
->     ip l set bond1 up
->     # Increases bpf_master_redirect_enabled_key
->     ip l set dev bond1 xdpdrv object tx_xdp.o section xdp_tx
->     ip l set veth3 master bond0
->     ip l set bond0 up
->     ip l set veth4 up
->     # Triggers WARN_ON_ONCE() from the xdp_master_redirect()
->     ip l set veth3 xdpgeneric object tx_xdp.o section xdp_tx
-> 
-> Reported-by: syzbot+c187823a52ed505b2257@syzkaller.appspotmail.com
-> Closes: https://syzkaller.appspot.com/bug?extid=c187823a52ed505b2257
-> Fixes: 9e2ee5c7e7c3 ("net, bonding: Add XDP support to the bonding driver")
-> Signed-off-by: Jiwon Kim <jiwonaid0@gmail.com>
-> ---
-> v3: Fix subject and description
-> v2: Change the patch to fix bond_xdp_get_xmit_slave
-> ---
->  drivers/net/bonding/bond_main.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
-> index b560644ee1b1..b1bffd8e9a95 100644
-> --- a/drivers/net/bonding/bond_main.c
-> +++ b/drivers/net/bonding/bond_main.c
-> @@ -5610,9 +5610,9 @@ bond_xdp_get_xmit_slave(struct net_device *bond_dev, struct xdp_buff *xdp)
->  		break;
->  
->  	default:
-> -		/* Should never happen. Mode guarded by bond_xdp_check() */
-> -		netdev_err(bond_dev, "Unknown bonding mode %d for xdp xmit\n", BOND_MODE(bond));
-> -		WARN_ON_ONCE(1);
-> +		if (net_ratelimit())
-> +			netdev_err(bond_dev, "Unknown bonding mode %d for xdp xmit\n",
-> +				   BOND_MODE(bond));
->  		return NULL;
->  	}
->  
+Hello all,
 
-Looks good to me, but next time wait 1 day before reposting another version.
-Signed-off-by: Nikolay Aleksandrov <razor@blackwall.org>
+This patch series offers improvements to the way .BTF_ids section data is
+created and later patched by resolve_btfids.
+
+Patch #1 simplifies the byte-order translation in resolve_btfids while
+making it more resilient to future .BTF_ids encoding updates.
+
+Patch #2 makes sure all BTF ID data is 4-byte aligned, and not only the
+.BTF_ids used for vmlinux.
+
+Patch #3 syncs the above changes in btf_ids.h to tools/include, obviating
+a previous alignment fix in selftests/bpf.
+
+Feedback and suggestions are welcome!
+
+Best regards,
+Tony
+
+
+Tony Ambardar (3):
+  tools/resolve_btfids: Simplify handling cross-endian compilation
+  bpf: btf: Ensure natural alignment of .BTF_ids section
+  tools/bpf, selftests/bpf : Sync btf_ids.h to tools
+
+ include/linux/btf_ids.h                       |  1 +
+ tools/bpf/resolve_btfids/main.c               | 60 +++++---------
+ tools/include/linux/btf_ids.h                 | 80 +++++++++++++++++--
+ .../selftests/bpf/prog_tests/resolve_btfids.c |  6 --
+ 4 files changed, 97 insertions(+), 50 deletions(-)
+
+-- 
+2.34.1
 
 
