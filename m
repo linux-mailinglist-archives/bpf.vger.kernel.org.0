@@ -1,248 +1,189 @@
-Return-Path: <bpf+bounces-40143-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40144-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D62697D8D4
-	for <lists+bpf@lfdr.de>; Fri, 20 Sep 2024 19:03:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BE1C97D9C0
+	for <lists+bpf@lfdr.de>; Fri, 20 Sep 2024 21:07:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 99AFC1F24ED9
-	for <lists+bpf@lfdr.de>; Fri, 20 Sep 2024 17:03:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1150C1F23878
+	for <lists+bpf@lfdr.de>; Fri, 20 Sep 2024 19:07:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 046F6185932;
-	Fri, 20 Sep 2024 17:02:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61BD618452C;
+	Fri, 20 Sep 2024 19:07:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="bwW7vOG5"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="f7UJKq89"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBD8918453D
-	for <bpf@vger.kernel.org>; Fri, 20 Sep 2024 17:02:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 225DC383B1
+	for <bpf@vger.kernel.org>; Fri, 20 Sep 2024 19:07:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726851769; cv=none; b=L1vB5DeeJot9g95ouW2AsJ/Upo8172Fu0KyaVjFCQwrtxg+wD6HnpSHuOhHfe5KhNCmqXDeR4YaXye7/GAjbEl7Dsam1LUM9duZTk9J7pNmGYgbo+Y5BsCmQjIedxV8aNIe1Ci/QVFKoV0aPFa2BoMnW+MIHZEfTUALCW0Vh62Q=
+	t=1726859262; cv=none; b=iKLfkkiPc0Bq7wlElDRZ0rxwjBaO14CSU7akkS83USLJK7s1014sPPMhhEGPiPsUJva6OwXzt7Askv7LAfQ9SQlyiakR0BqGe55UQquwHMH2jK8lkerSKnC6g6lSnNZmWIvzx+9c2vezi3+x5kQER/R7Tr+Fl1JLN5MYlfFqSuw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726851769; c=relaxed/simple;
-	bh=6jsLEb0C8rdq7VDmohj4Ns2SNUA7feYh+nsP+pP6g2s=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=IBLsXZ0KsNiNTVxhZ1l1bygPIxCfjKCXkdgf/1uezCbmqmNksd9IQkhN6lEYvzx4iihbBue6qu2vcZBSoIiwmwjayqJiPuTFWiPAFWqRtkk+x/PosrBnFgY+Bt4lmYDQEtzTflCcfAgbIL9zH0BU7OtlL2805/9xTRgJti94cu0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=bwW7vOG5; arc=none smtp.client-ip=209.85.128.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-42cbface8d6so27294115e9.3
-        for <bpf@vger.kernel.org>; Fri, 20 Sep 2024 10:02:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1726851766; x=1727456566; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5SJJEI41L6DAw5qSjBYrpeTyLVVZdoMRJaxTx6iDMqc=;
-        b=bwW7vOG5za4XECZQ5gxpZ0GwfAKnv3yuBfN2e1EOMMvJzqxGUX+RxWsZt4fElOZYdf
-         aeiCRXi/DQReBe5ehwKfueEPenONov2eNozWF5jT4XvqUXxi6u9/bcxhTjJUXysBbnhU
-         ncrS2oMoGgUA2sa6EFKr7KWWvkmULBQDATkBmAvXS/JwMAhFRABAZ+3Aa3id8LIUUMhW
-         ow2XYjQLDJh76/+BbcwvKbM3QYMRv+jX/1eers3aaQuJWE2eT2CurPFmVKeZOK2B02oj
-         CRWq18bZy9nBVJ0Rm9CQeOoRSTCk+zfBGZ1NTZFntrSjESSRHr6GZht4Idk819ZEFgFi
-         OJzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726851766; x=1727456566;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5SJJEI41L6DAw5qSjBYrpeTyLVVZdoMRJaxTx6iDMqc=;
-        b=IrGU+NOEOwq2tYsAUcRHnlMw9nIrGaHB8WCkdHnifIq+EGHbx6eh7CtycP2zdkuS2+
-         yGh67b5w5IUziQGHGw3l0b0I/u5xBL0ptCsdtaQWcv2Zh+jLk+lNyDXIYA10IN6ny0Uc
-         X0XXyJByvr44tSCv02TM66yylFwdpFYbV1lnPl+AcHXCBxJakgAsSri1lZcLxSs3zfcA
-         8OzVKhluNaA1kBtJnprMWiTz9os7UF14B+vthVk9V2L+vj+js6hUsGVPg5HegO98vFGY
-         LOn5j/SwudZ64BDTwQ51y9I9TdSimQ1XoL7lKeFXFAL4Z+dAT8wc9Nv8Ucs0tM0bPffD
-         tQjw==
-X-Forwarded-Encrypted: i=1; AJvYcCXro1x1Ka9MZ+WDBSvHlkYcjH2yyjAbEveFjXVE4feuAh6KUjKVvnts6vY1dK+SVG+rJZc=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy1lA7Sv30gVQ+6TlAPNYP7NmQagqsO8sAEulsy/qaW77ICQ4lc
-	e9FiutibmCY2iieFjmNYmExHKAaEDzxXQf64nCPQowevjRzambIdmSKXW3W7dFc=
-X-Google-Smtp-Source: AGHT+IH/xVCKh+VVWbY69gd2wFgfenC/+h+2qOLYdNz5m9L1N+IiLpwVhUgpa5NRi45ntZBxsNIhpw==
-X-Received: by 2002:a05:600c:4f0f:b0:42c:b62c:9f0d with SMTP id 5b1f17b1804b1-42e7ac4b1d4mr40135785e9.17.1726851766097;
-        Fri, 20 Sep 2024 10:02:46 -0700 (PDT)
-Received: from [127.0.1.1] ([2a09:bac5:50ca:432::6b:72])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-42e75450ac2sm54237785e9.24.2024.09.20.10.02.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Sep 2024 10:02:45 -0700 (PDT)
-From: Tiago Lam <tiagolam@cloudflare.com>
-Date: Fri, 20 Sep 2024 18:02:14 +0100
-Subject: [RFC PATCH v2 3/3] bpf: Add sk_lookup test to use ORIGDSTADDR
- cmsg.
+	s=arc-20240116; t=1726859262; c=relaxed/simple;
+	bh=XYleqDUUULMHmf327GC5FuqVofTnEl06Sl9up1zkKig=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=bm5xmEveMD8k7sCwFD37BuAs6FpSL61zy9XcJsfCIbf9Wh/iDWuAPCAjkkSDLoQOwqJmyvzyumGz4MYRKEDtpz4IMATdU1uXK1xgCuWKmZPK1OBpid0SBTXP0yaTlfD2H4d4sSXQUnzv1LuddUfiCIPaCd2oRT+4IameUorevnU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=f7UJKq89; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1726859258;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=dS1KGNZWGk2nhsYDCIsD8L7gyADHJUWHZbHDXT7ckqE=;
+	b=f7UJKq89SWfnaAuLBMiGq3lO+L2r4UDqv/dDZrNi5IuP2orXGb1wu4CCiiztbMOk6UpKTM
+	2HQl/1RFcc3TEQblPsu/hTMQrAF0onkkv6Sl9gFZBR9NgrR6NOqY3EGaC36CRPo3oh+IEH
+	gMo7GWBJpyLr0zXX6OsBmK2TgmvKhIU=
+Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-198-jaoiHIvdPqyl0OxF8OxWVA-1; Fri,
+ 20 Sep 2024 15:07:33 -0400
+X-MC-Unique: jaoiHIvdPqyl0OxF8OxWVA-1
+Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (unknown [10.30.177.17])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id B07D9192DE06;
+	Fri, 20 Sep 2024 19:07:30 +0000 (UTC)
+Received: from wcosta-thinkpadt14gen4.rmtbr.csb (unknown [10.22.33.41])
+	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 9F8C219560A3;
+	Fri, 20 Sep 2024 19:07:23 +0000 (UTC)
+From: Wander Lairson Costa <wander@redhat.com>
+To: Andrii Nakryiko <andrii@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	bpf@vger.kernel.org (open list:BPF [RINGBUF]),
+	linux-kernel@vger.kernel.org (open list)
+Cc: Wander Lairson Costa <wander.lairson@gmail.com>,
+	Brian Grech <bgrech@redhat.com>,
+	Wander Lairson Costa <wander@redhat.com>
+Subject: [PATCH] bpf: use raw_spinlock_t in ringbuf
+Date: Fri, 20 Sep 2024 16:06:59 -0300
+Message-ID: <20240920190700.617253-1-wander@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240920-reverse-sk-lookup-v2-3-916a48c47d56@cloudflare.com>
-References: <20240920-reverse-sk-lookup-v2-0-916a48c47d56@cloudflare.com>
-In-Reply-To: <20240920-reverse-sk-lookup-v2-0-916a48c47d56@cloudflare.com>
-To: "David S. Miller" <davem@davemloft.net>, 
- David Ahern <dsahern@kernel.org>, Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
- Andrii Nakryiko <andrii@kernel.org>, 
- Martin KaFai Lau <martin.lau@linux.dev>, 
- Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, 
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
- Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, 
- Shuah Khan <shuah@kernel.org>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
- bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
- Jakub Sitnicki <jakub@cloudflare.com>, Tiago Lam <tiagolam@cloudflare.com>, 
- kernel-team@cloudflare.com
-X-Mailer: b4 0.14.1
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
 
-This patch reuses the framework already in place for sk_lookup, allowing
-it now to send a reply from the server fd directly, instead of having to
-create a socket bound to the original destination address and reply from
-there. It does this by passing the source address and port from where to
-reply from in a IP_ORIGDSTADDR ancillary message passed in sendmsg.
+From: Wander Lairson Costa <wander.lairson@gmail.com>
 
-Signed-off-by: Tiago Lam <tiagolam@cloudflare.com>
+The function __bpf_ringbuf_reserve is invoked from a tracepoint, which
+disables preemption. Using spinlock_t in this context can lead to a
+"sleep in atomic" warning in the RT variant. This issue is illustrated
+in the example below:
+
+BUG: sleeping function called from invalid context at kernel/locking/spinlock_rt.c:48
+in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 556208, name: test_progs
+preempt_count: 1, expected: 0
+RCU nest depth: 1, expected: 1
+INFO: lockdep is turned off.
+Preemption disabled at:
+[<ffffd33a5c88ea44>] migrate_enable+0xc0/0x39c
+CPU: 7 PID: 556208 Comm: test_progs Tainted: G
+Hardware name: Qualcomm SA8775P Ride (DT)
+Call trace:
+ dump_backtrace+0xac/0x130
+ show_stack+0x1c/0x30
+ dump_stack_lvl+0xac/0xe8
+ dump_stack+0x18/0x30
+ __might_resched+0x3bc/0x4fc
+ rt_spin_lock+0x8c/0x1a4
+ __bpf_ringbuf_reserve+0xc4/0x254
+ bpf_ringbuf_reserve_dynptr+0x5c/0xdc
+ bpf_prog_ac3d15160d62622a_test_read_write+0x104/0x238
+ trace_call_bpf+0x238/0x774
+ perf_call_bpf_enter.isra.0+0x104/0x194
+ perf_syscall_enter+0x2f8/0x510
+ trace_sys_enter+0x39c/0x564
+ syscall_trace_enter+0x220/0x3c0
+ do_el0_svc+0x138/0x1dc
+ el0_svc+0x54/0x130
+ el0t_64_sync_handler+0x134/0x150
+ el0t_64_sync+0x17c/0x180
+
+Switch the spinlock to raw_spinlock_t to avoid this error.
+
+Signed-off-by: Wander Lairson Costa <wander.lairson@gmail.com>
+Reported-by: Brian Grech <bgrech@redhat.com>
+Fixes: 457f44363a88 ("bpf: Implement BPF ring buffer and verifier support for it")
+Signed-off-by: Wander Lairson Costa <wander@redhat.com>
 ---
- tools/testing/selftests/bpf/prog_tests/sk_lookup.c | 67 +++++++++++++++-------
- 1 file changed, 45 insertions(+), 22 deletions(-)
+ kernel/bpf/ringbuf.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/sk_lookup.c b/tools/testing/selftests/bpf/prog_tests/sk_lookup.c
-index ae87c00867ba..df780624c16c 100644
---- a/tools/testing/selftests/bpf/prog_tests/sk_lookup.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sk_lookup.c
-@@ -75,6 +75,7 @@ struct test {
- 	struct inet_addr listen_at;
- 	enum server accept_on;
- 	bool reuseport_has_conns; /* Add a connected socket to reuseport group */
-+	bool dont_bind_reply; /* Don't bind, send direct from server fd. */
- };
+diff --git a/kernel/bpf/ringbuf.c b/kernel/bpf/ringbuf.c
+index e20b90c36131..de3b681d1d13 100644
+--- a/kernel/bpf/ringbuf.c
++++ b/kernel/bpf/ringbuf.c
+@@ -29,7 +29,7 @@ struct bpf_ringbuf {
+ 	u64 mask;
+ 	struct page **pages;
+ 	int nr_pages;
+-	spinlock_t spinlock ____cacheline_aligned_in_smp;
++	raw_spinlock_t spinlock ____cacheline_aligned_in_smp;
+ 	/* For user-space producer ring buffers, an atomic_t busy bit is used
+ 	 * to synchronize access to the ring buffers in the kernel, rather than
+ 	 * the spinlock that is used for kernel-producer ring buffers. This is
+@@ -173,7 +173,7 @@ static struct bpf_ringbuf *bpf_ringbuf_alloc(size_t data_sz, int numa_node)
+ 	if (!rb)
+ 		return NULL;
  
- struct cb_opts {
-@@ -363,7 +364,7 @@ static void v4_to_v6(struct sockaddr_storage *ss)
- 	memset(&v6->sin6_addr.s6_addr[0], 0, 10);
- }
+-	spin_lock_init(&rb->spinlock);
++	raw_spin_lock_init(&rb->spinlock);
+ 	atomic_set(&rb->busy, 0);
+ 	init_waitqueue_head(&rb->waitq);
+ 	init_irq_work(&rb->work, bpf_ringbuf_notify);
+@@ -421,10 +421,10 @@ static void *__bpf_ringbuf_reserve(struct bpf_ringbuf *rb, u64 size)
+ 	cons_pos = smp_load_acquire(&rb->consumer_pos);
  
--static int udp_recv_send(int server_fd)
-+static int udp_recv_send(int server_fd, bool dont_bind_reply)
- {
- 	char cmsg_buf[CMSG_SPACE(sizeof(struct sockaddr_storage))];
- 	struct sockaddr_storage _src_addr = { 0 };
-@@ -373,7 +374,7 @@ static int udp_recv_send(int server_fd)
- 	struct iovec iov = { 0 };
- 	struct cmsghdr *cm;
- 	char buf[1];
--	int ret, fd;
-+	int fd;
- 	ssize_t n;
- 
- 	iov.iov_base = buf;
-@@ -415,26 +416,37 @@ static int udp_recv_send(int server_fd)
- 		v4_to_v6(dst_addr);
+ 	if (in_nmi()) {
+-		if (!spin_trylock_irqsave(&rb->spinlock, flags))
++		if (!raw_spin_trylock_irqsave(&rb->spinlock, flags))
+ 			return NULL;
+ 	} else {
+-		spin_lock_irqsave(&rb->spinlock, flags);
++		raw_spin_lock_irqsave(&rb->spinlock, flags);
  	}
  
--	/* Reply from original destination address. */
--	fd = start_server_addr(SOCK_DGRAM, dst_addr, sizeof(*dst_addr), NULL);
--	if (!ASSERT_OK_FD(fd, "start_server_addr")) {
--		log_err("failed to create tx socket");
--		return -1;
--	}
-+	if (dont_bind_reply) {
-+		/* Reply directly from server fd, specifying the source address
-+		 * and/or port in struct msghdr.
-+		 */
-+		n = sendmsg(server_fd, &msg, 0);
-+		if (CHECK(n <= 0, "sendmsg", "failed\n")) {
-+			log_err("failed to send echo reply");
-+			return -1;
-+		}
-+	} else {
-+		/* Reply from original destination address. */
-+		fd = start_server_addr(SOCK_DGRAM, dst_addr, sizeof(*dst_addr),
-+				       NULL);
-+		if (!ASSERT_OK_FD(fd, "start_server_addr")) {
-+			log_err("failed to create tx socket");
-+			return -1;
-+		}
- 
--	msg.msg_control = NULL;
--	msg.msg_controllen = 0;
--	n = sendmsg(fd, &msg, 0);
--	if (CHECK(n <= 0, "sendmsg", "failed\n")) {
--		log_err("failed to send echo reply");
--		ret = -1;
--		goto out;
-+		msg.msg_control = NULL;
-+		msg.msg_controllen = 0;
-+		n = sendmsg(fd, &msg, 0);
-+		if (CHECK(n <= 0, "sendmsg", "failed\n")) {
-+			log_err("failed to send echo reply");
-+			close(fd);
-+			return -1;
-+		}
-+
-+		close(fd);
+ 	pend_pos = rb->pending_pos;
+@@ -450,7 +450,7 @@ static void *__bpf_ringbuf_reserve(struct bpf_ringbuf *rb, u64 size)
+ 	 */
+ 	if (new_prod_pos - cons_pos > rb->mask ||
+ 	    new_prod_pos - pend_pos > rb->mask) {
+-		spin_unlock_irqrestore(&rb->spinlock, flags);
++		raw_spin_unlock_irqrestore(&rb->spinlock, flags);
+ 		return NULL;
  	}
  
--	ret = 0;
--out:
--	close(fd);
--	return ret;
-+	return 0;
+@@ -462,7 +462,7 @@ static void *__bpf_ringbuf_reserve(struct bpf_ringbuf *rb, u64 size)
+ 	/* pairs with consumer's smp_load_acquire() */
+ 	smp_store_release(&rb->producer_pos, new_prod_pos);
+ 
+-	spin_unlock_irqrestore(&rb->spinlock, flags);
++	raw_spin_unlock_irqrestore(&rb->spinlock, flags);
+ 
+ 	return (void *)hdr + BPF_RINGBUF_HDR_SZ;
  }
- 
- static int tcp_echo_test(int client_fd, int server_fd)
-@@ -454,14 +466,14 @@ static int tcp_echo_test(int client_fd, int server_fd)
- 	return 0;
- }
- 
--static int udp_echo_test(int client_fd, int server_fd)
-+static int udp_echo_test(int client_fd, int server_fd, bool dont_bind_reply)
- {
- 	int err;
- 
- 	err = send_byte(client_fd);
- 	if (err)
- 		return -1;
--	err = udp_recv_send(server_fd);
-+	err = udp_recv_send(server_fd, dont_bind_reply);
- 	if (err)
- 		return -1;
- 	err = recv_byte(client_fd);
-@@ -653,7 +665,8 @@ static void run_lookup_prog(const struct test *t)
- 	if (t->sotype == SOCK_STREAM)
- 		tcp_echo_test(client_fd, server_fds[t->accept_on]);
- 	else
--		udp_echo_test(client_fd, server_fds[t->accept_on]);
-+		udp_echo_test(client_fd, server_fds[t->accept_on],
-+			      t->dont_bind_reply);
- 
- 	close(client_fd);
- close:
-@@ -775,6 +788,16 @@ static void test_redirect_lookup(struct test_sk_lookup *skel)
- 			.listen_at	= { INT_IP4, INT_PORT },
- 			.accept_on	= SERVER_B,
- 		},
-+		{
-+			.desc		= "UDP IPv4 redir different ports",
-+			.lookup_prog	= skel->progs.select_sock_a_no_reuseport,
-+			.sock_map	= skel->maps.redir_map,
-+			.sotype		= SOCK_DGRAM,
-+			.connect_to	= { EXT_IP4, EXT_PORT },
-+			.listen_at	= { INT_IP4, INT_PORT },
-+			.accept_on	= SERVER_A,
-+			.dont_bind_reply = true,
-+		},
- 		{
- 			.desc		= "UDP IPv4 redir and reuseport with conns",
- 			.lookup_prog	= skel->progs.select_sock_a,
-
 -- 
-2.34.1
+2.46.1
 
 
