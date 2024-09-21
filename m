@@ -1,137 +1,156 @@
-Return-Path: <bpf+bounces-40157-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40158-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BAAB997DC73
-	for <lists+bpf@lfdr.de>; Sat, 21 Sep 2024 11:46:31 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B5D697DCC8
+	for <lists+bpf@lfdr.de>; Sat, 21 Sep 2024 12:00:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 659061F21DC1
-	for <lists+bpf@lfdr.de>; Sat, 21 Sep 2024 09:46:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EFADCB219EF
+	for <lists+bpf@lfdr.de>; Sat, 21 Sep 2024 10:00:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A9E2155C8D;
-	Sat, 21 Sep 2024 09:46:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1745155398;
+	Sat, 21 Sep 2024 10:00:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Vt5zMXhI"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r3FHvzc5"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 421DF27466;
-	Sat, 21 Sep 2024 09:46:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3432D2032A
+	for <bpf@vger.kernel.org>; Sat, 21 Sep 2024 10:00:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726911984; cv=none; b=N5ZSpcY07JpUziZTk+wXlEdRbEqQzoPtEys4x5Fx1XvYm+Jhfoe6HmYTSJGGG5TpTZE1J9Fsef03JyK03l5KuJmtT3hmvZbOH+pycN09nS16F1acnfW6Xcd6u+nytI8P8+Ktv1dWY0ys5bFC+Z/20poll0bnT4nXBPBHgILDxyo=
+	t=1726912838; cv=none; b=oMV2zDyQ+7pv6AoEKWLRtU6529oMknLQP+ewfMi39qltkBA0C++jh41o5jzjlx+fogdfVljv2osGdfaPjCLpfF9bpe6G7FsmFQgwK1nIeklhf9MUG77VyRZxVerkRlTUluCW7/7XXBtDJsb6rTNGzeXLBm5CUX7WJ2mYXLXgkhQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726911984; c=relaxed/simple;
-	bh=xsmrxnEre+MO6f0vdl60EMeX8LxAXNCCPU4qmncvAiw=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=WFwInCUKykuM/A98rTpkLTUyeI+21MpPmTly2Arxsb4+4H8aQDp1GLeKo42en5u4aoYRBreWuQBxWgictXEvhHK0JkbpOc9c9w2SRPDFokjXkkEX9aZc+5yzaXFeKsux4JRyQpsEm+1rKvghTHUoVfgM8UMBtQbfanT+oMh0TnA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Vt5zMXhI; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-2068acc8b98so27811105ad.3;
-        Sat, 21 Sep 2024 02:46:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1726911982; x=1727516782; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=4sp1aw4XFn+SXwrfveH4irHgkvxn748h6tzzmOhLtBI=;
-        b=Vt5zMXhI808QlKHNaI8l6nCxl0JdqBO83aDThiKdKyhHujS8Ds2UuhLwywMmu0AjYD
-         3eQT6Vc20C4ZdzZeJvvAqUhfsrkB3lMQnW0YdPVIKY/QXCOCMeZAIWYb8SgH7gJrT/gQ
-         HLpskUDezUc8PzI9sSFFx8PRBj8c44FKs+ltY0qVIO6Pnzo20EVEwfYRFjck3ysNoqbL
-         /IiwYA3SSI5VUVPCo6YfpWonUvDhK4emWFuekw//zP5qQ6Gfe87RfLr+2gmfh9MiV9Ad
-         p8YX/7Q8BGlUXXy5uVszCSfTHFxf5lAKA5yDdIyDug/fv6Kdq24dfuxEw+0AZKidfAsv
-         G8AQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726911982; x=1727516782;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4sp1aw4XFn+SXwrfveH4irHgkvxn748h6tzzmOhLtBI=;
-        b=gDyoczLMeKnvPeak2+CZz1b0xL+vsVtgIqbHHNKZq+SGvsExTNJ4ju0+0QksAAKTPe
-         HyIzgaWJ3pPum7hlFLaXReG6R1GS6PTQZKVt5l6/+H4aa//Jr7y5ejkWwlEbwKaidKJH
-         mrPre2soSIv/Z58y+a/TEg0XdD4iGkJnVVeGlbmgCPQ1lY0AAFIMkjKvbbQvRvit4n4r
-         eaYer8V3ljlftBhAKwcSXQbQQpm31IdjbGIzlLpd3MaQLJf1ZFF0GexWH3F5qtatnCs/
-         aCtfSWS+eYuEaq7DhiuAkl2tMYUbUeZahud1Nn6Rd9dKFxT+64UMeMo/6RwQimxKvXwT
-         rb8Q==
-X-Forwarded-Encrypted: i=1; AJvYcCW3JkMixMjAaK33+zemuUsaLlZr7GzCpyEqz73gvtUgOKJsJDi1MQT39OHUiJRo+TnCacg=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxdUJAPF9FpSrafEz62XFlYqRoTah4mNfPMWYk1X1/3gSY6qYPO
-	x0D5kcgu54BDmEb5ULTOXCc7uWdPcBrKsX+JWJwf1WZ98+gTkOyP
-X-Google-Smtp-Source: AGHT+IEympPNcdMw4jqvHuWixRDtlbR944ebyeXZZw3IyTUjJegt/IT9+cLmRMloe3/Cbgg/j/ghyw==
-X-Received: by 2002:a17:902:f707:b0:205:83a3:b08 with SMTP id d9443c01a7336-208d83da086mr74867115ad.32.1726911982410;
-        Sat, 21 Sep 2024 02:46:22 -0700 (PDT)
-Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-207946d293esm106462445ad.167.2024.09.21.02.46.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 Sep 2024 02:46:22 -0700 (PDT)
-Message-ID: <46d8d74883926245829f8aac3d1ab6dc5b5e4b98.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v1 2/3] bpf: btf: Ensure natural alignment of
- .BTF_ids section
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Tony Ambardar <tony.ambardar@gmail.com>, bpf@vger.kernel.org
-Cc: linux-kselftest@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>, 
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu
- <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
- <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
- Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,  Shuah Khan
- <shuah@kernel.org>, Jean-Philippe Brucker <jean-philippe@linaro.org>,
- Viktor Malik <vmalik@redhat.com>
-Date: Sat, 21 Sep 2024 02:46:17 -0700
-In-Reply-To: <714d7ab8a48172c67ddc027c85b2a0dad0312a74.1726806756.git.tony.ambardar@gmail.com>
-References: <cover.1726806756.git.tony.ambardar@gmail.com>
-	 <714d7ab8a48172c67ddc027c85b2a0dad0312a74.1726806756.git.tony.ambardar@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.4 (3.52.4-1.fc40) 
+	s=arc-20240116; t=1726912838; c=relaxed/simple;
+	bh=q2wHv4FCoFIAzTSDcslj2kIS0GpvdJWpKnhS1C31XY0=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=hfsBfqEu1+6EnFGkmnj3AbZxz/wlva8B3cTrjmgIx8vIfKoTDLoBapmcR1QNE8nPXN/lASvg1gjyVgKhg9ro2X2Nyo+xbtX4uvEW3UXtGGk2iAlx9yUGV4EXkzFLN1gvbtmIa7HxcNLURDPS3SxDMneGlW/0Owb3mPRtzpzKlqQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=r3FHvzc5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6EFE5C4CEC2;
+	Sat, 21 Sep 2024 10:00:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1726912837;
+	bh=q2wHv4FCoFIAzTSDcslj2kIS0GpvdJWpKnhS1C31XY0=;
+	h=Date:From:To:Cc:Subject:Reply-To:From;
+	b=r3FHvzc5c07DFRo8cuvX+pB68wWsBpNoAX+JC+iQV0E+qnphZpGriFS7dCWqDqeae
+	 wWFTVhmvFqnjuW7gydGGfKLPGIsTKT+zrgfTvQdT12Kn5vVL0rdzZ8R9BYMWWCUaSd
+	 AhoN/GVmfsgnI67bI3wvMW89G0gO3hdWT7fYtacsL373mZbZYzzudVZrTN5oAN3ERk
+	 dHutRBfUYe2qdTIOyaDB4NnJ45FNiPywjiC6zxOlA6afijoopRQ90YIOdftgpZ0Pm1
+	 lfP/wmDNIpU+AiAOeJQ6Jgi8zoLGiqKWRxU2vQa+JhdxHOAa9pAUizJAs4FTTyM0ch
+	 NIuiHHqO3FV2w==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 37044CE0DFD; Sat, 21 Sep 2024 03:00:35 -0700 (PDT)
+Date: Sat, 21 Sep 2024 03:00:35 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: ast@kernel.org, will@kernel.org, puranjay12@gmail.com
+Cc: bpf@vger.kernel.org
+Subject: Summary of discussions on BPF load-acquire instruction ordering
+Message-ID: <75d1352e-c05e-4fdf-96bf-b1c3daaf41f0@paulmck-laptop>
+Reply-To: paulmck@kernel.org
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Fri, 2024-09-20 at 00:49 -0700, Tony Ambardar wrote:
-> While building of vmlinux employs a linker script to align the .BTF_ids
-> section to 4 bytes, other usage leaves .BTF_ids unaligned and may lead to
-> problems (e.g. [1]). Post-processing and libelf-based endian translation =
-by
-> resolve_btfids may also potentially suffer from misalignment.
->=20
-> Update encoding macros in btf_ids.h to always align BTF ID data to 4 byte=
-s.
->=20
-> [1]: 3effc06a4dde ("selftests/bpf: Fix alignment of .BTF_ids")
->=20
-> Signed-off-by: Tony Ambardar <tony.ambardar@gmail.com>
-> ---
->  include/linux/btf_ids.h | 1 +
->  1 file changed, 1 insertion(+)
->=20
-> diff --git a/include/linux/btf_ids.h b/include/linux/btf_ids.h
-> index c0e3e1426a82..c10b163dc340 100644
-> --- a/include/linux/btf_ids.h
-> +++ b/include/linux/btf_ids.h
-> @@ -89,6 +89,7 @@ word							\
->  #define __BTF_ID_LIST(name, scope)			\
->  asm(							\
->  ".pushsection " BTF_IDS_SECTION ",\"a\";       \n"	\
-> +".balign 4, 0;                                 \n"	\
->  "." #scope " " #name ";                        \n"	\
->  #name ":;                                      \n"	\
->  ".popsection;                                  \n");
+Hello!
 
-This forces all id list symbols to be aligned on 4 bytes.
-Should the same be done for __BTF_SET_START?
+This is an attempted summary of the discussions on the memory-ordering
+properties of the upcoming BPF load-acquire instruction.  Please reply
+to the group calling out any errors, omissions, or other commentary.
 
-Also, is it guaranteed that all btf ids are organized in lists and sets?
-Grepping through the code it seems they are, but it looks like resolve_btfi=
-ds
-does not really enforce this, simply looking for symbols matching a special=
- name
-__BTF_ID__<type>__<symbol>[__<id>] .
+TL;DR:  I am sticking with my position that the BPF load-acquire
+instruction should have the weaker RCpc semantics (like ldapr, not ldar).
+That said, it is entirely reasonable for ARM64 JITs to use the stronger
+RCsc ldar instruction to implement the BPF load-acquire instruction.
+
+Background and details:
+
+o	The BPF load-acquire instruction might have RCsc ordering (like
+	the ARM64 ldar instruction) or RCpc ordering (like the ARM64
+	ldapr instruction).  One key difference between ldar and ldapr
+	is that the ldar is ordered against prior stlr instruction,
+	but ldapr is not.
+
+	Note well that there is only the one ARM64 store-release
+	instruction, stlr.  This instruction pairs equally well with
+	ldar and ldapr.
+
+o	The stronger semantics for the ldar instruction were added on
+	the advice of Herb Sutter of Microsoft.  The weaker semantics
+	for ldapr were added on the advice of other Microsoft employees
+	who actuallly write performance-critical concurrent code,
+	but for mid-range CPUs that do some reordering but not so much
+	speculation.  (High-end CPUs that do serious reordering and also
+	serious speculation don't usually care much about the difference
+	in ordering semantics, outside of benchmarks specially crafted
+	to demonstrate the difference.)
+
+	(Perhaps of historical interest, this mirrors the advice for
+	C's and C++'s non-SC atomics.  Herb passionately advocated
+	for atomics to be only SC, but an even more passionate group
+	elsewhere within Microsoft reached out privately to register
+	support for non-SC atomics in the strongest terms possible.
+	So C and C++ had non-SC atomics from the get-go.)
+
+o	The compilers do not guarantee RCsc, only RCpc.  Attempts to
+	provide stronger (and thus perhaps more expensive) RCsc
+	semantics for the BPF load-acquire instruction can therefore
+	be defeated by perfectly legal and reasonable compiler
+	memory-reference-reordering optimizations.
+
+o	The ARM64 ldar instruction was available first.  This means that
+	any ARM64 JIT that emits ldapr for BPF load-acquire instructions
+	must be prepared to emit ldar on older ARM64 hardware that does
+	not support ldapr.
+
+o	If BPF is to JIT efficiently to PowerPC, BPF's load-acquire
+	instruction must be implementable as ld;lwsync.  This has similar
+	RCpc memory-ordering semantics as ARM64's ldapr instruction.
+	In contrast, an RCsc load-acquire instruction (like ARM64 ldar)
+	would require sync;ld;lwsync.  The difference is that the sync
+	instruction has global scope (its action covers the full system),
+	while lwsync can be handled within the confines of the CPU's
+	local store buffer.  The sync instruction is thus considerably
+	more expensive than is the lwsync instruction.
+
+o	The fact that the Linux kernel runs reliably on PowerPC when using
+	"ld;lwsync" for smp_load_acquire() provides evidence that ARM64
+	could safely use ldapr for smp_load_acquire() in common code.
+	However:
+
+	o	The fact that older hardware does not support ldapr
+		and the fact that distros strongly prefer a single
+		Linux-kernel image per architecture means that use
+		of ldapr for smp_load_acquire() would likely require
+		yet more boot-time binary rewriting, and might restrict
+		migration of guest OSes from one ARM64 hardware system
+		to another.
+
+	o	There might well be uses of smp_load_acquire() in ARM64
+		architecture-specific code that need to emit the stronger
+		ldar instruction.
+
+	o	There are way more ARM64 systems than PowerPC systems.
+		It is entirely possible that PowerPC is just getting lucky
+		with its use of "ld;lwsync".  However, this applies to BPF
+		programs just as surely as it does to core Linux-kernel
+		code.  Risk of failures due to use of the weaker RCpc
+		instruction sequence is lower on PowerPC than on ARM64.
+
+o	All this leads me to stick with my position called out in TL;DR
+	above, namely that the BPF load-acquire instruction should have
+	the weaker RCpc semantics (like ldapr, not ldar).  That said,
+	it is entirely reasonable for ARM64 JITs to use the stronger RCsc
+	ldar instruction to implement the BPF load-acquire instruction.
+
+Thoughts?
+
+						Thanx, Paul
 
