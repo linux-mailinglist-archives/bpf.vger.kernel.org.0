@@ -1,416 +1,229 @@
-Return-Path: <bpf+bounces-40169-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40170-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B514797E04E
-	for <lists+bpf@lfdr.de>; Sun, 22 Sep 2024 08:39:33 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 065E397E09B
+	for <lists+bpf@lfdr.de>; Sun, 22 Sep 2024 10:40:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ED972B20F0B
-	for <lists+bpf@lfdr.de>; Sun, 22 Sep 2024 06:39:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AFE4C28161A
+	for <lists+bpf@lfdr.de>; Sun, 22 Sep 2024 08:40:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1989416DEDF;
-	Sun, 22 Sep 2024 06:39:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BD0F193418;
+	Sun, 22 Sep 2024 08:40:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="TNBeKhOK";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="prLWwB3Q"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fout4-smtp.messagingengine.com (fout4-smtp.messagingengine.com [103.168.172.147])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA9F01EB46
-	for <bpf@vger.kernel.org>; Sun, 22 Sep 2024 06:39:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 621E7134C4;
+	Sun, 22 Sep 2024 08:40:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.147
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726987161; cv=none; b=D/g8ys5oA4xPaEsV1DXCUaYQ3UNg2pFLCSZlhq2etF0u7D471WULegZWVEgnRGKHSQf36pY0m2pomU3YD5ygAt3bSuGe48vdHlFl+V552ppkQwaQgJl69kxMBeSIz9hcv6sSOlnvBYP30J/W+Zzw2A/0kGQ94OJz9PNNB3SphGM=
+	t=1726994414; cv=none; b=qet9QJVvYR/M44WRosuxBlAxowftx0J4lD8qFpSABhYi4pkGxJp7Kio1ZZt0/E1mRVCJaUfjlo9mkcWUsR0t7G7//0HR7FyzTYBYvF/qyUJJyoWw5AvIVyJtTVNdOAk86lBuTriHfacDx1dzR23TWoAJr245nI7gFBj7IWHQTik=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726987161; c=relaxed/simple;
-	bh=RsCLBRu9OgS2rTyUQod1kbpamXqiWn2mQU4fzdjN5qQ=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=VCiLo3Y9x2P+KaET1fX+ZbNYfmlj01N3BHbCc9De498aUi1w6ij2ZGckcoENAwczrqBiHSUE8GSKsM76gaRRW6N9mmPzyDn3LTa/VLOecKDiLpPr37PstBfUOJ/8/F4LEZwxjzpAjkOnZcTsychZ9QNKtVNcc31VAi7jn+iU9BY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3a04af50632so31699545ab.2
-        for <bpf@vger.kernel.org>; Sat, 21 Sep 2024 23:39:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726987158; x=1727591958;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2osVz8YBfcSSDypQ3jnp71kxoeud92UFU+64sz0Jq7M=;
-        b=nYQmd4+88SwT0nVQq03ti/+ZEQhlfoJkXOl5lhpvekYF3nZDuCmC4dGkrg+SPgnnki
-         F5bgUBrGWD9H5mHEuk77P0gKByCkivK8mEuNJCIf5Yhl1M5uAU0MidTVtJANfy97dd0E
-         4sTVwRYQvCE5fUlsws2eWM/+KMJf9cyVSJbC7jb9p1bnLDFHfWWRy4cUqRyWifXEyuTy
-         0gz5OlNcpkvGRzaI2JY8cFTuaZod+RKLvdqB6YaEpdgfU/jZhKYh6x9Z27AWJ288sGCc
-         uAz9chfdM+w5jwixo3eRV0Vx18iLg1EgyxRD+Bq/IY4qCSYyRZtt1kXM+4JiPtK9Bo5H
-         U5Pg==
-X-Forwarded-Encrypted: i=1; AJvYcCUgruA6ANHjkv88uZzq0Yk+1mGXKiPXWpNPOS9kXh5ULJuTKSEhgaUJG2zh+Fu156bq/qk=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxeBE0MZDU9CWwGWHeFiXo99cEBtyW6S+3iWElvkxjlWe4uW5a0
-	HNR5QFZP450XQPhHpgNltHJwx7JtU612af7uVWCmgtWNND8A726Fdl1YiCcxNK3rcfwphsgFp7t
-	NT7gqeTbeSWdpr6oDZikHpmitQWf3T6wgmwYdbcsN905UBjzJsH6v2+k=
-X-Google-Smtp-Source: AGHT+IFpQaCdwoTAHMtO70oJy9r/coWFVE9UQn40jD+cSPg09UZigvcyv+BHmjv7eRJ9pd1HRLuxTojbd3HQJlqRt4FO7lapt3KP
+	s=arc-20240116; t=1726994414; c=relaxed/simple;
+	bh=NvtNCWYLxAUUYaf1ZV3bfcHr8aPZfVyTOA42rrYChrw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Gpf+vzVPDAVWKpM9mSqnObbTguzLkp1In/kFzt7vZjb5gN3HRCZK479fGvGNCnTqQ35UVQK5KZ7R23KEpHs4qlUCxLlODpX8vRZb2Z3bQANqXvZq2yOHOxtJB1lJUaAOmX5ooS5XaS8/uAnL2JCIOQPtP7xVCj5Eae2PlX9YAVg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=TNBeKhOK; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=prLWwB3Q; arc=none smtp.client-ip=103.168.172.147
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
+Received: from phl-compute-12.internal (phl-compute-12.phl.internal [10.202.2.52])
+	by mailfout.phl.internal (Postfix) with ESMTP id 584DB1380284;
+	Sun, 22 Sep 2024 04:40:11 -0400 (EDT)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-12.internal (MEProxy); Sun, 22 Sep 2024 04:40:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm1; t=1726994411; x=1727080811; bh=L8BCOmBV7Q
+	cjMxVuy7I8eLqXWe+XQi090UTPa04zCPk=; b=TNBeKhOKoEd9adPkKsRGNaXRNz
+	9IoMMiqZR597YU7Spsvyg/+hj4x5drB5c5wOUtpLVGLHry8FipEFyEnsOL5r6oVJ
+	zo80eq6IN9ehZcj9fHtJNPjA3c5hZftD9lOJMwZDYQGMb0ar04tW8aCL80LgVHFJ
+	M8b6pzC8T5UenQyEG0PL4B8hw3faio6DK5Gh6nLxX0Y/ExLyoAJTuWJW66jVqmTX
+	7bl3qdMsCrXhw/iE4Xy+vQOyTjE15yCZNTVXYk7OBbMBzunRBYDvHmIQZ060CXdD
+	yExbjvO5rjAbYATtP3IJuYHupKMiJrxeB9xIWPCSeY5c0vnf3JmzD4KrFbow==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1726994411; x=1727080811; bh=L8BCOmBV7QcjMxVuy7I8eLqXWe+X
+	Qi090UTPa04zCPk=; b=prLWwB3Qd+m4HjjF7HpB+BP5Yh1RWxH9T/lFAHcVuHOe
+	haogI+PFD6ZzqH9UolQ7VhkE/27kQKOdpS6drsmvCUHCzGTmjTh4QBT6jVUKt6tC
+	6RzAC+VAsFxDJl+zGy1u4Tk21mJgl87w31JFF/UE6U80MyPOpfBL/yOaZiY+vc2u
+	Y86RVKt+HUGXHDfBnlTzLvnCIJl09uDeUjFCvDaApQJ4ZJQqAIGusO3CReKdGrvb
+	qbs1wW5L3rGa2tEZGhKHbovwXDx5/dQsWlW02tyTVxoq0thmO3wU43vSpSZAlRWO
+	BzpVPnKKizsFBK1P2x2ossAHdlRUMR07Dipxapt4ng==
+X-ME-Sender: <xms:6tfvZlOw7KrUmnVHAAWWV7Z3HAuVQtwftWJGSqPwMkegSCKwou3LKg>
+    <xme:6tfvZn_Bqzt9cJeZagDq7fNRvWjQgUbAXdQuXyik5HDW1B9ocMZ5xpzJ3xtymA7rh
+    oezZC1ecVFEuN6oZg>
+X-ME-Received: <xmr:6tfvZkTVbTLRtkQv_orXBfg67KhrJ4tj8i07iA6SilCmzpKN8-ekBw7c1d8CcO9Y0OlJsz6Do_bsLmbzhgGVS7fJZmcJuR2xDTl-sySHX-Kp8w>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrudeljedgtdeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
+    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdlje
+    dtmdenucfjughrpeffhffvvefukfhfgggtuggjsehttdfstddttddvnecuhfhrohhmpeff
+    rghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnh
+    epvdefkeetuddufeeigedtheefffekuedukeehudffudfffffggeeitdetgfdvhfdvnecu
+    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepugiguhesug
+    iguhhuuhdrgiihiidpnhgspghrtghpthhtohepudekpdhmohguvgepshhmthhpohhuthdp
+    rhgtphhtthhopegvugguhiiikeejsehgmhgrihhlrdgtohhmpdhrtghpthhtohepuggrnh
+    hivghlsehiohhgvggrrhgsohigrdhnvghtpdhrtghpthhtohepshhhuhgrhheskhgvrhhn
+    vghlrdhorhhgpdhrtghpthhtoheprghnughrihhisehkvghrnhgvlhdrohhrghdprhgtph
+    htthhopegrshhtsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehjohhhnhdrfhgrshht
+    rggsvghnugesghhmrghilhdrtghomhdprhgtphhtthhopehmrghrthhinhdrlhgruheslh
+    hinhhugidruggvvhdprhgtphhtthhopehsohhngheskhgvrhhnvghlrdhorhhgpdhrtghp
+    thhtohephihonhhghhhonhhgrdhsohhngheslhhinhhugidruggvvh
+X-ME-Proxy: <xmx:6tfvZhtS8v3WG-JpGU7cDOCtiwXzFc4Y1XuprJKXDucsu0P3O4_i2g>
+    <xmx:6tfvZtf7GC1EfCwgDM-Ssyq--1C_TOhuHvC1gC0JQnsoQWpEOeeZOg>
+    <xmx:6tfvZt0AAcNrB_bbC-FseMoQZF_KxIwvrVYjXxsRPg4JeE_8vuI7KA>
+    <xmx:6tfvZp99jdLKtbs4EP1p5eCEimJizrJGk4XkB_mKv8vVkHPyQ0YUUA>
+    <xmx:69fvZgWbQ2b7du7rNDLwYlbrZBzzZg5wYjrC-51lH6cF4Uhp_zKO-PWD>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 22 Sep 2024 04:40:08 -0400 (EDT)
+Date: Sun, 22 Sep 2024 02:40:07 -0600
+From: Daniel Xu <dxu@dxuuu.xyz>
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: daniel@iogearbox.net, shuah@kernel.org, andrii@kernel.org, 
+	ast@kernel.org, john.fastabend@gmail.com, martin.lau@linux.dev, song@kernel.org, 
+	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, 
+	jolsa@kernel.org, mykolal@fb.com, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, kernel-team@meta.com
+Subject: Re: [PATCH bpf-next v2 1/2] bpf: verifier: Support eliding map
+ lookup nullness
+Message-ID: <x32qvwnfnouk2zbvllwi7xy6w7jyjp6ifobumuohf4fy32sy2x@gczdukjvjo36>
+References: <cover.1726458273.git.dxu@dxuuu.xyz>
+ <3b54139f8d4877e0487daebdd799c3878ee27ed0.1726458273.git.dxu@dxuuu.xyz>
+ <a1b7e902e6f8be05f7d42bf340484b64583e1389.camel@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a92:c247:0:b0:3a0:a3f0:ff57 with SMTP id
- e9e14a558f8ab-3a0c9d3a2a1mr57018435ab.15.1726987157943; Sat, 21 Sep 2024
- 23:39:17 -0700 (PDT)
-Date: Sat, 21 Sep 2024 23:39:17 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <66efbb95.050a0220.3195df.008d.GAE@google.com>
-Subject: [syzbot] [trace?] [bpf?] possible deadlock in __mod_timer (4)
-From: syzbot <syzbot+83a876aef81c9a485ae8@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
-	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	martin.lau@linux.dev, mathieu.desnoyers@efficios.com, 
-	mattbobrowski@google.com, mhiramat@kernel.org, rostedt@goodmis.org, 
-	sdf@fomichev.me, song@kernel.org, syzkaller-bugs@googlegroups.com, 
-	yonghong.song@linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a1b7e902e6f8be05f7d42bf340484b64583e1389.camel@gmail.com>
 
-Hello,
+On Fri, Sep 20, 2024 at 03:05:35PM GMT, Eduard Zingerman wrote:
+> On Sun, 2024-09-15 at 21:45 -0600, Daniel Xu wrote:
+> > This commit allows progs to elide a null check on statically known map
+> > lookup keys. In other words, if the verifier can statically prove that
+> > the lookup will be in-bounds, allow the prog to drop the null check.
+> > 
+> > This is useful for two reasons:
+> > 
+> > 1. Large numbers of nullness checks (especially when they cannot fail)
+> >    unnecessarily pushes prog towards BPF_COMPLEXITY_LIMIT_JMP_SEQ.
+> > 2. It forms a tighter contract between programmer and verifier.
+> > 
+> > For (1), bpftrace is starting to make heavier use of percpu scratch
+> > maps. As a result, for user scripts with large number of unrolled loops,
+> > we are starting to hit jump complexity verification errors.  These
+> > percpu lookups cannot fail anyways, as we only use static key values.
+> > Eliding nullness probably results in less work for verifier as well.
+> > 
+> > For (2), percpu scratch maps are often used as a larger stack, as the
+> > currrent stack is limited to 512 bytes. In these situations, it is
+> > desirable for the programmer to express: "this lookup should never fail,
+> > and if it does, it means I messed up the code". By omitting the null
+> > check, the programmer can "ask" the verifier to double check the logic.
+> 
+> Nit: maybe add a few lines why tools/testing/selftests/bpf/progs/iters.c
+>      has to be changed.
 
-syzbot found the following issue on:
+Ack.
 
-HEAD commit:    a940d9a43e62 Merge tag 'soc-arm-6.12' of git://git.kernel...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=12d1c69f980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=44d46e514184cd24
-dashboard link: https://syzkaller.appspot.com/bug?extid=83a876aef81c9a485ae8
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11597677980000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13cd7500580000
+> 
+> [...]
+> 
+> > +/* Returns constant key value if possible, else -1 */
+> > +static long get_constant_map_key(struct bpf_verifier_env *env,
+> > +				 struct bpf_reg_state *key)
+> > +{
+> > +	struct bpf_func_state *state = func(env, key);
+> > +	struct bpf_reg_state *reg;
+> > +	int stack_off;
+> > +	int slot;
+> > +	int spi;
+> > +
+> > +	if (key->type != PTR_TO_STACK)
+> > +		return -1;
+> > +	if (!tnum_is_const(key->var_off))
+> > +		return -1;
+> > +
+> > +	stack_off = key->off + key->var_off.value;
+> > +	slot = -stack_off - 1;
+> > +	if (slot >= state->allocated_stack)
+> > +		/* Stack uninitialized */
+> > +		return -1;
+> 
+> I'm not sure verifier guarantees that key->off is negative.
+> E.g. the following simple program:
+> 
+>     0: (b7) r1 = 16                       ; R1_w=16
+>     1: (bf) r2 = r10                      ; R2_w=fp0 R10=fp0
+>     2: (0f) r2 += r1
+>     mark_precise: frame0: last_idx 2 first_idx 0 subseq_idx -1 
+>     mark_precise: frame0: regs=r1 stack= before 1: (bf) r2 = r10
+>     mark_precise: frame0: regs=r1 stack= before 0: (b7) r1 = 16
+>     3: R1_w=16 R2_w=fp16
+> 
+> => I think 'slot' should be checked to be >= 0.
 
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-a940d9a4.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/e9929bfe422c/vmlinux-a940d9a4.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/a6c74ee261ed/bzImage-a940d9a4.xz
+Ah, so in case stack grows "up" right? Which seems invalid but probably
+good to check.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+83a876aef81c9a485ae8@syzkaller.appspotmail.com
+> 
+> > +
+> > +	spi = slot / BPF_REG_SIZE;
+> > +	reg = &state->stack[spi].spilled_ptr;
+> > +	if (!tnum_is_const(reg->var_off))
+> > +		/* Stack value not statically known */
+> > +		return -1;
+> > +
+> > +	return reg->var_off.value;
+> > +}
+> > +
+> >  static int get_helper_proto(struct bpf_verifier_env *env, int func_id,
+> >  			    const struct bpf_func_proto **ptr)
+> >  {
+> > @@ -10511,6 +10557,15 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+> >  			env->insn_aux_data[insn_idx].storage_get_func_atomic = true;
+> >  	}
+> >  
+> > +	/* Logically we are trying to check on key register state before
+> > +	 * the helper is called, so process here. Otherwise argument processing
+> > +	 * may clobber the spilled key values.
+> > +	 */
+> > +	regs = cur_regs(env);
+> > +	if (func_id == BPF_FUNC_map_lookup_elem)
+> > +		meta.const_map_key = get_constant_map_key(env, &regs[BPF_REG_2]);
+> 
+> Nit: there is a long 'switch (func_id)' slightly below this point,
+>      maybe move this check there?
 
-FAULT_INJECTION: forcing a failure.
-name fail_usercopy, interval 1, probability 0, space 0, times 1
-======================================================
-WARNING: possible circular locking dependency detected
-6.11.0-syzkaller-03917-ga940d9a43e62 #0 Not tainted
-------------------------------------------------------
-syz-executor291/5332 is trying to acquire lock:
-ffffffff8dda88d8 ((console_sem).lock){-...}-{2:2}, at: down_trylock+0x12/0x70 kernel/locking/semaphore.c:139
+I had that initially but discovered that verifier marks the stack value
+as unknown as part of check_func_arg(). I _think_ it was:
 
-but task is already holding lock:
-ffff88806a92a858 (&base->lock){-.-.}-{2:2}, at: __mod_timer+0x6c1/0xdc0 kernel/time/timer.c:1164
+        if (is_spilled_reg(&state->stack[spi]) &&
+            (state->stack[spi].spilled_ptr.type == SCALAR_VALUE ||
+             env->allow_ptr_leaks)) {
+                if (clobber) {
+                        __mark_reg_unknown(env, &state->stack[spi].spilled_ptr);
+                        for (j = 0; j < BPF_REG_SIZE; j++)
+                                scrub_spilled_slot(&state->stack[spi].slot_type[j]);
+                }
+                goto mark;
+        }
 
-which lock already depends on the new lock.
+I remember spending some time debugging it. Which is why I left that
+comment above this code.
 
-
-the existing dependency chain (in reverse order) is:
-
--> #3 (&base->lock){-.-.}-{2:2}:
-       __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
-       _raw_spin_lock_irqsave+0x3a/0x60 kernel/locking/spinlock.c:162
-       lock_timer_base+0x5d/0x220 kernel/time/timer.c:1051
-       __mod_timer+0x426/0xdc0 kernel/time/timer.c:1132
-       add_timer_global+0x8a/0xc0 kernel/time/timer.c:1330
-       __queue_delayed_work+0x1ba/0x2e0 kernel/workqueue.c:2525
-       queue_delayed_work_on+0x12a/0x150 kernel/workqueue.c:2554
-       psi_task_change+0x1b4/0x2e0 kernel/sched/psi.c:913
-       psi_enqueue kernel/sched/stats.h:143 [inline]
-       enqueue_task+0x1a5/0x350 kernel/sched/core.c:1975
-       activate_task kernel/sched/core.c:2009 [inline]
-       wake_up_new_task+0x5ba/0xd30 kernel/sched/core.c:4689
-       kernel_clone+0x236/0x960 kernel/fork.c:2812
-       user_mode_thread+0xb4/0xf0 kernel/fork.c:2859
-       rest_init+0x23/0x2b0 init/main.c:712
-       start_kernel+0x3e4/0x4d0 init/main.c:1105
-       x86_64_start_reservations+0x18/0x30 arch/x86/kernel/head64.c:507
-       x86_64_start_kernel+0xb2/0xc0 arch/x86/kernel/head64.c:488
-       common_startup_64+0x13e/0x148
-
--> #2 (&rq->__lock){-.-.}-{2:2}:
-       _raw_spin_lock_nested+0x31/0x40 kernel/locking/spinlock.c:378
-       raw_spin_rq_lock_nested+0x29/0x130 kernel/sched/core.c:560
-       raw_spin_rq_lock kernel/sched/sched.h:1415 [inline]
-       rq_lock kernel/sched/sched.h:1714 [inline]
-       task_fork_fair+0x73/0x250 kernel/sched/fair.c:12710
-       sched_cgroup_fork+0x3cf/0x510 kernel/sched/core.c:4633
-       copy_process+0x439b/0x8dd0 kernel/fork.c:2483
-       kernel_clone+0xfd/0x960 kernel/fork.c:2781
-       user_mode_thread+0xb4/0xf0 kernel/fork.c:2859
-       rest_init+0x23/0x2b0 init/main.c:712
-       start_kernel+0x3e4/0x4d0 init/main.c:1105
-       x86_64_start_reservations+0x18/0x30 arch/x86/kernel/head64.c:507
-       x86_64_start_kernel+0xb2/0xc0 arch/x86/kernel/head64.c:488
-       common_startup_64+0x13e/0x148
-
--> #1 (&p->pi_lock){-.-.}-{2:2}:
-       __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
-       _raw_spin_lock_irqsave+0x3a/0x60 kernel/locking/spinlock.c:162
-       class_raw_spinlock_irqsave_constructor include/linux/spinlock.h:551 [inline]
-       try_to_wake_up+0x9a/0x13e0 kernel/sched/core.c:4051
-       up+0x79/0xb0 kernel/locking/semaphore.c:191
-       __up_console_sem+0x85/0xe0 kernel/printk/printk.c:343
-       __console_unlock kernel/printk/printk.c:2844 [inline]
-       __console_flush_and_unlock kernel/printk/printk.c:3241 [inline]
-       console_unlock+0x1dc/0x210 kernel/printk/printk.c:3279
-       vga_remove_vgacon drivers/pci/vgaarb.c:186 [inline]
-       vga_remove_vgacon+0x90/0xd0 drivers/pci/vgaarb.c:167
-       __aperture_remove_legacy_vga_devices drivers/video/aperture.c:331 [inline]
-       aperture_remove_conflicting_pci_devices+0x16a/0x1e0 drivers/video/aperture.c:369
-       virtio_gpu_pci_quirk drivers/gpu/drm/virtio/virtgpu_drv.c:61 [inline]
-       virtio_gpu_probe+0x408/0x4e0 drivers/gpu/drm/virtio/virtgpu_drv.c:92
-       virtio_dev_probe+0x586/0x8a0 drivers/virtio/virtio.c:341
-       call_driver_probe drivers/base/dd.c:578 [inline]
-       really_probe+0x23e/0xa90 drivers/base/dd.c:657
-       __driver_probe_device+0x1de/0x440 drivers/base/dd.c:799
-       driver_probe_device+0x4c/0x1b0 drivers/base/dd.c:829
-       __driver_attach+0x283/0x580 drivers/base/dd.c:1215
-       bus_for_each_dev+0x13c/0x1d0 drivers/base/bus.c:368
-       bus_add_driver+0x2e9/0x690 drivers/base/bus.c:673
-       driver_register+0x15c/0x4b0 drivers/base/driver.c:246
-       do_one_initcall+0x128/0x700 init/main.c:1269
-       do_initcall_level init/main.c:1331 [inline]
-       do_initcalls init/main.c:1347 [inline]
-       do_basic_setup init/main.c:1366 [inline]
-       kernel_init_freeable+0x69d/0xca0 init/main.c:1580
-       kernel_init+0x1c/0x2b0 init/main.c:1469
-       ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
-       ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
-
--> #0 ((console_sem).lock){-...}-{2:2}:
-       check_prev_add kernel/locking/lockdep.c:3158 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3277 [inline]
-       validate_chain kernel/locking/lockdep.c:3901 [inline]
-       __lock_acquire+0x250b/0x3ce0 kernel/locking/lockdep.c:5199
-       lock_acquire kernel/locking/lockdep.c:5822 [inline]
-       lock_acquire+0x1b1/0x560 kernel/locking/lockdep.c:5787
-       __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
-       _raw_spin_lock_irqsave+0x3a/0x60 kernel/locking/spinlock.c:162
-       down_trylock+0x12/0x70 kernel/locking/semaphore.c:139
-       __down_trylock_console_sem+0x40/0x140 kernel/printk/printk.c:326
-       console_trylock kernel/printk/printk.c:2827 [inline]
-       console_trylock_spinning kernel/printk/printk.c:1990 [inline]
-       vprintk_emit+0x3ec/0x6f0 kernel/printk/printk.c:2406
-       vprintk+0x7f/0xa0 kernel/printk/printk_safe.c:68
-       _printk+0xc8/0x100 kernel/printk/printk.c:2432
-       fail_dump lib/fault-inject.c:45 [inline]
-       should_fail_ex+0x46c/0x5b0 lib/fault-inject.c:153
-       strncpy_from_user+0x38/0x320 lib/strncpy_from_user.c:118
-       strncpy_from_user_nofault+0x7f/0x180 mm/maccess.c:186
-       bpf_probe_read_user_str_common kernel/trace/bpf_trace.c:216 [inline]
-       ____bpf_probe_read_compat_str kernel/trace/bpf_trace.c:311 [inline]
-       bpf_probe_read_compat_str+0xf1/0x170 kernel/trace/bpf_trace.c:307
-       bpf_prog_d0e9ac47b081aec3+0x48/0x4a
-       bpf_dispatcher_nop_func include/linux/bpf.h:1243 [inline]
-       __bpf_prog_run include/linux/filter.h:691 [inline]
-       bpf_prog_run include/linux/filter.h:698 [inline]
-       __bpf_trace_run kernel/trace/bpf_trace.c:2406 [inline]
-       bpf_trace_run2+0x231/0x590 kernel/trace/bpf_trace.c:2447
-       __bpf_trace_timer_start+0xc7/0x100 include/trace/events/timer.h:52
-       trace_timer_start include/trace/events/timer.h:52 [inline]
-       enqueue_timer+0x2b4/0x550 kernel/time/timer.c:663
-       internal_add_timer kernel/time/timer.c:688 [inline]
-       __mod_timer+0x8d7/0xdc0 kernel/time/timer.c:1183
-       add_timer_global+0x8a/0xc0 kernel/time/timer.c:1330
-       __queue_delayed_work+0x1ba/0x2e0 kernel/workqueue.c:2525
-       queue_delayed_work_on+0x12a/0x150 kernel/workqueue.c:2554
-       queue_delayed_work include/linux/workqueue.h:636 [inline]
-       fbcon_add_cursor_work drivers/video/fbdev/core/fbcon.c:392 [inline]
-       fbcon_cursor+0x4a0/0x520 drivers/video/fbdev/core/fbcon.c:1316
-       hide_cursor+0x84/0x220 drivers/tty/vt/vt.c:846
-       do_con_write+0x21e6/0x7bb0 drivers/tty/vt/vt.c:3068
-       con_write+0x23/0xb0 drivers/tty/vt/vt.c:3434
-       process_output_block drivers/tty/n_tty.c:574 [inline]
-       n_tty_write+0x419/0x1140 drivers/tty/n_tty.c:2389
-       iterate_tty_write drivers/tty/tty_io.c:1021 [inline]
-       file_tty_write.constprop.0+0x506/0x9a0 drivers/tty/tty_io.c:1096
-       new_sync_write fs/read_write.c:590 [inline]
-       vfs_write+0x6b5/0x1140 fs/read_write.c:683
-       ksys_write+0x12f/0x260 fs/read_write.c:736
-       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-       do_syscall_64+0xcd/0x250 arch/x86/entry/common.c:83
-       entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
-other info that might help us debug this:
-
-Chain exists of:
-  (console_sem).lock --> &rq->__lock --> &base->lock
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(&base->lock);
-                               lock(&rq->__lock);
-                               lock(&base->lock);
-  lock((console_sem).lock);
-
- *** DEADLOCK ***
-
-7 locks held by syz-executor291/5332:
- #0: ffff8880353610a0 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x24/0x80 drivers/tty/tty_ldisc.c:243
- #1: ffff888035361130 (&tty->atomic_write_lock){+.+.}-{3:3}, at: tty_write_lock drivers/tty/tty_io.c:954 [inline]
- #1: ffff888035361130 (&tty->atomic_write_lock){+.+.}-{3:3}, at: iterate_tty_write drivers/tty/tty_io.c:973 [inline]
- #1: ffff888035361130 (&tty->atomic_write_lock){+.+.}-{3:3}, at: file_tty_write.constprop.0+0x281/0x9a0 drivers/tty/tty_io.c:1096
- #2: ffff8880353612e8 (&tty->termios_rwsem){++++}-{3:3}, at: n_tty_write+0x1bd/0x1140 drivers/tty/n_tty.c:2372
- #3: ffffc9000324e380 (&ldata->output_lock){+.+.}-{3:3}, at: process_output_block drivers/tty/n_tty.c:529 [inline]
- #3: ffffc9000324e380 (&ldata->output_lock){+.+.}-{3:3}, at: n_tty_write+0x533/0x1140 drivers/tty/n_tty.c:2389
- #4: ffffffff8dda8460 (console_lock){+.+.}-{0:0}, at: do_con_write+0x154/0x7bb0 drivers/tty/vt/vt.c:3056
- #5: ffff88806a92a858 (&base->lock){-.-.}-{2:2}, at: __mod_timer+0x6c1/0xdc0 kernel/time/timer.c:1164
- #6: ffffffff8ddbaea0 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:326 [inline]
- #6: ffffffff8ddbaea0 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:838 [inline]
- #6: ffffffff8ddbaea0 (rcu_read_lock){....}-{1:2}, at: __bpf_trace_run kernel/trace/bpf_trace.c:2405 [inline]
- #6: ffffffff8ddbaea0 (rcu_read_lock){....}-{1:2}, at: bpf_trace_run2+0x1c2/0x590 kernel/trace/bpf_trace.c:2447
-
-stack backtrace:
-CPU: 3 UID: 0 PID: 5332 Comm: syz-executor291 Not tainted 6.11.0-syzkaller-03917-ga940d9a43e62 #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:93 [inline]
- dump_stack_lvl+0x116/0x1f0 lib/dump_stack.c:119
- print_circular_bug+0x419/0x5d0 kernel/locking/lockdep.c:2074
- check_noncircular+0x31a/0x400 kernel/locking/lockdep.c:2203
- check_prev_add kernel/locking/lockdep.c:3158 [inline]
- check_prevs_add kernel/locking/lockdep.c:3277 [inline]
- validate_chain kernel/locking/lockdep.c:3901 [inline]
- __lock_acquire+0x250b/0x3ce0 kernel/locking/lockdep.c:5199
- lock_acquire kernel/locking/lockdep.c:5822 [inline]
- lock_acquire+0x1b1/0x560 kernel/locking/lockdep.c:5787
- __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
- _raw_spin_lock_irqsave+0x3a/0x60 kernel/locking/spinlock.c:162
- down_trylock+0x12/0x70 kernel/locking/semaphore.c:139
- __down_trylock_console_sem+0x40/0x140 kernel/printk/printk.c:326
- console_trylock kernel/printk/printk.c:2827 [inline]
- console_trylock_spinning kernel/printk/printk.c:1990 [inline]
- vprintk_emit+0x3ec/0x6f0 kernel/printk/printk.c:2406
- vprintk+0x7f/0xa0 kernel/printk/printk_safe.c:68
- _printk+0xc8/0x100 kernel/printk/printk.c:2432
- fail_dump lib/fault-inject.c:45 [inline]
- should_fail_ex+0x46c/0x5b0 lib/fault-inject.c:153
- strncpy_from_user+0x38/0x320 lib/strncpy_from_user.c:118
- strncpy_from_user_nofault+0x7f/0x180 mm/maccess.c:186
- bpf_probe_read_user_str_common kernel/trace/bpf_trace.c:216 [inline]
- ____bpf_probe_read_compat_str kernel/trace/bpf_trace.c:311 [inline]
- bpf_probe_read_compat_str+0xf1/0x170 kernel/trace/bpf_trace.c:307
- bpf_prog_d0e9ac47b081aec3+0x48/0x4a
- bpf_dispatcher_nop_func include/linux/bpf.h:1243 [inline]
- __bpf_prog_run include/linux/filter.h:691 [inline]
- bpf_prog_run include/linux/filter.h:698 [inline]
- __bpf_trace_run kernel/trace/bpf_trace.c:2406 [inline]
- bpf_trace_run2+0x231/0x590 kernel/trace/bpf_trace.c:2447
- __bpf_trace_timer_start+0xc7/0x100 include/trace/events/timer.h:52
- trace_timer_start include/trace/events/timer.h:52 [inline]
- enqueue_timer+0x2b4/0x550 kernel/time/timer.c:663
- internal_add_timer kernel/time/timer.c:688 [inline]
- __mod_timer+0x8d7/0xdc0 kernel/time/timer.c:1183
- add_timer_global+0x8a/0xc0 kernel/time/timer.c:1330
- __queue_delayed_work+0x1ba/0x2e0 kernel/workqueue.c:2525
- queue_delayed_work_on+0x12a/0x150 kernel/workqueue.c:2554
- queue_delayed_work include/linux/workqueue.h:636 [inline]
- fbcon_add_cursor_work drivers/video/fbdev/core/fbcon.c:392 [inline]
- fbcon_cursor+0x4a0/0x520 drivers/video/fbdev/core/fbcon.c:1316
- hide_cursor+0x84/0x220 drivers/tty/vt/vt.c:846
- do_con_write+0x21e6/0x7bb0 drivers/tty/vt/vt.c:3068
- con_write+0x23/0xb0 drivers/tty/vt/vt.c:3434
- process_output_block drivers/tty/n_tty.c:574 [inline]
- n_tty_write+0x419/0x1140 drivers/tty/n_tty.c:2389
- iterate_tty_write drivers/tty/tty_io.c:1021 [inline]
- file_tty_write.constprop.0+0x506/0x9a0 drivers/tty/tty_io.c:1096
- new_sync_write fs/read_write.c:590 [inline]
- vfs_write+0x6b5/0x1140 fs/read_write.c:683
- ksys_write+0x12f/0x260 fs/read_write.c:736
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xcd/0x250 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f36b5809869
-Code: 48 83 c4 28 c3 e8 17 1a 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffeb8b42888 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 00007ffeb8b42890 RCX: 00007f36b5809869
-RDX: 0000000000001006 RSI: 0000000020001040 RDI: 0000000000000006
-RBP: 0000000000000001 R08: 00007ffeb8b42627 R09: 00007f36b5870033
-R10: 0000000000000001 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007ffeb8b42a68 R14: 0000000000000001 R15: 0000000000000001
- </TASK>
-CPU: 3 UID: 0 PID: 5332 Comm: syz-executor291 Not tainted 6.11.0-syzkaller-03917-ga940d9a43e62 #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:93 [inline]
- dump_stack_lvl+0x116/0x1f0 lib/dump_stack.c:119
- fail_dump lib/fault-inject.c:52 [inline]
- should_fail_ex+0x497/0x5b0 lib/fault-inject.c:153
- strncpy_from_user+0x38/0x320 lib/strncpy_from_user.c:118
- strncpy_from_user_nofault+0x7f/0x180 mm/maccess.c:186
- bpf_probe_read_user_str_common kernel/trace/bpf_trace.c:216 [inline]
- ____bpf_probe_read_compat_str kernel/trace/bpf_trace.c:311 [inline]
- bpf_probe_read_compat_str+0xf1/0x170 kernel/trace/bpf_trace.c:307
- bpf_prog_d0e9ac47b081aec3+0x48/0x4a
- bpf_dispatcher_nop_func include/linux/bpf.h:1243 [inline]
- __bpf_prog_run include/linux/filter.h:691 [inline]
- bpf_prog_run include/linux/filter.h:698 [inline]
- __bpf_trace_run kernel/trace/bpf_trace.c:2406 [inline]
- bpf_trace_run2+0x231/0x590 kernel/trace/bpf_trace.c:2447
- __bpf_trace_timer_start+0xc7/0x100 include/trace/events/timer.h:52
- trace_timer_start include/trace/events/timer.h:52 [inline]
- enqueue_timer+0x2b4/0x550 kernel/time/timer.c:663
- internal_add_timer kernel/time/timer.c:688 [inline]
- __mod_timer+0x8d7/0xdc0 kernel/time/timer.c:1183
- add_timer_global+0x8a/0xc0 kernel/time/timer.c:1330
- __queue_delayed_work+0x1ba/0x2e0 kernel/workqueue.c:2525
- queue_delayed_work_on+0x12a/0x150 kernel/workqueue.c:2554
- queue_delayed_work include/linux/workqueue.h:636 [inline]
- fbcon_add_cursor_work drivers/video/fbdev/core/fbcon.c:392 [inline]
- fbcon_cursor+0x4a0/0x520 drivers/video/fbdev/core/fbcon.c:1316
- hide_cursor+0x84/0x220 drivers/tty/vt/vt.c:846
- do_con_write+0x21e6/0x7bb0 drivers/tty/vt/vt.c:3068
- con_write+0x23/0xb0 drivers/tty/vt/vt.c:3434
- process_output_block drivers/tty/n_tty.c:574 [inline]
- n_tty_write+0x419/0x1140 drivers/tty/n_tty.c:2389
- iterate_tty_write drivers/tty/tty_io.c:1021 [inline]
- file_tty_write.constprop.0+0x506/0x9a0 drivers/tty/tty_io.c:1096
- new_sync_write fs/read_write.c:590 [inline]
- vfs_write+0x6b5/0x1140 fs/read_write.c:683
- ksys_write+0x12f/0x260 fs/read_write.c:736
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xcd/0x250 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f36b5809869
-Code: 48 83 c4 28 c3 e8 17 1a 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffeb8b42888 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 00007ffeb8b42890 RCX: 00007f36b5809869
-RDX: 0000000000001006 RSI: 0000000020001040 RDI: 0000000000000006
-RBP: 0000000000000001 R08: 00007ffeb8b42627 R09: 00007f36b5870033
-R10: 0000000000000001 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007ffeb8b42a68 R14: 0000000000000001 R15: 0000000000000001
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+Thanks for reviewing!
 
