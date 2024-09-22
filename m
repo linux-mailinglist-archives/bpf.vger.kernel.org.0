@@ -1,229 +1,200 @@
-Return-Path: <bpf+bounces-40170-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40171-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 065E397E09B
-	for <lists+bpf@lfdr.de>; Sun, 22 Sep 2024 10:40:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E748A97E0AB
+	for <lists+bpf@lfdr.de>; Sun, 22 Sep 2024 11:08:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AFE4C28161A
-	for <lists+bpf@lfdr.de>; Sun, 22 Sep 2024 08:40:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8646E2814F8
+	for <lists+bpf@lfdr.de>; Sun, 22 Sep 2024 09:08:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BD0F193418;
-	Sun, 22 Sep 2024 08:40:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3E7719341D;
+	Sun, 22 Sep 2024 09:08:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="TNBeKhOK";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="prLWwB3Q"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Pmnhfe6m"
 X-Original-To: bpf@vger.kernel.org
-Received: from fout4-smtp.messagingengine.com (fout4-smtp.messagingengine.com [103.168.172.147])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 621E7134C4;
-	Sun, 22 Sep 2024 08:40:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.147
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 044EC1EB46
+	for <bpf@vger.kernel.org>; Sun, 22 Sep 2024 09:08:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726994414; cv=none; b=qet9QJVvYR/M44WRosuxBlAxowftx0J4lD8qFpSABhYi4pkGxJp7Kio1ZZt0/E1mRVCJaUfjlo9mkcWUsR0t7G7//0HR7FyzTYBYvF/qyUJJyoWw5AvIVyJtTVNdOAk86lBuTriHfacDx1dzR23TWoAJr245nI7gFBj7IWHQTik=
+	t=1726996108; cv=none; b=OMiMvwX48eArADaW6FgOkX+8KSkPkjtak3+8W8QDO5qH3NN4Gko+iH8y927ZV0ra7dHsRPL/46z1Mm89oCjOehWlqRF2xzmB2C0z+syKFi4VloxRj12AeUNOhbJtaTIep1BWzAqmy9MZUn7GlEqjzRFYmQRx29cGAiHQfHcBFVY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726994414; c=relaxed/simple;
-	bh=NvtNCWYLxAUUYaf1ZV3bfcHr8aPZfVyTOA42rrYChrw=;
+	s=arc-20240116; t=1726996108; c=relaxed/simple;
+	bh=1HXtPzRt9nLzfCZCLMBt52X//n1f7S7R+U2+wChVizk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Gpf+vzVPDAVWKpM9mSqnObbTguzLkp1In/kFzt7vZjb5gN3HRCZK479fGvGNCnTqQ35UVQK5KZ7R23KEpHs4qlUCxLlODpX8vRZb2Z3bQANqXvZq2yOHOxtJB1lJUaAOmX5ooS5XaS8/uAnL2JCIOQPtP7xVCj5Eae2PlX9YAVg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=TNBeKhOK; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=prLWwB3Q; arc=none smtp.client-ip=103.168.172.147
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
-Received: from phl-compute-12.internal (phl-compute-12.phl.internal [10.202.2.52])
-	by mailfout.phl.internal (Postfix) with ESMTP id 584DB1380284;
-	Sun, 22 Sep 2024 04:40:11 -0400 (EDT)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-12.internal (MEProxy); Sun, 22 Sep 2024 04:40:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm1; t=1726994411; x=1727080811; bh=L8BCOmBV7Q
-	cjMxVuy7I8eLqXWe+XQi090UTPa04zCPk=; b=TNBeKhOKoEd9adPkKsRGNaXRNz
-	9IoMMiqZR597YU7Spsvyg/+hj4x5drB5c5wOUtpLVGLHry8FipEFyEnsOL5r6oVJ
-	zo80eq6IN9ehZcj9fHtJNPjA3c5hZftD9lOJMwZDYQGMb0ar04tW8aCL80LgVHFJ
-	M8b6pzC8T5UenQyEG0PL4B8hw3faio6DK5Gh6nLxX0Y/ExLyoAJTuWJW66jVqmTX
-	7bl3qdMsCrXhw/iE4Xy+vQOyTjE15yCZNTVXYk7OBbMBzunRBYDvHmIQZ060CXdD
-	yExbjvO5rjAbYATtP3IJuYHupKMiJrxeB9xIWPCSeY5c0vnf3JmzD4KrFbow==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1726994411; x=1727080811; bh=L8BCOmBV7QcjMxVuy7I8eLqXWe+X
-	Qi090UTPa04zCPk=; b=prLWwB3Qd+m4HjjF7HpB+BP5Yh1RWxH9T/lFAHcVuHOe
-	haogI+PFD6ZzqH9UolQ7VhkE/27kQKOdpS6drsmvCUHCzGTmjTh4QBT6jVUKt6tC
-	6RzAC+VAsFxDJl+zGy1u4Tk21mJgl87w31JFF/UE6U80MyPOpfBL/yOaZiY+vc2u
-	Y86RVKt+HUGXHDfBnlTzLvnCIJl09uDeUjFCvDaApQJ4ZJQqAIGusO3CReKdGrvb
-	qbs1wW5L3rGa2tEZGhKHbovwXDx5/dQsWlW02tyTVxoq0thmO3wU43vSpSZAlRWO
-	BzpVPnKKizsFBK1P2x2ossAHdlRUMR07Dipxapt4ng==
-X-ME-Sender: <xms:6tfvZlOw7KrUmnVHAAWWV7Z3HAuVQtwftWJGSqPwMkegSCKwou3LKg>
-    <xme:6tfvZn_Bqzt9cJeZagDq7fNRvWjQgUbAXdQuXyik5HDW1B9ocMZ5xpzJ3xtymA7rh
-    oezZC1ecVFEuN6oZg>
-X-ME-Received: <xmr:6tfvZkTVbTLRtkQv_orXBfg67KhrJ4tj8i07iA6SilCmzpKN8-ekBw7c1d8CcO9Y0OlJsz6Do_bsLmbzhgGVS7fJZmcJuR2xDTl-sySHX-Kp8w>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrudeljedgtdeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
-    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdlje
-    dtmdenucfjughrpeffhffvvefukfhfgggtuggjsehttdfstddttddvnecuhfhrohhmpeff
-    rghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnh
-    epvdefkeetuddufeeigedtheefffekuedukeehudffudfffffggeeitdetgfdvhfdvnecu
-    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepugiguhesug
-    iguhhuuhdrgiihiidpnhgspghrtghpthhtohepudekpdhmohguvgepshhmthhpohhuthdp
-    rhgtphhtthhopegvugguhiiikeejsehgmhgrihhlrdgtohhmpdhrtghpthhtohepuggrnh
-    hivghlsehiohhgvggrrhgsohigrdhnvghtpdhrtghpthhtohepshhhuhgrhheskhgvrhhn
-    vghlrdhorhhgpdhrtghpthhtoheprghnughrihhisehkvghrnhgvlhdrohhrghdprhgtph
-    htthhopegrshhtsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehjohhhnhdrfhgrshht
-    rggsvghnugesghhmrghilhdrtghomhdprhgtphhtthhopehmrghrthhinhdrlhgruheslh
-    hinhhugidruggvvhdprhgtphhtthhopehsohhngheskhgvrhhnvghlrdhorhhgpdhrtghp
-    thhtohephihonhhghhhonhhgrdhsohhngheslhhinhhugidruggvvh
-X-ME-Proxy: <xmx:6tfvZhtS8v3WG-JpGU7cDOCtiwXzFc4Y1XuprJKXDucsu0P3O4_i2g>
-    <xmx:6tfvZtf7GC1EfCwgDM-Ssyq--1C_TOhuHvC1gC0JQnsoQWpEOeeZOg>
-    <xmx:6tfvZt0AAcNrB_bbC-FseMoQZF_KxIwvrVYjXxsRPg4JeE_8vuI7KA>
-    <xmx:6tfvZp99jdLKtbs4EP1p5eCEimJizrJGk4XkB_mKv8vVkHPyQ0YUUA>
-    <xmx:69fvZgWbQ2b7du7rNDLwYlbrZBzzZg5wYjrC-51lH6cF4Uhp_zKO-PWD>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 22 Sep 2024 04:40:08 -0400 (EDT)
-Date: Sun, 22 Sep 2024 02:40:07 -0600
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: daniel@iogearbox.net, shuah@kernel.org, andrii@kernel.org, 
-	ast@kernel.org, john.fastabend@gmail.com, martin.lau@linux.dev, song@kernel.org, 
-	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, 
-	jolsa@kernel.org, mykolal@fb.com, bpf@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, kernel-team@meta.com
-Subject: Re: [PATCH bpf-next v2 1/2] bpf: verifier: Support eliding map
- lookup nullness
-Message-ID: <x32qvwnfnouk2zbvllwi7xy6w7jyjp6ifobumuohf4fy32sy2x@gczdukjvjo36>
-References: <cover.1726458273.git.dxu@dxuuu.xyz>
- <3b54139f8d4877e0487daebdd799c3878ee27ed0.1726458273.git.dxu@dxuuu.xyz>
- <a1b7e902e6f8be05f7d42bf340484b64583e1389.camel@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=p95FNyzj50RpdBnWCR0NipF5qJAy5sfxT3fH8k8t9Yi0ZbM7Qhbyn3R6eacj9sILSKszeiakAv4hY6wdqqDeWhpFjwqsW1Aq0vKY3SKl3lpX4lUYE0jMkJ2Bemfji4o8O+kNgSxPUv9n2JTEFkmNTTQzceC0MJtNfc9eMmh+zU4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Pmnhfe6m; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1726996105;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1VHLsfNfIqLcFZ23vrbINoBQfbbGCd6neqC+brlrwbA=;
+	b=Pmnhfe6mqf9aFVNFmxeqrNyjv7c1Pki43YE7a2aTJvv4tIAYcyP1t8K/TKe5SJRAlPZh02
+	t0RcEKIBvPZTNEZywl/RQOtNYL/1IUM2ndwx8ISDz8D+IHXvWtHU+skPq7xXXwZzNprgOa
+	PyWPRPq94KfIhqcc7aDrMDw92YSyx6I=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-281-agkCnxrBOEO0V5ylvGEZ6g-1; Sun, 22 Sep 2024 05:08:22 -0400
+X-MC-Unique: agkCnxrBOEO0V5ylvGEZ6g-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-42cb471a230so26377595e9.3
+        for <bpf@vger.kernel.org>; Sun, 22 Sep 2024 02:08:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1726996101; x=1727600901;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1VHLsfNfIqLcFZ23vrbINoBQfbbGCd6neqC+brlrwbA=;
+        b=VsIk/WBNjyimWYL1t8JzYdoioUBPTtrElzsMKqJOfeXnK3dU8RPWqL183PG9EJqhz2
+         2LAiiG/0jKHNiNbhivTlVG5PGo3SeUmwuH5aQtTKGs6cvP6m6iqCeaAt1MXDRM6OaJfr
+         ddfaFgUn0vhBrfWO+KFygkDNZ7JZiOBoKNx92X+WNAuUT8MCu2DfVPqPpbyTcqkMzv7O
+         im+lHrEgHcMG3LFTvypuG99U3O6ED4LcqLGeUE+vWl1qDhrIQHKh64sR+uX/DaFwej4v
+         V2r0GdgV4cq45DRxtJbClaA81rDdajV86jbxGsKUeTlzcA9wCiVAj+eAdrpH96ums/Ul
+         RFXw==
+X-Forwarded-Encrypted: i=1; AJvYcCVpzxJ+dtIcZEydHxRhM0x6TNXU5FOpR4dphtfjAoeJURVeSV/0rig03Qn6H4AT7E2Rbho=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyLIsma7FAFCtRC6ODRk1WljGYbUlyjoHnFTGWZwfnYlTu25yG8
+	par/rR9Kh37IAdyNF0GRBVnCUfBWnnKMpA9cdiLJO8KoawojdeX3g0kOn+jZtG0Im0kldJqSz10
+	r+GCSLAJbldWHo9exXGr7/JQj4twtSoIf+4JVIS1RiN73Zl6QzA==
+X-Received: by 2002:a05:6000:1375:b0:374:b675:6213 with SMTP id ffacd0b85a97d-37a4235a0d5mr4342830f8f.45.1726996100959;
+        Sun, 22 Sep 2024 02:08:20 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFJ792wGCd1MWhimTqAIbkaAYTvIoSbeWFq1FnVJvLvLdsklUapLCXxGhVVkH7LlMYgJ6lmNA==
+X-Received: by 2002:a05:6000:1375:b0:374:b675:6213 with SMTP id ffacd0b85a97d-37a4235a0d5mr4342805f8f.45.1726996100388;
+        Sun, 22 Sep 2024 02:08:20 -0700 (PDT)
+Received: from localhost (net-93-146-37-148.cust.vodafonedsl.it. [93.146.37.148])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-378e73e80c5sm21507653f8f.39.2024.09.22.02.08.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 22 Sep 2024 02:08:19 -0700 (PDT)
+Date: Sun, 22 Sep 2024 11:08:18 +0200
+From: Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+To: Alexander Lobakin <aleksander.lobakin@intel.com>
+Cc: Lorenzo Bianconi <lorenzo@kernel.org>,
+	Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@kernel.org>,
+	bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
+	daniel@iogearbox.net, davem@davemloft.net, kuba@kernel.org,
+	hawk@kernel.org, john.fastabend@gmail.com, edumazet@google.com,
+	pabeni@redhat.com, toke@toke.dk, sdf@fomichev.me, tariqt@nvidia.com,
+	saeedm@nvidia.com, anthony.l.nguyen@intel.com,
+	przemyslaw.kitszel@intel.com, intel-wired-lan@lists.osuosl.org,
+	mst@redhat.com, jasowang@redhat.com, mcoquelin.stm32@gmail.com,
+	alexandre.torgue@foss.st.com
+Subject: Re: [RFC bpf-next 0/4] Add XDP rx hw hints support performing
+ XDP_REDIRECT
+Message-ID: <Zu_eghZAEoYBkThM@lore-desk>
+References: <cover.1726935917.git.lorenzo@kernel.org>
+ <1f53cd74-6c1e-4a1c-838b-4acc8c5e22c1@intel.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="pFkQmBWfCOwm/HFL"
+Content-Disposition: inline
+In-Reply-To: <1f53cd74-6c1e-4a1c-838b-4acc8c5e22c1@intel.com>
+
+
+--pFkQmBWfCOwm/HFL
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a1b7e902e6f8be05f7d42bf340484b64583e1389.camel@gmail.com>
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Sep 20, 2024 at 03:05:35PM GMT, Eduard Zingerman wrote:
-> On Sun, 2024-09-15 at 21:45 -0600, Daniel Xu wrote:
-> > This commit allows progs to elide a null check on statically known map
-> > lookup keys. In other words, if the verifier can statically prove that
-> > the lookup will be in-bounds, allow the prog to drop the null check.
-> > 
-> > This is useful for two reasons:
-> > 
-> > 1. Large numbers of nullness checks (especially when they cannot fail)
-> >    unnecessarily pushes prog towards BPF_COMPLEXITY_LIMIT_JMP_SEQ.
-> > 2. It forms a tighter contract between programmer and verifier.
-> > 
-> > For (1), bpftrace is starting to make heavier use of percpu scratch
-> > maps. As a result, for user scripts with large number of unrolled loops,
-> > we are starting to hit jump complexity verification errors.  These
-> > percpu lookups cannot fail anyways, as we only use static key values.
-> > Eliding nullness probably results in less work for verifier as well.
-> > 
-> > For (2), percpu scratch maps are often used as a larger stack, as the
-> > currrent stack is limited to 512 bytes. In these situations, it is
-> > desirable for the programmer to express: "this lookup should never fail,
-> > and if it does, it means I messed up the code". By omitting the null
-> > check, the programmer can "ask" the verifier to double check the logic.
-> 
-> Nit: maybe add a few lines why tools/testing/selftests/bpf/progs/iters.c
->      has to be changed.
+> From: Lorenzo Bianconi <lorenzo@kernel.org>
+> Date: Sat, 21 Sep 2024 18:52:56 +0200
+>=20
+> > This series introduces the xdp_rx_meta struct in the xdp_buff/xdp_frame
+>=20
+> &xdp_buff is on the stack.
+> &xdp_frame consumes headroom.
 
-Ack.
+ack, right.
 
-> 
-> [...]
-> 
-> > +/* Returns constant key value if possible, else -1 */
-> > +static long get_constant_map_key(struct bpf_verifier_env *env,
-> > +				 struct bpf_reg_state *key)
-> > +{
-> > +	struct bpf_func_state *state = func(env, key);
-> > +	struct bpf_reg_state *reg;
-> > +	int stack_off;
-> > +	int slot;
-> > +	int spi;
-> > +
-> > +	if (key->type != PTR_TO_STACK)
-> > +		return -1;
-> > +	if (!tnum_is_const(key->var_off))
-> > +		return -1;
-> > +
-> > +	stack_off = key->off + key->var_off.value;
-> > +	slot = -stack_off - 1;
-> > +	if (slot >= state->allocated_stack)
-> > +		/* Stack uninitialized */
-> > +		return -1;
-> 
-> I'm not sure verifier guarantees that key->off is negative.
-> E.g. the following simple program:
-> 
->     0: (b7) r1 = 16                       ; R1_w=16
->     1: (bf) r2 = r10                      ; R2_w=fp0 R10=fp0
->     2: (0f) r2 += r1
->     mark_precise: frame0: last_idx 2 first_idx 0 subseq_idx -1 
->     mark_precise: frame0: regs=r1 stack= before 1: (bf) r2 = r10
->     mark_precise: frame0: regs=r1 stack= before 0: (b7) r1 = 16
->     3: R1_w=16 R2_w=fp16
-> 
-> => I think 'slot' should be checked to be >= 0.
+>=20
+> IOW they're size-sensitive and putting metadata directly there might
+> play bad; if not now, then later.
 
-Ah, so in case stack grows "up" right? Which seems invalid but probably
-good to check.
+I was thinking to use a TLV approach for it (so a variable struct), but then
+I decided to implement the simplest solution for the moment since, using TL=
+V,
+we would need to add parsing logic and waste at least 2B for each meta info
+to store the type and length. Moreover, with XDP we have 256B available for
+headeroom and for xdp_frame we would use the same cacheline of the current
+implementation:
 
-> 
-> > +
-> > +	spi = slot / BPF_REG_SIZE;
-> > +	reg = &state->stack[spi].spilled_ptr;
-> > +	if (!tnum_is_const(reg->var_off))
-> > +		/* Stack value not statically known */
-> > +		return -1;
-> > +
-> > +	return reg->var_off.value;
-> > +}
-> > +
-> >  static int get_helper_proto(struct bpf_verifier_env *env, int func_id,
-> >  			    const struct bpf_func_proto **ptr)
-> >  {
-> > @@ -10511,6 +10557,15 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
-> >  			env->insn_aux_data[insn_idx].storage_get_func_atomic = true;
-> >  	}
-> >  
-> > +	/* Logically we are trying to check on key register state before
-> > +	 * the helper is called, so process here. Otherwise argument processing
-> > +	 * may clobber the spilled key values.
-> > +	 */
-> > +	regs = cur_regs(env);
-> > +	if (func_id == BPF_FUNC_map_lookup_elem)
-> > +		meta.const_map_key = get_constant_map_key(env, &regs[BPF_REG_2]);
-> 
-> Nit: there is a long 'switch (func_id)' slightly below this point,
->      maybe move this check there?
+struct xdp_frame {
+	void *                     data;                 /*     0     8 */
+	u16                        len;                  /*     8     2 */
+	u16                        headroom;             /*    10     2 */
+	u32                        metasize;             /*    12     4 */
+	struct xdp_mem_info        mem;                  /*    16     8 */
+	struct net_device *        dev_rx;               /*    24     8 */
+	u32                        frame_sz;             /*    32     4 */
+	u32                        flags;                /*    36     4 */
+	struct xdp_rx_meta         rx_meta;              /*    40    12 */
 
-I had that initially but discovered that verifier marks the stack value
-as unknown as part of check_func_arg(). I _think_ it was:
+	/* size: 56, cachelines: 1, members: 9 */
+	/* padding: 4 */
+	/* last cacheline: 56 bytes */
+};
 
-        if (is_spilled_reg(&state->stack[spi]) &&
-            (state->stack[spi].spilled_ptr.type == SCALAR_VALUE ||
-             env->allow_ptr_leaks)) {
-                if (clobber) {
-                        __mark_reg_unknown(env, &state->stack[spi].spilled_ptr);
-                        for (j = 0; j < BPF_REG_SIZE; j++)
-                                scrub_spilled_slot(&state->stack[spi].slot_type[j]);
-                }
-                goto mark;
-        }
+Anyway I do not have a strong opinion about it and I am fine to covert the
+current implementation to a TLV one if we agree on it.
 
-I remember spending some time debugging it. Which is why I left that
-comment above this code.
+>=20
+> Our idea (me + Toke) was as follows:
+>=20
+> - new BPF kfunc to build generic meta. If called, the driver builds a
+>   generic meta with hash, csum etc., in the data_meta area.
+>   Yes, this also consumes headroom, but only when the corresponding func
+>   is called. Introducing new fields like you're doing will consume it
+>   unconditionally;
 
-Thanks for reviewing!
+ack, I am currently reusing the kfuncs added by Stanislav but I agree it is
+better to add a new one to store the rx hw hints info, I will work on it.
+
+> - when &xdp_frame gets converted to sk_buff, the function checks whether
+>   data_meta contains a generic structure filled with hints.
+>=20
+> We also thought about &skb_shared_info, but it's also size-sensitive as
+> it consumes tailroom.
+
+for rx_timestamp we can reuse the field available in the skb_shared_info.
+
+Regards,
+Lorenzo
+
+>=20
+> > one as a container to store the already supported xdp rx hw hints (rx_h=
+ash
+> > and rx_vlan, rx_timestamp will be stored in skb_shared_info area) when =
+the
+> > eBPF program running on the nic performs XDP_REDIRECT. Doing so, we are=
+ able
+> > to set the skb metadata converting the xdp_buff/xdp_frame to a skb.
+>=20
+> Thanks,
+> Olek
+>=20
+
+--pFkQmBWfCOwm/HFL
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCZu/eggAKCRA6cBh0uS2t
+rIdLAP0R/dGPCXgseg1Iy65MrQgRuHzAgV36/bG2Weac6f4WwQEA8KXcwzorG0oU
+nZx4Agc2TmA8ZFiQyO3aR9f63sZWrAA=
+=hB8l
+-----END PGP SIGNATURE-----
+
+--pFkQmBWfCOwm/HFL--
+
 
