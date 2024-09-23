@@ -1,206 +1,123 @@
-Return-Path: <bpf+bounces-40189-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40190-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C236197E744
-	for <lists+bpf@lfdr.de>; Mon, 23 Sep 2024 10:09:24 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D5F197E798
+	for <lists+bpf@lfdr.de>; Mon, 23 Sep 2024 10:34:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E4A311C20F3D
-	for <lists+bpf@lfdr.de>; Mon, 23 Sep 2024 08:09:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2DBAEB215C0
+	for <lists+bpf@lfdr.de>; Mon, 23 Sep 2024 08:34:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B22227E76D;
-	Mon, 23 Sep 2024 08:08:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A62D19341D;
+	Mon, 23 Sep 2024 08:34:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="mCfr1jkX"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HvShRKkD"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A16047F484;
-	Mon, 23 Sep 2024 08:08:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8103F2F2D;
+	Mon, 23 Sep 2024 08:34:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727078938; cv=none; b=arv6zS28sTGzoJ97p73Nq3hxDFQR6C3PYD8F1BaiKvV7MvJTnSQgLWyuSXXOpOsAwuPo543rlsjKhOYMcTzBFQdY7b22RJ2YXZjWB593e763dSDFnfJLPOaUN7d3bonU1Xtf/m5sqxyPspY1y7W7weqdhjv87p0BhW3da/02CHI=
+	t=1727080476; cv=none; b=F8jAckM2VGZ3oyYGNvZuANJe3G6Zb75awE7Duh7LJKXE1Ixym00egPnfqIpymAnEM0CN/i8mVQrL8vu8Z9vgzUvlkRsE8P2sH29Y5ycC1HUjdJ2GmiEEd6FyCPqPZdXqmfQBkh2NL49YoNrtY+BxCq0OU8mw4YMxfx5U3Je9rhQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727078938; c=relaxed/simple;
-	bh=DpxhoiVY4UveFzijoTaZZuYDPDgdMW8hSTAj3Aw1WtY=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=q+jmL1Kj+/Cm3vCl3z6yX8urYjHN7PojbUewNxHoCG4uiYPc2h+sbi13khAVYtNe2s0fYwUKLGoomSoxR01bjUxhJ6JWWAzBAkCAcyk/TfKxMNTbUfbQfOmLblvZMwZRES2N1fFDSt/bbmBp7nPpwY85PWv1WGiP0GQKK8GZ7YA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=mCfr1jkX; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 48N1nNUg026249;
-	Mon, 23 Sep 2024 08:08:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from
-	:to:cc:subject:in-reply-to:references:date:message-id
-	:mime-version:content-type; s=pp1; bh=1R9JlDqk6J0Q09htjggzzB6TZ2
-	8LP8W5JbuY7zcW460=; b=mCfr1jkXIfMG5PUV/2avPEKDfIHBU3MJWHgETurzEG
-	1l1U5Bufckz4Ol5dLdXuavFzIwCCgkT8oxmiCR7EFxwJHO/biSkgS1SCWvcpVsLg
-	uVXNWIHB0VTUCVD+4EUqAv3pAmCulrtmpwyjdL5EJrfEvGLedWQ0k/GHrd6yE5if
-	jJODLhj9gMMmM+Shd9WiKt+LqBt0MFkWm1XgHPrlFS4fK4+wL2D2T0o/zdYWeqbm
-	zkHTTtTvYI68rUaYzFBFxmeMEZJPlZ6j6+LOVsw4QSx+uLoUZO76A0qjvOIq/KUK
-	LJ0cEVLqVySw6pbibn8gg6HANqUnOvpZh305xrg1AnnQ==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 41snna2f27-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 23 Sep 2024 08:08:05 +0000 (GMT)
-Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 48N84U49023386;
-	Mon, 23 Sep 2024 08:08:05 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 41snna2f23-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 23 Sep 2024 08:08:05 +0000 (GMT)
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 48N7Gn4n000668;
-	Mon, 23 Sep 2024 08:08:04 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 41t8fudhxv-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 23 Sep 2024 08:08:02 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 48N880k218743704
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 23 Sep 2024 08:08:01 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id C68672004D;
-	Mon, 23 Sep 2024 08:08:00 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 8EF1A20049;
-	Mon, 23 Sep 2024 08:08:00 +0000 (GMT)
-Received: from tuxmaker.linux.ibm.com (unknown [9.152.85.9])
-	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Mon, 23 Sep 2024 08:08:00 +0000 (GMT)
-From: Sven Schnelle <svens@linux.ibm.com>
-To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Steven Rostedt
- <rostedt@goodmis.org>,
-        Florent Revest <revest@chromium.org>,
-        linux-trace-kernel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Daniel Borkmann
- <daniel@iogearbox.net>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Mark
- Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>,
-        linux-arch@vger.kernel.org
-Subject: Re: [PATCH v15 13/19] fprobe: Rewrite fprobe on function-graph tracer
-In-Reply-To: <172639152107.366111.11355494843935654791.stgit@devnote2> (Masami
-	Hiramatsu's message of "Sun, 15 Sep 2024 18:12:01 +0900")
-References: <172639136989.366111.11359590127009702129.stgit@devnote2>
-	<172639152107.366111.11355494843935654791.stgit@devnote2>
-Date: Mon, 23 Sep 2024 10:08:00 +0200
-Message-ID: <yt9dmsjyx067.fsf@linux.ibm.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1727080476; c=relaxed/simple;
+	bh=RKen6Z1zD3TKFxZEjI37rBLQGIuE3UM2cEg1ZLhLCJk=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=lwUzvPfjgrhVSLPylUBzzUIjEXkaQJ0xssRPUiIM0qkRzKI+Fu3Femly1YfD33KRv4IveZDIrBoS3ftZRmLgiLnBxcRMjQUfZLOxhGmr+1+uXVq0FjWEosYvYz/H1RhS+TtjNwtHM9STtJSGPuXP1EWhAl56kkTNWHDFC8d1GU0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HvShRKkD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05A5AC4CEC4;
+	Mon, 23 Sep 2024 08:34:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1727080476;
+	bh=RKen6Z1zD3TKFxZEjI37rBLQGIuE3UM2cEg1ZLhLCJk=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=HvShRKkDmI4DDHv8wxf3xNFWue/3zdAFhXdtqJVVpJn8A9aJPxklAR+AkM5IWcMn/
+	 oIE61Z2p/43WuG6dodBTdVVVrgApHP4wd7W/v/lIryKNhPSqdHNVtJWKGUANU2O4mv
+	 JaWQiaIkAPSn6/d7WWTv+su0kQciix4xHHitGvPHfyuRl1BYcru8vqx74EqyjbQEJc
+	 SKw0GUjh1HHZyAKz+s4Nmy9BKikZP2FhsxhE4MzXS8DTKVfKeR5FLQiMMS3Z81uWSW
+	 WbALxyyME8VZ+1T4aNRm5LH2fLGvjJonjhWdPGhbVwImJpx2T+YmkR2hfH8ielGbG+
+	 xKNUY6IP6C/sg==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 70BCE3809A80;
+	Mon, 23 Sep 2024 08:34:39 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: LLRWWqtHpZxdyP_87_aFJYy56ygCj52M
-X-Proofpoint-ORIG-GUID: Cg4VZKSNlROPP6jDB8fnjbZeTePXL0PW
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.60.29
- definitions=2024-09-23_04,2024-09-19_01,2024-09-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 adultscore=0
- mlxscore=0 mlxlogscore=799 spamscore=0 impostorscore=0 priorityscore=1501
- phishscore=0 bulkscore=0 clxscore=1011 lowpriorityscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2408220000
- definitions=main-2409230056
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCHv4 00/14] uprobe, bpf: Add session support
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <172708047825.3261420.5126267811201364070.git-patchwork-notify@kernel.org>
+Date: Mon, 23 Sep 2024 08:34:38 +0000
+References: <20240917085024.765883-1-jolsa@kernel.org>
+In-Reply-To: <20240917085024.765883-1-jolsa@kernel.org>
+To: Jiri Olsa <jolsa@kernel.org>
+Cc: oleg@redhat.com, peterz@infradead.org, ast@kernel.org,
+ daniel@iogearbox.net, andrii@kernel.org, bpf@vger.kernel.org, kafai@fb.com,
+ songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+ kpsingh@chromium.org, sdf@fomichev.me, haoluo@google.com,
+ rostedt@goodmis.org, mhiramat@kernel.org, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org
 
-"Masami Hiramatsu (Google)" <mhiramat@kernel.org> writes:
+Hello:
 
-> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
->
-> Rewrite fprobe implementation on function-graph tracer.
-> Major API changes are:
->  -  'nr_maxactive' field is deprecated.
->  -  This depends on CONFIG_DYNAMIC_FTRACE_WITH_ARGS or
->     !CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS, and
->     CONFIG_HAVE_FUNCTION_GRAPH_FREGS. So currently works only
->     on x86_64.
->  -  Currently the entry size is limited in 15 * sizeof(long).
->  -  If there is too many fprobe exit handler set on the same
->     function, it will fail to probe.
->
-> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> ---
->  Changes in v14:
->   - Add ftrace_regs_get_return_addresss() for riscv.
->  Changes in v12:
->   - Skip updating ftrace hash if not required.
->  Changes in v9:
->   - Remove unneeded prototype of ftrace_regs_get_return_address().
->   - Fix entry data address calculation.
->   - Remove DIV_ROUND_UP() from hotpath.
->  Changes in v8:
->   - Use trace_func_graph_ret/ent_t for fgraph_ops.
->   - Update CONFIG_FPROBE dependencies.
->   - Add ftrace_regs_get_return_address() for each arch.
->  Changes in v3:
->   - Update for new reserve_data/retrieve_data API.
->   - Fix internal push/pop on fgraph data logic so that it can
->     correctly save/restore the returning fprobes.
->  Changes in v2:
->   - Add more lockdep_assert_held(fprobe_mutex)
->   - Use READ_ONCE() and WRITE_ONCE() for fprobe_hlist_node::fp.
->   - Add NOKPROBE_SYMBOL() for the functions which is called from
->     entry/exit callback.
-> ---
->  arch/arm64/include/asm/ftrace.h     |    6 
->  arch/loongarch/include/asm/ftrace.h |    6 
->  arch/powerpc/include/asm/ftrace.h   |    6 
->  arch/riscv/include/asm/ftrace.h     |    5 
->  arch/s390/include/asm/ftrace.h      |    6 
->  arch/x86/include/asm/ftrace.h       |    6 
->  include/linux/fprobe.h              |   53 ++-
->  kernel/trace/Kconfig                |    8 
->  kernel/trace/fprobe.c               |  639 +++++++++++++++++++++++++----------
->  lib/test_fprobe.c                   |   45 --
->  10 files changed, 535 insertions(+), 245 deletions(-)
-[..]
+This series was applied to bpf/bpf.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
 
-> diff --git a/kernel/trace/fprobe.c b/kernel/trace/fprobe.c
-> index 90a3c8e2bbdf..5a0b4ef52fa7 100644
-> --- a/kernel/trace/fprobe.c
-> +++ b/kernel/trace/fprobe.c
-> +/* The entry data size is 4 bits (=16) * sizeof(long) in maximum */
-> +#define FPROBE_HEADER_SIZE_BITS		4
-> +#define MAX_FPROBE_DATA_SIZE_WORD	((1L << FPROBE_HEADER_SIZE_BITS) - 1)
-> +#define MAX_FPROBE_DATA_SIZE		(MAX_FPROBE_DATA_SIZE_WORD * sizeof(long))
-> +#define FPROBE_HEADER_PTR_BITS		(BITS_PER_LONG - FPROBE_HEADER_SIZE_BITS)
-> +#define FPROBE_HEADER_PTR_MASK		GENMASK(FPROBE_HEADER_PTR_BITS - 1, 0)
-> +#define FPROBE_HEADER_SIZE		sizeof(unsigned long)
-> +
-> +static inline unsigned long encode_fprobe_header(struct fprobe *fp, int size_words)
-> +{
-> +	if (WARN_ON_ONCE(size_words > MAX_FPROBE_DATA_SIZE_WORD ||
-> +	    ((unsigned long)fp & ~FPROBE_HEADER_PTR_MASK) !=
-> +	    ~FPROBE_HEADER_PTR_MASK)) {
-> +		return 0;
->  	}
-> +	return ((unsigned long)size_words << FPROBE_HEADER_PTR_BITS) |
-> +		((unsigned long)fp & FPROBE_HEADER_PTR_MASK);
-> +}
+On Tue, 17 Sep 2024 10:50:10 +0200 you wrote:
+> hi,
+> this patchset is adding support for session uprobe attachment and
+> using it through bpf link for bpf programs.
+> 
+> The session means that the uprobe consumer is executed on entry
+> and return of probed function with additional control:
+>   - entry callback can control execution of the return callback
+>   - entry and return callbacks can share data/cookie
+> 
+> [...]
 
-I haven't yet fully understood why this logic is needed, but the
-WARN_ON_ONCE triggers on s390. I'm assuming this fails because fp always
-has the upper bits of the address set on x86 (and likely others). As an
-example, in my test setup, fp is 0x8feec218 on s390, while it is
-0xffff888100add118 in x86-kvm.
+Here is the summary with links:
+  - [PATCHv4,01/14] uprobe: Add data pointer to consumer handlers
+    (no matching commit)
+  - [PATCHv4,02/14] uprobe: Add support for session consumer
+    (no matching commit)
+  - [PATCHv4,03/14] bpf: Add support for uprobe multi session attach
+    (no matching commit)
+  - [PATCHv4,04/14] bpf: Add support for uprobe multi session context
+    (no matching commit)
+  - [PATCHv4,05/14] bpf: Allow return values 0 and 1 for uprobe/kprobe session
+    (no matching commit)
+  - [PATCHv4,06/14] libbpf: Fix uretprobe.multi.s programs auto attachment
+    https://git.kernel.org/bpf/bpf/c/8c8b47597403
+  - [PATCHv4,07/14] libbpf: Add support for uprobe multi session attach
+    (no matching commit)
+  - [PATCHv4,08/14] selftests/bpf: Add uprobe session test
+    (no matching commit)
+  - [PATCHv4,09/14] selftests/bpf: Add uprobe session cookie test
+    (no matching commit)
+  - [PATCHv4,10/14] selftests/bpf: Add uprobe session recursive test
+    (no matching commit)
+  - [PATCHv4,11/14] selftests/bpf: Add uprobe session verifier test for return value
+    (no matching commit)
+  - [PATCHv4,12/14] selftests/bpf: Add kprobe session verifier test for return value
+    (no matching commit)
+  - [PATCHv4,13/14] selftests/bpf: Add uprobe session single consumer test
+    (no matching commit)
+  - [PATCHv4,14/14] selftests/bpf: Add consumers stress test on single uprobe
+    (no matching commit)
 
-Regards
-Sven
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
