@@ -1,146 +1,205 @@
-Return-Path: <bpf+bounces-40211-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40212-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 200D497F000
-	for <lists+bpf@lfdr.de>; Mon, 23 Sep 2024 19:52:41 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8B8C97F0B4
+	for <lists+bpf@lfdr.de>; Mon, 23 Sep 2024 20:35:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC952282451
-	for <lists+bpf@lfdr.de>; Mon, 23 Sep 2024 17:52:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 78FD91F22FF4
+	for <lists+bpf@lfdr.de>; Mon, 23 Sep 2024 18:35:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF63A19F461;
-	Mon, 23 Sep 2024 17:52:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA69C1A0723;
+	Mon, 23 Sep 2024 18:35:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="kC5MLjS7"
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="vFarxwzg"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com [209.85.160.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05olkn2051.outbound.protection.outlook.com [40.92.89.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCABF19F40A
-	for <bpf@vger.kernel.org>; Mon, 23 Sep 2024 17:52:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.175
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727113950; cv=none; b=OC1ZQl4xHd6gsSc46Ty8jOfmADYEs8t0j22W+/8Hw/S8RwISzdje9obCFtsIAcFovhSVTygSRlerkOy6XCOlPCaEbGgyW06p/K1H2D1BKNUFd3SzjkW1a75Q5uEKphgQqDUElV3qeeyej+/22rShrGrbbHkzS6lMiBw3wN6UW1k=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727113950; c=relaxed/simple;
-	bh=d012RvO8FEt4oNV/hdC2ORp0abycOdoKV3NqdL6MFLw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kIxQ1kvzF22N00LMiAfM13BdMK+wT/sjAhV5u5qqb4MWm0pgNwqeQflzRuaNlR7agCJ6yCWuhgo2yx8QBIq50dryKwvqiD/6nlGF9UUA7dnCbeY8u7QldnK2grsMsN7Np++KcTSdeOr0K71aDe3aJI9MtnppgtKu3Ex1AdGeiSQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=kC5MLjS7; arc=none smtp.client-ip=209.85.160.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qt1-f175.google.com with SMTP id d75a77b69052e-4583083d05eso36166741cf.3
-        for <bpf@vger.kernel.org>; Mon, 23 Sep 2024 10:52:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1727113947; x=1727718747; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=d012RvO8FEt4oNV/hdC2ORp0abycOdoKV3NqdL6MFLw=;
-        b=kC5MLjS7vlx32L+CMo/vijxLpluIvZK6GFWocekev0UAgknUMOwkw6vZ2x/QAQxi/O
-         Bc214bhG7DWlIC6bp3btej9mimBmpj/ssPHpH804+PKmzn9qk0S9c7NKyr2t39X/i7Jy
-         dxzMGCDmis/JH40iEX0YCAOTCo6I0sXk1kY9UcOA3xFmDNEokZcut4Sy0w+4JpwcVOpC
-         V3R0IdkdSvljBaOrLoBYBzB4GrRwS3m98tA4BYkEUatuU8KPFuld/opufxvr05E5vgmZ
-         3A4I9bDmmafNkdK1HWGQa2EL19C3dO+81lZcYzGlxoxwnQYtmI3EBw5F0hD9W/4ZRUAs
-         pXPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727113947; x=1727718747;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=d012RvO8FEt4oNV/hdC2ORp0abycOdoKV3NqdL6MFLw=;
-        b=Aq05npbkcTSTHvSITpouCOSOiCKeW5cwFLnXirPe1Hk8uxJILB2e1SiJlMpEGwZMDF
-         bXiEtslMwus62nfJm9Y+LsJyPMXpzMBIghGm31UJSAlIuiO5ERYL/U8TFDHNgY4niEOK
-         VI+JgKjetM34ijEJRFQZN2ZV6MMqGOjrm1/02kxP+zj9ZyLU859b/9KCCCB/0lPaI09B
-         2gi6vuzoR+MgnbzB+t+jHxJ67FJ88iNPKRZltSQ4qzSvXCQhCAjuLBxQnkmnttqghZDd
-         4IYV5yXtfymdAHehnH00aSbjF95eOHHcCv+7Pd37mHsrEoN/bawy/NPIXTV2RQo44i6f
-         9F3w==
-X-Forwarded-Encrypted: i=1; AJvYcCXfKxd+xoOubNs9aFnQ/yZa/pAeNDwZ1TJjXmg3sVOsuaKGq70v8qSUAdKNH0gIev1oQJM=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyxq53O/XMinVb2XDNvX9ghBriF8/lrJ/CoDeSMbu6JpmZlkNAV
-	EEg6yzhuXNZrLWPaz5l2/fEOPxObfJvf6m8TdNWCLULJxAy0wUURdX9N8hR9kRs=
-X-Google-Smtp-Source: AGHT+IHVrqHIowyi3PGsNMuzErMWdcwmU1SRIkTjY6Vp086kbtdmtvbVDAGc60f4mvoOr4wDyCS+5A==
-X-Received: by 2002:a05:622a:107:b0:458:35f7:3950 with SMTP id d75a77b69052e-45b226f380cmr178883201cf.17.1727113947576;
-        Mon, 23 Sep 2024 10:52:27 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-128-5.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.128.5])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-45b17888cdbsm49348071cf.49.2024.09.23.10.52.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Sep 2024 10:52:26 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1ssnEY-000LlC-32;
-	Mon, 23 Sep 2024 14:52:26 -0300
-Date: Mon, 23 Sep 2024 14:52:26 -0300
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Yunsheng Lin <linyunsheng@huawei.com>
-Cc: Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-	Jesper Dangaard Brouer <hawk@kernel.org>, davem@davemloft.net,
-	kuba@kernel.org, pabeni@redhat.com, liuyonglong@huawei.com,
-	fanghaiqing@huawei.com, zhangkun09@huawei.com,
-	Robin Murphy <robin.murphy@arm.com>,
-	Alexander Duyck <alexander.duyck@gmail.com>,
-	IOMMU <iommu@lists.linux.dev>, Wei Fang <wei.fang@nxp.com>,
-	Shenwei Wang <shenwei.wang@nxp.com>,
-	Clark Wang <xiaoning.wang@nxp.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Tony Nguyen <anthony.l.nguyen@intel.com>,
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-	Alexander Lobakin <aleksander.lobakin@intel.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Saeed Mahameed <saeedm@nvidia.com>,
-	Leon Romanovsky <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>,
-	Felix Fietkau <nbd@nbd.name>, Lorenzo Bianconi <lorenzo@kernel.org>,
-	Ryder Lee <ryder.lee@mediatek.com>,
-	Shayne Chen <shayne.chen@mediatek.com>,
-	Sean Wang <sean.wang@mediatek.com>, Kalle Valo <kvalo@kernel.org>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Andrew Morton <akpm@linux-foundation.org>, imx@lists.linux.dev,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	intel-wired-lan@lists.osuosl.org, bpf@vger.kernel.org,
-	linux-rdma@vger.kernel.org, linux-wireless@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org, linux-mm@kvack.org
-Subject: Re: [PATCH net 2/2] page_pool: fix IOMMU crash when driver has
- already unbound
-Message-ID: <20240923175226.GC9634@ziepe.ca>
-References: <20240918111826.863596-1-linyunsheng@huawei.com>
- <20240918111826.863596-3-linyunsheng@huawei.com>
- <CAC_iWjK=G7Oo5=pN2QunhasgDC6NyC1L+96jigX7u9ad+PbYng@mail.gmail.com>
- <894a3c2c-22f9-45b9-a82b-de7320066b42@kernel.org>
- <cdfecd37-31d7-42d2-a8d8-92008285b42e@huawei.com>
- <0e8c7a7a-0e2a-42ec-adbc-b29f6a514517@kernel.org>
- <CAC_iWj+3JvPY2oqVOdu0T1Wt6-ukoy=dLc72u1f55yY23uOTbA@mail.gmail.com>
- <2c5ccfff-6ab4-4aea-bff6-3679ff72cc9a@huawei.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7828919F473
+	for <bpf@vger.kernel.org>; Mon, 23 Sep 2024 18:35:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.89.51
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1727116513; cv=fail; b=B0GWlXt9IJtXAqoiW6l6Lfmg7JpkfMzIi0DSKiDIewstK3hsurmrLG7IrUG7ItjaJyug8eWJK4PcKr7WvJtmJGKEA2ie1dL3z3PkGbq/vxeBi0qM38JQmTWLp/c0t/mbp2lNu4GFxkqDJVoKmaZPfAuMEisypPQeODYKH8d47TY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1727116513; c=relaxed/simple;
+	bh=Yt8S79i5mPFIddRg/69Bg5A+vkOZOrAAwdRJZGm3hgY=;
+	h=Message-ID:Date:From:Subject:To:Content-Type:MIME-Version; b=c2r9VpWdxmUhqsFoGHVlj5h1I7/1qsjSsgzrjDwGbDzZpg3L8+/mRxnmEm4pkn3LkJtS9pwf8THs44PkfL3O678DlwDezPDzameeesntKLGLac+/7Uwgu5rXRV7OgTzqey4an6ruKGlO0FcgqITq/zXmr4DNmhADGPFKRWQGs1g=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=vFarxwzg; arc=fail smtp.client-ip=40.92.89.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=WrmJwL5/T9i4dF61CPNZmTIeVs8eOULhx/rxHTGCF/HuIUtPz3kDL40DK0DlRPCv0F14QC4KXibmapwa1zx6j1bvaUYTptQ+VG4UqMJK9SDfkH31is3n2C+aCGLZbVJkSSwD1TqdHc5ER3CqhI5R6q2lEhaQLMePiAXnLKUW5JcISg9i2k/SLScvd9Wvhm+MqZ+E+mKnsHmZYXYGOgC6bLVKyLV6KxM9vmB9Z7NGGy1uJIZOB+3WdktPNUkbuCwSf4kegkdqlM11H4fsptvMpYUfV3LFqNFzZQFd5M7P5CgOExyrEeQUJ5joluZ3a4pwcWe0h40Fx/fC3J4qc2bSmA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=un/8FD+w4Z2n3nJc46EwekiNYN4/iUf4/6mhL7b08ss=;
+ b=sY8Lj9V4u2C/8OqoNK07mZByDjlHo7fUy0+4HrT+18v5Ce032QE+T/QgVcqqlAvOJgsUHphOd4l/GTaAo2JwNCHzgaNZ+ONd0fRAgUBA4irxbnLytM98YeBQjLRt+BUMgA4Dw7d7IHbbmLvvu7xFRk3VY8CZEViLE5eUWr3zGM+1Ug3DsQcNGsq2oqndtVGPu+BX+0NHlL1N5NVo9C8124T7er2yB8Ioe0By4RCPGhWb2Hs1cpf+HMtSfKCX/8SORHFsCDcUKXRjKwtDhaOsUrkS9n/yh4Nq0Gbz8KLYVxRtCbDIpr+hFpvDQhPIaWETc9xWBI0BM8W2JrOA43WmJQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=un/8FD+w4Z2n3nJc46EwekiNYN4/iUf4/6mhL7b08ss=;
+ b=vFarxwzgAsau9hvYFbc/QOg/Qxl+++KeGJDkJEtdMYRfAu/qE0jiw7YEqtopWQnXn8AM7W5mhWgqU62s9ogrvzeZ43m85BDGCmy09L5tfmVO8jNzUZf0E/mUDJj82FpR9Lgf4FxODolSExWtvSGtWjVtU0lWCqk0Y1KYFH4NGCQsnLaYQGDb4Vi2HYnr6KIG8nFQ8F0kx3UNn9dKc0R9YMIxCCJWzmTS2DBV0Gkeydh+YHRwQX9FvzC86To8E30gQoppJomxWM9KnQ6SHLUnft0WCXaPfGixn+yQ6Rdn/YZj3ZiX1CuXcQ5pvEUIedOSCBXbNTCYGMCzLFLQr8g6jA==
+Received: from AS8P194MB2042.EURP194.PROD.OUTLOOK.COM (2603:10a6:20b:5bc::12)
+ by GVXP194MB1757.EURP194.PROD.OUTLOOK.COM (2603:10a6:150:3e::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7982.25; Mon, 23 Sep
+ 2024 18:35:09 +0000
+Received: from AS8P194MB2042.EURP194.PROD.OUTLOOK.COM
+ ([fe80::3644:f8b7:ee68:3865]) by AS8P194MB2042.EURP194.PROD.OUTLOOK.COM
+ ([fe80::3644:f8b7:ee68:3865%5]) with mapi id 15.20.7982.022; Mon, 23 Sep 2024
+ 18:35:09 +0000
+Message-ID:
+ <AS8P194MB2042168EE5CAC311644BA284866F2@AS8P194MB2042.EURP194.PROD.OUTLOOK.COM>
+Date: Mon, 23 Sep 2024 19:35:08 +0100
+User-Agent: Mozilla Thunderbird
+From: Alasdair McWilliam <alasdair.mcwilliam@outlook.com>
+Subject: Verifier - wild instructions count fluctiations between versions?
+To: bpf@vger.kernel.org
+Content-Language: en-GB
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: LO4P123CA0278.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:195::13) To AS8P194MB2042.EURP194.PROD.OUTLOOK.COM
+ (2603:10a6:20b:5bc::12)
+X-Microsoft-Original-Message-ID:
+ <421ea84e-2496-4205-a602-a4e002a79ef2@outlook.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2c5ccfff-6ab4-4aea-bff6-3679ff72cc9a@huawei.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AS8P194MB2042:EE_|GVXP194MB1757:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5dfc2c0d-5a9c-449d-9a5b-08dcdbfe7395
+X-Microsoft-Antispam:
+	BCL:0;ARA:14566002|7092599003|15080799006|461199028|6090799003|19110799003|8060799006|5072599009|56899033|3412199025|440099028;
+X-Microsoft-Antispam-Message-Info:
+	08v9Ut5FOy4r8vSTLayRqg/2tW8aJQeEvQOw9eQS14X7lCgFHPeOs8Ty1j002SyaMynZwldTvWWz84O70+R4ykjZejp5efDm3au+xxY4tcW/odbssz8yiJHLcbGyc8bEzVEDjrUzqIyhGwqI9mRyQeVcfZ97rOuJWq4M9lI8QaG974ZHd53JtTg7Ze9KrKhZIyehWJYKl/3biS0u02ktiUMM7AQNuEG5vr/bskznGyno3/Er8cYA71mT/xfpsy8OrInKYLpbkvkdZn973N3j6j7TQB4sM/rOB4EeOuifWjXDbLVjpS/Ls/QCNtwLESrF5fnJTUTI0pwCHkbxKwa0SzRDHKPIuOQv92ch+Bm0xYBqiZ+Ion+nTF8lBqEXKslkfa95enRDxSnFJg6DWP9LaGbxtcpafZvQxk3XAt2x4QGIP5hb6T88TEUUEEI+XXqRI884kCobg0rHLsXcnh3uwrXFICIh7ok1TNZ2yKWh6DN0NpIFApPDtaLyqYXk0gYroSA1H3QmmBSuVJWQv/OZylvuYS1CCtR2w8AGp0fLEa7/iUaM+K06m7zTuUYAoputGjkUjzeaSuvrFYfHB8vptf/9SjIDGMkWxIVQhkKg8f12Xo94nzZNAw/Wssxq37JAodc7VDMOWzFsj3Ml7c6goKAIWt50n9kdO2e4p5NCHD2nT35zrxjYoqC+kcOJ7S7pdetACZg9apLSpyGcPbYCHQwfbpQHik/2U3pmhZ4n3X83RsUSghX6fkOm41KkbJAip/lENTh95izgjRyjHdO80w==
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?QWh1ZzVnR1VkcXBLZFZTS3JFVm1GZ09ZeGVVWFNoQTMraFdrWnQ0eEdOcGlq?=
+ =?utf-8?B?RzB5cG4vdEhFSTRndE1KSkxJaDZQMDc4R3RZWGg0N3gvWElIZVU2dUdSVUw3?=
+ =?utf-8?B?SG9hbTB2QVNjK2VkbWdNOXF4OTlvYkNxWDgwUE40RG43Vi95TGV6VWxiVFA0?=
+ =?utf-8?B?b2RHWjhCSW03d0hISjBqcitoM0tSN0dzTkhCT0R6S1N6L3hMQ0o3NXNSS2Ey?=
+ =?utf-8?B?Z25wejhvZXNZNXFhR3NpMmgvcVNDV1NxcHRTYjNZQnRveEtjMEZZNkdFOStF?=
+ =?utf-8?B?YkU1TC9hVkNxOWtZUGZMb296dGNpZmdrV3lSckJjL2RtV0lnaXhtclVDY1lY?=
+ =?utf-8?B?cDFSVkI3bUJaVzN1YVMxVDBaU0d5OWh5Y2xJZytQQzgxUXEyK0pyTDBzdUM3?=
+ =?utf-8?B?cWZrdklUTnI4TlVMMGFGNFp6bk9ESzl0c2syajNWTEk2OGtsdzNNM3VmQzgy?=
+ =?utf-8?B?ZmRUTTQweWVhYlBobEZJYm54Z0hiUzFSUE5GTUJyNU9xMnZ0dk1jdTB4cmh2?=
+ =?utf-8?B?RFdVcWhONzh2aFd0RVJScmJKb2VUeGdGZ3p3bC9HT2FuWHpNUllJUFFWTTJt?=
+ =?utf-8?B?a0ZkZkJOQ05sNXg5Rk9GY1lqQVMxTmxuVnBJcW9GVllqK0xReU1HK0NaMkFF?=
+ =?utf-8?B?TW5kY05PY3ZPRzJFOXF0Z3VzTXZGRTBueUREK3VnV1FQdnh6cmxiUzJRQ0E4?=
+ =?utf-8?B?bHlWL2dQUGVwbHFnZHljVmdSa2xEMlNrZlFnNlNTU1diV1AyMng0TlMzYXI2?=
+ =?utf-8?B?d1lCeG0xd1JGQUhpMjdzZytWU2JYQjduM3RYTnR6OTd6MEZwK3I4ejNNSTJB?=
+ =?utf-8?B?Q1lpVERzb0F0WnFuQy9ndzVGakRiaGFXenNPdEJIVFNxdmtsb0NOZlo2UDg2?=
+ =?utf-8?B?RmhQSWJzWUxQMDFpN3JLUUcvUk5aQ0RPSEcwUGpmd25zYjUzeEJKeUowNEgy?=
+ =?utf-8?B?bjRHN2NkRTlQa3c4Uko3YlJYQnBtdUF1dmRlcENPUHdNYktWSi9jOTZkOEx6?=
+ =?utf-8?B?U3dqRzVFbVBWc3UzTzg1ajhJMTVxNjZmMjRnZjAzNDd2UXlsam8zTlZhOVFq?=
+ =?utf-8?B?Wk1QWW9UMG9wRGJjbjFObko1SDNHc1hPRWtCT2NTV3hSZDVDaGJGckhNUXVC?=
+ =?utf-8?B?QlhzdFBVL3RXZXZSM1FydUgvOVJPaElnRVcrdlRYLzF6YVNoSkRGcHpTLzhk?=
+ =?utf-8?B?dlZaK2Vra2ZPUDJrZ2g5ZXpObmxMQWg3T01NNnpwdTlTblJwNzdFOUVEUysv?=
+ =?utf-8?B?bHFMWjJHcVEzVnZJVWxrRGxVd2xRWTZHVkQzQ2dpdExqOElZNmhWeHhSV2xP?=
+ =?utf-8?B?SUtwT1JiaU4zd3VOUFdzWlNXcXFuck80YWViWUJ5Y1EzSmMzL0RreDZiK1pj?=
+ =?utf-8?B?ZjluV3hDQjAwRUlFaXA3NU1VU2VwVEp1VVlXNlRLUk1MbmQyNUxrbHRKWmZy?=
+ =?utf-8?B?aTIrWlBZbEtpQlB5eGV4ZzR2UmNXdEFUbXYyQkJxckZQYXJlY1BmL25kR2x1?=
+ =?utf-8?B?MHd4THo2WnJhWlVoTVhQUHg0bHJndGsxU1RsWkh5MzBWY0NVeUJ3ZUI4ejVn?=
+ =?utf-8?B?aFFkV0ZKM2VJOExraXVBRXp5V2hsbGJJWDhoVkxUZ2dPK2VlczlZTktMcUl1?=
+ =?utf-8?B?NUl1aXNPU0dKanY3ZmtQSk95c2M2a0JyT2h3VHdpam1zSGdMWFAxT3d4dElQ?=
+ =?utf-8?Q?rHsmBw3+Ill2RBDgpzvt?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5dfc2c0d-5a9c-449d-9a5b-08dcdbfe7395
+X-MS-Exchange-CrossTenant-AuthSource: AS8P194MB2042.EURP194.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Sep 2024 18:35:09.1188
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: GVXP194MB1757
 
-On Fri, Sep 20, 2024 at 02:14:02PM +0800, Yunsheng Lin wrote:
+Hello,
 
-> I am not sure what dose the API that allows netdev to "give" struct device
-> to page_pool look like or how to implement the API yet, but the obvious way
-> to stall the calling of device_del() is to wait for the inflight
-> page to
+First post so please be gentle :-)
 
-It is not device_del() you need to stall, but the remove() function of
-the device driver.
+I've got an eBPF workload running on kernel 6.1 LTS and we're running great.
 
-Once all drivers have been unbound the DMA API can be reconfigured and
-all existing DMA mappings must be concluded before this happens,
-otherwise there will be problems.
+Use case actually is using eBPF in combination with XDP and AF_XDP for
+volumetric DDoS mitigation.
 
-So, stalling something like unregister_netdevice() would be a better
-target - though stalling forever on driver unbind would not be
-acceptable.
+Makeup of the eBPF program is mostly packet parsing, LPM and map
+lookups, and 2x calls to the bpf_loop() helper. Currently no iterators,
+dynptrs, etc, but lots of switch-case blocks.
 
-Jason
+I've started to test newer kernel versions in preparation to upgrade our
+stack from 6.1 LTS to 6.6 LTS to gain access to newer functionality and
+just for future proofing. However, when loading the BPF object code on a
+6.6 kernel, the BPF verifier refuses to load the program that 6.1
+accepts and runs well.
+
+This caught me by surprise, because I have witnessed our stack boot
+successfully on a 6.7 kernel. So, I've run veristat [0] on the exact
+same eBPF object file, compiled by clang17, but each time running on a
+different kernel version. Results fluctuate wildly!
+
+Results on 6.1.106: success: 53687 insns and 5114 states [1]
+Results on 6.6.52:  failure: 1000001 insns and 39501 states [2]
+Results on 6.7.9:   success: 131418 insns and 8839 states [3]
+
+I have done some searching around and have found references to faults
+with bpf_loop around kernel 6.5, patches being backported to 6.6, but
+also references to those fixes being difficult to backport to 6.1. Being
+truthful, it does feel like bpf_loop is perhaps not working properly in 6.6.
+
+I am going to undertake some more testing on much newer kernels. While
+6.7.9 loads the program OK, it's still more than double the instruction
+count of 6.1, when obviously the binary isn't changing.
+
+In the meantime, I am wondering if someone might be able to advise if
+this is a known issue with 6.6 and the possibility of pending
+improvements in the 6.6 branch? Appreciate that isn't easy to answer
+without visiblity of the code. Happy to post a repo link if it would help.
+
+Perhaps it might be better to simply write off the 6.6 branch and wait
+for the next LTS branch as we are approaching end of year.
+
+Many thanks for any insight anyone can offer!
+
+Kind regards
+Alasdair
+
+
+[0] Exact command run each time is:
+
+  $ sudo veristat -e verdict,duration,insns,states,peak_states krn.bpf
+
+[1] Results on 6.1.106:
+
+  Verdict  Duration (us)  Insns  States  Peak states
+  -------  -------------  -----  ------  -----------
+  success          23763  53687    5114         1953
+  -------  -------------  -----  ------  -----------
+
+[2] Results on 6.6.52:
+
+  Verdict  Duration (us)    Insns  States  Peak states
+  -------  -------------  -------  ------  -----------
+  failure         325270  1000001   39501          866
+  -------  -------------  -------  ------  -----------
+
+[3] Results on 6.7.9:
+
+  Verdict  Duration (us)   Insns  States  Peak states
+  -------  -------------  ------  ------  -----------
+  success          56959  131418    8839         2713
+  -------  -------------  ------  ------  -----------
+
+
 
