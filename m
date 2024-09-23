@@ -1,268 +1,194 @@
-Return-Path: <bpf+bounces-40204-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40205-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97EE497EC78
-	for <lists+bpf@lfdr.de>; Mon, 23 Sep 2024 15:41:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B419797EC7B
+	for <lists+bpf@lfdr.de>; Mon, 23 Sep 2024 15:41:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BA9451C21124
-	for <lists+bpf@lfdr.de>; Mon, 23 Sep 2024 13:41:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 704EB281E4B
+	for <lists+bpf@lfdr.de>; Mon, 23 Sep 2024 13:41:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 803D319993B;
-	Mon, 23 Sep 2024 13:41:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="HHxVnqK9"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15321199E88;
+	Mon, 23 Sep 2024 13:41:45 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22F8E19922E
-	for <bpf@vger.kernel.org>; Mon, 23 Sep 2024 13:41:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 722EA38394;
+	Mon, 23 Sep 2024 13:41:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727098872; cv=none; b=TvGO/8JUcExfQt0iGUoxk3SJwX5WzEzSKTxfooM7UHdrnKTBbhe+32xel+/GO3EGzB9XmljKweGv7ZM70GZ6NI/yV4FAlDdhPWktFkH5EuxV9jzh2jmQWfuCMjTjJNqszPFmA0A5W79x9Tk8DH2Gs+86c4wc0W9YN8kH9LXJv3Y=
+	t=1727098904; cv=none; b=rPdD3obTmVcyy7oYhZ+tFingYqh5VZ9iw3iIWmWi0d1Q5FVPHozZ1wKYYqeqio3FjsVUDXjIhca9O34XAUoyUhe6SrvEPSHCQ7Qd1suN5RjdkFScyOGkrfolAU3C1vNrgPLmnMCxVlkqUPt6l3rns0LGSsTJO6Ri70nb0MFwZmo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727098872; c=relaxed/simple;
-	bh=BrTdLoiyecOydf+gQn7r2d++I9wD0GS7HjY1tHl9mQU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=l83TAV2FO6vtyGM5C7surXkRnvbYIbReDIhVTPAjlxByvCN/hExgfvI3Wa5OwJ8JuyLaSw4iW3YCNmt0UQq1GnEgseqOS6BTMQkbH2cpNelarXmKj7unWtzM4AsoEkqHmu1lGBZTxcIRaW9AzTDtms2Xt7xDRqK9KdJcnWMbhyg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=HHxVnqK9; arc=none smtp.client-ip=95.215.58.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1727098868;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LXH4TEyTyCpmffZ/AQBGWW5qkNpq1ttl9gYNsiMSSMw=;
-	b=HHxVnqK9gxfGI5KX5/oc6yBZsO5Rpca103e4VAJCbRZcxib8gnR9i1LSiaUud2c4h36VsT
-	T8uNAj48ArNCf+oK0P5njeyBiVwi1HtaKDMcpLnSZh0sSPwgJcHZtne4OYr/JfXFSHrJAB
-	FMcrcmZZWFwvDoWNM8YGqPwHH7jtSMw=
-From: Leon Hwang <leon.hwang@linux.dev>
-To: bpf@vger.kernel.org
-Cc: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	toke@redhat.com,
-	martin.lau@kernel.org,
-	yonghong.song@linux.dev,
-	puranjay@kernel.org,
-	xukuohai@huaweicloud.com,
-	eddyz87@gmail.com,
-	iii@linux.ibm.com,
-	leon.hwang@linux.dev,
-	kernel-patches-bot@fb.com
-Subject: [PATCH bpf-next v3 4/4] selftests/bpf: Add cases to test tailcall in freplace
-Date: Mon, 23 Sep 2024 21:40:44 +0800
-Message-ID: <20240923134044.22388-5-leon.hwang@linux.dev>
-In-Reply-To: <20240923134044.22388-1-leon.hwang@linux.dev>
-References: <20240923134044.22388-1-leon.hwang@linux.dev>
+	s=arc-20240116; t=1727098904; c=relaxed/simple;
+	bh=hsxv2s0aP4r3lxntQOdM0DgLVU7283pZh+orvWKbXoM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=NzqztbqNPUA4eHOsiwB+G+r6X/jmj+1pgitPqg6uX7V9WD+1E0bMCboF+//ltgynYUeGfa79Z+VhrBgrbsWD5hutOeXhOME9o9e1QL2i/PKusUOvoZLHwtyBt2bYEF9VkJEvs9Dh9FwA1HG9UQi/cLtTedDfO0blOMdYcsGTBn0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-6dffe3fe4fcso20018957b3.1;
+        Mon, 23 Sep 2024 06:41:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727098901; x=1727703701;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=t1Nb87hNB3zzIbZ7p6JsVdiw/rvLzl7jE2mKiDh11Ss=;
+        b=cPncJKBeIEi92osID8qicn52NpCCjk5O2wyPc4PPGNmjV/zRT7WtHRau1GSVPgrsqD
+         +YE6WDcrpNFfOgbdyhtre5cZ9nwBJE0SbIwkkwvDVw/r8ngQTVm6CqifP5fSl69AuEuH
+         zuy4GxIT6m8yPz1puXlnbnAIt9+goAyXVHKgex8cGfE74cNCDMarDzrApb3RJqHVxaqa
+         pg2SOois21lYOt1ZrbJGV+WKklqY7HclqwaF6UnchH5mKojULbVseNrHyn8j4hgBP+AU
+         uTLLMWHST+mnFm3abxhm3uszRKXGF3CMei0Ha4DAWICs9kp0y7L6vZdM6HG+o4TzogDu
+         d8jQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUUGGEB2d/R3J1384oFa+vpK3jj/O+Ezvx/HzbI06QIXAtB4o/KFZBE98wyCR7TIXagjMg=@vger.kernel.org, AJvYcCVQPcfX4MZaSiOUf9u45B2jLwWjRGX6CqpxAkKNRopPyts6ii/ezXXinUYt3NDeKB2jFncE0xsexL75xli/@vger.kernel.org, AJvYcCVvx64HEQ4AAZB3/d5dyczIsPhiaCdrgJZexAPLu8c5xHPtoUAb+d0N+RT00eIUEQI1eJ0NQCXt@vger.kernel.org, AJvYcCWpH87WWRU58iw1NUKWSQ3clEOc1Fz8R+EbNy0GRFpCd2pG2CusoO1zsgLXBWdcfAX3OHpIXGtS8ZxDwA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwIgZ/q5E9lc3Y623b8eGpYZJvYurJMrKFddOFSARzoHykJSDPM
+	1Qry6rb6sLV/QBhW6XzQflGtckQFqO4U11f8GeNEJOA2YZw6S0pTDz0e4S/g
+X-Google-Smtp-Source: AGHT+IEp1tOQad9OBsRlt3qcuhXq4am6XPqR3aO2VhPUjzwA7mT8FDgYo1wkrQ73zneRvZMTntdyOw==
+X-Received: by 2002:a05:690c:6612:b0:62c:c684:b1e1 with SMTP id 00721157ae682-6dfeeeeb549mr89065737b3.29.1727098901027;
+        Mon, 23 Sep 2024 06:41:41 -0700 (PDT)
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com. [209.85.128.178])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-6dbe2f0759asm34603967b3.131.2024.09.23.06.41.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Sep 2024 06:41:40 -0700 (PDT)
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-6e00f47f70eso11568657b3.0;
+        Mon, 23 Sep 2024 06:41:40 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCViIVIrs6YPpgNkjENoW1fPQ0tDdyupyBgo75So/gc7bduCUumGQSoyyU4AhYE8SP4Dz6k=@vger.kernel.org, AJvYcCWPFF9tZR/1S8lAha5Ky99xyRrCpKUdC+9c2WtEItKKU5/rZ0ueBw3BQKiBchwBI+QPpsdtyY2v@vger.kernel.org, AJvYcCWQ6il4IJyGnImudLNnCpHOuDM7AfJHezot6GSYUsxsQ2HZa/Mm8VJh+5vMFCiaaR2XSWrx1VRuX2+PQNBT@vger.kernel.org, AJvYcCWsNGBszvr3aUa3K+cb49ZKR1SkCExGMrJyud6Yua2gMOG9C+bqrtVwDT1ETteYUx9yrURtkXjv53zFPg==@vger.kernel.org
+X-Received: by 2002:a05:690c:6a03:b0:6d3:be51:6d03 with SMTP id
+ 00721157ae682-6dfeed8e97fmr94972827b3.23.1727098900023; Mon, 23 Sep 2024
+ 06:41:40 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <20240910-am65-cpsw-multi-rx-v4-0-077fa6403043@kernel.org> <20240910-am65-cpsw-multi-rx-v4-3-077fa6403043@kernel.org>
+In-Reply-To: <20240910-am65-cpsw-multi-rx-v4-3-077fa6403043@kernel.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 23 Sep 2024 15:41:27 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdUf-tKRDzkz2_m8qdFTFutefddU0NTratVrEjRTzA3yQQ@mail.gmail.com>
+Message-ID: <CAMuHMdUf-tKRDzkz2_m8qdFTFutefddU0NTratVrEjRTzA3yQQ@mail.gmail.com>
+Subject: Re: [PATCH net-next v4 3/6] net: ethernet: ti: cpsw_ale: use
+ regfields for number of Entries and Policers
+To: Roger Quadros <rogerq@kernel.org>
+Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Siddharth Vadapalli <s-vadapalli@ti.com>, Julien Panis <jpanis@baylibre.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
+	Simon Horman <horms@kernel.org>, Andrew Lunn <andrew@lunn.ch>, Joe Damato <jdamato@fastly.com>, srk@ti.com, 
+	vigneshr@ti.com, danishanwar@ti.com, pekka Varis <p-varis@ti.com>, 
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-omap@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-cd tools/testing/selftests/bpf; ./test_progs -t tailcalls
-335/27  tailcalls/tailcall_bpf2bpf_hierarchy_freplace_1:OK
-335/28  tailcalls/tailcall_bpf2bpf_hierarchy_freplace_2:OK
-335     tailcalls:OK
-Summary: 1/28 PASSED, 0 SKIPPED, 0 FAILED
+Hi Roger,
 
-Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
----
- .../selftests/bpf/prog_tests/tailcalls.c      | 97 +++++++++++++++++++
- .../tailcall_bpf2bpf_hierarchy_freplace.c     | 30 ++++++
- .../testing/selftests/bpf/progs/tc_bpf2bpf.c  | 13 +++
- 3 files changed, 140 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_hierarchy_freplace.c
+On Tue, Sep 10, 2024 at 11:25=E2=80=AFAM Roger Quadros <rogerq@kernel.org> =
+wrote:
+> Use regfields for number of ALE Entries and Policers.
+>
+> The variants that support Policers/Classifiers have the number
+> of policers encoded in the ALE_STATUS register.
+>
+> Use that and show the number of Policers in the ALE info message.
+>
+> Signed-off-by: Roger Quadros <rogerq@kernel.org>
+> Reviewed-by: Simon Horman <horms@kernel.org>
+> ---
+> Changelog:
+> v4:
+> - reverse Xmas tree declaration order fixes
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/tailcalls.c b/tools/testing/selftests/bpf/prog_tests/tailcalls.c
-index fa3f3bb11b098..0564ad6c9b288 100644
---- a/tools/testing/selftests/bpf/prog_tests/tailcalls.c
-+++ b/tools/testing/selftests/bpf/prog_tests/tailcalls.c
-@@ -5,6 +5,7 @@
- #include "tailcall_poke.skel.h"
- #include "tailcall_bpf2bpf_hierarchy2.skel.h"
- #include "tailcall_bpf2bpf_hierarchy3.skel.h"
-+#include "tailcall_bpf2bpf_hierarchy_freplace.skel.h"
- #include "tailcall_freplace.skel.h"
- #include "tc_bpf2bpf.skel.h"
- 
-@@ -1649,6 +1650,98 @@ static void test_tailcall_bpf2bpf_freplace(void)
- 	tc_bpf2bpf__destroy(tc_skel);
- }
- 
-+static void test_tailcall_bpf2bpf_hierarchy_freplace(bool freplace_subprog,
-+						     bool target_entry2,
-+						     int count1, int count2)
-+{
-+	struct tailcall_bpf2bpf_hierarchy_freplace *freplace_skel = NULL;
-+	struct bpf_link *freplace_link = NULL;
-+	struct tc_bpf2bpf *tc_skel = NULL;
-+	int prog_fd, map_fd;
-+	char buff[128] = {};
-+	int err, key, val;
-+
-+	LIBBPF_OPTS(bpf_test_run_opts, topts,
-+		    .data_in = buff,
-+		    .data_size_in = sizeof(buff),
-+		    .repeat = 1,
-+	);
-+
-+	tc_skel = tc_bpf2bpf__open_and_load();
-+	if (!ASSERT_OK_PTR(tc_skel, "tc_bpf2bpf__open_and_load"))
-+		goto out;
-+
-+	prog_fd = bpf_program__fd(target_entry2 ? tc_skel->progs.entry_tc_2 :
-+				  tc_skel->progs.entry_tc);
-+	freplace_skel = tailcall_bpf2bpf_hierarchy_freplace__open();
-+	if (!ASSERT_OK_PTR(freplace_skel, "tailcall_bpf2bpf_hierarchy_freplace__open"))
-+		goto out;
-+
-+	err = bpf_program__set_attach_target(freplace_skel->progs.entry_freplace,
-+					     prog_fd, freplace_subprog ?
-+					     "subprog_tailcall_tc" : "entry_tc");
-+	if (!ASSERT_OK(err, "set_attach_target"))
-+		goto out;
-+
-+	err = tailcall_bpf2bpf_hierarchy_freplace__load(freplace_skel);
-+	if (!ASSERT_OK(err, "tailcall_bpf2bpf_hierarchy_freplace__load"))
-+		goto out;
-+
-+	val = bpf_program__fd(freplace_skel->progs.entry_freplace);
-+	map_fd = bpf_map__fd(freplace_skel->maps.jmp_table);
-+	key = 0;
-+	err = bpf_map_update_elem(map_fd, &key, &val, BPF_ANY);
-+	if (!ASSERT_OK(err, "update jmp_table"))
-+		goto out;
-+
-+	freplace_link = bpf_program__attach_freplace(freplace_skel->progs.entry_freplace,
-+						     prog_fd, freplace_subprog ?
-+						     "subprog_tailcall_tc" : "entry_tc");
-+	if (!ASSERT_OK_PTR(freplace_link, "attach_freplace"))
-+		goto out;
-+
-+	err = bpf_prog_test_run_opts(prog_fd, &topts);
-+	ASSERT_OK(err, "test_run_opts");
-+	ASSERT_EQ(topts.retval, count1, "test_run_opts retval");
-+
-+	err = bpf_map_delete_elem(map_fd, &key);
-+	if (!ASSERT_OK(err, "delete_elem from jmp_table"))
-+		goto out;
-+
-+	err = bpf_prog_test_run_opts(prog_fd, &topts);
-+	ASSERT_OK(err, "test_run_opts again");
-+	ASSERT_EQ(topts.retval, count2, "test_run_opts retval again");
-+
-+out:
-+	bpf_link__destroy(freplace_link);
-+	tailcall_bpf2bpf_hierarchy_freplace__destroy(freplace_skel);
-+	tc_bpf2bpf__destroy(tc_skel);
-+}
-+
-+/* test_tailcall_bpf2bpf_hierarchy_freplace_1 checks the count value of tail
-+ * call limit enforcement matches with expectation for the case:
-+ *
-+ *                                    subprog_tail --tailcall-> entry_freplace
-+ * entry_tc --jump-> entry_freplace <
-+ *                                    subprog_tail --tailcall-> entry_freplace
-+ */
-+static void test_tailcall_bpf2bpf_hierarchy_freplace_1(void)
-+{
-+	test_tailcall_bpf2bpf_hierarchy_freplace(false, false, 34, 35);
-+}
-+
-+/* test_tailcall_bpf2bpf_hierarchy_freplace_2 checks the count value of tail
-+ * call limit enforcement matches with expectation for the case:
-+ *
-+ *                                                                              subprog_tail --tailcall-> entry_freplace
-+ * entry_tc_2 --> subprog_tailcall_tc (call 10 times) --jump-> entry_freplace <
-+ *                                                                              subprog_tail --tailcall-> entry_freplace
-+ */
-+static void test_tailcall_bpf2bpf_hierarchy_freplace_2(void)
-+{
-+	test_tailcall_bpf2bpf_hierarchy_freplace(true, true, 340, 350);
-+}
-+
- void test_tailcalls(void)
- {
- 	if (test__start_subtest("tailcall_1"))
-@@ -1701,4 +1794,8 @@ void test_tailcalls(void)
- 		test_tailcall_freplace();
- 	if (test__start_subtest("tailcall_bpf2bpf_freplace"))
- 		test_tailcall_bpf2bpf_freplace();
-+	if (test__start_subtest("tailcall_bpf2bpf_hierarchy_freplace_1"))
-+		test_tailcall_bpf2bpf_hierarchy_freplace_1();
-+	if (test__start_subtest("tailcall_bpf2bpf_hierarchy_freplace_2"))
-+		test_tailcall_bpf2bpf_hierarchy_freplace_2();
- }
-diff --git a/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_hierarchy_freplace.c b/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_hierarchy_freplace.c
-new file mode 100644
-index 0000000000000..6f7c1fac9ddb7
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_hierarchy_freplace.c
-@@ -0,0 +1,30 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PROG_ARRAY);
-+	__uint(max_entries, 1);
-+	__uint(key_size, sizeof(__u32));
-+	__uint(value_size, sizeof(__u32));
-+} jmp_table SEC(".maps");
-+
-+int count = 0;
-+
-+static __noinline
-+int subprog_tail(struct __sk_buff *skb)
-+{
-+	bpf_tail_call_static(skb, &jmp_table, 0);
-+	return 0;
-+}
-+
-+SEC("freplace")
-+int entry_freplace(struct __sk_buff *skb)
-+{
-+	count++;
-+	subprog_tail(skb);
-+	subprog_tail(skb);
-+	return count;
-+}
-+
-+char __license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/progs/tc_bpf2bpf.c b/tools/testing/selftests/bpf/progs/tc_bpf2bpf.c
-index 34f3c780194e4..beacf60a52677 100644
---- a/tools/testing/selftests/bpf/progs/tc_bpf2bpf.c
-+++ b/tools/testing/selftests/bpf/progs/tc_bpf2bpf.c
-@@ -39,4 +39,17 @@ int entry_tc(struct __sk_buff *skb)
- 	return subprog_tailcall_tc(skb);
- }
- 
-+SEC("tc")
-+int entry_tc_2(struct __sk_buff *skb)
-+{
-+	int ret, i;
-+
-+	for (i = 0; i < 10; i++) {
-+		ret = subprog_tailcall_tc(skb);
-+		__sink(ret);
-+	}
-+
-+	return ret;
-+}
-+
- char __license[] SEC("license") = "GPL";
--- 
-2.44.0
+Thanks for your patch, which is now commit 11cbcfeaa79e5c76 ("net:
+ethernet: ti: cpsw_ale: use regfields for number of Entries
+and Policers").
 
+This is causing the following warning on BeagleBone Black:
+
+    WARNING: CPU: 0 PID: 34 at drivers/base/regmap/regmap.c:1208
+devm_regmap_field_alloc+0xac/0xc8
+    invalid empty mask defined
+    CPU: 0 UID: 0 PID: 34 Comm: kworker/u4:3 Not tainted
+6.11.0-rc7-boneblack-01443-g11cbcfeaa79e #152
+    Hardware name: Generic AM33XX (Flattened Device Tree)
+    Workqueue: events_unbound deferred_probe_work_func
+    Call trace:
+     unwind_backtrace from show_stack+0x10/0x14
+     show_stack from dump_stack_lvl+0x68/0x88
+     dump_stack_lvl from __warn+0x6c/0x1a8
+     __warn from warn_slowpath_fmt+0x1bc/0x1d0
+     warn_slowpath_fmt from devm_regmap_field_alloc+0xac/0xc8
+     devm_regmap_field_alloc from cpsw_ale_create+0x10c/0x36c
+     cpsw_ale_create from cpsw_init_common+0x1fc/0x310
+
+> --- a/drivers/net/ethernet/ti/cpsw_ale.c
+> +++ b/drivers/net/ethernet/ti/cpsw_ale.c
+> @@ -1303,6 +1303,9 @@ static const struct reg_field ale_fields_cpsw_nu[] =
+=3D {
+>         /* CPSW_ALE_IDVER_REG */
+>         [MINOR_VER]     =3D REG_FIELD(ALE_IDVER, 0, 7),
+>         [MAJOR_VER]     =3D REG_FIELD(ALE_IDVER, 8, 10),
+> +       /* CPSW_ALE_STATUS_REG */
+> +       [ALE_ENTRIES]   =3D REG_FIELD(ALE_STATUS, 0, 7),
+> +       [ALE_POLICERS]  =3D REG_FIELD(ALE_STATUS, 8, 15),
+
+You are adding these entries only to ale_fields_cpsw_nu[], not
+to ale_fields_cpsw[], while cpsw_ale_regfield_init() loops over
+ALE_FIELDS_MAX entries, whether they are valid or not:
+
+    static int cpsw_ale_regfield_init(struct cpsw_ale *ale)
+    {
+            const struct reg_field *reg_fields =3D ale->params.reg_fields;
+            struct device *dev =3D ale->params.dev;
+            struct regmap *regmap =3D ale->regmap;
+            int i;
+
+            for (i =3D 0; i < ALE_FIELDS_MAX; i++) {
+                    ale->fields[i] =3D devm_regmap_field_alloc(dev, regmap,
+                                                             reg_fields[i])=
+;
+
+                    [...]
+            }
+
+            return 0;
+    }
+
+I tried fixing this by skipping entries where all of .reg, .lsb,
+and .msb are zero, but that doesn't work as that runs beyond the
+end of ale_fields_cpsw[], thus operating on random data.
+I think you do have to store the size of the array, instead of assuming
+ALE_FIELDS_MAX entries everywhere.
+
+> --- a/drivers/net/ethernet/ti/cpsw_ale.h
+> +++ b/drivers/net/ethernet/ti/cpsw_ale.h
+> @@ -33,6 +34,8 @@ struct regmap;
+>  enum ale_fields {
+>         MINOR_VER,
+>         MAJOR_VER,
+> +       ALE_ENTRIES,
+> +       ALE_POLICERS,
+>         /* terminator */
+>         ALE_FIELDS_MAX,
+>  };
+>
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
