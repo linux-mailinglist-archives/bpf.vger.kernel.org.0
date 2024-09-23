@@ -1,198 +1,111 @@
-Return-Path: <bpf+bounces-40199-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40200-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA98097EC0A
-	for <lists+bpf@lfdr.de>; Mon, 23 Sep 2024 15:09:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F23797EC74
+	for <lists+bpf@lfdr.de>; Mon, 23 Sep 2024 15:41:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8E61B281A79
-	for <lists+bpf@lfdr.de>; Mon, 23 Sep 2024 13:09:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 70EED1C214EE
+	for <lists+bpf@lfdr.de>; Mon, 23 Sep 2024 13:41:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A6F21993B7;
-	Mon, 23 Sep 2024 13:09:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82392199932;
+	Mon, 23 Sep 2024 13:40:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="irqDm2xU"
 X-Original-To: bpf@vger.kernel.org
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
+Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74A24198A05
-	for <bpf@vger.kernel.org>; Mon, 23 Sep 2024 13:09:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.85.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2338538394
+	for <bpf@vger.kernel.org>; Mon, 23 Sep 2024 13:40:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727096977; cv=none; b=FCEng/T3KE6nLpAjDCHRvjBpg7gx9KTnBA/ZvCGhxSEJKXOShCQt/Ljm52Sp112Xb694rw7UNDVH44pTcBUPwzVB5tjXC8/fKmUpB5oJ8fZruLgu0kCpFJR4e+/JyT51yYl8mNas6DOlQUnTMRuVdRSMAaeUZF13QkOpxCIQPbo=
+	t=1727098858; cv=none; b=mGREKsktU+NujiR/M/wJR7PfX4/u/cG3llB1g50chGmLWNGXI9cAt0vSyi5ou8rQ3JA42o08OSH4ziGMyqica7TLnmppevuXCgH32uwpjH9PRowj0ZtoeuyEl56P7KeBjhehzNjyuJw1t3A7mCRwilAYG/Zn+F7zLHjd87rXnTo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727096977; c=relaxed/simple;
-	bh=smBylhCLWUs3r4SgOLnGihzxFt122ylK4943d3CNycY=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 MIME-Version:Content-Type; b=jSOP0g+Vktc/8kSdfpCRdhgHTHI4q7Caa+x1YGfTW2iBeehLuN9Bt7Q+lqUPulvMlHR3ZiaExDOYXGBBbdYPnXzLUam3jxH3zeXMa0+ij1E9pw7aZNySt2lAiJavdQu8SOVKCQl1gdMAevvjDltCNg+jynfQvSQcuPqWiWulizQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.85.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-12-F9kUYeWRMymPJiBx8nV4uA-1; Mon, 23 Sep 2024 14:09:31 +0100
-X-MC-Unique: F9kUYeWRMymPJiBx8nV4uA-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 23 Sep
- 2024 14:08:36 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Mon, 23 Sep 2024 14:08:36 +0100
-From: David Laight <David.Laight@ACULAB.COM>
-To: 'Tiago Lam' <tiagolam@cloudflare.com>, "David S. Miller"
-	<davem@davemloft.net>, David Ahern <dsahern@kernel.org>, Eric Dumazet
-	<edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
-	<pabeni@redhat.com>, Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, "Yonghong
- Song" <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>,
-	"KP Singh" <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao
- Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko
-	<mykolal@fb.com>, Shuah Khan <shuah@kernel.org>
-CC: "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>, "Jakub
- Sitnicki" <jakub@cloudflare.com>, "kernel-team@cloudflare.com"
-	<kernel-team@cloudflare.com>
-Subject: RE: [RFC PATCH v2 2/3] ipv6: Support setting src port in sendmsg().
-Thread-Topic: [RFC PATCH v2 2/3] ipv6: Support setting src port in sendmsg().
-Thread-Index: AQHbC37mOgyMoKtrJE6wBcqRmpwTjbJlWLTg
-Date: Mon, 23 Sep 2024 13:08:36 +0000
-Message-ID: <855fc71343a149479c7da96438bf9e32@AcuMS.aculab.com>
-References: <20240920-reverse-sk-lookup-v2-0-916a48c47d56@cloudflare.com>
- <20240920-reverse-sk-lookup-v2-2-916a48c47d56@cloudflare.com>
-In-Reply-To: <20240920-reverse-sk-lookup-v2-2-916a48c47d56@cloudflare.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
+	s=arc-20240116; t=1727098858; c=relaxed/simple;
+	bh=ffP1p87UCzd+wdlCh2KZv4XFPU6UNDxuAJQKIQXf+fE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=JFZAoIkCfW2B1utww7UsIFS/x1C4SPZ91ZfwYS6Z0lRYYkxOpqAUwqyfg6/QF3yAa4FykZ6KvkeCKUvZfwbpULsy2FnllDAG/+Lk/YEgg2EyLmZssqHswhFA2ZPzgN1ZPcOWSdZEqll72N1R0EFcIda6Q5I0z4rXUcBDSRt5D2M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=irqDm2xU; arc=none smtp.client-ip=95.215.58.186
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1727098854;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=JioXZmWGMtD/Q7yLQeQWB+vObuUoPDoqE1udKMSt1EM=;
+	b=irqDm2xUayHZlSbWxV7qJ8LxNMdgMf/cAp0JBKs5DEigUKMjnrHkh0Z8n4iAW7v/rnsR/3
+	hH78A9dMpGLiU8prD3dHBayOI9O7qBo0LPSzXBa9lyyDxFkG9oCcZQ0YzvbPOVxb+q1FZ9
+	iL1XFwij45fvjEIqCA8RZ9L0qsmJcbo=
+From: Leon Hwang <leon.hwang@linux.dev>
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	toke@redhat.com,
+	martin.lau@kernel.org,
+	yonghong.song@linux.dev,
+	puranjay@kernel.org,
+	xukuohai@huaweicloud.com,
+	eddyz87@gmail.com,
+	iii@linux.ibm.com,
+	leon.hwang@linux.dev,
+	kernel-patches-bot@fb.com
+Subject: [PATCH bpf-next v3 0/4] bpf: Fix tailcall infinite loop caused by freplace
+Date: Mon, 23 Sep 2024 21:40:40 +0800
+Message-ID: <20240923134044.22388-1-leon.hwang@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-RnJvbTogVGlhZ28gTGFtIDx0aWFnb2xhbUBjbG91ZGZsYXJlLmNvbT4NCj4gU2VudDogMjAgU2Vw
-dGVtYmVyIDIwMjQgMTg6MDINCj4gDQo+IFRoaXMgZm9sbG93cyB0aGUgc2FtZSByYXRpb25hbGUg
-cHJvdmlkZWQgZm9yIHRoZSBpcHY0IGNvdW50ZXJwYXJ0LCB3aGVyZQ0KPiB0aGUgc2VuZG1zZygp
-IHBhdGggaXMgYWxzbyBleHRlbmRlZCBoZXJlIHRvIHN1cHBvcnQgdGhlIElQVjZfT1JJR0RTVEFE
-RFINCj4gYW5jaWxsYXJ5IG1lc3NhZ2UgdG8gYmUgYWJsZSB0byBzcGVjaWZ5IGEgc291cmNlIGFk
-ZHJlc3MvcG9ydC4gVGhpcw0KPiBhbGxvd3MgdXNlcnMgdG8gY29uZmlndXJlIHRoZSBzb3VyY2Ug
-YWRkcmVzcyBhbmQvb3IgcG9ydCBlZ3Jlc3MgdHJhZmZpYw0KPiBzaG91bGQgYmUgc2VudCBmcm9t
-Lg0KDQpJJ2QgbWlzc2VkIHRoYXQgYmVpbmcgYWRkZWQgLSBjb3VsZCBzYXZlIHVzIHRoZSBob3Jy
-aWQgcHJvYmxlbSBvZiBnZXR0aW5nDQp0aGUgVURQIGNoZWNrc3VtIGNvcnJlY3Qgd2hlbiBzZW5k
-aW5nIFVEUCBvdmVyIGEgcmF3IHNvY2tldC4NCihUaGF0IGlzbid0IGEgcHJvYmxlbSBmb3IgSVB2
-Ni4pDQoNCj4gVG8gbGltaXQgaXRzIHVzYWdlLCBhIHJldmVyc2Ugc29ja2V0IGxvb2t1cCBpcyBw
-ZXJmb3JtZWQgdG8gY2hlY2sgaWYgdGhlDQo+IGNvbmZpZ3VyZWQgZWdyZXNzIHNvdXJjZSBhZGRy
-ZXNzIGFuZC9vciBwb3J0IGhhdmUgYW55IGluZ3Jlc3Mgc2tfbG9va3VwDQo+IG1hdGNoLiBJZiBp
-dCBkb2VzLCB0cmFmZmljIGlzIGFsbG93ZWQgdG8gcHJvY2VlZCwgb3RoZXJ3aXNlIGl0IGZhbGxz
-DQo+IGJhY2sgdG8gdGhlIHJlZ3VsYXIgZWdyZXNzIHBhdGguDQoNCklzIHRoYXQgcmVhbGx5IHVz
-ZWZ1bC9uZWNlc3Nhcnk/DQpUaGUgY2hlY2sgKGJ1dCBub3QgdGhlIGNvbW1pdCBtZXNzYWdlKSBp
-bXBsaWVzIHRoYXQgc29tZSAnYnBmIHRoaW5neScNCmFsc28gbmVlZHMgdG8gYmUgZW5hYmxlZC4N
-CkFueSBjaGVjayB3b3VsZCBuZWVkIHRvIGluY2x1ZGUgdGhlIHRlc3QgdGhhdCB0aGUgcHJvZ3Jh
-bSBzZW5kaW5nIHRoZSBwYWNrZXQNCmhhcyB0aGUgYWJpbGl0eSB0byBzZW5kIGEgcGFja2V0IHRo
-cm91Z2ggdGhlIGluZ3Jlc3Mgc29ja2V0Lg0KQWRkaXRpb25hbGx5IGEgY2hlY2sgZm9yIHRoZSBz
-ZW5kaW5nIHByb2Nlc3MgaGF2aW5nIChJSVJDKSBDQVBfTkVUX0FETUlODQood2hpY2ggd291bGQg
-bGV0IHRoZSBwcm9jZXNzIHNlbmQgdGhlIG1lc3NhZ2UgYnkgb3RoZXIgbWVhbnMpIHdvdWxkIHNh
-dmUgdGhlDQpzbG93IHBhdGguDQoNClRoZSBjb2RlIHdlIGhhdmUgc2VuZHMgYSBsb3Qgb2YgVURQ
-IFJUUCAodHlwaWNhbGx5IDE2MCBieXRlcyBvZiBhdWRpbyBldmVyeSAyMG1zKS4NClRoZXJlIGlz
-IGFjdHVhbGx5IG5vIHJlYXNvbiBmb3IgdGhlcmUgdG8gYmUgYSB2YWxpZCBtYXRjaGluZyBpbmdy
-ZXNzIHBhdGguDQooVGhhdCBjb2RlIHdvdWxkIGJlbmVmaXQgZnJvbSBiZWluZyBhYmxlIHRvIGJp
-bmQgYSBsb3Qgb2YgcG9ydHMgdG8gdGhlIHNhbWUNClVEUCBzb2NrZXQuKQ0KDQoJRGF2aWQNCg0K
-PiANCj4gU3VnZ2VzdGVkLWJ5OiBKYWt1YiBTaXRuaWNraSA8amFrdWJAY2xvdWRmbGFyZS5jb20+
-DQo+IFNpZ25lZC1vZmYtYnk6IFRpYWdvIExhbSA8dGlhZ29sYW1AY2xvdWRmbGFyZS5jb20+DQo+
-IC0tLQ0KPiAgbmV0L2lwdjYvZGF0YWdyYW0uYyB8IDc5ICsrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrDQo+ICBuZXQvaXB2Ni91ZHAuYyAgICAgIHwg
-IDggKysrKy0tDQo+ICAyIGZpbGVzIGNoYW5nZWQsIDg1IGluc2VydGlvbnMoKyksIDIgZGVsZXRp
-b25zKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvbmV0L2lwdjYvZGF0YWdyYW0uYyBiL25ldC9pcHY2
-L2RhdGFncmFtLmMNCj4gaW5kZXggZmZmNzg0OTY4MDNkLi4zNjljNjRhNDc4ZWMgMTAwNjQ0DQo+
-IC0tLSBhL25ldC9pcHY2L2RhdGFncmFtLmMNCj4gKysrIGIvbmV0L2lwdjYvZGF0YWdyYW0uYw0K
-PiBAQCAtNzU2LDYgKzc1NiwyOSBAQCB2b2lkIGlwNl9kYXRhZ3JhbV9yZWN2X2N0bChzdHJ1Y3Qg
-c29jayAqc2ssIHN0cnVjdCBtc2doZHIgKm1zZywNCj4gIH0NCj4gIEVYUE9SVF9TWU1CT0xfR1BM
-KGlwNl9kYXRhZ3JhbV9yZWN2X2N0bCk7DQo+IA0KPiArc3RhdGljIGlubGluZSBib29sIHJldmVy
-c2Vfc2tfbG9va3VwKHN0cnVjdCBmbG93aTYgKmZsNiwgc3RydWN0IHNvY2sgKnNrLA0KPiArCQkJ
-CSAgICAgc3RydWN0IGluNl9hZGRyICpzYWRkciwgX19iZTE2IHNwb3J0KQ0KPiArew0KPiArCWlm
-IChzdGF0aWNfYnJhbmNoX3VubGlrZWx5KCZicGZfc2tfbG9va3VwX2VuYWJsZWQpICYmDQo+ICsJ
-ICAgIChzYWRkciAmJiBzcG9ydCkgJiYNCj4gKwkgICAgKGlwdjZfYWRkcl9jbXAoJnNrLT5za192
-Nl9yY3Zfc2FkZHIsIHNhZGRyKSB8fA0KPiArCSAgICBpbmV0X3NrKHNrKS0+aW5ldF9zcG9ydCAh
-PSBzcG9ydCkpIHsNCj4gKwkJc3RydWN0IHNvY2sgKnNrX2VncmVzczsNCj4gKw0KPiArCQlicGZf
-c2tfbG9va3VwX3J1bl92Nihzb2NrX25ldChzayksIElQUFJPVE9fVURQLCAmZmw2LT5kYWRkciwN
-Cj4gKwkJCQkgICAgIGZsNi0+Zmw2X2Rwb3J0LCBzYWRkciwgbnRvaHMoc3BvcnQpLCAwLA0KPiAr
-CQkJCSAgICAgJnNrX2VncmVzcyk7DQo+ICsJCWlmICghSVNfRVJSX09SX05VTEwoc2tfZWdyZXNz
-KSAmJiBza19lZ3Jlc3MgPT0gc2spDQo+ICsJCQlyZXR1cm4gdHJ1ZTsNCj4gKw0KPiArCQluZXRf
-aW5mb19yYXRlbGltaXRlZCgiTm8gcmV2ZXJzZSBzb2NrZXQgbG9va3VwIG1hdGNoIGZvciBsb2Nh
-bCBhZGRyICVwSTY6JWQgcmVtb3RlIGFkZHINCj4gJXBJNjolZFxuIiwNCj4gKwkJCQkgICAgICZz
-YWRkciwgbnRvaHMoc3BvcnQpLCAmZmw2LT5kYWRkciwNCj4gKwkJCQkgICAgIG50b2hzKGZsNi0+
-Zmw2X2Rwb3J0KSk7DQo+ICsJfQ0KPiArDQo+ICsJcmV0dXJuIGZhbHNlOw0KPiArfQ0KPiArDQo+
-ICBpbnQgaXA2X2RhdGFncmFtX3NlbmRfY3RsKHN0cnVjdCBuZXQgKm5ldCwgc3RydWN0IHNvY2sg
-KnNrLA0KPiAgCQkJICBzdHJ1Y3QgbXNnaGRyICptc2csIHN0cnVjdCBmbG93aTYgKmZsNiwNCj4g
-IAkJCSAgc3RydWN0IGlwY202X2Nvb2tpZSAqaXBjNikNCj4gQEAgLTg0NCw3ICs4NjcsNjMgQEAg
-aW50IGlwNl9kYXRhZ3JhbV9zZW5kX2N0bChzdHJ1Y3QgbmV0ICpuZXQsIHN0cnVjdCBzb2NrICpz
-aywNCj4gDQo+ICAJCQlicmVhazsNCj4gIAkJICAgIH0NCj4gKwkJY2FzZSBJUFY2X09SSUdEU1RB
-RERSOg0KPiArCQkJew0KPiArCQkJc3RydWN0IHNvY2thZGRyX2luNiAqc29ja2FkZHJfaW47DQo+
-ICsJCQlzdHJ1Y3QgbmV0X2RldmljZSAqZGV2ID0gTlVMTDsNCj4gKw0KPiArCQkJaWYgKGNtc2ct
-PmNtc2dfbGVuIDwgQ01TR19MRU4oc2l6ZW9mKHN0cnVjdCBzb2NrYWRkcl9pbjYpKSkgew0KPiAr
-CQkJCWVyciA9IC1FSU5WQUw7DQo+ICsJCQkJZ290byBleGl0X2Y7DQo+ICsJCQl9DQo+ICsNCj4g
-KwkJCXNvY2thZGRyX2luID0gKHN0cnVjdCBzb2NrYWRkcl9pbjYgKilDTVNHX0RBVEEoY21zZyk7
-DQo+ICsNCj4gKwkJCWFkZHJfdHlwZSA9IF9faXB2Nl9hZGRyX3R5cGUoJnNvY2thZGRyX2luLT5z
-aW42X2FkZHIpOw0KPiArDQo+ICsJCQlpZiAoYWRkcl90eXBlICYgSVBWNl9BRERSX0xJTktMT0NB
-TCkNCj4gKwkJCQlyZXR1cm4gLUVJTlZBTDsNCj4gKw0KPiArCQkJLyogSWYgd2UncmUgZWdyZXNz
-aW5nIHdpdGggYSBkaWZmZXJlbnQgc291cmNlIGFkZHJlc3MNCj4gKwkJCSAqIGFuZC9vciBwb3J0
-LCB3ZSBwZXJmb3JtIGEgcmV2ZXJzZSBzb2NrZXQgbG9va3VwLiBUaGUNCj4gKwkJCSAqIHJhdGlv
-bmFsZSBiZWhpbmQgdGhpcyBpcyB0aGF0IHdlIGNhbiBhbGxvdyByZXR1cm4NCj4gKwkJCSAqIFVE
-UCB0cmFmZmljIHRoYXQgaGFzIGluZ3Jlc3NlZCB0aHJvdWdoIHNrX2xvb2t1cCB0bw0KPiArCQkJ
-ICogYWxzbyBlZ3Jlc3MgY29ycmVjdGx5LiBJbiBjYXNlIHRoZSByZXZlcnNlIGxvb2t1cA0KPiAr
-CQkJICogZmFpbHMsIHdlIGNvbnRpbnVlIHdpdGggdGhlIG5vcm1hbCBwYXRoLg0KPiArCQkJICoN
-Cj4gKwkJCSAqIFRoZSBsb29rdXAgaXMgcGVyZm9ybWVkIGlmIGVpdGhlciBzb3VyY2UgYWRkcmVz
-cw0KPiArCQkJICogYW5kL29yIHBvcnQgY2hhbmdlZCwgYW5kIG5laXRoZXIgaXMgIjAiLg0KPiAr
-CQkJICovDQo+ICsJCQlpZiAocmV2ZXJzZV9za19sb29rdXAoZmw2LCBzaywgJnNvY2thZGRyX2lu
-LT5zaW42X2FkZHIsDQo+ICsJCQkJCSAgICAgIHNvY2thZGRyX2luLT5zaW42X3BvcnQpKSB7DQo+
-ICsJCQkJLyogT3ZlcnJpZGUgdGhlIHNvdXJjZSBwb3J0IGFuZCBhZGRyZXNzIHRvIHVzZQ0KPiAr
-CQkJCSAqIHdpdGggdGhlIG9uZSB3ZSBnb3QgaW4gY21zZyBhbmQgYmFpbCBlYXJseS4NCj4gKwkJ
-CQkgKi8NCj4gKwkJCQlmbDYtPnNhZGRyID0gc29ja2FkZHJfaW4tPnNpbjZfYWRkcjsNCj4gKwkJ
-CQlmbDYtPmZsNl9zcG9ydCA9IHNvY2thZGRyX2luLT5zaW42X3BvcnQ7DQo+ICsJCQkJYnJlYWs7
-DQo+ICsJCQl9DQo+IA0KPiArCQkJaWYgKGFkZHJfdHlwZSAhPSBJUFY2X0FERFJfQU5ZKSB7DQo+
-ICsJCQkJaW50IHN0cmljdCA9IF9faXB2Nl9hZGRyX3NyY19zY29wZShhZGRyX3R5cGUpIDw9IElQ
-VjZfQUREUl9TQ09QRV9MSU5LTE9DQUw7DQo+ICsNCj4gKwkJCQlpZiAoIWlwdjZfY2FuX25vbmxv
-Y2FsX2JpbmQobmV0LCBpbmV0X3NrKHNrKSkgJiYNCj4gKwkJCQkgICAgIWlwdjZfY2hrX2FkZHJf
-YW5kX2ZsYWdzKG5ldCwNCj4gKwkJCQkJCQkgICAgICZzb2NrYWRkcl9pbi0+c2luNl9hZGRyLA0K
-PiArCQkJCQkJCSAgICAgZGV2LCAhc3RyaWN0LCAwLA0KPiArCQkJCQkJCSAgICAgSUZBX0ZfVEVO
-VEFUSVZFKSAmJg0KPiArCQkJCSAgICAhaXB2Nl9jaGtfYWNhc3RfYWRkcl9zcmMobmV0LCBkZXYs
-DQo+ICsJCQkJCQkJICAgICAmc29ja2FkZHJfaW4tPnNpbjZfYWRkcikpDQo+ICsJCQkJCWVyciA9
-IC1FSU5WQUw7DQo+ICsJCQkJZWxzZQ0KPiArCQkJCQlmbDYtPnNhZGRyID0gc29ja2FkZHJfaW4t
-PnNpbjZfYWRkcjsNCj4gKwkJCX0NCj4gKw0KPiArCQkJaWYgKGVycikNCj4gKwkJCQlnb3RvIGV4
-aXRfZjsNCj4gKw0KPiArCQkJYnJlYWs7DQo+ICsJCQl9DQo+ICAJCWNhc2UgSVBWNl9GTE9XSU5G
-TzoNCj4gIAkJCWlmIChjbXNnLT5jbXNnX2xlbiA8IENNU0dfTEVOKDQpKSB7DQo+ICAJCQkJZXJy
-ID0gLUVJTlZBTDsNCj4gZGlmZiAtLWdpdCBhL25ldC9pcHY2L3VkcC5jIGIvbmV0L2lwdjYvdWRw
-LmMNCj4gaW5kZXggNjYwMmEyZTljZGI1Li42MTIxY2JiNzFhZDMgMTAwNjQ0DQo+IC0tLSBhL25l
-dC9pcHY2L3VkcC5jDQo+ICsrKyBiL25ldC9pcHY2L3VkcC5jDQo+IEBAIC0xNDc2LDYgKzE0NzYs
-MTIgQEAgaW50IHVkcHY2X3NlbmRtc2coc3RydWN0IHNvY2sgKnNrLCBzdHJ1Y3QgbXNnaGRyICpt
-c2csIHNpemVfdCBsZW4pDQo+IA0KPiAgCWZsNi0+Zmxvd2k2X3VpZCA9IHNrLT5za191aWQ7DQo+
-IA0KPiArCS8qIFdlIHVzZSBmbDYncyBkYWRkciBhbmQgZmw2X3Nwb3J0IGluIHRoZSByZXZlcnNl
-IHNrX2xvb2t1cCBkb25lDQo+ICsJICogd2l0aGluIGlwNl9kYXRhZ3JhbV9zZW5kX2N0bCgpIG5v
-dy4NCj4gKwkgKi8NCj4gKwlmbDYtPmRhZGRyID0gKmRhZGRyOw0KPiArCWZsNi0+Zmw2X3Nwb3J0
-ID0gaW5ldC0+aW5ldF9zcG9ydDsNCj4gKw0KPiAgCWlmIChtc2ctPm1zZ19jb250cm9sbGVuKSB7
-DQo+ICAJCW9wdCA9ICZvcHRfc3BhY2U7DQo+ICAJCW1lbXNldChvcHQsIDAsIHNpemVvZihzdHJ1
-Y3QgaXB2Nl90eG9wdGlvbnMpKTsNCj4gQEAgLTE1MTEsMTAgKzE1MTcsOCBAQCBpbnQgdWRwdjZf
-c2VuZG1zZyhzdHJ1Y3Qgc29jayAqc2ssIHN0cnVjdCBtc2doZHIgKm1zZywgc2l6ZV90IGxlbikN
-Cj4gDQo+ICAJZmw2LT5mbG93aTZfcHJvdG8gPSBzay0+c2tfcHJvdG9jb2w7DQo+ICAJZmw2LT5m
-bG93aTZfbWFyayA9IGlwYzYuc29ja2MubWFyazsNCj4gLQlmbDYtPmRhZGRyID0gKmRhZGRyOw0K
-PiAgCWlmIChpcHY2X2FkZHJfYW55KCZmbDYtPnNhZGRyKSAmJiAhaXB2Nl9hZGRyX2FueSgmbnAt
-PnNhZGRyKSkNCj4gIAkJZmw2LT5zYWRkciA9IG5wLT5zYWRkcjsNCj4gLQlmbDYtPmZsNl9zcG9y
-dCA9IGluZXQtPmluZXRfc3BvcnQ7DQo+IA0KPiAgCWlmIChjZ3JvdXBfYnBmX2VuYWJsZWQoQ0dS
-T1VQX1VEUDZfU0VORE1TRykgJiYgIWNvbm5lY3RlZCkgew0KPiAgCQllcnIgPSBCUEZfQ0dST1VQ
-X1JVTl9QUk9HX1VEUDZfU0VORE1TR19MT0NLKHNrLA0KPiANCj4gLS0NCj4gMi4zNC4xDQo+IA0K
-DQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQgRmFy
-bSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4NiAo
-V2FsZXMpDQo=
+Previously, I fixed a tailcall infinite loop issue caused by trampoline[0].
+
+At this time, I fix a tailcall infinite loop issue caused by tailcall and
+freplace combination by preventing updating extended prog to prog_array map
+and preventing extending tail callee prog with freplace.
+
+v2 -> v3:
+  * Address comments from Alexei:
+    * Stop hacking JIT.
+    * Prevent the specific use case at attach/update time.
+
+v1 -> v2:
+  * Address comment from Eduard:
+    * Explain why nop5 and xor/nop3 are swapped at prologue.
+  * Address comment from Alexei:
+    * Disallow attaching tail_call_reachable freplace prog to
+      not-tail_call_reachable target in verifier.
+  * Update "bpf, arm64: Fix tailcall infinite loop caused by freplace" with
+    latest arm64 JIT code.
+
+Links:
+[0] https://lore.kernel.org/bpf/20230912150442.2009-1-hffilwlqm@gmail.com/
+
+Leon Hwang (4):
+  bpf: Prevent updating extended prog to prog_array map
+  bpf: Prevent extending tail callee prog with freplace
+  selftests/bpf: Add a test case to confirm a tailcall infinite loop
+    issue has been prevented
+  selftests/bpf: Add cases to test tailcall in freplace
+
+ include/linux/bpf.h                           |   2 +
+ kernel/bpf/arraymap.c                         |  13 +-
+ kernel/bpf/syscall.c                          |  19 +-
+ .../selftests/bpf/prog_tests/tailcalls.c      | 196 +++++++++++++++++-
+ .../tailcall_bpf2bpf_hierarchy_freplace.c     |  30 +++
+ .../testing/selftests/bpf/progs/tc_bpf2bpf.c  |  37 +++-
+ 6 files changed, 290 insertions(+), 7 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_hierarchy_freplace.c
+
+-- 
+2.44.0
 
 
