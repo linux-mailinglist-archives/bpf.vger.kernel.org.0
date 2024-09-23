@@ -1,212 +1,197 @@
-Return-Path: <bpf+bounces-40186-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40187-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1290897E5C4
-	for <lists+bpf@lfdr.de>; Mon, 23 Sep 2024 07:53:27 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A544297E652
+	for <lists+bpf@lfdr.de>; Mon, 23 Sep 2024 09:01:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7FE781F217DE
-	for <lists+bpf@lfdr.de>; Mon, 23 Sep 2024 05:53:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 324471F2165E
+	for <lists+bpf@lfdr.de>; Mon, 23 Sep 2024 07:01:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20E6617996;
-	Mon, 23 Sep 2024 05:53:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=nxp.com header.i=@nxp.com header.b="AysreTF1"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C74FC44C94;
+	Mon, 23 Sep 2024 07:01:18 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from DU2PR03CU002.outbound.protection.outlook.com (mail-northeuropeazon11012042.outbound.protection.outlook.com [52.101.66.42])
+Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A03AF168B1;
-	Mon, 23 Sep 2024 05:53:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.66.42
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727070797; cv=fail; b=Bi+gEpfKaZlaoGQOLtDaB4jSyxSIhIlzvg/EtIz6oNvYUeHQCfTHX3Heicb9+cHvt9LYjX6kOYadwmudauuLr6f0/OGl7FpS3X3BMbEEfeplItChPZwaNKeoyos5liE8NanINNUsmFh8H9M59De4tMIqQOj2DveUeeTAM197+FI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727070797; c=relaxed/simple;
-	bh=0se5i/1BZoYAKVE1OzfrIvpufYCRhi8f/7plzIkWfTk=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=dDSu1aJNQ92J6zSWRbl7Bv7OyX5YcMjhGI7XobGnt6g45vQaNt2A8BeVrlqed1rn349Rjit4BBpEJfRauLi18HVelN+T8r8YmD9kdTSqGwPJaubRR+uDpxUd20vmGjFbZnjnlH6JhPXvLAhL90wobtqxO+TDdxB4vY1Lwy7l69Y=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (2048-bit key) header.d=nxp.com header.i=@nxp.com header.b=AysreTF1; arc=fail smtp.client-ip=52.101.66.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=sGFEzOaMSfQmcSO5Z4UrRBwxl3/5nIiZL+wGkGSdtt5MGbXiIhiEPvHRQIc/BVo6EusQ6I86/RgOtyc7hVczZWjrOX+iZTEpyxQLa4JZSIRiN5N71AlzdjR7hcR6+SOeiUFO/RLOdvLOS5scUJAP6hqQGl0tFYdG7yroDBsrXL2EG7H9L/Ju38DHju6QWOITOKGnPIANmhCXl4s/jygFwpeWP3Oj7reyt5BVatLh1pv8jL8krbPVetJYEVtp8kAAzmgoFwQNHqybHXLD477UZtljYGxB+YNbK21dTzOUMwgrLywg1XzdlNvefvpojkZ6XtNu3p2q5egrEUdktbmMxw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=0se5i/1BZoYAKVE1OzfrIvpufYCRhi8f/7plzIkWfTk=;
- b=LGs/OeHPeIuVyYP0q/JGF8hLN+XHdLqoWNitJG6/7VmSeRHV+z/1gZLSACz71NMQDGk0RtcwekBQjWJc2IKyYOnPkeso+MPQAaahGO9jlFgbnInBb+NfcTfXK20VeNgvccWYpMp9vXSCA2rwqGLa/7mxh2bbjIHxJMuaFD4rtZwmUunJJ1gljARt/Dyr/L599IlC6PJYzGB6kgpnA6NhiC5SxnykvdWWNrvIGW8/KB1nA9aS6VXseeaDzc+sEmzErHEOmb7jVURsGgzjAEHPnVpjmYVWLRPFBCYDGOcKGQHkWezJVOn+U1v1+TZ0xXd9Z90EEo96b7zoiZQYdUPYzg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0se5i/1BZoYAKVE1OzfrIvpufYCRhi8f/7plzIkWfTk=;
- b=AysreTF1soqZKZfw37INcaRgYes3oqyPH+SBkBxyuyzHP662ofSc/PhXmbHzq4w+Sld4mjxNxrm8A3D3majw0XwJD3vphZAbzbgcX0flz+MlEiaOPiiU1M9HYM5UfhRwxKELQf3TSlDrpKAjykJlBR4dNbRY4xI3dleXl7m+TWCeu196Gk9iUR2/uSPUi0eHTsxbWD+1Ebsm8tLwFqSuG3q4A38x/x/eaMnht1sZPufgRWbugfaxiClfHT0e/I+Hh2dX4R/xrGbFG7r5OA0LofaxrJ5cFsTsnS5iXqAA6szjARBZ+3UbQihkVPljrUvvOG9tYwGGXxZGTRwBm4ye8Q==
-Received: from PAXPR04MB8510.eurprd04.prod.outlook.com (2603:10a6:102:211::7)
- by PA1PR04MB11035.eurprd04.prod.outlook.com (2603:10a6:102:493::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7982.25; Mon, 23 Sep
- 2024 05:53:07 +0000
-Received: from PAXPR04MB8510.eurprd04.prod.outlook.com
- ([fe80::a7c2:e2fa:8e04:40db]) by PAXPR04MB8510.eurprd04.prod.outlook.com
- ([fe80::a7c2:e2fa:8e04:40db%6]) with mapi id 15.20.7918.024; Mon, 23 Sep 2024
- 05:53:07 +0000
-From: Wei Fang <wei.fang@nxp.com>
-To: Ratheesh Kannoth <rkannoth@marvell.com>
-CC: "davem@davemloft.net" <davem@davemloft.net>, "edumazet@google.com"
-	<edumazet@google.com>, "kuba@kernel.org" <kuba@kernel.org>,
-	"pabeni@redhat.com" <pabeni@redhat.com>, Claudiu Manoil
-	<claudiu.manoil@nxp.com>, Vladimir Oltean <vladimir.oltean@nxp.com>,
-	"ast@kernel.org" <ast@kernel.org>, "daniel@iogearbox.net"
-	<daniel@iogearbox.net>, "hawk@kernel.org" <hawk@kernel.org>,
-	"john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>, "bpf@vger.kernel.org"
-	<bpf@vger.kernel.org>, "stable@vger.kernel.org" <stable@vger.kernel.org>,
-	"imx@lists.linux.dev" <imx@lists.linux.dev>
-Subject: RE: [PATCH net 1/3] net: enetc: remove xdp_drops statistic from
- enetc_xdp_drop()
-Thread-Topic: [PATCH net 1/3] net: enetc: remove xdp_drops statistic from
- enetc_xdp_drop()
-Thread-Index: AQHbCnHMuBrO1CrjFE6GTOQ4l2wOzbJk1rEAgAANN1A=
-Date: Mon, 23 Sep 2024 05:53:07 +0000
-Message-ID:
- <PAXPR04MB8510259090731BFCABFDD47F886F2@PAXPR04MB8510.eurprd04.prod.outlook.com>
-References: <20240919084104.661180-1-wei.fang@nxp.com>
- <20240919084104.661180-2-wei.fang@nxp.com>
- <20240923050230.GB3287263@maili.marvell.com>
-In-Reply-To: <20240923050230.GB3287263@maili.marvell.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PAXPR04MB8510:EE_|PA1PR04MB11035:EE_
-x-ms-office365-filtering-correlation-id: 357861fa-8a02-41c3-a917-08dcdb93ffb5
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam:
- BCL:0;ARA:13230040|7416014|376014|1800799024|366016|38070700018;
-x-microsoft-antispam-message-info:
- =?gb2312?B?ek1BTHRIeXpFOWFPU3NBaTJMMm8wY1AwYmY5VWRZeWg3K2VueC9MMmdOM2xa?=
- =?gb2312?B?a2ErNlZHUlF1bVZTckhVTk50aGF1S1JZU3lvbFVFaUh2TzhMaVlqcGFXcUEz?=
- =?gb2312?B?a3B3NXpYZjZPbGpxQkJ0dUZjNlduOTB2OWwzajJXWXdzU1Y4bHRPRDZ0WDN0?=
- =?gb2312?B?YTdrREhVdUZGM3ZqWHYweElEd0NiVmFHc2xmdEY2c29zbHQvSXZ5TnN3K2p2?=
- =?gb2312?B?UmxCSkViMzFFZ0tSK1M4OXF0dWs4cEpqendtWGRTYkd6MVI5SllCQW81Sklo?=
- =?gb2312?B?ZmFySkdsc2p0ckdVMm1sVEtSYm43ZzZPR2hOdTNNcFNKT1poOVFqRFZCakFo?=
- =?gb2312?B?eTlOV2VWTDRMa0lnejJHT3ZmVk1LTXV5QStqbGVXeFNZNFZIT3prOHdyd0dS?=
- =?gb2312?B?RTNFTEhtdGt4REJDT1JQV21uTzQ4Wjk1R3B5cWtNMG5oZ0tKMWNNaVZCZTNN?=
- =?gb2312?B?REJ6WjZTa3NXbDFMNkFQQW1LckJocHlMampidldPbFZWM3FCZ2gybHNUQ3Nz?=
- =?gb2312?B?TStpVDlmdnVWTDVpM1Jrc0VRcWhMTjA1OW55aFYxVnFUbitCVzRzTWV6a3p1?=
- =?gb2312?B?cXZHdE05aWRoR1d4enR4eEszSVlKUGUxYkp5enJqZGZaTXdRWXBHaEpURUpo?=
- =?gb2312?B?eXpaTmdLcEtWc3Q2WW9pVmxIRzQwTVFuNkdHSnNmb1R3YkNVZExydzJyTzl1?=
- =?gb2312?B?ZnpTSytzTVpHRXI4ak01R0hvZ1ViZVVzRDhUVEZEWXBKdk4raVpvY3E3WnFM?=
- =?gb2312?B?a0llWjB6ZjhMZVdZQ0o2OXRBTVlaSFh5bUJuQ1lHVmJvbDJoV3hEWHI5Zy9a?=
- =?gb2312?B?ekRrdEE2ajBESm8vOTRKTFNIMFRrQSs5YUpPN21hVEVObFZUOUQxKzFkdHd5?=
- =?gb2312?B?UlNGZTNFd3M0NHMyODlsZVYxQVRBcTMyYitBeGJxcWhrYld1azFFMFNiQmFl?=
- =?gb2312?B?ZkEwNlp1dnZ5Y2RzUmE5U1FaK2tURzk1cU1uQlFScjEyUnFTVEt0bXA2aWdm?=
- =?gb2312?B?YmdjcXZobDJ3TERvNCtNcDBjZllLaTcrMXpUMEZpK3EzZWlFdlhza0JkTDJj?=
- =?gb2312?B?SXZvQ0sraHE2VllVT2IvTmMrbGcwaU56YXpLNEV4UnZHdXZ2V3VvQ2hYOExL?=
- =?gb2312?B?YnB1MUdsd1dyMHNoZG5XUi8xTWFOQkliTTEvM3VUaGdNbzJvOFFjQWFJWjYv?=
- =?gb2312?B?bWxWVUVNWGd6NVlhOUpUbUVndWZqWU45MHNFbmZKWjVGSGM0QUl3RDVQVEFt?=
- =?gb2312?B?R2k2V21aTFRUZVdhVVpWdzRsN2NMNjVuaHRLYzVVRXRjaVR5akc3b01zOWZY?=
- =?gb2312?B?V1V6S3FmZGdTb3kwWTdERm4vZW5CTVRvd0huaEJtN2d1eUNzVXBCZkVDV21t?=
- =?gb2312?B?bXlOcGNBT3hqL0FoNmtRVHJueXRUQk93bUQzNHJMak9zQUFiK3ltRmZyUkZz?=
- =?gb2312?B?Mm1VbHRGd0xST1l1bWkxT1Iwd3BOd2J0SkRYbVZUNm5VdGxkQ1VFZllwcHNP?=
- =?gb2312?B?VFJUaE1oYUE4ejlGTzk1N2QrQWJLTWZhUHg3bUlHbkI3UldkTkFxQ3VLNU5p?=
- =?gb2312?B?Q0x2b0ZRVUdzUG5RMW9ycldVTUpJdStKQjhHeG8wdkptTk5HcUIwdnB6UHRa?=
- =?gb2312?B?MGp0ZUFSZi9LWnhlK2d6TnpJZlNPdytCckJ2QjNwMzdsUTl3cVBEajNqT2pp?=
- =?gb2312?B?R3pGRit0dWJxUXljTDdiVWRpckxrVWNDNGdOUTFaM0NuTCs2RnBna3c5QkpH?=
- =?gb2312?B?QXdOSkI2Q1BYWGFxRGV0bmtoVU1BYng0NUJ1KzN1aGw2M1Y2TWgwRktPMUV3?=
- =?gb2312?B?ZFVZc2NOeEVKaHVZWG0yUT09?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:zh-cn;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB8510.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(1800799024)(366016)(38070700018);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?gb2312?B?aWtwenpLblRRbklhaHZjZUlOTFRCNGFlZk1qTUwvNm1YaG5Uczh4OC85emZB?=
- =?gb2312?B?K2hpT0hzM1U5SnFOd1BucXdkRDV5bU0zcGQ1QlRWWVgweTloWVRwQ3VyUDdr?=
- =?gb2312?B?Mi81Sms2cy8ybWRqMHFPQlJHVkoram5zNWE0YlBvNHBHNzFvdUQyU3JNWkRY?=
- =?gb2312?B?dk1xeWgxUjVkUkhzZmF6UjRRUnBHZ1JIcHVxdEpwVjVEVTB0WVhkQUJ4dDh4?=
- =?gb2312?B?WWxMQmQzODBtZUJWQlJrS3N3cmZrMVZ6bUpNd08zNnIxdW9NTHFSbGt5TmF4?=
- =?gb2312?B?VkxLcXdZbXFCZHFOZEVTZmZhUjcwUkZjekR6cWI0ZWpmZHRFcFA2b1JCV0Vi?=
- =?gb2312?B?TDhnMldXQ0tiTmhsSnRvd3JHUFBLL21QQWJHNWYrU1lwZEZraHVDdFZoa3VS?=
- =?gb2312?B?YjJ0UnE4ZWhRQmd4bG9NbXdLS2lmNlFJZzhFUEVuVUphQmtFdDdSeE1LQkE1?=
- =?gb2312?B?eCs4OXZTYmE1UUhBanMvVFk4SGZld3I0QlErRUh6eWJtUVpmbk9IWmZCWGp6?=
- =?gb2312?B?bUo3OFdJdTBzUWJNMTFqQ0RoRHVmcVJUR3JUTlUwWHFZZWNZY3NkZ2JKUGtk?=
- =?gb2312?B?WWxnY29zWmtHc1FNTXNycWwzWXdPeC9ORDFrbGQ5SnJycVFWUUFXWVlDcE1Y?=
- =?gb2312?B?QVZLR0pRVFVJekNvMC9WdUU3VzkyQnliVWR4RHErUXppdmxUek94cUNUekNi?=
- =?gb2312?B?M09jZWRNYjRrRElscldqbHU3U1lNTmE4U3BVVVhqOFg0VnVQZEw4ajR6RTU0?=
- =?gb2312?B?Y1lFenpkSWxqdnFzZGUvcWFteFVWODZVRllvQ2k1NExYdWRtUGQrb2lDamJ0?=
- =?gb2312?B?MmtXNXlwSXloUjE0RHgzSEdRZHJIekxkNS9WZ1BCZzROVEkwZ29HUEhFVmxl?=
- =?gb2312?B?RUQ0MGxneTJMUmxsU0ZtRU9udmlkMlBYS2UyYS84SDk3MGd0ZjNGZjhBTEpN?=
- =?gb2312?B?L0YzLzdDUWxWREUzV2hwUyttK2k5RVg1dVRqalV6ZDVjYk1sQ2NKVTZybnpM?=
- =?gb2312?B?T1RQYTUvZDFyTTV0cUxZa1o2MWR3cUs1YW5tRE5lTUVpdXNLb0FRUk1uQXhO?=
- =?gb2312?B?TDBicVV6M2RSNGp1eE5nYVhsVlFXNkxwamVpY0xJVFFQbUNYTjJrUzUxanBw?=
- =?gb2312?B?a0h2MVd0a3NBSlFYcFFoTS91SjVIWW1veU5UemZNQkhGdkNialN3RDJ0Q25E?=
- =?gb2312?B?VW8zbGZkOG1hbExXZHFCdEIzR2hic09PYnB5L1YxSHZqc3NSVTF2MkdmdElP?=
- =?gb2312?B?b0E0ai9ycDlOK3lyQWpaQ2lrTnZ2bGtNOHJybUlyMEh1WkxkekoxK2hRenRm?=
- =?gb2312?B?MCsreWhveHdmWEI4U1RsYVRWYzNEaEFpbjQyb2NYOGpMc2huOTVndkRrams0?=
- =?gb2312?B?akJTQndSYktsT2xDWUR5ZlJMQjd6MFY5L2dBck11OC84ckFsUXF4SnZmc3Rx?=
- =?gb2312?B?Nm0zQU00Mjg2N2UyTzNoMk96eFlaZTZwVW11R1lyc3BHUTJFM0hHWWpudnpC?=
- =?gb2312?B?K2tvUlcvR3RNdklOQVFTeUdXWEMyVC9BWGlsN2hROGxhd0FCTUt0NjFjUzQ3?=
- =?gb2312?B?RnFhaUhqSUhTMStLKzEyeG9kYU1zQ2NqRXVkbHlLYnpHSHFwcUFZc3dRbjBD?=
- =?gb2312?B?bk0xaVJ0Tk5xTTZoWTM5WDdCNHhrVnRVMHhxY0NNZkV1MmVvOW80TkpyUXI4?=
- =?gb2312?B?b1lha0I2TTdMRHdrN2haRE9oeUdTMUcxTVMvKzR0SVRRczRnOVMxdUhnbjFC?=
- =?gb2312?B?TWFUVjBndTZRNWdLYlFuakhPMm55c2N1QjlRVHBBL3V2a1dUSDVVT1ZSbHE1?=
- =?gb2312?B?dVozZWh3dzhrVlpFczgyTGFyRUFESjQ3ekhvMXpJOUdWaUVEZTZBT0R0NUZw?=
- =?gb2312?B?UVd0aXZycFVsU2pjczVpY1JQYmVPaDBHRDBCMXRvaVd3aHBYdFAyV1NSZTdO?=
- =?gb2312?B?bG9CWEtuNGtyeDlNU3FRVTJpZWtseTVia1VEYUVVcUFYRXQzMmx1SExOc2pZ?=
- =?gb2312?B?NGxuNjRoK24yVEQ0WTN1N0Jwb2FOUTRvbld0bGVXaWowT1N3WDZpWjJVOVBn?=
- =?gb2312?B?WFdRLzVyTmNyTlpGdGtIWk5aNTNqbWlYSHhxMzZKKzlYdTA3UitMK3YvVXps?=
- =?gb2312?Q?1os8=3D?=
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FC4129415;
+	Mon, 23 Sep 2024 07:01:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1727074878; cv=none; b=d7onMI5OYsOllY+FZl6bfknn47o8Wo8oPucGRd87TJYScgCf6N/JxNPy/u6Hq41KXNuFytgJctmGqPSqLPC4l+UOKoyoR+o9jGG1YFq8Z+GMPRsYPMw/unLWldxo7FagK+2hnrs4ZEbvgBfmZFwF+W40VWjtZ1qhT7F6j7jDXlg=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1727074878; c=relaxed/simple;
+	bh=CDHFNYRC/h6HRJUUrT6OvaZc1HSgkph1ZvzPrpmYm8I=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:CC:References:
+	 In-Reply-To:Content-Type; b=PNAut2Pj3eWY2mH0VQ8UB1ig6zb2dWC5DMbpJKvtLIpqBO9ckpdZsbnf+RcHs/H+ot28wlHQDHFALorz2QZFOLYbjjTpw9ePkVWyZWu6+yxCsJWfd+xS6UqIah0LnSQMNJUNb9xq+fnqBb7lG/4u5oVI5U8z32JmieeQYje1APA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.162.112])
+	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4XBv6L5xx7z1ymGS;
+	Mon, 23 Sep 2024 15:01:14 +0800 (CST)
+Received: from dggpemf200006.china.huawei.com (unknown [7.185.36.61])
+	by mail.maildlp.com (Postfix) with ESMTPS id 9CD3A1400F4;
+	Mon, 23 Sep 2024 15:01:13 +0800 (CST)
+Received: from [10.67.120.129] (10.67.120.129) by
+ dggpemf200006.china.huawei.com (7.185.36.61) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Mon, 23 Sep 2024 15:01:13 +0800
+Message-ID: <2fb8d278-62e0-4a81-a537-8f601f61e81d@huawei.com>
+Date: Mon, 23 Sep 2024 15:01:12 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB8510.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 357861fa-8a02-41c3-a917-08dcdb93ffb5
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Sep 2024 05:53:07.6101
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: g/JjGKGol2VCKmTgQdhCHEotaSV8zwJQRO+ayX8WSOhB6w6Tv0LDGcEB2Wta1o/tCIYS2f0NXcncmOxBcmStvA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA1PR04MB11035
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net 2/2] page_pool: fix IOMMU crash when driver has
+ already unbound
+From: Yunsheng Lin <linyunsheng@huawei.com>
+To: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+CC: <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>,
+	<liuyonglong@huawei.com>, <fanghaiqing@huawei.com>, <zhangkun09@huawei.com>,
+	Robin Murphy <robin.murphy@arm.com>, Alexander Duyck
+	<alexander.duyck@gmail.com>, IOMMU <iommu@lists.linux.dev>, Wei Fang
+	<wei.fang@nxp.com>, Shenwei Wang <shenwei.wang@nxp.com>, Clark Wang
+	<xiaoning.wang@nxp.com>, Eric Dumazet <edumazet@google.com>, Tony Nguyen
+	<anthony.l.nguyen@intel.com>, Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+	Alexander Lobakin <aleksander.lobakin@intel.com>, Alexei Starovoitov
+	<ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard
+ Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Saeed
+ Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Tariq Toukan
+	<tariqt@nvidia.com>, Felix Fietkau <nbd@nbd.name>, Lorenzo Bianconi
+	<lorenzo@kernel.org>, Ryder Lee <ryder.lee@mediatek.com>, Shayne Chen
+	<shayne.chen@mediatek.com>, Sean Wang <sean.wang@mediatek.com>, Kalle Valo
+	<kvalo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Andrew
+ Morton <akpm@linux-foundation.org>, <imx@lists.linux.dev>,
+	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<intel-wired-lan@lists.osuosl.org>, <bpf@vger.kernel.org>,
+	<linux-rdma@vger.kernel.org>, <linux-wireless@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>,
+	<linux-mm@kvack.org>
+References: <20240918111826.863596-1-linyunsheng@huawei.com>
+ <20240918111826.863596-3-linyunsheng@huawei.com>
+ <CAC_iWjK=G7Oo5=pN2QunhasgDC6NyC1L+96jigX7u9ad+PbYng@mail.gmail.com>
+ <50a463d5-a5a1-422f-a4f7-d3587b12c265@huawei.com>
+Content-Language: en-US
+In-Reply-To: <50a463d5-a5a1-422f-a4f7-d3587b12c265@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemf200006.china.huawei.com (7.185.36.61)
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBSYXRoZWVzaCBLYW5ub3RoIDxy
-a2Fubm90aEBtYXJ2ZWxsLmNvbT4NCj4gU2VudDogMjAyNMTqOdTCMjPI1SAxMzowMw0KPiBUbzog
-V2VpIEZhbmcgPHdlaS5mYW5nQG54cC5jb20+DQo+IENjOiBkYXZlbUBkYXZlbWxvZnQubmV0OyBl
-ZHVtYXpldEBnb29nbGUuY29tOyBrdWJhQGtlcm5lbC5vcmc7DQo+IHBhYmVuaUByZWRoYXQuY29t
-OyBDbGF1ZGl1IE1hbm9pbCA8Y2xhdWRpdS5tYW5vaWxAbnhwLmNvbT47IFZsYWRpbWlyDQo+IE9s
-dGVhbiA8dmxhZGltaXIub2x0ZWFuQG54cC5jb20+OyBhc3RAa2VybmVsLm9yZzsgZGFuaWVsQGlv
-Z2VhcmJveC5uZXQ7DQo+IGhhd2tAa2VybmVsLm9yZzsgam9obi5mYXN0YWJlbmRAZ21haWwuY29t
-OyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOw0KPiBuZXRkZXZAdmdlci5rZXJuZWwub3Jn
-OyBicGZAdmdlci5rZXJuZWwub3JnOyBzdGFibGVAdmdlci5rZXJuZWwub3JnOw0KPiBpbXhAbGlz
-dHMubGludXguZGV2DQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggbmV0IDEvM10gbmV0OiBlbmV0Yzog
-cmVtb3ZlIHhkcF9kcm9wcyBzdGF0aXN0aWMgZnJvbQ0KPiBlbmV0Y194ZHBfZHJvcCgpDQo+IA0K
-PiBPbiAyMDI0LTA5LTE5IGF0IDE0OjExOjAyLCBXZWkgRmFuZyAod2VpLmZhbmdAbnhwLmNvbSkg
-d3JvdGU6DQo+ID4gVGhlIHhkcF9kcm9wcyBzdGF0aXN0aWMgaW5kaWNhdGVzIHRoZSBudW1iZXIg
-b2YgWERQIGZyYW1lcyBkcm9wcGVkIGluDQo+ID4gdGhlIFJ4IGRpcmVjdGlvbi4gSG93ZXZlciwg
-ZW5ldGNfeGRwX2Ryb3AoKSBpcyBhbHNvIHVzZWQgaW4gWERQX1RYIGFuZA0KPiA+IFhEUF9SRURJ
-UkVDVCBhY3Rpb25zLiBJZiBmcmFtZSBsb3NzIG9jY3VycyBpbiB0aGVzZSB0d28gYWN0aW9ucywg
-dGhlDQo+ID4gZnJhbWVzIGxvc3MgY291bnQgc2hvdWxkIG5vdCBiZSBpbmNsdWRlZCBpbiB4ZHBf
-ZHJvcHMsIGJlY2F1c2UgdGhlcmUNCj4gPiBhcmUgYWxyZWFkeSB4ZHBfdHhfZHJvcHMgYW5kIHhk
-cF9yZWRpcmVjdF9mYWlsdXJlcyB0byBjb3VudCB0aGUgZnJhbWUNCj4gPiBsb3NzIG9mIHRoZXNl
-IHR3byBhY3Rpb25zLCBzbyBpdCdzIGJldHRlciB0byByZW1vdmUgeGRwX2Ryb3BzIHN0YXRpc3Rp
-Yw0KPiA+IGZyb20gZW5ldGNfeGRwX2Ryb3AoKSBhbmQgaW5jcmVhc2UgeGRwX2Ryb3BzIGluIFhE
-UF9EUk9QIGFjdGlvbi4NCj4gbml0OiBzL3hkcF9kcm9wcy94ZHBfcnhfZHJvcHMgd291bGQgYmUg
-YXBwcm9wcmlhdGUgYXMgeW91IGhhdmUNCj4geGRwX3R4X2Ryb3BzIGFuZA0KPiB4ZHBfcmVkaXJl
-Y3RfZmFpbHVyZXMuDQoNClNvcnJ5LCBJIGRvbid0IHF1aXRlIHVuZGVyc3RhbmQgd2hhdCB5b3Ug
-bWVhbi4NCg==
+On 2024/9/19 18:54, Yunsheng Lin wrote:
+> On 2024/9/19 1:06, Ilias Apalodimas wrote:
+>> Hi Yunsheng,
+>>
+>> Thanks for looking into this!
+>>
+>> On Wed, 18 Sept 2024 at 14:24, Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>>>
+>>> Networking driver with page_pool support may hand over page
+>>> still with dma mapping to network stack and try to reuse that
+>>> page after network stack is done with it and passes it back
+>>> to page_pool to avoid the penalty of dma mapping/unmapping.
+>>
+>> I think you can shorten this to "If recycling and DMA mapping are
+>> enabled during the pool creation"
+> 
+> I am not sure if I understand the 'recycling' part here. Is the
+> 'recycling' part referring to whether skb_mark_for_recycle() is
+> called to enable recycling for the skb? Is there still any driver
+> with page_pool support but doesn't call skb_mark_for_recycle()
+> when handing over page to network stack?
+> 
+> For the 'DMA mapping' part, as there is no space in 'struct
+> page' to track the inflight pages, so 'pp' in 'struct page'
+> is renamed to 'pp_item' to enable the tracking of inflight
+> page. I tried shortening this for 'pool->dma_map being false'
+> when coding, but it seems differentiating the same field in
+> 'struct page' doesn't make much sense according to 'pool->dma_map'
+> as it means we might need to add an union in 'struct page' for
+> that to work and add additional checking to decide if it is 'pp'
+> or 'pp_item'.
+> 
+>>
+>>> With all the caching in the network stack, some pages may be
+>>> held in the network stack without returning to the page_pool
+>>> soon enough, and with VF disable causing the driver unbound,
+>>> the page_pool does not stop the driver from doing it's
+>>> unbounding work, instead page_pool uses workqueue to check
+>>> if there is some pages coming back from the network stack
+>>> periodically, if there is any, it will do the dma unmmapping
+>>> related cleanup work.
+>>>
+>>> As mentioned in [1], attempting DMA unmaps after the driver
+>>> has already unbound may leak resources or at worst corrupt
+>>> memory. Fundamentally, the page pool code cannot allow DMA
+>>> mappings to outlive the driver they belong to.
+>>>
+>>> Currently it seems there are at least two cases that the page
+>>> is not released fast enough causing dma unmmapping done after
+>>> driver has already unbound:
+>>> 1. ipv4 packet defragmentation timeout: this seems to cause
+>>>    delay up to 30 secs:
+>>>
+>>> 2. skb_defer_free_flush(): this may cause infinite delay if
+>>>    there is no triggering for net_rx_action().
+>>>
+>>> In order not to do the dma unmmapping after driver has already
+>>> unbound and stall the unloading of the networking driver, add
+>>> the pool->items array to record all the pages including the ones
+>>> which are handed over to network stack, so the page_pool can
+>>> do the dma unmmapping for those pages when page_pool_destroy()
+>>> is called.
+>>
+>> So, I was thinking of a very similar idea. But what do you mean by
+>> "all"? The pages that are still in caches (slow or fast) of the pool
+>> will be unmapped during page_pool_destroy().
+> 
+> Yes, it includes the one in pool->alloc and pool->ring.
+
+It worths mentioning that there is a semantics changing here:
+Before this patch, there can be almost unlimited inflight pages used by
+driver and network stack, as page_pool doesn't really track those pages.
+After this patch, as we use a fixed-size pool->items array to track the
+inflight pages, the inflight pages is limited by the pool->items, currently
+the size of pool->items array is calculated as below in this patch:
+
++#define PAGE_POOL_MIN_ITEM_CNT	512
++	unsigned int item_cnt = (params->pool_size ? : 1024) +
++				PP_ALLOC_CACHE_SIZE + PAGE_POOL_MIN_ITEM_CNT;
+
+Personally I would consider it is an advantage to limit how many pages which
+are used by the driver and network stack, the problem seems to how to decide
+the limited number of page used by network stack so that performance is not
+impacted.
+
+> 
+>> Don't we 'just' need a list of the inflight packets and their pages or
+>> fragments? What we could do is go through that list and unmap these
+>> pages during page_pool_destroy().
+> 
+> The main reason for that is to avoid the overhead of page_pool_item_del()
+> and page_pool_item_add() when allocing/freeing page from/to pool->alloc
+> and pool->ring.
+> 
+> Yes, including the pages in pool->ring seems to make the pool->ring
+> somewhat duplicated, maybe we can remove pool->ring if we can make
+> and prove 'pool->items' is performing better than pool->ring in the
+> future?
+> 
+>>
+>> I'll have a closer look at the patch tomorrow
+> 
+> Thanks for the reviewing.
+> 
+>>
+>> Thanks!
+>> /Ilias
+>>
+> 
 
