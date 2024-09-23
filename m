@@ -1,158 +1,150 @@
-Return-Path: <bpf+bounces-40192-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40193-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A869697E9EB
-	for <lists+bpf@lfdr.de>; Mon, 23 Sep 2024 12:30:14 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8673E97EA34
+	for <lists+bpf@lfdr.de>; Mon, 23 Sep 2024 12:55:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E31951C212DB
-	for <lists+bpf@lfdr.de>; Mon, 23 Sep 2024 10:30:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B1BE81C2115A
+	for <lists+bpf@lfdr.de>; Mon, 23 Sep 2024 10:55:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 982A5197A7F;
-	Mon, 23 Sep 2024 10:30:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07A24197558;
+	Mon, 23 Sep 2024 10:55:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Oz5Yf3TU"
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07FD7197558;
-	Mon, 23 Sep 2024 10:30:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD62517543;
+	Mon, 23 Sep 2024 10:55:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727087407; cv=none; b=jtrRlUETHwZjwYChPHknm7hy4zvf6zETTA9pV4tv8vMCDc0+K8D+eZb0XoBt0zW9CTlFcfkultRcmcNstzGxlOnQg8NSu6aSAuTz2R7Ur4Bh1IZSNJaCSIoCCSmZoBGot3S8T3hfgfEDaKskY6i42dilOHrD5mxKV6fJb4kiRSQ=
+	t=1727088902; cv=none; b=l+aeO0+3TBC8IspVgybHXmNS2n2fQQqGGHVo4XpJ96y8qxp4ca2F6Wi7L5QCLv7OpSQKnMtxuT6KI49eLtTmCkEFvhlRXX4RTw1QHJgb5LSDnXxgNscAEkJ8bKw7dSAoSNhCDDaVR5i68jVk8WoAAfWlHM4KsUl0Rk3TouQoYJg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727087407; c=relaxed/simple;
-	bh=KtGx5U5GzL7Z/yR+uBlw5VS/+lB7HSxpBr3S7vnjqXw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=NE3WizXt/OaFRlh+WgSwpVTPser64IO/fRBzIlF/JnfBYvEXX1i2Gp5WehxOpnLEDWEP7f/OxosH79Be+ao2kedV+BPlNcWcHA2bJ+s8nWOPUFr3EUlzlIoemK7gVHw2XrBiHd2FLDxvuMpxnuSxWIVPQs4QbtPJJIlL8O6vCaQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4XBzkG1xpTz1SC8B;
-	Mon, 23 Sep 2024 18:29:10 +0800 (CST)
-Received: from kwepemd200013.china.huawei.com (unknown [7.221.188.133])
-	by mail.maildlp.com (Postfix) with ESMTPS id 97EC21A016C;
-	Mon, 23 Sep 2024 18:29:55 +0800 (CST)
-Received: from [10.67.110.108] (10.67.110.108) by
- kwepemd200013.china.huawei.com (7.221.188.133) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.34; Mon, 23 Sep 2024 18:29:54 +0800
-Message-ID: <0939300c-a825-5b46-d86f-72ce89b2b95f@huawei.com>
-Date: Mon, 23 Sep 2024 18:29:54 +0800
+	s=arc-20240116; t=1727088902; c=relaxed/simple;
+	bh=rJdZumpDMtoueS0WOtj2mLIcslSowlQ0JIc5EJzS2ec=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PZoS54f0c7/ovz653gPQj+xdWVADNitCehZdSIlNqGAcoDmwhHXKwWs9ay3NMsUfuGK0iPjj4c9rGm/UD9En/fV+q9sLg9WHXst2GRPuXIUB6HGV5GbTYhmEEt8VKY0RnaJR9bn9LgBM11iJR/jdq9QBDVWwuubyzcp6fBFmk6Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Oz5Yf3TU; arc=none smtp.client-ip=209.85.128.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-42e7b7bef42so24104165e9.3;
+        Mon, 23 Sep 2024 03:55:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1727088899; x=1727693699; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=LdG2+Uri2AGDsZ90rom+fWqJfjc9BwjIrqb1r21feAA=;
+        b=Oz5Yf3TU5v5+ZUoE2vsssAlr7VlH2nMU3i6QVLcnYDG+eSUYmLehDMDMxsNUylh75S
+         mBzWYARc1EgamAt+gBKtS2r3HyyHRwd8eqbBPVkDvjHwX5I64xdzioM3axuA0Hf7Lfar
+         M8UVvcaw5jCj7Q5JfpH5XISdCRKyoCOJViT5UmjV/LgjYlYYZgePV5yT9KmksLBChKkM
+         GgRu/sQ12XdN8to/OH4xX0XQCfXMk6c/YcwWV4Cr7nyYXz3vLK6expDg3px3O+8VdCHf
+         +QWCUwNJe4eFfmlJ4tMcNnougWYY8s2Mmk2sbPdFwG7buw8HYuVd/jeOIZPcc49vbfto
+         +e6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727088899; x=1727693699;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LdG2+Uri2AGDsZ90rom+fWqJfjc9BwjIrqb1r21feAA=;
+        b=MHuAkxMtwigVV4yISkWewFOvwK5EOYKKh7zByGyT+kh7Gn+96LLNDHas5/9CqKIM6p
+         Ah1AFEAJBz8cSSIDnrDOcTlEiFXwtuCXpaKp0vzKcfLigS5c5ilabJCLDt4tKP1DG0yX
+         WqdW2MlyrhLWG8NQB48kiykEOCQKukod9Q9/Yd6xQG4PlFZPxNYc7T1cRsw2WTNPtSY3
+         aFrF3C6mhhvXaZGLTViYMyEyDeN0kpC503jTy2EzQI64+FyJf+CqeEXkKbl/VMBIUGrP
+         1VSuEWLa0Px0iC5JumqHDQB0X4bI9+rIsQSmfG0DLV6ZbfqNaNID6FAqx13XCCfu3ZIj
+         VktQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVO1WuGn9ZJ2P9i2FDtyX5s8YZDtnl4rtH5K0f80QZtXGhl7fDzWc60ux3pX007JqwMFdk=@vger.kernel.org, AJvYcCWiozpNag2WxVKtc6qsw4IUrzIZEA2D7OzMnhu916CDpWoUbKpIuVY+/7Uizk7HkNrqD6yBB5q1wKIzwGv12V1n@vger.kernel.org
+X-Gm-Message-State: AOJu0YzQvBEdsH7k36uJFfOlGh7UjZdhnDLhluD0eGPCdfad4E1GZZKK
+	SYye5ARv9lvUXu1xjVA2VTeXSZLGpTw/nsKQpe5KKBh3wrumBiGm
+X-Google-Smtp-Source: AGHT+IHvZWyEtuFUqpskJTlBnwlHzGHfpCFtvjug4s+1iWMQfhtLNLNNXKxiCeuPADmIOCKxOsLcsg==
+X-Received: by 2002:a05:600c:45d1:b0:426:614b:1a72 with SMTP id 5b1f17b1804b1-42e7c16f909mr88253135e9.17.1727088898967;
+        Mon, 23 Sep 2024 03:54:58 -0700 (PDT)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-42e754a6643sm125169755e9.29.2024.09.23.03.54.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Sep 2024 03:54:58 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Mon, 23 Sep 2024 12:54:56 +0200
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Tony Ambardar <tony.ambardar@gmail.com>, bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>, Mykola Lysenko <mykolal@fb.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	Viktor Malik <vmalik@redhat.com>
+Subject: Re: [PATCH bpf-next v1 2/3] bpf: btf: Ensure natural alignment of
+ .BTF_ids section
+Message-ID: <ZvFJAJdEdK3wnyXs@krava>
+References: <cover.1726806756.git.tony.ambardar@gmail.com>
+ <714d7ab8a48172c67ddc027c85b2a0dad0312a74.1726806756.git.tony.ambardar@gmail.com>
+ <46d8d74883926245829f8aac3d1ab6dc5b5e4b98.camel@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.2
-Subject: Re: [PATCH] uprobes: Improve the usage of xol slots for better
- scalability
-To: Andi Kleen <ak@linux.intel.com>
-CC: <mhiramat@kernel.org>, <oleg@redhat.com>, <andrii@kernel.org>,
-	<peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
-	<namhyung@kernel.org>, <mark.rutland@arm.com>,
-	<alexander.shishkin@linux.intel.com>, <jolsa@kernel.org>,
-	<irogers@google.com>, <adrian.hunter@intel.com>, <kan.liang@linux.intel.com>,
-	<linux-kernel@vger.kernel.org>, <linux-trace-kernel@vger.kernel.org>,
-	<linux-perf-users@vger.kernel.org>, <bpf@vger.kernel.org>
-References: <20240918012752.2045713-1-liaochang1@huawei.com>
- <87jzf9b12w.fsf@linux.intel.com>
- <7a6ba3f3-dffa-cdac-73c7-074505ea4b44@huawei.com> <ZuwoUmqXrztp-Mzh@tassilo>
-From: "Liao, Chang" <liaochang1@huawei.com>
-In-Reply-To: <ZuwoUmqXrztp-Mzh@tassilo>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemd200013.china.huawei.com (7.221.188.133)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <46d8d74883926245829f8aac3d1ab6dc5b5e4b98.camel@gmail.com>
 
-
-
-在 2024/9/19 21:34, Andi Kleen 写道:
->> Sorry, I know nothing about the ThreadSanitizer and related annotation,
->> could you provide some information about it, thanks.
+On Sat, Sep 21, 2024 at 02:46:17AM -0700, Eduard Zingerman wrote:
+> On Fri, 2024-09-20 at 00:49 -0700, Tony Ambardar wrote:
+> > While building of vmlinux employs a linker script to align the .BTF_ids
+> > section to 4 bytes, other usage leaves .BTF_ids unaligned and may lead to
+> > problems (e.g. [1]). Post-processing and libelf-based endian translation by
+> > resolve_btfids may also potentially suffer from misalignment.
+> > 
+> > Update encoding macros in btf_ids.h to always align BTF ID data to 4 bytes.
+> > 
+> > [1]: 3effc06a4dde ("selftests/bpf: Fix alignment of .BTF_ids")
+> > 
+> > Signed-off-by: Tony Ambardar <tony.ambardar@gmail.com>
+> > ---
+> >  include/linux/btf_ids.h | 1 +
+> >  1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/include/linux/btf_ids.h b/include/linux/btf_ids.h
+> > index c0e3e1426a82..c10b163dc340 100644
+> > --- a/include/linux/btf_ids.h
+> > +++ b/include/linux/btf_ids.h
+> > @@ -89,6 +89,7 @@ word							\
+> >  #define __BTF_ID_LIST(name, scope)			\
+> >  asm(							\
+> >  ".pushsection " BTF_IDS_SECTION ",\"a\";       \n"	\
+> > +".balign 4, 0;                                 \n"	\
+> >  "." #scope " " #name ";                        \n"	\
+> >  #name ":;                                      \n"	\
+> >  ".popsection;                                  \n");
 > 
-> Documentation/dev-tools/kcsan.rst
+> This forces all id list symbols to be aligned on 4 bytes.
+> Should the same be done for __BTF_SET_START?
 
-Thanks.
-
-> 
->>> Would be good to have some commentary why doing so
->>> many write operations with merely a rcu_read_lock as protection is safe.
->>> It might be safer to put some write type operations under a real lock. 
->>> Also it is unclear how the RCU grace period for utasks is enforced.
->>
->> You are right, but I think using atomic refcount routine might be a more
->> suitable apprach for this scenario. The slot_ret field of utask instance
-> 
-> Does it really all need to be lockless? Perhaps you can only make the 
-> common case lockless, but then only when the list overflows take a lock 
-> and avoid a lot of races. That might be good enough for performance.
-
-Agreed, List overflow would happen if new threads were constantly spawned
-and hit the breakpoint. I'm not sure how often this occurs in real application.
-Even if some applications follow this pattern, I suspect the bottleneck
-might shift to another point, like dynamically allocating new utask instances.
-At least, for the scalability selftest benchmark, list overflow shouldn't
-be a common case.
+it seems all the set macros use __BTF_ID_LIST, so it should be taken
+care of by that
 
 > 
-> If you really want a complex lockless scheme you need very clear documentation
-> in comments and commit logs at least.
-> 
-> Also there should be a test case that stresses the various cases.
-> 
-> I would just use a lock 
+> Also, is it guaranteed that all btf ids are organized in lists and sets?
+> Grepping through the code it seems they are, but it looks like resolve_btfids
+> does not really enforce this, simply looking for symbols matching a special name
+> __BTF_ID__<type>__<symbol>[__<id>] .
 
-Thanks for the suggestions, I will experiment with a read-write lock, meanwhile,
-adding the documentation and testing for the lockless scheme.
+yes, you need the BTF_ID to be part of list or set to be able to access it
 
->> is used to track the status of insn_slot. slot_ret supports three values.
->> A value of 2 means the utask associated insn_slot is currently in use by
->> uprobe. A value of 1 means the slot is no being used by uprobe. A value
->> of 0 means the slot has been reclaimed. So in some term, the atomic refcount
->> routine test_and_pout_task_slot() also avoid the racing when writing to
->> the utask instance, providing additional status information about insn_slot.
->>
->> BTW, You reminded me that since it might recycle the slot after deleting the
->> utask from the garbage collection list, so it's necessary to use
->> test_and_put_task_slot() to avoid the racing on the stale utask. the correct
->> code might be something like this:
->>
->> @@ -1771,16 +1783,16 @@ static void xol_free_insn_slot(struct task_struct *tsk)
->>
->>         spin_lock_irqsave(&area->list_lock, flags);
->>         list_del_rcu(&tsk->utask->gc);
->> +       /* Ensure the slot is not in use or reclaimed on other CPU */
->> +       if (test_and_put_task_slot(tsk->utask)) {
->> +               clear_bit(tsk->utask->insn_slot, area->bitmap);
->> +               atomic_dec(&area->slot_count);
->> +               tsk->utask->insn_slot = UINSNS_PER_PAGE;
->> +               get_task_slot(tsk->utask);
->> +       }
-> 
-> I would have expected you would add a if (racing) bail out, assume the
-> other CPU will do the work type check but that doesn't seem to be what
-> the code is doing.
+resolve_btfids does not enforce some loose BTF_ID definition without list/set,
+but that does not seem to be a problem
 
-Sorry, I may not probably get the point clear here, and it would be very
-nice if more details are provided for the concern. Do you mean it's necessary
-to make the if-body excution exclusive among the CPUs? If that's the case,
-I guess the test_and_put_task_slot() is the equvialent to the race condition
-check. test_and_put_task_slot() uses a compare and exchange operation on the
-slot_ref of utask instance. Regardless of the work type being performed by
-other CPU, it will always bail out unless the slot_ref has a value of one,
-indicating the utask is free to access from local CPU.
-
-> 
-> -Andi
-> 
-> 
-
--- 
-BR
-Liao, Chang
+thanks,
+jirka
 
