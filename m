@@ -1,172 +1,114 @@
-Return-Path: <bpf+bounces-40215-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40216-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0801983A74
-	for <lists+bpf@lfdr.de>; Tue, 24 Sep 2024 01:40:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BC52983A7F
+	for <lists+bpf@lfdr.de>; Tue, 24 Sep 2024 01:52:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AC7EB1C224EB
-	for <lists+bpf@lfdr.de>; Mon, 23 Sep 2024 23:40:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 34A7E1C21C82
+	for <lists+bpf@lfdr.de>; Mon, 23 Sep 2024 23:52:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9794412CDBA;
-	Mon, 23 Sep 2024 23:40:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9742132106;
+	Mon, 23 Sep 2024 23:52:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MH6K6Sxc"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="cwHgw9OY"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCDBD12BF32
-	for <bpf@vger.kernel.org>; Mon, 23 Sep 2024 23:40:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 606DF2907;
+	Mon, 23 Sep 2024 23:52:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727134851; cv=none; b=T2rcE0ikxt0QZU6RVCHbXcBry27d+x8pb9OEmIKSFWfy3XQF834qs46y4yscXSYJsXW18JBX02Ds/qFnnPH24pvI4BX3i5vSqJ05PmC19XPQ7FXWyzN/2oSuR4N59aqa/OeIGggf6biXc8rCR7f4bf6Q3CUdb7BnFSHXupQzXnM=
+	t=1727135538; cv=none; b=ty7L+0u7fbj5ZKn2Oe4DBsHWSvlGP184dYQMa8vsUysTU5ijxrgGBhAZdLZA6UBGa/MmfjKBR0zYPfhj87Fe+sUPyyjmOsLaQBTYzqUk6J+J6T6mID3SlATNMCl0/Rmc1qkre46S0gPg2zNT7jLUyLbfMp2Hw+TM9WcUoGbRy1I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727134851; c=relaxed/simple;
-	bh=lih7Oq+kCRAy1ZCYZFVvfA2rCgmluuqdxt2UwRCCUUA=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=msl8WQV+gtfIT8Rs8l7J7QIg6rT1I9rgDNRB0k4DRtUPVGh1oGdytVwlwkKACSqYKYhVLlUwWlZ9FtnED3J9mxZXicjt0RTD44qTIvPKcGWs0v9ZwcFxsoADkBMREMUdTG7HTtLeTCmmuyJ7RqwE25Dndz8zqZdIwGOmmTW5dC8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MH6K6Sxc; arc=none smtp.client-ip=209.85.214.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-20792913262so57877395ad.3
-        for <bpf@vger.kernel.org>; Mon, 23 Sep 2024 16:40:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727134849; x=1727739649; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3x7kV0t0BwS+h8hmJz7CsPp0Gs9iGAzAhach2olk9Wg=;
-        b=MH6K6Sxcr0IzQWgmwcXNqvHfZK2nQAmc1JPFGX3HKDg5KA8Id1k1OQEU+MMBb4X8eO
-         yi3HzwC5J7UUNB6Aefb5FavjnN2zLxKeLqIAEh3ZDl9J/rV+JaG5dlfeOEnVf7RMOzCI
-         KeVCuefQc96mnvYLhtPOFhMbbvp4StAFDK/cpe2OGtDQk5EKRjNXQTQG/OxnlSWW/H3B
-         M4NfyNGJ8YSwxwEvgOCKLgxcnG2fFQQjzl8AugaXtaJA6lWPjP/vgKPuOYDx3qVOmPSo
-         /nHTJR6dNeHXyMEWRbnm5wnxewAGIWkYjGal8ZVU6hxoWP/aCuYBuGcqecenVc5va/on
-         tQww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727134849; x=1727739649;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3x7kV0t0BwS+h8hmJz7CsPp0Gs9iGAzAhach2olk9Wg=;
-        b=YDWgG557taKJhyNm/FCPV9iIfbPmF45ellmyQuSaxXldpQvZzT3RDddnzCAYcrTnIz
-         jJ2reJDGs8haEUpbxQXB+ByGJAhKonqyEIthPafrblLhr8YSDZgA683/dK/qCXti4G3q
-         1F5jvAxupsSQOzEWN/oqGIRR/C/fwLJZmHmkAhoDXSKDENzga3MzUJYwbnCyIvZ5Vp5Z
-         pt7yLp3hmDIOH2YwGoIsMjNWCTFGRsS925ZGnAUVqx8181xP6Au1PYds+S57ZlsGocoN
-         VboVfI7h18Coo6NMY892AYIPzJaBTqaZJikFa8th9P1zRJPP1U8tnL/JSbVpW6oSy3+J
-         iMDw==
-X-Gm-Message-State: AOJu0YyH+Jd/txA1dL4jTTqGhbua5NClagm/FfVLoGTsI1CQFCQD4FnL
-	cVaNeZtdto0MeokikZp8HWVb+d9jClthdcra2DxJVNMRAmagM7Ef/c8F
-X-Google-Smtp-Source: AGHT+IFQT4r4nPEB+muVUrJ9APjfA2wyKYm/wFE8zrGU+EF2MBMUe+pJuqPv2pR6IvicVmsOqxVzSw==
-X-Received: by 2002:a17:902:da84:b0:1fc:6740:3ce6 with SMTP id d9443c01a7336-208d8384adamr197169335ad.20.1727134848623;
-        Mon, 23 Sep 2024 16:40:48 -0700 (PDT)
-Received: from localhost ([2601:646:9e00:f56e:123b:cea3:439a:b3e3])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20af1831b1csm930675ad.226.2024.09.23.16.40.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Sep 2024 16:40:48 -0700 (PDT)
-Date: Mon, 23 Sep 2024 16:40:47 -0700
-From: Stanislav Fomichev <stfomichev@gmail.com>
-To: bpf@vger.kernel.org
-Cc: kuba@kernel.org
-Subject: [ANN] bpf development stats for 6.12
-Message-ID: <ZvH8f643jvK_gkyJ@mini-arch>
+	s=arc-20240116; t=1727135538; c=relaxed/simple;
+	bh=liU3xrMhCJ00+SP18e8Pf+o8QqUPpogn+daULb1u5gg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UtbD3KucfanxvOpTfq1F/i0XKEid1XIgveKrNfGnX5OcURo+WE1Oj2C9d8eXZgjYQamlOZohxf4TvJznTvR5lmZ93xcr1NBH4ZaTolzGSunxsPkILtRaiDuytIulK4xM9O+Eqpst9LvJvUfo0FJ9fBnT/grkuHRi+fFdFL0kGdI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=cwHgw9OY; arc=none smtp.client-ip=192.198.163.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1727135537; x=1758671537;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=liU3xrMhCJ00+SP18e8Pf+o8QqUPpogn+daULb1u5gg=;
+  b=cwHgw9OYgjB6tl2JKRDBD6M6kVvrvFvsVJ919+rzSz6CjO62DUvb1NXe
+   Ck8eM6jkMS8htUsnyra8EI7EJnaENzHGmJl5ota8BVeC53s9lZ/t4lFm+
+   QUAUJYhyNKVHtpbWH2JSIO/krqZ76eAcjC9B426cIgs0H6lp1XcFHB3vb
+   iXM+CvMQ3dbearrEnR7dPKZKoPS98G6vhStcaA3OHyMZobym0TEOMDEPd
+   PYPAEG6+Ou6TJ9p+qfQwAu/ltyRWOknD4blMCEK6425q+UcXYR5KUUZNJ
+   BlQbAvunUJBGd+rzfkVCdrC03xhn1544Hgmpc+XMfqe1P01YLUBLg2iqR
+   w==;
+X-CSE-ConnectionGUID: nw+T26XTTKShSQneEeBCjA==
+X-CSE-MsgGUID: RjQOmo4DQUuZ4Mp/KRqxGw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11204"; a="37472806"
+X-IronPort-AV: E=Sophos;i="6.10,252,1719903600"; 
+   d="scan'208";a="37472806"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2024 16:52:16 -0700
+X-CSE-ConnectionGUID: ebY8c56xTvWzZ2bYe8EGqA==
+X-CSE-MsgGUID: buCkN+fmRTOabrQlEgwvMw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.10,252,1719903600"; 
+   d="scan'208";a="75755546"
+Received: from tassilo.jf.intel.com (HELO tassilo) ([10.54.38.190])
+  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2024 16:52:15 -0700
+Date: Mon, 23 Sep 2024 16:52:14 -0700
+From: Andi Kleen <ak@linux.intel.com>
+To: "Liao, Chang" <liaochang1@huawei.com>
+Cc: mhiramat@kernel.org, oleg@redhat.com, andrii@kernel.org,
+	peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+	namhyung@kernel.org, mark.rutland@arm.com,
+	alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+	irogers@google.com, adrian.hunter@intel.com,
+	kan.liang@linux.intel.com, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH] uprobes: Improve the usage of xol slots for better
+ scalability
+Message-ID: <ZvH_LiUeOtAwommF@tassilo>
+References: <20240918012752.2045713-1-liaochang1@huawei.com>
+ <87jzf9b12w.fsf@linux.intel.com>
+ <7a6ba3f3-dffa-cdac-73c7-074505ea4b44@huawei.com>
+ <ZuwoUmqXrztp-Mzh@tassilo>
+ <0939300c-a825-5b46-d86f-72ce89b2b95f@huawei.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <0939300c-a825-5b46-d86f-72ce89b2b95f@huawei.com>
 
-As usual, sending out another update on the dev stats similar
-to Jakub's netdev one:
-https://lore.kernel.org/netdev/20240922190125.24697d06@kernel.org/
+> Thanks for the suggestions, I will experiment with a read-write lock, meanwhile,
+> adding the documentation and testing for the lockless scheme.
 
-BPF 6.11 stats: https://lore.kernel.org/bpf/ZqANgbFHX128IZYV@mini-arch/
+Read-write locks are usually not worth it for short critical sections,
+in fact they can be slower due to cache line effects.
 
-Previous cycle:
-15 May to 16 Jul: 5213 mailing list messages, 63 days, 83 messages per day
-552 repo commits (9 commits/day)
+> Sorry, I may not probably get the point clear here, and it would be very
+> nice if more details are provided for the concern. Do you mean it's necessary
+> to make the if-body excution exclusive among the CPUs? If that's the case,
+> I guess the test_and_put_task_slot() is the equvialent to the race condition
+> check. test_and_put_task_slot() uses a compare and exchange operation on the
+> slot_ref of utask instance. Regardless of the work type being performed by
+> other CPU, it will always bail out unless the slot_ref has a value of one,
+> indicating the utask is free to access from local CPU.
 
-Current cycle:
-16 Jul to 16 Sep: 5077 mailing list messages, 62 days, 82 messages per day
-247 repo commits (4 commits/day 45.75% of these are selftests)
+What I meant is that the typical pattern for handling races in destruction
+is to detect someone else is racing and then let it do the destruction
+work or reacquire the resource (so just bail out).
 
-Developer rankings
-------------------
+But that's not what you're doing here, in fact you're adding a
+completely new code path that has different semantics? I haven't checked
+all the code, but it looks dubious.
 
-Top reviewers (cs):                  Top reviewers (msg):                
-   1 ( +1) [8] Andrii Nakryiko          1 (   ) [25] Andrii Nakryiko     
-   2 ( -1) [7] Alexei Starovoitov       2 (   ) [17] Alexei Starovoitov  
-   3 ( +1) [3] Eduard Zingerman         3 (   ) [10] Eduard Zingerman    
-   4 ( +4) [3] Martin KaFai Lau         4 ( +3) [ 8] Martin KaFai Lau    
-   5 ( -2) [3] Jiri Olsa                5 ( +1) [ 8] Jakub Kicinski      
-   6 (+11) [2] Yonghong Song            6 (+14) [ 6] Yonghong Song       
-   7 (   ) [2] Jakub Kicinski           7 ( -3) [ 6] Jiri Olsa           
-   8 (+25) [1] Arnaldo Carvalho de Melo    8 ( +5) [ 5] Oleg Nesterov       
-   9 ( +2) [1] Alan Maguire             9 (***) [ 5] Christian Brauner   
-  10 (+12) [1] Stanislav Fomichev      10 (***) [ 5] Guillaume Nault     
-  11 (+10) [1] Oleg Nesterov           11 (+37) [ 4] Maciej Fijalkowski  
-  12 (+26) [1] Toke Høiland-Jørgensen   12 ( +5) [ 3] Alan Maguire        
-  13 ( +5) [1] Simon Horman            13 (+12) [ 3] Arnaldo Carvalho de Melo
-  14 ( -4) [1] Quentin Monnet          14 (+12) [ 2] Stanislav Fomichev  
-  15 (-10) [1] Masami Hiramatsu (Google)   15 (***) [ 2] Jitendra Vegiraju   
-
-Top authors (cs):                    Top authors (msg):                  
-   1 ( +1) [2] Andrii Nakryiko          1 ( +1) [16] Andrii Nakryiko     
-   2 (***) [2] Mina Almasry             2 ( +1) [16] Mina Almasry        
-   3 (+27) [1] Eduard Zingerman         3 (***) [12] Tony Ambardar       
-   4 ( +1) [1] Yonghong Song            4 ( +5) [ 8] Kui-Feng Lee        
-   5 (+31) [1] Tao Chen                 5 ( +7) [ 8] Eduard Zingerman    
-   6 (***) [1] Dan Carpenter            6 ( +7) [ 7] Masami Hiramatsu (Google)
-   7 (***) [1] Ihor Solodrai            7 (***) [ 6] Martin KaFai Lau    
-   8 (+14) [1] Chen Ridong              8 (***) [ 6] Ido Schimmel        
-   9 (***) [1] Tony Ambardar            9 ( +2) [ 6] Yafang Shao         
-  10 ( -6) [1] Jiri Olsa               10 (***) [ 5] Uros Bizjak         
-
-Top scores (positive):               Top scores (negative):              
-   1 (   ) [121] Alexei Starovoitov     1 ( +1) [63] Mina Almasry        
-   2 ( +3) [ 88] Andrii Nakryiko        2 (***) [46] Tony Ambardar       
-   3 (   ) [ 39] Jakub Kicinski         3 ( +3) [28] Kui-Feng Lee        
-   4 ( +2) [ 30] Jiri Olsa              4 (***) [23] Ido Schimmel        
-   5 ( -1) [ 27] Martin KaFai Lau       5 ( +2) [21] Yafang Shao         
-   6 (***) [ 24] Yonghong Song          6 (***) [20] Uros Bizjak         
-   7 ( +6) [ 22] Oleg Nesterov          7 (+25) [18] Alexis Lothoré      
-   8 (+19) [ 22] Arnaldo Carvalho de Melo    8 (***) [18] <viro@kernel.org>   
-   9 ( -7) [ 21] Eduard Zingerman       9 (+16) [15] Pu Lehui            
-  10 (+11) [ 18] Stanislav Fomichev    10 (***) [15] Masami Hiramatsu (Google)
-
-Company rankings
-----------------
-
-Top reviewers (cs):                  Top reviewers (msg):                
-   1 (   ) [14] Meta                    1 (   ) [57] Meta                
-   2 ( +2) [ 5] RedHat                  2 (   ) [21] RedHat              
-   3 ( -1) [ 5] Isovalent               3 (   ) [ 9] Isovalent           
-   4 ( -1) [ 3] Google                  4 (   ) [ 9] Google              
-   5 (   ) [ 3] Intel                   5 (   ) [ 6] Intel               
-   6 (   ) [ 2] Oracle                  6 ( +1) [ 6] Microsoft           
-   7 ( +4) [ 1] SUSE                    7 ( +1) [ 4] Oracle              
-
-Top authors (cs):                    Top authors (msg):                  
-   1 (   ) [8] Meta                     1 (   ) [52] Meta                
-   2 ( +1) [3] Google                   2 (   ) [27] Google              
-   3 ( +2) [3] Huawei                   3 ( +4) [14] Huawei              
-   4 ( +4) [2] RedHat                   4 (***) [12] Unknown             
-   5 ( -3) [1] Intel                    5 ( -1) [11] RedHat              
-   6 (   ) [1] Isovalent                6 ( -1) [ 7] Isovalent           
-   7 ( +4) [1] Bytedance                7 ( +2) [ 7] Intel               
-
-Top scores (positive):               Top scores (negative):              
-   1 (   ) [100] Meta                   1 ( +1) [49] Google              
-   2 ( +3) [ 67] RedHat                 2 (***) [45] Unknown             
-   3 ( -1) [ 47] Isovalent              3 ( +1) [37] Huawei              
-   4 ( +3) [ 19] Microsoft              4 ( +1) [21] Juniper Networks    
-   5 ( -1) [ 16] Intel                  5 (***) [20] Unknown
-   6 ( -3) [ 16] Linux Foundation       6 (***) [18] nVidia              
-   7 (***) [ 11] SUSE                   7 ( +9) [17] Bootlin             
+-Andi
 
