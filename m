@@ -1,143 +1,127 @@
-Return-Path: <bpf+bounces-40197-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40198-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2D3B97EAE0
-	for <lists+bpf@lfdr.de>; Mon, 23 Sep 2024 13:39:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A0FB97EB63
+	for <lists+bpf@lfdr.de>; Mon, 23 Sep 2024 14:14:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2FF461C214E3
-	for <lists+bpf@lfdr.de>; Mon, 23 Sep 2024 11:39:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4ADD51C21601
+	for <lists+bpf@lfdr.de>; Mon, 23 Sep 2024 12:14:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2FF4197A87;
-	Mon, 23 Sep 2024 11:39:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 890C41990BA;
+	Mon, 23 Sep 2024 12:13:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RCiwubSp"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gxxhKonl"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E700F52F62;
-	Mon, 23 Sep 2024 11:39:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB9FF198837
+	for <bpf@vger.kernel.org>; Mon, 23 Sep 2024 12:13:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727091565; cv=none; b=iKmYvBqbEAFkJD+nkDrhH76x+WGZPXyU6teINbOdlosDMIsBMjSjNeG1y2ZH7ZI9gbSWnulBZYKutXVfZQkbm+T6dgFz9fJFNEx0aMgKPDqyUtJQqQlpqQ7wsWyise+HLacY2MyGWdc67+chkmN53y5lVLOOQmzUR3f5wUcaiW8=
+	t=1727093634; cv=none; b=SQJJ5HfKgqwmnDnx/rNoebC1KxXkR4EzpGmfCD7nDKrqU0cRjXr5eE8ZM+NQoMVdDIfNpfGdOhjH+sFCfkWPQVnLnsiPQaOzEvgGSHJyAosny2MFG6Fgh9npaRJgPfWXArmNOKM4rV5ZxvCwdWhGCVlnbX81NiRSLtYylVs3gDo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727091565; c=relaxed/simple;
-	bh=aTRu5Zt18F0Vn58S0hvcQQ95NDimWRMH8Ql8FttBShc=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=LSQ8NWHylkFhW4a4lzopp+9HA8kVqGBJVur1tJTvw473EFQDdqv0YKOFsuJc4PW+66s/Y6k2nNUSndF+Z0U66E8bvrPNS1kopFTNVwMJVlhYNogpBo5WMEwVs8xk7Ac/+7KLRWySXVAgL7T7KKXatyhBMNWSrNs96p6TzQc5eAk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RCiwubSp; arc=none smtp.client-ip=209.85.215.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-7db90a28cf6so2333107a12.0;
-        Mon, 23 Sep 2024 04:39:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727091563; x=1727696363; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=2B2I+J6TxJmbnTjoxzqoH7+Kzts8oeJzZdCXJropM/k=;
-        b=RCiwubSp5Rra3fPi19op7LbsJndTbmBz1ZK6+MPFhks02ELv/mqKr51nBjdqysGq4v
-         mV1ppi4J0H9H0wNOmPfDnV1Z1i5PH/vO71Jv0Mdh512DVF1nHasrOd4+0Nvj/kU95s9t
-         QyYlCe2Yw5sThLm0FbV87Z4HuUZbswaQbWz8SU4PxgIECJAO+S5vENNxOgJOeNXuq3bM
-         /TB3U9TnKgyPiWd6MPV1pKM05lVH5RG+WT+WVbQIw9qxiG8U7j0BWAvGQc8dCxssv4Dj
-         zRZ3if1B/xcqUxQ2GF7doKuiQbYRV+yUh6Yjev6D1caTpVCmX6Nxh1fDWuaOLEsy0z/d
-         5EiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727091563; x=1727696363;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2B2I+J6TxJmbnTjoxzqoH7+Kzts8oeJzZdCXJropM/k=;
-        b=WVTk3LsJ/eGn7XK4HNfNIRI3FShM+GmmtX+dslVgfL4iy/AM6Cg1kq3lMGGteSai2v
-         b3xs1mFgBjmXudwavQdJWThQkYhyWQg9INvoL++1nUYk+Y/TQwPnHo3/pg1GMU/tjDUK
-         L8Ynzen+5rBbSlx5vAyP6AbVEZ6TMD64kqo4e+ZTZ8laCWJUANCyR0Z9wpE8Q5zfxJyd
-         DjWtxyTN6rSAKDh7MPMc4mof8nIK5i/dwhfS9cuDE16Fd9Um1zCp6qqHxNZUNOg0nvgJ
-         qhJEYkPKuBUI6a+PaQU2NsGdPZmeJ6mMgV1bUghE9Kjm9ZJhJiyt+a4lqd55VWNfDKlo
-         J2Wg==
-X-Forwarded-Encrypted: i=1; AJvYcCV3F9kYD2bvh2+3zWOupubw75jeIHmGQq0E47PiAz7iBy7HTR5PGHBt1J/EIMRjJlx4eHuHi7ImEhLGMviPSuFf@vger.kernel.org, AJvYcCWP7BfFFQ8BoMRK+zvXsLnf+X8Aceqxnr0gx9xVPziP+vIUxbjgJ8bsQ4B40OMDPwb5VeE=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxPhGm4W8bV302MwWHKRKPgqqECZdkydtK2wTGQnZAvzlBCrZ5G
-	T/8jmOYajCdWMbjiTNs9Tmgh9uLBV3nZJoVhH9v6OBjVmpyvhyJi
-X-Google-Smtp-Source: AGHT+IERpx0sY92CPr+NcFRfeU+hBGPA25M9y7xFnkE23ijIMROqdJH+Bc7TWBIGGu7sHn6A2r9m4A==
-X-Received: by 2002:a17:90a:8c96:b0:2d8:a943:87d1 with SMTP id 98e67ed59e1d1-2dd6ce9ae1cmr22286976a91.13.1727091563017;
-        Mon, 23 Sep 2024 04:39:23 -0700 (PDT)
-Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2dd6ef9858fsm9226312a91.52.2024.09.23.04.39.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Sep 2024 04:39:22 -0700 (PDT)
-Message-ID: <24b280fe1c3bc9348b4b89a9b860827ed432a772.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v1 2/3] bpf: btf: Ensure natural alignment of
- .BTF_ids section
-From: Eduard Zingerman <eddyz87@gmail.com>
+	s=arc-20240116; t=1727093634; c=relaxed/simple;
+	bh=QEy7BbUv17XgPef66l5Pl1s/1sq3pazOx8siZI8jVpY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cYVvpZgJwFy2vZeQMTvlZArhgYAv/aA4lSWb8xPPzBUqd7vQ9rf5cV1ONp2bt0Eiu8+C5imlYXeRRwhKDDXKJp9f1sSeip+eOVEBu6PsZs/+Kp4rNbQOjWqW11Phbamzldq1ZysJE4wt+K8CGKd6/LAAMpV6qKrymjque2gYb7A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gxxhKonl; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1727093631;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QEy7BbUv17XgPef66l5Pl1s/1sq3pazOx8siZI8jVpY=;
+	b=gxxhKonlw82Arbq0dGuhLP4hZ31t+qFvxnRnrcFf+YBLPSZBPvZlTuOFf6amMwMapn6/l4
+	FwJjLhVvRTJ/oEAxDR48j5m/y0i2gRPx6gAyaP2nUGRMKTC6g/ai4lZyBtoX4n9VRCgtMD
+	nT/A7kh/UyCurJILCntY27eEFN4kmMI=
+Received: from mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-46-1OYWd4CiNoKU5SzGIIWhLQ-1; Mon,
+ 23 Sep 2024 08:13:46 -0400
+X-MC-Unique: 1OYWd4CiNoKU5SzGIIWhLQ-1
+Received: from mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (unknown [10.30.177.40])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id C24C1190C4D3;
+	Mon, 23 Sep 2024 12:13:43 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.226.16])
+	by mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id A22751956060;
+	Mon, 23 Sep 2024 12:13:36 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Mon, 23 Sep 2024 14:13:31 +0200 (CEST)
+Date: Mon, 23 Sep 2024 14:13:23 +0200
+From: Oleg Nesterov <oleg@redhat.com>
 To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Tony Ambardar <tony.ambardar@gmail.com>, bpf@vger.kernel.org, 
- linux-kselftest@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu
- <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
- <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
- Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Mykola Lysenko
- <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, Jean-Philippe Brucker
- <jean-philippe@linaro.org>, Viktor Malik <vmalik@redhat.com>
-Date: Mon, 23 Sep 2024 04:39:17 -0700
-In-Reply-To: <ZvFJAJdEdK3wnyXs@krava>
-References: <cover.1726806756.git.tony.ambardar@gmail.com>
-	 <714d7ab8a48172c67ddc027c85b2a0dad0312a74.1726806756.git.tony.ambardar@gmail.com>
-	 <46d8d74883926245829f8aac3d1ab6dc5b5e4b98.camel@gmail.com>
-	 <ZvFJAJdEdK3wnyXs@krava>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.4 (3.52.4-1.fc40) 
+Cc: Peter Zijlstra <peterz@infradead.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@chromium.org>,
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCHv4 02/14] uprobe: Add support for session consumer
+Message-ID: <20240923121322.GC20793@redhat.com>
+References: <20240917085024.765883-1-jolsa@kernel.org>
+ <20240917085024.765883-3-jolsa@kernel.org>
+ <20240917120250.GA7752@redhat.com>
+ <Zul7UCsftY_ZX6wT@krava>
+ <20240922152722.GA12833@redhat.com>
+ <ZvEhL114tyhLmfB1@krava>
+ <20240923100552.GA20793@redhat.com>
+ <ZvFKy9WLiz18GjEZ@krava>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZvFKy9WLiz18GjEZ@krava>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.40
 
-On Mon, 2024-09-23 at 12:54 +0200, Jiri Olsa wrote:
+On 09/23, Jiri Olsa wrote:
+>
+> On Mon, Sep 23, 2024 at 12:05:53PM +0200, Oleg Nesterov wrote:
+> > On 09/23, Jiri Olsa wrote:
+> > >
+> > > change below should do what you proposed originally
+> >
+> > LGTM, just one nit below.
+> >
+> > But I guess you need to do this on top of bpf/bpf.git, Andrii has already
+> > applied your series.
+>
+> that seems confusing
 
-[...]
+Yes ;)
 
-> > > diff --git a/include/linux/btf_ids.h b/include/linux/btf_ids.h
-> > > index c0e3e1426a82..c10b163dc340 100644
-> > > --- a/include/linux/btf_ids.h
-> > > +++ b/include/linux/btf_ids.h
-> > > @@ -89,6 +89,7 @@ word							\
-> > >  #define __BTF_ID_LIST(name, scope)			\
-> > >  asm(							\
-> > >  ".pushsection " BTF_IDS_SECTION ",\"a\";       \n"	\
-> > > +".balign 4, 0;                                 \n"	\
-> > >  "." #scope " " #name ";                        \n"	\
-> > >  #name ":;                                      \n"	\
-> > >  ".popsection;                                  \n");
-> >=20
-> > This forces all id list symbols to be aligned on 4 bytes.
-> > Should the same be done for __BTF_SET_START?
->=20
-> it seems all the set macros use __BTF_ID_LIST, so it should be taken
-> care of by that
+> but looks like just that one fix with the
+> commit link in [1] was applied
 
-Apologies, I don't know how I missed __BTF_ID_LIST invocation in
-the __BTF_SET_START definition :(
+Ah, OK.
 
-> > Also, is it guaranteed that all btf ids are organized in lists and sets=
-?
-> > Grepping through the code it seems they are, but it looks like resolve_=
-btfids
-> > does not really enforce this, simply looking for symbols matching a spe=
-cial name
-> > __BTF_ID__<type>__<symbol>[__<id>] .
->=20
-> yes, you need the BTF_ID to be part of list or set to be able to access i=
-t
->=20
-> resolve_btfids does not enforce some loose BTF_ID definition without list=
-/set,
-> but that does not seem to be a problem
+> > And to remind, 02/14 must be fixed in any case unless I am totally confused,
+> > handler_chain() can leak return_instance.
+>
+> yep it was missing kfree, but it's not needed in this new version
 
-Understood, thank you.
+Yes, yes, the new version looks fine to me.
+
+Oleg.
 
 
