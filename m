@@ -1,96 +1,91 @@
-Return-Path: <bpf+bounces-40195-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40196-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F94597EA69
-	for <lists+bpf@lfdr.de>; Mon, 23 Sep 2024 13:02:49 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E225A97EA75
+	for <lists+bpf@lfdr.de>; Mon, 23 Sep 2024 13:07:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C5751F22061
-	for <lists+bpf@lfdr.de>; Mon, 23 Sep 2024 11:02:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2AA17B2098E
+	for <lists+bpf@lfdr.de>; Mon, 23 Sep 2024 11:07:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A711D197A88;
-	Mon, 23 Sep 2024 11:02:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9406F194ACF;
+	Mon, 23 Sep 2024 11:07:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BYg04hIQ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lv+rwdHq"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C824EADA;
-	Mon, 23 Sep 2024 11:02:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94F45197A77;
+	Mon, 23 Sep 2024 11:07:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727089361; cv=none; b=GiBR3UF/+P5bgyRB4FJuHJyFAcH+99rjWHFwTpYGHGfbKoZZnhwfjI/QQu3/zCCgVvnUnUrsPS59zP186uDprSLcUf4MQ9gLuhlMPOmU4ffdJB12SFcKeEHPTv2igQFDtNnrQ8g49GPmY1cH/EByvcaUnZcojxqVfiMYX3WlfLk=
+	t=1727089633; cv=none; b=Rh0skgFbJwY1sxaqKz1Z8Wofm5YfGKFbJoXW5/osLP70QZC6NCF3Q5xIC6M/URjri/Ufwe0m+Gsr2WxkKsuJHE4UHKtrCDLXiK6syK+Wd8k3j0tnf45i657bz7EBc1jTwH89+DrmShBYcT/4BDT+QkydhfaX/Wql3GssWqFHuVI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727089361; c=relaxed/simple;
-	bh=LlvucM0P1hXSJnxs8UuQo5QRum/PKVcAx7WDA82wobk=;
+	s=arc-20240116; t=1727089633; c=relaxed/simple;
+	bh=uQqTX8MOzbotyLLLrtDqctrYuNvqiUuv18STkugV78c=;
 	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=e1UxjgycLlQY+LRPEfLiaVK1V+jjhn728GbNHgCH51josNRovTlLCDFjYsCNzbfZsGAAfWyE4Bu8cvH756U0b97pqGlWPsFF4fcgBlFkvUPYi4bf6HIuCPIkoIzrTC3zUd9ScwwP++ROy2w50bHEBtahjq/Yu2gHSLNpTIfk26s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BYg04hIQ; arc=none smtp.client-ip=209.85.221.44
+	 Content-Type:Content-Disposition:In-Reply-To; b=a/Z3J5p1VFZePaLiHt4N5KeG0ODp9b7nijx6lhderuIJL67YvRcQtipmNECa3vz4AtXwanw7q6bMh7gYaziYvZE9PE7ECCxpVyvBSchKazPUlOjxSkphYivl3anj70Uf+rNCj+M4/ANj34kwt1h3H6jZ3MKcrnaq9/lQm6KVLVA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lv+rwdHq; arc=none smtp.client-ip=209.85.128.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-374bd0da617so2978462f8f.3;
-        Mon, 23 Sep 2024 04:02:39 -0700 (PDT)
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-42cb60aff1eso42035175e9.0;
+        Mon, 23 Sep 2024 04:07:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727089358; x=1727694158; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1727089630; x=1727694430; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=9yidkyLnY/xuXlstPu2cMA6yS+9pleuUa9Q9pOuYZ4M=;
-        b=BYg04hIQs21f+OKRzlZOVrZdVaTc7G3p0x9n9U5k4UmBy8HbUuPvHCDE0XUuU4j/LL
-         7aJx7PsSFeMw/MOA/pgm2uaO8z2QxJ1pSBDPJg5NtwzmhhmHxcPpvmHw9bRuSdA6Z9Mi
-         jEV81WU6pMZdC+y6aOroZyHQCvUr9hXcpA+LPYt2Qrkdq6rWo/5gCxZe1KsFxetAbbBV
-         /XQybb8Ia5T1s3AhhSjobTsEgi7x5FefL6N2LEXfnsgYFvOuvI83dhQpOCGivUfzqQWm
-         +8Y+tR2l+YCbQVoggWnDfE/Ho3i15fVGNFbBF/K0t1wOqaZ6+O0cgsEGgWQBabc36Dhf
-         bTxg==
+        bh=D3geJL7ixz4Bia+Km87KjRXCdEiy3BgJRZYEhH0JnWs=;
+        b=lv+rwdHquZOJdvGJlgrRGswp7yiLhIK7ciXBZkW/8n45NciYSxIXK5heNL/ibgFOy8
+         ZbERRwCWlul61hG6fiGI9CutYxH8Mfq5Nl4ud0xqqO5t7fOpzP//3/zTYUD8jjYekAnV
+         xXYd9zADeBg9ZkA21dKIBf5H3BZem5sQv8ZuaUBLnVPd5iwz6h4GsLakzCl3xbNY772B
+         AIfwylhcVPXq77OLvOQf1Jllwgopk56awRPzORdXR2mtr4yVx63UECHdNwAWxx6S675C
+         LthORiXJlI1ah4KEwCCOyoPneDPVsxCtT3tBjmDQazUjPBStLhbVbf5jpH/w4xYTsn9V
+         ry5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727089358; x=1727694158;
+        d=1e100.net; s=20230601; t=1727089630; x=1727694430;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=9yidkyLnY/xuXlstPu2cMA6yS+9pleuUa9Q9pOuYZ4M=;
-        b=PUZr3AVtMgDM9EWUgGTD/Rwf/ZGNNEt38qRiZYzcecLg1yD+xWjRdy0Oj3CJM4foef
-         BGFWcsLq5yglLeiDwEOIQMbX/r4SaSoyedzAfAZQZtNwFpBBDgrqU9gK2F+CJ9eSqdbS
-         s39PB5x45Ilocx0l1Z+QEdlo0grk4iWN4mVjpnDJR6nh5+cLEGxvE2cvdFxRZZIwlWte
-         quN2EKs6W8t718SCmvdhX4+ydkRGqw4vOEX/bsKyFT875dPUvzn/25RwiSYDVfZ8ly3j
-         DsNkO+TRE5PbVtppCTWbrTwwobcn43H6zUVYkXMv3T3ZyFj6r0BJKyZINUKb0F1Fest8
-         wKiA==
-X-Forwarded-Encrypted: i=1; AJvYcCUpvUpw3rjTJpW7uYXoYbrLd9T4eOUH7Ypdp4IzV3XWftj43IM7Fviq/Z31HJbwPNnbjksZc/cCL57hnoLcgh1LhsTQ@vger.kernel.org, AJvYcCX66qoeyTnpMNUCmB+l44EHEBb9kMnMHKmgc0koTulOtXnJdh3cORwF2Ssrh8OZApyi+bXSWYfg8ajMNadq@vger.kernel.org, AJvYcCXBZGj+riApIIgMsceW+kXpQB/MgVLEgMXNhiT7u1tmCBRIXquX/RQL/GMq7DapryV5Uxo=@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywn9inX3mc+xBUy3cC8PoamsfYiJjVg39vG86Cz4JX6tAfJQGJK
-	SJLkVB4pLXXEsNrQpwNN198OyeQ3d5/cCnJH188MQEQeUrnwCGpT
-X-Google-Smtp-Source: AGHT+IHaEAZrODitl8iCpdeEw/+Vxhs0sLBKOLbimZWJkK85P1HSSkvbyYQR5dqF0IlKeHJAqUEZ1g==
-X-Received: by 2002:adf:f882:0:b0:371:8ec6:f2f0 with SMTP id ffacd0b85a97d-37a4227273dmr6127402f8f.16.1727089357801;
-        Mon, 23 Sep 2024 04:02:37 -0700 (PDT)
+        bh=D3geJL7ixz4Bia+Km87KjRXCdEiy3BgJRZYEhH0JnWs=;
+        b=VqXjTalPf/ZkV/AN16jBWmDMJ6gxU2+lslWZNq460Sy5JxwZUcaj+7IBdYs53K+F3W
+         GBlBJ4ckY8rjINAbV4bKhGW7Cg0s5f49aITwfSce+k9Bq8R2rOneXvbXydRGbGVZ0GDG
+         R2ZmyvmOIUuwoTlKvSLSh5Y8shbz4FTP84aFS9SWhow4iog8d5rEE+Lgc/BnhMJPtwif
+         PeImvSeOktcZcTwba84MWt0OQcck77BqKwbR8bQ1GJPb79CVHZNRtdWGCmU0iy3MxXeu
+         tzav2Q4IdF26oGTA2F+NyEFkzNdHZqwplGzavFD3UkzpD5zfLq5eoDJeDYbiMQJuZRtg
+         +Lrg==
+X-Forwarded-Encrypted: i=1; AJvYcCX97VAzouqidaBOw/WcNYSkpcgPwWyOMqXnGUkwHcGCMDRSIAOylbnhIcDl8wXDKK06+WgnW8qWfHmwNVk1NeU=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywz9UCv6rY1h6oZyBUf3BraUCOtEx9S19pzDSuRjMwcO1byJetR
+	HVc4icnteTM6BYCt3VmaPJrGU3NihVghJV0joxru9GZgr1xEZeNj
+X-Google-Smtp-Source: AGHT+IHg07MeygA6nqV6/Z+8rt5L7mI/nXsru41UUFH2Mg0UopscBeAQ7xb3ZPGp3/ch6UmIzEtJJw==
+X-Received: by 2002:a05:600c:358b:b0:42c:b377:3f76 with SMTP id 5b1f17b1804b1-42e7c16ec9dmr88999175e9.17.1727089629839;
+        Mon, 23 Sep 2024 04:07:09 -0700 (PDT)
 Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-378e73e80eesm24050519f8f.30.2024.09.23.04.02.36
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-42e7ac7d315sm98942635e9.0.2024.09.23.04.07.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Sep 2024 04:02:37 -0700 (PDT)
+        Mon, 23 Sep 2024 04:07:09 -0700 (PDT)
 From: Jiri Olsa <olsajiri@gmail.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Mon, 23 Sep 2024 13:02:35 +0200
-To: Oleg Nesterov <oleg@redhat.com>
-Cc: Jiri Olsa <olsajiri@gmail.com>, Peter Zijlstra <peterz@infradead.org>,
+Date: Mon, 23 Sep 2024 13:07:07 +0200
+To: Tony Ambardar <tony.ambardar@gmail.com>
+Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
 	Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-	Yonghong Song <yhs@fb.com>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
 	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@chromium.org>,
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCHv4 02/14] uprobe: Add support for session consumer
-Message-ID: <ZvFKy9WLiz18GjEZ@krava>
-References: <20240917085024.765883-1-jolsa@kernel.org>
- <20240917085024.765883-3-jolsa@kernel.org>
- <20240917120250.GA7752@redhat.com>
- <Zul7UCsftY_ZX6wT@krava>
- <20240922152722.GA12833@redhat.com>
- <ZvEhL114tyhLmfB1@krava>
- <20240923100552.GA20793@redhat.com>
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>, Mykola Lysenko <mykolal@fb.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	Viktor Malik <vmalik@redhat.com>
+Subject: Re: [PATCH bpf-next v1 0/3] Improve .BTF_ids patching and alignment
+Message-ID: <ZvFL2_qf3m6jcnqu@krava>
+References: <cover.1726806756.git.tony.ambardar@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -99,56 +94,51 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240923100552.GA20793@redhat.com>
+In-Reply-To: <cover.1726806756.git.tony.ambardar@gmail.com>
 
-On Mon, Sep 23, 2024 at 12:05:53PM +0200, Oleg Nesterov wrote:
-> On 09/23, Jiri Olsa wrote:
-> >
-> > change below should do what you proposed originally
+On Fri, Sep 20, 2024 at 12:49:10AM -0700, Tony Ambardar wrote:
+> Hello all,
 > 
-> LGTM, just one nit below.
+> This patch series offers improvements to the way .BTF_ids section data is
+> created and later patched by resolve_btfids.
 > 
-> But I guess you need to do this on top of bpf/bpf.git, Andrii has already
-> applied your series.
+> Patch #1 simplifies the byte-order translation in resolve_btfids while
+> making it more resilient to future .BTF_ids encoding updates.
+> 
+> Patch #2 makes sure all BTF ID data is 4-byte aligned, and not only the
+> .BTF_ids used for vmlinux.
+> 
+> Patch #3 syncs the above changes in btf_ids.h to tools/include, obviating
+> a previous alignment fix in selftests/bpf.
+> 
+> Feedback and suggestions are welcome!
+> 
+> Best regards,
+> Tony
 
-that seems confusing but looks like just that one fix with the
-commit link in [1] was applied
+nice, thanks for the fix
 
-[1] https://lore.kernel.org/bpf/172708047825.3261420.5126267811201364070.git-patchwork-notify@kernel.org/T/#mb065649b5ab8f7ea5b03c215bdc6555a0b76c0d7
-
-> 
-> And to remind, 02/14 must be fixed in any case unless I am totally confused,
-> handler_chain() can leak return_instance.
-
-yep it was missing kfree, but it's not needed in this new version
-
-> 
-> > also on top of that.. I discussed with Andrii the possibility of dropping
-> > the UPROBE_HANDLER_IWANTMYCOOKIE completely and setup cookie for any consumer
-> > that has both 'handler' and 'ret_handler' defined, wdyt?
-> 
-> Up to you. As I said from the very beginning I won't insist on _IWANTMYCOOKIE.
-
-ok
-
-> 
-> >  	list_for_each_entry_srcu(uc, &uprobe->consumers, cons_node,
-> >  				 srcu_read_lock_held(&uprobes_srcu)) {
-> > +		ric = return_consumer_find(ri, &ric_idx, uc->id);
-> >  		if (uc->ret_handler)
-> > -			uc->ret_handler(uc, ri->func, regs);
-> > +			uc->ret_handler(uc, ri->func, regs, ric ? &ric->cookie : NULL);
-> >  	}
-> >  	srcu_read_unlock(&uprobes_srcu, srcu_idx);
-> 
-> return_consumer_find() makes no sense if !uc->ret_handler, can you move
-> 
-> 		ric = return_consumer_find(ri, &ric_idx, uc->id);
-> 
-> into the "if (uc->ret_handler)" block?
-
-ok, will move that
+Jean-Philippe, Viktor,
+any chance you could check/test this patchset? it changes your recent
+cross building fixes
 
 thanks,
 jirka
+
+> 
+> 
+> Tony Ambardar (3):
+>   tools/resolve_btfids: Simplify handling cross-endian compilation
+>   bpf: btf: Ensure natural alignment of .BTF_ids section
+>   tools/bpf, selftests/bpf : Sync btf_ids.h to tools
+> 
+>  include/linux/btf_ids.h                       |  1 +
+>  tools/bpf/resolve_btfids/main.c               | 60 +++++---------
+>  tools/include/linux/btf_ids.h                 | 80 +++++++++++++++++--
+>  .../selftests/bpf/prog_tests/resolve_btfids.c |  6 --
+>  4 files changed, 97 insertions(+), 50 deletions(-)
+> 
+> -- 
+> 2.34.1
+> 
 
