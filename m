@@ -1,163 +1,145 @@
-Return-Path: <bpf+bounces-40255-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40256-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EC6598444D
-	for <lists+bpf@lfdr.de>; Tue, 24 Sep 2024 13:13:42 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E76998446F
+	for <lists+bpf@lfdr.de>; Tue, 24 Sep 2024 13:22:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4CCAA281C10
-	for <lists+bpf@lfdr.de>; Tue, 24 Sep 2024 11:13:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A04AEB271E9
+	for <lists+bpf@lfdr.de>; Tue, 24 Sep 2024 11:22:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76F101A4F1A;
-	Tue, 24 Sep 2024 11:13:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DA131A270;
+	Tue, 24 Sep 2024 11:21:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DmjMwbKR"
+	dkim=pass (2048-bit key) header.d=blackwall-org.20230601.gappssmtp.com header.i=@blackwall-org.20230601.gappssmtp.com header.b="I4mRZlgf"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 439BD1A4F0C
-	for <bpf@vger.kernel.org>; Tue, 24 Sep 2024 11:13:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06E791A4F0A
+	for <bpf@vger.kernel.org>; Tue, 24 Sep 2024 11:21:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727176419; cv=none; b=syQ2tJj2k12XznoaS663nONROHXh4vuHxqbbTeWuMQlM08Rv9R6GSrBgczXJrK+x7g9hdU5AkOmjeoACJUwJfgn1mNWZYQxogOZMABU4kLe6wHsDlrDAAwzXtyYj21uhwMDC4QB0JE7lgWIiAB2Gr6hFgQWgKQ0x9c5MNN2hcJs=
+	t=1727176909; cv=none; b=QtygIvIEZby5KJNVba/Ee9U6VJOqG8Mce+OQ1Ml5z+qSOoRkIjk6MY6L1XpY3rPF3oCnBMfWiAxS/FiIy95bqCL6QakTOUMhPzwvGDH7rPby4YCDcxcF5K451RZM2aqMA5Kz3Shs8KXUjvVbbPvRkEHfVbdNgaAYFgZhvgoRrZE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727176419; c=relaxed/simple;
-	bh=1utVeLe28r/rkR5lS+VlI9lQg8NLncBUFW9yR9l8MfA=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=i+oykebRSSNS4Gv8H0WlsmTPhuPRpKCwcSiV+1bbtgAjE+EEaDLChbGuWu8v9VqWw76A7+6clYz71CwaXNck/cm4UK2qpLC7hvlInVL/rns7GK03PFQrd1HHwRcaPvziX9fUPAZjNlvdugCIbecQqiRmGA7nPy1Z4mzQLlMSgjI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DmjMwbKR; arc=none smtp.client-ip=209.85.128.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-42cbbb1727eso49922125e9.2
-        for <bpf@vger.kernel.org>; Tue, 24 Sep 2024 04:13:36 -0700 (PDT)
+	s=arc-20240116; t=1727176909; c=relaxed/simple;
+	bh=Jj2kY0s3nLvGSJk43H/8dQ6ptNHqz4lwqKkwB5lyxNM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=OJGl3k6X/lLxsg7TZ3UnXk6cbJLGTc68vspZgyCWOJWEoH/lBCb2XeJkCTgA9peuP3/ycwhmH5V2NhxmtwE7Z0RSFDBA78EPMXR7cE5AQpU59NNDMOIh2jx+LbkN+7tl1lh0J3yyGWf5j6ey6A3+RSipMGG+EJ5qkQhhB8YI/Sg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=blackwall.org; spf=none smtp.mailfrom=blackwall.org; dkim=pass (2048-bit key) header.d=blackwall-org.20230601.gappssmtp.com header.i=@blackwall-org.20230601.gappssmtp.com header.b=I4mRZlgf; arc=none smtp.client-ip=209.85.208.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=blackwall.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=blackwall.org
+Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2f75b13c2a8so57488701fa.3
+        for <bpf@vger.kernel.org>; Tue, 24 Sep 2024 04:21:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727176415; x=1727781215; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=PKgCQZeRX9zMqgMXO/bQGaBbBf7as1dZ12drLoyXWWM=;
-        b=DmjMwbKRWFjMcRUu0xPBs8WF5qqSeFtn4OklpGSqtTmThghc/Gckw0wgnH0HSG19lx
-         wuSy4AeVeytvwiipIcEGVnYCGA0+u/+fq7pvTfsxL76RaPuBilYNZoD+FN+HsmXDVO4W
-         GbUGHfvRnhtVAmKeLhmTCwg0uzUg7trQABm9bTL6i4R75wpmHskQsO+tD2Lw569TlV5n
-         g3Cq2PiQATWAsvrhmLBbNBGMORGn6FuguhT4Po7GFFrovIU7iwN6LDCaoCsFcmewIWgE
-         kn9uhGmaiBKNbQK2QqaLfSKbqBDKoH4S0fT6aAQnOkyq5uf1gU0tL9UzxxGn0P3IBbWD
-         o9+g==
+        d=blackwall-org.20230601.gappssmtp.com; s=20230601; t=1727176906; x=1727781706; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=J3VQ/oBeOZme7i4I/7mHE4CNcL6txPF1CWfw+Th573A=;
+        b=I4mRZlgfy7EdyPc2tI7OzrXslFHz5kS/x5LozXap56fdTyATrSAIORwv6Z6WdiPAvz
+         sYVpTMtYlz02PsxWJXkifURYsvvw3wH7jhjwjF+bEZP0jtztKDbuPk1ZnejiRiIfDlVG
+         k+Bano87Ja8rSMNvRee+bWTHBpcIljbUMBVa+MhFAgWn5jiiMeZC5KzfE16d1zhZh2xa
+         t8kywtC5qUXVhWB5DvdKJaeZZeH/Zf5KaU1B2BKPzAqGkCqUOYrzVBLOTn3bI+9juau/
+         fmXqZ07ANglwmHa9oUnhlRi0umw9tYlhalJG2/NlvIrMAhUQanzuGBwxs3S+184VIhGD
+         wVPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727176415; x=1727781215;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PKgCQZeRX9zMqgMXO/bQGaBbBf7as1dZ12drLoyXWWM=;
-        b=NXltYcJiFNQPkTsN94JZCLFLuujMrMfjqI9IzBBoE2CkxSSmDmewXy93FgASvb4h6C
-         W/Wu+CxpXlAaPpogVTmIrBPiUN3jRmHp1o60OZCBgZddNaxwMzDfiyGnrwt5MiA/3EpT
-         yRfwhuzSfehGiBPNLBM5QYBj9ToThNji4E2HURWtbX7Xb6eZdxV+QIiJ0NDDnovf2Jjb
-         sL+YVasYbikS4yLULDJ8gIyiSc9qeh5kKUshl3+IBYK8vgI7LKhsH3VKpxvy+lSR/ie9
-         VOf2Ro+daMa9UFwuOkt1GHJnpgVQBEbnbdgPHu/Z/Sug5iMSAQ28t6HION/00T1Lk9Mn
-         mbrg==
-X-Forwarded-Encrypted: i=1; AJvYcCVBnSejcjjsaCl6AploEHikP+z8F/ctdAhsuI85t8+BJ83IynFEvStgR7aVa7MB02MU4ek=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxD2zAKy6lFjiY4WSILBBAf4eAzH8gf3eNwDHbRstF3ve1x61qZ
-	P4UXYzbVJVMmW6IDjc30AcMPbU/8k82uNFTgdx5z0GODgwCE+kQa
-X-Google-Smtp-Source: AGHT+IEMrZ3StDmHecvDqGMKYYk2ydAN3bcXMWPhNKlJOwSillFl9FPbUslySBP7siZVrxd6zqBz2Q==
-X-Received: by 2002:a05:600c:5246:b0:42c:ba1f:5452 with SMTP id 5b1f17b1804b1-42e7ad87fc4mr122222395e9.25.1727176415136;
-        Tue, 24 Sep 2024 04:13:35 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-42e902b681esm18721715e9.37.2024.09.24.04.13.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Sep 2024 04:13:34 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Tue, 24 Sep 2024 13:13:32 +0200
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Ihor Solodrai <ihor.solodrai@pm.me>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@chromium.org>,
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
-	Oleg Nesterov <oleg@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>
-Subject: Re: [PATCHv3 bpf-next 2/2] selftests/bpf: Add uprobe multi consumers
- test
-Message-ID: <ZvKe3LGtJP5Otvrn@krava>
-References: <20240722202758.3889061-1-jolsa@kernel.org>
- <20240722202758.3889061-3-jolsa@kernel.org>
- <w6U8Z9fdhjnkSp2UaFaV1fGqJXvfLEtDKEUyGDkwmoruDJ_AgF_c0FFhrkeKW18OqiP-05s9yDKiT6X-Ns-avN_ABf0dcUkXqbSJN1TQSXo=@pm.me>
- <CAEf4Bzb2dTK0jgc69O9Ouu3=5qeTT=RMAa3Na3V7LztN6y8bUw@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1727176906; x=1727781706;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=J3VQ/oBeOZme7i4I/7mHE4CNcL6txPF1CWfw+Th573A=;
+        b=Kju0f2QxSVz2EtsG+TEKe+ekNIEa742VYVV57fB+pmMkmXm6VtchZ/kgHiGIJsfXO4
+         oNysJ6WNc0tK6oilznJIs6TXg2/GLrYPwP6YcsC3vTvn3s7ZH0ajbkDiF26Atex4JEjW
+         O8TmpC1iZMtqf0bKMo2/dU2B51v6DENm5vFI5ff4noBxHWK1bQ6UPtHEKT//SdTmzHq1
+         589eSx+gOcuGnLSJQOy8DEC/yqVvJRyX+5YLTpXyb30O5jKU5hWN0PfNyGo4RI20JcFJ
+         YYc6KMXGkw8QxmsE0BUJROIOzL0u6risU0wrfIntQrj8lD67gF2+diiMe3S+AhsFFeo8
+         BFWw==
+X-Forwarded-Encrypted: i=1; AJvYcCWYJcci2RFyjIFKUfHJ3kLIMccANQYe/b8y6/oio4xx0Dtyyc59QXNOlwsFq+RWhcBZ4C4=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwEJZULredTRSjtjKJK1/iUcdJiDJ8fxISXyN339CPUV2glHVUK
+	5W2eIgvv7iQTHRQtnwQW84L++btAQyuGEOaS/VgGoqPV1YatrBR02HjcghYGRjQ=
+X-Google-Smtp-Source: AGHT+IFk/otU7x9ha29AT1wwFhwBtrmwOZzPPA+MwpRBiO6fr4bhrwIYWdQcvPw2P2NZiHOtZN2UBA==
+X-Received: by 2002:a05:651c:2211:b0:2f7:8d3f:11fc with SMTP id 38308e7fff4ca-2f7cb360354mr81843491fa.31.1727176905904;
+        Tue, 24 Sep 2024 04:21:45 -0700 (PDT)
+Received: from [192.168.1.18] (176.111.185.181.kyiv.nat.volia.net. [176.111.185.181])
+        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-2f8d283b661sm1905781fa.33.2024.09.24.04.21.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Sep 2024 04:21:45 -0700 (PDT)
+Message-ID: <52874821-600b-4ffe-b4b4-9efbed6a3aca@blackwall.org>
+Date: Tue, 24 Sep 2024 14:21:43 +0300
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4Bzb2dTK0jgc69O9Ouu3=5qeTT=RMAa3Na3V7LztN6y8bUw@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net v3] bonding: Fix unnecessary warnings and logs from
+ bond_xdp_get_xmit_slave()
+To: Paolo Abeni <pabeni@redhat.com>, Jiwon Kim <jiwonaid0@gmail.com>,
+ jv@jvosburgh.net, andy@greyhouse.net, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+ hawk@kernel.org, john.fastabend@gmail.com, joamaki@gmail.com
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ bpf@vger.kernel.org, syzbot+c187823a52ed505b2257@syzkaller.appspotmail.com
+References: <20240918140602.18644-1-jiwonaid0@gmail.com>
+ <29ef00f0-57dc-4332-9569-e88868a85575@redhat.com>
+Content-Language: en-US
+From: Nikolay Aleksandrov <razor@blackwall.org>
+In-Reply-To: <29ef00f0-57dc-4332-9569-e88868a85575@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, Sep 24, 2024 at 07:44:50AM +0200, Andrii Nakryiko wrote:
-
-SNIP
-
-> > > + /
-> > > + * uprobe return is tricky ;-)
-> > > + *
-> > > + * to trigger uretprobe consumer, the uretprobe needs to be installed,
-> > > + * which means one of the 'return' uprobes was alive when probe was hit:
-> > > + *
-> > > + * idxs: 2/3 uprobe return in 'installed' mask
-> > > + *
-> > > + * in addition if 'after' state removes everything that was installed in
-> > > + * 'before' state, then uprobe kernel object goes away and return uprobe
-> > > + * is not installed and we won't hit it even if it's in 'after' state.
-> > > + */
-> > > + unsigned long had_uretprobes = before & 0b1100; // is uretprobe installed
-> > > + unsigned long probe_preserved = before & after; // did uprobe go away
-> > > +
-> > > + if (had_uretprobes && probe_preserved && test_bit(idx, after))
-> > > + val++;
-> > > + fmt = "idx 2/3: uretprobe";
-> > > + }
-> >
-> > Jiri, Andrii,
-> >
-> > This test case started failing since upstream got merged into bpf-next,
-> > starting from commit https://git.kernel.org/bpf/bpf-next/c/440b65232829
-
-thanks for the report
-
-SNIP
-
+On 9/24/24 13:20, Paolo Abeni wrote:
+> On 9/18/24 16:06, Jiwon Kim wrote:
+>> syzbot reported a WARNING in bond_xdp_get_xmit_slave. To reproduce
+>> this[1], one bond device (bond1) has xdpdrv, which increases
+>> bpf_master_redirect_enabled_key. Another bond device (bond0) which is
+>> unsupported by XDP but its slave (veth3) has xdpgeneric that returns
+>> XDP_TX. This triggers WARN_ON_ONCE() from the xdp_master_redirect().
+>> To reduce unnecessary warnings and improve log management, we need to
+>> delete the WARN_ON_ONCE() and add ratelimit to the netdev_err().
+>>
+>> [1] Steps to reproduce:
+>>      # Needs tx_xdp with return XDP_TX;
+>>      ip l add veth0 type veth peer veth1
+>>      ip l add veth3 type veth peer veth4
+>>      ip l add bond0 type bond mode 6 # BOND_MODE_ALB, unsupported by XDP
+>>      ip l add bond1 type bond # BOND_MODE_ROUNDROBIN by default
+>>      ip l set veth0 master bond1
+>>      ip l set bond1 up
+>>      # Increases bpf_master_redirect_enabled_key
+>>      ip l set dev bond1 xdpdrv object tx_xdp.o section xdp_tx
+>>      ip l set veth3 master bond0
+>>      ip l set bond0 up
+>>      ip l set veth4 up
+>>      # Triggers WARN_ON_ONCE() from the xdp_master_redirect()
+>>      ip l set veth3 xdpgeneric object tx_xdp.o section xdp_tx
+>>
+>> Reported-by: syzbot+c187823a52ed505b2257@syzkaller.appspotmail.com
+>> Closes: https://syzkaller.appspot.com/bug?extid=c187823a52ed505b2257
+>> Fixes: 9e2ee5c7e7c3 ("net, bonding: Add XDP support to the bonding driver")
+>> Signed-off-by: Jiwon Kim <jiwonaid0@gmail.com>
 > 
-> Thanks for the mitigation! I think this is due to my recent RCU and
-> refcounting changes to uprobes/uretprobes, which went through
-> tip/perf/core initially. And now that tip and bpf-next trees
-> converged, this condition:
+> Isn't the above issue completely addressed by explicitly checking for 
+> bond->prog in bond_xdp_get_xmit_slave()? Or would that broke some use-case?
 > 
->   > unsigned long probe_preserved = before & after; // did uprobe go away
+> Thanks,
 > 
-> is no longer correct, and uretprobe can be activated if there was
-> *any* uretprobe installed before.
+> Paolo
 > 
-> So the test needs adjustment, but I don't think anything really broke.
-> I don't remember exactly (and given the conferencing schedule and
-> quite bad internet can't test quickly), but I think the condition
-> should now be:
-> 
-> unsigned long probe_preserved = after & 0x1100;
-> 
-> (though we might want to also rename the variable to be a bit more
-> meaningful now).
-> 
-> Anyways, I don't think this is critical and we can address this later.
-> But if anyone is willing to send a fix, I'd appreciate it, of course!
 
-I think we can remove that check completely.. I sent the patch, let's discuss there ;-)
+There isn't much difference with this patch, bond_xdp_get_xmit_slave()
+always returns either a slave or NULL, either way you'd return NULL.
 
-thanks,
-jirka
+It does have a potential to break some weird setup, but I can't
+currently come up with one where bond_xdp_get_xmit_slave is used and
+xdp_prog is not set, so I don't have a preference about which way
+to fix it. :)
+
+Cheers,
+ Nik
+
 
