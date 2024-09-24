@@ -1,148 +1,112 @@
-Return-Path: <bpf+bounces-40242-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40243-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CFDB983FA6
-	for <lists+bpf@lfdr.de>; Tue, 24 Sep 2024 09:48:52 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69B2098400E
+	for <lists+bpf@lfdr.de>; Tue, 24 Sep 2024 10:12:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6FFC01C2264C
-	for <lists+bpf@lfdr.de>; Tue, 24 Sep 2024 07:48:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E8E73B24134
+	for <lists+bpf@lfdr.de>; Tue, 24 Sep 2024 08:12:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D2A814BF8F;
-	Tue, 24 Sep 2024 07:48:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28AA414D283;
+	Tue, 24 Sep 2024 08:12:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GANqzSCV"
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8A6811CBD;
-	Tue, 24 Sep 2024 07:48:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DDD814B08C
+	for <bpf@vger.kernel.org>; Tue, 24 Sep 2024 08:12:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727164109; cv=none; b=iSPjxuqId/yNI5J2ayP1+OXMh6eH63oxTUK8y/DShyVHcjSJtqbQIgkGRVWLPpQhl/nzqRyypMAefVmFZh6Y8BP2t9TqU2dC2wrIZZROqFmgJ+clZhuNaFM7TtURAUddsia+LZKal7U6XMU9VULdffOKWo7VJGtMRJB56Qsz2j8=
+	t=1727165527; cv=none; b=anF5Qk2Wbgz0sXePK4kL80zO43b0oYrpd3aWsJyjTMLhEhii8BmJDbGtsYQQmr/qodaqMs5XAunmf7Fi5PiuNVUSEBKzxC5u2AxMwel5ez2fHYmKPDgtH4ls4r6LrpkSXgfWcOA1wHH0h7eJs0QfwctQiBJQWTL2RihO62m66qQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727164109; c=relaxed/simple;
-	bh=CSwaPVNkAQ30B+hlvci2uTj9rmPm9lc0sX+C9imgF5s=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=QG76Hmq18YpOZ3DUm33gs9RQKSzsAzckRxzbGrgd9NrU4ok1vdMABzXN3L7yERz4OmE7p2eWZqm6lcd4CulqvPuihmU1Db9ev7jh3wMwkAESau9MoEE1tXDb+p7i3graAc9DfHDFeY51HkklPU400PKy54GDbOdpfJ13eap7ARA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4XCX5H6pvcz2QTxJ;
-	Tue, 24 Sep 2024 15:47:31 +0800 (CST)
-Received: from dggpemf200006.china.huawei.com (unknown [7.185.36.61])
-	by mail.maildlp.com (Postfix) with ESMTPS id A6BD31A016C;
-	Tue, 24 Sep 2024 15:48:17 +0800 (CST)
-Received: from [10.67.120.129] (10.67.120.129) by
- dggpemf200006.china.huawei.com (7.185.36.61) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Tue, 24 Sep 2024 15:48:17 +0800
-Message-ID: <64730d70-e5b7-4117-9ee8-43f23543eafd@huawei.com>
-Date: Tue, 24 Sep 2024 15:48:16 +0800
+	s=arc-20240116; t=1727165527; c=relaxed/simple;
+	bh=Rp5px9fyLoBKWe9OslQ8c6Zw41rouGmlkdIWQyjD6Ok=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=WUet23HsLrWw1B8DMXVLOZaUUGFNmeDCDM7ThepEytdebDx5M/LVxw9uCTx4oHtVsov/j6Pv0vM+P7YNsQ41BnFptyFLa8eyD/GpupXJgM/rd6RuEi3+CKPrdvyinx/tVFo3KTvP0ouYxNAA2w1c728kxtMDV/dwR+xETvqJ5ks=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GANqzSCV; arc=none smtp.client-ip=209.85.216.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2d88690837eso4245928a91.2
+        for <bpf@vger.kernel.org>; Tue, 24 Sep 2024 01:12:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1727165525; x=1727770325; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Rp5px9fyLoBKWe9OslQ8c6Zw41rouGmlkdIWQyjD6Ok=;
+        b=GANqzSCVvcoYD9fR8cpocTCWZ1Cf9GHu+J88MIarnD6UoHKhHViYSycXc6IL0H3VJ2
+         J07D7xQKGBjHX9WNn51IIBss5uwCGkQU3oVLvL26Sa5q7TdYko8cApM06Z1huPlBnPrY
+         SoBblvd7O5IaEUQwPdZs3anCANhAW5ZOpAsTFMJMt1O6QYyMCvFSSL9RrGi8RKARpKNk
+         ZqL+3F584LBK5GpmiJUbGY4RQ7zy6yjrjP4Skzv5IY/DpHnj7XGnoUQ7/ncMwdVd/E44
+         sRK4R28HDq6UVKfgssBUYFC4CyXd0MSLaHDmZV/6NbsfRqqgAkks9qZJL4l7Jjz8oTej
+         tygA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727165525; x=1727770325;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Rp5px9fyLoBKWe9OslQ8c6Zw41rouGmlkdIWQyjD6Ok=;
+        b=nZzBT4CAqyO+dbm2wLOyuDtHQwXElh/cUowljbKxWHiDr8o3BJCSO2cWRNx6Fis21v
+         /SIZNIH8+C5MQVyo1AeOJupDk2ZPBk/FH1a4yy4cAVhcWVLmPaIaC3GTCcM7GlIwah4X
+         eJTu2FxUri32R2Xyt/t1huHB1hl1kzmaHMJdSHVw7nsfPHcR6hQNdLoCSPsPTCONo/ab
+         +e+z163J/FH7YNR5CXamhCW0SlVsPJcpWi8gj8icAB6Pojo+rpB7ZrFphhMG5gKnuJ4K
+         opFQO/M6QzZ61Ow+Xcmf2RmyNXdMYZE4RWJ/uB9Hp92qghgDYEr55A8fV+x83mOhHvSw
+         zkTw==
+X-Gm-Message-State: AOJu0YzaXPEDUR1c9V2ookcNeOQp8WDyB6/dydJVSnAP2yGI2SfrcWkU
+	OKtknNsuBvghi9Bzt1W8j5ZiB4N/cI5gumJ5ID6ShhFVoqZ9NC0VBE4b+JFJ
+X-Google-Smtp-Source: AGHT+IHKqNaMQVVzXHtKEEk+Aa9thNyQ+lwj6fMfF+hLXMHXet+N6X5s/Ir9K8NkqSrnqKwbGTXmUg==
+X-Received: by 2002:a17:90b:390c:b0:2da:8e1d:4769 with SMTP id 98e67ed59e1d1-2dd7f6dfb1amr17561411a91.38.1727165524522;
+        Tue, 24 Sep 2024 01:12:04 -0700 (PDT)
+Received: from [192.168.0.235] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2dd6ee98388sm10838017a91.13.2024.09.24.01.12.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Sep 2024 01:12:03 -0700 (PDT)
+Message-ID: <e90b14ef01cc49b790b2b7a6dca19e873e47c671.camel@gmail.com>
+Subject: Re: [PATCH] Fix a bug in ebpf verifier
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: lonial con <kongln9170@gmail.com>
+Cc: bpf@vger.kernel.org
+Date: Tue, 24 Sep 2024 01:11:58 -0700
+In-Reply-To: <7e2aa30a62d740db182c170fdd8f81c596df280d.camel@gmail.com>
+References: <1726037521-18232-1-git-send-email-kongln9170@gmail.com>
+	 <67451140439fafa1bae3e3b010d2c6b9969696a1.camel@gmail.com>
+	 <CAH6SPwj6=zu8fLNLwZ06fTso9634GV6ku21xpyzN+bwvrOevFg@mail.gmail.com>
+	 <62b54401510477eebdb6e1272ba4308ee121c215.camel@gmail.com>
+	 <CAH6SPwjoACNcNBWCjYauSMYCFOUAys10uH-xM6mF8_Q79D0Yow@mail.gmail.com>
+	 <CAH6SPwhUnn9-nNz9fpX3YGeA9WHT_BA5UzNgS5wYMqO=+8Ly_A@mail.gmail.com>
+	 <7e2aa30a62d740db182c170fdd8f81c596df280d.camel@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.4 (3.52.4-1.fc40) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net 2/2] page_pool: fix IOMMU crash when driver has
- already unbound
-To: Gur Stavi <gur.stavi@huawei.com>
-CC: <akpm@linux-foundation.org>, <aleksander.lobakin@intel.com>,
-	<alexander.duyck@gmail.com>, <angelogioacchino.delregno@collabora.com>,
-	<anthony.l.nguyen@intel.com>, <ast@kernel.org>, <bpf@vger.kernel.org>,
-	<daniel@iogearbox.net>, <davem@davemloft.net>, <edumazet@google.com>,
-	<fanghaiqing@huawei.com>, <hawk@kernel.org>, <ilias.apalodimas@linaro.org>,
-	<imx@lists.linux.dev>, <intel-wired-lan@lists.osuosl.org>,
-	<iommu@lists.linux.dev>, <john.fastabend@gmail.com>, <kuba@kernel.org>,
-	<kvalo@kernel.org>, <leon@kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	<linux-mediatek@lists.infradead.org>, <linux-mm@kvack.org>,
-	<linux-rdma@vger.kernel.org>, <linux-wireless@vger.kernel.org>,
-	<liuyonglong@huawei.com>, <lorenzo@kernel.org>, <matthias.bgg@gmail.com>,
-	<nbd@nbd.name>, <netdev@vger.kernel.org>, <pabeni@redhat.com>,
-	<przemyslaw.kitszel@intel.com>, <robin.murphy@arm.com>,
-	<ryder.lee@mediatek.com>, <saeedm@nvidia.com>, <sean.wang@mediatek.com>,
-	<shayne.chen@mediatek.com>, <shenwei.wang@nxp.com>, <tariqt@nvidia.com>,
-	<wei.fang@nxp.com>, <xiaoning.wang@nxp.com>, <zhangkun09@huawei.com>
-References: <2fb8d278-62e0-4a81-a537-8f601f61e81d@huawei.com>
- <20240924064559.1681488-1-gur.stavi@huawei.com>
-Content-Language: en-US
-From: Yunsheng Lin <linyunsheng@huawei.com>
-In-Reply-To: <20240924064559.1681488-1-gur.stavi@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemf200006.china.huawei.com (7.185.36.61)
 
-On 2024/9/24 14:45, Gur Stavi wrote:
->>>>> With all the caching in the network stack, some pages may be
->>>>> held in the network stack without returning to the page_pool
->>>>> soon enough, and with VF disable causing the driver unbound,
->>>>> the page_pool does not stop the driver from doing it's
->>>>> unbounding work, instead page_pool uses workqueue to check
->>>>> if there is some pages coming back from the network stack
->>>>> periodically, if there is any, it will do the dma unmmapping
->>>>> related cleanup work.
->>>>>
->>>>> As mentioned in [1], attempting DMA unmaps after the driver
->>>>> has already unbound may leak resources or at worst corrupt
->>>>> memory. Fundamentally, the page pool code cannot allow DMA
->>>>> mappings to outlive the driver they belong to.
->>>>>
->>>>> Currently it seems there are at least two cases that the page
->>>>> is not released fast enough causing dma unmmapping done after
->>>>> driver has already unbound:
->>>>> 1. ipv4 packet defragmentation timeout: this seems to cause
->>>>>    delay up to 30 secs:
->>>>>
->>>>> 2. skb_defer_free_flush(): this may cause infinite delay if
->>>>>    there is no triggering for net_rx_action().
->>>>>
->>>>> In order not to do the dma unmmapping after driver has already
->>>>> unbound and stall the unloading of the networking driver, add
->>>>> the pool->items array to record all the pages including the ones
->>>>> which are handed over to network stack, so the page_pool can
->>>>> do the dma unmmapping for those pages when page_pool_destroy()
->>>>> is called.
->>>>
->>>> So, I was thinking of a very similar idea. But what do you mean by
->>>> "all"? The pages that are still in caches (slow or fast) of the pool
->>>> will be unmapped during page_pool_destroy().
->>>
->>> Yes, it includes the one in pool->alloc and pool->ring.
->>
->> It worths mentioning that there is a semantics changing here:
->> Before this patch, there can be almost unlimited inflight pages used by
->> driver and network stack, as page_pool doesn't really track those pages.
->> After this patch, as we use a fixed-size pool->items array to track the
->> inflight pages, the inflight pages is limited by the pool->items, currently
->> the size of pool->items array is calculated as below in this patch:
->>
->> +#define PAGE_POOL_MIN_ITEM_CNT	512
->> +	unsigned int item_cnt = (params->pool_size ? : 1024) +
->> +				PP_ALLOC_CACHE_SIZE + PAGE_POOL_MIN_ITEM_CNT;
->>
->> Personally I would consider it is an advantage to limit how many pages which
->> are used by the driver and network stack, the problem seems to how to decide
->> the limited number of page used by network stack so that performance is not
->> impacted.
-> 
-> In theory, with respect to the specific problem at hand, you only have
-> a limit on the number of mapped pages inflight. Once you reach this
-> limit you can unmap these old pages, forget about them and remember
-> new ones.
+On Thu, 2024-09-12 at 16:36 -0700, Eduard Zingerman wrote:
+> On Thu, 2024-09-12 at 22:40 +0800, lonial con wrote:
+> > Hi,
+> >=20
+> > I tried to build this environment, but it seems that it needs kvm
+> > support. For me, it is very troublesome to prepare a kvm environment.
+> > So could you please write this selftest?
+>=20
+> Please find the patch for test in the attachment.
+> Please submit a v2 as a patch-set of two parts:
+> - first patch: your fix
+> - second patch: my test
 
-Yes, it can be done theoretically.
-The tricky part seems to be how to handle the concurrency problem when
-we evict the old pages and the old pages are also returned back to the
-page_pool concurrently without any locking or lockless operation.
+Hi Lonial,
 
-For now each item has only one producer and one consumer, so we don't
-really have to worry about the concurrency problem before calling
-page_pool_item_uninit() in page_pool_destroy() to do the unmapping
-for the inflight pages by using a newly added 'destroy_lock' lock.
+Do you plan to proceed with this fix?
+
+[...]
+
 
