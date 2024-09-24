@@ -1,55 +1,50 @@
-Return-Path: <bpf+bounces-40235-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40233-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58CE2983D4E
-	for <lists+bpf@lfdr.de>; Tue, 24 Sep 2024 08:46:51 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92938983D06
+	for <lists+bpf@lfdr.de>; Tue, 24 Sep 2024 08:21:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E7226283F8C
-	for <lists+bpf@lfdr.de>; Tue, 24 Sep 2024 06:46:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3C54C1F219C2
+	for <lists+bpf@lfdr.de>; Tue, 24 Sep 2024 06:21:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7171A481DD;
-	Tue, 24 Sep 2024 06:46:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E54786E614;
+	Tue, 24 Sep 2024 06:20:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QdN+qEPo"
 X-Original-To: bpf@vger.kernel.org
-Received: from cmccmta1.chinamobile.com (cmccmta6.chinamobile.com [111.22.67.139])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07CC11B85FA;
-	Tue, 24 Sep 2024 06:46:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=111.22.67.139
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E45682D66
+	for <bpf@vger.kernel.org>; Tue, 24 Sep 2024 06:20:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727160403; cv=none; b=NKNkVvYT9ZZ4yetS9DhLu5GOELzf54MR/r8+FTrsYOs2NVAXn/iITaDgFEnJCzz0dnwEi7ia53n0Btr6HZzqkVmUmJUjWx/Qj5CrHqnBqkMOrYYqFnxYDr9mnIpaHaEN5YZShnSufLPavSzcbwRmS/595qTrqKdTaCxwYJCO870=
+	t=1727158827; cv=none; b=izY9n79lgD0QeL79ltBYIAg995LtT5rs+raqXd7ANubIdYeW7B8W4PIgG3t9M7SBH7TKKQRKnwOalDTAS0oyZYJt3pdlbxGvlDkkArt7gWa4RzaZ1pTe1j81V7RTNr+66cnd35PNqr8NhP1ccNYoX68uz6yBBHRvXkd+PEkySB4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727160403; c=relaxed/simple;
-	bh=N4L3Ma/ohQWO3wgqI5BRqisp8dWYVrEejFRIaSIlLlI=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=sJN7JleZCp6m4u2s5sVlNEWiJ0s0od6FrBN+oAKD68kqjZY2ta9SSZp69cOwdYXrQh4oE99RNakikyzy/zIkXVZp2j7mKODPRPaOUzu6p8iJ1wnDijttXaCR2xKnc6leoHSD89XEW/RR9el1A234zcFNV9ibcG4izWNumTzuVTI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cmss.chinamobile.com; spf=pass smtp.mailfrom=cmss.chinamobile.com; arc=none smtp.client-ip=111.22.67.139
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cmss.chinamobile.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmss.chinamobile.com
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG:00000000
-Received:from spf.mail.chinamobile.com (unknown[10.188.0.87])
-	by rmmx-syy-dmz-app01-12001 (RichMail) with SMTP id 2ee166f2604b3a6-51ca9;
-	Tue, 24 Sep 2024 14:46:35 +0800 (CST)
-X-RM-TRANSID:2ee166f2604b3a6-51ca9
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG:00000000
-Received:from localhost.localdomain (unknown[223.108.79.97])
-	by rmsmtp-syy-appsvr02-12002 (RichMail) with SMTP id 2ee266f2604a111-8dd92;
-	Tue, 24 Sep 2024 14:46:35 +0800 (CST)
-X-RM-TRANSID:2ee266f2604a111-8dd92
-From: zhangjiao2 <zhangjiao2@cmss.chinamobile.com>
-To: andrii@kernel.org
-Cc: eddyz87@gmail.com,
-	shuah@kernel.org,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	zhang jiao <zhangjiao2@cmss.chinamobile.com>
-Subject: [PATCH] selftests/bpf: Add missing va_end.
-Date: Tue, 24 Sep 2024 12:55:34 +0800
-Message-Id: <20240924045534.8672-1-zhangjiao2@cmss.chinamobile.com>
-X-Mailer: git-send-email 2.33.0
+	s=arc-20240116; t=1727158827; c=relaxed/simple;
+	bh=dvV7JW4j40YFjn+cskGYuG1xk+7VRmXa4IV5P8C2bgI=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=eVuXB9lV7llb/V7weWaLmzznVcBZrd6Sk4OsrdbA7xSYBzg5eyH0dl9AE5R8KUFbVErH2Pt8hRcpmr48SXCnXhLGrI7jIseM3tt4xCOwRaLPRX/g6Hr2zL+LvxAJXa2RhbXlaJPi33S4YwGZovEcssq8Ejwh3MKTuEXSyKtIXxU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QdN+qEPo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D620FC4CEC4;
+	Tue, 24 Sep 2024 06:20:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1727158826;
+	bh=dvV7JW4j40YFjn+cskGYuG1xk+7VRmXa4IV5P8C2bgI=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=QdN+qEPo4Mj7tPNNTsZjhwQrODFqEHOO3BkjlrTn7tUAT1dtPd1DFTG/QWPP4Za81
+	 wiHb/ngqU96Zl/XekogNCVcGljLzDbSxl2KAIsPUhEM/YyEiBOz1paxqOydVADE4bu
+	 DHrNfqw0QSF29fM54mXI+G0/Q5GFxEJpnX/g0xQqsuo4sAWFgwlTxmNF3/3L29vUGW
+	 xhRClfVFTQoTG0OijvCGoC5yTNCmfR2R6YYy9WOifgAUsJo2/hxkGpy+DE3RNhlaNS
+	 POQT0/M+tu9yNxIXrISEWlpIPwLwAfmnBdNOip//V4W8fpF8+IPotJ/ozv6paZiCPk
+	 6wor3opxmF7Og==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 70D093809A8F;
+	Tue, 24 Sep 2024 06:20:30 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -57,31 +52,45 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next 1/2] selftests/bpf: remove test_skb_cgroup_id.sh from
+ TEST_PROGS
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <172715882926.3893391.17604218740773697669.git-patchwork-notify@kernel.org>
+Date: Tue, 24 Sep 2024 06:20:29 +0000
+References: <20240916195919.1872371-1-ihor.solodrai@pm.me>
+In-Reply-To: <20240916195919.1872371-1-ihor.solodrai@pm.me>
+To: Ihor Solodrai <ihor.solodrai@pm.me>
+Cc: bpf@vger.kernel.org, andrii@kernel.org, ast@kernel.org,
+ daniel@iogearbox.net, eddyz87@gmail.com, mykolal@fb.com, bjorn@kernel.org
 
-From: zhang jiao <zhangjiao2@cmss.chinamobile.com>
+Hello:
 
-There is no va_end after va_copy, just add it.
+This series was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
 
-Signed-off-by: zhang jiao <zhangjiao2@cmss.chinamobile.com>
----
- tools/testing/selftests/bpf/test_progs.c | 1 +
- 1 file changed, 1 insertion(+)
+On Mon, 16 Sep 2024 19:59:22 +0000 you wrote:
+> test_skb_cgroup_id.sh was deleted in
+> https://git.kernel.org/bpf/bpf-next/c/f957c230e173
+> 
+> It has to be removed from TEST_PROGS variable in
+> tools/testing/selftests/bpf/Makefile, otherwise install target fails.
+> 
+> Link:
+> https://lore.kernel.org/bpf/Q3BN2kW9Kgy6LkrDOwnyY4Pv7_YF8fInLCd2_QA3LimKYM3wD64kRdnwp7blwG2dI_s7UGnfUae-4_dOmuTrxpYCi32G_KTzB3PfmxIerH8=@pm.me/
+> 
+> [...]
 
-diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
-index c7a70e1a1085..7846f7f98908 100644
---- a/tools/testing/selftests/bpf/test_progs.c
-+++ b/tools/testing/selftests/bpf/test_progs.c
-@@ -868,6 +868,7 @@ static int libbpf_print_fn(enum libbpf_print_level level,
- 
- 		va_copy(args2, args);
- 		vfprintf(libbpf_capture_stream, format, args2);
-+		va_end(args2);
- 	}
- 
- 	if (env.verbosity < VERBOSE_VERY && level == LIBBPF_DEBUG)
+Here is the summary with links:
+  - [bpf-next,1/2] selftests/bpf: remove test_skb_cgroup_id.sh from TEST_PROGS
+    https://git.kernel.org/bpf/bpf-next/c/e4c139a63aff
+  - [bpf-next,2/2] selftests/bpf: set vpath in Makefile to search for skels
+    https://git.kernel.org/bpf/bpf-next/c/494c3a797257
+
+You are awesome, thank you!
 -- 
-2.33.0
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
 
