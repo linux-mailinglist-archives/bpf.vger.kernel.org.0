@@ -1,69 +1,71 @@
-Return-Path: <bpf+bounces-40271-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40272-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 182AD984C8B
-	for <lists+bpf@lfdr.de>; Tue, 24 Sep 2024 23:09:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55407984C8C
+	for <lists+bpf@lfdr.de>; Tue, 24 Sep 2024 23:09:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C0F031F24658
-	for <lists+bpf@lfdr.de>; Tue, 24 Sep 2024 21:09:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7757E1C20B68
+	for <lists+bpf@lfdr.de>; Tue, 24 Sep 2024 21:09:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB20313BC3F;
-	Tue, 24 Sep 2024 21:09:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80BB013CFA5;
+	Tue, 24 Sep 2024 21:09:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ceoFdkcZ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VFYIuX5d"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10C691BC3F
-	for <bpf@vger.kernel.org>; Tue, 24 Sep 2024 21:09:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 978FC13B5B4
+	for <bpf@vger.kernel.org>; Tue, 24 Sep 2024 21:09:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727212144; cv=none; b=AbOaJDal635XYpPts2uLxcv5Mj+Ci4kpIL6KntEn51kTYv8/C1HvHy9YZXI4cXduUiGxmIEphogI5cGwaZ27zzizO1j1x+hl9cqwtZjCZYu008JDtQwkefnn36gEp0/DofI+E43kcUWyB05H/3yMO2Kca/OKdNLOLdkQEXMS8lo=
+	t=1727212146; cv=none; b=XlKnjHnaTlHfkiWGuzr5/x8sl2+232h9+hsx7nj1KTuK+VqX/zdgkkpfuG5hDe9e3t4DLAKjlhINr6NZb0z+H89+uoFsc9AQHJ+popeRZUgXS6J1lzojjrMZWdZLxIk1vAcxqihgpVMCGxSiatDP8jWz2XzKrnYdy1MjipyGeMY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727212144; c=relaxed/simple;
-	bh=k6LOtwomAOdIGaAy9yl9roiEFLsa7312idbkxYuE2ns=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=CDFXd0L85gCF3X7+kcLpffjQ/faSkE1gwxjsLbkRVALSTf3tFGf3MUi6MPVDg19wqmloH7ODYDiCvs02lQ4+JLGU3gf7/eq/sKDLN05eLtcPMp4AGE4r/Vir1hYAp+fWFBMJLdiantXLfUVBkvR74WfUjiXY9ee8non5JfOsMho=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ceoFdkcZ; arc=none smtp.client-ip=209.85.215.176
+	s=arc-20240116; t=1727212146; c=relaxed/simple;
+	bh=uQY69AN8q+sEP73JsOur8VycktqJEzb4LLI0FBG9vvY=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=O5W5qoTTB042Tm6wo+sGgnfuVCREm274wvy6pmh+WQm9duxu2tEaXARuOGRKiNqfj28FZJKXWKs4t9iN13ZyXY7yZc6pwS28GJ4Qi7HPGm+N0DYDy2tYQnfvdGyAMSBsZtK9DOZlwIRx5t8tkofiwB/yh644uQv8KFHOA+pNF1k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VFYIuX5d; arc=none smtp.client-ip=209.85.210.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-7db12af2f31so4958471a12.1
-        for <bpf@vger.kernel.org>; Tue, 24 Sep 2024 14:09:02 -0700 (PDT)
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-718f4fd89e5so5081105b3a.0
+        for <bpf@vger.kernel.org>; Tue, 24 Sep 2024 14:09:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727212142; x=1727816942; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=+WIXefra3KwrqSpHEXnFHdf5fnmFO2uqlvT3ppWM2CQ=;
-        b=ceoFdkcZAYECQ3mLhUtp2GKdziLqQ/Hoya7Idw+kI0EAp6yfrz5BLnnQwjWpE45EBA
-         9KX9zBefdV8rnXX54TkNzrotodGtej/xBAgQMU4dB0T1g3C/6mKSoOMsDLkZ1mehSiJM
-         aUd36gjGlSWn4nRIdJOqAnSLUDv40l3EBKiHDBMLcx9Ox8v2CK+/FVdobE7tUZ/4IfBp
-         hfXQz6dldwnQjug/1XtW74nIJDyS+vwsQl8MVIGWlgsU4BAI46IegHiAgsYMX+Ooq12F
-         4wpQTd7sB1v+r1eSniiQ8Mq0NQ83FBCB4l6OsKGWKTwm/AWA7s+MU186XMaUJAuVA96h
-         dCig==
+        d=gmail.com; s=20230601; t=1727212143; x=1727816943; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AYjUmC5BvzuaA2QRQKI2p9C62dv0nKyrVH5j7EwR20o=;
+        b=VFYIuX5dVBmvCF7/YQJvii7vXDGg+3ckJjint2zstVwI8bfNGn1BHjVGxIuBE8fVBe
+         GrHrH1sGFAwiqLlDqfA3ewRlFwg8CrE/dC1V1bRVhLTOhBy3YjQ3F2koWzYASSnMcw8c
+         wDnGE5kmF0MUx1Abr2BtkPTyxsaR+uHlbLdAO8Fi6djeZpPYj8IEpiR1sp02AvvCjJ9W
+         AqMXDTst2gP3CAETMy8iyL+ZDulgfGLo8Zrwyp8JITy4gtHxke7MQbEFynWJLn2zIDU7
+         68XnIsjzQFShpPkTywZWFo25Lhi1BYlyBcPwGz+KFKpfrj/uQ0yD1oONIYVEd2/ttYB/
+         UUKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727212142; x=1727816942;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+WIXefra3KwrqSpHEXnFHdf5fnmFO2uqlvT3ppWM2CQ=;
-        b=PUtabGqz7gfoDcdPsiQ1Y1MAfR20++tz2AVn4jMwPYJBSMNpbSplbfUcGw6GepODEN
-         fWkOGPi80LWb7A2bu6+uPgrH17vqM3aLRDVxN3Qlb/ctqH0rd77Gm6aem8VD9g+YbEu/
-         7etMGqwPj9Ugh+ufZGdC6YDc6By9HydE9PryUxjGfJqY6s5zxOHx2/mgbvIEl1psZTc+
-         jMPWK1VVEgE5tDf+VsqTuM0pkjGdOvtbGJcMDx6JACOOn00Jf564rhf+2rvdROOOovMx
-         ONPJEhNVYhXz9SbhAOGfvyqSanSwCpspoyxrhvea5VoGJdCTKOJecS8lRHmG+/k22tKW
-         Am5g==
-X-Gm-Message-State: AOJu0YxE4KJKdvUSNJgZfFRYAf8yyi2EBwX+/hHFyZdyZzbpFIFvPZbh
-	SPmzlzhcmaiaA6zD/HuLB4FNp/SmrQ2rOURxjB+v7uONkevVWzRkuRKSWDwo
-X-Google-Smtp-Source: AGHT+IFBD30yWIPdbmQwADt0Dylg2TXUhH6XaeFNm+6w1GvTa2Je6U4RCFtaZb9dD0B3Yukogi8DkA==
-X-Received: by 2002:a05:6a20:43a8:b0:1d3:1924:3ea4 with SMTP id adf61e73a8af0-1d4c6f307d8mr644550637.3.1727212141943;
-        Tue, 24 Sep 2024 14:09:01 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1727212143; x=1727816943;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=AYjUmC5BvzuaA2QRQKI2p9C62dv0nKyrVH5j7EwR20o=;
+        b=D/RETKMdQ6L7wFc5o9qjBQSn9/p7Q9pBed8V0GitkhtxOa8aUastqUOe8UMddkydry
+         ywWdc4hNwiEGGLKKcS7FmcsJs3GndKJwwpt1RTEwHqRABo0upScvR2hu5JDl+B6TkJco
+         ThOthcKiMIRenTBAIci1ghOWtt7C2fqT/pqlkvuGM7NIoH9y7/7biQmrI20WBnP6apOw
+         8bgA3OKka3NbzrpahUdIgPhUPC2dCyCRwSHtOws7gyqrCOgPlbQnzltDWNT4t4JAegsN
+         DpK7aB0qBRtiGPA6xp0txik32J3HywNumkCrONmkuHK0npQP9XeQq/d1TR6SIpnTwu0/
+         EZ9Q==
+X-Gm-Message-State: AOJu0YxbW2B/gvwOXQdfBCAypOqNTiunQtXYrbsKvvhbh2xVuHAkK8xD
+	oN9rAq/TNzacC2qqMslofhTN6FRLHAa8pY3+IKlncYLe3wAbeix0LnHn4kLL
+X-Google-Smtp-Source: AGHT+IHXzjI95jIME7sD8ylJEzTpqTAAsoXmBdCm8zIlmRzQlncNFezhTNw6UeDdB1b3tkIE6o6N1A==
+X-Received: by 2002:a05:6a00:170d:b0:70d:33b3:2d7f with SMTP id d2e1a72fcca58-71b0acb62f7mr751427b3a.26.1727212143364;
+        Tue, 24 Sep 2024 14:09:03 -0700 (PDT)
 Received: from honey-badger.. ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-71afc846dbfsm1567628b3a.80.2024.09.24.14.09.00
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-71afc846dbfsm1567628b3a.80.2024.09.24.14.09.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Sep 2024 14:09:01 -0700 (PDT)
+        Tue, 24 Sep 2024 14:09:02 -0700 (PDT)
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org
@@ -72,12 +74,13 @@ Cc: andrii@kernel.org,
 	martin.lau@linux.dev,
 	kernel-team@fb.com,
 	yonghong.song@linux.dev,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Lonial Con <kongln9170@gmail.com>
-Subject: [PATCH bpf v1 1/2] bpf: sync_linked_regs() must preserve subreg_def
-Date: Tue, 24 Sep 2024 14:08:43 -0700
-Message-ID: <20240924210844.1758441-1-eddyz87@gmail.com>
+	Eduard Zingerman <eddyz87@gmail.com>
+Subject: [PATCH bpf v1 2/2] selftests/bpf: verify that sync_linked_regs preserves subreg_def
+Date: Tue, 24 Sep 2024 14:08:44 -0700
+Message-ID: <20240924210844.1758441-2-eddyz87@gmail.com>
 X-Mailer: git-send-email 2.46.0
+In-Reply-To: <20240924210844.1758441-1-eddyz87@gmail.com>
+References: <20240924210844.1758441-1-eddyz87@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -86,67 +89,94 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Range propagation must not affect subreg_def marks, otherwise the
-following example is rewritten by verifier incorrectly when
-BPF_F_TEST_RND_HI32 flag is set:
+This test was added because of a bug in verifier.c:sync_linked_regs(),
+upon range propagation it destroyed subreg_def marks for registers.
+The test is written in a way to return an upper half of a register
+that is affected by range propagation and must have it's subreg_def
+preserved. This gives a return value of 0 and leads to undefined
+return value if subreg_def mark is not preserved.
 
-  0: call bpf_ktime_get_ns                   call bpf_ktime_get_ns
-  1: r0 &= 0x7fffffff       after verifier   r0 &= 0x7fffffff
-  2: w1 = w0                rewrites         w1 = w0
-  3: if w0 < 10 goto +0     -------------->  r11 = 0x2f5674a6     (r)
-  4: r1 >>= 32                               r11 <<= 32           (r)
-  5: r0 = r1                                 r1 |= r11            (r)
-  6: exit;                                   if w0 < 0xa goto pc+0
-                                             r1 >>= 32
-                                             r0 = r1
-                                             exit
-
-(or zero extension of w1 at (2) is missing for architectures that
- require zero extension for upper register half).
-
-The following happens w/o this patch:
-- r0 is marked as not a subreg at (0);
-- w1 is marked as subreg at (2);
-- w1 subreg_def is overridden at (3) by copy_register_state();
-- w1 is read at (5) but mark_insn_zext() does not mark (2)
-  for zero extension, because w1 subreg_def is not set;
-- because of BPF_F_TEST_RND_HI32 flag verifier inserts random
-  value for hi32 bits of (2) (marked (r));
-- this random value is read at (5).
-
-Reported-by: Lonial Con <kongln9170@gmail.com>
-Closes: https://lore.kernel.org/bpf/7e2aa30a62d740db182c170fdd8f81c596df280d.camel@gmail.com/
-Signed-off-by: Lonial Con <kongln9170@gmail.com>
 Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 ---
- kernel/bpf/verifier.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ .../selftests/bpf/progs/verifier_scalar_ids.c | 67 +++++++++++++++++++
+ 1 file changed, 67 insertions(+)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index dd86282ccaa4..1aa0c6360a55 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -15326,8 +15326,12 @@ static void sync_linked_regs(struct bpf_verifier_state *vstate, struct bpf_reg_s
- 			continue;
- 		if ((!(reg->id & BPF_ADD_CONST) && !(known_reg->id & BPF_ADD_CONST)) ||
- 		    reg->off == known_reg->off) {
-+			s32 saved_subreg_def = reg->subreg_def;
+diff --git a/tools/testing/selftests/bpf/progs/verifier_scalar_ids.c b/tools/testing/selftests/bpf/progs/verifier_scalar_ids.c
+index 2ecf77b623e0..7c5e5e6d10eb 100644
+--- a/tools/testing/selftests/bpf/progs/verifier_scalar_ids.c
++++ b/tools/testing/selftests/bpf/progs/verifier_scalar_ids.c
+@@ -760,4 +760,71 @@ __naked void two_old_ids_one_cur_id(void)
+ 	: __clobber_all);
+ }
+ 
++SEC("socket")
++/* Note the flag, see verifier.c:opt_subreg_zext_lo32_rnd_hi32() */
++__flag(BPF_F_TEST_RND_HI32)
++__success
++/* This test was added because of a bug in verifier.c:sync_linked_regs(),
++ * upon range propagation it destroyed subreg_def marks for registers.
++ * The subreg_def mark is used to decide whether zero extension instructions
++ * are needed when register is read. When BPF_F_TEST_RND_HI32 is set it
++ * also causes generation of statements to randomize upper halves of
++ * read registers.
++ *
++ * The test is written in a way to return an upper half of a register
++ * that is affected by range propagation and must have it's subreg_def
++ * preserved. This gives a return value of 0 and leads to undefined
++ * return value if subreg_def mark is not preserved.
++ */
++__retval(0)
++/* Check that verifier believes r1/r0 are zero at exit */
++__log_level(2)
++__msg("4: (77) r1 >>= 32                     ; R1_w=0")
++__msg("5: (bf) r0 = r1                       ; R0_w=0 R1_w=0")
++__msg("6: (95) exit")
++__msg("from 3 to 4")
++__msg("4: (77) r1 >>= 32                     ; R1_w=0")
++__msg("5: (bf) r0 = r1                       ; R0_w=0 R1_w=0")
++__msg("6: (95) exit")
++/* Verify that statements to randomize upper half of r1 had not been
++ * generated.
++ */
++__xlated("call unknown")
++__xlated("r0 &= 2147483647")
++__xlated("w1 = w0")
++/* This is how disasm.c prints BPF_ZEXT_REG at the moment, x86 and arm
++ * are the only CI archs that do not need zero extension for subregs.
++ */
++#if !defined(__TARGET_ARCH_x86) && !defined(__TARGET_ARCH_arm64)
++__xlated("w1 = w1")
++#endif
++__xlated("if w0 < 0xa goto pc+0")
++__xlated("r1 >>= 32")
++__xlated("r0 = r1")
++__xlated("exit")
++__naked void linked_regs_and_subreg_def(void)
++{
++	asm volatile (
++	"call %[bpf_ktime_get_ns];"
++	/* make sure r0 is in 32-bit range, otherwise w1 = w0 won't
++	 * assign same IDs to registers.
++	 */
++	"r0 &= 0x7fffffff;"
++	/* link w1 and w0 via ID */
++	"w1 = w0;"
++	/* 'if' statement propagates range info from w0 to w1,
++	 * but should not affect w1->subreg_def property.
++	 */
++	"if w0 < 10 goto +0;"
++	/* r1 is read here, on archs that require subreg zero
++	 * extension this would cause zext patch generation.
++	 */
++	"r1 >>= 32;"
++	"r0 = r1;"
++	"exit;"
++	:
++	: __imm(bpf_ktime_get_ns)
++	: __clobber_all);
++}
 +
- 			copy_register_state(reg, known_reg);
-+			reg->subreg_def = saved_subreg_def;
- 		} else {
-+			s32 saved_subreg_def = reg->subreg_def;
- 			s32 saved_off = reg->off;
- 
- 			fake_reg.type = SCALAR_VALUE;
-@@ -15340,6 +15344,7 @@ static void sync_linked_regs(struct bpf_verifier_state *vstate, struct bpf_reg_s
- 			 * otherwise another sync_linked_regs() will be incorrect.
- 			 */
- 			reg->off = saved_off;
-+			reg->subreg_def = saved_subreg_def;
- 
- 			scalar32_min_max_add(reg, &fake_reg);
- 			scalar_min_max_add(reg, &fake_reg);
+ char _license[] SEC("license") = "GPL";
 -- 
 2.46.0
 
