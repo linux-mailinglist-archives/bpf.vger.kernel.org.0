@@ -1,120 +1,139 @@
-Return-Path: <bpf+bounces-40264-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40265-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 735B8984A03
-	for <lists+bpf@lfdr.de>; Tue, 24 Sep 2024 18:52:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E4A4984A26
+	for <lists+bpf@lfdr.de>; Tue, 24 Sep 2024 19:12:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1FB751F21D1A
-	for <lists+bpf@lfdr.de>; Tue, 24 Sep 2024 16:52:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D794B1F23FF8
+	for <lists+bpf@lfdr.de>; Tue, 24 Sep 2024 17:12:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 921031ABEDD;
-	Tue, 24 Sep 2024 16:52:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3BAE1AB6D9;
+	Tue, 24 Sep 2024 17:12:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e6jQ0zKQ"
+	dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b="WNOPLd9C"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail-4322.protonmail.ch (mail-4322.protonmail.ch [185.70.43.22])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C72AB1ABEBD;
-	Tue, 24 Sep 2024 16:52:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C52423612D
+	for <bpf@vger.kernel.org>; Tue, 24 Sep 2024 17:12:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727196735; cv=none; b=Fjkm0ot9KQSzx2BriTAkMqrae7wcyoo1SoiHjpmFNWFDpyDzRdg3WyS1aHGUEeoodOxtBm+0z8BwSfvNYcDNSHHgf46or0OSqfU+p5IBJBC5er+N765v4rHKjvlIAE9Vzbjvp6w3qYEvg34JA2PVa3qhl2hUVqSHiAglUwMZBQ4=
+	t=1727197935; cv=none; b=qJrCHERAbdLPQFgunPAynBoNxNFE7NRzUBYEAyD6Gy2te8O/tu+j9cWkka9Dp/35W0HWsqyRkwQhN4lbDzoWwLWQqptDhKeHH1NX9mh2DnsuUKPqfa6PLv+nYPpFITWpRFut78cVwvuEzNPQpCNL8ucFiD+0jj7RO7YCarP4pic=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727196735; c=relaxed/simple;
-	bh=H/6l72Ca7+Y8qi9YMnj2+EzvUgjRfVz2PbhqQvLFdag=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=oxI61Ip9YO0tFidVpgseJ9MapE3sKZadf6/2/8XgGi0EI/iCZeJF0TRD+szvMCURi75AKal+usfnYRD7RT1jhfQ/iYIC0i1FWZRGIWtszxKmKW094gOUQu8L4LWVG89LxBwphxn8VdMP2kL/UqAlQVd+wSILA3drm3wS0NreCWk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=e6jQ0zKQ; arc=none smtp.client-ip=209.85.215.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-7d50e7a3652so3427486a12.3;
-        Tue, 24 Sep 2024 09:52:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727196733; x=1727801533; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=KiCsAkbQBe9LJKRTrWozwpKUfdPwVMDJuNSsnhssFKE=;
-        b=e6jQ0zKQ39AlW/cDmTak1ox1Y8dSuLF0kVR9SCpVERdu82G4ix3sfSkgeUYtbci236
-         6RpeSM0kQnRcfjhHP1YhcT9khZFgAHFyue1xL0Km7kJHHxArEM2fezWfnSPyYNW1Boot
-         eGVYZXk/P8w4ERaRXRUVVij6qux9H+ws4BAdr0N+Z8hzas39nJ2SsvgUk94hnO8aSOOO
-         MyyCCTIHOS0SqyWL80KW3zKcKHSv0UeZ74wJdWQf/tjOOcwOJ8lpj33WjTlJ1PWaom9k
-         C6lmeWrFttfc30kGsIUoHwFgjmV14VTCu58csZ7BQ5gxVMKd1ztulJqFNjku6vbRwyN/
-         /BlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727196733; x=1727801533;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=KiCsAkbQBe9LJKRTrWozwpKUfdPwVMDJuNSsnhssFKE=;
-        b=MC8x9pGondbaoWQlnb7KFjI2oqyLVBEobhysrMklg9GundH9uOTnoxQZVdKxG5snkZ
-         8uLw/x3ERRflws0DEqvMGzOtqNQhRe9Q1OsEDFqHs0xkLXN0rdGdmhWptqBcuMsYirbr
-         vG8GWbJ+eDBE3HfuijCAt1K1Ww/zQCMd/QQ8/elU82BuPESQTwrifZVQZW+1+I91Z41I
-         uXmlSPx1U+iGLIVYVdZrBcq2NO63WqetnbLW6vOf1CAVQw+B4Tc1iiILpTfDLWA5hbZQ
-         Pel9/U5xBCri/T9NPnN9vjnZsonAM+Y/NiIzFmh2Lt2sh5ST7QMLncH4gNdf5m+XoBQG
-         fU2Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWEHnMfpg87oS5AMMOivZuXdTKm2LUe+BsdLrBNGLHmGGNOhO9uFlsTlZj3gRXWMGNMOtbGh6CzwYSy52Y=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzqVtj+4UXOYvKH6ELTatgCTrr9UxQU2OlLVNoLd+RoIXCMqTZ4
-	R4lHDoKMSxLacRK7KtEyBbrTorC0RmXvDXErRLR2f3N8wE1kl7nl
-X-Google-Smtp-Source: AGHT+IGsNcreWmqDP41QHpDWhnsfEBCZpeSmRWgtBSl2Ji72JhPdSGV+r7Wibq4jlzSSzJkWjNU66w==
-X-Received: by 2002:a05:6a20:e18a:b0:1d2:e8d8:dd46 with SMTP id adf61e73a8af0-1d30c9e69d4mr18596550637.15.1727196732696;
-        Tue, 24 Sep 2024 09:52:12 -0700 (PDT)
-Received: from localhost ([116.198.225.81])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-71afc939068sm1400177b3a.133.2024.09.24.09.52.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Sep 2024 09:52:12 -0700 (PDT)
-From: Tao Chen <chen.dylane@gmail.com>
-To: Quentin Monnet <qmo@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Jiri Olsa <jolsa@kernel.org>
-Cc: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Tao Chen <chen.dylane@gmail.com>
-Subject: [PATCH bpf-next] bpftool: Remove llvm-strip from Makefile
-Date: Wed, 25 Sep 2024 00:52:02 +0800
-Message-Id: <20240924165202.1379930-1-chen.dylane@gmail.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1727197935; c=relaxed/simple;
+	bh=ixEiXE15kc9yzKOEv09IZEg7tqUTTTkuwzUAkMDGYHU=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Ty2YnqDhoenHG05QjIw6+lXGSwm8jazgsw8HxRczLKcR3cFmP2GlNhJNPO9UCKA8YdpsoamYySMeTO9+HUDQVhXMynQm85HhA32vG+XDColXwu6i7M0+mZuzHXvJZXlBpt0zarTJOQtdwWRvE3DEia+e9064B0uSPF38ziwIIaY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me; spf=pass smtp.mailfrom=pm.me; dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b=WNOPLd9C; arc=none smtp.client-ip=185.70.43.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pm.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me;
+	s=protonmail3; t=1727197925; x=1727457125;
+	bh=ixEiXE15kc9yzKOEv09IZEg7tqUTTTkuwzUAkMDGYHU=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=WNOPLd9C4x5qdzV8ddsgNLzp0wfnoo+0I3O8rbI83EuEXT8Hufg9Bv4kQG8XM0G2N
+	 1UXky3eT69MmceXuYsFZy67DX4oJHeGaziDzjo8fHBBsTrQBdUGC/gNFkybqKajxzT
+	 kGpdJosIcSQ+iZpXQer/Wf7X29Pj+c8v4MdFrkPTUL/gTEuasjzuigS1YCmVOe2ptp
+	 BqbVlAErm8bYc4U4tM5lQVxMhfhXJASHWpblJXD3FoSIiZWosgjObl/khQIvx4qoYx
+	 sXgEVJKke2sSELyGuzbA3m/OydsY5HrdyUcosJ+1ZFWApBoGghLqXCeb56sgM+of5p
+	 c5w+XiQe1N6hA==
+Date: Tue, 24 Sep 2024 17:11:59 +0000
+To: Jiri Olsa <jolsa@kernel.org>
+From: Ihor Solodrai <ihor.solodrai@pm.me>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>
+Subject: Re: [PATCH bpf-next 1/2] selftests/bpf: Fix uprobe consumer test
+Message-ID: <mcu1nzbyupNb3g3xtiADIASk9rXXU9byY0AdPoPKORTW0GhBKfokwurO3TMu4pjen7ikKaGch9-dxzk5ntbmtMQWRMczotlJNyi0IriF9Ag=@pm.me>
+In-Reply-To: <20240924110731.2644249-1-jolsa@kernel.org>
+References: <20240924110731.2644249-1-jolsa@kernel.org>
+Feedback-ID: 27520582:user:proton
+X-Pm-Message-ID: c652e5e7fb7452b4f8f00e68610fad4ce0d31366
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-As Quentin and Andrri said [0], bpftool gen object strips
-out DWARF already, so remove the repeat operation.
+On Tuesday, September 24th, 2024 at 4:07 AM, Jiri Olsa <jolsa@kernel.org> w=
+rote:
 
-[0] https://github.com/libbpf/bpftool/issues/161
+>=20
+>=20
+> With newly merged code the uprobe behaviour is slightly different
+> and affects uprobe consumer test.
+>=20
+> We no longer need to check if the uprobe object is still preserved
+> after removing last uretprobe, because it stays as long as there's
+> pending/installed uretprobe instance.
+>=20
+> This allows to run uretprobe consumers registered 'after' uprobe was
+> hit even if previous uretprobe got unregistered before being hit.
+>=20
+> The uprobe object will be now removed after the last uprobe ref is
+> released and in such case it's held by ri->uprobe (return instance)
+>=20
+> which is released after the uretprobe is hit.
+>=20
+> Reported-by: Ihor Solodrai ihor.solodrai@pm.me
+>=20
+> Closes: https://lore.kernel.org/bpf/w6U8Z9fdhjnkSp2UaFaV1fGqJXvfLEtDKEUyG=
+DkwmoruDJ_AgF_c0FFhrkeKW18OqiP-05s9yDKiT6X-Ns-avN_ABf0dcUkXqbSJN1TQSXo=3D@p=
+m.me/
+> Signed-off-by: Jiri Olsa jolsa@kernel.org
+>=20
+> ---
+> .../testing/selftests/bpf/prog_tests/uprobe_multi_test.c | 9 +--------
+> 1 file changed, 1 insertion(+), 8 deletions(-)
+>=20
+> diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c b=
+/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
+> index 844f6fc8487b..c1ac813ff9ba 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
+> @@ -869,21 +869,14 @@ static void consumer_test(struct uprobe_multi_consu=
+mers skel,
+> fmt =3D "prog 0/1: uprobe";
+> } else {
+> /
+> - * uprobe return is tricky ;-)
+> - *
+> * to trigger uretprobe consumer, the uretprobe needs to be installed,
+> * which means one of the 'return' uprobes was alive when probe was hit:
+> *
+> * idxs: 2/3 uprobe return in 'installed' mask
+> - *
+> - * in addition if 'after' state removes everything that was installed in
+> - * 'before' state, then uprobe kernel object goes away and return uprobe
+> - * is not installed and we won't hit it even if it's in 'after' state.
+> /
+> unsigned long had_uretprobes =3D before & 0b1100; / is uretprobe installe=
+d /
+> - unsigned long probe_preserved =3D before & after; / did uprobe go away =
+*/
+>=20
+> - if (had_uretprobes && probe_preserved && test_bit(idx, after))
+> + if (had_uretprobes && test_bit(idx, after))
+> val++;
+> fmt =3D "idx 2/3: uretprobe";
+> }
+> --
+> 2.46.0
 
-Suggested-by: Andrii Nakryiko <andrii@kernel.org>
-Suggested-by: Quentin Monnet <qmo@kernel.org>
-Signed-off-by: Tao Chen <chen.dylane@gmail.com>
----
- tools/bpf/bpftool/Makefile | 1 -
- 1 file changed, 1 deletion(-)
+Hi Jiri,
 
-diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
-index ba927379eb20..43bd826b0879 100644
---- a/tools/bpf/bpftool/Makefile
-+++ b/tools/bpf/bpftool/Makefile
-@@ -219,7 +219,6 @@ $(OUTPUT)%.bpf.o: skeleton/%.bpf.c $(OUTPUT)vmlinux.h $(LIBBPF_BOOTSTRAP)
- 		-I$(LIBBPF_BOOTSTRAP_INCLUDE) \
- 		-g -O2 -Wall -fno-stack-protector \
- 		--target=bpf -c $< -o $@
--	$(Q)$(LLVM_STRIP) -g $@
- 
- $(OUTPUT)%.skel.h: $(OUTPUT)%.bpf.o $(BPFTOOL_BOOTSTRAP)
- 	$(QUIET_GEN)$(BPFTOOL_BOOTSTRAP) gen skeleton $< > $@
--- 
-2.25.1
+I tested this change on top of bpf-next/master, and
+selftests/bpf/vmtest.sh passes.
+
+Thank you for the fix!
+
+Tested-by: Ihor Solodrai <ihor.solodrai@pm.me>
 
 
