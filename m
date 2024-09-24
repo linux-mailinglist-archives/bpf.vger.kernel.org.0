@@ -1,80 +1,59 @@
-Return-Path: <bpf+bounces-40247-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40251-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F37B984389
-	for <lists+bpf@lfdr.de>; Tue, 24 Sep 2024 12:20:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E32709843EF
+	for <lists+bpf@lfdr.de>; Tue, 24 Sep 2024 12:45:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE23C1C2297D
-	for <lists+bpf@lfdr.de>; Tue, 24 Sep 2024 10:20:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 11A6B1C22A54
+	for <lists+bpf@lfdr.de>; Tue, 24 Sep 2024 10:45:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 741A517B50F;
-	Tue, 24 Sep 2024 10:20:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE0F619F499;
+	Tue, 24 Sep 2024 10:45:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PVFN9lkM"
+	dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b="Awmrk2EQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from mailtransmit05.runbox.com (mailtransmit05.runbox.com [185.226.149.38])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 844AB178364
-	for <bpf@vger.kernel.org>; Tue, 24 Sep 2024 10:20:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2786E19F40C
+	for <bpf@vger.kernel.org>; Tue, 24 Sep 2024 10:45:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.226.149.38
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727173250; cv=none; b=nIgzCbMfu2WvXjLobdrJqek7p9/CTmt4qungMmSYbVaGQxdTnihNvC/T4SlHYCwiqVMtdeDYFZUYuLJOPBVWjzv7kHhtjgukPq2UyamepqhZRXShxI24mDmfUlrvsjPju/CPhjFVpED09MkejedRb2d8SrLtYOU2ccMIG9dX380=
+	t=1727174710; cv=none; b=trXUi34/lDVPz5gE1jMkWnLe/legKuWS3AB+JCzrGakbti12KUL1kABBJBF7Nio3MpEs+Qd3+SpkvDqMluqXNVaZE6RlFPbtCIp/Fco2AbwlnWbAtO3nTxlUQ8reOOz0GGsOnU+LrusfjOCS6BjRroSlYfwgL41VCCV3pFbmkI8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727173250; c=relaxed/simple;
-	bh=cZMktfwpKMy/jZFqHbDB6IPPRTqIFSjCmZOIoG1DTe8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=G7CqVwdhxwsg12TvK+YJOVxOch/QrWqC4XddcCvhElfXKnFKWK3ZcHF/xNohPw2j6EbXNFegFIYvKylpxauI7rlt7e0JNpqmH8SlgqV4B/NVNFTD1mWKq4OrUuATPLNY16fKF/LyVl7SppZ3odK+GDkHWcObK+zJVPW2Os9CLAo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=PVFN9lkM; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1727173247;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NGP+qBzp5YIh2+vU8jaw02F6pIrgJtrZ3R6SSohio/4=;
-	b=PVFN9lkMD950+zRkRsYDXQ380+fTZTg5aG35Db369zdi+V1cZIORjS/+cQYky+Z2bk03J0
-	2O7mwgSTMFrOE7niy5mIe00Hfi2+JHtP6N+hsz4gAHczBkDosQon0MPLRI2thGWmQtn5Ei
-	xLGQ5gPcITofi4QCXzKiioO3WdpLVso=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-396-qmZ-a_ZmMBmJYfhIjJkmlQ-1; Tue, 24 Sep 2024 06:20:46 -0400
-X-MC-Unique: qmZ-a_ZmMBmJYfhIjJkmlQ-1
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-374c54e188dso3082139f8f.1
-        for <bpf@vger.kernel.org>; Tue, 24 Sep 2024 03:20:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727173244; x=1727778044;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=NGP+qBzp5YIh2+vU8jaw02F6pIrgJtrZ3R6SSohio/4=;
-        b=bc/V/SLxsroURQeQo83JEXDIqziLtxM0425K+V9FFtvoOErAojCTPzmER0ZY6WyI0W
-         Q7/KVGePcbYU9gpTDckHs7VUwr+2E+UQ9MocuO5145qH5l27tuGf6lfXUUzkNyi6tCLm
-         Lbw5CyPgAt+WYp6aV+5Hh7vzMeJpIRtmtohP/tsQLYmJSnTGCF34xK58DnowtUaoPOOs
-         QOf1KeSBciMYW/y/3Tuicu1kaZfBnbv7g/S9XTqF4TJsandOr/1/mHSp4fOeBVGKYGyr
-         sFtJBAL18pZMBPZOIZeyfoQl0RsLTsoij285jq8Hj1D0WJKY2Z4gaLz1+PPp6Zsgr5Kv
-         2TKA==
-X-Forwarded-Encrypted: i=1; AJvYcCUQkNSRpAYx7+4MJN3nC/pE2OlhtQ3XBjKd1Qi1PyMHW6Q/VmPdbswsn+dLP+eWSumDg58=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzw20knZvuMy91GpO3xT2HCBPOV+ZjAucx1sXYOFBbNF2Xnj9Si
-	h+hEEjlDUuDysYHvOZMpIJKYVDcLabW7hSgD1rsbgvyKThPB431Hf06FcVoix+o2+ffFoNCj7Ta
-	15jTN4BJLBozwnzMOYHaU9BB3NCDKUgk8z4V77Lsvqw4VkdPGtN5/9MFbpdwY
-X-Received: by 2002:adf:f950:0:b0:374:cc89:174b with SMTP id ffacd0b85a97d-37c7eb999f3mr1485990f8f.4.1727173244395;
-        Tue, 24 Sep 2024 03:20:44 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGK0T5NfhyZYHiYDGJCXn8/4ZzrsjJgHASw3QcmuXmf6v0BqvMhuiyKu8gyWtFKxS9OMmD77A==
-X-Received: by 2002:adf:f950:0:b0:374:cc89:174b with SMTP id ffacd0b85a97d-37c7eb999f3mr1485969f8f.4.1727173243987;
-        Tue, 24 Sep 2024 03:20:43 -0700 (PDT)
-Received: from ?IPV6:2a0d:3341:b089:3810:f39e:a72d:6cbc:c72b? ([2a0d:3341:b089:3810:f39e:a72d:6cbc:c72b])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-37cbc31873csm1164742f8f.93.2024.09.24.03.20.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Sep 2024 03:20:43 -0700 (PDT)
-Message-ID: <29ef00f0-57dc-4332-9569-e88868a85575@redhat.com>
-Date: Tue, 24 Sep 2024 12:20:41 +0200
+	s=arc-20240116; t=1727174710; c=relaxed/simple;
+	bh=xicL/frCZY1KbKzVSB1P6euV3wP208zF7BMKF9c/vVc=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=TPsFbvbma5vhVQNauAuWTKj4THU2jNe3txaiGb7rzFtI68sGJWnn+0a9oIpztYLRl7jW6aQeIkAKweJ8fQobKV0l/oY2INP9QULy/uiSx2JOmcGwTNXZOF5/rDuVy2ureD4gBA/L+7HOnWUqMVsiu2MeeDnctrJsQ9Me5WTeRf0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co; spf=pass smtp.mailfrom=rbox.co; dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b=Awmrk2EQ; arc=none smtp.client-ip=185.226.149.38
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rbox.co
+Received: from mailtransmit03.runbox ([10.9.9.163] helo=aibo.runbox.com)
+	by mailtransmit05.runbox.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.93)
+	(envelope-from <mhal@rbox.co>)
+	id 1st2k0-001TUe-5f; Tue, 24 Sep 2024 12:25:56 +0200
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=rbox.co;
+	s=selector1; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:References:
+	Cc:To:Subject:From:MIME-Version:Date:Message-ID;
+	bh=o17RNvtJLEnk+WRoWMXcR0GFHekQdtyQbeL3ND3m24g=; b=Awmrk2EQxvwLvZG8l17tjV3qSP
+	cD8g1keRjpF3qsNeuw4Xfpx+Zrya9DZorn+cUkpvnplg85s6lFlAQo+u7Wl10sgKY+Xara7nUWph5
+	SEhXn/0dujJl+PXtV456W9ebI6x2XgUVscklxLFwEWSL4miOTAs+tOpyXf0HPxmBrhFw5h9e/nwRp
+	m6dRHhHIyo1KYdxnJKg2iG+DDatmFY3BWOVVWbBogYJHbDd4K7tilcCUtI6gmV+DuhCoMjG5CeTvP
+	4jkJAtFI+wNW9LTC0DZhWTw+WGgrHziTipBs0pqPoY6PcCpR9cyL49S6nKYAFEcl4/boYWOsv01lY
+	coohFDlQ==;
+Received: from [10.9.9.72] (helo=submission01.runbox)
+	by mailtransmit03.runbox with esmtp (Exim 4.86_2)
+	(envelope-from <mhal@rbox.co>)
+	id 1st2jz-00069y-FB; Tue, 24 Sep 2024 12:25:55 +0200
+Received: by submission01.runbox with esmtpsa  [Authenticated ID (604044)]  (TLS1.2:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.93)
+	id 1st2je-00H6oF-ST; Tue, 24 Sep 2024 12:25:34 +0200
+Message-ID: <e78254c5-8f2f-4dc5-bf81-401caefabdd1@rbox.co>
+Date: Tue, 24 Sep 2024 12:25:33 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -82,56 +61,155 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net v3] bonding: Fix unnecessary warnings and logs from
- bond_xdp_get_xmit_slave()
-To: Jiwon Kim <jiwonaid0@gmail.com>, razor@blackwall.org, jv@jvosburgh.net,
- andy@greyhouse.net, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
- john.fastabend@gmail.com, joamaki@gmail.com
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org, syzbot+c187823a52ed505b2257@syzkaller.appspotmail.com
-References: <20240918140602.18644-1-jiwonaid0@gmail.com>
-Content-Language: en-US
-From: Paolo Abeni <pabeni@redhat.com>
-In-Reply-To: <20240918140602.18644-1-jiwonaid0@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+From: Michal Luczaj <mhal@rbox.co>
+Subject: Re: [PATCH bpf-next v2 0/6] selftests/bpf: Various sockmap-related
+ fixes
+To: Jakub Sitnicki <jakub@cloudflare.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman
+ <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
+ bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240731-selftest-sockmap-fixes-v2-0-08a0c73abed2@rbox.co>
+ <87y159yi5m.fsf@cloudflare.com>
+ <249a7dc3-34e2-4579-aae7-8b38b145e4bb@rbox.co>
+ <87ttfxy28s.fsf@cloudflare.com>
+ <42939687-20f9-4a45-b7c2-342a0e11a014@rbox.co>
+ <877cccqnvj.fsf@cloudflare.com>
+Content-Language: pl-PL, en-GB
+In-Reply-To: <877cccqnvj.fsf@cloudflare.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 9/18/24 16:06, Jiwon Kim wrote:
-> syzbot reported a WARNING in bond_xdp_get_xmit_slave. To reproduce
-> this[1], one bond device (bond1) has xdpdrv, which increases
-> bpf_master_redirect_enabled_key. Another bond device (bond0) which is
-> unsupported by XDP but its slave (veth3) has xdpgeneric that returns
-> XDP_TX. This triggers WARN_ON_ONCE() from the xdp_master_redirect().
-> To reduce unnecessary warnings and improve log management, we need to
-> delete the WARN_ON_ONCE() and add ratelimit to the netdev_err().
+On 8/19/24 22:05, Jakub Sitnicki wrote:
+> On Wed, Aug 14, 2024 at 06:14 PM +02, Michal Luczaj wrote:
+>> On 8/6/24 19:45, Jakub Sitnicki wrote:
+>>> On Tue, Aug 06, 2024 at 07:18 PM +02, Michal Luczaj wrote:
+>>>> Great, thanks for the review. With this completed, I guess we can unwind
+>>>> the (mail) stack to [1]. Is that ingress-to-local et al. something you
+>>>> wanted to take care of yourself or can I give it a try?
+>>>> [1] https://lore.kernel.org/netdev/87msmqn9ws.fsf@cloudflare.com/
+>>>
+>>> I haven't stated any work on. You're welcome to tackle that.
+>>>
+>>> All I have is a toy test that I've used to generate the redirect matrix.
+>>> Perhaps it can serve as inspiration:
+>>>
+>>> https://github.com/jsitnicki/sockmap-redir-matrix
+>>
+>> All right, please let me know if this is more or less what you meant and
+>> I'll post the whole series for a review (+patch to purge sockmap_listen of
+>> redir tests, fix misnomers). [...]
 > 
-> [1] Steps to reproduce:
->      # Needs tx_xdp with return XDP_TX;
->      ip l add veth0 type veth peer veth1
->      ip l add veth3 type veth peer veth4
->      ip l add bond0 type bond mode 6 # BOND_MODE_ALB, unsupported by XDP
->      ip l add bond1 type bond # BOND_MODE_ROUNDROBIN by default
->      ip l set veth0 master bond1
->      ip l set bond1 up
->      # Increases bpf_master_redirect_enabled_key
->      ip l set dev bond1 xdpdrv object tx_xdp.o section xdp_tx
->      ip l set veth3 master bond0
->      ip l set bond0 up
->      ip l set veth4 up
->      # Triggers WARN_ON_ONCE() from the xdp_master_redirect()
->      ip l set veth3 xdpgeneric object tx_xdp.o section xdp_tx
+> Gave it a look as promised. It makes sense to me as well to put these
+> tests in a new module. There will be some overlap with sockmap_listen,
+> which has diverged from its inital scope, but we can dedup that later.
 > 
-> Reported-by: syzbot+c187823a52ed505b2257@syzkaller.appspotmail.com
-> Closes: https://syzkaller.appspot.com/bug?extid=c187823a52ed505b2257
-> Fixes: 9e2ee5c7e7c3 ("net, bonding: Add XDP support to the bonding driver")
-> Signed-off-by: Jiwon Kim <jiwonaid0@gmail.com>
+> One thought that I had is that it could make sense to test the not
+> supported redirect combos (and expect an error). Sometimes folks make
+> changes and enable some parts of the API by accient.
 
-Isn't the above issue completely addressed by explicitly checking for 
-bond->prog in bond_xdp_get_xmit_slave()? Or would that broke some use-case?
+All right, so I did what sockmap_listen does: check
+test_sockmap_listen.c:verdict_map[SK_PASS] to see if the redirect took
+place for a given combo. And that works well... except for skb/msg to
+ingress af_vsock. Even though this is unsupported and no redirect
+actually happens, verdict appears to be SK_PASS. Is this correct?
 
-Thanks,
+Maybe I'm missing something, so below is a crude testcase I've cobbled
+together.
 
-Paolo
+And sorry for the delay, I was away from keyboard.
+Michal
 
+All error logs:
+./test_progs:unix_vsock_redir_fail:1600: want pass=0 / drop=1, have 1 / 0
+unix_vsock_redir_fail:FAIL:1600
+
+diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
+index 4ee1148d22be..e59e1654f110 100644
+--- a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
++++ b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
+@@ -1561,6 +1561,45 @@ static void vsock_unix_redir_connectible(int sock_mapfd, int verd_mapfd,
+ 	close(u1);
+ }
+ 
++static void unix_vsock_redir_fail(int sock_mapfd, int verd_mapfd)
++{
++	int v0, v1, u[2], pass, drop;
++	char a = 'a';
++
++	bpf_map_delete_elem(sock_mapfd, &(int){0});
++	bpf_map_delete_elem(sock_mapfd, &(int){1});
++	zero_verdict_count(verd_mapfd);
++
++	if (socketpair(AF_UNIX, SOCK_STREAM, 0, u)) {
++		FAIL_ERRNO("socketpair(af_unix)");
++		return;
++	}
++
++	if (create_pair(AF_VSOCK, SOCK_STREAM, &v0, &v1))
++		return;
++
++	if (add_to_sockmap(sock_mapfd, v0, u[0]))
++		return;
++
++	if (write(u[1], &a, sizeof(a)) != 1) {
++		FAIL_ERRNO("write()");
++		return;
++	}
++
++	errno = 0;
++	if (recv_timeout(v0, &a, sizeof(a), 0, 1) >= 0 ||
++	    recv_timeout(v1, &a, sizeof(a), 0, 1) >= 0 ||
++	    recv_timeout(u[0], &a, sizeof(a), 0, 1) >= 0 ||
++	    recv_timeout(u[1], &a, sizeof(a), 0, 1) >= 0)
++		FAIL("recv() returned >=0, errno=%d", errno);
++
++	if (xbpf_map_lookup_elem(verd_mapfd, &(int){SK_PASS}, &pass) ||
++	    xbpf_map_lookup_elem(verd_mapfd, &(int){SK_DROP}, &drop))
++		return;
++	if (pass != 0 || drop != 1)
++		FAIL("want pass=0 / drop=1, have %d / %d", pass, drop);
++}
++
+ static void vsock_unix_skb_redir_connectible(struct test_sockmap_listen *skel,
+ 					     struct bpf_map *inner_map,
+ 					     int sotype)
+@@ -1582,6 +1621,23 @@ static void vsock_unix_skb_redir_connectible(struct test_sockmap_listen *skel,
+ 	xbpf_prog_detach2(verdict, sock_map, BPF_SK_SKB_VERDICT);
+ }
+ 
++static void unix_vsock_redir(struct test_sockmap_listen *skel, struct bpf_map *inner_map)
++{
++	int verdict = bpf_program__fd(skel->progs.prog_skb_verdict);
++	int verdict_map = bpf_map__fd(skel->maps.verdict_map);
++	int sock_map = bpf_map__fd(inner_map);
++	int err;
++
++	err = xbpf_prog_attach(verdict, sock_map, BPF_SK_SKB_VERDICT, 0);
++	if (err)
++		return;
++
++	skel->bss->test_ingress = true;
++	unix_vsock_redir_fail(sock_map, verdict_map);
++
++	xbpf_prog_detach2(verdict, sock_map, BPF_SK_SKB_VERDICT);
++}
++
+ static void test_vsock_redir(struct test_sockmap_listen *skel, struct bpf_map *map)
+ {
+ 	const char *family_name, *map_name;
+@@ -1883,6 +1939,7 @@ void serial_test_sockmap_listen(void)
+ 	test_unix_redir(skel, skel->maps.sock_map, SOCK_DGRAM);
+ 	test_unix_redir(skel, skel->maps.sock_map, SOCK_STREAM);
+ 	test_vsock_redir(skel, skel->maps.sock_map);
++	unix_vsock_redir(skel, skel->maps.sock_map);
+ 
+ 	skel->bss->test_sockmap = false;
+ 	run_tests(skel, skel->maps.sock_hash, AF_INET);
 
