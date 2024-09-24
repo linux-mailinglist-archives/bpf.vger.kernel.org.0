@@ -1,87 +1,87 @@
-Return-Path: <bpf+bounces-40269-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40270-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59220984B42
-	for <lists+bpf@lfdr.de>; Tue, 24 Sep 2024 20:45:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2B9E984B4C
+	for <lists+bpf@lfdr.de>; Tue, 24 Sep 2024 20:47:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0780B285257
-	for <lists+bpf@lfdr.de>; Tue, 24 Sep 2024 18:45:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8AB491F24356
+	for <lists+bpf@lfdr.de>; Tue, 24 Sep 2024 18:47:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4F951ACDFD;
-	Tue, 24 Sep 2024 18:44:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABADA1ABED1;
+	Tue, 24 Sep 2024 18:47:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MdEafUwB"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F2YXe5oq"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
+Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D742C1AC880;
-	Tue, 24 Sep 2024 18:44:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0358E40BF2
+	for <bpf@vger.kernel.org>; Tue, 24 Sep 2024 18:46:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727203481; cv=none; b=py36uPUW91JTGk2EjEpkDSYbaukWOhCWAz+oD6pWcl49b7DwXwdvQF8Gh9bGaI8RsLZL/pRrdycErogZdTvKMXxxnd+cr0w6o1547dWoQGFoExbCxI6ZIOVpL6ZgwQ5PEvEHYiuDi/y73a5I0r1b1kfUp+qo9zxUeuccbKivSrw=
+	t=1727203620; cv=none; b=BWWg8GpJmDAui1D5nSGkuTLyFc4o/4AC33sKeSF4R8RCKxMswusYGp13uYCzVhUH831ZNnPglOPmv1dVoNKo0bEPM4JWRIm+jNMbwkdiatdE9ln1Qk1wm7MSdbgq55EK3WUCpYsRYUVFmnf+s6Fvogis5bZcV86WT8Ex03LUftA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727203481; c=relaxed/simple;
-	bh=m+/VvRQ+++wCtbEd9ey3Gz7C1C/Zkqpv+B5faIBfK0M=;
+	s=arc-20240116; t=1727203620; c=relaxed/simple;
+	bh=/Ak/F3R9Hlir0mzzsbBr5DIdsrGxwI863f1+JGzEeRE=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=aQwum0Uvqwp110CIhU2oyOvAPJ5GeX4eePHLAj4tCopB4bPTzQCnhNGoFeo0yEeu/l3MJbwZ6rSzhzzDIhBKl0u5FeCSg2vMNn+vDmwfCFwEiGX4ls3f8JMXdHs8O+vSDaDql4wdFCmRDCCz8TrNJxA14s6i5Yjfzvs6FEsd7hE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MdEafUwB; arc=none smtp.client-ip=209.85.216.43
+	 Content-Type:MIME-Version; b=MVGCdF7a3q6QRkVQwGTIombXTVX1qevXTba0F+isaUUUlepNh+aa6QD18R9287ApvTPoqV4dBG51OP6fzAW5QCx+/E1S6rjLQ8HR0xZdLs5rar5r8RHxKvm9PGY/OPzZQKWcZGB+qwOWSgb5yaB43KiUJV/AdJObgAFGq6gBi7c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=F2YXe5oq; arc=none smtp.client-ip=209.85.215.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-2d877e9054eso4111441a91.3;
-        Tue, 24 Sep 2024 11:44:39 -0700 (PDT)
+Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-7cf5e179b68so141094a12.1
+        for <bpf@vger.kernel.org>; Tue, 24 Sep 2024 11:46:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727203479; x=1727808279; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1727203618; x=1727808418; darn=vger.kernel.org;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=q1TSmoyn8iXw1Hwv/qLhBv9Dztb3b91fPaP0YK6BdNM=;
-        b=MdEafUwB9MdSyi+5yDkzRNixkanje/AL56lUhR9pCwynp5LSK74PsZfaRymRKoJLWj
-         GTeG7Ic/U1XPmHrVQQI2L+0oPCWicj1sr96+6X7Gkjm40XG0TOpKQaT20rEk8rniIH+n
-         n9YzAEfuuV7xisvgHRy/x/3eF5mWXol8iPodNaSIDTsaTGz/ugFrnd1SmpfpqWC6SWDB
-         YcS6aeYuyhQZqFUrpBAlsQhHhlgja4CDyBSTvvhaLVBZR7d9OfQXOUOy1RJceAhgqlHj
-         taKV9EyJgCUGznIS78p6KH+qd3Y7EyYawC3FExodcz9zsdPXci7e1QOyH80LgPlcuRFG
-         uvBA==
+        bh=/Ak/F3R9Hlir0mzzsbBr5DIdsrGxwI863f1+JGzEeRE=;
+        b=F2YXe5oqdic4aVAjsLTZ40fFrsVsCroTmhGL56D54d2QXLKV84NRcxf5oLSnX2xmMD
+         +7j3oOcZIdrmyAfyuXxI1x754lwwd0IIIzJylno5+xjxIYz6Cu2v8apjFBWr1fGElLRQ
+         0buGIu4nLYcBzjDydHAIxLTnY52/k27vi7swDUdH/XNzVLPfAet5H6L+JSwQNzKTzATY
+         mqKR+8jEKvgN9Y5zd7tZyw7MesP0oMvMwvpchVUGfx5NU2FlowMI/AJUqSPTLKCZLkfv
+         UZMjaZngNm4BhJKn4W5eTzvu+hPUt9uSmRbLyXDf2EtVSOv74aRkqJcCDBnIVSvUFGtZ
+         +hIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727203479; x=1727808279;
+        d=1e100.net; s=20230601; t=1727203618; x=1727808418;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=q1TSmoyn8iXw1Hwv/qLhBv9Dztb3b91fPaP0YK6BdNM=;
-        b=sUqVZkZOX5omRwN6boDnyFS6PnrQn3Nc5Eo+uJuZ83JS5Rc4bH9usAM2aaPqij5Lpd
-         QYOlSIGNydb/s1p4Yce+5CD5VU13xYq3MtVxw3XJXJiOmcAGvD+/KcnmDBkUfStLN0/M
-         iIiPKNzSq5h+kcxAGumMRI0r/jnqvwsWsLhjp4tp5W8iM00YoG5ULIpR4XFlsJDwfc8y
-         zdWksIzKq1IhiYDPers5TJUYUJ6Z8cRg3FzDsMd2BShvZfBoEr4lkjG9OchMKaaPSED1
-         3oS9K88wZIFR/mAKM0nLJOinB5Eo4W8VK1WonoTGcAnrKRo79+OC89JVQmiqY0vM6lLs
-         joRw==
-X-Forwarded-Encrypted: i=1; AJvYcCVXtBJgnolDXKpDc5hfrrfiCHd9M4vtIzFWrKxMch6iC//F8GDUE5imOo5WF49g6iRKLV0=@vger.kernel.org, AJvYcCVuZ8iyqSP1C2x8g19SDev877PPPE2J0QuPsQGe4AFtrYUGOTBSKBg9LIhN+zLLCBnQQ1RbDeuQluHyb2LRZW6S@vger.kernel.org, AJvYcCWlNbFTeL6FJTI/kP2WBtEUA2+TfxbGvP9kVT6HJG/F8smbLDIZcrlFrioMlSR4bfyBMDZwTyfrOfA4VKjm@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy9iMmo6ZvyuRrFWtOAAm/5YGQK8e77LvKtCQG8XfPiN2be7GYV
-	j/iZHUgulsfJbwagyQt0x4NsbCkarv7GycNCb8jffZEtPX0y9m+7
-X-Google-Smtp-Source: AGHT+IE0VymKndO2jnvRjxP3110G2PKk/L89WWltJ4sm3Qb6iXETmYcoRM6hJuqYAODg6uZeBcco4A==
-X-Received: by 2002:a17:90a:3d86:b0:2d8:8509:85cd with SMTP id 98e67ed59e1d1-2e06b0074demr73099a91.40.1727203479168;
-        Tue, 24 Sep 2024 11:44:39 -0700 (PDT)
+        bh=/Ak/F3R9Hlir0mzzsbBr5DIdsrGxwI863f1+JGzEeRE=;
+        b=iBeqhSmvT841u9H9eogEPop32lxVNGLUlyqTRDmSicqqjK3G18w/pF/eEUd4s797dI
+         iwDHK4Y+ic6h4OrPlBigbuz+2fP2Xoqj/wFmBAu89btFLUbwuALLL+bF3IzDNPHgWkGh
+         PblGyQRx0O+Zig9fvON9Ayb9s8pMoom9pMpz+JhRGHF7S7YS9QzyTahAltKa18OHmpGn
+         fNWqcONx3ryBlRFqhBRM2Z/TlkZZzzQOFxezo8qylX7WbCekBXMxprI5CrzNog07QfvO
+         YghoPdurpApzRzfzEraTbAfjZpQn+svV2l37gxmf9yUpnhHNnoGvTdA2inl7eqTkvwsW
+         u/xQ==
+X-Gm-Message-State: AOJu0YyltyoHO3T9WvG76PeJKu+zJjgQ8ltWIMNUVn80Y2a71G+Eul0+
+	Ez1YxkoKv42kqJ33DPBzWOyZM1aSzNGxZkyxxfNEkA8cgsW9V5yy
+X-Google-Smtp-Source: AGHT+IHdlEbsNCPMK8ySr2LzTtm0C3ndlCeZ9qbGZ2w07yv9KIoK6dl9Wvi0OYEL473fgfJEheRhOQ==
+X-Received: by 2002:a17:90b:4d0e:b0:2d8:ea11:b2db with SMTP id 98e67ed59e1d1-2e06ac38577mr281665a91.16.1727203618190;
+        Tue, 24 Sep 2024 11:46:58 -0700 (PDT)
 Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2dd6eecaea5sm11710719a91.34.2024.09.24.11.44.38
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2e0590070b1sm1876119a91.42.2024.09.24.11.46.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Sep 2024 11:44:38 -0700 (PDT)
-Message-ID: <b9012c196537e64fb148232de3f97053891c1de8.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v3 1/2] bpf: verifier: Support eliding map
- lookup nullness
+        Tue, 24 Sep 2024 11:46:57 -0700 (PDT)
+Message-ID: <e297f72671a67181cceee29698b9aeeefc8c7014.camel@gmail.com>
+Subject: Re: [PATCH] Fix a bug in ebpf verifier
 From: Eduard Zingerman <eddyz87@gmail.com>
-To: Daniel Xu <dxu@dxuuu.xyz>, shuah@kernel.org, daniel@iogearbox.net, 
-	ast@kernel.org, andrii@kernel.org
-Cc: john.fastabend@gmail.com, martin.lau@linux.dev, song@kernel.org, 
- yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me,
- haoluo@google.com,  jolsa@kernel.org, mykolal@fb.com, bpf@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
- kernel-team@meta.com
-Date: Tue, 24 Sep 2024 11:44:33 -0700
-In-Reply-To: <815cefa75561c30bec8ca62b9261d4706fa25bb6.1727174358.git.dxu@dxuuu.xyz>
-References: <cover.1727174358.git.dxu@dxuuu.xyz>
-	 <815cefa75561c30bec8ca62b9261d4706fa25bb6.1727174358.git.dxu@dxuuu.xyz>
+To: lonial con <kongln9170@gmail.com>
+Cc: bpf@vger.kernel.org
+Date: Tue, 24 Sep 2024 11:46:53 -0700
+In-Reply-To: <CAH6SPwg9z6rXsvN0MgCj4tnGy8Fny_Lk_S0JPS98LrTORzNydw@mail.gmail.com>
+References: <1726037521-18232-1-git-send-email-kongln9170@gmail.com>
+	 <67451140439fafa1bae3e3b010d2c6b9969696a1.camel@gmail.com>
+	 <CAH6SPwj6=zu8fLNLwZ06fTso9634GV6ku21xpyzN+bwvrOevFg@mail.gmail.com>
+	 <62b54401510477eebdb6e1272ba4308ee121c215.camel@gmail.com>
+	 <CAH6SPwjoACNcNBWCjYauSMYCFOUAys10uH-xM6mF8_Q79D0Yow@mail.gmail.com>
+	 <CAH6SPwhUnn9-nNz9fpX3YGeA9WHT_BA5UzNgS5wYMqO=+8Ly_A@mail.gmail.com>
+	 <7e2aa30a62d740db182c170fdd8f81c596df280d.camel@gmail.com>
+	 <e90b14ef01cc49b790b2b7a6dca19e873e47c671.camel@gmail.com>
+	 <CAH6SPwg9z6rXsvN0MgCj4tnGy8Fny_Lk_S0JPS98LrTORzNydw@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.52.4 (3.52.4-1.fc40) 
@@ -92,83 +92,14 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
-On Tue, 2024-09-24 at 04:40 -0600, Daniel Xu wrote:
-> This commit allows progs to elide a null check on statically known map
-> lookup keys. In other words, if the verifier can statically prove that
-> the lookup will be in-bounds, allow the prog to drop the null check.
+On Tue, 2024-09-24 at 21:40 +0800, lonial con wrote:
+> Hi Eduard,
 >=20
-> This is useful for two reasons:
->=20
-> 1. Large numbers of nullness checks (especially when they cannot fail)
->    unnecessarily pushes prog towards BPF_COMPLEXITY_LIMIT_JMP_SEQ.
-> 2. It forms a tighter contract between programmer and verifier.
->=20
-> For (1), bpftrace is starting to make heavier use of percpu scratch
-> maps. As a result, for user scripts with large number of unrolled loops,
-> we are starting to hit jump complexity verification errors.  These
-> percpu lookups cannot fail anyways, as we only use static key values.
-> Eliding nullness probably results in less work for verifier as well.
->=20
-> For (2), percpu scratch maps are often used as a larger stack, as the
-> currrent stack is limited to 512 bytes. In these situations, it is
-> desirable for the programmer to express: "this lookup should never fail,
-> and if it does, it means I messed up the code". By omitting the null
-> check, the programmer can "ask" the verifier to double check the logic.
->=20
-> Tests also have to be updated in sync with these changes, as the
-> verifier is more efficient with this change. Notable, iters.c tests had
-> to be changed to use a map type that still requires null checks, as it's
-> exercising verifier tracking logic w.r.t iterators.
->=20
-> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
-> ---
+> Sorry, I was on vacation recently and didn't reply to emails in time.
+> Could you please submit this patch directly? Because I am on vacation
+> and don't have my computer with me.
 
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
-
-[...]
-
-> +/* Returns constant key value if possible, else -1 */
-> +static long get_constant_map_key(struct bpf_verifier_env *env,
-> +				 struct bpf_reg_state *key)
-> +{
-> +	struct bpf_func_state *state =3D func(env, key);
-> +	struct bpf_reg_state *reg;
-> +	int stack_off;
-> +	int slot;
-> +	int spi;
-> +
-> +	if (key->type !=3D PTR_TO_STACK)
-> +		return -1;
-> +	if (!tnum_is_const(key->var_off))
-> +		return -1;
-> +
-> +	stack_off =3D key->off + key->var_off.value;
-> +	slot =3D -stack_off - 1;
-> +	if (slot < 0)
-> +		/* Stack grew upwards */
-> +		return -1;
-
-Nitpick: I'd also add a test like below:
-
-SEC("socket")
-__failure __msg("invalid indirect access to stack R2 off=3D4096 size=3D4")
-__naked void key_lookup_at_invalid_fp(void)
-{
-	asm volatile ("					\
-	r1 =3D %[map_array] ll;				\
-	r2 =3D r10;					\
-	r2 +=3D 4096;					\
-	call %[bpf_map_lookup_elem];			\
-	r0 =3D *(u64*)(r0 + 0);				\
-	exit;						\
-"	:
-	: __imm(bpf_map_lookup_elem),
-	  __imm_addr(map_array)
-	: __clobber_all);
-}
-
-(double checked with v2 and this test does cause page fault)
-
-[...]
+Sure, thanks again for the fix.
+Have a good vacation.
 
 
