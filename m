@@ -1,139 +1,91 @@
-Return-Path: <bpf+bounces-40265-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40266-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E4A4984A26
-	for <lists+bpf@lfdr.de>; Tue, 24 Sep 2024 19:12:22 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68178984A2C
+	for <lists+bpf@lfdr.de>; Tue, 24 Sep 2024 19:15:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D794B1F23FF8
-	for <lists+bpf@lfdr.de>; Tue, 24 Sep 2024 17:12:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 998E11C22A84
+	for <lists+bpf@lfdr.de>; Tue, 24 Sep 2024 17:15:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3BAE1AB6D9;
-	Tue, 24 Sep 2024 17:12:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5E581ABEDD;
+	Tue, 24 Sep 2024 17:15:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b="WNOPLd9C"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="FN6GP3SU"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-4322.protonmail.ch (mail-4322.protonmail.ch [185.70.43.22])
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C52423612D
-	for <bpf@vger.kernel.org>; Tue, 24 Sep 2024 17:12:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CCC41B85D2;
+	Tue, 24 Sep 2024 17:15:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727197935; cv=none; b=qJrCHERAbdLPQFgunPAynBoNxNFE7NRzUBYEAyD6Gy2te8O/tu+j9cWkka9Dp/35W0HWsqyRkwQhN4lbDzoWwLWQqptDhKeHH1NX9mh2DnsuUKPqfa6PLv+nYPpFITWpRFut78cVwvuEzNPQpCNL8ucFiD+0jj7RO7YCarP4pic=
+	t=1727198143; cv=none; b=FoZizrFJLEnkge/Hj6jhD91bYqO4y7yD7X9Ha9A0JoJVk2kOYnqPE/BLDzwFQiaojkhhJdcJm3cTNnsVi6S+z+RgdGPYd3JGCQIedIo1O9B0f3esS+ZhuDsvz1Sz7YhgJKGTgjkuQrI7WcTtoNcOrtRDSgUr42rlPNjbkaCt/ac=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727197935; c=relaxed/simple;
-	bh=ixEiXE15kc9yzKOEv09IZEg7tqUTTTkuwzUAkMDGYHU=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Ty2YnqDhoenHG05QjIw6+lXGSwm8jazgsw8HxRczLKcR3cFmP2GlNhJNPO9UCKA8YdpsoamYySMeTO9+HUDQVhXMynQm85HhA32vG+XDColXwu6i7M0+mZuzHXvJZXlBpt0zarTJOQtdwWRvE3DEia+e9064B0uSPF38ziwIIaY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me; spf=pass smtp.mailfrom=pm.me; dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b=WNOPLd9C; arc=none smtp.client-ip=185.70.43.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pm.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me;
-	s=protonmail3; t=1727197925; x=1727457125;
-	bh=ixEiXE15kc9yzKOEv09IZEg7tqUTTTkuwzUAkMDGYHU=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=WNOPLd9C4x5qdzV8ddsgNLzp0wfnoo+0I3O8rbI83EuEXT8Hufg9Bv4kQG8XM0G2N
-	 1UXky3eT69MmceXuYsFZy67DX4oJHeGaziDzjo8fHBBsTrQBdUGC/gNFkybqKajxzT
-	 kGpdJosIcSQ+iZpXQer/Wf7X29Pj+c8v4MdFrkPTUL/gTEuasjzuigS1YCmVOe2ptp
-	 BqbVlAErm8bYc4U4tM5lQVxMhfhXJASHWpblJXD3FoSIiZWosgjObl/khQIvx4qoYx
-	 sXgEVJKke2sSELyGuzbA3m/OydsY5HrdyUcosJ+1ZFWApBoGghLqXCeb56sgM+of5p
-	 c5w+XiQe1N6hA==
-Date: Tue, 24 Sep 2024 17:11:59 +0000
-To: Jiri Olsa <jolsa@kernel.org>
-From: Ihor Solodrai <ihor.solodrai@pm.me>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>
-Subject: Re: [PATCH bpf-next 1/2] selftests/bpf: Fix uprobe consumer test
-Message-ID: <mcu1nzbyupNb3g3xtiADIASk9rXXU9byY0AdPoPKORTW0GhBKfokwurO3TMu4pjen7ikKaGch9-dxzk5ntbmtMQWRMczotlJNyi0IriF9Ag=@pm.me>
-In-Reply-To: <20240924110731.2644249-1-jolsa@kernel.org>
-References: <20240924110731.2644249-1-jolsa@kernel.org>
-Feedback-ID: 27520582:user:proton
-X-Pm-Message-ID: c652e5e7fb7452b4f8f00e68610fad4ce0d31366
+	s=arc-20240116; t=1727198143; c=relaxed/simple;
+	bh=qBXWmQulj4+bRaY1j5WtgTi0EYtaH2UYJLpcDVwM6qE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RLKc4LALs1AiEzub3NXiMCCqrW++A6wzdrxryauB0KjopdReQnK25bmXr+fVZRF+QekWNUUrO901YCeb3p3iyS3mqrl9HFnZ01YEzue0Lt3sIGafFSHzZaHrf5t0wRGsdCgg0KqXTR+3u7mlkvC75NulzVR/ykhcJtGRKrzEvT0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=FN6GP3SU; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=WJowBGyKSbxzXE1/4SfIgV1cnZ3niSXTshohFumyVyo=; b=FN6GP3SU7IBOOqvdNF+Slvk/CW
+	icGmhjkq8DxlxknZq1FtXL5hFEmEOuHet7Yc8T3Xmoc89NetMzgIjgkuIxyrKMCWJURKscgz4VWDh
+	01eRl3ZHrOt4DXCSKHJ23AnnZh4DRGlt12o3ma18+lZavmWoALXY6obv91jnEN7LfDxnbNdzOo8b+
+	1TMMXRdTdv3baEQrq/ryN8fjj7btYQg+SBPKAxYvGxJBdwq/X9j6Wbna+dH4rShmywnqbfQ3VXaWX
+	uxmA9xdOYlW7VuUZQtlbx8TvHaWZbbMjRoDh5vULaygl/Uf9weJ+0BADHCNR6BAH8XVA4XmjG0jJm
+	QlTxjDUQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.98 #2 (Red Hat Linux))
+	id 1st98T-0000000253H-3S3Y;
+	Tue, 24 Sep 2024 17:15:37 +0000
+Date: Tue, 24 Sep 2024 18:15:37 +0100
+From: Matthew Wilcox <willy@infradead.org>
+To: Jann Horn <jannh@google.com>
+Cc: Suren Baghdasaryan <surenb@google.com>,
+	linux-trace-kernel@vger.kernel.org, peterz@infradead.org,
+	oleg@redhat.com, rostedt@goodmis.org, mhiramat@kernel.org,
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, jolsa@kernel.org,
+	paulmck@kernel.org, akpm@linux-foundation.org, linux-mm@kvack.org,
+	mjguzik@gmail.com, brauner@kernel.org, andrii@kernel.org
+Subject: Re: [PATCH v2 1/1] mm: introduce mmap_lock_speculation_{start|end}
+Message-ID: <ZvLzueEY9Sbyz1H4@casper.infradead.org>
+References: <CAJuCfpFFqqUWYOob_WYG_aY=PurnKvZjxznnx7V0=ESbNzHr_w@mail.gmail.com>
+ <20240912210222.186542-1-surenb@google.com>
+ <CAG48ez131NJWvo_RrxL7Ss0p4jd_aKOu71z1vm9wfaH7Qjn+qw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAG48ez131NJWvo_RrxL7Ss0p4jd_aKOu71z1vm9wfaH7Qjn+qw@mail.gmail.com>
 
-On Tuesday, September 24th, 2024 at 4:07 AM, Jiri Olsa <jolsa@kernel.org> w=
-rote:
+On Fri, Sep 13, 2024 at 12:52:39AM +0200, Jann Horn wrote:
+> FWIW, I would still feel happier if this was a 64-bit number, though I
+> guess at least with uprobes the attack surface is not that large even
+> if you can wrap that counter... 2^31 counter increments are not all
+> that much, especially if someone introduces a kernel path in the
+> future that lets you repeatedly take the mmap_lock for writing within
+> a single syscall without doing much work, or maybe on some machine
+> where syscalls are really fast. I really don't like hinging memory
+> safety on how fast or slow some piece of code can run, unless we can
+> make strong arguments about it based on how many memory writes a CPU
+> core is capable of doing per second or stuff like that.
 
->=20
->=20
-> With newly merged code the uprobe behaviour is slightly different
-> and affects uprobe consumer test.
->=20
-> We no longer need to check if the uprobe object is still preserved
-> after removing last uretprobe, because it stays as long as there's
-> pending/installed uretprobe instance.
->=20
-> This allows to run uretprobe consumers registered 'after' uprobe was
-> hit even if previous uretprobe got unregistered before being hit.
->=20
-> The uprobe object will be now removed after the last uprobe ref is
-> released and in such case it's held by ri->uprobe (return instance)
->=20
-> which is released after the uretprobe is hit.
->=20
-> Reported-by: Ihor Solodrai ihor.solodrai@pm.me
->=20
-> Closes: https://lore.kernel.org/bpf/w6U8Z9fdhjnkSp2UaFaV1fGqJXvfLEtDKEUyG=
-DkwmoruDJ_AgF_c0FFhrkeKW18OqiP-05s9yDKiT6X-Ns-avN_ABf0dcUkXqbSJN1TQSXo=3D@p=
-m.me/
-> Signed-off-by: Jiri Olsa jolsa@kernel.org
->=20
-> ---
-> .../testing/selftests/bpf/prog_tests/uprobe_multi_test.c | 9 +--------
-> 1 file changed, 1 insertion(+), 8 deletions(-)
->=20
-> diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c b=
-/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-> index 844f6fc8487b..c1ac813ff9ba 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-> @@ -869,21 +869,14 @@ static void consumer_test(struct uprobe_multi_consu=
-mers skel,
-> fmt =3D "prog 0/1: uprobe";
-> } else {
-> /
-> - * uprobe return is tricky ;-)
-> - *
-> * to trigger uretprobe consumer, the uretprobe needs to be installed,
-> * which means one of the 'return' uprobes was alive when probe was hit:
-> *
-> * idxs: 2/3 uprobe return in 'installed' mask
-> - *
-> - * in addition if 'after' state removes everything that was installed in
-> - * 'before' state, then uprobe kernel object goes away and return uprobe
-> - * is not installed and we won't hit it even if it's in 'after' state.
-> /
-> unsigned long had_uretprobes =3D before & 0b1100; / is uretprobe installe=
-d /
-> - unsigned long probe_preserved =3D before & after; / did uprobe go away =
-*/
->=20
-> - if (had_uretprobes && probe_preserved && test_bit(idx, after))
-> + if (had_uretprobes && test_bit(idx, after))
-> val++;
-> fmt =3D "idx 2/3: uretprobe";
-> }
-> --
-> 2.46.0
-
-Hi Jiri,
-
-I tested this change on top of bpf-next/master, and
-selftests/bpf/vmtest.sh passes.
-
-Thank you for the fix!
-
-Tested-by: Ihor Solodrai <ihor.solodrai@pm.me>
-
+You could repeatedly call munmap(1, 0) which will take the
+mmap_write_lock, do no work and call mmap_write_unlock().  We could
+fix that by moving the start/len validation outside the
+mmap_write_lock(), but it won't increase the path length by much.
+How many syscalls can we do per second?
+https://blogs.oracle.com/linux/post/syscall-latency suggests 217ns per
+syscall, so we'll be close to 4.6m syscalls/second or 466 seconds (7
+minutes, 46 seconds).
 
