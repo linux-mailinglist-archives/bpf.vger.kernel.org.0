@@ -1,193 +1,137 @@
-Return-Path: <bpf+bounces-40246-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40247-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7470B9841F7
-	for <lists+bpf@lfdr.de>; Tue, 24 Sep 2024 11:23:06 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F37B984389
+	for <lists+bpf@lfdr.de>; Tue, 24 Sep 2024 12:20:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 364E6282A4D
-	for <lists+bpf@lfdr.de>; Tue, 24 Sep 2024 09:23:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE23C1C2297D
+	for <lists+bpf@lfdr.de>; Tue, 24 Sep 2024 10:20:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F28D15665E;
-	Tue, 24 Sep 2024 09:22:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 741A517B50F;
+	Tue, 24 Sep 2024 10:20:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="mj5hF09H"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PVFN9lkM"
 X-Original-To: bpf@vger.kernel.org
-Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A59884A50;
-	Tue, 24 Sep 2024 09:22:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.97
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 844AB178364
+	for <bpf@vger.kernel.org>; Tue, 24 Sep 2024 10:20:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727169760; cv=none; b=axCurHn39LBlL5CVzeo/ZoDvymNK1v3PvJRb92PlfCbinDFNsgF3nxdv4hhN2NXXkWmCqqfnYErHFAQQakXthGnoI7fU7rkPZxURy/18Dcej2leUWFq28ra4wKYkyIQtPV7fGRw6O8Jtt4mfthjwVSV2OiuUaAuSGSB5R0hB8AA=
+	t=1727173250; cv=none; b=nIgzCbMfu2WvXjLobdrJqek7p9/CTmt4qungMmSYbVaGQxdTnihNvC/T4SlHYCwiqVMtdeDYFZUYuLJOPBVWjzv7kHhtjgukPq2UyamepqhZRXShxI24mDmfUlrvsjPju/CPhjFVpED09MkejedRb2d8SrLtYOU2ccMIG9dX380=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727169760; c=relaxed/simple;
-	bh=6Vj11S6HdMJuiRm1aLSSlE7/927+AYxpKwgCgumPXbE=;
-	h=Message-ID:Subject:Date:From:To:Cc:References:In-Reply-To:
-	 Content-Type; b=gGu+klSCXUsD5/LaWLECvet5sjJbnFq+dIMBzsJjxFvnunE8/X3rh5QY53QGq0i66ZPf7UaJDlm6sh5qnR5uQZdPZ6wncof177uH+Ck9XWrlIfD3u64xyM2kwFvskb06+tnINij+/ySgdVf3sR3DqnnzmBC2Na0qXQCkLWoD250=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=mj5hF09H; arc=none smtp.client-ip=115.124.30.97
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1727169754; h=Message-ID:Subject:Date:From:To:Content-Type;
-	bh=lTTh98SEm+9t4NZHOlfMXI3Szo21fHMqd5Hby1i8RH8=;
-	b=mj5hF09HOkd/N9E1lnKsJXgsjFwMC+MorD6297h9AyOoqfamRZuVJDZOBSQQEoiZ5tx18SsMvjzjQaeHObuJokcYlJEiK8Sh0h19IW0gtpHcd9r/piilgFfP4eM6Ij/i8QgGdU9T9teFM0ef+DYkHB0qLJIOxmBpToRtLfg/L98=
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0WFflEn5_1727169752)
-          by smtp.aliyun-inc.com;
-          Tue, 24 Sep 2024 17:22:33 +0800
-Message-ID: <1727169724.035726-1-xuanzhuo@linux.alibaba.com>
-Subject: Re: [RFC net-next v1 08/12] virtio_net: xsk: bind/unbind xsk for tx
-Date: Tue, 24 Sep 2024 17:22:04 +0800
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To: Jason Wang <jasowang@redhat.com>
-Cc: netdev@vger.kernel.org,
- "Michael S. Tsirkin" <mst@redhat.com>,
- =?utf-8?q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>,
- "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>,
- Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- virtualization@lists.linux.dev,
- bpf@vger.kernel.org
-References: <20240924013204.13763-1-xuanzhuo@linux.alibaba.com>
- <20240924013204.13763-9-xuanzhuo@linux.alibaba.com>
- <CACGkMEsTpJV=dQUHMWTnzuSmGTqdEKz4jYygHtbXGtA0q3HnoA@mail.gmail.com>
-In-Reply-To: <CACGkMEsTpJV=dQUHMWTnzuSmGTqdEKz4jYygHtbXGtA0q3HnoA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+	s=arc-20240116; t=1727173250; c=relaxed/simple;
+	bh=cZMktfwpKMy/jZFqHbDB6IPPRTqIFSjCmZOIoG1DTe8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=G7CqVwdhxwsg12TvK+YJOVxOch/QrWqC4XddcCvhElfXKnFKWK3ZcHF/xNohPw2j6EbXNFegFIYvKylpxauI7rlt7e0JNpqmH8SlgqV4B/NVNFTD1mWKq4OrUuATPLNY16fKF/LyVl7SppZ3odK+GDkHWcObK+zJVPW2Os9CLAo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=PVFN9lkM; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1727173247;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NGP+qBzp5YIh2+vU8jaw02F6pIrgJtrZ3R6SSohio/4=;
+	b=PVFN9lkMD950+zRkRsYDXQ380+fTZTg5aG35Db369zdi+V1cZIORjS/+cQYky+Z2bk03J0
+	2O7mwgSTMFrOE7niy5mIe00Hfi2+JHtP6N+hsz4gAHczBkDosQon0MPLRI2thGWmQtn5Ei
+	xLGQ5gPcITofi4QCXzKiioO3WdpLVso=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-396-qmZ-a_ZmMBmJYfhIjJkmlQ-1; Tue, 24 Sep 2024 06:20:46 -0400
+X-MC-Unique: qmZ-a_ZmMBmJYfhIjJkmlQ-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-374c54e188dso3082139f8f.1
+        for <bpf@vger.kernel.org>; Tue, 24 Sep 2024 03:20:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727173244; x=1727778044;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=NGP+qBzp5YIh2+vU8jaw02F6pIrgJtrZ3R6SSohio/4=;
+        b=bc/V/SLxsroURQeQo83JEXDIqziLtxM0425K+V9FFtvoOErAojCTPzmER0ZY6WyI0W
+         Q7/KVGePcbYU9gpTDckHs7VUwr+2E+UQ9MocuO5145qH5l27tuGf6lfXUUzkNyi6tCLm
+         Lbw5CyPgAt+WYp6aV+5Hh7vzMeJpIRtmtohP/tsQLYmJSnTGCF34xK58DnowtUaoPOOs
+         QOf1KeSBciMYW/y/3Tuicu1kaZfBnbv7g/S9XTqF4TJsandOr/1/mHSp4fOeBVGKYGyr
+         sFtJBAL18pZMBPZOIZeyfoQl0RsLTsoij285jq8Hj1D0WJKY2Z4gaLz1+PPp6Zsgr5Kv
+         2TKA==
+X-Forwarded-Encrypted: i=1; AJvYcCUQkNSRpAYx7+4MJN3nC/pE2OlhtQ3XBjKd1Qi1PyMHW6Q/VmPdbswsn+dLP+eWSumDg58=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzw20knZvuMy91GpO3xT2HCBPOV+ZjAucx1sXYOFBbNF2Xnj9Si
+	h+hEEjlDUuDysYHvOZMpIJKYVDcLabW7hSgD1rsbgvyKThPB431Hf06FcVoix+o2+ffFoNCj7Ta
+	15jTN4BJLBozwnzMOYHaU9BB3NCDKUgk8z4V77Lsvqw4VkdPGtN5/9MFbpdwY
+X-Received: by 2002:adf:f950:0:b0:374:cc89:174b with SMTP id ffacd0b85a97d-37c7eb999f3mr1485990f8f.4.1727173244395;
+        Tue, 24 Sep 2024 03:20:44 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGK0T5NfhyZYHiYDGJCXn8/4ZzrsjJgHASw3QcmuXmf6v0BqvMhuiyKu8gyWtFKxS9OMmD77A==
+X-Received: by 2002:adf:f950:0:b0:374:cc89:174b with SMTP id ffacd0b85a97d-37c7eb999f3mr1485969f8f.4.1727173243987;
+        Tue, 24 Sep 2024 03:20:43 -0700 (PDT)
+Received: from ?IPV6:2a0d:3341:b089:3810:f39e:a72d:6cbc:c72b? ([2a0d:3341:b089:3810:f39e:a72d:6cbc:c72b])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-37cbc31873csm1164742f8f.93.2024.09.24.03.20.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Sep 2024 03:20:43 -0700 (PDT)
+Message-ID: <29ef00f0-57dc-4332-9569-e88868a85575@redhat.com>
+Date: Tue, 24 Sep 2024 12:20:41 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net v3] bonding: Fix unnecessary warnings and logs from
+ bond_xdp_get_xmit_slave()
+To: Jiwon Kim <jiwonaid0@gmail.com>, razor@blackwall.org, jv@jvosburgh.net,
+ andy@greyhouse.net, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+ john.fastabend@gmail.com, joamaki@gmail.com
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ bpf@vger.kernel.org, syzbot+c187823a52ed505b2257@syzkaller.appspotmail.com
+References: <20240918140602.18644-1-jiwonaid0@gmail.com>
+Content-Language: en-US
+From: Paolo Abeni <pabeni@redhat.com>
+In-Reply-To: <20240918140602.18644-1-jiwonaid0@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, 24 Sep 2024 15:35:05 +0800, Jason Wang <jasowang@redhat.com> wrote:
-> On Tue, Sep 24, 2024 at 9:32=E2=80=AFAM Xuan Zhuo <xuanzhuo@linux.alibaba=
-.com> wrote:
-> >
-> > This patch implement the logic of bind/unbind xsk pool to sq and rq.
-> >
-> > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> > ---
-> >  drivers/net/virtio_net.c | 53 ++++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 53 insertions(+)
-> >
-> > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> > index 41a5ea9b788d..7c379614fd22 100644
-> > --- a/drivers/net/virtio_net.c
-> > +++ b/drivers/net/virtio_net.c
-> > @@ -295,6 +295,10 @@ struct send_queue {
-> >
-> >         /* Record whether sq is in reset state. */
-> >         bool reset;
-> > +
-> > +       struct xsk_buff_pool *xsk_pool;
-> > +
-> > +       dma_addr_t xsk_hdr_dma_addr;
-> >  };
-> >
-> >  /* Internal representation of a receive virtqueue */
-> > @@ -497,6 +501,8 @@ struct virtio_net_common_hdr {
-> >         };
-> >  };
-> >
-> > +static struct virtio_net_common_hdr xsk_hdr;
-> > +
-> >  static void virtnet_sq_free_unused_buf(struct virtqueue *vq, void *buf=
-);
-> >  static int virtnet_xdp_handler(struct bpf_prog *xdp_prog, struct xdp_b=
-uff *xdp,
-> >                                struct net_device *dev,
-> > @@ -5488,6 +5494,29 @@ static int virtnet_rq_bind_xsk_pool(struct virtn=
-et_info *vi, struct receive_queu
-> >         return err;
-> >  }
-> >
-> > +static int virtnet_sq_bind_xsk_pool(struct virtnet_info *vi,
-> > +                                   struct send_queue *sq,
-> > +                                   struct xsk_buff_pool *pool)
-> > +{
-> > +       int err, qindex;
-> > +
-> > +       qindex =3D sq - vi->sq;
-> > +
-> > +       virtnet_tx_pause(vi, sq);
-> > +
-> > +       err =3D virtqueue_reset(sq->vq, virtnet_sq_free_unused_buf);
-> > +       if (err) {
-> > +               netdev_err(vi->dev, "reset tx fail: tx queue index: %d =
-err: %d\n", qindex, err);
-> > +               pool =3D NULL;
-> > +       }
-> > +
-> > +       sq->xsk_pool =3D pool;
-> > +
-> > +       virtnet_tx_resume(vi, sq);
-> > +
-> > +       return err;
-> > +}
-> > +
-> >  static int virtnet_xsk_pool_enable(struct net_device *dev,
-> >                                    struct xsk_buff_pool *pool,
-> >                                    u16 qid)
-> > @@ -5496,6 +5525,7 @@ static int virtnet_xsk_pool_enable(struct net_dev=
-ice *dev,
-> >         struct receive_queue *rq;
-> >         struct device *dma_dev;
-> >         struct send_queue *sq;
-> > +       dma_addr_t hdr_dma;
-> >         int err, size;
-> >
-> >         if (vi->hdr_len > xsk_pool_get_headroom(pool))
-> > @@ -5533,6 +5563,11 @@ static int virtnet_xsk_pool_enable(struct net_de=
-vice *dev,
-> >         if (!rq->xsk_buffs)
-> >                 return -ENOMEM;
-> >
-> > +       hdr_dma =3D virtqueue_dma_map_single_attrs(sq->vq, &xsk_hdr, vi=
-->hdr_len,
-> > +                                                DMA_TO_DEVICE, 0);
-> > +       if (virtqueue_dma_mapping_error(sq->vq, hdr_dma))
-> > +               return -ENOMEM;
-> > +
-> >         err =3D xsk_pool_dma_map(pool, dma_dev, 0);
-> >         if (err)
-> >                 goto err_xsk_map;
-> > @@ -5541,11 +5576,24 @@ static int virtnet_xsk_pool_enable(struct net_d=
-evice *dev,
-> >         if (err)
-> >                 goto err_rq;
-> >
-> > +       err =3D virtnet_sq_bind_xsk_pool(vi, sq, pool);
-> > +       if (err)
-> > +               goto err_sq;
-> > +
-> > +       /* Now, we do not support tx offset, so all the tx virtnet hdr =
-is zero.
->
-> What did you mean by "tx offset" here? (Or I don't see the connection
-> with vnet hdr).
+On 9/18/24 16:06, Jiwon Kim wrote:
+> syzbot reported a WARNING in bond_xdp_get_xmit_slave. To reproduce
+> this[1], one bond device (bond1) has xdpdrv, which increases
+> bpf_master_redirect_enabled_key. Another bond device (bond0) which is
+> unsupported by XDP but its slave (veth3) has xdpgeneric that returns
+> XDP_TX. This triggers WARN_ON_ONCE() from the xdp_master_redirect().
+> To reduce unnecessary warnings and improve log management, we need to
+> delete the WARN_ON_ONCE() and add ratelimit to the netdev_err().
+> 
+> [1] Steps to reproduce:
+>      # Needs tx_xdp with return XDP_TX;
+>      ip l add veth0 type veth peer veth1
+>      ip l add veth3 type veth peer veth4
+>      ip l add bond0 type bond mode 6 # BOND_MODE_ALB, unsupported by XDP
+>      ip l add bond1 type bond # BOND_MODE_ROUNDROBIN by default
+>      ip l set veth0 master bond1
+>      ip l set bond1 up
+>      # Increases bpf_master_redirect_enabled_key
+>      ip l set dev bond1 xdpdrv object tx_xdp.o section xdp_tx
+>      ip l set veth3 master bond0
+>      ip l set bond0 up
+>      ip l set veth4 up
+>      # Triggers WARN_ON_ONCE() from the xdp_master_redirect()
+>      ip l set veth3 xdpgeneric object tx_xdp.o section xdp_tx
+> 
+> Reported-by: syzbot+c187823a52ed505b2257@syzkaller.appspotmail.com
+> Closes: https://syzkaller.appspot.com/bug?extid=c187823a52ed505b2257
+> Fixes: 9e2ee5c7e7c3 ("net, bonding: Add XDP support to the bonding driver")
+> Signed-off-by: Jiwon Kim <jiwonaid0@gmail.com>
 
-Sorry, should be tx offload(such as tx csum).
+Isn't the above issue completely addressed by explicitly checking for 
+bond->prog in bond_xdp_get_xmit_slave()? Or would that broke some use-case?
 
-Will fix.
+Thanks,
 
-Thanks.
+Paolo
 
-
->
-> Anyhow the patch looks good.
->
-> Acked-by: Jason Wang <jasowang@redhat.com>
->
-> Thanks
->
 
