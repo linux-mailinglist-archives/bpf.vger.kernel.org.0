@@ -1,131 +1,79 @@
-Return-Path: <bpf+bounces-40273-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40274-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2767984DFB
-	for <lists+bpf@lfdr.de>; Wed, 25 Sep 2024 00:41:17 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7DDFC984E1B
+	for <lists+bpf@lfdr.de>; Wed, 25 Sep 2024 00:50:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2D3301C23A25
-	for <lists+bpf@lfdr.de>; Tue, 24 Sep 2024 22:41:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9F1191C23E50
+	for <lists+bpf@lfdr.de>; Tue, 24 Sep 2024 22:50:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11AF01A08B6;
-	Tue, 24 Sep 2024 22:41:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AAF617BB26;
+	Tue, 24 Sep 2024 22:50:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="SLqyPgRt"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KioeQCnj"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BDAC146A6C
-	for <bpf@vger.kernel.org>; Tue, 24 Sep 2024 22:41:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00B4417966F;
+	Tue, 24 Sep 2024 22:50:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727217668; cv=none; b=kdYeWfzTvUfYNxvfMHTxVhM3/jr6Vk2JBLP546mubbU86TuPicO0cnPIM5T4PmK4JDOWSmyogQ/+rQUeUKHCQzjcs83WKrqB4sWwqNLeo03ZfEIikyY8Hyaxlv5/hTqgm//M0BOmiiut7Zll2iwCiWWNxMG4rPtcYVZCMWzQvzs=
+	t=1727218206; cv=none; b=anZzMNdD4xoyfTQ7mM0OQQbPCoi+poBedwOXuBJCG6HHFKCwUg7e+uSDHXWCbdftnKIvQrnMBEJg+jAKb0tBkaUssDiscKRVHcFfas+grQ0lAb/3lm+qNf1GIx8LrvcSbL/4QUwWXISPQCNcnSL2zE+qveZolx0bG8F7Y+HijKU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727217668; c=relaxed/simple;
-	bh=NhMixv5kl+9QH6xYXoXAIcF/J3IXlleAgXvIX0252z8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=oS2bx264Mq+xiffIYjtKNoRbsKLmqsxv+2hQL/Esy2Nht2O90XXiT6mBUzS1Jz0eV9WS/yrsxmrCkNtUIBzA+GZKmpDJKpLcIQw1C74hWRUZS77wA5HhpwKqsu66Km/FzLrjTyNR1PBWknpwmNNR/lWHOGlvUy8CDQXG4b8wkk8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=SLqyPgRt; arc=none smtp.client-ip=95.215.58.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <c7c16253-eff3-4d34-80c3-884790ecfdb4@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1727217663;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=D/3ql7hSu6hfJ6OUqVAGGrToVQdofg7CuYaFZlYBk80=;
-	b=SLqyPgRtLkk/M3T3thMFA4Fk9htRI6ziWWflbkjrvNW+jLBX6iVw63Kg2ZVUh+c6tbkWgP
-	GVAB6wHaVDQijoBgFZclOYkd22LPH2GX6TUK7HEr9HQm3yldyj9S/BbIczOBrPWqRi4188
-	1IgMXcJqtnKIYjKEqhuEFpd70PjRN3k=
-Date: Tue, 24 Sep 2024 15:40:53 -0700
+	s=arc-20240116; t=1727218206; c=relaxed/simple;
+	bh=psPeoO0rCCnxW/v9R+0Jcvuzi4vkQj+OCsMLY96ea6g=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=C4wDBHYqOhubRAVtGX7pqOCTerNUCNwcAVa38irS/+JepoX7o+FuX7wqM4bb0pawpN2Qt90i9fSnsJWRVKI1w8EDNFw57pxwD/9LmL39jqoGTk6FKLQEXEXY4iUlsZjWVjjmfg5lL7lRNEEpljNIhlS4F0uhOD3sKrkPYosbSxA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KioeQCnj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D44AAC4CECD;
+	Tue, 24 Sep 2024 22:50:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1727218205;
+	bh=psPeoO0rCCnxW/v9R+0Jcvuzi4vkQj+OCsMLY96ea6g=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=KioeQCnj1HHsb/WDB3VQi5VQ4tKX8r54olsBRW+2kbCbjfsTwh3rJ5J6NEaoaMtAM
+	 Q70KpCrrqo8qddyF0CnuXPaCfOOmcvEeF7OrGAZxhixbrNJkoKFCjyOC1z5b1efjU2
+	 j2BFwmChOW55MJFdk8148Flec7thBXeeorvzndTluW8u2+qACpBNUbTumaByELqkvc
+	 AbZHxn87oXcHkpVZpEW1XyiqQNKaxnZ+BkaCWJfi4uKxijRynDSCLYCI835GgR4lCC
+	 sIQIBucD8jYxpDxJBeqt6xFW03K4BBoxcXtJyir8PDUUjFOeV089qq6KH24j4hsaNL
+	 PGrpVD+oiYKKA==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 8ACE33806657;
+	Tue, 24 Sep 2024 22:50:09 +0000 (UTC)
+Subject: Re: [GIT PULL] BPF struct_fd changes for 6.12
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <20240924163423.76635-1-alexei.starovoitov@gmail.com>
+References: <20240924163423.76635-1-alexei.starovoitov@gmail.com>
+X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20240924163423.76635-1-alexei.starovoitov@gmail.com>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git tags/bpf-next-6.12-struct-fd
+X-PR-Tracked-Commit-Id: 37d3dd663f7485bf3e444f40abee3c68f53158cb
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: fa8380a06bd0523e51f826520aac1beb8c585521
+Message-Id: <172721820839.30034.899688400394554863.pr-tracker-bot@kernel.org>
+Date: Tue, 24 Sep 2024 22:50:08 +0000
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: torvalds@linux-foundation.org, viro@zeniv.linux.org.uk, bpf@vger.kernel.org, daniel@iogearbox.net, andrii@kernel.org, linux-fsdevel@vger.kernel.org, brauner@kernel.org, martin.lau@kernel.org
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v1] selftests/bpf:Enhance bpf ability to detect
- ksym read error by libcap
-To: Lin Yikai <yikai.lin@vivo.com>
-Cc: bpf@vger.kernel.org, opensource.kernel@vivo.com,
- Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
- Mykola Lysenko <mykolal@fb.com>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
- Nathan Chancellor <nathan@kernel.org>,
- Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling
- <morbo@google.com>, Justin Stitt <justinstitt@google.com>,
- linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
- llvm@lists.linux.dev
-References: <20240914092426.431066-1-yikai.lin@vivo.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20240914092426.431066-1-yikai.lin@vivo.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
 
-On 9/14/24 11:24 AM, Lin Yikai wrote:
-> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-> index 04716a5e43f1..369c5ad8fc4a 100644
-> --- a/tools/testing/selftests/bpf/Makefile
-> +++ b/tools/testing/selftests/bpf/Makefile
-> @@ -183,7 +183,7 @@ NON_CHECK_FEAT_TARGETS := clean docs-clean
->   CHECK_FEAT := $(filter-out $(NON_CHECK_FEAT_TARGETS),$(or $(MAKECMDGOALS), "none"))
->   ifneq ($(CHECK_FEAT),)
->   FEATURE_USER := .selftests
-> -FEATURE_TESTS := llvm
-> +FEATURE_TESTS := llvm libcap
->   FEATURE_DISPLAY := $(FEATURE_TESTS)
->   
->   # Makefile.feature expects OUTPUT to end with a slash
-> @@ -208,6 +208,11 @@ ifeq ($(feature-llvm),1)
->     LLVM_LDFLAGS += $(shell $(LLVM_CONFIG) --ldflags)
->   endif
->   
-> +ifeq ($(feature-libcap), 1)
-> +  CFLAGS += -DHAVE_LIBCAP_SUPPORT
-> +  LDLIBS += -lcap
-> +endif
-> +
+The pull request you sent on Tue, 24 Sep 2024 18:34:23 +0200:
 
-[ ... ]
+> https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git tags/bpf-next-6.12-struct-fd
 
-> @@ -31,6 +35,55 @@ struct ksyms {
->   static struct ksyms *ksyms;
->   static pthread_mutex_t ksyms_mutex = PTHREAD_MUTEX_INITIALIZER;
->   
-> +#ifdef HAVE_LIBCAP_SUPPORT
-> +#include <sys/capability.h>
-> +static bool bpf_cap__capable(cap_value_t cap)
-> +{
-> +	cap_flag_value_t val;
-> +	cap_t caps = cap_get_proc();
-> +
-> +	if (!caps)
-> +		return false;
-> +
-> +	if (cap_get_flag(caps, cap, CAP_EFFECTIVE, &val) != 0)
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/fa8380a06bd0523e51f826520aac1beb8c585521
 
-Instead of adding new dependency on libcap, please check if capget() can 
-directly be used. Take a look at tools/testing/selftests/bpf/cap_helpers.c.
+Thank you!
 
-pw-bot: cr
-
-> +		val = CAP_CLEAR;
-> +
-> +	if (cap_free(caps) != 0)
-> +		return false;
-> +
-> +	return val == CAP_SET;
-> +}
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
