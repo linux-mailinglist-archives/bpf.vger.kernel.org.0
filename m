@@ -1,93 +1,140 @@
-Return-Path: <bpf+bounces-40285-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40284-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07E5498556B
-	for <lists+bpf@lfdr.de>; Wed, 25 Sep 2024 10:26:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 82227985565
+	for <lists+bpf@lfdr.de>; Wed, 25 Sep 2024 10:24:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB8D7282A95
-	for <lists+bpf@lfdr.de>; Wed, 25 Sep 2024 08:26:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3FF842823F8
+	for <lists+bpf@lfdr.de>; Wed, 25 Sep 2024 08:24:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DF9C15A842;
-	Wed, 25 Sep 2024 08:26:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2555B1598EE;
+	Wed, 25 Sep 2024 08:24:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QYb9KAz8"
 X-Original-To: bpf@vger.kernel.org
-Received: from cstnet.cn (smtp81.cstnet.cn [159.226.251.81])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04CAC7E574;
-	Wed, 25 Sep 2024 08:26:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.226.251.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21624130499;
+	Wed, 25 Sep 2024 08:24:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727252779; cv=none; b=k7y+8ZiVPKF+WZiH1lJ6BbFZYiEyNfQQWtOMbA23EZrzPqq8v6kf5w1L1BifMU3voZ4cCOYXVjseeFcqq9BPeh/OQejAx19/LKPAYsRhrwzMtmXfAzBdkOgvwBhicHkfi3jppsyyUU9/tGhqJGT1uDBApF1FAGBiYUoECqIWQAM=
+	t=1727252656; cv=none; b=MjfdJU2M2ydEH4R+blTMdVve1j6TdNkCHzDIzfp87uiDtQFXxLp4uRy+0Ep1Xs2WWL7ueXlwwtR5cyCuiSVmlGciXkZpSbjPXfmB/Rua69g1vVfSw3HftFwQBxT1SPvixLmipVvEtgSXP7DYQYC9S2YGaCYQLv/wAeEFG1SKa1g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727252779; c=relaxed/simple;
-	bh=ZGixcCrfPDSlQq13Vc/iK8J9fZ1D9NrD1Mjn8nVlCz8=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=GwSjrPX9wBkJdSWQF4hgV2/1rSRKocKCDknOKsw37lbEq9DmKpfHWV4Et3odtvaNdFyKO+BNbmMW15GtpRlydzICS4lS7D4Nc2ptHGe6oqDoFPf+OxJ96y7281M6HXJiP16D3h7Z7cOsLaNbI/HL++yWwTx4898hcnikW+CFIpM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ict.ac.cn; spf=pass smtp.mailfrom=ict.ac.cn; arc=none smtp.client-ip=159.226.251.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ict.ac.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ict.ac.cn
-Received: from localhost.localdomain (unknown [58.206.203.187])
-	by APP-03 (Coremail) with SMTP id rQCowABnPBEgyfNmA+_lAA--.9685S2;
-	Wed, 25 Sep 2024 16:26:09 +0800 (CST)
-From: zyf <zhouyangfan20s@ict.ac.cn>
-To: bpf@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	dsahern@kernel.org,
-	zyf <zhouyangfan20s@ict.ac.cn>
-Subject: [PATCH] BPF : arch/x86/net/bpf_jit_comp.c : fix wrong condition code in jit compiler
-Date: Wed, 25 Sep 2024 16:23:32 +0800
-Message-Id: <20240925082332.2849923-1-zhouyangfan20s@ict.ac.cn>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1727252656; c=relaxed/simple;
+	bh=z0YhgJE8tGOsHV49d9k1PcL2yhU7lZxB7k3+WA5Bpo0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=XCNEFEPtETaWcMDh1DQvjrT986zaejrensUrm+rQvE43FEEa3u4uYx+qNoHvLnVZe0ikBnq1COXFFnHUCAEggwjW/QIShcDRSqTjZxjAj1UaQL7btHwclxM0U+1yG+zywUB1QFfKyJmnZ7uk0DCabgs84HfKz2r2UpG70DSs/W8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QYb9KAz8; arc=none smtp.client-ip=209.85.221.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-374cacf18b1so3791278f8f.2;
+        Wed, 25 Sep 2024 01:24:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1727252653; x=1727857453; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=r2edHstWlsclzGFyhsz5xiTaZ1ZX4wZXAdxPbt18MN0=;
+        b=QYb9KAz86aPOk0KFsYMPchvHwqVgVbHqR2blrPF0Po6bng82J7+Qw4KHXGjQLHI2qp
+         4S8pVPrjxeVhNEuAH4DcNJz0SSdL1qcO+BSUCAdZo5kxmzYti5iJqo42v4zotU+ySjTK
+         05CaJIOO+ISz5jjx7sFi7nZxtd0ZhuX/OpCKyBFvrhYBhbVgEqqJvu3uNQmQehH4xqTC
+         Olc9Cmv+Uad1K+ToYpjVPz2/sAwoAlBAv+hvBHu1qyKGuFC0xd9UgJq47zMMEF1DEmTP
+         fm0a4cHCAiGfPD6U/lxunfDr6ss4jo/UTNqvfqn0wt5TulaSDMlw9yBVVzVLkAv8HyZr
+         Gklw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727252653; x=1727857453;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=r2edHstWlsclzGFyhsz5xiTaZ1ZX4wZXAdxPbt18MN0=;
+        b=AO29vmNL7A/rc5FFI/hIKbXE0fqklLQV4r58gVV4FFUSdffwC6fP12h8bdcGC27Ca8
+         EkejjXGbtXBtQM9xI/oEuX6Usa1YlcD+m8tiONE2BMByR8T1EQkRPgTcMzVM7/KWOC9y
+         otzZGZLJVhR9wtTQwIfJDSwXwus7b0KktY0JZCSoWleQVEdL1ZwhEvjHsE8YcmCHVZIm
+         DEuKYbig8bUkc+MQCBOsRV1WKIKn4/EV1R8+QOUCeN3DstNnUXCrNAuZ4WrFd/UZck+I
+         EJCjc9Sc1njgZ1Of4eaKytncAjYHnyRYAm19ipAErpC/UavN/yXwNiFMjLMKf8pOyPTo
+         DwWA==
+X-Forwarded-Encrypted: i=1; AJvYcCVKsbbV/Gxn+ECgIMisxQtDgjR25Q9/VUAbytGEy4y0H7zep94Il+5feG5gPXXiM43cm+IGLYLbwUvg+CTb@vger.kernel.org, AJvYcCW+tHvGhBQUTI1PslT5RgxhrMC6HLiwYlSWJAI87qnlxKW1ez/8vfI3ppc6noX+b3XVgkE=@vger.kernel.org, AJvYcCXDeecuXAgvN2oTXNyFca/lJYtx/10InTsHgvaz1bcI1uuwog2Q1/z/gvyBvwB2dXkR1qIljTKKqTj3XlGhNjyA@vger.kernel.org
+X-Gm-Message-State: AOJu0YyxP1P7GLZTywTkcmVGld5oh2o+kf9tpL3RqR3RTiBdYZSPm80P
+	jgUcUdwm7YhCL+cpQBswwIJ4NN2ZEBbfQ6+wMlWddNf1fRp4OqXW98bqG5MxlDsdIqyqnBkab4n
+	hc2Nn1dq8J5qduHQzFPlMN5zsj4E=
+X-Google-Smtp-Source: AGHT+IEDxTRbBnGIMHlwmtmEVOiP+3su787rzVqn6SiEoedksyYRYCb1L7LZhgoxFmj4CZxWus/vi/pOmX1wsDm8s+Y=
+X-Received: by 2002:adf:dd90:0:b0:374:b6b5:4688 with SMTP id
+ ffacd0b85a97d-37cc24c9e96mr1103156f8f.49.1727252653066; Wed, 25 Sep 2024
+ 01:24:13 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:rQCowABnPBEgyfNmA+_lAA--.9685S2
-X-Coremail-Antispam: 1UD129KBjvdXoWruw13KrykGw48Cry8KrWfKrg_yoW3Xrg_A3
-	W3Za1xXw1F9Fy5ZFn5ZF45JrsxCr4ruF43uFnYqrWYkas8XF45ZFyvyF1UKw17XFW5KrZ5
-	u393tw13JwsxtjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUb48FF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-	A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
-	Gr1UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY1x0262kKe7AKxVWU
-	AVWUtwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14
-	v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkG
-	c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
-	0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4U
-	MIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7VUjuHq7UUUU
-	U==
-X-CM-SenderInfo: 52kr35xdqjwtjqsq2qxlfwhtffof0/
+References: <cover.1727174358.git.dxu@dxuuu.xyz> <815cefa75561c30bec8ca62b9261d4706fa25bb6.1727174358.git.dxu@dxuuu.xyz>
+In-Reply-To: <815cefa75561c30bec8ca62b9261d4706fa25bb6.1727174358.git.dxu@dxuuu.xyz>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 25 Sep 2024 10:24:01 +0200
+Message-ID: <CAADnVQKZ1MkBttCKsOMh7nNXNP4OVxGdYLnJuXjNFLPUv3Bm6w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 1/2] bpf: verifier: Support eliding map lookup nullness
+To: Daniel Xu <dxu@dxuuu.xyz>
+Cc: Shuah Khan <shuah@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Alexei Starovoitov <ast@kernel.org>, Eddy Z <eddyz87@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Mykola Lysenko <mykolal@fb.com>, bpf <bpf@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, Kernel Team <kernel-team@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-change 'case BPF_ALU64 | BPF_END | BPF_FROM_LE' to 'case BPF_ALU64 | BPF_END | BPF_FROM_BE'
+On Tue, Sep 24, 2024 at 12:40=E2=80=AFPM Daniel Xu <dxu@dxuuu.xyz> wrote:
+>
+> +
+> +/* Returns constant key value if possible, else -1 */
+> +static long get_constant_map_key(struct bpf_verifier_env *env,
+> +                                struct bpf_reg_state *key)
+> +{
+> +       struct bpf_func_state *state =3D func(env, key);
+> +       struct bpf_reg_state *reg;
+> +       int stack_off;
+> +       int slot;
+> +       int spi;
+> +
+> +       if (key->type !=3D PTR_TO_STACK)
+> +               return -1;
+> +       if (!tnum_is_const(key->var_off))
+> +               return -1;
+> +
+> +       stack_off =3D key->off + key->var_off.value;
+> +       slot =3D -stack_off - 1;
+> +       if (slot < 0)
+> +               /* Stack grew upwards */
 
-Signed-off-by: zyf <zhouyangfan20s@ict.ac.cn>
----
- arch/x86/net/bpf_jit_comp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The comment is misleading.
+The verifier is supposed to catch this.
+It's just this helper was called before the stack bounds
+were checked?
+Maybe the call can be done later?
 
-diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index 06b080b61aa5..7f954d76b3a6 100644
---- a/arch/x86/net/bpf_jit_comp.c
-+++ b/arch/x86/net/bpf_jit_comp.c
-@@ -1786,7 +1786,7 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image, u8 *rw_image
- 			break;
- 
- 		case BPF_ALU | BPF_END | BPF_FROM_BE:
--		case BPF_ALU64 | BPF_END | BPF_FROM_LE:
-+		case BPF_ALU64 | BPF_END | BPF_FROM_BE:
- 			switch (imm32) {
- 			case 16:
- 				/* Emit 'ror %ax, 8' to swap lower 2 bytes */
--- 
-2.39.2
+> +               return -1;
+> +       else if (slot >=3D state->allocated_stack)
+> +               /* Stack uninitialized */
+> +               return -1;
+> +
+> +       spi =3D slot / BPF_REG_SIZE;
+> +       reg =3D &state->stack[spi].spilled_ptr;
+> +       if (!tnum_is_const(reg->var_off))
+> +               /* Stack value not statically known */
+> +               return -1;
+> +
+> +       return reg->var_off.value;
+> +}
 
+Looks like the code is more subtle than it looks.
+
+I think it's better to guard it all with CAP_BPF.
+
+pw-bot: cr
 
