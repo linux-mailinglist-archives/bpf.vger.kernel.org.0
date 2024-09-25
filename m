@@ -1,157 +1,134 @@
-Return-Path: <bpf+bounces-40317-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40318-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5CB169863A5
-	for <lists+bpf@lfdr.de>; Wed, 25 Sep 2024 17:33:48 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24E7F9864D4
+	for <lists+bpf@lfdr.de>; Wed, 25 Sep 2024 18:30:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F5BE1C24E3E
-	for <lists+bpf@lfdr.de>; Wed, 25 Sep 2024 15:33:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8BD94B276CF
+	for <lists+bpf@lfdr.de>; Wed, 25 Sep 2024 16:28:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBBC21AACB;
-	Wed, 25 Sep 2024 15:30:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 233F712BEBB;
+	Wed, 25 Sep 2024 16:26:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kSBIZlpq"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="N6uCIXFT"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f174.google.com (mail-il1-f174.google.com [209.85.166.174])
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC9681D5AB5;
-	Wed, 25 Sep 2024 15:30:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 562AD481CE;
+	Wed, 25 Sep 2024 16:26:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727278221; cv=none; b=W7eN/QjiWDf8Gu4tLvh/+UNkv4emeFQRj+eKHZCbMbmguN2jCJ+X06aeedKlo0QScdYjJcWANvq9CiuReuQFBtuhVHq7olBw1d+TGdSRftOVWv0Jl7uAgXuLeDQuwJSgJqLlbvvXQZxRUGPWEe5C0adj3XelRjSxH9bQYlStcsk=
+	t=1727281607; cv=none; b=PHKF2f4UExHHSnz+vLf97rPra42gyfKhn1pZXe4gYdc4Is7j8xJLE5unITSivIsOtPL/YOtZwgt/LcnXI6E8WKWpkyz+q9l1blCKEHe1b6XooY/R0JWgwuNcYcWNsffckxP/0hblu85C2yDBpCDuWtTONwrMGRqpIK34fd45cMU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727278221; c=relaxed/simple;
-	bh=malUig89NeChM+qVHquLi7LMYSW5FYmMIjlUg/kZyj0=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=UQxu3oXXHUC8VPC0C7iilhBrrubc9UhnTrFctSLHnTUnnWpTg6t9HmPJx0r7BvqsZ60kiaxrWG1AHHbHvxGjcRAGRKKpT/BZRHuHfzir/tmudsUwwV61APN1QFIQ3VmX9ZzAUcpKz+oJjYiNy8QUSEXdJxWx4BIVvUNUBbRv4Vg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kSBIZlpq; arc=none smtp.client-ip=209.85.166.174
+	s=arc-20240116; t=1727281607; c=relaxed/simple;
+	bh=/R54fp8hKNPO/2V67vGlkWeekKvDry3xBMaa2KQ2i2Y=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Nmh4KALrK19f1RI888q+mRKe2KatLBAJtumjBDHb+wlI53eYdYiyb8iLULh+mjhKls0qUjU9OsFxtV5qt7dMvIYJfqGVQk0OfF/gPNp4O0RT51MRgljTevCBt9Et2kPjg+JLdH9ztg3hw4rOIRIP2W/U4HiYvOnXRzzBDUSGJS8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=N6uCIXFT; arc=none smtp.client-ip=209.85.214.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f174.google.com with SMTP id e9e14a558f8ab-3a0cad8a0a5so27264335ab.1;
-        Wed, 25 Sep 2024 08:30:19 -0700 (PDT)
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-20792913262so81650105ad.3;
+        Wed, 25 Sep 2024 09:26:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727278219; x=1727883019; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Wy30SQD1ENIWTPN9yMx/+ebAJKSjTfpHvofyTUnSNpA=;
-        b=kSBIZlpq8UEMoCqX+bNU/tsn3uOt7f2gKd7S5xeKzRNk5IhT34Jwp/9twfPERR+IZK
-         NdMm4Zp3rLXXTRiSYTjimBSjhpNSgIDkBpQZcZg1q/jleKY2Jyksg2omqxPVWLaFC8BS
-         aPEmOu7Za4JUdmmuRoZh10azSTMmETpR9lTF6m9v1hXucG06vXxpFsY+ONjj8KSBZygU
-         u6XTbThQnWkfmPcJmai/lg8cW4zED0FBXp0PqqWfcxvOqdV0xxzhVgTI9yPkzAobAvmE
-         tt7vB8feGRnQ+jvbXFYewKhkHbbVkifZ0S68B20jwU8OW/qELyBI2AJB9useWnt8XoXH
-         5FGA==
+        d=gmail.com; s=20230601; t=1727281606; x=1727886406; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VuGWKm5UENWosvHzMemZt6HnQELzPD/LdCepurLCaBk=;
+        b=N6uCIXFT7LaI2Uwcc6fI9jzObgef+VuI5kmwac6LMTR4SW5jqtegxqYJvgVCeQUNsD
+         atTBG8sakgIsa4wJSb34dApUW0sz9U0z+1JOfI7ej7g7x7J4bHEEDlSn17/X+x3ZWxzQ
+         Ka0F0H9rNQRLttRjpBHDAmz3qhrm4UynsBjTlPz+3198tCCVANhUVYysROsDy90MqwM5
+         cevjfqcGzCSA178/cGemR5uMJfrrQIHXMZ8RC9vQyt57M0FEmhJL3aB+MqtXBOEPUMtG
+         8224oX1OUwvWvSaYC1hoIlKzEhu1ou1RoGCQNb360i32JG5WeOBLjfZG3xGjZjX+QssO
+         22zg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727278219; x=1727883019;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Wy30SQD1ENIWTPN9yMx/+ebAJKSjTfpHvofyTUnSNpA=;
-        b=f1hjaT5e6aO5bKnVh1Rmx78ES1Kb1Er0vkOEDAaeOSlsEURmzsMG0eM+aukan5536P
-         UkTnZwwctPEWc5Rbv8d4FHihvIWUv7SUwxoYwWtpEQ6LnYv7H7sCXgOZqNfZntCc4bBX
-         /JPOEZCwdEqOuKbB0ETcrWAMxyq04a5XmmwwMgzk21WoOTcfEkXPyg94QM9IBL4cnxmo
-         shSQ6UK9p5JLvy2JymWdVdMUTmapszruP9MRRLYUZ3zdlhgjEYaPxtNBqT3LXhhHZC/6
-         e739sLIH2cV0F5CIOeHN5dTrdK19XwXer02fX5rxX0uaXUsF3viQ3eefUezkIbPdFvte
-         5wFw==
-X-Forwarded-Encrypted: i=1; AJvYcCUzmcOnTGxvonD08sRchwabz04Bb64KzqJ/UGC8Tg9ILVDOmccLuuRwG8UaQmhkGZThLGYR4nE9b2HkbFw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyUwIhdYXDI6G0lc2YVK3LStqNsnMiZY3R0kFMAk759AGM1ZGvF
-	RdOQbkAg3MtV3gGeGc/8XE4OZO9sbzjQY5K86bhwlPa1J5D9wHH0
-X-Google-Smtp-Source: AGHT+IFlegXREGRke0UC+wjN9U/8NAQ5KzPof82ogZf9upE9hpC3GX7msAHbZzZ1le0Tx2S53QaE7Q==
-X-Received: by 2002:a05:6e02:17cd:b0:3a0:bf6b:6bca with SMTP id e9e14a558f8ab-3a26d72cc69mr36490425ab.9.1727278218783;
-        Wed, 25 Sep 2024 08:30:18 -0700 (PDT)
-Received: from localhost ([117.147.91.209])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7e6b7c32875sm2840764a12.11.2024.09.25.08.30.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Sep 2024 08:30:18 -0700 (PDT)
-From: Tao Chen <chen.dylane@gmail.com>
-To: Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>
-Cc: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Tao Chen <chen.dylane@gmail.com>
-Subject: [PATCH bpf-next v4] libbpf: Fix expected_attach_type set when kernel not support
-Date: Wed, 25 Sep 2024 23:30:12 +0800
-Message-Id: <20240925153012.212866-1-chen.dylane@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20230601; t=1727281606; x=1727886406;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=VuGWKm5UENWosvHzMemZt6HnQELzPD/LdCepurLCaBk=;
+        b=Tk7q7/JTfNph2e+wGdJXmw7TGZsw+Ee+z595ShW+5KRl97S9SsLgcOxfptiQLI1qte
+         bHZf2NlSkmYGoQwMirmca9DIQ+SUHtp4n3ZttEj1a51wq4ZDq5CQT+iuNhPY/L6pVYaN
+         U4YBrFspmNOpVIGXeyhbnRiHZh5P29mWSGVwxq1rEWku1fJC+thRDLTyX0IoQ0BrVSrZ
+         ceMBAlvaChlyzYunbV6+cb8SAXfNpxcZA6tv7aJd+AXfsE4sl/zs1fnHaXG8abru6QRJ
+         xa4gIXbRaTjD1YBki7O5R3jWYn2+trVmtI7PUzRMUKJ4mgqc75M2N5tbm/WGp2HBLUT4
+         p1qA==
+X-Forwarded-Encrypted: i=1; AJvYcCV2DrHTUYHclIUbzZaXV8WlPlH/PE1hsvsue/wsB0FGoV2qNfKNrVudAr/w+yWMw4D0/B2JLCJnErmj7M+n@vger.kernel.org, AJvYcCW6CoAqejcZiJTJicllBF3/fPACyxb9nWhbxDrtYw4oP4NTfXitykrQCGhrDnwbgVsagD0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwUV+C220pDs2dIS8gRMVwxA+AGgPk8MNDNZ6Npa9lA8Kl2mzZC
+	d+gkYR9k6GBy9MCMvIpAq5PJZeDbXDfPpC7BAeDkS/jGRX6bwP3l
+X-Google-Smtp-Source: AGHT+IFKJxV65iNSlOxlbZu84lyBy1ZAaOgS6UVZBoSWyxARv3dMtCEKeI72k4gPOE5Ffk6sHC9K/w==
+X-Received: by 2002:a17:902:da8e:b0:205:56e8:4a3f with SMTP id d9443c01a7336-20afc654e19mr46462755ad.61.1727281605361;
+        Wed, 25 Sep 2024 09:26:45 -0700 (PDT)
+Received: from [192.168.50.122] ([117.147.91.209])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20af1720c98sm26386215ad.73.2024.09.25.09.26.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Sep 2024 09:26:44 -0700 (PDT)
+Message-ID: <8bc57566-2867-49f5-8b66-7c5f32c1a0c8@gmail.com>
+Date: Thu, 26 Sep 2024 00:25:25 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next] bpftool: Remove llvm-strip from Makefile
+To: Daniel Borkmann <daniel@iogearbox.net>, patchwork-bot+netdevbpf@kernel.org
+Cc: qmo@kernel.org, ast@kernel.org, andrii@kernel.org, martin.lau@linux.dev,
+ eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
+ jolsa@kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240924165202.1379930-1-chen.dylane@gmail.com>
+ <172725782851.519668.2924142510144708471.git-patchwork-notify@kernel.org>
+ <4f58b093-ca1f-426a-8102-4b00ccaf4973@iogearbox.net>
+From: Tao Chen <chen.dylane@gmail.com>
+In-Reply-To: <4f58b093-ca1f-426a-8102-4b00ccaf4973@iogearbox.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-The commit "5902da6d8a52" set expected_attach_type again with
-field of bpf_program after libbpf_prepare_prog_load, which makes
-expected_attach_type = 0 no sense when kernel not support the
-attach_type feature, so fix it.
+在 2024/9/25 18:32, Daniel Borkmann 写道:
+> On 9/25/24 11:50 AM, patchwork-bot+netdevbpf@kernel.org wrote:
+>> Hello:
+>>
+>> This patch was applied to bpf/bpf-next.git (master)
+>> by Daniel Borkmann <daniel@iogearbox.net>:
+>>
+>> On Wed, 25 Sep 2024 00:52:02 +0800 you wrote:
+>>> As Quentin and Andrri said [0], bpftool gen object strips
+>>> out DWARF already, so remove the repeat operation.
+>>>
+>>> [0] https://github.com/libbpf/bpftool/issues/161
+>>>
+>>> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+>>> Suggested-by: Quentin Monnet <qmo@kernel.org>
+>>> Signed-off-by: Tao Chen <chen.dylane@gmail.com>
+>>>
+>>> [...]
+> I'll toss this shortly from the tree again, this missed that bpftool gen 
+> object call
+> needs to strip out dwarf.
 
-Fixes: 5902da6d8a52 ("libbpf: Add uprobe multi link support to bpf_program__attach_usdt")
-Suggested-by: Jiri Olsa <jolsa@kernel.org>
-Signed-off-by: Tao Chen <chen.dylane@gmail.com>
----
- tools/lib/bpf/libbpf.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+Hi Daniel, i saw linker_sanity_check_elf will ignore the dwarf sec, 
+which means bpftool gen object will strip, is my understanding correct?
 
-Change list:
-- v3 -> v4:
-    - fix some typo
-- v2 -> v3:
-    - update BPF_TRACE_UPROBE_MULTI both in prog and opts suggested by
-      Andrri
-- v1 -> v2:
-    - restore the original initialization way suggested by Jiri
+static int linker_sanity_check_elf(struct src_obj *obj)
+{
+	...
+	if (is_dwarf_sec_name(sec->sec_name))
+		continue;
+	...
+}
+>>> Here is the summary with links:
+>>>    - [bpf-next] bpftool: Remove llvm-strip from Makefile
+>>>      https://git.kernel.org/bpf/bpf-next/c/25bfc6333e32
+>>>
+>>> You are awesome, thank you!
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 219facd0e66e..a78e24ff354b 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -7352,8 +7352,14 @@ static int libbpf_prepare_prog_load(struct bpf_program *prog,
- 		opts->prog_flags |= BPF_F_XDP_HAS_FRAGS;
- 
- 	/* special check for usdt to use uprobe_multi link */
--	if ((def & SEC_USDT) && kernel_supports(prog->obj, FEAT_UPROBE_MULTI_LINK))
-+	if ((def & SEC_USDT) && kernel_supports(prog->obj, FEAT_UPROBE_MULTI_LINK)) {
-+		/* for BPF_TRACE_UPROBE_MULTI, user might want to query expected_attach_type
-+		 * in prog, and expected_attach_type we set in kernel is from opts, so we
-+		 * update both.
-+		 */
- 		prog->expected_attach_type = BPF_TRACE_UPROBE_MULTI;
-+		opts->expected_attach_type = BPF_TRACE_UPROBE_MULTI;
-+	}
- 
- 	if ((def & SEC_ATTACH_BTF) && !prog->attach_btf_id) {
- 		int btf_obj_fd = 0, btf_type_id = 0, err;
-@@ -7443,6 +7449,7 @@ static int bpf_object_load_prog(struct bpf_object *obj, struct bpf_program *prog
- 	load_attr.attach_btf_id = prog->attach_btf_id;
- 	load_attr.kern_version = kern_version;
- 	load_attr.prog_ifindex = prog->prog_ifindex;
-+	load_attr.expected_attach_type = prog->expected_attach_type;
- 
- 	/* specify func_info/line_info only if kernel supports them */
- 	if (obj->btf && btf__fd(obj->btf) >= 0 && kernel_supports(obj, FEAT_BTF_FUNC)) {
-@@ -7474,9 +7481,6 @@ static int bpf_object_load_prog(struct bpf_object *obj, struct bpf_program *prog
- 		insns_cnt = prog->insns_cnt;
- 	}
- 
--	/* allow prog_prepare_load_fn to change expected_attach_type */
--	load_attr.expected_attach_type = prog->expected_attach_type;
--
- 	if (obj->gen_loader) {
- 		bpf_gen__prog_load(obj->gen_loader, prog->type, prog->name,
- 				   license, insns, insns_cnt, &load_attr,
+
 -- 
-2.25.1
-
+Best Regards
+Dylane Chen
 
