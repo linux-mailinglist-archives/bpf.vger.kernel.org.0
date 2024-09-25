@@ -1,62 +1,61 @@
-Return-Path: <bpf+bounces-40302-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40303-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29EEC985C0B
-	for <lists+bpf@lfdr.de>; Wed, 25 Sep 2024 14:38:05 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48447985E31
+	for <lists+bpf@lfdr.de>; Wed, 25 Sep 2024 15:29:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3B0F7B243E8
-	for <lists+bpf@lfdr.de>; Wed, 25 Sep 2024 12:37:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0890528D2D9
+	for <lists+bpf@lfdr.de>; Wed, 25 Sep 2024 13:29:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1DB01CC15F;
-	Wed, 25 Sep 2024 11:53:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E87120D8B1;
+	Wed, 25 Sep 2024 12:09:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="koTM8NQP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eYEXi6gd"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B27E1CC146;
-	Wed, 25 Sep 2024 11:53:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A18D31B78E1;
+	Wed, 25 Sep 2024 12:09:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727265214; cv=none; b=nGjwCgmXZ6VTR06uaE2f0UBDQrzQYAWvC8rilbIxQBNy++sOyXkMsCm7r99uCsi6zyqTi1iGTp6zSlfmXKuDTgQLaHgXzahmnTt9fApK8tszpAbb3CoJox2mJ0a8XRc0SG7BmzVldAf0eV7pMmGtImQzC8RcPJAHRXw1hV8wkfI=
+	t=1727266144; cv=none; b=ds5zdlY7FD7Ki8djs9LwyX94W7tLwgT0BNXUIwbsVC7A0/oqzC6li4pbQYeLxxuzEWIfhR7SQUhNLu8m7qW2G8/LvSYr+SGeEtv4JBFDPHdHKsOyF7dqc1z1tgSLsRz6KMrw7nWn6+gwWUXcfp4E6aNCxXYUgax1mmNYP3p0sDs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727265214; c=relaxed/simple;
-	bh=amg53tDbdCODGmuTxjMA3mHkbvigstOfqgKqe+UfbTs=;
+	s=arc-20240116; t=1727266144; c=relaxed/simple;
+	bh=tpjmmTTWRgyTpMMkeq/BPrMDI6FNaVtIncuIWxH/uWo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MdA3M2Z0Daz47N3+/ETXx7yywiT4XVYxN2pESeui4cAmC6+jlnNL534JjjVUZpS30RLIEWoKfUZm01pxq753TO+J8TghswY+PyGn15jU8Pa7Zee/SWv8xgjwh+LXLBQuHuMO4Sq28zjKsAeJaOUmkT2604MdnoPEwUfpOG2OKh0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=koTM8NQP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BFFA2C4CECE;
-	Wed, 25 Sep 2024 11:53:32 +0000 (UTC)
+	 MIME-Version; b=O2UipThZv4F7Bu9FZV3ss07XFAWeoj4R9vgmyTuU2ctaQBmC+idonQT3GKfoOgvUnQoIFuyYO2uFA/9M8HzbSye+ju6LWgE5On9cH8TOXR8Aivq4nJTY2+bGRqU0UwIT61hDUd9zI0bB5Mr8irsgmu7lrBYiTzn0BqTnzRWeYxg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eYEXi6gd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A39AC4CEC7;
+	Wed, 25 Sep 2024 12:09:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727265213;
-	bh=amg53tDbdCODGmuTxjMA3mHkbvigstOfqgKqe+UfbTs=;
+	s=k20201202; t=1727266144;
+	bh=tpjmmTTWRgyTpMMkeq/BPrMDI6FNaVtIncuIWxH/uWo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=koTM8NQPTgVrL3EwsedeefAVyARbR27XJNGprZL43yLFKkF6bNMJldNMoRXVEqSyn
-	 NQUwXlvrq0KGZOMAf5hAOk2nzGlxQslXY38MCfJOAmVCpSKo5CiwZoAEVgF0hnbsG8
-	 s/MDsZFdD4C7NgBZ54cn2VrjKCktRHz2ludMtShJlQ5jNFDURnrl1gO88VXH1ndq+B
-	 GM9pVve9ebJ7S3yCWMN8bw4cblFojJ8E2uK1PwTiL5wNFOGeP0uVaewa0YCs8C1UjA
-	 sFRphofoaRU6mbAvTOOrD5iCI830LGZwHE49/vP6C83kUOko2H3xzuP05wskFT/gRJ
-	 lLJwktCJFUWGQ==
+	b=eYEXi6gdszCfdyvm4o9JFJCg3Sfct44/1hpPo48erm9gdKl1CZHYK5OgW88Sm/+/K
+	 XNKE8y2SESdqNO4d3EZ9Br3JbM3zxyRPpGG4+5XaB3Ow5OkRzpZQUajv50znTEhjAm
+	 60sGkaSjme9jPYGo2SVipfOM1Tr89L3nCGiun2GkgPQzA8Tuz9mFTzmTY7/SK5pq2t
+	 ZGFu9mtq4bO6r3AujBz7e25ovLvNtviP4MrhdePq/B83nndddihB4n4Bei41fqwHO4
+	 NFE6uwXhzP+ij0heKLDcokqi9Dp/YT/CMoXSiTSr13wtmGTFBwcTtjcehH6JbZNtaa
+	 al28j04/Xmfhw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Yonghong Song <yonghong.song@linux.dev>,
-	Zac Ecob <zacecob@protonmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
+Cc: Juntong Deng <juntong.deng@outlook.com>,
 	Alexei Starovoitov <ast@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
 	daniel@iogearbox.net,
+	andrii@kernel.org,
 	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.11 244/244] bpf: Fix a sdiv overflow issue
-Date: Wed, 25 Sep 2024 07:27:45 -0400
-Message-ID: <20240925113641.1297102-244-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.10 189/197] bpf: Make the pointer returned by iter next method valid
+Date: Wed, 25 Sep 2024 07:53:28 -0400
+Message-ID: <20240925115823.1303019-189-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240925113641.1297102-1-sashal@kernel.org>
-References: <20240925113641.1297102-1-sashal@kernel.org>
+In-Reply-To: <20240925115823.1303019-1-sashal@kernel.org>
+References: <20240925115823.1303019-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -65,203 +64,109 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.11
+X-stable-base: Linux 6.10.11
 Content-Transfer-Encoding: 8bit
 
-From: Yonghong Song <yonghong.song@linux.dev>
+From: Juntong Deng <juntong.deng@outlook.com>
 
-[ Upstream commit 7dd34d7b7dcf9309fc6224caf4dd5b35bedddcb7 ]
+[ Upstream commit 4cc8c50c9abcb2646a7a4fcef3cea5dcb30c06cf ]
 
-Zac Ecob reported a problem where a bpf program may cause kernel crash due
-to the following error:
-  Oops: divide error: 0000 [#1] PREEMPT SMP KASAN PTI
+Currently we cannot pass the pointer returned by iter next method as
+argument to KF_TRUSTED_ARGS or KF_RCU kfuncs, because the pointer
+returned by iter next method is not "valid".
 
-The failure is due to the below signed divide:
-  LLONG_MIN/-1 where LLONG_MIN equals to -9,223,372,036,854,775,808.
-LLONG_MIN/-1 is supposed to give a positive number 9,223,372,036,854,775,808,
-but it is impossible since for 64-bit system, the maximum positive
-number is 9,223,372,036,854,775,807. On x86_64, LLONG_MIN/-1 will
-cause a kernel exception. On arm64, the result for LLONG_MIN/-1 is
-LLONG_MIN.
+This patch sets the pointer returned by iter next method to be valid.
 
-Further investigation found all the following sdiv/smod cases may trigger
-an exception when bpf program is running on x86_64 platform:
-  - LLONG_MIN/-1 for 64bit operation
-  - INT_MIN/-1 for 32bit operation
-  - LLONG_MIN%-1 for 64bit operation
-  - INT_MIN%-1 for 32bit operation
-where -1 can be an immediate or in a register.
+This is based on the fact that if the iterator is implemented correctly,
+then the pointer returned from the iter next method should be valid.
 
-On arm64, there are no exceptions:
-  - LLONG_MIN/-1 = LLONG_MIN
-  - INT_MIN/-1 = INT_MIN
-  - LLONG_MIN%-1 = 0
-  - INT_MIN%-1 = 0
-where -1 can be an immediate or in a register.
+This does not make NULL pointer valid. If the iter next method has
+KF_RET_NULL flag, then the verifier will ask the ebpf program to
+check NULL pointer.
 
-Insn patching is needed to handle the above cases and the patched codes
-produced results aligned with above arm64 result. The below are pseudo
-codes to handle sdiv/smod exceptions including both divisor -1 and divisor 0
-and the divisor is stored in a register.
+KF_RCU_PROTECTED iterator is a special case, the pointer returned by
+iter next method should only be valid within RCU critical section,
+so it should be with MEM_RCU, not PTR_TRUSTED.
 
-sdiv:
-      tmp = rX
-      tmp += 1 /* [-1, 0] -> [0, 1]
-      if tmp >(unsigned) 1 goto L2
-      if tmp == 0 goto L1
-      rY = 0
-  L1:
-      rY = -rY;
-      goto L3
-  L2:
-      rY /= rX
-  L3:
+Another special case is bpf_iter_num_next, which returns a pointer with
+base type PTR_TO_MEM. PTR_TO_MEM should not be combined with type flag
+PTR_TRUSTED (PTR_TO_MEM already means the pointer is valid).
 
-smod:
-      tmp = rX
-      tmp += 1 /* [-1, 0] -> [0, 1]
-      if tmp >(unsigned) 1 goto L1
-      if tmp == 1 (is64 ? goto L2 : goto L3)
-      rY = 0;
-      goto L2
-  L1:
-      rY %= rX
-  L2:
-      goto L4  // only when !is64
-  L3:
-      wY = wY  // only when !is64
-  L4:
+The pointer returned by iter next method of other types of iterators
+is with PTR_TRUSTED.
 
-  [1] https://lore.kernel.org/bpf/tPJLTEh7S_DxFEqAI2Ji5MBSoZVg7_G-Py2iaZpAaWtM961fFTWtsnlzwvTbzBzaUzwQAoNATXKUlt0LZOFgnDcIyKCswAnAGdUF3LBrhGQ=@protonmail.com/
+In addition, this patch adds get_iter_from_state to help us get the
+current iterator from the current state.
 
-Reported-by: Zac Ecob <zacecob@protonmail.com>
-Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-Link: https://lore.kernel.org/r/20240913150326.1187788-1-yonghong.song@linux.dev
+Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
+Link: https://lore.kernel.org/r/AM6PR03MB584869F8B448EA1C87B7CDA399962@AM6PR03MB5848.eurprd03.prod.outlook.com
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/verifier.c | 93 +++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 89 insertions(+), 4 deletions(-)
+ kernel/bpf/verifier.c | 26 ++++++++++++++++++++++----
+ 1 file changed, 22 insertions(+), 4 deletions(-)
 
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 3b20c3e614e19..f2dd3fda40848 100644
+index 73f55f4b945ee..2eff14da6bf16 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
-@@ -19929,13 +19929,46 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
- 			/* Convert BPF_CLASS(insn->code) == BPF_ALU64 to 32-bit ALU */
- 			insn->code = BPF_ALU | BPF_OP(insn->code) | BPF_SRC(insn->code);
+@@ -7975,6 +7975,15 @@ static int widen_imprecise_scalars(struct bpf_verifier_env *env,
+ 	return 0;
+ }
  
--		/* Make divide-by-zero exceptions impossible. */
-+		/* Make sdiv/smod divide-by-minus-one exceptions impossible. */
-+		if ((insn->code == (BPF_ALU64 | BPF_MOD | BPF_K) ||
-+		     insn->code == (BPF_ALU64 | BPF_DIV | BPF_K) ||
-+		     insn->code == (BPF_ALU | BPF_MOD | BPF_K) ||
-+		     insn->code == (BPF_ALU | BPF_DIV | BPF_K)) &&
-+		    insn->off == 1 && insn->imm == -1) {
-+			bool is64 = BPF_CLASS(insn->code) == BPF_ALU64;
-+			bool isdiv = BPF_OP(insn->code) == BPF_DIV;
-+			struct bpf_insn *patchlet;
-+			struct bpf_insn chk_and_sdiv[] = {
-+				BPF_RAW_INSN((is64 ? BPF_ALU64 : BPF_ALU) |
-+					     BPF_NEG | BPF_K, insn->dst_reg,
-+					     0, 0, 0),
-+			};
-+			struct bpf_insn chk_and_smod[] = {
-+				BPF_MOV32_IMM(insn->dst_reg, 0),
-+			};
++static struct bpf_reg_state *get_iter_from_state(struct bpf_verifier_state *cur_st,
++						 struct bpf_kfunc_call_arg_meta *meta)
++{
++	int iter_frameno = meta->iter.frameno;
++	int iter_spi = meta->iter.spi;
 +
-+			patchlet = isdiv ? chk_and_sdiv : chk_and_smod;
-+			cnt = isdiv ? ARRAY_SIZE(chk_and_sdiv) : ARRAY_SIZE(chk_and_smod);
++	return &cur_st->frame[iter_frameno]->stack[iter_spi].spilled_ptr;
++}
 +
-+			new_prog = bpf_patch_insn_data(env, i + delta, patchlet, cnt);
-+			if (!new_prog)
-+				return -ENOMEM;
-+
-+			delta    += cnt - 1;
-+			env->prog = prog = new_prog;
-+			insn      = new_prog->insnsi + i + delta;
-+			goto next_insn;
-+		}
-+
-+		/* Make divide-by-zero and divide-by-minus-one exceptions impossible. */
- 		if (insn->code == (BPF_ALU64 | BPF_MOD | BPF_X) ||
- 		    insn->code == (BPF_ALU64 | BPF_DIV | BPF_X) ||
- 		    insn->code == (BPF_ALU | BPF_MOD | BPF_X) ||
- 		    insn->code == (BPF_ALU | BPF_DIV | BPF_X)) {
- 			bool is64 = BPF_CLASS(insn->code) == BPF_ALU64;
- 			bool isdiv = BPF_OP(insn->code) == BPF_DIV;
-+			bool is_sdiv = isdiv && insn->off == 1;
-+			bool is_smod = !isdiv && insn->off == 1;
- 			struct bpf_insn *patchlet;
- 			struct bpf_insn chk_and_div[] = {
- 				/* [R,W]x div 0 -> 0 */
-@@ -19955,10 +19988,62 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
- 				BPF_JMP_IMM(BPF_JA, 0, 0, 1),
- 				BPF_MOV32_REG(insn->dst_reg, insn->dst_reg),
- 			};
-+			struct bpf_insn chk_and_sdiv[] = {
-+				/* [R,W]x sdiv 0 -> 0
-+				 * LLONG_MIN sdiv -1 -> LLONG_MIN
-+				 * INT_MIN sdiv -1 -> INT_MIN
-+				 */
-+				BPF_MOV64_REG(BPF_REG_AX, insn->src_reg),
-+				BPF_RAW_INSN((is64 ? BPF_ALU64 : BPF_ALU) |
-+					     BPF_ADD | BPF_K, BPF_REG_AX,
-+					     0, 0, 1),
-+				BPF_RAW_INSN((is64 ? BPF_JMP : BPF_JMP32) |
-+					     BPF_JGT | BPF_K, BPF_REG_AX,
-+					     0, 4, 1),
-+				BPF_RAW_INSN((is64 ? BPF_JMP : BPF_JMP32) |
-+					     BPF_JEQ | BPF_K, BPF_REG_AX,
-+					     0, 1, 0),
-+				BPF_RAW_INSN((is64 ? BPF_ALU64 : BPF_ALU) |
-+					     BPF_MOV | BPF_K, insn->dst_reg,
-+					     0, 0, 0),
-+				/* BPF_NEG(LLONG_MIN) == -LLONG_MIN == LLONG_MIN */
-+				BPF_RAW_INSN((is64 ? BPF_ALU64 : BPF_ALU) |
-+					     BPF_NEG | BPF_K, insn->dst_reg,
-+					     0, 0, 0),
-+				BPF_JMP_IMM(BPF_JA, 0, 0, 1),
-+				*insn,
-+			};
-+			struct bpf_insn chk_and_smod[] = {
-+				/* [R,W]x mod 0 -> [R,W]x */
-+				/* [R,W]x mod -1 -> 0 */
-+				BPF_MOV64_REG(BPF_REG_AX, insn->src_reg),
-+				BPF_RAW_INSN((is64 ? BPF_ALU64 : BPF_ALU) |
-+					     BPF_ADD | BPF_K, BPF_REG_AX,
-+					     0, 0, 1),
-+				BPF_RAW_INSN((is64 ? BPF_JMP : BPF_JMP32) |
-+					     BPF_JGT | BPF_K, BPF_REG_AX,
-+					     0, 3, 1),
-+				BPF_RAW_INSN((is64 ? BPF_JMP : BPF_JMP32) |
-+					     BPF_JEQ | BPF_K, BPF_REG_AX,
-+					     0, 3 + (is64 ? 0 : 1), 1),
-+				BPF_MOV32_IMM(insn->dst_reg, 0),
-+				BPF_JMP_IMM(BPF_JA, 0, 0, 1),
-+				*insn,
-+				BPF_JMP_IMM(BPF_JA, 0, 0, 1),
-+				BPF_MOV32_REG(insn->dst_reg, insn->dst_reg),
-+			};
+ /* process_iter_next_call() is called when verifier gets to iterator's next
+  * "method" (e.g., bpf_iter_num_next() for numbers iterator) call. We'll refer
+  * to it as just "iter_next()" in comments below.
+@@ -8059,12 +8068,10 @@ static int process_iter_next_call(struct bpf_verifier_env *env, int insn_idx,
+ 	struct bpf_verifier_state *cur_st = env->cur_state, *queued_st, *prev_st;
+ 	struct bpf_func_state *cur_fr = cur_st->frame[cur_st->curframe], *queued_fr;
+ 	struct bpf_reg_state *cur_iter, *queued_iter;
+-	int iter_frameno = meta->iter.frameno;
+-	int iter_spi = meta->iter.spi;
  
--			patchlet = isdiv ? chk_and_div : chk_and_mod;
--			cnt = isdiv ? ARRAY_SIZE(chk_and_div) :
--				      ARRAY_SIZE(chk_and_mod) - (is64 ? 2 : 0);
-+			if (is_sdiv) {
-+				patchlet = chk_and_sdiv;
-+				cnt = ARRAY_SIZE(chk_and_sdiv);
-+			} else if (is_smod) {
-+				patchlet = chk_and_smod;
-+				cnt = ARRAY_SIZE(chk_and_smod) - (is64 ? 2 : 0);
-+			} else {
-+				patchlet = isdiv ? chk_and_div : chk_and_mod;
-+				cnt = isdiv ? ARRAY_SIZE(chk_and_div) :
-+					      ARRAY_SIZE(chk_and_mod) - (is64 ? 2 : 0);
+ 	BTF_TYPE_EMIT(struct bpf_iter);
+ 
+-	cur_iter = &env->cur_state->frame[iter_frameno]->stack[iter_spi].spilled_ptr;
++	cur_iter = get_iter_from_state(cur_st, meta);
+ 
+ 	if (cur_iter->iter.state != BPF_ITER_STATE_ACTIVE &&
+ 	    cur_iter->iter.state != BPF_ITER_STATE_DRAINED) {
+@@ -8092,7 +8099,7 @@ static int process_iter_next_call(struct bpf_verifier_env *env, int insn_idx,
+ 		if (!queued_st)
+ 			return -ENOMEM;
+ 
+-		queued_iter = &queued_st->frame[iter_frameno]->stack[iter_spi].spilled_ptr;
++		queued_iter = get_iter_from_state(queued_st, meta);
+ 		queued_iter->iter.state = BPF_ITER_STATE_ACTIVE;
+ 		queued_iter->iter.depth++;
+ 		if (prev_st)
+@@ -12654,6 +12661,17 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+ 			regs[BPF_REG_0].btf = desc_btf;
+ 			regs[BPF_REG_0].type = PTR_TO_BTF_ID;
+ 			regs[BPF_REG_0].btf_id = ptr_type_id;
++
++			if (is_iter_next_kfunc(&meta)) {
++				struct bpf_reg_state *cur_iter;
++
++				cur_iter = get_iter_from_state(env->cur_state, &meta);
++
++				if (cur_iter->type & MEM_RCU) /* KF_RCU_PROTECTED */
++					regs[BPF_REG_0].type |= MEM_RCU;
++				else
++					regs[BPF_REG_0].type |= PTR_TRUSTED;
 +			}
+ 		}
  
- 			new_prog = bpf_patch_insn_data(env, i + delta, patchlet, cnt);
- 			if (!new_prog)
+ 		if (is_kfunc_ret_null(&meta)) {
 -- 
 2.43.0
 
