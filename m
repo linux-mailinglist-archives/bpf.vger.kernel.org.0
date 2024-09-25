@@ -1,59 +1,59 @@
-Return-Path: <bpf+bounces-40305-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40306-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 990C8985E47
-	for <lists+bpf@lfdr.de>; Wed, 25 Sep 2024 15:31:50 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B13AB985EC4
+	for <lists+bpf@lfdr.de>; Wed, 25 Sep 2024 15:43:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5CCE4288DC4
-	for <lists+bpf@lfdr.de>; Wed, 25 Sep 2024 13:31:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 65DE1B26470
+	for <lists+bpf@lfdr.de>; Wed, 25 Sep 2024 13:32:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 708B520E085;
-	Wed, 25 Sep 2024 12:09:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72AAA20F480;
+	Wed, 25 Sep 2024 12:09:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Dg0q1z13"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KfLE1/Bw"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E499320EDF7;
-	Wed, 25 Sep 2024 12:09:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF14920F46F;
+	Wed, 25 Sep 2024 12:09:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727266156; cv=none; b=TPxO104EGMIyavMGrORp+aBBtdFi/36NnpDQvhXjh5kIsV4ehVJjsEPasKbofOOYhSwH/xpA5ADnj3diQ4TOxv2oy+kzXBgvhsteXBwsH4DJf7plT5khz02+SsEU5qISl2RZktJNznen94qKCDn38+u2BvKqaoW67R8mS5nDHOY=
+	t=1727266158; cv=none; b=Ys6u+vbV7HFXrH/1MihItfqbeRNGUVttBm6Is+5i2ky3ZwjyeKyTd4l/UdpkX0qASQf2CJuR3Syp1hfzdQ3nVpkrCoxvD8IQ9nU2+Fuk/27hO7anv5RHSs4RRCpcYo1oghQ4DlbbBNgBoEvhFR83oQednaiXANa/7wvFzONuGgU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727266156; c=relaxed/simple;
-	bh=PXYsEtrSdXpaRURxZQhAtlJjznCOG6BAByR7SGjYabo=;
+	s=arc-20240116; t=1727266158; c=relaxed/simple;
+	bh=loYJO/RaPJeM1OklIUynPjd7v+eKV64W9YBNv88pymA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=H+rgr0zY71YoTNdmCTwH7ic58dfuYpaKLMjpzuTpEB+5Amn4KclEXpcW4fckoj+DHSMtvHvoa/8ehc0blRvUt7xSZZ/60KFVoQzxe5TyCAgdsdxcNHvQQIQwbz0u1UouOUss/8bxdPK/jysRyMXZ+XF1FcGhgtSdhEkdnP6CfpA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Dg0q1z13; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A20CFC4CECD;
-	Wed, 25 Sep 2024 12:09:14 +0000 (UTC)
+	 MIME-Version; b=V6Ff3FlV2kQOcJih8Z0Cm0d4AlBIkkMAl6L3UO1ceDsJhFMNvcfgA4vMIJT24EiIC35o+73SqTMRtjNUa9JphdRNGuXGPXDLjZemD/yqDbrF1YpLCVD13s3W4apYEvj2WvDnCwRErB6mm8VqDtGSLpi926pCjtAjDMBSonWEEDM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KfLE1/Bw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51979C4CEC3;
+	Wed, 25 Sep 2024 12:09:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727266155;
-	bh=PXYsEtrSdXpaRURxZQhAtlJjznCOG6BAByR7SGjYabo=;
+	s=k20201202; t=1727266157;
+	bh=loYJO/RaPJeM1OklIUynPjd7v+eKV64W9YBNv88pymA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Dg0q1z13BsBhX5Obgy9PC/uQi6Zexc1/h6bBvkskuHJlEpm2DuJqWOLZ4jbcNeJrR
-	 ndXL2wae9iy84UjpFKRzYamidu15TNNdSMs2tYILCYcCjnUF5IpilFU9sxeKABkP8K
-	 QFPetSmWtWreZGq6PLEzw7OerHFTHNNMQgZmSVzAQ8KRUvGZUWDmUxo+GjZ9ozBiYw
-	 0QwNGm0wP5ePftXnjPx+RpCuQo1vjBYkHWLmMYDo0FO3f24rUHaXjvc8mdrdbJz+ZY
-	 xplyWAQ8hLz189xgoUEJj6kZbqDIN49HwTy/W+kIslGkSM5GRbMCr5Q2dhNwKTPuGX
-	 z+KHmcHQqRc4A==
+	b=KfLE1/BwaY2xWgO9LLerBJtkOcc178227vcXGZrhWmb967gS35wt3BCWR7yc/YgYb
+	 DWV2E6lb/AxrNA4ZEG32adYc3jWrxEZJjHtaNfg8G7sl5poTa9TUfSKesr2u2S7iOE
+	 WnMPpfciXEUl3AIg9wWV60sJL6uOLqP0U3UnLZv36P66Gf4aE5ZmkE8QgBkTBF76xB
+	 D9uS4B7UqR/chXsF2ZfDFy0YUqUVH8vuYQroXQ1PKjBACbGYHpqV6uES1oZsIB8ekY
+	 lnpdSW2+5X+x+sp/HJtGp/YcASzUgokACsLMGU8iI6dkyIXIbh0kZ3KXAF3bGkEs9R
+	 5WzYVVdDwCwCA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Kuan-Wei Chiu <visitorckw@gmail.com>,
+Cc: Yonghong Song <yonghong.song@linux.dev>,
+	Zac Ecob <zacecob@protonmail.com>,
 	Andrii Nakryiko <andrii@kernel.org>,
-	Quentin Monnet <qmo@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	ast@kernel.org,
 	daniel@iogearbox.net,
 	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.10 196/197] bpftool: Fix undefined behavior in qsort(NULL, 0, ...)
-Date: Wed, 25 Sep 2024 07:53:35 -0400
-Message-ID: <20240925115823.1303019-196-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.10 197/197] bpf: Fix a sdiv overflow issue
+Date: Wed, 25 Sep 2024 07:53:36 -0400
+Message-ID: <20240925115823.1303019-197-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240925115823.1303019-1-sashal@kernel.org>
 References: <20240925115823.1303019-1-sashal@kernel.org>
@@ -68,55 +68,200 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.10.11
 Content-Transfer-Encoding: 8bit
 
-From: Kuan-Wei Chiu <visitorckw@gmail.com>
+From: Yonghong Song <yonghong.song@linux.dev>
 
-[ Upstream commit f04e2ad394e2755d0bb2d858ecb5598718bf00d5 ]
+[ Upstream commit 7dd34d7b7dcf9309fc6224caf4dd5b35bedddcb7 ]
 
-When netfilter has no entry to display, qsort is called with
-qsort(NULL, 0, ...). This results in undefined behavior, as UBSan
-reports:
+Zac Ecob reported a problem where a bpf program may cause kernel crash due
+to the following error:
+  Oops: divide error: 0000 [#1] PREEMPT SMP KASAN PTI
 
-net.c:827:2: runtime error: null pointer passed as argument 1, which is declared to never be null
+The failure is due to the below signed divide:
+  LLONG_MIN/-1 where LLONG_MIN equals to -9,223,372,036,854,775,808.
+LLONG_MIN/-1 is supposed to give a positive number 9,223,372,036,854,775,808,
+but it is impossible since for 64-bit system, the maximum positive
+number is 9,223,372,036,854,775,807. On x86_64, LLONG_MIN/-1 will
+cause a kernel exception. On arm64, the result for LLONG_MIN/-1 is
+LLONG_MIN.
 
-Although the C standard does not explicitly state whether calling qsort
-with a NULL pointer when the size is 0 constitutes undefined behavior,
-Section 7.1.4 of the C standard (Use of library functions) mentions:
+Further investigation found all the following sdiv/smod cases may trigger
+an exception when bpf program is running on x86_64 platform:
+  - LLONG_MIN/-1 for 64bit operation
+  - INT_MIN/-1 for 32bit operation
+  - LLONG_MIN%-1 for 64bit operation
+  - INT_MIN%-1 for 32bit operation
+where -1 can be an immediate or in a register.
 
-"Each of the following statements applies unless explicitly stated
-otherwise in the detailed descriptions that follow: If an argument to a
-function has an invalid value (such as a value outside the domain of
-the function, or a pointer outside the address space of the program, or
-a null pointer, or a pointer to non-modifiable storage when the
-corresponding parameter is not const-qualified) or a type (after
-promotion) not expected by a function with variable number of
-arguments, the behavior is undefined."
+On arm64, there are no exceptions:
+  - LLONG_MIN/-1 = LLONG_MIN
+  - INT_MIN/-1 = INT_MIN
+  - LLONG_MIN%-1 = 0
+  - INT_MIN%-1 = 0
+where -1 can be an immediate or in a register.
 
-To avoid this, add an early return when nf_link_info is NULL to prevent
-calling qsort with a NULL pointer.
+Insn patching is needed to handle the above cases and the patched codes
+produced results aligned with above arm64 result. The below are pseudo
+codes to handle sdiv/smod exceptions including both divisor -1 and divisor 0
+and the divisor is stored in a register.
 
-Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Reviewed-by: Quentin Monnet <qmo@kernel.org>
-Link: https://lore.kernel.org/bpf/20240910150207.3179306-1-visitorckw@gmail.com
+sdiv:
+      tmp = rX
+      tmp += 1 /* [-1, 0] -> [0, 1]
+      if tmp >(unsigned) 1 goto L2
+      if tmp == 0 goto L1
+      rY = 0
+  L1:
+      rY = -rY;
+      goto L3
+  L2:
+      rY /= rX
+  L3:
+
+smod:
+      tmp = rX
+      tmp += 1 /* [-1, 0] -> [0, 1]
+      if tmp >(unsigned) 1 goto L1
+      if tmp == 1 (is64 ? goto L2 : goto L3)
+      rY = 0;
+      goto L2
+  L1:
+      rY %= rX
+  L2:
+      goto L4  // only when !is64
+  L3:
+      wY = wY  // only when !is64
+  L4:
+
+  [1] https://lore.kernel.org/bpf/tPJLTEh7S_DxFEqAI2Ji5MBSoZVg7_G-Py2iaZpAaWtM961fFTWtsnlzwvTbzBzaUzwQAoNATXKUlt0LZOFgnDcIyKCswAnAGdUF3LBrhGQ=@protonmail.com/
+
+Reported-by: Zac Ecob <zacecob@protonmail.com>
+Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Link: https://lore.kernel.org/r/20240913150326.1187788-1-yonghong.song@linux.dev
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/bpf/bpftool/net.c | 3 +++
- 1 file changed, 3 insertions(+)
+ kernel/bpf/verifier.c | 93 +++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 89 insertions(+), 4 deletions(-)
 
-diff --git a/tools/bpf/bpftool/net.c b/tools/bpf/bpftool/net.c
-index ad2ea6cf2db11..0f2106218e1f0 100644
---- a/tools/bpf/bpftool/net.c
-+++ b/tools/bpf/bpftool/net.c
-@@ -824,6 +824,9 @@ static void show_link_netfilter(void)
- 		nf_link_count++;
- 	}
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 2eff14da6bf16..c713ca32ab046 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -19927,13 +19927,46 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
+ 			/* Convert BPF_CLASS(insn->code) == BPF_ALU64 to 32-bit ALU */
+ 			insn->code = BPF_ALU | BPF_OP(insn->code) | BPF_SRC(insn->code);
  
-+	if (!nf_link_info)
-+		return;
+-		/* Make divide-by-zero exceptions impossible. */
++		/* Make sdiv/smod divide-by-minus-one exceptions impossible. */
++		if ((insn->code == (BPF_ALU64 | BPF_MOD | BPF_K) ||
++		     insn->code == (BPF_ALU64 | BPF_DIV | BPF_K) ||
++		     insn->code == (BPF_ALU | BPF_MOD | BPF_K) ||
++		     insn->code == (BPF_ALU | BPF_DIV | BPF_K)) &&
++		    insn->off == 1 && insn->imm == -1) {
++			bool is64 = BPF_CLASS(insn->code) == BPF_ALU64;
++			bool isdiv = BPF_OP(insn->code) == BPF_DIV;
++			struct bpf_insn *patchlet;
++			struct bpf_insn chk_and_sdiv[] = {
++				BPF_RAW_INSN((is64 ? BPF_ALU64 : BPF_ALU) |
++					     BPF_NEG | BPF_K, insn->dst_reg,
++					     0, 0, 0),
++			};
++			struct bpf_insn chk_and_smod[] = {
++				BPF_MOV32_IMM(insn->dst_reg, 0),
++			};
 +
- 	qsort(nf_link_info, nf_link_count, sizeof(*nf_link_info), netfilter_link_compar);
++			patchlet = isdiv ? chk_and_sdiv : chk_and_smod;
++			cnt = isdiv ? ARRAY_SIZE(chk_and_sdiv) : ARRAY_SIZE(chk_and_smod);
++
++			new_prog = bpf_patch_insn_data(env, i + delta, patchlet, cnt);
++			if (!new_prog)
++				return -ENOMEM;
++
++			delta    += cnt - 1;
++			env->prog = prog = new_prog;
++			insn      = new_prog->insnsi + i + delta;
++			goto next_insn;
++		}
++
++		/* Make divide-by-zero and divide-by-minus-one exceptions impossible. */
+ 		if (insn->code == (BPF_ALU64 | BPF_MOD | BPF_X) ||
+ 		    insn->code == (BPF_ALU64 | BPF_DIV | BPF_X) ||
+ 		    insn->code == (BPF_ALU | BPF_MOD | BPF_X) ||
+ 		    insn->code == (BPF_ALU | BPF_DIV | BPF_X)) {
+ 			bool is64 = BPF_CLASS(insn->code) == BPF_ALU64;
+ 			bool isdiv = BPF_OP(insn->code) == BPF_DIV;
++			bool is_sdiv = isdiv && insn->off == 1;
++			bool is_smod = !isdiv && insn->off == 1;
+ 			struct bpf_insn *patchlet;
+ 			struct bpf_insn chk_and_div[] = {
+ 				/* [R,W]x div 0 -> 0 */
+@@ -19953,10 +19986,62 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
+ 				BPF_JMP_IMM(BPF_JA, 0, 0, 1),
+ 				BPF_MOV32_REG(insn->dst_reg, insn->dst_reg),
+ 			};
++			struct bpf_insn chk_and_sdiv[] = {
++				/* [R,W]x sdiv 0 -> 0
++				 * LLONG_MIN sdiv -1 -> LLONG_MIN
++				 * INT_MIN sdiv -1 -> INT_MIN
++				 */
++				BPF_MOV64_REG(BPF_REG_AX, insn->src_reg),
++				BPF_RAW_INSN((is64 ? BPF_ALU64 : BPF_ALU) |
++					     BPF_ADD | BPF_K, BPF_REG_AX,
++					     0, 0, 1),
++				BPF_RAW_INSN((is64 ? BPF_JMP : BPF_JMP32) |
++					     BPF_JGT | BPF_K, BPF_REG_AX,
++					     0, 4, 1),
++				BPF_RAW_INSN((is64 ? BPF_JMP : BPF_JMP32) |
++					     BPF_JEQ | BPF_K, BPF_REG_AX,
++					     0, 1, 0),
++				BPF_RAW_INSN((is64 ? BPF_ALU64 : BPF_ALU) |
++					     BPF_MOV | BPF_K, insn->dst_reg,
++					     0, 0, 0),
++				/* BPF_NEG(LLONG_MIN) == -LLONG_MIN == LLONG_MIN */
++				BPF_RAW_INSN((is64 ? BPF_ALU64 : BPF_ALU) |
++					     BPF_NEG | BPF_K, insn->dst_reg,
++					     0, 0, 0),
++				BPF_JMP_IMM(BPF_JA, 0, 0, 1),
++				*insn,
++			};
++			struct bpf_insn chk_and_smod[] = {
++				/* [R,W]x mod 0 -> [R,W]x */
++				/* [R,W]x mod -1 -> 0 */
++				BPF_MOV64_REG(BPF_REG_AX, insn->src_reg),
++				BPF_RAW_INSN((is64 ? BPF_ALU64 : BPF_ALU) |
++					     BPF_ADD | BPF_K, BPF_REG_AX,
++					     0, 0, 1),
++				BPF_RAW_INSN((is64 ? BPF_JMP : BPF_JMP32) |
++					     BPF_JGT | BPF_K, BPF_REG_AX,
++					     0, 3, 1),
++				BPF_RAW_INSN((is64 ? BPF_JMP : BPF_JMP32) |
++					     BPF_JEQ | BPF_K, BPF_REG_AX,
++					     0, 3 + (is64 ? 0 : 1), 1),
++				BPF_MOV32_IMM(insn->dst_reg, 0),
++				BPF_JMP_IMM(BPF_JA, 0, 0, 1),
++				*insn,
++				BPF_JMP_IMM(BPF_JA, 0, 0, 1),
++				BPF_MOV32_REG(insn->dst_reg, insn->dst_reg),
++			};
  
- 	for (id = 0; id < nf_link_count; id++) {
+-			patchlet = isdiv ? chk_and_div : chk_and_mod;
+-			cnt = isdiv ? ARRAY_SIZE(chk_and_div) :
+-				      ARRAY_SIZE(chk_and_mod) - (is64 ? 2 : 0);
++			if (is_sdiv) {
++				patchlet = chk_and_sdiv;
++				cnt = ARRAY_SIZE(chk_and_sdiv);
++			} else if (is_smod) {
++				patchlet = chk_and_smod;
++				cnt = ARRAY_SIZE(chk_and_smod) - (is64 ? 2 : 0);
++			} else {
++				patchlet = isdiv ? chk_and_div : chk_and_mod;
++				cnt = isdiv ? ARRAY_SIZE(chk_and_div) :
++					      ARRAY_SIZE(chk_and_mod) - (is64 ? 2 : 0);
++			}
+ 
+ 			new_prog = bpf_patch_insn_data(env, i + delta, patchlet, cnt);
+ 			if (!new_prog)
 -- 
 2.43.0
 
