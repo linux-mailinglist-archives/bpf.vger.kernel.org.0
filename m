@@ -1,154 +1,163 @@
-Return-Path: <bpf+bounces-40277-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40278-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 091EE98509D
-	for <lists+bpf@lfdr.de>; Wed, 25 Sep 2024 03:24:21 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B51D89850A7
+	for <lists+bpf@lfdr.de>; Wed, 25 Sep 2024 03:37:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 922B3B22458
-	for <lists+bpf@lfdr.de>; Wed, 25 Sep 2024 01:24:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 335AF1F24573
+	for <lists+bpf@lfdr.de>; Wed, 25 Sep 2024 01:37:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0365313D2A9;
-	Wed, 25 Sep 2024 01:24:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13471148310;
+	Wed, 25 Sep 2024 01:37:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lufmKVEr"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="UYpEefUu"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 314AA13C683
-	for <bpf@vger.kernel.org>; Wed, 25 Sep 2024 01:24:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35295135A79
+	for <bpf@vger.kernel.org>; Wed, 25 Sep 2024 01:37:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727227453; cv=none; b=XFI1tpL3CFxPl6w30jZD7AuS2LJ8L1FKI8Bw81OmPcfyOb2maCCbyZTprz9ZKoq6rq5cin09PufvjuMUigNIXhl4/TmEdHxSh5OXCPJvXVs3+Cv4GQsY4pnMyMplDKUoSU0KX75shpzh4xLrsukmzTt1Vv7Y9gkXXEpwUJM0xQ0=
+	t=1727228248; cv=none; b=UXAmJphjRk64QKo/GNmzueJyEjSJQkScpwPlNqo6geSw9y6DDlgFlSvufXDxlc2JNXom7V4SthWc4Fe0alsTKqNV5hLUaclAvfl4ODkYhUs7uzq5WBBDed8BxKxorO6wGcgwHxjFJcsxx/2C+t4oYnB2mnQIFt+/+eTw9Nl8aR8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727227453; c=relaxed/simple;
-	bh=cB5ICeRSFo3WGPxLr2kAEi2UnnnU1jorkH+YMoCEYSg=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=XAcF92oS3gbIOtzDpUrZl1vmR2JJ/A3QcD/H287HhL7ehgFm2G+PaK4GO00aEnsnc1UpkiuEpgIM2il5wjgBMwnp+vWyBDAO7PhJAssvoXPyUsSGfGdCkym+D3Dl0EYKhLNIvw0Lwrk29W2sJnBd+Vdjlly3n4IdI5TuYIh9/nw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lufmKVEr; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-20aff65aa37so1328545ad.1
-        for <bpf@vger.kernel.org>; Tue, 24 Sep 2024 18:24:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727227451; x=1727832251; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=iE9Hsfi93vPrhu2/JR5xnkIBhaGBfHAVoTeu0qf8mI8=;
-        b=lufmKVErJxeoz1NqksoKTNluigYfN2gFvXQ8RC90m16/OJI/51S7Q+EtGGMOW8aUxn
-         NnqWNu900ZqlBegq697qL3FWfxsbddVy0VwwifiHjTfnxOvo9sRBVfURw9n+PQhmS2r2
-         RUkXStFaU5I7p4f2zOdGIcdgChv09C6E4B5VN2QoEhZ+g9d3VQrGSrdEvnNGA/uVoBWU
-         GJK6D2VTvucwXsOy7aKWLwQPJfOIxVgOhkt/x4yPLB6MQwCPKjuJUUCq9SWa00WfJ5ZF
-         dOHDwjTyw+kJXftN1SMOHOuI5hTPoS1bQfednYXxo8oib2lF5OkRdIZxs8I8OPy4/81i
-         Hrlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727227451; x=1727832251;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=iE9Hsfi93vPrhu2/JR5xnkIBhaGBfHAVoTeu0qf8mI8=;
-        b=elx8y3FLNh7qdw739pdKGa0Zbc/tUD6n09vLlLy2Op6yVY2L5QPSzPI64K4L6mNCID
-         exMHEm844/Qo6X+LlgPJufr8btXlWI5Bk21X9YpbgDogJPK+t9Tqek3xAJ0Ayby0UJeS
-         jhKQpK/QIfNKuo7o3KOAm2ECDngzeXUo5M7f6Af9wogmQBuolqDzChXQ0TrdQOWRhOc2
-         vGKIncrzJfbNUiBZyYOoGxtvQzrAnlO/qZreb99Ck2DecSufvA7V+Zg9oA/bJse6wT7V
-         6lPPN22D/mHxaY7vrwQIVJ2dWKtwNfxa54Urlw8am0fb6woEZSu3cM9v71rfy7bsaV7n
-         +Bng==
-X-Forwarded-Encrypted: i=1; AJvYcCVdegI2QrVXNoYK6wz3/VMGNmoN9j3wP1Dyi0VySJT94OvmwcGOwVlxtl9jzIqON3ZPxvk=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxoQLt4oJfgaYwr0+fslAMJDhb4uCfEj4/U4I7s5ag2MhO/Q7O1
-	zXfaPGt+hd0Sy+w4xBSFvoGAIBp4lVVsaxwAkdAP1giGaem4g6Tx
-X-Google-Smtp-Source: AGHT+IHsHiLsixe2qlEGvR0FmCoonHhHk8HWReJDNPN/POR8GEs5cJSoM1UMJNKYjc6Bd2X4//1Rfg==
-X-Received: by 2002:a17:903:987:b0:207:8e11:6fb6 with SMTP id d9443c01a7336-20afc4948e1mr17875975ad.35.1727227451293;
-        Tue, 24 Sep 2024 18:24:11 -0700 (PDT)
-Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2e06e1e09e2sm208162a91.32.2024.09.24.18.24.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Sep 2024 18:24:10 -0700 (PDT)
-Message-ID: <b879d9cf7eebd1e38492c76d7878a767b0245923.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v3 1/4] bpf: Prevent updating extended prog to
- prog_array map
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Leon Hwang <leon.hwang@linux.dev>, bpf@vger.kernel.org
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- toke@redhat.com,  martin.lau@kernel.org, yonghong.song@linux.dev,
- puranjay@kernel.org,  xukuohai@huaweicloud.com, iii@linux.ibm.com,
- kernel-patches-bot@fb.com
-Date: Tue, 24 Sep 2024 18:24:05 -0700
-In-Reply-To: <20240923134044.22388-2-leon.hwang@linux.dev>
-References: <20240923134044.22388-1-leon.hwang@linux.dev>
-	 <20240923134044.22388-2-leon.hwang@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.4 (3.52.4-1.fc40) 
+	s=arc-20240116; t=1727228248; c=relaxed/simple;
+	bh=BZaHkkXLrZxyKUJQEi/+1D/Onl/0da0dOYn7LMLZgB8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=mCEfLvyc4I6aqA4Glm5Z55R2m3Yd+pPQVuEJtY1i5ewfF31CGBJaD8/RIJnjS7R7f+T/z/XN5OVPtufibrNasI9lrnWkvasYFpj8ponynVL/QgKDf32JnOOcUzLlSOYdbSRRDYaajBDlv5jIvcVR0kvVsXuPdJPC1TzEtClP/PU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=UYpEefUu; arc=none smtp.client-ip=95.215.58.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <366e4392-bd00-4120-8585-a71b3952e365@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1727228244;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bsjzIUFUK2eSpfDDLWyGCwHbfrqw1/UK8ZIA6jybj/4=;
+	b=UYpEefUuJW30uWju94YCQi3A40EhvjHsRfoMjMSDZDRQW5/zV8jX5JjXb+nHtydgqfruoZ
+	MwQu0M8xXbEJNqG7PshiFej0SbGoKfjHhWZV1kC7x9eGCeb6af6v5KDg8SxwdT1doRqsWl
+	ByO9R8im93b1xPnNnIC8TY8+/h+BObI=
+Date: Tue, 24 Sep 2024 18:37:06 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [PATCH bpf-next v2] selftests/bpf: convert test_xdp_features.sh
+ to test_progs
+To: =?UTF-8?Q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>,
+ Jakub Kicinski <kuba@kernel.org>, Lorenzo Bianconi <lorenzo@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
+ Shuah Khan <shuah@kernel.org>, "David S. Miller" <davem@davemloft.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ Maxime Chevallier <maxime.chevallier@bootlin.com>, ebpf@linuxfoundation.org,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, netdev@vger.kernel.org
+References: <20240910-convert_xdp_tests-v2-1-a46367c9d038@bootlin.com>
+ <64df8d41-6cfb-45a9-8337-5cc04daedb60@linux.dev> <ZuVWmxoqXFI3qvVI@lore-desk>
+ <20240914063828.7bd73c5e@kernel.org>
+ <464e0ae0-d6e3-4da4-a157-f74260f96275@bootlin.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <464e0ae0-d6e3-4da4-a157-f74260f96275@bootlin.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, 2024-09-23 at 21:40 +0800, Leon Hwang wrote:
+On 9/22/24 12:04 PM, Alexis Lothoré wrote:
+> Hello all, sorry for the slow feedback, I have been off last week.
+> 
+> On 9/14/24 15:38, Jakub Kicinski wrote:
+>> On Sat, 14 Sep 2024 11:25:47 +0200 Lorenzo Bianconi wrote:
+>>> On Sep 13, Martin KaFai Lau wrote:
+>>>> test a physical network device that supports a certain XDP features.
+>>>>
+>>>> iiuc, test_xdp_features.sh only uses the veth and veth will also be the only
+>>>> device tested after moving to prog_tests/xdp_features.c? It is a reasonable
+>>>> addition to test_progs for an end-to-end xdp test by using veth. However,
+>>>> test_progs will not be able to test the physical network device.
+>>>>
+>>>> Lorenzo, is the xdp_features.c still used for device testing?
+>>>
+>>> correct, xdp_features.c is intended to test the real xdp features supported by
+>>> the NIC under test (DUT), not just the advertised ones (iirc that was a
+>>> requisite to add xdp kernel feature support). For this reason we need two
+>>> separated processes running on the tester device and on the DUT (they are
+>>> usually two different devices). test_xdp_features.sh was just a simple test
+>>> script used to develop xdp_features.c.
+>>> What about extending xdp_features.c to integrate it in the CI?
+> 
+> So IIUC Lorenzo's answer, we _need_ to keep the possibility to run this test on
+> real hardware, and so we _need_ to still be able to run two processes, possibly
+> on two different machines. If that's so, indeed my rework breaks this. I have
+> then multiple questions/doubts before being able to rework this:
+> - the main goal of this rework is to be able to automatically run this test in
+> CI, and the resulting constraint is that it must integrate in a standalone,
+> already-existing c program (test_progs). I guess I can preserve the standalone
+> xdp_features program as it is, and make test_progs just start  it twice (on two
+> different veths). It would involve the following changes:
+>    - keep a dedicated build step for this small, standalone xdp_features.c, and
+> add a "controller" part in test_progs (instead of fully migrating xdp_features
+> program into test_progs, which  is what the current series revision does)
+>    - simply make the controller part create the testing network in CI, fork/start
+> the xdp_features program on both veths, and check return codes.
+> My main concern is about the possible flakiness of this whole setup (multiple
 
-[...]
+The test could be simpler if it does not need to run in two separate machines.
 
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index 8a4117f6d7610..18b3f9216b050 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -3292,8 +3292,11 @@ static void bpf_tracing_link_release(struct bpf_li=
-nk *link)
->  	bpf_trampoline_put(tr_link->trampoline);
-> =20
->  	/* tgt_prog is NULL if target is a kernel function */
-> -	if (tr_link->tgt_prog)
-> +	if (tr_link->tgt_prog) {
-> +		if (link->prog->type =3D=3D BPF_PROG_TYPE_EXT)
-> +			tr_link->tgt_prog->aux->is_extended =3D false;
->  		bpf_prog_put(tr_link->tgt_prog);
-> +	}
->  }
-> =20
->  static void bpf_tracing_link_dealloc(struct bpf_link *link)
-> @@ -3523,6 +3526,8 @@ static int bpf_tracing_prog_attach(struct bpf_prog =
-*prog,
->  	if (prog->aux->dst_trampoline && tr !=3D prog->aux->dst_trampoline)
->  		/* we allocated a new trampoline, so free the old one */
->  		bpf_trampoline_put(prog->aux->dst_trampoline);
-> +	if (prog->type =3D=3D BPF_PROG_TYPE_EXT)
-> +		tgt_prog->aux->is_extended =3D true;
-> =20
->  	prog->aux->dst_prog =3D NULL;
->  	prog->aux->dst_trampoline =3D NULL;
+Also, there are bpf_prog_test_run_opts() style tests that provide a device 
+agnostic way to test the xdp helpers/features which should have covered most of 
+the cases exercised in progs/xdp_features.c?
 
-Sorry, this might be a silly question, I do not fully understand how
-programs and trampolines are protected against concurrent update.
+I am not sure which case in xdp_features.c does not have existing coverage in 
+test_progs. From a quick look, it seems only BPF_MAP_TYPE_CPUMAP is missing 
+(please check)? If that is the case, it may be more straight forward to add this 
+one test case to the test_progs. Check if it can borrow a similar setup from 
+prog_tests/test_xdp_veth.c, and then leave xdp_features.* as-is.
 
-Sequence of actions in bpf_tracing_prog_attach():
-a. call bpf_trampoline_link_prog(&link->link, tr)
-   this returns success if `tr->extension_prog` is NULL,
-   meaning trampoline is "free";
-b. update tgt_prog->aux->is_extended =3D true.
+There are other .sh tests that could better use the test_progs migration. In 
+particular the ones without existing test coverage. For non XDP related, 
+test_tcp_check_syncookie.sh, test_flow_dissector.sh, and test_tc_edt.sh should 
+be the good ones.
 
-Sequence of actions in bpf_tracing_link_release():
-c. call bpf_trampoline_unlink_prog(&tr_link->link, tr_link->trampoline)
-   this sets `tr->extension_prog` to NULL;
-d. update tr_link->tgt_prog->aux->is_extended =3D false.
+For XDP, test_xdp_meta.sh should be useful also. You may also want to check the 
+test_xdp_redirect_*.sh.
 
-In a concurrent environment, is it possible to have actions ordered as:
-- thread #1: does bpf_tracing_link_release(link pointing to tgt_prog)
-- thread #2: does bpf_tracing_prog_attach(some_prog, tgt_prog)
-- thread #1: (c) tr->extension_prog is set to NULL
-- thread #2: (a) tr->extension_prog is set to some_prog
-- thread #2: (b) tgt_prog->aux->is_extended =3D true
-- thread #1: (d) tgt_prog->aux->is_extended =3D false
-
-Thus, loosing the is_extended mark?
-
-(As far as I understand bpf_trampoline_compute_key() call in
- bpf_tracing_prog_attach() it is possible for threads #1 and #2 to
- operate on a same trampoline object).
+> processes and tcp/udp channels involved), but if keeping the standalone version
+> is really needed, I can give a try. Does it sound reasonable ?
+> - one part of my overall goal is to clean up the tools/testing/selftests/bpf
+> directory from anything that is not tested automatically. What should we do with
+> the wrapping shell script (test_xdp_features.sh) ? Since test_progs will
+> automate the test with veths, I guess it is still ok to just remove it ?
+> 
+>> No preference but just to raise awareness - drivers/net's NetDrvEpEnv
+>> class provides the setup for running tests with an endpoint.
+>> XDP tests intended for HW would fit there pretty well.
+> 
+> Thanks for the hint. If we want to keep some tooling for real hw xdp features
+> testing, maybe we could add a small part in tools/testing/selftests/drivers/net
+> and make it use this NetDrvEpEnv ? Or it is a bigger hint that the whole test
+> about xdp features could be moved there (and then tested by net kselftests
+> rather than by ebpf ci specifically) ? @Lorenzo and eBPF tests maintainers, any
+> opinion ?
+> 
+> Thanks,
+> 
+> Alexis
+> 
 
 
