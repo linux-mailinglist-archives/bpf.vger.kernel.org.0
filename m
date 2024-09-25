@@ -1,58 +1,59 @@
-Return-Path: <bpf+bounces-40303-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40304-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48447985E31
-	for <lists+bpf@lfdr.de>; Wed, 25 Sep 2024 15:29:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4041B985E41
+	for <lists+bpf@lfdr.de>; Wed, 25 Sep 2024 15:31:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0890528D2D9
-	for <lists+bpf@lfdr.de>; Wed, 25 Sep 2024 13:29:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 089662892A5
+	for <lists+bpf@lfdr.de>; Wed, 25 Sep 2024 13:31:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E87120D8B1;
-	Wed, 25 Sep 2024 12:09:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 412A020E8FD;
+	Wed, 25 Sep 2024 12:09:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eYEXi6gd"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nlhkUrpM"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A18D31B78E1;
-	Wed, 25 Sep 2024 12:09:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3B2A20E8DE;
+	Wed, 25 Sep 2024 12:09:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727266144; cv=none; b=ds5zdlY7FD7Ki8djs9LwyX94W7tLwgT0BNXUIwbsVC7A0/oqzC6li4pbQYeLxxuzEWIfhR7SQUhNLu8m7qW2G8/LvSYr+SGeEtv4JBFDPHdHKsOyF7dqc1z1tgSLsRz6KMrw7nWn6+gwWUXcfp4E6aNCxXYUgax1mmNYP3p0sDs=
+	t=1727266152; cv=none; b=j+bgA7PoGuEXkUmarHpw5tlOVk+/SQTKGnN1F8IT1HZop8+IiLgLZATtYUurSSAAhURb9a45NUq30ZuAT9dr/knrRF6Ud54es55N6BdjhqwtwxO3sIk0cR62oNAaUL6Km9ip1l8aubMbOIBOdxTmivWDjC0UxF2+f8EBzxRuoVo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727266144; c=relaxed/simple;
-	bh=tpjmmTTWRgyTpMMkeq/BPrMDI6FNaVtIncuIWxH/uWo=;
+	s=arc-20240116; t=1727266152; c=relaxed/simple;
+	bh=5ipd+6i1vmYzbqSVixtByEgWCPbCf8XMcpZSqw510BY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=O2UipThZv4F7Bu9FZV3ss07XFAWeoj4R9vgmyTuU2ctaQBmC+idonQT3GKfoOgvUnQoIFuyYO2uFA/9M8HzbSye+ju6LWgE5On9cH8TOXR8Aivq4nJTY2+bGRqU0UwIT61hDUd9zI0bB5Mr8irsgmu7lrBYiTzn0BqTnzRWeYxg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eYEXi6gd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A39AC4CEC7;
-	Wed, 25 Sep 2024 12:09:03 +0000 (UTC)
+	 MIME-Version; b=J5UXzF43OBliVhgewFQw2hSv/YfpUFYmeZ4LP3wl8KmAe2y7a9Q6Xa+F66YCbP3PaW3h9fmpV7mPpewDnXG3UGkW7dvPmS715hH4xg8bORhrMN4Bvlp1vd4y1TBKpSfCC2FNeDcOs6JWNES642NRirWF6qMT9iXhbgyTlAGewhE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nlhkUrpM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70F5BC4CEC7;
+	Wed, 25 Sep 2024 12:09:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727266144;
-	bh=tpjmmTTWRgyTpMMkeq/BPrMDI6FNaVtIncuIWxH/uWo=;
+	s=k20201202; t=1727266152;
+	bh=5ipd+6i1vmYzbqSVixtByEgWCPbCf8XMcpZSqw510BY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=eYEXi6gdszCfdyvm4o9JFJCg3Sfct44/1hpPo48erm9gdKl1CZHYK5OgW88Sm/+/K
-	 XNKE8y2SESdqNO4d3EZ9Br3JbM3zxyRPpGG4+5XaB3Ow5OkRzpZQUajv50znTEhjAm
-	 60sGkaSjme9jPYGo2SVipfOM1Tr89L3nCGiun2GkgPQzA8Tuz9mFTzmTY7/SK5pq2t
-	 ZGFu9mtq4bO6r3AujBz7e25ovLvNtviP4MrhdePq/B83nndddihB4n4Bei41fqwHO4
-	 NFE6uwXhzP+ij0heKLDcokqi9Dp/YT/CMoXSiTSr13wtmGTFBwcTtjcehH6JbZNtaa
-	 al28j04/Xmfhw==
+	b=nlhkUrpMF0X/kpC/VxaBpaSjzcxvA5MnC+9f4d2zf2HwDMlKO02bKZEAxl1jNjbLt
+	 39OjxcC7yNGjmGCIam3hgBPb4J5PKU+PdIHDB1iuzVGbTau3wrYTc5tvWrnt06UpgV
+	 9GIabbDepyS86PAp3plTkMw5eWLBn1opIVJ269Jbp3spalYfpmzMKVHIEkXojxvd1a
+	 Yg5LIIJpnWfOjSAJ5Nv+qRTXRFnLDHpwot+Fi7idbmthmlKpw6FOda+mtkDxiClrfC
+	 e2mGrlkV36LtYYvkxD7RnWwlE81I4QbNzw+qBXPXAmnSoffhv1JXIzNswkd7FXqLAz
+	 uHue0FThu/kGw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Juntong Deng <juntong.deng@outlook.com>,
-	Alexei Starovoitov <ast@kernel.org>,
+Cc: Kuan-Wei Chiu <visitorckw@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Quentin Monnet <qmo@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
+	ast@kernel.org,
 	daniel@iogearbox.net,
-	andrii@kernel.org,
 	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.10 189/197] bpf: Make the pointer returned by iter next method valid
-Date: Wed, 25 Sep 2024 07:53:28 -0400
-Message-ID: <20240925115823.1303019-189-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.10 194/197] bpftool: Fix undefined behavior caused by shifting into the sign bit
+Date: Wed, 25 Sep 2024 07:53:33 -0400
+Message-ID: <20240925115823.1303019-194-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240925115823.1303019-1-sashal@kernel.org>
 References: <20240925115823.1303019-1-sashal@kernel.org>
@@ -67,106 +68,53 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.10.11
 Content-Transfer-Encoding: 8bit
 
-From: Juntong Deng <juntong.deng@outlook.com>
+From: Kuan-Wei Chiu <visitorckw@gmail.com>
 
-[ Upstream commit 4cc8c50c9abcb2646a7a4fcef3cea5dcb30c06cf ]
+[ Upstream commit 4cdc0e4ce5e893bc92255f5f734d983012f2bc2e ]
 
-Currently we cannot pass the pointer returned by iter next method as
-argument to KF_TRUSTED_ARGS or KF_RCU kfuncs, because the pointer
-returned by iter next method is not "valid".
+Replace shifts of '1' with '1U' in bitwise operations within
+__show_dev_tc_bpf() to prevent undefined behavior caused by shifting
+into the sign bit of a signed integer. By using '1U', the operations
+are explicitly performed on unsigned integers, avoiding potential
+integer overflow or sign-related issues.
 
-This patch sets the pointer returned by iter next method to be valid.
-
-This is based on the fact that if the iterator is implemented correctly,
-then the pointer returned from the iter next method should be valid.
-
-This does not make NULL pointer valid. If the iter next method has
-KF_RET_NULL flag, then the verifier will ask the ebpf program to
-check NULL pointer.
-
-KF_RCU_PROTECTED iterator is a special case, the pointer returned by
-iter next method should only be valid within RCU critical section,
-so it should be with MEM_RCU, not PTR_TRUSTED.
-
-Another special case is bpf_iter_num_next, which returns a pointer with
-base type PTR_TO_MEM. PTR_TO_MEM should not be combined with type flag
-PTR_TRUSTED (PTR_TO_MEM already means the pointer is valid).
-
-The pointer returned by iter next method of other types of iterators
-is with PTR_TRUSTED.
-
-In addition, this patch adds get_iter_from_state to help us get the
-current iterator from the current state.
-
-Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
-Link: https://lore.kernel.org/r/AM6PR03MB584869F8B448EA1C87B7CDA399962@AM6PR03MB5848.eurprd03.prod.outlook.com
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Acked-by: Quentin Monnet <qmo@kernel.org>
+Link: https://lore.kernel.org/bpf/20240908140009.3149781-1-visitorckw@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/verifier.c | 26 ++++++++++++++++++++++----
- 1 file changed, 22 insertions(+), 4 deletions(-)
+ tools/bpf/bpftool/net.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 73f55f4b945ee..2eff14da6bf16 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -7975,6 +7975,15 @@ static int widen_imprecise_scalars(struct bpf_verifier_env *env,
- 	return 0;
- }
- 
-+static struct bpf_reg_state *get_iter_from_state(struct bpf_verifier_state *cur_st,
-+						 struct bpf_kfunc_call_arg_meta *meta)
-+{
-+	int iter_frameno = meta->iter.frameno;
-+	int iter_spi = meta->iter.spi;
-+
-+	return &cur_st->frame[iter_frameno]->stack[iter_spi].spilled_ptr;
-+}
-+
- /* process_iter_next_call() is called when verifier gets to iterator's next
-  * "method" (e.g., bpf_iter_num_next() for numbers iterator) call. We'll refer
-  * to it as just "iter_next()" in comments below.
-@@ -8059,12 +8068,10 @@ static int process_iter_next_call(struct bpf_verifier_env *env, int insn_idx,
- 	struct bpf_verifier_state *cur_st = env->cur_state, *queued_st, *prev_st;
- 	struct bpf_func_state *cur_fr = cur_st->frame[cur_st->curframe], *queued_fr;
- 	struct bpf_reg_state *cur_iter, *queued_iter;
--	int iter_frameno = meta->iter.frameno;
--	int iter_spi = meta->iter.spi;
- 
- 	BTF_TYPE_EMIT(struct bpf_iter);
- 
--	cur_iter = &env->cur_state->frame[iter_frameno]->stack[iter_spi].spilled_ptr;
-+	cur_iter = get_iter_from_state(cur_st, meta);
- 
- 	if (cur_iter->iter.state != BPF_ITER_STATE_ACTIVE &&
- 	    cur_iter->iter.state != BPF_ITER_STATE_DRAINED) {
-@@ -8092,7 +8099,7 @@ static int process_iter_next_call(struct bpf_verifier_env *env, int insn_idx,
- 		if (!queued_st)
- 			return -ENOMEM;
- 
--		queued_iter = &queued_st->frame[iter_frameno]->stack[iter_spi].spilled_ptr;
-+		queued_iter = get_iter_from_state(queued_st, meta);
- 		queued_iter->iter.state = BPF_ITER_STATE_ACTIVE;
- 		queued_iter->iter.depth++;
- 		if (prev_st)
-@@ -12654,6 +12661,17 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
- 			regs[BPF_REG_0].btf = desc_btf;
- 			regs[BPF_REG_0].type = PTR_TO_BTF_ID;
- 			regs[BPF_REG_0].btf_id = ptr_type_id;
-+
-+			if (is_iter_next_kfunc(&meta)) {
-+				struct bpf_reg_state *cur_iter;
-+
-+				cur_iter = get_iter_from_state(env->cur_state, &meta);
-+
-+				if (cur_iter->type & MEM_RCU) /* KF_RCU_PROTECTED */
-+					regs[BPF_REG_0].type |= MEM_RCU;
-+				else
-+					regs[BPF_REG_0].type |= PTR_TRUSTED;
-+			}
+diff --git a/tools/bpf/bpftool/net.c b/tools/bpf/bpftool/net.c
+index 968714b4c3d45..ad2ea6cf2db11 100644
+--- a/tools/bpf/bpftool/net.c
++++ b/tools/bpf/bpftool/net.c
+@@ -482,9 +482,9 @@ static void __show_dev_tc_bpf(const struct ip_devname_ifindex *dev,
+ 		if (prog_flags[i] || json_output) {
+ 			NET_START_ARRAY("prog_flags", "%s ");
+ 			for (j = 0; prog_flags[i] && j < 32; j++) {
+-				if (!(prog_flags[i] & (1 << j)))
++				if (!(prog_flags[i] & (1U << j)))
+ 					continue;
+-				NET_DUMP_UINT_ONLY(1 << j);
++				NET_DUMP_UINT_ONLY(1U << j);
+ 			}
+ 			NET_END_ARRAY("");
  		}
- 
- 		if (is_kfunc_ret_null(&meta)) {
+@@ -493,9 +493,9 @@ static void __show_dev_tc_bpf(const struct ip_devname_ifindex *dev,
+ 			if (link_flags[i] || json_output) {
+ 				NET_START_ARRAY("link_flags", "%s ");
+ 				for (j = 0; link_flags[i] && j < 32; j++) {
+-					if (!(link_flags[i] & (1 << j)))
++					if (!(link_flags[i] & (1U << j)))
+ 						continue;
+-					NET_DUMP_UINT_ONLY(1 << j);
++					NET_DUMP_UINT_ONLY(1U << j);
+ 				}
+ 				NET_END_ARRAY("");
+ 			}
 -- 
 2.43.0
 
