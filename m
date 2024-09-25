@@ -1,161 +1,151 @@
-Return-Path: <bpf+bounces-40275-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40276-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7FE48984F34
-	for <lists+bpf@lfdr.de>; Wed, 25 Sep 2024 01:58:41 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88E0F984F71
+	for <lists+bpf@lfdr.de>; Wed, 25 Sep 2024 02:22:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B37E284198
-	for <lists+bpf@lfdr.de>; Tue, 24 Sep 2024 23:58:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 03D4E1F2456B
+	for <lists+bpf@lfdr.de>; Wed, 25 Sep 2024 00:22:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93CD6189BA3;
-	Tue, 24 Sep 2024 23:58:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 525584C9A;
+	Wed, 25 Sep 2024 00:22:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="JCJWHwoG"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="no1+9ZKh"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oi1-f175.google.com (mail-oi1-f175.google.com [209.85.167.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A4991487DC
-	for <bpf@vger.kernel.org>; Tue, 24 Sep 2024 23:58:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E02EEEA5
+	for <bpf@vger.kernel.org>; Wed, 25 Sep 2024 00:22:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727222313; cv=none; b=EQ6K6BKf8qQsbF1htp6YHD+aTVW+5ZuMfSkepx9Wpxo5WkG7PCzjXMS83saQlyvFzTM9D5TWpAQxQbMPgZuomXOgKsv5cfGo92BiTPONXvbUAd3TKpAit1n/iIvz9RMwdG+aDysUTNZQZbVmju+YCgkCCKuHgK2s/eVKIIe50qE=
+	t=1727223753; cv=none; b=WqrptLM3ETF6dPGCV7/mKC1u87QBOAcd0hOMRpTyxBzrFvZtxJuBhB5v/OXkrPMmlJIg9JfU/WyrlUBxLffj/iOYNegx6Fsxmkz8nJ/0+HT1k0hJvxWgsozLxJEzKqfowXU9QY6Tzcw1EK3OhQMxjwiuvU7bwXRc+WrgF49diLs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727222313; c=relaxed/simple;
-	bh=K9n+AavOkX7MxXFNd46/bNtSLpAWA69QCnjmfIck+Gg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PpkjyWqrchKcRsL6jwkB/KGxLyomZszRRDqQy9H6d0HFfR7ODH88wgXBXTHHnBo778UNzFQbVE3ZLOQ10/ivO9UWPSQRbB0S4z2+w9KkvEIccPA4KJ9IF5yrnaqRa+7R2vU4vfced4PEvadryIdsGb5E8ZN4zCBEMTu09dvNLvc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=JCJWHwoG; arc=none smtp.client-ip=91.218.175.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <0288caf4-3c9b-4eae-a2b4-f8934badc270@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1727222308;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FJE52kWSLJz5Z0JKa0w5KuGxIC2eyIYAYGmmWOSFST4=;
-	b=JCJWHwoGV68v2uahGUBKx3Hcx5Y5o0qp2/LrqjG9J4z4KaXLSE3utSm/IB5acOcIu3RNS7
-	qxVKwvuJuRaB0DhlPNbWoSw4cS0hnN0+Fee3/xS/uJzRtiaeD+zLoZJklfMGLD2rfj+oKp
-	yBZOzyP7CcwPR9tyUlmwxY0/bjTgpcg=
-Date: Tue, 24 Sep 2024 16:58:19 -0700
+	s=arc-20240116; t=1727223753; c=relaxed/simple;
+	bh=fb6BJqvG21k76ifXT3Dtb/2RVKxTbL6Z13914yS7WRo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=LJhYSvEtXlcTyd5fHQf29e3xqrkVrWOVN7b90Whl/tSF/L+FM9RUwt3ZFK3Kya22kuJyv8p2oEgiZ3kOqSLEeCJTfikvLz31BgXWazhqUSccCXN+ox7znunjRrQ0Jx43BsNAR2yBrQLSn/nOvIgJDjZj616KjZcyWDSvq2wgwOI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=no1+9ZKh; arc=none smtp.client-ip=209.85.167.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f175.google.com with SMTP id 5614622812f47-3e042f4636dso3650400b6e.1
+        for <bpf@vger.kernel.org>; Tue, 24 Sep 2024 17:22:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1727223751; x=1727828551; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Pm4QOfNFQFLyxHFeubpA1n1fXQNCEbh3QGQrQIOsSQc=;
+        b=no1+9ZKhy2A8AYyI+oumPNYlH8XdUmMkMOTDD1vustmXrCAIsd6VzATZxkhd1pvD2R
+         255vCTrS1ZuB6cUH1ByZRx2FH7p4xjoiLa/P9f2OdPtfQc53GmPHVAPMviunaimBb+3m
+         VVCYn8rqDnp22Xz/wnVDYAL6CdZ/vsfNVSizRN2+JbkHZhgYMW2XsYpxrzCByvyI6Mt0
+         FPAHxi4a55rc2BaAXCdQWjshVZkhxUWT92N7YOdc5xLcUzKT+ItvHyTtx0sT0Gf9OMM8
+         +hVmPuNsZaG7qi9OdW0AkrKjjIYHWMqjl/uh6mZwsywSCnxZOyhzG5IHzWR9KntYoqSE
+         JFxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727223751; x=1727828551;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Pm4QOfNFQFLyxHFeubpA1n1fXQNCEbh3QGQrQIOsSQc=;
+        b=Uk/3dUpVvwJJ32x8qaRimuH+OgZTB7jLpdLMFDm6ucLrq2nm/HBzS4Th5SrSmx6iIM
+         NHFbVNOdQ6Y9u+n7tQtaVN5zVwcDKCN1DUtGh2pP/9Z26a0K3QaDG0Ec4cnn1j6gItRf
+         S/iehcpitOON/fn/UngwIy6YNkgllU/ADsdFuIBkrbOp+khK5pA8WrMRAZVRSCwSsWTU
+         Yyrpwx07m4/WCmBNSDQsS/PmcMU3VYaj1ZTJZ6TIE/RtdpSLaI1gEGQwQ8fva/h+Yku/
+         26y7gzrOVdOEbqmH+nKet9+TBHioUojBGVODlB//rXijZKCro1vyJ9adqtyeMbvtIrFw
+         87pw==
+X-Gm-Message-State: AOJu0YzJLwKne7nwo0W6c6hf5bi0eL1bytu/0CVbVYUEi8pnBhP0/9dH
+	0mcwCVPDFYPN/L7P1tVpFEP5Py7+f+oTJIn6nCFDtM4dK9M9KThyuXayeNcH
+X-Google-Smtp-Source: AGHT+IGidvtT+NPxlzc5xIi5V/y/GSUOkYgcLnIztfGHPtZBe5o0pTuyXxO7m4q4Qgqym9dhzjhBCg==
+X-Received: by 2002:a05:6808:10c7:b0:3e2:7b57:9930 with SMTP id 5614622812f47-3e29b7f3873mr793062b6e.36.1727223750691;
+        Tue, 24 Sep 2024 17:22:30 -0700 (PDT)
+Received: from localhost (fwdproxy-vll-113.fbsv.net. [2a03:2880:12ff:71::face:b00c])
+        by smtp.gmail.com with ESMTPSA id 006d021491bc7-5e5bcfd5063sm720906eaf.27.2024.09.24.17.22.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Sep 2024 17:22:29 -0700 (PDT)
+From: Manu Bretelle <chantr4@gmail.com>
+To: bpf@vger.kernel.org
+Cc: andrii@kernel.org,
+	daniel@iogearbox.net,
+	ast@kernel.org,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	eddyz87@gmail.com,
+	dxu@dxuuu.xyz,
+	yonghong.song@linux.dev
+Subject: [PATCH v2 bpf-next] selftests/bpf: vm: add support for VIRTIO_FS
+Date: Tue, 24 Sep 2024 17:22:10 -0700
+Message-ID: <20240925002210.501266-1-chantr4@gmail.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [RFC PATCH 2/3] ipv6: Run a reverse sk_lookup on sendmsg.
-To: Tiago Lam <tiagolam@cloudflare.com>
-Cc: "David S. Miller" <davem@davemloft.net>, David Ahern
- <dsahern@kernel.org>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
- Shuah Khan <shuah@kernel.org>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
- linux-kselftest@vger.kernel.org, Jakub Sitnicki <jakub@cloudflare.com>,
- kernel-team@cloudflare.com
-References: <20240913-reverse-sk-lookup-v1-0-e721ea003d4c@cloudflare.com>
- <20240913-reverse-sk-lookup-v1-2-e721ea003d4c@cloudflare.com>
- <d17da5b6-6273-4c2c-abd7-99378723866e@linux.dev> <ZumrBKAkZX0RZrgm@GHGHG14>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <ZumrBKAkZX0RZrgm@GHGHG14>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 
-On 9/17/24 6:15 PM, Tiago Lam wrote:
-> On Fri, Sep 13, 2024 at 11:24:09AM -0700, Martin KaFai Lau wrote:
->> On 9/13/24 2:39 AM, Tiago Lam wrote:
->>> This follows the same rationale provided for the ipv4 counterpart, where
->>> it now runs a reverse socket lookup when source addresses and/or ports
->>> are changed, on sendmsg, to check whether egress traffic should be
->>> allowed to go through or not.
->>>
->>> As with ipv4, the ipv6 sendmsg path is also extended here to support the
->>> IPV6_ORIGDSTADDR ancilliary message to be able to specify a source
->>> address/port.
->>>
->>> Suggested-by: Jakub Sitnicki <jakub@cloudflare.com>
->>> Signed-off-by: Tiago Lam <tiagolam@cloudflare.com>
->>> ---
->>>    net/ipv6/datagram.c | 76 +++++++++++++++++++++++++++++++++++++++++++++++++++++
->>>    net/ipv6/udp.c      |  8 ++++--
->>>    2 files changed, 82 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/net/ipv6/datagram.c b/net/ipv6/datagram.c
->>> index fff78496803d..4214dda1c320 100644
->>> --- a/net/ipv6/datagram.c
->>> +++ b/net/ipv6/datagram.c
->>> @@ -756,6 +756,27 @@ void ip6_datagram_recv_ctl(struct sock *sk, struct msghdr *msg,
->>>    }
->>>    EXPORT_SYMBOL_GPL(ip6_datagram_recv_ctl);
->>> +static inline bool reverse_sk_lookup(struct flowi6 *fl6, struct sock *sk,
->>> +				     struct in6_addr *saddr, __be16 sport)
->>> +{
->>> +	if (static_branch_unlikely(&bpf_sk_lookup_enabled) &&
->>> +	    (saddr && sport) &&
->>> +	    (ipv6_addr_cmp(&sk->sk_v6_rcv_saddr, saddr) || inet_sk(sk)->inet_sport != sport)) {
->>> +		struct sock *sk_egress;
->>> +
->>> +		bpf_sk_lookup_run_v6(sock_net(sk), IPPROTO_UDP, &fl6->daddr, fl6->fl6_dport,
->>> +				     saddr, ntohs(sport), 0, &sk_egress);
->>
->> iirc, in the ingress path, the sk could also be selected by a tc bpf prog
->> doing bpf_sk_assign. Then this re-run on sk_lookup may give an incorrect
->> result?
->>
-> 
-> If it does give the incorrect result, we still fallback to the normal
-> egress path.
-> 
->> In general, is it necessary to rerun any bpf prog if the user space has
->> specified the IP[v6]_ORIGDSTADDR.
->>
-> 
-> More generally, wouldn't that also be the case if someone calls
-> bpf_sk_assign() in both TC and sk_lookup on ingress? It can lead to some
-> interference between the two.
-> 
-> It seems like the interesting cases are:
-> 1. Calling bpf_sk_assign() on both TC and sk_lookup ingress: if this
-> happens sk_lookup on egress should match the correct socket when doing
-> the reverse lookup;
-> 2. Calling bpf_sk_assign() only on ingress TC: in this case it will
-> depend if an sk_lookup program is attached or not:
->    a. If not, there's no reverse lookup on egress either;
->    b. But if yes, although the reverse sk_lookup here won't match the
->    initial socket assigned at ingress TC, the packets will still fallback
->    to the normal egress path;
-> 
-> You're right in that case 2b above will continue with the same
-> restrictions as before.
+danobi/vmtest is going to migrate from using 9p to using virtio_fs to
+mount the local rootfs: https://github.com/danobi/vmtest/pull/88
 
-imo, all these cases you described above is a good signal that neither the TC 
-nor the BPF_PROG_TYPE_SK_LOOKUP program type is the right bpf prog to run here 
-_if_ a bpf prog was indeed useful here.
+BPF CI uses danobi/vmtest to run bpf selftests and will need to support
+VIRTIO_FS.
 
-I only followed some of the other discussion in v1 and v2. For now, I still 
-don't see running a bpf prog is useful here to process the IP[V6]_ORIGDSTADDR. 
-Jakub Sitnicki and I had discussed a similar point during the LPC.
+This change enables new kconfigs to be able to support the upcoming
+danobi/vmtest.
 
-If a bpf prog was indeed needed to process a cmsg, this should work closer to 
-what Jakub Sitnicki had proposed for getting the meta data during LPC (but I 
-believe the verdict there is also that a bpf prog is not needed). It should be a 
-bpf prog that can work in a more generic way to process any BPF specific cmsg 
-and can do other operations in the future using kfunc (e.g. route lookup or 
-something). Saying yes/no to a particular local IP and port could be one of 
-things that the bpf prog can do when processing the cmsg.
+Tested by building a new kernel with those config and confirming it
+would successfully run with 9p (currently what is used by vmtest), and
+with virtio_fs (using a local build of vmtest).
+
+  $ vmtest -k arch/x86/boot/bzImage "findmnt /"
+  => bzImage
+  ===> Booting
+  ===> Setting up VM
+  ===> Running command
+  TARGET SOURCE    FSTYPE OPTIONS
+  /      /dev/root 9p     rw,relatime,cache=5,access=client,msize=512000,trans=virtio
+  $ /home/chantra/local/danobi-vmtest/target/debug/vmtest -k arch/x86/boot/bzImage "findmnt /"
+  => bzImage
+  ===> Initializing host environment
+  ===> Booting
+  ===> Setting up VM
+  ===> Running command
+  TARGET SOURCE FSTYPE   OPTIONS
+  /      rootfs virtiofs rw,relatime
+
+Changes in v2:
+* Sorted configs alphabetically
+
+Signed-off-by: Manu Bretelle <chantr4@gmail.com>
+---
+ tools/testing/selftests/bpf/config.vm | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/tools/testing/selftests/bpf/config.vm b/tools/testing/selftests/bpf/config.vm
+index a9746ca78777..da543b24c144 100644
+--- a/tools/testing/selftests/bpf/config.vm
++++ b/tools/testing/selftests/bpf/config.vm
+@@ -1,12 +1,15 @@
+-CONFIG_9P_FS=y
+ CONFIG_9P_FS_POSIX_ACL=y
+ CONFIG_9P_FS_SECURITY=y
++CONFIG_9P_FS=y
+ CONFIG_CRYPTO_DEV_VIRTIO=y
+-CONFIG_NET_9P=y
++CONFIG_FUSE_FS=y
++CONFIG_FUSE_PASSTHROUGH=y
+ CONFIG_NET_9P_VIRTIO=y
++CONFIG_NET_9P=y
+ CONFIG_VIRTIO_BALLOON=y
+ CONFIG_VIRTIO_BLK=y
+ CONFIG_VIRTIO_CONSOLE=y
++CONFIG_VIRTIO_FS=y
+ CONFIG_VIRTIO_NET=y
+ CONFIG_VIRTIO_PCI=y
+ CONFIG_VIRTIO_VSOCKETS_COMMON=y
+-- 
+2.43.5
+
 
