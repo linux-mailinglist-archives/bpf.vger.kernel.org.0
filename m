@@ -1,181 +1,191 @@
-Return-Path: <bpf+bounces-40337-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40338-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76D73986D62
-	for <lists+bpf@lfdr.de>; Thu, 26 Sep 2024 09:16:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 554B9986D68
+	for <lists+bpf@lfdr.de>; Thu, 26 Sep 2024 09:19:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0FB22B2162A
-	for <lists+bpf@lfdr.de>; Thu, 26 Sep 2024 07:16:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D2E68B21C77
+	for <lists+bpf@lfdr.de>; Thu, 26 Sep 2024 07:19:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EDE0187851;
-	Thu, 26 Sep 2024 07:16:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D8A7188CB8;
+	Thu, 26 Sep 2024 07:19:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="q2FhgltW"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ggzoTZc6"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
+Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57D18224D6
-	for <bpf@vger.kernel.org>; Thu, 26 Sep 2024 07:16:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D86DA224D6
+	for <bpf@vger.kernel.org>; Thu, 26 Sep 2024 07:19:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727335001; cv=none; b=O0MDmddEjFx0L53R9SQoy3qGbZHD/u5mffMMjKy9wyfTVxn7br1QvIivfNWA5dpqmuyZ9X6Kjb7ONqmcUVzlSQcVgZtxTfgTh/uEVpchf5Agd7Pae26zd2poDtsHzQR4kWjbnvWEfOyK0HZ2G73Cg9F9IxW+lBAb++WjXBSoVmA=
+	t=1727335191; cv=none; b=EJ0hjhrQoK5o3odObo+QxsTtFRQPg8V/cVqBTm7QjaqXBwhoDotYMiKDEDZHb6BcwFsNTcsxSthbCk70oFV2c2auTZ597Ec2QwZd1ZhCKMkS9eEH9NbiOiXlgySGggzFO4YzcMJyJRIeVutOnmgtvRHV5m1fyeaUtRxiefU/Ylo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727335001; c=relaxed/simple;
-	bh=aLd1dBBjDCnXFKssmuiAHlADOGIEryKdovB/aPYcvec=;
+	s=arc-20240116; t=1727335191; c=relaxed/simple;
+	bh=fqWjJ5x2DDDNlNPeLap+iQ5YKNYxtlT2Hh+zyQ7LTVk=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nOTMqPltHNOOqdggahYc6vQm0uPbfeXUflAnXnz5oSpHK84prRD+euoDmpj0DQTN+7YGqTwPPg5dmrESBKSCUq4CprM1zGOfRER80lRTwsZHePvUCTqcDPoxeA6ruX7ZSwblI1cz7iLxuk3SkmX4XmcJjOWDamEq4AkZetLTpCk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=q2FhgltW; arc=none smtp.client-ip=95.215.58.172
+	 In-Reply-To:Content-Type; b=pHj5ovBVbY0fKqD10uzUGMZzK1cAEp8ryEGSdwiy6xSokVJFrpJ/o4d9sc8cJTGJkSgxHRLhM8CNWm7vndQyYaERebTA+SRaigtoX3LRfcHfESmMLEA8r7VIHTgGl1icxMsMQhtJGwYbek2IZznlVh1EScyyVrSqpZSHDUiIF3M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ggzoTZc6; arc=none smtp.client-ip=95.215.58.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <aac4921a-3f09-4c62-af92-df9f8412dcf6@linux.dev>
+Message-ID: <0583343e-874c-4af7-a405-3e939a34762f@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1727334997;
+	t=1727335187;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=/0BA+wUoq8yius4lD6af4t7plXr6Mi/ong07HszRwwY=;
-	b=q2FhgltWqAvv4JsVDy/+B4dAa3U0UkHHSSE+3/LiBnaMP7+v+QckzQV8QpYTVAX07lMY2g
-	rSRhqpqtY20gtKmCyqDwgZ0p5Agksv0tNA1pRDpdKrDvegi1BgnPrcJeJHxeHleHJaGvHd
-	xh6POdte2p3bWnUP22tsqMmBd9MLp3I=
-Date: Thu, 26 Sep 2024 15:16:27 +0800
+	bh=0S46fLE/Ll60j3bERSN5WiMsvc6qU9gkdj9vWZyJoYY=;
+	b=ggzoTZc61Jj4ivKJrsTH+6tNFdBnVYIGN0zqs+ZJ0Hs93hJseL22nB1odCIiVjOGoKssm+
+	dUjBNcX1qlXwpsOuGZtDhA+5Rh+IFUFb0HLSGkKQ7p4Ik0WHnoQAxdHCRTMWucZmtkbc0G
+	eEFj5fxMrQj9ddVcVVoniSBYPLy+TZ0=
+Date: Thu, 26 Sep 2024 15:19:38 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v3 1/4] bpf: Prevent updating extended prog to
- prog_array map
+Subject: Re: [PATCH bpf-next v3 2/4] bpf: Prevent extending tail callee prog
+ with freplace
 Content-Language: en-US
 To: Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org
 Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, toke@redhat.com,
  martin.lau@kernel.org, yonghong.song@linux.dev, puranjay@kernel.org,
  xukuohai@huaweicloud.com, iii@linux.ibm.com, kernel-patches-bot@fb.com
 References: <20240923134044.22388-1-leon.hwang@linux.dev>
- <20240923134044.22388-2-leon.hwang@linux.dev>
- <b879d9cf7eebd1e38492c76d7878a767b0245923.camel@gmail.com>
+ <20240923134044.22388-3-leon.hwang@linux.dev>
+ <ab4afb61e39cea42fb2ae2f4a2e134415417bbf6.camel@gmail.com>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Leon Hwang <leon.hwang@linux.dev>
-In-Reply-To: <b879d9cf7eebd1e38492c76d7878a767b0245923.camel@gmail.com>
+In-Reply-To: <ab4afb61e39cea42fb2ae2f4a2e134415417bbf6.camel@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Migadu-Flow: FLOW_OUT
 
-Hi Eduard,
 
-Thank you for your review.
 
-On 25/9/24 09:24, Eduard Zingerman wrote:
+On 25/9/24 13:32, Eduard Zingerman wrote:
 > On Mon, 2024-09-23 at 21:40 +0800, Leon Hwang wrote:
 > 
 > [...]
 > 
+>> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+>> index 048aa2625cbef..b864b37e67c17 100644
+>> --- a/include/linux/bpf.h
+>> +++ b/include/linux/bpf.h
+>> @@ -1484,6 +1484,7 @@ struct bpf_prog_aux {
+>>  	bool exception_cb;
+>>  	bool exception_boundary;
+>>  	bool is_extended; /* true if extended by freplace program */
+>> +	atomic_t tail_callee_cnt;
+> 
+> Nit: the name is a bit misleading, this counts how many times the
+>      program resides it prog maps. Confusing w/o additional comments.
+>      Maybe something like 'member_of_prog_array_cnt'?
+> 
+
+'member_of_prog_array_cnt' is not accurate enough.
+
+'prog_array_member_cnt' is better, and should alongside comment /*
+counts how many times as member of prog_array */.
+
+>>  	struct bpf_arena *arena;
+>>  	/* BTF_KIND_FUNC_PROTO for valid attach_btf_id */
+>>  	const struct btf_type *attach_func_proto;
+>> diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
+>> index 8d97bae98fa70..c12e0e3bf6ad0 100644
+>> --- a/kernel/bpf/arraymap.c
+>> +++ b/kernel/bpf/arraymap.c
+>> @@ -961,13 +961,17 @@ static void *prog_fd_array_get_ptr(struct bpf_map *map,
+>>  		return ERR_PTR(-EINVAL);
+>>  	}
+>>  
+>> +	atomic_inc(&prog->aux->tail_callee_cnt);
+>>  	return prog;
+>>  }
+> 
+> [...]
+> 
+>>  static u32 prog_fd_array_sys_lookup_elem(void *ptr)
 >> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
->> index 8a4117f6d7610..18b3f9216b050 100644
+>> index 18b3f9216b050..be829016d8182 100644
 >> --- a/kernel/bpf/syscall.c
 >> +++ b/kernel/bpf/syscall.c
->> @@ -3292,8 +3292,11 @@ static void bpf_tracing_link_release(struct bpf_link *link)
->>  	bpf_trampoline_put(tr_link->trampoline);
+>> @@ -3501,6 +3501,18 @@ static int bpf_tracing_prog_attach(struct bpf_prog *prog,
+>>  		tgt_prog = prog->aux->dst_prog;
+>>  	}
 >>  
->>  	/* tgt_prog is NULL if target is a kernel function */
->> -	if (tr_link->tgt_prog)
->> +	if (tr_link->tgt_prog) {
->> +		if (link->prog->type == BPF_PROG_TYPE_EXT)
->> +			tr_link->tgt_prog->aux->is_extended = false;
->>  		bpf_prog_put(tr_link->tgt_prog);
+>> +	if (prog->type == BPF_PROG_TYPE_EXT &&
+>> +	    atomic_read(&tgt_prog->aux->tail_callee_cnt)) {
+>> +		/* Program extensions can not extend target prog when the target
+>> +		 * prog has been updated to any prog_array map as tail callee.
+>> +		 * It's to prevent a potential infinite loop like:
+>> +		 * tgt prog entry -> tgt prog subprog -> freplace prog entry
+>> +		 * --tailcall-> tgt prog entry.
+>> +		 */
+>> +		err = -EINVAL;
+>> +		goto out_unlock;
 >> +	}
->>  }
->>  
->>  static void bpf_tracing_link_dealloc(struct bpf_link *link)
->> @@ -3523,6 +3526,8 @@ static int bpf_tracing_prog_attach(struct bpf_prog *prog,
->>  	if (prog->aux->dst_trampoline && tr != prog->aux->dst_trampoline)
->>  		/* we allocated a new trampoline, so free the old one */
->>  		bpf_trampoline_put(prog->aux->dst_trampoline);
->> +	if (prog->type == BPF_PROG_TYPE_EXT)
->> +		tgt_prog->aux->is_extended = true;
->>  
->>  	prog->aux->dst_prog = NULL;
->>  	prog->aux->dst_trampoline = NULL;
+>> +
+>>  	err = bpf_link_prime(&link->link.link, &link_primer);
+>>  	if (err)
+>>  		goto out_unlock;
 > 
-> Sorry, this might be a silly question, I do not fully understand how
-> programs and trampolines are protected against concurrent update.
-> 
+> Is it possible there is a race between map update and prog attach?
 
-There's no protection against concurrent update.
+Yes, it is possible.
 
-> Sequence of actions in bpf_tracing_prog_attach():
-> a. call bpf_trampoline_link_prog(&link->link, tr)
->    this returns success if `tr->extension_prog` is NULL,
->    meaning trampoline is "free";
-> b. update tgt_prog->aux->is_extended = true.
+> E.g. suppose the following sequence of events:
+> - thread #1 enters prog_fd_array_get_ptr()
+> - thread #1 successfully completes prog->aux->is_extended check (not extended)
+> - thread #2 enters bpf_tracing_prog_attach()
+> - thread #2 does atomic_read() for tgt_prog and it returns 0
+> - thread #2 proceeds attaching freplace to tgt_prog
+> - thread #1 does atomic_inc(&prog->aux->tail_callee_cnt)
 > 
-> Sequence of actions in bpf_tracing_link_release():
-> c. call bpf_trampoline_unlink_prog(&tr_link->link, tr_link->trampoline)
->    this sets `tr->extension_prog` to NULL;
-> d. update tr_link->tgt_prog->aux->is_extended = false.
-> 
-> In a concurrent environment, is it possible to have actions ordered as:
-> - thread #1: does bpf_tracing_link_release(link pointing to tgt_prog)
-> - thread #2: does bpf_tracing_prog_attach(some_prog, tgt_prog)
-> - thread #1: (c) tr->extension_prog is set to NULL
-> - thread #2: (a) tr->extension_prog is set to some_prog
-> - thread #2: (b) tgt_prog->aux->is_extended = true
-> - thread #1: (d) tgt_prog->aux->is_extended = false
-> 
-> Thus, loosing the is_extended mark?
-
-Yes, you are correct.
-
-> 
-> (As far as I understand bpf_trampoline_compute_key() call in
->  bpf_tracing_prog_attach() it is possible for threads #1 and #2 to
->  operate on a same trampoline object).
+> Thus arriving to a state when tgt_prog is both a member of a map and
+> is freplaced. Is this a valid scenario?
 > 
 
-In order to avoid the above case:
+This patch series aims to prevent such case that tgt_prog is a member of
+prog_array and is freplaced at the same time.
 
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 6988e432fc3d..1f19b754623c 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -3281,6 +3281,9 @@ static void bpf_tracing_link_release(struct
-bpf_link *link)
-        struct bpf_tracing_link *tr_link =
-                container_of(link, struct bpf_tracing_link, link.link);
+Without this patch series, a prog can be extended by freplace prog and then
+be updated to prog_array, or can be updated to prog_array and then be
+extended by freplace prog, in order to construct such case.
 
-+       if (link->prog->type == BPF_PROG_TYPE_EXT)
-+               tr_link->tgt_prog->aux->is_extended = false;
-+
-        WARN_ON_ONCE(bpf_trampoline_unlink_prog(&tr_link->link,
-                                                tr_link->trampoline));
+This patch aims to prevent "be updated to prog_array and then be extended
+by freplace prog".
+The previous patch aims to prevent "be extended by freplace prog and then
+be updated to prog_array".
 
-@@ -3518,6 +3521,8 @@ static int bpf_tracing_prog_attach(struct bpf_prog
-*prog,
-        if (prog->aux->dst_trampoline && tr != prog->aux->dst_trampoline)
-                /* we allocated a new trampoline, so free the old one */
-                bpf_trampoline_put(prog->aux->dst_trampoline);
-+       if (prog->type == BPF_PROG_TYPE_EXT)
-+               tgt_prog->aux->is_extended = true;
+So, in order to avoid the above case:
 
-        prog->aux->dst_prog = NULL;
-        prog->aux->dst_trampoline = NULL;
+diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
+index a43e62e2a8bb..da4e26029a33 100644
+--- a/kernel/bpf/arraymap.c
++++ b/kernel/bpf/arraymap.c
+@@ -948,7 +948,9 @@ static void *prog_fd_array_get_ptr(struct bpf_map *map,
+        if (IS_ERR(prog))
+                return prog;
 
-In bpf_tracing_link_release():
-1. update tr_link->tgt_prog->aux->is_extended = false.
-2. bpf_trampoline_unlink_prog().
+-       if (!bpf_prog_map_compatible(map, prog)) {
++       atomic_inc(&prog->aux->tail_callee_cnt);
++       if (!bpf_prog_map_compatible(map, prog) || prog->aux->is_extended) {
++               atomic_dec(&prog->aux->tail_callee_cnt);
+                bpf_prog_put(prog);
+                return ERR_PTR(-EINVAL);
+        }
 
-In bpf_tracing_prog_attach():
-1. bpf_trampoline_link_prog().
-2. update tgt_prog->aux->is_extended = true.
+1. Increment tail_callee_cnt.
+2. Decrement tail_callee_cnt, if prog->aux->is_extended.
 
-Then, it is able to avoid losing the is_extended mark.
+Then, thread #2 does atomic_read() for tgt_prog, and it won't return 0.
 
 Thanks,
 Leon
-
 
