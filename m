@@ -1,292 +1,151 @@
-Return-Path: <bpf+bounces-40328-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40330-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BAB48986B04
-	for <lists+bpf@lfdr.de>; Thu, 26 Sep 2024 04:39:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47A06986B66
+	for <lists+bpf@lfdr.de>; Thu, 26 Sep 2024 05:35:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 705D1283BBD
-	for <lists+bpf@lfdr.de>; Thu, 26 Sep 2024 02:39:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F242A1F222B6
+	for <lists+bpf@lfdr.de>; Thu, 26 Sep 2024 03:35:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 665981779AB;
-	Thu, 26 Sep 2024 02:39:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16962172BCC;
+	Thu, 26 Sep 2024 03:34:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="KtSnF5Ka"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="d9TOdf48"
 X-Original-To: bpf@vger.kernel.org
-Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 663671D5AAD;
-	Thu, 26 Sep 2024 02:39:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.119
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EE221D5ADF;
+	Thu, 26 Sep 2024 03:34:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727318354; cv=none; b=R74PApsc5ZkB2BXFiN7qJAI2PhtCOvHFoDbwZSn3UR2RYdInePzqUPCX9Vj2R/+qrbGNs9jX4/TIwG9/SmwSbhm3OdiAqgXVFJvFp5mQVUawL5rNq131cAXX03d7N7bJhkPzgo4XbyJcL47YF8yInpt8u2oPoVVYQS0Csr8dZ2E=
+	t=1727321695; cv=none; b=cMWoAImFpKXUmmBLp2q4yJmLGp7dmlpUdaIq7r0NPnfh9uYhXdPeCrjl97DuF+L09zhO3Os4UQn4/L/rK2j7CFlSUZVM6c2yiVsC1ThdN4HYx975B33o9oyaypu/O044ViVqx+mzpqcCWbLGf1NLGxPKvrLWqCxevToXGndDIBM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727318354; c=relaxed/simple;
-	bh=+qDywtrhHFNxNDbnP6zxi7WccfDa+KzBy7TgRf/rD+E=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Pcno9sl6uVSgMfcvKo7UpFObV5fI1xF/RhV03JG3jYMb2oF60zKfmbzsLnmaigs+PAwdVgmr4g6KHFAB93b9d4x8VtWeu6BOgnE1JoxmTkmDnGw1oBHdx0bIwdNt//CFoJyqW8LPo3AIf8hGYCT1o96KVigZM3elPOo1fRl0n30=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=KtSnF5Ka; arc=none smtp.client-ip=115.124.30.119
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1727318342; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=Z0R1U7Wy6M0jsshNG1rfYhoETdMbxREBR+pyD+pe4Ac=;
-	b=KtSnF5KarozFdaivNvURalwgPKZckVwmlYz9DDt/C+4zrphDD+st2mb999XxUeB874R7ZuYy3TFLZUkuqYz2mHaWR7nCzVWnMeW+QHsf8IX3MoUBLA4gSxxxuZ7Ql/Bz3vdURgFn6mC+XkRQYITV54h4cV3dVg0fv0WrELyrV9Y=
-Received: from 30.221.147.236(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0WFlm112_1727318341)
-          by smtp.aliyun-inc.com;
-          Thu, 26 Sep 2024 10:39:02 +0800
-Message-ID: <b6c6581a-f787-4417-a365-0ba97d71c4ac@linux.alibaba.com>
-Date: Thu, 26 Sep 2024 10:39:01 +0800
+	s=arc-20240116; t=1727321695; c=relaxed/simple;
+	bh=/At0ZfQKDRKqgXRUC/2vl4ZDoABUmTw1R9MYz/wjx+o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=OQX4DsKRzBrRHGb9XRtCdFm5VVtboN2fyMfJzCy38ThzvJTJ+feay60iss69V7WtwGjHjMZdYjNgJhL2zwL2XJNBD2L9giGzQMnT1DeWRQpNavreyAZkkHRy4PhJRZG49Xrna2W52Me66V1lvDAcbeBuEcWbBRTLoVC2rRtjEPQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=d9TOdf48; arc=none smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1727321694; x=1758857694;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=/At0ZfQKDRKqgXRUC/2vl4ZDoABUmTw1R9MYz/wjx+o=;
+  b=d9TOdf48uLPTm1rsMciPPTm4q9ftkflen3WdYqAEwZYr6JU8f2An0/dt
+   vMdAD6HaoeSn+FDvnza2l6LPMmPlv2Dhe2qUE2r+gLeTFNSR6bz1lOO35
+   FAeSERrrLc6t7K7Q7EbtLtHDUEDoptktQwMWgsDSdxh3+aY3r4sEgdUDl
+   GRSccWaCoXr0eqoQ6yzWzE0wRJnisP2ywsB1d4KPfh+O+qvPFxBeYJkW9
+   oLXPEoDKAc6VIs0viVZC0uu4hpoQLOVvkUvCjZxyfs/mTxp9dc6ksIlhA
+   RdoU6tcl3y1vn4qEaXap6YaiBPMELpJhZI8n7d0b+oDJYC1JdD9RqIXqX
+   w==;
+X-CSE-ConnectionGUID: hu5gJIagS8qAEHeF4rTUgw==
+X-CSE-MsgGUID: r0+/JxJZQ1+Ln0/NCQdXvQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11206"; a="37543177"
+X-IronPort-AV: E=Sophos;i="6.10,259,1719903600"; 
+   d="scan'208";a="37543177"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2024 20:34:53 -0700
+X-CSE-ConnectionGUID: wfbmaoPlRAyGIvvLNywPQw==
+X-CSE-MsgGUID: ncJ91KxCR6G2NdMIJoaDeA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.10,259,1719903600"; 
+   d="scan'208";a="102818880"
+Received: from lkp-server01.sh.intel.com (HELO 53e96f405c61) ([10.239.97.150])
+  by fmviesa001.fm.intel.com with ESMTP; 25 Sep 2024 20:34:49 -0700
+Received: from kbuild by 53e96f405c61 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1stfHC-000KB5-39;
+	Thu, 26 Sep 2024 03:34:46 +0000
+Date: Thu, 26 Sep 2024 11:34:19 +0800
+From: kernel test robot <lkp@intel.com>
+To: Eric Yan <eric.yan@oppo.com>, ast@kernel.org, daniel@iogearbox.net,
+	andrii@kernel.org, martin.lau@linux.dev, yonghong.song@linux.dev,
+	song@kernel.org, john.fastabend@gmail.com, kpsingh@kernel.org,
+	sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org, eric.yan@oppo.com
+Subject: Re: [PATCH] Add BPF Kernel Function bpf_ptrace_vprintk
+Message-ID: <202409261116.risxWG3M-lkp@intel.com>
+References: <20240925100254.436-1-eric.yan@oppo.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH net-next] net/smc: Introduce a hook to modify syn_smc
- at runtime
-To: Guangguan Wang <guangguan.wang@linux.alibaba.com>, kgraul@linux.ibm.com,
- wenjia@linux.ibm.com, jaka@linux.ibm.com, wintera@linux.ibm.com,
- guwen@linux.alibaba.com
-Cc: kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
- linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
- tonylu@linux.alibaba.com, pabeni@redhat.com, edumazet@google.com,
- bpf@vger.kernel.org
-References: <1726654204-61655-1-git-send-email-alibuda@linux.alibaba.com>
- <f9db0ec5-c779-4627-9e1f-0f6af98d2de5@linux.alibaba.com>
-Content-Language: en-US
-From: "D. Wythe" <alibuda@linux.alibaba.com>
-In-Reply-To: <f9db0ec5-c779-4627-9e1f-0f6af98d2de5@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240925100254.436-1-eric.yan@oppo.com>
+
+Hi Eric,
+
+kernel test robot noticed the following build warnings:
+
+[auto build test WARNING on bpf-next/master]
+[also build test WARNING on bpf/master linus/master next-20240925]
+[cannot apply to v6.11]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Eric-Yan/Add-BPF-Kernel-Function-bpf_ptrace_vprintk/20240925-180530
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+patch link:    https://lore.kernel.org/r/20240925100254.436-1-eric.yan%40oppo.com
+patch subject: [PATCH] Add BPF Kernel Function bpf_ptrace_vprintk
+config: x86_64-buildonly-randconfig-003-20240926 (https://download.01.org/0day-ci/archive/20240926/202409261116.risxWG3M-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240926/202409261116.risxWG3M-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202409261116.risxWG3M-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> kernel/bpf/helpers.c:2530: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+    * same as bpf_trace_vprintk, except for a trace_marker format requirement
 
 
+vim +2530 kernel/bpf/helpers.c
 
-On 9/19/24 8:36 PM, Guangguan Wang wrote:
-> 
-> 
-> On 2024/9/18 18:10, D. Wythe wrote:
->> From: "D. Wythe" <alibuda@linux.alibaba.com>
->>
->> The introduction of IPPROTO_SMC enables eBPF programs to determine
->> whether to use SMC based on the context of socket creation, such as
->> network namespaces, PID and comm name, etc.
->>
->> As a subsequent enhancement, this patch introduces a new hook for eBPF
->> programs that allows decisions on whether to use SMC or not at runtime,
->> including but not limited to local/remote IP address or ports. In
->> simpler words, this feature allows modifications to syn_smc through eBPF
->> programs before the TCP three-way handshake got established.
->>
->> Thanks to kfunc for making it easier for us to implement this feature in
->> SMC.
->>
->> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
-> 
-> Hi D. Wythe,
-> 
-> I think it is a good feature to have for more flexible using of SMC.
-> 
-> It is also a good solution for the problem we met before:
-> Some services are not correctly handled TCP syn packet with SMC experimental option in head.
-> The TCP connections to such services can not be successfully established through SMC. Thus, a
-> program can not using SMC and accessing the services mentioned above in the same time.
-> With this feature, by filter the port to the services metioned above, it is possible for
-> programes both using SMC and accessing the services metioned above.
-> 
->> ---
->>   include/linux/tcp.h  |  4 ++-
->>   net/ipv4/tcp_input.c |  4 +--
->>   net/smc/af_smc.c     | 69 ++++++++++++++++++++++++++++++++++++++++++++++------
->>   3 files changed, 66 insertions(+), 11 deletions(-)
->>
->> diff --git a/include/linux/tcp.h b/include/linux/tcp.h
->> index 6a5e08b..d028d76 100644
->> --- a/include/linux/tcp.h
->> +++ b/include/linux/tcp.h
->> @@ -478,7 +478,9 @@ struct tcp_sock {
->>   #endif
->>   #if IS_ENABLED(CONFIG_SMC)
->>   	bool	syn_smc;	/* SYN includes SMC */
->> -	bool	(*smc_hs_congested)(const struct sock *sk);
->> +	void	(*smc_openreq_init)(struct request_sock *req,
->> +			     const struct tcp_options_received *rx_opt,
->> +			     struct sk_buff *skb, const struct sock *sk);
->>   #endif
->>   
->>   #if defined(CONFIG_TCP_MD5SIG) || defined(CONFIG_TCP_AO)
->> diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
->> index e37488d..e33e2a0 100644
->> --- a/net/ipv4/tcp_input.c
->> +++ b/net/ipv4/tcp_input.c
->> @@ -7029,8 +7029,8 @@ static void tcp_openreq_init(struct request_sock *req,
->>   	ireq->ir_num = ntohs(tcp_hdr(skb)->dest);
->>   	ireq->ir_mark = inet_request_mark(sk, skb);
->>   #if IS_ENABLED(CONFIG_SMC)
->> -	ireq->smc_ok = rx_opt->smc_ok && !(tcp_sk(sk)->smc_hs_congested &&
->> -			tcp_sk(sk)->smc_hs_congested(sk));
->> +	if (ireq->smc_ok && tcp_sk(sk)->smc_openreq_init)Should be rx_opt->smc_ok?
+  2528	
+  2529	/**
+> 2530	 * same as bpf_trace_vprintk, except for a trace_marker format requirement
+  2531	 */
+  2532	__bpf_kfunc int bpf_ptrace_vprintk(char *fmt, u32 fmt_size, const void *args, u32 args__sz)
+  2533	{
+  2534		struct bpf_bprintf_data data = {
+  2535			.get_bin_args	= true,
+  2536			.get_buf	= true,
+  2537		};
+  2538		int ret, num_args;
+  2539	
+  2540		if (args__sz & 7 || args__sz > MAX_BPRINTF_VARARGS * 8 || (args__sz && !args))
+  2541			return -EINVAL;
+  2542		num_args = args__sz / 8;
+  2543	
+  2544		ret = bpf_bprintf_prepare(fmt, fmt_size, args, num_args, &data);
+  2545		if (ret < 0)
+  2546			return ret;
+  2547	
+  2548		ret = bstr_printf(data.buf, MAX_BPRINTF_BUF, fmt, data.bin_args);
+  2549	
+  2550		tracing_mark_write(data.buf);
+  2551	
+  2552		bpf_bprintf_cleanup(&data);
+  2553	
+  2554		return ret;
+  2555	}
+  2556	
 
-
-Yes, that's a bug here, i will fix it in next RFC.
-
-
-> 
->> +		tcp_sk(sk)->smc_openreq_init(req, rx_opt, skb, sk);
->>   #endif
->>   }
->>   
->> diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
->> index 0316217..003b2ac 100644
->> --- a/net/smc/af_smc.c
->> +++ b/net/smc/af_smc.c
->> @@ -70,6 +70,15 @@
->>   static void smc_tcp_listen_work(struct work_struct *);
->>   static void smc_connect_work(struct work_struct *);
->>   
->> +__bpf_hook_start();
->> +
->> +__weak noinline int select_syn_smc(const struct sock *sk, struct sockaddr *peer)
->> +{
->> +	return 1;
->> +}
->> +
->> +__bpf_hook_end();
->> +
->>   int smc_nl_dump_hs_limitation(struct sk_buff *skb, struct netlink_callback *cb)
->>   {
->>   	struct smc_nl_dmp_ctx *cb_ctx = smc_nl_dmp_ctx(cb);
->> @@ -156,19 +165,41 @@ static struct sock *smc_tcp_syn_recv_sock(const struct sock *sk,
->>   	return NULL;
->>   }
->>   
->> -static bool smc_hs_congested(const struct sock *sk)
->> +static void smc_openreq_init(struct request_sock *req,
->> +			     const struct tcp_options_received *rx_opt,
->> +			     struct sk_buff *skb, const struct sock *sk)
->>   {
->> +	struct inet_request_sock *ireq = inet_rsk(req);
->> +	struct sockaddr_storage rmt_sockaddr = {0};
->>   	const struct smc_sock *smc;
->>   
->>   	smc = smc_clcsock_user_data(sk);
->>   
->>   	if (!smc)
->> -		return true;
->> +		return;
-> It is better goto out_no_smc rather than return to explicitly set ireq->smc_ok to 0.
-> 
-
-
-I'm a little bit unsure, returning directly can make consistent with
-the previous code.
-
-
-In fact, once sk->sk_user_data goes NULL, the incoming sock will be dropped
-anyway whether it's a fallback or not.
-
-
->>   
->> -	if (workqueue_congested(WORK_CPU_UNBOUND, smc_hs_wq))
->> -		return true;
->> +	if (smc->limit_smc_hs && workqueue_congested(WORK_CPU_UNBOUND, smc_hs_wq))
->> +		goto out_no_smc;
->>   
->> -	return false;
->> +	rmt_sockaddr.ss_family = sk->sk_family;
->> +
->> +	if (rmt_sockaddr.ss_family == AF_INET) {
->> +		struct sockaddr_in *rmt4_sockaddr =  (struct sockaddr_in *)&rmt_sockaddr;
->> +
->> +		rmt4_sockaddr->sin_addr.s_addr = ireq->ir_rmt_addr;
->> +		rmt4_sockaddr->sin_port	= ireq->ir_rmt_port;
->> +	} else {
->> +		struct sockaddr_in6 *rmt6_sockaddr =  (struct sockaddr_in6 *)&rmt_sockaddr;
->> +
->> +		rmt6_sockaddr->sin6_addr = ireq->ir_v6_rmt_addr;
->> +		rmt6_sockaddr->sin6_port = ireq->ir_rmt_port;
->> +	}
->> +
->> +	ireq->smc_ok = select_syn_smc(sk, (struct sockaddr *)&rmt_sockaddr);
->> +	return;
->> +out_no_smc:
->> +	ireq->smc_ok = 0;
->> +	return;
->>   }
->>   
->>   struct smc_hashinfo smc_v4_hashinfo = {
->> @@ -1671,7 +1702,7 @@ int smc_connect(struct socket *sock, struct sockaddr *addr,
->>   	}
->>   
->>   	smc_copy_sock_settings_to_clc(smc);
->> -	tcp_sk(smc->clcsock->sk)->syn_smc = 1;
->> +	tcp_sk(smc->clcsock->sk)->syn_smc = select_syn_smc(sk, addr);
->>   	if (smc->connect_nonblock) {
->>   		rc = -EALREADY;
->>   		goto out;
->> @@ -2650,8 +2681,7 @@ int smc_listen(struct socket *sock, int backlog)
->>   
->>   	inet_csk(smc->clcsock->sk)->icsk_af_ops = &smc->af_ops;
->>   
->> -	if (smc->limit_smc_hs)
->> -		tcp_sk(smc->clcsock->sk)->smc_hs_congested = smc_hs_congested;
->> +	tcp_sk(smc->clcsock->sk)->smc_openreq_init = smc_openreq_init;
->>   
->>   	rc = kernel_listen(smc->clcsock, backlog);
->>   	if (rc) {
->> @@ -3475,6 +3505,20 @@ static void __net_exit smc_net_stat_exit(struct net *net)
->>   	.exit = smc_net_stat_exit,
->>   };
->>   
->> +BTF_SET8_START(bpf_smc_fmodret_ids)
->> +BTF_ID_FLAGS(func, select_syn_smc)
->> +BTF_SET8_END(bpf_smc_fmodret_ids)
->> +
->> +static const struct btf_kfunc_id_set bpf_smc_fmodret_set = {
->> +	.owner = THIS_MODULE,
->> +	.set   = &bpf_smc_fmodret_ids,
->> +};
->> +
->> +static int __init bpf_smc_kfunc_init(void)
->> +{
->> +	return register_btf_fmodret_id_set(&bpf_smc_fmodret_set);
->> +}
-> Does it have unregister function? Is it OK for repeate register when reload the smc module?
-> 
-
-Based on my current understanding, no such action was required.
-
-
-Thanks,
-D. Wythe
-
-> Thanks,
-> Guangguan Wang
->> +
->>   static int __init smc_init(void)
->>   {
->>   	int rc;
->> @@ -3574,8 +3618,17 @@ static int __init smc_init(void)
->>   		pr_err("%s: smc_inet_init fails with %d\n", __func__, rc);
->>   		goto out_ulp;
->>   	}
->> +
->> +	rc = bpf_smc_kfunc_init();
->> +	if (rc) {
->> +		pr_err("%s: bpf_smc_kfunc_init fails with %d\n", __func__, rc);
->> +		goto out_inet;
->> +	}
->> +
->>   	static_branch_enable(&tcp_have_smc);
->>   	return 0;
->> +out_inet:
->> +	smc_inet_exit();
->>   out_ulp:
->>   	tcp_unregister_ulp(&smc_ulp_ops);
->>   out_lo:
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
