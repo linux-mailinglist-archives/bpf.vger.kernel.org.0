@@ -1,134 +1,144 @@
-Return-Path: <bpf+bounces-40368-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40370-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D59D1987BFB
-	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2024 01:45:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36D5F987BFD
+	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2024 01:45:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B56028617A
-	for <lists+bpf@lfdr.de>; Thu, 26 Sep 2024 23:45:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F1A42281E35
+	for <lists+bpf@lfdr.de>; Thu, 26 Sep 2024 23:45:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 108E81B07A5;
-	Thu, 26 Sep 2024 23:44:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K73OLfFq"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 752001B07A6;
+	Thu, 26 Sep 2024 23:45:22 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
+Received: from 69-171-232-181.mail-mxout.facebook.com (69-171-232-181.mail-mxout.facebook.com [69.171.232.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4719715F41B
-	for <bpf@vger.kernel.org>; Thu, 26 Sep 2024 23:44:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 727BE15B99D
+	for <bpf@vger.kernel.org>; Thu, 26 Sep 2024 23:45:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=69.171.232.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727394295; cv=none; b=aiV2nmnogNZLbD+ytzkYlMaxJ+SamYzSflQ3t8hRny+2MFjqv4W7ZIbw4Z5o3O2fdTr1mGFXe0UNAYuXMM32LtLxUYfSk8zIKNJVcbyVQYDOeQGPxsZhWI+Cw20yf8uoq7GRoxqEe9cM4os+2my0B2JVOq72xuEWJL8mXnM4e48=
+	t=1727394322; cv=none; b=IdZ8itU9JUSPhjHK3hFSjW41Dv22EnhCAZ5JFurXSeI/pqBcaKJ/rI2eMrpdJs+uNR9CdTr2Xm4RGPGsFxXcepwfWQ18jgLmQF4FYE2kq0lcXmVEhofepPK0m9rcLlKubPZ1Kq5G6Dz4Urz1+Gri2NOCSWSKZZ28cvOcxr9QUBg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727394295; c=relaxed/simple;
-	bh=TlXnSNg6/uF3dHpv7h74CDNwtN9AQ1jFLBypSXZo2Cs=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=mtnGRE9aPjjIxxdtp+u+VmdS1GrgfirqPxjO3a1BHodYZx7HJqg6lzEJpq9FtC2R4Aw9AzhNgmwjuO00Vdv6m7a2P1HgJqBse2W2OmxGUfT1bnwkN33F6zgdwLWJgQbeIpPR0cKR4eiHWw2fNumNMJSPmLNVeiOC5Qas4RgiOg8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=K73OLfFq; arc=none smtp.client-ip=209.85.216.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-2e0c7eaf159so26581a91.1
-        for <bpf@vger.kernel.org>; Thu, 26 Sep 2024 16:44:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727394293; x=1727999093; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=rBqucrFp/DKM3daOAqEmik9TBOFBqpw1FWQ4CUOEH6Q=;
-        b=K73OLfFqMOaUJlcj6VVTpiWWqcFK2JCRjYcrir8Pap3rh2COA+t0RGd3mkuIekQ4qb
-         ohxoEzpIKOOA/yrVc+4mJ+3W6NgkYJHnTFo52L4BOJ4OmhbLyfJNY0X5wRmKHuaOm398
-         JWGOhfUpazCs4bt+EhqsQoTNLYzhhdJqWGeKd7wiwRAXiOYPGLJaGv5bUAS7Ns3gMW5T
-         KpEUZKaArrFKglCW3RCrvNPRprEitzrizdo1wuFmFPnhoWTqVxyGBd1qDqpJeSx1negO
-         vEDNMr/+rx5lquGHwylljB0d0E+Et79TFsnAs9CQoJkybJSl08hplobu4qbG3BTFJl1u
-         hXjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727394293; x=1727999093;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=rBqucrFp/DKM3daOAqEmik9TBOFBqpw1FWQ4CUOEH6Q=;
-        b=sbrP26yXY5CLalVNGXGi6wMh7KcuhnWXaO2Fbd5XODAuIxs2+mddY7mNnhb8qhtC8d
-         MqxrRdXEUTmAO9UlUsWMPtT2lcIzxDsHkFeGb/KAkGDB6ubFkZ0ANLMNX4Rz/qGpPvOM
-         neP2lmA5X1aTgdmq+mN9pFHdyr84AwZZIs+nPb7VW7OMRxmUkgNobX+UJyyVWWOB+qnS
-         onOQtWAtqvYWwG2nKGJox4JggSZ4DwO8fCNzl36OraVGJHB1nL49bH7rQlgXLbgBLNnW
-         PgcrXPLXHRIKX1wRrgc4AQ6crn8ncj0FQAdGZNQT6Tnahn7ykzExNZZm3jcL9mf2m3H3
-         RFSA==
-X-Forwarded-Encrypted: i=1; AJvYcCWzCGw1fFexkWoGc/6PPaayL9xoonAhGdTn2/VXXrRMEmN5Artu8YcYxFsiTr2KwKY97fc=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy2sHRuTsy0Qbs0d4eA+drR/0wgJ1JnccJYTcjab2KxPcGbdRTc
-	jzoARaUV6+UkFKFgx4zZvaVFFzBbSyjN3p8xz0+CuONqhFoFS2lR
-X-Google-Smtp-Source: AGHT+IGyeCNklITd56+ENV40Dpwi34rUyDHFHgbOB2UWollj9xVwz7V8VSpBQYdZafrlLjmrWGxwMA==
-X-Received: by 2002:a17:90a:fd84:b0:2e0:a0ab:7fcf with SMTP id 98e67ed59e1d1-2e0b89d4cfemr1490307a91.12.1727394293448;
-        Thu, 26 Sep 2024 16:44:53 -0700 (PDT)
-Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2e0b6e105e4sm618827a91.37.2024.09.26.16.44.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Sep 2024 16:44:52 -0700 (PDT)
-Message-ID: <084902540a09a7036b713bd2336955e9b63fb30b.camel@gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: fix uprobe_multi compilation
- error
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Alan Maguire <alan.maguire@oracle.com>, ast@kernel.org, 
-	daniel@iogearbox.net, andrii@kernel.org
-Cc: martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev, 
- john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
- haoluo@google.com,  jolsa@kernel.org, mykolal@fb.com, bpf@vger.kernel.org
-Date: Thu, 26 Sep 2024 16:44:48 -0700
-In-Reply-To: <20240926144948.172090-1-alan.maguire@oracle.com>
-References: <20240926144948.172090-1-alan.maguire@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.4 (3.52.4-1.fc40) 
+	s=arc-20240116; t=1727394322; c=relaxed/simple;
+	bh=EEvmGPSB+cylfXZ8tZFGr9TtzG5RZqMjPGCMbnp9Pmc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=GndmOc1CamhNWymJGhPAxdE9RL5LpVHTEdZJRGYwnfVbVfs+bamnH1rJIkM5hjpXCG4jhSklSPoOph//lMYDQd5UwvwaZXXn/exQ8sJnviA9HNMbOI1aKv9bQOXw34YmeOA5FOHuvKJ5khANo/hJ1BPkRhzFqyEDu6DEn81RxrU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=69.171.232.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
+Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
+	id 0A35A967C71D; Thu, 26 Sep 2024 16:45:06 -0700 (PDT)
+From: Yonghong Song <yonghong.song@linux.dev>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	kernel-team@fb.com,
+	Martin KaFai Lau <martin.lau@kernel.org>
+Subject: [PATCH bpf-next v3 0/5] bpf: Support private stack for bpf progs
+Date: Thu, 26 Sep 2024 16:45:06 -0700
+Message-ID: <20240926234506.1769256-1-yonghong.song@linux.dev>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2024-09-26 at 15:49 +0100, Alan Maguire wrote:
-> When building selftests, the following was seen:
->=20
-> uprobe_multi.c: In function =E2=80=98trigger_uprobe=E2=80=99:
-> uprobe_multi.c:108:40: error: =E2=80=98MADV_PAGEOUT=E2=80=99 undeclared (=
-first use in this function)
->   108 |                 madvise(addr, page_sz, MADV_PAGEOUT);
->       |                                        ^~~~~~~~~~~~
-> uprobe_multi.c:108:40: note: each undeclared identifier is reported only =
-once for each function it appears in
-> make: *** [Makefile:850: bpf-next/tools/testing/selftests/bpf/uprobe_mult=
-i] Error 1
->=20
-> ...even with updated UAPI headers. It seems the above value is
-> defined in UAPI <linux/mman.h> but including that file triggers
-> other redefinition errors.  Simplest solution is to add a
-> guarded definition, as was done for MADV_POPULATE_READ.
->=20
-> Fixes: 3c217a182018 ("selftests/bpf: add build ID tests")
-> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-> ---
+The main motivation for private stack comes from nested scheduler in
+sched-ext from Tejun. The basic idea is that
+ - each cgroup will its own associated bpf program,
+ - bpf program with parent cgroup will call bpf programs
+   in immediate child cgroups.
 
-I was curious why this error is not triggered on my local machine or CI.
-MADV_PAGEOUT is indeed defined in UAPI.
-Selftests build picks it from host system header, which is
-/usr/include/bits/mman-linux.h for my Fedora 40 setup.
-The MADV_PAGEOUT was added by commit [1] back in 2019
-(and should be available from Linux 5.4, I guess Alan uses a very old kerne=
-l).
+Let us say we have the following cgroup hierarchy:
+  root_cg (prog0):
+    cg1 (prog1):
+      cg11 (prog11):
+        cg111 (prog111)
+        cg112 (prog112)
+      cg12 (prog12):
+        cg121 (prog121)
+        cg122 (prog122)
+    cg2 (prog2):
+      cg21 (prog21)
+      cg22 (prog22)
+      cg23 (prog23)
 
-I think that at some point in time we should adjust selftests to use
-UAPI headers that come from the kernel being tested, not from the host.
-Until that happens, I think this fix is fine.
+In the above example, prog0 will call a kfunc which will call prog1 and
+prog2 to get sched info for cg1 and cg2 and then the information is
+summarized and sent back to prog0. Similarly, prog11 and prog12 will be
+invoked in the kfunc and the result will be summarized and sent back to
+prog1, etc.
 
-[1] 1a4e58cce84e ("mm: introduce MADV_PAGEOUT")
+Currently, for each thread, the x86 kernel allocate 8KB stack. The each
+bpf program (including its subprograms) has maximum 512B stack size to
+avoid potential stack overflow. And nested bpf programs increase the risk
+of stack overflow. To avoid potential stack overflow caused by bpf
+programs, this patch implemented a private stack so bpf program stack
+space is allocated dynamically when the program is jited. Such private
+stack is applied to tracing programs like kprobe/uprobe, perf_event,
+tracepoint, raw tracepoint and tracing.
 
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+But more than one instance of the same bpf program may run in the system.
+To make things simple, percpu private stack is allocated for each program=
+,
+so if the same program is running on different cpus concurrently, we won'=
+t
+have any issue. Note that the kernel already have logic to prevent the
+recursion for the same bpf program on the same cpu (kprobe, fentry, etc.)=
+.
 
-(I want back to 2019...)
+The patch implemented a percpu private stack based approach for x86 arch.
+Patch 1 allows each subprog having stack size of 512 bytes and overall pr=
+og
+stack depth (at the boundary of callback functions) can be as much as 64K=
+B.
+Patch 2 collects actual stack depth information in order to allocate per-=
+cpu
+buffer properly for each prog who is either the main prog or the callback
+entry prog. Patch 3 marks each subprog with proper private stack states s=
+o
+jit can emit proper native code properly. Patch 4 implemented private sta=
+ck
+support for x86_64. Patch 5 added some test cases.
 
-[...]
+Change logs:
+  v2 -> v3:
+    - Instead of per-subprog private stack allocation, allocate private
+      stacks at main prog or callback entry prog. Subprogs not main or ca=
+llback
+      progs will increment the inherited stack pointer to be their
+      frame pointer.
+    - Private stack allows each prog max stack size to be 512 bytes, inte=
+ad
+      of the whole prog hierarchy to be 512 bytes.
+    - Add some tests.
+
+Yonghong Song (5):
+  bpf: Allow each subprog having stack size of 512 bytes
+  bpf: Collect stack depth information
+  bpf: Mark each subprog with proper pstack states
+  bpf, x86: Add jit support for private stack
+  selftests/bpf: Add private stack tests
+
+ arch/x86/net/bpf_jit_comp.c                   |  87 ++++++-
+ include/linux/bpf.h                           |  13 +-
+ include/linux/bpf_verifier.h                  |   3 +
+ include/linux/filter.h                        |   1 +
+ kernel/bpf/core.c                             |  24 ++
+ kernel/bpf/verifier.c                         | 160 ++++++++++++-
+ .../selftests/bpf/prog_tests/verifier.c       |   2 +
+ .../bpf/progs/verifier_private_stack.c        | 215 ++++++++++++++++++
+ 8 files changed, 493 insertions(+), 12 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_private_st=
+ack.c
+
+--=20
+2.43.5
 
 
