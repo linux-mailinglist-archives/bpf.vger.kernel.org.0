@@ -1,401 +1,312 @@
-Return-Path: <bpf+bounces-40349-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40350-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA53098731F
-	for <lists+bpf@lfdr.de>; Thu, 26 Sep 2024 13:54:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 384559873BB
+	for <lists+bpf@lfdr.de>; Thu, 26 Sep 2024 14:41:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 75EB4286F66
-	for <lists+bpf@lfdr.de>; Thu, 26 Sep 2024 11:54:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E78A5286F7B
+	for <lists+bpf@lfdr.de>; Thu, 26 Sep 2024 12:41:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80D31158D66;
-	Thu, 26 Sep 2024 11:54:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9137F33C5;
+	Thu, 26 Sep 2024 12:41:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vMiLZ7pz"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="AhRS2hOF"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04F43156230;
-	Thu, 26 Sep 2024 11:53:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A60E28FC
+	for <bpf@vger.kernel.org>; Thu, 26 Sep 2024 12:41:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727351640; cv=none; b=paZEEFkHOc1XBoMGWWMAe0CKZqxESrZ0C4Dhq2hO3T4I8YoiYF3tr8SgyeBSVBt2ifaCAeEbaFB0cvDQRzCNCXqlOak5ng0bKv8mSNvEByEwKkNQorLcs5jBdAfOIg/inVyNwLFpwAW2dDq2gM0Pq3Z2iB7UeZdw43y2E6eEtmg=
+	t=1727354484; cv=none; b=AUQCffhvEijfzomR/aYvm5nIXytngB2YTmm3gqndmJ8X1Win5pyTsNdlFR7HIuwTGGvWIloCL2g3UZQyiIs4pM6Oi8PTTGQqLxDLSgECZaoc95cLn8lII6QHl0nQuMriM8Ku1vKg+wYH8ccRA5RqkueqnkQCbJbDo5Sw8N2XZHs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727351640; c=relaxed/simple;
-	bh=ldoq/21Iy8XOxX/1iQ6TNqo+98qmfhdsNcodCAQ09Io=;
-	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Vb9h9ZNxaQpjlTWsoRYvrZY9StbRFwm7itRvjQdBWoDsmnULiyckbJ3z9ebDqYH5Lf4kj3ZVXHR0bU/6B9TuhTj4lg66DnYqLXcWFFAXaa7VYO/iHOLIJ8kWWpjLOsg35Pmad1oO013Pwd5fGxsCg6t8rC/6L2uEQtHmLzlSS7M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vMiLZ7pz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C4D1C4CEC5;
-	Thu, 26 Sep 2024 11:53:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727351639;
-	bh=ldoq/21Iy8XOxX/1iQ6TNqo+98qmfhdsNcodCAQ09Io=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=vMiLZ7pzmIyRwyZFaRNQd4JqEKy9ZK8kSUbIxiCvazs9iE9KwMUaM2lSMtGSu8R+g
-	 hcDWtNYgURtRVZbAo51maeBoSKsBOXRSVpInslqs/XnHSGIwLsvQlkrNbwEyTI7Tni
-	 LW37extN0HxHdDJnXZbm1P5KlbDvUF2XcprvK3gAAt9imGsmKoEXaZbL84N5cAoBw8
-	 7yzJxEaSCb0SV/So7dREb2LjuMSsMftuG58Q83KZ8nYx6D6D28vspI5LiIcal1FkrS
-	 DxUsSlxBjvp6FP9FKfHS/MC74oB7SLOjdbE3s7VyNFPDaz4HozryDCJkkDizY2xgoa
-	 8v/Z/gjVPe2sQ==
-From: Puranjay Mohan <puranjay@kernel.org>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	puranjay12@gmail.com
-Subject: [PATCH bpf-next v2 2/2] selftests/bpf: Augment send_signal test with remote signaling
-Date: Thu, 26 Sep 2024 11:53:28 +0000
-Message-Id: <20240926115328.105634-3-puranjay@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240926115328.105634-1-puranjay@kernel.org>
-References: <20240926115328.105634-1-puranjay@kernel.org>
+	s=arc-20240116; t=1727354484; c=relaxed/simple;
+	bh=m/CQ7UyTh5YrazEQXAfjD4KDPsBQ2/B1d9qjwy5ZB/M=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=L3c8t1K4wbUaBYOsc/HNQJOAyB6lxVhrwiIIWb3zrWCuYh9Sg91bT4L7qan7SALaiKsVxGROaQQWJQm0uCPxrk+VXHk89UjUFB+AGg8CQdh++ZlOne/MoOi63tArSHZThjXUL7l3QZo9IEBg+lCkiZaLeSrfV2pe8WNibfyHZ0o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=AhRS2hOF; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1727354481;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vMJHYB8zqZmlZP20Oy49Gu05ZzldjET+scQ2w87XeYU=;
+	b=AhRS2hOFGes4LzCHY772cIRdCXrl1yGWzqxqnolD1fByiXlSMOjwvmjXGHpYaPBaOSLY9Q
+	V1dXfjNZhNFnbIZkv2Xt96UU/oTh8oD42ZbOcM+RmAfiW+o7qDRGrxIMf6KJOEAMnzSFpy
+	8JgsMnczyS/7SauC1rjKYXE3p//SSFY=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-374-EzOEJyusNkWvXXs0Movnwg-1; Thu, 26 Sep 2024 08:41:20 -0400
+X-MC-Unique: EzOEJyusNkWvXXs0Movnwg-1
+Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-a8d1a00e0beso116295466b.0
+        for <bpf@vger.kernel.org>; Thu, 26 Sep 2024 05:41:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727354479; x=1727959279;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vMJHYB8zqZmlZP20Oy49Gu05ZzldjET+scQ2w87XeYU=;
+        b=Lns6EmSQ2O2va02+oppJZr1HoOX7JoUF5BmgJepCw4+nIfQTKiqrPEszvfcBVVwZEw
+         uoN1G6d9b4wi+mEQidPZBKRkCHUHOT9WxHwx9IRsWO4tZ2UXeCEoUi+OfDO0JfwtyUvt
+         icQhFDroXfNEq9re30h4IflS/pJiLSyZI72y+3uQSNTbioP6wcNMDDRfrZjX9/Td4/Es
+         iH/B6TTcNVnutVErbQ5vH77txY1E0wg1oiLqrvFYUXIo+m6VKEa9appP3AUrW6M4RTTj
+         bhf3eS49uSfx8dCcNXxXBT6NzDfSP9yfIdldZrfAoLasJ08nXEyUsDEHuF/ABth6nxUM
+         OjAQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXsW5zQo96Z/B1iGgeuO/B8DbRRnuugpLxJnYZuFTaNNEn/8ZEF+fToQB6GsXJMsOdjJ1M=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwD9lJVatmAEGE4+1QC9L7gSKIZh7+AXKy8lvO414yqZ68BSsmB
+	JCsyW7738zNLDM+DlKvU+KZl1XftxhsOBkJB0vY11X0WEF6jWrSFRVYBM5CHbAOoaM50vn3kAxz
+	Tk1QwGxwlebJhSjwd9unjTdZ0hYcJGb21pQkyXx0qzuASSyJYEA==
+X-Received: by 2002:a17:907:7d9e:b0:a8a:754a:e1c1 with SMTP id a640c23a62f3a-a93b15d4060mr279766966b.8.1727354478953;
+        Thu, 26 Sep 2024 05:41:18 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFXJToynjae9rfSJhSBosAnZMFK/etnC+GhLgUSb8nc/h9oslSz0rwl720S6aFtTRC+xBUrFA==
+X-Received: by 2002:a17:907:7d9e:b0:a8a:754a:e1c1 with SMTP id a640c23a62f3a-a93b15d4060mr279763966b.8.1727354478469;
+        Thu, 26 Sep 2024 05:41:18 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a9392f34976sm340030166b.45.2024.09.26.05.41.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Sep 2024 05:41:17 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id A6C8D157FC7C; Thu, 26 Sep 2024 14:41:16 +0200 (CEST)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To: Arthur Fabre <afabre@cloudflare.com>
+Cc: Lorenzo Bianconi <lorenzo.bianconi@redhat.com>, Jesper Dangaard Brouer
+ <hawk@kernel.org>, Jakub Sitnicki <jakub@cloudflare.com>, Alexander
+ Lobakin <aleksander.lobakin@intel.com>, Lorenzo Bianconi
+ <lorenzo@kernel.org>, bpf@vger.kernel.org, netdev@vger.kernel.org,
+ ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+ kuba@kernel.org, john.fastabend@gmail.com, edumazet@google.com,
+ pabeni@redhat.com, sdf@fomichev.me, tariqt@nvidia.com, saeedm@nvidia.com,
+ anthony.l.nguyen@intel.com, przemyslaw.kitszel@intel.com,
+ intel-wired-lan@lists.osuosl.org, mst@redhat.com, jasowang@redhat.com,
+ mcoquelin.stm32@gmail.com, alexandre.torgue@foss.st.com, kernel-team
+ <kernel-team@cloudflare.com>, Yan Zhai <yan@cloudflare.com>
+Subject: Re: [RFC bpf-next 0/4] Add XDP rx hw hints support performing
+ XDP_REDIRECT
+In-Reply-To: <CAOn4ftshf3pyAst27C2haaSj4eR2n34_pcwWBc5o3zHBkwRb3g@mail.gmail.com>
+References: <cover.1726935917.git.lorenzo@kernel.org>
+ <1f53cd74-6c1e-4a1c-838b-4acc8c5e22c1@intel.com>
+ <09657be6-b5e2-4b5a-96b6-d34174aadd0a@kernel.org>
+ <Zu_gvkXe4RYjJXtq@lore-desk> <87ldzkndqk.fsf@toke.dk>
+ <CAOn4ftshf3pyAst27C2haaSj4eR2n34_pcwWBc5o3zHBkwRb3g@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date: Thu, 26 Sep 2024 14:41:16 +0200
+Message-ID: <87wmiysi37.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Add testcases to test bpf_send_signal_remote(). In these new test cases,
-the main process triggers the BPF program and the forked process
-receives the signals. The target process's signal handler receives a
-cookie from the bpf program.
+Arthur Fabre <afabre@cloudflare.com> writes:
 
-Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
----
- .../selftests/bpf/prog_tests/send_signal.c    | 133 +++++++++++++-----
- .../bpf/progs/test_send_signal_kern.c         |  35 ++++-
- 2 files changed, 130 insertions(+), 38 deletions(-)
+> On Sun, Sep 22, 2024 at 1:12=E2=80=AFPM Toke H=C3=B8iland-J=C3=B8rgensen =
+<toke@redhat.com> wrote:
+>> FYI, we also had a discussion related to this at LPC on Friday, in this
+>> session: https://lpc.events/event/18/contributions/1935/
+>>
+>> The context here was that Arthur and Jakub want to also support extended
+>> rich metadata all the way through the SKB path, and are looking at the
+>> same area used for XDP metadata to store it. So there's a need to manage
+>> both the kernel's own usage of that area, and userspace/BPF usage of it.
+>>
+>> I'll try to summarise some of the points of that discussion (all
+>> interpretations are my own, of course):
+>>
+>> - We want something that can be carried with a frame all the way from
+>>   the XDP layer, through all SKB layers and to userspace (to replace the
+>>   use of skb->mark for this purpose).
+>>
+>> - We want different applications running on the system (of which the
+>>   kernel itself if one, cf this discussion) to be able to share this
+>>   field, without having to have an out of band registry (like a Github
+>>   repository where applications can agree on which bits to use). Which
+>>   probably means that the kernel needs to be in the loop somehow to
+>>   explicitly allocate space in the metadata area and track offsets.
+>>
+>> - Having an explicit API to access this from userspace, without having
+>>   to go through BPF (i.e., a socket- or CMSG-based API) would be useful.
+>>
+>
+> Thanks for looping us in, and the great summary Toke!
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/send_signal.c b/tools/testing/selftests/bpf/prog_tests/send_signal.c
-index 6cc69900b3106..beb771347a503 100644
---- a/tools/testing/selftests/bpf/prog_tests/send_signal.c
-+++ b/tools/testing/selftests/bpf/prog_tests/send_signal.c
-@@ -8,17 +8,25 @@ static int sigusr1_received;
- 
- static void sigusr1_handler(int signum)
- {
--	sigusr1_received = 1;
-+	sigusr1_received = 8;
-+}
-+
-+static void sigusr1_siginfo_handler(int s, siginfo_t *i, void *v)
-+{
-+	sigusr1_received = i->si_value.sival_int;
- }
- 
- static void test_send_signal_common(struct perf_event_attr *attr,
--				    bool signal_thread)
-+				    bool signal_thread, bool remote)
- {
- 	struct test_send_signal_kern *skel;
-+	struct sigaction sa;
- 	int pipe_c2p[2], pipe_p2c[2];
- 	int err = -1, pmu_fd = -1;
-+	volatile int j = 0;
- 	char buf[256];
- 	pid_t pid;
-+	int old_prio;
- 
- 	if (!ASSERT_OK(pipe(pipe_c2p), "pipe_c2p"))
- 		return;
-@@ -39,11 +47,14 @@ static void test_send_signal_common(struct perf_event_attr *attr,
- 	}
- 
- 	if (pid == 0) {
--		int old_prio;
--		volatile int j = 0;
--
- 		/* install signal handler and notify parent */
--		ASSERT_NEQ(signal(SIGUSR1, sigusr1_handler), SIG_ERR, "signal");
-+		if (remote) {
-+			sa.sa_sigaction = sigusr1_siginfo_handler;
-+			sa.sa_flags = SA_RESTART | SA_SIGINFO;
-+			ASSERT_NEQ(sigaction(SIGUSR1, &sa, NULL), -1, "sigaction");
-+		} else {
-+			ASSERT_NEQ(signal(SIGUSR1, sigusr1_handler), SIG_ERR, "signal");
-+		}
- 
- 		close(pipe_c2p[0]); /* close read */
- 		close(pipe_p2c[1]); /* close write */
-@@ -52,10 +63,12 @@ static void test_send_signal_common(struct perf_event_attr *attr,
- 		 * that if an interrupt happens, the underlying task
- 		 * is this process.
- 		 */
--		errno = 0;
--		old_prio = getpriority(PRIO_PROCESS, 0);
--		ASSERT_OK(errno, "getpriority");
--		ASSERT_OK(setpriority(PRIO_PROCESS, 0, -20), "setpriority");
-+		if (!remote) {
-+			errno = 0;
-+			old_prio = getpriority(PRIO_PROCESS, 0);
-+			ASSERT_OK(errno, "getpriority");
-+			ASSERT_OK(setpriority(PRIO_PROCESS, 0, -20), "setpriority");
-+		}
- 
- 		/* notify parent signal handler is installed */
- 		ASSERT_EQ(write(pipe_c2p[1], buf, 1), 1, "pipe_write");
-@@ -66,20 +79,25 @@ static void test_send_signal_common(struct perf_event_attr *attr,
- 		/* wait a little for signal handler */
- 		for (int i = 0; i < 1000000000 && !sigusr1_received; i++) {
- 			j /= i + j + 1;
--			if (!attr)
--				/* trigger the nanosleep tracepoint program. */
--				usleep(1);
-+			if (remote)
-+				sleep(1);
-+			else
-+				if (!attr)
-+					/* trigger the nanosleep tracepoint program. */
-+					usleep(1);
- 		}
- 
--		buf[0] = sigusr1_received ? '2' : '0';
--		ASSERT_EQ(sigusr1_received, 1, "sigusr1_received");
-+		buf[0] = sigusr1_received;
-+
-+		ASSERT_EQ(sigusr1_received, 8, "sigusr1_received");
- 		ASSERT_EQ(write(pipe_c2p[1], buf, 1), 1, "pipe_write");
- 
- 		/* wait for parent notification and exit */
- 		ASSERT_EQ(read(pipe_p2c[0], buf, 1), 1, "pipe_read");
- 
- 		/* restore the old priority */
--		ASSERT_OK(setpriority(PRIO_PROCESS, 0, old_prio), "setpriority");
-+		if (!remote)
-+			ASSERT_OK(setpriority(PRIO_PROCESS, 0, old_prio), "setpriority");
- 
- 		close(pipe_c2p[1]);
- 		close(pipe_p2c[0]);
-@@ -93,6 +111,17 @@ static void test_send_signal_common(struct perf_event_attr *attr,
- 	if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
- 		goto skel_open_load_failure;
- 
-+	/* boost with a high priority so we got a higher chance
-+	 * that if an interrupt happens, the underlying task
-+	 * is this process.
-+	 */
-+	if (remote) {
-+		errno = 0;
-+		old_prio = getpriority(PRIO_PROCESS, 0);
-+		ASSERT_OK(errno, "getpriority");
-+		ASSERT_OK(setpriority(PRIO_PROCESS, 0, -20), "setpriority");
-+	}
-+
- 	if (!attr) {
- 		err = test_send_signal_kern__attach(skel);
- 		if (!ASSERT_OK(err, "skel_attach")) {
-@@ -100,8 +129,12 @@ static void test_send_signal_common(struct perf_event_attr *attr,
- 			goto destroy_skel;
- 		}
- 	} else {
--		pmu_fd = syscall(__NR_perf_event_open, attr, pid, -1 /* cpu */,
--				 -1 /* group id */, 0 /* flags */);
-+		if (!remote)
-+			pmu_fd = syscall(__NR_perf_event_open, attr, pid, -1 /* cpu */,
-+					 -1 /* group id */, 0 /* flags */);
-+		else
-+			pmu_fd = syscall(__NR_perf_event_open, attr, getpid(), -1 /* cpu */,
-+					 -1 /* group id */, 0 /* flags */);
- 		if (!ASSERT_GE(pmu_fd, 0, "perf_event_open")) {
- 			err = -1;
- 			goto destroy_skel;
-@@ -119,11 +152,30 @@ static void test_send_signal_common(struct perf_event_attr *attr,
- 	/* trigger the bpf send_signal */
- 	skel->bss->signal_thread = signal_thread;
- 	skel->bss->sig = SIGUSR1;
--	skel->bss->pid = pid;
-+	if (!remote) {
-+		skel->bss->target_pid = 0;
-+		skel->bss->pid = pid;
-+	} else {
-+		skel->bss->target_pid = pid;
-+		skel->bss->pid = getpid();
-+	}
- 
- 	/* notify child that bpf program can send_signal now */
- 	ASSERT_EQ(write(pipe_p2c[1], buf, 1), 1, "pipe_write");
- 
-+	/* For the remote test, the BPF program is triggered from this
-+	 * process but the other process/thread is signaled.
-+	 */
-+	if (remote) {
-+		if (!attr) {
-+			for (int i = 0; i < 10; i++)
-+				usleep(1);
-+		} else {
-+			for (int i = 0; i < 100000000; i++)
-+				j /= i + 1;
-+		}
-+	}
-+
- 	/* wait for result */
- 	err = read(pipe_c2p[0], buf, 1);
- 	if (!ASSERT_GE(err, 0, "reading pipe"))
-@@ -133,7 +185,7 @@ static void test_send_signal_common(struct perf_event_attr *attr,
- 		goto disable_pmu;
- 	}
- 
--	ASSERT_EQ(buf[0], '2', "incorrect result");
-+	ASSERT_EQ(buf[0], 8, "incorrect result");
- 
- 	/* notify child safe to exit */
- 	ASSERT_EQ(write(pipe_p2c[1], buf, 1), 1, "pipe_write");
-@@ -142,18 +194,21 @@ static void test_send_signal_common(struct perf_event_attr *attr,
- 	close(pmu_fd);
- destroy_skel:
- 	test_send_signal_kern__destroy(skel);
-+	/* restore the old priority */
-+	if (remote)
-+		ASSERT_OK(setpriority(PRIO_PROCESS, 0, old_prio), "setpriority");
- skel_open_load_failure:
- 	close(pipe_c2p[0]);
- 	close(pipe_p2c[1]);
- 	wait(NULL);
- }
- 
--static void test_send_signal_tracepoint(bool signal_thread)
-+static void test_send_signal_tracepoint(bool signal_thread, bool remote)
- {
--	test_send_signal_common(NULL, signal_thread);
-+	test_send_signal_common(NULL, signal_thread, remote);
- }
- 
--static void test_send_signal_perf(bool signal_thread)
-+static void test_send_signal_perf(bool signal_thread, bool remote)
- {
- 	struct perf_event_attr attr = {
- 		.freq = 1,
-@@ -162,10 +217,10 @@ static void test_send_signal_perf(bool signal_thread)
- 		.config = PERF_COUNT_SW_CPU_CLOCK,
- 	};
- 
--	test_send_signal_common(&attr, signal_thread);
-+	test_send_signal_common(&attr, signal_thread, remote);
- }
- 
--static void test_send_signal_nmi(bool signal_thread)
-+static void test_send_signal_nmi(bool signal_thread, bool remote)
- {
- 	struct perf_event_attr attr = {
- 		.sample_period = 1,
-@@ -191,21 +246,35 @@ static void test_send_signal_nmi(bool signal_thread)
- 		close(pmu_fd);
- 	}
- 
--	test_send_signal_common(&attr, signal_thread);
-+	test_send_signal_common(&attr, signal_thread, remote);
- }
- 
- void test_send_signal(void)
- {
- 	if (test__start_subtest("send_signal_tracepoint"))
--		test_send_signal_tracepoint(false);
-+		test_send_signal_tracepoint(false, false);
- 	if (test__start_subtest("send_signal_perf"))
--		test_send_signal_perf(false);
-+		test_send_signal_perf(false, false);
- 	if (test__start_subtest("send_signal_nmi"))
--		test_send_signal_nmi(false);
-+		test_send_signal_nmi(false, false);
- 	if (test__start_subtest("send_signal_tracepoint_thread"))
--		test_send_signal_tracepoint(true);
-+		test_send_signal_tracepoint(true, false);
- 	if (test__start_subtest("send_signal_perf_thread"))
--		test_send_signal_perf(true);
-+		test_send_signal_perf(true, false);
- 	if (test__start_subtest("send_signal_nmi_thread"))
--		test_send_signal_nmi(true);
-+		test_send_signal_nmi(true, false);
-+
-+	/* Signal remote thread and thread group */
-+	if (test__start_subtest("send_signal_tracepoint_remote"))
-+		test_send_signal_tracepoint(false, true);
-+	if (test__start_subtest("send_signal_perf_remote"))
-+		test_send_signal_perf(false, true);
-+	if (test__start_subtest("send_signal_nmi_remote"))
-+		test_send_signal_nmi(false, true);
-+	if (test__start_subtest("send_signal_tracepoint_thread_remote"))
-+		test_send_signal_tracepoint(true, true);
-+	if (test__start_subtest("send_signal_perf_thread_remote"))
-+		test_send_signal_perf(true, true);
-+	if (test__start_subtest("send_signal_nmi_thread_remote"))
-+		test_send_signal_nmi(true, true);
- }
-diff --git a/tools/testing/selftests/bpf/progs/test_send_signal_kern.c b/tools/testing/selftests/bpf/progs/test_send_signal_kern.c
-index 92354cd720440..4f25b60fe05b2 100644
---- a/tools/testing/selftests/bpf/progs/test_send_signal_kern.c
-+++ b/tools/testing/selftests/bpf/progs/test_send_signal_kern.c
-@@ -1,27 +1,50 @@
- // SPDX-License-Identifier: GPL-2.0
- // Copyright (c) 2019 Facebook
--#include <linux/bpf.h>
-+#include <vmlinux.h>
- #include <linux/version.h>
- #include <bpf/bpf_helpers.h>
- 
--__u32 sig = 0, pid = 0, status = 0, signal_thread = 0;
-+struct task_struct *bpf_task_from_pid(int pid) __ksym;
-+void bpf_task_release(struct task_struct *p) __ksym;
-+int bpf_send_signal_remote(struct task_struct *task, int sig, enum pid_type type, int value) __ksym;
-+
-+__u32 sig = 0, pid = 0, status = 0, signal_thread = 0, target_pid = 0;
- 
- static __always_inline int bpf_send_signal_test(void *ctx)
- {
-+	struct task_struct *target_task = NULL;
- 	int ret;
-+	int value;
- 
- 	if (status != 0 || pid == 0)
- 		return 0;
- 
- 	if ((bpf_get_current_pid_tgid() >> 32) == pid) {
--		if (signal_thread)
--			ret = bpf_send_signal_thread(sig);
--		else
--			ret = bpf_send_signal(sig);
-+		if (target_pid) {
-+			target_task = bpf_task_from_pid(target_pid);
-+			if (!target_task)
-+				return 0;
-+			value = 8;
-+		}
-+
-+		if (signal_thread) {
-+			if (target_pid)
-+				ret = bpf_send_signal_remote(target_task, sig, PIDTYPE_PID, value);
-+			else
-+				ret = bpf_send_signal_thread(sig);
-+		} else {
-+			if (target_pid)
-+				ret = bpf_send_signal_remote(target_task, sig, PIDTYPE_TGID, value);
-+			else
-+				ret = bpf_send_signal(sig);
-+		}
- 		if (ret == 0)
- 			status = 1;
- 	}
- 
-+	if (target_task)
-+		bpf_task_release(target_task);
-+
- 	return 0;
- }
- 
--- 
-2.40.1
+You're welcome :)
+
+>> The TLV format was one of the suggestions in Arthur and Jakub's talk,
+>> but AFAICT, there was not a lot of enthusiasm about this in the room
+>> (myself included), because of the parsing overhead and complexity. I
+>> believe the alternative that was seen as most favourable was a map
+>> lookup-style API, where applications can request a metadata area of
+>> arbitrary size and get an ID assigned that they can then use to set/get
+>> values in the data path.
+>>
+>> So, sketching this out, this could be realised by something like:
+>>
+>> /* could be called from BPF, or through netlink or sysfs; may fail, if
+>>  * there is no more space
+>>  */
+>> int metadata_id =3D register_packet_metadata_field(sizeof(struct my_meta=
+));
+>>
+>> The ID is just an opaque identifier that can then be passed to
+>> getter/setter functions (for both SKB and XDP), like:
+>>
+>> ret =3D bpf_set_packet_metadata_field(pkt, metadata_id,
+>>                                     &my_meta_value, sizeof(my_meta_value=
+))
+>>
+>> ret =3D bpf_get_packet_metadata_field(pkt, metadata_id,
+>>                                     &my_meta_value, sizeof(my_meta_value=
+))
+>>
+>>
+>> On the kernel side, the implementation would track registered fields in
+>> a global structure somewhere, say:
+>>
+>> struct pkt_metadata_entry {
+>>   int id;
+>>   u8 sz;
+>>   u8 offset;
+>>   u8 bit;
+>> };
+>>
+>> struct pkt_metadata_registry { /* allocated as a system-wide global */
+>>   u8 num_entries;
+>>   u8 total_size;
+>>   struct pkt_metadata_entry entries[MAX_ENTRIES];
+>> };
+>>
+>> struct xdp_rx_meta { /* at then end of xdp_frame */
+>>   u8 sz; /* set to pkt_metadata_registry->total_size on alloc */
+>>   u8 fields_set; /* bitmap of fields that have been set, see below */
+>>   u8 data[];
+>> };
+>>
+>> int register_packet_metadata_field(u8 size) {
+>>   struct pkt_metadata_registry *reg =3D get_global_registry();
+>>   struct pkt_metadata_entry *entry;
+>>
+>>   if (size + reg->total_size > MAX_METADATA_SIZE)
+>>     return -ENOSPC;
+>>
+>>   entry =3D &reg->entries[reg->num_entries++];
+>>   entry->id =3D assign_id();
+>>   entry->sz =3D size;
+>>   entry->offset =3D reg->total_size;
+>>   entry->bit =3D reg->num_entries - 1;
+>>   reg->total_size +=3D size;
+>>
+>>   return entry->id;
+>> }
+>>
+>> int bpf_set_packet_metadata_field(struct xdp_frame *frm, int id, void
+>>                                   *value, size_t sz)
+>> {
+>>   struct pkt_metadata_entry *entry =3D get_metadata_entry_by_id(id);
+>>
+>>   if (!entry)
+>>     return -ENOENT;
+>>
+>>   if (entry->sz !=3D sz)
+>>     return -EINVAL; /* user error */
+>>
+>>   if (frm->rx_meta.sz < entry->offset + sz)
+>>     return -EFAULT; /* entry allocated after xdp_frame was initialised */
+>>
+>>   memcpy(&frm->rx_meta.data + entry->offset, value, sz);
+>>   frm->rx_meta.fields_set |=3D BIT(entry->bit);
+>>
+>>   return 0;
+>> }
+>>
+>> int bpf_get_packet_metadata_field(struct xdp_frame *frm, int id, void
+>>                                   *value, size_t sz)
+>> {
+>>   struct pkt_metadata_entry *entry =3D get_metadata_entry_by_id(id);
+>>
+>>   if (!entry)
+>>     return -ENOENT;
+>>
+>>   if (entry->sz !=3D sz)
+>>     return -EINVAL;
+>>
+>> if (frm->rx_meta.sz < entry->offset + sz)
+>>     return -EFAULT; /* entry allocated after xdp_frame was initialised */
+>>
+>>   if (!(frm->rx_meta.fields_set & BIT(entry->bit)))
+>>     return -ENOENT;
+>>
+>>   memcpy(value, &frm->rx_meta.data + entry->offset, sz);
+>>
+>>   return 0;
+>> }
+>>
+>> I'm hinting at some complications here (with the EFAULT return) that
+>> needs to be resolved: there is no guarantee that a given packet will be
+>> in sync with the current status of the registered metadata, so we need
+>> explicit checks for this. If metadata entries are de-registered again
+>> this also means dealing with holes and/or reshuffling the metadata
+>> layout to reuse the released space (incidentally, this is the one place
+>> where a TLV format would have advantages).
+>>
+>> The nice thing about an API like this, though, is that it's extensible,
+>> and the kernel itself can be just another consumer of it for the
+>> metadata fields Lorenzo is adding in this series. I.e., we could just
+>> pre-define some IDs for metadata vlan, timestamp etc, and use the same
+>> functions as above from within the kernel to set and get those values;
+>> using the registry, there could even be an option to turn those off if
+>> an application wants more space for its own usage. Or, alternatively, we
+>> could keep the kernel-internal IDs hardcoded and always allocated, and
+>> just use the getter/setter functions as the BPF API for accessing them.
+>
+> That's exactly what I'm thinking of too, a simple API like:
+>
+> get(u8 key, u8 len, void *val);
+> set(u8 key, u8 len, void *val);
+>
+> With "well-known" keys like METADATA_ID_HW_HASH for hardware metadata.
+>
+> If a NIC doesn't support a certain well-known metadata, the key
+> wouldn't be set, and get() would return ENOENT.
+>
+> I think this also lets us avoid having to "register" keys or bits of
+> metadata with the kernel.
+> We'd reserve some number of keys for hardware metadata.
+
+Right, but how do you allocate space/offset for each key without an
+explicit allocation step? You'd basically have to encode the list of IDs
+in the metadata area itself, which implies a TLV format that you have to
+walk on every access? The registry idea in my example above was
+basically to avoid that...
+
+> The remaining keys would be up to users. They'd have to allocate keys
+> to services, and configure services to use those keys.
+> This is similar to the way listening on a certain port works: only one
+> service can use port 80 or 443, and that can typically beconfigured in
+> a service's config file.
+
+Right, well, port numbers *do* actually have an out of band service
+registry (IANA), which I thought was what we wanted to avoid? ;)
+
+> This side-steps the whole question of how to change the registered
+> metadata for in-flight packets, and how to deal with different NICs
+> with different hardware metadata.
+>
+> I think I've figured out a suitable encoding format, hopefully we'll
+> have an RFC soon!
+
+Alright, cool!
+
+-Toke
 
 
