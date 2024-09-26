@@ -1,99 +1,102 @@
-Return-Path: <bpf+bounces-40327-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40329-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7ADC986A38
-	for <lists+bpf@lfdr.de>; Thu, 26 Sep 2024 02:16:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 283FD986B05
+	for <lists+bpf@lfdr.de>; Thu, 26 Sep 2024 04:40:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D78A51C215C2
-	for <lists+bpf@lfdr.de>; Thu, 26 Sep 2024 00:16:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D0ED11F21D42
+	for <lists+bpf@lfdr.de>; Thu, 26 Sep 2024 02:40:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F62D16B75B;
-	Thu, 26 Sep 2024 00:16:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="j5aBZG1M"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FA60175D2C;
+	Thu, 26 Sep 2024 02:39:55 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from cstnet.cn (smtp81.cstnet.cn [159.226.251.81])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F097614B07E
-	for <bpf@vger.kernel.org>; Thu, 26 Sep 2024 00:16:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3BB41D5AAD;
+	Thu, 26 Sep 2024 02:39:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.226.251.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727309788; cv=none; b=McWpcwGtqX8yV28RhSd7lxPSAR+y/STbn//+U/V35HE1gMbs0QbC+xrNJhCrbXzfIk6FfjXJACjlvg3PrwV1lAspA3X95VnIlb42EQdh8qtsHYQ9JWYwDGllRtBhrPKVlIgt0MYavCj1Q/XHCh0cRh7XxpVkfpGEWzKIl7hcfS4=
+	t=1727318395; cv=none; b=gLrI4MBdc0qT9P5kWdqSt5zRL7/MwlJ9/ElprzofwdB3VRuMBY+wPaAX5f6U7csq7wF+8pk2ORZMjGbCdFh+rtUpuXkRBZbHO3LX8V5dkQ8sYgBwx7p8W2/iMi4exibTCSQMDgzanFMSz3EXSmihyC1kCQEKN1SNrokZ1RfYkuM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727309788; c=relaxed/simple;
-	bh=enwoDO9zWkwqHs5u+zYVt8zDdSb9cC+OKz6EZZC2mx4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GV8QEWv1FzFMC6/9Hdal3WFG64pb1K+1I76BSKCQubZdvXu+lItj8TgBvjw72WwjwxOHgBSLMutYZWNKLMyuSyIoYLLVsRYpUz94UYFo5TtNgE7ghbJN7MsvHHSBS6y1CZjFWlgPami70E6UtoHp0MRWgoONOpJRTQxaGGJlMq8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=j5aBZG1M; arc=none smtp.client-ip=91.218.175.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Thu, 26 Sep 2024 00:16:15 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1727309783;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1/w0GqQUJf9ZvapO+fo8ZvEt44vfHed8rtLvCcTVOD4=;
-	b=j5aBZG1MpDF6m5aOfSPds6ZxgTTmmX4spq3jfTDID4WNOeAsiEiRDh3Y9m/u/KddbFH3n5
-	O5FeBC8GPEe7CrtMkz/u/ncYExQA1qi4UtlJfyot1gEbvCFhkXW1ejEM8F+ju5GLglyygD
-	qhAjD1ybu4OKUAG8lkb1XadxaVZRVWY=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Roman Gushchin <roman.gushchin@linux.dev>
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
-	David Rientjes <rientjes@google.com>,
-	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm@kvack.org
-Subject: Re: [RFC/PATCH bpf-next 0/3] bpf: Add slab iterator and kfunc (v1)
-Message-ID: <ZvSnz4F7gDFa9_ue@google.com>
-References: <20240925223023.735947-1-namhyung@kernel.org>
+	s=arc-20240116; t=1727318395; c=relaxed/simple;
+	bh=UcRyjEvuYZA1EQbXIPMIZLGxbD1x8oDGMLqpKk4T8KM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=fbUH4vJsgirD1Tr1dkBTtcAmNBJYgbPrOAR8Fmf8P3uL2CbdUe8BzVL6Vrln3okEj5SNr0GKeKkN88yJYL+gwzjW7uJka0xrEaABgb7eN4khhFNO1j5AZDubBh78negQQG8J78aKq+wLVaSyFzxj9sWq5EnKATNkl5RxH5Js3SM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn; spf=pass smtp.mailfrom=iscas.ac.cn; arc=none smtp.client-ip=159.226.251.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iscas.ac.cn
+Received: from localhost (unknown [124.16.138.129])
+	by APP-03 (Coremail) with SMTP id rQCowACnu0BdyfRmJEshAQ--.9304S2;
+	Thu, 26 Sep 2024 10:39:25 +0800 (CST)
+From: Chen Ni <nichen@iscas.ac.cn>
+To: andrii@kernel.org,
+	eddyz87@gmail.com,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org
+Cc: bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Chen Ni <nichen@iscas.ac.cn>
+Subject: [PATCH bpf-next] libbpf: Remove unneeded semicolon
+Date: Thu, 26 Sep 2024 10:38:23 +0800
+Message-Id: <20240926023823.3632993-1-nichen@iscas.ac.cn>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240925223023.735947-1-namhyung@kernel.org>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:rQCowACnu0BdyfRmJEshAQ--.9304S2
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+	VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYu7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E
+	6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28Cjx
+	kF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8I
+	cVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87
+	Iv6xkF7I0E14v26r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
+	w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMc
+	vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v
+	4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc2xSY4AK67AK6r4UMxAIw28IcxkI7VAKI48JMx
+	Aqzxv26xkF7I0En4kS14v26r1q6r43MxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8C
+	rVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8Zw
+	CIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x02
+	67AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr
+	0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VU1sY
+	FtUUUUU==
+X-CM-SenderInfo: xqlfxv3q6l2u1dvotugofq/
 
-On Wed, Sep 25, 2024 at 03:30:20PM -0700, Namhyung Kim wrote:
-> Hello,
-> 
-> I'm proposing a new iterator and a kfunc for the slab memory allocator
-> to get information of each kmem_cache like in /proc/slabinfo or
-> /sys/kernel/slab.
+Remove unneeded semicolon in zip_archive_open().
 
-Hello, Namhyung!
+Signed-off-by: Chen Ni <nichen@iscas.ac.cn>
+---
+ tools/lib/bpf/zip.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I personally like the idea very much. With a growing number of kmem_caches
-/proc/slabinfo getting close to it's limit, so having a more flexible
-interface makes a lot of sense.
+diff --git a/tools/lib/bpf/zip.c b/tools/lib/bpf/zip.c
+index 3f26d629b2b4..88c376a8348d 100644
+--- a/tools/lib/bpf/zip.c
++++ b/tools/lib/bpf/zip.c
+@@ -223,7 +223,7 @@ struct zip_archive *zip_archive_open(const char *path)
+ 	if (!archive) {
+ 		munmap(data, size);
+ 		return ERR_PTR(-ENOMEM);
+-	};
++	}
+ 
+ 	archive->data = data;
+ 	archive->size = size;
+-- 
+2.25.1
 
-> Maybe I need to call it kmem_cache iter but slab
-> was short and easier to call. :)
-
-I'd personally prefer kmem_cache or slab_cache, just in case somebody later
-would propose an iterator over individual slab objects within a kmem_cache.
-
-Acked-by: Roman Gushchin <roman.gushchin@linux.dev> (mm/*)
-
-Thanks!
 
