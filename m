@@ -1,216 +1,517 @@
-Return-Path: <bpf+bounces-40353-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40354-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B707E98761A
-	for <lists+bpf@lfdr.de>; Thu, 26 Sep 2024 16:58:01 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FD6C9876C5
+	for <lists+bpf@lfdr.de>; Thu, 26 Sep 2024 17:44:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 254BE289A97
-	for <lists+bpf@lfdr.de>; Thu, 26 Sep 2024 14:57:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BE5F31F2115B
+	for <lists+bpf@lfdr.de>; Thu, 26 Sep 2024 15:44:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2207F14F9F4;
-	Thu, 26 Sep 2024 14:57:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C995154BF8;
+	Thu, 26 Sep 2024 15:44:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TwnD5Wyz"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="Rkaz+OfZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E7D214BFBF;
-	Thu, 26 Sep 2024 14:57:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6A4714831C
+	for <bpf@vger.kernel.org>; Thu, 26 Sep 2024 15:44:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727362653; cv=none; b=fit4IQG0dfDjvaIuKB2YS+62RWq6fQQkhd6SiZPT/IHuw3kjNATkOg/dLx18Po2oTO/SiOKPpXt5R/NmDTWVeXL/C28dgzXqKL/bHFyt7rW1+nWOoPuKjNrftQEPOVfBX+e5PUKYeyMefiDnmGvyAVJqwpJZJ3wHBfetEDvj0E8=
+	t=1727365461; cv=none; b=GCGOFllt0M0ymfSrxIcsPsurHCOc1PnPxksLwIv7d0Ev0+PTifAx6TxpO5qRRmFOTsID7rz6gjkB4G4b8Gu8q01GsBQg3V9B2gJvPIOa5mY4X/1Uatn5xneF8M9ZNpIXIllIojvPi5J+RqxOY800Ct/FLQoKZhdPROeU3Lf78WI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727362653; c=relaxed/simple;
-	bh=4ZGxuM2gdOgaQUTxnoqPu90dT3FeX/dRZmua+ueQAE4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IRCqkbk6hPRh4zOJDpEeOLL6yFtYNWPjHs0skBFYWpMA0ubdxlbo9x3KT0qYCVVMHcLcztbWFbK3C/EwBITFo5MZwadBPGcqcE1rGKsUGi9HJcowljEpg1T20o+jrEMRA45lVeJqDQCp4fTEfK2DDms/QxSrdzDPAYZafm5gihI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TwnD5Wyz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8FB6DC4CEC6;
-	Thu, 26 Sep 2024 14:57:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727362653;
-	bh=4ZGxuM2gdOgaQUTxnoqPu90dT3FeX/dRZmua+ueQAE4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=TwnD5WyzztQGgQwWsq5xsAdz59AeF0vhzrK73U7lZaQSF8dy0+k2uDdATt8IkJadT
-	 qNCm23fmba+4rrqJgbssKWqLDdpKlvLyOLEYFg/8H0Y56vBb8Dt5PBQID8HsqItibE
-	 gwhy5PN/rHESvBYjh2U6yy/3pLXU/+pWxtUtgSF0yLipRCvxPjhrRz9N9IRDhNWrRj
-	 MKe6mzZyvepVU9TgApGffNwYd4kyU8/aewLYl+otOv7s5/BCwPY9Rfm0r0/vfVT65z
-	 EInv2tIaS6MBan2tp09IvJzSOJ4UuhTt0kqO4Ay/Q2SyvtpcbYrtpjgc+nI3SyxFRs
-	 rnWU/HSP6ouLA==
-Date: Thu, 26 Sep 2024 16:57:28 +0200
-From: Lorenzo Bianconi <lorenzo@kernel.org>
-To: Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
-Cc: Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	Arthur Fabre <afabre@cloudflare.com>,
-	Jakub Sitnicki <jakub@cloudflare.com>,
-	Alexander Lobakin <aleksander.lobakin@intel.com>,
-	bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
-	daniel@iogearbox.net, davem@davemloft.net, kuba@kernel.org,
-	john.fastabend@gmail.com, edumazet@google.com, pabeni@redhat.com,
-	sdf@fomichev.me, tariqt@nvidia.com, saeedm@nvidia.com,
-	anthony.l.nguyen@intel.com, przemyslaw.kitszel@intel.com,
-	intel-wired-lan@lists.osuosl.org, mst@redhat.com,
-	jasowang@redhat.com, mcoquelin.stm32@gmail.com,
-	alexandre.torgue@foss.st.com,
-	kernel-team <kernel-team@cloudflare.com>,
-	Yan Zhai <yan@cloudflare.com>
-Subject: Re: [RFC bpf-next 0/4] Add XDP rx hw hints support performing
- XDP_REDIRECT
-Message-ID: <ZvV2WLUa1KB8qu3L@lore-rh-laptop>
-References: <cover.1726935917.git.lorenzo@kernel.org>
- <1f53cd74-6c1e-4a1c-838b-4acc8c5e22c1@intel.com>
- <09657be6-b5e2-4b5a-96b6-d34174aadd0a@kernel.org>
- <Zu_gvkXe4RYjJXtq@lore-desk>
- <87ldzkndqk.fsf@toke.dk>
- <ZvA6hIl6XWJ4UEJW@lore-desk>
- <874j62u1lb.fsf@toke.dk>
+	s=arc-20240116; t=1727365461; c=relaxed/simple;
+	bh=V7sco5O5qB56BGSBcT9rW9EZrtTdvjYXQMTkKn7cs2g=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Subject:From:To:Cc:
+	 References:In-Reply-To; b=XWpcH9vpSDODOVZR4rzEFwL/6YwCsGg5iHBLeu/Tal5RYrllUDSkb6woLEtT2f28HEwDhs8+5wQ6MiKpszaxlAaD8EIwwst1ttcTGk0wOYB5UjXAWRk5lOtmr/Lzbx5tzDUMaqVjeABDbg3lbwEbesP5v3YZVVNisXtoudcu2X4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=Rkaz+OfZ; arc=none smtp.client-ip=209.85.128.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-42e7b7bef42so9863225e9.3
+        for <bpf@vger.kernel.org>; Thu, 26 Sep 2024 08:44:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google09082023; t=1727365458; x=1727970258; darn=vger.kernel.org;
+        h=in-reply-to:references:cc:to:from:subject:message-id:date
+         :content-transfer-encoding:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mNlMFgplqP/YLhq+yU75GYVgkPfXUNExVYq5uXGpLuI=;
+        b=Rkaz+OfZVbQ/kfUnGhUucrBmqY+6c3NXAO+tb06a0w1wHPA87TMaIXWAumWNnabdrN
+         6WbySG8fWYEAsRwpaabb4yZuijAB1EO8IWtoG5Z+Fc9Y3pUo9sEWtL02itOFPoLgOeNM
+         UzmdQjENUtlXlq17PVdVi9zr73WxlH99QghRbAkxHv/rRvemhc9mC0zNLkjSZLgUzEak
+         EhYtPq+16P56SguMqwLla0PNy/kFRXymwna8F6AqbTP9hZxkSPl+hABhY1rbHyodaHKo
+         Kg4kIGMWyIP2m9rypsnSEP8XDgBz/NBiHQc7WuEwlc/deMpGMUJYeea0d0MkC1UJ05VH
+         TeKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727365458; x=1727970258;
+        h=in-reply-to:references:cc:to:from:subject:message-id:date
+         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=mNlMFgplqP/YLhq+yU75GYVgkPfXUNExVYq5uXGpLuI=;
+        b=EOalq4WnF4MF2kLsDuqqfiLaJJ41k7uqEw52RILxBMdjgNeHhG6VRw3EqCjCK14Hg2
+         RTLFougklXKPPONmjaEJOZhx2L3wBF/dsmrJUBohKYTWK4ANN8b2JwJkNv0Yf67VJxdm
+         KBYw7r2etyY+baTLed4Lesyc6AUP4lw7NIKbhPYAMEX2qIf0mh8eZrw43duk6wCJWiZS
+         kAOsPNKnwoneDLIm4h+oojLL/i4qpmWnoVVkdfzAQtxjRZfcC3LnyReE34ULHQkRAx0a
+         wOgKBLDBC1On9IT04oUlXGyuBM4Tkf+/b8GbOKB0eFhKy1HtaKXx13FaQ/jnOZTNNatZ
+         QrcA==
+X-Forwarded-Encrypted: i=1; AJvYcCXArfdOH05y29ai4Dt5Icn+dRHOxsseGaCy1+AtYxPlbuQfJDgm/6AK2XPrK8JpcLZuZ0k=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyC4TIaFYbOdHjDbtso2GX1ymZlFt5XegRGU+Qsd4QY4cRTwdxw
+	uSIlcWY4mzbwsgaFSCEEQOq+yxMwGpEojng3NHwFgYmUGF7P1lhfgm7D5n0XSsw=
+X-Google-Smtp-Source: AGHT+IGyE1pjonqHvE2ATI51frD2AHm4pKSiUS1utLMDSat91vi11lCEoW0NRAy2aH/BvzAGF5+pig==
+X-Received: by 2002:a5d:5d86:0:b0:37c:c5b4:8b1e with SMTP id ffacd0b85a97d-37cc5b48bddmr3456423f8f.22.1727365457760;
+        Thu, 26 Sep 2024 08:44:17 -0700 (PDT)
+Received: from localhost ([2a09:bac1:27c0:58::241:20])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-37cd572fbd3sm126802f8f.84.2024.09.26.08.44.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 26 Sep 2024 08:44:17 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="Ye/IXUGKfZM9t2/H"
-Content-Disposition: inline
-In-Reply-To: <874j62u1lb.fsf@toke.dk>
-
-
---Ye/IXUGKfZM9t2/H
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Thu, 26 Sep 2024 17:44:15 +0200
+Message-Id: <D4GBY7CHJNJ6.3O18I5W1FTPKR@bobby>
+Subject: Re: [RFC bpf-next 0/4] Add XDP rx hw hints support performing
+ XDP_REDIRECT
+From: "Arthur Fabre" <afabre@cloudflare.com>
+To: =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Cc: "Lorenzo Bianconi" <lorenzo.bianconi@redhat.com>, "Jesper Dangaard
+ Brouer" <hawk@kernel.org>, "Jakub Sitnicki" <jakub@cloudflare.com>,
+ "Alexander Lobakin" <aleksander.lobakin@intel.com>, "Lorenzo Bianconi"
+ <lorenzo@kernel.org>, <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
+ <ast@kernel.org>, <daniel@iogearbox.net>, <davem@davemloft.net>,
+ <kuba@kernel.org>, <john.fastabend@gmail.com>, <edumazet@google.com>,
+ <pabeni@redhat.com>, <sdf@fomichev.me>, <tariqt@nvidia.com>,
+ <saeedm@nvidia.com>, <anthony.l.nguyen@intel.com>,
+ <przemyslaw.kitszel@intel.com>, <intel-wired-lan@lists.osuosl.org>,
+ <mst@redhat.com>, <jasowang@redhat.com>, <mcoquelin.stm32@gmail.com>,
+ <alexandre.torgue@foss.st.com>, "kernel-team" <kernel-team@cloudflare.com>,
+ "Yan Zhai" <yan@cloudflare.com>
+X-Mailer: aerc 0.8.2
+References: <cover.1726935917.git.lorenzo@kernel.org>
+ <1f53cd74-6c1e-4a1c-838b-4acc8c5e22c1@intel.com>
+ <09657be6-b5e2-4b5a-96b6-d34174aadd0a@kernel.org>
+ <Zu_gvkXe4RYjJXtq@lore-desk> <87ldzkndqk.fsf@toke.dk>
+ <CAOn4ftshf3pyAst27C2haaSj4eR2n34_pcwWBc5o3zHBkwRb3g@mail.gmail.com>
+ <87wmiysi37.fsf@toke.dk>
+In-Reply-To: <87wmiysi37.fsf@toke.dk>
 
-> Lorenzo Bianconi <lorenzo.bianconi@redhat.com> writes:
->=20
+On Thu Sep 26, 2024 at 2:41 PM CEST, Toke H=C3=B8iland-J=C3=B8rgensen wrote=
+:
+> Arthur Fabre <afabre@cloudflare.com> writes:
+>
+> > On Sun, Sep 22, 2024 at 1:12=E2=80=AFPM Toke H=C3=B8iland-J=C3=B8rgense=
+n <toke@redhat.com> wrote:
+> >> FYI, we also had a discussion related to this at LPC on Friday, in thi=
+s
+> >> session: https://lpc.events/event/18/contributions/1935/
+> >>
+> >> The context here was that Arthur and Jakub want to also support extend=
+ed
+> >> rich metadata all the way through the SKB path, and are looking at the
+> >> same area used for XDP metadata to store it. So there's a need to mana=
+ge
+> >> both the kernel's own usage of that area, and userspace/BPF usage of i=
+t.
+> >>
+> >> I'll try to summarise some of the points of that discussion (all
+> >> interpretations are my own, of course):
+> >>
+> >> - We want something that can be carried with a frame all the way from
+> >>   the XDP layer, through all SKB layers and to userspace (to replace t=
+he
+> >>   use of skb->mark for this purpose).
+> >>
+> >> - We want different applications running on the system (of which the
+> >>   kernel itself if one, cf this discussion) to be able to share this
+> >>   field, without having to have an out of band registry (like a Github
+> >>   repository where applications can agree on which bits to use). Which
+> >>   probably means that the kernel needs to be in the loop somehow to
+> >>   explicitly allocate space in the metadata area and track offsets.
+> >>
+> >> - Having an explicit API to access this from userspace, without having
+> >>   to go through BPF (i.e., a socket- or CMSG-based API) would be usefu=
+l.
+> >>
+> >
+> > Thanks for looping us in, and the great summary Toke!
+>
+> You're welcome :)
+>
+> >> The TLV format was one of the suggestions in Arthur and Jakub's talk,
+> >> but AFAICT, there was not a lot of enthusiasm about this in the room
+> >> (myself included), because of the parsing overhead and complexity. I
+> >> believe the alternative that was seen as most favourable was a map
+> >> lookup-style API, where applications can request a metadata area of
+> >> arbitrary size and get an ID assigned that they can then use to set/ge=
+t
+> >> values in the data path.
+> >>
+> >> So, sketching this out, this could be realised by something like:
+> >>
+> >> /* could be called from BPF, or through netlink or sysfs; may fail, if
+> >>  * there is no more space
+> >>  */
+> >> int metadata_id =3D register_packet_metadata_field(sizeof(struct my_me=
+ta));
+> >>
+> >> The ID is just an opaque identifier that can then be passed to
+> >> getter/setter functions (for both SKB and XDP), like:
+> >>
+> >> ret =3D bpf_set_packet_metadata_field(pkt, metadata_id,
+> >>                                     &my_meta_value, sizeof(my_meta_val=
+ue))
+> >>
+> >> ret =3D bpf_get_packet_metadata_field(pkt, metadata_id,
+> >>                                     &my_meta_value, sizeof(my_meta_val=
+ue))
+> >>
+> >>
+> >> On the kernel side, the implementation would track registered fields i=
+n
+> >> a global structure somewhere, say:
+> >>
+> >> struct pkt_metadata_entry {
+> >>   int id;
+> >>   u8 sz;
+> >>   u8 offset;
+> >>   u8 bit;
+> >> };
+> >>
+> >> struct pkt_metadata_registry { /* allocated as a system-wide global */
+> >>   u8 num_entries;
+> >>   u8 total_size;
+> >>   struct pkt_metadata_entry entries[MAX_ENTRIES];
+> >> };
+> >>
+> >> struct xdp_rx_meta { /* at then end of xdp_frame */
+> >>   u8 sz; /* set to pkt_metadata_registry->total_size on alloc */
+> >>   u8 fields_set; /* bitmap of fields that have been set, see below */
+> >>   u8 data[];
+> >> };
+> >>
+> >> int register_packet_metadata_field(u8 size) {
+> >>   struct pkt_metadata_registry *reg =3D get_global_registry();
+> >>   struct pkt_metadata_entry *entry;
+> >>
+> >>   if (size + reg->total_size > MAX_METADATA_SIZE)
+> >>     return -ENOSPC;
+> >>
+> >>   entry =3D &reg->entries[reg->num_entries++];
+> >>   entry->id =3D assign_id();
+> >>   entry->sz =3D size;
+> >>   entry->offset =3D reg->total_size;
+> >>   entry->bit =3D reg->num_entries - 1;
+> >>   reg->total_size +=3D size;
+> >>
+> >>   return entry->id;
+> >> }
+> >>
+> >> int bpf_set_packet_metadata_field(struct xdp_frame *frm, int id, void
+> >>                                   *value, size_t sz)
+> >> {
+> >>   struct pkt_metadata_entry *entry =3D get_metadata_entry_by_id(id);
+> >>
+> >>   if (!entry)
+> >>     return -ENOENT;
+> >>
+> >>   if (entry->sz !=3D sz)
+> >>     return -EINVAL; /* user error */
+> >>
+> >>   if (frm->rx_meta.sz < entry->offset + sz)
+> >>     return -EFAULT; /* entry allocated after xdp_frame was initialised=
+ */
+> >>
+> >>   memcpy(&frm->rx_meta.data + entry->offset, value, sz);
+> >>   frm->rx_meta.fields_set |=3D BIT(entry->bit);
+> >>
+> >>   return 0;
+> >> }
+> >>
+> >> int bpf_get_packet_metadata_field(struct xdp_frame *frm, int id, void
+> >>                                   *value, size_t sz)
+> >> {
+> >>   struct pkt_metadata_entry *entry =3D get_metadata_entry_by_id(id);
+> >>
+> >>   if (!entry)
+> >>     return -ENOENT;
+> >>
+> >>   if (entry->sz !=3D sz)
+> >>     return -EINVAL;
+> >>
+> >> if (frm->rx_meta.sz < entry->offset + sz)
+> >>     return -EFAULT; /* entry allocated after xdp_frame was initialised=
+ */
+> >>
+> >>   if (!(frm->rx_meta.fields_set & BIT(entry->bit)))
+> >>     return -ENOENT;
+> >>
+> >>   memcpy(value, &frm->rx_meta.data + entry->offset, sz);
+> >>
+> >>   return 0;
+> >> }
+> >>
 > >> I'm hinting at some complications here (with the EFAULT return) that
-> >> needs to be resolved: there is no guarantee that a given packet will be
+> >> needs to be resolved: there is no guarantee that a given packet will b=
+e
 > >> in sync with the current status of the registered metadata, so we need
 > >> explicit checks for this. If metadata entries are de-registered again
 > >> this also means dealing with holes and/or reshuffling the metadata
-> >> layout to reuse the released space (incidentally, this is the one place
+> >> layout to reuse the released space (incidentally, this is the one plac=
+e
 > >> where a TLV format would have advantages).
+> >>
+> >> The nice thing about an API like this, though, is that it's extensible=
+,
+> >> and the kernel itself can be just another consumer of it for the
+> >> metadata fields Lorenzo is adding in this series. I.e., we could just
+> >> pre-define some IDs for metadata vlan, timestamp etc, and use the same
+> >> functions as above from within the kernel to set and get those values;
+> >> using the registry, there could even be an option to turn those off if
+> >> an application wants more space for its own usage. Or, alternatively, =
+we
+> >> could keep the kernel-internal IDs hardcoded and always allocated, and
+> >> just use the getter/setter functions as the BPF API for accessing them=
+.
 > >
-> > I like this approach but it seems to me more suitable for 'sw' metadata
-> > (this is main Arthur and Jakub use case iiuc) where the userspace would
-> > enable/disable these functionalities system-wide.
-> > Regarding device hw metadata (e.g. checksum offload) I can see some iss=
-ues
-> > since on a system we can have multiple NICs with different capabilities.
-> > If we consider current codebase, stmmac driver supports only rx timesta=
-mp,
-> > while mlx5 supports all of them. In a theoretical system with these two
-> > NICs, since pkt_metadata_registry is global system-wide, we will end-up
-> > with quite a lot of holes for the stmmac, right? (I am not sure if this
-> > case is relevant or not). In other words, we will end-up with a fixed
-> > struct for device rx hw metadata (like xdp_rx_meta). So I am wondering
-> > if we really need all this complexity for xdp rx hw metadata?
->=20
-> Well, the "holes" will be there anyway (in your static struct approach).
-> They would just correspond to parts of the "struct xdp_rx_meta" being
-> unset.
+> > That's exactly what I'm thinking of too, a simple API like:
+> >
+> > get(u8 key, u8 len, void *val);
+> > set(u8 key, u8 len, void *val);
+> >
+> > With "well-known" keys like METADATA_ID_HW_HASH for hardware metadata.
+> >
+> > If a NIC doesn't support a certain well-known metadata, the key
+> > wouldn't be set, and get() would return ENOENT.
+> >
+> > I think this also lets us avoid having to "register" keys or bits of
+> > metadata with the kernel.
+> > We'd reserve some number of keys for hardware metadata.
+>
+> Right, but how do you allocate space/offset for each key without an
+> explicit allocation step? You'd basically have to encode the list of IDs
+> in the metadata area itself, which implies a TLV format that you have to
+> walk on every access? The registry idea in my example above was
+> basically to avoid that...
 
-yes, what I wanted to say is I have the feeling we will end up 90% of the
-times in the same fields architecture and the cases where we can save some
-space seem very limited. Anyway, I am fine to discuss about a common
-architecture.
+I've been playing around with having a small fixed header at the front
+of the metadata itself, that lets you access values without walking them
+all.
 
->=20
-> What the "userspace can turn off the fields system wide" would
-> accomplish is to *avoid* the holes if you know that you will never need
-> them. E.g., say a system administrator know that they have no networks
-> that use (offloaded) VLANs. They could then disable the vlan offload
-> field system-wide, and thus reclaim the four bytes taken up by the
-> "vlan" member of struct xdp_rx_meta, freeing that up for use by
-> application metadata.
+Still WIP, and maybe this is too restrictive, but it lets you encode 64
+2, 4, or 8 byte KVs with a single 16 byte header:
 
-Even if I like the idea of having a common approach for this kernel feature,
-hw metadata seems to me quite a corner case with respect of 'user-defined
-metadata', since:
-- I do not think it is a common scenario to disable hw offload capabilities
-  (e.g checksum offload in production)
-- I guess it is not just enough to disable them via bpf, but the user/sysad=
-min
-  will need even to configure the NIC via ethtool (so a 2-steps process).
+#include <stdio.h>
+#include <stdint.h>
+#include <stdbool.h>
+#include <errno.h>
+#include <string.h>
 
-I think we should pay attention to not overcomplicate something that is 99%
-enabled and just need to be fast. E.g I can see an issue of putting the hw =
-rx
-metadata in metadata field since metadata grows backward and we will probab=
-ly
-end up putting them in a different cacheline with respect to xdp_frame
-(xdp_headroom is usually 256B).
+/**
+ * Very limited KV support:
+ *
+ * - Keys: 0-63. (TBD which are reserved for the kernel)
+ * - Value size: 2, 4, or 8.
+ *=20
+ * But compact, uses a fixed 16 byte header only.
+ * Reasonably fast access.
+ * Insertion and deletion need a memmove (entries have to be sorted), but i=
+t's ~100s of bytes of max.
+ *
+ * TODO - should we support more sizes? Can switch to three bits per entry.
+ * TODO - should we support a 0 size to just the presence / absence of key =
+without a value?
+ */
+bool valid_len(uint8_t len) {
+    return len =3D=3D 2 || len =3D=3D 4 || len =3D=3D 8;
+}
 
->=20
-> However, it may well be that the complexity of allowing fields to be
-> turned off is not worth the gains. At least as long as there are only
-> the couple of HW metadata fields that we have currently. Having the
-> flexibility to change our minds later would be good, though, which is
-> mostly a matter of making the API exposed to BPF and/or userspace
-> flexible enough to allow us to move things around in memory in the
-> future. Which was basically my thought with the API I sketched out in
-> the previous email. I.e., you could go:
->=20
-> ret =3D bpf_get_packet_metadata_field(pkt, METADATA_ID_HW_HASH,
->                                     &my_hash_vlaue, sizeof(u32))
+bool valid_key(uint8_t key) {
+    return key < 64;
+}
 
-yes, my plan is to add dedicated bpf kfuncs to store hw metadata in
-xdp_frame/xdp_buff
-
->=20
->=20
-> ...and the METADATA_ID_HW_HASH would be a constant defined by the
-> kernel, for which the bpf_get_packet_metadata_field() kfunc just has a
-> hardcoded lookup into struct xdp_rx_meta. And then, if we decide to move
-> the field in the future, we just change the kfunc implementation, with
-> no impact to the BPF programs calling it.
->=20
-
-maybe we can use what we Stanislav have already added (maybe removing xdp
-prefix):
-
-enum xdp_rx_metadata {
-	XDP_METADATA_KFUNC_RX_TIMESTAMP,
-	XDP_METADATA_KFUNC_RX_HASH,
-	XDP_METADATA_KFUNC_RX_VLAN_TAG
+// Fixed header at the start of the meta area.
+struct hdr {
+    // 2 bit length is stored for each key:
+    //  a high bit in the high word.
+    //  a low bit in the low word.
+    // Key itself is the bit position in each word, LSb 0.
+    // This lets us count the bits in high and low to easily
+    // calculate the sum of the preceeding KVs lengths.
+    uint64_t high;
+    uint64_t low;
 };
 
+int total_length(struct hdr h) {
+    // TODO - is this builtin allowed in kernel code?
+    return (__builtin_popcountll(h.high) << 2) + (__builtin_popcountll(h.lo=
+w) << 1);
+}
 
-> > Maybe we can start with a simple approach for xdp rx hw metadata
-> > putting the struct in xdp_frame as suggested by Jesper and covering
-> > the most common use-cases. We can then integrate this approach with
-> > Arthur/Jakub's solution without introducing any backward compatibility
-> > issue since these field are not visible to userspace.
->=20
-> Yes, this is basically the gist of my suggestion (as I hopefully managed
-> to clarify above): Expose the fields via an API that is flexible enough
-> that we can move things around should the need arise, *and* which can
-> co-exist with the user-defined application metadata.
+struct hdr and(struct hdr h, uint64_t mask) {
+    return (struct hdr){
+        h.high & mask,
+        h.low & mask,
+    };
+}
 
-ack
+int offset(struct hdr h, uint8_t key) {
+    // Calculate total length of previous keys by masking out keys after.
+    return sizeof(struct hdr) + total_length(and(h, ~(~0llu << key)));
+}
 
-Regards,
-Lorenzo
+// TODO - is headroom zero initialized?
+#define META_LEN (sizeof(struct hdr) + 128)
+uint8_t meta[META_LEN];
 
->=20
+int set(uint8_t key, uint8_t len, void *val) {
+    if (!valid_key(key)) {
+        return -EINVAL;
+    }
+    if (!valid_len(len)) {
+        return -EINVAL;
+    }
+
+    struct hdr *h =3D (struct hdr *)meta;
+
+    // Figure out if we have enough room left: total length of everything n=
+ow.
+    if (sizeof(struct hdr) + total_length(*h) + len > sizeof(meta)) {
+        return -ENOMEM;
+    }
+
+    // Offset of value of this key.
+    int off =3D offset(*h, key);
+
+    // Memmove all the kvs after us over.
+    memmove(meta+off+len, meta+off, sizeof(meta)-off);
+
+    // Set our value.
+    memcpy(meta+off, val, len);
+
+    // Store our length in header.
+    uint64_t encode_len =3D 0;
+    switch (len) {
+    case 2:
+        encode_len =3D 1;
+        break;
+    case 4:
+        encode_len =3D 2;
+        break;
+    case 8:
+        encode_len =3D 3;
+        break;
+    }
+    h->high |=3D (encode_len >> 1) << key;
+    h->low |=3D (encode_len & 1) << key;
+
+    return 0;
+}
+
+// Callers need to know the format ahead of time,
+// so they'll know the length too.
+// We just check the buffer is big enough for the value.
+int get(uint8_t key, uint8_t len, void *val) {
+    if (!valid_key(key)) {
+        return -EINVAL;
+    }
+    if (!valid_len(len)) {
+        return -EINVAL;
+    }
+
+    struct hdr h =3D *(struct hdr *)meta;
+
+    // Check key is set.
+    if (!((h.high & (1ull << key)) || (h.low & (1ull << key)))) {
+        return -ENOENT;
+    }
+
+    // Offset of value of this key.
+    int off =3D offset(h, key);
+
+    // Figure out our length.
+    int real_len =3D total_length(and(h, (1ull << key)));
+
+    if (real_len > len) {
+        return -EFBIG;
+    }
+
+    memcpy(val, meta+off, real_len);
+    return 0;
+}
+
+int del(uint8_t key) {
+    if (!valid_key(key)) {
+        return -EINVAL;
+    }
+
+    struct hdr *h =3D (struct hdr *)meta;
+
+    // Check key is set.
+    if (!((h->high & (1ull << key)) || (h->low & (1ull << key)))) {
+        return -ENOENT;
+    }
+
+    // Offset and length of value of this key.
+    int off =3D offset(*h, key);
+    int len =3D total_length(and(*h, (1ull << key)));
+
+    // Memmove all the kvs after us over.
+    memmove(meta+off, meta+off+len, sizeof(meta)-off-len);
+
+    // Clear our length in header.
+    h->high &=3D ~(1ull << key);
+    h->low &=3D ~(1ull << key);
+    return 0;
+}
+
+>
+> > The remaining keys would be up to users. They'd have to allocate keys
+> > to services, and configure services to use those keys.
+> > This is similar to the way listening on a certain port works: only one
+> > service can use port 80 or 443, and that can typically beconfigured in
+> > a service's config file.
+>
+> Right, well, port numbers *do* actually have an out of band service
+> registry (IANA), which I thought was what we wanted to avoid? ;)
+
+Depends how you think about it ;)
+
+I think we should avoid a global registry. But having a registry per
+deployment / server doesn't seem awful. Services that want to use a
+field would have a config file setting to set which index it corresponds
+to.
+Admins would just have to pick a free one on their system, and set it in
+the config file of the service.
+
+This is similar to what we do for non-IANA registered ports internally.
+For example each service needs a port on an internal interface to expose
+metrics, and we just track which ports are taken in our config
+management.
+
+Dynamically registering fields means you have to share the returned ID
+with whoever is interested, which sounds tricky.
+If an XDP program sets a field like packet_id, every tracing
+program that looks at it, and userspace service, would need to know what
+the ID of that field is.
+Is there a way to easily share that ID with all of them?
+
+>
+> > This side-steps the whole question of how to change the registered
+> > metadata for in-flight packets, and how to deal with different NICs
+> > with different hardware metadata.
+> >
+> > I think I've figured out a suitable encoding format, hopefully we'll
+> > have an RFC soon!
+>
+> Alright, cool!
+>
 > -Toke
->=20
 
---Ye/IXUGKfZM9t2/H
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCZvV2VgAKCRA6cBh0uS2t
-rG2DAP4vr17UaschZGwn9hvl6sZvGyw84ELpQebLqdV2Y1HGDAD/U0tzBa1q3Dsi
-eBtfJQ/0whO20lu0vKIwenL5eQYxCwM=
-=NPbX
------END PGP SIGNATURE-----
-
---Ye/IXUGKfZM9t2/H--
 
