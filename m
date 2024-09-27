@@ -1,42 +1,42 @@
-Return-Path: <bpf+bounces-40414-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40415-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F466988688
-	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2024 15:48:40 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8709D98868B
+	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2024 15:48:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 865041F24421
-	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2024 13:48:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 49D56284080
+	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2024 13:48:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0ADC51BFE01;
-	Fri, 27 Sep 2024 13:48:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 242EA1BFE0F;
+	Fri, 27 Sep 2024 13:48:21 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 491E91BF7F4;
-	Fri, 27 Sep 2024 13:48:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6F5B189F5C;
+	Fri, 27 Sep 2024 13:48:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727444896; cv=none; b=uWReLxCBETzSGfWw/R6ovRzdKSjt6cxWWvWR/QVRa0VXbU0NVU+B9NlBj4qBHR6Kw5Yc2tM3ADMjIWPBYxRatHlulqo83BSHoKUsehIljUwMgJMj+ggU0GKwocSLNcZBi9qE6kc+KnJ2JVXs9c2T+Xwr9DY1rRKnpFZxijwV3T4=
+	t=1727444900; cv=none; b=Z0tkg0HEUgB3Og9A/L9Eyj3NrG1c7ZFRb9zMJIQAj0C1/uD9tO2A7yU8A2HmiKvAbzQjzL5YvxBHQgw56x0lAOumqv4vBzn08ZIXxpYe/mQQ/STZspEdoNsMX5i1koIMfBLAQBrt+X027SzVUtSxtA/325P8+5WtDP8oUKEVFEU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727444896; c=relaxed/simple;
-	bh=3XS7CLKtVGqvlaO053kCqrUefPxw1aTwb/HExk9EREc=;
+	s=arc-20240116; t=1727444900; c=relaxed/simple;
+	bh=h/TN4It2tSZZZCVG4L5HrRpBnHVWcPsA9NitlW9EgIc=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Qt3Ni6O8EboEXFWhol7Tvwn3HG/Fz2B0dKnvN9XGpYodHt64s4EQQn1yUS6WD2y+nf3GJUuWKqJF+ex9S24QbGxw5fSqN/P4FInhEQ5r3l6OqxTtZpWybLY6JR0yS4ifHKNkmC6r78HoeUYgN1pRkXswISPC+BGaewXCq3m0//Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+	 MIME-Version:Content-Type; b=C4xmzyK5YqcXH6cOsdpDgKpqvApbQGZHf36H74Qd5KB3miXs5CKf2Vmd2IoCkBoUGyRu6XBPLU3QOsKH/2ZLYrvSiYSvlNfunevaFCfwE0z6LB9blvbwXUiaNYUwFdXZx/mwDlMt6mjxVw8H66m5bgQaoDCG16NhfpB7HTy3fFM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
 Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4XFWxp44Qnz4f3jks;
-	Fri, 27 Sep 2024 21:47:58 +0800 (CST)
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4XFWxj444kz4f3jry;
+	Fri, 27 Sep 2024 21:47:53 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id D84EF1A08FC;
+	by mail.maildlp.com (Postfix) with ESMTP id E109C1A092F;
 	Fri, 27 Sep 2024 21:48:09 +0800 (CST)
 Received: from ultra.huawei.com (unknown [10.90.53.71])
-	by APP4 (Coremail) with SMTP id gCh0CgCHvMiYt_Zm3kQCCg--.422S4;
+	by APP4 (Coremail) with SMTP id gCh0CgCHvMiYt_Zm3kQCCg--.422S5;
 	Fri, 27 Sep 2024 21:48:09 +0800 (CST)
 From: Pu Lehui <pulehui@huaweicloud.com>
 To: stable@vger.kernel.org,
@@ -45,9 +45,9 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Sasha Levin <sashal@kernel.org>,
 	=?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
 	Pu Lehui <pulehui@huawei.com>
-Subject: [PATCH 5.10 v2 2/3] Revert "bpf: Eliminate rlimit-based memory accounting for devmap maps"
-Date: Fri, 27 Sep 2024 13:51:17 +0000
-Message-Id: <20240927135118.1432057-3-pulehui@huaweicloud.com>
+Subject: [PATCH 5.10 v2 3/3] bpf: Fix DEVMAP_HASH overflow check on 32-bit arches
+Date: Fri, 27 Sep 2024 13:51:18 +0000
+Message-Id: <20240927135118.1432057-4-pulehui@huaweicloud.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240927135118.1432057-1-pulehui@huaweicloud.com>
 References: <20240927135118.1432057-1-pulehui@huaweicloud.com>
@@ -57,13 +57,14 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgCHvMiYt_Zm3kQCCg--.422S4
-X-Coremail-Antispam: 1UD129KBjvJXoWxJr1ftFWfCFW7Wr48ZFy7ZFb_yoW8KrWrpF
-	W8Ja45Jr40qrZrXrW5Ka1v9w4Ygw40gr1jkrZxA34Fkr10grn0qFyIgF1aqF909rWxCF1f
-	uF12qayv9348ArJanT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9Kb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUXw
+X-CM-TRANSID:gCh0CgCHvMiYt_Zm3kQCCg--.422S5
+X-Coremail-Antispam: 1UD129KBjvJXoWxJrWrAF1kJry3Xr15trW8WFg_yoW5JF1UpF
+	WDC3Wjgrs7Jr12q34qv3W0grWjkr18ZF1avFWqy340kr9Igwn3X340qFy3WF98Zr109F1f
+	Kr429Fy093y5uaDanT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9Kb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUWw
 	A2048vs2IY020Ec7CjxVAFwI0_Gr0_Xr1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
 	w2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
 	W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
@@ -74,78 +75,61 @@ X-Coremail-Antispam: 1UD129KBjvJXoWxJr1ftFWfCFW7Wr48ZFy7ZFb_yoW8KrWrpF
 	67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI
 	8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAv
 	wI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14
-	v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU2a9aDUUUU
+	v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU20PfDUUUU
 X-CM-SenderInfo: psxovxtxl6x35dzhxuhorxvhhfrp/
 
-From: Pu Lehui <pulehui@huawei.com>
+From: Toke Høiland-Jørgensen <toke@redhat.com>
 
-This reverts commit 70294d8bc31f3b7789e5e32f757aa9344556d964.
+[ Upstream commit 281d464a34f540de166cee74b723e97ac2515ec3 ]
 
-Commit 70294d8bc31f ("bpf: Eliminate rlimit-based memory accounting for
-devmap maps") is part of the v5.11+ base mechanism of memcg-based memory
-accounting[0]. The commit cannot be independently backported to the 5.10
-stable branch, otherwise the related memory when creating devmap will be
-unrestricted. Let's roll back to rlimit-based memory accounting mode for
-devmap.
+The devmap code allocates a number hash buckets equal to the next power
+of two of the max_entries value provided when creating the map. When
+rounding up to the next power of two, the 32-bit variable storing the
+number of buckets can overflow, and the code checks for overflow by
+checking if the truncated 32-bit value is equal to 0. However, on 32-bit
+arches the rounding up itself can overflow mid-way through, because it
+ends up doing a left-shift of 32 bits on an unsigned long value. If the
+size of an unsigned long is four bytes, this is undefined behaviour, so
+there is no guarantee that we'll end up with a nice and tidy 0-value at
+the end.
 
-Link: https://lore.kernel.org/bpf/20201201215900.3569844-1-guro@fb.com [0]
+Syzbot managed to turn this into a crash on arm32 by creating a
+DEVMAP_HASH with max_entries > 0x80000000 and then trying to update it.
+Fix this by moving the overflow check to before the rounding up
+operation.
+
+Fixes: 6f9d451ab1a3 ("xdp: Add devmap_hash map type for looking up devices by hashed index")
+Link: https://lore.kernel.org/r/000000000000ed666a0611af6818@google.com
+Reported-and-tested-by: syzbot+8cd36f6b65f3cafd400a@syzkaller.appspotmail.com
+Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+Message-ID: <20240307120340.99577-2-toke@redhat.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Pu Lehui <pulehui@huawei.com>
 ---
- kernel/bpf/devmap.c | 18 ++++++++++++++++--
- 1 file changed, 16 insertions(+), 2 deletions(-)
+ kernel/bpf/devmap.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
 diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
-index ca2cade2871b..01149821ded9 100644
+index 01149821ded9..7eb1282edc8e 100644
 --- a/kernel/bpf/devmap.c
 +++ b/kernel/bpf/devmap.c
-@@ -109,6 +109,8 @@ static inline struct hlist_head *dev_map_index_hash(struct bpf_dtab *dtab,
- static int dev_map_init_map(struct bpf_dtab *dtab, union bpf_attr *attr)
- {
- 	u32 valsize = attr->value_size;
-+	u64 cost = 0;
-+	int err;
+@@ -131,10 +131,13 @@ static int dev_map_init_map(struct bpf_dtab *dtab, union bpf_attr *attr)
+ 	bpf_map_init_from_attr(&dtab->map, attr);
  
- 	/* check sanity of attributes. 2 value sizes supported:
- 	 * 4 bytes: ifindex
-@@ -133,13 +135,21 @@ static int dev_map_init_map(struct bpf_dtab *dtab, union bpf_attr *attr)
- 
- 		if (!dtab->n_buckets) /* Overflow check */
- 			return -EINVAL;
-+		cost += (u64) sizeof(struct hlist_head) * dtab->n_buckets;
-+	} else {
-+		cost += (u64) dtab->map.max_entries * sizeof(struct bpf_dtab_netdev *);
- 	}
- 
-+	/* if map size is larger than memlock limit, reject it */
-+	err = bpf_map_charge_init(&dtab->map.memory, cost);
-+	if (err)
-+		return -EINVAL;
-+
  	if (attr->map_type == BPF_MAP_TYPE_DEVMAP_HASH) {
- 		dtab->dev_index_head = dev_map_create_hash(dtab->n_buckets,
- 							   dtab->map.numa_node);
- 		if (!dtab->dev_index_head)
--			return -ENOMEM;
-+			goto free_charge;
- 
- 		spin_lock_init(&dtab->index_lock);
- 	} else {
-@@ -147,10 +157,14 @@ static int dev_map_init_map(struct bpf_dtab *dtab, union bpf_attr *attr)
- 						      sizeof(struct bpf_dtab_netdev *),
- 						      dtab->map.numa_node);
- 		if (!dtab->netdev_map)
--			return -ENOMEM;
-+			goto free_charge;
- 	}
- 
- 	return 0;
+-		dtab->n_buckets = roundup_pow_of_two(dtab->map.max_entries);
+-
+-		if (!dtab->n_buckets) /* Overflow check */
++		/* hash table size must be power of 2; roundup_pow_of_two() can
++		 * overflow into UB on 32-bit arches, so check that first
++		 */
++		if (dtab->map.max_entries > 1UL << 31)
+ 			return -EINVAL;
 +
-+free_charge:
-+	bpf_map_charge_finish(&dtab->map.memory);
-+	return -ENOMEM;
- }
- 
- static struct bpf_map *dev_map_alloc(union bpf_attr *attr)
++		dtab->n_buckets = roundup_pow_of_two(dtab->map.max_entries);
+ 		cost += (u64) sizeof(struct hlist_head) * dtab->n_buckets;
+ 	} else {
+ 		cost += (u64) dtab->map.max_entries * sizeof(struct bpf_dtab_netdev *);
 -- 
 2.34.1
 
