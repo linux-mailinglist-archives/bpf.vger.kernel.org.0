@@ -1,135 +1,110 @@
-Return-Path: <bpf+bounces-40443-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40444-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0170C988C0A
-	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2024 23:52:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7324B988C32
+	for <lists+bpf@lfdr.de>; Sat, 28 Sep 2024 00:00:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB7302839CA
-	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2024 21:52:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F6FE281EE6
+	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2024 22:00:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B16F818B470;
-	Fri, 27 Sep 2024 21:52:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B95E1A4B70;
+	Fri, 27 Sep 2024 22:00:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TzncUpP9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SWVG/epI"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F25CA14BF8B;
-	Fri, 27 Sep 2024 21:52:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B1C816F909;
+	Fri, 27 Sep 2024 22:00:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727473958; cv=none; b=mdEkXYv/NQVmAaU6Rbo1QHxp/Spn4j6pCAB3Kf41tdcTsZD09Ym/ptJZ0e+IC19xsGGB3/AQzJsfXoVnidGPDCb9t1it0ljGFIwA3H1McrvG1jdHXam9hQJixs040mhrX10uuBdv6EyOjYb36ie8fGmvqc/uCqIdLxu/TgRwVFI=
+	t=1727474431; cv=none; b=N2WTJl0HgBt8I6ZIsnsqzbvDyLRuSB60h7HiRXTsNXB8d7wQHbBgSuyk8nCOY9ffJppSr23hxZURxS433GOWxIr2DdI1taAHQrOdPGIC5+//f8+gnyXtY0eUvB9EaR4QJHsjWg/HzBPw9+I4FuPjNpMyoZ3niE4a1/Pe1mDVjYk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727473958; c=relaxed/simple;
-	bh=KgNkij5ARbIS8TSicp5/QE/xvWbM3MIuVXdtO5tuAsw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ner8AKeMlD3pWl+yvYfgYlED4Yh3MsYmIMgLDYGeIlJvklQQ4NRJtnp8qtnU0RpfG2H2c3WHIEphpgBJA1NamZGd6ot2j2QrgwE6XVxSp4BDQAeKY6CKeA1dGQr9WXvLJnSoCp0D9DS9FRcjPzMQI9Hat1A+/TG0ovCkCIT0s4g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TzncUpP9; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-206bd1c6ccdso25352725ad.3;
-        Fri, 27 Sep 2024 14:52:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727473956; x=1728078756; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wt5HI5c1/abCfhsYESVTQWnehbXIiI7JPMSwXe+tPLU=;
-        b=TzncUpP9/j604iWDzyFeSZA+SjiFuNhaHfWEwadqXSc9rQqgwqZjAE4H8tXxLuiwYX
-         c/RwvDPJf1sf2RNqkqNRghuso5kPIO4DohCMis1Ebdk6Qfjx1QVSTAp6xUWyQrt7OfJK
-         Brr/BEGlHvirZwjcSfpsBu9Tba0qpbUL6dZxdUiq4r3AQK1L8eHr35WeTiS1328/2Jav
-         e3RmtsJbntcZ1xlrpQUlUk3+NBu+lnvqyRkT1zw0NUQAEnPe6Lv+MmmXIKEXwsrzMIi6
-         hvzKIxdh9S+aQOgNJFOGeQNUZp4g7h914uCayb6+fkIG8OW8Of39FmwT0YWzjZhGl7Vh
-         1lzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727473956; x=1728078756;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wt5HI5c1/abCfhsYESVTQWnehbXIiI7JPMSwXe+tPLU=;
-        b=mU5KAytDBh+hU8Jq8Xwa+qjuS1kY1Z2nVd9hiAwTSAWLzb5aPxdGO6acq1HUVc+1y7
-         nZgSM0gINeL/h8ahWF/L9kHdIkUHPfWjNOmMedZNeCyzJX0AuI3ilXOrfwso8ckZj4g2
-         wwLevqF1acxbUXsSbGssrbAjLZ/dgP3NLqF3D85BHkGgMfPGtcX9g6s6TrWzEDFVZA6E
-         jeRN0jeKITbtYKyam65oGPaI0gjaC09WbvgqJNLUYYQmtkOoe8+QjNbjblG6xuih9r5K
-         UpA2ahcf8W4rkBS7xE/fXwGCZMhEZOBElsby3tnlId6YMO2Ka6H45Z6N6Gx3cjQCOh6X
-         0zZQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVblf197pN8zaCaIONtdmYTwgBm5lRL8BYnxjkHQ3r8p0s9dKfNBd6okAoM+M3mM1vi37M=@vger.kernel.org
-X-Gm-Message-State: AOJu0YweN0DxNdzNVDxtKM8JKjH7xU30gWDyHP+GrQ7dEITXgs5EuvKK
-	vZ5VU+ftDfPvBfigtB75GPznsRyO8P5lsGyemETUN734k/FLPkbM/gIp5hQuwIQEKUtT9uI0MoL
-	CYgZyZlSc7+D4tbYRvncER9LxSk0=
-X-Google-Smtp-Source: AGHT+IEGB26D0EiMCRLY/fsm2tCjL7SvuHTeefrLnB5vZcJdE9GKA+Vm6tlX5baLsevU0nURHRj6JjkHBRBFe13cVqo=
-X-Received: by 2002:a17:90b:83:b0:2cf:eaec:d74c with SMTP id
- 98e67ed59e1d1-2e0b8a1b905mr5288738a91.16.1727473956392; Fri, 27 Sep 2024
- 14:52:36 -0700 (PDT)
+	s=arc-20240116; t=1727474431; c=relaxed/simple;
+	bh=6bjl9SUvdODKRD66JzPVq0qtGWL9+duEpGhXj3N3DOc=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=Li2q04Y7uBmOOWNVx4Vgfoa4oY+Nj2WfRsbAPUqA4TJYa82Gi77ddVdkkgQ95Tf052YlrYRbSDXnQVcBVqdQP8+G4OSoQ5uuJcIDq1vjpAWVUPE04wDKqrXkRvIvteH226A+O4UFDXkKflfrtX9t4lVXqnTcVf7VJ3bfYIrBZXw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SWVG/epI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E622C4CEC4;
+	Fri, 27 Sep 2024 22:00:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1727474430;
+	bh=6bjl9SUvdODKRD66JzPVq0qtGWL9+duEpGhXj3N3DOc=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=SWVG/epIz3M8qZTj51UmupmsMUpJV/ZbJxyTaTAc32EJd408AObG5SN9UTZI+PIl/
+	 qlZ9DCMONICS4Uw4/bukTJvN9moLG/1tAReA62DjIpie21sJrbIDDk9H9Zi8jfL1KJ
+	 nTooUfDB/vHU8hNF6GRZJUMXj9a1CxJTkJmAX7m1lSHBSQlSHO/6VGAWuu1exACgQA
+	 gmaTeXEM8juio/fnBHH3aKGR5plNg7Y6XsLSVU0ufGW6v14Jr0ujQL/9vCMhglFw46
+	 jvGB8cdcXo8gdUiKVmsTBXJC3UPq5DhQ4NTGfs8/k0cs0JOj4H0t4PaCoKhFjweIkt
+	 bxQEKWLk7AvTQ==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 7124D3809A80;
+	Fri, 27 Sep 2024 22:00:34 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240916091921.2929615-1-eddyz87@gmail.com>
-In-Reply-To: <20240916091921.2929615-1-eddyz87@gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 27 Sep 2024 14:52:24 -0700
-Message-ID: <CAEf4BzY5qmrRjNHESAjNm9DnMdfqmaHWYFXZZUC=L0pLJMLuwA@mail.gmail.com>
-Subject: Re: [PATCH dwarves v1] pahole: generate "bpf_fastcall" decl tags for
- eligible kfuncs
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: dwarves@vger.kernel.org, arnaldo.melo@gmail.com, bpf@vger.kernel.org, 
-	kernel-team@fb.com, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	yonghong.song@linux.dev, martin.lau@linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v6 0/8] libbpf,
+ selftests/bpf: Support cross-endian usage
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <172747443327.2094989.6626660527565870189.git-patchwork-notify@kernel.org>
+Date: Fri, 27 Sep 2024 22:00:33 +0000
+References: <cover.1726475448.git.tony.ambardar@gmail.com>
+In-Reply-To: <cover.1726475448.git.tony.ambardar@gmail.com>
+To: Tony Ambardar <tony.ambardar@gmail.com>
+Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, andrii@kernel.org,
+ eddyz87@gmail.com, ast@kernel.org, daniel@iogearbox.net,
+ martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
+ john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
+ haoluo@google.com, jolsa@kernel.org, mykolal@fb.com, shuah@kernel.org,
+ iii@linux.ibm.com, qmo@kernel.org
 
-On Mon, Sep 16, 2024 at 2:19=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.com=
-> wrote:
->
-> For kfuncs marked with KF_FASTCALL flag generate the following pair of
-> decl tags:
->
->     $ bpftool btf dump file vmlinux
->     ...
->     [A] FUNC 'bpf_rdonly_cast' type_id=3D...
->     ...
->     [B] DECL_TAG 'bpf_kfunc' type_id=3DA component_idx=3D-1
->     [C] DECL_TAG 'bpf_fastcall' type_id=3DA component_idx=3D-1
->
-> So that bpftool could find 'bpf_fastcall' decl tag and generate
-> appropriate C declarations for such kfuncs, e.g.:
->
->     #ifndef __VMLINUX_H__
->     #define __VMLINUX_H__
->     ...
->     #define __bpf_fastcall __attribute__((bpf_fastcall))
->     ...
->     __bpf_fastcall extern void *bpf_rdonly_cast(...) ...;
->
-> For additional information about 'bpf_fastcall' attribute,
-> see the following commit in the LLVM source tree:
->
-> 64e464349bfc ("[BPF] introduce __attribute__((bpf_fastcall))")
->
-> And the following Linux kernel commit:
->
-> 52839f31cece ("Merge branch 'no_caller_saved_registers-attribute-for-help=
-er-calls'")
->
-> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
-> ---
->  btf_encoder.c | 59 +++++++++++++++++++++++++++++++++++++--------------
->  1 file changed, 43 insertions(+), 16 deletions(-)
->
+Hello:
 
-LGTM,
+This series was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
+On Mon, 16 Sep 2024 01:37:39 -0700 you wrote:
+> Hello all,
+> 
+> This patch series targets a long-standing BPF usability issue - the lack
+> of general cross-compilation support - by enabling cross-endian usage of
+> libbpf and bpftool, as well as supporting cross-endian build targets for
+> selftests/bpf.
+> 
+> [...]
 
-Arnaldo, can you please take a look and if everything seems sane apply
-it to pahole master, so it's easier to use it locally? Thanks!
+Here is the summary with links:
+  - [bpf-next,v6,1/8] libbpf: Improve log message formatting
+    https://git.kernel.org/bpf/bpf-next/c/86eb7eb4fbfc
+  - [bpf-next,v6,2/8] libbpf: Fix header comment typos for BTF.ext
+    https://git.kernel.org/bpf/bpf-next/c/4977b35bfd4b
+  - [bpf-next,v6,3/8] libbpf: Fix output .symtab byte-order during linking
+    https://git.kernel.org/bpf/bpf-next/c/a91c9b9697ff
+  - [bpf-next,v6,4/8] libbpf: Support BTF.ext loading and output in either endianness
+    https://git.kernel.org/bpf/bpf-next/c/14a76da84b18
+  - [bpf-next,v6,5/8] libbpf: Support opening bpf objects of either endianness
+    https://git.kernel.org/bpf/bpf-next/c/f9292d6570d5
+  - [bpf-next,v6,6/8] libbpf: Support linking bpf objects of either endianness
+    https://git.kernel.org/bpf/bpf-next/c/ab4184fd1bb8
+  - [bpf-next,v6,7/8] libbpf: Support creating light skeleton of either endianness
+    https://git.kernel.org/bpf/bpf-next/c/a1cb9abcfec4
+  - [bpf-next,v6,8/8] selftests/bpf: Support cross-endian building
+    https://git.kernel.org/bpf/bpf-next/c/4fd5a501e1d0
 
-[...]
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
