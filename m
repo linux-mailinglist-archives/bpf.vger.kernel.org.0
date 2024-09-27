@@ -1,91 +1,122 @@
-Return-Path: <bpf+bounces-40390-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40391-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B192988013
-	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2024 10:11:12 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30C0C988040
+	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2024 10:24:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E7B5C1F26AFB
-	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2024 08:11:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E51F2283C70
+	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2024 08:24:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FA3E1898EA;
-	Fri, 27 Sep 2024 08:11:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A09551898ED;
+	Fri, 27 Sep 2024 08:23:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="u2YBqcP1"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="GxlUJFf4"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08E3E189524;
-	Fri, 27 Sep 2024 08:11:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEE7918BC17;
+	Fri, 27 Sep 2024 08:23:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.99
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727424664; cv=none; b=Nfmd6Rzys4sF2GPUazLeTw1adU5hMFxP+mD6lfgPZVW8Qxy9x8IxdqNYoLVqZ4IyY4D00nxE3x3UvJTtrXv/zaU477Id56sQb6okUEc9WMmqWE4qUKq2dOL3Ho5Vmq08uR3D4jAxoE0AqdXS+JIeyRQI72TjNqRSgbAVZ64sJFQ=
+	t=1727425409; cv=none; b=RYquKEfK+kTBOuscBsJnJT2HW8flW/KI+pl/VbJklyMOgqDNezMhoGBfvoUYVvurThtrReKkIbbBryEKGCpPq2OkcsBL7fpbhHg7rKvhD0gcSUbMZSF6LNe6JosQ8Xt8YngCKZx2DWzXVNF9wfGd3+7vTszzHLHInlDvEQY7vAE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727424664; c=relaxed/simple;
-	bh=0wMiZ2baa2l/kVUX/vRu3bE6uPUvrLbMQvu1NbVnOaI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ib0/rkhIKw9U1YuVR4p+ZCOSLtmbCQLSwv/dQhZi2gCZiE2QmNxZW3yXX39Ju+vvXZmYHnvI2NuMzP2u1PGyJal6FGhapg/cJKzROZ40ihnPsQiIgQd+54dqZKZ7l/mnXA/xrZUZEM72SZEnm4DTQDMaxn49iVxpXgbG4PMh8p4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=u2YBqcP1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1847BC4CEC7;
-	Fri, 27 Sep 2024 08:11:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1727424663;
-	bh=0wMiZ2baa2l/kVUX/vRu3bE6uPUvrLbMQvu1NbVnOaI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=u2YBqcP1D9+vchrrwaDQo+mWfcFZ8oe4u5vjON0+Svm5rUTBcYlq7RuXUsO6V7sl7
-	 jjwISBRTZ3DtWhEWPoEuqci5QBD+6f1myz2sHf0ovyNzStg036p/3CEtUs9cD98Vl7
-	 OjeaksT2scv+hz+xUaIRvfMBheNC9IHlDqr7BaVI=
-Date: Fri, 27 Sep 2024 10:11:01 +0200
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Pu Lehui <pulehui@huaweicloud.com>
-Cc: stable@vger.kernel.org, bpf@vger.kernel.org,
-	Sasha Levin <sashal@kernel.org>,
-	Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-	Roman Gushchin <guro@fb.com>, Pu Lehui <pulehui@huawei.com>
-Subject: Re: [PATCH 5.10] bpf: Fix mismatch memory accounting for devmap maps
-Message-ID: <2024092752-dormitory-getting-94b2@gregkh>
-References: <20240920103950.3931497-1-pulehui@huaweicloud.com>
- <2024092737-flick-commodity-20d5@gregkh>
- <a27e36c6-bf71-40d8-85de-4797d764046c@huaweicloud.com>
+	s=arc-20240116; t=1727425409; c=relaxed/simple;
+	bh=1huYT4EgmCex0ujaHKFX4m5ujtUQmNyO4sHj4DnU+UY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=byfZTszuqklIO/RDjST2naPkHhG1vSNkzT/ovziz4+GfWWNi6ZwpOjDE37yshOMmeaOgh4P4quXy7c1cBPRy6xztSgRbeyy9X/8pAIEO0EYugjopRrITu2eqJ9jlGEWfRMIfESlJh16c7wa0jwEYs2JHRPktdWCikEPk9+yQBLs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=GxlUJFf4; arc=none smtp.client-ip=115.124.30.99
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1727425403; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=WNqbE4DH8C3sckUEs77lvuuGox/FHMYfPKfFVASWlaQ=;
+	b=GxlUJFf4eBaS73t3uDu8kwfIhY70JCCTrMJp1QBYO2+OzLatZ7BlRgfLx1BYkdE/CgrAGDXtTs+D1930T99Q24CqTCr+D5EqsBiGqY2wNDScXcY7wiDQq3LHMSKhDdwS27DQhRiKm9sDzfPBdgJzQNG/AC140gSDZs46PW3Nh18=
+Received: from localhost(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0WFpys77_1727425394)
+          by smtp.aliyun-inc.com;
+          Fri, 27 Sep 2024 16:23:22 +0800
+From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To: andrii@kernel.org
+Cc: eddyz87@gmail.com,
+	mykolal@fb.com,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	shuah@kernel.org,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+	Abaci Robot <abaci@linux.alibaba.com>
+Subject: [PATCH -next] selftests/bpf: Use ARRAY_SIZE for array length
+Date: Fri, 27 Sep 2024 16:23:13 +0800
+Message-Id: <20240927082313.116139-1-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 2.32.0.3.g01195cf9f
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a27e36c6-bf71-40d8-85de-4797d764046c@huaweicloud.com>
+Content-Transfer-Encoding: 8bit
 
-On Fri, Sep 27, 2024 at 04:03:36PM +0800, Pu Lehui wrote:
-> 
-> 
-> On 2024/9/27 15:56, Greg Kroah-Hartman wrote:
-> > On Fri, Sep 20, 2024 at 10:39:50AM +0000, Pu Lehui wrote:
-> > > From: Pu Lehui <pulehui@huawei.com>
-> > > 
-> > > Commit 70294d8bc31f ("bpf: Eliminate rlimit-based memory accounting for
-> > > devmap maps") relies on the v5.11+ basic mechanism of memcg-based memory
-> > > accounting [0]. The commit cannot be independently backported to the
-> > > 5.10 stable branch, otherwise the related memory when creating devmap
-> > > will be unrestricted and the associated bpf selftest map_ptr will fail.
-> > > Let's roll back to rlimit-based memory accounting mode for devmap and
-> > > re-adapt the commit 225da02acdc9 ("bpf: Fix DEVMAP_HASH overflow check
-> > > on 32-bit arches") to the 5.10 stable branch.
-> > > 
-> > > Link: https://lore.kernel.org/bpf/20201201215900.3569844-1-guro@fb.com [0]
-> > > Fixes: 225da02acdc9 ("bpf: Fix DEVMAP_HASH overflow check on 32-bit arches")
-> > > Fixes: 70294d8bc31f ("bpf: Eliminate rlimit-based memory accounting for devmap maps")
-> > 
-> > Should we just revert these changes instead?
-> 
-> Yes, Greg. My patch is to revert these two commits and re-adapt commit
-> 225da02acdc9 ("bpf: Fix DEVMAP_HASH overflow check on 32-bit arches").
-> 
-> Shall we need to split this patch into multiple patches?
+Use of macro ARRAY_SIZE to calculate array size minimizes
+the redundant code and improves code reusability.
 
-Yes, please do so.
+./tools/testing/selftests/bpf/prog_tests/core_reloc_raw.c:98:34-35: WARNING: Use ARRAY_SIZE.
+./tools/testing/selftests/bpf/prog_tests/core_reloc_raw.c:93:29-30: WARNING: Use ARRAY_SIZE.
+./tools/testing/selftests/bpf/prog_tests/core_reloc_raw.c:101:34-35: WARNING: Use ARRAY_SIZE.
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=11167
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ tools/testing/selftests/bpf/prog_tests/core_reloc_raw.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/tools/testing/selftests/bpf/prog_tests/core_reloc_raw.c b/tools/testing/selftests/bpf/prog_tests/core_reloc_raw.c
+index a18d3680fb16..5e576c6cecca 100644
+--- a/tools/testing/selftests/bpf/prog_tests/core_reloc_raw.c
++++ b/tools/testing/selftests/bpf/prog_tests/core_reloc_raw.c
+@@ -7,7 +7,7 @@
+ #include <sys/syscall.h>
+ #include <bpf/libbpf.h>
+ #include <bpf/btf.h>
+-
++#include "kselftest.h"
+ #include "test_progs.h"
+ #include "test_btf.h"
+ #include "bpf/libbpf_internal.h"
+@@ -90,15 +90,15 @@ static void test_bad_local_id(void)
+ 	attr.prog_type = BPF_TRACE_RAW_TP;
+ 	attr.license = (__u64)"GPL";
+ 	attr.insns = (__u64)&insns;
+-	attr.insn_cnt = sizeof(insns) / sizeof(*insns);
++	attr.insn_cnt = ARRAY_SIZE(insns);
+ 	attr.log_buf = (__u64)log;
+ 	attr.log_size = sizeof(log);
+ 	attr.log_level = log_level;
+ 	attr.func_info = (__u64)funcs;
+-	attr.func_info_cnt = sizeof(funcs) / sizeof(*funcs);
++	attr.func_info_cnt = ARRAY_SIZE(funcs);
+ 	attr.func_info_rec_size = sizeof(*funcs);
+ 	attr.core_relos = (__u64)relos;
+-	attr.core_relo_cnt = sizeof(relos) / sizeof(*relos);
++	attr.core_relo_cnt = ARRAY_SIZE(relos);
+ 	attr.core_relo_rec_size = sizeof(*relos);
+ 	prog_fd = sys_bpf_prog_load(&attr, sizeof(attr), 1);
+ 	saved_errno = errno;
+-- 
+2.32.0.3.g01195cf9f
+
 
