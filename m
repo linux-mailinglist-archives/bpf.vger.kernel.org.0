@@ -1,110 +1,178 @@
-Return-Path: <bpf+bounces-40444-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40445-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7324B988C32
-	for <lists+bpf@lfdr.de>; Sat, 28 Sep 2024 00:00:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96C6C988C7E
+	for <lists+bpf@lfdr.de>; Sat, 28 Sep 2024 00:32:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F6FE281EE6
-	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2024 22:00:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A7F9F28187C
+	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2024 22:32:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B95E1A4B70;
-	Fri, 27 Sep 2024 22:00:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E6E918C031;
+	Fri, 27 Sep 2024 22:32:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SWVG/epI"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R+Gkub+w"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B1C816F909;
-	Fri, 27 Sep 2024 22:00:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0C2A1849D9
+	for <bpf@vger.kernel.org>; Fri, 27 Sep 2024 22:32:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727474431; cv=none; b=N2WTJl0HgBt8I6ZIsnsqzbvDyLRuSB60h7HiRXTsNXB8d7wQHbBgSuyk8nCOY9ffJppSr23hxZURxS433GOWxIr2DdI1taAHQrOdPGIC5+//f8+gnyXtY0eUvB9EaR4QJHsjWg/HzBPw9+I4FuPjNpMyoZ3niE4a1/Pe1mDVjYk=
+	t=1727476327; cv=none; b=rmp0brzJBHsHSYIZwE+YUzNhH4xJVq2zJsxRwkyH0JDCUtNRAbesWAFqJE+ahSHgpTyRI7QAoEaIvsLoVpjdr537KZuIL1O8XnRp1jm26GlcEcGiDgmKsCKEj1ZrYtbtsC/xUoPxDbZtncwahyxDSCCD/9W2uR2lhNN1yU7eeHU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727474431; c=relaxed/simple;
-	bh=6bjl9SUvdODKRD66JzPVq0qtGWL9+duEpGhXj3N3DOc=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=Li2q04Y7uBmOOWNVx4Vgfoa4oY+Nj2WfRsbAPUqA4TJYa82Gi77ddVdkkgQ95Tf052YlrYRbSDXnQVcBVqdQP8+G4OSoQ5uuJcIDq1vjpAWVUPE04wDKqrXkRvIvteH226A+O4UFDXkKflfrtX9t4lVXqnTcVf7VJ3bfYIrBZXw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SWVG/epI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E622C4CEC4;
-	Fri, 27 Sep 2024 22:00:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727474430;
-	bh=6bjl9SUvdODKRD66JzPVq0qtGWL9+duEpGhXj3N3DOc=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=SWVG/epIz3M8qZTj51UmupmsMUpJV/ZbJxyTaTAc32EJd408AObG5SN9UTZI+PIl/
-	 qlZ9DCMONICS4Uw4/bukTJvN9moLG/1tAReA62DjIpie21sJrbIDDk9H9Zi8jfL1KJ
-	 nTooUfDB/vHU8hNF6GRZJUMXj9a1CxJTkJmAX7m1lSHBSQlSHO/6VGAWuu1exACgQA
-	 gmaTeXEM8juio/fnBHH3aKGR5plNg7Y6XsLSVU0ufGW6v14Jr0ujQL/9vCMhglFw46
-	 jvGB8cdcXo8gdUiKVmsTBXJC3UPq5DhQ4NTGfs8/k0cs0JOj4H0t4PaCoKhFjweIkt
-	 bxQEKWLk7AvTQ==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 7124D3809A80;
-	Fri, 27 Sep 2024 22:00:34 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1727476327; c=relaxed/simple;
+	bh=u6/UW3wtFTIrDFrN8ELGc5+xxPV2j/H/MghPiSAYiTw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=R03eVYmoKHVk59gL1Jh5mDMUzLu+uXBzOzzVR6WN3c1Ow83XhhsLlgLE904NAQLMgqtLwaBO1g/X4+Diy1nq5LFETUqA1dDQNxuKMQgvfPbkZJzYhHSZQeYXfuCyZo5aWK+cwln5KiwrZLpk+gkF7Du7bUyEuwKwo91x0VLItnU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=R+Gkub+w; arc=none smtp.client-ip=209.85.216.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2d8abac30ddso2420688a91.0
+        for <bpf@vger.kernel.org>; Fri, 27 Sep 2024 15:32:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1727476325; x=1728081125; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DYpLEqgPwwIm6nPN9j1jBr05I2Zo6+sVjP3LFKShRfM=;
+        b=R+Gkub+w6Y/EiLQu7AT63rMEfYSC0H1yikU9GIf561olb1+pA7SOzWuI4Y5AG38cxC
+         TRSXeOnZExDX4b+983phaTD3xmj1B6n/Ph9v5zQBSBW4/vU4TarUMyAqZGvh0hFTFaeH
+         5QVf/2MfPBI7D/4IHEdIGkPZnG5EbN117hEvWBe3xXTPqsxLnIVGmNzGgeHhZ/ojIFUH
+         TrcEh/eNdjLIoRqVQidtgNn7PBxN+uXhvVMCaKf1MAVSPjMT2ghS11LQjnjK1ZkxdIpO
+         TsuX6EvHL6zvptIGs3GNei0AKYqdIk72z9IKIvA0thbmUtPc+zB9xqjdF2hQ5sHSqZgN
+         EqXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727476325; x=1728081125;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DYpLEqgPwwIm6nPN9j1jBr05I2Zo6+sVjP3LFKShRfM=;
+        b=JemKWD4sChRWgxNFTCeI7iZ9Zet5RkKQbxsxsycgOS3MLZSV8g3wPgS84lfjh8CMFa
+         igfOVx714dRDt3RPA6ztIM3trMF1cpwPqu6FeD+SReaCiMazUtmh+5SqUHM/hbgGBkrU
+         wNCF2zL/dQaC9lrpGOQ+TDQtkePVDrib/08YHd75NIPHgw2El7HkaF0996w32Q1U4eXF
+         FKcSS6qLDwhhFoQU5M7u1vNe75MUEHT34Qcwx02ILndpYlJGndL7UhLlhpJFhiBupCAJ
+         zXLwqfp+DeHauPFVFhYDBYUXb5wFe4/ffwHQ2JaLKclzJwZuGv9atlB01guI4JRl7tQD
+         Zo/Q==
+X-Gm-Message-State: AOJu0YzzzORmtZp108GJQg6TL1UK4arZXZ10MGA8c+yglrNerXWd7WPM
+	PHd6FaC5UzdRRI+zF3t7AmB9/4nQonLeF4IzbQhGDK6evawZO5c/65wmlnigUlY9bvh1uwtX8Po
+	nUFwTn77UDIGFK9x37YRPWwwNnEQ=
+X-Google-Smtp-Source: AGHT+IGQxTc9EEnZvDawhaFlOqyujoG5KbQ4tZczJm0hK5u92Ay0Nqto2A6M+4HOanYiWpGZ+tJ/FqpmOV+QNJIKLkg=
+X-Received: by 2002:a17:90a:f016:b0:2c9:9f50:3f9d with SMTP id
+ 98e67ed59e1d1-2e0b89a239bmr5608722a91.5.1727476324869; Fri, 27 Sep 2024
+ 15:32:04 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v6 0/8] libbpf,
- selftests/bpf: Support cross-endian usage
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <172747443327.2094989.6626660527565870189.git-patchwork-notify@kernel.org>
-Date: Fri, 27 Sep 2024 22:00:33 +0000
-References: <cover.1726475448.git.tony.ambardar@gmail.com>
-In-Reply-To: <cover.1726475448.git.tony.ambardar@gmail.com>
-To: Tony Ambardar <tony.ambardar@gmail.com>
-Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, andrii@kernel.org,
- eddyz87@gmail.com, ast@kernel.org, daniel@iogearbox.net,
- martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
- john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
- haoluo@google.com, jolsa@kernel.org, mykolal@fb.com, shuah@kernel.org,
- iii@linux.ibm.com, qmo@kernel.org
+References: <20240916091712.2929279-1-eddyz87@gmail.com> <20240916091712.2929279-2-eddyz87@gmail.com>
+In-Reply-To: <20240916091712.2929279-2-eddyz87@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Fri, 27 Sep 2024 15:31:52 -0700
+Message-ID: <CAEf4BzZBoBgdSa-AU-0kJUXsv0yHt54BUOeBb4bBsNiSx-u7tQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 1/4] bpf: allow specifying bpf_fastcall
+ attribute for BPF helpers
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
+	daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com, 
+	yonghong.song@linux.dev, arnaldo.melo@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello:
+On Mon, Sep 16, 2024 at 2:18=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.com=
+> wrote:
+>
+> Allow a new optional 'Attributes' section to be specified for helper
+> functions description, e.g.:
+>
+>  * u32 bpf_get_smp_processor_id(void)
+>  *              ...
+>  *      Return
+>  *              ...
+>  *      Attributes
+>  *              __bpf_fastcall
+>  *
+>
+> Generated header for the example above:
+>
+>   #ifndef __bpf_fastcall
+>   #if __has_attribute(__bpf_fastcall)
+>   #define __bpf_fastcall __attribute__((bpf_fastcall))
+>   #else
+>   #define __bpf_fastcall
+>   #endif
+>   #endif
+>   ...
+>   __bpf_fastcall
 
-This series was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
+I found it a bit annoying that bpf_helper_defs.h uses
 
-On Mon, 16 Sep 2024 01:37:39 -0700 you wrote:
-> Hello all,
-> 
-> This patch series targets a long-standing BPF usability issue - the lack
-> of general cross-compilation support - by enabling cross-endian usage of
-> libbpf and bpftool, as well as supporting cross-endian build targets for
-> selftests/bpf.
-> 
-> [...]
+__bpf_fastcall
+static __u32 ....
 
-Here is the summary with links:
-  - [bpf-next,v6,1/8] libbpf: Improve log message formatting
-    https://git.kernel.org/bpf/bpf-next/c/86eb7eb4fbfc
-  - [bpf-next,v6,2/8] libbpf: Fix header comment typos for BTF.ext
-    https://git.kernel.org/bpf/bpf-next/c/4977b35bfd4b
-  - [bpf-next,v6,3/8] libbpf: Fix output .symtab byte-order during linking
-    https://git.kernel.org/bpf/bpf-next/c/a91c9b9697ff
-  - [bpf-next,v6,4/8] libbpf: Support BTF.ext loading and output in either endianness
-    https://git.kernel.org/bpf/bpf-next/c/14a76da84b18
-  - [bpf-next,v6,5/8] libbpf: Support opening bpf objects of either endianness
-    https://git.kernel.org/bpf/bpf-next/c/f9292d6570d5
-  - [bpf-next,v6,6/8] libbpf: Support linking bpf objects of either endianness
-    https://git.kernel.org/bpf/bpf-next/c/ab4184fd1bb8
-  - [bpf-next,v6,7/8] libbpf: Support creating light skeleton of either endianness
-    https://git.kernel.org/bpf/bpf-next/c/a1cb9abcfec4
-  - [bpf-next,v6,8/8] selftests/bpf: Support cross-endian building
-    https://git.kernel.org/bpf/bpf-next/c/4fd5a501e1d0
+format, while in vmlinux we have single-line (and yeah, note that I
+put extern in front)
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+extern __bpf_fastcall __u32 ...
 
 
+So I slightly modified bpf_doc.py with my weak Python-fu:
+
+diff --git a/scripts/bpf_doc.py b/scripts/bpf_doc.py
+index db50c8d7d112..f98933a5d38c 100755
+--- a/scripts/bpf_doc.py
++++ b/scripts/bpf_doc.py
+@@ -871,9 +871,10 @@ class PrinterHelpers(Printer):
+                 print(' *{}{}'.format(' \t' if line else '', line))
+
+         print(' */')
++        print('static ', end=3D'')
+         if helper.attrs:
+-            print(" ".join(helper.attrs))
+-        print('static %s %s(* const %s)(' % (self.map_type(proto['ret_type=
+']),
++            print('%s ' % (" ".join(helper.attrs)), end=3D'')
++        print('%s %s(* const %s)(' % (self.map_type(proto['ret_type']),
+                                       proto['ret_star'],
+proto['name']), end=3D'')
+         comma =3D ''
+         for i, a in enumerate(proto['args']):
+
+But now I have:
+
+static __bpf_fastcall __u32 (* const bpf_get_smp_processor_id)(void) =3D
+(void *) 8;
+
+and
+
+extern __bpf_fastcall void *bpf_rdonly_cast(const void *obj__ign, u32
+btf_id__k) __weak __ksym;
+
+and that makes me a touch happier. I hope you don't mind.
+
+>   static __u32 (* const bpf_get_smp_processor_id)(void) =3D (void *) 8;
+>
+> The following rules apply:
+> - when present, section must follow 'Return' section;
+> - attribute names are specified on the line following 'Attribute'
+>   keyword;
+> - attribute names are separated by spaces;
+> - section ends with an "empty" line (" *\n").
+>
+> Valid attribute names are recorded in the ATTRS map.
+> ATTRS maps shortcut attribute name to correct C syntax.
+>
+> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+> ---
+>  scripts/bpf_doc.py | 50 ++++++++++++++++++++++++++++++++++++++++++++--
+>  1 file changed, 48 insertions(+), 2 deletions(-)
+>
+
+Looks good to me, and I'm not sure there is anything too controversial
+here, so I went ahead and applied to bpf-next, thanks.
 
