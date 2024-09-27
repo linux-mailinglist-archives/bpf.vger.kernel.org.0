@@ -1,194 +1,160 @@
-Return-Path: <bpf+bounces-40424-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40425-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E37798883D
-	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2024 17:24:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3035998898E
+	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2024 19:12:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B13F6B2244C
-	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2024 15:24:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E8AB6281A1F
+	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2024 17:12:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A3371C172C;
-	Fri, 27 Sep 2024 15:24:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15C041C175D;
+	Fri, 27 Sep 2024 17:12:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="e/NU6Onw"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oY2VXxVU"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD2A613AD1C
-	for <bpf@vger.kernel.org>; Fri, 27 Sep 2024 15:24:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CF1D524B0;
+	Fri, 27 Sep 2024 17:12:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727450664; cv=none; b=Uu/ng0N7tFKBot9tYcrM6pZtWn1sAAHPLuE1aiO/uBdwFBlVevxGY00STyg+l5N3tXXe4iQ0BTD5ZsK/VHajmYeLAfKb+X1t/J/Nidy95zMIHiHLoNZJr1kIG3xcprK0ugOxCHuCcaPJFavFLl1YZciF2HloNPd97HJ4uSkYW2I=
+	t=1727457148; cv=none; b=s9NaBXOa/fzBr71QCJ4Gl2it2BUM3sdzM9qPRIYOMY3sN83q2pl56a6qn79SSIEUkNtjtf++X65nsWvL2rHUV3HwVFGD9ac0dS+oMg8ZdveJ8JGofF2jLLAljO6855mfalYH00I7fSvLik/njtX97Zxw2ptMxHSU8p+S4lMxFy0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727450664; c=relaxed/simple;
-	bh=ZkweLvyag97akDboOxMZOkNg64bbiHQY6aByshyepaA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=b8IlGGLAdc6Pu3OEB06l44R/YWzocBYkx0Kd9351KiiVMJGTGik0tlaF+VGTxSUf/W+04gNtcrfiWF6OXKDx9EgrMMuUfzFi/ok0VBTkIIQvgFfphMhdMmJtS7zLXJf6EWrHEB+dFvTGNJdyM548vmfxBmiXaPc6ajDjI6GiaSU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=e/NU6Onw; arc=none smtp.client-ip=91.218.175.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <ec48e1b2-ff1d-499b-8ada-ba76a4bae9bb@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1727450660;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0GN1WCbWnVujnXCJ+8hJO2y/H0/A20AHKmN4AIhZJ4Q=;
-	b=e/NU6Onw1Q2VCjP298F5P3PnfX07NhK1+CkpD+j1NgmgrUR5jva4/7TwIqCA8z+yIUXx8M
-	ZTIrczRx8JHNDC8X+tkC6MhJKQO695RyO9GrUEnskaDUHQq3cjkrmzTEdNef+7FumFUiB5
-	oTASnL4BHKpUUpEVWIMExPV3QJLMGVE=
-Date: Fri, 27 Sep 2024 08:24:12 -0700
+	s=arc-20240116; t=1727457148; c=relaxed/simple;
+	bh=/aepn4yxs2GacHcxTHHnxPFuOl6EiGqs7P8YQBP1mx4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Gj9eAHVq4SjoUjyl6op7bvPIJZrcM1mEpUQbEpfIjK6TtYp5wUUXnVIpOaC7ZArF95T5nCO+WPJJBOJEroJSM80jU2TU9WyFJ+2gusLwcRVMs9XXWf8U5baUyDBqlNtT5JAteBDkgEBCj2xQaztwVdWCqCq8revKJOua80WnLNI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oY2VXxVU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8807C4CEC4;
+	Fri, 27 Sep 2024 17:12:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1727457147;
+	bh=/aepn4yxs2GacHcxTHHnxPFuOl6EiGqs7P8YQBP1mx4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=oY2VXxVU+quI2gL/DOUPraf3nWFhrGOrvHRjkN5sCL/ieWgt22COKnTzY3JjtAXjy
+	 qAjKdpNoHQl3/DkZfLjeymp81F0cYRURumPt1xzl8fwQid8d4rwdi13rKgQMFx11Ao
+	 uPZIfWkON3PEE00qAlpPoAcRmga9vBYcPCgWXrqMLUeBXyWC48RCaxnU4dUEpec0y9
+	 wenwpKyUNfxl3gOsog8iYPvbrPcuJpT++51TdCWPdqbGLhtjcwy+1y/RCxfmgCNq1I
+	 kpuS/yoRfMJvI+mwUkV8PyhYwkgK3E9BEExElRfvDEz+K3qQ9vkkSOhMOnbRoSsal9
+	 /5Xx6ICCcxeGA==
+Date: Fri, 27 Sep 2024 10:12:24 -0700
+From: Namhyung Kim <namhyung@kernel.org>
+To: Tengda Wu <wutengda@huaweicloud.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, song@kernel.org,
+	Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+	Adrian Hunter <adrian.hunter@intel.com>, kan.liang@linux.intel.com,
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH -next 1/2] perf stat: Increase perf_attr_map entries
+Message-ID: <ZvbnePGVmbWF0fAF@google.com>
+References: <20240925135523.367957-1-wutengda@huaweicloud.com>
+ <20240925135523.367957-2-wutengda@huaweicloud.com>
+ <ZvTgHKl4eZvpyVml@google.com>
+ <41d1d728-dbf4-4b0d-9855-19cd06e2a594@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v3 4/5] bpf, x86: Add jit support for private
- stack
-To: Leon Hwang <hffilwlqm@gmail.com>, bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
- Martin KaFai Lau <martin.lau@kernel.org>
-References: <20240926234506.1769256-1-yonghong.song@linux.dev>
- <20240926234526.1770736-1-yonghong.song@linux.dev>
- <44ddec9e-cc74-4686-9228-52e4db301e8a@gmail.com>
-Content-Language: en-GB
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <44ddec9e-cc74-4686-9228-52e4db301e8a@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <41d1d728-dbf4-4b0d-9855-19cd06e2a594@huaweicloud.com>
 
+On Fri, Sep 27, 2024 at 10:35:54AM +0800, Tengda Wu wrote:
+> 
+> 
+> On 2024/9/26 12:16, Namhyung Kim wrote:
+> > On Wed, Sep 25, 2024 at 01:55:22PM +0000, Tengda Wu wrote:
+> >> bperf restricts the size of perf_attr_map's entries to 16, which
+> >> cannot hold all events in many scenarios. A typical example is
+> >> when the user specifies `-a -ddd` ([0]). And in other cases such as
+> >> top-down analysis, which often requires a set of more than 16 PMUs
+> >> to be collected simultaneously.
+> >>
+> >> Fix this by increase perf_attr_map entries to 100, and an event
+> >> number check has been introduced when bperf__load() to ensure that
+> >> users receive a more friendly prompt when the event limit is reached.
+> >>
+> >>   [0] https://lore.kernel.org/all/20230104064402.1551516-3-namhyung@kernel.org/
+> > 
+> > Apparently this patch was never applied.  I don't know how much you need
+> > but having too many events at the same time won't be very useful because
+> > multiplexing could reduce the accuracy.
+> > 
+> 
+> Could you please explain why patch [0] was not merged at that time? I couldn't
+> find this information from the previous emails.
 
-On 9/26/24 9:58 PM, Leon Hwang wrote:
-> Hi Yonghong,
->
-> A brief review about the usage of this_cpu_off on non-SMP systems.
->
-> On 27/9/24 07:45, Yonghong Song wrote:
->> Add jit support for private stack. For a particular subtree, e.g.,
->>    subtree_root <== stack depth 120
->>     subprog1    <== stack depth 80
->>      subprog2   <== stack depth 40
->>     subprog3    <== stack depth 160
->>
->> Let us say that private_stack_ptr is the memory address allocated for
->> private stack. The frame pointer for each above is calculated like below:
->>    subtree_root  <== subtree_root_fp = private_stack_ptr + 120
->>     subprog1     <== subtree_subprog1_fp = subtree_root_fp + 80
->>      subprog2    <== subtree_subprog2_fp = subtree_subprog1_fp + 40
->>     subprog3     <== subtree_subprog1_fp = subtree_root_fp + 160
->>
->> For any function call to helper/kfunc, push/pop prog frame pointer
->> is needed in order to preserve frame pointer value.
->>
->> To deal with exception handling, push/pop frame pointer is also used
->> surrounding call to subsequent subprog. For example,
->>    subtree_root
->>     subprog1
->>       ...
->>       insn: call bpf_throw
->>       ...
->>
->> After jit, we will have
->>    subtree_root
->>     insn: push r9
->>     subprog1
->>       ...
->>       insn: push r9
->>       insn: call bpf_throw
->>       insn: pop r9
->>       ...
->>     insn: pop r9
->>
->>    exception_handler
->>       pop r9
->>       ...
->> where r9 represents the fp for each subprog.
->>
->> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
->> ---
->>   arch/x86/net/bpf_jit_comp.c | 87 ++++++++++++++++++++++++++++++++++---
->>   1 file changed, 81 insertions(+), 6 deletions(-)
->>
->> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
->> index 06b080b61aa5..c264822c926b 100644
->> --- a/arch/x86/net/bpf_jit_comp.c
->> +++ b/arch/x86/net/bpf_jit_comp.c
->> @@ -325,6 +325,22 @@ struct jit_context {
->>   /* Number of bytes that will be skipped on tailcall */
->>   #define X86_TAIL_CALL_OFFSET	(12 + ENDBR_INSN_SIZE)
->>   
->> +static void push_r9(u8 **pprog)
->> +{
->> +	u8 *prog = *pprog;
->> +
->> +	EMIT2(0x41, 0x51);   /* push r9 */
->> +	*pprog = prog;
->> +}
->> +
->> +static void pop_r9(u8 **pprog)
->> +{
->> +	u8 *prog = *pprog;
->> +
->> +	EMIT2(0x41, 0x59);   /* pop r9 */
->> +	*pprog = prog;
->> +}
->> +
->>   static void push_r12(u8 **pprog)
->>   {
->>   	u8 *prog = *pprog;
->> @@ -491,7 +507,7 @@ static void emit_prologue_tail_call(u8 **pprog, bool is_subprog)
->>    */
->>   static void emit_prologue(u8 **pprog, u32 stack_depth, bool ebpf_from_cbpf,
->>   			  bool tail_call_reachable, bool is_subprog,
->> -			  bool is_exception_cb)
->> +			  bool is_exception_cb, enum bpf_pstack_state  pstack)
->>   {
->>   	u8 *prog = *pprog;
->>   
->> @@ -518,6 +534,8 @@ static void emit_prologue(u8 **pprog, u32 stack_depth, bool ebpf_from_cbpf,
->>   		 * first restore those callee-saved regs from stack, before
->>   		 * reusing the stack frame.
->>   		 */
->> +		if (pstack)
->> +			pop_r9(&prog);
->>   		pop_callee_regs(&prog, all_callee_regs_used);
->>   		pop_r12(&prog);
->>   		/* Reset the stack frame. */
->> @@ -1404,6 +1422,22 @@ static void emit_shiftx(u8 **pprog, u32 dst_reg, u8 src_reg, bool is64, u8 op)
->>   	*pprog = prog;
->>   }
->>   
->> +static void emit_private_frame_ptr(u8 **pprog, void *private_frame_ptr)
->> +{
->> +	u8 *prog = *pprog;
->> +
->> +	/* movabs r9, private_frame_ptr */
->> +	emit_mov_imm64(&prog, X86_REG_R9, (long) private_frame_ptr >> 32,
->> +		       (u32) (long) private_frame_ptr);
->> +
->> +	/* add <r9>, gs:[<off>] */
->> +	EMIT2(0x65, 0x4c);
->> +	EMIT3(0x03, 0x0c, 0x25);
->> +	EMIT((u32)(unsigned long)&this_cpu_off, 4);
-> It should check CONFIG_SMP here like this commit:
-> 1e9e0b85255e ("bpf: handle CONFIG_SMP=n configuration in x86 BPF JIT").
->
-> So, it seems better to reuse the code snippet of the commit.
+I guess it's just fell through the crack. :)
 
-Thanks for pointing this out. I will make the change after waiting some
-other reviews.
+> 
+> In my scenario, we collect more than 40+ events to support necessary metric
+> calculations, which multiplexing is inevitable. Although multiplexing may
+> reduce accuracy, for the purpose of supporting metric calculations, these
+> accuracy losses can be acceptable. Perf also has the same issue with multiplexing.
+> Removing the event limit for bperf can provide users with additional options.
+> 
+> In addition to accuracy, we also care about overhead. I compared the overhead
+> of bperf and perf by testing ./lat_ctx in lmbench [1], and found that the
+> overhead of bperf stat is about 4% less than perf. This is why we choose to
+> use bperf in some extreme scenarios.
 
->
+Ok, thanks for explanation.  I think it's ok to increase the limit.
+
+Thanks,
+Namhyung
+
+> 
+>   [1] https://github.com/intel/lmbench
+> 
 > Thanks,
-> Leon
->
+> Tengda
+> 
+> > 
+> >>
+> >> Fixes: 7fac83aaf2ee ("perf stat: Introduce 'bperf' to share hardware PMCs with BPF")
+> >> Signed-off-by: Tengda Wu <wutengda@huaweicloud.com>
+> >> ---
+> >>  tools/perf/util/bpf_counter.c | 8 +++++++-
+> >>  1 file changed, 7 insertions(+), 1 deletion(-)
+> >>
+> >> diff --git a/tools/perf/util/bpf_counter.c b/tools/perf/util/bpf_counter.c
+> >> index 7a8af60e0f51..3346129c20cf 100644
+> >> --- a/tools/perf/util/bpf_counter.c
+> >> +++ b/tools/perf/util/bpf_counter.c
+> >> @@ -28,7 +28,7 @@
+> >>  #include "bpf_skel/bperf_leader.skel.h"
+> >>  #include "bpf_skel/bperf_follower.skel.h"
+> >>  
+> >> -#define ATTR_MAP_SIZE 16
+> >> +#define ATTR_MAP_SIZE 100
+> >>  
+> >>  static inline void *u64_to_ptr(__u64 ptr)
+> >>  {
+> >> @@ -451,6 +451,12 @@ static int bperf__load(struct evsel *evsel, struct target *target)
+> >>  	enum bperf_filter_type filter_type;
+> >>  	__u32 filter_entry_cnt, i;
+> >>  
+> >> +	if (evsel->evlist->core.nr_entries > ATTR_MAP_SIZE) {
+> >> +		pr_err("Too many events, please limit to %d or less\n",
+> >> +			ATTR_MAP_SIZE);
+> >> +		return -1;
+> >> +	}
+> >> +
+> >>  	if (bperf_check_target(evsel, target, &filter_type, &filter_entry_cnt))
+> >>  		return -1;
+> >>  
+> >> -- 
+> >> 2.34.1
+> >>
+> 
 
