@@ -1,316 +1,194 @@
-Return-Path: <bpf+bounces-40423-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40424-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 395479887EA
-	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2024 17:07:11 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E37798883D
+	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2024 17:24:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E33502811DA
-	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2024 15:07:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B13F6B2244C
+	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2024 15:24:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B21D91C1724;
-	Fri, 27 Sep 2024 15:06:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A3371C172C;
+	Fri, 27 Sep 2024 15:24:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TfVSQgHf"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="e/NU6Onw"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37072142621;
-	Fri, 27 Sep 2024 15:06:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD2A613AD1C
+	for <bpf@vger.kernel.org>; Fri, 27 Sep 2024 15:24:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727449619; cv=none; b=SAfJ7GAozKd6FG4BI+DhyDdh8CL1yJarebvoOSJZGaYTyUK6+SRBtOJkZKohyE6ufO8Au8k6Dhxy4N1FJMRcFRj6sxqXF4UiVa3XYSfto5GrHcWn1CUzBl8s8ImbwK36wdoNsQL1dutIJPME/m6bB/Cw7y0hnO9yt066L6R0epc=
+	t=1727450664; cv=none; b=Uu/ng0N7tFKBot9tYcrM6pZtWn1sAAHPLuE1aiO/uBdwFBlVevxGY00STyg+l5N3tXXe4iQ0BTD5ZsK/VHajmYeLAfKb+X1t/J/Nidy95zMIHiHLoNZJr1kIG3xcprK0ugOxCHuCcaPJFavFLl1YZciF2HloNPd97HJ4uSkYW2I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727449619; c=relaxed/simple;
-	bh=MyFqb+wY84HD5T6WosrUNw3USR4E0d33ftvlJocCEQE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ScZ8y6J1kzw6L5+pWUM5pkMm7gKsDXW02ZR4HA9l1kAdgKGpYwGZpVUAzRSiFM8/5vUeJ1NJNJxXTD13kGaQWqVUgEYMiuMqA3ElqMBNZBnAfohuLFEKU56PZZp780pS8vFzv0J30pZnHJ7nF+gFsuHFzNTKaQahkpeKYHQGkO8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TfVSQgHf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D1010C4CEC4;
-	Fri, 27 Sep 2024 15:06:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727449618;
-	bh=MyFqb+wY84HD5T6WosrUNw3USR4E0d33ftvlJocCEQE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=TfVSQgHfGmeSMNrmQoolcxikQ0ogy6NTCoTpYNpXh6GSZPVUWyWRmlWVlr8Kxyn6O
-	 dm0I+ivnMdahpDJGpOwJL5MxtF0uSWacZEDrH2LZKQLHftKIBUXtH0KJovZGNjlRCv
-	 zIAWsTqQA5/5zygFRsnOwgbAt1WcCBrCuLfxiDjEfDDRnGxoSxyyajE/ar5ejYYoRe
-	 C2xBIxTZbLoeAAkSd9KXVEW8P4t/AXHrnHRwL2wWINIwg+zU6s8dN7kR4Ow+gMrDER
-	 P8056GaHrnLkfbH6k5PjlZPcIdSx/onmhJVTCI/LWR/S9iWLwY1U8C9KLTBQ0o9NpL
-	 KS/rMBiXXKe7g==
-Date: Fri, 27 Sep 2024 17:06:53 +0200
-From: Lorenzo Bianconi <lorenzo@kernel.org>
-To: Arthur Fabre <afabre@cloudflare.com>
-Cc: Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-	Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	Jakub Sitnicki <jakub@cloudflare.com>,
-	Alexander Lobakin <aleksander.lobakin@intel.com>,
-	bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
-	daniel@iogearbox.net, davem@davemloft.net, kuba@kernel.org,
-	john.fastabend@gmail.com, edumazet@google.com, pabeni@redhat.com,
-	sdf@fomichev.me, tariqt@nvidia.com, saeedm@nvidia.com,
-	anthony.l.nguyen@intel.com, przemyslaw.kitszel@intel.com,
-	intel-wired-lan@lists.osuosl.org, mst@redhat.com,
-	jasowang@redhat.com, mcoquelin.stm32@gmail.com,
-	alexandre.torgue@foss.st.com,
-	kernel-team <kernel-team@cloudflare.com>,
-	Yan Zhai <yan@cloudflare.com>
-Subject: Re: [RFC bpf-next 0/4] Add XDP rx hw hints support performing
- XDP_REDIRECT
-Message-ID: <ZvbKDT-2xqx2unrx@lore-rh-laptop>
-References: <cover.1726935917.git.lorenzo@kernel.org>
- <1f53cd74-6c1e-4a1c-838b-4acc8c5e22c1@intel.com>
- <09657be6-b5e2-4b5a-96b6-d34174aadd0a@kernel.org>
- <Zu_gvkXe4RYjJXtq@lore-desk>
- <87ldzkndqk.fsf@toke.dk>
- <CAOn4ftshf3pyAst27C2haaSj4eR2n34_pcwWBc5o3zHBkwRb3g@mail.gmail.com>
- <87wmiysi37.fsf@toke.dk>
- <D4GBY7CHJNJ6.3O18I5W1FTPKR@bobby>
- <87ldzds8bp.fsf@toke.dk>
- <D4H5CAN4O95E.3KF8LAH75FYD4@bobby>
+	s=arc-20240116; t=1727450664; c=relaxed/simple;
+	bh=ZkweLvyag97akDboOxMZOkNg64bbiHQY6aByshyepaA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=b8IlGGLAdc6Pu3OEB06l44R/YWzocBYkx0Kd9351KiiVMJGTGik0tlaF+VGTxSUf/W+04gNtcrfiWF6OXKDx9EgrMMuUfzFi/ok0VBTkIIQvgFfphMhdMmJtS7zLXJf6EWrHEB+dFvTGNJdyM548vmfxBmiXaPc6ajDjI6GiaSU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=e/NU6Onw; arc=none smtp.client-ip=91.218.175.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <ec48e1b2-ff1d-499b-8ada-ba76a4bae9bb@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1727450660;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0GN1WCbWnVujnXCJ+8hJO2y/H0/A20AHKmN4AIhZJ4Q=;
+	b=e/NU6Onw1Q2VCjP298F5P3PnfX07NhK1+CkpD+j1NgmgrUR5jva4/7TwIqCA8z+yIUXx8M
+	ZTIrczRx8JHNDC8X+tkC6MhJKQO695RyO9GrUEnskaDUHQq3cjkrmzTEdNef+7FumFUiB5
+	oTASnL4BHKpUUpEVWIMExPV3QJLMGVE=
+Date: Fri, 27 Sep 2024 08:24:12 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="48nyGz3vm9X8yMny"
-Content-Disposition: inline
-In-Reply-To: <D4H5CAN4O95E.3KF8LAH75FYD4@bobby>
+Subject: Re: [PATCH bpf-next v3 4/5] bpf, x86: Add jit support for private
+ stack
+To: Leon Hwang <hffilwlqm@gmail.com>, bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
+ Martin KaFai Lau <martin.lau@kernel.org>
+References: <20240926234506.1769256-1-yonghong.song@linux.dev>
+ <20240926234526.1770736-1-yonghong.song@linux.dev>
+ <44ddec9e-cc74-4686-9228-52e4db301e8a@gmail.com>
+Content-Language: en-GB
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <44ddec9e-cc74-4686-9228-52e4db301e8a@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
 
---48nyGz3vm9X8yMny
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 9/26/24 9:58 PM, Leon Hwang wrote:
+> Hi Yonghong,
+>
+> A brief review about the usage of this_cpu_off on non-SMP systems.
+>
+> On 27/9/24 07:45, Yonghong Song wrote:
+>> Add jit support for private stack. For a particular subtree, e.g.,
+>>    subtree_root <== stack depth 120
+>>     subprog1    <== stack depth 80
+>>      subprog2   <== stack depth 40
+>>     subprog3    <== stack depth 160
+>>
+>> Let us say that private_stack_ptr is the memory address allocated for
+>> private stack. The frame pointer for each above is calculated like below:
+>>    subtree_root  <== subtree_root_fp = private_stack_ptr + 120
+>>     subprog1     <== subtree_subprog1_fp = subtree_root_fp + 80
+>>      subprog2    <== subtree_subprog2_fp = subtree_subprog1_fp + 40
+>>     subprog3     <== subtree_subprog1_fp = subtree_root_fp + 160
+>>
+>> For any function call to helper/kfunc, push/pop prog frame pointer
+>> is needed in order to preserve frame pointer value.
+>>
+>> To deal with exception handling, push/pop frame pointer is also used
+>> surrounding call to subsequent subprog. For example,
+>>    subtree_root
+>>     subprog1
+>>       ...
+>>       insn: call bpf_throw
+>>       ...
+>>
+>> After jit, we will have
+>>    subtree_root
+>>     insn: push r9
+>>     subprog1
+>>       ...
+>>       insn: push r9
+>>       insn: call bpf_throw
+>>       insn: pop r9
+>>       ...
+>>     insn: pop r9
+>>
+>>    exception_handler
+>>       pop r9
+>>       ...
+>> where r9 represents the fp for each subprog.
+>>
+>> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+>> ---
+>>   arch/x86/net/bpf_jit_comp.c | 87 ++++++++++++++++++++++++++++++++++---
+>>   1 file changed, 81 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+>> index 06b080b61aa5..c264822c926b 100644
+>> --- a/arch/x86/net/bpf_jit_comp.c
+>> +++ b/arch/x86/net/bpf_jit_comp.c
+>> @@ -325,6 +325,22 @@ struct jit_context {
+>>   /* Number of bytes that will be skipped on tailcall */
+>>   #define X86_TAIL_CALL_OFFSET	(12 + ENDBR_INSN_SIZE)
+>>   
+>> +static void push_r9(u8 **pprog)
+>> +{
+>> +	u8 *prog = *pprog;
+>> +
+>> +	EMIT2(0x41, 0x51);   /* push r9 */
+>> +	*pprog = prog;
+>> +}
+>> +
+>> +static void pop_r9(u8 **pprog)
+>> +{
+>> +	u8 *prog = *pprog;
+>> +
+>> +	EMIT2(0x41, 0x59);   /* pop r9 */
+>> +	*pprog = prog;
+>> +}
+>> +
+>>   static void push_r12(u8 **pprog)
+>>   {
+>>   	u8 *prog = *pprog;
+>> @@ -491,7 +507,7 @@ static void emit_prologue_tail_call(u8 **pprog, bool is_subprog)
+>>    */
+>>   static void emit_prologue(u8 **pprog, u32 stack_depth, bool ebpf_from_cbpf,
+>>   			  bool tail_call_reachable, bool is_subprog,
+>> -			  bool is_exception_cb)
+>> +			  bool is_exception_cb, enum bpf_pstack_state  pstack)
+>>   {
+>>   	u8 *prog = *pprog;
+>>   
+>> @@ -518,6 +534,8 @@ static void emit_prologue(u8 **pprog, u32 stack_depth, bool ebpf_from_cbpf,
+>>   		 * first restore those callee-saved regs from stack, before
+>>   		 * reusing the stack frame.
+>>   		 */
+>> +		if (pstack)
+>> +			pop_r9(&prog);
+>>   		pop_callee_regs(&prog, all_callee_regs_used);
+>>   		pop_r12(&prog);
+>>   		/* Reset the stack frame. */
+>> @@ -1404,6 +1422,22 @@ static void emit_shiftx(u8 **pprog, u32 dst_reg, u8 src_reg, bool is64, u8 op)
+>>   	*pprog = prog;
+>>   }
+>>   
+>> +static void emit_private_frame_ptr(u8 **pprog, void *private_frame_ptr)
+>> +{
+>> +	u8 *prog = *pprog;
+>> +
+>> +	/* movabs r9, private_frame_ptr */
+>> +	emit_mov_imm64(&prog, X86_REG_R9, (long) private_frame_ptr >> 32,
+>> +		       (u32) (long) private_frame_ptr);
+>> +
+>> +	/* add <r9>, gs:[<off>] */
+>> +	EMIT2(0x65, 0x4c);
+>> +	EMIT3(0x03, 0x0c, 0x25);
+>> +	EMIT((u32)(unsigned long)&this_cpu_off, 4);
+> It should check CONFIG_SMP here like this commit:
+> 1e9e0b85255e ("bpf: handle CONFIG_SMP=n configuration in x86 BPF JIT").
+>
+> So, it seems better to reuse the code snippet of the commit.
 
-On Sep 27, Arthur Fabre wrote:
-> On Fri Sep 27, 2024 at 12:24 PM CEST, Toke H=F8iland-J=F8rgensen wrote:
-> > "Arthur Fabre" <afabre@cloudflare.com> writes:
-> >
-> > >> >> The nice thing about an API like this, though, is that it's exten=
-sible,
-> > >> >> and the kernel itself can be just another consumer of it for the
-> > >> >> metadata fields Lorenzo is adding in this series. I.e., we could =
-just
-> > >> >> pre-define some IDs for metadata vlan, timestamp etc, and use the=
- same
-> > >> >> functions as above from within the kernel to set and get those va=
-lues;
-> > >> >> using the registry, there could even be an option to turn those o=
-ff if
-> > >> >> an application wants more space for its own usage. Or, alternativ=
-ely, we
-> > >> >> could keep the kernel-internal IDs hardcoded and always allocated=
-, and
-> > >> >> just use the getter/setter functions as the BPF API for accessing=
- them.
-> > >> >
-> > >> > That's exactly what I'm thinking of too, a simple API like:
-> > >> >
-> > >> > get(u8 key, u8 len, void *val);
-> > >> > set(u8 key, u8 len, void *val);
-> > >> >
-> > >> > With "well-known" keys like METADATA_ID_HW_HASH for hardware metad=
-ata.
-> > >> >
-> > >> > If a NIC doesn't support a certain well-known metadata, the key
-> > >> > wouldn't be set, and get() would return ENOENT.
-> > >> >
-> > >> > I think this also lets us avoid having to "register" keys or bits =
-of
-> > >> > metadata with the kernel.
-> > >> > We'd reserve some number of keys for hardware metadata.
-> > >>
-> > >> Right, but how do you allocate space/offset for each key without an
-> > >> explicit allocation step? You'd basically have to encode the list of=
- IDs
-> > >> in the metadata area itself, which implies a TLV format that you hav=
-e to
-> > >> walk on every access? The registry idea in my example above was
-> > >> basically to avoid that...
-> > >
-> > > I've been playing around with having a small fixed header at the front
-> > > of the metadata itself, that lets you access values without walking t=
-hem
-> > > all.
-> > >
-> > > Still WIP, and maybe this is too restrictive, but it lets you encode =
-64
-> > > 2, 4, or 8 byte KVs with a single 16 byte header:
-> >
-> > Ohh, that's clever, I like it! :)
-> >
-> > It's also extensible in the sense that the internal representation can
-> > change without impacting the API, so if we end up needing more bits we
-> > can always add those.
-> >
-> > Maybe it would be a good idea to make the 'key' parameter a larger
-> > integer type (function parameters are always 64-bit anyway, so might as
-> > well go all the way up to u64)? That way we can use higher values for
-> > the kernel-reserved types instead of reserving part of the already-small
-> > key space for applications (assuming the kernel-internal data is stored
-> > somewhere else, like in a static struct as in Lorenzo's patch)?
->=20
-> Good idea! That makes it more extensible too if we ever support more
-> keys or bigger lengths.
->=20
-> I'm not sure where the kernel-reserved types should live. Putting them
-> in here uses up some the of KV IDs, but it uses less head room space than=
-=20
-> always reserving a static struct for them.
-> Maybe it doesn't matter much, as long as we use the same API to access
-> them, we could internally switch between one and the other.
->=20
-> >
-> > [...]
-> >
-> > >> > The remaining keys would be up to users. They'd have to allocate k=
-eys
-> > >> > to services, and configure services to use those keys.
-> > >> > This is similar to the way listening on a certain port works: only=
- one
-> > >> > service can use port 80 or 443, and that can typically beconfigure=
-d in
-> > >> > a service's config file.
-> > >>
-> > >> Right, well, port numbers *do* actually have an out of band service
-> > >> registry (IANA), which I thought was what we wanted to avoid? ;)
-> > >
-> > > Depends how you think about it ;)
-> > >
-> > > I think we should avoid a global registry. But having a registry per
-> > > deployment / server doesn't seem awful. Services that want to use a
-> > > field would have a config file setting to set which index it correspo=
-nds
-> > > to.
-> > > Admins would just have to pick a free one on their system, and set it=
- in
-> > > the config file of the service.
-> > >
-> > > This is similar to what we do for non-IANA registered ports internall=
-y.
-> > > For example each service needs a port on an internal interface to exp=
-ose
-> > > metrics, and we just track which ports are taken in our config
-> > > management.
-> >
-> > Right, this would work, but it assumes that applications are
-> > well-behaved and do this correctly. Which they probably do in a
-> > centrally-managed system like yours, but for random applications shipped
-> > by distros, I'm not sure if it's going to work.
-> >
-> > In fact, it's more or less the situation we have with skb->mark today,
-> > isn't it? I.e., applications can co-exist as long as they don't use the
-> > same bits, so they have to coordinate on which bits to use. Sure, with
-> > this scheme there will be more total bits to use, which can lessen the
-> > pressure somewhat, but the basic problem remains. In other words, I
-> > worry that in practice we will end up with another github repository
-> > serving as a registry for metadata keys...
->=20
-> That's true. If applications hardcode keys, we'll be back to having
-> conflicts. If someone creates a registry on github I'll be very sad.
->=20
-> (Maybe we can make the verifier enforce that the key passed to get() and
-> set() isn't a constant? - only joking)
->=20
-> Applications don't tend to do this for ports though, I think most can be
-> configured to listen on any port. Is that just because it's been
-> instilled as "good practice" over time? Could we try to do the same with
-> some very stern documentation and examples?
->=20
-> Thinking about it more, my only relectance for a registration API is how
-> to communicate the ID back to other consumers (our discussion below).
->=20
-> >
-> > > Dynamically registering fields means you have to share the returned ID
-> > > with whoever is interested, which sounds tricky.
-> > > If an XDP program sets a field like packet_id, every tracing
-> > > program that looks at it, and userspace service, would need to know w=
-hat
-> > > the ID of that field is.
-> > > Is there a way to easily share that ID with all of them?
-> >
-> > Right, so I'll admit this was one of the handwavy bits of my original
-> > proposal, but I don't think it's unsolvable. You could do something like
-> > (once, on application initialisation):
-> >
-> > __u64 my_key =3D bpf_register_metadata_field(my_size); /* maybe add a n=
-ame for introspection? */
-> > bpf_map_update(&shared_application_config, &my_key_index, &my_key);
-> >
-> > and then just get the key out of that map from all programs that want to
-> > use it?
->=20
-> Passing it out of band works (whether it's via a pinned map like you
-> described, or through other means like a unix socket or some other
-> API), it's just more complicated.
->=20
-> Every consumer also needs to know about that API. That won't work with
-> standard tools. For example if we set a PACKET_ID KV, maybe we could
-> give it to pwru so it could track packets using it?
-> Without registering keys, we could pass it as a cli flag. With
-> registration, we'd have to have some helper to get the KV ID.
->=20
-> It also introduces ordering dependencies between the services on
-> startup, eg packet tracing hooks could only be attached once our XDP
-> service has registered a PACKET_ID KV, and they could query it's API.
->=20
-> >
-> > We could combine such a registration API with your header format, so
-> > that the registration just becomes a way of allocating one of the keys
-> > from 0-63 (and the registry just becomes a global copy of the header).
-> > This would basically amount to moving the "service config file" into the
-> > kernel, since that seems to be the only common denominator we can rely
-> > on between BPF applications (as all attempts to write a common daemon
-> > for BPF management have shown).
->=20
-> That sounds reasonable. And I guess we'd have set() check the global
-> registry to enforce that the key has been registered beforehand?
->=20
-> >
-> > -Toke
->=20
-> Thanks for all the feedback!
+Thanks for pointing this out. I will make the change after waiting some
+other reviews.
 
-I like this 'fast' KV approach but I guess we should really evaluate its
-impact on performances (especially for xdp) since, based on the kfunc calls
-order in the ebpf program, we can have one or multiple memmove/memcpy for
-each packet, right?
-
-Moreover, I still think the metadata area in the xdp_frame/xdp_buff is not
-so suitable for nic hw metadata since:
-- it grows backward=20
-- it is probably in a different cacheline with respect to xdp_frame
-- nic hw metadata will not start at fixed and immutable address, but it dep=
-ends
-  on the running ebpf program
-
-What about having something like:
-- fixed hw nic metadata: just after xdp_frame struct (or if you want at the=
- end
-  of the metadata area :)). Here he can reuse the same KV approach if it is=
- fast
-- user defined metadata: in the metadata area of the xdp_frame/xdp_buff
-
-Regards,
-Lorenzo
-
---48nyGz3vm9X8yMny
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCZvbKCwAKCRA6cBh0uS2t
-rF5lAQDTdLyjQu9LBlYXr/x+szI6oCwR7y7mQizpEprqoM5cZAEAnFSLkOtb3uYb
-tK14RGKLKIvhpK4/Q4SfAnUM/napRAM=
-=3nAl
------END PGP SIGNATURE-----
-
---48nyGz3vm9X8yMny--
+>
+> Thanks,
+> Leon
+>
 
