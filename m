@@ -1,325 +1,119 @@
-Return-Path: <bpf+bounces-40374-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40375-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53064987C01
-	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2024 01:45:49 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 846BB987CA4
+	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2024 03:37:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0D825285DA8
-	for <lists+bpf@lfdr.de>; Thu, 26 Sep 2024 23:45:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2D5F21F23E9F
+	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2024 01:37:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C5D21B07B9;
-	Thu, 26 Sep 2024 23:45:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8708022087;
+	Fri, 27 Sep 2024 01:37:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nmXJtDMX"
 X-Original-To: bpf@vger.kernel.org
-Received: from 69-171-232-181.mail-mxout.facebook.com (69-171-232-181.mail-mxout.facebook.com [69.171.232.181])
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EC2613C683
-	for <bpf@vger.kernel.org>; Thu, 26 Sep 2024 23:45:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=69.171.232.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6FAA3BBF6
+	for <bpf@vger.kernel.org>; Fri, 27 Sep 2024 01:37:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727394346; cv=none; b=cQcIiPuBQsjKMCLcxRQOuvFmPNb9I+xAqmZQGM94NokqQbWpekRI9lkcuhwKps5/XYNm3r4xSJJAKQGw2hzrS9zBA+cwYadfw/ZLwl6DpOTbAU8gHpabsZ6jvSf42pOzXG9i7a2v3ecfMuFWUTTsve3nD++rce7oYBWq+kaD7B4=
+	t=1727401035; cv=none; b=X/JnuyFMJtPKqawVWwex0+Mu2557i0hifQEC7NVm2Wa6GayKWjIOzye/V9dx+HPYMecIJpQn+C1BwCrGiSXGjHZshWIaOckM8Q54eNctPD2S2C0HvAe1m7pZscxYciXsGGhMHjBE4Me3sxKoKSdUX5JubO5IWoi6tUgaB7nf3vQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727394346; c=relaxed/simple;
-	bh=4e98wkph68Fu05rku6EeYCqb4fc24grg7vd3hPlNzHA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=rvovM2IsEicSFoGancYBNvYk//VVUuFjyQ0EQ9XP8u7QkhIA/TJedCRFuuvoexdckTOr5MzdcNuHFWRJH6RX2bhNZCNY1eDvy1Cp96b8176PWX3VmQkvQrkJTHeh7I9m5USQuaYtkHAUQPT1VIWAHZ3YiI3LzwIbu3Wg0v3gUR0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=69.171.232.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
-Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-	id 91391967C7C2; Thu, 26 Sep 2024 16:45:31 -0700 (PDT)
-From: Yonghong Song <yonghong.song@linux.dev>
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	kernel-team@fb.com,
-	Martin KaFai Lau <martin.lau@kernel.org>
-Subject: [PATCH bpf-next v3 5/5] selftests/bpf: Add private stack tests
-Date: Thu, 26 Sep 2024 16:45:31 -0700
-Message-ID: <20240926234531.1771024-1-yonghong.song@linux.dev>
-X-Mailer: git-send-email 2.43.5
-In-Reply-To: <20240926234506.1769256-1-yonghong.song@linux.dev>
-References: <20240926234506.1769256-1-yonghong.song@linux.dev>
+	s=arc-20240116; t=1727401035; c=relaxed/simple;
+	bh=vc61OX6CwRr6ElSmUhtCRjoDAGU/1p5+lZOEOAq17jc=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=cA+vLP8r+cbn6b1B+raOGXy6q4zQkt6KCW0DXOF3kRWLN0FTVDGVCJKfAAW+ZVUEwI/uxcHNsTUZE6FXieENPFghemeYl4hFp8lsVdlMZbJt7ATokGuWZmTo8HTJUnT6YRGMt4ATusLA2Zf4SbzCezRbCitNSn19ldQ1vM/YwGw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nmXJtDMX; arc=none smtp.client-ip=209.85.210.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-7179802b8fcso1254296b3a.1
+        for <bpf@vger.kernel.org>; Thu, 26 Sep 2024 18:37:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1727401033; x=1728005833; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=vc61OX6CwRr6ElSmUhtCRjoDAGU/1p5+lZOEOAq17jc=;
+        b=nmXJtDMX4xheuAOPn8sRUEN6YKGYyieHsqedjoCRXaLbGlF9fiJJAOqQMs+iYPJYp5
+         zkwwqrWF5CIbdSyOZjIhwA9EegHLPzitIrH9RxggAWXgv0GJKsQgate9vjOCdgmKCz85
+         mlFZFAUpMh5eWgloMnDRaHUg4pCc65xi5Lr6fO4NHHl4bbEm3UezQMqrdoWIXgIWG4nv
+         szLygIyxHBUPlKlF2iS3g4A7akYQgAUMbXAJxphbIol+y0+PohSGQ0AyB7MV1mB9QUge
+         sm6WIgnR10SfmF55QZkCfp5RKmD1sS5K8nZUJMqGPVoeHe38PR+Buy9hsCMAvA3tDXQZ
+         BYww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727401033; x=1728005833;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=vc61OX6CwRr6ElSmUhtCRjoDAGU/1p5+lZOEOAq17jc=;
+        b=cW4Afs7MUbz+xdEGAE5eKaGDPs7h1RxGeko6x+/ryOv9yB9XMw7wDcOFmSqpogWvMR
+         SeDVXPStN/PjgqgM4jkqQSKOn1mVf5YU94SBHoJmZjDgOJr2n3jlLxRUB7w1yjaBwm4a
+         kUPgybGT18W9xmJj0jZrBSyTzB3qSoayAnv7TH1C8vtEOVYNZ3HttkgSQW4bJJ6+EYzC
+         BuXAs7wIHHwUTkssOOgFpxF5uTMRghO/HBTrn5fm8pK+JPv70ae9xxV4FD2z4uhj9UIA
+         luIDmsTzfZhjRDRHYZBQta2EpESjZYhZoVeWkXkAano0EhXsxwQ98AC9XlZNny8fduF/
+         KIww==
+X-Forwarded-Encrypted: i=1; AJvYcCXZI7RBIaUIUSC61TgWOgLRtBuVwR904kFqF8VUGXv0pIw0y8bsRLCblcZTsVJCJCxtQaU=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxDQzkf4KNqjmy/NB7NA9PpkruKN+hJHUvskX2lN0z+3rd0u+8e
+	aXKJTX4pRd82oKFRTiwvfdMCL0cF7kJuftK0riMEvulBbcwBDG8a
+X-Google-Smtp-Source: AGHT+IEQI0zHudAkgMpkvnLrpw72oU7DFjwO1IqESUNiMzrUyJ8BwjSbChRZHa2/Ekwm9c/CWw6rAw==
+X-Received: by 2002:a05:6a00:84f:b0:706:67c9:16d0 with SMTP id d2e1a72fcca58-71b2606656emr2500140b3a.26.1727401032939;
+        Thu, 26 Sep 2024 18:37:12 -0700 (PDT)
+Received: from [192.168.0.235] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-71b264bc896sm534471b3a.76.2024.09.26.18.37.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Sep 2024 18:37:12 -0700 (PDT)
+Message-ID: <efa0ba9ce828010cd6fea1efa45b17c1b0800ace.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v2 0/2] bpf: Add kfuncs for read-only string
+ operations
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Viktor Malik <vmalik@redhat.com>, bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>,  Andrii Nakryiko <andrii@kernel.org>, Martin KaFai
+ Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,  Yonghong Song
+ <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, KP
+ Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo
+ <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
+Date: Thu, 26 Sep 2024 18:37:07 -0700
+In-Reply-To: <cover.1727335530.git.vmalik@redhat.com>
+References: <cover.1727335530.git.vmalik@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.4 (3.52.4-1.fc40) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 
-Some private stack tests are added including:
-  - prog with stack size greater than BPF_PSTACK_MIN_SUBTREE_SIZE.
-  - prog with stack size less than BPF_PSTACK_MIN_SUBTREE_SIZE.
-  - prog with one subprog having MAX_BPF_STACK stack size and another
-    subprog having non-zero stack size.
-  - prog with callback function.
-  - prog with exception in main prog or subprog.
+On Thu, 2024-09-26 at 09:29 +0200, Viktor Malik wrote:
+> Kernel contains highly optimised implementation of traditional string
+> operations. Expose them as kfuncs to allow BPF programs leverage the
+> kernel implementation instead of needing to reimplement the operations.
+>=20
+> These will be very helpful to bpftrace as it now needs to implement all
+> the string operations in LLVM IR.
 
-Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
----
- .../selftests/bpf/prog_tests/verifier.c       |   2 +
- .../bpf/progs/verifier_private_stack.c        | 215 ++++++++++++++++++
- 2 files changed, 217 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/verifier_private_st=
-ack.c
+Note that existing string related helpers take a pointer to a string
+and it's maximal length, namely:
+- bpf_strtol
+- bpf_strtoul
+- bpf_snprintf_btf
+- bpf_strncmp
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/te=
-sting/selftests/bpf/prog_tests/verifier.c
-index e26b5150fc43..635ff3509403 100644
---- a/tools/testing/selftests/bpf/prog_tests/verifier.c
-+++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
-@@ -59,6 +59,7 @@
- #include "verifier_or_jmp32_k.skel.h"
- #include "verifier_precision.skel.h"
- #include "verifier_prevent_map_lookup.skel.h"
-+#include "verifier_private_stack.skel.h"
- #include "verifier_raw_stack.skel.h"
- #include "verifier_raw_tp_writable.skel.h"
- #include "verifier_reg_equal.skel.h"
-@@ -185,6 +186,7 @@ void test_verifier_bpf_fastcall(void)         { RUN(v=
-erifier_bpf_fastcall); }
- void test_verifier_or_jmp32_k(void)           { RUN(verifier_or_jmp32_k)=
-; }
- void test_verifier_precision(void)            { RUN(verifier_precision);=
- }
- void test_verifier_prevent_map_lookup(void)   { RUN(verifier_prevent_map=
-_lookup); }
-+void test_verifier_private_stack(void)        { RUN(verifier_private_sta=
-ck); }
- void test_verifier_raw_stack(void)            { RUN(verifier_raw_stack);=
- }
- void test_verifier_raw_tp_writable(void)      { RUN(verifier_raw_tp_writ=
-able); }
- void test_verifier_reg_equal(void)            { RUN(verifier_reg_equal);=
- }
-diff --git a/tools/testing/selftests/bpf/progs/verifier_private_stack.c b=
-/tools/testing/selftests/bpf/progs/verifier_private_stack.c
-new file mode 100644
-index 000000000000..badd1fd1e3dd
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/verifier_private_stack.c
-@@ -0,0 +1,215 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <vmlinux.h>
-+#include <bpf/bpf_helpers.h>
-+#include "bpf_misc.h"
-+
-+/* From include/linux/filter.h */
-+#define MAX_BPF_STACK    512
-+
-+#if defined(__TARGET_ARCH_x86)
-+
-+SEC("kprobe")
-+__description("Private stack, single prog")
-+__success
-+__arch_x86_64
-+__jited("	movabsq	$0x{{.*}}, %r9")
-+__jited("	addq	%gs:0x{{.*}}, %r9")
-+__jited("	movl	$0x2a, %edi")
-+__jited("	movq	%rdi, -0x100(%r9)")
-+__naked void private_stack_single_prog(void)
-+{
-+	asm volatile (
-+	"r1 =3D 42;"
-+	"*(u64 *)(r10 - 256) =3D r1;"
-+	"r0 =3D 0;"
-+	"exit;"
-+	:
-+	:
-+	: __clobber_all);
-+}
-+
-+__used
-+__naked static void cumulative_stack_depth_subprog(void)
-+{
-+        asm volatile (
-+	"r1 =3D 41;"
-+        "*(u64 *)(r10 - 32) =3D r1;"
-+        "call %[bpf_get_smp_processor_id];"
-+        "exit;"
-+        :: __imm(bpf_get_smp_processor_id)
-+	: __clobber_all);
-+}
-+
-+SEC("kprobe")
-+__description("Private stack, subtree > MAX_BPF_STACK")
-+__success
-+__arch_x86_64
-+/* private stack fp for the main prog */
-+__jited("	movabsq	$0x{{.*}}, %r9")
-+__jited("	addq	%gs:0x{{.*}}, %r9")
-+__jited("	movl	$0x2a, %edi")
-+__jited("	movq	%rdi, -0x200(%r9)")
-+__jited("	pushq	%r9")
-+__jited("	callq	0x{{.*}}")
-+__jited("	popq	%r9")
-+__jited("	xorl	%eax, %eax")
-+__naked void private_stack_nested_1(void)
-+{
-+	asm volatile (
-+	"r1 =3D 42;"
-+	"*(u64 *)(r10 - %[max_bpf_stack]) =3D r1;"
-+	"call cumulative_stack_depth_subprog;"
-+	"r0 =3D 0;"
-+	"exit;"
-+	:
-+	: __imm_const(max_bpf_stack, MAX_BPF_STACK)
-+	: __clobber_all);
-+}
-+
-+SEC("kprobe")
-+__description("Private stack, subtree > MAX_BPF_STACK")
-+__success
-+__arch_x86_64
-+/* private stack fp for the subprog */
-+__jited("	addq	$0x20, %r9")
-+__naked void private_stack_nested_2(void)
-+{
-+	asm volatile (
-+	"r1 =3D 42;"
-+	"*(u64 *)(r10 - %[max_bpf_stack]) =3D r1;"
-+	"call cumulative_stack_depth_subprog;"
-+	"r0 =3D 0;"
-+	"exit;"
-+	:
-+	: __imm_const(max_bpf_stack, MAX_BPF_STACK)
-+	: __clobber_all);
-+}
-+
-+SEC("raw_tp")
-+__description("No private stack, nested")
-+__success
-+__arch_x86_64
-+__jited("	subq	$0x8, %rsp")
-+__naked void no_private_stack_nested(void)
-+{
-+	asm volatile (
-+	"r1 =3D 42;"
-+	"*(u64 *)(r10 - 8) =3D r1;"
-+	"call cumulative_stack_depth_subprog;"
-+	"r0 =3D 0;"
-+	"exit;"
-+	:
-+	:
-+	: __clobber_all);
-+}
-+
-+__naked __noinline __used
-+static unsigned long loop_callback()
-+{
-+	asm volatile (
-+	"call %[bpf_get_prandom_u32];"
-+	"r1 =3D 42;"
-+	"*(u64 *)(r10 - 512) =3D r1;"
-+	"call cumulative_stack_depth_subprog;"
-+	"r0 =3D 0;"
-+	"exit;"
-+	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_common);
-+}
-+
-+SEC("raw_tp")
-+__description("Private stack, callback")
-+__success
-+__arch_x86_64
-+/* for func loop_callback */
-+__jited("func #1")
-+__jited("	endbr64")
-+__jited("	nopl	(%rax,%rax)")
-+__jited("	nopl	(%rax)")
-+__jited("	pushq	%rbp")
-+__jited("	movq	%rsp, %rbp")
-+__jited("	endbr64")
-+__jited("	movabsq	$0x{{.*}}, %r9")
-+__jited("	addq	%gs:0x{{.*}}, %r9")
-+__jited("	pushq	%r9")
-+__jited("	callq")
-+__jited("	popq	%r9")
-+__jited("	movl	$0x2a, %edi")
-+__jited("	movq	%rdi, -0x200(%r9)")
-+__jited("	pushq	%r9")
-+__jited("	callq")
-+__jited("	popq	%r9")
-+__naked void private_stack_callback(void)
-+{
-+	asm volatile (
-+	"r1 =3D 1;"
-+	"r2 =3D %[loop_callback];"
-+	"r3 =3D 0;"
-+	"r4 =3D 0;"
-+	"call %[bpf_loop];"
-+	"r0 =3D 0;"
-+	"exit;"
-+	:
-+	: __imm_ptr(loop_callback),
-+	  __imm(bpf_loop)
-+	: __clobber_common);
-+}
-+
-+SEC("fentry/bpf_fentry_test9")
-+__description("Private stack, exception in main prog")
-+__success __retval(0)
-+__arch_x86_64
-+__jited("	pushq	%r9")
-+__jited("	callq")
-+__jited("	popq	%r9")
-+int private_stack_exception_main_prog(void)
-+{
-+	asm volatile (
-+	"r1 =3D 42;"
-+	"*(u64 *)(r10 - 512) =3D r1;"
-+	::: __clobber_common);
-+
-+	bpf_throw(0);
-+	return 0;
-+}
-+
-+__used static int subprog_exception(void)
-+{
-+	bpf_throw(0);
-+	return 0;
-+}
-+
-+SEC("fentry/bpf_fentry_test9")
-+__description("Private stack, exception in subprog")
-+__success __retval(0)
-+__arch_x86_64
-+__jited("	movq	%rdi, -0x200(%r9)")
-+__jited("	pushq	%r9")
-+__jited("	callq")
-+__jited("	popq	%r9")
-+int private_stack_exception_sub_prog(void)
-+{
-+	asm volatile (
-+	"r1 =3D 42;"
-+	"*(u64 *)(r10 - 512) =3D r1;"
-+	"call subprog_exception;"
-+	::: __clobber_common);
-+
-+	return 0;
-+}
-+
-+#else
-+
-+SEC("kprobe")
-+__description("private stack is not supported, use a dummy test")
-+__success
-+int dummy_test(void)
-+{
-+        return 0;
-+}
-+
-+#endif
-+
-+char _license[] SEC("license") =3D "GPL";
---=20
-2.43.5
+The unbounded variants that are being exposed in this patch-set
+(like strcmp) are only safe to use if string is guaranteed to be null termi=
+nated.
+Verifier does not check this property at the moment (idk how easy/hard
+such analysis might be).
+
+I'd suggest not to expose unbounded variants of string functions.
+
+[...]
 
 
