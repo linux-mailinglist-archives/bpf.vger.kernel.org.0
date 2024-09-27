@@ -1,156 +1,215 @@
-Return-Path: <bpf+bounces-40392-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40393-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E67A29880ED
-	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2024 10:58:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07299988124
+	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2024 11:16:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2BB58281939
-	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2024 08:58:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6BE912840DC
+	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2024 09:16:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B681318A6C8;
-	Fri, 27 Sep 2024 08:58:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 898CD1BA86D;
+	Fri, 27 Sep 2024 09:16:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gqAazClv"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="eL8JY6CE"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-vs1-f53.google.com (mail-vs1-f53.google.com [209.85.217.53])
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D19EC18C1F;
-	Fri, 27 Sep 2024 08:58:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F2971BA289
+	for <bpf@vger.kernel.org>; Fri, 27 Sep 2024 09:16:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727427485; cv=none; b=RSaQfqPiL6gEx7MR+stae+M7VlfB1BaZaZnRHeGMAd20771EAkWBwyaJK0kCRZKswDKPPhhFLYN6G/Cv87DckLqkbHY6P2JKwtEpqnzcPQtxKNQYN0U56emsdwCC4kzKsb1Ud6TX5jD3zLHFTzlr3oQ2ODesnvlFTI0Xl+NWcUE=
+	t=1727428565; cv=none; b=NLaV1uXSGZnisGq9Qn+JcfNeJGsRVxPSWf6bqqPpgxtqmGaHECEEGkonWePwS8ZnDSys+cilqsObuVPsQ6T/P96a+5AZo5CvzENL7tRdn7t/RBEnLhGCB7edYlQGipI/PiSmoaql9NEkN0dsjC32jsNaXeyMH7PyZY08yWnIZEI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727427485; c=relaxed/simple;
-	bh=pEp5gXfIjEbg1ta4gdp8fy84aFsgcENp6aqfPlh6iqM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hJZWOmteWdSYbFZE6Uohme4xxBsSm/nNpu/lBbKBfNsdem1U4CeHDRWdQDqMAMd+I0Ea/HjOMtu5mtrI84atwtvSmJZq0qDz6/T++9q7RAm4n/mFpwRLK43TEYfFlOXh6gZLsWM6s9y/g09caFpc3VBIreyCFYurWfFQyLbNCXo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gqAazClv; arc=none smtp.client-ip=209.85.217.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vs1-f53.google.com with SMTP id ada2fe7eead31-4a3075662b6so344760137.1;
-        Fri, 27 Sep 2024 01:58:03 -0700 (PDT)
+	s=arc-20240116; t=1727428565; c=relaxed/simple;
+	bh=9LVM7U9qoJlT9Uhh1DQExS62mXazXMYih3BiV2Pb6gI=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=GS4xsLsVHfyGkZvJ+iM4ddHeb3bcr9/jOFbVx1OkAAfnCc2FWa+fXnQUXBZotoIwSqam2kNI3P6ajiqdCACc5+TKI6U7Yv5Yavn38K+iwpeKmZ9oxmnawLDP/MCEXKaFBytIr272afxINEx0vYXvxmq78VAI0ra4VhIcaf9d4GA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=eL8JY6CE; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a90188ae58eso229494366b.1
+        for <bpf@vger.kernel.org>; Fri, 27 Sep 2024 02:16:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727427483; x=1728032283; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Eg8VUnCWU6xpmCG+ce1Tu7r95og6PEk5nWNUF8PLnD0=;
-        b=gqAazClv8s0ANTY895QSRiOBzehxWHAxTajzp8+L4oMVqITx1Rc1ZRR9N9zO3Vk1iS
-         0E0oCx/nlNg97ah1qOH5riadZAAUmcSvNTYO5+8cO82PLUIPlS/cfntRZC9yPsZp5BNq
-         HZigxvF8s1kAqeM4oah+T9Tu7K/saEbRk9nxIw4DIvRuG/wE2jmZ+lLUJ0nSO9Dx2xMF
-         0I10U74DdkKzjVpgTDGlNKXooe+uatFavOqUsEAAcqBFLrRAjiPMFMCrJtoLD3RBJ5An
-         kmon8czuYyTN9mFTIFXEn+V4NwEhigt5kZsoBpPbFRmrglYrNA4EqqQsJbKRRvYNpG4I
-         noGg==
+        d=cloudflare.com; s=google09082023; t=1727428562; x=1728033362; darn=vger.kernel.org;
+        h=mime-version:message-id:date:user-agent:references:in-reply-to
+         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=QMXB/acHnp63ulIQj4Mexrn6RJxHaMq1mectA7Dj3/0=;
+        b=eL8JY6CEs0r+PsJzvlaNiIH12dBxzHh2yJ3XZYfjkW1P9E6SZPVdTTy9/SdzC5DTXX
+         ZsUxxR4bekaqc5RPPiIouzI6Dlsd+zI/2XXGmuHE8rNulrep/XU7IQCtjtlwxo+trPsg
+         ex9P0q8fZN13jnSDDkx5t+/hkmSXbLq7UERKlL6Ie85vB5dqUfu7I7389lUNmEsRtWQu
+         Noh8v5MRNDUS5Yp456X4QCTJlF7cQ9Udr/BqODAhcWeL1A1cBGzXFji8d4WCdL0A9Czh
+         uF60hHQrlCO0oQVjO0zBX+PkdyNnKjGB82IHexMxOpPuDUbxVHR5Hqa29d/RRiz709Ew
+         5Usw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727427483; x=1728032283;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Eg8VUnCWU6xpmCG+ce1Tu7r95og6PEk5nWNUF8PLnD0=;
-        b=gv9fLOBopnpIo0Vc3onAwq98+o1AmwfsGOzUyG8gbGravcS6kGattnVwcEWUJUJe40
-         +0OOaYz2ANAIKW0RBypiVzAdT1I3PPoxhOlVSraoYfh2Bvxgo0knFVqOXuiZGWQJ/0uI
-         wNEBBqoz2gsSku0wksBpFcUDb4BUZnjJQ5uzKu3fioSEbsV0pTWGrFkuQ01jqemwx+0B
-         Lti5Sm19C0rU2s/Z1M0gTtzA1hyMkguLjTvVPMb3XU/fyRpveYS6rj1uJ0AiB2JqyjVk
-         qom0D4uTvulcKDDjVr8ygshXwLmd/7QDhYBW9C/c/49306qMxXO6s7s0LoNKBHccM8yq
-         ZzlA==
-X-Forwarded-Encrypted: i=1; AJvYcCU2kNwiVal/pbxQT4WCA9SZmuyu4dEISqslPuFr2sq3fPC9fh4lTuNtOeMwBn7eFImzsyFFI6xRhuhFf81Yz1wZL1wQ@vger.kernel.org, AJvYcCV2d0D0BsiKzXbQwL2TqwG+DY84lebb4Cux4G3ododFoAY6h2IDdKJbj2Rirj5VI/GV5D4wQlxe+CgYaZXOIQ==@vger.kernel.org, AJvYcCVBl/qvinXfWiUkGDVSQEEFr34DlHiFhgvil23df4xrDTJaQwe8+RbTWWC7NSxrKM2HLeN0@vger.kernel.org, AJvYcCWv54scAvVjhxJ7pezM8EjvxB7WchzIL10MLmaFUD5N0HnHJDuhrh3OttX2qEFrQFjslKvAbekh@vger.kernel.org, AJvYcCX9euyxmhyykrVUsgOdHzuNKV/u6O+k37wODRkiEsSzy6g1Zc4McDVPNUsKwU5fVqUshNJjLg==@vger.kernel.org, AJvYcCXd2/Cf5XF8BV7pfNUiXvazo1DtVaAEBfxUYPzvDHrcZrXX9wPyDY7dwNKWJ6jM7wdBSmSTZMDWtvu24YZf0jTXd+AvdPDG@vger.kernel.org, AJvYcCXuBnXWcCYL00ekJ2MlOU2kOwc6+ENoSoMdNGRjknOmTeVb81bBrChPPP9VJ0o7LFuwo9fkrerckw==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxlZYuYIBAqeuADDiwDH4QGdEkax+KYdlNITZDIn6qmDW0w1eWE
-	ziTAFLcqCrTmyw7kYJrLRlLAjg2pJLbz0YY1FjnOza6HmFweOxsxMhgfO6ZnU2yzL/YdMhgEvO0
-	CMEi91DmBjgQJjf1VLr4BwrAZDmk=
-X-Google-Smtp-Source: AGHT+IHlhccJP6o8YVDcpGsoOKh73nleQWjN6gMlntdM8azrnOLgCbN569DWouWNGBJF/Vf+8gknJS6h6du5PlKNbYc=
-X-Received: by 2002:a05:6102:2ac4:b0:49b:e9fc:14d2 with SMTP id
- ada2fe7eead31-4a2d7ff9815mr2856108137.23.1727427482685; Fri, 27 Sep 2024
- 01:58:02 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1727428562; x=1728033362;
+        h=mime-version:message-id:date:user-agent:references:in-reply-to
+         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QMXB/acHnp63ulIQj4Mexrn6RJxHaMq1mectA7Dj3/0=;
+        b=B0AHV3YDSbncf3+yp1M0d5QLO9Wo+daA4gdhSG4Mg1P8a4QQFeHWewvGdLJtRXq88P
+         c/Za0CuenDmWcdQugI9oUdwyOMf+QDY6nQGAZPNLPmfHEqbikNX4S9lm4J4GZdLUh4Un
+         npVlaZbQoOqdw3LSk01n+EwfJM3mkA6oKPCOSXEg3dxoxLrJBwQBFDtlsajdjF2hNPN0
+         jXmWOOlwmBKS9/VznVPGiSC+zXarRb0apQAeolFWSQj+Vuc+JNQiG9lLLnSeo3FaK1WV
+         9Hh/HkLsJWQAN8u6sltXCc578r7NiHCFeEUEwziLmC4jSS8qU9sr5zXK/zAvYJi7znHs
+         g8Dg==
+X-Forwarded-Encrypted: i=1; AJvYcCXmqdn+WSIDFaS31mbUI1XMpwZVuPgqt4Zon5sSi/eoM8v2VX7exBJLrPwpchk1PINc/HE=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwDScecjQdiRRctasQS1L8h6IyCsMaDo9+fb/d6isGkcXe1eyUx
+	zkrEMiKYwrvH9ZFRI16YAmwd6xgosHKlMZ02lBvl6kH9qjkSGPQUhlVYxU2vfFk=
+X-Google-Smtp-Source: AGHT+IH3O4+hKM0lE4zHGax913Dr+EWizpQPWKnOcfuA3BSxQ5PYgz+syrsbt0m6z7mRYNlXemozsw==
+X-Received: by 2002:a17:906:4fc6:b0:a8d:6648:813f with SMTP id a640c23a62f3a-a93c48f14a8mr231865966b.3.1727428561539;
+        Fri, 27 Sep 2024 02:16:01 -0700 (PDT)
+Received: from cloudflare.com ([2a09:bac5:5063:2432::39b:5a])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a93c2997d20sm106082766b.196.2024.09.27.02.15.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Sep 2024 02:15:59 -0700 (PDT)
+From: Jakub Sitnicki <jakub@cloudflare.com>
+To: Michal Luczaj <mhal@rbox.co>
+Cc: Andrii Nakryiko <andrii@kernel.org>,  Eduard Zingerman
+ <eddyz87@gmail.com>,  Mykola Lysenko <mykolal@fb.com>,  Alexei Starovoitov
+ <ast@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>,  Martin KaFai
+ Lau <martin.lau@linux.dev>,  Song Liu <song@kernel.org>,  Yonghong Song
+ <yonghong.song@linux.dev>,  John Fastabend <john.fastabend@gmail.com>,  KP
+ Singh <kpsingh@kernel.org>,  Stanislav Fomichev <sdf@fomichev.me>,  Hao
+ Luo <haoluo@google.com>,  Jiri Olsa <jolsa@kernel.org>,  Shuah Khan
+ <shuah@kernel.org>,  bpf@vger.kernel.org,
+  linux-kselftest@vger.kernel.org,  linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next v2 0/6] selftests/bpf: Various sockmap-related
+ fixes
+In-Reply-To: <0d4edea2-f989-484f-88bc-d8fb6acd7572@rbox.co> (Michal Luczaj's
+	message of "Fri, 27 Sep 2024 00:54:04 +0200")
+References: <20240731-selftest-sockmap-fixes-v2-0-08a0c73abed2@rbox.co>
+	<87y159yi5m.fsf@cloudflare.com>
+	<249a7dc3-34e2-4579-aae7-8b38b145e4bb@rbox.co>
+	<87ttfxy28s.fsf@cloudflare.com>
+	<42939687-20f9-4a45-b7c2-342a0e11a014@rbox.co>
+	<877cccqnvj.fsf@cloudflare.com>
+	<e78254c5-8f2f-4dc5-bf81-401caefabdd1@rbox.co>
+	<0d4edea2-f989-484f-88bc-d8fb6acd7572@rbox.co>
+User-Agent: mu4e 1.12.4; emacs 29.1
+Date: Fri, 27 Sep 2024 11:15:58 +0200
+Message-ID: <87ikuh78z5.fsf@cloudflare.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240817025624.13157-1-laoar.shao@gmail.com> <20240817025624.13157-6-laoar.shao@gmail.com>
- <CAHp75VdpG=yQVaJLR3J5puwj4FYWtXzaHkC1TdmiqfJu1s9PpA@mail.gmail.com>
-In-Reply-To: <CAHp75VdpG=yQVaJLR3J5puwj4FYWtXzaHkC1TdmiqfJu1s9PpA@mail.gmail.com>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Fri, 27 Sep 2024 16:57:26 +0800
-Message-ID: <CALOAHbBHV_xB88AD8azVXZQzdowLtU6EHewFGUtPHQE9K6GQ_Q@mail.gmail.com>
-Subject: Re: [PATCH v7 5/8] mm/util: Fix possible race condition in kstrdup()
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: akpm@linux-foundation.org, torvalds@linux-foundation.org, alx@kernel.org, 
-	justinstitt@google.com, ebiederm@xmission.com, alexei.starovoitov@gmail.com, 
-	rostedt@goodmis.org, catalin.marinas@arm.com, 
-	penguin-kernel@i-love.sakura.ne.jp, linux-mm@kvack.org, 
-	linux-fsdevel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	audit@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	selinux@vger.kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 
-On Fri, Sep 27, 2024 at 1:35=E2=80=AFAM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
+On Fri, Sep 27, 2024 at 12:54 AM +02, Michal Luczaj wrote:
+> On 9/24/24 12:25, Michal Luczaj wrote:
+>> On 8/19/24 22:05, Jakub Sitnicki wrote:
+>>> On Wed, Aug 14, 2024 at 06:14 PM +02, Michal Luczaj wrote:
+>>>> On 8/6/24 19:45, Jakub Sitnicki wrote:
+>>>>> On Tue, Aug 06, 2024 at 07:18 PM +02, Michal Luczaj wrote:
+>>>>>> Great, thanks for the review. With this completed, I guess we can unwind
+>>>>>> the (mail) stack to [1]. Is that ingress-to-local et al. something you
+>>>>>> wanted to take care of yourself or can I give it a try?
+>>>>>> [1] https://lore.kernel.org/netdev/87msmqn9ws.fsf@cloudflare.com/
+>>>>>
+>>>>> I haven't stated any work on. You're welcome to tackle that.
+>>>>>
+>>>>> All I have is a toy test that I've used to generate the redirect matrix.
+>>>>> Perhaps it can serve as inspiration:
+>>>>>
+>>>>> https://github.com/jsitnicki/sockmap-redir-matrix
+>>>>
+>>>> All right, please let me know if this is more or less what you meant and
+>>>> I'll post the whole series for a review (+patch to purge sockmap_listen of
+>>>> redir tests, fix misnomers). [...]
+>>>
+>>> Gave it a look as promised. It makes sense to me as well to put these
+>>> tests in a new module. There will be some overlap with sockmap_listen,
+>>> which has diverged from its inital scope, but we can dedup that later.
+>>>
+>>> One thought that I had is that it could make sense to test the not
+>>> supported redirect combos (and expect an error). Sometimes folks make
+>>> changes and enable some parts of the API by accient.
+>> 
+>> All right, so I did what sockmap_listen does: check
+>> test_sockmap_listen.c:verdict_map[SK_PASS] to see if the redirect took
+>> place for a given combo. And that works well... except for skb/msg to
+>> ingress af_vsock. Even though this is unsupported and no redirect
+>> actually happens, verdict appears to be SK_PASS. Is this correct?
 >
-> On Thu, Sep 26, 2024 at 7:44=E2=80=AFPM Yafang Shao <laoar.shao@gmail.com=
-> wrote:
-> >
-> > In kstrdup(), it is critical to ensure that the dest string is always
-> > NUL-terminated. However, potential race condidtion can occur between a
->
-> condition
->
-> > writer and a reader.
-> >
-> > Consider the following scenario involving task->comm:
-> >
-> >     reader                    writer
-> >
-> >   len =3D strlen(s) + 1;
-> >                              strlcpy(tsk->comm, buf, sizeof(tsk->comm))=
-;
-> >   memcpy(buf, s, len);
-> >
-> > In this case, there is a race condition between the reader and the
-> > writer. The reader calculate the length of the string `s` based on the
->
-> calculates
->
-> > old value of task->comm. However, during the memcpy(), the string `s`
-> > might be updated by the writer to a new value of task->comm.
-> >
-> > If the new task->comm is larger than the old one, the `buf` might not b=
-e
-> > NUL-terminated. This can lead to undefined behavior and potential
-> > security vulnerabilities.
-> >
-> > Let's fix it by explicitly adding a NUL-terminator.
->
-> memcpy() is not atomic AFAIK, meaning that the new string can be also
-> shorter and when memcpy() already copied past the new NUL. I would
-> amend the explanation to include this as well.
->
-> ...
->
-> > +               /* During memcpy(), the string might be updated to a ne=
-w value,
-> > +                * which could be longer than the string when strlen() =
-is
-> > +                * called. Therefore, we need to add a null termimator.
->
-> /*
->  * The wrong comment style. Besides that a typo
->  * in the word 'terminator'. Please, run codespell on your changes.
->  * Also use the same form: NUL-terminator when you are talking
->  * about '\0' and not NULL.
->  */
+> Here's a follow up: my guess is that some checks are missing. I'm not sure
+> if it's the best approach, but this fixes things for me:
 
-Thank you for pointing out these errors and for recommending the use
-of codespell.
-Will fix them in the next version.
+So you have already found a bug with a negative test. Nice.
 
---=20
-Regards
-Yafang
+Your patch makes sense to me.
+
+
+FYI, I've started a GH repo for anciallary materials for sockmap.
+Code samples, pointers to resources, a backlog of stuff to do (?).
+Inspired by the xdp-project repo:
+
+  https://github.com/xdp-project/xdp-project
+
+We can move it to a dedicated project namespace, right now it's at:
+
+  https://github.com/jsitnicki/sockmap-project/
+
+Feel free to add stuff there.
+
+> diff --git a/include/net/sock.h b/include/net/sock.h
+> index c58ca8dd561b..c87295f3476d 100644
+> --- a/include/net/sock.h
+> +++ b/include/net/sock.h
+> @@ -2715,6 +2715,11 @@ static inline bool sk_is_stream_unix(const struct sock *sk)
+>  	return sk->sk_family == AF_UNIX && sk->sk_type == SOCK_STREAM;
+>  }
+>  
+> +static inline bool sk_is_vsock(const struct sock *sk)
+> +{
+> +	return sk->sk_family == AF_VSOCK;
+> +}
+> +
+>  /**
+>   * sk_eat_skb - Release a skb if it is no longer needed
+>   * @sk: socket to eat this skb from
+> diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+> index 242c91a6e3d3..07d6aa4e39ef 100644
+> --- a/net/core/sock_map.c
+> +++ b/net/core/sock_map.c
+> @@ -647,6 +647,8 @@ BPF_CALL_4(bpf_sk_redirect_map, struct sk_buff *, skb,
+>  	sk = __sock_map_lookup_elem(map, key);
+>  	if (unlikely(!sk || !sock_map_redirect_allowed(sk)))
+>  		return SK_DROP;
+> +	if ((flags & BPF_F_INGRESS) && sk_is_vsock(sk))
+> +		return SK_DROP;
+>  
+>  	skb_bpf_set_redir(skb, sk, flags & BPF_F_INGRESS);
+>  	return SK_PASS;
+> @@ -675,6 +677,8 @@ BPF_CALL_4(bpf_msg_redirect_map, struct sk_msg *, msg,
+>  		return SK_DROP;
+>  	if (!(flags & BPF_F_INGRESS) && !sk_is_tcp(sk))
+>  		return SK_DROP;
+> +	if (sk_is_vsock(sk))
+> +		return SK_DROP;
+>  
+>  	msg->flags = flags;
+>  	msg->sk_redir = sk;
+> @@ -1249,6 +1253,8 @@ BPF_CALL_4(bpf_sk_redirect_hash, struct sk_buff *, skb,
+>  	sk = __sock_hash_lookup_elem(map, key);
+>  	if (unlikely(!sk || !sock_map_redirect_allowed(sk)))
+>  		return SK_DROP;
+> +	if ((flags & BPF_F_INGRESS) && sk_is_vsock(sk))
+> +		return SK_DROP;
+>  
+>  	skb_bpf_set_redir(skb, sk, flags & BPF_F_INGRESS);
+>  	return SK_PASS;
+> @@ -1277,6 +1283,8 @@ BPF_CALL_4(bpf_msg_redirect_hash, struct sk_msg *, msg,
+>  		return SK_DROP;
+>  	if (!(flags & BPF_F_INGRESS) && !sk_is_tcp(sk))
+>  		return SK_DROP;
+> +	if (sk_is_vsock(sk))
+> +		return SK_DROP;
+>  
+>  	msg->flags = flags;
+>  	msg->sk_redir = sk;
 
