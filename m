@@ -1,158 +1,178 @@
-Return-Path: <bpf+bounces-40381-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40382-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE714987D56
-	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2024 05:52:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F419987D61
+	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2024 05:58:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7313A1F24683
-	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2024 03:52:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7765F1C21D56
+	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2024 03:58:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EB6716EBE6;
-	Fri, 27 Sep 2024 03:52:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 123111714B6;
+	Fri, 27 Sep 2024 03:58:05 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D783223B0
-	for <bpf@vger.kernel.org>; Fri, 27 Sep 2024 03:52:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC481B658;
+	Fri, 27 Sep 2024 03:58:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727409142; cv=none; b=j0Ph+XXma0V8FqFSBPkXitgbigAGqR1I7L1+B9kEHj1JzPqebOW0ZB5l6rfHWyAP/yDu0NlksNFBGavx66C5jlh7lgt1/x2337adwdFgS2wF3yhbGJ6HSpBEGDEsa6CrYD3tpcgFAoZbuA0JeW/NOtomrUOzKFuT7KXWsUqFc7M=
+	t=1727409484; cv=none; b=OtQq4WRLTksRBn/Ctg63YPHPYMTSFFQEkJntYKrAqM2K+tHxZIm59j0ogiY9r8xhSOgzFpV45sVUAyu/Bh24q4zk6zD20SwouqNdph6s8P6PcLxh+eqD35LOQIVYgGkHdkCSd5NJ7kSaPI/b12GlrEKN4yQ/0/a4zSpZWby6/ko=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727409142; c=relaxed/simple;
-	bh=tijYP/eR2PHioC3KgAgMi4QXGnwkmGd0Dgeb/FN19k0=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=hcSv2CPKes8DzHxJkJeMsOlpD3dOc4JHIRAnEl7x2VBZDseKa+5zkW3jW0D7kuqth2qlB7D+ElpGKu2Jm+0+BzzQe9fHXuNSS0dHSU3tpOzm/a+Nvd9cQxSkcXGQCv0jtdWyTG5kUFRWJkuk4pZH/JrBc7Y2wQeeQaCwheJ6Zos=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-3a342e872a7so11750565ab.3
-        for <bpf@vger.kernel.org>; Thu, 26 Sep 2024 20:52:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727409140; x=1728013940;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3auWreLAZ73QzV0Lv0K1wMlu78NrY1VI+H7gTuEZZNg=;
-        b=peGNVPe+3IBh5vuqP80nC/GV3/sONWdepB7X11XTMYXoE1HptmsOgbwiaHX80d/U7r
-         j6IbByITXMszOTHj9r+5YDfrLhjbD0tj8OsVHS9HbGaOCd/wJw4k91GxeP6mutI77jEr
-         ptUfvF9kXDC5K45wqQ3Qk4sKoJB89Rm4lot5Uatr3ueEulckov/j2kwRg9LDDCJcFVRt
-         6iBopIYlqd+BRChgMOYqBDZamueWbSVozFgaL8+b3sbSXwNksYjbiCwQzcoQD+pG68r4
-         7lXpF9JwvIMzv4eU11aIjKD7IRJWnBbOMYssWTeVTLh/QZVn2HpAd60iAsrL+VESRs5o
-         P7og==
-X-Forwarded-Encrypted: i=1; AJvYcCV5Q7+MRwU8m7XxcrLPF3pdt1BxFG8GaqaSFc5HGguVcU4p318h74ES3U5f6DyAm8kbM9o=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz8Fxn5u9lmixU25dxhQ5Y5mYop1JOUaugAA018rstofRmBvmI0
-	LC0Dwr9ZVUNuMG0fkLqkGbMel+RmTCee/8hV4QvJs9HZsUbb0fQ0F6XEMvApzsM8IpYB6efo+cy
-	MwO7/CWhMoM1HTf8u7ljH8Y79B+dyLKH9rl8XQgOt64FYx+JvnD50kws=
-X-Google-Smtp-Source: AGHT+IE/eMe8L5X79DJcyc3g++cEfn8GM0JPpB9NtO+cctnAc2JcrwKhO3x5h2Ylk2bpVDbMqAZ8cGNF4hg6MH0vGn+lnXTetJZ0
+	s=arc-20240116; t=1727409484; c=relaxed/simple;
+	bh=zwS/DaxFbYR3qTbNEu5uhuYnJAYJWvWGfzselIAAS1E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=j8koX9Ojg5NtR73ohY3uC18Jo8Tz/LJI40KEGuKiHZYJ4aQPRFeBxxPtT3L2CWJUwux291nP8StXTQH5RutUwf4qe2cAAvBkkmDhg1caIR+fDJ6fhMWczdApsKP+OjsD1n0oBIfceYw/uu9/mQI6n/Btd6C10syZ9dqrmpEoV4Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.194])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4XFGpN5NVMzGq8S;
+	Fri, 27 Sep 2024 11:55:40 +0800 (CST)
+Received: from dggpemf200006.china.huawei.com (unknown [7.185.36.61])
+	by mail.maildlp.com (Postfix) with ESMTPS id B3F901400CF;
+	Fri, 27 Sep 2024 11:57:58 +0800 (CST)
+Received: from [10.67.120.129] (10.67.120.129) by
+ dggpemf200006.china.huawei.com (7.185.36.61) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Fri, 27 Sep 2024 11:57:58 +0800
+Message-ID: <842c8cc6-f716-437a-bc98-70bc26d6fd38@huawei.com>
+Date: Fri, 27 Sep 2024 11:57:58 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a92:ca4a:0:b0:3a0:915d:a4a7 with SMTP id
- e9e14a558f8ab-3a34514832bmr16835235ab.2.1727409140018; Thu, 26 Sep 2024
- 20:52:20 -0700 (PDT)
-Date: Thu, 26 Sep 2024 20:52:19 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <66f62bf3.050a0220.38ace9.0007.GAE@google.com>
-Subject: [syzbot] [bpf?] BUG: MAX_STACK_TRACE_ENTRIES too low! (4)
-From: syzbot <syzbot+c6c4861455fdd207f160@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
-	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
-	linux-kernel@vger.kernel.org, martin.lau@linux.dev, netdev@vger.kernel.org, 
-	sdf@fomichev.me, song@kernel.org, syzkaller-bugs@googlegroups.com, 
-	yonghong.song@linux.dev
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net v2 2/2] page_pool: fix IOMMU crash when driver has
+ already unbound
+To: Mina Almasry <almasrymina@google.com>
+CC: <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>,
+	<liuyonglong@huawei.com>, <fanghaiqing@huawei.com>, <zhangkun09@huawei.com>,
+	Robin Murphy <robin.murphy@arm.com>, Alexander Duyck
+	<alexander.duyck@gmail.com>, IOMMU <iommu@lists.linux.dev>, Wei Fang
+	<wei.fang@nxp.com>, Shenwei Wang <shenwei.wang@nxp.com>, Clark Wang
+	<xiaoning.wang@nxp.com>, Eric Dumazet <edumazet@google.com>, Tony Nguyen
+	<anthony.l.nguyen@intel.com>, Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+	Alexander Lobakin <aleksander.lobakin@intel.com>, Alexei Starovoitov
+	<ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard
+ Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Saeed
+ Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Tariq Toukan
+	<tariqt@nvidia.com>, Felix Fietkau <nbd@nbd.name>, Lorenzo Bianconi
+	<lorenzo@kernel.org>, Ryder Lee <ryder.lee@mediatek.com>, Shayne Chen
+	<shayne.chen@mediatek.com>, Sean Wang <sean.wang@mediatek.com>, Kalle Valo
+	<kvalo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Andrew
+ Morton <akpm@linux-foundation.org>, Ilias Apalodimas
+	<ilias.apalodimas@linaro.org>, <imx@lists.linux.dev>,
+	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<intel-wired-lan@lists.osuosl.org>, <bpf@vger.kernel.org>,
+	<linux-rdma@vger.kernel.org>, <linux-wireless@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>,
+	<linux-mm@kvack.org>
+References: <20240925075707.3970187-1-linyunsheng@huawei.com>
+ <20240925075707.3970187-3-linyunsheng@huawei.com>
+ <CAHS8izOxugzWJDTc-4CWqaKABTj=J4OHs=Lcb=SE9r8gX0J+yg@mail.gmail.com>
+Content-Language: en-US
+From: Yunsheng Lin <linyunsheng@huawei.com>
+In-Reply-To: <CAHS8izOxugzWJDTc-4CWqaKABTj=J4OHs=Lcb=SE9r8gX0J+yg@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemf200006.china.huawei.com (7.185.36.61)
 
-Hello,
+On 2024/9/27 2:15, Mina Almasry wrote:
+> 
+>> In order not to do the dma unmmapping after driver has already
+>> unbound and stall the unloading of the networking driver, add
+>> the pool->items array to record all the pages including the ones
+>> which are handed over to network stack, so the page_pool can
+>> do the dma unmmapping for those pages when page_pool_destroy()
+>> is called.
+> 
+> One thing I could not understand from looking at the code: if the
+> items array is in the struct page_pool, why do you need to modify the
+> page_pool entry in the struct page and in the struct net_iov? I think
+> the code could be made much simpler if you can remove these changes,
+> and you wouldn't need to modify the public api of the page_pool.
 
-syzbot found the following issue on:
+As mentioned in [1]:
+"There is no space in 'struct page' to track the inflight pages, so
+'pp' in 'struct page' is renamed to 'pp_item' to enable the tracking
+of inflight page"
 
-HEAD commit:    abf2050f51fd Merge tag 'media/v6.12-1' of git://git.kernel..
-git tree:       bpf
-console output: https://syzkaller.appspot.com/x/log.txt?x=100fc99f980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=bc30a30374b0753
-dashboard link: https://syzkaller.appspot.com/bug?extid=c6c4861455fdd207f160
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14ee7107980000
+As we still need pp for "struct page_pool" for page_pool_put_page()
+related API, the container_of() trick is used to get the pp from the
+pp_item.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/367fc75d0a34/disk-abf2050f.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/8df13e2678de/vmlinux-abf2050f.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/138b13f7dbdb/bzImage-abf2050f.xz
+As you had changed 'struct net_iov' to be mirroring the 'struct page',
+so change 'struct net_iov' part accordingly.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+c6c4861455fdd207f160@syzkaller.appspotmail.com
+1. https://lore.kernel.org/all/50a463d5-a5a1-422f-a4f7-d3587b12c265@huawei.com/
 
-BUG: MAX_STACK_TRACE_ENTRIES too low!
-turning off the locking correctness validator.
-CPU: 0 UID: 0 PID: 16 Comm: ksoftirqd/0 Not tainted 6.11.0-syzkaller-09959-gabf2050f51fd #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/06/2024
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:94 [inline]
- dump_stack_lvl+0x241/0x360 lib/dump_stack.c:120
- save_trace+0x926/0xb50 kernel/locking/lockdep.c:579
- check_prev_add kernel/locking/lockdep.c:3219 [inline]
- check_prevs_add kernel/locking/lockdep.c:3277 [inline]
- validate_chain+0x2bde/0x5920 kernel/locking/lockdep.c:3901
- __lock_acquire+0x1384/0x2050 kernel/locking/lockdep.c:5199
- lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5822
- __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
- _raw_spin_lock+0x2e/0x40 kernel/locking/spinlock.c:154
- htab_lock_bucket+0x1a4/0x370 kernel/bpf/hashtab.c:167
- htab_map_delete_elem+0x1df/0x6b0 kernel/bpf/hashtab.c:1430
- bpf_prog_bc20a984d57ef3f1+0x67/0x6b
- bpf_dispatcher_nop_func include/linux/bpf.h:1257 [inline]
- __bpf_prog_run include/linux/filter.h:701 [inline]
- bpf_prog_run include/linux/filter.h:708 [inline]
- __bpf_trace_run kernel/trace/bpf_trace.c:2318 [inline]
- bpf_trace_run2+0x2ec/0x540 kernel/trace/bpf_trace.c:2359
- __traceiter_kfree+0x2b/0x50 include/trace/events/kmem.h:94
- trace_kfree include/trace/events/kmem.h:94 [inline]
- kfree+0x35e/0x440 mm/slub.c:4715
- security_task_free+0xa4/0x1a0 security/security.c:3178
- __put_task_struct+0xf9/0x290 kernel/fork.c:977
- put_task_struct include/linux/sched/task.h:144 [inline]
- delayed_put_task_struct+0x125/0x300 kernel/exit.c:228
- rcu_do_batch kernel/rcu/tree.c:2567 [inline]
- rcu_core+0xaaa/0x17a0 kernel/rcu/tree.c:2823
- handle_softirqs+0x2c5/0x980 kernel/softirq.c:554
- run_ksoftirqd+0xca/0x130 kernel/softirq.c:927
- smpboot_thread_fn+0x544/0xa30 kernel/smpboot.c:164
- kthread+0x2f0/0x390 kernel/kthread.c:389
- ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
- </TASK>
+> 
+>> As the pool->items need to be large enough to avoid
+>> performance degradation, add a 'item_full' stat to indicate the
+>> allocation failure due to unavailability of pool->items.
+>>
+> 
+> I'm not sure there is any way to size the pool->items array correctly.
 
+Currently the size of pool->items is calculated in page_pool_create_percpu()
+as below, to make sure the size of pool->items is somewhat twice of the
+size of pool->ring so that the number of page sitting in the driver's rx
+ring waiting for the new packet is the similar to the number of page that is
+still being handled in the network stack as most drivers seems to set the
+pool->pool_size according to their rx ring size:
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
++#define PAGE_POOL_MIN_INFLIGHT_ITEMS		512
++	unsigned int item_cnt = (params->pool_size ? : 1024) +
++				PP_ALLOC_CACHE_SIZE + PAGE_POOL_MIN_INFLIGHT_ITEMS;
++	item_cnt = roundup_pow_of_two(item_cnt);
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> Can you use a data structure here that can grow? Linked list or
+> xarray?
+> 
+> AFAIU what we want is when the page pool allocates a netmem it will
+> add the netmem to the items array, and when the pp releases a netmem
+> it will remove it from the array. Both of these operations are slow
+> paths, right? So the performance of a data structure more complicated
+> than an array may be ok. bench_page_pool_simple will tell for sure.
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+The question would be why do we need the pool->items to grow with the
+additional overhead and complication by dynamic allocation of item, using
+complicated data structure and concurrent handling?
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+As mentioned in [2], it was the existing semantics, but it does not means
+we need to keep it. The changing of semantics seems like an advantage
+to me, as we are able to limit how many pages is allowed to be used by
+a page_pool instance.
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+2. https://lore.kernel.org/all/2fb8d278-62e0-4a81-a537-8f601f61e81d@huawei.com/
 
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
+> 
+>> Note, the devmem patchset seems to make the bug harder to fix,
+>> and may make backporting harder too. As there is no actual user
+>> for the devmem and the fixing for devmem is unclear for now,
+>> this patch does not consider fixing the case for devmem yet.
+>>
+> 
+> net_iovs don't hit this bug, dma_unmap_page_attrs() is never called on
+> them, so no special handling is needed really. However for code
 
-If you want to undo deduplication, reply with:
-#syz undup
+I am really doubtful about your above claim. As at least the below
+implementaion of dma_buf_unmap_attachment_unlocked() called in
+__net_devmem_dmabuf_binding_free() seems be using the DMA API directly:
+
+https://elixir.bootlin.com/linux/v6.7-rc8/source/drivers/gpu/drm/amd/amdgpu/amdgpu_dma_buf.c#L215
+
+Or am I missing something obvious here?
+
+> quality reasons lets try to minimize the number of devmem or memory
+> provider checks in the code, if possible.
+> 
 
