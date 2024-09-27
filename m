@@ -1,96 +1,132 @@
-Return-Path: <bpf+bounces-40438-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40439-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87346988B7D
-	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2024 22:50:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CFEC3988B88
+	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2024 22:51:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 39F2D1F24A55
-	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2024 20:50:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0CAD81C22D1F
+	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2024 20:51:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD61D1C2DB3;
-	Fri, 27 Sep 2024 20:50:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 673851C2DCF;
+	Fri, 27 Sep 2024 20:51:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iO1Rl+Fo"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z8d70gWB"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44F0115B57C
-	for <bpf@vger.kernel.org>; Fri, 27 Sep 2024 20:50:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B1D91C1AAA;
+	Fri, 27 Sep 2024 20:51:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727470228; cv=none; b=PRvZwCE2p8e18rJsr++5BJ+aYdMDtEr31bA5mrHwGW5LgtuAU8iErqBSs4uAB6NDNyx7nEjSxsDxEmAlAwuKiZ0oPJeP5MZoxFZNkxRKEUYv+CU9pZaQZHFC5/PnhKRfxENMVEG2bjdKE6Rjk6cvcQOdmE5mEJhWB5uiDigrcr8=
+	t=1727470270; cv=none; b=cMHN+kd2H0MKrbWvrIK8lUu3AW8KOuhmwecZhJS0GIM6WnGMiZPAdFhavorgV06tYqs2eoLv0uep0RFBRkViH53vHBwNXCnTEufjgEB4DxA5NbNbI47DDaF1ool9/Bbli4OAnqGVvG2N1+8owIG1oLJt/AwuhOCf9pduP0Bnwfo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727470228; c=relaxed/simple;
-	bh=jb/shboc0zdOXkJtWcknXQzVCir8lJXxy8TATOVnJs8=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=IIJtUaYHZjMNJodgRS0P8bIyWodfQRUy316nR1b/ZqoTCmvXM4DWIrwMVs8eHHWKYPVMuMZSDgPTR8KW66UWkGgrsvE6cyMjtPAUauRu5RECwx6HJ5Fw06RmTRNYnPppIVuBum2UUFqihju2y749Wpv4aL3l3JzEUm/8J3CPc/M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iO1Rl+Fo; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB90DC4CEC4;
-	Fri, 27 Sep 2024 20:50:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727470227;
-	bh=jb/shboc0zdOXkJtWcknXQzVCir8lJXxy8TATOVnJs8=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=iO1Rl+Fo1c55A9bIpfq25TuzQsmjnNJpzBWrHDwwjsovMnWqV6+ZSBRDAhXBjdSOR
-	 XTisCAOG26b2qQstyDrDVGXaLigm5lSkicoJUHpqIwq75nPBBjX0QM2rQIEj43imEe
-	 LIbRIzNXjC8sfF9XQePhY1KftFLwEJEoX4fqROxFV6HYzv2MwsgOXflj2uaGvz+nsx
-	 pzMy8Qom5qyP/ROeILLXSS9F/Wg3WpD1nz1X3/MZGDN8nndy+5fQzO0WQmeenC4gX8
-	 +EOWKV0DbVpp0NkV8xi04VcxeqOm/fNbxQmDMy9kUHfTFXa6I6QY0jlINVm3o/umsk
-	 KjzTrlAg5nL7A==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id AF1AD3809A80;
-	Fri, 27 Sep 2024 20:50:31 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1727470270; c=relaxed/simple;
+	bh=fv5Ohlk21LIsF20JuYNmFrvmslpVoam9RSrEzIPvyFI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Nln+UfwuE5f5/b7MGun4qbEdKACjJqykpDiPrjnAs1mjheDh1osYukerRliY6LUlPNX+P1dSZxMs8dQPxOqXsfPTS/Pn9CmHof5J8Mz0VCPA3wOaj5pxO0FYt+JsieCzEi05ULJIx3xElMuC3dQzQ8vkrNV1vHd1Lg4p7hnlCWY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Z8d70gWB; arc=none smtp.client-ip=209.85.214.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-2068acc8a4fso24365155ad.1;
+        Fri, 27 Sep 2024 13:51:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1727470268; x=1728075068; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=shLDirPvQHu0zX2krQXjYGhHMytzkPRkdTMRivfTN8M=;
+        b=Z8d70gWBCVUQYacppnGuM6YPaPABI25s4y8o3uZ0F54L6hbNNVJM9g24TPQd8511qz
+         7Vu3jcVBjxWnaLke1EH9LAJwhitWBxFLIsmCnMeLsDFl3SArlWV1xiYhR3sqRBWzvnSC
+         8rhDSVyvIrudCG9pw6ptKSRG5pmjCWd1W//lxtFjQUmykL1IPiWeVVc3K2EURbA7LFlV
+         r+S06uZYlrYd24yHqiHLVU4n8l2nugWXS0Ab/r1yrJ6XxGCuFYgGxJU8QiYdroPpI9Kg
+         4lBcF0WWkZZURqQEZXdr8zNSVo5wgMj1yy8SR+WrVrqUgJPfmFbFHDs3Ls2fuAOyHHXL
+         HdBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727470268; x=1728075068;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=shLDirPvQHu0zX2krQXjYGhHMytzkPRkdTMRivfTN8M=;
+        b=k1Mf7gV8QmjeH6iVuXmFrS6GHe0WaodcmVZuXF7CWPMqmGsirjxqi6vye5G7kS7Yzg
+         pUiH6cNJgE4ztmOH0KVzUERPJXXVXVdYNp3Uef0ZCz8++nJiEbgAA1JlURr0eeL0JFwV
+         oeEtMuLaSopMVV4Q4CpP2lLVxa76hurQrskBLI7L+MMYgtrlJG+BQy+dzUOZpOWrR7sb
+         oFoLgan0SmLljcNuPB47egEBWk+g14SKN8O8+t+x3trK9shrmMycg2f01rDZEE7S1kht
+         DxVZkR33zR9lkxcmpDfs3cbqq4meOhikrr9bgLLNrKallE8HC3A/O0gbKRBM/llFzESv
+         PdOQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVTw14ZaFyqHFOaH6ehzj/hDtGsTXcxpQHgHqNqTeqYw+QkE8FH277G1Jpx7tJui7DhK5PqgPuwTM88LlIJ@vger.kernel.org, AJvYcCVclkGZMJdRJLbxYWJBjamWvVAeoLqRYPELsrPQVn8rRTzPAQqHsRB1J3nk6abYLWeHEjGjxUWt@vger.kernel.org, AJvYcCXA3cT2ZaAcS4G6ItVMODj2Jzk+QyJn+N0BHAa7BdNpfwfEeZG7OH/HNxMpifz9Q5B8AX0W2dk5mWd7mEPkBaoj@vger.kernel.org, AJvYcCXukTP614m60ry8PKzARo6enqm7KnaFjw+LjD2Yx7czqWj+2izE5HO31R74CkbVt2RyczM=@vger.kernel.org
+X-Gm-Message-State: AOJu0YydTkXmN78/U1/WPoLbEcnzDebsKkqb08Rm+HKFAN01RrVdmmT+
+	HROHSnXqlzS30ZOQMxTR6hOQPu7IC3aFKyc6vT905hgISGobFRsMXZnAxjKRRlPIvkWlFvpEeaw
+	gJWbRSPXtDtWXUObfoITtcAWNVu0=
+X-Google-Smtp-Source: AGHT+IFc1YB99jbzqgA1b3v/qMqek7DloIcwJTgr24Uxixyvc8uET1u/DUrw9pFeTRB5saCg2/+neLug3iuvpvUpUDM=
+X-Received: by 2002:a17:90a:6d43:b0:2e0:8e36:132 with SMTP id
+ 98e67ed59e1d1-2e0b89ac7f4mr5057181a91.3.1727470267698; Fri, 27 Sep 2024
+ 13:51:07 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] selftests/bpf: fix uprobe_multi compilation error
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <172747023053.2079499.6816701153103508294.git-patchwork-notify@kernel.org>
-Date: Fri, 27 Sep 2024 20:50:30 +0000
-References: <20240926144948.172090-1-alan.maguire@oracle.com>
-In-Reply-To: <20240926144948.172090-1-alan.maguire@oracle.com>
-To: Alan Maguire <alan.maguire@oracle.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
- bpf@vger.kernel.org
+References: <20240927131355.350918-1-bjorn@kernel.org>
+In-Reply-To: <20240927131355.350918-1-bjorn@kernel.org>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Fri, 27 Sep 2024 13:50:55 -0700
+Message-ID: <CAEf4BzYCf2+8JkCjWZWGaNQcEc_=WO_emP2GPBQGZyrWm8APUg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] libbpf: Add missing per-arch include path
+To: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+Cc: Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, 
+	Mykola Lysenko <mykolal@fb.com>, bpf@vger.kernel.org, netdev@vger.kernel.org, 
+	=?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>, 
+	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-riscv@lists.infradead.org, Charlie Jenkins <charlie@rivosinc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello:
+On Fri, Sep 27, 2024 at 6:14=E2=80=AFAM Bj=C3=B6rn T=C3=B6pel <bjorn@kernel=
+.org> wrote:
+>
+> From: Bj=C3=B6rn T=C3=B6pel <bjorn@rivosinc.com>
+>
+> libbpf does not include the per-arch tools include path, e.g.
+> tools/arch/riscv/include. Some architectures depend those files to
+> build properly.
+>
+> Include tools/arch/$(SUBARCH)/include in the libbpf build.
+>
+> Fixes: 6d74d178fe6e ("tools: Add riscv barrier implementation")
+> Signed-off-by: Bj=C3=B6rn T=C3=B6pel <bjorn@rivosinc.com>
+> ---
+>  tools/lib/bpf/Makefile | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
+> index 1b22f0f37288..857a5f7b413d 100644
+> --- a/tools/lib/bpf/Makefile
+> +++ b/tools/lib/bpf/Makefile
+> @@ -61,7 +61,8 @@ ifndef VERBOSE
+>  endif
+>
+>  INCLUDES =3D -I$(or $(OUTPUT),.) \
+> -          -I$(srctree)/tools/include -I$(srctree)/tools/include/uapi
+> +          -I$(srctree)/tools/include -I$(srctree)/tools/include/uapi \
+> +          -I$(srctree)/tools/arch/$(SRCARCH)/include
+>
+>  export prefix libdir src obj
+>
 
-This patch was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
+Do you know what exactly is used from tools/arch/$(SRCARCH)/include
+for (I assume) RISC-V? I'm asking because we'd need to make sure that
+Github version of libbpf Makefile and include directory has all the
+necessary pieces as well (so I'd appreciate if you could take a look
+at that as well, if you haven't already).
 
-On Thu, 26 Sep 2024 15:49:48 +0100 you wrote:
-> When building selftests, the following was seen:
-> 
-> uprobe_multi.c: In function ‘trigger_uprobe’:
-> uprobe_multi.c:108:40: error: ‘MADV_PAGEOUT’ undeclared (first use in this function)
->   108 |                 madvise(addr, page_sz, MADV_PAGEOUT);
->       |                                        ^~~~~~~~~~~~
-> uprobe_multi.c:108:40: note: each undeclared identifier is reported only once for each function it appears in
-> make: *** [Makefile:850: bpf-next/tools/testing/selftests/bpf/uprobe_multi] Error 1
-> 
-> [...]
-
-Here is the summary with links:
-  - [bpf-next] selftests/bpf: fix uprobe_multi compilation error
-    https://git.kernel.org/bpf/bpf-next/c/db38ed2cfa62
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+>
+> base-commit: db5ca265e3334b48c4e3fa07eef79e8bc578c430
+> --
+> 2.43.0
+>
 
