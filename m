@@ -1,69 +1,70 @@
-Return-Path: <bpf+bounces-40448-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40449-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DED26988C9C
-	for <lists+bpf@lfdr.de>; Sat, 28 Sep 2024 00:48:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AF986988C9D
+	for <lists+bpf@lfdr.de>; Sat, 28 Sep 2024 00:48:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 03C241C20F8B
-	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2024 22:48:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF85E1C20DA3
+	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2024 22:48:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF1BD1B5ECD;
-	Fri, 27 Sep 2024 22:47:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E0C51B5ED9;
+	Fri, 27 Sep 2024 22:48:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CPAorfIA"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OBsYKI2R"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
+Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6E1418454C
-	for <bpf@vger.kernel.org>; Fri, 27 Sep 2024 22:47:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E9641B5ED4
+	for <bpf@vger.kernel.org>; Fri, 27 Sep 2024 22:48:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727477277; cv=none; b=KfgPhZMk37CXMNgV1itRlq/r9uS+FSIx62avahCRwRRgFoiXmHPxp4hiwlhv0XG9zvwRQLw1Rmy3q4OAAzWM7NgntsvyO4yFB5ohlnokzrBy92BlbNsjyrK041+GcH3/wfK5rsuT7G/CRJo/ysJonIO4FRzo9LjhD1P8SzgTbo0=
+	t=1727477310; cv=none; b=KJZ+Y2lJBe6yatajsForaEKMzVqm/stekktX4+s7wrOPHzXWLEX5iq9Fe/+tmSLx/U0ojFoXCvh4Yibij8LbFbGdwlqHrQC3bWVriEA3MQ+UymIzFzppT0ywEOePmS8KodPtfeMWjFtssam+nLUud9sa0I/oDO+LIeALoUhxMkE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727477277; c=relaxed/simple;
-	bh=FQfIr7jzAoDhAfZjzrswTSW8FjXr0k3mM883uYy/ujw=;
+	s=arc-20240116; t=1727477310; c=relaxed/simple;
+	bh=9NN6VbsRPAy5GwU6q/z1wEiREUUoRjjea/aUE5UR21o=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=QDcUyXnh8zgBuLL7hucd2pmhmn3B2YlsmesYqRNv74piJ8QfQlqtIfuj32pz4cwFlHqTpLLjjuP8ldMLwZyL3O+BpPzLtd8vLliqfsTKD2c5WJRHStWzT2fKrM058ntBrftExIli7HAskefWCOjKpR2j78Dl9jf9cyN2Si8GVBU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CPAorfIA; arc=none smtp.client-ip=209.85.216.49
+	 To:Cc:Content-Type; b=RbpR1/cmLvehHCKMmJsI4j3e6Ufqd2qA096LKeTbZuQyd+al6ktWhqr2CgAurqgCX0+uoaF7px8wLpCcYenzv6irqGdxbIFxBsunF/A9SsgsZ+1ZlLL0seAZi00z9rGQGXutb3vv4x2XIFlb4vNWB+kpdH/KzjR0A1POybeKka0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OBsYKI2R; arc=none smtp.client-ip=209.85.216.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-2e082bf1c7fso2003610a91.3
-        for <bpf@vger.kernel.org>; Fri, 27 Sep 2024 15:47:55 -0700 (PDT)
+Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-2e09a276ec6so2080468a91.0
+        for <bpf@vger.kernel.org>; Fri, 27 Sep 2024 15:48:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727477275; x=1728082075; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1727477309; x=1728082109; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=lwVyJcBXBN3eeCAv9Z+fuqkqA0rSxy10ro02THGBNtk=;
-        b=CPAorfIABlbIzki6taCEwyXZfCWSR5Kx5UQZdQvADozriMrqT1hpG499UQ8uT0gg/q
-         3KxIWLILR4g3L/r57IKJpNGRMtysIMbtBkPny8Z68nxWXI41iz9PI+wbiuIDOGg67vvj
-         F7fRK4Gt6Nf3JbRhq0iUKpQZuU8qnPRp8F0ZNScSZPqPbvutUMnqV80Y5bWECUcsXMEw
-         k2Se3E6u8AeYBBwIwBbafXp0Uz40K9am6BrIAZlsB3lupFRk78LgUvhnUyAQXSwqtZS9
-         OFnZpNyTw7Id5qC5577u1YlMlgEqSIE3viFr4WCqq5ZGSt3lP9FXxxyd0YmjMgiB9iGF
-         3byA==
+        bh=xqrVCWLT2Y7jc7iQ2NzMIo8gUo8tw8vrSs4UXb76dAc=;
+        b=OBsYKI2RlzRzcvWgWR5VRH0SJcMJ0cUBo/2GNk+9A8OshtkyqRDzsBVJG8M8aIuVUN
+         fGp2ASoKPzwK5GLn3TGZSwsEp86fGIRO71Hh72Stv3fVfaVQ90v2v4+BbfwuXB2ZVNK1
+         CQV/nW+FDvNdcCQit+FSgdV9I3QV4XH37EIBQyvH4ymKoKCp+/h/KO5oHqSaAJPuWjOj
+         OvaG9F522UvzzQ3MzVT4n2Smt6OFkA3josmQ+X+MM30um8PPbAJ8EL9PK42TvK84uL+T
+         AwD5qy1cn9SEbJNdPnyNi8kCNb67YGDUI6kbb3uZrULIN4fcY2NZEbUtpCQpH4UA3ihy
+         Keag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727477275; x=1728082075;
+        d=1e100.net; s=20230601; t=1727477309; x=1728082109;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=lwVyJcBXBN3eeCAv9Z+fuqkqA0rSxy10ro02THGBNtk=;
-        b=EQhw/KXPJKWlG152yMATVKHLbTbllfweJ9JzWS2kxUI0KgRhXL8sPyj5ysJthtcbop
-         ka5x6J7xsvmkJAcRTFgYU+hC3kOf3ZgTZhQpVO3d2sZEPNageqOrXmsTjPTBarSx2xRj
-         lgvmUB/ImDm8zunUARhOlicrni86rfkP1Zs1EzybULuuebXaH2s40DndPNspNai28C44
-         +S6x4UMT4j+SYN+cYOYfPYvAg4CNbCFpe2IA9rKrQLUjypFvzbuy1AKHD4OPv3YoY3JX
-         636JYatblgKYvHQALA/uMkyrHdKFFJ5emPXN7gXbUPjefn0Rj1bTK6FmtlTthMdqDuPi
-         KArQ==
-X-Gm-Message-State: AOJu0YyAvmJO0dWKlcFsG6CYEsUw6zUiR6XVEG/gGVVLtitnYH6Tw0Ff
-	bHlKEhU+7SsGUDcnxxIaYm8JArbhDRXYLgHMLSiynqsCpQ662yfQQBeOJCzIdgES0wOrMeC6W4z
-	FzZ58hv1il0wu91MHxVX7BLLzYuI=
-X-Google-Smtp-Source: AGHT+IF8CzCCwgZGaiEoPTufy/VLGrLMKypk2hLJC9QQjm/Jp50Ig9lJcpuJ2agqxMirRUm1qwfeQgy4VYYbYtXes7E=
-X-Received: by 2002:a17:90a:d3c1:b0:2dd:4f6b:6394 with SMTP id
- 98e67ed59e1d1-2e0b8b3a24cmr5462117a91.19.1727477275087; Fri, 27 Sep 2024
- 15:47:55 -0700 (PDT)
+        bh=xqrVCWLT2Y7jc7iQ2NzMIo8gUo8tw8vrSs4UXb76dAc=;
+        b=FMEBEn//bnyncpruqRTzB/yeqyNNnFIRvMFpGrvlsX09a5bbV/ZOeYMWeWzD+gqcN7
+         ruMwfQaxmeXu5zYJ/07EKt5w3FgFttpyQ/F6BqEU7ZobQkcdekCULs500YRsSfgDin0t
+         nITB4cH0fmfOWjWsARh87KZyXe3cbI3AOW/YxYQhYpcCgIY+agixbbwuL1tmxawcRvQ0
+         y4IF3BLnNb3faKJman4q7XUXv51cNwDEQ/BvJp9jhawTD3ZJ1sIBil2mRKX4I/hl8zS3
+         hGym9Kz5tTkWwkEbAnQQGynqFyfTaPaSVcdLR8QGvuoJ1hOmFAgEw06+r0X5cgGItEAp
+         pxqg==
+X-Forwarded-Encrypted: i=1; AJvYcCWb2ggauR9mGWP224vdkEGHcfCEMxshl7Y+z33lzabY3hGDxq6QbcUhD5ASPPhAORB0JKM=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzw/uFHEnb2cbrWTSY/tAa/SLbWqzGa3kv19n0rVm6qol0YvRmw
+	Q0g4mFQNfisKv24uLRxgF8GMbkDZUWwXGuO+fuU51MQ+oDfBosiwe19xo0lCTx2ORDsnGeCuaIA
+	k8eLnEdEqtGrWwLKAEFuHarIlAKw=
+X-Google-Smtp-Source: AGHT+IHn3vV6ktGaLt0JdMFTxdgGLcIVNv+QgiBg1nCknZAuU63gDVIlKYRzex4uGSbo/6CnqU0xy+A1ZPJ2r459+Ik=
+X-Received: by 2002:a17:90a:ad8b:b0:2e0:9236:5bb1 with SMTP id
+ 98e67ed59e1d1-2e0b8ec017bmr5873671a91.30.1727477308721; Fri, 27 Sep 2024
+ 15:48:28 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -71,221 +72,80 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20240918203925.150231-1-mykyta.yatsenko5@gmail.com>
-In-Reply-To: <20240918203925.150231-1-mykyta.yatsenko5@gmail.com>
+ <2a5997cd-ef30-42e6-b89b-6a1841e0c822@linux.alibaba.com> <2b838e54-4515-432c-b492-ccc16e000e7e@gmail.com>
+In-Reply-To: <2b838e54-4515-432c-b492-ccc16e000e7e@gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 27 Sep 2024 15:47:42 -0700
-Message-ID: <CAEf4BzYJRak7x0yn+g_zaAHUgJS0va2rcQL4uQ7LXDH3b3PAbQ@mail.gmail.com>
+Date: Fri, 27 Sep 2024 15:48:16 -0700
+Message-ID: <CAEf4BzYZQsr2RUYqsF2tCQ_aiWGPsQ-d_BvAs14S7mnj4yTDww@mail.gmail.com>
 Subject: Re: [PATCH bpf-next v2] selftests/bpf: emit top frequent code lines
  in veristat
 To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
-	daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com, 
-	Mykyta Yatsenko <yatsenko@meta.com>
+Cc: Philo Lu <lulie@linux.alibaba.com>, bpf@vger.kernel.org, ast@kernel.org, 
+	andrii@kernel.org, daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com, 
+	Mykyta Yatsenko <yatsenko@meta.com>, Eduard Zingerman <eddyz87@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Sep 18, 2024 at 1:40=E2=80=AFPM Mykyta Yatsenko
+On Thu, Sep 19, 2024 at 5:08=E2=80=AFAM Mykyta Yatsenko
 <mykyta.yatsenko5@gmail.com> wrote:
 >
-> From: Mykyta Yatsenko <yatsenko@meta.com>
+> On 19/09/2024 03:51, Philo Lu wrote:
+> >
+> > Hi Mykyta,
+> >
+> > On 2024/9/19 04:39, Mykyta Yatsenko wrote:
+> >> From: Mykyta Yatsenko <yatsenko@meta.com>
+> >>
+> >> Production BPF programs are increasing in number of instructions and
+> >> states
+> >> to the point, where optimising verification process for them is
+> >> necessary
+> >> to avoid running into instruction limit. Authors of those BPF programs
+> >> need to analyze verifier output, for example, collecting the most
+> >> frequent source code lines to understand which part of the program has
+> >> the biggest verification cost.
+> >>
+> >> This patch introduces `--top-src-lines` flag in veristat.
+> >> `--top-src-lines=3DN` makes veristat output N the most popular sorce c=
+ode
+> >> lines, parsed from verification log.
+> >>
+> >> An example:
+> >> ```
+> >> $ sudo ./veristat --log-size=3D1000000000 --top-src-lines=3D4
+> >> pyperf600.bpf.o
+> >> Processing 'pyperf600.bpf.o'...
+> >> Top source lines (on_event):
+> >>   4697: (pyperf.h:0)
+> >>   2334: (pyperf.h:326)    event->stack[i] =3D *symbol_id;
+> >>   2334: (pyperf.h:118)    pidData->offsets.String_data);
+> >>   1176: (pyperf.h:92) bpf_probe_read_user(&frame->f_back,
+> >> ...
+> >> ```
+> >
+> > I think this is useful and wonder how can I use it. In particular, is
+> > it possible to know the corresponding instruction number contributed
+> > by the source lines?
+> >
+> No, as far as I know, we don't have that info, so we just use number of
+> source lines as a proxy for number of instructions. Eduard suggested to
+> collect
+> instruction count per source line in verifier, maybe that actually what
+> we should do.
+
+Let's start simple and then build upon that. I'd rather finalize the
+minimal first version before going down to assembly instruction
+recording and counting.
+
+> > Assume a prog is rejected due to instruction limit. I can optimize the
+> > prog with `--top-src-lines`, but have to check the result with another
+> > "load" to see the total instruction number (because I don't know how
+> > many instructions reduced with the optimized src lines).
+> >
+> > Am I right? or is there any better method?
+> Yes, you are right.
+> >
+> > Thanks.
 >
-> Production BPF programs are increasing in number of instructions and stat=
-es
-> to the point, where optimising verification process for them is necessary
-> to avoid running into instruction limit. Authors of those BPF programs
-> need to analyze verifier output, for example, collecting the most
-> frequent source code lines to understand which part of the program has
-> the biggest verification cost.
 >
-> This patch introduces `--top-src-lines` flag in veristat.
-> `--top-src-lines=3DN` makes veristat output N the most popular sorce code
-> lines, parsed from verification log.
->
-> An example:
-> ```
-> $ sudo ./veristat --log-size=3D1000000000 --top-src-lines=3D4  pyperf600.=
-bpf.o
-> Processing 'pyperf600.bpf.o'...
-> Top source lines (on_event):
->  4697: (pyperf.h:0)
->  2334: (pyperf.h:326)   event->stack[i] =3D *symbol_id;
->  2334: (pyperf.h:118)   pidData->offsets.String_data);
->  1176: (pyperf.h:92)    bpf_probe_read_user(&frame->f_back,
-> ...
-> ```
->
-> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
-> ---
->  tools/testing/selftests/bpf/veristat.c | 132 ++++++++++++++++++++++++-
->  1 file changed, 127 insertions(+), 5 deletions(-)
->
-
-Looks pretty close to the final state, see some nits and some
-potential problems below. We should figure out the verboseness bits
-before applying this, though.
-
-pw-bot: cr
-
-> diff --git a/tools/testing/selftests/bpf/veristat.c b/tools/testing/selft=
-ests/bpf/veristat.c
-> index 1ec5c4c47235..854fa4459b77 100644
-> --- a/tools/testing/selftests/bpf/veristat.c
-> +++ b/tools/testing/selftests/bpf/veristat.c
-> @@ -143,6 +143,7 @@ static struct env {
->         char **filenames;
->         int filename_cnt;
->         bool verbose;
-> +       bool print_verbose;
-
-let's not do that, if we need to pass log_level to the kernel due to
-top_src_lines, then that should be coded explicitly, not relying on
-implicit "verbose" flag.
-
-But also consider that there are two verbose levels for the kernel:
-LOG_LEVEL=3D1 and LOG_LEVEL=3D2. We probably should default to LOG_LEVEL=3D=
-2
-if --top-src-lines is specified *unless* user explicitly specified
--vl1. Please play with different combinations and see if they make
-sense.
-
-log_level=3D2 is extremely verbose, so if the user specified -v (and not
--vl2), they will be surprised by extra verboseness.
-
->         bool debug;
->         bool quiet;
->         bool force_checkpoints;
-> @@ -179,11 +180,12 @@ static struct env {
->         int files_skipped;
->         int progs_processed;
->         int progs_skipped;
-> +       int top_src_lines;
->  } env;
-
-[...]
-
-> +static int print_top_src_lines(char * const buf, size_t buf_sz, const ch=
-ar *prog_name)
-> +{
-> +       int lines_cap =3D 1;
-> +       int lines_size =3D 0;
-> +       char **lines;
-> +       char *line =3D NULL;
-> +       char *state;
-> +       struct line_cnt *freq =3D NULL;
-> +       struct line_cnt *cur;
-> +       int unique_lines;
-> +       int err;
-> +       int i;
-> +
-> +       lines =3D calloc(lines_cap, sizeof(char *));
-> +       if (!lines)
-> +               return -ENOMEM;
-
-start with lines_cap =3D=3D 0, skip this calloc(), let realloc() do all
-the work (lines should be initialized to NULL, of course)
-
-> +
-> +       while ((line =3D strtok_r(line ? NULL : buf, "\n", &state))) {
-> +               if (strncmp(line, "; ", 2))
-
-nit: with strncmp() and strcmp() I find it much more readable explicit
-=3D=3D 0 or !=3D 0, otherwise my brain instinctively understands it in
-exactly opposite way
-
-> +                       continue;
-> +               line +=3D 2;
-> +
-> +               if (lines_size =3D=3D lines_cap) {
-> +                       char **tmp;
-> +
-> +                       lines_cap *=3D 2;
-
-nit: generally speaking, it's common pattern to have some starting
-minimal length that's a bit bigger than 1 or 2, so e.g., you'd do
-
-lines_cap =3D max(16, 2 * lines_cap);
-
-> +                       tmp =3D realloc(lines, lines_cap * sizeof(char *)=
-);
-> +                       if (!tmp) {
-> +                               err =3D -ENOMEM;
-> +                               goto cleanup;
-> +                       }
-> +                       lines =3D tmp;
-> +               }
-> +               lines[lines_size] =3D line;
-> +               lines_size++;
-> +       }
-> +
-> +       if (!lines_size)
-
-nit: lines_size =3D=3D 0 (it's not an error code and neither is it bool,
-so explicit zero comparison makes more sense, IMO)
-
-> +               goto cleanup;
-> +
-> +       qsort(lines, lines_size, sizeof(char *), str_cmp);
-
-nit: probably would be better to use sizeof(*lines)
-
-> +
-> +       freq =3D calloc(lines_size, sizeof(struct line_cnt));
-> +       if (!freq) {
-> +               err =3D -ENOMEM;
-> +               goto cleanup;
-> +       }
-> +
-> +       cur =3D freq;
-> +       cur->line =3D lines[0];
-> +       cur->cnt =3D 1;
-> +       for (i =3D 1; i < lines_size; ++i) {
-> +               if (strcmp(lines[i], cur->line)) {
-> +                       cur++;
-> +                       cur->line =3D lines[i];
-> +                       cur->cnt =3D 0;
-> +               }
-> +               cur->cnt++;
-> +       }
-> +       unique_lines =3D cur - freq + 1;
-> +
-> +       qsort(freq, unique_lines, sizeof(struct line_cnt), line_cnt_cmp);
-
-nit: sizeof(*freq), besides being shorter, it also won't need updating
-if we rename the type *and* it shows connection to freq[] itself quite
-explicitly
-
-> +
-> +       printf("Top source lines (%s):\n", prog_name);
-> +       for (i =3D 0; i < min(unique_lines, env.top_src_lines); ++i) {
-> +               char *src_code;
-> +               char *src_line;
-> +
-> +               src_code =3D strtok_r(freq[i].line, "@", &state);
-
-what happens if the line doesn't have '@' in it, which will be the
-case on older kernels? Can you please test all this on some old kernel
-with a different verifier log output? It shouldn't crash.
-
-tbh, it feels like strtok_r is a bit of an overkill here. I'd just
-strrchr('@') (note reverse search), if it's there, extract everything
-to the right as file name, otherwise assume the entire string is
-source code line. This will handle both old and new verifier log
-formats
-
-> +               src_line =3D strtok_r(NULL, "\0", &state);
-> +               if (src_line)
-> +                       printf("%5d: (%s)\t%s\n", freq[i].cnt, src_line +=
- 1, src_code);
-> +               else
-> +                       printf("%5d: %s\n", freq[i].cnt, src_code);
-> +       }
-> +
-> +cleanup:
-> +       free(freq);
-> +       free(lines);
-> +       return err;
-> +}
-> +
-
-[...]
 
