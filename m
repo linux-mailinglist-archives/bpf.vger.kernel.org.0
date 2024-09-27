@@ -1,215 +1,211 @@
-Return-Path: <bpf+bounces-40393-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40394-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07299988124
-	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2024 11:16:14 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EB27988136
+	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2024 11:22:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6BE912840DC
-	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2024 09:16:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B15D01F249E9
+	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2024 09:22:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 898CD1BA86D;
-	Fri, 27 Sep 2024 09:16:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35D9B1BAECE;
+	Fri, 27 Sep 2024 09:22:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="eL8JY6CE"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="a8WplHry"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F2971BA289
-	for <bpf@vger.kernel.org>; Fri, 27 Sep 2024 09:16:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D05C433D9
+	for <bpf@vger.kernel.org>; Fri, 27 Sep 2024 09:22:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727428565; cv=none; b=NLaV1uXSGZnisGq9Qn+JcfNeJGsRVxPSWf6bqqPpgxtqmGaHECEEGkonWePwS8ZnDSys+cilqsObuVPsQ6T/P96a+5AZo5CvzENL7tRdn7t/RBEnLhGCB7edYlQGipI/PiSmoaql9NEkN0dsjC32jsNaXeyMH7PyZY08yWnIZEI=
+	t=1727428932; cv=none; b=c5Y/SDM13fsCIM6HBiJzS6eVupXXgsA+W4AQ2qKfBrcjeSPOC5CE9CXwxpzh1oMSuG91iukUr11wF6lv/Ulf4K2B4s3KpeyEp5mbrr880BPOOf4yhVgN8vU87WKXsXI9Civ8g+Z3DTezL6wazrnYZXUDQ1Jk9hg+ljBJ5ACNo/A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727428565; c=relaxed/simple;
-	bh=9LVM7U9qoJlT9Uhh1DQExS62mXazXMYih3BiV2Pb6gI=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=GS4xsLsVHfyGkZvJ+iM4ddHeb3bcr9/jOFbVx1OkAAfnCc2FWa+fXnQUXBZotoIwSqam2kNI3P6ajiqdCACc5+TKI6U7Yv5Yavn38K+iwpeKmZ9oxmnawLDP/MCEXKaFBytIr272afxINEx0vYXvxmq78VAI0ra4VhIcaf9d4GA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=eL8JY6CE; arc=none smtp.client-ip=209.85.218.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a90188ae58eso229494366b.1
-        for <bpf@vger.kernel.org>; Fri, 27 Sep 2024 02:16:03 -0700 (PDT)
+	s=arc-20240116; t=1727428932; c=relaxed/simple;
+	bh=12b5Ewn3cylugkvg1EbdzJzESK9RcP19B7oJlHII/b8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=mQoaxkT9BwuYBWkvWKUgRaarrtuSr7scGYIJ8HRlNZOC780hu2OMu85v06TG8YHhcR/DpTyd0sQUwhp0IS/h7vEGgOpTO1g/Ky9RBMZaeunFji2N5q3EZmtq3NVqpckkVyvuKBuqj0WsXiEfVcT6vBBP7miEyPPK8kgywcBQa0c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=a8WplHry; arc=none smtp.client-ip=209.85.216.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2e06fade5eeso1556013a91.2
+        for <bpf@vger.kernel.org>; Fri, 27 Sep 2024 02:22:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1727428562; x=1728033362; darn=vger.kernel.org;
-        h=mime-version:message-id:date:user-agent:references:in-reply-to
-         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=QMXB/acHnp63ulIQj4Mexrn6RJxHaMq1mectA7Dj3/0=;
-        b=eL8JY6CEs0r+PsJzvlaNiIH12dBxzHh2yJ3XZYfjkW1P9E6SZPVdTTy9/SdzC5DTXX
-         ZsUxxR4bekaqc5RPPiIouzI6Dlsd+zI/2XXGmuHE8rNulrep/XU7IQCtjtlwxo+trPsg
-         ex9P0q8fZN13jnSDDkx5t+/hkmSXbLq7UERKlL6Ie85vB5dqUfu7I7389lUNmEsRtWQu
-         Noh8v5MRNDUS5Yp456X4QCTJlF7cQ9Udr/BqODAhcWeL1A1cBGzXFji8d4WCdL0A9Czh
-         uF60hHQrlCO0oQVjO0zBX+PkdyNnKjGB82IHexMxOpPuDUbxVHR5Hqa29d/RRiz709Ew
-         5Usw==
+        d=linaro.org; s=google; t=1727428930; x=1728033730; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=u12Tug5k2bdyzIU9WiqUE2EObFB7IXUcT3bKNNPZCB0=;
+        b=a8WplHry6u3iuaQkoq0+ZuW5zEccqDNVuuHcnAtXMA1SRyBTH7GW2PWKCLY01aJ6lL
+         dD22V5tm/66zyJZ+iCvICdOSB/lK9TZFCPr1tniZWNJ3v8WHRKoGwOgrsmCZjty3S5gt
+         0uSTHMamrhjA1ZZpzQN/Rwvl20Yy6SoXAAYpyx6becyxwT18gcBzmprVsjE076+Zk3Ik
+         +tosuclWvttUNiUGzSPIe6YG0y4c2IQFiRSVRZ1BbxffwUxbmY5aJz3kZgSIWYv9QCRP
+         CGrldaVUavywa5YcmblPv3J1jq8UNYHg7oD6znm6iJhNsOMaSvnST3WO+RLcrv08wJRF
+         BiPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727428562; x=1728033362;
-        h=mime-version:message-id:date:user-agent:references:in-reply-to
-         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QMXB/acHnp63ulIQj4Mexrn6RJxHaMq1mectA7Dj3/0=;
-        b=B0AHV3YDSbncf3+yp1M0d5QLO9Wo+daA4gdhSG4Mg1P8a4QQFeHWewvGdLJtRXq88P
-         c/Za0CuenDmWcdQugI9oUdwyOMf+QDY6nQGAZPNLPmfHEqbikNX4S9lm4J4GZdLUh4Un
-         npVlaZbQoOqdw3LSk01n+EwfJM3mkA6oKPCOSXEg3dxoxLrJBwQBFDtlsajdjF2hNPN0
-         jXmWOOlwmBKS9/VznVPGiSC+zXarRb0apQAeolFWSQj+Vuc+JNQiG9lLLnSeo3FaK1WV
-         9Hh/HkLsJWQAN8u6sltXCc578r7NiHCFeEUEwziLmC4jSS8qU9sr5zXK/zAvYJi7znHs
-         g8Dg==
-X-Forwarded-Encrypted: i=1; AJvYcCXmqdn+WSIDFaS31mbUI1XMpwZVuPgqt4Zon5sSi/eoM8v2VX7exBJLrPwpchk1PINc/HE=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwDScecjQdiRRctasQS1L8h6IyCsMaDo9+fb/d6isGkcXe1eyUx
-	zkrEMiKYwrvH9ZFRI16YAmwd6xgosHKlMZ02lBvl6kH9qjkSGPQUhlVYxU2vfFk=
-X-Google-Smtp-Source: AGHT+IH3O4+hKM0lE4zHGax913Dr+EWizpQPWKnOcfuA3BSxQ5PYgz+syrsbt0m6z7mRYNlXemozsw==
-X-Received: by 2002:a17:906:4fc6:b0:a8d:6648:813f with SMTP id a640c23a62f3a-a93c48f14a8mr231865966b.3.1727428561539;
-        Fri, 27 Sep 2024 02:16:01 -0700 (PDT)
-Received: from cloudflare.com ([2a09:bac5:5063:2432::39b:5a])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a93c2997d20sm106082766b.196.2024.09.27.02.15.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Sep 2024 02:15:59 -0700 (PDT)
-From: Jakub Sitnicki <jakub@cloudflare.com>
-To: Michal Luczaj <mhal@rbox.co>
-Cc: Andrii Nakryiko <andrii@kernel.org>,  Eduard Zingerman
- <eddyz87@gmail.com>,  Mykola Lysenko <mykolal@fb.com>,  Alexei Starovoitov
- <ast@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>,  Martin KaFai
- Lau <martin.lau@linux.dev>,  Song Liu <song@kernel.org>,  Yonghong Song
- <yonghong.song@linux.dev>,  John Fastabend <john.fastabend@gmail.com>,  KP
- Singh <kpsingh@kernel.org>,  Stanislav Fomichev <sdf@fomichev.me>,  Hao
- Luo <haoluo@google.com>,  Jiri Olsa <jolsa@kernel.org>,  Shuah Khan
- <shuah@kernel.org>,  bpf@vger.kernel.org,
-  linux-kselftest@vger.kernel.org,  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next v2 0/6] selftests/bpf: Various sockmap-related
- fixes
-In-Reply-To: <0d4edea2-f989-484f-88bc-d8fb6acd7572@rbox.co> (Michal Luczaj's
-	message of "Fri, 27 Sep 2024 00:54:04 +0200")
-References: <20240731-selftest-sockmap-fixes-v2-0-08a0c73abed2@rbox.co>
-	<87y159yi5m.fsf@cloudflare.com>
-	<249a7dc3-34e2-4579-aae7-8b38b145e4bb@rbox.co>
-	<87ttfxy28s.fsf@cloudflare.com>
-	<42939687-20f9-4a45-b7c2-342a0e11a014@rbox.co>
-	<877cccqnvj.fsf@cloudflare.com>
-	<e78254c5-8f2f-4dc5-bf81-401caefabdd1@rbox.co>
-	<0d4edea2-f989-484f-88bc-d8fb6acd7572@rbox.co>
-User-Agent: mu4e 1.12.4; emacs 29.1
-Date: Fri, 27 Sep 2024 11:15:58 +0200
-Message-ID: <87ikuh78z5.fsf@cloudflare.com>
+        d=1e100.net; s=20230601; t=1727428930; x=1728033730;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=u12Tug5k2bdyzIU9WiqUE2EObFB7IXUcT3bKNNPZCB0=;
+        b=j5+RbHJ2abmpEGKlhm1KWnsILAItg25kOBIyq2cw5SW2674eMDjJ7e7tpXn5l2fbSJ
+         qqldSx46hBwW4VJfdUn9nHFNHwQREb2MNlcyxPvSRhKyney+KidfbBM0fOWkuHPeij4v
+         hAeYWwTcv/RSIoTljHJrg5VrfbNlNOhd6Nh1U/+inB3C3SyL1mDuV90/wZXVmE7TToZ8
+         pSt0JUlgr45bb8GP/oh/bLft2X19TJnWxdDyGwPHrgF5qlNjKDA+LDcvwatdEi/sEDUL
+         pqmpFQXRNS42AhjT6GX9aXscD7zZ6597prma4v1pv0XMoV2vdHUQ+YA1XjxPva6Y3cqR
+         O8kg==
+X-Forwarded-Encrypted: i=1; AJvYcCUJ/tM3lPnO/XcnCHm8Eg+fUIRl4kZaV5aLcV40ZjKoFYikZrHbn0htps/kcIVU5aR3lQ4=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyfjdyArW092cTz8llnCvGiK0C+9ZxuZWYhUXn1LEVPSq2Q2KfU
+	at2hum2IrGYzNPfoyfeM+k1jD62R1WaqcAC3pF/z2DHYjY/e+S1tpiD5xgfCdifHxAr6n47JiOG
+	nikecmArAm52S0nMasK+IDPx56ECorZ3wU2Jl1A==
+X-Google-Smtp-Source: AGHT+IGhQGOutUtxLVOzhj1pZESUxIJEMnWirkI07rvkOdCYDPIQ+9U4QYWB0UPwoiObJJWrhA4Koam3DQfasHbzz4I=
+X-Received: by 2002:a17:90a:4b07:b0:2e0:9147:7db5 with SMTP id
+ 98e67ed59e1d1-2e0b8ed4cebmr2795273a91.38.1727428930437; Fri, 27 Sep 2024
+ 02:22:10 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20240925075707.3970187-1-linyunsheng@huawei.com>
+ <20240925075707.3970187-3-linyunsheng@huawei.com> <CAHS8izOxugzWJDTc-4CWqaKABTj=J4OHs=Lcb=SE9r8gX0J+yg@mail.gmail.com>
+ <842c8cc6-f716-437a-bc98-70bc26d6fd38@huawei.com>
+In-Reply-To: <842c8cc6-f716-437a-bc98-70bc26d6fd38@huawei.com>
+From: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Date: Fri, 27 Sep 2024 12:21:33 +0300
+Message-ID: <CAC_iWjLgNOtsbhqrhvvEz2C3S668qB8KatL_W+tPHMSkDrNS=w@mail.gmail.com>
+Subject: Re: [PATCH net v2 2/2] page_pool: fix IOMMU crash when driver has
+ already unbound
+To: Yunsheng Lin <linyunsheng@huawei.com>
+Cc: Mina Almasry <almasrymina@google.com>, davem@davemloft.net, kuba@kernel.org, 
+	pabeni@redhat.com, liuyonglong@huawei.com, fanghaiqing@huawei.com, 
+	zhangkun09@huawei.com, Robin Murphy <robin.murphy@arm.com>, 
+	Alexander Duyck <alexander.duyck@gmail.com>, IOMMU <iommu@lists.linux.dev>, 
+	Wei Fang <wei.fang@nxp.com>, Shenwei Wang <shenwei.wang@nxp.com>, 
+	Clark Wang <xiaoning.wang@nxp.com>, Eric Dumazet <edumazet@google.com>, 
+	Tony Nguyen <anthony.l.nguyen@intel.com>, Przemek Kitszel <przemyslaw.kitszel@intel.com>, 
+	Alexander Lobakin <aleksander.lobakin@intel.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, Saeed Mahameed <saeedm@nvidia.com>, 
+	Leon Romanovsky <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>, Felix Fietkau <nbd@nbd.name>, 
+	Lorenzo Bianconi <lorenzo@kernel.org>, Ryder Lee <ryder.lee@mediatek.com>, 
+	Shayne Chen <shayne.chen@mediatek.com>, Sean Wang <sean.wang@mediatek.com>, 
+	Kalle Valo <kvalo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>, 
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, imx@lists.linux.dev, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org, 
+	bpf@vger.kernel.org, linux-rdma@vger.kernel.org, 
+	linux-wireless@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-mediatek@lists.infradead.org, linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, Sep 27, 2024 at 12:54 AM +02, Michal Luczaj wrote:
-> On 9/24/24 12:25, Michal Luczaj wrote:
->> On 8/19/24 22:05, Jakub Sitnicki wrote:
->>> On Wed, Aug 14, 2024 at 06:14 PM +02, Michal Luczaj wrote:
->>>> On 8/6/24 19:45, Jakub Sitnicki wrote:
->>>>> On Tue, Aug 06, 2024 at 07:18 PM +02, Michal Luczaj wrote:
->>>>>> Great, thanks for the review. With this completed, I guess we can unwind
->>>>>> the (mail) stack to [1]. Is that ingress-to-local et al. something you
->>>>>> wanted to take care of yourself or can I give it a try?
->>>>>> [1] https://lore.kernel.org/netdev/87msmqn9ws.fsf@cloudflare.com/
->>>>>
->>>>> I haven't stated any work on. You're welcome to tackle that.
->>>>>
->>>>> All I have is a toy test that I've used to generate the redirect matrix.
->>>>> Perhaps it can serve as inspiration:
->>>>>
->>>>> https://github.com/jsitnicki/sockmap-redir-matrix
->>>>
->>>> All right, please let me know if this is more or less what you meant and
->>>> I'll post the whole series for a review (+patch to purge sockmap_listen of
->>>> redir tests, fix misnomers). [...]
->>>
->>> Gave it a look as promised. It makes sense to me as well to put these
->>> tests in a new module. There will be some overlap with sockmap_listen,
->>> which has diverged from its inital scope, but we can dedup that later.
->>>
->>> One thought that I had is that it could make sense to test the not
->>> supported redirect combos (and expect an error). Sometimes folks make
->>> changes and enable some parts of the API by accient.
->> 
->> All right, so I did what sockmap_listen does: check
->> test_sockmap_listen.c:verdict_map[SK_PASS] to see if the redirect took
->> place for a given combo. And that works well... except for skb/msg to
->> ingress af_vsock. Even though this is unsupported and no redirect
->> actually happens, verdict appears to be SK_PASS. Is this correct?
+Hi Yunsheng
+
+On Fri, 27 Sept 2024 at 06:58, Yunsheng Lin <linyunsheng@huawei.com> wrote:
 >
-> Here's a follow up: my guess is that some checks are missing. I'm not sure
-> if it's the best approach, but this fixes things for me:
+> On 2024/9/27 2:15, Mina Almasry wrote:
+> >
+> >> In order not to do the dma unmmapping after driver has already
+> >> unbound and stall the unloading of the networking driver, add
+> >> the pool->items array to record all the pages including the ones
+> >> which are handed over to network stack, so the page_pool can
+> >> do the dma unmmapping for those pages when page_pool_destroy()
+> >> is called.
+> >
+> > One thing I could not understand from looking at the code: if the
+> > items array is in the struct page_pool, why do you need to modify the
+> > page_pool entry in the struct page and in the struct net_iov? I think
+> > the code could be made much simpler if you can remove these changes,
+> > and you wouldn't need to modify the public api of the page_pool.
+>
+> As mentioned in [1]:
+> "There is no space in 'struct page' to track the inflight pages, so
+> 'pp' in 'struct page' is renamed to 'pp_item' to enable the tracking
+> of inflight page"
 
-So you have already found a bug with a negative test. Nice.
+I have the same feeling as Mina here. First of all, we do have an
+unsigned long in struct page we use for padding IIRC. More
+importantly, though, why does struct page need to know about this?
+Can't we have the same information in page pool?
+When the driver allocates pages it does via page_pool_dev_alloc_XXXXX
+or something similar. Cant we do what you suggest here ? IOW when we
+allocate a page we put it in a list, and when that page returns to
+page_pool (and it's mapped) we remove it.
 
-Your patch makes sense to me.
-
-
-FYI, I've started a GH repo for anciallary materials for sockmap.
-Code samples, pointers to resources, a backlog of stuff to do (?).
-Inspired by the xdp-project repo:
-
-  https://github.com/xdp-project/xdp-project
-
-We can move it to a dedicated project namespace, right now it's at:
-
-  https://github.com/jsitnicki/sockmap-project/
-
-Feel free to add stuff there.
-
-> diff --git a/include/net/sock.h b/include/net/sock.h
-> index c58ca8dd561b..c87295f3476d 100644
-> --- a/include/net/sock.h
-> +++ b/include/net/sock.h
-> @@ -2715,6 +2715,11 @@ static inline bool sk_is_stream_unix(const struct sock *sk)
->  	return sk->sk_family == AF_UNIX && sk->sk_type == SOCK_STREAM;
->  }
->  
-> +static inline bool sk_is_vsock(const struct sock *sk)
-> +{
-> +	return sk->sk_family == AF_VSOCK;
-> +}
-> +
->  /**
->   * sk_eat_skb - Release a skb if it is no longer needed
->   * @sk: socket to eat this skb from
-> diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-> index 242c91a6e3d3..07d6aa4e39ef 100644
-> --- a/net/core/sock_map.c
-> +++ b/net/core/sock_map.c
-> @@ -647,6 +647,8 @@ BPF_CALL_4(bpf_sk_redirect_map, struct sk_buff *, skb,
->  	sk = __sock_map_lookup_elem(map, key);
->  	if (unlikely(!sk || !sock_map_redirect_allowed(sk)))
->  		return SK_DROP;
-> +	if ((flags & BPF_F_INGRESS) && sk_is_vsock(sk))
-> +		return SK_DROP;
->  
->  	skb_bpf_set_redir(skb, sk, flags & BPF_F_INGRESS);
->  	return SK_PASS;
-> @@ -675,6 +677,8 @@ BPF_CALL_4(bpf_msg_redirect_map, struct sk_msg *, msg,
->  		return SK_DROP;
->  	if (!(flags & BPF_F_INGRESS) && !sk_is_tcp(sk))
->  		return SK_DROP;
-> +	if (sk_is_vsock(sk))
-> +		return SK_DROP;
->  
->  	msg->flags = flags;
->  	msg->sk_redir = sk;
-> @@ -1249,6 +1253,8 @@ BPF_CALL_4(bpf_sk_redirect_hash, struct sk_buff *, skb,
->  	sk = __sock_hash_lookup_elem(map, key);
->  	if (unlikely(!sk || !sock_map_redirect_allowed(sk)))
->  		return SK_DROP;
-> +	if ((flags & BPF_F_INGRESS) && sk_is_vsock(sk))
-> +		return SK_DROP;
->  
->  	skb_bpf_set_redir(skb, sk, flags & BPF_F_INGRESS);
->  	return SK_PASS;
-> @@ -1277,6 +1283,8 @@ BPF_CALL_4(bpf_msg_redirect_hash, struct sk_msg *, msg,
->  		return SK_DROP;
->  	if (!(flags & BPF_F_INGRESS) && !sk_is_tcp(sk))
->  		return SK_DROP;
-> +	if (sk_is_vsock(sk))
-> +		return SK_DROP;
->  
->  	msg->flags = flags;
->  	msg->sk_redir = sk;
+Thanks
+/Ilias
+>
+> As we still need pp for "struct page_pool" for page_pool_put_page()
+> related API, the container_of() trick is used to get the pp from the
+> pp_item.
+>
+> As you had changed 'struct net_iov' to be mirroring the 'struct page',
+> so change 'struct net_iov' part accordingly.
+>
+> 1. https://lore.kernel.org/all/50a463d5-a5a1-422f-a4f7-d3587b12c265@huawei.com/
+>
+> >
+> >> As the pool->items need to be large enough to avoid
+> >> performance degradation, add a 'item_full' stat to indicate the
+> >> allocation failure due to unavailability of pool->items.
+> >>
+> >
+> > I'm not sure there is any way to size the pool->items array correctly.
+>
+> Currently the size of pool->items is calculated in page_pool_create_percpu()
+> as below, to make sure the size of pool->items is somewhat twice of the
+> size of pool->ring so that the number of page sitting in the driver's rx
+> ring waiting for the new packet is the similar to the number of page that is
+> still being handled in the network stack as most drivers seems to set the
+> pool->pool_size according to their rx ring size:
+>
+> +#define PAGE_POOL_MIN_INFLIGHT_ITEMS           512
+> +       unsigned int item_cnt = (params->pool_size ? : 1024) +
+> +                               PP_ALLOC_CACHE_SIZE + PAGE_POOL_MIN_INFLIGHT_ITEMS;
+> +       item_cnt = roundup_pow_of_two(item_cnt);
+>
+> > Can you use a data structure here that can grow? Linked list or
+> > xarray?
+> >
+> > AFAIU what we want is when the page pool allocates a netmem it will
+> > add the netmem to the items array, and when the pp releases a netmem
+> > it will remove it from the array. Both of these operations are slow
+> > paths, right? So the performance of a data structure more complicated
+> > than an array may be ok. bench_page_pool_simple will tell for sure.
+>
+> The question would be why do we need the pool->items to grow with the
+> additional overhead and complication by dynamic allocation of item, using
+> complicated data structure and concurrent handling?
+>
+> As mentioned in [2], it was the existing semantics, but it does not means
+> we need to keep it. The changing of semantics seems like an advantage
+> to me, as we are able to limit how many pages is allowed to be used by
+> a page_pool instance.
+>
+> 2. https://lore.kernel.org/all/2fb8d278-62e0-4a81-a537-8f601f61e81d@huawei.com/
+>
+> >
+> >> Note, the devmem patchset seems to make the bug harder to fix,
+> >> and may make backporting harder too. As there is no actual user
+> >> for the devmem and the fixing for devmem is unclear for now,
+> >> this patch does not consider fixing the case for devmem yet.
+> >>
+> >
+> > net_iovs don't hit this bug, dma_unmap_page_attrs() is never called on
+> > them, so no special handling is needed really. However for code
+>
+> I am really doubtful about your above claim. As at least the below
+> implementaion of dma_buf_unmap_attachment_unlocked() called in
+> __net_devmem_dmabuf_binding_free() seems be using the DMA API directly:
+>
+> https://elixir.bootlin.com/linux/v6.7-rc8/source/drivers/gpu/drm/amd/amdgpu/amdgpu_dma_buf.c#L215
+>
+> Or am I missing something obvious here?
+>
+> > quality reasons lets try to minimize the number of devmem or memory
+> > provider checks in the code, if possible.
+> >
 
