@@ -1,367 +1,226 @@
-Return-Path: <bpf+bounces-40401-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40402-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 124E3988234
-	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2024 12:04:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6B65988263
+	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2024 12:24:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BFADC288FE8
-	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2024 10:03:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0AB991C225F2
+	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2024 10:24:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F36B1BC067;
-	Fri, 27 Sep 2024 10:03:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0D361BC094;
+	Fri, 27 Sep 2024 10:24:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZNAkwGJe"
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AD521BB69C;
-	Fri, 27 Sep 2024 10:03:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D90C1BAED6
+	for <bpf@vger.kernel.org>; Fri, 27 Sep 2024 10:24:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727431423; cv=none; b=J9ybn4CofvFLBP5PYACTC+nIZgmB4nOnmtDKi6TtEoguRUqDDtdlfLIt96OHMqaS9F2j9IBjMuKTp389kVJb4wfkORoNFlJUInaG/7Fqf8lLmVkVutQnavdSWWKXPL4Teuyc5NWyzqVbG7zAY4KhFab2M+g4EilRBoLDDVYk5rQ=
+	t=1727432674; cv=none; b=NkXrbTzuePRkZXaTsM6itxaww0G2HKTtD1HzcEWqoMYnsN1fn3QVQabWsgl24QUi0ZxDiFSdSk4UiKoB84tqKTW//mmMgvEBZLHAc/qDJxUA5mkjCzjvNynDr3tnAHznKqyCDkrKMHsT/AwK9x/RNIN1NrVwE2GjiKAygJSaeqs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727431423; c=relaxed/simple;
-	bh=VLYVdA9CFzvQ1GWLMkyg1fZOhSaxwyP/2kJeom4cG1s=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=QcF4ajZkoafm6nIjoE5W2UhKA8carbRZqq+z8PX+PlZt6COuiZ/hd95hdwx0e55lDWdbvabncJ1i9ejfsYoMkKkl/cpmiQ3FD3cwWsPgbIIpp2WDfwNo7L34koSFcnbei8/SkRP1CT/7/TkKOr9EzsSXt87ZZ/o+bhj8dk5l4x4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.194])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4XFQwK0nYmzWf35;
-	Fri, 27 Sep 2024 18:01:21 +0800 (CST)
-Received: from kwepemg200002.china.huawei.com (unknown [7.202.181.29])
-	by mail.maildlp.com (Postfix) with ESMTPS id 31AC41401E9;
-	Fri, 27 Sep 2024 18:03:39 +0800 (CST)
-Received: from huawei.com (10.90.53.73) by kwepemg200002.china.huawei.com
- (7.202.181.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Fri, 27 Sep
- 2024 18:03:38 +0800
-From: Yipeng Zou <zouyipeng@huawei.com>
-To: <linux-pm@vger.kernel.org>, <bpf@vger.kernel.org>, <rafael@kernel.org>,
-	<viresh.kumar@linaro.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-	<andrii@kernel.org>, <martin.lau@linux.dev>, <eddyz87@gmail.com>,
-	<song@kernel.org>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
-	<sdf@fomichev.me>, <haoluo@google.com>, <jolsa@kernel.org>
-CC: <zouyipeng@huawei.com>, <liaochang1@huawei.com>
-Subject: [RFC PATCH 2/2] cpufreq_ext: Add bpf sample
-Date: Fri, 27 Sep 2024 18:13:42 +0800
-Message-ID: <20240927101342.3240263-3-zouyipeng@huawei.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240927101342.3240263-1-zouyipeng@huawei.com>
-References: <20240927101342.3240263-1-zouyipeng@huawei.com>
+	s=arc-20240116; t=1727432674; c=relaxed/simple;
+	bh=XIxx1Gqnh8W7x2jrzbkG+Yz0hMarOzuqSzj35yPNitg=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=Kfm25gxi7DWicPzltYgvKpSdX7oFNS9NknBxlj33mixDC65CcIk/5q3nmEbqtyDx4yxDK2hEYCHqCOaPtInfKivb6r4VsJKGYS8Gy4AjZqnq7GZnyLCga4RMcgCABVeIG9gj2b9cMpnshkHukMCgahMt/AHIbPz4ZxW6z56eUaU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ZNAkwGJe; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1727432671;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XIxx1Gqnh8W7x2jrzbkG+Yz0hMarOzuqSzj35yPNitg=;
+	b=ZNAkwGJex5S1spnwY74V2/EaT0cH/3Nr5aPxKxrEh0z5dKSa4WJ26WxpmANnWvczbvEHm3
+	nqE5etzgSGCWWQBBOkKBBxTldYEv/5wcknRl+RZXHclTSdPvj0RzWfVaNMICt63cBZY+XB
+	RLHFlocC6j8/780eLxEwcR8HIgr0ROE=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-550-Cbqqb9OKN6W-30Qu9wwNJw-1; Fri, 27 Sep 2024 06:24:30 -0400
+X-MC-Unique: Cbqqb9OKN6W-30Qu9wwNJw-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-37cd08d3678so776295f8f.1
+        for <bpf@vger.kernel.org>; Fri, 27 Sep 2024 03:24:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727432669; x=1728037469;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=XIxx1Gqnh8W7x2jrzbkG+Yz0hMarOzuqSzj35yPNitg=;
+        b=jJdr5JXgxTsF2IEkvxmShrlGlODf7y73knodVA5TCM5pe/GB6IhJYsj3eoVwqTS/t3
+         EDgm7J53iLf2M9FxflpgpJZhN7WnDpZpyQJEr9FvWdZTSu3X4iX6O9ppl2LcY330NDpf
+         WYMal5vLD3HAGKAvTOwHNOW9zPTRBo1oCeUaw+V0SHCd//3DZVllkC0p/qTL9KQkFY5x
+         H9KLGL9DMRAO1kONYvO9545MnLoQfl/zICesvg8vIs2hF2a8G0sk+mbBDZh18i5KsrGq
+         xtqNEoZly+mAhmbDDATQla/q8kHsIWCZt7RGqWCgXT9ssNRzchxo13zWG4lTsh/40O4H
+         /+qg==
+X-Forwarded-Encrypted: i=1; AJvYcCVL6DYKRGbXF/ZTnpumCuUv+lbV7CGRxL9FgFovISM3WU+KxAn5HzNdyCYcd3EKMV0Rgic=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwngXCU2uS01SyIJ6f1vxMt39fp92ZTEYm7/E7/3k5eRkK5T9gJ
+	5TXO5ZYJMpjhvkdjOWIFIMGHmqwEB6vREh1XiOL2l1iYU9n9pc5RvoAQube299gl67MnOzIWigt
+	aBzgO30tedTPgau4XX+LjChH+FwYoexiDU9Vj5ZxlgZb6uQz7EA==
+X-Received: by 2002:a5d:5408:0:b0:37c:c4c0:4545 with SMTP id ffacd0b85a97d-37cd568c351mr2074560f8f.10.1727432669170;
+        Fri, 27 Sep 2024 03:24:29 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFzn/Hgbyr1j8TFmWW8rLoliM3ZBfnFOOaG1RI387NGbgDvZsVbVAlmnlZnn5QvDNrkUnRcIA==
+X-Received: by 2002:a5d:5408:0:b0:37c:c4c0:4545 with SMTP id ffacd0b85a97d-37cd568c351mr2074515f8f.10.1727432668693;
+        Fri, 27 Sep 2024 03:24:28 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-37cd572fa48sm2035752f8f.66.2024.09.27.03.24.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Sep 2024 03:24:27 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id 64AE8157FD23; Fri, 27 Sep 2024 12:24:26 +0200 (CEST)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To: Arthur Fabre <afabre@cloudflare.com>
+Cc: Lorenzo Bianconi <lorenzo.bianconi@redhat.com>, Jesper Dangaard Brouer
+ <hawk@kernel.org>, Jakub Sitnicki <jakub@cloudflare.com>, Alexander
+ Lobakin <aleksander.lobakin@intel.com>, Lorenzo Bianconi
+ <lorenzo@kernel.org>, bpf@vger.kernel.org, netdev@vger.kernel.org,
+ ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+ kuba@kernel.org, john.fastabend@gmail.com, edumazet@google.com,
+ pabeni@redhat.com, sdf@fomichev.me, tariqt@nvidia.com, saeedm@nvidia.com,
+ anthony.l.nguyen@intel.com, przemyslaw.kitszel@intel.com,
+ intel-wired-lan@lists.osuosl.org, mst@redhat.com, jasowang@redhat.com,
+ mcoquelin.stm32@gmail.com, alexandre.torgue@foss.st.com, kernel-team
+ <kernel-team@cloudflare.com>, Yan Zhai <yan@cloudflare.com>
+Subject: Re: [RFC bpf-next 0/4] Add XDP rx hw hints support performing
+ XDP_REDIRECT
+In-Reply-To: <D4GBY7CHJNJ6.3O18I5W1FTPKR@bobby>
+References: <cover.1726935917.git.lorenzo@kernel.org>
+ <1f53cd74-6c1e-4a1c-838b-4acc8c5e22c1@intel.com>
+ <09657be6-b5e2-4b5a-96b6-d34174aadd0a@kernel.org>
+ <Zu_gvkXe4RYjJXtq@lore-desk> <87ldzkndqk.fsf@toke.dk>
+ <CAOn4ftshf3pyAst27C2haaSj4eR2n34_pcwWBc5o3zHBkwRb3g@mail.gmail.com>
+ <87wmiysi37.fsf@toke.dk> <D4GBY7CHJNJ6.3O18I5W1FTPKR@bobby>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date: Fri, 27 Sep 2024 12:24:26 +0200
+Message-ID: <87ldzds8bp.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemg200002.china.huawei.com (7.202.181.29)
 
-The cpufreq_ext sample implement the typical BPF governor, switch to
-max cpufreq when VIP task is running on target cpu.
+"Arthur Fabre" <afabre@cloudflare.com> writes:
 
-We can enable the sample in the following step:
+>> >> The nice thing about an API like this, though, is that it's extensible,
+>> >> and the kernel itself can be just another consumer of it for the
+>> >> metadata fields Lorenzo is adding in this series. I.e., we could just
+>> >> pre-define some IDs for metadata vlan, timestamp etc, and use the same
+>> >> functions as above from within the kernel to set and get those values;
+>> >> using the registry, there could even be an option to turn those off if
+>> >> an application wants more space for its own usage. Or, alternatively, we
+>> >> could keep the kernel-internal IDs hardcoded and always allocated, and
+>> >> just use the getter/setter functions as the BPF API for accessing them.
+>> >
+>> > That's exactly what I'm thinking of too, a simple API like:
+>> >
+>> > get(u8 key, u8 len, void *val);
+>> > set(u8 key, u8 len, void *val);
+>> >
+>> > With "well-known" keys like METADATA_ID_HW_HASH for hardware metadata.
+>> >
+>> > If a NIC doesn't support a certain well-known metadata, the key
+>> > wouldn't be set, and get() would return ENOENT.
+>> >
+>> > I think this also lets us avoid having to "register" keys or bits of
+>> > metadata with the kernel.
+>> > We'd reserve some number of keys for hardware metadata.
+>>
+>> Right, but how do you allocate space/offset for each key without an
+>> explicit allocation step? You'd basically have to encode the list of IDs
+>> in the metadata area itself, which implies a TLV format that you have to
+>> walk on every access? The registry idea in my example above was
+>> basically to avoid that...
+>
+> I've been playing around with having a small fixed header at the front
+> of the metadata itself, that lets you access values without walking them
+> all.
+>
+> Still WIP, and maybe this is too restrictive, but it lets you encode 64
+> 2, 4, or 8 byte KVs with a single 16 byte header:
 
-1. First add target VIP task PID in samples/bpf/cpufreq_ext.bpf.c,
-   append in vip_task_pid array.
+Ohh, that's clever, I like it! :)
 
-	s32 vip_task_pid[] = {
-		...
-		@PID
-		...
-	}
+It's also extensible in the sense that the internal representation can
+change without impacting the API, so if we end up needing more bits we
+can always add those.
 
-2. Compile the sample.
+Maybe it would be a good idea to make the 'key' parameter a larger
+integer type (function parameters are always 64-bit anyway, so might as
+well go all the way up to u64)? That way we can use higher values for
+the kernel-reserved types instead of reserving part of the already-small
+key space for applications (assuming the kernel-internal data is stored
+somewhere else, like in a static struct as in Lorenzo's patch)?
 
-	make -C samples/bpf/
+[...]
 
-3. Configure ext governor on all cpufreq policy.
+>> > The remaining keys would be up to users. They'd have to allocate keys
+>> > to services, and configure services to use those keys.
+>> > This is similar to the way listening on a certain port works: only one
+>> > service can use port 80 or 443, and that can typically beconfigured in
+>> > a service's config file.
+>>
+>> Right, well, port numbers *do* actually have an out of band service
+>> registry (IANA), which I thought was what we wanted to avoid? ;)
+>
+> Depends how you think about it ;)
+>
+> I think we should avoid a global registry. But having a registry per
+> deployment / server doesn't seem awful. Services that want to use a
+> field would have a config file setting to set which index it corresponds
+> to.
+> Admins would just have to pick a free one on their system, and set it in
+> the config file of the service.
+>
+> This is similar to what we do for non-IANA registered ports internally.
+> For example each service needs a port on an internal interface to expose
+> metrics, and we just track which ports are taken in our config
+> management.
 
-	echo ext > /sys/devices/system/cpu/cpufreq/policy*/scaling_governor
+Right, this would work, but it assumes that applications are
+well-behaved and do this correctly. Which they probably do in a
+centrally-managed system like yours, but for random applications shipped
+by distros, I'm not sure if it's going to work.
 
-4. Install the sample.
+In fact, it's more or less the situation we have with skb->mark today,
+isn't it? I.e., applications can co-exist as long as they don't use the
+same bits, so they have to coordinate on which bits to use. Sure, with
+this scheme there will be more total bits to use, which can lessen the
+pressure somewhat, but the basic problem remains. In other words, I
+worry that in practice we will end up with another github repository
+serving as a registry for metadata keys...
 
-	./samples/bpf/cpufreq_ext
+> Dynamically registering fields means you have to share the returned ID
+> with whoever is interested, which sounds tricky.
+> If an XDP program sets a field like packet_id, every tracing
+> program that looks at it, and userspace service, would need to know what
+> the ID of that field is.
+> Is there a way to easily share that ID with all of them?
 
-If everything works well, will have some message in kernel log.
+Right, so I'll admit this was one of the handwavy bits of my original
+proposal, but I don't think it's unsolvable. You could do something like
+(once, on application initialisation):
 
-	# dmesg
-	cpufreq_ext: ext_reg: Register ext governor(VIP).
+__u64 my_key = bpf_register_metadata_field(my_size); /* maybe add a name for introspection? */
+bpf_map_update(&shared_application_config, &my_key_index, &my_key);
 
-After BPF cpufreq governor loaded, we can see current BPF governor
-information in ext/stat attribute.
+and then just get the key out of that map from all programs that want to
+use it?
 
-	# cat /sys/devices/system/cpu/cpufreq/ext/stat
-	Stat: CPUFREQ_EXT_LOADED
-	BPF governor: VIP
+We could combine such a registration API with your header format, so
+that the registration just becomes a way of allocating one of the keys
+from 0-63 (and the registry just becomes a global copy of the header).
+This would basically amount to moving the "service config file" into the
+kernel, since that seems to be the only common denominator we can rely
+on between BPF applications (as all attempts to write a common daemon
+for BPF management have shown).
 
-The "VIP" is the BPF governor name.
-
-And we can see some log in trace file.
-
-	# cat /sys/kernel/debug/tracing/trace
-	...
-	bpf_trace_printk: VIP running Set Freq(2600000) On Policy0.
-	bpf_trace_printk: No VIP Set Freq(200000) On Policy0.
-	...
-
-Signed-off-by: Yipeng Zou <zouyipeng@huawei.com>
----
- samples/bpf/.gitignore         |   1 +
- samples/bpf/Makefile           |   8 ++-
- samples/bpf/cpufreq_ext.bpf.c  | 113 +++++++++++++++++++++++++++++++++
- samples/bpf/cpufreq_ext_user.c |  48 ++++++++++++++
- 4 files changed, 169 insertions(+), 1 deletion(-)
- create mode 100644 samples/bpf/cpufreq_ext.bpf.c
- create mode 100644 samples/bpf/cpufreq_ext_user.c
-
-diff --git a/samples/bpf/.gitignore b/samples/bpf/.gitignore
-index 9f36fe5e2208..85903156e7e7 100644
---- a/samples/bpf/.gitignore
-+++ b/samples/bpf/.gitignore
-@@ -1,4 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0-only
-+cpufreq_ext
- cpustat
- fds_example
- hbm
-diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
-index bb4ab3a86b40..07b05d5cf748 100644
---- a/samples/bpf/Makefile
-+++ b/samples/bpf/Makefile
-@@ -46,6 +46,7 @@ tprogs-y += xdp_fwd
- tprogs-y += task_fd_query
- tprogs-y += ibumad
- tprogs-y += hbm
-+tprogs-y += cpufreq_ext
- 
- # Libbpf dependencies
- LIBBPF_SRC = $(TOOLS_PATH)/lib/bpf
-@@ -96,6 +97,7 @@ xdp_fwd-objs := xdp_fwd_user.o
- task_fd_query-objs := task_fd_query_user.o $(TRACE_HELPERS)
- ibumad-objs := ibumad_user.o
- hbm-objs := hbm.o $(CGROUP_HELPERS)
-+cpufreq_ext-objs := cpufreq_ext_user.o
- 
- xdp_router_ipv4-objs := xdp_router_ipv4_user.o $(XDP_SAMPLE)
- 
-@@ -149,6 +151,7 @@ always-y += task_fd_query_kern.o
- always-y += ibumad_kern.o
- always-y += hbm_out_kern.o
- always-y += hbm_edt_kern.o
-+always-y += cpufreq_ext.bpf.o
- 
- TPROGS_CFLAGS = $(TPROGS_USER_CFLAGS)
- TPROGS_LDFLAGS = $(TPROGS_USER_LDFLAGS)
-@@ -200,6 +203,7 @@ TPROGLDLIBS_trace_output	+= -lrt
- TPROGLDLIBS_trace_power		+= -lrt
- TPROGLDLIBS_map_perf_test	+= -lrt
- TPROGLDLIBS_test_overhead	+= -lrt
-+TPROGLDLIBS_cpufreq_ext		+= -lrt
- 
- # Allows pointing LLC/CLANG to a LLVM backend with bpf support, redefine on cmdline:
- # make M=samples/bpf LLC=~/git/llvm-project/llvm/build/bin/llc CLANG=~/git/llvm-project/llvm/build/bin/clang
-@@ -311,6 +315,7 @@ $(obj)/$(TRACE_HELPERS) $(obj)/$(CGROUP_HELPERS) $(obj)/$(XDP_SAMPLE): | libbpf_
- .PHONY: libbpf_hdrs
- 
- $(obj)/xdp_router_ipv4_user.o: $(obj)/xdp_router_ipv4.skel.h
-+$(obj)/cpufreq_ext_user.o: $(obj)/cpufreq_ext.skel.h
- 
- $(obj)/tracex5.bpf.o: $(obj)/syscall_nrs.h
- $(obj)/hbm_out_kern.o: $(src)/hbm.h $(src)/hbm_kern.h
-@@ -375,10 +380,11 @@ $(obj)/%.bpf.o: $(src)/%.bpf.c $(obj)/vmlinux.h $(src)/xdp_sample.bpf.h $(src)/x
- 		-I$(LIBBPF_INCLUDE) $(CLANG_SYS_INCLUDES) \
- 		-c $(filter %.bpf.c,$^) -o $@
- 
--LINKED_SKELS := xdp_router_ipv4.skel.h
-+LINKED_SKELS := xdp_router_ipv4.skel.h cpufreq_ext.skel.h
- clean-files += $(LINKED_SKELS)
- 
- xdp_router_ipv4.skel.h-deps := xdp_router_ipv4.bpf.o xdp_sample.bpf.o
-+cpufreq_ext.skel.h-deps := cpufreq_ext.bpf.o
- 
- LINKED_BPF_SRCS := $(patsubst %.bpf.o,%.bpf.c,$(foreach skel,$(LINKED_SKELS),$($(skel)-deps)))
- 
-diff --git a/samples/bpf/cpufreq_ext.bpf.c b/samples/bpf/cpufreq_ext.bpf.c
-new file mode 100644
-index 000000000000..deba5813ce93
---- /dev/null
-+++ b/samples/bpf/cpufreq_ext.bpf.c
-@@ -0,0 +1,113 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+/*
-+ * When VIP task is running switching to max speed
-+ */
-+static s32 vip_task_pid[] = {
-+	324, // Stub, need to be replacing
-+};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__type(key, u32);
-+	__type(value, int);
-+	__uint(max_entries, 1);
-+} exit_stat SEC(".maps");
-+
-+#define READ_KERNEL(P)								\
-+	({									\
-+		typeof(P) val;							\
-+		bpf_probe_read_kernel(&val, sizeof(val), &(P));			\
-+		val;								\
-+	})
-+
-+#define TASK_RUNNING 0x00000000
-+
-+#define task_is_running(task)	(READ_KERNEL((task)->__state) == TASK_RUNNING)
-+
-+#define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
-+
-+struct task_struct *bpf_task_from_pid(s32 pid) __ksym;
-+bool bpf_cpumask_test_cpu(u32 cpu, const struct cpumask *cpumask) __ksym;
-+void bpf_task_release(struct task_struct *p) __ksym;
-+bool ext_helper_is_cpu_in_policy(unsigned int cpu, struct cpufreq_policy *policy) __ksym;
-+
-+static bool is_vip_task_running_on_cpus(struct cpufreq_policy *policy)
-+{
-+	struct task_struct *task = NULL;
-+	bool is_vip_running = false;
-+	struct thread_info info;
-+	s32 cpu;
-+
-+	for (unsigned int index = 0; index < ARRAY_SIZE(vip_task_pid); index++) {
-+		task = bpf_task_from_pid(vip_task_pid[index]);
-+		if (!task)
-+			continue;
-+
-+		is_vip_running = task_is_running(task);
-+		info = READ_KERNEL(task->thread_info);
-+		cpu = READ_KERNEL(info.cpu);
-+		bpf_task_release(task);
-+
-+		/* Only task running on target CPU can update policy freq */
-+		if (is_vip_running && ext_helper_is_cpu_in_policy(cpu, policy))
-+			return true;
-+	}
-+
-+	return false;
-+}
-+
-+SEC("struct_ops.s/get_next_freq")
-+unsigned long BPF_PROG(update_next_freq, struct cpufreq_policy *policy)
-+{
-+	unsigned int max_freq = READ_KERNEL(policy->max);
-+	unsigned int min_freq = READ_KERNEL(policy->min);
-+	unsigned int cur_freq = READ_KERNEL(policy->cur);
-+	unsigned int policy_cpu = READ_KERNEL(policy->cpu);
-+
-+	if (is_vip_task_running_on_cpus(policy) == false) {
-+		if (cur_freq != min_freq)
-+			bpf_printk("No VIP Set Freq(%d) On Policy%d.\n", min_freq, policy_cpu);
-+		return min_freq;
-+	}
-+
-+	if (cur_freq != max_freq)
-+		bpf_printk("VIP running Set Freq(%d) On Policy%d.\n", max_freq, policy_cpu);
-+	return max_freq;
-+}
-+
-+SEC("struct_ops.s/get_sampling_rate")
-+unsigned int BPF_PROG(update_sampling_rate, struct cpufreq_policy *policy)
-+{
-+	/* Return 0 means keep smapling_rate no modified */
-+	return 0;
-+}
-+
-+SEC("struct_ops.s/init")
-+unsigned int BPF_PROG(ext_init)
-+{
-+	return 0;
-+}
-+
-+SEC("struct_ops.s/exit")
-+void BPF_PROG(ext_exit)
-+{
-+	unsigned int index = 0;
-+	int code = 1;
-+
-+	bpf_map_update_elem(&exit_stat, &index, &code, BPF_EXIST);
-+}
-+
-+SEC(".struct_ops.link")
-+struct cpufreq_governor_ext_ops cpufreq_ext_demo_ops = {
-+	.get_next_freq		= (void *)update_next_freq,
-+	.get_sampling_rate	= (void *)update_sampling_rate,
-+	.init			= (void *)ext_init,
-+	.exit			= (void *)ext_exit,
-+	.name			= "VIP"
-+};
-+
-+char _license[] SEC("license") = "GPL";
-diff --git a/samples/bpf/cpufreq_ext_user.c b/samples/bpf/cpufreq_ext_user.c
-new file mode 100644
-index 000000000000..7f058d8efae5
---- /dev/null
-+++ b/samples/bpf/cpufreq_ext_user.c
-@@ -0,0 +1,48 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+#include <stdio.h>
-+#include <fcntl.h>
-+#include <poll.h>
-+#include <time.h>
-+#include <signal.h>
-+#include <bpf/libbpf.h>
-+#include <sys/mman.h>
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include <bpf/bpf.h>
-+#include "cpufreq_ext.skel.h"
-+
-+static int exit_req;
-+
-+static void err_exit(int err)
-+{
-+	exit_req = 1;
-+}
-+
-+int main(int argc, char **argv)
-+{
-+	struct bpf_link *link;
-+	struct cpufreq_ext *skel;
-+	int idx = 0;
-+	int exit_stat;
-+
-+	signal(SIGINT, err_exit);
-+	signal(SIGKILL, err_exit);
-+	signal(SIGTERM, err_exit);
-+
-+	skel = cpufreq_ext__open_and_load();
-+	bpf_map__set_autoattach(skel->maps.cpufreq_ext_demo_ops, false);
-+	link = bpf_map__attach_struct_ops(skel->maps.cpufreq_ext_demo_ops);
-+
-+	while (!exit_req) {
-+		exit_stat = 0;
-+		bpf_map_lookup_elem(bpf_map__fd(skel->maps.exit_stat), &idx, &exit_stat);
-+		if (exit_stat)
-+			break;
-+		fflush(stdout);
-+		sleep(1);
-+	}
-+
-+	bpf_link__destroy(link);
-+	cpufreq_ext__destroy(skel);
-+	return 0;
-+}
--- 
-2.34.1
+-Toke
 
 
