@@ -1,124 +1,167 @@
-Return-Path: <bpf+bounces-40453-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40454-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74C5E988CEA
-	for <lists+bpf@lfdr.de>; Sat, 28 Sep 2024 01:20:16 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 705D8988D18
+	for <lists+bpf@lfdr.de>; Sat, 28 Sep 2024 02:08:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 74FE1B21ADF
-	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2024 23:20:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A8C421C2123C
+	for <lists+bpf@lfdr.de>; Sat, 28 Sep 2024 00:08:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 361C218A93C;
-	Fri, 27 Sep 2024 23:20:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8D4D5695;
+	Sat, 28 Sep 2024 00:07:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CJZGjf5b"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eCIJibGN"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 734E22C1AE
-	for <bpf@vger.kernel.org>; Fri, 27 Sep 2024 23:20:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46FA523AB;
+	Sat, 28 Sep 2024 00:07:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727479204; cv=none; b=E8j4cfWMAd0/D/nggIZF937BrwPCYIJZ499RX+aiC/hBhcsbhKeS+ihKGvdSrQBVn0+Gu3HSac2rD+O5Mnv9gpe5Ki1p6bOCGXW0V3p2K13VOg0dCh7jRgpk9ywtQd7ElP7PL5ZOmACMIlo/6lDjBKiErIYPlssXK96ca+s+jBo=
+	t=1727482074; cv=none; b=XmcE4m3LtbjpoikpOAfFjH1xvRuucu60T5Pob2OaaK3mEu1OGdWNV8AGz7dBUpV6tMIy+875VO65e0yyJR7ATsrhGG2klI1K/8/hY4u1f7phmdvP2TT2blxvyZVw9GUNswM6qpgEUXLArbvm48KP5CbxY1xcryVMW67qWLpBVWQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727479204; c=relaxed/simple;
-	bh=PTIHTxTVnFKFXAQbHzS7RZc725Lz4IxARmwRigf1DMI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=g4dLsPyTXwd9WEIcw8wany56PMBB0mncRy9/5M3sEEPos/5sAK73TU6QAxzS5/IYjj8VS/L84c7y5ZyL7ts+o0pncGZL0Q1FFAKW0IhSQCLFcbioIPUFkf44aGjgDG70l8CYXPHlHOr9l2SzkWE1Cn6IP7DPij1ddFTEwIXNkS8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CJZGjf5b; arc=none smtp.client-ip=209.85.216.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-2e0a5088777so1891565a91.2
-        for <bpf@vger.kernel.org>; Fri, 27 Sep 2024 16:20:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727479203; x=1728084003; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PTIHTxTVnFKFXAQbHzS7RZc725Lz4IxARmwRigf1DMI=;
-        b=CJZGjf5b901dGF4/FvykdiUC6JocUayzolCcLfiwTrfrk7AI5Pl0oKHSknMokQlF/G
-         xi6/MEaFJQwSsUzYJIXis2HpW8pqrU2fprQLxrIDWVIjehE+sBEvlXBnO9FO7G5ZdRN5
-         tXfc2mGxjGfDyqcTsOLmSScrOOjumTsj+g9ketkmQ3yxLWlhX1L3w8Dk3Toe0KVmlOJg
-         GvpqdHp/57krcMzARvdqE0Xzrww9amLR8Zs1XdkY/bOioBbUoBghLyo81SCt3wjyOAp2
-         X2Ppk7qeYbUIAJeMa+A3oYXzW60yo+DQz0xx5jEt+Mq2a95vh341EU7FNRY4o0dkSbvj
-         N95g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727479203; x=1728084003;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PTIHTxTVnFKFXAQbHzS7RZc725Lz4IxARmwRigf1DMI=;
-        b=VZejTP/3puFrY2NRW0whWsyShYkas43nx39Dbz4hhPEicdCC3sLygCChpVrvEdxVK/
-         UP4x74+wXV5fUWkons2cYle3+isrST3U+AdINcA4gI9bxYRS47STr6i9Zcx7Dn/pHThw
-         LraGuQQRLWG9JurIriys20hCMLteWOVwiA2hWGdY2afSoNEyT+YLY3L77sEmo4WVLWh2
-         I+V92SY64EElJagef8+gC83ZYHmthnd80o67UEAcV/wVj5nDIB4857E7FxLZZXG8pfMX
-         30Us/Kn51lSJxovMl1bbNygyGeEDbS7IN45uE1a78gCf+cASqfngMIH296tM50pzPsdW
-         5ILg==
-X-Gm-Message-State: AOJu0YyoE8+/a62DRhPFaln33gaMKL4PUstbeWWhRwQTdYNlgGSTJo7R
-	5SL1GqMzGZlFdFUH8PODJruNZ+kzJOAcyvS4cJ7nuPxMxEInKys9437y6B5Jtstp7CewY0v5vw/
-	syRCeXE7Gt7aLrwaoWddFI96YoWdpSYOM
-X-Google-Smtp-Source: AGHT+IEudK5i+tsBNjq/EawbrU+GrvDdW2mUyQZfTDtm+4/Ljf3NbWhqSGy08LHehfby7nAsXpVzSRoV2eYnVAMKR7Y=
-X-Received: by 2002:a17:90b:1987:b0:2e0:7d60:759 with SMTP id
- 98e67ed59e1d1-2e0b876f31bmr5614195a91.3.1727479202632; Fri, 27 Sep 2024
- 16:20:02 -0700 (PDT)
+	s=arc-20240116; t=1727482074; c=relaxed/simple;
+	bh=8kgpRAnyuvL767vg5X6HGRKePibuTGJqlt0etUFXi18=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=igdUOs+ejTfhHWNzh/zykzDI7qiqudyFuSCCI7TImiOR2duGG7jAgT1jyHh0sV8TTtQ+SOts0BfWCL5AFfJW/90vA/FGv0bjzVlSTVnEfA8AwUuEpVV4nqlbeNgphvRwg47q28nFAo3o/R7uav7pkRHtL+Mm2FxINBjyTMoXUJY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eCIJibGN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86AC5C4CEC4;
+	Sat, 28 Sep 2024 00:07:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1727482073;
+	bh=8kgpRAnyuvL767vg5X6HGRKePibuTGJqlt0etUFXi18=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=eCIJibGNojkstz62stalir/kMXNicMt/VFQmt//hAZ9q/WEyHQApOEtUiL305EaMQ
+	 YjRqk7dhAecURr5JLz1UHFdXMFLv9q6cV5Kglo5OTTgP2/v9ECzq2q5RQVuihHVPMC
+	 pfn+zjNLsGU2uHbKfC6xHCmOSCGd+rd8rN8yCxNNnFTbtteD4GrbouZwrP2aoPlNJG
+	 h59y7fBIcIP8jQa0TxjxMiAZUyCnZ7UP9J4Y2u2Dn7uhtcydTVT44v0i/lHeem+a+S
+	 Nq0gEbhLCIcqrrvddYKQ6UVlxaRE5sLxh4p2XBaSC2/XH286Zg2mnkV04IjFQvai2q
+	 HIegvrWIDXvOw==
+Date: Fri, 27 Sep 2024 19:07:52 -0500
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Frank Li <Frank.Li@nxp.com>
+Cc: Bjorn Helgaas <bhelgaas@google.com>, Richard Zhu <hongxing.zhu@nxp.com>,
+	Lucas Stach <l.stach@pengutronix.de>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Rob Herring <robh@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>, linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	imx@lists.linux.dev, alyssa@rosenzweig.io, bpf@vger.kernel.org,
+	broonie@kernel.org, jgg@ziepe.ca, joro@8bytes.org,
+	lgirdwood@gmail.com, maz@kernel.org, p.zabel@pengutronix.de,
+	robin.murphy@arm.com, will@kernel.org
+Subject: Re: [PATCH 1/2] PCI: Add enable_device() and disable_device()
+ callbacks for bridges
+Message-ID: <20240928000752.GA99095@bhelgaas>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CA+KXx0WsH1en-DNXLf4mc4bC7apK_U9js0KbFSfp8Jdm8K8W9w@mail.gmail.com>
-In-Reply-To: <CA+KXx0WsH1en-DNXLf4mc4bC7apK_U9js0KbFSfp8Jdm8K8W9w@mail.gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 27 Sep 2024 16:19:50 -0700
-Message-ID: <CAEf4BzZjmz7dqOe--MYAV8F=h-RAhfnhHmW66W56GZeCKjVOww@mail.gmail.com>
-Subject: Re: QUERY: Regarding bpf link cleanup for invalid binary path
-To: Abhik Sen <abhikisraina@gmail.com>
-Cc: bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240926-imx95_lut-v1-1-d0c62087dbab@nxp.com>
 
-On Sun, Sep 22, 2024 at 10:18=E2=80=AFPM Abhik Sen <abhikisraina@gmail.com>=
- wrote:
->
-> Hello Team!
->
-> We were looking into the bpf-link and bpf-program-attach-uprobe-opts
+On Thu, Sep 26, 2024 at 06:07:47PM -0400, Frank Li wrote:
+> Some PCIe bridges require special handling when enabling or disabling
+> PCIe devices. For example, on the i.MX95 platform, a lookup table must be
+> configured to inform the hardware how to convert pci_device_id to stream
+> (bus master) ID, which is used by the IOMMU and MSI controller to identify
+> bus master device.
 
-Is the API actually called "bpf-program-attach-uprobe-opts" or we are
-talking about libbpf's bpf_program__attach_uprobe_opts()? In the
-former case, which library and API are we talking about? In the latter
-case, why rewrite API names and cause unnecessary confusion?
+I don't think you're talking about PCI-to-PCI bridges (including PCIe
+Root Ports and Switch Ports).  Those are all standardized and don't do
+anything with Requester IDs or Stream IDs.
 
-> implementation and wanted to know if a bpf-link on a binary path
-> resulted out of bpf-program-attach-uprobe-opts([a binary path]),
-> remains valid and leaks memory post the binary path getting invalid
-> (say due to the file getting deleted or path does not exist anymore).
+A PCI host bridge, e.g., a PCIe Root Complex, might have to deal with
+Stream IDs, and I think that's what you're enabling here.  If so, I
+think the hooks should be in struct pci_host_bridge instead of
+pci_ops.
 
-I'll try to guess what you are asking. If you attached uprobe to some
-binary that was present at the time of attachment successfully, and
-then binary was removed from the file system *while uprobe is still
-attached*, then that binary is still there in the kernel and uprobe is
-still, technically active (there could be processes that were loaded
-from that binary that are still running). It's not considered a leak,
-that's how Linux object refcounting works.
-
->
-> Does calling bpf-link-destroy on that link give any additional safety
-> w.r.t the invalid binary path, or is it not needed to invoke and the
-> internal implementation of the bpf-link takes care of the essential
-> cleanup?
-
-bpf_link__destroy() (that's libbpf API name) will detach uprobe, and
-if that uprobe was the last thing to keep reference to that deleted
-file, it will be truly removed and destroyed at that point. So you
-might want to do that, but it has nothing to do with safety.
-
->
-> Thanks,
-> Abhik
->
+> Enablement will be failure when there is not enough lookup table resource.
+> Avoid DMA write to wrong position. That is the reason why pci_fixup_enable
+> can't work since not return value for fixup function.
+> 
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> ---
+>  drivers/pci/pci.c   | 19 +++++++++++++++++++
+>  include/linux/pci.h |  2 ++
+>  2 files changed, 21 insertions(+)
+> 
+> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> index 7d85c04fbba2a..e0f83ed53d964 100644
+> --- a/drivers/pci/pci.c
+> +++ b/drivers/pci/pci.c
+> @@ -2057,6 +2057,7 @@ static int do_pci_enable_device(struct pci_dev *dev, int bars)
+>  {
+>  	int err;
+>  	struct pci_dev *bridge;
+> +	struct pci_bus *bus;
+>  	u16 cmd;
+>  	u8 pin;
+>  
+> @@ -2068,6 +2069,15 @@ static int do_pci_enable_device(struct pci_dev *dev, int bars)
+>  	if (bridge)
+>  		pcie_aspm_powersave_config_link(bridge);
+>  
+> +	bus = dev->bus;
+> +	while (bus) {
+> +		if (bus->ops->enable_device)
+> +			err = bus->ops->enable_device(bus, dev);
+> +		if (err)
+> +			return err;
+> +		bus = bus->parent;
+> +	}
+> +
+>  	err = pcibios_enable_device(dev, bars);
+>  	if (err < 0)
+>  		return err;
+> @@ -2262,12 +2272,21 @@ void pci_disable_enabled_device(struct pci_dev *dev)
+>   */
+>  void pci_disable_device(struct pci_dev *dev)
+>  {
+> +	struct pci_bus *bus;
+> +
+>  	dev_WARN_ONCE(&dev->dev, atomic_read(&dev->enable_cnt) <= 0,
+>  		      "disabling already-disabled device");
+>  
+>  	if (atomic_dec_return(&dev->enable_cnt) != 0)
+>  		return;
+>  
+> +	bus = dev->bus;
+> +	while (bus) {
+> +		if (bus->ops->disable_device)
+> +			bus->ops->disable_device(bus, dev);
+> +		bus = bus->parent;
+> +	}
+> +
+>  	do_pci_disable_device(dev);
+>  
+>  	dev->is_busmaster = 0;
+> diff --git a/include/linux/pci.h b/include/linux/pci.h
+> index 573b4c4c2be61..42c25b8efd538 100644
+> --- a/include/linux/pci.h
+> +++ b/include/linux/pci.h
+> @@ -803,6 +803,8 @@ static inline int pcibios_err_to_errno(int err)
+>  struct pci_ops {
+>  	int (*add_bus)(struct pci_bus *bus);
+>  	void (*remove_bus)(struct pci_bus *bus);
+> +	int (*enable_device)(struct pci_bus *bus, struct pci_dev *dev);
+> +	void (*disable_device)(struct pci_bus *bus, struct pci_dev *dev);
+>  	void __iomem *(*map_bus)(struct pci_bus *bus, unsigned int devfn, int where);
+>  	int (*read)(struct pci_bus *bus, unsigned int devfn, int where, int size, u32 *val);
+>  	int (*write)(struct pci_bus *bus, unsigned int devfn, int where, int size, u32 val);
+> 
+> -- 
+> 2.34.1
+> 
 
