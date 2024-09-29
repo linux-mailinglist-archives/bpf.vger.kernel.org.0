@@ -1,53 +1,53 @@
-Return-Path: <bpf+bounces-40485-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40483-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD15D9893DF
-	for <lists+bpf@lfdr.de>; Sun, 29 Sep 2024 10:48:20 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 04CF99893DE
+	for <lists+bpf@lfdr.de>; Sun, 29 Sep 2024 10:48:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA75E1C20E61
-	for <lists+bpf@lfdr.de>; Sun, 29 Sep 2024 08:48:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B52D6284F44
+	for <lists+bpf@lfdr.de>; Sun, 29 Sep 2024 08:48:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A49113E8A5;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3644213D8A0;
 	Sun, 29 Sep 2024 08:48:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R7QAsts6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ocdoutji"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D38C513B5A1;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE1BFAD2F;
 	Sun, 29 Sep 2024 08:48:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727599684; cv=none; b=WAAAK6ATVd9gOJNbBW7Mkpmi92tv5hEZD7TBNfpiwO5/6M1+T10KvSdgkncKXVMmN/QdZ8aRhaPA9IokGNWlHY7zuPMmxBBhqW/6RsK0zQa5wKujq+0WWnuHTRECQRLOhf0unb80DeAspzwMJ3DIX2A0A/Npy5uUA14X8VlWbuE=
+	t=1727599684; cv=none; b=mtfsREOXsO3nOQdJRb0eDchsreRI1nsFQkL8fptLvw2Vf+cVUfyUGwf8Emu1ze3vfV9r1J66o6zWXpAGQiNmFWoiZ5N7i7z376OCzcjrpROQce1XX5qNKOwA/neK3RUN8epLLREBAQeNw0l7CNYCsbOKaU+I5+/0OuehDk7g3H0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1727599684; c=relaxed/simple;
-	bh=f6dz0eAovQ9H45vR8uatX5g6TKGH79bTRxSnAHxNIeM=;
+	bh=uacsQ/Wk7pWbwC6Lw38VvY6F4rtZM4EvO3CycqJmmQs=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=SJLCLFFQ1sUeTkez/9Ju8kFEoxl1W41r9C96WJKilaZY3NnnhfqwGxKwZ0XXOZqR1nWsqqrAGTjQICcZj7DqED1g/mrt119lnC4GEQpC3ExSzRo3CY/Mv/+Tn3DsRpdKNMgPs56uJ5Zf60ofjZ6Htei0hYeBLIkIozOJ3THZczU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R7QAsts6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 7C8F0C4CECE;
+	 In-Reply-To:To:Cc; b=LVuHXvq1kstkcH21ymIfqKE0Hd/dLtT/Pvi203BxA8IfvYaDNubTIe1grF9HI1VbM3Sv3qSU331oJ7l9kffUYJAhK9Z06/9HrVqBqf/bXIAh3MOSsGwX6QuYNcERLns0qQo1b396nqvVlL7h2uIAbaE6CcK7gi/TvNwvSl3mFFA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ocdoutji; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 84F7BC4CEC7;
 	Sun, 29 Sep 2024 08:48:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1727599684;
-	bh=f6dz0eAovQ9H45vR8uatX5g6TKGH79bTRxSnAHxNIeM=;
+	bh=uacsQ/Wk7pWbwC6Lw38VvY6F4rtZM4EvO3CycqJmmQs=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=R7QAsts6NHF5g24Ikxq1ZB61V8/Fut/dHkednFH/u1Lwqu+9oO61qHHb7EYH6TV0H
-	 SnQUVloQ+dL7twZM9stgai78wA4U5Ss32Hjxrq9jeTmwYUP3y2F1CS4dWoENN7ZT5V
-	 jWolvgsStE454NVDL4UjThUR0qNj+T68t6vQh53GtloIPe9/URwiYbKcTsR80lwOmJ
-	 1anlNIH0ROH3/Px7OHWWiGOg4zIXKMfTBU6D3aVebvdqFyDpxmMQFJSMr5h3jhTuPn
-	 fzqCKyD+sQJFC3JcKhSmynkvDO/f0UCIxMKs92Z4WQEM/hUybrS7AE2LObZH3Mcpq9
-	 0hm/+tVx8Krow==
+	b=ocdoutjiYmFtWjWIr6JSVvO5eTLq/oyUv+AuKzRuodq//76GZeyVbOCRgp6wVvpbY
+	 7Xar/hv7B10UJDpK3zDv90VOuwGxV25msOcn42o0WsCas5bJRlb7Syspw7VqxZxtJW
+	 nfT/UyOIOwkBCzxZHIUMfWOI3WlJaZxYL+hKENWz6c+MV0WT9LiJoxLyBuREzFoD/g
+	 2MW0wDyz9oKsMGZT6b4Z2A/Os9nwIGK0Ts0CEdoO6rQ9bfIoUOImf8P8woaUlQOyyI
+	 CUkHK/SQxYGWYtvwdu2RF8ZAm92YVQLRhppVnq+XADnsYEWxW3EZlOG8C3CfFK7sD7
+	 YFtuR8TO8Fzcw==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 69587CF6498;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 75C4BCF6495;
 	Sun, 29 Sep 2024 08:48:04 +0000 (UTC)
 From: Eric Long via B4 Relay <devnull+i.hack3r.moe@kernel.org>
-Date: Sun, 29 Sep 2024 16:48:00 +0800
-Subject: [PATCH bpf-next 1/2] libbpf: do not resolve size on duplicate
- FUNCs
+Date: Sun, 29 Sep 2024 16:48:01 +0800
+Subject: [PATCH bpf-next 2/2] selftests/bpf: make sure linking objects with
+ duplicate extern functions doesn't fail
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -56,7 +56,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240929-libbpf-dup-extern-funcs-v1-1-df15fbd6525b@hack3r.moe>
+Message-Id: <20240929-libbpf-dup-extern-funcs-v1-2-df15fbd6525b@hack3r.moe>
 References: <20240929-libbpf-dup-extern-funcs-v1-0-df15fbd6525b@hack3r.moe>
 In-Reply-To: <20240929-libbpf-dup-extern-funcs-v1-0-df15fbd6525b@hack3r.moe>
 To: bpf@vger.kernel.org
@@ -64,13 +64,13 @@ Cc: Andrii Nakryiko <andrii@kernel.org>,
  Alexei Starovoitov <ast@kernel.org>, netdev@vger.kernel.org, 
  Eric Long <i@hack3r.moe>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1893; i=i@hack3r.moe;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3770; i=i@hack3r.moe;
  h=from:subject:message-id;
- bh=cVkc6Hjsq020lv+rt+oCh7q9xtjmEGtFpGZ2Rx2LwNU=;
- b=owGbwMvMwCUWYb/agfVY0D7G02pJDGk/RZx3P4hjjK4QvqBjePHy6uavUz+94N/Szfdci11h+
- v8JvnrfOkpZGMS4GGTFFFm2HP6jlqDfvWkJ95xymDmsTCBDGLg4BWAi2QIM/zMbfRoOy3Um+y13
- +5gYFnbO3O+3VW+emeLigsvhOy9o3mf4n3L2wfHr8/Pd2+asO+tfquArXMXs/zvq7LMJ/xO6Q64
- mcAMA
+ bh=Hww+IY99Jvgbtqt0tYLYI8/UdyT0Cd78O9SVglyM2YM=;
+ b=owGbwMvMwCUWYb/agfVY0D7G02pJDGk/RZznnT8b0pEw9x7T5Gc3koIqE9kmBZ0WS2MzS/t4k
+ cHQjGNrRykLgxgXg6yYIsuWw3/UEvS7Ny3hnlMOM4eVCWQIAxenAExkhgzD/wCJvRGhXHcCG+80
+ 6MgqF7GcXfcmyEfW5tXn9AUfG2t/MTIyrDz6qixQ6O/utK+T97k9d9PZf5UzVuDPgtK6xc1WB6c
+ xMAEA
 X-Developer-Key: i=i@hack3r.moe; a=openpgp;
  fpr=3A7A1F5A7257780C45A9A147E1487564916D3DF5
 X-Endpoint-Received: by B4 Relay for i@hack3r.moe/default with auth_id=225
@@ -79,54 +79,105 @@ Reply-To: i@hack3r.moe
 
 From: Eric Long <i@hack3r.moe>
 
-FUNCs do not have sizes, thus currently btf__resolve_size will fail
-with -EINVAL. Add conditions so that we only update size when the BTF
-object is not function or function prototype.
+Previously when multiple BPF object files referencing the same extern
+function (usually kfunc) are statically linked using `bpftool gen
+object`, libbpf tries to get the nonexistent size of BTF_KIND_FUNC_PROTO
+and fails. This test ensures it is fixed.
 
 Signed-off-by: Eric Long <i@hack3r.moe>
 ---
- tools/lib/bpf/linker.c | 24 ++++++++++++++----------
- 1 file changed, 14 insertions(+), 10 deletions(-)
+ tools/testing/selftests/bpf/Makefile                 |  3 ++-
+ .../selftests/bpf/prog_tests/dup_extern_funcs.c      |  9 +++++++++
+ .../testing/selftests/bpf/progs/dup_extern_funcs1.c  | 20 ++++++++++++++++++++
+ .../testing/selftests/bpf/progs/dup_extern_funcs2.c  | 18 ++++++++++++++++++
+ 4 files changed, 49 insertions(+), 1 deletion(-)
 
-diff --git a/tools/lib/bpf/linker.c b/tools/lib/bpf/linker.c
-index 81dbbdd79a7c65a4b048b85e1dba99cb5f7cb56b..a2a7075038f898053b468a8256b93460edc29de6 100644
---- a/tools/lib/bpf/linker.c
-+++ b/tools/lib/bpf/linker.c
-@@ -2449,20 +2449,24 @@ static int linker_append_btf(struct bpf_linker *linker, struct src_obj *obj)
- 			 * the same extern VARs/FUNCs.
- 			 */
- 			if (glob_sym && glob_sym->var_idx >= 0) {
-+				const struct btf_type *t = btf__type_by_id(linker->btf, glob_sym->underlying_btf_id);
-+				int kind = btf_kind(t);
- 				__s64 sz;
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index e295e3df5ec6c3c21abe368038514cfb34b42f69..644c4dd6002c691a9cd94ef26ddf51f6dc84e2cc 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -496,7 +496,7 @@ SKEL_BLACKLIST := btf__% test_pinning_invalid.c test_sk_assign.c
+ LINKED_SKELS := test_static_linked.skel.h linked_funcs.skel.h		\
+ 		linked_vars.skel.h linked_maps.skel.h 			\
+ 		test_subskeleton.skel.h test_subskeleton_lib.skel.h	\
+-		test_usdt.skel.h
++		test_usdt.skel.h dup_extern_funcs.skel.h
  
- 				dst_var = &dst_sec->sec_vars[glob_sym->var_idx];
--				/* Because underlying BTF type might have
--				 * changed, so might its size have changed, so
--				 * re-calculate and update it in sec_var.
--				 */
--				sz = btf__resolve_size(linker->btf, glob_sym->underlying_btf_id);
--				if (sz < 0) {
--					pr_warn("global '%s': failed to resolve size of underlying type: %d\n",
--						name, (int)sz);
--					return -EINVAL;
-+				if (kind != BTF_KIND_FUNC && kind != BTF_KIND_FUNC_PROTO) {
-+					/* Because underlying BTF type might have
-+					 * changed, so might its size have changed, so
-+					 * re-calculate and update it in sec_var.
-+					 */
-+					sz = btf__resolve_size(linker->btf, glob_sym->underlying_btf_id);
-+					if (sz < 0) {
-+						pr_warn("global '%s': failed to resolve size of underlying type: %d\n",
-+							name, (int)sz);
-+						return -EINVAL;
-+					}
-+					dst_var->size = sz;
- 				}
--				dst_var->size = sz;
- 				continue;
- 			}
+ LSKELS := fentry_test.c fexit_test.c fexit_sleep.c atomics.c 		\
+ 	trace_printk.c trace_vprintk.c map_ptr_kern.c 			\
+@@ -520,6 +520,7 @@ test_usdt.skel.h-deps := test_usdt.bpf.o test_usdt_multispec.bpf.o
+ xsk_xdp_progs.skel.h-deps := xsk_xdp_progs.bpf.o
+ xdp_hw_metadata.skel.h-deps := xdp_hw_metadata.bpf.o
+ xdp_features.skel.h-deps := xdp_features.bpf.o
++dup_extern_funcs.skel.h-deps := dup_extern_funcs1.bpf.o dup_extern_funcs2.bpf.o
  
+ LINKED_BPF_OBJS := $(foreach skel,$(LINKED_SKELS),$($(skel)-deps))
+ LINKED_BPF_SRCS := $(patsubst %.bpf.o,%.c,$(LINKED_BPF_OBJS))
+diff --git a/tools/testing/selftests/bpf/prog_tests/dup_extern_funcs.c b/tools/testing/selftests/bpf/prog_tests/dup_extern_funcs.c
+new file mode 100644
+index 0000000000000000000000000000000000000000..b26f855745b451f7f53e44b27d47a2f659ad1378
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/dup_extern_funcs.c
+@@ -0,0 +1,9 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <test_progs.h>
++#include "dup_extern_funcs.skel.h"
++
++void test_dup_extern_funcs(void)
++{
++	RUN_TESTS(dup_extern_funcs);
++}
+diff --git a/tools/testing/selftests/bpf/progs/dup_extern_funcs1.c b/tools/testing/selftests/bpf/progs/dup_extern_funcs1.c
+new file mode 100644
+index 0000000000000000000000000000000000000000..6850e01d1455c0a2da947ad6d5b1c5dab0187e00
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/dup_extern_funcs1.c
+@@ -0,0 +1,20 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include "vmlinux.h"
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++
++char _license[] SEC("license") = "GPL";
++
++void *bpf_cast_to_kern_ctx(void *obj) __ksym;
++
++SEC("tc")
++int handler1(struct __sk_buff *skb)
++{
++	struct sk_buff *skb_kern = bpf_cast_to_kern_ctx(skb);
++
++	if (!skb_kern)
++		return -1;
++
++	return 0;
++}
+diff --git a/tools/testing/selftests/bpf/progs/dup_extern_funcs2.c b/tools/testing/selftests/bpf/progs/dup_extern_funcs2.c
+new file mode 100644
+index 0000000000000000000000000000000000000000..66ba3620274497cc40f8dfbb8d98856d4eab707e
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/dup_extern_funcs2.c
+@@ -0,0 +1,18 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include "vmlinux.h"
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++
++void *bpf_cast_to_kern_ctx(void *obj) __ksym;
++
++SEC("xdp")
++int handler2(struct xdp_md *xdp)
++{
++	struct xdp_buff *xdp_kern = bpf_cast_to_kern_ctx(xdp);
++
++	if (!xdp_kern)
++		return -1;
++
++	return 0;
++}
 
 -- 
 2.46.2
