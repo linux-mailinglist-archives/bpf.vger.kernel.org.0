@@ -1,53 +1,53 @@
-Return-Path: <bpf+bounces-40484-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40485-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CC4C9893E0
-	for <lists+bpf@lfdr.de>; Sun, 29 Sep 2024 10:48:22 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD15D9893DF
+	for <lists+bpf@lfdr.de>; Sun, 29 Sep 2024 10:48:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B8F0BB21543
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA75E1C20E61
 	for <lists+bpf@lfdr.de>; Sun, 29 Sep 2024 08:48:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5845813E41D;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A49113E8A5;
 	Sun, 29 Sep 2024 08:48:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DBYeiBTN"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R7QAsts6"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D387D42AB1;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D38C513B5A1;
 	Sun, 29 Sep 2024 08:48:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727599684; cv=none; b=LTo7yrDN4VIrypRf3hKlLesqB5dpdwMkR0hC+zq4xvywVt0pLRyANgRvU1Cp9iioHTEWnigtGTB2sCU1RCBZ1Cf3SBhqUKIEomS0LVmhuhg0Lhg7xLkVgazmCKE4d2QW/2J2rF+nbWRqu1mHF6R8W7ywPTDkPBrwjMCetDSXluQ=
+	t=1727599684; cv=none; b=WAAAK6ATVd9gOJNbBW7Mkpmi92tv5hEZD7TBNfpiwO5/6M1+T10KvSdgkncKXVMmN/QdZ8aRhaPA9IokGNWlHY7zuPMmxBBhqW/6RsK0zQa5wKujq+0WWnuHTRECQRLOhf0unb80DeAspzwMJ3DIX2A0A/Npy5uUA14X8VlWbuE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1727599684; c=relaxed/simple;
-	bh=SY9yDh1j+sDu6ngzI+1uKP6IbvRduNrKEKOhmrxEIuo=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=F43CYY8NXnSn8aPt+EAptUgIHAoVMonxiGa0U4fs7U+JSCi8nTxj/7VoEqgOFuc3dQopNKBESBSsdW2ZgQ4RK87ECYLVCpM23I+lU2JIY5wKw+sOX8voYGBUCulkplfliBibIU9NctT02o8ljQdfIzei7yU3A78uIc39OZXNpAY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DBYeiBTN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 6FB85C4CEC5;
+	bh=f6dz0eAovQ9H45vR8uatX5g6TKGH79bTRxSnAHxNIeM=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=SJLCLFFQ1sUeTkez/9Ju8kFEoxl1W41r9C96WJKilaZY3NnnhfqwGxKwZ0XXOZqR1nWsqqrAGTjQICcZj7DqED1g/mrt119lnC4GEQpC3ExSzRo3CY/Mv/+Tn3DsRpdKNMgPs56uJ5Zf60ofjZ6Htei0hYeBLIkIozOJ3THZczU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R7QAsts6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 7C8F0C4CECE;
 	Sun, 29 Sep 2024 08:48:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1727599684;
-	bh=SY9yDh1j+sDu6ngzI+1uKP6IbvRduNrKEKOhmrxEIuo=;
-	h=From:Subject:Date:To:Cc:Reply-To:From;
-	b=DBYeiBTNhK1ZkbRSBBtbJnlGsEA2Jn7AYwYgVXBrJv94R+X0D1uDtsSQiIP+Q4QXW
-	 pKiK3wRANrsjpBGe4GnJtlu+MGi3s8Lc9Sufkt3+JyWDJu6psf6jfqvJCHlnuKmS8/
-	 9lChV5ZYt80FPKbXNGcE2+Bi6Yr6Jbi48mi2CkvtSM7CvTWXlakIgnheqxb4zVdCZv
-	 /bUGJ70x25ciioyAVs7bnQC7NibZ7eYQoSLQMM76h1V1MwZ7lUJ0pDkCoNgv42slHL
-	 PImHS4FpEy4dh27YbuQeJ+xOFMO8eSbOTXN1Smv5roefrsqngsyKH5k24QQg11u8mL
-	 spXKo8FqHiBlg==
+	bh=f6dz0eAovQ9H45vR8uatX5g6TKGH79bTRxSnAHxNIeM=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
+	b=R7QAsts6NHF5g24Ikxq1ZB61V8/Fut/dHkednFH/u1Lwqu+9oO61qHHb7EYH6TV0H
+	 SnQUVloQ+dL7twZM9stgai78wA4U5Ss32Hjxrq9jeTmwYUP3y2F1CS4dWoENN7ZT5V
+	 jWolvgsStE454NVDL4UjThUR0qNj+T68t6vQh53GtloIPe9/URwiYbKcTsR80lwOmJ
+	 1anlNIH0ROH3/Px7OHWWiGOg4zIXKMfTBU6D3aVebvdqFyDpxmMQFJSMr5h3jhTuPn
+	 fzqCKyD+sQJFC3JcKhSmynkvDO/f0UCIxMKs92Z4WQEM/hUybrS7AE2LObZH3Mcpq9
+	 0hm/+tVx8Krow==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A194CF6497;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 69587CF6498;
 	Sun, 29 Sep 2024 08:48:04 +0000 (UTC)
 From: Eric Long via B4 Relay <devnull+i.hack3r.moe@kernel.org>
-Subject: [PATCH bpf-next 0/2] BPF static linker: fix failure when
- encountering duplicate extern functions
-Date: Sun, 29 Sep 2024 16:47:59 +0800
-Message-Id: <20240929-libbpf-dup-extern-funcs-v1-0-df15fbd6525b@hack3r.moe>
+Date: Sun, 29 Sep 2024 16:48:00 +0800
+Subject: [PATCH bpf-next 1/2] libbpf: do not resolve size on duplicate
+ FUNCs
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -56,58 +56,80 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAD8U+WYC/x2MQQqEMAwAvyI5G7BBUPcr4sHaVAOSLa2KIP7d6
- nFgZi5IHIUT/IoLIh+S5K8ZTFnAtIw6M4rLDFRRXXXU4SrWBo9uD8jnxlHR7zolbBvjazs6MkS
- Q6xDZy/mde3gLzToM9/0A4zpswnMAAAA=
-X-Change-ID: 20240929-libbpf-dup-extern-funcs-871f4bad2122
+Message-Id: <20240929-libbpf-dup-extern-funcs-v1-1-df15fbd6525b@hack3r.moe>
+References: <20240929-libbpf-dup-extern-funcs-v1-0-df15fbd6525b@hack3r.moe>
+In-Reply-To: <20240929-libbpf-dup-extern-funcs-v1-0-df15fbd6525b@hack3r.moe>
 To: bpf@vger.kernel.org
 Cc: Andrii Nakryiko <andrii@kernel.org>, 
  Alexei Starovoitov <ast@kernel.org>, netdev@vger.kernel.org, 
  Eric Long <i@hack3r.moe>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1327; i=i@hack3r.moe;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1893; i=i@hack3r.moe;
  h=from:subject:message-id;
- bh=SY9yDh1j+sDu6ngzI+1uKP6IbvRduNrKEKOhmrxEIuo=;
- b=owGbwMvMwCUWYb/agfVY0D7G02pJDGk/RZzE6515jy8JWXfJ48X8E1/sQ99mTtWRVfy2qM6mI
- bRmf2tbRwkLgxgXg6yYIsuWw3/UEvS7Ny3hnlMOM4eVCWQIAxenAEwk/RUjwwW7qQrR+YdPXJfc
- OPvv1LmXUw6a+LksZYguL5P8zlZeU8Lw4/iGaZkpcw4fmZihk5wqeVXSqiGAlefqU/tELru6ReI
- 8AA==
+ bh=cVkc6Hjsq020lv+rt+oCh7q9xtjmEGtFpGZ2Rx2LwNU=;
+ b=owGbwMvMwCUWYb/agfVY0D7G02pJDGk/RZx3P4hjjK4QvqBjePHy6uavUz+94N/Szfdci11h+
+ v8JvnrfOkpZGMS4GGTFFFm2HP6jlqDfvWkJ95xymDmsTCBDGLg4BWAi2QIM/zMbfRoOy3Um+y13
+ +5gYFnbO3O+3VW+emeLigsvhOy9o3mf4n3L2wfHr8/Pd2+asO+tfquArXMXs/zvq7LMJ/xO6Q64
+ mcAMA
 X-Developer-Key: i=i@hack3r.moe; a=openpgp;
  fpr=3A7A1F5A7257780C45A9A147E1487564916D3DF5
 X-Endpoint-Received: by B4 Relay for i@hack3r.moe/default with auth_id=225
 X-Original-From: Eric Long <i@hack3r.moe>
 Reply-To: i@hack3r.moe
 
-Currently, if `bpftool gen object` tries to link two objects that
-contains the same extern function prototype, libbpf will try to get
-their (non-existent) size by calling bpf__resolve_size like extern
-variables and fail with:
+From: Eric Long <i@hack3r.moe>
 
-	libbpf: global 'whatever': failed to resolve size of underlying type: -22
+FUNCs do not have sizes, thus currently btf__resolve_size will fail
+with -EINVAL. Add conditions so that we only update size when the BTF
+object is not function or function prototype.
 
-This should not be the case, and this series adds conditions to update
-size only when the BTF kind is not function.
-
-Fixes: a46349227cd8 ("libbpf: Add linker extern resolution support for functions and global variables")
 Signed-off-by: Eric Long <i@hack3r.moe>
 ---
-Eric Long (2):
-      libbpf: do not resolve size on duplicate FUNCs
-      selftests/bpf: make sure linking objects with duplicate extern functions doesn't fail
+ tools/lib/bpf/linker.c | 24 ++++++++++++++----------
+ 1 file changed, 14 insertions(+), 10 deletions(-)
 
- tools/lib/bpf/linker.c                             | 24 +++++++++++++---------
- tools/testing/selftests/bpf/Makefile               |  3 ++-
- .../selftests/bpf/prog_tests/dup_extern_funcs.c    |  9 ++++++++
- .../selftests/bpf/progs/dup_extern_funcs1.c        | 20 ++++++++++++++++++
- .../selftests/bpf/progs/dup_extern_funcs2.c        | 18 ++++++++++++++++
- 5 files changed, 63 insertions(+), 11 deletions(-)
----
-base-commit: 93eeaab4563cc7fc0309bc1c4d301139762bbd60
-change-id: 20240929-libbpf-dup-extern-funcs-871f4bad2122
+diff --git a/tools/lib/bpf/linker.c b/tools/lib/bpf/linker.c
+index 81dbbdd79a7c65a4b048b85e1dba99cb5f7cb56b..a2a7075038f898053b468a8256b93460edc29de6 100644
+--- a/tools/lib/bpf/linker.c
++++ b/tools/lib/bpf/linker.c
+@@ -2449,20 +2449,24 @@ static int linker_append_btf(struct bpf_linker *linker, struct src_obj *obj)
+ 			 * the same extern VARs/FUNCs.
+ 			 */
+ 			if (glob_sym && glob_sym->var_idx >= 0) {
++				const struct btf_type *t = btf__type_by_id(linker->btf, glob_sym->underlying_btf_id);
++				int kind = btf_kind(t);
+ 				__s64 sz;
+ 
+ 				dst_var = &dst_sec->sec_vars[glob_sym->var_idx];
+-				/* Because underlying BTF type might have
+-				 * changed, so might its size have changed, so
+-				 * re-calculate and update it in sec_var.
+-				 */
+-				sz = btf__resolve_size(linker->btf, glob_sym->underlying_btf_id);
+-				if (sz < 0) {
+-					pr_warn("global '%s': failed to resolve size of underlying type: %d\n",
+-						name, (int)sz);
+-					return -EINVAL;
++				if (kind != BTF_KIND_FUNC && kind != BTF_KIND_FUNC_PROTO) {
++					/* Because underlying BTF type might have
++					 * changed, so might its size have changed, so
++					 * re-calculate and update it in sec_var.
++					 */
++					sz = btf__resolve_size(linker->btf, glob_sym->underlying_btf_id);
++					if (sz < 0) {
++						pr_warn("global '%s': failed to resolve size of underlying type: %d\n",
++							name, (int)sz);
++						return -EINVAL;
++					}
++					dst_var->size = sz;
+ 				}
+-				dst_var->size = sz;
+ 				continue;
+ 			}
+ 
 
-Best regards,
 -- 
-Eric Long <i@hack3r.moe>
+2.46.2
 
 
 
