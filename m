@@ -1,145 +1,97 @@
-Return-Path: <bpf+bounces-40478-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40479-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF9AF989369
-	for <lists+bpf@lfdr.de>; Sun, 29 Sep 2024 09:19:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93226989373
+	for <lists+bpf@lfdr.de>; Sun, 29 Sep 2024 09:25:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 58018B23959
-	for <lists+bpf@lfdr.de>; Sun, 29 Sep 2024 07:19:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B6AC4285DB6
+	for <lists+bpf@lfdr.de>; Sun, 29 Sep 2024 07:25:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8554913A271;
-	Sun, 29 Sep 2024 07:19:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lCAUGEGl"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B76FB13B2B0;
+	Sun, 29 Sep 2024 07:25:04 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C282C2B9BB
-	for <bpf@vger.kernel.org>; Sun, 29 Sep 2024 07:19:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 149B352F9B
+	for <bpf@vger.kernel.org>; Sun, 29 Sep 2024 07:25:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727594369; cv=none; b=ptXlqG2/UCs6BWqxuKcuPzryqxB97WX0BAKCX+5FxSIHVkM4b/kzbfdhotHGCjQhppZXG/1N51c/k5Pxyn3qNzamIqywgRco+dbt3ksQgl+ADUkwyvyVUwvCGVZ6FXs3Xu49hAJVVvE2Kp9dhZPFuPiHztbtoZZegR7I6spnmf4=
+	t=1727594704; cv=none; b=DTvmL4ym23dGusXVobPJ0R9g/61c2o/xKmDVeVVbS1IODBOy+QYfrYF7glRbRDyQtotUd2y0Hi+s4K+UyWJ2OorPB8uvHkCT447LVaEm4LEEFSfPJpmQ2pG/GkGNSRC9YZnWosdi0iV51lcuzjs51yrVKL/JHLaTVZQbxjxb+A0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727594369; c=relaxed/simple;
-	bh=nZy09d4cw6Wq1RlXKHinEZMdmEdR4p9R4lXxTT47MMw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Y6GLOG7qxVn8/etiiU1cE0U5bQydAReKaB5+pup0znghB9jYHy/MiQcfN+NLGoU1CHJd4CPWTKe4NPgN7Ks4ajaaHHu7Fn7gLTviK4+DYygjOvAWpO1lt8a2FZUA0q26hfqq2KxOGujCOV1PWrHwU15DzIvPYh3yCKNrAVpS91c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lCAUGEGl; arc=none smtp.client-ip=209.85.210.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-71b20ffd809so2332479b3a.0
-        for <bpf@vger.kernel.org>; Sun, 29 Sep 2024 00:19:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727594367; x=1728199167; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nZy09d4cw6Wq1RlXKHinEZMdmEdR4p9R4lXxTT47MMw=;
-        b=lCAUGEGlle/ioCALT095TizTrdI6gWJRJ5m+hwr5ZlMN6lByLdtwHuBIFknh1W57kv
-         HPzRvh/PwX5OfN7uIkJqC43gW7uYV1bZcze7MOJ4iGU9o1uhiV7dvmCwkgeYvlKNP9Iu
-         1N+YrqL0/SY1KGHnizaM3Gog4sYk64c/esZZZ1XDKPyYL/8XsWJ07UIpK7L+pngr7p08
-         zzwVWDdZgW4FBZO/bpNCnIP3nb6KTTnQ3m131aKvTBv/04+b8xucWqXbDazbxIXsjYn4
-         P5lpBR+1x6AGyQSSV9P7iHu2woSpCBYFNBdeGLS59xB7nn3aqx4z1DrxrYUrxYxSwwvM
-         CMoA==
+	s=arc-20240116; t=1727594704; c=relaxed/simple;
+	bh=QUQFLsgcakmOxqNIX/ly7cXSo4bace+PZlvi10aC2bo=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=fTZJa8A3ursiJAUX7XSh7j5mbrectSK7hwHJsyB9toHDSER2D5THw9qFosOBpLHLcnbhJs7HBzM6Mae5je/wSSav2ET68DGrxlbp5zPlODyAUg5X/ofPybj49xHHr39u2nqtlXevoB5wuHFpl/ibqHX7eutQLFi2TCPGnanu1iI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-3a3481b26d6so18374025ab.2
+        for <bpf@vger.kernel.org>; Sun, 29 Sep 2024 00:25:02 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727594367; x=1728199167;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nZy09d4cw6Wq1RlXKHinEZMdmEdR4p9R4lXxTT47MMw=;
-        b=oTqhjxcHh95JZ28/9x58e5RRHseOL0P2XfA48NND/WcY5YOn+fxzzmnH0IuHOpDQ5W
-         oKhMHOz6h+MCftvgPD64yumdqcnTgTu92+4WK/AS98Ty1x5DstmJXpdkSz4V0SQaoRzq
-         zeVqokn0eLQ450sZkte5NLNl8n4+YFWEIh2X5lnXeh0+2YVUWckv0w/3EHzQ4h0HTCrB
-         sb3uu+eGih9qxvP82oLebylILGbYyOXP0+afmDk167kXjOHw2CHyW3Qw+mBNKJWe8RMr
-         xUnohgS0aj4bz50p/TZrWz7a50ivRotvH+0UUv4VVV7g3JeX2rj6qNHUiaiTJF0t7Ebf
-         6SSA==
-X-Forwarded-Encrypted: i=1; AJvYcCUM9M0LwLhtjlmxzqygwpBqnFy9e44F5CSw6MFACW/xuBWHrfccLVij0MOxStpjj+dlvQY=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzwFFZcPTS1pXkNU1gSH2+rJj2TClAlH+GlZlD++Hd/LTsfddsH
-	3dwD++C/c/UlPqDOR5JpTtiY+qDs8ScfKS5MaNE7KX4mWt3V+sSgTQT5dNOldo7tvItHA4aocpC
-	wrZns0bGPF3H34qIREcBANsdbGrQLWs+Ngl8=
-X-Google-Smtp-Source: AGHT+IHBaX7zToremk/eIcYJc0mZkosIgQANFk8r/j2Xc5ueYJYRcOmH4TWt8kecNIiq1A0kMoF/aA9ieu29mf7N5Nw=
-X-Received: by 2002:a05:6a00:9a3:b0:714:2014:d783 with SMTP id
- d2e1a72fcca58-71b25f275aamr12910498b3a.2.1727594367018; Sun, 29 Sep 2024
- 00:19:27 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1727594702; x=1728199502;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RiNNBzBiCFuCTjOXv7t2eBGAGAquTt6DCpiBL4q1mkY=;
+        b=Bwd2nc+UPmcMNM+6RYAJzFgFuOlrrkXdtrohUmMsQdpHdwPyH3VRr7/3HjxeIyylBI
+         4d3iKuPLs1sgAQxVjfZDhrI3Rs+jCkWaftB1XxYirkeoQnFnP61b2N2hGXagyl0T34bF
+         0qmKxcNnuTw1F9/0GKFZw3SiyoTN6s0pavV4wFGYGscvK/ORaSBjr6A/zWt1SxGmH3uZ
+         cv67rapZRw20ocpp4IEPIMFcSj3EZLELNbic/NoyHfawCZplyhNl+CEruB+2t8V7FpAx
+         3fMeDC7FZtIB2jjC2s/Xm/nNg/ZnZSJ0yvsRZ7JOhFHQ4Rh9vzTc+znDWnbFPxAjDfIg
+         IeLg==
+X-Forwarded-Encrypted: i=1; AJvYcCUBnKKYrqs2Lzv7ONMbjdR/xo5CaPemHWKs1j/D8V1kAEC0RTSBN00b/4xLbYhgaGg2TWc=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw/1dPUp1uUlGP9M74cZ4Xd2cgiFvKEXgiD3agOpfhmouTfniub
+	dNV+3jonYTBIVT5zLrew+TAu7LRNvSJGgHEzjNhdtZTGsrgFBD8X4BDH8FMd9CcCDA+Z6LTXxtY
+	2e0uow6zntTBiquj0bfrxuxgoFWMURVHGkjzp1HHpH4UvV1eHvCbMjoM=
+X-Google-Smtp-Source: AGHT+IGsVR0t+nezjz6+3pfe6BUp37rUtReguQpi53jhig1iod5w55MHl/Xa3NwmTZ7SLsC3SAYBD2PdWw2EVHSR5Yo91lGDCLvk
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CABVU1kWEHkt+z1c0vu1bXMn81iY8rDjwU=B6KPi2dPVvgeZUPw@mail.gmail.com>
- <CAEf4Bzbeqj3qneOEvKqcMf2XYx-1E=RKcAMo2L2oJz4qqqKbuA@mail.gmail.com> <CALOAHbBTLXWJ5EnXUzD-nGFxes-Q+Wu_-KPDZWHUKFfXsvdM0w@mail.gmail.com>
-In-Reply-To: <CALOAHbBTLXWJ5EnXUzD-nGFxes-Q+Wu_-KPDZWHUKFfXsvdM0w@mail.gmail.com>
-From: Tyrone Wu <wudevelops@gmail.com>
-Date: Sun, 29 Sep 2024 03:19:15 -0400
-Message-ID: <CABVU1kXwQXhqQGe0RTrr7eegtM6SVW_KayZBy16-yb0Snztmtg@mail.gmail.com>
-Subject: Re: bpf_link_info: perf_event link info name_len field returning zero
-To: Yafang Shao <laoar.shao@gmail.com>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org
+X-Received: by 2002:a05:6e02:1a05:b0:3a2:74f8:675d with SMTP id
+ e9e14a558f8ab-3a3451b01c6mr78897085ab.20.1727594702296; Sun, 29 Sep 2024
+ 00:25:02 -0700 (PDT)
+Date: Sun, 29 Sep 2024 00:25:02 -0700
+In-Reply-To: <66f62bf3.050a0220.38ace9.0007.GAE@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <66f900ce.050a0220.aab67.000f.GAE@google.com>
+Subject: Re: [syzbot] [bpf?] BUG: MAX_STACK_TRACE_ENTRIES too low! (4)
+From: syzbot <syzbot+c6c4861455fdd207f160@syzkaller.appspotmail.com>
+To: andrii@kernel.org, asml.silence@gmail.com, ast@kernel.org, axboe@kernel.dk, 
+	bpf@vger.kernel.org, daniel@iogearbox.net, eddyz87@gmail.com, 
+	haoluo@google.com, john.fastabend@gmail.com, jolsa@kernel.org, 
+	kpsingh@kernel.org, linux-kernel@vger.kernel.org, martin.lau@linux.dev, 
+	mingo@kernel.org, netdev@vger.kernel.org, peterz@infradead.org, 
+	riel@redhat.com, sdf@fomichev.me, sdf@google.com, song@kernel.org, 
+	syzkaller-bugs@googlegroups.com, wander@redhat.com, yhs@fb.com, 
+	yonghong.song@linux.dev
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-> The reason name_len is 0 is that the user did not set both the buffer
-> and the length. IOW, this happens when the user buffer is NULL and the
-> input length is 0.
+syzbot has bisected this issue to:
 
-Thank you both for the follow-up.
+commit 893cdaaa3977be6afb3a7f756fbfd7be83f68d8c
+Author: Wander Lairson Costa <wander@redhat.com>
+Date:   Wed Jun 14 12:23:22 2023 +0000
 
-> However, we should make this behavior consistent by
-> returning the actual size to the user if both the buffer and length
-> are unset.
->
-> I will submit a fix.
+    sched: avoid false lockdep splat in put_task_struct()
 
-I actually made a small patch for this when I was initially exploring
-this behavior. If it's alright, I can submit this after some clean-up.
-:)
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14a00127980000
+start commit:   abf2050f51fd Merge tag 'media/v6.12-1' of git://git.kernel..
+git tree:       bpf
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=16a00127980000
+console output: https://syzkaller.appspot.com/x/log.txt?x=12a00127980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=bc30a30374b0753
+dashboard link: https://syzkaller.appspot.com/bug?extid=c6c4861455fdd207f160
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14ee7107980000
 
+Reported-by: syzbot+c6c4861455fdd207f160@syzkaller.appspotmail.com
+Fixes: 893cdaaa3977 ("sched: avoid false lockdep splat in put_task_struct()")
 
-On Sat, Sep 28, 2024 at 10:36=E2=80=AFPM Yafang Shao <laoar.shao@gmail.com>=
- wrote:
->
-> On Sat, Sep 28, 2024 at 7:14=E2=80=AFAM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Sun, Sep 22, 2024 at 12:59=E2=80=AFPM Tyrone Wu <wudevelops@gmail.co=
-m> wrote:
-> > >
-> > > Hello,
-> > >
-> > > When retrieving bpf_link_info.perf_event kprobe/uprobe/tracepoint
-> > > data, I noticed that the name_len field always returns 0. After some
-> > > digging, I see that name_len is never actually populated, which
-> > > explains the 0 value.
-> > >
-> > > I expected it to function similarly to
-> > > bpf_link_info.raw_tracepoint.tp_name_len, where that field is filled
-> > > with the length of tp_name. However, I noticed that the selftest
-> > > explicitly asserts that name_len should be 0. I was wondering if
-> > > someone could clarify whether it is intended for the
-> > > bpf_link_info.perf_event name_len field to not be populated.
-> >
-> > This sounds like a bug. It should behave consistently with the other
-> > users of input/output string buffer size fields: on input we get
-> > maximum buffer size, on output we should put an actual size of the
-> > string (especially if it was truncated).
-> >
-> > Yafang, Jiri, WDYT?
->
-> The reason name_len is 0 is that the user did not set both the buffer
-> and the length. IOW, this happens when the user buffer is NULL and the
-> input length is 0. However, we should make this behavior consistent by
-> returning the actual size to the user if both the buffer and length
-> are unset.
->
-> I will submit a fix.
->
->
-> --
-> Regards
-> Yafang
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
