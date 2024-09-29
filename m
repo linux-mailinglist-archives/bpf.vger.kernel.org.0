@@ -1,373 +1,351 @@
-Return-Path: <bpf+bounces-40501-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40502-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 366639895F5
-	for <lists+bpf@lfdr.de>; Sun, 29 Sep 2024 16:27:47 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 816D69895FE
+	for <lists+bpf@lfdr.de>; Sun, 29 Sep 2024 16:42:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C5C071F224CE
-	for <lists+bpf@lfdr.de>; Sun, 29 Sep 2024 14:27:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 066FBB237B4
+	for <lists+bpf@lfdr.de>; Sun, 29 Sep 2024 14:42:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D54F217BEC5;
-	Sun, 29 Sep 2024 14:27:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6132617BEC8;
+	Sun, 29 Sep 2024 14:42:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BDHzV+cZ"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fo8rMHLX"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D3FE2AE69;
-	Sun, 29 Sep 2024 14:27:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727620061; cv=none; b=aPFyUxWA6dk5CdgTYcP0KZsBdqxYvHu4DmOF6SCRC4opWN8D1ZXIEu57cF6iE8hfMeuxRoM+Jrg2+MHKyRNv7JQ36zkzZf4jhqsLFwDOYciZaRMgFCoVVxB48BtXmSWJOfFGa7h9qarI23xsgbajvkN9SxpYn6S769ZI6/bDcx8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727620061; c=relaxed/simple;
-	bh=wfsaGTv/cYcMQG4W/chhN05/LY2CiveBskbyCN3nrfM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ciUZpvgkyXCjWhBaCKUAOO+ouGNrk6MwI6D6gq6UADTSUS4cayUky9dEGZVR7kvqGq52EeWHTCWVOXAHY7Pg8g8wVVoLYSgWhtTpb5nlQ8zwVxYIxo+g6Acq03jHthWK61L0prFWnBX6noo7QKqa9UeellMs15/bIhWXYmaB16o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BDHzV+cZ; arc=none smtp.client-ip=209.85.167.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-53659867cbdso5138508e87.3;
-        Sun, 29 Sep 2024 07:27:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727620057; x=1728224857; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PtbvtThMcLfZP33DpBG5SmDf+10l0U9/1PhI2Q2GmeY=;
-        b=BDHzV+cZewLvDoLGTfaiREt8cePCBySkBtKtd2AWv+kZOzv40Ss37kyNJn5aQPDkHl
-         ofNokvwTwtacLytnyKyeNjboVHbkne0VXrQq+k0wix5VS4kCLJG/ua0fFyhm1jzNQ3AT
-         sTduqKPcY6B8SNhmM7aVcvwwWxtJu9e2yp1u+e7WuOiDszgdTDLY/1DnDhcfRb5SKt/N
-         o6oMK9IQ8aWd+l30xS7Pf4SakiSMJepgfdCuiqd/Ufi69fTUEG/Dq2fVNZLOt9JFKoNJ
-         asqRA1ZqS9v4cFuUJ187bMJ+phoo3Mv9INU914VJgd7tKzcabgkUJRY/nm713MGlAeD7
-         RdTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727620057; x=1728224857;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PtbvtThMcLfZP33DpBG5SmDf+10l0U9/1PhI2Q2GmeY=;
-        b=Pcdt2X9VIR0K+N0VnmC6P1+KY0D0lpVMlTSCQpczk6aOYB5+BEatO8Ug1f8GmBV9qi
-         UT8LpNt40Lnis8bXw/H8UNDbUS/0WWAd0e8WFW62Ldl+mBuw2AcPUK9FBj5i315zjru8
-         86UV1UdWeSr8B3LHRgNH6Rs+xYWt1Vp9IjRYOTHtRh9P3Dpr1LIfyOJ+EVtKdnPFUdhA
-         2uYnS5gShfu4lREWitjJFso/lxJf0Y54DDauqOccqDY34j8hTDw89oweK6FQD1CsfVCz
-         5F+xZ7wz9rovbtqZ4H0PG/KZzqyCusBzQYPnk7j3KuWSk7B1A3si3mrbcTCU0ennLLq+
-         rO0A==
-X-Forwarded-Encrypted: i=1; AJvYcCUo5T849QbgRjFQtFdc/KtkcjqWJTdjK+pHAJpIjrR71vwd0NUEtY1HSUEyKBbW8U8JJb3q/tPxFswWYnUb@vger.kernel.org, AJvYcCW8b6qgkb000yxHcto2H0BXhSjHPJ3qr4O4QDpMeG0mbbanY5cVj4qp4Hb1aPckiCr6imk=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz3Nn4LtyLwRhxYBKpf5r9jwBTBm4DypoYaHoZt/1AG8e4kwBGN
-	0WTcUWbyMgnDyKJl74FIIZ1PaUGH6qsTKMxLjJrRRpX1FL9UwJtq4aaVlN4RpDEoSq68i7FckcV
-	zTRjWPX1Xfgm9vydQDRKroi47+es=
-X-Google-Smtp-Source: AGHT+IE4HXL1kMylcq8xlFLuKWk1AaVJJnQaLup27Jz1RzB4cQGJRzdsAibNxQ6jhUjn45Faqm6I6zWP+QcmF9XJ9G8=
-X-Received: by 2002:a05:6512:220a:b0:539:9155:e8c1 with SMTP id
- 2adb3069b0e04-5399155ebcbmr836865e87.8.1727620057141; Sun, 29 Sep 2024
- 07:27:37 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9EA01448E2;
+	Sun, 29 Sep 2024 14:41:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.18
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1727620920; cv=fail; b=MS89I3g1As3HgUtFVqUoIOy2B8fY6mcA3PBM1fJ/Ot+43ayYtYH1IXWYeNUcQxU7zucIrFQArj5EMIfgK8e/eROBsvmFURLpTaxqRhP2YyiV7xL43eY8hTEDwagDRRbG9izTOp7dEZfIkllh6P2C7HChEagTBHlt8Dd/O3T9B2Q=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1727620920; c=relaxed/simple;
+	bh=+RG3JaOEJ3wOvMj4RdyHOn2gyFahObe1OI1q5JH70Xo=;
+	h=Date:From:To:CC:Subject:Message-ID:Content-Type:
+	 Content-Disposition:MIME-Version; b=R+b209qLollFCrlKFWCn/SW5ZpBJh3tLupz2jAA//PN68C+xPxAqNVwIDYTxg8SmjGuXR83D/au2+aHbRHXQfPdtixZ9rnGQ4+p5RzEg7bpehKfxVYSUojDv5YfTVXYsJMlG+kUfZuVUZugh7Qg9akJmgB7yW4lH7HjmAEww8BI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=fo8rMHLX; arc=fail smtp.client-ip=198.175.65.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1727620919; x=1759156919;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=+RG3JaOEJ3wOvMj4RdyHOn2gyFahObe1OI1q5JH70Xo=;
+  b=fo8rMHLXmJdxk4m8ldNoc4RowPIGU/RWXgN8Ohb2Do+H0RoTHoz9+S9b
+   Zxd0sm46IvWCaquVO8HnSbCaeBnYLI9YDUXKDiok39PJsxhO0gpJFI/ET
+   WRUlTjbi+OJC+Qt2z2gHdfOMAguklmsQiTHjbeUCrJuM3vhSMYjqOCcKo
+   QRTuGVdosmvotN/LSM9/p8Qw3Ss4oU5kl0s2nwzUWAHvxRfB2l9mKjPLP
+   JlZwrV+VBEn4+ELoT/IGxy+RIXuCHJOPTU5CFPHWrwx3MwzaOo6qv3Pso
+   WoT5KpBdR4VC7Vn5nvmOFsQeCBDolh/L5GGk/Oo1oB97aR6O8oIBhyNEF
+   Q==;
+X-CSE-ConnectionGUID: Ue1rtKc8Ti+sXWJAlnXrgQ==
+X-CSE-MsgGUID: HpWajRFuSBa30Bf/yVRvaw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11209"; a="26839433"
+X-IronPort-AV: E=Sophos;i="6.11,163,1725346800"; 
+   d="scan'208";a="26839433"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2024 07:41:52 -0700
+X-CSE-ConnectionGUID: XsxjqilLSeKIrD83ooqcSQ==
+X-CSE-MsgGUID: lORC9ExaS5i8XKlJeCYGgA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.11,163,1725346800"; 
+   d="scan'208";a="77123748"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by fmviesa003.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 29 Sep 2024 07:41:51 -0700
+Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39; Sun, 29 Sep 2024 07:41:51 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39; Sun, 29 Sep 2024 07:41:51 -0700
+Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39; Sun, 29 Sep 2024 07:41:50 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39 via Frontend Transport; Sun, 29 Sep 2024 07:41:50 -0700
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.49) by
+ edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.39; Sun, 29 Sep 2024 07:41:50 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=Xhb6atAfWqP1M1nZiJSFaZfbVnNO9ZyvOEIT08wl3AAK+vhrx8Cdjte18weIJ+ZCdaX3M2dyvxTj4svXsIp1MOQ/RepasuU0cBMGGcKLiuKyhv49tLNyaiSgrn2EG+Cy1rXxeSVtnBH2cDRdqbTLZ8jhhej9X9DSw4OIlyFRHd6ULX6D9DBAkrI4coBFx2X/KVjEZfe1r0eoB8/k7v/6AfBhcNP8vPb04Hb37n0D1riCpps1w5A5jNHLKYx3LYrMYvluHfhuJag9wueeLggNnyqQt3G9T1mOVvmMomdTstKXZuviR1vYLV7u7AGnpw7uSo+dWO2QjStX1qik3jibcQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=DRNNoU3hlWcHnJ/LGoB4higEmpBg4kPgC+70vYTw3bo=;
+ b=bfSW4pq/7heNY9Cp2yu5kWDimqFwu6oan1wTtTL1gYUAYL/QU3j+FkowUnv3nGHSs5Xj74WBDwcRa+guCZOB72z3jDGTkEeHbFzTBIm9nIrh1BrlIJy9jhiMrL2HgB6C8ke8Jg5vMIyBgdfiXoi+X8OWakmiWOcpceM/KhlNR10Eu9tNGB1veVc8KgzP+/ydUwsgE7Is2NeDZv20OjKupbMELAjGhTPqiNqtT4rfkkfo1sXd59BRZJNr+Pr/+Ir6ZJ5zj8y4i0VFSMAsk5SS9OVDzDAMIrQoLg7JwB8iXwZWqVDtFQT0a5lxUbiM4opgcvaztkf4EeRYuLVjMfB4rQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from LV3PR11MB8603.namprd11.prod.outlook.com (2603:10b6:408:1b6::9)
+ by DM4PR11MB7374.namprd11.prod.outlook.com (2603:10b6:8:102::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8005.22; Sun, 29 Sep
+ 2024 14:41:48 +0000
+Received: from LV3PR11MB8603.namprd11.prod.outlook.com
+ ([fe80::4622:29cf:32b:7e5c]) by LV3PR11MB8603.namprd11.prod.outlook.com
+ ([fe80::4622:29cf:32b:7e5c%5]) with mapi id 15.20.8005.024; Sun, 29 Sep 2024
+ 14:41:48 +0000
+Date: Sun, 29 Sep 2024 22:41:39 +0800
+From: kernel test robot <oliver.sang@intel.com>
+To: Peter Zijlstra <peterz@infradead.org>
+CC: <oe-lkp@lists.linux.dev>, <lkp@intel.com>, <linux-kernel@vger.kernel.org>,
+	<bpf@vger.kernel.org>, <linux-kbuild@vger.kernel.org>,
+	<oliver.sang@intel.com>
+Subject: [peterz-queue:x86/ibt] [x86/ibt]  7674335965:
+ kernel_BUG_at_arch/x86/kernel/alternative.c
+Message-ID: <202409292243.b563a081-lkp@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+X-ClientProxiedBy: SG2PR04CA0187.apcprd04.prod.outlook.com
+ (2603:1096:4:14::25) To LV3PR11MB8603.namprd11.prod.outlook.com
+ (2603:10b6:408:1b6::9)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240927184133.968283-1-namhyung@kernel.org> <20240927184133.968283-4-namhyung@kernel.org>
- <ZvjwEH3QXkjUCu8Z@google.com>
-In-Reply-To: <ZvjwEH3QXkjUCu8Z@google.com>
-From: Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Date: Sun, 29 Sep 2024 23:27:25 +0900
-Message-ID: <CAB=+i9Sm4UEhGy-jzsZEs1Q6KQCVdbnu_eAiRzXz=sRC-3H6Uw@mail.gmail.com>
-Subject: Re: [RFC/PATCH bpf-next 3/3] selftests/bpf: Add a test for kmem_cache_iter
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, LKML <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org, 
-	Andrew Morton <akpm@linux-foundation.org>, Christoph Lameter <cl@linux.com>, 
-	Pekka Enberg <penberg@kernel.org>, David Rientjes <rientjes@google.com>, 
-	Joonsoo Kim <iamjoonsoo.kim@lge.com>, Vlastimil Babka <vbabka@suse.cz>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, linux-mm@kvack.org, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV3PR11MB8603:EE_|DM4PR11MB7374:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3fa29b19-f7fb-4879-1d83-08dce094d8db
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|1800799024|366016;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?FpmeKGE8KNYwRbxGQkJnoVnIhgHrJzfsdKJtodiF6t09/mIL+KHwnMg4k1ga?=
+ =?us-ascii?Q?NnS3mZtW6vhVJJCTNM6ZPD7RcByQphqvLG12lmM3KmOQSmMPckwYDVUTsBSE?=
+ =?us-ascii?Q?GTpr+1jExWIwng0pAsyH/CdonhkK7883NpgCXQJm0FFW9rV159VE18nFMQ82?=
+ =?us-ascii?Q?vTQfXcabrFX8sFP7goSNRn3ZpJY+Xc6oxPujOPbjMPDx/LSeAddXZYusyKGP?=
+ =?us-ascii?Q?LFftCGHA0Wob8ms1Ay8uVLLxjPuiBpBVTb+o/O5NULWgvQzSlep2yAzla2Qd?=
+ =?us-ascii?Q?hWvuFPaTRNcvEVhKJp537ckdvOR7B781q/E8hOjGHjYPChGBoBlffHc93Gbv?=
+ =?us-ascii?Q?oB8IXtOs67u729Q66+6LjEa7zrLbfbdtM6+Td6t9f1hN+K9oTx8YcBSYGRKt?=
+ =?us-ascii?Q?Ozc22hTsm7zJY+8cFhsbncwKxeo4EkHE3nWgQ7ogNE/LqNQvb/OLPTtw1ddO?=
+ =?us-ascii?Q?LYffzGKAR5gf98S0eBprZrBWLqnfD4PnWjCc7t5JG8O/qnHxvZsHj0+EfLQc?=
+ =?us-ascii?Q?8b/aVqyj8QymgXmMtWw3m06UepEj52D/GGb/Vk/3zLhr0UN8N96L605r9K7/?=
+ =?us-ascii?Q?hcN+SKOte8KdzHDu4hrJ4mHAOjDR+MO3DSZUqk/hrq8gvLXpBSX7/NpPUAUq?=
+ =?us-ascii?Q?vxi+5uZuvpnZwXgwc2Vw6rh7XoSH1Yz6Cfdfq3/18SUP8RA8oYoTrTL2QsGy?=
+ =?us-ascii?Q?ENVhjts5Wy4sB/+WNg4Jc+ubx3qLLVBNAIFXPHxakC3EM0EJ7eQ9Br4nO7Qh?=
+ =?us-ascii?Q?UoKGjhVDbCnXTG7feoFBBfNxAiVT3hFU9xp62KCJSOYNLYKrMwus1h5xI4ET?=
+ =?us-ascii?Q?xQKVEExox1ibpUtsW+J9iO7oEC8Kj/REog/9Raxhn0AVQYkBVjx5ERK4Ndv7?=
+ =?us-ascii?Q?e9tWSFRa3qNiff8UTjNYQSKCUhF0iahyZK7OaF66WXPL3Xl2bY7a4OdQSSRk?=
+ =?us-ascii?Q?5tmkBJm9GPOUadYJrxQzK+LPF5XLS1N0NPR5u8xlitFwDa3JzfGHDgc7wLZH?=
+ =?us-ascii?Q?IPh9bxNgya0xhtMa4/TnQqiJNNKBRJEObZP5MlWWZIO9tUqeGW7ffVZIIX7s?=
+ =?us-ascii?Q?JlD4Hkm2HtefjzYJd238kvpqvP3JxxPZhQiWUb7P8F54GzdBdCEi6jHryOzs?=
+ =?us-ascii?Q?E+1iE7o7Zir0+F0pm8pu/MXZ92oM+OuGeHSvg8tG8mhMwbjKdauSnJMPvM6W?=
+ =?us-ascii?Q?IS3ZjPqwPgFeIHlc5PBlZc5svQkfH4kVo9dQet1XNBYyUMOkBk7BTgqBNnYr?=
+ =?us-ascii?Q?jRVjTqq6mRlljhYp8bwS2ou5ego2NO+SLZ6560tBxGR0KFIYiG2sesDRQTYf?=
+ =?us-ascii?Q?B4f9Cq4SD24CKaYDUcabF/x7k/+bq2hMkmfsuBlMQhaGqr5kIfk0XUv8YQQj?=
+ =?us-ascii?Q?i0tTXXU=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV3PR11MB8603.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(1800799024)(366016);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?bx7qtN64GX2eKhxnN2i1gVgIH8phgIZRgdvvf1UloPPPPkLq2+RfC9nWwllw?=
+ =?us-ascii?Q?B2EPHFnf5G1bH/EOhr5UxWCNbjZH0p55jOibiqB+hzfPQ8n7TJqhZktz1n+p?=
+ =?us-ascii?Q?6Q5WO6JMHLTctaxn7++mruFElt9xobqKp89gV0OIAM4aOs5NaWtcyuKNWVVT?=
+ =?us-ascii?Q?zEBFLTsnn4LWlLEHutqHDagm7MZPlC1QK3P9mvF3eGiaoN948win6+EpnOep?=
+ =?us-ascii?Q?90OdNuEbDXZuYSnLngSZ6iekueaz/vET4wAFgMScTc04BeKl8S/mH77nKiVM?=
+ =?us-ascii?Q?3yKDmxcv5rvADtrzth4QPgM4wyfXl8dwRojo3lDcMw33ywGmulcSVxwFixEN?=
+ =?us-ascii?Q?tps5zSxBLhWT2MN5BoaUiG7vHlyfWuQO5iMQ9tG0Aa6NzfLBqoCbm5lJ7bOG?=
+ =?us-ascii?Q?cKPpm0UxNw1jJPN8g+SVzwtkEHo0inRlZKSe/eIAH3SpV5hXEdLSqZzSkx6X?=
+ =?us-ascii?Q?tj9xsd6qo7LZC9OAzcsX3bcwamVgeXTdL0vI6WWx877znPFPQ/MCMZkHoZYa?=
+ =?us-ascii?Q?BkyupuhMli1MKQD6rRb3BHCdEE2AyVV5/sUjXUNnBYtj+GtVU+XfYKmlLKV2?=
+ =?us-ascii?Q?rJvf296a9vvLQeXDanLC4/xyiAU1V7D6GcvRo7GLooie88wDiSWVoWwMPtiV?=
+ =?us-ascii?Q?2RD402L8k257/ZjaDpVCbUUnr8wsP3fl7032YUTmnuu2TYmX3EZl6c6bhSms?=
+ =?us-ascii?Q?JZWHH8Q2RvW/m5paxratecGhMfKGpy9I+oXNuUibpSLQutHc7QnhFMnemU1q?=
+ =?us-ascii?Q?f29/MC43+6R2ipSxCuyn8ca2Qrb5X8tqZZNmI+dzO9CAA/rBq8cmUqoZJAyk?=
+ =?us-ascii?Q?Qb6B08AIyHSZBkrrqoERDU+RuP5uKbHN8H+aRV90/A6uyxqIeWe1MBp+vcQg?=
+ =?us-ascii?Q?PIfZvqZl8gPOQL+TiwcnSXeeqrThhK+PwoVEl1fT0iCwepW7vT6Z/Wb/RF2m?=
+ =?us-ascii?Q?eyLkl4w9fQ+hdq0XvgQg+IQS4EfBW/a7X/hhq5flTL2HCFraOJDN79F6I6Ar?=
+ =?us-ascii?Q?cAdxWjnlGXOl+6NBJLHQhdk7X8QCauenkBmbC0q0YOqbzza1sXL2NmXZy0Jv?=
+ =?us-ascii?Q?12Tg+787vsvGBfmwNTtTq1DhyV3lZZcjQq4fSrTS5t6NpRMgzrRhH04vVscy?=
+ =?us-ascii?Q?Zz1Ten1iIMJY234VB1zFNLKGagk+Fr15qsTk3fIW6BTiE5uKXCP8SyEZ4Sxl?=
+ =?us-ascii?Q?7gg4nA1UZNQZQeByD1T0C9mkdlDRBwQTOpDc2Plg1yr0MAqzOmQFAx54mM7i?=
+ =?us-ascii?Q?PYyV/C0jkMu9OmsT9X19J8Mi/MJge/YtV0MkBDnJyhC4shPF3ZCBf6mBwrkf?=
+ =?us-ascii?Q?YRpEUD/17ouw7OOqY3KjbjtMywxds3iaMw7+woJ0RU+oWnp535BwuUwKShtT?=
+ =?us-ascii?Q?cJ2c/H9OHlSLEzwOcqlV3JyMy4FBjJT9+tgaha2s+YNCibbPz5umyqWCpxvB?=
+ =?us-ascii?Q?YEjz/5q7/jKLtQCXrVNq21w62tzsDfmh3yCBlAEDXWvv5B1KUJIsG2Ok27eG?=
+ =?us-ascii?Q?P+Io0EjTGukSxzH9QFVsibpl/VerPGNyB1Zcyvh3hilFb+rmds4S0GJeZWsA?=
+ =?us-ascii?Q?G/5rgQzYzHiaAbcxSH4ANE4KxB7FU4lylDTp4DkIHTrNcoYCA32x0qZLejlJ?=
+ =?us-ascii?Q?Ng=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3fa29b19-f7fb-4879-1d83-08dce094d8db
+X-MS-Exchange-CrossTenant-AuthSource: LV3PR11MB8603.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Sep 2024 14:41:48.0810
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: QXO2E0puZIlL9XJE9IGoKbinHybhf7WsF50aPadWNmd/WNzJdxSZIVv9Q98whIC3a1aZ1J22IiJ5OFZKNPqQyQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB7374
+X-OriginatorOrg: intel.com
 
-On Sun, Sep 29, 2024 at 3:13=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> =
-wrote:
->
-> On Fri, Sep 27, 2024 at 11:41:33AM -0700, Namhyung Kim wrote:
-> > The test traverses all slab caches using the kmem_cache_iter and check
-> > if current task's pointer is from "task_struct" slab cache.
-> >
-> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> > ---
-> >  .../bpf/prog_tests/kmem_cache_iter.c          | 64 ++++++++++++++++++
-> >  tools/testing/selftests/bpf/progs/bpf_iter.h  |  7 ++
-> >  .../selftests/bpf/progs/kmem_cache_iter.c     | 66 +++++++++++++++++++
-> >  3 files changed, 137 insertions(+)
-> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/kmem_cache_i=
-ter.c
-> >  create mode 100644 tools/testing/selftests/bpf/progs/kmem_cache_iter.c
-> >
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/kmem_cache_iter.c b=
-/tools/testing/selftests/bpf/prog_tests/kmem_cache_iter.c
-> > new file mode 100644
-> > index 0000000000000000..814bcc453e9f3ccd
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/prog_tests/kmem_cache_iter.c
-> > @@ -0,0 +1,64 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/* Copyright (c) 2024 Google */
-> > +
-> > +#include <test_progs.h>
-> > +#include <bpf/libbpf.h>
-> > +#include <bpf/btf.h>
-> > +#include "kmem_cache_iter.skel.h"
-> > +
-> > +static void test_kmem_cache_iter_check_task(struct kmem_cache_iter *sk=
-el)
-> > +{
-> > +     LIBBPF_OPTS(bpf_test_run_opts, opts,
-> > +             .flags =3D BPF_F_TEST_RUN_ON_CPU,
-> > +     );
-> > +     int prog_fd =3D bpf_program__fd(skel->progs.check_task_struct);
-> > +
-> > +     /* get task_struct and check it if's from a slab cache */
-> > +     bpf_prog_test_run_opts(prog_fd, &opts);
-> > +
-> > +     /* the BPF program should set 'found' variable */
-> > +     ASSERT_EQ(skel->bss->found, 1, "found task_struct");
->
-> Hmm.. I'm seeing a failure with found being -1, which means ...
->
-> > +}
-> > +
-> > +void test_kmem_cache_iter(void)
-> > +{
-> > +     DECLARE_LIBBPF_OPTS(bpf_iter_attach_opts, opts);
-> > +     struct kmem_cache_iter *skel =3D NULL;
-> > +     union bpf_iter_link_info linfo =3D {};
-> > +     struct bpf_link *link;
-> > +     char buf[1024];
-> > +     int iter_fd;
-> > +
-> > +     skel =3D kmem_cache_iter__open_and_load();
-> > +     if (!ASSERT_OK_PTR(skel, "kmem_cache_iter__open_and_load"))
-> > +             return;
-> > +
-> > +     opts.link_info =3D &linfo;
-> > +     opts.link_info_len =3D sizeof(linfo);
-> > +
-> > +     link =3D bpf_program__attach_iter(skel->progs.slab_info_collector=
-, &opts);
-> > +     if (!ASSERT_OK_PTR(link, "attach_iter"))
-> > +             goto destroy;
-> > +
-> > +     iter_fd =3D bpf_iter_create(bpf_link__fd(link));
-> > +     if (!ASSERT_GE(iter_fd, 0, "iter_create"))
-> > +             goto free_link;
-> > +
-> > +     memset(buf, 0, sizeof(buf));
-> > +     while (read(iter_fd, buf, sizeof(buf) > 0)) {
-> > +             /* read out all contents */
-> > +             printf("%s", buf);
-> > +     }
-> > +
-> > +     /* next reads should return 0 */
-> > +     ASSERT_EQ(read(iter_fd, buf, sizeof(buf)), 0, "read");
-> > +
-> > +     test_kmem_cache_iter_check_task(skel);
-> > +
-> > +     close(iter_fd);
-> > +
-> > +free_link:
-> > +     bpf_link__destroy(link);
-> > +destroy:
-> > +     kmem_cache_iter__destroy(skel);
-> > +}
-> > diff --git a/tools/testing/selftests/bpf/progs/bpf_iter.h b/tools/testi=
-ng/selftests/bpf/progs/bpf_iter.h
-> > index c41ee80533ca219a..3305dc3a74b32481 100644
-> > --- a/tools/testing/selftests/bpf/progs/bpf_iter.h
-> > +++ b/tools/testing/selftests/bpf/progs/bpf_iter.h
-> > @@ -24,6 +24,7 @@
-> >  #define BTF_F_PTR_RAW BTF_F_PTR_RAW___not_used
-> >  #define BTF_F_ZERO BTF_F_ZERO___not_used
-> >  #define bpf_iter__ksym bpf_iter__ksym___not_used
-> > +#define bpf_iter__kmem_cache bpf_iter__kmem_cache___not_used
-> >  #include "vmlinux.h"
-> >  #undef bpf_iter_meta
-> >  #undef bpf_iter__bpf_map
-> > @@ -48,6 +49,7 @@
-> >  #undef BTF_F_PTR_RAW
-> >  #undef BTF_F_ZERO
-> >  #undef bpf_iter__ksym
-> > +#undef bpf_iter__kmem_cache
-> >
-> >  struct bpf_iter_meta {
-> >       struct seq_file *seq;
-> > @@ -165,3 +167,8 @@ struct bpf_iter__ksym {
-> >       struct bpf_iter_meta *meta;
-> >       struct kallsym_iter *ksym;
-> >  };
-> > +
-> > +struct bpf_iter__kmem_cache {
-> > +     struct bpf_iter_meta *meta;
-> > +     struct kmem_cache *s;
-> > +} __attribute__((preserve_access_index));
-> > diff --git a/tools/testing/selftests/bpf/progs/kmem_cache_iter.c b/tool=
-s/testing/selftests/bpf/progs/kmem_cache_iter.c
-> > new file mode 100644
-> > index 0000000000000000..3f6ec15a1bf6344c
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/progs/kmem_cache_iter.c
-> > @@ -0,0 +1,66 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/* Copyright (c) 2024 Google */
-> > +
-> > +#include "bpf_iter.h"
-> > +#include <bpf/bpf_helpers.h>
-> > +#include <bpf/bpf_tracing.h>
-> > +
-> > +char _license[] SEC("license") =3D "GPL";
-> > +
-> > +#define SLAB_NAME_MAX  256
-> > +
-> > +struct {
-> > +     __uint(type, BPF_MAP_TYPE_HASH);
-> > +     __uint(key_size, sizeof(void *));
-> > +     __uint(value_size, SLAB_NAME_MAX);
-> > +     __uint(max_entries, 1024);
-> > +} slab_hash SEC(".maps");
-> > +
-> > +extern struct kmem_cache *bpf_get_kmem_cache(__u64 addr) __ksym;
-> > +
-> > +/* result, will be checked by userspace */
-> > +int found;
-> > +
-> > +SEC("iter/kmem_cache")
-> > +int slab_info_collector(struct bpf_iter__kmem_cache *ctx)
-> > +{
-> > +     struct seq_file *seq =3D ctx->meta->seq;
-> > +     struct kmem_cache *s =3D ctx->s;
-> > +
-> > +     if (s) {
-> > +             char name[SLAB_NAME_MAX];
-> > +
-> > +             /*
-> > +              * To make sure if the slab_iter implements the seq inter=
-face
-> > +              * properly and it's also useful for debugging.
-> > +              */
-> > +             BPF_SEQ_PRINTF(seq, "%s: %u\n", s->name, s->object_size);
-> > +
-> > +             bpf_probe_read_kernel_str(name, sizeof(name), s->name);
-> > +             bpf_map_update_elem(&slab_hash, &s, name, BPF_NOEXIST);
-> > +     }
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +SEC("raw_tp/bpf_test_finish")
-> > +int BPF_PROG(check_task_struct)
-> > +{
-> > +     __u64 curr =3D bpf_get_current_task();
-> > +     struct kmem_cache *s;
-> > +     char *name;
-> > +
-> > +     s =3D bpf_get_kmem_cache(curr);
-> > +     if (s =3D=3D NULL) {
-> > +             found =3D -1;
-> > +             return 0;
->
-> ... it cannot find a kmem_cache for the current task.  This program is
-> run by bpf_prog_test_run_opts() with BPF_F_TEST_RUN_ON_CPU.  So I think
-> the curr should point a task_struct in a slab cache.
->
-> Am I missing something?
 
-Hi Namhyung,
 
-Out of curiosity I've been investigating this issue on my machine and
-running some experiments.
+Hello,
 
-When the test fails, calling dump_page() for the page the task_struct
-belongs to,
-shows that the page does not have the PGTY_slab flag set which is why
-virt_to_slab(current) returns NULL.
+kernel test robot noticed "kernel_BUG_at_arch/x86/kernel/alternative.c" on:
 
-Does the test always fails on your environment? On my machine, the
-test passed sometimes but failed some times.
+commit: 76743359658d730ecba565019069d870d30fe3b8 ("x86/ibt: Implement IBT+")
+https://git.kernel.org/cgit/linux/kernel/git/peterz/queue.git x86/ibt
 
-Maybe sometimes the value returned by 'current' macro belongs to a
-slab, but sometimes it does not.
-But that doesn't really make sense to me as IIUC task_struct
-descriptors are allocated from slab.
+in testcase: boot
 
-....Or maybe some code can overwrote the page_type field of a slab?
-Hmm, it seems we need more information to identify what's gone wrong.
+compiler: clang-18
+test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 16G
 
-Just FYI, adding the output of the following code snippet in
-bpf_get_kmem_cache():
+(please refer to attached dmesg/kmsg for entire log/backtrace)
 
-pr_info("current =3D %llx\n", (unsigned long long)current);
-dump_page(virt_to_head_page(current), "virt_to_head_page()");
 
-# When the test passes
-[  232.755028] current =3D ffff8ff5b9ebd200
-[  232.755031] page: refcount:1 mapcount:0 mapping:0000000000000000
-index:0x0 pfn:0x139eb8
-[  232.755033] head: order:3 mapcount:0 entire_mapcount:0
-nr_pages_mapped:0 pincount:0
-[  232.755035] memcg:ffff8ff5b3ee0c01
-[  232.755037] ksm flags:
-0x17ffffc0000040(head|node=3D0|zone=3D2|lastcpupid=3D0x1fffff)
-[  232.755040] page_type: f5(slab)
-[  232.755042] raw: 0017ffffc0000040 ffff8ff58028ab00 ffffdaba05b8fc00
-dead000000000003
-[  232.755045] raw: 0000000000000000 0000000000030003 00000001f5000000
-ffff8ff5b3ee0c01
-[  232.755047] head: 0017ffffc0000040 ffff8ff58028ab00
-ffffdaba05b8fc00 dead000000000003
-[  232.755048] head: 0000000000000000 0000000000030003
-00000001f5000000 ffff8ff5b3ee0c01
-[  232.755050] head: 0017ffffc0000003 ffffdaba04e7ae01
-ffffffffffffffff 0000000000000000
-[  232.755052] head: 0000000000000008 0000000000000000
-00000000ffffffff 0000000000000000
-[  232.755053] page dumped because: virt_to_head_page()
++---------------------------------------------+------------+------------+
+|                                             | 89d02f5cc0 | 7674335965 |
++---------------------------------------------+------------+------------+
+| boot_successes                              | 18         | 0          |
+| boot_failures                               | 0          | 18         |
+| kernel_BUG_at_arch/x86/kernel/alternative.c | 0          | 18         |
+| Oops:invalid_opcode:#[##]PREEMPT_SMP_PTI    | 0          | 18         |
+| RIP:apply_direct_call_offset                | 0          | 18         |
+| Kernel_panic-not_syncing:Fatal_exception    | 0          | 18         |
++---------------------------------------------+------------+------------+
 
-# When the test fails
-[  130.811626] current =3D ffffffff884110c0
-[  130.811628] page: refcount:1 mapcount:0 mapping:0000000000000000
-index:0x0 pfn:0x8a9411
-[  130.811632] flags:
-0x17ffffc0002000(reserved|node=3D0|zone=3D2|lastcpupid=3D0x1fffff)
-[  130.811636] raw: 0017ffffc0002000 ffffdaba22a50448 ffffdaba22a50448
-0000000000000000
-[  130.811639] raw: 0000000000000000 0000000000000000 00000001ffffffff
-0000000000000000
-[  130.811641] page dumped because: virt_to_head_page()
 
-Best,
-Hyeonggon
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <oliver.sang@intel.com>
+| Closes: https://lore.kernel.org/oe-lkp/202409292243.b563a081-lkp@intel.com
 
->
-> Thanks,
-> Namhyung
->
-> > +     }
-> > +
-> > +     name =3D bpf_map_lookup_elem(&slab_hash, &s);
-> > +     if (name && !bpf_strncmp(name, 11, "task_struct"))
-> > +             found =3D 1;
-> > +     else
-> > +             found =3D -2;
-> > +
-> > +     return 0;
-> > +}
-> > --
-> > 2.46.1.824.gd892dcdcdd-goog
-> >
+
+[    0.484790][    T0] ------------[ cut here ]------------
+[    0.485675][    T0] kernel BUG at arch/x86/kernel/alternative.c:302!
+[    0.486640][    T0] Oops: invalid opcode: 0000 [#1] PREEMPT SMP PTI
+[    0.487072][    T0] CPU: 0 UID: 0 PID: 0 Comm: swapper/0 Not tainted 6.11.0-09968-g76743359658d #1
+[    0.487072][    T0] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+[ 0.487072][ T0] RIP: 0010:apply_direct_call_offset (arch/x86/kernel/alternative.c:302) 
+[ 0.487072][ T0] Code: 08 43 83 44 2e 01 04 eb df 83 f8 0f 75 0f 80 7c 24 19 8f 7f 17 43 83 44 2e 02 04 eb cb 3d eb 00 00 00 74 a7 eb 06 0f 0b eb be <0f> 0b 0f b6 54 24 52 48 c7 c7 75 6a 89 82 4c 89 e6 4c 89 e1 e8 0f
+All code
+========
+   0:	08 43 83             	or     %al,-0x7d(%rbx)
+   3:	44                   	rex.R
+   4:	2e 01 04 eb          	cs add %eax,(%rbx,%rbp,8)
+   8:	df 83 f8 0f 75 0f    	filds  0xf750ff8(%rbx)
+   e:	80 7c 24 19 8f       	cmpb   $0x8f,0x19(%rsp)
+  13:	7f 17                	jg     0x2c
+  15:	43 83 44 2e 02 04    	addl   $0x4,0x2(%r14,%r13,1)
+  1b:	eb cb                	jmp    0xffffffffffffffe8
+  1d:	3d eb 00 00 00       	cmp    $0xeb,%eax
+  22:	74 a7                	je     0xffffffffffffffcb
+  24:	eb 06                	jmp    0x2c
+  26:	0f 0b                	ud2
+  28:	eb be                	jmp    0xffffffffffffffe8
+  2a:*	0f 0b                	ud2		<-- trapping instruction
+  2c:	0f b6 54 24 52       	movzbl 0x52(%rsp),%edx
+  31:	48 c7 c7 75 6a 89 82 	mov    $0xffffffff82896a75,%rdi
+  38:	4c 89 e6             	mov    %r12,%rsi
+  3b:	4c 89 e1             	mov    %r12,%rcx
+  3e:	e8                   	.byte 0xe8
+  3f:	0f                   	.byte 0xf
+
+Code starting with the faulting instruction
+===========================================
+   0:	0f 0b                	ud2
+   2:	0f b6 54 24 52       	movzbl 0x52(%rsp),%edx
+   7:	48 c7 c7 75 6a 89 82 	mov    $0xffffffff82896a75,%rdi
+   e:	4c 89 e6             	mov    %r12,%rsi
+  11:	4c 89 e1             	mov    %r12,%rcx
+  14:	e8                   	.byte 0xe8
+  15:	0f                   	.byte 0xf
+[    0.487072][    T0] RSP: 0000:ffffffff82a03e58 EFLAGS: 00010297
+[    0.487072][    T0] RAX: 0000000000000082 RBX: ffffffff8380369c RCX: 0000000000000000
+[    0.487072][    T0] RDX: 0000000000000001 RSI: 0000000000000004 RDI: ffffffff81b4ea70
+[    0.487072][    T0] RBP: 0000000000000000 R08: 0000000000000001 R09: ffffffff82a03e58
+[    0.487072][    T0] R10: 000000000000000f R11: 0000000000000040 R12: ffffffff81b4e9f0
+[    0.487072][    T0] R13: fffffffffe353184 R14: ffffffff837fb86c R15: ffffffff82a03e58
+[    0.487072][    T0] FS:  0000000000000000(0000) GS:ffff88842fc00000(0000) knlGS:0000000000000000
+[    0.487072][    T0] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[    0.487072][    T0] CR2: ffff88843ffff000 CR3: 0000000002a32000 CR4: 00000000000406f0
+[    0.487072][    T0] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[    0.487072][    T0] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[    0.487072][    T0] Call Trace:
+[    0.487072][    T0]  <TASK>
+[ 0.487072][ T0] ? __die_body (arch/x86/kernel/dumpstack.c:421) 
+[ 0.487072][ T0] ? die (arch/x86/kernel/dumpstack.c:? arch/x86/kernel/dumpstack.c:447) 
+[ 0.487072][ T0] ? do_trap (arch/x86/kernel/traps.c:196) 
+[ 0.487072][ T0] ? apply_direct_call_offset (arch/x86/kernel/alternative.c:302) 
+[ 0.487072][ T0] ? do_error_trap (arch/x86/kernel/traps.c:242) 
+[ 0.487072][ T0] ? apply_direct_call_offset (arch/x86/kernel/alternative.c:302) 
+[ 0.487072][ T0] ? handle_invalid_op (arch/x86/kernel/traps.c:279) 
+[ 0.487072][ T0] ? apply_direct_call_offset (arch/x86/kernel/alternative.c:302) 
+[ 0.487072][ T0] ? exc_invalid_op (arch/x86/kernel/traps.c:361) 
+[ 0.487072][ T0] ? asm_exc_invalid_op (arch/x86/include/asm/idtentry.h:621) 
+[ 0.487072][ T0] ? rtl8169_netpoll (drivers/net/ethernet/realtek/r8169_main.c:4847) 
+[ 0.487072][ T0] ? __pfx_rtl8169_interrupt (drivers/net/ethernet/realtek/r8169_main.c:4650) 
+[ 0.487072][ T0] ? apply_direct_call_offset (arch/x86/kernel/alternative.c:302) 
+[ 0.487072][ T0] ? apply_direct_call_offset (arch/x86/kernel/alternative.c:889) 
+[ 0.487072][ T0] ? rtl8169_netpoll (drivers/net/ethernet/realtek/r8169_main.c:4847) 
+[ 0.487072][ T0] ? rtl8169_netpoll (drivers/net/ethernet/realtek/r8169_main.c:4847) 
+[ 0.487072][ T0] ? rtl8169_netpoll (drivers/net/ethernet/realtek/r8169_main.c:4847) 
+[ 0.487072][ T0] alternative_instructions (arch/x86/kernel/alternative.c:1821) 
+[ 0.487072][ T0] arch_cpu_finalize_init (arch/x86/kernel/cpu/common.c:2397) 
+[ 0.487072][ T0] start_kernel (init/main.c:1073) 
+[ 0.487072][ T0] x86_64_start_reservations (??:?) 
+[ 0.487072][ T0] x86_64_start_kernel (arch/x86/kernel/head64.c:437) 
+[ 0.487072][ T0] common_startup_64 (arch/x86/kernel/head_64.S:421) 
+[    0.487072][    T0]  </TASK>
+[    0.487072][    T0] Modules linked in:
+[    0.487076][    T0] ---[ end trace 0000000000000000 ]---
+[ 0.487877][ T0] RIP: 0010:apply_direct_call_offset (arch/x86/kernel/alternative.c:302) 
+[ 0.491321][ T0] Code: 08 43 83 44 2e 01 04 eb df 83 f8 0f 75 0f 80 7c 24 19 8f 7f 17 43 83 44 2e 02 04 eb cb 3d eb 00 00 00 74 a7 eb 06 0f 0b eb be <0f> 0b 0f b6 54 24 52 48 c7 c7 75 6a 89 82 4c 89 e6 4c 89 e1 e8 0f
+All code
+========
+   0:	08 43 83             	or     %al,-0x7d(%rbx)
+   3:	44                   	rex.R
+   4:	2e 01 04 eb          	cs add %eax,(%rbx,%rbp,8)
+   8:	df 83 f8 0f 75 0f    	filds  0xf750ff8(%rbx)
+   e:	80 7c 24 19 8f       	cmpb   $0x8f,0x19(%rsp)
+  13:	7f 17                	jg     0x2c
+  15:	43 83 44 2e 02 04    	addl   $0x4,0x2(%r14,%r13,1)
+  1b:	eb cb                	jmp    0xffffffffffffffe8
+  1d:	3d eb 00 00 00       	cmp    $0xeb,%eax
+  22:	74 a7                	je     0xffffffffffffffcb
+  24:	eb 06                	jmp    0x2c
+  26:	0f 0b                	ud2
+  28:	eb be                	jmp    0xffffffffffffffe8
+  2a:*	0f 0b                	ud2		<-- trapping instruction
+  2c:	0f b6 54 24 52       	movzbl 0x52(%rsp),%edx
+  31:	48 c7 c7 75 6a 89 82 	mov    $0xffffffff82896a75,%rdi
+  38:	4c 89 e6             	mov    %r12,%rsi
+  3b:	4c 89 e1             	mov    %r12,%rcx
+  3e:	e8                   	.byte 0xe8
+  3f:	0f                   	.byte 0xf
+
+Code starting with the faulting instruction
+===========================================
+   0:	0f 0b                	ud2
+   2:	0f b6 54 24 52       	movzbl 0x52(%rsp),%edx
+   7:	48 c7 c7 75 6a 89 82 	mov    $0xffffffff82896a75,%rdi
+   e:	4c 89 e6             	mov    %r12,%rsi
+  11:	4c 89 e1             	mov    %r12,%rcx
+  14:	e8                   	.byte 0xe8
+  15:	0f                   	.byte 0xf
+
+
+The kernel config and materials to reproduce are available at:
+https://download.01.org/0day-ci/archive/20240929/202409292243.b563a081-lkp@intel.com
+
+
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
+
 
