@@ -1,279 +1,145 @@
-Return-Path: <bpf+bounces-40477-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40478-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 893EE98933E
-	for <lists+bpf@lfdr.de>; Sun, 29 Sep 2024 08:13:48 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF9AF989369
+	for <lists+bpf@lfdr.de>; Sun, 29 Sep 2024 09:19:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 253A81F23B91
-	for <lists+bpf@lfdr.de>; Sun, 29 Sep 2024 06:13:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 58018B23959
+	for <lists+bpf@lfdr.de>; Sun, 29 Sep 2024 07:19:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E41A1386B4;
-	Sun, 29 Sep 2024 06:13:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8554913A271;
+	Sun, 29 Sep 2024 07:19:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P5UUxHGt"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lCAUGEGl"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C78F018EB0;
-	Sun, 29 Sep 2024 06:13:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C282C2B9BB
+	for <bpf@vger.kernel.org>; Sun, 29 Sep 2024 07:19:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727590421; cv=none; b=LsJYAgSdDF7mG/gOsO0wrvtaIILarlY5+KcYcozsMPzMhFNZ8WdNo/4HdiqT6FGXinHHkZoof0rbO8ckwRdDcJ5osQEkXpbYM/6B1zKXnY45Nk0k4e82CSl2FLMLGW/GsAKxJ1ihmWOAdQg4K3W6II43cZU6nUPhhDPQxpv9g0k=
+	t=1727594369; cv=none; b=ptXlqG2/UCs6BWqxuKcuPzryqxB97WX0BAKCX+5FxSIHVkM4b/kzbfdhotHGCjQhppZXG/1N51c/k5Pxyn3qNzamIqywgRco+dbt3ksQgl+ADUkwyvyVUwvCGVZ6FXs3Xu49hAJVVvE2Kp9dhZPFuPiHztbtoZZegR7I6spnmf4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727590421; c=relaxed/simple;
-	bh=K1yicp/bGL8F91qvGqt+1UnHa6FWbR1s/iEvXrsN5Rw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eqZEoEq72X+uylT48ne8BwsH+3E2OzN6q108OsP3z7TAan3rrheGzrRpNBsCwx0pTl8Wnn7oeXaJde3T+u4wrF+S6HlWDnYfUoPsp51rhkqjRB9LSTp/LjLrd7BsnOMghQNbzVSKAtveaA5mi2TWGu+i91nB01h0CyzDah3LLbs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P5UUxHGt; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 735A2C4CEC5;
-	Sun, 29 Sep 2024 06:13:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727590421;
-	bh=K1yicp/bGL8F91qvGqt+1UnHa6FWbR1s/iEvXrsN5Rw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=P5UUxHGtQUu638bUVVX5IG9DsMPkLZUmJZiPMaqKExcUqR5Fz4Y78JcuP18aepHLt
-	 7LLcI8R/WB4W2YFQpBlTJzUNyrpPXsRkvobrNE3N58HlwdRe17mwuc64Kqx/z6AVcE
-	 LevWQHqsImQz4eBPle2PF4HIarw6LD8IcqARcMT7LiCNVlRAB603QlGTprA3fawx7E
-	 ab5ppjgaEz1tMahm4x/F3OcuWaLUrtQodj7qpzUSreLt2YZlbVFm2PtXDMT98EeKB0
-	 Ta3XM3Hx1uQfv3PWmCH0HD5piAxRZpEaMWfCM1+upWppKW8qEqY6SXl2WKQTv6kf3+
-	 ap0ylKZkjX4IA==
-Date: Sat, 28 Sep 2024 23:13:36 -0700
-From: Namhyung Kim <namhyung@kernel.org>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>
-Cc: Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
-	David Rientjes <rientjes@google.com>,
-	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm@kvack.org,
-	Arnaldo Carvalho de Melo <acme@kernel.org>
-Subject: Re: [RFC/PATCH bpf-next 3/3] selftests/bpf: Add a test for
- kmem_cache_iter
-Message-ID: <ZvjwEH3QXkjUCu8Z@google.com>
-References: <20240927184133.968283-1-namhyung@kernel.org>
- <20240927184133.968283-4-namhyung@kernel.org>
+	s=arc-20240116; t=1727594369; c=relaxed/simple;
+	bh=nZy09d4cw6Wq1RlXKHinEZMdmEdR4p9R4lXxTT47MMw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Y6GLOG7qxVn8/etiiU1cE0U5bQydAReKaB5+pup0znghB9jYHy/MiQcfN+NLGoU1CHJd4CPWTKe4NPgN7Ks4ajaaHHu7Fn7gLTviK4+DYygjOvAWpO1lt8a2FZUA0q26hfqq2KxOGujCOV1PWrHwU15DzIvPYh3yCKNrAVpS91c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lCAUGEGl; arc=none smtp.client-ip=209.85.210.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-71b20ffd809so2332479b3a.0
+        for <bpf@vger.kernel.org>; Sun, 29 Sep 2024 00:19:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1727594367; x=1728199167; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nZy09d4cw6Wq1RlXKHinEZMdmEdR4p9R4lXxTT47MMw=;
+        b=lCAUGEGlle/ioCALT095TizTrdI6gWJRJ5m+hwr5ZlMN6lByLdtwHuBIFknh1W57kv
+         HPzRvh/PwX5OfN7uIkJqC43gW7uYV1bZcze7MOJ4iGU9o1uhiV7dvmCwkgeYvlKNP9Iu
+         1N+YrqL0/SY1KGHnizaM3Gog4sYk64c/esZZZ1XDKPyYL/8XsWJ07UIpK7L+pngr7p08
+         zzwVWDdZgW4FBZO/bpNCnIP3nb6KTTnQ3m131aKvTBv/04+b8xucWqXbDazbxIXsjYn4
+         P5lpBR+1x6AGyQSSV9P7iHu2woSpCBYFNBdeGLS59xB7nn3aqx4z1DrxrYUrxYxSwwvM
+         CMoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727594367; x=1728199167;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nZy09d4cw6Wq1RlXKHinEZMdmEdR4p9R4lXxTT47MMw=;
+        b=oTqhjxcHh95JZ28/9x58e5RRHseOL0P2XfA48NND/WcY5YOn+fxzzmnH0IuHOpDQ5W
+         oKhMHOz6h+MCftvgPD64yumdqcnTgTu92+4WK/AS98Ty1x5DstmJXpdkSz4V0SQaoRzq
+         zeVqokn0eLQ450sZkte5NLNl8n4+YFWEIh2X5lnXeh0+2YVUWckv0w/3EHzQ4h0HTCrB
+         sb3uu+eGih9qxvP82oLebylILGbYyOXP0+afmDk167kXjOHw2CHyW3Qw+mBNKJWe8RMr
+         xUnohgS0aj4bz50p/TZrWz7a50ivRotvH+0UUv4VVV7g3JeX2rj6qNHUiaiTJF0t7Ebf
+         6SSA==
+X-Forwarded-Encrypted: i=1; AJvYcCUM9M0LwLhtjlmxzqygwpBqnFy9e44F5CSw6MFACW/xuBWHrfccLVij0MOxStpjj+dlvQY=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzwFFZcPTS1pXkNU1gSH2+rJj2TClAlH+GlZlD++Hd/LTsfddsH
+	3dwD++C/c/UlPqDOR5JpTtiY+qDs8ScfKS5MaNE7KX4mWt3V+sSgTQT5dNOldo7tvItHA4aocpC
+	wrZns0bGPF3H34qIREcBANsdbGrQLWs+Ngl8=
+X-Google-Smtp-Source: AGHT+IHBaX7zToremk/eIcYJc0mZkosIgQANFk8r/j2Xc5ueYJYRcOmH4TWt8kecNIiq1A0kMoF/aA9ieu29mf7N5Nw=
+X-Received: by 2002:a05:6a00:9a3:b0:714:2014:d783 with SMTP id
+ d2e1a72fcca58-71b25f275aamr12910498b3a.2.1727594367018; Sun, 29 Sep 2024
+ 00:19:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240927184133.968283-4-namhyung@kernel.org>
+References: <CABVU1kWEHkt+z1c0vu1bXMn81iY8rDjwU=B6KPi2dPVvgeZUPw@mail.gmail.com>
+ <CAEf4Bzbeqj3qneOEvKqcMf2XYx-1E=RKcAMo2L2oJz4qqqKbuA@mail.gmail.com> <CALOAHbBTLXWJ5EnXUzD-nGFxes-Q+Wu_-KPDZWHUKFfXsvdM0w@mail.gmail.com>
+In-Reply-To: <CALOAHbBTLXWJ5EnXUzD-nGFxes-Q+Wu_-KPDZWHUKFfXsvdM0w@mail.gmail.com>
+From: Tyrone Wu <wudevelops@gmail.com>
+Date: Sun, 29 Sep 2024 03:19:15 -0400
+Message-ID: <CABVU1kXwQXhqQGe0RTrr7eegtM6SVW_KayZBy16-yb0Snztmtg@mail.gmail.com>
+Subject: Re: bpf_link_info: perf_event link info name_len field returning zero
+To: Yafang Shao <laoar.shao@gmail.com>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Sep 27, 2024 at 11:41:33AM -0700, Namhyung Kim wrote:
-> The test traverses all slab caches using the kmem_cache_iter and check
-> if current task's pointer is from "task_struct" slab cache.
-> 
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> ---
->  .../bpf/prog_tests/kmem_cache_iter.c          | 64 ++++++++++++++++++
->  tools/testing/selftests/bpf/progs/bpf_iter.h  |  7 ++
->  .../selftests/bpf/progs/kmem_cache_iter.c     | 66 +++++++++++++++++++
->  3 files changed, 137 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/kmem_cache_iter.c
->  create mode 100644 tools/testing/selftests/bpf/progs/kmem_cache_iter.c
-> 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/kmem_cache_iter.c b/tools/testing/selftests/bpf/prog_tests/kmem_cache_iter.c
-> new file mode 100644
-> index 0000000000000000..814bcc453e9f3ccd
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/kmem_cache_iter.c
-> @@ -0,0 +1,64 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2024 Google */
-> +
-> +#include <test_progs.h>
-> +#include <bpf/libbpf.h>
-> +#include <bpf/btf.h>
-> +#include "kmem_cache_iter.skel.h"
-> +
-> +static void test_kmem_cache_iter_check_task(struct kmem_cache_iter *skel)
-> +{
-> +	LIBBPF_OPTS(bpf_test_run_opts, opts,
-> +		.flags = BPF_F_TEST_RUN_ON_CPU,
-> +	);
-> +	int prog_fd = bpf_program__fd(skel->progs.check_task_struct);
-> +
-> +	/* get task_struct and check it if's from a slab cache */
-> +	bpf_prog_test_run_opts(prog_fd, &opts);
-> +
-> +	/* the BPF program should set 'found' variable */
-> +	ASSERT_EQ(skel->bss->found, 1, "found task_struct");
+> The reason name_len is 0 is that the user did not set both the buffer
+> and the length. IOW, this happens when the user buffer is NULL and the
+> input length is 0.
 
-Hmm.. I'm seeing a failure with found being -1, which means ...
+Thank you both for the follow-up.
 
-> +}
-> +
-> +void test_kmem_cache_iter(void)
-> +{
-> +	DECLARE_LIBBPF_OPTS(bpf_iter_attach_opts, opts);
-> +	struct kmem_cache_iter *skel = NULL;
-> +	union bpf_iter_link_info linfo = {};
-> +	struct bpf_link *link;
-> +	char buf[1024];
-> +	int iter_fd;
-> +
-> +	skel = kmem_cache_iter__open_and_load();
-> +	if (!ASSERT_OK_PTR(skel, "kmem_cache_iter__open_and_load"))
-> +		return;
-> +
-> +	opts.link_info = &linfo;
-> +	opts.link_info_len = sizeof(linfo);
-> +
-> +	link = bpf_program__attach_iter(skel->progs.slab_info_collector, &opts);
-> +	if (!ASSERT_OK_PTR(link, "attach_iter"))
-> +		goto destroy;
-> +
-> +	iter_fd = bpf_iter_create(bpf_link__fd(link));
-> +	if (!ASSERT_GE(iter_fd, 0, "iter_create"))
-> +		goto free_link;
-> +
-> +	memset(buf, 0, sizeof(buf));
-> +	while (read(iter_fd, buf, sizeof(buf) > 0)) {
-> +		/* read out all contents */
-> +		printf("%s", buf);
-> +	}
-> +
-> +	/* next reads should return 0 */
-> +	ASSERT_EQ(read(iter_fd, buf, sizeof(buf)), 0, "read");
-> +
-> +	test_kmem_cache_iter_check_task(skel);
-> +
-> +	close(iter_fd);
-> +
-> +free_link:
-> +	bpf_link__destroy(link);
-> +destroy:
-> +	kmem_cache_iter__destroy(skel);
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/bpf_iter.h b/tools/testing/selftests/bpf/progs/bpf_iter.h
-> index c41ee80533ca219a..3305dc3a74b32481 100644
-> --- a/tools/testing/selftests/bpf/progs/bpf_iter.h
-> +++ b/tools/testing/selftests/bpf/progs/bpf_iter.h
-> @@ -24,6 +24,7 @@
->  #define BTF_F_PTR_RAW BTF_F_PTR_RAW___not_used
->  #define BTF_F_ZERO BTF_F_ZERO___not_used
->  #define bpf_iter__ksym bpf_iter__ksym___not_used
-> +#define bpf_iter__kmem_cache bpf_iter__kmem_cache___not_used
->  #include "vmlinux.h"
->  #undef bpf_iter_meta
->  #undef bpf_iter__bpf_map
-> @@ -48,6 +49,7 @@
->  #undef BTF_F_PTR_RAW
->  #undef BTF_F_ZERO
->  #undef bpf_iter__ksym
-> +#undef bpf_iter__kmem_cache
->  
->  struct bpf_iter_meta {
->  	struct seq_file *seq;
-> @@ -165,3 +167,8 @@ struct bpf_iter__ksym {
->  	struct bpf_iter_meta *meta;
->  	struct kallsym_iter *ksym;
->  };
-> +
-> +struct bpf_iter__kmem_cache {
-> +	struct bpf_iter_meta *meta;
-> +	struct kmem_cache *s;
-> +} __attribute__((preserve_access_index));
-> diff --git a/tools/testing/selftests/bpf/progs/kmem_cache_iter.c b/tools/testing/selftests/bpf/progs/kmem_cache_iter.c
-> new file mode 100644
-> index 0000000000000000..3f6ec15a1bf6344c
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/kmem_cache_iter.c
-> @@ -0,0 +1,66 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2024 Google */
-> +
-> +#include "bpf_iter.h"
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_tracing.h>
-> +
-> +char _license[] SEC("license") = "GPL";
-> +
-> +#define SLAB_NAME_MAX  256
-> +
-> +struct {
-> +	__uint(type, BPF_MAP_TYPE_HASH);
-> +	__uint(key_size, sizeof(void *));
-> +	__uint(value_size, SLAB_NAME_MAX);
-> +	__uint(max_entries, 1024);
-> +} slab_hash SEC(".maps");
-> +
-> +extern struct kmem_cache *bpf_get_kmem_cache(__u64 addr) __ksym;
-> +
-> +/* result, will be checked by userspace */
-> +int found;
-> +
-> +SEC("iter/kmem_cache")
-> +int slab_info_collector(struct bpf_iter__kmem_cache *ctx)
-> +{
-> +	struct seq_file *seq = ctx->meta->seq;
-> +	struct kmem_cache *s = ctx->s;
-> +
-> +	if (s) {
-> +		char name[SLAB_NAME_MAX];
-> +
-> +		/*
-> +		 * To make sure if the slab_iter implements the seq interface
-> +		 * properly and it's also useful for debugging.
-> +		 */
-> +		BPF_SEQ_PRINTF(seq, "%s: %u\n", s->name, s->object_size);
-> +
-> +		bpf_probe_read_kernel_str(name, sizeof(name), s->name);
-> +		bpf_map_update_elem(&slab_hash, &s, name, BPF_NOEXIST);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +SEC("raw_tp/bpf_test_finish")
-> +int BPF_PROG(check_task_struct)
-> +{
-> +	__u64 curr = bpf_get_current_task();
-> +	struct kmem_cache *s;
-> +	char *name;
-> +
-> +	s = bpf_get_kmem_cache(curr);
-> +	if (s == NULL) {
-> +		found = -1;
-> +		return 0;
+> However, we should make this behavior consistent by
+> returning the actual size to the user if both the buffer and length
+> are unset.
+>
+> I will submit a fix.
 
-... it cannot find a kmem_cache for the current task.  This program is
-run by bpf_prog_test_run_opts() with BPF_F_TEST_RUN_ON_CPU.  So I think
-the curr should point a task_struct in a slab cache.
+I actually made a small patch for this when I was initially exploring
+this behavior. If it's alright, I can submit this after some clean-up.
+:)
 
-Am I missing something?
 
-Thanks,
-Namhyung
-
-> +	}
-> +
-> +	name = bpf_map_lookup_elem(&slab_hash, &s);
-> +	if (name && !bpf_strncmp(name, 11, "task_struct"))
-> +		found = 1;
-> +	else
-> +		found = -2;
-> +
-> +	return 0;
-> +}
-> -- 
-> 2.46.1.824.gd892dcdcdd-goog
-> 
+On Sat, Sep 28, 2024 at 10:36=E2=80=AFPM Yafang Shao <laoar.shao@gmail.com>=
+ wrote:
+>
+> On Sat, Sep 28, 2024 at 7:14=E2=80=AFAM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Sun, Sep 22, 2024 at 12:59=E2=80=AFPM Tyrone Wu <wudevelops@gmail.co=
+m> wrote:
+> > >
+> > > Hello,
+> > >
+> > > When retrieving bpf_link_info.perf_event kprobe/uprobe/tracepoint
+> > > data, I noticed that the name_len field always returns 0. After some
+> > > digging, I see that name_len is never actually populated, which
+> > > explains the 0 value.
+> > >
+> > > I expected it to function similarly to
+> > > bpf_link_info.raw_tracepoint.tp_name_len, where that field is filled
+> > > with the length of tp_name. However, I noticed that the selftest
+> > > explicitly asserts that name_len should be 0. I was wondering if
+> > > someone could clarify whether it is intended for the
+> > > bpf_link_info.perf_event name_len field to not be populated.
+> >
+> > This sounds like a bug. It should behave consistently with the other
+> > users of input/output string buffer size fields: on input we get
+> > maximum buffer size, on output we should put an actual size of the
+> > string (especially if it was truncated).
+> >
+> > Yafang, Jiri, WDYT?
+>
+> The reason name_len is 0 is that the user did not set both the buffer
+> and the length. IOW, this happens when the user buffer is NULL and the
+> input length is 0. However, we should make this behavior consistent by
+> returning the actual size to the user if both the buffer and length
+> are unset.
+>
+> I will submit a fix.
+>
+>
+> --
+> Regards
+> Yafang
 
