@@ -1,45 +1,46 @@
-Return-Path: <bpf+bounces-40515-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40516-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 046F3989768
-	for <lists+bpf@lfdr.de>; Sun, 29 Sep 2024 22:57:32 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7160E98976B
+	for <lists+bpf@lfdr.de>; Sun, 29 Sep 2024 22:57:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A6B32830DB
-	for <lists+bpf@lfdr.de>; Sun, 29 Sep 2024 20:57:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 001F2B21D2E
+	for <lists+bpf@lfdr.de>; Sun, 29 Sep 2024 20:57:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B9DC13BC2F;
-	Sun, 29 Sep 2024 20:57:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD43B13C3EE;
+	Sun, 29 Sep 2024 20:57:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O7hQhK4D"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PL8LRKxR"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E789418EB0;
-	Sun, 29 Sep 2024 20:57:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C83F18EB0;
+	Sun, 29 Sep 2024 20:57:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727643445; cv=none; b=RpLkAkPcm6O9dgl5iitZnsnW8GFfPZUFz2YWr3wzH/qTHV9KzftrIJmSmAai/Y2VnDbQY1PiOYGG2UC7aob282udMbjWnXEGTKZ9MBzbOGGu9/zzqd5MpuydzC2enI6oa9PkFsAZkD3lUO88M/4r5XXkg3tuiPq2RCpwZg5ffKY=
+	t=1727643457; cv=none; b=ERMIdCgyH4039N0bvKYtzHegMnTkDrGSTGa0dGZ4jOp7IhONWP2CU9R3yflnAOBjs8cITWjBB6Gg3RQBxqoGvTxapZLuApibkyzu0l5tyOmtUFOtyiZAyNDLBcbzAVhJYO/FvYn1oj/4mSQ/sxpQWA7mU6fPbPzR4iuagiGJKqY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727643445; c=relaxed/simple;
-	bh=Suqh0zl7SOWbmpoXGqTt1K3EKX7jBF08yX+TqSXmcHM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Wpz5dcogmHPiWcuBFUosuo/jMsAALfAX3d+o7WGWSTSSrFOuYoyt+hWyYfceILBeMaRdB6pUX1dOd5V7JT7ZzwlVRmBPV5lVepkdbM2uzCV7GTwoXtqoqNGnBmUGX2PC/M8Hl5xpdnszR6VRgi0DXhhMObSUU0yfSK9kZshCtOU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O7hQhK4D; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B131CC4CEC5;
-	Sun, 29 Sep 2024 20:57:19 +0000 (UTC)
+	s=arc-20240116; t=1727643457; c=relaxed/simple;
+	bh=UdjtvmBJEuA72j3JoZh2o4f116ut1IgN0CDDTK9Tvss=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=RpIYL8S9fqJfQMvqLckgK7bBvFT3+qM9QclWwKX7+HfetF3I+Kzjbj2qqJzOdXSQBy+tl6oSJWQHOoT+4sN4tW71Ii893vudqi5aFdMXNNdDPWzuVCLXFRvJQrVoMIXZdkJp3M3grzRRlqYene0LR8uAo5EuLK27GODyZ+aRHH0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PL8LRKxR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 558CEC4CEC5;
+	Sun, 29 Sep 2024 20:57:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727643444;
-	bh=Suqh0zl7SOWbmpoXGqTt1K3EKX7jBF08yX+TqSXmcHM=;
-	h=From:To:Cc:Subject:Date:From;
-	b=O7hQhK4DI5DnfTeNCamnKEN3ZiNVwBGYk+gzwN578XGS5VXfAABv7up7iGXViLUj+
-	 OdxowpUbOmoALhGY+PbyfDmjAhC5sHIt32LcflH7smkL3kgwFYahtdyhfT9gGd4Bgr
-	 pG9S5W/IR9Dd90JOP0zx/L6jLENBA7yxBgPBhTlAUDt3mfX0B21AefZo/XAs1tbz1X
-	 fPPAdMApbdsfbmXsRHnGd9ePEJqv1qXtq/BxNAmU1op0CELIVYTqHGx/EXlcgMTIY7
-	 xl4fht350hRaXLyxOeR4eXVhX9YfUkIiFeythI5uiEPxwcrNZkFGVTCE34+UYjzPBn
-	 sbBrjSVpEo+nQ==
+	s=k20201202; t=1727643456;
+	bh=UdjtvmBJEuA72j3JoZh2o4f116ut1IgN0CDDTK9Tvss=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=PL8LRKxRfP5BbhdJ0WQWAIHdICrxRZ9p41+RVEhdPZvju8T3X6o8uiqRJ/8SEBX8P
+	 l2LJ8oB3pQypc6nFU86tCohLaegvgTTmMEOs9Jw+xdCBoyWLB6EA6PFQYyOz4LPDd6
+	 sMVRZ+ifjEnj+v0DV9XMiK7Yr1RrKKBOZywGNzDLzJUJ5vdi+GzL3/31HBLTllsQml
+	 /X+onDiZh2ib9dC5MtvorAIm+uTTXWwKL5OdXdsQXLwOy76s8Vsf/+JmX2sQDgWLa7
+	 ZKBX4SEABdJ4SWJQ5k6d/8i6+39TxUe8V9HX5INd7A+wT6JN24eHYMLNzmzLITkSa3
+	 S7To1heoyjhHA==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Oleg Nesterov <oleg@redhat.com>,
 	Peter Zijlstra <peterz@infradead.org>,
@@ -58,10 +59,12 @@ Cc: bpf@vger.kernel.org,
 	Masami Hiramatsu <mhiramat@kernel.org>,
 	linux-kernel@vger.kernel.org,
 	linux-trace-kernel@vger.kernel.org
-Subject: [PATCHv5 bpf-next 00/13] uprobe, bpf: Add session support
-Date: Sun, 29 Sep 2024 22:57:04 +0200
-Message-ID: <20240929205717.3813648-1-jolsa@kernel.org>
+Subject: [PATCHv5 bpf-next 01/13] uprobe: Add data pointer to consumer handlers
+Date: Sun, 29 Sep 2024 22:57:05 +0200
+Message-ID: <20240929205717.3813648-2-jolsa@kernel.org>
 X-Mailer: git-send-email 2.46.1
+In-Reply-To: <20240929205717.3813648-1-jolsa@kernel.org>
+References: <20240929205717.3813648-1-jolsa@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -70,75 +73,133 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-hi,
-this patchset is adding support for session uprobe attachment and
-using it through bpf link for bpf programs.
+Adding data pointer to both entry and exit consumer handlers and all
+its users. The functionality itself is coming in following change.
 
-The session means that the uprobe consumer is executed on entry
-and return of probed function with additional control:
-  - entry callback can control execution of the return callback
-  - entry and return callbacks can share data/cookie
-
-On more details please see patch #2.
-
-Kernel uprobe changes are applicable on Peter's perf/core:
-  git://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git perf/core
-
-The whole patchset is based on bpf-next/master because the tooling
-bits need changes that are not yet merged in peter's tree.
-
-v5 changes:
-  - removed IWANTMYCOOKIE return value, instead we pass cookie when both
-    'handler' and 'ret_handler' callbacks are defined in consumer [Andrii]
-  - move return_consumer_find call under uc->ret_handler check [Oleg] 
-  - dropped uprobe stress selftest, don't think it's needed
-
-thanks,
-jirka
-
-
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
-Jiri Olsa (13):
-      uprobe: Add data pointer to consumer handlers
-      uprobe: Add support for session consumer
-      bpf: Add support for uprobe multi session attach
-      bpf: Add support for uprobe multi session context
-      bpf: Allow return values 0 and 1 for uprobe/kprobe session
-      libbpf: Add support for uprobe multi session attach
-      selftests/bpf: Add uprobe session test
-      selftests/bpf: Add uprobe session cookie test
-      selftests/bpf: Add uprobe session recursive test
-      selftests/bpf: Add uprobe session verifier test for return value
-      selftests/bpf: Add kprobe session verifier test for return value
-      selftests/bpf: Add uprobe session single consumer test
-      selftests/bpf: Add uprobe sessions to consumer test
+ include/linux/uprobes.h                              |  4 ++--
+ kernel/events/uprobes.c                              |  4 ++--
+ kernel/trace/bpf_trace.c                             |  6 ++++--
+ kernel/trace/trace_uprobe.c                          | 12 ++++++++----
+ .../testing/selftests/bpf/bpf_testmod/bpf_testmod.c  |  2 +-
+ 5 files changed, 17 insertions(+), 11 deletions(-)
 
- include/linux/uprobes.h                                            |  25 +++++++--
- include/uapi/linux/bpf.h                                           |   1 +
- kernel/bpf/syscall.c                                               |   9 +++-
- kernel/bpf/verifier.c                                              |  10 ++++
- kernel/events/uprobes.c                                            | 148 +++++++++++++++++++++++++++++++++++++++++------------
- kernel/trace/bpf_trace.c                                           |  66 +++++++++++++++++-------
- kernel/trace/trace_uprobe.c                                        |  12 +++--
- tools/include/uapi/linux/bpf.h                                     |   1 +
- tools/lib/bpf/bpf.c                                                |   1 +
- tools/lib/bpf/libbpf.c                                             |  22 ++++++--
- tools/lib/bpf/libbpf.h                                             |   4 +-
- tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c              |   2 +-
- tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c         |   2 +
- tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c         | 233 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-----
- tools/testing/selftests/bpf/progs/kprobe_multi_verifier.c          |  31 ++++++++++++
- tools/testing/selftests/bpf/progs/uprobe_multi_consumers.c         |  16 +++++-
- tools/testing/selftests/bpf/progs/uprobe_multi_session.c           |  71 ++++++++++++++++++++++++++
- tools/testing/selftests/bpf/progs/uprobe_multi_session_cookie.c    |  48 ++++++++++++++++++
- tools/testing/selftests/bpf/progs/uprobe_multi_session_recursive.c |  44 ++++++++++++++++
- tools/testing/selftests/bpf/progs/uprobe_multi_session_single.c    |  44 ++++++++++++++++
- tools/testing/selftests/bpf/progs/uprobe_multi_verifier.c          |  31 ++++++++++++
- 21 files changed, 744 insertions(+), 77 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/progs/kprobe_multi_verifier.c
- create mode 100644 tools/testing/selftests/bpf/progs/uprobe_multi_session.c
- create mode 100644 tools/testing/selftests/bpf/progs/uprobe_multi_session_cookie.c
- create mode 100644 tools/testing/selftests/bpf/progs/uprobe_multi_session_recursive.c
- create mode 100644 tools/testing/selftests/bpf/progs/uprobe_multi_session_single.c
- create mode 100644 tools/testing/selftests/bpf/progs/uprobe_multi_verifier.c
+diff --git a/include/linux/uprobes.h b/include/linux/uprobes.h
+index 2b294bf1881f..bb265a632b91 100644
+--- a/include/linux/uprobes.h
++++ b/include/linux/uprobes.h
+@@ -37,10 +37,10 @@ struct uprobe_consumer {
+ 	 * for the current process. If filter() is omitted or returns true,
+ 	 * UPROBE_HANDLER_REMOVE is effectively ignored.
+ 	 */
+-	int (*handler)(struct uprobe_consumer *self, struct pt_regs *regs);
++	int (*handler)(struct uprobe_consumer *self, struct pt_regs *regs, __u64 *data);
+ 	int (*ret_handler)(struct uprobe_consumer *self,
+ 				unsigned long func,
+-				struct pt_regs *regs);
++				struct pt_regs *regs, __u64 *data);
+ 	bool (*filter)(struct uprobe_consumer *self, struct mm_struct *mm);
+ 
+ 	struct list_head cons_node;
+diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+index 2ec796e2f055..2ba93f8a31aa 100644
+--- a/kernel/events/uprobes.c
++++ b/kernel/events/uprobes.c
+@@ -2139,7 +2139,7 @@ static void handler_chain(struct uprobe *uprobe, struct pt_regs *regs)
+ 		int rc = 0;
+ 
+ 		if (uc->handler) {
+-			rc = uc->handler(uc, regs);
++			rc = uc->handler(uc, regs, NULL);
+ 			WARN(rc & ~UPROBE_HANDLER_MASK,
+ 				"bad rc=0x%x from %ps()\n", rc, uc->handler);
+ 		}
+@@ -2179,7 +2179,7 @@ handle_uretprobe_chain(struct return_instance *ri, struct pt_regs *regs)
+ 	list_for_each_entry_srcu(uc, &uprobe->consumers, cons_node,
+ 				 srcu_read_lock_held(&uprobes_srcu)) {
+ 		if (uc->ret_handler)
+-			uc->ret_handler(uc, ri->func, regs);
++			uc->ret_handler(uc, ri->func, regs, NULL);
+ 	}
+ 	srcu_read_unlock(&uprobes_srcu, srcu_idx);
+ }
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index a582cd25ca87..fdab7ecd8dfa 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -3244,7 +3244,8 @@ uprobe_multi_link_filter(struct uprobe_consumer *con, struct mm_struct *mm)
+ }
+ 
+ static int
+-uprobe_multi_link_handler(struct uprobe_consumer *con, struct pt_regs *regs)
++uprobe_multi_link_handler(struct uprobe_consumer *con, struct pt_regs *regs,
++			  __u64 *data)
+ {
+ 	struct bpf_uprobe *uprobe;
+ 
+@@ -3253,7 +3254,8 @@ uprobe_multi_link_handler(struct uprobe_consumer *con, struct pt_regs *regs)
+ }
+ 
+ static int
+-uprobe_multi_link_ret_handler(struct uprobe_consumer *con, unsigned long func, struct pt_regs *regs)
++uprobe_multi_link_ret_handler(struct uprobe_consumer *con, unsigned long func, struct pt_regs *regs,
++			      __u64 *data)
+ {
+ 	struct bpf_uprobe *uprobe;
+ 
+diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
+index f7443e996b1b..11103dde897b 100644
+--- a/kernel/trace/trace_uprobe.c
++++ b/kernel/trace/trace_uprobe.c
+@@ -88,9 +88,11 @@ static struct trace_uprobe *to_trace_uprobe(struct dyn_event *ev)
+ static int register_uprobe_event(struct trace_uprobe *tu);
+ static int unregister_uprobe_event(struct trace_uprobe *tu);
+ 
+-static int uprobe_dispatcher(struct uprobe_consumer *con, struct pt_regs *regs);
++static int uprobe_dispatcher(struct uprobe_consumer *con, struct pt_regs *regs,
++			     __u64 *data);
+ static int uretprobe_dispatcher(struct uprobe_consumer *con,
+-				unsigned long func, struct pt_regs *regs);
++				unsigned long func, struct pt_regs *regs,
++				__u64 *data);
+ 
+ #ifdef CONFIG_STACK_GROWSUP
+ static unsigned long adjust_stack_addr(unsigned long addr, unsigned int n)
+@@ -1500,7 +1502,8 @@ trace_uprobe_register(struct trace_event_call *event, enum trace_reg type,
+ 	}
+ }
+ 
+-static int uprobe_dispatcher(struct uprobe_consumer *con, struct pt_regs *regs)
++static int uprobe_dispatcher(struct uprobe_consumer *con, struct pt_regs *regs,
++			     __u64 *data)
+ {
+ 	struct trace_uprobe *tu;
+ 	struct uprobe_dispatch_data udd;
+@@ -1530,7 +1533,8 @@ static int uprobe_dispatcher(struct uprobe_consumer *con, struct pt_regs *regs)
+ }
+ 
+ static int uretprobe_dispatcher(struct uprobe_consumer *con,
+-				unsigned long func, struct pt_regs *regs)
++				unsigned long func, struct pt_regs *regs,
++				__u64 *data)
+ {
+ 	struct trace_uprobe *tu;
+ 	struct uprobe_dispatch_data udd;
+diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+index 8835761d9a12..12005e3dc3e4 100644
+--- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
++++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+@@ -461,7 +461,7 @@ static struct bin_attribute bin_attr_bpf_testmod_file __ro_after_init = {
+ 
+ static int
+ uprobe_ret_handler(struct uprobe_consumer *self, unsigned long func,
+-		   struct pt_regs *regs)
++		   struct pt_regs *regs, __u64 *data)
+ 
+ {
+ 	regs->ax  = 0x12345678deadbeef;
+-- 
+2.46.1
+
 
