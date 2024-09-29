@@ -1,175 +1,283 @@
-Return-Path: <bpf+bounces-40468-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40469-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A88D498923B
-	for <lists+bpf@lfdr.de>; Sun, 29 Sep 2024 02:59:11 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2AFD4989278
+	for <lists+bpf@lfdr.de>; Sun, 29 Sep 2024 03:32:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AE6FF1C22E64
-	for <lists+bpf@lfdr.de>; Sun, 29 Sep 2024 00:59:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B4E341F212F7
+	for <lists+bpf@lfdr.de>; Sun, 29 Sep 2024 01:32:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2730EA94A;
-	Sun, 29 Sep 2024 00:59:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C573C134AB;
+	Sun, 29 Sep 2024 01:31:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Gh4D+pj9"
+	dkim=pass (2048-bit key) header.d=nxp.com header.i=@nxp.com header.b="T1b0009k"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from DUZPR83CU001.outbound.protection.outlook.com (mail-northeuropeazon11013057.outbound.protection.outlook.com [52.101.67.57])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 319503FC7;
-	Sun, 29 Sep 2024 00:59:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727571544; cv=none; b=kzktg6yA/4eov5BWlhBW46UM83Y7diNTRJWIfJJLzjawoLVlbfCQM60tIp96jcz+LiPIDk/hpOLMpHfi7XPbkG7Neib5Rnp9PNqFsb0YgY8IHM217CAB1wtbJN3NsSCn17ysmNkjt7yn7p3XnKT/5bpDES6mLGsEEJ7BVObadHg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727571544; c=relaxed/simple;
-	bh=7L0Y9JGQG6xXBo0/yWFtfYGMzLEkRCuQUV5Bf4zpFCs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Y+VIBuGTCU4tJMgxxIAlcoA/UJEi0U6L84AtDxcwYb0Zn69xE6Wdh4ygq9wXQDO3U4TublPE1WxHQ92jETF3fHlbVI/YvlyICwvZ1/ijluqasFYYjkJ6gLLb5QZhyYUTnW3oDvWweFW3n93JogFcqfC1ZfHzc/QR6oxdbffP+2A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Gh4D+pj9; arc=none smtp.client-ip=209.85.210.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-71788bfe60eso2564568b3a.1;
-        Sat, 28 Sep 2024 17:59:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727571542; x=1728176342; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=CEj6xG+ReV1xwKr6ft0gHBve+9SE79mtuHBwZ3BvA+g=;
-        b=Gh4D+pj928wPXyl03M42tlId8Dxj1Z7YPkTg+jSBhazBiqalFaSjrV9KyPfnOcjWqg
-         KsOSkUAFG6N7Sl0sD3GKQRGWIZV32JNn4wZdchw3MJEtfgFd4fMc0CsWkIB/sJ+c7JJ7
-         Kevm+jTy8Kps8koWmFzNN9EiwXireG5S5GiFUT3hVV57j3T6zZScGdzSIMtcpVC9IFJl
-         oXdmxk7vG5785fNYRcwiNhGjbHe5ryNOh7n5nsMo0V2cYredruUGdXc7BS3ctG5aS+oI
-         ps/eSuOsWn5yhzt3OHh53py2sC0hmRVYe//yR936ddQujNpwzKoIOuvjWUx8ZwZBsRJN
-         LXPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727571542; x=1728176342;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CEj6xG+ReV1xwKr6ft0gHBve+9SE79mtuHBwZ3BvA+g=;
-        b=rOcCz/NaIGT8UYhezo/uAtHZ1E7iN1kdA04sqkjInaakBrOumQCPUStvJf8Tr5/z5a
-         3MCcyH6cBkfl6Iu5zrpG0FIQ/5AxE91IXqO6yjbRIvOGCRLjAUPVLE3rfH5CWY4WhT0n
-         nfTTqJhLG9Ua5BWiBu0PEcAd95Zz+0E4XOnzNB2/sFA+Sj5kPB/scgElgcqIGJsiKs6U
-         PeYWPJkl4XSCGpLbO8NAM4m+9CHH6+Hz1eaKy4TehHo4LEBPW+N+KjO4xE9pEiA9wzS/
-         CcJx/s4/4fDbLIyqozrtA7V/HpXpsosirMPhb8kwAeDNMRFo+jTjv2mQ2IxKmiHsbnJ9
-         Azyg==
-X-Forwarded-Encrypted: i=1; AJvYcCUzRVJWyLEEm3z7yQoCDWWYb6ffXAFPfP1e/EQe94UQaGDws2DHUnNsL0eZqujgJHWW9Jnyr25W@vger.kernel.org, AJvYcCVQWz1jQMKSRNvHQ4SgS4/YCICk3vnpuEofzPYjlUsYV8FZDT8GjpqtfDPy2tPbrvGYwjA=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyDr+wPOYtOr9DoOLXPLoTiqP6y7j5LDbaUlT/1IfXtCeF7ILpg
-	T0VBUg6sg5blaLj10/fB7WKuTlVplqSUrYwOWdeUheuwHNJ1JjE3zgqZ
-X-Google-Smtp-Source: AGHT+IE7YdAVrTBcyZrWFgZCBeRWpqpsmaz8u1S6YB9Dxd0jnQFNiKu3EN5WH8jOILllP9h09WvLJA==
-X-Received: by 2002:a05:6a20:d704:b0:1cc:9f25:54d4 with SMTP id adf61e73a8af0-1d4fa78a484mr11649480637.38.1727571542272;
-        Sat, 28 Sep 2024 17:59:02 -0700 (PDT)
-Received: from localhost ([2601:646:9e00:f56e:123b:cea3:439a:b3e3])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-71b264aad33sm3867647b3a.10.2024.09.28.17.59.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 Sep 2024 17:59:01 -0700 (PDT)
-Date: Sat, 28 Sep 2024 17:59:00 -0700
-From: Stanislav Fomichev <stfomichev@gmail.com>
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: "Sergey V. Lobanov" <sergey@lobanov.in>,
-	Stanislav Fomichev <sdf@fomichev.me>, bpf@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: Re: BUG: Kernel OOPS in __bpf_prog_offload_destroy (6.10, 6.11,
- bpf-next, x86_64/aarch64)
-Message-ID: <ZvimVOSJ_vNM6cif@mini-arch>
-References: <2194F884-8028-4018-AA64-848405757119@lobanov.in>
- <94203662-8792-456f-a9a1-dea3c4154d47@linux.dev>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F188AD2F;
+	Sun, 29 Sep 2024 01:31:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.67.57
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1727573512; cv=fail; b=RAKiNqp+7ha7+Zc8+qqjk/lBV5A8hOZFF9vH/3gc+8dRctMylXnFDcsb8jflRsq5Ac/hp3fk9FIMmVaq73bNk/5FoRX6mkDMjWkv7KVF+kHSbJWxnK7GoGoup8gAEbOaF5iSQrt0NIGUCc4UAY1WXecYhHoqiIGX06/DQq1z3P8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1727573512; c=relaxed/simple;
+	bh=AnNOw3I8Ia+hFtvVQR+/0GEcROEws2GQhlJNKClbgqE=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=HZgrkH7x259/h2OKPpy06OBeD5stWg2Uu1SMegEFrPzLsA3JcePa3najSKnC3mD+MAYCFw9EazzDLF5hTCAZsV8dluFkPVeJljjytKDmjm4KCpbmjTEMUgJ8biFGbbBZJbCjqXRn4t+wY48+BBM3T6Q9kXIj4fK9rfAwhuXI6WM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (2048-bit key) header.d=nxp.com header.i=@nxp.com header.b=T1b0009k; arc=fail smtp.client-ip=52.101.67.57
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=NcjDYslTXJSmGZtYhBimNlxJTTRIMvBqJ4i1hQSSM5s0F2cxXz58M5YDbZv8P8KSVH9d3fxxc2GMVVpr2Lw3okriPHCD3oflBczgZ/N5lQ9L0M9Q2H2PTmfHHnp7TizUKvw7vMv+h0qJ2LAzKqZq5pnpjCPzwQi6culg3XUUXtASgHtjLIgu/BF79pTKEgcUm8Nd3YoODaZYtxH1GNa57lO1PVUNbd5rxqZoju2/kjpLD4WAVKBOnVQc5ZSpr9S0n1gMYPJh728VPaV+YSgLScViOiv+/VJF1FfuWglkxhj/iH9hHunx85Ln6lQplmasD5J4Jgk2HnEMA7u5v79Zfg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=F6ahNzUi1HOxyrY/Fa9agt+3YeeoNBsM3it6HdYgctc=;
+ b=yQe6NOIzbEGMnXAhgSS1Wd5eJFQB1mup+DizI9QQcm4OSpyS3IUQYs6up3jDwl9vtPyHgWRxxjCXZKuP3zr8QOY+sJ8qLMNgemuT4/PiMQgTpeaSEnhhL3lc31dXjn4C8yVQ2YGfkETsmU7O3hRTVANq6qwSh7zpvuwZmiXL/C3aUf0skWuW7s2qzZBL7vmZSjnjoe7+SJOONjh6Do6U5DRACVVxmYIHmxUA2gKnTsA707cP4UkOYnuK8hNxjb9U8IqCFyHqO1zqvQmfAYo+gvUo0PokiMpkpnwFhN3NJ8FPtp6a7c7LuYlB57RAMIA4KkkjdPBENu9DZhZUzm2CXg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=F6ahNzUi1HOxyrY/Fa9agt+3YeeoNBsM3it6HdYgctc=;
+ b=T1b0009kBBNzbUNfJb4wGtQDj7Y005/S75jqoqayb3Y/zCXt8ymqG5k5Hqd0rcIvki1YOPlooYlKNqkEoYRF21R2TvCLs+KFHcp6CyuB4DuWAJw9ccyTsdC+i7dXG3lkvEl/A/vgNKA9HvJwX0zA7CtL58zIS4eqreEKGt6nUZluH62UdyJFlwm6EyMZ0ttsNyKM6FWwq8JMx7OqIpADxJhQ116Ol3rbp7uiABCjjWJWypnSM3YKB4LmMzNFm9Jt3cgJyHvZ/gy7t1p01sG86ojzazSGvu1dDmWAxJf0P5leVY7/7929Z/483E0CFt77Vv0VzRB1Kmlv+WzJ3/nF7g==
+Received: from PAXPR04MB8510.eurprd04.prod.outlook.com (2603:10a6:102:211::7)
+ by DB8PR04MB6777.eurprd04.prod.outlook.com (2603:10a6:10:11f::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8005.24; Sun, 29 Sep
+ 2024 01:31:46 +0000
+Received: from PAXPR04MB8510.eurprd04.prod.outlook.com
+ ([fe80::a7c2:e2fa:8e04:40db]) by PAXPR04MB8510.eurprd04.prod.outlook.com
+ ([fe80::a7c2:e2fa:8e04:40db%6]) with mapi id 15.20.7918.024; Sun, 29 Sep 2024
+ 01:31:46 +0000
+From: Wei Fang <wei.fang@nxp.com>
+To: Vladimir Oltean <vladimir.oltean@nxp.com>
+CC: Maciej Fijalkowski <maciej.fijalkowski@intel.com>, "davem@davemloft.net"
+	<davem@davemloft.net>, "edumazet@google.com" <edumazet@google.com>,
+	"kuba@kernel.org" <kuba@kernel.org>, "pabeni@redhat.com" <pabeni@redhat.com>,
+	Claudiu Manoil <claudiu.manoil@nxp.com>, "ast@kernel.org" <ast@kernel.org>,
+	"daniel@iogearbox.net" <daniel@iogearbox.net>, "hawk@kernel.org"
+	<hawk@kernel.org>, "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>, "bpf@vger.kernel.org"
+	<bpf@vger.kernel.org>, "stable@vger.kernel.org" <stable@vger.kernel.org>,
+	"imx@lists.linux.dev" <imx@lists.linux.dev>
+Subject: RE: [PATCH net 3/3] net: enetc: reset xdp_tx_in_flight when updating
+ bpf program
+Thread-Topic: [PATCH net 3/3] net: enetc: reset xdp_tx_in_flight when updating
+ bpf program
+Thread-Index:
+ AQHbCnHT295KDDvRD0aXaVmRMCCprrJgpnMAgAANdRCAAAkBgIAD4MDAgAchygCAAknPMA==
+Date: Sun, 29 Sep 2024 01:31:46 +0000
+Message-ID:
+ <PAXPR04MB8510D6740CA5B37622A7298E88752@PAXPR04MB8510.eurprd04.prod.outlook.com>
+References: <20240919084104.661180-1-wei.fang@nxp.com>
+ <20240919084104.661180-4-wei.fang@nxp.com> <Zu1y8DNQWdYI38VA@boxer>
+ <PAXPR04MB85101DE84124D424264BB4FD886C2@PAXPR04MB8510.eurprd04.prod.outlook.com>
+ <20240920142511.aph5wpmiczcsxfgr@skbuf>
+ <PAXPR04MB85105CC61372D1F2FC48C89A886F2@PAXPR04MB8510.eurprd04.prod.outlook.com>
+ <20240927143308.emkgu7x5ybjnqaty@skbuf>
+In-Reply-To: <20240927143308.emkgu7x5ybjnqaty@skbuf>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PAXPR04MB8510:EE_|DB8PR04MB6777:EE_
+x-ms-office365-filtering-correlation-id: b67ab49c-140c-4b91-2fea-08dce0267b6e
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam:
+ BCL:0;ARA:13230040|7416014|1800799024|376014|366016|38070700018;
+x-microsoft-antispam-message-info:
+ =?us-ascii?Q?Zgu087IqRKDiH6u6C2C2Cvwjhstqv9Mx8/QjXsYD3e03Zix4v3aCJCKO4p4B?=
+ =?us-ascii?Q?IkVXxAImOTzvAE5/i4lCn4VMk/E5hCTQmIOioTaXcT1BfVygY5vrxfy20zv5?=
+ =?us-ascii?Q?JxZdP4RBTppTNQS1PQ0DBjijDEddMdbvgklPTzjeArJqnGGRtdKWr42HrVVd?=
+ =?us-ascii?Q?YebWGOyB0ki6VcoQBnob67UEKFBjtZN4rMXgzRFPbDtMbDy2wGKQ8wk19D6X?=
+ =?us-ascii?Q?bAUbECe/Cy6g/Vd213zbo78R4PXKhoRY+T/smisdbqr2bTDMLNp8baJO9J2x?=
+ =?us-ascii?Q?wX9IEfYwj6zTk3nkt+NJ92ey8im1AWlcxJjoWBudzAB18FEg5kS3oiQ4z/5a?=
+ =?us-ascii?Q?g7WavGkWXZG877XFO54MAjEi4vBHaOucWTtyA6Upr0Im3ugpu45oqMbygYsy?=
+ =?us-ascii?Q?2OaLB+sSpef0VNND9i22iK4bcMQtlgmh6iJlMx9KJgBJqWaSQyKry5FWKeoE?=
+ =?us-ascii?Q?uHe1pdMRhM0+BgCXky3QFgCh5tltqFlnKGgnRZAF1JKVWTz2TRDhmg3nnVgV?=
+ =?us-ascii?Q?9bUJ+wWEsKGE/WjdihT58ReXZZVRG9Y2ekmj6PNR0uI7qnJ0m2nDBfE2ACdA?=
+ =?us-ascii?Q?06cP7+Lb1kIptrlIyf8KGC9Gmt/G0/wqS66r5TpDSye2h7S/CR4ZzzOjrAsQ?=
+ =?us-ascii?Q?u/iqv8yvonXhvnT1orCfwPZ6G+h4L5nni7paDLl61o1E8GpwmNaIrDzDfnKA?=
+ =?us-ascii?Q?p7PhfBNA45s249DvaqPZUyAmRb6fo2cKQjdZ5BBGo1ZsH2URosrk8nEFyJxp?=
+ =?us-ascii?Q?oq2rCQJAhmcYKvGIutvxzLbzpKD9vF2O0+BcR6H/XsTduLvCIPXf530SZGJ8?=
+ =?us-ascii?Q?P0TItbuN7ga21HlomcYM5erE1RFpgqpfermtAE7aZTZl2sq0Muf3iINGHpN1?=
+ =?us-ascii?Q?9JpYw0zl+tkDGIMiZakrwmFzk8aQHfwrVhd05mEMco/7zARJoyjHdSWDfK9K?=
+ =?us-ascii?Q?R1qwyMnJyKHUVLHVKq5EU8RzQEMIAnPGcwweZtSwgHLNgE7vktIJTX57KTH6?=
+ =?us-ascii?Q?qr6dyVsBZduLt0n6wA41lH5dNyAHAbPO1yW/TASlEH2IMgQU58kKeUHaNOnO?=
+ =?us-ascii?Q?ROCKDnfojCzXlrl4nQ1fLv3DWkyVyTIf/AUkffuE3zx/PXobG60msYrqrL9i?=
+ =?us-ascii?Q?1aiplEbU7Forjwuyq/eZ5ZWaibqs8yifROEzHMw1SYSupk9dkxZXuaU54r+t?=
+ =?us-ascii?Q?11KYpc12NQjU3HTAVKT+nXrJaV/9lIMZ9DMVDOjM/QPdMOinkswmNNQDbtKo?=
+ =?us-ascii?Q?+C6NkH0yQwlrn7nlhxvJgUzl0Zv+KZYoBGbFhAs3AdiTshi76hy0ysd0F+Mi?=
+ =?us-ascii?Q?rnIAkTRmyaCydfdQyUedHh/R47HBaIaqINVDCM3T+9Wf8Q3VosxcihG9Uyuh?=
+ =?us-ascii?Q?j3KKqUZMkk6w9RKWhCD9XNOoLm8YStILDMiFS8K9p6Zj+Lgn4g=3D=3D?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB8510.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(1800799024)(376014)(366016)(38070700018);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?vx3iB4KoieKegIszgayqSqXmEiFLqq/Pa9CwigA8wg/amUT9zf6bA9R9DAPZ?=
+ =?us-ascii?Q?VuM9DWFzIrVpZRycYxr2DkbRSZpzLDG6jLMtUMVK2kJnKsSrVhtoik3INH5T?=
+ =?us-ascii?Q?WeXifqqQs2tLFGI38l40uiM+bdEk0+RWIAAGvfbqe1MfFJBB9elWEMHReXn2?=
+ =?us-ascii?Q?cI3FbLAyaqm62xq/a+ktLDWnvXQLmhjItltc9l67fEB6FiExtB7qpd3cCGlc?=
+ =?us-ascii?Q?Vmj3fHaA4tE3px2Riod/WHsd0NFnR7164hPG7nNifsULj9DyVqyCFQ+dpRF7?=
+ =?us-ascii?Q?FakFOzX3ADbRKBRYuNDmA5aCZ5PxUHe2v/463Pbv+DcltzLMXtOrSLhflOBY?=
+ =?us-ascii?Q?KQiOqCRXlQIff4v43gsFyWC6GNGhRzEZM+6ie7U1rDVOCTYg6XU2+TKcCzCR?=
+ =?us-ascii?Q?lEQ8CI5g46X42qrZsSjVGP3+UeKEDZXpNV6b5rVcT4y9t42Kk02VeuIBDl1X?=
+ =?us-ascii?Q?TbgeHHr0HK7Mlk8iKBDnKNtAKUarEQUb1iIdMLsZfA6I3VJNJiDc5ko912RX?=
+ =?us-ascii?Q?9Pf80sYi2tweBaCzkBs2L6ODkKCi4kfQLxbQM+vA0miC1o/4TMCNgG9t7wSc?=
+ =?us-ascii?Q?v8pRhoRfFGonpcwp8Onh8KIPHcSg0ZYGHVxDJ+JJoTlb38gkhaTYnwuF9xfj?=
+ =?us-ascii?Q?8yGQSPG+kreFbqc3YiJ1K6NvSRzj7c/OCRfh8t/Bdh8SLEyU0JvA7GJCJNhZ?=
+ =?us-ascii?Q?qCncGtdQO43wKtFizcVXF6MxWt88flOSKDny7juGCvdz6lY7alC4FmsR9MH+?=
+ =?us-ascii?Q?SSzkmie9+xebI+aI7YXaIrc1dbEj2i1Zg1ynf9LlSnCmhTigOhEl3s+oCNVu?=
+ =?us-ascii?Q?+cs2UbZSKkiJ0UZAgqm3jx4KoPLUXK1HFfUV9EYPXNT5KjX3gSlIy7ketVnB?=
+ =?us-ascii?Q?OvUygPIDZVFFavG1emcxqLhv4aS2PQO7J4a2BU+jw1/9Xjfj2w51wJXEFeGt?=
+ =?us-ascii?Q?S0UrpuZs1A4oW3NTe7ucXQuaZMX8fph5RQpKW05WllYXVoUFHqyKSGncL/yR?=
+ =?us-ascii?Q?IRmjnL/R+ejBux3XnoOUWWnJTJDdM2MkRIY4e7kHyMR+lSOLy3meOZtjQBdp?=
+ =?us-ascii?Q?tas0HZijDybMmEksPcqUcz5B7ubEl8Z6zoa8vHjabBOP17my2mTTCuxCC145?=
+ =?us-ascii?Q?U5f77ocCFjkVcSa4BGM5sntfd4iZ9jCKBkmi32ZZ9fTOaE4Wt1VMHpZEoH0Y?=
+ =?us-ascii?Q?c2hlWqIsJpBjKLeMJqdD4FEMFBmDMLB6/Ny6YsjaCM9410f7q2NjxrOCg9cM?=
+ =?us-ascii?Q?6JWP6oo58ndZWXEDn1JMj7lyuUcmJP+pxhfcnS6IeilNKLnwyqxTAEW7ItE8?=
+ =?us-ascii?Q?iithIWkV/jYaXBXhA6UrFZ6EHK+B/VhAT9uvgSH70LeivOuKpWHv0J5HaufY?=
+ =?us-ascii?Q?XYoWxqGbIub0w2C5T4IgLk2WNFh5ZEODV44VIK1gNjsSbDBigY688XQg9wHu?=
+ =?us-ascii?Q?3DgP7lFvGlKkf2N9pz+8kYtcRXlqX7I2RQNRZnLkqSLHbih6wSdxyl3JCBJE?=
+ =?us-ascii?Q?pVdYx/nHLK5CsMZpVPYK5LXx79U2pIFe3rBB59T6r4cA+BJomus6TfIcHJ/2?=
+ =?us-ascii?Q?QSFvcgndUaAg/P9v0aw=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <94203662-8792-456f-a9a1-dea3c4154d47@linux.dev>
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB8510.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b67ab49c-140c-4b91-2fea-08dce0267b6e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Sep 2024 01:31:46.3604
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: m1iZ8yqu3MAeUrGRQL4CCcTQXAv39vAmVY//R2F0ABPQ/QlqV2dlYG/76iJNw/aAd4gb+Fjm4/aQqN+zs1zdbw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB6777
 
-On 09/27, Martin KaFai Lau wrote:
-> On 9/19/24 11:40 AM, Sergey V. Lobanov wrote:
-> > Hi,
-> > 
-> > I've found kernel oops during device deletion (ip link del veth0) after attaching and detaching device bounded XDP bpf program. When this oops happens, host doesn’t function correctly (new processes can’t start, can’t login via ssh and so on).
-> 
-> bpf selftests also exercises a similar veth add/del path but didn't hit this
-> issue. Is it reproducible very time?
-> 
-> cc: Stanislav if something obvious can be spotted.
+> Hi Wei,
+>=20
+> On Mon, Sep 23, 2024 at 04:59:56AM +0300, Wei Fang wrote:
+> > Okay, I have tested this solution (see changes below), and from what I
+> observed,
+> > the xdp_tx_in_flight can naturally drop to 0 in every test. So if there=
+ are no
+> other
+> > risks, the next version will use this solution.
+> >
+>=20
+> Sorry for the delay. I have tested this variant and it works. Just one
+> thing below.
+>=20
+> > @@ -2467,10 +2469,6 @@ void enetc_start(struct net_device *ndev)
+> >         struct enetc_ndev_priv *priv =3D netdev_priv(ndev);
+> >         int i;
+> >
+> > -       enetc_setup_interrupts(priv);
+> > -
+> > -       enetc_enable_tx_bdrs(priv);
+> > -
+> >         for (i =3D 0; i < priv->bdr_int_num; i++) {
+> >                 int irq =3D pci_irq_vector(priv->si->pdev,
+> >
+> ENETC_BDR_INT_BASE_IDX + i);
+> > @@ -2479,6 +2477,10 @@ void enetc_start(struct net_device *ndev)
+> >                 enable_irq(irq);
+> >         }
+> >
+> > +       enetc_setup_interrupts(priv);
+> > +
+> > +       enetc_enable_tx_bdrs(priv);
+> > +
+> >         enetc_enable_rx_bdrs(priv);
+> >
+> >         netif_tx_start_all_queues(ndev);
+> > @@ -2547,6 +2549,12 @@ void enetc_stop(struct net_device *ndev)
+> >
+> >         enetc_disable_rx_bdrs(priv);
+> >
+> > +       enetc_wait_bdrs(priv);
+> > +
+> > +       enetc_disable_tx_bdrs(priv);
+> > +
+> > +       enetc_clear_interrupts(priv);
+>=20
+> Here, NAPI may still be scheduled. So if you clear interrupts, enetc_poll=
+()
+> on another CPU might still have time to re-enable them. This makes the
+> call pointless.
+>=20
+> Please move the enetc_clear_interrupts() call after the for() loop below
+> (AKA leave it where it is).
 
-I saw this one and I even run xdp_dev_bound_only.c with an explicit
-'link del dev' prior to netns dismantle and got nothing :-(
-
-Sergey, maybe you can do faddr2line and post on
-__bpf_prog_offload_destroy+0x24/0xc8? So we at least get an idea
-were exactly it fails. 'paging request at virtual address
-ffff80008b565038' looks too broken to me.
-
-> > BPF compiler is GCC 14.2.0. CXX is compiler (for loader) is GCC 14.2.0
-> > 
-> > It happens in kernels: 6.10.9, 6.11.0, bpf-next master branch (commit 5277d130947ba8c0d54c16eed89eb97f0b6d2e5a) on x86_64 and aarch64 hosts.
-> > 
-> > Call trace (kernel 6.11.0, aarch64):
-> > [  584.364169] Unable to handle kernel paging request at virtual address ffff80008b565038
-> > [  584.364236] Mem abort info:
-> > [  584.364242]   ESR = 0x0000000096000007
-> > [  584.364248]   EC = 0x25: DABT (current EL), IL = 32 bits
-> > [  584.364256]   SET = 0, FnV = 0
-> > [  584.364270]   EA = 0, S1PTW = 0
-> > [  584.364276]   FSC = 0x07: level 3 translation fault
-> > [  584.364283] Data abort info:
-> > [  584.364289]   ISV = 0, ISS = 0x00000007, ISS2 = 0x00000000
-> > [  584.364297]   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
-> > [  584.364305]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
-> > [  584.364313] swapper pgtable: 4k pages, 48-bit VAs, pgdp=000000015ab5d000
-> > [  584.364323] [ffff80008b565038] pgd=100000015bdf0003, p4d=100000015bdf0003, pud=100000015bdf1003, pmd=10000000ab84a003, pte=0000000000000000
-> > [  584.364360] Internal error: Oops: 0000000096000007 [#1] SMP
-> > [  584.364387] Modules linked in: veth xt_nat xt_tcpudp xt_conntrack nft_chain_nat xt_MASQUERADE nf_nat nf_conntrack_netlink nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 xfrm_user xfrm_algo xt_addrtype nft_compat nf_tables br_netfilter bridge stp llc overlay qrtr cfg80211 binfmt_misc virtio_snd snd_pcm snd_timer nls_iso8859_1 snd soundcore input_leds joydev apple_mfi_fastcharge dm_multipath efi_pstore nfnetlink dmi_sysfs virtiofs ip_tables x_tables autofs4 hid_generic usbhid hid btrfs blake2b_generic raid10 raid456 async_raid6_recov async_memcpy async_pq async_xor async_tx xor xor_neon raid6_pq libcrc32c raid1 raid0 crct10dif_ce polyval_ce polyval_generic ghash_ce sm4 sha3_ce sha2_ce sha256_arm64 sha1_ce virtio_rng virtio_gpu xhci_pci virtio_dma_buf xhci_pci_renesas aes_neon_bs aes_neon_blk aes_ce_blk aes_ce_cipher
-> > [  584.364667] CPU: 1 UID: 0 PID: 6070 Comm: ip Not tainted 6.11.0-061100-generic #202409151536
-> > [  584.364678] Hardware name: Apple Inc. Apple Virtualization Generic Platform, BIOS 2020.41.1.0.0 10/04/2023
-> > [  584.364691] pstate: 21400005 (nzCv daif +PAN -UAO -TCO +DIT -SSBS BTYPE=--)
-> > [  584.364701] pc : __bpf_prog_offload_destroy+0x24/0xc8
-> > [  584.364745] lr : __bpf_offload_dev_netdev_unregister+0x318/0x438
-> > [  584.364754] sp : ffff80008b64b1b0
-> > [  584.364766] x29: ffff80008b64b1b0 x28: ffff0000c0355e00 x27: 0000000000000008
-> > [  584.364781] x26: ffff80008394bcf8 x25: 0000000000000008 x24: ffff0000c6b71058
-> > [  584.364791] x23: ffff0000c6b71000 x22: ffff0000c0d95018 x21: 0000000000000000
-> > [  584.364802] x20: ffff80008b565000 x19: ffff0000c0d94ff8 x18: ffff80008b61d0a0
-> > [  584.364813] x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000000
-> > [  584.364823] x14: 0000000000000000 x13: 0000000000000000 x12: 0000000000000000
-> > [  584.364834] x11: 0000000000000000 x10: 949c93cdb28287d2 x9 : ffff8000803abc30
-> > [  584.364844] x8 : ffff000042c844a8 x7 : 0000000000000000 x6 : 0000000000000000
-> > [  584.364854] x5 : 0000000000000000 x4 : 0000000000000000 x3 : 0000000000000000
-> > [  584.364865] x2 : 0000000000000000 x1 : ffff0000c0270500 x0 : ffff80008b565000
-> > [  584.364875] Call trace:
-> > [  584.364881]  __bpf_prog_offload_destroy+0x24/0xc8
-> > [  584.364889]  __bpf_offload_dev_netdev_unregister+0x318/0x438
-> > [  584.364898]  bpf_dev_bound_netdev_unregister+0x8c/0x138
-> > [  584.364906]  unregister_netdevice_many_notify+0x1f0/0x760
-> > [  584.364928]  rtnl_dellink+0x1b4/0x3e8
-> > [  584.364935]  rtnetlink_rcv_msg+0x140/0x420
-> > [  584.364944]  netlink_rcv_skb+0x6c/0x160
-> > [  584.364978]  rtnetlink_rcv+0x24/0x50
-> > [  584.364985]  netlink_unicast+0x340/0x3a0
-> > [  584.364993]  netlink_sendmsg+0x270/0x480
-> > [  584.365007]  __sock_sendmsg+0x80/0x108
-> > [  584.365018]  ____sys_sendmsg+0x294/0x360
-> > [  584.365025]  ___sys_sendmsg+0xbc/0x140
-> > [  584.365033]  __sys_sendmsg+0x94/0x120
-> > [  584.365041]  __arm64_sys_sendmsg+0x30/0x60
-> > [  584.365052]  invoke_syscall+0x70/0x120
-> > [  584.365071]  el0_svc_common.constprop.0+0x4c/0x140
-> > [  584.365079]  do_el0_svc+0x28/0x60
-> > [  584.365086]  el0_svc+0x44/0x1b0
-> > [  584.365097]  el0t_64_sync_handler+0x148/0x160
-> > [  584.365106]  el0t_64_sync+0x1b0/0x1b8
-> > [  584.365113] Code: 910003fd a90153f3 aa0003f4 f90013f5 (f9401c00)
-> > [  584.365123] ---[ end trace 0000000000000000 ]—
-> > 
-> > --
-> > Sergey
-> 
+Okay, I will, thanks.
+>=20
+> > +
+> >         for (i =3D 0; i < priv->bdr_int_num; i++) {
+> >                 int irq =3D pci_irq_vector(priv->si->pdev,
+> >
+> ENETC_BDR_INT_BASE_IDX + i);
+> > @@ -2555,12 +2563,6 @@ void enetc_stop(struct net_device *ndev)
+> >                 napi_synchronize(&priv->int_vector[i]->napi);
+> >                 napi_disable(&priv->int_vector[i]->napi);
+> >         }
+> > -
+> > -       enetc_wait_bdrs(priv);
+> > -
+> > -       enetc_disable_tx_bdrs(priv);
+> > -
+> > -       enetc_clear_interrupts(priv);
+> >  }
+> >  EXPORT_SYMBOL_GPL(enetc_stop);
+>=20
+> FWIW, there are at least 2 other valid ways of solving this problem. One
+> has already been mentioned (reset the counter in enetc_free_rx_ring()):
+>=20
+> @@ -2014,6 +2015,8 @@ static void enetc_free_rx_ring(struct enetc_bdr
+> *rx_ring)
+>  		__free_page(rx_swbd->page);
+>  		rx_swbd->page =3D NULL;
+>  	}
+> +
+> +	rx_ring->xdp.xdp_tx_in_flight =3D 0;
+>  }
+>=20
+>  static void enetc_free_rxtx_rings(struct enetc_ndev_priv *priv)
+>=20
+> And the other would be to keep rescheduling NAPI until there are no more
+> pending XDP_TX frames.
+>=20
+> diff --git a/drivers/net/ethernet/freescale/enetc/enetc.c
+> b/drivers/net/ethernet/freescale/enetc/enetc.c
+> index 3cff76923ab9..36520f8c49a6 100644
+> --- a/drivers/net/ethernet/freescale/enetc/enetc.c
+> +++ b/drivers/net/ethernet/freescale/enetc/enetc.c
+> @@ -1689,6 +1689,7 @@ static int enetc_poll(struct napi_struct *napi, int
+> budget)
+>  		work_done =3D enetc_clean_rx_ring_xdp(rx_ring, napi, budget, prog);
+>  	else
+>  		work_done =3D enetc_clean_rx_ring(rx_ring, napi, budget);
+> -	if (work_done =3D=3D budget)
+> +	if (work_done =3D=3D budget || rx_ring->xdp.xdp_tx_in_flight)
+>  		complete =3D false;
+>  	if (work_done)
+>=20
+> But I like your second proposal the best. It doesn't involve adding an
+> unnecessary extra test in the fast path.
 
