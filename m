@@ -1,147 +1,184 @@
-Return-Path: <bpf+bounces-40466-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40467-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B0A2989187
-	for <lists+bpf@lfdr.de>; Sat, 28 Sep 2024 23:17:42 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8589989231
+	for <lists+bpf@lfdr.de>; Sun, 29 Sep 2024 02:55:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E7A021F214BD
-	for <lists+bpf@lfdr.de>; Sat, 28 Sep 2024 21:17:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3BEEA1F23C77
+	for <lists+bpf@lfdr.de>; Sun, 29 Sep 2024 00:55:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6D16184532;
-	Sat, 28 Sep 2024 21:17:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RKee8TD0"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 706208494;
+	Sun, 29 Sep 2024 00:54:52 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27DE03C0C;
-	Sat, 28 Sep 2024 21:17:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBAB3469D;
+	Sun, 29 Sep 2024 00:54:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727558251; cv=none; b=jWC8tlt9iXGjiL8cSJ6A2cOYgGF/8euw/7IMcIlLYs5BbeHPBp1cvRZ6uybeKXLNwt6xVcuTNOpwB7V6Tr/cdezYdJkbSiSbU76PsirxtyaJ1H+pPEW9bdPSHyU8B3pQcAdhHEL9SZrtzpQAcTEzCUbLbvhPDduk0/BOJowv7JU=
+	t=1727571292; cv=none; b=M/PNxDf/bgVbr3WEe6N6tv29l5KNXGBUUa47k49USwqrc4s4D4wWLeW9CFY75CQhmvdnhu0/o5z8PovfTtNV5gY6EgquHLsa9Pw2ftyh44TiyCoz5wHiJ5foBPKHY5OEVN2v5LacJAWgl4dcdYUyCgWcg08HeJdp58YpIKTHhMA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727558251; c=relaxed/simple;
-	bh=D0r2pMAslanB4R9KKI1cz+nAetpbVmkKyvYYI304mqI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VdIGgscl/u7JWFhKMUC9T5u/R3125gc+l9wPpgcccT7Os60mxRdZWqY1k0y9YCxbJuFCnzPgk2hSShZjCLuFYkhWdn2noP6tnr58mZkf/n+8Un3GSkw35tUu0T4ItyEETp3ltJG6KWJL69KA0hqv9i2z0DoCl3JwZuswsNkVMCA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RKee8TD0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9DAFFC4CEC3;
-	Sat, 28 Sep 2024 21:17:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727558250;
-	bh=D0r2pMAslanB4R9KKI1cz+nAetpbVmkKyvYYI304mqI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=RKee8TD0HOzA1sEOmQy+o1YoprUqIz5Nx9I6rrFKrUGy1HZUkPMmOjKnCl3+9maWg
-	 1GdsNYYM0sAY/FVkiThXRc3afmVOcZcblIxwyo55OD2/2r3pt+VjmF531qy1ec/AF/
-	 nJ4AaI0nancNp+mrRBLDnG3AJJeb4kjXv2FtVJ/VHHglFEDhz9o/mxI/jlnp5X2DlS
-	 5Ct0im2UfESxxYEUowIKaR8/cSYh6y1p9AT6lp4oAwdkIRqBdVlWkO89X7OXf1CR2j
-	 eKkhJhuoCnM9eYUO/a3XQ19tYfht2hhlkKf5OKlyJQPedvRhQ73TS2vCTd6BMSc8ZQ
-	 cA5757sItzN/g==
-Date: Sat, 28 Sep 2024 14:17:30 -0700
-From: Kees Cook <kees@kernel.org>
-To: Alejandro Colomar <alx@kernel.org>
-Cc: Yafang Shao <laoar.shao@gmail.com>, akpm@linux-foundation.org,
-	torvalds@linux-foundation.org, justinstitt@google.com,
-	ebiederm@xmission.com, alexei.starovoitov@gmail.com,
-	rostedt@goodmis.org, catalin.marinas@arm.com,
-	penguin-kernel@i-love.sakura.ne.jp, linux-mm@kvack.org,
-	linux-fsdevel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	audit@vger.kernel.org, linux-security-module@vger.kernel.org,
-	selinux@vger.kernel.org, bpf@vger.kernel.org,
-	netdev@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH v7 5/8] mm/util: Fix possible race condition in kstrdup()
-Message-ID: <202409281414.487BFDAB@keescook>
-References: <20240817025624.13157-1-laoar.shao@gmail.com>
- <20240817025624.13157-6-laoar.shao@gmail.com>
- <w6fx3gozq73slfpge4xucpezffrdioauzvoscdw2is5xf7viea@a4doumg264s4>
+	s=arc-20240116; t=1727571292; c=relaxed/simple;
+	bh=2B/0qFrZ4MvrYvu29+Wu+zlHj4pQsCk+raaWBiQzTm4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=dtpSrbaVowVBE9AdiZ0TtJl+4eHKDyUFidTcLKOjLATs6JTCM3W/AC0NQ8BXg1ROHVcOhb6hHRVKM7+miSxAN52JBet76d6wHgpittPx4M6qAi6flxUeuwze/ffs4t6JlmNdHkZsloFAnr3MIVvk5KiX3MJ5Gsz/p/UQ/YiI+yY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4XGQhJ2vq7z4f3jdn;
+	Sun, 29 Sep 2024 08:54:24 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id C88A21A0B1F;
+	Sun, 29 Sep 2024 08:54:40 +0800 (CST)
+Received: from [10.67.110.36] (unknown [10.67.110.36])
+	by APP4 (Coremail) with SMTP id gCh0CgC3N8ROpfhmE0uNCg--.34615S2;
+	Sun, 29 Sep 2024 08:54:39 +0800 (CST)
+Message-ID: <1222cf96-0382-4396-bb2d-475615070ccf@huaweicloud.com>
+Date: Sun, 29 Sep 2024 08:54:38 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <w6fx3gozq73slfpge4xucpezffrdioauzvoscdw2is5xf7viea@a4doumg264s4>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH -next 1/2] perf stat: Increase perf_attr_map entries
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>, song@kernel.org,
+ Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+ Adrian Hunter <adrian.hunter@intel.com>, kan.liang@linux.intel.com,
+ linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+ bpf@vger.kernel.org
+References: <20240925135523.367957-1-wutengda@huaweicloud.com>
+ <20240925135523.367957-2-wutengda@huaweicloud.com>
+ <ZvTgHKl4eZvpyVml@google.com>
+ <41d1d728-dbf4-4b0d-9855-19cd06e2a594@huaweicloud.com>
+ <ZvbnePGVmbWF0fAF@google.com>
+Content-Language: en-US
+From: Tengda Wu <wutengda@huaweicloud.com>
+In-Reply-To: <ZvbnePGVmbWF0fAF@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgC3N8ROpfhmE0uNCg--.34615S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxZw4DZFW3uFW8Aw4kXr1xGrg_yoW5tr1rpF
+	W8CF9FyF45Xr1UGw1Yv3ZIvF9Ygw45Wr45Wr13t3y0yF1qgr13KFWIqr4Y9FyxtrZ2yryY
+	qw4jqrW7ua90vaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvjb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AF
+	wI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43
+	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+	0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
+	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUF1
+	v3UUUUU
+X-CM-SenderInfo: pzxwv0hjgdqx5xdzvxpfor3voofrz/
 
-On Sat, Aug 17, 2024 at 10:48:15AM +0200, Alejandro Colomar wrote:
-> Hi Yafang,
-> 
-> On Sat, Aug 17, 2024 at 10:56:21AM GMT, Yafang Shao wrote:
-> > In kstrdup(), it is critical to ensure that the dest string is always
-> > NUL-terminated. However, potential race condidtion can occur between a
-> > writer and a reader.
-> > 
-> > Consider the following scenario involving task->comm:
-> > 
-> >     reader                    writer
-> > 
-> >   len = strlen(s) + 1;
-> >                              strlcpy(tsk->comm, buf, sizeof(tsk->comm));
-> >   memcpy(buf, s, len);
-> > 
-> > In this case, there is a race condition between the reader and the
-> > writer. The reader calculate the length of the string `s` based on the
-> > old value of task->comm. However, during the memcpy(), the string `s`
-> > might be updated by the writer to a new value of task->comm.
-> > 
-> > If the new task->comm is larger than the old one, the `buf` might not be
-> > NUL-terminated. This can lead to undefined behavior and potential
-> > security vulnerabilities.
-> > 
-> > Let's fix it by explicitly adding a NUL-terminator.
-> > 
-> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > ---
-> >  mm/util.c | 8 +++++++-
-> >  1 file changed, 7 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/mm/util.c b/mm/util.c
-> > index 983baf2bd675..4542d8a800d9 100644
-> > --- a/mm/util.c
-> > +++ b/mm/util.c
-> > @@ -62,8 +62,14 @@ char *kstrdup(const char *s, gfp_t gfp)
-> >  
-> >  	len = strlen(s) + 1;
-> >  	buf = kmalloc_track_caller(len, gfp);
-> > -	if (buf)
-> > +	if (buf) {
-> >  		memcpy(buf, s, len);
-> > +		/* During memcpy(), the string might be updated to a new value,
-> > +		 * which could be longer than the string when strlen() is
-> > +		 * called. Therefore, we need to add a null termimator.
-> > +		 */
-> > +		buf[len - 1] = '\0';
-> > +	}
-> 
-> I would compact the above to:
-> 
-> 	len = strlen(s);
-> 	buf = kmalloc_track_caller(len + 1, gfp);
-> 	if (buf)
-> 		strcpy(mempcpy(buf, s, len), "");
-> 
-> It allows _FORTIFY_SOURCE to track the copy of the NUL, and also uses
-> less screen.  It also has less moving parts.  (You'd need to write a
-> mempcpy() for the kernel, but that's as easy as the following:)
-> 
-> 	#define mempcpy(d, s, n)  (memcpy(d, s, n) + n)
-> 
-> In shadow utils, I did a global replacement of all buf[...] = '\0'; by
-> strcpy(..., "");.  It ends up being optimized by the compiler to the
-> same code (at least in the experiments I did).
 
-Just to repeat what's already been said: no, please, don't complicate
-this with yet more wrappers. And I really don't want to add more str/mem
-variants -- we're working really hard to _remove_ them. :P
 
--Kees
+On 2024/9/28 1:12, Namhyung Kim wrote:
+> On Fri, Sep 27, 2024 at 10:35:54AM +0800, Tengda Wu wrote:
+>>
+>>
+>> On 2024/9/26 12:16, Namhyung Kim wrote:
+>>> On Wed, Sep 25, 2024 at 01:55:22PM +0000, Tengda Wu wrote:
+>>>> bperf restricts the size of perf_attr_map's entries to 16, which
+>>>> cannot hold all events in many scenarios. A typical example is
+>>>> when the user specifies `-a -ddd` ([0]). And in other cases such as
+>>>> top-down analysis, which often requires a set of more than 16 PMUs
+>>>> to be collected simultaneously.
+>>>>
+>>>> Fix this by increase perf_attr_map entries to 100, and an event
+>>>> number check has been introduced when bperf__load() to ensure that
+>>>> users receive a more friendly prompt when the event limit is reached.
+>>>>
+>>>>   [0] https://lore.kernel.org/all/20230104064402.1551516-3-namhyung@kernel.org/
+>>>
+>>> Apparently this patch was never applied.  I don't know how much you need
+>>> but having too many events at the same time won't be very useful because
+>>> multiplexing could reduce the accuracy.
+>>>
+>>
+>> Could you please explain why patch [0] was not merged at that time? I couldn't
+>> find this information from the previous emails.
+> 
+> I guess it's just fell through the crack. :)
 
--- 
-Kees Cook
+Hope it won't happen again. 😆
+
+> 
+>>
+>> In my scenario, we collect more than 40+ events to support necessary metric
+>> calculations, which multiplexing is inevitable. Although multiplexing may
+>> reduce accuracy, for the purpose of supporting metric calculations, these
+>> accuracy losses can be acceptable. Perf also has the same issue with multiplexing.
+>> Removing the event limit for bperf can provide users with additional options.
+>>
+>> In addition to accuracy, we also care about overhead. I compared the overhead
+>> of bperf and perf by testing ./lat_ctx in lmbench [1], and found that the
+>> overhead of bperf stat is about 4% less than perf. This is why we choose to
+>> use bperf in some extreme scenarios.
+> 
+> Ok, thanks for explanation.  I think it's ok to increase the limit.
+> 
+> Thanks,
+> Namhyung
+> 
+>>
+>>   [1] https://github.com/intel/lmbench
+>>
+>> Thanks,
+>> Tengda
+>>
+>>>
+>>>>
+>>>> Fixes: 7fac83aaf2ee ("perf stat: Introduce 'bperf' to share hardware PMCs with BPF")
+>>>> Signed-off-by: Tengda Wu <wutengda@huaweicloud.com>
+>>>> ---
+>>>>  tools/perf/util/bpf_counter.c | 8 +++++++-
+>>>>  1 file changed, 7 insertions(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/tools/perf/util/bpf_counter.c b/tools/perf/util/bpf_counter.c
+>>>> index 7a8af60e0f51..3346129c20cf 100644
+>>>> --- a/tools/perf/util/bpf_counter.c
+>>>> +++ b/tools/perf/util/bpf_counter.c
+>>>> @@ -28,7 +28,7 @@
+>>>>  #include "bpf_skel/bperf_leader.skel.h"
+>>>>  #include "bpf_skel/bperf_follower.skel.h"
+>>>>  
+>>>> -#define ATTR_MAP_SIZE 16
+>>>> +#define ATTR_MAP_SIZE 100
+>>>>  
+>>>>  static inline void *u64_to_ptr(__u64 ptr)
+>>>>  {
+>>>> @@ -451,6 +451,12 @@ static int bperf__load(struct evsel *evsel, struct target *target)
+>>>>  	enum bperf_filter_type filter_type;
+>>>>  	__u32 filter_entry_cnt, i;
+>>>>  
+>>>> +	if (evsel->evlist->core.nr_entries > ATTR_MAP_SIZE) {
+>>>> +		pr_err("Too many events, please limit to %d or less\n",
+>>>> +			ATTR_MAP_SIZE);
+>>>> +		return -1;
+>>>> +	}
+>>>> +
+>>>>  	if (bperf_check_target(evsel, target, &filter_type, &filter_entry_cnt))
+>>>>  		return -1;
+>>>>  
+>>>> -- 
+>>>> 2.34.1
+>>>>
+>>
+
 
