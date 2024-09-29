@@ -1,111 +1,213 @@
-Return-Path: <bpf+bounces-40480-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40481-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1D41989377
-	for <lists+bpf@lfdr.de>; Sun, 29 Sep 2024 09:32:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9259B9893A0
+	for <lists+bpf@lfdr.de>; Sun, 29 Sep 2024 09:58:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 836241F23E54
-	for <lists+bpf@lfdr.de>; Sun, 29 Sep 2024 07:32:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B55171C21B3B
+	for <lists+bpf@lfdr.de>; Sun, 29 Sep 2024 07:58:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A44FA84E18;
-	Sun, 29 Sep 2024 07:32:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADA1913C90A;
+	Sun, 29 Sep 2024 07:58:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="P1CJm4/O"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="na/tpird"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qv1-f43.google.com (mail-qv1-f43.google.com [209.85.219.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0DC21F95A
-	for <bpf@vger.kernel.org>; Sun, 29 Sep 2024 07:32:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B29718641;
+	Sun, 29 Sep 2024 07:58:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727595152; cv=none; b=eGBY7TwWjmhQtVmF3h8WHxQOldBRWLO+4NReysbSWfBZ9hfpQkUFTBKeWDSL+IGxmqJKMHH2nUplMRUUpr7WAFrOonpEMAQuLcRD6CpHpx8Y11222PB/z8xUhamA4XZ6zncnoGYmHMesdsSJnz53eS6GY2YzH4tT7lIre2qCzvM=
+	t=1727596711; cv=none; b=qIqCZ/PN4XEKrqW9/UGqcqIGa7PEurFvnID02LWwoymfvvLE8484xBWqwgSp0WI+BIKCO7oeSnn5WRWBOl3N33MxHgiUWT/GBy2klN85LP0wKROwdVO7h9nZlwtGL6jSaYQLeCJfzpcKMHq5vNiDGIh0E6codcJMo+ljFrJw0hI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727595152; c=relaxed/simple;
-	bh=qMbChOq48uyiS+eoJMWyaVILpMNm6THV4cmcw5lnG1I=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bej8Q2BJ5T2ezk40DSemMdO8fZZ5KLyKTlkFuoqEinCIRcYviMzOAuskOUHYwT/ohyjkPbHOX9YoiiE/emGEpaKwlzhrLrWFls198VkCKF9L6hmGZ4Z9FzEk8B3kDRCY1Q1R8ggGOKwmYAaPzjdJufzcbhu0kdhD/HcO1ujXTRw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=P1CJm4/O; arc=none smtp.client-ip=209.85.219.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f43.google.com with SMTP id 6a1803df08f44-6cb3ba0a9a2so17611226d6.2
-        for <bpf@vger.kernel.org>; Sun, 29 Sep 2024 00:32:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727595150; x=1728199950; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KvHHx1HPQCFIJRj5copAb22W7uxh3f8cwMv1wzZNzSw=;
-        b=P1CJm4/OIDSsyWc2x5+bdaSbamx7KBJtC60B+VjXYQ617gVxWfmXb7cyE5E6QdNPq9
-         WlxnUGdNFdIIqCo3cMVVQaKJbW2hAPRbQBS3sNuNyfy8vbXqhmgYcG7+UmAUP5G6AeXG
-         nM+BKnRMeDOqKFcOYrJ/8xmSU9ZpgUOuw3esRvU2XYdjF3s2geLxbWFA4apmhP7fac6S
-         kYmm+vtqW0FBSvwPSP6kyweiz1F+LhsGeS63PFD8yNtaOu/Ti0xjrdHdyLPOMfjCYSJN
-         FDi+4g7S2Mfd8cYPSyCDsU2X8A1doqCqYG71Xxiaih7AdkJHu0FJehbyaPpL5IctEP6j
-         Ae9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727595150; x=1728199950;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KvHHx1HPQCFIJRj5copAb22W7uxh3f8cwMv1wzZNzSw=;
-        b=XTboZ1RV+cXa3LnEt4R37ARQ5WOn7LV+/O26z0bzHnjqtwSlP9hTsOJChEZDXVX5aS
-         A/AnogCkI4w1koNraf/R5G33Fx5inOH86gt+v8lndIPSsv62ZS1t7idoPnlqDwYVkVjl
-         RMtod8mfmD6rbbCkzM+1wHvwPQc7KJbP2mF03dhpJyW8yNY+7Hj98ZZqQxrq2x1cKJ1h
-         KeYhHaDpqPy/Lz7zsR3khuYXRAcZbV1XS8Z+J/agvS77nEGeyFS3vFOOVdSZzvICZTRW
-         5kzOpMsBp2rD4MkWti9QZdh5cJF4lg0NSKzzXEeuyLYYZUrsuP28YqNYpSKngvKvX/rS
-         +p9A==
-X-Forwarded-Encrypted: i=1; AJvYcCURxOdXJ8c/Tb6iRnt/QtjieEaz4kPIQ0GZX1e7jCJvG2AvLGtKN+Zhd/jAT4UI+IC1gJA=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxPFbSSvGt7C6J2BE9oyx2f/UXG3adMKzA+lQp33s2DUWX1mN1V
-	jJuTbbK3KVV5Jp+wvYF/3x9Z2aAHjKdrUSO1999ZSK0mB1eoycm3HmM5b1dDg7sBOUaS07+1ekE
-	Fw0s5TptP0y/Nc/XPdieyRdmoZgUHclJG
-X-Google-Smtp-Source: AGHT+IGl5Vbg8OUBYcxTAC0JwJcH29mGgGiIuXYQ1ISO0l2BOxpcmTLCZrQ+KsxxA6E8Q08cg5zsW6d6wM1xo7a+BDY=
-X-Received: by 2002:a05:6214:4602:b0:6c7:50bf:a443 with SMTP id
- 6a1803df08f44-6cb3b60141fmr100793376d6.30.1727595149622; Sun, 29 Sep 2024
- 00:32:29 -0700 (PDT)
+	s=arc-20240116; t=1727596711; c=relaxed/simple;
+	bh=3xHAO/1nMaKipfHebjoHo1sKkeBUhtCQGPDbex00eno=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VjbaCv7mxKmViur6q41Bsvx/bzK9c7ndh8mALEAdn9mYYD0jV53iBpWBJH0+JzU3i7ydjn+/cRWSmoJ83Bdv2SElQbHa2AIqUcdEn5uiAEfz8ZK6uy5agQD9PlA4CvuY76qPtK3NIf9Ov2xwrDkKm7D5cq7yh/H10r3YsWON77k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=na/tpird; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC4E7C4CEC5;
+	Sun, 29 Sep 2024 07:58:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1727596710;
+	bh=3xHAO/1nMaKipfHebjoHo1sKkeBUhtCQGPDbex00eno=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=na/tpird1bl9uvUKD9qDM4ARwhFA8PdpOm4dQQ7LxTWB/c33ja9fLlbqblYaKveqp
+	 Dd1mL5wLQhBBHY5REMFl7wDVk2vg5in81Z/qrjqgroWrMr3iBR0QeIK9xo2g+fID1W
+	 fZItj8cABW/yqR2e/9FCQSn2af9tg6wehIBneqHIGm7ROS54HNnV/IcC74/wYenXJj
+	 tccFdIJcBXl3O9NWHn38NKksr88Yq2jp0vqBFnpjaGrdNMZbnTJOOK8iAiy+HshUZi
+	 5744M39jfLtZQvSe3QV3UBHhc4ZP6RD/28eA0H8XD1lcVIHekhInDLtSvj5jVVewoi
+	 1xkMVvPzd8Ktg==
+Date: Sun, 29 Sep 2024 09:58:24 +0200
+From: Alejandro Colomar <alx@kernel.org>
+To: Kees Cook <kees@kernel.org>
+Cc: Yafang Shao <laoar.shao@gmail.com>, akpm@linux-foundation.org, 
+	torvalds@linux-foundation.org, justinstitt@google.com, ebiederm@xmission.com, 
+	alexei.starovoitov@gmail.com, rostedt@goodmis.org, catalin.marinas@arm.com, 
+	penguin-kernel@i-love.sakura.ne.jp, linux-mm@kvack.org, linux-fsdevel@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org, audit@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	selinux@vger.kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, Andy Shevchenko <andy.shevchenko@gmail.com>, 
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: Re: [PATCH v7 5/8] mm/util: Fix possible race condition in kstrdup()
+Message-ID: <xzhijtnrz57jxrqoumamxfs3vl7nrsu5qamcjcm4mgtdhruy5r@4az7dbngmfdn>
+References: <20240817025624.13157-1-laoar.shao@gmail.com>
+ <20240817025624.13157-6-laoar.shao@gmail.com>
+ <w6fx3gozq73slfpge4xucpezffrdioauzvoscdw2is5xf7viea@a4doumg264s4>
+ <202409281414.487BFDAB@keescook>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CABVU1kWEHkt+z1c0vu1bXMn81iY8rDjwU=B6KPi2dPVvgeZUPw@mail.gmail.com>
- <CAEf4Bzbeqj3qneOEvKqcMf2XYx-1E=RKcAMo2L2oJz4qqqKbuA@mail.gmail.com>
- <CALOAHbBTLXWJ5EnXUzD-nGFxes-Q+Wu_-KPDZWHUKFfXsvdM0w@mail.gmail.com> <CABVU1kWDy4vPM-Kw1fGEyFtZqYkBcbB-2hktO2CBxE1P0L350w@mail.gmail.com>
-In-Reply-To: <CABVU1kWDy4vPM-Kw1fGEyFtZqYkBcbB-2hktO2CBxE1P0L350w@mail.gmail.com>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Sun, 29 Sep 2024 15:31:52 +0800
-Message-ID: <CALOAHbBsaw2KE96sajYaCie4ooyOva-cBmh3xnQYU1JqYZMf0Q@mail.gmail.com>
-Subject: Re: bpf_link_info: perf_event link info name_len field returning zero
-To: Tyrone Wu <wudevelops@gmail.com>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="sc2ag33lzzfktmx5"
+Content-Disposition: inline
+In-Reply-To: <202409281414.487BFDAB@keescook>
+
+
+--sc2ag33lzzfktmx5
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
+From: Alejandro Colomar <alx@kernel.org>
+To: Kees Cook <kees@kernel.org>
+Cc: Yafang Shao <laoar.shao@gmail.com>, akpm@linux-foundation.org, 
+	torvalds@linux-foundation.org, justinstitt@google.com, ebiederm@xmission.com, 
+	alexei.starovoitov@gmail.com, rostedt@goodmis.org, catalin.marinas@arm.com, 
+	penguin-kernel@i-love.sakura.ne.jp, linux-mm@kvack.org, linux-fsdevel@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org, audit@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	selinux@vger.kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, Andy Shevchenko <andy.shevchenko@gmail.com>, 
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: Re: [PATCH v7 5/8] mm/util: Fix possible race condition in kstrdup()
+References: <20240817025624.13157-1-laoar.shao@gmail.com>
+ <20240817025624.13157-6-laoar.shao@gmail.com>
+ <w6fx3gozq73slfpge4xucpezffrdioauzvoscdw2is5xf7viea@a4doumg264s4>
+ <202409281414.487BFDAB@keescook>
+MIME-Version: 1.0
+In-Reply-To: <202409281414.487BFDAB@keescook>
 
-On Sun, Sep 29, 2024 at 3:14=E2=80=AFPM Tyrone Wu <wudevelops@gmail.com> wr=
-ote:
->
->
-> > The reason name_len is 0 is that the user did not set both the buffer
-> > and the length. IOW, this happens when the user buffer is NULL and the
-> > input length is 0.
->
-> Thank you both for the follow-up.
->
-> > However, we should make this behavior consistent by
-> > returning the actual size to the user if both the buffer and length
-> > are unset.
-> >
-> > I will submit a fix.
->
-> I actually made a small patch for this when I was initially exploring thi=
-s behavior. If it's alright, I can submit this after some clean-up. :)
+[CC +=3D Andy, Gustavo]
 
-That's great.  Please do it.
+On Sat, Sep 28, 2024 at 02:17:30PM GMT, Kees Cook wrote:
+> > > diff --git a/mm/util.c b/mm/util.c
+> > > index 983baf2bd675..4542d8a800d9 100644
+> > > --- a/mm/util.c
+> > > +++ b/mm/util.c
+> > > @@ -62,8 +62,14 @@ char *kstrdup(const char *s, gfp_t gfp)
+> > > =20
+> > >  	len =3D strlen(s) + 1;
+> > >  	buf =3D kmalloc_track_caller(len, gfp);
+> > > -	if (buf)
+> > > +	if (buf) {
+> > >  		memcpy(buf, s, len);
+> > > +		/* During memcpy(), the string might be updated to a new value,
+> > > +		 * which could be longer than the string when strlen() is
+> > > +		 * called. Therefore, we need to add a null termimator.
+> > > +		 */
+> > > +		buf[len - 1] =3D '\0';
+> > > +	}
+> >=20
+> > I would compact the above to:
+> >=20
+> > 	len =3D strlen(s);
+> > 	buf =3D kmalloc_track_caller(len + 1, gfp);
+> > 	if (buf)
+> > 		strcpy(mempcpy(buf, s, len), "");
+> >=20
+> > It allows _FORTIFY_SOURCE to track the copy of the NUL, and also uses
+> > less screen.  It also has less moving parts.  (You'd need to write a
+> > mempcpy() for the kernel, but that's as easy as the following:)
+> >=20
+> > 	#define mempcpy(d, s, n)  (memcpy(d, s, n) + n)
+> >=20
+> > In shadow utils, I did a global replacement of all buf[...] =3D '\0'; by
+> > strcpy(..., "");.  It ends up being optimized by the compiler to the
+> > same code (at least in the experiments I did).
+>=20
+> Just to repeat what's already been said: no, please, don't complicate
+> this with yet more wrappers. And I really don't want to add more str/mem
+> variants -- we're working really hard to _remove_ them. :P
+
+Hi Kees,
+
+I assume by "[no] more str/mem variants" you're referring to mempcpy(3).
+
+mempcpy(3) is a libc function available in several systems (at least
+glibc, musl, FreeBSD, and NetBSD).  It's not in POSIX nor in OpenBSD,
+but it's relatively widely available.  Availability is probably
+pointless to the kernel, but I mention it because it's not something
+random I came up with, but rather something that several projects have
+found useful.  I find it quite useful to copy the non-zero part of a
+string.  See string_copying(7).
+<https://www.man7.org/linux/man-pages/man7/string_copying.7.html>
+
+Regarding "we're working really hard to remove them [mem/str wrappers]",
+I think it's more like removing those that are prone to misuse, not just
+blinly reducing the amount of wrappers.  Some of them are really useful.
+
+I've done a randomized search of kernel code, and found several places
+where mempcpy(3) would be useful for simplifying code:
+
+=2E/drivers/staging/rtl8723bs/core/rtw_ap.c:		memcpy(pwps_ie, pwps_ie_src, =
+wps_ielen + 2);
+=2E/drivers/staging/rtl8723bs/core/rtw_ap.c-		pwps_ie +=3D (wps_ielen+2);
+
+equivalent to:
+
+	pwps_ie =3D mempcpy(pwps_ie, pwps_ie_src, wps_ielen + 2);
+
+=2E/drivers/staging/rtl8723bs/core/rtw_ap.c:		memcpy(supportRate + supportR=
+ateNum, p + 2, ie_len);
+=2E/drivers/staging/rtl8723bs/core/rtw_ap.c-		supportRateNum +=3D ie_len;
+
+equivalent to:
+
+	supportRateNum =3D mempcpy(supportRate + supportRateNum, p + 2, ie_len);
+
+=2E/drivers/staging/rtl8723bs/core/rtw_ap.c:		memcpy(dst_ie, &tim_bitmap_le=
+, 2);
+=2E/drivers/staging/rtl8723bs/core/rtw_ap.c-		dst_ie +=3D 2;
+
+equivalent to:
+
+	dst_ie =3D mempcpy(dst_ie, &tim_bitmap_le, 2);
+
+
+And there are many cases like this.  Using mempcpy(3) would make this
+pattern less repetitive.
+
+
+Have a lovely day!
+Alex
 
 --=20
-Regards
-Yafang
+<https://www.alejandro-colomar.es/>
+
+--sc2ag33lzzfktmx5
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE6jqH8KTroDDkXfJAnowa+77/2zIFAmb5CJoACgkQnowa+77/
+2zLfmw/9FsLN/M7ZkpM7L+8hpOThHHZDCRD40jrK8GQ9Ao1lmIKMASXMncuGw7Qn
+BoGLg+9glMCF47rsNtrqU5iSAoXuXOhIbi6iJUxF6WbK/Y0h4un0vjBoBZuoINnP
+fnGIPzVp2pNx70EaOw1Af3zUpXpbdzJYFpI++i7OJ4dnH8uQ5sbZMs2HioBKiWRT
+arfK0OD+HhJHE7GRtZMMCPeq1JvaELpBPp2exwe6j29Js6cD0EX4T9cLf7zTzU2n
+4enMj6OY04Hq78bmLv2Ej13DHYSrQCQdcbYu5auFN/dF3oq5AuB8XAk6L/gnuXdH
+bxIsS3yRvZL3JRYRU/n9RJzzAlrUX7wFo1/EVQFQvw/tbhmizOL3UM4IW8AXTxX+
+b4UuHBu+U3bGx1xCREqqWdq0Kl7CaGR2y8HipW5BXRa+58CaqZd3KPiyCvxsFxkN
+mMHgXRagtAo/RAjPapyBy++yBNFAy1QiXs4C+WOyONP3x+AA0e+tZiNvZOgFSrHC
+82An0a78d7f+1EXhpuE8X+LpVqwR7EFQVnPG1ox9B3B4380hphULOEa9HqstIvvt
+WGCtOL6T/Jb7SVoYesDuu26eQFoiK4JmDJht/K/z7NEhJsop3qzKnEnKl81GeX4K
+sNCQWo2X1SFnUZcxvQKNzGVMsOlNdjjTO4pOoSEFgurln1kI+BY=
+=4tYC
+-----END PGP SIGNATURE-----
+
+--sc2ag33lzzfktmx5--
 
