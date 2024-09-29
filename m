@@ -1,218 +1,271 @@
-Return-Path: <bpf+bounces-40490-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40491-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B5F49894A1
-	for <lists+bpf@lfdr.de>; Sun, 29 Sep 2024 11:48:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E09A989536
+	for <lists+bpf@lfdr.de>; Sun, 29 Sep 2024 13:57:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A3F2FB213F6
-	for <lists+bpf@lfdr.de>; Sun, 29 Sep 2024 09:48:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 423D31C21978
+	for <lists+bpf@lfdr.de>; Sun, 29 Sep 2024 11:57:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D2F214D6E9;
-	Sun, 29 Sep 2024 09:48:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 158441607A4;
+	Sun, 29 Sep 2024 11:56:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZZYqjUkd"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="c16J43vL"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-176.mta0.migadu.com (out-176.mta0.migadu.com [91.218.175.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C6DF184D;
-	Sun, 29 Sep 2024 09:48:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D12CA15B995
+	for <bpf@vger.kernel.org>; Sun, 29 Sep 2024 11:56:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727603291; cv=none; b=LaWSxInb2p7p8EIMX88qZWNk66fl1nH2i7an+VHAXtDhwYXnwAkT+wi0VNuhW7xvdzFwVbjnTO8v+t0ZyVILAW9hIVnGqcfYA4uaFPHiplYhRNYL+9qU64yyTsgHgLwIeafcQFcBh+kJWVF/wkt8gD6v0kIWnMAPK+a/FUWbxmM=
+	t=1727611016; cv=none; b=AeDfkxZLh7ugFcAz+MAAdrqFjEfcS/Zjx1yKMpIAbeOzHQQG2/B27DyZq1Wq516TGG8yzKCBd+ScBDZrnvIt1xOiLXeCYF55KhluBKMXgNO0avzi/n0Li0kOyyUHj1Yezz9c7xNgYlyx7Z8rVKCJyLlBZcYFila0apbtKw4ILko=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727603291; c=relaxed/simple;
-	bh=Q85EQZ1C0LWdCS5RaobjsfqzLm5bDoBuzWbpeweMj9I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fb7IWRlldnLut5tRaV5lBOxq+XtVKdpmgdr1MSpX1OBZDk8Ocm/R3h4fcoJZaprTCUnp9O3wMjsPBj5J2SBGU0A8BpOZ5mL4dltl58ZMtM8OFxNwVNoL1bZL55+Z7kqyPMewCE02rkhLIrRSDLuVDjsIZ9y2Wi5b/rz+Ma2xRBM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZZYqjUkd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5AAA7C4CEC5;
-	Sun, 29 Sep 2024 09:48:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727603291;
-	bh=Q85EQZ1C0LWdCS5RaobjsfqzLm5bDoBuzWbpeweMj9I=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ZZYqjUkdiv7S8FgTbaYbV0XUknhL1P1VVmTo9P1W2GctlLPXcJ8oJQHBKlPZgjXo2
-	 Es2xS3ESgdg86l3wNftoKH9yH1/mTm6moYrm8dO7zU9boWmnMHAw8RgfZX0mjjOtZF
-	 3Topn8mc6AxsEl9nm1AzniZzWYp8ZvUI1lQvJdgHq4cipjPYGwJMkUqiJAjl1fNVVH
-	 4V2xLeDXnFXCRYKaPkvjwJu2MSGKPGUGkuP+NA3eC/XdQPRwLsGdFWj7FNnY4DOSXy
-	 CKQblIkIkEUIRFJqSL4eUbxg5R1gDF2r/Fs5YYJQanEMuWLUSlYPW9HSAKjbigtLm5
-	 iX9v7pf55JwHQ==
-Date: Sun, 29 Sep 2024 11:48:05 +0200
-From: Alejandro Colomar <alx@kernel.org>
-To: Kees Cook <kees@kernel.org>
-Cc: Yafang Shao <laoar.shao@gmail.com>, akpm@linux-foundation.org, 
-	torvalds@linux-foundation.org, justinstitt@google.com, ebiederm@xmission.com, 
-	alexei.starovoitov@gmail.com, rostedt@goodmis.org, catalin.marinas@arm.com, 
-	penguin-kernel@i-love.sakura.ne.jp, linux-mm@kvack.org, linux-fsdevel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, audit@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	selinux@vger.kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, Andy Shevchenko <andy.shevchenko@gmail.com>, 
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: Re: [PATCH v7 5/8] mm/util: Fix possible race condition in kstrdup()
-Message-ID: <squaseoxrkkxw7my6cdxksmiuhfj2qzd3luwzkyhnd7of2envx@w6s7ncgh4ea3>
-References: <20240817025624.13157-1-laoar.shao@gmail.com>
- <20240817025624.13157-6-laoar.shao@gmail.com>
- <w6fx3gozq73slfpge4xucpezffrdioauzvoscdw2is5xf7viea@a4doumg264s4>
- <202409281414.487BFDAB@keescook>
- <xzhijtnrz57jxrqoumamxfs3vl7nrsu5qamcjcm4mgtdhruy5r@4az7dbngmfdn>
+	s=arc-20240116; t=1727611016; c=relaxed/simple;
+	bh=kRdlNh2IHMBzOlcxstBQXWNI19MwftyElilV8HkvdK4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=MwzMimX8oZvGzwAGIA0mWoK7P+45P+Zdp99IbJ7CM4vRdquTzcx4YnoapANUxYIZjOZ+5ni8QRSAbDnYpYKiTvxvKmLVtVcB4piy9vE9yBsFdl8k3ROT6+xgJ+Nj1TnRAoU8++FwFhABYoKJCKGPwRxl8QQ5zBHQnGLWSbH2Sy4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=c16J43vL; arc=none smtp.client-ip=91.218.175.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <f60061bb-109a-4fa8-b419-07585cbb79e3@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1727611011;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=hAC//q1Q0snEPQ/btU6qHTHCF/zamSYZtJr8ip76b+8=;
+	b=c16J43vLB2hZPHz6tqz1HC9iB1xmdlprrXdGrQVKOfjC40iLWd8pDmUjeHHwgem1CKxzGL
+	Ng5nZZUJo8UqQRfBFImIqFuZFgu2gq6gdbZEYpu50omzXoS8Kf7yg0al9ZZIr83bb6Am1r
+	Z2sy3Fygp6gN4K2Tke2melQjUDtFCXU=
+Date: Sun, 29 Sep 2024 19:56:17 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="vmgihngka57rzukx"
-Content-Disposition: inline
-In-Reply-To: <xzhijtnrz57jxrqoumamxfs3vl7nrsu5qamcjcm4mgtdhruy5r@4az7dbngmfdn>
+Subject: Re: [RFC PATCH net-next v2] net/smc: Introduce a hook to modify
+ syn_smc at runtime
+To: "D. Wythe" <alibuda@linux.alibaba.com>, kgraul@linux.ibm.com,
+ wenjia@linux.ibm.com, jaka@linux.ibm.com, wintera@linux.ibm.com,
+ guwen@linux.alibaba.com
+Cc: kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+ linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
+ tonylu@linux.alibaba.com, pabeni@redhat.com, edumazet@google.com,
+ bpf@vger.kernel.org
+References: <1727408549-106551-1-git-send-email-alibuda@linux.alibaba.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <1727408549-106551-1-git-send-email-alibuda@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
+在 2024/9/27 11:42, D. Wythe 写道:
+> From: "D. Wythe" <alibuda@linux.alibaba.com>
+> 
+> The introduction of IPPROTO_SMC enables eBPF programs to determine
+> whether to use SMC based on the context of socket creation, such as
+> network namespaces, PID and comm name, etc.
+> 
+> As a subsequent enhancement, this patch introduces a new hook for eBPF
+> programs that allows decisions on whether to use SMC or not at runtime,
+> including but not limited to local/remote IP address or ports. In
+> simpler words, this feature allows modifications to syn_smc through eBPF
+> programs before the TCP three-way handshake got established.
+> 
+> Thanks to kfunc for making it easier for us to implement this feature in
+> SMC.
+> 
+> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
+> 
+> ---
+> v1 -> v2:
+> 1. Fix wrong use of ireq->smc_ok, should be rx_opt->smc_ok.
+> 2. Fix compile error when CONFIG_IPV6 or CONFIG_BPF_SYSCALL was not set.
+> 
+> ---
+>   include/linux/tcp.h  |  4 ++-
+>   net/ipv4/tcp_input.c |  4 +--
+>   net/smc/af_smc.c     | 75 ++++++++++++++++++++++++++++++++++++++++++++++------
+>   3 files changed, 72 insertions(+), 11 deletions(-)
+> 
+> diff --git a/include/linux/tcp.h b/include/linux/tcp.h
+> index 6a5e08b..d028d76 100644
+> --- a/include/linux/tcp.h
+> +++ b/include/linux/tcp.h
+> @@ -478,7 +478,9 @@ struct tcp_sock {
+>   #endif
+>   #if IS_ENABLED(CONFIG_SMC)
+>   	bool	syn_smc;	/* SYN includes SMC */
+> -	bool	(*smc_hs_congested)(const struct sock *sk);
+> +	void	(*smc_openreq_init)(struct request_sock *req,
+> +			     const struct tcp_options_received *rx_opt,
+> +			     struct sk_buff *skb, const struct sock *sk);
+>   #endif
+>   
+>   #if defined(CONFIG_TCP_MD5SIG) || defined(CONFIG_TCP_AO)
+> diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
+> index 9f314df..99f34f5 100644
+> --- a/net/ipv4/tcp_input.c
+> +++ b/net/ipv4/tcp_input.c
+> @@ -7036,8 +7036,8 @@ static void tcp_openreq_init(struct request_sock *req,
+>   	ireq->ir_num = ntohs(tcp_hdr(skb)->dest);
+>   	ireq->ir_mark = inet_request_mark(sk, skb);
+>   #if IS_ENABLED(CONFIG_SMC)
+> -	ireq->smc_ok = rx_opt->smc_ok && !(tcp_sk(sk)->smc_hs_congested &&
+> -			tcp_sk(sk)->smc_hs_congested(sk));
+> +	if (rx_opt->smc_ok && tcp_sk(sk)->smc_openreq_init)
+> +		tcp_sk(sk)->smc_openreq_init(req, rx_opt, skb, sk);
+>   #endif
+>   }
+>   
+> diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
+> index 0316217..fdac7e2b 100644
+> --- a/net/smc/af_smc.c
+> +++ b/net/smc/af_smc.c
+> @@ -70,6 +70,15 @@
+>   static void smc_tcp_listen_work(struct work_struct *);
+>   static void smc_connect_work(struct work_struct *);
+>   
+> +__bpf_hook_start();
+> +
+> +__weak noinline int select_syn_smc(const struct sock *sk, struct sockaddr *peer)
+> +{
+> +	return 1;
+> +}
+> +
+> +__bpf_hook_end();
+> +
+>   int smc_nl_dump_hs_limitation(struct sk_buff *skb, struct netlink_callback *cb)
+>   {
+>   	struct smc_nl_dmp_ctx *cb_ctx = smc_nl_dmp_ctx(cb);
+> @@ -156,19 +165,43 @@ static struct sock *smc_tcp_syn_recv_sock(const struct sock *sk,
+>   	return NULL;
+>   }
+>   
+> -static bool smc_hs_congested(const struct sock *sk)
+> +static void smc_openreq_init(struct request_sock *req,
+> +			     const struct tcp_options_received *rx_opt,
+> +			     struct sk_buff *skb, const struct sock *sk)
+>   {
+> +	struct inet_request_sock *ireq = inet_rsk(req);
+> +	struct sockaddr_storage rmt_sockaddr = {0};
 
---vmgihngka57rzukx
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-From: Alejandro Colomar <alx@kernel.org>
-To: Kees Cook <kees@kernel.org>
-Cc: Yafang Shao <laoar.shao@gmail.com>, akpm@linux-foundation.org, 
-	torvalds@linux-foundation.org, justinstitt@google.com, ebiederm@xmission.com, 
-	alexei.starovoitov@gmail.com, rostedt@goodmis.org, catalin.marinas@arm.com, 
-	penguin-kernel@i-love.sakura.ne.jp, linux-mm@kvack.org, linux-fsdevel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, audit@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	selinux@vger.kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, Andy Shevchenko <andy.shevchenko@gmail.com>, 
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: Re: [PATCH v7 5/8] mm/util: Fix possible race condition in kstrdup()
-References: <20240817025624.13157-1-laoar.shao@gmail.com>
- <20240817025624.13157-6-laoar.shao@gmail.com>
- <w6fx3gozq73slfpge4xucpezffrdioauzvoscdw2is5xf7viea@a4doumg264s4>
- <202409281414.487BFDAB@keescook>
- <xzhijtnrz57jxrqoumamxfs3vl7nrsu5qamcjcm4mgtdhruy5r@4az7dbngmfdn>
-MIME-Version: 1.0
-In-Reply-To: <xzhijtnrz57jxrqoumamxfs3vl7nrsu5qamcjcm4mgtdhruy5r@4az7dbngmfdn>
+A trivial problem.
 
-On Sun, Sep 29, 2024 at 09:58:30AM GMT, Alejandro Colomar wrote:
-> [CC +=3D Andy, Gustavo]
->=20
-> On Sat, Sep 28, 2024 at 02:17:30PM GMT, Kees Cook wrote:
-> > > > diff --git a/mm/util.c b/mm/util.c
-> > > > index 983baf2bd675..4542d8a800d9 100644
-> > > > --- a/mm/util.c
-> > > > +++ b/mm/util.c
-> > > > @@ -62,8 +62,14 @@ char *kstrdup(const char *s, gfp_t gfp)
-> > > > =20
-> > > >  	len =3D strlen(s) + 1;
-> > > >  	buf =3D kmalloc_track_caller(len, gfp);
-> > > > -	if (buf)
-> > > > +	if (buf) {
-> > > >  		memcpy(buf, s, len);
-> > > > +		/* During memcpy(), the string might be updated to a new value,
-> > > > +		 * which could be longer than the string when strlen() is
-> > > > +		 * called. Therefore, we need to add a null termimator.
-> > > > +		 */
-> > > > +		buf[len - 1] =3D '\0';
-> > > > +	}
-> > >=20
-> > > I would compact the above to:
-> > >=20
-> > > 	len =3D strlen(s);
-> > > 	buf =3D kmalloc_track_caller(len + 1, gfp);
-> > > 	if (buf)
-> > > 		strcpy(mempcpy(buf, s, len), "");
-> > >=20
-> > > It allows _FORTIFY_SOURCE to track the copy of the NUL, and also uses
-> > > less screen.  It also has less moving parts.  (You'd need to write a
-> > > mempcpy() for the kernel, but that's as easy as the following:)
-> > >=20
-> > > 	#define mempcpy(d, s, n)  (memcpy(d, s, n) + n)
-> > >=20
-> > > In shadow utils, I did a global replacement of all buf[...] =3D '\0';=
- by
-> > > strcpy(..., "");.  It ends up being optimized by the compiler to the
-> > > same code (at least in the experiments I did).
-> >=20
-> > Just to repeat what's already been said: no, please, don't complicate
-> > this with yet more wrappers. And I really don't want to add more str/mem
-> > variants -- we're working really hard to _remove_ them. :P
->=20
-> Hi Kees,
->=20
-> I assume by "[no] more str/mem variants" you're referring to mempcpy(3).
->=20
-> mempcpy(3) is a libc function available in several systems (at least
-> glibc, musl, FreeBSD, and NetBSD).  It's not in POSIX nor in OpenBSD,
-> but it's relatively widely available.  Availability is probably
-> pointless to the kernel, but I mention it because it's not something
-> random I came up with, but rather something that several projects have
-> found useful.  I find it quite useful to copy the non-zero part of a
-> string.  See string_copying(7).
-> <https://www.man7.org/linux/man-pages/man7/string_copying.7.html>
->=20
-> Regarding "we're working really hard to remove them [mem/str wrappers]",
-> I think it's more like removing those that are prone to misuse, not just
-> blinly reducing the amount of wrappers.  Some of them are really useful.
->=20
-> I've done a randomized search of kernel code, and found several places
-> where mempcpy(3) would be useful for simplifying code:
->=20
-> ./drivers/staging/rtl8723bs/core/rtw_ap.c:		memcpy(pwps_ie, pwps_ie_src, =
-wps_ielen + 2);
-> ./drivers/staging/rtl8723bs/core/rtw_ap.c-		pwps_ie +=3D (wps_ielen+2);
->=20
-> equivalent to:
->=20
-> 	pwps_ie =3D mempcpy(pwps_ie, pwps_ie_src, wps_ielen + 2);
->=20
-> ./drivers/staging/rtl8723bs/core/rtw_ap.c:		memcpy(supportRate + supportR=
-ateNum, p + 2, ie_len);
-> ./drivers/staging/rtl8723bs/core/rtw_ap.c-		supportRateNum +=3D ie_len;
->=20
-> equivalent to:
->=20
-> 	supportRateNum =3D mempcpy(supportRate + supportRateNum, p + 2, ie_len);
+The following should be better?
 
-Oops, I misread the original in the above.  I didn't notice that the +=3D
-is being done on the count, not the pointer.  The other equivalences are
-good, though.
+struct sockaddr_storage rmt_sockaddr = {};
 
->=20
-> ./drivers/staging/rtl8723bs/core/rtw_ap.c:		memcpy(dst_ie, &tim_bitmap_le=
-, 2);
-> ./drivers/staging/rtl8723bs/core/rtw_ap.c-		dst_ie +=3D 2;
->=20
-> equivalent to:
->=20
-> 	dst_ie =3D mempcpy(dst_ie, &tim_bitmap_le, 2);
->=20
->=20
-> And there are many cases like this.  Using mempcpy(3) would make this
-> pattern less repetitive.
+I think, we have discussed this problem in RDMA maillist for several times.
 
---=20
-<https://www.alejandro-colomar.es/>
+Zhu Yanjun
 
---vmgihngka57rzukx
-Content-Type: application/pgp-signature; name="signature.asc"
+>   	const struct smc_sock *smc;
+>   
+>   	smc = smc_clcsock_user_data(sk);
+>   
+>   	if (!smc)
+> -		return true;
+> +		return;
+>   
+> -	if (workqueue_congested(WORK_CPU_UNBOUND, smc_hs_wq))
+> -		return true;
+> +	if (smc->limit_smc_hs && workqueue_congested(WORK_CPU_UNBOUND, smc_hs_wq))
+> +		goto out_no_smc;
+>   
+> -	return false;
+> +	rmt_sockaddr.ss_family = sk->sk_family;
+> +
+> +	if (rmt_sockaddr.ss_family == AF_INET) {
+> +		struct sockaddr_in *rmt4_sockaddr =  (struct sockaddr_in *)&rmt_sockaddr;
+> +
+> +		rmt4_sockaddr->sin_addr.s_addr = ireq->ir_rmt_addr;
+> +		rmt4_sockaddr->sin_port	= ireq->ir_rmt_port;
+> +#if IS_ENABLED(CONFIG_IPV6)
+> +	} else {
+> +		struct sockaddr_in6 *rmt6_sockaddr =  (struct sockaddr_in6 *)&rmt_sockaddr;
+> +
+> +		rmt6_sockaddr->sin6_addr = ireq->ir_v6_rmt_addr;
+> +		rmt6_sockaddr->sin6_port = ireq->ir_rmt_port;
+> +#endif /* CONFIG_IPV6 */
+> +	}
+> +
+> +	ireq->smc_ok = select_syn_smc(sk, (struct sockaddr *)&rmt_sockaddr);
+> +	return;
+> +out_no_smc:
+> +	ireq->smc_ok = 0;
+> +	return;
+>   }
+>   
+>   struct smc_hashinfo smc_v4_hashinfo = {
+> @@ -1671,7 +1704,7 @@ int smc_connect(struct socket *sock, struct sockaddr *addr,
+>   	}
+>   
+>   	smc_copy_sock_settings_to_clc(smc);
+> -	tcp_sk(smc->clcsock->sk)->syn_smc = 1;
+> +	tcp_sk(smc->clcsock->sk)->syn_smc = select_syn_smc(sk, addr);
+>   	if (smc->connect_nonblock) {
+>   		rc = -EALREADY;
+>   		goto out;
+> @@ -2650,8 +2683,7 @@ int smc_listen(struct socket *sock, int backlog)
+>   
+>   	inet_csk(smc->clcsock->sk)->icsk_af_ops = &smc->af_ops;
+>   
+> -	if (smc->limit_smc_hs)
+> -		tcp_sk(smc->clcsock->sk)->smc_hs_congested = smc_hs_congested;
+> +	tcp_sk(smc->clcsock->sk)->smc_openreq_init = smc_openreq_init;
+>   
+>   	rc = kernel_listen(smc->clcsock, backlog);
+>   	if (rc) {
+> @@ -3475,6 +3507,24 @@ static void __net_exit smc_net_stat_exit(struct net *net)
+>   	.exit = smc_net_stat_exit,
+>   };
+>   
+> +#if IS_ENABLED(CONFIG_BPF_SYSCALL)
+> +BTF_SET8_START(bpf_smc_fmodret_ids)
+> +BTF_ID_FLAGS(func, select_syn_smc)
+> +BTF_SET8_END(bpf_smc_fmodret_ids)
+> +
+> +static const struct btf_kfunc_id_set bpf_smc_fmodret_set = {
+> +	.owner = THIS_MODULE,
+> +	.set   = &bpf_smc_fmodret_ids,
+> +};
+> +
+> +static int bpf_smc_kfunc_init(void)
+> +{
+> +	return register_btf_fmodret_id_set(&bpf_smc_fmodret_set);
+> +}
+> +#else
+> +static inline int bpf_smc_kfunc_init(void) { return 0; }
+> +#endif /* CONFIG_BPF_SYSCALL */
+> +
+>   static int __init smc_init(void)
+>   {
+>   	int rc;
+> @@ -3574,8 +3624,17 @@ static int __init smc_init(void)
+>   		pr_err("%s: smc_inet_init fails with %d\n", __func__, rc);
+>   		goto out_ulp;
+>   	}
+> +
+> +	rc = bpf_smc_kfunc_init();
+> +	if (rc) {
+> +		pr_err("%s: bpf_smc_kfunc_init fails with %d\n", __func__, rc);
+> +		goto out_inet;
+> +	}
+> +
+>   	static_branch_enable(&tcp_have_smc);
+>   	return 0;
+> +out_inet:
+> +	smc_inet_exit();
+>   out_ulp:
+>   	tcp_unregister_ulp(&smc_ulp_ops);
+>   out_lo:
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE6jqH8KTroDDkXfJAnowa+77/2zIFAmb5Ik4ACgkQnowa+77/
-2zKNqBAAqNB/fweA49pRRWO/XgFk0EvMiezUqWV2wXsV2l/VUrjeGx/Tecpvhh5b
-cze6CNkVl/fKu2M8a5/ysj/r99gtHpNA85bmby3/b4BFwXNfPd7V+Qz1hUI7iXom
-3hnuyFNPMH7iIyUxvwwHM3k3qSh1G/rxcVJm2NkRDC0WJo7dEIHl8UxaaXTEcqTO
-bbb+umzXIosV+Fhsk1tjwgORKj5GaOVMbbF+hqFeuLt7z1eFWb3MYQAavRKN7SNm
-QVgnMlJZir6XIzQv8HaAQvulm4x+N9xvMSlQ9ihADbMHc0YZPxp/ZZqYmnvyopWn
-5FlXrWZhfi+tbHSciR4f/n8OVg6go0483iVrLZNs8+rne7Et8iExHCqHlqAIlA9S
-d1hJfdjZGGdgO5DbA6Y3H0hf/XS9e/IZ+a+T0MEdvjDv7pv+zhYSuapXnbJ+xbDB
-XmpEadusEMQGWkf+8GEeXiI8IujrMCAlncDoisghL3BF/ALac9zkWnFQjjW5l+xJ
-op+juVgs6urGNtdRzW8Itu+AlkSJyuYb0rbRfoE6NN+yRG04Yxf9rMC98bI3q8zl
-ZZr85yLJayTBLOD+QQVsbeUQJFs4sJan+Bj8EN42+BCZ+Se1XCxSeh2nDSXlpAAX
-wv+032Rpbz/aJVCJLO2r02aT/nYCQBDo/gNYqy/cMqdm8R35R80=
-=kmHt
------END PGP SIGNATURE-----
-
---vmgihngka57rzukx--
 
