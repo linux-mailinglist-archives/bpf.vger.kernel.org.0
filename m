@@ -1,197 +1,236 @@
-Return-Path: <bpf+bounces-40509-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40510-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CFFED989674
-	for <lists+bpf@lfdr.de>; Sun, 29 Sep 2024 19:10:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F313989678
+	for <lists+bpf@lfdr.de>; Sun, 29 Sep 2024 19:14:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 98861B20AC6
-	for <lists+bpf@lfdr.de>; Sun, 29 Sep 2024 17:10:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A5FA21F22841
+	for <lists+bpf@lfdr.de>; Sun, 29 Sep 2024 17:14:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C840317E44A;
-	Sun, 29 Sep 2024 17:10:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 623F217E013;
+	Sun, 29 Sep 2024 17:14:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eRVF95kB"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dFBCOFXz"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A77F617DFF2;
-	Sun, 29 Sep 2024 17:10:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44A2E154BED;
+	Sun, 29 Sep 2024 17:14:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727629825; cv=none; b=V0HNVjsZoXDMe65+i0WxvgT7OWHgxZEj0eCv+Zeg7UDRKPAkVGo/D1rSDGJBUFdMOO0ETFlD7hmxIV8LlU24lrcx7j3bVzXH1y/ndUXZtkK9lxhlhnr2oitHbr62yR+WdvmcByvuafQpWvWtkyO/v/K4PKFsK3Ff2WUVW9GlJZ4=
+	t=1727630053; cv=none; b=fShKySmVJMn1LEASy/jbtlB1gnj57UbID4IwlHWdG6nVY5jeiuR4hNsEho/JvCFisuVaxnLCNuf9gEtNxnk06AyB1CIkXehN7Ydh7T4WWeBiUO6f6Cqzu3+61b9aT/A7QJSIqmXVaoFkjXQv9k3+y6lTp56vLkGYbDlZ9s8GAlg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727629825; c=relaxed/simple;
-	bh=RupHcF2YMDtc5B0PvtdrFVxi7O2rIkLjnzwiVQ+8+is=;
+	s=arc-20240116; t=1727630053; c=relaxed/simple;
+	bh=JEYG6VvrMXHx4KWb1o2iWV/PqQza+18wa1vjRIIPF+E=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nPd651u7kZOBADL3HZwh9izL0pCaIbUsYQvEpwRhaonQoyrLkfLB1jIKBh+LNQ6w2G8ZhkVXUAk6ZpNnH/WYZQ/Bj4t56HaVuHdjTHSSOwvHvzdJvDCOONX5k6cky18D0QaTn+apKsOuRCBLgb//gdAYdu4tZbdXkn1eLNcXuSM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eRVF95kB; arc=none smtp.client-ip=209.85.221.41
+	 To:Cc:Content-Type; b=upYY2UaffALoqzgkpxvA9YQGX/OTLEzF1EkYguAoaWZH0md++gHKr4+8pkzu1hKzHJGZiwbdimhA7nUriNq1uDSFBaXNH7blZYGFdASNz80hrk6b6BaXlT6CArQP7Y1NIzw30Aaa8HRsGyqvgxkm2CG56P4LfOgHAmSuPs54hJY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dFBCOFXz; arc=none smtp.client-ip=209.85.221.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-37cdb6ebc1cso995746f8f.1;
-        Sun, 29 Sep 2024 10:10:23 -0700 (PDT)
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-37ce14ab7eeso1000391f8f.2;
+        Sun, 29 Sep 2024 10:14:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727629822; x=1728234622; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1727630049; x=1728234849; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=YPGuySNzaGQqh50PPbKO6DCxB7qiiEF+rpBWLfkBod0=;
-        b=eRVF95kBimxF+OJbN9d5xCfcMbyRVnKfwrvrndaTYbo7VQKls+vMBDHVbVMMN/qOPl
-         28M6OVQ4ZiZ344c6o6pICPCMcbw7Fo413j15Jmm5VmmoJvR/fDTlJG9NpwBDenGEHcYP
-         DYPbzFNhGGflAg0/txYG8wzqnV0NETZy9MjYWOJPFmMn56Bcb9MZCNMSUfWZY+SxK7Zl
-         Z5U+RCYSdUTxrOtduUvfULIFYGcvPl9SRZI9Igzqupk/T4tLsxpO+WhkSGZ3dQjoEgbc
-         EWEUoBuGerVZuTlO6aHBj2VqgcMoYDARR5EbkTDlT+0SC8beExMM8TxvEmsat3PCQeua
-         slfQ==
+        bh=ujx86CAlBOuJagVhHvFTxkQxVPjlVr6IAEtlsGZ7IPY=;
+        b=dFBCOFXzvn8m1lCV2yAvrHYYQhq2Mimnvu/5WO3dUuKFE6Q+wGp8tdn3twQJfGqIMw
+         rydykjF1K4ctFkkxzXgZlLN363ugr7UFluwln3rSWmtDJpuB9Y7ZdUsrPVdqmRZjBtvA
+         Y1sHudoqpwvLxP67Z4m9K5QNcEB9HdvIRItcXVvorZH+podnBlyX1c6awxEkjLuptNaU
+         XCfPRcDfRPTB0O5njqdRtURHynuPrq/cyAL0PZcX3P73UOTyZ4MxSbRBJbFox5RwH3Vl
+         feSoLvbruxRwb36HhhqqO+po30OwRy0FoYP2wENqwkEMUMr6GMp0WytV1TRipYIaSiUe
+         gQvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727629822; x=1728234622;
+        d=1e100.net; s=20230601; t=1727630049; x=1728234849;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=YPGuySNzaGQqh50PPbKO6DCxB7qiiEF+rpBWLfkBod0=;
-        b=Rhj97mZwl6p0MPO0GOzLCcCcuXiYDGu3a6BvL9pVt9lYDUv7ChZ2O0F+TJJcDY/YgC
-         MiKlOeyxploxiMuj4FSTVgQGauxKeXjOa35eCY5/tn4PshTDQ5AGA+uUNEWaibQYBFi7
-         XY9cenU+ITGWtFdAGcgJYjuPPsDVzOvNTMeGQVVZ9n8tDv3ryC/2dhp1VEEc3gzixF9p
-         9lt06/r3vnwrBC6nVNialFv/E9W37HE/vL5KT79MZr/7i7tQ2r0lul+L+0hjhSVo8x1P
-         B+l1EBAMOne7jpOCpnLjrvYq0oTp2IFEROgBU+OtGQTVP2997Rvj2rnk1QjsT8fANyyK
-         YzEA==
-X-Forwarded-Encrypted: i=1; AJvYcCVOz81NZ+3FhMSCH0OKIQWP+0MbKW3mzpmSKvSKmlXtFmBy4cyhvtoa6XaPy/0XHP1bKkpSs/ctUcGerd0q@vger.kernel.org, AJvYcCVTAOdqfH235R7txLO5A75VG1iDU8Wp/2k0jGGhBr+HmnfEw0zWliLqsXmMZk8kSRoYrs8=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzennq37RjpLlcBT+X/NBWpUR0dKSg19RsvrzqLdqNUJyixDOSQ
-	TrgKYeZbr/bthgjFIJkd3FMloX/s3Rhw8sZ9q5Pz4sogiMTw+pHFF93SX8I8Z98TtmnRX84nFDx
-	2ada58Hk4d8AAPY/kSMAwQAbYSbU=
-X-Google-Smtp-Source: AGHT+IE71jalNcYCe9JkRHNkl+Yu72w6VOsAwtk1UKTuiSzkxtFzH0GmxCfEPUgvq5E6fy8k7JUsmPqLwFXNB4//0Uc=
-X-Received: by 2002:adf:fd52:0:b0:37c:d0f9:58c with SMTP id
- ffacd0b85a97d-37cd5af2de1mr5588923f8f.35.1727629821884; Sun, 29 Sep 2024
- 10:10:21 -0700 (PDT)
+        bh=ujx86CAlBOuJagVhHvFTxkQxVPjlVr6IAEtlsGZ7IPY=;
+        b=fbTtq68xUNdO8fyC4Q3o7rDJBzvU8dRYGb9rcQ27hHWYyjBMCzqgU2Xr35NrUfRvuG
+         fon9kljpfrPIel7Q1q7cFXCPK2Dbfi4LCzs0WIXT98RqXG502nidqyEU/PLg4FZnuZUY
+         wzFzRTR7zxAQVrOQeMpzxrx7UOy4O+Eg407NaBiAgxuiwY2G6NlUNP5Ulsbqt+f85VSD
+         d3hOregCDpdnJsmozVZ0X4A/R4QZx6Zarzm78AcLbwJHCCxn6pxOMO7v4UkV9KmlsdS1
+         BZAnGCjeE6DrpVMK6Ar4xpFew88EtPIQ3uU+Gke4BfPGYoZMn/vDMiFUEZ4kRjthk4HB
+         IFsA==
+X-Forwarded-Encrypted: i=1; AJvYcCXbN6RdjdZBeeDbjk/U2dSX21D0PoEM3W6bVwnW0NgnTru0Ydux12R890rOXcC+Y/JV7tsGsO3uXazWwcE4@vger.kernel.org, AJvYcCXjl/SuTVUcTzPso2H0f05DlaFK8PuUF6/dLLKGJkPNjVqy9sTDEAwlrSoR9B8WGZSsuPw=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy4cZZmZM6Bd278LxWAHMnvz44KqObauzxZo2oupd0F283WorNB
+	5oi7pg77D3U4XlwnMVqbIz2gu3EejvSjR5Dk8KuZz7hGJI7uOFIeSWbHjA3TEloQijpVxX3Gh77
+	J4KTGVks9uX79+yMcCn5cnmkLD50=
+X-Google-Smtp-Source: AGHT+IEvRwkn2gMwVAZdKl5/Khty3QtE8LNL8UvKVRpAvWk+bJ7tNsFc8gB2qyKTkbJZwPwLUP0s7jQ8/7WXiF3NMn4=
+X-Received: by 2002:a5d:4587:0:b0:37c:cea2:826f with SMTP id
+ ffacd0b85a97d-37cd5a692e1mr8138299f8f.2.1727630049388; Sun, 29 Sep 2024
+ 10:14:09 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <202409261116.risxWG3M-lkp@intel.com> <20240926072755.2007-1-eric.yan@oppo.com>
-In-Reply-To: <20240926072755.2007-1-eric.yan@oppo.com>
+References: <20240926115328.105634-1-puranjay@kernel.org> <20240926115328.105634-2-puranjay@kernel.org>
+In-Reply-To: <20240926115328.105634-2-puranjay@kernel.org>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Sun, 29 Sep 2024 10:10:10 -0700
-Message-ID: <CAADnVQJ5xCsBg057gKOQOYA1+9pD-X86bjYJVrTbpRNstvW=DQ@mail.gmail.com>
-Subject: Re: [PATCH v2] Add BPF Kernel Function bpf_ptrace_vprintk
-To: Eric Yan <eric.yan@oppo.com>
-Cc: kbuild test robot <lkp@intel.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Hao Luo <haoluo@google.com>, 
-	John Fastabend <john.fastabend@gmail.com>, Jiri Olsa <jolsa@kernel.org>, 
-	KP Singh <kpsingh@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, oe-kbuild-all@lists.linux.dev, 
-	Stanislav Fomichev <sdf@fomichev.me>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>
+Date: Sun, 29 Sep 2024 10:13:58 -0700
+Message-ID: <CAADnVQJL5xpF=5hWdavOcU8gbZKwqsqMBLFySqpsr+K_3C+=vA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/2] bpf: implement bpf_send_signal_remote() kfunc
+To: Puranjay Mohan <puranjay@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, Puranjay Mohan <puranjay12@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Sep 26, 2024 at 12:28=E2=80=AFAM Eric Yan <eric.yan@oppo.com> wrote=
-:
+On Thu, Sep 26, 2024 at 4:53=E2=80=AFAM Puranjay Mohan <puranjay@kernel.org=
+> wrote:
 >
-> add a kfunc 'bpf_ptrace_vprintk' printing bpf msg with trace_marker
-> format requirement so that these msgs can be retrieved by android
-> perfetto by default and well represented in perfetto UI.
+> Implement bpf_send_signal_remote kfunc that is similar to
+> bpf_send_signal_thread and bpf_send_signal helpers  but can be used to
+> send signals to other threads and processes. It also supports sending a
+> cookie with the signal similar to sigqueue().
 >
-> [testing prog]
-> const volatile bool ptrace_enabled =3D true;
-> extern int bpf_ptrace_vprintk(char *fmt, u32 fmt_size, const void *args, =
-u32 args__sz) __ksym;
+> If the receiving process establishes a handler for the signal using the
+> SA_SIGINFO flag to sigaction(), then it can obtain this cookie via the
+> si_value field of the siginfo_t structure passed as the second argument
+> to the handler.
 >
-> ({                                    \
->     if (!ptrace_enabled) { \
->         bpf_printk(fmt, __VA_ARGS__);     \
->     } else {                              \
->         char __fmt[] =3D fmt;               \
->         _Pragma("GCC diagnostic push")    \
->         _Pragma("GCC diagnostic ignored \"-Wint-conversion\"")  \
->         u64 __params[] =3D { __VA_ARGS__ }; \
->         _Pragma("GCC diagnostic pop")     \
->         bpf_ptrace_vprintk(__fmt, sizeof(__fmt), __params, sizeof(__param=
-s)); \
->     }                                  \
-> })
->
-> SEC("perf_event")
-> int do_sample(struct bpf_perf_event_data *ctx)
-> {
->         u64 ip =3D PT_REGS_IP(&ctx->regs);
->         u64 id =3D bpf_get_current_pid_tgid();
->         s32 pid =3D id >> 32;
->         s32 tid =3D id;
->         debug_printk("N|%d|BPRF-%d|BPRF:%llx", pid, tid, ip);
->         return 0;
-> }
->
-> [output]:
->        app-3151    [000] d.h1.  6059.904239: tracing_mark_write: N|2491|B=
-PRF-3151|BPRF:58750d0eec
->
-> Signed-off-by: Eric Yan <eric.yan@oppo.com>
+> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
 > ---
->  kernel/bpf/helpers.c | 34 ++++++++++++++++++++++++++++++++++
->  1 file changed, 34 insertions(+)
+>  kernel/trace/bpf_trace.c | 78 +++++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 77 insertions(+), 1 deletion(-)
 >
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index 1a43d06eab28..1e37dae74ca6 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -2521,6 +2521,39 @@ __bpf_kfunc struct task_struct *bpf_task_from_pid(=
-s32 pid)
->         return p;
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index a582cd25ca876..51b27db1321fc 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -802,6 +802,9 @@ struct send_signal_irq_work {
+>         struct task_struct *task;
+>         u32 sig;
+>         enum pid_type type;
+> +       bool is_siginfo;
+> +       kernel_siginfo_t info;
+> +       int value;
+>  };
+>
+>  static DEFINE_PER_CPU(struct send_signal_irq_work, send_signal_work);
+> @@ -811,7 +814,11 @@ static void do_bpf_send_signal(struct irq_work *entr=
+y)
+>         struct send_signal_irq_work *work;
+>
+>         work =3D container_of(entry, struct send_signal_irq_work, irq_wor=
+k);
+> -       group_send_sig_info(work->sig, SEND_SIG_PRIV, work->task, work->t=
+ype);
+> +       if (work->is_siginfo)
+> +               group_send_sig_info(work->sig, &work->info, work->task, w=
+ork->type);
+> +       else
+> +               group_send_sig_info(work->sig, SEND_SIG_PRIV, work->task,=
+ work->type);
+> +
+>         put_task_struct(work->task);
 >  }
 >
-> +static noinline void tracing_mark_write(char *buf)
-> +{
-> +       trace_printk(buf);
-> +}
+> @@ -848,6 +855,7 @@ static int bpf_send_signal_common(u32 sig, enum pid_t=
+ype type)
+>                  * irq works get executed.
+>                  */
+>                 work->task =3D get_task_struct(current);
+> +               work->is_siginfo =3D false;
+>                 work->sig =3D sig;
+>                 work->type =3D type;
+>                 irq_work_queue(&work->irq_work);
+> @@ -3484,3 +3492,71 @@ static int __init bpf_kprobe_multi_kfuncs_init(voi=
+d)
+>  }
+>
+>  late_initcall(bpf_kprobe_multi_kfuncs_init);
 > +
-> +/* same as bpf_trace_vprintk, only with a trace_marker format requiremen=
-t
-> + * @fmt: Format string, e.g. <B|E|C|N>|<%d:pid>|<%s:TAG>...
-> + */
-> +__bpf_kfunc int bpf_ptrace_vprintk(char *fmt, u32 fmt_size, const void *=
-args, u32 args__sz)
-> +{
-> +       struct bpf_bprintf_data data =3D {
-> +               .get_bin_args   =3D true,
-> +               .get_buf        =3D true,
-> +       };
-> +       int ret, num_args;
+> +__bpf_kfunc_start_defs();
 > +
-> +       if (args__sz & 7 || args__sz > MAX_BPRINTF_VARARGS * 8 || (args__=
-sz && !args))
+> +__bpf_kfunc int bpf_send_signal_remote(struct task_struct *task, int sig=
+, enum pid_type type,
+> +                                      int value)
+> +{
+> +       struct send_signal_irq_work *work =3D NULL;
+> +       kernel_siginfo_t info;
+> +
+> +       if (type !=3D PIDTYPE_PID && type !=3D PIDTYPE_TGID)
 > +               return -EINVAL;
-> +       num_args =3D args__sz / 8;
+> +       if (unlikely(task->flags & (PF_KTHREAD | PF_EXITING)))
+> +               return -EPERM;
+> +       if (unlikely(!nmi_uaccess_okay()))
+> +               return -EPERM;
+> +       /* Task should not be pid=3D1 to avoid kernel panic. */
+> +       if (unlikely(is_global_init(task)))
+> +               return -EPERM;
 > +
-> +       ret =3D bpf_bprintf_prepare(fmt, fmt_size, args, num_args, &data)=
-;
-> +       if (ret < 0)
-> +               return ret;
+> +       clear_siginfo(&info);
+> +       info.si_signo =3D sig;
+> +       info.si_errno =3D 0;
+> +       info.si_code =3D SI_KERNEL;
+> +       info.si_pid =3D 0;
+> +       info.si_uid =3D 0;
+> +       info.si_value.sival_int =3D value;
 > +
-> +       ret =3D bstr_printf(data.buf, MAX_BPRINTF_BUF, fmt, data.bin_args=
-);
+> +       if (irqs_disabled()) {
+> +               /* Do an early check on signal validity. Otherwise,
+> +                * the error is lost in deferred irq_work.
+> +                */
+> +               if (unlikely(!valid_signal(sig)))
+> +                       return -EINVAL;
 > +
-> +       tracing_mark_write(data.buf);
+> +               work =3D this_cpu_ptr(&send_signal_work);
+> +               if (irq_work_is_busy(&work->irq_work))
+> +                       return -EBUSY;
 > +
-> +       bpf_bprintf_cleanup(&data);
+> +               work->task =3D get_task_struct(task);
+> +               work->is_siginfo =3D true;
+> +               work->info =3D info;
+> +               work->sig =3D sig;
+> +               work->type =3D type;
+> +               work->value =3D value;
+> +               irq_work_queue(&work->irq_work);
+> +               return 0;
+> +       }
 > +
-> +       return ret;
+> +       return group_send_sig_info(sig, &info, task, type);
+
+This is very similar with bpf_send_signal_common().
+Pls avoid copy paste and share the code instead.
+
 > +}
 > +
->  /**
->   * bpf_dynptr_slice() - Obtain a read-only pointer to the dynptr data.
->   * @p: The dynptr whose data slice to retrieve
-> @@ -3090,6 +3123,7 @@ BTF_ID_FLAGS(func, bpf_iter_bits_new, KF_ITER_NEW)
->  BTF_ID_FLAGS(func, bpf_iter_bits_next, KF_ITER_NEXT | KF_RET_NULL)
->  BTF_ID_FLAGS(func, bpf_iter_bits_destroy, KF_ITER_DESTROY)
->  BTF_ID_FLAGS(func, bpf_copy_from_user_str, KF_SLEEPABLE)
-> +BTF_ID_FLAGS(func, bpf_ptrace_vprintk)
->  BTF_KFUNCS_END(common_btf_ids)
+> +__bpf_kfunc_end_defs();
+> +
+> +BTF_KFUNCS_START(send_signal_kfunc_ids)
+> +BTF_ID_FLAGS(func, bpf_send_signal_remote, KF_TRUSTED_ARGS)
+> +BTF_KFUNCS_END(send_signal_kfunc_ids)
+> +
+> +static const struct btf_kfunc_id_set bpf_send_signal_kfunc_set =3D {
+> +       .owner =3D THIS_MODULE,
+> +       .set =3D &send_signal_kfunc_ids,
+> +};
+> +
+> +static int __init bpf_send_signal_kfuncs_init(void)
+> +{
+> +       return register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING, &bpf_send=
+_signal_kfunc_set);
+> +}
+> +
+> +late_initcall(bpf_send_signal_kfuncs_init);
 
-Why new kfunc?
-Use bpf_snprintf() and follow with bpf_trace_printk() ?
+Let's avoid all this later_init proliferation.
+We have way too many of them across the whole kernel.
+Reuse one of the existing places and add kfunc there.
+With that extra bpf_send_signal_kfunc_set and send_signal_kfunc_ids
+won't be necessary.
+
+pw-bot: cr
 
