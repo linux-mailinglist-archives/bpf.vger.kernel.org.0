@@ -1,472 +1,290 @@
-Return-Path: <bpf+bounces-40549-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40550-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBEEB989EA1
-	for <lists+bpf@lfdr.de>; Mon, 30 Sep 2024 11:40:51 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 58344989FB4
+	for <lists+bpf@lfdr.de>; Mon, 30 Sep 2024 12:48:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 75479281E42
-	for <lists+bpf@lfdr.de>; Mon, 30 Sep 2024 09:40:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DC77A1F226B8
+	for <lists+bpf@lfdr.de>; Mon, 30 Sep 2024 10:48:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44E2F18990E;
-	Mon, 30 Sep 2024 09:40:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B96F18DF99;
+	Mon, 30 Sep 2024 10:47:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dSYm9uxq"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="T6bJ6jns"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2A64189520
-	for <bpf@vger.kernel.org>; Mon, 30 Sep 2024 09:40:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D97BB18C914
+	for <bpf@vger.kernel.org>; Mon, 30 Sep 2024 10:47:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727689247; cv=none; b=npIat5qAlsr2vjWe6a/JN2UTh2hUHskkjTdsSdkCEVRU1md9q2Q2fwG+bV7rz+k7uDRE3QJdbsc9v8ZHsXAOAPVj5kGHAVW6PqaMFKHISEX3373i+Oml9zf7s18SwKddy3fLx4gVfP7H+aetKLUifPD0DQC8eVdekLNhJO1tovo=
+	t=1727693246; cv=none; b=iODmZ0NiBV5ZK9AdXG+PQKfzTXGiwJ9WTaZT1qAnMgN9Fv/zUo8X4kBZzatTE6EwRmgdOuqi0iotzz8duWvDvlMeJcSvR8qVGomA1z15PQKxLYAB8MciNFoSkJvFaqGBqqgZiiLxWFHuJ0nUEpAZs+n0/FZjZHw2rcaiDIW/2lc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727689247; c=relaxed/simple;
-	bh=cvR51nrfsAexTy67HhXjj6ohzaXX0/38qIkbN+szIoQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=c1CZ002DZBxl1W8x3G0NrX76I21aaMAOSDe8NaVJ6B75y7fSnIOcXeL7AO406iw8ekXAaEx6NuE1fDDGDSI3n61SfLeDEyWip40gd/eiBNYRJWpdeKphnX8Cjy6cq18haROIoWaO27heTAlSo+Iu5RV0iI96DA5oUt+n/8Hcd+U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=dSYm9uxq; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1727689244;
+	s=arc-20240116; t=1727693246; c=relaxed/simple;
+	bh=IlvOQtnXuq3xZ8kUhJ9RstN8JRxm/RPKmIg6stNPLXU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=LrRFzSDHprDPXiiDFkI7+m7KqWJztAJasVCHrvV56pUTwzDubvYePgkqgHEO+AE2X6URiuOjFOUjvMdAI2GOsZN4yKWya0GPFY5so/MPQ7aDAlwny0etJk5JSQmMzcv1u4edcucGwXkIlNs3HMvpgBTX86c51Xs9eX8cM+H2R6Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=T6bJ6jns; arc=none smtp.client-ip=91.218.175.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <2cb8660b-d582-4cef-9c44-80fd6f5c1d6c@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1727693241;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=v0E+qKNNngUa/s7lIUGOnbui4nnSmqw78cj0HvRaCzg=;
-	b=dSYm9uxqFso3aQIbmjejzJ4fOSYhedixNmUM06d9ugEh9eBidkFai/KC03DbK1uDhKnXQX
-	S6mL7ARFuhSnuGUcFXsk7T6/5NOdCIz1PZ8PV8+jmlNPMATMVMFf4M+mJKUNigLKzJIIL9
-	8Yls30gThjh0JOpnn+XjQX9M9W4bvpI=
-Received: from mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-607-HttAFN4iNH-QDBGEmmn92w-1; Mon,
- 30 Sep 2024 05:40:38 -0400
-X-MC-Unique: HttAFN4iNH-QDBGEmmn92w-1
-Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (unknown [10.30.177.12])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 1E7CC19030B9;
-	Mon, 30 Sep 2024 09:40:36 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.225.88])
-	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id E8354195419F;
-	Mon, 30 Sep 2024 09:40:29 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Mon, 30 Sep 2024 11:40:22 +0200 (CEST)
-Date: Mon, 30 Sep 2024 11:40:15 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-To: Jiri Olsa <jolsa@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@chromium.org>,
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCHv5 bpf-next 02/13] uprobe: Add support for session consumer
-Message-ID: <20240930094014.GB18499@redhat.com>
-References: <20240929205717.3813648-1-jolsa@kernel.org>
- <20240929205717.3813648-3-jolsa@kernel.org>
+	bh=MvsrZvXNV+xHyTyAw9XvrzBOm3pa/0kyhjZhwvo6qCg=;
+	b=T6bJ6jnsDzd/JJzjtHEcXFklth5pEO36upIoRK9QbErB3jnmFURh5Myx1tICjOlapNLjbI
+	xnpMX5gtvG2K8c56TbzDQXCLH5aa6z7SgzkxyA6BtkAjseWnveefcmZlEcDkJzEgLjVnB3
+	A/kjffKXqcB7o7j+Ho+CTtNNev589C8=
+Date: Mon, 30 Sep 2024 18:46:57 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240929205717.3813648-3-jolsa@kernel.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
+Subject: Re: [RFC PATCH net-next v2] net/smc: Introduce a hook to modify
+ syn_smc at runtime
+To: "D. Wythe" <alibuda@linux.alibaba.com>, kgraul@linux.ibm.com,
+ wenjia@linux.ibm.com, jaka@linux.ibm.com, wintera@linux.ibm.com,
+ guwen@linux.alibaba.com
+Cc: kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+ linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
+ tonylu@linux.alibaba.com, pabeni@redhat.com, edumazet@google.com,
+ bpf@vger.kernel.org
+References: <1727408549-106551-1-git-send-email-alibuda@linux.alibaba.com>
+ <f60061bb-109a-4fa8-b419-07585cbb79e3@linux.dev>
+ <be2685ab-272a-4f10-9322-a0bb0a35e3d4@linux.alibaba.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <be2685ab-272a-4f10-9322-a0bb0a35e3d4@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-Jiri,
+在 2024/9/30 15:15, D. Wythe 写道:
+> 
+> 
+> On 9/29/24 7:56 PM, Zhu Yanjun wrote:
+>> 在 2024/9/27 11:42, D. Wythe 写道:
+>>> From: "D. Wythe" <alibuda@linux.alibaba.com>
+>>>
+>>> The introduction of IPPROTO_SMC enables eBPF programs to determine
+>>> whether to use SMC based on the context of socket creation, such as
+>>> network namespaces, PID and comm name, etc.
+>>>
+>>> As a subsequent enhancement, this patch introduces a new hook for eBPF
+>>> programs that allows decisions on whether to use SMC or not at runtime,
+>>> including but not limited to local/remote IP address or ports. In
+>>> simpler words, this feature allows modifications to syn_smc through eBPF
+>>> programs before the TCP three-way handshake got established.
+>>>
+>>> Thanks to kfunc for making it easier for us to implement this feature in
+>>> SMC.
+>>>
+>>> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
+>>>
+>>> ---
+>>> v1 -> v2:
+>>> 1. Fix wrong use of ireq->smc_ok, should be rx_opt->smc_ok.
+>>> 2. Fix compile error when CONFIG_IPV6 or CONFIG_BPF_SYSCALL was not set.
+>>>
+>>> ---
+>>>   include/linux/tcp.h  |  4 ++-
+>>>   net/ipv4/tcp_input.c |  4 +--
+>>>   net/smc/af_smc.c     | 75 +++++++++++++++++++++++++++++++++++++++++ 
+>>> +++++------
+>>>   3 files changed, 72 insertions(+), 11 deletions(-)
+>>>
+>>> diff --git a/include/linux/tcp.h b/include/linux/tcp.h
+>>> index 6a5e08b..d028d76 100644
+>>> --- a/include/linux/tcp.h
+>>> +++ b/include/linux/tcp.h
+>>> @@ -478,7 +478,9 @@ struct tcp_sock {
+>>>   #endif
+>>>   #if IS_ENABLED(CONFIG_SMC)
+>>>       bool    syn_smc;    /* SYN includes SMC */
+>>> -    bool    (*smc_hs_congested)(const struct sock *sk);
+>>> +    void    (*smc_openreq_init)(struct request_sock *req,
+>>> +                 const struct tcp_options_received *rx_opt,
+>>> +                 struct sk_buff *skb, const struct sock *sk);
+>>>   #endif
+>>>   #if defined(CONFIG_TCP_MD5SIG) || defined(CONFIG_TCP_AO)
+>>> diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
+>>> index 9f314df..99f34f5 100644
+>>> --- a/net/ipv4/tcp_input.c
+>>> +++ b/net/ipv4/tcp_input.c
+>>> @@ -7036,8 +7036,8 @@ static void tcp_openreq_init(struct 
+>>> request_sock *req,
+>>>       ireq->ir_num = ntohs(tcp_hdr(skb)->dest);
+>>>       ireq->ir_mark = inet_request_mark(sk, skb);
+>>>   #if IS_ENABLED(CONFIG_SMC)
+>>> -    ireq->smc_ok = rx_opt->smc_ok && !(tcp_sk(sk)->smc_hs_congested &&
+>>> -            tcp_sk(sk)->smc_hs_congested(sk));
+>>> +    if (rx_opt->smc_ok && tcp_sk(sk)->smc_openreq_init)
+>>> +        tcp_sk(sk)->smc_openreq_init(req, rx_opt, skb, sk);
+>>>   #endif
+>>>   }
+>>> diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
+>>> index 0316217..fdac7e2b 100644
+>>> --- a/net/smc/af_smc.c
+>>> +++ b/net/smc/af_smc.c
+>>> @@ -70,6 +70,15 @@
+>>>   static void smc_tcp_listen_work(struct work_struct *);
+>>>   static void smc_connect_work(struct work_struct *);
+>>> +__bpf_hook_start();
+>>> +
+>>> +__weak noinline int select_syn_smc(const struct sock *sk, struct 
+>>> sockaddr *peer)
+>>> +{
+>>> +    return 1;
+>>> +}
+>>> +
+>>> +__bpf_hook_end();
+>>> +
+>>>   int smc_nl_dump_hs_limitation(struct sk_buff *skb, struct 
+>>> netlink_callback *cb)
+>>>   {
+>>>       struct smc_nl_dmp_ctx *cb_ctx = smc_nl_dmp_ctx(cb);
+>>> @@ -156,19 +165,43 @@ static struct sock *smc_tcp_syn_recv_sock(const 
+>>> struct sock *sk,
+>>>       return NULL;
+>>>   }
+>>> -static bool smc_hs_congested(const struct sock *sk)
+>>> +static void smc_openreq_init(struct request_sock *req,
+>>> +                 const struct tcp_options_received *rx_opt,
+>>> +                 struct sk_buff *skb, const struct sock *sk)
+>>>   {
+>>> +    struct inet_request_sock *ireq = inet_rsk(req);
+>>> +    struct sockaddr_storage rmt_sockaddr = {0};
+>>
+>> A trivial problem.
+>>
+>> The following should be better?
+>>
+>> struct sockaddr_storage rmt_sockaddr = {};
+>>
+>> I think, we have discussed this problem in RDMA maillist for several 
+>> times.
+>>
+>> Zhu Yanjun
+> 
+> 
+> This is truly new information to me. Can you provide me with some 
+> discussion links?
+> Thanks.
 
-LGTM. But I'm afraid you need to send v6, sorry ;)
+It is a trivial problem. This is the link
+https://www.spinics.net/lists/linux-rdma/msg119815.html
 
-This change has some (trivial) conflicts in prepare_uretprobe() with the
-cleanups I sent yesterday, and Peter is going to queue them.
+Zhu Yanjun
 
-See https://lore.kernel.org/all/20240929144201.GA9429@redhat.com/
-
-Oleg.
-
-On 09/29, Jiri Olsa wrote:
->
-> This change allows the uprobe consumer to behave as session which
-> means that 'handler' and 'ret_handler' callbacks are connected in
-> a way that allows to:
 > 
->   - control execution of 'ret_handler' from 'handler' callback
->   - share data between 'handler' and 'ret_handler' callbacks
+> D. Wythe
 > 
-> The session concept fits to our common use case where we do filtering
-> on entry uprobe and based on the result we decide to run the return
-> uprobe (or not).
 > 
-> It's also convenient to share the data between session callbacks.
-> 
-> To achive this we are adding new return value the uprobe consumer
-> can return from 'handler' callback:
-> 
->   UPROBE_HANDLER_IGNORE
->   - Ignore 'ret_handler' callback for this consumer.
-> 
-> And store cookie and pass it to 'ret_handler' when consumer has both
-> 'handler' and 'ret_handler' callbacks defined.
-> 
-> We store shared data in the return_consumer object array as part of
-> the return_instance object. This way the handle_uretprobe_chain can
-> find related return_consumer and its shared data.
-> 
-> We also store entry handler return value, for cases when there are
-> multiple consumers on single uprobe and some of them are ignored and
-> some of them not, in which case the return probe gets installed and
-> we need to have a way to find out which consumer needs to be ignored.
-> 
-> The tricky part is when consumer is registered 'after' the uprobe
-> entry handler is hit. In such case this consumer's 'ret_handler' gets
-> executed as well, but it won't have the proper data pointer set,
-> so we can filter it out.
-> 
-> Suggested-by: Oleg Nesterov <oleg@redhat.com>
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  include/linux/uprobes.h |  21 +++++-
->  kernel/events/uprobes.c | 148 +++++++++++++++++++++++++++++++---------
->  2 files changed, 137 insertions(+), 32 deletions(-)
-> 
-> diff --git a/include/linux/uprobes.h b/include/linux/uprobes.h
-> index bb265a632b91..dbaf04189548 100644
-> --- a/include/linux/uprobes.h
-> +++ b/include/linux/uprobes.h
-> @@ -23,8 +23,17 @@ struct inode;
->  struct notifier_block;
->  struct page;
->  
-> +/*
-> + * Allowed return values from uprobe consumer's handler callback
-> + * with following meaning:
-> + *
-> + * UPROBE_HANDLER_REMOVE
-> + * - Remove the uprobe breakpoint from current->mm.
-> + * UPROBE_HANDLER_IGNORE
-> + * - Ignore ret_handler callback for this consumer.
-> + */
->  #define UPROBE_HANDLER_REMOVE		1
-> -#define UPROBE_HANDLER_MASK		1
-> +#define UPROBE_HANDLER_IGNORE		2
->  
->  #define MAX_URETPROBE_DEPTH		64
->  
-> @@ -44,6 +53,8 @@ struct uprobe_consumer {
->  	bool (*filter)(struct uprobe_consumer *self, struct mm_struct *mm);
->  
->  	struct list_head cons_node;
-> +
-> +	__u64 id;	/* set when uprobe_consumer is registered */
->  };
->  
->  #ifdef CONFIG_UPROBES
-> @@ -83,14 +94,22 @@ struct uprobe_task {
->  	unsigned int			depth;
->  };
->  
-> +struct return_consumer {
-> +	__u64	cookie;
-> +	__u64	id;
-> +};
-> +
->  struct return_instance {
->  	struct uprobe		*uprobe;
->  	unsigned long		func;
->  	unsigned long		stack;		/* stack pointer */
->  	unsigned long		orig_ret_vaddr; /* original return address */
->  	bool			chained;	/* true, if instance is nested */
-> +	int			consumers_cnt;
->  
->  	struct return_instance	*next;		/* keep as stack */
-> +
-> +	struct return_consumer	consumers[] __counted_by(consumers_cnt);
->  };
->  
->  enum rp_check {
-> diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-> index 2ba93f8a31aa..76fe535c9b3c 100644
-> --- a/kernel/events/uprobes.c
-> +++ b/kernel/events/uprobes.c
-> @@ -65,7 +65,7 @@ struct uprobe {
->  	struct rcu_head		rcu;
->  	loff_t			offset;
->  	loff_t			ref_ctr_offset;
-> -	unsigned long		flags;
-> +	unsigned long		flags;		/* "unsigned long" so bitops work */
->  
->  	/*
->  	 * The generic code assumes that it has two members of unknown type
-> @@ -825,8 +825,11 @@ static struct uprobe *alloc_uprobe(struct inode *inode, loff_t offset,
->  
->  static void consumer_add(struct uprobe *uprobe, struct uprobe_consumer *uc)
->  {
-> +	static atomic64_t id;
-> +
->  	down_write(&uprobe->consumer_rwsem);
->  	list_add_rcu(&uc->cons_node, &uprobe->consumers);
-> +	uc->id = (__u64) atomic64_inc_return(&id);
->  	up_write(&uprobe->consumer_rwsem);
->  }
->  
-> @@ -1797,6 +1800,34 @@ static struct uprobe_task *get_utask(void)
->  	return current->utask;
->  }
->  
-> +static size_t ri_size(int consumers_cnt)
-> +{
-> +	struct return_instance *ri;
-> +
-> +	return sizeof(*ri) + sizeof(ri->consumers[0]) * consumers_cnt;
-> +}
-> +
-> +#define DEF_CNT 4
-> +
-> +static struct return_instance *alloc_return_instance(void)
-> +{
-> +	struct return_instance *ri;
-> +
-> +	ri = kzalloc(ri_size(DEF_CNT), GFP_KERNEL);
-> +	if (!ri)
-> +		return ZERO_SIZE_PTR;
-> +
-> +	ri->consumers_cnt = DEF_CNT;
-> +	return ri;
-> +}
-> +
-> +static struct return_instance *dup_return_instance(struct return_instance *old)
-> +{
-> +	size_t size = ri_size(old->consumers_cnt);
-> +
-> +	return kmemdup(old, size, GFP_KERNEL);
-> +}
-> +
->  static int dup_utask(struct task_struct *t, struct uprobe_task *o_utask)
->  {
->  	struct uprobe_task *n_utask;
-> @@ -1809,11 +1840,10 @@ static int dup_utask(struct task_struct *t, struct uprobe_task *o_utask)
->  
->  	p = &n_utask->return_instances;
->  	for (o = o_utask->return_instances; o; o = o->next) {
-> -		n = kmalloc(sizeof(struct return_instance), GFP_KERNEL);
-> +		n = dup_return_instance(o);
->  		if (!n)
->  			return -ENOMEM;
->  
-> -		*n = *o;
->  		/*
->  		 * uprobe's refcnt has to be positive at this point, kept by
->  		 * utask->return_instances items; return_instances can't be
-> @@ -1906,39 +1936,35 @@ static void cleanup_return_instances(struct uprobe_task *utask, bool chained,
->  	utask->return_instances = ri;
->  }
->  
-> -static void prepare_uretprobe(struct uprobe *uprobe, struct pt_regs *regs)
-> +static void prepare_uretprobe(struct uprobe *uprobe, struct pt_regs *regs,
-> +			      struct return_instance *ri)
->  {
-> -	struct return_instance *ri;
->  	struct uprobe_task *utask;
->  	unsigned long orig_ret_vaddr, trampoline_vaddr;
->  	bool chained;
->  
->  	if (!get_xol_area())
-> -		return;
-> +		goto free;
->  
->  	utask = get_utask();
->  	if (!utask)
-> -		return;
-> +		goto free;
->  
->  	if (utask->depth >= MAX_URETPROBE_DEPTH) {
->  		printk_ratelimited(KERN_INFO "uprobe: omit uretprobe due to"
->  				" nestedness limit pid/tgid=%d/%d\n",
->  				current->pid, current->tgid);
-> -		return;
-> +		goto free;
->  	}
->  
->  	/* we need to bump refcount to store uprobe in utask */
->  	if (!try_get_uprobe(uprobe))
-> -		return;
-> -
-> -	ri = kmalloc(sizeof(struct return_instance), GFP_KERNEL);
-> -	if (!ri)
-> -		goto fail;
-> +		goto free;
->  
->  	trampoline_vaddr = uprobe_get_trampoline_vaddr();
->  	orig_ret_vaddr = arch_uretprobe_hijack_return_addr(trampoline_vaddr, regs);
->  	if (orig_ret_vaddr == -1)
-> -		goto fail;
-> +		goto put;
->  
->  	/* drop the entries invalidated by longjmp() */
->  	chained = (orig_ret_vaddr == trampoline_vaddr);
-> @@ -1956,7 +1982,7 @@ static void prepare_uretprobe(struct uprobe *uprobe, struct pt_regs *regs)
->  			 * attack from user-space.
->  			 */
->  			uprobe_warn(current, "handle tail call");
-> -			goto fail;
-> +			goto put;
->  		}
->  		orig_ret_vaddr = utask->return_instances->orig_ret_vaddr;
->  	}
-> @@ -1971,9 +1997,10 @@ static void prepare_uretprobe(struct uprobe *uprobe, struct pt_regs *regs)
->  	utask->return_instances = ri;
->  
->  	return;
-> -fail:
-> -	kfree(ri);
-> +put:
->  	put_uprobe(uprobe);
-> +free:
-> +	kfree(ri);
->  }
->  
->  /* Prepare to single-step probed instruction out of line. */
-> @@ -2125,35 +2152,91 @@ static struct uprobe *find_active_uprobe_rcu(unsigned long bp_vaddr, int *is_swb
->  	return uprobe;
->  }
->  
-> +static struct return_instance*
-> +push_consumer(struct return_instance *ri, int idx, __u64 id, __u64 cookie)
-> +{
-> +	if (unlikely(ri == ZERO_SIZE_PTR))
-> +		return ri;
-> +
-> +	if (unlikely(idx >= ri->consumers_cnt)) {
-> +		struct return_instance *old_ri = ri;
-> +
-> +		ri->consumers_cnt += DEF_CNT;
-> +		ri = krealloc(old_ri, ri_size(old_ri->consumers_cnt), GFP_KERNEL);
-> +		if (!ri) {
-> +			kfree(old_ri);
-> +			return ZERO_SIZE_PTR;
-> +		}
-> +	}
-> +
-> +	ri->consumers[idx].id = id;
-> +	ri->consumers[idx].cookie = cookie;
-> +	return ri;
-> +}
-> +
-> +static struct return_consumer *
-> +return_consumer_find(struct return_instance *ri, int *iter, int id)
-> +{
-> +	struct return_consumer *ric;
-> +	int idx = *iter;
-> +
-> +	for (ric = &ri->consumers[idx]; idx < ri->consumers_cnt; idx++, ric++) {
-> +		if (ric->id == id) {
-> +			*iter = idx + 1;
-> +			return ric;
-> +		}
-> +	}
-> +	return NULL;
-> +}
-> +
-> +static bool ignore_ret_handler(int rc)
-> +{
-> +	return rc == UPROBE_HANDLER_REMOVE || rc == UPROBE_HANDLER_IGNORE;
-> +}
-> +
->  static void handler_chain(struct uprobe *uprobe, struct pt_regs *regs)
->  {
->  	struct uprobe_consumer *uc;
-> -	int remove = UPROBE_HANDLER_REMOVE;
-> -	bool need_prep = false; /* prepare return uprobe, when needed */
-> -	bool has_consumers = false;
-> +	bool has_consumers = false, remove = true;
-> +	struct return_instance *ri = NULL;
-> +	int push_idx = 0;
->  
->  	current->utask->auprobe = &uprobe->arch;
->  
->  	list_for_each_entry_srcu(uc, &uprobe->consumers, cons_node,
->  				 srcu_read_lock_held(&uprobes_srcu)) {
-> +		bool session = uc->handler && uc->ret_handler;
-> +		__u64 cookie = 0;
->  		int rc = 0;
->  
->  		if (uc->handler) {
-> -			rc = uc->handler(uc, regs, NULL);
-> -			WARN(rc & ~UPROBE_HANDLER_MASK,
-> +			rc = uc->handler(uc, regs, &cookie);
-> +			WARN(rc < 0 || rc > 2,
->  				"bad rc=0x%x from %ps()\n", rc, uc->handler);
->  		}
->  
-> -		if (uc->ret_handler)
-> -			need_prep = true;
-> -
-> -		remove &= rc;
-> +		remove &= rc == UPROBE_HANDLER_REMOVE;
->  		has_consumers = true;
-> +
-> +		if (!uc->ret_handler || ignore_ret_handler(rc))
-> +			continue;
-> +
-> +		if (!ri)
-> +			ri = alloc_return_instance();
-> +
-> +		if (session)
-> +			ri = push_consumer(ri, push_idx++, uc->id, cookie);
->  	}
->  	current->utask->auprobe = NULL;
->  
-> -	if (need_prep && !remove)
-> -		prepare_uretprobe(uprobe, regs); /* put bp at return */
-> +	if (!ZERO_OR_NULL_PTR(ri)) {
-> +		/*
-> +		 * The push_idx value has the final number of return consumers,
-> +		 * and ri->consumers_cnt has number of allocated consumers.
-> +		 */
-> +		ri->consumers_cnt = push_idx;
-> +		prepare_uretprobe(uprobe, regs, ri);
-> +	}
->  
->  	if (remove && has_consumers) {
->  		down_read(&uprobe->register_rwsem);
-> @@ -2172,14 +2255,17 @@ static void
->  handle_uretprobe_chain(struct return_instance *ri, struct pt_regs *regs)
->  {
->  	struct uprobe *uprobe = ri->uprobe;
-> +	struct return_consumer *ric;
->  	struct uprobe_consumer *uc;
-> -	int srcu_idx;
-> +	int srcu_idx, ric_idx = 0;
->  
->  	srcu_idx = srcu_read_lock(&uprobes_srcu);
->  	list_for_each_entry_srcu(uc, &uprobe->consumers, cons_node,
->  				 srcu_read_lock_held(&uprobes_srcu)) {
-> -		if (uc->ret_handler)
-> -			uc->ret_handler(uc, ri->func, regs, NULL);
-> +		if (uc->ret_handler) {
-> +			ric = return_consumer_find(ri, &ric_idx, uc->id);
-> +			uc->ret_handler(uc, ri->func, regs, ric ? &ric->cookie : NULL);
-> +		}
->  	}
->  	srcu_read_unlock(&uprobes_srcu, srcu_idx);
->  }
-> -- 
-> 2.46.1
-> 
+>>
+>>>       const struct smc_sock *smc;
+>>>       smc = smc_clcsock_user_data(sk);
+>>>       if (!smc)
+>>> -        return true;
+>>> +        return;
+>>> -    if (workqueue_congested(WORK_CPU_UNBOUND, smc_hs_wq))
+>>> -        return true;
+>>> +    if (smc->limit_smc_hs && workqueue_congested(WORK_CPU_UNBOUND, 
+>>> smc_hs_wq))
+>>> +        goto out_no_smc;
+>>> -    return false;
+>>> +    rmt_sockaddr.ss_family = sk->sk_family;
+>>> +
+>>> +    if (rmt_sockaddr.ss_family == AF_INET) {
+>>> +        struct sockaddr_in *rmt4_sockaddr =  (struct sockaddr_in 
+>>> *)&rmt_sockaddr;
+>>> +
+>>> +        rmt4_sockaddr->sin_addr.s_addr = ireq->ir_rmt_addr;
+>>> +        rmt4_sockaddr->sin_port    = ireq->ir_rmt_port;
+>>> +#if IS_ENABLED(CONFIG_IPV6)
+>>> +    } else {
+>>> +        struct sockaddr_in6 *rmt6_sockaddr =  (struct sockaddr_in6 
+>>> *)&rmt_sockaddr;
+>>> +
+>>> +        rmt6_sockaddr->sin6_addr = ireq->ir_v6_rmt_addr;
+>>> +        rmt6_sockaddr->sin6_port = ireq->ir_rmt_port;
+>>> +#endif /* CONFIG_IPV6 */
+>>> +    }
+>>> +
+>>> +    ireq->smc_ok = select_syn_smc(sk, (struct sockaddr 
+>>> *)&rmt_sockaddr);
+>>> +    return;
+>>> +out_no_smc:
+>>> +    ireq->smc_ok = 0;
+>>> +    return;
+>>>   }
+>>>   struct smc_hashinfo smc_v4_hashinfo = {
+>>> @@ -1671,7 +1704,7 @@ int smc_connect(struct socket *sock, struct 
+>>> sockaddr *addr,
+>>>       }
+>>>       smc_copy_sock_settings_to_clc(smc);
+>>> -    tcp_sk(smc->clcsock->sk)->syn_smc = 1;
+>>> +    tcp_sk(smc->clcsock->sk)->syn_smc = select_syn_smc(sk, addr);
+>>>       if (smc->connect_nonblock) {
+>>>           rc = -EALREADY;
+>>>           goto out;
+>>> @@ -2650,8 +2683,7 @@ int smc_listen(struct socket *sock, int backlog)
+>>>       inet_csk(smc->clcsock->sk)->icsk_af_ops = &smc->af_ops;
+>>> -    if (smc->limit_smc_hs)
+>>> -        tcp_sk(smc->clcsock->sk)->smc_hs_congested = smc_hs_congested;
+>>> +    tcp_sk(smc->clcsock->sk)->smc_openreq_init = smc_openreq_init;
+>>>       rc = kernel_listen(smc->clcsock, backlog);
+>>>       if (rc) {
+>>> @@ -3475,6 +3507,24 @@ static void __net_exit 
+>>> smc_net_stat_exit(struct net *net)
+>>>       .exit = smc_net_stat_exit,
+>>>   };
+>>> +#if IS_ENABLED(CONFIG_BPF_SYSCALL)
+>>> +BTF_SET8_START(bpf_smc_fmodret_ids)
+>>> +BTF_ID_FLAGS(func, select_syn_smc)
+>>> +BTF_SET8_END(bpf_smc_fmodret_ids)
+>>> +
+>>> +static const struct btf_kfunc_id_set bpf_smc_fmodret_set = {
+>>> +    .owner = THIS_MODULE,
+>>> +    .set   = &bpf_smc_fmodret_ids,
+>>> +};
+>>> +
+>>> +static int bpf_smc_kfunc_init(void)
+>>> +{
+>>> +    return register_btf_fmodret_id_set(&bpf_smc_fmodret_set);
+>>> +}
+>>> +#else
+>>> +static inline int bpf_smc_kfunc_init(void) { return 0; }
+>>> +#endif /* CONFIG_BPF_SYSCALL */
+>>> +
+>>>   static int __init smc_init(void)
+>>>   {
+>>>       int rc;
+>>> @@ -3574,8 +3624,17 @@ static int __init smc_init(void)
+>>>           pr_err("%s: smc_inet_init fails with %d\n", __func__, rc);
+>>>           goto out_ulp;
+>>>       }
+>>> +
+>>> +    rc = bpf_smc_kfunc_init();
+>>> +    if (rc) {
+>>> +        pr_err("%s: bpf_smc_kfunc_init fails with %d\n", __func__, rc);
+>>> +        goto out_inet;
+>>> +    }
+>>> +
+>>>       static_branch_enable(&tcp_have_smc);
+>>>       return 0;
+>>> +out_inet:
+>>> +    smc_inet_exit();
+>>>   out_ulp:
+>>>       tcp_unregister_ulp(&smc_ulp_ops);
+>>>   out_lo:
 
 
