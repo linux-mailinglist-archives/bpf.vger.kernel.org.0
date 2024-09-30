@@ -1,120 +1,105 @@
-Return-Path: <bpf+bounces-40530-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40531-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4BBB69898F9
-	for <lists+bpf@lfdr.de>; Mon, 30 Sep 2024 03:33:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05B5E98990A
+	for <lists+bpf@lfdr.de>; Mon, 30 Sep 2024 03:52:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 08878283D88
-	for <lists+bpf@lfdr.de>; Mon, 30 Sep 2024 01:33:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 360B41C210D4
+	for <lists+bpf@lfdr.de>; Mon, 30 Sep 2024 01:52:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 061B663D5;
-	Mon, 30 Sep 2024 01:33:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E9D9848E;
+	Mon, 30 Sep 2024 01:52:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lmVvqDai"
 X-Original-To: bpf@vger.kernel.org
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D5BC8F45;
-	Mon, 30 Sep 2024 01:33:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11214566A;
+	Mon, 30 Sep 2024 01:52:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727659998; cv=none; b=b7djEE61kX6PQV2ihHoHGKFBrNW9ikrmVEjfvh9F8Ehds3JwDl1X91iGmvVCbW10Y/maXUmL2927VBeknTnOYZu5hD9e1jpgBce/WyhuqwYLo91uADs4rvDaNvtcxOkAly6JfZsaYp7K2GS+lWk/42BJMDqz6YI41WEBF5XSETI=
+	t=1727661124; cv=none; b=GpGjEx86CkWKvYd84TKNDGuyU0MWTKo9JydcmXmPSMFk3QdbEBIQoLXi/7L7Q5skHAd1H5pWAt0yAJyftqVG/nAkOE6y3kOBJ6qzL2x6ft2dWYkuE1J0k9wEMRCzzyB2WItdKshiFOKDIaaDddMMi9vHu65POiu2QsDgJBP4wzA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727659998; c=relaxed/simple;
-	bh=08VJNtcS+rcA7QZ4rAKhlxeMH19+5rRxSPp9p1HDcaI=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=P7NUWBpur/Q+uwE2cR40SymKHdAgfzwYAX+uS/4/Swy1J1wIXzBrrmvK6i5aY07wCdt9tFkR9CGlYFS3w21kX3cxxpkWnCYPW8GKY9a85LiVhZ61ZyqeaINdpTQEzQ0Gq+BiuN/NcLvSEddNJLoRdxzmTkqPLrLYIa+omDAgt7E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: f1d073027ecb11efa216b1d71e6e1362-20240930
-X-CTIC-Tags:
-	HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NAME, HR_CC_NO_NAME, HR_CTE_8B
-	HR_CTT_MISS, HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_NAME
-	HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER, HR_SJ_NOR_SYM, HR_SJ_PHRASE
-	HR_SJ_PHRASE_LEN, HR_SJ_WS, HR_TO_COUNT, HR_TO_DOMAIN_COUNT, HR_TO_NO_NAME
-	IP_UNTRUSTED, SRC_UNTRUSTED, IP_UNFAMILIAR, SRC_UNFAMILIAR, DN_TRUSTED
-	SRC_TRUSTED, SA_EXISTED, SN_TRUSTED, SN_EXISTED, SPF_NOPASS
-	DKIM_NOPASS, DMARC_NOPASS, CIE_BAD, CIE_GOOD_SPF, CIE_UNKNOWN
-	GTI_FG_BS, GTI_RG_INFO, GTI_C_BU, AMN_T1, AMN_GOOD
-	AMN_C_TI, AMN_C_BU, ABX_MISS_RDNS
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.38,REQID:7cfdac14-61c4-4608-b71a-8d392611962c,IP:10,
-	URL:0,TC:0,Content:0,EDM:25,RT:0,SF:5,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-	N:release,TS:40
-X-CID-INFO: VERSION:1.1.38,REQID:7cfdac14-61c4-4608-b71a-8d392611962c,IP:10,UR
-	L:0,TC:0,Content:0,EDM:25,RT:0,SF:5,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-	release,TS:40
-X-CID-META: VersionHash:82c5f88,CLOUDID:cf79c44db204f9b2660c90e28a0a05dc,BulkI
-	D:240930093309R2IFMP0Z,BulkQuantity:0,Recheck:0,SF:72|19|43|74|66|38|23|10
-	2,TC:nil,Content:0,EDM:5,IP:-2,URL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:n
-	il,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FSD
-X-UUID: f1d073027ecb11efa216b1d71e6e1362-20240930
-X-User: tianyaxiong@kylinos.cn
-Received: from tian-thinkpad-x390.. [(223.153.174.217)] by mailgw.kylinos.cn
-	(envelope-from <tianyaxiong@kylinos.cn>)
-	(Generic MTA)
-	with ESMTP id 104374964; Mon, 30 Sep 2024 09:33:07 +0800
-From: Yaxiong Tian <tianyaxiong@kylinos.cn>
-To: martin.lau@linux.dev,
-	ast@kernel.org,
-	andrii@kernel.org,
-	shuah@kernel.org,
-	hinker.li@gmail.com
-Cc: bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Yaxiong Tian <iambestgod@outlook.com>,
-	Yaxiong Tian <tianyaxiong@kylinos.cn>
-Subject: [PATCH] selftests/bpf: Add __init and __exit to the functions bpf_test_no_cfi_init()/bpf_test_no_cfi_exit()
-Date: Mon, 30 Sep 2024 09:33:01 +0800
-Message-Id: <20240930013301.10817-1-tianyaxiong@kylinos.cn>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1727661124; c=relaxed/simple;
+	bh=Ygv82u8MaTIGw4j1VwEn56lzxTjIHWN4CaJ19mHyz0Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UW+dPwIMwwV+ZK0ABGxli6tGkk2ux7ym7yB9DEIJnLPJ/pAlFPeFdmG3kxYIVxPNrc1ozNN3Zngt2Ia9xUSD7Tt22X5/ZQICf/rxjF35vFUCX08S9B6ELhOnz1RG53KPlQ8YyMC8jgOVlZsxC10kiPMu7ypjn7D5te5meVYgfWM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lmVvqDai; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94F90C4CEC6;
+	Mon, 30 Sep 2024 01:52:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1727661123;
+	bh=Ygv82u8MaTIGw4j1VwEn56lzxTjIHWN4CaJ19mHyz0Q=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=lmVvqDaip7ffiKitmaimglVXV49v4LM2VaFEG3Ryx439qSXFIadR68oSzwx/OmVK/
+	 mfR4/mgtN3wUkXUmW+YEUKvb/DPxKNTmnffTXCtAMJi8JX09MyyALtPVxe6/3+aLwq
+	 FDfm3Ozt0hBKI/P1GBmIQZGiuwdUfTCuuA+bumITf3wl4ELL/1gEhmneinCvhn2y0m
+	 Rm6oj8tOhSoYFq50CH4pylzEraDiuP0qyEZ0gbUhW63/f9QUd16nCf5FF65bmrJrPQ
+	 e8dBlbFU9OGOBvi+diPRBZBLKTyhN7ptXXYWVV08PVq83B2e4cgErbWdED8KeUNO4R
+	 8LjtXqEiT2+8A==
+Date: Sun, 29 Sep 2024 18:51:59 -0700
+From: Namhyung Kim <namhyung@kernel.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
+	David Rientjes <rientjes@google.com>,
+	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm <linux-mm@kvack.org>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>
+Subject: Re: [RFC/PATCH bpf-next 0/3] bpf: Add kmem_cache iterator and kfunc
+ (v2)
+Message-ID: <ZvoEPyrJF4uk1_LI@google.com>
+References: <20240927184133.968283-1-namhyung@kernel.org>
+ <CAADnVQLeARMvSqg0aqgBS0vncV-m6e+sM9C_Ox0r3SL1=GpRgA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQLeARMvSqg0aqgBS0vncV-m6e+sM9C_Ox0r3SL1=GpRgA@mail.gmail.com>
 
-From: Yaxiong Tian <iambestgod@outlook.com>
+Hello Alexei,
 
-To save some running memory,Add __init and __exit to the
-module load/unload functions.
+On Sun, Sep 29, 2024 at 10:00:56AM -0700, Alexei Starovoitov wrote:
+> On Fri, Sep 27, 2024 at 11:41 AM Namhyung Kim <namhyung@kernel.org> wrote:
+> >
+> > Hello,
+> >
+> > I'm proposing a new iterator and a kfunc for the slab memory allocator
+> > to get information of each kmem_cache like in /proc/slabinfo or
+> > /sys/kernel/slab in more flexible way.
+> >
+> > v2 changes)
+> 
+> The subject is confusing CI and human readers.
+> Please use [PATCH v3 bpf-next ..] in the future.
+> 
+> Also note that RFC patches are never going to be applied and they are
+> ignored by BPF CI.
+> If you want things to land then drop the RFC tag.
 
-Signed-off-by: Yaxiong Tian <tianyaxiong@kylinos.cn>
----
- tools/testing/selftests/bpf/bpf_test_no_cfi/bpf_test_no_cfi.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Ok, I'll change the subject line in the next version.
 
-diff --git a/tools/testing/selftests/bpf/bpf_test_no_cfi/bpf_test_no_cfi.c b/tools/testing/selftests/bpf/bpf_test_no_cfi/bpf_test_no_cfi.c
-index 948eb3962732..aa571ab3c6c6 100644
---- a/tools/testing/selftests/bpf/bpf_test_no_cfi/bpf_test_no_cfi.c
-+++ b/tools/testing/selftests/bpf/bpf_test_no_cfi/bpf_test_no_cfi.c
-@@ -56,7 +56,7 @@ static struct bpf_struct_ops test_no_cif_ops = {
- 	.owner = THIS_MODULE,
- };
- 
--static int bpf_test_no_cfi_init(void)
-+static int __init bpf_test_no_cfi_init(void)
- {
- 	int ret;
- 
-@@ -71,7 +71,7 @@ static int bpf_test_no_cfi_init(void)
- 	return ret;
- }
- 
--static void bpf_test_no_cfi_exit(void)
-+static void __exit bpf_test_no_cfi_exit(void)
- {
- }
- 
--- 
-2.34.1
-
+Thanks,
+Namhyung
 
