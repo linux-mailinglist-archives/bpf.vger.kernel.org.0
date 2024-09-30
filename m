@@ -1,117 +1,118 @@
-Return-Path: <bpf+bounces-40584-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40585-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61D2D98A816
-	for <lists+bpf@lfdr.de>; Mon, 30 Sep 2024 17:06:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2960198A8DC
+	for <lists+bpf@lfdr.de>; Mon, 30 Sep 2024 17:41:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1E2A81F23D75
-	for <lists+bpf@lfdr.de>; Mon, 30 Sep 2024 15:06:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CE4951F225F6
+	for <lists+bpf@lfdr.de>; Mon, 30 Sep 2024 15:41:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7269190671;
-	Mon, 30 Sep 2024 15:05:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C835194AE6;
+	Mon, 30 Sep 2024 15:40:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hoYcBJff"
+	dkim=pass (2048-bit key) header.d=networkplumber-org.20230601.gappssmtp.com header.i=@networkplumber-org.20230601.gappssmtp.com header.b="csafDKve"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1FC818FDBD
-	for <bpf@vger.kernel.org>; Mon, 30 Sep 2024 15:05:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAFC01925AF
+	for <bpf@vger.kernel.org>; Mon, 30 Sep 2024 15:40:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727708752; cv=none; b=CZI7uzZcM9Cuorkt99poogHJdpIWj+Si8lE6oBMjKST+Q7pOzTro1jvkpEci9zs480ZaqZZ7GK1o90DwvE+ThEEMFkzm/da0EW2/Aa/JrGI+XaZtWEosHRsBWBm94cMhnU/qxVlWJHwMey0v4ICFBziurOaowbP9HuuobixO2hk=
+	t=1727710851; cv=none; b=l1y/LiNM0hzEFbWmPNxMXYUlpk26WW4QyeXYGflgi40EnV0Ug7MvefwbU9uzCOe4A4MCGgMIcRqhl21OBSUFYU4O/iS9uhjsHwW+Q8KjIN3kDCyvhQlJT0DIxJRxmoWMemboLw3dECZ2K5AWThFU695nssdAxbkmbKeeSL3mhgo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727708752; c=relaxed/simple;
-	bh=q1EylvTXCOSu3WUgeBvEVrnh2dL1oWDc7sixJb+KcCM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZhRJLY6yfOsjFCo6lu0dNKUefMYyIY0LEbBr2ZJTWupx2vlFq3mfii0bKsBoLfWLInUXtMDPAVBcdjXzuaCl2tSv55KnriEoCROUTjqTZZ1aCQ3GYM3OgUWWvAEwtHNRdqiNXtMcchvrfWXi5MedvYI+JICfZS9Cs8ZdNnR6VLQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hoYcBJff; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-42cc8782869so41494295e9.2
-        for <bpf@vger.kernel.org>; Mon, 30 Sep 2024 08:05:50 -0700 (PDT)
+	s=arc-20240116; t=1727710851; c=relaxed/simple;
+	bh=fDFumAK9igYZ+CxTHR9gCbxjlAoTzynxL/GKvBjAzsU=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=M3CXBrU8CjemVAHgpSVHDaFaAH9EprMGOxXwvrT1etPVJYYr0qKhuNPaVN9CQLclCq7vCez8dpMIK6uKq7emS17MKbarp4Il2q9c+c4P15MGSl2VKIoaItZitAzGw8xFstUYkbqbjJ64MmOsmCY7k9GoXyEFzp6pipY4/LeWJ7c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=networkplumber.org; spf=pass smtp.mailfrom=networkplumber.org; dkim=pass (2048-bit key) header.d=networkplumber-org.20230601.gappssmtp.com header.i=@networkplumber-org.20230601.gappssmtp.com header.b=csafDKve; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=networkplumber.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=networkplumber.org
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-20b1335e4e4so41458995ad.0
+        for <bpf@vger.kernel.org>; Mon, 30 Sep 2024 08:40:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727708749; x=1728313549; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=networkplumber-org.20230601.gappssmtp.com; s=20230601; t=1727710848; x=1728315648; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/+Sj32ztOlwR5YP5m8KSicIJCrfbaXXGmoGnvtrkvCM=;
-        b=hoYcBJffXpYiK8M9vAdHFfIREf2XxUtoX4OBdhQOPvb+VgzukCovSlh9bhwsHX09Ox
-         hP/AIyZS+W1NMoiv5sbRN0d77VSNgY4nZfuuVPW1hkt8GNW6dzjeBDCEJp/mULRoOCqV
-         YSr0AfQiHVBz7TxT/TWJ2A2H8lBH9LT2rSavy4ACTXBCbr17O0iryB6W4OknBipZyp0C
-         ot9NUDE7sP7C1dpaRLaYnMZ3Skh2GSjsumtZU3isoh7/szwP/ol5d6GU7crzxT62FhSI
-         qRghrKOgnKHPnTnOWDV2wZxX5s9cjStF0Luf2YziC+FrZtMjtoOanC2p0FkEntj/klDC
-         OeRA==
+        bh=Gk4IT+ziW7GSilMgu7AJgpoE41t4jq/Ls2rSzqW+beE=;
+        b=csafDKvefF/P8ZewMQZITH2n/3TirhLRyV+fyujN8sG/8QTfABFbl7uLHCVd3xJp8o
+         i45ZC5vAhS3FncRjCQg9sznJVAa/MzMr+8+NRoWXbcd3zT6QOVULcrStd3Rl3Rakgnsb
+         lbNgj9YssLf7SKWOxuz2exxKwC/990ZbmOz7KpSNQDosnOPDfjtqUuWKcJYsZg2LTTH8
+         2a9MHrQfG8BLSbJ0nm83tK11XHl2SLd4vXbn/KTk5e7XmrRwT9aAPk+0f2JqFSk7n6P6
+         WpmPzQdRktvTnOG8m+pn3jDkfSE3OlgQgBJhnuzuJEwjNcTj9E0Hgmm9AnfaxRJVU1Kl
+         7zYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727708749; x=1728313549;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1727710848; x=1728315648;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/+Sj32ztOlwR5YP5m8KSicIJCrfbaXXGmoGnvtrkvCM=;
-        b=e/OFXphhI3wvvC5y5VZprGYRMvwc6MJaHwjCleaxA4ZNhAcGMK/rDJJU2pPQ2ZkVFU
-         BGhQkJthGDZ+4oNOTdoOIkDqJc35bUid7CbjcaSKYQ/zKT5QuIAF0BMIOBPVC5MAcuo8
-         Go+vVZgx/AyDTx2xM7aMXfN05BjXZ9tWABu7aMk+8IHT8gc8Er/GlgZxJvBViEX7SvHD
-         JHRRyWStpOHe/xe/p6dZHRzYWCseHMWbecLpeG+z/+qOHZLLQ1FliHGSInzqiEzl/7oe
-         KeWkYCgbEHRxQziJvjvEEtoF4CntuY38vVKUJUh3JZoGGkzBKDpJHipfYp1mcDrP6IEH
-         GFyw==
-X-Forwarded-Encrypted: i=1; AJvYcCUj3vkyq2xi8ie0kLbOIoeqgeBmcCLKO3Zw+WbaqeVxtMbNYeaBMa7wRJ0G62B8DFNuuV0=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwPEGkvzw1vtL7SxLehDspkRX4o9QAzrleOgUBMpj5KEan7t9W2
-	XtdgJIIdZyOmJarh/b4siTBJcSaxFBRoZeLQN7nxG1Vb+3mcPOhYICV+P5NwS67RG8vUtz4Ickc
-	cDT5wQyLdcs502DPkn3fdlslhgmk=
-X-Google-Smtp-Source: AGHT+IG1yM2MxxEMgVe7UHeUTwFuJm75x16UDte1/FpmVZroicE8zgbYPRY70m0x0T5+FsmqICnq8wGhRCl36S4J0zM=
-X-Received: by 2002:a05:600c:5125:b0:42c:b22e:fc2e with SMTP id
- 5b1f17b1804b1-42f5844b601mr97331625e9.15.1727708749187; Mon, 30 Sep 2024
- 08:05:49 -0700 (PDT)
+        bh=Gk4IT+ziW7GSilMgu7AJgpoE41t4jq/Ls2rSzqW+beE=;
+        b=EuwUDbz+QVFKclYjrOry4yavpBId0+zorkd4lghO6QlH5CxCOgofgT70e9hnGW+4Ti
+         LNCreznpdhISkxEI6T+eHT5a6CFU6TTY3RuEBI+lnoJPNhNc9FDRi9xYeh82wHS4DRJP
+         X4rIY03shDcWlPMSON+BKoEA3kPyGPBqXTht6ODBvL75iIEu6xIV6yt9EkwmmZ8AJ1sX
+         AXTi+U9wvP5gJWXJmQn22yrefbL5V5TkMT2XGGWatoj2IRfxedrhR0bKYq45aA/Mi1vn
+         mlSNjtic3YJyreJuN2y5IwMP72OgoCgZcS7ChCPyWB9C23Xq2LIZy7/X4QmGMqRuGyM8
+         Pg2g==
+X-Forwarded-Encrypted: i=1; AJvYcCV/mxtvGbzTN/6Km4+VSLoh1r47kfdyT4mUQDly6jondSZ8zFU3eLmNYsoFV+e+3Gdnp0k=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywpb/uSju2/eml5bt8/paW/lbbVTFN53/mbFrinfcBoVaT/S4j6
+	xyG9gMY7ygF5qcqos12u8dhDAacNPzZ3YQo+mNkFHf0gb6U/XHbu2NxmqfKGeId37WXJf4MOcFJ
+	ONMUjONJB
+X-Google-Smtp-Source: AGHT+IEBTYKGJiVF/hvLtnqHSF6GUD7YmyDMyv0oyolLcyv9IFVLXr8V4Z3pE6cLuKRIJT4zroumAw==
+X-Received: by 2002:a17:902:f54f:b0:20b:5c94:da02 with SMTP id d9443c01a7336-20b5c94de48mr112201815ad.33.1727710848215;
+        Mon, 30 Sep 2024 08:40:48 -0700 (PDT)
+Received: from hermes.local (204-195-96-226.wavecable.com. [204.195.96.226])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20b37e6c997sm55788515ad.307.2024.09.30.08.40.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Sep 2024 08:40:47 -0700 (PDT)
+Date: Mon, 30 Sep 2024 08:40:45 -0700
+From: Stephen Hemminger <stephen@networkplumber.org>
+To: Uros Bizjak <ubizjak@gmail.com>
+Cc: x86@kernel.org, linux-crypto@vger.kernel.org,
+ intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+ linux-media@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-fscrypt@vger.kernel.org, linux-scsi@vger.kernel.org,
+ bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org, Jamal Hadi Salim
+ <jhs@mojatatu.com>, Cong Wang <xiyou.wangcong@gmail.com>, Jiri Pirko
+ <jiri@resnulli.us>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+ <pabeni@redhat.com>
+Subject: Re: [PATCH v3 17/19] netem: Include <linux/prandom.h> in
+ sch_netem.c
+Message-ID: <20240930084045.7c0e913e@hermes.local>
+In-Reply-To: <20240930123702.803617-18-ubizjak@gmail.com>
+References: <20240930123702.803617-1-ubizjak@gmail.com>
+	<20240930123702.803617-18-ubizjak@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240926234506.1769256-1-yonghong.song@linux.dev>
- <20240926234531.1771024-1-yonghong.song@linux.dev> <ZvqqOTrK_0aLRolW@krava>
-In-Reply-To: <ZvqqOTrK_0aLRolW@krava>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 30 Sep 2024 08:05:38 -0700
-Message-ID: <CAADnVQ+XCqenWJF+d52gtV1ZZgO=80p9jEb43OWgv1QdEUpkrw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 5/5] selftests/bpf: Add private stack tests
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Yonghong Song <yonghong.song@linux.dev>, bpf <bpf@vger.kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Kernel Team <kernel-team@fb.com>, 
-	Martin KaFai Lau <martin.lau@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Mon, Sep 30, 2024 at 6:40=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wrot=
-e:
->
-> On Thu, Sep 26, 2024 at 04:45:31PM -0700, Yonghong Song wrote:
-> > Some private stack tests are added including:
-> >   - prog with stack size greater than BPF_PSTACK_MIN_SUBTREE_SIZE.
-> >   - prog with stack size less than BPF_PSTACK_MIN_SUBTREE_SIZE.
-> >   - prog with one subprog having MAX_BPF_STACK stack size and another
-> >     subprog having non-zero stack size.
-> >   - prog with callback function.
-> >   - prog with exception in main prog or subprog.
-> >
-> > Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
->
-> hi,
-> might be some fail on my side, but I had to include bpf_experimental.h to
-> compile this.. ci seems ok
->
->   CLNG-BPF [test_progs-cpuv4] verifier_private_stack.bpf.o
-> progs/verifier_private_stack.c:174:2: error: call to undeclared function =
-'bpf_throw'; ISO C99 and later do not support implicit function declaration=
-s [-Wimplicit-function-declaration]
->   174 |         bpf_throw(0);
+On Mon, 30 Sep 2024 14:33:28 +0200
+Uros Bizjak <ubizjak@gmail.com> wrote:
 
-Yeah. Let's add bpf_experimental.h for folks like Jiri
-who didn't upgrade their pahole for a long time :)
+> Include <linux/prandom.h> header to allow the removal of legacy
+> inclusion of <linux/prandom.h> from <linux/random.h>.
+> 
+> Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+> Cc: Stephen Hemminger <stephen@networkplumber.org>
+> Cc: Jamal Hadi Salim <jhs@mojatatu.com>
+> Cc: Cong Wang <xiyou.wangcong@gmail.com>
+> Cc: Jiri Pirko <jiri@resnulli.us>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Eric Dumazet <edumazet@google.com>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: Paolo Abeni <pabeni@redhat.com>
 
-bpf_throw will be in vmlinux.h ;)
+Makes sense
+
+Acked-by: Stephen Hemminger <stephen@networkplumber.org>
 
