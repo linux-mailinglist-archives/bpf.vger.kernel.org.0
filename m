@@ -1,249 +1,254 @@
-Return-Path: <bpf+bounces-40624-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40625-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0740398B0AE
-	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2024 01:18:00 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBDF598B140
+	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2024 01:59:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 795B01F22E4A
-	for <lists+bpf@lfdr.de>; Mon, 30 Sep 2024 23:17:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 189C91C2236B
+	for <lists+bpf@lfdr.de>; Mon, 30 Sep 2024 23:59:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26795188A1C;
-	Mon, 30 Sep 2024 23:17:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B94E518951C;
+	Mon, 30 Sep 2024 23:59:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W/KblZQ6"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H5yxE/fh"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31DF917798F;
-	Mon, 30 Sep 2024 23:17:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7E8E2C1B4;
+	Mon, 30 Sep 2024 23:59:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727738272; cv=none; b=iszhC44W2RMK16kMfPr+R6Ci57DVijYdpjhz0oWeOGTw5d3SYCdz3YEenEHr601mbTbDcf/0QwQwMMBE7YwNsBvAMCqoOg4WmFxDsTyebfxhjXU1+eZ8ioTbI/s6ylt4+LS2aaiJ6d7nLBZC1Ajj66HO7ydr5JV8PJhg3PfNhdg=
+	t=1727740778; cv=none; b=TYDqnuASONInZUgYAmVIxC3lu0K6+0Sdq/A6yvwV/s1BM1rr+sxE9XCPxSqzxZwmIqvBElH+DxJj60hz5FLwBaC6eT8RtSeIPScQozc/3lWrmoDe15nOrAXWu/xlNos3SE05QFficbCxU1wjBIT9YoVO3MCmSlrZC6J/0WppT5s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727738272; c=relaxed/simple;
-	bh=Y2N2gMrrP3gdldRLITILmhvAkRtYTdhz+PTlF5q6Ry4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=B/zEF59fdnwusbClID7M9Wnx/2CJNFwzuLd8cAp4mPQ7hCaDQfRjenwFAxwAJb2EKBuIckWlNPgbd+BiPqgJ+1TecZ8pPIOfKQUhNj/ssjG0Mo7++RuszRERTHX1olKIZusBcbm6N0ZyUfpSNXNSVNoW8VJANmpxWg78CTApATI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=W/KblZQ6; arc=none smtp.client-ip=209.85.214.177
+	s=arc-20240116; t=1727740778; c=relaxed/simple;
+	bh=bHJTfIv/bQKEaDRRNzyllEiHmX2BmrRj0mXBc5jpiMo=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=dfzypiRkN8xEdNQKl1ZTM1a+jQLwshmCSkLynBXkdYNnqgOT2Y82MEhuDzyINp1Ct5jIO7BbE6exAuBBF5be9bP3EivYXxQtul27q/OBi890Y2YFxeUvoKXkucKVWa7qiuXVwu4kiNM5LCw0V1vNgJnFm9Pl9IKVEjGsdeqTyyM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=H5yxE/fh; arc=none smtp.client-ip=209.85.219.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-20b64584fd4so16349895ad.1;
-        Mon, 30 Sep 2024 16:17:50 -0700 (PDT)
+Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-e260754066cso3028164276.1;
+        Mon, 30 Sep 2024 16:59:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727738270; x=1728343070; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1727740775; x=1728345575; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=51cWZof8LQF3H3bDFgOCRd/ObmUG7m4ZND6e3BBb31Y=;
-        b=W/KblZQ60QLFW8IPzG93DgTyLrcyZMGnJawjFg2DZjjecl168m9SXhuZ9xM1QlFyej
-         K43kUjLDqFvXetB3TTPp3eJusQOpx3vUK7V4X8eLLm0gyXLb0qKXVy13WdCcBOD1m8Ak
-         7WmiYuh+j5ryy3EoeMDhGC7Bkbm77XvXAGIS/EULz/uWARwb/qwM3hWl9JFTR1RScKZV
-         as6o1PMCe2vyAgAXVbBKp+WjX/vEtaVaqiaVEvYXsZIcp6FWIuIYRp9tgNRDqNgIZtqz
-         pJdW1qUwKsqcd2PueWO3JoUd5ZYp2oL4nMYcnB0e9j+DyCZX/b+H5KjGCHbZdNHeo3yZ
-         WmGQ==
+        bh=0Omp0TCRUqYPq/kqA2kywyGRQS2WH8xmPRfAWQrDh08=;
+        b=H5yxE/fhiA+XdAzS1wFlIZdwYJF5FajVlA3HPr9KgYr6Z0u45bMU4jxTRv3ByGN6AC
+         FnTGlgd3Vlrcag6A0ea+isZgv1cJszVQToq6JjLIpTrqqtskKksfw79rJkdUMgO2EF7T
+         CT4/x3pGxgjRv19HIRTStiVzxanYrx4bMSk8eHIsU4B9L3ipb8lwqmiK9xhI/jw3fUNi
+         beg0c1wRWIidN8f1xQFSXTQtlb+vynuRPUvGmVKIV/6ofPDwVlk5s7xEl9aPkxvKrg5G
+         dSKi7aa62BdeksYOhoxcuMD5yRthuBQgc5iyzXIRH+FGOzyn+z79Rbg3eJvveiN8HMew
+         Ge7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727738270; x=1728343070;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1727740775; x=1728345575;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=51cWZof8LQF3H3bDFgOCRd/ObmUG7m4ZND6e3BBb31Y=;
-        b=wptGsFGvM3bJHtQXuDzg56968AACsajkildtoJllxkVYOkdoIvNDGBW0QDCDzc5v+E
-         m95m4Mmb6MyUrfg63hNp0lSzKMnEaTbxEHN69YZoJDEMyv9ET1TPcxPGbdMKgHje8sMc
-         D+FEWR1RrGklHpdvpTqa2QXTBVwmTQmviLZZclCCzOG2PRQTE7QiH+nn52fvGzRPfCNF
-         FiWcCAsitkj6YIyiCHMv7gDtJW+rHB8d7QNAxxJyEi5A6Yxfl9IZuAY0CMc3ondHFDpL
-         yltygbUOSGBOVaGnPwrfJ4AhUzdyGaEDCaRRW6K28lAaoxzDKfiIcAjBMGhWTghbc9KF
-         thLg==
-X-Forwarded-Encrypted: i=1; AJvYcCUBIg4UzhpOvRKJXcxar8qoQulfJrXVD1LoFwclkaonVJ64kZZow72ab4A/4LKhBkIsW4U=@vger.kernel.org, AJvYcCWmI4h6R1g4e4XL74Ie+0Dn0JaquK1CWOYmXFF1wSaqf8u1eaCPNW4GqgtUB2/OVyFd9xKWw25BHdh9aAHh@vger.kernel.org
-X-Gm-Message-State: AOJu0YxCTOEYz7+bSX7jfRd1QLKtcvo8Z74vPtJv24AAqK0Luske0IPq
-	XPDD84vmmSF5mjS+Ug/Ti1kri6rsq0pF+uCdfvnodDzjAcqMlIfTcPvVOIHh0QSIxCaAXNgWbot
-	JTixW2GcnOXqDLUCO0oaB49GUf+E=
-X-Google-Smtp-Source: AGHT+IGcWS0XZYCX/k8q1Dti6cK0hUtuZOdWz41n1PPDqIExuIP6VxSZxLmhoXWwHJ+Wt+SkuqJdjnL6STw3eoPzrqE=
-X-Received: by 2002:a17:903:230f:b0:20b:6d47:a3b1 with SMTP id
- d9443c01a7336-20b6d47a97emr101618135ad.21.1727738270415; Mon, 30 Sep 2024
- 16:17:50 -0700 (PDT)
+        bh=0Omp0TCRUqYPq/kqA2kywyGRQS2WH8xmPRfAWQrDh08=;
+        b=qS1v6nCAvC+s1sTXR8DwDYqNBwlklLw1wOkMyCj8iQjlssgPk5zqfQhk3YEO8nLHd1
+         skV9MOPDXCSajWMuDvNDHuybWFFc17kVQnh69t9LREjY4162HKdW7uUfAH2iofxse7X/
+         LaKCSuMdzCb9fNkoPz0I0mL8EiaLn0Bw4zZXshfucUY9ogzQjZ2v7PhdhHZbBphmWGCr
+         CWiHrcQoZHouAdEJ9sniK5TvF9R7OE8vlX+AhiNFgjNKVze2UiRzfEeGkfkMRquYQnZp
+         +u6LQreeFneC9kzrsMcf8jUvDAjDNcGJam0AwkHSfM1JWPISO8lWgB50+lSbiEsbBdO1
+         cefQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVall4QuH+77d2oq32Jf60MG1rAse5UKpaq8ayZ3NUK2e+o5XoHOGYngPyQxwHdgZDcTJhNEJVUcpU/4TfKVCQt@vger.kernel.org, AJvYcCVjQ4dF+wkZcaYH1vlnoGCobUxeEzE+xUsvHsN11cD6JWyDPT33u6AtkOaB0a9xiFzRGuORbhq3oJbF9jQG@vger.kernel.org, AJvYcCX4XMNINf2bNzlJ3G1kB+Znyc7hby8Zn1lwnzXE/K2BiSGcwzaCwW3Nzwu6dCtWKHDYtdI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyybaoNrNBw+Fz+KCDaVDTDlb/OFZXXS7O0guhFccLzhQ8IwTtU
+	WTWQvMw7QYBN17HhlvnuLKkd5VlerfkZds8seLjgV5ARmb7Flxwy
+X-Google-Smtp-Source: AGHT+IGfhUcsgW0vXTpQM/RQpsEALLTzaOy9gzajslyDHkJNDwRuqCj3icvML3SzIvbGJP83yw/24A==
+X-Received: by 2002:a05:6902:a0a:b0:e25:e38b:a46e with SMTP id 3f1490d57ef6-e2604b158ddmr10631946276.1.1727740775564;
+        Mon, 30 Sep 2024 16:59:35 -0700 (PDT)
+Received: from dev-ubuntu-0.. (104-15-236-76.lightspeed.rlghnc.sbcglobal.net. [104.15.236.76])
+        by smtp.googlemail.com with ESMTPSA id 3f1490d57ef6-e25e42210acsm2701553276.35.2024.09.30.16.59.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Sep 2024 16:59:34 -0700 (PDT)
+From: tyrone-wu <wudevelops@gmail.com>
+To: olsajiri@gmail.com,
+	laoar.shao@gmail.com,
+	andrii.nakryiko@gmail.com,
+	wudevelops@gmail.com,
+	bpf@vger.kernel.org
+Cc: ast@kernel.org,
+	daniel@iogearbox.net,
+	john.fastabend@gmail.com,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	mykolal@fb.com,
+	shuah@kernel.org,
+	kernel-patches-bot@fb.com,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH bpf] bpf: fix unpopulated name_len field in perf_event link info
+Date: Mon, 30 Sep 2024 23:59:20 +0000
+Message-ID: <20240930235920.125417-1-wudevelops@gmail.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <ZvqLanKfaO9dLlf4@krava>
+References: <ZvqLanKfaO9dLlf4@krava>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <202409261116.risxWG3M-lkp@intel.com> <20240926072755.2007-1-eric.yan@oppo.com>
- <CAADnVQJ5xCsBg057gKOQOYA1+9pD-X86bjYJVrTbpRNstvW=DQ@mail.gmail.com> <TY0PR02MB5408EE044112DE9640CB06FFF0762@TY0PR02MB5408.apcprd02.prod.outlook.com>
-In-Reply-To: <TY0PR02MB5408EE044112DE9640CB06FFF0762@TY0PR02MB5408.apcprd02.prod.outlook.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 30 Sep 2024 16:17:37 -0700
-Message-ID: <CAEf4BzZ1uFeY1YgL1t5Rcp60a_gXZ0ap3_8=ZOaP9G98_CXfow@mail.gmail.com>
-Subject: Re: [PATCH v2] Add BPF Kernel Function bpf_ptrace_vprintk
-To: =?UTF-8?B?54eV6Z2S5rSyKEVyaWMgWWFuKQ==?= <eric.yan@oppo.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, kbuild test robot <lkp@intel.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Hao Luo <haoluo@google.com>, 
-	John Fastabend <john.fastabend@gmail.com>, Jiri Olsa <jolsa@kernel.org>, 
-	KP Singh <kpsingh@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, 
-	"oe-kbuild-all@lists.linux.dev" <oe-kbuild-all@lists.linux.dev>, Stanislav Fomichev <sdf@fomichev.me>, 
-	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Mon, Sep 30, 2024 at 1:29=E2=80=AFAM =E7=87=95=E9=9D=92=E6=B4=B2(Eric Ya=
-n) <eric.yan@oppo.com> wrote:
->
-> This patch is mainly considered based on the Android Perfetto (A powerful=
- trace collection and analysis tool, support ftrace data source).
-> The output of bpf_trace_printk and bpf_vtrace_printk in ftrace is like:
->   app-12345 [001] d... 654321.1970001: bpf_trace_printk: blabla..
->
-> FUNCTION field of this kind of message is 'bpf_trace_printk', and there's=
- no standard syntax format for it.
-> Currently, Perfetto doesn't collect 'bpf_trace/bpf_trace_printk' trace ev=
-ent by default, but does support
-> 'tracing_mark_write' function style by default, such as:
-> app-3151    [000] d.h1.  6059.904239: tracing_mark_write: B|2491|BPRF-315=
-1|TracingFunc
-> app-3151    [000] d.h1.  6059.904239: tracing_mark_write: E|2491
->
-> Therefore, it's considered to add this kfunc to output formatted BPF mess=
-ages to ftrace like trace_marker,
-> allowing perfetto to collect and parse 'tracing_mark_write' events by def=
-ault and eventually visualize them in the perfetto UI.
+Previously when retrieving `bpf_link_info.perf_event` for
+kprobe/uprobe/tracepoint, the `name_len` field was not populated by the
+kernel, leaving it to reflect the value initially set by the user. This
+behavior was inconsistent with how other input/output string buffer
+fields function (e.g. `raw_tracepoint.tp_name_len`).
 
-This does seem like a bit of an overkill to add a new kfunc just to
-have "tracing_mark_write" instead of "bpf_trace_printk". Is there any
-chance that perfetto can be changed to also track bpf_trace_printk,
-perhaps with some pre-agreed upon prefix or something? E.g,
+This patch fills `name_len` with the actual size of the string name. The
+ relevant selftests have also been updated to assert that `name_len`
+contains the correct size rather than 0.
 
-app-3151    [000] d.h1.  6059.904239: bpf_trace_printk:
-!B|2491|BPRF-3151|TracingFunc
-app-3151    [000] d.h1.  6059.904239: bpf_trace_printk: !E|2491
+Link: https://lore.kernel.org/bpf/CABVU1kXwQXhqQGe0RTrr7eegtM6SVW_KayZBy16-yb0Snztmtg@mail.gmail.com/
+Fixes: 1b715e1b0ec5 ("bpf: Support ->fill_link_info for perf_event")
+Signed-off-by: tyrone-wu <wudevelops@gmail.com>
+---
+ kernel/bpf/syscall.c                          | 25 +++++++++++++------
+ .../selftests/bpf/prog_tests/fill_link_info.c |  6 ++---
+ 2 files changed, 20 insertions(+), 11 deletions(-)
 
-Generally speaking, bpf_trace_printk() shouldn't be used in production
-setup (much), so perhaps parsing everything from bpf_trace_printk() is
-OK (assuming it follows this vertical bar syntax)?
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index a8f1808a1ca5..90b6add4d0c9 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -3565,7 +3565,7 @@ static void bpf_perf_link_dealloc(struct bpf_link *link)
+ }
+ 
+ static int bpf_perf_link_fill_common(const struct perf_event *event,
+-				     char __user *uname, u32 ulen,
++				     char __user *uname, u32 *ulen,
+ 				     u64 *probe_offset, u64 *probe_addr,
+ 				     u32 *fd_type, unsigned long *missed)
+ {
+@@ -3574,18 +3574,20 @@ static int bpf_perf_link_fill_common(const struct perf_event *event,
+ 	size_t len;
+ 	int err;
+ 
+-	if (!ulen ^ !uname)
++	if (!(*ulen) ^ !uname)
+ 		return -EINVAL;
+ 
+ 	err = bpf_get_perf_event_info(event, &prog_id, fd_type, &buf,
+ 				      probe_offset, probe_addr, missed);
+ 	if (err)
+ 		return err;
++
++	len = strlen(buf);
++	*ulen = len + 1;
+ 	if (!uname)
+ 		return 0;
+ 	if (buf) {
+-		len = strlen(buf);
+-		err = bpf_copy_to_user(uname, buf, ulen, len);
++		err = bpf_copy_to_user(uname, buf, *ulen, len);
+ 		if (err)
+ 			return err;
+ 	} else {
+@@ -3609,7 +3611,7 @@ static int bpf_perf_link_fill_kprobe(const struct perf_event *event,
+ 
+ 	uname = u64_to_user_ptr(info->perf_event.kprobe.func_name);
+ 	ulen = info->perf_event.kprobe.name_len;
+-	err = bpf_perf_link_fill_common(event, uname, ulen, &offset, &addr,
++	err = bpf_perf_link_fill_common(event, uname, &ulen, &offset, &addr,
+ 					&type, &missed);
+ 	if (err)
+ 		return err;
+@@ -3617,7 +3619,7 @@ static int bpf_perf_link_fill_kprobe(const struct perf_event *event,
+ 		info->perf_event.type = BPF_PERF_EVENT_KRETPROBE;
+ 	else
+ 		info->perf_event.type = BPF_PERF_EVENT_KPROBE;
+-
++	info->perf_event.kprobe.name_len = ulen;
+ 	info->perf_event.kprobe.offset = offset;
+ 	info->perf_event.kprobe.missed = missed;
+ 	if (!kallsyms_show_value(current_cred()))
+@@ -3639,7 +3641,7 @@ static int bpf_perf_link_fill_uprobe(const struct perf_event *event,
+ 
+ 	uname = u64_to_user_ptr(info->perf_event.uprobe.file_name);
+ 	ulen = info->perf_event.uprobe.name_len;
+-	err = bpf_perf_link_fill_common(event, uname, ulen, &offset, &addr,
++	err = bpf_perf_link_fill_common(event, uname, &ulen, &offset, &addr,
+ 					&type, NULL);
+ 	if (err)
+ 		return err;
+@@ -3648,6 +3650,7 @@ static int bpf_perf_link_fill_uprobe(const struct perf_event *event,
+ 		info->perf_event.type = BPF_PERF_EVENT_URETPROBE;
+ 	else
+ 		info->perf_event.type = BPF_PERF_EVENT_UPROBE;
++	info->perf_event.uprobe.name_len = ulen;
+ 	info->perf_event.uprobe.offset = offset;
+ 	info->perf_event.uprobe.cookie = event->bpf_cookie;
+ 	return 0;
+@@ -3673,12 +3676,18 @@ static int bpf_perf_link_fill_tracepoint(const struct perf_event *event,
+ {
+ 	char __user *uname;
+ 	u32 ulen;
++	int err;
+ 
+ 	uname = u64_to_user_ptr(info->perf_event.tracepoint.tp_name);
+ 	ulen = info->perf_event.tracepoint.name_len;
++	err = bpf_perf_link_fill_common(event, uname, &ulen, NULL, NULL, NULL, NULL);
++	if (err)
++		return err;
++
+ 	info->perf_event.type = BPF_PERF_EVENT_TRACEPOINT;
++	info->perf_event.tracepoint.name_len = ulen;
+ 	info->perf_event.tracepoint.cookie = event->bpf_cookie;
+-	return bpf_perf_link_fill_common(event, uname, ulen, NULL, NULL, NULL, NULL);
++	return 0;
+ }
+ 
+ static int bpf_perf_link_fill_perf_event(const struct perf_event *event,
+diff --git a/tools/testing/selftests/bpf/prog_tests/fill_link_info.c b/tools/testing/selftests/bpf/prog_tests/fill_link_info.c
+index f3932941bbaa..59077f260404 100644
+--- a/tools/testing/selftests/bpf/prog_tests/fill_link_info.c
++++ b/tools/testing/selftests/bpf/prog_tests/fill_link_info.c
+@@ -67,8 +67,8 @@ static int verify_perf_link_info(int fd, enum bpf_perf_event_type type, long add
+ 
+ 		ASSERT_EQ(info.perf_event.kprobe.cookie, PERF_EVENT_COOKIE, "kprobe_cookie");
+ 
++		ASSERT_EQ(info.perf_event.kprobe.name_len, strlen(KPROBE_FUNC) + 1, "name_len");
+ 		if (!info.perf_event.kprobe.func_name) {
+-			ASSERT_EQ(info.perf_event.kprobe.name_len, 0, "name_len");
+ 			info.perf_event.kprobe.func_name = ptr_to_u64(&buf);
+ 			info.perf_event.kprobe.name_len = sizeof(buf);
+ 			goto again;
+@@ -79,8 +79,8 @@ static int verify_perf_link_info(int fd, enum bpf_perf_event_type type, long add
+ 		ASSERT_EQ(err, 0, "cmp_kprobe_func_name");
+ 		break;
+ 	case BPF_PERF_EVENT_TRACEPOINT:
++		ASSERT_EQ(info.perf_event.tracepoint.name_len, strlen(TP_NAME) + 1, "name_len");
+ 		if (!info.perf_event.tracepoint.tp_name) {
+-			ASSERT_EQ(info.perf_event.tracepoint.name_len, 0, "name_len");
+ 			info.perf_event.tracepoint.tp_name = ptr_to_u64(&buf);
+ 			info.perf_event.tracepoint.name_len = sizeof(buf);
+ 			goto again;
+@@ -96,8 +96,8 @@ static int verify_perf_link_info(int fd, enum bpf_perf_event_type type, long add
+ 	case BPF_PERF_EVENT_URETPROBE:
+ 		ASSERT_EQ(info.perf_event.uprobe.offset, offset, "uprobe_offset");
+ 
++		ASSERT_EQ(info.perf_event.uprobe.name_len, strlen(UPROBE_FILE) + 1, "name_len");
+ 		if (!info.perf_event.uprobe.file_name) {
+-			ASSERT_EQ(info.perf_event.uprobe.name_len, 0, "name_len");
+ 			info.perf_event.uprobe.file_name = ptr_to_u64(&buf);
+ 			info.perf_event.uprobe.name_len = sizeof(buf);
+ 			goto again;
+-- 
+2.43.0
 
->
-> -----=E9=82=AE=E4=BB=B6=E5=8E=9F=E4=BB=B6-----
-> =E5=8F=91=E4=BB=B6=E4=BA=BA: Alexei Starovoitov <alexei.starovoitov@gmail=
-.com>
-> =E5=8F=91=E9=80=81=E6=97=B6=E9=97=B4: 2024=E5=B9=B49=E6=9C=8830=E6=97=A5 =
-1:10
-> =E6=94=B6=E4=BB=B6=E4=BA=BA: =E7=87=95=E9=9D=92=E6=B4=B2(Eric Yan) <eric.=
-yan@oppo.com>
-> =E6=8A=84=E9=80=81: kbuild test robot <lkp@intel.com>; Andrii Nakryiko <a=
-ndrii@kernel.org>; Alexei Starovoitov <ast@kernel.org>; bpf <bpf@vger.kerne=
-l.org>; Daniel Borkmann <daniel@iogearbox.net>; Hao Luo <haoluo@google.com>=
-; John Fastabend <john.fastabend@gmail.com>; Jiri Olsa <jolsa@kernel.org>; =
-KP Singh <kpsingh@kernel.org>; LKML <linux-kernel@vger.kernel.org>; Martin =
-KaFai Lau <martin.lau@linux.dev>; oe-kbuild-all@lists.linux.dev; Stanislav =
-Fomichev <sdf@fomichev.me>; Song Liu <song@kernel.org>; Yonghong Song <yong=
-hong.song@linux.dev>
-> =E4=B8=BB=E9=A2=98: Re: [PATCH v2] Add BPF Kernel Function bpf_ptrace_vpr=
-intk
->
-> On Thu, Sep 26, 2024 at 12:28=E2=80=AFAM Eric Yan <eric.yan@oppo.com> wro=
-te:
-> >
-> > add a kfunc 'bpf_ptrace_vprintk' printing bpf msg with trace_marker
-> > format requirement so that these msgs can be retrieved by android
-> > perfetto by default and well represented in perfetto UI.
-> >
-> > [testing prog]
-> > const volatile bool ptrace_enabled =3D true; extern int
-> > bpf_ptrace_vprintk(char *fmt, u32 fmt_size, const void *args, u32
-> > args__sz) __ksym;
-> >
-> > ({                                    \
-> >     if (!ptrace_enabled) { \
-> >         bpf_printk(fmt, __VA_ARGS__);     \
-> >     } else {                              \
-> >         char __fmt[] =3D fmt;               \
-> >         _Pragma("GCC diagnostic push")    \
-> >         _Pragma("GCC diagnostic ignored \"-Wint-conversion\"")  \
-> >         u64 __params[] =3D { __VA_ARGS__ }; \
-> >         _Pragma("GCC diagnostic pop")     \
-> >         bpf_ptrace_vprintk(__fmt, sizeof(__fmt), __params, sizeof(__par=
-ams)); \
-> >     }                                  \
-> > })
-> >
-> > SEC("perf_event")
-> > int do_sample(struct bpf_perf_event_data *ctx) {
-> >         u64 ip =3D PT_REGS_IP(&ctx->regs);
-> >         u64 id =3D bpf_get_current_pid_tgid();
-> >         s32 pid =3D id >> 32;
-> >         s32 tid =3D id;
-> >         debug_printk("N|%d|BPRF-%d|BPRF:%llx", pid, tid, ip);
-> >         return 0;
-> > }
-> >
-> > [output]:
-> >        app-3151    [000] d.h1.  6059.904239: tracing_mark_write: N|2491=
-|BPRF-3151|BPRF:58750d0eec
-> >
-> > Signed-off-by: Eric Yan <eric.yan@oppo.com>
-> > ---
-> >  kernel/bpf/helpers.c | 34 ++++++++++++++++++++++++++++++++++
-> >  1 file changed, 34 insertions(+)
-> >
-> > diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c index
-> > 1a43d06eab28..1e37dae74ca6 100644
-> > --- a/kernel/bpf/helpers.c
-> > +++ b/kernel/bpf/helpers.c
-> > @@ -2521,6 +2521,39 @@ __bpf_kfunc struct task_struct *bpf_task_from_pi=
-d(s32 pid)
-> >         return p;
-> >  }
-> >
-> > +static noinline void tracing_mark_write(char *buf) {
-> > +       trace_printk(buf);
-> > +}
-> > +
-> > +/* same as bpf_trace_vprintk, only with a trace_marker format
-> > +requirement
-> > + * @fmt: Format string, e.g. <B|E|C|N>|<%d:pid>|<%s:TAG>...
-> > + */
-> > +__bpf_kfunc int bpf_ptrace_vprintk(char *fmt, u32 fmt_size, const
-> > +void *args, u32 args__sz) {
-> > +       struct bpf_bprintf_data data =3D {
-> > +               .get_bin_args   =3D true,
-> > +               .get_buf        =3D true,
-> > +       };
-> > +       int ret, num_args;
-> > +
-> > +       if (args__sz & 7 || args__sz > MAX_BPRINTF_VARARGS * 8 || (args=
-__sz && !args))
-> > +               return -EINVAL;
-> > +       num_args =3D args__sz / 8;
-> > +
-> > +       ret =3D bpf_bprintf_prepare(fmt, fmt_size, args, num_args, &dat=
-a);
-> > +       if (ret < 0)
-> > +               return ret;
-> > +
-> > +       ret =3D bstr_printf(data.buf, MAX_BPRINTF_BUF, fmt,
-> > + data.bin_args);
-> > +
-> > +       tracing_mark_write(data.buf);
-> > +
-> > +       bpf_bprintf_cleanup(&data);
-> > +
-> > +       return ret;
-> > +}
-> > +
-> >  /**
-> >   * bpf_dynptr_slice() - Obtain a read-only pointer to the dynptr data.
-> >   * @p: The dynptr whose data slice to retrieve @@ -3090,6 +3123,7 @@
-> > BTF_ID_FLAGS(func, bpf_iter_bits_new, KF_ITER_NEW)  BTF_ID_FLAGS(func,
-> > bpf_iter_bits_next, KF_ITER_NEXT | KF_RET_NULL)  BTF_ID_FLAGS(func,
-> > bpf_iter_bits_destroy, KF_ITER_DESTROY)  BTF_ID_FLAGS(func,
-> > bpf_copy_from_user_str, KF_SLEEPABLE)
-> > +BTF_ID_FLAGS(func, bpf_ptrace_vprintk)
-> >  BTF_KFUNCS_END(common_btf_ids)
->
-> Why new kfunc?
-> Use bpf_snprintf() and follow with bpf_trace_printk() ?
 
