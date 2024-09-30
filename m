@@ -1,155 +1,125 @@
-Return-Path: <bpf+bounces-40543-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40544-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0890F989B74
-	for <lists+bpf@lfdr.de>; Mon, 30 Sep 2024 09:31:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 882A2989BA8
+	for <lists+bpf@lfdr.de>; Mon, 30 Sep 2024 09:37:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2314E1C215DF
-	for <lists+bpf@lfdr.de>; Mon, 30 Sep 2024 07:31:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 345CD1F2144B
+	for <lists+bpf@lfdr.de>; Mon, 30 Sep 2024 07:37:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0074155A52;
-	Mon, 30 Sep 2024 07:30:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8D8115C144;
+	Mon, 30 Sep 2024 07:36:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NMQTpuFv"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="Nn8leL/q"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E974F21105;
-	Mon, 30 Sep 2024 07:30:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD29721105;
+	Mon, 30 Sep 2024 07:36:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727681454; cv=none; b=sOfLQQ4SxulkP+huVbmRwuxFwL3JdiBLgiawrK0e0WlSUWzBHseNEm4McOFoSypqywU9GAN/Ykk+z6x35zS8ZXpU7POCbNbOZDnTmZG4mUI5kv+kgFbFa9ux20kYLpc+a2ZDMjhFCkC/8u8LiOxC9WRxfqsxhHc8QAkRnJSVyP8=
+	t=1727681813; cv=none; b=Y89Eq+GJjjkfK09ei8ikw3ivkRj9zhlspt0IzJbRvkl8O81+Fei1FoLHKjvLr9qxpW6+LqBx8SC2yrHgCBjVqN+jM79GCmYx1hO23xk+dPPmyjhLaOopBagJ0RUjQXXacgOKxxxgZZwQZp6g2fDyYdKPtupCM7TItuTPouJTn+c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727681454; c=relaxed/simple;
-	bh=cCo/fLAbtIySYmGhjn2Dszar3sQ0qCxvq3HoyL6hBEU=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=U8l1iBSuOGM0qJyBb9tCEOnomkpAYLQDuYrjHjXO5xYlh+sSRvkdMSXwCn6cAqn0ytYWjbGl6LvgwvGPUaOR3zfBr9kFk0E6KzwjQZKAtSfdsbRDxA19NmGkODT5mtiINmqy1hqEPdKLn8htum0S1Ieh7SyB9mhBYhxu7EQqCGU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NMQTpuFv; arc=none smtp.client-ip=209.85.215.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-7d666fb3fb9so2094986a12.0;
-        Mon, 30 Sep 2024 00:30:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727681452; x=1728286252; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ClHkn94f2eHvY8OtjIJbzSBBrFztTgapow7MgGqWqQ0=;
-        b=NMQTpuFvRuFoRnUHCFh9f0ia2zEHPgtvbEV8twGpvI5QgJqG6M6xqjLJzlsdFfEhJX
-         FdaCIjSwyTwo0JmzZhN8jmKCNziQp1T1bymt2nSscoJ693Zmoa9rmc+W+jv2T6BGhuZq
-         pXs5yLgjOHDFksSAafkdCLL8d0QN5lzy86xYX9ddoeuoqxUbM44Z9adA2pUk7MJj+aQi
-         Ce10rKBmMoMGzpN2QPUnesYfBOmWJtW0sFJBv1WiVhen8bcxOqzO1Jrpx1i7Hxv5H+2U
-         KL+ZsX8QH+oHWBikGJP9SIrfgpq5fjg8moyt0wWqT3Qt2/WLAOvFYQnwzAGx8mLduXrE
-         61OQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727681452; x=1728286252;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ClHkn94f2eHvY8OtjIJbzSBBrFztTgapow7MgGqWqQ0=;
-        b=NVQTkUPht0yIjsaX4nQMVs7b23hu6cKMlCfoEnzKEioZ5EaaR6edCVfmQKr00YsRU2
-         Wn3TwJj9EDiRi0IVEH6V6ETlSdWMSkQZF8GtkLln3aJl7vziaAZvS1JZL4jOdmQy2mmF
-         T1GLrfM6+iV0PAiTiRc4ImRxBT0qhIwAAi19jKTCbvBd9aFEg+6/PYgaNYsOL5MqjoSZ
-         rI41Kmx1d96AedwdOt2ANAd9p11BnCitbECxGPeIM8NOAgNw2q4WuAMKsFS7TeLWUL7q
-         hluBynZinT1U7XBkJZg8HlGqWje1rXaHUfT7Vimk0PLID1HIzYQ5FLXgWyyHYqSlLI9g
-         jJ7g==
-X-Forwarded-Encrypted: i=1; AJvYcCUOLp00zrNfRUC2thzMXkJWZzKzi7BNZTdK0wagKJqA+ZWNDTUUnkgio4PwkI0dK7Jd4oY=@vger.kernel.org, AJvYcCVRqYIw22w/dO5NigePvhrQbveJHCOiUnCQ4QtoWr5rMf+/PK4+KLATJpZ2fFL74SS2JLVUw5oGb73k7TRV@vger.kernel.org, AJvYcCWNw7B5gwXW9ls4mB2KeZ+4fZgULtB6QO35yvJw5lPT5ccETEi7GsfyeV/gv77EpW2D3g0JR+57hBGAsS7u+3ZB@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywt2UxMTsOxm9hJDycQQFs9K/GqtzyR8Ydtw82jGN3bBvk6YZ3Y
-	1URkUqja51PBoW6TWMOczoeL3Mfiu7xOHq3nTSDVKMn1e9lBXSvl
-X-Google-Smtp-Source: AGHT+IG2GMh+01FhZGX/8NArehqsmFbxm0c8Tt5WgTBnanQ+Hw6SF+CyF2FSAL3EBXHm9LoXqPRHmw==
-X-Received: by 2002:a05:6a20:6f9c:b0:1cf:4ed:ffc0 with SMTP id adf61e73a8af0-1d4fa1b8417mr17769352637.4.1727681452084;
-        Mon, 30 Sep 2024 00:30:52 -0700 (PDT)
-Received: from kodidev-ubuntu (69-172-146-21.cable.teksavvy.com. [69.172.146.21])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7e6db2c66e1sm5908521a12.47.2024.09.30.00.30.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Sep 2024 00:30:51 -0700 (PDT)
-From: Tony Ambardar <tony.ambardar@gmail.com>
-X-Google-Original-From: Tony Ambardar <Tony.Ambardar@gmail.com>
-Date: Mon, 30 Sep 2024 00:30:49 -0700
-To: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc: andrii@kernel.org, eddyz87@gmail.com, mykolal@fb.com, ast@kernel.org,
-	daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org,
-	yonghong.song@linux.dev, john.fastabend@gmail.com,
-	kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com,
-	jolsa@kernel.org, shuah@kernel.org, bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Abaci Robot <abaci@linux.alibaba.com>
-Subject: Re: [PATCH v2 -next] selftests/bpf: Use ARRAY_SIZE for array length
-Message-ID: <ZvpTqammU0DqcKyz@kodidev-ubuntu>
-References: <20240929092811.7103-1-jiapeng.chong@linux.alibaba.com>
+	s=arc-20240116; t=1727681813; c=relaxed/simple;
+	bh=um1tO7yPe6lanquOSmonCyC+iddX9cPeHGSY6pn/DDo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=fJqfbF2gnu2bR9HC2kOs241oq0AC69j1c/Mo0mE8aVvBug9YR3zzAARhHvvvCEyPNMWtkgE2FwjEeMlA4qDSdKp1Y9Eljax+9xBbbl4gNEBnhH05S2aDUWj1T6balL8tDDaLhjFn/I5PZawjjFZRqiJY4nGmiQocGaPHKZs9l5o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=Nn8leL/q; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=wDovo+tFomF7bMi/0L+PtEMdVXxkZUmvFiFypxxGh6E=; b=Nn8leL/qROiP5Yy9Mc7HxdvzRp
+	LepsFPKOC2Yo/cOvBlM6R6rV5nceAx5b4yGz8xLxNcLO5t93vEDsaIa9REFX+zajFy/S1kuvTgtGJ
+	wmpogi78VKaGI+DgQEnbqtl3qKZEKOY3+i78R/l17SQk9u4lUiQ3VqDcoBB217q0aQ/30p6Tj2zrT
+	wgEgqNL5T6YF0Oex1QPhf8YqSf5fe1aD9IlqPDPucgYMjmfnoBcRI0M3LJIvw7+jzOxzk9VxVPFWf
+	sZpeXovzdwrB7JnbLkduWBinK6j+czRoL62cCLkuU3v0yFIyQeQgZEBna55el/dgq86vv6NW/yyTN
+	dhF3pIcQ==;
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1svAxT-000IFU-VQ; Mon, 30 Sep 2024 09:36:39 +0200
+Received: from [178.197.249.44] (helo=[192.168.1.114])
+	by sslproxy02.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1svAxS-0008Fm-2d;
+	Mon, 30 Sep 2024 09:36:39 +0200
+Message-ID: <cb613257-75c5-4bcf-9daa-c3f5d9a83186@iogearbox.net>
+Date: Mon, 30 Sep 2024 09:36:38 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240929092811.7103-1-jiapeng.chong@linux.alibaba.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1] bpf: Prevent infinite loops with bpf_redirect_peer
+To: Jordan Rife <jrife@google.com>, bpf@vger.kernel.org
+Cc: netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Kui-Feng Lee <thinker.li@gmail.com>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ "David S. Miller" <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>,
+ stable@vger.kernel.org, John Fastabend <john.fastabend@gmail.com>
+References: <20240929170219.1881536-1-jrife@google.com>
+Content-Language: en-US
+From: Daniel Borkmann <daniel@iogearbox.net>
+In-Reply-To: <20240929170219.1881536-1-jrife@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27412/Sun Sep 29 10:48:04 2024)
 
-On Sun, Sep 29, 2024 at 05:28:11PM +0800, Jiapeng Chong wrote:
-> Use of macro ARRAY_SIZE to calculate array size minimizes
-> the redundant code and improves code reusability.
-> 
-> ./tools/testing/selftests/bpf/prog_tests/core_reloc_raw.c:98:34-35: WARNING: Use ARRAY_SIZE.
-> ./tools/testing/selftests/bpf/prog_tests/core_reloc_raw.c:93:29-30: WARNING: Use ARRAY_SIZE.
-> ./tools/testing/selftests/bpf/prog_tests/core_reloc_raw.c:101:34-35: WARNING: Use ARRAY_SIZE.
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=11167
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+On 9/29/24 7:02 PM, Jordan Rife wrote:
+> It is possible to create cycles using bpf_redirect_peer which lead to an
+> an infinite loop inside __netif_receive_skb_core. The simplest way to
+> illustrate this is by attaching a TC program to the ingress hook on both
+> sides of a veth or netkit device pair which redirects to its own peer,
+> although other cycles are possible. This patch places an upper limit on
+> the number of iterations allowed inside __netif_receive_skb_core to
+> prevent this.
+>
+> Signed-off-by: Jordan Rife <jrife@google.com>
+> Fixes: 9aa1206e8f48 ("bpf: Add redirect_peer helper")
+> Cc: stable@vger.kernel.org
 > ---
-> Changes in v2:
->   -Modify the header file "kselftest.h" to "linux/kernel.h".
-> 
->  tools/testing/selftests/bpf/prog_tests/core_reloc_raw.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/core_reloc_raw.c b/tools/testing/selftests/bpf/prog_tests/core_reloc_raw.c
-> index a18d3680fb16..7534014279ca 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/core_reloc_raw.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/core_reloc_raw.c
-> @@ -7,6 +7,7 @@
->  #include <sys/syscall.h>
->  #include <bpf/libbpf.h>
->  #include <bpf/btf.h>
-> +#include <linux/kernel.h>
-
-Hi Jiapeng,
-
-I don't believe adding this header is needed, since ARRAY_SIZE is defined
-in bpf_utils.h and already pulled in by test_progs.h below. Maybe try
-without "#include <linux/kernel.h"> to check?
-
-Take care,
-Tony
-
->  
->  #include "test_progs.h"
->  #include "test_btf.h"
-> @@ -90,15 +91,15 @@ static void test_bad_local_id(void)
->  	attr.prog_type = BPF_TRACE_RAW_TP;
->  	attr.license = (__u64)"GPL";
->  	attr.insns = (__u64)&insns;
-> -	attr.insn_cnt = sizeof(insns) / sizeof(*insns);
-> +	attr.insn_cnt = ARRAY_SIZE(insns);
->  	attr.log_buf = (__u64)log;
->  	attr.log_size = sizeof(log);
->  	attr.log_level = log_level;
->  	attr.func_info = (__u64)funcs;
-> -	attr.func_info_cnt = sizeof(funcs) / sizeof(*funcs);
-> +	attr.func_info_cnt = ARRAY_SIZE(funcs);
->  	attr.func_info_rec_size = sizeof(*funcs);
->  	attr.core_relos = (__u64)relos;
-> -	attr.core_relo_cnt = sizeof(relos) / sizeof(*relos);
-> +	attr.core_relo_cnt = ARRAY_SIZE(relos);
->  	attr.core_relo_rec_size = sizeof(*relos);
->  	prog_fd = sys_bpf_prog_load(&attr, sizeof(attr), 1);
->  	saved_errno = errno;
-> -- 
-> 2.32.0.3.g01195cf9f
-> 
+>   net/core/dev.c                                | 11 +++-
+>   net/core/dev.h                                |  1 +
+>   .../selftests/bpf/prog_tests/tc_redirect.c    | 51 +++++++++++++++++++
+>   .../selftests/bpf/progs/test_tc_peer.c        | 13 +++++
+>   4 files changed, 75 insertions(+), 1 deletion(-)
+>
+> diff --git a/net/core/dev.c b/net/core/dev.c
+> index cd479f5f22f6..753f8d27f47c 100644
+> --- a/net/core/dev.c
+> +++ b/net/core/dev.c
+> @@ -5455,6 +5455,7 @@ static int __netif_receive_skb_core(struct sk_buff **pskb, bool pfmemalloc,
+>   	struct net_device *orig_dev;
+>   	bool deliver_exact = false;
+>   	int ret = NET_RX_DROP;
+> +	int loops = 0;
+>   	__be16 type;
+>   
+>   	net_timestamp_check(!READ_ONCE(net_hotdata.tstamp_prequeue), skb);
+> @@ -5521,8 +5522,16 @@ static int __netif_receive_skb_core(struct sk_buff **pskb, bool pfmemalloc,
+>   		nf_skip_egress(skb, true);
+>   		skb = sch_handle_ingress(skb, &pt_prev, &ret, orig_dev,
+>   					 &another);
+> -		if (another)
+> +		if (another) {
+> +			loops++;
+No, as you mentioned, there are plenty of other misconfiguration 
+possibilities in and
+outside bpf where something can loop in the stack (or where you can lock 
+yourself
+out e.g. drop-all).
 
