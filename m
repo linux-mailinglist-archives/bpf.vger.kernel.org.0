@@ -1,188 +1,240 @@
-Return-Path: <bpf+bounces-40613-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40614-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2D9D98AF43
-	for <lists+bpf@lfdr.de>; Mon, 30 Sep 2024 23:37:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 15BA298AF65
+	for <lists+bpf@lfdr.de>; Mon, 30 Sep 2024 23:49:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EDFD81C2185F
-	for <lists+bpf@lfdr.de>; Mon, 30 Sep 2024 21:37:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2CD991C2130D
+	for <lists+bpf@lfdr.de>; Mon, 30 Sep 2024 21:49:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A90B3186E59;
-	Mon, 30 Sep 2024 21:36:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9711187347;
+	Mon, 30 Sep 2024 21:49:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T0IdNwHg"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LbJOGqWS"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7F60184527;
-	Mon, 30 Sep 2024 21:36:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B45015E97;
+	Mon, 30 Sep 2024 21:49:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727732210; cv=none; b=ArSGUMhYaLi2c59+C/HBe1Qq9W0K+zFRMxgX6q6B+RusWP2a3zRsNznnVxtriE2FKYH7a0sJsR3vCFqXVLJpUvDvs37TPo3g/TKkMoE7o3OJ3jp9AkrMeywIabDSBmNzJ1N7SoGzsvFSGM5bk9JlHp9JipSMmvLXAPZQB21cqww=
+	t=1727732950; cv=none; b=dEV3hTJO9jwLUJ6vtIbjdPUwM2ZycJOhli4CH22yYwYFjdQAlsrYb1D0ti6vdK5EnCekCKyYf3tK8qj8jLridBEoPnb0ZtvShDjud2n+3FRHvdny7vK/RcD64WiOZfH8FLVd4XJZLFbSgcvVukCT9B2Mij8dL7WMNH9tbQsCoCQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727732210; c=relaxed/simple;
-	bh=GXmvbsvNEqoHGNrJu2SrieazMifYZhOquLiAVHxWLxQ=;
+	s=arc-20240116; t=1727732950; c=relaxed/simple;
+	bh=n6p2rf3/kdt9aomaPY8/OOMh33kr6Y0Bhyx+wYtPwZc=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=M4wZrCkF87ITyfmXCBM5x/Hm4s356PuDjXHnlVZmW0uXeEB4qib+wwLtkJmwxmoXuMtL8Yp8ZpRTpAjp+Dj2jVS+xhZyqy4KK/iCIKxyyBZPyXy9YDiRPQyj85vBI3N49xOO1zQNmLR6DmcAIKMISgjUE4qi5tmJF+z9zdZPQ1k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=T0IdNwHg; arc=none smtp.client-ip=209.85.216.54
+	 To:Cc:Content-Type; b=gQzLWhC7u7o+d4nnIkk34DLHktvkCJaMyuS4k4FEAdeTNvchiO8Nufc2jeYrFe3FMzT6a3OVGfTrTZi7QNJkNLRhuKDtZJll6xWhKgXDGMA5i/BNGkIlstau9twTU+evN0VAgLneVcnV97sWvxDbxADYQrUtG/Vlq4eYFVSX1/k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LbJOGqWS; arc=none smtp.client-ip=209.85.216.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-2e0af6e5da9so3074305a91.2;
-        Mon, 30 Sep 2024 14:36:48 -0700 (PDT)
+Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2e0af6e5da9so3079626a91.2;
+        Mon, 30 Sep 2024 14:49:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727732208; x=1728337008; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1727732948; x=1728337748; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=aLjmuJdgY04vPZgQ7wfu5wG7oZ0LAGRAYlcoftUXrC4=;
-        b=T0IdNwHgdDyWPiTstBzBME6+glNC45vRAKdNfchySuGO94mtDoro+KvhHv4lTb+dpz
-         OlnVT0mFwHeOvvXDyJ2Mt8VZYTs4KSCIuiZN3ruGWmKxW3ajnrquJLTuo/+guF/akeOT
-         CI1FM8vWCX7cqj5JrQdbO5wQfgXYG/2N7qciaBgohFDNnnspxkDWcuo7y0mDCu0IyPgd
-         OPo58r0lU2jJ+BJOK32J8VHvs3Bf/rjad4T2TFkQyWI6TFgsP5pczEh7b/mtv8WSB6Px
-         YszJFwvyg0ApftyXut+I9zOKZrQU1YPeYVWEVduLcf3kukSZ+j239nVVqGD4WIsGpT2H
-         Eu2g==
+        bh=7NvwH7J9RmZnAE9MhK+XghnKQt8nf7AhDP5uZDkgZ6U=;
+        b=LbJOGqWSyDU+QeJomn+fPiQRnUe30GRg/kue8KOAsI9Hs4hqaZSXMn8WIt0D9A1BKD
+         K73aUC2MV/AAfRH2ogS9nYVVl3SZprWzgCvNK+b3nfOCT2NimUF8uOrG0Hh9Q4UEHZU7
+         h0wpnMGzZvVLwx9Wa5YZmQfPgi97GyS1555Obh8f6Gsv5lCASdsATx0GgL2z3oH6BhKp
+         RC4Ly7lXT0lXHWqNyU8H2KSn27hZ77MATEsPDBLnK6F/qJ7qRvcPdQ02873Ojw+X8Ani
+         SiLZ7vkwLqwaPKdpc6xhmbHPv3EW6XM82de58SartvwOzq3zQi0rxRwgDfshWm8qLeO1
+         wgQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727732208; x=1728337008;
+        d=1e100.net; s=20230601; t=1727732948; x=1728337748;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=aLjmuJdgY04vPZgQ7wfu5wG7oZ0LAGRAYlcoftUXrC4=;
-        b=RKqyhlkfAUnH1kx26OV5pF95JWr3hf4m8VGGy+n+B+DDX2x3rJom3H/B66MK5PhrKF
-         yKUPTYvrIoIONeMESmohI20AYYOipJGXi19T0A8SBaTiMAvR0OHrrIJia8PYtVbqPor5
-         vfwxzLOQl0W1gL7HLM1jtIOopUrfPKIIDEe0sz54cx4ZkXBjljqXQQT7DSQ6H+hzpOGX
-         atCFDmxFR8rgqSjSzwTd/fNOBSo43Bsazm1nFF+Jbbp2S7t6xSr6euiMcmp0DIuVuqoT
-         TVU+Xs8nKqWiFEZWWWko1oHO5sWSZfS3+5l6o9CXYrj+TcV5C0VBmLiUMHAzafdRO5EN
-         NHtg==
-X-Forwarded-Encrypted: i=1; AJvYcCX8Z5rL2erkXLWgPu1cAYDbJDsJUodOKytNIHGPuN7ufa76Sff8kkEIqnqT/T+CobL9anKpHMl1gd9dT+uc2lY7ZGC3@vger.kernel.org, AJvYcCXiuKKd0amUgJAjBMn4qcdkD13F9YYAZsKrZzvjv/sT2zQ5ObeMyULo5A9/aC4vs2zfDMc=@vger.kernel.org, AJvYcCXma2IwElANNT/7vTH0UbPZSJihyK4tofUfuKQdm77VWnaBndgaB7mLgAQxT4wFyIvLGpGIRapd9kE/Trbh@vger.kernel.org
-X-Gm-Message-State: AOJu0YzvFUCVBFJ3snwGyyQQcHa2FEOiQVyqVWyrinPpEqC/5CJthx0O
-	UPF5jT16tLW4rekr33fZ8MV9s28fypmSPzxbMFjz6nNr3xLW8vuPYgN2/07W0bwba/wOzDNebfr
-	bIjhMSF7GjpIk2GbFToSK6Sid4Us=
-X-Google-Smtp-Source: AGHT+IGrecAdvHcSYgeuLmnKQSCfWKC9mn/PnT0z7da7XCLAC3HexVDjABjdU3yGwmAKJ+kqDL1ESJcquMJmDutfTto=
-X-Received: by 2002:a17:90a:9ea:b0:2d3:c34e:2fda with SMTP id
- 98e67ed59e1d1-2e0b89d961cmr15187610a91.14.1727732208036; Mon, 30 Sep 2024
- 14:36:48 -0700 (PDT)
+        bh=7NvwH7J9RmZnAE9MhK+XghnKQt8nf7AhDP5uZDkgZ6U=;
+        b=E/nko0NJnZRG67dLwcxzbOKGxd9pqv+MHZdzYnFozdFrrEHbFtjprCImuBZVfPsgsR
+         6jVlEBWT+CBnW4AyBsukDd0yOZ7tFlktNXbTXkJZagM9worZj8ExhqDb6ZrhFVwruO9d
+         oBeVzb5MrcfxhD/jG4qLPHFuLy8Z3/AOrzX5WBHYx4rxQgOkL+QQBQSO5vy7n6gb1ZDT
+         PgJEQ4vO8iOzz31chrwIybVOaPLTMDnrceAGWc/VPkuFKgifIy51n2J6S0n6MxEi5Yiq
+         C3KIdlgTm6MwBRMNFZeq8CecLLcid6HPzuZpct4/Au0K2d5EK8kEh5zT8l6yq6+kNVW4
+         jCrQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUiOI8ALNGpH0CthcWtTQOkP153HLiml0sgUW0smIkN3JM59r8Xw2XIHlPe93koWCWug4SPcoX+/8iCEjSi@vger.kernel.org, AJvYcCWGoGD5EMsDCO0Vw/qELx27lsMPJooJHuaevA7h/rsURezVeMJnNzjIBEjB6JS9atYyGzQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxoMR1yCbmqEgqcQtg+bCVkB/JmxTTAYd10E+zxlasSPkf2UZ4x
+	tV0Mk06dwLdLE0xIlEtg43m8lNiUgevt49xHSLPLh+12D+alODqdTfASC3td+QGa3Ugtth/8Ztg
+	gLA+vF9HXUNrHRPPZdGpL+byfmH50fg==
+X-Google-Smtp-Source: AGHT+IH9fqFiMjAM8mUwUhqCnAz+/lSkMBgzdYjLn17UBNdu5OsLTqlkVy2Vy0yAdFfBIsltYnUWlBb9n5Bf3T2/H9w=
+X-Received: by 2002:a17:90a:8a8c:b0:2cf:c9ab:e747 with SMTP id
+ 98e67ed59e1d1-2e0b8872f4fmr16921981a91.1.1727732948235; Mon, 30 Sep 2024
+ 14:49:08 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240929205717.3813648-1-jolsa@kernel.org> <20240929205717.3813648-7-jolsa@kernel.org>
-In-Reply-To: <20240929205717.3813648-7-jolsa@kernel.org>
+References: <20240926115328.105634-1-puranjay@kernel.org> <20240926115328.105634-2-puranjay@kernel.org>
+In-Reply-To: <20240926115328.105634-2-puranjay@kernel.org>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 30 Sep 2024 14:36:35 -0700
-Message-ID: <CAEf4BzYQLo41DtTPpkZ-mMWx-34G4h2pFKY_mDrBfFibjGHjPA@mail.gmail.com>
-Subject: Re: [PATCHv5 bpf-next 06/13] libbpf: Add support for uprobe multi
- session attach
-To: Jiri Olsa <jolsa@kernel.org>
-Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>, 
-	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, linux-kernel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org
+Date: Mon, 30 Sep 2024 14:48:55 -0700
+Message-ID: <CAEf4BzaUq9WqKL1n8uHJQw3hbEFHYS4c3RN7qPWzbtYHzREThw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/2] bpf: implement bpf_send_signal_remote() kfunc
+To: Puranjay Mohan <puranjay@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	puranjay12@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, Sep 29, 2024 at 1:58=E2=80=AFPM Jiri Olsa <jolsa@kernel.org> wrote:
+On Thu, Sep 26, 2024 at 4:53=E2=80=AFAM Puranjay Mohan <puranjay@kernel.org=
+> wrote:
 >
-> Adding support to attach program in uprobe session mode
-> with bpf_program__attach_uprobe_multi function.
+> Implement bpf_send_signal_remote kfunc that is similar to
+> bpf_send_signal_thread and bpf_send_signal helpers  but can be used to
+> send signals to other threads and processes. It also supports sending a
+> cookie with the signal similar to sigqueue().
 >
-> Adding session bool to bpf_uprobe_multi_opts struct that allows
-> to load and attach the bpf program via uprobe session.
-> the attachment to create uprobe multi session.
+> If the receiving process establishes a handler for the signal using the
+> SA_SIGINFO flag to sigaction(), then it can obtain this cookie via the
+> si_value field of the siginfo_t structure passed as the second argument
+> to the handler.
 >
-> Also adding new program loader section that allows:
->   SEC("uprobe.session/bpf_fentry_test*")
->
-> and loads/attaches uprobe program as uprobe session.
->
-> Adding sleepable hook (uprobe.session.s) as well.
->
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
 > ---
->  tools/lib/bpf/bpf.c    |  1 +
->  tools/lib/bpf/libbpf.c | 21 ++++++++++++++++++---
->  tools/lib/bpf/libbpf.h |  4 +++-
->  3 files changed, 22 insertions(+), 4 deletions(-)
+>  kernel/trace/bpf_trace.c | 78 +++++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 77 insertions(+), 1 deletion(-)
 >
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index a582cd25ca876..51b27db1321fc 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -802,6 +802,9 @@ struct send_signal_irq_work {
+>         struct task_struct *task;
+>         u32 sig;
+>         enum pid_type type;
+> +       bool is_siginfo;
+> +       kernel_siginfo_t info;
+> +       int value;
+>  };
+>
+>  static DEFINE_PER_CPU(struct send_signal_irq_work, send_signal_work);
+> @@ -811,7 +814,11 @@ static void do_bpf_send_signal(struct irq_work *entr=
+y)
+>         struct send_signal_irq_work *work;
+>
+>         work =3D container_of(entry, struct send_signal_irq_work, irq_wor=
+k);
+> -       group_send_sig_info(work->sig, SEND_SIG_PRIV, work->task, work->t=
+ype);
+> +       if (work->is_siginfo)
+> +               group_send_sig_info(work->sig, &work->info, work->task, w=
+ork->type);
+> +       else
+> +               group_send_sig_info(work->sig, SEND_SIG_PRIV, work->task,=
+ work->type);
+> +
+>         put_task_struct(work->task);
+>  }
+>
+> @@ -848,6 +855,7 @@ static int bpf_send_signal_common(u32 sig, enum pid_t=
+ype type)
+>                  * irq works get executed.
+>                  */
+>                 work->task =3D get_task_struct(current);
+> +               work->is_siginfo =3D false;
+>                 work->sig =3D sig;
+>                 work->type =3D type;
+>                 irq_work_queue(&work->irq_work);
+> @@ -3484,3 +3492,71 @@ static int __init bpf_kprobe_multi_kfuncs_init(voi=
+d)
+>  }
+>
+>  late_initcall(bpf_kprobe_multi_kfuncs_init);
+> +
+> +__bpf_kfunc_start_defs();
+> +
+> +__bpf_kfunc int bpf_send_signal_remote(struct task_struct *task, int sig=
+, enum pid_type type,
+> +                                      int value)
+> +{
+> +       struct send_signal_irq_work *work =3D NULL;
+> +       kernel_siginfo_t info;
+> +
+> +       if (type !=3D PIDTYPE_PID && type !=3D PIDTYPE_TGID)
+> +               return -EINVAL;
+> +       if (unlikely(task->flags & (PF_KTHREAD | PF_EXITING)))
+> +               return -EPERM;
+> +       if (unlikely(!nmi_uaccess_okay()))
+> +               return -EPERM;
+> +       /* Task should not be pid=3D1 to avoid kernel panic. */
+> +       if (unlikely(is_global_init(task)))
+> +               return -EPERM;
+> +
+> +       clear_siginfo(&info);
+> +       info.si_signo =3D sig;
+> +       info.si_errno =3D 0;
+> +       info.si_code =3D SI_KERNEL;
+> +       info.si_pid =3D 0;
+> +       info.si_uid =3D 0;
+> +       info.si_value.sival_int =3D value;
 
-LGTM, though see the nit below
+It seems like it could be either int sival_int or `void *sival_ptr`,
+i.e., it's actually a 64-bit value on 64-bit architectures.
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Can we allow passing a full u64 here and assign it to sival_ptr (with a cas=
+t)?
 
-> diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-> index 2a4c71501a17..becdfa701c75 100644
-> --- a/tools/lib/bpf/bpf.c
-> +++ b/tools/lib/bpf/bpf.c
-> @@ -776,6 +776,7 @@ int bpf_link_create(int prog_fd, int target_fd,
->                         return libbpf_err(-EINVAL);
->                 break;
->         case BPF_TRACE_UPROBE_MULTI:
-> +       case BPF_TRACE_UPROBE_SESSION:
->                 attr.link_create.uprobe_multi.flags =3D OPTS_GET(opts, up=
-robe_multi.flags, 0);
->                 attr.link_create.uprobe_multi.cnt =3D OPTS_GET(opts, upro=
-be_multi.cnt, 0);
->                 attr.link_create.uprobe_multi.path =3D ptr_to_u64(OPTS_GE=
-T(opts, uprobe_multi.path, 0));
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 3587ed7ec359..563ff5e64269 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -9410,8 +9410,10 @@ static const struct bpf_sec_def section_defs[] =3D=
- {
->         SEC_DEF("kprobe.session+",      KPROBE, BPF_TRACE_KPROBE_SESSION,=
- SEC_NONE, attach_kprobe_session),
->         SEC_DEF("uprobe.multi+",        KPROBE, BPF_TRACE_UPROBE_MULTI, S=
-EC_NONE, attach_uprobe_multi),
->         SEC_DEF("uretprobe.multi+",     KPROBE, BPF_TRACE_UPROBE_MULTI, S=
-EC_NONE, attach_uprobe_multi),
-> +       SEC_DEF("uprobe.session+",      KPROBE, BPF_TRACE_UPROBE_SESSION,=
- SEC_NONE, attach_uprobe_multi),
->         SEC_DEF("uprobe.multi.s+",      KPROBE, BPF_TRACE_UPROBE_MULTI, S=
-EC_SLEEPABLE, attach_uprobe_multi),
->         SEC_DEF("uretprobe.multi.s+",   KPROBE, BPF_TRACE_UPROBE_MULTI, S=
-EC_SLEEPABLE, attach_uprobe_multi),
-> +       SEC_DEF("uprobe.session.s+",    KPROBE, BPF_TRACE_UPROBE_SESSION,=
- SEC_SLEEPABLE, attach_uprobe_multi),
->         SEC_DEF("ksyscall+",            KPROBE, 0, SEC_NONE, attach_ksysc=
-all),
->         SEC_DEF("kretsyscall+",         KPROBE, 0, SEC_NONE, attach_ksysc=
-all),
->         SEC_DEF("usdt+",                KPROBE, 0, SEC_USDT, attach_usdt)=
-,
-> @@ -11733,7 +11735,10 @@ static int attach_uprobe_multi(const struct bpf_=
-program *prog, long cookie, stru
->                 ret =3D 0;
->                 break;
->         case 3:
-> -               opts.retprobe =3D str_has_pfx(probe_type, "uretprobe.mult=
-i");
-> +               if (str_has_pfx(probe_type, "uprobe.session"))
-> +                       opts.session =3D true;
-> +               else
-> +                       opts.retprobe =3D str_has_pfx(probe_type, "uretpr=
-obe.multi");
+> +
+> +       if (irqs_disabled()) {
+> +               /* Do an early check on signal validity. Otherwise,
+> +                * the error is lost in deferred irq_work.
+> +                */
+> +               if (unlikely(!valid_signal(sig)))
+> +                       return -EINVAL;
+> +
+> +               work =3D this_cpu_ptr(&send_signal_work);
+> +               if (irq_work_is_busy(&work->irq_work))
+> +                       return -EBUSY;
+> +
+> +               work->task =3D get_task_struct(task);
+> +               work->is_siginfo =3D true;
+> +               work->info =3D info;
+> +               work->sig =3D sig;
+> +               work->type =3D type;
+> +               work->value =3D value;
+> +               irq_work_queue(&work->irq_work);
+> +               return 0;
+> +       }
+> +
+> +       return group_send_sig_info(sig, &info, task, type);
+> +}
+> +
+> +__bpf_kfunc_end_defs();
+> +
+> +BTF_KFUNCS_START(send_signal_kfunc_ids)
+> +BTF_ID_FLAGS(func, bpf_send_signal_remote, KF_TRUSTED_ARGS)
+> +BTF_KFUNCS_END(send_signal_kfunc_ids)
+> +
+> +static const struct btf_kfunc_id_set bpf_send_signal_kfunc_set =3D {
+> +       .owner =3D THIS_MODULE,
+> +       .set =3D &send_signal_kfunc_ids,
+> +};
+> +
+> +static int __init bpf_send_signal_kfuncs_init(void)
+> +{
+> +       return register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING, &bpf_send=
+_signal_kfunc_set);
 
-nit: this is very non-uniform, can you please just do:
+let's allow it for other program types (at least kprobes, tracepoints,
+raw_tp, etc, etc)? Is there any problem just allowing it for any
+program type?
 
-opts.session =3D str_has_pfx(probe_type, "uprobe.session");
-opts.retprobe =3D str_has_pfx(probe_type, "uretprobe.multi");
 
-There is no need to micro-optimize str_has_pfx() calls, IMO.
-
->                 *link =3D bpf_program__attach_uprobe_multi(prog, -1, bina=
-ry_path, func_name, &opts);
->                 ret =3D libbpf_get_error(*link);
->                 break;
-
-[...]
+> +}
+> +
+> +late_initcall(bpf_send_signal_kfuncs_init);
+> --
+> 2.40.1
+>
 
