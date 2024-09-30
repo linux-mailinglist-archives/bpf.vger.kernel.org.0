@@ -1,252 +1,212 @@
-Return-Path: <bpf+bounces-40615-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40616-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA9A998AF75
-	for <lists+bpf@lfdr.de>; Mon, 30 Sep 2024 23:52:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E4F398AF88
+	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2024 00:00:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 54D79B2417F
-	for <lists+bpf@lfdr.de>; Mon, 30 Sep 2024 21:52:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 90905B23EDC
+	for <lists+bpf@lfdr.de>; Mon, 30 Sep 2024 22:00:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA48118754D;
-	Mon, 30 Sep 2024 21:52:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D08C187560;
+	Mon, 30 Sep 2024 22:00:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IPBjaXoP"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nQVyDOj6"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02C9A15E97;
-	Mon, 30 Sep 2024 21:52:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0A8817F505
+	for <bpf@vger.kernel.org>; Mon, 30 Sep 2024 22:00:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727733153; cv=none; b=UH02dWlIyw+yuwd/2JMkBNRRLYMoPAX5OLpxBOO3nT1P+Ys2IoY9z8b23mLNyOcex1MZFpEMZj3EeuF7Lz4HODR81swW1GhvaxI4iwrbZjy2NKvV/ksAVDGTXV/7zHJX/l1tB0e4AjbIiR/PCIPTjohXgmdCVH09Zxxs8r12lfU=
+	t=1727733647; cv=none; b=q+z2K22uvK5al8fF2SrUtcZo8QbwA2zF2OH+xU7IcACFPOu1nOZNwwdQ+JaHEbxOEODm+JFpNayMlhLhFej3wEbJYE+rkThiP26MyPJqSL42WtLumzfRjWlCFcxA5k6MZ+wI1yWqO6krgix00hHzUjHJCo3+PKEpG/5yfyuUDVQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727733153; c=relaxed/simple;
-	bh=7AYToSm+YLx/ySbs4rmudrF2CAZpd+LDWLQoVQwrMuI=;
+	s=arc-20240116; t=1727733647; c=relaxed/simple;
+	bh=Hou3Kdgt4yapHujcrnHCVyYFmc626AH71kQjYdmfqUA=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KxpL/Kmg4Me3/jUsd7mz2lOKEtjMxsUzLEKlOzoK6J9G9eM6PCO9oIeZqjhhVALKg64INiQhIpKIfLgaAoj967o7JRr2QEXbpSn65pjEILz9199gSSw81J3P2yZZlV+qC+6Ml/CMRbdMf5gUiRIo+EKlZEAEL87co7m2crGvhCY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IPBjaXoP; arc=none smtp.client-ip=209.85.216.41
+	 To:Cc:Content-Type; b=d0YRTDKjgGHwstbfqMMuL0LyoQH2nxWDuv6j7NHNaa4AOqrSQ8/bQT/9RVBa/Tlra9CCly4kOvNCHjPWb0zpPO0MRS04JNP+mnLosiPXzt6rh4ls2FXyvDtScqqQrzTQeDDJO8P2gOZq2juJVPsIzQARZpZhN5fiIsso9g9jvEM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nQVyDOj6; arc=none smtp.client-ip=209.85.214.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-2e137183587so1029766a91.3;
-        Mon, 30 Sep 2024 14:52:30 -0700 (PDT)
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-20b6458ee37so27564885ad.1
+        for <bpf@vger.kernel.org>; Mon, 30 Sep 2024 15:00:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727733150; x=1728337950; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1727733645; x=1728338445; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Q/dGOU6/DyGTPGsE+EFtrlj1MYO6DRcr08abM9lQN98=;
-        b=IPBjaXoP2+4q+Tn3/Y31RUFw0fWTX+XC3iqBSSdQagx3Z5HGciplVS2SrQz8X5zKyu
-         RpLoGeKirnCty7RhFXun3zugtqG2xgtjFQHYcyekWBl6xDV/4M6MJnpbmOMcAB4mCyzY
-         w6hYuLGDmDE+pvs7GBGSAFECshBRnLiGqcbnPV1Bph6swSl2edofN+gOEBQ/sRJihP8J
-         3skJkRqj2FNYcskVMSU8OCQVDcq34e+wMoHmRjzQnMqk2a9/DysNkcySbpN3oG7xPF1G
-         bhjwIJXTnb7KLGiW1j7+n7AquzKaVeSbJZw3QxknTQqkEHq5VVFoGFSprip+ZBWgOzeg
-         YPMw==
+        bh=javF89s5Qqo6U6NJbcQcdYbYUaSRrWB4RzzIk8jhLwg=;
+        b=nQVyDOj63u5QuKoZii1u4whqVHXcIHQxIxojQQ92k9yFXKdEAcyx9Dof4kHsdkTjji
+         pwNexgrZogOSACzpc5jT6sThE2P8IC/QHPa9n+LbJvLWVTcN6mW+5zENZGG1LaAccJKz
+         DW7PyG5HHt8OoHSkU7oLDWIFIhtiKyAZFbZMlKcTr6lmQiQBzwRoPSTJShgVNtWm7w1y
+         LrSfKJoIeXbgl3cHib9dgOIp6XN77eQNnXqEgDKyk4bQRSOfIi0GDd35oDm8H/5yjHd2
+         x78rtFqGh6RH7OsxiiyqTgqqZ0FOh57urDtg4IAS4AD7S5Wg+xCqyZNtvVsL80+SvxIJ
+         6F3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727733150; x=1728337950;
+        d=1e100.net; s=20230601; t=1727733645; x=1728338445;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Q/dGOU6/DyGTPGsE+EFtrlj1MYO6DRcr08abM9lQN98=;
-        b=Vsc+dt6vY1r7JCz8Jh9cjXu36XpScdeXgTUNbXitZyUES90X0fdWjabLButCPcYyZb
-         jqag0EB7cLalzrIpcV0SI/abmePB0fv8WYjKVq+7jS4OmNyyTlxHlIoUyL0jKDuEkIYE
-         BcViHZzexcn8fvKs3JMwy8DyKDHEjuBfk/SRQiVP9gpcCi2w0Zi3OfevMxZdN21zWM5D
-         5Gegyskle9mkjvA2yfJmZfAw787dCxG1zyvuEG93/PLuceRZkg81s91v96SR/372U3Kj
-         GDLbsDxgqIME+s6Lhp9Hfq0wCqJzqdsBtGHXaaLDustx4pI8qa5i6vSBvE2z+APdz2IU
-         cJ2Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWlvidMO7owTKhzXplAMm15KY5dN6AzMfNVG+AEBcnUMgD5fuy6qCw6YDwVdqbnOKDzcj0=@vger.kernel.org, AJvYcCWwKGv3mPhNaAifQs6lgKc+72lleWoHpj8sNGHvNUtq928xsZBEPPURThjbpZF5fQZlu4U9eNLeknqzwkne@vger.kernel.org
-X-Gm-Message-State: AOJu0YzChuniC2Sc9Wtm661ud2l/mOgMAkswg9sA88l3XdS57U27rOOj
-	eljW4zB1WVamsqRWCsVdrUXgYI32MCtiIh+nLl/Y179SWOjVgj9APmxCMgotKTwH2HNdRSGBE8G
-	ENIIwxsIDzrnW8lYG9ofaKW2T6zU=
-X-Google-Smtp-Source: AGHT+IG2R76mkh8zb+ZI+9j/OwCAT4Yf5sniEhlyf0cw/FcLd0xejibzVdTv7ntB03TCtxyU//Ade71LQxtoH7GwD2s=
-X-Received: by 2002:a17:90a:f00a:b0:2d8:3fe8:a18e with SMTP id
- 98e67ed59e1d1-2e0b8872d71mr15883003a91.5.1727733150147; Mon, 30 Sep 2024
- 14:52:30 -0700 (PDT)
+        bh=javF89s5Qqo6U6NJbcQcdYbYUaSRrWB4RzzIk8jhLwg=;
+        b=cB4yZ0HMo30r62Vn9Qfd0gApdDItSOxecA1oDnoa5qrtXSPIpJN5CTy86X/lbTs4ys
+         Ge204MWWS1IqB0pOVKjDqQgk4mUCCaDAkNz8K6v1GbMk5oe2PvPj+k2EzsIzLy3+7cGZ
+         zk+d+x8qTOb0GqXQQdQX//4G6vsmUqsVBI1pW8Hm+py+QLiGHELI8jg4pR+6Zqb8H7cF
+         6I1xzxWJaJmbHUhZK4mnN+DIk3HH1EYuo1Q96lI6MI8MqrE0Nji0KOauI0XWXQHXV2H6
+         hp6dwM4VyQ4T8TLyK0rdrPHSCeA3/ezpbl9J9shRKf4cX0LOOXLKdNqpPsNF4hVXL2Ye
+         SVfQ==
+X-Gm-Message-State: AOJu0YyS2crs6Awz2udv0u/xz6zFyn0ZUrV6B0pJy3zLXu+BtZ/EtAlH
+	b4ci4YcYKRnuCCSs+lA/sb/vZL3uRGG60N7EC0JF6nd7LTF/TlTp4dORcUtyBqnNmbM1MnTxP4v
+	/IVzWGNf1PoZe/yk6DU7qMvUiaMI=
+X-Google-Smtp-Source: AGHT+IEgpQ85Y9sCEpoiYUFVWDPB/E+38Y/9W1WcvUhwajJFP9mTWIn+CyarybaoEVTLShJl7JU9aZ7o86mWojcDUSs=
+X-Received: by 2002:a17:902:c94f:b0:20b:9034:fb4a with SMTP id
+ d9443c01a7336-20b9034fc7emr55951325ad.49.1727733644899; Mon, 30 Sep 2024
+ 15:00:44 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240926115328.105634-1-puranjay@kernel.org> <20240926115328.105634-2-puranjay@kernel.org>
- <CAEf4BzaUq9WqKL1n8uHJQw3hbEFHYS4c3RN7qPWzbtYHzREThw@mail.gmail.com>
-In-Reply-To: <CAEf4BzaUq9WqKL1n8uHJQw3hbEFHYS4c3RN7qPWzbtYHzREThw@mail.gmail.com>
+References: <cover.1727329823.git.vmalik@redhat.com> <bc06e1f4bef09ba3d431d7a7236303746a7adb57.1727329823.git.vmalik@redhat.com>
+In-Reply-To: <bc06e1f4bef09ba3d431d7a7236303746a7adb57.1727329823.git.vmalik@redhat.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 30 Sep 2024 14:52:18 -0700
-Message-ID: <CAEf4Bzac9hbk7vgKETsS56iqy9Did8Zq6HJkQha4ksCE-Fk-2A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/2] bpf: implement bpf_send_signal_remote() kfunc
-To: Puranjay Mohan <puranjay@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+Date: Mon, 30 Sep 2024 15:00:32 -0700
+Message-ID: <CAEf4Bzas4ZxiyJp7h7N5OGmPSMRfZDgPUgEAdTmir3n-4cx-xg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: Add kfuncs for read-only string operations
+To: Viktor Malik <vmalik@redhat.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
 	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	puranjay12@gmail.com
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Sep 30, 2024 at 2:48=E2=80=AFPM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Wed, Sep 25, 2024 at 11:18=E2=80=AFPM Viktor Malik <vmalik@redhat.com> w=
+rote:
 >
-> On Thu, Sep 26, 2024 at 4:53=E2=80=AFAM Puranjay Mohan <puranjay@kernel.o=
-rg> wrote:
-> >
-> > Implement bpf_send_signal_remote kfunc that is similar to
-> > bpf_send_signal_thread and bpf_send_signal helpers  but can be used to
-> > send signals to other threads and processes. It also supports sending a
-> > cookie with the signal similar to sigqueue().
-> >
-> > If the receiving process establishes a handler for the signal using the
-> > SA_SIGINFO flag to sigaction(), then it can obtain this cookie via the
-> > si_value field of the siginfo_t structure passed as the second argument
-> > to the handler.
-> >
-> > Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
-> > ---
-> >  kernel/trace/bpf_trace.c | 78 +++++++++++++++++++++++++++++++++++++++-
-> >  1 file changed, 77 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> > index a582cd25ca876..51b27db1321fc 100644
-> > --- a/kernel/trace/bpf_trace.c
-> > +++ b/kernel/trace/bpf_trace.c
-> > @@ -802,6 +802,9 @@ struct send_signal_irq_work {
-> >         struct task_struct *task;
-> >         u32 sig;
-> >         enum pid_type type;
-> > +       bool is_siginfo;
-> > +       kernel_siginfo_t info;
-> > +       int value;
-> >  };
-> >
-> >  static DEFINE_PER_CPU(struct send_signal_irq_work, send_signal_work);
-> > @@ -811,7 +814,11 @@ static void do_bpf_send_signal(struct irq_work *en=
-try)
-> >         struct send_signal_irq_work *work;
-> >
-> >         work =3D container_of(entry, struct send_signal_irq_work, irq_w=
-ork);
-> > -       group_send_sig_info(work->sig, SEND_SIG_PRIV, work->task, work-=
->type);
-> > +       if (work->is_siginfo)
-> > +               group_send_sig_info(work->sig, &work->info, work->task,=
- work->type);
-> > +       else
-> > +               group_send_sig_info(work->sig, SEND_SIG_PRIV, work->tas=
-k, work->type);
-> > +
-> >         put_task_struct(work->task);
-> >  }
-> >
-> > @@ -848,6 +855,7 @@ static int bpf_send_signal_common(u32 sig, enum pid=
-_type type)
-> >                  * irq works get executed.
-> >                  */
-> >                 work->task =3D get_task_struct(current);
-> > +               work->is_siginfo =3D false;
-> >                 work->sig =3D sig;
-> >                 work->type =3D type;
-> >                 irq_work_queue(&work->irq_work);
-> > @@ -3484,3 +3492,71 @@ static int __init bpf_kprobe_multi_kfuncs_init(v=
-oid)
-> >  }
-> >
-> >  late_initcall(bpf_kprobe_multi_kfuncs_init);
-> > +
-> > +__bpf_kfunc_start_defs();
-> > +
-> > +__bpf_kfunc int bpf_send_signal_remote(struct task_struct *task, int s=
-ig, enum pid_type type,
-> > +                                      int value)
+> Kernel contains highly optimised implementation of traditional string
+> operations. Expose them as kfuncs to allow BPF programs leverage the
+> kernel implementation instead of needing to reimplement the operations.
+>
+> For now, add kfuncs for all string operations which do not copy memory
+> around: strcmp, strchr, strrchr, strnchr, strstr, strnstr, strlen,
+> strnlen, strpbrk, strspn, strcspn. Do not add strncmp as it is already
+> exposed as a helper.
+>
+> Signed-off-by: Viktor Malik <vmalik@redhat.com>
+> ---
+>  kernel/bpf/helpers.c | 66 ++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 66 insertions(+)
+>
+> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> index 1a43d06eab28..daa19760d8c8 100644
+> --- a/kernel/bpf/helpers.c
+> +++ b/kernel/bpf/helpers.c
+> @@ -3004,6 +3004,61 @@ __bpf_kfunc int bpf_copy_from_user_str(void *dst, =
+u32 dst__sz, const void __user
+>         return ret + 1;
+>  }
+>
+> +__bpf_kfunc int bpf_strcmp(const char *cs, const char *ct)
 
-Bikeshedding here a bit, but would bpf_send_signal_task() be a better
-name for something that accepts task_struct?
+I don't think this will work as you hope it will work. I suspect BPF
+verifier thinks you are asking to a pointer to a singular char (1-byte
+memory, basically), and expects kfunc to not access beyond that single
+byte. Which is not what you are doing, so it's a violation of declared
+kfunc contract.
 
-> > +{
-> > +       struct send_signal_irq_work *work =3D NULL;
-> > +       kernel_siginfo_t info;
-> > +
-> > +       if (type !=3D PIDTYPE_PID && type !=3D PIDTYPE_TGID)
-> > +               return -EINVAL;
-> > +       if (unlikely(task->flags & (PF_KTHREAD | PF_EXITING)))
-> > +               return -EPERM;
-> > +       if (unlikely(!nmi_uaccess_okay()))
-> > +               return -EPERM;
-> > +       /* Task should not be pid=3D1 to avoid kernel panic. */
-> > +       if (unlikely(is_global_init(task)))
-> > +               return -EPERM;
-> > +
-> > +       clear_siginfo(&info);
-> > +       info.si_signo =3D sig;
-> > +       info.si_errno =3D 0;
-> > +       info.si_code =3D SI_KERNEL;
-> > +       info.si_pid =3D 0;
-> > +       info.si_uid =3D 0;
-> > +       info.si_value.sival_int =3D value;
->
-> It seems like it could be either int sival_int or `void *sival_ptr`,
-> i.e., it's actually a 64-bit value on 64-bit architectures.
->
-> Can we allow passing a full u64 here and assign it to sival_ptr (with a c=
-ast)?
+We do have support to pass constant string pointers that are known at
+verification time (see bpf_strncmp() and also is_kfunc_arg_const_str()
+for kfunc-like equivalent), but I don't think that's what you want
+here.
 
-Seems like Alexei already suggested that on patch #2, I support the request=
-.
+Right now, the only way to pass dynamically sized anything is through
+dynptr, AFAIU.
 
+pw-bot: cr
+
+> +{
+> +       return strcmp(cs, ct);
+> +}
+> +
+> +__bpf_kfunc char *bpf_strchr(const char *s, int c)
+> +{
+> +       return strchr(s, c);
+> +}
+> +
+> +__bpf_kfunc char *bpf_strrchr(const char *s, int c)
+> +{
+> +       return strrchr(s, c);
+> +}
+> +
+> +__bpf_kfunc char *bpf_strnchr(const char *s, size_t count, int c)
+> +{
+> +       return strnchr(s, count, c);
+> +}
+> +
+> +__bpf_kfunc char *bpf_strstr(const char *s1, const char *s2)
+> +{
+> +       return strstr(s1, s2);
+> +}
+> +
+> +__bpf_kfunc char *bpf_strnstr(const char *s1, const char *s2, size_t len=
+)
+> +{
+> +       return strnstr(s1, s2, len);
+> +}
+> +
+> +__bpf_kfunc size_t bpf_strlen(const char *s)
+> +{
+> +       return strlen(s);
+> +}
+> +
+> +__bpf_kfunc size_t bpf_strnlen(const char *s, size_t count)
+> +{
+> +       return strnlen(s, count);
+> +}
+> +
+> +__bpf_kfunc char *bpf_strpbrk(const char *cs, const char *ct)
+> +{
+> +       return strpbrk(cs, ct);
+> +}
+> +
+> +__bpf_kfunc size_t bpf_strspn(const char *s, const char *accept)
+> +{
+> +       return strspn(s, accept);
+> +}
+> +
+> +__bpf_kfunc size_t bpf_strcspn(const char *s, const char *reject)
+> +{
+> +       return strcspn(s, reject);
+> +}
+> +
+>  __bpf_kfunc_end_defs();
 >
-> > +
-> > +       if (irqs_disabled()) {
-> > +               /* Do an early check on signal validity. Otherwise,
-> > +                * the error is lost in deferred irq_work.
-> > +                */
-> > +               if (unlikely(!valid_signal(sig)))
-> > +                       return -EINVAL;
-> > +
-> > +               work =3D this_cpu_ptr(&send_signal_work);
-> > +               if (irq_work_is_busy(&work->irq_work))
-> > +                       return -EBUSY;
-> > +
-> > +               work->task =3D get_task_struct(task);
-> > +               work->is_siginfo =3D true;
-> > +               work->info =3D info;
-> > +               work->sig =3D sig;
-> > +               work->type =3D type;
-> > +               work->value =3D value;
-> > +               irq_work_queue(&work->irq_work);
-> > +               return 0;
-> > +       }
-> > +
-> > +       return group_send_sig_info(sig, &info, task, type);
-> > +}
-> > +
-> > +__bpf_kfunc_end_defs();
-> > +
-> > +BTF_KFUNCS_START(send_signal_kfunc_ids)
-> > +BTF_ID_FLAGS(func, bpf_send_signal_remote, KF_TRUSTED_ARGS)
-> > +BTF_KFUNCS_END(send_signal_kfunc_ids)
-> > +
-> > +static const struct btf_kfunc_id_set bpf_send_signal_kfunc_set =3D {
-> > +       .owner =3D THIS_MODULE,
-> > +       .set =3D &send_signal_kfunc_ids,
-> > +};
-> > +
-> > +static int __init bpf_send_signal_kfuncs_init(void)
-> > +{
-> > +       return register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING, &bpf_se=
-nd_signal_kfunc_set);
+>  BTF_KFUNCS_START(generic_btf_ids)
+> @@ -3090,6 +3145,17 @@ BTF_ID_FLAGS(func, bpf_iter_bits_new, KF_ITER_NEW)
+>  BTF_ID_FLAGS(func, bpf_iter_bits_next, KF_ITER_NEXT | KF_RET_NULL)
+>  BTF_ID_FLAGS(func, bpf_iter_bits_destroy, KF_ITER_DESTROY)
+>  BTF_ID_FLAGS(func, bpf_copy_from_user_str, KF_SLEEPABLE)
+> +BTF_ID_FLAGS(func, bpf_strcmp)
+> +BTF_ID_FLAGS(func, bpf_strchr)
+> +BTF_ID_FLAGS(func, bpf_strrchr)
+> +BTF_ID_FLAGS(func, bpf_strnchr)
+> +BTF_ID_FLAGS(func, bpf_strstr)
+> +BTF_ID_FLAGS(func, bpf_strnstr)
+> +BTF_ID_FLAGS(func, bpf_strlen)
+> +BTF_ID_FLAGS(func, bpf_strnlen)
+> +BTF_ID_FLAGS(func, bpf_strpbrk)
+> +BTF_ID_FLAGS(func, bpf_strspn)
+> +BTF_ID_FLAGS(func, bpf_strcspn)
+>  BTF_KFUNCS_END(common_btf_ids)
 >
-> let's allow it for other program types (at least kprobes, tracepoints,
-> raw_tp, etc, etc)? Is there any problem just allowing it for any
-> program type?
+>  static const struct btf_kfunc_id_set common_kfunc_set =3D {
+> --
+> 2.46.0
 >
->
-> > +}
-> > +
-> > +late_initcall(bpf_send_signal_kfuncs_init);
-> > --
-> > 2.40.1
-> >
 
