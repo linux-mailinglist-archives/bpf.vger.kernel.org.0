@@ -1,236 +1,303 @@
-Return-Path: <bpf+bounces-40622-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40623-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4956598B0A9
-	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2024 01:13:50 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4438C98B0AC
+	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2024 01:15:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ECC562834BA
-	for <lists+bpf@lfdr.de>; Mon, 30 Sep 2024 23:13:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C4B601F22B62
+	for <lists+bpf@lfdr.de>; Mon, 30 Sep 2024 23:15:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A869318754F;
-	Mon, 30 Sep 2024 23:13:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F8DC187322;
+	Mon, 30 Sep 2024 23:15:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CgxIH8pm"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GII4iofS"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D104183CA4
-	for <bpf@vger.kernel.org>; Mon, 30 Sep 2024 23:13:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 241BB5339F
+	for <bpf@vger.kernel.org>; Mon, 30 Sep 2024 23:15:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727738024; cv=none; b=oBtqeQBl1JvVJY00HKoePD83/2+urENm8BwJvFWqH27B1kzsE3MdiJroYPg8ja7IyjqteUlF+PRm9NGuc3OCz3Yut4vnRawkSpGsIxLNs2qXrVhdYutAtL+xLMXCPXtaATP4a/RS/wNIPtS7XoNFcf2nOvZ/vLA/3vtO5EtfXSM=
+	t=1727738135; cv=none; b=LkSClDuQdmevIpQDFBXfRF3h8fwy+XU8k3qUVmGeEZTN1G4SMO0kO/+mHrZC6d49GPCPw/RdJfemgB5UaE351s/sICQSuBtXzCds3VMMRshxQAq19alb4wTRe70PEsjd9UJuleS/Wt8l34NW1+vzil5FhHEI9vAHUZ+OdCf6sns=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727738024; c=relaxed/simple;
-	bh=t3kavuk2bk2E/MDxMgtMreajeW67uJ1/5YRb/UNG1r4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nxzdNhSSNwgPByETWZj3avzCAejZuvoyCqVQ0kVL82KV4DG/iTjPMvkle/xVuvlKBXnx63h0v+HcFBqkDMbBZrQ4te04e0VZtfgrNJ4iITtLJAghoZBfqotd/9X+GTAQqmivgd0vJ4rRgRFotI36e5Qfz5z6HFL2EX2LUTjvWy0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CgxIH8pm; arc=none smtp.client-ip=209.85.215.179
+	s=arc-20240116; t=1727738135; c=relaxed/simple;
+	bh=AhBs2kh6O1iSfEwO6OihVlDznJTjXkI73fNKIxkxsRg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ptsp4G7omFNi8sFNo1iQYV5fLIvOiWVLUNTvMgZ1BP50jB/E64uBGaZzx8ycTilxd1D4Y8HMsUusS6ISPIz09lnuOVzENhErLyxjxzU8sdBlhrEJ3K/hG3/ZIi3BzfyP3mBDPaMLbd56968ML09IRX9tKgj829F7AcuwW6ZC/ts=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GII4iofS; arc=none smtp.client-ip=209.85.218.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-7db174f9050so1093349a12.3
-        for <bpf@vger.kernel.org>; Mon, 30 Sep 2024 16:13:42 -0700 (PDT)
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a8d6ac24a3bso913305766b.1
+        for <bpf@vger.kernel.org>; Mon, 30 Sep 2024 16:15:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727738022; x=1728342822; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NuH3fuo2ce0A/koosjNDUiu4Hm46ie1xuYJvbKElY1w=;
-        b=CgxIH8pm+8JtGbtEeT7cOIeOx8s+CItHwByGNJMTHpa0NSvbwPLbVHCpDpRWLAgZE3
-         9fZVpb7TFLkS/vueladD+wSM6pKT8hAypw9eJm2hNeDKR1Ayuxnx0vSmAvg1S/uLMiWQ
-         PVXMa7Itt3zZtMLPaz1fXXQa7Xz4EeF+Pta6zQ8k14wA+meCJmB96x0CnNnLimOAaE7g
-         OrYKTm2cA8NRm2RI7JLhV0V9+Gd9lHs8eMEZd3RCAHCcdkB56N0fOHkErER6Ixrqg3Hv
-         6WW9HILZrXIiGXXrt7pNdNuZgy6LRv/FDG3FM8W0CljU+2TxrZzawcktdDCEZZPwwXD/
-         mSoA==
+        d=gmail.com; s=20230601; t=1727738132; x=1728342932; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=N8wpEL7ax9yzf7RCQvozhQjj+r+cWppRynlUDA/vBD0=;
+        b=GII4iofSBKr/5Nj7epr3a/40023wAAXWf5uVWCYWYx4b6MEjhJvVNq1BQfy4+q/KeT
+         SAGBszUAKjAww5ZeqlE7c9D0kK15XYjmoBuzytOFSVgtzsvIvtrAJf2zmpv3OHZuCQxM
+         sA8/M0ItA1IPYDHQIlJE9q0OTDpbay0yOzsnUQ7gIdvc5jPgnneGlPfvsfAxsU7BARKk
+         bV6eG22zXA4CyGVKE31EV37DT3VwIIc/2A2iLUkNDLj8MG0PzM9ShUZcvH0pH1lA3lqq
+         9NKKSyhd6fIAb5JqJgcJPbTd6A3yFY/PdH8B2KAGyHC64RhPIdCLuyn1H+xhf+XboA0/
+         qf2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727738022; x=1728342822;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NuH3fuo2ce0A/koosjNDUiu4Hm46ie1xuYJvbKElY1w=;
-        b=lkRg/wFKq66kz31xiw9OVkoBNwY6iXmoBW2pg5cgyByHKGc/Jy0g9Gtby1+LI1DMTK
-         v028KU7DcQVo+A1Jm47zmr+3xyr7NvkP1DSU1NheSvdqpgccepKBJ+2HCyxKvdb5I9Lj
-         9LoZAiKRsnokpiaFlrhxASISm6B85DKh7hnhbEclej5GvZESNMC8GXI/t3JCqt2Yt4BZ
-         eWEQ6exzhWBHHOPaTbYPAlG2vrZ6gVg5ihj/75YAoqi5cvdmbVNUYdxQOpFAtGuMc7GN
-         vvRlkhX/roAuASK24cWkjSuJ4cngae/gl8tn6n3UnjESKSGuruLNb0JIe2w8M28Otibv
-         mbVQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXwdrBFtzAzSpqgNzd9lz7NQfYFy0y7rr3EdQGufyof7R3EiZ8rfsG2uf4+6TP2+jcvUsw=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx0Eobs4dJ1UmkFoOQ8ap3LElhEt6vA+Bkrqj6Gtgl3EQ41aGCd
-	EG62s6Amron65m3HjMSz2fUnr3vgMlirfEmrgC5jzv1lu8wCu/zbKj63xKKHTH9g6LIzP+Dn5gF
-	6S7nCe9x5rl7/yr5iwCIjVTCx6Lo=
-X-Google-Smtp-Source: AGHT+IG9xOkwXLCrT6CGgLxFGakCfLp1+YvFE2nDyBHGAlVnD4DSBYD8mkg2nA2m8+y//qAEucxEyNwYW2DO4hyhzVY=
-X-Received: by 2002:a17:90a:134d:b0:2d3:d8ae:67e1 with SMTP id
- 98e67ed59e1d1-2e0b8e8b889mr15418741a91.26.1727738021771; Mon, 30 Sep 2024
- 16:13:41 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1727738132; x=1728342932;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=N8wpEL7ax9yzf7RCQvozhQjj+r+cWppRynlUDA/vBD0=;
+        b=vbzGpFVy/YBxcc37nH2Or77sb8d8uDZQRNxsfzFL0s8oC3d9YMXOmPLpt15MTTuPVK
+         xDvqwjdQfyAaeLAaSUINXAQrXur6AjSnz+0vtbZucRZwZsF9yF/JSVM3Zcq5ohN0xcGQ
+         q4chndA1jVq1VrXRejetTzJw4VDkshU/yy8SelhPy0m+tjevbe/4vjo5miolIy4HrV1H
+         SSl6ijnsaTojyckuxD0RDTZsIoj4KicKNUWltammOCMsxPkEoI5BiZ43iaEyVuhbnXXn
+         CDoYVskTtc7Kg6HPyCSp60nYknZJ1ujVnRbTiF1MIlfM4RYAj/EbeVF/M4eOJKtaqrq/
+         iPIw==
+X-Gm-Message-State: AOJu0YxHDyGHPBY/Rk6N7ZIBk9h3+NQSJIUUgffcomQvEpcZWyRfIP3l
+	SdewAj/5G7K0mxDoj8Swu0RRuxf/NixOmsmXL71V7cMMuJkIbHWnm/XUTQ==
+X-Google-Smtp-Source: AGHT+IH0KqdMwuLdaAclbnQkUMaEBNeWbheztKRSzpZM1Ff3Ps39q5Dv0b9v8GscMJOUu5SJ7ev/0A==
+X-Received: by 2002:a17:906:5f85:b0:a98:282:e676 with SMTP id a640c23a62f3a-a980282e87fmr22855566b.10.1727738132239;
+        Mon, 30 Sep 2024 16:15:32 -0700 (PDT)
+Received: from localhost.localdomain (cpc158789-hari22-2-0-cust468.20-2.cable.virginm.net. [86.26.115.213])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a93c2947fbesm599993866b.128.2024.09.30.16.15.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Sep 2024 16:15:31 -0700 (PDT)
+From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+To: bpf@vger.kernel.org,
+	ast@kernel.org,
+	andrii@kernel.org,
+	daniel@iogearbox.net,
+	kafai@meta.com,
+	kernel-team@meta.com
+Cc: Mykyta Yatsenko <yatsenko@meta.com>
+Subject: [PATCH bpf-next v3] selftests/bpf: emit top frequent code lines in veristat
+Date: Tue,  1 Oct 2024 00:15:22 +0100
+Message-ID: <20240930231522.58650-1-mykyta.yatsenko5@gmail.com>
+X-Mailer: git-send-email 2.46.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <3xru56ozvb4mrphuqt53tvbsiv3n3wfcknme663zcxefayx3re@oq5xnb3o3fec> <pxhmdzeguovh77x7vjkbwxi2r4nthre6n7w2u63j3frvsediu4@x45otw5mpjq4>
-In-Reply-To: <pxhmdzeguovh77x7vjkbwxi2r4nthre6n7w2u63j3frvsediu4@x45otw5mpjq4>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 30 Sep 2024 16:13:29 -0700
-Message-ID: <CAEf4BzY7L3fBVMiPJze0JY68Z62UvXTw=LMZGrgZMTMWs4VB-A@mail.gmail.com>
-Subject: Re: Good first-time BPF tasks
-To: Shung-Hsi Yu <shung-hsi.yu@suse.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org, 
-	Hemanth Malla <hemanth.malla@datadoghq.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Sun, Sep 29, 2024 at 11:30=E2=80=AFPM Shung-Hsi Yu <shung-hsi.yu@suse.co=
-m> wrote:
->
-> Hi Andrii and Eduard,
->
-> On Sun, Sep 22, 2024 at 02:41:08AM GMT, Shung-Hsi Yu wrote:
-> > A topic that came up several times off-list at LPC was how to start
-> > contributing to the BPF subsystem. One of the thing that would probably=
- help
-> > is to have a list of todos that are nice to have and can be implemented=
- in a
-> > relatively self-contained set of patches. Here's things that I've gathe=
-red.
-> >
-> > On the more concrete task sides (easy to hard):
-> >
-> > - Check return value of btf__align_of() in btf_dump_emit_struct_def()
->
-> The above task is currently being worked on. But I though its better to
-> ask you both for opinion before I lead anyone astray.
->
-> My understanding is that btf__align_of() could return an error, thus all
-> caller should check for its return value, for example:
->
->         static void btf_dump_emit_struct_def(...)
->         {
->                 ...
->                 align =3D btf__align_of(d->btf, id);
->
->                 for (i =3D 0; i < vlen; i++, m++) {
->                         const char *fname;
->                         int m_off, m_sz, m_align;
->                         ...
->                         m_align =3D packed ? 1 : btf__align_of(d->btf, m-=
->type);
->
->                         in_bitfield =3D prev_bitfield && m_sz !=3D 0;
->
->                         btf_dump_emit_bit_padding(d, off, m_off, m_align,=
- in_bitfield, lvl + 1);
->                         btf_dump_printf(d, "\n%s", pfx(lvl + 1));
->                         ...
->                 }
->
->                 /* pad at the end, if necessary */
->                 if (is_struct)
->                         btf_dump_emit_bit_padding(d, off, t->size * 8, al=
-ign, false, lvl + 1);
->                 ...
->         }
->
-> Should check whether align or m_align is 0 before moving forward.
->
-> The reason I looked into this was because I ran into floating point
-> exception a while back when trying to dump C-style header file out of a
-> kernel module while mistakenly using the wrong base BTF, which crashed
-> inside btf_dump_emit_bit_padding() at
->
->         roundup(cur_off, next_align * 8)
->
-> Because roundup() requires the second argument to be positive, yet
-> next_align that came from a btf__align_of() call was 0. I believe this
-> still may happen with basic BTF validation[1] added.
+From: Mykyta Yatsenko <yatsenko@meta.com>
 
-TBH, I'd rather improve sanity checking to prevent invalid INT/FLOAT
-definitions that don't have size.
+Production BPF programs are increasing in number of instructions and states
+to the point, where optimising verification process for them is necessary
+to avoid running into instruction limit. Authors of those BPF programs
+need to analyze verifier output, for example, collecting the most
+frequent source code lines to understand which part of the program has
+the biggest verification cost.
 
->
-> So, questions:
-> - Is checking return value of btf__align_of() in
->   btf_dump_emit_struct_def() wanted? And if so:
+This patch introduces `--top-src-lines` flag in veristat.
+`--top-src-lines=N` makes veristat output N the most popular sorce code
+lines, parsed from verification log.
 
-The assumption is that you are dumping a well-formed BTF, so, barring
-bugs, align_of() should always be valid and well-defined. So I'd leave
-it as is, but, improve sanity checking, if that's the concern.
+An example of output:
+```
+sudo ./veristat  --top-src-lines=2   bpf_flow.bpf.o
+Processing 'bpf_flow.bpf.o'...
+Top source lines (_dissect):
+    4: (bpf_helpers.h:161)	asm volatile("r1 = %[ctx]\n\t"
+    4: (bpf_flow.c:155)	if (iph && iph->ihl == 5 &&
+...
+```
 
->   - What's the preferable action to take when it returns an error?
->         According to the comment for btf_dump_emit_type() it seems like t=
-he
->         best thing to do is simply return in btf_dump_emit_struct_def()?
->   - Should we add a pr_* to report such error?
-> - Any place that skipping the return value check of btf__align_of() is
->   fine?
+Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+---
+ tools/testing/selftests/bpf/veristat.c | 127 ++++++++++++++++++++++++-
+ 1 file changed, 125 insertions(+), 2 deletions(-)
 
-All those btf_dump_emit_*() functions are void-returning, and so they
-basically expect valid BTF. In the case of invalid BTF, that's a)
-user's problem ;) but also b) those functions generally will just
-either produce a bit of garbage output or exit early, resulting in
-incomplete/clobbered vmlinux.h output, but other than that should be
-fine.
+diff --git a/tools/testing/selftests/bpf/veristat.c b/tools/testing/selftests/bpf/veristat.c
+index 1ec5c4c47235..977c5eca56f7 100644
+--- a/tools/testing/selftests/bpf/veristat.c
++++ b/tools/testing/selftests/bpf/veristat.c
+@@ -179,6 +179,7 @@ static struct env {
+ 	int files_skipped;
+ 	int progs_processed;
+ 	int progs_skipped;
++	int top_src_lines;
+ } env;
+ 
+ static int libbpf_print_fn(enum libbpf_print_level level, const char *format, va_list args)
+@@ -206,6 +207,7 @@ const char argp_program_doc[] =
+ enum {
+ 	OPT_LOG_FIXED = 1000,
+ 	OPT_LOG_SIZE = 1001,
++	OPT_TOP_SRC_LINES = 1002,
+ };
+ 
+ static const struct argp_option opts[] = {
+@@ -228,6 +230,7 @@ static const struct argp_option opts[] = {
+ 	  "Force frequent BPF verifier state checkpointing (set BPF_F_TEST_STATE_FREQ program flag)" },
+ 	{ "test-reg-invariants", 'r', NULL, 0,
+ 	  "Force BPF verifier failure on register invariant violation (BPF_F_TEST_REG_INVARIANTS program flag)" },
++	{ "top-src-lines", OPT_TOP_SRC_LINES, "N", 0, "Emit N most frequent source code lines" },
+ 	{},
+ };
+ 
+@@ -337,6 +340,14 @@ static error_t parse_arg(int key, char *arg, struct argp_state *state)
+ 			return -ENOMEM;
+ 		env.filename_cnt++;
+ 		break;
++	case OPT_TOP_SRC_LINES:
++		errno = 0;
++		env.top_src_lines = strtol(arg, NULL, 10);
++		if (errno) {
++			fprintf(stderr, "invalid top lines N specifier: %s\n", arg);
++			argp_usage(state);
++		}
++		break;
+ 	default:
+ 		return ARGP_ERR_UNKNOWN;
+ 	}
+@@ -854,6 +865,115 @@ static int parse_verif_log(char * const buf, size_t buf_sz, struct verif_stats *
+ 	return 0;
+ }
+ 
++struct line_cnt {
++	char *line;
++	int cnt;
++};
++
++static int str_cmp(const void *a, const void *b)
++{
++	const char **str1 = (const char **)a;
++	const char **str2 = (const char **)b;
++
++	return strcmp(*str1, *str2);
++}
++
++static int line_cnt_cmp(const void *a, const void *b)
++{
++	const struct line_cnt *a_cnt = (const struct line_cnt *)a;
++	const struct line_cnt *b_cnt = (const struct line_cnt *)b;
++
++	return b_cnt->cnt - a_cnt->cnt;
++}
++
++static int print_top_src_lines(char * const buf, size_t buf_sz, const char *prog_name)
++{
++	int lines_cap = 0;
++	int lines_size = 0;
++	char **lines = NULL;
++	char *line = NULL;
++	char *state;
++	struct line_cnt *freq = NULL;
++	struct line_cnt *cur;
++	int unique_lines;
++	int err = 0;
++	int i;
++
++	while ((line = strtok_r(line ? NULL : buf, "\n", &state))) {
++		if (strncmp(line, "; ", 2) != 0)
++			continue;
++		line += 2;
++
++		if (lines_size == lines_cap) {
++			char **tmp;
++
++			lines_cap = max(16, lines_cap * 2);
++			tmp = realloc(lines, lines_cap * sizeof(*tmp));
++			if (!tmp) {
++				err = -ENOMEM;
++				goto cleanup;
++			}
++			lines = tmp;
++		}
++		lines[lines_size] = line;
++		lines_size++;
++	}
++
++	if (lines_size == 0)
++		goto cleanup;
++
++	qsort(lines, lines_size, sizeof(*lines), str_cmp);
++
++	freq = calloc(lines_size, sizeof(*freq));
++	if (!freq) {
++		err = -ENOMEM;
++		goto cleanup;
++	}
++
++	cur = freq;
++	cur->line = lines[0];
++	cur->cnt = 1;
++	for (i = 1; i < lines_size; ++i) {
++		if (strcmp(lines[i], cur->line) != 0) {
++			cur++;
++			cur->line = lines[i];
++			cur->cnt = 0;
++		}
++		cur->cnt++;
++	}
++	unique_lines = cur - freq + 1;
++
++	qsort(freq, unique_lines, sizeof(struct line_cnt), line_cnt_cmp);
++
++	printf("Top source lines (%s):\n", prog_name);
++	for (i = 0; i < min(unique_lines, env.top_src_lines); ++i) {
++		const char *src_code = freq[i].line;
++		const char *src_line = NULL;
++		char *split = strrchr(freq[i].line, '@');
++
++		if (split) {
++			src_line = split + 1;
++
++			while (*src_line && isspace(*src_line))
++				src_line++;
++
++			while (split > src_code && isspace(*split))
++				split--;
++			*split = '\0';
++		}
++
++		if (src_line)
++			printf("%5d: (%s)\t%s\n", freq[i].cnt, src_line, src_code);
++		else
++			printf("%5d: %s\n", freq[i].cnt, src_code);
++	}
++
++cleanup:
++	free(freq);
++	free(lines);
++	return err;
++}
++
+ static int guess_prog_type_by_ctx_name(const char *ctx_name,
+ 				       enum bpf_prog_type *prog_type,
+ 				       enum bpf_attach_type *attach_type)
+@@ -1009,13 +1129,14 @@ static int process_prog(const char *filename, struct bpf_object *obj, struct bpf
+ 	stats = &env.prog_stats[env.prog_stat_cnt++];
+ 	memset(stats, 0, sizeof(*stats));
+ 
+-	if (env.verbose) {
++	if (env.verbose || env.top_src_lines > 0) {
+ 		buf_sz = env.log_size ? env.log_size : 16 * 1024 * 1024;
+ 		buf = malloc(buf_sz);
+ 		if (!buf)
+ 			return -ENOMEM;
+ 		/* ensure we always request stats */
+-		log_level = env.log_level | 4 | (env.log_fixed ? 8 : 0);
++		log_level = (env.top_src_lines > 0 && env.log_level == 0 ? 2 : env.log_level)
++			| 4 | (env.log_fixed ? 8 : 0);
+ 	} else {
+ 		buf = verif_log_buf;
+ 		buf_sz = sizeof(verif_log_buf);
+@@ -1048,6 +1169,8 @@ static int process_prog(const char *filename, struct bpf_object *obj, struct bpf
+ 		       filename, prog_name, stats->stats[DURATION],
+ 		       err ? "failure" : "success", buf);
+ 	}
++	if (env.top_src_lines > 0)
++		print_top_src_lines(buf, buf_sz, stats->prog_name);
+ 
+ 	if (verif_log_buf != buf)
+ 		free(buf);
+-- 
+2.46.2
 
-If you provide invalid base BTF, way more than btf__align_of() would
-cause problems.
-
->
-> 1: https://lore.kernel.org/bpf/20230825202152.1813394-1-andrii@kernel.org=
-/
->
-> (One more question below)
->
-> ...
-> > - Replace open-coded & PTR_MAYBE_NULL checks with type_may_be_null()
-> > - Implement tnum_scast(), and use that to simply var_off induction in
-> >   coerce_reg_to_size_sx()
-> > - Better error message when BTF generation failed, or at least fail ear=
-lier
-> > - Refactor to use list_head to create a linked-list of bpf_verifier_sta=
-te
-> >   instead of using bpf_verifier_state_list
-> >
-> > On the more general side of things:
-> >
-> > - Improve the documentation
-> >   - add the missing pieces (e.g. document all BPF_PROG_TYPE_*)
-> >   - update the out-date part (admittedly quite hard)
-> > - Improve the BPF selftests coverage
-> >   - add test for fixes that have been merged but does not come with a
-> >     corresponding test case to prevent regression
-> >
-> > I want to keep the list from being too verbose, so I won't go into too
-> > much detail in this email. But feel free to reply to this thread and
-> > ask. You might want to use https://github.com/sjp38/hackermail to reply
-> > if you're not familiar with mailing lists.
-> > (I know mailing list don't have the best UX, is a scary place, and also
-> > not the best issue tracker, we'll see how this works out and change if
-> > needed)
-> >
-> > Also If anyone has other things they want to add to the list that will
-> > be great.
->
-> Is there any libbpf task(s) that you think that might be good for
-> first-time contributors? I see there are issues tracker for the
-> libbpf/libbpf project on GitHub[2], but wonder if there's specific ones
-> that are suggested for first time contributor to tackle.
->
-> 2: https://github.com/libbpf/libbpf/issues
-
-I'd appreciate any help with handling these issues and helping users
-with their problems and/or fixing OSS Fuzz issues (or at least
-triaging them).
-
-That would be a good start.
-
->
-> ...
-> > Resources
-> >
-> > - Introduction to BPF selftests
-> >   https://lore.kernel.org/bpf/62b54401510477eebdb6e1272ba4308ee121c215.=
-camel@gmail.com/
 
