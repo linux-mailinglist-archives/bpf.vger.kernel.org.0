@@ -1,103 +1,161 @@
-Return-Path: <bpf+bounces-40674-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40675-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0358698BFE9
-	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2024 16:30:21 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA4EB98BFFD
+	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2024 16:31:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B00E0B2128A
-	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2024 14:30:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 12A52B25F38
+	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2024 14:30:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCDEB1C6F7E;
-	Tue,  1 Oct 2024 14:30:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D16761C7B63;
+	Tue,  1 Oct 2024 14:30:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="I3wF8ail"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RMOflocR"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2D0710957
-	for <bpf@vger.kernel.org>; Tue,  1 Oct 2024 14:30:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DBEF1A4F0D;
+	Tue,  1 Oct 2024 14:30:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727793003; cv=none; b=sSsIxy/sc0vSkEslFegiEfnXVdHb8mGpFmwQaK3wB+9lctHWEN3A4zOA2BSYTOZa4nya26yZxrbeNz7IG1NwCS22GpgvKDlaQlYM8wZzGuZjjPKNLAvZKUytCctT2YVmVBw91PiphbeSCmxx7LkYmZib+5160vRjvpLqt2h9fYs=
+	t=1727793034; cv=none; b=nk/n258f67bycjtwg62BAS3zSLuzjBWyJBv7Y6Kjs2buwmHwRt4ilL6/148Tbb30Se0VSQQk3JSiJA8mG/EMO0EPoUevk6K4k47EIWbTaMMXJmAOKxckrh9OFsIaugwP0i7Ehoe2uRDevJ3/7vlSug+E7s0Bqvgd+DK3zg4xWsI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727793003; c=relaxed/simple;
-	bh=+Nl1kEdwPimOPfPmlicMbcqdvXouyxBlkRlYIlQixwE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FuzNx70pwJVqIpIffx/iKPPOMaybuNmg0Z3Z1QDEKjo3WfEZu0kUoNLKex3S5Kd8J2DjnDwAPS9nRxo2bGuD0hQlD5BweR8FL/WWQVV9KGAEDJMxfpm8AVdAPPkndzKAkP7po4+tVODOBEN/hFgbBCNP33oKvuSUlkVX+cGZ66E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=I3wF8ail; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1727793000;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NYxlu4wEpUycV3Br8yC3N1dH9hq1z+35+N/eS8vjAyg=;
-	b=I3wF8ailW3t0L4ZGgw/9j5993Q1ZM7nbam4OE5yHrY1BpoBjidOCG/asnHdcKZ4vbmNWp2
-	+hUopQJnNs7x86NqcINPBlX54WgfdqF8RJ3VuDWCSgr2EfkIfIGOfs1j7KpQYIH7c75vqY
-	zCCqzBnXDYIwIcY52eJlyMYzVygyvCo=
-Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-441-ihUUIuxaMROXiGPoN2tIbQ-1; Tue,
- 01 Oct 2024 10:29:59 -0400
-X-MC-Unique: ihUUIuxaMROXiGPoN2tIbQ-1
-Received: from mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (unknown [10.30.177.15])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id DF50F196C415;
-	Tue,  1 Oct 2024 14:29:56 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.225.88])
-	by mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 7FD061979074;
-	Tue,  1 Oct 2024 14:29:50 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Tue,  1 Oct 2024 16:29:43 +0200 (CEST)
-Date: Tue, 1 Oct 2024 16:29:35 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-To: Liao Chang <liaochang1@huawei.com>
-Cc: ak@linux.intel.com, mhiramat@kernel.org, andrii@kernel.org,
-	peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
-	namhyung@kernel.org, mark.rutland@arm.com,
-	alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-	irogers@google.com, adrian.hunter@intel.com,
-	kan.liang@linux.intel.com, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH v2] uprobes: Improve the usage of xol slots for better
- scalability
-Message-ID: <20241001142935.GC23907@redhat.com>
-References: <20240927094549.3382916-1-liaochang1@huawei.com>
+	s=arc-20240116; t=1727793034; c=relaxed/simple;
+	bh=nGvYMRuh7zWFI6VcJ1HEzDn8S8Ie85YQyayn0q6e0wA=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=bUKH8mSOuFah9DU+9ERLKIYAqwypE/x3Khz8E/+AXPeiREyzlHw7+SFhkK5WjU3ipUJzSFme83UQCmGtDyKqvgOOWrB4OgZpZYgPA/1uB2z46swwE4TtOqI7GcixYUVDKRLOE0CDBvSApEPebnq7P4cOYnxxQq0x54WlDpgFfGY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RMOflocR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35DC4C4CEC6;
+	Tue,  1 Oct 2024 14:30:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1727793033;
+	bh=nGvYMRuh7zWFI6VcJ1HEzDn8S8Ie85YQyayn0q6e0wA=;
+	h=From:Subject:Date:To:Cc:From;
+	b=RMOflocR27fAPoPNikaQQqiyPFUktpj1l7yvZEjGUShbQXcLh10UHGxC/dPm/rfAg
+	 gXg+rs4ov6fasC1w0uPWfwQBR2XrtNYW+jLE1kos42OlYv7pvUldKBz6XP5/OIOZFQ
+	 /bTMuLUG8K99wKb6BPtOD9bAOsuwPQnFRJPzqFq4ltLHGcA9uv+0cBhXBpg2pJ/sAJ
+	 hSZgy0mOKdztCf0LSU8ac63p19OFpSGUaSW1vJ/Tvy9r6YaOrUJiD2dyKprcuxqAOx
+	 1ccBokXZdWDmjqRfGDlfi+Cop/EQLxySoyA4d5JaOiU4MEYHuxyoEYQtX++ROMnG6m
+	 f0XBoxNhbZZZw==
+From: Benjamin Tissoires <bentiss@kernel.org>
+Subject: [PATCH HID v3 0/9] HID: bpf: add a new hook to control hid-generic
+Date: Tue, 01 Oct 2024 16:30:04 +0200
+Message-Id: <20241001-hid-bpf-hid-generic-v3-0-2ef1019468df@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240927094549.3382916-1-liaochang1@huawei.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.15
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAGwH/GYC/23NwQ6CMAwG4FchPTuzDYbMkwcP+gzGA7AOGs0gm
+ 1k0hHd32UkTTs3f5v+6QEBPGOBYLOAxUqDJpVDuCujH1g3IyKQMksuKN1KzkQzrZpvngC61e1Y
+ LddBWdUpXClJz9mjpndUbXK5nuKflSOE1+U/+FEU+ZVTzchONgnGmlRCtqlUnTXt6oHf43E9+y
+ GCUP4jg24hMCG9KY3vRaNSHP2Rd1y8dzFnJAQEAAA==
+To: Jiri Kosina <jikos@kernel.org>, 
+ Peter Hutterer <peter.hutterer@who-t.net>, Vicki Pfau <vi@endrift.com>, 
+ Shuah Khan <shuah@kernel.org>
+Cc: linux-input@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
+ Benjamin Tissoires <bentiss@kernel.org>
+X-Mailer: b4 0.14.1
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1727793031; l=4175;
+ i=bentiss@kernel.org; s=20230215; h=from:subject:message-id;
+ bh=nGvYMRuh7zWFI6VcJ1HEzDn8S8Ie85YQyayn0q6e0wA=;
+ b=Qj28gsmtXPhAagUhfKkQqh5Hd7LFduYqBUKvzE+46XVGZZAYocJHJ7KWnoK/+Lb3yKoG9/4wN
+ QN/VbeCsnN7D+T/v3uS7Df8pUFPDJdMHPOfrE3o2cp6/zXARcrSF/GI
+X-Developer-Key: i=bentiss@kernel.org; a=ed25519;
+ pk=7D1DyAVh6ajCkuUTudt/chMuXWIJHlv2qCsRkIizvFw=
 
-On 09/27, Liao Chang wrote:
->
-> The uprobe handler allocates xol slot from xol_area and quickly release
-> it in the single-step handler. The atomic operations on the xol bitmap
-> and slot_count lead to expensive cache line bouncing between multiple
-> CPUs.
+This is a slight change from the fundamentals of HID-BPF.
+In theory, HID-BPF is abstract to the kernel itself, and makes
+only changes at the HID level (through report descriptors or
+events emitted to/from the device).
 
-Liao, could you please check if this series
+However, we have seen a few use cases where HID-BPF might interact with
+the running kernel when the target device is already handled by a
+specific device.
 
-	[PATCH 0/2] uprobes: kill xol_area->slot_count
-	https://lore.kernel.org/all/20241001142416.GA13599@redhat.com/
+For example, the XP-Pen/Huion/UC-Logic tablets are handled by
+hid-uclogic but this driver is also doing a report descriptor fixup
+without checking if the device has already been fixed by HID-BPF.
 
-makes any difference performance-wise in your testing?
+In the same way, another recent example[0] was when a cheap foot pedal is
+used and tricks iPhones and Windows machines by presenting itself as a
+known Apple wireless keyboard. The problem is that this fake keyboard is
+not presenting a compatible report descriptor and hid-core merges all
+device nodes together making libinput ignore the keyboard part for
+historical reasons.
 
-Oleg.
+This series aims at tackling this problem:
+- first, we promote hid_bpf_report_descriptor_fixup to be called before
+  any driver is even matched for the device
+- then we allow hdev->quirks to be written during report_fixup and add a
+  new quirk to force hid-core to ignore any non hid-generic driver.
+
+Basically, it means that when we insert a BPF program to fix a device,
+we can force hid-generic to handle the device, and thus preventing
+any other kernel driver to tamper with our device.
+
+This branch is on top of the for-6.12/upstream-fixes branch of hid.git.
+
+[0] https://gitlab.freedesktop.org/libinput/libinput/-/issues/1014
+
+Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
+---
+Changes in v3:
+- dropped the last 2 patches with hid-input control, as I'm not 100%
+  sure of it
+- changed the first patch to avoid a double free on cleanup of a device
+  when a HID-BPF program was attached
+- kept Peter's rev-by for all but patches 1 and 6
+- Link to v2: https://lore.kernel.org/r/20240910-hid-bpf-hid-generic-v2-0-083dfc189e97@kernel.org
+
+Changes in v2:
+- Refactored the API to not use a new hook but hid_bpf_rdesc_fixup
+  instead
+- Some cleanups in hid-core.c probe() device to not kmemdup multiple
+  time the report descriptor when it's not required
+- I'm still not 100% sure the HID_QUIRK_IGNORE_HIDINPUT is that
+  required, but I can not think of anything else at the moment to
+  temporary disable any driver input device.
+- Link to v1: https://lore.kernel.org/r/20240903-hid-bpf-hid-generic-v1-0-9511a565b2da@kernel.org
+
+---
+Benjamin Tissoires (9):
+      HID: bpf: move HID-BPF report descriptor fixup earlier
+      HID: core: save one kmemdup during .probe()
+      HID: core: remove one more kmemdup on .probe()
+      HID: bpf: allow write access to quirks field in struct hid_device
+      selftests/hid: add dependency on hid_common.h
+      selftests/hid: cleanup C tests by adding a common struct uhid_device
+      selftests/hid: allow to parametrize bus/vid/pid/rdesc on the test device
+      HID: add per device quirk to force bind to hid-generic
+      selftests/hid: add test for assigning a given device to hid-generic
+
+ drivers/hid/bpf/hid_bpf_dispatch.c                 |   9 +-
+ drivers/hid/bpf/hid_bpf_struct_ops.c               |   1 +
+ drivers/hid/hid-core.c                             |  84 +++++++++---
+ drivers/hid/hid-generic.c                          |   3 +
+ include/linux/hid.h                                |  20 +--
+ include/linux/hid_bpf.h                            |  11 +-
+ tools/testing/selftests/hid/Makefile               |   2 +-
+ tools/testing/selftests/hid/hid_bpf.c              | 151 ++++++++++++++-------
+ tools/testing/selftests/hid/hid_common.h           | 112 ++++++++++-----
+ tools/testing/selftests/hid/hidraw.c               |  36 ++---
+ tools/testing/selftests/hid/progs/hid.c            |  12 ++
+ .../testing/selftests/hid/progs/hid_bpf_helpers.h  |   6 +-
+ 12 files changed, 296 insertions(+), 151 deletions(-)
+---
+base-commit: acd5f76fd5292c91628e04da83e8b78c986cfa2b
+change-id: 20240829-hid-bpf-hid-generic-61579f5b5945
+
+Best regards,
+-- 
+Benjamin Tissoires <bentiss@kernel.org>
 
 
