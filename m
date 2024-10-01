@@ -1,98 +1,117 @@
-Return-Path: <bpf+bounces-40710-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40711-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D33C98C647
-	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2024 21:50:34 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D30598C655
+	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2024 21:53:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 24D181F23F9C
-	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2024 19:50:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 94771B2204E
+	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2024 19:53:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 927D91CDFAF;
-	Tue,  1 Oct 2024 19:50:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC8D41CDA2D;
+	Tue,  1 Oct 2024 19:53:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p7zV3oJO"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kXWe8d7h"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 021641B86E6;
-	Tue,  1 Oct 2024 19:50:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB03F19D894
+	for <bpf@vger.kernel.org>; Tue,  1 Oct 2024 19:53:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727812228; cv=none; b=nvmcvHoBvGCBF8C+QkO1igb8OAO3c7BBUSKzQiR0ic0NEzFJEWelR4f2YYCGP+Fmhdz4tJAkOoScNfHMkyGPGuNWuEFiSAlT2YSUM6sEeTeRUv4f7/T/ejwY665fe9mc78KQTjKtHaVSMA67l8KnUVzLmunlT8BRhSxBA3aKunU=
+	t=1727812419; cv=none; b=WAhnQqDU8GXRBhkxgfX45QLpNM63qBKs6/vKKCa1xXkESjpeZE+GHDVKzok0ljxwtKRbKgYP7i1tH7wAjLqqmQXcyDf44/myDtwTDuq3EdYIbVJDxWUkvMXJYFuRu0TqxaaoWIGrf7F8Z+UqDHCjbcW/ZwEiHUjGn/im4p2CSpc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727812228; c=relaxed/simple;
-	bh=Sx3A4Jeys8k4Og3PUtR+rI5Zdg98sWtoyioNaK9nG84=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=hBthZxiPjavcZmCPSoQTt+QfQ399fcdXVHTp1VBj0VznpuFbVa/LQeQvB1DiLheaEyDAsY+vFfJQB7ajMnhu32cICFYlDcM7uWVVe9KnIYlSCKtPVbCOlKQLs2aKeA2S0jhHsOZVSHs8Qz6t4hqJYxgsbpxb/Frp/Jyao0FcDGo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p7zV3oJO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD22DC4CEC6;
-	Tue,  1 Oct 2024 19:50:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727812227;
-	bh=Sx3A4Jeys8k4Og3PUtR+rI5Zdg98sWtoyioNaK9nG84=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=p7zV3oJOPAF+or90gaWQlUvQgA18kIjGdAvZJB/gtJ+ReMtwJcISQFb287fUU2igG
-	 yI3hkjDzR/cbPOFI8ZO8S6sWp0Pbk9Lo3pQGkOW8ThGJtXggfg1CNquHjW1FefZfP6
-	 Q2bX+hchchbDO2VZlZHhpK2iatrrE0MAzTo//ErOF9QNfRI0aTox2of71W7sKWYjVe
-	 r7rO3WVNomZLtcEhrOuTtHOhleumyP5UvNDMbBEAXAbjBotYXBuRcjUSMfIrBuYiWy
-	 sVbGEF1T02nqLJwPmtYvlfzz0zn6vVfI+L6D/4BoKK4IDoj00NdW0OuWhpPUnZY0RY
-	 XMmj8RF/ceMpg==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 33EB5380DBF7;
-	Tue,  1 Oct 2024 19:50:32 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1727812419; c=relaxed/simple;
+	bh=RRreKsIx0UsgL2WsELGVw/VJRQzSUbUYpOEixKVQLxo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=gpanqCIolnxN3DvdcAXw3F2Wwywol5wSSinqgTJ/LRIKNAOwt9VaDdcT+wUkAv5wV9G5maZOvTxuGjya1FpGa+SjWtuhMbShT164Pfc+7ZwQnnbM/ViRCT9DvOuufSK0NeKOxsxq81oyOalq41KsNatuJOrG2FOUEEUvq9UCEKU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kXWe8d7h; arc=none smtp.client-ip=209.85.221.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-37cce5b140bso3842480f8f.3
+        for <bpf@vger.kernel.org>; Tue, 01 Oct 2024 12:53:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1727812416; x=1728417216; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=RRreKsIx0UsgL2WsELGVw/VJRQzSUbUYpOEixKVQLxo=;
+        b=kXWe8d7h86t4v5b5pdQyCM7c0SahZZRCvYHSsKs095K+1ndO1gM78hc+6IuhUvz99L
+         kZ2lwR1ZvhJYoAxc36Uf34PzRilKcrx5gG3qdG7R2LbDpDPTQDLzkTexXQTBNKGpW9Bd
+         60A6BlOpoHb9SH9R4DQiM4aOzCMXmbmqnv3fAm8cGJVyIcygNgOI+ZEKo+T4FBse5/oV
+         AJr+goxQA/dd5jTCFE/GlYzCuWeJE3RdsisAPnJOp33pKmEm0ovknuRL2eXrf0H+BMRw
+         Yl/EzEID16swDsfQ6YCMYK5HmqtQysSryZ9jJ+9FZ3lkNIqGktxq/WvDZj0wsBSI8fzU
+         iTMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727812416; x=1728417216;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RRreKsIx0UsgL2WsELGVw/VJRQzSUbUYpOEixKVQLxo=;
+        b=O79xyU6q7mRThmHjTlKWgZcpjSkFrhGMMeTIaDNxKv8Tft3LDCn+0OCS5M6+dtQtpW
+         6JlBpkvWVsHe3dRbwvJhW+44V7xQzdmHFq2AnaP18Odmwy8wUWvIklM4sIkR1cz9Xp7O
+         aR8jk0v39btW1CO2aS+fP6MujqFiGLwSNCPjBu/g7YgkdmFBdFMHWxWMHuufg7o7fUNF
+         LJC+pwMZ6wdGc68msciGaZDnrckDpIjRQaQJzBwADY74Fa5pO7tllOYIJxU7puma2tSH
+         OU8CjkWYCVcLNQUtalfBYsOmv307amOQSSDuniLY0lcKe4S16eL1QNz3TjAK+V7d/PGH
+         P0hg==
+X-Forwarded-Encrypted: i=1; AJvYcCUIf/qLUSbgLQn37+9KolnQ5pRrmpChNFbKnyhZLPrKApKhCjxjH249+bE6oKTElZM0MN4=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxO2tLnqppU+POhXmuWYqzBLLMAyhtBj9qLnXJvZ0toKvZjjmJn
+	GS5btpi8VRKwMPJyE/LlJcWjUj3WnZgzd74Maf/Pq/7GYQz1nFXAdt6hxB0HawB+6AXLK5nVcFw
+	th6lJvKVNmK8hKH3XlDxzM9iLvyqHDXJk
+X-Google-Smtp-Source: AGHT+IFHrzMiLfafnimWLRAFpZTjsAULULf5N0iS6mSME6HFG6P6gYEHbSIpzYL9LT6gTKqD0gTzbUpbxtFHwYSiMck=
+X-Received: by 2002:adf:fb43:0:b0:37c:d2f3:b3b0 with SMTP id
+ ffacd0b85a97d-37cfb8cb766mr418801f8f.23.1727812415934; Tue, 01 Oct 2024
+ 12:53:35 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] bpf: Make sure internal and UAPI bpf_redirect flags
- don't overlap
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <172781223105.541677.17664830432727433314.git-patchwork-notify@kernel.org>
-Date: Tue, 01 Oct 2024 19:50:31 +0000
-References: <20240920125625.59465-1-toke@redhat.com>
-In-Reply-To: <20240920125625.59465-1-toke@redhat.com>
-To: =?utf-8?b?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2VuIDx0b2tlQHJlZGhhdC5jb20+?=@codeaurora.org
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, liuhangbin@gmail.com,
- brouer@redhat.com, syzbot+cca39e6e84a367a7e6f6@syzkaller.appspotmail.com,
- davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- bpf@vger.kernel.org, netdev@vger.kernel.org
+References: <20240926234506.1769256-1-yonghong.song@linux.dev>
+ <20240926234526.1770736-1-yonghong.song@linux.dev> <CAADnVQ+v3u=9PEHQ0xJEf6wSRc2iR928Sc+6CULh390i3TDR=w@mail.gmail.com>
+ <CAP01T77-bU5Ewu79QLJDTnt_E8h_VFHuABOD5=oct7_TC_yYGQ@mail.gmail.com>
+ <CAP01T76UnVfn3x7zZH4vJgZMGv_Ygewxg=9gUA-xuOa7pwGr3A@mail.gmail.com> <CAADnVQ+caNh8+fgCj2XeZDrXniYif5Y+rw6vsMOojBO3Qwk+Nw@mail.gmail.com>
+In-Reply-To: <CAADnVQ+caNh8+fgCj2XeZDrXniYif5Y+rw6vsMOojBO3Qwk+Nw@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 1 Oct 2024 12:53:24 -0700
+Message-ID: <CAADnVQKLWi_TfpbiYb1vPMYMqPOPWPS-RGbB0FksEQW5i36poQ@mail.gmail.com>
+Subject: yet another approach Was: [PATCH bpf-next v3 4/5] bpf, x86: Add jit
+ support for private stack
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: Yonghong Song <yonghong.song@linux.dev>, bpf <bpf@vger.kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Kernel Team <kernel-team@fb.com>, 
+	Martin KaFai Lau <martin.lau@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-Hello:
+Another idea...
 
-This patch was applied to bpf/bpf.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
+Currently the prologue looks like:
+push rbp
+mov rbp, rsp
+sub rsp, stack_depth
 
-On Fri, 20 Sep 2024 14:56:24 +0200 you wrote:
-> The bpf_redirect_info is shared between the SKB and XDP redirect paths,
-> and the two paths use the same numeric flag values in the ri->flags
-> field (specifically, BPF_F_BROADCAST == BPF_F_NEXTHOP). This means that
-> if skb bpf_redirect_neigh() is used with a non-NULL params argument and,
-> subsequently, an XDP redirect is performed using the same
-> bpf_redirect_info struct, the XDP path will get confused and end up
-> crashing, which syzbot managed to trigger.
-> 
-> [...]
+how about in the main prog we keep the first two insns,
+but then set rsp with a single insn to point to the top
+of our private stack that should have enough room
+for stack_of_main_prog + stacks_of_all_subprogs + extra 8k for kfuncs/helpers.
 
-Here is the summary with links:
-  - [bpf-next] bpf: Make sure internal and UAPI bpf_redirect flags don't overlap
-    https://git.kernel.org/bpf/bpf/c/09d88791c7cd
+The prologue of all subprogs will stay as-is with above 3 insns.
+The epilogue is the same in main prog and subprogs: leave + ret.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Such stack will look like a typical split stack used in compilers.
 
+The obvious advantage is we don't need to touch r9, do push/pop,
+and stack unwind will work just fine.
+In the past we discussed something like this, but
+then we did all 3 insns in the private stack
+and it was problematic due to IRQs.
+In this approach the main prog will use up to 512 bytes of
+kernel stack, but everything that it calls will be in the private stack,
+and since it doesn't migrate there is no per-cpu memory reuse issue.
 
+Thoughts?
 
