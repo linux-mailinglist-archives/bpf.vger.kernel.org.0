@@ -1,72 +1,72 @@
-Return-Path: <bpf+bounces-40645-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40646-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07D7898B407
-	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2024 08:02:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4919898B40A
+	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2024 08:02:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C8CEC28434B
-	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2024 06:02:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6CC621C22FBE
+	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2024 06:02:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48DBE1BD4EA;
-	Tue,  1 Oct 2024 06:01:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D13EB1BD514;
+	Tue,  1 Oct 2024 06:01:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dxCv8I8K"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XJZAkfAv"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f66.google.com (mail-pj1-f66.google.com [209.85.216.66])
+Received: from mail-pj1-f68.google.com (mail-pj1-f68.google.com [209.85.216.68])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5689F1BD031;
-	Tue,  1 Oct 2024 06:01:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4BA81BC073;
+	Tue,  1 Oct 2024 06:01:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.68
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727762463; cv=none; b=qHTSUIoKYTk2Xefx+xH4/8OFO97YMP9MqPP7Iej/F39zQeGOH3zkTaXgMgh5V+fkpBGRe/lRNAen04AuUKuJrH7LquLn9OESVjrwB5AUAcBX+OSsmUjk1QqkBI1j8RBelIAG03inouNUhePtDlT+EmI41yabI/cI9ARUDPbISCs=
+	t=1727762470; cv=none; b=g0rudayrzgRy4qOQFjBwGy+rzLkLhVkkRfHZnFKZpCu8yigrqV8PcIxJW/wCNJJEHxuZmYacC441x38ifVDboBCexBHkfyuh+lJ2f0sGcaJItyHNa83V9RKbKqUCLR+1H1plOHQ01siMyw8qO+NYJIAKs0EcFBBxhAjFJILqsE8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727762463; c=relaxed/simple;
-	bh=YqEogfeJLe9c/3bfq2XxyWEglvHt5kZYl7TE1QySazM=;
+	s=arc-20240116; t=1727762470; c=relaxed/simple;
+	bh=aHFVAhSauYhcaI4Qxqi6+hVTR2IUnewnJG9ZCTMkUYc=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Y4pN/AE/6oMQJEapC+EqnErLl2iKE6hTmzC9rBQs/E5JdoFOJc5MpoMJ6aT8EJmjBvCOM6q40UHTGOuDkHrX09CxlU9EN76EgwsHXa3lisvqEqo9gnaUSffecl9MA3fpqGXl5Iweh0DDmghkDU8dJbX9zyTZBkurUSwNjc79ml8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dxCv8I8K; arc=none smtp.client-ip=209.85.216.66
+	 MIME-Version; b=JSUj/LxX3Cz7jFy2aCt1iJF1kRK26W8zp8zeHjsoR4cWlRJ9KARr/Af05s5dmjQjXf7iK6JIHY3n2ChjN8yGaFr2dWGzFctSvL1tWYug4rh0O5DZWVXy0/0qshYYfy4eW6kUIuz3pK48um+6O59VSh04GHbqWHmo28Xy2sFeKys=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XJZAkfAv; arc=none smtp.client-ip=209.85.216.68
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f66.google.com with SMTP id 98e67ed59e1d1-2e0a950e2f2so4049084a91.2;
-        Mon, 30 Sep 2024 23:01:02 -0700 (PDT)
+Received: by mail-pj1-f68.google.com with SMTP id 98e67ed59e1d1-2e06f5d4bc7so4382155a91.2;
+        Mon, 30 Sep 2024 23:01:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727762462; x=1728367262; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1727762468; x=1728367268; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=RiHzu+ulvjky3wzgvQb46nJbDFBRKyZby3oN41FMw90=;
-        b=dxCv8I8KoyFDlFPyd4+nZKDHoPd2yVF5ua2xJCn7zSnCsbdLaiLbe2njRy0IzRxq/7
-         eeNDAfe7tI8KOj8hw/LXh4HsgNb/boafe9e0Y7UzAlACqHMF5IU3TIZoFAMoeu7Ph6oz
-         muEKCXFXM0+3F5zEV5TavpUV29gm1vdxKUYp1JamU04cz/0oi4b5xa2tzQ4UsDU1Vyjx
-         nKDMYCgCqLWEzBPrZp2u556AZEackrbQW9xYI58685ixQ4KeLmHaqqzSTJGyZoqPsyeS
-         MJ4Zwwf4b2HFbtBVAJQHlXyslhSAMGJ1lHv2w6hqoJfOR6nrBF8jc6KrTVxmiR798as4
-         qchw==
+        bh=VYpoCxYLAImw/g0O6S5ba1T5oz021gTBCQ/UN1xsnUk=;
+        b=XJZAkfAvtwi7djN1wfMY29KaMSTJnGDtclqv83kDAVGT0UmF5/4g4ROOsX8lxrSiSW
+         iUe8EkIzuYYMMUB8ArTbe3nB0p2JVVYCtXR1zD5U/PJMB7FhXerqppscYbm5ug4CKPbH
+         eaFpt9wNW6iPAvBIKNL1JGYhP8NBImsx2BWJpHN1Kr/kEOwRDsKcpLsyXH9WTdCvB05i
+         PhEWgn55yTzXUuqZa4ezzZia/Wwx5WBUBdwafbkmaTtXvM483RCn599DHPXyPiZZzPyZ
+         OQJ71Xf/sSDOsXBHZ2aBxAnzl3+Lds9fytmNDm97cLo4DM2R0VCBE3EtgAHIrUVezd9/
+         vaaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727762462; x=1728367262;
+        d=1e100.net; s=20230601; t=1727762468; x=1728367268;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=RiHzu+ulvjky3wzgvQb46nJbDFBRKyZby3oN41FMw90=;
-        b=uzTTFCxt8ROAwNUw5aW3MDjyxdQ+6afZUvLanRejGXjZVMnvw/ZIF3OuTVqQ1kWAjf
-         A0yXLmY6gKdhLtx23EoPEW5PSz7sqFjlJYbJ82SRfAWksO+yLtIwvbFU0Nu5l8CfSSKx
-         hjIvRelwqpnzcPqrBbPiGMjnR47A7rL4hOFKpae4emgyWul4t4pXK/n+b4bkSiYbY0/V
-         u12D7VYnX+lM3RyqXV9+TaP/+bzCOa0iNtnGWrZ89/UcbbUHbhTOB7JCjrg9i0tHLPpV
-         lyBec4X8BFNFn5v7jBFgf/8T8ExIXWNomEHgqUix1Ewreb2FJj5BK5+5wLMhKY5NccNn
-         z8Qg==
-X-Forwarded-Encrypted: i=1; AJvYcCUP1UFdUl2yiYmn4KqM+//UFZPuO160YcGgB2qwG8LAkOMhBD39lXKu4UlFZFmToCKn+SZw/tvp@vger.kernel.org, AJvYcCUg/mfBDXcxhSUhveUYeU7jCK+wl3vLSgZ28sa2LB9xfb3x6e8UDaG2dVFZZIGkA6IZWfGpUF6pYr6VU9Pq@vger.kernel.org, AJvYcCXR3eJytNs9cFSbzTVOCnMCXNorezed504wlHdLkb0kTbRNoJmpwmPhpp7LGa1Wo0RdeSM=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx8woUmzvw4QRABEXuCbCbafEwAQZrzdZ21iRqgH1sPczT/r50R
-	w9Ii20MxtOdn0+755lJBphHe87EqpmaiHJFkp9nnYtdpjGfNhDqa
-X-Google-Smtp-Source: AGHT+IGxcp33HKAcRKYo2olYX1EnTuL6eZiMVBrOhxAu/Ez4aMIx0IbRoxiePDmgWrqHJXJmllCczw==
-X-Received: by 2002:a17:90a:3486:b0:2d8:89ad:a67e with SMTP id 98e67ed59e1d1-2e0b88903famr18880996a91.1.1727762461479;
-        Mon, 30 Sep 2024 23:01:01 -0700 (PDT)
+        bh=VYpoCxYLAImw/g0O6S5ba1T5oz021gTBCQ/UN1xsnUk=;
+        b=ihOsxW7h0zeRD8GLh0BPwxSR7u+okctlv6vl8fRMxAVyTSShAEzADHKu+sQK/xhnLK
+         GaAkMdVdJr9i1DU6bQHg1b/30rwMRKFw0uF1cia+4RsdTOVuLF/XfwkB9AOWc777bO9w
+         csk3P1fR+d1xqCP3hTH4Mcf2lcFDIX8fmILRFwcaZ9+9/rDr+/UbaJ/uVtzeA24BYToA
+         d0T0uFRXiMTaD2hy0x0aAc1gmqmvjb5rL10K35JEcPL+BpuJ+/P/K+GXsCbYv1vqRI80
+         oGlwkAimWTjd/UZEN/n6wtARPaU/7e989+Z2wcE1zcMzc2ienl8vhtNUgwI1amhIX9qf
+         8IpQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVYLcz96mchlG+16vIRnWdlHyK8YWxIsbR6juIc1dCIPkHv+6WxqFOjWgpv8PwmxZw1Wdc=@vger.kernel.org, AJvYcCVp9muAl39u6AfBBMzMQ9IdQ/5eK0KMyLhqNJErSoHCLOYmeHDgaGWru4iEWYlR10eBXTX4Kfe0PqHqrJJT@vger.kernel.org, AJvYcCXajOT156CIWkLObYkDN3I/fZ0UfnMkrs6Y0CvXV2U+kV0ZjpXz+hO4n8sJrYcLVTSYkuGvclA3@vger.kernel.org
+X-Gm-Message-State: AOJu0YyOm8EGqequnfzHb05AETL3Q6umBxqUNoKUzupoBCefs1MHXEZ7
+	5r+1Mvizmzl5XloHaowVWKtbXoibLuHmS52oxGxIhqEIxZ5ZwbAP0Z/b+raW
+X-Google-Smtp-Source: AGHT+IHn1ToQ3k6iUZaeM1D4hzw48Kca4247nxPSj0gjkQYcCt8MkqBMWA7bFTJ50AHOQ1TZR2qTkA==
+X-Received: by 2002:a17:90b:d98:b0:2d3:d063:bdb6 with SMTP id 98e67ed59e1d1-2e0b89a2d65mr16684678a91.4.1727762467954;
+        Mon, 30 Sep 2024 23:01:07 -0700 (PDT)
 Received: from localhost.localdomain ([43.129.25.208])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2e0b6c4bc46sm9055950a91.7.2024.09.30.23.00.56
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2e0b6c4bc46sm9055950a91.7.2024.09.30.23.01.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Sep 2024 23:01:00 -0700 (PDT)
+        Mon, 30 Sep 2024 23:01:07 -0700 (PDT)
 From: Menglong Dong <menglong8.dong@gmail.com>
 X-Google-Original-From: Menglong Dong <dongml2@chinatelecom.cn>
 To: edumazet@google.com,
@@ -84,9 +84,9 @@ Cc: davem@davemloft.net,
 	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	bpf@vger.kernel.org
-Subject: [PATCH net-next 3/7] net: ip: add drop reason to ip_route_input_slow()
-Date: Tue,  1 Oct 2024 14:00:01 +0800
-Message-Id: <20241001060005.418231-4-dongml2@chinatelecom.cn>
+Subject: [PATCH net-next 4/7] net: ip: make fib_validate_source() return drop reason
+Date: Tue,  1 Oct 2024 14:00:02 +0800
+Message-Id: <20241001060005.418231-5-dongml2@chinatelecom.cn>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20241001060005.418231-1-dongml2@chinatelecom.cn>
 References: <20241001060005.418231-1-dongml2@chinatelecom.cn>
@@ -98,150 +98,152 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-In this commit, we make ip_route_input_slow() support skb drop reason by
-adding the pointer of drop reason to its functions aeguments.
+In this commit, we make fib_validate_source/__fib_validate_source return
+-reason instead of errno on error. As the return value of them can be
+-errno, 0, and 1, we can't make it return enum skb_drop_reason directly.
 
-Following new skb drop reasons are added:
+In the origin logic, if __fib_validate_source() return -EXDEV,
+LINUX_MIB_IPRPFILTER will be counted. And now, we need to adjust it by
+checking "reason == SKB_DROP_REASON_IP_RPFILTER".
 
-  SKB_DROP_REASON_IP_LOCAL_SOURCE
-  SKB_DROP_REASON_IP_INVALID_SOURCE
-  SKB_DROP_REASON_IP_INVALID_DEST
-  SKB_DROP_REASON_IP_LOCALNET
+We set the errno to -EINVAL when fib_validate_source() is called and the
+validation fails, as the errno can be checked in the caller and now its
+value is -reason, which can lead misunderstand.
 
 Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
 ---
- include/net/dropreason-core.h | 19 +++++++++++++++++++
- net/ipv4/route.c              | 32 ++++++++++++++++++++++++--------
- 2 files changed, 43 insertions(+), 8 deletions(-)
+ net/ipv4/fib_frontend.c | 19 +++++++++++++------
+ net/ipv4/ip_input.c     |  4 +---
+ net/ipv4/route.c        | 17 +++++++++++++----
+ 3 files changed, 27 insertions(+), 13 deletions(-)
 
-diff --git a/include/net/dropreason-core.h b/include/net/dropreason-core.h
-index 4748680e8c88..3d1b09f70bbd 100644
---- a/include/net/dropreason-core.h
-+++ b/include/net/dropreason-core.h
-@@ -76,6 +76,10 @@
- 	FN(INVALID_PROTO)		\
- 	FN(IP_INADDRERRORS)		\
- 	FN(IP_INNOROUTES)		\
-+	FN(IP_LOCAL_SOURCE)		\
-+	FN(IP_INVALID_SOURCE)		\
-+	FN(IP_INVALID_DEST)		\
-+	FN(IP_LOCALNET)			\
- 	FN(PKT_TOO_BIG)			\
- 	FN(DUP_FRAG)			\
- 	FN(FRAG_REASM_TIMEOUT)		\
-@@ -365,6 +369,21 @@ enum skb_drop_reason {
- 	 * IPSTATS_MIB_INADDRERRORS
- 	 */
- 	SKB_DROP_REASON_IP_INNOROUTES,
-+	/** @SKB_DROP_REASON_IP_LOCAL_SOURCE: the source ip is local */
-+	SKB_DROP_REASON_IP_LOCAL_SOURCE,
-+	/**
-+	 * @SKB_DROP_REASON_IP_INVALID_SOURCE: the source ip is invalid:
-+	 * 1) source ip is multicast or limited broadcast
-+	 * 2) source ip is zero and not IGMP
-+	 */
-+	SKB_DROP_REASON_IP_INVALID_SOURCE,
-+	/**
-+	 * @SKB_DROP_REASON_IP_INVALID_DEST: the dest ip is invalid:
-+	 * 1) dest ip is 0
-+	 */
-+	SKB_DROP_REASON_IP_INVALID_DEST,
-+	/** @SKB_DROP_REASON_IP_LOCALNET: source or dest ip is local net */
-+	SKB_DROP_REASON_IP_LOCALNET,
- 	/**
- 	 * @SKB_DROP_REASON_PKT_TOO_BIG: packet size is too big (maybe exceed the
- 	 * MTU)
+diff --git a/net/ipv4/fib_frontend.c b/net/ipv4/fib_frontend.c
+index 793e6781399a..779c90de3a54 100644
+--- a/net/ipv4/fib_frontend.c
++++ b/net/ipv4/fib_frontend.c
+@@ -346,6 +346,7 @@ static int __fib_validate_source(struct sk_buff *skb, __be32 src, __be32 dst,
+ 				 int rpf, struct in_device *idev, u32 *itag)
+ {
+ 	struct net *net = dev_net(dev);
++	enum skb_drop_reason reason;
+ 	struct flow_keys flkeys;
+ 	int ret, no_addr;
+ 	struct fib_result res;
+@@ -377,9 +378,15 @@ static int __fib_validate_source(struct sk_buff *skb, __be32 src, __be32 dst,
+ 
+ 	if (fib_lookup(net, &fl4, &res, 0))
+ 		goto last_resort;
+-	if (res.type != RTN_UNICAST &&
+-	    (res.type != RTN_LOCAL || !IN_DEV_ACCEPT_LOCAL(idev)))
+-		goto e_inval;
++	if (res.type != RTN_UNICAST) {
++		if (res.type != RTN_LOCAL) {
++			reason = SKB_DROP_REASON_IP_INVALID_SOURCE;
++			goto e_inval;
++		} else if (!IN_DEV_ACCEPT_LOCAL(idev)) {
++			reason = SKB_DROP_REASON_IP_LOCAL_SOURCE;
++			goto e_inval;
++		}
++	}
+ 	fib_combine_itag(itag, &res);
+ 
+ 	dev_match = fib_info_nh_uses_dev(res.fi, dev);
+@@ -412,9 +419,9 @@ static int __fib_validate_source(struct sk_buff *skb, __be32 src, __be32 dst,
+ 	return 0;
+ 
+ e_inval:
+-	return -EINVAL;
++	return -reason;
+ e_rpf:
+-	return -EXDEV;
++	return -SKB_DROP_REASON_IP_RPFILTER;
+ }
+ 
+ /* Ignore rp_filter for packets protected by IPsec. */
+@@ -440,7 +447,7 @@ int fib_validate_source(struct sk_buff *skb, __be32 src, __be32 dst,
+ 		 * and the same host but different containers are not.
+ 		 */
+ 		if (inet_lookup_ifaddr_rcu(net, src))
+-			return -EINVAL;
++			return -SKB_DROP_REASON_IP_LOCAL_SOURCE;
+ 
+ ok:
+ 		*itag = 0;
+diff --git a/net/ipv4/ip_input.c b/net/ipv4/ip_input.c
+index dc062ae49137..aac0575bb1a4 100644
+--- a/net/ipv4/ip_input.c
++++ b/net/ipv4/ip_input.c
+@@ -424,10 +424,8 @@ static int ip_rcv_finish_core(struct net *net, struct sock *sk,
+ 	return NET_RX_DROP;
+ 
+ drop_error:
+-	if (err == -EXDEV) {
+-		drop_reason = SKB_DROP_REASON_IP_RPFILTER;
++	if (drop_reason == SKB_DROP_REASON_IP_RPFILTER)
+ 		__NET_INC_STATS(net, LINUX_MIB_IPRPFILTER);
+-	}
+ 	goto drop;
+ }
+ 
 diff --git a/net/ipv4/route.c b/net/ipv4/route.c
-index 385efe6d71a7..ab70917c62e5 100644
+index ab70917c62e5..9de85051463b 100644
 --- a/net/ipv4/route.c
 +++ b/net/ipv4/route.c
-@@ -2202,8 +2202,10 @@ static struct net_device *ip_rt_get_dev(struct net *net,
+@@ -1690,7 +1690,7 @@ int ip_mc_validate_source(struct sk_buff *skb, __be32 daddr, __be32 saddr,
+ 		err = fib_validate_source(skb, saddr, 0, tos, 0, dev,
+ 					  in_dev, itag);
+ 		if (err < 0)
+-			return err;
++			return -EINVAL;
+ 	}
+ 	return 0;
+ }
+@@ -1788,6 +1788,7 @@ static int __mkroute_input(struct sk_buff *skb,
+ 	err = fib_validate_source(skb, saddr, daddr, tos, FIB_RES_OIF(*res),
+ 				  in_dev->dev, in_dev, &itag);
+ 	if (err < 0) {
++		err = -EINVAL;
+ 		ip_handle_martian_source(in_dev->dev, in_dev, skb, daddr,
+ 					 saddr);
  
- static int ip_route_input_slow(struct sk_buff *skb, __be32 daddr, __be32 saddr,
- 			       u8 tos, struct net_device *dev,
--			       struct fib_result *res)
-+			       struct fib_result *res,
-+			       enum skb_drop_reason *reason)
- {
-+	enum skb_drop_reason __reason = SKB_DROP_REASON_NOT_SPECIFIED;
- 	struct in_device *in_dev = __in_dev_get_rcu(dev);
- 	struct flow_keys *flkeys = NULL, _flkeys;
- 	struct net    *net = dev_net(dev);
-@@ -2231,8 +2233,10 @@ static int ip_route_input_slow(struct sk_buff *skb, __be32 daddr, __be32 saddr,
- 		fl4.flowi4_tun_key.tun_id = 0;
- 	skb_dst_drop(skb);
+@@ -2162,8 +2163,10 @@ int ip_route_use_hint(struct sk_buff *skb, __be32 daddr, __be32 saddr,
  
--	if (ipv4_is_multicast(saddr) || ipv4_is_lbcast(saddr))
-+	if (ipv4_is_multicast(saddr) || ipv4_is_lbcast(saddr)) {
-+		__reason = SKB_DROP_REASON_IP_INVALID_SOURCE;
+ 	tos &= INET_DSCP_MASK;
+ 	err = fib_validate_source(skb, saddr, daddr, tos, 0, dev, in_dev, &tag);
+-	if (err < 0)
++	if (err < 0) {
++		err = -EINVAL;
  		goto martian_source;
 +	}
  
- 	res->fi = NULL;
- 	res->table = NULL;
-@@ -2242,21 +2246,29 @@ static int ip_route_input_slow(struct sk_buff *skb, __be32 daddr, __be32 saddr,
- 	/* Accept zero addresses only to limited broadcast;
- 	 * I even do not know to fix it or not. Waiting for complains :-)
- 	 */
--	if (ipv4_is_zeronet(saddr))
-+	if (ipv4_is_zeronet(saddr)) {
-+		__reason = SKB_DROP_REASON_IP_INVALID_SOURCE;
- 		goto martian_source;
-+	}
- 
--	if (ipv4_is_zeronet(daddr))
-+	if (ipv4_is_zeronet(daddr)) {
-+		__reason = SKB_DROP_REASON_IP_INVALID_DEST;
- 		goto martian_destination;
-+	}
- 
- 	/* Following code try to avoid calling IN_DEV_NET_ROUTE_LOCALNET(),
- 	 * and call it once if daddr or/and saddr are loopback addresses
- 	 */
- 	if (ipv4_is_loopback(daddr)) {
--		if (!IN_DEV_NET_ROUTE_LOCALNET(in_dev, net))
-+		if (!IN_DEV_NET_ROUTE_LOCALNET(in_dev, net)) {
-+			__reason = SKB_DROP_REASON_IP_LOCALNET;
- 			goto martian_destination;
+ skip_validate_source:
+ 	skb_dst_copy(skb, hint);
+@@ -2313,8 +2316,11 @@ static int ip_route_input_slow(struct sk_buff *skb, __be32 daddr, __be32 saddr,
+ 	if (res->type == RTN_LOCAL) {
+ 		err = fib_validate_source(skb, saddr, daddr, tos,
+ 					  0, dev, in_dev, &itag);
+-		if (err < 0)
++		if (err < 0) {
++			__reason = -err;
++			err = -EINVAL;
+ 			goto martian_source;
 +		}
- 	} else if (ipv4_is_loopback(saddr)) {
--		if (!IN_DEV_NET_ROUTE_LOCALNET(in_dev, net))
-+		if (!IN_DEV_NET_ROUTE_LOCALNET(in_dev, net)) {
-+			__reason = SKB_DROP_REASON_IP_LOCALNET;
+ 		goto local_input;
+ 	}
+ 
+@@ -2339,8 +2345,11 @@ static int ip_route_input_slow(struct sk_buff *skb, __be32 daddr, __be32 saddr,
+ 	if (!ipv4_is_zeronet(saddr)) {
+ 		err = fib_validate_source(skb, saddr, 0, tos, 0, dev,
+ 					  in_dev, &itag);
+-		if (err < 0)
++		if (err < 0) {
++			__reason = -err;
++			err = -EINVAL;
  			goto martian_source;
 +		}
  	}
- 
- 	/*
-@@ -2315,7 +2327,10 @@ static int ip_route_input_slow(struct sk_buff *skb, __be32 daddr, __be32 saddr,
- 
- make_route:
- 	err = ip_mkroute_input(skb, res, in_dev, daddr, saddr, tos, flkeys);
--out:	return err;
-+out:
-+	if (reason && err)
-+		*reason = __reason;
-+	return err;
- 
- brd_input:
- 	if (skb->protocol != htons(ETH_P_IP))
-@@ -2406,6 +2421,7 @@ out:	return err;
- 
- e_nobufs:
- 	err = -ENOBUFS;
-+	__reason = SKB_DROP_REASON_NOMEM;
- 	goto out;
- 
- martian_source:
-@@ -2462,7 +2478,7 @@ static int ip_route_input_rcu(struct sk_buff *skb, __be32 daddr, __be32 saddr,
- 		return err;
- 	}
- 
--	return ip_route_input_slow(skb, daddr, saddr, tos, dev, res);
-+	return ip_route_input_slow(skb, daddr, saddr, tos, dev, res, reason);
- }
- 
- int ip_route_input_noref(struct sk_buff *skb, __be32 daddr, __be32 saddr,
+ 	flags |= RTCF_BROADCAST;
+ 	res->type = RTN_BROADCAST;
 -- 
 2.39.5
 
