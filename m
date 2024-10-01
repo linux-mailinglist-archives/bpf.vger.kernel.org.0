@@ -1,171 +1,192 @@
-Return-Path: <bpf+bounces-40632-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40633-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 928EE98B1ED
-	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2024 03:51:11 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14DEB98B1FB
+	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2024 03:58:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 555CA2811AB
-	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2024 01:51:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B8AE71F22744
+	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2024 01:58:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82D9122094;
-	Tue,  1 Oct 2024 01:51:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 158152BB1C;
+	Tue,  1 Oct 2024 01:58:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kcAe639F"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="fxMehmws"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62B2CC8C0
-	for <bpf@vger.kernel.org>; Tue,  1 Oct 2024 01:51:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64A5E39ADD
+	for <bpf@vger.kernel.org>; Tue,  1 Oct 2024 01:58:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727747466; cv=none; b=WfafYXblUHo7WjSUi2ZphSg+05Hb2QEncTEAThbEie++oASduTdkPLMKteAjzP7JtcRAeF/aN+Mr65V49Upk7lq2ixoN9wLuqZy4D4OSzBiQAhUcYqdSxjIJul3OCX+aF02ernOspLoqxmPXZ9K5nmcc4O2rvGMANhQgfYF6w7Q=
+	t=1727747902; cv=none; b=L4ILzU9RV3EhKKEIRf3BJkviYyYOQOm4ayXuJ/k9gnyE1TP+BfAom/aDI7LcSIYcUsyLUF+3Fvtx55dMFTfb/bLSWaAqI3zQY0E+B8c8SXtRISRfj+314S2KKY6g+Y1xJwKwN15zAw3smubk/t9X1MicHfLdo0aI4jylGuotBYE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727747466; c=relaxed/simple;
-	bh=7iSatZ+4hUQaJQjbACDNi7CNb0P0WfWMkEmJDHyA2nE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CEb0HDDoQU0T8Oc6Us1ECJBYRMMMLBrVdiCc0/JhOmSShVwDsuufOVCH1TggAOBKrpT49ljG/LO2/6ZE2Bu6dUd5R4mzfzoWYT+VX3bRvJQxeqrPm3IUxw5qFEaYcOyDZgT1K/28RDlMJ33SRNSSnUi/j7qd+vo9QlX7FXPVpIE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kcAe639F; arc=none smtp.client-ip=209.85.221.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-37cd5016d98so2486889f8f.1
-        for <bpf@vger.kernel.org>; Mon, 30 Sep 2024 18:51:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727747463; x=1728352263; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PxWx/wdYDgk3bq+3VgKSKVH0oBS1zBveroHqSiUTxvk=;
-        b=kcAe639FFqHxEfnJT6YtmiRk34UkO6lDCmZIWZuKqwCOo/tYk4MRYHgtafjwMsOvIt
-         mJCaDcFoYOxOkMdScET6iLkElUZmX7WgXhdy7YAaxa8EJPUST0t2KJx24dsgpUBWSb6g
-         uemeflXsW85NQGNiQnMKRVUSECQPxDfUMC8XJ/XB3396KVtxAiiZUR6cnk3DWg4FPytw
-         jzsdQ7p65ilmPmzC7tQ/2uQ+P4w3AFWWBe5oa8miwVruUOkuRt3zQVmgBlciipYdTv5l
-         gmr17k0a44AErnAIInO+04IR77fnkuiK1/YLscNOPMoh96SwdHoqLl6XdytIZr2lQaSj
-         ndoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727747463; x=1728352263;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PxWx/wdYDgk3bq+3VgKSKVH0oBS1zBveroHqSiUTxvk=;
-        b=Q48bo43MraV+E0BWFxN6S9OyAKSQS79hbb1q8FAI43a7f1gnTPMw/58fn8Q/4vySRE
-         RxlTQ+RDmLIni1v9sTAFpDTmCrpNoozjWfAOQhEK+rekLnxcdUPpN9gF8WmCm239ZzzT
-         nK0sXLCRfZIW+12wr0vOpOPteOrFQCDrPbGIvbdZwg6Y7in0KPe14QjmdLxsjr2svwSp
-         XwkC0njsxq08bIXkGeCABGvd8fetuAZKTOEFvpI8hiPiObqVaAeQfRWieZNc+DNnBCbX
-         qnf6v7BH7HsrHuqc8gsktu7VBh2CfbF853dk2d6Pvo9Q1NjC8RZ7oI2jwsHTOtsS0Cr5
-         3kPw==
-X-Gm-Message-State: AOJu0YwfYeg1Y0W1h2gqt9XfqLE6HY0kVwNka/P1PDid5AbWTDU1oLiI
-	gkQ2agiJIwYL5HvTOLSEex5yZ/SiJOCvqyH9vq1iwbCqkfsr9DfksJXIpE3qQHSw0iqVw/s+KXl
-	GuhUe1aUNQo82UsQ0+6uYHKwZiB/sofek
-X-Google-Smtp-Source: AGHT+IEIJFCqRK5fmYoCwrGl+QJ0y1CWAPwdeO4FuIAWLitfXFlm35OyyJsisB3C02Vdd+zs1cnJlCRic1hR8FGlWWw=
-X-Received: by 2002:adf:e6c7:0:b0:374:c7a3:3349 with SMTP id
- ffacd0b85a97d-37cd5b292c9mr7791315f8f.51.1727747462640; Mon, 30 Sep 2024
- 18:51:02 -0700 (PDT)
+	s=arc-20240116; t=1727747902; c=relaxed/simple;
+	bh=8Y+WnIyKoqdfaJlKH+KC75pnTaZZbappW+5Vga7ETag=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=fvcGHk5Q7UN42IAPqzWdiDv1eVdqV/LjnX6m397+7SMBOeEiTYz/1+b+MFyfgnnH0BFGhPcIpUdL28nB69RXQ9tPKag0T8jcQbbcaRbfk5vJQh/vHg0G1GCOArVm+wyrxJl4uVLSI/KPwooAUBQLYAodupSRP4p1f4C4B5r4Hhw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=fxMehmws; arc=none smtp.client-ip=95.215.58.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <075e314c-3aa5-4f7b-81f7-3bc0e055334a@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1727747897;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=lnIHn0BF5I13YOzLPkhPaKL/Qst4Kg2kv0TRJKsCPcA=;
+	b=fxMehmwsRJzfvj0Vi78qAXO/boLwVzMUeDJPechQuFoncZIMJhXrwupLTgEFoSNr0fp5S6
+	b+b8M7kywArhMwJCxkvx4+6kYuOAlk+Ktn4OMINxIMBtctRA79wiEicMNKknIq9eKeh6uB
+	X19GsyjjZeOI61WdUt+nH0QmRFZX0gQ=
+Date: Mon, 30 Sep 2024 18:58:03 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240927033904.2702474-1-yonghong.song@linux.dev>
-In-Reply-To: <20240927033904.2702474-1-yonghong.song@linux.dev>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 30 Sep 2024 18:50:51 -0700
-Message-ID: <CAADnVQJZLRnT3J31CLB85by=SmC2UY1pmUZX0kkyePtVdTdy9A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] docs/bpf: Document some special sdiv/smod operations
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next v2 2/2] bpf, selftests: Add test case for cgroup
+ skb to get net_cls classid helpers
+To: Feng zhou <zhoufeng.zf@bytedance.com>
+Cc: daniel@iogearbox.net, john.fastabend@gmail.com, ast@kernel.org,
+ andrii@kernel.org, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me,
+ haoluo@google.com, jolsa@kernel.org, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, mykolal@fb.com,
+ shuah@kernel.org, geliang@kernel.org, laoar.shao@gmail.com,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, yangzhenze@bytedance.com,
+ wangdongdong.6@bytedance.com
+References: <20240918074516.5697-1-zhoufeng.zf@bytedance.com>
+ <20240918074516.5697-3-zhoufeng.zf@bytedance.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+Content-Language: en-US
+In-Reply-To: <20240918074516.5697-3-zhoufeng.zf@bytedance.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Sep 26, 2024 at 8:39=E2=80=AFPM Yonghong Song <yonghong.song@linux.=
-dev> wrote:
->
-> Patch [1] fixed possible kernel crash due to specific sdiv/smod operation=
-s
-> in bpf program. The following are related operations and the expected res=
-ults
-> of those operations:
->   - LLONG_MIN/-1 =3D LLONG_MIN
->   - INT_MIN/-1 =3D INT_MIN
->   - LLONG_MIN%-1 =3D 0
->   - INT_MIN%-1 =3D 0
->
-> Those operations are replaced with codes which won't cause
-> kernel crash. This patch documents what operations may cause exception an=
-d
-> what replacement operations are.
->
->   [1] https://lore.kernel.org/all/20240913150326.1187788-1-yonghong.song@=
-linux.dev/
->
-> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+On 9/18/24 12:45 AM, Feng zhou wrote:
+> From: Feng Zhou <zhoufeng.zf@bytedance.com>
+> 
+> This patch adds a test for cgroup skb to get classid.
+> 
+> Signed-off-by: Feng Zhou <zhoufeng.zf@bytedance.com>
 > ---
->  .../bpf/standardization/instruction-set.rst   | 25 +++++++++++++++----
->  1 file changed, 20 insertions(+), 5 deletions(-)
->
-> diff --git a/Documentation/bpf/standardization/instruction-set.rst b/Docu=
-mentation/bpf/standardization/instruction-set.rst
-> index ab820d565052..d150c1d7ad3b 100644
-> --- a/Documentation/bpf/standardization/instruction-set.rst
-> +++ b/Documentation/bpf/standardization/instruction-set.rst
-> @@ -347,11 +347,26 @@ register.
->    =3D=3D=3D=3D=3D  =3D=3D=3D=3D=3D  =3D=3D=3D=3D=3D=3D=3D  =3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D
->
->  Underflow and overflow are allowed during arithmetic operations, meaning
-> -the 64-bit or 32-bit value will wrap. If BPF program execution would
-> -result in division by zero, the destination register is instead set to z=
-ero.
-> -If execution would result in modulo by zero, for ``ALU64`` the value of
-> -the destination register is unchanged whereas for ``ALU`` the upper
-> -32 bits of the destination register are zeroed.
-> +the 64-bit or 32-bit value will wrap. There are also a few arithmetic op=
-erations
-> +which may cause exception for certain architectures. Since crashing the =
-kernel
-> +is not an option, those operations are replaced with alternative operati=
-ons.
+>   .../bpf/prog_tests/cg_skb_get_classid.c       | 87 +++++++++++++++++++
+>   .../selftests/bpf/progs/cg_skb_get_classid.c  | 19 ++++
+>   2 files changed, 106 insertions(+)
+>   create mode 100644 tools/testing/selftests/bpf/prog_tests/cg_skb_get_classid.c
+>   create mode 100644 tools/testing/selftests/bpf/progs/cg_skb_get_classid.c
+> 
+> diff --git a/tools/testing/selftests/bpf/prog_tests/cg_skb_get_classid.c b/tools/testing/selftests/bpf/prog_tests/cg_skb_get_classid.c
+> new file mode 100644
+> index 000000000000..13a5943c387d
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/cg_skb_get_classid.c
+> @@ -0,0 +1,87 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
 > +
-> +.. table:: Arithmetic operations with possible exceptions
+> +/*
+> + * Copyright 2024 Bytedance.
+> + */
 > +
-> +  =3D=3D=3D=3D=3D  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D  =3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D  =3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> +  name   class       original                       replacement
-> +  =3D=3D=3D=3D=3D  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D  =3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D  =3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> +  DIV    ALU64/ALU   dst /=3D 0                       dst =3D 0
-> +  SDIV   ALU64/ALU   dst s/=3D 0                      dst =3D 0
-> +  MOD    ALU64       dst %=3D 0                       dst =3D dst (no re=
-placement)
-> +  MOD    ALU         dst %=3D 0                       dst =3D (u32)dst
-> +  SMOD   ALU64       dst s%=3D 0                      dst =3D dst (no re=
-placement)
-> +  SMOD   ALU         dst s%=3D 0                      dst =3D (u32)dst
-> +  SDIV   ALU64       dst s/=3D -1 (dst =3D LLONG_MIN)   dst =3D LLONG_MI=
-N
-> +  SDIV   ALU         dst s/=3D -1 (dst =3D INT_MIN)     dst =3D (u32)INT=
-_MIN
-> +  SMOD   ALU64       dst s%=3D -1 (dst =3D LLONG_MIN)   dst =3D 0
-> +  SMOD   ALU         dst s%=3D -1 (dst =3D INT_MIN)     dst =3D 0
+> +#include <test_progs.h>
+> +
+> +#include "cg_skb_get_classid.skel.h"
+> +
+> +#include "cgroup_helpers.h"
+> +#include "network_helpers.h"
+> +
+> +static int run_test(int cgroup_fd, int server_fd)
+> +{
+> +	struct cg_skb_get_classid *skel;
+> +	int fd, err = 0;
+> +
+> +	skel = cg_skb_get_classid__open_and_load();
+> +	if (!ASSERT_OK_PTR(skel, "skel_open"))
+> +		return -1;
+> +
+> +	skel->links.cg_skb_classid =
+> +		bpf_program__attach_cgroup(skel->progs.cg_skb_classid,
+> +					   cgroup_fd);
+> +	if (!ASSERT_OK_PTR(skel->links.cg_skb_classid, "prog_attach")) {
+> +		err = -1;
+> +		goto out;
+> +	}
+> +
+> +	if (!ASSERT_OK(join_classid(), "join_classid")) {
+> +		err = -1;
+> +		goto out;
+> +	}
+> +
+> +	errno = 0;
+> +	fd = connect_to_fd_opts(server_fd, NULL);
+> +	if (fd >= 0) {
+> +		if (skel->bss->classid != getpid()) {
+> +			log_err("Get unexpected classid");
+> +			err = -1;
+> +		}
+> +
+> +		close(fd);
+> +	} else {
+> +		log_err("Unexpected errno from connect to server");
+> +		err = -1;
+> +	}
+> +out:
+> +	cg_skb_get_classid__destroy(skel);
+> +	return err;
+> +}
+> +
+> +void test_cg_skb_get_classid(void)
+> +{
+> +	struct network_helper_opts opts = {};
+> +	int server_fd, client_fd, cgroup_fd;
+> +	static const int port = 60120;
 
-This is a great addition to the doc, but this file is currently
-being used as a base for IETF standard which is in its final "edit" stage
-which may require few patches,
-so we cannot land any changes to instruction-set.rst
-not related to standardization until RFC number is issued and
-it becomes immutable. After that the same instruction-set.rst
-file can be reused for future revisions on the standard.
-Hopefully the draft will clear the final hurdle in a couple weeks.
-Until then:
+Running a test with a specific port without netns could fail when test_progs is 
+run in parallel (-j). e.g. cgroup_v1v2 is using the same port.
+
+> +
+> +	/* Step 1: Check base connectivity works without any BPF. */
+> +	server_fd = start_server(AF_INET, SOCK_STREAM, NULL, port, 0);
+> +	if (!ASSERT_GE(server_fd, 0, "server_fd"))
+> +		return;
+> +	client_fd = connect_to_fd_opts(server_fd, &opts);
+> +	if (!ASSERT_GE(client_fd, 0, "client_fd")) {
+> +		close(server_fd);
+> +		return;
+> +	}
+> +	close(client_fd);
+> +	close(server_fd);
+
+imo, this connection pre-test is unnecessary. I would remove it.
+
+> +
+> +	/* Step 2: Check BPF prog attached to cgroups. */
+> +	cgroup_fd = test__join_cgroup("/cg_skb_get_classid");
+> +	if (!ASSERT_GE(cgroup_fd, 0, "cgroup_fd"))
+> +		return;
+> +	server_fd = start_server(AF_INET, SOCK_STREAM, NULL, port, 0);
+> +	if (!ASSERT_GE(server_fd, 0, "server_fd")) {
+> +		close(cgroup_fd);
+> +		return;
+> +	}
+> +	setup_classid_environment();
+> +	set_classid();
+> +	ASSERT_OK(run_test(cgroup_fd, server_fd), "cg_skb_get_classid");
+
+Please run this test under a netns and without specifying a particular port. 
+connect_to_fd_opts will figure out the port used in server_fd.
+
+Patch 1 lgtm.
+
+Please add a few words to the cover letter also.
+
 pw-bot: cr
 
