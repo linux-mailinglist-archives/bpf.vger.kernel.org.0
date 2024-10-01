@@ -1,169 +1,230 @@
-Return-Path: <bpf+bounces-40686-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40687-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47DD998C0CF
-	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2024 16:54:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBA7298C0D9
+	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2024 16:55:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AE30C285829
-	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2024 14:54:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 613D51F219BC
+	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2024 14:55:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49C5E282F7;
-	Tue,  1 Oct 2024 14:53:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52AF91C9B65;
+	Tue,  1 Oct 2024 14:55:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cIoF4RLA"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vKaO29f9"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 288B61C6F73;
-	Tue,  1 Oct 2024 14:53:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C96F11C7B9D;
+	Tue,  1 Oct 2024 14:55:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727794436; cv=none; b=CkFCLLZ15QMb9rMBX8w5lpMywDjbUOmtCqqeFJ6AvSsXjQr5PLWyZoZ+e/KEbL1v40YCmiiR/j/nbxBrvbqNV4P7Gvguf2G77HnlgGa9CWghFJh4xjB3HUXXjeYLnb5ryK5jN80baazPezTBvYQJn7ZaYz3AC4kg3rBdCd0oOFY=
+	t=1727794501; cv=none; b=cxKwiiWTXkvrzdQBbbpqJpDU3UhT4hyh5vkxygmIGgQcIcfNDIzAFL8Ww/rniEdTTFxsv9x09rrL66W+ls5Uf4mW197Lxqr5VpsYLcguHa+q3zAnDANsfzmAYA2SAY3CSLLAbco/SomcFhN77ClwqAdkl/MAPYGrzXkw5+BHoIg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727794436; c=relaxed/simple;
-	bh=NiNTmNONqUG6rArLU6+DW/koYHBP+PdkO5eQL5qKW5E=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bGzE361Ky27XXrz9vSHdhAxkCdsKL2mXIVHzUyFQp91Ljmkj6rPXQ78SXE6dEsHMDkFdWksdoXXT6IEpVGdfM6MKPASQg5wHYKoOy4/HT6DW8XAXwICYAQcT8nbot719qTvcLI11G7/BFHQbHtFHyTA1NQPGxHZ1C+2PdU9RAuU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cIoF4RLA; arc=none smtp.client-ip=209.85.221.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-37cdb6ebc1cso2160624f8f.1;
-        Tue, 01 Oct 2024 07:53:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727794433; x=1728399233; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FSTnPU9v6H2GxBsNTOAiZzPo6DZqtIPh6ogHLJkD69Y=;
-        b=cIoF4RLAJ5CKomWNW2LZn2p/in6XaxaKLzxMj/AfmU4vVPEI5fcbc2uQ6734WwsH/D
-         VbW2Gz1vseKhOclIVlLJeMUow+KlnVlmh6GgAO0PQJgEIHqEUdGlaYEsUB5GZ0yoLMIt
-         rJjW40tlq7OXis+Trc603C1pUbCe5aDN2hAnBGRYkXYN9AWJjezLEf+0wlnC37R0eedr
-         IaTkcu6M+xvzuOPNCnZANxhuWK7+tuhoUrJ8tc+LZ/9n5zsQYtBrZutqLHjuLicYy8Ad
-         GvpgVNxzB2sn/slp14qP0aJX7yUjVBvppzhsBel3en5EYzRcdf+VTz5ypepb7nRYgunc
-         dg/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727794433; x=1728399233;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FSTnPU9v6H2GxBsNTOAiZzPo6DZqtIPh6ogHLJkD69Y=;
-        b=XyFl9/KMIw/xKQfRv6h6rhqXWgVORH/6hlm4QFr2A5zl+TMcxj+59s34ybfzlUeSv1
-         XBzFi2PV3e3DHxQrnCCB+xj276qORjQnKDIHP8Xujo1Eu9pPQjf+KqiEM843Wh+gXI2c
-         llXuBDDHEtasi1buwLcvL5y/zWD7XaydR32OnUPoTWSQWAubbZUiW5um4MImBpVWO/Pf
-         RBhzN0OXwfFQ+Sgxs8H7vHUo2Qb8a4aUW/7qPXi1kxZzsUQ0gA07xc8cYZJHNsH0dsZo
-         eNbh4+qJQ/K/wXK3m4HiUGsncV2Vil8JbKhm0hGC3bkaKBC1x66xo9/pJkvJixj/QFIw
-         Gggg==
-X-Forwarded-Encrypted: i=1; AJvYcCUlydnOAlaU0RhrN493vW3f4XIs4uaslbMQ/EI+905H4aOyxHxZ5ezVl5I0GPf7c1kopr1WEPEeaWDV+ZBl@vger.kernel.org, AJvYcCVZfto3bu0yMVvLB5sMqg0Gb4BU6AWLdFnA7HvMA+42qCOQoU3naMSJwhu8DP9HM/H+0Xo=@vger.kernel.org, AJvYcCW01P2UxcSlPZTG4Q4y0IDMCjvC0HEw9R0vtLm5UMgRGb7BcGyqBTZ4I0m88Z2u26DTn4/gK9WQo2On+04+M9lQVjEu@vger.kernel.org, AJvYcCWL4OUHcvGfPxT7i4gg8kepsPWnMkPRvfw01jAV1PPHMy7BGKTVgbwY/ky68Y/bhRtJVZQV/IfzXg4sPuy5@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywlrv6C5gmesX2OGkjCL8Nm31H1QYkSfQ6dQpFJJGnaM6CGrgHp
-	55IlLIhrCM06Glu1QRpES7Gkh2DAaUcagUzCoj5BO7/L5XwUpR0qAZ4KoyyeR/J9ZWICpXMnEs+
-	+BaTI/5gwKhx9AEhbiEH/FigrfGXNvvPp
-X-Google-Smtp-Source: AGHT+IEm8GKzd4fqUPp6LAzM4CsjfnUSOgffnLlYkAgZo42PyQhxjWYeeN/iWESnCrPx+63wt9+U+2OjWQ/iO36f9Zg=
-X-Received: by 2002:a05:6000:e42:b0:37c:d2d2:7f5a with SMTP id
- ffacd0b85a97d-37cd5aef979mr6359211f8f.32.1727794433399; Tue, 01 Oct 2024
- 07:53:53 -0700 (PDT)
+	s=arc-20240116; t=1727794501; c=relaxed/simple;
+	bh=K73I+jE0VsIHKMTIulu1znEQ33yW3tbXLveEep54EC4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WQIMFREYfPES0kEDHsWMwgmqNMbQDzKMTF570n/N8yQkp64FQcqUNcQuj/AdReU6i+1Rm0+acckx8OKpcsE8xc5vS0Eq0SA1sASZe3emIBtkMCBUDjo8fRa1Tl19XBQ+B7+xWlc06UvEddvcGL1P6UT3IoM0DmAwddIcv7pSWLM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vKaO29f9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CFA89C4CEC6;
+	Tue,  1 Oct 2024 14:55:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1727794501;
+	bh=K73I+jE0VsIHKMTIulu1znEQ33yW3tbXLveEep54EC4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=vKaO29f9wCjbLAMhegO8JcQuaQSybTEVgjIBoAGycugkXnIRGrcBulXlK+OHVHTPp
+	 5YbwlYq8u8oy4aP5qWx/+uWSJcKECxX3ov+uyvWsZ4+gjXInTSkLbu14/eKVRdECq8
+	 SJuz6nUJZNy4uVP+dxZwqy8GScmyQMmybnwxcbuEormjgD3JWUbA+Kx4AM/phdU2vH
+	 PH7vdFox1J6BR/I2GzaQo8yoH5janJmaHo+u722ndB9rxQpWCi448+TuOz92q4zGDl
+	 XpUdkZVed72v5QHcCyFubFR43KUogJIAyQZzV2FVOhb7wlXUUJmqY5X3/H96rUvO27
+	 ZVImFPxfxJrXA==
+Date: Tue, 1 Oct 2024 16:54:58 +0200
+From: Lorenzo Bianconi <lorenzo@kernel.org>
+To: Arthur Fabre <afabre@cloudflare.com>
+Cc: Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+	Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	Jakub Sitnicki <jakub@cloudflare.com>,
+	Alexander Lobakin <aleksander.lobakin@intel.com>,
+	bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
+	daniel@iogearbox.net, davem@davemloft.net, kuba@kernel.org,
+	john.fastabend@gmail.com, edumazet@google.com, pabeni@redhat.com,
+	sdf@fomichev.me, tariqt@nvidia.com, saeedm@nvidia.com,
+	anthony.l.nguyen@intel.com, przemyslaw.kitszel@intel.com,
+	intel-wired-lan@lists.osuosl.org, mst@redhat.com,
+	jasowang@redhat.com, mcoquelin.stm32@gmail.com,
+	alexandre.torgue@foss.st.com,
+	kernel-team <kernel-team@cloudflare.com>,
+	Yan Zhai <yan@cloudflare.com>
+Subject: Re: [RFC bpf-next 0/4] Add XDP rx hw hints support performing
+ XDP_REDIRECT
+Message-ID: <ZvwNQqN4gez1Ksfn@lore-desk>
+References: <87ldzkndqk.fsf@toke.dk>
+ <CAOn4ftshf3pyAst27C2haaSj4eR2n34_pcwWBc5o3zHBkwRb3g@mail.gmail.com>
+ <87wmiysi37.fsf@toke.dk>
+ <D4GBY7CHJNJ6.3O18I5W1FTPKR@bobby>
+ <87ldzds8bp.fsf@toke.dk>
+ <D4H5CAN4O95E.3KF8LAH75FYD4@bobby>
+ <ZvbKDT-2xqx2unrx@lore-rh-laptop>
+ <871q11s91e.fsf@toke.dk>
+ <ZvqQOpqnK9hBmXNn@lore-desk>
+ <D4KJ7DUXJQC5.2UFST9L3CUOH7@bobby>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240915205648.830121-1-hbathini@linux.ibm.com>
- <20240915205648.830121-18-hbathini@linux.ibm.com> <CAADnVQL60XXW95tgwKn3kVgSQAN7gr1STy=APuO1xQD7mz-aXA@mail.gmail.com>
- <32249e74-633d-4757-8931-742b682a63d3@linux.ibm.com> <CAADnVQKfSH_zkP0-TwOB_BLxCBH9efot9mk03uRuooCTMmWnWA@mail.gmail.com>
- <7afc9cc7-95cd-45c7-b748-28040206d9a0@linux.ibm.com>
-In-Reply-To: <7afc9cc7-95cd-45c7-b748-28040206d9a0@linux.ibm.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 1 Oct 2024 07:53:42 -0700
-Message-ID: <CAADnVQJjqnSVqq2n70-uqfrYRHH3n=5s9=t3D2AMooxxAHYfJQ@mail.gmail.com>
-Subject: Re: [PATCH v5 17/17] powerpc64/bpf: Add support for bpf trampolines
-To: Hari Bathini <hbathini@linux.ibm.com>
-Cc: linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, bpf <bpf@vger.kernel.org>, 
-	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>, 
-	Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	"Naveen N. Rao" <naveen@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Masahiro Yamada <masahiroy@kernel.org>, 
-	Nicholas Piggin <npiggin@gmail.com>, Alexei Starovoitov <ast@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
-	Vishal Chourasia <vishalc@linux.ibm.com>, Mahesh J Salgaonkar <mahesh@linux.ibm.com>, 
-	Masami Hiramatsu <mhiramat@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="QZlN8fZgoeG75Oo9"
+Content-Disposition: inline
+In-Reply-To: <D4KJ7DUXJQC5.2UFST9L3CUOH7@bobby>
+
+
+--QZlN8fZgoeG75Oo9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Oct 1, 2024 at 12:18=E2=80=AFAM Hari Bathini <hbathini@linux.ibm.co=
-m> wrote:
->
->
->
-> On 30/09/24 6:25 pm, Alexei Starovoitov wrote:
-> > On Sun, Sep 29, 2024 at 10:33=E2=80=AFPM Hari Bathini <hbathini@linux.i=
-bm.com> wrote:
-> >>
-> >>
-> >>
-> >> On 17/09/24 1:20 pm, Alexei Starovoitov wrote:
-> >>> On Sun, Sep 15, 2024 at 10:58=E2=80=AFPM Hari Bathini <hbathini@linux=
-.ibm.com> wrote:
-> >>>>
-> >>>> +
-> >>>> +       /*
-> >>>> +        * Generated stack layout:
-> >>>> +        *
-> >>>> +        * func prev back chain         [ back chain        ]
-> >>>> +        *                              [                   ]
-> >>>> +        * bpf prog redzone/tailcallcnt [ ...               ] 64 byt=
-es (64-bit powerpc)
-> >>>> +        *                              [                   ] --
-> >>> ...
-> >>>> +
-> >>>> +       /* Dummy frame size for proper unwind - includes 64-bytes re=
-d zone for 64-bit powerpc */
-> >>>> +       bpf_dummy_frame_size =3D STACK_FRAME_MIN_SIZE + 64;
-> >>>
-> >>> What is the goal of such a large "red zone" ?
-> >>> The kernel stack is a limited resource.
-> >>> Why reserve 64 bytes ?
-> >>> tail call cnt can probably be optional as well.
-> >>
-> >> Hi Alexei, thanks for reviewing.
-> >> FWIW, the redzone on ppc64 is 288 bytes. BPF JIT for ppc64 was using
-> >> a redzone of 80 bytes since tailcall support was introduced [1].
-> >> It came down to 64 bytes thanks to [2]. The red zone is being used
-> >> to save NVRs and tail call count when a stack is not setup. I do
-> >> agree that we should look at optimizing it further. Do you think
-> >> the optimization should go as part of PPC64 trampoline enablement
-> >> being done here or should that be taken up as a separate item, maybe?
+> On Mon Sep 30, 2024 at 1:49 PM CEST, Lorenzo Bianconi wrote:
+> > > Lorenzo Bianconi <lorenzo@kernel.org> writes:
+> > >=20
+> > > >> > We could combine such a registration API with your header format=
+, so
+> > > >> > that the registration just becomes a way of allocating one of th=
+e keys
+> > > >> > from 0-63 (and the registry just becomes a global copy of the he=
+ader).
+> > > >> > This would basically amount to moving the "service config file" =
+into the
+> > > >> > kernel, since that seems to be the only common denominator we ca=
+n rely
+> > > >> > on between BPF applications (as all attempts to write a common d=
+aemon
+> > > >> > for BPF management have shown).
+> > > >>=20
+> > > >> That sounds reasonable. And I guess we'd have set() check the glob=
+al
+> > > >> registry to enforce that the key has been registered beforehand?
+> > > >>=20
+> > > >> >
+> > > >> > -Toke
+> > > >>=20
+> > > >> Thanks for all the feedback!
+> > > >
+> > > > I like this 'fast' KV approach but I guess we should really evaluat=
+e its
+> > > > impact on performances (especially for xdp) since, based on the kfu=
+nc calls
+> > > > order in the ebpf program, we can have one or multiple memmove/memc=
+py for
+> > > > each packet, right?
+> > >=20
+> > > Yes, with Arthur's scheme, performance will be ordering dependent. Us=
+ing
+> > > a global registry for offsets would sidestep this, but have the
+> > > synchronisation issues we discussed up-thread. So on balance, I think
+> > > the memmove() suggestion will probably lead to the least pain.
+> > >=20
+> > > For the HW metadata we could sidestep this by always having a fixed
+> > > struct for it (but using the same set/get() API with reserved keys). =
+The
+> > > only drawback of doing that is that we statically reserve a bit of
+> > > space, but I'm not sure that is such a big issue in practice (at least
+> > > not until this becomes to popular that the space starts to be contend=
+ed;
+> > > but surely 256 bytes ought to be enough for everybody, right? :)).
 > >
-> > The follow up is fine.
-> > It just odd to me that we currently have:
-> >
-> > [   unused red zone ] 208 bytes protected
-> >
-> > I simply don't understand why we need to waste this much stack space.
-> > Why can't it be zero today ?
-> >
->
-> The ABI for ppc64 has a redzone of 288 bytes below the current
-> stack pointer that can be used as a scratch area until a new
-> stack frame is created. So, no wastage of stack space as such.
-> It is just red zone that can be used before a new stack frame
-> is created. The comment there is only to show how redzone is
-> being used in ppc64 BPF JIT. I think the confusion is with the
-> mention of "208 bytes" as protected. As not all of that scratch
-> area is used, it mentions the remaining as unused. Essentially
-> 288 bytes below current stack pointer is protected from debuggers
-> and interrupt code (red zone). Note that it should be 224 bytes
-> of unused red zone instead of 208 bytes as red zone usage in
-> ppc64 BPF JIT come down from 80 bytes to 64 bytes since [2].
-> Hope that clears the misunderstanding..
+> > I am fine with the proposed approach, but I think we need to verify wha=
+t is the
+> > impact on performances (in the worst case??)
+>=20
+> If drivers are responsible for populating the hardware metadata before
+> XDP, we could make sure drivers set the fields in order to avoid any
+> memove() (and maybe even provide a helper to ensure this?).
 
-I see. That makes sense. So it's similar to amd64 red zone,
-but there we have an issue with irqs, hence the kernel is
-compiled with -mno-red-zone.
+nope, since the current APIs introduced by Stanislav are consuming NIC
+metadata in kfuncs (mainly for af_xdp) and, according to my understanding,
+we want to add a kfunc to store the info for each NIC metadata (e.g rx-hash,
+timestamping, ..) into the packet (this is what Toke is proposing, right?).
+In this case kfunc calling order makes a difference.
+We can think even to add single kfunc to store all the info for all the NIC
+metadata (maybe via a helping struct) but it seems not scalable to me and we
+are losing kfunc versatility.
 
-I guess ppc always has a different interrupt stack and
-it's not an issue?
+Regards,
+Lorenzo
+
+>=20
+> > > > Moreover, I still think the metadata area in the xdp_frame/xdp_buff=
+ is not
+> > > > so suitable for nic hw metadata since:
+> > > > - it grows backward=20
+> > > > - it is probably in a different cacheline with respect to xdp_frame
+> > > > - nic hw metadata will not start at fixed and immutable address, bu=
+t it depends
+> > > >   on the running ebpf program
+> > > >
+> > > > What about having something like:
+> > > > - fixed hw nic metadata: just after xdp_frame struct (or if you wan=
+t at the end
+> > > >   of the metadata area :)). Here he can reuse the same KV approach =
+if it is fast
+> > > > - user defined metadata: in the metadata area of the xdp_frame/xdp_=
+buff
+> > >=20
+> > > AFAIU, none of this will live in the (current) XDP metadata area. It
+> > > will all live just after the xdp_frame struct (so sharing the space w=
+ith
+> > > the metadata area in the sense that adding more metadata kv fields wi=
+ll
+> > > decrease the amount of space that is usable by the current XDP metada=
+ta
+> > > APIs).
+> > >=20
+> > > -Toke
+> > >=20
+> >
+> > ah, ok. I was thinking the proposed approach was to put them in the cur=
+rent
+> > metadata field.
+>=20
+> I've also been thinking of putting this new KV stuff at the start of the
+> headroom (I think that's what you're saying Toke?). It has a few nice
+> advantanges:
+>=20
+> * It coexists nicely with the current XDP / TC metadata support.
+> Those users won't be able to overwrite / corrupt the KV metadata.
+> KV users won't need to call xdp_adjust_meta() (which would be awkward -
+> how would they know how much space the KV implementation needs).
+>=20
+> * We don't have to move all the metadata everytime we call
+> xdp_adjust_head() (or the kernel equivalent).
+>=20
+> Are there any performance implications of that, e.g. for caching?
+>=20
+> This would also grow "upwards" which is more natural, but I think=20
+> either way the KV API would hide whether it's downwards or upwards from
+> users.
+>=20
+> >
+> > Regards,
+> > Lorenzo
+>=20
+
+--QZlN8fZgoeG75Oo9
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCZvwNQgAKCRA6cBh0uS2t
+rPPCAP9NLWLOvwOPJvBCDjraaJ1dXthG/l5SniJouVDlxP1+ZAEA7a8VgC/fcorU
+Vjt+2iF85Ez8TF5ht/npXVtMFFfi2Qk=
+=QR1N
+-----END PGP SIGNATURE-----
+
+--QZlN8fZgoeG75Oo9--
 
