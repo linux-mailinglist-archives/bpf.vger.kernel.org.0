@@ -1,165 +1,145 @@
-Return-Path: <bpf+bounces-40666-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40667-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4356198BDC7
-	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2024 15:33:19 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90AF198BDED
+	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2024 15:36:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5D9061C20DF0
-	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2024 13:33:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 063B7B24BAA
+	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2024 13:36:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 859141C57B9;
-	Tue,  1 Oct 2024 13:32:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76BF41C4623;
+	Tue,  1 Oct 2024 13:36:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="GSSiOv69"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="aVPBOyFF";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="CMosy8MG"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69EAD1C3F26
-	for <bpf@vger.kernel.org>; Tue,  1 Oct 2024 13:32:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 559161C57A7
+	for <bpf@vger.kernel.org>; Tue,  1 Oct 2024 13:36:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727789564; cv=none; b=PG7jBcPRwWVrjzaZ94cdpmMz9cty3e3Bz9jMZq09QdQl/E3YPQ+HjGDoUlgbcKZ/W6bQfQdZfK2pnI4RXlvtN0t/mX0VYEhMbqh/HZO7/ZXozZowjt69Ln4HPNtJTPfPVD6Xp0G3q97Nxprai5AIs4gBhzOZHryHpgCjsevpBnI=
+	t=1727789769; cv=none; b=EZqIVQiDjEHXdwFalYocBsgVJ/cjngiGgtbY8UmziFtHLoPTm0+FKiSf1Rl/T+qTawEd7ti2Y6GBsfcIV+blcFdCxW0JDPIBSX9zwSWbs77DwUHOuguPCSG49zurA+GeMOoc817r5jlYZBXlmmjalCU9jYGIOsn53WOD4NwgDw8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727789564; c=relaxed/simple;
-	bh=PKF8ZVEo8AmNwMLcEwYXeCfaLkhMxlQpxXFFSPA6ZXo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SmI5KV8Pu2jCS+XMU5KIJl+JtIFGlzqRDXOgq4EoBD4G/Yh627x3GYqL6Xue/zN/Ejj54gg7B1U1TJbDQv2p9OLjsYKwCAAKnoJEEn1oFykdKNuaBAVEO5+allj5NlMRs0CculDmewCX+C2D2CCRFEKO21uO6bWIAKrCtEKhnZk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=GSSiOv69; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1727789561;
+	s=arc-20240116; t=1727789769; c=relaxed/simple;
+	bh=1Q91ZtOx7WXzoCuq5xvTv6JxndWm9IVhATDFHynZAwA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EkWteZKi6EZ4dw0bCMpugZ8KIemZLAFKw+Vqf8E5CX/0fACYdQQ0E9GF8O5QDGN7NXTgIaSq40nR0Oa9lYzY1h2duz55MDfh485sTDm/Qf1cFzVrCUIUb8l6NTzB0ZopLphT2xrnHCByAR9JOrDJ4l9xd4GJRcHGOiMz7blO0+g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=aVPBOyFF; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=CMosy8MG; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Tue, 1 Oct 2024 15:36:03 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1727789764;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=iojT1xfY/iXMYZ4HclXjt5wJyv9eCNn2RMRvon4kbuU=;
-	b=GSSiOv69fNEJVwQ+K86InxXSXuNnKs2jBvWLFV+Ti5gJlurZKFYaUQ/SXfKUgL9gtpi0tx
-	SOo9d1m91pGGgF+6dOwfB9KNX/TWKKkrA6DHWIxMiKGSTxjKO8saZ4vYORC8BbP7kSyIuX
-	e9SbSCkY6I6j8CTCPMrZvnr4ipbfyM4=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-601-83jhRMU3N3iFppyefzT7qg-1; Tue, 01 Oct 2024 09:32:40 -0400
-X-MC-Unique: 83jhRMU3N3iFppyefzT7qg-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-42caca7215dso31498745e9.2
-        for <bpf@vger.kernel.org>; Tue, 01 Oct 2024 06:32:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727789559; x=1728394359;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=iojT1xfY/iXMYZ4HclXjt5wJyv9eCNn2RMRvon4kbuU=;
-        b=aavAhDwqr0gKt/RFACFBOAOAIi2aza2pT5XyJC04TUzcmwJm7vsn+TUyKaty8HGXSz
-         YL2NUNqjzRhluaeWs14DTXzg4IFdaPRtn6DwOlQ8KgOIV1W/QPJ/HWyzVFKzYVExZ1j2
-         PmtOPIC0ZHLLghrBQK55SMsCtzFK+lKl5R+5qSqZZtVdsSpj3mfoDYKqU9bZXiNhUtUm
-         dGDkWXudqMULTyOZ2Vefx5bxTeyi6f8vOVCydPw6xWVZwvH4xuC5HjbLMyfeqLpfwlCE
-         0oqcbWozSTmTKQ+aweZZp4T1DZopZIOWxjF94heaSWcbUXcEt8pXhl+GI3KmTHg3EmTY
-         2TDw==
-X-Forwarded-Encrypted: i=1; AJvYcCXdonTyoNLNYRIeWfZFQ4XImO8iuIMNbvxQV5XkMsaFBeZX2fsR0S054Zwp7O0XWwIB8B8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxbspA/qmjAevT5nigX8LlUOVtyGRtS1+EAvXlGqATbkM98z9PE
-	kBuVwNwEbbrg3UiLV05TmyqWMa3TwChcw/ztBQ95bj+w3w40ETlxhntpD5OhA5/cnIS5ZH9smmN
-	Ko0W7ImF0Z1yhf8lC3EYHX8sVFcEKOPsoXpg+fnjSej/CEubAUw==
-X-Received: by 2002:a05:600c:a02:b0:426:66e9:b844 with SMTP id 5b1f17b1804b1-42f584339aemr130160625e9.8.1727789559123;
-        Tue, 01 Oct 2024 06:32:39 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGDiutjjZjFmvjKmZCcGrKni3t0abnQlYsETvEbcK9G6gugyRexKg3WBxo9lrKH5Dul5fJhqA==
-X-Received: by 2002:a05:600c:a02:b0:426:66e9:b844 with SMTP id 5b1f17b1804b1-42f584339aemr130159935e9.8.1727789558576;
-        Tue, 01 Oct 2024 06:32:38 -0700 (PDT)
-Received: from ?IPV6:2a0d:3341:b088:b810::f71? ([2a0d:3341:b088:b810::f71])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-42f57e13a1dsm136324005e9.32.2024.10.01.06.32.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Oct 2024 06:32:37 -0700 (PDT)
-Message-ID: <4968c2ec-5584-4a98-9782-143605117315@redhat.com>
-Date: Tue, 1 Oct 2024 15:32:34 +0200
+	bh=1SIgvgdhetwAqHvFy5k54XNttIMSQkB7d/Tr1DJfFHc=;
+	b=aVPBOyFFux98IBE21Pp6G8aTBmaowZ5bZAy4m8Cf3mmyrvvBBUpPUX4N6/UKPw6+Wq+1uh
+	VLsgmoVKSTh1LRLuddxeVw/znCSIJRJLAqn7YnqGMFpRcHm+eqlaWXBjPMWE55QQR12Dum
+	zupZ3VKrjqWEHb2fUNTgj5QiZZ+ywlYvYOuAKg+FObnrvAazCQJPyRnCLSYuJcj0QkIlBX
+	Agrr0avxl26SYCjE3YxHowX8RqPuBBah7XI53im/AYAZTulks7sp5Bj2mQc40ybaaq1VJA
+	w1zT+x1x6J2MAm3B26ynFFxSGJP/XnivS7WrMVpJVPG9LuuyzUVvGaY6n9b/sA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1727789764;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1SIgvgdhetwAqHvFy5k54XNttIMSQkB7d/Tr1DJfFHc=;
+	b=CMosy8MG7OY0nAy8J4gZ+nFGdOOT6QSPhFL1mAXCsmMAgtHgc0Rtx7xIKBz5l6W8ypZjtt
+	ENzxLKBegfEeESCQ==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Yury Vostrikov <mon@unformed.ru>
+Cc: bpf@vger.kernel.org, Edward Cree <ecree.xilinx@gmail.com>,
+	Martin Habets <habetsm.xilinx@gmail.com>,
+	Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: NULL pointer deref inside xdp_do_flush due to
+ bpf_net_ctx_get_all_used_flush_lists
+Message-ID: <20241001133603.G8j39V2l@linutronix.de>
+References: <5627f6d1-5491-4462-9d75-bc0612c26a22@app.fastmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net v2 2/2] page_pool: fix IOMMU crash when driver has
- already unbound
-To: Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
- kuba@kernel.org
-Cc: liuyonglong@huawei.com, fanghaiqing@huawei.com, zhangkun09@huawei.com,
- Robin Murphy <robin.murphy@arm.com>,
- Alexander Duyck <alexander.duyck@gmail.com>, IOMMU <iommu@lists.linux.dev>,
- Wei Fang <wei.fang@nxp.com>, Shenwei Wang <shenwei.wang@nxp.com>,
- Clark Wang <xiaoning.wang@nxp.com>, Eric Dumazet <edumazet@google.com>,
- Tony Nguyen <anthony.l.nguyen@intel.com>,
- Przemek Kitszel <przemyslaw.kitszel@intel.com>,
- Alexander Lobakin <aleksander.lobakin@intel.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>, Saeed Mahameed
- <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
- Tariq Toukan <tariqt@nvidia.com>, Felix Fietkau <nbd@nbd.name>,
- Lorenzo Bianconi <lorenzo@kernel.org>, Ryder Lee <ryder.lee@mediatek.com>,
- Shayne Chen <shayne.chen@mediatek.com>, Sean Wang <sean.wang@mediatek.com>,
- Kalle Valo <kvalo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Ilias Apalodimas <ilias.apalodimas@linaro.org>, imx@lists.linux.dev,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- intel-wired-lan@lists.osuosl.org, bpf@vger.kernel.org,
- linux-rdma@vger.kernel.org, linux-wireless@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
- linux-mm@kvack.org
-References: <20240925075707.3970187-1-linyunsheng@huawei.com>
- <20240925075707.3970187-3-linyunsheng@huawei.com>
-Content-Language: en-US
-From: Paolo Abeni <pabeni@redhat.com>
-In-Reply-To: <20240925075707.3970187-3-linyunsheng@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <5627f6d1-5491-4462-9d75-bc0612c26a22@app.fastmail.com>
 
-On 9/25/24 09:57, Yunsheng Lin wrote:
-> Networking driver with page_pool support may hand over page
-> still with dma mapping to network stack and try to reuse that
-> page after network stack is done with it and passes it back
-> to page_pool to avoid the penalty of dma mapping/unmapping.
-> With all the caching in the network stack, some pages may be
-> held in the network stack without returning to the page_pool
-> soon enough, and with VF disable causing the driver unbound,
-> the page_pool does not stop the driver from doing it's
-> unbounding work, instead page_pool uses workqueue to check
-> if there is some pages coming back from the network stack
-> periodically, if there is any, it will do the dma unmmapping
-> related cleanup work.
-> 
-> As mentioned in [1], attempting DMA unmaps after the driver
-> has already unbound may leak resources or at worst corrupt
-> memory. Fundamentally, the page pool code cannot allow DMA
-> mappings to outlive the driver they belong to.
-> 
-> Currently it seems there are at least two cases that the page
-> is not released fast enough causing dma unmmapping done after
-> driver has already unbound:
-> 1. ipv4 packet defragmentation timeout: this seems to cause
->     delay up to 30 secs.
-> 2. skb_defer_free_flush(): this may cause infinite delay if
->     there is no triggering for net_rx_action().
-> 
-> In order not to do the dma unmmapping after driver has already
-> unbound and stall the unloading of the networking driver, add
-> the pool->items array to record all the pages including the ones
-> which are handed over to network stack, so the page_pool can
-> do the dma unmmapping for those pages when page_pool_destroy()
-> is called. As the pool->items need to be large enough to avoid
-> performance degradation, add a 'item_full' stat to indicate the
-> allocation failure due to unavailability of pool->items.
+On 2024-10-01 13:30:13 [+0200], Yury Vostrikov wrote:
+> Hi,
+Hi,
 
-This looks really invasive, with room for potentially large performance 
-regressions or worse. At very least it does not look suitable for net.
+=E2=80=A6
+> I get the following backtrace instead of crash:
+>=20
+> [  177.216427] ------------[ cut here ]------------
+=E2=80=A6
+> [  177.216464] Call Trace:
+> [  177.216464]  <TASK>
+> [  177.216474]  efx_poll+0x178/0x380 [sfc_siena]
+> [  177.216479]  netpoll_poll_dev+0x118/0x1b0
+> [  177.216481]  __netpoll_send_skb+0x1ae/0x240
+> [  177.216482]  netpoll_send_udp+0x2e5/0x400
+> [  177.216484]  write_msg+0xeb/0x100 [netconsole]
+> [  177.216486]  console_flush_all+0x261/0x440
+> [  177.216489]  console_unlock+0x71/0xf0
+> [  177.216490]  vprintk_emit+0x251/0x2b0
+> [  177.216491]  _printk+0x48/0x50
+=E2=80=A6
+> I'm out of my depth figuring out why bpf_net_ctx_get() returns NULL. For =
+now I'm simply running with NULL check enabled.
 
-Is the problem only tied to VFs drivers? It's a pity all the page_pool 
-users will have to pay a bill for it...
+netpoll_send_udp() Does not assign a context and invokes a NAPI poll.
+However with a budget of 0 to just clean the TX resources.
+Now, the SFC driver does not clean any RX packets but invokes
+xdp_do_flush() anyway which leads to the crash later on.
+Are the SFC maintainer against the following:
 
-/P
+diff --git a/drivers/net/ethernet/sfc/efx_channels.c b/drivers/net/ethernet=
+/sfc/efx_channels.c
+index c9e17a8208a90..f3288e02c1bd8 100644
+--- a/drivers/net/ethernet/sfc/efx_channels.c
++++ b/drivers/net/ethernet/sfc/efx_channels.c
+@@ -1260,7 +1260,8 @@ static int efx_poll(struct napi_struct *napi, int bud=
+get)
+=20
+ 	spent =3D efx_process_channel(channel, budget);
+=20
+-	xdp_do_flush();
++	if (spent)
++		xdp_do_flush();
+=20
+ 	if (spent < budget) {
+ 		if (efx_channel_has_rx_queue(channel) &&
+diff --git a/drivers/net/ethernet/sfc/siena/efx_channels.c b/drivers/net/et=
+hernet/sfc/siena/efx_channels.c
+index a7346e965bfe7..2b8b7c69bd7ae 100644
+--- a/drivers/net/ethernet/sfc/siena/efx_channels.c
++++ b/drivers/net/ethernet/sfc/siena/efx_channels.c
+@@ -1285,7 +1285,8 @@ static int efx_poll(struct napi_struct *napi, int bud=
+get)
+=20
+ 	spent =3D efx_process_channel(channel, budget);
+=20
+-	xdp_do_flush();
++	if (spent)
++		xdp_do_flush();
+=20
+ 	if (spent < budget) {
+ 		if (efx_channel_has_rx_queue(channel) &&
 
+This should fix the crash. As an alternative we could keep track of
+channel->n_rx_xdp_redirect before and after the efx_process_channel()
+invocation to avoid the flush if there is no XDP done.
+
+Sebastian
 
