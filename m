@@ -1,184 +1,140 @@
-Return-Path: <bpf+bounces-40638-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40639-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E895D98B2DD
-	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2024 05:55:40 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D8CC98B2E5
+	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2024 06:06:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 70E6A1F23988
-	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2024 03:55:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A9E28B2280F
+	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2024 04:06:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D341A1B0125;
-	Tue,  1 Oct 2024 03:55:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 189201B1D70;
+	Tue,  1 Oct 2024 04:06:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BB7UsrcP"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="d2J90eag"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5388D1AFB29;
-	Tue,  1 Oct 2024 03:55:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 055F51B1D63
+	for <bpf@vger.kernel.org>; Tue,  1 Oct 2024 04:06:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727754926; cv=none; b=hWUy2qxGXvrmHxHcC5bgkOBG2v2oVhyiAG4Gm2EJW8UYnR3HExDAVnM1CNksOzyZe96Q/swrgnSFWrtu7+1kVXykxLy7lWCszE0hy2fMrsA8yB4LdfzjyvsA/mjO+/j8Ah+vmGiWKgDSOBNo73BVLxLlHtq9Cy8Dk35JqR0d9Qk=
+	t=1727755578; cv=none; b=nC9EouK7pZyVH7yyjELnsVvJBXs06Qq1Ct23IRkvn59hvl2WmHazLYl6QomzovL7jPgPCQs8/TNpDCHQ6o7MWLr6Uhg6QvOlpBsy5VeiH9PBt1ZPruEztpc/ZWlzzmBgCtwTAuA5YOuCgDZG7yBUHSDxQx/TDVxRaRBxpKUEw04=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727754926; c=relaxed/simple;
-	bh=+SL4iD42TElvYHd+Fi83SbrkqmPXI/D9XApoWLsNksM=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=mLlMh4zGgXuVV2GKYNq3nXZgsYfQTZNKGmOphHGBghd47eplSiT5yCcYDtwpz7Fd0YYRsBXb7nCyw1BAjpUmNzciSjMZVOTcoD3eSLBNTmO4YLzhgb117CROTtVL3EPXn5mZlqlfeb0df9B0o60g7dCnnmowjslyLAdAJBrL6TE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BB7UsrcP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 2D23FC4CECF;
-	Tue,  1 Oct 2024 03:55:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727754926;
-	bh=+SL4iD42TElvYHd+Fi83SbrkqmPXI/D9XApoWLsNksM=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=BB7UsrcP83M9ng6GvIP0GXt8XZd4/ua3+84rCX9ynGFq+H6ByCozlWIrVIzfzfLli
-	 JJ7jtrggACJRVQdzq/4p+lc/DahkzJXKjg9Fr0oUudX/0kbZJ/6DoiNES9wVU4vZwH
-	 eNVwbHr6U4KShbhY57TT+iUxlGy8Pkc/ej3DZdZeLVcKoxCYfG0WpZ2clt9N5EUd3s
-	 M/WK0Glv29UMBHU/mBCnk4kAtdkBQxn4gy3shQOH7z/3X9YfkE1YzGwb5Q4157Y4Lt
-	 3AUMVyUhnPy/JwusJoBNJ56rzhGTImRj1SIMA6fbzP0l26sVWdSCO6Eb9QMXBlDd1m
-	 ak3zqPuLIntMg==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 21DF9CEB2E4;
-	Tue,  1 Oct 2024 03:55:26 +0000 (UTC)
-From: Eric Long via B4 Relay <devnull+i.hack3r.moe@kernel.org>
-Date: Tue, 01 Oct 2024 11:55:22 +0800
-Subject: [PATCH bpf-next v3 2/2] selftests/bpf: test linking with duplicate
- extern functions
+	s=arc-20240116; t=1727755578; c=relaxed/simple;
+	bh=a9etoQnpj9/Xb7+iogYzSqg0qlyUy2yo3HYhMmK0gdM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Y1Gc1vhomxvsG8UbLfbXWfYeYWonXRi01pDlXwrv+LdjHsLJJpE2dWTuPYk1gTrPTdmOKm2N6s779gHSz5xZbUhrPkVfqfoLYB3unJCtaxgGyrxr190IvmRERF5bfXMjnRStnN1LjRqcrLc1QaYL+FLnbVST+RDYFDIKHREygc0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=d2J90eag; arc=none smtp.client-ip=209.85.128.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-42e5e1e6d37so45982505e9.3
+        for <bpf@vger.kernel.org>; Mon, 30 Sep 2024 21:06:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1727755575; x=1728360375; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=a9etoQnpj9/Xb7+iogYzSqg0qlyUy2yo3HYhMmK0gdM=;
+        b=d2J90eagAvSddpjgwD57y8jffcnEP5VvDITJXDBomHqc+qvF2f08SyGmxrWF6doL4y
+         V9suuSGSYxH/Nn1H6o0j6ptVyDpzXurUSw59pDlULMAbNLjj5Z8U4S3fNETIZZzA94ov
+         BW1SqK+5TU2j0kHI8o4pvEv8+5g3b2WSDp4I+hRPaYBPM23/zZJ0EhrhVsYm0eeeueD8
+         sajJJuqo3e6S/XIA7oC2g6invJWuF1RVeKjQBz39Bb8jDpUUPMrtlDQ0hIdzYsYPQwVz
+         qqAG/Iywr26uF75TGIaJP1gPkE9FYpIRIT0f0tOfsX+qK12/aQpnUzFZC67OZzvD2l4U
+         bQ+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727755575; x=1728360375;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=a9etoQnpj9/Xb7+iogYzSqg0qlyUy2yo3HYhMmK0gdM=;
+        b=kT6RV3Dy+eeO2rvfUzUwCBD/CDqw8tUdr+F7gWAv7XzwEB+ZOeIUDl604E85l6AFh9
+         002CMiVws8MdSR/Zyj+bB5P0DMoJFIQ80Q7ziQOROlpIZ9mG8errKRI6OQeYc76m4dh0
+         PeMVP0elQjxih967vqKpTi0oBVwEttj4GVoE3Mgi4r5Zyo9OMws1yfmf+QSxXTqOeiBT
+         vuZlA9HGn1RiZbTFuhI5e0nykTlIBO9d7HU4rVb3VUmviibDAlYraPoRpSKikjgQozTH
+         7UWuCt8nfhwRHHeNao7NwheDK0sw5q/HiXNzOwLYXKBofQWtVl7WJHJiuuMFfXKeM5ZG
+         bzAQ==
+X-Gm-Message-State: AOJu0Yy9Fp6op0AQDbAen8czLTf00mG1BRK1gCndYs1yeS+bH21XHfIU
+	SVV9LML66BNuMqUoMJPYxNCBzp+MGJaVztsfqPS/IOBLd8zqkkzpOyk5UfGuPNlQjaE8/E8W1Al
+	Lmu8a2W3RvkkmSNPl58oJ9Py9/Gw=
+X-Google-Smtp-Source: AGHT+IGaqnOFUfxlT6OXPcwSV0S8VGjkcUDsUPPbl/0c40TFwYynkWsk2ybpHZpeEq3/uqrQbOrCDqVJuY/1qgH3wsk=
+X-Received: by 2002:a05:600c:1ca2:b0:42c:baf9:bee7 with SMTP id
+ 5b1f17b1804b1-42f58433782mr107606695e9.12.1727755574913; Mon, 30 Sep 2024
+ 21:06:14 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20241001-libbpf-dup-extern-funcs-v3-2-42f7774efbf3@hack3r.moe>
-References: <20241001-libbpf-dup-extern-funcs-v3-0-42f7774efbf3@hack3r.moe>
-In-Reply-To: <20241001-libbpf-dup-extern-funcs-v3-0-42f7774efbf3@hack3r.moe>
-To: bpf@vger.kernel.org
-Cc: Andrii Nakryiko <andrii@kernel.org>, 
- Alexei Starovoitov <ast@kernel.org>, netdev@vger.kernel.org, 
- Eric Long <i@hack3r.moe>
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3710; i=i@hack3r.moe;
- h=from:subject:message-id;
- bh=lBW/ZkssutZzZs0+icq0x4wdMAyMMqQZLN7YcP9oJJs=;
- b=owGbwMvMwCUWYb/agfVY0D7G02pJDGm/i9b8Wm/+2/V0QO/tHyEnru/S2vh//3HOt7NnfOCcc
- 07F0TWzraOUhUGMi0FWTJFly+E/agn63ZuWcM8ph5nDygQyhIGLUwAmwqTJ8FdUrfmGVK+7a2Xy
- 12XbTJ5Mc1jhMO+M1+bd79+0mF8wyeNlZFjdl/TAP6z4VIPkBwUXa58ZjzdEznWfd37DTpOZZve
- u7GUCAA==
-X-Developer-Key: i=i@hack3r.moe; a=openpgp;
- fpr=3A7A1F5A7257780C45A9A147E1487564916D3DF5
-X-Endpoint-Received: by B4 Relay for i@hack3r.moe/default with auth_id=225
-X-Original-From: Eric Long <i@hack3r.moe>
-Reply-To: i@hack3r.moe
+References: <CA+KXx0WsH1en-DNXLf4mc4bC7apK_U9js0KbFSfp8Jdm8K8W9w@mail.gmail.com>
+ <CAEf4BzZjmz7dqOe--MYAV8F=h-RAhfnhHmW66W56GZeCKjVOww@mail.gmail.com>
+In-Reply-To: <CAEf4BzZjmz7dqOe--MYAV8F=h-RAhfnhHmW66W56GZeCKjVOww@mail.gmail.com>
+From: Abhik Sen <abhikisraina@gmail.com>
+Date: Tue, 1 Oct 2024 09:36:01 +0530
+Message-ID: <CA+KXx0WOmany6RdE8uaYMiCHd6FPNfXC3RxUfd-zE4UBaiO5Rw@mail.gmail.com>
+Subject: Re: QUERY: Regarding bpf link cleanup for invalid binary path
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Eric Long <i@hack3r.moe>
+Thanks for the reply.
 
-Previously when multiple BPF object files referencing the same extern
-function (usually kfunc) are statically linked using `bpftool gen
-object`, libbpf tries to get the nonexistent size of BTF_KIND_FUNC_PROTO
-and fails. This test ensures it is fixed.
+Yes you did understand the concern I was having, more precisely if I
+have a bpf_link from libbpf's bpf_program__attach_uprobe_opts(), on a
+binary path say "proc/<PID_12>/root/lib64/libpam.so", and the
+namespace containing <PID_12> is terminated, thereby killing the
+process <PID_12>, what happens to the bpf_link?
 
-Signed-off-by: Eric Long <i@hack3r.moe>
----
- tools/testing/selftests/bpf/Makefile                  |  3 ++-
- .../selftests/bpf/prog_tests/dup_extern_funcs.c       |  9 +++++++++
- tools/testing/selftests/bpf/progs/dup_extern_funcs1.c | 19 +++++++++++++++++++
- tools/testing/selftests/bpf/progs/dup_extern_funcs2.c | 17 +++++++++++++++++
- 4 files changed, 47 insertions(+), 1 deletion(-)
+If I understood you correctly then even in this scenario one should
+explicitly call the bpf_link__destroy on that link?
+Thanks.
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index e295e3df5ec6c3c21abe368038514cfb34b42f69..644c4dd6002c691a9cd94ef26ddf51f6dc84e2cc 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -496,7 +496,7 @@ SKEL_BLACKLIST := btf__% test_pinning_invalid.c test_sk_assign.c
- LINKED_SKELS := test_static_linked.skel.h linked_funcs.skel.h		\
- 		linked_vars.skel.h linked_maps.skel.h 			\
- 		test_subskeleton.skel.h test_subskeleton_lib.skel.h	\
--		test_usdt.skel.h
-+		test_usdt.skel.h dup_extern_funcs.skel.h
- 
- LSKELS := fentry_test.c fexit_test.c fexit_sleep.c atomics.c 		\
- 	trace_printk.c trace_vprintk.c map_ptr_kern.c 			\
-@@ -520,6 +520,7 @@ test_usdt.skel.h-deps := test_usdt.bpf.o test_usdt_multispec.bpf.o
- xsk_xdp_progs.skel.h-deps := xsk_xdp_progs.bpf.o
- xdp_hw_metadata.skel.h-deps := xdp_hw_metadata.bpf.o
- xdp_features.skel.h-deps := xdp_features.bpf.o
-+dup_extern_funcs.skel.h-deps := dup_extern_funcs1.bpf.o dup_extern_funcs2.bpf.o
- 
- LINKED_BPF_OBJS := $(foreach skel,$(LINKED_SKELS),$($(skel)-deps))
- LINKED_BPF_SRCS := $(patsubst %.bpf.o,%.c,$(LINKED_BPF_OBJS))
-diff --git a/tools/testing/selftests/bpf/prog_tests/dup_extern_funcs.c b/tools/testing/selftests/bpf/prog_tests/dup_extern_funcs.c
-new file mode 100644
-index 0000000000000000000000000000000000000000..b26f855745b451f7f53e44b27d47a2f659ad1378
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/dup_extern_funcs.c
-@@ -0,0 +1,9 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <test_progs.h>
-+#include "dup_extern_funcs.skel.h"
-+
-+void test_dup_extern_funcs(void)
-+{
-+	RUN_TESTS(dup_extern_funcs);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/dup_extern_funcs1.c b/tools/testing/selftests/bpf/progs/dup_extern_funcs1.c
-new file mode 100644
-index 0000000000000000000000000000000000000000..a5b6ea361c3d457d48bc562040f1ef946fadfc81
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/dup_extern_funcs1.c
-@@ -0,0 +1,19 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+void *bpf_cast_to_kern_ctx(void *obj) __ksym;
-+
-+SEC("tc")
-+int handler1(struct __sk_buff *skb)
-+{
-+	struct sk_buff *skb_kern = bpf_cast_to_kern_ctx(skb);
-+
-+	if (!skb_kern)
-+		return -1;
-+
-+	return 0;
-+}
-diff --git a/tools/testing/selftests/bpf/progs/dup_extern_funcs2.c b/tools/testing/selftests/bpf/progs/dup_extern_funcs2.c
-new file mode 100644
-index 0000000000000000000000000000000000000000..2f9f63dcc6ed2a35e82b55da54356502cfc95c9d
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/dup_extern_funcs2.c
-@@ -0,0 +1,17 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+
-+void *bpf_cast_to_kern_ctx(void *obj) __ksym;
-+
-+SEC("xdp")
-+int handler2(struct xdp_md *xdp)
-+{
-+	struct xdp_buff *xdp_kern = bpf_cast_to_kern_ctx(xdp);
-+
-+	if (!xdp_kern)
-+		return -1;
-+
-+	return 0;
-+}
-
--- 
-2.46.2
-
-
+On Sat, Sep 28, 2024 at 4:50=E2=80=AFAM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Sun, Sep 22, 2024 at 10:18=E2=80=AFPM Abhik Sen <abhikisraina@gmail.co=
+m> wrote:
+> >
+> > Hello Team!
+> >
+> > We were looking into the bpf-link and bpf-program-attach-uprobe-opts
+>
+> Is the API actually called "bpf-program-attach-uprobe-opts" or we are
+> talking about libbpf's bpf_program__attach_uprobe_opts()? In the
+> former case, which library and API are we talking about? In the latter
+> case, why rewrite API names and cause unnecessary confusion?
+>
+> > implementation and wanted to know if a bpf-link on a binary path
+> > resulted out of bpf-program-attach-uprobe-opts([a binary path]),
+> > remains valid and leaks memory post the binary path getting invalid
+> > (say due to the file getting deleted or path does not exist anymore).
+>
+> I'll try to guess what you are asking. If you attached uprobe to some
+> binary that was present at the time of attachment successfully, and
+> then binary was removed from the file system *while uprobe is still
+> attached*, then that binary is still there in the kernel and uprobe is
+> still, technically active (there could be processes that were loaded
+> from that binary that are still running). It's not considered a leak,
+> that's how Linux object refcounting works.
+>
+> >
+> > Does calling bpf-link-destroy on that link give any additional safety
+> > w.r.t the invalid binary path, or is it not needed to invoke and the
+> > internal implementation of the bpf-link takes care of the essential
+> > cleanup?
+>
+> bpf_link__destroy() (that's libbpf API name) will detach uprobe, and
+> if that uprobe was the last thing to keep reference to that deleted
+> file, it will be truly removed and destroyed at that point. So you
+> might want to do that, but it has nothing to do with safety.
+>
+> >
+> > Thanks,
+> > Abhik
+> >
 
