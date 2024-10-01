@@ -1,83 +1,84 @@
-Return-Path: <bpf+bounces-40694-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40695-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7D4298C438
-	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2024 19:10:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 032E198C43E
+	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2024 19:11:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 641B11F24E62
-	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2024 17:10:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 61443281BBA
+	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2024 17:11:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F6171CBE82;
-	Tue,  1 Oct 2024 17:10:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 452A61CBE86;
+	Tue,  1 Oct 2024 17:11:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CQQcptCJ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XBuCx0CH"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
+Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61D831C8FD5;
-	Tue,  1 Oct 2024 17:10:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78E801C6F7B;
+	Tue,  1 Oct 2024 17:11:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727802602; cv=none; b=k9ur6je9R9E3OkcWp36AWE2FVwH5Ae9ro6nUvpszEUaPhleDMUJJxCyWloqtRY+hL6JgjbRZae+Jtp7CMJ2SWO31MwI6IrmL2sDXyFlg/JC86roi28BY4jS7bUe9lcd/kGw8vCqWqyFhinp/DQ8n72XULaq/19Q/9UOBtqZ/RJU=
+	t=1727802686; cv=none; b=h+IYMPfzDFL6bEtUnEo4FabL66dIBSKGD7aksiTvrGG8185Ii/SfVwAdI4bht6vUOl5WWNm/lx+LZsMyRVe5rJNIFGx5VzzhBes2PQETwrq61iCBmSJFay36jsexCyN2rDHw3zVr9AD/Yy/8rTZ1rmkdlI9G4gxlQ968zsqnPmk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727802602; c=relaxed/simple;
-	bh=alDtEoNsU4mwdUuRnINXZRZyMrKQxS5WIZf9p9ulSNo=;
+	s=arc-20240116; t=1727802686; c=relaxed/simple;
+	bh=0sSh3ZCHBJPpJ28ZMI5T70fcWwIV9M4FjxM0fbpj6iw=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=MpzRF2qCoqKc9/cNMQgSaQbutxG+ZvszPATw5nERYmZFeKyo+EQ+bUXkolEbF+w/ww609/UQsZiENTFOJ89j4Y3FcUtCD5AdqsMgdZTjUaJ5uP+MXUclOZCZZe9/+cwUHidhkUPMRyd0hl1e7AQUzzT74Q7OLtFRk1vrgZFIrCY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CQQcptCJ; arc=none smtp.client-ip=209.85.216.43
+	 To:Cc:Content-Type; b=NFjaaS+n9WXGI1KdBBXK/3+39UtRXNnsXQLri0Qt4BYzimOLpAfH87QbHceGrZnvDOGdXoSOua0akbVon87/6FKqrgNxWKe70bfrdsMj6ISJc4UAD31kZXYg74WWwUvjZ8DWEjvh4ppjtseByn762aRcllQc1CA8Bpyd+czC5oE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XBuCx0CH; arc=none smtp.client-ip=209.85.215.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-2e0b9bca173so3456900a91.0;
-        Tue, 01 Oct 2024 10:10:00 -0700 (PDT)
+Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-7e6ba3f93fdso3672096a12.1;
+        Tue, 01 Oct 2024 10:11:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727802600; x=1728407400; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1727802685; x=1728407485; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/IDIXsRvA4u9tioJjolq/9MIM5TaBVbevdVxNHBa54E=;
-        b=CQQcptCJAEDFKclC5konuLM3iXtm7rjPRWaylj3cv1gur2zL1Ltoh3ONEfJJFUw3Wm
-         YvNzUbMgMMk/oMxGXaq/ObmWiOw8Lyf1gzw9C+2HoUGTMqmbl/g0+aAmW6DWwykBFVPN
-         DLaPnmA0kDwHCsdLmjVHmbo9FT+/q320GbPjlCQWQSxG/50cFRQsyETQKzDGb+QV9XwJ
-         gw4xVCNN5rlbcAB/AdZZlZLrOsKnTDYkwdihVZyIdwDNlyWFCZisirV1m21Ysjpi06iG
-         V7r/MQGFY8IqHX4vhUR2fq7EpmXeAKHb8f8vcqwRSxG/r7x6PRv0QENF2zgDCNQceTZY
-         1udA==
+        bh=yYiVgO3mv9eTxEti/PW66LLKYQU9HIPqaaS7/jCRmIU=;
+        b=XBuCx0CHp8U1WKtg5VnulszI00lzMjoYTkldaaqo79YUEpssnQ5uFR4ubCmHAE/aVB
+         qoX5Kg69S/AOXM2JruD09hsG2RXT4NVy9lviPUCtjTMTOT7w7JnJQTL2LGkYItKYKte/
+         mF26Ejqm8DxFbApY2q2+goDT6x7l9irhQ6vNVUShl1ioHWoq6QwkDBqsKzPCUmmxdT1I
+         gt/Dd+WT9q/hdpeL+QDtZ0DV/UfXVLwbtgtQnumFdWzGODJg5r+DeFgsnNCkAHRaMmUJ
+         FbU2FLudtz28rRqtvWw3X0Hp/T4DHmNNSMmuWr4MHbCfHKvFT9QEE+LaoDcGjVBxpFqW
+         UIMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727802600; x=1728407400;
+        d=1e100.net; s=20230601; t=1727802685; x=1728407485;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/IDIXsRvA4u9tioJjolq/9MIM5TaBVbevdVxNHBa54E=;
-        b=OWiMCrE6432OpZdtRyUYCNF/ZNPN4KjraM563IS7akGC1Aq5EZRNqGpJtf8EJ3qCQO
-         4JqMAuN2dxhayrV10ZRg5W/c8bDICw6mhK9X5bqmppkjtsMipo3QnqRmCRNAzXMwq5/S
-         yPuZhRgzGghhbsBnWIukzeXlh6CwyHrWmrIKBPmYtZMHD4p8wEHFz7CkatIxdvUtGa5b
-         j69Rqxj8JRiibTxlzElm8jlBSbnnkuhC3biXEZxspRpXkdruYihDtSOFeed8WOaHlji2
-         O1pRM4WNBwmLQxYxrkGv2cR3rNM3C+OrKJ6bbro+S8rHVDsAKz9XoxnWx5bTaLXjEEy1
-         JvLA==
-X-Forwarded-Encrypted: i=1; AJvYcCV+idO/kg2uqLElM6qOuLQcrg4Qde4fpUksyngBIHX/IW1KUzpqgQgE+TPmED0K4piOUMjOxT46ngdecaYtIeiCMYNt@vger.kernel.org, AJvYcCV5fPd8N5ugl/1OlrlAakoQ42iriko1zCxKj6q9mVG/myswHoYp2dAJRBdud+LWY7lz2s5D+VvtF11qrlNS@vger.kernel.org, AJvYcCXonnAXtdSBoJDDgQS3HAdVeG0Fl4nYZdR0Q2CXV4YsTXX2anyQYoaX8CJYQKCRcg9xcPw=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy6tu0PQgzn0miesaB6tCN14GSXoWRQIQ8D4Fms8XIBPKipIK8G
-	QIivFgtFifxeWLiHpdpCgZI6DFg80lDDSNEBvEufl4vjy/t9tQhG7Bm3yOIKW6iMB5IK27ydbQH
-	kbzmOBKQ09A+85X6MtgMbftEj4O8=
-X-Google-Smtp-Source: AGHT+IHzetG8vydc4yjfozPANM0fmOmtCvy0ZuI9MUfqcHltM4C6A8LVHuJgWUaFY4YmnkxbIbdxy7RByoTLOAvLbVA=
-X-Received: by 2002:a17:90b:fc5:b0:2d3:dca0:89b7 with SMTP id
- 98e67ed59e1d1-2e184527678mr464260a91.3.1727802599607; Tue, 01 Oct 2024
- 10:09:59 -0700 (PDT)
+        bh=yYiVgO3mv9eTxEti/PW66LLKYQU9HIPqaaS7/jCRmIU=;
+        b=OSe71bJ3NLmmRd1k6fF6sAVFKag7Y+z4QZdpHYyYgsikih/HkZf3TOrvVauH3A/nB2
+         x0ot2mZfSLjw8haPcXBLciDlV+hhGyMcQlE6p+Bj38IQz8N/J0D8qVHxtXOxsm2ADmYk
+         827CP7/jd7AT8PcHd8NKqTmaKzqlPaYYDZpOZ/EQk8UM+aqT7aHi21O2BMifQ4oTq795
+         Hdn2GAsxVnpIGtRIkmKVlF61Gtip6N8dtRBppVsmvETBYkC9P+f1i3EMZOcvsOXEZ9Cu
+         8/gorQqcaX57OmRz6L3vuJYnuK6ITyUIM5poSQN+Agc8NMr8H9bCzYA/xHNAa7/KxGsl
+         rizQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU7eeeMrVa1j3i7HN9KXkB4v//MbNIW5LR3Wna2UAMewGOCOz7g6YJgHLCatt/uB5rkbTV6oIBuqrQuCpHM@vger.kernel.org, AJvYcCVeiwp0dtdqJiwHk12Wlcxle+t1dloXROo0h7be52ribi3uHxURby1jInGjZBh8otqZNNboIZEH9+MqnJy8q4T9xW4C@vger.kernel.org, AJvYcCVnkuJHvBSkiu73QT7seSZqKtYyyt0EEBqG+MUhClq+cdGXn6sYJWlOvCuAlIYImM2UzoI=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywdxhf2cydiGezFlMInQOXG7g5YgC7BwofW4FaE05gpfKmPWYS8
+	IsuSy4l0fmt9FkkUwa5zy5BbVPVfC2qKv1p+1MG+7ZnqdzwWeTIFGnHk7DI7vMlIfMJUQ0Rzmx2
+	dTk2a+qum6rVrqu+oH8NptAYoHec=
+X-Google-Smtp-Source: AGHT+IFbWZu/Op5q1u1++KWxKhxXOCSmOqj/rf3NlKpN4maBxpEa9f3ipFc/ib5YDm7xhueuTWGYXhMA0NtOiUzD3Vs=
+X-Received: by 2002:a17:90a:ae0a:b0:2e0:8c5e:14a0 with SMTP id
+ 98e67ed59e1d1-2e182c994f2mr523996a91.0.1727802684899; Tue, 01 Oct 2024
+ 10:11:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240929205717.3813648-1-jolsa@kernel.org> <20240929205717.3813648-3-jolsa@kernel.org>
- <CAEf4BzZ+1=YU=61mVup8pAc80SOvNuYtMzNdz4miH+Sm4qV4ig@mail.gmail.com> <Zvv2eM2YNuiv7C8-@krava>
-In-Reply-To: <Zvv2eM2YNuiv7C8-@krava>
+References: <20240929205717.3813648-1-jolsa@kernel.org> <20240929205717.3813648-4-jolsa@kernel.org>
+ <CAEf4BzZfy1H2O-uY3x9X7ScsJTXHgqjZkcP7A0tMmhmvubF-nw@mail.gmail.com> <Zvv2gciCj-0mAnat@krava>
+In-Reply-To: <Zvv2gciCj-0mAnat@krava>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 1 Oct 2024 10:09:47 -0700
-Message-ID: <CAEf4BzY8tGCstcD4BVBLPd0V92p--b_vUmQyWydObRJHZPgCLA@mail.gmail.com>
-Subject: Re: [PATCHv5 bpf-next 02/13] uprobe: Add support for session consumer
+Date: Tue, 1 Oct 2024 10:11:13 -0700
+Message-ID: <CAEf4BzaRrg_=scWTt1X7fvB+4wxUiiQUOCPvvtWgL4_rwr+2CQ@mail.gmail.com>
+Subject: Re: [PATCHv5 bpf-next 03/13] bpf: Add support for uprobe multi
+ session attach
 To: Jiri Olsa <olsajiri@gmail.com>
 Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
 	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
@@ -93,92 +94,69 @@ Content-Transfer-Encoding: quoted-printable
 On Tue, Oct 1, 2024 at 6:17=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wrote=
 :
 >
-> On Mon, Sep 30, 2024 at 02:36:03PM -0700, Andrii Nakryiko wrote:
-> > On Sun, Sep 29, 2024 at 1:57=E2=80=AFPM Jiri Olsa <jolsa@kernel.org> wr=
-ote:
-> > >
-> > > This change allows the uprobe consumer to behave as session which
-> > > means that 'handler' and 'ret_handler' callbacks are connected in
-> > > a way that allows to:
-> > >
-> > >   - control execution of 'ret_handler' from 'handler' callback
-> > >   - share data between 'handler' and 'ret_handler' callbacks
-> > >
-> > > The session concept fits to our common use case where we do filtering
-> > > on entry uprobe and based on the result we decide to run the return
-> > > uprobe (or not).
-> > >
-> > > It's also convenient to share the data between session callbacks.
-> > >
-> > > To achive this we are adding new return value the uprobe consumer
-> > > can return from 'handler' callback:
-> > >
-> > >   UPROBE_HANDLER_IGNORE
-> > >   - Ignore 'ret_handler' callback for this consumer.
-> > >
-> > > And store cookie and pass it to 'ret_handler' when consumer has both
-> > > 'handler' and 'ret_handler' callbacks defined.
-> > >
-> > > We store shared data in the return_consumer object array as part of
-> > > the return_instance object. This way the handle_uretprobe_chain can
-> > > find related return_consumer and its shared data.
-> > >
-> > > We also store entry handler return value, for cases when there are
-> > > multiple consumers on single uprobe and some of them are ignored and
-> > > some of them not, in which case the return probe gets installed and
-> > > we need to have a way to find out which consumer needs to be ignored.
-> > >
-> > > The tricky part is when consumer is registered 'after' the uprobe
-> > > entry handler is hit. In such case this consumer's 'ret_handler' gets
-> > > executed as well, but it won't have the proper data pointer set,
-> > > so we can filter it out.
-> > >
-> > > Suggested-by: Oleg Nesterov <oleg@redhat.com>
-> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > > ---
-> > >  include/linux/uprobes.h |  21 +++++-
-> > >  kernel/events/uprobes.c | 148 +++++++++++++++++++++++++++++++-------=
---
-> > >  2 files changed, 137 insertions(+), 32 deletions(-)
-> > >
-> >
-> > LGTM,
-> >
-> > Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> >
-> >
-> > Note also that I just resent the last patch from my patch set ([0]),
-> > hopefully it will get applied, in which case you'd need to do a tiny
-> > rebase.
-> >
-> >   [0] https://lore.kernel.org/linux-trace-kernel/20240930212246.1829395=
--1-andrii@kernel.org/
+> On Mon, Sep 30, 2024 at 02:36:08PM -0700, Andrii Nakryiko wrote:
 >
-> the rebase is fine, but what I'm not clear about is that after yours and
-> Oleg's changes get in, my kernel changes will depend on peter's perf/core=
-,
-> but bpf selftests changes will need bpf-next/master
+> SNIP
+>
+> > >  struct bpf_uprobe_multi_link {
+> > > @@ -3248,9 +3260,13 @@ uprobe_multi_link_handler(struct uprobe_consum=
+er *con, struct pt_regs *regs,
+> > >                           __u64 *data)
+> > >  {
+> > >         struct bpf_uprobe *uprobe;
+> > > +       int ret;
+> > >
+> > >         uprobe =3D container_of(con, struct bpf_uprobe, consumer);
+> > > -       return uprobe_prog_run(uprobe, instruction_pointer(regs), reg=
+s);
+> > > +       ret =3D uprobe_prog_run(uprobe, instruction_pointer(regs), re=
+gs);
+> > > +       if (uprobe->session)
+> > > +               return ret ? UPROBE_HANDLER_IGNORE : 0;
+> > > +       return ret;
+> >
+> > isn't this a bug that BPF program can return arbitrary value here and,
+> > e.g., request uprobe unregistration?
+> >
+> > Let's return 0, unless uprobe->session? (it would be good to move that
+> > into a separate patch with Fixes)
+>
+> yea there's no use case for uprobe multi user, so let's return
+> 0 as you suggest
+>
+> >
+> > >  }
+> > >
+> > >  static int
+> > > @@ -3260,6 +3276,12 @@ uprobe_multi_link_ret_handler(struct uprobe_co=
+nsumer *con, unsigned long func, s
+> > >         struct bpf_uprobe *uprobe;
+> > >
+> > >         uprobe =3D container_of(con, struct bpf_uprobe, consumer);
+> > > +       /*
+> > > +        * There's chance we could get called with NULL data if we re=
+gistered uprobe
+> > > +        * after it hit entry but before it hit return probe, just ig=
+nore it.
+> > > +        */
+> > > +       if (uprobe->session && !data)
+> > > +               return 0;
+> >
+> > why can't handle_uretprobe_chain() do this check instead? We know when
+> > we are dealing with session uprobe/uretprobe, so we can filter out
+> > these spurious calls, no?
+>
+> right, now that we decide session based on presence of both callbacks
+> we have that info in here handle_uretprobe_chain.. but let's still check
+> it for sanity and warn? like
+>
+>         if (WARN_ON_ONCE(uprobe->session && !data))
 
-Yep, and I was waiting for your next revision to discuss logistics,
-but perhaps we could do it right here.
+You mean to check this *additionally* in uprobe_multi_link_handler(),
+after core uprobe code already filtered that condition out? It won't
+hurt, but I'm not sure I see the point?
 
-I think uprobe parts should stay in tip/perf/core (if that's where all
-uprobe code goes in), as we have a bunch of ongoing work that all will
-conflict a bit with each other, if it lands across multiple trees.
-
-So that means that patches #1 and #2 ideally land in tip/perf/core.
-But you have a lot of BPF-specific things that would be inconvenient
-to route through tip, so I'd say those should go through bpf-next.
-
-What we can do, if Ingo and Peter are OK with that, is to create a
-stable (non-rebaseable) branch off of your first two patches (applied
-in tip/perf/core), which we'll merge into bpf-next/master and land the
-rest of your patch set there. We've done that with recent struct fd
-changes, and there were few other similar cases in the past, and that
-all worked well.
-
-Peter, Ingo, are you guys OK with that approach?
-
+>                 return 0;
 >
 > jirka
 
