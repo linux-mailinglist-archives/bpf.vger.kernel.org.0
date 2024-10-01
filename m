@@ -1,187 +1,124 @@
-Return-Path: <bpf+bounces-40635-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40636-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C66C98B219
-	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2024 04:34:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6384898B2DB
+	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2024 05:55:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1CEF21C21E2C
-	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2024 02:34:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 16BE928322E
+	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2024 03:55:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CFDE2CCAA;
-	Tue,  1 Oct 2024 02:34:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE5A31B0118;
+	Tue,  1 Oct 2024 03:55:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="UAnerSJ9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DFJYfZLc"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D573679CF;
-	Tue,  1 Oct 2024 02:34:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 314EB1AFB32;
+	Tue,  1 Oct 2024 03:55:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727750043; cv=none; b=F/fmKz4XKqPYBxPCpfoAnnHNK/AGesdlDO+XvAIhdHqimi2PAn/3DFyqhdGzrJ8Q9k04pB9a9dNh8UQTw1iiTSSuc30tRT0sZEkXpORHsSo0LAcao5dv+X7yN2SakUONqTTqiCrtnjtz6lbGUvT9pCynAUUik4MM5zIeIyBXiyI=
+	t=1727754926; cv=none; b=YZSE8Jj/nNyWNkMGSiUv++VfQtVigbpS+Izsig4rm7nCtaVW2ShMbHUS9wlkC4JEn5DVEzCYF8KPoJGUzRjVZso3An6Z1Fo2X/8zvWbm4VnnlkECXUh/0rBc5XwPbQ9cprUuTp669yWXjVQ2xu55K6+/d27nnlK3LQE+cmuNr3I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727750043; c=relaxed/simple;
-	bh=3Lax1a51FpGxs8aUU8rWQPnGiqIQ+xprsIA3ixmbbTw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=UD1fmISLejWBkH0hG6MPcW0tJWuS+v3Qomsarig/nMjXMOAGObHJ5v4poMOUFi5BLBYxPTW3r5buZYo7C2K8Y2ch1tfah+o874ziNbv22Ik3I/tRWOOm56ZUSRNFhjjgTVj3KFu0Ziz5WUcZIsITSAnJXDRo4sPAFkFgixiUJwA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=UAnerSJ9; arc=none smtp.client-ip=91.218.175.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <6f0cb09c-3a3b-4307-8b7e-6a7c6e45b97e@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1727750039;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7FDUIwg+b2BEQXcQCTShkc7XaViRzXKe7OyrM24xOog=;
-	b=UAnerSJ9FAQbFKKHVlm3Zry60b6tYjKahxmvoHAN8VT9EfexI5+/HyDFoCGhhqKDgQV1k+
-	U+7IomHnBe1GXwNtN/p1JrE1BMe+hFjF07SCpNZ81ArC7Zy54SUMdyKHIrRkBtW5UHCZc2
-	OWtXZuMbu37K/ZPKB3Ahwyz97xE4Rx4=
-Date: Mon, 30 Sep 2024 19:33:43 -0700
+	s=arc-20240116; t=1727754926; c=relaxed/simple;
+	bh=uchJyHZwSePmopkBZvOxuyt0es7TztoFkb8qVxM5/M0=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=t29PPFDCCWrXqoD8kosw6LVzM5F7kzJHgfjtMqUcPCwpQVNNqMxfWIdgzsWgJ6pgE4Fcn2h+3m4ZK8gE8rC75h+VY7rudfnlbf/HC4w7zWNwaNPYo5TSOK5DNWobLZH8kCxM5AETwot4DGNlHseYh+OKmOGFjQ7WmGk1VK5yJxk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DFJYfZLc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 10FA5C4CEC6;
+	Tue,  1 Oct 2024 03:55:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1727754926;
+	bh=uchJyHZwSePmopkBZvOxuyt0es7TztoFkb8qVxM5/M0=;
+	h=From:Subject:Date:To:Cc:Reply-To:From;
+	b=DFJYfZLcKZ1bvLsnOnzO8tHFnxnFrRUq725ax++fmm6wLdcVNJUwq9g90btY7UYpC
+	 aEZMDxu+13ekHOdYKRaNeUZl3qTMiWKOkISrewDTHMTitzglsjtCs7ygzkACtEu4aF
+	 tVhYt7RuVwkV0aT2ZxePdQUBwA7nn4WxL3+LX7b10sUuXbMlIQ4v3vtTfidM8fnMGf
+	 /d1XyQqtn6N+1XFdZOCMaoBUdh6PqlmUN2Z+hQ6N7f6MIVQUzApOiHcd60MyPdgqDh
+	 89uhBUt6Qt7Jc52BBW3r5/dh2qYE8cfNf+5aaFowva2MrYFXe1v5YBMk39aGGCL2NZ
+	 t66lzrSSSPLWg==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F1727CEB2E5;
+	Tue,  1 Oct 2024 03:55:25 +0000 (UTC)
+From: Eric Long via B4 Relay <devnull+i.hack3r.moe@kernel.org>
+Subject: [PATCH bpf-next v3 0/2] BPF static linker: fix linking duplicate
+ extern functions
+Date: Tue, 01 Oct 2024 11:55:20 +0800
+Message-Id: <20241001-libbpf-dup-extern-funcs-v3-0-42f7774efbf3@hack3r.moe>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v3 2/2] selftests/bpf: Setget_sockopt add a test
- for tcp over ipv4 via ipv6
-To: Feng zhou <zhoufeng.zf@bytedance.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
- john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
- haoluo@google.com, jolsa@kernel.org, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, mykolal@fb.com,
- shuah@kernel.org, alan.maguire@oracle.com, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
- linux-kselftest@vger.kernel.org, yangzhenze@bytedance.com,
- wangdongdong.6@bytedance.com
-References: <20240914103226.71109-1-zhoufeng.zf@bytedance.com>
- <20240914103226.71109-3-zhoufeng.zf@bytedance.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20240914103226.71109-3-zhoufeng.zf@bytedance.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+X-B4-Tracking: v=1; b=H4sIAKhy+2YC/43NQQ6CMBAF0KuYrh3TDiDgynsYF7SdSqMW0kKDI
+ dzd2p0rXf78+W9WFshbCuy0W5mnaIMdXArFfsdU37kbgdUpM+RY8hZbeFgpRwN6HoGWibwDMzs
+ VoKmFKWWnUSCytB49Gbtk+cI+C5fO2TU1vQ3T4F/5ZRS5/6lHARy0EZWR+lhhJc99p+6FPzwHy
+ mjEPyFMEFeqEZoKU7fmC9q27Q26m0ttEgEAAA==
+X-Change-ID: 20240929-libbpf-dup-extern-funcs-871f4bad2122
+To: bpf@vger.kernel.org
+Cc: Andrii Nakryiko <andrii@kernel.org>, 
+ Alexei Starovoitov <ast@kernel.org>, netdev@vger.kernel.org, 
+ Eric Long <i@hack3r.moe>
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1680; i=i@hack3r.moe;
+ h=from:subject:message-id;
+ bh=uchJyHZwSePmopkBZvOxuyt0es7TztoFkb8qVxM5/M0=;
+ b=owGbwMvMwCUWYb/agfVY0D7G02pJDGm/i9b46y1w2bPjsYmno7l69LzH6VeEOM1uRISFOx0LM
+ dinJ9fdUcrCIMbFICumyLLl8B+1BP3uTUu455TDzGFlAhnCwMUpABOpC2VkmJj6P/OzyI13RUXb
+ H5qrMPzkMP9eKjxVJkG5Tn7e6hWtUxgZLuubNeifkZofaBm+LWjrJHGOK4LzZh38sejMhMbXB0U
+ 2MAAA
+X-Developer-Key: i=i@hack3r.moe; a=openpgp;
+ fpr=3A7A1F5A7257780C45A9A147E1487564916D3DF5
+X-Endpoint-Received: by B4 Relay for i@hack3r.moe/default with auth_id=225
+X-Original-From: Eric Long <i@hack3r.moe>
+Reply-To: i@hack3r.moe
 
-On 9/14/24 3:32 AM, Feng zhou wrote:
-> From: Feng Zhou <zhoufeng.zf@bytedance.com>
-> 
-> This patch adds a test for TCP over IPv4 via INET6 API.
-> 
-> Signed-off-by: Feng Zhou <zhoufeng.zf@bytedance.com>
-> ---
->   .../selftests/bpf/prog_tests/setget_sockopt.c | 33 +++++++++++++++++++
->   .../selftests/bpf/progs/setget_sockopt.c      | 13 ++++++--
->   2 files changed, 43 insertions(+), 3 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/setget_sockopt.c b/tools/testing/selftests/bpf/prog_tests/setget_sockopt.c
-> index 7d4a9b3d3722..3cad92128e60 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/setget_sockopt.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/setget_sockopt.c
-> @@ -15,8 +15,11 @@
->   
->   #define CG_NAME "/setget-sockopt-test"
->   
-> +#define INT_PORT	8008
-> +
->   static const char addr4_str[] = "127.0.0.1";
->   static const char addr6_str[] = "::1";
-> +static const char addr6_any_str[] = "::";
->   static struct setget_sockopt *skel;
->   static int cg_fd;
->   
-> @@ -67,6 +70,35 @@ static void test_tcp(int family)
->   	ASSERT_EQ(bss->nr_binddev, 2, "nr_bind");
->   }
->   
-> +static void test_tcp_over_ipv4_via_ipv6(void)
-> +{
-> +	struct setget_sockopt__bss *bss = skel->bss;
-> +	int sfd, cfd;
-> +
-> +	memset(bss, 0, sizeof(*bss));
-> +	skel->bss->test_tcp_over_ipv4_via_ipv6 = 1;
-> +
-> +	sfd = start_server(AF_INET6, SOCK_STREAM,
-> +			   addr6_any_str, INT_PORT, 0);
-> +	if (!ASSERT_GE(sfd, 0, "start_server"))
-> +		return;
-> +
-> +	cfd = connect_to_addr_str(AF_INET, SOCK_STREAM, addr4_str, INT_PORT, NULL);
-> +	if (!ASSERT_GE(cfd, 0, "connect_to_addr_str")) {
-> +		close(sfd);
-> +		return;
-> +	}
-> +	close(sfd);
-> +	close(cfd);
-> +
-> +	ASSERT_EQ(bss->nr_listen, 1, "nr_listen");
-> +	ASSERT_EQ(bss->nr_connect, 1, "nr_connect");
-> +	ASSERT_EQ(bss->nr_active, 1, "nr_active");
-> +	ASSERT_EQ(bss->nr_passive, 1, "nr_passive");
-> +	ASSERT_EQ(bss->nr_socket_post_create, 2, "nr_socket_post_create");
-> +	ASSERT_EQ(bss->nr_binddev, 2, "nr_bind");
-> +}
-> +
->   static void test_udp(int family)
->   {
->   	struct setget_sockopt__bss *bss = skel->bss;
-> @@ -191,6 +223,7 @@ void test_setget_sockopt(void)
->   	test_udp(AF_INET);
->   	test_ktls(AF_INET6);
->   	test_ktls(AF_INET);
-> +	test_tcp_over_ipv4_via_ipv6();
+Currently, if `bpftool gen object` tries to link two objects that
+contains the same extern function prototype, libbpf will try to get
+their (non-existent) size by calling bpf__resolve_size like extern
+variables and fail with:
 
-This has a conflict with commit d53050934e66.
+	libbpf: global 'whatever': failed to resolve size of underlying type: -22
 
-pw-bot: cr
+This should not be the case, and this series adds conditions to update
+size only when the BTF kind is not function.
 
->   
->   done:
->   	setget_sockopt__destroy(skel);
-> diff --git a/tools/testing/selftests/bpf/progs/setget_sockopt.c b/tools/testing/selftests/bpf/progs/setget_sockopt.c
-> index 60518aed1ffc..ff834d94dd23 100644
-> --- a/tools/testing/selftests/bpf/progs/setget_sockopt.c
-> +++ b/tools/testing/selftests/bpf/progs/setget_sockopt.c
-> @@ -20,6 +20,7 @@ int nr_connect;
->   int nr_binddev;
->   int nr_socket_post_create;
->   int nr_fin_wait1;
-> +int test_tcp_over_ipv4_via_ipv6;
->   
->   struct sockopt_test {
->   	int opt;
-> @@ -262,9 +263,15 @@ static int bpf_test_sockopt(void *ctx, struct sock *sk)
->   		if (n != ARRAY_SIZE(sol_ip_tests))
->   			return -1;
->   	} else {
-> -		n = bpf_loop(ARRAY_SIZE(sol_ipv6_tests), bpf_test_ipv6_sockopt, &lc, 0);
-> -		if (n != ARRAY_SIZE(sol_ipv6_tests))
-> -			return -1;
-> +		if (test_tcp_over_ipv4_via_ipv6) {
-> +			n = bpf_loop(ARRAY_SIZE(sol_ip_tests), bpf_test_ip_sockopt, &lc, 0);
+Fixes: a46349227cd8 ("libbpf: Add linker extern resolution support for functions and global variables")
+Signed-off-by: Eric Long <i@hack3r.moe>
+---
+Changes in v3:
+- Simplifiy changes and shorten subjects, according to reviews.
+- Remove unused includes in selftests.
+- Link to v2: https://lore.kernel.org/r/20240929-libbpf-dup-extern-funcs-v2-0-0cc81de3f79f@hack3r.moe
 
-Can this bpf_loop(..., bpf_test_ip_sockopt, ...) be always run? Then the above 
-test_tcp_over_ipv4_via_ipv6() addition will not be needed.
+Changes in v2:
+- Fix compile errors. Oops!
+- Link to v1: https://lore.kernel.org/r/20240929-libbpf-dup-extern-funcs-v1-0-df15fbd6525b@hack3r.moe
 
+---
+Eric Long (2):
+      libbpf: do not resolve size on duplicate FUNCs
+      selftests/bpf: test linking with duplicate extern functions
 
-> +			if (n != ARRAY_SIZE(sol_ip_tests))
-> +				return -1;
-> +		} else {
-> +			n = bpf_loop(ARRAY_SIZE(sol_ipv6_tests), bpf_test_ipv6_sockopt, &lc, 0);
-> +			if (n != ARRAY_SIZE(sol_ipv6_tests))
-> +				return -1;
-> +		}
->   	}
->   
->   	return 0;
+ tools/lib/bpf/linker.c                                |  4 ++++
+ tools/testing/selftests/bpf/Makefile                  |  3 ++-
+ .../selftests/bpf/prog_tests/dup_extern_funcs.c       |  9 +++++++++
+ tools/testing/selftests/bpf/progs/dup_extern_funcs1.c | 19 +++++++++++++++++++
+ tools/testing/selftests/bpf/progs/dup_extern_funcs2.c | 17 +++++++++++++++++
+ 5 files changed, 51 insertions(+), 1 deletion(-)
+---
+base-commit: 93eeaab4563cc7fc0309bc1c4d301139762bbd60
+change-id: 20240929-libbpf-dup-extern-funcs-871f4bad2122
+
+Best regards,
+-- 
+Eric Long <i@hack3r.moe>
+
 
 
