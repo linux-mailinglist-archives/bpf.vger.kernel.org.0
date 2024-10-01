@@ -1,72 +1,72 @@
-Return-Path: <bpf+bounces-40648-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40649-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D91D98B410
-	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2024 08:03:34 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7897498B413
+	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2024 08:03:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E0B7C283432
-	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2024 06:03:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 288361F2430B
+	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2024 06:03:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2ACF1BDABA;
-	Tue,  1 Oct 2024 06:01:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBC1B1BE23E;
+	Tue,  1 Oct 2024 06:01:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UULuon5K"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="h583iV8y"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f194.google.com (mail-pg1-f194.google.com [209.85.215.194])
+Received: from mail-pl1-f195.google.com (mail-pl1-f195.google.com [209.85.214.195])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18C7A1BBBD7;
-	Tue,  1 Oct 2024 06:01:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24AC11BBBD9;
+	Tue,  1 Oct 2024 06:01:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727762481; cv=none; b=HfJ24P+XpUb/QCsgPGFb8yXe2YmSn5FKGnq7V0OfCBPf4enuLjv3XyIUS2YqZ59oXYG8G9n63iG+xPTV/qV0Ne2iAjvZvZd4xPZzoMUNC8doxvfoomkzazDWYOO0GpWM2QyI6HYX+JG/baYGkWHk1/NvFUWMUsSG2ypIRFqueq0=
+	t=1727762487; cv=none; b=H9rlTTl23VhifmIfMH3wKwEVj1MJHudA0Id71pQXwGpTYrTQNhsHm4GwWKOrj6NG2kl313LGUJdt5PyjX9C6RRWEldZaaFxzxCsetTAw06Ax/2nR6tyrwvWIUSLub1MkAk9PkfDe/IXOrgAMkxmQKeGRzqC3HFqdPqaaC6C3NkY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727762481; c=relaxed/simple;
-	bh=AqI7arKaEVMpTT2qhZmIJZA5E+txg/W+R4/pPMw2DaI=;
+	s=arc-20240116; t=1727762487; c=relaxed/simple;
+	bh=ieuL/O3/265wxoAQ9SYV+ZrakZmm8ntMC/lUQH0jiok=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=rvtboWywFSO0I6WsEp/nWIAT/y2/t6RRbmbiYfSsVxYIKsnMX9jPCS1cwFiwc/tw4I1/JbyDAE3i3xUF5QrzSAWhlxh6nb0+i+NBpqKH74vZVU8tOQjMW6/8gGsS+VrOEjzAh1ToUQWS1G8159QGIdFISwmVlkJCZM3fkX5d01M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UULuon5K; arc=none smtp.client-ip=209.85.215.194
+	 MIME-Version; b=B2Iz7baQUr88DngwaRmVD6n528TR0bGft7G1tdu80LVf1pb40oY7Nm1reEMxrnn15loSaNhp4m0MWDm6Gm/yw1Bd5J697XfH/t2H7iYjaCV8XrJr7WeEP9upaLs4uMt1/5UI+ycnmm/NxCMbeYlpE4SIVr84plPbqsnMMq6XbBk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=h583iV8y; arc=none smtp.client-ip=209.85.214.195
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f194.google.com with SMTP id 41be03b00d2f7-7d50e7a3652so3441120a12.3;
-        Mon, 30 Sep 2024 23:01:19 -0700 (PDT)
+Received: by mail-pl1-f195.google.com with SMTP id d9443c01a7336-20b833f9b35so16508235ad.2;
+        Mon, 30 Sep 2024 23:01:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727762479; x=1728367279; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1727762485; x=1728367285; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=VbPGgSOikK+F605onoyc1YqeJXlzGc1QhlYtJFewpEo=;
-        b=UULuon5K2hhOO/MvMC1iND6N4ePe2AKyv4d1UJXnFJGxagii+xeGFvQ9KTu9v5dvTN
-         iSZ8zgjalzbL6chu9rAD+2PsT8PKUOAbIdeTZgDBBrjkHV5aEM63aJv+B09coal6NzMg
-         gKekc+uTAn+kLMSMVgOwDrxunTMlhZ7jS7TG7DiasLReenqTZ3wWN8sF+aK9nIYCo8kv
-         OZTdZLD5XjGq0KHK65kY31d73nnDFknsClo3E2/Y1q3hMDoQF5IqFx8kM3g6zuzqP9sp
-         LjXMkJbIzMXZh8sfhWnPRgS0RtWw7sL5XuDRRb99ps1tkZw+8Z3581DS3fQnOZCNOhtI
-         fliA==
+        bh=Rfr8GHfpAnekQQsJ9DXbNrw9ejSWEOElOr5R5vluBYQ=;
+        b=h583iV8ynLNhuIOaOC5UgUkHL6yiC86V7Tkv+X1DpMBUtGXPJwRCHoqTR77zo3wtpF
+         YT9yOwrIvBLZT4DvCCRdzLQxLR+LIEI2qIXJ1EEl1+kqaDftX1qEZpPvca4ajKqXrq2m
+         LshIEmdJD5FCVslHt2GfgtfIQ22noNPQsa5KT7Vh+8dQVUxQnH9HhEiP1Vp4TPGcNWXR
+         +yHfrzd8/wZCHLGduwYfY4Of01XxB4tyxHbRlGCD8SV9MJz6E1zuBu2j8i1e0jNHr7aH
+         coRujU/Pfwj3IeiNnV4Yzre96cO5Su2SNouxB9oQDurUW7DKDQoGzKf8l2RPSVmH5sZZ
+         7dlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727762479; x=1728367279;
+        d=1e100.net; s=20230601; t=1727762485; x=1728367285;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=VbPGgSOikK+F605onoyc1YqeJXlzGc1QhlYtJFewpEo=;
-        b=MKXRikUxBxaKKlY4LU1Ol1fAxKyrKsFZByDbgNy0zFleGW9bIAxu0+h8rjiLEgRIVu
-         lPYwn4AUbmRKizw5mjYHxa57B8to20THVsVV/WSSnD0Ma5WxvJWr1WCIHWqxrjE1C+d7
-         i3AhjDaU3GDD2kNyVtAztrLJsybrO2O/9eRf9ENG92eMlNfnPf4FrVb9p7mzuKY91mcl
-         fyViUcFVd9wSjNYMkHWdcOI1xZC6XJm3ctS3YK3om/GIAt34WNEDkmjzkhBpx93QXes3
-         Ef6+xhK3XbfcPNxazio8LxiCOFA0+fYLDtTQRk5OrwRuDrSYgGq//YnyMbTVqIt4HmbX
-         ZQ1A==
-X-Forwarded-Encrypted: i=1; AJvYcCU1hXS0ko0Bm8YLZoTqVgfmi+GZN7UI9NzG1iTXuVrCUzYUARYPOXQB9Y1vQvT9gCMgPCNB2IpJbRJdD0G+@vger.kernel.org, AJvYcCVCf71HlPCILDwSquZHy1L6Lck3cqMLBgsPP75MhF/fCwy8fjsoJqVe/ILncqDetGySrLs=@vger.kernel.org, AJvYcCVE0a+UjjN4a8dfHDztL0/bR+Wi2rQj2aOaPxKYjJ1IjQfS++gNT/f/vdrOgQvby3laD+pDouiG@vger.kernel.org
-X-Gm-Message-State: AOJu0YwhcwomUfK3gCD/faE7zNOIxjRe7LXA/UmYjDS+jS8KBcasYI02
-	tuBAAz7v8otB761F7xKO32eG8i8CRXJ0dYduE0Y46pP4y/AWx6vJ
-X-Google-Smtp-Source: AGHT+IFMaUccJG2q6m6uvtlz1CAeZzt/87PRSN0BUde3JiMNj/hQhrk337sjxmHRYIrjlH0Rr5BT7w==
-X-Received: by 2002:a05:6a20:cf84:b0:1cf:49a6:9933 with SMTP id adf61e73a8af0-1d4fa6c2f99mr18043236637.20.1727762479311;
-        Mon, 30 Sep 2024 23:01:19 -0700 (PDT)
+        bh=Rfr8GHfpAnekQQsJ9DXbNrw9ejSWEOElOr5R5vluBYQ=;
+        b=kofcji4eDnewwhx1kyxuFonYSgnYbwGlMJrogekikjwXiIkM+oohCgVLMYhNhiAszC
+         8eOm1Q3EqFo/mWkJWg5SsEIJgc+gZ8sBWAU0i9ffRMcNU/H0V4RFDXdCC6EpLSkXnVK1
+         UlvtyJOgsUC3Gp9Jhs30yVDaE75JUgc/1u11k6GHlkaZtWHRlTLYsUHS3mS6Ft/Bxv8R
+         wvqzP0nqBYYk65utHASsaDxXgPkalwa3v+V/dF1z12SmPTloaBkiKQZ4o5UxXs33NP74
+         ZQHwmYI+hzGomC18tXONHA8HR5zfrlD02vdAB8up0/jZPEgUFQLLms5zHNt0ALUuR0Wt
+         PSkA==
+X-Forwarded-Encrypted: i=1; AJvYcCUFsm2+mDgFtYs5m60+V7a9bHeQ7h/L69YozkhqM+SBfzIm0WNEYPF9MKWuo82Jr/a+Kwo1T6e/@vger.kernel.org, AJvYcCW0RsXuU+zYn1O+wfTMVKv1a8DnfIIl1wLZBoSXUoYJ6NObjQ8JFfxzFbsNIw1bcsr/alOaFWK9rifk+VC3@vger.kernel.org, AJvYcCXgla/dc3t/iFC9a3gz0mU9Zr3hI/tpob1HKuadoDYUNBy2nSF1nGOdMT5nm+512BRK2ko=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyBXf8BxBDMdsyPckBH96G4gusNtxiNFndIPsV4YZtYXWx2DNcW
+	090qK0MEb1x1g9Hfqj2JQ4TTEmEZHUV5jtE417uL+TYinx2tJ8Qm
+X-Google-Smtp-Source: AGHT+IF0pqg6cHdPQNZUnpp0KY3LqcCogvQjVaDIbEAdyFcDi8rMUdKYWPzepWjPauNArtxkGDit+w==
+X-Received: by 2002:a17:903:1208:b0:20b:2eb3:97ac with SMTP id d9443c01a7336-20b36ad2914mr4118545ad.24.1727762485308;
+        Mon, 30 Sep 2024 23:01:25 -0700 (PDT)
 Received: from localhost.localdomain ([43.129.25.208])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2e0b6c4bc46sm9055950a91.7.2024.09.30.23.01.13
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2e0b6c4bc46sm9055950a91.7.2024.09.30.23.01.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Sep 2024 23:01:18 -0700 (PDT)
+        Mon, 30 Sep 2024 23:01:24 -0700 (PDT)
 From: Menglong Dong <menglong8.dong@gmail.com>
 X-Google-Original-From: Menglong Dong <dongml2@chinatelecom.cn>
 To: edumazet@google.com,
@@ -84,9 +84,9 @@ Cc: davem@davemloft.net,
 	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	bpf@vger.kernel.org
-Subject: [PATCH net-next 6/7] net: ip: make ip_mc_validate_source() return drop reason
-Date: Tue,  1 Oct 2024 14:00:04 +0800
-Message-Id: <20241001060005.418231-7-dongml2@chinatelecom.cn>
+Subject: [PATCH net-next 7/7] net: ip: fix typo in the doc of SKB_DROP_REASON_IP_INNOROUTES
+Date: Tue,  1 Oct 2024 14:00:05 +0800
+Message-Id: <20241001060005.418231-8-dongml2@chinatelecom.cn>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20241001060005.418231-1-dongml2@chinatelecom.cn>
 References: <20241001060005.418231-1-dongml2@chinatelecom.cn>
@@ -98,107 +98,27 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Make ip_mc_validate_source() return drop reason, and adjust the call of
-it in ip_route_input_mc().
-
-Another caller of it is ip_rcv_finish_core->udp_v4_early_demux, and the
-errno is not checked in detail, so we don't do more adjustment for it.
+This is a copy error, and SKB_DROP_REASON_IP_INNOROUTES should correspond
+to IPSTATS_MIB_INADDRERRORS in the comment. Just fix it
 
 Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
 ---
- include/net/route.h |  7 ++++---
- net/ipv4/route.c    | 33 ++++++++++++++++++---------------
- 2 files changed, 22 insertions(+), 18 deletions(-)
+ include/net/dropreason-core.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/net/route.h b/include/net/route.h
-index cb9f31080517..cd0f585dacf0 100644
---- a/include/net/route.h
-+++ b/include/net/route.h
-@@ -198,9 +198,10 @@ static inline struct rtable *ip_route_output_gre(struct net *net, struct flowi4
- 	fl4->fl4_gre_key = gre_key;
- 	return ip_route_output_key(net, fl4);
- }
--int ip_mc_validate_source(struct sk_buff *skb, __be32 daddr, __be32 saddr,
--			  u8 tos, struct net_device *dev,
--			  struct in_device *in_dev, u32 *itag);
-+enum skb_drop_reason
-+ip_mc_validate_source(struct sk_buff *skb, __be32 daddr, __be32 saddr,
-+		      u8 tos, struct net_device *dev,
-+		      struct in_device *in_dev, u32 *itag);
- int ip_route_input_noref(struct sk_buff *skb, __be32 dst, __be32 src,
- 			 u8 tos, struct net_device *devin,
- 			 enum skb_drop_reason *reason);
-diff --git a/net/ipv4/route.c b/net/ipv4/route.c
-index f577012985c5..89f97637af20 100644
---- a/net/ipv4/route.c
-+++ b/net/ipv4/route.c
-@@ -1665,34 +1665,37 @@ struct rtable *rt_dst_clone(struct net_device *dev, struct rtable *rt)
- EXPORT_SYMBOL(rt_dst_clone);
- 
- /* called in rcu_read_lock() section */
--int ip_mc_validate_source(struct sk_buff *skb, __be32 daddr, __be32 saddr,
--			  u8 tos, struct net_device *dev,
--			  struct in_device *in_dev, u32 *itag)
-+enum skb_drop_reason
-+ip_mc_validate_source(struct sk_buff *skb, __be32 daddr, __be32 saddr,
-+		      u8 tos, struct net_device *dev,
-+		      struct in_device *in_dev, u32 *itag)
- {
- 	int err;
- 
- 	/* Primary sanity checks. */
- 	if (!in_dev)
--		return -EINVAL;
-+		return SKB_DROP_REASON_NOT_SPECIFIED;
- 
--	if (ipv4_is_multicast(saddr) || ipv4_is_lbcast(saddr) ||
--	    skb->protocol != htons(ETH_P_IP))
--		return -EINVAL;
-+	if (ipv4_is_multicast(saddr) || ipv4_is_lbcast(saddr))
-+		return SKB_DROP_REASON_IP_INVALID_SOURCE;
-+
-+	if (skb->protocol != htons(ETH_P_IP))
-+		return SKB_DROP_REASON_INVALID_PROTO;
- 
- 	if (ipv4_is_loopback(saddr) && !IN_DEV_ROUTE_LOCALNET(in_dev))
--		return -EINVAL;
-+		return SKB_DROP_REASON_IP_LOCALNET;
- 
- 	if (ipv4_is_zeronet(saddr)) {
- 		if (!ipv4_is_local_multicast(daddr) &&
- 		    ip_hdr(skb)->protocol != IPPROTO_IGMP)
--			return -EINVAL;
-+			return SKB_DROP_REASON_IP_INVALID_SOURCE;
- 	} else {
- 		err = fib_validate_source(skb, saddr, 0, tos, 0, dev,
- 					  in_dev, itag);
- 		if (err < 0)
--			return -EINVAL;
-+			return -err;
- 	}
--	return 0;
-+	return SKB_NOT_DROPPED_YET;
- }
- 
- /* called in rcu_read_lock() section */
-@@ -1702,13 +1705,13 @@ ip_route_input_mc(struct sk_buff *skb, __be32 daddr, __be32 saddr,
- {
- 	struct in_device *in_dev = __in_dev_get_rcu(dev);
- 	unsigned int flags = RTCF_MULTICAST;
-+	enum skb_drop_reason reason;
- 	struct rtable *rth;
- 	u32 itag = 0;
--	int err;
- 
--	err = ip_mc_validate_source(skb, daddr, saddr, tos, dev, in_dev, &itag);
--	if (err)
--		return SKB_DROP_REASON_NOT_SPECIFIED;
-+	reason = ip_mc_validate_source(skb, daddr, saddr, tos, dev, in_dev, &itag);
-+	if (reason)
-+		return reason;
- 
- 	if (our)
- 		flags |= RTCF_LOCAL;
+diff --git a/include/net/dropreason-core.h b/include/net/dropreason-core.h
+index 3d1b09f70bbd..a68235240f6a 100644
+--- a/include/net/dropreason-core.h
++++ b/include/net/dropreason-core.h
+@@ -366,7 +366,7 @@ enum skb_drop_reason {
+ 	SKB_DROP_REASON_IP_INADDRERRORS,
+ 	/**
+ 	 * @SKB_DROP_REASON_IP_INNOROUTES: network unreachable, corresponding to
+-	 * IPSTATS_MIB_INADDRERRORS
++	 * IPSTATS_MIB_INNOROUTES
+ 	 */
+ 	SKB_DROP_REASON_IP_INNOROUTES,
+ 	/** @SKB_DROP_REASON_IP_LOCAL_SOURCE: the source ip is local */
 -- 
 2.39.5
 
