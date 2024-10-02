@@ -1,133 +1,146 @@
-Return-Path: <bpf+bounces-40750-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40751-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F18E98CEC0
-	for <lists+bpf@lfdr.de>; Wed,  2 Oct 2024 10:28:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 348A998CED1
+	for <lists+bpf@lfdr.de>; Wed,  2 Oct 2024 10:36:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4028F1C21139
-	for <lists+bpf@lfdr.de>; Wed,  2 Oct 2024 08:28:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AC05B1F213B4
+	for <lists+bpf@lfdr.de>; Wed,  2 Oct 2024 08:36:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F311194C67;
-	Wed,  2 Oct 2024 08:28:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F56F195FCE;
+	Wed,  2 Oct 2024 08:36:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b="BrLVF9XM"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fVSH3XHP"
 X-Original-To: bpf@vger.kernel.org
-Received: from mailtransmit04.runbox.com (mailtransmit04.runbox.com [185.226.149.37])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B148681AD7;
-	Wed,  2 Oct 2024 08:28:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.226.149.37
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF54619580B
+	for <bpf@vger.kernel.org>; Wed,  2 Oct 2024 08:36:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727857692; cv=none; b=YG80Q1hOOoTszMaD1BchuJCbeh7hq7D9M3rwiUx3TLVSdgrj8QBMsuCrTRG/2g6dhmU/c5nMc1eiMsiMsxGggIThK5EsPUxeiWrXzx8GoBy3Pk9LrC2Z6Gzv7zsBzixN+4gJ7mK76ecyXcugKJeWbrkrMvDsXFZ8NK4egOmnAjc=
+	t=1727858164; cv=none; b=MQtvprDm6Q2mTynvZFUW4DtufAUkrIFEkHl5TtAMXQGRt/z5uc7F4xDYAUgb0SOCpDlim5aGCr3cYkkxT9JmtU0xRa6iCZwbKAhQPBtNmBYVrDy73f5k1mHQULwn1kNJLezZSZJT9ysDN7dF5hIy8/37f7xtVSCEi1PpSE4vt6k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727857692; c=relaxed/simple;
-	bh=XPeH6vkyj1VLzGltpfrOTJ+H6dt17+dZU2/WLNRc9wI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jvyCw1IRdylEKAou4rTZd/PFYA45sIRjZ8VyX2j4riodtg0pBTh8SVLaJRHnNt4uuaMVs803B3WGWM2zHEHXYpqmGPE4rBb9jtXqZwXWQ1zi8fqjTSIeGYFaBA0BdvRoRIoKrdMIB+wJP3+G71oqqC+3aW7cvje3LUZgCw07b1Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co; spf=pass smtp.mailfrom=rbox.co; dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b=BrLVF9XM; arc=none smtp.client-ip=185.226.149.37
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rbox.co
-Received: from mailtransmit03.runbox ([10.9.9.163] helo=aibo.runbox.com)
-	by mailtransmit04.runbox.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.93)
-	(envelope-from <mhal@rbox.co>)
-	id 1svui7-007C9H-OM; Wed, 02 Oct 2024 10:27:51 +0200
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=rbox.co;
-	s=selector1; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-	References:Cc:To:Subject:MIME-Version:Date:Message-ID;
-	bh=3dzYHqUhVpEdv+qGLjHqmkMkatBIOm9n+RLyyWhSE74=; b=BrLVF9XMIp6T+yVHjiJ6ZCprlv
-	/eywjn10dpMnEcAUuvqAJ+vEHueM3G0WZ4ZwCJM5N9gfFlkUVSXbuXJCu9A05vxQJcKwtr80Xf+Hh
-	Fat72sipZc3J4OyHSu73cEHt0DKbCXuhzS8S5ki86NwXQPRlEU1+Mez1nRRKXi0qAvorl3Lo55mz9
-	LMFwYwdMZJeEAk+km+WYPH8+GnSeT2zIY9NktUNazBxtXJy1G/sMZGFu2aMdLrC5g65tXpvOe8aUt
-	kr9546Z+w7wB49+eb5OOouA59yNXvqqHfvRndzx7y7p7wmkL3x7ibEaKQJ5x3HdpjmswO6cLYyk/l
-	RhL7pdJA==;
-Received: from [10.9.9.73] (helo=submission02.runbox)
-	by mailtransmit03.runbox with esmtp (Exim 4.86_2)
-	(envelope-from <mhal@rbox.co>)
-	id 1svui6-0008Fz-MB; Wed, 02 Oct 2024 10:27:51 +0200
-Received: by submission02.runbox with esmtpsa  [Authenticated ID (604044)]  (TLS1.2:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.93)
-	id 1svuhy-00G1GC-5e; Wed, 02 Oct 2024 10:27:42 +0200
-Message-ID: <ab60e5c2-90a1-43c3-936b-10520c751dfb@rbox.co>
-Date: Wed, 2 Oct 2024 10:27:40 +0200
+	s=arc-20240116; t=1727858164; c=relaxed/simple;
+	bh=3Lqi/OXxA00eaLf8XiOP46D2ukKfPmvmLfoAbIztisU=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=XFMeHGFd4on9MmNmNKldLfqBW3fXl84QKvWE5L3Mt5RQIjTEdgvnRyhX1OzF2ygr+9FA0Zd+Si85+7T5S8RIxs4KW5PWt24IHAEcqkTPuEv+aSVjfJdYBFn04up7d3JvxWtolQsuABk3mwpDYMPhFxw3wknrSbMhlks4da7N7Os=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fVSH3XHP; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1727858161;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=N0mOeG6DrEcLzm/NhKgCIaXI+fTzk5B5rgZ8qzhrCw4=;
+	b=fVSH3XHPlBWXmQpxeYg4N59NBTzE6dVImyMfQsAoK4jB7dUpc3bvjtqJ5MEOjpCnrEkQIU
+	4XA6NJj3TRMeG9fqmlnZ0BjTiOfMTM4tTMwqb+kL/BJTDsQcFQGw8XfYjLtw79fw8IFMIX
+	iSYNKSIgNdp1UqoCHt5O3slcGJGvnGI=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-620-z3wi85X2M7ma7vS43NuPPQ-1; Wed, 02 Oct 2024 04:35:59 -0400
+X-MC-Unique: z3wi85X2M7ma7vS43NuPPQ-1
+Received: by mail-ed1-f72.google.com with SMTP id 4fb4d7f45d1cf-5c80d23d501so734541a12.1
+        for <bpf@vger.kernel.org>; Wed, 02 Oct 2024 01:35:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727858157; x=1728462957;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=N0mOeG6DrEcLzm/NhKgCIaXI+fTzk5B5rgZ8qzhrCw4=;
+        b=Cj4s/Hpm2YieQIVyfTY1pVsMvVTjrNLHFZzMYgBVvUrMHppTIe4EiueYzcyvYMJ/k7
+         29H14U5wRxfYcHOnZwNiVDqjV1vagXA5SrJGfm0w3f8ItZdTu5d/AmWviPR3gYRDjsSN
+         kRmr2rK04cdTksp7baVIixkprNDfTQjtN6nX+m150Q1uDHR6nKPaIJNU5krPdV09nWG3
+         O9nbscluszbBDJPtZmOW0eryQa8qvAbpqdfEcHZu/23Xi86LhzCvF8JZR+CvtV5Y/Wke
+         qXx5ONxHBl7D5iyyawDDezA2iF0u7XJfcyGI9gzliEczpN6AXSJP1VRwBsK7Lherjh45
+         tQpg==
+X-Forwarded-Encrypted: i=1; AJvYcCVGcCbw9QFH1wMU+mUI+UjRjuEynsLsgj+V8/Cgig1Zb1QLjNFuRGzek7BPyYc/Dy5vPdk=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzJuE8rYDvcit3lgb9ZxnyrVnO2pIr0R2zqbAWPbY7mThpY0jtM
+	tKukYu66+PK9H8bLZ7DBUtRzXn0oTc0PKYKglZR+gaFsvfWppfMKzFu93m767L4keu7cmf7jgfJ
+	YobeWPqgmqjUvAkGKML0LZMRPhbtwcqnxeXNJ2XdMxTSKqHASGw==
+X-Received: by 2002:a05:6402:5191:b0:5c2:1014:295a with SMTP id 4fb4d7f45d1cf-5c8a29f7c88mr5800962a12.2.1727858157431;
+        Wed, 02 Oct 2024 01:35:57 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHe9afha6qgSKtgnEwfoZIrqaGl4NvYrwm0BQ8Yeh1sL2Q9OmJ7WOhS8LXAKyAkwfZGwz/sjg==
+X-Received: by 2002:a05:6402:5191:b0:5c2:1014:295a with SMTP id 4fb4d7f45d1cf-5c8a29f7c88mr5800928a12.2.1727858156917;
+        Wed, 02 Oct 2024 01:35:56 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5c882495491sm7278037a12.87.2024.10.02.01.35.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Oct 2024 01:35:56 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id 2FFE2158026D; Wed, 02 Oct 2024 10:35:55 +0200 (CEST)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To: Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov
+ <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu
+ <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
+ <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
+ Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa
+ <jolsa@kernel.org>, Hangbin Liu <liuhangbin@gmail.com>, Jesper Dangaard
+ Brouer <brouer@redhat.com>
+Cc: syzbot+cca39e6e84a367a7e6f6@syzkaller.appspotmail.com, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
+ <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, bpf@vger.kernel.org,
+ netdev@vger.kernel.org
+Subject: Re: [PATCH bpf-next] bpf: Make sure internal and UAPI bpf_redirect
+ flags don't overlap
+In-Reply-To: <4e04ef28-6c82-4624-ba40-c6072f8875a5@iogearbox.net>
+References: <20240920125625.59465-1-toke@redhat.com>
+ <4e04ef28-6c82-4624-ba40-c6072f8875a5@iogearbox.net>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date: Wed, 02 Oct 2024 10:35:55 +0200
+Message-ID: <87r08yq4us.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v2 0/6] selftests/bpf: Various sockmap-related
- fixes
-To: Jakub Sitnicki <jakub@cloudflare.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman
- <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
- bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240731-selftest-sockmap-fixes-v2-0-08a0c73abed2@rbox.co>
- <87y159yi5m.fsf@cloudflare.com>
- <249a7dc3-34e2-4579-aae7-8b38b145e4bb@rbox.co>
- <87ttfxy28s.fsf@cloudflare.com>
- <42939687-20f9-4a45-b7c2-342a0e11a014@rbox.co>
- <877cccqnvj.fsf@cloudflare.com>
- <e78254c5-8f2f-4dc5-bf81-401caefabdd1@rbox.co>
- <0d4edea2-f989-484f-88bc-d8fb6acd7572@rbox.co>
- <87ikuh78z5.fsf@cloudflare.com>
-Content-Language: pl-PL, en-GB
-From: Michal Luczaj <mhal@rbox.co>
-In-Reply-To: <87ikuh78z5.fsf@cloudflare.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On 9/27/24 11:15, Jakub Sitnicki wrote:
-> On Fri, Sep 27, 2024 at 12:54 AM +02, Michal Luczaj wrote:
->> ...
->> Here's a follow up: my guess is that some checks are missing. I'm not sure
->> if it's the best approach, but this fixes things for me:
-> 
-> So you have already found a bug with a negative test. Nice.
-> 
-> Your patch makes sense to me.
+Daniel Borkmann <daniel@iogearbox.net> writes:
 
-Great, I'll submit it properly.
+> On 9/20/24 2:56 PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+>> The bpf_redirect_info is shared between the SKB and XDP redirect paths,
+>> and the two paths use the same numeric flag values in the ri->flags
+>> field (specifically, BPF_F_BROADCAST =3D=3D BPF_F_NEXTHOP). This means t=
+hat
+>> if skb bpf_redirect_neigh() is used with a non-NULL params argument and,
+>> subsequently, an XDP redirect is performed using the same
+>> bpf_redirect_info struct, the XDP path will get confused and end up
+>> crashing, which syzbot managed to trigger.
+>>
+>> With the stack-allocated bpf_redirect_info, the structure is no longer
+>> shared between the SKB and XDP paths, so the crash doesn't happen
+>> anymore. However, different code paths using identically-numbered flag
+>> values in the same struct field still seems like a bit of a mess, so
+>> this patch cleans that up by moving the flag definitions together and
+>> redefining the three flags in BPF_F_REDIRECT_INTERNAL to not overlap
+>> with the flags used for XDP. It also adds a BUILD_BUG_ON() check to make
+>> sure the overlap is not re-introduced by mistake.
+>>
+>> Fixes: e624d4ed4aa8 ("xdp: Extend xdp_redirect_map with broadcast suppor=
+t")
+>> Reported-by: syzbot+cca39e6e84a367a7e6f6@syzkaller.appspotmail.com
+>> Closes: https://syzkaller.appspot.com/bug?extid=3Dcca39e6e84a367a7e6f6
+>> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+>> ---
+>>   include/uapi/linux/bpf.h | 14 ++++++--------
+>>   net/core/filter.c        |  8 +++++---
+>>   2 files changed, 11 insertions(+), 11 deletions(-)
+> Lgtm, applied, thanks! I also added a tools header sync.I took this into=
+=20
+> bpf tree, so that stable can pick it up.
 
-Another thing I've noticed is that unsupported (non-TCP) sk_msg redirects
-fail silently, i.e. send() is successful, then packet appears to be
-dropped, but because the BPF_SK_MSG_VERDICT program is never run, the
-verdict[SK_DROP] isn't updated. Is this by design?
+Great! Thanks for the fixups :)
 
-Also, for unsupported af_vsock sk_skb-to-ingress we hit the warning:
-
-[  233.396654] rx_queue is empty, but rx_bytes is non-zero
-[  233.396702] WARNING: CPU: 11 PID: 40601 at net/vmw_vsock/virtio_transport_common.c:589 virtio_transport_stream_dequeue+0x2e5/0x2f0
-
-I'll try to fix that. Now, the series begin to grow long. Should the fixes
-come separately?
-
-> FYI, I've started a GH repo for anciallary materials for sockmap.
-> Code samples, pointers to resources, a backlog of stuff to do (?).
-> Inspired by the xdp-project repo:
-> 
->   https://github.com/xdp-project/xdp-project
-> 
-> We can move it to a dedicated project namespace, right now it's at:
-> 
->   https://github.com/jsitnicki/sockmap-project/
-> 
-> Feel free to add stuff there.
-
-Not that I have anything to add, but sure, thanks :)
-
-Michal
+-Toke
 
 
