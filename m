@@ -1,169 +1,183 @@
-Return-Path: <bpf+bounces-40797-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40798-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1ECB298E631
-	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2024 00:43:44 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2116198E63D
+	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2024 00:47:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 419201C21D30
-	for <lists+bpf@lfdr.de>; Wed,  2 Oct 2024 22:43:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6A956B219D7
+	for <lists+bpf@lfdr.de>; Wed,  2 Oct 2024 22:47:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4ED619D063;
-	Wed,  2 Oct 2024 22:43:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACBB319AD5C;
+	Wed,  2 Oct 2024 22:46:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="gUchvAEH"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CFN24kRI"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-io1-f46.google.com (mail-io1-f46.google.com [209.85.166.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB03819ABB7
-	for <bpf@vger.kernel.org>; Wed,  2 Oct 2024 22:43:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24BE9DDD2;
+	Wed,  2 Oct 2024 22:46:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727908999; cv=none; b=o6FZcpzLc7gQanIDmKutOL+hl0CIgvJ8dKfBXcf6adCzAQ+HOhJBFpvhCOHfJgxALshJBfYcjLwSAk4UJqbQp8RVWF9gbG9fsENtEPTCKQShiJJWOt65C53XX66u8YWYUMBxk9uab2zxBIH6zpCi/zwB1CWOqXFcL2TZsuP8tlM=
+	t=1727909213; cv=none; b=VGBR6z7aH+F1GuzFLnseEL7YT8K44BIsgUJ4Ylzvil5dwrMKqTsCZY3OIyprpW5PlN658oMwTSG6JukbHO4Uqez3iweKGBK3a285IeCv4JGwLR/HPtm+TtJDp6MUY2+RVCdSesP1p70QZ39BFHvGSVN/lF4EtahsqQfvyqW44fI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727908999; c=relaxed/simple;
-	bh=j6t8tk7Z//+2Is6i3VUUm0aYAVTeRD5a2UMG2eI0ATY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=au961aX1wxDPDW1f58kjgbSLKf4EgRtGsBp4HtZ7txFnzo4zHyM4Y+QfgbQt3TPaxk+aRPLmpoN7MvY7KewXnS6/GUTdfFQV8ktyErJ1ktwYmDxMGLL+Bhj5YiAEyHuPnBg4ZI8jBVzNrIjqAHKeCOsvbMHaHEV6s/0/C2LsPCA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=gUchvAEH; arc=none smtp.client-ip=209.85.166.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-io1-f46.google.com with SMTP id ca18e2360f4ac-82ce603d8b5so17140739f.0
-        for <bpf@vger.kernel.org>; Wed, 02 Oct 2024 15:43:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1727908996; x=1728513796; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=x3ilwW6cK4QI7nkKPfL57rY6tVRa1T4n8ruZSd7gO4c=;
-        b=gUchvAEHJSH0hLbv3OtCwqew2nqDy9GLdhWArdnNmGO0eos8j/p1a6+iNRh90nvhb0
-         e96QEinpPBagoDMvI2O5ioG2188zpfOz++N9k+/z62XJKsY9344uOJO67RPrycNjOGBt
-         mkjj8TM14u30zm5au5TJEskki7oaTIlBPED3Y=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727908996; x=1728513796;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=x3ilwW6cK4QI7nkKPfL57rY6tVRa1T4n8ruZSd7gO4c=;
-        b=sdtx97lfrcIXr1rkPHQkzdEVSO3CUVRc1yyhNnbo4XhvDOrEM1Er56RiH2D/9Qd8ig
-         FtQbiTqNu7NWsWhIB1+2ercQ+uloHeycl3U7zyXOKmvkyZtdFn05Z3Cr7CSmQ+FJJ7Tf
-         vMkDv6vuFV5vTul1BKmNVOhdozuARZeqP9GHjq3IStLLOd1u4uZp5VNxRFX1outgFKtP
-         enATy1p6UT38f29+gAkmyxUQlUUz0hMkjlMhd1uEpdfy7rv7sLcQJu/qGwyVuPqTdtCk
-         FlHZHslUv/ko0kuRxJF1p3NfQ6mRTJQXOmIE7ujjgQyoO25irqlV5fql24K9l+9tCKlT
-         jwgg==
-X-Forwarded-Encrypted: i=1; AJvYcCXZNjoBCQygOXGAwWBEd1ER+NvR3oQzDBpMQjKJujjjCXVPFjKDxX9zZKn7HJ+us+vZWTQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxrxwJM6TBTYR5sAeUqGr5RrC2J4obVsfmN5kCV9DS2T1uAnw/n
-	dQakANs37bGlRdZX7mBPDAblZ8/xWDgW+EVww7LCu/rY3M+G5EnsqESCRITQ0qU=
-X-Google-Smtp-Source: AGHT+IG7ncSQ5cx0L4TiFYzd75wjkYvgQW/jpvx2/bj9FPfBqI0KRbv1UTT6Cok8YzgBkusExy0uDQ==
-X-Received: by 2002:a05:6602:601b:b0:82c:967b:6f96 with SMTP id ca18e2360f4ac-834d8411337mr547748739f.8.1727908996579;
-        Wed, 02 Oct 2024 15:43:16 -0700 (PDT)
-Received: from [192.168.1.128] ([38.175.170.29])
-        by smtp.gmail.com with ESMTPSA id ca18e2360f4ac-834936b4e97sm350364539f.6.2024.10.02.15.43.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Oct 2024 15:43:16 -0700 (PDT)
-Message-ID: <1fd8fd72-2439-4497-a18a-fdc06628eb1e@linuxfoundation.org>
-Date: Wed, 2 Oct 2024 16:43:14 -0600
+	s=arc-20240116; t=1727909213; c=relaxed/simple;
+	bh=BngeXkbt/WG24essn3TrThJOgh2ow30+BK+6VpFJwtc=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=Myzbkeqfi1t713ZKrSXexubEyEe0rWH8g3XnwUteaezZBX9Inlc0PZzRcyjKZm4XLn7YX1MDzPmTVld8l+h0q2zU2lpb55EkMNTSvmg+zZVfbcIR0ldkz3K4TGRMhAWlpUrh3FdE/6KzMt8+sfhIKPoQJgQdd5Mp++0hVXgezK4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CFN24kRI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AEDC0C4CEC2;
+	Wed,  2 Oct 2024 22:46:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1727909213;
+	bh=BngeXkbt/WG24essn3TrThJOgh2ow30+BK+6VpFJwtc=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=CFN24kRIIeakf8Wns6NqUqGPIlTmK9/Zwt8AQzjd9i/5x34uq+/o5tZ59X/geQ7v8
+	 N0AxvLTAkyabrrA2Js1f/tUzOzyRZUVBphfxtg6kb0qwqFjgjDVZyvrBn/e/WaiTNV
+	 4u8F847iD2eCo9cI8RkX7/c+1bMHU8jWYdj/dACPk9p5E+WyRhb59LyBOXBxeTxoPa
+	 U0W44HxOt4iGpMXe//2b3wVfimkn8dpRItdZTToukyF68eVl5EWqrkBp8X4/MpLj5p
+	 cumqEYj2EtT8OrzzGrTzlKPS9rcFLkMY5vzWnAf5gIat/KQ99Cj44pqFI0VjPDsKfQ
+	 uucQNd4BslFpA==
+Date: Wed, 2 Oct 2024 17:46:51 -0500
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Frank Li <Frank.Li@nxp.com>
+Cc: Bjorn Helgaas <bhelgaas@google.com>, Richard Zhu <hongxing.zhu@nxp.com>,
+	Lucas Stach <l.stach@pengutronix.de>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Rob Herring <robh@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>, linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	imx@lists.linux.dev, alyssa@rosenzweig.io, bpf@vger.kernel.org,
+	broonie@kernel.org, jgg@ziepe.ca, joro@8bytes.org,
+	lgirdwood@gmail.com, maz@kernel.org, p.zabel@pengutronix.de,
+	robin.murphy@arm.com, will@kernel.org
+Subject: Re: [PATCH v2 1/2] PCI: Add enable_device() and disable_device()
+ callbacks for bridges
+Message-ID: <20241002224651.GA282373@bhelgaas>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH HID v3 0/9] HID: bpf: add a new hook to control
- hid-generic
-To: Benjamin Tissoires <bentiss@kernel.org>, Jiri Kosina <jikos@kernel.org>,
- Peter Hutterer <peter.hutterer@who-t.net>, Vicki Pfau <vi@endrift.com>,
- Shuah Khan <shuah@kernel.org>
-Cc: linux-input@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
- Shuah Khan <skhan@linuxfoundation.org>
-References: <20241001-hid-bpf-hid-generic-v3-0-2ef1019468df@kernel.org>
-Content-Language: en-US
-From: Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20241001-hid-bpf-hid-generic-v3-0-2ef1019468df@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240930-imx95_lut-v2-1-3b6467ba539a@nxp.com>
 
-On 10/1/24 08:30, Benjamin Tissoires wrote:
-> This is a slight change from the fundamentals of HID-BPF.
-> In theory, HID-BPF is abstract to the kernel itself, and makes
-> only changes at the HID level (through report descriptors or
-> events emitted to/from the device).
+On Mon, Sep 30, 2024 at 03:42:21PM -0400, Frank Li wrote:
+> Some PCIe bridges require special handling when enabling or disabling
+> PCIe devices. For example, on the i.MX95 platform, a lookup table must be
+> configured to inform the hardware how to convert pci_device_id to stream
+> (bus master) ID, which is used by the IOMMU and MSI controller to identify
+> bus master device.
+
+It's important that this say "PCI *host bridge*" specifically to avoid
+confusion with PCI-to-PCI bridges.
+
+On the PCIe side, it would be better to use "Requester ID" than
+"pci_device_id" because I think that's the actual key for the lookup
+table.
+
+Possible commit log text, fix my misconceptions as needed:
+
+  Some PCIe host bridges require special handling when enabling or
+  disabling PCIe Endpoints. For example, the i.MX95 platform has a
+  lookup table to map Requester IDs to StreamIDs, which are used by
+  the SMMU and MSI controller to identify the source of DMA accesses.
+
+  Without this mapping, DMA accesses may target unintended memory,
+  which would corrupt memory or read the wrong data.
+
+  Add a host bridge .enable_device() hook the imx6 driver can use to
+  configure the Requester ID to StreamID mapping.  The hardware table
+  isn't big enough to map all possible Requester IDs, so this hook may
+  fail if no table space is available.  In that case, return failure
+  from pci_enable_device().
+
+  It might make more sense to make pci_set_master() decline to enable
+  bus mastering and return failure, but it currently doesn't have a
+  way to return failure.
+
+> Enablement will be failure when there is not enough lookup table resource.
+> Avoid DMA write to wrong position. That is the reason why pci_fixup_enable
+> can't work since not return value for fixup function.
 > 
-> However, we have seen a few use cases where HID-BPF might interact with
-> the running kernel when the target device is already handled by a
-> specific device.
-> 
-> For example, the XP-Pen/Huion/UC-Logic tablets are handled by
-> hid-uclogic but this driver is also doing a report descriptor fixup
-> without checking if the device has already been fixed by HID-BPF.
-> 
-> In the same way, another recent example[0] was when a cheap foot pedal is
-> used and tricks iPhones and Windows machines by presenting itself as a
-> known Apple wireless keyboard. The problem is that this fake keyboard is
-> not presenting a compatible report descriptor and hid-core merges all
-> device nodes together making libinput ignore the keyboard part for
-> historical reasons.
-> 
-> This series aims at tackling this problem:
-> - first, we promote hid_bpf_report_descriptor_fixup to be called before
->    any driver is even matched for the device
-> - then we allow hdev->quirks to be written during report_fixup and add a
->    new quirk to force hid-core to ignore any non hid-generic driver.
-> 
-> Basically, it means that when we insert a BPF program to fix a device,
-> we can force hid-generic to handle the device, and thus preventing
-> any other kernel driver to tamper with our device.
-> 
-> This branch is on top of the for-6.12/upstream-fixes branch of hid.git.
-> 
-> [0] https://gitlab.freedesktop.org/libinput/libinput/-/issues/1014
-> 
-> Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
 > ---
-> Changes in v3:
-> - dropped the last 2 patches with hid-input control, as I'm not 100%
->    sure of it
-> - changed the first patch to avoid a double free on cleanup of a device
->    when a HID-BPF program was attached
-> - kept Peter's rev-by for all but patches 1 and 6
-> - Link to v2: https://lore.kernel.org/r/20240910-hid-bpf-hid-generic-v2-0-083dfc189e97@kernel.org
+> Change from v1 to v2
+> - move enable(disable)device ops to pci_host_bridge
+> ---
+>  drivers/pci/pci.c   | 14 ++++++++++++++
+>  include/linux/pci.h |  2 ++
+>  2 files changed, 16 insertions(+)
 > 
-
->        HID: bpf: move HID-BPF report descriptor fixup earlier
->        HID: core: save one kmemdup during .probe()
->        HID: core: remove one more kmemdup on .probe()
->        HID: bpf: allow write access to quirks field in struct hid_device
->        selftests/hid: add dependency on hid_common.h
->        selftests/hid: cleanup C tests by adding a common struct uhid_device
->        selftests/hid: allow to parametrize bus/vid/pid/rdesc on the test device
->        HID: add per device quirk to force bind to hid-generic
->        selftests/hid: add test for assigning a given device to hid-generic
-
+> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> index 7d85c04fbba2a..fcdeb12622568 100644
+> --- a/drivers/pci/pci.c
+> +++ b/drivers/pci/pci.c
+> @@ -2056,6 +2056,7 @@ int __weak pcibios_enable_device(struct pci_dev *dev, int bars)
+>  static int do_pci_enable_device(struct pci_dev *dev, int bars)
+>  {
+>  	int err;
+> +	struct pci_host_bridge *host_bridge;
+>  	struct pci_dev *bridge;
+>  	u16 cmd;
+>  	u8 pin;
+> @@ -2068,6 +2069,13 @@ static int do_pci_enable_device(struct pci_dev *dev, int bars)
+>  	if (bridge)
+>  		pcie_aspm_powersave_config_link(bridge);
+>  
+> +	host_bridge = pci_find_host_bridge(dev->bus);
+> +	if (host_bridge && host_bridge->enable_device) {
+> +		err = host_bridge->enable_device(host_bridge, dev);
+> +		if (err)
+> +			return err;
+> +	}
+> +
+>  	err = pcibios_enable_device(dev, bars);
+>  	if (err < 0)
+>  		return err;
+> @@ -2262,12 +2270,18 @@ void pci_disable_enabled_device(struct pci_dev *dev)
+>   */
+>  void pci_disable_device(struct pci_dev *dev)
+>  {
+> +	struct pci_host_bridge *host_bridge;
+> +
+>  	dev_WARN_ONCE(&dev->dev, atomic_read(&dev->enable_cnt) <= 0,
+>  		      "disabling already-disabled device");
+>  
+>  	if (atomic_dec_return(&dev->enable_cnt) != 0)
+>  		return;
+>  
+> +	host_bridge = pci_find_host_bridge(dev->bus);
+> +	if (host_bridge && host_bridge->disable_device)
+> +		host_bridge->disable_device(host_bridge, dev);
+> +
+>  	do_pci_disable_device(dev);
+>  
+>  	dev->is_busmaster = 0;
+> diff --git a/include/linux/pci.h b/include/linux/pci.h
+> index 573b4c4c2be61..ac15b02e14ddd 100644
+> --- a/include/linux/pci.h
+> +++ b/include/linux/pci.h
+> @@ -578,6 +578,8 @@ struct pci_host_bridge {
+>  	u8 (*swizzle_irq)(struct pci_dev *, u8 *); /* Platform IRQ swizzler */
+>  	int (*map_irq)(const struct pci_dev *, u8, u8);
+>  	void (*release_fn)(struct pci_host_bridge *);
+> +	int (*enable_device)(struct pci_host_bridge *bridge, struct pci_dev *dev);
+> +	void (*disable_device)(struct pci_host_bridge *bridge, struct pci_dev *dev);
+>  	void		*release_data;
+>  	unsigned int	ignore_reset_delay:1;	/* For entire hierarchy */
+>  	unsigned int	no_ext_tags:1;		/* No Extended Tags */
 > 
->   drivers/hid/bpf/hid_bpf_dispatch.c                 |   9 +-
->   drivers/hid/bpf/hid_bpf_struct_ops.c               |   1 +
->   drivers/hid/hid-core.c                             |  84 +++++++++---
->   drivers/hid/hid-generic.c                          |   3 +
->   include/linux/hid.h                                |  20 +--
->   include/linux/hid_bpf.h                            |  11 +-
->   tools/testing/selftests/hid/Makefile               |   2 +-
->   tools/testing/selftests/hid/hid_bpf.c              | 151 ++++++++++++++-------
->   tools/testing/selftests/hid/hid_common.h           | 112 ++++++++++-----
->   tools/testing/selftests/hid/hidraw.c               |  36 ++---
->   tools/testing/selftests/hid/progs/hid.c            |  12 ++
->   .../testing/selftests/hid/progs/hid_bpf_helpers.h  |   6 +-
->   12 files changed, 296 insertions(+), 151 deletions(-)
-
-I am assuming selftests go with the driver changes.
-For selftests:
-
-Acked-by: Shuah Khan <skhan@linuxfoundation.org>
-
-thanks,
--- Shuah
+> -- 
+> 2.34.1
+> 
 
