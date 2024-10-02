@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-40781-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40782-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3063798E212
-	for <lists+bpf@lfdr.de>; Wed,  2 Oct 2024 20:10:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE6CF98E214
+	for <lists+bpf@lfdr.de>; Wed,  2 Oct 2024 20:10:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 79809B22018
-	for <lists+bpf@lfdr.de>; Wed,  2 Oct 2024 18:10:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 816182852E1
+	for <lists+bpf@lfdr.de>; Wed,  2 Oct 2024 18:10:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91AE91D1F6D;
-	Wed,  2 Oct 2024 18:09:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49B641D2217;
+	Wed,  2 Oct 2024 18:10:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cFiiyiX1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="C1nN9bS1"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 198551D1F5A;
-	Wed,  2 Oct 2024 18:09:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C34A21D1F72;
+	Wed,  2 Oct 2024 18:09:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727892599; cv=none; b=KGscHtiGPsWl+KBxQnGCwNwRzBscBx1PmmVPIBeSWo+Jklg4PgiTQTEhjzr8ZfIPx64ckCSaiGrZBQHlHxfqpMD+8VwLpvB5ZKQkASHVq/LFMlYtnuHOPjehwFLK7IIJf+DUY55pYbGEYDYflO3766tJJc9rwpCG61z4WKFxyaY=
+	t=1727892599; cv=none; b=CL0Gf+sYRRpX6z5i0zGlYegvyKLOsEw4AP+lHLGucfK4PxAM642YUZWYdfO7kalbhZBiQNw2SwlBZdUeEcK+wg1mEMjPShN9V4KZj+trAJF1t6VzMgPRWXtqTx7R22ol8X5nlQZVBp6uhQF6ECGLXiwLJbUaQvsQ/xQfN4aZslM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1727892599; c=relaxed/simple;
-	bh=OspFckh9hcfNpQfmco31YwmJgcBtSOdPnDKdNDPKD04=;
+	bh=CZ1VN+wISqfF7U/NBBkytViSmRb/vkGLNUY76gXrLxU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=a2fjtkvg3BDAItMckvjGii1iJkhSPp9JWg3RjA9xRcn4FQbc+96XcTxr4ClV2wBbznaIipz3QvkL1QvlMRTL673AkQJBbA67Y58c0ve51vcS3nQn/2BHmluyVwiX+YQ9ziXUPDAYCOvVGUnf2UG4GZfq1Ur/dVivW7NckV1tsxg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cFiiyiX1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3F97C4CED3;
-	Wed,  2 Oct 2024 18:09:57 +0000 (UTC)
+	 MIME-Version; b=L2j1PUU6FHA0glexkQZAh8s4EGSwR1WL0618lZQrM21y8YBVR9y6GoykxJCUTO2sYtHPb4S/5veImM/Fvw7f0fFwNmaHWtNtB9yGBcnUxiXRaVbtPi4aucsDfxyusCHcSF90RMwC7jZSaYSaqEgxmeMWUFBpbsapEweGj3hZD/A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=C1nN9bS1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3F17C4CED6;
+	Wed,  2 Oct 2024 18:09:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727892598;
-	bh=OspFckh9hcfNpQfmco31YwmJgcBtSOdPnDKdNDPKD04=;
+	s=k20201202; t=1727892599;
+	bh=CZ1VN+wISqfF7U/NBBkytViSmRb/vkGLNUY76gXrLxU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=cFiiyiX1K3U6QE/qWPMNufn3ufF9eAQ7QU8VWg84F7VQkXI9sYF+Dqgx0QhzilOkB
-	 yKEGYNBagzW52NB8dTcBOGGkaTx1puduS09f3KE4sAdGUdNtSXCIUWmib1raJAZyjs
-	 yxSYo9a3zhUKsvt7TSFzKe5/+1EbgsEy1cO36RLt1LGeZRwgtstndGxlAya9ZGoi4a
-	 xz62UNP+TEuOIQvLMVI3y7sYrIScLSIdirJIX2XXnwew/9qXIJrQ8VPDzH9x7b+nJh
-	 YI5pWUHU5FY8r5qJIdNL7XImWGm8MKS+5tNxxwiemvHN9G4khA8pQPFUMqZBQP3PnK
-	 10Hbz3ixnpkXg==
+	b=C1nN9bS1juVNiiTLMsoIIP2DGHBhXblmGXHhsKBD+j6XPJwI5tpUtFSZYdSkMTJVU
+	 PBXFgrsz8B8ZV+VT0cgqgK6qrFs2w4+ycrTH0yA9gyW/m5l7V02/XBNfHa+8kFJAxc
+	 4lDiS2LMUucmUhiFgs7PefmznRoDDt92VSgPcL4FERTeuDorLGV9p9f336azJI+4UE
+	 OA/Xcg20450+n41GGYuAvcr+sjyEwfRG4b5943hnrFLr1Jc36oc3uHQDVlH90Kgvc4
+	 otDwmKd42es+dgexigXc+VKAxyPI3gA5HxIY2GFemE/uxwLmPRtnBaR2WSVkvv29E2
+	 eedyeP/3Sdorw==
 From: Namhyung Kim <namhyung@kernel.org>
 To: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
@@ -67,9 +67,9 @@ Cc: Martin KaFai Lau <martin.lau@linux.dev>,
 	linux-mm@kvack.org,
 	Arnaldo Carvalho de Melo <acme@kernel.org>,
 	Kees Cook <kees@kernel.org>
-Subject: [PATCH v4 bpf-next 1/3] bpf: Add kmem_cache iterator
-Date: Wed,  2 Oct 2024 11:09:54 -0700
-Message-ID: <20241002180956.1781008-2-namhyung@kernel.org>
+Subject: [PATCH v4 bpf-next 2/3] mm/bpf: Add bpf_get_kmem_cache() kfunc
+Date: Wed,  2 Oct 2024 11:09:55 -0700
+Message-ID: <20241002180956.1781008-3-namhyung@kernel.org>
 X-Mailer: git-send-email 2.46.1.824.gd892dcdcdd-goog
 In-Reply-To: <20241002180956.1781008-1-namhyung@kernel.org>
 References: <20241002180956.1781008-1-namhyung@kernel.org>
@@ -81,229 +81,66 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The new "kmem_cache" iterator will traverse the list of slab caches
-and call attached BPF programs for each entry.  It should check the
-argument (ctx.s) if it's NULL before using it.
+The bpf_get_kmem_cache() is to get a slab cache information from a
+virtual address like virt_to_cache().  If the address is a pointer
+to a slab object, it'd return a valid kmem_cache pointer, otherwise
+NULL is returned.
 
-Now the iteration grabs the slab_mutex only if it traverse the list and
-releases the mutex when it runs the BPF program.  The kmem_cache entry
-is protected by a refcount during the execution.
+It doesn't grab a reference count of the kmem_cache so the caller is
+responsible to manage the access.  The intended use case for now is to
+symbolize locks in slab objects from the lock contention tracepoints.
 
-It includes the internal "mm/slab.h" header to access kmem_cache,
-slab_caches and slab_mutex.  Hope it's ok to mm folks.
-
+Suggested-by: Vlastimil Babka <vbabka@suse.cz>
+Acked-by: Roman Gushchin <roman.gushchin@linux.dev> (mm/*)
+Acked-by: Vlastimil Babka <vbabka@suse.cz> #mm/slab
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
-I've removed the Acked-by's from Roman and Vlastimil since it's changed
-not to hold the slab_mutex and to manage the refcount.  Please review
-this change again!
+ kernel/bpf/helpers.c |  1 +
+ mm/slab_common.c     | 19 +++++++++++++++++++
+ 2 files changed, 20 insertions(+)
 
- include/linux/btf_ids.h      |   1 +
- kernel/bpf/Makefile          |   1 +
- kernel/bpf/kmem_cache_iter.c | 174 +++++++++++++++++++++++++++++++++++
- 3 files changed, 176 insertions(+)
- create mode 100644 kernel/bpf/kmem_cache_iter.c
-
-diff --git a/include/linux/btf_ids.h b/include/linux/btf_ids.h
-index c0e3e1426a82f5c4..139bdececdcfaefb 100644
---- a/include/linux/btf_ids.h
-+++ b/include/linux/btf_ids.h
-@@ -283,5 +283,6 @@ extern u32 btf_tracing_ids[];
- extern u32 bpf_cgroup_btf_id[];
- extern u32 bpf_local_storage_map_btf_id[];
- extern u32 btf_bpf_map_id[];
-+extern u32 bpf_kmem_cache_btf_id[];
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index 4053f279ed4cc7ab..3709fb14288105c6 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -3090,6 +3090,7 @@ BTF_ID_FLAGS(func, bpf_iter_bits_new, KF_ITER_NEW)
+ BTF_ID_FLAGS(func, bpf_iter_bits_next, KF_ITER_NEXT | KF_RET_NULL)
+ BTF_ID_FLAGS(func, bpf_iter_bits_destroy, KF_ITER_DESTROY)
+ BTF_ID_FLAGS(func, bpf_copy_from_user_str, KF_SLEEPABLE)
++BTF_ID_FLAGS(func, bpf_get_kmem_cache, KF_RET_NULL)
+ BTF_KFUNCS_END(common_btf_ids)
  
- #endif
-diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
-index 9b9c151b5c826b31..105328f0b9c04e37 100644
---- a/kernel/bpf/Makefile
-+++ b/kernel/bpf/Makefile
-@@ -52,3 +52,4 @@ obj-$(CONFIG_BPF_PRELOAD) += preload/
- obj-$(CONFIG_BPF_SYSCALL) += relo_core.o
- obj-$(CONFIG_BPF_SYSCALL) += btf_iter.o
- obj-$(CONFIG_BPF_SYSCALL) += btf_relocate.o
-+obj-$(CONFIG_BPF_SYSCALL) += kmem_cache_iter.o
-diff --git a/kernel/bpf/kmem_cache_iter.c b/kernel/bpf/kmem_cache_iter.c
-new file mode 100644
-index 0000000000000000..e103d25175126ab0
---- /dev/null
-+++ b/kernel/bpf/kmem_cache_iter.c
-@@ -0,0 +1,174 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/* Copyright (c) 2024 Google */
-+#include <linux/bpf.h>
-+#include <linux/btf_ids.h>
-+#include <linux/slab.h>
-+#include <linux/kernel.h>
-+#include <linux/seq_file.h>
+ static const struct btf_kfunc_id_set common_kfunc_set = {
+diff --git a/mm/slab_common.c b/mm/slab_common.c
+index 7443244656150325..5484e1cd812f698e 100644
+--- a/mm/slab_common.c
++++ b/mm/slab_common.c
+@@ -1322,6 +1322,25 @@ size_t ksize(const void *objp)
+ }
+ EXPORT_SYMBOL(ksize);
+ 
++#ifdef CONFIG_BPF_SYSCALL
++#include <linux/btf.h>
 +
-+#include "../../mm/slab.h" /* kmem_cache, slab_caches and slab_mutex */
++__bpf_kfunc_start_defs();
 +
-+struct bpf_iter__kmem_cache {
-+	__bpf_md_ptr(struct bpf_iter_meta *, meta);
-+	__bpf_md_ptr(struct kmem_cache *, s);
-+};
-+
-+static void *kmem_cache_iter_seq_start(struct seq_file *seq, loff_t *pos)
++__bpf_kfunc struct kmem_cache *bpf_get_kmem_cache(u64 addr)
 +{
-+	loff_t cnt = 0;
-+	bool found = false;
-+	struct kmem_cache *s;
++	struct slab *slab;
 +
-+	mutex_lock(&slab_mutex);
-+
-+	/*
-+	 * Find an entry at the given position in the slab_caches list instead
-+	 * of keeping a reference (of the last visited entry, if any) out of
-+	 * slab_mutex. It might miss something if one is deleted in the middle
-+	 * while it releases the lock.  But it should be rare and there's not
-+	 * much we can do about it.
-+	 */
-+	list_for_each_entry(s, &slab_caches, list) {
-+		if (cnt == *pos) {
-+			/*
-+			 * Make sure this entry remains in the list by getting
-+			 * a new reference count.  Note that boot_cache entries
-+			 * have a negative refcount, so don't touch them.
-+			 */
-+			if (s->refcount > 0)
-+				s->refcount++;
-+			found = true;
-+			break;
-+		}
-+		cnt++;
-+	}
-+	mutex_unlock(&slab_mutex);
-+
-+	if (!found)
++	if (!virt_addr_valid(addr))
 +		return NULL;
 +
-+	++*pos;
-+	return s;
++	slab = virt_to_slab((void *)(long)addr);
++	return slab ? slab->slab_cache : NULL;
 +}
 +
-+static void kmem_cache_iter_seq_stop(struct seq_file *seq, void *v)
-+{
-+	struct bpf_iter_meta meta;
-+	struct bpf_iter__kmem_cache ctx = {
-+		.meta = &meta,
-+		.s = v,
-+	};
-+	struct bpf_prog *prog;
-+	bool destroy = false;
++__bpf_kfunc_end_defs();
++#endif /* CONFIG_BPF_SYSCALL */
 +
-+	meta.seq = seq;
-+	prog = bpf_iter_get_info(&meta, true);
-+	if (prog)
-+		bpf_iter_run_prog(prog, &ctx);
-+
-+	if (ctx.s == NULL)
-+		return;
-+
-+	mutex_lock(&slab_mutex);
-+
-+	/* Skip kmem_cache_destroy() for active entries */
-+	if (ctx.s->refcount > 1)
-+		ctx.s->refcount--;
-+	else if (ctx.s->refcount == 1)
-+		destroy = true;
-+
-+	mutex_unlock(&slab_mutex);
-+
-+	if (destroy)
-+		kmem_cache_destroy(ctx.s);
-+}
-+
-+static void *kmem_cache_iter_seq_next(struct seq_file *seq, void *v, loff_t *pos)
-+{
-+	struct kmem_cache *s = v;
-+	struct kmem_cache *next = NULL;
-+	bool destroy = false;
-+
-+	++*pos;
-+
-+	mutex_lock(&slab_mutex);
-+
-+	if (list_last_entry(&slab_caches, struct kmem_cache, list) != s) {
-+		next = list_next_entry(s, list);
-+		if (next->refcount > 0)
-+			next->refcount++;
-+	}
-+
-+	/* Skip kmem_cache_destroy() for active entries */
-+	if (s->refcount > 1)
-+		s->refcount--;
-+	else if (s->refcount == 1)
-+		destroy = true;
-+
-+	mutex_unlock(&slab_mutex);
-+
-+	if (destroy)
-+		kmem_cache_destroy(s);
-+
-+	return next;
-+}
-+
-+static int kmem_cache_iter_seq_show(struct seq_file *seq, void *v)
-+{
-+	struct bpf_iter_meta meta;
-+	struct bpf_iter__kmem_cache ctx = {
-+		.meta = &meta,
-+		.s = v,
-+	};
-+	struct bpf_prog *prog;
-+	int ret = 0;
-+
-+	meta.seq = seq;
-+	prog = bpf_iter_get_info(&meta, false);
-+	if (prog)
-+		ret = bpf_iter_run_prog(prog, &ctx);
-+
-+	return ret;
-+}
-+
-+static const struct seq_operations kmem_cache_iter_seq_ops = {
-+	.start  = kmem_cache_iter_seq_start,
-+	.next   = kmem_cache_iter_seq_next,
-+	.stop   = kmem_cache_iter_seq_stop,
-+	.show   = kmem_cache_iter_seq_show,
-+};
-+
-+BTF_ID_LIST_GLOBAL_SINGLE(bpf_kmem_cache_btf_id, struct, kmem_cache)
-+
-+static const struct bpf_iter_seq_info kmem_cache_iter_seq_info = {
-+	.seq_ops		= &kmem_cache_iter_seq_ops,
-+};
-+
-+static void bpf_iter_kmem_cache_show_fdinfo(const struct bpf_iter_aux_info *aux,
-+					    struct seq_file *seq)
-+{
-+	seq_puts(seq, "kmem_cache iter\n");
-+}
-+
-+DEFINE_BPF_ITER_FUNC(kmem_cache, struct bpf_iter_meta *meta,
-+		     struct kmem_cache *s)
-+
-+static struct bpf_iter_reg bpf_kmem_cache_reg_info = {
-+	.target			= "kmem_cache",
-+	.feature		= BPF_ITER_RESCHED,
-+	.show_fdinfo		= bpf_iter_kmem_cache_show_fdinfo,
-+	.ctx_arg_info_size	= 1,
-+	.ctx_arg_info		= {
-+		{ offsetof(struct bpf_iter__kmem_cache, s),
-+		  PTR_TO_BTF_ID_OR_NULL | PTR_TRUSTED },
-+	},
-+	.seq_info		= &kmem_cache_iter_seq_info,
-+};
-+
-+static int __init bpf_kmem_cache_iter_init(void)
-+{
-+	bpf_kmem_cache_reg_info.ctx_arg_info[0].btf_id = bpf_kmem_cache_btf_id[0];
-+	return bpf_iter_reg_target(&bpf_kmem_cache_reg_info);
-+}
-+
-+late_initcall(bpf_kmem_cache_iter_init);
+ /* Tracepoints definitions. */
+ EXPORT_TRACEPOINT_SYMBOL(kmalloc);
+ EXPORT_TRACEPOINT_SYMBOL(kmem_cache_alloc);
 -- 
 2.46.1.824.gd892dcdcdd-goog
 
