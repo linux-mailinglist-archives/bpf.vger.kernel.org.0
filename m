@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-40782-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40783-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE6CF98E214
-	for <lists+bpf@lfdr.de>; Wed,  2 Oct 2024 20:10:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43C1A98E216
+	for <lists+bpf@lfdr.de>; Wed,  2 Oct 2024 20:10:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 816182852E1
-	for <lists+bpf@lfdr.de>; Wed,  2 Oct 2024 18:10:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6859B1C23567
+	for <lists+bpf@lfdr.de>; Wed,  2 Oct 2024 18:10:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49B641D2217;
-	Wed,  2 Oct 2024 18:10:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D3071D26F0;
+	Wed,  2 Oct 2024 18:10:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="C1nN9bS1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Wi4ubqCt"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C34A21D1F72;
-	Wed,  2 Oct 2024 18:09:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F8BA1D223D;
+	Wed,  2 Oct 2024 18:10:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727892599; cv=none; b=CL0Gf+sYRRpX6z5i0zGlYegvyKLOsEw4AP+lHLGucfK4PxAM642YUZWYdfO7kalbhZBiQNw2SwlBZdUeEcK+wg1mEMjPShN9V4KZj+trAJF1t6VzMgPRWXtqTx7R22ol8X5nlQZVBp6uhQF6ECGLXiwLJbUaQvsQ/xQfN4aZslM=
+	t=1727892601; cv=none; b=JLNa5nV5V+76ErnFKPGlwzCyVDsdyUIWGZs70s8j0x+Whea5bcQoey0bN0n5If70znLL2R8uDlVjm1EcP7oXLxvKrTNivTok7knp9SXEx8RUZgW/vvjX0RCF0uI0nq03sosUsKlV5FP0+Pan+JErtTvfLtK+pQRkccR+/S5Q06o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727892599; c=relaxed/simple;
-	bh=CZ1VN+wISqfF7U/NBBkytViSmRb/vkGLNUY76gXrLxU=;
+	s=arc-20240116; t=1727892601; c=relaxed/simple;
+	bh=ePjQez0zpwMreMUAuz+KvIM2b9Vii7HFddbSYrTFhpc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=L2j1PUU6FHA0glexkQZAh8s4EGSwR1WL0618lZQrM21y8YBVR9y6GoykxJCUTO2sYtHPb4S/5veImM/Fvw7f0fFwNmaHWtNtB9yGBcnUxiXRaVbtPi4aucsDfxyusCHcSF90RMwC7jZSaYSaqEgxmeMWUFBpbsapEweGj3hZD/A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=C1nN9bS1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3F17C4CED6;
-	Wed,  2 Oct 2024 18:09:58 +0000 (UTC)
+	 MIME-Version; b=iIutC4lQUGSFKqnwFcgfYzDogANodgQ77vwX5UERkLGZ8nui9BNyOi5Te4zJm0EvBQcoNtN5y2lPg94LevlEx4rCeWRIrzPD2gbz/VsKCHV0/OYUFeczcp4BjTZwJTVg7JIdk+Iu9qaa6+je5wCpis6sDPWjB6WjuXyqWw4/61A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Wi4ubqCt; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8FEFC4CECF;
+	Wed,  2 Oct 2024 18:09:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727892599;
-	bh=CZ1VN+wISqfF7U/NBBkytViSmRb/vkGLNUY76gXrLxU=;
+	s=k20201202; t=1727892600;
+	bh=ePjQez0zpwMreMUAuz+KvIM2b9Vii7HFddbSYrTFhpc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=C1nN9bS1juVNiiTLMsoIIP2DGHBhXblmGXHhsKBD+j6XPJwI5tpUtFSZYdSkMTJVU
-	 PBXFgrsz8B8ZV+VT0cgqgK6qrFs2w4+ycrTH0yA9gyW/m5l7V02/XBNfHa+8kFJAxc
-	 4lDiS2LMUucmUhiFgs7PefmznRoDDt92VSgPcL4FERTeuDorLGV9p9f336azJI+4UE
-	 OA/Xcg20450+n41GGYuAvcr+sjyEwfRG4b5943hnrFLr1Jc36oc3uHQDVlH90Kgvc4
-	 otDwmKd42es+dgexigXc+VKAxyPI3gA5HxIY2GFemE/uxwLmPRtnBaR2WSVkvv29E2
-	 eedyeP/3Sdorw==
+	b=Wi4ubqCtkGXIKFj8UkgIyBOAnxzZZ4rGMyF8fzGhCZlvRlhRcuVtq1zaxLxBO7D2B
+	 YIa0YE0VwzDvdvCx2E3L6+tfbVRSvYbgESP5vjC6VnYWMjTuDxAfbUFiOmyX+qE/yJ
+	 SpcOCRE2lFI1WeyjcJstBSx4pl1hcNBlwZyNKXuaoMXHRs/k4ITT1ouVY4jjtQ/3fY
+	 veNrgPyqOU7aoSqrAeVzyW2FUSVOZPt26DGJo/mQSzl5cYlwtPURE15RSR1BKw5goE
+	 SIhtC9kgrdwp+knOGWJ90EpG+dEiimHqjCMj+zAIgpL5ofo2WV3gGqVJFdiz48pyJA
+	 yr1h7z8v5Uj3w==
 From: Namhyung Kim <namhyung@kernel.org>
 To: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
@@ -67,9 +67,9 @@ Cc: Martin KaFai Lau <martin.lau@linux.dev>,
 	linux-mm@kvack.org,
 	Arnaldo Carvalho de Melo <acme@kernel.org>,
 	Kees Cook <kees@kernel.org>
-Subject: [PATCH v4 bpf-next 2/3] mm/bpf: Add bpf_get_kmem_cache() kfunc
-Date: Wed,  2 Oct 2024 11:09:55 -0700
-Message-ID: <20241002180956.1781008-3-namhyung@kernel.org>
+Subject: [PATCH v4 bpf-next 3/3] selftests/bpf: Add a test for kmem_cache_iter
+Date: Wed,  2 Oct 2024 11:09:56 -0700
+Message-ID: <20241002180956.1781008-4-namhyung@kernel.org>
 X-Mailer: git-send-email 2.46.1.824.gd892dcdcdd-goog
 In-Reply-To: <20241002180956.1781008-1-namhyung@kernel.org>
 References: <20241002180956.1781008-1-namhyung@kernel.org>
@@ -81,66 +81,189 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The bpf_get_kmem_cache() is to get a slab cache information from a
-virtual address like virt_to_cache().  If the address is a pointer
-to a slab object, it'd return a valid kmem_cache pointer, otherwise
-NULL is returned.
+The test traverses all slab caches using the kmem_cache_iter and check
+if current task's pointer is from "task_struct" slab cache.
 
-It doesn't grab a reference count of the kmem_cache so the caller is
-responsible to manage the access.  The intended use case for now is to
-symbolize locks in slab objects from the lock contention tracepoints.
-
-Suggested-by: Vlastimil Babka <vbabka@suse.cz>
-Acked-by: Roman Gushchin <roman.gushchin@linux.dev> (mm/*)
-Acked-by: Vlastimil Babka <vbabka@suse.cz> #mm/slab
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- kernel/bpf/helpers.c |  1 +
- mm/slab_common.c     | 19 +++++++++++++++++++
- 2 files changed, 20 insertions(+)
+ .../bpf/prog_tests/kmem_cache_iter.c          | 64 ++++++++++++++++++
+ tools/testing/selftests/bpf/progs/bpf_iter.h  |  7 ++
+ .../selftests/bpf/progs/kmem_cache_iter.c     | 66 +++++++++++++++++++
+ 3 files changed, 137 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/kmem_cache_iter.c
+ create mode 100644 tools/testing/selftests/bpf/progs/kmem_cache_iter.c
 
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index 4053f279ed4cc7ab..3709fb14288105c6 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -3090,6 +3090,7 @@ BTF_ID_FLAGS(func, bpf_iter_bits_new, KF_ITER_NEW)
- BTF_ID_FLAGS(func, bpf_iter_bits_next, KF_ITER_NEXT | KF_RET_NULL)
- BTF_ID_FLAGS(func, bpf_iter_bits_destroy, KF_ITER_DESTROY)
- BTF_ID_FLAGS(func, bpf_copy_from_user_str, KF_SLEEPABLE)
-+BTF_ID_FLAGS(func, bpf_get_kmem_cache, KF_RET_NULL)
- BTF_KFUNCS_END(common_btf_ids)
- 
- static const struct btf_kfunc_id_set common_kfunc_set = {
-diff --git a/mm/slab_common.c b/mm/slab_common.c
-index 7443244656150325..5484e1cd812f698e 100644
---- a/mm/slab_common.c
-+++ b/mm/slab_common.c
-@@ -1322,6 +1322,25 @@ size_t ksize(const void *objp)
- }
- EXPORT_SYMBOL(ksize);
- 
-+#ifdef CONFIG_BPF_SYSCALL
-+#include <linux/btf.h>
+diff --git a/tools/testing/selftests/bpf/prog_tests/kmem_cache_iter.c b/tools/testing/selftests/bpf/prog_tests/kmem_cache_iter.c
+new file mode 100644
+index 0000000000000000..3965e2924ac82d91
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/kmem_cache_iter.c
+@@ -0,0 +1,64 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2024 Google */
 +
-+__bpf_kfunc_start_defs();
++#include <test_progs.h>
++#include <bpf/libbpf.h>
++#include <bpf/btf.h>
++#include "kmem_cache_iter.skel.h"
 +
-+__bpf_kfunc struct kmem_cache *bpf_get_kmem_cache(u64 addr)
++static void test_kmem_cache_iter_check_task(struct kmem_cache_iter *skel)
 +{
-+	struct slab *slab;
++	LIBBPF_OPTS(bpf_test_run_opts, opts,
++		.flags = 0,  /* run it with the current task */
++	);
++	int prog_fd = bpf_program__fd(skel->progs.check_task_struct);
 +
-+	if (!virt_addr_valid(addr))
-+		return NULL;
++	/* get task_struct and check it if's from a slab cache */
++	bpf_prog_test_run_opts(prog_fd, &opts);
 +
-+	slab = virt_to_slab((void *)(long)addr);
-+	return slab ? slab->slab_cache : NULL;
++	/* the BPF program should set 'found' variable */
++	ASSERT_EQ(skel->bss->found, 1, "found task_struct");
 +}
 +
-+__bpf_kfunc_end_defs();
-+#endif /* CONFIG_BPF_SYSCALL */
++void test_kmem_cache_iter(void)
++{
++	DECLARE_LIBBPF_OPTS(bpf_iter_attach_opts, opts);
++	struct kmem_cache_iter *skel = NULL;
++	union bpf_iter_link_info linfo = {};
++	struct bpf_link *link;
++	char buf[1024];
++	int iter_fd;
 +
- /* Tracepoints definitions. */
- EXPORT_TRACEPOINT_SYMBOL(kmalloc);
- EXPORT_TRACEPOINT_SYMBOL(kmem_cache_alloc);
++	skel = kmem_cache_iter__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "kmem_cache_iter__open_and_load"))
++		return;
++
++	opts.link_info = &linfo;
++	opts.link_info_len = sizeof(linfo);
++
++	link = bpf_program__attach_iter(skel->progs.slab_info_collector, &opts);
++	if (!ASSERT_OK_PTR(link, "attach_iter"))
++		goto destroy;
++
++	iter_fd = bpf_iter_create(bpf_link__fd(link));
++	if (!ASSERT_GE(iter_fd, 0, "iter_create"))
++		goto free_link;
++
++	memset(buf, 0, sizeof(buf));
++	while (read(iter_fd, buf, sizeof(buf) > 0)) {
++		/* read out all contents */
++		printf("%s", buf);
++	}
++
++	/* next reads should return 0 */
++	ASSERT_EQ(read(iter_fd, buf, sizeof(buf)), 0, "read");
++
++	test_kmem_cache_iter_check_task(skel);
++
++	close(iter_fd);
++
++free_link:
++	bpf_link__destroy(link);
++destroy:
++	kmem_cache_iter__destroy(skel);
++}
+diff --git a/tools/testing/selftests/bpf/progs/bpf_iter.h b/tools/testing/selftests/bpf/progs/bpf_iter.h
+index c41ee80533ca219a..3305dc3a74b32481 100644
+--- a/tools/testing/selftests/bpf/progs/bpf_iter.h
++++ b/tools/testing/selftests/bpf/progs/bpf_iter.h
+@@ -24,6 +24,7 @@
+ #define BTF_F_PTR_RAW BTF_F_PTR_RAW___not_used
+ #define BTF_F_ZERO BTF_F_ZERO___not_used
+ #define bpf_iter__ksym bpf_iter__ksym___not_used
++#define bpf_iter__kmem_cache bpf_iter__kmem_cache___not_used
+ #include "vmlinux.h"
+ #undef bpf_iter_meta
+ #undef bpf_iter__bpf_map
+@@ -48,6 +49,7 @@
+ #undef BTF_F_PTR_RAW
+ #undef BTF_F_ZERO
+ #undef bpf_iter__ksym
++#undef bpf_iter__kmem_cache
+ 
+ struct bpf_iter_meta {
+ 	struct seq_file *seq;
+@@ -165,3 +167,8 @@ struct bpf_iter__ksym {
+ 	struct bpf_iter_meta *meta;
+ 	struct kallsym_iter *ksym;
+ };
++
++struct bpf_iter__kmem_cache {
++	struct bpf_iter_meta *meta;
++	struct kmem_cache *s;
++} __attribute__((preserve_access_index));
+diff --git a/tools/testing/selftests/bpf/progs/kmem_cache_iter.c b/tools/testing/selftests/bpf/progs/kmem_cache_iter.c
+new file mode 100644
+index 0000000000000000..3f6ec15a1bf6344c
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/kmem_cache_iter.c
+@@ -0,0 +1,66 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2024 Google */
++
++#include "bpf_iter.h"
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++
++char _license[] SEC("license") = "GPL";
++
++#define SLAB_NAME_MAX  256
++
++struct {
++	__uint(type, BPF_MAP_TYPE_HASH);
++	__uint(key_size, sizeof(void *));
++	__uint(value_size, SLAB_NAME_MAX);
++	__uint(max_entries, 1024);
++} slab_hash SEC(".maps");
++
++extern struct kmem_cache *bpf_get_kmem_cache(__u64 addr) __ksym;
++
++/* result, will be checked by userspace */
++int found;
++
++SEC("iter/kmem_cache")
++int slab_info_collector(struct bpf_iter__kmem_cache *ctx)
++{
++	struct seq_file *seq = ctx->meta->seq;
++	struct kmem_cache *s = ctx->s;
++
++	if (s) {
++		char name[SLAB_NAME_MAX];
++
++		/*
++		 * To make sure if the slab_iter implements the seq interface
++		 * properly and it's also useful for debugging.
++		 */
++		BPF_SEQ_PRINTF(seq, "%s: %u\n", s->name, s->object_size);
++
++		bpf_probe_read_kernel_str(name, sizeof(name), s->name);
++		bpf_map_update_elem(&slab_hash, &s, name, BPF_NOEXIST);
++	}
++
++	return 0;
++}
++
++SEC("raw_tp/bpf_test_finish")
++int BPF_PROG(check_task_struct)
++{
++	__u64 curr = bpf_get_current_task();
++	struct kmem_cache *s;
++	char *name;
++
++	s = bpf_get_kmem_cache(curr);
++	if (s == NULL) {
++		found = -1;
++		return 0;
++	}
++
++	name = bpf_map_lookup_elem(&slab_hash, &s);
++	if (name && !bpf_strncmp(name, 11, "task_struct"))
++		found = 1;
++	else
++		found = -2;
++
++	return 0;
++}
 -- 
 2.46.1.824.gd892dcdcdd-goog
 
