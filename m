@@ -1,192 +1,204 @@
-Return-Path: <bpf+bounces-40775-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40777-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7848598E137
-	for <lists+bpf@lfdr.de>; Wed,  2 Oct 2024 18:55:36 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1921398E17A
+	for <lists+bpf@lfdr.de>; Wed,  2 Oct 2024 19:06:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 28177B233BF
-	for <lists+bpf@lfdr.de>; Wed,  2 Oct 2024 16:55:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 515A1B27617
+	for <lists+bpf@lfdr.de>; Wed,  2 Oct 2024 17:03:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6A4B1D12EF;
-	Wed,  2 Oct 2024 16:55:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F4251D14E4;
+	Wed,  2 Oct 2024 17:02:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="J31U/jtP"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g71HNFdf"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 940E71D0DF7
-	for <bpf@vger.kernel.org>; Wed,  2 Oct 2024 16:55:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A690E1D0E19;
+	Wed,  2 Oct 2024 17:02:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727888116; cv=none; b=Uisr/hNizPKue69hjS+7qgZ9Z+6njNE21hDX4ACgoGWq0slH1KoW5mFSbTr7ADW3ve0nS1oq3Wyy7VsynmAO7YV3u5Xcl0zIIcsPfXKghXjbJARRFHEtJ2oxXNHD+2lkgB+hIupXk6XBlV2RYcvfIw/N40jj75BoP0lQm4dNcMU=
+	t=1727888555; cv=none; b=UWp0jKeoUkNb8kNVuBwex+E0UOJ4JpKSPJLexlTUcod1pitIb29A2oHSmNSbaKVzRyOrAZdL4Gdb6zaSY4vSYKKfraBaprIve8v8kNV1kcp4I5H5xPR/H367mJpJUtxsinFI1906hM9c1JOeAwIOUeCocR71dqd8rq6gI7DqvDA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727888116; c=relaxed/simple;
-	bh=2rFuyThHxWP57junGefKRDEji5JiZL0EJcKFBgesle8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fu66SgtRBfi8d9Dm/rVAuUbLn+0eu7aTxiwPKbqQq4ZWZb9ZOy40Fqx3Vrf7koGnVqQpQlOlqRPWCzu9QCOShiS+aL681ES2uUhivfkjkjiPlEiM4aWtDfSM+8qNK2+gf6LfOBjC5eeozmcjvDe0ITvYok0ca1NqUnQGT+tOwNg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=J31U/jtP; arc=none smtp.client-ip=209.85.128.42
+	s=arc-20240116; t=1727888555; c=relaxed/simple;
+	bh=2qnD3gcBe6sh/sUSe/VAfQiEfTQxar5VV5mjmhqjanY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hBcw5Gm/ZAF542V7ox6ScSREt6kNxWSQVJnff+QRmTFor8/kjfT97lUIZF49AuUdVBb/oxVM1LkkvYFeIaoDjhKD5d6CII+twpBs3MWdwUfQ9QehmoBj60R4EiOhCJG8SQ2A9zI6j147BIhnOPc6oHhqciWsJOceI5iII+ZJcDA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=g71HNFdf; arc=none smtp.client-ip=209.85.210.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-42cd46f3a26so56620835e9.2
-        for <bpf@vger.kernel.org>; Wed, 02 Oct 2024 09:55:14 -0700 (PDT)
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-718816be6cbso69556b3a.1;
+        Wed, 02 Oct 2024 10:02:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727888113; x=1728492913; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VCN1fWvxKwrTO+buEfXZLop43hrpA2k2kewTKpLd3kw=;
-        b=J31U/jtPKl7r9XMH2TsXe/WaIMOiI4M1YtJ+hIowaUAkR8Fq2h3L5I2LeMKfr2vEiy
-         +nCLi/A20eWOsrv7RdcURRZQDGTYEmvcThkpAIi1Xaz3tGldzYtm6gMoC02tWFHBksOD
-         +zOD3UOmgpanOAN1qqAj1EuKt6CCHozo6K5cSY05dbE1+ZkTEnQ5AcpFfr1yi/rVVfO7
-         AfdpZ+ToB3No+TIE/5FWhhAkGh7uvk5fah7zvNBzyZW62u8zddi9xCLn99hY/7Bl1oyH
-         JtUb2J21MEv4e+U9CYOgoomu19RdrS0h7N0EfDCQf0JKwrvBEiPVnqb4WX6hjtCPQScK
-         JDuw==
+        d=gmail.com; s=20230601; t=1727888553; x=1728493353; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=j3CAetgPIchZCXGcR59D8f6NwNxq3FYMeL7IhO3SN+4=;
+        b=g71HNFdfuv+bBytHj6Kde7USbYcpyUFzoRpcdFQTvBHGWprcmU6aJXsqwDLymAZroT
+         U6rzrlMMc61iSjY/R4L2bI+mEs89eWrYIRW8tVVtvodi/PfkNOFsoDWsX0hq2pcBCeOq
+         XfxNJGpjuyy8i8oYwAlCUJjpdk5F6KQB+EflQnJB0BQUmWVVJTNnTTHlaQwwBxE1RX+R
+         tyJhTnTEfP4CQKPMTkmlNF4AfARZ0NXZzLYSgWwhhU+vS+JuG9RFfyDtKp/ssa2r//hn
+         ARwu4ZUaRrYJTk96A9oUVLdS625mWljYINsTXRD7lZ6XgHzbzUDluurcdwasTQOEz0tr
+         cQIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727888113; x=1728492913;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VCN1fWvxKwrTO+buEfXZLop43hrpA2k2kewTKpLd3kw=;
-        b=cvVuzFnjtvNGgre9GJ7fDPIuyfyd6Q3ICS5BC6Cs4ZLmJ3uQ4mZbiT7vfRBZvvv7/Y
-         dxXo7BwMnCubb2h3GBGX3+Air451EpJTxB2SWIaKRP2gOWer3aikfEZlsfPwjMOxm9Gg
-         05bHu4E19FiZxqGsOHvK04SZoDo85B/2032yXeyq6dW5ztmyf/dhSQl6e3Uzk0intQDm
-         aapBakErS9xqU/yen40CkEj4n9+/GFs7tayejPnpSaiMnbxDSac5hILfHgpuZmOfWyzN
-         ER5Xo2F+Vb8/6tsGb46JddFGT2+LxMhUyG6PecMA75QB6uIaPBgrukOiib9tkgCgBFMg
-         wUaw==
-X-Forwarded-Encrypted: i=1; AJvYcCUO/W8sR0rgBbdvS3ukS5+c3hFKr/NAgaHCEe3j4o06V3I6U3uKTk9A0ykcQ147TMnkxl8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyG7lQ7oDYHM93EV0yF2x5T0cutdJ60yLbj/Sf+KOs1N0fQEltP
-	YG+LWNQPocsRGAYTJvrg8niPz9b5J0584SOQAkte2h0a6zkm+YykIyRdtXa345iRK4hSN8bwkxE
-	/uSv3KfNrmGlVGxYmZCpA8lH18QA=
-X-Google-Smtp-Source: AGHT+IGiMKbkRLAd0LFeoyurrYoUobJ2cvltehAY8EgRTAWzLuGN15tb/dNOgsip44ejzpMX7bM+KXPaaWr5iYv7dX0=
-X-Received: by 2002:adf:f04e:0:b0:37c:ccbe:39ae with SMTP id
- ffacd0b85a97d-37cfba078ddmr2329761f8f.48.1727888112545; Wed, 02 Oct 2024
- 09:55:12 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1727888553; x=1728493353;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=j3CAetgPIchZCXGcR59D8f6NwNxq3FYMeL7IhO3SN+4=;
+        b=nZsmyhs+joZCoq5rCYz8ZwVUxIQnMezMagqV8PtxYcgVcQZAvDWjFdFgtm7DWfJJpI
+         THCdhupAebHjchKhfec/jNxHRbWlsm7NljMorwYIcB8RpBurgMreUwqT1w+tOKCVLV5J
+         Do1/fPyKN5dTNzhAppNF3Ptb2Gg+okBmzJnNG3XDwZg/HyNhG+5jrZemQQspzoQCgEm8
+         Jl+RzIFSD01l/XuQvADjX+oVDD/uCPSC5A8cD7ppf/foxNl2A3gd8lFgeMJg+JTPhKDl
+         z9h6Em8mx9lxcceb3zOgxi4gRL/S/dLNEb5bNHKfSkMZ1wLd5b7VWEXNxzNLpqanOYGk
+         kR2w==
+X-Forwarded-Encrypted: i=1; AJvYcCW5GOPa6bbWq2smbLignQj6WWPyfFmf0CR5ewEuGUv6fqZrYizc9uYqX+829BcY206NLLPl73YF@vger.kernel.org, AJvYcCXnvY/xCVLX8CVgIjWqAh+VumBU48yYzMimHTw7cbZ4XX38d7M+7OaqDmbMD5aOtY6ec1s=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw4qD8YTaDkmzmdFAU6XHlZ5LCxPsX8xFSD8gjHizrQWmFf/L7k
+	EJTaxbepbO5D1RSkJf3KwikdR+/z6/b1GsvfI2Up4MTvzUzB0JI=
+X-Google-Smtp-Source: AGHT+IGp5S9qADB+5Pu5rzmzU8tU0hkVADw7MBH03DAjOoup+W+fr8dADId0yHouk9LY1IerDa/fzA==
+X-Received: by 2002:a05:6a00:807:b0:705:a13b:e740 with SMTP id d2e1a72fcca58-71dc5d6a157mr5638461b3a.19.1727888552645;
+        Wed, 02 Oct 2024 10:02:32 -0700 (PDT)
+Received: from localhost ([2601:646:9e00:f56e:123b:cea3:439a:b3e3])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-71b26498b51sm10383673b3a.14.2024.10.02.10.02.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Oct 2024 10:02:32 -0700 (PDT)
+Date: Wed, 2 Oct 2024 10:02:31 -0700
+From: Stanislav Fomichev <stfomichev@gmail.com>
+To: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Cc: Lorenzo Bianconi <lorenzo@kernel.org>,
+	Arthur Fabre <afabre@cloudflare.com>,
+	Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	Jakub Sitnicki <jakub@cloudflare.com>,
+	Alexander Lobakin <aleksander.lobakin@intel.com>,
+	bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
+	daniel@iogearbox.net, davem@davemloft.net, kuba@kernel.org,
+	john.fastabend@gmail.com, edumazet@google.com, pabeni@redhat.com,
+	sdf@fomichev.me, tariqt@nvidia.com, saeedm@nvidia.com,
+	anthony.l.nguyen@intel.com, przemyslaw.kitszel@intel.com,
+	intel-wired-lan@lists.osuosl.org, mst@redhat.com,
+	jasowang@redhat.com, mcoquelin.stm32@gmail.com,
+	alexandre.torgue@foss.st.com,
+	kernel-team <kernel-team@cloudflare.com>,
+	Yan Zhai <yan@cloudflare.com>
+Subject: Re: [RFC bpf-next 0/4] Add XDP rx hw hints support performing
+ XDP_REDIRECT
+Message-ID: <Zv18pxsiTGTZSTyO@mini-arch>
+References: <87wmiysi37.fsf@toke.dk>
+ <D4GBY7CHJNJ6.3O18I5W1FTPKR@bobby>
+ <87ldzds8bp.fsf@toke.dk>
+ <D4H5CAN4O95E.3KF8LAH75FYD4@bobby>
+ <ZvbKDT-2xqx2unrx@lore-rh-laptop>
+ <871q11s91e.fsf@toke.dk>
+ <ZvqQOpqnK9hBmXNn@lore-desk>
+ <D4KJ7DUXJQC5.2UFST9L3CUOH7@bobby>
+ <ZvwNQqN4gez1Ksfn@lore-desk>
+ <87zfnnq2hs.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1727329823.git.vmalik@redhat.com> <bc06e1f4bef09ba3d431d7a7236303746a7adb57.1727329823.git.vmalik@redhat.com>
- <CAEf4Bzas4ZxiyJp7h7N5OGmPSMRfZDgPUgEAdTmir3n-4cx-xg@mail.gmail.com>
- <adaa47618f2b71c2803195749cedd4a5b468cffa.camel@gmail.com>
- <CAADnVQLCk+VNpN8WfCbSbT-FBcHBuMXpk-hBOLB7HX3BrURp8w@mail.gmail.com>
- <CAEf4BzZSFuXyUbwN8_VvbR6Uk_qHAKWNLkCZfdo-58WC_RYYag@mail.gmail.com>
- <CAADnVQLsnhsL2i_RnOBUSebO--yx_5Az1Ydr9QPb5WZCkmYQJg@mail.gmail.com>
- <CAEf4BzYt42A73kmg5=HWRiHj0H1Dr0WPQosmQLkBhgkkiw0HQA@mail.gmail.com> <c831b42e-30ba-4a19-bc0d-5346c8388892@redhat.com>
-In-Reply-To: <c831b42e-30ba-4a19-bc0d-5346c8388892@redhat.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 2 Oct 2024 09:55:01 -0700
-Message-ID: <CAADnVQLhr+xOF58ppaySOjb6cMdsWEYhr_4ZLvQ-XDWXHBMgBA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Add kfuncs for read-only string operations
-To: Viktor Malik <vmalik@redhat.com>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Eduard Zingerman <eddyz87@gmail.com>, 
-	bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87zfnnq2hs.fsf@toke.dk>
 
-On Tue, Oct 1, 2024 at 11:12=E2=80=AFPM Viktor Malik <vmalik@redhat.com> wr=
-ote:
->
-> On 10/1/24 19:40, Andrii Nakryiko wrote:
-> > On Tue, Oct 1, 2024 at 10:34=E2=80=AFAM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> >>
-> >> On Tue, Oct 1, 2024 at 10:04=E2=80=AFAM Andrii Nakryiko
-> >> <andrii.nakryiko@gmail.com> wrote:
-> >>>
-> >>> On Tue, Oct 1, 2024 at 7:48=E2=80=AFAM Alexei Starovoitov
-> >>> <alexei.starovoitov@gmail.com> wrote:
-> >>>>
-> >>>> On Tue, Oct 1, 2024 at 4:26=E2=80=AFAM Eduard Zingerman <eddyz87@gma=
-il.com> wrote:
-> >>>>>
-> >>>>> On Mon, 2024-09-30 at 15:00 -0700, Andrii Nakryiko wrote:
-> >>>>>
-> >>>>> [...]
-> >>>>>
-> >>>>>> Right now, the only way to pass dynamically sized anything is thro=
-ugh
-> >>>>>> dynptr, AFAIU.
-> >>>>>
-> >>>>> But we do have 'is_kfunc_arg_mem_size()' that checks for __sz suffi=
-x,
-> >>>>> e.g. used for bpf_copy_from_user_str():
-> >>>>>
-> >>>>> /**
-> >>>>>  * bpf_copy_from_user_str() - Copy a string from an unsafe user add=
-ress
-> >>>>>  * @dst:             Destination address, in kernel space.  This bu=
-ffer must be
-> >>>>>  *                   at least @dst__sz bytes long.
-> >>>>>  * @dst__sz:         Maximum number of bytes to copy, includes the =
-trailing NUL.
-> >>>>>  * ...
-> >>>>>  */
-> >>>>> __bpf_kfunc int bpf_copy_from_user_str(void *dst, u32 dst__sz, cons=
-t void __user *unsafe_ptr__ign, u64 flags)
-> >>>>>
-> >>>>> However, this suffix won't work for strnstr because of the argument=
-s order.
-> >>>>
-> >>>> Stating the obvious... we don't need to keep the order exactly the s=
-ame.
-> >>>>
-> >>>> Regarding all of these kfuncs... as Andrii pointed out 'const char *=
-s'
-> >>>> means that the verifier will check that 's' points to a valid byte.
-> >>>> I think we can do a hybrid static + dynamic safety scheme here.
-> >>>> All of the kfunc signatures can stay the same, but we'd have to
-> >>>> open code all string helpers with __get_kernel_nofault() instead of
-> >>>> direct memory access.
-> >>>> Since the first byte is guaranteed to be valid by the verifier
-> >>>> we only need to make sure that the s+N bytes won't cause page faults
-> >>>
-> >>> You mean to just check that s[N-1] can be read? Given a large enough
-> >>> N, couldn't it be that some page between s[0] and s[N-1] still can be
-> >>> unmapped, defeating this check?
-> >>
-> >> Just checking s[0] and s[N-1] is not enough, obviously, and especially=
-,
-> >> since the logic won't know where nul byte is, so N is unknown.
-> >> I meant to that all of str* kfuncs will be reading all bytes
-> >> via __get_kernel_nofault() until they find \0.
+On 10/01, Toke Høiland-Jørgensen wrote:
+> Lorenzo Bianconi <lorenzo@kernel.org> writes:
+> 
+> >> On Mon Sep 30, 2024 at 1:49 PM CEST, Lorenzo Bianconi wrote:
+> >> > > Lorenzo Bianconi <lorenzo@kernel.org> writes:
+> >> > > 
+> >> > > >> > We could combine such a registration API with your header format, so
+> >> > > >> > that the registration just becomes a way of allocating one of the keys
+> >> > > >> > from 0-63 (and the registry just becomes a global copy of the header).
+> >> > > >> > This would basically amount to moving the "service config file" into the
+> >> > > >> > kernel, since that seems to be the only common denominator we can rely
+> >> > > >> > on between BPF applications (as all attempts to write a common daemon
+> >> > > >> > for BPF management have shown).
+> >> > > >> 
+> >> > > >> That sounds reasonable. And I guess we'd have set() check the global
+> >> > > >> registry to enforce that the key has been registered beforehand?
+> >> > > >> 
+> >> > > >> >
+> >> > > >> > -Toke
+> >> > > >> 
+> >> > > >> Thanks for all the feedback!
+> >> > > >
+> >> > > > I like this 'fast' KV approach but I guess we should really evaluate its
+> >> > > > impact on performances (especially for xdp) since, based on the kfunc calls
+> >> > > > order in the ebpf program, we can have one or multiple memmove/memcpy for
+> >> > > > each packet, right?
+> >> > > 
+> >> > > Yes, with Arthur's scheme, performance will be ordering dependent. Using
+> >> > > a global registry for offsets would sidestep this, but have the
+> >> > > synchronisation issues we discussed up-thread. So on balance, I think
+> >> > > the memmove() suggestion will probably lead to the least pain.
+> >> > > 
+> >> > > For the HW metadata we could sidestep this by always having a fixed
+> >> > > struct for it (but using the same set/get() API with reserved keys). The
+> >> > > only drawback of doing that is that we statically reserve a bit of
+> >> > > space, but I'm not sure that is such a big issue in practice (at least
+> >> > > not until this becomes to popular that the space starts to be contended;
+> >> > > but surely 256 bytes ought to be enough for everybody, right? :)).
+> >> >
+> >> > I am fine with the proposed approach, but I think we need to verify what is the
+> >> > impact on performances (in the worst case??)
+> >> 
+> >> If drivers are responsible for populating the hardware metadata before
+> >> XDP, we could make sure drivers set the fields in order to avoid any
+> >> memove() (and maybe even provide a helper to ensure this?).
 > >
-> > Ah, ok, I see what you mean now.
-> >
-> >> It can be optimized to 8 byte access.
-> >> The open coding (aka copy-paste) is unfortunate, of course.
-> >
-> > Yep, this sucks.
->
-> Yeah, that's quite annoying. I really wanted to avoid doing that. Also,
-> we won't be able to use arch-optimized versions of the functions.
->
-> Just to make sure I understand things correctly - can we do what Eduard
-> suggested and add explicit sizes for all arguments using the __sz
-> suffix? So something like:
->
->     const char *bpf_strnstr(const char *s1, u32 s1__sz, const char *s2, u=
-32 s2__sz);
+> > nope, since the current APIs introduced by Stanislav are consuming NIC
+> > metadata in kfuncs (mainly for af_xdp) and, according to my understanding,
+> > we want to add a kfunc to store the info for each NIC metadata (e.g rx-hash,
+> > timestamping, ..) into the packet (this is what Toke is proposing, right?).
+> > In this case kfunc calling order makes a difference.
+> > We can think even to add single kfunc to store all the info for all the NIC
+> > metadata (maybe via a helping struct) but it seems not scalable to me and we
+> > are losing kfunc versatility.
+> 
+> Yes, I agree we should have separate kfuncs for each metadata field.
+> Which means it makes a lot of sense to just use the same setter API that
+> we use for the user-registered metadata fields, but using reserved keys.
+> So something like:
+> 
+> #define BPF_METADATA_HW_HASH      BIT(60)
+> #define BPF_METADATA_HW_TIMESTAMP BIT(61)
+> #define BPF_METADATA_HW_VLAN      BIT(62)
+> #define BPF_METADATA_RESERVED (0xffff << 48)
+> 
+> bpf_packet_metadata_set(pkt, BPF_METADATA_HW_HASH, hash_value);
+> 
+> 
+> As for the internal representation, we can just have the kfunc do
+> something like:
+> 
+> int bpf_packet_metadata_set(field_id, value) {
+>   switch(field_id) {
+>     case BPF_METADATA_HW_HASH:
+>       pkt->xdp_hw_meta.hash = value;
+>       break;
+>     [...]
+>     default:
+>       /* do the key packing thing */
+>   }
+> }
+> 
+> 
+> that way the order of setting the HW fields doesn't matter, only the
+> user-defined metadata.
 
-That's ok-ish, but you probably want:
-
-const char *bpf_strnstr(void *s1, u32 s1__sz, void *s2, u32 s2__sz);
-
-and then to call strnstr() you still need to strnlen(s2, s2__sz).
-
-But a more general question... how always passing size will work
-for bpftrace ? Does it always know the upper bound of storage where
-strings are stored?
-
-I would think __get_kernel_nofault() approach is user friendlier.
+Can you expand on why we need the flexibility of picking the metadata fields
+here? Presumably we are talking about the use-cases where the XDP program
+is doing redirect/pass and it doesn't really know who's the final
+consumer is (might be another xdp program or might be the xdp->skb
+kernel case), so the only sensible option here seems to be store everything?
 
