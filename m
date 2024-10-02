@@ -1,119 +1,127 @@
-Return-Path: <bpf+bounces-40735-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40736-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 076A998CD18
-	for <lists+bpf@lfdr.de>; Wed,  2 Oct 2024 08:23:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EE9898CD1D
+	for <lists+bpf@lfdr.de>; Wed,  2 Oct 2024 08:25:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 391EE1C21A86
-	for <lists+bpf@lfdr.de>; Wed,  2 Oct 2024 06:23:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AE11E1C21497
+	for <lists+bpf@lfdr.de>; Wed,  2 Oct 2024 06:25:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EBE684D2C;
-	Wed,  2 Oct 2024 06:23:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5AAA12C473;
+	Wed,  2 Oct 2024 06:25:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SX7n50Fk"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JEUqQRYh"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 509B481723
-	for <bpf@vger.kernel.org>; Wed,  2 Oct 2024 06:23:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49ACC33EC;
+	Wed,  2 Oct 2024 06:25:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727850200; cv=none; b=aXrdzuCHe13GEfV/SNLs3szCQvJiBBJDYM77ce6hq848++E7RqWaiLU9LPX3ahY1Rst6aImlldXDA5QOqA9gKCyxzcE+u7BfUMjcMmbkFw7RQ0v7WAyuUBNqRLCDoTXvq9b0mhk3MKBWI5N6QgFhqYf6oPHs4htiyYBMNFjd/kI=
+	t=1727850310; cv=none; b=WnjK7z82em4kY6I7RzzTToXVmFAPqwBshI5SnU62NDwDSSCB0GVO9qyTCpp2w0A20U5f8Dq6o6SQ0v0JX86nLMNYFN2ZsDw8swzZ8Nhnf1J2rzM3GGeuG1E3VZDmz7jVlQrRX+GaDdFKCosx7cGyBiz60pIAVy4VsVb7ovlTC+U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727850200; c=relaxed/simple;
-	bh=UzKoBxpbk4aL4Yx0+CEm/GEDDDVa1g3ht2MnHb5Ts/s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fChkjjCdFC7/4ym9FV3pUw0KNg430dwwDdD8bErdKbVcIPyWpfeSHau4McKikY0lK7RiXIZQc5xDx+IS6TjhWyed5NPhdoT/7oqpzSSFSmCc0EU8ETxz9v2uQjHmFtSDspUeb61nuFqFof+ELSK0qcuU1wu8O2qbqhBEi4kriiw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SX7n50Fk; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1727850197;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CoIq6U8qofHBQZGFVoSjI+GCS/TwH5xAxtMOanCM3vA=;
-	b=SX7n50FkfCdbcMEU2xBjs503Drz8N8qxmDeNwPNm1vwk1JirMknfcgSiih3JtUFGDTcKRy
-	CtCDSdrLO2lIXZLxXpizdilvPQA/MQeDksPQPMVS+b+gMZVKq6pVh44UCCVxbYuhUCFx2b
-	N7skI6z1i3N6P6Nj3PIXUtqm3ZGQ/mI=
-Received: from mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-33-y3H0uhPmP4q3HNzJ2LXVCw-1; Wed,
- 02 Oct 2024 02:23:14 -0400
-X-MC-Unique: y3H0uhPmP4q3HNzJ2LXVCw-1
-Received: from mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.40])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id F3B1419560A2;
-	Wed,  2 Oct 2024 06:23:10 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.196])
-	by mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 30ABB19560AD;
-	Wed,  2 Oct 2024 06:23:03 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Wed,  2 Oct 2024 08:22:56 +0200 (CEST)
-Date: Wed, 2 Oct 2024 08:22:49 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-To: Andrii Nakryiko <andrii@kernel.org>
-Cc: linux-trace-kernel@vger.kernel.org, peterz@infradead.org,
-	rostedt@goodmis.org, mhiramat@kernel.org, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org, jolsa@kernel.org, paulmck@kernel.org,
-	willy@infradead.org, surenb@google.com, akpm@linux-foundation.org,
-	linux-mm@kvack.org, mjguzik@gmail.com, brauner@kernel.org,
-	jannh@google.com, mhocko@kernel.org, vbabka@suse.cz,
-	mingo@kernel.org
-Subject: Re: [PATCH v2 tip/perf/core 4/5] uprobes: simplify
- find_active_uprobe_rcu() VMA checks
-Message-ID: <20241002062248.GA27552@redhat.com>
-References: <20241001225207.2215639-1-andrii@kernel.org>
- <20241001225207.2215639-5-andrii@kernel.org>
+	s=arc-20240116; t=1727850310; c=relaxed/simple;
+	bh=lfSqdrDVW8IPHNi3F/V0jAnpEIiI+8S0zzzKbOuVd+Y=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=chRPNxU2L8aqaTkJO0amNT/LpD1yzcr/lOxAy/QX5HZQXm7qzZIKdAyqew6KYDUKWQXV1jiTdXI8/JEAHN+Kn2lzteT82ZHKmZ47oNafIeGghSZ7+40XvUcFtmXVk1JaY8llhMDRfh3zLoEdTjWSu8LCycY7lsuwC/xM44hdGCE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JEUqQRYh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id D789FC4CEC5;
+	Wed,  2 Oct 2024 06:25:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1727850309;
+	bh=lfSqdrDVW8IPHNi3F/V0jAnpEIiI+8S0zzzKbOuVd+Y=;
+	h=From:Subject:Date:To:Cc:Reply-To:From;
+	b=JEUqQRYhtLhmG0kbyPgXn15a60MSqxYYqUxlr4s8IGrlFCzPsTDmdGES8F6YGLVBF
+	 Gn4Y8H9vydLDhJdnlmKRFOCqwsoVzBiIDJ9HHh5M8auwFJMbDRxnj8g2M9z6UUVwg1
+	 HzmnYprSFS9dGT6d4Dz/YKuSGf5SfOPPcMr1ZUU9aeByG+/nQ8uUehwfiji7v4Rv/d
+	 ruDa+wGg912Qdl4c5bpaBkNtbt07peSG+/4f9rOALAKqbiKRZump03XxHSEbaWjj7G
+	 mVtR58YpYk8nkp4k9NlFMG+s0E1CAn4Yx6tovE83WdmZw16ntEIKaZD6YxOSkkQsOq
+	 3ReksYWAqOLRg==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C061ECF3198;
+	Wed,  2 Oct 2024 06:25:09 +0000 (UTC)
+From: Eric Long via B4 Relay <devnull+i.hack3r.moe@kernel.org>
+Subject: [PATCH bpf-next v4 0/2] BPF static linker: fix linking duplicate
+ extern functions
+Date: Wed, 02 Oct 2024 14:25:05 +0800
+Message-Id: <20241002-libbpf-dup-extern-funcs-v4-0-560eb460ff90@hack3r.moe>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241001225207.2215639-5-andrii@kernel.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.40
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAEHn/GYC/43NQQ7CIBAF0KsY1mJgoGJdeQ/josCMJSptQBuN6
+ d3FLkyMMbr8+fPf3FnGFDCz9ezOEg4hhy6WoOcz5tom7pEHXzIDAVrUUPNjsLYn7i89x+sZU+R
+ 0iS7zlZGkbeNBArCy7hNSuE7ylj0XsZyzXWnakM9duk0vBzn1P/VBcsE9yYqsX1ZQ2U3buINKi
+ 1OHEzrAnxAUSDi3kh4VmZo+IPWCpBDyO6QKpIGMMRrJknqDxnF8ADW1V1RbAQAA
+X-Change-ID: 20240929-libbpf-dup-extern-funcs-871f4bad2122
+To: bpf@vger.kernel.org
+Cc: Andrii Nakryiko <andrii@kernel.org>, 
+ Alexei Starovoitov <ast@kernel.org>, netdev@vger.kernel.org, 
+ Eric Long <i@hack3r.moe>
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1687; i=i@hack3r.moe;
+ h=from:subject:message-id;
+ bh=lfSqdrDVW8IPHNi3F/V0jAnpEIiI+8S0zzzKbOuVd+Y=;
+ b=owGbwMvMwCUWYb/agfVY0D7G02pJDGl/nrsE2N553W9zIStZe/L8KbO1w2rOWy5sWbFw5pmX/
+ EkGDk9OdJSyMIhxMciKKbJsOfxHLUG/e9MS7jnlMHNYmUCGMHBxCsBEpvgxMrx8v1Z6n10he+fc
+ RRP+i7LIH/xxc9q3L3MiI0tYixrqud8zMvwTj/4tE/+w6lu99ffPGalHrl58c1jov4mUa7brN03
+ Jdn4A
+X-Developer-Key: i=i@hack3r.moe; a=openpgp;
+ fpr=3A7A1F5A7257780C45A9A147E1487564916D3DF5
+X-Endpoint-Received: by B4 Relay for i@hack3r.moe/default with auth_id=225
+X-Original-From: Eric Long <i@hack3r.moe>
+Reply-To: i@hack3r.moe
 
-On 10/01, Andrii Nakryiko wrote:
->
-> At the point where find_active_uprobe_rcu() is used we know that VMA in
-> question has triggered software breakpoint, so we don't need to validate
-> vma->vm_flags. Keep only vma->vm_file NULL check.
-> 
-> Suggested-by: Oleg Nesterov <oleg@redhat.com>
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> ---
->  kernel/events/uprobes.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+Currently, if `bpftool gen object` tries to link two objects that
+contains the same extern function prototype, libbpf will try to get
+their (non-existent) size by calling bpf__resolve_size like extern
+variables and fail with:
 
-Acked-by: Oleg Nesterov <oleg@redhat.com>
+	libbpf: global 'whatever': failed to resolve size of underlying type: -22
 
+This should not be the case, and this series adds conditions to update
+size only when the BTF kind is not function.
 
-> diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-> index a2e6a57f79f2..7bd9111b4e8b 100644
-> --- a/kernel/events/uprobes.c
-> +++ b/kernel/events/uprobes.c
-> @@ -2091,7 +2091,7 @@ static struct uprobe *find_active_uprobe_rcu(unsigned long bp_vaddr, int *is_swb
->  	mmap_read_lock(mm);
->  	vma = vma_lookup(mm, bp_vaddr);
->  	if (vma) {
-> -		if (valid_vma(vma, false)) {
-> +		if (vma->vm_file) {
->  			struct inode *inode = file_inode(vma->vm_file);
->  			loff_t offset = vaddr_to_offset(vma, bp_vaddr);
->  
-> -- 
-> 2.43.5
-> 
+Fixes: a46349227cd8 ("libbpf: Add linker extern resolution support for functions and global variables")
+Signed-off-by: Eric Long <i@hack3r.moe>
+---
+Changes in v4:
+- Remove redundant FUNC_PROTO check.
+- Merge tests into linked_funcs.
+- Link to v3: https://lore.kernel.org/r/20241001-libbpf-dup-extern-funcs-v3-0-42f7774efbf3@hack3r.moe
+
+Changes in v3:
+- Simplifiy changes and shorten subjects, according to reviews.
+- Remove unused includes in selftests.
+- Link to v2: https://lore.kernel.org/r/20240929-libbpf-dup-extern-funcs-v2-0-0cc81de3f79f@hack3r.moe
+
+Changes in v2:
+- Fix compile errors. Oops!
+- Link to v1: https://lore.kernel.org/r/20240929-libbpf-dup-extern-funcs-v1-0-df15fbd6525b@hack3r.moe
+
+---
+Eric Long (2):
+      libbpf: do not resolve size on duplicate FUNCs
+      selftests/bpf: test linking with duplicate extern functions
+
+ tools/lib/bpf/linker.c                            | 4 ++++
+ tools/testing/selftests/bpf/progs/linked_funcs1.c | 8 ++++++++
+ tools/testing/selftests/bpf/progs/linked_funcs2.c | 8 ++++++++
+ 3 files changed, 20 insertions(+)
+---
+base-commit: 93eeaab4563cc7fc0309bc1c4d301139762bbd60
+change-id: 20240929-libbpf-dup-extern-funcs-871f4bad2122
+
+Best regards,
+-- 
+Eric Long <i@hack3r.moe>
+
 
 
