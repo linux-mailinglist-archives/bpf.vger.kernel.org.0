@@ -1,84 +1,75 @@
-Return-Path: <bpf+bounces-40779-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40780-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B9ED98E1F9
-	for <lists+bpf@lfdr.de>; Wed,  2 Oct 2024 19:58:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D68D98E210
+	for <lists+bpf@lfdr.de>; Wed,  2 Oct 2024 20:10:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7ED1C1C22CDB
-	for <lists+bpf@lfdr.de>; Wed,  2 Oct 2024 17:58:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6F81B1C23596
+	for <lists+bpf@lfdr.de>; Wed,  2 Oct 2024 18:10:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD45F1D1E8D;
-	Wed,  2 Oct 2024 17:58:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B337D1D1F4F;
+	Wed,  2 Oct 2024 18:09:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AZsS8Bof"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gci2uiPh"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B835E1D1E7C
-	for <bpf@vger.kernel.org>; Wed,  2 Oct 2024 17:58:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 356DD1854;
+	Wed,  2 Oct 2024 18:09:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727891891; cv=none; b=B42V0rgwFFOhWvMlipSOI1lyY2Oy5NMJGKfvN07zgGcrXtJHaLQGcdGQK/ZOg3wW4VjNDe6NQ6ltntIbpDmu7mUmhghFndxCCztADf9u/wwho0XTuNub9m2aXc7phO54dZ5d9wS16wxnAL+hPtd1DQA0lTBO4hhWThYw0XxovWw=
+	t=1727892598; cv=none; b=oL3jQ1aY/NJ4Hn8SXFmKeGIw+2sNPbrrW/hajdFEa1PQGPRpbQiTKgKS3tHwadvGGb0L2ZY4sG3wE32seZAUGHfHMvC/qWKyFmOAuJmu8By34QF68KxUipa8N645xfNg+ec5q5LvMozdkS1gncnwSM+v9kR1GhzVi/dkg4zBH6A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727891891; c=relaxed/simple;
-	bh=ARccJMCiTtTfWzlmhDUm4xi8p0VIp4X3nP38O8rlkjQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=NKD5a2kFmr13tyjR56CQDBuB6tVJQQViSqRbHkbAHyL+qt8m2ky7jfLL36Mjf2MA1ilySLXiIXjURfX5/cQM4WFE2PIqCbMcKL2W9YIyEQzMmL4r55izxf67xSCdhAk92jEISetNhKuTJVxvs+2h0GbuMhpzWgDuXGVISKmsn1w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AZsS8Bof; arc=none smtp.client-ip=209.85.128.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-42cbface8d6so204425e9.3
-        for <bpf@vger.kernel.org>; Wed, 02 Oct 2024 10:58:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727891888; x=1728496688; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aUzWevPH/3NOwhroQAK/SlMUjSktsgPIJ0EELVj5jkc=;
-        b=AZsS8BofxuGCZNvUIHNtLLzh1aVddDtmaOvqyTmuySGSYME7d59kili6tbcBYphmXR
-         e/6uwtYGp61rQuk2V33gIaEj2jetimAGR5SJSUBhYwbbgmMJ75SLsl0zlrhOjCdlY8zW
-         YA6NmtkU/1lf/Teh1iR5FMgxOHXBebdB9y9dGNe5pkxRk+AdgavPCw3UjACOaYN5IiWi
-         pVhvMN6VfVwCQVDIhQ5swzvkZZYdCZcTxWXyLYWgTBGo2kwPyVvmqQkxqLwCnDgDa9PG
-         EaugurbMsj+2tggOYzvG1o8V8Yu+09jkzR/U5qAQbKJLWXBNywWmo03SZ6Z9ezYBH2ON
-         JMJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727891888; x=1728496688;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=aUzWevPH/3NOwhroQAK/SlMUjSktsgPIJ0EELVj5jkc=;
-        b=UxDSmhI1NLj86esgPvnKgxWAiy9WEm8v0xHFtksTIoDL3wbjZIZ9RkW8QNRUS3PFkg
-         I1+crFVuscHsVAWTHDcq7GL/K/TYxAG8BAEDZZ1ROEZB/0gUV/tU5IrgOWwvJz4kgAwm
-         5aGDokKRgFudenCaChlDtD+JOE8BHMyKb18vaozwnQ9jfUR1njFw4vACqk6wJy7WOqmH
-         nlWj7Y6d8+tbLXMYyyleK/OOOf5oRC9E9QRzkU34tGMf7Cy0yvWqsynbzvngXl6HcIXp
-         rNyPcNQAwxLfKA6WA5OEO45+H8wlTy22GzNh8sw9jhFdCeZBa0ld376FqefgXMl09PC9
-         3BHg==
-X-Gm-Message-State: AOJu0YxF1Sse+UEZ34IAC0RASHbnMwUl6XClf6RYriTil/zg92VsiXXM
-	yHM2/9NH4/X34adfVxca25TupX5vWWJoIFFHA3nAnXv7NeMAaUsa3hjvwAhe0WZe7w==
-X-Google-Smtp-Source: AGHT+IEokQKAE/+0iw/sHElfQHlg7ytryID1hK73DxfXWXh3X1srWf9pD64j0E4ZeEUZrJ0UuTe9sA==
-X-Received: by 2002:a05:600c:4587:b0:42c:bae0:f05f with SMTP id 5b1f17b1804b1-42f777ba357mr35959605e9.13.1727891887808;
-        Wed, 02 Oct 2024 10:58:07 -0700 (PDT)
-Received: from mtardy-friendly-lvh-runner.c.cilium-dev.internal (114.73.211.130.bc.googleusercontent.com. [130.211.73.114])
-        by smtp.googlemail.com with ESMTPSA id 5b1f17b1804b1-42f7a00bc5csm25616495e9.45.2024.10.02.10.58.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Oct 2024 10:58:07 -0700 (PDT)
-From: Mahe Tardy <mahe.tardy@gmail.com>
-To: bpf@vger.kernel.org
-Cc: martin.lau@linux.dev,
-	daniel@iogearbox.net,
-	john.fastabend@gmail.com,
-	Mahe Tardy <mahe.tardy@gmail.com>
-Subject: [PATCH bpf-next v2 2/2] selftests/bpf: add tcx netns cookie tests
-Date: Wed,  2 Oct 2024 17:57:26 +0000
-Message-Id: <20241002175726.304608-2-mahe.tardy@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20241002175726.304608-1-mahe.tardy@gmail.com>
-References: <f05e5f07-467d-441a-8113-0a7c4cb2c842@iogearbox.net>
- <20241002175726.304608-1-mahe.tardy@gmail.com>
+	s=arc-20240116; t=1727892598; c=relaxed/simple;
+	bh=5eYoXNjoAptQV3+YkIGOlz/sVoK3uR5EITHgEaQvhsQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=eDbNqeVD/+iWegiJx34cSewLZiTBkO67we84AZYSKBCgqu/8mfek1OSaevugHpapMPAmF+mZCTopY9IV6+aULTiYe/Klvt2c3tf9kSstaHesemn/tuHzS8YH9qV1eI+ZBM+/IzgLc1v6TPWoHqL/mRIDcpM81ZlUgS5wbudgRiQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gci2uiPh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED49DC4CEC2;
+	Wed,  2 Oct 2024 18:09:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1727892597;
+	bh=5eYoXNjoAptQV3+YkIGOlz/sVoK3uR5EITHgEaQvhsQ=;
+	h=From:To:Cc:Subject:Date:From;
+	b=gci2uiPhUT9t0xewWeL2xmBbcV81KvRX7tw5ZQp8LokAgu2jik94G7BYkQEBZwvsl
+	 RZPAq/xaJ+r46ovuf7f90fWc3HSytNNmngedjWqdm0PN7eAuFQUKmhRPveD7KUjGm4
+	 D0XOI8pPiyU2SGVIKpkWZNsbSkAL+VktDknCRNWdZIeMwbQcUe7PkyHytG4a3amxBn
+	 VS7xWrmj9+4WrWlZ3h0YLyzFZlmZOeDsf+6hFXUG0Pv3XmDyl0aZdiNzqNefCDMvKA
+	 VeHJQiJfFJ1kpg/KYtYNqLNORNkuYhn8QuNaEOtK3ktRrlVNVfWMavF3BylAoBgy7J
+	 9QJMe9Cw4n43w==
+From: Namhyung Kim <namhyung@kernel.org>
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	bpf@vger.kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Christoph Lameter <cl@linux.com>,
+	Pekka Enberg <penberg@kernel.org>,
+	David Rientjes <rientjes@google.com>,
+	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+	linux-mm@kvack.org,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Kees Cook <kees@kernel.org>
+Subject: [PATCH v4 bpf-next 0/3] bpf: Add kmem_cache iterator and kfunc
+Date: Wed,  2 Oct 2024 11:09:53 -0700
+Message-ID: <20241002180956.1781008-1-namhyung@kernel.org>
+X-Mailer: git-send-email 2.46.1.824.gd892dcdcdd-goog
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -87,116 +78,78 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add netns cookie test that verifies the helper is now supported and work
-in the context of tc programs.
+Hello,
 
-Signed-off-by: Mahe Tardy <mahe.tardy@gmail.com>
----
- .../selftests/bpf/prog_tests/netns_cookie.c   | 28 ++++++++++++++-----
- .../selftests/bpf/progs/netns_cookie_prog.c   |  9 ++++++
- 2 files changed, 30 insertions(+), 7 deletions(-)
+I'm proposing a new iterator and a kfunc for the slab memory allocator
+to get information of each kmem_cache like in /proc/slabinfo or
+/sys/kernel/slab in more flexible way.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/netns_cookie.c b/tools/testing/selftests/bpf/prog_tests/netns_cookie.c
-index 71d8f3ba7d6b..a014082d1e09 100644
---- a/tools/testing/selftests/bpf/prog_tests/netns_cookie.c
-+++ b/tools/testing/selftests/bpf/prog_tests/netns_cookie.c
-@@ -8,12 +8,16 @@
- #define SO_NETNS_COOKIE 71
- #endif
+v4 changes)
 
-+#define loopback 1
-+
- static int duration;
+ * skip kmem_cache_destroy() in kmem_cache_iter_seq_stop() if possible  (Vlastimil)
+ * fix a bug in the kmem_cache_iter_seq_start() for the last entry
+ 
+v3: https://lore.kernel.org/lkml/20241002065456.1580143-1-namhyung@kernel.org/
 
- void test_netns_cookie(void)
- {
-+	LIBBPF_OPTS(bpf_prog_attach_opts, opta);
-+	LIBBPF_OPTS(bpf_prog_detach_opts, optd);
- 	int server_fd = -1, client_fd = -1, cgroup_fd = -1;
--	int err, val, ret, map, verdict;
-+	int err, val, ret, map, verdict, tc_fd;
- 	struct netns_cookie_prog *skel;
- 	uint64_t cookie_expected_value;
- 	socklen_t vallen = sizeof(cookie_expected_value);
-@@ -38,36 +42,46 @@ void test_netns_cookie(void)
- 	if (!ASSERT_OK(err, "prog_attach"))
- 		goto done;
+ * rework kmem_cache_iter not to hold slab_mutex when running BPF  (Alexei)
+ * add virt_addr_valid() check  (Alexei)
+ * fix random test failure by running test with the current task  (Hyeonggon)
 
-+	tc_fd = bpf_program__fd(skel->progs.get_netns_cookie_tcx);
-+	err = bpf_prog_attach_opts(tc_fd, loopback, BPF_TCX_INGRESS, &opta);
-+	if (!ASSERT_OK(err, "prog_attach"))
-+		goto done;
-+
- 	server_fd = start_server(AF_INET6, SOCK_STREAM, "::1", 0, 0);
- 	if (CHECK(server_fd < 0, "start_server", "errno %d\n", errno))
--		goto done;
-+		goto cleanup_tc;
+v2: https://lore.kernel.org/lkml/20240927184133.968283-1-namhyung@kernel.org/
 
- 	client_fd = connect_to_fd(server_fd, 0);
- 	if (CHECK(client_fd < 0, "connect_to_fd", "errno %d\n", errno))
--		goto done;
-+		goto cleanup_tc;
+ * rename it to "kmem_cache_iter"
+ * fix a build issue
+ * add Acked-by's from Roman and Vlastimil (Thanks!)
+ * add error codes in the test for debugging
 
- 	ret = send(client_fd, send_msg, sizeof(send_msg), 0);
- 	if (CHECK(ret != sizeof(send_msg), "send(msg)", "ret:%d\n", ret))
--		goto done;
-+		goto cleanup_tc;
+v1: https://lore.kernel.org/lkml/20240925223023.735947-1-namhyung@kernel.org/
 
- 	err = bpf_map_lookup_elem(bpf_map__fd(skel->maps.sockops_netns_cookies),
- 				  &client_fd, &val);
- 	if (!ASSERT_OK(err, "map_lookup(sockops_netns_cookies)"))
--		goto done;
-+		goto cleanup_tc;
+My use case is `perf lock contention` tool which shows contended locks
+but many of them are not global locks and don't have symbols.  If it
+can tranlate the address of the lock in a slab object to the name of
+the slab, it'd be much more useful.
 
- 	err = getsockopt(client_fd, SOL_SOCKET, SO_NETNS_COOKIE,
- 			 &cookie_expected_value, &vallen);
- 	if (!ASSERT_OK(err, "getsockopt"))
--		goto done;
-+		goto cleanup_tc;
+I'm not aware of type information in slab yet, but I was told there's
+a work to associate BTF ID with it.  It'd be definitely helpful to my
+use case.  Probably we need another kfunc to get the start address of
+the object or the offset in the object from an address if the type
+info is available.  But I want to start with a simple thing first.
 
- 	ASSERT_EQ(val, cookie_expected_value, "cookie_value");
+The kmem_cache_iter iterates kmem_cache objects under slab_mutex and
+will be useful for userspace to prepare some work for specific slabs
+like setting up filters in advance.  And the bpf_get_kmem_cache()
+kfunc will return a pointer to a slab from the address of a lock.  And
+the test code is to read from the iterator and make sure it finds a
+slab cache of the task_struct for the current task.
 
- 	err = bpf_map_lookup_elem(bpf_map__fd(skel->maps.sk_msg_netns_cookies),
- 				  &client_fd, &val);
- 	if (!ASSERT_OK(err, "map_lookup(sk_msg_netns_cookies)"))
--		goto done;
-+		goto cleanup_tc;
+The code is available at 'bpf/slab-iter-v4' branch in
+https://git.kernel.org/pub/scm/linux/kernel/git/namhyung/linux-perf.git
 
- 	ASSERT_EQ(val, cookie_expected_value, "cookie_value");
-+	ASSERT_EQ(skel->bss->tcx_netns_cookie, cookie_expected_value, "cookie_value");
-+
-+cleanup_tc:
-+	err = bpf_prog_detach_opts(tc_fd, loopback, BPF_TCX_INGRESS, &optd);
-+	ASSERT_OK(err, "prog_detach");
+Thanks,
+Namhyung
 
- done:
- 	if (server_fd != -1)
-diff --git a/tools/testing/selftests/bpf/progs/netns_cookie_prog.c b/tools/testing/selftests/bpf/progs/netns_cookie_prog.c
-index aeff3a4f9287..207f0e6c20b7 100644
---- a/tools/testing/selftests/bpf/progs/netns_cookie_prog.c
-+++ b/tools/testing/selftests/bpf/progs/netns_cookie_prog.c
-@@ -27,6 +27,8 @@ struct {
- 	__type(value, __u64);
- } sock_map SEC(".maps");
 
-+int tcx_netns_cookie;
-+
- SEC("sockops")
- int get_netns_cookie_sockops(struct bpf_sock_ops *ctx)
- {
-@@ -81,4 +83,11 @@ int get_netns_cookie_sk_msg(struct sk_msg_md *msg)
- 	return 1;
- }
+Namhyung Kim (3):
+  bpf: Add kmem_cache iterator
+  mm/bpf: Add bpf_get_kmem_cache() kfunc
+  selftests/bpf: Add a test for kmem_cache_iter
 
-+SEC("tcx/ingress")
-+int get_netns_cookie_tcx(struct __sk_buff *skb)
-+{
-+	tcx_netns_cookie = bpf_get_netns_cookie(skb);
-+	return TCX_PASS;
-+}
-+
- char _license[] SEC("license") = "GPL";
---
-2.34.1
+ include/linux/btf_ids.h                       |   1 +
+ kernel/bpf/Makefile                           |   1 +
+ kernel/bpf/helpers.c                          |   1 +
+ kernel/bpf/kmem_cache_iter.c                  | 174 ++++++++++++++++++
+ mm/slab_common.c                              |  19 ++
+ .../bpf/prog_tests/kmem_cache_iter.c          |  64 +++++++
+ tools/testing/selftests/bpf/progs/bpf_iter.h  |   7 +
+ .../selftests/bpf/progs/kmem_cache_iter.c     |  66 +++++++
+ 8 files changed, 333 insertions(+)
+ create mode 100644 kernel/bpf/kmem_cache_iter.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/kmem_cache_iter.c
+ create mode 100644 tools/testing/selftests/bpf/progs/kmem_cache_iter.c
+
+
+base-commit: 9502a7de5a61bec3bda841a830560c5d6d40ecac
+-- 
+2.46.1.824.gd892dcdcdd-goog
 
 
