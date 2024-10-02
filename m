@@ -1,177 +1,182 @@
-Return-Path: <bpf+bounces-40741-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40742-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A046898CD59
-	for <lists+bpf@lfdr.de>; Wed,  2 Oct 2024 08:49:12 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66DEE98CD66
+	for <lists+bpf@lfdr.de>; Wed,  2 Oct 2024 08:52:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4AF8628617C
-	for <lists+bpf@lfdr.de>; Wed,  2 Oct 2024 06:49:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0EC581F24126
+	for <lists+bpf@lfdr.de>; Wed,  2 Oct 2024 06:52:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B72F839EB;
-	Wed,  2 Oct 2024 06:49:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62F5D188905;
+	Wed,  2 Oct 2024 06:52:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Si0ettZm"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="SKOPUFsi"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9CEC433A9
-	for <bpf@vger.kernel.org>; Wed,  2 Oct 2024 06:49:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44B39132121
+	for <bpf@vger.kernel.org>; Wed,  2 Oct 2024 06:52:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727851746; cv=none; b=kjJBM5T3NDEk+dDfKkHViuJMDm74NiOizKKKAo2uIGs5ECBZr7RJtHBoIyqGKvUUYB59mS9kNTCDH99O2c/sk9Tz+FULe2aSPyZwjIb26DaB8HHZ7bEmi1n3XfRSg1XzBOTsbpKmyla7QLP9VH2RwIF1ZBlHJgUO0WBk+qg4D4c=
+	t=1727851947; cv=none; b=i6+mh4jqbhqMZBW+fJowCMhWcTtpFiwyvQy7s/0FlMUy3MtZa/FmHwjh6H3ji6mBg+JcmQ+IYQgNP7dvavVjwTB+Dbq8hCnpwUvYOZif8TiXduEkDN0j4QLWeWPek4S20hWPbzOAIcI6/W45gXp9RsUdTlz8THdBRwexq4pgRVo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727851746; c=relaxed/simple;
-	bh=bs0V9niQEq/DX4u6e6/Qdtb3UpO/5LkeAMb2zRWAhBM=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=GJJPV4Ip4QBWzFY4/kmaduYOVwOc5RqvV+3Knikp0s6uKBsB9IuzFhD0rthkwZ6p5Ppv7hWj901MLvSMaCAsY9VQNhYobC+s00CdfVYA9LWtipYJcnO7N97cl4PXQ2r3A8bM5gY2Mk2IFN7fb/YV7ni87gkApApKIyPPkvkr8Uk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Si0ettZm; arc=none smtp.client-ip=91.218.175.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <6366e7d3-f81b-4837-b105-bced5217c95f@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1727851739;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=EEdraAmQF9/P0QqnWL33aNgCzRj89B2W2T+RbBTzf6U=;
-	b=Si0ettZmjPEgI3XKYPOIAAm3a207yuRxXyPgJmT399wQwD0pe4wAlWfPy6dhEfXdeNoSFM
-	2v3b2KDqqfdRDmZWhVcY2MtcnLFuBjFX1QLfmh7S0rMpJoxN5/9/mZxDdUdt36sHr1qFUl
-	9SCyH/7jif38VtSHe61Mm+tn+TuYNes=
-Date: Tue, 1 Oct 2024 23:48:51 -0700
+	s=arc-20240116; t=1727851947; c=relaxed/simple;
+	bh=NbxMuNV6T7+k9WLtS52Fq9ckPhCxmFmjklyi5qtHS8g=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=WXUY7vI6Mi0pvRwBMhFMS9yLOvYo4JZrezVooOVf8mMQcrowHM2KYvpQbRO8wDwC+wWg+HSPvAiwcyM+e/OBRzgkR44thBwq2L1qd2Cvu62DaF3CZvPaLthM+NhFAkRYK46TL943mO1p+IfVvw2ELzTcRJirohSqJh/Il8mhw80=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=SKOPUFsi; arc=none smtp.client-ip=209.85.210.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-71957eb256bso5745338b3a.3
+        for <bpf@vger.kernel.org>; Tue, 01 Oct 2024 23:52:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1727851945; x=1728456745; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Wi2knaZL4xgHJFaFdtzBXqIWLSuRG81LD3CTPdMJ4G8=;
+        b=SKOPUFsiFBcGR/Z/AOKbsb8AsAhhO0ga0IBXnZetNaEzQfMGEVIUXojR36SE5I7gx3
+         h3dovV/s7YKrYEfR30D7I42wHtihuh0sABujpmskGkLp+xMraVMuy+XSCXFPo3WtwhOF
+         DQ60/4wMoXiTII/x5gmk/1U7iYINkq2Iqi1udOmKbQj8mBLcdpty4Ulq0w0aJRc5yEC7
+         jSXHayg9IIUZRk4ry2SkAYHSBg7t9VeNId5NPk/0iXKHMjQcRaRc1huYOEi2DulPhmrC
+         MCDyCFYx5v0jENfPMZ72j1JuxrR3qjMC3a7w98avqlfbr9fi0hkofmr9FyfQUbc7HJ/c
+         YHoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727851945; x=1728456745;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Wi2knaZL4xgHJFaFdtzBXqIWLSuRG81LD3CTPdMJ4G8=;
+        b=GXq5jooG6buyvLbfbhh4s0d60CpXClGnkdCkggjWqgoEf99njQ7Nl6Tct1G7ZyAsSO
+         nnsoN2IdBPlu11h+TZcmmiveu8FHAU+LqM69hKKGaAOUV5lYXPoDzKYoTuqlZHwEcyQw
+         XUelyPJvwoTRqL0mxM8wNAoCw/fCpd2wOqLlaNcMcgjDX7tPR+sNtNZPD94lm54klvvT
+         2Yw7CBXcm7jp+ZdolhocdZ+wXmmm1mgpszr5R0IbsH46aew1eqZ6texTKILqaAEWaoNt
+         10ifRaLYCSbqEo4l9lX6lQBl5/ubQQNQrM1QGcZ/sVOx7rrAdefFKuVB7LSigJeU6eUT
+         Aq3g==
+X-Forwarded-Encrypted: i=1; AJvYcCXGmNx9SObb6+c13XW+wCD2AzBDxQzcrH1Ngyvqe/zgES5VfgxHVkSmZpxxlWRnLEtIdEI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxeEwWQ6qqHHfelNYcSZsnw49CwQtoMbc5aMwsGRQa6Rn9P7B4f
+	JVOcHKQB019r8uWYOgvk6VbPrNTkzXsSTy9ZLACU8SQhv/7vBNxbX36Lgghrr6FJ2+6ed+3umG4
+	MyxCnUirU0PN4bsbmgFBo8R8nOYnPhic9dQxprA==
+X-Google-Smtp-Source: AGHT+IHsypqnvHxqefjiDxYFDz2akYzDsFoGU6PLh+7312onUDhEMOGndUNDmbbTnJmbGIeOeR17h1E7o2px85taLvw=
+X-Received: by 2002:a05:6a21:2d8b:b0:1d5:10c3:af5a with SMTP id
+ adf61e73a8af0-1d5e2d3df25mr3361839637.47.1727851945585; Tue, 01 Oct 2024
+ 23:52:25 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: yet another approach Was: [PATCH bpf-next v3 4/5] bpf, x86: Add
- jit support for private stack
-Content-Language: en-GB
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>,
- Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>
-References: <20240926234506.1769256-1-yonghong.song@linux.dev>
- <20240926234526.1770736-1-yonghong.song@linux.dev>
- <CAADnVQ+v3u=9PEHQ0xJEf6wSRc2iR928Sc+6CULh390i3TDR=w@mail.gmail.com>
- <CAP01T77-bU5Ewu79QLJDTnt_E8h_VFHuABOD5=oct7_TC_yYGQ@mail.gmail.com>
- <CAP01T76UnVfn3x7zZH4vJgZMGv_Ygewxg=9gUA-xuOa7pwGr3A@mail.gmail.com>
- <CAADnVQ+caNh8+fgCj2XeZDrXniYif5Y+rw6vsMOojBO3Qwk+Nw@mail.gmail.com>
- <CAADnVQKLWi_TfpbiYb1vPMYMqPOPWPS-RGbB0FksEQW5i36poQ@mail.gmail.com>
- <CAP01T77q_H31mPXPQV4xHifutxxFeuoD8eg75C717MZ=OOeHew@mail.gmail.com>
- <CAADnVQLfWgpu6WvZRCFo39YHJ=zSSQWcOnaCOqdfyCg8uRoddg@mail.gmail.com>
- <CAP01T77G63MGvomrd3563bgBcNKUZg0Jc=GGmcGO0zPLS0hcHA@mail.gmail.com>
- <CAADnVQ+z-s07V_KU91+zGRB3qXGR9nr3w1dMBfCEEgunyes7EA@mail.gmail.com>
- <CAP01T75JUvKUJH4OKDOSySQcK5xP0nFs48FbW_dqMzeo9DhQOw@mail.gmail.com>
- <a1686631-3c65-4ed0-bdb6-90fa1f0c6242@linux.dev>
-In-Reply-To: <a1686631-3c65-4ed0-bdb6-90fa1f0c6242@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <20240925075707.3970187-1-linyunsheng@huawei.com>
+ <20240925075707.3970187-3-linyunsheng@huawei.com> <4968c2ec-5584-4a98-9782-143605117315@redhat.com>
+ <CAC_iWjKHofqDrp+jOO_QTp_8Op=KeE_jjhjsDUxjRa4vnHYJmQ@mail.gmail.com>
+In-Reply-To: <CAC_iWjKHofqDrp+jOO_QTp_8Op=KeE_jjhjsDUxjRa4vnHYJmQ@mail.gmail.com>
+From: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Date: Wed, 2 Oct 2024 09:51:49 +0300
+Message-ID: <CAC_iWjJXWgt9TdBSYGkc=htyeS=VAago5wqXzBgX_Mun76Z42g@mail.gmail.com>
+Subject: Re: [PATCH net v2 2/2] page_pool: fix IOMMU crash when driver has
+ already unbound
+To: Paolo Abeni <pabeni@redhat.com>
+Cc: Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net, kuba@kernel.org, 
+	liuyonglong@huawei.com, fanghaiqing@huawei.com, zhangkun09@huawei.com, 
+	Robin Murphy <robin.murphy@arm.com>, Alexander Duyck <alexander.duyck@gmail.com>, 
+	IOMMU <iommu@lists.linux.dev>, Wei Fang <wei.fang@nxp.com>, 
+	Shenwei Wang <shenwei.wang@nxp.com>, Clark Wang <xiaoning.wang@nxp.com>, 
+	Eric Dumazet <edumazet@google.com>, Tony Nguyen <anthony.l.nguyen@intel.com>, 
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>, 
+	Alexander Lobakin <aleksander.lobakin@intel.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, Saeed Mahameed <saeedm@nvidia.com>, 
+	Leon Romanovsky <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>, Felix Fietkau <nbd@nbd.name>, 
+	Lorenzo Bianconi <lorenzo@kernel.org>, Ryder Lee <ryder.lee@mediatek.com>, 
+	Shayne Chen <shayne.chen@mediatek.com>, Sean Wang <sean.wang@mediatek.com>, 
+	Kalle Valo <kvalo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>, 
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, imx@lists.linux.dev, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org, 
+	bpf@vger.kernel.org, linux-rdma@vger.kernel.org, 
+	linux-wireless@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-mediatek@lists.infradead.org, linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
 
+On Wed, 2 Oct 2024 at 09:46, Ilias Apalodimas
+<ilias.apalodimas@linaro.org> wrote:
+>
+> Hi Paolo,
+>
+> Thanks for taking the time.
+>
+> On Tue, 1 Oct 2024 at 16:32, Paolo Abeni <pabeni@redhat.com> wrote:
+> >
+> > On 9/25/24 09:57, Yunsheng Lin wrote:
+> > > Networking driver with page_pool support may hand over page
+> > > still with dma mapping to network stack and try to reuse that
+> > > page after network stack is done with it and passes it back
+> > > to page_pool to avoid the penalty of dma mapping/unmapping.
+> > > With all the caching in the network stack, some pages may be
+> > > held in the network stack without returning to the page_pool
+> > > soon enough, and with VF disable causing the driver unbound,
+> > > the page_pool does not stop the driver from doing it's
+> > > unbounding work, instead page_pool uses workqueue to check
+> > > if there is some pages coming back from the network stack
+> > > periodically, if there is any, it will do the dma unmmapping
+> > > related cleanup work.
+> > >
+> > > As mentioned in [1], attempting DMA unmaps after the driver
+> > > has already unbound may leak resources or at worst corrupt
+> > > memory. Fundamentally, the page pool code cannot allow DMA
+> > > mappings to outlive the driver they belong to.
+> > >
+> > > Currently it seems there are at least two cases that the page
+> > > is not released fast enough causing dma unmmapping done after
+> > > driver has already unbound:
+> > > 1. ipv4 packet defragmentation timeout: this seems to cause
+> > >     delay up to 30 secs.
+> > > 2. skb_defer_free_flush(): this may cause infinite delay if
+> > >     there is no triggering for net_rx_action().
+> > >
+> > > In order not to do the dma unmmapping after driver has already
+> > > unbound and stall the unloading of the networking driver, add
+> > > the pool->items array to record all the pages including the ones
+> > > which are handed over to network stack, so the page_pool can
+> > > do the dma unmmapping for those pages when page_pool_destroy()
+> > > is called. As the pool->items need to be large enough to avoid
+> > > performance degradation, add a 'item_full' stat to indicate the
+> > > allocation failure due to unavailability of pool->items.
+> >
+> > This looks really invasive, with room for potentially large performance
+> > regressions or worse. At very least it does not look suitable for net.
+>
+> Perhaps, and you are right we need to measure performance before
+> pulling it but...
+>
+> >
+> > Is the problem only tied to VFs drivers? It's a pity all the page_pool
+> > users will have to pay a bill for it...
+>
+> It's not. The problem happens when an SKB has been scheduled for
+> recycling and has already been mapped via page_pool. If the driver
+> disappears in the meantime,
 
-On 10/1/24 11:28 PM, Yonghong Song wrote:
->
-> On 10/1/24 7:16 PM, Kumar Kartikeya Dwivedi wrote:
->> On Wed, 2 Oct 2024 at 03:26, Alexei Starovoitov
->> <alexei.starovoitov@gmail.com> wrote:
->>> On Tue, Oct 1, 2024 at 5:23 PM Kumar Kartikeya Dwivedi 
->>> <memxor@gmail.com> wrote:
->>>> Makes sense, though will we have cases where hierarchical scheduling
->>>> attaches the same prog at different points of the hierarchy?
->>> I'm not sure anyone was asking for such a use case.
->> I wondered because why would you then need a limit of 4 (say instead
->> of disallowing it)?
->>
->>>> Then the
->>>> limit of 4 may not be enough (e.g. say with cgroup nested levels > 4).
->>> Well, 4 was the number from TJ.
->>>
->> Ok, then let's assume 4 would be enough.
->>
->>> Anyway the proposed pseudo code:
->>>
->>> __bpf_prog_enter_recur_limited()
->>> {
->>>    cnt = this_cpu_inc_return(*(prog->active));
->>>    if (cnt > 4) {
->>>       inc_miss
->>>       return 0;
->>>    }
->>>   // pass cnt into bpf prog somehow, like %rdx ?
->>>   // or re-read prog->active from prog
->>> }
->>>
->>>
->>> then in the prologue emit:
->>>
->>> push rbp
->>> mov rbp, rsp
->>> if %rdx == 1
->>>     // main prog is called for the first time
->>>     mov rsp, pcpu_priv_stack_top
->
-> This sounds good in high level. I still need to figure out
-> 'if %rdx == 1' part and how to implement this.
+Apologies, this wasn't correct. It's the device that has to disappear
+not the driver
 
-Okay, looks like trampoline could supply rdx == 1.
-
+> page_pool will free all the packets it
+> holds in its private rings (both slow and fast), but is not in control
+> of the SKB anymore. So any packets coming back for recycling *after*
+> that point cannot unmap memory properly.
 >
->>> else
->>>     // 2+nd time main prog is called or 1+ time subprog
->>>    sub rsp, stack_size
->>>    if rsp < pcpu_priv_stack_bottom
->>>      goto exit  // stack is too small, exit
->>> fi
->> I think we need just the second part for subprogs, right?
->> Since rdx is R3 (arg into subprog).
->> I guess that's what you meant in the pseudocode.
->> But otherwise sounds good.
->> The benefit with stack probing is we don't exactly limit to 4 cases.
->>
->> Another option instead of the branch in main prog is to divide in 4
->> slots (as you said before) and choose the slot based on cnt.
->> But then we're stuck with a max limit of 4. Since we're allocating
->> stack size of bpf + extra (which I guess is 8K?). rdx can be used to
->> pass in the priv_stack address of the right slot.
->>
->> So I think the probing version seems better. We can probably pass in
->> rdx = priv_stack and then test and cmov instead for main prog.
+> As discussed this can either lead to memory corruption and resource
+> leaking, or worse as seen in the bug report panics. I am fine with
+> this going into -next, but it really is a bugfix, although I am not
+> 100% sure that the Fixes: tag in the current patch is correct.
 >
-> Yes, we do not need to limit to 4, checking rsp < pcpu_priv_stack_bottom
-> should be okay.
->
->>
->>> Since stack bottom/top are known at JIT time we can
->>> generate reliable stack overflow checks.
->>> Much better than guard pages and -fstack-protector.
->>> The prog can alloc percpu
->>> (stack size of main prog + subprogs + extra) * 4
->> extra will be 8K, I guess (same as kernel stack size)?
->> Just confirming.
->>
->>> and it likely will be enough.
->>> If not, the stack protection will gently exit the prog
->>> when the stack is too deep.
->> I like this stack probing version, since there's no hard limit on the
->> number of recursions, and it's safe against stack overflow as well.
->>
->>> kfunc won't have such a check, so we need a buffer zone.
->>> Can have a guard page too, but feels like overkill.
->> I was leaning toward saying yes for a guard page, since we'll atleast
->> have a hard error instead of random corruption if the kfunc goes
->> beyond the bottom after probing succeeds.
->>
->> But the better way might be doing if rsp < pcpu_priv_stack_bottom +
->> 8K, so we leave max headroom we reserve for kernel stuff (or say add
->> 4K instead, which should be good enough), and then skip execution.
->
+> Thanks
+> /Ilias
+> >
+> > /P
+> >
 
