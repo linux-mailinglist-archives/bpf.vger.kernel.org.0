@@ -1,231 +1,156 @@
-Return-Path: <bpf+bounces-40795-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40796-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48A3498E57C
-	for <lists+bpf@lfdr.de>; Wed,  2 Oct 2024 23:48:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1E6898E614
+	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2024 00:24:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 03852289068
-	for <lists+bpf@lfdr.de>; Wed,  2 Oct 2024 21:48:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 003051C23DC8
+	for <lists+bpf@lfdr.de>; Wed,  2 Oct 2024 22:24:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5616B19D07C;
-	Wed,  2 Oct 2024 21:47:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65461199929;
+	Wed,  2 Oct 2024 22:24:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NVADYMTq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qhAW0TIS"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC5751991AC;
-	Wed,  2 Oct 2024 21:47:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D28D9195B1A;
+	Wed,  2 Oct 2024 22:24:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727905635; cv=none; b=Xarq/QUjnLSXdRp5xvEVHxSqXEZlqWvBTOuQAZ89A3IXByJL9eeOR8dpZer5pX9W0ofR74NIFGf7tuA5l8r19hBHlXS6UiTb4SBQBo8uAN49/GL8polAUGArHgUW7ALmd5WPmL6Lh5zAL+MMHzreYwJYoMaMAXVHMDU7ipJ99Hg=
+	t=1727907866; cv=none; b=nEccFpARK4pTbERya5z7Qd40zzoqQdaMZGooqtwJcb681vt6//8PELDFhb0928XD+TY7fAPO9tJGEMDdIORi60DRexjQSEiJUz3IpbMAyHd9XEUZDnasuYD1Pg/L2++xEYJs4JaJvRT7kVn34w3FjzzONPot90BJX6QAip9QGNg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727905635; c=relaxed/simple;
-	bh=nxakek7sL8xSsKVj/KOi6ZNyLMe9MbAwDA2OugPeeVU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BjvIVLrbLX1qLFqdMDvRm8x4gVaILUrFi2L+ErRk+crH6ZRQn8n1zTXh0pI5LX9x5Q/I0p21iiVrk9w5F+58JWeCudVePeoq2SPxDThiHceULdgau90obh9eqE0KQHg226t88EiXqvLjSDK9jtvb9dAn/QJO5x5+snLaXr+/mLM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NVADYMTq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D15CEC4CEC2;
-	Wed,  2 Oct 2024 21:47:12 +0000 (UTC)
+	s=arc-20240116; t=1727907866; c=relaxed/simple;
+	bh=q2Rl77RNB02APr0cNr0BdjJ03UI4MAUtitRmcIrhtt4=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=SvZk2GDQx2qeAeDSvKzOBRU0hcEUemFpIobmm2Ym7XdrjAvbfmHirrexg4xa3AqM08UBOsYfHtQ3wZHPWt6LoWzhk+H2TRJi6a2ZHOzjw3Qv1dO3aD0IVe+WCRUtRGS3BIIOjUmICT2KXJrZU+uDCwz/womzlU8zF2b5vCkPvhA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qhAW0TIS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4EF4CC4CEC2;
+	Wed,  2 Oct 2024 22:24:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727905635;
-	bh=nxakek7sL8xSsKVj/KOi6ZNyLMe9MbAwDA2OugPeeVU=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=NVADYMTq/AbRALlVEG8Yp4IwvPVD3bBZYXn/sUYjBKhrmczmTaanfbXb5tx86k+8a
-	 H50PY11tzIR9KGmqekiMYvCwV87ibGl8luQjDUDADuQMzL7AAmq7pt6NS9gU27voMy
-	 MF2EJMqBDkjH619tPsBEYwxOi1du3ygvWZctQpwHINAbVC01Cg74UCsx5K4/1ojAtN
-	 UZm9WjSMqotHnf7/C3PVS1U20TYdFj6LmmmF9hUyjnhGLXzgFo9DtwdZubEwxITygL
-	 Q90B0Bkh83tXFggN8iAohr90criLMSGfpbTrlqowsIbk1zmqa06uaoU5anYVr9jPfc
-	 aZAWRWUWqIk0g==
-From: Song Liu <song@kernel.org>
-To: bpf@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: kernel-team@meta.com,
-	andrii@kernel.org,
-	eddyz87@gmail.com,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	martin.lau@linux.dev,
-	viro@zeniv.linux.org.uk,
-	brauner@kernel.org,
-	jack@suse.cz,
-	kpsingh@kernel.org,
-	mattbobrowski@google.com,
-	Song Liu <song@kernel.org>
-Subject: [PATCH bpf-next 2/2] selftests/bpf: Extend test fs_kfuncs to cover security.bpf xattr names
-Date: Wed,  2 Oct 2024 14:46:37 -0700
-Message-ID: <20241002214637.3625277-3-song@kernel.org>
-X-Mailer: git-send-email 2.43.5
-In-Reply-To: <20241002214637.3625277-1-song@kernel.org>
-References: <20241002214637.3625277-1-song@kernel.org>
+	s=k20201202; t=1727907865;
+	bh=q2Rl77RNB02APr0cNr0BdjJ03UI4MAUtitRmcIrhtt4=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=qhAW0TIS2u8ad7MMxUUsd2UYFbBkRIGVWjLqV5bZkHkYRZt+MLlNhms8GEuTTZjp0
+	 YD/p0vpp1paTTM/pAaPFfRkV98Z4P3ZLyK4rGrHWDTHGJfFh01AVO5WZpkfWnB5zzT
+	 gADZxVqdjVqsEhy9SY98GcCFfjsSk0nQZ5arT34uF/GnyYuB6h55Z0J0LLTv6tJBvb
+	 sFyJTppcZvSKULtwZBg90NT6ZdJWnf4o/vDDEO5W2T8q/0MLkPo2Clh0jgtue12j4d
+	 nc7lCxphw+cwclQYJ6JlfFd/IXEK7AXrkIgd4BHulYXq+3/4n1Ae8tgwmn/D19p52y
+	 6SUR/P/ejDCaw==
+Date: Wed, 2 Oct 2024 17:24:23 -0500
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Frank Li <Frank.Li@nxp.com>
+Cc: Bjorn Helgaas <bhelgaas@google.com>, Richard Zhu <hongxing.zhu@nxp.com>,
+	Lucas Stach <l.stach@pengutronix.de>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Rob Herring <robh@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>, linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	imx@lists.linux.dev, alyssa@rosenzweig.io, bpf@vger.kernel.org,
+	broonie@kernel.org, jgg@ziepe.ca, joro@8bytes.org,
+	lgirdwood@gmail.com, maz@kernel.org, p.zabel@pengutronix.de,
+	robin.murphy@arm.com, will@kernel.org
+Subject: Re: [PATCH v2 0/2] PCI: add enabe(disable)_device() hook for bridge
+Message-ID: <20241002222423.GA282316@bhelgaas>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240930-imx95_lut-v2-0-3b6467ba539a@nxp.com>
 
-Extend test_progs fs_kfuncs to cover different xattr names. Specifically:
-xattr name "user.kfuncs", "security.bpf", and "security.bpf.xxx" can be
-read from BPF program with kfuncs bpf_get_[file|dentry]_xattr(); while
-"security.bpfxxx" and "security.selinux" cannot be read.
+On Mon, Sep 30, 2024 at 03:42:20PM -0400, Frank Li wrote:
+> Some system's IOMMU stream(master) ID bits(such as 6bits) less than
+> pci_device_id (16bit). It needs add hardware configuration to enable
+> pci_device_id to stream ID convert.
+> 
+> https://lore.kernel.org/imx/20240622173849.GA1432357@bhelgaas/
+> This ways use pcie bus notifier (like apple pci controller), when new PCIe
+> device added, bus notifier will call register specific callback to handle
+> look up table (LUT) configuration.
+> 
+> https://lore.kernel.org/imx/20240429150842.GC1709920-robh@kernel.org/
+> which parse dt's 'msi-map' and 'iommu-map' property to static config LUT
+> table (qcom use this way). This way is rejected by DT maintainer Rob.
+> 
+> Above ways can resolve LUT take or stream id out of usage the problem. If
+> there are not enough stream id resource, not error return, EP hardware
+> still issue DMA to do transfer, which may transfer to wrong possition.
+> 
+> Add enable(disable)_device() hook for bridge can return error when not
+> enough resource, and PCI device can't enabled.
+> 
+> Basicallly this version can match Bjorn's requirement:
+> 1: simple, because it is rare that there are no LUT resource.
+> 2: EP driver probe failure when no LUT, but lspci can see such device.
+> 
+> [    2.164415] nvme nvme0: pci function 0000:01:00.0
+> [    2.169142] pci 0000:00:00.0: Error enabling bridge (-1), continuing
+> [    2.175654] nvme 0000:01:00.0: probe with driver nvme failed with error -12
+> 
+> > lspci
+> 0000:00:00.0 PCI bridge: Philips Semiconductors Device 0000
+> 0000:01:00.0 Non-Volatile memory controller: Micron Technology Inc 2100AI NVMe SSD [Nitro] (rev 03)
+> 
+> To: Bjorn Helgaas <bhelgaas@google.com>
+> To: Richard Zhu <hongxing.zhu@nxp.com>
+> To: Lucas Stach <l.stach@pengutronix.de>
+> To: Lorenzo Pieralisi <lpieralisi@kernel.org>
+> To: Krzysztof Wilczyński <kw@linux.com>
+> To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> To: Rob Herring <robh@kernel.org>
+> To: Shawn Guo <shawnguo@kernel.org>
+> To: Sascha Hauer <s.hauer@pengutronix.de>
+> To: Pengutronix Kernel Team <kernel@pengutronix.de>
+> To: Fabio Estevam <festevam@gmail.com>
+> Cc: linux-pci@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: imx@lists.linux.dev
+> Cc: Frank.li@nxp.com \
+> Cc: alyssa@rosenzweig.io \
+> Cc: bpf@vger.kernel.org \
+> Cc: broonie@kernel.org \
+> Cc: jgg@ziepe.ca \
+> Cc: joro@8bytes.org \
+> Cc: l.stach@pengutronix.de \
+> Cc: lgirdwood@gmail.com \
+> Cc: maz@kernel.org \
+> Cc: p.zabel@pengutronix.de \
+> Cc: robin.murphy@arm.com \
+> Cc: will@kernel.org \
+> 
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> ---
+> Changes in v2:
+> - see each patch
+> - Link to v1: https://lore.kernel.org/r/20240926-imx95_lut-v1-0-d0c62087dbab@nxp.com
+> 
+> ---
+> Frank Li (2):
+>       PCI: Add enable_device() and disable_device() callbacks for bridges
+>       PCI: imx6: Add IOMMU and ITS MSI support for i.MX95
+> 
+>  drivers/pci/controller/dwc/pci-imx6.c | 133 +++++++++++++++++++++++++++++++++-
+>  drivers/pci/pci.c                     |  14 ++++
+>  include/linux/pci.h                   |   2 +
+>  3 files changed, 148 insertions(+), 1 deletion(-)
+> ---
+> base-commit: 2849622e7b01d5aea1b060ba3955054798c1e0bb
+> change-id: 20240926-imx95_lut-1c68222e0944
 
-Signed-off-by: Song Liu <song@kernel.org>
----
- .../selftests/bpf/prog_tests/fs_kfuncs.c      | 40 ++++++++++++++-----
- .../selftests/bpf/progs/test_get_xattr.c      | 30 ++++++++++++--
- 2 files changed, 56 insertions(+), 14 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/fs_kfuncs.c b/tools/testing/selftests/bpf/prog_tests/fs_kfuncs.c
-index 5a0b51157451..986dd5eabaa6 100644
---- a/tools/testing/selftests/bpf/prog_tests/fs_kfuncs.c
-+++ b/tools/testing/selftests/bpf/prog_tests/fs_kfuncs.c
-@@ -12,7 +12,7 @@
- 
- static const char testfile[] = "/tmp/test_progs_fs_kfuncs";
- 
--static void test_xattr(void)
-+static void test_get_xattr(const char *name, const char *value, bool allow_access)
- {
- 	struct test_get_xattr *skel = NULL;
- 	int fd = -1, err;
-@@ -25,7 +25,7 @@ static void test_xattr(void)
- 	close(fd);
- 	fd = -1;
- 
--	err = setxattr(testfile, "user.kfuncs", "hello", sizeof("hello"), 0);
-+	err = setxattr(testfile, name, value, strlen(value) + 1, 0);
- 	if (err && errno == EOPNOTSUPP) {
- 		printf("%s:SKIP:local fs doesn't support xattr (%d)\n"
- 		       "To run this test, make sure /tmp filesystem supports xattr.\n",
-@@ -48,16 +48,23 @@ static void test_xattr(void)
- 		goto out;
- 
- 	fd = open(testfile, O_RDONLY, 0644);
-+
- 	if (!ASSERT_GE(fd, 0, "open_file"))
- 		goto out;
- 
--	ASSERT_EQ(skel->bss->found_xattr_from_file, 1, "found_xattr_from_file");
--
- 	/* Trigger security_inode_getxattr */
--	err = getxattr(testfile, "user.kfuncs", v, sizeof(v));
--	ASSERT_EQ(err, -1, "getxattr_return");
--	ASSERT_EQ(errno, EINVAL, "getxattr_errno");
--	ASSERT_EQ(skel->bss->found_xattr_from_dentry, 1, "found_xattr_from_dentry");
-+	err = getxattr(testfile, name, v, sizeof(v));
-+
-+	if (allow_access) {
-+		ASSERT_EQ(err, -1, "getxattr_return");
-+		ASSERT_EQ(errno, EINVAL, "getxattr_errno");
-+		ASSERT_EQ(skel->bss->found_xattr_from_file, 1, "found_xattr_from_file");
-+		ASSERT_EQ(skel->bss->found_xattr_from_dentry, 1, "found_xattr_from_dentry");
-+	} else {
-+		ASSERT_EQ(err, strlen(value) + 1, "getxattr_return");
-+		ASSERT_EQ(skel->bss->found_xattr_from_file, 0, "found_xattr_from_file");
-+		ASSERT_EQ(skel->bss->found_xattr_from_dentry, 0, "found_xattr_from_dentry");
-+	}
- 
- out:
- 	close(fd);
-@@ -141,8 +148,21 @@ static void test_fsverity(void)
- 
- void test_fs_kfuncs(void)
- {
--	if (test__start_subtest("xattr"))
--		test_xattr();
-+	/* Matches xattr_names in progs/test_get_xattr.c */
-+	if (test__start_subtest("user_xattr"))
-+		test_get_xattr("user.kfuncs", "hello", true);
-+
-+	if (test__start_subtest("security_bpf_xattr_1"))
-+		test_get_xattr("security.bpf", "hello", true);
-+
-+	if (test__start_subtest("security_bpf_xattr_2"))
-+		test_get_xattr("security.bpf.xxx", "hello", true);
-+
-+	if (test__start_subtest("security_bpfxxx_xattr_error"))
-+		test_get_xattr("security.bpfxxx", "hello", false);
-+
-+	if (test__start_subtest("security_selinux_xattr_error"))
-+		test_get_xattr("security.selinux", "hello", false);
- 
- 	if (test__start_subtest("fsverity"))
- 		test_fsverity();
-diff --git a/tools/testing/selftests/bpf/progs/test_get_xattr.c b/tools/testing/selftests/bpf/progs/test_get_xattr.c
-index 66e737720f7c..0be8120683cd 100644
---- a/tools/testing/selftests/bpf/progs/test_get_xattr.c
-+++ b/tools/testing/selftests/bpf/progs/test_get_xattr.c
-@@ -17,12 +17,26 @@ static const char expected_value[] = "hello";
- char value1[32];
- char value2[32];
- 
-+#define NUM_OF_XATTR_NAME 5
-+
-+/* Matches caller of test_get_xattr() in prog_tests/fs_kfuncs.c */
-+static const char *xattr_names[NUM_OF_XATTR_NAME] = {
-+	/* The following work. */
-+	"user.kfuncs",
-+	"security.bpf",
-+	"security.bpf.xxx",
-+
-+	/* The following do not work. */
-+	"security.bpfxxx",
-+	"security.selinux"
-+};
-+
- SEC("lsm.s/file_open")
- int BPF_PROG(test_file_open, struct file *f)
- {
- 	struct bpf_dynptr value_ptr;
- 	__u32 pid;
--	int ret;
-+	int ret, i;
- 
- 	pid = bpf_get_current_pid_tgid() >> 32;
- 	if (pid != monitored_pid)
-@@ -30,7 +44,11 @@ int BPF_PROG(test_file_open, struct file *f)
- 
- 	bpf_dynptr_from_mem(value1, sizeof(value1), 0, &value_ptr);
- 
--	ret = bpf_get_file_xattr(f, "user.kfuncs", &value_ptr);
-+	for (i = 0; i < NUM_OF_XATTR_NAME; i++) {
-+		ret = bpf_get_file_xattr(f, xattr_names[i], &value_ptr);
-+		if (ret == sizeof(expected_value))
-+			break;
-+	}
- 	if (ret != sizeof(expected_value))
- 		return 0;
- 	if (bpf_strncmp(value1, ret, expected_value))
-@@ -44,7 +62,7 @@ int BPF_PROG(test_inode_getxattr, struct dentry *dentry, char *name)
- {
- 	struct bpf_dynptr value_ptr;
- 	__u32 pid;
--	int ret;
-+	int ret, i;
- 
- 	pid = bpf_get_current_pid_tgid() >> 32;
- 	if (pid != monitored_pid)
-@@ -52,7 +70,11 @@ int BPF_PROG(test_inode_getxattr, struct dentry *dentry, char *name)
- 
- 	bpf_dynptr_from_mem(value2, sizeof(value2), 0, &value_ptr);
- 
--	ret = bpf_get_dentry_xattr(dentry, "user.kfuncs", &value_ptr);
-+	for (i = 0; i < NUM_OF_XATTR_NAME; i++) {
-+		ret = bpf_get_dentry_xattr(dentry, xattr_names[i], &value_ptr);
-+		if (ret == sizeof(expected_value))
-+			break;
-+	}
- 	if (ret != sizeof(expected_value))
- 		return 0;
- 	if (bpf_strncmp(value2, ret, expected_value))
--- 
-2.43.5
-
+Not sure what this applies to; it doesn't apply cleanly to v6.13-rc1
+(the pci/main branch).
 
