@@ -1,194 +1,192 @@
-Return-Path: <bpf+bounces-40776-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40775-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76C7F98E16E
-	for <lists+bpf@lfdr.de>; Wed,  2 Oct 2024 19:03:47 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7848598E137
+	for <lists+bpf@lfdr.de>; Wed,  2 Oct 2024 18:55:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9A73A1C20CC8
-	for <lists+bpf@lfdr.de>; Wed,  2 Oct 2024 17:03:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 28177B233BF
+	for <lists+bpf@lfdr.de>; Wed,  2 Oct 2024 16:55:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D45B1D131B;
-	Wed,  2 Oct 2024 17:01:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6A4B1D12EF;
+	Wed,  2 Oct 2024 16:55:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="nzGoO/pN"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="J31U/jtP"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE99F1D150D
-	for <bpf@vger.kernel.org>; Wed,  2 Oct 2024 17:01:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 940E71D0DF7
+	for <bpf@vger.kernel.org>; Wed,  2 Oct 2024 16:55:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727888499; cv=none; b=fhQLVMzp1uEI9c3QKmeiGR7iBOnrduhBuHs19ezwNLMWKmGqyL09F7zVz+cn+Q3Ec3se4/Vgkb0nuuqUVAfoKESkgYnwWDYE0g+Qtx8NzvalEjiK36177OGgNrgWoALv744Oxk2RuUrJQv6rUaxKuWe/WdF8hN0stZyhBXQfE/Y=
+	t=1727888116; cv=none; b=Uisr/hNizPKue69hjS+7qgZ9Z+6njNE21hDX4ACgoGWq0slH1KoW5mFSbTr7ADW3ve0nS1oq3Wyy7VsynmAO7YV3u5Xcl0zIIcsPfXKghXjbJARRFHEtJ2oxXNHD+2lkgB+hIupXk6XBlV2RYcvfIw/N40jj75BoP0lQm4dNcMU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727888499; c=relaxed/simple;
-	bh=577fAuiY7k/W2o9T9JdM0OPHd/iJA/K86pGSr+nSf4k=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dwfWdklKJmWuvEEqqlhxPIaVmDH4U//dX52bY+w5rVoqt7+Dx9OayUk/VrPgfzWDxEImSer6gJMxlqeIMAG21gMw8G2/A+h2r/aAJI2Riqesbe5IOj7l0x9zVU0VQVL8FUGb8my9dldi3E2Ww6IX1bj4AuWXPRoIPT9CX4lVIPU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=nzGoO/pN; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=3zt1X3mjNNbRXgA9ovCNYcAwOmhj3f5kzmFTM14l448=; b=nzGoO/pNX99+s3tjWNFPPxgs6d
-	6YBtF/GyR5VXJNsSn4vny6/OZOwbDSCb4BsDRv5lz3DZcj1UjEEUxi+muZdNtcSmgomNV1pdxwzai
-	mJkIhhEWV1AOIYolypFZG7iTok/00LyfJ3GyJFqoACd6XGn8gNi66y71ru7CK4rJxR9tgpd2qSPDl
-	GYqFCiB4UlPPDwwdMbvQBWo7nkoOHAIYaRtAk9IExzku6h3Bc3JGOjxCtZ6AyV1BGgoHfFjzU/8yH
-	eAihTd6JPc7pUWgUcJDbVGWEjo6xs8i1g7KCWOUbNM7b1ICP4TmNQHF7Z1S3EkGj/IMK7x2XAXeC9
-	LCsu/eWA==;
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1sw2QM-000EhK-CH; Wed, 02 Oct 2024 18:42:02 +0200
-Received: from [178.197.249.44] (helo=[192.168.1.114])
-	by sslproxy06.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1sw2QL-000CdS-2Y;
-	Wed, 02 Oct 2024 18:42:01 +0200
-Message-ID: <f05e5f07-467d-441a-8113-0a7c4cb2c842@iogearbox.net>
-Date: Wed, 2 Oct 2024 18:42:01 +0200
+	s=arc-20240116; t=1727888116; c=relaxed/simple;
+	bh=2rFuyThHxWP57junGefKRDEji5JiZL0EJcKFBgesle8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=fu66SgtRBfi8d9Dm/rVAuUbLn+0eu7aTxiwPKbqQq4ZWZb9ZOy40Fqx3Vrf7koGnVqQpQlOlqRPWCzu9QCOShiS+aL681ES2uUhivfkjkjiPlEiM4aWtDfSM+8qNK2+gf6LfOBjC5eeozmcjvDe0ITvYok0ca1NqUnQGT+tOwNg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=J31U/jtP; arc=none smtp.client-ip=209.85.128.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-42cd46f3a26so56620835e9.2
+        for <bpf@vger.kernel.org>; Wed, 02 Oct 2024 09:55:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1727888113; x=1728492913; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VCN1fWvxKwrTO+buEfXZLop43hrpA2k2kewTKpLd3kw=;
+        b=J31U/jtPKl7r9XMH2TsXe/WaIMOiI4M1YtJ+hIowaUAkR8Fq2h3L5I2LeMKfr2vEiy
+         +nCLi/A20eWOsrv7RdcURRZQDGTYEmvcThkpAIi1Xaz3tGldzYtm6gMoC02tWFHBksOD
+         +zOD3UOmgpanOAN1qqAj1EuKt6CCHozo6K5cSY05dbE1+ZkTEnQ5AcpFfr1yi/rVVfO7
+         AfdpZ+ToB3No+TIE/5FWhhAkGh7uvk5fah7zvNBzyZW62u8zddi9xCLn99hY/7Bl1oyH
+         JtUb2J21MEv4e+U9CYOgoomu19RdrS0h7N0EfDCQf0JKwrvBEiPVnqb4WX6hjtCPQScK
+         JDuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727888113; x=1728492913;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VCN1fWvxKwrTO+buEfXZLop43hrpA2k2kewTKpLd3kw=;
+        b=cvVuzFnjtvNGgre9GJ7fDPIuyfyd6Q3ICS5BC6Cs4ZLmJ3uQ4mZbiT7vfRBZvvv7/Y
+         dxXo7BwMnCubb2h3GBGX3+Air451EpJTxB2SWIaKRP2gOWer3aikfEZlsfPwjMOxm9Gg
+         05bHu4E19FiZxqGsOHvK04SZoDo85B/2032yXeyq6dW5ztmyf/dhSQl6e3Uzk0intQDm
+         aapBakErS9xqU/yen40CkEj4n9+/GFs7tayejPnpSaiMnbxDSac5hILfHgpuZmOfWyzN
+         ER5Xo2F+Vb8/6tsGb46JddFGT2+LxMhUyG6PecMA75QB6uIaPBgrukOiib9tkgCgBFMg
+         wUaw==
+X-Forwarded-Encrypted: i=1; AJvYcCUO/W8sR0rgBbdvS3ukS5+c3hFKr/NAgaHCEe3j4o06V3I6U3uKTk9A0ykcQ147TMnkxl8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyG7lQ7oDYHM93EV0yF2x5T0cutdJ60yLbj/Sf+KOs1N0fQEltP
+	YG+LWNQPocsRGAYTJvrg8niPz9b5J0584SOQAkte2h0a6zkm+YykIyRdtXa345iRK4hSN8bwkxE
+	/uSv3KfNrmGlVGxYmZCpA8lH18QA=
+X-Google-Smtp-Source: AGHT+IGiMKbkRLAd0LFeoyurrYoUobJ2cvltehAY8EgRTAWzLuGN15tb/dNOgsip44ejzpMX7bM+KXPaaWr5iYv7dX0=
+X-Received: by 2002:adf:f04e:0:b0:37c:ccbe:39ae with SMTP id
+ ffacd0b85a97d-37cfba078ddmr2329761f8f.48.1727888112545; Wed, 02 Oct 2024
+ 09:55:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: add tcx netns cookie tests
-To: Mahe Tardy <mahe.tardy@gmail.com>, bpf@vger.kernel.org
-Cc: martin.lau@linux.dev, john.fastabend@gmail.com
-References: <20241002160122.148980-1-mahe.tardy@gmail.com>
- <20241002160122.148980-2-mahe.tardy@gmail.com>
-Content-Language: en-US
-From: Daniel Borkmann <daniel@iogearbox.net>
-Autocrypt: addr=daniel@iogearbox.net; keydata=
- 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
-In-Reply-To: <20241002160122.148980-2-mahe.tardy@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27415/Wed Oct  2 10:52:29 2024)
+References: <cover.1727329823.git.vmalik@redhat.com> <bc06e1f4bef09ba3d431d7a7236303746a7adb57.1727329823.git.vmalik@redhat.com>
+ <CAEf4Bzas4ZxiyJp7h7N5OGmPSMRfZDgPUgEAdTmir3n-4cx-xg@mail.gmail.com>
+ <adaa47618f2b71c2803195749cedd4a5b468cffa.camel@gmail.com>
+ <CAADnVQLCk+VNpN8WfCbSbT-FBcHBuMXpk-hBOLB7HX3BrURp8w@mail.gmail.com>
+ <CAEf4BzZSFuXyUbwN8_VvbR6Uk_qHAKWNLkCZfdo-58WC_RYYag@mail.gmail.com>
+ <CAADnVQLsnhsL2i_RnOBUSebO--yx_5Az1Ydr9QPb5WZCkmYQJg@mail.gmail.com>
+ <CAEf4BzYt42A73kmg5=HWRiHj0H1Dr0WPQosmQLkBhgkkiw0HQA@mail.gmail.com> <c831b42e-30ba-4a19-bc0d-5346c8388892@redhat.com>
+In-Reply-To: <c831b42e-30ba-4a19-bc0d-5346c8388892@redhat.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 2 Oct 2024 09:55:01 -0700
+Message-ID: <CAADnVQLhr+xOF58ppaySOjb6cMdsWEYhr_4ZLvQ-XDWXHBMgBA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: Add kfuncs for read-only string operations
+To: Viktor Malik <vmalik@redhat.com>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Eduard Zingerman <eddyz87@gmail.com>, 
+	bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 10/2/24 6:01 PM, Mahe Tardy wrote:
-> Add netns cookie test that verifies the helper is now supported and work
-> in the context of tc programs.
-> 
-> Signed-off-by: Mahe Tardy <mahe.tardy@gmail.com>
-> ---
->   tools/testing/selftests/bpf/prog_tests/netns_cookie.c | 7 +++++++
->   tools/testing/selftests/bpf/progs/netns_cookie_prog.c | 9 +++++++++
->   2 files changed, 16 insertions(+)
-> 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/netns_cookie.c b/tools/testing/selftests/bpf/prog_tests/netns_cookie.c
-> index 71d8f3ba7d6b..233fd66f59ee 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/netns_cookie.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/netns_cookie.c
-> @@ -12,6 +12,7 @@ static int duration;
-> 
->   void test_netns_cookie(void)
->   {
-> +	LIBBPF_OPTS(bpf_prog_attach_opts, opta);
->   	int server_fd = -1, client_fd = -1, cgroup_fd = -1;
->   	int err, val, ret, map, verdict;
->   	struct netns_cookie_prog *skel;
-> @@ -38,6 +39,11 @@ void test_netns_cookie(void)
->   	if (!ASSERT_OK(err, "prog_attach"))
->   		goto done;
-> 
-> +	verdict = bpf_program__fd(skel->progs.get_netns_cookie_tcx);
-> +	err = bpf_prog_attach_opts(verdict, 1, BPF_TCX_INGRESS, &opta);
-> +	if (!ASSERT_EQ(err, 0, "prog_attach"))
-> +		goto done;
-> +
->   	server_fd = start_server(AF_INET6, SOCK_STREAM, "::1", 0, 0);
->   	if (CHECK(server_fd < 0, "start_server", "errno %d\n", errno))
->   		goto done;
-> @@ -68,6 +74,7 @@ void test_netns_cookie(void)
->   		goto done;
-> 
->   	ASSERT_EQ(val, cookie_expected_value, "cookie_value");
-> +	ASSERT_EQ(skel->bss->tcx_netns_cookie, cookie_expected_value, "cookie_value");
-> 
->   done:
->   	if (server_fd != -1)
+On Tue, Oct 1, 2024 at 11:12=E2=80=AFPM Viktor Malik <vmalik@redhat.com> wr=
+ote:
+>
+> On 10/1/24 19:40, Andrii Nakryiko wrote:
+> > On Tue, Oct 1, 2024 at 10:34=E2=80=AFAM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> >>
+> >> On Tue, Oct 1, 2024 at 10:04=E2=80=AFAM Andrii Nakryiko
+> >> <andrii.nakryiko@gmail.com> wrote:
+> >>>
+> >>> On Tue, Oct 1, 2024 at 7:48=E2=80=AFAM Alexei Starovoitov
+> >>> <alexei.starovoitov@gmail.com> wrote:
+> >>>>
+> >>>> On Tue, Oct 1, 2024 at 4:26=E2=80=AFAM Eduard Zingerman <eddyz87@gma=
+il.com> wrote:
+> >>>>>
+> >>>>> On Mon, 2024-09-30 at 15:00 -0700, Andrii Nakryiko wrote:
+> >>>>>
+> >>>>> [...]
+> >>>>>
+> >>>>>> Right now, the only way to pass dynamically sized anything is thro=
+ugh
+> >>>>>> dynptr, AFAIU.
+> >>>>>
+> >>>>> But we do have 'is_kfunc_arg_mem_size()' that checks for __sz suffi=
+x,
+> >>>>> e.g. used for bpf_copy_from_user_str():
+> >>>>>
+> >>>>> /**
+> >>>>>  * bpf_copy_from_user_str() - Copy a string from an unsafe user add=
+ress
+> >>>>>  * @dst:             Destination address, in kernel space.  This bu=
+ffer must be
+> >>>>>  *                   at least @dst__sz bytes long.
+> >>>>>  * @dst__sz:         Maximum number of bytes to copy, includes the =
+trailing NUL.
+> >>>>>  * ...
+> >>>>>  */
+> >>>>> __bpf_kfunc int bpf_copy_from_user_str(void *dst, u32 dst__sz, cons=
+t void __user *unsafe_ptr__ign, u64 flags)
+> >>>>>
+> >>>>> However, this suffix won't work for strnstr because of the argument=
+s order.
+> >>>>
+> >>>> Stating the obvious... we don't need to keep the order exactly the s=
+ame.
+> >>>>
+> >>>> Regarding all of these kfuncs... as Andrii pointed out 'const char *=
+s'
+> >>>> means that the verifier will check that 's' points to a valid byte.
+> >>>> I think we can do a hybrid static + dynamic safety scheme here.
+> >>>> All of the kfunc signatures can stay the same, but we'd have to
+> >>>> open code all string helpers with __get_kernel_nofault() instead of
+> >>>> direct memory access.
+> >>>> Since the first byte is guaranteed to be valid by the verifier
+> >>>> we only need to make sure that the s+N bytes won't cause page faults
+> >>>
+> >>> You mean to just check that s[N-1] can be read? Given a large enough
+> >>> N, couldn't it be that some page between s[0] and s[N-1] still can be
+> >>> unmapped, defeating this check?
+> >>
+> >> Just checking s[0] and s[N-1] is not enough, obviously, and especially=
+,
+> >> since the logic won't know where nul byte is, so N is unknown.
+> >> I meant to that all of str* kfuncs will be reading all bytes
+> >> via __get_kernel_nofault() until they find \0.
+> >
+> > Ah, ok, I see what you mean now.
+> >
+> >> It can be optimized to 8 byte access.
+> >> The open coding (aka copy-paste) is unfortunate, of course.
+> >
+> > Yep, this sucks.
+>
+> Yeah, that's quite annoying. I really wanted to avoid doing that. Also,
+> we won't be able to use arch-optimized versions of the functions.
+>
+> Just to make sure I understand things correctly - can we do what Eduard
+> suggested and add explicit sizes for all arguments using the __sz
+> suffix? So something like:
+>
+>     const char *bpf_strnstr(const char *s1, u32 s1__sz, const char *s2, u=
+32 s2__sz);
 
-Looks like CI fails, as this is missing a bpf_prog_detach_opts().
+That's ok-ish, but you probably want:
 
-> diff --git a/tools/testing/selftests/bpf/progs/netns_cookie_prog.c b/tools/testing/selftests/bpf/progs/netns_cookie_prog.c
-> index aeff3a4f9287..207f0e6c20b7 100644
-> --- a/tools/testing/selftests/bpf/progs/netns_cookie_prog.c
-> +++ b/tools/testing/selftests/bpf/progs/netns_cookie_prog.c
-> @@ -27,6 +27,8 @@ struct {
->   	__type(value, __u64);
->   } sock_map SEC(".maps");
-> 
-> +int tcx_netns_cookie;
-> +
->   SEC("sockops")
->   int get_netns_cookie_sockops(struct bpf_sock_ops *ctx)
->   {
-> @@ -81,4 +83,11 @@ int get_netns_cookie_sk_msg(struct sk_msg_md *msg)
->   	return 1;
->   }
-> 
-> +SEC("tcx/ingress")
-> +int get_netns_cookie_tcx(struct __sk_buff *skb)
-> +{
-> +	tcx_netns_cookie = bpf_get_netns_cookie(skb);
-> +	return TCX_PASS;
-> +}
-> +
->   char _license[] SEC("license") = "GPL";
-> --
-> 2.34.1
-> 
+const char *bpf_strnstr(void *s1, u32 s1__sz, void *s2, u32 s2__sz);
+
+and then to call strnstr() you still need to strnlen(s2, s2__sz).
+
+But a more general question... how always passing size will work
+for bpftrace ? Does it always know the upper bound of storage where
+strings are stored?
+
+I would think __get_kernel_nofault() approach is user friendlier.
 
