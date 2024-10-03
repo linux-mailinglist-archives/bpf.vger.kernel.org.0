@@ -1,317 +1,203 @@
-Return-Path: <bpf+bounces-40855-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40857-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F10DE98F5C7
-	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2024 20:04:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B94098F62B
+	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2024 20:33:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D877282039
-	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2024 18:04:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9F4101C216D9
+	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2024 18:33:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF5A91AB6DC;
-	Thu,  3 Oct 2024 18:03:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 165F61AB530;
+	Thu,  3 Oct 2024 18:33:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="GhLZSLgI"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ijDtx3a/"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D237F1A76CF;
-	Thu,  3 Oct 2024 18:03:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8229F6A33F;
+	Thu,  3 Oct 2024 18:33:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727978613; cv=none; b=qjMdUuaud5n7fK2XiaBOX4azDgT9Zh1YI1UI65igjgFVwuMxsUJGEAWijgNBzIS/nnIqOULyjGrGdLsjL5lQj4CeqM6bYoCEx5UnM1GCSV8G4Fk9mQHKtMYo9MaANK1MTA/ibEHcwG7c4lSypkXINhIJFZFPV7g3/FqtubGn9W8=
+	t=1727980397; cv=none; b=cadSRSKmSiQqzx2C0WOoEoUKE2wYdkBRgln4sVLrGljK7WSQpsl7u+Knhnv1GnkcagwaHWypBJUIwsjQ86tIS9MWe1ORhGtYVsVEM1zvdh1ahog4MI0aqewcylaOyVH/Hxg6JhG4jhYXbKTBN42+Zp1LFQU+vVnAbLZVBcSK/X4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727978613; c=relaxed/simple;
-	bh=pIATfDLY3eHxDv/6Tju+aPh4JAyq6y/R1hh+kz+4sMM=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=s926FBMEGCvfdQ1oZBe+31atnFtxZWuP+g4WlAVEvoN30DRI7wjjSJhprqNZ0/iUI0HKKd4ijlwZwH4IlAI+k5hPcABJdbAOA2AycWNhMG+xaQ0HVa11ZXEGMkuqKAJDa6wdtKvQzldxE07eS6rpUJbpwCal0IzEcsTaxGBEyao=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=GhLZSLgI; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:MIME-Version:
-	References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-	Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=trdebJaQoOOg2KNHBWb6sySsRrnLfnR9Du3D0sqwzd8=; b=GhLZSLgIH0OmJfpZnQGAvwXtg4
-	Nw3bBmng02OmQfQ7tack/EpLY00uYpB9/fi5qKND3sY1z4ZbRxUQ7vjFk/BkLXJKxpV2yGKXr/Bna
-	BXV905d+5ZdiROigFW1yCJ9w5cmY/j4olT/oaJsdAm9iLDiJsFrEhc5xpTnHcBc+9cwKj++ApKSLS
-	FNY6LK9MxsiIllydA7NYVphr4Q/y95XYsdJLghJiNtYgeICGZnAg7f6R7LjOJngsDAiV1N4puZkhf
-	6LOWDKPgrlzWpCZvr1+LyhFhBKtOUVUx3SeAu4g2S/niafmEcod2Wp/tAfax6rYtLzy20qlzQ52vX
-	2UmtKseQ==;
-Received: from 44.249.197.178.dynamic.cust.swisscom.net ([178.197.249.44] helo=localhost)
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1swQAd-0006Dv-IL; Thu, 03 Oct 2024 20:03:23 +0200
-From: Daniel Borkmann <daniel@iogearbox.net>
-To: martin.lau@linux.dev
-Cc: razor@blackwall.org,
-	jrife@google.com,
-	tangchen.1@bytedance.com,
-	bpf@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: [PATCH bpf-next 4/4] selftests/bpf: Extend netkit tests to validate skb meta data
-Date: Thu,  3 Oct 2024 20:03:20 +0200
-Message-Id: <20241003180320.113002-4-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20241003180320.113002-1-daniel@iogearbox.net>
-References: <20241003180320.113002-1-daniel@iogearbox.net>
+	s=arc-20240116; t=1727980397; c=relaxed/simple;
+	bh=qeKYzDR0ZzWVVmm6mUgb0da9cLC20051Tsv6ATTHuLc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Tlsgvi/dp+I4J+mx+fMZAI+4Ij4yDae3azngSa6986ukH39Tj1mTYT0rdIh8q08HSc5kF90C0gpaFvbzrF6l/DL3y25xf5FpnQXINN2Fy/HFAUGi6U03yTFvVneolPrAWF/9914ScAtuxc4BQW4lGbkUWWkWJkHv+Jf4FF/AUxI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ijDtx3a/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93555C4CEC5;
+	Thu,  3 Oct 2024 18:33:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1727980397;
+	bh=qeKYzDR0ZzWVVmm6mUgb0da9cLC20051Tsv6ATTHuLc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ijDtx3a/OrpwitT1cE66Sn7FpVdibUuLA2lltomzNY18HodbjyOCKyv+UrKSPsO01
+	 3cRNWV3l3XHBA9CbZXwf85jV71yfAbY8jQY1NeG+WUtvNvLZa6MvXqg8jywMUvGPMS
+	 CHXFVB5Ka7FciR5Osv0nyMq/CYeyzpuHTJdC7GfqUb/wW5WyREx+CBZN6teNvadxMW
+	 h4Nx0r27ZJ1F9L0CNutScEkzBVP/RgtLSb0vDrG/GUd0OrmFQcstOP8D5U+I7Saes4
+	 zG7W57ZS1ZmR4nhr+QjQb5JKwTJfEEX1g52j975ECtB7zTHlgd639O2yAfC9SE3rhD
+	 rnhFuOAygzy4A==
+Date: Thu, 3 Oct 2024 15:33:13 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Stephen Brennan <stephen.s.brennan@oracle.com>
+Cc: Alan Maguire <alan.maguire@oracle.com>, bpf@vger.kernel.org,
+	dwarves@vger.kernel.org, linux-debuggers@vger.kernel.org
+Subject: Re: [PATCH dwarves v3 5/5] pahole: add global_var BTF feature
+Message-ID: <Zv7jaXiQ7Av0p6Hn@x1>
+References: <20241002235253.487251-1-stephen.s.brennan@oracle.com>
+ <20241002235253.487251-6-stephen.s.brennan@oracle.com>
+ <22da229b-86d0-4a0c-b5d6-4883b64669f2@oracle.com>
+ <Zv6v0WdEBg4dEJAP@x1>
+ <9cda0821-4b25-498e-acf3-cd8055d82ca5@oracle.com>
+ <Zv7R2RcFRqMPLB5K@x1>
+ <87ttdtkrh4.fsf@oracle.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27416/Thu Oct  3 10:37:25 2024)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87ttdtkrh4.fsf@oracle.com>
 
-Add a small netkit test to validate skb mark and priority under the
-default scrubbing as well as with mark and priority scrubbing off.
+On Thu, Oct 03, 2024 at 10:48:23AM -0700, Stephen Brennan wrote:
+> Arnaldo Carvalho de Melo <acme@kernel.org> writes:
+> > On Thu, Oct 03, 2024 at 04:21:07PM +0100, Alan Maguire wrote:
+> >> On 03/10/2024 15:53, Arnaldo Carvalho de Melo wrote:
+> >> > On Thu, Oct 03, 2024 at 03:40:35PM +0100, Alan Maguire wrote:
+> >> >> On 03/10/2024 00:52, Stephen Brennan wrote:
+> >> >>> So far, pahole has only encoded type information for percpu variables.
+> >> >>> However, there are several reasons why type information for all global
+> >> >>> variables would be useful in the kernel:
+> >> > 
+> >> >>> 1. Runtime kernel debuggers like drgn could use the BTF to introspect
+> >> >>> kernel data structures without needing to install heavyweight DWARF.
+> >> > 
+> >> >>> 2. BPF programs using the "__ksym" annotation could declare the
+> >> >>> variables using the correct type, rather than "void".
+> >> > 
+> >> >>> It makes sense to introduce a feature for this in pahole so that these
+> >> >>> capabilities can be explored in the kernel. The feature is non-default:
+> >> >>> when using "--btf-features=default", it is disabled. It must be
+> >> >>> explicitly requested, e.g. with "--btf-features=+global_var".
+> >> >  
+> >> >> I'm not totally sure switching global_var to a non-default feature is
+> >> >> the right answer here.
+> >> >  
+> >> >> The --btf_features "default" set of options are meant to closely mirror
+> >> >> the upstream kernel options we enable when doing BTF encoding. However,
+> >> >> in scripts/Makefile.btf we don't use "default"; we explicitly call out
+> >> >> the set of features we want. We can't just use "default" in that context
+> >> >> since the meaning of "default" varies based upon whatever version of
+> >> >> pahole you have.
+> >> >  
+> >> >> So "default" is simply a convenient shorthand for pahole testing which
+> >> >> corresponds to "give me the set of features that upstream kernels use".
+> >> >> It could have a better name that reflects that more clearly I suppose.
+> >> >  
+> >> >> When we do switch this on in-kernel, we'll add the explicit "global_var"
+> >> >> to the list of features in scripts/Makefile.btf.
+> >> >  
+> >> >> So with all this said, do we make global_vars a default or non-default
+> >> >> feature? It would seem to make sense to specify non-default, since it is
+> >> >> not switched on for the kernel yet, but looking ahead, what if the 1.28
+> >> >> pahole release is used to build vmlinux BTF and we add global_var to the
+> >> >> list of features? In such a case, our "default" set of values would be
+> >> >> out of step with the kernel. So it's not a huge deal, but I would
+> >> >> consider keeping this a default feature to facilitate testing; this
+> >> >> won't change what the kernel does, but it makes testing with full
+> >> >> variable generation easier (I can just do "--btf_features=default").
+> >> > 
+> >> > This "default" really is confusing, as you spelled out above :-\
+> 
+> Yeah, I spent a while staring at the comment and reading the code to
+> understand the nuance between the initial and default values. I don't
+> think I fully understood it until this v3 patch, and admittedly I still
+> didn't have the full context of how "default" was used.
+> 
+> One interesting point of comparison is the "-M" argument to
+> "qemu-system-$arch". For example:
+> 
+>   $ qemu-system-x86_64 -M ?
+>   Supported machines are:
+>   microvm              microvm (i386)
+>   pc                   Standard PC (i440FX + PIIX, 1996) (alias of pc-i440fx-9.0)
+>   pc-i440fx-9.0        Standard PC (i440FX + PIIX, 1996) (default)
+>   pc-i440fx-8.2        Standard PC (i440FX + PIIX, 1996)
+>   pc-i440fx-8.1        Standard PC (i440FX + PIIX, 1996)
+>   pc-i440fx-8.0        Standard PC (i440FX + PIIX, 1996)
+>   [...]
+> 
+> So the default "pc" machine is simply an alias that gets updated to the
+> most recent machine (with potential new behaviors) every release, but
+> you can always select a specific machine that you care about.
+> 
+> Maybe it would make sense if there were versioned defaults, so that
+> "default" always picks whatever is relevant to the most recent upstream
+> kernel, but you could also select the default as of an older pahole
+> release.
+> 
+> That does sound like plenty of complexity added to an already somewhat
+> confusing system, so I'm not sold on it. The flexibility for adjusting
+> to new kernel defaults is appealing though.
+> 
+> >> >When to
+> >> > add something to it so that it reflects what the kernel has is tricky,
+> >> > perhaps we should instead have a ~/.config/pahole file where developers
+> >> > can add BTF features to add to --btf_features=default in the period
+> >> > where something new was _really_ added to the kernel and before the next
+> >> > version when it _have been added to the kernel set of BTF features_ thus
+> >> > should be set into stone in the pahole sources?
+> >  
+> >> it's a nice idea; I suppose once we have more automated tests, this will
+> >> be less of an issue too. I'm looking at adding a BTF variable test
+> >> shortly, would be good to have coverage there too, especially since
+> >> we're growing the amount of info we encode in this area.
+> >
+> > Sure thing, the more tests, the better!
+> >  
+> >> > So I think we should do as Stephen did, keep it out of
+> >> > --btf_features=default, as it is not yet in the kernel set of options,
+> >> > and have the config file, starting with being able to set those
+> >> > features, i.e. we would have:
+> >
+> >> > $ cat ~/.config/pahole
+> >> > [btf_encoder]
+> >> > 	btf_features=+global_var
+> >
+> >> > wdyt?
+> >  
+> >> I think that makes perfect sense, great idea!
+> >
+> > I was looking for a library to do that to avoid "stealing" the
+> > perf-config code, but perhaps we should use an env var for that?
+> >
+> > PAHOLE_BTF_FEATURES='+global_var'
+> >
+> > To keep things simple?
+> 
+> One concern with configuration files is that (at least on my system)
+> they tend to sit around and get forgotten, unless they're super well
+> known configs like ~/.bashrc. So at some point, I could see myself
+> setting a pahole config and then 6 months later wondering why pahole
+> behaves differently on two different systems.
+> 
+> Env vars are easy to set permanently if you want, but are also more
+> visible and centralized with your other configurations, so they're my
+> preference.
 
-  # ./vmtest.sh -- ./test_progs -t netkit
-  [...]
-  ./test_progs -t netkit
-  [    1.419662] tsc: Refined TSC clocksource calibration: 3407.993 MHz
-  [    1.420151] clocksource: tsc: mask: 0xffffffffffffffff max_cycles: 0x311fcd52370, max_idle_ns: 440795242006 ns
-  [    1.420897] clocksource: Switched to clocksource tsc
-  [    1.447996] bpf_testmod: loading out-of-tree module taints kernel.
-  [    1.448447] bpf_testmod: module verification failed: signature and/or required key missing - tainting kernel
-  #357     tc_netkit_basic:OK
-  #358     tc_netkit_device:OK
-  #359     tc_netkit_multi_links:OK
-  #360     tc_netkit_multi_opts:OK
-  #361     tc_netkit_neigh_links:OK
-  #362     tc_netkit_pkt_type:OK
-  #363     tc_netkit_scrub:OK
-  Summary: 7/0 PASSED, 0 SKIPPED, 0 FAILED
+Agreed, lets go with an env var.
 
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
----
- .../selftests/bpf/prog_tests/tc_netkit.c      | 94 +++++++++++++++++--
- .../selftests/bpf/progs/test_tc_link.c        | 12 +++
- 2 files changed, 97 insertions(+), 9 deletions(-)
+And this one is even "ephemeral", i.e. as we get new versions of pahole
+it should match the most recent set of kernel btf_features set and thus
+become unneeded.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/tc_netkit.c b/tools/testing/selftests/bpf/prog_tests/tc_netkit.c
-index b9135720024c..6c49b67155b1 100644
---- a/tools/testing/selftests/bpf/prog_tests/tc_netkit.c
-+++ b/tools/testing/selftests/bpf/prog_tests/tc_netkit.c
-@@ -14,7 +14,9 @@
- #include "netlink_helpers.h"
- #include "tc_helpers.h"
- 
--#define ICMP_ECHO 8
-+#define MARK		42
-+#define PRIO		0xeb9f
-+#define ICMP_ECHO	8
- 
- struct icmphdr {
- 	__u8		type;
-@@ -33,7 +35,7 @@ struct iplink_req {
- };
- 
- static int create_netkit(int mode, int policy, int peer_policy, int *ifindex,
--			 bool same_netns)
-+			 bool same_netns, int scrub, int peer_scrub)
- {
- 	struct rtnl_handle rth = { .fd = -1 };
- 	struct iplink_req req = {};
-@@ -58,6 +60,8 @@ static int create_netkit(int mode, int policy, int peer_policy, int *ifindex,
- 	data = addattr_nest(&req.n, sizeof(req), IFLA_INFO_DATA);
- 	addattr32(&req.n, sizeof(req), IFLA_NETKIT_POLICY, policy);
- 	addattr32(&req.n, sizeof(req), IFLA_NETKIT_PEER_POLICY, peer_policy);
-+	addattr32(&req.n, sizeof(req), IFLA_NETKIT_SCRUB, scrub);
-+	addattr32(&req.n, sizeof(req), IFLA_NETKIT_PEER_SCRUB, peer_scrub);
- 	addattr32(&req.n, sizeof(req), IFLA_NETKIT_MODE, mode);
- 	addattr_nest_end(&req.n, data);
- 	addattr_nest_end(&req.n, linkinfo);
-@@ -118,9 +122,9 @@ static void destroy_netkit(void)
- 
- static int __send_icmp(__u32 dest)
- {
-+	int sock, ret, mark = MARK, prio = PRIO;
- 	struct sockaddr_in addr;
- 	struct icmphdr icmp;
--	int sock, ret;
- 
- 	ret = write_sysctl("/proc/sys/net/ipv4/ping_group_range", "0 0");
- 	if (!ASSERT_OK(ret, "write_sysctl(net.ipv4.ping_group_range)"))
-@@ -135,6 +139,15 @@ static int __send_icmp(__u32 dest)
- 	if (!ASSERT_OK(ret, "setsockopt(SO_BINDTODEVICE)"))
- 		goto out;
- 
-+	ret = setsockopt(sock, SOL_SOCKET, SO_MARK, &mark, sizeof(mark));
-+	if (!ASSERT_OK(ret, "setsockopt(SO_MARK)"))
-+		goto out;
-+
-+	ret = setsockopt(sock, SOL_SOCKET, SO_PRIORITY,
-+			 &prio, sizeof(prio));
-+	if (!ASSERT_OK(ret, "setsockopt(SO_PRIORITY)"))
-+		goto out;
-+
- 	memset(&addr, 0, sizeof(addr));
- 	addr.sin_family = AF_INET;
- 	addr.sin_addr.s_addr = htonl(dest);
-@@ -171,7 +184,8 @@ void serial_test_tc_netkit_basic(void)
- 	int err, ifindex;
- 
- 	err = create_netkit(NETKIT_L2, NETKIT_PASS, NETKIT_PASS,
--			    &ifindex, false);
-+			    &ifindex, false, NETKIT_SCRUB_DEFAULT,
-+			    NETKIT_SCRUB_DEFAULT);
- 	if (err)
- 		return;
- 
-@@ -285,7 +299,8 @@ static void serial_test_tc_netkit_multi_links_target(int mode, int target)
- 	int err, ifindex;
- 
- 	err = create_netkit(mode, NETKIT_PASS, NETKIT_PASS,
--			    &ifindex, false);
-+			    &ifindex, false, NETKIT_SCRUB_DEFAULT,
-+			    NETKIT_SCRUB_DEFAULT);
- 	if (err)
- 		return;
- 
-@@ -413,7 +428,8 @@ static void serial_test_tc_netkit_multi_opts_target(int mode, int target)
- 	int err, ifindex;
- 
- 	err = create_netkit(mode, NETKIT_PASS, NETKIT_PASS,
--			    &ifindex, false);
-+			    &ifindex, false, NETKIT_SCRUB_DEFAULT,
-+			    NETKIT_SCRUB_DEFAULT);
- 	if (err)
- 		return;
- 
-@@ -527,7 +543,8 @@ void serial_test_tc_netkit_device(void)
- 	int err, ifindex, ifindex2;
- 
- 	err = create_netkit(NETKIT_L3, NETKIT_PASS, NETKIT_PASS,
--			    &ifindex, true);
-+			    &ifindex, true, NETKIT_SCRUB_DEFAULT,
-+			    NETKIT_SCRUB_DEFAULT);
- 	if (err)
- 		return;
- 
-@@ -638,7 +655,8 @@ static void serial_test_tc_netkit_neigh_links_target(int mode, int target)
- 	int err, ifindex;
- 
- 	err = create_netkit(mode, NETKIT_PASS, NETKIT_PASS,
--			    &ifindex, false);
-+			    &ifindex, false, NETKIT_SCRUB_DEFAULT,
-+			    NETKIT_SCRUB_DEFAULT);
- 	if (err)
- 		return;
- 
-@@ -715,7 +733,8 @@ static void serial_test_tc_netkit_pkt_type_mode(int mode)
- 	struct bpf_link *link;
- 
- 	err = create_netkit(mode, NETKIT_PASS, NETKIT_PASS,
--			    &ifindex, true);
-+			    &ifindex, true, NETKIT_SCRUB_DEFAULT,
-+			    NETKIT_SCRUB_DEFAULT);
- 	if (err)
- 		return;
- 
-@@ -779,3 +798,60 @@ void serial_test_tc_netkit_pkt_type(void)
- 	serial_test_tc_netkit_pkt_type_mode(NETKIT_L2);
- 	serial_test_tc_netkit_pkt_type_mode(NETKIT_L3);
- }
-+
-+void serial_test_tc_netkit_scrub_type(int scrub)
-+{
-+	LIBBPF_OPTS(bpf_netkit_opts, optl);
-+	struct test_tc_link *skel;
-+	struct bpf_link *link;
-+	int err, ifindex;
-+
-+	err = create_netkit(NETKIT_L2, NETKIT_PASS, NETKIT_PASS,
-+			    &ifindex, false, scrub, scrub);
-+	if (err)
-+		return;
-+
-+	skel = test_tc_link__open();
-+	if (!ASSERT_OK_PTR(skel, "skel_open"))
-+		goto cleanup;
-+
-+	ASSERT_EQ(bpf_program__set_expected_attach_type(skel->progs.tc8,
-+		  BPF_NETKIT_PRIMARY), 0, "tc8_attach_type");
-+
-+	err = test_tc_link__load(skel);
-+	if (!ASSERT_OK(err, "skel_load"))
-+		goto cleanup;
-+
-+	assert_mprog_count_ifindex(ifindex, BPF_NETKIT_PRIMARY, 0);
-+	assert_mprog_count_ifindex(ifindex, BPF_NETKIT_PEER, 0);
-+
-+	ASSERT_EQ(skel->bss->seen_tc8, false, "seen_tc8");
-+
-+	link = bpf_program__attach_netkit(skel->progs.tc8, ifindex, &optl);
-+	if (!ASSERT_OK_PTR(link, "link_attach"))
-+		goto cleanup;
-+
-+	skel->links.tc8 = link;
-+
-+	assert_mprog_count_ifindex(ifindex, BPF_NETKIT_PRIMARY, 1);
-+	assert_mprog_count_ifindex(ifindex, BPF_NETKIT_PEER, 0);
-+
-+	tc_skel_reset_all_seen(skel);
-+	ASSERT_EQ(send_icmp(), 0, "icmp_pkt");
-+
-+	ASSERT_EQ(skel->bss->seen_tc8, true, "seen_tc8");
-+	ASSERT_EQ(skel->bss->mark, scrub == NETKIT_SCRUB_NONE ? MARK : 0, "mark");
-+	ASSERT_EQ(skel->bss->prio, scrub == NETKIT_SCRUB_NONE ? PRIO : 0, "prio");
-+cleanup:
-+	test_tc_link__destroy(skel);
-+
-+	assert_mprog_count_ifindex(ifindex, BPF_NETKIT_PRIMARY, 0);
-+	assert_mprog_count_ifindex(ifindex, BPF_NETKIT_PEER, 0);
-+	destroy_netkit();
-+}
-+
-+void serial_test_tc_netkit_scrub(void)
-+{
-+	serial_test_tc_netkit_scrub_type(NETKIT_SCRUB_DEFAULT);
-+	serial_test_tc_netkit_scrub_type(NETKIT_SCRUB_NONE);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_tc_link.c b/tools/testing/selftests/bpf/progs/test_tc_link.c
-index ab3eae3d6af8..10d825928499 100644
---- a/tools/testing/selftests/bpf/progs/test_tc_link.c
-+++ b/tools/testing/selftests/bpf/progs/test_tc_link.c
-@@ -18,6 +18,7 @@ bool seen_tc4;
- bool seen_tc5;
- bool seen_tc6;
- bool seen_tc7;
-+bool seen_tc8;
- 
- bool set_type;
- 
-@@ -25,6 +26,8 @@ bool seen_eth;
- bool seen_host;
- bool seen_mcast;
- 
-+int mark, prio;
-+
- SEC("tc/ingress")
- int tc1(struct __sk_buff *skb)
- {
-@@ -100,3 +103,12 @@ int tc7(struct __sk_buff *skb)
- 	seen_tc7 = true;
- 	return TCX_PASS;
- }
-+
-+SEC("tc/egress")
-+int tc8(struct __sk_buff *skb)
-+{
-+	seen_tc8 = true;
-+	mark = skb->mark;
-+	prio = skb->priority;
-+	return TCX_PASS;
-+}
--- 
-2.43.0
+At some point we'll stop adding features, right? 8-)
 
+- Arnaldo
 
