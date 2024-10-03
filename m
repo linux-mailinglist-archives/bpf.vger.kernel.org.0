@@ -1,203 +1,202 @@
-Return-Path: <bpf+bounces-40857-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40858-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B94098F62B
-	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2024 20:33:24 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1F9798F683
+	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2024 20:53:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9F4101C216D9
-	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2024 18:33:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 12A1BB22280
+	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2024 18:53:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 165F61AB530;
-	Thu,  3 Oct 2024 18:33:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E93E1AB515;
+	Thu,  3 Oct 2024 18:53:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ijDtx3a/"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Jb9waOxp"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-175.mta0.migadu.com (out-175.mta0.migadu.com [91.218.175.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8229F6A33F;
-	Thu,  3 Oct 2024 18:33:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A8D91A3A9B
+	for <bpf@vger.kernel.org>; Thu,  3 Oct 2024 18:53:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727980397; cv=none; b=cadSRSKmSiQqzx2C0WOoEoUKE2wYdkBRgln4sVLrGljK7WSQpsl7u+Knhnv1GnkcagwaHWypBJUIwsjQ86tIS9MWe1ORhGtYVsVEM1zvdh1ahog4MI0aqewcylaOyVH/Hxg6JhG4jhYXbKTBN42+Zp1LFQU+vVnAbLZVBcSK/X4=
+	t=1727981606; cv=none; b=aOXhRXQ6dlBAF2DaVq/IfvhHluXixodRV8raHgtLt0Q8BCCOT95M2pMTQxfNl2GeVfg2GwXja8VCWcNAiAtkOrVTXUoGsnUKNM1qDMxJ+PxyenE1Oxcf8tisJl33/bXTi4TanL9gMg22FlqMJUvjEeyuGg2EU6GR4hvOD/czl+s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727980397; c=relaxed/simple;
-	bh=qeKYzDR0ZzWVVmm6mUgb0da9cLC20051Tsv6ATTHuLc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Tlsgvi/dp+I4J+mx+fMZAI+4Ij4yDae3azngSa6986ukH39Tj1mTYT0rdIh8q08HSc5kF90C0gpaFvbzrF6l/DL3y25xf5FpnQXINN2Fy/HFAUGi6U03yTFvVneolPrAWF/9914ScAtuxc4BQW4lGbkUWWkWJkHv+Jf4FF/AUxI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ijDtx3a/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93555C4CEC5;
-	Thu,  3 Oct 2024 18:33:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727980397;
-	bh=qeKYzDR0ZzWVVmm6mUgb0da9cLC20051Tsv6ATTHuLc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ijDtx3a/OrpwitT1cE66Sn7FpVdibUuLA2lltomzNY18HodbjyOCKyv+UrKSPsO01
-	 3cRNWV3l3XHBA9CbZXwf85jV71yfAbY8jQY1NeG+WUtvNvLZa6MvXqg8jywMUvGPMS
-	 CHXFVB5Ka7FciR5Osv0nyMq/CYeyzpuHTJdC7GfqUb/wW5WyREx+CBZN6teNvadxMW
-	 h4Nx0r27ZJ1F9L0CNutScEkzBVP/RgtLSb0vDrG/GUd0OrmFQcstOP8D5U+I7Saes4
-	 zG7W57ZS1ZmR4nhr+QjQb5JKwTJfEEX1g52j975ECtB7zTHlgd639O2yAfC9SE3rhD
-	 rnhFuOAygzy4A==
-Date: Thu, 3 Oct 2024 15:33:13 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Stephen Brennan <stephen.s.brennan@oracle.com>
-Cc: Alan Maguire <alan.maguire@oracle.com>, bpf@vger.kernel.org,
-	dwarves@vger.kernel.org, linux-debuggers@vger.kernel.org
-Subject: Re: [PATCH dwarves v3 5/5] pahole: add global_var BTF feature
-Message-ID: <Zv7jaXiQ7Av0p6Hn@x1>
-References: <20241002235253.487251-1-stephen.s.brennan@oracle.com>
- <20241002235253.487251-6-stephen.s.brennan@oracle.com>
- <22da229b-86d0-4a0c-b5d6-4883b64669f2@oracle.com>
- <Zv6v0WdEBg4dEJAP@x1>
- <9cda0821-4b25-498e-acf3-cd8055d82ca5@oracle.com>
- <Zv7R2RcFRqMPLB5K@x1>
- <87ttdtkrh4.fsf@oracle.com>
+	s=arc-20240116; t=1727981606; c=relaxed/simple;
+	bh=kvQb/ogb0I5fqx/vjlyCkumizXiHqxG+w56PFQWNcys=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Kb0WLkToON39RL3HKPTosueSCC5rbRhh5S+31BpMxjn+N5OZRW8kHSbA5rvTEmBg9tSUqy6HGlLSQTyEtIRZwhEEfgw9mEA/RMOFw682bhlPAL7phFWQjszg+JpKXoJqHt15mwYCos1g4c2jOWCp6aQh+AX/LWGQaw3z6mUWJ00=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Jb9waOxp; arc=none smtp.client-ip=91.218.175.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <4dbee577-af8f-4b27-9099-d56956c8e772@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1727981600;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=eszk3sNqij3NLdzQux9S4INK5vDEPqrRJhwv6sLmoh4=;
+	b=Jb9waOxpQQjBJkCm3oahL56ZGAFCcPXOvfjzlgSWQhRIxZEO6kQvcmIlLkwrCROQ60VRoZ
+	Rbavl9oZv/vQEcLkm8dUyDkEV2XW0OL+H7XzCslh7eFEp0ck/chgo1EWR+Jt3nuUEPTQCc
+	17uWMCqPwpREojuy1TIrAPVUX29GXC0=
+Date: Thu, 3 Oct 2024 11:53:13 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87ttdtkrh4.fsf@oracle.com>
+Subject: Re: yet another approach Was: [PATCH bpf-next v3 4/5] bpf, x86: Add
+ jit support for private stack
+Content-Language: en-GB
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>
+References: <20240926234506.1769256-1-yonghong.song@linux.dev>
+ <20240926234526.1770736-1-yonghong.song@linux.dev>
+ <CAADnVQ+v3u=9PEHQ0xJEf6wSRc2iR928Sc+6CULh390i3TDR=w@mail.gmail.com>
+ <CAP01T77-bU5Ewu79QLJDTnt_E8h_VFHuABOD5=oct7_TC_yYGQ@mail.gmail.com>
+ <CAP01T76UnVfn3x7zZH4vJgZMGv_Ygewxg=9gUA-xuOa7pwGr3A@mail.gmail.com>
+ <CAADnVQ+caNh8+fgCj2XeZDrXniYif5Y+rw6vsMOojBO3Qwk+Nw@mail.gmail.com>
+ <CAADnVQKLWi_TfpbiYb1vPMYMqPOPWPS-RGbB0FksEQW5i36poQ@mail.gmail.com>
+ <CAP01T77q_H31mPXPQV4xHifutxxFeuoD8eg75C717MZ=OOeHew@mail.gmail.com>
+ <CAADnVQLfWgpu6WvZRCFo39YHJ=zSSQWcOnaCOqdfyCg8uRoddg@mail.gmail.com>
+ <CAP01T77G63MGvomrd3563bgBcNKUZg0Jc=GGmcGO0zPLS0hcHA@mail.gmail.com>
+ <CAADnVQ+z-s07V_KU91+zGRB3qXGR9nr3w1dMBfCEEgunyes7EA@mail.gmail.com>
+ <8b6c1eb1-de43-4ddb-b2b6-48256bdacddb@linux.dev>
+ <CAP01T77k7bqTx_VRhnUjcOcGDp-y=zJHzKi7S-+domZjhEGfzQ@mail.gmail.com>
+ <CAADnVQ+UByKkpVSg4tC-hoV7DstEYE11WxJ4nbGj27emZ2PFmA@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <CAADnVQ+UByKkpVSg4tC-hoV7DstEYE11WxJ4nbGj27emZ2PFmA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Oct 03, 2024 at 10:48:23AM -0700, Stephen Brennan wrote:
-> Arnaldo Carvalho de Melo <acme@kernel.org> writes:
-> > On Thu, Oct 03, 2024 at 04:21:07PM +0100, Alan Maguire wrote:
-> >> On 03/10/2024 15:53, Arnaldo Carvalho de Melo wrote:
-> >> > On Thu, Oct 03, 2024 at 03:40:35PM +0100, Alan Maguire wrote:
-> >> >> On 03/10/2024 00:52, Stephen Brennan wrote:
-> >> >>> So far, pahole has only encoded type information for percpu variables.
-> >> >>> However, there are several reasons why type information for all global
-> >> >>> variables would be useful in the kernel:
-> >> > 
-> >> >>> 1. Runtime kernel debuggers like drgn could use the BTF to introspect
-> >> >>> kernel data structures without needing to install heavyweight DWARF.
-> >> > 
-> >> >>> 2. BPF programs using the "__ksym" annotation could declare the
-> >> >>> variables using the correct type, rather than "void".
-> >> > 
-> >> >>> It makes sense to introduce a feature for this in pahole so that these
-> >> >>> capabilities can be explored in the kernel. The feature is non-default:
-> >> >>> when using "--btf-features=default", it is disabled. It must be
-> >> >>> explicitly requested, e.g. with "--btf-features=+global_var".
-> >> >  
-> >> >> I'm not totally sure switching global_var to a non-default feature is
-> >> >> the right answer here.
-> >> >  
-> >> >> The --btf_features "default" set of options are meant to closely mirror
-> >> >> the upstream kernel options we enable when doing BTF encoding. However,
-> >> >> in scripts/Makefile.btf we don't use "default"; we explicitly call out
-> >> >> the set of features we want. We can't just use "default" in that context
-> >> >> since the meaning of "default" varies based upon whatever version of
-> >> >> pahole you have.
-> >> >  
-> >> >> So "default" is simply a convenient shorthand for pahole testing which
-> >> >> corresponds to "give me the set of features that upstream kernels use".
-> >> >> It could have a better name that reflects that more clearly I suppose.
-> >> >  
-> >> >> When we do switch this on in-kernel, we'll add the explicit "global_var"
-> >> >> to the list of features in scripts/Makefile.btf.
-> >> >  
-> >> >> So with all this said, do we make global_vars a default or non-default
-> >> >> feature? It would seem to make sense to specify non-default, since it is
-> >> >> not switched on for the kernel yet, but looking ahead, what if the 1.28
-> >> >> pahole release is used to build vmlinux BTF and we add global_var to the
-> >> >> list of features? In such a case, our "default" set of values would be
-> >> >> out of step with the kernel. So it's not a huge deal, but I would
-> >> >> consider keeping this a default feature to facilitate testing; this
-> >> >> won't change what the kernel does, but it makes testing with full
-> >> >> variable generation easier (I can just do "--btf_features=default").
-> >> > 
-> >> > This "default" really is confusing, as you spelled out above :-\
-> 
-> Yeah, I spent a while staring at the comment and reading the code to
-> understand the nuance between the initial and default values. I don't
-> think I fully understood it until this v3 patch, and admittedly I still
-> didn't have the full context of how "default" was used.
-> 
-> One interesting point of comparison is the "-M" argument to
-> "qemu-system-$arch". For example:
-> 
->   $ qemu-system-x86_64 -M ?
->   Supported machines are:
->   microvm              microvm (i386)
->   pc                   Standard PC (i440FX + PIIX, 1996) (alias of pc-i440fx-9.0)
->   pc-i440fx-9.0        Standard PC (i440FX + PIIX, 1996) (default)
->   pc-i440fx-8.2        Standard PC (i440FX + PIIX, 1996)
->   pc-i440fx-8.1        Standard PC (i440FX + PIIX, 1996)
->   pc-i440fx-8.0        Standard PC (i440FX + PIIX, 1996)
->   [...]
-> 
-> So the default "pc" machine is simply an alias that gets updated to the
-> most recent machine (with potential new behaviors) every release, but
-> you can always select a specific machine that you care about.
-> 
-> Maybe it would make sense if there were versioned defaults, so that
-> "default" always picks whatever is relevant to the most recent upstream
-> kernel, but you could also select the default as of an older pahole
-> release.
-> 
-> That does sound like plenty of complexity added to an already somewhat
-> confusing system, so I'm not sold on it. The flexibility for adjusting
-> to new kernel defaults is appealing though.
-> 
-> >> >When to
-> >> > add something to it so that it reflects what the kernel has is tricky,
-> >> > perhaps we should instead have a ~/.config/pahole file where developers
-> >> > can add BTF features to add to --btf_features=default in the period
-> >> > where something new was _really_ added to the kernel and before the next
-> >> > version when it _have been added to the kernel set of BTF features_ thus
-> >> > should be set into stone in the pahole sources?
-> >  
-> >> it's a nice idea; I suppose once we have more automated tests, this will
-> >> be less of an issue too. I'm looking at adding a BTF variable test
-> >> shortly, would be good to have coverage there too, especially since
-> >> we're growing the amount of info we encode in this area.
-> >
-> > Sure thing, the more tests, the better!
-> >  
-> >> > So I think we should do as Stephen did, keep it out of
-> >> > --btf_features=default, as it is not yet in the kernel set of options,
-> >> > and have the config file, starting with being able to set those
-> >> > features, i.e. we would have:
-> >
-> >> > $ cat ~/.config/pahole
-> >> > [btf_encoder]
-> >> > 	btf_features=+global_var
-> >
-> >> > wdyt?
-> >  
-> >> I think that makes perfect sense, great idea!
-> >
-> > I was looking for a library to do that to avoid "stealing" the
-> > perf-config code, but perhaps we should use an env var for that?
-> >
-> > PAHOLE_BTF_FEATURES='+global_var'
-> >
-> > To keep things simple?
-> 
-> One concern with configuration files is that (at least on my system)
-> they tend to sit around and get forgotten, unless they're super well
-> known configs like ~/.bashrc. So at some point, I could see myself
-> setting a pahole config and then 6 months later wondering why pahole
-> behaves differently on two different systems.
-> 
-> Env vars are easy to set permanently if you want, but are also more
-> visible and centralized with your other configurations, so they're my
-> preference.
 
-Agreed, lets go with an env var.
+On 10/3/24 10:35 AM, Alexei Starovoitov wrote:
+> On Thu, Oct 3, 2024 at 6:40 AM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
+>> On Thu, 3 Oct 2024 at 08:17, Yonghong Song <yonghong.song@linux.dev> wrote:
+>>>
+>>> On 10/1/24 6:26 PM, Alexei Starovoitov wrote:
+>>>> On Tue, Oct 1, 2024 at 5:23 PM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
+>>>>> Makes sense, though will we have cases where hierarchical scheduling
+>>>>> attaches the same prog at different points of the hierarchy?
+>>>> I'm not sure anyone was asking for such a use case.
+>>>>
+>>>>> Then the
+>>>>> limit of 4 may not be enough (e.g. say with cgroup nested levels > 4).
+>>>> Well, 4 was the number from TJ.
+>>>>
+>>>> Anyway the proposed pseudo code:
+>>>>
+>>>> __bpf_prog_enter_recur_limited()
+>>>> {
+>>>>     cnt = this_cpu_inc_return(*(prog->active));
+>>>>     if (cnt > 4) {
+>>>>        inc_miss
+>>>>        return 0;
+>>>>     }
+>>>>    // pass cnt into bpf prog somehow, like %rdx ?
+>>>>    // or re-read prog->active from prog
+>>>> }
+>>>>
+>>>>
+>>>> then in the prologue emit:
+>>>>
+>>>> push rbp
+>>>> mov rbp, rsp
+>>>> if %rdx == 1
+>>>>      // main prog is called for the first time
+>>>>      mov rsp, pcpu_priv_stack_top
+>>>> else
+>>>>      // 2+nd time main prog is called or 1+ time subprog
+>>>>     sub rsp, stack_size
+>>>>     if rsp < pcpu_priv_stack_bottom
+>>>>       goto exit  // stack is too small, exit
+>>>> fi
+>>> I have tried to implement this approach (not handling
+>>> recursion yet) based on the above approach. It works
+>>> okay with nested bpf subprogs like
+>>>      main prog  // set rsp = pcpu_priv_stack_top
+>>>        subprog1 // some stack
+>>>          subprog2 // some stack
+>>>
+>>> The pcpu_priv_stack is allocated like
+>>>     priv_stack_ptr = __alloc_percpu_gfp(1024 * 16, 8, GFP_KERNEL);
+>>>
+>>> But whenever the prog called an external function,
+>>> e.g. a helper in this case, I will get a double fault.
+>>> An example could be
+>>>      main prog  // set rsp = pcpu_priv_stack_top
+>>>        subprog1 // some stack
+>>>          subprog2 // some stack
+>>>        call bpf_seq_printf
+>>> (I modified bpf_iter_ipv6_route.c bpf prog for the above
+>>> purpose.)
+>>> I added some printk statements from the beginning of bpf_seq_printf and
+>>> nothing printed out either and of course traps still happens.
+>>>
+>>> I tried another example without subprog and the mainprog calls
+>>> a helper and the same double traps happens below too.
+>>>
+>>> The error log looks like
+>>>
+>>> [   54.024955] traps: PANIC: double fault, error_code: 0x0
+>>> [   54.024969] Oops: double fault: 0000 [#1] PREEMPT SMP KASAN PTI
+>>> [   54.024977] CPU: 3 UID: 0 PID: 1946 Comm: test_progs Tainted: G           OE      6.11.0-10577-gf25c172fd840-dirty #968
+>>> [   54.024982] Tainted: [O]=OOT_MODULE, [E]=UNSIGNED_MODULE
+>>> [   54.024983] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
+>>> [   54.024986] RIP: 0010:error_entry+0x1e/0x140
+>>> [   54.024996] Code: ff ff 90 90 90 90 90 90 90 90 90 90 56 48 8b 74 24 08 48 89 7c 24 08 52 51 50 41 50 41 51 41 52 41 53 53 55 41 54 41 55 41 56 <41> 57 56 31 f6 31 d1
+>>> [   54.024999] RSP: 0018:ffffe8ffff580000 EFLAGS: 00010806
+>>> [   54.025002] RAX: f3f3f300f1f1f1f1 RBX: fffff91fffeb0044 RCX: ffffffff84201701
+>>> [   54.025005] RDX: fffff91fffeb0044 RSI: ffffffff8420128d RDI: ffffe8ffff580178
+>>> [   54.025007] RBP: ffffe8ffff580140 R08: 0000000000000000 R09: 0000000000000000
+>>> [   54.025009] R10: 0000000000000000 R11: 0000000000000000 R12: dffffc0000000000
+>>> [   54.025010] R13: 1ffffd1fffeb0014 R14: 0000000000000003 R15: ffffe8ffff580178
+>>> [   54.025012] FS:  00007fd076525d00(0000) GS:ffff8881f7180000(0000) knlGS:0000000000000000
+>>> [   54.025015] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>>> [   54.025017] CR2: ffffe8ffff57fff8 CR3: 000000010cd80002 CR4: 0000000000370ef0
+>>> [   54.025021] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+>>> [   54.025022] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>>> [   54.025024] Call Trace:
+>>> [   54.025026]  <#DF>
+>>> [   54.025028]  ? __die_body+0xaf/0xc0
+>>> [   54.025032]  ? die+0x2f/0x50
+>>> [   54.025036]  ? exc_double_fault+0x73/0x80
+>>> [   54.025040]  ? asm_exc_double_fault+0x23/0x30
+>>> [   54.025044]  ? common_interrupt_return+0xb1/0xcc
+>>> [   54.025048]  ? asm_exc_page_fault+0xd/0x30
+>>> [   54.025051]  ? error_entry+0x1e/0x140
+>>> [   54.025055]  </#DF>
+>>> [   54.025056] Modules linked in: bpf_testmod(OE)
+>>> [   54.025061] ---[ end trace 0000000000000000 ]---
+>>>
+>>> Maybe somebody could give a hint why I got a double fault
+>>> when calling external functions (outside of bpf programs)
+>>> with allocated stack?
+>>>
+>> I will help in debugging. Can you share the patch you applied locally
+>> so I can reproduce?
+> Looks like the idea needs more thought.
+>
+> in_task_stack() won't recognize the private stack,
+> so it will look like stack overflow and double fault.
 
-And this one is even "ephemeral", i.e. as we get new versions of pahole
-it should match the most recent set of kernel btf_features set and thus
-become unneeded.
+Thanks. Good point. For a particular helper, if the helper is
+doing nothing, it works fine. As soon as I add a printk,
+it will have double fault. Maybe some case kernel functions
+also do check in_task_stack() as well.
 
-At some point we'll stop adding features, right? 8-)
+>
+> do you have CONFIG_VMAP_STACK ?
 
-- Arnaldo
+No. But I can try.
+
 
