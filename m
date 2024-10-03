@@ -1,202 +1,208 @@
-Return-Path: <bpf+bounces-40858-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40859-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1F9798F683
-	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2024 20:53:36 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C32B98F6CC
+	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2024 21:10:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 12A1BB22280
-	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2024 18:53:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8E2DD1C2173B
+	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2024 19:10:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E93E1AB515;
-	Thu,  3 Oct 2024 18:53:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FAAE1AC443;
+	Thu,  3 Oct 2024 19:10:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Jb9waOxp"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Tg3VE+2O"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-175.mta0.migadu.com (out-175.mta0.migadu.com [91.218.175.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A8D91A3A9B
-	for <bpf@vger.kernel.org>; Thu,  3 Oct 2024 18:53:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61D3638DD1;
+	Thu,  3 Oct 2024 19:10:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727981606; cv=none; b=aOXhRXQ6dlBAF2DaVq/IfvhHluXixodRV8raHgtLt0Q8BCCOT95M2pMTQxfNl2GeVfg2GwXja8VCWcNAiAtkOrVTXUoGsnUKNM1qDMxJ+PxyenE1Oxcf8tisJl33/bXTi4TanL9gMg22FlqMJUvjEeyuGg2EU6GR4hvOD/czl+s=
+	t=1727982637; cv=none; b=WrzhbQ42cZiFS+VCiXDJ+m4cAJPvujAoxHtE09a9sB63dCr5v4zSJR8wm4Q0hw2nJIFJNjkbsMgtyrLEuzYS8LkYI0BsYfBsxaTBBJiufRHpWSdaFcZgrNwHtZXdngrMe4APMATH8DMYTDCrc76EtpJEa90Z1E+s/6HPwcrwQs0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727981606; c=relaxed/simple;
-	bh=kvQb/ogb0I5fqx/vjlyCkumizXiHqxG+w56PFQWNcys=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Kb0WLkToON39RL3HKPTosueSCC5rbRhh5S+31BpMxjn+N5OZRW8kHSbA5rvTEmBg9tSUqy6HGlLSQTyEtIRZwhEEfgw9mEA/RMOFw682bhlPAL7phFWQjszg+JpKXoJqHt15mwYCos1g4c2jOWCp6aQh+AX/LWGQaw3z6mUWJ00=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Jb9waOxp; arc=none smtp.client-ip=91.218.175.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <4dbee577-af8f-4b27-9099-d56956c8e772@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1727981600;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=eszk3sNqij3NLdzQux9S4INK5vDEPqrRJhwv6sLmoh4=;
-	b=Jb9waOxpQQjBJkCm3oahL56ZGAFCcPXOvfjzlgSWQhRIxZEO6kQvcmIlLkwrCROQ60VRoZ
-	Rbavl9oZv/vQEcLkm8dUyDkEV2XW0OL+H7XzCslh7eFEp0ck/chgo1EWR+Jt3nuUEPTQCc
-	17uWMCqPwpREojuy1TIrAPVUX29GXC0=
-Date: Thu, 3 Oct 2024 11:53:13 -0700
+	s=arc-20240116; t=1727982637; c=relaxed/simple;
+	bh=7FKMHedS9v3iJ4yoWK3F+gbHCRnnNYbRVzNnkZF3BVo=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HnsKqdTjYc+iItxRD2ISZE2r1U5eDj+26E6VXK7v03jxVoX9q9ZewdW3ObQnzN7BjLVUhZzc2UrSUyNMLGi01OnOM3ZRYMvTsGOPuGqrYgfhG0gI9nQklDDMkwSw8A0jBGqCtXc7iMCnbSYIbVIMbMzCSukdLBL1xdyXJFKJ/PE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Tg3VE+2O; arc=none smtp.client-ip=209.85.128.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-42cb60aff1eso12603605e9.0;
+        Thu, 03 Oct 2024 12:10:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1727982634; x=1728587434; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=C2VRJONZwrkQ6lGnjsANrZSJ98JgZ0fhmWDrQKfyidg=;
+        b=Tg3VE+2OVrMqBreezK1PhdP3CEZvBMPtll2mYVN77uetHkLoN9RA00gf6ssXZ/soBT
+         0UjasoaqfIISzWo6RSepCVfstypRl/TVp/TLM/ifqt/tkIGbMe+CXMv09n/5kyk8CuAB
+         1TE4k+px3kzRYtH0rfssqasLkTCyNUjwpRiMycIfkzB9hRSDXJtppQ94BSHj6AhGAi7J
+         0qkEsus2W7vDfiuVJYgL2yt7jnf+KL9L86yerBhHrvSBs5EF6SqdEGZYR1eE4ikJkM/Q
+         wnuOO56c/NOnUxQqbi4bxK7nz3IEXf/tPBZKryxTo+l36QlzSFuZJzG8jAvUaIfrrrsh
+         WfOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727982634; x=1728587434;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=C2VRJONZwrkQ6lGnjsANrZSJ98JgZ0fhmWDrQKfyidg=;
+        b=ifb/pZyrUfcllDyyk5ExMgeFQ7ZBQqcB1H/nU9SfpJhkgNA6o5HYI5FlAXspcY7rVl
+         rWdbt35PADcTirh3HqAYahaMYFQ4jn90OlI+9uXWRSIuqEGe8HCRtaztBVz1kTQwsSCd
+         O2MEdvbpx0gmuV3blf7UOo99d1lbHSagPs3J998MpzmOZOGUNx0DnZHHgKiF4VeBlGf+
+         wjVhK53MQOXr1a5WTLbn8V4b69JQsVWiwE8WnSojopm22BRnqjfrE3EfiEdVeoy/E+gl
+         7VL2XTa8I5f+S465pFIyPpEgfkPhaIamfkVU6vVOs/7E5+XvRw4XG1txhfb7Djsh0Br2
+         pcVg==
+X-Forwarded-Encrypted: i=1; AJvYcCUz8wV8DgvtYmW3Og8kJ0eMPo/qBynYDHK9/NzsfuLocQkeXNJr/LMv0jYI7GtX4MpHzwzsrzHukKTwffuJ@vger.kernel.org, AJvYcCVMTV9v+ccsT5DHnDpHmlB0arMis+dCNVdfjqHYj2sem3HwLP1J1iLEeA0jrbwCEt2ZAElGENV/0UlqqGby037V@vger.kernel.org, AJvYcCWsJBFo4lZKnWOOtUiaTRg028XC0JVzuBQvlPc0Z4NM1XVYyRDnWzOBMOBLlI07pAM6gBk=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyrTmsQeefEcJaf3EzYV0qGaYv1WBAj7cZVcwxdxGIhiSRyBtLn
+	ackKSZ4bDW5rCgFayskCthzkTJ6gALRmKwhGkpjhe23N9hzRA3S6
+X-Google-Smtp-Source: AGHT+IHLRbqYY32Z03um5opn6uvtz52OCp4GmwDQ9bp8h4SxU1T8dSKCa9DFHYkh9tsRI3ynE1l7xw==
+X-Received: by 2002:a05:600c:19cd:b0:42e:75a6:bb60 with SMTP id 5b1f17b1804b1-42f85ab86b8mr708355e9.19.1727982633488;
+        Thu, 03 Oct 2024 12:10:33 -0700 (PDT)
+Received: from krava (85-193-35-211.rib.o2.cz. [85.193.35.211])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-37d082d58absm1822930f8f.108.2024.10.03.12.10.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Oct 2024 12:10:33 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Thu, 3 Oct 2024 21:10:25 +0200
+To: tyrone-wu <wudevelops@gmail.com>
+Cc: olsajiri@gmail.com, andrii.nakryiko@gmail.com, andrii@kernel.org,
+	ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
+	eddyz87@gmail.com, haoluo@google.com, john.fastabend@gmail.com,
+	kernel-patches-bot@fb.com, kpsingh@kernel.org, laoar.shao@gmail.com,
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	martin.lau@linux.dev, mykolal@fb.com, sdf@fomichev.me,
+	shuah@kernel.org, song@kernel.org, yonghong.song@linux.dev
+Subject: Re: [PATCH bpf v2] bpf: fix unpopulated name_len field in perf_event
+ link info
+Message-ID: <Zv7sISV0yEyGlEM3@krava>
+References: <Zv0wl-S13WJnIkb_@krava>
+ <20241002213839.13790-1-wudevelops@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: yet another approach Was: [PATCH bpf-next v3 4/5] bpf, x86: Add
- jit support for private stack
-Content-Language: en-GB
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>
-References: <20240926234506.1769256-1-yonghong.song@linux.dev>
- <20240926234526.1770736-1-yonghong.song@linux.dev>
- <CAADnVQ+v3u=9PEHQ0xJEf6wSRc2iR928Sc+6CULh390i3TDR=w@mail.gmail.com>
- <CAP01T77-bU5Ewu79QLJDTnt_E8h_VFHuABOD5=oct7_TC_yYGQ@mail.gmail.com>
- <CAP01T76UnVfn3x7zZH4vJgZMGv_Ygewxg=9gUA-xuOa7pwGr3A@mail.gmail.com>
- <CAADnVQ+caNh8+fgCj2XeZDrXniYif5Y+rw6vsMOojBO3Qwk+Nw@mail.gmail.com>
- <CAADnVQKLWi_TfpbiYb1vPMYMqPOPWPS-RGbB0FksEQW5i36poQ@mail.gmail.com>
- <CAP01T77q_H31mPXPQV4xHifutxxFeuoD8eg75C717MZ=OOeHew@mail.gmail.com>
- <CAADnVQLfWgpu6WvZRCFo39YHJ=zSSQWcOnaCOqdfyCg8uRoddg@mail.gmail.com>
- <CAP01T77G63MGvomrd3563bgBcNKUZg0Jc=GGmcGO0zPLS0hcHA@mail.gmail.com>
- <CAADnVQ+z-s07V_KU91+zGRB3qXGR9nr3w1dMBfCEEgunyes7EA@mail.gmail.com>
- <8b6c1eb1-de43-4ddb-b2b6-48256bdacddb@linux.dev>
- <CAP01T77k7bqTx_VRhnUjcOcGDp-y=zJHzKi7S-+domZjhEGfzQ@mail.gmail.com>
- <CAADnVQ+UByKkpVSg4tC-hoV7DstEYE11WxJ4nbGj27emZ2PFmA@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <CAADnVQ+UByKkpVSg4tC-hoV7DstEYE11WxJ4nbGj27emZ2PFmA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241002213839.13790-1-wudevelops@gmail.com>
+
+On Wed, Oct 02, 2024 at 09:38:39PM +0000, tyrone-wu wrote:
+> Previously when retrieving `bpf_link_info.perf_event` for
+> kprobe/uprobe/tracepoint, the `name_len` field was not populated by the
+> kernel, leaving it to reflect the value initially set by the user. This
+> behavior was inconsistent with how other input/output string buffer
+> fields function (e.g. `raw_tracepoint.tp_name_len`).
+> 
+> This patch fills `name_len` with the actual size of the string name. The
+>  relevant selftests have also been updated to assert that `name_len`
+> contains the correct size rather than 0.
+> 
+> Link: https://lore.kernel.org/bpf/CABVU1kXwQXhqQGe0RTrr7eegtM6SVW_KayZBy16-yb0Snztmtg@mail.gmail.com/
+> Fixes: 1b715e1b0ec5 ("bpf: Support ->fill_link_info for perf_event")
+> Signed-off-by: tyrone-wu <wudevelops@gmail.com>
+> ---
+> V1 -> V2:
+> Link: https://lore.kernel.org/bpf/Zv0wl-S13WJnIkb_@krava/
+> - Use user set *ulen in bpf_copy_to_user before overwriting *ulen
+> 
+>  kernel/bpf/syscall.c                          | 29 +++++++++++++------
+>  .../selftests/bpf/prog_tests/fill_link_info.c |  6 ++--
+>  2 files changed, 23 insertions(+), 12 deletions(-)
+> 
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index a8f1808a1ca5..26cc18693924 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -3565,27 +3565,31 @@ static void bpf_perf_link_dealloc(struct bpf_link *link)
+>  }
+>  
+>  static int bpf_perf_link_fill_common(const struct perf_event *event,
+> -				     char __user *uname, u32 ulen,
+> +				     char __user *uname, u32 *ulen,
+>  				     u64 *probe_offset, u64 *probe_addr,
+>  				     u32 *fd_type, unsigned long *missed)
+>  {
+>  	const char *buf;
+>  	u32 prog_id;
+> -	size_t len;
+> +	size_t len, name_len;
+
+>  	int err;
+>  
+> -	if (!ulen ^ !uname)
+> +	if (!(*ulen) ^ !uname)
+>  		return -EINVAL;
+>  
+>  	err = bpf_get_perf_event_info(event, &prog_id, fd_type, &buf,
+>  				      probe_offset, probe_addr, missed);
+>  	if (err)
+>  		return err;
+> +
+> +	name_len = *ulen;
+> +	len = strlen(buf);
+> +	*ulen = len + 1;
+>  	if (!uname)
+>  		return 0;
+> +
+>  	if (buf) {
+> -		len = strlen(buf);
+> -		err = bpf_copy_to_user(uname, buf, ulen, len);
+> +		err = bpf_copy_to_user(uname, buf, name_len, len);
+>  		if (err)
+>  			return err;
+>  	} else {
+
+small nit.. up to you but I'd suggest bit different naming like below,
+otherwise looks good
+
+Acked-by: Jiri Olsa <jolsa@kernel.org>
+
+thanks,
+jirka
 
 
-On 10/3/24 10:35 AM, Alexei Starovoitov wrote:
-> On Thu, Oct 3, 2024 at 6:40 AM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
->> On Thu, 3 Oct 2024 at 08:17, Yonghong Song <yonghong.song@linux.dev> wrote:
->>>
->>> On 10/1/24 6:26 PM, Alexei Starovoitov wrote:
->>>> On Tue, Oct 1, 2024 at 5:23 PM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
->>>>> Makes sense, though will we have cases where hierarchical scheduling
->>>>> attaches the same prog at different points of the hierarchy?
->>>> I'm not sure anyone was asking for such a use case.
->>>>
->>>>> Then the
->>>>> limit of 4 may not be enough (e.g. say with cgroup nested levels > 4).
->>>> Well, 4 was the number from TJ.
->>>>
->>>> Anyway the proposed pseudo code:
->>>>
->>>> __bpf_prog_enter_recur_limited()
->>>> {
->>>>     cnt = this_cpu_inc_return(*(prog->active));
->>>>     if (cnt > 4) {
->>>>        inc_miss
->>>>        return 0;
->>>>     }
->>>>    // pass cnt into bpf prog somehow, like %rdx ?
->>>>    // or re-read prog->active from prog
->>>> }
->>>>
->>>>
->>>> then in the prologue emit:
->>>>
->>>> push rbp
->>>> mov rbp, rsp
->>>> if %rdx == 1
->>>>      // main prog is called for the first time
->>>>      mov rsp, pcpu_priv_stack_top
->>>> else
->>>>      // 2+nd time main prog is called or 1+ time subprog
->>>>     sub rsp, stack_size
->>>>     if rsp < pcpu_priv_stack_bottom
->>>>       goto exit  // stack is too small, exit
->>>> fi
->>> I have tried to implement this approach (not handling
->>> recursion yet) based on the above approach. It works
->>> okay with nested bpf subprogs like
->>>      main prog  // set rsp = pcpu_priv_stack_top
->>>        subprog1 // some stack
->>>          subprog2 // some stack
->>>
->>> The pcpu_priv_stack is allocated like
->>>     priv_stack_ptr = __alloc_percpu_gfp(1024 * 16, 8, GFP_KERNEL);
->>>
->>> But whenever the prog called an external function,
->>> e.g. a helper in this case, I will get a double fault.
->>> An example could be
->>>      main prog  // set rsp = pcpu_priv_stack_top
->>>        subprog1 // some stack
->>>          subprog2 // some stack
->>>        call bpf_seq_printf
->>> (I modified bpf_iter_ipv6_route.c bpf prog for the above
->>> purpose.)
->>> I added some printk statements from the beginning of bpf_seq_printf and
->>> nothing printed out either and of course traps still happens.
->>>
->>> I tried another example without subprog and the mainprog calls
->>> a helper and the same double traps happens below too.
->>>
->>> The error log looks like
->>>
->>> [   54.024955] traps: PANIC: double fault, error_code: 0x0
->>> [   54.024969] Oops: double fault: 0000 [#1] PREEMPT SMP KASAN PTI
->>> [   54.024977] CPU: 3 UID: 0 PID: 1946 Comm: test_progs Tainted: G           OE      6.11.0-10577-gf25c172fd840-dirty #968
->>> [   54.024982] Tainted: [O]=OOT_MODULE, [E]=UNSIGNED_MODULE
->>> [   54.024983] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
->>> [   54.024986] RIP: 0010:error_entry+0x1e/0x140
->>> [   54.024996] Code: ff ff 90 90 90 90 90 90 90 90 90 90 56 48 8b 74 24 08 48 89 7c 24 08 52 51 50 41 50 41 51 41 52 41 53 53 55 41 54 41 55 41 56 <41> 57 56 31 f6 31 d1
->>> [   54.024999] RSP: 0018:ffffe8ffff580000 EFLAGS: 00010806
->>> [   54.025002] RAX: f3f3f300f1f1f1f1 RBX: fffff91fffeb0044 RCX: ffffffff84201701
->>> [   54.025005] RDX: fffff91fffeb0044 RSI: ffffffff8420128d RDI: ffffe8ffff580178
->>> [   54.025007] RBP: ffffe8ffff580140 R08: 0000000000000000 R09: 0000000000000000
->>> [   54.025009] R10: 0000000000000000 R11: 0000000000000000 R12: dffffc0000000000
->>> [   54.025010] R13: 1ffffd1fffeb0014 R14: 0000000000000003 R15: ffffe8ffff580178
->>> [   54.025012] FS:  00007fd076525d00(0000) GS:ffff8881f7180000(0000) knlGS:0000000000000000
->>> [   54.025015] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->>> [   54.025017] CR2: ffffe8ffff57fff8 CR3: 000000010cd80002 CR4: 0000000000370ef0
->>> [   54.025021] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->>> [   54.025022] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->>> [   54.025024] Call Trace:
->>> [   54.025026]  <#DF>
->>> [   54.025028]  ? __die_body+0xaf/0xc0
->>> [   54.025032]  ? die+0x2f/0x50
->>> [   54.025036]  ? exc_double_fault+0x73/0x80
->>> [   54.025040]  ? asm_exc_double_fault+0x23/0x30
->>> [   54.025044]  ? common_interrupt_return+0xb1/0xcc
->>> [   54.025048]  ? asm_exc_page_fault+0xd/0x30
->>> [   54.025051]  ? error_entry+0x1e/0x140
->>> [   54.025055]  </#DF>
->>> [   54.025056] Modules linked in: bpf_testmod(OE)
->>> [   54.025061] ---[ end trace 0000000000000000 ]---
->>>
->>> Maybe somebody could give a hint why I got a double fault
->>> when calling external functions (outside of bpf programs)
->>> with allocated stack?
->>>
->> I will help in debugging. Can you share the patch you applied locally
->> so I can reproduce?
-> Looks like the idea needs more thought.
->
-> in_task_stack() won't recognize the private stack,
-> so it will look like stack overflow and double fault.
-
-Thanks. Good point. For a particular helper, if the helper is
-doing nothing, it works fine. As soon as I add a printk,
-it will have double fault. Maybe some case kernel functions
-also do check in_task_stack() as well.
-
->
-> do you have CONFIG_VMAP_STACK ?
-
-No. But I can try.
-
+---
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index a8f1808a1ca5..b637e9dced5a 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -3565,26 +3565,28 @@ static void bpf_perf_link_dealloc(struct bpf_link *link)
+ }
+ 
+ static int bpf_perf_link_fill_common(const struct perf_event *event,
+-				     char __user *uname, u32 ulen,
++				     char __user *uname, u32 *ulenp,
+ 				     u64 *probe_offset, u64 *probe_addr,
+ 				     u32 *fd_type, unsigned long *missed)
+ {
+ 	const char *buf;
+-	u32 prog_id;
++	u32 prog_id, ulen;
+ 	size_t len;
+ 	int err;
+ 
+-	if (!ulen ^ !uname)
++	if (!(*ulenp) ^ !uname)
+ 		return -EINVAL;
+ 
+ 	err = bpf_get_perf_event_info(event, &prog_id, fd_type, &buf,
+ 				      probe_offset, probe_addr, missed);
+ 	if (err)
+ 		return err;
++	ulen = *ulenp;
++	len = strlen(buf);
++	*ulenp = len + 1;
+ 	if (!uname)
+ 		return 0;
+ 	if (buf) {
+-		len = strlen(buf);
+ 		err = bpf_copy_to_user(uname, buf, ulen, len);
+ 		if (err)
+ 			return err;
 
