@@ -1,205 +1,245 @@
-Return-Path: <bpf+bounces-40810-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40811-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F3D298E937
-	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2024 06:51:36 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D00B598E948
+	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2024 07:10:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B083A1C223C1
-	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2024 04:51:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 44726B24E0E
+	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2024 05:10:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D5EC3FB31;
-	Thu,  3 Oct 2024 04:51:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CAB23D551;
+	Thu,  3 Oct 2024 05:10:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="W1PQcZSH"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="srdEkmst"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ua1-f53.google.com (mail-ua1-f53.google.com [209.85.222.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 689AFBA49
-	for <bpf@vger.kernel.org>; Thu,  3 Oct 2024 04:51:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9B0A3AC2B
+	for <bpf@vger.kernel.org>; Thu,  3 Oct 2024 05:09:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727931089; cv=none; b=UtnD1F+P8PPO66yBp39dleWPYlEmFH9h8VPPJN0+E5oYbJVHGSfB/VjMNhRn3YfnMahutHrnAnNiBu2GygE5GH8lvrS5eGS0IiFfY1iDOQws695vftgXiTKTyKx4bVW0dxZnYay78xvJF1sqnZhD+f/T1vBEvXxwtHqwQ4P6pU4=
+	t=1727932200; cv=none; b=b6ba0ZQXiL4LNKEkTY94vgfOhXotDIQ/RZEhDCXRLNUp+xvGQWeiPolbq2SSUJ4yd/R/XinVDv8r5j0T2Uz2LYp9opRMMKli/UhrEib0g/NT4P87Fb92KIeV05FgudoRlr2SrTf2wNDGW24bc5YusL9TYriVapM4kWzE+JLj1gk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727931089; c=relaxed/simple;
-	bh=hPPyUccLiTCCIJr4tp3ulm/6Rz5EA/cFmioBfTPp7d8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=AnOmr5LVAOzW9BpwNfALe5DN0XgdHWVO+e40E9r0o2fxqUyCrD7IrKRb51l4v5rLQhHl2+7AUTmdHJ8EZpWVc24ZdXYyDEvYoRmT+Ddz/tbaAxn3Z2HZzv2ne7RmJQ0EB47pEZr/8Z/ZUBtDdpWCli8BvFyGALgcG7R/vkpO2i4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=W1PQcZSH; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1727931086;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SWUNTLS92RYFrRb4mZe3jVY99KEqimrh0yZ1sGGxzBU=;
-	b=W1PQcZSHk02F/msXtX+NH/6lNNQhOMm0ZTFvG+Wzgcbrt3K1UescAMA9NPkJC+3eIItNnm
-	C1SgOfl40FShpK3ZxLM47FO9p81t+3H3EeGQ9PkK2ekeO5VcJWWv9FM4keC+VddGBWyTex
-	DDRq+L8BeBWV6XWAXCOEM+e1zXquCtA=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-681-fjGD6S15P9SznwghMmistw-1; Thu, 03 Oct 2024 00:51:25 -0400
-X-MC-Unique: fjGD6S15P9SznwghMmistw-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-42cb2c5d634so2472815e9.0
-        for <bpf@vger.kernel.org>; Wed, 02 Oct 2024 21:51:24 -0700 (PDT)
+	s=arc-20240116; t=1727932200; c=relaxed/simple;
+	bh=qrbLRk/FSxnCiu6axn74hXEdJnOeoT94Cx/ecRppH2A=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Ueu5BC07RXT+lGyvKQ6WlMgW57HmO+el4EAJKDXreYdpsSfDUqumKlpUvy/7v6StwYCgipAAUGIrCf8aui7u0BYpTPQ/X3q3lFE96PtBVJlWhVy9M1wsDWpyAAJF5JvFN7h1cVTqlueHsPBHrOShke0aDOyld8beB8P3h8CO35Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=srdEkmst; arc=none smtp.client-ip=209.85.222.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ua1-f53.google.com with SMTP id a1e0cc1a2514c-84e9893c457so192783241.2
+        for <bpf@vger.kernel.org>; Wed, 02 Oct 2024 22:09:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1727932198; x=1728536998; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ywgtKyqh0N3Dye97MVd0kIqtuLbIpst9nSCmWrn174Q=;
+        b=srdEkmst7swwBdms08hYXlb+laEPRhwbNdaFf7sR9baZTAPoGKHlkCL7SbUu0RORx7
+         QeCd7HahCBHsuTr4h3bsSTxJCts16nSCQraL721HB65Xj01hnf3MSahjd/WjPKF3shRx
+         9r7WUzj6c4d8qLZ8ERjnm3+PzWUrIu8R0D2A2F++cyf47SSYSbE9/Th7bFgEOPMN7r3S
+         4KxQ7HrEAvHRP4ZoULO8iBje7zTzFiJ0K/SeMPBCQlsiMdj8KLWgKLs+maPUywJyYujK
+         +Q3Ard52Bq3E/uKDObmDkUNNZyiVK6QFjaa4fee1GjsvbXQSGLrF4LdHwwkfsPzmJqHc
+         u+Yw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727931084; x=1728535884;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SWUNTLS92RYFrRb4mZe3jVY99KEqimrh0yZ1sGGxzBU=;
-        b=cFYxBj/K3/hE8UGl7h9EOtH92o7kpzPfJ94jrHiZkcf4Lutthxznk2YxSrp3PDAD9K
-         YWpwxqyVe+dcXyFgKTJ6bVEOwlOUbjSlk7HY1XqoWjyG855lZnBte8vzhpHNP6OTQdO7
-         Ne17F3AVmUEkcigxFNRKlnbqytosz/o0IVDOivsHXZm2HAG4/c2iwlWRLutbZuivrHOp
-         HbQvhwpGx7IRkcObIvlT+SfrclVLgHPiB1/lJnAFUG8+bbL72dt5KJwGKJ8N54Ig2zum
-         2qWkohesVYC5ISvD9obmsVMNTi1yoEsJ3bPHl7y34jqim0eMtcTGy/k5mDrkzjjRp80d
-         4knQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXZso+23I3s5UsX7m/ocZIj+qy5A6HJQx9n4cXialM1qSun7z4SwxhwADpCFmabxYDmMNo=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxG83yGrWnAXnrZmtncmKZ/bMkUwUzqs1RS3OrbmBn+7wKinD/e
-	j0e0UjmUluO7lyQQrjK7YriBG9kwlOk2kuCcHJt5ozPBfX31UAkiq7YUq0ffZdt/eMYKzgvmeb8
-	TeWx1cP83SPNY3aPB0b8dhughWetMJJjDOYvyTzG8dZWMM/9x
-X-Received: by 2002:a05:600c:1f0f:b0:42c:b22e:fbfa with SMTP id 5b1f17b1804b1-42f819ff766mr460915e9.21.1727931083857;
-        Wed, 02 Oct 2024 21:51:23 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEWmlfAT+WefmfbJTHZinJAa2tf2UkgSZINsY/zEk04RxX42Rr6iHbc2j4WKOBn603JwS6soA==
-X-Received: by 2002:a05:600c:1f0f:b0:42c:b22e:fbfa with SMTP id 5b1f17b1804b1-42f819ff766mr460785e9.21.1727931083489;
-        Wed, 02 Oct 2024 21:51:23 -0700 (PDT)
-Received: from [192.168.0.113] (185-219-167-205-static.vivo.cz. [185.219.167.205])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-37d081f749asm377911f8f.9.2024.10.02.21.51.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Oct 2024 21:51:22 -0700 (PDT)
-Message-ID: <e4bfbee4-ca5f-4496-98ed-60d24e402046@redhat.com>
-Date: Thu, 3 Oct 2024 06:51:20 +0200
+        d=1e100.net; s=20230601; t=1727932198; x=1728536998;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ywgtKyqh0N3Dye97MVd0kIqtuLbIpst9nSCmWrn174Q=;
+        b=rMeJ5xdVKWojw49UEynxbiGKUG6S+nrRtB5kNzzNQEzorUUQh6Sk1ROzh2K9yHRL+K
+         SHUsO9Do64LcM8mYVWGk+LB7j9S8gA0jHI7LAU4TPCKgKl38/wro1N4K89IHc88dGhuS
+         kKojQsgq/zdzDwDqDCJ5MuLoy+6+/6ZgI5ji9Es2pTNWE77n7M128pj4KXvB5/W5fVjb
+         SpnKzCr1ulI7Xe/90WBbuxVtnGLbd3LuWXkb9XrvKLqsF8Uwdnp7xlzUU2sXx1Qdf3UT
+         Gw/OxTLP+QRCzCiTA3z5DefKVStyHr0zNyJjoUxux0s0BnfUy6Fk3yAEIZoJDxNuuG/z
+         SUfg==
+X-Forwarded-Encrypted: i=1; AJvYcCWobPSF6fU4vf1ooooOsxBi5dcaQkvKCmCN6XwispJlXiTR9exrMRt9gNkhc3IcBf7GKCY=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx+K5qrqO/fSyNsZdClNxyVsKpQtrHFjcK+FkQ4SCxQ4xBCNL4b
+	jnFAN+axsPLetUmI9o4vBDQKN3sCjdZ7W2DY8YHAsNjTKKrjVU6uk5HsZQSCgQiYrTigBwHpu1q
+	/CvZ8jmvuTFjeB8P0IYY2JniqzYY393iFCxWlGA==
+X-Google-Smtp-Source: AGHT+IE9u2+/8nC7XjQNdK9e4FXcoT1LUX+A/NRgmnjoZdPr9xDcH7NfQFwxfX9f507kLSYP5FbG/rzvoA7a+mzNSY0=
+X-Received: by 2002:a05:6122:794:b0:4f6:a697:d380 with SMTP id
+ 71dfb90a1353d-50c582122a0mr4539080e0c.10.1727932197603; Wed, 02 Oct 2024
+ 22:09:57 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next 1/2] bpf: Add kfuncs for read-only string
- operations
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
- Eduard Zingerman <eddyz87@gmail.com>, bpf <bpf@vger.kernel.org>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>
-References: <cover.1727329823.git.vmalik@redhat.com>
- <bc06e1f4bef09ba3d431d7a7236303746a7adb57.1727329823.git.vmalik@redhat.com>
- <CAEf4Bzas4ZxiyJp7h7N5OGmPSMRfZDgPUgEAdTmir3n-4cx-xg@mail.gmail.com>
- <adaa47618f2b71c2803195749cedd4a5b468cffa.camel@gmail.com>
- <CAADnVQLCk+VNpN8WfCbSbT-FBcHBuMXpk-hBOLB7HX3BrURp8w@mail.gmail.com>
- <CAEf4BzZSFuXyUbwN8_VvbR6Uk_qHAKWNLkCZfdo-58WC_RYYag@mail.gmail.com>
- <CAADnVQLsnhsL2i_RnOBUSebO--yx_5Az1Ydr9QPb5WZCkmYQJg@mail.gmail.com>
- <CAEf4BzYt42A73kmg5=HWRiHj0H1Dr0WPQosmQLkBhgkkiw0HQA@mail.gmail.com>
- <c831b42e-30ba-4a19-bc0d-5346c8388892@redhat.com>
- <CAADnVQLhr+xOF58ppaySOjb6cMdsWEYhr_4ZLvQ-XDWXHBMgBA@mail.gmail.com>
-From: Viktor Malik <vmalik@redhat.com>
-Content-Language: en-US
-In-Reply-To: <CAADnVQLhr+xOF58ppaySOjb6cMdsWEYhr_4ZLvQ-XDWXHBMgBA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20241002125751.964700919@linuxfoundation.org>
+In-Reply-To: <20241002125751.964700919@linuxfoundation.org>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Thu, 3 Oct 2024 10:39:45 +0530
+Message-ID: <CA+G9fYtcs_bFp_N+Q59Nn_bM2AT0Xm4utdh6vT+Cdvj6D=VP+w@mail.gmail.com>
+Subject: Re: [PATCH 6.6 000/538] 6.6.54-rc1 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
+	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
+	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
+	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com, 
+	broonie@kernel.org, Kui-Feng Lee <thinker.li@gmail.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-On 10/2/24 18:55, Alexei Starovoitov wrote:
-> On Tue, Oct 1, 2024 at 11:12 PM Viktor Malik <vmalik@redhat.com> wrote:
->>
->> On 10/1/24 19:40, Andrii Nakryiko wrote:
->>> On Tue, Oct 1, 2024 at 10:34 AM Alexei Starovoitov
->>> <alexei.starovoitov@gmail.com> wrote:
->>>>
->>>> On Tue, Oct 1, 2024 at 10:04 AM Andrii Nakryiko
->>>> <andrii.nakryiko@gmail.com> wrote:
->>>>>
->>>>> On Tue, Oct 1, 2024 at 7:48 AM Alexei Starovoitov
->>>>> <alexei.starovoitov@gmail.com> wrote:
->>>>>>
->>>>>> On Tue, Oct 1, 2024 at 4:26 AM Eduard Zingerman <eddyz87@gmail.com> wrote:
->>>>>>>
->>>>>>> On Mon, 2024-09-30 at 15:00 -0700, Andrii Nakryiko wrote:
->>>>>>>
->>>>>>> [...]
->>>>>>>
->>>>>>>> Right now, the only way to pass dynamically sized anything is through
->>>>>>>> dynptr, AFAIU.
->>>>>>>
->>>>>>> But we do have 'is_kfunc_arg_mem_size()' that checks for __sz suffix,
->>>>>>> e.g. used for bpf_copy_from_user_str():
->>>>>>>
->>>>>>> /**
->>>>>>>  * bpf_copy_from_user_str() - Copy a string from an unsafe user address
->>>>>>>  * @dst:             Destination address, in kernel space.  This buffer must be
->>>>>>>  *                   at least @dst__sz bytes long.
->>>>>>>  * @dst__sz:         Maximum number of bytes to copy, includes the trailing NUL.
->>>>>>>  * ...
->>>>>>>  */
->>>>>>> __bpf_kfunc int bpf_copy_from_user_str(void *dst, u32 dst__sz, const void __user *unsafe_ptr__ign, u64 flags)
->>>>>>>
->>>>>>> However, this suffix won't work for strnstr because of the arguments order.
->>>>>>
->>>>>> Stating the obvious... we don't need to keep the order exactly the same.
->>>>>>
->>>>>> Regarding all of these kfuncs... as Andrii pointed out 'const char *s'
->>>>>> means that the verifier will check that 's' points to a valid byte.
->>>>>> I think we can do a hybrid static + dynamic safety scheme here.
->>>>>> All of the kfunc signatures can stay the same, but we'd have to
->>>>>> open code all string helpers with __get_kernel_nofault() instead of
->>>>>> direct memory access.
->>>>>> Since the first byte is guaranteed to be valid by the verifier
->>>>>> we only need to make sure that the s+N bytes won't cause page faults
->>>>>
->>>>> You mean to just check that s[N-1] can be read? Given a large enough
->>>>> N, couldn't it be that some page between s[0] and s[N-1] still can be
->>>>> unmapped, defeating this check?
->>>>
->>>> Just checking s[0] and s[N-1] is not enough, obviously, and especially,
->>>> since the logic won't know where nul byte is, so N is unknown.
->>>> I meant to that all of str* kfuncs will be reading all bytes
->>>> via __get_kernel_nofault() until they find \0.
->>>
->>> Ah, ok, I see what you mean now.
->>>
->>>> It can be optimized to 8 byte access.
->>>> The open coding (aka copy-paste) is unfortunate, of course.
->>>
->>> Yep, this sucks.
->>
->> Yeah, that's quite annoying. I really wanted to avoid doing that. Also,
->> we won't be able to use arch-optimized versions of the functions.
->>
->> Just to make sure I understand things correctly - can we do what Eduard
->> suggested and add explicit sizes for all arguments using the __sz
->> suffix? So something like:
->>
->>     const char *bpf_strnstr(const char *s1, u32 s1__sz, const char *s2, u32 s2__sz);
-> 
-> That's ok-ish, but you probably want:
-> 
-> const char *bpf_strnstr(void *s1, u32 s1__sz, void *s2, u32 s2__sz);
-> 
-> and then to call strnstr() you still need to strnlen(s2, s2__sz).
-> 
-> But a more general question... how always passing size will work
-> for bpftrace ? Does it always know the upper bound of storage where
-> strings are stored?
+On Wed, 2 Oct 2024 at 19:56, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 6.6.54 release.
+> There are 538 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Fri, 04 Oct 2024 12:56:13 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.54-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Yes, it does. The strings must be read via the str() call (which
-internally calls bpf_probe_read_str) and there's an upper bound on the
-size of each string.
 
-> I would think __get_kernel_nofault() approach is user friendlier.
+As other reported selftests bpf build failed,
 
-That's probably true but isn't there still the problem that strings are
-not necessarily null-terminated? And in such case, unbounded string
-functions may not terminate which is not allowed in BPF?
+libbpf.c: In function 'bpf_object__create_map':
+libbpf.c:5215:50: error: 'BPF_F_VTYPE_BTF_OBJ_FD' undeclared (first
+use in this function)
+ 5215 |                         create_attr.map_flags |= BPF_F_VTYPE_BTF_OBJ_FD;
+      |                                                  ^~~~~~~~~~~~~~~~~~~~~~
+libbpf.c:5215:50: note: each undeclared identifier is reported only
+once for each function it appears in
 
+due to commit,
+  9e926acda0c2e libbpf: Find correct module BTFs for struct_ops maps and progs.
+
+Build log:
+-------
+ - https://storage.tuxsuite.com/public/linaro/lkft/builds/2msz2dGbiCYZjR2hPFlN5xFUOhX/
+
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+## Build
+* kernel: 6.6.54-rc1
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+* git commit: 1bbd78667e8e467cac0a2bc31d183b9d9983f448
+* git describe: v6.6.53-539-g1bbd78667e8e
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.6.y/build/v6.6.53-539-g1bbd78667e8e
+
+## Test Regressions (compared to v6.6.51-145-g3ecfbb62e37a)
+
+## Metric Regressions (compared to v6.6.51-145-g3ecfbb62e37a)
+
+## Test Fixes (compared to v6.6.51-145-g3ecfbb62e37a)
+
+## Metric Fixes (compared to v6.6.51-145-g3ecfbb62e37a)
+
+## Test result summary
+total: 170988, pass: 150287, fail: 1587, skip: 18917, xfail: 197
+
+## Build Summary
+* arc: 5 total, 5 passed, 0 failed
+* arm: 129 total, 129 passed, 0 failed
+* arm64: 41 total, 41 passed, 0 failed
+* i386: 28 total, 26 passed, 2 failed
+* mips: 26 total, 25 passed, 1 failed
+* parisc: 4 total, 4 passed, 0 failed
+* powerpc: 36 total, 35 passed, 1 failed
+* riscv: 10 total, 10 passed, 0 failed
+* s390: 14 total, 13 passed, 1 failed
+* sh: 10 total, 10 passed, 0 failed
+* sparc: 7 total, 7 passed, 0 failed
+* x86_64: 33 total, 33 passed, 0 failed
+
+## Test suites summary
+* boot
+* commands
+* kselftest-arm64
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-efivarfs
+* kselftest-exec
+* kselftest-filesystems
+* kselftest-filesystems-binderfs
+* kselftest-filesystems-epoll
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-ftrace
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-kcmp
+* kselftest-kvm
+* kselftest-livepatch
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-mincore
+* kselftest-mqueue
+* kselftest-net
+* kselftest-net-mptcp
+* kselftest-openat2
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-tc-testing
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user_events
+* kselftest-vDSO
+* kselftest-watchdog
+* kselftest-x86
+* kunit
+* kvm-unit-tests
+* libgpiod
+* libhugetlbfs
+* log-parser-boot
+* log-parser-test
+* ltp-commands
+* ltp-containers
+* ltp-controllers
+* ltp-cpuhotplug
+* ltp-crypto
+* ltp-cve
+* ltp-dio
+* ltp-fcntl-locktests
+* ltp-fs
+* ltp-fs_bind
+* ltp-fs_perms_simple
+* ltp-hugetlb
+* ltp-ipc
+* ltp-math
+* ltp-mm
+* ltp-nptl
+* ltp-pty
+* ltp-sched
+* ltp-smoke
+* ltp-syscalls
+* ltp-tracing
+* perf
+* rcutorture
+
+--
+Linaro LKFT
+https://lkft.linaro.org
 
