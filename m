@@ -1,57 +1,53 @@
-Return-Path: <bpf+bounces-40874-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40875-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4BCC98F9C1
-	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 00:18:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 91A5298F9C9
+	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 00:22:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6BDA4283205
-	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2024 22:18:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5143928484D
+	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2024 22:22:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB9881CBE82;
-	Thu,  3 Oct 2024 22:18:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fEBnNL+l"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC9F31CC173;
+	Thu,  3 Oct 2024 22:22:12 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 404B2824BD;
-	Thu,  3 Oct 2024 22:18:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BD07824BD;
+	Thu,  3 Oct 2024 22:22:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727993932; cv=none; b=IqaT3JfQOBUG8ZJFp30TuhYPjjklzkaUO5JYCpbNma31bzQL3MtCi4/OgYNcmGEzkM/8h0JQ2UmN+tUjcBMA2nTS6Gpa046H4furd/cDKZlU9od2mCVJve7/K4laEgkd+751FXOcCd8KkDkyxW0zkjZS6+irTznSHwyqSXEhRjg=
+	t=1727994132; cv=none; b=YmqYjN5EHdKkL5BfGjm8Zd3LzwhRljLkG5M+YwepxPT8aE5Y9TJnIImNC2AFFIKVSim9f0RXczgihX5r3mFQ3DPKsIKXgQ220xGZ0dG/EMHlFWCSon98L3LpW7HCa8hSJGB82VQwoi1K9BKZnsWLJ5rL7v3YgOvrPOk4Dl2x880=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727993932; c=relaxed/simple;
-	bh=X6bRa4YftH+pNr8zwab+8NBtUgS3nTFmWQ1Bw4aZmYQ=;
+	s=arc-20240116; t=1727994132; c=relaxed/simple;
+	bh=+ZZhYV5rCNb2l4NQkre846T0CFjuue50xe67+2KlTv8=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Zc67BqNOijwqbumbJq2UxoBgQlrw7xGuO672ycCRaarb9WWAqnppzMkR6suV7W48F3nqLbB7tEm/L3Z7fIbRPFeWVlRn3XMoQcWFWqMsSaeHYEIfvuM7e+kKVkMz7Z5im/wwW6nIixJLy2sSaBkMvOJBDD3Qpngwfq9c96OcGr4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fEBnNL+l; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E47EC4CEC5;
-	Thu,  3 Oct 2024 22:18:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727993931;
-	bh=X6bRa4YftH+pNr8zwab+8NBtUgS3nTFmWQ1Bw4aZmYQ=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=fEBnNL+lRmlhyNL7Mlov+tUbxMc5orhx370DWTHC07dSJ8NNxRXaIJs39R5LZSdk3
-	 uSzCGHVX9qPNDf0Wz59mAr0KLQBR/YSWTNqHcluYgeYy6Qq1Yif8Rm3K3RzpQuIYoL
-	 PpKWJp7EBlSuyvfooDe/K8gcxtP1DBvv4DRMqshmZmbZWtAHuwSWIqRglQXFFizFsQ
-	 5fMqEurB/kxfOpZjhCjgXuZcafDWulEn6Z6yyilIhSiJ2v+5v2sgrTAAFxSpZoWTfa
-	 ZLh62qG1+csGlmeL9uhQDbgOrq0/OmP2hhWDfD4xHrK1zayiYc3rPzcBA+iN5+mwkT
-	 xEQ3HoON1HR/w==
-Date: Thu, 3 Oct 2024 15:18:50 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Daniel Borkmann <daniel@iogearbox.net>
-Cc: martin.lau@linux.dev, razor@blackwall.org, jrife@google.com,
- tangchen.1@bytedance.com, bpf@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH bpf-next 2/4] netkit: Add add netkit scrub support to
- rt_link.yaml
-Message-ID: <20241003151850.11e04ba3@kernel.org>
-In-Reply-To: <20241003180320.113002-2-daniel@iogearbox.net>
-References: <20241003180320.113002-1-daniel@iogearbox.net>
-	<20241003180320.113002-2-daniel@iogearbox.net>
+	 MIME-Version:Content-Type; b=oTGPoRbTk5tfPYEVyA3raAksDFJ5aNdQY4G1Xxt/DSe93WRcy6ez7fUryTsP7q4FacaCJJXty+KrTUko/8qBByQX3LaHCzgcS/8Hz03rMeaeAdIvSq1s3efziySVpxJOPbctFxx9nICMiiwldMM7QikQxsg7jYMQzeYGr/TAdZk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 309F0C4CEC5;
+	Thu,  3 Oct 2024 22:22:10 +0000 (UTC)
+Date: Thu, 3 Oct 2024 18:23:04 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, linux-kernel@vger.kernel.org,
+ Peter Zijlstra <peterz@infradead.org>, Alexei Starovoitov <ast@kernel.org>,
+ Yonghong Song <yhs@fb.com>, "Paul E . McKenney" <paulmck@kernel.org>, Ingo
+ Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Mark
+ Rutland <mark.rutland@arm.com>, Alexander Shishkin
+ <alexander.shishkin@linux.intel.com>, Namhyung Kim <namhyung@kernel.org>,
+ Andrii Nakryiko <andrii.nakryiko@gmail.com>, bpf@vger.kernel.org, Joel
+ Fernandes <joel@joelfernandes.org>, linux-trace-kernel@vger.kernel.org,
+ Michael Jeanson <mjeanson@efficios.com>
+Subject: Re: [PATCH v1 2/8] tracing/ftrace: guard syscall probe with
+ preempt_notrace
+Message-ID: <20241003182304.2b04b74a@gandalf.local.home>
+In-Reply-To: <20241003151638.1608537-3-mathieu.desnoyers@efficios.com>
+References: <20241003151638.1608537-1-mathieu.desnoyers@efficios.com>
+	<20241003151638.1608537-3-mathieu.desnoyers@efficios.com>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -61,17 +57,43 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Thu,  3 Oct 2024 20:03:18 +0200 Daniel Borkmann wrote:
-> +  -
-> +    name: netkit-scrub
-> +    type: enum
-> +    entries:
-> +      - name: none
-> +      - name: default
+On Thu,  3 Oct 2024 11:16:32 -0400
+Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
 
-The behavior of the scrub should probably be documented somewhere
-(either here or in the if_link.h header?)
-What the "default" is may not be obvious to a newcomer?
-Perhaps you plan to document it in the man page, but dunno if
-programmers using netlink directly will check there.
+> In preparation for allowing system call enter/exit instrumentation to
+> handle page faults, make sure that ftrace can handle this change by
+> explicitly disabling preemption within the ftrace system call tracepoint
+> probes to respect the current expectations within ftrace ring buffer
+> code.
+
+The ftrace ring buffer doesn't expect preemption being disabled before use.
+It will explicitly disable preemption.
+
+I don't think this patch is needed.
+
+-- Steve
+
+
+> 
+> This change does not yet allow ftrace to take page faults per se within
+> its probe, but allows its existing probes to adapt to the upcoming
+> change.
+> 
+> Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> Cc: Michael Jeanson <mjeanson@efficios.com>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Masami Hiramatsu <mhiramat@kernel.org>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Alexei Starovoitov <ast@kernel.org>
+> Cc: Yonghong Song <yhs@fb.com>
+> Cc: Paul E. McKenney <paulmck@kernel.org>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+> Cc: Namhyung Kim <namhyung@kernel.org>
+> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> Cc: bpf@vger.kernel.org
+> Cc: Joel Fernandes <joel@joelfernandes.org>
 
