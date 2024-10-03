@@ -1,220 +1,205 @@
-Return-Path: <bpf+bounces-40809-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40810-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06E6A98E7F7
-	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2024 03:02:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F3D298E937
+	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2024 06:51:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 33B331C22075
-	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2024 01:02:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B083A1C223C1
+	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2024 04:51:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16D3FDDD2;
-	Thu,  3 Oct 2024 01:02:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D5EC3FB31;
+	Thu,  3 Oct 2024 04:51:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="EiPmayf6"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="W1PQcZSH"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C63741BC20
-	for <bpf@vger.kernel.org>; Thu,  3 Oct 2024 01:02:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=67.231.153.30
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727917322; cv=fail; b=NuFlOv6/h74i+5K+BwNf8JjKer2I+tJVOK5xciWv9b/0nH/qMQ10a/lCZZdup7Fitc5Mk6r7WyK39ZSBz4Wga7PIJk8V8DTCbbJj08pSvGsM/2sydpVwwtuowIq4dM2zjXAagJ7I0+17FnePo0QN0k2PV5yDmYDl03d2UAihAz0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727917322; c=relaxed/simple;
-	bh=qxzRqIHHoqCeQYb56I0n6BK4ai+GA5hN2r43+2l0QeE=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=usiKh+hTEvsHcFY9H6zTFH6BQc2Jwv4yjSAsXIjXZAa/REjlaRgk4Q+EHG6/YM2SqcQMTf8iStl5umMJiQ7ri8SYpNNBZ7v4G/sN5GFVSY/QvJ9I+k25bjtCDuHwjiv2HeWT9Q23DhTuqB4Uts9TlJeF9F1OTpB/fcUzlxPNWHM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=EiPmayf6; arc=fail smtp.client-ip=67.231.153.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4930iWAS018848
-	for <bpf@vger.kernel.org>; Wed, 2 Oct 2024 18:01:59 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=from
-	:to:cc:subject:date:message-id:references:in-reply-to
-	:content-type:content-id:content-transfer-encoding:mime-version;
-	 s=s2048-2021-q4; bh=qxzRqIHHoqCeQYb56I0n6BK4ai+GA5hN2r43+2l0QeE
-	=; b=EiPmayf64ZvNxSBDvcWn8pEpbgeBDH6TwBNCLNOw9gRwbyIvXMD4FPNwpyU
-	DivwpaauamNlCDy5WNm9SRQLLsbJI5CdllEyKBgCZx9YAY2phFR3bg/HAevKar3a
-	ycspYzfl+ZSUP//xZzvp7iLYHIlIOm1cuyQyFmsddnEGFyQHrJud5WPtLJ46O558
-	k4NUtEd1pVsDhE1POI0Uiy+IevU0J6d/FAn5qXKPidOJ033dQ3XTnSaZYA7YJbol
-	WkQIaEcSOaNiDFFESLwb0A6f+HEgRgvUH0xJEswu4IacEoXnPzIOYHjF1xmtOHSJ
-	lonzWEX9czutmeLTZ2cE4sh0t1Q==
-Received: from nam02-dm3-obe.outbound.protection.outlook.com (mail-dm3nam02lp2041.outbound.protection.outlook.com [104.47.56.41])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 42163x4ned-2
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-	for <bpf@vger.kernel.org>; Wed, 02 Oct 2024 18:01:58 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=HQTbTSE4hcoMr97dmb+la+yLrBQp/z0PA0qNALZv0RSuIHJM2qSBEbfqSXCSHlx1kmoZtHUFUXMtalg1AsowrgVHfEP6THW/3WUBIU/YKr2HGWqHtknbF5bERZvwxFVi8piJi7znR21RZjls0dTa0UOSTVma4rGzLh0J6hIwW20oj41kak2wkM+xcrDS50a7oaqLT81d5wS2q9XtIfm+oQj+mca5I8Y80iRgRUNa7dJbbwbyodZgmiPhgvLhsGaiDFxNvlHrt7jZjsKadzBohHKApDXYJSy9XikNWjnLWEmXTMNSz7bZex6qC/iWbxPMcg/EfI9wHI3NK1iwfZ4gjQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=qxzRqIHHoqCeQYb56I0n6BK4ai+GA5hN2r43+2l0QeE=;
- b=BNTALur9ZphXWrOM1l6BvWs2ioCJs9rEiYmbGEGE3krZCE4ShxxDaDxbw8B2/qcvsGy/NGRzXGzOLEuEjT5eoDD6Z7ASmt3UGMqkZ7SNUabe0C8GGhFysqwrzsvKZx6wnfSKfrccjtsg8SE77uSqPIJ0m9jWVqZw5U7mwaNSVMvZZUU8fHG6k70BqJ504frPquWk7iXuVnq95XCd70wul8+rEFvzAJEHHl179/TCFRiGpUHEizgORCBbVszRFDA0HMH8cxU0uWmKVEsYm1OaEX1EFkUsD9DlXAVQGmbZfmOY4y+B3JGLOybSd4x2mRFb2M4qlkbiFsl7pcci0tb14w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
- dkim=pass header.d=meta.com; arc=none
-Received: from BLAPR15MB4052.namprd15.prod.outlook.com (2603:10b6:208:276::22)
- by CO1PR15MB5100.namprd15.prod.outlook.com (2603:10b6:303:ef::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8026.16; Thu, 3 Oct
- 2024 01:01:55 +0000
-Received: from BLAPR15MB4052.namprd15.prod.outlook.com
- ([fe80::d42a:8422:b4de:55db]) by BLAPR15MB4052.namprd15.prod.outlook.com
- ([fe80::d42a:8422:b4de:55db%4]) with mapi id 15.20.8005.026; Thu, 3 Oct 2024
- 01:01:55 +0000
-From: Daniel Xu <dlxu@meta.com>
-To: Namhyung Kim <namhyung@gmail.com>,
-        "bot+bpf-ci@kernel.org"
-	<bot+bpf-ci@kernel.org>
-CC: kernel-ci <kernel-ci@meta.com>, "andrii@kernel.org" <andrii@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "martin.lau@linux.dev"
-	<martin.lau@linux.dev>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: Re: [PATCH v4 bpf-next 0/3] bpf: Add kmem_cache iterator and kfunc
-Thread-Topic: [PATCH v4 bpf-next 0/3] bpf: Add kmem_cache iterator and kfunc
-Thread-Index: AQHbFP4xKrvLuTe+REuNf5Nadm/3wrJ0KZiAgAAMGYA=
-Date: Thu, 3 Oct 2024 01:01:55 +0000
-Message-ID: <96728576-f323-4eba-a1b0-5c73d357efac@meta.com>
-References: <20241002180956.1781008-1-namhyung@kernel.org>
- <94bdb7a4cb0f83adf655d98a5c5f5df5299b960d2af54c87eba08de9646d0e42@mail.kernel.org>
- <CAM9d7cjGh5+5Cgw-5Nc5oO88HgJz33BUuMGYREExEgWXND3B_A@mail.gmail.com>
-In-Reply-To:
- <CAM9d7cjGh5+5Cgw-5Nc5oO88HgJz33BUuMGYREExEgWXND3B_A@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BLAPR15MB4052:EE_|CO1PR15MB5100:EE_
-x-ms-office365-filtering-correlation-id: f5b7fcdf-6c33-4194-a2ed-08dce346f992
-x-fb-source: Internal
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam:
- BCL:0;ARA:13230040|1800799024|10070799003|376014|366016|38070700018;
-x-microsoft-antispam-message-info:
- =?utf-8?B?VVloK2FySlR1SEw0TVRXNWtXV2d4eEFjbE45U0lRWWs3b2lnZEhBWE1seTVx?=
- =?utf-8?B?VE04VklYWW16cjV2RTJhOHJtVHo0alllRUZadEhHckJqbmNiNkxLYlRMejRT?=
- =?utf-8?B?eEM4aHZPbkNaSTlyU0tBc2YxYmlSbCtiL3JhdWhHK3RkN2FqVTN4cE5ML0d5?=
- =?utf-8?B?RDlyakdyZ21reDNhMURESWw3VXNXd01kN1ZrUFBBWUpzdGI3MHEvb2FVRDZn?=
- =?utf-8?B?RUQybU9hNnpITjlFWWRqalV2N3dScFpleEFiNThkSnVoL3p5a2IxaTcvRjls?=
- =?utf-8?B?TWs1L2ZySHEralJaZmFENXN5c2RRc05aWGYyazdnaTliWGJ1SnNRcmdubHh2?=
- =?utf-8?B?VFpKQnNuSlZJYUtVUE14NHdORnJrTVI0L2xSblhwZlF5cUZEMTd4YnUzenlz?=
- =?utf-8?B?WmFwMmU4eHlKeWpuTlpscVVXMTRZR0FXMEZySDhsNWlSc05PV0FZNlFsWkd1?=
- =?utf-8?B?cWlSN1hxeVQyaDJXSlRTekViR2dsTm9qR09NNzZSdm1JaStGZDBaeDliVXo0?=
- =?utf-8?B?Y1pOcE1Xck9FU0VOMGRRbzFSN2xWbFFSV0s4WWJRZ1Y5Smx4K2paNThSQkNX?=
- =?utf-8?B?bFRCZktEL09UUmdpRmZmN0l3SENuUnBzWUQyZEthWkV1ZE4xamxBTWw2TXdP?=
- =?utf-8?B?dUEyQmJNc0ExWVBlRzU4RU1tejV6eURCNUJHMUlaQ1hmRXl2Q1I2eHJMTmsx?=
- =?utf-8?B?NlE3Y0NuVVlFRVVIRjM5V0N6ZDJJb1FMUzl3SXE5d3FXQnhpQ0llMDhnTkIw?=
- =?utf-8?B?SWEzYlNVcEp1VHF3emZtSW5EUGZoRGtwRURQL3p5SG5ZaU4yemNPQlJEYkF5?=
- =?utf-8?B?VUI5VUJrbEsxbUtqdGg3TmJpU2k5dkVhME4zekhJbjBHZ0VuRTExRmd3azNs?=
- =?utf-8?B?b3BEZmU4L3dIa3hDanRuUjVxVUlMV2g1SS92MjVURk9pRjZzSm5BM0FTaEU1?=
- =?utf-8?B?QStqZ0dZQzJSak1zaTU3cm5JZ2tSMFdnd1VvaGZGem85Z0NyWFExWFdjVXds?=
- =?utf-8?B?RGpFTWhTb0RMdUdIazN0Yi85Uys5akZqK1NRNzBJSCs1OVhrSXlvMDNOL0tM?=
- =?utf-8?B?R3Q1S2lhZzIrOStIWnUzYmxrQU1jRTI2U05tdlVxZlNvNzJ4enZteXg3dzg0?=
- =?utf-8?B?b1RqdmNGU1VzNERCYkRLSnlVVC9pOTBHdXVNdzI0K1pPQnBvYXhPbnhwdi9I?=
- =?utf-8?B?MFIrTmp2N2VZejJESUszU3ZNamdrNVlDSFdlWW12cWorZHlyY0ZqbHUxOXE1?=
- =?utf-8?B?QWRvYXhVd0hNUk80QVA3RFY5SjNNNzNlZlp5QkUwdnREMUlNbHZJdUVBU3Vx?=
- =?utf-8?B?cXpDcjljcHZYbUFENGpQMEgxYUh3cksweW1rcnJmeWpSUTJBNXFaU0d3TUNU?=
- =?utf-8?B?RjBDYktTMGlSN29lQys5emhZd044c2hrR1B4cmRFSkNnOU14UnpKazluRitR?=
- =?utf-8?B?V09Cdjl4STFkaTdEM05mbEthVDg1a2ZxU0Eybk1Pdlppdk5UTitZK2U1VmNk?=
- =?utf-8?B?YmtCc3U2c3VSb2VxTmlKNVRZbmpyalp4cUlCTVNRWlo4YS9SN3NoS2I0Q0Ew?=
- =?utf-8?B?U0h5TnZmYXBXaEdOK0d5eWJmWnB6WHdwcjBVZWtpamozcnY3d280dGltbGNt?=
- =?utf-8?B?QWdHbnVRTFF4WitjekNSblBncERSbnRoL1JMa0lRQmRtTEc2VFpYSnlYdlBI?=
- =?utf-8?B?T0xFcGlNblhFNEQvWHZXZUg1Snh2d0l2U0t0OUdMWWxQMGVoc0o4djUvTGRF?=
- =?utf-8?B?MFZBZnpFOXRxZ1ZNUHZaRFNVYVc1ZVZkaXViRC8wWlVoZmM0N09ZbnExcTV5?=
- =?utf-8?Q?FOkPg+4jh1Wok7NC7wZzkRyjFcQb376cREJcA=3D?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR15MB4052.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(10070799003)(376014)(366016)(38070700018);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?azc5c1lQNlBtZGg2bkNvbE1Ram8zb1dueEE5dkJGYi9maFJpS2VRUGNHbGNG?=
- =?utf-8?B?Q3ZqbzhoZWVpVlNMbENrT3hVTGpPNHJUL3kyL0pXSzI4dXc1UXdFNGJDYTJy?=
- =?utf-8?B?cEpTTVhyTU01NmltUThoeWVFd0VrRFlTanFmU0JPS0JDS3h6UWhLU3RIV2NO?=
- =?utf-8?B?YU5qTkdXK01aRk4veVZzMkJ0MXZtVEhhK1JXNTNnMFFBbDhUZ2JsYzN2Vm5u?=
- =?utf-8?B?bTI2N2p6WVEwcUU1aTAvMis4K0tCd0c1YndTOVVoMCtsSnVLT2w0TzluMnM3?=
- =?utf-8?B?ZUUwZ0toV1BNaWNvVzJNSHNnN1ZWVDJzNkVTWENKOXJsa1JUR2t0cUFmSlJD?=
- =?utf-8?B?NzFxZ2lQOGM1OTZIc0RaVCtrUDVUd29wMk5oWEFqRTRITzZQZjk0Wlk5WkFE?=
- =?utf-8?B?bUxyMW9HTFFnWHZ1dWJrTk10em5Qa1kvQnRtRHRIdXdsZGZrMVFVMDFpQXNh?=
- =?utf-8?B?SjVLdGEwZG9ic3hScjN3dHB2Q0FtNklIMFptWmVDOU1LSTc4b2d2WWhVNVp4?=
- =?utf-8?B?My84NGpZM1FDakhRc0RTZmFoaFdpZnY1Wkd6RDFUUmN2NVNtVWEwSmVUTkV6?=
- =?utf-8?B?YTQ2MVJRbnRrT0tGSFp2aVF2amg0bnQ3d2ErYjZBd0xPZ25MY0FGOE9nTmhw?=
- =?utf-8?B?V2tqLzJ4dzBXdlBCcEVzeWhuSzFtQWFhQjBtQ0xqNGJkMzF5TzkrNEszWDVD?=
- =?utf-8?B?KzY3SHVmWTFIQjlnSWZmd2ZHdFo1enBiaUMvR290T080ZjNXSDF6Zk9sNFRy?=
- =?utf-8?B?ZnowcysxS2ExRThkN1Y5eElBd1Rud1kxR3RQMm5KaFFhT0RaWS8wVnM0YVRr?=
- =?utf-8?B?ZERDMGlpcWVsTDgrZHVGT3hhQTlLcFBLVzNDWXF5eEFzMlV0bmtDejA0SkhJ?=
- =?utf-8?B?ZGJjNFZ1YWx5dEdWWUlSUHJONWdCbVJDcWhpTEJzY3ExSlVSR1FKV2RnSnB3?=
- =?utf-8?B?NEtTVGxjaU5SYmZQT1BMSG85TXNpU2srNitNVVlFZWw1ZngrTmdtV3Flb2dV?=
- =?utf-8?B?c2RycFBac0ZKbXJqdnN4a2NpcWVjempRM3NsclZoYzR4UTFyUFFnY2JxdEVy?=
- =?utf-8?B?c0tOKytDUkdUSVJaYVJsMGhOc0FqcG5iYTYvdk5DZlB2TmN3VzM4aW5MUCsw?=
- =?utf-8?B?UlM3eGxBRVJHMGRrOThWcTJhaC80WlcvODcxdkVSS3k0ZTErdWlkVy9Ib3dE?=
- =?utf-8?B?bktFT2IxLys1aytDeDVlZEgvdFpDcVBoL2src2J2Wm1uSitDUUpHY3kxem80?=
- =?utf-8?B?UnNFWmc1SS93RVg4VWFHRVUrRXFXNjR3SXZKeUNYUENpdDU2L00rSXovU0dF?=
- =?utf-8?B?dVBWOERtd0pTOUFkYVNOYitpMGsxYlBxL1JIemtHSHk4OStQbUN4VU5nbWhk?=
- =?utf-8?B?VHhuMmZJczRDa0tUU3FzakFzSTVIOUs4MWxhYUhjNndUQzdCNXVNZDZ0aVU0?=
- =?utf-8?B?QXowZVFhN2QzODdOZS9ObWNCa1crdWpuMUNjczRmeVNUOXNOYkQwbkhlbGcz?=
- =?utf-8?B?YWpUMlgzTkVCQU9Ga085QW1IK080VVRyZEJwSDRzOG5VSzhDTVRhUldJYmg4?=
- =?utf-8?B?R0xQMlF6Yk5WWFAzbnUyc3c0ZW1FU3V2MHNiMllpdVYyWHNpem52V1hHUDUz?=
- =?utf-8?B?WmdrS1hZcEFhSTJOSDJSNm5UWHF3VHc3a0N1b2pIRk1GdEt1SU9qdWljdWs0?=
- =?utf-8?B?M3R5WGdhbVBmbURHM28wdzUxTjdhS1JIVTBOOU02YVZxL1pZKzZURkZudWtu?=
- =?utf-8?B?STd1bFNXd0MzRnZwcWY4bURtOEs4cjJJeHdQZG1jY2FqOXgzVHhYKzNvU0Ja?=
- =?utf-8?B?SHpPMHRqQmhmNzJ5RnlScVZXT0k4OFRmbzdFQjJwQ0FwMGZ3TVRMOTlLbXlq?=
- =?utf-8?B?dURzYVFIUXE5aFpYbnlrZjBzeW5ud1lVdXQydGtjQ1RSZVZqUDdld2FoaTNm?=
- =?utf-8?B?RUxPanJ1eldMbzlONXhIcEhEVk9KS2VuaWs2Q0h5aUM5bXlEZFlaanpkQ21D?=
- =?utf-8?B?c3J4UFhuMXVxL0U3ZjhVdGx1L1hQT3JxQUZ5aE9JdUptVGR4M0cvMitIOHd3?=
- =?utf-8?B?MllLbnFJRGhTNDVhb3UyQlZBQzdpNzZ2NjZQdDFUT1JKWENheTByend0V3BJ?=
- =?utf-8?Q?7+OkQuo//gknvrS+IQsG8bZna?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <4ED1FCAC2BE34D459CC7670407EAD437@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 689AFBA49
+	for <bpf@vger.kernel.org>; Thu,  3 Oct 2024 04:51:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1727931089; cv=none; b=UtnD1F+P8PPO66yBp39dleWPYlEmFH9h8VPPJN0+E5oYbJVHGSfB/VjMNhRn3YfnMahutHrnAnNiBu2GygE5GH8lvrS5eGS0IiFfY1iDOQws695vftgXiTKTyKx4bVW0dxZnYay78xvJF1sqnZhD+f/T1vBEvXxwtHqwQ4P6pU4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1727931089; c=relaxed/simple;
+	bh=hPPyUccLiTCCIJr4tp3ulm/6Rz5EA/cFmioBfTPp7d8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=AnOmr5LVAOzW9BpwNfALe5DN0XgdHWVO+e40E9r0o2fxqUyCrD7IrKRb51l4v5rLQhHl2+7AUTmdHJ8EZpWVc24ZdXYyDEvYoRmT+Ddz/tbaAxn3Z2HZzv2ne7RmJQ0EB47pEZr/8Z/ZUBtDdpWCli8BvFyGALgcG7R/vkpO2i4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=W1PQcZSH; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1727931086;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SWUNTLS92RYFrRb4mZe3jVY99KEqimrh0yZ1sGGxzBU=;
+	b=W1PQcZSHk02F/msXtX+NH/6lNNQhOMm0ZTFvG+Wzgcbrt3K1UescAMA9NPkJC+3eIItNnm
+	C1SgOfl40FShpK3ZxLM47FO9p81t+3H3EeGQ9PkK2ekeO5VcJWWv9FM4keC+VddGBWyTex
+	DDRq+L8BeBWV6XWAXCOEM+e1zXquCtA=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-681-fjGD6S15P9SznwghMmistw-1; Thu, 03 Oct 2024 00:51:25 -0400
+X-MC-Unique: fjGD6S15P9SznwghMmistw-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-42cb2c5d634so2472815e9.0
+        for <bpf@vger.kernel.org>; Wed, 02 Oct 2024 21:51:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727931084; x=1728535884;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=SWUNTLS92RYFrRb4mZe3jVY99KEqimrh0yZ1sGGxzBU=;
+        b=cFYxBj/K3/hE8UGl7h9EOtH92o7kpzPfJ94jrHiZkcf4Lutthxznk2YxSrp3PDAD9K
+         YWpwxqyVe+dcXyFgKTJ6bVEOwlOUbjSlk7HY1XqoWjyG855lZnBte8vzhpHNP6OTQdO7
+         Ne17F3AVmUEkcigxFNRKlnbqytosz/o0IVDOivsHXZm2HAG4/c2iwlWRLutbZuivrHOp
+         HbQvhwpGx7IRkcObIvlT+SfrclVLgHPiB1/lJnAFUG8+bbL72dt5KJwGKJ8N54Ig2zum
+         2qWkohesVYC5ISvD9obmsVMNTi1yoEsJ3bPHl7y34jqim0eMtcTGy/k5mDrkzjjRp80d
+         4knQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXZso+23I3s5UsX7m/ocZIj+qy5A6HJQx9n4cXialM1qSun7z4SwxhwADpCFmabxYDmMNo=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxG83yGrWnAXnrZmtncmKZ/bMkUwUzqs1RS3OrbmBn+7wKinD/e
+	j0e0UjmUluO7lyQQrjK7YriBG9kwlOk2kuCcHJt5ozPBfX31UAkiq7YUq0ffZdt/eMYKzgvmeb8
+	TeWx1cP83SPNY3aPB0b8dhughWetMJJjDOYvyTzG8dZWMM/9x
+X-Received: by 2002:a05:600c:1f0f:b0:42c:b22e:fbfa with SMTP id 5b1f17b1804b1-42f819ff766mr460915e9.21.1727931083857;
+        Wed, 02 Oct 2024 21:51:23 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEWmlfAT+WefmfbJTHZinJAa2tf2UkgSZINsY/zEk04RxX42Rr6iHbc2j4WKOBn603JwS6soA==
+X-Received: by 2002:a05:600c:1f0f:b0:42c:b22e:fbfa with SMTP id 5b1f17b1804b1-42f819ff766mr460785e9.21.1727931083489;
+        Wed, 02 Oct 2024 21:51:23 -0700 (PDT)
+Received: from [192.168.0.113] (185-219-167-205-static.vivo.cz. [185.219.167.205])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-37d081f749asm377911f8f.9.2024.10.02.21.51.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Oct 2024 21:51:22 -0700 (PDT)
+Message-ID: <e4bfbee4-ca5f-4496-98ed-60d24e402046@redhat.com>
+Date: Thu, 3 Oct 2024 06:51:20 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: meta.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BLAPR15MB4052.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f5b7fcdf-6c33-4194-a2ed-08dce346f992
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Oct 2024 01:01:55.3934
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: zjC5q6mW+2KhrQZoClqBk40csS26lUOMEFdtgrmkZCaxUJ9I6IuELSdYwk0WyxCE
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR15MB5100
-X-Proofpoint-GUID: mkPnqcpEdWAyq1-UyB98iPrK48Jg5HWi
-X-Proofpoint-ORIG-GUID: mkPnqcpEdWAyq1-UyB98iPrK48Jg5HWi
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
- definitions=2024-10-02_21,2024-09-30_01,2024-09-30_01
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next 1/2] bpf: Add kfuncs for read-only string
+ operations
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+ Eduard Zingerman <eddyz87@gmail.com>, bpf <bpf@vger.kernel.org>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>
+References: <cover.1727329823.git.vmalik@redhat.com>
+ <bc06e1f4bef09ba3d431d7a7236303746a7adb57.1727329823.git.vmalik@redhat.com>
+ <CAEf4Bzas4ZxiyJp7h7N5OGmPSMRfZDgPUgEAdTmir3n-4cx-xg@mail.gmail.com>
+ <adaa47618f2b71c2803195749cedd4a5b468cffa.camel@gmail.com>
+ <CAADnVQLCk+VNpN8WfCbSbT-FBcHBuMXpk-hBOLB7HX3BrURp8w@mail.gmail.com>
+ <CAEf4BzZSFuXyUbwN8_VvbR6Uk_qHAKWNLkCZfdo-58WC_RYYag@mail.gmail.com>
+ <CAADnVQLsnhsL2i_RnOBUSebO--yx_5Az1Ydr9QPb5WZCkmYQJg@mail.gmail.com>
+ <CAEf4BzYt42A73kmg5=HWRiHj0H1Dr0WPQosmQLkBhgkkiw0HQA@mail.gmail.com>
+ <c831b42e-30ba-4a19-bc0d-5346c8388892@redhat.com>
+ <CAADnVQLhr+xOF58ppaySOjb6cMdsWEYhr_4ZLvQ-XDWXHBMgBA@mail.gmail.com>
+From: Viktor Malik <vmalik@redhat.com>
+Content-Language: en-US
+In-Reply-To: <CAADnVQLhr+xOF58ppaySOjb6cMdsWEYhr_4ZLvQ-XDWXHBMgBA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-SGkgTmFtaHl1bmcsDQoNCk9uIDEwLzIvMjQgMTc6MTgsIE5hbWh5dW5nIEtpbSB3cm90ZToNCj4g
-SGVsbG8sDQo+IA0KPiBPbiBXZWQsIE9jdCAyLCAyMDI0IGF0IDEyOjA24oCvUE0gPGJvdCticGYt
-Y2lAa2VybmVsLm9yZz4gd3JvdGU6DQo+Pg0KPj4gRGVhciBwYXRjaCBzdWJtaXR0ZXIsDQo+Pg0K
-Pj4gQ0kgaGFzIHRlc3RlZCB0aGUgZm9sbG93aW5nIHN1Ym1pc3Npb246DQo+PiBTdGF0dXM6ICAg
-ICBGQUlMVVJFDQo+PiBOYW1lOiAgICAgICBbdjQsYnBmLW5leHQsMC8zXSBicGY6IEFkZCBrbWVt
-X2NhY2hlIGl0ZXJhdG9yIGFuZCBrZnVuYw0KPj4gUGF0Y2h3b3JrOiAgaHR0cHM6Ly9wYXRjaHdv
-cmsua2VybmVsLm9yZy9wcm9qZWN0L25ldGRldmJwZi9saXN0Lz9zZXJpZXM9ODk0OTQ3JnN0YXRl
-PSoNCj4+IE1hdHJpeDogICAgIGh0dHBzOi8vZ2l0aHViLmNvbS9rZXJuZWwtcGF0Y2hlcy9icGYv
-YWN0aW9ucy9ydW5zLzExMTQ5MzUwODY2DQo+Pg0KPj4gRmFpbGVkIGpvYnM6DQo+PiB0ZXN0X3By
-b2dzLWFhcmNoNjQtZ2NjOiBodHRwczovL2dpdGh1Yi5jb20va2VybmVsLXBhdGNoZXMvYnBmL2Fj
-dGlvbnMvcnVucy8xMTE0OTM1MDg2Ni9qb2IvMzA5ODgzNDE1NjQNCj4gDQo+IEknbSBub3Qgc3Vy
-ZSBpZiBpdCdzIGJlY2F1c2Ugb2YgbXkgY2hhbmdlLiAgSXQgc2VlbXMgdG8gaGF2ZSBmYWlsZWQN
-Cj4gb24gdW5yZWxhdGVkIHRlc3RzLiAgQ2FuIHlvdSBwbGVhc2UgZG91YmxlIGNoZWNrPw0KDQpJ
-IHJhbiBzb21lIHF1ZXJpZXMgb24gdGhlIEJQRiBDSSBkYXRhc2V0ICh1bmZvcnR1bmF0ZWx5IG5v
-dCBwdWJsaWMpIGFuZCANCkkgZm91bmQgYXQgbGVhc3Qgb25lIG90aGVyIGluc3RhbmNlIG9mIHRo
-aXMgZmFpbHVyZSBbMF0uDQoNCkkndmUgYWxzbyBtYW51YWxseSB0cmlnZ2VyZWQgYSByZS1ydW4g
-YW5kIG5vdyBpdCBwYXNzZXMuDQpTbyBpdCdzIHByb2JhYmx5IG5vdCByZWxhdGVkIHRvIHlvdXIg
-Y2hhbmdlLg0KDQpJJ2xsIHRyeSB0byBmaW5kIHRoZSByaWdodCBwZXJzb24gdG8gZGVidWcgaXQg
-ZnVydGhlci4NCg0KVGhhbmtzLA0KRGFuaWVsDQoNClswXTogDQpodHRwczovL2dpdGh1Yi5jb20v
-a2VybmVsLXBhdGNoZXMvYnBmL2FjdGlvbnMvcnVucy8xMTAxMDU1NzIxOC9qb2IvMzA1NzM2MDc3
-NzcNCg0K
+On 10/2/24 18:55, Alexei Starovoitov wrote:
+> On Tue, Oct 1, 2024 at 11:12 PM Viktor Malik <vmalik@redhat.com> wrote:
+>>
+>> On 10/1/24 19:40, Andrii Nakryiko wrote:
+>>> On Tue, Oct 1, 2024 at 10:34 AM Alexei Starovoitov
+>>> <alexei.starovoitov@gmail.com> wrote:
+>>>>
+>>>> On Tue, Oct 1, 2024 at 10:04 AM Andrii Nakryiko
+>>>> <andrii.nakryiko@gmail.com> wrote:
+>>>>>
+>>>>> On Tue, Oct 1, 2024 at 7:48 AM Alexei Starovoitov
+>>>>> <alexei.starovoitov@gmail.com> wrote:
+>>>>>>
+>>>>>> On Tue, Oct 1, 2024 at 4:26 AM Eduard Zingerman <eddyz87@gmail.com> wrote:
+>>>>>>>
+>>>>>>> On Mon, 2024-09-30 at 15:00 -0700, Andrii Nakryiko wrote:
+>>>>>>>
+>>>>>>> [...]
+>>>>>>>
+>>>>>>>> Right now, the only way to pass dynamically sized anything is through
+>>>>>>>> dynptr, AFAIU.
+>>>>>>>
+>>>>>>> But we do have 'is_kfunc_arg_mem_size()' that checks for __sz suffix,
+>>>>>>> e.g. used for bpf_copy_from_user_str():
+>>>>>>>
+>>>>>>> /**
+>>>>>>>  * bpf_copy_from_user_str() - Copy a string from an unsafe user address
+>>>>>>>  * @dst:             Destination address, in kernel space.  This buffer must be
+>>>>>>>  *                   at least @dst__sz bytes long.
+>>>>>>>  * @dst__sz:         Maximum number of bytes to copy, includes the trailing NUL.
+>>>>>>>  * ...
+>>>>>>>  */
+>>>>>>> __bpf_kfunc int bpf_copy_from_user_str(void *dst, u32 dst__sz, const void __user *unsafe_ptr__ign, u64 flags)
+>>>>>>>
+>>>>>>> However, this suffix won't work for strnstr because of the arguments order.
+>>>>>>
+>>>>>> Stating the obvious... we don't need to keep the order exactly the same.
+>>>>>>
+>>>>>> Regarding all of these kfuncs... as Andrii pointed out 'const char *s'
+>>>>>> means that the verifier will check that 's' points to a valid byte.
+>>>>>> I think we can do a hybrid static + dynamic safety scheme here.
+>>>>>> All of the kfunc signatures can stay the same, but we'd have to
+>>>>>> open code all string helpers with __get_kernel_nofault() instead of
+>>>>>> direct memory access.
+>>>>>> Since the first byte is guaranteed to be valid by the verifier
+>>>>>> we only need to make sure that the s+N bytes won't cause page faults
+>>>>>
+>>>>> You mean to just check that s[N-1] can be read? Given a large enough
+>>>>> N, couldn't it be that some page between s[0] and s[N-1] still can be
+>>>>> unmapped, defeating this check?
+>>>>
+>>>> Just checking s[0] and s[N-1] is not enough, obviously, and especially,
+>>>> since the logic won't know where nul byte is, so N is unknown.
+>>>> I meant to that all of str* kfuncs will be reading all bytes
+>>>> via __get_kernel_nofault() until they find \0.
+>>>
+>>> Ah, ok, I see what you mean now.
+>>>
+>>>> It can be optimized to 8 byte access.
+>>>> The open coding (aka copy-paste) is unfortunate, of course.
+>>>
+>>> Yep, this sucks.
+>>
+>> Yeah, that's quite annoying. I really wanted to avoid doing that. Also,
+>> we won't be able to use arch-optimized versions of the functions.
+>>
+>> Just to make sure I understand things correctly - can we do what Eduard
+>> suggested and add explicit sizes for all arguments using the __sz
+>> suffix? So something like:
+>>
+>>     const char *bpf_strnstr(const char *s1, u32 s1__sz, const char *s2, u32 s2__sz);
+> 
+> That's ok-ish, but you probably want:
+> 
+> const char *bpf_strnstr(void *s1, u32 s1__sz, void *s2, u32 s2__sz);
+> 
+> and then to call strnstr() you still need to strnlen(s2, s2__sz).
+> 
+> But a more general question... how always passing size will work
+> for bpftrace ? Does it always know the upper bound of storage where
+> strings are stored?
+
+Yes, it does. The strings must be read via the str() call (which
+internally calls bpf_probe_read_str) and there's an upper bound on the
+size of each string.
+
+> I would think __get_kernel_nofault() approach is user friendlier.
+
+That's probably true but isn't there still the problem that strings are
+not necessarily null-terminated? And in such case, unbounded string
+functions may not terminate which is not allowed in BPF?
+
 
