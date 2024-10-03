@@ -1,204 +1,165 @@
-Return-Path: <bpf+bounces-40867-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40868-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7FF8C98F846
-	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2024 22:54:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 087E198F858
+	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2024 22:59:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D895AB21AC1
-	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2024 20:54:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 237DC1C21EB1
+	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2024 20:59:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4461D1AC447;
-	Thu,  3 Oct 2024 20:54:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CF061B85C8;
+	Thu,  3 Oct 2024 20:59:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ZYT9TM04"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lhSkImDq"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE68A224D1
-	for <bpf@vger.kernel.org>; Thu,  3 Oct 2024 20:54:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 461951AC884;
+	Thu,  3 Oct 2024 20:59:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727988870; cv=none; b=onKVVvG+Hnvg1gvCOWaG36C34KgSF7Dw7egQM5lkFwYWWvhBsmqFDHelgxCcOivFF9Sd5g9clqYEaK9g1S11G7RmoFMcqGl9ewdJKbyQut/wgUQ49eGubPwmPjYXqT432hk6Hmet97p4jMPGosAGGbOfF1T7RIhzA/gHOuGw3jc=
+	t=1727989149; cv=none; b=oJOjyLmz6vbYlO2KmTGFZS7vbczgd5GFYztoRvhn67t6PmsnIUB1bGgHJt7rLeJFXCvltxIwqpiFev2GBnpK44Vo4cREE1peHN/2Ze0hVJI+QfsAcBKZRcnXsPq3cbYwVso8YkBO/N0Gn7uyFMT4KrZp+w9qfjhQ2OeVll24cXw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727988870; c=relaxed/simple;
-	bh=d0QfieXfENrWksHSxSgdz5h7MVZyvhmK9kgrF+FTszU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=S9TUUTYcq56dvDqNucOYw42d0AiZ7NgTFJfvQakpvQ6SPACrMJrdrYHuQ8Ul18UmgyP23Nc2NBmHRvUIZIfutNe8DWji5MX+6RhU7hN4TSZjeHJs9gSJI1MNBInSHiu2Raw/IJCiBAcsPtclTRsejCSgFV5Z/acBUtcSwxU9M5Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ZYT9TM04; arc=none smtp.client-ip=95.215.58.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <89c98687-2087-46eb-8341-6ae65d70cb9c@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1727988866;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NRj+hdtnQAsunKo2wllQxFgzW8G4V5X3a49QiCrG7RA=;
-	b=ZYT9TM04WYYe721f42tkT/f+ShTB7yWFg84AUrpcJ4uOlzLZ/dcd4osgvgCAPgIa/Su5C6
-	UZwkzo4r4LQ7g8r1R6YV+Y+ScHnkxNH9uAkPBEh/odgZQ2JaxTgxUDaVy8HFJ4ogJtgMyj
-	Hcve9c0I1rZ8qDBCPSUUEkwlvFdi2Ak=
-Date: Thu, 3 Oct 2024 13:54:18 -0700
+	s=arc-20240116; t=1727989149; c=relaxed/simple;
+	bh=ZmpXlFGMpkNtzbN2wBs+Cw+ak6YemdJvW39dDHNXTWY=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lrokz0tZsL7H+KfcWGW3F40EnQ2IcnotpXHHgvUIOLwQGzNw1p8Sbw/pn+wL3fo8Vn0OZ+j+w3JSMIyEvn8qo44c1ea1YFHS8HJdjxghI0O2/z5ywVIhemZdjyD8cQvLHDGbjAyXfP6yglaB/WSKcJn+J1vBC2uvcII+uynQV+c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lhSkImDq; arc=none smtp.client-ip=209.85.128.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-42e5e1e6d37so13235325e9.3;
+        Thu, 03 Oct 2024 13:59:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1727989145; x=1728593945; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=mJNihuWQh42d+jrcRZkq6DiE8tAO9UQ/Jb0vkJLRO0o=;
+        b=lhSkImDqrZx6jC6CAR+dULWCkJb46UuS1mrq0cubfaVlN5JcS6kgfyXxl0r1eY6et1
+         QkVozfPDvWqnPR+kIJz90QheCh9skgKnvJfaWU0Oy+MY1dLEMAYs9SUNyootsdt3zDcf
+         yGjIw2FMwBTwELzSO0sjGIl389qmqSkcagGkEikh8qT1Ms0uTdhKfRyGFItiKbXEo67k
+         +zEpHXU1sfFiDrvEk4EFpFhxFM11/vH5GwFriIwYVRlqRV1Rz4FnrIOW5W60eCmc2Hkz
+         w13sK2brpBi35XdstzK5zvj4hrWG2t7TDhOFN7h/yRdCQTdpYrABsOW7SiDcxGkCzK6Y
+         k4LA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727989145; x=1728593945;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mJNihuWQh42d+jrcRZkq6DiE8tAO9UQ/Jb0vkJLRO0o=;
+        b=QcKPcKChjGgtztCXylsmqiX6cFSxLOZ/LHnhDkQDPQnrkZYplhDehGhNMOzTCLQAR3
+         hfviMkVHGUyiiuCSTjbvC+hEKX62100CdxFpNcb721vdF/v88xdPsQPgHZGgiTUhlYpR
+         nrFWde6IICJAkxPXKbuGPhlEGNGbhWsPBDhYyi7a3/yJ9Q5rPxY66mQwIlOJXlMxcQ6h
+         TBAVOLBeUYQjwdV4B83oJr9zubKIALXTQdHAw2MlMHlu+/Fe4k9ZfmzF2Qu8Cl38lhHK
+         MjfHTlAa12gE0pDDy9uq3sei4CMFMlJAzN7TzENaeUHbyqxqjlFDTEvPJiXK+lqt4ESD
+         OXPw==
+X-Forwarded-Encrypted: i=1; AJvYcCUXAhZ5nO7qz8qX1MAok1uSWPBN81ZPXK0AF7uWNxQNoUz/ONsotGWqr3ycyVRFdk9PV+255SaUEQ==@vger.kernel.org, AJvYcCUw8PjHwMsa31v0+zC/QLpLKUW7ktzDwBpxukhsFKkipXj+UyyFcPlr6ETGWxAC4o4ivzY=@vger.kernel.org, AJvYcCVbOgw8YSkZ4K5M+XO4ugohbmHr16NBcOZDbYXbiX8qawS2XaRKO073GyOVQSQYcbm1xNZjKzFa0NKYSjCFu60o@vger.kernel.org
+X-Gm-Message-State: AOJu0Yye6HJkbFp/8lGi4tr4b9m2Vt8HO8m9/an2jjb1EhRkqL+4cXup
+	tf3hQk9/Nqq3G9QHUyeiBvcaqsbXBY9Zu+HXOD2qgYEcH/52pWkc9eBOFvmA
+X-Google-Smtp-Source: AGHT+IHssXj60QMhEj9YSO13AirAlwQRcDaUB+HiW5Htq7R4F7UVDq3ycVAM4z57QWMb5k3rjt1W7g==
+X-Received: by 2002:a05:600c:3b27:b0:42f:8515:e4a8 with SMTP id 5b1f17b1804b1-42f85a6d5camr2173545e9.6.1727989145119;
+        Thu, 03 Oct 2024 13:59:05 -0700 (PDT)
+Received: from krava (85-193-35-211.rib.o2.cz. [85.193.35.211])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-42f79d8d2fcsm52618615e9.9.2024.10.03.13.59.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Oct 2024 13:59:03 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Thu, 3 Oct 2024 22:59:01 +0200
+To: Stephen Brennan <stephen.s.brennan@oracle.com>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, bpf@vger.kernel.org,
+	dwarves@vger.kernel.org, linux-debuggers@vger.kernel.org,
+	Alan Maguire <alan.maguire@oracle.com>
+Subject: Re: [PATCH dwarves v3 0/5] Emit global variables in BTF
+Message-ID: <Zv8FlbMTd24eJCyE@krava>
+References: <20241002235253.487251-1-stephen.s.brennan@oracle.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: yet another approach Was: [PATCH bpf-next v3 4/5] bpf, x86: Add
- jit support for private stack
-Content-Language: en-GB
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>
-References: <20240926234506.1769256-1-yonghong.song@linux.dev>
- <CAADnVQ+v3u=9PEHQ0xJEf6wSRc2iR928Sc+6CULh390i3TDR=w@mail.gmail.com>
- <CAP01T77-bU5Ewu79QLJDTnt_E8h_VFHuABOD5=oct7_TC_yYGQ@mail.gmail.com>
- <CAP01T76UnVfn3x7zZH4vJgZMGv_Ygewxg=9gUA-xuOa7pwGr3A@mail.gmail.com>
- <CAADnVQ+caNh8+fgCj2XeZDrXniYif5Y+rw6vsMOojBO3Qwk+Nw@mail.gmail.com>
- <CAADnVQKLWi_TfpbiYb1vPMYMqPOPWPS-RGbB0FksEQW5i36poQ@mail.gmail.com>
- <CAP01T77q_H31mPXPQV4xHifutxxFeuoD8eg75C717MZ=OOeHew@mail.gmail.com>
- <CAADnVQLfWgpu6WvZRCFo39YHJ=zSSQWcOnaCOqdfyCg8uRoddg@mail.gmail.com>
- <CAP01T77G63MGvomrd3563bgBcNKUZg0Jc=GGmcGO0zPLS0hcHA@mail.gmail.com>
- <CAADnVQ+z-s07V_KU91+zGRB3qXGR9nr3w1dMBfCEEgunyes7EA@mail.gmail.com>
- <8b6c1eb1-de43-4ddb-b2b6-48256bdacddb@linux.dev>
- <CAP01T77k7bqTx_VRhnUjcOcGDp-y=zJHzKi7S-+domZjhEGfzQ@mail.gmail.com>
- <CAADnVQ+UByKkpVSg4tC-hoV7DstEYE11WxJ4nbGj27emZ2PFmA@mail.gmail.com>
- <a3116710-7e55-42ce-abd2-7becee9c275f@linux.dev>
- <CAP01T75CB=dEzXaHjJK6GCUrZUEqyzw+dxqHZuZLjCE-UyVH4w@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <CAP01T75CB=dEzXaHjJK6GCUrZUEqyzw+dxqHZuZLjCE-UyVH4w@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241002235253.487251-1-stephen.s.brennan@oracle.com>
+
+On Wed, Oct 02, 2024 at 04:52:42PM -0700, Stephen Brennan wrote:
+> Hello all,
+> 
+> This is v3 of the series to add global variables to pahole's generated BTF.
+> Patches 1-3 of v2 were already merged. This series splits the last patch of v2
+> and does some small updates. It should apply cleanly to the "next" branch.
+> https://github.com/acmel/dwarves/commits/btf_global_vars/
+> 
+> Changes since v2:
+> 1. Split things out into several smaller patches as can be seen in the log
+>    below.
+
+thanks for the split, so much better for review, lgtm
+
+Acked-by: Jiri Olsa <jolsa@kernel.org>
+
+thanks,
+jirka
 
 
-On 10/3/24 1:47 PM, Kumar Kartikeya Dwivedi wrote:
-> On Thu, 3 Oct 2024 at 22:44, Yonghong Song <yonghong.song@linux.dev> wrote:
->>
->> On 10/3/24 10:35 AM, Alexei Starovoitov wrote:
->>> On Thu, Oct 3, 2024 at 6:40 AM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
->>>> On Thu, 3 Oct 2024 at 08:17, Yonghong Song <yonghong.song@linux.dev> wrote:
->>>>> On 10/1/24 6:26 PM, Alexei Starovoitov wrote:
->>>>>> On Tue, Oct 1, 2024 at 5:23 PM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
->>>>>>> Makes sense, though will we have cases where hierarchical scheduling
->>>>>>> attaches the same prog at different points of the hierarchy?
->>>>>> I'm not sure anyone was asking for such a use case.
->>>>>>
->>>>>>> Then the
->>>>>>> limit of 4 may not be enough (e.g. say with cgroup nested levels > 4).
->>>>>> Well, 4 was the number from TJ.
->>>>>>
->>>>>> Anyway the proposed pseudo code:
->>>>>>
->>>>>> __bpf_prog_enter_recur_limited()
->>>>>> {
->>>>>>      cnt = this_cpu_inc_return(*(prog->active));
->>>>>>      if (cnt > 4) {
->>>>>>         inc_miss
->>>>>>         return 0;
->>>>>>      }
->>>>>>     // pass cnt into bpf prog somehow, like %rdx ?
->>>>>>     // or re-read prog->active from prog
->>>>>> }
->>>>>>
->>>>>>
->>>>>> then in the prologue emit:
->>>>>>
->>>>>> push rbp
->>>>>> mov rbp, rsp
->>>>>> if %rdx == 1
->>>>>>       // main prog is called for the first time
->>>>>>       mov rsp, pcpu_priv_stack_top
->>>>>> else
->>>>>>       // 2+nd time main prog is called or 1+ time subprog
->>>>>>      sub rsp, stack_size
->>>>>>      if rsp < pcpu_priv_stack_bottom
->>>>>>        goto exit  // stack is too small, exit
->>>>>> fi
->>>>> I have tried to implement this approach (not handling
->>>>> recursion yet) based on the above approach. It works
->>>>> okay with nested bpf subprogs like
->>>>>       main prog  // set rsp = pcpu_priv_stack_top
->>>>>         subprog1 // some stack
->>>>>           subprog2 // some stack
->>>>>
->>>>> The pcpu_priv_stack is allocated like
->>>>>      priv_stack_ptr = __alloc_percpu_gfp(1024 * 16, 8, GFP_KERNEL);
->>>>>
->>>>> But whenever the prog called an external function,
->>>>> e.g. a helper in this case, I will get a double fault.
->>>>> An example could be
->>>>>       main prog  // set rsp = pcpu_priv_stack_top
->>>>>         subprog1 // some stack
->>>>>           subprog2 // some stack
->>>>>         call bpf_seq_printf
->>>>> (I modified bpf_iter_ipv6_route.c bpf prog for the above
->>>>> purpose.)
->>>>> I added some printk statements from the beginning of bpf_seq_printf and
->>>>> nothing printed out either and of course traps still happens.
->>>>>
->>>>> I tried another example without subprog and the mainprog calls
->>>>> a helper and the same double traps happens below too.
->>>>>
->>>>> The error log looks like
->>>>>
->>>>> [   54.024955] traps: PANIC: double fault, error_code: 0x0
->>>>> [   54.024969] Oops: double fault: 0000 [#1] PREEMPT SMP KASAN PTI
->>>>> [   54.024977] CPU: 3 UID: 0 PID: 1946 Comm: test_progs Tainted: G           OE      6.11.0-10577-gf25c172fd840-dirty #968
->>>>> [   54.024982] Tainted: [O]=OOT_MODULE, [E]=UNSIGNED_MODULE
->>>>> [   54.024983] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
->>>>> [   54.024986] RIP: 0010:error_entry+0x1e/0x140
->>>>> [   54.024996] Code: ff ff 90 90 90 90 90 90 90 90 90 90 56 48 8b 74 24 08 48 89 7c 24 08 52 51 50 41 50 41 51 41 52 41 53 53 55 41 54 41 55 41 56 <41> 57 56 31 f6 31 d1
->>>>> [   54.024999] RSP: 0018:ffffe8ffff580000 EFLAGS: 00010806
->>>>> [   54.025002] RAX: f3f3f300f1f1f1f1 RBX: fffff91fffeb0044 RCX: ffffffff84201701
->>>>> [   54.025005] RDX: fffff91fffeb0044 RSI: ffffffff8420128d RDI: ffffe8ffff580178
->>>>> [   54.025007] RBP: ffffe8ffff580140 R08: 0000000000000000 R09: 0000000000000000
->>>>> [   54.025009] R10: 0000000000000000 R11: 0000000000000000 R12: dffffc0000000000
->>>>> [   54.025010] R13: 1ffffd1fffeb0014 R14: 0000000000000003 R15: ffffe8ffff580178
->>>>> [   54.025012] FS:  00007fd076525d00(0000) GS:ffff8881f7180000(0000) knlGS:0000000000000000
->>>>> [   54.025015] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->>>>> [   54.025017] CR2: ffffe8ffff57fff8 CR3: 000000010cd80002 CR4: 0000000000370ef0
->>>>> [   54.025021] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->>>>> [   54.025022] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->>>>> [   54.025024] Call Trace:
->>>>> [   54.025026]  <#DF>
->>>>> [   54.025028]  ? __die_body+0xaf/0xc0
->>>>> [   54.025032]  ? die+0x2f/0x50
->>>>> [   54.025036]  ? exc_double_fault+0x73/0x80
->>>>> [   54.025040]  ? asm_exc_double_fault+0x23/0x30
->>>>> [   54.025044]  ? common_interrupt_return+0xb1/0xcc
->>>>> [   54.025048]  ? asm_exc_page_fault+0xd/0x30
->>>>> [   54.025051]  ? error_entry+0x1e/0x140
->>>>> [   54.025055]  </#DF>
->>>>> [   54.025056] Modules linked in: bpf_testmod(OE)
->>>>> [   54.025061] ---[ end trace 0000000000000000 ]---
->>>>>
->>>>> Maybe somebody could give a hint why I got a double fault
->>>>> when calling external functions (outside of bpf programs)
->>>>> with allocated stack?
->>>>>
->>>> I will help in debugging. Can you share the patch you applied locally
->>>> so I can reproduce?
->>> Looks like the idea needs more thought.
->>>
->>> in_task_stack() won't recognize the private stack,
->>> so it will look like stack overflow and double fault.
->>>
->>> do you have CONFIG_VMAP_STACK ?
->> Yes, my above test runs fine withCONFIG_VMAP_STACK. Let me guard private stack support with
->> CONFIG_VMAP_STACK for now. Not sure whether distributions enable
->> CONFIG_VMAP_STACK or not.
->>
-> I think it is the default on most distributions (Debian, Ubuntu, Fedora, etc.).
-
-Thanks for confirmation! Great CONFIG_VMAP_STACK is on by default for most distro's.
-
+> 2. Previously the global_var feature was defined with BTF_DEFAULT_FEATURE, but I
+>    think we agreed in the discussion of v2 that it would be better as
+>    BTF_NON_DEFAULT_FEATURE, so I changed it to align with our discussion.
+> 3. Removed the "--encode_btf_global_vars" option.
+> 3. I went through and straightened out my use of integer types for ELF section
+>    index (size_t, as returned by libelf) as well as the variable addr and size.
+>    To this end I did add a few checks to explicitly ensure we don't overflow the
+>    uint32_t fields in the DATASEC.
+> 
+> To test this out on a Linux build, you'll want to make the following change:
+> 
+> ---------
+> diff --git a/scripts/Makefile.btf b/scripts/Makefile.btf
+> index b75f09f3f424..c88d9e526426 100644
+> --- a/scripts/Makefile.btf
+> +++ b/scripts/Makefile.btf
+> @@ -19,7 +19,7 @@ pahole-flags-$(call test-ge, $(pahole-ver), 125)      += --skip_encoding_btf_inconsis
+>  else
+> 
+>  # Switch to using --btf_features for v1.26 and later.
+> -pahole-flags-$(call test-ge, $(pahole-ver), 126)  = -j --btf_features=encode_force,var,float,enum64,decl_tag,type_tag,optimized_func,consistent_func,decl_tag_kfuncs
+> +pahole-flags-$(call test-ge, $(pahole-ver), 126)  = -j --btf_features=encode_force,var,float,enum64,decl_tag,type_tag,optimized_func,consistent_func,decl_tag_kfuncs,global_var
+> 
+>  ifneq ($(KBUILD_EXTMOD),)
+>  module-pahole-flags-$(call test-ge, $(pahole-ver), 126) += --btf_features=distilled_base
+> ---------
+> 
+> With a suitable kernel config that has BTF enabled, you could then build like
+> so:
+> 
+>     PATH=path/to/pahole_build_dir make all
+> 
+> And you'll be able to examine the size of the results with readelf, or dump the
+> results with bpftool.
+> 
+> v2: https://lore.kernel.org/dwarves/20240920081903.13473-1-stephen.s.brennan@oracle.com/T/
+> v1: https://lore.kernel.org/dwarves/20240912190827.230176-1-stephen.s.brennan@oracle.com/
+> 
+> Stephen Brennan (5):
+>   btf_encoder: use bitfield to control var encoding
+>   btf_encoder: stop indexing symbols for VARs
+>   btf_encoder: explicitly check addr/size for u32 overflow
+>   btf_encoder: allow encoding VARs from many sections
+>   pahole: add global_var BTF feature
+> 
+>  btf_encoder.c      | 348 +++++++++++++++++++++------------------------
+>  btf_encoder.h      |   7 +
+>  dwarves.h          |   1 +
+>  man-pages/pahole.1 |   7 +-
+>  pahole.c           |   3 +-
+>  5 files changed, 178 insertions(+), 188 deletions(-)
+> 
+> -- 
+> 2.43.5
+> 
+> 
 
