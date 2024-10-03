@@ -1,245 +1,200 @@
-Return-Path: <bpf+bounces-40811-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40812-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D00B598E948
-	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2024 07:10:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26F9D98E94C
+	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2024 07:15:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 44726B24E0E
-	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2024 05:10:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 89E122834B6
+	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2024 05:15:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CAB23D551;
-	Thu,  3 Oct 2024 05:10:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D364049638;
+	Thu,  3 Oct 2024 05:15:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="srdEkmst"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="P71OwC4h"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ua1-f53.google.com (mail-ua1-f53.google.com [209.85.222.53])
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9B0A3AC2B
-	for <bpf@vger.kernel.org>; Thu,  3 Oct 2024 05:09:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF6F43AC2B
+	for <bpf@vger.kernel.org>; Thu,  3 Oct 2024 05:15:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727932200; cv=none; b=b6ba0ZQXiL4LNKEkTY94vgfOhXotDIQ/RZEhDCXRLNUp+xvGQWeiPolbq2SSUJ4yd/R/XinVDv8r5j0T2Uz2LYp9opRMMKli/UhrEib0g/NT4P87Fb92KIeV05FgudoRlr2SrTf2wNDGW24bc5YusL9TYriVapM4kWzE+JLj1gk=
+	t=1727932538; cv=none; b=nfr3ssQ1zPR57UfHFD2DsBgof3Se7mjAUYbifa8jBmtbmV9nsb7QGi+iSG4uEijaF3PocvZ9G3LziYWczQdp9QL1lsppW6ENG+pB9VQhHIbfLqKj025Vkohc0bxDrh7qS3+/TECuUzlfKGsTz6tAvUs+1RUzHHAmkzlzfoBc1LA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727932200; c=relaxed/simple;
-	bh=qrbLRk/FSxnCiu6axn74hXEdJnOeoT94Cx/ecRppH2A=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Ueu5BC07RXT+lGyvKQ6WlMgW57HmO+el4EAJKDXreYdpsSfDUqumKlpUvy/7v6StwYCgipAAUGIrCf8aui7u0BYpTPQ/X3q3lFE96PtBVJlWhVy9M1wsDWpyAAJF5JvFN7h1cVTqlueHsPBHrOShke0aDOyld8beB8P3h8CO35Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=srdEkmst; arc=none smtp.client-ip=209.85.222.53
+	s=arc-20240116; t=1727932538; c=relaxed/simple;
+	bh=OHiaQB6DuBhomWeQAXyZs+hA1EcEH547SHdB4xPJezs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PiWm3mW3U5IZLphyH8T/uz748Te92u48aMLGD2TX4KmkmbX3SxgGjvcmhJBtEJfs3CYYTX8Lf1CcegHONJgVzhnDzPhelzCoNpoLq1e/FVnwz/sngPf2qjTYCcvcglm0pXqppAnvgmB6jcwMHX03cPDD+ebJuyK34OaM9n6qQG8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=P71OwC4h; arc=none smtp.client-ip=209.85.216.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ua1-f53.google.com with SMTP id a1e0cc1a2514c-84e9893c457so192783241.2
-        for <bpf@vger.kernel.org>; Wed, 02 Oct 2024 22:09:58 -0700 (PDT)
+Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-2e18293a5efso399983a91.3
+        for <bpf@vger.kernel.org>; Wed, 02 Oct 2024 22:15:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1727932198; x=1728536998; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ywgtKyqh0N3Dye97MVd0kIqtuLbIpst9nSCmWrn174Q=;
-        b=srdEkmst7swwBdms08hYXlb+laEPRhwbNdaFf7sR9baZTAPoGKHlkCL7SbUu0RORx7
-         QeCd7HahCBHsuTr4h3bsSTxJCts16nSCQraL721HB65Xj01hnf3MSahjd/WjPKF3shRx
-         9r7WUzj6c4d8qLZ8ERjnm3+PzWUrIu8R0D2A2F++cyf47SSYSbE9/Th7bFgEOPMN7r3S
-         4KxQ7HrEAvHRP4ZoULO8iBje7zTzFiJ0K/SeMPBCQlsiMdj8KLWgKLs+maPUywJyYujK
-         +Q3Ard52Bq3E/uKDObmDkUNNZyiVK6QFjaa4fee1GjsvbXQSGLrF4LdHwwkfsPzmJqHc
-         u+Yw==
+        d=linaro.org; s=google; t=1727932536; x=1728537336; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=zDZEd+knXkuxXPgXs2kDCTgo3adMpe62SuSlOEQu0K8=;
+        b=P71OwC4h+hwSGsTSrJ4V2TQ0bta34eAe5JEPK7wlyYCrNImKkj63ENFie6/MuBwolL
+         xJEE/G9/Y3qWw5khkoI9+R9vUCkgUIIcEAM5QHYzIak7H+V56nwN7kwywIHl0TEf0cml
+         Pe8mRT3hwiefIkiL3o5DPLWAdc2LBhhli4M2/mAZZQz2R6iLsY7tEacjtZrdPdML4OKv
+         dDMo5D/RJz9AI6ZsjuWWZJOLkKSresQa9+00U252JbmjJNiDE0zBtCXSxw7PzcPr1Z2c
+         Fy/TD6Dwlmg5eewGosdW62lX012n/RRaAtaKz5XvtfunS1ynbPpOuGc6Ll6s+bkzjF7o
+         VFIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727932198; x=1728536998;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ywgtKyqh0N3Dye97MVd0kIqtuLbIpst9nSCmWrn174Q=;
-        b=rMeJ5xdVKWojw49UEynxbiGKUG6S+nrRtB5kNzzNQEzorUUQh6Sk1ROzh2K9yHRL+K
-         SHUsO9Do64LcM8mYVWGk+LB7j9S8gA0jHI7LAU4TPCKgKl38/wro1N4K89IHc88dGhuS
-         kKojQsgq/zdzDwDqDCJ5MuLoy+6+/6ZgI5ji9Es2pTNWE77n7M128pj4KXvB5/W5fVjb
-         SpnKzCr1ulI7Xe/90WBbuxVtnGLbd3LuWXkb9XrvKLqsF8Uwdnp7xlzUU2sXx1Qdf3UT
-         Gw/OxTLP+QRCzCiTA3z5DefKVStyHr0zNyJjoUxux0s0BnfUy6Fk3yAEIZoJDxNuuG/z
-         SUfg==
-X-Forwarded-Encrypted: i=1; AJvYcCWobPSF6fU4vf1ooooOsxBi5dcaQkvKCmCN6XwispJlXiTR9exrMRt9gNkhc3IcBf7GKCY=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx+K5qrqO/fSyNsZdClNxyVsKpQtrHFjcK+FkQ4SCxQ4xBCNL4b
-	jnFAN+axsPLetUmI9o4vBDQKN3sCjdZ7W2DY8YHAsNjTKKrjVU6uk5HsZQSCgQiYrTigBwHpu1q
-	/CvZ8jmvuTFjeB8P0IYY2JniqzYY393iFCxWlGA==
-X-Google-Smtp-Source: AGHT+IE9u2+/8nC7XjQNdK9e4FXcoT1LUX+A/NRgmnjoZdPr9xDcH7NfQFwxfX9f507kLSYP5FbG/rzvoA7a+mzNSY0=
-X-Received: by 2002:a05:6122:794:b0:4f6:a697:d380 with SMTP id
- 71dfb90a1353d-50c582122a0mr4539080e0c.10.1727932197603; Wed, 02 Oct 2024
- 22:09:57 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1727932536; x=1728537336;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zDZEd+knXkuxXPgXs2kDCTgo3adMpe62SuSlOEQu0K8=;
+        b=qB5XwXioxz++g2ALrL0I1ezxTZYAxg0PX2AlwQgjwg3tyV99JX63axLfcM0GS1muHh
+         A0r8UfudZMURt3ahFObmTs8Pjcj5aTkL9I5nBS6/4H+LavkuydiJeoxroJ4WJru+vwyj
+         mWnQ53L/BhV226zcpGnmSZlxZ0Ajf+cZxXQ4poStjfjn5pz8tMof/OImkdhlTuxIbEN7
+         H9gdbdov/9meA2ZLWbpvA6KjC0QFcZA6I1/HstGvjjrd3HdrqWVpcs9NVLQy/bECFPdM
+         QNBVNlsrkIyWbhjSCnIUzWgsIyEoX6TTVmCfVGvan/yKXBaM8+TXbf/06qGSy9HhpI0T
+         B+xw==
+X-Forwarded-Encrypted: i=1; AJvYcCUIvf9YODxVHBx4hNlTyK+Vz5iISRhoAqS+zpGUgwjmkq2xemEBxWcCyT5NjqdQ3iC66+U=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx3HssCw780J7fOlzDGfX90bxVYV9AN3vQjFNHnJ2JFHXlznPmn
+	8VTvQCa6FywDInuKIklkwU908kaeZBGpKunQFB77pkoMUgBuqvz+Nm0mlCuveQ==
+X-Google-Smtp-Source: AGHT+IGFzmJSdO8rd6CXNlY0TTZNLylyV1+W0nXK1rdwwYtV/CN8tyL4ABdeXZlNSjBhb2YD1GkaTA==
+X-Received: by 2002:a17:90a:a00f:b0:2e0:77aa:fecf with SMTP id 98e67ed59e1d1-2e1849cbe38mr5987618a91.41.1727932535975;
+        Wed, 02 Oct 2024 22:15:35 -0700 (PDT)
+Received: from thinkpad ([36.255.17.222])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2e18f773a21sm2669570a91.20.2024.10.02.22.15.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Oct 2024 22:15:35 -0700 (PDT)
+Date: Thu, 3 Oct 2024 10:45:28 +0530
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: Frank Li <Frank.Li@nxp.com>
+Cc: Bjorn Helgaas <bhelgaas@google.com>, Richard Zhu <hongxing.zhu@nxp.com>,
+	Lucas Stach <l.stach@pengutronix.de>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>, linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	imx@lists.linux.dev, alyssa@rosenzweig.io, bpf@vger.kernel.org,
+	broonie@kernel.org, jgg@ziepe.ca, joro@8bytes.org,
+	lgirdwood@gmail.com, maz@kernel.org, p.zabel@pengutronix.de,
+	robin.murphy@arm.com, will@kernel.org
+Subject: Re: [PATCH v2 0/2] PCI: add enabe(disable)_device() hook for bridge
+Message-ID: <20241003051528.qrp2z7kvzgvymgjb@thinkpad>
+References: <20240930-imx95_lut-v2-0-3b6467ba539a@nxp.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241002125751.964700919@linuxfoundation.org>
-In-Reply-To: <20241002125751.964700919@linuxfoundation.org>
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Thu, 3 Oct 2024 10:39:45 +0530
-Message-ID: <CA+G9fYtcs_bFp_N+Q59Nn_bM2AT0Xm4utdh6vT+Cdvj6D=VP+w@mail.gmail.com>
-Subject: Re: [PATCH 6.6 000/538] 6.6.54-rc1 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
-	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
-	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
-	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
-	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com, 
-	broonie@kernel.org, Kui-Feng Lee <thinker.li@gmail.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240930-imx95_lut-v2-0-3b6467ba539a@nxp.com>
 
-On Wed, 2 Oct 2024 at 19:56, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 6.6.54 release.
-> There are 538 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Fri, 04 Oct 2024 12:56:13 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.54-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On Mon, Sep 30, 2024 at 03:42:20PM -0400, Frank Li wrote:
+> Some system's IOMMU stream(master) ID bits(such as 6bits) less than
+> pci_device_id (16bit). It needs add hardware configuration to enable
+> pci_device_id to stream ID convert.
+> 
+> https://lore.kernel.org/imx/20240622173849.GA1432357@bhelgaas/
+> This ways use pcie bus notifier (like apple pci controller), when new PCIe
+> device added, bus notifier will call register specific callback to handle
+> look up table (LUT) configuration.
+> 
+> https://lore.kernel.org/imx/20240429150842.GC1709920-robh@kernel.org/
+> which parse dt's 'msi-map' and 'iommu-map' property to static config LUT
+> table (qcom use this way). This way is rejected by DT maintainer Rob.
+> 
 
+What is the issue in doing this during the probe() stage? It looks like you are
+working with the static info in the devicetree, which is already available
+during the controller probe().
 
-As other reported selftests bpf build failed,
+> Above ways can resolve LUT take or stream id out of usage the problem. If
+> there are not enough stream id resource, not error return, EP hardware
+> still issue DMA to do transfer, which may transfer to wrong possition.
+> 
+> Add enable(disable)_device() hook for bridge can return error when not
+> enough resource, and PCI device can't enabled.
+> 
 
-libbpf.c: In function 'bpf_object__create_map':
-libbpf.c:5215:50: error: 'BPF_F_VTYPE_BTF_OBJ_FD' undeclared (first
-use in this function)
- 5215 |                         create_attr.map_flags |= BPF_F_VTYPE_BTF_OBJ_FD;
-      |                                                  ^~~~~~~~~~~~~~~~~~~~~~
-libbpf.c:5215:50: note: each undeclared identifier is reported only
-once for each function it appears in
+{enable/disable}_device() doesn't convey the fact you are mapping BDF to SID in
+the hardware. Maybe something like, {map/unmap}_bdf2sid() or similar would make
+sense.
 
-due to commit,
-  9e926acda0c2e libbpf: Find correct module BTFs for struct_ops maps and progs.
+- Mani
 
-Build log:
--------
- - https://storage.tuxsuite.com/public/linaro/lkft/builds/2msz2dGbiCYZjR2hPFlN5xFUOhX/
+> Basicallly this version can match Bjorn's requirement:
+> 1: simple, because it is rare that there are no LUT resource.
+> 2: EP driver probe failure when no LUT, but lspci can see such device.
+> 
+> [    2.164415] nvme nvme0: pci function 0000:01:00.0
+> [    2.169142] pci 0000:00:00.0: Error enabling bridge (-1), continuing
+> [    2.175654] nvme 0000:01:00.0: probe with driver nvme failed with error -12
+> 
+> > lspci
+> 0000:00:00.0 PCI bridge: Philips Semiconductors Device 0000
+> 0000:01:00.0 Non-Volatile memory controller: Micron Technology Inc 2100AI NVMe SSD [Nitro] (rev 03)
+> 
+> To: Bjorn Helgaas <bhelgaas@google.com>
+> To: Richard Zhu <hongxing.zhu@nxp.com>
+> To: Lucas Stach <l.stach@pengutronix.de>
+> To: Lorenzo Pieralisi <lpieralisi@kernel.org>
+> To: Krzysztof Wilczyński <kw@linux.com>
+> To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> To: Rob Herring <robh@kernel.org>
+> To: Shawn Guo <shawnguo@kernel.org>
+> To: Sascha Hauer <s.hauer@pengutronix.de>
+> To: Pengutronix Kernel Team <kernel@pengutronix.de>
+> To: Fabio Estevam <festevam@gmail.com>
+> Cc: linux-pci@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: imx@lists.linux.dev
+> Cc: Frank.li@nxp.com \
+> Cc: alyssa@rosenzweig.io \
+> Cc: bpf@vger.kernel.org \
+> Cc: broonie@kernel.org \
+> Cc: jgg@ziepe.ca \
+> Cc: joro@8bytes.org \
+> Cc: l.stach@pengutronix.de \
+> Cc: lgirdwood@gmail.com \
+> Cc: maz@kernel.org \
+> Cc: p.zabel@pengutronix.de \
+> Cc: robin.murphy@arm.com \
+> Cc: will@kernel.org \
+> 
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> ---
+> Changes in v2:
+> - see each patch
+> - Link to v1: https://lore.kernel.org/r/20240926-imx95_lut-v1-0-d0c62087dbab@nxp.com
+> 
+> ---
+> Frank Li (2):
+>       PCI: Add enable_device() and disable_device() callbacks for bridges
+>       PCI: imx6: Add IOMMU and ITS MSI support for i.MX95
+> 
+>  drivers/pci/controller/dwc/pci-imx6.c | 133 +++++++++++++++++++++++++++++++++-
+>  drivers/pci/pci.c                     |  14 ++++
+>  include/linux/pci.h                   |   2 +
+>  3 files changed, 148 insertions(+), 1 deletion(-)
+> ---
+> base-commit: 2849622e7b01d5aea1b060ba3955054798c1e0bb
+> change-id: 20240926-imx95_lut-1c68222e0944
+> 
+> Best regards,
+> ---
+> Frank Li <Frank.Li@nxp.com>
+> 
+> 
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-## Build
-* kernel: 6.6.54-rc1
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-* git commit: 1bbd78667e8e467cac0a2bc31d183b9d9983f448
-* git describe: v6.6.53-539-g1bbd78667e8e
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.6.y/build/v6.6.53-539-g1bbd78667e8e
-
-## Test Regressions (compared to v6.6.51-145-g3ecfbb62e37a)
-
-## Metric Regressions (compared to v6.6.51-145-g3ecfbb62e37a)
-
-## Test Fixes (compared to v6.6.51-145-g3ecfbb62e37a)
-
-## Metric Fixes (compared to v6.6.51-145-g3ecfbb62e37a)
-
-## Test result summary
-total: 170988, pass: 150287, fail: 1587, skip: 18917, xfail: 197
-
-## Build Summary
-* arc: 5 total, 5 passed, 0 failed
-* arm: 129 total, 129 passed, 0 failed
-* arm64: 41 total, 41 passed, 0 failed
-* i386: 28 total, 26 passed, 2 failed
-* mips: 26 total, 25 passed, 1 failed
-* parisc: 4 total, 4 passed, 0 failed
-* powerpc: 36 total, 35 passed, 1 failed
-* riscv: 10 total, 10 passed, 0 failed
-* s390: 14 total, 13 passed, 1 failed
-* sh: 10 total, 10 passed, 0 failed
-* sparc: 7 total, 7 passed, 0 failed
-* x86_64: 33 total, 33 passed, 0 failed
-
-## Test suites summary
-* boot
-* commands
-* kselftest-arm64
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-efivarfs
-* kselftest-exec
-* kselftest-filesystems
-* kselftest-filesystems-binderfs
-* kselftest-filesystems-epoll
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-ftrace
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-kcmp
-* kselftest-kvm
-* kselftest-livepatch
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-mincore
-* kselftest-mqueue
-* kselftest-net
-* kselftest-net-mptcp
-* kselftest-openat2
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-tc-testing
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user_events
-* kselftest-vDSO
-* kselftest-watchdog
-* kselftest-x86
-* kunit
-* kvm-unit-tests
-* libgpiod
-* libhugetlbfs
-* log-parser-boot
-* log-parser-test
-* ltp-commands
-* ltp-containers
-* ltp-controllers
-* ltp-cpuhotplug
-* ltp-crypto
-* ltp-cve
-* ltp-dio
-* ltp-fcntl-locktests
-* ltp-fs
-* ltp-fs_bind
-* ltp-fs_perms_simple
-* ltp-hugetlb
-* ltp-ipc
-* ltp-math
-* ltp-mm
-* ltp-nptl
-* ltp-pty
-* ltp-sched
-* ltp-smoke
-* ltp-syscalls
-* ltp-tracing
-* perf
-* rcutorture
-
---
-Linaro LKFT
-https://lkft.linaro.org
+-- 
+மணிவண்ணன் சதாசிவம்
 
