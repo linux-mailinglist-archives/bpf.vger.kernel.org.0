@@ -1,251 +1,203 @@
-Return-Path: <bpf+bounces-40816-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40817-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2BC4798E9CF
-	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2024 08:51:38 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F62998EA65
+	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2024 09:36:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E173D281ACB
-	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2024 06:51:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 84ACEB24BEE
+	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2024 07:36:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05F4380C13;
-	Thu,  3 Oct 2024 06:51:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A93E12C544;
+	Thu,  3 Oct 2024 07:36:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="IvJmVuLs"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="IJs5pHyL";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="nS0QiUTM";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="IJs5pHyL";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="nS0QiUTM"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4989BA49
-	for <bpf@vger.kernel.org>; Thu,  3 Oct 2024 06:51:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0749C4779F;
+	Thu,  3 Oct 2024 07:36:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727938291; cv=none; b=h9zEY4CDQ63ksZ6oyHmaeOJYo2a0LMVsQ5U/OTuHPAP0QiaDTA+mtakG0mP+iz12LyD3XN6BU5cPBkr5XXb2Tc83l0z7g/cUO2UYW2mR3OntJyPhpwXf7E7GUwO8bWEsG/PE51ISFaVBvN9yBcyO8WFP8NjP6fnWQj1YNUNWSRM=
+	t=1727940967; cv=none; b=AeN+ynC+GLcYLvpZHqeSKM8J77xMPxECKruSNlsASdxlXYiA4XckP5yolbGPWXCLeA4n47M7CFF9e622AOU8R7EqTslOHFB6/aIuz5B3H/DBlz0SB55yzo4JwB1eV9ujsEFtbOWnGs9zkmMsEoA3FDj6n8WRhn7lbvngIXBOMts=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727938291; c=relaxed/simple;
-	bh=WfFQOlU/FNGjfQVBBdMXE6R4DGDei7d3X3WOszlo3XY=;
-	h=Mime-Version:Content-Type:Date:Message-Id:To:Cc:Subject:From:
-	 References:In-Reply-To; b=NlhukxbKGLhxLA9ABlu7oKyJJX4Hmh+N+Zoh0r7RGi4cjgGGOLu6ExhOnciW0NkyDyaGNyKiPFOcs5D3UDRmiIKssyKNg2pNat1kxkng4+TN0Je9ir0H7tnUPmK7mMbXZfj+BV4p7ZLrkJtP0eUj050zvvMpMYzhRyS5pOb8z9c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=IvJmVuLs; arc=none smtp.client-ip=209.85.167.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-5398ec2f3c3so723009e87.1
-        for <bpf@vger.kernel.org>; Wed, 02 Oct 2024 23:51:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1727938288; x=1728543088; darn=vger.kernel.org;
-        h=in-reply-to:references:from:subject:cc:to:message-id:date
-         :content-transfer-encoding:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WfFQOlU/FNGjfQVBBdMXE6R4DGDei7d3X3WOszlo3XY=;
-        b=IvJmVuLsz83pPgToWEj3tm07DeFgmFSKYUG5Vz1Lr1vZn5hmRmuwhTBwxyyMocmkPa
-         w3SsVQgrf0n0h7G5QfuuY1QocXaRCmrE6TzayejTHeuXiSsV0qk/JWLxOu12emTc7/Rb
-         f2whZMq3C3mM+XRzd4vo7soCjseukbJ4S7l2aDeJeqyqAHsfp6znHQyfOHJlKMw8KUIr
-         J+EpqIc4/EQJwWr0fCZavqoDV/4/+lOR3v1kMPVDCeY6bOVTYWmL1pRPv72WZzE2rUAe
-         hDQClxI4ilkdqIpSaJy6SZw6LRyXxMHxTSi0iHLcNGznWjrSCnin2PYXuMsS+XSoiLuV
-         35eg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727938288; x=1728543088;
-        h=in-reply-to:references:from:subject:cc:to:message-id:date
-         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=WfFQOlU/FNGjfQVBBdMXE6R4DGDei7d3X3WOszlo3XY=;
-        b=FSBS7XjITnUNm/w4NYW+Xkpf+ObvFl05vtc9o/NrYG3kMyec2Uqh/oUfdW657wyD73
-         oTdRngicqSnfygHTN+FbU5KAV8PLnLmrOMizJhwOvuLbisxZ+NfG5viCRwCGThY1tuoV
-         TNHKVOBtdAWYKemA9Ot2lOHto9bO895YHgLJT1AJ2quCStI/Nhw/j0wNWSqqBPaShZGp
-         EJ07iKaaWtkA/O+e2MUVy+dtfD3mQum2kOJRyIw9YnHYX8lJviIkhyIkSPAdyQrf9ldL
-         eTPrQ/im0lSbIxHPytE4cTGRNsCtb2cSYGWiMRvEAI0KrEJZLA8mCawB1g8cyAPkD96Z
-         nrsQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUAwrD/nkP9mZM2RLSlV0QuSXkSpUmnwkaYNxtt2he6n7D3jluFjmOodS//OT1ys51bvTQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzn3U7315XR3cf0IkkaSExxtGocbU8YGsWBG7Dy2oHW0gpof0Y8
-	gecSS1WDCzYhxdzzkP5UagpVWUd/TiRPV339NWZyzwE/C0ZBlU2YO9FsEWDAj5I=
-X-Google-Smtp-Source: AGHT+IFPzic61mAOdapq2igy/pJOJfz/CFhssuKDfJVb3+2mio6Wf7QJg2yWIWSfpPGTMK9HJ+plaw==
-X-Received: by 2002:a05:6512:b90:b0:534:3cdc:dbfe with SMTP id 2adb3069b0e04-539a067c3demr2912257e87.28.1727938287661;
-        Wed, 02 Oct 2024 23:51:27 -0700 (PDT)
-Received: from localhost ([2a09:bac1:27c0:58::31:92])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-42f802a0195sm7488605e9.38.2024.10.02.23.51.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Oct 2024 23:51:27 -0700 (PDT)
+	s=arc-20240116; t=1727940967; c=relaxed/simple;
+	bh=8+jYR6LzkS9wtg4x86c+iS5YU7iQeUIed45WBxl3Q4w=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=rFohuv8PiLy6vb1IWZuvjLYiiHKIcF5nvEzVlCr6kQhO/OPNkXDpgELyrILl+1ttaJnTmqYLl+U3Dr7IvFHm51O/EC9BE4+g+jpZvZjSf15Z3y85VPlRi2BWdEK2aOnEnNuXd2CMupZoLqXjEv4a9m5pKtM/j2caGMO7gxIzeVA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=IJs5pHyL; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=nS0QiUTM; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=IJs5pHyL; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=nS0QiUTM; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 5E5FA1FDBF;
+	Thu,  3 Oct 2024 07:35:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1727940945; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=3VNFSPm/6Pk3a/qk6lR/t2/nxO2a5lbejtUGZN+5aFQ=;
+	b=IJs5pHyLykeMWEn0Zrg09bLJELYLTzMRUtFMzpJP6YYRsl2cd+RDO6hbE3llQdTSdaQzQ/
+	tt5Px1DcRa7YchhOI9jT9s84KgRf3sW1lzFOvRgE/Z2VIWbedUWWq4ERkDnpEJ565S/qL5
+	m7R7gQ4E+Z84C79cks04/YM/njV3I1A=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1727940945;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=3VNFSPm/6Pk3a/qk6lR/t2/nxO2a5lbejtUGZN+5aFQ=;
+	b=nS0QiUTM2gH3kFb7RYGX/Ig8aTHM5JnKNRV1xuVtttBJrI6ZnJE3cTx577xiuA2/xr16Lw
+	8RjC1fqK4wTfBzBg==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1727940945; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=3VNFSPm/6Pk3a/qk6lR/t2/nxO2a5lbejtUGZN+5aFQ=;
+	b=IJs5pHyLykeMWEn0Zrg09bLJELYLTzMRUtFMzpJP6YYRsl2cd+RDO6hbE3llQdTSdaQzQ/
+	tt5Px1DcRa7YchhOI9jT9s84KgRf3sW1lzFOvRgE/Z2VIWbedUWWq4ERkDnpEJ565S/qL5
+	m7R7gQ4E+Z84C79cks04/YM/njV3I1A=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1727940945;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=3VNFSPm/6Pk3a/qk6lR/t2/nxO2a5lbejtUGZN+5aFQ=;
+	b=nS0QiUTM2gH3kFb7RYGX/Ig8aTHM5JnKNRV1xuVtttBJrI6ZnJE3cTx577xiuA2/xr16Lw
+	8RjC1fqK4wTfBzBg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E0767139CE;
+	Thu,  3 Oct 2024 07:35:42 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id ruGaNE5J/mZ/SQAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Thu, 03 Oct 2024 07:35:42 +0000
+Message-ID: <29c666d1-1e68-4b90-a919-60efbc8ab7bf@suse.cz>
+Date: Thu, 3 Oct 2024 09:35:40 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 bpf-next 1/3] bpf: Add kmem_cache iterator
+To: Namhyung Kim <namhyung@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>,
+ Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+ bpf@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+ Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
+ David Rientjes <rientjes@google.com>, Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm@kvack.org,
+ Arnaldo Carvalho de Melo <acme@kernel.org>, Kees Cook <kees@kernel.org>
+References: <20241002180956.1781008-1-namhyung@kernel.org>
+ <20241002180956.1781008-2-namhyung@kernel.org>
+Content-Language: en-US
+From: Vlastimil Babka <vbabka@suse.cz>
+Autocrypt: addr=vbabka@suse.cz; keydata=
+ xsFNBFZdmxYBEADsw/SiUSjB0dM+vSh95UkgcHjzEVBlby/Fg+g42O7LAEkCYXi/vvq31JTB
+ KxRWDHX0R2tgpFDXHnzZcQywawu8eSq0LxzxFNYMvtB7sV1pxYwej2qx9B75qW2plBs+7+YB
+ 87tMFA+u+L4Z5xAzIimfLD5EKC56kJ1CsXlM8S/LHcmdD9Ctkn3trYDNnat0eoAcfPIP2OZ+
+ 9oe9IF/R28zmh0ifLXyJQQz5ofdj4bPf8ecEW0rhcqHfTD8k4yK0xxt3xW+6Exqp9n9bydiy
+ tcSAw/TahjW6yrA+6JhSBv1v2tIm+itQc073zjSX8OFL51qQVzRFr7H2UQG33lw2QrvHRXqD
+ Ot7ViKam7v0Ho9wEWiQOOZlHItOOXFphWb2yq3nzrKe45oWoSgkxKb97MVsQ+q2SYjJRBBH4
+ 8qKhphADYxkIP6yut/eaj9ImvRUZZRi0DTc8xfnvHGTjKbJzC2xpFcY0DQbZzuwsIZ8OPJCc
+ LM4S7mT25NE5kUTG/TKQCk922vRdGVMoLA7dIQrgXnRXtyT61sg8PG4wcfOnuWf8577aXP1x
+ 6mzw3/jh3F+oSBHb/GcLC7mvWreJifUL2gEdssGfXhGWBo6zLS3qhgtwjay0Jl+kza1lo+Cv
+ BB2T79D4WGdDuVa4eOrQ02TxqGN7G0Biz5ZLRSFzQSQwLn8fbwARAQABzSBWbGFzdGltaWwg
+ QmFia2EgPHZiYWJrYUBzdXNlLmN6PsLBlAQTAQoAPgIbAwULCQgHAwUVCgkICwUWAgMBAAIe
+ AQIXgBYhBKlA1DSZLC6OmRA9UCJPp+fMgqZkBQJkBREIBQkRadznAAoJECJPp+fMgqZkNxIQ
+ ALZRqwdUGzqL2aeSavbum/VF/+td+nZfuH0xeWiO2w8mG0+nPd5j9ujYeHcUP1edE7uQrjOC
+ Gs9sm8+W1xYnbClMJTsXiAV88D2btFUdU1mCXURAL9wWZ8Jsmz5ZH2V6AUszvNezsS/VIT87
+ AmTtj31TLDGwdxaZTSYLwAOOOtyqafOEq+gJB30RxTRE3h3G1zpO7OM9K6ysLdAlwAGYWgJJ
+ V4JqGsQ/lyEtxxFpUCjb5Pztp7cQxhlkil0oBYHkudiG8j1U3DG8iC6rnB4yJaLphKx57NuQ
+ PIY0Bccg+r9gIQ4XeSK2PQhdXdy3UWBr913ZQ9AI2usid3s5vabo4iBvpJNFLgUmxFnr73SJ
+ KsRh/2OBsg1XXF/wRQGBO9vRuJUAbnaIVcmGOUogdBVS9Sun/Sy4GNA++KtFZK95U7J417/J
+ Hub2xV6Ehc7UGW6fIvIQmzJ3zaTEfuriU1P8ayfddrAgZb25JnOW7L1zdYL8rXiezOyYZ8Fm
+ ZyXjzWdO0RpxcUEp6GsJr11Bc4F3aae9OZtwtLL/jxc7y6pUugB00PodgnQ6CMcfR/HjXlae
+ h2VS3zl9+tQWHu6s1R58t5BuMS2FNA58wU/IazImc/ZQA+slDBfhRDGYlExjg19UXWe/gMcl
+ De3P1kxYPgZdGE2eZpRLIbt+rYnqQKy8UxlszsBNBFsZNTUBCACfQfpSsWJZyi+SHoRdVyX5
+ J6rI7okc4+b571a7RXD5UhS9dlVRVVAtrU9ANSLqPTQKGVxHrqD39XSw8hxK61pw8p90pg4G
+ /N3iuWEvyt+t0SxDDkClnGsDyRhlUyEWYFEoBrrCizbmahOUwqkJbNMfzj5Y7n7OIJOxNRkB
+ IBOjPdF26dMP69BwePQao1M8Acrrex9sAHYjQGyVmReRjVEtv9iG4DoTsnIR3amKVk6si4Ea
+ X/mrapJqSCcBUVYUFH8M7bsm4CSxier5ofy8jTEa/CfvkqpKThTMCQPNZKY7hke5qEq1CBk2
+ wxhX48ZrJEFf1v3NuV3OimgsF2odzieNABEBAAHCwXwEGAEKACYCGwwWIQSpQNQ0mSwujpkQ
+ PVAiT6fnzIKmZAUCZAUSmwUJDK5EZgAKCRAiT6fnzIKmZOJGEACOKABgo9wJXsbWhGWYO7mD
+ 8R8mUyJHqbvaz+yTLnvRwfe/VwafFfDMx5GYVYzMY9TWpA8psFTKTUIIQmx2scYsRBUwm5VI
+ EurRWKqENcDRjyo+ol59j0FViYysjQQeobXBDDE31t5SBg++veI6tXfpco/UiKEsDswL1WAr
+ tEAZaruo7254TyH+gydURl2wJuzo/aZ7Y7PpqaODbYv727Dvm5eX64HCyyAH0s6sOCyGF5/p
+ eIhrOn24oBf67KtdAN3H9JoFNUVTYJc1VJU3R1JtVdgwEdr+NEciEfYl0O19VpLE/PZxP4wX
+ PWnhf5WjdoNI1Xec+RcJ5p/pSel0jnvBX8L2cmniYnmI883NhtGZsEWj++wyKiS4NranDFlA
+ HdDM3b4lUth1pTtABKQ1YuTvehj7EfoWD3bv9kuGZGPrAeFNiHPdOT7DaXKeHpW9homgtBxj
+ 8aX/UkSvEGJKUEbFL9cVa5tzyialGkSiZJNkWgeHe+jEcfRT6pJZOJidSCdzvJpbdJmm+eED
+ w9XOLH1IIWh7RURU7G1iOfEfmImFeC3cbbS73LQEFGe1urxvIH5K/7vX+FkNcr9ujwWuPE9b
+ 1C2o4i/yZPLXIVy387EjA6GZMqvQUFuSTs/GeBcv0NjIQi8867H3uLjz+mQy63fAitsDwLmR
+ EP+ylKVEKb0Q2A==
+In-Reply-To: <20241002180956.1781008-2-namhyung@kernel.org>
 Content-Type: text/plain; charset=UTF-8
-Date: Thu, 03 Oct 2024 08:51:25 +0200
-Message-Id: <D4LZ01REEQLV.3M4VOEW5XK5YZ@bobby>
-To: =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Cc: "Lorenzo Bianconi" <lorenzo.bianconi@redhat.com>, "Jesper Dangaard
- Brouer" <hawk@kernel.org>, "Jakub Sitnicki" <jakub@cloudflare.com>,
- "Alexander Lobakin" <aleksander.lobakin@intel.com>, "Lorenzo Bianconi"
- <lorenzo@kernel.org>, <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
- <ast@kernel.org>, <daniel@iogearbox.net>, <davem@davemloft.net>,
- <kuba@kernel.org>, <john.fastabend@gmail.com>, <edumazet@google.com>,
- <pabeni@redhat.com>, <sdf@fomichev.me>, <tariqt@nvidia.com>,
- <saeedm@nvidia.com>, <anthony.l.nguyen@intel.com>,
- <przemyslaw.kitszel@intel.com>, <intel-wired-lan@lists.osuosl.org>,
- <mst@redhat.com>, <jasowang@redhat.com>, <mcoquelin.stm32@gmail.com>,
- <alexandre.torgue@foss.st.com>, "kernel-team" <kernel-team@cloudflare.com>,
- "Yan Zhai" <yan@cloudflare.com>
-Subject: Re: [RFC bpf-next 0/4] Add XDP rx hw hints support performing
- XDP_REDIRECT
-From: "Arthur Fabre" <afabre@cloudflare.com>
-X-Mailer: aerc 0.8.2
-References: <cover.1726935917.git.lorenzo@kernel.org>
- <1f53cd74-6c1e-4a1c-838b-4acc8c5e22c1@intel.com>
- <09657be6-b5e2-4b5a-96b6-d34174aadd0a@kernel.org>
- <Zu_gvkXe4RYjJXtq@lore-desk> <87ldzkndqk.fsf@toke.dk>
- <CAOn4ftshf3pyAst27C2haaSj4eR2n34_pcwWBc5o3zHBkwRb3g@mail.gmail.com>
- <87wmiysi37.fsf@toke.dk> <D4GBY7CHJNJ6.3O18I5W1FTPKR@bobby>
- <87ldzds8bp.fsf@toke.dk> <D4H5CAN4O95E.3KF8LAH75FYD4@bobby>
- <874j5xs9b1.fsf@toke.dk> <D4KIZY73DAJJ.EVUPLH612IV6@bobby>
- <87wmirq1uk.fsf@toke.dk>
-In-Reply-To: <87wmirq1uk.fsf@toke.dk>
+Content-Transfer-Encoding: 7bit
+X-Spam-Score: -2.80
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_TLS_ALL(0.00)[];
+	TAGGED_RCPT(0.00)[];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[linux.dev,gmail.com,kernel.org,fomichev.me,google.com,vger.kernel.org,linux-foundation.org,linux.com,lge.com,kvack.org];
+	RCPT_COUNT_TWELVE(0.00)[25];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	TO_DN_SOME(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-On Tue Oct 1, 2024 at 5:28 PM CEST, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
-> "Arthur Fabre" <afabre@cloudflare.com> writes:
->
-> > On Mon Sep 30, 2024 at 12:52 PM CEST, Toke H=C3=B8iland-J=C3=B8rgensen =
-wrote:
-> >> > Thinking about it more, my only relectance for a registration API is=
- how
-> >> > to communicate the ID back to other consumers (our discussion below)=
-.
-> >> >
-> >> >>
-> >> >> > Dynamically registering fields means you have to share the return=
-ed ID
-> >> >> > with whoever is interested, which sounds tricky.
-> >> >> > If an XDP program sets a field like packet_id, every tracing
-> >> >> > program that looks at it, and userspace service, would need to kn=
-ow what
-> >> >> > the ID of that field is.
-> >> >> > Is there a way to easily share that ID with all of them?
-> >> >>
-> >> >> Right, so I'll admit this was one of the handwavy bits of my origin=
-al
-> >> >> proposal, but I don't think it's unsolvable. You could do something=
- like
-> >> >> (once, on application initialisation):
-> >> >>
-> >> >> __u64 my_key =3D bpf_register_metadata_field(my_size); /* maybe add=
- a name for introspection? */
-> >> >> bpf_map_update(&shared_application_config, &my_key_index, &my_key);
-> >> >>
-> >> >> and then just get the key out of that map from all programs that wa=
-nt to
-> >> >> use it?
-> >> >
-> >> > Passing it out of band works (whether it's via a pinned map like you
-> >> > described, or through other means like a unix socket or some other
-> >> > API), it's just more complicated.
-> >> >
-> >> > Every consumer also needs to know about that API. That won't work wi=
-th
-> >> > standard tools. For example if we set a PACKET_ID KV, maybe we could
-> >> > give it to pwru so it could track packets using it?
-> >> > Without registering keys, we could pass it as a cli flag. With
-> >> > registration, we'd have to have some helper to get the KV ID.
-> >> >
-> >> > It also introduces ordering dependencies between the services on
-> >> > startup, eg packet tracing hooks could only be attached once our XDP
-> >> > service has registered a PACKET_ID KV, and they could query it's API=
-.
-> >>
-> >> Yeah, we definitely need a way to make that accessible and not too
-> >> cumbersome.
-> >>
-> >> I suppose what we really need is a way to map an application-specific
-> >> identifier to an ID. And, well, those identifiers could just be (strin=
-g)
-> >> names? That's what we do for CO-RE, after all. So you'd get something
-> >> like:
-> >>
-> >> id =3D bpf_register_metadata_field("packet_id", 8, BPF_CREATE); /* reg=
-ister */
-> >>
-> >> id =3D bpf_register_metadata_field("packet_id", 8, BPF_NO_CREATE); /* =
-resolve */
-> >>
-> >> and we make that idempotent, so that two callers using the same name a=
-nd
-> >> size will just get the same id back; and if called with BPF_NO_CREATE,
-> >> you'll get -ENOENT if it hasn't already been registered by someone els=
-e?
-> >>
-> >> We could even make this a sub-command of the bpf() syscall if we want =
-it
-> >> to be UAPI, but that's not strictly necessary, applications can also
-> >> just call the registration from a syscall program at startup...
-> >
-> > That's a nice API, it makes sharing the IDs much easier.
-> >
-> > We still have to worry about collisions (what if two different things
-> > want to add their own "packet_id" field?). But at least:
-> >
-> > * "Any string" has many more possibilities than 0-64 keys.
->
-> Yes, and it's easy to namespace (by prefixing, like
-> APPNAME_my_metaname). But sure, if everyone uses very generic names that
-> will be a problem.
->
-> > * bpf_register_metadata() could return an error if a field is already
-> > registered, instead of silently letting an application overwrite
-> > metadata
->
-> I don't think we can fundamentally solve the collision problem if we
-> also need to allow sharing keys (on purpose). I.e., we can't distinguish
-> between "these two applications deliberately want to share the packet_id
-> field" and "these two applications accidentally both picked packet_id as
-> their internal key".
+On 10/2/24 20:09, Namhyung Kim wrote:
+> The new "kmem_cache" iterator will traverse the list of slab caches
+> and call attached BPF programs for each entry.  It should check the
+> argument (ctx.s) if it's NULL before using it.
+> 
+> Now the iteration grabs the slab_mutex only if it traverse the list and
+> releases the mutex when it runs the BPF program.  The kmem_cache entry
+> is protected by a refcount during the execution.
+> 
+> It includes the internal "mm/slab.h" header to access kmem_cache,
+> slab_caches and slab_mutex.  Hope it's ok to mm folks.
+> 
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 
-Good point. We either have to be happy with sharing the small keys
-space, or sharing the much bigger string space.
+Acked-by: Vlastimil Babka <vbabka@suse.cz> #mm/slab
 
-> I suppose we could pre-define some extra reserved keys if there turns
-> out to be widely used identifiers that many applications want. But I'm
-> not sure if that should be there from the start, it quickly becomes very
-> speculative(packet_id comes to mind as one that might be generally
-> useful, but I'm really not sure, TBH).
->
-> > (although arguably we could have add a BPF_NOEXIST style flag
-> > to the KV set() to kind of do the same).
->
-> A global registry will need locking, so not sure it's a good idea to
-> support inserting into it in the fast path?
-
-(I meant just checking if a KV with that value has been set already or
-not, in the case where we don't have a registration API).
-
-That raises an interesting question: we probably won't be able to
-ensure that the keys passed to set() have been registered ahead of time.
-That would require checking the locked global registry as you point
-out.=20
-
-Misbehaving users could just skip calling register() altogether, and
-directly pick a random key to use.
-
-Maybe we could solve this by having a pair of atomic u64s per thread
-storing the KV header to describe which keys are allowed to be set, and
-what size they'll have? But that's starting to feel complicated.
-
-(Same for the size parameter in register() - we won't be able to enforce
-that that is actually the size then passed to set(). But I think we
-can just drop it - anyways we can't check the size ahead of time because
-we can't know about adjust_head() / expand_head() calls).
-
->
-> > At least internally, it still feels like we'd maintain a registry of
-> > these string fields and make them configurable for each service to avoi=
-d
-> > collisions.
->
-> Yeah, see above. Some kind of coordination (like a registry) is
-> impossible to avoid if you *want* to share data, but not sure how
-> common that is?
->
-> -Toke
 
