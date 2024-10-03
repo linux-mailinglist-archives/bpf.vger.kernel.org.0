@@ -1,207 +1,190 @@
-Return-Path: <bpf+bounces-40813-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40814-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A742798E966
-	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2024 07:35:28 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D6FB98E9AE
+	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2024 08:18:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 171F6B23DEA
-	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2024 05:35:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 735CF1F244FE
+	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2024 06:18:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88D903C463;
-	Thu,  3 Oct 2024 05:35:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65806770F5;
+	Thu,  3 Oct 2024 06:18:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="nKnywCZN"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="gE5k9ZT/"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+Received: from out-175.mta0.migadu.com (out-175.mta0.migadu.com [91.218.175.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC5C82232A;
-	Thu,  3 Oct 2024 05:34:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CED9C2564
+	for <bpf@vger.kernel.org>; Thu,  3 Oct 2024 06:17:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727933701; cv=none; b=TnZAlFRTfhh+8tTpPcj26KOl6U55mg4yTljMVhxQhnvBNBcS7XXbeh2sNjrLl7jxjBgpd+BE1SDqEtXKnErb+8T1vI+VHtW6ToN6eVPvBOQXpmBzvi277Hp+nXxLddnG3p8/zkL3K7mzNiimI5/QRikuqWajZjd0L3IsD96WN38=
+	t=1727936281; cv=none; b=T+Z0mSd3KgVzDgwpic2c/lWS2hX/JNyaPpK0VZ1kEiUCv8tsK8aKESOrDRm6fAvv1YpwR6HqxaFWHNOaiteGFU5xotHMJ2ZUk//4K52ucrcafFSInkLuFaW6xPxggzdlvBUzBjYcMTN10f1h26HEIVLF4UU9ajNyCm0qf0FDVFo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727933701; c=relaxed/simple;
-	bh=ypy85dcDy01BH1W/Dxx238ctF+Gv2SOQmYIlzDayQXA=;
+	s=arc-20240116; t=1727936281; c=relaxed/simple;
+	bh=fIIFQBsw7bb8sbXQLz60tMfAUWKmJJDxvjZuycx22co=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CTA/q2zDeL+ZgLPFwyhgy54xBl1nLO82v97ifw+tlDCrpxYkhmXkjc6X/5ZztPw4o6MY92vNFWrFkW0QuTpegBxkRaR5juR7UoKCzXYWuBDztN9YPdYSCwAC8Ret4Pu7EREcFDxgSfksgiROkB8lfi3r/2OOhbECihozwihvAMc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=nKnywCZN; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4935NeYB029655;
-	Thu, 3 Oct 2024 05:34:01 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=pp1; bh=D
-	U2EVq/dJRHq3kbfnrGZl+Z6bZudmAtCY8KaXHsKQKU=; b=nKnywCZNvHuWuJeNp
-	JvE0Noncqn8uGVyji3dy61l31fH4SBnGRHLx5cy//eCoTlz8j2RsdBEd8RoYszp3
-	GwNWgerApi3F3VllB30HglkF0KIznGE2zBjW9Rx4NLpKF4O4Aq8HA6RUtAd1rqAB
-	G7GWUjfSjLIiN/R3/yREVa05TYXXvWnBL1RjSoOKB3BAYQoLYlsPVbRpdi/ULF4f
-	M4IOMuZEzJaIe9tqJz1VYx4Js6qqgB+dGhC0aBrHv82GppxSoNnf89ppRoFaddIN
-	9qaVkifnlXhgUKJsVZGPRPSuuo0B4cnWjBRxjE03F2jhYKLr8YAGtJfUyUMTfXX3
-	5lf5w==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 421n2q00xf-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 03 Oct 2024 05:34:01 +0000 (GMT)
-Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 4935Y0mG021923;
-	Thu, 3 Oct 2024 05:34:00 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 421n2q00xc-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 03 Oct 2024 05:34:00 +0000 (GMT)
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma13.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 49313JW6013047;
-	Thu, 3 Oct 2024 05:33:59 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 41xxbjny5t-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 03 Oct 2024 05:33:59 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
-	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 4935Xu4M53477772
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 3 Oct 2024 05:33:56 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 306CC2004B;
-	Thu,  3 Oct 2024 05:33:56 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 57E5E20040;
-	Thu,  3 Oct 2024 05:33:52 +0000 (GMT)
-Received: from [9.43.34.175] (unknown [9.43.34.175])
-	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Thu,  3 Oct 2024 05:33:52 +0000 (GMT)
-Message-ID: <0b10ef55-bb70-4000-b028-2f38c1879b4a@linux.ibm.com>
-Date: Thu, 3 Oct 2024 11:03:51 +0530
+	 In-Reply-To:Content-Type; b=TZN77Ey3rKW3fuIMRMRh542qKE+9a5vCyWsFcLPwDINh8fWhcj/VIWyHF9arb+vawATkCxuCg/cFZ4/Do+wOkn9fXUX6bpLxtafDinjbZN6O12psSWL5Ocos0OEFlEaUAbdXklotqVCgshwpsooFt2JWBIcybtiNOCnmLG7vomo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=gE5k9ZT/; arc=none smtp.client-ip=91.218.175.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <8b6c1eb1-de43-4ddb-b2b6-48256bdacddb@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1727936276;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=l1ae8gTA1k7GPD69d8GTFlpuY5yjiGiTxZ/jQFwsw5I=;
+	b=gE5k9ZT/2KmSj6SI07P9WtWOZBeZP5u5KhbrqLxooONjKtxAZoGXnCNi6c3QJb1L7icgJx
+	aNUwJm8SMOHrdQhctSNGy9ZRji8mewabPMACXBdIbGZIrYeDqrMZZV5NV+OHaw8Zq5Eywx
+	xbbjDDftwvEiPX2j/c8W4X4IiJeg51g=
+Date: Wed, 2 Oct 2024 23:17:50 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 17/17] powerpc64/bpf: Add support for bpf trampolines
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, bpf <bpf@vger.kernel.org>,
-        linux-trace-kernel <linux-trace-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Naveen N. Rao" <naveen@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Vishal Chourasia <vishalc@linux.ibm.com>,
-        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-References: <20240915205648.830121-1-hbathini@linux.ibm.com>
- <20240915205648.830121-18-hbathini@linux.ibm.com>
- <CAADnVQL60XXW95tgwKn3kVgSQAN7gr1STy=APuO1xQD7mz-aXA@mail.gmail.com>
- <32249e74-633d-4757-8931-742b682a63d3@linux.ibm.com>
- <CAADnVQKfSH_zkP0-TwOB_BLxCBH9efot9mk03uRuooCTMmWnWA@mail.gmail.com>
- <7afc9cc7-95cd-45c7-b748-28040206d9a0@linux.ibm.com>
- <CAADnVQJjqnSVqq2n70-uqfrYRHH3n=5s9=t3D2AMooxxAHYfJQ@mail.gmail.com>
-Content-Language: en-US
-From: Hari Bathini <hbathini@linux.ibm.com>
-In-Reply-To: <CAADnVQJjqnSVqq2n70-uqfrYRHH3n=5s9=t3D2AMooxxAHYfJQ@mail.gmail.com>
+Subject: Re: yet another approach Was: [PATCH bpf-next v3 4/5] bpf, x86: Add
+ jit support for private stack
+Content-Language: en-GB
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>
+References: <20240926234506.1769256-1-yonghong.song@linux.dev>
+ <20240926234526.1770736-1-yonghong.song@linux.dev>
+ <CAADnVQ+v3u=9PEHQ0xJEf6wSRc2iR928Sc+6CULh390i3TDR=w@mail.gmail.com>
+ <CAP01T77-bU5Ewu79QLJDTnt_E8h_VFHuABOD5=oct7_TC_yYGQ@mail.gmail.com>
+ <CAP01T76UnVfn3x7zZH4vJgZMGv_Ygewxg=9gUA-xuOa7pwGr3A@mail.gmail.com>
+ <CAADnVQ+caNh8+fgCj2XeZDrXniYif5Y+rw6vsMOojBO3Qwk+Nw@mail.gmail.com>
+ <CAADnVQKLWi_TfpbiYb1vPMYMqPOPWPS-RGbB0FksEQW5i36poQ@mail.gmail.com>
+ <CAP01T77q_H31mPXPQV4xHifutxxFeuoD8eg75C717MZ=OOeHew@mail.gmail.com>
+ <CAADnVQLfWgpu6WvZRCFo39YHJ=zSSQWcOnaCOqdfyCg8uRoddg@mail.gmail.com>
+ <CAP01T77G63MGvomrd3563bgBcNKUZg0Jc=GGmcGO0zPLS0hcHA@mail.gmail.com>
+ <CAADnVQ+z-s07V_KU91+zGRB3qXGR9nr3w1dMBfCEEgunyes7EA@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <CAADnVQ+z-s07V_KU91+zGRB3qXGR9nr3w1dMBfCEEgunyes7EA@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: nfk4x77q3uIih6IxVoMQw5vL6RKfZNVa
-X-Proofpoint-ORIG-GUID: AOTm3W-XTbmLTZO3OzmfxPQdAdP4Ygbv
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
- definitions=2024-10-03_04,2024-09-30_01,2024-09-30_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
- mlxlogscore=907 phishscore=0 clxscore=1015 priorityscore=1501
- malwarescore=0 adultscore=0 spamscore=0 mlxscore=0 suspectscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2408220000 definitions=main-2410030035
+X-Migadu-Flow: FLOW_OUT
 
 
+On 10/1/24 6:26 PM, Alexei Starovoitov wrote:
+> On Tue, Oct 1, 2024 at 5:23 PM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
+>> Makes sense, though will we have cases where hierarchical scheduling
+>> attaches the same prog at different points of the hierarchy?
+> I'm not sure anyone was asking for such a use case.
+>
+>> Then the
+>> limit of 4 may not be enough (e.g. say with cgroup nested levels > 4).
+> Well, 4 was the number from TJ.
+>
+> Anyway the proposed pseudo code:
+>
+> __bpf_prog_enter_recur_limited()
+> {
+>    cnt = this_cpu_inc_return(*(prog->active));
+>    if (cnt > 4) {
+>       inc_miss
+>       return 0;
+>    }
+>   // pass cnt into bpf prog somehow, like %rdx ?
+>   // or re-read prog->active from prog
+> }
+>
+>
+> then in the prologue emit:
+>
+> push rbp
+> mov rbp, rsp
+> if %rdx == 1
+>     // main prog is called for the first time
+>     mov rsp, pcpu_priv_stack_top
+> else
+>     // 2+nd time main prog is called or 1+ time subprog
+>    sub rsp, stack_size
+>    if rsp < pcpu_priv_stack_bottom
+>      goto exit  // stack is too small, exit
+> fi
 
-On 01/10/24 8:23 pm, Alexei Starovoitov wrote:
-> On Tue, Oct 1, 2024 at 12:18 AM Hari Bathini <hbathini@linux.ibm.com> wrote:
->>
->>
->>
->> On 30/09/24 6:25 pm, Alexei Starovoitov wrote:
->>> On Sun, Sep 29, 2024 at 10:33 PM Hari Bathini <hbathini@linux.ibm.com> wrote:
->>>>
->>>>
->>>>
->>>> On 17/09/24 1:20 pm, Alexei Starovoitov wrote:
->>>>> On Sun, Sep 15, 2024 at 10:58 PM Hari Bathini <hbathini@linux.ibm.com> wrote:
->>>>>>
->>>>>> +
->>>>>> +       /*
->>>>>> +        * Generated stack layout:
->>>>>> +        *
->>>>>> +        * func prev back chain         [ back chain        ]
->>>>>> +        *                              [                   ]
->>>>>> +        * bpf prog redzone/tailcallcnt [ ...               ] 64 bytes (64-bit powerpc)
->>>>>> +        *                              [                   ] --
->>>>> ...
->>>>>> +
->>>>>> +       /* Dummy frame size for proper unwind - includes 64-bytes red zone for 64-bit powerpc */
->>>>>> +       bpf_dummy_frame_size = STACK_FRAME_MIN_SIZE + 64;
->>>>>
->>>>> What is the goal of such a large "red zone" ?
->>>>> The kernel stack is a limited resource.
->>>>> Why reserve 64 bytes ?
->>>>> tail call cnt can probably be optional as well.
->>>>
->>>> Hi Alexei, thanks for reviewing.
->>>> FWIW, the redzone on ppc64 is 288 bytes. BPF JIT for ppc64 was using
->>>> a redzone of 80 bytes since tailcall support was introduced [1].
->>>> It came down to 64 bytes thanks to [2]. The red zone is being used
->>>> to save NVRs and tail call count when a stack is not setup. I do
->>>> agree that we should look at optimizing it further. Do you think
->>>> the optimization should go as part of PPC64 trampoline enablement
->>>> being done here or should that be taken up as a separate item, maybe?
->>>
->>> The follow up is fine.
->>> It just odd to me that we currently have:
->>>
->>> [   unused red zone ] 208 bytes protected
->>>
->>> I simply don't understand why we need to waste this much stack space.
->>> Why can't it be zero today ?
->>>
->>
->> The ABI for ppc64 has a redzone of 288 bytes below the current
->> stack pointer that can be used as a scratch area until a new
->> stack frame is created. So, no wastage of stack space as such.
->> It is just red zone that can be used before a new stack frame
->> is created. The comment there is only to show how redzone is
->> being used in ppc64 BPF JIT. I think the confusion is with the
->> mention of "208 bytes" as protected. As not all of that scratch
->> area is used, it mentions the remaining as unused. Essentially
->> 288 bytes below current stack pointer is protected from debuggers
->> and interrupt code (red zone). Note that it should be 224 bytes
->> of unused red zone instead of 208 bytes as red zone usage in
->> ppc64 BPF JIT come down from 80 bytes to 64 bytes since [2].
->> Hope that clears the misunderstanding..
-> 
-> I see. That makes sense. So it's similar to amd64 red zone,
-> but there we have an issue with irqs, hence the kernel is
-> compiled with -mno-red-zone.
-> 
-> I guess ppc always has a different interrupt stack and
-> it's not an issue?
+I have tried to implement this approach (not handling
+recursion yet) based on the above approach. It works
+okay with nested bpf subprogs like
+    main prog  // set rsp = pcpu_priv_stack_top
+      subprog1 // some stack
+        subprog2 // some stack
 
-Yeah. On ppc64, kernel also uses redzone.
-Interrupts use a different stack..
+The pcpu_priv_stack is allocated like
+   priv_stack_ptr = __alloc_percpu_gfp(1024 * 16, 8, GFP_KERNEL);
 
-Thanks
-Hari
+But whenever the prog called an external function,
+e.g. a helper in this case, I will get a double fault.
+An example could be
+    main prog  // set rsp = pcpu_priv_stack_top
+      subprog1 // some stack
+        subprog2 // some stack
+      call bpf_seq_printf
+(I modified bpf_iter_ipv6_route.c bpf prog for the above
+purpose.)
+I added some printk statements from the beginning of bpf_seq_printf and
+nothing printed out either and of course traps still happens.
 
+I tried another example without subprog and the mainprog calls
+a helper and the same double traps happens below too.
+
+The error log looks like
+
+[   54.024955] traps: PANIC: double fault, error_code: 0x0
+[   54.024969] Oops: double fault: 0000 [#1] PREEMPT SMP KASAN PTI
+[   54.024977] CPU: 3 UID: 0 PID: 1946 Comm: test_progs Tainted: G           OE      6.11.0-10577-gf25c172fd840-dirty #968
+[   54.024982] Tainted: [O]=OOT_MODULE, [E]=UNSIGNED_MODULE
+[   54.024983] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
+[   54.024986] RIP: 0010:error_entry+0x1e/0x140
+[   54.024996] Code: ff ff 90 90 90 90 90 90 90 90 90 90 56 48 8b 74 24 08 48 89 7c 24 08 52 51 50 41 50 41 51 41 52 41 53 53 55 41 54 41 55 41 56 <41> 57 56 31 f6 31 d1
+[   54.024999] RSP: 0018:ffffe8ffff580000 EFLAGS: 00010806
+[   54.025002] RAX: f3f3f300f1f1f1f1 RBX: fffff91fffeb0044 RCX: ffffffff84201701
+[   54.025005] RDX: fffff91fffeb0044 RSI: ffffffff8420128d RDI: ffffe8ffff580178
+[   54.025007] RBP: ffffe8ffff580140 R08: 0000000000000000 R09: 0000000000000000
+[   54.025009] R10: 0000000000000000 R11: 0000000000000000 R12: dffffc0000000000
+[   54.025010] R13: 1ffffd1fffeb0014 R14: 0000000000000003 R15: ffffe8ffff580178
+[   54.025012] FS:  00007fd076525d00(0000) GS:ffff8881f7180000(0000) knlGS:0000000000000000
+[   54.025015] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   54.025017] CR2: ffffe8ffff57fff8 CR3: 000000010cd80002 CR4: 0000000000370ef0
+[   54.025021] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[   54.025022] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[   54.025024] Call Trace:
+[   54.025026]  <#DF>
+[   54.025028]  ? __die_body+0xaf/0xc0
+[   54.025032]  ? die+0x2f/0x50
+[   54.025036]  ? exc_double_fault+0x73/0x80
+[   54.025040]  ? asm_exc_double_fault+0x23/0x30
+[   54.025044]  ? common_interrupt_return+0xb1/0xcc
+[   54.025048]  ? asm_exc_page_fault+0xd/0x30
+[   54.025051]  ? error_entry+0x1e/0x140
+[   54.025055]  </#DF>
+[   54.025056] Modules linked in: bpf_testmod(OE)
+[   54.025061] ---[ end trace 0000000000000000 ]---
+
+Maybe somebody could give a hint why I got a double fault
+when calling external functions (outside of bpf programs)
+with allocated stack?
+
+>
+> Since stack bottom/top are known at JIT time we can
+> generate reliable stack overflow checks.
+> Much better than guard pages and -fstack-protector.
+> The prog can alloc percpu
+> (stack size of main prog + subprogs + extra) * 4
+> and it likely will be enough.
+> If not, the stack protection will gently exit the prog
+> when the stack is too deep.
+> kfunc won't have such a check, so we need a buffer zone.
+> Can have a guard page too, but feels like overkill.
 
