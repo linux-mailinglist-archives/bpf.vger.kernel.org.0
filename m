@@ -1,208 +1,101 @@
-Return-Path: <bpf+bounces-40859-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40860-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C32B98F6CC
-	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2024 21:10:49 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DF9198F6E0
+	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2024 21:14:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8E2DD1C2173B
-	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2024 19:10:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A97D31F2250D
+	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2024 19:14:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FAAE1AC443;
-	Thu,  3 Oct 2024 19:10:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 637631ABECD;
+	Thu,  3 Oct 2024 19:14:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Tg3VE+2O"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JF8jdGKl"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61D3638DD1;
-	Thu,  3 Oct 2024 19:10:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E9681AB6DD;
+	Thu,  3 Oct 2024 19:14:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727982637; cv=none; b=WrzhbQ42cZiFS+VCiXDJ+m4cAJPvujAoxHtE09a9sB63dCr5v4zSJR8wm4Q0hw2nJIFJNjkbsMgtyrLEuzYS8LkYI0BsYfBsxaTBBJiufRHpWSdaFcZgrNwHtZXdngrMe4APMATH8DMYTDCrc76EtpJEa90Z1E+s/6HPwcrwQs0=
+	t=1727982862; cv=none; b=lW9IGnxkEn5oQFR+Kw/uDwUPIVhF9Zhj5C+W9mj+tO35F/L/WtWvMhlQncRE2x7fhg+ZvpSpnx02PC1cux2vPM2ofoqyeDJGueNlHcE/qiNm53CtSaoEw0eymnq8fUjrZVyVn2Uiw8kRyGTLq4uOud1pGv61YytkG5DaMmRPKyc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727982637; c=relaxed/simple;
-	bh=7FKMHedS9v3iJ4yoWK3F+gbHCRnnNYbRVzNnkZF3BVo=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HnsKqdTjYc+iItxRD2ISZE2r1U5eDj+26E6VXK7v03jxVoX9q9ZewdW3ObQnzN7BjLVUhZzc2UrSUyNMLGi01OnOM3ZRYMvTsGOPuGqrYgfhG0gI9nQklDDMkwSw8A0jBGqCtXc7iMCnbSYIbVIMbMzCSukdLBL1xdyXJFKJ/PE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Tg3VE+2O; arc=none smtp.client-ip=209.85.128.51
+	s=arc-20240116; t=1727982862; c=relaxed/simple;
+	bh=hkek51HZiFyWjMuH339bV7tUDXiEI3ziQgVq8TrvAqU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ZnsToUTUWoSOmhNcQ38hG8goqsDo4qL/oF2j3daoZP6jrh8uU43DoOQiaCn4KJ3vKgId/t5r7gZJi/DEjOkhwgR+IXrgZnZc6qvY2Jhltc4HS4+atfg9tlrrFOTvASOHNAolgoUPJRjvQGNUfaYm7L2+K0g8XNd/0w8BfyHx8Z4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JF8jdGKl; arc=none smtp.client-ip=209.85.218.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-42cb60aff1eso12603605e9.0;
-        Thu, 03 Oct 2024 12:10:35 -0700 (PDT)
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a8d100e9ce0so167381166b.2;
+        Thu, 03 Oct 2024 12:14:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727982634; x=1728587434; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=C2VRJONZwrkQ6lGnjsANrZSJ98JgZ0fhmWDrQKfyidg=;
-        b=Tg3VE+2OVrMqBreezK1PhdP3CEZvBMPtll2mYVN77uetHkLoN9RA00gf6ssXZ/soBT
-         0UjasoaqfIISzWo6RSepCVfstypRl/TVp/TLM/ifqt/tkIGbMe+CXMv09n/5kyk8CuAB
-         1TE4k+px3kzRYtH0rfssqasLkTCyNUjwpRiMycIfkzB9hRSDXJtppQ94BSHj6AhGAi7J
-         0qkEsus2W7vDfiuVJYgL2yt7jnf+KL9L86yerBhHrvSBs5EF6SqdEGZYR1eE4ikJkM/Q
-         wnuOO56c/NOnUxQqbi4bxK7nz3IEXf/tPBZKryxTo+l36QlzSFuZJzG8jAvUaIfrrrsh
-         WfOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727982634; x=1728587434;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1727982859; x=1728587659; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=C2VRJONZwrkQ6lGnjsANrZSJ98JgZ0fhmWDrQKfyidg=;
-        b=ifb/pZyrUfcllDyyk5ExMgeFQ7ZBQqcB1H/nU9SfpJhkgNA6o5HYI5FlAXspcY7rVl
-         rWdbt35PADcTirh3HqAYahaMYFQ4jn90OlI+9uXWRSIuqEGe8HCRtaztBVz1kTQwsSCd
-         O2MEdvbpx0gmuV3blf7UOo99d1lbHSagPs3J998MpzmOZOGUNx0DnZHHgKiF4VeBlGf+
-         wjVhK53MQOXr1a5WTLbn8V4b69JQsVWiwE8WnSojopm22BRnqjfrE3EfiEdVeoy/E+gl
-         7VL2XTa8I5f+S465pFIyPpEgfkPhaIamfkVU6vVOs/7E5+XvRw4XG1txhfb7Djsh0Br2
-         pcVg==
-X-Forwarded-Encrypted: i=1; AJvYcCUz8wV8DgvtYmW3Og8kJ0eMPo/qBynYDHK9/NzsfuLocQkeXNJr/LMv0jYI7GtX4MpHzwzsrzHukKTwffuJ@vger.kernel.org, AJvYcCVMTV9v+ccsT5DHnDpHmlB0arMis+dCNVdfjqHYj2sem3HwLP1J1iLEeA0jrbwCEt2ZAElGENV/0UlqqGby037V@vger.kernel.org, AJvYcCWsJBFo4lZKnWOOtUiaTRg028XC0JVzuBQvlPc0Z4NM1XVYyRDnWzOBMOBLlI07pAM6gBk=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyrTmsQeefEcJaf3EzYV0qGaYv1WBAj7cZVcwxdxGIhiSRyBtLn
-	ackKSZ4bDW5rCgFayskCthzkTJ6gALRmKwhGkpjhe23N9hzRA3S6
-X-Google-Smtp-Source: AGHT+IHLRbqYY32Z03um5opn6uvtz52OCp4GmwDQ9bp8h4SxU1T8dSKCa9DFHYkh9tsRI3ynE1l7xw==
-X-Received: by 2002:a05:600c:19cd:b0:42e:75a6:bb60 with SMTP id 5b1f17b1804b1-42f85ab86b8mr708355e9.19.1727982633488;
-        Thu, 03 Oct 2024 12:10:33 -0700 (PDT)
-Received: from krava (85-193-35-211.rib.o2.cz. [85.193.35.211])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-37d082d58absm1822930f8f.108.2024.10.03.12.10.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Oct 2024 12:10:33 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Thu, 3 Oct 2024 21:10:25 +0200
-To: tyrone-wu <wudevelops@gmail.com>
-Cc: olsajiri@gmail.com, andrii.nakryiko@gmail.com, andrii@kernel.org,
-	ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
-	eddyz87@gmail.com, haoluo@google.com, john.fastabend@gmail.com,
-	kernel-patches-bot@fb.com, kpsingh@kernel.org, laoar.shao@gmail.com,
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	martin.lau@linux.dev, mykolal@fb.com, sdf@fomichev.me,
-	shuah@kernel.org, song@kernel.org, yonghong.song@linux.dev
-Subject: Re: [PATCH bpf v2] bpf: fix unpopulated name_len field in perf_event
- link info
-Message-ID: <Zv7sISV0yEyGlEM3@krava>
-References: <Zv0wl-S13WJnIkb_@krava>
- <20241002213839.13790-1-wudevelops@gmail.com>
+        bh=crbKlFaWCZXIwLHF2Ztk874znYfbQRFp9tVROKFLT2o=;
+        b=JF8jdGKltUI7FvYliXqz6E3YI8uBSNRkZ5iLYimQ64Kwim7pea5HLZ4/cBj5M/VQTN
+         DaESPavU8OXCaTcaVdUyi9QTUrmwQ61/IB9UH1zaXNSMfeYHUriYYAtXXkTm6hp721W/
+         jeu6K9cIx9o2WY3Tpy/DZvvjmhJ4yIWlCeCM6MxPM4snAnzk1yPVkBEtcbNUnT4+kjYx
+         1QAS/lg/mWEcLK0Fch56aBNitETH8oskfCrxGOS/Yro+s8aLjZiItP83Ix7CgCaRekAN
+         rrpKwdmu3tKNCCg0+KrrrEc27j2OSUfGxAvXnlD0rDp555splcqeKQvsOFmw+KWHk8MF
+         j3lA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727982859; x=1728587659;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=crbKlFaWCZXIwLHF2Ztk874znYfbQRFp9tVROKFLT2o=;
+        b=q8315wZavQ9bBNCE98lRKVqbgdQFPs+Ddc/N32KBn94Wp3Bz1G+vhEP8t9ziIqaM8R
+         ldv3+b3q3CjLwUmijBlRpyWNNsA/3PKBnewEpHktyOdAMsa4iBS1O2gLbRUNGokcJ8+v
+         tbGT7hiIbdjEiTRYC+XXRaVVcSo/+plv6EjuoJ1jner863Z9zRPbY0U4sXC6fdz2V/4A
+         cAZic4WRBUmQFWz0cl2yQ7BPzYWqMkBSN0fbsv6yZFN5FhhbNn5bLGB7TAyWUX7tcerR
+         nYNW+RvBAsbLpzjpmbhA5XfiZkkRKsaZf0dSIYGJImEqtiUdEZ0iwVKoa7YosQl1rf7O
+         /+JQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX9tdjLknddsSzLlpPF8jf7xF/Be3EkeoZU6H9elv6QjAtEU97JWGVHhWrSK5dTJKfrYGA=@vger.kernel.org, AJvYcCXjsqKHjrxEmqJ/a3MMrVZHrcyjj21kd+bcwx4uXIClHAQ69JIb7oMlg0lvDkiVMR2vyqgkkjp/@vger.kernel.org
+X-Gm-Message-State: AOJu0YyYem02At/xNj7rO4G/qsrFeuTpVsKa+h5+sUHqIGOZetxgfvtY
+	BH7p9I6HRBAjhY0Byw/ErKFEoCcAyB+p4f30zn/i3cj+meRfHUIEG637n1Xvl4ybf+OwNNlkK64
+	OfunKtlL2ymMsx9Es8jD219zmDYB7yw==
+X-Google-Smtp-Source: AGHT+IEWq7oIiILMRmTpsmtonKFza5sucToClW+/lDk3WfPo3k5okik3W//eMMYTGkdEO9um1IWqrLQmTctQUz6fq9s=
+X-Received: by 2002:a17:907:d3c3:b0:a86:a1cd:5a8c with SMTP id
+ a640c23a62f3a-a991bd44f67mr34862166b.22.1727982858510; Thu, 03 Oct 2024
+ 12:14:18 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241002213839.13790-1-wudevelops@gmail.com>
+References: <20241003180320.113002-1-daniel@iogearbox.net> <20241003180320.113002-3-daniel@iogearbox.net>
+In-Reply-To: <20241003180320.113002-3-daniel@iogearbox.net>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 3 Oct 2024 12:14:07 -0700
+Message-ID: <CAADnVQL1ULq1tHHO7wVJfADiFPnQuTrap3+iQcQs-_y-zgKQeg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 3/4] tools: Sync if_link.h uapi tooling header
+To: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>, Nikolay Aleksandrov <razor@blackwall.org>, jrife@google.com, 
+	tangchen.1@bytedance.com, bpf <bpf@vger.kernel.org>, 
+	Network Development <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Oct 02, 2024 at 09:38:39PM +0000, tyrone-wu wrote:
-> Previously when retrieving `bpf_link_info.perf_event` for
-> kprobe/uprobe/tracepoint, the `name_len` field was not populated by the
-> kernel, leaving it to reflect the value initially set by the user. This
-> behavior was inconsistent with how other input/output string buffer
-> fields function (e.g. `raw_tracepoint.tp_name_len`).
-> 
-> This patch fills `name_len` with the actual size of the string name. The
->  relevant selftests have also been updated to assert that `name_len`
-> contains the correct size rather than 0.
-> 
-> Link: https://lore.kernel.org/bpf/CABVU1kXwQXhqQGe0RTrr7eegtM6SVW_KayZBy16-yb0Snztmtg@mail.gmail.com/
-> Fixes: 1b715e1b0ec5 ("bpf: Support ->fill_link_info for perf_event")
-> Signed-off-by: tyrone-wu <wudevelops@gmail.com>
+On Thu, Oct 3, 2024 at 11:04=E2=80=AFAM Daniel Borkmann <daniel@iogearbox.n=
+et> wrote:
+>
+> Sync if_link uapi header to the latest version as we need the refresher
+> in tooling for netkit device. Given it's been a while since the last sync
+> and the diff is fairly big, it has been done as its own commit.
+>
+> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
 > ---
-> V1 -> V2:
-> Link: https://lore.kernel.org/bpf/Zv0wl-S13WJnIkb_@krava/
-> - Use user set *ulen in bpf_copy_to_user before overwriting *ulen
-> 
->  kernel/bpf/syscall.c                          | 29 +++++++++++++------
->  .../selftests/bpf/prog_tests/fill_link_info.c |  6 ++--
->  2 files changed, 23 insertions(+), 12 deletions(-)
-> 
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index a8f1808a1ca5..26cc18693924 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -3565,27 +3565,31 @@ static void bpf_perf_link_dealloc(struct bpf_link *link)
->  }
->  
->  static int bpf_perf_link_fill_common(const struct perf_event *event,
-> -				     char __user *uname, u32 ulen,
-> +				     char __user *uname, u32 *ulen,
->  				     u64 *probe_offset, u64 *probe_addr,
->  				     u32 *fd_type, unsigned long *missed)
->  {
->  	const char *buf;
->  	u32 prog_id;
-> -	size_t len;
-> +	size_t len, name_len;
+>  tools/include/uapi/linux/if_link.h | 545 ++++++++++++++++++++++++++++-
+>  1 file changed, 544 insertions(+), 1 deletion(-)
 
->  	int err;
->  
-> -	if (!ulen ^ !uname)
-> +	if (!(*ulen) ^ !uname)
->  		return -EINVAL;
->  
->  	err = bpf_get_perf_event_info(event, &prog_id, fd_type, &buf,
->  				      probe_offset, probe_addr, missed);
->  	if (err)
->  		return err;
-> +
-> +	name_len = *ulen;
-> +	len = strlen(buf);
-> +	*ulen = len + 1;
->  	if (!uname)
->  		return 0;
-> +
->  	if (buf) {
-> -		len = strlen(buf);
-> -		err = bpf_copy_to_user(uname, buf, ulen, len);
-> +		err = bpf_copy_to_user(uname, buf, name_len, len);
->  		if (err)
->  			return err;
->  	} else {
-
-small nit.. up to you but I'd suggest bit different naming like below,
-otherwise looks good
-
-Acked-by: Jiri Olsa <jolsa@kernel.org>
-
-thanks,
-jirka
-
-
----
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index a8f1808a1ca5..b637e9dced5a 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -3565,26 +3565,28 @@ static void bpf_perf_link_dealloc(struct bpf_link *link)
- }
- 
- static int bpf_perf_link_fill_common(const struct perf_event *event,
--				     char __user *uname, u32 ulen,
-+				     char __user *uname, u32 *ulenp,
- 				     u64 *probe_offset, u64 *probe_addr,
- 				     u32 *fd_type, unsigned long *missed)
- {
- 	const char *buf;
--	u32 prog_id;
-+	u32 prog_id, ulen;
- 	size_t len;
- 	int err;
- 
--	if (!ulen ^ !uname)
-+	if (!(*ulenp) ^ !uname)
- 		return -EINVAL;
- 
- 	err = bpf_get_perf_event_info(event, &prog_id, fd_type, &buf,
- 				      probe_offset, probe_addr, missed);
- 	if (err)
- 		return err;
-+	ulen = *ulenp;
-+	len = strlen(buf);
-+	*ulenp = len + 1;
- 	if (!uname)
- 		return 0;
- 	if (buf) {
--		len = strlen(buf);
- 		err = bpf_copy_to_user(uname, buf, ulen, len);
- 		if (err)
- 			return err;
+iirc we decided to start using kernel uapi headers for cases like this,
+so we don't have to copy paste such things all the time.
 
