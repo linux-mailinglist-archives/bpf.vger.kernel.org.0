@@ -1,144 +1,174 @@
-Return-Path: <bpf+bounces-41037-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41038-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD380991355
-	for <lists+bpf@lfdr.de>; Sat,  5 Oct 2024 01:57:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94F5499135A
+	for <lists+bpf@lfdr.de>; Sat,  5 Oct 2024 01:59:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 59D64B220D6
-	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 23:57:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 592DE2850E1
+	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 23:59:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD1BB155300;
-	Fri,  4 Oct 2024 23:57:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFF4D1553BC;
+	Fri,  4 Oct 2024 23:59:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gUh6INGL"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Afz5uC/k"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 615ED153838;
-	Fri,  4 Oct 2024 23:57:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A723A1552EB;
+	Fri,  4 Oct 2024 23:59:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728086230; cv=none; b=c+BKw7LoJ7DCo4mcvcnGxcD63pXFgPihG6/j2YuVBWwUp0PNkH4jPwWo5xF74G7sd8a0NQFh0h9mvapu9IOvISLRvYjhu9rIVjs9AZ1KP6AliUjPEyQxwehC9o1qEtueLG4b4UhxagmVAZr0cj5ILo/3dS41QyYqqO9cEVXdiGE=
+	t=1728086393; cv=none; b=Rs+vGNkum9UaAwhdjWag5FT5pDGAWlgkwS6RYcEV6p0VtzRMQrgWI7gNDsfHUFlmIZFI3HqB/lFRvS2P8HnhDGmO0XGzSFKPnAY9RBpjgwk2ohHWBy6ySm3umzwCJ30GC9xN2o5A8a66wnXfUQT2PrC/ZR0+kxP/MULDm3nT+4U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728086230; c=relaxed/simple;
-	bh=4hUROC6DIqthBNdPrjAkuLOYME9aDS8/AsLjsPBVw98=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=T2EKIh86R5DIFfxziw1OEfpVG6U5SS1Ee4fgyIE44sqXrbM5IRzygZWjN59V8QXwkYcFjduiXABbaix0AEXOiWW/i3p/vmliLs78rTOvLFCW2WPBGWC3Wag5BE3I7+gtsdU6HrNHIKrqM03121f/khNlToOr5fOPBLxcw/KlWMI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gUh6INGL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27976C4CED8;
-	Fri,  4 Oct 2024 23:57:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728086230;
-	bh=4hUROC6DIqthBNdPrjAkuLOYME9aDS8/AsLjsPBVw98=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=gUh6INGLLnvy7dBIymE9edcFKxmbRQqM8wMFskO2/RDmWX8yDEFNfcCjcNh6uh3nY
-	 Zt4Rc066ej2w6ySG6CdkKFzEdGGLWqeCxtfIQQJCWdUDbSbZq010e9BJwHTVvaU770
-	 b7BskwNywhXAgGuN8PQ5b3cO5FolUJd7/jCPoE0PZFwRjhmMkyiUJxJL8mtq5U4yUP
-	 hovFXCfJTL2Y3mNxEqpDYdSCjTEQSatOk8LOP0gKnI6c9e+cmKr7nWfIaXFkomUgnp
-	 hPhFd4pBxdAPo9oe9zRLpuzcdkicjAaSig1Koey5oTwsNscC3kMkG+GwVt6baEpYOB
-	 HtkYlYbu+reDw==
-Received: by mail-il1-f174.google.com with SMTP id e9e14a558f8ab-3a344f92143so11715355ab.2;
-        Fri, 04 Oct 2024 16:57:10 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCU2FWXlC6gdH10uZyr5qFiuiBv+fLPrgRxQk5At9kqyjHQDy/7jv9aTuQVbqYcwHECwQkqcov8KIJ7Xqvv5@vger.kernel.org, AJvYcCXUCYNdqNIL6vep/wEKdjyQGDYABEjutkuHJPcX6j/5vfk26Z/nB96k8o3T1lFppyUFPXk=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx+d5gB4Ha4g4KE2owTSK6vj/fd97QRrO5kXWzzlheb9XQodUxx
-	dOdsN8HGWB5WB7heB6shm9qt56wNTTDp4U2t0+CpAdHM6BYF9jTy7wgrBoXFsIO4KVJc8kJBweK
-	xQ2tjkmYKQd8MqRQLd86cD2yxxPY=
-X-Google-Smtp-Source: AGHT+IFcsGHVrHHVnjJ64LBTXNmEoO3SYFvavCZqFJHGHWwaRA2sGiCLcet+688mt3P53rIGxuvTLw01D3IM/zCyNlw=
-X-Received: by 2002:a05:6e02:1fcd:b0:39f:558a:e404 with SMTP id
- e9e14a558f8ab-3a3759780bemr46249655ab.4.1728086229441; Fri, 04 Oct 2024
- 16:57:09 -0700 (PDT)
+	s=arc-20240116; t=1728086393; c=relaxed/simple;
+	bh=nr4GUGUStXtqD14t7ZevxhYCeurvOELE6qLbAsqBJvQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ew8dr885twm1LZ7kCK9cERlGZ6z5fptTfUhJroQ+UaCC0oPF1BZEG5yPPDnzFFtgWGhLA7nREO04zHHyFRPlIQ/zt/q0N37DNyOqsbgUBIgn5Gprjo6AoCsV4RtM2JXuQ2E23atiWSohGLIY0RpqjycPjESMffDatTRtCElC758=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Afz5uC/k; arc=none smtp.client-ip=198.175.65.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1728086392; x=1759622392;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=nr4GUGUStXtqD14t7ZevxhYCeurvOELE6qLbAsqBJvQ=;
+  b=Afz5uC/k0yMcUR55/0vQ5sXFENv3AXtnLEu/riReXx2dfRglJzARMeOD
+   B8xNjpvmMWHuQDtuXpE8RVr9gVd03ZJXaVNfG2Xyx3O1XeNUUVwu14gtP
+   09qY8zdN2Z9Mt7pmF4ADQ9bQ+j0EdNkWiP+IulkdG2e7Oa5XvHIMUsURJ
+   Z6V0U6Jm/88S5PV5hcpcEL+o1Wy7zZd/q6h4S2rGgs/GEO/EQmJGEEQwQ
+   aHGbZ81Gn0HXhRP9Wdt8msfFIMA1UiPsYhaHBhAcoPgJzegZ1OXlPbexg
+   Lt1Zlh66uO4AfRCPN3xmLeshkrFFiDd1UDYKtXcChqLk9JsSB40jaOABv
+   w==;
+X-CSE-ConnectionGUID: rcMEP+WmS6G8Lapqx6jBgQ==
+X-CSE-MsgGUID: Ccn8La+cRsqGhsZ8UVJhkQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11215"; a="27456451"
+X-IronPort-AV: E=Sophos;i="6.11,178,1725346800"; 
+   d="scan'208";a="27456451"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2024 16:59:52 -0700
+X-CSE-ConnectionGUID: r4hSBamkQvqDiGw8qBDzCg==
+X-CSE-MsgGUID: kSuRW7wQSN++WA4YrXARVQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.11,178,1725346800"; 
+   d="scan'208";a="75290556"
+Received: from lkp-server01.sh.intel.com (HELO a48cf1aa22e8) ([10.239.97.150])
+  by orviesa007.jf.intel.com with ESMTP; 04 Oct 2024 16:59:46 -0700
+Received: from kbuild by a48cf1aa22e8 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1swsD2-0002M1-0Q;
+	Fri, 04 Oct 2024 23:59:44 +0000
+Date: Sat, 5 Oct 2024 07:59:27 +0800
+From: kernel test robot <lkp@intel.com>
+To: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org,
+	peterz@infradead.org, oleg@redhat.com
+Cc: oe-kbuild-all@lists.linux.dev, rostedt@goodmis.org, mhiramat@kernel.org,
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, jolsa@kernel.org,
+	paulmck@kernel.org, willy@infradead.org, surenb@google.com,
+	akpm@linux-foundation.org, linux-mm@kvack.org, mjguzik@gmail.com,
+	brauner@kernel.org, jannh@google.com, mhocko@kernel.org,
+	vbabka@suse.cz, mingo@kernel.org,
+	Andrii Nakryiko <andrii@kernel.org>
+Subject: Re: [PATCH v2 tip/perf/core 5/5] uprobes: add speculative lockless
+ VMA-to-inode-to-uprobe resolution
+Message-ID: <202410050745.2Nuvusy4-lkp@intel.com>
+References: <20241001225207.2215639-6-andrii@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241002180956.1781008-1-namhyung@kernel.org> <20241002180956.1781008-3-namhyung@kernel.org>
- <CAPhsuW7Bh-ZXfM2aYB=Yj8WaJHFc==AKmv6LDRgBq-TfdQ3s8A@mail.gmail.com>
- <ZwBdS86yBtOWy3iD@google.com> <CAPhsuW6AhfG7Xv2izDYnMM+z03X29peZfmWNy0rf98aEaAUfVg@mail.gmail.com>
- <ZwBk8i23odCe7qVK@google.com> <CAPhsuW4AjZMQxCbqYmEgbnkP0gWenKo4wVi8tW1zYcsaF5h7iQ@mail.gmail.com>
- <CAADnVQK0VQXvxqxm6WudyeLao1L+jMTvmUauciBc8_vcLcR=vQ@mail.gmail.com>
-In-Reply-To: <CAADnVQK0VQXvxqxm6WudyeLao1L+jMTvmUauciBc8_vcLcR=vQ@mail.gmail.com>
-From: Song Liu <song@kernel.org>
-Date: Fri, 4 Oct 2024 16:56:57 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW6gB5PaNDQ5x20oRXUtgf7KPNTQpN_WLvtYm=-7CLhn-g@mail.gmail.com>
-Message-ID: <CAPhsuW6gB5PaNDQ5x20oRXUtgf7KPNTQpN_WLvtYm=-7CLhn-g@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 2/3] mm/bpf: Add bpf_get_kmem_cache() kfunc
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Namhyung Kim <namhyung@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Yonghong Song <yonghong.song@linux.dev>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Andrew Morton <akpm@linux-foundation.org>, Christoph Lameter <cl@linux.com>, 
-	Pekka Enberg <penberg@kernel.org>, David Rientjes <rientjes@google.com>, 
-	Joonsoo Kim <iamjoonsoo.kim@lge.com>, Vlastimil Babka <vbabka@suse.cz>, 
-	Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm <linux-mm@kvack.org>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Kees Cook <kees@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241001225207.2215639-6-andrii@kernel.org>
 
-On Fri, Oct 4, 2024 at 4:44=E2=80=AFPM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
-[...]
-> > diff --git i/kernel/bpf/helpers.c w/kernel/bpf/helpers.c
-> > index 3709fb142881..7311a26ecb01 100644
-> > --- i/kernel/bpf/helpers.c
-> > +++ w/kernel/bpf/helpers.c
-> > @@ -3090,7 +3090,7 @@ BTF_ID_FLAGS(func, bpf_iter_bits_new, KF_ITER_NEW=
-)
-> >  BTF_ID_FLAGS(func, bpf_iter_bits_next, KF_ITER_NEXT | KF_RET_NULL)
-> >  BTF_ID_FLAGS(func, bpf_iter_bits_destroy, KF_ITER_DESTROY)
-> >  BTF_ID_FLAGS(func, bpf_copy_from_user_str, KF_SLEEPABLE)
-> > -BTF_ID_FLAGS(func, bpf_get_kmem_cache, KF_RET_NULL)
-> > +BTF_ID_FLAGS(func, bpf_get_kmem_cache, KF_RET_NULL | KF_TRUSTED_ARGS
-> > | KF_RCU_PROTECTED)
->
-> I don't think KF_TRUSTED_ARGS approach would fit here.
-> Namhyung's use case is tracing. The 'addr' will be some potentially
-> arbitrary address from somewhere. The chance to see a trusted pointer
-> is probably very low in such a tracing use case.
+Hi Andrii,
 
-I thought the primary use case was to trace lock contention, for
-example, queued_spin_lock_slowpath(). Of course, a more
-general solution is better.
+kernel test robot noticed the following build errors:
 
->
-> The verifier change can mainly be the following:
->
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 7d9b38ffd220..e09eb108e956 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -12834,6 +12834,9 @@ static int check_kfunc_call(struct
-> bpf_verifier_env *env, struct bpf_insn *insn,
->                         regs[BPF_REG_0].type =3D PTR_TO_BTF_ID;
->                         regs[BPF_REG_0].btf_id =3D ptr_type_id;
->
-> +                       if (meta.func_id =3D=3D
-> special_kfunc_list[KF_get_kmem_cache])
-> +                               regs[BPF_REG_0].type |=3D PTR_UNTRUSTED;
-> +
->                         if (is_iter_next_kfunc(&meta)) {
->                                 struct bpf_reg_state *cur_iter;
+[auto build test ERROR on tip/perf/core]
 
-This is easier than I thought.
+url:    https://github.com/intel-lab-lkp/linux/commits/Andrii-Nakryiko/mm-introduce-mmap_lock_speculation_-start-end/20241002-065354
+base:   tip/perf/core
+patch link:    https://lore.kernel.org/r/20241001225207.2215639-6-andrii%40kernel.org
+patch subject: [PATCH v2 tip/perf/core 5/5] uprobes: add speculative lockless VMA-to-inode-to-uprobe resolution
+config: loongarch-allyesconfig (https://download.01.org/0day-ci/archive/20241005/202410050745.2Nuvusy4-lkp@intel.com/config)
+compiler: loongarch64-linux-gcc (GCC) 14.1.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20241005/202410050745.2Nuvusy4-lkp@intel.com/reproduce)
 
-Thanks,
-Song
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202410050745.2Nuvusy4-lkp@intel.com/
 
-> The returned 'struct kmem_cache *' won't be refcnt-ed (acquired).
-> It will be readonly via ptr_to_btf_id logic.
-> s->flags;
-> s->size;
-> s->offset;
-> access will be allowed but the verifier will sanitize them
-> with an inlined version of probe_read_kernel.
-> Even KF_RET_NULL can be dropped.
+All errors (new ones prefixed by >>):
+
+   kernel/events/uprobes.c: In function 'find_active_uprobe_speculative':
+>> kernel/events/uprobes.c:2098:46: error: passing argument 2 of 'mmap_lock_speculation_start' from incompatible pointer type [-Wincompatible-pointer-types]
+    2098 |         if (!mmap_lock_speculation_start(mm, &seq))
+         |                                              ^~~~
+         |                                              |
+         |                                              long int *
+   In file included from include/linux/mm.h:16,
+                    from arch/loongarch/include/asm/cacheflush.h:8,
+                    from include/linux/cacheflush.h:5,
+                    from include/linux/highmem.h:8,
+                    from kernel/events/uprobes.c:13:
+   include/linux/mmap_lock.h:126:75: note: expected 'int *' but argument is of type 'long int *'
+     126 | static inline bool mmap_lock_speculation_start(struct mm_struct *mm, int *seq) { return false; }
+         |                                                                      ~~~~~^~~
+
+
+vim +/mmap_lock_speculation_start +2098 kernel/events/uprobes.c
+
+  2086	
+  2087	static struct uprobe *find_active_uprobe_speculative(unsigned long bp_vaddr)
+  2088	{
+  2089		struct mm_struct *mm = current->mm;
+  2090		struct uprobe *uprobe = NULL;
+  2091		struct vm_area_struct *vma;
+  2092		struct file *vm_file;
+  2093		loff_t offset;
+  2094		long seq;
+  2095	
+  2096		guard(rcu)();
+  2097	
+> 2098		if (!mmap_lock_speculation_start(mm, &seq))
+  2099			return NULL;
+  2100	
+  2101		vma = vma_lookup(mm, bp_vaddr);
+  2102		if (!vma)
+  2103			return NULL;
+  2104	
+  2105		/* vm_file memory can be reused for another instance of struct file,
+  2106		 * but can't be freed from under us, so it's safe to read fields from
+  2107		 * it, even if the values are some garbage values; ultimately
+  2108		 * find_uprobe_rcu() + mmap_lock_speculation_end() check will ensure
+  2109		 * that whatever we speculatively found is correct
+  2110		 */
+  2111		vm_file = READ_ONCE(vma->vm_file);
+  2112		if (!vm_file)
+  2113			return NULL;
+  2114	
+  2115		offset = (loff_t)(vma->vm_pgoff << PAGE_SHIFT) + (bp_vaddr - vma->vm_start);
+  2116		uprobe = find_uprobe_rcu(vm_file->f_inode, offset);
+  2117		if (!uprobe)
+  2118			return NULL;
+  2119	
+  2120		/* now double check that nothing about MM changed */
+  2121		if (!mmap_lock_speculation_end(mm, seq))
+  2122			return NULL;
+  2123	
+  2124		return uprobe;
+  2125	}
+  2126	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
