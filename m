@@ -1,34 +1,34 @@
-Return-Path: <bpf+bounces-40924-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40926-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B79D99009E
-	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 12:14:01 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E74DF9900A3
+	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 12:14:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F32C01F21757
-	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 10:14:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 90B341F22E8C
+	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 10:14:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C07B814D6E1;
-	Fri,  4 Oct 2024 10:13:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7938B1514F8;
+	Fri,  4 Oct 2024 10:13:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="En1rlGKn"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="dUAozncb"
 X-Original-To: bpf@vger.kernel.org
 Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5799414AD2B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1749514B061;
 	Fri,  4 Oct 2024 10:13:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728036820; cv=none; b=mqb+S265pA89DJnitpadm0UIJJ4vd/9fGQDYUv9vm11d74cjn8c1uCKM+s7hJdjBkU67rsTjiHn/IEmQmfaRm8nfctHhhuyidX3g0oslLLXC7jUkPioiL5+Kf3lDuM6YBjdzWSJD6dU5saSGg8edbCDN4H0TPXL5mAxs3AoLaiw=
+	t=1728036821; cv=none; b=UrzUT3DVuDQhHymvlHtGzShr1A4r2JarOJrfOQF36FzZcohJIKfkZpB2FBCnn+TAtQkcBgJzbYt2jjldlmyjrIAodsbEhgWOq4Ydt7NPDtRx32r6ydXeIMPnQYKP/MpBMYBvaeZR2D4jCwdchXtmdWEKnXTXoARUXKVL5RNZ1PM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728036820; c=relaxed/simple;
-	bh=B6if5tMMZ9GJi1tFuCoWoOLntlXQ47B5NMRgYA4olpY=;
+	s=arc-20240116; t=1728036821; c=relaxed/simple;
+	bh=DYlwMDBGIBQ6ZKw/wdb5qz0tEd2rReGxtQnoOE1IhrU=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=SWxV5XtHrSQJbOTCjXep8w0bqpLReaAMh+I2Rotc/zeopkyKAsr+RrF5vx8QhMI7e5EnYtey3Pjd8G68uRpCkAoZuwvSPqw+KSEKrdCe6QDDYKxO+fXugie/z7Wbxz+hiEC+JYl7re8G6SHmDfxoMbXNoWaN4JpsdfU2lR1+xHI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=En1rlGKn; arc=none smtp.client-ip=213.133.104.62
+	 MIME-Version; b=V83LUo9U0YGEltzz8DtIC5/sNDMczgN+sPs8S2QhCBTROJLtzIjklln+ZHLrW2Q/hrZQ+9MoVRr9+opsXAPmNeu/g5u07mmbp7hCVrOMZlYiIbghng33xoRIzOVMfCC+qP5cdZdLpNnfjlPukLh+Mz5Qw0CTmneJFBLr9okAsZM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=dUAozncb; arc=none smtp.client-ip=213.133.104.62
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -36,17 +36,17 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
 	Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=IqONZw7NdWqlh6ST1cwKGMJ3mKRzsHntCJoL3bxEg6Q=; b=En1rlGKnfOIf6vIGIQh0QJvdCh
-	YL116nWmp741mlIHl4ZpGcCX4LL3ybjdlOZKco3qI4VHx9cW9hjC74v8OgNXZGFnu8vD28MMod6Qh
-	jZ1lXQBxI+gqBoaQcH53h+nU+slBo3kbbXTTBHWTq9hotqkXTrodhzeEX6fBR8Wg/xvHu7NMGXoRi
-	mkG1oQziUevx5ukCg9CqFcbpdzkxdYqPSamnLmbZjJEuEQpux8rEx01364j0/F5q1iIQGGAm1QlJ/
-	q0Octrwnq1w3ieYpTjjxp38R8BO41C6YY6il4zETZ8bFPEyU25Q+UTszYCsKx5N95fK7+Bt//SvpP
-	HGzrLgHw==;
+	bh=tBDUG2BzjjJAUxXFr7V7YZ/wcg5nvB9xrEH9S2GdSEM=; b=dUAozncb9kDSn2Vxgsp3ZH81lc
+	TCIPyP9N//VxhqFF3BimXR2OEf+I7n5PTjOX40YkJfw53bMqCtGnluUVZCgp0p4t5jNgNcshH9Q8h
+	rdsBP7VAJaAbp9h1PaojFGadOKljcMfMA5k8nppyObxUjZMe6R5M9ZAu3Rb6lFJC0Sxkdd9sPyETd
+	29Mu4g01e9j6Ft1a6hYvyQDw6CPuzShn+05CfvPOmJKrIY7Y3qVeCxYJVDTBRbVKpNpmgcDbRDXLd
+	e9K71eb+OJxsDn6lAm43OA5xJ+451TVqwTOhCnwU1F4jz/1fXqf2DZaANErZZrQ3ZgHmj9u/kawkQ
+	1HTgPOPw==;
 Received: from 226.206.1.85.dynamic.cust.swisscom.net ([85.1.206.226] helo=localhost)
 	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1swfJY-000BVJ-On; Fri, 04 Oct 2024 12:13:36 +0200
+	id 1swfJZ-000BVS-C7; Fri, 04 Oct 2024 12:13:37 +0200
 From: Daniel Borkmann <daniel@iogearbox.net>
 To: martin.lau@linux.dev
 Cc: razor@blackwall.org,
@@ -55,9 +55,9 @@ Cc: razor@blackwall.org,
 	tangchen.1@bytedance.com,
 	bpf@vger.kernel.org,
 	netdev@vger.kernel.org
-Subject: [PATCH bpf-next v2 2/5] netkit: Simplify netkit mode over to use NLA_POLICY_MAX
-Date: Fri,  4 Oct 2024 12:13:32 +0200
-Message-Id: <20241004101335.117711-2-daniel@iogearbox.net>
+Subject: [PATCH bpf-next v2 3/5] netkit: Add add netkit scrub support to rt_link.yaml
+Date: Fri,  4 Oct 2024 12:13:33 +0200
+Message-Id: <20241004101335.117711-3-daniel@iogearbox.net>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20241004101335.117711-1-daniel@iogearbox.net>
 References: <20241004101335.117711-1-daniel@iogearbox.net>
@@ -71,70 +71,65 @@ Content-Transfer-Encoding: 8bit
 X-Authenticated-Sender: daniel@iogearbox.net
 X-Virus-Scanned: Clear (ClamAV 0.103.10/27417/Fri Oct  4 10:53:24 2024)
 
-Jakub suggested to rely on netlink policy validation via NLA_POLICY_MAX()
-instead of open-coding it. netkit_check_mode() is a candidate which can
-be simplified through this as well aside from the netkit scrubbing one.
+Add netkit scrub attribute support to the rt_link.yaml spec file.
 
-Suggested-by: Jakub Kicinski <kuba@kernel.org>
+Example:
+
+  # ./tools/net/ynl/cli.py --spec Documentation/netlink/specs/rt_link.yaml \
+   --do getlink --json '{"ifname": "nk0"}' --output-json | jq
+  [...]
+  "linkinfo": {
+    "kind": "netkit",
+    "data": {
+      "primary": 0,
+      "policy": "forward",
+      "mode": "l3",
+      "scrub": "default",
+      "peer-policy": "forward",
+      "peer-scrub": "default"
+    }
+  },
+  [...]
+
 Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
 Cc: Nikolay Aleksandrov <razor@blackwall.org>
 ---
- v1 -> v2:
-   - new patch, also use NLA_POLICY_MAX here (Jakub)
+ Documentation/netlink/specs/rt_link.yaml | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
- drivers/net/netkit.c | 25 +++----------------------
- 1 file changed, 3 insertions(+), 22 deletions(-)
-
-diff --git a/drivers/net/netkit.c b/drivers/net/netkit.c
-index fba2c734f0ec..cd8360b9bbde 100644
---- a/drivers/net/netkit.c
-+++ b/drivers/net/netkit.c
-@@ -311,20 +311,6 @@ static int netkit_check_policy(int policy, struct nlattr *tb,
- 	}
- }
+diff --git a/Documentation/netlink/specs/rt_link.yaml b/Documentation/netlink/specs/rt_link.yaml
+index 0c4d5d40cae9..59c51cf6df31 100644
+--- a/Documentation/netlink/specs/rt_link.yaml
++++ b/Documentation/netlink/specs/rt_link.yaml
+@@ -920,6 +920,13 @@ definitions:
+       - name: l2
+       - name: l3
  
--static int netkit_check_mode(int mode, struct nlattr *tb,
--			     struct netlink_ext_ack *extack)
--{
--	switch (mode) {
--	case NETKIT_L2:
--	case NETKIT_L3:
--		return 0;
--	default:
--		NL_SET_ERR_MSG_ATTR(extack, tb,
--				    "Provided device mode can only be L2 or L3");
--		return -EINVAL;
--	}
--}
--
- static int netkit_validate(struct nlattr *tb[], struct nlattr *data[],
- 			   struct netlink_ext_ack *extack)
- {
-@@ -360,13 +346,8 @@ static int netkit_new_link(struct net *src_net, struct net_device *dev,
- 	int err;
++  -
++    name: netkit-scrub
++    type: enum
++    entries:
++      - name: none
++      - name: default
++
+ attribute-sets:
+   -
+     name: link-attrs
+@@ -2147,6 +2154,14 @@ attribute-sets:
+         name: mode
+         type: u32
+         enum: netkit-mode
++      -
++        name: scrub
++        type: u32
++        enum: netkit-scrub
++      -
++        name: peer-scrub
++        type: u32
++        enum: netkit-scrub
  
- 	if (data) {
--		if (data[IFLA_NETKIT_MODE]) {
--			attr = data[IFLA_NETKIT_MODE];
--			mode = nla_get_u32(attr);
--			err = netkit_check_mode(mode, attr, extack);
--			if (err < 0)
--				return err;
--		}
-+		if (data[IFLA_NETKIT_MODE])
-+			mode = nla_get_u32(data[IFLA_NETKIT_MODE]);
- 		if (data[IFLA_NETKIT_PEER_INFO]) {
- 			attr = data[IFLA_NETKIT_PEER_INFO];
- 			ifmp = nla_data(attr);
-@@ -976,7 +957,7 @@ static int netkit_fill_info(struct sk_buff *skb, const struct net_device *dev)
- 
- static const struct nla_policy netkit_policy[IFLA_NETKIT_MAX + 1] = {
- 	[IFLA_NETKIT_PEER_INFO]		= { .len = sizeof(struct ifinfomsg) },
--	[IFLA_NETKIT_MODE]		= { .type = NLA_U32 },
-+	[IFLA_NETKIT_MODE]		= NLA_POLICY_MAX(NLA_U32, NETKIT_L3),
- 	[IFLA_NETKIT_POLICY]		= { .type = NLA_U32 },
- 	[IFLA_NETKIT_PEER_POLICY]	= { .type = NLA_U32 },
- 	[IFLA_NETKIT_SCRUB]		= NLA_POLICY_MAX(NLA_U32, NETKIT_SCRUB_DEFAULT),
+ sub-messages:
+   -
 -- 
 2.43.0
 
