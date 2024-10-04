@@ -1,195 +1,204 @@
-Return-Path: <bpf+bounces-41014-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41015-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB9C29910EE
-	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 22:53:58 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 633E99910B6
+	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 22:37:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B438AB227A0
-	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 20:33:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 72360283DD7
+	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 20:37:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0319D231CB1;
-	Fri,  4 Oct 2024 20:33:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97EAA231CBE;
+	Fri,  4 Oct 2024 20:37:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tuc+VHDc"
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="Hn8WQY12"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from smtp-fw-2101.amazon.com (smtp-fw-2101.amazon.com [72.21.196.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A82A22067;
-	Fri,  4 Oct 2024 20:33:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 460441E51D;
+	Fri,  4 Oct 2024 20:37:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=72.21.196.25
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728074011; cv=none; b=RNuc2s1W/5E0bTYMXJwgpM6dgOsxgoyZW8EDjy4J/1vtupDiYAAFjhEjP438TbwA1KcTbOlkF+H+F+1zC4yIJIA7EJZH2Tbxn1WOPtTxWbaZVXlfeEz5jZsocQwvd8OZ1Emirv2gGQRABK1ZPVkW8IRjuwgGeQIXR1nZznUhXNQ=
+	t=1728074255; cv=none; b=B+ASwD6eQpYLNytGAr938U6haq/vvToUkm1goiiZY/yTJcptW5kxGm54NuUZOGYoqt5QbmIGHd2vzT6ih817g1pqQQwBE9kyqZ3OHMQCOFRk2W2rGy7+cV6jY0jtKLbGQwLZwF3DbVh5I9swQL1NjIMVCX0sK/9KWgPcs60M3L4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728074011; c=relaxed/simple;
-	bh=dgu2VTGNBz0Q3vaF2UYNqERBE89cxhqUTRShhpNWnp0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ucsB+2+MLtgEbJDgsty9mpokGAvTVIbj6j8aonGshyJ1eAbEnPoCaf2atW5sYDgkYOYLIDWM6ORMf7x1LkJB8ADfJ7lQVI0+RrjZiaew5cQO+ts2r/BiOmgFZKfjV+2VNwrKfqFLnGgcU6TfuIlJWsIZoW6xpXIATV+NnLOpevk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tuc+VHDc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10140C4CECE;
-	Fri,  4 Oct 2024 20:33:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728074011;
-	bh=dgu2VTGNBz0Q3vaF2UYNqERBE89cxhqUTRShhpNWnp0=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=tuc+VHDccH39CXrTezK0z2rbgd7J0q7dlmwsAy5dKNHgSYcKWuroaqSstMCjRJGKj
-	 GoUXDiv3QuvVYH7tGzSefGkkl0hCBVAroujlYjJI2CEw1kxtNxtIppLExKoXxf6XzR
-	 vWzRQOBaPh5Yp3Zj62ndrGyW2DwIKxhIoKx3IcolAe0vymm82NLtHDqp3kr9n+AZw+
-	 V6fXqz0jM4s6BtLx5B6gqHoGMPKMJpY9CdRb8HJpxY0dieJrAyJtKaMWxdDNr/tpcl
-	 oFfCtQznBihdAnN39VinI/Z2erzEZz5nRdl/z1q4nE4qI9/y42HhXba+Uf3KkQ83Py
-	 LZ+8CVk8j8Uug==
-Received: by mail-io1-f45.google.com with SMTP id ca18e2360f4ac-82cdc21b5d8so120174839f.3;
-        Fri, 04 Oct 2024 13:33:31 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCW6rAe04mtZgi6pZLiU/TjWvg67RFEkuHelOtG2afllAyskGh2aD2ZtaT3ioj5AFgsNtO4CQ9E0RAVrm/vH@vger.kernel.org, AJvYcCWe2nlSHwlhKtjAQMLGSAqT1ld+YFDswIbPvJdQlYjoYANpRjS2LHGX0LDAv1GW86uwQps=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx6fkY5LSf/s8PXPT1eYlcJJ0gIFqsDqKGHo3l42h6jHKA79y7E
-	t7KX9U4pX9G9Q33BOjudToibmZ3l8VFGBiibCqYXxQxNi9oTfRIKnYyTi2TfFEY40+1WWkZOjPn
-	bjQk7REt8v4YhNnfhq3qncDG3h4U=
-X-Google-Smtp-Source: AGHT+IHKcUX7A7EqBxhx0p8LA2IErluMnPnMlNw7uAMVTmuO7e0uQR4F1tGjJKCmJfYI5Lh+nTutnwcr1eMdldwatRU=
-X-Received: by 2002:a05:6e02:144d:b0:3a3:3e1f:1168 with SMTP id
- e9e14a558f8ab-3a375bb6c76mr40195255ab.17.1728074010416; Fri, 04 Oct 2024
- 13:33:30 -0700 (PDT)
+	s=arc-20240116; t=1728074255; c=relaxed/simple;
+	bh=5+5lkVZunnViCy42rdQBckFfT0Mmc1pSUyUpplhsRJM=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=OgNBlt+oJjuaHx1mol38GkDLrhJYtuHL1J4HYn/PJAu55bFWsSn0BDexqapIZtaQEh4dKjYIhXMX3WP/TfbnzwHWbIAzOPMaIT2bCbfoiUKyWZaGTeMRQN97ePttLAmTw5ZcgfR67wHm/vaocl53+XjhRIxaPqtTkheebOGqwig=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.jp; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=Hn8WQY12; arc=none smtp.client-ip=72.21.196.25
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.jp
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1728074253; x=1759610253;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=ky88xZ3OcqJJ6A1O5eX7bIGljIi3n9TyNluz00xw3OQ=;
+  b=Hn8WQY12hCJ0O019+IB1fjvVKEQQ8RkZpAGDB2Mq9xS5/pJmp+4iRNxx
+   fKepO3dow8JIo9dWwhSlzOMrNbYuWuFHquwCUOoon7+/ypIYm122gu0Fl
+   /iSVHWK0tXTpc8zt22GDueqb0vgQ7rcRG5BEFTJboXf+Op7kG91ooAWV0
+   Q=;
+X-IronPort-AV: E=Sophos;i="6.11,178,1725321600"; 
+   d="scan'208";a="432684100"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.43.8.6])
+  by smtp-border-fw-2101.iad2.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2024 20:37:30 +0000
+Received: from EX19MTAUWB001.ant.amazon.com [10.0.21.151:20663]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.6.41:2525] with esmtp (Farcaster)
+ id 385f030d-cb8a-4235-aab8-99cbfa32b8e3; Fri, 4 Oct 2024 20:37:29 +0000 (UTC)
+X-Farcaster-Flow-ID: 385f030d-cb8a-4235-aab8-99cbfa32b8e3
+Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
+ EX19MTAUWB001.ant.amazon.com (10.250.64.248) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1258.34;
+ Fri, 4 Oct 2024 20:37:29 +0000
+Received: from 88665a182662.ant.amazon.com (10.88.184.239) by
+ EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1258.35;
+ Fri, 4 Oct 2024 20:37:26 +0000
+From: Kuniyuki Iwashima <kuniyu@amazon.com>
+To: <martin.lau@linux.dev>
+CC: <bpf@vger.kernel.org>, <edumazet@google.com>, <kuba@kernel.org>,
+	<kuniyu@amazon.com>, <netdev@vger.kernel.org>
+Subject: Re: [Question]: A non NULL req->sk in tcp_rtx_synack. Not a fastopen connection.
+Date: Fri, 4 Oct 2024 13:37:18 -0700
+Message-ID: <20241004203718.67792-1-kuniyu@amazon.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <341af7e1-7817-4aca-97dc-8f2813a086df@linux.dev>
+References: <341af7e1-7817-4aca-97dc-8f2813a086df@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241002180956.1781008-1-namhyung@kernel.org> <20241002180956.1781008-2-namhyung@kernel.org>
-In-Reply-To: <20241002180956.1781008-2-namhyung@kernel.org>
-From: Song Liu <song@kernel.org>
-Date: Fri, 4 Oct 2024 13:33:19 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW4HLM=v=eGyT5F7epEKc_tfh=Y643wvkDOJRLdow-RWpg@mail.gmail.com>
-Message-ID: <CAPhsuW4HLM=v=eGyT5F7epEKc_tfh=Y643wvkDOJRLdow-RWpg@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 1/3] bpf: Add kmem_cache iterator
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Yonghong Song <yonghong.song@linux.dev>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org, 
-	Andrew Morton <akpm@linux-foundation.org>, Christoph Lameter <cl@linux.com>, 
-	Pekka Enberg <penberg@kernel.org>, David Rientjes <rientjes@google.com>, 
-	Joonsoo Kim <iamjoonsoo.kim@lge.com>, Vlastimil Babka <vbabka@suse.cz>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm@kvack.org, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Kees Cook <kees@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: EX19D043UWA003.ant.amazon.com (10.13.139.31) To
+ EX19D004ANA001.ant.amazon.com (10.37.240.138)
 
-On Wed, Oct 2, 2024 at 11:09=E2=80=AFAM Namhyung Kim <namhyung@kernel.org> =
-wrote:
->
-[...]
-> +
-> +       mutex_lock(&slab_mutex);
-> +
-> +       /*
-> +        * Find an entry at the given position in the slab_caches list in=
-stead
+From: Martin KaFai Lau <martin.lau@linux.dev>
+Date: Thu, 3 Oct 2024 21:00:20 -0700
+> On 10/3/24 7:02 PM, Kuniyuki Iwashima wrote:
+> > From: Martin KaFai Lau <martin.lau@linux.dev>
+> > Date: Thu, 3 Oct 2024 18:14:09 -0700
+> >> Hi,
+> >>
+> >> We are seeing a use-after-free from a bpf prog attached to
+> >> trace_tcp_retransmit_synack. The program passes the req->sk to the
+> >> bpf_sk_storage_get_tracing kernel helper which does check for null before using it.
+> >>
+> >> fastopen is not used.
+> >>
+> >> We got a kfence report on use-after-free (pasted at the end). It is running with
+> >> an older 6.4 kernel and we hardly hit this in production.
+> >>
+> >>   From the upstream code, del_timer_sync() should have been done by
+> >> inet_csk_reqsk_queue_drop() before "req->sk = child;" is assigned in
+> >> inet_csk_reqsk_queue_add(). My understanding is the req->rsk_timer should have
+> >> been stopped before the "req->sk = child;" assignment.
+> > 
+> > There seems to be a small race window in reqsk_queue_unlink().
+> > 
+> > expire_timers() first calls detach_timer(, true), which marks the timer
+> > as not pending, and then calls reqsk_timer_handler().
+> > 
+> > If reqsk_queue_unlink() calls timer_pending() just before expire_timers()
+> > calls reqsk_timer_handler(), reqsk_queue_unlink() could miss
+> > del_timer_sync() ?
+> 
+> This seems to explain it. :)
+> 
+> Does it mean there is a chance that the reqsk_timer_handler() may rearm the 
+> timer again and I guess only a few more synack will be sent in this case and 
+> should be no harm?
 
-Nit: style of multi-line comment: "/* Find ...".
+Ah, it seems possible.  I was wondering how the timer can be delayed
+until sk is freed.  In such a case, the timer will just let the peer
+generate some challenge ACKs.
 
-> +        * of keeping a reference (of the last visited entry, if any) out=
- of
-> +        * slab_mutex. It might miss something if one is deleted in the m=
-iddle
-> +        * while it releases the lock.  But it should be rare and there's=
- not
-> +        * much we can do about it.
-> +        */
-> +       list_for_each_entry(s, &slab_caches, list) {
-> +               if (cnt =3D=3D *pos) {
-> +                       /*
-> +                        * Make sure this entry remains in the list by ge=
-tting
-> +                        * a new reference count.  Note that boot_cache e=
-ntries
-> +                        * have a negative refcount, so don't touch them.
-> +                        */
-> +                       if (s->refcount > 0)
-> +                               s->refcount++;
-> +                       found =3D true;
-> +                       break;
-> +               }
-> +               cnt++;
-> +       }
-> +       mutex_unlock(&slab_mutex);
-> +
-> +       if (!found)
-> +               return NULL;
-> +
-> +       ++*pos;
-> +       return s;
-> +}
-> +
-> +static void kmem_cache_iter_seq_stop(struct seq_file *seq, void *v)
-> +{
-> +       struct bpf_iter_meta meta;
-> +       struct bpf_iter__kmem_cache ctx =3D {
-> +               .meta =3D &meta,
-> +               .s =3D v,
-> +       };
-> +       struct bpf_prog *prog;
-> +       bool destroy =3D false;
-> +
-> +       meta.seq =3D seq;
-> +       prog =3D bpf_iter_get_info(&meta, true);
-> +       if (prog)
-> +               bpf_iter_run_prog(prog, &ctx);
-> +
-> +       if (ctx.s =3D=3D NULL)
-> +               return;
-> +
-> +       mutex_lock(&slab_mutex);
-> +
-> +       /* Skip kmem_cache_destroy() for active entries */
-> +       if (ctx.s->refcount > 1)
-> +               ctx.s->refcount--;
-> +       else if (ctx.s->refcount =3D=3D 1)
-> +               destroy =3D true;
-> +
-> +       mutex_unlock(&slab_mutex);
-> +
-> +       if (destroy)
-> +               kmem_cache_destroy(ctx.s);
-> +}
-> +
-> +static void *kmem_cache_iter_seq_next(struct seq_file *seq, void *v, lof=
-f_t *pos)
-> +{
-> +       struct kmem_cache *s =3D v;
-> +       struct kmem_cache *next =3D NULL;
-> +       bool destroy =3D false;
-> +
-> +       ++*pos;
-> +
-> +       mutex_lock(&slab_mutex);
-> +
-> +       if (list_last_entry(&slab_caches, struct kmem_cache, list) !=3D s=
-) {
-> +               next =3D list_next_entry(s, list);
-> +               if (next->refcount > 0)
-> +                       next->refcount++;
 
-What if next->refcount <=3D0? Shall we find next of next?
+> 
+> > 
+> > ---8<---
+> > diff --git a/net/ipv4/inet_connection_sock.c b/net/ipv4/inet_connection_sock.c
+> > index 2c5632d4fddb..4ba47ee6c9da 100644
+> > --- a/net/ipv4/inet_connection_sock.c
+> > +++ b/net/ipv4/inet_connection_sock.c
+> > @@ -1045,7 +1045,7 @@ static bool reqsk_queue_unlink(struct request_sock *req)
+> >   		found = __sk_nulls_del_node_init_rcu(sk);
+> >   		spin_unlock(lock);
+> >   	}
+> > -	if (timer_pending(&req->rsk_timer) && del_timer_sync(&req->rsk_timer))
+> > +	if (del_timer_sync(&req->rsk_timer))
+> 
+> It seems the reqsk_timer_handler() will also call reqsk_queue_unlink() through 
+> inet_csk_reqsk_queue_drop_and_put(). Not sure if the reqsk_timer_handler() can 
+> del_timer_sync() itself.
 
-> +       }
-> +
-> +       /* Skip kmem_cache_destroy() for active entries */
-> +       if (s->refcount > 1)
-> +               s->refcount--;
-> +       else if (s->refcount =3D=3D 1)
-> +               destroy =3D true;
-> +
-> +       mutex_unlock(&slab_mutex);
-> +
-> +       if (destroy)
-> +               kmem_cache_destroy(s);
-> +
-> +       return next;
-> +}
-[...]
+Exactly, it seems illegal to call it from the timer.
+Then, we need a variant of inet_csk_reqsk_queue_drop() to see if
+the caller is tiemr or not. (compile-test only)
+
+---8<---
+diff --git a/net/ipv4/inet_connection_sock.c b/net/ipv4/inet_connection_sock.c
+index 2c5632d4fddb..2623964d8817 100644
+--- a/net/ipv4/inet_connection_sock.c
++++ b/net/ipv4/inet_connection_sock.c
+@@ -1045,21 +1045,31 @@ static bool reqsk_queue_unlink(struct request_sock *req)
+ 		found = __sk_nulls_del_node_init_rcu(sk);
+ 		spin_unlock(lock);
+ 	}
+-	if (timer_pending(&req->rsk_timer) && del_timer_sync(&req->rsk_timer))
+-		reqsk_put(req);
++
+ 	return found;
+ }
+ 
+-bool inet_csk_reqsk_queue_drop(struct sock *sk, struct request_sock *req)
++static bool __inet_csk_reqsk_queue_drop(struct sock *sk,
++					struct request_sock *req,
++					bool from_timer)
+ {
+ 	bool unlinked = reqsk_queue_unlink(req);
+ 
++	if (!from_timer && del_timer_sync(&req->rsk_timer))
++		reqsk_put(req);
++
+ 	if (unlinked) {
+ 		reqsk_queue_removed(&inet_csk(sk)->icsk_accept_queue, req);
+ 		reqsk_put(req);
+ 	}
++
+ 	return unlinked;
+ }
++
++bool inet_csk_reqsk_queue_drop(struct sock *sk, struct request_sock *req)
++{
++	return __inet_csk_reqsk_queue_drop(sk, req, false);
++}
+ EXPORT_SYMBOL(inet_csk_reqsk_queue_drop);
+ 
+ void inet_csk_reqsk_queue_drop_and_put(struct sock *sk, struct request_sock *req)
+@@ -1152,7 +1162,7 @@ static void reqsk_timer_handler(struct timer_list *t)
+ 
+ 		if (!inet_ehash_insert(req_to_sk(nreq), req_to_sk(oreq), NULL)) {
+ 			/* delete timer */
+-			inet_csk_reqsk_queue_drop(sk_listener, nreq);
++			__inet_csk_reqsk_queue_drop(sk_listener, nreq, true);
+ 			goto no_ownership;
+ 		}
+ 
+@@ -1178,7 +1188,8 @@ static void reqsk_timer_handler(struct timer_list *t)
+ 	}
+ 
+ drop:
+-	inet_csk_reqsk_queue_drop_and_put(oreq->rsk_listener, oreq);
++	__inet_csk_reqsk_queue_drop(sk_listener, nreq, true);
++	reqsk_put(req);
+ }
+ 
+ static bool reqsk_queue_hash_req(struct request_sock *req,
+---8<---
 
