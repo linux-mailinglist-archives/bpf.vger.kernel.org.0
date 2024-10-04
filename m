@@ -1,122 +1,155 @@
-Return-Path: <bpf+bounces-41032-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41033-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A25529912FE
-	for <lists+bpf@lfdr.de>; Sat,  5 Oct 2024 01:29:22 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E130991309
+	for <lists+bpf@lfdr.de>; Sat,  5 Oct 2024 01:31:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 442051F23D14
-	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 23:29:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9200D1C22DEC
+	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 23:31:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F23431537AA;
-	Fri,  4 Oct 2024 23:29:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0984C14EC71;
+	Fri,  4 Oct 2024 23:30:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XHaa71hy"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="grd3VFgo"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 796CC146A68;
-	Fri,  4 Oct 2024 23:29:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03E0A231C9A
+	for <bpf@vger.kernel.org>; Fri,  4 Oct 2024 23:30:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728084555; cv=none; b=LP5x2LjFw4Wevqu8D6yFGBPkxZgFWuIJZzN+P1usEO29ybiOY78nUSRw4XbWEssQe6OtR2//ndZh5bd92GFMSXEF4O/zD9o0InFJkxsdX8mWZ1Fv12ehEskAKqbxW5CuqhszLUYTIP6tUrXAPuwQCHfxEO7S++AF35xC3WQB0Tw=
+	t=1728084655; cv=none; b=OpJUS4A6WIgeyeK0EuyaJYsL1yDnXqvJOTV1ZUFzIQ+WKwi6e/AvhaZNkoTzRlviO98MvWJFI70XxN3xaTcUxdBWIHBVpO8slqe53xQXzpgK4t+slWVUiNqfuAt5k9FwvEQ3I7geLroCjz9cFfnHZzz6YjE//mg6P1PrvcmnsOk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728084555; c=relaxed/simple;
-	bh=aoLXUpmnj6nq/Dgd/ap+0tK44YWQD7Jz9lgBXXobjUM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PFodghrE7fR/tS1rwIYiinw9o+ujSw4KyaG5xGhxmL+f+KBhuU4ldKIB5JQsMt0bCALfUmPGJKQxOG76upcIHljgUnjByrWzkHuwbSl1XCUKGdJVEWrol3xLgPIUNy5j2QVsM9K/gWwk/QH/xsdT5x+1ZusoB81qF68nWulAu2c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XHaa71hy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35122C4CEC6;
-	Fri,  4 Oct 2024 23:29:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728084555;
-	bh=aoLXUpmnj6nq/Dgd/ap+0tK44YWQD7Jz9lgBXXobjUM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=XHaa71hytBhkcRCER9vhf4Q9rxZIjF9OQ5sO2kKHtj3OQ91zpf7NZ1aREWs/VSANr
-	 J7ZiQ2wcu/az1zTeuG+OCJxD+C2ARp5q//rA/l9QYtb2WCT7BegQQralN5a5nx+8ZD
-	 MK6WEV9uPYLtDIjEFqOmX2idf35dczSXUlgUQe5+rBe8X7yXVv+2h5P9fGNTq+3u8b
-	 4Y/R87lEWp3wwNvtqofRIVE9j4tJOq67ykUylqukmZOm2Mq91BY1zP+/OKwWOn0bd0
-	 ePOa9gxo3VvB7OGIo9qVmhR8ZJ3W/QTWdIZCkHWxPpbnakyi4OCISh1IR9zzLSocFN
-	 euzIafjVSmrCw==
-Date: Fri, 4 Oct 2024 16:29:12 -0700
-From: Namhyung Kim <namhyung@kernel.org>
-To: Song Liu <song@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
-	David Rientjes <rientjes@google.com>,
-	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm@kvack.org,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Kees Cook <kees@kernel.org>
-Subject: Re: [PATCH v4 bpf-next 1/3] bpf: Add kmem_cache iterator
-Message-ID: <ZwB6SO4ARLMBquku@google.com>
-References: <20241002180956.1781008-1-namhyung@kernel.org>
- <20241002180956.1781008-2-namhyung@kernel.org>
- <CAPhsuW4HLM=v=eGyT5F7epEKc_tfh=Y643wvkDOJRLdow-RWpg@mail.gmail.com>
- <ZwBgLmcEwuplwNSt@google.com>
- <CAPhsuW7NFHbt0yPxh81gkRo8q_z_6JSrGGGLXtPMqvrbxk6b5w@mail.gmail.com>
+	s=arc-20240116; t=1728084655; c=relaxed/simple;
+	bh=SOb/zc2dA1llSeMKNmyFLP1mTx0GSJkP8C83iKwRnCg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=DBU7uWZbfBSYpIRp7P0YpPuAjy8u+ZTN4u21d/e0dNjBmSF5vzwkZpA3cusqLILuHCGVrqSJYaTtuRKtLOezVwZSuCNiq+v/zSRj3f+qcW0RotSWcgvZrA8cXMcyUUcRMUUB/0RNd5oL5LtGU0eKXnfJquTsS1W+COLIqpRL4Xc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=grd3VFgo; arc=none smtp.client-ip=209.85.128.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-42cba6cdf32so26606455e9.1
+        for <bpf@vger.kernel.org>; Fri, 04 Oct 2024 16:30:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1728084652; x=1728689452; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cnLD4cm8CNlsW5Sb/038+vu9ogBwyfFo/+2E/K9LaOE=;
+        b=grd3VFgoFas2E/wY1+ztAWRNH8STwiRcWqgEvnonrB6V/YeKPpxBrNr6ec581xpSNx
+         Xf0leQB6GFE1WVB/Q8GKT5tR4Oy7Y0qdGH6Mmqa++zn03YjqxOxixpRZyJdtGVzoppnT
+         pvoYikObo8DsdpwTLrugRZbavfcErrLdtBUr6ecRpSSZIQ3OgNVcvFpfhkERsw5trYJO
+         HnDahZ2Z0VzX5ZAdDtyVsvErpGdsX5KoN8pPC7vlqH2WtXRLy5jiqaY1xi+87Tv9vUZ1
+         LV02ssrPrVobgV+UUfppuxvVqzhfvDmJIDWR2MZJAmRisj5jXvOxoJj9hHsR8HNrdQrX
+         g1XA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1728084652; x=1728689452;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cnLD4cm8CNlsW5Sb/038+vu9ogBwyfFo/+2E/K9LaOE=;
+        b=XGPkqtzGgGSN/O0yiH4t5iNmR9nZRDiMOHE0dMoq3g0H+PhIuu9zX2X4Nvh7sOgWQ+
+         GOlJTFQLyOn1BiaumMMOpR1fwZQs5JHeoYHvUXN7654e+K/2sXyZtN9ObFyra+/tbKG0
+         iI+XrcDi8vI/vy8e66SWkdajppHlElrODSwo87T8DjrpqagBEqgjbpcXGzI+vxBnECb5
+         V71FrVXYY1k1UfZnmA06crEGYzdo2N+hFbOHLREhwZYfytKqwdy9o1zs67u0zPObsEKC
+         vpf8MXxFhdOkTgxEv2FF1YuqNUg5CEPauKJ1wWGJ7WeR7KG1MGp28/t51y2T4aFyw7wK
+         QAMQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWWIIDo8VqD6j3mjfN8UXhci4CB0zLKGZPQcAbcTzWrHiM9GJsoFcCtlahtUJKfQjsjTYE=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz5kTKL6sF+eA43x0syLGOhP5jyllZMUajJl9GNCohQMTV74Vrh
+	qMBk6j7ajvLJJsYOVXlxw3OalCBkzodbPm1VghEU1kR5tlqmGx4eByYu0ZHhAa6ft/iqzBZNZzU
+	KO5bqtr4XzjI53VHqc1IjjZm4H9tnztx5
+X-Google-Smtp-Source: AGHT+IFaPQIvqCOkjyZRU692susvHBgUPatYvlOoracHR5gk0xT/EG8euwxe36InG8gfXTXCcGq6MJ6U7TvvONYeGvE=
+X-Received: by 2002:a05:600c:1ca4:b0:42c:b995:20d3 with SMTP id
+ 5b1f17b1804b1-42f85ae9d41mr37451105e9.26.1728084652040; Fri, 04 Oct 2024
+ 16:30:52 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAPhsuW7NFHbt0yPxh81gkRo8q_z_6JSrGGGLXtPMqvrbxk6b5w@mail.gmail.com>
+References: <20240929132757.79826-1-leon.hwang@linux.dev> <20240929132757.79826-3-leon.hwang@linux.dev>
+ <378aa2d5-6359-4e89-a228-7ea47ba563c3@gmail.com> <CAADnVQL_VUJCFH6TuHMLesafY8iQ-4xBkiTdfEMqr02C_G6T=w@mail.gmail.com>
+ <3d2ba1d054d73c53b205559ad5d89cef78d89303.camel@gmail.com>
+In-Reply-To: <3d2ba1d054d73c53b205559ad5d89cef78d89303.camel@gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 4 Oct 2024 16:30:40 -0700
+Message-ID: <CAADnVQKaUZofEkUBU=mDEWmPYOYLBmWUiKOqBnfd0Qq2x7wpCA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 2/4] bpf: Prevent extending tail callee prog
+ with freplace prog
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Leon Hwang <hffilwlqm@gmail.com>, Leon Hwang <leon.hwang@linux.dev>, bpf <bpf@vger.kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
+	Puranjay Mohan <puranjay@kernel.org>, Xu Kuohai <xukuohai@huaweicloud.com>, 
+	Ilya Leoshkevich <iii@linux.ibm.com>, kernel-patches-bot@fb.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Oct 04, 2024 at 02:46:43PM -0700, Song Liu wrote:
-> On Fri, Oct 4, 2024 at 2:37 PM Namhyung Kim <namhyung@kernel.org> wrote:
-> >
-> > Hi Song,
-> >
-> > On Fri, Oct 04, 2024 at 01:33:19PM -0700, Song Liu wrote:
+On Fri, Oct 4, 2024 at 1:52=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com>=
+ wrote:
+>
+> On Fri, 2024-10-04 at 12:33 -0700, Alexei Starovoitov wrote:
+>
 > [...]
-> > > > +
-> > > > +static void *kmem_cache_iter_seq_next(struct seq_file *seq, void *v, loff_t *pos)
-> > > > +{
-> > > > +       struct kmem_cache *s = v;
-> > > > +       struct kmem_cache *next = NULL;
-> > > > +       bool destroy = false;
-> > > > +
-> > > > +       ++*pos;
-> > > > +
-> > > > +       mutex_lock(&slab_mutex);
-> > > > +
-> > > > +       if (list_last_entry(&slab_caches, struct kmem_cache, list) != s) {
-> > > > +               next = list_next_entry(s, list);
-> > > > +               if (next->refcount > 0)
-> > > > +                       next->refcount++;
-> > >
-> > > What if next->refcount <=0? Shall we find next of next?
+>
+> > btw the whole thing can be done with a single atomic64_t:
+> > - set it to 1 at the start then
 > >
-> > The slab_mutex should protect refcount == 0 case so it won't see that.
-> > The negative refcount means it's a boot_cache and we shouldn't touch the
-> > refcount.
-> 
-> I see. Thanks for the explanation!
-> 
-> Please add a comment here, and maybe also add
-> 
->   WARN_ON_ONCE(next ->refcount == 0).
+> > - prog_fd_array_get_ptr() will do
+> > atomic64_inc_not_zero
+> >
+> > - prog_fd_array_put_ptr() will do
+> > atomic64_add_unless(,-1, 1)
+> >
+> > - freplace attach will do
+> > cmpxchg(,1,0)
+> >
+> > so 1 - initial state
+> > 2,3,.. - prog in prog_array
+> > 0 - prog was extended.
+> >
+> > If =3D=3D 0 -> cannot add to prog_array
+> > if > 1 -> cannot freplace.
+>
+> I think this should work, because we no longer need to jungle two values.
+> I kinda like it.
 
-Sure, thanks for your review!
-Namhyung
+It's a bit too clever.
 
+With mutex it's much easier to reason about:
+
+struct bpf_prog_aux {
+   mutex ext_mutex;
+   bool is_extended;
+   u64 prog_array_member_cnt;
+};
+
+freplace link on tgt_prog:
+guard(mutex)(&aux->ext_mutex);
+if (aux->prog_array_member_cnt) {
+  // reject freplace
+} else {
+  aux->is_extended =3D true;
+}
+
+freplace unlink:
+guard(mutex)(&aux->ext_mutex);
+aux->is_extended =3D false;
+
+and similar in prog_fd_array_get_ptr():
+guard(mutex)(&aux->ext_mutex);
+if (aux->is_extended) {
+   // reject adding to prog_array
+} else {
+  aux->prog_array_member_cnt++;
+}
+
+in prog_fd_array_put_ptr():
+guard(mutex)(&aux->ext_mutex);
+aux->prog_array_member_cnt--;
 
