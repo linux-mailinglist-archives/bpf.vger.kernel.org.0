@@ -1,45 +1,45 @@
-Return-Path: <bpf+bounces-41001-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41002-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0288990E65
-	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 21:34:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60520990EBF
+	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 21:41:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 773CB2838D8
-	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 19:34:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 234FA2829FE
+	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 19:41:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F6CA2256C8;
-	Fri,  4 Oct 2024 18:30:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51C0F22AD13;
+	Fri,  4 Oct 2024 18:31:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jEwknbi6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ClZpxn7B"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBF5B1DF25A;
-	Fri,  4 Oct 2024 18:30:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C851822AD08;
+	Fri,  4 Oct 2024 18:31:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728066608; cv=none; b=AsX00zByIHPuHvqWM7d9KLRCVh5ANUcn8GJX/rqF+mlaNIAXNQv8t+1ndHxIKW0WMiOzqO9ae779y2H2vKkNvGM2C35cddm4fCoNiJ++kdzC8ziX74zVfat2SsIjHIUpMssAfXaYl43dRMMSLb6P61YvfBGQ17gZne+w+qQC92Y=
+	t=1728066667; cv=none; b=of8u2HHlnrS5n6ugek7NX1LOPuf6EUk4t6TU1WhfqM8fE906YWI4BjDikYSDoWTrJaF54ZuLTgEjCMcpU/LSsX2uWn/OFumjCE+VULRJh65D45yia/Npr/D4i4dU7c4cJcSImUnfVhs1x34d61sOFRBRwP5Cc7ayTkMFHa7Yhws=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728066608; c=relaxed/simple;
-	bh=+KaJrIRtLYyTg1NyKVAJTDMq3P9Oib12WipD/KF9iSg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Z0s1GDZFo5M+/o1Tw93uZWgx50kHm66WKxXEk2K35DAhaN28YI8HrmrVfTShNGGoXbeWJNEa1Nyemihn7j7hjZ6I/gtxwtkIVs1ZvOb/pJ4WcbOPxJfz5rbFoHyboGGWs7UhP2EsuNfkfbTbpGH+6PxxJND7TR7Y0u0SqWPTALE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jEwknbi6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21D2FC4CEC6;
-	Fri,  4 Oct 2024 18:30:07 +0000 (UTC)
+	s=arc-20240116; t=1728066667; c=relaxed/simple;
+	bh=2GiZ3O48rveT/hHn+zcXPzbx0SldDS0Y/LX2/NzGneU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=TpgLcqLS6bscMKOTDwUd6SYdoYRzSwuy+PCK73q6QIKTOnXvAMfavUik17Lqiir7jzyn+MtK5RQSqoMEjXf+oNP/mFmbPEe4X1QOLzZUm8EHh+wzHAjJc+vGRgaW5IrcYI7FkEKMOs9f/frWBdefT/e1hSGu3Tvm2HlnM6TIkZw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ClZpxn7B; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82A70C4CEC6;
+	Fri,  4 Oct 2024 18:31:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728066608;
-	bh=+KaJrIRtLYyTg1NyKVAJTDMq3P9Oib12WipD/KF9iSg=;
+	s=k20201202; t=1728066667;
+	bh=2GiZ3O48rveT/hHn+zcXPzbx0SldDS0Y/LX2/NzGneU=;
 	h=From:To:Cc:Subject:Date:From;
-	b=jEwknbi60kddwXGyEyqUhUs3DjDNRB7fhd3ia6beW6VvTYD8brq5mR7QBJOOg4QMb
-	 xx4Tpw66Y9WmR9mygwR6Q/IDAcfI35HSroTouC/vbqwjpqZBcIPeiF1ZbdSxMHR11i
-	 B5sNN9JsNA6lPnn1OSSDYqtym4YdTnIdqSXcB7EB5XTgiH8m12GNMkSAYnDhFYH4v4
-	 GoS/B0VwtQHuYg0M4AckloEUD1J/ozI2zjMfUgzbROp8j59hzoU5Kn9a41uDBXZOUF
-	 OU7Ocidx3fRm1L5azItU13u+fyxZOVyDg87QfO2J6cLpmcjouqCxS4/YuliTO+tpQy
-	 cBMY3+LhIOjyQ==
+	b=ClZpxn7B7juoa+F+8gHiyEMYk+iAEB0PV66I+8KwEFK0JpEGOTwRcdlgVKFfj7hpP
+	 rIrYL7wXVEns3NFZIf9w4x3SWeCGSpcE5NTb7Lbwk40jYIUOJ4oOjRJHkCH6tePFWX
+	 rdyde6m+V6c8Rx2k6H9+2L0sT5Dq+E/+2JxnJntdCxRTegdf7V796Bw090y8cvaxzC
+	 EaMhf5dLF7LXaTUfEtATAgNAzlbm6lXojy1McVNS8ogcVOaOhU6xYhhyy7YbMRvhRC
+	 opy1zcT6AVAE2ug2xkkRTD77Pvczvkdqb+xjOMNhxAv5NfjaQ57sLIYwYKoQmlsLA2
+	 H9U9ENmgluFrw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -51,9 +51,9 @@ Cc: Tao Chen <chen.dylane@gmail.com>,
 	ast@kernel.org,
 	daniel@iogearbox.net,
 	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 01/26] bpf: Check percpu map value size first
-Date: Fri,  4 Oct 2024 14:29:27 -0400
-Message-ID: <20241004183005.3675332-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 01/21] bpf: Check percpu map value size first
+Date: Fri,  4 Oct 2024 14:30:36 -0400
+Message-ID: <20241004183105.3675901-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -63,7 +63,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.10.226
+X-stable-base: Linux 5.4.284
 Content-Transfer-Encoding: 8bit
 
 From: Tao Chen <chen.dylane@gmail.com>
@@ -90,10 +90,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  2 files changed, 6 insertions(+)
 
 diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
-index 5102338129d5f..3d92e42c3895a 100644
+index 81ed9b79f4019..af90c4498e80e 100644
 --- a/kernel/bpf/arraymap.c
 +++ b/kernel/bpf/arraymap.c
-@@ -74,6 +74,9 @@ int array_map_alloc_check(union bpf_attr *attr)
+@@ -64,6 +64,9 @@ int array_map_alloc_check(union bpf_attr *attr)
  		 * access the elements.
  		 */
  		return -E2BIG;
@@ -104,10 +104,10 @@ index 5102338129d5f..3d92e42c3895a 100644
  	return 0;
  }
 diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-index 72bc5f5752543..4c7cab79d90e5 100644
+index 34c4f709b1ede..0d14a2a11463a 100644
 --- a/kernel/bpf/hashtab.c
 +++ b/kernel/bpf/hashtab.c
-@@ -404,6 +404,9 @@ static int htab_map_alloc_check(union bpf_attr *attr)
+@@ -288,6 +288,9 @@ static int htab_map_alloc_check(union bpf_attr *attr)
  		 * kmalloc-able later in htab_map_update_elem()
  		 */
  		return -E2BIG;
