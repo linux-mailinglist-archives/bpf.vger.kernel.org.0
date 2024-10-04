@@ -1,189 +1,150 @@
-Return-Path: <bpf+bounces-40947-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40949-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A76B89906AD
-	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 16:51:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D924F9906DF
+	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 16:57:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 246B4B265DF
-	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 14:51:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0AA391C203F7
+	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 14:57:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F0A8219486;
-	Fri,  4 Oct 2024 14:46:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02C7221BAF9;
+	Fri,  4 Oct 2024 14:51:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WpsXWQsz"
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="aqZJiDkc"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEF9221948D;
-	Fri,  4 Oct 2024 14:46:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73FE32178EE;
+	Fri,  4 Oct 2024 14:51:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728053195; cv=none; b=C5Uu1qDo3Y5asuu6iWPbmxY1mWWmsFWIAkzjvz3s3o1tOV5M3M5WKESHWI01hIyMXo+ivJleOJIIeNzuQzbO4SkYtcoa6L5xs3gFhKIHN8sOWiA7ihjTQIN4C6CeRI8sqKCiV/8wT+tSwpcLRvbiJZ5e9cR/j3cKqWP3GTkt8B0=
+	t=1728053500; cv=none; b=WnhtqDtxIGYjS6enATDybywzKdkJsGJRua/z2ELImxg11qeTUGH8ivsRqx87YHq9L4YwS1xYV8Xg7P5WRmhk0bhbmlTEONntZ76mubl5MNR63ayeNtumRU9MPAYgla9QKlfSHmdstKjniNe3VF2fNYB/3voyp4oHAiE9T4l4zlg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728053195; c=relaxed/simple;
-	bh=Kd7bxxn+E6+a5OxHMhzYutlTNc12wg0ar2p6Ca02iDw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rHsjI9QfREfBPl05zeYYvX3ZPOfWZGuiWZMvMMgZSk+r0RH0nsWw8Kn7BIZ5I36wl06K2wOfvS3bjBZRqBVa9vlYnvNHqKVKEs/uXWn4M43rXNTN04xUgz0VJUpzwLLoAyGUTJNBRRQMjNOenic5HF7Tdh1u26ROoZI29L9PCQE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WpsXWQsz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A0A9C4CEC6;
-	Fri,  4 Oct 2024 14:46:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728053194;
-	bh=Kd7bxxn+E6+a5OxHMhzYutlTNc12wg0ar2p6Ca02iDw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=WpsXWQszg2DgwFS81tb6nwql6Z7+RJKDFdGq5iSG0LZvks0AMmjGhIipT87H5y2PQ
-	 29MEcDCzUescRkh24KdNQ7v1mSTn8G84WuqvAv0Q55WuZnLLvNrZ5LXkFxVqsrlkDB
-	 3Er7ESa2ZQIFsELewu6MJ/JdHAJtxxgEqjTgqwae+pu85j8MA0+TmgWZ4iads46ngr
-	 TpmTmlCEB4bUmWaVr0LBr8dazkZu3+fiJYa56SbKVLmvKAKNZeXIDRUK3YkvYRgzUX
-	 6Zd1Z2suPYENnSGqUQi1kJF+4l6hktwp59ojPc5ZaGaPq6KOw8P+GrIvSUWmk02d3Q
-	 WROU18UmBWmtw==
-Date: Fri, 4 Oct 2024 15:46:28 +0100
-From: Mark Brown <broonie@kernel.org>
-To: =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>
-Cc: Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
-	bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Mykola Lysenko <mykolal@fb.com>,
-	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@rivosinc.com>,
-	linux-kernel@vger.kernel.org,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Anders Roxell <anders.roxell@linaro.org>
-Subject: Re: [PATCH] selftests: Do not skip BPF selftests by default
-Message-ID: <bb579569-1451-414f-aac4-12757024d9a5@sirena.org.uk>
-References: <20241004095348.797020-1-bjorn@kernel.org>
- <96023ef4-fa0b-4fc2-a6a7-ac32bc777c44@sirena.org.uk>
- <875xq82dqe.fsf@all.your.base.are.belong.to.us>
+	s=arc-20240116; t=1728053500; c=relaxed/simple;
+	bh=AR81zM7tcgdPrGoH+VnVwMEtO6dO/auPSDmcI/0T2as=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=D+gaD6TLsWwoHBaJmO5w9iSOmV3yx9pvlGDEVp8FGzkZAtLSF35c3LIN7E7HJde6ebjIK6Ww/+U1VWD+ljwEf7LeAegocFMnRO3l9gWxgUXL0IN3wuPcHR1R7zgOLGjOxBNM9pJ3XGBELOi0EDItUt9kl6v4klKil/Z3Bk1aBCY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=aqZJiDkc; arc=none smtp.client-ip=167.114.26.122
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+	s=smtpout1; t=1728053497;
+	bh=AR81zM7tcgdPrGoH+VnVwMEtO6dO/auPSDmcI/0T2as=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=aqZJiDkcFNbybvOWnSH1YTzAZ3uM5/cerAacIkwqm7Lc3cPTmNVHb2YLKv/c5xS8T
+	 mf1JNd4Lb0yZQvRElFWOgE1sRkiHrTIEwXxpXFj/DgKcwGYaY59Qm0ZfTIBo6HMqrq
+	 SnqTnoHFHD7zxNEL31vKleGoeHsH4JU3kIbE8BN2q5/dLekoHC/Bw4Hh/pTOBiLAq3
+	 jTIvouslB+GU7+x+ruAd6KDu5e174r8AnvwmiSCrDRZlYnQofKF6bMfiqMYZwbBOB5
+	 2jP+8Rl5p/OA9LMVlV0mND/nS6t6oofgwuyWUaK+L7ECjLYobPdfO+7xKz43utBB3q
+	 dEYJeAKnimt6A==
+Received: from [172.16.0.134] (96-127-217-162.qc.cable.ebox.net [96.127.217.162])
+	by smtpout.efficios.com (Postfix) with ESMTPSA id 4XKs2119qszL30;
+	Fri,  4 Oct 2024 10:51:37 -0400 (EDT)
+Message-ID: <1aff8385-083e-4d8d-9c81-ce8d54b688ed@efficios.com>
+Date: Fri, 4 Oct 2024 10:49:36 -0400
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="JKPBhgJ4YDwDsxOc"
-Content-Disposition: inline
-In-Reply-To: <875xq82dqe.fsf@all.your.base.are.belong.to.us>
-X-Cookie: A bachelor is an unaltared male.
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 0/7] tracing: Allow system call tracepoints to handle
+ page faults
+To: Steven Rostedt <rostedt@goodmis.org>,
+ Masami Hiramatsu <mhiramat@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+ Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>,
+ "Paul E . McKenney" <paulmck@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+ Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Namhyung Kim <namhyung@kernel.org>,
+ Andrii Nakryiko <andrii.nakryiko@gmail.com>, bpf@vger.kernel.org,
+ Joel Fernandes <joel@joelfernandes.org>, linux-trace-kernel@vger.kernel.org
+References: <20241004011201.1681962-1-mathieu.desnoyers@efficios.com>
+Content-Language: en-US
+From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+In-Reply-To: <20241004011201.1681962-1-mathieu.desnoyers@efficios.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
+On 2024-10-04 03:11, Mathieu Desnoyers wrote:
+> Wire up the system call tracepoints with Tasks Trace RCU to allow
+> the ftrace, perf, and eBPF tracers to handle page faults.
+> 
+> This series does the initial wire-up allowing tracers to handle page
+> faults, but leaves out the actual handling of said page faults as future
+> work.
+> 
+> This series was compile and runtime tested with ftrace and perf syscall
+> tracing and raw syscall tracing, adding a WARN_ON_ONCE() in the
+> generated code to validate that the intended probes are used for raw
+> syscall tracing. The might_fault() added within those probes validate
+> that they are called from a context where handling a page fault is OK.
+> 
+> This series replaces the "Faultable Tracepoints v6" series found at [1].
+> 
+> This has been rebased on v6.12-rc1 on top of two patches from Steven:
+> 
+> tracing: Remove definition of trace_*_rcuidle()
+> tracepoint: Remove SRCU protection
 
---JKPBhgJ4YDwDsxOc
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I'll send an updated series which includes
+"tracing: Declare system call tracepoints with TRACE_EVENT_SYSCALL"
+(missing here), and which rework that patch to remove the mapping from
+trace_sys_enter/exit to trace_syscall_sys_enter/exit which requires
+modifying architecture code. A lot of churn for little value add.
 
-On Fri, Oct 04, 2024 at 03:34:49PM +0200, Bj=F6rn T=F6pel wrote:
-> Mark Brown <broonie@kernel.org> writes:
-> > On Fri, Oct 04, 2024 at 11:53:47AM +0200, Bj=F6rn T=F6pel wrote:
+Thanks,
 
-> >> This effectively is a revert of commit 7a6eb7c34a78 ("selftests: Skip
-> >> BPF seftests by default"). At the time when this was added, BPF had
-> >> "build time dependencies on cutting edge versions". Since then a
-> >> number of BPF capable tests has been included in net, hid, sched_ext.
+Mathieu
 
-> > The issue was always requiring a bleeding edge version of clang, not
-> > sure if that's been relaxed yet, IIRC sometimes it required git
-> > versions.  I have clang 20 installed here so that's not an issue for me
-> > but given that that's not released yet it wouldn't be reasonable to
-> > expect CI systems to install it.
+> 
+> Thanks,
+> 
+> Mathieu
+> 
+> Link: https://lore.kernel.org/lkml/20240828144153.829582-1-mathieu.desnoyers@efficios.com/ # [1]
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Alexei Starovoitov <ast@kernel.org>
+> Cc: Yonghong Song <yhs@fb.com>
+> Cc: Paul E. McKenney <paulmck@kernel.org>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+> Cc: Namhyung Kim <namhyung@kernel.org>
+> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> Cc: bpf@vger.kernel.org
+> Cc: Joel Fernandes <joel@joelfernandes.org>
+> Cc: linux-trace-kernel@vger.kernel.org
+> 
+> Mathieu Desnoyers (7):
+>    tracing/ftrace: guard syscall probe with preempt_notrace
+>    tracing/perf: guard syscall probe with preempt_notrace
+>    tracing/bpf: guard syscall probe with preempt_notrace
+>    tracing: Allow system call tracepoints to handle page faults
+>    tracing/ftrace: Add might_fault check to syscall probes
+>    tracing/perf: Add might_fault check to syscall probes
+>    tracing/bpf: Add might_fault check to syscall probes
+> 
+>   include/linux/tracepoint.h    | 18 ++++++++++-----
+>   include/trace/bpf_probe.h     | 12 +++++++++-
+>   include/trace/perf.h          | 42 +++++++++++++++++++++++++++++++----
+>   include/trace/trace_events.h  | 39 ++++++++++++++++++++++++++------
+>   init/Kconfig                  |  1 +
+>   kernel/trace/trace_syscalls.c | 28 +++++++++++++++++++++++
+>   6 files changed, 123 insertions(+), 17 deletions(-)
+> 
 
-> Yeah, but I'd say that is not the case anymore. LLVM 18 and 19 works.
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
 
-Hrm, that's definitely a lot better then though still a little cutting
-edge - the 24.10 Ubuntu release has clang 17, never mind any of the
-stables or LTSs (Debian is very popular for build containers).  Not
-quite at the "you can just install your distro package" level yet though
-it's definitely substantial progress.  Is this requirement documented
-somewhere someone could reasonably be expected to discover it?
-
-It's a bit unfortunate having to pull clang into GCC build containers,
-and needing a newer version than the minimum clang for the kernel itself
-too :/
-
-> > We also get a bunch of:
-
-> > die__process_unit: DW_TAG_label (0xa) @ <0x58eb7> not handled!
-> > die__process_unit: tag not supported 0xa (label)!
-
-> > if we do turn enable CONFIG_DEBUG_INFO_BTF for arm64.
-
-> This is pahole version related.
-
-Which version is needed?  I've got 1.24 (from Debian) here...
-
-> > The whole thing is also broken for cross compilation with clang since
-> > everything is assuming that CROSS_COMPILE will be set for cross builds
-> > but that's not the case for LLVM=3D1 builds - net gives:
-
-> A lot can be said about kselftest, and cross-building. It's a bit of a
-> mess. Maybe we should move to meson or something for kselftest (that
-> requires less work for lazy developers like me). ;-)
-
-AFAICT it pretty much works fine?  It's certainly widely used.
-
-> I'm simply arguing that the *default* should be: BPF (and
-> hid/net/sched_ext) turned on. Default on would surface these kind of
-> problems, rather than hiding them. (And let the CI exclude tests it
-> cannot handle).
-
-The original motivation behind that patch was that there were a bunch of
-CI systems all trying to run as many of the selftests as they can,
-running into BPF and getting frustrated at the amount of time it was
-consuming (or not managing to get it working at all).  Everyone was
-assuming they were missing something or somehow doing the wrong thing to
-satisfy the dependencies and it was burning a bunch of time and
-discouraging people from using the selftests at all since it doesn't
-create a good impression if stuff just doesn't build.  People did often
-end up skipping BPF, but only after banging their heads against it for a
-while, and then went and compared notes with other CI systems and found
-everyone else had the same problem.
-
-I think we before defaulting BPF stuff on we should at the very least
-fix the builds for commonly covered architectures, it looks like as well
-as arm64 we're also seeing BTF not generated on 32 bit arm:
-
-   https://storage.kernelci.org/next/master/next-20241004/arm/multi_v7_defc=
-onfig%2Bkselftest/gcc-12/config/kernel.config
-
-but everything else I spot checked looks fine.  It'd be much better to
-skip gracefully if the kernel doesn't have BPF too.
-
-We should probably also have explicit clang presence and feature/version
-checks in the builds since clang is now fairly widely available in
-distros but many of them have older versions than are needed so I
-imagine a common failure pattern might be that people see clang is
-needed, install their distro clang package and then run into errors from
-clang.  That'd mean people would get a graceful skip with a clear
-description of what's needed rather than build errors.
-
-This is all a particular issue for the net tests where the addition of BPF
-is a regression, not only can't you run the BPF based tests without
-getting BPF working we've now lost the entire net testsuite if BPF isn't
-working since it breaks the build.  TBH I didn't notice this getting
-broken because I forgot that I was expecting to see net tests on
-kernelci.org and the build break means they just disappear entirely from
-the runtime results.  That really does need a graceful skip.
-
---JKPBhgJ4YDwDsxOc
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmb//8MACgkQJNaLcl1U
-h9CPLgf9Gocwxq6rC7AlTu5wU9GWsdECfrkKXxMJ0bL6pv/GfRt8eNHZTyq3rrwF
-nXkOMzqWEXrSsI0xdhfd7UYd5M41o6IZiSi/Q3AZUci2hnWE6fOOri6cUUUX1Im8
-hv2eQpQAfVCrurr2gJbsq7Owr/y6jA+nQ8ZNDBd8o6KI6UBQWDRH2jNVS1ABOLpf
-fQUeSPPr4IqJogK9pu6K+U/bHwxmVqsbIIzXza7sFw1inmGr3jfUEW12Qx/hPdiM
-p/9uOe7eQO+DB9kDHkRhpLdwm9nMvoBjs/3/y3r7Eps42VXSDN+UobJHyXpgisQ6
-cQTScmCy8K56kOzgE6GP+Sk+KCf/jw==
-=koLM
------END PGP SIGNATURE-----
-
---JKPBhgJ4YDwDsxOc--
 
