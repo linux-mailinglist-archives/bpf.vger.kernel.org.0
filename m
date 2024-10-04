@@ -1,66 +1,59 @@
-Return-Path: <bpf+bounces-40982-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40983-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 869C3990B2A
-	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 20:23:48 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D272A990BE6
+	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 20:39:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D88B6B27602
-	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 18:23:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7D2D91F220A9
+	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 18:39:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6129621F404;
-	Fri,  4 Oct 2024 18:19:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7883C1DACB4;
+	Fri,  4 Oct 2024 18:22:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UVLy3iyJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AEfR9cOd"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D380321D2D0;
-	Fri,  4 Oct 2024 18:19:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBBB01EF0BC;
+	Fri,  4 Oct 2024 18:22:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728065944; cv=none; b=baQ7BU9ulflmX7wW1tCqjJ4xfa3G9wYnPTbM7z8EX7lbB5uhvLUqc5ftRGoYvF2lEs8/Jw6HPCL24tV8hFQ8QEQls1dWXEHxyvV/I9rMRfhAIfTbGJ5ZfCvoVBT3osuVO4Xt8CHNFzA14+RapagtkWuH/d+3qJhe4vW5ZmpN/ZE=
+	t=1728066124; cv=none; b=jKtKF4kJySsSoSGb8RywtasXYqSyOvuS3KlBt41porjrDrE/kG1cKSg7LeGspywZiqsQnJL8PZfPeAx/R88Olkw9IJYFoIScYbwZC9Oplvcb/1PtZ4xGjOmLMnBK9kSlrsuopZtmJjz8+OKvMeC+vipN00ru9crz7bIc8kANBt4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728065944; c=relaxed/simple;
-	bh=JYoz5QyUR2nx87bkEGYll65BNDFwgH7DXFukJfA4Qcw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=geznulhWh8IOR04oX7B5Re+4oTZ2Gd/spPsvZQMrw63F3W8mdMEZRvdA/hkyHyzedQ+/X3VnLhnnKN5ArK7MKU85Hhhuc1KoFAkkclTSoayhnwczMDR2StXWOkCAL2EcyYg9tzI1biJo+ePejO0HzcDjdfB11RQC3QklaEfGTLU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UVLy3iyJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 558E1C4CECC;
-	Fri,  4 Oct 2024 18:19:03 +0000 (UTC)
+	s=arc-20240116; t=1728066124; c=relaxed/simple;
+	bh=5Bh4TTwH0WivaKR5pVnaai1z9H1dk+fO8e5BQ2qk7a8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=CTbQPA4DNuTUNxVytUgmLSAwzzWwzj/ZdUH0D+m8SwRaxreoFjZMO8JbCCrFKidxAWjWmk7x06UXvJD/qVS7zMjn5GrsPumXY3Yt8bOpCjDa0cmyPO0l0q68lXWlqFLD4BrZ2ObR5u6FqOaN9tbXc4v+2r/CSFoi6S6+lngCmU4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AEfR9cOd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C817C4CEC6;
+	Fri,  4 Oct 2024 18:22:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728065944;
-	bh=JYoz5QyUR2nx87bkEGYll65BNDFwgH7DXFukJfA4Qcw=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=UVLy3iyJ+EN3NrCesaIgOf9WarhalOM+tTZwUx+6E7VDleP83fEokcIZ9oATx9Cgj
-	 /U+zQKQV9w1u5AHsD/IQ/QNpSkDIrIF3E3PuJOA5gZhZxPM0xJgXYXQ6x1IaO4uCcF
-	 ToTzYnSSc54aq3Ztb7Ifbacv9wctVETMKD0Vm2/yZzO49niqPm50h/L7LwA6C0WdCY
-	 1zD6Y7xzq8qbjHfXKFOuPqBeJ+k9tpWBHpPrT7blsifZ3z57PsnCD+4ySJHvzVnA5t
-	 D2FsRjFtYujAswBZnofACWV46YiJYPojRYVSqu3Hyu79i4zp1bDVJKPCRpyTw01MLp
-	 Y3IMibQVBvXmQ==
+	s=k20201202; t=1728066123;
+	bh=5Bh4TTwH0WivaKR5pVnaai1z9H1dk+fO8e5BQ2qk7a8=;
+	h=From:To:Cc:Subject:Date:From;
+	b=AEfR9cOdpyP75C5vL7lvU4J5cebM/TkORD402r2P4f/PrVzCLmtJIyFHC/gFjnao/
+	 zpqKbEyKVqCknktzgidu6yGv21E9sqeR/0IMqgyD8JEfhQQJEn4IaJkQ+LenlEYBq+
+	 8Y282M6E02UekwTSD3LL5fTa54poqVd7Y1HmVveKDBSPGJoAhC0mFYbNxmfR9NWJko
+	 YaRcBXgRS/xGe1y3+MrRhn9QPifGBtXdMn0Lbz4S4W9bWoJg2mfgxvt8aPZVjBF1Et
+	 ngYAOsAkXoqZp1UD88Vu3OWLk+qnoOXmvAwb21B3IrR1ijkX3TsPconotayt7eAR6h
+	 pZg8KklQEoUUA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Xu Kuohai <xukuohai@huawei.com>,
+Cc: Hou Tao <houtao1@huawei.com>,
+	Jiri Olsa <jolsa@kernel.org>,
 	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
 	daniel@iogearbox.net,
-	davem@davemloft.net,
-	kuba@kernel.org,
-	hawk@kernel.org,
-	john.fastabend@gmail.com,
-	bpf@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.11 20/76] bpf: Prevent tail call between progs attached to different hooks
-Date: Fri,  4 Oct 2024 14:16:37 -0400
-Message-ID: <20241004181828.3669209-20-sashal@kernel.org>
+	andrii@kernel.org,
+	bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.10 01/70] bpf: Call the missed btf_record_free() when map creation fails
+Date: Fri,  4 Oct 2024 14:19:59 -0400
+Message-ID: <20241004182200.3670903-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20241004181828.3669209-1-sashal@kernel.org>
-References: <20241004181828.3669209-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -69,113 +62,82 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.11.2
+X-stable-base: Linux 6.10.13
 Content-Transfer-Encoding: 8bit
 
-From: Xu Kuohai <xukuohai@huawei.com>
+From: Hou Tao <houtao1@huawei.com>
 
-[ Upstream commit 28ead3eaabc16ecc907cfb71876da028080f6356 ]
+[ Upstream commit 87e9675a0dfd0bf4a36550e4a0e673038ec67aee ]
 
-bpf progs can be attached to kernel functions, and the attached functions
-can take different parameters or return different return values. If
-prog attached to one kernel function tail calls prog attached to another
-kernel function, the ctx access or return value verification could be
-bypassed.
+When security_bpf_map_create() in map_create() fails, map_create() will
+call btf_put() and ->map_free() callback to free the map. It doesn't
+free the btf_record of map value, so add the missed btf_record_free()
+when map creation fails.
 
-For example, if prog1 is attached to func1 which takes only 1 parameter
-and prog2 is attached to func2 which takes two parameters. Since verifier
-assumes the bpf ctx passed to prog2 is constructed based on func2's
-prototype, verifier allows prog2 to access the second parameter from
-the bpf ctx passed to it. The problem is that verifier does not prevent
-prog1 from passing its bpf ctx to prog2 via tail call. In this case,
-the bpf ctx passed to prog2 is constructed from func1 instead of func2,
-that is, the assumption for ctx access verification is bypassed.
+However btf_record_free() needs to be called after ->map_free() just
+like bpf_map_free_deferred() did, because ->map_free() may use the
+btf_record to free the special fields in preallocated map value. So
+factor out bpf_map_free() helper to free the map, btf_record, and btf
+orderly and use the helper in both map_create() and
+bpf_map_free_deferred().
 
-Another example, if BPF LSM prog1 is attached to hook file_alloc_security,
-and BPF LSM prog2 is attached to hook bpf_lsm_audit_rule_known. Verifier
-knows the return value rules for these two hooks, e.g. it is legal for
-bpf_lsm_audit_rule_known to return positive number 1, and it is illegal
-for file_alloc_security to return positive number. So verifier allows
-prog2 to return positive number 1, but does not allow prog1 to return
-positive number. The problem is that verifier does not prevent prog1
-from calling prog2 via tail call. In this case, prog2's return value 1
-will be used as the return value for prog1's hook file_alloc_security.
-That is, the return value rule is bypassed.
-
-This patch adds restriction for tail call to prevent such bypasses.
-
-Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
-Link: https://lore.kernel.org/r/20240719110059.797546-4-xukuohai@huaweicloud.com
+Signed-off-by: Hou Tao <houtao1@huawei.com>
+Acked-by: Jiri Olsa <jolsa@kernel.org>
+Link: https://lore.kernel.org/r/20240912012845.3458483-2-houtao@huaweicloud.com
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/bpf.h |  1 +
- kernel/bpf/core.c   | 21 ++++++++++++++++++---
- 2 files changed, 19 insertions(+), 3 deletions(-)
+ kernel/bpf/syscall.c | 19 ++++++++++++-------
+ 1 file changed, 12 insertions(+), 7 deletions(-)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 3b94ec161e8cc..46873d9d86494 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -294,6 +294,7 @@ struct bpf_map {
- 	 * same prog type, JITed flag and xdp_has_frags flag.
- 	 */
- 	struct {
-+		const struct btf_type *attach_func_proto;
- 		spinlock_t lock;
- 		enum bpf_prog_type type;
- 		bool jited;
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 7ee62e38faf0e..4e07cc057d6f2 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -2302,6 +2302,7 @@ bool bpf_prog_map_compatible(struct bpf_map *map,
- {
- 	enum bpf_prog_type prog_type = resolve_prog_type(fp);
- 	bool ret;
-+	struct bpf_prog_aux *aux = fp->aux;
- 
- 	if (fp->kprobe_override)
- 		return false;
-@@ -2311,7 +2312,7 @@ bool bpf_prog_map_compatible(struct bpf_map *map,
- 	 * in the case of devmap and cpumap). Until device checks
- 	 * are implemented, prohibit adding dev-bound programs to program maps.
- 	 */
--	if (bpf_prog_is_dev_bound(fp->aux))
-+	if (bpf_prog_is_dev_bound(aux))
- 		return false;
- 
- 	spin_lock(&map->owner.lock);
-@@ -2321,12 +2322,26 @@ bool bpf_prog_map_compatible(struct bpf_map *map,
- 		 */
- 		map->owner.type  = prog_type;
- 		map->owner.jited = fp->jited;
--		map->owner.xdp_has_frags = fp->aux->xdp_has_frags;
-+		map->owner.xdp_has_frags = aux->xdp_has_frags;
-+		map->owner.attach_func_proto = aux->attach_func_proto;
- 		ret = true;
- 	} else {
- 		ret = map->owner.type  == prog_type &&
- 		      map->owner.jited == fp->jited &&
--		      map->owner.xdp_has_frags == fp->aux->xdp_has_frags;
-+		      map->owner.xdp_has_frags == aux->xdp_has_frags;
-+		if (ret &&
-+		    map->owner.attach_func_proto != aux->attach_func_proto) {
-+			switch (prog_type) {
-+			case BPF_PROG_TYPE_TRACING:
-+			case BPF_PROG_TYPE_LSM:
-+			case BPF_PROG_TYPE_EXT:
-+			case BPF_PROG_TYPE_STRUCT_OPS:
-+				ret = false;
-+				break;
-+			default:
-+				break;
-+			}
-+		}
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index f45ed6adc092a..92590ddb2042d 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -733,15 +733,11 @@ void bpf_obj_free_fields(const struct btf_record *rec, void *obj)
  	}
- 	spin_unlock(&map->owner.lock);
+ }
  
+-/* called from workqueue */
+-static void bpf_map_free_deferred(struct work_struct *work)
++static void bpf_map_free(struct bpf_map *map)
+ {
+-	struct bpf_map *map = container_of(work, struct bpf_map, work);
+ 	struct btf_record *rec = map->record;
+ 	struct btf *btf = map->btf;
+ 
+-	security_bpf_map_free(map);
+-	bpf_map_release_memcg(map);
+ 	/* implementation dependent freeing */
+ 	map->ops->map_free(map);
+ 	/* Delay freeing of btf_record for maps, as map_free
+@@ -760,6 +756,16 @@ static void bpf_map_free_deferred(struct work_struct *work)
+ 	btf_put(btf);
+ }
+ 
++/* called from workqueue */
++static void bpf_map_free_deferred(struct work_struct *work)
++{
++	struct bpf_map *map = container_of(work, struct bpf_map, work);
++
++	security_bpf_map_free(map);
++	bpf_map_release_memcg(map);
++	bpf_map_free(map);
++}
++
+ static void bpf_map_put_uref(struct bpf_map *map)
+ {
+ 	if (atomic64_dec_and_test(&map->usercnt)) {
+@@ -1411,8 +1417,7 @@ static int map_create(union bpf_attr *attr)
+ free_map_sec:
+ 	security_bpf_map_free(map);
+ free_map:
+-	btf_put(map->btf);
+-	map->ops->map_free(map);
++	bpf_map_free(map);
+ put_token:
+ 	bpf_token_put(token);
+ 	return err;
 -- 
 2.43.0
 
