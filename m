@@ -1,193 +1,195 @@
-Return-Path: <bpf+bounces-41013-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41014-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 04DCE991074
-	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 22:28:03 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB9C29910EE
+	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 22:53:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2D94B1C22E08
-	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 20:28:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B438AB227A0
+	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 20:33:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE2E21B4F12;
-	Fri,  4 Oct 2024 20:19:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0319D231CB1;
+	Fri,  4 Oct 2024 20:33:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G8diY9L5"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tuc+VHDc"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7124231C8E;
-	Fri,  4 Oct 2024 20:18:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A82A22067;
+	Fri,  4 Oct 2024 20:33:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728073141; cv=none; b=h+I0ru0Fp7iDOQvF2JOFy0/fd+D+3X6xpNfsy7DCTscGbvlAkU0oU8eREOW3VMzXob8Dxng7Qrk/TUOXbqsHyrc0sThtMYfchIP7yZgi7gzLmfQVe62YMics4K4wO4u/v5s3/5buVbtiYsKYnpbzacJi3b4qL9ytpg6fUWIT/e0=
+	t=1728074011; cv=none; b=RNuc2s1W/5E0bTYMXJwgpM6dgOsxgoyZW8EDjy4J/1vtupDiYAAFjhEjP438TbwA1KcTbOlkF+H+F+1zC4yIJIA7EJZH2Tbxn1WOPtTxWbaZVXlfeEz5jZsocQwvd8OZ1Emirv2gGQRABK1ZPVkW8IRjuwgGeQIXR1nZznUhXNQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728073141; c=relaxed/simple;
-	bh=kO8h2yh/96qdBvgnAEctiSIaSRu5H1VvkCa+5VUd7og=;
+	s=arc-20240116; t=1728074011; c=relaxed/simple;
+	bh=dgu2VTGNBz0Q3vaF2UYNqERBE89cxhqUTRShhpNWnp0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nfITi+mEWI8BzR5coKJ6sevBbxEtuGTsJvAJxCQoqPZ77V4v8wrHLTxjZ4ksyg754t6x1REUoAdz9tmBptw6t1arAj7GfF/5OqxmUuPFaibWFZydYrci1N8ooAywpN8H1OC56I/FPTlyiYtStOG1Ct5LN4GAhStTkhshfjdRxrQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=G8diY9L5; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-20b90ab6c19so27521245ad.0;
-        Fri, 04 Oct 2024 13:18:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1728073139; x=1728677939; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2FLheXzq/15q2f96LLXhH5P16czCOjKPDgTOb73CTE8=;
-        b=G8diY9L55L5b6FrbSACK1iIu9gZTCHol9Z88vB5eKnn/ivwxa4er6d//MyU/Veg+4X
-         TExezbJFz8UuQ177LcIiVM76gXNp5E/QIOfszlRr7DVOt3qUbqBUmVXqo/YCb4LojN86
-         lLLCxqzejAOvq/4MS67bYloV5UbrRa1KSTkDcS9WVebZ4+InAIii/4H6y05MkQ19LEKX
-         95aW4grZ/cPivPD3tln58tFeDegsL4GzK5qxIgU++naSfOXnwcvns7dOAfUbKthzbIWG
-         jXn/YiPAMTBC4UKZ7ELZtL6VGK4NWfO6phip7bFTq4JKzDUBXnYS4fQ/5v+pDeOg9M3A
-         TmbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728073139; x=1728677939;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2FLheXzq/15q2f96LLXhH5P16czCOjKPDgTOb73CTE8=;
-        b=SXv+9qLxdti201G21nqTCybXWDkXeSasedgHJZEXRAuyIOIZwEUrMYJepqL9EQMg/A
-         Sp13R3z1MzLYrNTWaHt6X0JWiC3mesosSFzNJbS9Vp3D5hTPkd5WlmXoYyCZhuW/bohK
-         cArlWoLx27bCu5aE8aWHcl4z7XVXiCXpnASZFBeddYaTqP6TEUM6vUI+EYy6ZeKaaFa4
-         wk9QeSzAeWgsBQRFo+i8chpgwEbpI/CqbqFEkwQ20maTin+f+6sXbn/4tbY83LF+QOnZ
-         Fz7i/uG43ceIVrlAU26maK7WhqMw4yahDCKI5ZRIxaovYdYR3rtWuWrzE6SKzffw4sxH
-         xX1A==
-X-Forwarded-Encrypted: i=1; AJvYcCVsDQ16n085wUoLT3pqQpmuiYciEdOxh96gBwrzBACeveM2xJ5eRaAYC9tPf+oEUD1BoFsWedLa3alELXYX@vger.kernel.org, AJvYcCW4UlaeGKTNRP4LxQOL0LmcVqh46iSGseYnew/64Aw0BtMTAFY1zu/fKp8v0DcFrIWpX3c=@vger.kernel.org, AJvYcCWNIZl4zFpl9eY0lYCO4iDChgmoomX+kW2Mcr5KahDZQ32j1/fVra4dOHpu+dN2iHnq5Xe39XMajDkVNDChPwzmOSCP@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyxvs1e8wCMgw3mUxguMPfO5qb36daPeE0s32UEKqOxOSPkQpbM
-	fNIBLZv0DJmVF7HzWIWSTHDuAhqZstiAdiXk9OlQTY84DGw1qQdpmxV3/387sO+QHxTbaG508EE
-	VVqE5iz9DKfEzO3HByW/n7j2MZtI=
-X-Google-Smtp-Source: AGHT+IFosWxYbZhnzaNUh9VcJNKxeVjZan6qDfHnjL8KTgP25O9RmU3CjTba4VmgHvpvWOfuS33JHNtRt6/gz3P+yVo=
-X-Received: by 2002:a17:902:ea11:b0:202:28b1:9f34 with SMTP id
- d9443c01a7336-20bff04acbemr40906135ad.56.1728073139155; Fri, 04 Oct 2024
- 13:18:59 -0700 (PDT)
+	 To:Cc:Content-Type; b=ucsB+2+MLtgEbJDgsty9mpokGAvTVIbj6j8aonGshyJ1eAbEnPoCaf2atW5sYDgkYOYLIDWM6ORMf7x1LkJB8ADfJ7lQVI0+RrjZiaew5cQO+ts2r/BiOmgFZKfjV+2VNwrKfqFLnGgcU6TfuIlJWsIZoW6xpXIATV+NnLOpevk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tuc+VHDc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10140C4CECE;
+	Fri,  4 Oct 2024 20:33:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1728074011;
+	bh=dgu2VTGNBz0Q3vaF2UYNqERBE89cxhqUTRShhpNWnp0=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=tuc+VHDccH39CXrTezK0z2rbgd7J0q7dlmwsAy5dKNHgSYcKWuroaqSstMCjRJGKj
+	 GoUXDiv3QuvVYH7tGzSefGkkl0hCBVAroujlYjJI2CEw1kxtNxtIppLExKoXxf6XzR
+	 vWzRQOBaPh5Yp3Zj62ndrGyW2DwIKxhIoKx3IcolAe0vymm82NLtHDqp3kr9n+AZw+
+	 V6fXqz0jM4s6BtLx5B6gqHoGMPKMJpY9CdRb8HJpxY0dieJrAyJtKaMWxdDNr/tpcl
+	 oFfCtQznBihdAnN39VinI/Z2erzEZz5nRdl/z1q4nE4qI9/y42HhXba+Uf3KkQ83Py
+	 LZ+8CVk8j8Uug==
+Received: by mail-io1-f45.google.com with SMTP id ca18e2360f4ac-82cdc21b5d8so120174839f.3;
+        Fri, 04 Oct 2024 13:33:31 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCW6rAe04mtZgi6pZLiU/TjWvg67RFEkuHelOtG2afllAyskGh2aD2ZtaT3ioj5AFgsNtO4CQ9E0RAVrm/vH@vger.kernel.org, AJvYcCWe2nlSHwlhKtjAQMLGSAqT1ld+YFDswIbPvJdQlYjoYANpRjS2LHGX0LDAv1GW86uwQps=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx6fkY5LSf/s8PXPT1eYlcJJ0gIFqsDqKGHo3l42h6jHKA79y7E
+	t7KX9U4pX9G9Q33BOjudToibmZ3l8VFGBiibCqYXxQxNi9oTfRIKnYyTi2TfFEY40+1WWkZOjPn
+	bjQk7REt8v4YhNnfhq3qncDG3h4U=
+X-Google-Smtp-Source: AGHT+IHKcUX7A7EqBxhx0p8LA2IErluMnPnMlNw7uAMVTmuO7e0uQR4F1tGjJKCmJfYI5Lh+nTutnwcr1eMdldwatRU=
+X-Received: by 2002:a05:6e02:144d:b0:3a3:3e1f:1168 with SMTP id
+ e9e14a558f8ab-3a375bb6c76mr40195255ab.17.1728074010416; Fri, 04 Oct 2024
+ 13:33:30 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240909224903.3498207-1-andrii@kernel.org> <20240909224903.3498207-2-andrii@kernel.org>
- <20240915144910.GA27726@redhat.com> <CAEf4BzZ7=NFAUB_GzAt1SCO=LnCFSbqX_NThtjrs8EfkjBUr7A@mail.gmail.com>
-In-Reply-To: <CAEf4BzZ7=NFAUB_GzAt1SCO=LnCFSbqX_NThtjrs8EfkjBUr7A@mail.gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 4 Oct 2024 13:18:46 -0700
-Message-ID: <CAEf4BzYO0i0f_pui6PwAfEHCVwaP0yR9BDY8-+EfvgbPjFXxbg@mail.gmail.com>
-Subject: Re: [PATCH 1/3] uprobes: allow put_uprobe() from non-sleepable
- softirq context
-To: Oleg Nesterov <oleg@redhat.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org, 
-	peterz@infradead.org, rostedt@goodmis.org, mhiramat@kernel.org, 
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, jolsa@kernel.org, 
-	paulmck@kernel.org
+References: <20241002180956.1781008-1-namhyung@kernel.org> <20241002180956.1781008-2-namhyung@kernel.org>
+In-Reply-To: <20241002180956.1781008-2-namhyung@kernel.org>
+From: Song Liu <song@kernel.org>
+Date: Fri, 4 Oct 2024 13:33:19 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW4HLM=v=eGyT5F7epEKc_tfh=Y643wvkDOJRLdow-RWpg@mail.gmail.com>
+Message-ID: <CAPhsuW4HLM=v=eGyT5F7epEKc_tfh=Y643wvkDOJRLdow-RWpg@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 1/3] bpf: Add kmem_cache iterator
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Yonghong Song <yonghong.song@linux.dev>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org, 
+	Andrew Morton <akpm@linux-foundation.org>, Christoph Lameter <cl@linux.com>, 
+	Pekka Enberg <penberg@kernel.org>, David Rientjes <rientjes@google.com>, 
+	Joonsoo Kim <iamjoonsoo.kim@lge.com>, Vlastimil Babka <vbabka@suse.cz>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm@kvack.org, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Kees Cook <kees@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Sep 17, 2024 at 1:19=E2=80=AFAM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Wed, Oct 2, 2024 at 11:09=E2=80=AFAM Namhyung Kim <namhyung@kernel.org> =
+wrote:
 >
-> On Sun, Sep 15, 2024 at 4:49=E2=80=AFPM Oleg Nesterov <oleg@redhat.com> w=
-rote:
-> >
-> > On 09/09, Andrii Nakryiko wrote:
-> > >
-> > > Currently put_uprobe() might trigger mutex_lock()/mutex_unlock(), whi=
-ch
-> > > makes it unsuitable to be called from more restricted context like so=
-ftirq.
-> > >
-> > > Let's make put_uprobe() agnostic to the context in which it is called=
-,
-> > > and use work queue to defer the mutex-protected clean up steps.
-> >
-> > ...
-> >
-> > > +static void uprobe_free_deferred(struct work_struct *work)
-> > > +{
-> > > +     struct uprobe *uprobe =3D container_of(work, struct uprobe, wor=
-k);
-> > > +
-> > > +     /*
-> > > +      * If application munmap(exec_vma) before uprobe_unregister()
-> > > +      * gets called, we don't get a chance to remove uprobe from
-> > > +      * delayed_uprobe_list from remove_breakpoint(). Do it here.
-> > > +      */
-> > > +     mutex_lock(&delayed_uprobe_lock);
-> > > +     delayed_uprobe_remove(uprobe, NULL);
-> > > +     mutex_unlock(&delayed_uprobe_lock);
-> > > +
-> > > +     kfree(uprobe);
-> > > +}
-> > > +
-> > >  static void uprobe_free_rcu(struct rcu_head *rcu)
-> > >  {
-> > >       struct uprobe *uprobe =3D container_of(rcu, struct uprobe, rcu)=
-;
-> > >
-> > > -     kfree(uprobe);
-> > > +     INIT_WORK(&uprobe->work, uprobe_free_deferred);
-> > > +     schedule_work(&uprobe->work);
-> > >  }
-> >
-> > This is still wrong afaics...
-> >
-> > If put_uprobe() can be called from softirq (after the next patch), then
-> > put_uprobe() and all other users of uprobes_treelock should use
-> > write_lock_bh/read_lock_bh to avoid the deadlock.
->
-> Ok, I see the problem, that's unfortunate.
->
-> I see three ways to handle that:
->
-> 1) keep put_uprobe() as is, and instead do schedule_work() from the
-> timer thread to postpone put_uprobe(). (but I'm not a big fan of this)
-> 2) move uprobes_treelock part of put_uprobe() into rcu callback, I
-> think it has no bearing on correctness, uprobe_is_active() is there
-> already to handle races between putting uprobe and removing it from
-> uprobes_tree (I prefer this one over #1 )
-> 3) you might like this the most ;) I think I can simplify
-> hprobes_expire() from patch #2 to not need put_uprobe() at all, if I
-> protect uprobe lifetime with non-sleepable
-> rcu_read_lock()/rcu_read_unlock() and perform try_get_uprobe() as the
-> very last step after cmpxchg() succeeded.
->
-> I'm leaning towards #3, but #2 seems fine to me as well.
+[...]
+> +
+> +       mutex_lock(&slab_mutex);
+> +
+> +       /*
+> +        * Find an entry at the given position in the slab_caches list in=
+stead
 
-Ok, so just a short update. I don't think #3 works, I do need
-try_get_uprobe() before I know for sure that cmpxchg() succeeds. Which
-means I'd need a compensating put_uprobe() if cmpxchg() fails. So for
-put_uprobe(), I just made it do all the locking in deferred work
-callback (which is #2 above), which I think resolved the issue you
-pointed out with potential deadlock and removes any limitations on
-put_uprobe().
+Nit: style of multi-line comment: "/* Find ...".
 
-Also, I rewrote the hprobe_consume() and hprobe_expire() in terms of
-an explicit state machine with 4 possible states (LEASED, STABLE,
-GONE, CONSUMED), which I think makes the logic a bit more
-straightforward to follow. Hopefully that will make the change more
-palatable for you. I'm probably going to post patches next week,
-though.
+> +        * of keeping a reference (of the last visited entry, if any) out=
+ of
+> +        * slab_mutex. It might miss something if one is deleted in the m=
+iddle
+> +        * while it releases the lock.  But it should be rare and there's=
+ not
+> +        * much we can do about it.
+> +        */
+> +       list_for_each_entry(s, &slab_caches, list) {
+> +               if (cnt =3D=3D *pos) {
+> +                       /*
+> +                        * Make sure this entry remains in the list by ge=
+tting
+> +                        * a new reference count.  Note that boot_cache e=
+ntries
+> +                        * have a negative refcount, so don't touch them.
+> +                        */
+> +                       if (s->refcount > 0)
+> +                               s->refcount++;
+> +                       found =3D true;
+> +                       break;
+> +               }
+> +               cnt++;
+> +       }
+> +       mutex_unlock(&slab_mutex);
+> +
+> +       if (!found)
+> +               return NULL;
+> +
+> +       ++*pos;
+> +       return s;
+> +}
+> +
+> +static void kmem_cache_iter_seq_stop(struct seq_file *seq, void *v)
+> +{
+> +       struct bpf_iter_meta meta;
+> +       struct bpf_iter__kmem_cache ctx =3D {
+> +               .meta =3D &meta,
+> +               .s =3D v,
+> +       };
+> +       struct bpf_prog *prog;
+> +       bool destroy =3D false;
+> +
+> +       meta.seq =3D seq;
+> +       prog =3D bpf_iter_get_info(&meta, true);
+> +       if (prog)
+> +               bpf_iter_run_prog(prog, &ctx);
+> +
+> +       if (ctx.s =3D=3D NULL)
+> +               return;
+> +
+> +       mutex_lock(&slab_mutex);
+> +
+> +       /* Skip kmem_cache_destroy() for active entries */
+> +       if (ctx.s->refcount > 1)
+> +               ctx.s->refcount--;
+> +       else if (ctx.s->refcount =3D=3D 1)
+> +               destroy =3D true;
+> +
+> +       mutex_unlock(&slab_mutex);
+> +
+> +       if (destroy)
+> +               kmem_cache_destroy(ctx.s);
+> +}
+> +
+> +static void *kmem_cache_iter_seq_next(struct seq_file *seq, void *v, lof=
+f_t *pos)
+> +{
+> +       struct kmem_cache *s =3D v;
+> +       struct kmem_cache *next =3D NULL;
+> +       bool destroy =3D false;
+> +
+> +       ++*pos;
+> +
+> +       mutex_lock(&slab_mutex);
+> +
+> +       if (list_last_entry(&slab_caches, struct kmem_cache, list) !=3D s=
+) {
+> +               next =3D list_next_entry(s, list);
+> +               if (next->refcount > 0)
+> +                       next->refcount++;
 
->
-> >
-> > To be honest... I simply can't force myself to even try to read 2/3 ;) =
-I'll
-> > try to do this later, but I am sure I will never like it, sorry.
->
-> This might sound rude, but the goal here is not to make you like it :)
-> The goal is to improve performance with minimal complexity. And I'm
-> very open to any alternative proposals as to how to make uretprobes
-> RCU-protected to avoid refcounting in the hot path.
->
-> I think #3 proposal above will make it a bit more palatable (but there
-> is still locklessness, cmpxchg, etc, I see no way around that,
-> unfortunately).
->
-> >
-> > Oleg.
-> >
+What if next->refcount <=3D0? Shall we find next of next?
+
+> +       }
+> +
+> +       /* Skip kmem_cache_destroy() for active entries */
+> +       if (s->refcount > 1)
+> +               s->refcount--;
+> +       else if (s->refcount =3D=3D 1)
+> +               destroy =3D true;
+> +
+> +       mutex_unlock(&slab_mutex);
+> +
+> +       if (destroy)
+> +               kmem_cache_destroy(s);
+> +
+> +       return next;
+> +}
+[...]
 
