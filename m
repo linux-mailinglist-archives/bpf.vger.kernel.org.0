@@ -1,158 +1,152 @@
-Return-Path: <bpf+bounces-40915-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40917-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7684F98FCFF
-	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 07:28:45 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8536798FD05
+	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 07:31:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3C5992840E8
-	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 05:28:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A8E481C22691
+	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 05:31:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FED680C0A;
-	Fri,  4 Oct 2024 05:28:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DC607D3F1;
+	Fri,  4 Oct 2024 05:31:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="KCCze5g4"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qlN1u4IC"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E32409475
-	for <bpf@vger.kernel.org>; Fri,  4 Oct 2024 05:28:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E001C1D5ADA;
+	Fri,  4 Oct 2024 05:31:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728019718; cv=none; b=IuZf6waA82wcQIp/GrmYHxRVRraaVYBokctkhRYOihacvrPulkTIiBl6zR9NZHzqT0ZoWS1uMZL96myveygh4wceZwJgE8gN+bye9tU8BME5tFODyuQpt+7cAeuFNTO0mvgb+EziU07HM7eRTKVdfoDTKpHj7/dfY15vwdTYh9E=
+	t=1728019907; cv=none; b=GmyZIER8bWif5jHgx0g5TZzOTOvnt7Df7CSYl33J5ja3gWjJ3+++Nxt96Dejkr3SVhtvEiTBZMbROHr+hDQeJi7wJI0ss6smp86QhhRsnl5icREhApNXsdctRHXNLgCl5MfRIsr+6kqz6sPXHOASD8P82ZxCo1UJu48WiEgIpVc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728019718; c=relaxed/simple;
-	bh=PEuqH1peiri/YBuvzHWdhfa2Jrv3lxgFtvTHz1LrtzQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=g7hcMiysOYRbbhUmf7ibPGNz/nQZMixxKdTX3mCrZM9GRmxDE4zp1rqYv4o8IRfMtgURkgnhFt6Q0JsUL/ROKkKuC66L0RdEDctTF9RC7p5YSkPrObI7VhuEHXOPlXfj6O8JFxUBfNWdQrr3bhsvSWv2iJBCKr3i+1TgPfZEtog=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=KCCze5g4; arc=none smtp.client-ip=91.218.175.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <cebd5c08-717f-4130-9f8c-1f5bd101d767@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1728019715;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+84r6u5hzBSXVMYDdK7c7QxyHOJyEwxN5wdWpftiNvs=;
-	b=KCCze5g4miCILJ5IaM3oEC9j0zjM24FV2Y8ZkxqD2d8TknpXKptMvoUqvChfWzeNL5ltU/
-	WWsBcJ4ElitVqJoseCd4NIX+ZGu8dsFArm933WgLwQezHdolhI6XVpOGFlFaNHoSgil+Zf
-	S8kNYLuZ1fkDGEfWwYUXllwfayJbaKk=
-Date: Thu, 3 Oct 2024 22:28:29 -0700
+	s=arc-20240116; t=1728019907; c=relaxed/simple;
+	bh=oPReOWeYT2UZEov/VsqcIcn18d320BRQlYBQEAvZuUU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BZgilMo/dKzlsGnKxkclcTm+pqaEJa/lu+73tjWf5oy3zh4R76wXokCG8d/dNHa/S2yn4/kGgqwkOp5iFIgXQ0UfcWdB/puRcSSLkRlPDLnW5TYKmIHr5QoB4Qan1LIrguw8t7K6NoIr2moUF0dKquPMRNyYLqH3hyxx6Ypv8L0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qlN1u4IC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 765A3C4CEC6;
+	Fri,  4 Oct 2024 05:31:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1728019906;
+	bh=oPReOWeYT2UZEov/VsqcIcn18d320BRQlYBQEAvZuUU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=qlN1u4IC0r99kFwuTyEvvgpnKtlQXJhQIiaVSYFWhKt0guvQX5I2wtbi4wfjdPRvw
+	 jDFjhzprkgEX63ncvKL/SeVUECu5nBFrH5IIY6d1J0MCbZyKD4hvs92/xS0keDVZQs
+	 TFtKR1zDQLVPE6z4xgr19Hx8bgMXlNKLzKD8s4AXc3Zou8yXuts/LhS2JxwColr0Fi
+	 fduCMr+IhO1XWtSdTYu8QRP94FyJ6/NBxH/2Rikk8e8Rhc+wQF8y4V/m2u6N5if3Jo
+	 hNV01hbozoSnECH8E9jJAUxO0tNxkNOo8ENRWVrSeDbk237tgY7YRxY8eo8almgf5b
+	 VESCjGrbNaDNQ==
+Date: Thu, 3 Oct 2024 22:31:44 -0700
+From: Namhyung Kim <namhyung@kernel.org>
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
+	David Rientjes <rientjes@google.com>,
+	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm@kvack.org,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Kees Cook <kees@kernel.org>
+Subject: Re: [PATCH v4 bpf-next 2/3] mm/bpf: Add bpf_get_kmem_cache() kfunc
+Message-ID: <Zv99wGyOjwWfbsyz@google.com>
+References: <20241002180956.1781008-1-namhyung@kernel.org>
+ <20241002180956.1781008-3-namhyung@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next] docs/bpf: Document some special sdiv/smod
- operations
-Content-Language: en-GB
-To: Dave Thaler <dthaler1968@googlemail.com>,
- 'Alexei Starovoitov' <alexei.starovoitov@gmail.com>, bpf@ietf.org
-Cc: 'bpf' <bpf@vger.kernel.org>, 'Alexei Starovoitov' <ast@kernel.org>,
- 'Andrii Nakryiko' <andrii@kernel.org>,
- 'Daniel Borkmann' <daniel@iogearbox.net>,
- 'Martin KaFai Lau' <martin.lau@kernel.org>
-References: <20240927033904.2702474-1-yonghong.song@linux.dev>
- <CAADnVQJZLRnT3J31CLB85by=SmC2UY1pmUZX0kkyePtVdTdy9A@mail.gmail.com>
- <e93729b5-199f-4809-84f5-7efdf7c8aaf3@linux.dev>
- <181301db143b$ba6fd9c0$2f4f8d40$@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <181301db143b$ba6fd9c0$2f4f8d40$@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20241002180956.1781008-3-namhyung@kernel.org>
+
+On Wed, Oct 02, 2024 at 11:09:55AM -0700, Namhyung Kim wrote:
+> The bpf_get_kmem_cache() is to get a slab cache information from a
+> virtual address like virt_to_cache().  If the address is a pointer
+> to a slab object, it'd return a valid kmem_cache pointer, otherwise
+> NULL is returned.
+> 
+> It doesn't grab a reference count of the kmem_cache so the caller is
+> responsible to manage the access.  The intended use case for now is to
+> symbolize locks in slab objects from the lock contention tracepoints.
+> 
+> Suggested-by: Vlastimil Babka <vbabka@suse.cz>
+> Acked-by: Roman Gushchin <roman.gushchin@linux.dev> (mm/*)
+> Acked-by: Vlastimil Babka <vbabka@suse.cz> #mm/slab
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> ---
+>  kernel/bpf/helpers.c |  1 +
+>  mm/slab_common.c     | 19 +++++++++++++++++++
+>  2 files changed, 20 insertions(+)
+> 
+> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> index 4053f279ed4cc7ab..3709fb14288105c6 100644
+> --- a/kernel/bpf/helpers.c
+> +++ b/kernel/bpf/helpers.c
+> @@ -3090,6 +3090,7 @@ BTF_ID_FLAGS(func, bpf_iter_bits_new, KF_ITER_NEW)
+>  BTF_ID_FLAGS(func, bpf_iter_bits_next, KF_ITER_NEXT | KF_RET_NULL)
+>  BTF_ID_FLAGS(func, bpf_iter_bits_destroy, KF_ITER_DESTROY)
+>  BTF_ID_FLAGS(func, bpf_copy_from_user_str, KF_SLEEPABLE)
+> +BTF_ID_FLAGS(func, bpf_get_kmem_cache, KF_RET_NULL)
+>  BTF_KFUNCS_END(common_btf_ids)
+>  
+>  static const struct btf_kfunc_id_set common_kfunc_set = {
+> diff --git a/mm/slab_common.c b/mm/slab_common.c
+> index 7443244656150325..5484e1cd812f698e 100644
+> --- a/mm/slab_common.c
+> +++ b/mm/slab_common.c
+> @@ -1322,6 +1322,25 @@ size_t ksize(const void *objp)
+>  }
+>  EXPORT_SYMBOL(ksize);
+>  
+> +#ifdef CONFIG_BPF_SYSCALL
+> +#include <linux/btf.h>
+> +
+> +__bpf_kfunc_start_defs();
+> +
+> +__bpf_kfunc struct kmem_cache *bpf_get_kmem_cache(u64 addr)
+> +{
+> +	struct slab *slab;
+> +
+> +	if (!virt_addr_valid(addr))
+
+Hmm.. 32-bit systems don't like this.  Is it ok to change the type of
+the parameter (addr) to 'unsigned long'?  Or do you want to keep it as
+u64 and add a cast here?
+
+Thanks,
+Namhyung
 
 
-On 10/1/24 12:54 PM, Dave Thaler wrote:
-> Yonghong Song <yonghong.song@linux.dev> wrote:
->> On 9/30/24 6:50 PM, Alexei Starovoitov wrote:
->>> On Thu, Sep 26, 2024 at 8:39 PM Yonghong Song <yonghong.song@linux.dev>
->> wrote:
->>>> Patch [1] fixed possible kernel crash due to specific sdiv/smod
->>>> operations in bpf program. The following are related operations and
->>>> the expected results of those operations:
->>>>     - LLONG_MIN/-1 = LLONG_MIN
->>>>     - INT_MIN/-1 = INT_MIN
->>>>     - LLONG_MIN%-1 = 0
->>>>     - INT_MIN%-1 = 0
->>>>
->>>> Those operations are replaced with codes which won't cause kernel
->>>> crash. This patch documents what operations may cause exception and
->>>> what replacement operations are.
->>>>
->>>>     [1]
->>>> https://lore.kernel.org/all/20240913150326.1187788-1-yonghong.song@li
->>>> nux.dev/
->>>>
->>>> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
->>>> ---
->>>>    .../bpf/standardization/instruction-set.rst   | 25 +++++++++++++++----
->>>>    1 file changed, 20 insertions(+), 5 deletions(-)
->>>>
->>>> diff --git a/Documentation/bpf/standardization/instruction-set.rst
->>>> b/Documentation/bpf/standardization/instruction-set.rst
->>>> index ab820d565052..d150c1d7ad3b 100644
->>>> --- a/Documentation/bpf/standardization/instruction-set.rst
->>>> +++ b/Documentation/bpf/standardization/instruction-set.rst
->>>> @@ -347,11 +347,26 @@ register.
->>>>      =====  =====  =======
->>>> ==========================================================
->>>>
->>>>    Underflow and overflow are allowed during arithmetic operations,
->>>> meaning -the 64-bit or 32-bit value will wrap. If BPF program
->>>> execution would -result in division by zero, the destination register is instead set
->> to zero.
->>>> -If execution would result in modulo by zero, for ``ALU64`` the value of
->>>> -the destination register is unchanged whereas for ``ALU`` the upper
->>>> -32 bits of the destination register are zeroed.
->>>> +the 64-bit or 32-bit value will wrap. There are also a few
->>>> +arithmetic operations which may cause exception for certain
->>>> +architectures. Since crashing the kernel is not an option, those operations are
->> replaced with alternative operations.
->>>> +
->>>> +.. table:: Arithmetic operations with possible exceptions
->>>> +
->>>> +  =====  ==========  =============================
->> ==========================
->>>> +  name   class       original                       replacement
->>>> +  =====  ==========  =============================
->> ==========================
->>>> +  DIV    ALU64/ALU   dst /= 0                       dst = 0
->>>> +  SDIV   ALU64/ALU   dst s/= 0                      dst = 0
->>>> +  MOD    ALU64       dst %= 0                       dst = dst (no replacement)
->>>> +  MOD    ALU         dst %= 0                       dst = (u32)dst
->>>> +  SMOD   ALU64       dst s%= 0                      dst = dst (no replacement)
->>>> +  SMOD   ALU         dst s%= 0                      dst = (u32)dst
-> All of the above are already covered in existing Table 5 and in my opinion
-> don't need to be repeated.
-
-This tries to separate cases between ALU and ALU64. But I agree that the table
-5 should be good enough.
-
->
-> That is, the "original" is not what Table 5 has, so just introduces confusion
-> in the document in my opinion.
->
->>>> +  SDIV   ALU64       dst s/= -1 (dst = LLONG_MIN)   dst = LLONG_MIN
->>>> +  SDIV   ALU         dst s/= -1 (dst = INT_MIN)     dst = (u32)INT_MIN
->>>> +  SMOD   ALU64       dst s%= -1 (dst = LLONG_MIN)   dst = 0
->>>> +  SMOD   ALU         dst s%= -1 (dst = INT_MIN)     dst = 0
-> The above four are the new ones and I'd prefer a solution that modifies
-> existing table 5.  E.g. table 5 has now for SMOD:
->
-> dst = (src != 0) ? (dst s% src) : dst
->
-> and could have something like this:
->
-> dst = (src == 0) ? dst : ((src == -1 && dst == INT_MIN) ? 0 : (dst s% src))
-
-Thanks. This indeed simpler. I can do this.
-
+> +		return NULL;
+> +
+> +	slab = virt_to_slab((void *)(long)addr);
+> +	return slab ? slab->slab_cache : NULL;
+> +}
+> +
+> +__bpf_kfunc_end_defs();
+> +#endif /* CONFIG_BPF_SYSCALL */
+> +
+>  /* Tracepoints definitions. */
+>  EXPORT_TRACEPOINT_SYMBOL(kmalloc);
+>  EXPORT_TRACEPOINT_SYMBOL(kmem_cache_alloc);
+> -- 
+> 2.46.1.824.gd892dcdcdd-goog
+> 
 
