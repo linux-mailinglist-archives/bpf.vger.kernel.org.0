@@ -1,165 +1,177 @@
-Return-Path: <bpf+bounces-40936-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40937-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A1A0990393
-	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 15:09:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73782990440
+	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 15:28:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C096D1C21A9D
-	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 13:09:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 39C7728289D
+	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 13:28:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 207002139C4;
-	Fri,  4 Oct 2024 13:07:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YXL7uCgc"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80F682178E8;
+	Fri,  4 Oct 2024 13:25:26 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 923C920FAAD;
-	Fri,  4 Oct 2024 13:07:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30014215F4A;
+	Fri,  4 Oct 2024 13:25:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728047275; cv=none; b=FGNIbriuJjfytu+uMq6V7G51fiG8V2nrZ63mCXDjXBSLjc5e5fD9RzV/rqHySB4neXBmuLw2MT01SVsl0HH7yd/CMXtkHLMIEYBZey+v9ZMNSZPHPWHik2eYi1oAHFLiXFM/B+3jlYMGVzrTxnR/a55hzKfbwoYR88MIAPlftWk=
+	t=1728048326; cv=none; b=ph7Ts/quLZ6kDENNbofw2yREp+2fAzlHVG5uCsOhLAsyuI9Zsphq/ss7W4wOSPc8PKYOMLFkTDoO2Q0TPT6HvvO+81eWq1f9DBa1Xd+7s84anTrsg5JOlgTIBzqOD5YkgBIvVjFB+KZ91aXQvI9lR2Px8EfquR+xltE8ymPc8Sg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728047275; c=relaxed/simple;
-	bh=HbfE2h4vxKWvyg/eWGYjSKRVkib46D2fF4m5DahMOHs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=m7BLMWXdJe7I5I/1NkD34hzr4UqizDXeWX/4Ha6Da7lHVloMYJNhCQweW5eu00I2LQYOayinpptUy7JlyR2bpQ2ii2FdMM+XvH+bnYgrxJDzcDCLjP8wDUBMtrfBgBK3MlbuwFCEZ7mrBSHXPwNWgOXP17/+qbN8GiHcsQzoNek=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YXL7uCgc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63CC4C4CEC6;
-	Fri,  4 Oct 2024 13:07:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728047275;
-	bh=HbfE2h4vxKWvyg/eWGYjSKRVkib46D2fF4m5DahMOHs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=YXL7uCgcRJdTD5uPtadv/zeAPIOM3nXWZFcBCtsYSDWbL+yCwSE2oaASKHLTWC8yT
-	 MgezIgpxB6qcVEEsJ3w93VX4N0XrsK/G90JwtSB1OuzMFHfnbRmmgP3NQLpSWnJ5tH
-	 hYfaZQ4rzX4yozAEK69I0Iac6n7gH5/rSrjIsOpriLvV/gOXIhSVGC5fYNGxYvNdEr
-	 wCoSJeMxE3xt91QmtwypraxjdH0f0sQQI19yAYLImp8Rl5SVV+XQ7iz9zvF8Wg5GaW
-	 EXJCbEXwjp6b2m4Ks+1FWUpkEBGZxyTGk5lRdeu/xUrhmiYS+Px0L/RA1ZssPyQnRl
-	 k8pyCrkJ+lVmQ==
-Date: Fri, 4 Oct 2024 14:07:49 +0100
-From: Mark Brown <broonie@kernel.org>
-To: =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>
-Cc: Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
-	bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Mykola Lysenko <mykolal@fb.com>,
-	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@rivosinc.com>,
-	linux-kernel@vger.kernel.org,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Nathan Chancellor <nathan@kernel.org>
-Subject: Re: [PATCH] selftests: Do not skip BPF selftests by default
-Message-ID: <96023ef4-fa0b-4fc2-a6a7-ac32bc777c44@sirena.org.uk>
-References: <20241004095348.797020-1-bjorn@kernel.org>
+	s=arc-20240116; t=1728048326; c=relaxed/simple;
+	bh=PY7WDjKmcN9GMO1EwQuntVNzRSGl/jKf+GrigyIqudg=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=AjEoB6lxvrHGL/UWSg3KfdcQbJjGTyuDui4OSa2D2084ZygNm51Tl6/pke3OgVAK9JWMqc1EKYIbQTUqQqv9OO8oq9T5/+X68KVRZ7IaagoNWol8517LE6SFBKLaOJO5oajgUheKc9Y2AIOZZdEA4P9FPkXYIzVYIFumRAYExnw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E569C4CEC6;
+	Fri,  4 Oct 2024 13:25:23 +0000 (UTC)
+Date: Fri, 4 Oct 2024 09:26:19 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, linux-kernel@vger.kernel.org,
+ Peter Zijlstra <peterz@infradead.org>, Alexei Starovoitov <ast@kernel.org>,
+ Yonghong Song <yhs@fb.com>, "Paul E . McKenney" <paulmck@kernel.org>, Ingo
+ Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Mark
+ Rutland <mark.rutland@arm.com>, Alexander Shishkin
+ <alexander.shishkin@linux.intel.com>, Namhyung Kim <namhyung@kernel.org>,
+ Andrii Nakryiko <andrii.nakryiko@gmail.com>, bpf@vger.kernel.org, Joel
+ Fernandes <joel@joelfernandes.org>, linux-trace-kernel@vger.kernel.org,
+ Michael Jeanson <mjeanson@efficios.com>
+Subject: Re: [PATCH v1 2/8] tracing/ftrace: guard syscall probe with
+ preempt_notrace
+Message-ID: <20241004092619.0be53f90@gandalf.local.home>
+In-Reply-To: <90ca2fee-cdfb-4d48-ab9e-57d8d2b8b8d8@efficios.com>
+References: <20241003151638.1608537-1-mathieu.desnoyers@efficios.com>
+	<20241003151638.1608537-3-mathieu.desnoyers@efficios.com>
+	<20241003182304.2b04b74a@gandalf.local.home>
+	<6dc21f67-52e1-4ed5-af7f-f047c3c22c11@efficios.com>
+	<20241003210403.71d4aa67@gandalf.local.home>
+	<90ca2fee-cdfb-4d48-ab9e-57d8d2b8b8d8@efficios.com>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="0C1Go1cXuSqgJ8u8"
-Content-Disposition: inline
-In-Reply-To: <20241004095348.797020-1-bjorn@kernel.org>
-X-Cookie: A bachelor is an unaltared male.
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
+On Thu, 3 Oct 2024 21:33:16 -0400
+Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
 
---0C1Go1cXuSqgJ8u8
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> On 2024-10-04 03:04, Steven Rostedt wrote:
+> > On Thu, 3 Oct 2024 20:26:29 -0400
+> > Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
+> > 
+> >   
+> >> static void ftrace_syscall_enter(void *data, struct pt_regs *regs, long id)
+> >> {
+> >>           struct trace_array *tr = data;
+> >>           struct trace_event_file *trace_file;
+> >>           struct syscall_trace_enter *entry;
+> >>           struct syscall_metadata *sys_data;
+> >>           struct trace_event_buffer fbuffer;
+> >>           unsigned long args[6];
+> >>           int syscall_nr;
+> >>           int size;
+> >>
+> >>           syscall_nr = trace_get_syscall_nr(current, regs);
+> >>           if (syscall_nr < 0 || syscall_nr >= NR_syscalls)
+> >>                   return;
+> >>
+> >>           /* Here we're inside tp handler's rcu_read_lock_sched (__DO_TRACE) */
+> >>           trace_file = rcu_dereference_sched(tr->enter_syscall_files[syscall_nr]);
+> >>
+> >> ^^^^ this function explicitly states that preempt needs to be disabled by
+> >> tracepoints.  
+> > 
+> > Ah, I should have known it was the syscall portion. I don't care for this
+> > hidden dependency. I rather add a preempt disable here and not expect it to
+> > be disabled when called.  
+> 
+> Which is exactly what this patch is doing.
 
-On Fri, Oct 04, 2024 at 11:53:47AM +0200, Bj=F6rn T=F6pel wrote:
-> From: Bj=F6rn T=F6pel <bjorn@rivosinc.com>
->=20
-> This effectively is a revert of commit 7a6eb7c34a78 ("selftests: Skip
-> BPF seftests by default"). At the time when this was added, BPF had
-> "build time dependencies on cutting edge versions". Since then a
-> number of BPF capable tests has been included in net, hid, sched_ext.
->=20
-> There is no reason not to include BPF by default in the build.
+I was thinking of putting the protection in the function and not the macro.
 
-The issue was always requiring a bleeding edge version of clang, not
-sure if that's been relaxed yet, IIRC sometimes it required git
-versions.  I have clang 20 installed here so that's not an issue for me
-but given that that's not released yet it wouldn't be reasonable to
-expect CI systems to install it.
+> 
+> >   
+> >>
+> >>           if (!trace_file)
+> >>                   return;
+> >>
+> >>           if (trace_trigger_soft_disabled(trace_file))
+> >>                   return;
+> >>
+> >>           sys_data = syscall_nr_to_meta(syscall_nr);
+> >>           if (!sys_data)
+> >>                   return;
+> >>
+> >>           size = sizeof(*entry) + sizeof(unsigned long) * sys_data->nb_args;
+> >>
+> >>           entry = trace_event_buffer_reserve(&fbuffer, trace_file, size);
+> >> ^^^^ it reserves space in the ring buffer without disabling preemption explicitly.
+> >>
+> >> And also:
+> >>
+> >> void *trace_event_buffer_reserve(struct trace_event_buffer *fbuffer,
+> >>                                    struct trace_event_file *trace_file,
+> >>                                    unsigned long len)
+> >> {
+> >>           struct trace_event_call *event_call = trace_file->event_call;
+> >>
+> >>           if ((trace_file->flags & EVENT_FILE_FL_PID_FILTER) &&
+> >>               trace_event_ignore_this_pid(trace_file))
+> >>                   return NULL;
+> >>
+> >>           /*
+> >>            * If CONFIG_PREEMPTION is enabled, then the tracepoint itself disables
+> >>            * preemption (adding one to the preempt_count). Since we are
+> >>            * interested in the preempt_count at the time the tracepoint was
+> >>            * hit, we need to subtract one to offset the increment.
+> >>            */
+> >> ^^^ This function also explicitly expects preemption to be disabled.
+> >>
+> >> So I rest my case. The change I'm introducing for tracepoints
+> >> don't make any assumptions about whether or not each tracer require
+> >> preempt off or not: it keeps the behavior the _same_ as it was before.
+> >>
+> >> Then it's up to each tracer's developer to change the behavior of their
+> >> own callbacks as they see fit. But I'm not introducing regressions in
+> >> tracers with the "big switch" change of making syscall tracepoints
+> >> faultable. This will belong to changes that are specific to each tracer.  
+> > 
+> > 
+> > I rather remove these dependencies at the source. So, IMHO, these places
+> > should be "fixed" first.
+> > 
+> > At least for the ftrace users. But I think the same can be done for the
+> > other users as well. BPF already stated it just needs "migrate_disable()".
+> > Let's see what perf has.
+> > 
+> > We can then audit all the tracepoint users to make sure they do not need
+> > preemption disabled.  
+> 
+> Why does it need to be a broad refactoring of the entire world ? What is
+> wrong with the simple approach of introducing this tracepoint faultable
+> syscall support as a no-op from the tracer's perspective ?
 
-There's a few other substantial issues with all of these suites now I
-look, none of them build on arm64 since arm64 defconfig has
-DEBUG_INFO_REDUCED=3Dy which isn't compatible with CONFIG_DEBUG_INFO_BTF
-so that gets turned off and the build splats trying to read the BTF out
-of the kernel binary (which is a new build dep for the selftests
-too...). =20
+Because we want in-tree users too ;-)
 
-   https://storage.kernelci.org/next/master/next-20241004/arm64/defconfig%2=
-Bkselftest/gcc-12/config/
+> 
+> Then we can build on top and figure out if we want to relax things
+> on a tracer-per-tracer basis.
 
-We also get a bunch of:
+Looking deeper into how ftrace can implement this, it may require some more
+work. Doing it your way may be fine for now, but we need this working for
+something in-tree instead of having it only work for LTTng.
 
-die__process_unit: DW_TAG_label (0xa) @ <0x58eb7> not handled!
-die__process_unit: tag not supported 0xa (label)!
+Note, it doesn't have to be ftrace either. It could be perf or BPF. Or
+simply the sframe code (doing stack traces at the entry of system calls).
 
-if we do turn enable CONFIG_DEBUG_INFO_BTF for arm64. =20
-
-The whole thing is also broken for cross compilation with clang since
-everything is assuming that CROSS_COMPILE will be set for cross builds
-but that's not the case for LLVM=3D1 builds - net gives:
-
-  BPF_PROG nat6to4.bpf.o
-  BPF_PROG sample_map_ret0.bpf.o
-/usr/lib/gcc-cross/aarch64-linux-gnu/12/../../../../aarch64-linux-gnu/bin/l=
-d: /home/broonie/git/linux/tools/testing/selftests/net/libynl.a(ynl.o): Rel=
-ocations in generic ELF (EM: 62)
-/usr/lib/gcc-cross/aarch64-linux-gnu/12/../../../../aarch64-linux-gnu/bin/l=
-d: /home/broonie/git/linux/tools/testing/selftests/net/libynl.a(ynl.o): Rel=
-ocations in generic ELF (EM: 62)
-/usr/lib/gcc-cross/aarch64-linux-gnu/12/../../../../aarch64-linux-gnu/bin/l=
-d: /home/broonie/git/linux/tools/testing/selftests/net/libynl.a(ynl.o): Rel=
-ocations in generic ELF (EM: 62)
-/usr/lib/gcc-cross/aarch64-linux-gnu/12/../../../../aarch64-linux-gnu/bin/l=
-d: /home/broonie/git/linux/tools/testing/selftests/net/libynl.a: error addi=
-ng symbols: file in wrong format
-  BPF_PROG sample_ret0.bpf.o
-collect2: error: ld returned 1 exit status
-
-with similar errors in libbpf for HID:
-
-/usr/bin/aarch64-linux-gnu-ld: /home/broonie/git/linux/tools/testing/selfte=
-sts/hid/tools/build/libbpf/libbpf.a(libbpf-in.o): Relocations in generic EL=
-F (EM: 62)
-/usr/bin/aarch64-linux-gnu-ld: /home/broonie/git/linux/tools/testing/selfte=
-sts/hid/tools/build/libbpf/libbpf.a(libbpf-in.o): Relocations in generic EL=
-F (EM: 62)
-
-KernelCI is seeing failures earlier with HID:
-
-   https://storage.kernelci.org/next/master/next-20241004/arm64/defconfig%2=
-Bkselftest/gcc-12/logs/kselftest.log
-
-and an unrelated missing dependency on libssl for net that needs to be
-fixed.
-
---0C1Go1cXuSqgJ8u8
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmb/6KQACgkQJNaLcl1U
-h9AHHQf+JDjGvFF361rxHw+hdwcRUWLxLvZAPuNs8ktIA5ZgxlHb+lmSm0sIMUQB
-EnidDI8Vej+ZgTm/eoWr3WV/iAfOOKibzaqx9QaNCJ4UDCPDlSnqcBkAJ9QvhBYa
-ucq37YdKNwPmJl1s70ppWeAWlB6k7R55Xz6PiiTwhnkiXG+7o9R0Y5UdbZKqIBJG
-dZi0RhVmBGutGG47Ksrm3xSAr6JLr8qotM4hKff8fDnoGsDVquUtRLG4ucd+tYtK
-9RFAtQZ5BTYX/1h7lCwz/DnmJs79Wpyey6RgDUpB0Nj15sZbPkRxS+k28SASxsTg
-UK8eLqsacdzwVRB9Oii1XfOmVB628g==
-=fk9l
------END PGP SIGNATURE-----
-
---0C1Go1cXuSqgJ8u8--
+-- Steve
 
