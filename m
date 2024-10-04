@@ -1,59 +1,65 @@
-Return-Path: <bpf+bounces-40983-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40984-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D272A990BE6
-	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 20:39:08 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75D37990C55
+	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 20:47:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7D2D91F220A9
-	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 18:39:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A626FB254C7
+	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 18:39:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7883C1DACB4;
-	Fri,  4 Oct 2024 18:22:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16ABE21791B;
+	Fri,  4 Oct 2024 18:22:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AEfR9cOd"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WjIer+bi"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBBB01EF0BC;
-	Fri,  4 Oct 2024 18:22:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 810162178EA;
+	Fri,  4 Oct 2024 18:22:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728066124; cv=none; b=jKtKF4kJySsSoSGb8RywtasXYqSyOvuS3KlBt41porjrDrE/kG1cKSg7LeGspywZiqsQnJL8PZfPeAx/R88Olkw9IJYFoIScYbwZC9Oplvcb/1PtZ4xGjOmLMnBK9kSlrsuopZtmJjz8+OKvMeC+vipN00ru9crz7bIc8kANBt4=
+	t=1728066126; cv=none; b=qI/LhQ/XBn+jfqLqLLN1SW/y0miGZSj0zvZBiWzNGqBgcWa9mrKnG5dsUONhRMEKySyJr+CGcVq8aZzvXjv3w3m0R2pJlOIBvzLYGhSkW2HkO0roc8q7xZ4WQkNqQghf4dYdFz+XpKbvs9mi0UeZ4ERBO5/Vx+2vxmd2DScc3Pg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728066124; c=relaxed/simple;
-	bh=5Bh4TTwH0WivaKR5pVnaai1z9H1dk+fO8e5BQ2qk7a8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=CTbQPA4DNuTUNxVytUgmLSAwzzWwzj/ZdUH0D+m8SwRaxreoFjZMO8JbCCrFKidxAWjWmk7x06UXvJD/qVS7zMjn5GrsPumXY3Yt8bOpCjDa0cmyPO0l0q68lXWlqFLD4BrZ2ObR5u6FqOaN9tbXc4v+2r/CSFoi6S6+lngCmU4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AEfR9cOd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C817C4CEC6;
-	Fri,  4 Oct 2024 18:22:01 +0000 (UTC)
+	s=arc-20240116; t=1728066126; c=relaxed/simple;
+	bh=OFvuv6szrIgwq/Jr8XcEAfXXd2uT+8hTX91TIsDOwlM=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=MjjkwwNDclqKkySY+Utc3nURYRW7uA1+9QHTH+Y0NOPCkPdxX6RbDtkviKpn6I49/UGobD2aDP8sz4dxF3h91iZBr4LP4ASM1CujlAicjrmDg9R3yzdwl5nkBYl2ma98hG96lh3tEjDjYr2nVQ/LnecnPiyGxnE01goo1EkjRnE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WjIer+bi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E352AC4CEF5;
+	Fri,  4 Oct 2024 18:22:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728066123;
-	bh=5Bh4TTwH0WivaKR5pVnaai1z9H1dk+fO8e5BQ2qk7a8=;
-	h=From:To:Cc:Subject:Date:From;
-	b=AEfR9cOdpyP75C5vL7lvU4J5cebM/TkORD402r2P4f/PrVzCLmtJIyFHC/gFjnao/
-	 zpqKbEyKVqCknktzgidu6yGv21E9sqeR/0IMqgyD8JEfhQQJEn4IaJkQ+LenlEYBq+
-	 8Y282M6E02UekwTSD3LL5fTa54poqVd7Y1HmVveKDBSPGJoAhC0mFYbNxmfR9NWJko
-	 YaRcBXgRS/xGe1y3+MrRhn9QPifGBtXdMn0Lbz4S4W9bWoJg2mfgxvt8aPZVjBF1Et
-	 ngYAOsAkXoqZp1UD88Vu3OWLk+qnoOXmvAwb21B3IrR1ijkX3TsPconotayt7eAR6h
-	 pZg8KklQEoUUA==
+	s=k20201202; t=1728066126;
+	bh=OFvuv6szrIgwq/Jr8XcEAfXXd2uT+8hTX91TIsDOwlM=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=WjIer+bivlS+ewMBMa8QXncyikylguiV0zZhnjwBE3IAu1RLQuZa5yfmG5k6VTMJk
+	 ryQ2p12tDi5Kqu9mZ0PAA5U6ZmfghpYXb5P4804jNuW9bPz6fA+QTxFROrZVrvoLVo
+	 P0KlbWrgw66OCDI18mqcRrFwXHlRvmoPYsuV0DavtcXzv9gZJTZt6rBVp817e3MnW1
+	 D3QdIkbz5yUtz7EZiu561C/m239j3ztTWtzSGsu7SBYmO/JbuiCS98qAXSgNpnvmOQ
+	 z2tjJzBhesP6zibXnSQhE1kfmxxAbs2mBJhiTQb6FV+WEYmZ+wyhCqZpVGFOiqHsY1
+	 6SyhmlpM8jJYQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Hou Tao <houtao1@huawei.com>,
-	Jiri Olsa <jolsa@kernel.org>,
+Cc: Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
 	Alexei Starovoitov <ast@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.10 01/70] bpf: Call the missed btf_record_free() when map creation fails
-Date: Fri,  4 Oct 2024 14:19:59 -0400
-Message-ID: <20241004182200.3670903-1-sashal@kernel.org>
+	eddyz87@gmail.com,
+	shuah@kernel.org,
+	andreimatei1@gmail.com,
+	shung-hsi.yu@suse.com,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.10 02/70] selftests/bpf: Fix ARG_PTR_TO_LONG {half-,}uninitialized test
+Date: Fri,  4 Oct 2024 14:20:00 -0400
+Message-ID: <20241004182200.3670903-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20241004182200.3670903-1-sashal@kernel.org>
+References: <20241004182200.3670903-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -65,79 +71,47 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.10.13
 Content-Transfer-Encoding: 8bit
 
-From: Hou Tao <houtao1@huawei.com>
+From: Daniel Borkmann <daniel@iogearbox.net>
 
-[ Upstream commit 87e9675a0dfd0bf4a36550e4a0e673038ec67aee ]
+[ Upstream commit b8e188f023e07a733b47d5865311ade51878fe40 ]
 
-When security_bpf_map_create() in map_create() fails, map_create() will
-call btf_put() and ->map_free() callback to free the map. It doesn't
-free the btf_record of map value, so add the missed btf_record_free()
-when map creation fails.
+The assumption of 'in privileged mode reads from uninitialized stack locations
+are permitted' is not quite correct since the verifier was probing for read
+access rather than write access. Both tests need to be annotated as __success
+for privileged and unprivileged.
 
-However btf_record_free() needs to be called after ->map_free() just
-like bpf_map_free_deferred() did, because ->map_free() may use the
-btf_record to free the special fields in preallocated map value. So
-factor out bpf_map_free() helper to free the map, btf_record, and btf
-orderly and use the helper in both map_create() and
-bpf_map_free_deferred().
-
-Signed-off-by: Hou Tao <houtao1@huawei.com>
-Acked-by: Jiri Olsa <jolsa@kernel.org>
-Link: https://lore.kernel.org/r/20240912012845.3458483-2-houtao@huaweicloud.com
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Link: https://lore.kernel.org/r/20240913191754.13290-6-daniel@iogearbox.net
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/syscall.c | 19 ++++++++++++-------
- 1 file changed, 12 insertions(+), 7 deletions(-)
+ tools/testing/selftests/bpf/progs/verifier_int_ptr.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index f45ed6adc092a..92590ddb2042d 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -733,15 +733,11 @@ void bpf_obj_free_fields(const struct btf_record *rec, void *obj)
- 	}
- }
- 
--/* called from workqueue */
--static void bpf_map_free_deferred(struct work_struct *work)
-+static void bpf_map_free(struct bpf_map *map)
+diff --git a/tools/testing/selftests/bpf/progs/verifier_int_ptr.c b/tools/testing/selftests/bpf/progs/verifier_int_ptr.c
+index 9fc3fae5cd833..87206803c0255 100644
+--- a/tools/testing/selftests/bpf/progs/verifier_int_ptr.c
++++ b/tools/testing/selftests/bpf/progs/verifier_int_ptr.c
+@@ -8,7 +8,6 @@
+ SEC("socket")
+ __description("ARG_PTR_TO_LONG uninitialized")
+ __success
+-__failure_unpriv __msg_unpriv("invalid indirect read from stack R4 off -16+0 size 8")
+ __naked void arg_ptr_to_long_uninitialized(void)
  {
--	struct bpf_map *map = container_of(work, struct bpf_map, work);
- 	struct btf_record *rec = map->record;
- 	struct btf *btf = map->btf;
+ 	asm volatile ("					\
+@@ -36,9 +35,7 @@ __naked void arg_ptr_to_long_uninitialized(void)
  
--	security_bpf_map_free(map);
--	bpf_map_release_memcg(map);
- 	/* implementation dependent freeing */
- 	map->ops->map_free(map);
- 	/* Delay freeing of btf_record for maps, as map_free
-@@ -760,6 +756,16 @@ static void bpf_map_free_deferred(struct work_struct *work)
- 	btf_put(btf);
- }
- 
-+/* called from workqueue */
-+static void bpf_map_free_deferred(struct work_struct *work)
-+{
-+	struct bpf_map *map = container_of(work, struct bpf_map, work);
-+
-+	security_bpf_map_free(map);
-+	bpf_map_release_memcg(map);
-+	bpf_map_free(map);
-+}
-+
- static void bpf_map_put_uref(struct bpf_map *map)
+ SEC("socket")
+ __description("ARG_PTR_TO_LONG half-uninitialized")
+-/* in privileged mode reads from uninitialized stack locations are permitted */
+-__success __failure_unpriv
+-__msg_unpriv("invalid indirect read from stack R4 off -16+4 size 8")
++__success
+ __retval(0)
+ __naked void ptr_to_long_half_uninitialized(void)
  {
- 	if (atomic64_dec_and_test(&map->usercnt)) {
-@@ -1411,8 +1417,7 @@ static int map_create(union bpf_attr *attr)
- free_map_sec:
- 	security_bpf_map_free(map);
- free_map:
--	btf_put(map->btf);
--	map->ops->map_free(map);
-+	bpf_map_free(map);
- put_token:
- 	bpf_token_put(token);
- 	return err;
 -- 
 2.43.0
 
