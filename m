@@ -1,135 +1,165 @@
-Return-Path: <bpf+bounces-40935-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40936-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB7B39902B4
-	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 14:09:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A1A0990393
+	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 15:09:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9318E1F22471
-	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 12:09:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C096D1C21A9D
+	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 13:09:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C39215C15B;
-	Fri,  4 Oct 2024 12:08:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 207002139C4;
+	Fri,  4 Oct 2024 13:07:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="C0VDbTky"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YXL7uCgc"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4793C15B99E;
-	Fri,  4 Oct 2024 12:08:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 923C920FAAD;
+	Fri,  4 Oct 2024 13:07:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728043728; cv=none; b=uJGAHMDePVIYVa1b9KcB7Q/u/fAGzgx6U70ezzecYR2dba5LoZ1WYR7f/FO1Zh/drV5aE9iBDNAaY1LgKqBLwiJDxpp27h9gW3xMigjGITNDWFlVfbqVQ+OCh6ldfnLot6D2VqJXs+0o/ZEfVJIgjubT6lEK1E622vWW5uJwSVg=
+	t=1728047275; cv=none; b=FGNIbriuJjfytu+uMq6V7G51fiG8V2nrZ63mCXDjXBSLjc5e5fD9RzV/rqHySB4neXBmuLw2MT01SVsl0HH7yd/CMXtkHLMIEYBZey+v9ZMNSZPHPWHik2eYi1oAHFLiXFM/B+3jlYMGVzrTxnR/a55hzKfbwoYR88MIAPlftWk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728043728; c=relaxed/simple;
-	bh=PNoRABAxxGHN+gWreU+upS1oZMnOjX2mtQk2A4lRsD8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZuNMYEPVo34nWZF0zgtlTWUMNfkYw+ZjEdtUwcFd1r2HBDkGyxEwiFLuEvn3yQ/ABj7/xSuOPhrNsBN0n6KaywucUFjCLjZ8pzXQGhYTth+Ng8ThcxzKpPDTBFkvRGk6L6JPUylXAN7RqHC+3TZTPsxEUs7GfYR1dRBkA7GT8L8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=C0VDbTky; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=44Xt4YN/Xf2l//UJjhes9TdlgKq7DvXnQRjPRVK23fE=; b=C0VDbTkyC3Qyc8wWZHo0nlWTzN
-	z6EAIzHkCehHZWkLfF2xMYzhMRHWoPy7AJvxflhWG3aeVf0R/39XnWVlFotxfKYnNk3DlhA0U+wKZ
-	7O6IgNkhkAaMy/YGC4RHzPpu7PDcQf8AuB3vaV5lbhRceQTF3J7rhQAle0ppS9z/f+rLrCW7FwQ9e
-	hkV+C+BeMK+J+pfW3A4OhYiPhh9SUvcsjPS7FKGvi8KoV0XTgVSe+1SMcx1iWfXT9yEQqRl2iav6w
-	sVs9Yw/42PqixwDXAl8GyZw7l4VdCJEUAhmaZe9b2kRov/KYozNaV1IKl1AE6iuR0PVWCu2/msqVK
-	tBkK3dRw==;
-Received: from sslproxy07.your-server.de ([78.47.199.104])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1swh6t-0002tz-76; Fri, 04 Oct 2024 14:08:39 +0200
-Received: from [178.197.249.47] (helo=[192.168.1.114])
-	by sslproxy07.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1swh6s-000HTD-1f;
-	Fri, 04 Oct 2024 14:08:38 +0200
-Message-ID: <51371534-5813-480f-b797-f073c31df5de@iogearbox.net>
-Date: Fri, 4 Oct 2024 14:08:38 +0200
+	s=arc-20240116; t=1728047275; c=relaxed/simple;
+	bh=HbfE2h4vxKWvyg/eWGYjSKRVkib46D2fF4m5DahMOHs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=m7BLMWXdJe7I5I/1NkD34hzr4UqizDXeWX/4Ha6Da7lHVloMYJNhCQweW5eu00I2LQYOayinpptUy7JlyR2bpQ2ii2FdMM+XvH+bnYgrxJDzcDCLjP8wDUBMtrfBgBK3MlbuwFCEZ7mrBSHXPwNWgOXP17/+qbN8GiHcsQzoNek=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YXL7uCgc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63CC4C4CEC6;
+	Fri,  4 Oct 2024 13:07:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1728047275;
+	bh=HbfE2h4vxKWvyg/eWGYjSKRVkib46D2fF4m5DahMOHs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=YXL7uCgcRJdTD5uPtadv/zeAPIOM3nXWZFcBCtsYSDWbL+yCwSE2oaASKHLTWC8yT
+	 MgezIgpxB6qcVEEsJ3w93VX4N0XrsK/G90JwtSB1OuzMFHfnbRmmgP3NQLpSWnJ5tH
+	 hYfaZQ4rzX4yozAEK69I0Iac6n7gH5/rSrjIsOpriLvV/gOXIhSVGC5fYNGxYvNdEr
+	 wCoSJeMxE3xt91QmtwypraxjdH0f0sQQI19yAYLImp8Rl5SVV+XQ7iz9zvF8Wg5GaW
+	 EXJCbEXwjp6b2m4Ks+1FWUpkEBGZxyTGk5lRdeu/xUrhmiYS+Px0L/RA1ZssPyQnRl
+	 k8pyCrkJ+lVmQ==
+Date: Fri, 4 Oct 2024 14:07:49 +0100
+From: Mark Brown <broonie@kernel.org>
+To: =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>
+Cc: Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
+	bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Mykola Lysenko <mykolal@fb.com>,
+	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@rivosinc.com>,
+	linux-kernel@vger.kernel.org,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Nathan Chancellor <nathan@kernel.org>
+Subject: Re: [PATCH] selftests: Do not skip BPF selftests by default
+Message-ID: <96023ef4-fa0b-4fc2-a6a7-ac32bc777c44@sirena.org.uk>
+References: <20241004095348.797020-1-bjorn@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next 1/6] xsk: get rid of xdp_buff_xsk::xskb_list_node
-To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>, bpf@vger.kernel.org,
- ast@kernel.org, andrii@kernel.org
-Cc: netdev@vger.kernel.org, magnus.karlsson@intel.com, bjorn@kernel.org
-References: <20241002155441.253956-1-maciej.fijalkowski@intel.com>
- <20241002155441.253956-2-maciej.fijalkowski@intel.com>
-Content-Language: en-US
-From: Daniel Borkmann <daniel@iogearbox.net>
-Autocrypt: addr=daniel@iogearbox.net; keydata=
- xsFNBGNAkI0BEADiPFmKwpD3+vG5nsOznvJgrxUPJhFE46hARXWYbCxLxpbf2nehmtgnYpAN
- 2HY+OJmdspBntWzGX8lnXF6eFUYLOoQpugoJHbehn9c0Dcictj8tc28MGMzxh4aK02H99KA8
- VaRBIDhmR7NJxLWAg9PgneTFzl2lRnycv8vSzj35L+W6XT7wDKoV4KtMr3Szu3g68OBbp1TV
- HbJH8qe2rl2QKOkysTFRXgpu/haWGs1BPpzKH/ua59+lVQt3ZupePpmzBEkevJK3iwR95TYF
- 06Ltpw9ArW/g3KF0kFUQkGXYXe/icyzHrH1Yxqar/hsJhYImqoGRSKs1VLA5WkRI6KebfpJ+
- RK7Jxrt02AxZkivjAdIifFvarPPu0ydxxDAmgCq5mYJ5I/+BY0DdCAaZezKQvKw+RUEvXmbL
- 94IfAwTFA1RAAuZw3Rz5SNVz7p4FzD54G4pWr3mUv7l6dV7W5DnnuohG1x6qCp+/3O619R26
- 1a7Zh2HlrcNZfUmUUcpaRPP7sPkBBLhJfqjUzc2oHRNpK/1mQ/+mD9CjVFNz9OAGD0xFzNUo
- yOFu/N8EQfYD9lwntxM0dl+QPjYsH81H6zw6ofq+jVKcEMI/JAgFMU0EnxrtQKH7WXxhO4hx
- 3DFM7Ui90hbExlFrXELyl/ahlll8gfrXY2cevtQsoJDvQLbv7QARAQABzSZEYW5pZWwgQm9y
- a21hbm4gPGRhbmllbEBpb2dlYXJib3gubmV0PsLBkQQTAQoAOxYhBCrUdtCTcZyapV2h+93z
- cY/jfzlXBQJjQJCNAhsDBQkHhM4ACAsJCAcNDAsKBRUKCQgLAh4BAheAAAoJEN3zcY/jfzlX
- dkUQAIFayRgjML1jnwKs7kvfbRxf11VI57EAG8a0IvxDlNKDcz74mH66HMyhMhPqCPBqphB5
- ZUjN4N5I7iMYB/oWUeohbuudH4+v6ebzzmgx/EO+jWksP3gBPmBeeaPv7xOvN/pPDSe/0Ywp
- dHpl3Np2dS6uVOMnyIsvmUGyclqWpJgPoVaXrVGgyuer5RpE/a3HJWlCBvFUnk19pwDMMZ8t
- 0fk9O47HmGh9Ts3O8pGibfdREcPYeGGqRKRbaXvcRO1g5n5x8cmTm0sQYr2xhB01RJqWrgcj
- ve1TxcBG/eVMmBJefgCCkSs1suriihfjjLmJDCp9XI/FpXGiVoDS54TTQiKQinqtzP0jv+TH
- 1Ku+6x7EjLoLH24ISGyHRmtXJrR/1Ou22t0qhCbtcT1gKmDbTj5TcqbnNMGWhRRTxgOCYvG0
- 0P2U6+wNj3HFZ7DePRNQ08bM38t8MUpQw4Z2SkM+jdqrPC4f/5S8JzodCu4x80YHfcYSt+Jj
- ipu1Ve5/ftGlrSECvy80ZTKinwxj6lC3tei1bkI8RgWZClRnr06pirlvimJ4R0IghnvifGQb
- M1HwVbht8oyUEkOtUR0i0DMjk3M2NoZ0A3tTWAlAH8Y3y2H8yzRrKOsIuiyKye9pWZQbCDu4
- ZDKELR2+8LUh+ja1RVLMvtFxfh07w9Ha46LmRhpCzsFNBGNAkI0BEADJh65bNBGNPLM7cFVS
- nYG8tqT+hIxtR4Z8HQEGseAbqNDjCpKA8wsxQIp0dpaLyvrx4TAb/vWIlLCxNu8Wv4W1JOST
- wI+PIUCbO/UFxRy3hTNlb3zzmeKpd0detH49bP/Ag6F7iHTwQQRwEOECKKaOH52tiJeNvvyJ
- pPKSKRhmUuFKMhyRVK57ryUDgowlG/SPgxK9/Jto1SHS1VfQYKhzMn4pWFu0ILEQ5x8a0RoX
- k9p9XkwmXRYcENhC1P3nW4q1xHHlCkiqvrjmWSbSVFYRHHkbeUbh6GYuCuhqLe6SEJtqJW2l
- EVhf5AOp7eguba23h82M8PC4cYFl5moLAaNcPHsdBaQZznZ6NndTtmUENPiQc2EHjHrrZI5l
- kRx9hvDcV3Xnk7ie0eAZDmDEbMLvI13AvjqoabONZxra5YcPqxV2Biv0OYp+OiqavBwmk48Z
- P63kTxLddd7qSWbAArBoOd0wxZGZ6mV8Ci/ob8tV4rLSR/UOUi+9QnkxnJor14OfYkJKxot5
- hWdJ3MYXjmcHjImBWplOyRiB81JbVf567MQlanforHd1r0ITzMHYONmRghrQvzlaMQrs0V0H
- 5/sIufaiDh7rLeZSimeVyoFvwvQPx5sXhjViaHa+zHZExP9jhS/WWfFE881fNK9qqV8pi+li
- 2uov8g5yD6hh+EPH6wARAQABwsF8BBgBCgAmFiEEKtR20JNxnJqlXaH73fNxj+N/OVcFAmNA
- kI0CGwwFCQeEzgAACgkQ3fNxj+N/OVfFMhAA2zXBUzMLWgTm6iHKAPfz3xEmjtwCF2Qv/TT3
- KqNUfU3/0VN2HjMABNZR+q3apm+jq76y0iWroTun8Lxo7g89/VDPLSCT0Nb7+VSuVR/nXfk8
- R+OoXQgXFRimYMqtP+LmyYM5V0VsuSsJTSnLbJTyCJVu8lvk3T9B0BywVmSFddumv3/pLZGn
- 17EoKEWg4lraXjPXnV/zaaLdV5c3Olmnj8vh+14HnU5Cnw/dLS8/e8DHozkhcEftOf+puCIl
- Awo8txxtLq3H7KtA0c9kbSDpS+z/oT2S+WtRfucI+WN9XhvKmHkDV6+zNSH1FrZbP9FbLtoE
- T8qBdyk//d0GrGnOrPA3Yyka8epd/bXA0js9EuNknyNsHwaFrW4jpGAaIl62iYgb0jCtmoK/
- rCsv2dqS6Hi8w0s23IGjz51cdhdHzkFwuc8/WxI1ewacNNtfGnorXMh6N0g7E/r21pPeMDFs
- rUD9YI1Je/WifL/HbIubHCCdK8/N7rblgUrZJMG3W+7vAvZsOh/6VTZeP4wCe7Gs/cJhE2gI
- DmGcR+7rQvbFQC4zQxEjo8fNaTwjpzLM9NIp4vG9SDIqAm20MXzLBAeVkofixCsosUWUODxP
- owLbpg7pFRJGL9YyEHpS7MGPb3jSLzucMAFXgoI8rVqoq6si2sxr2l0VsNH5o3NgoAgJNIg=
-In-Reply-To: <20241002155441.253956-2-maciej.fijalkowski@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27417/Fri Oct  4 10:53:24 2024)
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="0C1Go1cXuSqgJ8u8"
+Content-Disposition: inline
+In-Reply-To: <20241004095348.797020-1-bjorn@kernel.org>
+X-Cookie: A bachelor is an unaltared male.
 
-On 10/2/24 5:54 PM, Maciej Fijalkowski wrote:
-> Let's bring xdp_buff_xsk back to occupying 2 cachelines by removing
-> xskb_list_node - for the purpose of gathering the xskb frags
-> free_list_node can be used, head of the list (xsk_buff_pool::xskb_list)
-> stays as-is, just reuse the node ptr.
-> 
-> It is safe to do as a single xdp_buff_xsk can never reside in two
-> pool's lists simultaneously.
-> 
-> Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 
-Given you send v2 anyway, pls also double check the clang errors from netdev CI:
-https://netdev.bots.linux.dev/static/nipa/894909/13820003/build_clang/summary
+--0C1Go1cXuSqgJ8u8
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, Oct 04, 2024 at 11:53:47AM +0200, Bj=F6rn T=F6pel wrote:
+> From: Bj=F6rn T=F6pel <bjorn@rivosinc.com>
+>=20
+> This effectively is a revert of commit 7a6eb7c34a78 ("selftests: Skip
+> BPF seftests by default"). At the time when this was added, BPF had
+> "build time dependencies on cutting edge versions". Since then a
+> number of BPF capable tests has been included in net, hid, sched_ext.
+>=20
+> There is no reason not to include BPF by default in the build.
+
+The issue was always requiring a bleeding edge version of clang, not
+sure if that's been relaxed yet, IIRC sometimes it required git
+versions.  I have clang 20 installed here so that's not an issue for me
+but given that that's not released yet it wouldn't be reasonable to
+expect CI systems to install it.
+
+There's a few other substantial issues with all of these suites now I
+look, none of them build on arm64 since arm64 defconfig has
+DEBUG_INFO_REDUCED=3Dy which isn't compatible with CONFIG_DEBUG_INFO_BTF
+so that gets turned off and the build splats trying to read the BTF out
+of the kernel binary (which is a new build dep for the selftests
+too...). =20
+
+   https://storage.kernelci.org/next/master/next-20241004/arm64/defconfig%2=
+Bkselftest/gcc-12/config/
+
+We also get a bunch of:
+
+die__process_unit: DW_TAG_label (0xa) @ <0x58eb7> not handled!
+die__process_unit: tag not supported 0xa (label)!
+
+if we do turn enable CONFIG_DEBUG_INFO_BTF for arm64. =20
+
+The whole thing is also broken for cross compilation with clang since
+everything is assuming that CROSS_COMPILE will be set for cross builds
+but that's not the case for LLVM=3D1 builds - net gives:
+
+  BPF_PROG nat6to4.bpf.o
+  BPF_PROG sample_map_ret0.bpf.o
+/usr/lib/gcc-cross/aarch64-linux-gnu/12/../../../../aarch64-linux-gnu/bin/l=
+d: /home/broonie/git/linux/tools/testing/selftests/net/libynl.a(ynl.o): Rel=
+ocations in generic ELF (EM: 62)
+/usr/lib/gcc-cross/aarch64-linux-gnu/12/../../../../aarch64-linux-gnu/bin/l=
+d: /home/broonie/git/linux/tools/testing/selftests/net/libynl.a(ynl.o): Rel=
+ocations in generic ELF (EM: 62)
+/usr/lib/gcc-cross/aarch64-linux-gnu/12/../../../../aarch64-linux-gnu/bin/l=
+d: /home/broonie/git/linux/tools/testing/selftests/net/libynl.a(ynl.o): Rel=
+ocations in generic ELF (EM: 62)
+/usr/lib/gcc-cross/aarch64-linux-gnu/12/../../../../aarch64-linux-gnu/bin/l=
+d: /home/broonie/git/linux/tools/testing/selftests/net/libynl.a: error addi=
+ng symbols: file in wrong format
+  BPF_PROG sample_ret0.bpf.o
+collect2: error: ld returned 1 exit status
+
+with similar errors in libbpf for HID:
+
+/usr/bin/aarch64-linux-gnu-ld: /home/broonie/git/linux/tools/testing/selfte=
+sts/hid/tools/build/libbpf/libbpf.a(libbpf-in.o): Relocations in generic EL=
+F (EM: 62)
+/usr/bin/aarch64-linux-gnu-ld: /home/broonie/git/linux/tools/testing/selfte=
+sts/hid/tools/build/libbpf/libbpf.a(libbpf-in.o): Relocations in generic EL=
+F (EM: 62)
+
+KernelCI is seeing failures earlier with HID:
+
+   https://storage.kernelci.org/next/master/next-20241004/arm64/defconfig%2=
+Bkselftest/gcc-12/logs/kselftest.log
+
+and an unrelated missing dependency on libssl for net that needs to be
+fixed.
+
+--0C1Go1cXuSqgJ8u8
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmb/6KQACgkQJNaLcl1U
+h9AHHQf+JDjGvFF361rxHw+hdwcRUWLxLvZAPuNs8ktIA5ZgxlHb+lmSm0sIMUQB
+EnidDI8Vej+ZgTm/eoWr3WV/iAfOOKibzaqx9QaNCJ4UDCPDlSnqcBkAJ9QvhBYa
+ucq37YdKNwPmJl1s70ppWeAWlB6k7R55Xz6PiiTwhnkiXG+7o9R0Y5UdbZKqIBJG
+dZi0RhVmBGutGG47Ksrm3xSAr6JLr8qotM4hKff8fDnoGsDVquUtRLG4ucd+tYtK
+9RFAtQZ5BTYX/1h7lCwz/DnmJs79Wpyey6RgDUpB0Nj15sZbPkRxS+k28SASxsTg
+UK8eLqsacdzwVRB9Oii1XfOmVB628g==
+=fk9l
+-----END PGP SIGNATURE-----
+
+--0C1Go1cXuSqgJ8u8--
 
