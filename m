@@ -1,319 +1,180 @@
-Return-Path: <bpf+bounces-40911-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40912-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C43EA98FC34
-	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 04:13:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CDFF98FC9C
+	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 06:00:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7A658281F5B
-	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 02:13:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5F808283D35
+	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 04:00:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 813961BDC8;
-	Fri,  4 Oct 2024 02:13:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C7754C618;
+	Fri,  4 Oct 2024 04:00:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="iGi+3X3V";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="e3cLK8mr"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="NlSWV+zG"
 X-Original-To: bpf@vger.kernel.org
-Received: from fout-a1-smtp.messagingengine.com (fout-a1-smtp.messagingengine.com [103.168.172.144])
+Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8804117547;
-	Fri,  4 Oct 2024 02:13:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.144
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8713A1B963
+	for <bpf@vger.kernel.org>; Fri,  4 Oct 2024 04:00:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728007995; cv=none; b=D3rDckSjsciyzZCOGKnjckzsKHxWFcSa8KMtsROvZXB3enJtvgpAMlmNYYJXHNFEkwBjlIVLrW/2/dcUsh38C1iCeBw1+yaFCU9RVoaNfAkHSrylInqBRGqQFStEMy0O3MPAmNBkx6UBOZVb1BfJdwTP0dUHw1h/tnyTl9CuszU=
+	t=1728014433; cv=none; b=d0TVmvYDMW6mPJckPX9rcp08BSB3wx1Gb67oS5I+7ED/bJJ9umZbdAp3ZEw89qAgZgGoW6fU8UYMfixApYSDmSOIHKkAuC0dVcHDhp22SW8KDaa/3cOCyrY7i8JMke8SSw4bFu13LTog0NY1gMcnHToqll624QX2NaHWSvitiUA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728007995; c=relaxed/simple;
-	bh=3fK7GChpVNnKxwBRh5J9MBnN/QIevOP3WmPmABiTuck=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=S7OgopLDIVsPIrWZo/rzbwLtjiCxb9PSzj3HfFPCcQyCPwjgjIriJfwy/ojTpX6SH8FfIS8z9ix5HBT0yvo9ngYt1IxQH3QDV3D0O7FxT2PKUk90Teq/VqLpvz54jxIdzqdrEWQQmYNHExl1/lmkcyQ+COvOvta3kNZO6TB0JmE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=iGi+3X3V; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=e3cLK8mr; arc=none smtp.client-ip=103.168.172.144
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
-Received: from phl-compute-01.internal (phl-compute-01.phl.internal [10.202.2.41])
-	by mailfout.phl.internal (Postfix) with ESMTP id 883541380141;
-	Thu,  3 Oct 2024 22:13:12 -0400 (EDT)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-01.internal (MEProxy); Thu, 03 Oct 2024 22:13:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm1; t=1728007992;
-	 x=1728094392; bh=DNnO7oBJ38aTEcsogdYXkdlehmzDHYXoYjI0FO0UbwQ=; b=
-	iGi+3X3VKyVxDp1gyOD/0VT6rGq6iHlqiZpsLLrBmv9NiDIn8aGHSnlwoWeExEfg
-	G78XSMTqMyQLD5rqxzhli4zUwxyV+381CAaccud1hLodiHWL3LFm9Kiq147aYPoO
-	OwYfIj9ibX5hyz6dN6PTMTvpJOutiq0z0+Hu3MimABO30xgNdfM0Chbe+RrSsknm
-	YrywqqT7pm/vnFBeHgudxKZ/WUUcrsZynskUMJ1KBJrPMp1kAaUu8gTP1R5LqPq1
-	VQUIe9GtFr99GnzX6c1mRcK5aTxHXWh4li0IgkWlEiFCfQmoal+i00tL13FwtoUL
-	cDb8HBqcuSto8Oik4jV0rQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1728007992; x=
-	1728094392; bh=DNnO7oBJ38aTEcsogdYXkdlehmzDHYXoYjI0FO0UbwQ=; b=e
-	3cLK8mrPBFO6/X8/vwEwAveCfZA9R74+7BVBOkbxGhgGufa+XkwZxr1x5b5LUgWG
-	dZzBFKBoT+tpiy0HvClbWDsR+ZkLU0SoHJwpUpWODid/3/jmh+6BNfLfwIRYvhCo
-	Y34fVPA2QgJ0SivyifqyCxlWGpgF5Ypm5KLlYQ7JDZW4JhC6rabtnAU4mBMCGjyr
-	j0xb/DGDA5MUEBzaLgXxxRZq4uevxhRW/TGrHON0JcnL20cdFGRzBD1dUB9WDaKw
-	RgX0Wtfz39qve4eCazvjsf+aKSV/sETle78SSK7Kds3jSkWTG/cXkvJJKwudTZ/d
-	2Rij8JyyJwWPM+stesxoA==
-X-ME-Sender: <xms:N0__ZmR-fw1VACOo_U96KG3sJlP2oBJ5rezx8IJvni-dxcMZVJ2hHA>
-    <xme:N0__ZrzE_M7ETwTvoem6gF8LuwCMOE1xB0Gv7mvbo3dO9_gBOjg8-0cgh_mAHnSEL
-    H4Q8XxoRCEnTYsFXg>
-X-ME-Received: <xmr:N0__Zj0EEZcNkuOPC9HaIKdIsrZhLzGPI1NDJERX8094df-SYReXKmV0VsIroKa193TMiNRmvgNBMN09Qsdtfsb3ZJDS7yZ9LbZkik1t3_Qoqg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvddvvddgheejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
-    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
-    htshculddquddttddmnegfrhhlucfvnfffucdljedtmdenucfjughrpeffhffvvefukfhf
-    gggtugfgjgestheksfdttddtudenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihuse
-    gugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpedufeeitdeiheffueffleffgeeh
-    geejkeetkefgtdekfeejheffjedtgfekieetleenucevlhhushhtvghrufhiiigvpedtne
-    curfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiiipdhnsggprhgt
-    phhtthhopedvledpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtohepshhtfhhomhhitg
-    hhvghvsehgmhgrihhlrdgtohhmpdhrtghpthhtoheprghfrggsrhgvsegtlhhouhgufhhl
-    rghrvgdrtghomhdprhgtphhtthhopehtohhkvgesrhgvughhrghtrdgtohhmpdhrtghpth
-    htoheplhhorhgvnhiioheskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhorhgvnhii
-    ohdrsghirghntghonhhisehrvgguhhgrthdrtghomhdprhgtphhtthhopehhrgifkheskh
-    gvrhhnvghlrdhorhhgpdhrtghpthhtohepjhgrkhhusgestghlohhuughflhgrrhgvrdgt
-    ohhmpdhrtghpthhtoheprghlvghkshgrnhguvghrrdhlohgsrghkihhnsehinhhtvghlrd
-    gtohhmpdhrtghpthhtohepsghpfhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:N0__ZiAILa9QrxONVn0NgRn9Rvb7mnPy3B278mrZhGqrRKY9pI8YeQ>
-    <xmx:N0__Zvj5PIVlcGE6uUrJPBjgR6BadsTp-KNJZo4qyKScZf3KgdwMzA>
-    <xmx:N0__ZuraEYVvb9TYjden7Ids7dEErKfgc1SpQTert3LAbRJ93nMWkQ>
-    <xmx:N0__ZigDnuGw6-9_wFIEX-UT_7aQuNYLFWbGCqUL1sfwHM6rbXwajg>
-    <xmx:OE__ZgawQ9m_l61gXPYIbruBogG1yskokX2KrZ5QOrMIaFULc7cMCc6S>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 3 Oct 2024 22:13:08 -0400 (EDT)
-Date: Thu, 3 Oct 2024 20:13:06 -0600
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: Stanislav Fomichev <stfomichev@gmail.com>
-Cc: Arthur Fabre <afabre@cloudflare.com>, 
-	Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>, Lorenzo Bianconi <lorenzo@kernel.org>, 
-	Lorenzo Bianconi <lorenzo.bianconi@redhat.com>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	Jakub Sitnicki <jakub@cloudflare.com>, Alexander Lobakin <aleksander.lobakin@intel.com>, 
-	bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
-	davem@davemloft.net, kuba@kernel.org, john.fastabend@gmail.com, edumazet@google.com, 
-	pabeni@redhat.com, sdf@fomichev.me, tariqt@nvidia.com, saeedm@nvidia.com, 
-	anthony.l.nguyen@intel.com, przemyslaw.kitszel@intel.com, intel-wired-lan@lists.osuosl.org, 
-	mst@redhat.com, jasowang@redhat.com, mcoquelin.stm32@gmail.com, 
-	alexandre.torgue@foss.st.com, kernel-team <kernel-team@cloudflare.com>, 
-	Yan Zhai <yan@cloudflare.com>
-Subject: Re: [RFC bpf-next 0/4] Add XDP rx hw hints support performing
- XDP_REDIRECT
-Message-ID: <2fy5vuewgwkh3o3mx5v4bkrzu6josqylraa4ocgzqib6a7ozt4@hwsuhcibtcb6>
-References: <871q11s91e.fsf@toke.dk>
- <ZvqQOpqnK9hBmXNn@lore-desk>
- <D4KJ7DUXJQC5.2UFST9L3CUOH7@bobby>
- <ZvwNQqN4gez1Ksfn@lore-desk>
- <87zfnnq2hs.fsf@toke.dk>
- <Zv18pxsiTGTZSTyO@mini-arch>
- <87ttdunydz.fsf@toke.dk>
- <Zv3N5G8swr100EXm@mini-arch>
- <D4LYNKGLE7G0.3JAN5MX1ATPTB@bobby>
- <Zv794Ot-kOq1pguM@mini-arch>
+	s=arc-20240116; t=1728014433; c=relaxed/simple;
+	bh=3Z7c/wBfN2zeA3acuNBiKHtvX5WGERkpd4FWQk2H9BQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jOX/BZFDr7OeVLK/pK69agzV0xc+sP2KjrCe0zPundnFrMZEHwslvOpMatwapRIXeNgUcokR6sf/Rd2Q6ZP0IN9iKpvB6W4SA0+9T1PQz0OqdeBgwZg+wtT9OHp+u6KV7m2eHSR9eAqMEJ32AjLVExPeSpXMEujrWJa49NT9vzc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=NlSWV+zG; arc=none smtp.client-ip=91.218.175.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <341af7e1-7817-4aca-97dc-8f2813a086df@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1728014428;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZNQRCxMBz5ZWdzX3UDIe7nauhj263vm6VCZvYNip50E=;
+	b=NlSWV+zGCTyP4Pqc7/XWPASsNMjkm4WkxEKNmbiLzgDsVBcrzRA0suPyrZ50sCDpSVqPFn
+	xJZI38QpnkLr7er5lhWFgTFhg5Xe+GBVzq+cy5OdcVnvmYnFHpzQpOb6aieKVs/w0xCOeZ
+	s/jGVGgMHbCXF1BqQI7Dpc5id3JrNsQ=
+Date: Thu, 3 Oct 2024 21:00:20 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <Zv794Ot-kOq1pguM@mini-arch>
+Subject: Re: [Question]: A non NULL req->sk in tcp_rtx_synack. Not a fastopen
+ connection.
+To: Kuniyuki Iwashima <kuniyu@amazon.com>
+Cc: bpf@vger.kernel.org, edumazet@google.com, kuba@kernel.org,
+ netdev@vger.kernel.org
+References: <eb6684d0-ffd9-4bdc-9196-33f690c25824@linux.dev>
+ <20241004020255.36532-1-kuniyu@amazon.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20241004020255.36532-1-kuniyu@amazon.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-Hi Stan,
+On 10/3/24 7:02 PM, Kuniyuki Iwashima wrote:
+> From: Martin KaFai Lau <martin.lau@linux.dev>
+> Date: Thu, 3 Oct 2024 18:14:09 -0700
+>> Hi,
+>>
+>> We are seeing a use-after-free from a bpf prog attached to
+>> trace_tcp_retransmit_synack. The program passes the req->sk to the
+>> bpf_sk_storage_get_tracing kernel helper which does check for null before using it.
+>>
+>> fastopen is not used.
+>>
+>> We got a kfence report on use-after-free (pasted at the end). It is running with
+>> an older 6.4 kernel and we hardly hit this in production.
+>>
+>>   From the upstream code, del_timer_sync() should have been done by
+>> inet_csk_reqsk_queue_drop() before "req->sk = child;" is assigned in
+>> inet_csk_reqsk_queue_add(). My understanding is the req->rsk_timer should have
+>> been stopped before the "req->sk = child;" assignment.
+> 
+> There seems to be a small race window in reqsk_queue_unlink().
+> 
+> expire_timers() first calls detach_timer(, true), which marks the timer
+> as not pending, and then calls reqsk_timer_handler().
+> 
+> If reqsk_queue_unlink() calls timer_pending() just before expire_timers()
+> calls reqsk_timer_handler(), reqsk_queue_unlink() could miss
+> del_timer_sync() ?
 
-On Thu, Oct 03, 2024 at 01:26:08PM GMT, Stanislav Fomichev wrote:
-> On 10/03, Arthur Fabre wrote:
-> > On Thu Oct 3, 2024 at 12:49 AM CEST, Stanislav Fomichev wrote:
-> > > On 10/02, Toke Høiland-Jørgensen wrote:
-> > > > Stanislav Fomichev <stfomichev@gmail.com> writes:
-> > > > 
-> > > > > On 10/01, Toke Høiland-Jørgensen wrote:
-> > > > >> Lorenzo Bianconi <lorenzo@kernel.org> writes:
-> > > > >> 
-> > > > >> >> On Mon Sep 30, 2024 at 1:49 PM CEST, Lorenzo Bianconi wrote:
-> > > > >> >> > > Lorenzo Bianconi <lorenzo@kernel.org> writes:
-> > > > >> >> > > 
-> > > > >> >> > > >> > We could combine such a registration API with your header format, so
-> > > > >> >> > > >> > that the registration just becomes a way of allocating one of the keys
-> > > > >> >> > > >> > from 0-63 (and the registry just becomes a global copy of the header).
-> > > > >> >> > > >> > This would basically amount to moving the "service config file" into the
-> > > > >> >> > > >> > kernel, since that seems to be the only common denominator we can rely
-> > > > >> >> > > >> > on between BPF applications (as all attempts to write a common daemon
-> > > > >> >> > > >> > for BPF management have shown).
-> > > > >> >> > > >> 
-> > > > >> >> > > >> That sounds reasonable. And I guess we'd have set() check the global
-> > > > >> >> > > >> registry to enforce that the key has been registered beforehand?
-> > > > >> >> > > >> 
-> > > > >> >> > > >> >
-> > > > >> >> > > >> > -Toke
-> > > > >> >> > > >> 
-> > > > >> >> > > >> Thanks for all the feedback!
-> > > > >> >> > > >
-> > > > >> >> > > > I like this 'fast' KV approach but I guess we should really evaluate its
-> > > > >> >> > > > impact on performances (especially for xdp) since, based on the kfunc calls
-> > > > >> >> > > > order in the ebpf program, we can have one or multiple memmove/memcpy for
-> > > > >> >> > > > each packet, right?
-> > > > >> >> > > 
-> > > > >> >> > > Yes, with Arthur's scheme, performance will be ordering dependent. Using
-> > > > >> >> > > a global registry for offsets would sidestep this, but have the
-> > > > >> >> > > synchronisation issues we discussed up-thread. So on balance, I think
-> > > > >> >> > > the memmove() suggestion will probably lead to the least pain.
-> > > > >> >> > > 
-> > > > >> >> > > For the HW metadata we could sidestep this by always having a fixed
-> > > > >> >> > > struct for it (but using the same set/get() API with reserved keys). The
-> > > > >> >> > > only drawback of doing that is that we statically reserve a bit of
-> > > > >> >> > > space, but I'm not sure that is such a big issue in practice (at least
-> > > > >> >> > > not until this becomes to popular that the space starts to be contended;
-> > > > >> >> > > but surely 256 bytes ought to be enough for everybody, right? :)).
-> > > > >> >> >
-> > > > >> >> > I am fine with the proposed approach, but I think we need to verify what is the
-> > > > >> >> > impact on performances (in the worst case??)
-> > > > >> >> 
-> > > > >> >> If drivers are responsible for populating the hardware metadata before
-> > > > >> >> XDP, we could make sure drivers set the fields in order to avoid any
-> > > > >> >> memove() (and maybe even provide a helper to ensure this?).
-> > > > >> >
-> > > > >> > nope, since the current APIs introduced by Stanislav are consuming NIC
-> > > > >> > metadata in kfuncs (mainly for af_xdp) and, according to my understanding,
-> > > > >> > we want to add a kfunc to store the info for each NIC metadata (e.g rx-hash,
-> > > > >> > timestamping, ..) into the packet (this is what Toke is proposing, right?).
-> > > > >> > In this case kfunc calling order makes a difference.
-> > > > >> > We can think even to add single kfunc to store all the info for all the NIC
-> > > > >> > metadata (maybe via a helping struct) but it seems not scalable to me and we
-> > > > >> > are losing kfunc versatility.
-> > > > >> 
-> > > > >> Yes, I agree we should have separate kfuncs for each metadata field.
-> > > > >> Which means it makes a lot of sense to just use the same setter API that
-> > > > >> we use for the user-registered metadata fields, but using reserved keys.
-> > > > >> So something like:
-> > > > >> 
-> > > > >> #define BPF_METADATA_HW_HASH      BIT(60)
-> > > > >> #define BPF_METADATA_HW_TIMESTAMP BIT(61)
-> > > > >> #define BPF_METADATA_HW_VLAN      BIT(62)
-> > > > >> #define BPF_METADATA_RESERVED (0xffff << 48)
-> > > > >> 
-> > > > >> bpf_packet_metadata_set(pkt, BPF_METADATA_HW_HASH, hash_value);
-> > > > >> 
-> > > > >> 
-> > > > >> As for the internal representation, we can just have the kfunc do
-> > > > >> something like:
-> > > > >> 
-> > > > >> int bpf_packet_metadata_set(field_id, value) {
-> > > > >>   switch(field_id) {
-> > > > >>     case BPF_METADATA_HW_HASH:
-> > > > >>       pkt->xdp_hw_meta.hash = value;
-> > > > >>       break;
-> > > > >>     [...]
-> > > > >>     default:
-> > > > >>       /* do the key packing thing */
-> > > > >>   }
-> > > > >> }
-> > > > >> 
-> > > > >> 
-> > > > >> that way the order of setting the HW fields doesn't matter, only the
-> > > > >> user-defined metadata.
-> > > > >
-> > > > > Can you expand on why we need the flexibility of picking the metadata fields
-> > > > > here? Presumably we are talking about the use-cases where the XDP program
-> > > > > is doing redirect/pass and it doesn't really know who's the final
-> > > > > consumer is (might be another xdp program or might be the xdp->skb
-> > > > > kernel case), so the only sensible option here seems to be store everything?
-> > > > 
-> > > > For the same reason that we have separate kfuncs for each metadata field
-> > > > when getting it from the driver: XDP programs should have the
-> > > > flexibility to decide which pieces of metadata they need, and skip the
-> > > > overhead of stuff that is not needed.
-> > > > 
-> > > > For instance, say an XDP program knows that nothing in the system uses
-> > > > timestamps; in that case, it can skip both the getter and the setter
-> > > > call for timestamps.
-> 
-> Original RFC is talking about XDP -> XDP_REDIRECT -> skb use-case,
-> right? For this we pretty much know what kind of metadata we want to
-> preserve, so why not ship it in the existing metadata area and have
-> a kfunc that the xdp program will call prior to doing xdp_redirect?
-> This kfunc can do exactly what you're suggesting - skip the timestamp
-> if we know that the timestamping is off.
-> 
-> Or have we moved to discussing some other use-cases? What am I missing
-> about the need for some other new mechanism?
-> 
-> > > But doesn't it put us in the same place? Where the first (native) xdp program
-> > > needs to know which metadata the final consumer wants. At this point
-> > > why not propagate metadata layout as well?
-> > >
-> > > (or maybe I'm still missing what exact use-case we are trying to solve)
-> > 
-> > There are two different use-cases for the metadata:
-> > 
-> > * "Hardware" metadata (like the hash, rx_timestamp...). There are only a
-> >   few well known fields, and only XDP can access them to set them as
-> >   metadata, so storing them in a struct somewhere could make sense.
-> > 
-> > * Arbitrary metadata used by services. Eg a TC filter could set a field
-> >   describing which service a packet is for, and that could be reused for
-> >   iptables, routing, socket dispatch...
-> >   Similarly we could set a "packet_id" field that uniquely identifies a
-> >   packet so we can trace it throughout the network stack (through
-> >   clones, encap, decap, userspace services...).
-> >   The skb->mark, but with more room, and better support for sharing it.
-> > 
-> > We can only know the layout ahead of time for the first one. And they're
-> > similar enough in their requirements (need to be stored somewhere in the
-> > SKB, have a way of retrieving each one individually, that it seems to
-> > make sense to use a common API).
-> 
-> Why not have the following layout then?
-> 
-> +---------------+-------------------+----------------------------------------+------+
-> | more headroom | user-defined meta | hw-meta (potentially fixed skb format) | data |
-> +---------------+-------------------+----------------------------------------+------+
->                 ^                                                            ^
->             data_meta                                                      data
-> 
-> You obviously still have a problem of communicating the layout if you
-> have some redirects in between, but you, in theory still have this
-> problem with user-defined metadata anyway (unless I'm missing
-> something).
-> 
-> > > > I suppose we *could* support just a single call to set the skb meta,
-> > > > like:
-> > > > 
-> > > > bpf_set_skb_meta(struct xdp_md *pkt, struct xdp_hw_meta *data);
-> > > > 
-> > > > ...but in that case, we'd need to support some fields being unset
-> > > > anyway, and the program would have to populate the struct on the stack
-> > > > before performing the call. So it seems simpler to just have symmetry
-> > > > between the get (from HW) and set side? :)
-> > >
-> > > Why not simply bpf_set_skb_meta(struct xdp_md *pkt) and let it store
-> > > the metadata somewhere in xdp_md directly? (also presumably by
-> > > reusing most of the existing kfuncs/xmo_xxx helpers)
-> > 
-> > If we store it in xdp_md, the metadata won't be available higher up the
-> > stack (or am I missing something?). I think one of the goals is to let
-> > things other than XDP access it (maybe even the network stack itself?).
-> 
-> IIRC, xdp metadata gets copied to skb metadata, so it does propagate.
-> Although, it might have a detrimental effect on the gro, but I'm
-> assuming that is something that can be fixed separately.
+This seems to explain it. :)
 
-I was thinking about this today so I'm glad you brought it up.
+Does it mean there is a chance that the reqsk_timer_handler() may rearm the 
+timer again and I guess only a few more synack will be sent in this case and 
+should be no harm?
 
-IIUC putting unique data in the metadata area will prevent GRO from
-working. I wonder if as a part of this work there's a cleaner way to
-indicate to XDP or GRO engine that some metadata should be ignored for
-coalescing purposes. Otherwise the final XDP prog before GRO would need
-to memset() all the relevant bytes to 0 (assuming that even works).
+> 
+> ---8<---
+> diff --git a/net/ipv4/inet_connection_sock.c b/net/ipv4/inet_connection_sock.c
+> index 2c5632d4fddb..4ba47ee6c9da 100644
+> --- a/net/ipv4/inet_connection_sock.c
+> +++ b/net/ipv4/inet_connection_sock.c
+> @@ -1045,7 +1045,7 @@ static bool reqsk_queue_unlink(struct request_sock *req)
+>   		found = __sk_nulls_del_node_init_rcu(sk);
+>   		spin_unlock(lock);
+>   	}
+> -	if (timer_pending(&req->rsk_timer) && del_timer_sync(&req->rsk_timer))
+> +	if (del_timer_sync(&req->rsk_timer))
 
-Thanks,
-Daniel
+It seems the reqsk_timer_handler() will also call reqsk_queue_unlink() through 
+inet_csk_reqsk_queue_drop_and_put(). Not sure if the reqsk_timer_handler() can 
+del_timer_sync() itself.
+
+>   		reqsk_put(req);
+>   	return found;
+>   }
+> ---8<---
+> 
+> 
+>>
+>> or there are cases that req->sk is not NULL in the reqsk_timer_handler()?
+>>
+>> BUG: KFENCE: use-after-free read in bpf_sk_storage_get_tracing+0x2e/0x1b0
+>>
+>> Use-after-free read at 0x00000000a891fb3a (in kfence-#1):
+>> bpf_sk_storage_get_tracing+0x2e/0x1b0
+>> bpf_prog_5ea3e95db6da0438_tcp_retransmit_synack+0x1d20/0x1dda
+>> bpf_trace_run2+0x4c/0xc0
+>> tcp_rtx_synack+0xf9/0x100
+>> reqsk_timer_handler+0xda/0x3d0
+>> run_timer_softirq+0x292/0x8a0
+>> irq_exit_rcu+0xf5/0x320
+>> sysvec_apic_timer_interrupt+0x6d/0x80
+>> asm_sysvec_apic_timer_interrupt+0x16/0x20
+>> intel_idle_irq+0x5a/0xa0
+>> cpuidle_enter_state+0x94/0x273
+>> cpu_startup_entry+0x15e/0x260
+>> start_secondary+0x8a/0x90
+>> secondary_startup_64_no_verify+0xfa/0xfb
+>>
+>> kfence-#1: 0x00000000a72cc7b6-0x00000000d97616d9, size=2376, cache=TCPv6
+>>
+>> allocated by task 0 on cpu 9 at 260507.901592s:
+>> sk_prot_alloc+0x35/0x140
+>> sk_clone_lock+0x1f/0x3f0
+>> inet_csk_clone_lock+0x15/0x160
+>> tcp_create_openreq_child+0x1f/0x410
+>> tcp_v6_syn_recv_sock+0x1da/0x700
+>> tcp_check_req+0x1fb/0x510
+>> tcp_v6_rcv+0x98b/0x1420
+>> ipv6_list_rcv+0x2258/0x26e0
+>> napi_complete_done+0x5b1/0x2990
+>> mlx5e_napi_poll+0x2ae/0x8d0
+>> net_rx_action+0x13e/0x590
+>> irq_exit_rcu+0xf5/0x320
+>> common_interrupt+0x80/0x90
+>> asm_common_interrupt+0x22/0x40
+>> cpuidle_enter_state+0xfb/0x273
+>> cpu_startup_entry+0x15e/0x260
+>> start_secondary+0x8a/0x90
+>> secondary_startup_64_no_verify+0xfa/0xfb
+>>
+>> freed by task 0 on cpu 9 at 260507.927527s:
+>> rcu_core_si+0x4ff/0xf10
+>> irq_exit_rcu+0xf5/0x320
+>> sysvec_apic_timer_interrupt+0x6d/0x80
+>> asm_sysvec_apic_timer_interrupt+0x16/0x20
+>> cpuidle_enter_state+0xfb/0x273
+>> cpu_startup_entry+0x15e/0x260
+>> start_secondary+0x8a/0x90
+>> secondary_startup_64_no_verify+0xfa/0xfb
+>>
+>> Thanks,
+>> Martin
+
 
