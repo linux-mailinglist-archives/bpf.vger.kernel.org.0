@@ -1,180 +1,121 @@
-Return-Path: <bpf+bounces-40912-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40913-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CDFF98FC9C
-	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 06:00:42 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E429198FCC5
+	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 06:45:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5F808283D35
-	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 04:00:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BF0651C222BD
+	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 04:45:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C7754C618;
-	Fri,  4 Oct 2024 04:00:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85F7A73466;
+	Fri,  4 Oct 2024 04:45:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="NlSWV+zG"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="cif02BMw"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
+Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8713A1B963
-	for <bpf@vger.kernel.org>; Fri,  4 Oct 2024 04:00:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 246EC43ADE
+	for <bpf@vger.kernel.org>; Fri,  4 Oct 2024 04:45:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728014433; cv=none; b=d0TVmvYDMW6mPJckPX9rcp08BSB3wx1Gb67oS5I+7ED/bJJ9umZbdAp3ZEw89qAgZgGoW6fU8UYMfixApYSDmSOIHKkAuC0dVcHDhp22SW8KDaa/3cOCyrY7i8JMke8SSw4bFu13LTog0NY1gMcnHToqll624QX2NaHWSvitiUA=
+	t=1728017111; cv=none; b=N4RidX0O3+l7gFUf66GPdj7xgIDrZa14bpY2uLPndy7IKmrvcsKA6AWk2x6XjeBcE8ama3Giqa0ImqIjbvivGtf+u9E+fLz1Fiwahm47U5QpipksEZbpUwXwA1VHWgXMKTUd63XTcnFuhldHiqSTfK++ZFzGORcpQWfuGisqvts=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728014433; c=relaxed/simple;
-	bh=3Z7c/wBfN2zeA3acuNBiKHtvX5WGERkpd4FWQk2H9BQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jOX/BZFDr7OeVLK/pK69agzV0xc+sP2KjrCe0zPundnFrMZEHwslvOpMatwapRIXeNgUcokR6sf/Rd2Q6ZP0IN9iKpvB6W4SA0+9T1PQz0OqdeBgwZg+wtT9OHp+u6KV7m2eHSR9eAqMEJ32AjLVExPeSpXMEujrWJa49NT9vzc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=NlSWV+zG; arc=none smtp.client-ip=91.218.175.178
+	s=arc-20240116; t=1728017111; c=relaxed/simple;
+	bh=VmwvU0W4CbtoHjdtRtYbUa1zfcrUwdOCsDV5l+mX1gQ=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=MqvurnnD2XGkMk8kVu1LFt1ZDjgvjLqYHxMdg3zOwgWW4tFtJJ5Jwq8aoZ83e5yOv19ryz9rb99l5+ZpOnk7xmJ/SaVHdgxkwRvyRzEv9j91rrsqS/3nWbXMiUUQifEYlQAlS4GKrCawlhFTI1NVk/JR67VYyunt6e+gBPsf9hQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=cif02BMw; arc=none smtp.client-ip=91.218.175.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <341af7e1-7817-4aca-97dc-8f2813a086df@linux.dev>
+Message-ID: <6d23b607-b6d6-4074-8778-c50bf3bd0b91@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1728014428;
+	t=1728017103;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ZNQRCxMBz5ZWdzX3UDIe7nauhj263vm6VCZvYNip50E=;
-	b=NlSWV+zGCTyP4Pqc7/XWPASsNMjkm4WkxEKNmbiLzgDsVBcrzRA0suPyrZ50sCDpSVqPFn
-	xJZI38QpnkLr7er5lhWFgTFhg5Xe+GBVzq+cy5OdcVnvmYnFHpzQpOb6aieKVs/w0xCOeZ
-	s/jGVGgMHbCXF1BqQI7Dpc5id3JrNsQ=
-Date: Thu, 3 Oct 2024 21:00:20 -0700
+	bh=ytssWJLKmXIWXSrDg9ABlNpbkQhbsJOWwycT6PoQRhQ=;
+	b=cif02BMw0GzdjzhEZDwFVDFEIppcN7DFA9RB7RJTWvYL/k1JyQxwrtdZ3o/ht160Nnev2+
+	MjCoa0xOwItozXfUK1vw63f/lurOBt0ZK2wv8UaJ7r97F1YtJeztgwwIFJKN+I4FgTXwUS
+	D5qe/rCsFpIY8ITEVkZkD1Gqg0UU6Go=
+Date: Thu, 3 Oct 2024 21:44:52 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [Question]: A non NULL req->sk in tcp_rtx_synack. Not a fastopen
- connection.
-To: Kuniyuki Iwashima <kuniyu@amazon.com>
-Cc: bpf@vger.kernel.org, edumazet@google.com, kuba@kernel.org,
- netdev@vger.kernel.org
-References: <eb6684d0-ffd9-4bdc-9196-33f690c25824@linux.dev>
- <20241004020255.36532-1-kuniyu@amazon.com>
-Content-Language: en-US
+Subject: Re: [PATCH bpf-next v2] selftests/bpf: convert test_xdp_features.sh
+ to test_progs
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20241004020255.36532-1-kuniyu@amazon.com>
+To: =?UTF-8?Q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Jakub Kicinski <kuba@kernel.org>,
+ Lorenzo Bianconi <lorenzo@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
+ Shuah Khan <shuah@kernel.org>, "David S. Miller" <davem@davemloft.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ Maxime Chevallier <maxime.chevallier@bootlin.com>, ebpf@linuxfoundation.org,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, netdev@vger.kernel.org
+References: <20240910-convert_xdp_tests-v2-1-a46367c9d038@bootlin.com>
+ <64df8d41-6cfb-45a9-8337-5cc04daedb60@linux.dev> <ZuVWmxoqXFI3qvVI@lore-desk>
+ <20240914063828.7bd73c5e@kernel.org>
+ <464e0ae0-d6e3-4da4-a157-f74260f96275@bootlin.com>
+ <366e4392-bd00-4120-8585-a71b3952e365@linux.dev>
+Content-Language: en-US
+In-Reply-To: <366e4392-bd00-4120-8585-a71b3952e365@linux.dev>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Migadu-Flow: FLOW_OUT
 
-On 10/3/24 7:02 PM, Kuniyuki Iwashima wrote:
-> From: Martin KaFai Lau <martin.lau@linux.dev>
-> Date: Thu, 3 Oct 2024 18:14:09 -0700
->> Hi,
->>
->> We are seeing a use-after-free from a bpf prog attached to
->> trace_tcp_retransmit_synack. The program passes the req->sk to the
->> bpf_sk_storage_get_tracing kernel helper which does check for null before using it.
->>
->> fastopen is not used.
->>
->> We got a kfence report on use-after-free (pasted at the end). It is running with
->> an older 6.4 kernel and we hardly hit this in production.
->>
->>   From the upstream code, del_timer_sync() should have been done by
->> inet_csk_reqsk_queue_drop() before "req->sk = child;" is assigned in
->> inet_csk_reqsk_queue_add(). My understanding is the req->rsk_timer should have
->> been stopped before the "req->sk = child;" assignment.
-> 
-> There seems to be a small race window in reqsk_queue_unlink().
-> 
-> expire_timers() first calls detach_timer(, true), which marks the timer
-> as not pending, and then calls reqsk_timer_handler().
-> 
-> If reqsk_queue_unlink() calls timer_pending() just before expire_timers()
-> calls reqsk_timer_handler(), reqsk_queue_unlink() could miss
-> del_timer_sync() ?
+On 9/24/24 6:37 PM, Martin KaFai Lau wrote:
+> There are other .sh tests that could better use the test_progs migration. In 
+> particular the ones without existing test coverage. For non XDP related, 
+> test_tcp_check_syncookie.sh, test_flow_dissector.sh, and test_tc_edt.sh should 
+> be the good ones.
 
-This seems to explain it. :)
-
-Does it mean there is a chance that the reqsk_timer_handler() may rearm the 
-timer again and I guess only a few more synack will be sent in this case and 
-should be no harm?
+I just took a closer look at the test_tc_edt.* for another reason. It seems 
+doing some bandwidth test which may not be a good fit (e.g. too flaky) for 
+test_progs. I would leave it to the bottom of the todo list for now.
 
 > 
-> ---8<---
-> diff --git a/net/ipv4/inet_connection_sock.c b/net/ipv4/inet_connection_sock.c
-> index 2c5632d4fddb..4ba47ee6c9da 100644
-> --- a/net/ipv4/inet_connection_sock.c
-> +++ b/net/ipv4/inet_connection_sock.c
-> @@ -1045,7 +1045,7 @@ static bool reqsk_queue_unlink(struct request_sock *req)
->   		found = __sk_nulls_del_node_init_rcu(sk);
->   		spin_unlock(lock);
->   	}
-> -	if (timer_pending(&req->rsk_timer) && del_timer_sync(&req->rsk_timer))
-> +	if (del_timer_sync(&req->rsk_timer))
-
-It seems the reqsk_timer_handler() will also call reqsk_queue_unlink() through 
-inet_csk_reqsk_queue_drop_and_put(). Not sure if the reqsk_timer_handler() can 
-del_timer_sync() itself.
-
->   		reqsk_put(req);
->   	return found;
->   }
-> ---8<---
+> For XDP, test_xdp_meta.sh should be useful also. You may also want to check the 
+> test_xdp_redirect_*.sh.
 > 
-> 
+>> processes and tcp/udp channels involved), but if keeping the standalone version
+>> is really needed, I can give a try. Does it sound reasonable ?
+>> - one part of my overall goal is to clean up the tools/testing/selftests/bpf
+>> directory from anything that is not tested automatically. What should we do with
+>> the wrapping shell script (test_xdp_features.sh) ? Since test_progs will
+>> automate the test with veths, I guess it is still ok to just remove it ?
 >>
->> or there are cases that req->sk is not NULL in the reqsk_timer_handler()?
+>>> No preference but just to raise awareness - drivers/net's NetDrvEpEnv
+>>> class provides the setup for running tests with an endpoint.
+>>> XDP tests intended for HW would fit there pretty well.
 >>
->> BUG: KFENCE: use-after-free read in bpf_sk_storage_get_tracing+0x2e/0x1b0
->>
->> Use-after-free read at 0x00000000a891fb3a (in kfence-#1):
->> bpf_sk_storage_get_tracing+0x2e/0x1b0
->> bpf_prog_5ea3e95db6da0438_tcp_retransmit_synack+0x1d20/0x1dda
->> bpf_trace_run2+0x4c/0xc0
->> tcp_rtx_synack+0xf9/0x100
->> reqsk_timer_handler+0xda/0x3d0
->> run_timer_softirq+0x292/0x8a0
->> irq_exit_rcu+0xf5/0x320
->> sysvec_apic_timer_interrupt+0x6d/0x80
->> asm_sysvec_apic_timer_interrupt+0x16/0x20
->> intel_idle_irq+0x5a/0xa0
->> cpuidle_enter_state+0x94/0x273
->> cpu_startup_entry+0x15e/0x260
->> start_secondary+0x8a/0x90
->> secondary_startup_64_no_verify+0xfa/0xfb
->>
->> kfence-#1: 0x00000000a72cc7b6-0x00000000d97616d9, size=2376, cache=TCPv6
->>
->> allocated by task 0 on cpu 9 at 260507.901592s:
->> sk_prot_alloc+0x35/0x140
->> sk_clone_lock+0x1f/0x3f0
->> inet_csk_clone_lock+0x15/0x160
->> tcp_create_openreq_child+0x1f/0x410
->> tcp_v6_syn_recv_sock+0x1da/0x700
->> tcp_check_req+0x1fb/0x510
->> tcp_v6_rcv+0x98b/0x1420
->> ipv6_list_rcv+0x2258/0x26e0
->> napi_complete_done+0x5b1/0x2990
->> mlx5e_napi_poll+0x2ae/0x8d0
->> net_rx_action+0x13e/0x590
->> irq_exit_rcu+0xf5/0x320
->> common_interrupt+0x80/0x90
->> asm_common_interrupt+0x22/0x40
->> cpuidle_enter_state+0xfb/0x273
->> cpu_startup_entry+0x15e/0x260
->> start_secondary+0x8a/0x90
->> secondary_startup_64_no_verify+0xfa/0xfb
->>
->> freed by task 0 on cpu 9 at 260507.927527s:
->> rcu_core_si+0x4ff/0xf10
->> irq_exit_rcu+0xf5/0x320
->> sysvec_apic_timer_interrupt+0x6d/0x80
->> asm_sysvec_apic_timer_interrupt+0x16/0x20
->> cpuidle_enter_state+0xfb/0x273
->> cpu_startup_entry+0x15e/0x260
->> start_secondary+0x8a/0x90
->> secondary_startup_64_no_verify+0xfa/0xfb
+>> Thanks for the hint. If we want to keep some tooling for real hw xdp features
+>> testing, maybe we could add a small part in tools/testing/selftests/drivers/net
+>> and make it use this NetDrvEpEnv ? Or it is a bigger hint that the whole test
+>> about xdp features could be moved there (and then tested by net kselftests
+>> rather than by ebpf ci specifically) ? @Lorenzo and eBPF tests maintainers, any
+>> opinion ?
 >>
 >> Thanks,
->> Martin
+>>
+>> Alexis
+>>
+> 
+> 
 
 
