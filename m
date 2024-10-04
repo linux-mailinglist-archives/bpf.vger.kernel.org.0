@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-40979-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40980-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F268990AEC
-	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 20:19:59 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2BE9E990AF0
+	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 20:20:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 120FD1F2138C
-	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 18:19:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EA757281A00
+	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 18:20:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D9501E32A0;
-	Fri,  4 Oct 2024 18:18:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E5B21E32BB;
+	Fri,  4 Oct 2024 18:18:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DhpcrzUH"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YMYOkPbX"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC4F21E284A;
-	Fri,  4 Oct 2024 18:18:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D42191E32AA;
+	Fri,  4 Oct 2024 18:18:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728065918; cv=none; b=aGi5vUjpQwjgrYQn7SC6jImE+O9levynBb79S9jIo3kmo6hRPhRW2ZfF+06kRtY3rgIL9sbWJ60tigvmrsZpGIP2AQqX5hLjEC/gsb3enya9oofY28m5qSltzkKzpm041Cc6zxXG51jZRrbkjlGzQrAHvtTwGU/jgcOidPf5rY8=
+	t=1728065919; cv=none; b=AcUvSgIOEwBLAte73ao2vWhA8oxl77ddbiF7Pmqjj51x9/60deZuNfpqSvStm+meNinrXqKoyXlKIfOIEndyA2e7VNQ5uz2hD1ZsFHwFA2m9ZzA6RGtSrl2u4C2UXBsdp+u6mff2/GAbn3VfS7RCfiXkDH6i2eoTitdn2dTYB0s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728065918; c=relaxed/simple;
-	bh=2my7iZVJrU4CA6w35Blro+3kSQHI5GlKSS8Rl/NZ5/8=;
+	s=arc-20240116; t=1728065919; c=relaxed/simple;
+	bh=VrlpKBy5TNHBhTslCSmOmCDHVJEv+ytmNDHN7pQ4HOw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=A0N6GKOX4x3EP9cqKHvVc42Hy27xV+qTX9c9M5lT3uIUC0xDHAhjgBa9xivKRXQppNfK60Va4Q7zPzpIG+UknT0eq7yiF6dMXmMUSl5UWew0kicGzKwuii2bl1BhP7xt/UHdhowU+17uBV3tOssbjuXWeif0v7cSz3eFywk+l24=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DhpcrzUH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 475D8C4CECD;
-	Fri,  4 Oct 2024 18:18:37 +0000 (UTC)
+	 MIME-Version; b=thehRWwI5km2zXHQzxnwGPc4d6s3mr2oJZSLmtaJOrkuFbusmuEVKMp+PseWkkIKWC7zZG3mAz6WQUr1dOgv0SIzU5VufbNmr2gqTtVY/ZPnCqzdcvd3MeTPGjb0wN3K+ifmXTtcyVngXsZ+P5UqUz13K5rnCMgJ5G03rVy4q10=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YMYOkPbX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4446C4AF0B;
+	Fri,  4 Oct 2024 18:18:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728065918;
-	bh=2my7iZVJrU4CA6w35Blro+3kSQHI5GlKSS8Rl/NZ5/8=;
+	s=k20201202; t=1728065919;
+	bh=VrlpKBy5TNHBhTslCSmOmCDHVJEv+ytmNDHN7pQ4HOw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=DhpcrzUHnbBOoS87hlywje7n9dTNz0ZNgDIoJ6n6G1qhetCN/Gj7gFbAZNzHpgiTd
-	 LK+Hg/vxo4OoKBy9Gwqd5b1EZGRTQpU5yB7aQyUyCVDM+HOU4sHfaKXJuy6qpK39T5
-	 j5ccNAnC3TvWlQpifnBI4dda1TASOdLQW1Wlq0md/R+ITdwF0FIWEQ6YFfqyRo/w6E
-	 jkftCbYTEn7Q5iVBDHT9lZNm/bWf7MxOZdp2JrkehJXg7L6UDKppte+CD7MZ3hy/7U
-	 Hp0BV42atxfiy37RfPN1kvNXLqtzibfEgitMcr8CBrfY0b0qL87Wm4tTw5zR3gtsRM
-	 wLHLTs1yIDu1g==
+	b=YMYOkPbXdbhBWRW8dVhuANw/kTGPoyACtH+wW7++a8pzwWk+VS3Z4AXhqLmf/1EOL
+	 hYlBmMOj+sMl2aHC9m8k6DsJaSxXkVTBl7VlpMEP+1DFmj5oCk7iuAZ+84G5ajeUx3
+	 GPIeKmiAVhkX3aL3AJHl0SehDi26T63esPwavaOM5TAc28Whx6DpfqtJMCy0j24K7h
+	 pxapYkVAMDxm0Yj5v4sK80vpBaQW0gwSR264q3hV7MENrs03S2eWBN7KAaZfXFruK/
+	 GpgTKEJy2f2Skjqg4ci8BkMSrduUNbQ7WNJRBzuF/UG61KT+cHOyVuhcgi7X8m+Xxl
+	 Lp3pg0KQND1wA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -51,9 +51,9 @@ Cc: Kuan-Wei Chiu <visitorckw@gmail.com>,
 	ast@kernel.org,
 	daniel@iogearbox.net,
 	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.11 05/76] bpftool: Fix undefined behavior in qsort(NULL, 0, ...)
-Date: Fri,  4 Oct 2024 14:16:22 -0400
-Message-ID: <20241004181828.3669209-5-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.11 06/76] bpftool: Fix undefined behavior caused by shifting into the sign bit
+Date: Fri,  4 Oct 2024 14:16:23 -0400
+Message-ID: <20241004181828.3669209-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20241004181828.3669209-1-sashal@kernel.org>
 References: <20241004181828.3669209-1-sashal@kernel.org>
@@ -70,53 +70,51 @@ Content-Transfer-Encoding: 8bit
 
 From: Kuan-Wei Chiu <visitorckw@gmail.com>
 
-[ Upstream commit f04e2ad394e2755d0bb2d858ecb5598718bf00d5 ]
+[ Upstream commit 4cdc0e4ce5e893bc92255f5f734d983012f2bc2e ]
 
-When netfilter has no entry to display, qsort is called with
-qsort(NULL, 0, ...). This results in undefined behavior, as UBSan
-reports:
-
-net.c:827:2: runtime error: null pointer passed as argument 1, which is declared to never be null
-
-Although the C standard does not explicitly state whether calling qsort
-with a NULL pointer when the size is 0 constitutes undefined behavior,
-Section 7.1.4 of the C standard (Use of library functions) mentions:
-
-"Each of the following statements applies unless explicitly stated
-otherwise in the detailed descriptions that follow: If an argument to a
-function has an invalid value (such as a value outside the domain of
-the function, or a pointer outside the address space of the program, or
-a null pointer, or a pointer to non-modifiable storage when the
-corresponding parameter is not const-qualified) or a type (after
-promotion) not expected by a function with variable number of
-arguments, the behavior is undefined."
-
-To avoid this, add an early return when nf_link_info is NULL to prevent
-calling qsort with a NULL pointer.
+Replace shifts of '1' with '1U' in bitwise operations within
+__show_dev_tc_bpf() to prevent undefined behavior caused by shifting
+into the sign bit of a signed integer. By using '1U', the operations
+are explicitly performed on unsigned integers, avoiding potential
+integer overflow or sign-related issues.
 
 Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Reviewed-by: Quentin Monnet <qmo@kernel.org>
-Link: https://lore.kernel.org/bpf/20240910150207.3179306-1-visitorckw@gmail.com
+Acked-by: Quentin Monnet <qmo@kernel.org>
+Link: https://lore.kernel.org/bpf/20240908140009.3149781-1-visitorckw@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/bpf/bpftool/net.c | 3 +++
- 1 file changed, 3 insertions(+)
+ tools/bpf/bpftool/net.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/tools/bpf/bpftool/net.c b/tools/bpf/bpftool/net.c
-index 968714b4c3d45..0ad684e810f34 100644
+index 0ad684e810f34..0f2106218e1f0 100644
 --- a/tools/bpf/bpftool/net.c
 +++ b/tools/bpf/bpftool/net.c
-@@ -824,6 +824,9 @@ static void show_link_netfilter(void)
- 		nf_link_count++;
- 	}
- 
-+	if (!nf_link_info)
-+		return;
-+
- 	qsort(nf_link_info, nf_link_count, sizeof(*nf_link_info), netfilter_link_compar);
- 
- 	for (id = 0; id < nf_link_count; id++) {
+@@ -482,9 +482,9 @@ static void __show_dev_tc_bpf(const struct ip_devname_ifindex *dev,
+ 		if (prog_flags[i] || json_output) {
+ 			NET_START_ARRAY("prog_flags", "%s ");
+ 			for (j = 0; prog_flags[i] && j < 32; j++) {
+-				if (!(prog_flags[i] & (1 << j)))
++				if (!(prog_flags[i] & (1U << j)))
+ 					continue;
+-				NET_DUMP_UINT_ONLY(1 << j);
++				NET_DUMP_UINT_ONLY(1U << j);
+ 			}
+ 			NET_END_ARRAY("");
+ 		}
+@@ -493,9 +493,9 @@ static void __show_dev_tc_bpf(const struct ip_devname_ifindex *dev,
+ 			if (link_flags[i] || json_output) {
+ 				NET_START_ARRAY("link_flags", "%s ");
+ 				for (j = 0; link_flags[i] && j < 32; j++) {
+-					if (!(link_flags[i] & (1 << j)))
++					if (!(link_flags[i] & (1U << j)))
+ 						continue;
+-					NET_DUMP_UINT_ONLY(1 << j);
++					NET_DUMP_UINT_ONLY(1U << j);
+ 				}
+ 				NET_END_ARRAY("");
+ 			}
 -- 
 2.43.0
 
