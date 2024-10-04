@@ -1,191 +1,193 @@
-Return-Path: <bpf+bounces-41006-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41007-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A02AC990FAC
-	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 22:05:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AD37C9910AA
+	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 22:34:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 05032B29908
-	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 19:59:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 14921B2E1FC
+	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 20:07:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DCB81EABC8;
-	Fri,  4 Oct 2024 19:00:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD1D21DE2B1;
+	Fri,  4 Oct 2024 19:28:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="j8DlFaVx"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qv1-f42.google.com (mail-qv1-f42.google.com [209.85.219.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AFFF12F375;
-	Fri,  4 Oct 2024 19:00:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3DE4231CBF
+	for <bpf@vger.kernel.org>; Fri,  4 Oct 2024 19:28:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728068420; cv=none; b=JfkYR28cg+2AudU0TDgTOCE0yUQ3duKG3+/qv1JlbKogUAaY8wPJvWVfL5+l7lkLR5SVWmfUOjq33qdJkC+gJZ6W+iHdpDz0QaY//KUsRL/EivE/P/E+2bYh5QYa1vTDQGDjMoS/AXx1ssWBi58hcVhX0KxUYhg0d+Ui+Act1OE=
+	t=1728070088; cv=none; b=UnboZqQ2Kq6B7UNp/KkM+X2LCAYbb5EhLcY0GQAgfxhKmXcLykTEJ/MKWdN7xIwvIMCQvP3dJiMLDbeS/dcaP3ircTMXraZVsbSAliHp95beFF803Kb02rBeiRvMwgOVew8R9Mhsnds+iaTjt8ns68XJtN9D/YITMFaixvnKHj0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728068420; c=relaxed/simple;
-	bh=SOKYJYKzZbDHyOEtbIb1irA4DK+VBkWWqh78oJuf3eM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tmwle0jRb8lDg8Lk4cv98GMg9YDXYMatyk/opYrOUwjRAWTzsdBQUmKSeVNVxyTKHFKNtNaUScwADGcVd0/wEDdFSX3rJIp4D2cN2M6ISzZx6Mb5qdj0HD4CItSdpbqhI6Ji97xxnkUXb8z0qr45VHKmlZAZOoyuOVmRsUgrOHs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f42.google.com with SMTP id 6a1803df08f44-6cb3ba0a9a2so15504126d6.2;
-        Fri, 04 Oct 2024 12:00:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728068417; x=1728673217;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qkxm/OHPet7Zjw6QCsjdjVbVeK6Q7QSnuwybW1OxgWc=;
-        b=kdJEdvvy7lfWMTwmE8BnmKpslvbA/PCH5hgpATtcPrYZcEoWPLxE2PSxTcPG/HKyUo
-         hPrC4tcL9QiDrvCWZB7EqSBmZf0/ug9DYh6O6vIQ99NRGFCzwUknlV1uBSPit9cjIsFs
-         NGPVz9onvza8WlIR11938D9NlckOKSnqQhOAvWTdbxzNrUH/nubvkaHgYriYdI8I2pjC
-         /qmv+/sKOTPITOZfP/uvHgSHY/CyenjdxedMRKKfzoRecgPk/eaiya5Cgjnd/QFATgb4
-         8oioNyg+tD+ugRrFGmGFGNmhP8JC4z8JV4iz3WkKb3GNJjG1WiorUonMp6maUhaZxJ6M
-         uBww==
-X-Forwarded-Encrypted: i=1; AJvYcCVInmUXG0pwjImXgINzxopwjoh6GO9kPeufV/kFE7Iu9d688EfDpnF/V3Ty7iQQ+0rA0Co=@vger.kernel.org, AJvYcCVZM9BhbejM7TDUkw2ixs9bE1M1AJEHMfNyUbe14Hlsh/SA76UnFdaukzueGg13edQfsf0A30OdP2rSdGG5@vger.kernel.org, AJvYcCVeuGNjcWrburpGgySKY2rEv6qBXSdpg2OxcWhl3vBaPVJ9n/shdTlIKMD47262On/h8qkc3q3jp/qMELwaCgGj@vger.kernel.org
-X-Gm-Message-State: AOJu0YxIdzfANL4DujAVrGfyDlk5MkpxKn8jdEUGWBYMNi2YnCYXfNed
-	Pc3iZ+KTZym2qZZGqMdQ3uuI1vhPnOrgc8jxabLcdC2PvNj5AoBS
-X-Google-Smtp-Source: AGHT+IHwmWhUNZLoKBZBzrHAuiK/CRzNPe6zvX+k5dVAbJhsyyQHmJcbtMkjFYFKuTouPQicMUcpxw==
-X-Received: by 2002:a05:6214:5503:b0:6c3:5833:260f with SMTP id 6a1803df08f44-6cb9a4eafe7mr45102326d6.39.1728068416859;
-        Fri, 04 Oct 2024 12:00:16 -0700 (PDT)
-Received: from maniforge (c-76-141-129-107.hsd1.il.comcast.net. [76.141.129.107])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6cba47512bdsm1688556d6.88.2024.10.04.12.00.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Oct 2024 12:00:15 -0700 (PDT)
-Date: Fri, 4 Oct 2024 14:00:13 -0500
-From: David Vernet <void@manifault.com>
-To: =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>
-Cc: Tejun Heo <tj@kernel.org>, Shuah Khan <shuah@kernel.org>,
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@rivosinc.com>,
-	bpf@vger.kernel.org, linux-riscv@lists.infradead.org,
-	Anders Roxell <anders.roxell@linaro.org>
-Subject: Re: [PATCH] selftests: sched_ext: Add sched_ext as proper selftest
- target
-Message-ID: <20241004190013.GB56767@maniforge>
-References: <20241004094247.795385-1-bjorn@kernel.org>
+	s=arc-20240116; t=1728070088; c=relaxed/simple;
+	bh=O2cB0liHSo08e/idGpj0/onE+EIzJw2YiBcAJ6UU1lQ=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=oidDp0DyX9bZdnZd6aYSaimHTk2DKnskesfdG6zFYN8COUp2dcS3tWfMBOjiyusIqE/benNUj1hyU8ovTQ4U4ygVYmKvaGKy0zYYcB6W0NWqkSCLW9bCo6SMmmdtjVeOfkbLOPrsjXPApfDZZdJmtFnAGry3nt9rUYwDBc0vewA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=j8DlFaVx; arc=none smtp.client-ip=95.215.58.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <a4468429-3b93-49b3-b8e4-122b903c98fb@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1728070081;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7iscizTRfcMiQQZhQKKOOR76+jYVPmHZR3+Up9FwulA=;
+	b=j8DlFaVxWKfXAhg5YQ0LqS4AeJH2Mm6XSoQmAZYoXNAhXtzPrmQRbVSYzo2IurgTWjvlca
+	1Q/3PxXfa/dSBUQQG+fknp2+QL3tu+6o98X32wKMs8zQMaGp51mTRpa3zC3PwQgDPb4BPj
+	EMo2T++IGKQClBh6Qdzpm6HNixMwkQ8=
+Date: Fri, 4 Oct 2024 12:27:55 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="xuk+u8UxomGOBld1"
-Content-Disposition: inline
-In-Reply-To: <20241004094247.795385-1-bjorn@kernel.org>
-User-Agent: Mutt/2.2.13 (00d56288) (2024-03-09)
+Subject: Re: yet another approach Was: [PATCH bpf-next v3 4/5] bpf, x86: Add
+ jit support for private stack
+Content-Language: en-GB
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf <bpf@vger.kernel.org>,
+ Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Kernel Team <kernel-team@fb.com>,
+ Martin KaFai Lau <martin.lau@kernel.org>
+References: <20240926234506.1769256-1-yonghong.song@linux.dev>
+ <CAP01T77-bU5Ewu79QLJDTnt_E8h_VFHuABOD5=oct7_TC_yYGQ@mail.gmail.com>
+ <CAP01T76UnVfn3x7zZH4vJgZMGv_Ygewxg=9gUA-xuOa7pwGr3A@mail.gmail.com>
+ <CAADnVQ+caNh8+fgCj2XeZDrXniYif5Y+rw6vsMOojBO3Qwk+Nw@mail.gmail.com>
+ <CAADnVQKLWi_TfpbiYb1vPMYMqPOPWPS-RGbB0FksEQW5i36poQ@mail.gmail.com>
+ <CAP01T77q_H31mPXPQV4xHifutxxFeuoD8eg75C717MZ=OOeHew@mail.gmail.com>
+ <CAADnVQLfWgpu6WvZRCFo39YHJ=zSSQWcOnaCOqdfyCg8uRoddg@mail.gmail.com>
+ <CAP01T77G63MGvomrd3563bgBcNKUZg0Jc=GGmcGO0zPLS0hcHA@mail.gmail.com>
+ <CAADnVQ+z-s07V_KU91+zGRB3qXGR9nr3w1dMBfCEEgunyes7EA@mail.gmail.com>
+ <8b6c1eb1-de43-4ddb-b2b6-48256bdacddb@linux.dev>
+ <CAP01T77k7bqTx_VRhnUjcOcGDp-y=zJHzKi7S-+domZjhEGfzQ@mail.gmail.com>
+ <CAADnVQ+UByKkpVSg4tC-hoV7DstEYE11WxJ4nbGj27emZ2PFmA@mail.gmail.com>
+ <a3116710-7e55-42ce-abd2-7becee9c275f@linux.dev>
+ <CAADnVQKO1=ywkfULmSE=15dFU4Ovn3OMVbnGpkah5noeDnwtgw@mail.gmail.com>
+ <d8ff2878-c53b-48d7-b624-93aeb2087113@linux.dev>
+In-Reply-To: <d8ff2878-c53b-48d7-b624-93aeb2087113@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
 
---xuk+u8UxomGOBld1
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 10/3/24 10:22 PM, Yonghong Song wrote:
+>
+> On 10/3/24 3:32 PM, Alexei Starovoitov wrote:
+>> On Thu, Oct 3, 2024 at 1:44 PM Yonghong Song 
+>> <yonghong.song@linux.dev> wrote:
+>>>> Looks like the idea needs more thought.
+>>>>
+>>>> in_task_stack() won't recognize the private stack,
+>>>> so it will look like stack overflow and double fault.
+>>>>
+>>>> do you have CONFIG_VMAP_STACK ?
+>>> Yes, my above test runs fine withCONFIG_VMAP_STACK. Let me guard 
+>>> private stack support with
+>>> CONFIG_VMAP_STACK for now. Not sure whether distributions enable
+>>> CONFIG_VMAP_STACK or not.
+>> Good! but I'm surprised it makes a difference.
+>
+> That only for the test case I tried. Now I tried the whole bpf selftests
+> with CONFIG_VMAP_STACK on. There are still some failures. Some of them
+> due to stack protector. I disabled stack protector and then those stack
+> protector error gone. But some other errors show up like below:
+>
+> [   27.186581] kernel tried to execute NX-protected page - exploit 
+> attempt? (uid: 0)
+> [   27.187480] BUG: unable to handle page fault for address: 
+> ffff888109572800
+> [   27.188299] #PF: supervisor instruction fetch in kernel mode
+> [   27.189085] #PF: error_code(0x0011) - permissions violation
+>
+> or
+>
+> [   27.736844] BUG: unable to handle page fault for address: 
+> 0000000080000000
+> [   27.737759] #PF: supervisor instruction fetch in kernel mode
+> [   27.738631] #PF: error_code(0x0010) - not-present page
+> [   27.739455] PGD 0 P4D 0
+> [   27.739818] Oops: Oops: 0010 [#1] PREEMPT SMP PTI
+>
+> ...
+>
+> Some further investigations are needed.
 
-On Fri, Oct 04, 2024 at 11:42:46AM +0200, Bj=F6rn T=F6pel wrote:
-> From: Bj=F6rn T=F6pel <bjorn@rivosinc.com>
 
-Thanks a lot Bj=F6rn for working on this.
+I found one failure case (with stackprotector disabled):
 
-> The sched_ext selftests is missing proper cross-compilation support, a
-> proper target entry, and out-of-tree build support.
->=20
-> When building the kselftest suite, e.g.:
->=20
->   make ARCH=3Driscv CROSS_COMPILE=3Driscv64-linux-gnu- \
->     SKIP_TARGETS=3D"" O=3D/output/foo -C tools/testing/selftests install
->=20
-> The expectation is that the sched_ext is included, cross-built, and
-> placed into /output/foo.
->=20
-> Add CROSS_COMPILE, OUTPUT, and TARGETS support to the sched_ext
-> selftest.
->=20
-> Signed-off-by: Bj=F6rn T=F6pel <bjorn@rivosinc.com>
-> ---
->  tools/testing/selftests/Makefile           |  1 +
->  tools/testing/selftests/sched_ext/Makefile | 59 +++++++++++++++-------
->  2 files changed, 41 insertions(+), 19 deletions(-)
->=20
-> diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/M=
-akefile
-> index b38199965f99..20ee8a0b795c 100644
-> --- a/tools/testing/selftests/Makefile
-> +++ b/tools/testing/selftests/Makefile
-> @@ -88,6 +88,7 @@ TARGETS +=3D rlimits
->  TARGETS +=3D rseq
->  TARGETS +=3D rtc
->  TARGETS +=3D rust
-> +TARGETS +=3D sched_ext
->  TARGETS +=3D seccomp
->  TARGETS +=3D sgx
->  TARGETS +=3D sigaltstack
-> diff --git a/tools/testing/selftests/sched_ext/Makefile b/tools/testing/s=
-elftests/sched_ext/Makefile
-> index 0754a2c110a1..66467a99184d 100644
-> --- a/tools/testing/selftests/sched_ext/Makefile
-> +++ b/tools/testing/selftests/sched_ext/Makefile
-> @@ -13,14 +13,8 @@ LLVM_SUFFIX :=3D $(LLVM)
->  endif
-> =20
->  CC :=3D $(LLVM_PREFIX)clang$(LLVM_SUFFIX) $(CLANG_FLAGS) -fintegrated-as
-> -else
-> -CC :=3D gcc
+[   20.032611] traps: PANIC: double fault, error_code: 0x0
+[   20.032615] Oops: double fault: 0000 [#1] PREEMPT SMP PTI
+[   20.032619] CPU: 0 UID: 0 PID: 1959 Comm: test_progs Tainted: G           OE      6.11.0-10576-g17baa0096769-dirty #1006
+[   20.032623] Tainted: [O]=OOT_MODULE, [E]=UNSIGNED_MODULE
+[   20.032624] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
+[   20.032626] RIP: 0010:error_entry+0x17/0x140
+[   20.032633] Code: ff 0f 01 f8 e9 56 fe ff ff 90 90 90 90 90 90 90 90 90 90 56 48 8b 74 24 08 48 89 7c 24 08 52 51 50 41 50 41 51 41 52 49
+[   20.032635] RSP: 0018:ffffe8ffff400000 EFLAGS: 00010093
+[   20.032637] RAX: ffffe8ffff4000a8 RBX: ffffe8ffff4000a8 RCX: ffffffff82201737
+[   20.032639] RDX: 0000000000000000 RSI: ffffffff8220128d RDI: ffffe8ffff4000a8
+[   20.032640] RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+[   20.032641] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+[   20.032642] R13: 0000000000000000 R14: 000000000002ed80 R15: 0000000000000000
+[   20.032643] FS:  00007f8a3a2006c0(0000) GS:ffff888237c00000(0000) knlGS:ffff888237c00000
+[   20.032645] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   20.032646] CR2: ffffe8ffff3ffff8 CR3: 0000000103580002 CR4: 0000000000370ef0
+[   20.032649] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[   20.032650] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[   20.032651] Call Trace:
+[   20.032660]  <#DF>
+[   20.032664]  ? __die_body+0xaf/0xc0
+[   20.032667]  ? die+0x2f/0x50
+[   20.032670]  ? exc_double_fault+0xbf/0xd0
+[   20.032674]  ? asm_exc_double_fault+0x23/0x30
+[   20.032678]  ? restore_regs_and_return_to_kernel+0x1b/0x1b
+[   20.032681]  ? asm_exc_page_fault+0xd/0x30
+[   20.032684]  ? error_entry+0x17/0x140
+[   20.032687]  </#DF>
 
-Given that we're including ../lib.mk, can we just get rid of this whole blo=
-ck?
+The private stack for cpu 0:
+   priv_stack_ptr cpu 0 = [ffffe8ffff434000, ffffe8ffff438000] (total 16KB)
+That is, the top stack is ffffe8ffff438000 and the bottom stack is ffffe8ffff434000.
 
->  endif # LLVM
-> =20
-> -ifneq ($(CROSS_COMPILE),)
-> -$(error CROSS_COMPILE not supported for scx selftests)
-> -endif # CROSS_COMPILE
-> -
->  CURDIR :=3D $(abspath .)
->  REPOROOT :=3D $(abspath ../../../..)
->  TOOLSDIR :=3D $(REPOROOT)/tools
-> @@ -34,18 +28,39 @@ GENHDR :=3D $(GENDIR)/autoconf.h
->  SCXTOOLSDIR :=3D $(TOOLSDIR)/sched_ext
->  SCXTOOLSINCDIR :=3D $(TOOLSDIR)/sched_ext/include
-> =20
-> -OUTPUT_DIR :=3D $(CURDIR)/build
-> +ifeq (,$(OUTPUT))
-> +OUTPUT :=3D $(CURDIR)/build
-> +RUNNER_DIR :=3D $(CURDIR)
-> +else
-> +OUTPUT_DIR :=3D $(OUTPUT)
+During bpf execution, a softirq may happen, at that point,
+stack pointer becomes:
+    RSP: 0018:ffffe8ffff400000 (see above)
+and there is a read/write (mostly write) to address
+    CR2: ffffe8ffff3ffff8
+And this may cause a fault.
+After this fault, there are some further access and probably because
+of invalid stack, double fault happens.
 
-This breaks if you use make from the selftests/sched_ext directory.  AFAICT=
- it
-looks like OUTPUT is always set in ../lib.mk, so we always go to the OUTPUT=
-_DIR
-:=3D $(CURDIR) branch. Because of that, running `make clean` will delete the
-whole sched_ext selftests directory. Also, did you mean for the first branc=
-h to
-be:
+So the quesiton is why RSP is reset to ffffe8ffff400000?
+I have not figured out which code changed this? Maybe somebody can help?
 
-+OUTPUT_DIR :=3D $(CURDIR)/build
-
-as opposed to:
-
-> +OUTPUT :=3D $(CURDIR)/build
-
-[...]
-
-Thanks,
-David
-
---xuk+u8UxomGOBld1
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEARYKAB0WIQRBxU1So5MTLwphjdFZ5LhpZcTzZAUCZwA7PQAKCRBZ5LhpZcTz
-ZPoZAP9bSuKYYs994wmUp8WMfOXDiFGe8xsav/5htQkIbRVslwD+OudAqVtsa2Qe
-PbwPgF0KtahM0Aa0bMGJ3l9vyX7aTAw=
-=t/6n
------END PGP SIGNATURE-----
-
---xuk+u8UxomGOBld1--
+>
+>> Please still root cause the crash without VMAP_STACK.
+>
+> Sure. Let me investigate cases with VMAP_STACK first and
+> then will try to look at it without VMAP_STACK.
+>
+>>
+>> We need to do a lot more homework here before proceeding.
+>> Look at arch/x86/kernel/dumpstack_64.c
+>> At least we need new stack_type for priv stack.
+>> stack_type_unknown doesn't inspire confidence.
+>> Need to make sure stack trace is still reliable with priv stack.
+>> Though it may look appealing from performance pov.
+>> We may need to go back to r9 approach with push/pop around calls,
+>> since that is surely keeping unwinder happy
+>> while this approach will have to teach unwinder.
+>
+> Good point.
+>
+>
 
