@@ -1,105 +1,94 @@
-Return-Path: <bpf+bounces-40918-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40919-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CF9B98FD45
-	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 08:24:15 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DCD9E98FE5F
+	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 10:02:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E896C1F23058
-	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 06:24:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A2AEB281C13
+	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 08:02:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF29E126C14;
-	Fri,  4 Oct 2024 06:24:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A535813B58F;
+	Fri,  4 Oct 2024 08:01:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="d6g66t3i"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uPAQ/fIA"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE4B54DA00;
-	Fri,  4 Oct 2024 06:24:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BC6B84D29;
+	Fri,  4 Oct 2024 08:01:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728023045; cv=none; b=gY/Xt+4KoGngRSDCKSKRE4xVI9BFED3b56dmSLmXmSbsH2AmWPMEEc8sjj/a743BdVTJjGjeOb6gmEeHAsaZ32rcOkqBjMYOblYfDZZxSO4JBHzUQUp0lALnz4+94oDcAU6iNLmNHWn7l45+VcrQLbiaJuyTNimkjBmeawh3eZk=
+	t=1728028902; cv=none; b=OPUL+DU/42ARJ2YqczWDUJmdvV4NQmt41ieKAArPXW9Z2okm1/PTjbaWHZV6zL3L3OHRYL5ah9bBLT31aKDOfT8POFXD09cvAauxesCyIlsCmN+3TVXpIxEnw2912bV6Hn0yR76ncUHs7XsWoBdHjJPxWnJ5CrYz7ULt6aofsRY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728023045; c=relaxed/simple;
-	bh=HvkxK1aTVBWtEPE6QbXJJ7jlS4gRi5139c+pO4Kp4zE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=FUtyIKpjoZUxaMcYVx1Vn6OucU0iUr711zHfBnJZQw/wSGY7yvJwkGZI/ig+FWmpKVU4uRrDjmcB0KA/GmUITpJkl9pG5g3+rFWjCaR7DMAQHHuDJJO2v1Zaz9WZMSc0cO6Ce1FqMBJDbrekIT8jCWUYAVG7byS3+7a9tcwe9G0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=d6g66t3i; arc=none smtp.client-ip=217.70.183.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id C6793FF802;
-	Fri,  4 Oct 2024 06:23:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1728023034;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=03W9nGxDFHr9kO1XmOKBkDSteAW+ydtDQleISvuWWCk=;
-	b=d6g66t3ipiiFrIVhtdhw4UAkXa/n2n9VnL5Jnjqe5xUr6SEykqyOiY04TLUzM6qoRrY3q3
-	1B1CDCdg+7V6rO+Nkl5g6yEpcatu0Nh5j/T2KlnGAKI+AZMoDiRyZQeL/imcglgPYwfbCN
-	IGzxg859wHPXJgHRUO99BAh0xKZpUHyQcUh7dsXFqajJ2nxQq+0WiDfeJm1awZmsGNUieU
-	zcqCZ0had7VD0LU0YgNT/gxRApe7IE9MhGVdjx1+1sr7YMqMuMa8ejV+0efDgWxsLW+Iiw
-	a1rAevU5pjsCA+T8pdIQcBYYkI4KYGY7fPS0WaFbn0xFFqXNUd4prpZL+ZOTwA==
-Message-ID: <24611a2f-ff5a-47e4-af48-9faad03273d3@bootlin.com>
-Date: Fri, 4 Oct 2024 08:23:52 +0200
+	s=arc-20240116; t=1728028902; c=relaxed/simple;
+	bh=czh6SU5zL2iJcYy6jW4TFILwI5XBwlvFj/KY4P03WUg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=OeKLpDwqRrGT26Aq1BoqEh8A8bEi/w/2Km0Lqg3/cbjO1OuC3Bl97M82jgNejcd6BmV5dbKCZfdJY9SVOrF4P18t+8NobPgg9NqKAPkoZ/dqllsXJ/TOWS2BBvLPZFVyV7YKUvn8e9CThycXq24KT0NEJTRIGdOwdgOqBVhcCrc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uPAQ/fIA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C8BFC4CECD;
+	Fri,  4 Oct 2024 08:01:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1728028901;
+	bh=czh6SU5zL2iJcYy6jW4TFILwI5XBwlvFj/KY4P03WUg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=uPAQ/fIAE/QAAjeYGXWo1YTo3Y0qqWBhc/8Y/n0CMFHT2N1RT8KtWDpQStMeiGlkt
+	 rbq2a1fnLhcuWcxo3xc3K2rQ0DOJ4IUq8kQQyNc1baSXmayh3uPGajSN6/K9CjE5HX
+	 7UjKViGzApNDpCSTdeI0WcidECgzLJgnwAEW959FuxTuCr26DAKT/MyLXbMvygh08X
+	 rAB+T91BbTMa5I9efZZvLvdc8O/T6kmDhnb7zrYqN4kTjejmW90sIyfPoCVI+3ZJJ/
+	 C6AFH41VHQIBZzj241AyYWqiQStA2hNt6zLdbAqhNOa5qrUIFB9hb9ismRdq+xvV7O
+	 7zs6JklKtCP+g==
+Date: Fri, 4 Oct 2024 10:01:35 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: Andrii Nakryiko <andrii@kernel.org>
+Cc: linux-trace-kernel@vger.kernel.org, peterz@infradead.org, 
+	oleg@redhat.com, rostedt@goodmis.org, mhiramat@kernel.org, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, jolsa@kernel.org, paulmck@kernel.org, willy@infradead.org, 
+	surenb@google.com, akpm@linux-foundation.org, linux-mm@kvack.org, mjguzik@gmail.com, 
+	jannh@google.com, mhocko@kernel.org, vbabka@suse.cz, mingo@kernel.org, 
+	Amir Goldstein <amir73il@gmail.com>
+Subject: Re: [PATCH v2 tip/perf/core 3/5] fs: add back RCU-delayed freeing of
+ FMODE_BACKING file
+Message-ID: <20241004-holzweg-wahrgemacht-c1429b882127@brauner>
+References: <20241001225207.2215639-1-andrii@kernel.org>
+ <20241001225207.2215639-4-andrii@kernel.org>
+ <20241003-lachs-handel-4f3a9f31403d@brauner>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v2] selftests/bpf: convert test_xdp_features.sh
- to test_progs
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Jakub Kicinski <kuba@kernel.org>,
- Lorenzo Bianconi <lorenzo@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
- Shuah Khan <shuah@kernel.org>, "David S. Miller" <davem@davemloft.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- Maxime Chevallier <maxime.chevallier@bootlin.com>, ebpf@linuxfoundation.org,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
- linux-kselftest@vger.kernel.org, netdev@vger.kernel.org
-References: <20240910-convert_xdp_tests-v2-1-a46367c9d038@bootlin.com>
- <64df8d41-6cfb-45a9-8337-5cc04daedb60@linux.dev> <ZuVWmxoqXFI3qvVI@lore-desk>
- <20240914063828.7bd73c5e@kernel.org>
- <464e0ae0-d6e3-4da4-a157-f74260f96275@bootlin.com>
- <366e4392-bd00-4120-8585-a71b3952e365@linux.dev>
- <6d23b607-b6d6-4074-8778-c50bf3bd0b91@linux.dev>
-Content-Language: en-US
-From: =?UTF-8?Q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
-In-Reply-To: <6d23b607-b6d6-4074-8778-c50bf3bd0b91@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: alexis.lothore@bootlin.com
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20241003-lachs-handel-4f3a9f31403d@brauner>
 
-On 10/4/24 06:44, Martin KaFai Lau wrote:
-> On 9/24/24 6:37 PM, Martin KaFai Lau wrote:
->> There are other .sh tests that could better use the test_progs migration. In
->> particular the ones without existing test coverage. For non XDP related,
->> test_tcp_check_syncookie.sh, test_flow_dissector.sh, and test_tc_edt.sh should
->> be the good ones.
+On Thu, Oct 03, 2024 at 11:13:54AM GMT, Christian Brauner wrote:
+> On Tue, Oct 01, 2024 at 03:52:05PM GMT, Andrii Nakryiko wrote:
+> > 6cf41fcfe099 ("backing file: free directly") switched FMODE_BACKING
+> > files to direct freeing as back then there were no use cases requiring
+> > RCU protected access to such files.
+> > 
+> > Now, with speculative lockless VMA-to-uprobe lookup logic, we do need to
+> > have a guarantee that struct file memory is not going to be freed from
+> > under us during speculative check. So add back RCU-delayed freeing
+> > logic.
+> > 
+> > We use headless kfree_rcu_mightsleep() variant, as file_free() is only
+> > called for FMODE_BACKING files in might_sleep() context.
+> > 
+> > Suggested-by: Suren Baghdasaryan <surenb@google.com>
+> > Cc: Christian Brauner <brauner@kernel.org>
+> > Cc: Amir Goldstein <amir73il@gmail.com>
+> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> > ---
 > 
-> I just took a closer look at the test_tc_edt.* for another reason. It seems
-> doing some bandwidth test which may not be a good fit (e.g. too flaky) for
-> test_progs. I would leave it to the bottom of the todo list for now.
+> Reviewed-by: Christian Brauner <brauner@kernel.org>
 
-ACK, thanks
-
-
--- 
-Alexis Lothoré, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Fwiw, I have another patch series for files that I'm testing that will
+require me to switch FMODE_BACKING to a SLAB_TYPSAFE_BY_RCU cache. That
+shouldn't matter for your use-case though.
 
