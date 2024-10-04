@@ -1,34 +1,34 @@
-Return-Path: <bpf+bounces-40934-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40935-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B0F4990297
-	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 14:00:41 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB7B39902B4
+	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 14:09:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5EABD1C20F7D
-	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 12:00:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9318E1F22471
+	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 12:09:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8618E15852F;
-	Fri,  4 Oct 2024 12:00:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C39215C15B;
+	Fri,  4 Oct 2024 12:08:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="MPVX8o+j"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="C0VDbTky"
 X-Original-To: bpf@vger.kernel.org
 Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A99C1FAA
-	for <bpf@vger.kernel.org>; Fri,  4 Oct 2024 12:00:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4793C15B99E;
+	Fri,  4 Oct 2024 12:08:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728043234; cv=none; b=R8zKPUQOH0s1UnGJ1fliQ8rHoRGaaynii1fcbdItyLv1Lo5HGXssn3Z5T+JhjA/8TR/BQjAwsWVgB89tIl3D3fdvSXw5WbDNzTKnMmsyT+Cn+pcjgqqofTGzZ/vYAMISI2dl48ZPIkzqfUHN7kqAOBY3OoGBZ4ZdLN44CabjTAI=
+	t=1728043728; cv=none; b=uJGAHMDePVIYVa1b9KcB7Q/u/fAGzgx6U70ezzecYR2dba5LoZ1WYR7f/FO1Zh/drV5aE9iBDNAaY1LgKqBLwiJDxpp27h9gW3xMigjGITNDWFlVfbqVQ+OCh6ldfnLot6D2VqJXs+0o/ZEfVJIgjubT6lEK1E622vWW5uJwSVg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728043234; c=relaxed/simple;
-	bh=gd9ePzkhKdhnCVIqyoGGXxcnRuI9cYgH9N6euSSDmV8=;
+	s=arc-20240116; t=1728043728; c=relaxed/simple;
+	bh=PNoRABAxxGHN+gWreU+upS1oZMnOjX2mtQk2A4lRsD8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=AYmU3ygHwIg6JTozL7oE942b+tpTHE8mVGWpJziFX2VOFFz3n0Z0ZjiZAUQpA74/C/1pV3VSTIXEDH15aWQM27uvgMh56P4n6+K/7a0c1NYVuMcF5ds9CF8GYULNkeRiksTJsaYHaCr/d9punapGhht0V3rQEeOuj3TKFzHaOlo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=MPVX8o+j; arc=none smtp.client-ip=213.133.104.62
+	 In-Reply-To:Content-Type; b=ZuNMYEPVo34nWZF0zgtlTWUMNfkYw+ZjEdtUwcFd1r2HBDkGyxEwiFLuEvn3yQ/ABj7/xSuOPhrNsBN0n6KaywucUFjCLjZ8pzXQGhYTth+Ng8ThcxzKpPDTBFkvRGk6L6JPUylXAN7RqHC+3TZTPsxEUs7GfYR1dRBkA7GT8L8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=C0VDbTky; arc=none smtp.client-ip=213.133.104.62
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -36,25 +36,25 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=Ssr3oa/J0uDwMCbh5IAmJd/aJaUp+YVgNfbC0eRVOQk=; b=MPVX8o+j9tjUQBmG+whM5W/IK9
-	HqSFN6oneoK4/k/p8cAw6EfDiSnlhdlVrW6gGzHodzoWcSNMyK819dbFCw8D4JkMs4Cx4uTwRVCsX
-	RykEv+zx8DGni0zgMXIejGTbdNDoDYMbqVcL4AfueKclSg9gBcmiCUTLSF+UaOuQ5WbeJ7l9VkA7n
-	dUP5XRW6L4tP8Q3Tj64r5eghqSEB0rvMsPmhGlmaoPeXv9Uh2CNprQEvbVMBfEAFpz/LdePwz0/V0
-	2sQrO3y91GDSWAXe+4oVOxQEwsr3afjGw2W5QB4L3XXw1g8RS+JeEN5kIpgWdQeurJq5HBN2JUHFu
-	fkKiBn0w==;
-Received: from sslproxy04.your-server.de ([78.46.152.42])
+	bh=44Xt4YN/Xf2l//UJjhes9TdlgKq7DvXnQRjPRVK23fE=; b=C0VDbTkyC3Qyc8wWZHo0nlWTzN
+	z6EAIzHkCehHZWkLfF2xMYzhMRHWoPy7AJvxflhWG3aeVf0R/39XnWVlFotxfKYnNk3DlhA0U+wKZ
+	7O6IgNkhkAaMy/YGC4RHzPpu7PDcQf8AuB3vaV5lbhRceQTF3J7rhQAle0ppS9z/f+rLrCW7FwQ9e
+	hkV+C+BeMK+J+pfW3A4OhYiPhh9SUvcsjPS7FKGvi8KoV0XTgVSe+1SMcx1iWfXT9yEQqRl2iav6w
+	sVs9Yw/42PqixwDXAl8GyZw7l4VdCJEUAhmaZe9b2kRov/KYozNaV1IKl1AE6iuR0PVWCu2/msqVK
+	tBkK3dRw==;
+Received: from sslproxy07.your-server.de ([78.47.199.104])
 	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1swgyz-0001bh-3R; Fri, 04 Oct 2024 14:00:28 +0200
+	id 1swh6t-0002tz-76; Fri, 04 Oct 2024 14:08:39 +0200
 Received: from [178.197.249.47] (helo=[192.168.1.114])
-	by sslproxy04.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	by sslproxy07.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1swgyy-0000yj-1g;
-	Fri, 04 Oct 2024 14:00:28 +0200
-Message-ID: <a67821e7-e0e2-442e-a7c4-30889a482806@iogearbox.net>
-Date: Fri, 4 Oct 2024 14:00:28 +0200
+	id 1swh6s-000HTD-1f;
+	Fri, 04 Oct 2024 14:08:38 +0200
+Message-ID: <51371534-5813-480f-b797-f073c31df5de@iogearbox.net>
+Date: Fri, 4 Oct 2024 14:08:38 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -62,12 +62,12 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v2 1/2] bpf: add get_netns_cookie helper to tc
- programs
-To: Mahe Tardy <mahe.tardy@gmail.com>, bpf@vger.kernel.org
-Cc: martin.lau@linux.dev, john.fastabend@gmail.com
-References: <f05e5f07-467d-441a-8113-0a7c4cb2c842@iogearbox.net>
- <20241002175726.304608-1-mahe.tardy@gmail.com>
+Subject: Re: [PATCH bpf-next 1/6] xsk: get rid of xdp_buff_xsk::xskb_list_node
+To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>, bpf@vger.kernel.org,
+ ast@kernel.org, andrii@kernel.org
+Cc: netdev@vger.kernel.org, magnus.karlsson@intel.com, bjorn@kernel.org
+References: <20241002155441.253956-1-maciej.fijalkowski@intel.com>
+ <20241002155441.253956-2-maciej.fijalkowski@intel.com>
 Content-Language: en-US
 From: Daniel Borkmann <daniel@iogearbox.net>
 Autocrypt: addr=daniel@iogearbox.net; keydata=
@@ -113,62 +113,23 @@ Autocrypt: addr=daniel@iogearbox.net; keydata=
  rUD9YI1Je/WifL/HbIubHCCdK8/N7rblgUrZJMG3W+7vAvZsOh/6VTZeP4wCe7Gs/cJhE2gI
  DmGcR+7rQvbFQC4zQxEjo8fNaTwjpzLM9NIp4vG9SDIqAm20MXzLBAeVkofixCsosUWUODxP
  owLbpg7pFRJGL9YyEHpS7MGPb3jSLzucMAFXgoI8rVqoq6si2sxr2l0VsNH5o3NgoAgJNIg=
-In-Reply-To: <20241002175726.304608-1-mahe.tardy@gmail.com>
+In-Reply-To: <20241002155441.253956-2-maciej.fijalkowski@intel.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Authenticated-Sender: daniel@iogearbox.net
 X-Virus-Scanned: Clear (ClamAV 0.103.10/27417/Fri Oct  4 10:53:24 2024)
 
-On 10/2/24 7:57 PM, Mahe Tardy wrote:
-> This is needed in the context of Cilium and Tetragon to retrieve netns
-> cookie from hostns when traffic leaves Pod, so that we can correlate
-> skb->sk's netns cookie.
+On 10/2/24 5:54 PM, Maciej Fijalkowski wrote:
+> Let's bring xdp_buff_xsk back to occupying 2 cachelines by removing
+> xskb_list_node - for the purpose of gathering the xskb frags
+> free_list_node can be used, head of the list (xsk_buff_pool::xskb_list)
+> stays as-is, just reuse the node ptr.
 > 
-> Signed-off-by: Mahe Tardy <mahe.tardy@gmail.com>
-> ---
->   net/core/filter.c | 13 +++++++++++++
->   1 file changed, 13 insertions(+)
+> It is safe to do as a single xdp_buff_xsk can never reside in two
+> pool's lists simultaneously.
 > 
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index cd3524cb326b..6e80991125ba 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -5138,6 +5138,17 @@ static u64 __bpf_get_netns_cookie(struct sock *sk)
->   	return net->net_cookie;
->   }
-> 
-> +BPF_CALL_1(bpf_get_netns_cookie, struct sk_buff *, skb)
-> +{
-> +	return __bpf_get_netns_cookie(skb->sk ? skb->sk : NULL);
-> +}
-> +
-> +static const struct bpf_func_proto bpf_get_netns_cookie_proto = {
-> +	.func           = bpf_get_netns_cookie,
-> +	.ret_type       = RET_INTEGER,
-> +	.arg1_type      = ARG_PTR_TO_CTX_OR_NULL,
+> Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 
-This basically tells the verifier that NULL or context can be passed to the
-helper. As-is above, the `skb->sk ?` will trigger a NULL pointer dereference.
-
-If you look into other implementations, the above should rather look like:
-
-   return __bpf_get_netns_cookie(skb && skb->sk ? skb->sk : NULL);
-
-> +};
-> +
->   BPF_CALL_1(bpf_get_netns_cookie_sock, struct sock *, ctx)
->   {
->   	return __bpf_get_netns_cookie(ctx);
-> @@ -8209,6 +8220,8 @@ tc_cls_act_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
->   		return &bpf_skb_under_cgroup_proto;
->   	case BPF_FUNC_get_socket_cookie:
->   		return &bpf_get_socket_cookie_proto;
-> +	case BPF_FUNC_get_netns_cookie:
-> +		return &bpf_get_netns_cookie_proto;
->   	case BPF_FUNC_get_socket_uid:
->   		return &bpf_get_socket_uid_proto;
->   	case BPF_FUNC_fib_lookup:
-> --
-> 2.34.1
-> 
+Given you send v2 anyway, pls also double check the clang errors from netdev CI:
+https://netdev.bots.linux.dev/static/nipa/894909/13820003/build_clang/summary
 
