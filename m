@@ -1,332 +1,281 @@
-Return-Path: <bpf+bounces-41028-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41029-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EC8D991263
-	for <lists+bpf@lfdr.de>; Sat,  5 Oct 2024 00:39:22 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 535CB991291
+	for <lists+bpf@lfdr.de>; Sat,  5 Oct 2024 00:57:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DCBCF1F23ED5
-	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 22:39:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C5ADDB212AE
+	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 22:57:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99D1C1B4F26;
-	Fri,  4 Oct 2024 22:39:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B77814D439;
+	Fri,  4 Oct 2024 22:57:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IAcVqJTb"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 488241ADFE5;
-	Fri,  4 Oct 2024 22:39:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D067214BF92;
+	Fri,  4 Oct 2024 22:57:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728081554; cv=none; b=svBStdEpSnnYBA/ylADYB0DYhYmGKAKdB3/c23xtDsXIL23cqrjVDzhsRe2ANfYxAPx0Vi7Nd1O1Y67a8QBPab1ub5UVd8eipUA8r38w1pLLITRW0mBfZcwwKTHYQxuavrbtNp03D9RVffbu8iHo9yg5RpxmyB4fFNMXN6xkIAE=
+	t=1728082658; cv=none; b=P/Hl8VYZmMKebUqLwRUGmZDSMnzjRiP57tpKj2w9fYqPiw0MRnhQJMKEWDj0oX5knpTM8dOl9Yl/71adVEmCIGCoR3fZ76u+3zlq3OVz0vnnU+UBLAezrDvIdc4/JtFdQ/BG1eDmT0C/5F5XyDgaRDXh2AegjNybeYukiBB1cQ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728081554; c=relaxed/simple;
-	bh=tefueRlwND1jrTinLe9/yebVtVaMB4nAUXnZwi6vS2U=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=g8rowLzGbBMxupg/y97nETRXOL8R83HOSHH8NC3RfP2CPNCgwnWeQZ0BPNP+Hw/E/vLlF5DvZ4ElICzdQufoWKy9kjkbpaX/OOEzyjkWM/GBrMOimq2L1jnyxahMqeRAlK/PohqIIK3sSnBYbBsDcs4Q0KzwXkwmNSnv71qXc5M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D489BC4CEC6;
-	Fri,  4 Oct 2024 22:39:12 +0000 (UTC)
-Date: Fri, 4 Oct 2024 18:40:08 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Sven Schnelle <svens@linux.ibm.com>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland
- <mark.rutland@arm.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- bpf@vger.kernel.org
-Subject: Re: [PATCH 6/7] tracing: add support for function argument to graph
- tracer
-Message-ID: <20241004184008.151c64a7@gandalf.local.home>
-In-Reply-To: <20240904065908.1009086-7-svens@linux.ibm.com>
-References: <20240904065908.1009086-1-svens@linux.ibm.com>
-	<20240904065908.1009086-7-svens@linux.ibm.com>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1728082658; c=relaxed/simple;
+	bh=qVjDmqSZwjw9opZT+5TeJEUEe/n3oLyxDf4L24muHzk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=UFkAV5mpJEWlC+kljPQX0WyW9lulnepUjwS2O1w92SveymB6vkudHgc55mE5lfH8fYNH1/PH3yXJ5DeBt/WoTg2lOCF9a1hr9CvnmdRzgYUI+P+6CLTDhvH2MNkCoHXf2ep+HxA6NiQx27KMxsNUFLG+dT9ti3PrB0TvVvdoiLM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IAcVqJTb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D4DEC4CED2;
+	Fri,  4 Oct 2024 22:57:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1728082658;
+	bh=qVjDmqSZwjw9opZT+5TeJEUEe/n3oLyxDf4L24muHzk=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=IAcVqJTbpoSqWwg6W7hK2MFIU8Ijvon0F3DYu9FVRhDWnOAZ7tpai5CDPmZ6GESfm
+	 5k4UfJRAZf1M1Qgs/CoDKUI+/j0t+hVrAfmXz7CN4yNjVD0/9AIiGsg1SWksyDUTkY
+	 q97lltyPUj/FDep7HpfIHy3bDo3rwRuyJqh0YjFrkXFaQqPagVqDFE5jD6Z7NqXYLK
+	 u8+7iOwhOTEY6OM2HRtFSOQWfPpANogTptch092aSauSzzhY08DAH3J1rcul7ttiBB
+	 dWOaH/0QVPGfrVEi24v4rqVT1Hm4OzFDUWBNXI/ajRYkqPn3qYs+5YhrYC9gEShly1
+	 Ff4pWyeyB4zxA==
+Received: by mail-il1-f171.google.com with SMTP id e9e14a558f8ab-3a1a412638fso11022695ab.1;
+        Fri, 04 Oct 2024 15:57:38 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCU2f7+RvAX1hk3CoaEvy/PizsUQUTfnMTUYmmOiBp+SJVoUK1fZt/QluQODIuBWdU64+JY8xnpauFyPQ3xA@vger.kernel.org, AJvYcCUyL53XwJFRKmj7O059rdndfazdO5eD862BCEPo3fN8Q7qvaD7EOigQIUUd9mHShI2Im+w=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzNzZDvx0XVctW1De1UA+OU5fAzvuMYpBirgnRmuju7e7l6BtfE
+	swMvAsR1CI59FfrFwMRxGnNn0yS8XUc0I5YqmrGfCNAmPoEQ2CFSzD4TK4+ebfhcYTC2kIaLLQk
+	+9cXT1RN1RZD7ZYIWsJaWMaIJLIE=
+X-Google-Smtp-Source: AGHT+IFxRndEcVq6a0ZjsKN35u+f0Bwc6BGCMWePGg+IW0DnMklxekOyLQfc291uwPNil47MRqUyEBZPrNFtxWwugsc=
+X-Received: by 2002:a05:6e02:1fcf:b0:3a0:533e:3c0a with SMTP id
+ e9e14a558f8ab-3a3759925c7mr47646525ab.7.1728082657742; Fri, 04 Oct 2024
+ 15:57:37 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20241002180956.1781008-1-namhyung@kernel.org> <20241002180956.1781008-3-namhyung@kernel.org>
+ <CAPhsuW7Bh-ZXfM2aYB=Yj8WaJHFc==AKmv6LDRgBq-TfdQ3s8A@mail.gmail.com>
+ <ZwBdS86yBtOWy3iD@google.com> <CAPhsuW6AhfG7Xv2izDYnMM+z03X29peZfmWNy0rf98aEaAUfVg@mail.gmail.com>
+ <ZwBk8i23odCe7qVK@google.com>
+In-Reply-To: <ZwBk8i23odCe7qVK@google.com>
+From: Song Liu <song@kernel.org>
+Date: Fri, 4 Oct 2024 15:57:26 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW4AjZMQxCbqYmEgbnkP0gWenKo4wVi8tW1zYcsaF5h7iQ@mail.gmail.com>
+Message-ID: <CAPhsuW4AjZMQxCbqYmEgbnkP0gWenKo4wVi8tW1zYcsaF5h7iQ@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 2/3] mm/bpf: Add bpf_get_kmem_cache() kfunc
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Roman Gushchin <roman.gushchin@linux.dev>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, LKML <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org, 
+	Andrew Morton <akpm@linux-foundation.org>, Christoph Lameter <cl@linux.com>, 
+	Pekka Enberg <penberg@kernel.org>, David Rientjes <rientjes@google.com>, 
+	Joonsoo Kim <iamjoonsoo.kim@lge.com>, Vlastimil Babka <vbabka@suse.cz>, 
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm@kvack.org, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Kees Cook <kees@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed,  4 Sep 2024 08:59:00 +0200
-Sven Schnelle <svens@linux.ibm.com> wrote:
+On Fri, Oct 4, 2024 at 2:58=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> w=
+rote:
+>
+> On Fri, Oct 04, 2024 at 02:36:30PM -0700, Song Liu wrote:
+> > On Fri, Oct 4, 2024 at 2:25=E2=80=AFPM Roman Gushchin <roman.gushchin@l=
+inux.dev> wrote:
+> > >
+> > > On Fri, Oct 04, 2024 at 01:10:58PM -0700, Song Liu wrote:
+> > > > On Wed, Oct 2, 2024 at 11:10=E2=80=AFAM Namhyung Kim <namhyung@kern=
+el.org> wrote:
+> > > > >
+> > > > > The bpf_get_kmem_cache() is to get a slab cache information from =
+a
+> > > > > virtual address like virt_to_cache().  If the address is a pointe=
+r
+> > > > > to a slab object, it'd return a valid kmem_cache pointer, otherwi=
+se
+> > > > > NULL is returned.
+> > > > >
+> > > > > It doesn't grab a reference count of the kmem_cache so the caller=
+ is
+> > > > > responsible to manage the access.  The intended use case for now =
+is to
+> > > > > symbolize locks in slab objects from the lock contention tracepoi=
+nts.
+> > > > >
+> > > > > Suggested-by: Vlastimil Babka <vbabka@suse.cz>
+> > > > > Acked-by: Roman Gushchin <roman.gushchin@linux.dev> (mm/*)
+> > > > > Acked-by: Vlastimil Babka <vbabka@suse.cz> #mm/slab
+> > > > > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> > > > > ---
+> > > > >  kernel/bpf/helpers.c |  1 +
+> > > > >  mm/slab_common.c     | 19 +++++++++++++++++++
+> > > > >  2 files changed, 20 insertions(+)
+> > > > >
+> > > > > diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> > > > > index 4053f279ed4cc7ab..3709fb14288105c6 100644
+> > > > > --- a/kernel/bpf/helpers.c
+> > > > > +++ b/kernel/bpf/helpers.c
+> > > > > @@ -3090,6 +3090,7 @@ BTF_ID_FLAGS(func, bpf_iter_bits_new, KF_IT=
+ER_NEW)
+> > > > >  BTF_ID_FLAGS(func, bpf_iter_bits_next, KF_ITER_NEXT | KF_RET_NUL=
+L)
+> > > > >  BTF_ID_FLAGS(func, bpf_iter_bits_destroy, KF_ITER_DESTROY)
+> > > > >  BTF_ID_FLAGS(func, bpf_copy_from_user_str, KF_SLEEPABLE)
+> > > > > +BTF_ID_FLAGS(func, bpf_get_kmem_cache, KF_RET_NULL)
+> > > > >  BTF_KFUNCS_END(common_btf_ids)
+> > > > >
+> > > > >  static const struct btf_kfunc_id_set common_kfunc_set =3D {
+> > > > > diff --git a/mm/slab_common.c b/mm/slab_common.c
+> > > > > index 7443244656150325..5484e1cd812f698e 100644
+> > > > > --- a/mm/slab_common.c
+> > > > > +++ b/mm/slab_common.c
+> > > > > @@ -1322,6 +1322,25 @@ size_t ksize(const void *objp)
+> > > > >  }
+> > > > >  EXPORT_SYMBOL(ksize);
+> > > > >
+> > > > > +#ifdef CONFIG_BPF_SYSCALL
+> > > > > +#include <linux/btf.h>
+> > > > > +
+> > > > > +__bpf_kfunc_start_defs();
+> > > > > +
+> > > > > +__bpf_kfunc struct kmem_cache *bpf_get_kmem_cache(u64 addr)
+> > > > > +{
+> > > > > +       struct slab *slab;
+> > > > > +
+> > > > > +       if (!virt_addr_valid(addr))
+> > > > > +               return NULL;
+> > > > > +
+> > > > > +       slab =3D virt_to_slab((void *)(long)addr);
+> > > > > +       return slab ? slab->slab_cache : NULL;
+> > > > > +}
+> > > >
+> > > > Do we need to hold a refcount to the slab_cache? Given
+> > > > we make this kfunc available everywhere, including
+> > > > sleepable contexts, I think it is necessary.
+> > >
+> > > It's a really good question.
+> > >
+> > > If the callee somehow owns the slab object, as in the example
+> > > provided in the series (current task), it's not necessarily.
+> > >
+> > > If a user can pass a random address, you're right, we need to
+> > > grab the slab_cache's refcnt. But then we also can't guarantee
+> > > that the object still belongs to the same slab_cache, the
+> > > function becomes racy by the definition.
+> >
+> > To be safe, we can limit the kfunc to sleepable context only. Then
+> > we can lock slab_mutex for virt_to_slab, and hold a refcount
+> > to slab_cache. We will need a KF_RELEASE kfunc to release
+> > the refcount later.
+>
+> Then it needs to call kmem_cache_destroy() for release which contains
+> rcu_barrier. :(
+>
+> >
+> > IIUC, this limitation (sleepable context only) shouldn't be a problem
+> > for perf use case?
+>
+> No, it would be called from the lock contention path including
+> spinlocks. :(
+>
+> Can we limit it to non-sleepable ctx and not to pass arbtrary address
+> somehow (or not to save the result pointer)?
 
-> Wire up the code to print function arguments in the function graph
-> tracer. This functionality can be enabled/disabled during compile
-> time by setting CONFIG_FUNCTION_TRACE_ARGS and during runtime with
-> options/funcgraph-args.
+I hacked something like the following. It is not ideal, because we are
+taking spinlock_t pointer instead of void pointer. To use this with void
+'pointer, we will need some verifier changes.
 
-I finally got around to looking at your patches. Do you plan on still
-working on them? I really like this feature, and I'm willing to do the work
-too if you have other things on your plate.
-
-> 
-> Example usage:
-> 
-> 6)              | dummy_xmit [dummy](skb = 0x8887c100, dev = 0x872ca000) {
-> 6)              |   consume_skb(skb = 0x8887c100) {
-> 6)              |     skb_release_head_state(skb = 0x8887c100) {
-> 6)  0.178 us    |       sock_wfree(skb = 0x8887c100)
-> 6)  0.627 us    |     }
-> 
-> Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
-> ---
->  include/linux/ftrace.h               |  1 +
->  kernel/trace/fgraph.c                |  6 ++-
->  kernel/trace/trace_functions_graph.c | 74 ++++++++++++++--------------
->  3 files changed, 44 insertions(+), 37 deletions(-)
-
-BTW, this is missing:
-
-diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-index 2f8017f8d34d..8a218b39d11d 100644
---- a/kernel/trace/trace.h
-+++ b/kernel/trace/trace.h
-@@ -879,6 +879,7 @@ static __always_inline bool ftrace_hash_empty(struct ftrace_hash *hash)
- #define TRACE_GRAPH_GRAPH_TIME          0x400
- #define TRACE_GRAPH_PRINT_RETVAL        0x800
- #define TRACE_GRAPH_PRINT_RETVAL_HEX    0x1000
-+#define TRACE_GRAPH_ARGS		0x2000
- #define TRACE_GRAPH_PRINT_FILL_SHIFT	28
- #define TRACE_GRAPH_PRINT_FILL_MASK	(0x3 << TRACE_GRAPH_PRINT_FILL_SHIFT)
- 
-that you added in patch 7, but is needed for this patch, where it does not
-build without it.
-
-> 
-> diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
-> index 56d91041ecd2..5d0ff66f8a70 100644
-> --- a/include/linux/ftrace.h
-> +++ b/include/linux/ftrace.h
-> @@ -1010,6 +1010,7 @@ static inline void ftrace_init(void) { }
->   * to remove extra padding at the end.
->   */
->  struct ftrace_graph_ent {
-> +	struct ftrace_regs regs;
->  	unsigned long func; /* Current function */
->  	int depth;
->  } __packed;
-
-This should have a different event type, to not waste the ring buffer when
-not needed.
-
-struct ftrace_graph_ent_args {
-	struct ftrace_regs_args fargs;
-	unsigned long func; /* Current function */
-	int depth;
-} __packed;
-
-But also, we need to create a new structure, as nothing should depend on
-the size of ftrace_regs (we plan on hiding that completely). I can add a
-"struct ftrace_regs_args" that will hold just the args for each arch.
-Especially for archs (like x86) where ftrace_regs can be pt_regs in size,
-where most of the space is just wasted. Then we can do a:
-
-	ftrace_regs_copy_args(fregs, &entry->addr);
-
-And then:
-
-	char buf[ftrace_regs_size()];
-	struct ftrace_regs *fregs = &buf;
-
-	ftrace_regs_from_args(fregs, &entry->addr);
-
-to get the arguments.
-
-
-
-
-> diff --git a/kernel/trace/fgraph.c b/kernel/trace/fgraph.c
-> index fa62ebfa0711..f4bb10c0aa52 100644
-> --- a/kernel/trace/fgraph.c
-> +++ b/kernel/trace/fgraph.c
-> @@ -614,7 +614,7 @@ ftrace_push_return_trace(unsigned long ret, unsigned long func,
->  /* If the caller does not use ftrace, call this function. */
->  int function_graph_enter(unsigned long ret, unsigned long func,
->  			 unsigned long frame_pointer, unsigned long *retp,
-> -			struct ftrace_regs *fregs)
-> +			 struct ftrace_regs *fregs)
->  {
->  	struct ftrace_graph_ent trace;
->  	unsigned long bitmap = 0;
-> @@ -623,6 +623,10 @@ int function_graph_enter(unsigned long ret, unsigned long func,
->  
->  	trace.func = func;
->  	trace.depth = ++current->curr_ret_depth;
-> +	if (IS_ENABLED(CONFIG_FUNCTION_TRACE_ARGS) && fregs)
-> +		trace.regs = *fregs;
-> +	else
-> +		memset(&trace.regs, 0, sizeof(struct ftrace_regs));
->  
->  	offset = ftrace_push_return_trace(ret, func, frame_pointer, retp, 0);
->  	if (offset < 0)
-> diff --git a/kernel/trace/trace_functions_graph.c b/kernel/trace/trace_functions_graph.c
-> index 13d0387ac6a6..be0cee52944a 100644
-> --- a/kernel/trace/trace_functions_graph.c
-> +++ b/kernel/trace/trace_functions_graph.c
-> @@ -12,6 +12,8 @@
->  #include <linux/interrupt.h>
->  #include <linux/slab.h>
->  #include <linux/fs.h>
-> +#include <linux/btf.h>
-> +#include <linux/bpf.h>
->  
->  #include "trace.h"
->  #include "trace_output.h"
-> @@ -63,6 +65,9 @@ static struct tracer_opt trace_opts[] = {
->  	{ TRACER_OPT(funcgraph-retval, TRACE_GRAPH_PRINT_RETVAL) },
->  	/* Display function return value in hexadecimal format ? */
->  	{ TRACER_OPT(funcgraph-retval-hex, TRACE_GRAPH_PRINT_RETVAL_HEX) },
-> +#endif
-> +#ifdef CONFIG_FUNCTION_TRACE_ARGS
-> +	{ TRACER_OPT(funcgraph-args, TRACE_GRAPH_ARGS) },
->  #endif
->  	/* Include sleep time (scheduled out) between entry and return */
->  	{ TRACER_OPT(sleep-time, TRACE_GRAPH_SLEEP_TIME) },
-> @@ -653,7 +658,7 @@ print_graph_duration(struct trace_array *tr, unsigned long long duration,
->  #define __TRACE_GRAPH_PRINT_RETVAL TRACE_GRAPH_PRINT_RETVAL
->  
->  static void print_graph_retval(struct trace_seq *s, unsigned long retval,
-> -				bool leaf, void *func, bool hex_format)
-> +			       bool hex_format)
->  {
->  	unsigned long err_code = 0;
->  
-> @@ -673,28 +678,17 @@ static void print_graph_retval(struct trace_seq *s, unsigned long retval,
->  		err_code = 0;
->  
->  done:
-> -	if (leaf) {
-> -		if (hex_format || (err_code == 0))
-> -			trace_seq_printf(s, "%ps(); /* = 0x%lx */\n",
-> -					func, retval);
-> -		else
-> -			trace_seq_printf(s, "%ps(); /* = %ld */\n",
-> -					func, err_code);
-> -	} else {
-> -		if (hex_format || (err_code == 0))
-> -			trace_seq_printf(s, "} /* %ps = 0x%lx */\n",
-> -					func, retval);
-> -		else
-> -			trace_seq_printf(s, "} /* %ps = %ld */\n",
-> -					func, err_code);
-> -	}
-> +	if (hex_format || (err_code == 0))
-> +		trace_seq_printf(s, " /* = 0x%lx */", retval);
-> +	else
-> +		trace_seq_printf(s, " /* = %ld */", err_code);
->  }
->  
->  #else
->  
->  #define __TRACE_GRAPH_PRINT_RETVAL 0
->  
-> -#define print_graph_retval(_seq, _retval, _leaf, _func, _format) do {} while (0)
-> +#define print_graph_retval(_seq, _retval, _format) do {} while (0)
->  
->  #endif
->  
-> @@ -741,16 +735,20 @@ print_graph_entry_leaf(struct trace_iterator *iter,
->  	/* Function */
->  	for (i = 0; i < call->depth * TRACE_GRAPH_INDENT; i++)
->  		trace_seq_putc(s, ' ');
-> +	trace_seq_printf(s, "%ps", (void *)graph_ret->func);
-> +	if (flags & TRACE_GRAPH_ARGS)
-> +		print_function_args(s, &call->regs, graph_ret->func);
-
-Ideally, the flag is going to be set when args is recorded and not used for
-printing. If the event is the ftrace_ent_args() this will print the
-arguments, otherwise it does not.
-
-To simplify these functions, we probably need to have a:
-
-union fgraph_entry {
-	struct ftrace_graph_ent		*normal;
-	struct ftrace_graph_ent_args	*args;
-};
-
-And switch depending which is which (the header of both is the same as is
-for all entries).
-
--- Steve
+Thanks,
+Song
 
 
-> +	else
-> +		trace_seq_puts(s, "();");
->  
->  	/*
->  	 * Write out the function return value if the option function-retval is
->  	 * enabled.
->  	 */
->  	if (flags & __TRACE_GRAPH_PRINT_RETVAL)
-> -		print_graph_retval(s, graph_ret->retval, true, (void *)call->func,
-> -				!!(flags & TRACE_GRAPH_PRINT_RETVAL_HEX));
-> -	else
-> -		trace_seq_printf(s, "%ps();\n", (void *)call->func);
-> +		print_graph_retval(s, graph_ret->retval,
-> +				   !!(flags & TRACE_GRAPH_PRINT_RETVAL_HEX));
-> +	trace_seq_printf(s, "\n");
->  
->  	print_graph_irq(iter, graph_ret->func, TRACE_GRAPH_RET,
->  			cpu, iter->ent->pid, flags);
-> @@ -788,7 +786,12 @@ print_graph_entry_nested(struct trace_iterator *iter,
->  	for (i = 0; i < call->depth * TRACE_GRAPH_INDENT; i++)
->  		trace_seq_putc(s, ' ');
->  
-> -	trace_seq_printf(s, "%ps() {\n", (void *)call->func);
-> +	trace_seq_printf(s, "%ps", (void *)call->func);
-> +	if (flags & TRACE_GRAPH_ARGS)
-> +		print_function_args(s, &call->regs, call->func);
-> +	else
-> +		trace_seq_puts(s, "()");
-> +	trace_seq_printf(s, " {\n");
->  
->  	if (trace_seq_has_overflowed(s))
->  		return TRACE_TYPE_PARTIAL_LINE;
-> @@ -1028,27 +1031,26 @@ print_graph_return(struct ftrace_graph_ret *trace, struct trace_seq *s,
->  	for (i = 0; i < trace->depth * TRACE_GRAPH_INDENT; i++)
->  		trace_seq_putc(s, ' ');
->  
-> +	/*
-> +	 * If the return function does not have a matching entry,
-> +	 * then the entry was lost. Instead of just printing
-> +	 * the '}' and letting the user guess what function this
-> +	 * belongs to, write out the function name. Always do
-> +	 * that if the funcgraph-tail option is enabled.
-> +	 */
-> +	if (func_match && !(flags & TRACE_GRAPH_PRINT_TAIL))
-> +		trace_seq_puts(s, "}");
-> +	else
-> +		trace_seq_printf(s, "} /* %ps */", (void *)trace->func);
->  	/*
->  	 * Always write out the function name and its return value if the
->  	 * function-retval option is enabled.
->  	 */
->  	if (flags & __TRACE_GRAPH_PRINT_RETVAL) {
-> -		print_graph_retval(s, trace->retval, false, (void *)trace->func,
-> +		print_graph_retval(s, trace->retval,
->  			!!(flags & TRACE_GRAPH_PRINT_RETVAL_HEX));
-> -	} else {
-> -		/*
-> -		 * If the return function does not have a matching entry,
-> -		 * then the entry was lost. Instead of just printing
-> -		 * the '}' and letting the user guess what function this
-> -		 * belongs to, write out the function name. Always do
-> -		 * that if the funcgraph-tail option is enabled.
-> -		 */
-> -		if (func_match && !(flags & TRACE_GRAPH_PRINT_TAIL))
-> -			trace_seq_puts(s, "}\n");
-> -		else
-> -			trace_seq_printf(s, "} /* %ps */\n", (void *)trace->func);
->  	}
-> -
-> +	trace_seq_printf(s, "\n");
->  	/* Overrun */
->  	if (flags & TRACE_GRAPH_PRINT_OVERRUN)
->  		trace_seq_printf(s, " (Overruns: %u)\n",
+diff --git i/kernel/bpf/helpers.c w/kernel/bpf/helpers.c
+index 3709fb142881..7311a26ecb01 100644
+--- i/kernel/bpf/helpers.c
++++ w/kernel/bpf/helpers.c
+@@ -3090,7 +3090,7 @@ BTF_ID_FLAGS(func, bpf_iter_bits_new, KF_ITER_NEW)
+ BTF_ID_FLAGS(func, bpf_iter_bits_next, KF_ITER_NEXT | KF_RET_NULL)
+ BTF_ID_FLAGS(func, bpf_iter_bits_destroy, KF_ITER_DESTROY)
+ BTF_ID_FLAGS(func, bpf_copy_from_user_str, KF_SLEEPABLE)
+-BTF_ID_FLAGS(func, bpf_get_kmem_cache, KF_RET_NULL)
++BTF_ID_FLAGS(func, bpf_get_kmem_cache, KF_RET_NULL | KF_TRUSTED_ARGS
+| KF_RCU_PROTECTED)
+ BTF_KFUNCS_END(common_btf_ids)
 
+ static const struct btf_kfunc_id_set common_kfunc_set =3D {
+diff --git i/mm/slab_common.c w/mm/slab_common.c
+index 5484e1cd812f..3e3e5f172f2e 100644
+--- i/mm/slab_common.c
++++ w/mm/slab_common.c
+@@ -1327,14 +1327,15 @@ EXPORT_SYMBOL(ksize);
+
+ __bpf_kfunc_start_defs();
+
+-__bpf_kfunc struct kmem_cache *bpf_get_kmem_cache(u64 addr)
++__bpf_kfunc struct kmem_cache *bpf_get_kmem_cache(spinlock_t *addr)
+ {
+        struct slab *slab;
++       unsigned long a =3D (unsigned long)addr;
+
+-       if (!virt_addr_valid(addr))
++       if (!virt_addr_valid(a))
+                return NULL;
+
+-       slab =3D virt_to_slab((void *)(long)addr);
++       slab =3D virt_to_slab(addr);
+        return slab ? slab->slab_cache : NULL;
+ }
+
+@@ -1346,4 +1347,3 @@ EXPORT_TRACEPOINT_SYMBOL(kmalloc);
+ EXPORT_TRACEPOINT_SYMBOL(kmem_cache_alloc);
+ EXPORT_TRACEPOINT_SYMBOL(kfree);
+ EXPORT_TRACEPOINT_SYMBOL(kmem_cache_free);
+-
+diff --git i/tools/testing/selftests/bpf/progs/kmem_cache_iter.c
+w/tools/testing/selftests/bpf/progs/kmem_cache_iter.c
+index 3f6ec15a1bf6..8238155a5055 100644
+--- i/tools/testing/selftests/bpf/progs/kmem_cache_iter.c
++++ w/tools/testing/selftests/bpf/progs/kmem_cache_iter.c
+@@ -16,7 +16,7 @@ struct {
+        __uint(max_entries, 1024);
+ } slab_hash SEC(".maps");
+
+-extern struct kmem_cache *bpf_get_kmem_cache(__u64 addr) __ksym;
++extern struct kmem_cache *bpf_get_kmem_cache(spinlock_t *addr) __ksym;
+
+ /* result, will be checked by userspace */
+ int found;
+@@ -46,21 +46,23 @@ int slab_info_collector(struct bpf_iter__kmem_cache *ct=
+x)
+ SEC("raw_tp/bpf_test_finish")
+ int BPF_PROG(check_task_struct)
+ {
+-       __u64 curr =3D bpf_get_current_task();
++       struct task_struct *curr =3D bpf_get_current_task_btf();
+        struct kmem_cache *s;
+        char *name;
+
+-       s =3D bpf_get_kmem_cache(curr);
++       s =3D bpf_get_kmem_cache(&curr->alloc_lock);
+        if (s =3D=3D NULL) {
+                found =3D -1;
+                return 0;
+        }
+
++       bpf_rcu_read_lock();
+        name =3D bpf_map_lookup_elem(&slab_hash, &s);
+        if (name && !bpf_strncmp(name, 11, "task_struct"))
+                found =3D 1;
+        else
+                found =3D -2;
++       bpf_rcu_read_unlock();
+
+        return 0;
+ }
 
