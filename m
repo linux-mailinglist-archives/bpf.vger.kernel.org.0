@@ -1,319 +1,249 @@
-Return-Path: <bpf+bounces-40927-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40929-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC6239900A6
-	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 12:14:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DCFA099016E
+	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 12:35:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 708FD285A28
-	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 10:14:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 60CAA1F213B1
+	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 10:35:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8984614B061;
-	Fri,  4 Oct 2024 10:13:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 960E8156644;
+	Fri,  4 Oct 2024 10:35:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="lJQQnOyE"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FTzVqcgi"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4210A14B07A;
-	Fri,  4 Oct 2024 10:13:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55193155C98;
+	Fri,  4 Oct 2024 10:35:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728036822; cv=none; b=H0m3In9zVYvdDZbNCAFq6faSsYduQP8+ggsrKyA/AGEMFoV6W1jjSQ29VGdjuFdedByZ5LvMqGGJMMucdxqYOSTNMYhEEITYa18jkEr5Uws7vM/j5OgQnd2HKlc/eBCzZn+D2gAs1lvblbRw8wsXMbyMPOn6PYWB2ju8omk/IKU=
+	t=1728038122; cv=none; b=e/nHo16SroFhYhjsKsKC9BCb00B3NlKzGVEjFDSjNbNv3tycYIrxfIBA661mX3kKzw2ohGutjyp4LJwndfHFOhsx8dKeeyvKBaBG5IbQCO8Rmd+lNZK+nnGwlQD+WoIyyZIcJuZWfl7ycRrkp+bx4IPTBND94ManaCnD8xNfN/U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728036822; c=relaxed/simple;
-	bh=LWXrW7sFGONFBCBALWIIjFjQXonk6RDTNi55zighhVk=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=bcbEs6wOFbK/mEk9ZDHPGo2APSZZ02LORPuwI4l7lCfbWPYwIds49FC9WnbLYtjMytRTwDMIZ1HvadR4l7ql76riTn0RSVNYiuAJTHVVkUZASxlIrtahgyDhCx+Kj/0hc+RsMz8nNh5B1GfAQVuSrvtzZ+PYEE7sVPyT27PprIo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=lJQQnOyE; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:MIME-Version:
-	References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-	Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=yfll2XTk4oOaKMmMdk+yvyvMGnugJ4UHyWcKofG4prI=; b=lJQQnOyEN21W8aDDftal2we98R
-	P5m1TKs1wHWcUbleuVwm5unFaAZWewiEQiJ7PSSMh8IHFL0SBvPlnmUCW/Vlx6nfP8zUgbhB/Iphg
-	MZxbgir4dH0KWQR4bdAYnXHGYvCMfSn3ESl9N5+5iqViqKhzwfGFun1XAUSOedLnw8spHy6DeRVKl
-	wV9/OPshBJKhIubiJlp1vlJRZ/0SI84tZYqPJf6/gvoRawxMz+pWM8keAX/Ori0bYfptYCYO3QGSa
-	OrkLtMAE4qihRsvm00pJR3zNYfx5Z7uR8l7r65geTZsaZ+e72VCGwO3LFUdDDK4SkCdpxfaJhCxWX
-	QItOoKSg==;
-Received: from 226.206.1.85.dynamic.cust.swisscom.net ([85.1.206.226] helo=localhost)
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1swfJa-000BVe-K5; Fri, 04 Oct 2024 12:13:38 +0200
-From: Daniel Borkmann <daniel@iogearbox.net>
-To: martin.lau@linux.dev
-Cc: razor@blackwall.org,
-	kuba@kernel.org,
-	jrife@google.com,
-	tangchen.1@bytedance.com,
-	bpf@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: [PATCH bpf-next v2 5/5] selftests/bpf: Extend netkit tests to validate skb meta data
-Date: Fri,  4 Oct 2024 12:13:35 +0200
-Message-Id: <20241004101335.117711-5-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20241004101335.117711-1-daniel@iogearbox.net>
-References: <20241004101335.117711-1-daniel@iogearbox.net>
+	s=arc-20240116; t=1728038122; c=relaxed/simple;
+	bh=eCX4FHv21F1UmXbzAcke3XRP+BTSB2fq8+NGQdMcpuI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=szq4vaGdANYxHf5s+xXChjK0xzC51M8fgkq+4OMhfRVtDQgIpTSavPzDl4dTQxrENBxJdSSmhHwOC43epqT497ojtBAEai8sfxm65wYqm6EdL7qPRVNV3NuBH6+GBH1c1zzDePjfsK85F/yhyKgmobKgr4CFrW+SCR7nCLwh/cY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FTzVqcgi; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1728038120; x=1759574120;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=eCX4FHv21F1UmXbzAcke3XRP+BTSB2fq8+NGQdMcpuI=;
+  b=FTzVqcgi3nij3bPKFHKne9XtXpQUSis3dUPrhtVnfvdSa1c+oI75si20
+   g5f4PPNyRxvf5q5p11l32a+ZMHsDMKATOzCX0G3tOfNOgSarQcBT/9i2r
+   95POICDyeQkSEYXn5a8wVqArxuCeDAaOylOJufnq9rFCH6dIntqjTRRlH
+   fPiFgcREWTWOWnphang+/fQ8GTxl4sNOJehOmGtIoC6/Pib2fPEGNNUsy
+   TaAbaBn2mWqPhiUltFTczIV4bpdusRP75OqesDqYanAQoqnGURlP4Bir6
+   GCt2d2eiG3sr0g7BYHzPJcI+7ChQEf8Eb2lAL6jfbTTJGZtQ4OOdp22uu
+   Q==;
+X-CSE-ConnectionGUID: wKqU3NOIT0O3Rx9jMfcyRQ==
+X-CSE-MsgGUID: uLNqej0ETF+09abN/FO4kg==
+X-IronPort-AV: E=McAfee;i="6700,10204,11214"; a="30963942"
+X-IronPort-AV: E=Sophos;i="6.11,177,1725346800"; 
+   d="scan'208";a="30963942"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2024 03:35:18 -0700
+X-CSE-ConnectionGUID: 5p8A3KL0Sia6ey7VuKWtCA==
+X-CSE-MsgGUID: oQePmqGWQpulC3Rr1s1WeA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.11,177,1725346800"; 
+   d="scan'208";a="74992841"
+Received: from lkp-server01.sh.intel.com (HELO a48cf1aa22e8) ([10.239.97.150])
+  by fmviesa010.fm.intel.com with ESMTP; 04 Oct 2024 03:35:12 -0700
+Received: from kbuild by a48cf1aa22e8 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1swfeQ-0001Ui-26;
+	Fri, 04 Oct 2024 10:35:10 +0000
+Date: Fri, 4 Oct 2024 18:34:39 +0800
+From: kernel test robot <lkp@intel.com>
+To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Andrii Nakryiko <andrii.nakryiko@gmail.com>, bpf@vger.kernel.org,
+	Joel Fernandes <joel@joelfernandes.org>,
+	linux-trace-kernel@vger.kernel.org,
+	Michael Jeanson <mjeanson@efficios.com>
+Subject: Re: [PATCH v1 1/8] tracing: Declare system call tracepoints with
+ TRACE_EVENT_SYSCALL
+Message-ID: <202410041838.pOZuOGTX-lkp@intel.com>
+References: <20241003151638.1608537-2-mathieu.desnoyers@efficios.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27417/Fri Oct  4 10:53:24 2024)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241003151638.1608537-2-mathieu.desnoyers@efficios.com>
 
-Add a small netkit test to validate skb mark and priority under the
-default scrubbing as well as with mark and priority scrubbing off.
+Hi Mathieu,
 
-  # ./vmtest.sh -- ./test_progs -t netkit
-  [...]
-  ./test_progs -t netkit
-  [    1.419662] tsc: Refined TSC clocksource calibration: 3407.993 MHz
-  [    1.420151] clocksource: tsc: mask: 0xffffffffffffffff max_cycles: 0x311fcd52370, max_idle_ns: 440795242006 ns
-  [    1.420897] clocksource: Switched to clocksource tsc
-  [    1.447996] bpf_testmod: loading out-of-tree module taints kernel.
-  [    1.448447] bpf_testmod: module verification failed: signature and/or required key missing - tainting kernel
-  #357     tc_netkit_basic:OK
-  #358     tc_netkit_device:OK
-  #359     tc_netkit_multi_links:OK
-  #360     tc_netkit_multi_opts:OK
-  #361     tc_netkit_neigh_links:OK
-  #362     tc_netkit_pkt_type:OK
-  #363     tc_netkit_scrub:OK
-  Summary: 7/0 PASSED, 0 SKIPPED, 0 FAILED
+kernel test robot noticed the following build errors:
 
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Nikolay Aleksandrov <razor@blackwall.org>
----
- .../selftests/bpf/prog_tests/tc_netkit.c      | 94 +++++++++++++++++--
- .../selftests/bpf/progs/test_tc_link.c        | 12 +++
- 2 files changed, 97 insertions(+), 9 deletions(-)
+[auto build test ERROR on peterz-queue/sched/core]
+[also build test ERROR on linus/master tip/core/entry v6.12-rc1 next-20241004]
+[cannot apply to rostedt-trace/for-next rostedt-trace/for-next-urgent]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/tc_netkit.c b/tools/testing/selftests/bpf/prog_tests/tc_netkit.c
-index b9135720024c..6c49b67155b1 100644
---- a/tools/testing/selftests/bpf/prog_tests/tc_netkit.c
-+++ b/tools/testing/selftests/bpf/prog_tests/tc_netkit.c
-@@ -14,7 +14,9 @@
- #include "netlink_helpers.h"
- #include "tc_helpers.h"
- 
--#define ICMP_ECHO 8
-+#define MARK		42
-+#define PRIO		0xeb9f
-+#define ICMP_ECHO	8
- 
- struct icmphdr {
- 	__u8		type;
-@@ -33,7 +35,7 @@ struct iplink_req {
- };
- 
- static int create_netkit(int mode, int policy, int peer_policy, int *ifindex,
--			 bool same_netns)
-+			 bool same_netns, int scrub, int peer_scrub)
- {
- 	struct rtnl_handle rth = { .fd = -1 };
- 	struct iplink_req req = {};
-@@ -58,6 +60,8 @@ static int create_netkit(int mode, int policy, int peer_policy, int *ifindex,
- 	data = addattr_nest(&req.n, sizeof(req), IFLA_INFO_DATA);
- 	addattr32(&req.n, sizeof(req), IFLA_NETKIT_POLICY, policy);
- 	addattr32(&req.n, sizeof(req), IFLA_NETKIT_PEER_POLICY, peer_policy);
-+	addattr32(&req.n, sizeof(req), IFLA_NETKIT_SCRUB, scrub);
-+	addattr32(&req.n, sizeof(req), IFLA_NETKIT_PEER_SCRUB, peer_scrub);
- 	addattr32(&req.n, sizeof(req), IFLA_NETKIT_MODE, mode);
- 	addattr_nest_end(&req.n, data);
- 	addattr_nest_end(&req.n, linkinfo);
-@@ -118,9 +122,9 @@ static void destroy_netkit(void)
- 
- static int __send_icmp(__u32 dest)
- {
-+	int sock, ret, mark = MARK, prio = PRIO;
- 	struct sockaddr_in addr;
- 	struct icmphdr icmp;
--	int sock, ret;
- 
- 	ret = write_sysctl("/proc/sys/net/ipv4/ping_group_range", "0 0");
- 	if (!ASSERT_OK(ret, "write_sysctl(net.ipv4.ping_group_range)"))
-@@ -135,6 +139,15 @@ static int __send_icmp(__u32 dest)
- 	if (!ASSERT_OK(ret, "setsockopt(SO_BINDTODEVICE)"))
- 		goto out;
- 
-+	ret = setsockopt(sock, SOL_SOCKET, SO_MARK, &mark, sizeof(mark));
-+	if (!ASSERT_OK(ret, "setsockopt(SO_MARK)"))
-+		goto out;
-+
-+	ret = setsockopt(sock, SOL_SOCKET, SO_PRIORITY,
-+			 &prio, sizeof(prio));
-+	if (!ASSERT_OK(ret, "setsockopt(SO_PRIORITY)"))
-+		goto out;
-+
- 	memset(&addr, 0, sizeof(addr));
- 	addr.sin_family = AF_INET;
- 	addr.sin_addr.s_addr = htonl(dest);
-@@ -171,7 +184,8 @@ void serial_test_tc_netkit_basic(void)
- 	int err, ifindex;
- 
- 	err = create_netkit(NETKIT_L2, NETKIT_PASS, NETKIT_PASS,
--			    &ifindex, false);
-+			    &ifindex, false, NETKIT_SCRUB_DEFAULT,
-+			    NETKIT_SCRUB_DEFAULT);
- 	if (err)
- 		return;
- 
-@@ -285,7 +299,8 @@ static void serial_test_tc_netkit_multi_links_target(int mode, int target)
- 	int err, ifindex;
- 
- 	err = create_netkit(mode, NETKIT_PASS, NETKIT_PASS,
--			    &ifindex, false);
-+			    &ifindex, false, NETKIT_SCRUB_DEFAULT,
-+			    NETKIT_SCRUB_DEFAULT);
- 	if (err)
- 		return;
- 
-@@ -413,7 +428,8 @@ static void serial_test_tc_netkit_multi_opts_target(int mode, int target)
- 	int err, ifindex;
- 
- 	err = create_netkit(mode, NETKIT_PASS, NETKIT_PASS,
--			    &ifindex, false);
-+			    &ifindex, false, NETKIT_SCRUB_DEFAULT,
-+			    NETKIT_SCRUB_DEFAULT);
- 	if (err)
- 		return;
- 
-@@ -527,7 +543,8 @@ void serial_test_tc_netkit_device(void)
- 	int err, ifindex, ifindex2;
- 
- 	err = create_netkit(NETKIT_L3, NETKIT_PASS, NETKIT_PASS,
--			    &ifindex, true);
-+			    &ifindex, true, NETKIT_SCRUB_DEFAULT,
-+			    NETKIT_SCRUB_DEFAULT);
- 	if (err)
- 		return;
- 
-@@ -638,7 +655,8 @@ static void serial_test_tc_netkit_neigh_links_target(int mode, int target)
- 	int err, ifindex;
- 
- 	err = create_netkit(mode, NETKIT_PASS, NETKIT_PASS,
--			    &ifindex, false);
-+			    &ifindex, false, NETKIT_SCRUB_DEFAULT,
-+			    NETKIT_SCRUB_DEFAULT);
- 	if (err)
- 		return;
- 
-@@ -715,7 +733,8 @@ static void serial_test_tc_netkit_pkt_type_mode(int mode)
- 	struct bpf_link *link;
- 
- 	err = create_netkit(mode, NETKIT_PASS, NETKIT_PASS,
--			    &ifindex, true);
-+			    &ifindex, true, NETKIT_SCRUB_DEFAULT,
-+			    NETKIT_SCRUB_DEFAULT);
- 	if (err)
- 		return;
- 
-@@ -779,3 +798,60 @@ void serial_test_tc_netkit_pkt_type(void)
- 	serial_test_tc_netkit_pkt_type_mode(NETKIT_L2);
- 	serial_test_tc_netkit_pkt_type_mode(NETKIT_L3);
- }
-+
-+void serial_test_tc_netkit_scrub_type(int scrub)
-+{
-+	LIBBPF_OPTS(bpf_netkit_opts, optl);
-+	struct test_tc_link *skel;
-+	struct bpf_link *link;
-+	int err, ifindex;
-+
-+	err = create_netkit(NETKIT_L2, NETKIT_PASS, NETKIT_PASS,
-+			    &ifindex, false, scrub, scrub);
-+	if (err)
-+		return;
-+
-+	skel = test_tc_link__open();
-+	if (!ASSERT_OK_PTR(skel, "skel_open"))
-+		goto cleanup;
-+
-+	ASSERT_EQ(bpf_program__set_expected_attach_type(skel->progs.tc8,
-+		  BPF_NETKIT_PRIMARY), 0, "tc8_attach_type");
-+
-+	err = test_tc_link__load(skel);
-+	if (!ASSERT_OK(err, "skel_load"))
-+		goto cleanup;
-+
-+	assert_mprog_count_ifindex(ifindex, BPF_NETKIT_PRIMARY, 0);
-+	assert_mprog_count_ifindex(ifindex, BPF_NETKIT_PEER, 0);
-+
-+	ASSERT_EQ(skel->bss->seen_tc8, false, "seen_tc8");
-+
-+	link = bpf_program__attach_netkit(skel->progs.tc8, ifindex, &optl);
-+	if (!ASSERT_OK_PTR(link, "link_attach"))
-+		goto cleanup;
-+
-+	skel->links.tc8 = link;
-+
-+	assert_mprog_count_ifindex(ifindex, BPF_NETKIT_PRIMARY, 1);
-+	assert_mprog_count_ifindex(ifindex, BPF_NETKIT_PEER, 0);
-+
-+	tc_skel_reset_all_seen(skel);
-+	ASSERT_EQ(send_icmp(), 0, "icmp_pkt");
-+
-+	ASSERT_EQ(skel->bss->seen_tc8, true, "seen_tc8");
-+	ASSERT_EQ(skel->bss->mark, scrub == NETKIT_SCRUB_NONE ? MARK : 0, "mark");
-+	ASSERT_EQ(skel->bss->prio, scrub == NETKIT_SCRUB_NONE ? PRIO : 0, "prio");
-+cleanup:
-+	test_tc_link__destroy(skel);
-+
-+	assert_mprog_count_ifindex(ifindex, BPF_NETKIT_PRIMARY, 0);
-+	assert_mprog_count_ifindex(ifindex, BPF_NETKIT_PEER, 0);
-+	destroy_netkit();
-+}
-+
-+void serial_test_tc_netkit_scrub(void)
-+{
-+	serial_test_tc_netkit_scrub_type(NETKIT_SCRUB_DEFAULT);
-+	serial_test_tc_netkit_scrub_type(NETKIT_SCRUB_NONE);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_tc_link.c b/tools/testing/selftests/bpf/progs/test_tc_link.c
-index ab3eae3d6af8..10d825928499 100644
---- a/tools/testing/selftests/bpf/progs/test_tc_link.c
-+++ b/tools/testing/selftests/bpf/progs/test_tc_link.c
-@@ -18,6 +18,7 @@ bool seen_tc4;
- bool seen_tc5;
- bool seen_tc6;
- bool seen_tc7;
-+bool seen_tc8;
- 
- bool set_type;
- 
-@@ -25,6 +26,8 @@ bool seen_eth;
- bool seen_host;
- bool seen_mcast;
- 
-+int mark, prio;
-+
- SEC("tc/ingress")
- int tc1(struct __sk_buff *skb)
- {
-@@ -100,3 +103,12 @@ int tc7(struct __sk_buff *skb)
- 	seen_tc7 = true;
- 	return TCX_PASS;
- }
-+
-+SEC("tc/egress")
-+int tc8(struct __sk_buff *skb)
-+{
-+	seen_tc8 = true;
-+	mark = skb->mark;
-+	prio = skb->priority;
-+	return TCX_PASS;
-+}
+url:    https://github.com/intel-lab-lkp/linux/commits/Mathieu-Desnoyers/tracing-Declare-system-call-tracepoints-with-TRACE_EVENT_SYSCALL/20241003-232114
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git sched/core
+patch link:    https://lore.kernel.org/r/20241003151638.1608537-2-mathieu.desnoyers%40efficios.com
+patch subject: [PATCH v1 1/8] tracing: Declare system call tracepoints with TRACE_EVENT_SYSCALL
+config: powerpc-randconfig-r071-20241004 (https://download.01.org/0day-ci/archive/20241004/202410041838.pOZuOGTX-lkp@intel.com/config)
+compiler: powerpc-linux-gcc (GCC) 14.1.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20241004/202410041838.pOZuOGTX-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202410041838.pOZuOGTX-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   arch/powerpc/kernel/ptrace/ptrace.c: In function 'do_syscall_trace_enter':
+>> arch/powerpc/kernel/ptrace/ptrace.c:298:17: error: implicit declaration of function 'trace_sys_enter'; did you mean 'ftrace_nmi_enter'? [-Wimplicit-function-declaration]
+     298 |                 trace_sys_enter(regs, regs->gpr[0]);
+         |                 ^~~~~~~~~~~~~~~
+         |                 ftrace_nmi_enter
+   arch/powerpc/kernel/ptrace/ptrace.c: In function 'do_syscall_trace_leave':
+>> arch/powerpc/kernel/ptrace/ptrace.c:329:17: error: implicit declaration of function 'trace_sys_exit'; did you mean 'ftrace_nmi_exit'? [-Wimplicit-function-declaration]
+     329 |                 trace_sys_exit(regs, regs->result);
+         |                 ^~~~~~~~~~~~~~
+         |                 ftrace_nmi_exit
+
+Kconfig warnings: (for reference only)
+   WARNING: unmet direct dependencies detected for GET_FREE_REGION
+   Depends on [n]: SPARSEMEM [=n]
+   Selected by [y]:
+   - RESOURCE_KUNIT_TEST [=y] && RUNTIME_TESTING_MENU [=y] && KUNIT [=y]
+
+
+vim +298 arch/powerpc/kernel/ptrace/ptrace.c
+
+2449acc5348b94 arch/powerpc/kernel/ptrace.c        Michael Ellerman  2015-07-23  235  
+d38374142b2560 arch/powerpc/kernel/ptrace.c        Michael Ellerman  2015-07-23  236  /**
+d38374142b2560 arch/powerpc/kernel/ptrace.c        Michael Ellerman  2015-07-23  237   * do_syscall_trace_enter() - Do syscall tracing on kernel entry.
+d38374142b2560 arch/powerpc/kernel/ptrace.c        Michael Ellerman  2015-07-23  238   * @regs: the pt_regs of the task to trace (current)
+d38374142b2560 arch/powerpc/kernel/ptrace.c        Michael Ellerman  2015-07-23  239   *
+d38374142b2560 arch/powerpc/kernel/ptrace.c        Michael Ellerman  2015-07-23  240   * Performs various types of tracing on syscall entry. This includes seccomp,
+d38374142b2560 arch/powerpc/kernel/ptrace.c        Michael Ellerman  2015-07-23  241   * ptrace, syscall tracepoints and audit.
+d38374142b2560 arch/powerpc/kernel/ptrace.c        Michael Ellerman  2015-07-23  242   *
+d38374142b2560 arch/powerpc/kernel/ptrace.c        Michael Ellerman  2015-07-23  243   * The pt_regs are potentially visible to userspace via ptrace, so their
+d38374142b2560 arch/powerpc/kernel/ptrace.c        Michael Ellerman  2015-07-23  244   * contents is ABI.
+d38374142b2560 arch/powerpc/kernel/ptrace.c        Michael Ellerman  2015-07-23  245   *
+d38374142b2560 arch/powerpc/kernel/ptrace.c        Michael Ellerman  2015-07-23  246   * One or more of the tracers may modify the contents of pt_regs, in particular
+d38374142b2560 arch/powerpc/kernel/ptrace.c        Michael Ellerman  2015-07-23  247   * to modify arguments or even the syscall number itself.
+d38374142b2560 arch/powerpc/kernel/ptrace.c        Michael Ellerman  2015-07-23  248   *
+d38374142b2560 arch/powerpc/kernel/ptrace.c        Michael Ellerman  2015-07-23  249   * It's also possible that a tracer can choose to reject the system call. In
+d38374142b2560 arch/powerpc/kernel/ptrace.c        Michael Ellerman  2015-07-23  250   * that case this function will return an illegal syscall number, and will put
+d38374142b2560 arch/powerpc/kernel/ptrace.c        Michael Ellerman  2015-07-23  251   * an appropriate return value in regs->r3.
+d38374142b2560 arch/powerpc/kernel/ptrace.c        Michael Ellerman  2015-07-23  252   *
+d38374142b2560 arch/powerpc/kernel/ptrace.c        Michael Ellerman  2015-07-23  253   * Return: the (possibly changed) syscall number.
+^1da177e4c3f41 arch/ppc/kernel/ptrace.c            Linus Torvalds    2005-04-16  254   */
+4f72c4279eab1e arch/powerpc/kernel/ptrace.c        Roland McGrath    2008-07-27  255  long do_syscall_trace_enter(struct pt_regs *regs)
+ea9c102cb0a796 arch/ppc/kernel/ptrace.c            David Woodhouse   2005-05-08  256  {
+8dbdec0bcb416d arch/powerpc/kernel/ptrace.c        Dmitry V. Levin   2018-12-16  257  	u32 flags;
+8dbdec0bcb416d arch/powerpc/kernel/ptrace.c        Dmitry V. Levin   2018-12-16  258  
+985faa78687de6 arch/powerpc/kernel/ptrace/ptrace.c Mark Rutland      2021-11-29  259  	flags = read_thread_flags() & (_TIF_SYSCALL_EMU | _TIF_SYSCALL_TRACE);
+8dbdec0bcb416d arch/powerpc/kernel/ptrace.c        Dmitry V. Levin   2018-12-16  260  
+8dbdec0bcb416d arch/powerpc/kernel/ptrace.c        Dmitry V. Levin   2018-12-16  261  	if (flags) {
+153474ba1a4aed arch/powerpc/kernel/ptrace/ptrace.c Eric W. Biederman 2022-01-27  262  		int rc = ptrace_report_syscall_entry(regs);
+8dbdec0bcb416d arch/powerpc/kernel/ptrace.c        Dmitry V. Levin   2018-12-16  263  
+8dbdec0bcb416d arch/powerpc/kernel/ptrace.c        Dmitry V. Levin   2018-12-16  264  		if (unlikely(flags & _TIF_SYSCALL_EMU)) {
+5521eb4bca2db7 arch/powerpc/kernel/ptrace.c        Breno Leitao      2018-09-20  265  			/*
+8dbdec0bcb416d arch/powerpc/kernel/ptrace.c        Dmitry V. Levin   2018-12-16  266  			 * A nonzero return code from
+153474ba1a4aed arch/powerpc/kernel/ptrace/ptrace.c Eric W. Biederman 2022-01-27  267  			 * ptrace_report_syscall_entry() tells us to prevent
+8dbdec0bcb416d arch/powerpc/kernel/ptrace.c        Dmitry V. Levin   2018-12-16  268  			 * the syscall execution, but we are not going to
+8dbdec0bcb416d arch/powerpc/kernel/ptrace.c        Dmitry V. Levin   2018-12-16  269  			 * execute it anyway.
+a225f156740555 arch/powerpc/kernel/ptrace.c        Elvira Khabirova  2018-12-07  270  			 *
+8dbdec0bcb416d arch/powerpc/kernel/ptrace.c        Dmitry V. Levin   2018-12-16  271  			 * Returning -1 will skip the syscall execution. We want
+8dbdec0bcb416d arch/powerpc/kernel/ptrace.c        Dmitry V. Levin   2018-12-16  272  			 * to avoid clobbering any registers, so we don't goto
+8dbdec0bcb416d arch/powerpc/kernel/ptrace.c        Dmitry V. Levin   2018-12-16  273  			 * the skip label below.
+5521eb4bca2db7 arch/powerpc/kernel/ptrace.c        Breno Leitao      2018-09-20  274  			 */
+5521eb4bca2db7 arch/powerpc/kernel/ptrace.c        Breno Leitao      2018-09-20  275  			return -1;
+5521eb4bca2db7 arch/powerpc/kernel/ptrace.c        Breno Leitao      2018-09-20  276  		}
+5521eb4bca2db7 arch/powerpc/kernel/ptrace.c        Breno Leitao      2018-09-20  277  
+8dbdec0bcb416d arch/powerpc/kernel/ptrace.c        Dmitry V. Levin   2018-12-16  278  		if (rc) {
+4f72c4279eab1e arch/powerpc/kernel/ptrace.c        Roland McGrath    2008-07-27  279  			/*
+8dbdec0bcb416d arch/powerpc/kernel/ptrace.c        Dmitry V. Levin   2018-12-16  280  			 * The tracer decided to abort the syscall. Note that
+8dbdec0bcb416d arch/powerpc/kernel/ptrace.c        Dmitry V. Levin   2018-12-16  281  			 * the tracer may also just change regs->gpr[0] to an
+8dbdec0bcb416d arch/powerpc/kernel/ptrace.c        Dmitry V. Levin   2018-12-16  282  			 * invalid syscall number, that is handled below on the
+8dbdec0bcb416d arch/powerpc/kernel/ptrace.c        Dmitry V. Levin   2018-12-16  283  			 * exit path.
+4f72c4279eab1e arch/powerpc/kernel/ptrace.c        Roland McGrath    2008-07-27  284  			 */
+1addc57e111b92 arch/powerpc/kernel/ptrace.c        Kees Cook         2016-06-02  285  			goto skip;
+8dbdec0bcb416d arch/powerpc/kernel/ptrace.c        Dmitry V. Levin   2018-12-16  286  		}
+8dbdec0bcb416d arch/powerpc/kernel/ptrace.c        Dmitry V. Levin   2018-12-16  287  	}
+1addc57e111b92 arch/powerpc/kernel/ptrace.c        Kees Cook         2016-06-02  288  
+1addc57e111b92 arch/powerpc/kernel/ptrace.c        Kees Cook         2016-06-02  289  	/* Run seccomp after ptrace; allow it to set gpr[3]. */
+1addc57e111b92 arch/powerpc/kernel/ptrace.c        Kees Cook         2016-06-02  290  	if (do_seccomp(regs))
+1addc57e111b92 arch/powerpc/kernel/ptrace.c        Kees Cook         2016-06-02  291  		return -1;
+1addc57e111b92 arch/powerpc/kernel/ptrace.c        Kees Cook         2016-06-02  292  
+1addc57e111b92 arch/powerpc/kernel/ptrace.c        Kees Cook         2016-06-02  293  	/* Avoid trace and audit when syscall is invalid. */
+1addc57e111b92 arch/powerpc/kernel/ptrace.c        Kees Cook         2016-06-02  294  	if (regs->gpr[0] >= NR_syscalls)
+1addc57e111b92 arch/powerpc/kernel/ptrace.c        Kees Cook         2016-06-02  295  		goto skip;
+ea9c102cb0a796 arch/ppc/kernel/ptrace.c            David Woodhouse   2005-05-08  296  
+02424d8966d803 arch/powerpc/kernel/ptrace.c        Ian Munsie        2011-02-02  297  	if (unlikely(test_thread_flag(TIF_SYSCALL_TRACEPOINT)))
+02424d8966d803 arch/powerpc/kernel/ptrace.c        Ian Munsie        2011-02-02 @298  		trace_sys_enter(regs, regs->gpr[0]);
+02424d8966d803 arch/powerpc/kernel/ptrace.c        Ian Munsie        2011-02-02  299  
+cab175f9fa2973 arch/powerpc/kernel/ptrace.c        Denis Kirjanov    2010-08-27  300  	if (!is_32bit_task())
+91397401bb5072 arch/powerpc/kernel/ptrace.c        Eric Paris        2014-03-11  301  		audit_syscall_entry(regs->gpr[0], regs->gpr[3], regs->gpr[4],
+ea9c102cb0a796 arch/ppc/kernel/ptrace.c            David Woodhouse   2005-05-08  302  				    regs->gpr[5], regs->gpr[6]);
+cfcd1705b61ecc arch/powerpc/kernel/ptrace.c        David Woodhouse   2007-01-14  303  	else
+91397401bb5072 arch/powerpc/kernel/ptrace.c        Eric Paris        2014-03-11  304  		audit_syscall_entry(regs->gpr[0],
+cfcd1705b61ecc arch/powerpc/kernel/ptrace.c        David Woodhouse   2007-01-14  305  				    regs->gpr[3] & 0xffffffff,
+cfcd1705b61ecc arch/powerpc/kernel/ptrace.c        David Woodhouse   2007-01-14  306  				    regs->gpr[4] & 0xffffffff,
+cfcd1705b61ecc arch/powerpc/kernel/ptrace.c        David Woodhouse   2007-01-14  307  				    regs->gpr[5] & 0xffffffff,
+cfcd1705b61ecc arch/powerpc/kernel/ptrace.c        David Woodhouse   2007-01-14  308  				    regs->gpr[6] & 0xffffffff);
+4f72c4279eab1e arch/powerpc/kernel/ptrace.c        Roland McGrath    2008-07-27  309  
+1addc57e111b92 arch/powerpc/kernel/ptrace.c        Kees Cook         2016-06-02  310  	/* Return the possibly modified but valid syscall number */
+1addc57e111b92 arch/powerpc/kernel/ptrace.c        Kees Cook         2016-06-02  311  	return regs->gpr[0];
+1addc57e111b92 arch/powerpc/kernel/ptrace.c        Kees Cook         2016-06-02  312  
+1addc57e111b92 arch/powerpc/kernel/ptrace.c        Kees Cook         2016-06-02  313  skip:
+d38374142b2560 arch/powerpc/kernel/ptrace.c        Michael Ellerman  2015-07-23  314  	/*
+d38374142b2560 arch/powerpc/kernel/ptrace.c        Michael Ellerman  2015-07-23  315  	 * If we are aborting explicitly, or if the syscall number is
+d38374142b2560 arch/powerpc/kernel/ptrace.c        Michael Ellerman  2015-07-23  316  	 * now invalid, set the return value to -ENOSYS.
+d38374142b2560 arch/powerpc/kernel/ptrace.c        Michael Ellerman  2015-07-23  317  	 */
+d38374142b2560 arch/powerpc/kernel/ptrace.c        Michael Ellerman  2015-07-23  318  	regs->gpr[3] = -ENOSYS;
+d38374142b2560 arch/powerpc/kernel/ptrace.c        Michael Ellerman  2015-07-23  319  	return -1;
+d38374142b2560 arch/powerpc/kernel/ptrace.c        Michael Ellerman  2015-07-23  320  }
+d38374142b2560 arch/powerpc/kernel/ptrace.c        Michael Ellerman  2015-07-23  321  
+ea9c102cb0a796 arch/ppc/kernel/ptrace.c            David Woodhouse   2005-05-08  322  void do_syscall_trace_leave(struct pt_regs *regs)
+ea9c102cb0a796 arch/ppc/kernel/ptrace.c            David Woodhouse   2005-05-08  323  {
+4f72c4279eab1e arch/powerpc/kernel/ptrace.c        Roland McGrath    2008-07-27  324  	int step;
+4f72c4279eab1e arch/powerpc/kernel/ptrace.c        Roland McGrath    2008-07-27  325  
+d7e7528bcd456f arch/powerpc/kernel/ptrace.c        Eric Paris        2012-01-03  326  	audit_syscall_exit(regs);
+ea9c102cb0a796 arch/ppc/kernel/ptrace.c            David Woodhouse   2005-05-08  327  
+02424d8966d803 arch/powerpc/kernel/ptrace.c        Ian Munsie        2011-02-02  328  	if (unlikely(test_thread_flag(TIF_SYSCALL_TRACEPOINT)))
+02424d8966d803 arch/powerpc/kernel/ptrace.c        Ian Munsie        2011-02-02 @329  		trace_sys_exit(regs, regs->result);
+02424d8966d803 arch/powerpc/kernel/ptrace.c        Ian Munsie        2011-02-02  330  
+4f72c4279eab1e arch/powerpc/kernel/ptrace.c        Roland McGrath    2008-07-27  331  	step = test_thread_flag(TIF_SINGLESTEP);
+4f72c4279eab1e arch/powerpc/kernel/ptrace.c        Roland McGrath    2008-07-27  332  	if (step || test_thread_flag(TIF_SYSCALL_TRACE))
+153474ba1a4aed arch/powerpc/kernel/ptrace/ptrace.c Eric W. Biederman 2022-01-27  333  		ptrace_report_syscall_exit(regs, step);
+ea9c102cb0a796 arch/ppc/kernel/ptrace.c            David Woodhouse   2005-05-08  334  }
+002af9391bfbe8 arch/powerpc/kernel/ptrace.c        Michael Ellerman  2018-10-12  335  
+
 -- 
-2.43.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
