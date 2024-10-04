@@ -1,129 +1,169 @@
-Return-Path: <bpf+bounces-41010-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41011-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65E149910D0
-	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 22:47:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 34F1F99104C
+	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 22:23:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8ABC2B2600C
-	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 20:18:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CCCD3B2FEBC
+	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2024 20:20:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 358F31B4F14;
-	Fri,  4 Oct 2024 19:58:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0C9C1ADFFE;
+	Fri,  4 Oct 2024 20:04:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DWqCXwYz"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="h+oAieAA"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
+Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E6141B4F0C;
-	Fri,  4 Oct 2024 19:58:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2FC81AE000;
+	Fri,  4 Oct 2024 20:04:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728071894; cv=none; b=c69aBIE2dev95s1hnkNL9iUmzPC63t0fMpFYeZlljB7qN1zcPcVkb+Ih8oWE54iqcyC3/1q9vPqYWuIiJwI8t0OLyBI3VEABaXiXgWvT+QMwnjIMZ7sgMRXATo9vaSJ5JqHTtW91UNg9llACK8K7T/RMCCQ0+8n/UYgj3bXJGjs=
+	t=1728072275; cv=none; b=Wrg23OtnMUiESk4QfyBlV4QV0w14Yr5byltQ9HnV/vy+1+ydmZag9Ix9jTtSqvUlnBEllR8oaWgMmvYF8W1L5FXfGPFnlOheTSJAo/+d/O80O7qjKmHMfqzKq6jc+WvhpGbdEV5eanER+NkfirlRPKNXyK9JRR7DVl352B81uOY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728071894; c=relaxed/simple;
-	bh=jGYwHtJUP8CJSvTmfTnBLjBMRqwmyxvX78RTi0aovuc=;
+	s=arc-20240116; t=1728072275; c=relaxed/simple;
+	bh=cCdDTcUm4bFPThg2lM08rNCWleBMqiey7gEaVCUSrxI=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=o57ZU5Bux57Q0D0042s/X14eLrDBXwTCvum4PlbHe3+2lqOu07kBT1UHyVpI8o7h6vRqSq4Qn0X9LRW/GwfFipyU0gS5RU3VU3PieVPC1xDRqHDgobw26t115aq5ZUcVqD8CQrz82yYIEn7JM2kBeTjIeuvsIRJ+sx1qFmo/bD8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DWqCXwYz; arc=none smtp.client-ip=209.85.215.177
+	 To:Cc:Content-Type; b=czl8jJ845fmz/kNqa/pbTka2HBKFNjtjQvoYkqrnQCD1rnBbVBM8sG2iExSUNH+91/xaoWaed526E7OYhy6Q1dvFhnR/zFfXirmkRgJRClEsLoxvpnbjXOxRjxNVz2Qfx5B/kFi18I42bxolJppiu7ZR9z6D+u8f8NQdiQww9G0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=h+oAieAA; arc=none smtp.client-ip=209.85.216.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-7db174f9050so691531a12.3;
-        Fri, 04 Oct 2024 12:58:13 -0700 (PDT)
+Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-2e078d28fe9so1851982a91.2;
+        Fri, 04 Oct 2024 13:04:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1728071892; x=1728676692; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1728072273; x=1728677073; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=jGYwHtJUP8CJSvTmfTnBLjBMRqwmyxvX78RTi0aovuc=;
-        b=DWqCXwYzs9qQWa+iq2SyEoSXT+f1xXxT9EeYNDDjPeD1OPw1X41m7BfcLM3tHyq3Qq
-         FvLrf5dGs6wRmi72RkjV8S0RRMofjlS1O1L0F8XxTtq1S//1lbA7GIHOslmDYA6yqpUu
-         RWjWxxIE2MQQsfrvk0EnO734Ug7zMCDI+UIg1mLnp5rjK9Yt4jPGXa3Rs4wgj1KJnbJW
-         kdFdmyZZE6Jav/xOg8E0LNkfOaMRY8oVfMV6nXUF8oaP9JdFjfWZ8YNs1BwQfzmjUZnE
-         TYEkwqxIsEGTMWdLlN/c+9IdKB/gQy3AU0AEldLQv0lpI0jB2CahXKvOm3mfA8Wa7Pfs
-         4bcQ==
+        bh=cCdDTcUm4bFPThg2lM08rNCWleBMqiey7gEaVCUSrxI=;
+        b=h+oAieAATR88aEyk8Fv2uGuwnkrkXOVAVFwBCVYLNuc0Qe2EnlZvDJvdMASRo3zwlH
+         Yml1aODVAK0IdeGaY14J2iywMRXoRFK5ACrWhnXYoU1RP9aMIRgcqc7uiV/cY6XJm0ZD
+         K8zqdml3YZp01u12xtSAo5ogPWwYjiQtmDydIwLfkB4Z+tDXRoET9/7pPy81PkBOS0XW
+         0OTgpO13WeJ4SyVU2aM93movsFbgo/RHf7J0oMckatSE4Q+1pADyM7/qDScPHfJWMDqT
+         dMpPZ9i7INa53dLDA8XZpKOgIaiLNW/jn1XecrwqbP5xtc7Kn5folBTHIYaKTK3fqm6N
+         qJKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728071892; x=1728676692;
+        d=1e100.net; s=20230601; t=1728072273; x=1728677073;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=jGYwHtJUP8CJSvTmfTnBLjBMRqwmyxvX78RTi0aovuc=;
-        b=krn8WYOCEM2K+Kvm3uxDFR0pSMPVnC0tiJIkQNfetcOKcpOvtbf7bqGS7KMo0O9Pvy
-         gU3PIkT9bxKJtgy9XfF1BntWs/iNzSgDq+skl10thsH7x2CLJnvjfSIdtAIE/V9W/JoW
-         oF51Qx06zrbfipCwL0PVr7wKTHhfeQV96rAh5cxPinXCDdgjK6VUV+SLnbyFYL6e1mR6
-         jENE8/kgZTiRoY5TfvIop0auP85GeM8qtQFZRTUtDGlIMmFAxDcgj9HNFzNBx4f25yrg
-         5Sb0sNUHh20Jb5xQwdxdfVIT99LooK00A5Mtbo7gLdugG7dCknTKji/FOZg6QNajK0ee
-         hK+g==
-X-Forwarded-Encrypted: i=1; AJvYcCVSGw6wXTt1yaGZr1x7zW+EGqgjuXiJFRIomQYl/p9MVFixEzaqYHfmT5Sx1PfwZkbHONzKYpOa3yDEseHBOI0G7aqf@vger.kernel.org, AJvYcCVpDH+0tH7iPBf5+jWwHmOnikWTepOILzpAceXE0UvI7lgQFLtig4Xh+dh9To78+YVbz/Y=@vger.kernel.org, AJvYcCW52r/TYVNNZoGaybhEBBXFKMcgqmF4SXNLV7qVJIYt/ake46PmgXMUq/VPiQYtEEjVkqA3VhuCwnFqJmQW@vger.kernel.org
-X-Gm-Message-State: AOJu0YzHsSGgCCbHTkbgr6VEu48zGJVMkSD1qUdQrCL0l1SETr0X9hz/
-	SifkJPvZKs5p918xDmM8i2Lgg/KqE2O4iBZOIzggNdtr5/cEsB8jC/xvREq4ooDjujVMowU9sEr
-	m5ZP1/T/1owNJwE3BCOGRpOHI+mc=
-X-Google-Smtp-Source: AGHT+IEWzIrSjrNtEvKMO440O7fdoRp62ef79uEnejMaUjsk0dIVB65DxKQYHNe6tCIKxr+tm1ziHTzX0Fh2nUC80Bw=
-X-Received: by 2002:a17:90b:889:b0:2d8:77cc:85e with SMTP id
- 98e67ed59e1d1-2e1e6391a8bmr5375612a91.37.1728071892548; Fri, 04 Oct 2024
- 12:58:12 -0700 (PDT)
+        bh=cCdDTcUm4bFPThg2lM08rNCWleBMqiey7gEaVCUSrxI=;
+        b=jqxX9QzMim6wjLwmWxjzcx5kQ6iu7HKwcXH6ZB28bj3uPUAOKA3aAThpYhnrse8aRt
+         DsdOgJ6mRdI9T9wUAWU4CGF4MBVBITUbr1BT7Kpwy/9fYD9Vz3qAUwlIsuEC4fJyOHM0
+         HXerR8J5aQGeHyKjCzRpm46GwlfMQvXlXdvj5m4EU+sMw2e/o+yi+R7Z7yGiJ9PNeFoI
+         BCUedbm5E0nVILaVvX6eWgnyGbnlNOiSkjXmow5ww5x2FoGHKEsOsK3ZHliIXTS45pve
+         mqpMLHd8UCUUk+81LCV05SLYIvGIwNiFexm+yovDMLUdUkLo6PWlpgLJQwN8Xhyy4qQH
+         9lng==
+X-Forwarded-Encrypted: i=1; AJvYcCUapnnpWxdxaPc4euxLU/1jslYSpvWQPyoE1QyV25+WO29W6q0WPkaMeRUi8vV5Qs0bBkSoC4cCkdidSkHl@vger.kernel.org, AJvYcCUzQhWVII4C1maCgD195aI/zm+AYsfkX0IHR1cG+7Z/pv/BCCmRM2dpc6/f8KyDwnn+w7S4DtwJK7yE6oyOuTCEFJZf@vger.kernel.org, AJvYcCVD7/G6tTlR0V5YTuYF+lIeYiyrfZMSJKsPKy91u7mBRVIZwwwNxJDb+AWeSCLQqt5T39I=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy0CDJxYxf72HqZkXqRWIsr4GMiw+W7rLguGxZkgnyUg5be3C3U
+	S3Yi8xaU3SQ7HiAnanugtXb8FckuO+TbGVjTGGXKEfhSq40BM/PAoZ+A78oAEI17XRgz4ppR/oc
+	4ZCejahLeVQsPsZmOxZ/2LL3Hxuc=
+X-Google-Smtp-Source: AGHT+IFQaZ6vae6vffxFo9uyG8YGJ9VcxjSrqhSww64Y2yjTDJ/Nrff6qKFiOLgb8v51yyr+nVi0h1iA86TuS8otjmg=
+X-Received: by 2002:a17:90b:3889:b0:2cb:4c25:f941 with SMTP id
+ 98e67ed59e1d1-2e1e6264456mr4150777a91.17.1728072273163; Fri, 04 Oct 2024
+ 13:04:33 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241001225207.2215639-1-andrii@kernel.org> <20241001225207.2215639-4-andrii@kernel.org>
- <20241003-lachs-handel-4f3a9f31403d@brauner> <20241004-holzweg-wahrgemacht-c1429b882127@brauner>
-In-Reply-To: <20241004-holzweg-wahrgemacht-c1429b882127@brauner>
+References: <20241003151638.1608537-1-mathieu.desnoyers@efficios.com>
+ <20241003151638.1608537-3-mathieu.desnoyers@efficios.com> <20241003182304.2b04b74a@gandalf.local.home>
+ <6dc21f67-52e1-4ed5-af7f-f047c3c22c11@efficios.com> <20241003210403.71d4aa67@gandalf.local.home>
+ <90ca2fee-cdfb-4d48-ab9e-57d8d2b8b8d8@efficios.com> <20241004092619.0be53f90@gandalf.local.home>
+ <e547819a-7993-4c80-b358-6719ca420cf8@efficios.com> <20241004105211.13ea45da@gandalf.local.home>
+ <4f1046e7-7b62-4db3-93d4-815dc8c27185@efficios.com>
+In-Reply-To: <4f1046e7-7b62-4db3-93d4-815dc8c27185@efficios.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 4 Oct 2024 12:58:00 -0700
-Message-ID: <CAEf4BzY5fy1VVykbSdcLbVhaHRuT6pRNYNgpYteaD79vRM7N5A@mail.gmail.com>
-Subject: Re: [PATCH v2 tip/perf/core 3/5] fs: add back RCU-delayed freeing of
- FMODE_BACKING file
-To: Christian Brauner <brauner@kernel.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org, 
-	peterz@infradead.org, oleg@redhat.com, rostedt@goodmis.org, 
-	mhiramat@kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	jolsa@kernel.org, paulmck@kernel.org, willy@infradead.org, surenb@google.com, 
-	akpm@linux-foundation.org, linux-mm@kvack.org, mjguzik@gmail.com, 
-	jannh@google.com, mhocko@kernel.org, vbabka@suse.cz, mingo@kernel.org, 
-	Amir Goldstein <amir73il@gmail.com>
+Date: Fri, 4 Oct 2024 13:04:21 -0700
+Message-ID: <CAEf4BzYHXz0UFOOnkAeKDK-yt59cwz-66_4wL-bjmv3zxryftg@mail.gmail.com>
+Subject: Re: [PATCH v1 2/8] tracing/ftrace: guard syscall probe with preempt_notrace
+To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>, "Paul E . McKenney" <paulmck@kernel.org>, 
+	Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Namhyung Kim <namhyung@kernel.org>, 
+	bpf@vger.kernel.org, Joel Fernandes <joel@joelfernandes.org>, 
+	linux-trace-kernel@vger.kernel.org, Michael Jeanson <mjeanson@efficios.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Oct 4, 2024 at 1:01=E2=80=AFAM Christian Brauner <brauner@kernel.or=
-g> wrote:
+On Fri, Oct 4, 2024 at 7:53=E2=80=AFAM Mathieu Desnoyers
+<mathieu.desnoyers@efficios.com> wrote:
 >
-> On Thu, Oct 03, 2024 at 11:13:54AM GMT, Christian Brauner wrote:
-> > On Tue, Oct 01, 2024 at 03:52:05PM GMT, Andrii Nakryiko wrote:
-> > > 6cf41fcfe099 ("backing file: free directly") switched FMODE_BACKING
-> > > files to direct freeing as back then there were no use cases requirin=
-g
-> > > RCU protected access to such files.
-> > >
-> > > Now, with speculative lockless VMA-to-uprobe lookup logic, we do need=
- to
-> > > have a guarantee that struct file memory is not going to be freed fro=
-m
-> > > under us during speculative check. So add back RCU-delayed freeing
-> > > logic.
-> > >
-> > > We use headless kfree_rcu_mightsleep() variant, as file_free() is onl=
-y
-> > > called for FMODE_BACKING files in might_sleep() context.
-> > >
-> > > Suggested-by: Suren Baghdasaryan <surenb@google.com>
-> > > Cc: Christian Brauner <brauner@kernel.org>
-> > > Cc: Amir Goldstein <amir73il@gmail.com>
-> > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > > ---
+> On 2024-10-04 16:52, Steven Rostedt wrote:
+> > On Fri, 4 Oct 2024 10:19:36 -0400
+> > Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
 > >
-> > Reviewed-by: Christian Brauner <brauner@kernel.org>
+> >> The eBPF people want to leverage this. When I last discussed this with
+> >> eBPF maintainers, they were open to adapt eBPF after this infrastructu=
+re
+> >> series is merged. Based on this eBPF attempt from 2022:
+> >>
+> >> https://lore.kernel.org/lkml/c323bce9-a04e-b1c3-580a-783fde259d60@fb.c=
+om/
+> >
+> > Sorry, I wasn't part of that discussion.
+> >
+> >>
+> >> The sframe code is just getting in shape (2024), but is far from being=
+ ready.
+> >>
+> >> Everyone appears to be waiting for this infrastructure work to go in
+> >> before they can build on top. Once this infrastructure is available,
+> >> multiple groups can start working on introducing use of this into thei=
+r
+> >> own code in parallel.
+> >>
+> >> Four years into this effort, and this is the first time we're told we =
+need
+> >> to adapt in-tree tracers to handle the page faults before this can go =
+in.
+> >>
+> >> Could you please stop moving the goal posts ?
+> >
+> > I don't think I'm moving the goal posts. I was mentioning to show an
+> > in-tree user. If BPF wants this, I'm all for it. The only thing I saw w=
+as a
+> > generalization in the cover letter about perf, bpf and ftrace using
+> > faultible tracepoints. I just wanted to see a path for that happening.
 >
-> Fwiw, I have another patch series for files that I'm testing that will
-> require me to switch FMODE_BACKING to a SLAB_TYPSAFE_BY_RCU cache. That
-> shouldn't matter for your use-case though.
+> AFAIU eBPF folks are very eager to start making use of this, so we won't
+> have to wait long.
 
-Correct, we assume SLAB_TYPESAFE_BY_RCU semantics for the common case
-anyways. But hopefully my change won't cause major merge conflicts
-with your patch set.
+I already gave my ack on BPF parts of this patch set, but I'll
+elaborate a bit more here for the record. There seems to be two things
+that's been discussed.
+
+First, preempt_disable() vs migrate_disable(). We only need the
+latter, but the former just preserves current behavior and I think
+it's fine, we can follow up with BPF-specific bits later to optimize
+and clean this up further. No big deal.
+
+Second, whether BPF can utilize sleepable (faultable) tracepoints
+right now with these changes. No, we need a bit more work (again, in
+BPF specific parts) to allow faultable tracepoint attachment for BPF
+programs. But it's a bit nuanced piece of code to get everything
+right, and it's best done by someone more familiar with BPF internals.
+So I wouldn't expect Mathieu to do this either.
+
+So, tl;dr, I think patches are fine as-is (from BPF perspective), and
+we'd like to see them applied and get to bpf-next for further
+development on top of that.
+
+>
+> Thanks,
+>
+> Mathieu
+>
+> --
+> Mathieu Desnoyers
+> EfficiOS Inc.
+> https://www.efficios.com
+>
 
