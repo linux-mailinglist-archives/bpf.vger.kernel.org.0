@@ -1,108 +1,150 @@
-Return-Path: <bpf+bounces-41055-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41056-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F01199170C
-	for <lists+bpf@lfdr.de>; Sat,  5 Oct 2024 15:39:39 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51D16991710
+	for <lists+bpf@lfdr.de>; Sat,  5 Oct 2024 15:45:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B872DB211DB
-	for <lists+bpf@lfdr.de>; Sat,  5 Oct 2024 13:39:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EE2A51F227E7
+	for <lists+bpf@lfdr.de>; Sat,  5 Oct 2024 13:45:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D1DD153BC1;
-	Sat,  5 Oct 2024 13:39:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91B2713C3D3;
+	Sat,  5 Oct 2024 13:45:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=blackwall-org.20230601.gappssmtp.com header.i=@blackwall-org.20230601.gappssmtp.com header.b="IAWsfLgI"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HBtNq19g"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26C8513A24E
-	for <bpf@vger.kernel.org>; Sat,  5 Oct 2024 13:39:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32C1213C8F6;
+	Sat,  5 Oct 2024 13:45:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728135569; cv=none; b=K+ZGv6JBDGumpdAf/sVvxy57F08VjFjWbGoSTBUmkrH1OPeoAAvrCuxFPzfKoPmXqYCkNJH3gfJqLua6LGscqtZl7e87boppUiMOsH1OSyoyk8j4CJLj3ZaHdXzCxeTHqqj1jDVsH3MZktgoMsdtg5iFzvHDAkVgn9I/J3lL5Ik=
+	t=1728135930; cv=none; b=GpZMoxxR7QNv/l4duxbmMXRBbtIEWCOYSGOPC6NCWhey1nBuZFUlJFYHK+7b1KVCp7KE0msPXIFSGGHbk803dPuengibzuObKtoNYMXQH/qgV5nt2oS5/Zf7E4n7EO2Pi5Zfss9swLGsnz+0mA3iQxktP+ykMr5VpwUyEZAEDlM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728135569; c=relaxed/simple;
-	bh=WPSNbgCRIOzuJvywBwwnI4D7zl4+YhX+vKz5RnNwEo4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=pZ9zMZ54euYdTymxU1FHFHnewDRdVlCwwsdbuHFp/JATutcv9fKcRpiZR2P8C7r8UayFzWAicORgCtyF9kjdjojUbvJZMJXfDmOhTdiIAgUwTm2AxUW3p7mM7g+pK7BgFiSTQ61dhvfv7atHFAYtK3aGaoWtPePH30yE5yyLp3w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=blackwall.org; spf=none smtp.mailfrom=blackwall.org; dkim=pass (2048-bit key) header.d=blackwall-org.20230601.gappssmtp.com header.i=@blackwall-org.20230601.gappssmtp.com header.b=IAWsfLgI; arc=none smtp.client-ip=209.85.128.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=blackwall.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=blackwall.org
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-42cb806623eso26447495e9.2
-        for <bpf@vger.kernel.org>; Sat, 05 Oct 2024 06:39:27 -0700 (PDT)
+	s=arc-20240116; t=1728135930; c=relaxed/simple;
+	bh=6WMCleyRf9rkTC7gpicSmXoOJzsha0XAiXyxm4lH0Vg=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=S8pylDCRjECzr0c8DdXjtOdn98g24R0TJu15F7Jsc/Rov+gytBjYXUxHUnlFjIKld1zSFnZRfWCKhUa3FT0IsHxOOiLUq56i9wqYHjiqFlNMhpxPMJpe9HDwj0fOAtAtCHAC1yVm6/i77gkfRYJ8d1/qLftKoGCQXeU0DOZ1n4s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HBtNq19g; arc=none smtp.client-ip=209.85.218.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a8d6d0fe021so502529266b.1;
+        Sat, 05 Oct 2024 06:45:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=blackwall-org.20230601.gappssmtp.com; s=20230601; t=1728135566; x=1728740366; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=/dw2nlO1YbFRY+slXgiXeePfiGcRPzzcnM5E2TwM1mw=;
-        b=IAWsfLgIqu7kKgmWoo5NVUpHsl7RpD0J95czYZBBDLILtezoIhdDEWL7a0HwdVvRk8
-         tzlyVrKzHlgLjlKuE+V4/iCKrSYaWsufhQ4MI+PoyL94CPxEwW4S3Ywst/hTg/7DhsX+
-         5yO7K23nyGf86+Kz9ptoXnZuqslFpksh33TcGCbS+IbxTOcUvilch2GmRdsxsD96W5hg
-         XYjgKAGpAd7vCRXQKT4OqPiyN3j9NWt/BiPzftn2+uhteFvCRW7q15DD4ruSQ9u2n3f9
-         CwIkmYuVM2xsXm2DWBhOQ7kR9gIYct7ClLoO6aTJ6K3UZPkDHz8MhaMToYUDQT2BfSuz
-         rr2g==
+        d=gmail.com; s=20230601; t=1728135926; x=1728740726; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Kx4yHJPGBMBusL2+jeuSBsTQGYeHDWUiK8Vz71jCsnA=;
+        b=HBtNq19gn9CIlORP6VpK8JD2xwk8i5KScTrqJYcWmC9irdn0gxFTD5luei+IM7/Bqq
+         x5iX3q3GjcQ1MfqHDbsi52ByUepz+hoyIRerhoHL5GmsgHde1JG2WOWREfMJLXIu99oi
+         9x7mibhnfSLODAIAUJ1uA9vD0awp1VrghCa4alZgYumESe08Kci/r4hk+4bqVP/xxi9I
+         NtyKTYqa5+UDnQ4LNoCWR4a7v516HTYv8HrNE+UiZrIk1jZaL+IAzdp+ZGzDA5tVBUyo
+         SL2TREJO3DnRuDaYE3//M8rvkuGUadDUXlVY3UUHfvzi8SM+cTcOvvBdFf5+8zjMUe4o
+         GbmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728135566; x=1728740366;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1728135926; x=1728740726;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/dw2nlO1YbFRY+slXgiXeePfiGcRPzzcnM5E2TwM1mw=;
-        b=OJDNNs1WACkRpldZciM4ul4OVJ4F5tdiVtMhUzF6wMjvLIMZ5qJDoc4OtbYePOpebm
-         c7UM99FkoIiOefBTD8l1PGckI+Cl1/ucsDNMpGa9YqMnmbEPd0D+4Wjemv4WeXzsTnJ4
-         Z92W7kdT/OjKTYvSl1Wjl0SJqOeI583pvl9XC0Sb5ndkwuyzBkZ2vkmAV0pzm6l8SByH
-         ABtN/vMmP0P+VlKvmAyjBrUHf3QKQzP3Osob5oQxVVkwG/M9K+9W3h4f8yJ2BH+E6d4N
-         4E1Ubcl3hRT0dpWhNA/uK5W8LWTd8tzrKZU7jL03DrcwlVPIOUJTW1rdubVBufXK6ezK
-         OhFA==
-X-Forwarded-Encrypted: i=1; AJvYcCWTVlVzjJ3lP6ufZMApybCvFY2qp+QvDScW5nMnBMmXx1FkKViislGBIcrp7eyPBg82pIo=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxZw5SxkuI7bVRBWepS9mi8GYz/cmFnyMos4S1XufMSA6TzT/3Z
-	mj7PTa9AqAX/4zvLYEHZDUtzrzMbKqGNEMktgQG78GPrKfbOrA+oWG29NIjPN1o=
-X-Google-Smtp-Source: AGHT+IGx2dLlotyR3cxjnKwpRX/npbxndpZPoA3+xIpMUIbipfD89aRLvAoe92tSAM5A824jxkuNYg==
-X-Received: by 2002:a05:600c:3ca6:b0:42c:c1f6:6ded with SMTP id 5b1f17b1804b1-42f85af8a7amr47820865e9.29.1728135566500;
-        Sat, 05 Oct 2024 06:39:26 -0700 (PDT)
-Received: from [192.168.0.245] ([62.73.69.208])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-42f89e8a25csm22860915e9.17.2024.10.05.06.39.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 05 Oct 2024 06:39:26 -0700 (PDT)
-Message-ID: <1a90c807-eb6c-4495-ae93-64e5d099c29f@blackwall.org>
-Date: Sat, 5 Oct 2024 16:39:25 +0300
+        bh=Kx4yHJPGBMBusL2+jeuSBsTQGYeHDWUiK8Vz71jCsnA=;
+        b=WWbrgPH/hB8YnB+Bn9ggwVt61HFLfqNm479HNXeVk4euDOUJN0nphowEQ4Kw4DaoB0
+         4e6q/vsX42f+4VlIXN26eQ58RvUmJ7vJBXt/4DdlmTvfG3lt7y9z4bC2sDWxwTaLRmGw
+         VgczDmHXB3DTwEw2h7SkiRk+R1XEGhctFsekQFFH+dTcI/qCu9nByNcbRdpBS+0KXy+9
+         GXhy9+czn3MskcATo2a0ASvOMXmhEkyLT0Kr3jJCyk/XmW+S19zQjGmHiyx5zOwpwNhO
+         VcLxTPsHzJsEoevTv96wraNpJtfmCOP4G4z3Yn0QCuAqBuxXJVUhBEX6CFaEBm7yNKVn
+         9vdw==
+X-Forwarded-Encrypted: i=1; AJvYcCVLz7aEofRh/5Lc4xaxFcLvyhhvc2eGpBOE40uR4+0hGsrgQrCyDQ2XdSw5w4LQfGhu1O6lbdEHpxXGWFFI@vger.kernel.org, AJvYcCVf/TKstbbu6YOJJ3kRZKp+1rVPmSJ+aD1JLen0jaCXzFfTybOKuuF8sLA6vFDOK63A8a0=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyg7t2wxaSgAyrsL0d06ZyrTwwskmAjh4F6n/LGgtTtdNXlAI2t
+	/jRedpWpuGycPW2kqFwWi/cZGK9JOBfiCgOFr8Gj/a7Xdk2DPv60
+X-Google-Smtp-Source: AGHT+IGEpWpCDACNRAEu30MNVIKtG/hJJxxoBLsghEuDe35isIBnrPXgxEeDiOjY/mAC0CF5YpPX0Q==
+X-Received: by 2002:a17:907:e668:b0:a99:32f8:781a with SMTP id a640c23a62f3a-a9932f878bdmr236709666b.61.1728135926199;
+        Sat, 05 Oct 2024 06:45:26 -0700 (PDT)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a992e784ee4sm134046666b.105.2024.10.05.06.45.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 05 Oct 2024 06:45:25 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Sat, 5 Oct 2024 15:45:23 +0200
+To: Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
+Cc: KP Singh <kpsingh@kernel.org>,
+	Matt Bobrowski <mattbobrowski@google.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+	Casey Schaufler <casey@schaufler-ca.com>,
+	Paul Moore <paul@paul-moore.com>,
+	John Johansen <john.johansen@canonical.com>, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] bpf, lsm: Remove bpf_lsm_key_free hook
+Message-ID: <ZwE_veRD7f2ir6mS@krava>
+References: <20241005-lsm-key_free-v1-1-42ea801dbd63@weissschuh.net>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v2 4/5] tools: Sync if_link.h uapi tooling header
-To: Daniel Borkmann <daniel@iogearbox.net>, martin.lau@linux.dev
-Cc: kuba@kernel.org, jrife@google.com, tangchen.1@bytedance.com,
- bpf@vger.kernel.org, netdev@vger.kernel.org
-References: <20241004101335.117711-1-daniel@iogearbox.net>
- <20241004101335.117711-4-daniel@iogearbox.net>
-Content-Language: en-US
-From: Nikolay Aleksandrov <razor@blackwall.org>
-In-Reply-To: <20241004101335.117711-4-daniel@iogearbox.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20241005-lsm-key_free-v1-1-42ea801dbd63@weissschuh.net>
 
-On 04/10/2024 13:13, Daniel Borkmann wrote:
-> Sync if_link uapi header to the latest version as we need the refresher
-> in tooling for netkit device. Given it's been a while since the last sync
-> and the diff is fairly big, it has been done as its own commit.
+On Sat, Oct 05, 2024 at 02:06:28AM +0200, Thomas Weiﬂschuh wrote:
+> The key_free LSM hook has been removed.
+> Remove the corresponding BPF hook.
 > 
-> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+> Avoid warnings during the build:
+>   BTFIDS  vmlinux
+> WARN: resolve_btfids: unresolved symbol bpf_lsm_key_free
+
+nice, I was wondering about that, lgtm
+
+Acked-by: Jiri Olsa <jolsa@kernel.org>
+
+thanks,
+jirka
+
+> 
+> Fixes: 5f8d28f6d7d5 ("lsm: infrastructure management of the key security blob")
+> Signed-off-by: Thomas Weiﬂschuh <linux@weissschuh.net>
 > ---
->  v1 -> v2:
->   - Left the patch as part of the series to not break build
+> I don't know much about LSMs, so please disregard if this is wrong.
+> ---
+>  kernel/bpf/bpf_lsm.c | 4 ----
+>  1 file changed, 4 deletions(-)
 > 
->  tools/include/uapi/linux/if_link.h | 553 ++++++++++++++++++++++++++++-
->  1 file changed, 552 insertions(+), 1 deletion(-)
+> diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
+> index 6292ac5f9bd139dafb39ecd8bb180be46cd7c7fd..3bc61628ab251e05d7837eb27dabc3b62bcc4783 100644
+> --- a/kernel/bpf/bpf_lsm.c
+> +++ b/kernel/bpf/bpf_lsm.c
+> @@ -339,10 +339,6 @@ BTF_ID(func, bpf_lsm_path_chmod)
+>  BTF_ID(func, bpf_lsm_path_chown)
+>  #endif /* CONFIG_SECURITY_PATH */
+>  
+> -#ifdef CONFIG_KEYS
+> -BTF_ID(func, bpf_lsm_key_free)
+> -#endif /* CONFIG_KEYS */
+> -
+>  BTF_ID(func, bpf_lsm_mmap_file)
+>  BTF_ID(func, bpf_lsm_netlink_send)
+>  BTF_ID(func, bpf_lsm_path_notify)
 > 
-
-Acked-by: Nikolay Aleksandrov <razor@blackwall.org>
-
-
+> ---
+> base-commit: 0c559323bbaabee7346c12e74b497e283aaafef5
+> change-id: 20241005-lsm-key_free-b47445ee523d
+> 
+> Best regards,
+> -- 
+> Thomas Weiﬂschuh <linux@weissschuh.net>
+> 
 
