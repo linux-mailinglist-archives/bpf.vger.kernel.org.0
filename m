@@ -1,243 +1,173 @@
-Return-Path: <bpf+bounces-41049-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41050-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B81619916AB
-	for <lists+bpf@lfdr.de>; Sat,  5 Oct 2024 14:10:24 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6923A9916D8
+	for <lists+bpf@lfdr.de>; Sat,  5 Oct 2024 14:39:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DBABE1C21631
-	for <lists+bpf@lfdr.de>; Sat,  5 Oct 2024 12:10:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D1BDAB21B99
+	for <lists+bpf@lfdr.de>; Sat,  5 Oct 2024 12:39:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4056014C5AE;
-	Sat,  5 Oct 2024 12:10:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 843E3153808;
+	Sat,  5 Oct 2024 12:39:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YknrkGmm"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PMs35McN"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f195.google.com (mail-pf1-f195.google.com [209.85.210.195])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACDAF82D91;
-	Sat,  5 Oct 2024 12:10:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 982C814AD19;
+	Sat,  5 Oct 2024 12:39:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728130215; cv=none; b=ACo5GkEzHIQZGqcg1gvSSIqJ9rw+7xrNnFMa9lutmyobadR7W+2V8dTYRkyyKHQZJMd8zWPtOSYnRrw8K4u94bnZznlJP/zX2/G31+/j1n0GQpe5liToOY5IYlsUUGk646gY6MgofufHXX2QF86DDtW9ORw+ByIx6qFqGQYtnQc=
+	t=1728131952; cv=none; b=EGmyP0PvxhYREN5PCTFySf4mxnYslir6XbC/iO6SwJdYzy7/+VFWYmiknIBsxkbKtMVO4NrA/Lc09rkg9+UK+776fOHgN5TaVTB7XX4LCaHNu4CR1lfdtCU0ECeRZg3jSA7KltajMok1ml0ef9jshY8eLWtlQYApITWQk20MinQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728130215; c=relaxed/simple;
-	bh=k7JwcDVnbEixpxAlYkqVh+O0lGDuWqZnz+mr8iDxfkU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iypFimDJ3krHSEr77oDAq6R2/gMpM4wmpbPkEul3v8A2NsTRW/VPBruZ6NWeYkuly5wIprPjzvDcE7eG4ArL7klHTf6rCwJhtkuu0nzE1VH1lsIyaMHsz3jb3qd0d4SaE6Q9GbUuVs61LNyy9BV4tUHojNIoiZqWhYMCXRVjYL0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YknrkGmm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A321EC4CEC2;
-	Sat,  5 Oct 2024 12:10:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728130215;
-	bh=k7JwcDVnbEixpxAlYkqVh+O0lGDuWqZnz+mr8iDxfkU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=YknrkGmmpkbdrE3Lt6C/pKy7y9GK9dW2SZx+XuOkXtOU2RSEwUReh4JeuVvin+kpu
-	 zCTdqVftuoSn9YGyk6LdJ05wRRsCSm0NnmT3Es5OoIyhbBopVfUx+0jenIlcHcuVEK
-	 QUxyG4W6x+X4VMgVa8LMpYuVtaYfvCGxzSoaqa7/t8TNXlPvI2xBp/7DQaIG4X6Ob1
-	 t/Ew915xduGG3bH8C4Vdi4ArD/q+QYXkiZg7S2f0MvNEGBV1cUTLPsS/YqGf8Tpu/k
-	 ZQkIVtZntbxeGMXopJI3XsSq8bZ0c/CNHYpPkYAjlf8K026mToruhxc30aF6nf3ztc
-	 RfTYI0F9nT8XA==
-Date: Sat, 5 Oct 2024 13:10:12 +0100
-From: Mark Brown <broonie@kernel.org>
-To: =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>
-Cc: Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
-	bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Mykola Lysenko <mykolal@fb.com>,
-	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@rivosinc.com>,
-	linux-kernel@vger.kernel.org,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Anders Roxell <anders.roxell@linaro.org>
-Subject: Re: [PATCH] selftests: Do not skip BPF selftests by default
-Message-ID: <ZwEspBT04w20oPsj@finisterre.sirena.org.uk>
-References: <20241004095348.797020-1-bjorn@kernel.org>
- <96023ef4-fa0b-4fc2-a6a7-ac32bc777c44@sirena.org.uk>
- <875xq82dqe.fsf@all.your.base.are.belong.to.us>
- <bb579569-1451-414f-aac4-12757024d9a5@sirena.org.uk>
- <87bjzyeu4g.fsf@all.your.base.are.belong.to.us>
+	s=arc-20240116; t=1728131952; c=relaxed/simple;
+	bh=YNm3x+D/+uR/yV1OSOY9lGo7cThaljvjLDn81E+MKfk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=lPuvinjrVOwvi6lNfVsAKiUi4CZKoVFUQ2uiUwCsSgqHv7uxfEhCi4jd4iSA1TKuVdow4GJYC7YZQBJ1BaBmAreoScjrosYC+MF67QpEno1WGdvCluAYM+BI5HSWkA9UkAYcQgWLkIKHDLWbyUkubEnE3uUu4aA3knm6+7Y8nPA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PMs35McN; arc=none smtp.client-ip=209.85.210.195
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f195.google.com with SMTP id d2e1a72fcca58-7179069d029so2310698b3a.2;
+        Sat, 05 Oct 2024 05:39:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1728131950; x=1728736750; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=YbmQWqwf8KLWBh53BpLjJjepp8M5DqLAMepSsUrr8/A=;
+        b=PMs35McNWB15k7nicCSjjbeVhDSdcypBjCHkHQHnx2UOwG+/xBcGjLgjuX/4+Ty4zL
+         h4zetdTGjh+NLa2Un6mS4lwD57nS7XOC2RNnmpTLax4y9jRcd3AjsUhHaiAeQNjWAvef
+         1iuolrKGxvfZRQVoDsk8bRgupkmHcsCY9Vq7EolgnaTkDoiRc9Hldh2k0UunJm377tkQ
+         GJny1GpMRBDO3/cafD5NEBc6Iy6MFSVTDfbqoAIm5YVroWM37ylLjwapMDCmD0xO/Luy
+         AUW/K+3K+XpH0peCFGJOvexBZnGb+0Tp7BEi2BUs74HoSUg0N1pU++oxD49vzHkVmwwB
+         v0VQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1728131950; x=1728736750;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YbmQWqwf8KLWBh53BpLjJjepp8M5DqLAMepSsUrr8/A=;
+        b=UbvxvuxZa0qsJ7Rxgkxriv65PQHnSSUkQXygfhvzHEoopJvgpWnOrv9QuqUTewCXId
+         sCUvIPpTwLLGmGU7iPtOthjor6U7aOx7l+R+TzvtHkQiym0qnTXpXtCHjBvoyNb0vgeD
+         Ob702YK+UBHVIPTKhcySaQrz7JpkApHjYVIg36X28SPaSK9scUUjzIQvrmO5wXzrTG2h
+         S+b/QDv0MGAqR308Iu6fvJS6SMd62XSUxlmWU3Ei2Jtb/IB+gSnxlCGB8t1A+Q5KgWCE
+         cb+FKp5GoxP48ox0CF/ZnkMpgWB7QScwyaUU5yE2kR8n4zinYxMlAZSaAOjwh/qWhxxy
+         OVQQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUIUht/2HdDXFoRe1cBfgjuUg4xD1tXRCQCLePozHDClZ9FR+C2/jXhurhhzZK9/TumSGChXSoR@vger.kernel.org, AJvYcCUppHcAPkCJ5LDL3dPO7SOTmoHrCQOO5Z7pWqbc6BJZpUUVyfGMSSF2ZvqesFShQXPwA88=@vger.kernel.org, AJvYcCVRM77xwL7GJ/2X39fLG9EwrwPU8ZPFAfnGUfzPrsjdZSp4ct+0HybxXBUTqf1uI5lJpHPFeSD2ceZjSg==@vger.kernel.org, AJvYcCWEMcljify8xelvcV36k/QbrQ/2vR8ZUCJ95sxJOg0K9yeHb9ZXAExO9/+nCoyQJH4uK/M28uAoGu17mmKYJBI=@vger.kernel.org, AJvYcCXKt/WP1EDjEsOIiGJPsb5IzwgUTdfAVDkD/TTZeignWw1wJPChsAw4PucIQkOBklqBPZx6tan8k5m10kx0@vger.kernel.org
+X-Gm-Message-State: AOJu0YxGLJauWuWbHekKar0Ear4vjKKbtcC4ZW5j1xrP/rVhFYKD2WNc
+	LGT+ajau8xji7+yNPAFrrCCxWoXe2vzz6JpjYKt8V2FHQbW5Owif
+X-Google-Smtp-Source: AGHT+IH7TZfPKkqMhF7jhMgZXtf7Pauw1fuqlg17S6ZMnwvz+3KYrvO5e1eqHcfYjc/CJowJUAwQhQ==
+X-Received: by 2002:a05:6a00:9a1:b0:70d:3337:7820 with SMTP id d2e1a72fcca58-71de23c72ecmr10006756b3a.8.1728131949813;
+        Sat, 05 Oct 2024 05:39:09 -0700 (PDT)
+Received: from ?IPV6:2409:8a55:301b:e120:3c3f:d401:ec20:dbc7? ([2409:8a55:301b:e120:3c3f:d401:ec20:dbc7])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-71df0cd3983sm1408702b3a.87.2024.10.05.05.38.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 05 Oct 2024 05:39:09 -0700 (PDT)
+Message-ID: <6cb0a740-f597-4a13-8fe5-43f94d222c70@gmail.com>
+Date: Sat, 5 Oct 2024 20:38:51 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="QO42guiMCIxRerEh"
-Content-Disposition: inline
-In-Reply-To: <87bjzyeu4g.fsf@all.your.base.are.belong.to.us>
-X-Cookie: Editing is a rewording activity.
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net v2 2/2] page_pool: fix IOMMU crash when driver has
+ already unbound
+To: Paolo Abeni <pabeni@redhat.com>, Yunsheng Lin <linyunsheng@huawei.com>,
+ Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Cc: liuyonglong@huawei.com, fanghaiqing@huawei.com, zhangkun09@huawei.com,
+ Robin Murphy <robin.murphy@arm.com>,
+ Alexander Duyck <alexander.duyck@gmail.com>, IOMMU <iommu@lists.linux.dev>,
+ Wei Fang <wei.fang@nxp.com>, Shenwei Wang <shenwei.wang@nxp.com>,
+ Clark Wang <xiaoning.wang@nxp.com>, Eric Dumazet <edumazet@google.com>,
+ Tony Nguyen <anthony.l.nguyen@intel.com>,
+ Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+ Alexander Lobakin <aleksander.lobakin@intel.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, Saeed Mahameed
+ <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+ Tariq Toukan <tariqt@nvidia.com>, Felix Fietkau <nbd@nbd.name>,
+ Lorenzo Bianconi <lorenzo@kernel.org>, Ryder Lee <ryder.lee@mediatek.com>,
+ Shayne Chen <shayne.chen@mediatek.com>, Sean Wang <sean.wang@mediatek.com>,
+ Kalle Valo <kvalo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Andrew Morton <akpm@linux-foundation.org>, imx@lists.linux.dev,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ intel-wired-lan@lists.osuosl.org, bpf@vger.kernel.org,
+ linux-rdma@vger.kernel.org, linux-wireless@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
+ linux-mm@kvack.org, davem@davemloft.net, kuba@kernel.org
+References: <20240925075707.3970187-1-linyunsheng@huawei.com>
+ <20240925075707.3970187-3-linyunsheng@huawei.com>
+ <4968c2ec-5584-4a98-9782-143605117315@redhat.com>
+ <33f23809-abec-4d39-ab80-839dc525a2e6@gmail.com>
+ <4316fa2d-8dd8-44f2-b211-4b2ef3200d75@redhat.com>
+Content-Language: en-US
+From: Yunsheng Lin <yunshenglin0825@gmail.com>
+In-Reply-To: <4316fa2d-8dd8-44f2-b211-4b2ef3200d75@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
+On 10/2/2024 3:37 PM, Paolo Abeni wrote:
+> Hi,
+> 
+> On 10/2/24 04:34, Yunsheng Lin wrote:
+>> On 10/1/2024 9:32 PM, Paolo Abeni wrote:
+>>> Is the problem only tied to VFs drivers? It's a pity all the page_pool
+>>> users will have to pay a bill for it...
+>>
+>> I am afraid it is not only tied to VFs drivers, as:
+>> attempting DMA unmaps after the driver has already unbound may leak
+>> resources or at worst corrupt memory.
+>>
+>> Unloading PFs driver might cause the above problems too, I guess the
+>> probability of crashing is low for the PF as PF can not be disable
+>> unless it can be hot-unplug'ed, but the probability of leaking resources
+>> behind the dma mapping might be similar.
+> 
+> Out of sheer ignorance, why/how the refcount acquired by the page pool 
+> on the device does not prevent unloading?
 
---QO42guiMCIxRerEh
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I am not sure if I understand the reasoning behind that, but it seems
+the driver unloading does not check on the refcount of the device from
+the implementation of __device_release_driver().
 
-On Sat, Oct 05, 2024 at 12:12:15PM +0200, Bj=F6rn T=F6pel wrote:
-> Mark Brown <broonie@kernel.org> writes:
-> > On Fri, Oct 04, 2024 at 03:34:49PM +0200, Bj=F6rn T=F6pel wrote:
-> >> Mark Brown <broonie@kernel.org> writes:
+> 
+> I fear the performance impact could be very high: AFICS, if the item 
+> array become fragmented, insertion will take linar time, with the quite 
+> large item_count/pool size. If so, it looks like a no-go.
 
-> > It's a bit unfortunate having to pull clang into GCC build containers,
-> > and needing a newer version than the minimum clang for the kernel itself
-> > too :/
+The last checked index is recorded in pool->item_idx, so the insertion
+mostly will not take linear, unless pool->items is almost full and the
+old item came back to page_pool is just checked. The thought is that if
+it comes to this point, the page_pool is likely not the bottleneck
+anymore, and adding infinite pool->items might not make any difference.
 
-> I guess this boils down to the expecatation on the build environment. I
-> pull in Rust, various LLVM, and GCC versions into the build container.
+If the insertion does turn out to be a bottleneck, 'struct llist_head'
+can be used to records the old items lockless for the freeing side, and
+llist_del_all() can be used to refill the old items for the allocing
+side from freeing side, which is kind of like the pool->ring and
+pool->alloc used currently in page_pool. As this patchset is already
+complicated, doing this makes it more complicated, I am not sure it is
+worth the effort right now as benefit does not seem obvious yet.
 
-> Is the expectation the kernel and userland tooling must be the same?
+> 
+> I fear we should consider blocking the device removal until all the 
+> pages are returned/unmapped ?!? (I hope that could be easier/faster)
 
-I'd say it's a likely expectation, or at least a case people are going
-to want to try.  A bunch of the people doing builds have per toolchain
-containers, as well as keeping the container size under control it makes
-it easy to be sure that your build actually used the toolchain you
-thought it used if there simply isn't any other toolchain in there.  You
-have testing that is focused on making sure that all the puportedly
-supported toolchain versions actually work.
+As Ilias pointed out, blocking the device removal until all the pages
+are returned/unmapped might cause infinite delay in our testing:
 
-> >> > The whole thing is also broken for cross compilation with clang since
-> >> > everything is assuming that CROSS_COMPILE will be set for cross buil=
-ds
-> >> > but that's not the case for LLVM=3D1 builds - net gives:
+https://lore.kernel.org/netdev/d50ac1a9-f1e2-49ee-b89b-05dac9bc6ee1@huawei.com/
 
-> >> A lot can be said about kselftest, and cross-building. It's a bit of a
-> >> mess. Maybe we should move to meson or something for kselftest (that
-> >> requires less work for lazy developers like me). ;-)
+> 
+> /P
+> 
 
-> > AFAICT it pretty much works fine?  It's certainly widely used.
-
-> Ugh, I guess we have very different views here. For me kselftest
-> cross-building is breaking all the time. The tests are a mix of using
-> the kselftest framework, and "having tests stored somewhere". Targets
-> have different semantics (e.g. missing things from "install"),
-> developers (I definitely include me self here!) seem to have a hard time
-> figuring out what should be included in the test Makefiles (copy and
-> paste, etc.).
-
-I'm pretty much exclusively cross building kselftest, even for the cases
-I end up doing native builds the build is set up like a cross build
-because a lot of my stuff is running in a Kubernetes cluster which will
-spin up whatever machines it can get cheapest at a given moment.
-
-> A lot of tests are not included in the top-level kselftest Makefile
-> (maybe there's a rationale for that? I haven't found one).
-
-As far as I'm aware the ones that aren't included are ones that are (or
-were, perhaps there's some cases that need revisiting) unreasonably hard
-to get going or where the test programs just don't look at all like
-selftests so break the framework when you try to run them.  I
-occasionally go through and try to enable more selftests in both my CI
-and KernelCI, I know there's some that are missing from the top level
-Makefile that I didn't hook in because they were too broken but there's
-a bunch of others where I've sent patches because it just looks like an
-oversight.  There's other people doing similar stuff, Muhammad Usama
-Anjum from Collabora has been doing a bunch of stuff recently for
-example.
-
-> I love kbuild for the *kernel*, but IMO it really feels bolted on for
-> kselftest (and much of tools/).
-
-> Tests don't get the same love as the kernel proper, and developers don't
-> want to spend a lot of time figuring out how kselftests works -- and
-> that shows in kselftest.
-
-That's a big part of the pushback on things like the build issues with
-the BPF tests and the way those issues manifest, part of the goal is to
-get the selftests to the point where they mostly work without too much
-effort.  Things like requiring a library are not too much of an issue,
-you just search for what provides foo.h on your distro or whatever, and
-similarly if it's a common tool that distros tend to carry.  Similarly
-adding the tools/testing/selftests/suite/config fragments to a defconfig
-should be what's needed to get the kernel configured appropriately to do
-the tests.
-
-It would be nice to do something better with the libraries, IIRC some of
-the suites do already for cases where the libray is only used by a
-subset of the tests, but other than that we do mostly seem to be at a
-point where you can reasonably just expect things to work.
-
-> > I think we before defaulting BPF stuff on we should at the very least
-> > fix the builds for commonly covered architectures, it looks like as well
-> > as arm64 we're also seeing BTF not generated on 32 bit arm:
-
-> >    https://storage.kernelci.org/next/master/next-20241004/arm/multi_v7_=
-defconfig%2Bkselftest/gcc-12/config/kernel.config
-
-> > but everything else I spot checked looks fine.  It'd be much better to
-> > skip gracefully if the kernel doesn't have BPF too.
-
-> > We should probably also have explicit clang presence and feature/version
-> > checks in the builds since clang is now fairly widely available in
-> > distros but many of them have older versions than are needed so I
-> > imagine a common failure pattern might be that people see clang is
-> > needed, install their distro clang package and then run into errors from
-> > clang.  That'd mean people would get a graceful skip with a clear
-> > description of what's needed rather than build errors.
-
-> This is not only true for BPF/Clang. There are a number of kselftests
-> that make assumptions about architecture, and tools. I do agree that a
-> proper feature detection (what bpftool/perf is using, or move to that
-> new shiny build system ;-P) for kselftest would be great!
-
-Do you have specific pointers to problem suites?  The general idea is
-that if there's architecture dependencies the tests should be skipped
-when not applicable (eg, the arm64, riscv and x86 suites do this) and at
-the minute for straightforward library dependencies we just expect
-people to sort them out (it's mildly annoying whenever someone starts
-using a new library but it tends not to be too much of a barrier).
-
-I'm not sure the problem here is really the language TBH.
-
-> > This is all a particular issue for the net tests where the addition of =
-BPF
-> > is a regression, not only can't you run the BPF based tests without
-> > getting BPF working we've now lost the entire net testsuite if BPF isn't
-> > working since it breaks the build.  TBH I didn't notice this getting
-> > broken because I forgot that I was expecting to see net tests on
-> > kernelci.org and the build break means they just disappear entirely from
-> > the runtime results.  That really does need a graceful skip.
-
-> ...and adding net/hid/sched_ext to the default skip as well? What the
-> tests that only work on some platforms. I'm intentionally provoking
-> here. I don't like hiding tests, because it is bit "tricky" to setup the
-> tooling. BPF is very much in the core of the kernel, and leaving those
-> tests out seems odd.
-
-I think the ideal thing would be to have these suites included in the
-build and skipping gracefully with comprehensible error messages if
-their dependencies aren't met.  Now that they are expected to work with
-released versions of clang it's a lot more tractable for people to
-resolve the dependency than it was in the past.  We also need to ensure
-that they work for at least major architectures, even with their
-dependencies installed and config fragments turned on no upstream
-configuration can currently build any BPF tests on either arm or arm64
-which clearly isn't at all OK.
-
-Like I said above I think for net the current situation is a serious
-regression and should be fixed so that only the BPF related net tests
-are skipped when BPF isn't working.
-
---QO42guiMCIxRerEh
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEyBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmcBLKMACgkQJNaLcl1U
-h9AVCAf3fWUJK+i2QAf52M8fkqBs7g2oXpWNh/cdCAkb685PWkZkyfHsQfKSL5N8
-txpYz+EcJKXJneyYQVOpOt9PTHg+NNaccAC/JvS/V3+UmaZF7/mgwVgj7mLAtM/c
-tzvlOWbiGOC2OTlRusB01scwGoRbj6R4ApIND3DTou2UA68sy+l6kZoSEP8Lm6KB
-yUfjm9SXve66XMtapCkR1lU9G+FLPMFlwlEIqiJ6F0WbGfnO7r50yNf4J6HYZfm3
-x3jwDKqU7BEeA0kUxb519MQaS4fI/AJaA5AUlYwTf3izzu6vXYeKI0o9nFeHTlnM
-iM16o7fQGi2+4HiZ9Ew8PSgK1pCX
-=nhT9
------END PGP SIGNATURE-----
-
---QO42guiMCIxRerEh--
 
