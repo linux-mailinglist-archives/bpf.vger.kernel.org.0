@@ -1,229 +1,243 @@
-Return-Path: <bpf+bounces-41048-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41049-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9872991620
-	for <lists+bpf@lfdr.de>; Sat,  5 Oct 2024 12:37:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B81619916AB
+	for <lists+bpf@lfdr.de>; Sat,  5 Oct 2024 14:10:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED2391C21890
-	for <lists+bpf@lfdr.de>; Sat,  5 Oct 2024 10:37:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DBABE1C21631
+	for <lists+bpf@lfdr.de>; Sat,  5 Oct 2024 12:10:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A4B2149013;
-	Sat,  5 Oct 2024 10:37:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4056014C5AE;
+	Sat,  5 Oct 2024 12:10:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="wXvc339g"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YknrkGmm"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8000A13A250
-	for <bpf@vger.kernel.org>; Sat,  5 Oct 2024 10:37:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACDAF82D91;
+	Sat,  5 Oct 2024 12:10:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728124645; cv=none; b=QMScM9dFfbfDowtdP9EEnkY1Hw9dWDvIsFYKQqSfBBathE8GD/vNXOjuPalj40HZdQzsgB0ag5l58O45D746wv/5w4WipUZpW/9IpSHLSZTkMgWPQkVdeNtbbRWen4EbFmm1vRzfh7JWcsFJQtiKAj0D4xTUFwAlSn7ezdasWsg=
+	t=1728130215; cv=none; b=ACo5GkEzHIQZGqcg1gvSSIqJ9rw+7xrNnFMa9lutmyobadR7W+2V8dTYRkyyKHQZJMd8zWPtOSYnRrw8K4u94bnZznlJP/zX2/G31+/j1n0GQpe5liToOY5IYlsUUGk646gY6MgofufHXX2QF86DDtW9ORw+ByIx6qFqGQYtnQc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728124645; c=relaxed/simple;
-	bh=xXuYtNAETQ1g5JcjlzOE5MFvfpkQQOj1E6OhX/1lXZE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=aihfDydCE0Ivyx230KHFDyksI0/qCoKJVYFaKot5G1enmfDBnQsBt/9B6Qi/ktujCRcM93HTyvlHqDvPmzBQHLXD6eUZolCiV6C1OB+aiMuhSUL3QTNQoFjxrksYvOF8cTSCG3ETzfwAS7zyml2DiZX6uKL7SOriZCraSrfdNfw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=wXvc339g; arc=none smtp.client-ip=209.85.216.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-2e0af6e5da9so2241834a91.2
-        for <bpf@vger.kernel.org>; Sat, 05 Oct 2024 03:37:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1728124643; x=1728729443; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=B4ms11ZQkraDYH9Xo26ocEAmXpjpDosjseyHDy0gtFw=;
-        b=wXvc339gD3yax5pXG8Oz24licvzXm3QJyLsxLFvtE69FsgpBYStAz8o5EyW+ba4BGy
-         jM2oRVmPEuLFhMbW3XXTehTomowxtqcT1gCUYM/AcR9aK3b5pBaKYXHQ6marbSpmgKXw
-         USdT5DpumO+RhRHEoA/jqrd8JnlBOdZJIIUSAMmDSGTudeypSm+FovDJ0BnDUn0AQGvW
-         ZepE6tHXni+tzjMDFRlnsjHsVbVZqCPK/X6pBB/xuXpHRPFA5GhhDhSsjKNMdTjhuYJK
-         WZaiWgr9ATN5aPUjum9LwPbOrLXaLtJ9TibwsuWbEM7P8ox28c8IvwUrcIZjXaOt4MKa
-         Ngmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728124643; x=1728729443;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=B4ms11ZQkraDYH9Xo26ocEAmXpjpDosjseyHDy0gtFw=;
-        b=NW6U4fmfFu+X7Ei3G9N+Gor/x4k+7Fjh6PE57VhuilknACyyieltP0/PYPUBk0hpyX
-         uNREfRpGpJuhWWLKWzSt37eNFMucIrmX0Je/yNnAWclu7DIQB9nV2yHfm6J20kCzNamq
-         Hf2BZARpOQKjkzI9RbyjSA1MS61AH4Ljd5kjFP6B+/oTh50RY6u46LlHsV6vU5f2P05O
-         JMJct0D207kgIucqCrkxn13CK2g3+lZW0521nBYMl57k9ZanueX7E23K/qKti7n3fbzV
-         E7Z5mYob/OnGdTtJEq5ijTh9Q39gYUN6PQ6n+DwPKTexU8oU4z5ZDbXcdkfkeOI/459f
-         PpAw==
-X-Forwarded-Encrypted: i=1; AJvYcCWqlEzysIl7twodbAbz/1CuBxlXZs9FrBPQf59nV2K+mFLDOvIqG4bfSv4fjevqBctdzR4=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwK6bm0joM1US3nr9y1QQ0DMiRrPXYiG+NOtb5PsPfioiQI7+/L
-	+hT+Nw730jucAnD4Suec+JXv9MbZ1sfyRYmg93Msdp7/itjNjptm05vAeABGFDAXWmGYEV4DJeN
-	LmY3Bg8QzAqnx5OTpwWeDRxsN0G/4CXvX8WKT
-X-Google-Smtp-Source: AGHT+IFpelqnAaOBUIxS1I4oQr1q2aEbZ56jlxqBJluUueazlQUie6wZxLwd0KZecIyBO72JszXXXVvhtpu6+8xR5xo=
-X-Received: by 2002:a17:90b:494:b0:2c9:b72:7a1f with SMTP id
- 98e67ed59e1d1-2e1e632369fmr7417174a91.28.1728124642435; Sat, 05 Oct 2024
- 03:37:22 -0700 (PDT)
+	s=arc-20240116; t=1728130215; c=relaxed/simple;
+	bh=k7JwcDVnbEixpxAlYkqVh+O0lGDuWqZnz+mr8iDxfkU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=iypFimDJ3krHSEr77oDAq6R2/gMpM4wmpbPkEul3v8A2NsTRW/VPBruZ6NWeYkuly5wIprPjzvDcE7eG4ArL7klHTf6rCwJhtkuu0nzE1VH1lsIyaMHsz3jb3qd0d4SaE6Q9GbUuVs61LNyy9BV4tUHojNIoiZqWhYMCXRVjYL0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YknrkGmm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A321EC4CEC2;
+	Sat,  5 Oct 2024 12:10:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1728130215;
+	bh=k7JwcDVnbEixpxAlYkqVh+O0lGDuWqZnz+mr8iDxfkU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=YknrkGmmpkbdrE3Lt6C/pKy7y9GK9dW2SZx+XuOkXtOU2RSEwUReh4JeuVvin+kpu
+	 zCTdqVftuoSn9YGyk6LdJ05wRRsCSm0NnmT3Es5OoIyhbBopVfUx+0jenIlcHcuVEK
+	 QUxyG4W6x+X4VMgVa8LMpYuVtaYfvCGxzSoaqa7/t8TNXlPvI2xBp/7DQaIG4X6Ob1
+	 t/Ew915xduGG3bH8C4Vdi4ArD/q+QYXkiZg7S2f0MvNEGBV1cUTLPsS/YqGf8Tpu/k
+	 ZQkIVtZntbxeGMXopJI3XsSq8bZ0c/CNHYpPkYAjlf8K026mToruhxc30aF6nf3ztc
+	 RfTYI0F9nT8XA==
+Date: Sat, 5 Oct 2024 13:10:12 +0100
+From: Mark Brown <broonie@kernel.org>
+To: =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>
+Cc: Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
+	bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Mykola Lysenko <mykolal@fb.com>,
+	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@rivosinc.com>,
+	linux-kernel@vger.kernel.org,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Anders Roxell <anders.roxell@linaro.org>
+Subject: Re: [PATCH] selftests: Do not skip BPF selftests by default
+Message-ID: <ZwEspBT04w20oPsj@finisterre.sirena.org.uk>
+References: <20241004095348.797020-1-bjorn@kernel.org>
+ <96023ef4-fa0b-4fc2-a6a7-ac32bc777c44@sirena.org.uk>
+ <875xq82dqe.fsf@all.your.base.are.belong.to.us>
+ <bb579569-1451-414f-aac4-12757024d9a5@sirena.org.uk>
+ <87bjzyeu4g.fsf@all.your.base.are.belong.to.us>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241005092316.2471810-1-snovitoll@gmail.com>
-In-Reply-To: <20241005092316.2471810-1-snovitoll@gmail.com>
-From: Marco Elver <elver@google.com>
-Date: Sat, 5 Oct 2024 12:36:44 +0200
-Message-ID: <CANpmjNOZ4N5mhqWGvEU9zGBxj+jqhG3Q_eM1AbHp0cbSF=HqFw@mail.gmail.com>
-Subject: Re: [PATCH] mm, kmsan: instrument copy_from_kernel_nofault
-To: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
-Cc: ryabinin.a.a@gmail.com, glider@google.com, andreyknvl@gmail.com, 
-	dvyukov@google.com, akpm@linux-foundation.org, vincenzo.frascino@arm.com, 
-	kasan-dev@googlegroups.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org, syzbot+61123a5daeb9f7454599@syzkaller.appspotmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="QO42guiMCIxRerEh"
+Content-Disposition: inline
+In-Reply-To: <87bjzyeu4g.fsf@all.your.base.are.belong.to.us>
+X-Cookie: Editing is a rewording activity.
 
-On Sat, 5 Oct 2024 at 11:22, Sabyrzhan Tasbolatov <snovitoll@gmail.com> wrote:
->
-> syzbot reported that bpf_probe_read_kernel() kernel helper triggered
-> KASAN report via kasan_check_range() which is not the expected behaviour
-> as copy_from_kernel_nofault() is meant to be a non-faulting helper.
->
-> Solution is, suggested by Marco Elver, to replace KASAN, KCSAN check in
-> copy_from_kernel_nofault() with KMSAN detection of copying uninitilaized
-> kernel memory. In copy_to_kernel_nofault() we can retain
-> instrument_write() for the memory corruption instrumentation but before
-> pagefault_disable().
->
-> Added KMSAN and modified KASAN kunit tests and tested on x86_64.
->
-> This is the part of PATCH series attempting to properly address bugzilla
-> issue.
->
-> Link: https://lore.kernel.org/linux-mm/CANpmjNMAVFzqnCZhEity9cjiqQ9CVN1X7qeeeAp_6yKjwKo8iw@mail.gmail.com/
-> Suggested-by: Marco Elver <elver@google.com>
-> Reported-by: syzbot+61123a5daeb9f7454599@syzkaller.appspotmail.com
-> Closes: https://syzkaller.appspot.com/bug?extid=61123a5daeb9f7454599
-> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=210505
-> Signed-off-by: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
 
-I'm getting confused which parts are already picked up by Andrew into
--mm, and which aren't.
+--QO42guiMCIxRerEh
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-To clarify we have:
- 1. https://lore.kernel.org/mm-commits/20240927171751.D1BD9C4CEC4@smtp.kernel.org/
- 2. https://lore.kernel.org/mm-commits/20240930162435.9B6CBC4CED0@smtp.kernel.org/
+On Sat, Oct 05, 2024 at 12:12:15PM +0200, Bj=F6rn T=F6pel wrote:
+> Mark Brown <broonie@kernel.org> writes:
+> > On Fri, Oct 04, 2024 at 03:34:49PM +0200, Bj=F6rn T=F6pel wrote:
+> >> Mark Brown <broonie@kernel.org> writes:
 
-And this is the 3rd patch, which applies on top of the other 2.
+> > It's a bit unfortunate having to pull clang into GCC build containers,
+> > and needing a newer version than the minimum clang for the kernel itself
+> > too :/
 
-If my understanding is correct, rather than just adding fix on top of
-fix, in the interest of having one clean patch which can also be
-backported more easily, would it make sense to drop the first 2
-patches from -mm, and you send out one clean patch series?
+> I guess this boils down to the expecatation on the build environment. I
+> pull in Rust, various LLVM, and GCC versions into the build container.
 
-Thanks,
--- Marco
+> Is the expectation the kernel and userland tooling must be the same?
 
-> ---
->  mm/kasan/kasan_test_c.c |  8 ++------
->  mm/kmsan/kmsan_test.c   | 17 +++++++++++++++++
->  mm/maccess.c            |  5 +++--
->  3 files changed, 22 insertions(+), 8 deletions(-)
->
-> diff --git a/mm/kasan/kasan_test_c.c b/mm/kasan/kasan_test_c.c
-> index 0a226ab032d..5cff90f831d 100644
-> --- a/mm/kasan/kasan_test_c.c
-> +++ b/mm/kasan/kasan_test_c.c
-> @@ -1954,7 +1954,7 @@ static void rust_uaf(struct kunit *test)
->         KUNIT_EXPECT_KASAN_FAIL(test, kasan_test_rust_uaf());
->  }
->
-> -static void copy_from_to_kernel_nofault_oob(struct kunit *test)
-> +static void copy_to_kernel_nofault_oob(struct kunit *test)
->  {
->         char *ptr;
->         char buf[128];
-> @@ -1973,10 +1973,6 @@ static void copy_from_to_kernel_nofault_oob(struct kunit *test)
->                 KUNIT_EXPECT_LT(test, (u8)get_tag(ptr), (u8)KASAN_TAG_KERNEL);
->         }
->
-> -       KUNIT_EXPECT_KASAN_FAIL(test,
-> -               copy_from_kernel_nofault(&buf[0], ptr, size));
-> -       KUNIT_EXPECT_KASAN_FAIL(test,
-> -               copy_from_kernel_nofault(ptr, &buf[0], size));
->         KUNIT_EXPECT_KASAN_FAIL(test,
->                 copy_to_kernel_nofault(&buf[0], ptr, size));
->         KUNIT_EXPECT_KASAN_FAIL(test,
-> @@ -2057,7 +2053,7 @@ static struct kunit_case kasan_kunit_test_cases[] = {
->         KUNIT_CASE(match_all_not_assigned),
->         KUNIT_CASE(match_all_ptr_tag),
->         KUNIT_CASE(match_all_mem_tag),
-> -       KUNIT_CASE(copy_from_to_kernel_nofault_oob),
-> +       KUNIT_CASE(copy_to_kernel_nofault_oob),
->         KUNIT_CASE(rust_uaf),
->         {}
->  };
-> diff --git a/mm/kmsan/kmsan_test.c b/mm/kmsan/kmsan_test.c
-> index 13236d579eb..9733a22c46c 100644
-> --- a/mm/kmsan/kmsan_test.c
-> +++ b/mm/kmsan/kmsan_test.c
-> @@ -640,6 +640,22 @@ static void test_unpoison_memory(struct kunit *test)
->         KUNIT_EXPECT_TRUE(test, report_matches(&expect));
->  }
->
-> +static void test_copy_from_kernel_nofault(struct kunit *test)
-> +{
-> +       long ret;
-> +       char buf[4], src[4];
-> +       size_t size = sizeof(buf);
-> +
-> +       EXPECTATION_UNINIT_VALUE_FN(expect, "copy_from_kernel_nofault");
-> +       kunit_info(
-> +               test,
-> +               "testing copy_from_kernel_nofault with uninitialized memory\n");
-> +
-> +       ret = copy_from_kernel_nofault((char *)&buf[0], (char *)&src[0], size);
-> +       USE(ret);
-> +       KUNIT_EXPECT_TRUE(test, report_matches(&expect));
-> +}
-> +
->  static struct kunit_case kmsan_test_cases[] = {
->         KUNIT_CASE(test_uninit_kmalloc),
->         KUNIT_CASE(test_init_kmalloc),
-> @@ -664,6 +680,7 @@ static struct kunit_case kmsan_test_cases[] = {
->         KUNIT_CASE(test_long_origin_chain),
->         KUNIT_CASE(test_stackdepot_roundtrip),
->         KUNIT_CASE(test_unpoison_memory),
-> +       KUNIT_CASE(test_copy_from_kernel_nofault),
->         {},
->  };
->
-> diff --git a/mm/maccess.c b/mm/maccess.c
-> index f752f0c0fa3..a91a39a56cf 100644
-> --- a/mm/maccess.c
-> +++ b/mm/maccess.c
-> @@ -31,8 +31,9 @@ long copy_from_kernel_nofault(void *dst, const void *src, size_t size)
->         if (!copy_from_kernel_nofault_allowed(src, size))
->                 return -ERANGE;
->
-> +       /* Make sure uninitialized kernel memory isn't copied. */
-> +       kmsan_check_memory(src, size);
->         pagefault_disable();
-> -       instrument_read(src, size);
->         if (!(align & 7))
->                 copy_from_kernel_nofault_loop(dst, src, size, u64, Efault);
->         if (!(align & 3))
-> @@ -63,8 +64,8 @@ long copy_to_kernel_nofault(void *dst, const void *src, size_t size)
->         if (!IS_ENABLED(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS))
->                 align = (unsigned long)dst | (unsigned long)src;
->
-> -       pagefault_disable();
->         instrument_write(dst, size);
-> +       pagefault_disable();
->         if (!(align & 7))
->                 copy_to_kernel_nofault_loop(dst, src, size, u64, Efault);
->         if (!(align & 3))
-> --
-> 2.34.1
->
+I'd say it's a likely expectation, or at least a case people are going
+to want to try.  A bunch of the people doing builds have per toolchain
+containers, as well as keeping the container size under control it makes
+it easy to be sure that your build actually used the toolchain you
+thought it used if there simply isn't any other toolchain in there.  You
+have testing that is focused on making sure that all the puportedly
+supported toolchain versions actually work.
+
+> >> > The whole thing is also broken for cross compilation with clang since
+> >> > everything is assuming that CROSS_COMPILE will be set for cross buil=
+ds
+> >> > but that's not the case for LLVM=3D1 builds - net gives:
+
+> >> A lot can be said about kselftest, and cross-building. It's a bit of a
+> >> mess. Maybe we should move to meson or something for kselftest (that
+> >> requires less work for lazy developers like me). ;-)
+
+> > AFAICT it pretty much works fine?  It's certainly widely used.
+
+> Ugh, I guess we have very different views here. For me kselftest
+> cross-building is breaking all the time. The tests are a mix of using
+> the kselftest framework, and "having tests stored somewhere". Targets
+> have different semantics (e.g. missing things from "install"),
+> developers (I definitely include me self here!) seem to have a hard time
+> figuring out what should be included in the test Makefiles (copy and
+> paste, etc.).
+
+I'm pretty much exclusively cross building kselftest, even for the cases
+I end up doing native builds the build is set up like a cross build
+because a lot of my stuff is running in a Kubernetes cluster which will
+spin up whatever machines it can get cheapest at a given moment.
+
+> A lot of tests are not included in the top-level kselftest Makefile
+> (maybe there's a rationale for that? I haven't found one).
+
+As far as I'm aware the ones that aren't included are ones that are (or
+were, perhaps there's some cases that need revisiting) unreasonably hard
+to get going or where the test programs just don't look at all like
+selftests so break the framework when you try to run them.  I
+occasionally go through and try to enable more selftests in both my CI
+and KernelCI, I know there's some that are missing from the top level
+Makefile that I didn't hook in because they were too broken but there's
+a bunch of others where I've sent patches because it just looks like an
+oversight.  There's other people doing similar stuff, Muhammad Usama
+Anjum from Collabora has been doing a bunch of stuff recently for
+example.
+
+> I love kbuild for the *kernel*, but IMO it really feels bolted on for
+> kselftest (and much of tools/).
+
+> Tests don't get the same love as the kernel proper, and developers don't
+> want to spend a lot of time figuring out how kselftests works -- and
+> that shows in kselftest.
+
+That's a big part of the pushback on things like the build issues with
+the BPF tests and the way those issues manifest, part of the goal is to
+get the selftests to the point where they mostly work without too much
+effort.  Things like requiring a library are not too much of an issue,
+you just search for what provides foo.h on your distro or whatever, and
+similarly if it's a common tool that distros tend to carry.  Similarly
+adding the tools/testing/selftests/suite/config fragments to a defconfig
+should be what's needed to get the kernel configured appropriately to do
+the tests.
+
+It would be nice to do something better with the libraries, IIRC some of
+the suites do already for cases where the libray is only used by a
+subset of the tests, but other than that we do mostly seem to be at a
+point where you can reasonably just expect things to work.
+
+> > I think we before defaulting BPF stuff on we should at the very least
+> > fix the builds for commonly covered architectures, it looks like as well
+> > as arm64 we're also seeing BTF not generated on 32 bit arm:
+
+> >    https://storage.kernelci.org/next/master/next-20241004/arm/multi_v7_=
+defconfig%2Bkselftest/gcc-12/config/kernel.config
+
+> > but everything else I spot checked looks fine.  It'd be much better to
+> > skip gracefully if the kernel doesn't have BPF too.
+
+> > We should probably also have explicit clang presence and feature/version
+> > checks in the builds since clang is now fairly widely available in
+> > distros but many of them have older versions than are needed so I
+> > imagine a common failure pattern might be that people see clang is
+> > needed, install their distro clang package and then run into errors from
+> > clang.  That'd mean people would get a graceful skip with a clear
+> > description of what's needed rather than build errors.
+
+> This is not only true for BPF/Clang. There are a number of kselftests
+> that make assumptions about architecture, and tools. I do agree that a
+> proper feature detection (what bpftool/perf is using, or move to that
+> new shiny build system ;-P) for kselftest would be great!
+
+Do you have specific pointers to problem suites?  The general idea is
+that if there's architecture dependencies the tests should be skipped
+when not applicable (eg, the arm64, riscv and x86 suites do this) and at
+the minute for straightforward library dependencies we just expect
+people to sort them out (it's mildly annoying whenever someone starts
+using a new library but it tends not to be too much of a barrier).
+
+I'm not sure the problem here is really the language TBH.
+
+> > This is all a particular issue for the net tests where the addition of =
+BPF
+> > is a regression, not only can't you run the BPF based tests without
+> > getting BPF working we've now lost the entire net testsuite if BPF isn't
+> > working since it breaks the build.  TBH I didn't notice this getting
+> > broken because I forgot that I was expecting to see net tests on
+> > kernelci.org and the build break means they just disappear entirely from
+> > the runtime results.  That really does need a graceful skip.
+
+> ...and adding net/hid/sched_ext to the default skip as well? What the
+> tests that only work on some platforms. I'm intentionally provoking
+> here. I don't like hiding tests, because it is bit "tricky" to setup the
+> tooling. BPF is very much in the core of the kernel, and leaving those
+> tests out seems odd.
+
+I think the ideal thing would be to have these suites included in the
+build and skipping gracefully with comprehensible error messages if
+their dependencies aren't met.  Now that they are expected to work with
+released versions of clang it's a lot more tractable for people to
+resolve the dependency than it was in the past.  We also need to ensure
+that they work for at least major architectures, even with their
+dependencies installed and config fragments turned on no upstream
+configuration can currently build any BPF tests on either arm or arm64
+which clearly isn't at all OK.
+
+Like I said above I think for net the current situation is a serious
+regression and should be fixed so that only the BPF related net tests
+are skipped when BPF isn't working.
+
+--QO42guiMCIxRerEh
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEyBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmcBLKMACgkQJNaLcl1U
+h9AVCAf3fWUJK+i2QAf52M8fkqBs7g2oXpWNh/cdCAkb685PWkZkyfHsQfKSL5N8
+txpYz+EcJKXJneyYQVOpOt9PTHg+NNaccAC/JvS/V3+UmaZF7/mgwVgj7mLAtM/c
+tzvlOWbiGOC2OTlRusB01scwGoRbj6R4ApIND3DTou2UA68sy+l6kZoSEP8Lm6KB
+yUfjm9SXve66XMtapCkR1lU9G+FLPMFlwlEIqiJ6F0WbGfnO7r50yNf4J6HYZfm3
+x3jwDKqU7BEeA0kUxb519MQaS4fI/AJaA5AUlYwTf3izzu6vXYeKI0o9nFeHTlnM
+iM16o7fQGi2+4HiZ9Ew8PSgK1pCX
+=nhT9
+-----END PGP SIGNATURE-----
+
+--QO42guiMCIxRerEh--
 
