@@ -1,172 +1,248 @@
-Return-Path: <bpf+bounces-41060-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41061-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0179991C7D
-	for <lists+bpf@lfdr.de>; Sun,  6 Oct 2024 06:12:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43097991CB4
+	for <lists+bpf@lfdr.de>; Sun,  6 Oct 2024 08:00:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D055D1C2133D
-	for <lists+bpf@lfdr.de>; Sun,  6 Oct 2024 04:12:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 003AA282FD7
+	for <lists+bpf@lfdr.de>; Sun,  6 Oct 2024 06:00:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FC8016B75C;
-	Sun,  6 Oct 2024 04:12:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35FB116C6B7;
+	Sun,  6 Oct 2024 06:00:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G/6nv/WU"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ocp6Y+Pr"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f194.google.com (mail-yb1-f194.google.com [209.85.219.194])
+Received: from mail-qk1-f177.google.com (mail-qk1-f177.google.com [209.85.222.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6DAEA920;
-	Sun,  6 Oct 2024 04:12:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C50C2C18C;
+	Sun,  6 Oct 2024 06:00:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728187930; cv=none; b=qmhwrZ7Nkd4hPB805FJzghfSZr9fO0r/yh7c+wuyKoky4LU4qmewPV816Yhmyg5X+M7WS2lnDo3D1yfOKziLw67grIbP/AgeBIksBTUXkmmm29TjuTmNP03wMll4uvDZcTQEPtBhmhNIGDVF69DyEknqmmhqnGBZyVWKXNX8C7s=
+	t=1728194445; cv=none; b=GEqm6iu9SVzjGrKUaU1fcTcJGqeJxAZZ9syCqFFk72jAUBiaSjKNbpKU8fK/DGjfiSQjtGGEIXDNdO+AQziw4TFotFBnK5fmEfmi3B33+NbNCDtmYyO0Oobu7s/AtcIm/Jfyze7Utz2IYDIp9jxeB08F0gmQ6I11Z79bECeXm34=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728187930; c=relaxed/simple;
-	bh=jBIMzlq2qyemeqFD0zzVCt5CBNb2A07I6HruPWx58pE=;
+	s=arc-20240116; t=1728194445; c=relaxed/simple;
+	bh=EcNwiFqFvvy7rKkC+xt1BQpm/FRmgrtdssydaUFObIE=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=k9HAZrftqHR5LQgFea+g/tU2BOWtRQgCkiQH8TCNIyVSqYGoN0ecsXDlZLQC5HVeKd1BLZlHiPPiUhSfFL56TRP/cEAgOthRKNYK8BFaoMs0hW56TT+wnRUmSQWBixecy57rdI3GUjJ3XLM2HxparASDK+yc1CfoFTVFGew8wb0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=G/6nv/WU; arc=none smtp.client-ip=209.85.219.194
+	 To:Cc:Content-Type; b=cvMmXGAAQoso/4o8Gfj6FwCHjD7UaiadSbltF3aLrGPJlslG/Rt9AjVvgKA/Bf17vBnesigA97Fk6Lk2B/xkAJkAInB3sRwbo8vja8Pup3cVruZIP4eGE5wUXKahqFYUig6Zud4H6w1X5qNO77EcOgeMZrHTtjSPmrV28D+O7M0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ocp6Y+Pr; arc=none smtp.client-ip=209.85.222.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f194.google.com with SMTP id 3f1490d57ef6-e03caab48a2so2605731276.1;
-        Sat, 05 Oct 2024 21:12:08 -0700 (PDT)
+Received: by mail-qk1-f177.google.com with SMTP id af79cd13be357-7a99de9beb2so180767285a.3;
+        Sat, 05 Oct 2024 23:00:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1728187927; x=1728792727; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1728194443; x=1728799243; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=zdL2mRdZWJ/xzhNJcF/wqyuScW2pPe2rVtzAuzvJLks=;
-        b=G/6nv/WU5iQVxb1easGVYs+D7pbzmVb29+Y/BDpIII3fMftKcHFzmdqXg3QoLsJw5s
-         gVMRcdHxbp5+C+Pz0oFUjNcxIP6K2nLF/XNMdy5tVdJGTJSk7ea9PmoBoVd5R4Y2EV+b
-         xF6evYNht3bOPaj409hJA5C3YZOJwlUhmZq+XgQNE73DSXKju34CG57TyYmeQRG+EiLy
-         rKpTAizRNnSaDC0WqeyX+ENYppLD3CDSE3POJxqpkGKKKjW42SO2TBF4mIUmfZidNXJC
-         Pv7EGqs1lsccRRMjTDHRtPZzpdIOdm8eo9SvUrT8sNtuWtiRuJYPut3YXy6DhZep9+xa
-         Ojyg==
+        bh=Urvj443lDPBxCNc4tUVMzXPrl0/q53Phb4eO5bfK+/M=;
+        b=Ocp6Y+PryyvTar6Umo21uap4ZK8gkMzG2DW9xQCRuf/vjatgQyANBGH+MXG/bMe80z
+         bRSudbV1V0flyd/TpzDXaqroxMChum8EW3kvdGQuEkSLd6OROHhjO1s0wzej0K/4UyPK
+         c+l3zLGCKm76aFpmF36Xl36YeivTVjDW5f0NhOUFWLKOBWOsUdCcgymvNk8Rx+jXq1co
+         SJ8uLRFoXHaZ5e0YBozqL4ABZwBMMpp6NNH2RxY8GkQ+Ie2cnDeqtq14j/zIgjehe8UO
+         tbM0PGhF74PmGI3x90OJDpAFUeFVIoKc75Mp0b6VH+vfFfYZU1vGVZDF6H59GOHdBp3g
+         Is9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728187927; x=1728792727;
+        d=1e100.net; s=20230601; t=1728194443; x=1728799243;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=zdL2mRdZWJ/xzhNJcF/wqyuScW2pPe2rVtzAuzvJLks=;
-        b=VeeTtTF8fbKa99mFfj2bQClXgdLZ68EGeColSxa0Q92TPqFVpgNbdw3njBkBWicGAX
-         UAPl+yQOvwk/92EQwwm4lRELaeCrwiwVSRbto6b6kdPAB9SWMAg1ayifQH4w/fln3UVG
-         uyrBRXTQyreP60SJMy//0xT1ZeJiI9Y1Zpx/LSm5DI8jX0ykf5R0z3H+Ytd9aEHSlEGG
-         6eWdefZBhPsdDWh3Icv6e5+3fqCDwsWIoXhGKwe36Yu7u0FKdHYHB3rJFufhevyCrhgF
-         T61wuM2+ttJqF9FauRWcgIynoR9kr1aWo+ds9xNydR3M/CtFThs841Pe6rRi3QVNUyiO
-         ivDw==
-X-Forwarded-Encrypted: i=1; AJvYcCVGEVDJWs978rHhTUEsJSoa7McaHzkFFcmWi8gpyvx86MAYZJkiwv0WLMfUK87abGU7JOX4WCOM8KLEMpLp@vger.kernel.org, AJvYcCWGt9xI8YeCZ/0ImZlQHuSBidiGzGVNIlAoPxpmKOH5P8dOOrQu31Z7dJkM7s8t73UP2UA=@vger.kernel.org, AJvYcCWbf1iErZ9E1HXNElDQm4h3c4njM9bjGaOJj74iLRprmv+FxBC+RZkerlK+CK/NuIZIyvf1jznV@vger.kernel.org
-X-Gm-Message-State: AOJu0YxCzrkUnRrX1SCEXs6OTIGLw+41GeuU5gdXsy8/ooFXcQUSI1nR
-	R+b2rVj/zz59Fh6JnBB/RNGwhB/ciPYySm5wqYcXRvauEWaH9zJAf8Heuu3WzU9QdWUPTqEzSkl
-	ajuYiyrS/kT+iblmuDMAaZrucH7s=
-X-Google-Smtp-Source: AGHT+IEd8GiqREKe0zNIg/JSHY51WS9PWnKWmd0jkpb3w/sVz26cK7HAGWIB7ScabXxBBhULIpYDMrM4roLyhg0tEJg=
-X-Received: by 2002:a05:6902:124e:b0:e25:d11c:5ef7 with SMTP id
- 3f1490d57ef6-e2893059477mr4999358276.18.1728187927644; Sat, 05 Oct 2024
- 21:12:07 -0700 (PDT)
+        bh=Urvj443lDPBxCNc4tUVMzXPrl0/q53Phb4eO5bfK+/M=;
+        b=LX7l95MWOjY3OducCom7ZDHwZtW1ELi9J93ogC1qxmw2oRQKZPZM7Va948W7k2UCBK
+         JzN63MyDrbKe0Qkj4+YJA3Ygy++XhqE+DgZ3xOb46YJgrswomingsLDnfoYxEi+F+KMS
+         xeJAoeG+YpMuE0ehI9aI/wYnL7kiyCCGpY2T4J0awrmVQqsmcXb0rBrI2rZETkJ9YsT9
+         rmtk5H7rd6TTcisRE+2NezG/bXQabLN+I3T3NIVaQ2enQnp2wMlWluki0cyMTv8vpQHA
+         RJfIUKexPXW5v7s2RgqguE/NZ4Gwgu/Qxe3Wq+br10yTj5zXVulnhybZu1bIVYCFyvcM
+         /Djw==
+X-Forwarded-Encrypted: i=1; AJvYcCVIXwgT7rLLZQ1rmQkTHk+332g1Ef1CDGzYwRuuYVH7FzbxIJyXUmQTi0U4Kg7AgJe9kHkLn6JQEvsg5IS/jX2M@vger.kernel.org, AJvYcCVbZAKSxOHmsB2xHDJCox4QtS0WP5dCEBLTbKUq/hhJrC0aTRC34dd9l+HuKoRiN40c2mTHS/QnSQ8FYvHY@vger.kernel.org, AJvYcCXHR/PRVcD+IKgob+O3j20yTkb+99kLcNKEddZcfdYqXQq5Y4iy8sDy8XKKqxj8GPXYQNI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwCGz31+NV1ajfxj35E7vSBt+uq+qYgvK94FDRXGaRBpFFZhuUC
+	NmPHxwjXDGSzPtIV+C9Nph/d9qtbWxhU4CbqTF0wnY2tWIyNaP7H6LL90mQEyP8xnFBmuS5KpfS
+	UFvoTJfjqREVrdWKdp2aX/4YyaEo=
+X-Google-Smtp-Source: AGHT+IGNYJrfcIsI5d5/upzhEJbTEIO+lxC+Mn5Mr5wX7Vvl0pM4dvVwPk/a0atUbr30Xww8OfEs1SdX/u3UQ11IxUM=
+X-Received: by 2002:a05:6214:5bc8:b0:6cb:579b:b4ce with SMTP id
+ 6a1803df08f44-6cb9a505308mr135617616d6.38.1728194442859; Sat, 05 Oct 2024
+ 23:00:42 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241001060005.418231-1-dongml2@chinatelecom.cn>
- <20241001060005.418231-2-dongml2@chinatelecom.cn> <20241004093641.7f68b889@kernel.org>
- <CANn89iJQbjtWhqv-D_fG4LpKtNK4G5g0JQq+fBrxv4VTY-QHSA@mail.gmail.com>
-In-Reply-To: <CANn89iJQbjtWhqv-D_fG4LpKtNK4G5g0JQq+fBrxv4VTY-QHSA@mail.gmail.com>
-From: Menglong Dong <menglong8.dong@gmail.com>
-Date: Sun, 6 Oct 2024 12:12:01 +0800
-Message-ID: <CADxym3bcDiyELqoRjn8RitY5y2TxxSnOBGyEafiDhu0ujELuWQ@mail.gmail.com>
-Subject: Re: [PATCH net-next 1/7] net: ip: add drop reason to ip_route_input_noref()
-To: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>
-Cc: atenart@kernel.org, davem@davemloft.net, pabeni@redhat.com, 
-	dsahern@kernel.org, steffen.klassert@secunet.com, herbert@gondor.apana.org.au, 
-	dongml2@chinatelecom.cn, bigeasy@linutronix.de, toke@redhat.com, 
-	idosch@nvidia.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org
+References: <Zv_PP6Gs5cq3W2Ey@krava> <20241004154002.10979-1-wudevelops@gmail.com>
+In-Reply-To: <20241004154002.10979-1-wudevelops@gmail.com>
+From: Yafang Shao <laoar.shao@gmail.com>
+Date: Sun, 6 Oct 2024 14:00:06 +0800
+Message-ID: <CALOAHbC5xm7Cbfhau3z5X2PqUhiHECNWAPtJCWiOVqTKmdZp-Q@mail.gmail.com>
+Subject: Re: [PATCH bpf v4 1/2] bpf: fix unpopulated name_len field in
+ perf_event link info
+To: tyrone-wu <wudevelops@gmail.com>
+Cc: olsajiri@gmail.com, andrii.nakryiko@gmail.com, andrii@kernel.org, 
+	ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net, eddyz87@gmail.com, 
+	haoluo@google.com, john.fastabend@gmail.com, kernel-patches-bot@fb.com, 
+	kpsingh@kernel.org, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, martin.lau@linux.dev, mykolal@fb.com, 
+	sdf@fomichev.me, shuah@kernel.org, song@kernel.org, yonghong.song@linux.dev, 
+	Jiri Olsa <jolsa@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, Oct 5, 2024 at 12:54=E2=80=AFAM Eric Dumazet <edumazet@google.com> =
-wrote:
+On Fri, Oct 4, 2024 at 11:40=E2=80=AFPM tyrone-wu <wudevelops@gmail.com> wr=
+ote:
 >
-> On Fri, Oct 4, 2024 at 6:36=E2=80=AFPM Jakub Kicinski <kuba@kernel.org> w=
-rote:
-> >
-> > no longer applies, please respin
-> >
-> > On Tue,  1 Oct 2024 13:59:59 +0800 Menglong Dong wrote:
-> > > +     enum skb_drop_reason drop_reason =3D SKB_DROP_REASON_NOT_SPECIF=
-IED;
-> > >       const struct iphdr *iph =3D ip_hdr(skb);
-> > > -     int err, drop_reason;
-> > > +     int err;
-> > >       struct rtable *rt;
-> >
-> > reverse xmas tree
-> >
-> > >
-> > > -     drop_reason =3D SKB_DROP_REASON_NOT_SPECIFIED;
-> > > -
-> > >       if (ip_can_use_hint(skb, iph, hint)) {
-> > >               err =3D ip_route_use_hint(skb, iph->daddr, iph->saddr, =
-iph->tos,
-> > >                                       dev, hint);
-> > > @@ -363,7 +362,7 @@ static int ip_rcv_finish_core(struct net *net, st=
-ruct sock *sk,
-> > >        */
-> > >       if (!skb_valid_dst(skb)) {
-> > >               err =3D ip_route_input_noref(skb, iph->daddr, iph->sadd=
-r,
-> > > -                                        iph->tos, dev);
-> > > +                                        iph->tos, dev, &drop_reason)=
-;
-> >
-> > I find the extra output argument quite ugly.
-> > I can't apply this now to try to suggest something better, perhaps you
-> > can come up with a better solution..
+> Previously when retrieving `bpf_link_info.perf_event` for
+> kprobe/uprobe/tracepoint, the `name_len` field was not populated by the
+> kernel, leaving it to reflect the value initially set by the user. This
+> behavior was inconsistent with how other input/output string buffer
+> fields function (e.g. `raw_tracepoint.tp_name_len`).
 >
-> Also, passing a local variable by address forces the compiler to emit
-> more canary checks in more
-> networking core functions.
+> This patch fills `name_len` with the actual size of the string name.
+>
+> Link: https://lore.kernel.org/bpf/CABVU1kXwQXhqQGe0RTrr7eegtM6SVW_KayZBy1=
+6-yb0Snztmtg@mail.gmail.com/
+> Fixes: 1b715e1b0ec5 ("bpf: Support ->fill_link_info for perf_event")
+> Signed-off-by: tyrone-wu <wudevelops@gmail.com>
+> Acked-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+> V3 -> V4:
+> Link: https://lore.kernel.org/bpf/Zv_PP6Gs5cq3W2Ey@krava/
+> - Split patch into separate kernel and selftest change
+>
+> V2 -> V3:
+> Link: https://lore.kernel.org/bpf/Zv7sISV0yEyGlEM3@krava/
+> - Use clearer variable name for user set/inputted name len (name_len -> i=
+nput_len)
+> - Change (name_len -> input_len) type from size_t to u32 since it's only =
+received and used as u32
+>
+> V1 -> V2:
+> Link: https://lore.kernel.org/bpf/Zv0wl-S13WJnIkb_@krava/
+> - Use user set *ulen in bpf_copy_to_user before overwriting *ulen
+>
+>  kernel/bpf/syscall.c | 29 ++++++++++++++++++++---------
+>  1 file changed, 20 insertions(+), 9 deletions(-)
+>
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index a8f1808a1ca5..56c556fcf325 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -3565,27 +3565,31 @@ static void bpf_perf_link_dealloc(struct bpf_link=
+ *link)
+>  }
+>
+>  static int bpf_perf_link_fill_common(const struct perf_event *event,
+> -                                    char __user *uname, u32 ulen,
+> +                                    char __user *uname, u32 *ulen,
+>                                      u64 *probe_offset, u64 *probe_addr,
+>                                      u32 *fd_type, unsigned long *missed)
+>  {
+>         const char *buf;
+> -       u32 prog_id;
+> +       u32 prog_id, input_len;
+>         size_t len;
+>         int err;
+>
+> -       if (!ulen ^ !uname)
+> +       if (!(*ulen) ^ !uname)
+>                 return -EINVAL;
+>
+>         err =3D bpf_get_perf_event_info(event, &prog_id, fd_type, &buf,
+>                                       probe_offset, probe_addr, missed);
+>         if (err)
+>                 return err;
+> +
+> +       input_len =3D *ulen;
+> +       len =3D strlen(buf);
+
+The buf might be NULL, so we should check it.
+
+> +       *ulen =3D len + 1;
+>         if (!uname)
+>                 return 0;
+> +
+>         if (buf) {
+> -               len =3D strlen(buf);
+> -               err =3D bpf_copy_to_user(uname, buf, ulen, len);
+> +               err =3D bpf_copy_to_user(uname, buf, input_len, len);
+>                 if (err)
+>                         return err;
+>         } else {
+> @@ -3609,7 +3613,7 @@ static int bpf_perf_link_fill_kprobe(const struct p=
+erf_event *event,
+>
+>         uname =3D u64_to_user_ptr(info->perf_event.kprobe.func_name);
+>         ulen =3D info->perf_event.kprobe.name_len;
+> -       err =3D bpf_perf_link_fill_common(event, uname, ulen, &offset, &a=
+ddr,
+> +       err =3D bpf_perf_link_fill_common(event, uname, &ulen, &offset, &=
+addr,
+>                                         &type, &missed);
+>         if (err)
+>                 return err;
+> @@ -3617,7 +3621,7 @@ static int bpf_perf_link_fill_kprobe(const struct p=
+erf_event *event,
+>                 info->perf_event.type =3D BPF_PERF_EVENT_KRETPROBE;
+>         else
+>                 info->perf_event.type =3D BPF_PERF_EVENT_KPROBE;
+> -
+> +       info->perf_event.kprobe.name_len =3D ulen;
+>         info->perf_event.kprobe.offset =3D offset;
+>         info->perf_event.kprobe.missed =3D missed;
+>         if (!kallsyms_show_value(current_cred()))
+> @@ -3639,7 +3643,7 @@ static int bpf_perf_link_fill_uprobe(const struct p=
+erf_event *event,
+>
+>         uname =3D u64_to_user_ptr(info->perf_event.uprobe.file_name);
+>         ulen =3D info->perf_event.uprobe.name_len;
+> -       err =3D bpf_perf_link_fill_common(event, uname, ulen, &offset, &a=
+ddr,
+> +       err =3D bpf_perf_link_fill_common(event, uname, &ulen, &offset, &=
+addr,
+>                                         &type, NULL);
+>         if (err)
+>                 return err;
+> @@ -3648,6 +3652,7 @@ static int bpf_perf_link_fill_uprobe(const struct p=
+erf_event *event,
+>                 info->perf_event.type =3D BPF_PERF_EVENT_URETPROBE;
+>         else
+>                 info->perf_event.type =3D BPF_PERF_EVENT_UPROBE;
+> +       info->perf_event.uprobe.name_len =3D ulen;
+>         info->perf_event.uprobe.offset =3D offset;
+>         info->perf_event.uprobe.cookie =3D event->bpf_cookie;
+>         return 0;
+> @@ -3673,12 +3678,18 @@ static int bpf_perf_link_fill_tracepoint(const st=
+ruct perf_event *event,
+>  {
+>         char __user *uname;
+>         u32 ulen;
+> +       int err;
+>
+>         uname =3D u64_to_user_ptr(info->perf_event.tracepoint.tp_name);
+>         ulen =3D info->perf_event.tracepoint.name_len;
+> +       err =3D bpf_perf_link_fill_common(event, uname, &ulen, NULL, NULL=
+, NULL, NULL);
+> +       if (err)
+> +               return err;
+> +
+>         info->perf_event.type =3D BPF_PERF_EVENT_TRACEPOINT;
+> +       info->perf_event.tracepoint.name_len =3D ulen;
+>         info->perf_event.tracepoint.cookie =3D event->bpf_cookie;
+> -       return bpf_perf_link_fill_common(event, uname, ulen, NULL, NULL, =
+NULL, NULL);
+> +       return 0;
+>  }
+>
+>  static int bpf_perf_link_fill_perf_event(const struct perf_event *event,
+> --
+> 2.43.0
 >
 
-Yeah, passing the address of the drop reasons to a function
-looks not nice. The first glance for me is to make
-ip_route_input_noref() return drop reasons, but I'm afraid that
-the errno it returns is used by the caller.
 
-Let me dig it deeper, and make the functions in this series
-return drop reasons, instead of passing a local variable.
-
-Thanks!
-Menglong Dong
+--
+Regards
 
 
->
-> See :
->
->
-> config STACKPROTECTOR_STRONG
-> bool "Strong Stack Protector"
-> depends on STACKPROTECTOR
-> depends on $(cc-option,-fstack-protector-strong)
-> default y
-> help
->   Functions will have the stack-protector canary logic added in any
->   of the following conditions:
->
->   - local variable's address used as part of the right hand side of an
->     assignment or function argument
->   - local variable is an array (or union containing an array),
->     regardless of array type or length
->   - uses register local variables
->
->   This feature requires gcc version 4.9 or above, or a distribution
->   gcc with the feature backported ("-fstack-protector-strong").
->
->   On an x86 "defconfig" build, this feature adds canary checks to
->   about 20% of all kernel functions, which increases the kernel code
->   size by about 2%.
+Yafang
 
