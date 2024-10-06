@@ -1,93 +1,80 @@
-Return-Path: <bpf+bounces-41069-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41070-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2BE6F992020
-	for <lists+bpf@lfdr.de>; Sun,  6 Oct 2024 19:51:12 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6775F992081
+	for <lists+bpf@lfdr.de>; Sun,  6 Oct 2024 21:00:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 37A871C20CC0
-	for <lists+bpf@lfdr.de>; Sun,  6 Oct 2024 17:51:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 298BC281A4B
+	for <lists+bpf@lfdr.de>; Sun,  6 Oct 2024 19:00:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E588318A6BF;
-	Sun,  6 Oct 2024 17:50:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C736C18A935;
+	Sun,  6 Oct 2024 19:00:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="aLv8i7Hz"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jzK+NVy7"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 963C7189F5A
-	for <bpf@vger.kernel.org>; Sun,  6 Oct 2024 17:50:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40A8718A6D3;
+	Sun,  6 Oct 2024 19:00:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728237058; cv=none; b=QCWwEDK0LP7jvzs1wsOVZdE7ZKM/k0JWQKq6V2clNC+5bzd27sQguhH3ZP4ly3UAT1/4Mj/JgsT9htV/IVbQAUsw7DDJ0vbnua+Njj6POJzRgrX3d4NTXbsLhMSK9t9lMDao8kMP4OKLvPks2k1H2aRlsWRGyH3I6UJpzyiL88I=
+	t=1728241219; cv=none; b=h7MiuVYBsEVbOh6L1OyDTg0GYHEU/IBdosaSfEirjASfGqxt6OTtcAcv4IclYHEup2X+Hs6tU6t1cl8pLAluupg3Z0wCVg7gOa9wHlLSgK+BzatjGlMldIIZdC/WqJkyL69dPm9+/rjO4D4SLnZFSIQmnfe41K2g3G7oN8huRgs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728237058; c=relaxed/simple;
-	bh=QX5bVPMoC5X/ATRCLwmjQ5j4TdyRP1gHWz1UGgRYGGs=;
+	s=arc-20240116; t=1728241219; c=relaxed/simple;
+	bh=iwFEjW6d6zkYqFBkePAlQ+Q5V3zdYkn/YSKeM+fBUbk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HPyiaQDHtvFbbAQIAfEc4xXgfuX6TjMn5Q40Fpr5AbrYlSGj9jrD5vB96/bS5XqupUIIF9qw8lGRe/SfJV8qO4Lsf6Z9z+yLmFNhK36FLJOarxlykx4G+iGd+5ythCRgCiY570UOaSU4zOh8VEexZxwHVMHzPgUYm6KgqaZwoHg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=aLv8i7Hz; arc=none smtp.client-ip=209.85.214.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-20b833f9b35so31041185ad.2
-        for <bpf@vger.kernel.org>; Sun, 06 Oct 2024 10:50:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1728237056; x=1728841856; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=9/jpL3YcDbT5s9GUNC8ARxSJoU3MJ9r3elvS/k1XvaU=;
-        b=aLv8i7HzZSa0vR0bO2X5FeLzK14QXcj9tjcYn8OBCjSn8ou6w+LKXFI94noBkpRwHs
-         BHPqbAJu8fr4ie+V/1pCDkMSN+ZoZ0LzStIEAO674fuugmCgT2TOzPx9ZSUUziHlMU3g
-         tKMIS81LsiTUniydVaa9UV3ucb95eeqDj3L0hn4vchortrwKorwzYGsiVGYFyPlvhlG4
-         t7JRBNZNBegrem1xWBYxBUNnhis4r4V+SCf8hU761ZKA+6j7YJ/hdvy0GCih2WObFa+A
-         j48ve7fBDfOTaQrbr/ZwLvK8nSqh1/Iiqm13cRklPrFCJygXukPvwgBGkbyc/alfMu9r
-         G8IQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728237056; x=1728841856;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9/jpL3YcDbT5s9GUNC8ARxSJoU3MJ9r3elvS/k1XvaU=;
-        b=wOOGqpPHateGe25kDitvgQB4puL9xB0k5ffG+YnyUu6HLAjAQNsfzXAY2X6QiQKBr0
-         Is4JKaphwNqb3bJI63ndk7XoiKtBZhcpan8bEl2lzKVjGJK88HKBAH6hhjeuXLjzMGJm
-         mGVJha0k26OtW0HqbssYmC3vWekFtARxYEtTn545zIkgIylbGoYo2bcYSAP6o9PWgkiB
-         KyCNelRCSPZPHqIcfarh9Hzj6NvKgoVCPI6JfsDtLcTe/HnJ/r6KmhGkFSnFcdk6ZrYj
-         eGS31lz8JPKCQvn5sRqQ+9RkUcVYFEbH4qr8zeWy8S/K0QqCdsCLmfvSEVw5DxPAE8Cf
-         dgEQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXtEzyQf2LjgrPzHb6vPx0a8I2Li7OPKYuItGErKCmD7IeU1aGR+MGMHPK0SnPbEhVJNdE=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyoP404+puo+utNvcOqc+6HRB37OSGzwFBCpybHcWxvPmtms5Hp
-	u9rQ8TAhOBRI1j4S0JiC7nZHBbsLac4U87MUpZLaHFCU5yUur/3Jv2FCezSiaA==
-X-Google-Smtp-Source: AGHT+IGZMh0K9p8XUknILzUzT5SqwVvVg47E7lfixteAimw7+8QYQTtqQ9t9Zn+e4BhqYnC9cpugcw==
-X-Received: by 2002:a17:902:f551:b0:20b:9680:d5c4 with SMTP id d9443c01a7336-20bfde57d03mr139672265ad.4.1728237055829;
-        Sun, 06 Oct 2024 10:50:55 -0700 (PDT)
-Received: from thinkpad ([220.158.156.57])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20c138b104csm27352325ad.45.2024.10.06.10.50.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 06 Oct 2024 10:50:55 -0700 (PDT)
-Date: Sun, 6 Oct 2024 23:20:47 +0530
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To: Frank Li <Frank.li@nxp.com>
-Cc: Bjorn Helgaas <bhelgaas@google.com>, Richard Zhu <hongxing.zhu@nxp.com>,
-	Lucas Stach <l.stach@pengutronix.de>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>, linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	imx@lists.linux.dev, alyssa@rosenzweig.io, bpf@vger.kernel.org,
-	broonie@kernel.org, jgg@ziepe.ca, joro@8bytes.org,
-	lgirdwood@gmail.com, maz@kernel.org, p.zabel@pengutronix.de,
-	robin.murphy@arm.com, will@kernel.org
-Subject: Re: [PATCH v2 0/2] PCI: add enabe(disable)_device() hook for bridge
-Message-ID: <20241006175047.xgy2zyaiebvyxfsi@thinkpad>
-References: <20240930-imx95_lut-v2-0-3b6467ba539a@nxp.com>
- <20241003051528.qrp2z7kvzgvymgjb@thinkpad>
- <Zv7t9HnRsfTxb2Xs@lizhi-Precision-Tower-5810>
+	 Content-Type:Content-Disposition:In-Reply-To; b=klzQtDgaQHyiR6iNracDyS7ZxqQZegorcMVb8nMnPzwwhJQEr22orjUCyyodrHVKl/toXk7pyh9Pwej+a9UuaBCROpZIMHeE/Z0CcEcxfoaeyXkaaV92wYf4y3F7le2Vg+QaY+sLWlTFXYpGcdhw9sxQ6urFPxE1X8c5hJgE13c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jzK+NVy7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1838C4CEC5;
+	Sun,  6 Oct 2024 19:00:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1728241218;
+	bh=iwFEjW6d6zkYqFBkePAlQ+Q5V3zdYkn/YSKeM+fBUbk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=jzK+NVy77xMQ8mnIGl5r8YW8+gaIHZFA6eeSX7S+J2wGME1FquMnX2XrvprpuspJ/
+	 wWftMSgXu4tb51+8QCqI5+J/FfvpQoK8P/aT32PjEJpKaYVBwq5N6exYbVI960FKf4
+	 MuZi4T66F8wsD1e9FJY64FroxojUCkPGziLTseK1oxwQNuM4demxK2/L8H6rq3fmcf
+	 zgfgLJLn+s28cs5KgVvtP/nmmMXoGLKIg33u65qtj2P3gyKBgFa6lcZqTrYYAi2V0H
+	 9THLt3UC4ktBSh+8huDttITbxGHk2fUbmhf65cP2h5PZtvq3Y6fALp1j9XEp2Z9K98
+	 /zbaqJVyWTRug==
+Date: Sun, 6 Oct 2024 12:00:16 -0700
+From: Namhyung Kim <namhyung@kernel.org>
+To: Song Liu <song@kernel.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
+	David Rientjes <rientjes@google.com>,
+	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm <linux-mm@kvack.org>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Kees Cook <kees@kernel.org>
+Subject: Re: [PATCH v4 bpf-next 2/3] mm/bpf: Add bpf_get_kmem_cache() kfunc
+Message-ID: <ZwLeQO6KxAh7YNvt@google.com>
+References: <20241002180956.1781008-1-namhyung@kernel.org>
+ <20241002180956.1781008-3-namhyung@kernel.org>
+ <CAPhsuW7Bh-ZXfM2aYB=Yj8WaJHFc==AKmv6LDRgBq-TfdQ3s8A@mail.gmail.com>
+ <ZwBdS86yBtOWy3iD@google.com>
+ <CAPhsuW6AhfG7Xv2izDYnMM+z03X29peZfmWNy0rf98aEaAUfVg@mail.gmail.com>
+ <ZwBk8i23odCe7qVK@google.com>
+ <CAPhsuW4AjZMQxCbqYmEgbnkP0gWenKo4wVi8tW1zYcsaF5h7iQ@mail.gmail.com>
+ <CAADnVQK0VQXvxqxm6WudyeLao1L+jMTvmUauciBc8_vcLcR=vQ@mail.gmail.com>
+ <CAPhsuW6gB5PaNDQ5x20oRXUtgf7KPNTQpN_WLvtYm=-7CLhn-g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -97,160 +84,75 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <Zv7t9HnRsfTxb2Xs@lizhi-Precision-Tower-5810>
+In-Reply-To: <CAPhsuW6gB5PaNDQ5x20oRXUtgf7KPNTQpN_WLvtYm=-7CLhn-g@mail.gmail.com>
 
-On Thu, Oct 03, 2024 at 03:18:12PM -0400, Frank Li wrote:
-> On Thu, Oct 03, 2024 at 10:45:28AM +0530, Manivannan Sadhasivam wrote:
-> > On Mon, Sep 30, 2024 at 03:42:20PM -0400, Frank Li wrote:
-> > > Some system's IOMMU stream(master) ID bits(such as 6bits) less than
-> > > pci_device_id (16bit). It needs add hardware configuration to enable
-> > > pci_device_id to stream ID convert.
-> > >
-> > > https://lore.kernel.org/imx/20240622173849.GA1432357@bhelgaas/
-> > > This ways use pcie bus notifier (like apple pci controller), when new PCIe
-> > > device added, bus notifier will call register specific callback to handle
-> > > look up table (LUT) configuration.
-> > >
-> > > https://lore.kernel.org/imx/20240429150842.GC1709920-robh@kernel.org/
-> > > which parse dt's 'msi-map' and 'iommu-map' property to static config LUT
-> > > table (qcom use this way). This way is rejected by DT maintainer Rob.
-> > >
+Hello,
+
+On Fri, Oct 04, 2024 at 04:56:57PM -0700, Song Liu wrote:
+> On Fri, Oct 4, 2024 at 4:44 PM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> [...]
+> > > diff --git i/kernel/bpf/helpers.c w/kernel/bpf/helpers.c
+> > > index 3709fb142881..7311a26ecb01 100644
+> > > --- i/kernel/bpf/helpers.c
+> > > +++ w/kernel/bpf/helpers.c
+> > > @@ -3090,7 +3090,7 @@ BTF_ID_FLAGS(func, bpf_iter_bits_new, KF_ITER_NEW)
+> > >  BTF_ID_FLAGS(func, bpf_iter_bits_next, KF_ITER_NEXT | KF_RET_NULL)
+> > >  BTF_ID_FLAGS(func, bpf_iter_bits_destroy, KF_ITER_DESTROY)
+> > >  BTF_ID_FLAGS(func, bpf_copy_from_user_str, KF_SLEEPABLE)
+> > > -BTF_ID_FLAGS(func, bpf_get_kmem_cache, KF_RET_NULL)
+> > > +BTF_ID_FLAGS(func, bpf_get_kmem_cache, KF_RET_NULL | KF_TRUSTED_ARGS
+> > > | KF_RCU_PROTECTED)
 > >
-> > What is the issue in doing this during the probe() stage? It looks like you are
-> > working with the static info in the devicetree, which is already available
-> > during the controller probe().
+> > I don't think KF_TRUSTED_ARGS approach would fit here.
+> > Namhyung's use case is tracing. The 'addr' will be some potentially
+> > arbitrary address from somewhere. The chance to see a trusted pointer
+> > is probably very low in such a tracing use case.
 > 
-> There are problems.
-> One: It is not good to manually parser this property in pci host bridge
-> drivers.
-> 
+> I thought the primary use case was to trace lock contention, for
+> example, queued_spin_lock_slowpath(). Of course, a more
+> general solution is better.
 
-Why? I see the comment from Rob saying that the host bridge driver should not
-parse iommu* properties, but this series is essentially doing the same just in a
-different place.
+Right, my intended use case is the lock contention profiling so probably
+it's ok to limit it for trusted pointers if it helps.  But as Song said,
+a general solution should be better. :)
 
-> Two: of_map default is bypass map. For example: if in dts only 2 sid, 0xA
-> and 0xB. If try to enable 3rd function RID(103), there are no error report.
-> of_map will return RID 103 as stream ID.  DMA will write to wrong
-> possition possibly.
-> 
-
-Well, you can use iommu-map-mask to allow all devices under a bus to share the
-same SID. It will allow you to work with the LUT limitation. But the downside is
-that, there would be no isolation between devices under the same bus.
-
-> https://elixir.bootlin.com/linux/v6.12-rc1/source/drivers/of/base.c#L2070
-> 
-> Three: LUT resource is limited, if DT provide 16 entry, but LUT have only 8
-> items, if more device enable, not LUT avaible and can't return error. of
-> course, it may fix dts, but It'd better that driver can handle error
-> properly when meet wrong dtb file.
-> 
-
-Drivers can trust the DT, unless there are evidence of broken DT available in
-upstream or got fixed.
-
-If you really want to validate DT, use dt-bindings.
-
-- Mani
-
-> >
-> > > Above ways can resolve LUT take or stream id out of usage the problem. If
-> > > there are not enough stream id resource, not error return, EP hardware
-> > > still issue DMA to do transfer, which may transfer to wrong possition.
-> > >
-> > > Add enable(disable)_device() hook for bridge can return error when not
-> > > enough resource, and PCI device can't enabled.
-> > >
-> >
-> > {enable/disable}_device() doesn't convey the fact you are mapping BDF to SID in
-> > the hardware. Maybe something like, {map/unmap}_bdf2sid() or similar would make
-> > sense.
-> 
-> It is called in PCI common code do_pci_enable_device(), hook functin name
-> should be similar with caller. {map/unmap}_bdf2sid() is just implementation
-> in dwc.
-> 
-> stream id is only ARM platform concept.
-> 
-> May other host bridge do difference thing at enable/disable_device().
-> 
-> So I am still perfer use {enable/disable}_device().
-> 
-> 
-> Frank
 > 
 > >
-> > - Mani
+> > The verifier change can mainly be the following:
 > >
-> > > Basicallly this version can match Bjorn's requirement:
-> > > 1: simple, because it is rare that there are no LUT resource.
-> > > 2: EP driver probe failure when no LUT, but lspci can see such device.
-> > >
-> > > [    2.164415] nvme nvme0: pci function 0000:01:00.0
-> > > [    2.169142] pci 0000:00:00.0: Error enabling bridge (-1), continuing
-> > > [    2.175654] nvme 0000:01:00.0: probe with driver nvme failed with error -12
-> > >
-> > > > lspci
-> > > 0000:00:00.0 PCI bridge: Philips Semiconductors Device 0000
-> > > 0000:01:00.0 Non-Volatile memory controller: Micron Technology Inc 2100AI NVMe SSD [Nitro] (rev 03)
-> > >
-> > > To: Bjorn Helgaas <bhelgaas@google.com>
-> > > To: Richard Zhu <hongxing.zhu@nxp.com>
-> > > To: Lucas Stach <l.stach@pengutronix.de>
-> > > To: Lorenzo Pieralisi <lpieralisi@kernel.org>
-> > > To: Krzysztof Wilczyński <kw@linux.com>
-> > > To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > > To: Rob Herring <robh@kernel.org>
-> > > To: Shawn Guo <shawnguo@kernel.org>
-> > > To: Sascha Hauer <s.hauer@pengutronix.de>
-> > > To: Pengutronix Kernel Team <kernel@pengutronix.de>
-> > > To: Fabio Estevam <festevam@gmail.com>
-> > > Cc: linux-pci@vger.kernel.org
-> > > Cc: linux-kernel@vger.kernel.org
-> > > Cc: linux-arm-kernel@lists.infradead.org
-> > > Cc: imx@lists.linux.dev
-> > > Cc: Frank.li@nxp.com \
-> > > Cc: alyssa@rosenzweig.io \
-> > > Cc: bpf@vger.kernel.org \
-> > > Cc: broonie@kernel.org \
-> > > Cc: jgg@ziepe.ca \
-> > > Cc: joro@8bytes.org \
-> > > Cc: l.stach@pengutronix.de \
-> > > Cc: lgirdwood@gmail.com \
-> > > Cc: maz@kernel.org \
-> > > Cc: p.zabel@pengutronix.de \
-> > > Cc: robin.murphy@arm.com \
-> > > Cc: will@kernel.org \
-> > >
-> > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> > > ---
-> > > Changes in v2:
-> > > - see each patch
-> > > - Link to v1: https://lore.kernel.org/r/20240926-imx95_lut-v1-0-d0c62087dbab@nxp.com
-> > >
-> > > ---
-> > > Frank Li (2):
-> > >       PCI: Add enable_device() and disable_device() callbacks for bridges
-> > >       PCI: imx6: Add IOMMU and ITS MSI support for i.MX95
-> > >
-> > >  drivers/pci/controller/dwc/pci-imx6.c | 133 +++++++++++++++++++++++++++++++++-
-> > >  drivers/pci/pci.c                     |  14 ++++
-> > >  include/linux/pci.h                   |   2 +
-> > >  3 files changed, 148 insertions(+), 1 deletion(-)
-> > > ---
-> > > base-commit: 2849622e7b01d5aea1b060ba3955054798c1e0bb
-> > > change-id: 20240926-imx95_lut-1c68222e0944
-> > >
-> > > Best regards,
-> > > ---
-> > > Frank Li <Frank.Li@nxp.com>
-> > >
-> > >
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index 7d9b38ffd220..e09eb108e956 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -12834,6 +12834,9 @@ static int check_kfunc_call(struct
+> > bpf_verifier_env *env, struct bpf_insn *insn,
+> >                         regs[BPF_REG_0].type = PTR_TO_BTF_ID;
+> >                         regs[BPF_REG_0].btf_id = ptr_type_id;
 > >
-> > --
-> > மணிவண்ணன் சதாசிவம்
+> > +                       if (meta.func_id == special_kfunc_list[KF_get_kmem_cache])
+> > +                               regs[BPF_REG_0].type |= PTR_UNTRUSTED;
+> > +
+> >                         if (is_iter_next_kfunc(&meta)) {
+> >                                 struct bpf_reg_state *cur_iter;
+> 
+> This is easier than I thought.
 
--- 
-மணிவண்ணன் சதாசிவம்
+Indeed!  Thanks for providing the code.
+
+> 
+> > The returned 'struct kmem_cache *' won't be refcnt-ed (acquired).
+> > It will be readonly via ptr_to_btf_id logic.
+> > s->flags;
+> > s->size;
+> > s->offset;
+> > access will be allowed but the verifier will sanitize them
+> > with an inlined version of probe_read_kernel.
+> > Even KF_RET_NULL can be dropped.
+
+Ok, I'll check this out.  By having PTR_UNTRUSTED, are the callers
+still required to check NULL or is it handled by probe_read_kernel()?
+
+Thanks,
+Namhyung
 
