@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-41102-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41103-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBD40992951
-	for <lists+bpf@lfdr.de>; Mon,  7 Oct 2024 12:35:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C759992953
+	for <lists+bpf@lfdr.de>; Mon,  7 Oct 2024 12:35:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 409EF1F2241A
-	for <lists+bpf@lfdr.de>; Mon,  7 Oct 2024 10:35:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A0D231F23166
+	for <lists+bpf@lfdr.de>; Mon,  7 Oct 2024 10:35:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E96F81D07B0;
-	Mon,  7 Oct 2024 10:34:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 609BD1D0E28;
+	Mon,  7 Oct 2024 10:34:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hqHnNV93"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jaf4tdSj"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D41D1C878B;
-	Mon,  7 Oct 2024 10:34:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D69431D0DE7;
+	Mon,  7 Oct 2024 10:34:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728297292; cv=none; b=NyKr7Hid/Mrc+R9uultufE79K/wSxbeDJAP4PZFcWb3M5Bu00ILjC6RBaK3kVEuo/S4phfcZJ1rgno4FHozJkkMqYu9Ttx9AcCLGw82evWi6/+2z7CrajP8TiMDb2w021V+ODRobir3Z1MvSHihEzUQSPizZmZq7e8TyWoTOZMQ=
+	t=1728297295; cv=none; b=KmwtwSvJi/GvJkHBnYr/T/dLYtDiBT1TE5G5NDarqMYanO0/zomIDL2nUSzy6rYVxNk/vAy7xOmgo6cYsDw351dAgQo0b+pgeo2X2FeQF0bmK8ddNqzwtYjytHu1uN5h7wQluqVYV9eZeitL3IgRB0vRsacL4iFswr7MWc2CizE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728297292; c=relaxed/simple;
-	bh=zLBswqHmt+tMJ0oWb6dIQHlYuJg5CCE1zs0HIuD9lzg=;
+	s=arc-20240116; t=1728297295; c=relaxed/simple;
+	bh=ftR829O9N0CKcNDo12QImEpYfJonT5P077gO9ETFlBI=;
 	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=UHCBj9ObibVQR3vo4UMLXZFG60n0Ic45efH6jnJhw/kjF/MiBxXpCDyJ1qr7ixW3kaQyPE2q1Vf2FOmgBJpdKUkEe0HQDO7x3RF4DclD8gkHZ5NwJkc8zjQdYrNw4SUtEQ37ERlSyh7dvNEjhgFu661k4jiTIwwkhT8rO5nCKk0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hqHnNV93; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7D57C4CECC;
-	Mon,  7 Oct 2024 10:34:51 +0000 (UTC)
+	 MIME-Version; b=af2mo8RT0Lv0pPUCNxDP5Pq/5LGlsYcfPeUpaf1yR2UqQOienKP0VRc/TahiWjJ9HvsmQP/FjoRc2Hyja79+lsHrDvNMMtPx2CLqp6WBMBL3oBxzsi8jQC20duJotDYySWTUAzyYBpVmZTcfAFdqXuofOmd3XJZkcSwnQZe64rI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jaf4tdSj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F3A4C4CECC;
+	Mon,  7 Oct 2024 10:34:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728297292;
-	bh=zLBswqHmt+tMJ0oWb6dIQHlYuJg5CCE1zs0HIuD9lzg=;
+	s=k20201202; t=1728297295;
+	bh=ftR829O9N0CKcNDo12QImEpYfJonT5P077gO9ETFlBI=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=hqHnNV932lUsJI/DfMjunFOdZOtGtaQ2jPIAUz8mZQvwYq8p3iR460aqJ190Qnx1k
-	 DCy1KH+hRdAv2d98yQ2qJhQZHrMabrrgPh+OSXbFRLRknigWGTv9N7yY5MIfNGfM1I
-	 khRa4T6+5oDwivtaQKyB58zGyw8DFy/XPo7Fir6mLTMvmxWgXRSNRCHoJHtJo6x1j8
-	 hiorTdrb181D9Z6T6WpU3x6MbwD/xsE+5u/DtPCGUWaz2S5S0RNqjFRWcK2FuZvvVd
-	 /EAhGPHromJOyqT501nN01n+kc/E86tpfGbbcUKyrfeea+zH2dvD0QyEvCRaDX7yb0
-	 5tTvcc8mxzshQ==
+	b=jaf4tdSjmqqAQJUx4Ia1ywVG/Cl9+YVzGQ8dIlTCekQ/5rKFAwa8w2BVjnIXOcMvK
+	 gb0aIWlTo2hsGJgjyO7CYWVuZoVzPkdXlCs4rnhkwtJSsYBnzU7nV/LHTmnTUYVlOb
+	 QzhvNfqoCJOWljfOePl8clIms34uhBqo7HKn22CVjOaKhBOiywguRO2Yux+uOST9vX
+	 Dcjn83u7J2ixmYQ1hjGrDKZDhc+gAS8My1nv1aRcZPenPB8JeegwgA0oF666QxBxBS
+	 Mb8YcO4VFmeRH+J1aFVLUYU7g5QviIi6/ZNHvN8sD2aMVUHHNdfgSErtR/UTeBxTJS
+	 BR57SPSYX27bQ==
 From: Puranjay Mohan <puranjay@kernel.org>
 To: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
@@ -54,9 +54,9 @@ To: Alexei Starovoitov <ast@kernel.org>,
 	bpf@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	puranjay12@gmail.com
-Subject: [PATCH bpf-next v3 1/2] bpf: implement bpf_send_signal_task() kfunc
-Date: Mon,  7 Oct 2024 10:34:25 +0000
-Message-Id: <20241007103426.128923-2-puranjay@kernel.org>
+Subject: [PATCH bpf-next v3 2/2] selftests/bpf: Augment send_signal test with remote signaling
+Date: Mon,  7 Oct 2024 10:34:26 +0000
+Message-Id: <20241007103426.128923-3-puranjay@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20241007103426.128923-1-puranjay@kernel.org>
 References: <20241007103426.128923-1-puranjay@kernel.org>
@@ -68,149 +68,333 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Implement bpf_send_signal_task kfunc that is similar to
-bpf_send_signal_thread and bpf_send_signal helpers  but can be used to
-send signals to other threads and processes. It also supports sending a
-cookie with the signal similar to sigqueue().
-
-If the receiving process establishes a handler for the signal using the
-SA_SIGINFO flag to sigaction(), then it can obtain this cookie via the
-si_value field of the siginfo_t structure passed as the second argument
-to the handler.
+Add testcases to test bpf_send_signal_task(). In these new test cases,
+the main process triggers the BPF program and the forked process
+receives the signals. The target process's signal handler receives a
+cookie from the bpf program.
 
 Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
 ---
- kernel/bpf/helpers.c     |  1 +
- kernel/trace/bpf_trace.c | 54 ++++++++++++++++++++++++++++++++++------
- 2 files changed, 47 insertions(+), 8 deletions(-)
+ .../selftests/bpf/prog_tests/send_signal.c    | 133 +++++++++++++-----
+ .../bpf/progs/test_send_signal_kern.c         |  35 ++++-
+ 2 files changed, 130 insertions(+), 38 deletions(-)
 
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index 4053f279ed4cc..2fd3feefb9d94 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -3035,6 +3035,7 @@ BTF_ID_FLAGS(func, bpf_task_get_cgroup1, KF_ACQUIRE | KF_RCU | KF_RET_NULL)
- #endif
- BTF_ID_FLAGS(func, bpf_task_from_pid, KF_ACQUIRE | KF_RET_NULL)
- BTF_ID_FLAGS(func, bpf_throw)
-+BTF_ID_FLAGS(func, bpf_send_signal_task, KF_TRUSTED_ARGS)
- BTF_KFUNCS_END(generic_btf_ids)
+diff --git a/tools/testing/selftests/bpf/prog_tests/send_signal.c b/tools/testing/selftests/bpf/prog_tests/send_signal.c
+index 6cc69900b3106..beb771347a503 100644
+--- a/tools/testing/selftests/bpf/prog_tests/send_signal.c
++++ b/tools/testing/selftests/bpf/prog_tests/send_signal.c
+@@ -8,17 +8,25 @@ static int sigusr1_received;
  
- static const struct btf_kfunc_id_set generic_kfunc_set = {
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index a582cd25ca876..ae8c9fa8b04d1 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -802,6 +802,8 @@ struct send_signal_irq_work {
- 	struct task_struct *task;
- 	u32 sig;
- 	enum pid_type type;
-+	bool has_siginfo;
-+	kernel_siginfo_t info;
- };
- 
- static DEFINE_PER_CPU(struct send_signal_irq_work, send_signal_work);
-@@ -811,25 +813,43 @@ static void do_bpf_send_signal(struct irq_work *entry)
- 	struct send_signal_irq_work *work;
- 
- 	work = container_of(entry, struct send_signal_irq_work, irq_work);
--	group_send_sig_info(work->sig, SEND_SIG_PRIV, work->task, work->type);
-+	if (work->has_siginfo)
-+		group_send_sig_info(work->sig, &work->info, work->task, work->type);
-+	else
-+		group_send_sig_info(work->sig, SEND_SIG_PRIV, work->task, work->type);
- 	put_task_struct(work->task);
- }
- 
--static int bpf_send_signal_common(u32 sig, enum pid_type type)
-+static int bpf_send_signal_common(u32 sig, enum pid_type type, struct task_struct *tsk, u64 value)
+ static void sigusr1_handler(int signum)
  {
- 	struct send_signal_irq_work *work = NULL;
-+	kernel_siginfo_t info;
-+	bool has_siginfo = false;
-+
-+	if (!tsk) {
-+		tsk = current;
-+	} else {
-+		has_siginfo = true;
-+		clear_siginfo(&info);
-+		info.si_signo = sig;
-+		info.si_errno = 0;
-+		info.si_code = SI_KERNEL;
-+		info.si_pid = 0;
-+		info.si_uid = 0;
-+		info.si_value.sival_ptr = (void *)value;
-+	}
- 
- 	/* Similar to bpf_probe_write_user, task needs to be
- 	 * in a sound condition and kernel memory access be
- 	 * permitted in order to send signal to the current
- 	 * task.
- 	 */
--	if (unlikely(current->flags & (PF_KTHREAD | PF_EXITING)))
-+	if (unlikely(tsk->flags & (PF_KTHREAD | PF_EXITING)))
- 		return -EPERM;
- 	if (unlikely(!nmi_uaccess_okay()))
- 		return -EPERM;
- 	/* Task should not be pid=1 to avoid kernel panic. */
--	if (unlikely(is_global_init(current)))
-+	if (unlikely(is_global_init(tsk)))
- 		return -EPERM;
- 
- 	if (irqs_disabled()) {
-@@ -847,19 +867,24 @@ static int bpf_send_signal_common(u32 sig, enum pid_type type)
- 		 * to the irq_work. The current task may change when queued
- 		 * irq works get executed.
- 		 */
--		work->task = get_task_struct(current);
-+		work->task = get_task_struct(tsk);
-+		work->has_siginfo = has_siginfo;
-+		work->info = info;
- 		work->sig = sig;
- 		work->type = type;
- 		irq_work_queue(&work->irq_work);
- 		return 0;
- 	}
- 
--	return group_send_sig_info(sig, SEND_SIG_PRIV, current, type);
-+	if (has_siginfo)
-+		return group_send_sig_info(sig, &info, tsk, type);
-+
-+	return group_send_sig_info(sig, SEND_SIG_PRIV, tsk, type);
- }
- 
- BPF_CALL_1(bpf_send_signal, u32, sig)
- {
--	return bpf_send_signal_common(sig, PIDTYPE_TGID);
-+	return bpf_send_signal_common(sig, PIDTYPE_TGID, NULL, 0);
- }
- 
- static const struct bpf_func_proto bpf_send_signal_proto = {
-@@ -871,7 +896,7 @@ static const struct bpf_func_proto bpf_send_signal_proto = {
- 
- BPF_CALL_1(bpf_send_signal_thread, u32, sig)
- {
--	return bpf_send_signal_common(sig, PIDTYPE_PID);
-+	return bpf_send_signal_common(sig, PIDTYPE_PID, NULL, 0);
- }
- 
- static const struct bpf_func_proto bpf_send_signal_thread_proto = {
-@@ -3484,3 +3509,16 @@ static int __init bpf_kprobe_multi_kfuncs_init(void)
- }
- 
- late_initcall(bpf_kprobe_multi_kfuncs_init);
-+
-+__bpf_kfunc_start_defs();
-+
-+__bpf_kfunc int bpf_send_signal_task(struct task_struct *task, int sig, enum pid_type type,
-+				     u64 value)
-+{
-+	if (type != PIDTYPE_PID && type != PIDTYPE_TGID)
-+		return -EINVAL;
-+
-+	return bpf_send_signal_common(sig, type, task, value);
+-	sigusr1_received = 1;
++	sigusr1_received = 8;
 +}
 +
-+__bpf_kfunc_end_defs();
++static void sigusr1_siginfo_handler(int s, siginfo_t *i, void *v)
++{
++	sigusr1_received = i->si_value.sival_int;
+ }
+ 
+ static void test_send_signal_common(struct perf_event_attr *attr,
+-				    bool signal_thread)
++				    bool signal_thread, bool remote)
+ {
+ 	struct test_send_signal_kern *skel;
++	struct sigaction sa;
+ 	int pipe_c2p[2], pipe_p2c[2];
+ 	int err = -1, pmu_fd = -1;
++	volatile int j = 0;
+ 	char buf[256];
+ 	pid_t pid;
++	int old_prio;
+ 
+ 	if (!ASSERT_OK(pipe(pipe_c2p), "pipe_c2p"))
+ 		return;
+@@ -39,11 +47,14 @@ static void test_send_signal_common(struct perf_event_attr *attr,
+ 	}
+ 
+ 	if (pid == 0) {
+-		int old_prio;
+-		volatile int j = 0;
+-
+ 		/* install signal handler and notify parent */
+-		ASSERT_NEQ(signal(SIGUSR1, sigusr1_handler), SIG_ERR, "signal");
++		if (remote) {
++			sa.sa_sigaction = sigusr1_siginfo_handler;
++			sa.sa_flags = SA_RESTART | SA_SIGINFO;
++			ASSERT_NEQ(sigaction(SIGUSR1, &sa, NULL), -1, "sigaction");
++		} else {
++			ASSERT_NEQ(signal(SIGUSR1, sigusr1_handler), SIG_ERR, "signal");
++		}
+ 
+ 		close(pipe_c2p[0]); /* close read */
+ 		close(pipe_p2c[1]); /* close write */
+@@ -52,10 +63,12 @@ static void test_send_signal_common(struct perf_event_attr *attr,
+ 		 * that if an interrupt happens, the underlying task
+ 		 * is this process.
+ 		 */
+-		errno = 0;
+-		old_prio = getpriority(PRIO_PROCESS, 0);
+-		ASSERT_OK(errno, "getpriority");
+-		ASSERT_OK(setpriority(PRIO_PROCESS, 0, -20), "setpriority");
++		if (!remote) {
++			errno = 0;
++			old_prio = getpriority(PRIO_PROCESS, 0);
++			ASSERT_OK(errno, "getpriority");
++			ASSERT_OK(setpriority(PRIO_PROCESS, 0, -20), "setpriority");
++		}
+ 
+ 		/* notify parent signal handler is installed */
+ 		ASSERT_EQ(write(pipe_c2p[1], buf, 1), 1, "pipe_write");
+@@ -66,20 +79,25 @@ static void test_send_signal_common(struct perf_event_attr *attr,
+ 		/* wait a little for signal handler */
+ 		for (int i = 0; i < 1000000000 && !sigusr1_received; i++) {
+ 			j /= i + j + 1;
+-			if (!attr)
+-				/* trigger the nanosleep tracepoint program. */
+-				usleep(1);
++			if (remote)
++				sleep(1);
++			else
++				if (!attr)
++					/* trigger the nanosleep tracepoint program. */
++					usleep(1);
+ 		}
+ 
+-		buf[0] = sigusr1_received ? '2' : '0';
+-		ASSERT_EQ(sigusr1_received, 1, "sigusr1_received");
++		buf[0] = sigusr1_received;
++
++		ASSERT_EQ(sigusr1_received, 8, "sigusr1_received");
+ 		ASSERT_EQ(write(pipe_c2p[1], buf, 1), 1, "pipe_write");
+ 
+ 		/* wait for parent notification and exit */
+ 		ASSERT_EQ(read(pipe_p2c[0], buf, 1), 1, "pipe_read");
+ 
+ 		/* restore the old priority */
+-		ASSERT_OK(setpriority(PRIO_PROCESS, 0, old_prio), "setpriority");
++		if (!remote)
++			ASSERT_OK(setpriority(PRIO_PROCESS, 0, old_prio), "setpriority");
+ 
+ 		close(pipe_c2p[1]);
+ 		close(pipe_p2c[0]);
+@@ -93,6 +111,17 @@ static void test_send_signal_common(struct perf_event_attr *attr,
+ 	if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
+ 		goto skel_open_load_failure;
+ 
++	/* boost with a high priority so we got a higher chance
++	 * that if an interrupt happens, the underlying task
++	 * is this process.
++	 */
++	if (remote) {
++		errno = 0;
++		old_prio = getpriority(PRIO_PROCESS, 0);
++		ASSERT_OK(errno, "getpriority");
++		ASSERT_OK(setpriority(PRIO_PROCESS, 0, -20), "setpriority");
++	}
++
+ 	if (!attr) {
+ 		err = test_send_signal_kern__attach(skel);
+ 		if (!ASSERT_OK(err, "skel_attach")) {
+@@ -100,8 +129,12 @@ static void test_send_signal_common(struct perf_event_attr *attr,
+ 			goto destroy_skel;
+ 		}
+ 	} else {
+-		pmu_fd = syscall(__NR_perf_event_open, attr, pid, -1 /* cpu */,
+-				 -1 /* group id */, 0 /* flags */);
++		if (!remote)
++			pmu_fd = syscall(__NR_perf_event_open, attr, pid, -1 /* cpu */,
++					 -1 /* group id */, 0 /* flags */);
++		else
++			pmu_fd = syscall(__NR_perf_event_open, attr, getpid(), -1 /* cpu */,
++					 -1 /* group id */, 0 /* flags */);
+ 		if (!ASSERT_GE(pmu_fd, 0, "perf_event_open")) {
+ 			err = -1;
+ 			goto destroy_skel;
+@@ -119,11 +152,30 @@ static void test_send_signal_common(struct perf_event_attr *attr,
+ 	/* trigger the bpf send_signal */
+ 	skel->bss->signal_thread = signal_thread;
+ 	skel->bss->sig = SIGUSR1;
+-	skel->bss->pid = pid;
++	if (!remote) {
++		skel->bss->target_pid = 0;
++		skel->bss->pid = pid;
++	} else {
++		skel->bss->target_pid = pid;
++		skel->bss->pid = getpid();
++	}
+ 
+ 	/* notify child that bpf program can send_signal now */
+ 	ASSERT_EQ(write(pipe_p2c[1], buf, 1), 1, "pipe_write");
+ 
++	/* For the remote test, the BPF program is triggered from this
++	 * process but the other process/thread is signaled.
++	 */
++	if (remote) {
++		if (!attr) {
++			for (int i = 0; i < 10; i++)
++				usleep(1);
++		} else {
++			for (int i = 0; i < 100000000; i++)
++				j /= i + 1;
++		}
++	}
++
+ 	/* wait for result */
+ 	err = read(pipe_c2p[0], buf, 1);
+ 	if (!ASSERT_GE(err, 0, "reading pipe"))
+@@ -133,7 +185,7 @@ static void test_send_signal_common(struct perf_event_attr *attr,
+ 		goto disable_pmu;
+ 	}
+ 
+-	ASSERT_EQ(buf[0], '2', "incorrect result");
++	ASSERT_EQ(buf[0], 8, "incorrect result");
+ 
+ 	/* notify child safe to exit */
+ 	ASSERT_EQ(write(pipe_p2c[1], buf, 1), 1, "pipe_write");
+@@ -142,18 +194,21 @@ static void test_send_signal_common(struct perf_event_attr *attr,
+ 	close(pmu_fd);
+ destroy_skel:
+ 	test_send_signal_kern__destroy(skel);
++	/* restore the old priority */
++	if (remote)
++		ASSERT_OK(setpriority(PRIO_PROCESS, 0, old_prio), "setpriority");
+ skel_open_load_failure:
+ 	close(pipe_c2p[0]);
+ 	close(pipe_p2c[1]);
+ 	wait(NULL);
+ }
+ 
+-static void test_send_signal_tracepoint(bool signal_thread)
++static void test_send_signal_tracepoint(bool signal_thread, bool remote)
+ {
+-	test_send_signal_common(NULL, signal_thread);
++	test_send_signal_common(NULL, signal_thread, remote);
+ }
+ 
+-static void test_send_signal_perf(bool signal_thread)
++static void test_send_signal_perf(bool signal_thread, bool remote)
+ {
+ 	struct perf_event_attr attr = {
+ 		.freq = 1,
+@@ -162,10 +217,10 @@ static void test_send_signal_perf(bool signal_thread)
+ 		.config = PERF_COUNT_SW_CPU_CLOCK,
+ 	};
+ 
+-	test_send_signal_common(&attr, signal_thread);
++	test_send_signal_common(&attr, signal_thread, remote);
+ }
+ 
+-static void test_send_signal_nmi(bool signal_thread)
++static void test_send_signal_nmi(bool signal_thread, bool remote)
+ {
+ 	struct perf_event_attr attr = {
+ 		.sample_period = 1,
+@@ -191,21 +246,35 @@ static void test_send_signal_nmi(bool signal_thread)
+ 		close(pmu_fd);
+ 	}
+ 
+-	test_send_signal_common(&attr, signal_thread);
++	test_send_signal_common(&attr, signal_thread, remote);
+ }
+ 
+ void test_send_signal(void)
+ {
+ 	if (test__start_subtest("send_signal_tracepoint"))
+-		test_send_signal_tracepoint(false);
++		test_send_signal_tracepoint(false, false);
+ 	if (test__start_subtest("send_signal_perf"))
+-		test_send_signal_perf(false);
++		test_send_signal_perf(false, false);
+ 	if (test__start_subtest("send_signal_nmi"))
+-		test_send_signal_nmi(false);
++		test_send_signal_nmi(false, false);
+ 	if (test__start_subtest("send_signal_tracepoint_thread"))
+-		test_send_signal_tracepoint(true);
++		test_send_signal_tracepoint(true, false);
+ 	if (test__start_subtest("send_signal_perf_thread"))
+-		test_send_signal_perf(true);
++		test_send_signal_perf(true, false);
+ 	if (test__start_subtest("send_signal_nmi_thread"))
+-		test_send_signal_nmi(true);
++		test_send_signal_nmi(true, false);
++
++	/* Signal remote thread and thread group */
++	if (test__start_subtest("send_signal_tracepoint_remote"))
++		test_send_signal_tracepoint(false, true);
++	if (test__start_subtest("send_signal_perf_remote"))
++		test_send_signal_perf(false, true);
++	if (test__start_subtest("send_signal_nmi_remote"))
++		test_send_signal_nmi(false, true);
++	if (test__start_subtest("send_signal_tracepoint_thread_remote"))
++		test_send_signal_tracepoint(true, true);
++	if (test__start_subtest("send_signal_perf_thread_remote"))
++		test_send_signal_perf(true, true);
++	if (test__start_subtest("send_signal_nmi_thread_remote"))
++		test_send_signal_nmi(true, true);
+ }
+diff --git a/tools/testing/selftests/bpf/progs/test_send_signal_kern.c b/tools/testing/selftests/bpf/progs/test_send_signal_kern.c
+index 92354cd720440..176a355e30624 100644
+--- a/tools/testing/selftests/bpf/progs/test_send_signal_kern.c
++++ b/tools/testing/selftests/bpf/progs/test_send_signal_kern.c
+@@ -1,27 +1,50 @@
+ // SPDX-License-Identifier: GPL-2.0
+ // Copyright (c) 2019 Facebook
+-#include <linux/bpf.h>
++#include <vmlinux.h>
+ #include <linux/version.h>
+ #include <bpf/bpf_helpers.h>
+ 
+-__u32 sig = 0, pid = 0, status = 0, signal_thread = 0;
++struct task_struct *bpf_task_from_pid(int pid) __ksym;
++void bpf_task_release(struct task_struct *p) __ksym;
++int bpf_send_signal_task(struct task_struct *task, int sig, enum pid_type type, u64 value) __ksym;
++
++__u32 sig = 0, pid = 0, status = 0, signal_thread = 0, target_pid = 0;
+ 
+ static __always_inline int bpf_send_signal_test(void *ctx)
+ {
++	struct task_struct *target_task = NULL;
+ 	int ret;
++	u64 value;
+ 
+ 	if (status != 0 || pid == 0)
+ 		return 0;
+ 
+ 	if ((bpf_get_current_pid_tgid() >> 32) == pid) {
+-		if (signal_thread)
+-			ret = bpf_send_signal_thread(sig);
+-		else
+-			ret = bpf_send_signal(sig);
++		if (target_pid) {
++			target_task = bpf_task_from_pid(target_pid);
++			if (!target_task)
++				return 0;
++			value = 8;
++		}
++
++		if (signal_thread) {
++			if (target_pid)
++				ret = bpf_send_signal_task(target_task, sig, PIDTYPE_PID, value);
++			else
++				ret = bpf_send_signal_thread(sig);
++		} else {
++			if (target_pid)
++				ret = bpf_send_signal_task(target_task, sig, PIDTYPE_TGID, value);
++			else
++				ret = bpf_send_signal(sig);
++		}
+ 		if (ret == 0)
+ 			status = 1;
+ 	}
+ 
++	if (target_task)
++		bpf_task_release(target_task);
++
+ 	return 0;
+ }
+ 
 -- 
 2.40.1
 
