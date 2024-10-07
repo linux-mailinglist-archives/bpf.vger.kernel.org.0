@@ -1,131 +1,251 @@
-Return-Path: <bpf+bounces-41149-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41150-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1A40993521
-	for <lists+bpf@lfdr.de>; Mon,  7 Oct 2024 19:37:02 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A43DE99363A
+	for <lists+bpf@lfdr.de>; Mon,  7 Oct 2024 20:29:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 52AA31F2405F
-	for <lists+bpf@lfdr.de>; Mon,  7 Oct 2024 17:37:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EE42BB21D50
+	for <lists+bpf@lfdr.de>; Mon,  7 Oct 2024 18:29:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C86C1DD9AF;
-	Mon,  7 Oct 2024 17:36:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48AB71DE2A5;
+	Mon,  7 Oct 2024 18:29:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TQBlea/K"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Lf6sfLmi"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 994961DD89F;
-	Mon,  7 Oct 2024 17:36:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AA881DD52D;
+	Mon,  7 Oct 2024 18:29:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728322617; cv=none; b=sluaSNgXImTc7+gdfe3Dn1PHIO50p4chHH9Ocpu6LANYgmCUOUQ9ewwCV0ElzdP7SJa+xlxwgY3wwdtMBqc1U3dcbBkYOQNksfN+bQG/zOtUUqk9V1zMtcaWILQUD5AjXund7tdpamGEKsP1m21TuCPEAEW78u34ytLOYCm1d6g=
+	t=1728325784; cv=none; b=jN/df6jdbRxhwVM6L7isrU4XzFix2h5rwPwK5eApHeEMvTQLi7oEb4uFqMAeUweAToQDO1qlfVN92uVBM4LHnyeCpgx9/+uzBtV95qaQab0RlvnHQtmQPeLbCkKnexCl8Z0LjLu0clJwqyGxZgeCMi3WxFWvSHBabysv2fQiyzI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728322617; c=relaxed/simple;
-	bh=VDVpINc5efQO9ZByGX+9ngmID7JbZWO6wKtc6Kj+cEA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=iVXEYUaJcOv/Nd8LFnR53R0DrYfoHrtg+ZTsR27lWvitSUfCFQ7cv4BoOgrr/9Jf+oHH+eiw7XZD8n7z4EADQhUmAeoiVjE/+g4niEPZ7geDOo8rxfj8+YtcGqGkBaHBwPMLdtOmxC4Dtk5SQjI6xaRvgSDDcXLC+liGZglkLXE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TQBlea/K; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60CE8C4CEC7;
-	Mon,  7 Oct 2024 17:36:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728322617;
-	bh=VDVpINc5efQO9ZByGX+9ngmID7JbZWO6wKtc6Kj+cEA=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=TQBlea/KuvQAIUYsqAMPQrp+NcdZSYq1A+OZnblF9iXzms9APCj9HaWFrZt+4F+c/
-	 nKhD95NNXYPwsLFsj6qm7JGscctgT+6pggOG4njhtpMscuyMf8So2yPQKj0vQU/t0i
-	 sTOklSFjMgW7Ud2ctFK6rJgZg3aRKlFY/XIso+sVwzgBIl73jXMKd9CqsWfCO6zQwq
-	 KRXcCcquxgtPVCU2q5aDSk1ojsmmT9znKXpZ/yCb9S8CTrsEnSnzWlKG4QmKaOljL6
-	 6uE/xpDqXwXBjqyOhRejfdLebIB9d731ciIZ5d7ZBoWTD69x+uhdY4r2y9MzfG8+KV
-	 tV/T6o6zNG09g==
-Received: by mail-il1-f174.google.com with SMTP id e9e14a558f8ab-3a0c8b81b4eso19771715ab.0;
-        Mon, 07 Oct 2024 10:36:57 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCU2zIA3Sl3RourRz2cXRkLz1wOMwlUgfzcn48oSg8x86Ohh8J02a9QamyeXhb6c5A+6i4gZbAqsm4yNxvVK@vger.kernel.org, AJvYcCUrSiFxPrb/mTwbAU5fbgDQzKd8LbfCsPUyT0f7RdAixcTk7Uc/U1XAteXrwtZpvwXEung=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwyzfKPpnGRgc/vhspir4/LrGBCL2+QGWEy2zg2CLi6vrA1lgNi
-	IbTBsX+YtcGy3bT4YiCQC/czksumToc4ege2MFjMTwhsuxvPVWuADRjeD/j2pcdGupuunEigP5b
-	61b24q+fKxFYQohI/G/mtR53qycw=
-X-Google-Smtp-Source: AGHT+IGpkBSN4tRML84uJG24cEc1cHjRdvVPClMQv26CjceR4K5YTUVpij3ZJxdtzQiSgzZy+Z0LfFDQdC+1+o23BEw=
-X-Received: by 2002:a05:6e02:1a23:b0:3a1:a619:203c with SMTP id
- e9e14a558f8ab-3a375be29bdmr126054715ab.23.1728322616783; Mon, 07 Oct 2024
- 10:36:56 -0700 (PDT)
+	s=arc-20240116; t=1728325784; c=relaxed/simple;
+	bh=QhyJG1yefxH1ukiGpEgjlQYVZ/MxwqI9nEfhMYYcmD8=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=ubmQNQYwNrW1aKO76z3Swpop5el3x5xC5q8yQrwBzJAmUxmCyKS8hHxPzKOap3DP/dh8H9ytF/Be9khalsCFHIur2c+HMr/EFsgLOhvQEyJT7Tu3Ikoy/uwB4X3mq6jw7jFTWR9rZ6/N5QJe96nXABJ27YeRmGrO/6jRN/FT63g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Lf6sfLmi; arc=none smtp.client-ip=209.85.128.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-6e25f3748e0so47110697b3.0;
+        Mon, 07 Oct 2024 11:29:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1728325782; x=1728930582; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=j9tL+fiEIisanOLXgHGQUAxH9XfudE5xPb2xakDmuBk=;
+        b=Lf6sfLmifHkSRqAguKPYtnHm1sWOrpnQoZHLmoJlEccRSq8+IqT5eJ7qAAajbMgH8C
+         4kTJJU9FUf1xsA5SpSTKLPxhTS+rxYzXO8Z3vnQLzZjLrrgQ60qzbHB38zhp86Wl1bPB
+         FcBlIV+hAoYzhkCtNn6w1WVu1+6YSE4UU2SXGD1NB4s+noyWYtWv0J/ZxKCqxRyKB4YQ
+         bS+3eR840EfD58iqjCQrTBrtVBn9XbVU4TSoNVHf/8Z197DlCCKgKDOayUhwdFJryq6T
+         6CRrElP4aYINd8v1aTzAfMfl5ekxwrksuamskaoo1Nb91ibFKXfqTq1wwzv4IwVoEWPF
+         Jc1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1728325782; x=1728930582;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=j9tL+fiEIisanOLXgHGQUAxH9XfudE5xPb2xakDmuBk=;
+        b=i552u8LhjorA6Ri+zF0HLuyTw5Z46AVMex51hre8+3iUmpqif5ioAQU44CEpJJZ7aD
+         FEgjxs4He9vy4XzGXLUI3MiI6TonPlbs38DNOJPZxczX9g0by6tTuYSWc8TRhmcMroQX
+         sjdKMkxiBE1KdvHQn2J3ZO4kR3aUllqC0tg3lsvBIURSrhElpMvO2kd4zHjqJfLXbJG2
+         AjYlYE8YzADD5daZ5kIYqqU4n3hAIiyEkmz8rfpzC6PPfG0IvBG0aIKkNTD9jNVlBdys
+         UOWB88eUXsIX9VxNhdsfgD0ksclfUPq+GrVa+mVzAoQ5nbZQZuNpIzwKrFEqdv1L7MlI
+         61EQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUtetSn6wLdeIHj61nDtHv6frR0oDxKB/O91K0xW4DFAD/ZsDmP9BdECK5mAwwA6ts/2iXi6G2QIIHUvVvO@vger.kernel.org, AJvYcCVd7kIBZ1SYaFgF7k8gKikDE8s5VwQNjeLNE9URr27+XdegHneKwDTp5rzVwWg/qL/wKzMwtBBUQwYoxmP2vqNM@vger.kernel.org, AJvYcCWBCE0riUgKfmitWrg09wbVcrfdnQrKrMGNzJOruy2UiV/DmRb56SWnzy4FJi26NghF1BQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwOHuPPqHPjsp55TgsBJSl6XOsXZAa7qtQvhh354xAcmtjoPlUx
+	W5icAyJUcWl591NCZ+cWFwngeUhhpFnDTImB8jm0wgOmDezkU1VouZnO/Odo
+X-Google-Smtp-Source: AGHT+IFxRXXkyXYrbz4bkr7Zxus1zEAxwXPdFVCO/p5Eqbpv2MrtpmYKCXpDdSRinH+YQu1wXePscg==
+X-Received: by 2002:a05:690c:39c:b0:6e2:767:8a64 with SMTP id 00721157ae682-6e2c729eab6mr104318897b3.37.1728325782187;
+        Mon, 07 Oct 2024 11:29:42 -0700 (PDT)
+Received: from dev-ubuntu-0.. (104-15-236-76.lightspeed.rlghnc.sbcglobal.net. [104.15.236.76])
+        by smtp.googlemail.com with ESMTPSA id 00721157ae682-6e2d926aec5sm11377977b3.2.2024.10.07.11.29.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Oct 2024 11:29:41 -0700 (PDT)
+From: Tyrone Wu <wudevelops@gmail.com>
+To: olsajiri@gmail.com,
+	laoar.shao@gmail.com,
+	wudevelops@gmail.com
+Cc: andrii.nakryiko@gmail.com,
+	andrii@kernel.org,
+	ast@kernel.org,
+	bpf@vger.kernel.org,
+	daniel@iogearbox.net,
+	eddyz87@gmail.com,
+	haoluo@google.com,
+	john.fastabend@gmail.com,
+	kernel-patches-bot@fb.com,
+	kpsingh@kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	martin.lau@linux.dev,
+	mykolal@fb.com,
+	sdf@fomichev.me,
+	shuah@kernel.org,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	Jiri Olsa <jolsa@kernel.org>
+Subject: [PATCH bpf v6 1/2] bpf: fix unpopulated name_len field in perf_event link info
+Date: Mon,  7 Oct 2024 18:29:32 +0000
+Message-ID: <20241007182933.8841-1-wudevelops@gmail.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <ZwOWs_XrBtlTGE24@krava>
+References: <ZwOWs_XrBtlTGE24@krava>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241007164648.20926-1-richard120310@gmail.com>
-In-Reply-To: <20241007164648.20926-1-richard120310@gmail.com>
-From: Song Liu <song@kernel.org>
-Date: Mon, 7 Oct 2024 10:36:45 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW7DHKZKbw3V5_=mxKNqnyhOWjdHWhGseESbOfS43tje=w@mail.gmail.com>
-Message-ID: <CAPhsuW7DHKZKbw3V5_=mxKNqnyhOWjdHWhGseESbOfS43tje=w@mail.gmail.com>
-Subject: Re: [PATCH] libbpf: Fix integer overflow issue
-To: I Hsin Cheng <richard120310@gmail.com>
-Cc: martin.lau@linux.dev, ast@kernel.org, daniel@iogearbox.net, 
-	andrii@kernel.org, eddyz87@gmail.com, yonghong.song@linux.dev, 
-	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
-	haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Mon, Oct 7, 2024 at 9:46=E2=80=AFAM I Hsin Cheng <richard120310@gmail.co=
-m> wrote:
->
-> Fix integer overflow issue discovered by coverity scan, where
-> "bpf_program_fd()" might return a value less than zero. Assignment of
-> "prog_fd" to "kern_data" will result in integer overflow in that case.
+From: tyrone-wu <wudevelops@gmail.com>
 
-Has this been a real issue other than coverity scan? If so, we will need
-a Fix tag.
+Previously when retrieving `bpf_link_info.perf_event` for
+kprobe/uprobe/tracepoint, the `name_len` field was not populated by the
+kernel, leaving it to reflect the value initially set by the user. This
+behavior was inconsistent with how other input/output string buffer
+fields function (e.g. `raw_tracepoint.tp_name_len`).
 
-Also, some logistics. Please be clear which tree this patch targets,
-and tag the patches with "[PATCH bpf]" or "[PATCH bpf-next]".
+This patch fills `name_len` with the actual size of the string name.
 
-> Do a pre-check after the program fd is returned, if it's negative we
-> should ignore this program and move on, or maybe add some error handling
-> mechanism here.
->
-> Signed-off-by: I Hsin Cheng <richard120310@gmail.com>
-> ---
->  tools/lib/bpf/libbpf.c | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index a3be6f8fac09..95fb5e48e79e 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -8458,6 +8458,9 @@ static void bpf_map_prepare_vdata(const struct bpf_=
-map *map)
->                         continue;
->
->                 prog_fd =3D bpf_program__fd(prog);
-> +               if (prog_fd < 0)
-> +                       continue;
-> +
+Link: https://lore.kernel.org/bpf/CABVU1kXwQXhqQGe0RTrr7eegtM6SVW_KayZBy16-yb0Snztmtg@mail.gmail.com/
+Fixes: 1b715e1b0ec5 ("bpf: Support ->fill_link_info for perf_event")
+Signed-off-by: Tyrone Wu <wudevelops@gmail.com>
+Acked-by: Jiri Olsa <jolsa@kernel.org>
+Acked-by: Yafang Shao <laoar.shao@gmail.com>
+---
+V5 -> V6:
+Link: https://lore.kernel.org/bpf/ZwOWs_XrBtlTGE24@krava/
+- Use simpler buf check while keeping V4
+- Fix netdev/checkpatch warning for 80 cols exceeded
+- Fix Signed-off-by to use real name instead of git username
 
-AFAICT, this only happens with non-NULL obj->gen_loader. So we can
-achieve the same with something like:
+V4 -> V5:
+Link: https://lore.kernel.org/bpf/CALOAHbC5xm7Cbfhau3z5X2PqUhiHECNWAPtJCWiOVqTKmdZp-Q@mail.gmail.com/
+- Check that buf is not NULL before retrieving/using its length
 
-diff --git i/tools/lib/bpf/libbpf.c w/tools/lib/bpf/libbpf.c
-index 712b95e8891b..6756199a942f 100644
---- i/tools/lib/bpf/libbpf.c
-+++ w/tools/lib/bpf/libbpf.c
-@@ -8502,6 +8502,8 @@ static int bpf_object_prepare_struct_ops(struct
-bpf_object *obj)
-        struct bpf_map *map;
-        int i;
+V3 -> V4:
+Link: https://lore.kernel.org/bpf/Zv_PP6Gs5cq3W2Ey@krava/
+- Split patch into separate kernel and selftest change
 
-+       if (obj->gen_loader)
-+               return 0;
-        for (i =3D 0; i < obj->nr_maps; i++) {
-                map =3D &obj->maps[i];
+V2 -> V3:
+Link: https://lore.kernel.org/bpf/Zv7sISV0yEyGlEM3@krava/
+- Use clearer variable name for user set/inputted name len (name_len -> input_len)
+- Change (name_len -> input_len) type from size_t to u32 since it's only received and used as u32
 
+V1 -> V2:
+Link: https://lore.kernel.org/bpf/Zv0wl-S13WJnIkb_@krava/
+- Use user set *ulen in bpf_copy_to_user before overwriting *ulen
 
-Thanks,
-Song
+ kernel/bpf/syscall.c | 32 +++++++++++++++++++++++---------
+ 1 file changed, 23 insertions(+), 9 deletions(-)
+
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index a8f1808a1ca5..b5a7e428ac16 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -3565,27 +3565,33 @@ static void bpf_perf_link_dealloc(struct bpf_link *link)
+ }
+ 
+ static int bpf_perf_link_fill_common(const struct perf_event *event,
+-				     char __user *uname, u32 ulen,
++				     char __user *uname, u32 *ulen,
+ 				     u64 *probe_offset, u64 *probe_addr,
+ 				     u32 *fd_type, unsigned long *missed)
+ {
+ 	const char *buf;
+-	u32 prog_id;
++	u32 prog_id, input_len;
+ 	size_t len;
+ 	int err;
+ 
+-	if (!ulen ^ !uname)
++	if (!(*ulen) ^ !uname)
+ 		return -EINVAL;
+ 
+ 	err = bpf_get_perf_event_info(event, &prog_id, fd_type, &buf,
+ 				      probe_offset, probe_addr, missed);
+ 	if (err)
+ 		return err;
++
++	if (buf) {
++		input_len = *ulen;
++		len = strlen(buf);
++		*ulen = len + 1;
++	}
+ 	if (!uname)
+ 		return 0;
++
+ 	if (buf) {
+-		len = strlen(buf);
+-		err = bpf_copy_to_user(uname, buf, ulen, len);
++		err = bpf_copy_to_user(uname, buf, input_len, len);
+ 		if (err)
+ 			return err;
+ 	} else {
+@@ -3609,7 +3615,7 @@ static int bpf_perf_link_fill_kprobe(const struct perf_event *event,
+ 
+ 	uname = u64_to_user_ptr(info->perf_event.kprobe.func_name);
+ 	ulen = info->perf_event.kprobe.name_len;
+-	err = bpf_perf_link_fill_common(event, uname, ulen, &offset, &addr,
++	err = bpf_perf_link_fill_common(event, uname, &ulen, &offset, &addr,
+ 					&type, &missed);
+ 	if (err)
+ 		return err;
+@@ -3617,7 +3623,7 @@ static int bpf_perf_link_fill_kprobe(const struct perf_event *event,
+ 		info->perf_event.type = BPF_PERF_EVENT_KRETPROBE;
+ 	else
+ 		info->perf_event.type = BPF_PERF_EVENT_KPROBE;
+-
++	info->perf_event.kprobe.name_len = ulen;
+ 	info->perf_event.kprobe.offset = offset;
+ 	info->perf_event.kprobe.missed = missed;
+ 	if (!kallsyms_show_value(current_cred()))
+@@ -3639,7 +3645,7 @@ static int bpf_perf_link_fill_uprobe(const struct perf_event *event,
+ 
+ 	uname = u64_to_user_ptr(info->perf_event.uprobe.file_name);
+ 	ulen = info->perf_event.uprobe.name_len;
+-	err = bpf_perf_link_fill_common(event, uname, ulen, &offset, &addr,
++	err = bpf_perf_link_fill_common(event, uname, &ulen, &offset, &addr,
+ 					&type, NULL);
+ 	if (err)
+ 		return err;
+@@ -3648,6 +3654,7 @@ static int bpf_perf_link_fill_uprobe(const struct perf_event *event,
+ 		info->perf_event.type = BPF_PERF_EVENT_URETPROBE;
+ 	else
+ 		info->perf_event.type = BPF_PERF_EVENT_UPROBE;
++	info->perf_event.uprobe.name_len = ulen;
+ 	info->perf_event.uprobe.offset = offset;
+ 	info->perf_event.uprobe.cookie = event->bpf_cookie;
+ 	return 0;
+@@ -3673,12 +3680,19 @@ static int bpf_perf_link_fill_tracepoint(const struct perf_event *event,
+ {
+ 	char __user *uname;
+ 	u32 ulen;
++	int err;
+ 
+ 	uname = u64_to_user_ptr(info->perf_event.tracepoint.tp_name);
+ 	ulen = info->perf_event.tracepoint.name_len;
++	err = bpf_perf_link_fill_common(event, uname, &ulen, NULL, NULL, NULL,
++					NULL);
++	if (err)
++		return err;
++
+ 	info->perf_event.type = BPF_PERF_EVENT_TRACEPOINT;
++	info->perf_event.tracepoint.name_len = ulen;
+ 	info->perf_event.tracepoint.cookie = event->bpf_cookie;
+-	return bpf_perf_link_fill_common(event, uname, ulen, NULL, NULL, NULL, NULL);
++	return 0;
+ }
+ 
+ static int bpf_perf_link_fill_perf_event(const struct perf_event *event,
+-- 
+2.43.0
+
 
