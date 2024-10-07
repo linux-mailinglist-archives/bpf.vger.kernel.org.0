@@ -1,59 +1,61 @@
-Return-Path: <bpf+bounces-41113-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41114-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8F08992BCF
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0830A992BCD
 	for <lists+bpf@lfdr.de>; Mon,  7 Oct 2024 14:31:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B37B0B25791
-	for <lists+bpf@lfdr.de>; Mon,  7 Oct 2024 12:31:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4563E1F23697
+	for <lists+bpf@lfdr.de>; Mon,  7 Oct 2024 12:31:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CBC91C2324;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AF841D2B0E;
 	Mon,  7 Oct 2024 12:31:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="kgiFrxQ0";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="6lES4Fbi"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="fCCkiTi+";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="JFdX7VBG"
 X-Original-To: bpf@vger.kernel.org
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40D8C1C173D;
-	Mon,  7 Oct 2024 12:31:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40D2C18BB89;
+	Mon,  7 Oct 2024 12:31:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728304294; cv=none; b=hhYs74WMqKUm4ZjrHb/yD0WjaDPfCx2KSJYQkUUXTFzWjQMpTSyDQvVoft9rBisjWRjHxQv9mps1uFeMq7ZEqMelJ3u67ERTXpcwdkTrTRm2UyQu7SIjEBUB7WbfAEdtAo3E0jKZnenYGrGNpJ9nYP+Mh2w8padJFpt4gtzbdNw=
+	t=1728304294; cv=none; b=jPDZwJbR0jOVwTH83NoEnuMHCvhGiR5fr2vvlqHh3NMOR+i3Ef9D+bDz2DqQlrHGrMz1bLg8ZuENUbtBFNuT63dHi3/v4ypipVqoP5IaDz90AAawfLEnZYjG3sH6Q5EnYV90ZvBj3EiSdkiopDczVQSMtc7G9cczeTMCAzrG3UY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1728304294; c=relaxed/simple;
-	bh=cSr16lHesup0jyZsTm8sLeSAjC1XAE7gBsDOVQ5e4JU=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=Xbju8BDR4zDTSavZysWZZVXVa8TzayODqaXOTlhCMsYrqnDV/4+XxSi+CTTAg7cAngW/dWxd5JPHb9a5Xv1Rb6Eyi9wKTF/rTGDUT5liGln8GzwzU7OfSiOIA1E1wcGiZSMP6dNWLG3g54YG2+qDr6358NpiEG6pE+A4L98xlIk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=kgiFrxQ0; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=6lES4Fbi; arc=none smtp.client-ip=193.142.43.55
+	bh=d9lK34L8zunQ7HDOE3UWaku66e/Qei3NVI1+NTcuFks=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=R5DyM2YOJp239iUL7TJgwqmNg2ySrNzGbnJ6b1b72XeOcl6Y//hRudfyRoWxWS0ec24sgMEgkRfhPQiLGw2nGq7tWvjygPZ5oAsXMiPAKN75J62jDjUKXTnOaaYQpWX+Ik3oPRyVCmISq/T7j24L47fNN97QzlENEDh3n7Hsj+E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=fCCkiTi+; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=JFdX7VBG; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 From: Kurt Kanzenbach <kurt@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1728304289;
+	s=2020; t=1728304290;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=n80mNWK26mFk+wt7hmAWZnpX8w+IrgjsndVOCDRIpmw=;
-	b=kgiFrxQ04lY6D31fMCum7QILrsSiNRvqfK3W7T8Sb6/09kPFtBql69t6hMtFJlOh/N16au
-	8QAXgu3iADVWzAlYBINBUFs28FVjG1O+jLYbAtFdP5kLikmgwOXmr3o42+ndE3UL4CWNkY
-	HeEdKRa0jgCxgqMxy8K3ktsqHMPAjRCRJEErUGEqjLn7KbYjzKotkyYWQ+MyzCA+3DFh6p
-	NDLsr9iDDqA3WldZQkSTbgJgiL2OeIaXncaJePBul3rYJl3ay9FmX87ij698yy+oz+E3HY
-	TM8W7AFWBpmlM4x+VCoNjTkop/IzTDTdZZdrxR04kixCXF7Ld+Psros3rZUluQ==
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Cz4kPA6dKsgqq0HrMQA9PFkTNe0rHOz9xSJaT+6WwYI=;
+	b=fCCkiTi+iwRKvJRex6M0fydKG+EnU0oGr2P1u2zS4xpVKhUGRR2LlKbMj7wuHRERTwTsvS
+	06n9yE1NHR/5Wg7uwOwm5+3jLLn04alvXqvfZQdmn8KpW1orfnCVFkvrAFFZlLs7a0m1YG
+	U4VNGo7E3dGAO7a8mwiUJFRsAE3t21OM9vHZW8X/WXb983+hFQdUmaBySEwbgt8NLpW25E
+	tO9ap+mKinSdiPQixrqheuNw8ENpto0vw7lqTg1Ij6K5w1nLQXIukzc29AcbJqTRSB8j1v
+	YsmNUiWsXzg7jt7r+6vNIyhV4wdvmhZDQ7C3b+9Wzg1OKbFE+NSEP1DdVwDF9Q==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1728304289;
+	s=2020e; t=1728304290;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=n80mNWK26mFk+wt7hmAWZnpX8w+IrgjsndVOCDRIpmw=;
-	b=6lES4Fbi17ybIvKVBiXpXUFozPYE13Qb+N33Nic4R1xhLs2CKi14AO//E+AoTGJwdOaxxJ
-	5FbKbaYmZqar3mBw==
-Subject: [PATCH iwl-next v7 0/5] igb: Add support for AF_XDP zero-copy
-Date: Mon, 07 Oct 2024 14:31:22 +0200
-Message-Id: <20241007-b4-igb_zero_copy-v7-0-23556668adc6@linutronix.de>
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Cz4kPA6dKsgqq0HrMQA9PFkTNe0rHOz9xSJaT+6WwYI=;
+	b=JFdX7VBGIvRcjAdyXacqiEJPYMBK3YqRZDwlHNqRgCwF9YbC2bQY4MxYOnwGGjm2PSEbLv
+	EZB3cu1iSwgLEMAw==
+Date: Mon, 07 Oct 2024 14:31:23 +0200
+Subject: [PATCH iwl-next v7 1/5] igb: Remove static qualifiers
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -62,10 +64,9 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAJrUA2cC/4WOQQqDMBREryJZNyXRaKSr3qMU8euPfpBEErVa8
- e4NLguly5lh3szOAnrCwG7JzjwuFMjZKPQlYU1f2w45tVGzVKRKaCk5KE4dVG/0rmrcuHEALep
- MYgPCsFiDOiAHX9umj0U7D0M0R4+G1nPnweg1cIvrxJ4x6SlMzm/ngSU/899bS84FN5lReS5lB
- lLeB7Lz5J2l9driCVyKf5AiQhQYKEqtI6T8hhzH8QFgrhf2GAEAAA==
+Message-Id: <20241007-b4-igb_zero_copy-v7-1-23556668adc6@linutronix.de>
+References: <20241007-b4-igb_zero_copy-v7-0-23556668adc6@linutronix.de>
+In-Reply-To: <20241007-b4-igb_zero_copy-v7-0-23556668adc6@linutronix.de>
 To: Tony Nguyen <anthony.l.nguyen@intel.com>, 
  Przemek Kitszel <przemyslaw.kitszel@intel.com>
 Cc: "David S. Miller" <davem@davemloft.net>, 
@@ -82,128 +83,191 @@ Cc: "David S. Miller" <davem@davemloft.net>,
  intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org, 
  bpf@vger.kernel.org, Sriram Yagnaraman <sriram.yagnaraman@est.tech>, 
  Kurt Kanzenbach <kurt@linutronix.de>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3979; i=kurt@linutronix.de;
- h=from:subject:message-id; bh=cSr16lHesup0jyZsTm8sLeSAjC1XAE7gBsDOVQ5e4JU=;
- b=owEBbQKS/ZANAwAKAcGT0fKqRnOCAcsmYgBnA9SfeeE7eiysY3Z4ekSZ3cnBTHezh25rJ8ZTx
- IF1aAvXFj2JAjMEAAEKAB0WIQS8ub+yyMN909/bWZLBk9HyqkZzggUCZwPUnwAKCRDBk9HyqkZz
- gtybD/9uAO8asrLO30z7y9hDi2VfpP0uJpDNT34qFt0fWBDe3/C2UdkuKhBW1LIG+oSRd7jMD1g
- t6CdfdQTVc1Vv6uChpgAFibi4z4DM2WLzZxOKsVnmexrKLuDXFFhSmBMFvI2mmwfdgKF4iZKThA
- Y/lCZNfPCR9WZbt1BrkC027ETR3pqQqAiyLQqnVfxZh8oYmYaqXQZcBi+1gF9+FJAnggV+grMHn
- KwWwhZOoKFtZPy6ImPAwMCArlQ1eyZZMvB6TL+cEu84xJxHXKFGLt5rZPHU0mqb0FK8YoiTdIUj
- HhQYOPks65HK9a5DE6bJ9QZS1bARCoab97jn07eYDMFn1PJh1A5xMvwg/Tl8zyNvfsVGOpDjnR/
- Q1XtKXxNVizN1hafyJs/0wdbKgdzLmwvGSwsAUOIHT1MEtxqcduFsgn1jJMgidNe9ljCyqBluUd
- UlPef6WoQDWyQNF1Bb8v+wmLFKvzzgWHb687W5S1oarmhGXq2jgoNK71uE+wzqOgWEq/TDd+Mhu
- 3Y2BIV461HPpGMkJXS8jft6dZyykPK0J2Sy0MUUsGoLeAj87Zz89laWo2VLUWt7p0Ghh+PV5nyo
- Ze/klIIjFHHk4Y2yHKOihvZ98lzIxKToVTOmxB04r/rVHbbep8wiYmI1lwRFGv4mCCMgoZivJRe
- wtc96/IoysbIqmQ==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=6388; i=kurt@linutronix.de;
+ h=from:subject:message-id; bh=BUo9bjWjvJHruoupHD0KEda6yWDg4kg5Kz4Gw3OfUZg=;
+ b=owEBbQKS/ZANAwAKAcGT0fKqRnOCAcsmYgBnA9SfY/ZqC+n53/lMBEg3poTgH2A/fa4gFky71
+ LWRtyBLvnaJAjMEAAEKAB0WIQS8ub+yyMN909/bWZLBk9HyqkZzggUCZwPUnwAKCRDBk9HyqkZz
+ glg6D/9SGOE+XMUm3Vk9Xa+oheEJKv4Qv4MlgIU0TVoRiLlKmbQp7DR0670vN71nn6V05918z9t
+ eiks6LVmQfinAuiUB2dmN5MiGwu/Ck0CJhAiMvkSkJ9tQJRKz7lCvCoE3pHzORPPrbAqONqctMb
+ izLXVGU8PCE7UCAaL9efqxxWwpg0y18/JgDE8K15ZaZ2qnfxES3V+SitGcK5thfxGP17knoh/vD
+ botpa1TCnboVGVc+YYwTnG3WVLb1TUflI9hMz8UYlcZRbEOpK25SMUWN4ZuC6oiMdxHfANSMWcZ
+ 8sp5SPBAkgZRxJc8jZNwvy3jIv6YLHJhDvwGBGkBYP5Se46VLJWPuBYKnXsJWmuXBBJTbeW/Uqd
+ DwuAHUlXM6lF050iCCdVavL1/3ZXRd3W6OboiJynFELuK18B3XKpQuM4vN7Zwx36QvP9YdKem+K
+ wiUSpx8iZroNoEC4sf5wn3bg713QZQjS8hBqqExzF7Y1+pQXGqTQJcTn4Qibuvu98yhFBf2IBgh
+ 2F1sTs1rKmrT6fpmeF+pXHNqvJzoOFcIYc980pnGfcxlo74ZiopUSnmbpHoJF4fdKRywoOEAJ+J
+ H1G2anEWrnPggHfO+P3asIfu1+Se0ZadKoC8WSAFUpp+38kw69K0F6naDBFhDOViuhQTbmDfw/0
+ 9rpZAV721nT7P8Q==
 X-Developer-Key: i=kurt@linutronix.de; a=openpgp;
  fpr=BCB9BFB2C8C37DD3DFDB5992C193D1F2AA467382
 
-This is version v7 of the AF_XDP zero-copy support for igb. Since Sriram's
-duties changed I am sending this instead. Additionally, I've tested this on
-real hardware, Intel i210 [1].
+From: Sriram Yagnaraman <sriram.yagnaraman@est.tech>
 
-Changes since v6:
+Remove static qualifiers on the following functions to be able to call
+from XSK specific file that is added in the later patches:
+- igb_xdp_tx_queue_mapping()
+- igb_xdp_ring_update_tail()
+- igb_clean_tx_ring()
+- igb_clean_rx_ring()
+- igb_xdp_xmit_back()
+- igb_process_skb_fields()
 
- - Rebase to v6.12
- - Collect tags
- - Merged first patch via -net
- - Inline small functions (Maciej)
- - Read xdp_prog only once per NAPI cycle (Maciej)
- - Use u32 for stack based variables (Maciej)
- - Link to v6: https://lore.kernel.org/r/20240711-b4-igb_zero_copy-v6-0-4bfb68773b18@linutronix.de
+While at it, inline igb_xdp_tx_queue_mapping() and
+igb_xdp_ring_update_tail(). These functions are small enough and used in
+XDP hot paths.
 
-Changes since v5:
-
- - Rebase to 6.11
- - Fix set-but-unused variable warnings
- - Split first patches (Maciej)
- - Add READ/WRITE_ONCE() for xsk_pool and xdp_prog (Maciej)
- - Add synchronize_net() (Maciej)
- - Remove IGB_RING_FLAG_AF_XDP_ZC (Maciej)
- - Add NETDEV_XDP_ACT_XSK_ZEROCOPY to last patch (Maciej)
- - Update Rx ntc handling (Maciej)
- - Move stats update and xdp finalize to common functions (Maciej)
- - "Likelyfy" XDP_REDIRECT case (Maciej)
- - Check Tx disabled and carrier in igb_xmit_zc() (Maciej)
- - RCT (Maciej)
- - Link to v5: https://lore.kernel.org/r/20240711-b4-igb_zero_copy-v5-0-f3f455113b11@linutronix.de
-
-Changes since v4:
-
- - Rebase to v6.10
- - Fix issue reported by kernel test robot
- - Provide napi_id for xdp_rxq_info_reg() so that busy polling works
- - Set olinfo_status in igb_xmit_zc() so that frames are transmitted
-
-Link to v4: https://lore.kernel.org/intel-wired-lan/20230804084051.14194-1-sriram.yagnaraman@est.tech/
-
-[1] - https://github.com/Linutronix/TSN-Testbench/tree/main/tests/busypolling_i210
-
-Original cover letter:
-
-The first couple of patches adds helper funcctions to prepare for AF_XDP
-zero-copy support which comes in the last couple of patches, one each
-for Rx and TX paths.
-
-As mentioned in v1 patchset [0], I don't have access to an actual IGB
-device to provide correct performance numbers. I have used Intel 82576EB
-emulator in QEMU [1] to test the changes to IGB driver.
-
-The tests use one isolated vCPU for RX/TX and one isolated vCPU for the
-xdp-sock application [2]. Hope these measurements provide at the least
-some indication on the increase in performance when using ZC, especially
-in the TX path. It would be awesome if someone with a real IGB NIC can
-test the patch.
-
-AF_XDP performance using 64 byte packets in Kpps.
-Benchmark:	XDP-SKB		XDP-DRV		XDP-DRV(ZC)
-rxdrop		220		235		350
-txpush		1.000		1.000		410
-l2fwd 		1.000		1.000		200
-
-AF_XDP performance using 1500 byte packets in Kpps.
-Benchmark:	XDP-SKB		XDP-DRV		XDP-DRV(ZC)
-rxdrop		200		210		310
-txpush		1.000		1.000		410
-l2fwd 		0.900		1.000		160
-
-[0]: https://lore.kernel.org/intel-wired-lan/20230704095915.9750-1-sriram.yagnaraman@est.tech/
-[1]: https://www.qemu.org/docs/master/system/devices/igb.html
-[2]: https://github.com/xdp-project/bpf-examples/tree/master/AF_XDP-example
-
-v3->v4:
-- NULL check buffer_info in igb_dump before dereferencing (Simon Horman)
-
-v2->v3:
-- Avoid TX unit hang when using AF_XDP zero-copy by setting time_stamp
-  on the tx_buffer_info
-- Fix uninitialized nb_buffs (Simon Horman)
-
-v1->v2:
-- Use batch XSK APIs (Maciej Fijalkowski)
-- Follow reverse xmas tree convention and remove the ternary operator
-  use (Simon Horman)
-
+Signed-off-by: Sriram Yagnaraman <sriram.yagnaraman@est.tech>
+[Kurt: Split patches, inline small XDP functions]
+Signed-off-by: Kurt Kanzenbach <kurt@linutronix.de>
 ---
-Sriram Yagnaraman (5):
-      igb: Remove static qualifiers
-      igb: Introduce igb_xdp_is_enabled()
-      igb: Introduce XSK data structures and helpers
-      igb: Add AF_XDP zero-copy Rx support
-      igb: Add AF_XDP zero-copy Tx support
+ drivers/net/ethernet/intel/igb/igb.h      | 29 ++++++++++++++++++++++++
+ drivers/net/ethernet/intel/igb/igb_main.c | 37 +++++--------------------------
+ 2 files changed, 35 insertions(+), 31 deletions(-)
 
- drivers/net/ethernet/intel/igb/Makefile   |   2 +-
- drivers/net/ethernet/intel/igb/igb.h      |  57 ++-
- drivers/net/ethernet/intel/igb/igb_main.c | 247 ++++++++-----
- drivers/net/ethernet/intel/igb/igb_xsk.c  | 560 ++++++++++++++++++++++++++++++
- 4 files changed, 783 insertions(+), 83 deletions(-)
----
-base-commit: 1e37963a388fe7361259f1a769cef4bac2012534
-change-id: 20240711-b4-igb_zero_copy-bb70a31ecb0f
+diff --git a/drivers/net/ethernet/intel/igb/igb.h b/drivers/net/ethernet/intel/igb/igb.h
+index 3c2dc7bdebb5..1bfe703e73d9 100644
+--- a/drivers/net/ethernet/intel/igb/igb.h
++++ b/drivers/net/ethernet/intel/igb/igb.h
+@@ -18,6 +18,7 @@
+ #include <linux/i2c-algo-bit.h>
+ #include <linux/pci.h>
+ #include <linux/mdio.h>
++#include <linux/lockdep.h>
+ 
+ #include <net/xdp.h>
+ 
+@@ -731,12 +732,18 @@ int igb_setup_tx_resources(struct igb_ring *);
+ int igb_setup_rx_resources(struct igb_ring *);
+ void igb_free_tx_resources(struct igb_ring *);
+ void igb_free_rx_resources(struct igb_ring *);
++void igb_clean_tx_ring(struct igb_ring *tx_ring);
++void igb_clean_rx_ring(struct igb_ring *rx_ring);
+ void igb_configure_tx_ring(struct igb_adapter *, struct igb_ring *);
+ void igb_configure_rx_ring(struct igb_adapter *, struct igb_ring *);
+ void igb_setup_tctl(struct igb_adapter *);
+ void igb_setup_rctl(struct igb_adapter *);
+ void igb_setup_srrctl(struct igb_adapter *, struct igb_ring *);
+ netdev_tx_t igb_xmit_frame_ring(struct sk_buff *, struct igb_ring *);
++int igb_xdp_xmit_back(struct igb_adapter *adapter, struct xdp_buff *xdp);
++void igb_process_skb_fields(struct igb_ring *rx_ring,
++			    union e1000_adv_rx_desc *rx_desc,
++			    struct sk_buff *skb);
+ void igb_alloc_rx_buffers(struct igb_ring *, u16);
+ void igb_update_stats(struct igb_adapter *);
+ bool igb_has_link(struct igb_adapter *adapter);
+@@ -797,6 +804,28 @@ static inline struct netdev_queue *txring_txq(const struct igb_ring *tx_ring)
+ 	return netdev_get_tx_queue(tx_ring->netdev, tx_ring->queue_index);
+ }
+ 
++/* This function assumes __netif_tx_lock is held by the caller. */
++static inline void igb_xdp_ring_update_tail(struct igb_ring *ring)
++{
++	lockdep_assert_held(&txring_txq(ring)->_xmit_lock);
++
++	/* Force memory writes to complete before letting h/w know there
++	 * are new descriptors to fetch.
++	 */
++	wmb();
++	writel(ring->next_to_use, ring->tail);
++}
++
++static inline struct igb_ring *igb_xdp_tx_queue_mapping(struct igb_adapter *adapter)
++{
++	unsigned int r_idx = smp_processor_id();
++
++	if (r_idx >= adapter->num_tx_queues)
++		r_idx = r_idx % adapter->num_tx_queues;
++
++	return adapter->tx_ring[r_idx];
++}
++
+ int igb_add_filter(struct igb_adapter *adapter,
+ 		   struct igb_nfc_filter *input);
+ int igb_erase_filter(struct igb_adapter *adapter,
+diff --git a/drivers/net/ethernet/intel/igb/igb_main.c b/drivers/net/ethernet/intel/igb/igb_main.c
+index 1ef4cb871452..71addc0eac96 100644
+--- a/drivers/net/ethernet/intel/igb/igb_main.c
++++ b/drivers/net/ethernet/intel/igb/igb_main.c
+@@ -33,7 +33,6 @@
+ #include <linux/bpf_trace.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/etherdevice.h>
+-#include <linux/lockdep.h>
+ #ifdef CONFIG_IGB_DCA
+ #include <linux/dca.h>
+ #endif
+@@ -116,8 +115,6 @@ static void igb_configure_tx(struct igb_adapter *);
+ static void igb_configure_rx(struct igb_adapter *);
+ static void igb_clean_all_tx_rings(struct igb_adapter *);
+ static void igb_clean_all_rx_rings(struct igb_adapter *);
+-static void igb_clean_tx_ring(struct igb_ring *);
+-static void igb_clean_rx_ring(struct igb_ring *);
+ static void igb_set_rx_mode(struct net_device *);
+ static void igb_update_phy_info(struct timer_list *);
+ static void igb_watchdog(struct timer_list *);
+@@ -2915,29 +2912,7 @@ static int igb_xdp(struct net_device *dev, struct netdev_bpf *xdp)
+ 	}
+ }
+ 
+-/* This function assumes __netif_tx_lock is held by the caller. */
+-static void igb_xdp_ring_update_tail(struct igb_ring *ring)
+-{
+-	lockdep_assert_held(&txring_txq(ring)->_xmit_lock);
+-
+-	/* Force memory writes to complete before letting h/w know there
+-	 * are new descriptors to fetch.
+-	 */
+-	wmb();
+-	writel(ring->next_to_use, ring->tail);
+-}
+-
+-static struct igb_ring *igb_xdp_tx_queue_mapping(struct igb_adapter *adapter)
+-{
+-	unsigned int r_idx = smp_processor_id();
+-
+-	if (r_idx >= adapter->num_tx_queues)
+-		r_idx = r_idx % adapter->num_tx_queues;
+-
+-	return adapter->tx_ring[r_idx];
+-}
+-
+-static int igb_xdp_xmit_back(struct igb_adapter *adapter, struct xdp_buff *xdp)
++int igb_xdp_xmit_back(struct igb_adapter *adapter, struct xdp_buff *xdp)
+ {
+ 	struct xdp_frame *xdpf = xdp_convert_buff_to_frame(xdp);
+ 	int cpu = smp_processor_id();
+@@ -4884,7 +4859,7 @@ static void igb_free_all_tx_resources(struct igb_adapter *adapter)
+  *  igb_clean_tx_ring - Free Tx Buffers
+  *  @tx_ring: ring to be cleaned
+  **/
+-static void igb_clean_tx_ring(struct igb_ring *tx_ring)
++void igb_clean_tx_ring(struct igb_ring *tx_ring)
+ {
+ 	u16 i = tx_ring->next_to_clean;
+ 	struct igb_tx_buffer *tx_buffer = &tx_ring->tx_buffer_info[i];
+@@ -5003,7 +4978,7 @@ static void igb_free_all_rx_resources(struct igb_adapter *adapter)
+  *  igb_clean_rx_ring - Free Rx Buffers per Queue
+  *  @rx_ring: ring to free buffers from
+  **/
+-static void igb_clean_rx_ring(struct igb_ring *rx_ring)
++void igb_clean_rx_ring(struct igb_ring *rx_ring)
+ {
+ 	u16 i = rx_ring->next_to_clean;
+ 
+@@ -8782,9 +8757,9 @@ static bool igb_cleanup_headers(struct igb_ring *rx_ring,
+  *  order to populate the hash, checksum, VLAN, timestamp, protocol, and
+  *  other fields within the skb.
+  **/
+-static void igb_process_skb_fields(struct igb_ring *rx_ring,
+-				   union e1000_adv_rx_desc *rx_desc,
+-				   struct sk_buff *skb)
++void igb_process_skb_fields(struct igb_ring *rx_ring,
++			    union e1000_adv_rx_desc *rx_desc,
++			    struct sk_buff *skb)
+ {
+ 	struct net_device *dev = rx_ring->netdev;
+ 
 
-Best regards,
 -- 
-Kurt Kanzenbach <kurt@linutronix.de>
+2.39.5
 
 
