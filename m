@@ -1,34 +1,34 @@
-Return-Path: <bpf+bounces-41111-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41112-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58199992BB3
-	for <lists+bpf@lfdr.de>; Mon,  7 Oct 2024 14:26:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68DB0992BB5
+	for <lists+bpf@lfdr.de>; Mon,  7 Oct 2024 14:26:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1BA47285716
-	for <lists+bpf@lfdr.de>; Mon,  7 Oct 2024 12:26:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9AB4D1C22D43
+	for <lists+bpf@lfdr.de>; Mon,  7 Oct 2024 12:26:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 627F21D4161;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC31B1D4325;
 	Mon,  7 Oct 2024 12:25:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="naBk+bFh"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jx9OVtQe"
 X-Original-To: bpf@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C8231D2B0E;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7E8A1D3640;
 	Mon,  7 Oct 2024 12:25:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728303922; cv=none; b=CjW0DjHZtBWBwalQaSZ2ypupxj5Dce1cmH1/3QRpRCnV89085axDGn+QEfxXCVhC3L5pXQaAs0eOB/6zLR+uIVcnJfe84pqtICcwDrkXQ03ZiN0yWD3naj+QSKKsstUduhuVaJpJnVkQw7SpyaUTH0DTS+iEYyqB6KY0OPDt8h4=
+	t=1728303923; cv=none; b=S4LmnReN7FGJz0xXv41tJg88wBiw2FRWGk5BpqSHkvBg7uPbFldZZKgMF308rZhY+lkJgG6RKh/RHpufr2/XatfvNG9ziKLBGuAP9ZsEOU2YHYqf+El51e1Cw6+OhlgWQP2bXZeIUn5M2wZ8ICCJFiAvgW8jRmcfOmdawBdoeYQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728303922; c=relaxed/simple;
-	bh=KvVnpCkxmabJb+RRBOEsAMz7vD62sAxroz3xiSVnRMs=;
+	s=arc-20240116; t=1728303923; c=relaxed/simple;
+	bh=U7tNzbhI7z63cKaK1ajHEzbuxNm1oQWVdEKIsF+aYdk=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=mdS83PwUHthz0ROOewFqor3z2B4fdbKE3ry+02y7puMXM72K5G6zsS2/qw/DObIBJ2irVAM/mJQRGCr9xsFzXYeZxU3vTutYJNuFhTPPvUEr/HoziXuJDn8d9Ek1pfe8tncOS8mO66Ay725G3qkdyTR0HegSDFbAbily1WI28jE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=naBk+bFh; arc=none smtp.client-ip=192.198.163.16
+	 MIME-Version; b=HcNCfpncwJ6wAjyEnzSHwpNyBAUiVL3uifJR7YD2UYwgTu2zCU4NULU1LljA6/pm1lWFj1szS/TKbMBZPLhFwAfxWVqp2/DzgMecIOkKNFwxKJ+keJPdRpR04rZsv301lxgqg0G48Y+tq7MnF/Hc7s+kcq57dfd0vjKYbexOKnw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jx9OVtQe; arc=none smtp.client-ip=192.198.163.16
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
@@ -36,28 +36,28 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   t=1728303921; x=1759839921;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=KvVnpCkxmabJb+RRBOEsAMz7vD62sAxroz3xiSVnRMs=;
-  b=naBk+bFhnZvwYB7pc7C6qWf6vPazfUWfeaP8jUPWWGUTObaetLfWbS6F
-   OtNIqE2NuyTcGeGxWt05bH7G/OcIt8e2D0yTPURpqZAdhLiCDJmJeOwm8
-   ffZlVy3OXJi66SMMgXBFu3dXmjzOOyYiPAxdMTQoV2YotSXD2hIm6ABWQ
-   /nXS+u38C1xtmOODg+6inAH8PVWPgGb7TNQQUJ7EbptyTLP9suVjB4YeV
-   ew4LuguyeJW1w4s/nLebaO4Z+Y+CIJwnUlVtTDNMb/kIYYaELhjavbZg+
-   JJpE56Ou5WJZGVrQeSaGrfAQqxqpubSwTaVJNKTps93OuxFJw6Cpd/Ssm
-   g==;
-X-CSE-ConnectionGUID: dJxqkMRdTua0LQD8i9AYbw==
-X-CSE-MsgGUID: Ago9T+N5QZGwYZm3w9snoA==
-X-IronPort-AV: E=McAfee;i="6700,10204,11217"; a="15066380"
+  bh=U7tNzbhI7z63cKaK1ajHEzbuxNm1oQWVdEKIsF+aYdk=;
+  b=jx9OVtQePP5UNUViKFbACYG+dVmSsopAzEPWf5E2LHceZNg0ia+62C7M
+   zaMFbH7UYdL5yv0C44uviSFfxpW/Nwu5mn1yx61w6trsnaWg99ezwgK+y
+   bV+RLh/QBJBnK8YERp1r3LWA63Ftm06LibJMrzxRGQclXA6KPIy4YYfPU
+   SUmDy8J1c5dNAU4+A22ZfLe7SbrQAS6OtV3/cDi9jnfB1b0LpEttmBz/C
+   +dJ+Gnd1yS0Dp6Y2iG3U0jowVp0FcNC6uWOkB8eiX0r6JWQauzyj/2NXx
+   zzJF3C5Kbz5utPS0+h/AertA9r0adVFnAcp48lUH7VhNkJr1w5cK6O89s
+   w==;
+X-CSE-ConnectionGUID: UN18zyioTYSg1JqIbgtZVw==
+X-CSE-MsgGUID: qMoABDiQTMytbr3pCJPArw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11217"; a="15066387"
 X-IronPort-AV: E=Sophos;i="6.11,184,1725346800"; 
-   d="scan'208";a="15066380"
+   d="scan'208";a="15066387"
 Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2024 05:25:15 -0700
-X-CSE-ConnectionGUID: ce4PpnXUStSBsBCEKCZP6w==
-X-CSE-MsgGUID: Xt7OTP7BTaOKqM2e/7JJGA==
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2024 05:25:19 -0700
+X-CSE-ConnectionGUID: 5nVVT1qIQpeBWndU+QPwDw==
+X-CSE-MsgGUID: wR5s/M/gTea3YTXkBYlW2Q==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.11,184,1725346800"; 
-   d="scan'208";a="80250985"
+   d="scan'208";a="80251019"
 Received: from boxer.igk.intel.com ([10.102.20.173])
-  by orviesa005.jf.intel.com with ESMTP; 07 Oct 2024 05:25:14 -0700
+  by orviesa005.jf.intel.com with ESMTP; 07 Oct 2024 05:25:16 -0700
 From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org,
@@ -68,9 +68,9 @@ Cc: netdev@vger.kernel.org,
 	bjorn@kernel.org,
 	maciej.fijalkowski@intel.com,
 	vadfed@meta.com
-Subject: [PATCH v2 bpf-next 5/6] xsk: wrap duplicated code to function
-Date: Mon,  7 Oct 2024 14:24:57 +0200
-Message-Id: <20241007122458.282590-6-maciej.fijalkowski@intel.com>
+Subject: [PATCH v2 bpf-next 6/6] xsk: use xsk_buff_pool directly for cq functions
+Date: Mon,  7 Oct 2024 14:24:58 +0200
+Message-Id: <20241007122458.282590-7-maciej.fijalkowski@intel.com>
 X-Mailer: git-send-email 2.38.1
 In-Reply-To: <20241007122458.282590-1-maciej.fijalkowski@intel.com>
 References: <20241007122458.282590-1-maciej.fijalkowski@intel.com>
@@ -82,73 +82,105 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Both allocation paths have exactly the same code responsible for getting
-and initializing xskb. Pull it out to common function.
+Currently xsk_cq_{reserve_addr,submit,cancel}_locked() take xdp_sock as
+an input argument but it is only used for pulling out xsk_buff_pool
+pointer from it.
+
+Change mentioned functions to take pool pointer as an input argument to
+avoid unnecessary dereferences.
 
 Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 ---
- net/xdp/xsk_buff_pool.c | 34 ++++++++++++++++++----------------
- 1 file changed, 18 insertions(+), 16 deletions(-)
+ net/xdp/xsk.c | 32 ++++++++++++++++----------------
+ 1 file changed, 16 insertions(+), 16 deletions(-)
 
-diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
-index e946ba4a5ccf..ae71da7d2cd6 100644
---- a/net/xdp/xsk_buff_pool.c
-+++ b/net/xdp/xsk_buff_pool.c
-@@ -503,6 +503,22 @@ static bool xp_check_aligned(struct xsk_buff_pool *pool, u64 *addr)
- 	return *addr < pool->addrs_cnt;
+diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+index 6c31c1de1619..7d7e37f53708 100644
+--- a/net/xdp/xsk.c
++++ b/net/xdp/xsk.c
+@@ -527,34 +527,34 @@ static int xsk_wakeup(struct xdp_sock *xs, u8 flags)
+ 	return dev->netdev_ops->ndo_xsk_wakeup(dev, xs->queue_id, flags);
  }
  
-+static struct xdp_buff_xsk *xp_get_xskb(struct xsk_buff_pool *pool, u64 addr)
-+{
-+	struct xdp_buff_xsk *xskb;
-+
-+	if (pool->unaligned) {
-+		xskb = pool->free_heads[--pool->free_heads_cnt];
-+		xp_init_xskb_addr(xskb, pool, addr);
-+		if (pool->dma_pages)
-+			xp_init_xskb_dma(xskb, pool, pool->dma_pages, addr);
-+	} else {
-+		xskb = &pool->heads[xp_aligned_extract_idx(pool, addr)];
-+	}
-+
-+	return xskb;
-+}
-+
- static struct xdp_buff_xsk *__xp_alloc(struct xsk_buff_pool *pool)
+-static int xsk_cq_reserve_addr_locked(struct xdp_sock *xs, u64 addr)
++static int xsk_cq_reserve_addr_locked(struct xsk_buff_pool *pool, u64 addr)
  {
- 	struct xdp_buff_xsk *xskb;
-@@ -528,14 +544,7 @@ static struct xdp_buff_xsk *__xp_alloc(struct xsk_buff_pool *pool)
- 		break;
+ 	unsigned long flags;
+ 	int ret;
+ 
+-	spin_lock_irqsave(&xs->pool->cq_lock, flags);
+-	ret = xskq_prod_reserve_addr(xs->pool->cq, addr);
+-	spin_unlock_irqrestore(&xs->pool->cq_lock, flags);
++	spin_lock_irqsave(&pool->cq_lock, flags);
++	ret = xskq_prod_reserve_addr(pool->cq, addr);
++	spin_unlock_irqrestore(&pool->cq_lock, flags);
+ 
+ 	return ret;
+ }
+ 
+-static void xsk_cq_submit_locked(struct xdp_sock *xs, u32 n)
++static void xsk_cq_submit_locked(struct xsk_buff_pool *pool, u32 n)
+ {
+ 	unsigned long flags;
+ 
+-	spin_lock_irqsave(&xs->pool->cq_lock, flags);
+-	xskq_prod_submit_n(xs->pool->cq, n);
+-	spin_unlock_irqrestore(&xs->pool->cq_lock, flags);
++	spin_lock_irqsave(&pool->cq_lock, flags);
++	xskq_prod_submit_n(pool->cq, n);
++	spin_unlock_irqrestore(&pool->cq_lock, flags);
+ }
+ 
+-static void xsk_cq_cancel_locked(struct xdp_sock *xs, u32 n)
++static void xsk_cq_cancel_locked(struct xsk_buff_pool *pool, u32 n)
+ {
+ 	unsigned long flags;
+ 
+-	spin_lock_irqsave(&xs->pool->cq_lock, flags);
+-	xskq_prod_cancel_n(xs->pool->cq, n);
+-	spin_unlock_irqrestore(&xs->pool->cq_lock, flags);
++	spin_lock_irqsave(&pool->cq_lock, flags);
++	xskq_prod_cancel_n(pool->cq, n);
++	spin_unlock_irqrestore(&pool->cq_lock, flags);
+ }
+ 
+ static u32 xsk_get_num_desc(struct sk_buff *skb)
+@@ -571,7 +571,7 @@ static void xsk_destruct_skb(struct sk_buff *skb)
+ 		*compl->tx_timestamp = ktime_get_tai_fast_ns();
  	}
  
--	if (pool->unaligned) {
--		xskb = pool->free_heads[--pool->free_heads_cnt];
--		xp_init_xskb_addr(xskb, pool, addr);
--		if (pool->dma_pages)
--			xp_init_xskb_dma(xskb, pool, pool->dma_pages, addr);
--	} else {
--		xskb = &pool->heads[xp_aligned_extract_idx(pool, addr)];
--	}
-+	xskb = xp_get_xskb(pool, addr);
+-	xsk_cq_submit_locked(xdp_sk(skb->sk), xsk_get_num_desc(skb));
++	xsk_cq_submit_locked(xdp_sk(skb->sk)->pool, xsk_get_num_desc(skb));
+ 	sock_wfree(skb);
+ }
  
- 	xskq_cons_release(pool->fq);
- 	return xskb;
-@@ -593,14 +602,7 @@ static u32 xp_alloc_new_from_fq(struct xsk_buff_pool *pool, struct xdp_buff **xd
- 			continue;
- 		}
+@@ -587,7 +587,7 @@ static void xsk_consume_skb(struct sk_buff *skb)
+ 	struct xdp_sock *xs = xdp_sk(skb->sk);
  
--		if (pool->unaligned) {
--			xskb = pool->free_heads[--pool->free_heads_cnt];
--			xp_init_xskb_addr(xskb, pool, addr);
--			if (pool->dma_pages)
--				xp_init_xskb_dma(xskb, pool, pool->dma_pages, addr);
--		} else {
--			xskb = &pool->heads[xp_aligned_extract_idx(pool, addr)];
--		}
-+		xskb = xp_get_xskb(pool, addr);
+ 	skb->destructor = sock_wfree;
+-	xsk_cq_cancel_locked(xs, xsk_get_num_desc(skb));
++	xsk_cq_cancel_locked(xs->pool, xsk_get_num_desc(skb));
+ 	/* Free skb without triggering the perf drop trace */
+ 	consume_skb(skb);
+ 	xs->skb = NULL;
+@@ -765,7 +765,7 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+ 		xskq_cons_release(xs->tx);
+ 	} else {
+ 		/* Let application retry */
+-		xsk_cq_cancel_locked(xs, 1);
++		xsk_cq_cancel_locked(xs->pool, 1);
+ 	}
  
- 		*xdp = &xskb->xdp;
- 		xdp++;
+ 	return ERR_PTR(err);
+@@ -802,7 +802,7 @@ static int __xsk_generic_xmit(struct sock *sk)
+ 		 * if there is space in it. This avoids having to implement
+ 		 * any buffering in the Tx path.
+ 		 */
+-		if (xsk_cq_reserve_addr_locked(xs, desc.addr))
++		if (xsk_cq_reserve_addr_locked(xs->pool, desc.addr))
+ 			goto out;
+ 
+ 		skb = xsk_build_skb(xs, &desc);
 -- 
 2.34.1
 
