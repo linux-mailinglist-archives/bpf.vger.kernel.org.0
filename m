@@ -1,123 +1,287 @@
-Return-Path: <bpf+bounces-41085-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41086-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F6459924FA
-	for <lists+bpf@lfdr.de>; Mon,  7 Oct 2024 08:38:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D4510992619
+	for <lists+bpf@lfdr.de>; Mon,  7 Oct 2024 09:31:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5ED851C22209
-	for <lists+bpf@lfdr.de>; Mon,  7 Oct 2024 06:37:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 51EEB1F23AC5
+	for <lists+bpf@lfdr.de>; Mon,  7 Oct 2024 07:31:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC2BA1531CC;
-	Mon,  7 Oct 2024 06:37:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69C3517C7D4;
+	Mon,  7 Oct 2024 07:31:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="pSWACBqj"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SLNFMf52"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCDA742077;
-	Mon,  7 Oct 2024 06:37:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D732C74C08;
+	Mon,  7 Oct 2024 07:31:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728283073; cv=none; b=b17XHz4MMeAhdR/YTya06StCxHtw3GNjlpcCrBk78s17tqPuO/QMMli9Lm5su9JvIIiqJK+YW8IAX0Wb5431HKO1w4t3+8fch+28JgISnNMQoEBJKkd7a8OEzFWjZwYbERontJKBhHcsNvPXmaL4lKPDXLLXMcv8C5YRk3C8ENw=
+	t=1728286301; cv=none; b=FUxgB8wmmPgbUoC0oMDOOM8bmb8L1YqhKmkNhGFl75eu5NJLlLuIAabhV6flrmhcfc22utJCT9R5NWKefjSS6B5iN/nW0sawGIKUFeG4Pl9V1W1D1UUILESrDk4Zh0srxawNqGdwXK3Ym7L1NetwZ1dMfUgLYKbUa3OrhA45wTM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728283073; c=relaxed/simple;
-	bh=g3GXP9seX/Xrl0OzEkq2gfliNxDJLE2Ij/C6kPicpNQ=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=eF7gbUIYOhK8T63K2DPhhmdPWXjKHuGe/RFFEISU9ZPTpB+O/Z2yhHqATyaWEOGNqdjUTjKqAqh+whkcAIa+UIVkJSglvSGkDHk0FX/8otHowea8HaYwZ0zsvLnhgC9IPH3BL86nxawO8D42sSW9V24+MUS8dNQjfsTRTDbEk2I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=pSWACBqj; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4976Qwur025893;
-	Mon, 7 Oct 2024 06:37:38 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from
-	:to:cc:subject:in-reply-to:references:date:message-id
-	:mime-version:content-type; s=pp1; bh=Gxo1OKB3S+0RplzV70T8W45kSo
-	KYWYadm5u+4O2vvpY=; b=pSWACBqj91deO3CvxA3v6q7zSoZXnHlSm5kpZdnila
-	1rlb9NU76gttKrEUQixXwg5CfOTKBMi5LlAjidaH3ai856CydzlXcd3WMXNBMKqS
-	8CadAoV/edcuH8/s+tOZu5LSo85dxzeXdgmTGdsXxqlUgp+zvkJa2iGldkkbVyfb
-	zUQi1KPCf0trAGIvsWj2udb7yGQ7iS9OKQOhH+oBy895tIUQsf27yeiWlPHbt9Ta
-	7ulgxkJBRESzG0KKhfughjWygJBM1xSC3ywZyaIOJBCkmS+4l0Np40ICx+nMbwVn
-	bli+60/7jYWTzhjRcuO8RkpmWZ6cjEv3cv3Io5MpsWUw==
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 424acng1a0-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 07 Oct 2024 06:37:38 +0000 (GMT)
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 49751HGH022867;
-	Mon, 7 Oct 2024 06:37:37 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 423jg0mnfd-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 07 Oct 2024 06:37:37 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 4976baPl51642628
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 7 Oct 2024 06:37:36 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 11B4A20043;
-	Mon,  7 Oct 2024 06:37:36 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id C91CF20040;
-	Mon,  7 Oct 2024 06:37:35 +0000 (GMT)
-Received: from tuxmaker.linux.ibm.com (unknown [9.152.85.9])
-	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Mon,  7 Oct 2024 06:37:35 +0000 (GMT)
-From: Sven Schnelle <svens@linux.ibm.com>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland
- <mark.rutland@arm.com>,
-        Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>,
-        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH 6/7] tracing: add support for function argument to graph
- tracer
-In-Reply-To: <20241004184008.151c64a7@gandalf.local.home> (Steven Rostedt's
-	message of "Fri, 4 Oct 2024 18:40:08 -0400")
-References: <20240904065908.1009086-1-svens@linux.ibm.com>
-	<20240904065908.1009086-7-svens@linux.ibm.com>
-	<20241004184008.151c64a7@gandalf.local.home>
-Date: Mon, 07 Oct 2024 08:37:35 +0200
-Message-ID: <yt9dldz0v2og.fsf@linux.ibm.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1728286301; c=relaxed/simple;
+	bh=MQvwg8vb9dS8GngN/GkkuavJEoeBFMRsx6M3qD2yGik=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=DrxWzS52ziB3fOXdKoHPpRIs7hwsWmfSa3CGWvz1REBNHnIxIYB52itwzwYzyng02dOAdfOamjwiF2oaGqxE8ajCINyFY1fwp8KRYarnKi+knlRZJ1JhniMnlSP7BXrWX9MJ0Eh2o4a2NPhRGkc9RXckD8xt8cRm6qsfbhv9aK8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SLNFMf52; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE4A1C4CEC6;
+	Mon,  7 Oct 2024 07:31:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1728286300;
+	bh=MQvwg8vb9dS8GngN/GkkuavJEoeBFMRsx6M3qD2yGik=;
+	h=From:To:Cc:Subject:Date:From;
+	b=SLNFMf52qee2NT2FJBw+6q2wuOMrRwDdMT9RM/QC5e2BstAUBj1Hc6Vr72M6IG11g
+	 djun7MKPdqc0Kr/PJEVHYIoosQ/oLZkHEjjziMtAgf5dl6A3AYdR92JqT9jc9MIfH3
+	 AeVt6XCeXoMtV8pARxhMIXcCftCy82uoiZXMLtUl4qQkVWNE3po9fLfY3QR3bvJrc9
+	 J0qSd1HdIhIhDBnUoySKUfOjM6hd05YmpbnrVvs80B0EBAxZiq/JO9VTEFPsFzmmup
+	 BpqN4Xtq6M1vtmyGrphbZrfa7H3AhxPbserL89mENsKTAXKY3ZQwiJz7RdNyezNLLG
+	 2uhJB0raF5AqA==
+From: =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>
+To: Tejun Heo <tj@kernel.org>,
+	David Vernet <void@manifault.com>,
+	Shuah Khan <shuah@kernel.org>,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	Mark Brown <broonie@kernel.org>
+Cc: =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@rivosinc.com>,
+	bpf@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	Anders Roxell <anders.roxell@linaro.org>
+Subject: [PATCH v2] selftests: sched_ext: Add sched_ext as proper selftest target
+Date: Mon,  7 Oct 2024 09:31:32 +0200
+Message-ID: <20241007073133.989166-1-bjorn@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 4aHDxItS7uoT3n1D7BVzH9brNcC0nBxM
-X-Proofpoint-ORIG-GUID: 4aHDxItS7uoT3n1D7BVzH9brNcC0nBxM
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
- definitions=2024-10-06_21,2024-10-04_01,2024-09-30_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 clxscore=1011
- priorityscore=1501 spamscore=0 mlxlogscore=650 malwarescore=0
- lowpriorityscore=0 impostorscore=0 suspectscore=0 mlxscore=0 adultscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2409260000 definitions=main-2410070045
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Steven Rostedt <rostedt@goodmis.org> writes:
+From: Björn Töpel <bjorn@rivosinc.com>
 
-> On Wed,  4 Sep 2024 08:59:00 +0200
-> Sven Schnelle <svens@linux.ibm.com> wrote:
->
->> Wire up the code to print function arguments in the function graph
->> tracer. This functionality can be enabled/disabled during compile
->> time by setting CONFIG_FUNCTION_TRACE_ARGS and during runtime with
->> options/funcgraph-args.
->
-> I finally got around to looking at your patches. Do you plan on still
-> working on them? I really like this feature, and I'm willing to do the work
-> too if you have other things on your plate.
+The sched_ext selftests is missing proper cross-compilation support, a
+proper target entry, and out-of-tree build support.
 
-Yes, working on other things, so feel free to take over.
+When building the kselftest suite, e.g.:
+
+  make ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu- \
+    SKIP_TARGETS="" O=/output/foo -C tools/testing/selftests install
+
+The expectation is that the sched_ext is included, cross-built, and
+placed into /output/foo.
+
+Add CROSS_COMPILE, OUTPUT, and TARGETS support to the sched_ext
+selftest. Also, remove some variables that were unused by the
+Makefile.
+
+Signed-off-by: Björn Töpel <bjorn@rivosinc.com>
+---
+v2: * Removed the duplicated LLVM prefix parsing (David)
+    * Made sure make clean didn't do a complete mess (David)
+    * Added sched_ext to default skip (Shuah)
+---
+tools/testing/selftests/Makefile           |  9 +--
+ tools/testing/selftests/sched_ext/Makefile | 80 +++++++++++-----------
+ 2 files changed, 45 insertions(+), 44 deletions(-)
+
+diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
+index b38199965f99..363d031a16f7 100644
+--- a/tools/testing/selftests/Makefile
++++ b/tools/testing/selftests/Makefile
+@@ -88,6 +88,7 @@ TARGETS += rlimits
+ TARGETS += rseq
+ TARGETS += rtc
+ TARGETS += rust
++TARGETS += sched_ext
+ TARGETS += seccomp
+ TARGETS += sgx
+ TARGETS += sigaltstack
+@@ -129,10 +130,10 @@ ifeq ($(filter net/lib,$(TARGETS)),)
+ endif
+ endif
+ 
+-# User can optionally provide a TARGETS skiplist.  By default we skip
+-# BPF since it has cutting edge build time dependencies which require
+-# more effort to install.
+-SKIP_TARGETS ?= bpf
++# User can optionally provide a TARGETS skiplist. By default we skip
++# targets using BPF since it has cutting edge build time dependencies
++# which require more effort to install.
++SKIP_TARGETS ?= bpf sched_ext
+ ifneq ($(SKIP_TARGETS),)
+ 	TMP := $(filter-out $(SKIP_TARGETS), $(TARGETS))
+ 	override TARGETS := $(TMP)
+diff --git a/tools/testing/selftests/sched_ext/Makefile b/tools/testing/selftests/sched_ext/Makefile
+index 0754a2c110a1..acab9732b23e 100644
+--- a/tools/testing/selftests/sched_ext/Makefile
++++ b/tools/testing/selftests/sched_ext/Makefile
+@@ -3,24 +3,13 @@
+ include ../../../build/Build.include
+ include ../../../scripts/Makefile.arch
+ include ../../../scripts/Makefile.include
++
++TEST_GEN_PROGS := runner
++
++# override lib.mk's default rules
++OVERRIDE_TARGETS := 1
+ include ../lib.mk
+ 
+-ifneq ($(LLVM),)
+-ifneq ($(filter %/,$(LLVM)),)
+-LLVM_PREFIX := $(LLVM)
+-else ifneq ($(filter -%,$(LLVM)),)
+-LLVM_SUFFIX := $(LLVM)
+-endif
+-
+-CC := $(LLVM_PREFIX)clang$(LLVM_SUFFIX) $(CLANG_FLAGS) -fintegrated-as
+-else
+-CC := gcc
+-endif # LLVM
+-
+-ifneq ($(CROSS_COMPILE),)
+-$(error CROSS_COMPILE not supported for scx selftests)
+-endif # CROSS_COMPILE
+-
+ CURDIR := $(abspath .)
+ REPOROOT := $(abspath ../../../..)
+ TOOLSDIR := $(REPOROOT)/tools
+@@ -34,18 +23,31 @@ GENHDR := $(GENDIR)/autoconf.h
+ SCXTOOLSDIR := $(TOOLSDIR)/sched_ext
+ SCXTOOLSINCDIR := $(TOOLSDIR)/sched_ext/include
+ 
+-OUTPUT_DIR := $(CURDIR)/build
++OUTPUT_DIR := $(OUTPUT)/build
+ OBJ_DIR := $(OUTPUT_DIR)/obj
+ INCLUDE_DIR := $(OUTPUT_DIR)/include
+ BPFOBJ_DIR := $(OBJ_DIR)/libbpf
+ SCXOBJ_DIR := $(OBJ_DIR)/sched_ext
+ BPFOBJ := $(BPFOBJ_DIR)/libbpf.a
+ LIBBPF_OUTPUT := $(OBJ_DIR)/libbpf/libbpf.a
+-DEFAULT_BPFTOOL := $(OUTPUT_DIR)/sbin/bpftool
+-HOST_BUILD_DIR := $(OBJ_DIR)
+-HOST_OUTPUT_DIR := $(OUTPUT_DIR)
+ 
+-VMLINUX_BTF_PATHS ?= ../../../../vmlinux					\
++ifneq ($(CROSS_COMPILE),)
++DEFAULT_BPFTOOL := $(OUTPUT_DIR)/host/sbin/bpftool
++HOST_OBJ_DIR := $(OBJ_DIR)/host/bpftool
++HOST_LIBBPF_OUTPUT := $(OBJ_DIR)/host/libbpf/
++HOST_LIBBPF_DESTDIR := $(OUTPUT_DIR)/host/
++HOST_DESTDIR := $(OUTPUT_DIR)/host/
++else
++DEFAULT_BPFTOOL := $(OUTPUT_DIR)/sbin/bpftool
++HOST_OBJ_DIR := $(OBJ_DIR)/bpftool
++HOST_LIBBPF_OUTPUT := $(OBJ_DIR)/libbpf/
++HOST_LIBBPF_DESTDIR := $(OUTPUT_DIR)/
++HOST_DESTDIR := $(OUTPUT_DIR)/
++endif
++
++VMLINUX_BTF_PATHS ?= $(if $(O),$(O)/vmlinux)					\
++		     $(if $(KBUILD_OUTPUT),$(KBUILD_OUTPUT)/vmlinux)		\
++		     ../../../../vmlinux					\
+ 		     /sys/kernel/btf/vmlinux					\
+ 		     /boot/vmlinux-$(shell uname -r)
+ VMLINUX_BTF ?= $(abspath $(firstword $(wildcard $(VMLINUX_BTF_PATHS))))
+@@ -80,17 +82,23 @@ IS_LITTLE_ENDIAN = $(shell $(CC) -dM -E - </dev/null |				\
+ # Use '-idirafter': Don't interfere with include mechanics except where the
+ # build would have failed anyways.
+ define get_sys_includes
+-$(shell $(1) -v -E - </dev/null 2>&1 \
++$(shell $(1) $(2) -v -E - </dev/null 2>&1 \
+ 	| sed -n '/<...> search starts here:/,/End of search list./{ s| \(/.*\)|-idirafter \1|p }') \
+-$(shell $(1) -dM -E - </dev/null | grep '__riscv_xlen ' | awk '{printf("-D__riscv_xlen=%d -D__BITS_PER_LONG=%d", $$3, $$3)}')
++$(shell $(1) $(2) -dM -E - </dev/null | grep '__riscv_xlen ' | awk '{printf("-D__riscv_xlen=%d -D__BITS_PER_LONG=%d", $$3, $$3)}')
+ endef
+ 
++ifneq ($(CROSS_COMPILE),)
++CLANG_TARGET_ARCH = --target=$(notdir $(CROSS_COMPILE:%-=%))
++endif
++
++CLANG_SYS_INCLUDES = $(call get_sys_includes,$(CLANG),$(CLANG_TARGET_ARCH))
++
+ BPF_CFLAGS = -g -D__TARGET_ARCH_$(SRCARCH)					\
+ 	     $(if $(IS_LITTLE_ENDIAN),-mlittle-endian,-mbig-endian)		\
+ 	     -I$(CURDIR)/include -I$(CURDIR)/include/bpf-compat			\
+ 	     -I$(INCLUDE_DIR) -I$(APIDIR) -I$(SCXTOOLSINCDIR)			\
+ 	     -I$(REPOROOT)/include						\
+-	     $(call get_sys_includes,$(CLANG))					\
++	     $(CLANG_SYS_INCLUDES) 						\
+ 	     -Wall -Wno-compare-distinct-pointer-types				\
+ 	     -Wno-incompatible-function-pointer-types				\
+ 	     -O2 -mcpu=v3
+@@ -98,7 +106,7 @@ BPF_CFLAGS = -g -D__TARGET_ARCH_$(SRCARCH)					\
+ # sort removes libbpf duplicates when not cross-building
+ MAKE_DIRS := $(sort $(OBJ_DIR)/libbpf $(OBJ_DIR)/libbpf				\
+ 	       $(OBJ_DIR)/bpftool $(OBJ_DIR)/resolve_btfids			\
+-	       $(INCLUDE_DIR) $(SCXOBJ_DIR))
++	       $(HOST_OBJ_DIR) $(INCLUDE_DIR) $(SCXOBJ_DIR))
+ 
+ $(MAKE_DIRS):
+ 	$(call msg,MKDIR,,$@)
+@@ -112,14 +120,14 @@ $(BPFOBJ): $(wildcard $(BPFDIR)/*.[ch] $(BPFDIR)/Makefile)			\
+ 		    DESTDIR=$(OUTPUT_DIR) prefix= all install_headers
+ 
+ $(DEFAULT_BPFTOOL): $(wildcard $(BPFTOOLDIR)/*.[ch] $(BPFTOOLDIR)/Makefile)	\
+-		    $(LIBBPF_OUTPUT) | $(OBJ_DIR)/bpftool
++		    $(LIBBPF_OUTPUT) | $(HOST_OBJ_DIR)
+ 	$(Q)$(MAKE) $(submake_extras)  -C $(BPFTOOLDIR)				\
+ 		    ARCH= CROSS_COMPILE= CC=$(HOSTCC) LD=$(HOSTLD)		\
+ 		    EXTRA_CFLAGS='-g -O0'					\
+-		    OUTPUT=$(OBJ_DIR)/bpftool/					\
+-		    LIBBPF_OUTPUT=$(OBJ_DIR)/libbpf/				\
+-		    LIBBPF_DESTDIR=$(OUTPUT_DIR)/				\
+-		    prefix= DESTDIR=$(OUTPUT_DIR)/ install-bin
++		    OUTPUT=$(HOST_OBJ_DIR)/					\
++		    LIBBPF_OUTPUT=$(HOST_LIBBPF_OUTPUT)				\
++		    LIBBPF_DESTDIR=$(HOST_LIBBPF_DESTDIR)			\
++		    prefix= DESTDIR=$(HOST_DESTDIR) install-bin
+ 
+ $(INCLUDE_DIR)/vmlinux.h: $(VMLINUX_BTF) $(BPFTOOL) | $(INCLUDE_DIR)
+ ifeq ($(VMLINUX_H),)
+@@ -150,9 +158,7 @@ $(INCLUDE_DIR)/%.bpf.skel.h: $(SCXOBJ_DIR)/%.bpf.o $(INCLUDE_DIR)/vmlinux.h $(BP
+ 
+ override define CLEAN
+ 	rm -rf $(OUTPUT_DIR)
+-	rm -f *.o *.bpf.o *.bpf.skel.h *.bpf.subskel.h
+ 	rm -f $(TEST_GEN_PROGS)
+-	rm -f runner
+ endef
+ 
+ # Every testcase takes all of the BPF progs are dependencies by default. This
+@@ -196,21 +202,15 @@ $(SCXOBJ_DIR)/runner.o: runner.c | $(SCXOBJ_DIR)
+ # function doesn't support using implicit rules otherwise.
+ $(testcase-targets): $(SCXOBJ_DIR)/%.o: %.c $(SCXOBJ_DIR)/runner.o $(all_test_bpfprogs) | $(SCXOBJ_DIR)
+ 	$(eval test=$(patsubst %.o,%.c,$(notdir $@)))
+-	$(CC) $(CFLAGS) -c $< -o $@ $(SCXOBJ_DIR)/runner.o
++	$(CC) $(CFLAGS) -c $< -o $@
+ 
+ $(SCXOBJ_DIR)/util.o: util.c | $(SCXOBJ_DIR)
+ 	$(CC) $(CFLAGS) -c $< -o $@
+ 
+-runner: $(SCXOBJ_DIR)/runner.o $(SCXOBJ_DIR)/util.o $(BPFOBJ) $(testcase-targets)
++$(OUTPUT)/runner: $(SCXOBJ_DIR)/runner.o $(SCXOBJ_DIR)/util.o $(BPFOBJ) $(testcase-targets)
+ 	@echo "$(testcase-targets)"
+ 	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
+ 
+-TEST_GEN_PROGS := runner
+-
+-all: runner
+-
+-.PHONY: all clean help
+-
+ .DEFAULT_GOAL := all
+ 
+ .DELETE_ON_ERROR:
+
+base-commit: 8cf0b93919e13d1e8d4466eb4080a4c4d9d66d7b
+-- 
+2.43.0
+
 
