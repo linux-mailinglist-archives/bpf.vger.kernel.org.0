@@ -1,216 +1,233 @@
-Return-Path: <bpf+bounces-41162-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41163-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A24D9939CA
-	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 00:05:33 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3676D993A0E
+	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 00:18:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E4A33B2278C
-	for <lists+bpf@lfdr.de>; Mon,  7 Oct 2024 22:05:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 59F9C1C23E7B
+	for <lists+bpf@lfdr.de>; Mon,  7 Oct 2024 22:18:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFCE818C921;
-	Mon,  7 Oct 2024 22:05:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8949B18CBE1;
+	Mon,  7 Oct 2024 22:18:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gjcvcs5K"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cjQZk2TG"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3950218A6DC
-	for <bpf@vger.kernel.org>; Mon,  7 Oct 2024 22:05:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A334E1865ED;
+	Mon,  7 Oct 2024 22:18:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728338724; cv=none; b=a5Y6DAXVoyfh6SszO2eVRRPdhCIuBByD8rUVs+IX6funbtHOTMQYIPuFYROM6u2MGOWzvfGeKy4x7VTA3ZoNsx+jsJ+6+8IUzdTXowSA+P6opPtCimGXhdubB9dctqX6xC4XbmToNcU4zeG3JUj2Z8OReuCq0+5uhgBAaHjRib8=
+	t=1728339500; cv=none; b=TxJLRxIRqcpg+dIzq5Iu0tCxfMftoVJbwcBE/giyBbaaOxrCSMmq1ux9gED8un+SVlgu7sf1lX6AJivv8oPtkEgsHbveW7Lqc9H7x8ZFV8sRAkIjA1YuKmwv/tIIiEXeKT9Olhgre9IpqoEULm4qnMbEeFSHxeyF+LbX0FCYEfk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728338724; c=relaxed/simple;
-	bh=oIj3C0UNERAkSq7dsNIls8egQg4SVPQoiy+1eSGZ+kg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aQ6lhUmFHr3Q4ghpSjFiD0J8PIE8A73f1lT08bI3IbtDO1dmCwboDm5GfLLvXw9Xewrdh+1zPkU/zt5UW3HwEUb2/zbuo37N5lMFdKmSnNgJOvSSY+i7HawyLh4g9Oi7Xe+xY811wUHepr4fweQug1Gn/m2CINHQhjI6N6rxU68=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gjcvcs5K; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1728338721; x=1759874721;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=oIj3C0UNERAkSq7dsNIls8egQg4SVPQoiy+1eSGZ+kg=;
-  b=gjcvcs5KwUQhnTMBmDmYPA0l8vxxkwbfX82fTmVNthUdZADoIUK1GzQJ
-   cYyS4nG/VPiU5OLWtmFKZg9wPQ0FMcNF6QXo2Me1+MHBK99YCUB09CU5Z
-   dSnu2Oy9Wjh3wofplM8wcJipDC15nkJRzxNw9KVudgw5RBX7Rb8lNiBaG
-   S/CROXiDwL9A3ziq+jO/cqkEEksxxnBXlCUHgXSNwSVn2Z+BlkscRlTTy
-   th5QUW9wbii5eKnlNJa1TcEWWIZgjRgbGatoNcOf0J4JWqdEPIOS1IpeO
-   W5ZehoZdDAh/2vlyBlg1h5uPq8F/vLJwSWX3bMSHHrdtPZPc3iTgsokZf
-   A==;
-X-CSE-ConnectionGUID: iylVNtSsRBWD4aebmqeNQQ==
-X-CSE-MsgGUID: bKy8Bog1QRy/6c2KqhlN9A==
-X-IronPort-AV: E=McAfee;i="6700,10204,11218"; a="31206137"
-X-IronPort-AV: E=Sophos;i="6.11,185,1725346800"; 
-   d="scan'208";a="31206137"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2024 15:05:20 -0700
-X-CSE-ConnectionGUID: nLMR5d2VTqyouUNDcAFRvQ==
-X-CSE-MsgGUID: WeiY/PSfQD6pXisMILBWMQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.11,185,1725346800"; 
-   d="scan'208";a="80233247"
-Received: from lkp-server01.sh.intel.com (HELO a48cf1aa22e8) ([10.239.97.150])
-  by fmviesa004.fm.intel.com with ESMTP; 07 Oct 2024 15:05:18 -0700
-Received: from kbuild by a48cf1aa22e8 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1sxvqt-0005ac-0X;
-	Mon, 07 Oct 2024 22:05:15 +0000
-Date: Tue, 8 Oct 2024 06:04:20 +0800
-From: kernel test robot <lkp@intel.com>
-To: Leon Hwang <leon.hwang@linux.dev>, bpf@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, ast@kernel.org, daniel@iogearbox.net,
-	andrii@kernel.org, toke@redhat.com, martin.lau@kernel.org,
-	yonghong.song@linux.dev, puranjay@kernel.org,
-	xukuohai@huaweicloud.com, eddyz87@gmail.com, iii@linux.ibm.com,
-	leon.hwang@linux.dev, kernel-patches-bot@fb.com
-Subject: Re: [PATCH bpf-next v5 1/3] bpf: Prevent tailcall infinite loop
- caused by freplace
-Message-ID: <202410080554.slh2FEXJ-lkp@intel.com>
-References: <20241006130130.77125-2-leon.hwang@linux.dev>
+	s=arc-20240116; t=1728339500; c=relaxed/simple;
+	bh=sC3KyJ5dwliQ0WLK59LNP+zHAObgaZ0x+APBvMZDukA=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=BRG50KPGXjIU7ruV0rjfkZK/NFyFfrObG862KV/qVnZrDRQSNtwksSBpI6cBepnZcUoC1IGHEpJPa9hoZUCv/28vxboxU/S3fDDTSXh+ywKkpJjHjQm/7MJVePZ2hXsFoWTtnjjrcNMtCkftgWPaie0+5j5uyMuBNPOJTYAGQx0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cjQZk2TG; arc=none smtp.client-ip=209.85.214.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-20b9b35c7c3so51972625ad.3;
+        Mon, 07 Oct 2024 15:18:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1728339498; x=1728944298; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:to:from:subject:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=F0gNABxy0rUT0bU4IMMnsUy1TKuFw6aYam8xfxXyLF0=;
+        b=cjQZk2TG66RF6HDMYgryFdcSDpS4UF2ZaAnp0SepbmIDsLQr9Z3xk1ICEXzxkJSLy1
+         +pp0PfY6wRjFfrGQm6IDV+TvQpFecNwAu57vlOIAopSGzntWqVwV+SD5HI/HSvZEuH81
+         aS9vRxntDWnwP9PPepInXuMMK1hnB5bGWb+I0AhLu6JUg/ODI9gvVBbr4eT0/MxLCjvN
+         D4DiA1tCpzTdrkVyCHXDZaWZXy0qgJxKI8WESAPdBH5qZG/YitarJxjjaO/pkggJvlcD
+         4JZ1vDbpptkBHcsXGTUey/hNd5/c+W5iVjDi+X4l9pyKrWdPksxdXU7x/jFeUpF2YqM+
+         ocIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1728339498; x=1728944298;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=F0gNABxy0rUT0bU4IMMnsUy1TKuFw6aYam8xfxXyLF0=;
+        b=RJWjl7UgzwniNgy83rUDOyeX75mgvKbGGOGC3ddQNCdqxonKym7fNxNAb5d7cXPjSh
+         kQ1uKGIR6cxaa5nmSIxUu7b+XcvGlDGQuztKFNV9egKLG+aHIpADjVf0DqoPjzC0NKw0
+         JCcDGyewUyIHDsFZvQptsUZLFUK4D6FQlUET9Z4aLnH+oCHcOTcC/EUitVyiU1YtQCIX
+         HjSdZQjR6IUGCTHOGJhqKOjMfB8AbwvnKHkUngRVKzeBmfj+JsrblDEHGHpiRQW45eB8
+         NJRo6fQfTp+u9vxFkUHnnvmF2euS2J9eV3tvVXffIjls1vEWUgZa27rh0nkJ5pThpt8V
+         sgSw==
+X-Forwarded-Encrypted: i=1; AJvYcCUeRbFEk1DctWqEe6HtbB+ulSw9TRAOx1zIJ72wjeQBSnCCSjde5de4i0w6JTrfzUqeTa4=@vger.kernel.org, AJvYcCWip1gOCptG9KX8ZbwY1/Y2UyOocrPT+UPJADDWXH+/1kNx/Qitbhwz/inEUFo4canVwq+kplyo/whdd7v6@vger.kernel.org
+X-Gm-Message-State: AOJu0YyE1i77rLnCU3n3uwjOzMWVfMumA9gTqmJLHBhu9+aJMFy8ifZu
+	KuUaYYwoy6P3H074t8v3ZfIMFbyKTlWpOjoF66Pf6jtO/V78VJI8
+X-Google-Smtp-Source: AGHT+IFRRv+1E9ZHnVx/W3MEPFuZs1gMqlh5PNFQYbZHrW7DmwoJoGQHXtc2xpJOyXd2iIRfP6tsKg==
+X-Received: by 2002:a17:903:228f:b0:20b:9fa3:233c with SMTP id d9443c01a7336-20bff04b2c8mr194798405ad.40.1728339497779;
+        Mon, 07 Oct 2024 15:18:17 -0700 (PDT)
+Received: from [192.168.0.235] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2e20a907341sm6049568a91.0.2024.10.07.15.18.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Oct 2024 15:18:17 -0700 (PDT)
+Message-ID: <cfec3ec1b7092e1dde01eb1896ec7fba7ed714f4.camel@gmail.com>
+Subject: Re: [syzbot] [bpf?] WARNING in push_jmp_history
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: syzbot <syzbot+7e46cdef14bf496a3ab4@syzkaller.appspotmail.com>, 
+ andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+ daniel@iogearbox.net,  haoluo@google.com, john.fastabend@gmail.com,
+ jolsa@kernel.org, kpsingh@kernel.org,  linux-kernel@vger.kernel.org,
+ martin.lau@linux.dev, sdf@fomichev.me,  song@kernel.org,
+ syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
+Date: Mon, 07 Oct 2024 15:18:12 -0700
+In-Reply-To: <670429f6.050a0220.49194.0517.GAE@google.com>
+References: <670429f6.050a0220.49194.0517.GAE@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.4 (3.52.4-1.fc40) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241006130130.77125-2-leon.hwang@linux.dev>
 
-Hi Leon,
+On Mon, 2024-10-07 at 11:35 -0700, syzbot wrote:
+> Hello,
+>=20
+> syzbot found the following issue on:
+>=20
+> HEAD commit:    c02d24a5af66 Add linux-next specific files for 20241003
+> git tree:       linux-next
+> console+strace: https://syzkaller.appspot.com/x/log.txt?x=3D1738270798000=
+0
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D94f9caf16c0af=
+42d
+> dashboard link: https://syzkaller.appspot.com/bug?extid=3D7e46cdef14bf496=
+a3ab4
+> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Deb=
+ian) 2.40
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D10b82707980=
+000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D16f4c32798000=
+0
 
-kernel test robot noticed the following build errors:
+When I try this reproducer the bpf syscall never exits (waited for 5 minute=
+s).
+Here is the reproducer as a selftest:
 
-[auto build test ERROR on bpf-next/master]
+SEC("kprobe")
+__success
+__naked void syzbot_bug(void)
+{
+	asm volatile (
+	"   r2 =3D *(u32 *)(r1 +140)\n"		// 0
+	"   r3 =3D *(u32 *)(r1 +76)\n"		// 1
+	"   r0 =3D r2\n"				// 2
+	"   if w0 > 0xffffff07 goto 1f\n"	// 3
+	"   if r3 <=3D r0 goto +16\n"		// 4
+	"   exit\n"				// 5
+	"1: r6 =3D *(u16 *)(r1 +0)\n"		// 6
+	"   r7 =3D r6\n"				// 7
+	"2: w7 +=3D 447767737\n"			// 8
+	"   if w7 & 0x702000 goto 2b\n"		// 9
+	"   w7 &=3D 2024974\n"			// 10
+	"   r5 =3D r1\n"				// 11
+	"   r7 +=3D r5\n"				// 12
+	"   if r7 s> 0x37d2 goto +0\n"		// 13
+	"   w3 *=3D w0\n"				// 14
+	"   r5 -=3D r7\n"				// 15
+	"   r4 =3D r5\n"				// 16
+	"   r0 +=3D -458748\n"			// 17
+	"   if r3 < r4 goto 3f\n"		// 18
+	"   w0 >>=3D w0\n"			// 19
+	"3: goto +0\n"				// 20
+	"   exit\n"				// 21
+	::: __clobber_all);
+}
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Leon-Hwang/bpf-Prevent-tailcall-infinite-loop-caused-by-freplace/20241006-210309
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/20241006130130.77125-2-leon.hwang%40linux.dev
-patch subject: [PATCH bpf-next v5 1/3] bpf: Prevent tailcall infinite loop caused by freplace
-config: arc-nsimosci_hs_defconfig (https://download.01.org/0day-ci/archive/20241008/202410080554.slh2FEXJ-lkp@intel.com/config)
-compiler: arc-elf-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20241008/202410080554.slh2FEXJ-lkp@intel.com/reproduce)
+(e.g. can be put to tools/testing/selftests/bpf/progs/verifier_and.c
+ or any other verifier_*.c).
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202410080554.slh2FEXJ-lkp@intel.com/
+Inserting a few printks shows that the following instructions are
+verified in a loop:
+              =20
+           ... verification starts ...
+[    2.094272] do_check: env->insn_idx 0
+[    2.094345] do_check: env->insn_idx 1
+[    2.094417] do_check: env->insn_idx 2
+[    2.094486] do_check: env->insn_idx 3
+[    2.094585] do_check: env->insn_idx 4
+[    2.094675] do_check: env->insn_idx 5
+[    2.094748] do_check: env->insn_idx 21
+[    2.094879] do_check: env->insn_idx 6
+[    2.095005] do_check: env->insn_idx 7
+[    2.095074] do_check: env->insn_idx 8 <------ let's call this point LBL
+[    2.095156] do_check: env->insn_idx 9
+[    2.095264] do_check: env->insn_idx 8
+[    2.095372] do_check: env->insn_idx 9
+[    2.095497] do_check: env->insn_idx 8
+[    2.095579] do_check: env->insn_idx 9
+[    2.095716] do_check: env->insn_idx 8
+[    2.095892] do_check: env->insn_idx 9
+[    2.096070] do_check: env->insn_idx 8
+[    2.096151] do_check: env->insn_idx 9
+[    2.096314] do_check: env->insn_idx 8
+[    2.096402] do_check: env->insn_idx 9
+[    2.096570] do_check: env->insn_idx 8
+[    2.096646] do_check: env->insn_idx 9
+[    2.096840] do_check: env->insn_idx 8
+[    2.096921] do_check: env->insn_idx 9
+[    2.097040] do_check: env->insn_idx 10
+[    2.097113] do_check: env->insn_idx 11
+[    2.097195] do_check: env->insn_idx 12
+[    2.097417] do_check: env->insn_idx 13
+[    2.097521] do_check: env->insn_idx 14
+[    2.097597] do_check: env->insn_idx 15
+[    2.097688] do_check: env->insn_idx 16
+[    2.097774] do_check: env->insn_idx 17
+[    2.097866] do_check: env->insn_idx 18
+[    2.097990] do_check: env->insn_idx 19
+[    2.098050] do_check: env->insn_idx 20
+[    2.098119] do_check: env->insn_idx 21
+[    2.098195] do_check: env->insn_idx 20
+[    2.098347] do_check: env->insn_idx 21
+[    2.098414] do_check: env->insn_idx 14
+[    2.098556] do_check: env->insn_idx 15
+[    2.098629] do_check: env->insn_idx 16
+[    2.098700] do_check: env->insn_idx 17
+[    2.098767] do_check: env->insn_idx 18
+[    2.098842] do_check: env->insn_idx 8
+[    2.098984] do_check: env->insn_idx 9
+[    2.099108] do_check: env->insn_idx 8
+[    2.099171] do_check: env->insn_idx 9
+[    2.099304] do_check: env->insn_idx 8
+[    2.099368] do_check: env->insn_idx 9
+[    2.099505] do_check: env->insn_idx 8
+[    2.099568] do_check: env->insn_idx 9
+[    2.099703] do_check: env->insn_idx 8
+[    2.099774] do_check: env->insn_idx 9
+[    2.099921] do_check: env->insn_idx 8
+[    2.099984] do_check: env->insn_idx 9
+[    2.100133] do_check: env->insn_idx 8
+[    2.100200] do_check: env->insn_idx 9
+[    2.100349] do_check: env->insn_idx 8
+[    2.100413] do_check: env->insn_idx 9
+[    2.100503] do_check: env->insn_idx 10
+[    2.100566] do_check: env->insn_idx 11
+[    2.100636] do_check: env->insn_idx 12
+[    2.100813] do_check: env->insn_idx 13
+[    2.100909] do_check: env->insn_idx 14
+[    2.100972] do_check: env->insn_idx 15
+[    2.101047] do_check: env->insn_idx 16
+[    2.101117] do_check: env->insn_idx 17
+[    2.101185] do_check: env->insn_idx 18
+[    2.101250] do_check: env->insn_idx 14
+[    2.101389] do_check: env->insn_idx 15
+[    2.101462] do_check: env->insn_idx 16
+[    2.101531] do_check: env->insn_idx 17
+[    2.101598] do_check: env->insn_idx 18
 
-All errors (new ones prefixed by >>):
+    ... verification repeats from LBL ...
 
-   arc-elf-ld: init/do_mounts.o: in function `bpf_extension_link_prog':
->> do_mounts.c:(.text+0x14): multiple definition of `bpf_extension_link_prog'; init/main.o:main.c:(.text+0x5dc): first defined here
-   arc-elf-ld: init/do_mounts.o: in function `bpf_extension_unlink_prog':
->> do_mounts.c:(.text+0x1c): multiple definition of `bpf_extension_unlink_prog'; init/main.o:main.c:(.text+0x5e4): first defined here
-   arc-elf-ld: init/do_mounts_initrd.o: in function `bpf_extension_link_prog':
-   do_mounts_initrd.c:(.text+0x0): multiple definition of `bpf_extension_link_prog'; init/main.o:main.c:(.text+0x5dc): first defined here
-   arc-elf-ld: init/do_mounts_initrd.o: in function `bpf_extension_unlink_prog':
-   do_mounts_initrd.c:(.text+0x8): multiple definition of `bpf_extension_unlink_prog'; init/main.o:main.c:(.text+0x5e4): first defined here
-   arc-elf-ld: init/initramfs.o: in function `bpf_extension_link_prog':
-   initramfs.c:(.text+0x44): multiple definition of `bpf_extension_link_prog'; init/main.o:main.c:(.text+0x5dc): first defined here
-   arc-elf-ld: init/initramfs.o: in function `bpf_extension_unlink_prog':
-   initramfs.c:(.text+0x4c): multiple definition of `bpf_extension_unlink_prog'; init/main.o:main.c:(.text+0x5e4): first defined here
-   arc-elf-ld: arch/arc/kernel/ptrace.o: in function `bpf_extension_link_prog':
-   ptrace.c:(.text+0x13f4): multiple definition of `bpf_extension_link_prog'; init/main.o:main.c:(.text+0x5dc): first defined here
-   arc-elf-ld: arch/arc/kernel/ptrace.o: in function `bpf_extension_unlink_prog':
-   ptrace.c:(.text+0x13fc): multiple definition of `bpf_extension_unlink_prog'; init/main.o:main.c:(.text+0x5e4): first defined here
-   arc-elf-ld: arch/arc/kernel/process.o: in function `bpf_extension_link_prog':
-   process.c:(.text+0x174): multiple definition of `bpf_extension_link_prog'; init/main.o:main.c:(.text+0x5dc): first defined here
-   arc-elf-ld: arch/arc/kernel/process.o: in function `bpf_extension_unlink_prog':
-   process.c:(.text+0x17c): multiple definition of `bpf_extension_unlink_prog'; init/main.o:main.c:(.text+0x5e4): first defined here
-   arc-elf-ld: arch/arc/kernel/signal.o: in function `bpf_extension_link_prog':
-   signal.c:(.text+0x45c): multiple definition of `bpf_extension_link_prog'; init/main.o:main.c:(.text+0x5dc): first defined here
-   arc-elf-ld: arch/arc/kernel/signal.o: in function `bpf_extension_unlink_prog':
-   signal.c:(.text+0x464): multiple definition of `bpf_extension_unlink_prog'; init/main.o:main.c:(.text+0x5e4): first defined here
-   arc-elf-ld: arch/arc/kernel/sys.o: in function `bpf_extension_link_prog':
-   sys.c:(.text+0x0): multiple definition of `bpf_extension_link_prog'; init/main.o:main.c:(.text+0x5dc): first defined here
-   arc-elf-ld: arch/arc/kernel/sys.o: in function `bpf_extension_unlink_prog':
-   sys.c:(.text+0x8): multiple definition of `bpf_extension_unlink_prog'; init/main.o:main.c:(.text+0x5e4): first defined here
-   arc-elf-ld: arch/arc/kernel/perf_event.o: in function `bpf_extension_link_prog':
-   perf_event.c:(.text+0xbb4): multiple definition of `bpf_extension_link_prog'; init/main.o:main.c:(.text+0x5dc): first defined here
-   arc-elf-ld: arch/arc/kernel/perf_event.o: in function `bpf_extension_unlink_prog':
-   perf_event.c:(.text+0xbbc): multiple definition of `bpf_extension_unlink_prog'; init/main.o:main.c:(.text+0x5e4): first defined here
-   arc-elf-ld: arch/arc/mm/fault.o: in function `bpf_extension_link_prog':
-   fault.c:(.text+0x28): multiple definition of `bpf_extension_link_prog'; init/main.o:main.c:(.text+0x5dc): first defined here
-   arc-elf-ld: arch/arc/mm/fault.o: in function `bpf_extension_unlink_prog':
-   fault.c:(.text+0x30): multiple definition of `bpf_extension_unlink_prog'; init/main.o:main.c:(.text+0x5e4): first defined here
-   arc-elf-ld: arch/arc/mm/cache.o: in function `bpf_extension_link_prog':
-   cache.c:(.text+0x2f4): multiple definition of `bpf_extension_link_prog'; init/main.o:main.c:(.text+0x5dc): first defined here
-   arc-elf-ld: arch/arc/mm/cache.o: in function `bpf_extension_unlink_prog':
-   cache.c:(.text+0x2fc): multiple definition of `bpf_extension_unlink_prog'; init/main.o:main.c:(.text+0x5e4): first defined here
-   arc-elf-ld: kernel/fork.o: in function `bpf_extension_link_prog':
-   fork.c:(.text+0x1090): multiple definition of `bpf_extension_link_prog'; init/main.o:main.c:(.text+0x5dc): first defined here
-   arc-elf-ld: kernel/fork.o: in function `bpf_extension_unlink_prog':
-   fork.c:(.text+0x1098): multiple definition of `bpf_extension_unlink_prog'; init/main.o:main.c:(.text+0x5e4): first defined here
-   arc-elf-ld: kernel/exec_domain.o: in function `bpf_extension_link_prog':
-   exec_domain.c:(.text+0x14): multiple definition of `bpf_extension_link_prog'; init/main.o:main.c:(.text+0x5dc): first defined here
-   arc-elf-ld: kernel/exec_domain.o: in function `bpf_extension_unlink_prog':
-   exec_domain.c:(.text+0x1c): multiple definition of `bpf_extension_unlink_prog'; init/main.o:main.c:(.text+0x5e4): first defined here
-   arc-elf-ld: kernel/cpu.o: in function `bpf_extension_link_prog':
-   cpu.c:(.text+0xbec): multiple definition of `bpf_extension_link_prog'; init/main.o:main.c:(.text+0x5dc): first defined here
-   arc-elf-ld: kernel/cpu.o: in function `bpf_extension_unlink_prog':
-   cpu.c:(.text+0xbf4): multiple definition of `bpf_extension_unlink_prog'; init/main.o:main.c:(.text+0x5e4): first defined here
-   arc-elf-ld: kernel/exit.o: in function `bpf_extension_link_prog':
-   exit.c:(.text+0x6b4): multiple definition of `bpf_extension_link_prog'; init/main.o:main.c:(.text+0x5dc): first defined here
-   arc-elf-ld: kernel/exit.o: in function `bpf_extension_unlink_prog':
-   exit.c:(.text+0x6bc): multiple definition of `bpf_extension_unlink_prog'; init/main.o:main.c:(.text+0x5e4): first defined here
-   arc-elf-ld: kernel/softirq.o: in function `bpf_extension_link_prog':
-   softirq.c:(.text+0xe88): multiple definition of `bpf_extension_link_prog'; init/main.o:main.c:(.text+0x5dc): first defined here
-   arc-elf-ld: kernel/softirq.o: in function `bpf_extension_unlink_prog':
-   softirq.c:(.text+0xe90): multiple definition of `bpf_extension_unlink_prog'; init/main.o:main.c:(.text+0x5e4): first defined here
-   arc-elf-ld: kernel/resource.o: in function `bpf_extension_link_prog':
-   resource.c:(.text+0xb68): multiple definition of `bpf_extension_link_prog'; init/main.o:main.c:(.text+0x5dc): first defined here
-   arc-elf-ld: kernel/resource.o: in function `bpf_extension_unlink_prog':
-   resource.c:(.text+0xb70): multiple definition of `bpf_extension_unlink_prog'; init/main.o:main.c:(.text+0x5e4): first defined here
-   arc-elf-ld: kernel/sysctl.o: in function `bpf_extension_link_prog':
-   sysctl.c:(.text+0x14f4): multiple definition of `bpf_extension_link_prog'; init/main.o:main.c:(.text+0x5dc): first defined here
-   arc-elf-ld: kernel/sysctl.o: in function `bpf_extension_unlink_prog':
-   sysctl.c:(.text+0x14fc): multiple definition of `bpf_extension_unlink_prog'; init/main.o:main.c:(.text+0x5e4): first defined here
-   arc-elf-ld: kernel/capability.o: in function `bpf_extension_link_prog':
-   capability.c:(.text+0x718): multiple definition of `bpf_extension_link_prog'; init/main.o:main.c:(.text+0x5dc): first defined here
-   arc-elf-ld: kernel/capability.o: in function `bpf_extension_unlink_prog':
-   capability.c:(.text+0x720): multiple definition of `bpf_extension_unlink_prog'; init/main.o:main.c:(.text+0x5e4): first defined here
-   arc-elf-ld: kernel/ptrace.o: in function `bpf_extension_link_prog':
-   ptrace.c:(.text+0x580): multiple definition of `bpf_extension_link_prog'; init/main.o:main.c:(.text+0x5dc): first defined here
-   arc-elf-ld: kernel/ptrace.o: in function `bpf_extension_unlink_prog':
-   ptrace.c:(.text+0x588): multiple definition of `bpf_extension_unlink_prog'; init/main.o:main.c:(.text+0x5e4): first defined here
-   arc-elf-ld: kernel/signal.o: in function `bpf_extension_link_prog':
-   signal.c:(.text+0x1118): multiple definition of `bpf_extension_link_prog'; init/main.o:main.c:(.text+0x5dc): first defined here
-   arc-elf-ld: kernel/signal.o: in function `bpf_extension_unlink_prog':
-   signal.c:(.text+0x1120): multiple definition of `bpf_extension_unlink_prog'; init/main.o:main.c:(.text+0x5e4): first defined here
-   arc-elf-ld: kernel/sys.o: in function `bpf_extension_link_prog':
-   sys.c:(.text+0xf70): multiple definition of `bpf_extension_link_prog'; init/main.o:main.c:(.text+0x5dc): first defined here
-   arc-elf-ld: kernel/sys.o: in function `bpf_extension_unlink_prog':
-   sys.c:(.text+0xf78): multiple definition of `bpf_extension_unlink_prog'; init/main.o:main.c:(.text+0x5e4): first defined here
-   arc-elf-ld: kernel/umh.o: in function `bpf_extension_link_prog':
-   umh.c:(.text+0x5c0): multiple definition of `bpf_extension_link_prog'; init/main.o:main.c:(.text+0x5dc): first defined here
-   arc-elf-ld: kernel/umh.o: in function `bpf_extension_unlink_prog':
-   umh.c:(.text+0x5c8): multiple definition of `bpf_extension_unlink_prog'; init/main.o:main.c:(.text+0x5e4): first defined here
-   arc-elf-ld: kernel/workqueue.o: in function `bpf_extension_link_prog':
-   workqueue.c:(.text+0x55a8): multiple definition of `bpf_extension_link_prog'; init/main.o:main.c:(.text+0x5dc): first defined here
-   arc-elf-ld: kernel/workqueue.o: in function `bpf_extension_unlink_prog':
-   workqueue.c:(.text+0x55b0): multiple definition of `bpf_extension_unlink_prog'; init/main.o:main.c:(.text+0x5e4): first defined here
-   arc-elf-ld: kernel/pid.o: in function `bpf_extension_link_prog':
-   pid.c:(.text+0x308): multiple definition of `bpf_extension_link_prog'; init/main.o:main.c:(.text+0x5dc): first defined here
-   arc-elf-ld: kernel/pid.o: in function `bpf_extension_unlink_prog':
-   pid.c:(.text+0x310): multiple definition of `bpf_extension_unlink_prog'; init/main.o:main.c:(.text+0x5e4): first defined here
-   arc-elf-ld: kernel/extable.o: in function `bpf_extension_link_prog':
-   extable.c:(.text+0x0): multiple definition of `bpf_extension_link_prog'; init/main.o:main.c:(.text+0x5dc): first defined here
-   arc-elf-ld: kernel/extable.o: in function `bpf_extension_unlink_prog':
-   extable.c:(.text+0x8): multiple definition of `bpf_extension_unlink_prog'; init/main.o:main.c:(.text+0x5e4): first defined here
-   arc-elf-ld: kernel/params.o: in function `bpf_extension_link_prog':
-   params.c:(.text+0x918): multiple definition of `bpf_extension_link_prog'; init/main.o:main.c:(.text+0x5dc): first defined here
-   arc-elf-ld: kernel/params.o: in function `bpf_extension_unlink_prog':
-   params.c:(.text+0x920): multiple definition of `bpf_extension_unlink_prog'; init/main.o:main.c:(.text+0x5e4): first defined here
+[...]
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+
 
