@@ -1,185 +1,313 @@
-Return-Path: <bpf+bounces-41075-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41076-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 371E69923DE
-	for <lists+bpf@lfdr.de>; Mon,  7 Oct 2024 07:24:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61FF1992470
+	for <lists+bpf@lfdr.de>; Mon,  7 Oct 2024 08:29:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 538C51C2219F
-	for <lists+bpf@lfdr.de>; Mon,  7 Oct 2024 05:24:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 21E55282C02
+	for <lists+bpf@lfdr.de>; Mon,  7 Oct 2024 06:29:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8AA0136672;
-	Mon,  7 Oct 2024 05:24:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B509B14C5B5;
+	Mon,  7 Oct 2024 06:29:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mAvpd3li"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFABE4C91
-	for <bpf@vger.kernel.org>; Mon,  7 Oct 2024 05:24:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E59C140E5F;
+	Mon,  7 Oct 2024 06:29:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728278663; cv=none; b=kXn47kinKzZbvk2Lm9Mn2I5XofWyK3FRM133IJs6BZhkovIAH6tFrT1Kh+8NHPh0NBr992oTpUl4NlnuU/a17XieOWMWUenPClAPRN5TejCDdRrmBssypY7b1eXD+3etD8sDiG++6FBJGFHxEq/YCXbRy6Rn3clfV65gVno4Gpg=
+	t=1728282563; cv=none; b=qHoo3qCajQqLJ6MFDjZrXAMk0jjtT5g5IqJcUlgMUBmarNuhY/ba4u3g7WdSZVxZ92X3yR6zoMYUC5N/751usyCfWCj+zhfUayQtr08H7E4JzewUBL5g6hWd+Q8bZlVf8k4hX07bkT0KIlE+5uqg3c+QHXdRGsNtqL/vnSUn81Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728278663; c=relaxed/simple;
-	bh=BfXqHwKacYlyfKlsyU5jxlqJhyB67gpoXh95UTrlHNM=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=VNRjm+cFFjpA4ickkzwxR0ZRmdF6vyuoXy1tJc2w+7AHojC8u6C+GGfoYZT3g/1CdNGz0+vrSBuWeyEyqn6BzfYGGGyvPFopITTvqZVDr4zqxgbrgIq9PYRtdTCIAN/2YMp+69m3OckcwWcgNJKGewWN/Ad8wv5LFKo45GmnUiU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-3a1a8b992d3so45311315ab.0
-        for <bpf@vger.kernel.org>; Sun, 06 Oct 2024 22:24:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728278661; x=1728883461;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=/AIRQPHTgvdZ7jAuuFNBy85i0UfMXrmiIvbDH4nGzBI=;
-        b=it9oaSHCMq4mSx0OHcKobAo00S5NmxjCGjkeBniEbtwhSw9YDmTgpkcT9BukHeuNJf
-         kt/DtZ9EsNAbLnINZCJL4R5uNhUWqLCZpNNO/Ms4e4lOiJ6BvT30kcP4ONjnNev22SOB
-         cf952vhZce1brcBtgazrmHC24RkxrjQEz3wZ1EqCNFubv2XkrNZLPakZZaJ3dMA8f2vZ
-         ITgUXNOnlL4RtaWJfptK7YQ7spJQZbbwz+XFCSu36O3vUvsRp0YuF5uvQdlaXSufi1yW
-         HlrTE4AppbxkJAmm8lW/+p1w7ZEQk/FNWoLp0gKMnDLnECsH5EHSCyUQkEMa+Xv9IxGn
-         M7Eg==
-X-Forwarded-Encrypted: i=1; AJvYcCWh7s4GeXKfEy3cKvF3kTSXo9JoGI2QU1GC692M2iwHbRo1qTObS8GLwoiwhvVNckolGxY=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyn1Zj+9toSwYLKxVMWn2xOYmNCjShmGEgvfDUuaw7BqTe467bu
-	Lvp1kyKg57vTnnRcBoW6bWlyHLQ74YMUz/yrmNF4tBTYhG6wBZLl1SwogENbMbroBLY4cLLDo1J
-	HP8UojwDQZWCFnudknDy4HH9YFv9+QGxPKyQhUdGvRTZMX85O+1oHbzY=
-X-Google-Smtp-Source: AGHT+IF247V/nCJeF+xQvJQ+DDdGbioA32XPXJjCoMMHg41yI54GWh5WH0vmKJqok4i79rtevGel8jfCW0kQQzzUuKXf/PEH5nEK
+	s=arc-20240116; t=1728282563; c=relaxed/simple;
+	bh=GYz9jJeJwdTzMuunM08gf0B0slcAjxJN/5ca8sCoryM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=sSKSOTFzGVZreXKIr2jEC4Qv0hGdflchS8jFTCHNDLTCvQE+ctWoWv30NXZNBoFPmXed88iWJcxNWUzODWxcMc1PmiX6BHuuGVyiT1JE+h6Dg0Prl35S2OvA2jLVLV8CKcGRey6ybnWowehtd62EKvveQ6PAkSRwIqIC7JfbSTU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mAvpd3li; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3B94C4CEC6;
+	Mon,  7 Oct 2024 06:29:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1728282562;
+	bh=GYz9jJeJwdTzMuunM08gf0B0slcAjxJN/5ca8sCoryM=;
+	h=From:To:Cc:Subject:Date:From;
+	b=mAvpd3li61HdTUdxFJIe7eyvRfePLEvKecXQdexCLVpbBEa8HxHGH4u3IK8jVju4x
+	 ZXgoWx2/G65gU8/jWAV0QcRmBNwVxuebK3LnO7N6jsJxAiKtM3WlATwassj9ysIxRf
+	 JMkkeWiqetONDupxedDcqAYSK6K+hWFncl2o2LE1/LXb6kyCjzd2wzXgw7Yk9EJGAz
+	 bMWr/AwedePV7iVNtLs5+ErNIgVz90TWToU4sfjPGxTZUPTZwiKvYcEPtVhBTKYZL0
+	 nHAhBcqyxEcAbP8TanB1vMyYdueNcpnycESXgCpWvBxKeH9MKkSWS4f/IP5DbcrXTz
+	 xYawM/9Xr6WPA==
+From: Mike Rapoport <rppt@kernel.org>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Andreas Larsson <andreas@gaisler.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Borislav Petkov <bp@alien8.de>,
+	Brian Cain <bcain@quicinc.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Christoph Hellwig <hch@infradead.org>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Guo Ren <guoren@kernel.org>,
+	Helge Deller <deller@gmx.de>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Matt Turner <mattst88@gmail.com>,
+	Max Filippov <jcmvbkbc@gmail.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Michal Simek <monstr@monstr.eu>,
+	Mike Rapoport <rppt@kernel.org>,
+	Oleg Nesterov <oleg@redhat.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Richard Weinberger <richard@nod.at>,
+	Russell King <linux@armlinux.org.uk>,
+	Song Liu <song@kernel.org>,
+	Stafford Horne <shorne@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Vineet Gupta <vgupta@kernel.org>,
+	Will Deacon <will@kernel.org>,
+	bpf@vger.kernel.org,
+	linux-alpha@vger.kernel.org,
+	linux-arch@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-csky@vger.kernel.org,
+	linux-hexagon@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-m68k@lists.linux-m68k.org,
+	linux-mips@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-modules@vger.kernel.org,
+	linux-openrisc@vger.kernel.org,
+	linux-parisc@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	linux-sh@vger.kernel.org,
+	linux-snps-arc@lists.infradead.org,
+	linux-trace-kernel@vger.kernel.org,
+	linux-um@lists.infradead.org,
+	linuxppc-dev@lists.ozlabs.org,
+	loongarch@lists.linux.dev,
+	sparclinux@vger.kernel.org,
+	x86@kernel.org
+Subject: [PATCH v4 0/8] x86/module: use large ROX pages for text allocations
+Date: Mon,  7 Oct 2024 09:28:50 +0300
+Message-ID: <20241007062858.44248-1-rppt@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1aad:b0:3a0:8e7c:b4ae with SMTP id
- e9e14a558f8ab-3a375c3b6f5mr74743345ab.2.1728278661144; Sun, 06 Oct 2024
- 22:24:21 -0700 (PDT)
-Date: Sun, 06 Oct 2024 22:24:21 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <67037085.050a0220.49194.04fa.GAE@google.com>
-Subject: [syzbot] [bpf?] WARNING in acquire_reference_state
-From: syzbot <syzbot+b2f95ad40a2119295cc1@syzkaller.appspotmail.com>
-To: 42.hyeyoo@gmail.com, akpm@linux-foundation.org, andrii@kernel.org, 
-	ast@kernel.org, bpf@vger.kernel.org, cl@linux.com, daniel@iogearbox.net, 
-	eddyz87@gmail.com, feng.tang@intel.com, haoluo@google.com, 
-	iamjoonsoo.kim@lge.com, john.fastabend@gmail.com, jolsa@kernel.org, 
-	kpsingh@kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	martin.lau@linux.dev, penberg@kernel.org, rientjes@google.com, 
-	roman.gushchin@linux.dev, sdf@fomichev.me, song@kernel.org, 
-	syzkaller-bugs@googlegroups.com, vbabka@suse.cz, yonghong.song@linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hello,
+From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
 
-syzbot found the following issue on:
+Hi,
 
-HEAD commit:    c02d24a5af66 Add linux-next specific files for 20241003
-git tree:       linux-next
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=1113e307980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=94f9caf16c0af42d
-dashboard link: https://syzkaller.appspot.com/bug?extid=b2f95ad40a2119295cc1
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14bc33d0580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11772b9f980000
+These patches add support for using large ROX pages for allocations of
+executable memory on x86.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/641e642c9432/disk-c02d24a5.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/98aaf20c29e0/vmlinux-c02d24a5.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/c23099f2d86b/bzImage-c02d24a5.xz
+They address Andy's comments [1] about having executable mappings for code
+that was not completely formed.
 
-The issue was bisected to:
+The approach taken is to allocate ROX memory along with writable but not
+executable memory and use the writable copy to perform relocations and
+alternatives patching. After the module text gets into its final shape, the
+contents of the writable memory is copied into the actual ROX location
+using text poking.
 
-commit d0a38fad51cc70ab3dd3c59b54d8079ac19220b9
-Author: Feng Tang <feng.tang@intel.com>
-Date:   Wed Sep 11 06:45:34 2024 +0000
+The allocations of the ROX memory use vmalloc(VMAP_ALLOW_HUGE_MAP) to
+allocate PMD aligned memory, fill that memory with invalid instructions and
+in the end remap it as ROX. Portions of these large pages are handed out to
+execmem_alloc() callers without any changes to the permissions. When the
+memory is freed with execmem_free() it is invalidated again so that it
+won't contain stale instructions.
 
-    mm/slub: Improve redzone check and zeroing for krealloc()
+The module memory allocation, x86 code dealing with relocations and
+alternatives patching take into account the existence of the two copies,
+the writable memory and the ROX memory at the actual allocated virtual
+address.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15191307980000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=17191307980000
-console output: https://syzkaller.appspot.com/x/log.txt?x=13191307980000
+The patches are available at git:
+https://git.kernel.org/pub/scm/linux/kernel/git/rppt/linux.git/log/?h=execmem/x86-rox/v2
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+b2f95ad40a2119295cc1@syzkaller.appspotmail.com
-Fixes: d0a38fad51cc ("mm/slub: Improve redzone check and zeroing for krealloc()")
+[1] https://lore.kernel.org/all/a17c65c6-863f-4026-9c6f-a04b659e9ab4@app.fastmail.com
 
-------------[ cut here ]------------
-virt_to_cache: Object is not a Slab page!
-WARNING: CPU: 0 PID: 5236 at mm/slub.c:4655 virt_to_cache mm/slub.c:4655 [inline]
-WARNING: CPU: 0 PID: 5236 at mm/slub.c:4655 __do_krealloc mm/slub.c:4753 [inline]
-WARNING: CPU: 0 PID: 5236 at mm/slub.c:4655 krealloc_noprof+0x1b3/0x2e0 mm/slub.c:4838
-Modules linked in:
-CPU: 0 UID: 0 PID: 5236 Comm: syz-executor185 Not tainted 6.12.0-rc1-next-20241003-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/13/2024
-RIP: 0010:virt_to_cache mm/slub.c:4655 [inline]
-RIP: 0010:__do_krealloc mm/slub.c:4753 [inline]
-RIP: 0010:krealloc_noprof+0x1b3/0x2e0 mm/slub.c:4838
-Code: 45 31 ff 45 31 f6 45 31 ed e9 21 ff ff ff c6 05 4e 2a 14 0e 01 90 48 c7 c7 24 f2 0b 8e 48 c7 c6 44 f2 0b 8e e8 3e 19 63 ff 90 <0f> 0b 90 90 e9 d9 fe ff ff f3 0f 1e fa 41 8b 45 08 f7 d0 a8 88 0f
-RSP: 0018:ffffc900039ce958 EFLAGS: 00010246
-RAX: d5f86d2e4537eb00 RBX: 0000000000000000 RCX: ffff88802bd81e00
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: ffff8880276c0000 R08: ffffffff8155d412 R09: 1ffff110170c519a
-R10: dffffc0000000000 R11: ffffed10170c519b R12: 0000000000004000
-R13: 00000000000002ac R14: 0000000000000cc0 R15: 00000000000002ac
-FS:  000055555e044380(0000) GS:ffff8880b8600000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00005564fc7f1000 CR3: 0000000079940000 CR4: 00000000003526f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- realloc_array kernel/bpf/verifier.c:1247 [inline]
- resize_reference_state kernel/bpf/verifier.c:1287 [inline]
- acquire_reference_state+0x136/0x460 kernel/bpf/verifier.c:1334
- check_helper_call+0x65cc/0x7660 kernel/bpf/verifier.c:10897
- do_check+0x9954/0xfe40 kernel/bpf/verifier.c:18529
- do_check_common+0x14bd/0x1dd0 kernel/bpf/verifier.c:21618
- do_check_main kernel/bpf/verifier.c:21709 [inline]
- bpf_check+0x18a25/0x1e320 kernel/bpf/verifier.c:22421
- bpf_prog_load+0x1667/0x20f0 kernel/bpf/syscall.c:2846
- __sys_bpf+0x4ee/0x810 kernel/bpf/syscall.c:5634
- __do_sys_bpf kernel/bpf/syscall.c:5741 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:5739 [inline]
- __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:5739
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f922052d669
-Code: 48 83 c4 28 c3 e8 37 17 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffc58143c38 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 00007ffc58143e08 RCX: 00007f922052d669
-RDX: 0000000000000090 RSI: 0000000020000840 RDI: 0000000000000005
-RBP: 00007f92205a0610 R08: 00007ffc58143e08 R09: 00007ffc58143e08
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
-R13: 00007ffc58143df8 R14: 0000000000000001 R15: 0000000000000001
- </TASK>
+v3: https://lore.kernel.org/all/20240909064730.3290724-1-rppt@kernel.org
+* Drop ftrace_swap_func(). It is not needed because mcount array lives
+  in a data section (Peter)
+* Update maple_tree usage (Liam)
+* Set ->fill_trapping_insns pointer on init (Ard)
+* Instead of using VM_FLUSH_RESET_PERMS for execmem cache, completely
+  remove it from the direct map
+
+v2: https://lore.kernel.org/all/20240826065532.2618273-1-rppt@kernel.org
+* add comment why ftrace_swap_func() is needed (Steve)
+
+Since RFC: https://lore.kernel.org/all/20240411160526.2093408-1-rppt@kernel.org
+* update changelog about HUGE_VMAP allocations (Christophe) 
+* move module_writable_address() from x86 to modules core (Ingo)
+* rename execmem_invalidate() to execmem_fill_trapping_insns() (Peter)
+* call alternatives_smp_unlock() after module text in-place is up to
+  date (Nadav)
+
+Mike Rapoport (Microsoft) (8):
+  mm: vmalloc: group declarations depending on CONFIG_MMU together
+  mm: vmalloc: don't account for number of nodes for HUGE_VMAP allocations
+  asm-generic: introduce text-patching.h
+  module: prepare to handle ROX allocations for text
+  arch: introduce set_direct_map_valid_noflush()
+  x86/module: perpare module loading for ROX allocations of text
+  execmem: add support for cache of large ROX pages
+  x86/module: enable ROX caches for module text
+
+ arch/alpha/include/asm/Kbuild                 |   1 +
+ arch/arc/include/asm/Kbuild                   |   1 +
+ .../include/asm/{patch.h => text-patching.h}  |   0
+ arch/arm/kernel/ftrace.c                      |   2 +-
+ arch/arm/kernel/jump_label.c                  |   2 +-
+ arch/arm/kernel/kgdb.c                        |   2 +-
+ arch/arm/kernel/patch.c                       |   2 +-
+ arch/arm/probes/kprobes/core.c                |   2 +-
+ arch/arm/probes/kprobes/opt-arm.c             |   2 +-
+ arch/arm64/include/asm/set_memory.h           |   1 +
+ .../asm/{patching.h => text-patching.h}       |   0
+ arch/arm64/kernel/ftrace.c                    |   2 +-
+ arch/arm64/kernel/jump_label.c                |   2 +-
+ arch/arm64/kernel/kgdb.c                      |   2 +-
+ arch/arm64/kernel/patching.c                  |   2 +-
+ arch/arm64/kernel/probes/kprobes.c            |   2 +-
+ arch/arm64/kernel/traps.c                     |   2 +-
+ arch/arm64/mm/pageattr.c                      |  10 +
+ arch/arm64/net/bpf_jit_comp.c                 |   2 +-
+ arch/csky/include/asm/Kbuild                  |   1 +
+ arch/hexagon/include/asm/Kbuild               |   1 +
+ arch/loongarch/include/asm/Kbuild             |   1 +
+ arch/loongarch/include/asm/set_memory.h       |   1 +
+ arch/loongarch/mm/pageattr.c                  |  21 ++
+ arch/m68k/include/asm/Kbuild                  |   1 +
+ arch/microblaze/include/asm/Kbuild            |   1 +
+ arch/mips/include/asm/Kbuild                  |   1 +
+ arch/nios2/include/asm/Kbuild                 |   1 +
+ arch/openrisc/include/asm/Kbuild              |   1 +
+ .../include/asm/{patch.h => text-patching.h}  |   0
+ arch/parisc/kernel/ftrace.c                   |   2 +-
+ arch/parisc/kernel/jump_label.c               |   2 +-
+ arch/parisc/kernel/kgdb.c                     |   2 +-
+ arch/parisc/kernel/kprobes.c                  |   2 +-
+ arch/parisc/kernel/patch.c                    |   2 +-
+ arch/powerpc/include/asm/kprobes.h            |   2 +-
+ .../asm/{code-patching.h => text-patching.h}  |   0
+ arch/powerpc/kernel/crash_dump.c              |   2 +-
+ arch/powerpc/kernel/epapr_paravirt.c          |   2 +-
+ arch/powerpc/kernel/jump_label.c              |   2 +-
+ arch/powerpc/kernel/kgdb.c                    |   2 +-
+ arch/powerpc/kernel/kprobes.c                 |   2 +-
+ arch/powerpc/kernel/module_32.c               |   2 +-
+ arch/powerpc/kernel/module_64.c               |   2 +-
+ arch/powerpc/kernel/optprobes.c               |   2 +-
+ arch/powerpc/kernel/process.c                 |   2 +-
+ arch/powerpc/kernel/security.c                |   2 +-
+ arch/powerpc/kernel/setup_32.c                |   2 +-
+ arch/powerpc/kernel/setup_64.c                |   2 +-
+ arch/powerpc/kernel/static_call.c             |   2 +-
+ arch/powerpc/kernel/trace/ftrace.c            |   2 +-
+ arch/powerpc/kernel/trace/ftrace_64_pg.c      |   2 +-
+ arch/powerpc/lib/code-patching.c              |   2 +-
+ arch/powerpc/lib/feature-fixups.c             |   2 +-
+ arch/powerpc/lib/test-code-patching.c         |   2 +-
+ arch/powerpc/lib/test_emulate_step.c          |   2 +-
+ arch/powerpc/mm/book3s32/mmu.c                |   2 +-
+ arch/powerpc/mm/book3s64/hash_utils.c         |   2 +-
+ arch/powerpc/mm/book3s64/slb.c                |   2 +-
+ arch/powerpc/mm/kasan/init_32.c               |   2 +-
+ arch/powerpc/mm/mem.c                         |   2 +-
+ arch/powerpc/mm/nohash/44x.c                  |   2 +-
+ arch/powerpc/mm/nohash/book3e_pgtable.c       |   2 +-
+ arch/powerpc/mm/nohash/tlb.c                  |   2 +-
+ arch/powerpc/mm/nohash/tlb_64e.c              |   2 +-
+ arch/powerpc/net/bpf_jit_comp.c               |   2 +-
+ arch/powerpc/perf/8xx-pmu.c                   |   2 +-
+ arch/powerpc/perf/core-book3s.c               |   2 +-
+ arch/powerpc/platforms/85xx/smp.c             |   2 +-
+ arch/powerpc/platforms/86xx/mpc86xx_smp.c     |   2 +-
+ arch/powerpc/platforms/cell/smp.c             |   2 +-
+ arch/powerpc/platforms/powermac/smp.c         |   2 +-
+ arch/powerpc/platforms/powernv/idle.c         |   2 +-
+ arch/powerpc/platforms/powernv/smp.c          |   2 +-
+ arch/powerpc/platforms/pseries/smp.c          |   2 +-
+ arch/powerpc/xmon/xmon.c                      |   2 +-
+ arch/riscv/errata/andes/errata.c              |   2 +-
+ arch/riscv/errata/sifive/errata.c             |   2 +-
+ arch/riscv/errata/thead/errata.c              |   2 +-
+ arch/riscv/include/asm/set_memory.h           |   1 +
+ .../include/asm/{patch.h => text-patching.h}  |   0
+ arch/riscv/include/asm/uprobes.h              |   2 +-
+ arch/riscv/kernel/alternative.c               |   2 +-
+ arch/riscv/kernel/cpufeature.c                |   3 +-
+ arch/riscv/kernel/ftrace.c                    |   2 +-
+ arch/riscv/kernel/jump_label.c                |   2 +-
+ arch/riscv/kernel/patch.c                     |   2 +-
+ arch/riscv/kernel/probes/kprobes.c            |   2 +-
+ arch/riscv/mm/pageattr.c                      |  15 +
+ arch/riscv/net/bpf_jit_comp64.c               |   2 +-
+ arch/riscv/net/bpf_jit_core.c                 |   2 +-
+ arch/s390/include/asm/set_memory.h            |   1 +
+ arch/s390/mm/pageattr.c                       |  11 +
+ arch/sh/include/asm/Kbuild                    |   1 +
+ arch/sparc/include/asm/Kbuild                 |   1 +
+ arch/um/kernel/um_arch.c                      |  16 +-
+ arch/x86/entry/vdso/vma.c                     |   3 +-
+ arch/x86/include/asm/alternative.h            |  14 +-
+ arch/x86/include/asm/set_memory.h             |   1 +
+ arch/x86/include/asm/text-patching.h          |   1 +
+ arch/x86/kernel/alternative.c                 | 160 +++++----
+ arch/x86/kernel/ftrace.c                      |  30 +-
+ arch/x86/kernel/module.c                      |  45 ++-
+ arch/x86/mm/init.c                            |  26 +-
+ arch/x86/mm/pat/set_memory.c                  |   8 +
+ arch/xtensa/include/asm/Kbuild                |   1 +
+ include/asm-generic/text-patching.h           |   5 +
+ include/linux/execmem.h                       |  25 ++
+ include/linux/module.h                        |   9 +
+ include/linux/moduleloader.h                  |   4 +
+ include/linux/set_memory.h                    |   6 +
+ include/linux/text-patching.h                 |  15 +
+ include/linux/vmalloc.h                       |  60 ++--
+ kernel/module/main.c                          |  77 +++-
+ kernel/module/strict_rwx.c                    |   3 +
+ mm/execmem.c                                  | 328 +++++++++++++++++-
+ mm/internal.h                                 |   1 +
+ mm/vmalloc.c                                  |  14 +-
+ 118 files changed, 831 insertions(+), 235 deletions(-)
+ rename arch/arm/include/asm/{patch.h => text-patching.h} (100%)
+ rename arch/arm64/include/asm/{patching.h => text-patching.h} (100%)
+ rename arch/parisc/include/asm/{patch.h => text-patching.h} (100%)
+ rename arch/powerpc/include/asm/{code-patching.h => text-patching.h} (100%)
+ rename arch/riscv/include/asm/{patch.h => text-patching.h} (100%)
+ create mode 100644 include/asm-generic/text-patching.h
+ create mode 100644 include/linux/text-patching.h
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+base-commit: 9852d85ec9d492ebef56dc5f229416c925758edc
+-- 
+2.43.0
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
