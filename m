@@ -1,189 +1,228 @@
-Return-Path: <bpf+bounces-41094-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41095-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 087C5992653
-	for <lists+bpf@lfdr.de>; Mon,  7 Oct 2024 09:50:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 245889926A7
+	for <lists+bpf@lfdr.de>; Mon,  7 Oct 2024 10:07:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A1071C22415
-	for <lists+bpf@lfdr.de>; Mon,  7 Oct 2024 07:50:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9C71A1F22DE4
+	for <lists+bpf@lfdr.de>; Mon,  7 Oct 2024 08:07:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 200AB18C92C;
-	Mon,  7 Oct 2024 07:48:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50A15188703;
+	Mon,  7 Oct 2024 08:07:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fA1Ad1ne"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JXUKKJWm"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f195.google.com (mail-pl1-f195.google.com [209.85.214.195])
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48D7D188CB7;
-	Mon,  7 Oct 2024 07:48:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21FDC18732B;
+	Mon,  7 Oct 2024 08:07:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728287284; cv=none; b=mudoYDW63Zg1sHPSsObqvHtwpEwsKkAW0OTYVaayqjj2GTQ61BuoRLfmtJq77IoZo2sDql1uTl+RwlABvB1ZQz/u00XBZZ6qjeIxOD4Ip2PP/CQvuGAuxFeek1O5r+s/4ihKL7v1XBHvuB808QpuslL80BrzNt4qh1A9h2RhEss=
+	t=1728288441; cv=none; b=pvd4pExffe4dJthsIXTQdgxBI3dlmBra3UT4yzCq0jnPhiBk61dVC/45ji4u9WNyYPLbaPXK/RRa2/OQt7hEVhXSS4gKsYQeLO37bz/eSQOeGDPc0tYUzZSEsE/BQ4zQan9gJtZDunz5oFmQWV2p1Y9jH9nbJCHnk4ft/XltOwM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728287284; c=relaxed/simple;
-	bh=AFtinQhikZyKitdPfZNlcdt31jcLu6Yv1Ja9JGIMARQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=keCGbpxtJ5xfFEDqWqBCoCs58WanFZ6GWige43bVhCA8XoGFYuqbhdTlzjkwDW0ewOKc7QwKp0r9g6iiKysmaL7lXCsI2Q8y+HU2GSc1CehreLlJUu2P3rJWI4xBq8Mv3O/N/Gi8unQtg5Ubu/fwwqlSkW1f1vP929okmGDYwts=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fA1Ad1ne; arc=none smtp.client-ip=209.85.214.195
+	s=arc-20240116; t=1728288441; c=relaxed/simple;
+	bh=jYk4qTv8kAO5SLDx69XdaqTCkdLRACIjygpJLLT8lMc=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JmsaX9gy/48rsCnVsghJVy3WaATrzbBJ40/Uh+82oNrnZ+M9CpKqHHjps5lH9z+FZiRMU7N6gn/VzBr9qxRSr1UhseVn8blusRUVF9D6UxZtRxiO9lyfCoO2cVdWIB4GjsejgVlatYUENndVLH+HXhHPaBK6M2cQqbFK+OTvwV4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JXUKKJWm; arc=none smtp.client-ip=209.85.128.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f195.google.com with SMTP id d9443c01a7336-20ba8d92af9so29867565ad.3;
-        Mon, 07 Oct 2024 00:48:02 -0700 (PDT)
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-42e5e1e6d37so41773355e9.3;
+        Mon, 07 Oct 2024 01:07:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1728287282; x=1728892082; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wyp3LmvP1ogw5p4ky3MkRZN9RsleA4VcicUieYoXaao=;
-        b=fA1Ad1neHv790sl7YlyP53QqXqCZAql5nHGZh2lLiE8LKOSgwD8AJJcEaZ3WyiNpWw
-         3j2xDQ7dabw/A3uENkYNiIqnyBm69xRB3n/UQdC+UJPI55btZoRTLfeNd7CFPoREeYed
-         10FVNBE/zac7haB5z1dOrbMr3MAJGbdKssUsFXy9VLjTFqocR8I6N9QYHlA37xwHRA8s
-         tXEsj66uavSonBfS5qC9c1a0RFh00DZ6W+3vLlhWe5yMC1qJOiJXEe/LtckYwO2WpuHI
-         pBTm63V/pistTHx+mqJDfRSvm1NWErtHbEVhvhwXZTxDFAn4ftmv+S3a8kvnsvWE3LYP
-         Qh+Q==
+        d=gmail.com; s=20230601; t=1728288437; x=1728893237; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ja9w7vdCtDERzAoUGyjJRlwbo3h/9osUMg9vAVY7lrg=;
+        b=JXUKKJWmCbK1cho5KaHHPIaFl+VA+GxJAQttxW0EQJ0ab8wT5HDW23jqR2ctTgsjlK
+         1tuyUrzVOQ1dOT7W4S/dMrzEkRoz+vFDl8YZfQH7QlJFHFkLJfj5dq1gQMLKPYYecbNh
+         m0wYdg8pYkkSwa0DMkze8yEACjEZUbCXDkP35e2KgwXR+dDjijsjMJDbGGlFn3Qo/20i
+         wFQ8seRGoXQ2/fmdpM16uHT4+WKal22478JR9nDoZLYGezliQyP92cGFKXYv0xtMt/qD
+         JDjc/o+FSkGiZAi/nDqSATCzBnsLGx4WMpSdfUYdchXVhhGnmKC9ku9vjlFD6CY2vzd0
+         uqHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728287282; x=1728892082;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wyp3LmvP1ogw5p4ky3MkRZN9RsleA4VcicUieYoXaao=;
-        b=DCbFnGvQPMwWk1OUmmXepvqtDL0GsdUzG7YrNzntUObXWIj4u1LvDq/ZTgL+0/ShEG
-         t/bh3vPaCJc12aeVraZNih/xP+8ssHVbiGGIR/1QS1wAOqJvk7rJIOeVhNqApevuKUe3
-         KzTf0ccypN7bHdAXeALo4nYq5zp8lhc1tFJeqdM4LFfsn9OTGd78HxjQ73qb8PWJF91K
-         lJ6uO/apkCackITqjULXFKn6JnoW9VFwTQKKoORoAKLyemTsY1EtY8wxiyzr4RXVV2GC
-         uVoI2x1iQQKwtHgwNseXwYWjEZ+pR6E6kf30IPq0cyC225U/IRFCcCxIje+8CgBleeTH
-         lhfg==
-X-Forwarded-Encrypted: i=1; AJvYcCUp95wOGcRFXTgXyRpTHYX7fffyKCCASXg2GerQ+drCHaeOqM2HEj1Qs4Yi4cJtrJQYJQyqNuzU@vger.kernel.org, AJvYcCW7C6bnWfan2i7LpWZQISYox4WpJ7xyQtWRCyz8BHyOFQUkANs/THbnAxsw3XvxK6dBRnDdZLh+2ivyR9df@vger.kernel.org, AJvYcCXG3kSIctkwAjrycTxijGiWRnmAJI+TMiybtKWrsVcGPz99pewIVq08X6aDqUjYhleyBcM=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyy1Hq1x1TS9RCjSvGM1AnNSRPMtD8UK8DAyvxXgVCLYVAECbuC
-	bkWjmvxYyC5Ub691dFbveN4U9hY664dwo/eYBDF2m0B/jbZYlGNK
-X-Google-Smtp-Source: AGHT+IHwrjE/SnjfkzYiNUS/YvoOeTq8epmjrCoTM4gX34wia0xyYe74rL6fiPjkr6JnxSxiotfjNg==
-X-Received: by 2002:a17:902:e547:b0:20b:b75d:e8c1 with SMTP id d9443c01a7336-20bfde5567cmr190170345ad.4.1728287281651;
-        Mon, 07 Oct 2024 00:48:01 -0700 (PDT)
-Received: from localhost.localdomain ([43.129.25.208])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20c1393a15fsm34375395ad.121.2024.10.07.00.47.56
+        d=1e100.net; s=20230601; t=1728288437; x=1728893237;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ja9w7vdCtDERzAoUGyjJRlwbo3h/9osUMg9vAVY7lrg=;
+        b=oe+cuOcyXsfgihsU+pvk7a329kTSSHap2rgWSaEbMakpWmvpU2KucgEZcVc6e1YrKa
+         heJ/qKihilr+hm0us1CxXZnjc2qVd/jRHWV/T5WkW7Emq8h00xfxW716JVC5ds/Wt+F+
+         f0mOu1BZcVOJ72agtNrnrB+4bvApDcTxI+4MaBUhb0194UrgUiAcBRFY6w8IRo2JMt5U
+         UY5NnqRKsF2DlFRkrOb3RT7HP02SsV5lZL1LLtxqZWZQ4OGgLDs/Sbor4RGy9Ws6cT2U
+         yq9bt/ENz5+ytpP96WNBT5V2q8ssB19hnZtYvx8uvPlMyr47i7uGP25pA0/2h3mFyVTQ
+         zLYQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVMdkKUTg5StZTd33wu/Sep2pbtSvoxPABAi/SxjCfQlwfebrEDL+WhS25SD09Ouz+U/BSKqDjXNir+jVMY@vger.kernel.org, AJvYcCVufFfsSRdyKTI+MPbvH8FEHYIzcHoJ1w+21jimRS3JX80JDnwiBtSMNuVR5FrOnhCdynh8trAfR2bn77qvviEg@vger.kernel.org, AJvYcCW6eCrkvLpK4Mk1ktzi9AeRMN43Jx0awvu+rHJQuE24Y5jf6Gg9k+4iI/CMtnQpn6zqIb0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwTc/rbYljCxsCh1Z4ufSTIbuipPCLbsmdsSZNwaARVob2Z316a
+	ntuNtM3S7u2YlbpAuCFtC2Ji+ggooeKp47Lif+cFfGT6kPw0TFth
+X-Google-Smtp-Source: AGHT+IGSZXGhFxXfwLuS2KmWGon7scorT641BYrPKbpsyplMaCJjjvTl27nzQjR/VfC+jJ97tU13AQ==
+X-Received: by 2002:a05:600c:1c10:b0:42c:b62c:9f36 with SMTP id 5b1f17b1804b1-42f85a6d528mr87316785e9.5.1728288437146;
+        Mon, 07 Oct 2024 01:07:17 -0700 (PDT)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-37d1691a56dsm5116236f8f.41.2024.10.07.01.07.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Oct 2024 00:48:01 -0700 (PDT)
-From: Menglong Dong <menglong8.dong@gmail.com>
-X-Google-Original-From: Menglong Dong <dongml2@chinatelecom.cn>
-To: edumazet@google.com,
-	kuba@kernel.org
-Cc: davem@davemloft.net,
-	pabeni@redhat.com,
-	dsahern@kernel.org,
-	steffen.klassert@secunet.com,
-	herbert@gondor.apana.org.au,
-	dongml2@chinatelecom.cn,
-	bigeasy@linutronix.de,
-	toke@redhat.com,
-	idosch@nvidia.com,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: [PATCH net-next v2 7/7] net: ip: make ip_route_input() return drop reasons
-Date: Mon,  7 Oct 2024 15:47:02 +0800
-Message-Id: <20241007074702.249543-8-dongml2@chinatelecom.cn>
-X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20241007074702.249543-1-dongml2@chinatelecom.cn>
-References: <20241007074702.249543-1-dongml2@chinatelecom.cn>
+        Mon, 07 Oct 2024 01:07:16 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Mon, 7 Oct 2024 10:07:15 +0200
+To: tyrone-wu <wudevelops@gmail.com>
+Cc: laoar.shao@gmail.com, andrii.nakryiko@gmail.com, andrii@kernel.org,
+	ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
+	eddyz87@gmail.com, haoluo@google.com, john.fastabend@gmail.com,
+	kernel-patches-bot@fb.com, kpsingh@kernel.org,
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	martin.lau@linux.dev, mykolal@fb.com, olsajiri@gmail.com,
+	sdf@fomichev.me, shuah@kernel.org, song@kernel.org,
+	yonghong.song@linux.dev
+Subject: Re: [PATCH bpf v5 1/2] bpf: fix unpopulated name_len field in
+ perf_event link info
+Message-ID: <ZwOWs_XrBtlTGE24@krava>
+References: <CALOAHbC5xm7Cbfhau3z5X2PqUhiHECNWAPtJCWiOVqTKmdZp-Q@mail.gmail.com>
+ <20241006195131.563006-1-wudevelops@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241006195131.563006-1-wudevelops@gmail.com>
 
-In this commit, we make ip_route_input() return skb drop reasons that come
-from ip_route_input_noref().
+On Sun, Oct 06, 2024 at 07:51:30PM +0000, tyrone-wu wrote:
+> Previously when retrieving `bpf_link_info.perf_event` for
+> kprobe/uprobe/tracepoint, the `name_len` field was not populated by the
+> kernel, leaving it to reflect the value initially set by the user. This
+> behavior was inconsistent with how other input/output string buffer
+> fields function (e.g. `raw_tracepoint.tp_name_len`).
+> 
+> This patch fills `name_len` with the actual size of the string name.
+> 
+> Link: https://lore.kernel.org/bpf/CABVU1kXwQXhqQGe0RTrr7eegtM6SVW_KayZBy16-yb0Snztmtg@mail.gmail.com/
+> Fixes: 1b715e1b0ec5 ("bpf: Support ->fill_link_info for perf_event")
+> Signed-off-by: tyrone-wu <wudevelops@gmail.com>
+> Acked-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+> V4 -> V5:
+> Link: https://lore.kernel.org/bpf/CALOAHbC5xm7Cbfhau3z5X2PqUhiHECNWAPtJCWiOVqTKmdZp-Q@mail.gmail.com/
+> - Check that buf is not NULL before retrieving/using its length
+> 
+> V3 -> V4:
+> Link: https://lore.kernel.org/bpf/Zv_PP6Gs5cq3W2Ey@krava/
+> - Split patch into separate kernel and selftest change
+> 
+> V2 -> V3:
+> Link: https://lore.kernel.org/bpf/Zv7sISV0yEyGlEM3@krava/
+> - Use clearer variable name for user set/inputted name len (name_len -> input_len)
+> - Change (name_len -> input_len) type from size_t to u32 since it's only received and used as u32
+> 
+> V1 -> V2:
+> Link: https://lore.kernel.org/bpf/Zv0wl-S13WJnIkb_@krava/
+> - Use user set *ulen in bpf_copy_to_user before overwriting *ulen
+> 
+>  kernel/bpf/syscall.c | 38 ++++++++++++++++++++++++--------------
+>  1 file changed, 24 insertions(+), 14 deletions(-)
+> 
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index a8f1808a1ca5..3df192a6bdcc 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -3565,32 +3565,35 @@ static void bpf_perf_link_dealloc(struct bpf_link *link)
+>  }
+>  
+>  static int bpf_perf_link_fill_common(const struct perf_event *event,
+> -				     char __user *uname, u32 ulen,
+> +				     char __user *uname, u32 *ulen,
+>  				     u64 *probe_offset, u64 *probe_addr,
+>  				     u32 *fd_type, unsigned long *missed)
+>  {
+>  	const char *buf;
+> -	u32 prog_id;
+> +	u32 prog_id, input_len;
+>  	size_t len;
+>  	int err;
+>  
+> -	if (!ulen ^ !uname)
+> +	if (!(*ulen) ^ !uname)
+>  		return -EINVAL;
+>  
+>  	err = bpf_get_perf_event_info(event, &prog_id, fd_type, &buf,
+>  				      probe_offset, probe_addr, missed);
+>  	if (err)
+>  		return err;
+> -	if (!uname)
+> -		return 0;
+> +
+>  	if (buf) {
+> +		input_len = *ulen;
+>  		len = strlen(buf);
+> -		err = bpf_copy_to_user(uname, buf, ulen, len);
+> -		if (err)
+> -			return err;
+> -	} else {
+> -		char zero = '\0';
+> +		*ulen = len + 1;
+>  
+> +		if (uname) {
+> +			err = bpf_copy_to_user(uname, buf, input_len, len);
+> +			if (err)
+> +				return err;
+> +		}
+> +	} else if (uname) {
+> +		char zero = '\0';
+>  		if (put_user(zero, uname))
+>  			return -EFAULT;
+>  	}
 
-Meanwhile, adjust all the call to it.
+hm, why not just simple check buf for and keep the rest? seems less complicated..
 
-Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
+jirka
+
+
 ---
- include/net/route.h             |  7 ++++---
- net/bridge/br_netfilter_hooks.c | 11 ++++++-----
- net/ipv4/icmp.c                 |  1 +
- 3 files changed, 11 insertions(+), 8 deletions(-)
-
-diff --git a/include/net/route.h b/include/net/route.h
-index c0b1b5fb9b59..87d2c103616e 100644
---- a/include/net/route.h
-+++ b/include/net/route.h
-@@ -209,8 +209,9 @@ int ip_route_use_hint(struct sk_buff *skb, __be32 dst, __be32 src,
- 		      u8 tos, struct net_device *devin,
- 		      const struct sk_buff *hint);
- 
--static inline int ip_route_input(struct sk_buff *skb, __be32 dst, __be32 src,
--				 dscp_t dscp, struct net_device *devin)
-+static inline enum skb_drop_reason
-+ip_route_input(struct sk_buff *skb, __be32 dst, __be32 src, dscp_t dscp,
-+	       struct net_device *devin)
- {
- 	enum skb_drop_reason reason;
- 
-@@ -223,7 +224,7 @@ static inline int ip_route_input(struct sk_buff *skb, __be32 dst, __be32 src,
- 	}
- 	rcu_read_unlock();
- 
--	return reason ? -EINVAL : 0;
-+	return reason;
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index a8f1808a1ca5..e393b94b90ec 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -3565,27 +3565,31 @@ static void bpf_perf_link_dealloc(struct bpf_link *link)
  }
  
- void ipv4_update_pmtu(struct sk_buff *skb, struct net *net, u32 mtu, int oif,
-diff --git a/net/bridge/br_netfilter_hooks.c b/net/bridge/br_netfilter_hooks.c
-index c6bab2b5e834..ab4b9c6ae34b 100644
---- a/net/bridge/br_netfilter_hooks.c
-+++ b/net/bridge/br_netfilter_hooks.c
-@@ -372,8 +372,8 @@ static int br_nf_pre_routing_finish(struct net *net, struct sock *sk, struct sk_
- 	struct nf_bridge_info *nf_bridge = nf_bridge_info_get(skb);
- 	struct net_device *dev = skb->dev, *br_indev;
- 	const struct iphdr *iph = ip_hdr(skb);
-+	enum skb_drop_reason reason;
- 	struct rtable *rt;
--	int err;
+ static int bpf_perf_link_fill_common(const struct perf_event *event,
+-				     char __user *uname, u32 ulen,
++				     char __user *uname, u32 *ulen,
+ 				     u64 *probe_offset, u64 *probe_addr,
+ 				     u32 *fd_type, unsigned long *missed)
+ {
+ 	const char *buf;
+-	u32 prog_id;
++	u32 prog_id, input_len;
+ 	size_t len;
+ 	int err;
  
- 	br_indev = nf_bridge_get_physindev(skb, net);
- 	if (!br_indev) {
-@@ -389,9 +389,9 @@ static int br_nf_pre_routing_finish(struct net *net, struct sock *sk, struct sk_
- 	}
- 	nf_bridge->in_prerouting = 0;
- 	if (br_nf_ipv4_daddr_was_changed(skb, nf_bridge)) {
--		err = ip_route_input(skb, iph->daddr, iph->saddr,
--				     ip4h_dscp(iph), dev);
--		if (err) {
-+		reason = ip_route_input(skb, iph->daddr, iph->saddr,
-+					ip4h_dscp(iph), dev);
-+		if (reason) {
- 			struct in_device *in_dev = __in_dev_get_rcu(dev);
+-	if (!ulen ^ !uname)
++	if (!(*ulen) ^ !uname)
+ 		return -EINVAL;
  
- 			/* If err equals -EHOSTUNREACH the error is due to a
-@@ -401,7 +401,8 @@ static int br_nf_pre_routing_finish(struct net *net, struct sock *sk, struct sk_
- 			 * martian destinations: loopback destinations and destination
- 			 * 0.0.0.0. In both cases the packet will be dropped because the
- 			 * destination is the loopback device and not the bridge. */
--			if (err != -EHOSTUNREACH || !in_dev || IN_DEV_FORWARD(in_dev))
-+			if (reason != SKB_DROP_REASON_IP_INADDRERRORS || !in_dev ||
-+			    IN_DEV_FORWARD(in_dev))
- 				goto free_skb;
- 
- 			rt = ip_route_output(net, iph->daddr, 0,
-diff --git a/net/ipv4/icmp.c b/net/ipv4/icmp.c
-index 23664434922e..c3bafff093e0 100644
---- a/net/ipv4/icmp.c
-+++ b/net/ipv4/icmp.c
-@@ -546,6 +546,7 @@ static struct rtable *icmp_route_lookup(struct net *net, struct flowi4 *fl4,
- 		skb_dst_set(skb_in, NULL);
- 		err = ip_route_input(skb_in, fl4_dec.daddr, fl4_dec.saddr,
- 				     dscp, rt2->dst.dev);
-+		err = err ? -EINVAL : 0;
- 
- 		dst_release(&rt2->dst);
- 		rt2 = skb_rtable(skb_in);
--- 
-2.39.5
-
+ 	err = bpf_get_perf_event_info(event, &prog_id, fd_type, &buf,
+ 				      probe_offset, probe_addr, missed);
+ 	if (err)
+ 		return err;
++	if (buf) {
++		input_len = *ulen;
++		len = strlen(buf);
++		*ulen = len + 1;
++	}
+ 	if (!uname)
+ 		return 0;
+ 	if (buf) {
+-		len = strlen(buf);
+-		err = bpf_copy_to_user(uname, buf, ulen, len);
++		err = bpf_copy_to_user(uname, buf, input_len, len);
+ 		if (err)
+ 			return err;
+ 	} else {
 
