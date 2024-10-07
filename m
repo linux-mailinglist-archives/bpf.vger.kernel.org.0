@@ -1,168 +1,119 @@
-Return-Path: <bpf+bounces-41125-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41126-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F37BF992DAF
-	for <lists+bpf@lfdr.de>; Mon,  7 Oct 2024 15:48:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C7A1992DF8
+	for <lists+bpf@lfdr.de>; Mon,  7 Oct 2024 15:56:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9D5EB1F22CA6
-	for <lists+bpf@lfdr.de>; Mon,  7 Oct 2024 13:48:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 33075281E5F
+	for <lists+bpf@lfdr.de>; Mon,  7 Oct 2024 13:56:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10F631D4358;
-	Mon,  7 Oct 2024 13:48:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDDE51D54D7;
+	Mon,  7 Oct 2024 13:56:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="fcXenWxY";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="uycR1gYD"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hRQYqMMl"
 X-Original-To: bpf@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CA901D2B1B;
-	Mon,  7 Oct 2024 13:48:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C1F21D45FF;
+	Mon,  7 Oct 2024 13:56:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728308886; cv=none; b=sKvIGgv7VLUtxU/LP8H8uu6e6yEz+ePhLED9bujTrW9wxuS2YZcj9g6/Sr9Qicdc2syFJk1apvF+jZTO1ejYpqCIKlLD7vWssUDxJpVIqGgXqXCagM8l4wDHZPAfiQZQQ2mEkQ+eEaEHak/NJBnagpyK4uKFh+HG5oV3Z134Vqw=
+	t=1728309364; cv=none; b=lslsxKjvH0sgfWLnOZysbQ5hsqAm2/CQQaMWZdlOmNJ8o9Z+qprbWldru+yx+s3GsKQRhY27T6QEzAVJ6JWKam6gDZaLkUdWFKiPRe6YiIMJ/hZ4b5yU79obowxvWoi+cczBoaSKOnKlKQ9rUf2KWuKrx7hP4VX8tK0rs/DqFZ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728308886; c=relaxed/simple;
-	bh=xo5Qc8fWt2E4M176sLxxEYhptKrDLxzLQqtDN34v9b0=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=f1pMFWR/e7O5/w3LHOrSfOvS42frZ1U/Kcd6jVn0z5Uc3IuHwbG1S003A5mzOX+OxEAabPR0VosjUlifawsHJgVTXhQPK2NSBCG80zd6e8McdRsnuU3ULTQ+XNoPdlSz+ymtIuI1uMMoRiaAW5ngWkYkiw8RLc5VMrU1liD8b5k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=fcXenWxY; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=uycR1gYD; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Kurt Kanzenbach <kurt@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1728308883;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/CMEPpVEE6fy3UEb+JX8XqWy4ReKkQZ2Nee5KJh8d/0=;
-	b=fcXenWxYppf4B3MgjuL064fGlAUEFe1lUp1CKZVXRONISZCaqx34CPlgsA9H3QSGAbYqEK
-	cjNvhGMGB7TLtyzmvfQAGl7ci9uo6to4sfuK6miJHymST2UKXaUxiqlisyyufbDIejlAkX
-	qxw9Z1hIxAelAYaLwwf32j2XFt/fhzwP1tnXr7O1pZU2ymcbgl/DlXFIWgc9VEAYmlTxsu
-	Ph5ZXfjoLr0tv2kxhaZ58obNzONOPNYrxXqvcw0U65tm0yq3l+WqNNXgy64njzlXE5aTp/
-	b5evre4s09feOeHeZCa5ju6yUw/NpHhylZAjHn3n3+6Wsawkk4tXTuIlKyFLNw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1728308883;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/CMEPpVEE6fy3UEb+JX8XqWy4ReKkQZ2Nee5KJh8d/0=;
-	b=uycR1gYDgxQPnbwBcdIYakrl/MLcbeIXwkYNCh6hLRKdncJULrn57s71HsL7JlVFPJK8g4
-	BVBnxR7dPoRnulAw==
-To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc: Tony Nguyen <anthony.l.nguyen@intel.com>, Przemek Kitszel
- <przemyslaw.kitszel@intel.com>, "David S. Miller" <davem@davemloft.net>,
- Eric
- Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo
- Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>, Richard Cochran
- <richardcochran@gmail.com>, Sriram Yagnaraman
- <sriram.yagnaraman@ericsson.com>, Benjamin Steinke
- <benjamin.steinke@woks-audio.com>, Sebastian Andrzej Siewior
- <bigeasy@linutronix.de>, intel-wired-lan@lists.osuosl.org,
- netdev@vger.kernel.org, bpf@vger.kernel.org, Sriram Yagnaraman
- <sriram.yagnaraman@est.tech>
-Subject: Re: [PATCH iwl-next v7 5/5] igb: Add AF_XDP zero-copy Tx support
-In-Reply-To: <ZwPfARyIRE+MvqyK@boxer>
-References: <20241007-b4-igb_zero_copy-v7-0-23556668adc6@linutronix.de>
- <20241007-b4-igb_zero_copy-v7-5-23556668adc6@linutronix.de>
- <ZwPfARyIRE+MvqyK@boxer>
-Date: Mon, 07 Oct 2024 15:48:01 +0200
-Message-ID: <87h69o3tym.fsf@kurt.kurt.home>
+	s=arc-20240116; t=1728309364; c=relaxed/simple;
+	bh=wvCri/APOwLwKzEXU27ZALMfuTtuI11RCzPtlLbbyiQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TF+Ueb112L/0sL+tEZQpkg//UZHoZIlzJG9U7qx1Ktvqczl41yu3koXCnUCerYVhGNVG5/iNNKHl345/G1u7629dStQj1DYkBoTFUc1TxbUGyAeBhfEf+mKiQhuAfPGuzZDsEqK9RQHoJQS9tf9HD/qZAA1OFsdY73DUH1o0bMM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hRQYqMMl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 408BEC4CEC6;
+	Mon,  7 Oct 2024 13:56:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1728309363;
+	bh=wvCri/APOwLwKzEXU27ZALMfuTtuI11RCzPtlLbbyiQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=hRQYqMMlWb5R+TYN+9Gtblw36NWS4sjRrmiX2IcEgOjSnsuMa2acTeTUpw136ZRVn
+	 ehpgIagQIUhxVoACUxfRZT2LSsxGI2n3MdKnQ/AN44UH115WRfbZPOXMJQPElsd4MQ
+	 TpiZyYjaBEunWM+u55QvDW1NIpbpzHLl6i748lQj0tu4MpatagA3TolpoNayyFKAKx
+	 kSYcgq14cvbbubEonZRZND/yni3VGHU6z+Nd/cUGf3FXS9xhh+HpU38eI5e+1w7JgG
+	 xW5LusspTY1r81TnxXZh/hPnsZzgIbUKwOn05fYHaKHsim6h7YQbnrrPJ/SyrKiIG/
+	 N0sOS9Soj4BYQ==
+Date: Mon, 7 Oct 2024 10:55:59 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Stephen Brennan <stephen.s.brennan@oracle.com>
+Cc: bpf@vger.kernel.org, dwarves@vger.kernel.org,
+	linux-debuggers@vger.kernel.org,
+	Alan Maguire <alan.maguire@oracle.com>
+Subject: Re: [PATCH dwarves] btf_encoder: fix reversed condition for matching
+ ELF section
+Message-ID: <ZwPob57HKYbfNpOH@x1>
+References: <20241005000147.723515-1-stephen.s.brennan@oracle.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-	micalg=pgp-sha512; protocol="application/pgp-signature"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241005000147.723515-1-stephen.s.brennan@oracle.com>
 
---=-=-=
-Content-Type: text/plain
+On Fri, Oct 04, 2024 at 05:01:46PM -0700, Stephen Brennan wrote:
+> We only want to consider PROGBITS and NOBITS. However, when refactoring
+> this function for clarity, I managed to miss flip this condition. The
+> result is fewer variables output, and bad section names used for the
+> ones that are emitted.
+> 
+> Fixes: bf2eedb ("btf_encoder: Stop indexing symbols for VARs")
+> 
+> Signed-off-by: Stephen Brennan <stephen.s.brennan@oracle.com>
+> ---
+> 
+> Hi Arnaldo,
+> 
+> This clearly slipped by me in my last small edit based on Alan's feedback, and I
+> didn't run a full enough validation test after the last tweak since it was "just
+> some small nits".
+> 
+> (His code review suggestion was not buggy... I introduced it as I shoddily
+> redid his suggestion).
+> 
+> Sorry for the bug introduced at the last second - feel free to fold this into
+> the commit or keep the commit as a monument to the bug :)
 
-On Mon Oct 07 2024, Maciej Fijalkowski wrote:
->> +bool igb_xmit_zc(struct igb_ring *tx_ring)
->> +{
->> +	unsigned int budget = igb_desc_unused(tx_ring);
->> +	struct xsk_buff_pool *pool = tx_ring->xsk_pool;
->> +	u32 cmd_type, olinfo_status, nb_pkts, i = 0;
->> +	struct xdp_desc *descs = pool->tx_descs;
->> +	union e1000_adv_tx_desc *tx_desc = NULL;
->> +	struct igb_tx_buffer *tx_buffer_info;
->> +	unsigned int total_bytes = 0;
->> +	dma_addr_t dma;
->> +
->> +	if (!netif_carrier_ok(tx_ring->netdev))
->> +		return true;
->> +
->> +	if (test_bit(IGB_RING_FLAG_TX_DISABLED, &tx_ring->flags))
->> +		return true;
->> +
->> +	nb_pkts = xsk_tx_peek_release_desc_batch(pool, budget);
->> +	if (!nb_pkts)
->> +		return true;
->> +
->> +	while (nb_pkts-- > 0) {
->> +		dma = xsk_buff_raw_get_dma(pool, descs[i].addr);
->> +		xsk_buff_raw_dma_sync_for_device(pool, dma, descs[i].len);
->> +
->> +		tx_buffer_info = &tx_ring->tx_buffer_info[tx_ring->next_to_use];
->> +		tx_buffer_info->bytecount = descs[i].len;
->> +		tx_buffer_info->type = IGB_TYPE_XSK;
->> +		tx_buffer_info->xdpf = NULL;
->> +		tx_buffer_info->gso_segs = 1;
->> +		tx_buffer_info->time_stamp = jiffies;
->> +
->> +		tx_desc = IGB_TX_DESC(tx_ring, tx_ring->next_to_use);
->> +		tx_desc->read.buffer_addr = cpu_to_le64(dma);
->> +
->> +		/* put descriptor type bits */
->> +		cmd_type = E1000_ADVTXD_DTYP_DATA | E1000_ADVTXD_DCMD_DEXT |
->> +			   E1000_ADVTXD_DCMD_IFCS;
->> +		olinfo_status = descs[i].len << E1000_ADVTXD_PAYLEN_SHIFT;
->> +
->> +		cmd_type |= descs[i].len | IGB_TXD_DCMD;
->
-> I forgot if we spoke about this but you still set RS bit for each produced
-> desc. Probably we agreed that since cleaning side is shared with 'slow'
-> path it would be too much of an effort to address that?
+Nope, as it was just in the next branch, I folded it into the fixed
+commit and kept just a lore link to this fixup, all is back in next now
+and I'm redoing tests here.
 
-Yes, and i believe we agreed that this needs to be addressed later, also
-for igc.
+Thanks for realizing the mistake and providing a fix, and thanks to Jiri
+and Alan for reviewing the fix.
 
->
-> Could you add a FIXME/TODO here so that we won't lose this from our
-> radars?
-
-Sure.
-
-Thanks,
-Kurt
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQJHBAEBCgAxFiEEvLm/ssjDfdPf21mSwZPR8qpGc4IFAmcD5pETHGt1cnRAbGlu
-dXRyb25peC5kZQAKCRDBk9HyqkZzgsWdD/9yy16yaYLB4R5GpXSpQa/47OdSmlNU
-38nE4hLd6bLrnhVvu5XEoglQyPn0jciYPw69b45JXi5y/Fe/Whegtw+jYC8/StB1
-j3RPnd47yX5vvmwn6+413ybpiE+fk1yBKmhjhMj8VLjGb6ejFC7J6L65q0k4CvbZ
-jx1XfF+0b58+ZTyjSLAi3KJhjkMFfsmdosVm6Rqqqeui5ZICTXTrjKWizj/8rDR0
-nv4DLRFgPdhYpD+xbjtDT5D7eBnkXI3kwznQHdVreimI2Niv5TOqc9vHa8RIbqHw
-rdFK3ihLAmcKm4vApDXdHnkAl3SQMdWQX5JNE+X4DL4Cd1DP2iMpsXYn9RNgtdw+
-2Ogmn9joZiVrtXAzt0aijkXzQFO8S7fo36EjJ8Wkx9mMHcUjHth1WJn3i/tB/1+5
-Y/m0HxSvGGreoQ1ApECJJkToYcaWZwmyd66C7u2mg0jQSEipqtTavFNWyaBIq7OR
-REIlkZTfoRaa7mrcJXMEbNprJGFZwQ3VlXUii7ps02Yce35+QAZF5cB44IPue77O
-5uWWIWKX2QGMyXdx2NTSWngo0iidI+VQfxBNKut5zIcBBEBxZDOjumJevWedPsrV
-3SlQOW3uoopIdRbu18Cw3TZQoSR2/Nxn6zfWO3R+pyplWRH3gDWcrVW7Dewic+2v
-PYzAZE+2VlG36w==
-=b4js
------END PGP SIGNATURE-----
---=-=-=--
+- Arnaldo
+ 
+> Thanks,
+> Stephen
+> 
+>  btf_encoder.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/btf_encoder.c b/btf_encoder.c
+> index 201a48c..5954238 100644
+> --- a/btf_encoder.c
+> +++ b/btf_encoder.c
+> @@ -2137,8 +2137,8 @@ static size_t get_elf_section(struct btf_encoder *encoder, uint64_t addr)
+>  	/* Start at index 1 to ignore initial SHT_NULL section */
+>  	for (size_t i = 1; i < encoder->seccnt; i++) {
+>  		/* Variables are only present in PROGBITS or NOBITS (.bss) */
+> -		if (encoder->secinfo[i].type == SHT_PROGBITS ||
+> -		    encoder->secinfo[i].type == SHT_NOBITS)
+> +		if (!(encoder->secinfo[i].type == SHT_PROGBITS ||
+> +		     encoder->secinfo[i].type == SHT_NOBITS))
+>  			continue;
+>  
+>  		if (encoder->secinfo[i].addr <= addr &&
+> -- 
+> 2.43.5
 
