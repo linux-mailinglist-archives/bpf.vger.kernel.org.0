@@ -1,114 +1,126 @@
-Return-Path: <bpf+bounces-41141-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41142-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 727CC9933AB
-	for <lists+bpf@lfdr.de>; Mon,  7 Oct 2024 18:45:44 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 807F49933C8
+	for <lists+bpf@lfdr.de>; Mon,  7 Oct 2024 18:48:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2B4BE1F243DC
-	for <lists+bpf@lfdr.de>; Mon,  7 Oct 2024 16:45:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B165C1C21966
+	for <lists+bpf@lfdr.de>; Mon,  7 Oct 2024 16:48:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 955811DB52F;
-	Mon,  7 Oct 2024 16:45:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E0511DC06F;
+	Mon,  7 Oct 2024 16:46:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JFpqTEZo"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Qp1twiEx"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 109F0210E4;
-	Mon,  7 Oct 2024 16:45:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6CC21D4345;
+	Mon,  7 Oct 2024 16:46:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728319536; cv=none; b=WYdhkk8F0IIRkMyPH25eGh3HZZky+D1vLE3f2fhKWfCEysfO8qdC+RT6FrpH02uwHbmI8kDhcOOL0FKB6bgtea+l+d6Je7a5dkEXOWkoPa+2DSjnBUpPcJY0eYyPAP3QzfJfwkPMA01j05ExvsFceRuB482u0VXMGp30UFn110A=
+	t=1728319617; cv=none; b=eyITlV3drUiEQHehCgIGsLYfqnsrNc6anTtTpRezGfEZjnF1ZIcaOw8RgGzwolbIW7npk0Qc7K9DMABhtgTWkll9lHR5Cy5x9dXOfS6rkS0gveapPQ09iuA0PUjTH8f+ywtK7AEQUpVxdoEb+BZB4NH3UJb93I6ZdO06MOA0Bdc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728319536; c=relaxed/simple;
-	bh=RHLEWzCLyBN4xFFOl+qf15YS/UdOA1RB+ZXNvpTNpWo=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=kBpxHEy3jbCtzbKs+dnCi9673EZhlo3kveOoWweMNg5zjWbSkN3Uhtg5fWH6xy95pOq0Vk4mqqfHUOk0gELSwJm4jySRfabIP/WSNKoK+nyQ1q1FxCHRlO3Mne9FWdmjhzfXJx9/UmyFZLgoSHcj97Vdgb9JeLyonsdg0kjVCzc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JFpqTEZo; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 441B8C4CEC6;
-	Mon,  7 Oct 2024 16:45:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728319535;
-	bh=RHLEWzCLyBN4xFFOl+qf15YS/UdOA1RB+ZXNvpTNpWo=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=JFpqTEZouLwUu4N+gjdJrc/Rc6hlA9F+JKUncCBWBDKlFVq267zmTBUSEnemXr5/F
-	 0p6Af4rNvAtTuc2BsI9iWuH8FehyWQ/Wjya9t5tGjNnaDsXFfiIDBWwnd8P+zaCqt/
-	 vRJnMzpd8Gba5qKWgRShwexTkj9QKexMmo53xcfDf6TXg+FuqXsWJZ20b5kdMowEIo
-	 JHtY1qXK72SD2ZqaWeSB9oElI+Ui2XTHIcye8i4h+mi4/OwWM3JgetOQ3IOHj7KrPW
-	 MWXY6EoqiGjG7TXPQQwh1yLkvhpDKjkKf3c4yVxJU4TCGM+RdZmRI09bnY2+ETyOHD
-	 0rtJTFbKPo02A==
-From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To: Mark Brown <broonie@kernel.org>
-Cc: Tejun Heo <tj@kernel.org>, David Vernet <void@manifault.com>, Shuah Khan
- <shuah@kernel.org>, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org, =?utf-8?B?QmrDtnJuIFTDtnBlbA==?=
- <bjorn@rivosinc.com>,
- bpf@vger.kernel.org, linux-riscv@lists.infradead.org, Anders Roxell
- <anders.roxell@linaro.org>
-Subject: Re: [PATCH v2] selftests: sched_ext: Add sched_ext as proper
- selftest target
-In-Reply-To: <ZwQKRe7iIzZjjEQd@finisterre.sirena.org.uk>
-References: <20241007073133.989166-1-bjorn@kernel.org>
- <ZwQBqlG6MShCkNrU@finisterre.sirena.org.uk>
- <87r08rnbra.fsf@all.your.base.are.belong.to.us>
- <ZwQKRe7iIzZjjEQd@finisterre.sirena.org.uk>
-Date: Mon, 07 Oct 2024 18:45:32 +0200
-Message-ID: <87msjfn9oz.fsf@all.your.base.are.belong.to.us>
+	s=arc-20240116; t=1728319617; c=relaxed/simple;
+	bh=v6/USJgPTXQ3pYhiGAZg9RF+9zeybeo9ggj+sDXuiUc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jkNCUwmQ/9OaGw3fUT1Xd3QtKNV9MiZDp+hgizDtC2TP2sz0pjAZ9/gU1u1EYXLZ5qcuiklCCF4rlilJMyhjhmYRlS7wVvdAmD8i7TkAoJ1gx8Mgt1B7X56AgM56Wbf3oOTbXyV+J6rS7iBTswJG+pLTpojlP4oyQXZRh4ghrYo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Qp1twiEx; arc=none smtp.client-ip=209.85.210.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-71df67c6881so1843841b3a.3;
+        Mon, 07 Oct 2024 09:46:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1728319615; x=1728924415; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=x474kzK8YR4kJtZQLEiCdd924M+GSa8g7xKps8ToXwY=;
+        b=Qp1twiEx2mvpqyj9lk5UFgcsCJ8CDXsuKJ8gNC8V75OgUkYD1oOiixgx0IBY1GrGDt
+         0MekL+aCz2S1BoIlUhXOeWGUfB7BS1e+L1HvsIoR8RBoyn7GOhJDZ90BsIO8BPsgtI3g
+         kpGNUO6uU1h+11s83UpIFwNF8n3IE9A8cBtkRWoJ3EJlNzl8bA7gnylif4endZqC41mc
+         R8tEHy7suJL3Pdcaqye09l16m7bdE7VQoRKHElopn1tkGEKuYMBd8wErBOeZx9sYP/Hc
+         /I5D2N/ibupmiHNz0M1UP+ieiqXg17YdkmzBtSBeNLOs3wdxqmbxW2vvg7FLl/8JP10x
+         7ksA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1728319615; x=1728924415;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=x474kzK8YR4kJtZQLEiCdd924M+GSa8g7xKps8ToXwY=;
+        b=IfGT6azGKW8vmZvjgemfKpbUjJ0ImUExxBw93eifB24jgP1E/oUR2AFNVudJwEo+70
+         I4XllxEd4rRtQHZk7BLOznxDD7r3aBo0ZyU/pHz+1NHJw/qEPwfWB/xldcLiQvDVm+pX
+         nd5j+apmW209kZFQUQWXi9OCR7T4RamsqrElY6NCeuxqzuFi0EhWBTpyfDMDe+8JeT7j
+         12cpN0X0GT6oLzf43ZXsbeL87jfgMUg66M7dxrj9ET4ThDghXrsfp08bJvoemcn1qRjI
+         fuxGC1clp7Zvh9u1Dsfl4zNfoxoNFNqLjLZjb44loWq2wUGunqls2CkCfZaM4VQxJIpB
+         uvBg==
+X-Forwarded-Encrypted: i=1; AJvYcCUDXCfHhAv5jnYTJJHCp2wlNe6ZMcnmv6CnHfvm4vlOW9KnjqrEP1hsVAkX3gXHWuZwA/Ujjjj11J922GZF@vger.kernel.org, AJvYcCVsIwP4LqooKw1/4mCUgBPUYnkI9AEudlMUT63a1axt3vN85ZuPSuJUVNPCunxWkFBGKjw=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywun5z140iFC+yFZL8ZEzISkLM3UhuyALrk/vn1/hsUzpJ4eE5T
+	vKfOHxQJOZZbt0eItg0WryhygU0oWxsJx3TZp55BXIcK9Qs5Ab2o
+X-Google-Smtp-Source: AGHT+IF9R8rki+DMzj2a1TSHbHN7YFw7JEdxr94Rd7L6dc0LOsAEap8bxlgWCWM2KSWPbZwFDWHbiA==
+X-Received: by 2002:a05:6a00:854:b0:71e:695:41ee with SMTP id d2e1a72fcca58-71e06954699mr4611858b3a.5.1728319614971;
+        Mon, 07 Oct 2024 09:46:54 -0700 (PDT)
+Received: from vaxr-BM6660-BM6360.. ([2001:288:7001:2703:d13b:ab1f:73a7:7b60])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-71df0d4633csm4583732b3a.126.2024.10.07.09.46.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Oct 2024 09:46:54 -0700 (PDT)
+From: I Hsin Cheng <richard120310@gmail.com>
+To: martin.lau@linux.dev
+Cc: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	I Hsin Cheng <richard120310@gmail.com>
+Subject: [PATCH] libbpf: Fix integer overflow issue
+Date: Tue,  8 Oct 2024 00:46:48 +0800
+Message-ID: <20241007164648.20926-1-richard120310@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Mark Brown <broonie@kernel.org> writes:
+Fix integer overflow issue discovered by coverity scan, where
+"bpf_program_fd()" might return a value less than zero. Assignment of
+"prog_fd" to "kern_data" will result in integer overflow in that case.
 
-> On Mon, Oct 07, 2024 at 06:00:57PM +0200, Bj=C3=B6rn T=C3=B6pel wrote:
->> Mark Brown <broonie@kernel.org> writes:
->> > On Mon, Oct 07, 2024 at 09:31:32AM +0200, Bj=C3=B6rn T=C3=B6pel wrote:
->
->> >   CLNG-BPF create_dsq.bpf.o
->> > In file included from create_dsq.bpf.c:9:
->> > /home/broonie/git/linux/tools/sched_ext/include/scx/common.bpf.h:33:17=
-: error: use of undeclared identifier 'SCX_DSQ_FLAG_BUILTIN'
->> >    33 |         _Static_assert(SCX_DSQ_FLAG_BUILTIN,
->> >       |                        ^
->
->> This is most likely due to incorrect VMLINUX_BTF_PATHS, so that
->> vmlinux.h is incorrectly generated. Try grepping for
->> SCX_DSQ_FLAG_BUILTIN in vmlinux.h.
->
-> Yeah, it's not in the generated files:
->
-> broonie@finisterre:~/git/linux$ grep SCX_DSQ_FLAG_BUILTIN ./tools/testing=
-/selftests/sched_ext/build/include/vmlinux.h ./tools/testing/selftests/sche=
-d_ext/build/obj/bpftool/vmlinux.h
-> broonie@finisterre:~/git/linux$=20
->
-> I didn't actually build a kernel, if the build system needs a kernel
-> it's just silently not detected that it's missing?
+Do a pre-check after the program fd is returned, if it's negative we
+should ignore this program and move on, or maybe add some error handling
+mechanism here.
 
-It tries to find a kernel with BTF:
-  | VMLINUX_BTF_PATHS ?=3D $(if $(O),$(O)/vmlinux)                         =
-           \
-  |                      $(if $(KBUILD_OUTPUT),$(KBUILD_OUTPUT)/vmlinux)   =
-         \
-  |                      ../../../../vmlinux                               =
-         \
-  |                      /sys/kernel/btf/vmlinux                           =
-         \
-  |                      /boot/vmlinux-$(shell uname -r)
+Signed-off-by: I Hsin Cheng <richard120310@gmail.com>
+---
+ tools/lib/bpf/libbpf.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Similar to all the other selftests using BPF.
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index a3be6f8fac09..95fb5e48e79e 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -8458,6 +8458,9 @@ static void bpf_map_prepare_vdata(const struct bpf_map *map)
+ 			continue;
+ 
+ 		prog_fd = bpf_program__fd(prog);
++		if (prog_fd < 0)
++			continue;
++
+ 		kern_data = st_ops->kern_vdata + st_ops->kern_func_off[i];
+ 		*(unsigned long *)kern_data = prog_fd;
+ 	}
+-- 
+2.43.0
 
-(Oh, and at some point the BPF parts should be in lib.mk...)
-
-
-Bj=C3=B6rn
 
