@@ -1,148 +1,140 @@
-Return-Path: <bpf+bounces-41295-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41296-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4EE319957C4
-	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 21:41:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id CC8A7995825
+	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 22:09:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 595AE1C211BF
-	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 19:41:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 09FA31C2126E
+	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 20:09:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B47E01E0DCC;
-	Tue,  8 Oct 2024 19:41:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBC70215029;
+	Tue,  8 Oct 2024 20:09:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eRiZgYqS"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="d71Dakmf"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
+Received: from mail-io1-f47.google.com (mail-io1-f47.google.com [209.85.166.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52A49213EC7;
-	Tue,  8 Oct 2024 19:41:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 989D121501C
+	for <bpf@vger.kernel.org>; Tue,  8 Oct 2024 20:09:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728416500; cv=none; b=KHi9VGdtXM/p13aaUk2oM+BIv4ML+tORjbs4TXlqYT6H1569rg9U0MfZAVkPVAV38b4gJVDytp1gyy1ru9D1oLwRapgdK9qGzxPvrfw/gskrX8cOT+pSVWQo2f6CiFdODWmlXLcSkWKiUNaqv9cjH2bzQOpoH4WoU85K13B0ekc=
+	t=1728418145; cv=none; b=Hq9GiryvtWaCaD2p5nmKbsNpF7LXSwZcCWjibabbqUjyG+nY+eeulXRgifen4rZc6PI83xnwQJsfW7N6Cu0bY6bB38hlGopTmrl651bTzM6nkxCTqmbd+JmBCvzaIbvunKkpjOyYOpVd9ts/2CREzPwLS0HCwOoCj6mdX2Rjnfo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728416500; c=relaxed/simple;
-	bh=fVGMZtZhgtHCxuhHyUnzKVZDOTuydFWJ9mdX2wICxOU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YH4MkrZcyJ8bd8STFFa/Iedfg716mTdW3rfi61LlWfjqO3qWEHtDRUVDqiBqF42ZVV5KtMTA1GMNaO+2pDArZK85C0iWeblKzGlskDYWvehO67nZRaHoeEs7ALAZD2A5nTkC8dK0p+odAB6ecLveIwr1UL0IC2PHsdAWyRBwKS4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eRiZgYqS; arc=none smtp.client-ip=209.85.167.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-5399675e14cso7029766e87.3;
-        Tue, 08 Oct 2024 12:41:38 -0700 (PDT)
+	s=arc-20240116; t=1728418145; c=relaxed/simple;
+	bh=96/WBjjCEcTbhseVkSHqRdoAVNyBPwQ7jQ4AqTUbNrk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qWJRdSOMH268s03DGHaggZpK48RHcsI8+lupPBFJmOugjSbZbWYgadvBL+vmL1yaH5xt3YKyXrrDUR/zsx2cRA6imAfOfgWUCDTcfjU+GX5n/eW+2znTFO9U4uRTLXtM3fZTQk7SQpFfgbuh3c49rA6+Q1fulgafjC+wUWDXMxY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=d71Dakmf; arc=none smtp.client-ip=209.85.166.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-io1-f47.google.com with SMTP id ca18e2360f4ac-82cdb749598so257369939f.1
+        for <bpf@vger.kernel.org>; Tue, 08 Oct 2024 13:09:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1728416496; x=1729021296; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ubbmBflcQYl2zP8nv9YP3haRuCtPw16r/0MycKENL+U=;
-        b=eRiZgYqSWAlzsJrj+VqSltKUDXsPu3YskxddL9NH1BC+GostNprfGf+ahgA5djbI8y
-         oWqX57Fm0IJRKo4FNmEbxMZYAo0hk3Am2UV14NDLHfL+7qdR9mNRMSojI7TDmgedShtE
-         YsQgQkj3TRGNrgEMEQQxSc5pt/ea89YBNXEXcQl+ihujWpcqBBXY3/n8YIusvRQkn/Qa
-         602G+rCL7y3zqsebGSk2P9XjvW3qoEttnnzRg934h671E6Kt0NTVCTJTPVapepiqutw1
-         dBL2DgCD84Wte3JxaxAxPBO02tfmg1RNYjvHZFPMVIAcUjB4Bc+aJ4V3UyAdgb4MISrb
-         vQwg==
+        d=linuxfoundation.org; s=google; t=1728418143; x=1729022943; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=9huRF/wNisHHqCSWMJS/4iRoGweiDoPtDUbse6lb6K4=;
+        b=d71DakmfBmwNVz5JYQ9E6ssL596Ngaqa9W4eF7arqc1x4UzEKI0BH2DqhG/L5kHYeP
+         FYm7lr39ALILaIcoy5PK6774YB1++A6w9jnAR3KWrtuzYGKtmSiWchDb9NsYAiW05jYF
+         XWTgg315leIGR76gbMdVicAbp0RXXrx6TE2i0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728416496; x=1729021296;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ubbmBflcQYl2zP8nv9YP3haRuCtPw16r/0MycKENL+U=;
-        b=M1U3CA4CcsUY45dEQ1uAFgBF1j0kuBor2VVHKw86c4XVEFjir29n+N9p9VwTPuMXna
-         V5RWQtO+wWmSSQjJhWzw0svkswXjGBaoLvkl2PZ08Z+SEA2Q+SnbWXdIzhMZ/G0sN5uX
-         6LnBYe1bNIeeeCzrnGM4iYso2Os4OtsbLLbuz0dExd5b6b/z/ZOwwcd0LCj6MWEMfAgu
-         Atnd1mjaZtvvOKZvC2mhyxdqsSRx6azSp/F4QDKpGTXgvgxN0OvAQZF+/EaTU13qAi9L
-         L0DRRaYxXY2MNEMQmt0DQfJ91LMbtxetbUu+5XbYx9h4xaZhAqOKDtnCWygNcKe/cWOS
-         g1GQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUJEAOsWvOclUIHItKQXyX5f8a06++pkIXwoHh5GIR4peKnggu00vDMoSCnY4hdAw00Qmc=@vger.kernel.org, AJvYcCXj+233yqRXcHC8gmJGIo0LE9QzzROUdItFrrzpB9sjz5yYB509saihlIf0sFXzhpniYT+1a0Bvm7UZaLuu@vger.kernel.org
-X-Gm-Message-State: AOJu0YzwKOQMaiLdU0fwb1Y96Ko9dgnrRL6ZfXDTcdDzQ6ehCehKtnxi
-	weZO6Vsy+N/hqxbNmFIAa4/wjVVYpYA2BRI6Z2Y+adPBGe4bPa6ytwzizuBOu3Rg6gFXHxe6V0P
-	Xd2s2KezC0xYyeuTX0CKT/WkrY0U=
-X-Google-Smtp-Source: AGHT+IGqIxIVzVAfRF4E8lIehQu2QDm54fmsyMsTO2KtX3X0XxhDyaqYworH63hJ1HFcE0ofa436QIXdupAQ1EQQi6c=
-X-Received: by 2002:a05:6512:ba2:b0:536:9f02:17b4 with SMTP id
- 2adb3069b0e04-539ab9cf41bmr8639804e87.40.1728416496101; Tue, 08 Oct 2024
- 12:41:36 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1728418143; x=1729022943;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9huRF/wNisHHqCSWMJS/4iRoGweiDoPtDUbse6lb6K4=;
+        b=jQSfJopiF6ZEsjp/lnCGKITbhVQ5mo/FV5zmYFPSNFVH8XLdPlwWsEQvGZ0gNJ/VsT
+         Zsg0cZZLo+7apAnuOYXdBhTS7RIhKI/jiYF77Y1aBcwVgPYXLMdcPGn/CXLNeGWGXAwV
+         9eCWLDQVwxHbqzfi0hkj1W3TW/NMT6Se+lR2+RGmmKQLmZHY1jOk+D9uz+yK58HWsgrU
+         dIwavMnYmtsx930Vvkjgw00An81haVk1lGiUwXvIKqWS4oZBWHQRX4hxPwsQwECECVT0
+         cacitoGHHS7d+ZEe9a7KdqDkhmGXUj14rAx41r2Bhn7XM0O/EXfYfxLyVnoeYudSxhG5
+         p7dQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVCpnQBA/twk1XAHjGuybNa3U6AL5qWH6ZWqERB8JvgiIPsGNXyP0HS3hE0zHNp2tWmfYk=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw0D3Bd4EkXYf+Z2Szcr00m+oayimWSc+2v4YcxpMiqqws+S5Cs
+	2qnvhC2vU+eNyuDyyw9iW4tG8rVPIU1XEfAxE6FbPp6SzRTAxXsMUedqtU9m/n4=
+X-Google-Smtp-Source: AGHT+IGHl7cgy6p1Go9Zcy53EN9p/6bAdeTKO57a6EqLNuq/Hk7nBTr1o35VUqdXGpWut7AJPDr5dw==
+X-Received: by 2002:a05:6602:2b87:b0:82a:2a0b:1c7d with SMTP id ca18e2360f4ac-8353d484d1emr23105639f.5.1728418142626;
+        Tue, 08 Oct 2024 13:09:02 -0700 (PDT)
+Received: from [192.168.1.128] ([38.175.170.29])
+        by smtp.gmail.com with ESMTPSA id 8926c6da1cb9f-4db83190a9asm1220476173.91.2024.10.08.13.09.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Oct 2024 13:09:02 -0700 (PDT)
+Message-ID: <efee099b-f478-4bfb-8c6c-90934934477e@linuxfoundation.org>
+Date: Tue, 8 Oct 2024 14:09:01 -0600
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CANpmjNN3OYXXamVb3FcSLxfnN5og-cS31-4jJiB3jrbN_Rsuag@mail.gmail.com>
- <20241008192910.2823726-1-snovitoll@gmail.com> <CANpmjNO9js1Ncb9b=wQQCJi4K8XZEDf_Z9E29yw2LmXkOdH0Xw@mail.gmail.com>
-In-Reply-To: <CANpmjNO9js1Ncb9b=wQQCJi4K8XZEDf_Z9E29yw2LmXkOdH0Xw@mail.gmail.com>
-From: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
-Date: Wed, 9 Oct 2024 00:42:25 +0500
-Message-ID: <CACzwLxhJTHJ-rjwrvw5ni6jRfCG5euzN73EcckTSuM6jhoNvXA@mail.gmail.com>
-Subject: Re: [PATCH v4] mm, kasan, kmsan: copy_from/to_kernel_nofault
-To: Marco Elver <elver@google.com>
-Cc: akpm@linux-foundation.org, andreyknvl@gmail.com, bpf@vger.kernel.org, 
-	dvyukov@google.com, glider@google.com, kasan-dev@googlegroups.com, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, ryabinin.a.a@gmail.com, 
-	syzbot+61123a5daeb9f7454599@syzkaller.appspotmail.com, 
-	vincenzo.frascino@arm.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] selftests: sched_ext: Add sched_ext as proper selftest
+ target
+To: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+ Tejun Heo <tj@kernel.org>, David Vernet <void@manifault.com>,
+ Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, Mark Brown <broonie@kernel.org>
+Cc: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>,
+ bpf@vger.kernel.org, linux-riscv@lists.infradead.org,
+ Anders Roxell <anders.roxell@linaro.org>,
+ Shuah Khan <skhan@linuxfoundation.org>
+References: <20241008153519.1270862-1-bjorn@kernel.org>
+Content-Language: en-US
+From: Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <20241008153519.1270862-1-bjorn@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed, Oct 9, 2024 at 12:34=E2=80=AFAM Marco Elver <elver@google.com> wrot=
-e:
->
-> On Tue, 8 Oct 2024 at 21:28, Sabyrzhan Tasbolatov <snovitoll@gmail.com> w=
-rote:
-> >
-> > Instrument copy_from_kernel_nofault() with KMSAN for uninitialized kern=
-el
-> > memory check and copy_to_kernel_nofault() with KASAN, KCSAN to detect
-> > the memory corruption.
-> >
-> > syzbot reported that bpf_probe_read_kernel() kernel helper triggered
-> > KASAN report via kasan_check_range() which is not the expected behaviou=
-r
-> > as copy_from_kernel_nofault() is meant to be a non-faulting helper.
-> >
-> > Solution is, suggested by Marco Elver, to replace KASAN, KCSAN check in
-> > copy_from_kernel_nofault() with KMSAN detection of copying uninitilaize=
-d
-> > kernel memory. In copy_to_kernel_nofault() we can retain
-> > instrument_write() explicitly for the memory corruption instrumentation=
-.
-> >
-> > copy_to_kernel_nofault() is tested on x86_64 and arm64 with
-> > CONFIG_KASAN_SW_TAGS. On arm64 with CONFIG_KASAN_HW_TAGS,
-> > kunit test currently fails. Need more clarification on it
-> > - currently, disabled in kunit test.
-> >
-> > Link: https://lore.kernel.org/linux-mm/CANpmjNMAVFzqnCZhEity9cjiqQ9CVN1=
-X7qeeeAp_6yKjwKo8iw@mail.gmail.com/
-> > Reviewed-by: Marco Elver <elver@google.com>
-> > Reported-by: syzbot+61123a5daeb9f7454599@syzkaller.appspotmail.com
-> > Closes: https://syzkaller.appspot.com/bug?extid=3D61123a5daeb9f7454599
-> > Reported-by: Andrey Konovalov <andreyknvl@gmail.com>
-> > Closes: https://bugzilla.kernel.org/show_bug.cgi?id=3D210505
-> > Signed-off-by: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
-> > ---
-> > v2:
-> > - squashed previous submitted in -mm tree 2 patches based on Linus tree
-> > v3:
-> > - moved checks to *_nofault_loop macros per Marco's comments
-> > - edited the commit message
-> > v4:
-> > - replaced Suggested-By with Reviewed-By: Marco Elver
->
-> For future reference: No need to send v+1 just for this tag. Usually
-> maintainers pick up tags from the last round without the original
-> author having to send out a v+1 with the tags. Of course, if you make
-> other corrections and need to send a v+1, then it is appropriate to
-> collect tags where those tags would remain valid (such as on unchanged
-> patches part of the series, or for simpler corrections).
+On 10/8/24 09:35, Björn Töpel wrote:
+> From: Björn Töpel <bjorn@rivosinc.com>
+> 
+> The sched_ext selftests is missing proper cross-compilation support, a
+> proper target entry, and out-of-tree build support.
+> 
+> When building the kselftest suite, e.g.:
+> 
+>    make ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu-  \
+>      TARGETS=sched_ext SKIP_TARGETS="" O=/output/foo \
+>      -C tools/testing/selftests install
+> 
+> or:
+> 
+>    make ARCH=arm64 LLVM=1 TARGETS=sched_ext SKIP_TARGETS="" \
+>      O=/output/foo -C tools/testing/selftests install
+> 
+> The expectation is that the sched_ext is included, cross-built, the
+> correct toolchain is picked up, and placed into /output/foo.
+> 
+> In contrast to the BPF selftests, the sched_ext suite does not use
+> bpftool at test run-time, so it is sufficient to build bpftool for the
+> build host only.
+> 
+> Add ARCH, CROSS_COMPILE, OUTPUT, and TARGETS support to the sched_ext
+> selftest. Also, remove some variables that were unused by the
+> Makefile.
 
-Thanks! Will do it next time.
+Thank you for adding this to change log.
+Maybe we need to add this to kselftest.rst at some point.
 
-Please advise if Andrew should need to be notified in the separate cover le=
-tter
-to remove the prev. merged  to -mm tree patch and use this v4:
-https://lore.kernel.org/all/20241008020150.4795AC4CEC6@smtp.kernel.org/
+> 
+> Signed-off-by: Björn Töpel <bjorn@rivosinc.com>
+> ---
+> v3: * Always build a build host version of bpftool (Mark)
+>      * Make sure LLVM style "ARCH only" cross-build works (Mark)
+>      
+> v2: * Removed the duplicated LLVM prefix parsing (David)
+>      * Made sure make clean didn't do a complete mess (David)
+>      * Added sched_ext to default skip (Shuah)
+
+Thank you.
+
+Reviewed-by: Shuah Khan <skhan@linuxfoundation.org>
+
+thanks,
+-- Shuah
 
