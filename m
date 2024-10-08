@@ -1,228 +1,310 @@
-Return-Path: <bpf+bounces-41235-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41236-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AFCB9944CF
-	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 11:53:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 394A69944F7
+	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 12:01:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F0D0D284A95
-	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 09:53:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B2D6B1F22540
+	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 10:01:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1998E1CEEA0;
-	Tue,  8 Oct 2024 09:52:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C1EB18CBF1;
+	Tue,  8 Oct 2024 10:01:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eT4qJswF"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="NwE+r5Ej";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Cu9em5JV";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="1n3pQQQB";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="UAKXMz7g"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4187C199225;
-	Tue,  8 Oct 2024 09:52:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98D9C78276;
+	Tue,  8 Oct 2024 10:01:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728381123; cv=none; b=XzQxbzq2pZVtOS6lALhCVnz4fWRYTvSx99WLiDW/fIqWrIH2BUlDnbfJZiSNkGQx+q57YLVcswWGmYgoj9FV/lR3q/alOyEFeP+XaThusr/mRNT+VpiCguyBHh+xcQ1XMk7ZxD4vzKIgpFMsLuVRMFYhmh1trHsEzRcNuuoFB2c=
+	t=1728381676; cv=none; b=m15osFq34H/3SOvw9l0g9I01HJFkXJEH5rrbrlRWNYfaLlffGwwuU3CkNgxMHpYC695VqniUpp0/7N3zzJkyFc6N2122AQo5WFQuXdByF5NA4uCDApESWpoP8NV4Bvet/Mr6798Buf7iwmy6v1Q3O/gM6tk/dLs2VptCh6XSGFs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728381123; c=relaxed/simple;
-	bh=MJshw9h40ymJ3Nc5HZrkDmJA46p/ympzLgaX5/Ab3AM=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=VDxWWoTFmpIl/94P8WzHuu2wQJcZqEUjNPfzM6KuXmmQxqbXILyOxrnh3TwhADtGTqzM3B/JH9Fz0qT0Chgg5t7MjU8ubqxo1u8hLBLz3jA/OmrxKE08yAXlxRoitC9n+0q0j/L34Z1curKrTL0YtUuHdOzpT7nICr85YHSzgXY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eT4qJswF; arc=none smtp.client-ip=209.85.214.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-20b7eb9e81eso64436535ad.2;
-        Tue, 08 Oct 2024 02:52:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1728381122; x=1728985922; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QUComqhPeUxBF0aXy60LKQQCYmV3hHWBJE0MF5/cSug=;
-        b=eT4qJswF5N860zomFa1gdpM31oc/eIcBQPTL8qcL+rqj4WFVrSBmuGmxipJjN355bA
-         kM7L4rzIVEY5KZ+VTv5obxaRcYXwik66Sj5PEw+a9i87q6f9Rib4bGPGZFxyyCOYYu00
-         nDVt6oQqUVc5sOYU/3cpOhKIB8XO+mpc6sixf0ARwmbuZjCj0d+8RXI67Okm9wsDyu22
-         y5Ga8c1s586nh0Cbg8wbZXy4PsCpAGlAWj1P0lrb6WU73UngATBJIPHTszP7agpj/dt8
-         q6dPpO0gIW5nVjGy8NGUDK57TExErgOLbEg/qMLWNOk27xyqLM17qqZwrwROBmcDt+90
-         WRvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728381122; x=1728985922;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QUComqhPeUxBF0aXy60LKQQCYmV3hHWBJE0MF5/cSug=;
-        b=eVaNjZJdTrdrBuqTPy1H1uvMB7uqpiVZ4azJ47S+GRaKpS6jXeo/gZzN2FLTNeYYjm
-         9oZ7OPslN6qTV52bl/nLVgE9kRz/Ekn/6mrR6hcWegPTCI31OG0pvXsFyWno7M3M0bjy
-         DWXTyvDYDsd941RMTBfzfkz+xqDPM+AmIG6SNdY1lzH9JVLFAH6rUarOGP0f4QBZK9Sl
-         iiOiJ9WZCuyI2Em5+YZBL2QSZrOextTMoy33Uof99i9SCizXCJX+QpyizNFaEOhNgvoB
-         rV4PCnEIvinX8PElTwkdohPh8Lh25tWG0PqelA1Am7prJM6V91gR+UblLhx/dCoOBO1N
-         xo8Q==
-X-Forwarded-Encrypted: i=1; AJvYcCW8bx/i8ZNk72pP+moolnSKQ4Ikd9pTy5hmrOWJ2xYKQVYvOBS8gQQAfwSoo1dLILR6cXFquwg=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwjersDqjWoLWCpgnk4oOrGiM4hGqgQjXAG3yya82ZVBfMEDRHG
-	tIEROJm26VScbsgu6Yqgmy1sRfvK9ejngdURBHGZTvwN1nHS5DwTO3GLig==
-X-Google-Smtp-Source: AGHT+IELp7iJAl1g8RI4hS7+vxFcLa36F2p1sSzf3KervtMfeEq37sWtPBKzjDFft6AlQ0rnKrBJJw==
-X-Received: by 2002:a17:903:2452:b0:20b:8c13:533f with SMTP id d9443c01a7336-20bfdff0141mr175711685ad.24.1728381121713;
-        Tue, 08 Oct 2024 02:52:01 -0700 (PDT)
-Received: from KERNELXING-MB0.tencent.com ([43.132.141.21])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20c138cfd25sm52527345ad.73.2024.10.08.02.51.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Oct 2024 02:52:01 -0700 (PDT)
-From: Jason Xing <kerneljasonxing@gmail.com>
-To: davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	dsahern@kernel.org,
-	willemdebruijn.kernel@gmail.com,
-	willemb@google.com,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org
-Cc: bpf@vger.kernel.org,
-	netdev@vger.kernel.org,
-	Jason Xing <kernelxing@tencent.com>
-Subject: [PATCH net-next 9/9] net-timestamp: add bpf support for rx software/hardware timestamp
-Date: Tue,  8 Oct 2024 17:51:09 +0800
-Message-Id: <20241008095109.99918-10-kerneljasonxing@gmail.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20241008095109.99918-1-kerneljasonxing@gmail.com>
-References: <20241008095109.99918-1-kerneljasonxing@gmail.com>
+	s=arc-20240116; t=1728381676; c=relaxed/simple;
+	bh=+0FDQuRcCQaBOYQeUSn0bsdncp8GJcXLugOJUkCRPqI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Elejz5zaveGarX8fzDh7dj4zaeLM767AVzSyHZXw9nGYAQUqLe8icvQ79EGwNew4ZgMkFPOy073FGzmyqdWl5ZGYYquN3XXQCnlhFZv1KtZ1+AA2n5sKVS4gip9x/Vgn+N7JTr2oniqdIk5D1r5W5XYO0DslUaRx5dA8hUUsoRE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=NwE+r5Ej; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Cu9em5JV; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=1n3pQQQB; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=UAKXMz7g; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id B2C921F7A5;
+	Tue,  8 Oct 2024 10:01:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1728381672; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=auDmFYal75sChbZaknVCwko3uWEWFwGgE/swGMkMKss=;
+	b=NwE+r5EjBxB+AfwgzBXoo80gUna92I+6hi7l3iIlzheBdyIsoA95hPzU2Q4S3sQVMOADR1
+	7WphlHaaylHqMBIliH9Io9YrfpqZPgmpHLs/mKxAIYOjyvVnKzmTel43NO2n5blhcxOPZe
+	5qkYOozm/OT74fsG+StZt0kXhJZEBY4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1728381672;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=auDmFYal75sChbZaknVCwko3uWEWFwGgE/swGMkMKss=;
+	b=Cu9em5JVyrikwe5Fpak2RC1oyXfCCG3ilTkK4QIToJwZyGgEka+4HEoNOKMtzP5gIodEyj
+	r1PnlZHJPJD2slDA==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1728381671; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=auDmFYal75sChbZaknVCwko3uWEWFwGgE/swGMkMKss=;
+	b=1n3pQQQBIVlz5pT2Y/rlj0w2ZVpiqXWOqlrwCDEBeWPg3IWgXxwyYQsag/NfNWQ7/Aezob
+	lG3X5bvQ1v3vQOGD/LhftDGT55nxlQ0meoWr5ve5sJ6ZeKzMesyfSCXWWLZuaCOy3eg6Kp
+	k+iD1qnprwdou404o2fVhWF2Axtt2AE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1728381671;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=auDmFYal75sChbZaknVCwko3uWEWFwGgE/swGMkMKss=;
+	b=UAKXMz7gytFoNFQdOEVoVxSznCm/DngyjMEVxA+GetC8V2RKytygMOIdvBIxm9Ons5lqaM
+	NHsFMpyldFUwnDDA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7D82B1340C;
+	Tue,  8 Oct 2024 10:01:11 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id RrwGHucCBWfnQgAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Tue, 08 Oct 2024 10:01:11 +0000
+Message-ID: <7d785f59-7c5a-45e6-b508-8814537a1522@suse.cz>
+Date: Tue, 8 Oct 2024 12:01:11 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [syzbot] [bpf?] WARNING in push_jmp_history
+Content-Language: en-US
+To: Eduard Zingerman <eddyz87@gmail.com>, feng.tang@intel.com
+Cc: syzbot <syzbot+7e46cdef14bf496a3ab4@syzkaller.appspotmail.com>,
+ 42.hyeyoo@gmail.com, akpm@linux-foundation.org, andrii@kernel.org,
+ ast@kernel.org, bpf@vger.kernel.org, cl@linux.com, daniel@iogearbox.net,
+ haoluo@google.com, iamjoonsoo.kim@lge.com, john.fastabend@gmail.com,
+ jolsa@kernel.org, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+ linux-mm@kvack.org, martin.lau@linux.dev, penberg@kernel.org,
+ rientjes@google.com, roman.gushchin@linux.dev, sdf@fomichev.me,
+ song@kernel.org, syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
+References: <6704f097.050a0220.1e4d62.0087.GAE@google.com>
+ <fc6396c21f8a9fa83166fd4ccaee7c2c5069f0b2.camel@gmail.com>
+From: Vlastimil Babka <vbabka@suse.cz>
+Autocrypt: addr=vbabka@suse.cz; keydata=
+ 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
+ EP+ylKVEKb0Q2A==
+In-Reply-To: <fc6396c21f8a9fa83166fd4ccaee7c2c5069f0b2.camel@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Level: 
+X-Spamd-Result: default: False [-1.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=94f9caf16c0af42d];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_TWELVE(0.00)[25];
+	FREEMAIL_TO(0.00)[gmail.com,intel.com];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	RCVD_TLS_ALL(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[syzkaller.appspotmail.com,gmail.com,linux-foundation.org,kernel.org,vger.kernel.org,linux.com,iogearbox.net,google.com,lge.com,kvack.org,linux.dev,fomichev.me,googlegroups.com];
+	SUBJECT_HAS_QUESTION(0.00)[];
+	TAGGED_RCPT(0.00)[7e46cdef14bf496a3ab4];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	REDIRECTOR_URL(0.00)[goo.gl];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:email]
+X-Spam-Score: -1.80
+X-Spam-Flag: NO
 
-From: Jason Xing <kernelxing@tencent.com>
+On 10/8/24 11:41, Eduard Zingerman wrote:
+> On Tue, 2024-10-08 at 01:43 -0700, syzbot wrote:
+>> syzbot has bisected this issue to:
+>> 
+>> commit d0a38fad51cc70ab3dd3c59b54d8079ac19220b9
+>> Author: Feng Tang <feng.tang@intel.com>
+>> Date:   Wed Sep 11 06:45:34 2024 +0000
+>> 
+>>     mm/slub: Improve redzone check and zeroing for krealloc()
+>> 
+>> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11ddbb80580000
+>> start commit:   c02d24a5af66 Add linux-next specific files for 20241003
+>> git tree:       linux-next
+>> final oops:     https://syzkaller.appspot.com/x/report.txt?x=13ddbb80580000
+>> console output: https://syzkaller.appspot.com/x/log.txt?x=15ddbb80580000
+>> kernel config:  https://syzkaller.appspot.com/x/.config?x=94f9caf16c0af42d
+>> dashboard link: https://syzkaller.appspot.com/bug?extid=7e46cdef14bf496a3ab4
+>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10b82707980000
+>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16f4c327980000
+>> 
+>> Reported-by: syzbot+7e46cdef14bf496a3ab4@syzkaller.appspotmail.com
+>> Fixes: d0a38fad51cc ("mm/slub: Improve redzone check and zeroing for krealloc()")
+>> 
+>> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> 
+> There are two issues demonstrated by this repro:
+> - one is mm/slub related;
+> - another one is verification taking forever.
+> 
+> About the mm/slub related. Applying the following patch with
+> additional logging on top of commit d0a38fad51cc identified by syzbot:
 
-Now it's time to let the bpf for rx timestamp take effect.
+The slab one is known from other reports and the problematic commit was
+removed from -next since then.
 
-Signed-off-by: Jason Xing <kernelxing@tencent.com>
----
- include/net/tcp.h              | 14 ++++++++++++++
- include/uapi/linux/bpf.h       |  5 +++++
- net/ipv4/tcp.c                 | 28 +++++++++++++++++++++++++++-
- tools/include/uapi/linux/bpf.h |  5 +++++
- 4 files changed, 51 insertions(+), 1 deletion(-)
-
-diff --git a/include/net/tcp.h b/include/net/tcp.h
-index 739a9fb83d0c..416a039da472 100644
---- a/include/net/tcp.h
-+++ b/include/net/tcp.h
-@@ -2676,6 +2676,14 @@ static inline int tcp_call_bpf_3arg(struct sock *sk, int op, u32 arg1, u32 arg2,
- 	return tcp_call_bpf(sk, op, 3, args);
- }
- 
-+static inline int tcp_call_bpf_4arg(struct sock *sk, int op, u32 arg1, u32 arg2,
-+				    u32 arg3, u32 arg4)
-+{
-+	u32 args[4] = {arg1, arg2, arg3, arg4};
-+
-+	return tcp_call_bpf(sk, op, 4, args);
-+}
-+
- #else
- static inline int tcp_call_bpf(struct sock *sk, int op, u32 nargs, u32 *args)
- {
-@@ -2693,6 +2701,12 @@ static inline int tcp_call_bpf_3arg(struct sock *sk, int op, u32 arg1, u32 arg2,
- 	return -EPERM;
- }
- 
-+static inline int tcp_call_bpf_4arg(struct sock *sk, int op, u32 arg1, u32 arg2,
-+				    u32 arg3, u32 arg4)
-+{
-+	return -EPERM;
-+}
-+
- #endif
- 
- static inline u32 tcp_timeout_init(struct sock *sk)
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 3c28d74d14ea..ffaa483f1362 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -7045,6 +7045,11 @@ enum {
- 					 * flag for other three tx timestamp
- 					 * use.
- 					 */
-+	BPF_SOCK_OPS_TS_RX_OPT_CB,	/* Called when tcp layer tries to
-+					 * receive skbs with timestamps when
-+					 * SO_TIMESTAMPING feature is on
-+					 * It indicates the recorded timestamp.
-+					 */
- };
- 
- /* List of TCP states. There is a build check in net/ipv4/tcp.c to detect
-diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
-index 938e2bff4fa6..f6addd26db9f 100644
---- a/net/ipv4/tcp.c
-+++ b/net/ipv4/tcp.c
-@@ -2278,10 +2278,36 @@ static int tcp_zerocopy_receive(struct sock *sk,
- 
- static bool tcp_bpf_recv_timestamp(struct sock *sk, struct scm_timestamping_internal *tss)
- {
-+	u32 tsflags = READ_ONCE(sk->sk_tsflags);
- 	struct tcp_sock *tp = tcp_sk(sk);
- 
--	if (BPF_SOCK_OPS_TEST_FLAG(tp, BPF_SOCK_OPS_RX_TIMESTAMPING_OPT_CB_FLAG))
-+	if (BPF_SOCK_OPS_TEST_FLAG(tp, BPF_SOCK_OPS_RX_TIMESTAMPING_OPT_CB_FLAG)) {
-+		u32 hw_sec, hw_nsec, sw_sec, sw_nsec;
-+
-+		if (!(tsflags & (SOF_TIMESTAMPING_RX_SOFTWARE |
-+		      SOF_TIMESTAMPING_RX_HARDWARE)))
-+			return true;
-+
-+		if (tsflags & SOF_TIMESTAMPING_RX_SOFTWARE) {
-+			sw_sec = tss->ts[0].tv_sec;
-+			sw_nsec = tss->ts[0].tv_nsec;
-+		} else {
-+			sw_sec = 0;
-+			sw_nsec = 0;
-+		}
-+
-+		if (tsflags & SOF_TIMESTAMPING_RX_HARDWARE) {
-+			hw_sec = tss->ts[2].tv_sec;
-+			hw_nsec = tss->ts[2].tv_nsec;
-+		} else {
-+			hw_sec = 0;
-+			hw_nsec = 0;
-+		}
-+
-+		tcp_call_bpf_4arg(sk, BPF_SOCK_OPS_TS_RX_OPT_CB,
-+				  sw_sec, sw_nsec, hw_sec, hw_nsec);
- 		return true;
-+	}
- 
- 	return false;
- }
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index ff17cd820bde..8a87fee2e012 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -7044,6 +7044,11 @@ enum {
- 					 * flag for other three tx timestamp
- 					 * use.
- 					 */
-+	BPF_SOCK_OPS_TS_RX_OPT_CB,	/* Called when tcp layer tries to
-+					 * receive skbs with timestamps when
-+					 * SO_TIMESTAMPING feature is on
-+					 * It indicates the recorded timestamp.
-+					 */
- };
- 
- /* List of TCP states. There is a build check in net/ipv4/tcp.c to detect
--- 
-2.37.3
+> 
+> ------- 8< ------------------------------------------------------------
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 9a7ed527e47e..c1582a6d1d33 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -3494,7 +3494,9 @@ static int push_jmp_history(struct bpf_verifier_env *env, struct bpf_verifier_st
+>  
+>         cnt++;
+>         alloc_size = kmalloc_size_roundup(size_mul(cnt, sizeof(*p)));
+> +       printk("push_jmp_history: #1 cur->jmp_history=%p\n", cur->jmp_history);
+>         p = krealloc(cur->jmp_history, alloc_size, GFP_USER);
+> +       printk("push_jmp_history: #2 cur->jmp_history=%p\n", p);
+>         if (!p)
+>                 return -ENOMEM;
+>         cur->jmp_history = p;
+> diff --git a/mm/slub.c b/mm/slub.c
+> index e0fb0a26c796..3f5b080ac1f5 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -4627,7 +4627,7 @@ static inline struct kmem_cache *virt_to_cache(const void *obj)
+>         struct slab *slab;
+>  
+>         slab = virt_to_slab(obj);
+> -       if (WARN_ONCE(!slab, "%s: Object is not a Slab page!\n", __func__))
+> +       if (WARN_ONCE(!slab, "%s: Object %p is not a Slab page!\n", __func__, obj))
+>                 return NULL;
+>         return slab->slab_cache;
+>  }
+> ------------------------------------------------------------ >8 -------
+> 
+> Produces the following log:
+> 
+>  l1: [    2.942120] push_jmp_history: #2 cur->jmp_history=00000000a0f6f503
+>  l2: [    2.944445] push_jmp_history: #1 cur->jmp_history=00000000a0f6f503
+>  l3: [    2.944560] ------------[ cut here ]------------
+>  l4: [    2.944647] virt_to_cache: Object 00000000a0f6f503 is not a Slab page!
+>  l5: [    2.944765] WARNING: CPU: 0 PID: 145 at mm/slub.c:4630 krealloc_noprof (mm/slub.c:4630 mm/slub.c:4728 mm/slub.c:4813) 
+>  l6: [    2.944906] Modules linked in:
+>  l7: [    2.945134] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-2.fc40 04/01/2014
+>  l8: [    2.945285] RIP: 0010:krealloc_noprof (mm/slub.c:4630 mm/slub.c:4728 mm/slub.c:4813) 
+>                ...
+> l9:  [    2.952088] BUG: kernel NULL pointer dereference, address: 000000000000001c
+> l10: [    2.952171] #PF: supervisor read access in kernel mode
+> l11: [    2.952240] #PF: error_code(0x0000) - not-present page
+> l12: [    2.952309] PGD 105d51067 P4D 105d51067 PUD 1013d0067 PMD 0 
+> l13: [    2.952402] Oops: Oops: 0000 [#1] PREEMPT SMP KASAN NOPTI
+> l14: [    2.952611] Tainted: [W]=WARN
+> l15: [    2.952664] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-2.fc40 04/01/2014
+> l16: [    2.952794] RIP: 0010:krealloc_noprof (mm/slub.c:0 mm/slub.c:4729 mm/slub.c:4813) 
+> 
+> Lines l{1,2,4} show that address 0xa0f6f503 was first allocated by
+> krealloc and then krealloc failed to recognize it as such.
+> 
+> The warning at l3 is reported by virt_to_cache() called from
+> __do_krealloc():
+> 
+> 
+>    4715 static __always_inline __realloc_size(2) void *
+>    4716 __do_krealloc(const void *p, size_t new_size, gfp_t flags)
+>    4717 {
+>    4718         void *ret;
+>    4719         size_t ks;
+>    4720         int orig_size = 0;
+>    4721         struct kmem_cache *s;
+>    4722 
+>    4723         /* Check for double-free. */
+>    4724         if (likely(!ZERO_OR_NULL_PTR(p))) {
+>    4725                 if (!kasan_check_byte(p))
+>    4726                         return NULL;
+>    4727 
+>    4728                 s = virt_to_cache(p);
+>    4729                 orig_size = get_orig_size(s, (void *)p);
+>    4730                 ks = s->object_size;
+> 
+> When virt_to_cache() reports the warning it returns NULL.
+> Hence variable 's' at line 4728 is NULL and this causes null pointer
+> dereference at line 4730, reported at l9.
+> 
+> Lines 4725-4730 were changed by commit d0a38fad51cc identified by syzbot,
+> previously 'ks' was identified using other means.
+> 
+> Feng, this issue seem unrelated to BPF verifier, could you please take a look?
+> 
+> Best regards,
+> Eduard
+> 
 
 
