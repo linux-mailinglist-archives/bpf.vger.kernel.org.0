@@ -1,248 +1,229 @@
-Return-Path: <bpf+bounces-41237-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41238-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 566E7994520
-	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 12:15:01 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8221F99452D
+	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 12:18:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7A5D11C2399D
-	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 10:15:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C6B721F254A8
+	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 10:18:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 469F61B81CC;
-	Tue,  8 Oct 2024 10:14:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 833A31922C7;
+	Tue,  8 Oct 2024 10:17:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MZoPcBQZ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kbH+UvdL"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1025B19067C;
-	Tue,  8 Oct 2024 10:14:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 422CEEEC8;
+	Tue,  8 Oct 2024 10:17:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728382482; cv=none; b=dqDkOXGL/Rbi9XqltmnIbbXkgcW1pUZSg8o7krsi/8ctl+ePAWyUg5+eJyZMWWWug6rxozm2kWlSygjPfocFdpPfZm/nVvpc4zpus1VpKydoVYO5f3gutJWC/+74HHRhckVUItZ+d0Oyt5cZ+vET9dpNd0s47ljqYpmyB77ILd0=
+	t=1728382674; cv=none; b=ux7c6DerfhvpuSbQZVcqKymojTDlKBg6E5UWQVrBiIRvqsO3KL46FI5m2cpFsMSwALTtSdHDBR3+O7RsodJxnN7A+ga/Zm3hdDvTKnv4tetgMywsv2clqnhsl+eNLuoFp8v8n56txJ7Xa1hoi4c5rlk48W2dkXRB54C2cirs63U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728382482; c=relaxed/simple;
-	bh=TUqU4rRtqBHAmFV5UzRNB/U1p3wPjrjfJRAziwSvtxE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ev61Kf/PLUrVe7a0ZALdpx8PXRiWxy71O7IZEBbX/HTv3jTRbLaRbu+TAP3AAS83H1snncVq35tqKF8p/S3M2UmBdUXor213h9I5vJs24hGMpnZi0LB0NPKWVBIhyxzUxHtNcN9nAgNGahaz5Rq76cWW/0RsY4bgW/Logq6dsxg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MZoPcBQZ; arc=none smtp.client-ip=209.85.128.45
+	s=arc-20240116; t=1728382674; c=relaxed/simple;
+	bh=SFYF8/r/i06nkK3/m1NYik/yK1v1qRVIA7kXQjfjO/4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Gy4A1vWHZn3zHvq59jVvazUYT7t4Hf4YGaG3Olf3BPbOlm9UahUGtckA0uqmtGNQRQTxC2efzpbsZh+xBpDeHmuEumNsZRRFkDG8LpcaVqpEQM135dFCrK4JNRJnbK/cPPaoH6jwdospbFa/fPtCfYZhn6hJn1+We94pJR1hgAU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kbH+UvdL; arc=none smtp.client-ip=209.85.167.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-42e748f78d6so48670835e9.0;
-        Tue, 08 Oct 2024 03:14:40 -0700 (PDT)
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-539973829e7so5414480e87.0;
+        Tue, 08 Oct 2024 03:17:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1728382479; x=1728987279; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1728382670; x=1728987470; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Imn45k5J9wM19h9i9/RuyLoAF2diDSxFA12TsgI6H5w=;
-        b=MZoPcBQZoPDRcIbxRIVYiX+IiSHzxWXtgA3tX5JJMMpA/Z5xtVLfHF0Of3tHvSmYcf
-         UVR/YxXTAl/u30vn0VHizdIM6ul+/DTMYKahj0NgrFpWlztZFnSMdfp3rtgHTzgOKcab
-         e08h+5RXZZz8iH+q94YFoiB8WVx16IVR8Q+r4hTWAEnQ3PbSBzZXICATQQiBWCVgj2iJ
-         FwDw/SygXQ3+Ddac7laW7iNu1BMh0MRm51VEy9pCKl5aKyA8SrTVsBST21W3WqMtKwii
-         RAqQwolwGHEUO1gVsNFJ2qK0O15MPbcrAp8XyNBc4+Rs3S+j4jIpMNs2QXR/lD1vzPnZ
-         R0/w==
+        bh=nm7RsSOhPfPPwg70mqf7oHnrMTjRMeHo6UNAH6x59BU=;
+        b=kbH+UvdLbEFk7SEQLyPAKWk/3w2k0UKUeL7l23+2BxoymrAUFI1RCVe1ruU1xLU8Mg
+         iFZLstghLSbbimJyL6sL8qDqaOUYvdhOUdJhcQymZxbDOiVO1cYOQx2KksnsLJTCgYzB
+         HmV96D2Ib//G+U+ka0yHFKkFcQjm+gFIqhJLzVtKoEqBpRfLM9tqNuXr7SkdBoU6Jisa
+         7UOAw/+ICpNLbfcRHaCPbPbQrBatbyN4OhyYsYsj7AQeUTdlDiSfrdM/DJ/6H79cEe2T
+         BO7x0xEW7CFp7Ss+HLUmkP/UbFHrRfPIAkXTUUmOmPQeqDQlyvSJyyxQFRE4K+2879ni
+         /vjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728382479; x=1728987279;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1728382670; x=1728987470;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Imn45k5J9wM19h9i9/RuyLoAF2diDSxFA12TsgI6H5w=;
-        b=gWtdnCpfCEZx4kYtuvWH1c99gmYLndyLbbBr2cgPllmulaGtV5YuFvTexNVq9XU/XE
-         R10cUV1nPamgJoAg7e1BDwpU4CsPoDZAMWf+teM2SWs70A4LQgaegzzb2TAFSJJy9xzx
-         2inoPQ6Wm/ynHNPXOmsb6v59deMN8vWw18KoHnGTJXgDA+bGm2/McK3nC6if1v3cXRkQ
-         Fe/dMaK0lqxBZOtdQr/s/w4w1lKK7XC6MHPTDrBV80jsJBU/PMWuH8yJbCWu80WSJTVK
-         JRwwpZ9tF1+nxQdQlyvlb/OfpJtWk49I6+LoKgatnlyMcWe+wYqVsPL8ucOXx60BQaYO
-         ZQpA==
-X-Forwarded-Encrypted: i=1; AJvYcCVLZ+GIrw41hYp2r9kha+BTVjRjtVVmwrMENP7Nh0ivytQqxLw5zc8mhHKyl9yUEbDypROX/TP6cs+tSNsO@vger.kernel.org, AJvYcCWIXj4w4SUXgBEnqHYP30RhdDcjupbJOw3uR1ESMUo3nrYqCqENqC6XZp4ZHuucJigmbtE=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzwr4wS+UbLXHaFaKwABZn7+sWubbxQ9NNAOsPJhq25S7DsLQgB
-	XmiRtUAIXD2ZpO7raezoDMtBDv4vau4lD5LFEkJvd7rBRgAPcP8i
-X-Google-Smtp-Source: AGHT+IFUHFdsSTKRxb8639sVgXceTyFTrRE4SGLmq/ZsJV2CO1ZElzEx8lFPPP5n/dq949hi8/BBKA==
-X-Received: by 2002:a05:600c:4f14:b0:42b:a88f:f872 with SMTP id 5b1f17b1804b1-42f85af5387mr96155965e9.32.1728382479035;
-        Tue, 08 Oct 2024 03:14:39 -0700 (PDT)
-Received: from work.. ([94.200.20.179])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-42f89e89624sm103790585e9.12.2024.10.08.03.14.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Oct 2024 03:14:38 -0700 (PDT)
-From: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
-To: elver@google.com,
-	akpm@linux-foundation.org
-Cc: andreyknvl@gmail.com,
-	bpf@vger.kernel.org,
-	dvyukov@google.com,
-	glider@google.com,
-	kasan-dev@googlegroups.com,
-	linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	ryabinin.a.a@gmail.com,
-	snovitoll@gmail.com,
-	syzbot+61123a5daeb9f7454599@syzkaller.appspotmail.com,
-	vincenzo.frascino@arm.com
-Subject: [PATCH v3] mm, kasan, kmsan: copy_from/to_kernel_nofault
-Date: Tue,  8 Oct 2024 15:15:26 +0500
-Message-Id: <20241008101526.2591147-1-snovitoll@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <CACzwLxh1yWXQZ4LAO3gFMjK8KPDFfNOR6wqWhtXyucJ0+YXurw@mail.gmail.com>
-References: <CACzwLxh1yWXQZ4LAO3gFMjK8KPDFfNOR6wqWhtXyucJ0+YXurw@mail.gmail.com>
+        bh=nm7RsSOhPfPPwg70mqf7oHnrMTjRMeHo6UNAH6x59BU=;
+        b=l7il8s12Z4JJeAIhif2mRRjSQpoVGFG0ZbMUpLRdEBKr5oyqKM44YiO7G2EwCpsPRZ
+         3yo95njbFQK21J0KQkRTOy7jLIhMvp7qVWzmz+L44SrqQD1Xs7/7vON5V87czXnid3jk
+         p8CmkwTij4utscOW6qb+aUe7VRPkM5ugCu/ybmUb6vQo20GnvM7UPIVN32RGnPen6aIE
+         wktSRgBecrb8H21pJIS4qONlQJwdWNevAtjPgsCsHf4nvVBJzKtNbUvA159oRSzsZQNf
+         XAmU3oVITlfDo5nGSnlFlBwYEvJY4ur7Bh627dsSYiAKZpylUMNBJVU7JwvGQTJlwf2h
+         TdWw==
+X-Forwarded-Encrypted: i=1; AJvYcCU6UFH6HgXW4Q2masBVQit1vsTgs2mFJfoySEVLyIodVH9Un1hyrkHzhsV5a2yEVyQkvSg=@vger.kernel.org, AJvYcCWLmzPp4IDHy95Qqc/SF9uAjaqH0iGeszWUrexTOwkMn7qJyXbPk5Blo6wEgJgi5S09dgpjJj9g2xUEPJ/4@vger.kernel.org
+X-Gm-Message-State: AOJu0YxQFFowcukXMB/RDXGoEXdJ7M3euDgXJMRA2maESDOmnv5FGV68
+	baNrO0gahSjpTJ547mBXzqomRiIbbmKZGaWfZ9yGCIo1wsj4XtJqEOueWOFtz4TEfH4bZDdOXxz
+	8lZHX2XMWhWna8tsoLiOtpACjP/c=
+X-Google-Smtp-Source: AGHT+IG9ul/fVGV3oF7muBBRZwCiXz8jJbGeHfwS4n+Cr+pqbGbkFWeiWoHTUm6aRcIwL3VIwsS52xrFtC7i+c+jZ9Q=
+X-Received: by 2002:a05:6512:138e:b0:539:9505:7e5 with SMTP id
+ 2adb3069b0e04-539ab87e201mr7007245e87.36.1728382669868; Tue, 08 Oct 2024
+ 03:17:49 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20241007103426.128923-1-puranjay@kernel.org> <20241007103426.128923-2-puranjay@kernel.org>
+ <CAEf4BzZMiwcMY3H9=qwpgCKQxDZmKHcmxEJtRhrTCgNar8YaXQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzZMiwcMY3H9=qwpgCKQxDZmKHcmxEJtRhrTCgNar8YaXQ@mail.gmail.com>
+From: Puranjay Mohan <puranjay12@gmail.com>
+Date: Tue, 8 Oct 2024 12:17:37 +0200
+Message-ID: <CANk7y0iz9SWLXFMbdhOp+1JBqaB6Qhyt6rKonQyE4vGLy=7hYw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 1/2] bpf: implement bpf_send_signal_task() kfunc
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Puranjay Mohan <puranjay@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Instrument copy_from_kernel_nofault() with KMSAN for uninitialized kernel
-memory check and copy_to_kernel_nofault() with KASAN, KCSAN to detect
-the memory corruption.
+On Tue, Oct 8, 2024 at 6:24=E2=80=AFAM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Mon, Oct 7, 2024 at 3:34=E2=80=AFAM Puranjay Mohan <puranjay@kernel.or=
+g> wrote:
+> >
+> > Implement bpf_send_signal_task kfunc that is similar to
+> > bpf_send_signal_thread and bpf_send_signal helpers  but can be used to
+> > send signals to other threads and processes. It also supports sending a
+> > cookie with the signal similar to sigqueue().
+> >
+> > If the receiving process establishes a handler for the signal using the
+> > SA_SIGINFO flag to sigaction(), then it can obtain this cookie via the
+> > si_value field of the siginfo_t structure passed as the second argument
+> > to the handler.
+> >
+> > Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
+> > ---
+> >  kernel/bpf/helpers.c     |  1 +
+> >  kernel/trace/bpf_trace.c | 54 ++++++++++++++++++++++++++++++++++------
+> >  2 files changed, 47 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> > index 4053f279ed4cc..2fd3feefb9d94 100644
+> > --- a/kernel/bpf/helpers.c
+> > +++ b/kernel/bpf/helpers.c
+> > @@ -3035,6 +3035,7 @@ BTF_ID_FLAGS(func, bpf_task_get_cgroup1, KF_ACQUI=
+RE | KF_RCU | KF_RET_NULL)
+> >  #endif
+> >  BTF_ID_FLAGS(func, bpf_task_from_pid, KF_ACQUIRE | KF_RET_NULL)
+> >  BTF_ID_FLAGS(func, bpf_throw)
+> > +BTF_ID_FLAGS(func, bpf_send_signal_task, KF_TRUSTED_ARGS)
+> >  BTF_KFUNCS_END(generic_btf_ids)
+> >
+> >  static const struct btf_kfunc_id_set generic_kfunc_set =3D {
+> > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> > index a582cd25ca876..ae8c9fa8b04d1 100644
+> > --- a/kernel/trace/bpf_trace.c
+> > +++ b/kernel/trace/bpf_trace.c
+> > @@ -802,6 +802,8 @@ struct send_signal_irq_work {
+> >         struct task_struct *task;
+> >         u32 sig;
+> >         enum pid_type type;
+> > +       bool has_siginfo;
+> > +       kernel_siginfo_t info;
+>
+> group_send_sig_info() refers to this as `struct kernel_siginfo`, let's
+> use that and avoid unnecessary typedefs
+>
+> >  };
+> >
+> >  static DEFINE_PER_CPU(struct send_signal_irq_work, send_signal_work);
+> > @@ -811,25 +813,43 @@ static void do_bpf_send_signal(struct irq_work *e=
+ntry)
+> >         struct send_signal_irq_work *work;
+> >
+> >         work =3D container_of(entry, struct send_signal_irq_work, irq_w=
+ork);
+> > -       group_send_sig_info(work->sig, SEND_SIG_PRIV, work->task, work-=
+>type);
+> > +       if (work->has_siginfo)
+> > +               group_send_sig_info(work->sig, &work->info, work->task,=
+ work->type);
+> > +       else
+> > +               group_send_sig_info(work->sig, SEND_SIG_PRIV, work->tas=
+k, work->type);
+>
+> There is lots of duplication while the only difference is between
+> providing SEND_SIG_PRIV and our own &work->info. So maybe let's just
+> have something like
+>
+> struct kernel_siginfo *siginfo;
+>
+> siginfo =3D work->has_siginfo ? &work->info : SEND_SIG_PRIV;
+> group_send_sig_info(work->sig, siginfo, work->task, work->type);
+>
+> ?
+>
+> >         put_task_struct(work->task);
+> >  }
+> >
+> > -static int bpf_send_signal_common(u32 sig, enum pid_type type)
+> > +static int bpf_send_signal_common(u32 sig, enum pid_type type, struct =
+task_struct *tsk, u64 value)
+>
+> task? why tsk?
+>
+> >  {
+> >         struct send_signal_irq_work *work =3D NULL;
+> > +       kernel_siginfo_t info;
+> > +       bool has_siginfo =3D false;
+> > +
+> > +       if (!tsk) {
+> > +               tsk =3D current;
+> > +       } else {
+> > +               has_siginfo =3D true;
+>
+> nit: I find it less confusing for cases like with has_siginfo here,
+> for the variable to be explicitly assigned in both branches, instead
+> of defaulting to false and then reassigned in one of the branches
+>
+> > +               clear_siginfo(&info);
+> > +               info.si_signo =3D sig;
+> > +               info.si_errno =3D 0;
+> > +               info.si_code =3D SI_KERNEL;
+> > +               info.si_pid =3D 0;
+> > +               info.si_uid =3D 0;
+> > +               info.si_value.sival_ptr =3D (void *)value;
+> > +       }
+>
+> kernel test bot complains that this should probably be (void
+> *)(unsigned long)value (which will truncate on 32-bit archtes, but oh
+> well)
+>
+> but can you please double check that it's ok to set
+> info.si_value.sival_ptr for any signal? Because si_value.sival_ptr is
+> actually defined inside __sifields._rt._sigval, which clearly would
+> conflict with _kill, _timer, _sigchld and other groups of signals.
+>
+> so I suspect we'd need to have a list of signals that are OK accepting
+> this extra u64 value, and reject it otherwise (instead of silently
+> corrupting data inside __sifields
 
-syzbot reported that bpf_probe_read_kernel() kernel helper triggered
-KASAN report via kasan_check_range() which is not the expected behaviour
-as copy_from_kernel_nofault() is meant to be a non-faulting helper.
+I tried reading the man pages of sigqueue and it allows using all signals.
 
-Solution is, suggested by Marco Elver, to replace KASAN, KCSAN check in
-copy_from_kernel_nofault() with KMSAN detection of copying uninitilaized
-kernel memory. In copy_to_kernel_nofault() we can retain
-instrument_write() explicitly for the memory corruption instrumentation.
+To test it, I sent SIGCHLD to a process with si_value.sival_ptr using
+sigqueue() and it worked as expected.
 
-copy_to_kernel_nofault() is tested on x86_64 and arm64 with
-CONFIG_KASAN_SW_TAGS. On arm64 with CONFIG_KASAN_HW_TAGS,
-kunit test currently fails. Need more clarification on it
-- currently, disabled in kunit test.
+It shouldn't affect us as we are not populating all fields of
+__sifields anyway. For example if you send SIGCHLD using
+this new kfunc, there is no way to set _utime and _stime or even _pid
+and _uid, here only the signal number
+and this u64 value is relevant.
 
-Link: https://lore.kernel.org/linux-mm/CANpmjNMAVFzqnCZhEity9cjiqQ9CVN1X7qeeeAp_6yKjwKo8iw@mail.gmail.com/
-Suggested-by: Marco Elver <elver@google.com>
-Reported-by: syzbot+61123a5daeb9f7454599@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=61123a5daeb9f7454599
-Reported-by: Andrey Konovalov <andreyknvl@gmail.com>
-Closes: https://bugzilla.kernel.org/show_bug.cgi?id=210505
-Signed-off-by: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
----
-v2:
-- squashed previous submitted in -mm tree 2 patches based on Linus tree
-v3:
-- moved checks to *_nofault_loop macros per Marco's comments
-- edited the commit message
----
- mm/kasan/kasan_test_c.c | 27 +++++++++++++++++++++++++++
- mm/kmsan/kmsan_test.c   | 17 +++++++++++++++++
- mm/maccess.c            | 10 ++++++++--
- 3 files changed, 52 insertions(+), 2 deletions(-)
+I will make all the other suggested changes in the next version.
 
-diff --git a/mm/kasan/kasan_test_c.c b/mm/kasan/kasan_test_c.c
-index a181e4780d9d..5cff90f831db 100644
---- a/mm/kasan/kasan_test_c.c
-+++ b/mm/kasan/kasan_test_c.c
-@@ -1954,6 +1954,32 @@ static void rust_uaf(struct kunit *test)
- 	KUNIT_EXPECT_KASAN_FAIL(test, kasan_test_rust_uaf());
- }
- 
-+static void copy_to_kernel_nofault_oob(struct kunit *test)
-+{
-+	char *ptr;
-+	char buf[128];
-+	size_t size = sizeof(buf);
-+
-+	/* Not detecting fails currently with HW_TAGS */
-+	KASAN_TEST_NEEDS_CONFIG_OFF(test, CONFIG_KASAN_HW_TAGS);
-+
-+	ptr = kmalloc(size - KASAN_GRANULE_SIZE, GFP_KERNEL);
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
-+	OPTIMIZER_HIDE_VAR(ptr);
-+
-+	if (IS_ENABLED(CONFIG_KASAN_SW_TAGS)) {
-+		/* Check that the returned pointer is tagged. */
-+		KUNIT_EXPECT_GE(test, (u8)get_tag(ptr), (u8)KASAN_TAG_MIN);
-+		KUNIT_EXPECT_LT(test, (u8)get_tag(ptr), (u8)KASAN_TAG_KERNEL);
-+	}
-+
-+	KUNIT_EXPECT_KASAN_FAIL(test,
-+		copy_to_kernel_nofault(&buf[0], ptr, size));
-+	KUNIT_EXPECT_KASAN_FAIL(test,
-+		copy_to_kernel_nofault(ptr, &buf[0], size));
-+	kfree(ptr);
-+}
-+
- static struct kunit_case kasan_kunit_test_cases[] = {
- 	KUNIT_CASE(kmalloc_oob_right),
- 	KUNIT_CASE(kmalloc_oob_left),
-@@ -2027,6 +2053,7 @@ static struct kunit_case kasan_kunit_test_cases[] = {
- 	KUNIT_CASE(match_all_not_assigned),
- 	KUNIT_CASE(match_all_ptr_tag),
- 	KUNIT_CASE(match_all_mem_tag),
-+	KUNIT_CASE(copy_to_kernel_nofault_oob),
- 	KUNIT_CASE(rust_uaf),
- 	{}
- };
-diff --git a/mm/kmsan/kmsan_test.c b/mm/kmsan/kmsan_test.c
-index 13236d579eba..9733a22c46c1 100644
---- a/mm/kmsan/kmsan_test.c
-+++ b/mm/kmsan/kmsan_test.c
-@@ -640,6 +640,22 @@ static void test_unpoison_memory(struct kunit *test)
- 	KUNIT_EXPECT_TRUE(test, report_matches(&expect));
- }
- 
-+static void test_copy_from_kernel_nofault(struct kunit *test)
-+{
-+	long ret;
-+	char buf[4], src[4];
-+	size_t size = sizeof(buf);
-+
-+	EXPECTATION_UNINIT_VALUE_FN(expect, "copy_from_kernel_nofault");
-+	kunit_info(
-+		test,
-+		"testing copy_from_kernel_nofault with uninitialized memory\n");
-+
-+	ret = copy_from_kernel_nofault((char *)&buf[0], (char *)&src[0], size);
-+	USE(ret);
-+	KUNIT_EXPECT_TRUE(test, report_matches(&expect));
-+}
-+
- static struct kunit_case kmsan_test_cases[] = {
- 	KUNIT_CASE(test_uninit_kmalloc),
- 	KUNIT_CASE(test_init_kmalloc),
-@@ -664,6 +680,7 @@ static struct kunit_case kmsan_test_cases[] = {
- 	KUNIT_CASE(test_long_origin_chain),
- 	KUNIT_CASE(test_stackdepot_roundtrip),
- 	KUNIT_CASE(test_unpoison_memory),
-+	KUNIT_CASE(test_copy_from_kernel_nofault),
- 	{},
- };
- 
-diff --git a/mm/maccess.c b/mm/maccess.c
-index 518a25667323..3ca55ec63a6a 100644
---- a/mm/maccess.c
-+++ b/mm/maccess.c
-@@ -13,9 +13,14 @@ bool __weak copy_from_kernel_nofault_allowed(const void *unsafe_src,
- 	return true;
- }
- 
-+/*
-+ * The below only uses kmsan_check_memory() to ensure uninitialized kernel
-+ * memory isn't leaked.
-+ */
- #define copy_from_kernel_nofault_loop(dst, src, len, type, err_label)	\
- 	while (len >= sizeof(type)) {					\
--		__get_kernel_nofault(dst, src, type, err_label);		\
-+		__get_kernel_nofault(dst, src, type, err_label);	\
-+		kmsan_check_memory(src, sizeof(type));			\
- 		dst += sizeof(type);					\
- 		src += sizeof(type);					\
- 		len -= sizeof(type);					\
-@@ -49,7 +54,8 @@ EXPORT_SYMBOL_GPL(copy_from_kernel_nofault);
- 
- #define copy_to_kernel_nofault_loop(dst, src, len, type, err_label)	\
- 	while (len >= sizeof(type)) {					\
--		__put_kernel_nofault(dst, src, type, err_label);		\
-+		__put_kernel_nofault(dst, src, type, err_label);	\
-+		instrument_write(dst, sizeof(type));			\
- 		dst += sizeof(type);					\
- 		src += sizeof(type);					\
- 		len -= sizeof(type);					\
--- 
-2.34.1
 
+Thanks,
+Puranjay
 
