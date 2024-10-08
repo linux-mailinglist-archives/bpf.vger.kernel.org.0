@@ -1,84 +1,83 @@
-Return-Path: <bpf+bounces-41241-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41242-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC439994587
-	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 12:35:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17E8A994589
+	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 12:36:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C0592835B7
-	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 10:35:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 36F1E1C20FD7
+	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 10:36:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54EC91C1AA3;
-	Tue,  8 Oct 2024 10:35:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94FC11C75F8;
+	Tue,  8 Oct 2024 10:35:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gBQVv/AR"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Z3osnfb8"
 X-Original-To: bpf@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B5EF18C01C
-	for <bpf@vger.kernel.org>; Tue,  8 Oct 2024 10:35:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EBB6192B91
+	for <bpf@vger.kernel.org>; Tue,  8 Oct 2024 10:35:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728383740; cv=none; b=jI3ZhRizSKlHbCkUmY5IjD/4kUgBLtvelywK6uAwszBCWkFfCB1HdVW5yLeTX/pHOY+rZyjqpduYPnyV/ZHfBs+Juq1BpTwZs1nejgls4QWAIx6JgJ+kfMrtuW/4wR54NocImfeJttVvlHhrCI8Anj279Bv4zuH0z91yxpdF35s=
+	t=1728383743; cv=none; b=B8BMKFwFiSeuWBN0I6Slhbp6QiXoGT+ExZw95F53gSjGGiw+jK7BVE2DOkgS1t1xtatAQmWmgpJGUY/11m/BvscVvY+bgYu2Fp5BP+pNwg/U81WqWCBL6LAPv49uNFHrgUDEIr/8O5ebCM08ISOUZGAJ4+aYpqKbBwYZ614O2x4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728383740; c=relaxed/simple;
-	bh=WUcIsxzdozoXzuX7b2XeUGypOM+OdSPbsKtFcoPe6xE=;
+	s=arc-20240116; t=1728383743; c=relaxed/simple;
+	bh=hdvio31jekZrWc88PWna/SZnf2ogh/eHg9WrPMxt+F4=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=lkwTK6YEctw/JmlwuE4Ivt2DWZZYM2WNyHd+xRuu24zgNPLmU5Z5B/UbzkpuJVbSk9HEFn6K57W/ln6f28d3A4PYXxoFtHerfBmvkpzwunKv5VysTR/lnHATsZPrXOt3bF0QJe3Fmfdr3YdSvCwJW8ydIaedPIMqIekFxp1TXLc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gBQVv/AR; arc=none smtp.client-ip=170.10.129.124
+	 In-Reply-To:To:Cc; b=uq9GeSut6/vSe7PPrpjWQkaefepryp5QFTG3FAr51v+DeeD5zgA2WXMPDGNfa0L8yEsgEEAS8JRxqtfKdSVhf9fcAsFKZwMv1LXRR0jdpmcq24J670EuVlD3hm0WGTBfhiEAQFUhxul+/0ni+696U8PdRaz1B1xyZVZi90ZY94E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Z3osnfb8; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1728383738;
+	s=mimecast20190719; t=1728383739;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=NWwE4mR8UgUEuS0dtcthvc4twWJQGG6zF+aNN8WtJI4=;
-	b=gBQVv/ARbiJBbPlLUlbqLKiAjp5SXfzGTr2cGcNSw816nS+tfpZDRa4GorEYosnpIspD5/
-	HXzV2sT6pT6WIZWqxAsxPyVS70Emdoq3udu1071ZuvwTXnHTI1EXY3ndZTzXPpgHhXFI64
-	wrgC6jPMv7AEnRH6SDjQJ66Cb6UMLgg=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=ictraSdjPOL9YxFw42aYTBzlTsPkKC6d66I8jAe4Ebo=;
+	b=Z3osnfb8dmM/xwuhDgQXwzHNbQjUDVSiF+KSzFZilZNpimhbs/4+a5eHzvT4+npbs5MpY5
+	o6eMKytgHHT7ZRdSEhjjfdFP1vAcyYUotyv1qvwR309OSBZyh/vSr2xKlu9KxHpH4PzblR
+	1DZIPgQcmEF4Po2cMOht9Ar3vmJX8fw=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-589-t4GOAd6pPtuNsr8zG_nHHg-1; Tue, 08 Oct 2024 06:35:37 -0400
-X-MC-Unique: t4GOAd6pPtuNsr8zG_nHHg-1
-Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-a994e6c8244so186707166b.1
-        for <bpf@vger.kernel.org>; Tue, 08 Oct 2024 03:35:36 -0700 (PDT)
+ us-mta-655-oK0S3zk3NAaUGTiVGnLA2w-1; Tue, 08 Oct 2024 06:35:38 -0400
+X-MC-Unique: oK0S3zk3NAaUGTiVGnLA2w-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-37cd18bd0d6so2640461f8f.0
+        for <bpf@vger.kernel.org>; Tue, 08 Oct 2024 03:35:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728383736; x=1728988536;
+        d=1e100.net; s=20230601; t=1728383737; x=1728988537;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=NWwE4mR8UgUEuS0dtcthvc4twWJQGG6zF+aNN8WtJI4=;
-        b=uHzaT1tYlNjyl7LLHW5GYYfbROrqSVCmm8WU3528YS4EydHqKM+jts3XX+GRcsyMDG
-         +21BS8ecx9xjPpdfJF/ar5IED9lIPGNOQCCjAWOtxQn3TSWPbLoLV7808fV8FOp8k0t2
-         niKO/nEFOBYWO1GhspgDu4wng0EKx+EUYqAiqsFwOlKy3+jOBrxBcWzvAS04+166TBTW
-         8CuCgC7gUO44xpD13EsnON55xjJ1QPapWGxzuBN6M0WCe2b2taYfKzRqvcse/2om+B2B
-         +PtIvcdrhtjSDC7jmw/L/511DiZvvZnSBuoyfL2ZbipAYvpUBOoiVyUhcrBYIpTsoAR0
-         B6mA==
-X-Forwarded-Encrypted: i=1; AJvYcCVZ6+d+AWGHVaiy+wW7JTAF4v/f1Im/TVXa9h2JUBHpXoKbIdHU4Em+N25xcVv7umF8cRs=@vger.kernel.org
-X-Gm-Message-State: AOJu0YytwWquJfdhnT3iMHhNEXoQr8kn6jneRnI8CrkNNfPwSIrHXA5S
-	xWlibdd2QfwVJ4DVq/nzFnL0Nx+6B/IqXWExszPOiAXo11FV0Bklu+2UW6EUL7nxd/Qinu/qfu6
-	C0rLA1xllcr4iVuljG3j9/PG11SIzrR8ioP/7BB8DfZptuCBCBg==
-X-Received: by 2002:a17:907:318d:b0:a90:41a9:7c3e with SMTP id a640c23a62f3a-a991c0af160mr1517007866b.65.1728383735697;
-        Tue, 08 Oct 2024 03:35:35 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IH1/nMNFhRHrZX/Ta+Ms02g+SMDncRE8XhwNr/i9kDjUsTs4Zqs4vi4pmb2/JzpucQ0P4EcYw==
-X-Received: by 2002:a17:907:318d:b0:a90:41a9:7c3e with SMTP id a640c23a62f3a-a991c0af160mr1517004366b.65.1728383735182;
-        Tue, 08 Oct 2024 03:35:35 -0700 (PDT)
+        bh=ictraSdjPOL9YxFw42aYTBzlTsPkKC6d66I8jAe4Ebo=;
+        b=YWA3ZeMce8BueWm4/eiUtz4WgxirCTEExSsJj5Ak5h5CzOrJMvJNtAvMOBYSOguP6T
+         Qvft8HgblYczeobICJo3ZfAyf9nhzq3Hi3CcC0qcXvQcRZX5EqndbhCemlUlt7Fya86Y
+         ZfuyoB0baAPuqNwWTMwkvrsgYk2Jb3Hl4HTRbxiLPx7r4q30HoIa3ExPOJkuB6UTvFbq
+         Kt2mT0kdAP8yvh57cpQWb2f/Y32Xckz8KsW3wEVJR1CBIKGSgzMMgMvmQJABpVkw9Z6x
+         x7VqIm2+F5nzuC3RfFTah8BPTQt++c8EyzUoUS2byan24iTkVY4FSr6oKGDNiImXd5sl
+         sKAw==
+X-Forwarded-Encrypted: i=1; AJvYcCW1zztqbwtumxQ+QK3BMj22IlWqFLvmQJq/9LXUfmtBm1dFUiIchAm2EbOMuK5eQTSjT8s=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzEZEzy+KI+2YxpCCrmASbtgqsXLgo5gFw2mgyorWo4GlCYBRNj
+	wp55gkf0lDMwpeGvsYomhYKvtiJ0FljsQqthos51GK1/skgExCiuFcxGVrOQKDaOID4xGkCxfSe
+	dETxqxK87fGFgoocdnJ8Dsvv8GsJRKCyaLWPOq6RzGgT5N7rXmg==
+X-Received: by 2002:a5d:65c9:0:b0:374:c407:4e07 with SMTP id ffacd0b85a97d-37d0e7d43abmr7983899f8f.46.1728383736919;
+        Tue, 08 Oct 2024 03:35:36 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH8Ee/83HPJF7kEkGgSeJ8xH2/r8G/imdIwHv7WhzMacUp8aa24FEa+cet9tbARHTx+ed7Nnw==
+X-Received: by 2002:a5d:65c9:0:b0:374:c407:4e07 with SMTP id ffacd0b85a97d-37d0e7d43abmr7983886f8f.46.1728383736442;
+        Tue, 08 Oct 2024 03:35:36 -0700 (PDT)
 Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a993f0d00e3sm422335966b.193.2024.10.08.03.35.33
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-37d1691b505sm7786105f8f.43.2024.10.08.03.35.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Oct 2024 03:35:34 -0700 (PDT)
+        Tue, 08 Oct 2024 03:35:35 -0700 (PDT)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id EFAB515F3ADB; Tue, 08 Oct 2024 12:35:32 +0200 (CEST)
+	id F1D4515F3ADD; Tue, 08 Oct 2024 12:35:32 +0200 (CEST)
 From: =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Date: Tue, 08 Oct 2024 12:35:18 +0200
-Subject: [PATCH bpf 3/4] selftests/bpf: Provide a generic [un]load_module
- helper
+Date: Tue, 08 Oct 2024 12:35:19 +0200
+Subject: [PATCH bpf 4/4] selftests/bpf: Add test for kfunc module order
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -87,7 +86,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20241008-fix-kfunc-btf-caching-for-modules-v1-3-dfefd9aa4318@redhat.com>
+Message-Id: <20241008-fix-kfunc-btf-caching-for-modules-v1-4-dfefd9aa4318@redhat.com>
 References: <20241008-fix-kfunc-btf-caching-for-modules-v1-0-dfefd9aa4318@redhat.com>
 In-Reply-To: <20241008-fix-kfunc-btf-caching-for-modules-v1-0-dfefd9aa4318@redhat.com>
 To: Alexei Starovoitov <ast@kernel.org>, 
@@ -106,120 +105,237 @@ X-Mailer: b4 0.14.2
 
 From: Simon Sundberg <simon.sundberg@kau.se>
 
-Generalize the previous [un]load_bpf_testmod() helpers (in
-testing_helpers.c) to the more generic [un]load_module(), which can
-load an arbitrary kernel module by name. This allows future selftests
-to more easily load custom kernel modules other than bpf_testmod.ko.
-Refactor [un]load_bpf_testmod() to wrap this new helper.
+Add a test case for kfuncs from multiple external modules, checking
+that the correct kfuncs are called regardless of which order they're
+called in. Specifically, check that calling the kfuncs in an order
+different from the one the modules' BTF are loaded in works.
 
 Signed-off-by: Simon Sundberg <simon.sundberg@kau.se>
 Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
 ---
- tools/testing/selftests/bpf/testing_helpers.c | 34 +++++++++++++++++----------
- tools/testing/selftests/bpf/testing_helpers.h |  2 ++
- 2 files changed, 24 insertions(+), 12 deletions(-)
+ tools/testing/selftests/bpf/Makefile               |  3 +-
+ .../selftests/bpf/prog_tests/kfunc_module_order.c  | 55 ++++++++++++++++++++++
+ .../selftests/bpf/progs/kfunc_module_order.c       | 30 ++++++++++++
+ tools/testing/selftests/bpf/test_kmods/Makefile    |  3 +-
+ .../selftests/bpf/test_kmods/bpf_test_modorder_x.c | 39 +++++++++++++++
+ .../selftests/bpf/test_kmods/bpf_test_modorder_y.c | 39 +++++++++++++++
+ 6 files changed, 167 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/testing_helpers.c b/tools/testing/selftests/bpf/testing_helpers.c
-index d3c3c3a24150f99abd13ecb7d7b11d8f7351560d..5e9f16683be5460b1a295fb9754df761cbd090ea 100644
---- a/tools/testing/selftests/bpf/testing_helpers.c
-+++ b/tools/testing/selftests/bpf/testing_helpers.c
-@@ -367,7 +367,7 @@ int delete_module(const char *name, int flags)
- 	return syscall(__NR_delete_module, name, flags);
- }
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index 4bde8d57a4e940f4672c6723d05da0c9fd8b62e6..1e3e05d1ab804b585c3083e97c0f3d2c2a6655b8 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -152,7 +152,8 @@ TEST_PROGS_EXTENDED := with_addr.sh \
+ 	with_tunnels.sh ima_setup.sh verify_sig_setup.sh \
+ 	test_xdp_vlan.sh test_bpftool.py
  
--int unload_bpf_testmod(bool verbose)
-+int unload_module(const char *name, bool verbose)
- {
- 	int ret, cnt = 0;
+-TEST_KMODS := bpf_testmod.ko bpf_test_no_cfi.ko
++TEST_KMODS := bpf_testmod.ko bpf_test_no_cfi.ko bpf_test_modorder_x.ko \
++	bpf_test_modorder_y.ko
  
-@@ -375,11 +375,11 @@ int unload_bpf_testmod(bool verbose)
- 		fprintf(stdout, "Failed to trigger kernel-side RCU sync!\n");
- 
- 	for (;;) {
--		ret = delete_module("bpf_testmod", 0);
-+		ret = delete_module(name, 0);
- 		if (!ret || errno != EAGAIN)
- 			break;
- 		if (++cnt > 10000) {
--			fprintf(stdout, "Unload of bpf_testmod timed out\n");
-+			fprintf(stdout, "Unload of %s timed out\n", name);
- 			break;
- 		}
- 		usleep(100);
-@@ -388,41 +388,51 @@ int unload_bpf_testmod(bool verbose)
- 	if (ret) {
- 		if (errno == ENOENT) {
- 			if (verbose)
--				fprintf(stdout, "bpf_testmod.ko is already unloaded.\n");
-+				fprintf(stdout, "%s.ko is already unloaded.\n", name);
- 			return -1;
- 		}
--		fprintf(stdout, "Failed to unload bpf_testmod.ko from kernel: %d\n", -errno);
-+		fprintf(stdout, "Failed to unload %s.ko from kernel: %d\n", name, -errno);
- 		return -1;
- 	}
- 	if (verbose)
--		fprintf(stdout, "Successfully unloaded bpf_testmod.ko.\n");
-+		fprintf(stdout, "Successfully unloaded %s.ko.\n", name);
- 	return 0;
- }
- 
--int load_bpf_testmod(bool verbose)
-+int load_module(const char *path, bool verbose)
- {
- 	int fd;
- 
- 	if (verbose)
--		fprintf(stdout, "Loading bpf_testmod.ko...\n");
-+		fprintf(stdout, "Loading %s...\n", path);
- 
--	fd = open("bpf_testmod.ko", O_RDONLY);
-+	fd = open(path, O_RDONLY);
- 	if (fd < 0) {
--		fprintf(stdout, "Can't find bpf_testmod.ko kernel module: %d\n", -errno);
-+		fprintf(stdout, "Can't find %s kernel module: %d\n", path, -errno);
- 		return -ENOENT;
- 	}
- 	if (finit_module(fd, "", 0)) {
--		fprintf(stdout, "Failed to load bpf_testmod.ko into the kernel: %d\n", -errno);
-+		fprintf(stdout, "Failed to load %s into the kernel: %d\n", path, -errno);
- 		close(fd);
- 		return -EINVAL;
- 	}
- 	close(fd);
- 
- 	if (verbose)
--		fprintf(stdout, "Successfully loaded bpf_testmod.ko.\n");
-+		fprintf(stdout, "Successfully loaded %s.\n", path);
- 	return 0;
- }
- 
-+int unload_bpf_testmod(bool verbose)
+ # Compile but not part of 'make run_tests'
+ TEST_GEN_PROGS_EXTENDED = \
+diff --git a/tools/testing/selftests/bpf/prog_tests/kfunc_module_order.c b/tools/testing/selftests/bpf/prog_tests/kfunc_module_order.c
+new file mode 100644
+index 0000000000000000000000000000000000000000..45872bac024246a3f77c636bd840543d50f6adc4
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/kfunc_module_order.c
+@@ -0,0 +1,55 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <test_progs.h>
++#include <testing_helpers.h>
++
++#include "kfunc_module_order.skel.h"
++
++static int test_run_prog(const struct bpf_program *prog,
++			 struct bpf_test_run_opts *opts, int expect_val)
 +{
-+	return unload_module("bpf_testmod", verbose);
++	int err;
++
++	err = bpf_prog_test_run_opts(bpf_program__fd(prog), opts);
++	if (!ASSERT_OK(err, "bpf_prog_test_run_opts"))
++		return err;
++
++	if (!ASSERT_EQ((int)opts->retval, expect_val, bpf_program__name(prog)))
++		return -EINVAL;
++
++	return 0;
 +}
 +
-+int load_bpf_testmod(bool verbose)
++void test_kfunc_module_order(void)
 +{
-+	return load_module("bpf_testmod.ko", verbose);
++	struct kfunc_module_order *skel;
++	char pkt_data[64] = {};
++	int err = 0;
++
++	DECLARE_LIBBPF_OPTS(bpf_test_run_opts, test_opts, .data_in = pkt_data,
++			    .data_size_in = sizeof(pkt_data));
++
++	err = load_module("bpf_test_modorder_x.ko",
++			  env_verbosity > VERBOSE_NONE);
++	if (!ASSERT_OK(err, "load bpf_test_modorder_x.ko"))
++		return;
++
++	err = load_module("bpf_test_modorder_y.ko",
++			  env_verbosity > VERBOSE_NONE);
++	if (!ASSERT_OK(err, "load bpf_test_modorder_y.ko"))
++		goto exit_modx;
++
++	skel = kfunc_module_order__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "kfunc_module_order__open_and_load()")) {
++		err = -EINVAL;
++		goto exit_mods;
++	}
++
++	test_run_prog(skel->progs.call_kfunc_xy, &test_opts, 0);
++	test_run_prog(skel->progs.call_kfunc_yx, &test_opts, 0);
++
++	kfunc_module_order__destroy(skel);
++exit_mods:
++	unload_module("bpf_test_modorder_y", env_verbosity > VERBOSE_NONE);
++exit_modx:
++	unload_module("bpf_test_modorder_x", env_verbosity > VERBOSE_NONE);
++}
+diff --git a/tools/testing/selftests/bpf/progs/kfunc_module_order.c b/tools/testing/selftests/bpf/progs/kfunc_module_order.c
+new file mode 100644
+index 0000000000000000000000000000000000000000..76003d04c95f4eaef4c9f3ec640a0da2a20253e2
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/kfunc_module_order.c
+@@ -0,0 +1,30 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++
++extern int bpf_test_modorder_retx(void) __ksym;
++extern int bpf_test_modorder_rety(void) __ksym;
++
++SEC("classifier")
++int call_kfunc_xy(struct __sk_buff *skb)
++{
++	int ret1, ret2;
++
++	ret1 = bpf_test_modorder_retx();
++	ret2 = bpf_test_modorder_rety();
++
++	return ret1 == 'x' && ret2 == 'y' ? 0 : -1;
 +}
 +
- /*
-  * Trigger synchronize_rcu() in kernel.
-  */
-diff --git a/tools/testing/selftests/bpf/testing_helpers.h b/tools/testing/selftests/bpf/testing_helpers.h
-index d55f6ab124338ccab33bc120ca7e3baa18264aea..46d7f7089f636b0d2476859fd0fa5e1c4b305419 100644
---- a/tools/testing/selftests/bpf/testing_helpers.h
-+++ b/tools/testing/selftests/bpf/testing_helpers.h
-@@ -38,6 +38,8 @@ int unload_bpf_testmod(bool verbose);
- int kern_sync_rcu(void);
- int finit_module(int fd, const char *param_values, int flags);
- int delete_module(const char *name, int flags);
-+int load_module(const char *path, bool verbose);
-+int unload_module(const char *name, bool verbose);
++SEC("classifier")
++int call_kfunc_yx(struct __sk_buff *skb)
++{
++	int ret1, ret2;
++
++	ret1 = bpf_test_modorder_rety();
++	ret2 = bpf_test_modorder_retx();
++
++	return ret1 == 'y' && ret2 == 'x' ? 0 : -1;
++}
++
++char _license[] SEC("license") = "GPL";
+diff --git a/tools/testing/selftests/bpf/test_kmods/Makefile b/tools/testing/selftests/bpf/test_kmods/Makefile
+index 393f407f35baf7e2b657b5d7910a6ffdecb35910..5057c6aacc58be8182be8884854eba846789a2a8 100644
+--- a/tools/testing/selftests/bpf/test_kmods/Makefile
++++ b/tools/testing/selftests/bpf/test_kmods/Makefile
+@@ -7,7 +7,8 @@ else
+ Q = @
+ endif
  
- static inline __u64 get_time_ns(void)
- {
+-MODULES = bpf_testmod.ko bpf_test_no_cfi.ko
++MODULES = bpf_testmod.ko bpf_test_no_cfi.ko bpf_test_modorder_x.ko \
++	bpf_test_modorder_y.ko
+ 
+ $(foreach m,$(MODULES),$(eval obj-m += $(m:.ko=.o)))
+ 
+diff --git a/tools/testing/selftests/bpf/test_kmods/bpf_test_modorder_x.c b/tools/testing/selftests/bpf/test_kmods/bpf_test_modorder_x.c
+new file mode 100644
+index 0000000000000000000000000000000000000000..0cc747fa912fcd5b6738af15dc1b8dfb88c33f6b
+--- /dev/null
++++ b/tools/testing/selftests/bpf/test_kmods/bpf_test_modorder_x.c
+@@ -0,0 +1,39 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <linux/bpf.h>
++#include <linux/btf.h>
++#include <linux/module.h>
++#include <linux/init.h>
++
++__bpf_kfunc_start_defs();
++
++__bpf_kfunc int bpf_test_modorder_retx(void)
++{
++	return 'x';
++}
++
++__bpf_kfunc_end_defs();
++
++BTF_KFUNCS_START(bpf_test_modorder_kfunc_x_ids)
++BTF_ID_FLAGS(func, bpf_test_modorder_retx);
++BTF_KFUNCS_END(bpf_test_modorder_kfunc_x_ids)
++
++static const struct btf_kfunc_id_set bpf_test_modorder_x_set = {
++	.owner = THIS_MODULE,
++	.set = &bpf_test_modorder_kfunc_x_ids,
++};
++
++static int __init bpf_test_modorder_x_init(void)
++{
++	return register_btf_kfunc_id_set(BPF_PROG_TYPE_SCHED_CLS,
++					 &bpf_test_modorder_x_set);
++}
++
++static void __exit bpf_test_modorder_x_exit(void)
++{
++}
++
++module_init(bpf_test_modorder_x_init);
++module_exit(bpf_test_modorder_x_exit);
++
++MODULE_DESCRIPTION("BPF selftest ordertest module X");
++MODULE_LICENSE("GPL");
+diff --git a/tools/testing/selftests/bpf/test_kmods/bpf_test_modorder_y.c b/tools/testing/selftests/bpf/test_kmods/bpf_test_modorder_y.c
+new file mode 100644
+index 0000000000000000000000000000000000000000..c627ee085d1305af98c5d7f66d99dcfbf98dc4e1
+--- /dev/null
++++ b/tools/testing/selftests/bpf/test_kmods/bpf_test_modorder_y.c
+@@ -0,0 +1,39 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <linux/bpf.h>
++#include <linux/btf.h>
++#include <linux/module.h>
++#include <linux/init.h>
++
++__bpf_kfunc_start_defs();
++
++__bpf_kfunc int bpf_test_modorder_rety(void)
++{
++	return 'y';
++}
++
++__bpf_kfunc_end_defs();
++
++BTF_KFUNCS_START(bpf_test_modorder_kfunc_y_ids)
++BTF_ID_FLAGS(func, bpf_test_modorder_rety);
++BTF_KFUNCS_END(bpf_test_modorder_kfunc_y_ids)
++
++static const struct btf_kfunc_id_set bpf_test_modorder_y_set = {
++	.owner = THIS_MODULE,
++	.set = &bpf_test_modorder_kfunc_y_ids,
++};
++
++static int __init bpf_test_modorder_y_init(void)
++{
++	return register_btf_kfunc_id_set(BPF_PROG_TYPE_SCHED_CLS,
++					 &bpf_test_modorder_y_set);
++}
++
++static void __exit bpf_test_modorder_y_exit(void)
++{
++}
++
++module_init(bpf_test_modorder_y_init);
++module_exit(bpf_test_modorder_y_exit);
++
++MODULE_DESCRIPTION("BPF selftest ordertest module Y");
++MODULE_LICENSE("GPL");
 
 -- 
 2.47.0
