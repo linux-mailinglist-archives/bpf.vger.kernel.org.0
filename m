@@ -1,43 +1,43 @@
-Return-Path: <bpf+bounces-41205-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41209-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D88399438E
-	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 11:07:13 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 423409943C7
+	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 11:13:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BEEF02833BA
-	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 09:07:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E41D3B29093
+	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 09:07:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A197317BEAC;
-	Tue,  8 Oct 2024 09:02:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AC251DEFF1;
+	Tue,  8 Oct 2024 09:02:36 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E64913A878
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCD5613D601
 	for <bpf@vger.kernel.org>; Tue,  8 Oct 2024 09:02:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728378154; cv=none; b=n4ixbKJlNFX1vy5zjeRGIReh81sTyARXw8oxUFJwV7ws+vhFbx5JONV8JUYQQQt9FYZehAoLzSwHHfhvIgzWGBFFw1c/FnskJDHzJCdF1luCOJeG3XKkp/bTKNPIa4StrjIVEsLwCroniW7XHG/8AEITq2zBGB4faojBfmvl/NA=
+	t=1728378156; cv=none; b=mQUICWZsfQRaogA0Q7pnAqKzpTTow/qzsOcXST6dYycXagiU3wZZdMWiZEpX3N2uShfmuDzr6iD5JSBK7MB60S4b5jI092eEPAE5IiG2OVDSGhoZYWDTOWFc1RPxe6CY/tUnKvU58ay1ZnXl2OiDvY/0+cm5HicBlbU6a99BOcs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728378154; c=relaxed/simple;
-	bh=RvE+LTUJOvFTb5I4Ku5u7U5B5d+nmKjUsauimT3CG8U=;
+	s=arc-20240116; t=1728378156; c=relaxed/simple;
+	bh=Q0unTHPJL125siBbqisYiKJ0aBgYrV4KfS4NTeLJDqI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=HX777IELracaRu50uvERJLLVXSSaX/jVnh9y5TLM+MnMKFhgNST6/bwO94ZBBkKo1cAMGRRhYzFcTHg4u6hkOMS9FjQu2qeAD8S9WO66L2LVNjWC/YaJ3omLlylAS+BcBqf6SPdrEOKEGCuO1+xQhtRhvpkAip8CqS5iYj7cVq8=
+	 MIME-Version; b=I3WtV/qQHS2EdbYCdaStUnc6mt6IaPAFbqmamFl6dufbMZMD0BP87dFdZzk4Y7eWjSMaKGV1+kN0nfJA8SLfmIIaUQ/ZL1qAimJLM+OFTo/ITGZYpEgEaE5gklEswzT/QwI8ILMQydzA5OyOBiF7xktgVMvT33yrxrKy++9QiaI=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
 Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4XN9552QbVz4f3jqx
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4XN9556YJdz4f3jsx
 	for <bpf@vger.kernel.org>; Tue,  8 Oct 2024 17:02:17 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 10FF81A08FC
+	by mail.maildlp.com (Postfix) with ESMTP id 9EE201A08FC
 	for <bpf@vger.kernel.org>; Tue,  8 Oct 2024 17:02:29 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.112.60])
-	by APP4 (Coremail) with SMTP id gCh0CgDH+sYd9QRnbOEHDg--.25681S12;
-	Tue, 08 Oct 2024 17:02:28 +0800 (CST)
+	by APP4 (Coremail) with SMTP id gCh0CgDH+sYd9QRnbOEHDg--.25681S13;
+	Tue, 08 Oct 2024 17:02:29 +0800 (CST)
 From: Hou Tao <houtao@huaweicloud.com>
 To: bpf@vger.kernel.org
 Cc: Martin KaFai Lau <martin.lau@linux.dev>,
@@ -54,9 +54,9 @@ Cc: Martin KaFai Lau <martin.lau@linux.dev>,
 	John Fastabend <john.fastabend@gmail.com>,
 	houtao1@huawei.com,
 	xukuohai@huawei.com
-Subject: [PATCH bpf-next 08/16] bpf: Handle bpf_dynptr_user in bpf syscall when it is used as input
-Date: Tue,  8 Oct 2024 17:14:53 +0800
-Message-ID: <20241008091501.8302-9-houtao@huaweicloud.com>
+Subject: [PATCH bpf-next 09/16] bpf: Handle bpf_dynptr_user in bpf syscall when it is used as output
+Date: Tue,  8 Oct 2024 17:14:54 +0800
+Message-ID: <20241008091501.8302-10-houtao@huaweicloud.com>
 X-Mailer: git-send-email 2.45.0
 In-Reply-To: <20241008091501.8302-1-houtao@huaweicloud.com>
 References: <20241008091501.8302-1-houtao@huaweicloud.com>
@@ -67,10 +67,10 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgDH+sYd9QRnbOEHDg--.25681S12
-X-Coremail-Antispam: 1UD129KBjvJXoWxCF45CFWUWr45Jr1DCw18Grg_yoWrtry3pF
-	W8WryfZrWFvr43Jr95J3WFva1rWrn2qw1UG3srJas5W3WDXrZ8Xr1xtFZYgryY9FykXrn8
-	Jr4Dta4rCry8ArJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID:gCh0CgDH+sYd9QRnbOEHDg--.25681S13
+X-Coremail-Antispam: 1UD129KBjvJXoW3WF1fuF1DAr48GFW5ArWkJFb_yoW7KF1DpF
+	48G3savr4Fqr43Jas8X3Wqv3yrtrn7Ww1UGas3Ka4rXF9xWr90vr1xKFW09r90vFyDJF12
+	vw4Iqr98ZrWxJrJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUUPvb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
 	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
 	Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
@@ -89,172 +89,182 @@ X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
 From: Hou Tao <houtao1@huawei.com>
 
-Introduce bpf_copy_from_dynptr_ukey() helper to handle map key with
-bpf_dynptr when the map key is used in map lookup, update, delete and
-get_next_key operations.
+For get_next_key operation, unext_key is used as an output argument.
+When there is dynptr in map key, unext_key will also be used as an input
+argument, because the userspace application needs to pre-allocate a
+buffer for each variable-length part in the map key and save the
+length and the address of these buffers in bpf_dynptr_user objects.
 
-The helper places all variable-length data of these bpf_dynptr_user
-objects at the end of the map key to simplify the allocate and the free
-of map key with dynptr.
+To support get_next_key op for map with dynptr key, map_get_next_key()
+first calls bpf_copy_from_dynptr_ukey() to construct a map key in which
+each bpf_dynptr_kern object has the same size as the corresponding
+bpf_dynptr_user object. It then calls ->map_get_next_key() to get the
+next_key, and finally calls bpf_copy_to_dynptr_ukey() to copy both the
+non-dynptr part and dynptr part in the map key to unext_key.
 
 Signed-off-by: Hou Tao <houtao1@huawei.com>
 ---
- kernel/bpf/syscall.c | 98 +++++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 87 insertions(+), 11 deletions(-)
+ kernel/bpf/syscall.c | 88 ++++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 73 insertions(+), 15 deletions(-)
 
 diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index aa0a500f8fad..5bd75db9b12f 100644
+index 5bd75db9b12f..338f17530068 100644
 --- a/kernel/bpf/syscall.c
 +++ b/kernel/bpf/syscall.c
-@@ -1540,10 +1540,83 @@ int __weak bpf_stackmap_copy(struct bpf_map *map, void *key, void *value)
+@@ -1540,7 +1540,7 @@ int __weak bpf_stackmap_copy(struct bpf_map *map, void *key, void *value)
  	return -ENOTSUPP;
  }
  
--static void *__bpf_copy_key(void __user *ukey, u64 key_size)
-+static void *bpf_copy_from_dynptr_ukey(const struct bpf_map *map, bpfptr_t ukey)
-+{
-+	const struct btf_record *record;
-+	const struct btf_field *field;
-+	struct bpf_dynptr_user *uptr;
-+	struct bpf_dynptr_kern *kptr;
-+	void *key, *new_key, *kdata;
-+	unsigned int key_size, size;
-+	bpfptr_t udata;
-+	unsigned int i;
-+	int err;
-+
-+	key_size = map->key_size;
-+	key = kvmemdup_bpfptr(ukey, key_size);
-+	if (!key)
-+		return ERR_PTR(-ENOMEM);
-+
-+	size = key_size;
-+	record = map->key_record;
-+	for (i = 0; i < record->cnt; i++) {
-+		field = &record->fields[i];
-+		if (field->type != BPF_DYNPTR)
-+			continue;
-+		uptr = key + field->offset;
-+		if (!uptr->size || uptr->size > map->map_extra || uptr->rsvd) {
-+			err = -EINVAL;
-+			goto free_key;
-+		}
-+
-+		size += uptr->size;
-+		/* Overflow ? */
-+		if (size < uptr->size) {
-+			err = -E2BIG;
-+			goto free_key;
-+		}
-+	}
-+
-+	/* Place all dynptrs' data in the end of the key */
-+	new_key = kvrealloc(key, size, GFP_USER | __GFP_NOWARN);
-+	if (!new_key) {
-+		err = -ENOMEM;
-+		goto free_key;
-+	}
-+
-+	key = new_key;
-+	kdata = key + key_size;
-+	for (i = 0; i < record->cnt; i++) {
-+		field = &record->fields[i];
-+		if (field->type != BPF_DYNPTR)
-+			continue;
-+
-+		uptr = key + field->offset;
-+		size = uptr->size;
-+		udata = make_bpfptr(uptr->data, bpfptr_is_kernel(ukey));
-+		if (copy_from_bpfptr(kdata, udata, size)) {
-+			err = -EFAULT;
-+			goto free_key;
-+		}
-+		kptr = (struct bpf_dynptr_kern *)uptr;
-+		bpf_dynptr_init(kptr, kdata, BPF_DYNPTR_TYPE_LOCAL, 0, size);
-+		kdata += size;
-+	}
-+
-+	return key;
-+
-+free_key:
-+	kvfree(key);
-+	return ERR_PTR(err);
-+}
-+
-+static void *__bpf_copy_key(const struct bpf_map *map, void __user *ukey)
+-static void *bpf_copy_from_dynptr_ukey(const struct bpf_map *map, bpfptr_t ukey)
++static void *bpf_copy_from_dynptr_ukey(const struct bpf_map *map, bpfptr_t ukey, bool copy_data)
  {
--	if (key_size)
--		return vmemdup_user(ukey, key_size);
-+	if (bpf_map_has_dynptr_key(map))
-+		return bpf_copy_from_dynptr_ukey(map, USER_BPFPTR(ukey));
-+
-+	if (map->key_size)
-+		return vmemdup_user(ukey, map->key_size);
+ 	const struct btf_record *record;
+ 	const struct btf_field *field;
+@@ -1548,7 +1548,6 @@ static void *bpf_copy_from_dynptr_ukey(const struct bpf_map *map, bpfptr_t ukey)
+ 	struct bpf_dynptr_kern *kptr;
+ 	void *key, *new_key, *kdata;
+ 	unsigned int key_size, size;
+-	bpfptr_t udata;
+ 	unsigned int i;
+ 	int err;
  
- 	if (ukey)
- 		return ERR_PTR(-EINVAL);
-@@ -1551,10 +1624,13 @@ static void *__bpf_copy_key(void __user *ukey, u64 key_size)
+@@ -1563,6 +1562,7 @@ static void *bpf_copy_from_dynptr_ukey(const struct bpf_map *map, bpfptr_t ukey)
+ 		field = &record->fields[i];
+ 		if (field->type != BPF_DYNPTR)
+ 			continue;
++
+ 		uptr = key + field->offset;
+ 		if (!uptr->size || uptr->size > map->map_extra || uptr->rsvd) {
+ 			err = -EINVAL;
+@@ -1593,10 +1593,13 @@ static void *bpf_copy_from_dynptr_ukey(const struct bpf_map *map, bpfptr_t ukey)
+ 
+ 		uptr = key + field->offset;
+ 		size = uptr->size;
+-		udata = make_bpfptr(uptr->data, bpfptr_is_kernel(ukey));
+-		if (copy_from_bpfptr(kdata, udata, size)) {
+-			err = -EFAULT;
+-			goto free_key;
++		if (copy_data) {
++			bpfptr_t udata = make_bpfptr(uptr->data, bpfptr_is_kernel(ukey));
++
++			if (copy_from_bpfptr(kdata, udata, size)) {
++				err = -EFAULT;
++				goto free_key;
++			}
+ 		}
+ 		kptr = (struct bpf_dynptr_kern *)uptr;
+ 		bpf_dynptr_init(kptr, kdata, BPF_DYNPTR_TYPE_LOCAL, 0, size);
+@@ -1613,7 +1616,7 @@ static void *bpf_copy_from_dynptr_ukey(const struct bpf_map *map, bpfptr_t ukey)
+ static void *__bpf_copy_key(const struct bpf_map *map, void __user *ukey)
+ {
+ 	if (bpf_map_has_dynptr_key(map))
+-		return bpf_copy_from_dynptr_ukey(map, USER_BPFPTR(ukey));
++		return bpf_copy_from_dynptr_ukey(map, USER_BPFPTR(ukey), true);
+ 
+ 	if (map->key_size)
+ 		return vmemdup_user(ukey, map->key_size);
+@@ -1627,7 +1630,7 @@ static void *__bpf_copy_key(const struct bpf_map *map, void __user *ukey)
+ static void *___bpf_copy_key(const struct bpf_map *map, bpfptr_t ukey)
+ {
+ 	if (bpf_map_has_dynptr_key(map))
+-		return bpf_copy_from_dynptr_ukey(map, ukey);
++		return bpf_copy_from_dynptr_ukey(map, ukey, true);
+ 
+ 	if (map->key_size)
+ 		return kvmemdup_bpfptr(ukey, map->key_size);
+@@ -1638,6 +1641,51 @@ static void *___bpf_copy_key(const struct bpf_map *map, bpfptr_t ukey)
  	return NULL;
  }
  
--static void *___bpf_copy_key(bpfptr_t ukey, u64 key_size)
-+static void *___bpf_copy_key(const struct bpf_map *map, bpfptr_t ukey)
- {
--	if (key_size)
--		return kvmemdup_bpfptr(ukey, key_size);
-+	if (bpf_map_has_dynptr_key(map))
-+		return bpf_copy_from_dynptr_ukey(map, ukey);
++static int bpf_copy_to_dynptr_ukey(const struct bpf_map *map,
++				   void __user *ukey, void *key)
++{
++	struct bpf_dynptr_user __user *uptr;
++	struct bpf_dynptr_kern *kptr;
++	struct btf_record *record;
++	unsigned int i, offset;
 +
-+	if (map->key_size)
-+		return kvmemdup_bpfptr(ukey, map->key_size);
++	offset = 0;
++	record = map->key_record;
++	for (i = 0; i < record->cnt; i++) {
++		struct btf_field *field;
++		unsigned int size;
++		u64 udata;
++
++		field = &record->fields[i];
++		if (field->type != BPF_DYNPTR)
++			continue;
++
++		/* Any no-dynptr part before the dynptr ? */
++		if (offset < field->offset &&
++		    copy_to_user(ukey + offset, key + offset, field->offset - offset))
++			return -EFAULT;
++
++		/* dynptr part */
++		uptr = ukey + field->offset;
++		if (copy_from_user(&udata, &uptr->data, sizeof(udata)))
++			return -EFAULT;
++
++		kptr = key + field->offset;
++		size = __bpf_dynptr_size(kptr);
++		if (copy_to_user(u64_to_user_ptr(udata), __bpf_dynptr_data(kptr, size), size) ||
++		    put_user(size, &uptr->size) || put_user(0, &uptr->rsvd))
++			return -EFAULT;
++
++		offset = field->offset + field->size;
++	}
++
++	if (offset < map->key_size &&
++	    copy_to_user(ukey + offset, key + offset, map->key_size - offset))
++		return -EFAULT;
++
++	return 0;
++}
++
+ /* last field in 'union bpf_attr' used by this command */
+ #define BPF_MAP_LOOKUP_ELEM_LAST_FIELD flags
  
- 	if (!bpfptr_is_null(ukey))
- 		return ERR_PTR(-EINVAL);
-@@ -1591,7 +1667,7 @@ static int map_lookup_elem(union bpf_attr *attr)
- 	    !btf_record_has_field(map->record, BPF_SPIN_LOCK))
- 		return -EINVAL;
- 
--	key = __bpf_copy_key(ukey, map->key_size);
-+	key = __bpf_copy_key(map, ukey);
- 	if (IS_ERR(key))
- 		return PTR_ERR(key);
- 
-@@ -1658,7 +1734,7 @@ static int map_update_elem(union bpf_attr *attr, bpfptr_t uattr)
- 		goto err_put;
+@@ -1840,10 +1888,19 @@ static int map_get_next_key(union bpf_attr *attr)
+ 		key = NULL;
  	}
  
--	key = ___bpf_copy_key(ukey, map->key_size);
-+	key = ___bpf_copy_key(map, ukey);
- 	if (IS_ERR(key)) {
- 		err = PTR_ERR(key);
- 		goto err_put;
-@@ -1705,7 +1781,7 @@ static int map_delete_elem(union bpf_attr *attr, bpfptr_t uattr)
- 		goto err_put;
- 	}
+-	err = -ENOMEM;
+-	next_key = kvmalloc(map->key_size, GFP_USER);
+-	if (!next_key)
++	if (bpf_map_has_dynptr_key(map))
++		next_key = bpf_copy_from_dynptr_ukey(map, USER_BPFPTR(unext_key), false);
++	else
++		next_key = kvmalloc(map->key_size, GFP_USER);
++	if (IS_ERR_OR_NULL(next_key)) {
++		if (!next_key) {
++			err = -ENOMEM;
++		} else {
++			err = PTR_ERR(next_key);
++			next_key = NULL;
++		}
+ 		goto free_key;
++	}
  
--	key = ___bpf_copy_key(ukey, map->key_size);
-+	key = ___bpf_copy_key(map, ukey);
- 	if (IS_ERR(key)) {
- 		err = PTR_ERR(key);
- 		goto err_put;
-@@ -1757,7 +1833,7 @@ static int map_get_next_key(union bpf_attr *attr)
- 		return -EPERM;
+ 	if (bpf_map_is_offloaded(map)) {
+ 		err = bpf_map_offload_get_next_key(map, key, next_key);
+@@ -1857,12 +1914,13 @@ static int map_get_next_key(union bpf_attr *attr)
+ 	if (err)
+ 		goto free_next_key;
  
- 	if (ukey) {
--		key = __bpf_copy_key(ukey, map->key_size);
-+		key = __bpf_copy_key(map, ukey);
- 		if (IS_ERR(key))
- 			return PTR_ERR(key);
- 	} else {
-@@ -2054,7 +2130,7 @@ static int map_lookup_and_delete_elem(union bpf_attr *attr)
- 		goto err_put;
- 	}
+-	err = -EFAULT;
+-	if (copy_to_user(unext_key, next_key, map->key_size) != 0)
++	if (bpf_map_has_dynptr_key(map))
++		err = bpf_copy_to_dynptr_ukey(map, unext_key, next_key);
++	else
++		err = copy_to_user(unext_key, next_key, map->key_size) ? -EFAULT : 0;
++	if (err)
+ 		goto free_next_key;
  
--	key = __bpf_copy_key(ukey, map->key_size);
-+	key = __bpf_copy_key(map, ukey);
- 	if (IS_ERR(key)) {
- 		err = PTR_ERR(key);
- 		goto err_put;
+-	err = 0;
+-
+ free_next_key:
+ 	kvfree(next_key);
+ free_key:
 -- 
 2.44.0
 
