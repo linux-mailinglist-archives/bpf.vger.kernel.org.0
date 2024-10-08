@@ -1,162 +1,151 @@
-Return-Path: <bpf+bounces-41275-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41276-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9807F99562A
-	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 20:06:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8ADC99564A
+	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 20:18:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4191C1F26632
-	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 18:06:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 91D61283A0D
+	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 18:18:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6560820CCDC;
-	Tue,  8 Oct 2024 18:05:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A10BE21264E;
+	Tue,  8 Oct 2024 18:18:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="L0ULsd7z"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fanD8ZR1"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 824BA20CCDF
-	for <bpf@vger.kernel.org>; Tue,  8 Oct 2024 18:05:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 925A420ADE2;
+	Tue,  8 Oct 2024 18:18:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728410747; cv=none; b=R1BGUCbNW8LPPdJv3dxl/qULd/1UNNqaMSclcnXSUrSWxpfwJRYZRkbvtSKQOgXWYNR88GbeRyk87DU0MHkJ4UwBt2D/HIUrIOp3OLkkCcG8NFq7W0RDXp5pd7IwBOtc67/wp8W3j4wV5nT94sunmrB9szJhtNhWI6Xp5TNjJuA=
+	t=1728411518; cv=none; b=FbBJa/CBZ17gyuBfw4mlcDGD6V2G4CAztlgFC+3xQCaeU5Ncio3YoJmKlyWHQMgw6u7LiV8BIi32wV00hIJQPmA1KTwBfgDQ+f+XstQBb1S8tajIRPq5TUPZBqihzHTFQ37p6q22kHKIquEw77fizStSR5dUz9YLiMZWD4+aQM4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728410747; c=relaxed/simple;
-	bh=5jnrWiF88k5I9mEvkkTZ/M8EPG4BVGPiOHqtxpZAdK0=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=odhkUP2s1Rt4B06tpiKuyPRjeBsyM29r3lGjXVnDMprAhW/ZC2K508Sra4ozw1Hzr8rzNCzOaNc6jiI2oxs2avsnsMT3SePH/clkLQZcmuUtHEPKftbqWxEoOpyW2ZHa0/YZQcaIy2ws0NUiPh8Y9bxKIzgIHt3/gtvijZgmhsY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=L0ULsd7z; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1728410745;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QSBrsBHX+bOF/xalnqFlbySfgWCG2J84KmNwiiijxt0=;
-	b=L0ULsd7z3iWGlRM2q3kQzSaxKob5BtWXvxvZDMubwLv/K2L2TaJgDu0rqqYv0jTli4TYXm
-	WekEgXsxubH3mrwxLHFf2CeXrUndVsSg4DMyitQ0tvf1DH1JDPDciBXFYbUQXzpHiEaPZs
-	t76DHsKfsGBdGtAVFwJsVcvdXEA4C38=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-39-hGXWGZ0TMk2rPOpXluqPvw-1; Tue, 08 Oct 2024 14:05:44 -0400
-X-MC-Unique: hGXWGZ0TMk2rPOpXluqPvw-1
-Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-5c911a22768so450681a12.2
-        for <bpf@vger.kernel.org>; Tue, 08 Oct 2024 11:05:44 -0700 (PDT)
+	s=arc-20240116; t=1728411518; c=relaxed/simple;
+	bh=zcCo+naKQ+6xHi3XDFC+ZU21mkrShiOyjKx/GJqC87U=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=B17EN6QWHt+e9+KLSY21hQIlT32/Nn/w68Z+jEuDblgiFJRK4zrpHA4mHWkr2A40+quO5hNFubiix9y0Nejj3OEiAjAIuJ/Zt+8+LYUrIWUYaHb+ZPwsxY0btipGwUhDxsSYtSLiRm6KczWaxfKvyll11NyAhR9JKnbXuQ1kpaU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fanD8ZR1; arc=none smtp.client-ip=209.85.128.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-42cc43454d5so47965435e9.3;
+        Tue, 08 Oct 2024 11:18:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1728411515; x=1729016315; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=47h+WttSju8q0HbSBeD7ZI3w1+wXMpgqyxIWAg/Pnu8=;
+        b=fanD8ZR1cn1ZyX/6LUiRDs3/sGj5WHNNUUUypdJv2HKBWz8xx1ol8bGSzy5SCdeSxI
+         ysHSI4xXn4Zs2URuRLfXCaKW/yIA7Ly5itqoXPktzopLvScOGaGMvjzFYaqWtxI+Qb/1
+         l/Y8oOn+Xu/76+zQ2Jra+KWrBoM/E15ar4ZxuXztif8pUgCefOtf0l8MMeCrsaA6Q3Oc
+         dgOqbt077m3kdmIvbvVTrulrIUL9WZqTZCZ+9LGGsS3pG5SBM7Fs8lOiQCwzlZv7d5SL
+         xipODmr9mQBQOyveCApeciIbOW/rc2grhq/ie1ob1WrLUBwYyCOEGMvk9DRdnjGk54FD
+         uadg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728410743; x=1729015543;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QSBrsBHX+bOF/xalnqFlbySfgWCG2J84KmNwiiijxt0=;
-        b=Jjc4F+vo/YUAC2IX3sSUOWzlN/MBkxEm2lMiaG9IJcwFrq1lOZ5xRgSXguQhOceXde
-         m74jjQiq+PYJM7ZZWMyda2zP3KMo7GCa15wdpeo+Ok8Imua9TtAAyuEf1q98zuTCaRzV
-         Z4L8Kbftyq4rQ4BkADtnXcVkyFuoP98duYypl4O7VTkrNNvAFXi3id3X01jZQ1tDRTbE
-         MZRvogLQFndP9lVW9NgBRy3BT5GOOq9CoqY1mGfbtHqwUkem75gH59t/B83zFb6FqfCp
-         kDrVmlI+r/uh/TLrq7YeaoUTvIltE1vbc/cdNmPZLtocfdqPRG58ZyiailcZU/kFYqMu
-         8Msw==
-X-Forwarded-Encrypted: i=1; AJvYcCXuF/zkt/tP79pExxPO05ffask8yTQUOd/pDrCSPeI9Ign4JOJt0CUBRwnAxZWY8g1AzII=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzw6qdSk9haBTK0uYoP7ZpmSrp7E7n+yROj1yCUih/iODQOXwno
-	WbU8TBqWNKL6Jbpg/lIT9XlgFE5j7elf+33I+UHZe89lrCcVSMGVT/FpEIeZpI04hKubAA9wMMK
-	VZmnzdTTFj6jNP8zznAkTGZiSFv5yM6z09w6a2EB1AhuDZpHBpw==
-X-Received: by 2002:a05:6402:3811:b0:5c8:9f44:8145 with SMTP id 4fb4d7f45d1cf-5c8d2e8769dmr14049267a12.26.1728410743007;
-        Tue, 08 Oct 2024 11:05:43 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGImQDma5QXpogq3kDV2BvTyqiPPtxuHsvPzGt2cQSE0/0TUikQD5HviL4wT8kioF60+Te2KA==
-X-Received: by 2002:a05:6402:3811:b0:5c8:9f44:8145 with SMTP id 4fb4d7f45d1cf-5c8d2e8769dmr14049226a12.26.1728410742520;
-        Tue, 08 Oct 2024 11:05:42 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5c8e05bc422sm4542269a12.42.2024.10.08.11.05.41
+        d=1e100.net; s=20230601; t=1728411515; x=1729016315;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=47h+WttSju8q0HbSBeD7ZI3w1+wXMpgqyxIWAg/Pnu8=;
+        b=m8VcHiYhgcKhajBwQwOo9gjWqKQyp4UxFNCqKdCRx9taiOasycNNzeN++SYFcQWmKk
+         HDb/0bDa9nQb6xqImF9myF9VphAECikjC65VdroreotnrXZjNP7b3ITTqz9k4ZUCZ+fK
+         urRCDdOjiI8yAooiQ5BDiXzEggrbt1qiSOP2bqIdScK2CNDm0gA+FYFUqvwBtOy3cEBo
+         iaS7DoYqSXnF5fJ30Zy8jutiQM/i7FV/h4sehHSVoyuFMSW+zpNHztPxHRljTHE0Q/9j
+         e0u5kqvHu0Jzf8ATry3yUzLMDvO3KeWa1yPGdGFRs/MAexoWaxFV6YVzwDjViN305G+a
+         Bd8A==
+X-Forwarded-Encrypted: i=1; AJvYcCU8pOFwOJ+tUQ0vKN2yQMpkCnpjO7jUoka/BqZWqrQJF0Zh6rmNg1ChPpurjvQnv2b7Qi0=@vger.kernel.org, AJvYcCW3spLvqcW7aoaNsvYMYBsV2Qwtwf/cteUrap7nRXo6v2fW1mZZhMsGwuwvmrwM6Kz5RNXm1iN1@vger.kernel.org
+X-Gm-Message-State: AOJu0YwfQqc4UlTxj8h68jH0df+7cRfaUix5Fw3BhKEKm/hQKW2yAugJ
+	/SqplR55d8mE2NNBwrbzUeF4Thi/vGnnwT8ax9PjgH6PY0aL8VWw
+X-Google-Smtp-Source: AGHT+IE9KDMQK2rADBlPUW3pV7FCsILciLufwIQGADHY2crqenBECqAhUw2W1Xdgb7N8WC3FoNOLyg==
+X-Received: by 2002:a05:600c:4fcf:b0:425:80d5:b8b2 with SMTP id 5b1f17b1804b1-42f85abeab0mr120700175e9.16.1728411514545;
+        Tue, 08 Oct 2024 11:18:34 -0700 (PDT)
+Received: from krava (ip-94-113-247-30.net.vodafone.cz. [94.113.247.30])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43017466e4fsm19574595e9.0.2024.10.08.11.18.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Oct 2024 11:05:41 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id 674CB15F3BCD; Tue, 08 Oct 2024 20:05:40 +0200 (CEST)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, Andrii
- Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
- Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, Yonghong
- Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, Stanislav
- Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Kumar Kartikeya
- Dwivedi <memxor@gmail.com>, Simon Sundberg <simon.sundberg@kau.se>,
- bpf@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH bpf 4/4] selftests/bpf: Add test for kfunc module order
-In-Reply-To: <ZwVwBiT8XASa7Jy_@krava>
+        Tue, 08 Oct 2024 11:18:34 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Tue, 8 Oct 2024 20:18:31 +0200
+To: Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+	Simon Sundberg <simon.sundberg@kau.se>, bpf@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: Re: [PATCH bpf 2/4] selftests/bpf: Consolidate kernel modules into
+ common directory
+Message-ID: <ZwV3d5-sBYtgt2vi@krava>
 References: <20241008-fix-kfunc-btf-caching-for-modules-v1-0-dfefd9aa4318@redhat.com>
- <20241008-fix-kfunc-btf-caching-for-modules-v1-4-dfefd9aa4318@redhat.com>
- <ZwVwBiT8XASa7Jy_@krava>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date: Tue, 08 Oct 2024 20:05:40 +0200
-Message-ID: <87h69msc5n.fsf@toke.dk>
+ <20241008-fix-kfunc-btf-caching-for-modules-v1-2-dfefd9aa4318@redhat.com>
+ <ZwVv_ZOvh2mTGAlK@krava>
+ <87ploascn2.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87ploascn2.fsf@toke.dk>
 
-Jiri Olsa <olsajiri@gmail.com> writes:
+On Tue, Oct 08, 2024 at 07:55:13PM +0200, Toke Høiland-Jørgensen wrote:
+> Jiri Olsa <olsajiri@gmail.com> writes:
+> 
+> > On Tue, Oct 08, 2024 at 12:35:17PM +0200, Toke Høiland-Jørgensen wrote:
+> >
+> > SNIP
+> >
+> >> diff --git a/tools/testing/selftests/bpf/bpf_testmod/.gitignore b/tools/testing/selftests/bpf/test_kmods/.gitignore
+> >> similarity index 100%
+> >> rename from tools/testing/selftests/bpf/bpf_testmod/.gitignore
+> >> rename to tools/testing/selftests/bpf/test_kmods/.gitignore
+> >> diff --git a/tools/testing/selftests/bpf/test_kmods/Makefile b/tools/testing/selftests/bpf/test_kmods/Makefile
+> >> new file mode 100644
+> >> index 0000000000000000000000000000000000000000..393f407f35baf7e2b657b5d7910a6ffdecb35910
+> >> --- /dev/null
+> >> +++ b/tools/testing/selftests/bpf/test_kmods/Makefile
+> >> @@ -0,0 +1,25 @@
+> >> +TEST_KMOD_DIR := $(realpath $(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
+> >> +KDIR ?= $(abspath $(TEST_KMOD_DIR)/../../../../..)
+> >> +
+> >> +ifeq ($(V),1)
+> >> +Q =
+> >> +else
+> >> +Q = @
+> >> +endif
+> >> +
+> >> +MODULES = bpf_testmod.ko bpf_test_no_cfi.ko
+> >> +
+> >> +$(foreach m,$(MODULES),$(eval obj-m += $(m:.ko=.o)))
+> >> +
+> >> +CFLAGS_bpf_testmod.o = -I$(src)
+> >> +
+> >> +all: modules.built
+> >> +
+> >> +modules.built: *.[ch]
+> >
+> > curious, the top Makefile already checks for test_kmods/*.[ch], do we
+> > need *.[ch] ?
+> 
+> Not really for building from the top-level Makefile, that is for running
+> 'make' inside the subdir, in case anyone tries that. Don't feel strongly
+> about it, so can remove it if you prefer?
 
-> On Tue, Oct 08, 2024 at 12:35:19PM +0200, Toke H=C3=B8iland-J=C3=B8rgense=
-n wrote:
->
-> SNIP
->
->> +static int test_run_prog(const struct bpf_program *prog,
->> +			 struct bpf_test_run_opts *opts, int expect_val)
->> +{
->> +	int err;
->> +
->> +	err =3D bpf_prog_test_run_opts(bpf_program__fd(prog), opts);
->> +	if (!ASSERT_OK(err, "bpf_prog_test_run_opts"))
->> +		return err;
->> +
->> +	if (!ASSERT_EQ((int)opts->retval, expect_val, bpf_program__name(prog)))
->> +		return -EINVAL;
->> +
->> +	return 0;
->> +}
->> +
->> +void test_kfunc_module_order(void)
->> +{
->> +	struct kfunc_module_order *skel;
->> +	char pkt_data[64] =3D {};
->> +	int err =3D 0;
->> +
->> +	DECLARE_LIBBPF_OPTS(bpf_test_run_opts, test_opts, .data_in =3D pkt_dat=
-a,
->> +			    .data_size_in =3D sizeof(pkt_data));
->> +
->> +	err =3D load_module("bpf_test_modorder_x.ko",
->> +			  env_verbosity > VERBOSE_NONE);
->> +	if (!ASSERT_OK(err, "load bpf_test_modorder_x.ko"))
->> +		return;
->> +
->> +	err =3D load_module("bpf_test_modorder_y.ko",
->> +			  env_verbosity > VERBOSE_NONE);
->> +	if (!ASSERT_OK(err, "load bpf_test_modorder_y.ko"))
->> +		goto exit_modx;
->> +
->> +	skel =3D kfunc_module_order__open_and_load();
->> +	if (!ASSERT_OK_PTR(skel, "kfunc_module_order__open_and_load()")) {
->> +		err =3D -EINVAL;
->> +		goto exit_mods;
->> +	}
->> +
->> +	test_run_prog(skel->progs.call_kfunc_xy, &test_opts, 0);
->> +	test_run_prog(skel->progs.call_kfunc_yx, &test_opts, 0);
->
-> nit, no need to pass expect_val, it's always 0
+no strong feelings either ;-) I was just wondering what was the purpose
 
-Sure, can get rid of that...
-
--Toke
-
+thanks,
+jirka
 
