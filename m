@@ -1,129 +1,121 @@
-Return-Path: <bpf+bounces-41254-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41255-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92D99994BA0
-	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 14:45:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D20999525F
+	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 16:51:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C34BD1C24BE0
-	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 12:45:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BF94A1C248F0
+	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 14:51:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10F0C1DF25C;
-	Tue,  8 Oct 2024 12:44:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A3021DFE32;
+	Tue,  8 Oct 2024 14:51:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="SieLekxt"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D75B11DC759;
-	Tue,  8 Oct 2024 12:44:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AE8218CBED;
+	Tue,  8 Oct 2024 14:51:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728391474; cv=none; b=ThVZxbYdl77DbdJkLladlM8exksSFJozm0wq8EHWa76fCJokxMdSEZ7Dh7BykjrPe5O0FZfyVwddrAW1+pGTeD4PWbX/wifqtDbOvgFjHyyhR+N9XbrVvfseq7DYT+4cObz+mCMxSNF0WHTL7HOW5IiFqgxzKVMKzjHrzOKUyZE=
+	t=1728399068; cv=none; b=Q2bM7oxZN3/E7mF/xDkdYIWOAKwAKT5CtAu0sSPf6a5nB6e2JMb8d+u384UJv9BLyaQz3A4l2tZH1nEEZqn04y6VsYCU08pTK5GBwxqiTeC4wNfsMdHVg+Zx5aDpdCoeeq7UJI9ttNbRDYYtZPppvdo513NOcMhes2x279uCvRg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728391474; c=relaxed/simple;
-	bh=sweYFrv8IsvTIm5Iea4QHztGwwK/h8vbldzc5XJKGF8=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=rKzhrROx+ZI1Y1pLURxW2RC/+nHMZF1tkPDVieQgeFcH4qF/s+cwVollhyBtaImb+c56+TydG1Mug88OE3Vw49fWXjgwsui4nbHI2CDGF2yPD+fS1xDb+ZVbhRLfxYy4QcWrJrvsAyp1Ll3yNCPkMTisIdSzCgpGUvw8XmgHH4c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4XNG161PZxz4f3lgC;
-	Tue,  8 Oct 2024 20:44:10 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id B5FF61A058E;
-	Tue,  8 Oct 2024 20:44:27 +0800 (CST)
-Received: from ultra.huawei.com (unknown [10.90.53.71])
-	by APP2 (Coremail) with SMTP id Syh0CgCHB10qKQVnta4PDg--.34351S2;
-	Tue, 08 Oct 2024 20:44:27 +0800 (CST)
-From: Pu Lehui <pulehui@huaweicloud.com>
-To: bpf@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	netdev@vger.kernel.org
-Cc: =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
-	Puranjay Mohan <puranjay@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Albert Ou <aou@eecs.berkeley.edu>
-Subject: [PATCH bpf] riscv, bpf: Fix possible infinite tailcall when CONFIG_CFI_CLANG is enabled
-Date: Tue,  8 Oct 2024 12:45:44 +0000
-Message-Id: <20241008124544.171161-1-pulehui@huaweicloud.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1728399068; c=relaxed/simple;
+	bh=p/9acfdEgaLxVZfogRhnfANqjd3z7mrfWD179zJel/M=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=Sl4X+tJXQQDRn9ylZL/Gbwa1DvP7lpUbbLZn8GU/ARazEV94gFStWmwlSqb8JDNs6hrgdTdcGEOV2BnoQZTwgy7s/IshV3l4P25xoI9N+vhVBNKXu20ohrzwuVNQhrxzd7UJlIKz1b7KunJEeBhVS2f9t6z2WoSu3ASHSya/BcY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=SieLekxt; arc=none smtp.client-ip=217.70.183.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 9C6244000A;
+	Tue,  8 Oct 2024 14:51:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1728399064;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=T8JTIkRyYPw4ANhnRm9O1xslQPulRbbv6/2c4JrZHr0=;
+	b=SieLekxt9CJgTwGfAISBzmrG8aI1Zw9QyaTNvG7O3mRQexMn+MGTAUtKxIRU1XJd9AGUhr
+	OWoKrOtvHK+ncs/rsblUPL64zUk+f5lggblH4VOsnTdeW4F+gt11zJmMpCfUYvH5jL6PKK
+	fuNCgJkNkg5EwJfnXI8KIDQCzBX13d2sMGj9n3A8j9uUH3J/fED+EovzLoHU4wdyqo1bAo
+	niIeKT6ZAJhMBIy152AtsoprW1mCyn2kaBo+XQ7Am8E+PSqVjxCRluYd/7dvub+1FUo9pO
+	vb/R8q4zfhr0b+ELQqfWkweSIQMvOusWpnEiCK8g1WKk4OnHVTJ6hd+pDwT1oA==
+From: =?utf-8?q?Alexis_Lothor=C3=A9_=28eBPF_Foundation=29?= <alexis.lothore@bootlin.com>
+Date: Tue, 08 Oct 2024 16:50:57 +0200
+Subject: [PATCH bpf] selftests/bpf: add missing header include for htons
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgCHB10qKQVnta4PDg--.34351S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7tryxGr48KFykXr45WFykKrg_yoW8XrykpF
-	WUKwn3C34kXrs2k34xAF4DXw4agF1F9F47Ary7ua43Jan2vrn7Wan8Kw4YyFyrZF48Ga18
-	JFyj9r1fu34kZw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0E
-	n4kS14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I
-	0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8
-	ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcV
-	CY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAF
-	wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
-	7IU0s2-5UUUUU==
-X-CM-SenderInfo: psxovxtxl6x35dzhxuhorxvhhfrp/
+Message-Id: <20241008-network_helpers_fix-v1-1-2c2ae03df7ef@bootlin.com>
+X-B4-Tracking: v=1; b=H4sIANBGBWcC/x2MWwqAIBAAryL7naA96HGViMjaailU1qggunvS5
+ wzMPBCQCQM04gHGkwI5G0EnAsZ1sAtKmiJDqtJcK1VJi8fleOtX3D1y6Ge6pTGmnHRR1XWmIJa
+ eMer/2oLxM3Tv+wEKzjpBagAAAA==
+X-Change-ID: 20241008-network_helpers_fix-bbb7d1589930
+To: Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, 
+ Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+ Yonghong Song <yonghong.song@linux.dev>, 
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+ Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, 
+ Shuah Khan <shuah@kernel.org>
+Cc: ebpf@linuxfoundation.org, 
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, bpf@vger.kernel.org, 
+ linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ =?utf-8?q?Alexis_Lothor=C3=A9_=28eBPF_Foundation=29?= <alexis.lothore@bootlin.com>
+X-Mailer: b4 0.14.2
+X-GND-Sasl: alexis.lothore@bootlin.com
 
-From: Pu Lehui <pulehui@huawei.com>
+Including the network_helpers.h header in tests can lead to the following
+build error:
 
-When CONFIG_CFI_CLANG is enabled, the number of prologue instructions
-skipped by tailcall needs to include the kcfi instruction, otherwise the
-TCC will be initialized every tailcall is called, which may result in
-infinite tailcalls.
+./network_helpers.h: In function ‘csum_tcpudp_magic’:
+./network_helpers.h:116:14: error: implicit declaration of function \
+  ‘htons’ [-Werror=implicit-function-declaration]
+  116 |         s += htons(proto + len);
 
-Fixes: e63985ecd226 ("bpf, riscv64/cfi: Support kCFI + BPF on riscv64")
-Signed-off-by: Pu Lehui <pulehui@huawei.com>
+The error is avoided in many cases thanks to some other headers included
+earlier and bringing in arpa/inet.h (ie: test_progs.h).
+
+Make sure that test_progs build success does not depend on header ordering
+by adding the missing header include in network_helpers.h
+
+Fixes: f6642de0c3e9 ("selftests/bpf: Add csum helpers")
+Signed-off-by: Alexis Lothoré (eBPF Foundation) <alexis.lothore@bootlin.com>
 ---
- arch/riscv/net/bpf_jit_comp64.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ tools/testing/selftests/bpf/network_helpers.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
-index 99f34409fb60..91bd5082c4d8 100644
---- a/arch/riscv/net/bpf_jit_comp64.c
-+++ b/arch/riscv/net/bpf_jit_comp64.c
-@@ -18,6 +18,7 @@
- #define RV_MAX_REG_ARGS 8
- #define RV_FENTRY_NINSNS 2
- #define RV_FENTRY_NBYTES (RV_FENTRY_NINSNS * 4)
-+#define RV_KCFI_NINSNS (IS_ENABLED(CONFIG_CFI_CLANG) ? 1 : 0)
- /* imm that allows emit_imm to emit max count insns */
- #define RV_MAX_COUNT_IMM 0x7FFF7FF7FF7FF7FF
- 
-@@ -271,7 +272,8 @@ static void __build_epilogue(bool is_tail_call, struct rv_jit_context *ctx)
- 	if (!is_tail_call)
- 		emit_addiw(RV_REG_A0, RV_REG_A5, 0, ctx);
- 	emit_jalr(RV_REG_ZERO, is_tail_call ? RV_REG_T3 : RV_REG_RA,
--		  is_tail_call ? (RV_FENTRY_NINSNS + 1) * 4 : 0, /* skip reserved nops and TCC init */
-+		  /* kcfi, fentry and TCC init insns will be skipped on tailcall */
-+		  is_tail_call ? (RV_KCFI_NINSNS + RV_FENTRY_NINSNS + 1) * 4 : 0,
- 		  ctx);
- }
- 
+diff --git a/tools/testing/selftests/bpf/network_helpers.h b/tools/testing/selftests/bpf/network_helpers.h
+index c72c16e1aff825439896b38e59962ffafe92dc71..5764155b6d25188ed38e828e1e4a8a08f8a83934 100644
+--- a/tools/testing/selftests/bpf/network_helpers.h
++++ b/tools/testing/selftests/bpf/network_helpers.h
+@@ -1,6 +1,7 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
+ #ifndef __NETWORK_HELPERS_H
+ #define __NETWORK_HELPERS_H
++#include <arpa/inet.h>
+ #include <sys/socket.h>
+ #include <sys/types.h>
+ #include <linux/types.h>
+
+---
+base-commit: 67a7c7b656cfc10a7280f71641fb9e88726e8a5d
+change-id: 20241008-network_helpers_fix-bbb7d1589930
+
+Best regards,
 -- 
-2.34.1
+Alexis Lothoré, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
 
