@@ -1,297 +1,134 @@
-Return-Path: <bpf+bounces-41257-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41258-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92B09995374
-	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 17:35:36 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DB4C99542E
+	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 18:16:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1EDF71F2595C
-	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 15:35:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF5831C24968
+	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 16:16:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52EC51E009E;
-	Tue,  8 Oct 2024 15:35:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 410EE4F8A0;
+	Tue,  8 Oct 2024 16:16:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PJs2EVol"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="v4DmITZj"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6BF2249E5;
-	Tue,  8 Oct 2024 15:35:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15A2833986
+	for <bpf@vger.kernel.org>; Tue,  8 Oct 2024 16:16:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728401728; cv=none; b=sEzXDV7Lq08ooY+F+oZlHJ8qzEJDPuD2umR/UJhjgTWhiADn4kClgDhGTjNXNY1o/c60Ysjd76Sqwc0t55Q/cUlWiB9GvntBBENXBa2/UrKnlLM8yF5U5pzUmflseESE/YiKUmWHn5iWz1L9erRo18rbduvOmiK1AS8gsKYp5rc=
+	t=1728404209; cv=none; b=RJY/2c9jIKEYh0rHSsQPK2TIg+EV4KysrXn2plkJ5HtKhr2aAI6ZdthbyFO//wrRbSY8MAusxZPY9wCROYJ04O5TH/DqIp/m7biQ/oeIgMEulgG+ZIYSw36NihP9eK+cfVhfDWAeetO9xLFMj19JQRaStutX6O0r3TeO+B1GLIM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728401728; c=relaxed/simple;
-	bh=Wl1j1DcsdjghWUruz8NJy1B0MpfUs6RuX40DQKKNB4I=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=d9usMJV+6gIKhBy2ZL/Te4QArMezKVLOGipuuTAFWSt3D0lONt4Mo5JD7bHlulrE1HP4Ilxmy51DGz7AWJ8GleKrLp4+ueImQKxc1KZieAn6qFPGBCznHti+ba2Rj6aoI/xa0DlsB9sBxbdSS8Y2oyyRSWeGJil9S6qneG4TX/w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PJs2EVol; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49C0FC4CECE;
-	Tue,  8 Oct 2024 15:35:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728401728;
-	bh=Wl1j1DcsdjghWUruz8NJy1B0MpfUs6RuX40DQKKNB4I=;
-	h=From:To:Cc:Subject:Date:From;
-	b=PJs2EVolLdF3G1KCtNP10zYBxCxio9SdSC5+Q40F64AvPO+dwJiGEVjVuhP0HB4V6
-	 NVNzPnBR/tjFyDVvRCN2IWSw6db+SpTMAycXYsVy0iW9ILoLPznpqVzqBvH7I46vTo
-	 PnH3zijWchCPF9cnAYUSaUUy9lTzqjOzrDPkLDuuuNhS5kzG7faD9CbDSWp+vbLkAU
-	 ZPIpdNblmYgxaP1wH4aIjX6glH8IV2vuKDLLli8K7BvLR2I2n5AXSoitZJMOI8ziwb
-	 TltOKetZuXsSrR9hkKq57H7YZrCA92znScqi9WcT+GChkcj9u8yWlkLQ6iSDmhGCtz
-	 hGxJdqziUftpA==
-From: =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>
-To: Tejun Heo <tj@kernel.org>,
-	David Vernet <void@manifault.com>,
-	Shuah Khan <shuah@kernel.org>,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	Mark Brown <broonie@kernel.org>
-Cc: =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@rivosinc.com>,
-	bpf@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	Anders Roxell <anders.roxell@linaro.org>
-Subject: [PATCH v3] selftests: sched_ext: Add sched_ext as proper selftest target
-Date: Tue,  8 Oct 2024 17:35:18 +0200
-Message-ID: <20241008153519.1270862-1-bjorn@kernel.org>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1728404209; c=relaxed/simple;
+	bh=d3rLaK90byeGE8JPEf7fcgRVfGgbIw5Xh3yfCnfm5HE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=HPS45qVKdR0ls5Q3LDHE8NigusVUlEHw7PtJi0W8xob2dGGALPwFwTMN6Fmf7jQmyDbXu5uSV8hP1p6bESV+pX98Cv2qPdFVFhMnmT9/FFs06tNXTWa1iYdqoGdgIlqNxg9sWYvvl9oAURZd688A0vMFfCTKKPy6hQZ7xHoF7vM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=v4DmITZj; arc=none smtp.client-ip=95.215.58.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1728404204;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=FJYrN5SuilSXytbhTyPhAYiLmEnU66WbJIPSLOdkl/4=;
+	b=v4DmITZjH73ygArTDP4fBj6R4sN9wEEgxd9tyOznT/fwEHyPqnT2nsjPEp/cIiWkn7i1KY
+	o7hlKHWGq0M3i599hq4IUohU/YTVC0Lju1VR9JMdtxnsO52jN1egKGphkxymi2enVTCLoi
+	uzzRhHYBi6drdB4zvFxATlT86pCMVjI=
+From: Leon Hwang <leon.hwang@linux.dev>
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	toke@redhat.com,
+	martin.lau@kernel.org,
+	yonghong.song@linux.dev,
+	puranjay@kernel.org,
+	xukuohai@huaweicloud.com,
+	eddyz87@gmail.com,
+	iii@linux.ibm.com,
+	leon.hwang@linux.dev,
+	kernel-patches-bot@fb.com,
+	lkp@intel.com
+Subject: [PATCH bpf-next v6 0/3] bpf: Fix tailcall infinite loop caused by freplace
+Date: Wed,  9 Oct 2024 00:13:30 +0800
+Message-ID: <20241008161333.33469-1-leon.hwang@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-From: Björn Töpel <bjorn@rivosinc.com>
+Previously, I fixed a tailcall infinite loop issue caused by trampoline[0].
 
-The sched_ext selftests is missing proper cross-compilation support, a
-proper target entry, and out-of-tree build support.
+At this time, I fix a tailcall infinite loop issue caused by tailcall and
+freplace combination by preventing updating extended prog to prog_array map
+and preventing extending tail callee prog with freplace:
 
-When building the kselftest suite, e.g.:
+1. If a prog or its subprog has been extended by freplace prog, the prog
+   can not be updated to prog_array map.
+2. If a prog has been updated to prog_array map, it or its subprog can not
+   be extended by freplace prog.
 
-  make ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu-  \
-    TARGETS=sched_ext SKIP_TARGETS="" O=/output/foo \
-    -C tools/testing/selftests install
+Changes:
+v5 -> v6:
+  * Fix a build warning reported by kernel test robot.
 
-or:
+v4 -> v5:
+  * Move code of linking/unlinking target prog of freplace to trampoline.c.
+  * Address comments from Alexei:
+    * Change type of prog_array_member_cnt to u64.
+    * Combine two patches to one.
 
-  make ARCH=arm64 LLVM=1 TARGETS=sched_ext SKIP_TARGETS="" \
-    O=/output/foo -C tools/testing/selftests install
+v3 -> v4:
+  * Address comments from Eduard:
+    * Rename 'tail_callee_cnt' to 'prog_array_member_cnt'.
+    * Add comment to 'prog_array_member_cnt'.
+    * Use a mutex to protect 'is_extended' and 'prog_array_member_cnt'.
 
-The expectation is that the sched_ext is included, cross-built, the
-correct toolchain is picked up, and placed into /output/foo.
+v2 -> v3:
+  * Address comments from Alexei:
+    * Stop hacking JIT.
+    * Prevent the specific use case at attach/update time.
 
-In contrast to the BPF selftests, the sched_ext suite does not use
-bpftool at test run-time, so it is sufficient to build bpftool for the
-build host only.
+v1 -> v2:
+  * Address comment from Eduard:
+    * Explain why nop5 and xor/nop3 are swapped at prologue.
+  * Address comment from Alexei:
+    * Disallow attaching tail_call_reachable freplace prog to
+      not-tail_call_reachable target in verifier.
+  * Update "bpf, arm64: Fix tailcall infinite loop caused by freplace" with
+    latest arm64 JIT code.
 
-Add ARCH, CROSS_COMPILE, OUTPUT, and TARGETS support to the sched_ext
-selftest. Also, remove some variables that were unused by the
-Makefile.
+Links:
+[0] https://lore.kernel.org/bpf/20230912150442.2009-1-hffilwlqm@gmail.com/
 
-Signed-off-by: Björn Töpel <bjorn@rivosinc.com>
----
-v3: * Always build a build host version of bpftool (Mark)
-    * Make sure LLVM style "ARCH only" cross-build works (Mark)
-    
-v2: * Removed the duplicated LLVM prefix parsing (David)
-    * Made sure make clean didn't do a complete mess (David)
-    * Added sched_ext to default skip (Shuah)
----
- tools/testing/selftests/Makefile           |  9 +--
- tools/testing/selftests/sched_ext/Makefile | 73 ++++++++++------------
- 2 files changed, 38 insertions(+), 44 deletions(-)
+Leon Hwang (3):
+  bpf: Prevent tailcall infinite loop caused by freplace
+  selftests/bpf: Add a test case to confirm a tailcall infinite loop
+    issue has been prevented
+  selftests/bpf: Add cases to test tailcall in freplace
 
-diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
-index b38199965f99..363d031a16f7 100644
---- a/tools/testing/selftests/Makefile
-+++ b/tools/testing/selftests/Makefile
-@@ -88,6 +88,7 @@ TARGETS += rlimits
- TARGETS += rseq
- TARGETS += rtc
- TARGETS += rust
-+TARGETS += sched_ext
- TARGETS += seccomp
- TARGETS += sgx
- TARGETS += sigaltstack
-@@ -129,10 +130,10 @@ ifeq ($(filter net/lib,$(TARGETS)),)
- endif
- endif
- 
--# User can optionally provide a TARGETS skiplist.  By default we skip
--# BPF since it has cutting edge build time dependencies which require
--# more effort to install.
--SKIP_TARGETS ?= bpf
-+# User can optionally provide a TARGETS skiplist. By default we skip
-+# targets using BPF since it has cutting edge build time dependencies
-+# which require more effort to install.
-+SKIP_TARGETS ?= bpf sched_ext
- ifneq ($(SKIP_TARGETS),)
- 	TMP := $(filter-out $(SKIP_TARGETS), $(TARGETS))
- 	override TARGETS := $(TMP)
-diff --git a/tools/testing/selftests/sched_ext/Makefile b/tools/testing/selftests/sched_ext/Makefile
-index 0754a2c110a1..06ae9c107049 100644
---- a/tools/testing/selftests/sched_ext/Makefile
-+++ b/tools/testing/selftests/sched_ext/Makefile
-@@ -3,24 +3,13 @@
- include ../../../build/Build.include
- include ../../../scripts/Makefile.arch
- include ../../../scripts/Makefile.include
-+
-+TEST_GEN_PROGS := runner
-+
-+# override lib.mk's default rules
-+OVERRIDE_TARGETS := 1
- include ../lib.mk
- 
--ifneq ($(LLVM),)
--ifneq ($(filter %/,$(LLVM)),)
--LLVM_PREFIX := $(LLVM)
--else ifneq ($(filter -%,$(LLVM)),)
--LLVM_SUFFIX := $(LLVM)
--endif
--
--CC := $(LLVM_PREFIX)clang$(LLVM_SUFFIX) $(CLANG_FLAGS) -fintegrated-as
--else
--CC := gcc
--endif # LLVM
--
--ifneq ($(CROSS_COMPILE),)
--$(error CROSS_COMPILE not supported for scx selftests)
--endif # CROSS_COMPILE
--
- CURDIR := $(abspath .)
- REPOROOT := $(abspath ../../../..)
- TOOLSDIR := $(REPOROOT)/tools
-@@ -34,18 +23,23 @@ GENHDR := $(GENDIR)/autoconf.h
- SCXTOOLSDIR := $(TOOLSDIR)/sched_ext
- SCXTOOLSINCDIR := $(TOOLSDIR)/sched_ext/include
- 
--OUTPUT_DIR := $(CURDIR)/build
-+OUTPUT_DIR := $(OUTPUT)/build
- OBJ_DIR := $(OUTPUT_DIR)/obj
- INCLUDE_DIR := $(OUTPUT_DIR)/include
- BPFOBJ_DIR := $(OBJ_DIR)/libbpf
- SCXOBJ_DIR := $(OBJ_DIR)/sched_ext
- BPFOBJ := $(BPFOBJ_DIR)/libbpf.a
- LIBBPF_OUTPUT := $(OBJ_DIR)/libbpf/libbpf.a
--DEFAULT_BPFTOOL := $(OUTPUT_DIR)/sbin/bpftool
--HOST_BUILD_DIR := $(OBJ_DIR)
--HOST_OUTPUT_DIR := $(OUTPUT_DIR)
- 
--VMLINUX_BTF_PATHS ?= ../../../../vmlinux					\
-+DEFAULT_BPFTOOL := $(OUTPUT_DIR)/host/sbin/bpftool
-+HOST_OBJ_DIR := $(OBJ_DIR)/host/bpftool
-+HOST_LIBBPF_OUTPUT := $(OBJ_DIR)/host/libbpf/
-+HOST_LIBBPF_DESTDIR := $(OUTPUT_DIR)/host/
-+HOST_DESTDIR := $(OUTPUT_DIR)/host/
-+
-+VMLINUX_BTF_PATHS ?= $(if $(O),$(O)/vmlinux)					\
-+		     $(if $(KBUILD_OUTPUT),$(KBUILD_OUTPUT)/vmlinux)		\
-+		     ../../../../vmlinux					\
- 		     /sys/kernel/btf/vmlinux					\
- 		     /boot/vmlinux-$(shell uname -r)
- VMLINUX_BTF ?= $(abspath $(firstword $(wildcard $(VMLINUX_BTF_PATHS))))
-@@ -80,17 +74,23 @@ IS_LITTLE_ENDIAN = $(shell $(CC) -dM -E - </dev/null |				\
- # Use '-idirafter': Don't interfere with include mechanics except where the
- # build would have failed anyways.
- define get_sys_includes
--$(shell $(1) -v -E - </dev/null 2>&1 \
-+$(shell $(1) $(2) -v -E - </dev/null 2>&1 \
- 	| sed -n '/<...> search starts here:/,/End of search list./{ s| \(/.*\)|-idirafter \1|p }') \
--$(shell $(1) -dM -E - </dev/null | grep '__riscv_xlen ' | awk '{printf("-D__riscv_xlen=%d -D__BITS_PER_LONG=%d", $$3, $$3)}')
-+$(shell $(1) $(2) -dM -E - </dev/null | grep '__riscv_xlen ' | awk '{printf("-D__riscv_xlen=%d -D__BITS_PER_LONG=%d", $$3, $$3)}')
- endef
- 
-+ifneq ($(CROSS_COMPILE),)
-+CLANG_TARGET_ARCH = --target=$(notdir $(CROSS_COMPILE:%-=%))
-+endif
-+
-+CLANG_SYS_INCLUDES = $(call get_sys_includes,$(CLANG),$(CLANG_TARGET_ARCH))
-+
- BPF_CFLAGS = -g -D__TARGET_ARCH_$(SRCARCH)					\
- 	     $(if $(IS_LITTLE_ENDIAN),-mlittle-endian,-mbig-endian)		\
- 	     -I$(CURDIR)/include -I$(CURDIR)/include/bpf-compat			\
- 	     -I$(INCLUDE_DIR) -I$(APIDIR) -I$(SCXTOOLSINCDIR)			\
- 	     -I$(REPOROOT)/include						\
--	     $(call get_sys_includes,$(CLANG))					\
-+	     $(CLANG_SYS_INCLUDES) 						\
- 	     -Wall -Wno-compare-distinct-pointer-types				\
- 	     -Wno-incompatible-function-pointer-types				\
- 	     -O2 -mcpu=v3
-@@ -98,7 +98,7 @@ BPF_CFLAGS = -g -D__TARGET_ARCH_$(SRCARCH)					\
- # sort removes libbpf duplicates when not cross-building
- MAKE_DIRS := $(sort $(OBJ_DIR)/libbpf $(OBJ_DIR)/libbpf				\
- 	       $(OBJ_DIR)/bpftool $(OBJ_DIR)/resolve_btfids			\
--	       $(INCLUDE_DIR) $(SCXOBJ_DIR))
-+	       $(HOST_OBJ_DIR) $(INCLUDE_DIR) $(SCXOBJ_DIR))
- 
- $(MAKE_DIRS):
- 	$(call msg,MKDIR,,$@)
-@@ -108,18 +108,19 @@ $(BPFOBJ): $(wildcard $(BPFDIR)/*.[ch] $(BPFDIR)/Makefile)			\
- 	   $(APIDIR)/linux/bpf.h						\
- 	   | $(OBJ_DIR)/libbpf
- 	$(Q)$(MAKE) $(submake_extras) -C $(BPFDIR) OUTPUT=$(OBJ_DIR)/libbpf/	\
-+		    ARCH=$(ARCH) CC="$(CC)" CROSS_COMPILE=$(CROSS_COMPILE)	\
- 		    EXTRA_CFLAGS='-g -O0 -fPIC'					\
- 		    DESTDIR=$(OUTPUT_DIR) prefix= all install_headers
- 
- $(DEFAULT_BPFTOOL): $(wildcard $(BPFTOOLDIR)/*.[ch] $(BPFTOOLDIR)/Makefile)	\
--		    $(LIBBPF_OUTPUT) | $(OBJ_DIR)/bpftool
-+		    $(LIBBPF_OUTPUT) | $(HOST_OBJ_DIR)
- 	$(Q)$(MAKE) $(submake_extras)  -C $(BPFTOOLDIR)				\
- 		    ARCH= CROSS_COMPILE= CC=$(HOSTCC) LD=$(HOSTLD)		\
- 		    EXTRA_CFLAGS='-g -O0'					\
--		    OUTPUT=$(OBJ_DIR)/bpftool/					\
--		    LIBBPF_OUTPUT=$(OBJ_DIR)/libbpf/				\
--		    LIBBPF_DESTDIR=$(OUTPUT_DIR)/				\
--		    prefix= DESTDIR=$(OUTPUT_DIR)/ install-bin
-+		    OUTPUT=$(HOST_OBJ_DIR)/					\
-+		    LIBBPF_OUTPUT=$(HOST_LIBBPF_OUTPUT)				\
-+		    LIBBPF_DESTDIR=$(HOST_LIBBPF_DESTDIR)			\
-+		    prefix= DESTDIR=$(HOST_DESTDIR) install-bin
- 
- $(INCLUDE_DIR)/vmlinux.h: $(VMLINUX_BTF) $(BPFTOOL) | $(INCLUDE_DIR)
- ifeq ($(VMLINUX_H),)
-@@ -150,9 +151,7 @@ $(INCLUDE_DIR)/%.bpf.skel.h: $(SCXOBJ_DIR)/%.bpf.o $(INCLUDE_DIR)/vmlinux.h $(BP
- 
- override define CLEAN
- 	rm -rf $(OUTPUT_DIR)
--	rm -f *.o *.bpf.o *.bpf.skel.h *.bpf.subskel.h
- 	rm -f $(TEST_GEN_PROGS)
--	rm -f runner
- endef
- 
- # Every testcase takes all of the BPF progs are dependencies by default. This
-@@ -196,21 +195,15 @@ $(SCXOBJ_DIR)/runner.o: runner.c | $(SCXOBJ_DIR)
- # function doesn't support using implicit rules otherwise.
- $(testcase-targets): $(SCXOBJ_DIR)/%.o: %.c $(SCXOBJ_DIR)/runner.o $(all_test_bpfprogs) | $(SCXOBJ_DIR)
- 	$(eval test=$(patsubst %.o,%.c,$(notdir $@)))
--	$(CC) $(CFLAGS) -c $< -o $@ $(SCXOBJ_DIR)/runner.o
-+	$(CC) $(CFLAGS) -c $< -o $@
- 
- $(SCXOBJ_DIR)/util.o: util.c | $(SCXOBJ_DIR)
- 	$(CC) $(CFLAGS) -c $< -o $@
- 
--runner: $(SCXOBJ_DIR)/runner.o $(SCXOBJ_DIR)/util.o $(BPFOBJ) $(testcase-targets)
-+$(OUTPUT)/runner: $(SCXOBJ_DIR)/runner.o $(SCXOBJ_DIR)/util.o $(BPFOBJ) $(testcase-targets)
- 	@echo "$(testcase-targets)"
- 	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
- 
--TEST_GEN_PROGS := runner
--
--all: runner
--
--.PHONY: all clean help
--
- .DEFAULT_GOAL := all
- 
- .DELETE_ON_ERROR:
+ include/linux/bpf.h                           |  21 ++
+ kernel/bpf/arraymap.c                         |  23 +-
+ kernel/bpf/core.c                             |   1 +
+ kernel/bpf/syscall.c                          |  21 +-
+ kernel/bpf/trampoline.c                       |  43 ++++
+ .../selftests/bpf/prog_tests/tailcalls.c      | 196 +++++++++++++++++-
+ .../tailcall_bpf2bpf_hierarchy_freplace.c     |  30 +++
+ .../testing/selftests/bpf/progs/tc_bpf2bpf.c  |  37 +++-
+ 8 files changed, 361 insertions(+), 11 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_hierarchy_freplace.c
 
-base-commit: 87d6aab2389e5ce0197d8257d5f8ee965a67c4cd
 -- 
-2.43.0
+2.44.0
 
 
