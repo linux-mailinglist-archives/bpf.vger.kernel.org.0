@@ -1,146 +1,297 @@
-Return-Path: <bpf+bounces-41256-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41257-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6873995342
-	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 17:21:55 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92B09995374
+	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 17:35:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 71D3D281422
-	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 15:21:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1EDF71F2595C
+	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 15:35:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64EA51E0DB5;
-	Tue,  8 Oct 2024 15:21:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52EC51E009E;
+	Tue,  8 Oct 2024 15:35:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="HK7Aoff2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PJs2EVol"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DE961E0B91
-	for <bpf@vger.kernel.org>; Tue,  8 Oct 2024 15:21:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6BF2249E5;
+	Tue,  8 Oct 2024 15:35:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728400888; cv=none; b=uRob0njde3E3cIK3zWC4pguDh2x4ShAZmWCcMsJZeJpxdaRxRIX9FMKXAyf2a2+N65e2m+jqPHMR4/VkCdEGY5DIVvhltuAT4SiiUq7xOMjQFXu0YRpp29X5TtkBatzAPJCPhHh5CyNO9a2QsrbJvYspG/OPugrk2gjsPQLwFKQ=
+	t=1728401728; cv=none; b=sEzXDV7Lq08ooY+F+oZlHJ8qzEJDPuD2umR/UJhjgTWhiADn4kClgDhGTjNXNY1o/c60Ysjd76Sqwc0t55Q/cUlWiB9GvntBBENXBa2/UrKnlLM8yF5U5pzUmflseESE/YiKUmWHn5iWz1L9erRo18rbduvOmiK1AS8gsKYp5rc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728400888; c=relaxed/simple;
-	bh=V6wv7UuW3HAgTnvx4RGFnn4y4Ee+TSsmIYQNAmcoo/4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dczMuF3CESdxLRhkGVSM27dF6Is1SXaMfurHK73UD4w58z55MBMUAkz+71UZo4XD++stPYAfLsfQuHmOMmJ4M/TL01QoOXGI2PT1lXMB+Op9RVvAFeY5ccPbC8lJixPtD7SxD9Q8//kiED8RG6Ie6B90Xb17zV3TnKTHeID1TQo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=HK7Aoff2; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1728400885;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ruYSLgW7gfmln5kN4ADH0+uUUeJjmQiMQYi2GHJLhGM=;
-	b=HK7Aoff28qaYRPW+oEg61pRvs5yX643eJBrrHhXXrs3FckMrnWyI5GHz4mDzjsBJGneAO0
-	xT1eyIpwFx5sYJ2WU7dHMClAJ4Kzlc5kv6S9nJhv54M2IIJIlW8wPy0DyVgZ1pcZyFqfXm
-	CN1ksvPrNR0v9wXvevho3FrPv5BvjYo=
-Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-19-BuiWbL8bPueyNVxlgpUhdA-1; Tue,
- 08 Oct 2024 11:21:22 -0400
-X-MC-Unique: BuiWbL8bPueyNVxlgpUhdA-1
-Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 19AB51955F3D;
-	Tue,  8 Oct 2024 15:21:19 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.226.71])
-	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 68A7219560A7;
-	Tue,  8 Oct 2024 15:21:12 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Tue,  8 Oct 2024 17:21:05 +0200 (CEST)
-Date: Tue, 8 Oct 2024 17:20:57 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-To: Andrii Nakryiko <andrii@kernel.org>
-Cc: linux-trace-kernel@vger.kernel.org, peterz@infradead.org,
-	rostedt@goodmis.org, mhiramat@kernel.org, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org, jolsa@kernel.org, paulmck@kernel.org,
-	willy@infradead.org, surenb@google.com, akpm@linux-foundation.org,
-	linux-mm@kvack.org, mjguzik@gmail.com, brauner@kernel.org,
-	jannh@google.com, mhocko@kernel.org, vbabka@suse.cz,
-	mingo@kernel.org
-Subject: Re: [PATCH v2 tip/perf/core 0/5] uprobes,mm: speculative lockless
- VMA-to-uprobe lookup
-Message-ID: <20241008152056.GA9508@redhat.com>
-References: <20241001225207.2215639-1-andrii@kernel.org>
+	s=arc-20240116; t=1728401728; c=relaxed/simple;
+	bh=Wl1j1DcsdjghWUruz8NJy1B0MpfUs6RuX40DQKKNB4I=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=d9usMJV+6gIKhBy2ZL/Te4QArMezKVLOGipuuTAFWSt3D0lONt4Mo5JD7bHlulrE1HP4Ilxmy51DGz7AWJ8GleKrLp4+ueImQKxc1KZieAn6qFPGBCznHti+ba2Rj6aoI/xa0DlsB9sBxbdSS8Y2oyyRSWeGJil9S6qneG4TX/w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PJs2EVol; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49C0FC4CECE;
+	Tue,  8 Oct 2024 15:35:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1728401728;
+	bh=Wl1j1DcsdjghWUruz8NJy1B0MpfUs6RuX40DQKKNB4I=;
+	h=From:To:Cc:Subject:Date:From;
+	b=PJs2EVolLdF3G1KCtNP10zYBxCxio9SdSC5+Q40F64AvPO+dwJiGEVjVuhP0HB4V6
+	 NVNzPnBR/tjFyDVvRCN2IWSw6db+SpTMAycXYsVy0iW9ILoLPznpqVzqBvH7I46vTo
+	 PnH3zijWchCPF9cnAYUSaUUy9lTzqjOzrDPkLDuuuNhS5kzG7faD9CbDSWp+vbLkAU
+	 ZPIpdNblmYgxaP1wH4aIjX6glH8IV2vuKDLLli8K7BvLR2I2n5AXSoitZJMOI8ziwb
+	 TltOKetZuXsSrR9hkKq57H7YZrCA92znScqi9WcT+GChkcj9u8yWlkLQ6iSDmhGCtz
+	 hGxJdqziUftpA==
+From: =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>
+To: Tejun Heo <tj@kernel.org>,
+	David Vernet <void@manifault.com>,
+	Shuah Khan <shuah@kernel.org>,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	Mark Brown <broonie@kernel.org>
+Cc: =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@rivosinc.com>,
+	bpf@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	Anders Roxell <anders.roxell@linaro.org>
+Subject: [PATCH v3] selftests: sched_ext: Add sched_ext as proper selftest target
+Date: Tue,  8 Oct 2024 17:35:18 +0200
+Message-ID: <20241008153519.1270862-1-bjorn@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241001225207.2215639-1-andrii@kernel.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Well. I am in no position to ack these changes.
+From: Björn Töpel <bjorn@rivosinc.com>
 
-But let me say that I personally like this series and I see nothing wrong,
-except perhaps 5/5 needs some data_race/etc annotations as we have already
-discussed.
+The sched_ext selftests is missing proper cross-compilation support, a
+proper target entry, and out-of-tree build support.
 
-Thanks,
+When building the kselftest suite, e.g.:
 
-Oleg.
+  make ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu-  \
+    TARGETS=sched_ext SKIP_TARGETS="" O=/output/foo \
+    -C tools/testing/selftests install
 
-On 10/01, Andrii Nakryiko wrote:
->
-> Implement speculative (lockless) resolution of VMA to inode to uprobe,
-> bypassing the need to take mmap_lock for reads, if possible. Patch #1 by Suren
-> adds mm_struct helpers that help detect whether mm_struct were changed, which
-> is used by uprobe logic to validate that speculative results can be trusted
-> after all the lookup logic results in a valid uprobe instance. Patch #2
-> follows to make mm_lock_seq into 64-bit counter (on 64-bit architectures).
->
-> Patch #3 adds back RCU-delayed freeing for FMODE_BACKING files, which is
-> necessary to make speculation safe to access struct file's memory in any
-> possible situation.
->
-> Patch #4 is a simplification to uprobe VMA flag checking, suggested by Oleg.
->
-> And, finally, patch #5 is the speculative VMA-to-uprobe resolution logic. See
-> corresponding patch for details and benchmarking results.
->
-> v1->v2:
-> - adjusted vma_end_write_all() comment to point out it should never be called
->   manually now, but I wasn't sure how ACQUIRE/RELEASE comments should be
->   reworded (previously requested by Jann), so I'd appreciate some help there
->   (Jann);
-> - int -> long change for mm_lock_seq, as agreed at LPC2024 (Jann, Suren, Liam);
-> - kfree_rcu_mightsleep() for FMODE_BACKING (Suren, Christian);
-> - vm_flags simplification in find_active_uprobe_rcu() and
->   find_active_uprobe_speculative() (Oleg);
-> - guard(rcu)() simplified find_active_uprobe_speculative() implementation.
->
-> Andrii Nakryiko (4):
->   mm: switch to 64-bit mm_lock_seq/vm_lock_seq on 64-bit architectures
->   fs: add back RCU-delayed freeing of FMODE_BACKING file
->   uprobes: simplify find_active_uprobe_rcu() VMA checks
->   uprobes: add speculative lockless VMA-to-inode-to-uprobe resolution
->
-> Suren Baghdasaryan (1):
->   mm: introduce mmap_lock_speculation_{start|end}
->
->  fs/file_table.c           |  2 +-
->  include/linux/mm.h        |  6 ++--
->  include/linux/mm_types.h  |  7 ++--
->  include/linux/mmap_lock.h | 72 ++++++++++++++++++++++++++++++++-------
->  kernel/events/uprobes.c   | 46 ++++++++++++++++++++++++-
->  kernel/fork.c             |  3 --
->  6 files changed, 114 insertions(+), 22 deletions(-)
->
-> --
-> 2.43.5
->
+or:
+
+  make ARCH=arm64 LLVM=1 TARGETS=sched_ext SKIP_TARGETS="" \
+    O=/output/foo -C tools/testing/selftests install
+
+The expectation is that the sched_ext is included, cross-built, the
+correct toolchain is picked up, and placed into /output/foo.
+
+In contrast to the BPF selftests, the sched_ext suite does not use
+bpftool at test run-time, so it is sufficient to build bpftool for the
+build host only.
+
+Add ARCH, CROSS_COMPILE, OUTPUT, and TARGETS support to the sched_ext
+selftest. Also, remove some variables that were unused by the
+Makefile.
+
+Signed-off-by: Björn Töpel <bjorn@rivosinc.com>
+---
+v3: * Always build a build host version of bpftool (Mark)
+    * Make sure LLVM style "ARCH only" cross-build works (Mark)
+    
+v2: * Removed the duplicated LLVM prefix parsing (David)
+    * Made sure make clean didn't do a complete mess (David)
+    * Added sched_ext to default skip (Shuah)
+---
+ tools/testing/selftests/Makefile           |  9 +--
+ tools/testing/selftests/sched_ext/Makefile | 73 ++++++++++------------
+ 2 files changed, 38 insertions(+), 44 deletions(-)
+
+diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
+index b38199965f99..363d031a16f7 100644
+--- a/tools/testing/selftests/Makefile
++++ b/tools/testing/selftests/Makefile
+@@ -88,6 +88,7 @@ TARGETS += rlimits
+ TARGETS += rseq
+ TARGETS += rtc
+ TARGETS += rust
++TARGETS += sched_ext
+ TARGETS += seccomp
+ TARGETS += sgx
+ TARGETS += sigaltstack
+@@ -129,10 +130,10 @@ ifeq ($(filter net/lib,$(TARGETS)),)
+ endif
+ endif
+ 
+-# User can optionally provide a TARGETS skiplist.  By default we skip
+-# BPF since it has cutting edge build time dependencies which require
+-# more effort to install.
+-SKIP_TARGETS ?= bpf
++# User can optionally provide a TARGETS skiplist. By default we skip
++# targets using BPF since it has cutting edge build time dependencies
++# which require more effort to install.
++SKIP_TARGETS ?= bpf sched_ext
+ ifneq ($(SKIP_TARGETS),)
+ 	TMP := $(filter-out $(SKIP_TARGETS), $(TARGETS))
+ 	override TARGETS := $(TMP)
+diff --git a/tools/testing/selftests/sched_ext/Makefile b/tools/testing/selftests/sched_ext/Makefile
+index 0754a2c110a1..06ae9c107049 100644
+--- a/tools/testing/selftests/sched_ext/Makefile
++++ b/tools/testing/selftests/sched_ext/Makefile
+@@ -3,24 +3,13 @@
+ include ../../../build/Build.include
+ include ../../../scripts/Makefile.arch
+ include ../../../scripts/Makefile.include
++
++TEST_GEN_PROGS := runner
++
++# override lib.mk's default rules
++OVERRIDE_TARGETS := 1
+ include ../lib.mk
+ 
+-ifneq ($(LLVM),)
+-ifneq ($(filter %/,$(LLVM)),)
+-LLVM_PREFIX := $(LLVM)
+-else ifneq ($(filter -%,$(LLVM)),)
+-LLVM_SUFFIX := $(LLVM)
+-endif
+-
+-CC := $(LLVM_PREFIX)clang$(LLVM_SUFFIX) $(CLANG_FLAGS) -fintegrated-as
+-else
+-CC := gcc
+-endif # LLVM
+-
+-ifneq ($(CROSS_COMPILE),)
+-$(error CROSS_COMPILE not supported for scx selftests)
+-endif # CROSS_COMPILE
+-
+ CURDIR := $(abspath .)
+ REPOROOT := $(abspath ../../../..)
+ TOOLSDIR := $(REPOROOT)/tools
+@@ -34,18 +23,23 @@ GENHDR := $(GENDIR)/autoconf.h
+ SCXTOOLSDIR := $(TOOLSDIR)/sched_ext
+ SCXTOOLSINCDIR := $(TOOLSDIR)/sched_ext/include
+ 
+-OUTPUT_DIR := $(CURDIR)/build
++OUTPUT_DIR := $(OUTPUT)/build
+ OBJ_DIR := $(OUTPUT_DIR)/obj
+ INCLUDE_DIR := $(OUTPUT_DIR)/include
+ BPFOBJ_DIR := $(OBJ_DIR)/libbpf
+ SCXOBJ_DIR := $(OBJ_DIR)/sched_ext
+ BPFOBJ := $(BPFOBJ_DIR)/libbpf.a
+ LIBBPF_OUTPUT := $(OBJ_DIR)/libbpf/libbpf.a
+-DEFAULT_BPFTOOL := $(OUTPUT_DIR)/sbin/bpftool
+-HOST_BUILD_DIR := $(OBJ_DIR)
+-HOST_OUTPUT_DIR := $(OUTPUT_DIR)
+ 
+-VMLINUX_BTF_PATHS ?= ../../../../vmlinux					\
++DEFAULT_BPFTOOL := $(OUTPUT_DIR)/host/sbin/bpftool
++HOST_OBJ_DIR := $(OBJ_DIR)/host/bpftool
++HOST_LIBBPF_OUTPUT := $(OBJ_DIR)/host/libbpf/
++HOST_LIBBPF_DESTDIR := $(OUTPUT_DIR)/host/
++HOST_DESTDIR := $(OUTPUT_DIR)/host/
++
++VMLINUX_BTF_PATHS ?= $(if $(O),$(O)/vmlinux)					\
++		     $(if $(KBUILD_OUTPUT),$(KBUILD_OUTPUT)/vmlinux)		\
++		     ../../../../vmlinux					\
+ 		     /sys/kernel/btf/vmlinux					\
+ 		     /boot/vmlinux-$(shell uname -r)
+ VMLINUX_BTF ?= $(abspath $(firstword $(wildcard $(VMLINUX_BTF_PATHS))))
+@@ -80,17 +74,23 @@ IS_LITTLE_ENDIAN = $(shell $(CC) -dM -E - </dev/null |				\
+ # Use '-idirafter': Don't interfere with include mechanics except where the
+ # build would have failed anyways.
+ define get_sys_includes
+-$(shell $(1) -v -E - </dev/null 2>&1 \
++$(shell $(1) $(2) -v -E - </dev/null 2>&1 \
+ 	| sed -n '/<...> search starts here:/,/End of search list./{ s| \(/.*\)|-idirafter \1|p }') \
+-$(shell $(1) -dM -E - </dev/null | grep '__riscv_xlen ' | awk '{printf("-D__riscv_xlen=%d -D__BITS_PER_LONG=%d", $$3, $$3)}')
++$(shell $(1) $(2) -dM -E - </dev/null | grep '__riscv_xlen ' | awk '{printf("-D__riscv_xlen=%d -D__BITS_PER_LONG=%d", $$3, $$3)}')
+ endef
+ 
++ifneq ($(CROSS_COMPILE),)
++CLANG_TARGET_ARCH = --target=$(notdir $(CROSS_COMPILE:%-=%))
++endif
++
++CLANG_SYS_INCLUDES = $(call get_sys_includes,$(CLANG),$(CLANG_TARGET_ARCH))
++
+ BPF_CFLAGS = -g -D__TARGET_ARCH_$(SRCARCH)					\
+ 	     $(if $(IS_LITTLE_ENDIAN),-mlittle-endian,-mbig-endian)		\
+ 	     -I$(CURDIR)/include -I$(CURDIR)/include/bpf-compat			\
+ 	     -I$(INCLUDE_DIR) -I$(APIDIR) -I$(SCXTOOLSINCDIR)			\
+ 	     -I$(REPOROOT)/include						\
+-	     $(call get_sys_includes,$(CLANG))					\
++	     $(CLANG_SYS_INCLUDES) 						\
+ 	     -Wall -Wno-compare-distinct-pointer-types				\
+ 	     -Wno-incompatible-function-pointer-types				\
+ 	     -O2 -mcpu=v3
+@@ -98,7 +98,7 @@ BPF_CFLAGS = -g -D__TARGET_ARCH_$(SRCARCH)					\
+ # sort removes libbpf duplicates when not cross-building
+ MAKE_DIRS := $(sort $(OBJ_DIR)/libbpf $(OBJ_DIR)/libbpf				\
+ 	       $(OBJ_DIR)/bpftool $(OBJ_DIR)/resolve_btfids			\
+-	       $(INCLUDE_DIR) $(SCXOBJ_DIR))
++	       $(HOST_OBJ_DIR) $(INCLUDE_DIR) $(SCXOBJ_DIR))
+ 
+ $(MAKE_DIRS):
+ 	$(call msg,MKDIR,,$@)
+@@ -108,18 +108,19 @@ $(BPFOBJ): $(wildcard $(BPFDIR)/*.[ch] $(BPFDIR)/Makefile)			\
+ 	   $(APIDIR)/linux/bpf.h						\
+ 	   | $(OBJ_DIR)/libbpf
+ 	$(Q)$(MAKE) $(submake_extras) -C $(BPFDIR) OUTPUT=$(OBJ_DIR)/libbpf/	\
++		    ARCH=$(ARCH) CC="$(CC)" CROSS_COMPILE=$(CROSS_COMPILE)	\
+ 		    EXTRA_CFLAGS='-g -O0 -fPIC'					\
+ 		    DESTDIR=$(OUTPUT_DIR) prefix= all install_headers
+ 
+ $(DEFAULT_BPFTOOL): $(wildcard $(BPFTOOLDIR)/*.[ch] $(BPFTOOLDIR)/Makefile)	\
+-		    $(LIBBPF_OUTPUT) | $(OBJ_DIR)/bpftool
++		    $(LIBBPF_OUTPUT) | $(HOST_OBJ_DIR)
+ 	$(Q)$(MAKE) $(submake_extras)  -C $(BPFTOOLDIR)				\
+ 		    ARCH= CROSS_COMPILE= CC=$(HOSTCC) LD=$(HOSTLD)		\
+ 		    EXTRA_CFLAGS='-g -O0'					\
+-		    OUTPUT=$(OBJ_DIR)/bpftool/					\
+-		    LIBBPF_OUTPUT=$(OBJ_DIR)/libbpf/				\
+-		    LIBBPF_DESTDIR=$(OUTPUT_DIR)/				\
+-		    prefix= DESTDIR=$(OUTPUT_DIR)/ install-bin
++		    OUTPUT=$(HOST_OBJ_DIR)/					\
++		    LIBBPF_OUTPUT=$(HOST_LIBBPF_OUTPUT)				\
++		    LIBBPF_DESTDIR=$(HOST_LIBBPF_DESTDIR)			\
++		    prefix= DESTDIR=$(HOST_DESTDIR) install-bin
+ 
+ $(INCLUDE_DIR)/vmlinux.h: $(VMLINUX_BTF) $(BPFTOOL) | $(INCLUDE_DIR)
+ ifeq ($(VMLINUX_H),)
+@@ -150,9 +151,7 @@ $(INCLUDE_DIR)/%.bpf.skel.h: $(SCXOBJ_DIR)/%.bpf.o $(INCLUDE_DIR)/vmlinux.h $(BP
+ 
+ override define CLEAN
+ 	rm -rf $(OUTPUT_DIR)
+-	rm -f *.o *.bpf.o *.bpf.skel.h *.bpf.subskel.h
+ 	rm -f $(TEST_GEN_PROGS)
+-	rm -f runner
+ endef
+ 
+ # Every testcase takes all of the BPF progs are dependencies by default. This
+@@ -196,21 +195,15 @@ $(SCXOBJ_DIR)/runner.o: runner.c | $(SCXOBJ_DIR)
+ # function doesn't support using implicit rules otherwise.
+ $(testcase-targets): $(SCXOBJ_DIR)/%.o: %.c $(SCXOBJ_DIR)/runner.o $(all_test_bpfprogs) | $(SCXOBJ_DIR)
+ 	$(eval test=$(patsubst %.o,%.c,$(notdir $@)))
+-	$(CC) $(CFLAGS) -c $< -o $@ $(SCXOBJ_DIR)/runner.o
++	$(CC) $(CFLAGS) -c $< -o $@
+ 
+ $(SCXOBJ_DIR)/util.o: util.c | $(SCXOBJ_DIR)
+ 	$(CC) $(CFLAGS) -c $< -o $@
+ 
+-runner: $(SCXOBJ_DIR)/runner.o $(SCXOBJ_DIR)/util.o $(BPFOBJ) $(testcase-targets)
++$(OUTPUT)/runner: $(SCXOBJ_DIR)/runner.o $(SCXOBJ_DIR)/util.o $(BPFOBJ) $(testcase-targets)
+ 	@echo "$(testcase-targets)"
+ 	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
+ 
+-TEST_GEN_PROGS := runner
+-
+-all: runner
+-
+-.PHONY: all clean help
+-
+ .DEFAULT_GOAL := all
+ 
+ .DELETE_ON_ERROR:
+
+base-commit: 87d6aab2389e5ce0197d8257d5f8ee965a67c4cd
+-- 
+2.43.0
 
 
