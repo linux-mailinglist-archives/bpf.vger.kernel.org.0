@@ -1,150 +1,145 @@
-Return-Path: <bpf+bounces-41305-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41306-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3DDD995B6C
-	for <lists+bpf@lfdr.de>; Wed,  9 Oct 2024 01:12:53 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB9AB995B80
+	for <lists+bpf@lfdr.de>; Wed,  9 Oct 2024 01:19:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 71FFF1F24EE8
-	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 23:12:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EFF9E1C2163A
+	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 23:19:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59E9C2178E1;
-	Tue,  8 Oct 2024 23:12:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFABA217913;
+	Tue,  8 Oct 2024 23:19:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AwyO2kQd"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Mn2Ym7el"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
+Received: from mail-io1-f44.google.com (mail-io1-f44.google.com [209.85.166.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92FEA173336;
-	Tue,  8 Oct 2024 23:12:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B756C2178FE;
+	Tue,  8 Oct 2024 23:19:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728429166; cv=none; b=ktBVp8cDtfZp4zd+/XpIY/ErQ7HzG39xaonuTbRiksF8QQ8YCRnSwAyIizGhdKePJiDG88pMGrJDXqWdy0vOj35eef8NcCsnorGLxO+DXMFAu2+Yd7VY+gIIPYlFi2H+/f8efFAGadclToUzTI6EnDGwwgwSZA4Py6T1NEin1Sk=
+	t=1728429549; cv=none; b=QITNUPjoRy6Te9KDKFvvIO+UbxtVkoQfo/gtVOJjehDbC43iiRqqu+1pCATxYlUwfk1iwnXw3IXngYfy7YSYUBFjLNGGW1iADaZrqWUwcBoyNukXD3LZWRKinP4GbPgy223KCTvmgngcqDRDIuhV8CVi4vg4t0rVhQ5MW67ZtZQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728429166; c=relaxed/simple;
-	bh=V3BdJKy7CxOhfroJGxI5BGYjNRO00SqO6rdsy+vpmMI=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=UrrtqkDeGBXmi5Rxzn+G7vTnI8JOg8MOw66r49d1RGsew6Lptjd1SiXghLL/hr1VUlwm+PG7E892Mmlcho51s2W4RM/FpB0jm8Lpz6or30KWqc0NrZUqCSqC3ux9/O8LI+hZpdcUHhxagDDhPaeDjFH0i/pp4fKMJ5N5VErwuF4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AwyO2kQd; arc=none smtp.client-ip=209.85.215.180
+	s=arc-20240116; t=1728429549; c=relaxed/simple;
+	bh=UWx7R+D4wTTqvKoZ9J90B2LDFN/v+psmFlgqBnJJ5ZY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=pX+iU0tvdZebcOm1lICkMbjqB9dYWuvMBg5MjQyh1eR1sIOTT6JsYxif0ghuDF0rTAQS8bVWPnlkXwSAM/FLVTo97AZd50NKyLZqx7j0+ncNC/4pDuUVWvD90GuNMWvmY1XAdOxIUo9IDbe0YM0vIhhNLOopYwkGribpjmmTdxw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Mn2Ym7el; arc=none smtp.client-ip=209.85.166.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-7c3e1081804so3061169a12.3;
-        Tue, 08 Oct 2024 16:12:45 -0700 (PDT)
+Received: by mail-io1-f44.google.com with SMTP id ca18e2360f4ac-835393b3c05so13802539f.2;
+        Tue, 08 Oct 2024 16:19:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1728429165; x=1729033965; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=BsjmZAaiL+r0qx+ZNZLEANsPckK9zwVJsn7S22NQzkQ=;
-        b=AwyO2kQdzqC/2gITfL1+muD1nCLNSMQCbRu68992nRVzMWlPOftbx9pNlBV28ZDZdx
-         nXJ97LDyqxwGJcSTR5Cgs77Le4PLVGj4xW2AlwneOdFV3K6wu1SlqibjUzEGBL5/bAFi
-         m+vMQYMpH+IZ+wdYgRjYtVRrNGp83TK/ozKUA0tUiaSCTOuC/7U0oU2xswDV88CnbbA6
-         Qp6pvlZBlEKHb6qB12A3YN4gjkBcKXm7pdx8jtC4/XBqmUUMu+otg2NwrD4ARUYBdXPb
-         R1hTLcsrOTDgehWR2VHq0p8qA+DcIgBCRrbOQ7nFLWefxMbozGUf9WZY9SZrOWtD0nm9
-         nToQ==
+        d=gmail.com; s=20230601; t=1728429547; x=1729034347; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=e8V3pavK9gEFR3Y/ZpTYwjDhBxTLh7nk+LEHCLIgYUk=;
+        b=Mn2Ym7el8VWsz9tV4pp3DTv9JxKgLsIfwp8q/7E8NJbQO9t7tLlZexuEv1sGI0xQYH
+         owNoGzBwj6XgQz+5xRA14Qls26nyA7Iws35b2QHF+sT/NQ9RTLkqAX4WgWm8dlZ7wssY
+         v4KGax992BwjXe9F/N6soki0e7wCk+5GDjJgP+vpEQavzRiQz/BQx+qQB8FhAD++DLsI
+         d6BYp1R0pCYuznQE3FvZEtN/Op5s3y7UjNSLMg1Z8k1eKkme9xzndV18IwFh2U5TgdFi
+         i9rauqB8tt9uOiQsNsXKFLzhm3kH9skSLp2usihP2ekSC0NzP6lOd9FQ9ctQjl4QWecR
+         M6sg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728429165; x=1729033965;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=BsjmZAaiL+r0qx+ZNZLEANsPckK9zwVJsn7S22NQzkQ=;
-        b=Q9VeEG7mcaV/tKyOEJ7lsk2TuDxqPmAuONdhmpG7Bkj47iiLAMy+xf18ufzllViClt
-         sV2hqXUnLX0kTQiJ27gHse48DYjvJWiDEEohu/qjDwpauLnDHTyCdAI7skKDO4RY5340
-         HXm4rqwV2/VNQRnUcsxtLk+kQZ4+HbYs/4ai2ZMVurAMFUAMD5BnYD6fISA0ikGH+3eW
-         kO5zr1z0JGgQfwRvKi5pJqKHUvpO+h0I/LV2IY16shjgBSHQbwDLlVlkehOLfj/hlCVg
-         e/PbzdAPbUxeskQNaCNghucf8jZn9r3r94WB0reLk/PGzPdSAewl9RmSwttwl+t0B5v8
-         lWEA==
-X-Forwarded-Encrypted: i=1; AJvYcCULpdJusenhwx/IHhBmjtZ0coHXqubO5ISwI6Dy356v6OZxLoGX0sa8Ku7QmXcdQ/mszn3hb7DveCMoh8wz8EI=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxEG0mNSoAJb5MExXhbmPoVNNp4T7jP7GwyACyE57MRcB0df+uj
-	R1d6K8UIGwHxPI/OyiB7WtxY7q81/XZue0ssYabbLFKe6zOlzxMBLZZAnQ==
-X-Google-Smtp-Source: AGHT+IGKpGMqSDziCrUl7esZ93wa2cuNi5PZ2M5lQymHsIKGXZhZywAmLFnnwlXZSU5SvL0zctj2Og==
-X-Received: by 2002:a05:6a21:4d8c:b0:1cf:6baf:61c0 with SMTP id adf61e73a8af0-1d8a3c490e1mr756328637.44.1728429164669;
-        Tue, 08 Oct 2024 16:12:44 -0700 (PDT)
-Received: from localhost.localdomain (69-172-146-21.cable.teksavvy.com. [69.172.146.21])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7e9f682decbsm7381929a12.45.2024.10.08.16.12.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Oct 2024 16:12:44 -0700 (PDT)
-From: Tony Ambardar <tony.ambardar@gmail.com>
-To: bpf@vger.kernel.org
-Cc: Tony Ambardar <tony.ambardar@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Shuah Khan <shuah@kernel.org>,
-	linux-kselftest@vger.kernel.org,
-	=?UTF-8?q?Alexis=20Lothor=C3=A9?= <alexis.lothore@bootlin.com>
-Subject: [PATCH bpf v1] selftests/bpf: Fix error compiling cgroup_ancestor.c with musl libc
-Date: Tue,  8 Oct 2024 16:12:32 -0700
-Message-Id: <20241008231232.634047-1-tony.ambardar@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20230601; t=1728429547; x=1729034347;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=e8V3pavK9gEFR3Y/ZpTYwjDhBxTLh7nk+LEHCLIgYUk=;
+        b=muWoIbDD7mBxCzqEkgptKMH63xVyaBu3jAK1tTh+hGoJJHzUppM3OliUx6Wfx4+5LB
+         5KKivrGOwtPg1n2/fQP8n1/DhW+vHcqhmU3vUowsi1Qqm46/ebQKIjeJcyxLIf3Mtuz0
+         p6emTR+MglOe18kYK8npqPTGXfmW+KfzqCEJsaLmrpQAed/iWTvs9ROY3RYM23Cq9fGO
+         OvfxnstbYlYZq1JrQe3PrZjCNTUJKIoi+fzfjMbVDP6t32FLu6Nf51jyIaDR2BhY5uu+
+         fi2a/yyDvBqxZiilioOAT7qzB5GvLmnyU6zucBkbTKH31NfdTDa8P3dVhjehYOjaJsHE
+         wblg==
+X-Forwarded-Encrypted: i=1; AJvYcCVn7qLMWmGO1OsnkUxscaHdm+DyZzWKB6aC0IoD+Of/d0+klVZ51Ozvx+Ox14zUIaq6vhCgrk0Z@vger.kernel.org, AJvYcCWqc3WS+4E1x7xmjjRyzDN83sATxOPQomGQzxlca6xuvF69F4bb55lLh2jnhtJOgWtGAUk=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx0g4YKxdFGoKegKi4ncJCDYsjgh3DrYq/pLGHi0wQQJMjhs6RE
+	3OYBrUCLgi7ix7+Jzailxc8yivRxZDRGNAvj+u7m4ke8Ea5gGbZEDv7GVCE3hz/G5P+Z19sidvu
+	miowHH0YzLS4AxMW2znn+cLYsVspJIVTU
+X-Google-Smtp-Source: AGHT+IEF1bl05RbryFjU1WHWXSQpyLnCbbHGfsuMLSddfL6821lwuyuTa70yEFqo4fRGVKMV9ZzaQyo3yFB1Cn2jQJk=
+X-Received: by 2002:a05:6e02:1d82:b0:3a0:8e92:ecd1 with SMTP id
+ e9e14a558f8ab-3a397ce886cmr4883685ab.2.1728429546782; Tue, 08 Oct 2024
+ 16:19:06 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20241008095109.99918-1-kerneljasonxing@gmail.com>
+ <20241008095109.99918-7-kerneljasonxing@gmail.com> <6705804318fa1_1a41992941a@willemb.c.googlers.com.notmuch>
+In-Reply-To: <6705804318fa1_1a41992941a@willemb.c.googlers.com.notmuch>
+From: Jason Xing <kerneljasonxing@gmail.com>
+Date: Wed, 9 Oct 2024 07:18:30 +0800
+Message-ID: <CAL+tcoA_HwCYG+_DtdRHNL-L07RYqQfxY+pmT2fUvs-N1HYV9g@mail.gmail.com>
+Subject: Re: [PATCH net-next 6/9] net-timestamp: add tx OPT_ID_TCP support for
+ bpf case
+To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
+	pabeni@redhat.com, dsahern@kernel.org, willemb@google.com, ast@kernel.org, 
+	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev, 
+	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev, 
+	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
+	haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org, 
+	netdev@vger.kernel.org, Jason Xing <kernelxing@tencent.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Existing code calls connect() with a 'struct sockaddr_in6 *' argument
-where a 'struct sockaddr *' argument is declared, yielding compile errors
-when building for mips64el/musl-libc:
+On Wed, Oct 9, 2024 at 2:56=E2=80=AFAM Willem de Bruijn
+<willemdebruijn.kernel@gmail.com> wrote:
+>
+> Jason Xing wrote:
+> > From: Jason Xing <kernelxing@tencent.com>
+> >
+> > We can set OPT_ID|OPT_ID_TCP before we initialize the last skb
+> > from each sendmsg. We only set the socket once like how we use
+> > setsockopt() with OPT_ID|OPT_ID_TCP flags.
+> >
+> > Signed-off-by: Jason Xing <kernelxing@tencent.com>
+> > ---
+> >  net/core/skbuff.c | 16 +++++++++++++---
+> >  net/ipv4/tcp.c    | 19 +++++++++++++++----
+> >  2 files changed, 28 insertions(+), 7 deletions(-)
+> >
+>
+> > @@ -491,10 +491,21 @@ static u32 bpf_tcp_tx_timestamp(struct sock *sk)
+> >       if (!(flags & SOF_TIMESTAMPING_TX_RECORD_MASK))
+> >               return 0;
+> >
+> > +     /* We require users to set both OPT_ID and OPT_ID_TCP flags
+> > +      * together here, or else the key might be inaccurate.
+> > +      */
+> > +     if (flags & SOF_TIMESTAMPING_OPT_ID &&
+> > +         flags & SOF_TIMESTAMPING_OPT_ID_TCP &&
+> > +         !(sk->sk_tsflags & (SOF_TIMESTAMPING_OPT_ID | SOF_TIMESTAMPIN=
+G_OPT_ID_TCP))) {
+> > +             atomic_set(&sk->sk_tskey, (tcp_sk(sk)->write_seq - copied=
+));
+> > +             sk->sk_tsflags |=3D (SOF_TIMESTAMPING_OPT_ID | SOF_TIMEST=
+AMPING_OPT_ID_TCP);
+>
+> So user and BPF admin conflict on both sk_tsflags and sktskey?
+>
+> I think BPF resetting this key, or incrementing it, may break user
+> expectations.
 
-In file included from cgroup_ancestor.c:3:
-cgroup_ancestor.c: In function 'send_datagram':
-cgroup_ancestor.c:38:38: error: passing argument 2 of 'connect' from incompatible pointer type [-Werror=incompatible-pointer-types]
-   38 |         if (!ASSERT_OK(connect(sock, &addr, sizeof(addr)), "connect")) {
-      |                                      ^~~~~
-      |                                      |
-      |                                      struct sockaddr_in6 *
-./test_progs.h:343:29: note: in definition of macro 'ASSERT_OK'
-  343 |         long long ___res = (res);                                       \
-      |                             ^~~
-In file included from .../netinet/in.h:10,
-                 from .../arpa/inet.h:9,
-                 from ./test_progs.h:17:
-.../sys/socket.h:386:19: note: expected 'const struct sockaddr *' but argument is of type 'struct sockaddr_in6 *'
-  386 | int connect (int, const struct sockaddr *, socklen_t);
-      |                   ^~~~~~~~~~~~~~~~~~~~~~~
-cc1: all warnings being treated as errors
+Yes, when it comes to OPT_ID and OPT_ID_TCP, conflict could happen.
+The reason why I don't use it like BPF_SOCK_OPS_TS_SCHED_OPT_CB flags
+(which is set along with each last skb) is that OPT_ID logic is a
+little bit complex. If we want to avoid touching sk_tsflags field in
+struct sock, we have to re-implement a similiar logic as you've
+already done in these years.
 
-This only compiles because of a glibc extension allowing declaration of the
-argument as a "transparent union" which includes both types above.
+Now, this patch is easier but as you said it may "break" users... But
+I wonder if we can give the bpf program the first priority like what
+TCP_BPF_RTO_MIN does. TCP_BPF_RTO_MIN can override icsk_rto_min field
+in struct inet_connection_sock.
 
-Explicitly cast the argument to allow compiling for both musl and glibc.
-
-Cc: Alexis Lothoré (eBPF Foundation) <alexis.lothore@bootlin.com>
-Fixes: f957c230e173 ("selftests/bpf: convert test_skb_cgroup_id_user to test_progs")
-Signed-off-by: Tony Ambardar <tony.ambardar@gmail.com>
----
- tools/testing/selftests/bpf/prog_tests/cgroup_ancestor.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/cgroup_ancestor.c b/tools/testing/selftests/bpf/prog_tests/cgroup_ancestor.c
-index 9250a1e9f9af..3f9ffdf71343 100644
---- a/tools/testing/selftests/bpf/prog_tests/cgroup_ancestor.c
-+++ b/tools/testing/selftests/bpf/prog_tests/cgroup_ancestor.c
-@@ -35,7 +35,7 @@ static int send_datagram(void)
- 	if (!ASSERT_OK_FD(sock, "create socket"))
- 		return sock;
- 
--	if (!ASSERT_OK(connect(sock, &addr, sizeof(addr)), "connect")) {
-+	if (!ASSERT_OK(connect(sock, (struct sockaddr *)&addr, sizeof(addr)), "connect")) {
- 		close(sock);
- 		return -1;
- 	}
--- 
-2.34.1
-
+Thanks,
+Jason
 
