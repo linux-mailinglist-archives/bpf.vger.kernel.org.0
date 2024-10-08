@@ -1,305 +1,293 @@
-Return-Path: <bpf+bounces-41192-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41193-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 326D2994044
-	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 10:00:22 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 201E999408A
+	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 10:07:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AC50F1F239EF
-	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 08:00:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 42D431C2596B
+	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 08:07:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EAEE1F12F0;
-	Tue,  8 Oct 2024 06:59:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E75072010F5;
+	Tue,  8 Oct 2024 07:16:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="MXRdpNSy"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC4271D0F60
-	for <bpf@vger.kernel.org>; Tue,  8 Oct 2024 06:59:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F07331FF7D5
+	for <bpf@vger.kernel.org>; Tue,  8 Oct 2024 07:16:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728370753; cv=none; b=Q5WnnREAokEfQ5fpDA2jDI/8tvtNt06NBbE5UxZWaLsaTSxbfvvscOAfLXtfS59irD/FYgprR47KdBouwoqLq7cnEePeJxJmeg25k4V1n/uB1fvqcOAGG3DIA4PvmP8mPZlrgc9fh62KM9azRA+C+jq1igTSyDYe798S78AVnhg=
+	t=1728371764; cv=none; b=nQytOVJQXLtnV6p7183vEx5sYnNUZmuEYRlSt9CUS2pzVRDl+WNZutJE/8Tz7I8KKechhWuXO0+wph47s960xZInvOgwelq2E5lKwgoX/H73+nNfuIEdodjtdC46TXQ9qTZw1ZCp55PPDCl0Poz114b4AW6uv7x8szY02B2uuXc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728370753; c=relaxed/simple;
-	bh=y6nCdWO8qLK20kmuH06EI8PyrDGRhJj1ZBYOD2DKw+s=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=KplwrE/l/BQ9W+37a1BQh4Jexrz6XdMkMUbfZbRMffoJ3DNIoyZCXZmkOYLqSgboAC3lDA1jLUF0ah8gJqd/imcYym1ZkU9V9AtI3Af0zbUlbYlax8QXIV/cqcyO+0Wgwwn8R7G6GLHupEjLQk9Y37tVYNq3sm0rKHzSqdlhNGU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4XN6Lf3LNxz4f3jY3
-	for <bpf@vger.kernel.org>; Tue,  8 Oct 2024 14:58:50 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 4363C1A0568
-	for <bpf@vger.kernel.org>; Tue,  8 Oct 2024 14:59:07 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP4 (Coremail) with SMTP id gCh0CgAXTMg22ARnFIP_DQ--.38499S6;
-	Tue, 08 Oct 2024 14:59:07 +0800 (CST)
-From: Hou Tao <houtao@huaweicloud.com>
-To: bpf@vger.kernel.org
-Cc: Martin KaFai Lau <martin.lau@linux.dev>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Hao Luo <haoluo@google.com>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Jiri Olsa <jolsa@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Kui-Feng Lee <thinker.li@gmail.com>,
-	houtao1@huawei.com,
-	xukuohai@huawei.com
-Subject: [PATCH bpf RESEND 2/2] selftests/bpf: Add more test case for field flattening
-Date: Tue,  8 Oct 2024 15:11:14 +0800
-Message-Id: <20241008071114.3718177-3-houtao@huaweicloud.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20241008071114.3718177-1-houtao@huaweicloud.com>
-References: <20241008071114.3718177-1-houtao@huaweicloud.com>
+	s=arc-20240116; t=1728371764; c=relaxed/simple;
+	bh=VFjX1QavLeLzJwyUCKTDugF+FWb3RbCevKvof29zq78=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=iMR91EC7CMDP0/muS21kePj9gpoozOCIaXrvpnXrIVWQW6JolK1y+rhxpgZrhXbIbVThM4x+KSRYOj+CgruM7EPt678yYoO4LQZIS/T8R/jNSJHZKQG0XLswgjUB1xkRAP8xlQRNQVv5yE3qlPOxYJUN5vcDy7IyTGVW3irywYQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=MXRdpNSy; arc=none smtp.client-ip=209.85.128.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-42cae6bb895so54321205e9.1
+        for <bpf@vger.kernel.org>; Tue, 08 Oct 2024 00:16:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google09082023; t=1728371759; x=1728976559; darn=vger.kernel.org;
+        h=in-reply-to:references:to:from:subject:cc:message-id:date
+         :content-transfer-encoding:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=S2ueIGZGFFuijyr+mi84RMycpanED72itl8B8kGLf0A=;
+        b=MXRdpNSyD8Jlq19ig7miW+dvvBtMZP2sMLM7M974egVjIE4VAjRzhEifhRsLlp/OxH
+         xErBYZlAijv15p9f+CeyHi415ik7/UF6F3ZTLOhvFEpyLCo2D2lUhTpCziwgRR/1/YZe
+         XWUXkBMSYA6bmp3YppfbB3DGmTfa+c7FqcMUedbbfBiWdxkZyu+PGbKtY0Ih4zuQxxEO
+         kBFBky7sK1M0MqRpb3Dj8e2CvaBoV8n3BcJ4ivJLTj87J5ifM6J3pK54aaE2ooUp++Zj
+         G37xGOyZ+FhvKwpx/UPtcmSKyWDy37gUPuiDNCTfH9VUt36W1Y7xHWupahl7IFPaIP0G
+         4THA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1728371759; x=1728976559;
+        h=in-reply-to:references:to:from:subject:cc:message-id:date
+         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=S2ueIGZGFFuijyr+mi84RMycpanED72itl8B8kGLf0A=;
+        b=f40HH8lONBOPCAUwc+/mkGiqKfFdksV71dnFSwucImrAkea1JsebTmHVOFihP1Bw+i
+         ZKam+Orgpa4UM0tYBr9Cb+o4vwF+LjINikvymuwwnYo8hLyUY2I7wkUGvc/GDLLctHuY
+         XSPk6rKitKfrbsq23uwid2gShW9UI7nnWPXdJPpp+e5atH9Hts4Cvzq5ce+Dx7UTiQ/H
+         /wIEmdQqeKeJ22/uC0LLTUvN3bYLtB0iQOLiGtIv57y4VcegXtHIu5EVcxWbvJnqQbzF
+         kWsIgGoJoar7r/BBwLVWfv80LhLn+DTjFr1ASA5oZ70mEVQGb2Ko+4GxNtKtCa4Me28l
+         mLuQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW9eytHZZDjz9shF+WeFcGKSkN5rAxSw7NrnT82FVG/qmllTgo4k1qreEwg9R1urYRmmwk=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy/mp1Vpst5CjaCVutnRgMFlVaCh3I+BgyMsym2XBJTXWBB25XO
+	THsyKt9R0+nLnbpf7R1ntnpuDOGfNMDRMsEJ88CbDl03SYw4luupPmEtxjXjNn29EUzT25dQj6/
+	R7xkQrg==
+X-Google-Smtp-Source: AGHT+IHLIvf/mdkUVnE3YZebgoJmimuDbqbaYR4qzhNrK3mnyNkUciw2Q6Oqe3tYnWECPsRjHMl9cA==
+X-Received: by 2002:a5d:5e0f:0:b0:37d:3256:76e4 with SMTP id ffacd0b85a97d-37d32567825mr266216f8f.11.1728371759077;
+        Tue, 08 Oct 2024 00:15:59 -0700 (PDT)
+Received: from localhost ([2a09:bac1:27c0:58::241:66])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-37d1690f767sm7340969f8f.20.2024.10.08.00.15.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Oct 2024 00:15:58 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgAXTMg22ARnFIP_DQ--.38499S6
-X-Coremail-Antispam: 1UD129KBjvJXoW3XFy8tr1UGFyDtF4xXw1rXrb_yoWxury8pa
-	48X340krWxtF1xG34UCa97GFWSgw1kZF4Fgr98C34avFy7Jr97ZF48K3WUJr1YgrZY9w1f
-	Aryvvws3Wa1kCF7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUPFb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUXw
-	A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-	w2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-	W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-	6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
-	Ij6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_
-	Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AFwI
-	0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG
-	67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MI
-	IYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E
-	14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJV
-	W8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUFSdy
-	UUUUU
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Tue, 08 Oct 2024 09:15:56 +0200
+Message-Id: <D4Q8NJRMZCYY.QRM4L1W95PE2@bobby>
+Cc: "Jesper Dangaard Brouer" <hawk@kernel.org>, "Daniel Xu" <dxu@dxuuu.xyz>,
+ "Lorenzo Bianconi" <lorenzo@kernel.org>, "Lorenzo Bianconi"
+ <lorenzo.bianconi@redhat.com>, "Jakub Sitnicki" <jakub@cloudflare.com>,
+ "Alexander Lobakin" <aleksander.lobakin@intel.com>, <bpf@vger.kernel.org>,
+ <netdev@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+ <davem@davemloft.net>, <kuba@kernel.org>, <john.fastabend@gmail.com>,
+ <edumazet@google.com>, <pabeni@redhat.com>, <sdf@fomichev.me>,
+ <tariqt@nvidia.com>, <saeedm@nvidia.com>, <anthony.l.nguyen@intel.com>,
+ <przemyslaw.kitszel@intel.com>, <intel-wired-lan@lists.osuosl.org>,
+ <mst@redhat.com>, <jasowang@redhat.com>, <mcoquelin.stm32@gmail.com>,
+ <alexandre.torgue@foss.st.com>, "kernel-team" <kernel-team@cloudflare.com>,
+ "Yan Zhai" <yan@cloudflare.com>
+Subject: Re: [RFC bpf-next 0/4] Add XDP rx hw hints support performing
+ XDP_REDIRECT
+From: "Arthur Fabre" <afabre@cloudflare.com>
+To: "Stanislav Fomichev" <stfomichev@gmail.com>,
+ =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+X-Mailer: aerc 0.8.2
+References: <87zfnnq2hs.fsf@toke.dk> <Zv18pxsiTGTZSTyO@mini-arch>
+ <87ttdunydz.fsf@toke.dk> <Zv3N5G8swr100EXm@mini-arch>
+ <D4LYNKGLE7G0.3JAN5MX1ATPTB@bobby> <Zv794Ot-kOq1pguM@mini-arch>
+ <2fy5vuewgwkh3o3mx5v4bkrzu6josqylraa4ocgzqib6a7ozt4@hwsuhcibtcb6>
+ <038fffa3-1e29-4c6d-9e27-8181865dca46@kernel.org>
+ <ZwArrsqrYx7IM5tq@mini-arch> <87ldz1edaz.fsf@toke.dk>
+ <ZwQtAHpg2LB-7en_@mini-arch>
+In-Reply-To: <ZwQtAHpg2LB-7en_@mini-arch>
 
-From: Hou Tao <houtao1@huawei.com>
+On Mon Oct 7, 2024 at 8:48 PM CEST, Stanislav Fomichev wrote:
+> On 10/06, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+> > Stanislav Fomichev <stfomichev@gmail.com> writes:
+> >=20
+> > > On 10/04, Jesper Dangaard Brouer wrote:
+> > >>=20
+> > >>=20
+> > >> On 04/10/2024 04.13, Daniel Xu wrote:
+> > >> > On Thu, Oct 03, 2024 at 01:26:08PM GMT, Stanislav Fomichev wrote:
+> > >> > > On 10/03, Arthur Fabre wrote:
+> > >> > > > On Thu Oct 3, 2024 at 12:49 AM CEST, Stanislav Fomichev wrote:
+> > >> > > > > On 10/02, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+> > >> > > > > > Stanislav Fomichev <stfomichev@gmail.com> writes:
+> > >> > > > > >=20
+> > >> > > > > > > On 10/01, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+> > >> > > > > > > > Lorenzo Bianconi <lorenzo@kernel.org> writes:
+> > >> > > > > > > >=20
+> > >> > > > > > > > > > On Mon Sep 30, 2024 at 1:49 PM CEST, Lorenzo Bianc=
+oni wrote:
+> > >> > > > > > > > > > > > Lorenzo Bianconi <lorenzo@kernel.org> writes:
+> > >> > > > > > > > > > > >=20
+> > >> [...]
+> > >> > > > > > > > > > > > >=20
+> > >> > > > > > > > > > > > > I like this 'fast' KV approach but I guess w=
+e should really evaluate its
+> > >> > > > > > > > > > > > > impact on performances (especially for xdp) =
+since, based on the kfunc calls
+> > >> > > > > > > > > > > > > order in the ebpf program, we can have one o=
+r multiple memmove/memcpy for
+> > >> > > > > > > > > > > > > each packet, right?
+> > >> > > > > > > > > > > >=20
+> > >> > > > > > > > > > > > Yes, with Arthur's scheme, performance will be=
+ ordering dependent. Using
+> > >>=20
+> > >> I really like the *compact* Key-Value (KV) store idea from Arthur.
+> > >>  - The question is it is fast enough?
+> > >>=20
+> > >> I've promised Arthur to XDP micro-benchmark this, if he codes this u=
+p to
+> > >> be usable in the XDP code path.  Listening to the LPC recording I he=
+ard
+> > >> that Alexei also saw potential and other use-case for this kind of
+> > >> fast-and-compact KV approach.
+> > >>=20
+> > >> I have high hopes for the performance, as Arthur uses POPCNT instruc=
+tion
+> > >> which is *very* fast[1]. I checked[2] AMD Zen 3 and 4 have Ops/Laten=
+cy=3D1
+> > >> and Reciprocal throughput 0.25.
+> > >>=20
+> > >>  [1] https://www.agner.org/optimize/blog/read.php?i=3D853#848
+> > >>  [2] https://www.agner.org/optimize/instruction_tables.pdf
+> > >>=20
+> > >> [...]
+> > >> > > > There are two different use-cases for the metadata:
+> > >> > > >=20
+> > >> > > > * "Hardware" metadata (like the hash, rx_timestamp...). There =
+are only a
+> > >> > > >    few well known fields, and only XDP can access them to set =
+them as
+> > >> > > >    metadata, so storing them in a struct somewhere could make =
+sense.
+> > >> > > >=20
+> > >> > > > * Arbitrary metadata used by services. Eg a TC filter could se=
+t a field
+> > >> > > >    describing which service a packet is for, and that could be=
+ reused for
+> > >> > > >    iptables, routing, socket dispatch...
+> > >> > > >    Similarly we could set a "packet_id" field that uniquely id=
+entifies a
+> > >> > > >    packet so we can trace it throughout the network stack (thr=
+ough
+> > >> > > >    clones, encap, decap, userspace services...).
+> > >> > > >    The skb->mark, but with more room, and better support for s=
+haring it.
+> > >> > > >=20
+> > >> > > > We can only know the layout ahead of time for the first one. A=
+nd they're
+> > >> > > > similar enough in their requirements (need to be stored somewh=
+ere in the
+> > >> > > > SKB, have a way of retrieving each one individually, that it s=
+eems to
+> > >> > > > make sense to use a common API).
+> > >> > >=20
+> > >> > > Why not have the following layout then?
+> > >> > >=20
+> > >> > > +---------------+-------------------+---------------------------=
+-------------+------+
+> > >> > > | more headroom | user-defined meta | hw-meta (potentially fixed=
+ skb format) | data |
+> > >> > > +---------------+-------------------+---------------------------=
+-------------+------+
+> > >> > >                  ^                                              =
+              ^
+> > >> > >              data_meta                                          =
+            data
+> > >> > >=20
+> > >> > > You obviously still have a problem of communicating the layout i=
+f you
+> > >> > > have some redirects in between, but you, in theory still have th=
+is
+> > >> > > problem with user-defined metadata anyway (unless I'm missing
+> > >> > > something).
+> > >> > >=20
+> > >>=20
+> > >> Hmm, I think you are missing something... As far as I'm concerned we=
+ are
+> > >> discussing placing the KV data after the xdp_frame, and not in the X=
+DP
+> > >> data_meta area (as your drawing suggests).  The xdp_frame is stored =
+at
+> > >> the very top of the headroom.  Lorenzo's patchset is extending struc=
+t
+> > >> xdp_frame and now we are discussing to we can make a more flexible A=
+PI
+> > >> for extending this. I understand that Toke confirmed this here [3]. =
+ Let
+> > >> me know if I missed something :-)
+> > >>=20
+> > >>  [3] https://lore.kernel.org/all/874j62u1lb.fsf@toke.dk/
+> > >>
+> > >> As part of designing this flexible API, we/Toke are trying hard not =
+to
+> > >> tie this to a specific data area.  This is a good API design, keepin=
+g it
+> > >> flexible enough that we can move things around should the need arise=
+.
+> > >>=20
+> > >> I don't think it is viable to store this KV data in XDP data_meta ar=
+ea,
+> > >> because existing BPF-prog's already have direct memory (write) acces=
+s
+> > >> and can change size of area, which creates too much headache with
+> > >> (existing) BPF-progs creating unintentional breakage for the KV stor=
+e,
+> > >> which would then need extensive checks to handle random corruptions
+> > >> (slowing down KV-store code).
+> > >
+> > > Yes, I'm definitely missing the bigger picture. If we want to have a =
+global
+> > > metadata registry in the kernel, why can't it be built on top of the =
+existing
+> > > area?
+> >=20
+> > Because we have no way of preventing existing XDP programs from
+> > overwriting (corrupting) the area using the xdp_adjust_meta() API and
+> > data_meta field.
+>
+> True, but this can be solved with some new BPF_F_XDP_HAS_FRAGS-like
+> flag (which can reject loading if there is some incompatibility)?
+> Even in the new KV-metadata world, 2+ programs still need to be
+> aware of the new method to work correctly. But I do see your point
+> that it's better to not apply any metadata than apply something
+> that's corrupt/overridden.
 
-Add three success test cases to test the flattening of array of nested
-struct. For these three tests, the number of special fields in map is
-BTF_FIELDS_MAX, but the array is defined in structs with different
-nested level.
+Currently the new KV-metadata will be tied to XDP, because most NICs only
+reserve enough headroom if an XDP program is attached.
 
-Add one failure test case for the flattening as well. In the test case,
-the number of special fields in map is BTF_FIELDS_MAX + 1. It will make
-btf_parse_fields() in map_create() return -E2BIG, the creation of map
-will succeed, but the load of program will fail because the btf_record
-is invalid for the map.
+But longer-term, I'm hoping to lift this restriction to let users not using
+XDP (eg using TC only, or other hook points) use the KV metadata too.
+Enabling it with an XDP flag would make that hard.
 
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
- .../selftests/bpf/prog_tests/cpumask.c        |  1 +
- .../selftests/bpf/progs/cpumask_common.h      |  5 ++
- .../selftests/bpf/progs/cpumask_failure.c     | 35 +++++++++
- .../selftests/bpf/progs/cpumask_success.c     | 78 ++++++++++++++++++-
- 4 files changed, 117 insertions(+), 2 deletions(-)
+We also want to store the new KV metadata at the start of the headroom=20
+(right after xdp_frame) so that we don't have to move it for every=20
+xdp_adjust_head() call.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/cpumask.c b/tools/testing/selftests/bpf/prog_tests/cpumask.c
-index 2570bd4b0cb2..e58a04654238 100644
---- a/tools/testing/selftests/bpf/prog_tests/cpumask.c
-+++ b/tools/testing/selftests/bpf/prog_tests/cpumask.c
-@@ -23,6 +23,7 @@ static const char * const cpumask_success_testcases[] = {
- 	"test_global_mask_array_l2_rcu",
- 	"test_global_mask_nested_rcu",
- 	"test_global_mask_nested_deep_rcu",
-+	"test_global_mask_nested_deep_array_rcu",
- 	"test_cpumask_weight",
- };
- 
-diff --git a/tools/testing/selftests/bpf/progs/cpumask_common.h b/tools/testing/selftests/bpf/progs/cpumask_common.h
-index b979e91f55f0..4ece7873ba60 100644
---- a/tools/testing/selftests/bpf/progs/cpumask_common.h
-+++ b/tools/testing/selftests/bpf/progs/cpumask_common.h
-@@ -7,6 +7,11 @@
- #include "errno.h"
- #include <stdbool.h>
- 
-+/* Should use BTF_FIELDS_MAX, but it is not always available in vmlinux.h,
-+ * so use the hard-coded number as a workaround.
-+ */
-+#define CPUMASK_KPTR_FIELDS_MAX 11
-+
- int err;
- 
- #define private(name) SEC(".bss." #name) __attribute__((aligned(8)))
-diff --git a/tools/testing/selftests/bpf/progs/cpumask_failure.c b/tools/testing/selftests/bpf/progs/cpumask_failure.c
-index a988d2823b52..b40b52548ffb 100644
---- a/tools/testing/selftests/bpf/progs/cpumask_failure.c
-+++ b/tools/testing/selftests/bpf/progs/cpumask_failure.c
-@@ -10,6 +10,21 @@
- 
- char _license[] SEC("license") = "GPL";
- 
-+struct kptr_nested_array_2 {
-+	struct bpf_cpumask __kptr * mask;
-+};
-+
-+struct kptr_nested_array_1 {
-+	/* Make btf_parse_fields() in map_create() return -E2BIG */
-+	struct kptr_nested_array_2 d_2[CPUMASK_KPTR_FIELDS_MAX + 1];
-+};
-+
-+struct kptr_nested_array {
-+	struct kptr_nested_array_1 d_1;
-+};
-+
-+private(MASK_NESTED) static struct kptr_nested_array global_mask_nested_arr;
-+
- /* Prototype for all of the program trace events below:
-  *
-  * TRACE_EVENT(task_newtask,
-@@ -187,3 +202,23 @@ int BPF_PROG(test_global_mask_rcu_no_null_check, struct task_struct *task, u64 c
- 
- 	return 0;
- }
-+
-+SEC("tp_btf/task_newtask")
-+__failure __msg("has no valid kptr")
-+int BPF_PROG(test_invalid_nested_array, struct task_struct *task, u64 clone_flags)
-+{
-+	struct bpf_cpumask *local, *prev;
-+
-+	local = create_cpumask();
-+	if (!local)
-+		return 0;
-+
-+	prev = bpf_kptr_xchg(&global_mask_nested_arr.d_1.d_2[CPUMASK_KPTR_FIELDS_MAX].mask, local);
-+	if (prev) {
-+		bpf_cpumask_release(prev);
-+		err = 3;
-+		return 0;
-+	}
-+
-+	return 0;
-+}
-diff --git a/tools/testing/selftests/bpf/progs/cpumask_success.c b/tools/testing/selftests/bpf/progs/cpumask_success.c
-index fd8106831c32..80ee469b0b60 100644
---- a/tools/testing/selftests/bpf/progs/cpumask_success.c
-+++ b/tools/testing/selftests/bpf/progs/cpumask_success.c
-@@ -31,11 +31,59 @@ struct kptr_nested_deep {
- 	struct kptr_nested_pair ptr_pairs[3];
- };
- 
-+struct kptr_nested_deep_array_1_2 {
-+	int dummy;
-+	struct bpf_cpumask __kptr * mask[CPUMASK_KPTR_FIELDS_MAX];
-+};
-+
-+struct kptr_nested_deep_array_1_1 {
-+	int dummy;
-+	struct kptr_nested_deep_array_1_2 d_2;
-+};
-+
-+struct kptr_nested_deep_array_1 {
-+	long dummy;
-+	struct kptr_nested_deep_array_1_1 d_1;
-+};
-+
-+struct kptr_nested_deep_array_2_2 {
-+	long dummy[2];
-+	struct bpf_cpumask __kptr * mask;
-+};
-+
-+struct kptr_nested_deep_array_2_1 {
-+	int dummy;
-+	struct kptr_nested_deep_array_2_2 d_2[CPUMASK_KPTR_FIELDS_MAX];
-+};
-+
-+struct kptr_nested_deep_array_2 {
-+	long dummy;
-+	struct kptr_nested_deep_array_2_1 d_1;
-+};
-+
-+struct kptr_nested_deep_array_3_2 {
-+	long dummy[2];
-+	struct bpf_cpumask __kptr * mask;
-+};
-+
-+struct kptr_nested_deep_array_3_1 {
-+	int dummy;
-+	struct kptr_nested_deep_array_3_2 d_2;
-+};
-+
-+struct kptr_nested_deep_array_3 {
-+	long dummy;
-+	struct kptr_nested_deep_array_3_1 d_1[CPUMASK_KPTR_FIELDS_MAX];
-+};
-+
- private(MASK) static struct bpf_cpumask __kptr * global_mask_array[2];
- private(MASK) static struct bpf_cpumask __kptr * global_mask_array_l2[2][1];
- private(MASK) static struct bpf_cpumask __kptr * global_mask_array_one[1];
- private(MASK) static struct kptr_nested global_mask_nested[2];
- private(MASK_DEEP) static struct kptr_nested_deep global_mask_nested_deep;
-+private(MASK_1) static struct kptr_nested_deep_array_1 global_mask_nested_deep_array_1;
-+private(MASK_2) static struct kptr_nested_deep_array_2 global_mask_nested_deep_array_2;
-+private(MASK_3) static struct kptr_nested_deep_array_3 global_mask_nested_deep_array_3;
- 
- static bool is_test_task(void)
- {
-@@ -543,12 +591,21 @@ static int _global_mask_array_rcu(struct bpf_cpumask **mask0,
- 		goto err_exit;
- 	}
- 
--	/* [<mask 0>, NULL] */
--	if (!*mask0 || *mask1) {
-+	/* [<mask 0>, *] */
-+	if (!*mask0) {
- 		err = 2;
- 		goto err_exit;
- 	}
- 
-+	if (!mask1)
-+		goto err_exit;
-+
-+	/* [*, NULL] */
-+	if (*mask1) {
-+		err = 3;
-+		goto err_exit;
-+	}
-+
- 	local = create_cpumask();
- 	if (!local) {
- 		err = 9;
-@@ -631,6 +688,23 @@ int BPF_PROG(test_global_mask_nested_deep_rcu, struct task_struct *task, u64 clo
- 	return 0;
- }
- 
-+SEC("tp_btf/task_newtask")
-+int BPF_PROG(test_global_mask_nested_deep_array_rcu, struct task_struct *task, u64 clone_flags)
-+{
-+	int i;
-+
-+	for (i = 0; i < CPUMASK_KPTR_FIELDS_MAX; i++)
-+		_global_mask_array_rcu(&global_mask_nested_deep_array_1.d_1.d_2.mask[i], NULL);
-+
-+	for (i = 0; i < CPUMASK_KPTR_FIELDS_MAX; i++)
-+		_global_mask_array_rcu(&global_mask_nested_deep_array_2.d_1.d_2[i].mask, NULL);
-+
-+	for (i = 0; i < CPUMASK_KPTR_FIELDS_MAX; i++)
-+		_global_mask_array_rcu(&global_mask_nested_deep_array_3.d_1[i].d_2.mask, NULL);
-+
-+	return 0;
-+}
-+
- SEC("tp_btf/task_newtask")
- int BPF_PROG(test_cpumask_weight, struct task_struct *task, u64 clone_flags)
- {
--- 
-2.29.2
+That makes it very easy for them to coexist, it's just a few bounds
+checks when we grow each one.
 
+> > But in a sense the *memory area* is shared between the two APIs, in the
+> > sense that they both use the headroom before the packet data, just from
+> > opposite ends. So if you store lots of data using the new KV API, that
+> > space will no longer be available for xdp_adjust_{head,meta}. But the
+> > kernel can enforce this so we don't get programs corrupting the KV
+> > format.
+>
+> Ack, let's see how it shapes out. My main concern comes from the
+> growing api surface where for af_xdp it's one mechanism, for xdp
+> redirect it's another. And for Jakub's consumption from userspace
+> it's gonna be another special case probably (to read it out from the
+> headroom head)? Idk, maybe it's fine as long as each case is clearly
+> documented.
+
+You're right, there's going to be relatively big API surface. Hopefully
+the APIs should all be very similar, and we'll document them.
 
