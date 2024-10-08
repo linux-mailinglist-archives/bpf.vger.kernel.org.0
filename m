@@ -1,91 +1,145 @@
-Return-Path: <bpf+bounces-41289-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41290-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AEE69995763
-	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 21:06:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 32EF5995776
+	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 21:13:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2936D28894D
-	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 19:06:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CDED32888A8
+	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 19:13:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8198D2139B6;
-	Tue,  8 Oct 2024 19:06:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D97862139B1;
+	Tue,  8 Oct 2024 19:13:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ozaItHFB"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="pMkV/RV2"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
+Received: from out-175.mta0.migadu.com (out-175.mta0.migadu.com [91.218.175.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBFF81F472B
-	for <bpf@vger.kernel.org>; Tue,  8 Oct 2024 19:06:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87B62212EF2
+	for <bpf@vger.kernel.org>; Tue,  8 Oct 2024 19:13:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728414371; cv=none; b=sCm85Xj0E7kRDktNsnjMqri94G1Q+8DbLiIJCF02wMfOPiDikIKXFyzYFQO2LJqm0Soq1BM0xZMu6sOwHzdoTLIxoUAfXVI6WXj9amwfPMOO+O+ktWftS/lyHwl9QmKzP4cIWvOmv8oqtM6reDVibTpId3O/fJIiMiLz/YEEor4=
+	t=1728414831; cv=none; b=hPc6JLLyI+UNGv9mzKABwe9u9XgpvxhYS4L7peC/pTQ8I22kT7rfk5KQMzS871vK3kszjv4tDvZivxrkznYZt7xcDoGn9LbnO1HUiQE7OoMVtddU5ROQGZb3R6Ai8NPYendgU7gj7ILN02p+ibiuCcuxFvL/f1nBdWcn/XHC+l8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728414371; c=relaxed/simple;
-	bh=5KvCDrYsmVEvQOJdpgcn18Q0pvxqfpe7WxBjVnVzH9c=;
+	s=arc-20240116; t=1728414831; c=relaxed/simple;
+	bh=84VLykOVJanK2JuOPLXMEjUqAHC796Bd+w3gVOB0JG4=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=kkIki3iOpa0gVVpZNDgMAEFQa8FjjA9OB2VVGPOP+Lwt3QDzx/LB+FpUWA/j+SNOqOzEr58c6KDTClMIU6XnFUoudCCO4XiqBv2VXQ1gE1VJ4adbvt5Bb3frFOkIRsWsjk929F5LFrLc+W+1KCpKlLpRwHRxD5h8AC/qULc2DDA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ozaItHFB; arc=none smtp.client-ip=95.215.58.174
+	 In-Reply-To:Content-Type; b=f1o6zk85J+ID7aaqPob6j8U946TORCjp40jzzjfLddXRS2vzy+XwNsI8x4dpTxQAE+EPL7ugH5dcI9nhWLn7yimTT/+PXy5oM/OEAR3Lv35PsZeFSqmuVqoWf3Oub4TEHTbjqvUAM7K/maJip1amRnB5JfK5ksKoo2IncsMvc1w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=pMkV/RV2; arc=none smtp.client-ip=91.218.175.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <80cb3d4b-cebb-4f08-865d-354110a54467@linux.dev>
+Message-ID: <8f35cf0f-c56b-4fd0-93ef-e7e4f1c49dba@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1728414366;
+	t=1728414827;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ni+aJGRqa2mg0vHffyWRXur4SC1MH0dJEEbAGiR80M8=;
-	b=ozaItHFB/2BGM61ilYRQ2zY795ImSAUTnTY/dkYyvwBA/g6z6LzkTFpdLf7IbYUJAoO7CA
-	1E6CxZl47f3x5o0LGIXjFAB9CU3cEFDukfauyKw9/+woKhDZxkiFCtw781VzVBsYqQXdtv
-	TkNcQZQ0U99fNZVegPgCRDvYrnvLKf0=
-Date: Tue, 8 Oct 2024 12:05:59 -0700
+	bh=G4QRXGY5GGdSn95A7ChAPdYKlTgS12Bqr4q8uRR1npU=;
+	b=pMkV/RV2eM848IEhXJT5XDaTOS4LLWphrseJp06+0INRBfvs8lNsx5rwwOeU746t9J5QoU
+	Nca08Ks4AglL+3gb+k69bro81PXC5GBXyOZ8gycxuLc57owsqmo0mu8pxHT6VX897gvBcD
+	m4jGuj3Fm5y/hwbP6w/H6GFYoe9u+0w=
+Date: Tue, 8 Oct 2024 20:13:39 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next] bpf: Add rcu ptr in btf_id_sock_common_types
-To: Philo Lu <lulie@linux.alibaba.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
- andrii@kernel.org, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me,
- haoluo@google.com, jolsa@kernel.org, xuanzhuo@linux.alibaba.com,
- bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20241008080916.44724-1-lulie@linux.alibaba.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
+Subject: Re: [PATCH net-next 3/9] net-timestamp: introduce TS_SW_OPT_CB to
+ generate driver timestamp
+To: Jason Xing <kerneljasonxing@gmail.com>, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, dsahern@kernel.org,
+ willemdebruijn.kernel@gmail.com, willemb@google.com, ast@kernel.org,
+ daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+ eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
+ john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
+ haoluo@google.com, jolsa@kernel.org
+Cc: bpf@vger.kernel.org, netdev@vger.kernel.org,
+ Jason Xing <kernelxing@tencent.com>
+References: <20241008095109.99918-1-kerneljasonxing@gmail.com>
+ <20241008095109.99918-4-kerneljasonxing@gmail.com>
 Content-Language: en-US
-In-Reply-To: <20241008080916.44724-1-lulie@linux.alibaba.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Vadim Fedorenko <vadim.fedorenko@linux.dev>
+In-Reply-To: <20241008095109.99918-4-kerneljasonxing@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Migadu-Flow: FLOW_OUT
 
-On 10/8/24 1:09 AM, Philo Lu wrote:
-> Sometimes sk is dereferenced as an rcu ptr, such as skb->sk in tp_btf,
-> which is a valid type of sock common. Then helpers like bpf_skc_to_*()
-> can be used with skb->sk.
+On 08/10/2024 10:51, Jason Xing wrote:
+> From: Jason Xing <kernelxing@tencent.com>
 > 
-> For example, the following prog will be rejected without this patch:
-> ```
-> SEC("tp_btf/tcp_bad_csum")
-> int BPF_PROG(tcp_bad_csum, struct sk_buff* skb)
-> {
-> 	struct sock *sk = skb->sk;
-> 	struct tcp_sock *tp;
+> When the skb is about to send from driver to nic, we can print timestamp
+> by setting BPF_SOCK_OPS_TS_SW_OPT_CB in bpf program.
 > 
-> 	if (!sk)
-> 		return 0;
-> 	tp = bpf_skc_to_tcp_sock(sk);
+> Signed-off-by: Jason Xing <kernelxing@tencent.com>
+> ---
+>   include/uapi/linux/bpf.h       | 5 +++++
+>   net/core/skbuff.c              | 8 +++++++-
+>   tools/include/uapi/linux/bpf.h | 5 +++++
+>   3 files changed, 17 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 3cf3c9c896c7..0d00539f247a 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -7024,6 +7024,11 @@ enum {
+>   					 * feature is on. It indicates the
+>   					 * recorded timestamp.
+>   					 */
+> +	BPF_SOCK_OPS_TS_SW_OPT_CB,	/* Called when skb is about to send
+> +					 * to the nic when SO_TIMESTAMPING
+> +					 * feature is on. It indicates the
+> +					 * recorded timestamp.
+> +					 */
+>   };
+>   
+>   /* List of TCP states. There is a build check in net/ipv4/tcp.c to detect
+> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+> index e697f50d1182..8faaa96c026b 100644
+> --- a/net/core/skbuff.c
+> +++ b/net/core/skbuff.c
+> @@ -5556,11 +5556,17 @@ static bool bpf_skb_tstamp_tx(struct sock *sk, u32 scm_flag,
+>   		case SCM_TSTAMP_SCHED:
+>   			cb_flag = BPF_SOCK_OPS_TS_SCHED_OPT_CB;
+>   			break;
+> +		case SCM_TSTAMP_SND:
+> +			cb_flag = BPF_SOCK_OPS_TS_SW_OPT_CB;
+> +			break;
+>   		default:
+>   			return true;
+>   		}
+>   
+> -		tstamp = ktime_to_timespec64(ktime_get_real());
+> +		if (hwtstamps)
+> +			tstamp = ktime_to_timespec64(hwtstamps->hwtstamp);
+> +		else
+> +			tstamp = ktime_to_timespec64(ktime_get_real());
 
-If the use case is for reading the fields in tp, please use the bpf_core_cast 
-from the libbpf's bpf_core_read.h. bpf_core_cast is using the bpf_rdonly_cast 
-kfunc underneath.
+Looks like this chunk belongs to another patch?
 
-pw-bot: cr
+>   		tcp_call_bpf_2arg(sk, cb_flag, tstamp.tv_sec, tstamp.tv_nsec);
+>   		return true;
+>   	}
+> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+> index d60675e1a5a0..020ec14ffae6 100644
+> --- a/tools/include/uapi/linux/bpf.h
+> +++ b/tools/include/uapi/linux/bpf.h
+> @@ -7023,6 +7023,11 @@ enum {
+>   					 * feature is on. It indicates the
+>   					 * recorded timestamp.
+>   					 */
+> +	BPF_SOCK_OPS_TS_SW_OPT_CB,	/* Called when skb is about to send
+> +					 * to the nic when SO_TIMESTAMPING
+> +					 * feature is on. It indicates the
+> +					 * recorded timestamp.
+> +					 */
+>   };
+>   
+>   /* List of TCP states. There is a build check in net/ipv4/tcp.c to detect
 
 
