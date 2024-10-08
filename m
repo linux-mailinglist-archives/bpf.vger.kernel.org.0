@@ -1,258 +1,287 @@
-Return-Path: <bpf+bounces-41197-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41199-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BDFF9942F5
-	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 10:56:49 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC7FA99439F
+	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 11:08:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8FF201C22DF8
-	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 08:56:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 231A8B20FC1
+	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 09:06:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF824190477;
-	Tue,  8 Oct 2024 08:45:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SHBIHnJ1"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43B98178384;
+	Tue,  8 Oct 2024 09:02:31 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63F4318C35D;
-	Tue,  8 Oct 2024 08:45:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D69F13C827
+	for <bpf@vger.kernel.org>; Tue,  8 Oct 2024 09:02:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728377132; cv=none; b=lOB9cIwEIfhT4rth71UIBP7OJLH6DOXebzkdAnQN85McpD74eLo/VyWHIEhXQU0CsGtdHpBfd2tycmvS6zq0g6pQxS0DS5rq6XBDNqjfPwTu+CNpdHPN6r0xWQfiCWdV45dG/gND1IY14ErF/5Sguv7n8E2ig6EGDVXCi/WbFFk=
+	t=1728378151; cv=none; b=adc4vfh1RAgYhPP6ot/RhV/6JXOPM7KJ5cBXYdtlk7BwtquyopzScgk5Yi71uWMgDc1S48zdC+CVNpDZBW7p3hgHUjoeAUvuywZwCz1t2leJY4PwywDyHwRGCiEw0EKj+Rp+EPCCl0i08HE93wl1H/4pbcK2Vt1nKINPdKPfNBM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728377132; c=relaxed/simple;
-	bh=VIHLJ66eE/wavOygB1PuGao6FeCvbE2xkQRb2vPO9G4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=m7ot4RH3TO3s329m/U3U7RpXqfX1CogP1Mfe0bg8L2qz/OCNRVVqby2r5/xHTaReOR/3GUXV/MdTyEBdPYYU0nvUCodiSoxvxLdpdwZWYsz+MFBCCuqZGb7l80Ob8hRL5aQLgC5y4tOYwdvApGxXJ5y8ztBt5DMplWDCh1xvGV4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SHBIHnJ1; arc=none smtp.client-ip=209.85.208.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-5c8967dd2c7so6662957a12.1;
-        Tue, 08 Oct 2024 01:45:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1728377129; x=1728981929; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tjUdOJA4jWMVSrUGgvOSdZl3neMitSFURhlyYwW/SrM=;
-        b=SHBIHnJ16+Ya7nr2cce9T1QavDSakrBNsCdthQdESUiB2fkKYGJ3MuyxhNTl1cP7x4
-         dK5cGunRTQ0JrpiF0ZM+MnyJm/6FQIFwYFOGLxhitru2Puoq2NGegZrguJ/kLUWpWlut
-         jIUsRCozdcI1HMUSEsAJbyk31uCjDBTxY7g2/w+DYHlRiZMr34490FIjZSoXLZKhN8Qy
-         P1dDj3qe49Rftj4C37mXO4jLmt++uYuHl0nF8QW9muaiV/LnnwhQiFtqaX1EUn/FdYF0
-         IH1K78WZNXEQV1zwNoAUI1XCwYpELMxEN5D0n+LrKNYDYF9v50ZMfS/XNrgWvtrTodfO
-         9LlA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728377129; x=1728981929;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tjUdOJA4jWMVSrUGgvOSdZl3neMitSFURhlyYwW/SrM=;
-        b=GdZ++GdrpKl8yZVSQatBsBIOJGG9gy7HZx6B62p4dwhTwxtvm5sFdc6XWMe3CiCB+4
-         JF+EIJon5RYBeSLbM5KBqdrXmChFNLOKXOL2h0BfBDnV9pgQnPKpptqJ0eX2+dxfvKfm
-         ldzZesnUho5ChFnI6bzGN9qws3V2joYgYUOP3gr7e0yjesIrZInBNYkc8WFBUG4L+1aP
-         pdyJL28law1MpNvm0S42uOFbU1Y1AnfHdNp+Q1HWn/hahvbiG+JmEQnXxm4DVpeJxVKL
-         xJMpCX4g0LtPL5smbKiQtBfQMwpELdd1766CMenKEvm4kl2cup1Pum3gdkhxxdtFuphT
-         dKjw==
-X-Forwarded-Encrypted: i=1; AJvYcCVAn02MAJJO11Oj4YItlBX+L1jsS5Q9ElJhhWbnSfi4l62oTyHt+7eXz5atbe7sIS0aT4I=@vger.kernel.org, AJvYcCWIvQ+TYHM0zide9+a7zxZSS1bUxPc0YNXu6WbxHsmYsopwQ2O1RwMjbvKqiiLSoduGKyq48bAAWXWw0ck9@vger.kernel.org
-X-Gm-Message-State: AOJu0YwTNmCZTaXNdccmbTOkh+l8unho7o6EAu3IpRDvUcy/cfUKUrkA
-	C2hL98fO7l0ombNjF3MqUCAPlyFQJ0YTwAPV0Ob0obxK6gHO+X3C/ffpjEzi9kAIXLYpy+ExSat
-	9IYKhelZRTZyzPfHQ5ueT4gxJpMQ=
-X-Google-Smtp-Source: AGHT+IEVzwOnSYQA1b2F4OqwlA/gmNlLWqBbX9kmps/lSsu6YEwLy8WGawj/FxMV3YlylFOIka6CG/gYsPqDXcjpFyg=
-X-Received: by 2002:a05:6402:5108:b0:5c7:1922:d770 with SMTP id
- 4fb4d7f45d1cf-5c8d2d015cfmr10905346a12.6.1728377128325; Tue, 08 Oct 2024
- 01:45:28 -0700 (PDT)
+	s=arc-20240116; t=1728378151; c=relaxed/simple;
+	bh=yHUt9QyWE3vnnQPt5wTBR4XfGqzL20PL6N9aOdb0Pi4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=PTvqmZ0Ox0QnciZ9zLmRuVAMfTL9TCTVs7bep0YihWFRhBjDCqHpvw4137DssQtAKuuXdd0KnkfZyA2MgiRqTSoRouj97w3go086s9W2SexpxHykXtTmpAL1n1JF/ypl/dKneSHYQ1odxI111L5Q8FJA+T2CF/28ih1uYU6MCtM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4XN94v52Sfz4f3jY1
+	for <bpf@vger.kernel.org>; Tue,  8 Oct 2024 17:02:07 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 8064A1A08FC
+	for <bpf@vger.kernel.org>; Tue,  8 Oct 2024 17:02:24 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.112.60])
+	by APP4 (Coremail) with SMTP id gCh0CgDH+sYd9QRnbOEHDg--.25681S4;
+	Tue, 08 Oct 2024 17:02:22 +0800 (CST)
+From: Hou Tao <houtao@huaweicloud.com>
+To: bpf@vger.kernel.org
+Cc: Martin KaFai Lau <martin.lau@linux.dev>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Hao Luo <haoluo@google.com>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Jiri Olsa <jolsa@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	houtao1@huawei.com,
+	xukuohai@huawei.com
+Subject: [PATCH bpf-next 00/16] Support dynptr key for hash map
+Date: Tue,  8 Oct 2024 17:14:45 +0800
+Message-ID: <20241008091501.8302-1-houtao@huaweicloud.com>
+X-Mailer: git-send-email 2.45.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CANpmjNOZ4N5mhqWGvEU9zGBxj+jqhG3Q_eM1AbHp0cbSF=HqFw@mail.gmail.com>
- <20241005164813.2475778-1-snovitoll@gmail.com> <20241005164813.2475778-2-snovitoll@gmail.com>
- <ZwTt-Sq5bsovQI5X@elver.google.com>
-In-Reply-To: <ZwTt-Sq5bsovQI5X@elver.google.com>
-From: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
-Date: Tue, 8 Oct 2024 13:46:17 +0500
-Message-ID: <CACzwLxh1yWXQZ4LAO3gFMjK8KPDFfNOR6wqWhtXyucJ0+YXurw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] mm, kasan, kmsan: copy_from/to_kernel_nofault
-To: Marco Elver <elver@google.com>
-Cc: akpm@linux-foundation.org, andreyknvl@gmail.com, bpf@vger.kernel.org, 
-	dvyukov@google.com, glider@google.com, kasan-dev@googlegroups.com, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, ryabinin.a.a@gmail.com, 
-	syzbot+61123a5daeb9f7454599@syzkaller.appspotmail.com, 
-	vincenzo.frascino@arm.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgDH+sYd9QRnbOEHDg--.25681S4
+X-Coremail-Antispam: 1UD129KBjvJXoW3WF47AF18tr47Ary7tF17trb_yoWxuryxpa
+	y0g3y3trWxtFy7Xw43Aa1xAFWFvws5uw1UGF18t34Fk34kX343ZrWxK3ZY9F98tryfWr4f
+	Zw1Dt343uw18CFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0E
+	n4kS14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I
+	0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWU
+	tVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcV
+	CY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAF
+	wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
+	7IUbX4S5UUUUU==
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-On Tue, Oct 8, 2024 at 1:32=E2=80=AFPM Marco Elver <elver@google.com> wrote=
-:
->
-> On Sat, Oct 05, 2024 at 09:48PM +0500, Sabyrzhan Tasbolatov wrote:
-> > Instrument copy_from_kernel_nofault() with KMSAN for uninitialized kern=
-el
-> > memory check and copy_to_kernel_nofault() with KASAN, KCSAN to detect
-> > the memory corruption.
-> >
-> > syzbot reported that bpf_probe_read_kernel() kernel helper triggered
-> > KASAN report via kasan_check_range() which is not the expected behaviou=
-r
-> > as copy_from_kernel_nofault() is meant to be a non-faulting helper.
-> >
-> > Solution is, suggested by Marco Elver, to replace KASAN, KCSAN check in
-> > copy_from_kernel_nofault() with KMSAN detection of copying uninitilaize=
-d
-> > kernel memory. In copy_to_kernel_nofault() we can retain
-> > instrument_write() for the memory corruption instrumentation but before
-> > pagefault_disable().
->
-> I don't understand why it has to be before the whole copy i.e. before
-> pagefault_disable()?
->
+From: Hou Tao <houtao1@huawei.com>
 
-I was unsure about this decision as well - I should've waited for your resp=
-onse
-before sending the PATCH when I was asking for clarification. Sorry
-for the confusion,
-I thought that what you meant as the instrumentation was already done after
-pagefault_disable().
+Hi,
 
-Let me send the v3 with your suggested diff, I will also ask Andrew to drop
-merged to -mm patch.
-https://lore.kernel.org/all/20241008020150.4795AC4CEC6@smtp.kernel.org/
+The patch set aims to add the basic dynptr key support for hash map as
+discussed in [1]. The main motivation is to fully utilize the BTF info
+of the map key and to support variable-length key (e.g., string or any
+byte stream) for bpf map. The patch set uses bpf_dynptr to represent the
+variable-length part in the map key and the total number of
+variable-length parts in the map key is limited as 4 now. And due to the
+limitation in bpf memory allocator, the max size of dynptr in map key is
+limited as 4088 bytes. Beside the variable-length parts (dynptr parts),
+the fixed-size part in map key is still allowed, so all of the following
+map key definitions are valid:
 
-Thanks for the review.
+	struct bpf_dynptr;
 
-> I think my suggestion was to only check the memory where no fault
-> occurred. See below.
->
-> > diff --git a/mm/maccess.c b/mm/maccess.c
-> > index 518a25667323..a91a39a56cfd 100644
-> > --- a/mm/maccess.c
-> > +++ b/mm/maccess.c
-> > @@ -15,7 +15,7 @@ bool __weak copy_from_kernel_nofault_allowed(const vo=
-id *unsafe_src,
-> >
-> >  #define copy_from_kernel_nofault_loop(dst, src, len, type, err_label) =
-       \
-> >       while (len >=3D sizeof(type)) {                                  =
- \
-> > -             __get_kernel_nofault(dst, src, type, err_label);         =
-       \
-> > +             __get_kernel_nofault(dst, src, type, err_label);        \
-> >               dst +=3D sizeof(type);                                   =
- \
-> >               src +=3D sizeof(type);                                   =
- \
-> >               len -=3D sizeof(type);                                   =
- \
-> > @@ -31,6 +31,8 @@ long copy_from_kernel_nofault(void *dst, const void *=
-src, size_t size)
-> >       if (!copy_from_kernel_nofault_allowed(src, size))
-> >               return -ERANGE;
-> >
-> > +     /* Make sure uninitialized kernel memory isn't copied. */
-> > +     kmsan_check_memory(src, size);
-> >       pagefault_disable();
-> >       if (!(align & 7))
-> >               copy_from_kernel_nofault_loop(dst, src, size, u64, Efault=
-);
-> > @@ -49,7 +51,7 @@ EXPORT_SYMBOL_GPL(copy_from_kernel_nofault);
-> >
-> >  #define copy_to_kernel_nofault_loop(dst, src, len, type, err_label)  \
-> >       while (len >=3D sizeof(type)) {                                  =
- \
-> > -             __put_kernel_nofault(dst, src, type, err_label);         =
-       \
-> > +             __put_kernel_nofault(dst, src, type, err_label);        \
-> >               dst +=3D sizeof(type);                                   =
- \
-> >               src +=3D sizeof(type);                                   =
- \
-> >               len -=3D sizeof(type);                                   =
- \
-> > @@ -62,6 +64,7 @@ long copy_to_kernel_nofault(void *dst, const void *sr=
-c, size_t size)
-> >       if (!IS_ENABLED(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS))
-> >               align =3D (unsigned long)dst | (unsigned long)src;
-> >
-> > +     instrument_write(dst, size);
-> >       pagefault_disable();
->
-> So this will check the whole range before the access. But if the copy
-> aborts because of a fault, then we may still end up with false
-> positives.
->
-> Why not something like the below - normally we check the accesses
-> before, but these are debug kernels anyway, so I see no harm in making
-> an exception in this case and checking the memory if there was no fault
-> i.e. it didn't jump to err_label yet. It's also slower because of
-> repeated calls, but these helpers aren't frequently used.
->
-> The alternative is to do the sanitizer check after the entire copy if we
-> know there was no fault at all. But that may still hide real bugs if
-> e.g. it starts copying some partial memory and then accesses an
-> unfaulted page.
->
->
-> diff --git a/mm/maccess.c b/mm/maccess.c
-> index a91a39a56cfd..3ca55ec63a6a 100644
-> --- a/mm/maccess.c
-> +++ b/mm/maccess.c
-> @@ -13,9 +13,14 @@ bool __weak copy_from_kernel_nofault_allowed(const voi=
-d *unsafe_src,
->         return true;
->  }
->
-> +/*
-> + * The below only uses kmsan_check_memory() to ensure uninitialized kern=
-el
-> + * memory isn't leaked.
-> + */
->  #define copy_from_kernel_nofault_loop(dst, src, len, type, err_label)  \
->         while (len >=3D sizeof(type)) {                                  =
- \
->                 __get_kernel_nofault(dst, src, type, err_label);        \
-> +               kmsan_check_memory(src, sizeof(type));                  \
->                 dst +=3D sizeof(type);                                   =
- \
->                 src +=3D sizeof(type);                                   =
- \
->                 len -=3D sizeof(type);                                   =
- \
-> @@ -31,8 +36,6 @@ long copy_from_kernel_nofault(void *dst, const void *sr=
-c, size_t size)
->         if (!copy_from_kernel_nofault_allowed(src, size))
->                 return -ERANGE;
->
-> -       /* Make sure uninitialized kernel memory isn't copied. */
-> -       kmsan_check_memory(src, size);
->         pagefault_disable();
->         if (!(align & 7))
->                 copy_from_kernel_nofault_loop(dst, src, size, u64, Efault=
-);
-> @@ -52,6 +55,7 @@ EXPORT_SYMBOL_GPL(copy_from_kernel_nofault);
->  #define copy_to_kernel_nofault_loop(dst, src, len, type, err_label)    \
->         while (len >=3D sizeof(type)) {                                  =
- \
->                 __put_kernel_nofault(dst, src, type, err_label);        \
-> +               instrument_write(dst, sizeof(type));                    \
->                 dst +=3D sizeof(type);                                   =
- \
->                 src +=3D sizeof(type);                                   =
- \
->                 len -=3D sizeof(type);                                   =
- \
-> @@ -64,7 +68,6 @@ long copy_to_kernel_nofault(void *dst, const void *src,=
- size_t size)
->         if (!IS_ENABLED(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS))
->                 align =3D (unsigned long)dst | (unsigned long)src;
->
-> -       instrument_write(dst, size);
->         pagefault_disable();
->         if (!(align & 7))
->                 copy_to_kernel_nofault_loop(dst, src, size, u64, Efault);
+	struct map_key_1 {
+		struct bpf_dynptr name;
+	};
+	struct map_key_2 {
+		int pid;
+		struct bpf_dynptr name;
+	};
+	struct map_key_3 {
+		struct map_key_2 f1;
+		unsigned long when;
+		struct bpf_dynptr tag;
+	};
+
+The patch set supports lookup, update, delete operations on hash map
+with dynptr key for both bpf program and bpf syscall. It also supports
+lookup_and_delete and get_next_key operations on dynptr map key for bpf
+syscall.
+
+However the following operations have not been fully supported yet on a
+hash map with dynptr key:
+
+1) batched map operation through bpf syscall
+2) the memory accounting for dynptr (aka .htab_map_mem_usage)
+3) btf print for the dynptr in map key
+4) bpftool support
+5) the iteration of elements through bpf program
+When a bpf program iterates the element in a hash map with dynptr key
+(e.g., bpf_for_each_map_elem() helper or map element iterator), the
+dynptr in the map key has not been specially treated yet and the dynptr
+is only treated as a read-only 16-bytes buffer.
+
+The patch set is structured as follow:
+
+Patch #1~#5 introduce BPF_F_DYNPTR_IN_KEY map flag, parse the bpf_dynptr
+in the map key and verify the use of bpf_dynptr in map related helpers.
+
+Patch #6~#10 introduce bpf_dynptr_user, support the use of
+bpf_dynptr_user in bpf syscall for map lookup, lookup_delete, update,
+delete and get_next_key operations.
+
+Patch #11~#15 update the lookup, lookup_delete, update, delete and
+get_next_key callback correspondingly to support key with bpf_dynptr for
+hash map.
+
+Patch #16 adds positive and negative test cases for hash map with dynptr
+key support.
+
+The following are the benchmark results on hash map with dynptr key.
+
+(1) the benchmark compares the performance and memory usage between
+normal hash map and dynptr-keyed hash map.
+
+The key definitions for these two maps are show below:
+
+struct norm_key {
+	__u64 cookie;
+	unsigned char desc[MAX_LEN];
+};
+
+struct dynptr_key {
+	__u64 cookie;
+	struct bpf_dynptr_user desc;
+};
+
+When the max length of desc is greater than 256, the lookup performance
+of dynptr hash-map will be better than the normal hash map. When the max
+length is greater than 512, the update performance of dynptr hash map
+will be better than the normal hash map. And the memory consumption of
+hash-map with dynptr key is smaller compared with normal hash map.
+
+a) lookup operation
+
+max_entries = 8K (randomly generated data set)
+| max length of desc | normal hash-map    | dynptr hash-map   |
+| ---                |  ---               | ---               |
+|  64                | 12.1 M/s (? MB)    | 7.5 M/s (? MB)    |
+| 128                |  7.5 M/s (? MB)    | 6.3 M/s (? MB)
+| 256                |  4.6 M/s (4.9 MB)  | 4.9 M/s (? MB)    |
+| 512                |  2.6 M/s (8.9 MB)  | 3.5 M/s (4.6 MB)  |
+| 1024               |  1.3 M/s (17 MB)   | 2.2 M/s (7.4 MB)  |
+| 2048               |  0.6 M/s (33 MB)   | 1.2 M/s (13 MB)   |
+| 4096               |  0.3 M/s (65 MB)   | 0.6 M/s (24 MB)   |
+
+| string in file     | normal hash-map    | dynptr hash-map   |
+| ---                |  ---               | ---               |
+| kallsyms           |  5.4 M/s (32 MB)   | 5.4 M/s (25 MB)   |
+| string in BTF      |  6.8 M/s (23 MB)   | 6.8 M/s (17 MB)   |
+| alexa top 1M sites |  3.2 M/s (192 MB)  | 3.0 M/s (139 MB)  |
+
+b) update and delete operation
+
+max_entries = 8K (randomly generated data set)
+| max length of desc | normal hash-map    | dynptr hash-map   |
+| ---                |  ---               | ---               |
+|  64                |  4.3 M/s           | 3.2 M/s           |
+| 128                |  3.6 M/s           | 2.9 M/s           |
+| 256                |  2.8 M/s           | 2.6 M/s           |
+| 512                |  1.9 M/s           | 2.0 M/s           |
+| 1024               |  1.0 M/s           | 1.3 M/s           |
+| 2048               |  0.5 M/s           | 0.8 M/s           |
+| 4096               |  0.3 M/s           | 0.5 M/s           |
+
+| strings in file    | normal hash-map    | dynptr hash-map   |
+| ---                |  ---               | ---               |
+| kallsyms           |  3.0 M/s           | 2.0 M/s           |
+| strings in BTF     |  3.9 M/s           | 3.0 M/s           |
+| alexa top 1M sites |  2.4 M/s           | 2.3 M/s           |
+
+(2) the benchmark uses map_perf_test under samples/bpf to test the
+overhead of adding dynptr key support in hash map. The test is conducted
+on a Intel Xeon CPU and the base kernel version is v6.11.
+
+It seems adding dynptr key support in hash map degrades the lookup
+performance about 12% and degrades the update performance about 7%. Will
+investigate these degradation first.
+
+a) lookup
+
+max_entries = 8K
+
+before:
+0:hash_lookup 72347325 lookups per sec
+
+after:
+0:hash_lookup 64758890 lookups per sec
+
+b) update/delete/lookup
+
+max_entries = 8K
+
+before:
+0:hash_map_perf pre-alloc 675275 events per sec
+0:hash_map_perf kmalloc 666535 events per sec
+
+after:
+0:hash_map_perf pre-alloc 626563 events per sec
+0:hash_map_perf kmalloc 617234 events per sec
+
+As usual, comments and suggestions are always welcome.
+
+[1]: https://lore.kernel.org/bpf/CAADnVQJWaBRB=P-ZNkppwm=0tZaT3qP8PKLLJ2S5SSA2-S8mxg@mail.gmail.com/
+
+Hou Tao (16):
+  bpf: Introduce map flag BPF_F_DYNPTR_IN_KEY
+  bpf: Add two helpers to facilitate the btf parsing of bpf_dynptr
+  bpf: Parse bpf_dynptr in map key
+  bpf: Pass flags instead of bool to check_helper_mem_access()
+  bpf: Support map key with dynptr in verifier
+  bpf: Introduce bpf_dynptr_user
+  libbpf: Add helpers for bpf_dynptr_user
+  bpf: Handle bpf_dynptr_user in bpf syscall when it is used as input
+  bpf: Handle bpf_dynptr_user in bpf syscall when it is used as output
+  bpf: Disable unsupported functionalities for map with dynptr key
+  bpf: Add bpf_mem_alloc_check_size() helper
+  bpf: Support basic operations for dynptr key in hash map
+  bpf: Export bpf_dynptr_set_size
+  bpf: Support get_next_key operation for dynptr key in hash map
+  bpf: Enable BPF_F_DYNPTR_IN_KEY for hash map
+  selftests/bpf: Add test cases for hash map with dynptr key
+
+ include/linux/bpf.h                           |  22 +-
+ include/linux/bpf_mem_alloc.h                 |   3 +
+ include/linux/btf.h                           |   2 +
+ include/uapi/linux/bpf.h                      |   9 +
+ kernel/bpf/btf.c                              |  46 +-
+ kernel/bpf/hashtab.c                          | 314 ++++++++++--
+ kernel/bpf/helpers.c                          |   2 +-
+ kernel/bpf/map_in_map.c                       |  19 +-
+ kernel/bpf/memalloc.c                         |  14 +-
+ kernel/bpf/syscall.c                          | 222 ++++++++-
+ kernel/bpf/verifier.c                         | 183 ++++++-
+ tools/include/uapi/linux/bpf.h                |   9 +
+ tools/lib/bpf/bpf.h                           |  27 ++
+ .../bpf/prog_tests/htab_dynkey_test.c         | 451 ++++++++++++++++++
+ .../bpf/progs/htab_dynkey_test_failure.c      | 270 +++++++++++
+ .../bpf/progs/htab_dynkey_test_success.c      | 399 ++++++++++++++++
+ 16 files changed, 1902 insertions(+), 90 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/htab_dynkey_test.c
+ create mode 100644 tools/testing/selftests/bpf/progs/htab_dynkey_test_failure.c
+ create mode 100644 tools/testing/selftests/bpf/progs/htab_dynkey_test_success.c
+
+-- 
+2.44.0
+
 
