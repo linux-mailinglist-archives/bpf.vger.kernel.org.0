@@ -1,121 +1,146 @@
-Return-Path: <bpf+bounces-41255-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41256-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D20999525F
-	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 16:51:15 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6873995342
+	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 17:21:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BF94A1C248F0
-	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 14:51:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 71D3D281422
+	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 15:21:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A3021DFE32;
-	Tue,  8 Oct 2024 14:51:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64EA51E0DB5;
+	Tue,  8 Oct 2024 15:21:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="SieLekxt"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="HK7Aoff2"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AE8218CBED;
-	Tue,  8 Oct 2024 14:51:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DE961E0B91
+	for <bpf@vger.kernel.org>; Tue,  8 Oct 2024 15:21:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728399068; cv=none; b=Q2bM7oxZN3/E7mF/xDkdYIWOAKwAKT5CtAu0sSPf6a5nB6e2JMb8d+u384UJv9BLyaQz3A4l2tZH1nEEZqn04y6VsYCU08pTK5GBwxqiTeC4wNfsMdHVg+Zx5aDpdCoeeq7UJI9ttNbRDYYtZPppvdo513NOcMhes2x279uCvRg=
+	t=1728400888; cv=none; b=uRob0njde3E3cIK3zWC4pguDh2x4ShAZmWCcMsJZeJpxdaRxRIX9FMKXAyf2a2+N65e2m+jqPHMR4/VkCdEGY5DIVvhltuAT4SiiUq7xOMjQFXu0YRpp29X5TtkBatzAPJCPhHh5CyNO9a2QsrbJvYspG/OPugrk2gjsPQLwFKQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728399068; c=relaxed/simple;
-	bh=p/9acfdEgaLxVZfogRhnfANqjd3z7mrfWD179zJel/M=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=Sl4X+tJXQQDRn9ylZL/Gbwa1DvP7lpUbbLZn8GU/ARazEV94gFStWmwlSqb8JDNs6hrgdTdcGEOV2BnoQZTwgy7s/IshV3l4P25xoI9N+vhVBNKXu20ohrzwuVNQhrxzd7UJlIKz1b7KunJEeBhVS2f9t6z2WoSu3ASHSya/BcY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=SieLekxt; arc=none smtp.client-ip=217.70.183.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 9C6244000A;
-	Tue,  8 Oct 2024 14:51:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1728399064;
+	s=arc-20240116; t=1728400888; c=relaxed/simple;
+	bh=V6wv7UuW3HAgTnvx4RGFnn4y4Ee+TSsmIYQNAmcoo/4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dczMuF3CESdxLRhkGVSM27dF6Is1SXaMfurHK73UD4w58z55MBMUAkz+71UZo4XD++stPYAfLsfQuHmOMmJ4M/TL01QoOXGI2PT1lXMB+Op9RVvAFeY5ccPbC8lJixPtD7SxD9Q8//kiED8RG6Ie6B90Xb17zV3TnKTHeID1TQo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=HK7Aoff2; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1728400885;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=T8JTIkRyYPw4ANhnRm9O1xslQPulRbbv6/2c4JrZHr0=;
-	b=SieLekxt9CJgTwGfAISBzmrG8aI1Zw9QyaTNvG7O3mRQexMn+MGTAUtKxIRU1XJd9AGUhr
-	OWoKrOtvHK+ncs/rsblUPL64zUk+f5lggblH4VOsnTdeW4F+gt11zJmMpCfUYvH5jL6PKK
-	fuNCgJkNkg5EwJfnXI8KIDQCzBX13d2sMGj9n3A8j9uUH3J/fED+EovzLoHU4wdyqo1bAo
-	niIeKT6ZAJhMBIy152AtsoprW1mCyn2kaBo+XQ7Am8E+PSqVjxCRluYd/7dvub+1FUo9pO
-	vb/R8q4zfhr0b+ELQqfWkweSIQMvOusWpnEiCK8g1WKk4OnHVTJ6hd+pDwT1oA==
-From: =?utf-8?q?Alexis_Lothor=C3=A9_=28eBPF_Foundation=29?= <alexis.lothore@bootlin.com>
-Date: Tue, 08 Oct 2024 16:50:57 +0200
-Subject: [PATCH bpf] selftests/bpf: add missing header include for htons
+	 in-reply-to:in-reply-to:references:references;
+	bh=ruYSLgW7gfmln5kN4ADH0+uUUeJjmQiMQYi2GHJLhGM=;
+	b=HK7Aoff28qaYRPW+oEg61pRvs5yX643eJBrrHhXXrs3FckMrnWyI5GHz4mDzjsBJGneAO0
+	xT1eyIpwFx5sYJ2WU7dHMClAJ4Kzlc5kv6S9nJhv54M2IIJIlW8wPy0DyVgZ1pcZyFqfXm
+	CN1ksvPrNR0v9wXvevho3FrPv5BvjYo=
+Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-19-BuiWbL8bPueyNVxlgpUhdA-1; Tue,
+ 08 Oct 2024 11:21:22 -0400
+X-MC-Unique: BuiWbL8bPueyNVxlgpUhdA-1
+Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 19AB51955F3D;
+	Tue,  8 Oct 2024 15:21:19 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.226.71])
+	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 68A7219560A7;
+	Tue,  8 Oct 2024 15:21:12 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Tue,  8 Oct 2024 17:21:05 +0200 (CEST)
+Date: Tue, 8 Oct 2024 17:20:57 +0200
+From: Oleg Nesterov <oleg@redhat.com>
+To: Andrii Nakryiko <andrii@kernel.org>
+Cc: linux-trace-kernel@vger.kernel.org, peterz@infradead.org,
+	rostedt@goodmis.org, mhiramat@kernel.org, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org, jolsa@kernel.org, paulmck@kernel.org,
+	willy@infradead.org, surenb@google.com, akpm@linux-foundation.org,
+	linux-mm@kvack.org, mjguzik@gmail.com, brauner@kernel.org,
+	jannh@google.com, mhocko@kernel.org, vbabka@suse.cz,
+	mingo@kernel.org
+Subject: Re: [PATCH v2 tip/perf/core 0/5] uprobes,mm: speculative lockless
+ VMA-to-uprobe lookup
+Message-ID: <20241008152056.GA9508@redhat.com>
+References: <20241001225207.2215639-1-andrii@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20241008-network_helpers_fix-v1-1-2c2ae03df7ef@bootlin.com>
-X-B4-Tracking: v=1; b=H4sIANBGBWcC/x2MWwqAIBAAryL7naA96HGViMjaailU1qggunvS5
- wzMPBCQCQM04gHGkwI5G0EnAsZ1sAtKmiJDqtJcK1VJi8fleOtX3D1y6Ge6pTGmnHRR1XWmIJa
- eMer/2oLxM3Tv+wEKzjpBagAAAA==
-X-Change-ID: 20241008-network_helpers_fix-bbb7d1589930
-To: Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
- Martin KaFai Lau <martin.lau@linux.dev>, 
- Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, 
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
- Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, 
- Shuah Khan <shuah@kernel.org>
-Cc: ebpf@linuxfoundation.org, 
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>, bpf@vger.kernel.org, 
- linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
- =?utf-8?q?Alexis_Lothor=C3=A9_=28eBPF_Foundation=29?= <alexis.lothore@bootlin.com>
-X-Mailer: b4 0.14.2
-X-GND-Sasl: alexis.lothore@bootlin.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241001225207.2215639-1-andrii@kernel.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
 
-Including the network_helpers.h header in tests can lead to the following
-build error:
+Well. I am in no position to ack these changes.
 
-./network_helpers.h: In function ‘csum_tcpudp_magic’:
-./network_helpers.h:116:14: error: implicit declaration of function \
-  ‘htons’ [-Werror=implicit-function-declaration]
-  116 |         s += htons(proto + len);
+But let me say that I personally like this series and I see nothing wrong,
+except perhaps 5/5 needs some data_race/etc annotations as we have already
+discussed.
 
-The error is avoided in many cases thanks to some other headers included
-earlier and bringing in arpa/inet.h (ie: test_progs.h).
+Thanks,
 
-Make sure that test_progs build success does not depend on header ordering
-by adding the missing header include in network_helpers.h
+Oleg.
 
-Fixes: f6642de0c3e9 ("selftests/bpf: Add csum helpers")
-Signed-off-by: Alexis Lothoré (eBPF Foundation) <alexis.lothore@bootlin.com>
----
- tools/testing/selftests/bpf/network_helpers.h | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/tools/testing/selftests/bpf/network_helpers.h b/tools/testing/selftests/bpf/network_helpers.h
-index c72c16e1aff825439896b38e59962ffafe92dc71..5764155b6d25188ed38e828e1e4a8a08f8a83934 100644
---- a/tools/testing/selftests/bpf/network_helpers.h
-+++ b/tools/testing/selftests/bpf/network_helpers.h
-@@ -1,6 +1,7 @@
- /* SPDX-License-Identifier: GPL-2.0 */
- #ifndef __NETWORK_HELPERS_H
- #define __NETWORK_HELPERS_H
-+#include <arpa/inet.h>
- #include <sys/socket.h>
- #include <sys/types.h>
- #include <linux/types.h>
-
----
-base-commit: 67a7c7b656cfc10a7280f71641fb9e88726e8a5d
-change-id: 20241008-network_helpers_fix-bbb7d1589930
-
-Best regards,
--- 
-Alexis Lothoré, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+On 10/01, Andrii Nakryiko wrote:
+>
+> Implement speculative (lockless) resolution of VMA to inode to uprobe,
+> bypassing the need to take mmap_lock for reads, if possible. Patch #1 by Suren
+> adds mm_struct helpers that help detect whether mm_struct were changed, which
+> is used by uprobe logic to validate that speculative results can be trusted
+> after all the lookup logic results in a valid uprobe instance. Patch #2
+> follows to make mm_lock_seq into 64-bit counter (on 64-bit architectures).
+>
+> Patch #3 adds back RCU-delayed freeing for FMODE_BACKING files, which is
+> necessary to make speculation safe to access struct file's memory in any
+> possible situation.
+>
+> Patch #4 is a simplification to uprobe VMA flag checking, suggested by Oleg.
+>
+> And, finally, patch #5 is the speculative VMA-to-uprobe resolution logic. See
+> corresponding patch for details and benchmarking results.
+>
+> v1->v2:
+> - adjusted vma_end_write_all() comment to point out it should never be called
+>   manually now, but I wasn't sure how ACQUIRE/RELEASE comments should be
+>   reworded (previously requested by Jann), so I'd appreciate some help there
+>   (Jann);
+> - int -> long change for mm_lock_seq, as agreed at LPC2024 (Jann, Suren, Liam);
+> - kfree_rcu_mightsleep() for FMODE_BACKING (Suren, Christian);
+> - vm_flags simplification in find_active_uprobe_rcu() and
+>   find_active_uprobe_speculative() (Oleg);
+> - guard(rcu)() simplified find_active_uprobe_speculative() implementation.
+>
+> Andrii Nakryiko (4):
+>   mm: switch to 64-bit mm_lock_seq/vm_lock_seq on 64-bit architectures
+>   fs: add back RCU-delayed freeing of FMODE_BACKING file
+>   uprobes: simplify find_active_uprobe_rcu() VMA checks
+>   uprobes: add speculative lockless VMA-to-inode-to-uprobe resolution
+>
+> Suren Baghdasaryan (1):
+>   mm: introduce mmap_lock_speculation_{start|end}
+>
+>  fs/file_table.c           |  2 +-
+>  include/linux/mm.h        |  6 ++--
+>  include/linux/mm_types.h  |  7 ++--
+>  include/linux/mmap_lock.h | 72 ++++++++++++++++++++++++++++++++-------
+>  kernel/events/uprobes.c   | 46 ++++++++++++++++++++++++-
+>  kernel/fork.c             |  3 --
+>  6 files changed, 114 insertions(+), 22 deletions(-)
+>
+> --
+> 2.43.5
+>
 
 
