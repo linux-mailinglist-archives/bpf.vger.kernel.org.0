@@ -1,43 +1,43 @@
-Return-Path: <bpf+bounces-41220-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41221-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 307559943C0
-	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 11:12:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id DCFD49943AD
+	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 11:09:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A3D6DB29528
-	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 09:09:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 78F8EB2936C
+	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 09:09:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9DDD1C6F72;
-	Tue,  8 Oct 2024 09:05:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B51871C9B99;
+	Tue,  8 Oct 2024 09:05:16 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05B281C2DC3
-	for <bpf@vger.kernel.org>; Tue,  8 Oct 2024 09:05:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE78C1C2DD3
+	for <bpf@vger.kernel.org>; Tue,  8 Oct 2024 09:05:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728378315; cv=none; b=KPAdOnXmg3vfN/p+FGih+icuWd7v3Vm4g3iOFEzkP1OmaFPaHv3Upr7cpuVgrR8W89rGaVCXCdpLkAMwhpslk3qLflL9E2EHZTGprFkHevWJ80ZJ5318J/xcKmc5QP4XhVFmvtHUAYr8XEIH7745f2ShjF5cihqKKG1UT3c4zqI=
+	t=1728378316; cv=none; b=uWVRssmuZlS1NouVVfB8Zo2k3DkG69kkfMsikrISb9ZcyzIZ5KWe/0Cux+w0fGX8WpRRuV6FKwpTk5LczU1y343ZkT1xLX2Tfgu0KvwRfvjXxPCpo2wbXY2bCe9ayAU9GArcvPuZGs7priuzW1j0fBX3c0Dmi38//ZLm7fw8Jas=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728378315; c=relaxed/simple;
-	bh=YZClfy9Bri4+3Vtc6QLb3qS16lWXR2kMUnMh7HJ5ZKU=;
+	s=arc-20240116; t=1728378316; c=relaxed/simple;
+	bh=E2brk+fhgdmaDgyQyfWBHA6NlDzqwx79ck318myUSAg=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=FZCOgY1xMkEkZJwRrFELqbBlPFqt3uCRGEy6rlJouKTuapMNy2mIOTvzRirjhrGJCn0ILb2D4I8yY2Wd1x0kfoc+AQ5ynGK2Xx1z2X6noUSv0Qqr4+nhvwp+YtG0r3g1ahb0V+tvYpMvnCwaIb1IsLsXdQr4LoI0sArIdLcQumY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+	 MIME-Version; b=DppSmWz4BhpFXckOVkFFbm37raEqm6Bw1S4ZpTkmxloS72PyXPV8PMduLzy62+gO9BHXV76kd8KLZ0cS9VfD+ki63HEMm0kuA1phCMOqNfN+tLy+pw0+cJm89wLsubrQohZJbWzGuhpWV/R1s4xdEjTUi+/6JLmFAvuTnpqANmg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4XN9852vjSz4f3lfY
-	for <bpf@vger.kernel.org>; Tue,  8 Oct 2024 17:04:53 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4XN9865K9qz4f3jY6
+	for <bpf@vger.kernel.org>; Tue,  8 Oct 2024 17:04:54 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.252])
-	by mail.maildlp.com (Postfix) with ESMTP id EAFDB1A08FC
-	for <bpf@vger.kernel.org>; Tue,  8 Oct 2024 17:05:10 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 893C31A018D
+	for <bpf@vger.kernel.org>; Tue,  8 Oct 2024 17:05:11 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP3 (Coremail) with SMTP id _Ch0CgB3yobB9QRnm_6TDQ--.2069S10;
-	Tue, 08 Oct 2024 17:05:10 +0800 (CST)
+	by APP3 (Coremail) with SMTP id _Ch0CgB3yobB9QRnm_6TDQ--.2069S11;
+	Tue, 08 Oct 2024 17:05:11 +0800 (CST)
 From: Hou Tao <houtao@huaweicloud.com>
 To: bpf@vger.kernel.org
 Cc: Martin KaFai Lau <martin.lau@linux.dev>,
@@ -55,9 +55,9 @@ Cc: Martin KaFai Lau <martin.lau@linux.dev>,
 	Yafang Shao <laoar.shao@gmail.com>,
 	houtao1@huawei.com,
 	xukuohai@huawei.com
-Subject: [PATCH bpf 6/7] selftests/bpf: Test multiplication overflow of nr_bits in bits_iter
-Date: Tue,  8 Oct 2024 17:17:17 +0800
-Message-Id: <20241008091718.3797027-7-houtao@huaweicloud.com>
+Subject: [PATCH bpf 7/7] selftests/bpf: Pass a pointer of unsigned long to bpf_iter_bits_new()
+Date: Tue,  8 Oct 2024 17:17:18 +0800
+Message-Id: <20241008091718.3797027-8-houtao@huaweicloud.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20241008091718.3797027-1-houtao@huaweicloud.com>
 References: <20241008091718.3797027-1-houtao@huaweicloud.com>
@@ -68,59 +68,146 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_Ch0CgB3yobB9QRnm_6TDQ--.2069S10
-X-Coremail-Antispam: 1UD129KBjvdXoWrKFW5Wr48Zr47KryUCF1xXwb_yoWDurXEyw
-	4Sva48Kr4UtF97tFykZrn3urW5Cws29rWxGF43trWfA3WUXw1rJF4ktr18Zry8WrW5t39x
-	Z3WqqF10gw43KjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbg8YFVCjjxCrM7AC8VAFwI0_Wr0E3s1l1xkIjI8I6I8E6xAIw20E
-	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l82xGYIkIc2x26280x7IE14v26r126s
-	0DM28IrcIa0xkI8VCY1x0267AKxVW5JVCq3wA2ocxC64kIII0Yj41l84x0c7CEw4AK67xG
-	Y2AK021l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14
-	v26F4UJVW0owA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AK
-	xVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ew
-	Av7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY
-	6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS14
-	v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8C
-	rVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXw
-	CIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26ryj6F1UMIIF0xvE2Ix0cI8IcVCY1x02
-	67AKxVW8Jr0_Cr1UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxV
-	W8JVWxJwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7I
-	U1aLvJUUUUU==
+X-CM-TRANSID:_Ch0CgB3yobB9QRnm_6TDQ--.2069S11
+X-Coremail-Antispam: 1UD129KBjvJXoWxCFy8urW8JFW5tFWxtr17GFg_yoW5tw13pa
+	y8uwnFyrs5tw4a9ws7WayjkFyrXr4vqayUCw47XryruFn8XFnrWr1Sy34rX3Z0yrZ0vw1v
+	vFWjy347JrZrJaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUPqb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
+	Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
+	rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267
+	AKxVWxJr0_GcWl84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAF
+	wI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2
+	WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkE
+	bVWUJVW8JwACjcxG0xvY0x0EwIxGrwACI402YVCY1x02628vn2kIc2xKxwCY1x0262kKe7
+	AKxVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02
+	F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_Wr
+	ylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVW5JVW7JwCI42IY6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI
+	0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x
+	07UZTmfUUUUU=
 X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
 From: Hou Tao <houtao1@huawei.com>
 
-Add a test to verify the multiplication overflow of nr_bits in bits_iter.
-When nr_words is assigned as 67108865, nr_bits becomes 64, causing
-bpf_probe_read_kernel_common() to corrupt the stack.
+The type of unsafe_ptr has been changed from u64 * to unsigned long *,
+so update the type of data from u64 to unsigned long accordingly.
+
+The results of bits_memalloc and bits_nomem should depend on the size of
+unsigned long, so update these two test cases accordingly. A note is
+needed for bits_memalloc() in which "int nr" needs the volatile
+qualifier to prevent the optimization of the compiler.
 
 Signed-off-by: Hou Tao <houtao1@huawei.com>
 ---
- .../selftests/bpf/progs/verifier_bits_iter.c       | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ .../selftests/bpf/progs/verifier_bits_iter.c  | 28 +++++++++----------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
 
 diff --git a/tools/testing/selftests/bpf/progs/verifier_bits_iter.c b/tools/testing/selftests/bpf/progs/verifier_bits_iter.c
-index f4da4d508ddb..344b7eac15c8 100644
+index 344b7eac15c8..4622897b8a24 100644
 --- a/tools/testing/selftests/bpf/progs/verifier_bits_iter.c
 +++ b/tools/testing/selftests/bpf/progs/verifier_bits_iter.c
-@@ -151,3 +151,17 @@ int zero_words(void)
+@@ -10,7 +10,7 @@
+ 
+ char _license[] SEC("license") = "GPL";
+ 
+-int bpf_iter_bits_new(struct bpf_iter_bits *it, const u64 *unsafe_ptr__ign,
++int bpf_iter_bits_new(struct bpf_iter_bits *it, const unsigned long *unsafe_ptr__ign,
+ 		      u32 nr_bits) __ksym __weak;
+ int *bpf_iter_bits_next(struct bpf_iter_bits *it) __ksym __weak;
+ void bpf_iter_bits_destroy(struct bpf_iter_bits *it) __ksym __weak;
+@@ -21,7 +21,7 @@ __failure __msg("Unreleased reference")
+ int BPF_PROG(no_destroy, struct bpf_iter_meta *meta, struct cgroup *cgrp)
+ {
+ 	struct bpf_iter_bits it;
+-	u64 data = 1;
++	unsigned long data = 1;
+ 
+ 	bpf_iter_bits_new(&it, &data, 1);
+ 	bpf_iter_bits_next(&it);
+@@ -68,7 +68,7 @@ __description("bits copy")
+ __success __retval(10)
+ int bits_copy(void)
+ {
+-	u64 data = 0xf7310UL; /* 4 + 3 + 2 + 1 + 0*/
++	unsigned long data = 0xf7310UL; /* 4 + 3 + 2 + 1 + 0*/
+ 	int nr = 0;
+ 	int *bit;
+ 
+@@ -79,17 +79,17 @@ int bits_copy(void)
+ 
+ SEC("syscall")
+ __description("bits memalloc")
+-__success __retval(64)
++__success __retval(1)
+ int bits_memalloc(void)
+ {
+-	u64 data[2];
+-	int nr = 0;
++	unsigned long data[2];
++	volatile int nr = 0;
+ 	int *bit;
+ 
+-	__builtin_memset(&data, 0xf0, sizeof(data)); /* 4 * 16 */
++	__builtin_memset(&data, 0xf0, sizeof(data));
+ 	bpf_for_each(bits, bit, &data[0], ARRAY_SIZE(data))
+ 		nr++;
+-	return nr;
++	return nr == 4 * sizeof(data);
+ }
+ 
+ SEC("syscall")
+@@ -97,7 +97,7 @@ __description("bit index")
+ __success __retval(8)
+ int bit_index(void)
+ {
+-	u64 data = 0x100;
++	unsigned long data = 0x100;
+ 	int bit_idx = 0;
+ 	int *bit;
+ 
+@@ -114,12 +114,12 @@ __description("bits nomem")
+ __success __retval(0)
+ int bits_nomem(void)
+ {
+-	u64 data[4];
++	unsigned long data[4];
+ 	int nr = 0;
+ 	int *bit;
+ 
+ 	__builtin_memset(&data, 0xff, sizeof(data));
+-	bpf_for_each(bits, bit, &data[0], 513) /* Be greater than 512 */
++	bpf_for_each(bits, bit, &data[0], 4096 / sizeof(data[0]) + 1)
  		nr++;
  	return nr;
  }
-+
-+SEC("syscall")
-+__description("big words")
-+__success __retval(0)
-+int big_words(void)
-+{
-+	u64 data[8] = {0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1};
-+	int nr = 0;
-+	int *bit;
-+
-+	bpf_for_each(bits, bit, &data[0], 67108865)
-+		nr++;
-+	return nr;
-+}
+@@ -129,7 +129,7 @@ __description("fewer words")
+ __success __retval(1)
+ int fewer_words(void)
+ {
+-	u64 data[2] = {0x1, 0xff};
++	unsigned long data[2] = {0x1, 0xff};
+ 	int nr = 0;
+ 	int *bit;
+ 
+@@ -143,7 +143,7 @@ __description("zero words")
+ __success __retval(0)
+ int zero_words(void)
+ {
+-	u64 data[2] = {0x1, 0xff};
++	unsigned long data[2] = {0x1, 0xff};
+ 	int nr = 0;
+ 	int *bit;
+ 
+@@ -157,7 +157,7 @@ __description("big words")
+ __success __retval(0)
+ int big_words(void)
+ {
+-	u64 data[8] = {0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1};
++	unsigned long data[8] = {0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1};
+ 	int nr = 0;
+ 	int *bit;
+ 
 -- 
 2.29.2
 
