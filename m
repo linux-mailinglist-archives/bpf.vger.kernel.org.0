@@ -1,300 +1,305 @@
-Return-Path: <bpf+bounces-41185-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41186-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3369C993DC7
-	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 06:04:45 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29AD4993DE9
+	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 06:24:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 946392815B1
-	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 04:04:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4D4691C24268
+	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2024 04:24:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11B50762D0;
-	Tue,  8 Oct 2024 04:04:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8563278685;
+	Tue,  8 Oct 2024 04:24:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JZx/S/hl"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Qc6V1unm"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8DD433CA;
-	Tue,  8 Oct 2024 04:04:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8424C3C0C;
+	Tue,  8 Oct 2024 04:24:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728360276; cv=none; b=FGK9wFs35VMQ7ZHglfngsgbTF/2l6aJXeWMGI0Jit4nXotIfS+lk5iuFv7Pa5uvqCLCSngj3T26LNqUTyiP4Ohgb1FnwpAc30zHbsF2hqvds8YsKrsz4kP1naM3PhvaEK7GY3YuLznvtNP/0XTcstYwt28QgJtrROv4GmM2F6tI=
+	t=1728361483; cv=none; b=IjZWIxHSFhi2gguzdSY0ZwtRCuXtTTq4xcVv7czD1KLHqd3xor04AzXE3HY5K1ymskvaTcKMlRtkV5NvKP15qPLzRYr1f67q/+7egOpAK2eTlqgm1uEzi0SNl6HwAxHAR+KQjbaRb2CBTmtZ6/SiE8NQLQ+VJEdHnXqJJPMZioo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728360276; c=relaxed/simple;
-	bh=bXaRgSHofV6Rkkq4qfXRdN7k91QpXPIN6NrC9+sniNk=;
+	s=arc-20240116; t=1728361483; c=relaxed/simple;
+	bh=so/nl/Kem0klmMnenAiz3hVrhvNngCaBJdBqzHmRpYQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CxGBb0Y2cRJvhY1kyhIegfOKOkTcjiBulgXIdWxCXz4z4iJxLPiAytKfbqCkb8aHihgZsSeGYnI5I0/0K/ND0tGjcTmQp+nevXBCx/puP0mOSHrG3VIPPZ9etQ916JLULbHL7y0e3PZJ5EgsY+yJiNi+u4i9MMOYT+MiYdpG9lE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JZx/S/hl; arc=none smtp.client-ip=209.85.221.50
+	 To:Cc:Content-Type; b=uexkXlNcILK3ZfPLmoJ4YVxpSsE3OZv/BBvNV09eL6EfEusRQMRLhm2C2046AsqROOnaGEF1HKeSiCMTwSMwRFnJ+GvgyjRpYOB7m2gLnUyx98JBBHa43a1P+0YfxTPIrnlAuSvs0db5R8Sg6u7V69izId+reyWDwozWjTQG15Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Qc6V1unm; arc=none smtp.client-ip=209.85.214.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-37cdbcb139cso3973460f8f.1;
-        Mon, 07 Oct 2024 21:04:34 -0700 (PDT)
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-20b833f9b35so44220825ad.2;
+        Mon, 07 Oct 2024 21:24:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1728360273; x=1728965073; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1728361481; x=1728966281; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=XeL2eCQ3D5dxw4ZH8f6RmNsLwTsdLHD4eyRo25Vm5C0=;
-        b=JZx/S/hlH+PHgw2Gs66Iq8+7FFQyj1ztnz6/do2zBUlI6tmATrEdwK5b3Mu841E94u
-         HCsLy+UwBpET3tfQKKez+Ed+rXADigDEdgTBF8xwe+PjX+Ssgh/d1zW6D7nqHP7b/RZ0
-         6cJtUzGbjT068VCKE9bPREHXJRX063WRKPm9LcmW41l9VUGhJLP6zLUnIXvYvTdvzKxU
-         +P3tqSnB3uEyshuwuSeyAD/HYhOuYkcfqYpCZecm2OG6/Dei5542djMLkwvSjqdId5fi
-         YGqFnK6UkApWLz++Zr3auS4Mj4U+vZbGJ68+Zq29CaC4oC+4E//1gxdJuzj8CtOqHT8F
-         JYeg==
+        bh=HWti4zorau3ReA1q4GOxR8ruEn2HPXjYThgm7CozDvs=;
+        b=Qc6V1unmTd/5GEsOn3YFbpvxIOEzwZH9e1Kweya5kh1osLb0LV3iPWcgSKjIouoZBD
+         QaZ/3AGzxM5PESxc9L+/rKfF9o+h4XfdEQcezebvRz3aTQ7Uj4/l68U5RQMcMDsHfHqc
+         7WwsLlXhtScPm17/Fq2LtA2phErlMFYpueDHnSuP60Z6P/drqhWVL8yLylS25Fvf1vJn
+         0UWm0hMpL4wmGotApzz0BIKEsKUxXYY3bNFNSrYFNK6DDyeMrmnszYtizdUV2Ezf43xa
+         r/+fONuAWuK30zY1Oba7tLitlLOT617AauSCp/+hyyEoOIkyDHGbd8/27zjEUhsd0hFH
+         NgTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728360273; x=1728965073;
+        d=1e100.net; s=20230601; t=1728361481; x=1728966281;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=XeL2eCQ3D5dxw4ZH8f6RmNsLwTsdLHD4eyRo25Vm5C0=;
-        b=HbLKG8Db6ITpR+RPOZLT5Qhr2aIERYwNsBEk4Y+RvSThDPNWFZPa8pGcsF5/YeT9+2
-         fFMDVwFdWnsk+Xk+L29OR/YW3EvTRHLD1A2ZqUKToFj6P1UbzjrvlEw93jrnPdfr+0fn
-         4RrtxXPC4ABzr6s81yh2lMpr1ZBWkSZJxjmePnxgXJ92D47j4fxxHQCRFXeTkAeBCg5X
-         FhfF04uGETlEY5gfH6b7Jb+fQKiElctXKgXk5BNLNMFSY/neCEO57JgaCx20yxfrA5Ky
-         dgwix4Mdpq1MwIc1UAMSlWnsawuBLSBL7AJtAuiFpu3GSappz/UyF63iSWftvFpfH9YO
-         D1Qw==
-X-Forwarded-Encrypted: i=1; AJvYcCUgMN0gOl6rTXIOdKuUL8J2JO4h+WS7lhAlgsvUFBwm1ICLYPEigZMNPiCJTMON+ppdNMc=@vger.kernel.org, AJvYcCXFJw3A2axQprYl8MWdF+CynUDihsRWG7Bes7RTyfTHJuZdpemfqA5MJeZjzYMqWinwfLku6BDchwEuT82d@vger.kernel.org, AJvYcCXvoBBRxwHuz8lPWZgwHHmdkAb6SoJd6ZAqQLsYF7LMYmk1EzH530GiKT18bW+ydPSk8WuzvcaDKJSrHEmUaLxr@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywq8TAiELD61nrDhCAa4Mz52oAsFqpdVChPWlLyldef258fyToI
-	Kw4tGNnD1pBEFIB+6ALXiByEsfTmQOq5QmYzxrS6we7l9zgvxetbM98kQIo5iFv5ScAPx2UsGds
-	cZwbOqqsjnkNCySNTlyC+F1rhqsk=
-X-Google-Smtp-Source: AGHT+IHq6nL5kxATCrOVR0zNdZG0uySRJFuWtC6A4pqWyJRtHOG2KIuPSxSw+beCCOE8d2wnI7WM3lsd9KiBn2RDjds=
-X-Received: by 2002:a05:6000:1818:b0:37c:ca21:bc53 with SMTP id
- ffacd0b85a97d-37d0e76fdfdmr8678174f8f.26.1728360272583; Mon, 07 Oct 2024
- 21:04:32 -0700 (PDT)
+        bh=HWti4zorau3ReA1q4GOxR8ruEn2HPXjYThgm7CozDvs=;
+        b=bu7egNXrL1L+7ccZhE2B/o9N0+6JdjlYXjbBaTFJUbtr28hSymTVA9obBK47Gcp/rz
+         sw+gjYH2uCUxc8VlVNMxCUtCwtGLhG1DPP4WxAOyOKnUh6hyi8zpc9QOMrInhP7X8nyr
+         cGXm/n1aFDFFon/FNxpMTXtTdXPeTQ83hUmOud1WfNNLCLIeKOU9j4j7UFEQuNwqRsut
+         iKwPGQUfQXpdoNk0T+CYwbXFVeZx6f3KTdNvGDprFyg7fVjMUhMzpSZDUr1Jwy3tLRR1
+         0ll3W6wyRhzeQNq5NfX4PKdOv1UrSV6TlxjjLrazenkEgcTihs4THL52+UxFqUGtn/VL
+         dvcg==
+X-Forwarded-Encrypted: i=1; AJvYcCUUKZ5QyhEjcERm7an+Yf7HCZC1Kq+X0jOHB068Hz9/0SvjUAoW6Nj8Gu5db6qxOeHY5K8=@vger.kernel.org, AJvYcCWi3SfkHnI1imfS8Fa+I2RIIyYGDcyIqFBlYgX40M5EA1T/9ordmgqYpXvU3YpCcD/P88mOnarH0bAcDVME@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx2s1teekZPga8AFiorUaDJ9kkTmOPP1jxMpwA+ZAe60AE0NHXP
+	BUcNvCSQGqODphXWV0uBoeVN02chM0ljWvnjHz4tojwuwsJR3UAJJVWO7VMC83YsmqRjnu7buCC
+	dW34PSLEr9yn1qRJk1w0LuPjfLqI=
+X-Google-Smtp-Source: AGHT+IFD7tOvjZYwVALv2jrofqDMU2Fc6pBOTv+b2ZRDyK0ZMEmGIMfId0LN/bdf+6cJfdcVuaDLlezLdRAtv7kDqxk=
+X-Received: by 2002:a17:903:234f:b0:20c:3d9e:5f2b with SMTP id
+ d9443c01a7336-20c3d9e60acmr59879205ad.57.1728361480758; Mon, 07 Oct 2024
+ 21:24:40 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ZwOWs_XrBtlTGE24@krava> <20241007182933.8841-1-wudevelops@gmail.com>
-In-Reply-To: <20241007182933.8841-1-wudevelops@gmail.com>
+References: <20241007103426.128923-1-puranjay@kernel.org> <20241007103426.128923-2-puranjay@kernel.org>
+In-Reply-To: <20241007103426.128923-2-puranjay@kernel.org>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 7 Oct 2024 21:04:17 -0700
-Message-ID: <CAEf4Bzb1JzE7OPieODoq7H5hg_z2WwkBZo91dyGuRQ56cJ03jg@mail.gmail.com>
-Subject: Re: [PATCH bpf v6 1/2] bpf: fix unpopulated name_len field in
- perf_event link info
-To: Tyrone Wu <wudevelops@gmail.com>
-Cc: olsajiri@gmail.com, laoar.shao@gmail.com, andrii@kernel.org, 
-	ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net, eddyz87@gmail.com, 
-	haoluo@google.com, john.fastabend@gmail.com, kernel-patches-bot@fb.com, 
-	kpsingh@kernel.org, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, martin.lau@linux.dev, mykolal@fb.com, 
-	sdf@fomichev.me, shuah@kernel.org, song@kernel.org, yonghong.song@linux.dev, 
-	Jiri Olsa <jolsa@kernel.org>
+Date: Mon, 7 Oct 2024 21:24:28 -0700
+Message-ID: <CAEf4BzZMiwcMY3H9=qwpgCKQxDZmKHcmxEJtRhrTCgNar8YaXQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 1/2] bpf: implement bpf_send_signal_task() kfunc
+To: Puranjay Mohan <puranjay@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	puranjay12@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Oct 7, 2024 at 11:29=E2=80=AFAM Tyrone Wu <wudevelops@gmail.com> wr=
-ote:
+On Mon, Oct 7, 2024 at 3:34=E2=80=AFAM Puranjay Mohan <puranjay@kernel.org>=
+ wrote:
 >
-> From: tyrone-wu <wudevelops@gmail.com>
+> Implement bpf_send_signal_task kfunc that is similar to
+> bpf_send_signal_thread and bpf_send_signal helpers  but can be used to
+> send signals to other threads and processes. It also supports sending a
+> cookie with the signal similar to sigqueue().
 >
-> Previously when retrieving `bpf_link_info.perf_event` for
-> kprobe/uprobe/tracepoint, the `name_len` field was not populated by the
-> kernel, leaving it to reflect the value initially set by the user. This
-> behavior was inconsistent with how other input/output string buffer
-> fields function (e.g. `raw_tracepoint.tp_name_len`).
+> If the receiving process establishes a handler for the signal using the
+> SA_SIGINFO flag to sigaction(), then it can obtain this cookie via the
+> si_value field of the siginfo_t structure passed as the second argument
+> to the handler.
 >
-> This patch fills `name_len` with the actual size of the string name.
->
-> Link: https://lore.kernel.org/bpf/CABVU1kXwQXhqQGe0RTrr7eegtM6SVW_KayZBy1=
-6-yb0Snztmtg@mail.gmail.com/
-> Fixes: 1b715e1b0ec5 ("bpf: Support ->fill_link_info for perf_event")
-> Signed-off-by: Tyrone Wu <wudevelops@gmail.com>
-> Acked-by: Jiri Olsa <jolsa@kernel.org>
-> Acked-by: Yafang Shao <laoar.shao@gmail.com>
+> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
 > ---
-> V5 -> V6:
-> Link: https://lore.kernel.org/bpf/ZwOWs_XrBtlTGE24@krava/
-> - Use simpler buf check while keeping V4
-> - Fix netdev/checkpatch warning for 80 cols exceeded
-> - Fix Signed-off-by to use real name instead of git username
+>  kernel/bpf/helpers.c     |  1 +
+>  kernel/trace/bpf_trace.c | 54 ++++++++++++++++++++++++++++++++++------
+>  2 files changed, 47 insertions(+), 8 deletions(-)
 >
-> V4 -> V5:
-> Link: https://lore.kernel.org/bpf/CALOAHbC5xm7Cbfhau3z5X2PqUhiHECNWAPtJCW=
-iOVqTKmdZp-Q@mail.gmail.com/
-> - Check that buf is not NULL before retrieving/using its length
+> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> index 4053f279ed4cc..2fd3feefb9d94 100644
+> --- a/kernel/bpf/helpers.c
+> +++ b/kernel/bpf/helpers.c
+> @@ -3035,6 +3035,7 @@ BTF_ID_FLAGS(func, bpf_task_get_cgroup1, KF_ACQUIRE=
+ | KF_RCU | KF_RET_NULL)
+>  #endif
+>  BTF_ID_FLAGS(func, bpf_task_from_pid, KF_ACQUIRE | KF_RET_NULL)
+>  BTF_ID_FLAGS(func, bpf_throw)
+> +BTF_ID_FLAGS(func, bpf_send_signal_task, KF_TRUSTED_ARGS)
+>  BTF_KFUNCS_END(generic_btf_ids)
 >
-> V3 -> V4:
-> Link: https://lore.kernel.org/bpf/Zv_PP6Gs5cq3W2Ey@krava/
-> - Split patch into separate kernel and selftest change
+>  static const struct btf_kfunc_id_set generic_kfunc_set =3D {
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index a582cd25ca876..ae8c9fa8b04d1 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -802,6 +802,8 @@ struct send_signal_irq_work {
+>         struct task_struct *task;
+>         u32 sig;
+>         enum pid_type type;
+> +       bool has_siginfo;
+> +       kernel_siginfo_t info;
+
+group_send_sig_info() refers to this as `struct kernel_siginfo`, let's
+use that and avoid unnecessary typedefs
+
+>  };
 >
-> V2 -> V3:
-> Link: https://lore.kernel.org/bpf/Zv7sISV0yEyGlEM3@krava/
-> - Use clearer variable name for user set/inputted name len (name_len -> i=
-nput_len)
-> - Change (name_len -> input_len) type from size_t to u32 since it's only =
-received and used as u32
+>  static DEFINE_PER_CPU(struct send_signal_irq_work, send_signal_work);
+> @@ -811,25 +813,43 @@ static void do_bpf_send_signal(struct irq_work *ent=
+ry)
+>         struct send_signal_irq_work *work;
 >
-> V1 -> V2:
-> Link: https://lore.kernel.org/bpf/Zv0wl-S13WJnIkb_@krava/
+>         work =3D container_of(entry, struct send_signal_irq_work, irq_wor=
+k);
+> -       group_send_sig_info(work->sig, SEND_SIG_PRIV, work->task, work->t=
+ype);
+> +       if (work->has_siginfo)
+> +               group_send_sig_info(work->sig, &work->info, work->task, w=
+ork->type);
+> +       else
+> +               group_send_sig_info(work->sig, SEND_SIG_PRIV, work->task,=
+ work->type);
 
-Please drop all the Link: tags, our scripts will accumulate all of
-them in the final commit and it becomes very confusing. Our script
-will add the final Link: for your latest applied version anyways.
+There is lots of duplication while the only difference is between
+providing SEND_SIG_PRIV and our own &work->info. So maybe let's just
+have something like
 
-Also, git still shows:
+struct kernel_siginfo *siginfo;
 
-Author: tyrone-wu <wudevelops@gmail.com>
+siginfo =3D work->has_siginfo ? &work->info : SEND_SIG_PRIV;
+group_send_sig_info(work->sig, siginfo, work->task, work->type);
 
-So please try to fix that.
+?
 
-But generally, looks good and I almost applied, but see one small
-issue below, which I think needs fixing.
+>         put_task_struct(work->task);
+>  }
+>
+> -static int bpf_send_signal_common(u32 sig, enum pid_type type)
+> +static int bpf_send_signal_common(u32 sig, enum pid_type type, struct ta=
+sk_struct *tsk, u64 value)
+
+task? why tsk?
+
+>  {
+>         struct send_signal_irq_work *work =3D NULL;
+> +       kernel_siginfo_t info;
+> +       bool has_siginfo =3D false;
+> +
+> +       if (!tsk) {
+> +               tsk =3D current;
+> +       } else {
+> +               has_siginfo =3D true;
+
+nit: I find it less confusing for cases like with has_siginfo here,
+for the variable to be explicitly assigned in both branches, instead
+of defaulting to false and then reassigned in one of the branches
+
+> +               clear_siginfo(&info);
+> +               info.si_signo =3D sig;
+> +               info.si_errno =3D 0;
+> +               info.si_code =3D SI_KERNEL;
+> +               info.si_pid =3D 0;
+> +               info.si_uid =3D 0;
+> +               info.si_value.sival_ptr =3D (void *)value;
+> +       }
+
+kernel test bot complains that this should probably be (void
+*)(unsigned long)value (which will truncate on 32-bit archtes, but oh
+well)
+
+but can you please double check that it's ok to set
+info.si_value.sival_ptr for any signal? Because si_value.sival_ptr is
+actually defined inside __sifields._rt._sigval, which clearly would
+conflict with _kill, _timer, _sigchld and other groups of signals.
+
+so I suspect we'd need to have a list of signals that are OK accepting
+this extra u64 value, and reject it otherwise (instead of silently
+corrupting data inside __sifields
 
 pw-bot: cr
 
-> - Use user set *ulen in bpf_copy_to_user before overwriting *ulen
 >
->  kernel/bpf/syscall.c | 32 +++++++++++++++++++++++---------
->  1 file changed, 23 insertions(+), 9 deletions(-)
+>         /* Similar to bpf_probe_write_user, task needs to be
+>          * in a sound condition and kernel memory access be
+>          * permitted in order to send signal to the current
+>          * task.
+>          */
+> -       if (unlikely(current->flags & (PF_KTHREAD | PF_EXITING)))
+> +       if (unlikely(tsk->flags & (PF_KTHREAD | PF_EXITING)))
+>                 return -EPERM;
+>         if (unlikely(!nmi_uaccess_okay()))
+>                 return -EPERM;
+>         /* Task should not be pid=3D1 to avoid kernel panic. */
+> -       if (unlikely(is_global_init(current)))
+> +       if (unlikely(is_global_init(tsk)))
+>                 return -EPERM;
 >
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index a8f1808a1ca5..b5a7e428ac16 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -3565,27 +3565,33 @@ static void bpf_perf_link_dealloc(struct bpf_link=
- *link)
->  }
->
->  static int bpf_perf_link_fill_common(const struct perf_event *event,
-> -                                    char __user *uname, u32 ulen,
-> +                                    char __user *uname, u32 *ulen,
+>         if (irqs_disabled()) {
+> @@ -847,19 +867,24 @@ static int bpf_send_signal_common(u32 sig, enum pid=
+_type type)
+>                  * to the irq_work. The current task may change when queu=
+ed
+>                  * irq works get executed.
+>                  */
+> -               work->task =3D get_task_struct(current);
+> +               work->task =3D get_task_struct(tsk);
+> +               work->has_siginfo =3D has_siginfo;
+> +               work->info =3D info;
 
-nit: I'd do what Jiri suggested, use `u32 *ulenp` here
+if you are using clear_siginfo(), you probably should use copy_siginfo() he=
+re?
 
->                                      u64 *probe_offset, u64 *probe_addr,
->                                      u32 *fd_type, unsigned long *missed)
->  {
->         const char *buf;
-> -       u32 prog_id;
-> +       u32 prog_id, input_len;
-
-and then just `u32 ulen;` here.
-
->         size_t len;
->         int err;
->
-
-start with just
-
-ulen =3D *ulenp;
-
-> -       if (!ulen ^ !uname)
-> +       if (!(*ulen) ^ !uname)
-
-and remove all the `*ulen` uses except the final assignment
-
->                 return -EINVAL;
->
->         err =3D bpf_get_perf_event_info(event, &prog_id, fd_type, &buf,
->                                       probe_offset, probe_addr, missed);
->         if (err)
->                 return err;
-> +
-> +       if (buf) {
-> +               input_len =3D *ulen;
-> +               len =3D strlen(buf);
-> +               *ulen =3D len + 1;
-> +       }
-
-don't we need
-
-} else {
-    *ulen =3D 1;
-}
-
-for cases when we don't have buf returned from
-bpf_get_perf_event_info()? Though I don't think it can happen
-currently, existing code is clearly ready to handle that case, so
-let's keep it consistent.
-
->         if (!uname)
+>                 work->sig =3D sig;
+>                 work->type =3D type;
+>                 irq_work_queue(&work->irq_work);
 >                 return 0;
+>         }
+>
+> -       return group_send_sig_info(sig, SEND_SIG_PRIV, current, type);
+> +       if (has_siginfo)
+> +               return group_send_sig_info(sig, &info, tsk, type);
 > +
->         if (buf) {
-> -               len =3D strlen(buf);
-> -               err =3D bpf_copy_to_user(uname, buf, ulen, len);
-> +               err =3D bpf_copy_to_user(uname, buf, input_len, len);
->                 if (err)
->                         return err;
->         } else {
-> @@ -3609,7 +3615,7 @@ static int bpf_perf_link_fill_kprobe(const struct p=
-erf_event *event,
->
->         uname =3D u64_to_user_ptr(info->perf_event.kprobe.func_name);
->         ulen =3D info->perf_event.kprobe.name_len;
-> -       err =3D bpf_perf_link_fill_common(event, uname, ulen, &offset, &a=
-ddr,
-> +       err =3D bpf_perf_link_fill_common(event, uname, &ulen, &offset, &=
-addr,
->                                         &type, &missed);
->         if (err)
->                 return err;
-> @@ -3617,7 +3623,7 @@ static int bpf_perf_link_fill_kprobe(const struct p=
-erf_event *event,
->                 info->perf_event.type =3D BPF_PERF_EVENT_KRETPROBE;
->         else
->                 info->perf_event.type =3D BPF_PERF_EVENT_KPROBE;
-> -
-> +       info->perf_event.kprobe.name_len =3D ulen;
->         info->perf_event.kprobe.offset =3D offset;
->         info->perf_event.kprobe.missed =3D missed;
->         if (!kallsyms_show_value(current_cred()))
-> @@ -3639,7 +3645,7 @@ static int bpf_perf_link_fill_uprobe(const struct p=
-erf_event *event,
->
->         uname =3D u64_to_user_ptr(info->perf_event.uprobe.file_name);
->         ulen =3D info->perf_event.uprobe.name_len;
-> -       err =3D bpf_perf_link_fill_common(event, uname, ulen, &offset, &a=
-ddr,
-> +       err =3D bpf_perf_link_fill_common(event, uname, &ulen, &offset, &=
-addr,
->                                         &type, NULL);
->         if (err)
->                 return err;
-> @@ -3648,6 +3654,7 @@ static int bpf_perf_link_fill_uprobe(const struct p=
-erf_event *event,
->                 info->perf_event.type =3D BPF_PERF_EVENT_URETPROBE;
->         else
->                 info->perf_event.type =3D BPF_PERF_EVENT_UPROBE;
-> +       info->perf_event.uprobe.name_len =3D ulen;
->         info->perf_event.uprobe.offset =3D offset;
->         info->perf_event.uprobe.cookie =3D event->bpf_cookie;
->         return 0;
-> @@ -3673,12 +3680,19 @@ static int bpf_perf_link_fill_tracepoint(const st=
-ruct perf_event *event,
->  {
->         char __user *uname;
->         u32 ulen;
-> +       int err;
->
->         uname =3D u64_to_user_ptr(info->perf_event.tracepoint.tp_name);
->         ulen =3D info->perf_event.tracepoint.name_len;
-> +       err =3D bpf_perf_link_fill_common(event, uname, &ulen, NULL, NULL=
-, NULL,
-> +                                       NULL);
+> +       return group_send_sig_info(sig, SEND_SIG_PRIV, tsk, type);
 
-nit: keep it on a single line
+Similarly to what I mentioned at the very top, the only difference is
+a pointer to struct kernel_siginfo, so make it explicit?
 
-> +       if (err)
-> +               return err;
-> +
->         info->perf_event.type =3D BPF_PERF_EVENT_TRACEPOINT;
-> +       info->perf_event.tracepoint.name_len =3D ulen;
->         info->perf_event.tracepoint.cookie =3D event->bpf_cookie;
-> -       return bpf_perf_link_fill_common(event, uname, ulen, NULL, NULL, =
-NULL, NULL);
-> +       return 0;
+struct kernel_siginfo *siginfo;
+
+siginfo =3D task =3D=3D current ? SEND_SIG_PRIV : &info;
+
+?
+
 >  }
 >
->  static int bpf_perf_link_fill_perf_event(const struct perf_event *event,
+>  BPF_CALL_1(bpf_send_signal, u32, sig)
+>  {
+> -       return bpf_send_signal_common(sig, PIDTYPE_TGID);
+> +       return bpf_send_signal_common(sig, PIDTYPE_TGID, NULL, 0);
+>  }
+>
+>  static const struct bpf_func_proto bpf_send_signal_proto =3D {
+> @@ -871,7 +896,7 @@ static const struct bpf_func_proto bpf_send_signal_pr=
+oto =3D {
+>
+>  BPF_CALL_1(bpf_send_signal_thread, u32, sig)
+>  {
+> -       return bpf_send_signal_common(sig, PIDTYPE_PID);
+> +       return bpf_send_signal_common(sig, PIDTYPE_PID, NULL, 0);
+>  }
+>
+>  static const struct bpf_func_proto bpf_send_signal_thread_proto =3D {
+> @@ -3484,3 +3509,16 @@ static int __init bpf_kprobe_multi_kfuncs_init(voi=
+d)
+>  }
+>
+>  late_initcall(bpf_kprobe_multi_kfuncs_init);
+> +
+> +__bpf_kfunc_start_defs();
+> +
+> +__bpf_kfunc int bpf_send_signal_task(struct task_struct *task, int sig, =
+enum pid_type type,
+> +                                    u64 value)
+> +{
+> +       if (type !=3D PIDTYPE_PID && type !=3D PIDTYPE_TGID)
+> +               return -EINVAL;
+> +
+> +       return bpf_send_signal_common(sig, type, task, value);
+> +}
+> +
+> +__bpf_kfunc_end_defs();
 > --
-> 2.43.0
+> 2.40.1
 >
 
