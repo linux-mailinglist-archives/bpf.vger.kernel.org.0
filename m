@@ -1,123 +1,119 @@
-Return-Path: <bpf+bounces-41498-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41499-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE349997876
-	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 00:24:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A273997883
+	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 00:32:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8CF48284763
-	for <lists+bpf@lfdr.de>; Wed,  9 Oct 2024 22:24:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F20B81C23058
+	for <lists+bpf@lfdr.de>; Wed,  9 Oct 2024 22:32:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 810C01E3786;
-	Wed,  9 Oct 2024 22:23:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F8E118E02A;
+	Wed,  9 Oct 2024 22:31:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Wiwa3rlr"
+	dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b="JTieHRHn"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mailtransmit05.runbox.com (mailtransmit05.runbox.com [185.226.149.38])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7A7816BE3A;
-	Wed,  9 Oct 2024 22:23:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A27F11E3786;
+	Wed,  9 Oct 2024 22:31:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.226.149.38
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728512633; cv=none; b=ZFo8BFFJTy6kc/8ZL25UxCnTBthkV7yoiGVu6a9s6EBCleeckbd4w9UGshJWOPY9C1oXc1rSEFNiclMpNrXhBbV2irQH+mYaiQIPvrOKDPQVuL0RNPMV1c7xe86nwfpPgXHDcu7/uliYIZKF3arUQln6RyucfWHpiMlghB+yP3w=
+	t=1728513104; cv=none; b=RrzjCf62Z94gIlkZ8F/6oF1lSoJ4zz6Bj3n9sV1PWQ6aZTUk9uzPEuCSMJ9F2nOCqmWFv5uye2DYhkedOgrpK6qhcegEilytfML+jiywod7ofZCwFx4CO0P3VMbj0dovXm+ULIhhPRoTNMMwMyr+ZJlh1GTS9wDqClgSDbzHfg8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728512633; c=relaxed/simple;
-	bh=w4l9dzDzlilO4E+6HL//zAT4zhaj8ld4amfc5zECEfQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BgZFNti6Cp5Zfvo74gnk4Y8sLJAE2yWeVysachcCehMVU98fZPCD6GG8MhgZ7YuMkXblZpnp/uSOOh6Fmb/P8mNrKQwAZMewbybzD/XACx8v86FzAZG7HvMag8xUwjXsZowwlyicC2jB2InIeWDF+mHEezf9NUBZfSYXQMXOLpQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Wiwa3rlr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C8D7C4CECC;
-	Wed,  9 Oct 2024 22:23:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728512632;
-	bh=w4l9dzDzlilO4E+6HL//zAT4zhaj8ld4amfc5zECEfQ=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=Wiwa3rlrYH9BC46EoCHkt+QLbJoTT1X2QA01HAqIYKjAte3oUq44GaeL+zZ4AkJ2c
-	 2fmhTarWCgJZzvugjgiXFaapdrUxRw+aMHjQkxk7R7tMQ4X8TAISQfJF8mwZjkVS1k
-	 P8ckfmO9JeSeyS8x4lu0kJaTjkOtHpLIIPYKJmo4HQ1/9VWZa6uO3ff20ntiwcvv+8
-	 WNsOi1fvz3WyQp8/mTsIKp1bTZX1Q46ddgghD/obeQF4nyOrExSGPC7njchLh/Wo1L
-	 w8uAfe7NKlqBlMlX1oAMsBsi5zUdQStu0GaxZpBZ0z6hB0R3qZA3l0SEImsa2B3CEC
-	 jNcMMmsZn1/Ag==
-Received: by mail-il1-f181.google.com with SMTP id e9e14a558f8ab-3a394418442so1476475ab.0;
-        Wed, 09 Oct 2024 15:23:52 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCU61D2CRcLaVMIBuI6bY2KR8gDO+54vJTIDrd9dXpGnlhfz9PSeIgFxDEo0aa683hEME9WacFNEcK75/Q==@vger.kernel.org, AJvYcCU6d3T+xfYZy2ZFXy9VmY0Bz4A9MHDIH3H1Dt3ynUChED1Q2uAlSOfIdOM6LQQ9gJ3QHvtJ58hVz3HIyt6ZAg==@vger.kernel.org, AJvYcCUAd9vKSVac0AFdqFCSYRMUhYB+UQLfnbKVNt9XTL7TY1kal0FuLABW1DsLU43cPhtJW/5DDpstPUugb0hi@vger.kernel.org, AJvYcCUYrvTnCSh4MK873qv36UUCOhdtHj19TbOGgvM8d0S8sWOsfqIyiJ6jPS0CEqCe9YN2eoeS1IyefRRd1mNpLA==@vger.kernel.org, AJvYcCVI5+g2UIN13rDvUyTWLgNl03epMtsNWRHbF8T6c3XzRTEe5Te85331sYOS5vLSJ23RA4w=@vger.kernel.org, AJvYcCW5r0tPZikGROllmLilDHOQcXRNzPcUchdGX0JolS0jcZy30DBVKz4HMtBSYTVRlFHWXAQCfX1lLLx0fw==@vger.kernel.org, AJvYcCWIF2EZtnabVrRizeMQ/Tep9LTVr87ZDxZx83HJvZQQQ86NsOwKQHEzOKDN0Xqawqdss2IsMK+oO/OFnG3apSU=@vger.kernel.org, AJvYcCWW7Pza1E4TOk00NSKM83YK/yh7inog4RCog7HafeZksnpyNXVeFZSoFS5NHHbNTJ47fNcRqy0QITM+Vw==@vger.kernel.org, AJvYcCXCTVRsAhw+rPuKzky04p2bXjw8VQZ82+vrCqfA4Yx0DnKKYncBjkvhgSv79h37ER6NxmrHjY27AuB+/w==@vger.kernel.org, AJvYcCXZRssXwAo/
- AoVv+xF31T8SbmiHry76PkvJONpDdg1KO/SSvumEAS5ouqmtI6xptdmebRNO62viHxFfT5k=@vger.kernel.org, AJvYcCXbg/L4OaMANur3cTXZeXkAmiqmyFSK97rxe7C5AHGfqMAi/4MIVi9X8X3oe03WPJ1PJjJxhdVnmVODVzTSzoA8gESi@vger.kernel.org, AJvYcCXpMyniBp7nUwtryj0Diu50gmpx6gzO6of+c7dZofHAtVJRf6vBep9vIVdkig4y3/RA7XDZODFZ33O86nEc@vger.kernel.org, AJvYcCXvXb0vrL9zsDB5gWaymu5B7GP/LIsC0kSisKZlo3yGno3edCKU/B6Jm+pbe0yvNRKmGUHLzNlxAFk=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyXv35Vz6MPYXtnQB6bXHLaTDBgUIz1+Bcw9ur/SOVy01qpX3mK
-	8AU3HMd55oMTZ91TqFK75LVJk+fRg3aWoLiA1riG08HddGm4Y6BbnmK+3053It5O/qJYBG15IR0
-	V5jvbKTFl4U5B0UDDgnKBlf2+VeQ=
-X-Google-Smtp-Source: AGHT+IE+0c/kMVosLTSGHy+n6QvIYJcOAn6W5BXDQkMmjF/nhxZwOJHSZ6SOjh26Vu9mUcUiW0DFRwoy/+Y0vdg6KQk=
-X-Received: by 2002:a05:6e02:1fe6:b0:3a0:aac2:a0a4 with SMTP id
- e9e14a558f8ab-3a397cffa21mr40549325ab.9.1728512631542; Wed, 09 Oct 2024
- 15:23:51 -0700 (PDT)
+	s=arc-20240116; t=1728513104; c=relaxed/simple;
+	bh=s16GKP7PIIzYD3NjhkiAU6d8d8MyvTH/H5PWTSkhsKU=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=afc8S/76Fa2Q9I3MfBz7o9XpEyrPLXfwkUFa39bJZls6JWzkknuwR9VZCYbbQTlfkjkiF3NyY0JFwu/wnYzPKexAUDU8XciHsyWx9jrZ08XsYC9sbH4mGvrdZDk3+UgWa/rNYk2UpAuXeSLZTPY4ubaVXFVStgosra5XuuZusrM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co; spf=pass smtp.mailfrom=rbox.co; dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b=JTieHRHn; arc=none smtp.client-ip=185.226.149.38
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rbox.co
+Received: from mailtransmit02.runbox ([10.9.9.162] helo=aibo.runbox.com)
+	by mailtransmit05.runbox.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.93)
+	(envelope-from <mhal@rbox.co>)
+	id 1syfDQ-001qmc-2R; Thu, 10 Oct 2024 00:31:32 +0200
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=rbox.co;
+	s=selector1; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:References:
+	Cc:To:Subject:From:MIME-Version:Date:Message-ID;
+	bh=IBi/mETRE54sSOUeSu5Xs+ajeMs0LsADF1LzwwtI7CQ=; b=JTieHRHn55ksiW920a9adiNGcQ
+	WqcC/H16K1/TkPDVf5YkAQQxZTB5aefDlgXeinGOTQfzYsl1Jp8oSmZi+D2cFcZ3aq31SGhtBQPjZ
+	6Eegz61Z31dJfC4GY1R1x0hSB/hLhGJymNEvWNqbHlo0GNhdqkOKyWF52EG0qWG+4UrwErkLBgEdX
+	pTlMGhBqkrCufZxgXx9eONTxvIQuFQ7iug8oNAc1xpUaWc34cTYxEFeZpyJ7C1ooQ2YeS931y0Zv+
+	g3KIKPQxYNhJjGmKM9bU2eN6BJs5n2mdpJmUS8LsllV048ghqCRzS+vGxDamC111aJKYaXnTslU7E
+	VgIBHzfQ==;
+Received: from [10.9.9.73] (helo=submission02.runbox)
+	by mailtransmit02.runbox with esmtp (Exim 4.86_2)
+	(envelope-from <mhal@rbox.co>)
+	id 1syfDP-0005ul-0C; Thu, 10 Oct 2024 00:31:31 +0200
+Received: by submission02.runbox with esmtpsa  [Authenticated ID (604044)]  (TLS1.2:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.93)
+	id 1syfD9-00Esvy-UY; Thu, 10 Oct 2024 00:31:16 +0200
+Message-ID: <dc968352-4ce6-46a0-af69-058e29aa0df4@rbox.co>
+Date: Thu, 10 Oct 2024 00:31:13 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241009180816.83591-1-rppt@kernel.org> <20241009180816.83591-5-rppt@kernel.org>
-In-Reply-To: <20241009180816.83591-5-rppt@kernel.org>
-From: Song Liu <song@kernel.org>
-Date: Wed, 9 Oct 2024 15:23:40 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW66etfdU3Fvk0KsELXcgWD6_TkBFjJ-BTHQu5OejDsP2w@mail.gmail.com>
-Message-ID: <CAPhsuW66etfdU3Fvk0KsELXcgWD6_TkBFjJ-BTHQu5OejDsP2w@mail.gmail.com>
-Subject: Re: [PATCH v5 4/8] module: prepare to handle ROX allocations for text
-To: Mike Rapoport <rppt@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Andreas Larsson <andreas@gaisler.com>, 
-	Andy Lutomirski <luto@kernel.org>, Ard Biesheuvel <ardb@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
-	Borislav Petkov <bp@alien8.de>, Brian Cain <bcain@quicinc.com>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Christoph Hellwig <hch@infradead.org>, 
-	Christophe Leroy <christophe.leroy@csgroup.eu>, Dave Hansen <dave.hansen@linux.intel.com>, 
-	Dinh Nguyen <dinguyen@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Guo Ren <guoren@kernel.org>, 
-	Helge Deller <deller@gmx.de>, Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>, 
-	Johannes Berg <johannes@sipsolutions.net>, 
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Kent Overstreet <kent.overstreet@linux.dev>, 
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>, Luis Chamberlain <mcgrof@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>, 
-	Michael Ellerman <mpe@ellerman.id.au>, Michal Simek <monstr@monstr.eu>, Oleg Nesterov <oleg@redhat.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>, 
-	Stafford Horne <shorne@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Thomas Gleixner <tglx@linutronix.de>, 
-	Uladzislau Rezki <urezki@gmail.com>, Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>, 
-	bpf@vger.kernel.org, linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org, 
-	linux-hexagon@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, 
-	linux-mm@kvack.org, linux-modules@vger.kernel.org, 
-	linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org, 
-	linux-snps-arc@lists.infradead.org, linux-trace-kernel@vger.kernel.org, 
-	linux-um@lists.infradead.org, linuxppc-dev@lists.ozlabs.org, 
-	loongarch@lists.linux.dev, sparclinux@vger.kernel.org, x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+From: Michal Luczaj <mhal@rbox.co>
+Subject: Re: [PATCH bpf-next v2 0/6] selftests/bpf: Various sockmap-related
+ fixes
+To: Jakub Sitnicki <jakub@cloudflare.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman
+ <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
+ bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240731-selftest-sockmap-fixes-v2-0-08a0c73abed2@rbox.co>
+ <87y159yi5m.fsf@cloudflare.com>
+ <249a7dc3-34e2-4579-aae7-8b38b145e4bb@rbox.co>
+ <87ttfxy28s.fsf@cloudflare.com>
+ <42939687-20f9-4a45-b7c2-342a0e11a014@rbox.co>
+ <877cccqnvj.fsf@cloudflare.com>
+ <e78254c5-8f2f-4dc5-bf81-401caefabdd1@rbox.co>
+ <0d4edea2-f989-484f-88bc-d8fb6acd7572@rbox.co>
+ <87ikuh78z5.fsf@cloudflare.com>
+ <ab60e5c2-90a1-43c3-936b-10520c751dfb@rbox.co>
+ <87y12xy5fe.fsf@cloudflare.com>
+Content-Language: pl-PL, en-GB
+In-Reply-To: <87y12xy5fe.fsf@cloudflare.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Oct 9, 2024 at 11:10=E2=80=AFAM Mike Rapoport <rppt@kernel.org> wro=
-te:
-[...]
-> diff --git a/include/linux/module.h b/include/linux/module.h
-> index 88ecc5e9f523..7039f609c6ef 100644
-> --- a/include/linux/module.h
-> +++ b/include/linux/module.h
-> @@ -367,6 +367,8 @@ enum mod_mem_type {
->
->  struct module_memory {
->         void *base;
-> +       void *rw_copy;
-> +       bool is_rox;
->         unsigned int size;
+On 10/9/24 11:46, Jakub Sitnicki wrote:
+> That's curious. We don't override the proto::sendmsg callback for
+> protocols which don't support sk_msg redirects, like UDP:
+> 
+> https://elixir.bootlin.com/linux/v6.12-rc2/source/net/ipv4/udp_bpf.c#L114
+> 
+> The packet should get delivered to the peer socket as w/o sockmap.
+> I will have to double check that.
 
-Do we really need to hold the rw_copy all the time? I was
-thinking we only need a temporary buffer when we want to
-update anything. The buffer might be much smaller than "size".
+Ugh, no, you're right. I was checking the wrong queue all that time...
+Sorry for the confusion.
 
-Thanks,
-Song
+> Thanks. And yes - if possible, better to push fixes separately. Because
+> they go through the bpf tree, and they will still land in the upcoming
+> -rc releases (and get backported).
+> 
+> While improvements go through bpf-next. Of course that sometimes makes
+> life more difficult if the improvements depend on some fixes...
 
-[...]
+I'm afraid that's the case for the redir selftest to run cleanly.
+Anyway, so those are the fixes mentioned, targeting bpf:
+https://lore.kernel.org/bpf/20241009-vsock-fixes-for-redir-v1-0-e455416f6d78@rbox.co/
+
+> Not sure if anything from bpf-next gets backported if it has a Fixes
+> tag. We can ask the stable kernel maintainers, if needed.
 
