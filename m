@@ -1,208 +1,195 @@
-Return-Path: <bpf+bounces-41418-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41419-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4CC8996FC4
-	for <lists+bpf@lfdr.de>; Wed,  9 Oct 2024 17:32:48 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB7B9996FDE
+	for <lists+bpf@lfdr.de>; Wed,  9 Oct 2024 17:41:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED8051F21148
-	for <lists+bpf@lfdr.de>; Wed,  9 Oct 2024 15:32:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E482A1F24169
+	for <lists+bpf@lfdr.de>; Wed,  9 Oct 2024 15:41:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5C001E0DB9;
-	Wed,  9 Oct 2024 15:24:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 771FA1E0B8C;
+	Wed,  9 Oct 2024 15:28:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hOKOvzKx"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="L0KRP1Rt"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 624EC199230;
-	Wed,  9 Oct 2024 15:23:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 170BB1A2630;
+	Wed,  9 Oct 2024 15:28:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728487440; cv=none; b=nzOtYo+kQInHMdoYPDKj62oxRGH00l+6bftstVfb0Lp97dBwmeGiM6sSmTeX9qLI2c9VLklngUokUQJ9A2QYA4WVueuDbhUAZJBfDOcj8GtK4zpsZhhAjbWDIqr2JvcpdFnc3ZLwAHpKLVHPJ97s/Pby26XStM1sST1EpbABnlE=
+	t=1728487719; cv=none; b=Td6RPBAkAGp2Eh+pDXFgx/AB6mcNYl5Nvk4iMcfeA58ElvO5z1tm/jeMB+1OahvuM234wRmoH9L/r7ZD8Ev+bSxt+/9+saX59HGQ5WeefioDsbwWa5DKRPHrrGNPkdE9n4fh/fRIg8Uyp/vhDfoXvuvqJDeg1jfqZ/eOKmXnc1M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728487440; c=relaxed/simple;
-	bh=4AjksnzzW5k8hBBme1kBI/+DD7QGwpafnwlUuyqFM6g=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Di3OKqWHvFYh/6WmD2h50TYEe99HGt42PrAGo4Nli9OZJ5gYYt7UnXco9meL88z2vksvF14QtovQ/pNNt0fRffC6BHHHQ86CUChe6Poo4JG7nTBM+3LkrzrbcmhK9WZgx/3BGJqhXEMRZwYQruwe/c262yjvC5mSyrSZimzhZIc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hOKOvzKx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6846C4CEC5;
-	Wed,  9 Oct 2024 15:23:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728487439;
-	bh=4AjksnzzW5k8hBBme1kBI/+DD7QGwpafnwlUuyqFM6g=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=hOKOvzKxW6op8p2Rq75UJoop9Pd0jFDZDJXovc+WfjxUYXz+3mIUeE+rqO8deMQol
-	 D5Q3zUA2oddqsXKrwAYpUx3bSQVX+ifmZDaQcwFkhqcmlYKbkRvQQSygISBlUEYBiz
-	 lwIbYr5wZA0P1+iQQH52qhdR8w68Xqow/FF9F6Ktjv5n+WLCQrdhmpx8dj00R8El+E
-	 1s8C+p+0+ykam250o5nlc5/KtVQdMDSoZGcveRbLtfo5TutKX+KDW+EFjRaTtT/sgx
-	 YdUBVf2B++TXBgNKhR8m1OEuIQjCyQvBCHF8mhTQDPplS3zIR4l17t7YN6gzrsovb7
-	 cxqKuczpR6kxQ==
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-5399651d21aso6431179e87.3;
-        Wed, 09 Oct 2024 08:23:59 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVSqw7DXJFD/KBIu2FRQ5/BLxSMR3sOif7mqyf+M30dn45vTM/jM9dasFLY7D8KUZAvxn4=@vger.kernel.org, AJvYcCVUD4XTm8jfWizf6AY3U6KTxSye+7ilclhu+uveEQYIRcMqJV5rFuSVLWO6riVg2QpEfmJkOaglHvP4wwo1rnGgmZ4A@vger.kernel.org, AJvYcCVan0fOKVSaxuY3mpehjrSGT9F/kT7y22gnpq0tonMwm2k4YLYZPbAxxDqvC12a32QNDoP7yqaozElEDhy8@vger.kernel.org, AJvYcCWw+glId4vP2hKM+OKSS1Q0chwzxlSvZ1cDMDIlfAH0kBthl/mqRtHXPZmKmP2GDSp6HjZL4E36r8sO5yeB@vger.kernel.org
-X-Gm-Message-State: AOJu0YwsLppdR/il1B8UBBhoqeVT4qkPRiEoGNcrSFclK4DsnmEJ3Ncg
-	Wt3WQO7PeA2ehksrpnQl5wVcMu0QTFlpJ+e/Y+2c6WVX0aSCNB6deTJMKxys/cYkLLPNuNO10eJ
-	3OoFv4phxq1jrD56fF53lgpk4fns=
-X-Google-Smtp-Source: AGHT+IEiWPw+RQ+TnDaHXfM/Mw/zmdX2TI3sj1La8whAJdJcZ29a26S9fWhexgESxPKq+5AXQsmOXW5h7DnougX3kLY=
-X-Received: by 2002:a05:6512:1188:b0:539:9d24:9ea with SMTP id
- 2adb3069b0e04-539c48d93dfmr1743896e87.34.1728487438407; Wed, 09 Oct 2024
- 08:23:58 -0700 (PDT)
+	s=arc-20240116; t=1728487719; c=relaxed/simple;
+	bh=qor5oKVZ0f0YphXLdqbFq9ooAP3Cp1QdipBUG5qGRbk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ny8IcIF05u5qqOlxFlE942ekRe7pJGacgDQdHyTK6nvqw8IzzfJJYA8vdRd6aVJGAWQEhAssDo3YniLJZOjNhbIeIbB3UVEt8ivJtX9zW9ZlBVqzp8AqmODAnlHf0UXvzDciPRlAP7zsVooCZvXA/v0BFDbgFgXg/kQrbAXcSw0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=L0KRP1Rt; arc=none smtp.client-ip=192.198.163.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1728487717; x=1760023717;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=qor5oKVZ0f0YphXLdqbFq9ooAP3Cp1QdipBUG5qGRbk=;
+  b=L0KRP1Rt0a/tdKuMmnmTNaGOLwOjEiEVxnyT74sfWQ6PrY3q/OsY1rOE
+   tTvrepaRuPMAJ8wHrW7pWHHUKL+MeO300PIIPI9fVQ6haz8o0xNIfMbio
+   pw/Es1NCsNDnIjI8OOt/sgzjjoBpNFMC4rtShKHSP//n21f87Zm6TaV1B
+   Me2Tlf0Go2w9gvz6W4hM0/NZmNBZ8d2AatEv4pkMVrekJIGP/QI2YPc8s
+   LhblXMCaE2wxjTnNwmUyioiww1XCxbFHMQihFuv5owveHDAy8ZNK0vj24
+   /qgROlxihxLids1AgdfklmxoB8IrhrhuZmy6/LeCuA9WjrgnAZqR11H9G
+   w==;
+X-CSE-ConnectionGUID: jYQ8kHbPQPaMKBVsXlsrWQ==
+X-CSE-MsgGUID: U0UQ+movS6yFdngpvZZVEg==
+X-IronPort-AV: E=McAfee;i="6700,10204,11220"; a="27675670"
+X-IronPort-AV: E=Sophos;i="6.11,190,1725346800"; 
+   d="scan'208";a="27675670"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2024 08:28:36 -0700
+X-CSE-ConnectionGUID: TJjpBHFITlyCTnekg6tM7A==
+X-CSE-MsgGUID: rcZAiaprQk2fbrUSKDhElA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.11,190,1725346800"; 
+   d="scan'208";a="81305733"
+Received: from newjersey.igk.intel.com ([10.102.20.203])
+  by orviesa004.jf.intel.com with ESMTP; 09 Oct 2024 08:28:32 -0700
+From: Alexander Lobakin <aleksander.lobakin@intel.com>
+To: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>
+Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
+	=?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Magnus Karlsson <magnus.karlsson@intel.com>,
+	nex.sw.ncis.osdt.itp.upstreaming@intel.com,
+	bpf@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH net-next 00/18] idpf: XDP chapter III: core XDP changes (+libeth_xdp)
+Date: Wed,  9 Oct 2024 17:27:38 +0200
+Message-ID: <20241009152756.3113697-1-aleksander.lobakin@intel.com>
+X-Mailer: git-send-email 2.46.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240915205648.830121-1-hbathini@linux.ibm.com> <20240915205648.830121-12-hbathini@linux.ibm.com>
-In-Reply-To: <20240915205648.830121-12-hbathini@linux.ibm.com>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Date: Thu, 10 Oct 2024 00:23:21 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAS9LPPxVOU55t2C_vkXYXK-8_2bHCVPWVxYdwrSrxCduw@mail.gmail.com>
-Message-ID: <CAK7LNAS9LPPxVOU55t2C_vkXYXK-8_2bHCVPWVxYdwrSrxCduw@mail.gmail.com>
-Subject: Re: [PATCH v5 11/17] kbuild: Add generic hook for architectures to
- use before the final vmlinux link
-To: Hari Bathini <hbathini@linux.ibm.com>
-Cc: linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, bpf@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, "Naveen N. Rao" <naveen@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Nicholas Piggin <npiggin@gmail.com>, Alexei Starovoitov <ast@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
-	Vishal Chourasia <vishalc@linux.ibm.com>, Mahesh J Salgaonkar <mahesh@linux.ibm.com>, 
-	Masami Hiramatsu <mhiramat@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Mon, Sep 16, 2024 at 5:58=E2=80=AFAM Hari Bathini <hbathini@linux.ibm.co=
-m> wrote:
->
-> From: Naveen N Rao <naveen@kernel.org>
->
-> On powerpc, we would like to be able to make a pass on vmlinux.o and
-> generate a new object file to be linked into vmlinux. Add a generic pass
-> in Makefile.vmlinux that architectures can use for this purpose.
->
-> Architectures need to select CONFIG_ARCH_WANTS_PRE_LINK_VMLINUX and must
-> provide arch/<arch>/tools/Makefile with .arch.vmlinux.o target, which
-> will be invoked prior to the final vmlinux link step.
->
-> Signed-off-by: Naveen N Rao <naveen@kernel.org>
-> Signed-off-by: Hari Bathini <hbathini@linux.ibm.com>
-> ---
->
-> Changes in v5:
-> * Intermediate files named .vmlinux.arch.* instead of .arch.vmlinux.*
->
->
->  arch/Kconfig             | 6 ++++++
->  scripts/Makefile.vmlinux | 7 +++++++
->  scripts/link-vmlinux.sh  | 7 ++++++-
->  3 files changed, 19 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/Kconfig b/arch/Kconfig
-> index 975dd22a2dbd..ef868ff8156a 100644
-> --- a/arch/Kconfig
-> +++ b/arch/Kconfig
-> @@ -1643,4 +1643,10 @@ config CC_HAS_SANE_FUNCTION_ALIGNMENT
->  config ARCH_NEED_CMPXCHG_1_EMU
->         bool
->
-> +config ARCH_WANTS_PRE_LINK_VMLINUX
-> +       def_bool n
+XDP for idpf is currently 5 chapters:
+* convert Rx to libeth;
+* convert Tx and stats to libeth;
+* generic XDP and XSk code changes (this);
+* actual XDP for idpf via libeth_xdp;
+* XSk for idpf (^).
 
+Part III does the following:
+* does some cleanups with marking read-only bpf_prog and xdp_buff
+  arguments const for some generic functions;
+* allows attaching already registered XDP memory model to Rxq info;
+* allows mixing pages from several Page Pools within one XDP frame;
+* optimizes &xdp_frame structure and removes no-more-used field;
+* adds generic functions to build skbs from xdp_buffs (regular and
+  XSk) and attach frags to xdp_buffs (regular and XSk);
+* adds helper to optimize XSk xmit in drivers;
+* extends libeth Rx to support XDP requirements (headroom etc.) on Rx;
+* adds libeth_xdp -- libeth module with common XDP and XSk routines.
 
-Redundant default. This line should be "bool".
+They are implemented mostly as inlines with inline callback arguments.
+They will be then uninlined in the drivers with sane function sizes,
+but without any indirect calls.
+All those inlines and macros really removes tons of driver code, which
+is mostly the same across the drivers minus HW-specific part. You just
+basically need functions which read Rx descriptors and fill Tx
+descriptors, call a couple macros and that's it. The rest is written
+once in libeth_xdp.
+All exception and cold code are external. Error handling etc, anything
+that don't happen at line rates, are external. Only the hottest things
+are inlined ensuring driver code doesn't bloat for no gain and that
+cold code won't push hot code into more cachelines than wanted.
 
+Note on diffstat: don't be scared, almost 1500 lines are documentation
+explaining everything in details. The actual new code is around 2500.
 
+Alexander Lobakin (17):
+  jump_label: export static_key_slow_{inc,dec}_cpuslocked()
+  skbuff: allow 2-4-argument skb_frag_dma_map()
+  unroll: add generic loop unroll helpers
+  bpf, xdp: constify some bpf_prog * function arguments
+  xdp, xsk: constify read-only arguments of some static inline helpers
+  xdp: allow attaching already registered memory model to xdp_rxq_info
+  page_pool: make page_pool_put_page_bulk() actually handle array of
+    pages
+  page_pool: allow mixing PPs within one bulk
+  xdp: get rid of xdp_frame::mem.id
+  xdp: add generic xdp_buff_add_frag()
+  xdp: add generic xdp_build_skb_from_buff()
+  xsk: allow attaching XSk pool via xdp_rxq_info_reg_mem_model()
+  xsk: make xsk_buff_add_frag really add a frag via
+    __xdp_buff_add_frag()
+  xsk: add generic XSk &xdp_buff -> skb conversion
+  xsk: add helper to get &xdp_desc's DMA and meta pointer in one go
+  libeth: support native XDP and register memory model
+  libeth: add a couple of XDP helpers (libeth_xdp)
 
+Toke Høiland-Jørgensen (1):
+  net: Register system page pool as an XDP memory model
 
+ drivers/net/ethernet/intel/libeth/Kconfig     |    6 +
+ drivers/net/ethernet/intel/libeth/Makefile    |    6 +
+ include/net/libeth/types.h                    |  102 +-
+ include/net/page_pool/types.h                 |    7 +-
+ drivers/net/ethernet/intel/libeth/priv.h      |   37 +
+ include/linux/bpf.h                           |   12 +-
+ include/linux/filter.h                        |    9 +-
+ include/linux/netdevice.h                     |    7 +-
+ include/linux/skbuff.h                        |   49 +-
+ include/linux/unroll.h                        |   43 +
+ include/net/libeth/rx.h                       |    6 +-
+ include/net/libeth/tx.h                       |   34 +-
+ include/net/libeth/xdp.h                      | 1864 +++++++++++++++++
+ include/net/libeth/xsk.h                      |  684 ++++++
+ include/net/xdp.h                             |  185 +-
+ include/net/xdp_sock_drv.h                    |   52 +-
+ include/net/xsk_buff_pool.h                   |   10 +-
+ .../net/ethernet/freescale/dpaa/dpaa_eth.c    |    2 +-
+ drivers/net/ethernet/intel/i40e/i40e_xsk.c    |   30 +-
+ drivers/net/ethernet/intel/ice/ice_xsk.c      |   32 +-
+ drivers/net/ethernet/intel/libeth/rx.c        |   22 +-
+ drivers/net/ethernet/intel/libeth/tx.c        |   39 +
+ drivers/net/ethernet/intel/libeth/xdp.c       |  444 ++++
+ drivers/net/ethernet/intel/libeth/xsk.c       |  264 +++
+ drivers/net/veth.c                            |    4 +-
+ kernel/bpf/cpumap.c                           |    2 +-
+ kernel/bpf/devmap.c                           |    8 +-
+ kernel/jump_label.c                           |    2 +
+ net/bpf/test_run.c                            |    2 +-
+ net/core/dev.c                                |   20 +-
+ net/core/filter.c                             |   41 +-
+ net/core/page_pool.c                          |   50 +-
+ net/core/skbuff.c                             |    2 +-
+ net/core/xdp.c                                |  311 ++-
+ net/xdp/xsk_buff_pool.c                       |   40 +
+ 35 files changed, 4215 insertions(+), 213 deletions(-)
+ create mode 100644 drivers/net/ethernet/intel/libeth/priv.h
+ create mode 100644 include/net/libeth/xdp.h
+ create mode 100644 include/net/libeth/xsk.h
+ create mode 100644 drivers/net/ethernet/intel/libeth/tx.c
+ create mode 100644 drivers/net/ethernet/intel/libeth/xdp.c
+ create mode 100644 drivers/net/ethernet/intel/libeth/xsk.c
 
+-- 
+2.46.2
 
-> +       help
-> +         An architecture can select this if it provides arch/<arch>/tool=
-s/Makefile
-> +         with .arch.vmlinux.o target to be linked into vmlinux.
-> +
->  endmenu
-> diff --git a/scripts/Makefile.vmlinux b/scripts/Makefile.vmlinux
-> index 49946cb96844..edf6fae8d960 100644
-> --- a/scripts/Makefile.vmlinux
-> +++ b/scripts/Makefile.vmlinux
-> @@ -22,6 +22,13 @@ targets +=3D .vmlinux.export.o
->  vmlinux: .vmlinux.export.o
->  endif
->
-> +ifdef CONFIG_ARCH_WANTS_PRE_LINK_VMLINUX
-> +vmlinux: arch/$(SRCARCH)/tools/.vmlinux.arch.o
-
-If you move this to arch/*/tools/, there is no reason
-to make it a hidden file.
-
-
-vmlinux: arch/$(SRCARCH)/tools/vmlinux.arch.o
-
-
-
-
-> +arch/$(SRCARCH)/tools/.vmlinux.arch.o: vmlinux.o
-
-FORCE is missing.
-
-
-arch/$(SRCARCH)/tools/vmlinux.arch.o: vmlinux.o FORCE
-
-
-
-> +       $(Q)$(MAKE) $(build)=3Darch/$(SRCARCH)/tools $@
-> +endif
-> +
->  ARCH_POSTLINK :=3D $(wildcard $(srctree)/arch/$(SRCARCH)/Makefile.postli=
-nk)
->
->  # Final link of vmlinux with optional arch pass after final link
-> diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
-> index f7b2503cdba9..b3a940c0e6c2 100755
-> --- a/scripts/link-vmlinux.sh
-> +++ b/scripts/link-vmlinux.sh
-> @@ -100,7 +100,7 @@ vmlinux_link()
->         ${ld} ${ldflags} -o ${output}                                   \
->                 ${wl}--whole-archive ${objs} ${wl}--no-whole-archive    \
->                 ${wl}--start-group ${libs} ${wl}--end-group             \
-> -               ${kallsymso} ${btf_vmlinux_bin_o} ${ldlibs}
-> +               ${kallsymso} ${btf_vmlinux_bin_o} ${arch_vmlinux_o} ${ldl=
-ibs}
->  }
->
->  # generate .BTF typeinfo from DWARF debuginfo
-> @@ -214,6 +214,11 @@ fi
->
->  ${MAKE} -f "${srctree}/scripts/Makefile.build" obj=3Dinit init/version-t=
-imestamp.o
->
-> +arch_vmlinux_o=3D""
-> +if is_enabled CONFIG_ARCH_WANTS_PRE_LINK_VMLINUX; then
-> +       arch_vmlinux_o=3Darch/${SRCARCH}/tools/.vmlinux.arch.o
-
-
-arch_vmlinux_o=3Darch/${SRCARCH}/tools/vmlinux.arch.o
-
-
-
-> +fi
-> +
->  btf_vmlinux_bin_o=3D
->  kallsymso=3D
->  strip_debug=3D
-> --
-> 2.46.0
->
-
-
---
-Best Regards
-Masahiro Yamada
 
