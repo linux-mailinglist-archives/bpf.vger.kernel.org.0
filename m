@@ -1,202 +1,180 @@
-Return-Path: <bpf+bounces-41343-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41344-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21877995DDD
-	for <lists+bpf@lfdr.de>; Wed,  9 Oct 2024 04:34:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9504995DE7
+	for <lists+bpf@lfdr.de>; Wed,  9 Oct 2024 04:45:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9962E1F25F40
-	for <lists+bpf@lfdr.de>; Wed,  9 Oct 2024 02:34:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5A25F284469
+	for <lists+bpf@lfdr.de>; Wed,  9 Oct 2024 02:45:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2C2B824A3;
-	Wed,  9 Oct 2024 02:34:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QQm7MjXj"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A45C52F9B;
+	Wed,  9 Oct 2024 02:45:33 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4B222A1C9;
-	Wed,  9 Oct 2024 02:34:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96C962A1CF
+	for <bpf@vger.kernel.org>; Wed,  9 Oct 2024 02:45:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728441270; cv=none; b=WWBKMzftnLha/D4hBzfbDPo79zxtuygjt0hdfLc2f+VIDE3e94O8vqvd/OxzlcVCYcKOVtILoUuUHKaXkfJd146kd0QituuQ3xaYp5/FpuYBHi8e4kHYDKfUFDbswH7J8VZOKMEkmCb9+o6uLW/vQAskFC/6J/Yg2R2+L3H7OWM=
+	t=1728441933; cv=none; b=D8rc9Wg5poHolyRRyvDvbp1hLGiPpE2i3SMK8XZxlt60Yzd1XnLkw+8EAD2/Zncby7Bd9r/yF9LfxplfOaeZ6KvCTH6miMnrtF+mhTjVjRv+b3QQt/gj9vUscbL57U4We3BNeIlZTqm5ncx7UKjpcC4Q5TtLskTifbEGTOYsquQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728441270; c=relaxed/simple;
-	bh=w/uG2F7+b3lmtyFgYfJ4/QgE5UHrbECT3Fe3GLCEX/g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=G0J0rLv0gSPotKmnLNJ3Y8HI3PPVFw2fSzD7KvdsUX1JnviBG0OXbyNJ45gIxwoiTsl8JpmsK80DfWarLhAGlmR93Hr+ClJ2FI/de/TDJxe+/KNEq2ukXyGAdaYadyc5RLlVGHa77rS4BoLs+Hd55aaFxX9fXm8Rah7Ef3JNzmc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QQm7MjXj; arc=none smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1728441269; x=1759977269;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=w/uG2F7+b3lmtyFgYfJ4/QgE5UHrbECT3Fe3GLCEX/g=;
-  b=QQm7MjXjooKhSdDRQZ8/KIgmoj46FxT8GwPXod0Yb7GBLYYV/V6AZYU4
-   Zra72H2aUInBm0n4llIUC7DvW6eeQskXXy45k2Kio/hC2dLk7jK1ZcvVB
-   Ypmdp8gx2MMg11N0PHAd11iIwyueKnKTEUOe152nPT0yKUwgUJtJZ+MHK
-   crouGUaWtOAcnZDqa8y32pE9hxjUkH2Aa6ZKu0/9g6WUEL6BeONNOp3rK
-   mj9YMhhONJSy23HyZfsF637zLBXRhOUSXBw8SIhrpxN5i5ySp2m5r8Wt4
-   4ebCsZKtJCSBmQWh0YcTEJ392UMaOu8kbVul6nUZChWeAbCraZtlYdNz4
-   A==;
-X-CSE-ConnectionGUID: ngUJcK34TE+Oc652kQBGNg==
-X-CSE-MsgGUID: 8xBwT4h1Tgy0+D+OjzjrMg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11219"; a="39105635"
-X-IronPort-AV: E=Sophos;i="6.11,188,1725346800"; 
-   d="scan'208";a="39105635"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2024 19:34:27 -0700
-X-CSE-ConnectionGUID: zjmCndsUS4yOkYYOPBD4kQ==
-X-CSE-MsgGUID: wWPACbChQKie7Y85XO0JOw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.11,188,1725346800"; 
-   d="scan'208";a="80887962"
-Received: from lkp-server01.sh.intel.com (HELO a48cf1aa22e8) ([10.239.97.150])
-  by orviesa005.jf.intel.com with ESMTP; 08 Oct 2024 19:34:21 -0700
-Received: from kbuild by a48cf1aa22e8 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1syMWp-0008cg-0h;
-	Wed, 09 Oct 2024 02:34:19 +0000
-Date: Wed, 9 Oct 2024 10:33:50 +0800
-From: kernel test robot <lkp@intel.com>
-To: Jason Xing <kerneljasonxing@gmail.com>, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	dsahern@kernel.org, willemdebruijn.kernel@gmail.com,
-	willemb@google.com, ast@kernel.org, daniel@iogearbox.net,
-	andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com,
-	song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com,
-	kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com,
-	jolsa@kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, bpf@vger.kernel.org,
-	netdev@vger.kernel.org, Jason Xing <kernelxing@tencent.com>
-Subject: Re: [PATCH net-next 8/9] net-timestamp: add bpf framework for rx
- timestamps
-Message-ID: <202410090912.5vZnvozX-lkp@intel.com>
-References: <20241008095109.99918-9-kerneljasonxing@gmail.com>
+	s=arc-20240116; t=1728441933; c=relaxed/simple;
+	bh=mMnjMdthw3wG5//NdrmSmQoKIot4DUSxfgBNJFqwy8A=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=s2hSyXyt4EwwYt7ey81L4HqO8wNFt16Qo9ilhVRq3PhcLk8gjlRXtOGFyaL2hxSztNfb/REG+pi6pdxVq8cK7f2fz+9YMjPq2wL358iFlFfY4H2RNVBkA09ax4gEIENF2LxDlG+JSCy7JR1aWRv7Sd+hvjZ8cFpAaRE+oEc00MY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4XNcgb1rFXz4f3jZQ
+	for <bpf@vger.kernel.org>; Wed,  9 Oct 2024 10:45:15 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 03C2F1A08DC
+	for <bpf@vger.kernel.org>; Wed,  9 Oct 2024 10:45:27 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP4 (Coremail) with SMTP id gCh0CgB3q8dC7gVnighODg--.22398S2;
+	Wed, 09 Oct 2024 10:45:26 +0800 (CST)
+Subject: Re: [PATCH bpf 5/7] bpf: Change the type of unsafe_ptr in
+ bpf_iter_bits_new()
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
+ Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Jiri Olsa <jolsa@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, Yafang Shao
+ <laoar.shao@gmail.com>, houtao1@huawei.com, xukuohai@huawei.com
+References: <20241008091718.3797027-1-houtao@huaweicloud.com>
+ <20241008091718.3797027-6-houtao@huaweicloud.com>
+ <CAEf4BzZ2J+Kd3wHNUM92ro1ikD3kqMF9zXEMPbG7u=GAVev3Xw@mail.gmail.com>
+From: Hou Tao <houtao@huaweicloud.com>
+Message-ID: <bcb4adcf-0e02-2543-6cb4-ac237b11a061@huaweicloud.com>
+Date: Wed, 9 Oct 2024 10:45:22 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241008095109.99918-9-kerneljasonxing@gmail.com>
-
-Hi Jason,
-
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on net-next/main]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Jason-Xing/net-timestamp-add-bpf-infrastructure-to-allow-exposing-more-information-later/20241008-175458
-base:   net-next/main
-patch link:    https://lore.kernel.org/r/20241008095109.99918-9-kerneljasonxing%40gmail.com
-patch subject: [PATCH net-next 8/9] net-timestamp: add bpf framework for rx timestamps
-config: openrisc-defconfig (https://download.01.org/0day-ci/archive/20241009/202410090912.5vZnvozX-lkp@intel.com/config)
-compiler: or1k-linux-gcc (GCC) 14.1.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20241009/202410090912.5vZnvozX-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202410090912.5vZnvozX-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   net/ipv4/tcp.c: In function 'tcp_recv_timestamp':
->> net/ipv4/tcp.c:2297:36: warning: passing argument 1 of 'tcp_bpf_recv_timestamp' discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
-    2297 |         if (tcp_bpf_recv_timestamp(sk, tss))
-         |                                    ^~
-   net/ipv4/tcp.c:2279:49: note: expected 'struct sock *' but argument is of type 'const struct sock *'
-    2279 | static bool tcp_bpf_recv_timestamp(struct sock *sk, struct scm_timestamping_internal *tss)
-         |                                    ~~~~~~~~~~~~~^~
+In-Reply-To: <CAEf4BzZ2J+Kd3wHNUM92ro1ikD3kqMF9zXEMPbG7u=GAVev3Xw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID:gCh0CgB3q8dC7gVnighODg--.22398S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxAF18Xw43tFW3AFyfGryUZFb_yoWrJF1UpF
+	4fJ3ZFyr40qrZFgw1qqayjka4UJwn7ta48GrWxAr15KFs8WFnrur1UGry5Xasakry0yr1I
+	vry09343ZFWDAa7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9Ib4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+	e2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_GFv_Wryl42xK82IYc2Ij64vIr41l4I8I3I0E4I
+	kC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWU
+	WwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr
+	0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWU
+	JVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJb
+	IYCTnIWIevJa73UjIFyTuYvjxUIa0PDUUUU
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
 
-vim +2297 net/ipv4/tcp.c
 
-  2288	
-  2289	/* Similar to __sock_recv_timestamp, but does not require an skb */
-  2290	void tcp_recv_timestamp(struct msghdr *msg, const struct sock *sk,
-  2291				struct scm_timestamping_internal *tss)
-  2292	{
-  2293		int new_tstamp = sock_flag(sk, SOCK_TSTAMP_NEW);
-  2294		u32 tsflags = READ_ONCE(sk->sk_tsflags);
-  2295		bool has_timestamping = false;
-  2296	
-> 2297		if (tcp_bpf_recv_timestamp(sk, tss))
-  2298			return;
-  2299	
-  2300		if (tss->ts[0].tv_sec || tss->ts[0].tv_nsec) {
-  2301			if (sock_flag(sk, SOCK_RCVTSTAMP)) {
-  2302				if (sock_flag(sk, SOCK_RCVTSTAMPNS)) {
-  2303					if (new_tstamp) {
-  2304						struct __kernel_timespec kts = {
-  2305							.tv_sec = tss->ts[0].tv_sec,
-  2306							.tv_nsec = tss->ts[0].tv_nsec,
-  2307						};
-  2308						put_cmsg(msg, SOL_SOCKET, SO_TIMESTAMPNS_NEW,
-  2309							 sizeof(kts), &kts);
-  2310					} else {
-  2311						struct __kernel_old_timespec ts_old = {
-  2312							.tv_sec = tss->ts[0].tv_sec,
-  2313							.tv_nsec = tss->ts[0].tv_nsec,
-  2314						};
-  2315						put_cmsg(msg, SOL_SOCKET, SO_TIMESTAMPNS_OLD,
-  2316							 sizeof(ts_old), &ts_old);
-  2317					}
-  2318				} else {
-  2319					if (new_tstamp) {
-  2320						struct __kernel_sock_timeval stv = {
-  2321							.tv_sec = tss->ts[0].tv_sec,
-  2322							.tv_usec = tss->ts[0].tv_nsec / 1000,
-  2323						};
-  2324						put_cmsg(msg, SOL_SOCKET, SO_TIMESTAMP_NEW,
-  2325							 sizeof(stv), &stv);
-  2326					} else {
-  2327						struct __kernel_old_timeval tv = {
-  2328							.tv_sec = tss->ts[0].tv_sec,
-  2329							.tv_usec = tss->ts[0].tv_nsec / 1000,
-  2330						};
-  2331						put_cmsg(msg, SOL_SOCKET, SO_TIMESTAMP_OLD,
-  2332							 sizeof(tv), &tv);
-  2333					}
-  2334				}
-  2335			}
-  2336	
-  2337			if (tsflags & SOF_TIMESTAMPING_SOFTWARE &&
-  2338			    (tsflags & SOF_TIMESTAMPING_RX_SOFTWARE ||
-  2339			     !(tsflags & SOF_TIMESTAMPING_OPT_RX_FILTER)))
-  2340				has_timestamping = true;
-  2341			else
-  2342				tss->ts[0] = (struct timespec64) {0};
-  2343		}
-  2344	
-  2345		if (tss->ts[2].tv_sec || tss->ts[2].tv_nsec) {
-  2346			if (tsflags & SOF_TIMESTAMPING_RAW_HARDWARE &&
-  2347			    (tsflags & SOF_TIMESTAMPING_RX_HARDWARE ||
-  2348			     !(tsflags & SOF_TIMESTAMPING_OPT_RX_FILTER)))
-  2349				has_timestamping = true;
-  2350			else
-  2351				tss->ts[2] = (struct timespec64) {0};
-  2352		}
-  2353	
-  2354		if (has_timestamping) {
-  2355			tss->ts[1] = (struct timespec64) {0};
-  2356			if (sock_flag(sk, SOCK_TSTAMP_NEW))
-  2357				put_cmsg_scm_timestamping64(msg, tss);
-  2358			else
-  2359				put_cmsg_scm_timestamping(msg, tss);
-  2360		}
-  2361	}
-  2362	
+On 10/9/2024 2:30 AM, Andrii Nakryiko wrote:
+> On Tue, Oct 8, 2024 at 2:05 AM Hou Tao <houtao@huaweicloud.com> wrote:
+>> From: Hou Tao <houtao1@huawei.com>
+>>
+>> Under 32-bits host (e.g, arm32) , when a bpf program passes an u64 to
+>> bpf_iter_bits_new(), bpf_iter_bits_new() will use bits_copy to save the
+>> content of the u64, but the size of bits_copy is only 4-bytes, and there
+>> will be stack corruption.
+>>
+>> Fix it by change the type of unsafe_ptr from u64 * to unsigned long *.
+>>
+> This will be confusing as BPF-side long is always 64-bit. So why not
+> instead make sure it's u64 throughout (i.e., bits_copy is u64
+> explicitly), even on 32-bit architectures?
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Just learn about the size of BPF-side long is always 64-bits. I had
+considered to change bits_copy to u64. The main obstacle is that the
+pointer type of find_next_bit is unsigned long *, if it is used on an
+u64 under big-endian host, it may return invalid result.
+>
+>> Signed-off-by: Hou Tao <houtao1@huawei.com>
+>> ---
+>>  kernel/bpf/helpers.c | 18 ++++++++++--------
+>>  1 file changed, 10 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+>> index 6c0205d5018c..dee69c3904a0 100644
+>> --- a/kernel/bpf/helpers.c
+>> +++ b/kernel/bpf/helpers.c
+>> @@ -2852,7 +2852,7 @@ struct bpf_iter_bits {
+>>  } __aligned(8);
+>>
+>>  /* nr_bits only has 31 bits */
+>> -#define BITS_ITER_NR_WORDS_MAX ((1U << 31) / BITS_PER_TYPE(u64))
+>> +#define BITS_ITER_NR_WORDS_MAX ((1U << 31) / BITS_PER_TYPE(unsigned long))
+>>
+>>  struct bpf_iter_bits_kern {
+>>         union {
+>> @@ -2868,8 +2868,9 @@ struct bpf_iter_bits_kern {
+>>   * bpf_iter_bits_new() - Initialize a new bits iterator for a given memory area
+>>   * @it: The new bpf_iter_bits to be created
+>>   * @unsafe_ptr__ign: A pointer pointing to a memory area to be iterated over
+>> - * @nr_words: The size of the specified memory area, measured in 8-byte units.
+>> - * Due to the limitation of memalloc, it can't be greater than 512.
+>> + * @nr_words: The size of the specified memory area, measured in units of
+>> + * sizeof(unsigned long). Due to the limitation of memalloc, it can't be
+>> + * greater than 512.
+>>   *
+>>   * This function initializes a new bpf_iter_bits structure for iterating over
+>>   * a memory area which is specified by the @unsafe_ptr__ign and @nr_words. It
+>> @@ -2879,17 +2880,18 @@ struct bpf_iter_bits_kern {
+>>   * On success, 0 is returned. On failure, ERR is returned.
+>>   */
+>>  __bpf_kfunc int
+>> -bpf_iter_bits_new(struct bpf_iter_bits *it, const u64 *unsafe_ptr__ign, u32 nr_words)
+>> +bpf_iter_bits_new(struct bpf_iter_bits *it, const unsigned long *unsafe_ptr__ign, u32 nr_words)
+>>  {
+>> -       struct bpf_iter_bits_kern *kit = (void *)it;
+>> -       u32 nr_bytes = nr_words * sizeof(u64);
+>> +       u32 nr_bytes = nr_words * sizeof(*unsafe_ptr__ign);
+>>         u32 nr_bits = BYTES_TO_BITS(nr_bytes);
+>> +       struct bpf_iter_bits_kern *kit;
+>>         int err;
+>>
+>>         BUILD_BUG_ON(sizeof(struct bpf_iter_bits_kern) != sizeof(struct bpf_iter_bits));
+>>         BUILD_BUG_ON(__alignof__(struct bpf_iter_bits_kern) !=
+>>                      __alignof__(struct bpf_iter_bits));
+>>
+>> +       kit = (void *)it;
+>>         kit->allocated = 0;
+>>         kit->nr_bits = 0;
+>>         kit->bits_copy = 0;
+>> @@ -2900,8 +2902,8 @@ bpf_iter_bits_new(struct bpf_iter_bits *it, const u64 *unsafe_ptr__ign, u32 nr_w
+>>         if (nr_words > BITS_ITER_NR_WORDS_MAX)
+>>                 return -E2BIG;
+>>
+>> -       /* Optimization for u64 mask */
+>> -       if (nr_bits == 64) {
+>> +       /* Optimization for unsigned long mask */
+>> +       if (nr_words == 1) {
+>>                 err = bpf_probe_read_kernel_common(&kit->bits_copy, nr_bytes, unsafe_ptr__ign);
+>>                 if (err)
+>>                         return -EFAULT;
+>> --
+>> 2.29.2
+>>
+> .
+
 
