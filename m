@@ -1,409 +1,231 @@
-Return-Path: <bpf+bounces-41444-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41445-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C07D099709A
-	for <lists+bpf@lfdr.de>; Wed,  9 Oct 2024 18:09:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D75979970F2
+	for <lists+bpf@lfdr.de>; Wed,  9 Oct 2024 18:17:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 185DA2839F8
-	for <lists+bpf@lfdr.de>; Wed,  9 Oct 2024 16:09:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0608D1C20B57
+	for <lists+bpf@lfdr.de>; Wed,  9 Oct 2024 16:17:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 665FB1FB3F7;
-	Wed,  9 Oct 2024 15:47:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF7BF1E7C12;
+	Wed,  9 Oct 2024 15:56:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qRrm/ZpR"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="T6JoK0ZR"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D485E1E32BB;
-	Wed,  9 Oct 2024 15:47:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD19B1E5711
+	for <bpf@vger.kernel.org>; Wed,  9 Oct 2024 15:56:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728488854; cv=none; b=ZQPTLzK5j4Y9sPVHo3cwt+d3fgOnvq/c2tFFWcu1iL7siVcFgmA/RMxaHjbABXsV4jFi98ekdSpCW8wDRIX7p6Z1TNrKvTowF6Q9/JxukjGIzZIxci/VBjqfM/hn54ssXocoeGZK8gQoCklTPNuYbP1mUdjL0rzoJ5EwbL1gEQo=
+	t=1728489380; cv=none; b=YHOFf8U+x5nml51seXJjSmNj6NWWsvL5AvTPhvG/L7pN2vEpWWJ/7TWNMs9auu/nKo7dM16Yh6plGMfEgZqVRchZw894ptRiitSPT9cvZk3XEY6pZRaPqLvJgQtDX+TGQKM+xjfYP+FHsakG1nxFkwkW+yIOkq/dIUVKb44FUac=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728488854; c=relaxed/simple;
-	bh=xEBUO24ik2NfKd22BHQ9wyBGEOMHQv6JyR0aYMKRXQA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bTAj1qtebJk1P+6eSCEgD/gPsXdMNg2MM18tY9aU68OBWOWA88sUFo3kRfQ+2nggLnLd4UXxgw9pzxdVaujXlcibs20/maSXjo7RVop0uD9PrYlUXP/IWSsS9UAYL4msn7I2/pCzHk/w6PFd56S5hJJXmK0ABAQQXNHNHqrFtmk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qRrm/ZpR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 350FAC4AF0B;
-	Wed,  9 Oct 2024 15:47:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728488853;
-	bh=xEBUO24ik2NfKd22BHQ9wyBGEOMHQv6JyR0aYMKRXQA=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=qRrm/ZpR0SGKnG1Gm4fTlBrcPxXQZqdaChybtVwAgMiNvKqNZQ8aUkBYvuNbe9Hoh
-	 mrRGu003kgQpPNuOzIAZFNRmMMHvofjQiDpc6tyc+X3FE2Jiu2bTowaWeif0cpUTye
-	 IhuUL3Lgt/E1GktiBkpaXzYTHLhx2AGkgnVxkNKBXJ9FO5Mg3rD6LvyWkuLS8YGysN
-	 LoAnQVEwEbuynCQdLVDPdIzfK3mmPCcF92slEmdOglnGX8EA0lxbUuUJk5xJo6uAFG
-	 4ely8ZCAUxhUL/NMCFJ+EP6dJF8SMfBeK0LJ6ZizG0EwD7ysuvPKxHbC6gOTVPSudk
-	 RI01h4KQzK2aA==
-Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-53995380bb3so8622115e87.1;
-        Wed, 09 Oct 2024 08:47:33 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCX4D2ThttgOVuvSmwRNcieqIMTcq8n0q2Sxyh6w87HWWdzbXENM5kIKHhHSxEnoE9ycPCQLz4RWgBYwcKYF@vger.kernel.org, AJvYcCXOOwxiD0wFBdBEQ+bINuNQ/OrMkWfMM+wYtFNDduVo2mDDYcg2EoGW0aRQ8ylqzxcZycaIGq+Gn1nNOQkj@vger.kernel.org, AJvYcCXUIbZr9Nm3caAAiShEpqEddvQ6A2v75PB8sJlrMYSxnA7Pc7G6F3uUQu6rkRfiiFRTywdIa1nSS3FP24WlEY0IKhGn@vger.kernel.org, AJvYcCXzrlIj1M0RpsmmF8t9X3gwhyXASBu24UaNps8WiGNnBOgqagv9Z7yjOOuxqlJz5TQ1WCQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxDLL1eDtNcqgfdW4V9VFQzow4MZy8LSfQiAC/UGwSYq7pLU+NU
-	MoYKtvl0l2/1CakhoK019cJOw6Jy4j60u1IGLnYsJGbasNPEwXP4ZTSKRsnK3TLiqtruaHd33Lk
-	yMNB0pKdMRhWg97odLLwRtJ/JHOI=
-X-Google-Smtp-Source: AGHT+IF+us6iJthCHb0RPd5fShdbqSzjc62GDQ0NhFOhcw/X7lkmjVwDuMO8LoBaiDVCsoo//uvOhcXjrhPFJiD5kv0=
-X-Received: by 2002:a05:6512:2307:b0:539:8f4d:a7dc with SMTP id
- 2adb3069b0e04-539c4958651mr1852775e87.48.1728488851814; Wed, 09 Oct 2024
- 08:47:31 -0700 (PDT)
+	s=arc-20240116; t=1728489380; c=relaxed/simple;
+	bh=qKW37Gsfxb+iFhfycqd/keeURCuGPF8bt57otFK+k3A=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=BtxdiDe3Pkn/snCfcGgrUSePxH3XOQasTzpmMts3Ck4j7xR6/oo7bktLljWpK7LXDvwkSwjX47pjEHoW36SXoQeKu1Txox4VN9oOs+kg7iNlMUvEM2VJ+i3798sKsR30eQzwaOkAt2aSZYGxuSGxq0eJ2RODouNiVQ5VXZm25yk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=T6JoK0ZR; arc=none smtp.client-ip=91.218.175.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <5be197d5-dec6-4d65-9908-1bfb6267d091@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1728489373;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QFTBzMOhuqpordLv5A0TIhLhXjI6wOUPN+0j7s0Oeh0=;
+	b=T6JoK0ZRs3BTBZ3X5dU7Nnc9K1OSzwSMgXM1iNXsgrJqoLvWlnY6lBlxXByyzmnZI3zFWd
+	NTvAGqFzCbk6LaryCPL6L3ihqZI4cigIH2V7GPsttM6bFWZKyN9D15oI3oB1MNLybgk7tK
+	cD2SjB35pRuy+8R4TKsPgjTJBpJhGK8=
+Date: Wed, 9 Oct 2024 08:56:08 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240915205648.830121-1-hbathini@linux.ibm.com>
-In-Reply-To: <20240915205648.830121-1-hbathini@linux.ibm.com>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Date: Thu, 10 Oct 2024 00:46:54 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATzqVAJHFg6OyVR1+YgNKo7S=nN1M7w5GJVG1Ygn0QhUA@mail.gmail.com>
-Message-ID: <CAK7LNATzqVAJHFg6OyVR1+YgNKo7S=nN1M7w5GJVG1Ygn0QhUA@mail.gmail.com>
-Subject: Re: [PATCH v5 00/17] powerpc: Core ftrace rework, support for ftrace
- direct and bpf trampolines
-To: Hari Bathini <hbathini@linux.ibm.com>
-Cc: linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, bpf@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, "Naveen N. Rao" <naveen@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Nicholas Piggin <npiggin@gmail.com>, Alexei Starovoitov <ast@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
-	Vishal Chourasia <vishalc@linux.ibm.com>, Mahesh J Salgaonkar <mahesh@linux.ibm.com>, 
-	Masami Hiramatsu <mhiramat@kernel.org>
-Content-Type: multipart/mixed; boundary="00000000000002e85f06240d2c76"
+Subject: Re: yet another approach Was: [PATCH bpf-next v3 4/5] bpf, x86: Add
+ jit support for private stack
+Content-Language: en-GB
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf <bpf@vger.kernel.org>,
+ Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Kernel Team <kernel-team@fb.com>,
+ Martin KaFai Lau <martin.lau@kernel.org>
+References: <20240926234506.1769256-1-yonghong.song@linux.dev>
+ <CAP01T77G63MGvomrd3563bgBcNKUZg0Jc=GGmcGO0zPLS0hcHA@mail.gmail.com>
+ <CAADnVQ+z-s07V_KU91+zGRB3qXGR9nr3w1dMBfCEEgunyes7EA@mail.gmail.com>
+ <8b6c1eb1-de43-4ddb-b2b6-48256bdacddb@linux.dev>
+ <CAP01T77k7bqTx_VRhnUjcOcGDp-y=zJHzKi7S-+domZjhEGfzQ@mail.gmail.com>
+ <CAADnVQ+UByKkpVSg4tC-hoV7DstEYE11WxJ4nbGj27emZ2PFmA@mail.gmail.com>
+ <a3116710-7e55-42ce-abd2-7becee9c275f@linux.dev>
+ <CAADnVQKO1=ywkfULmSE=15dFU4Ovn3OMVbnGpkah5noeDnwtgw@mail.gmail.com>
+ <d8ff2878-c53b-48d7-b624-93aeb2087113@linux.dev>
+ <a4468429-3b93-49b3-b8e4-122b903c98fb@linux.dev>
+ <CAADnVQJRd-ngE8UBVUZVzwUwK6cGLMtZngwoUK+HOh2t_evcgQ@mail.gmail.com>
+ <1fc78197-c266-41d2-8d8a-c9dbf2e35d8f@linux.dev>
+ <CAADnVQ+tvGMFnEuZmKyXxJX25pL+G6X+9445Ct-RSU1sZ+57xw@mail.gmail.com>
+ <CAADnVQLoLviDyvhae=m=LrUEPhE_UCaDGvjCREKTQBqEGduPdQ@mail.gmail.com>
+ <62260dde-9e1d-430a-b350-01c28613b062@linux.dev>
+ <CAADnVQ+T5AD8J_p3U5vpTs=5nqpypuQeGBE+wezB7mnh8Axo0Q@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <CAADnVQ+T5AD8J_p3U5vpTs=5nqpypuQeGBE+wezB7mnh8Axo0Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
---00000000000002e85f06240d2c76
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Sep 16, 2024 at 5:57=E2=80=AFAM Hari Bathini <hbathini@linux.ibm.co=
-m> wrote:
+On 10/9/24 7:56 AM, Alexei Starovoitov wrote:
+> On Tue, Oct 8, 2024 at 11:31 PM Yonghong Song <yonghong.song@linux.dev> wrote:
+>>
+>> On 10/8/24 7:06 PM, Alexei Starovoitov wrote:
+>>> On Tue, Oct 8, 2024 at 3:10 PM Alexei Starovoitov
+>>> <alexei.starovoitov@gmail.com> wrote:
+>>>> We need to scrap this idea.
+>>>> Let's go back to push/pop r11 around calls :(
+>>> I didn't give up :)
+>>>
+>>> Here is a new idea that seems to work:
+>>>
+>>> [  131.472066]  dump_stack_lvl+0x53/0x70
+>>> [  131.472066]  bpf_task_storage_get+0x3e/0x2f0
+>>> [  131.472066]  ? bpf_task_storage_get+0x231/0x2f0
+>>> [  131.472066]  bpf_prog_ed7a5f33cc9fefab_foo+0x30/0x32
+>>> [  131.472066]  bpf_prog_8c4f9bc79da6c27e_socket_post_create+0x68/0x6d
+>>> ...
+>>> [  131.417145]  dump_stack_lvl+0x53/0x70
+>>> [  131.417145]  bpf_task_storage_get+0x3e/0x2f0
+>>> [  131.417145]  ? selinux_netlbl_socket_post_create+0xab/0x150
+>>> [  131.417145]  bpf_prog_8c4f9bc79da6c27e_socket_post_create+0x60/0x6d
+>>>
+>>>
+>>> The stack dump works fine out of main prog and out of subprog.
+>>>
+>>> The key difference it to pretend to have stack_depth=0,
+>>> so there is no adjustment to %rsp,
+>>> but point %rbp to per-cpu private stack and grow it _up_.
+>>>
+>>> For the main prog %rbp points to the bottom of priv stack
+>>> plus stack_depth it needs,
+>>> so all bpf insns that do r10-off access the bottom of that priv stack.
+>>> When subprog is called it does 'add %rbp, its_stack_depth' and
+>>> in turn it's using memory above the bottom of the priv stack.
+>>>
+>>> That seems to work, but exceptions and tailcalls are broken.
+>>> I ran out of time today to debug.
+>>> Pls see the attached patch.
+>> The core part of the code is below:
+>>
+>> EMIT1(0x55); /* push rbp */ - EMIT3(0x48, 0x89, 0xE5); /* mov rbp, rsp
+>> */ + if (tail_call_reachable || !bpf_prog->aux->priv_stack_ptr) { +
+>> EMIT3(0x48, 0x89, 0xE5); /* mov rbp, rsp */ + } else { + if
+>> (!is_subprog) { + /* mov rsp, pcpu_priv_stack_bottom */ + void __percpu
+>> *priv_frame_ptr = + bpf_prog->aux->priv_stack_ptr +
+>> round_up(stack_depth, 8); + + /* movabs sp, priv_frame_ptr */ +
+>> emit_mov_imm64(&prog, AUX_REG, (long) priv_frame_ptr >> 32, + (u32)
+>> (long) priv_frame_ptr); + + /* add <aux_reg>, gs:[<off>] */ +
+>> EMIT2(0x65, 0x4c); + EMIT3(0x03, 0x1c, 0x25); + EMIT((u32)(unsigned
+>> long)&this_cpu_off, 4); + /* mov rbp, aux_reg */ + EMIT3(0x4c, 0x89,
+>> 0xdd); + } else { + /* add rbp, stack_depth */ + EMIT3_off32(0x48, 0x81,
+>> 0xC5, round_up(stack_depth, 8)); + } + }
+> your mailer garbled the diff.
+
+Sorry, I just copy-paste from your attached code. It shows properly
+when I send email. I guess, I need to ensure I use proper format
+in my editor.
+
 >
-> This is v5 of the series posted here:
-> https://lore.kernel.org/all/cover.1720942106.git.naveen@kernel.org/
->
-> This series reworks core ftrace support on powerpc to have the function
-> profiling sequence moved out of line. This enables us to have a single
-> nop at kernel function entry virtually eliminating effect of the
-> function tracer when it is not enabled. The function profile sequence is
-> moved out of line and is allocated at two separate places depending on a
-> new config option.
->
-> For 64-bit powerpc, the function profiling sequence is also updated to
-> include an additional instruction 'mtlr r0' after the usual
-> two-instruction sequence to fix link stack imbalance (return address
-> predictor) when ftrace is enabled. This showed an improvement of ~10%
-> in null_syscall benchmark (NR_LOOPS=3D10000000) on a Power 10 system
-> with ftrace enabled.
->
-> Finally, support for ftrace direct calls is added based on support for
-> DYNAMIC_FTRACE_WITH_CALL_OPS. BPF Trampoline support is added atop this.
->
-> Support for ftrace direct calls is added for 32-bit powerpc. There is
-> some code to enable bpf trampolines for 32-bit powerpc, but it is not
-> complete and will need to be pursued separately.
->
-> Patches 1 to 10 are independent of this series and can go in separately
-> though. Rest of the patches depend on the series from Benjamin Gray
-> adding support for patch_uint() and patch_ulong():
-> https://lore.kernel.org/all/172474280311.31690.1489687786264785049.b4-ty@=
-ellerman.id.au/
+>> So for main program, we have
+>>
+>> push rbp rbp = per_cpu_ptr(priv_stack_ptr + stack_size) ... What will
+>> happen we have an interrupt like below? push rbp rbp =
+>> per_cpu_ptr(priv_stack_ptr + stack_size) <=== interrupt happens here ...
+>> If we need to dump the stack trace at interrupt point then unwinder may
+>> have difficulty to find the proper stack trace since *rbp is a arbitrary
+>> value and *(rbp + 8) will not have proper func return address. Does this
+>> make sense?
+> Hard to read above... but I think you're saying that rbp will point
 
+Sorry again. Formating issue again.
 
+> to priv stack, irq happens and unwinder cannot work ?
+> Yes. I was also expecting it to break, but orc unwinder
+> with fallback to fp somehow did it correctly. See above stack dumps.
+> For the top frame the unwinder starts from SP, so it's fine,
+> but for the subprog 'foo' above the 'push rbp' pushes the
+> addr of priv stack, so the chain should be broken,
+> but the printed stack is correct, so I'm puzzled why it worked :)
 
-It is getting better.
+We still have issues here. With 'rbp = ...' approach, I got
+stack:
 
-I attached a diff for improvements.
+[   53.429814] Call Trace:
+[   53.430177]  <TASK>
+[   53.430498]  dump_stack_lvl+0x52/0x70
+[   53.431067]  bpf_task_storage_get+0x41/0x120
+[   53.431680]  bpf_prog_71392c3ef5437fd9_foo+0x30/0x32
+[   53.432404]  bpf_prog_8c4f9bc79da6c27e_socket_post_create+0x68/0x6d
+[   53.433241]  ? bpf_trampoline_6442549714+0x68/0x10d
+[   53.433879]  ? bpf_lsm_socket_post_create+0x9/0x20
+[   53.434512]  ? security_socket_post_create+0x6e/0xd0
+[   53.435166]  ? __sock_create+0x19e/0x2d0
+[   53.435686]  ? __sys_socket+0x56/0xd0
+[   53.436176]  ? __x64_sys_socket+0x19/0x30
+[   53.436702]  ? do_syscall_64+0x58/0xf0
+[   53.437201]  ? clear_bhb_loop+0x45/0xa0
+[   53.437746]  ? entry_SYSCALL_64_after_hwframe+0x76/0x7e
+[   53.438488]  </TASK>
 
+With the original kernel plus the following hack:
 
+--- a/kernel/bpf/bpf_task_storage.c
++++ b/kernel/bpf/bpf_task_storage.c
+@@ -255,6 +255,7 @@ BPF_CALL_5(bpf_task_storage_get, struct bpf_map *, map, struct task_struct *,
+         if (flags & ~BPF_LOCAL_STORAGE_GET_F_CREATE || !task)
+                 return (unsigned long)NULL;
+  
++       dump_stack();
+         bpf_task_storage_lock();
+         data = __bpf_task_storage_get(map, task, value, flags,
+                                       gfp_flags, true);
 
-Also, please run 'shellcheck' and eliminate
-as many warnings as you can.
+I got stack trace:
 
+[   32.146519] Call Trace:
+[   32.146979]  <TASK>
+[   32.147356]  dump_stack_lvl+0x52/0x70
+[   32.147984]  bpf_task_storage_get+0x41/0x120
+[   32.148741]  bpf_prog_3c50a12b50fe949a_socket_post_create+0x5d/0xaa
+[   32.149844]  bpf_trampoline_6442512791+0x68/0x10d
+[   32.150679]  bpf_lsm_socket_post_create+0x9/0x20
+[   32.151451]  security_socket_post_create+0x6e/0xd0
+[   32.152320]  __sock_create+0x19e/0x2d0
+[   32.153059]  __sys_socket+0x56/0xd0
+[   32.153779]  __x64_sys_socket+0x19/0x30
+[   32.154561]  do_syscall_64+0x58/0xf0
+[   32.155225]  ? clear_bhb_loop+0x45/0xa0
+[   32.155970]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
+[   32.156864] RIP: 0033:0x7f580d11385b
+[   32.157554] Code: 8b 54 24 08 64 48 2b 14 25 28 00 00 00 75 05 48 83 c4 18 c3 67 e8 65 d0 00 00 0f 1f 44 00 00 f3 0f 1e fa b8 29 00 00 00 0f 05 <48> 3d 8
+[   32.160990] RSP: 002b:00007f58005ffea8 EFLAGS: 00000246 ORIG_RAX: 0000000000000029
+[   32.162500] RAX: ffffffffffffffda RBX: 00007f5800600cdc RCX: 00007f580d11385b
+[   32.163907] RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000002
+[   32.165292] RBP: 00007f58005ffed0 R08: 0000000000000000 R09: 00007f58006006c0
+[   32.166608] R10: 0000000000000008 R11: 0000000000000246 R12: ffffffffffffff80
+[   32.167898] R13: 0000000000000002 R14: 00007ffc461fba30 R15: 00007f57ffe00000
+[   32.169119]  </TASK>
 
+The difference is after bpf prog, the kernel stack trace
+does not have '?' while with private stack and 'rbp = priv_stack_ptr'
+approach, we have '?'.
 
+The reason is that for private stack, when unwinder find the 'rbp', it
+is not able to find the previous frame return address and previous proper 'rbp'.
 
-
-
-$ shellcheck  arch/powerpc/tools/ftrace-gen-ool-stubs.sh
-
-In arch/powerpc/tools/ftrace-gen-ool-stubs.sh line 19:
-num_ool_stubs_text=3D$(${OBJDUMP} -r -j __patchable_function_entries
-${vmlinux_o} |
-
-^----------^ SC2086 (info): Double quote to prevent globbing and word
-splitting.
-
-Did you mean:
-num_ool_stubs_text=3D$(${OBJDUMP} -r -j __patchable_function_entries
-"${vmlinux_o}" |
-
-
-In arch/powerpc/tools/ftrace-gen-ool-stubs.sh line 20:
-     grep -v ".init.text" | grep "${RELOCATION}" | wc -l)
-                                            ^------------------^
-SC2126 (style): Consider using 'grep -c' instead of 'grep|wc -l'.
-
-
-In arch/powerpc/tools/ftrace-gen-ool-stubs.sh line 21:
-num_ool_stubs_inittext=3D$(${OBJDUMP} -r -j __patchable_function_entries
-${vmlinux_o} |
-
-^----------^ SC2086 (info): Double quote to prevent globbing and word
-splitting.
-
-Did you mean:
-num_ool_stubs_inittext=3D$(${OBJDUMP} -r -j __patchable_function_entries
-"${vmlinux_o}" |
-
-
-In arch/powerpc/tools/ftrace-gen-ool-stubs.sh line 22:
-grep ".init.text" | grep "${RELOCATION}" | wc -l)
-                                             ^------------------^
-SC2126 (style): Consider using 'grep -c' instead of 'grep|wc -l'.
-
-
-In arch/powerpc/tools/ftrace-gen-ool-stubs.sh line 25:
-if [ ${num_ool_stubs_text} -gt ${num_ool_stubs_text_builtin} ]; then
-     ^-------------------^ SC2086 (info): Double quote to prevent
-globbing and word splitting.
-                               ^---------------------------^ SC2086
-(info): Double quote to prevent globbing and word splitting.
-
-Did you mean:
-if [ "${num_ool_stubs_text}" -gt "${num_ool_stubs_text_builtin}" ]; then
-
-
-In arch/powerpc/tools/ftrace-gen-ool-stubs.sh line 26:
-num_ool_stubs_text_end=3D$(expr ${num_ool_stubs_text} -
-${num_ool_stubs_text_builtin})
-                                 ^--^ SC2003 (style): expr is
-antiquated. Consider rewriting this using $((..)), ${} or [[ ]].
-                                      ^-------------------^ SC2086
-(info): Double quote to prevent globbing and word splitting.
-
-^---------------------------^ SC2086 (info): Double quote to prevent
-globbing and word splitting.
-
-Did you mean:
-num_ool_stubs_text_end=3D$(expr "${num_ool_stubs_text}" -
-"${num_ool_stubs_text_builtin}")
-
-
-In arch/powerpc/tools/ftrace-gen-ool-stubs.sh line 31:
-cat > ${arch_vmlinux_S} <<EOF
-      ^---------------^ SC2086 (info): Double quote to prevent
-globbing and word splitting.
-
-Did you mean:
-cat > "${arch_vmlinux_S}" <<EOF
-
-For more information:
-  https://www.shellcheck.net/wiki/SC2086 -- Double quote to prevent globbin=
-g ...
-  https://www.shellcheck.net/wiki/SC2003 -- expr is antiquated. Consider re=
-wr...
-  https://www.shellcheck.net/wiki/SC2126 -- Consider using 'grep -c' instea=
-d ...
-
-
-
-
-
-
-
-
-
-
-
-> Changelog v5:
-> * Intermediate files named .vmlinux.arch.* instead of .arch.vmlinux.*
-> * Fixed ftrace stack tracer failure due to inadvertent use of
->   'add r7, r3, MCOUNT_INSN_SIZE' instruction instead of
->   'addi r7, r3, MCOUNT_INSN_SIZE'
-> * Fixed build error for !CONFIG_MODULES case.
-> * .vmlinux.arch.* files compiled under arch/powerpc/tools
-> * Made sure .vmlinux.arch.* files are cleaned with `make clean`
-> * num_ool_stubs_text_end used for setting up ftrace_ool_stub_text_end
->   set to zero instead of computing to some random negative value when
->   not required.
-> * Resolved checkpatch.pl warnings.
-> * Dropped RFC tag.
->
-> Changelog v4:
-> - Patches 1, 10 and 13 are new.
-> - Address review comments from Nick. Numerous changes throughout the
->   patch series.
-> - Extend support for ftrace ool to vmlinux text up to 64MB (patch 13).
-> - Address remaining TODOs in support for BPF Trampolines.
-> - Update synchronization when patching instructions during trampoline
->   attach/detach.
->
->
-> Naveen N Rao (17):
->   powerpc/trace: Account for -fpatchable-function-entry support by
->     toolchain
->   powerpc/kprobes: Use ftrace to determine if a probe is at function
->     entry
->   powerpc64/ftrace: Nop out additional 'std' instruction emitted by gcc
->     v5.x
->   powerpc32/ftrace: Unify 32-bit and 64-bit ftrace entry code
->   powerpc/module_64: Convert #ifdef to IS_ENABLED()
->   powerpc/ftrace: Remove pointer to struct module from dyn_arch_ftrace
->   powerpc/ftrace: Skip instruction patching if the instructions are the
->     same
->   powerpc/ftrace: Move ftrace stub used for init text before _einittext
->   powerpc64/bpf: Fold bpf_jit_emit_func_call_hlp() into
->     bpf_jit_emit_func_call_rel()
->   powerpc/ftrace: Add a postlink script to validate function tracer
->   kbuild: Add generic hook for architectures to use before the final
->     vmlinux link
->   powerpc64/ftrace: Move ftrace sequence out of line
->   powerpc64/ftrace: Support .text larger than 32MB with out-of-line
->     stubs
->   powerpc/ftrace: Add support for DYNAMIC_FTRACE_WITH_CALL_OPS
->   powerpc/ftrace: Add support for DYNAMIC_FTRACE_WITH_DIRECT_CALLS
->   samples/ftrace: Add support for ftrace direct samples on powerpc
->   powerpc64/bpf: Add support for bpf trampolines
->
->  arch/Kconfig                                |   6 +
->  arch/powerpc/Kbuild                         |   2 +-
->  arch/powerpc/Kconfig                        |  23 +-
->  arch/powerpc/Makefile                       |   8 +
->  arch/powerpc/Makefile.postlink              |   8 +
->  arch/powerpc/include/asm/ftrace.h           |  33 +-
->  arch/powerpc/include/asm/module.h           |   5 +
->  arch/powerpc/include/asm/ppc-opcode.h       |  14 +
->  arch/powerpc/kernel/asm-offsets.c           |  11 +
->  arch/powerpc/kernel/kprobes.c               |  18 +-
->  arch/powerpc/kernel/module_64.c             |  66 +-
->  arch/powerpc/kernel/trace/Makefile          |  11 +-
->  arch/powerpc/kernel/trace/ftrace.c          | 298 ++++++-
->  arch/powerpc/kernel/trace/ftrace_64_pg.c    |  69 +-
->  arch/powerpc/kernel/trace/ftrace_entry.S    | 244 ++++--
->  arch/powerpc/kernel/vmlinux.lds.S           |   3 +-
->  arch/powerpc/net/bpf_jit.h                  |  12 +
->  arch/powerpc/net/bpf_jit_comp.c             | 847 +++++++++++++++++++-
->  arch/powerpc/net/bpf_jit_comp32.c           |   7 +-
->  arch/powerpc/net/bpf_jit_comp64.c           |  68 +-
->  arch/powerpc/tools/Makefile                 |  12 +
->  arch/powerpc/tools/ftrace-gen-ool-stubs.sh  |  52 ++
->  arch/powerpc/tools/ftrace_check.sh          |  50 ++
->  samples/ftrace/ftrace-direct-modify.c       |  85 +-
->  samples/ftrace/ftrace-direct-multi-modify.c | 101 ++-
->  samples/ftrace/ftrace-direct-multi.c        |  79 +-
->  samples/ftrace/ftrace-direct-too.c          |  83 +-
->  samples/ftrace/ftrace-direct.c              |  69 +-
->  scripts/Makefile.vmlinux                    |   7 +
->  scripts/link-vmlinux.sh                     |   7 +-
->  30 files changed, 2098 insertions(+), 200 deletions(-)
->  create mode 100644 arch/powerpc/tools/Makefile
->  create mode 100755 arch/powerpc/tools/ftrace-gen-ool-stubs.sh
->  create mode 100755 arch/powerpc/tools/ftrace_check.sh
->
-> --
-> 2.46.0
->
-
-
---=20
-Best Regards
-Masahiro Yamada
-
---00000000000002e85f06240d2c76
-Content-Type: text/x-patch; charset="US-ASCII"; name="0001-fixup.patch"
-Content-Disposition: attachment; filename="0001-fixup.patch"
-Content-Transfer-Encoding: base64
-Content-ID: <f_m221jiku0>
-X-Attachment-Id: f_m221jiku0
-
-RnJvbSAwZTk2Njg5ZWZjOTc3NTQyYTQ3ZTgxNWE3ODg5MjgzM2UwMzA1ZDc5IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBNYXNhaGlybyBZYW1hZGEgPG1hc2FoaXJveUBrZXJuZWwub3Jn
-PgpEYXRlOiBXZWQsIDkgT2N0IDIwMjQgMjM6Mzc6NDcgKzA5MDAKU3ViamVjdDogW1BBVENIXSBm
-aXh1cAoKU2lnbmVkLW9mZi1ieTogTWFzYWhpcm8gWWFtYWRhIDxtYXNhaGlyb3lAa2VybmVsLm9y
-Zz4KLS0tCiBhcmNoL0tjb25maWcgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAyICst
-CiBhcmNoL3Bvd2VycGMvS2NvbmZpZyAgICAgICAgICAgICAgICAgICAgICAgfCA1ICsrLS0tCiBh
-cmNoL3Bvd2VycGMvdG9vbHMvLmdpdGlnbm9yZSAgICAgICAgICAgICAgfCAyICsrCiBhcmNoL3Bv
-d2VycGMvdG9vbHMvTWFrZWZpbGUgICAgICAgICAgICAgICAgfCA3ICsrLS0tLS0KIGFyY2gvcG93
-ZXJwYy90b29scy9mdHJhY2UtZ2VuLW9vbC1zdHVicy5zaCB8IDUgKystLS0KIHNjcmlwdHMvTWFr
-ZWZpbGUudm1saW51eCAgICAgICAgICAgICAgICAgICB8IDQgKystLQogc2NyaXB0cy9saW5rLXZt
-bGludXguc2ggICAgICAgICAgICAgICAgICAgIHwgMiArLQogNyBmaWxlcyBjaGFuZ2VkLCAxMiBp
-bnNlcnRpb25zKCspLCAxNSBkZWxldGlvbnMoLSkKIGNyZWF0ZSBtb2RlIDEwMDY0NCBhcmNoL3Bv
-d2VycGMvdG9vbHMvLmdpdGlnbm9yZQoKZGlmZiAtLWdpdCBhL2FyY2gvS2NvbmZpZyBiL2FyY2gv
-S2NvbmZpZwppbmRleCA4NzgwNjc1MGNmNGUuLmExNTM4OTI3YzhjMSAxMDA2NDQKLS0tIGEvYXJj
-aC9LY29uZmlnCisrKyBiL2FyY2gvS2NvbmZpZwpAQCAtMTY4NSw3ICsxNjg1LDcgQEAgY29uZmln
-IEFSQ0hfTkVFRF9DTVBYQ0hHXzFfRU1VCiAJYm9vbAogCiBjb25maWcgQVJDSF9XQU5UU19QUkVf
-TElOS19WTUxJTlVYCi0JZGVmX2Jvb2wgbgorCWJvb2wKIAloZWxwCiAJICBBbiBhcmNoaXRlY3R1
-cmUgY2FuIHNlbGVjdCB0aGlzIGlmIGl0IHByb3ZpZGVzIGFyY2gvPGFyY2g+L3Rvb2xzL01ha2Vm
-aWxlCiAJICB3aXRoIC5hcmNoLnZtbGludXgubyB0YXJnZXQgdG8gYmUgbGlua2VkIGludG8gdm1s
-aW51eC4KZGlmZiAtLWdpdCBhL2FyY2gvcG93ZXJwYy9LY29uZmlnIGIvYXJjaC9wb3dlcnBjL0tj
-b25maWcKaW5kZXggOGEzMWY2MWYxYjM0Li5jODU0NzBiMjQxMTggMTAwNjQ0Ci0tLSBhL2FyY2gv
-cG93ZXJwYy9LY29uZmlnCisrKyBiL2FyY2gvcG93ZXJwYy9LY29uZmlnCkBAIC01NzUsMTMgKzU3
-NSwxMiBAQCBjb25maWcgQVJDSF9VU0lOR19QQVRDSEFCTEVfRlVOQ1RJT05fRU5UUlkKIAogY29u
-ZmlnIFBQQ19GVFJBQ0VfT1VUX09GX0xJTkUKIAlkZWZfYm9vbCBQUEM2NCAmJiBBUkNIX1VTSU5H
-X1BBVENIQUJMRV9GVU5DVElPTl9FTlRSWQotCWRlcGVuZHMgb24gUFBDNjQKIAlzZWxlY3QgQVJD
-SF9XQU5UU19QUkVfTElOS19WTUxJTlVYCiAKIGNvbmZpZyBQUENfRlRSQUNFX09VVF9PRl9MSU5F
-X05VTV9SRVNFUlZFCiAJaW50ICJOdW1iZXIgb2YgZnRyYWNlIG91dC1vZi1saW5lIHN0dWJzIHRv
-IHJlc2VydmUgd2l0aGluIC50ZXh0IgotCWRlZmF1bHQgMzI3NjggaWYgUFBDX0ZUUkFDRV9PVVRf
-T0ZfTElORQotCWRlZmF1bHQgMAorCWRlcGVuZHMgb24gUFBDX0ZUUkFDRV9PVVRfT0ZfTElORQor
-CWRlZmF1bHQgMzI3NjgKIAloZWxwCiAJICBOdW1iZXIgb2Ygc3R1YnMgdG8gcmVzZXJ2ZSBmb3Ig
-dXNlIGJ5IGZ0cmFjZS4gVGhpcyBzcGFjZSBpcwogCSAgcmVzZXJ2ZWQgd2l0aGluIC50ZXh0LCBh
-bmQgaXMgZGlzdGluY3QgZnJvbSBhbnkgYWRkaXRpb25hbCBzcGFjZQpkaWZmIC0tZ2l0IGEvYXJj
-aC9wb3dlcnBjL3Rvb2xzLy5naXRpZ25vcmUgYi9hcmNoL3Bvd2VycGMvdG9vbHMvLmdpdGlnbm9y
-ZQpuZXcgZmlsZSBtb2RlIDEwMDY0NAppbmRleCAwMDAwMDAwMDAwMDAuLmVjMzgwYTE0YTA5YQot
-LS0gL2Rldi9udWxsCisrKyBiL2FyY2gvcG93ZXJwYy90b29scy8uZ2l0aWdub3JlCkBAIC0wLDAg
-KzEsMiBAQAorIyBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIuMC1vbmx5Cisvdm1saW51
-eC5hcmNoLlMKZGlmZiAtLWdpdCBhL2FyY2gvcG93ZXJwYy90b29scy9NYWtlZmlsZSBiL2FyY2gv
-cG93ZXJwYy90b29scy9NYWtlZmlsZQppbmRleCA5ZWViNmVkZjAyZmUuLjk2ZGJiYzRmM2U2NiAx
-MDA2NDQKLS0tIGEvYXJjaC9wb3dlcnBjL3Rvb2xzL01ha2VmaWxlCisrKyBiL2FyY2gvcG93ZXJw
-Yy90b29scy9NYWtlZmlsZQpAQCAtMywxMCArMyw3IEBACiBxdWlldF9jbWRfZ2VuX2Z0cmFjZV9v
-b2xfc3R1YnMgPSBHRU4gICAgICRACiAgICAgICBjbWRfZ2VuX2Z0cmFjZV9vb2xfc3R1YnMgPSAk
-PCAkKENPTkZJR19QUENfRlRSQUNFX09VVF9PRl9MSU5FX05VTV9SRVNFUlZFKSB2bWxpbnV4Lm8g
-JEAKIAotJChvYmopLy52bWxpbnV4LmFyY2guUzogJChzcmMpL2Z0cmFjZS1nZW4tb29sLXN0dWJz
-LnNoIHZtbGludXgubyBGT1JDRQorJChvYmopL3ZtbGludXguYXJjaC5TOiAkKHNyYykvZnRyYWNl
-LWdlbi1vb2wtc3R1YnMuc2ggdm1saW51eC5vIEZPUkNFCiAJJChjYWxsIGlmX2NoYW5nZWQsZ2Vu
-X2Z0cmFjZV9vb2xfc3R1YnMpCiAKLSQob2JqKS8udm1saW51eC5hcmNoLm86ICQob2JqKS8udm1s
-aW51eC5hcmNoLlMgRk9SQ0UKLQkkKGNhbGwgaWZfY2hhbmdlZF9ydWxlLGFzX29fUykKLQotY2xl
-YW4tZmlsZXMgKz0gLnZtbGludXguYXJjaC5TIC52bWxpbnV4LmFyY2gubwordGFyZ2V0cyArPSB2
-bWxpbnV4LmFyY2guUwpkaWZmIC0tZ2l0IGEvYXJjaC9wb3dlcnBjL3Rvb2xzL2Z0cmFjZS1nZW4t
-b29sLXN0dWJzLnNoIGIvYXJjaC9wb3dlcnBjL3Rvb2xzL2Z0cmFjZS1nZW4tb29sLXN0dWJzLnNo
-CmluZGV4IDMzZjVhZTRiYWNlNS4uYzY5YjM3NTMwOWJjIDEwMDc1NQotLS0gYS9hcmNoL3Bvd2Vy
-cGMvdG9vbHMvZnRyYWNlLWdlbi1vb2wtc3R1YnMuc2gKKysrIGIvYXJjaC9wb3dlcnBjL3Rvb2xz
-L2Z0cmFjZS1nZW4tb29sLXN0dWJzLnNoCkBAIC0xMCwxNiArMTAsMTUgQEAgaXNfZW5hYmxlZCgp
-IHsKIAogdm1saW51eF9vPSR7Mn0KIGFyY2hfdm1saW51eF9TPSR7M30KLWFyY2hfdm1saW51eF9v
-PSQoZGlybmFtZSAke2FyY2hfdm1saW51eF9TfSkvJChiYXNlbmFtZSAke2FyY2hfdm1saW51eF9T
-fSAuUykubwogCiBSRUxPQ0FUSU9OPVJfUFBDNjRfQUREUjY0CiBpZiBpc19lbmFibGVkIENPTkZJ
-R19QUEMzMjsgdGhlbgogCVJFTE9DQVRJT049Ul9QUENfQUREUjMyCiBmaQogCi1udW1fb29sX3N0
-dWJzX3RleHQ9JCgke0NST1NTX0NPTVBJTEV9b2JqZHVtcCAtciAtaiBfX3BhdGNoYWJsZV9mdW5j
-dGlvbl9lbnRyaWVzICR7dm1saW51eF9vfSB8CitudW1fb29sX3N0dWJzX3RleHQ9JCgke09CSkRV
-TVB9IC1yIC1qIF9fcGF0Y2hhYmxlX2Z1bmN0aW9uX2VudHJpZXMgJHt2bWxpbnV4X299IHwKIAkJ
-ICAgICBncmVwIC12ICIuaW5pdC50ZXh0IiB8IGdyZXAgIiR7UkVMT0NBVElPTn0iIHwgd2MgLWwp
-Ci1udW1fb29sX3N0dWJzX2luaXR0ZXh0PSQoJHtDUk9TU19DT01QSUxFfW9iamR1bXAgLXIgLWog
-X19wYXRjaGFibGVfZnVuY3Rpb25fZW50cmllcyAke3ZtbGludXhfb30gfAorbnVtX29vbF9zdHVi
-c19pbml0dGV4dD0kKCR7T0JKRFVNUH0gLXIgLWogX19wYXRjaGFibGVfZnVuY3Rpb25fZW50cmll
-cyAke3ZtbGludXhfb30gfAogCQkJIGdyZXAgIi5pbml0LnRleHQiIHwgZ3JlcCAiJHtSRUxPQ0FU
-SU9OfSIgfCB3YyAtbCkKIAogbnVtX29vbF9zdHVic190ZXh0X2J1aWx0aW49JHsxfQpkaWZmIC0t
-Z2l0IGEvc2NyaXB0cy9NYWtlZmlsZS52bWxpbnV4IGIvc2NyaXB0cy9NYWtlZmlsZS52bWxpbnV4
-CmluZGV4IDhmMDgxMTdmNGE0OC4uZGRkYWQ1NTRlOTEyIDEwMDY0NAotLS0gYS9zY3JpcHRzL01h
-a2VmaWxlLnZtbGludXgKKysrIGIvc2NyaXB0cy9NYWtlZmlsZS52bWxpbnV4CkBAIC0yMyw5ICsy
-Myw5IEBAIHZtbGludXg6IC52bWxpbnV4LmV4cG9ydC5vCiBlbmRpZgogCiBpZmRlZiBDT05GSUdf
-QVJDSF9XQU5UU19QUkVfTElOS19WTUxJTlVYCi12bWxpbnV4OiBhcmNoLyQoU1JDQVJDSCkvdG9v
-bHMvLnZtbGludXguYXJjaC5vCit2bWxpbnV4OiBhcmNoLyQoU1JDQVJDSCkvdG9vbHMvdm1saW51
-eC5hcmNoLm8KIAotYXJjaC8kKFNSQ0FSQ0gpL3Rvb2xzLy52bWxpbnV4LmFyY2gubzogdm1saW51
-eC5vCithcmNoLyQoU1JDQVJDSCkvdG9vbHMvdm1saW51eC5hcmNoLm86IHZtbGludXgubyBGT1JD
-RQogCSQoUSkkKE1BS0UpICQoYnVpbGQpPWFyY2gvJChTUkNBUkNIKS90b29scyAkQAogZW5kaWYK
-IApkaWZmIC0tZ2l0IGEvc2NyaXB0cy9saW5rLXZtbGludXguc2ggYi9zY3JpcHRzL2xpbmstdm1s
-aW51eC5zaAppbmRleCAzM2MxYWE4ZGQ0NjguLjdhY2Y0ZTMxZTUxYyAxMDA3NTUKLS0tIGEvc2Ny
-aXB0cy9saW5rLXZtbGludXguc2gKKysrIGIvc2NyaXB0cy9saW5rLXZtbGludXguc2gKQEAgLTIw
-MCw3ICsyMDAsNyBAQCAke01BS0V9IC1mICIke3NyY3RyZWV9L3NjcmlwdHMvTWFrZWZpbGUuYnVp
-bGQiIG9iaj1pbml0IGluaXQvdmVyc2lvbi10aW1lc3RhbXAubwogCiBhcmNoX3ZtbGludXhfbz0i
-IgogaWYgaXNfZW5hYmxlZCBDT05GSUdfQVJDSF9XQU5UU19QUkVfTElOS19WTUxJTlVYOyB0aGVu
-Ci0JYXJjaF92bWxpbnV4X289YXJjaC8ke1NSQ0FSQ0h9L3Rvb2xzLy52bWxpbnV4LmFyY2gubwor
-CWFyY2hfdm1saW51eF9vPWFyY2gvJHtTUkNBUkNIfS90b29scy92bWxpbnV4LmFyY2gubwogZmkK
-IAogYnRmX3ZtbGludXhfYmluX289Ci0tIAoyLjQzLjAKCg==
---00000000000002e85f06240d2c76--
 
