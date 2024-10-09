@@ -1,158 +1,121 @@
-Return-Path: <bpf+bounces-41383-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41384-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34BAB9966C6
-	for <lists+bpf@lfdr.de>; Wed,  9 Oct 2024 12:14:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F6DF996758
+	for <lists+bpf@lfdr.de>; Wed,  9 Oct 2024 12:32:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 64A6C281BE2
-	for <lists+bpf@lfdr.de>; Wed,  9 Oct 2024 10:14:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 409422844FD
+	for <lists+bpf@lfdr.de>; Wed,  9 Oct 2024 10:32:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 517661922CC;
-	Wed,  9 Oct 2024 10:12:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="jWqPrOf+"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 025AF168C3F;
+	Wed,  9 Oct 2024 10:32:06 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C46B18F2C4;
-	Wed,  9 Oct 2024 10:12:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CA171C6BE;
+	Wed,  9 Oct 2024 10:32:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728468748; cv=none; b=McSKLL1fisDVDm5R/vHlvoFqSPRNznxD2taJ0vmriIUeyaQoRe+HrzjdPK23lGJt4doRJ64XaxvfGdhVB/Isb2z3OouQQzekLaaBLsrgcBWaHbV1xyNIZlCEuIRtVThnRXJwvO0+IMS4Kro5vi83e8W8QZBByYqsLkSwfec/UIw=
+	t=1728469925; cv=none; b=QvDtEyV4VZy11NeIfh0w9cIu3rKsyD9WLli0l1PC5lFgvd6E5oc8cszg/aWrJ3LSq+9jLplN88rVqiHzWRG05xysCQR3MhnEi7rKg6PTlrziCGde1rgxL9vrI2/T5whTeR0pr3olO+dTeAj8O3BCZcbT2t1JOP0ldjBqi4brNi4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728468748; c=relaxed/simple;
-	bh=7j9vq35pXyRAcVc3ZRAoNyo9ZAAvkSUotw0OPx7aaTk=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=DHApQmHICmwc9DDx0RnmcxQUKlGgQ7PuDjT9PLvfnd4fU9EuYs2uXngW1Vx6kLMYjvao0jWYYBQTPJcOvYaWOBet4gFqo7KmiM5qDqoijqjEUuldXJw9OG6TfwwI9sQw0/94y3SLPoQXCFGAJDJFO47FC8EHsekturjIweSFfLA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=jWqPrOf+; arc=none smtp.client-ip=217.70.183.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 358D6FF811;
-	Wed,  9 Oct 2024 10:12:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1728468739;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Eu33JTzN4sTvi1v3XIuk8Ur/NqSxuhd85F01Nc7EkjU=;
-	b=jWqPrOf+md0dM+VyGixNbUyMEKSVYnqKNr1kzG3n6cFeVhHJRK8lg9Xo962x8AXu+GK0Uq
-	h2wKJ5wgpdI5GeSyWdHlFZUD4v8ycu6Zz/Xe4QCsffKMNBT9CGxRYYMQJHYSfH9rDn02F/
-	VffH2ys9zpw2rlGHWt39VdbKML2F6PkY+AMkNTFP/RMt1pLk212msqDgIssC4wcGTO+qWE
-	7qyyO0rwsi0xUfj2flV1g36HjqijYH+8WlNs4//X0HOAmmft5PCpCC75QPanOFwkjWVxpe
-	OlamNvFgykUM/2HDzsTRrTaRT1i6PQ0kCzf0sblhP6hXg20PtDNwz81bQlr26g==
-From: =?utf-8?q?Alexis_Lothor=C3=A9_=28eBPF_Foundation=29?= <alexis.lothore@bootlin.com>
-Date: Wed, 09 Oct 2024 12:12:09 +0200
-Subject: [PATCH bpf-next v3 3/3] selftests/bpf: check program redirect in
- xdp_cpumap_attach
+	s=arc-20240116; t=1728469925; c=relaxed/simple;
+	bh=QvtfR7BhG8sulKALwtMeEvVd+Q2wyrwjlIV3/0y5/HQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=JfjSxhGs9CPeuUdRRIHXV5ahPD2RHB4Y4XaBgL7nxZ7P4VJtiah2G56STB0kJL1RO/f6EiTrowrqaL/lbC+tjgsUT1HXhnF6ipBKx6iUlwj6oZpEVbHqLxYL2RPgRSCy70qmFC1Fg3dflarO3Uy1rYNcYilaPhBtq1QgkIOI6YU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4XNq1n28ZTz4f3mHR;
+	Wed,  9 Oct 2024 18:31:41 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id DB26C1A018D;
+	Wed,  9 Oct 2024 18:31:58 +0800 (CST)
+Received: from [10.67.109.184] (unknown [10.67.109.184])
+	by APP2 (Coremail) with SMTP id Syh0CgB3q2CdWwZnmZ9lDg--.1143S2;
+	Wed, 09 Oct 2024 18:31:58 +0800 (CST)
+Message-ID: <bc137f2e-4375-4174-8985-c5fe31fbbf98@huaweicloud.com>
+Date: Wed, 9 Oct 2024 18:31:57 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf] riscv, bpf: Fix possible infinite tailcall when
+ CONFIG_CFI_CLANG is enabled
+To: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, bpf@vger.kernel.org,
+ linux-riscv@lists.infradead.org, netdev@vger.kernel.org
+Cc: Puranjay Mohan <puranjay@kernel.org>, Alexei Starovoitov
+ <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Albert Ou <aou@eecs.berkeley.edu>
+References: <20241008124544.171161-1-pulehui@huaweicloud.com>
+ <87jzeh4qvv.fsf@all.your.base.are.belong.to.us>
+Content-Language: en-US
+From: Pu Lehui <pulehui@huaweicloud.com>
+In-Reply-To: <87jzeh4qvv.fsf@all.your.base.are.belong.to.us>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Message-Id: <20241009-convert_xdp_tests-v3-3-51cea913710c@bootlin.com>
-References: <20241009-convert_xdp_tests-v3-0-51cea913710c@bootlin.com>
-In-Reply-To: <20241009-convert_xdp_tests-v3-0-51cea913710c@bootlin.com>
-To: Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, 
- "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
- Jesper Dangaard Brouer <hawk@kernel.org>, 
- John Fastabend <john.fastabend@gmail.com>, 
- Andrii Nakryiko <andrii@kernel.org>, 
- Martin KaFai Lau <martin.lau@linux.dev>, 
- Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
- Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, 
- Shuah Khan <shuah@kernel.org>
-Cc: ebpf@linuxfoundation.org, 
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>, netdev@vger.kernel.org, 
- bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
- linux-kernel@vger.kernel.org, 
- =?utf-8?q?Alexis_Lothor=C3=A9_=28eBPF_Foundation=29?= <alexis.lothore@bootlin.com>
-X-Mailer: b4 0.14.2
-X-GND-Sasl: alexis.lothore@bootlin.com
+X-CM-TRANSID:Syh0CgB3q2CdWwZnmZ9lDg--.1143S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrZw1UWFyUKF45JrW3tF4ruFg_yoWDWFc_uF
+	WSyr9ag3y5Ja1Ik3W8ur4UW3srCrWj9ryUX3W5t3sxGa93Jws5uw4vqrs2yrWxZ393XFyq
+	yF45tFWIgw429jkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbx8YFVCjjxCrM7AC8VAFwI0_Xr0_Wr1l1xkIjI8I6I8E6xAIw20E
+	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcVCY1x02
+	67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxV
+	AFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2
+	j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7x
+	kEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kIc2xKxwCY1x0262kKe7AK
+	xVW8ZVWrXwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
+	0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_Wryl
+	IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxV
+	AFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j
+	6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jIks
+	gUUUUU=
+X-CM-SenderInfo: psxovxtxl6x35dzhxuhorxvhhfrp/
 
-xdp_cpumap_attach, in its current form, only checks that an xdp cpumap
-program can be executed, but not that it performs correctly the cpu
-redirect as configured by userspace (bpf_prog_test_run_opts will return
-success even if the redirect program returns an error)
 
-Add a check to ensure that the program performs the configured redirect
-as well. The check is based on a global variable incremented by a
-chained program executed only if the redirect program properly executes.
 
-Signed-off-by: Alexis Lothoré (eBPF Foundation) <alexis.lothore@bootlin.com>
----
-Changes in v3:
-- new patch
----
- tools/testing/selftests/bpf/prog_tests/xdp_cpumap_attach.c     | 10 ++++++++--
- .../testing/selftests/bpf/progs/test_xdp_with_cpumap_helpers.c |  5 +++++
- 2 files changed, 13 insertions(+), 2 deletions(-)
+On 2024/10/9 16:33, Björn Töpel wrote:
+> Pu Lehui <pulehui@huaweicloud.com> writes:
+> 
+>> From: Pu Lehui <pulehui@huawei.com>
+>>
+>> When CONFIG_CFI_CLANG is enabled, the number of prologue instructions
+>> skipped by tailcall needs to include the kcfi instruction, otherwise the
+>> TCC will be initialized every tailcall is called, which may result in
+>> infinite tailcalls.
+>>
+>> Fixes: e63985ecd226 ("bpf, riscv64/cfi: Support kCFI + BPF on riscv64")
+>> Signed-off-by: Pu Lehui <pulehui@huawei.com>
+> 
+> Thanks! Did you test this with the selftest suite? Did the tailcall
+> tests catch it?
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_cpumap_attach.c b/tools/testing/selftests/bpf/prog_tests/xdp_cpumap_attach.c
-index 31c225f0239613f6b5adad36b5b0e6e85eeddd9a..57d1661dc72aeb152c7cb9c2f63e3b47bf1799d8 100644
---- a/tools/testing/selftests/bpf/prog_tests/xdp_cpumap_attach.c
-+++ b/tools/testing/selftests/bpf/prog_tests/xdp_cpumap_attach.c
-@@ -62,8 +62,11 @@ static void test_xdp_with_cpumap_helpers(void)
- 	err = bpf_prog_test_run_opts(prog_redir_fd, &opts);
- 	ASSERT_OK(err, "XDP test run");
- 
--	/* wait for the packets to be flushed */
-+	/* wait for the packets to be flushed, then check that redirect has been
-+	 * performed
-+	 */
- 	kern_sync_rcu();
-+	ASSERT_NEQ(skel->bss->redirect_count, 0, "redirected packets");
- 
- 	err = bpf_xdp_detach(IFINDEX_LO, XDP_FLAGS_SKB_MODE, NULL);
- 	ASSERT_OK(err, "XDP program detach");
-@@ -203,8 +206,11 @@ static void test_xdp_with_cpumap_helpers_veth(void)
- 	err = bpf_prog_test_run_opts(cm_fd_redir, &opts);
- 	ASSERT_OK(err, "XDP test run");
- 
--	/* wait for the packets to be flushed */
-+	/* wait for the packets to be flushed, then check that redirect has been
-+	 * performed
-+	 */
- 	kern_sync_rcu();
-+	ASSERT_NEQ(skel->bss->redirect_count, 0, "redirected packets");
- 
- 	err = bpf_xdp_detach(ifindex_src, XDP_FLAGS_DRV_MODE, NULL);
- 	ASSERT_OK(err, "XDP program detach");
-diff --git a/tools/testing/selftests/bpf/progs/test_xdp_with_cpumap_helpers.c b/tools/testing/selftests/bpf/progs/test_xdp_with_cpumap_helpers.c
-index d848fe96924e32a72e1e0327e3afffeb349b933e..3619239b01b741dfd81bbebf5d9a62e0cf71e4f4 100644
---- a/tools/testing/selftests/bpf/progs/test_xdp_with_cpumap_helpers.c
-+++ b/tools/testing/selftests/bpf/progs/test_xdp_with_cpumap_helpers.c
-@@ -12,6 +12,8 @@ struct {
- 	__uint(max_entries, 4);
- } cpu_map SEC(".maps");
- 
-+__u32 redirect_count = 0;
-+
- SEC("xdp")
- int xdp_redir_prog(struct xdp_md *ctx)
- {
-@@ -27,6 +29,9 @@ int xdp_dummy_prog(struct xdp_md *ctx)
- SEC("xdp/cpumap")
- int xdp_dummy_cm(struct xdp_md *ctx)
- {
-+	if (bpf_get_smp_processor_id() == 0)
-+		redirect_count++;
-+
- 	if (ctx->ingress_ifindex == IFINDEX_LO)
- 		return XDP_DROP;
- 
+Oh, I discovered it through code review.
 
--- 
-2.46.2
+I just tried llvm compilation but it seems that my environment cannot 
+compile bpf selftests. I need to find why.
+
+But after reading the tailcalls testcase, I found that the tailcall_3 
+subtest can cover this scenario as it will verify the TCC value.
+
+> 
+> Note to self is that I should run kCFI enabled tests for RISC-V.
+> 
+> 
+> Acked-by: Björn Töpel <bjorn@kernel.org>
 
 
