@@ -1,192 +1,123 @@
-Return-Path: <bpf+bounces-41319-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41320-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17E47995C98
-	for <lists+bpf@lfdr.de>; Wed,  9 Oct 2024 02:58:59 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3AD52995C9C
+	for <lists+bpf@lfdr.de>; Wed,  9 Oct 2024 02:59:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9BC541F249FB
-	for <lists+bpf@lfdr.de>; Wed,  9 Oct 2024 00:58:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EAFDE284659
+	for <lists+bpf@lfdr.de>; Wed,  9 Oct 2024 00:59:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AA8C1CD2B;
-	Wed,  9 Oct 2024 00:58:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 922E318EBF;
+	Wed,  9 Oct 2024 00:59:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="er78mva5"
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="L/ZtzLJH"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+Received: from smtp-fw-33001.amazon.com (smtp-fw-33001.amazon.com [207.171.190.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C5C418C31;
-	Wed,  9 Oct 2024 00:58:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A07D2EAD2;
+	Wed,  9 Oct 2024 00:59:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=207.171.190.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728435531; cv=none; b=M7CaheHNIFfKSgGj8CQF/erL6gFQhXWzpBHSMcwxPKOM5+qhrjS54QjvAfAIs0yXkWfIHAY8JqZiDRCQn5ns1Gk7C2RPIFnxBDm7SuNj1qIUkQ1R7Yttlhpi0UraJgLSd5x+pHC4dioFRtDIgWpe7awduzgDvDJDkYioTjRZ4hA=
+	t=1728435553; cv=none; b=ZVtTfr/mP7Z9CIVbyZAkQU1gRihd7lQ4iP0/PyjrUg/NDx1o0UDhY2OsMeLc0aNECCp5MWIU3fvmwuOUCuqIr5taPzGrnvlZgIETnff8Q17Y5Uh22anOqoBO/c7/O8SEP4NRxfSf709Xjtb4i6g3YBcY1QppSN/fqZmVt70mi8I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728435531; c=relaxed/simple;
-	bh=94+ST9p9ZEZx/gYVfmyH38elST3i1/AeA9RBXiRn/eg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gdv43cjn4PHwODWFpIDgTvpbr8cHJW4X2GW+9htvLYWyeM7XEGppzoYwpUEid+/OQlUY5+gZRgTm1S+ZoGIOlgCN/4MWXqy7kvTpPCF8uA5Ixd24wcvdVPL2Hk/4449USUsue/kjA71JZFLCxrOPxy+Uf9xWberr6bQU/h9rZdM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=er78mva5; arc=none smtp.client-ip=167.114.26.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-	s=smtpout1; t=1728435528;
-	bh=94+ST9p9ZEZx/gYVfmyH38elST3i1/AeA9RBXiRn/eg=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=er78mva5H84qSS+DrO+FFLZNhR6jQFx4KMWPz9soeRQZ1fLAEPm6MEUMEC4Ze/SGF
-	 wUVzFJH+Xw0XxOABG7guUjARHKUWLG8MxK0tMC+WpG8Y0aZiZFSnFu3UWTSGU1uaJW
-	 +ZwIsefYapDwzZjExa2ES9TDmJxWarAQBZdMM+eZ8xCWQ9juQ4+tRicjkab0ztNnQz
-	 i8tg5mzqU7dlpLVuuLWEoWGLpHtUuZz+f2JEMVIFrTtSxHq+i+8aNg0dQ800EuZKJq
-	 syMSJNpfB2Ul/I0lRhXff9vmXs3TT5mWlcecYo3XGHCkVIBr5Y1P2H2zZ5NKKham3b
-	 G6cVapbPHUnqQ==
-Received: from [IPV6:2606:6d00:100:4000:cacb:9855:de1f:ded2] (unknown [IPv6:2606:6d00:100:4000:cacb:9855:de1f:ded2])
-	by smtpout.efficios.com (Postfix) with ESMTPSA id 4XNZJm1FWfzSRw;
-	Tue,  8 Oct 2024 20:58:48 -0400 (EDT)
-Message-ID: <74d621a3-5b82-4831-a875-7c04e56dec7b@efficios.com>
-Date: Tue, 8 Oct 2024 20:56:51 -0400
+	s=arc-20240116; t=1728435553; c=relaxed/simple;
+	bh=SUHcnqAr8yhu077rKx9IiGHuJXgRJPVcwk783FOMTck=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=u97LpZ3rY8qLu4wX7PIWgkHwRV2UnwUMfzPs1UTS8QyYV9Te9qt3+FikTHBLxBF1Jstx6WLeFask8V40N/J8C93+kTSEgk558DpJfGgDIvZ6Qvmtyp/QqfSg+94iAsoSAc5BdAKyl1RimMYvVQpRIDlxwP/+wH6wx7dZhmRq/30=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.jp; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=L/ZtzLJH; arc=none smtp.client-ip=207.171.190.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.jp
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1728435551; x=1759971551;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=UmGmVF0qSS3224D/cSwIPdCaKUsdhZx5Q13P7JykaYA=;
+  b=L/ZtzLJHww1QRWR91/B+zHM0PF1AquUIff7rHIKcAeCvop0GKtePPZkK
+   TBjATC6bOslxXQ1VAS+kdRL8XdN+3UY0Ky98bPPYmE3EbO8CaBfnymwiV
+   fkYQ2DuyFK0ovmuVUl3uwluxF+b2yWm0/vhu/wb/6d56DNRRP5ReFqBCO
+   g=;
+X-IronPort-AV: E=Sophos;i="6.11,188,1725321600"; 
+   d="scan'208";a="374484136"
+Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.25.36.210])
+  by smtp-border-fw-33001.sea14.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2024 00:59:06 +0000
+Received: from EX19MTAUWB002.ant.amazon.com [10.0.21.151:43078]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.7.250:2525] with esmtp (Farcaster)
+ id 04d2f9e0-b978-40f4-a80f-8044b4c2cc65; Wed, 9 Oct 2024 00:59:06 +0000 (UTC)
+X-Farcaster-Flow-ID: 04d2f9e0-b978-40f4-a80f-8044b4c2cc65
+Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
+ EX19MTAUWB002.ant.amazon.com (10.250.64.231) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1258.34;
+ Wed, 9 Oct 2024 00:59:04 +0000
+Received: from 88665a182662.ant.amazon.com (10.88.149.159) by
+ EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1258.35;
+ Wed, 9 Oct 2024 00:59:00 +0000
+From: Kuniyuki Iwashima <kuniyu@amazon.com>
+To: <kerneljasonxing@gmail.com>
+CC: <andrii@kernel.org>, <ast@kernel.org>, <bpf@vger.kernel.org>,
+	<daniel@iogearbox.net>, <davem@davemloft.net>, <dsahern@kernel.org>,
+	<eddyz87@gmail.com>, <edumazet@google.com>, <haoluo@google.com>,
+	<john.fastabend@gmail.com>, <jolsa@kernel.org>, <kernelxing@tencent.com>,
+	<kpsingh@kernel.org>, <kuba@kernel.org>, <martin.lau@linux.dev>,
+	<netdev@vger.kernel.org>, <pabeni@redhat.com>, <sdf@fomichev.me>,
+	<song@kernel.org>, <willemb@google.com>, <willemdebruijn.kernel@gmail.com>,
+	<yonghong.song@linux.dev>, <kuniyu@amazon.com>
+Subject: Re: [PATCH net-next 1/9] net-timestamp: add bpf infrastructure to allow exposing more information later
+Date: Tue, 8 Oct 2024 17:58:46 -0700
+Message-ID: <20241009005846.40046-1-kuniyu@amazon.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20241008095109.99918-2-kerneljasonxing@gmail.com>
+References: <20241008095109.99918-2-kerneljasonxing@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 5/8] tracing: Allow system call tracepoints to handle
- page faults
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, linux-kernel@vger.kernel.org,
- Peter Zijlstra <peterz@infradead.org>, Alexei Starovoitov <ast@kernel.org>,
- Yonghong Song <yhs@fb.com>, "Paul E . McKenney" <paulmck@kernel.org>,
- Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Namhyung Kim <namhyung@kernel.org>,
- Andrii Nakryiko <andrii.nakryiko@gmail.com>, bpf@vger.kernel.org,
- Joel Fernandes <joel@joelfernandes.org>, linux-trace-kernel@vger.kernel.org,
- Michael Jeanson <mjeanson@efficios.com>
-References: <20241004145818.1726671-1-mathieu.desnoyers@efficios.com>
- <20241004145818.1726671-6-mathieu.desnoyers@efficios.com>
- <20241008192334.54180520@gandalf.local.home>
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Content-Language: en-US
-In-Reply-To: <20241008192334.54180520@gandalf.local.home>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: EX19D038UWB001.ant.amazon.com (10.13.139.148) To
+ EX19D004ANA001.ant.amazon.com (10.37.240.138)
 
-On 2024-10-09 01:23, Steven Rostedt wrote:
-> On Fri,  4 Oct 2024 10:58:15 -0400
-> Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
+From: Jason Xing <kerneljasonxing@gmail.com>
+Date: Tue,  8 Oct 2024 17:51:01 +0800
+> From: Jason Xing <kernelxing@tencent.com>
 > 
->> Use Tasks Trace RCU to protect iteration of system call enter/exit
->> tracepoint probes to allow those probes to handle page faults.
->>
->> In preparation for this change, all tracers registering to system call
->> enter/exit tracepoints should expect those to be called with preemption
->> enabled.
->>
->> This allows tracers to fault-in userspace system call arguments such as
->> path strings within their probe callbacks.
->>
->> Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
->> Cc: Michael Jeanson <mjeanson@efficios.com>
->> Cc: Steven Rostedt <rostedt@goodmis.org>
->> Cc: Masami Hiramatsu <mhiramat@kernel.org>
->> Cc: Peter Zijlstra <peterz@infradead.org>
->> Cc: Alexei Starovoitov <ast@kernel.org>
->> Cc: Yonghong Song <yhs@fb.com>
->> Cc: Paul E. McKenney <paulmck@kernel.org>
->> Cc: Ingo Molnar <mingo@redhat.com>
->> Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
->> Cc: Mark Rutland <mark.rutland@arm.com>
->> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
->> Cc: Namhyung Kim <namhyung@kernel.org>
->> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
->> Cc: bpf@vger.kernel.org
->> Cc: Joel Fernandes <joel@joelfernandes.org>
->> ---
->>   include/linux/tracepoint.h | 12 ++++++++++--
->>   init/Kconfig               |  1 +
->>   2 files changed, 11 insertions(+), 2 deletions(-)
->>
->> diff --git a/include/linux/tracepoint.h b/include/linux/tracepoint.h
->> index 014790495ad8..cefd44b7c91f 100644
->> --- a/include/linux/tracepoint.h
->> +++ b/include/linux/tracepoint.h
->> @@ -17,6 +17,7 @@
->>   #include <linux/errno.h>
->>   #include <linux/types.h>
->>   #include <linux/rcupdate.h>
->> +#include <linux/rcupdate_trace.h>
->>   #include <linux/tracepoint-defs.h>
->>   #include <linux/static_call.h>
->>   
->> @@ -107,6 +108,7 @@ void for_each_tracepoint_in_module(struct module *mod,
->>   #ifdef CONFIG_TRACEPOINTS
->>   static inline void tracepoint_synchronize_unregister(void)
->>   {
->> +	synchronize_rcu_tasks_trace();
->>   	synchronize_rcu();
->>   }
->>   #else
->> @@ -204,11 +206,17 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
->>   		if (!(cond))						\
->>   			return;						\
->>   									\
->> -		preempt_disable_notrace();				\
+> Implement basic codes so that we later can easily add each tx points.
+> Introducing BPF_SOCK_OPS_ALL_CB_FLAGS used as a test statement can help use
+> control whether to output or not.
 > 
-> Should add a comment somewhere stating that the syscall version is to allow faults.
-
-I plan to add this comment on top of __TO_TRACE:
-
-+ *
-+ * With @syscall=0, the tracepoint callback array dereference is
-+ * protected by disabling preemption.
-+ * With @syscall=1, the tracepoint callback array dereference is
-+ * protected by Tasks Trace RCU, which allows probes to handle page
-+ * faults.
-
-Thanks,
-
-Mathieu
-
-
+> Signed-off-by: Jason Xing <kernelxing@tencent.com>
+> ---
+>  include/uapi/linux/bpf.h       |  5 ++++-
+>  net/core/skbuff.c              | 18 ++++++++++++++++++
+>  tools/include/uapi/linux/bpf.h |  5 ++++-
+>  3 files changed, 26 insertions(+), 2 deletions(-)
 > 
-> -- Steve
-> 
->> +		if (syscall)						\
->> +			rcu_read_lock_trace();				\
->> +		else							\
->> +			preempt_disable_notrace();			\
->>   									\
->>   		__DO_TRACE_CALL(name, TP_ARGS(args));			\
->>   									\
->> -		preempt_enable_notrace();				\
->> +		if (syscall)						\
->> +			rcu_read_unlock_trace();			\
->> +		else							\
->> +			preempt_enable_notrace();			\
->>   	} while (0)
->>   
->>   /*
->> diff --git a/init/Kconfig b/init/Kconfig
->> index fbd0cb06a50a..eedd0064fb36 100644
->> --- a/init/Kconfig
->> +++ b/init/Kconfig
->> @@ -1984,6 +1984,7 @@ config BINDGEN_VERSION_TEXT
->>   #
->>   config TRACEPOINTS
->>   	bool
->> +	select TASKS_TRACE_RCU
->>   
->>   source "kernel/Kconfig.kexec"
->>   
-> 
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index c6cd7c7aeeee..157e139ed6fc 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -6900,8 +6900,11 @@ enum {
+>  	 * options first before the BPF program does.
+>  	 */
+>  	BPF_SOCK_OPS_WRITE_HDR_OPT_CB_FLAG = (1<<6),
+> +	/* Call bpf when the kernel is generating tx timestamps.
+> +	 */
+> +	BPF_SOCK_OPS_TX_TIMESTAMPING_OPT_CB_FLAG = (1<<7),
+>  /* Mask of all currently supported cb flags */
+> -	BPF_SOCK_OPS_ALL_CB_FLAGS       = 0x7F,
+> +	BPF_SOCK_OPS_ALL_CB_FLAGS       = 0xFF,
 
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
+I remember this change makes two selftests fail and needs diff
+in this link.
+https://lore.kernel.org/bpf/20231016161134.25365-1-kuniyu@amazon.com/
 
+Also, adding a bpf selftest or extending some for this series
+would be nice.
 
