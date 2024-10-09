@@ -1,156 +1,138 @@
-Return-Path: <bpf+bounces-41501-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41502-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38717997927
-	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 01:35:34 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28A34997931
+	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 01:37:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5B3831C225E6
-	for <lists+bpf@lfdr.de>; Wed,  9 Oct 2024 23:35:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B4F22284482
+	for <lists+bpf@lfdr.de>; Wed,  9 Oct 2024 23:37:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D90051E1330;
-	Wed,  9 Oct 2024 23:35:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 786A31E3DF7;
+	Wed,  9 Oct 2024 23:37:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UfaCDW04"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NZCJGcXH"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A28781547CF
-	for <bpf@vger.kernel.org>; Wed,  9 Oct 2024 23:35:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 647B21E3DD6;
+	Wed,  9 Oct 2024 23:37:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728516928; cv=none; b=AhJttiYxg5XyeOfq0Xw1N6Msz6BtIMUKkZPFtqEjt2cXM0/iGSrV9+U7akU5KH8oWHU3qIlDu36U7PwMkuFFwbB4khZEQ7PD+x8AkeipDgfHmBQGhvdrdhER4tjl7WcTKCmhu6kp/nwzSqTJYfbqzsSmDxUK8okQbcgJHQx8CT4=
+	t=1728517023; cv=none; b=EJoSFqU0TfNlBCmTzRK5bdxMTQl8vuPOe7l0a3oRJojHP73PhqP1Dx61EnFkRCmUgPLZtgWhZUOjezpSDm1+IQm5/5GyxOb9QlPmso1pypZk9zN2EgwR4fvFKRa740WePZsvBuo9T4xTu66NwlU1zNSPB/rXqfpGygCdrzj9AUw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728516928; c=relaxed/simple;
-	bh=3JCe5/aXakAe33MsV3fVuP0YrL2vIO6+IpjbdP8gRm4=;
+	s=arc-20240116; t=1728517023; c=relaxed/simple;
+	bh=wUG1D8/JF0SUTbWugDeCKFgHLZU5zyUNJg6GkytmOrI=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Is2818z8IRdVUsnjWdCA/utvKpHOH53/IN3YhyEUaYVnE2+gn/n43r2VYenO44ZXKA3bAzTAHewfsq2qzVz+X46+R+TZ3OIlwxMEjIP4gIjZiGZ7VzpSnlI7wC+OkXjeC8lns3zrMxBKgp2RZQsYh/xMwxp6VmPIMRfl51VGPek=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UfaCDW04; arc=none smtp.client-ip=209.85.221.54
+	 To:Cc:Content-Type; b=Hbm5V/rJ4e3GlAE6jxvz/Q4eoP228PCPK9jney1/SZ+pcLkzHi+GsBhSpCRIVJsz2nzx21+uI+OaqE/GkB+0nf7Ou2tK6AvDpeI556PhjtI1xXPenbnHW3RDy6cWyZL9+mkmLTkyOnrhg2XJPOWYKDlN7nGl7nsb99ApKtZklQ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NZCJGcXH; arc=none smtp.client-ip=209.85.128.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-37ccebd7f0dso163189f8f.1
-        for <bpf@vger.kernel.org>; Wed, 09 Oct 2024 16:35:26 -0700 (PDT)
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-42f6bec84b5so2720615e9.1;
+        Wed, 09 Oct 2024 16:37:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1728516925; x=1729121725; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1728517019; x=1729121819; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=i5gM/ickk520BcezLGCw7uOXhqlWZ4F/SXrCXl3VNmo=;
-        b=UfaCDW04Gt8Ui9+2hMAzq7Ajh+mar/t676+2qque4DFqo1helhT+Ci0zAjdq/RNViB
-         v7sC1SH19kM4+rCDzE67yAdy6bztQjFk2uD9WX5Pj+qigHgFg+lKL+rp3zo8tRfKu17t
-         f03o1fw1EOE2W70jltwp4EnN/n7PERojPlxwC/cTRBYVapvcmV8/SzloOX3wiAiqvOuk
-         Q6jkBIi/lJAWUiWMhMojeQ+MNJzPziE3RRnummJXBwl0tyl0dLhl5hyrzgPvoHqwUKzb
-         daaQrRVhWHK4N0tWsN1RZDxmrzZn56OsNoFAbBTy1n/eXRVC/aJ6awAiOEua8/dhnp8U
-         Yoew==
+        bh=wUG1D8/JF0SUTbWugDeCKFgHLZU5zyUNJg6GkytmOrI=;
+        b=NZCJGcXH6c//taI9sHvZXJn0gXPnLjDw78cqE585NDxdSDsaC+wnle/nJUwgrKpGpp
+         A8ZUMRnR5zv79JiZKZwLXx2KksE1tUySmPHj4jdcbF+0WHpS1Jun9698NEGTJtnqoNAi
+         2gFedPgdacINzA5Stv8PYXp1LUb+X9Omupw01u/RgbRX/lAwygJBYbggIik+/ODHW4ru
+         r003dMYxOlHtGfEci0bKMf+hQFmIdydF42NvNKIrZztC9NliUklqfVhccGnhaX6NadPU
+         2Ut/nii0nKKAnYPK1NcRUb8x021HVQd/TXXFwOLXYAow+FxiqX45VyIMUCP5UCiuPLAv
+         W5OQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728516925; x=1729121725;
+        d=1e100.net; s=20230601; t=1728517019; x=1729121819;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=i5gM/ickk520BcezLGCw7uOXhqlWZ4F/SXrCXl3VNmo=;
-        b=TUB+s5P22/N4LfmZzS65N9a9Uc74JJdlK1rZTef9P9yxymRv6XYkcqgQUf1Yt8VY10
-         wBZ0guAVCtM5y1pCHZJ5JXZRPUBX9MUyyBBkzCVBlQpgwJPQyuqwrFeFElJh1DV/Zqdo
-         33Nu4Xf79M4kifJQMCLnTi11CzHef9WxHwk1buaPHNAIGnoGKLt/0fQxPl8wyezhV6X5
-         zqTg16f7Kz8963uCdfEOq+xGE3LPJ9BHCackGx0wFygAxSi/w7T+jw3QTIftreTraGiJ
-         x0Am/pyUIWYexUJgcwAM8krN3aeO2tp8h6r/pKxsij+2ySZGLKvOw1dM5oPdzIk55P5B
-         /zHw==
-X-Forwarded-Encrypted: i=1; AJvYcCUWDm/mm62T14SVVNtveE2JN17PceeeVhmTUsWDVBMREQbHw39UgcXHgVTCKVEZgvlH2HY=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxqGxO0Rq/vZjEDcnNwSJIDwdbpMXuIvooqdgC8PnWGeCGW9Cys
-	VaTdXK0g8SjTThUUgnuP8HXrYvky9FGCmXhgosKQ1afCHAgWDc16Jh+hy7CvXKslrYImDU7zuOn
-	auifG0uel3hri9kzRAJHm/sbkFFs=
-X-Google-Smtp-Source: AGHT+IEw/S0AVf8GcJyTGTNhviWqWIL6Xxb/h5RbHAY3TAeYOlIgp8vYYQQ3VRIbXMys5By6eBpqC5gisyPQ+eivpqI=
-X-Received: by 2002:a5d:4991:0:b0:37c:cc67:8b1f with SMTP id
- ffacd0b85a97d-37d3aab7873mr2611925f8f.48.1728516924596; Wed, 09 Oct 2024
- 16:35:24 -0700 (PDT)
+        bh=wUG1D8/JF0SUTbWugDeCKFgHLZU5zyUNJg6GkytmOrI=;
+        b=bOz4ZUE3aFMwjXhFucSGXxIydIJXakWIxso5u1Ii1zxcZ7c/hUXGHaYiWhHKlzAB/X
+         Mq97BCkdbzMqCqC06ZRmgXIfimIXH+BCRLEwpzG/0SPcYkKvwVt4bvCPdPEtSSI9QAvr
+         s6wrXnM4Ksa5ZClqCUQfkLH0sZh0RyCXl8Ys/WD9Iir65d0RggV3dkDXH7VtmyBrpA4o
+         lu7Nzx90ZXYHf5X9WoVl91V+uPlDqBlnZ6gSdDqy7jxEe/CJaCeu7nxpopW6lDpsx/WO
+         XmEIIHg9fuOpaZD5PMveYPQu6eAt2poBR1D2CvXDGwIyVZI38vkRANYpUEB9ejYqFF4H
+         58pg==
+X-Forwarded-Encrypted: i=1; AJvYcCUOTKmIIHdE3jIpWOLzNU5wLcPvktrCIETS28ulL5rI6qbNr6MeF1zyi+esrXcdEWa+7SE=@vger.kernel.org, AJvYcCW/NAMelrKv4rAdzXhNnB3+/tg89Ozn9sbXvIih5szfKHQgHihdFbsNCOPXIO2exXKqnFUQGZe6@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx1zfQS2HKjmxs8BsCTBKBZkXapw43i3fujJS1ccl9kSxKg+8O0
+	m269aEIrdT9XctYk7MFkfrQkoawXmOY6sqqhj28OVcoB8Kb9Bgmz18KAw2FOK1qliCNvcSRXQkg
+	Xb04zTe2NP/AAoQPXaG7czMTHh1c=
+X-Google-Smtp-Source: AGHT+IHqIWbZVifNDlT8DeMkyoyAF2MOb7xZrxOqjs+EkXDp+KFRBCvU+99Fq2KqCJiCcJFUtHOkqVh4DlZLORfSf/g=
+X-Received: by 2002:a05:600c:3ac4:b0:426:602d:a246 with SMTP id
+ 5b1f17b1804b1-430d7487f4fmr36662795e9.32.1728517018355; Wed, 09 Oct 2024
+ 16:36:58 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241008091718.3797027-1-houtao@huaweicloud.com>
- <20241008091718.3797027-2-houtao@huaweicloud.com> <CAEf4BzZOo37TZM_tcEq_FV4v3LWXYmrUGAtOr+7ctGLF-w26wg@mail.gmail.com>
- <20f2714b-39a7-1530-6a7e-af8b7c2e8ee5@huaweicloud.com>
-In-Reply-To: <20f2714b-39a7-1530-6a7e-af8b7c2e8ee5@huaweicloud.com>
+References: <20241008-fix-kfunc-btf-caching-for-modules-v1-0-dfefd9aa4318@redhat.com>
+ <20241008-fix-kfunc-btf-caching-for-modules-v1-2-dfefd9aa4318@redhat.com>
+ <CAADnVQKM0Mw=VXp6mX2aZrHoUz1+EpVO5RDMq3FPm9scPkVZXw@mail.gmail.com> <87bjztsp2b.fsf@toke.dk>
+In-Reply-To: <87bjztsp2b.fsf@toke.dk>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 9 Oct 2024 16:35:13 -0700
-Message-ID: <CAADnVQ+iMhEXPAbGNpPpsKnZ5VLfjo_ar59Z0HL2TtwesaEU-g@mail.gmail.com>
-Subject: Re: [PATCH bpf 1/7] bpf: Add the missing BPF_LINK_TYPE invocation for sockmap
-To: Hou Tao <houtao@huaweicloud.com>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, bpf <bpf@vger.kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Andrii Nakryiko <andrii@kernel.org>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>, 
-	Yonghong Song <yonghong.song@linux.dev>, Daniel Borkmann <daniel@iogearbox.net>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Jiri Olsa <jolsa@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, Yafang Shao <laoar.shao@gmail.com>, 
-	Hou Tao <houtao1@huawei.com>, Xu Kuohai <xukuohai@huawei.com>
+Date: Wed, 9 Oct 2024 16:36:47 -0700
+Message-ID: <CAADnVQKuw=HqtzRok5NyxMDLoe=AHQfwtBxpe9hs3G1HDRJmfA@mail.gmail.com>
+Subject: Re: [PATCH bpf 2/4] selftests/bpf: Consolidate kernel modules into
+ common directory
+To: =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Simon Sundberg <simon.sundberg@kau.se>, bpf <bpf@vger.kernel.org>, 
+	Network Development <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Oct 8, 2024 at 6:32=E2=80=AFPM Hou Tao <houtao@huaweicloud.com> wro=
-te:
+On Wed, Oct 9, 2024 at 12:39=E2=80=AFAM Toke H=C3=B8iland-J=C3=B8rgensen <t=
+oke@redhat.com> wrote:
 >
-> Hi,
+> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
 >
-> On 10/9/2024 2:33 AM, Andrii Nakryiko wrote:
-> > On Tue, Oct 8, 2024 at 2:05=E2=80=AFAM Hou Tao <houtao@huaweicloud.com>=
- wrote:
-> >> From: Hou Tao <houtao1@huawei.com>
+> > On Tue, Oct 8, 2024 at 3:35=E2=80=AFAM Toke H=C3=B8iland-J=C3=B8rgensen=
+ <toke@redhat.com> wrote:
 > >>
-> >> There is an out-of-bounds read in bpf_link_show_fdinfo() for the sockm=
-ap
-> >> link fd. Fix it by adding the missing BPF_LINK_TYPE invocation for
-> >> sockmap link
+> >> The selftests build two kernel modules (bpf_testmod.ko and
+> >> bpf_test_no_cfi.ko) which use copy-pasted Makefile targets. This is a
+> >> bit messy, and doesn't scale so well when we add more modules, so let'=
+s
+> >> consolidate these rules into a single rule generated for each module
+> >> name, and move the module sources into a single directory.
 > >>
-> >> Also add comments for bpf_link_type to prevent missing updates in the
-> >> future.
-> >>
-> >> Fixes: 699c23f02c65 ("bpf: Add bpf_link support for sk_msg and sk_skb =
-progs")
-> >> Signed-off-by: Hou Tao <houtao1@huawei.com>
-> >> ---
-> >>  include/linux/bpf_types.h | 1 +
-> >>  include/uapi/linux/bpf.h  | 3 +++
-> >>  2 files changed, 4 insertions(+)
-> >>
-> >> diff --git a/include/linux/bpf_types.h b/include/linux/bpf_types.h
-> >> index 9f2a6b83b49e..fa78f49d4a9a 100644
-> >> --- a/include/linux/bpf_types.h
-> >> +++ b/include/linux/bpf_types.h
-> >> @@ -146,6 +146,7 @@ BPF_LINK_TYPE(BPF_LINK_TYPE_XDP, xdp)
-> >>  BPF_LINK_TYPE(BPF_LINK_TYPE_NETFILTER, netfilter)
-> >>  BPF_LINK_TYPE(BPF_LINK_TYPE_TCX, tcx)
-> >>  BPF_LINK_TYPE(BPF_LINK_TYPE_NETKIT, netkit)
-> >> +BPF_LINK_TYPE(BPF_LINK_TYPE_SOCKMAP, sockmap)
-> >>  #endif
-> >>  #ifdef CONFIG_PERF_EVENTS
-> >>  BPF_LINK_TYPE(BPF_LINK_TYPE_PERF_EVENT, perf)
-> >> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> >> index e8241b320c6d..4a939c90dc2e 100644
-> >> --- a/include/uapi/linux/bpf.h
-> >> +++ b/include/uapi/linux/bpf.h
-> >> @@ -1121,6 +1121,9 @@ enum bpf_attach_type {
-> >>
-> >>  #define MAX_BPF_ATTACH_TYPE __MAX_BPF_ATTACH_TYPE
-> >>
-> >> +/* Add BPF_LINK_TYPE(type, name) in bpf_types.h to keep bpf_link_type=
-_strs[]
-> >> + * in sync with the definitions below.
-> >> + */
+> >> To avoid parallel builds of the different modules stepping on each
+> >> other's toes during the 'modpost' phase of the Kbuild 'make modules', =
+we
+> >> create a single target for all the defined modules, which contains the
+> >> recursive 'make' call into the modules directory. The Makefile in the
+> >> subdirectory building the modules is modified to also touch a
+> >> 'modules.built' file, which we can add as a dependency on the top-leve=
+l
+> >> selftests Makefile, thus ensuring that the modules are always rebuilt =
+if
+> >> any of the dependencies in the selftests change.
 > >
-> > Let's also add some static assert making sure that bpf_link_type_strs
-> > (and probably same for other types) size is equal to
-> > __MAX_BPF_LINK_TYPE? Comment is good to remind us, but compilation
-> > error is better.
+> > Nice cleanup, but looks unrelated to the fix and hence
+> > not a bpf material.
+> > Why combine them?
 >
-> Good idea. Will check for other candidates for static assert. Will do in =
-v2.
+> Because the selftest adds two more kernel modules to the selftest build,
+> so we'd have to add two more directories with a single module in each
+> and copy-pasted Makefile rules. It seemed simpler to just refactor the
+> build of the two existing modules first, after which adding the two new
+> modules means just dropping two more source files into the modules
+> directory.
+>
+> I guess we could technically do the single-directory-per-module, and
+> then send this patch as a follow-up once bpf gets merged back into
+> bpf-next, but it seems a bit of a hassle, TBH. WDYT?
 
-When updating include/uapi/linux/bpf.h
-pls update tools/../bpf.h in the same patch as well.
-
-pw-bot: cr
+The way it is right it's certainly not going into bpf tree.
+So if you don't want to split then the whole thing is bpf-next then.
 
