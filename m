@@ -1,148 +1,172 @@
-Return-Path: <bpf+bounces-41450-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41451-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 371199971C7
-	for <lists+bpf@lfdr.de>; Wed,  9 Oct 2024 18:37:22 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1143E9971DA
+	for <lists+bpf@lfdr.de>; Wed,  9 Oct 2024 18:39:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EADA8280A70
-	for <lists+bpf@lfdr.de>; Wed,  9 Oct 2024 16:37:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 341311C23313
+	for <lists+bpf@lfdr.de>; Wed,  9 Oct 2024 16:39:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 616CD1E376F;
-	Wed,  9 Oct 2024 16:32:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 658361DF722;
+	Wed,  9 Oct 2024 16:36:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Bm9P3LXt"
 X-Original-To: bpf@vger.kernel.org
-Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f67.google.com (mail-ed1-f67.google.com [209.85.208.67])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93B101E32C7;
-	Wed,  9 Oct 2024 16:32:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.23
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 473F919DF6A
+	for <bpf@vger.kernel.org>; Wed,  9 Oct 2024 16:36:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.67
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728491552; cv=none; b=CPqo+j4k9mxQYE669fsmmtYMyaOhMKkewquSwO8UOIw1lYKrpwconOKCbJJqSOFL8Cb58J+x8w1M3epvPL8bU/lAyKkyJrTunPQf1/zNPJA3soKLYF4IyegxnYy39LJcKPtgXveDrB5onu013WXlGkNTuiAA0ArmCkur/Mlh+H8=
+	t=1728491800; cv=none; b=ZdbLzlryOYR5v+mHYysYX6cxfX6j+AcAf1/f64As7vcfTj3abl31yXKqwJHMynuregtELLsI++n4/TexFOZcvxyZAUPNrSFfTiPZ4qqY15r7Oogf6uUgt+6LlLnL3qS1Zp3SNpbgD+SwLLlEYX1uP4IZDJKN8Lw1c4wrDTtvigM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728491552; c=relaxed/simple;
-	bh=XsqPqyDRIUZtsOsZNo/NYq7wEUNAvNic6hAxHdnTasE=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=Q/hqtoaGkc8Pkj7Ku+syV6eu4H/25HeJ4sKmy4UD8LUFPDx9vFuIjbtMnC4x5YO+WMXkhYCpwvEv+zybu2Xv/l6aOm+hvimhK0sNzGA8F6aaAZ1c27hJDGvX032jwwvIW5RSFiyoxtCAAM4ZrxdCT7MP/xClBOsU8QjFAcaOT50=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.23
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.18.186.29])
-	by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4XNyZt43gpz9v7Hq;
-	Thu, 10 Oct 2024 00:12:22 +0800 (CST)
-Received: from mail02.huawei.com (unknown [7.182.16.27])
-	by mail.maildlp.com (Postfix) with ESMTP id 9F0B1140393;
-	Thu, 10 Oct 2024 00:32:18 +0800 (CST)
-Received: from [127.0.0.1] (unknown [10.204.63.22])
-	by APP2 (Coremail) with SMTP id GxC2BwB3JscKsAZnHceLAg--.4147S2;
-	Wed, 09 Oct 2024 17:32:18 +0100 (CET)
-Message-ID: <b5f9059326d184fa16269c666256b481339c689d.camel@huaweicloud.com>
-Subject: Re: [PATCH 1/3] ima: Remove inode lock
-From: Roberto Sassu <roberto.sassu@huaweicloud.com>
-To: bpf@vger.kernel.org, kpsingh@kernel.org
-Cc: Paul Moore <paul@paul-moore.com>, zohar@linux.ibm.com, 
-	dmitry.kasatkin@gmail.com, eric.snowberg@oracle.com, jmorris@namei.org, 
-	serge@hallyn.com, linux-integrity@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	ebpqwerty472123@gmail.com, Roberto Sassu <roberto.sassu@huawei.com>
-Date: Wed, 09 Oct 2024 18:32:07 +0200
-In-Reply-To: <7358f12d852964d9209492e337d33b8880234b74.camel@huaweicloud.com>
-References: <20241008165732.2603647-1-roberto.sassu@huaweicloud.com>
-	 <CAHC9VhSyWNKqustrTjA1uUaZa_jA-KjtzpKdJ4ikSUKoi7iV0Q@mail.gmail.com>
-	 <CAHC9VhQR2JbB7ni2yX_U8TWE0PcQQkm_pBCuG3nYN7qO15nNjg@mail.gmail.com>
-	 <7358f12d852964d9209492e337d33b8880234b74.camel@huaweicloud.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	s=arc-20240116; t=1728491800; c=relaxed/simple;
+	bh=aiYaq/LMUVxpbLOQV4chWrwdPX9zfNJRDjQhnyGNfI4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LT4XbZoJkAHqAfRiUX7c2givNZJa3TIm3gt5O0s5XQMjvVMYIuZXntxSuNF+kd2rayEpAwsxmgojHnxh/sa0OH/f7DFNuavMjgNXFRTPRXjjo3opn8zh9QlSBlQKO4wIsAXmBTPttChDTdjPc175Cf1bGQ/QZoyuEP0Ail+lAvE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Bm9P3LXt; arc=none smtp.client-ip=209.85.208.67
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f67.google.com with SMTP id 4fb4d7f45d1cf-5c5cf26b95aso9091834a12.3
+        for <bpf@vger.kernel.org>; Wed, 09 Oct 2024 09:36:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1728491797; x=1729096597; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XIFfJOTMBFyfVompdVZeH8TD3DhGBG5Ob5oC9agYjiw=;
+        b=Bm9P3LXtoXWc10U/beq/O23CFGlnMc5VyqDTjnECpN+XFtx4qvQiXUJqAhaHnWpVmD
+         lzvRvn+lbIOQ4ymC0gk5zYe2almI4yZtaVX7ZckC15JaZ0aBUlj+zqPj7NxVsQAyM5ud
+         5my8hjwlkg4fVv2BpEAnscwhZI7LD1sb2siQuh3sguy3eW9/V2tsxhEurvrmLmDaMmqI
+         3PO1ZsRSV6N0Oe/otuDYTawK+Hjldbzsfm/2ssuHJ9wwCVvEOM/qX7XEFnxP8EMANEls
+         3pN7RjEpbvrMoZnCUKVcQNpohDwfqw6AKapWEQ96uee1WjPop+3s+XyQSo1IebsAtCwe
+         0xoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1728491797; x=1729096597;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XIFfJOTMBFyfVompdVZeH8TD3DhGBG5Ob5oC9agYjiw=;
+        b=Rm0q4d2kbzTN12uHBzlxCdO1fQUOCFoX/HKQUlWc+Da1r9KSvcDLccufcrawZia1nD
+         DKgpCIm9hmoDVdyDmX0BS2SskobU1ojAt8orZJ2SZunxr0eHczTd7LFvuHhqVOUlKOgX
+         Ak3DL3SakQ5wuDFudpOYA2Vh609+2L3qnbyJebKAnv1GjKXuD9D6/5PW1m3/kMFSDbJR
+         ZB2cKekGOa2wlk8DEV3LilQ5RlMifRMD2cFdfDeq+/O26NMp4MW/DIBtnTQR5xlVPtyt
+         Os5s4GTqxuO9TMWHKdK3UiPYN3Fsb729IL7Bkg31FMK1LKg3IVncSbZFQNXMJ1GVoXCS
+         D9KA==
+X-Forwarded-Encrypted: i=1; AJvYcCWUbiA9lKxy5FrQEpKE5FulV0b5VOCK7k1U15tOXj5hD/6WBuoL5g/BUzfyPG26JEamPig=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwmfqNZRjfi8CGm9KuLFDS0xPds6JJJKDtMAI5Dz6M877f3Fyvx
+	rFuyMPFnb/aSv/pfI9omILRLFryzZLdPdxG3GfFoP6wuWcwunONKVMpfa7ui0zrrqxcJtmPd4Ny
+	/NYqqDNtWMXkQAfwu/35aK6QXTZY=
+X-Google-Smtp-Source: AGHT+IH1U2WOS1pRvwSY5xwddFd3eNgusr9MER9YqBxhYQ6KNpaVW7k+emitSsj49IjxX3CJHBue9rBADz+T+7ax+08=
+X-Received: by 2002:a05:6402:278f:b0:5c3:1089:ff23 with SMTP id
+ 4fb4d7f45d1cf-5c91d6a03femr2430254a12.35.1728491797232; Wed, 09 Oct 2024
+ 09:36:37 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-CM-TRANSID:GxC2BwB3JscKsAZnHceLAg--.4147S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7uw18AFy7KrW7JF18AF43ZFb_yoW8KFy7pa
-	y3K3WYkr1ktrW3CryftFZruaySk3yfWFZrXwn7Jr1qvas2vr1jqr1rJw1Uury5GryxAw1I
-	qF17WwnxCw1UArJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvFb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8C
-	rVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4
-	IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kIc2xKxwCY1x0262kK
-	e7AKxVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
-	02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
-	GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-	CjxVAFwI0_Cr0_Gr1UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AK
-	xVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvj
-	xUrsqXDUUUU
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQALBGcF5ngMbAAAsS
+References: <20240926234506.1769256-1-yonghong.song@linux.dev>
+ <CAADnVQ+caNh8+fgCj2XeZDrXniYif5Y+rw6vsMOojBO3Qwk+Nw@mail.gmail.com>
+ <CAADnVQKLWi_TfpbiYb1vPMYMqPOPWPS-RGbB0FksEQW5i36poQ@mail.gmail.com>
+ <CAP01T77q_H31mPXPQV4xHifutxxFeuoD8eg75C717MZ=OOeHew@mail.gmail.com>
+ <CAADnVQLfWgpu6WvZRCFo39YHJ=zSSQWcOnaCOqdfyCg8uRoddg@mail.gmail.com>
+ <CAP01T77G63MGvomrd3563bgBcNKUZg0Jc=GGmcGO0zPLS0hcHA@mail.gmail.com>
+ <CAADnVQ+z-s07V_KU91+zGRB3qXGR9nr3w1dMBfCEEgunyes7EA@mail.gmail.com>
+ <8b6c1eb1-de43-4ddb-b2b6-48256bdacddb@linux.dev> <CAP01T77k7bqTx_VRhnUjcOcGDp-y=zJHzKi7S-+domZjhEGfzQ@mail.gmail.com>
+ <CAADnVQ+UByKkpVSg4tC-hoV7DstEYE11WxJ4nbGj27emZ2PFmA@mail.gmail.com>
+ <a3116710-7e55-42ce-abd2-7becee9c275f@linux.dev> <CAADnVQKO1=ywkfULmSE=15dFU4Ovn3OMVbnGpkah5noeDnwtgw@mail.gmail.com>
+ <d8ff2878-c53b-48d7-b624-93aeb2087113@linux.dev> <a4468429-3b93-49b3-b8e4-122b903c98fb@linux.dev>
+ <CAADnVQJRd-ngE8UBVUZVzwUwK6cGLMtZngwoUK+HOh2t_evcgQ@mail.gmail.com>
+ <1fc78197-c266-41d2-8d8a-c9dbf2e35d8f@linux.dev> <CAADnVQ+tvGMFnEuZmKyXxJX25pL+G6X+9445Ct-RSU1sZ+57xw@mail.gmail.com>
+ <CAADnVQLoLviDyvhae=m=LrUEPhE_UCaDGvjCREKTQBqEGduPdQ@mail.gmail.com>
+In-Reply-To: <CAADnVQLoLviDyvhae=m=LrUEPhE_UCaDGvjCREKTQBqEGduPdQ@mail.gmail.com>
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Wed, 9 Oct 2024 18:36:00 +0200
+Message-ID: <CAP01T751eMtFv-LAym3Go_f-QLHSeU2GY08p--hCcdxzADte1w@mail.gmail.com>
+Subject: Re: yet another approach Was: [PATCH bpf-next v3 4/5] bpf, x86: Add
+ jit support for private stack
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Yonghong Song <yonghong.song@linux.dev>, bpf <bpf@vger.kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Kernel Team <kernel-team@fb.com>, 
+	Martin KaFai Lau <martin.lau@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2024-10-09 at 18:25 +0200, Roberto Sassu wrote:
-> On Wed, 2024-10-09 at 11:37 -0400, Paul Moore wrote:
-> > On Wed, Oct 9, 2024 at 11:36=E2=80=AFAM Paul Moore <paul@paul-moore.com=
-> wrote:
-> > > On Tue, Oct 8, 2024 at 12:57=E2=80=AFPM Roberto Sassu
-> > > <roberto.sassu@huaweicloud.com> wrote:
-> > > >=20
-> > > > From: Roberto Sassu <roberto.sassu@huawei.com>
-> > > >=20
-> > > > Move out the mutex in the ima_iint_cache structure to a new structu=
-re
-> > > > called ima_iint_cache_lock, so that a lock can be taken regardless =
-of
-> > > > whether or not inode integrity metadata are stored in the inode.
-> > > >=20
-> > > > Introduce ima_inode_security() to simplify accessing the new struct=
-ure in
-> > > > the inode security blob.
-> > > >=20
-> > > > Move the mutex initialization and annotation in the new function
-> > > > ima_inode_alloc_security() and introduce ima_iint_lock() and
-> > > > ima_iint_unlock() to respectively lock and unlock the mutex.
-> > > >=20
-> > > > Finally, expand the critical region in process_measurement() guarde=
-d by
-> > > > iint->mutex up to where the inode was locked, use only one iint loc=
-k in
-> > > > __ima_inode_hash(), since the mutex is now in the inode security bl=
-ob, and
-> > > > replace the inode_lock()/inode_unlock() calls in ima_check_last_wri=
-ter().
-> > > >=20
-> > > > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> > > > ---
-> > > >  security/integrity/ima/ima.h      | 26 ++++++++---
-> > > >  security/integrity/ima/ima_api.c  |  4 +-
-> > > >  security/integrity/ima/ima_iint.c | 77 ++++++++++++++++++++++++++-=
-----
-> > > >  security/integrity/ima/ima_main.c | 39 +++++++---------
-> > > >  4 files changed, 104 insertions(+), 42 deletions(-)
-> > >=20
-> > > I'm not an IMA expert, but it looks reasonable to me, although
-> > > shouldn't this carry a stable CC in the patch metadata?
-> > >=20
-> > > Reviewed-by: Paul Moore <paul@paul-moore.com>
-> >=20
-> > Sorry, one more thing ... did you verify this patchset resolves the
-> > syzbot problem?  I saw at least one reproducer.
->=20
-> Uhm, could not reproduce the deadlock with the reproducer. However,
-> without the patch I have a lockdep warning, and with I don't.
->=20
-> I asked syzbot to try the patches. Let's see.
+On Wed, 9 Oct 2024 at 04:06, Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Tue, Oct 8, 2024 at 3:10=E2=80=AFPM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > We need to scrap this idea.
+> > Let's go back to push/pop r11 around calls :(
+>
+> I didn't give up :)
+>
+> Here is a new idea that seems to work:
+>
+> [  131.472066]  dump_stack_lvl+0x53/0x70
+> [  131.472066]  bpf_task_storage_get+0x3e/0x2f0
+> [  131.472066]  ? bpf_task_storage_get+0x231/0x2f0
+> [  131.472066]  bpf_prog_ed7a5f33cc9fefab_foo+0x30/0x32
+> [  131.472066]  bpf_prog_8c4f9bc79da6c27e_socket_post_create+0x68/0x6d
+> ...
+> [  131.417145]  dump_stack_lvl+0x53/0x70
+> [  131.417145]  bpf_task_storage_get+0x3e/0x2f0
+> [  131.417145]  ? selinux_netlbl_socket_post_create+0xab/0x150
+> [  131.417145]  bpf_prog_8c4f9bc79da6c27e_socket_post_create+0x60/0x6d
+>
+>
+> The stack dump works fine out of main prog and out of subprog.
+>
+> The key difference it to pretend to have stack_depth=3D0,
+> so there is no adjustment to %rsp,
+> but point %rbp to per-cpu private stack and grow it _up_.
+>
+> For the main prog %rbp points to the bottom of priv stack
+> plus stack_depth it needs,
+> so all bpf insns that do r10-off access the bottom of that priv stack.
+> When subprog is called it does 'add %rbp, its_stack_depth' and
+> in turn it's using memory above the bottom of the priv stack.
+>
+> That seems to work, but exceptions and tailcalls are broken.
 
-@bpf: could you please manually trigger the tests in a PR? Next time
-will add the bpf-next tag (or I can send a PR directly from Github).
+I fixed exceptions, the reason it breaks is because we:
+We get rsp and rbp for the main frame from unwinding.
+rsp has undergone subtraction for: stack depth, push r12, push callee regs.
 
-This patch affects the BPF LSM, the bpf_ima_file_hash() and
-bpf_ima_inode_hash() helpers.
+When setting up the frame for exception cb, we need to pop saved
+registers from stack and then 'reset stack frame' using mov rsp, rbp.
+That effectively undoes the subtraction that happened for stack depth,
+and at this point rsp =3D=3D rbp. Then the verifier will set up the frame
+for exception cb like it does normally for any prog: subtract stack
+depth, and push callee saved regs.
 
-Thanks
+Now all of this was ok before, but this patch makes two changes:
+stack_depth is not subtracted, and rbp is a per-cpu stack pointer.
 
-Roberto
+Therefore, at the top of the stack is just the callee saved regs and r12.
+After popping those, it will be equal to the original rbp which was
+overwritten with per-cpu stack pointer.
 
+Doing mov rsp, rbp for this patch will reset rsp to per-cpu stack
+pointer. Instead, we do mov rbp, rsp. This restores the rbp to kernel
+stack pointer, and then the subsequent leave etc. return control back
+into the kernel.
+
+At least this seems to make everything work fine, and things no longer
+crash, and it looks sane etc.
+
+I will dig into the tail call case a bit later, but most likely it's a
+variation of this problem.
+
+> I ran out of time today to debug.
+> Pls see the attached patch.
 
