@@ -1,142 +1,108 @@
-Return-Path: <bpf+bounces-41496-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41500-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1306F997835
-	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 00:07:24 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A852E99788E
+	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 00:37:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C76B4283D5B
-	for <lists+bpf@lfdr.de>; Wed,  9 Oct 2024 22:07:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DE2D9B230AA
+	for <lists+bpf@lfdr.de>; Wed,  9 Oct 2024 22:37:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BD661E3787;
-	Wed,  9 Oct 2024 22:07:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFFF31E1A1A;
+	Wed,  9 Oct 2024 22:37:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ajlEsEXv"
+	dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b="uaGe1FLR"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mailtransmit04.runbox.com (mailtransmit04.runbox.com [185.226.149.37])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7ABA81E32C2;
-	Wed,  9 Oct 2024 22:07:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B103A18E740
+	for <bpf@vger.kernel.org>; Wed,  9 Oct 2024 22:37:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.226.149.37
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728511624; cv=none; b=Z7swuTHjq55r9KEXNFwT6+Zfd30X4I/1aFYAHQ9b7UFZZMBTpmfRb98ZRLPJ7Auaid+b6lzDnIOx2wgGSzJdy4TVL256D6y9yZOSbwrn0EN0wq3b2sEIUKnN0zcql73mi6ZnZBhgKskTh9HeE5vYFfzQUVUMdPu3Dm5LL3VOORQ=
+	t=1728513451; cv=none; b=pxpGrM1jWpH9ofz5yuZx222c8EeGE/rJAdWeEctrV3HlyMdk3H99brjqxRFDcudHz2Bo9Id4lG8doUTYEEExpLzgxqKktIZiO1UePFZ6QtGXk2XT5WUvywpzjFKz+FUtNbdYiOSfP1pWxGRVU4OJwhB+rQUJH6ZS7hDNetxQOPM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728511624; c=relaxed/simple;
-	bh=vamGcFrPRyfG19X12b4a/YEYp7dSMGPkZd9DEbWGDM4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=dT4lIL93yA2zAVn7J/4NSOspyNFbP/C0WxMKy4YdFyVpPX1r+G2sr70ZIIob9yXeezas1zbF2KYdQqcZAxh/QbNjH2kQMXfqbkDsAecavQLgMCHVQ46enho42ieNLWt3PdqpX8tCbM3qA8FSemFHAW9Guzxnaf7KKlIK37drNxw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ajlEsEXv; arc=none smtp.client-ip=209.85.128.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-6e330a7b120so1330677b3.2;
-        Wed, 09 Oct 2024 15:07:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1728511622; x=1729116422; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wZGOsm3YR+E73cJ0SGQHJhXA862v5jLb24Y7Aj3c+FE=;
-        b=ajlEsEXv09GzmaWk7BNIG7MOsyUtIRZhxCmwbBmLHgxzH7gXRbMrPYD09E2cml2/2C
-         rppHWyTMrib4L5omndUWBS3ltg38VLVjVnH+3KTIJT9nbsKbv/spAEF5kOn0rNVBbVdg
-         6hru/P9KlKBp8T+DP7roHnxMWtOVWuMrP19siLbIKe55SdwFmagMt5qfIzIT5EyEBQoC
-         FzUCJU+OzpB2Z8/kckZ3FamC35mPUszZwwB4A+AOcLBHCQk5TPR7pYjdTrfAYvSIC99c
-         rSwcTqDSSDGMw3o2l6phqZj/0uaWZbBqm6OtI17z60iTgSZ21ezOWdHlxUdEWUN5PxK2
-         jEPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728511622; x=1729116422;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wZGOsm3YR+E73cJ0SGQHJhXA862v5jLb24Y7Aj3c+FE=;
-        b=M0+Jvd4CDBoDcyV+K4YmxWIVwRFhUO+aooaYg7r0NwsCpkf+9EKZeiRCvqyNm4qyVM
-         ub0GMvfNGDnGhC9646wtwAFpbZZEhXrgtJGcFRfaMx3upgzNn01kwwZmJTPxC7DhmOxW
-         Zr8M7n6Cnb52OdTzUCAfGqjgoQBOQE20SxG/OkzddtcohTF5EAa5CL4A+aw70yh3fvwr
-         FkZ5WpTLv/7mk+zWuKXyfpfqDZUPhzEO+LHYaq8143H93LSGtG0IG3x/14QlgFMpsiD1
-         OZx736HyOd9wjMBPZgcml81OAF8Aih9TGFFGKQAPNuHvkSONgoFOl8c0zDB63P8omDAQ
-         rfEQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVffa/kvHoihrrMi0R6PehurCp7U1nvz28OBeikQ/sWOgALUvTdlV97RCXntxJjy7uh4RUG2rZlJdJjaBRY02Lv@vger.kernel.org, AJvYcCWaSU2XtXLrKFpfEIItrLUFqfV+7VOo1L/EUjE81c55sYxcMUpv5SZwDm9abkDIPFa1YTM9Kuyw+hDYvO4=@vger.kernel.org, AJvYcCXSRIPxkHQt7BLPn2LP3UbiCqjmfrDHmfHhR+6r7Ym3vO6jdv4WAyZiRab4k+3KZm21PeoJFr8VEHoNvxzF1IgLXTIO@vger.kernel.org
-X-Gm-Message-State: AOJu0YxG/rYjuNqUc1/X7D4RT6sw1DYGFjr0WKrHR5XDjTU3Pz5rqC+j
-	OYKxGUUowJ96JtsF4uWI7a92mRsY0EXV7NtAJn4TUlNSL55xskZheU9t06FB
-X-Google-Smtp-Source: AGHT+IF1uyZrUK2/Sy4TPteRgeer5kAxQj+FQiPxRggZ89itv4Zhagt8kBp2ymbhkdbDtg6qJgOcpw==
-X-Received: by 2002:a05:690c:113:b0:6e3:ceb:ce2b with SMTP id 00721157ae682-6e32250ade9mr39798427b3.44.1728511622150;
-        Wed, 09 Oct 2024 15:07:02 -0700 (PDT)
-Received: from dev-ubuntu-0.. (104-15-236-76.lightspeed.rlghnc.sbcglobal.net. [104.15.236.76])
-        by smtp.googlemail.com with ESMTPSA id 00721157ae682-6e2d926b44esm20294217b3.16.2024.10.09.15.07.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Oct 2024 15:07:01 -0700 (PDT)
-From: Tyrone Wu <wudevelops@gmail.com>
-To: bpf@vger.kernel.org,
-	wudevelops@gmail.com
-Cc: kpsingh@kernel.org,
-	mattbobrowski@google.com,
-	song@kernel.org,
-	jolsa@kernel.org,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	rostedt@goodmis.org,
-	mhiramat@kernel.org,
-	mathieu.desnoyers@efficios.com,
-	mykolal@fb.com,
-	shuah@kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	kernel-patches-bot@fb.com
-Subject: [PATCH bpf v1 2/2] selftests/bpf: assert link info uprobe_multi count & path_size if unset
-Date: Wed,  9 Oct 2024 22:06:38 +0000
-Message-ID: <20241009220638.333429-2-wudevelops@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20241009220638.333429-1-wudevelops@gmail.com>
-References: <20241009220638.333429-1-wudevelops@gmail.com>
+	s=arc-20240116; t=1728513451; c=relaxed/simple;
+	bh=fV85lYMYy13smen59u9frogrj+vjYHYqk6ZdBC4xwkA=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=fbWwftiyytgbUOhCdnr9PmmfMlIa9J0aoOpUXkSMuRKtJHBKOu6db0AOWh4VKaWfSutX208aGL7n67U9XwO8mkz+ZULbamuHV7S+4Z7iWQEha6EFH9xCbgzOScNPobWlnqx8xix+K1pbw0olhlhMpq3zqHRcjJQ9Y10dxfB47yo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co; spf=pass smtp.mailfrom=rbox.co; dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b=uaGe1FLR; arc=none smtp.client-ip=185.226.149.37
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rbox.co
+Received: from mailtransmit03.runbox ([10.9.9.163] helo=aibo.runbox.com)
+	by mailtransmit04.runbox.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.93)
+	(envelope-from <mhal@rbox.co>)
+	id 1sye8f-001jJJ-Lc; Wed, 09 Oct 2024 23:22:33 +0200
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=rbox.co;
+	s=selector1; h=Cc:To:In-Reply-To:References:Message-Id:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:From;
+	bh=2Wj1YSIDs+wnKVPgrDjOMjQqZD7UYDf8qr64czFHjYA=; b=uaGe1FLRdC9s7yduJTCeq7DtZM
+	zUTiN0PxbrIwot2draUqt9xzf13sUCamXX/YEVgV73mAc+QCUoVRB3NDNwTlZMNgALY3CZyuuXm2l
+	syFt26Pdz22q/WJLILYiQcL6lPiK22Xc+nVyyDFlLJZv9Nj7SaTOKVhGOtLwT8djfEbZNHVtcLFnL
+	hoTbfcawZQCsMRoTnQ2+gYcJgx24HpBZ8XXwNz/ndlS0KM8Bl/V/bjyfqZQ/bOVXA5CS/7HMhkkpC
+	Mw7aI0hosRytELfZ5rlL5fzczDMWYGONq0aSqQQr6g528IQqKpsDpsGSx8/EPmJcI44j1XEZT4OaT
+	bVyrFYKg==;
+Received: from [10.9.9.74] (helo=submission03.runbox)
+	by mailtransmit03.runbox with esmtp (Exim 4.86_2)
+	(envelope-from <mhal@rbox.co>)
+	id 1sye8f-0004hI-1D; Wed, 09 Oct 2024 23:22:33 +0200
+Received: by submission03.runbox with esmtpsa  [Authenticated ID (604044)]  (TLS1.2:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.93)
+	id 1sye8S-00EL6w-05; Wed, 09 Oct 2024 23:22:20 +0200
+From: Michal Luczaj <mhal@rbox.co>
+Date: Wed, 09 Oct 2024 23:20:52 +0200
+Subject: [PATCH bpf 3/4] vsock: Update msg_count on read_skb()
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20241009-vsock-fixes-for-redir-v1-3-e455416f6d78@rbox.co>
+References: <20241009-vsock-fixes-for-redir-v1-0-e455416f6d78@rbox.co>
+In-Reply-To: <20241009-vsock-fixes-for-redir-v1-0-e455416f6d78@rbox.co>
+To: "David S. Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, John Fastabend <john.fastabend@gmail.com>, 
+ Jakub Sitnicki <jakub@cloudflare.com>, 
+ "Michael S. Tsirkin" <mst@redhat.com>, 
+ Stefano Garzarella <sgarzare@redhat.com>, 
+ Bobby Eshleman <bobby.eshleman@bytedance.com>, 
+ Stefan Hajnoczi <stefanha@redhat.com>
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, 
+ Michal Luczaj <mhal@rbox.co>
+X-Mailer: b4 0.14.2
 
-Add assertions in `bpf_link_info.uprobe_multi` test to verify that
-`count` and `path_size` fields are correctly populated when the fields
-are unset.
+Dequeuing via vsock_transport::read_skb() left msg_count outdated, which
+then confused SOCK_SEQPACKET recv(). Decrease the counter.
 
-This tests a previous bug where the `path_size` field was not populated
-when `path` and `path_size` were unset.
-
-Signed-off-by: Tyrone Wu <wudevelops@gmail.com>
+Fixes: 634f1a7110b4 ("vsock: support sockmap")
+Signed-off-by: Michal Luczaj <mhal@rbox.co>
 ---
- tools/testing/selftests/bpf/prog_tests/fill_link_info.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ net/vmw_vsock/virtio_transport_common.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/fill_link_info.c b/tools/testing/selftests/bpf/prog_tests/fill_link_info.c
-index f3932941bbaa..a38cf2a999fe 100644
---- a/tools/testing/selftests/bpf/prog_tests/fill_link_info.c
-+++ b/tools/testing/selftests/bpf/prog_tests/fill_link_info.c
-@@ -417,6 +417,13 @@ verify_umulti_link_info(int fd, bool retprobe, __u64 *offsets,
- 	if (!ASSERT_NEQ(err, -1, "readlink"))
- 		return -1;
+diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
+index ed1c1bed5700e5988a233cea146cf9fac95426e0..1d591b69ede3244a4f49aa44dc1f939d827dafc0 100644
+--- a/net/vmw_vsock/virtio_transport_common.c
++++ b/net/vmw_vsock/virtio_transport_common.c
+@@ -1723,6 +1723,9 @@ int virtio_transport_read_skb(struct vsock_sock *vsk, skb_read_actor_t recv_acto
+ 	}
  
-+	memset(&info, 0, sizeof(info));
-+	err = bpf_link_get_info_by_fd(fd, &info, &len);
+ 	hdr = virtio_vsock_hdr(skb);
++	if (le32_to_cpu(hdr->flags) & VIRTIO_VSOCK_SEQ_EOM)
++		vvs->msg_count--;
 +
-+	ASSERT_EQ(info.uprobe_multi.count, 3, "info.uprobe_multi.count");
-+	ASSERT_EQ(info.uprobe_multi.path_size, strlen(path) + 1,
-+		  "info.uprobe_multi.path_size");
-+
- 	for (bit = 0; bit < 8; bit++) {
- 		memset(&info, 0, sizeof(info));
- 		info.uprobe_multi.path = ptr_to_u64(path_buf);
+ 	virtio_transport_dec_rx_pkt(vvs, le32_to_cpu(hdr->len));
+ 	spin_unlock_bh(&vvs->rx_lock);
+ 
+
 -- 
-2.43.0
+2.46.2
 
 
