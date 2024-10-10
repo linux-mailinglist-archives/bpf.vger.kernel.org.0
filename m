@@ -1,141 +1,113 @@
-Return-Path: <bpf+bounces-41653-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41654-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA5889994DF
-	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2024 00:01:22 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 486BB9994ED
+	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2024 00:07:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C1CF28547D
-	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 22:01:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 76D671C22E85
+	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 22:07:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 207CA1E47AA;
-	Thu, 10 Oct 2024 22:01:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F5261E5705;
+	Thu, 10 Oct 2024 22:07:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NfRIo8xV"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="G8WgUXjN"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49E07188CAE;
-	Thu, 10 Oct 2024 22:01:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57F271E47B9
+	for <bpf@vger.kernel.org>; Thu, 10 Oct 2024 22:07:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728597674; cv=none; b=B2vZ0H2bCQ801bqzerC63G+BJezt+2phfQIiC0Y+oGPSAounms/dx5BzniI7+OnJU3G1HBCuiRnHBgzr81KFYP/ikPlQfbx1mX16Ob0PPgebeQu/wTz0qTpihftIBU4jEk7Ni8RIkYMjmTBuYwvycWGMinYIAeXtInC7PKtHWwQ=
+	t=1728598057; cv=none; b=mSjSJ5EiCk2EkGJFzAQqsIVD607mafxz+Poahm39fSKlkUeKifRgo5YFi7iKmSQvX4fdYVstvuWY4mGd/QofwFpsUzSaI8wGaDnaN2eZt3TiNs9C5N75tPatfZJOCX6xWeBestBqzo0G+uxk40ABeLcIyakcWKxWYbw566QnVpc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728597674; c=relaxed/simple;
-	bh=IqrqVRAGWmUTngX9JyJMpYS2/1LzBtHqam0T8qPIgNM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bW4xIOJHhnv340atmvUSRna1t4RMAFH79vxFQKG0WtzYkuV1KtbaJhv7Wq9JFpIbJCLCdelx37jAjlCkd74Z+gTAPrcqeGLu+Q9DlUSgUtvtlfuYHhxRmg0xEpxms9HX+Lqur7A/CmoBrnfJrcTDgYg6w3EXzbbnBIhiECO4F04=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NfRIo8xV; arc=none smtp.client-ip=209.85.215.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-7e9e38dd5f1so1166331a12.0;
-        Thu, 10 Oct 2024 15:01:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1728597672; x=1729202472; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WLcwOUla2fi4WryQZC9pITLT3xq49m68i6L5ryo+y5s=;
-        b=NfRIo8xViwuO3JUVi7JjR9HDghFI8DjV6w7O5j6u0TzQwT7YikUD58F0A8rDhbnRqX
-         r1D1rR0FY+JLS7q3rzRJ1uo8Y7OQ3vQycnuscZ+AhtQfN13O5T6GgAPEugkja5KTFQdG
-         CNxs4qV2ffOWnVQ913ljVUdgfR8/P137uPIz6OfT4GMs/+wt1veg0O+17tMzLNemjxV/
-         +TigNCm6pAJ42ULcP1097oT6kY7LnReLbE6LIE3msbU4/2klZTrqghtmYWarqsT/QoQp
-         Gq6boDb8bl4cTvIZc6e2oW4gFcHII2bQcMDqo1/J+ercvCWjmQrP1n7umezbnCwGBrv7
-         K27Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728597672; x=1729202472;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WLcwOUla2fi4WryQZC9pITLT3xq49m68i6L5ryo+y5s=;
-        b=vCGZz2rlbdqdBEKxX+LKiQMCoewnpfRHj5i63VIkWKFdLIeEZ0KHOWaQnX7P42y0s+
-         9d6tUTn/Uag7kOm19bTMR4gQ3zQH4MuMpv3kz3a0NsiF/rySaWpQPi5jkiE/HjKzz1gZ
-         OjzImM+rLcN2QUmt6oC62HrnLCDWggm00xc7rRdXfZVhI5P3e/8uAe7XzWpb/ASsDuEN
-         pJsdyBl8a/jE/yXbZjrvJMu6XPE+NFzvbFLBYWqnKlnplbyAEyiotrGblK3FQgoktbCK
-         1LG3qnAeeC8FJewYOSX0nsegnThMyaJAgByybF1cpYDCfmBpn7xJxQMRoTyZcQ8x3rgJ
-         FQ/w==
-X-Forwarded-Encrypted: i=1; AJvYcCVsdjBdQD5nkSzlXDhQlFz4rHKTGfuJGJNJrWi5hJ1PwPNbfFO6/fQO9bVJWRRlcnwUhVStAlIn5s/dTX++6XKs@vger.kernel.org, AJvYcCW2NyGSCtSXvwGFA0r6mRldoYyygod6h6vhIpzOoliQNbKyF85ChDnsxg2yuvIJxqpXudihQBjg6CRAV9k/eHLgXUWJ@vger.kernel.org, AJvYcCXd6cpMrRWL2QciEEf3m5nNn4HGHSTx9OmMGWbpLCYHK1H+ILTCX0+SbXlpWPD40w2cXjac4pvbvshXdVE=@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywr0uTEQLzyn2ySlR/KaEeOVFZS0aeUZyCrJKULWv5XhQwBraVf
-	EUvy10LlX37eR7vU5XHl0L4B7/9pwmm8294VJFEBQXuForA06f3dKTNO5dLOVtwqyt8bbHKwIzm
-	pKtbxsvKS2ObbTS+T6il0vSSqmwBS9QjP
-X-Google-Smtp-Source: AGHT+IHWqBnwD9Qz9bUKjePD4Lcw9JynVMvCGdfFK2afXtJlMLe+UYYEUJ2v1N1JhWUHdofyf/tHHrKSHl0k8vTVypk=
-X-Received: by 2002:a17:90a:bc97:b0:2e2:cd22:b092 with SMTP id
- 98e67ed59e1d1-2e2f0a6e9cdmr866900a91.16.1728597672490; Thu, 10 Oct 2024
- 15:01:12 -0700 (PDT)
+	s=arc-20240116; t=1728598057; c=relaxed/simple;
+	bh=LaigjFxQUjyMv6ZYoJS4ypnJpFkCLTNIgoboW2nLLuw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=KQoTdy5ZHsLWQEzFisRCR5S2EGr+g1IcNBkydv4POn5HhZlWhZhtra9Q1z3i5ffnKYwJkl8IkmdxxfedotOgaw+J/dF96YSPI4/VlroA8y1WTnTvlHGT8Ao/2OJEOpOyj3IpzVEPFvLwk8SqBXvlmfANEFf2SGaCKE4w/9WwwUs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=G8WgUXjN; arc=none smtp.client-ip=95.215.58.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <7b090ca5-7997-4371-8d79-7862a7e27052@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1728598053;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZIUGJGUITBa6JcDz8UXnyNpp/2ZzVbzWjWLZ1LXlwiw=;
+	b=G8WgUXjNyEmQTm8/SIZtf9N2kwcCRr5sMy/zFIdcstX/QzVAQov5rYfUnd22ugVrJm53eh
+	NRM/vGQWHfiiGJ5miTSIJvusNkMuNbBKrQSBA5unFCo466q3w+c86gWA0Ps9DrBtTGfr7e
+	L2/Db+t8KlMMlG5eIkEZezLSKszqUdg=
+Date: Thu, 10 Oct 2024 15:07:23 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241009220638.333429-1-wudevelops@gmail.com> <20241009220638.333429-2-wudevelops@gmail.com>
-In-Reply-To: <20241009220638.333429-2-wudevelops@gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 10 Oct 2024 15:01:00 -0700
-Message-ID: <CAEf4BzYo12vao0GPYPC=3SMTzc5c8kZSFCE+D63ACgtjs7QhVw@mail.gmail.com>
-Subject: Re: [PATCH bpf v1 2/2] selftests/bpf: assert link info uprobe_multi
- count & path_size if unset
-To: Tyrone Wu <wudevelops@gmail.com>
-Cc: bpf@vger.kernel.org, kpsingh@kernel.org, mattbobrowski@google.com, 
-	song@kernel.org, jolsa@kernel.org, ast@kernel.org, daniel@iogearbox.net, 
-	andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, 
-	yonghong.song@linux.dev, john.fastabend@gmail.com, sdf@fomichev.me, 
-	haoluo@google.com, rostedt@goodmis.org, mhiramat@kernel.org, 
-	mathieu.desnoyers@efficios.com, mykolal@fb.com, shuah@kernel.org, 
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, kernel-patches-bot@fb.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next] bpf: Add rcu ptr in btf_id_sock_common_types
+To: Philo Lu <lulie@linux.alibaba.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
+ andrii@kernel.org, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me,
+ haoluo@google.com, jolsa@kernel.org, xuanzhuo@linux.alibaba.com,
+ bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20241008080916.44724-1-lulie@linux.alibaba.com>
+ <80cb3d4b-cebb-4f08-865d-354110a54467@linux.dev>
+ <2e3f676a-ef03-4618-852d-ceb3b620a640@linux.alibaba.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <2e3f676a-ef03-4618-852d-ceb3b620a640@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, Oct 9, 2024 at 3:07=E2=80=AFPM Tyrone Wu <wudevelops@gmail.com> wro=
-te:
->
-> Add assertions in `bpf_link_info.uprobe_multi` test to verify that
-> `count` and `path_size` fields are correctly populated when the fields
-> are unset.
->
-> This tests a previous bug where the `path_size` field was not populated
-> when `path` and `path_size` were unset.
->
-> Signed-off-by: Tyrone Wu <wudevelops@gmail.com>
-> ---
->  tools/testing/selftests/bpf/prog_tests/fill_link_info.c | 7 +++++++
->  1 file changed, 7 insertions(+)
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/fill_link_info.c b/to=
-ols/testing/selftests/bpf/prog_tests/fill_link_info.c
-> index f3932941bbaa..a38cf2a999fe 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/fill_link_info.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/fill_link_info.c
-> @@ -417,6 +417,13 @@ verify_umulti_link_info(int fd, bool retprobe, __u64=
- *offsets,
->         if (!ASSERT_NEQ(err, -1, "readlink"))
->                 return -1;
->
-> +       memset(&info, 0, sizeof(info));
-> +       err =3D bpf_link_get_info_by_fd(fd, &info, &len);
+On 10/8/24 7:23 PM, Philo Lu wrote:
+> 
+> 
+> On 2024/10/9 03:05, Martin KaFai Lau wrote:
+>> On 10/8/24 1:09 AM, Philo Lu wrote:
+>>> Sometimes sk is dereferenced as an rcu ptr, such as skb->sk in tp_btf,
+>>> which is a valid type of sock common. Then helpers like bpf_skc_to_*()
+>>> can be used with skb->sk.
+>>>
+>>> For example, the following prog will be rejected without this patch:
+>>> ```
+>>> SEC("tp_btf/tcp_bad_csum")
+>>> int BPF_PROG(tcp_bad_csum, struct sk_buff* skb)
+>>> {
+>>>     struct sock *sk = skb->sk;
+>>>     struct tcp_sock *tp;
+>>>
+>>>     if (!sk)
+>>>         return 0;
+>>>     tp = bpf_skc_to_tcp_sock(sk);
+>>
+>> If the use case is for reading the fields in tp, please use the bpf_core_cast 
+>> from the libbpf's bpf_core_read.h. bpf_core_cast is using the bpf_rdonly_cast 
+>> kfunc underneath.
+>>
+> 
+> Thank you! This works for me so this patch is unnecessary then.
+> 
+> Just curious is there any technical issue to include rcu_ptr into 
+> btf_id_sock_common_types? AFAICT rcu_ptr should also be a valid ptr type, and 
+> then btf_id_sock_common_types will behave like (PTR_TO_BTF_ID + 
+> &btf_sock_ids[BTF_SOCK_TYPE_SOCK_COMMON]) in bpf_func_proto.
 
-if (!ASSERT_OK(err, "link_get_info"))
-    return -1;
+bpf_skc_to_*() returns a PTR_TO_BTF_ID which can be passed into other helpers 
+that takes ARG_PTR_TO_BTF_ID_SOCK_COMMON. There are helpers that change the sk. 
+e.g. bpf_setsockopt() changes the sk and needs sk to be locked. Other non 
+tracing hooks do have a hold on the skb also. I did take a quick look at the 
+bpf_setsockopt situation and looks ok. I am positive there are other helpers 
+that need to audit first.
 
-?
-
-Other than this, LGTM.
-
-pw-bot: cr
-
-> +
-> +       ASSERT_EQ(info.uprobe_multi.count, 3, "info.uprobe_multi.count");
-> +       ASSERT_EQ(info.uprobe_multi.path_size, strlen(path) + 1,
-> +                 "info.uprobe_multi.path_size");
-> +
->         for (bit =3D 0; bit < 8; bit++) {
->                 memset(&info, 0, sizeof(info));
->                 info.uprobe_multi.path =3D ptr_to_u64(path_buf);
-> --
-> 2.43.0
->
+Tracing use case should only read the sk. bpf_core_cast() is the correct one to 
+use. The bpf_sk_storage_{get,delete}() should be the only allowed helper that 
+can change the sk.
 
