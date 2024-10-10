@@ -1,149 +1,128 @@
-Return-Path: <bpf+bounces-41593-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41594-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11808998E10
-	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 19:09:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C688998E3F
+	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 19:18:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 411C11C2465F
-	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 17:09:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 39BE528246D
+	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 17:18:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8477919AD8C;
-	Thu, 10 Oct 2024 17:09:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB7F219CCEC;
+	Thu, 10 Oct 2024 17:18:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lqdLjD+p"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YGQC3YGT"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6458D19C560
-	for <bpf@vger.kernel.org>; Thu, 10 Oct 2024 17:09:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BFAC19AA6B;
+	Thu, 10 Oct 2024 17:18:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728580190; cv=none; b=TLwnFmYxr867Sem4ayPoMbtiGQHYu2TAyuvkeJAncDFuRtGEQVdQUFF8ltkn8SThO4H72irQcjdds6ajruaAB6oQfI787oS1KtJtnkVGCTj6EL9bqChm62YzImqQwY185DeVA5BiKQjOOgTMJ7QbG5eX0XpvE2YCGBVdfCT4Q40=
+	t=1728580712; cv=none; b=Kl2XB1eeRlt7qxPKIwMIMP7olnumK8gsjJMdy2L3KMxHkQaNbIfABk/e85bza+2ZV9kujedqmxgAsZ/7UHvHteAozt+gNCAh2sb1p5lkceC65fn97tZU/tZhUEfepe8lQT7Be24UTyQY55lDz+RPjCL2k3j29J71oGya5mYSaP0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728580190; c=relaxed/simple;
-	bh=5x+JldR/LRqxCtrVtLNqo99PjIMwsRBuenM0cDeT4Gg=;
+	s=arc-20240116; t=1728580712; c=relaxed/simple;
+	bh=vaucBuX2fMrEpT3kygwI4CcFnWG5blOdj+4yYIH1/lc=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uW1Qe2sUF2CImfMoy3qR3H/ntjaK7wwFaHiznJB/zcN9wAFPI3ywXalx2Geagr3jSFzmF4Ig6CDbFfxTUdQRq0q+FWl4rRVtwD0hV0o7uNagtLW1etPxwTSVVF9G//kDYC2vvFAqb78eB7QKmRJHLRPSm69OQqRWjKpjBtxYAcI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lqdLjD+p; arc=none smtp.client-ip=209.85.221.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-37d3e8d923fso683504f8f.0
-        for <bpf@vger.kernel.org>; Thu, 10 Oct 2024 10:09:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1728580187; x=1729184987; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ly7lOZMOwdPR3q95x1mP8p6AahjPhZcz8EOLhfAFVeA=;
-        b=lqdLjD+pL38sAY24x2TeJ7JCloA3UDrSJ7lblufESVDItGfH7xneU9vG0kMZgFcFp3
-         MkdxieNuUeuy5TWR+E0wxeh4ABBmsE57fWgmZFfXJYB9KVEUgNW2TqnQAeD7NnBfaMaD
-         rcTv/Ufr+oDukeV4fhsaY7BQP6SyZ+ml4v1JrEWx8qdk1FkPeN8zfVLpMTAV5Mo5BnG4
-         CsJG8q6L3iBdcCkmkRNrUVO0gi/8tQAZdmm6bKB57+RfpTeeSpAB/dFf5FEmlMLtAx+8
-         rD+xWSVQdqndF/JeJNTKjoG9gl+O+Xe2Ut1ZTbWCy29y9u7rubwapcl2tKsSsHamXqrZ
-         H57w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728580187; x=1729184987;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Ly7lOZMOwdPR3q95x1mP8p6AahjPhZcz8EOLhfAFVeA=;
-        b=OV+kcom+WxolhWXRNcDnxgsqssPE/lYpScKKc8BTQGu4JaWDeYyrt7tB38gulXFdAJ
-         VKPaXd7f1wnRGyq1q59GhE9BQZMuMPVAskbFkeyqDhguLLpk2cL1ZM563lMpCOC3Gnnj
-         UhJETu8tjXhgs0vs1l38AWj+aESyTkiF5ucxyR/bKxE9ED/1Y48b+IxneNRJF2CEcL3t
-         hw/CQ8cXQHbw//07uyMU9D7qsjR6KAy3Vr5Gd/cBJUT0Bp2t/RGct2jEz+OBsoxvcJGc
-         oXfryrvGa49ofSEIWCNnpZEwRA20E1g1DAanXbKul5preYE+YSfp+zwUlAechTfLBifI
-         TKSA==
-X-Gm-Message-State: AOJu0YxfX8nrziyt1r+Htgs9nfEEDVMuel9AoSMYmDH16TkoRgAdNhfr
-	q5e/gYRz4BrqX+huYRcoUfnmRmQ0BjYCYDJjsYW3VLhkLqAONSqIzIMkxBFZpMl0FjtT4BugpsC
-	FNfE6HFnC0FbA170jqYFUMSpIVyU=
-X-Google-Smtp-Source: AGHT+IEO7/ZGB+7I1cEBr3pHA+ihdUkTPuqDNHWfgt+bq14uqWDqI7uzZn3YKRi44wx+lXHP/q5t0PrPfKEGi7HFMC8=
-X-Received: by 2002:a05:6000:1241:b0:374:c3e4:d6de with SMTP id
- ffacd0b85a97d-37d3aa70df4mr4656608f8f.41.1728580186682; Thu, 10 Oct 2024
- 10:09:46 -0700 (PDT)
+	 To:Cc:Content-Type; b=VdyUqTy6CptoVSqVgvzdYJMqPU6hJwsDnJ2c5zqIj6cq6ZJnMSFz+hXc2D2YP6Tse4+y88y9zq6qQC1ceGSi9VIEQs4p9Plc0JwM+xWYtQbrO0SE/qLvB32fevMLBuTF7BrXn0G85g2OsFxS51nidUHgDFJa6qrYyTpEbUHrqSM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YGQC3YGT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1E86C4CED1;
+	Thu, 10 Oct 2024 17:18:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1728580711;
+	bh=vaucBuX2fMrEpT3kygwI4CcFnWG5blOdj+4yYIH1/lc=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=YGQC3YGTpIM/Tv02Vn7usGJD/6tt+x+KTKu3UxnMO5NCC8+C7ZPh5ezrehFriglwe
+	 0kHT558np8Wr8rw+tHrk6iFdI6TYZzj/XuDQyl1ohCHGBlLvqRKvMY9o2gFo+NuycW
+	 y20uvBOD9Gdu+xnvXvzrx2PBIPwMfqD7Kk74Y5ZM4wURiZxI3kabAPnyXgltKV5Te8
+	 nLgYuMl0XB6UP3CI6ocVV8lyp79EB210TDlqZm0fWRLk96yJAx28fczirFRv8Ok4xn
+	 g28YaYfndtMh2lJkpow1r3uH0m1V9UcGEfvj2KBq6mV0UhVTJerIhIuFum/RTZvtMI
+	 Z12HDd0NC/l1Q==
+Received: by mail-io1-f48.google.com with SMTP id ca18e2360f4ac-8354851fcabso48911939f.2;
+        Thu, 10 Oct 2024 10:18:31 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUNwS4nU0i1pFTedEe9QquUZznRCoLc+3xUgysql3JpZQ1HE+HaPatufKWc8qr0x/Ye2SQsxkziAepgcw==@vger.kernel.org, AJvYcCURTNsCKHxmNg85Q0OquBOAAn4jXzp/HSvwityJzy1FP4UBfrQS5ey7549dEMoRJBoqS9u+h2FK5J1O1Q==@vger.kernel.org, AJvYcCUnXjAFL7Vh4gBrRhVyEqBEd8t7lq75QzDLkU1jQpu2pPeqMTjdN0rG+XEjvXFfcEgIwZrUtX9iKlnYuZl1Iw==@vger.kernel.org, AJvYcCUpsoApLKAYKbB/pB5ltcSLmuksx4pmT57XP4Qx563kh6rXnFT7j/pvr+QRHXsv5PpsC1hMx2rrNHaaQA==@vger.kernel.org, AJvYcCUujDcBpwF8M6Qg6H2w77GxDLXtQ6Xokb0ZnQ0XkGg8nSLYIfwOopK4UFUL7XDf1Xq/gGar3qy1fSoKKIyQsQ==@vger.kernel.org, AJvYcCVceqbqnoD8upMwp/2rMzTQA+NnTmzxnZYka3o5PMZK0SOnabs3WzoIzYtuNHcGv17yAVbwdSAnLAP741oYp1068Njm@vger.kernel.org, AJvYcCVtUOzBZjY/yodlV6U3dIaM80pFkBdfOsoKfaz6TGmw57MrAN7kZC7WJeTmxobtSTkk1AoqdjwrNfc=@vger.kernel.org, AJvYcCVtYIpyyF4KPkwJbK0dSAr8z/fZQfE/nEvPhH1FlGGEIhNujLo9NzrcQWT8hZZGg1MM832Sv4mM5/YgOw==@vger.kernel.org, AJvYcCWMFvZbSRThFQeP2ZvabB4MrRYbmwFHdF4xKCT4Sau2vCUtG5OivWCBhzdTpUxAl7M41KjCuFW7bGqFhAY=@vger.kernel.org, AJvY
+ cCWcPvgouWs6OFoewglssFG7UHTBjYz/7OKk2nN1Ovn1QIhK2B3HNcbOeqHTS/9TFy8wFXTOAnuPwbM7AxRY@vger.kernel.org, AJvYcCWgcrmvKS+saR8ChWJ38tf6CjCHieZyZn8se624ihvJDrH/8Hd8woMODD9mOtz/sMEzCi0=@vger.kernel.org, AJvYcCWsKsLVzkoC7SAiMH7xEL4hMOOAvV863DEiMnc42F7DPzDatuylHqJQNdtM5UIa2cyFJv+gpo5iu2pckVXg@vger.kernel.org, AJvYcCXfHFj95a4sWp51N7WEhfSNNqDmCkH5z7GRG7BzYeyhUFXbus+OhaAaGyRp8Kf0QQULH+MkcC0Xpe/rI66Tg44=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxQR8Mgvc/yWBlexpByTgWAPe9ne4Og5hO9d59xlmOJSOhlNgN2
+	cf5Fd0Crb6QwfYEcRnE0TZbARHYJQ6Xgji+ynd/D7NOUT8aORLlv06NQJVa7qMltWwCZRZY6TRu
+	QtAxxGqpEubkGQgWES9J+UiGKsgE=
+X-Google-Smtp-Source: AGHT+IGszKBBrf1gYsUhslMqcPNpC/f6sAFFbsmL+u+zGmeEd2sYZs3+7Tvb9T+CKCsx/nhk3yidKvoEgysxI18Lmn4=
+X-Received: by 2002:a05:6e02:144d:b0:3a0:92e5:af68 with SMTP id
+ e9e14a558f8ab-3a3b51daa94mr2839515ab.15.1728580710921; Thu, 10 Oct 2024
+ 10:18:30 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241010153835.26984-1-leon.hwang@linux.dev> <20241010153835.26984-2-leon.hwang@linux.dev>
-In-Reply-To: <20241010153835.26984-2-leon.hwang@linux.dev>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 10 Oct 2024 10:09:35 -0700
-Message-ID: <CAADnVQL8ie=xxCXt7td=ZhQwyY_hKtig-y9kHwWYwBG9MdfRQA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v7 1/2] bpf: Prevent tailcall infinite loop
- caused by freplace
-To: Leon Hwang <leon.hwang@linux.dev>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	=?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
-	Puranjay Mohan <puranjay@kernel.org>, Xu Kuohai <xukuohai@huaweicloud.com>, 
-	Eddy Z <eddyz87@gmail.com>, Ilya Leoshkevich <iii@linux.ibm.com>, kernel-patches-bot@fb.com
+References: <20241009180816.83591-1-rppt@kernel.org> <20241009180816.83591-5-rppt@kernel.org>
+ <CAPhsuW66etfdU3Fvk0KsELXcgWD6_TkBFjJ-BTHQu5OejDsP2w@mail.gmail.com> <ZwdpnPKKQGF5DtSv@kernel.org>
+In-Reply-To: <ZwdpnPKKQGF5DtSv@kernel.org>
+From: Song Liu <song@kernel.org>
+Date: Thu, 10 Oct 2024 10:18:19 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW6gb76T_75TPzb-AvfyAcYE83iYhDpjJNHJQWDd3Fki_Q@mail.gmail.com>
+Message-ID: <CAPhsuW6gb76T_75TPzb-AvfyAcYE83iYhDpjJNHJQWDd3Fki_Q@mail.gmail.com>
+Subject: Re: [PATCH v5 4/8] module: prepare to handle ROX allocations for text
+To: Mike Rapoport <rppt@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Andreas Larsson <andreas@gaisler.com>, 
+	Andy Lutomirski <luto@kernel.org>, Ard Biesheuvel <ardb@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
+	Borislav Petkov <bp@alien8.de>, Brian Cain <bcain@quicinc.com>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Christoph Hellwig <hch@infradead.org>, 
+	Christophe Leroy <christophe.leroy@csgroup.eu>, Dave Hansen <dave.hansen@linux.intel.com>, 
+	Dinh Nguyen <dinguyen@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Guo Ren <guoren@kernel.org>, 
+	Helge Deller <deller@gmx.de>, Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>, 
+	Johannes Berg <johannes@sipsolutions.net>, 
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Kent Overstreet <kent.overstreet@linux.dev>, 
+	"Liam R. Howlett" <Liam.Howlett@oracle.com>, Luis Chamberlain <mcgrof@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>, 
+	Michael Ellerman <mpe@ellerman.id.au>, Michal Simek <monstr@monstr.eu>, Oleg Nesterov <oleg@redhat.com>, 
+	Palmer Dabbelt <palmer@dabbelt.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>, 
+	Stafford Horne <shorne@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, 
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Thomas Gleixner <tglx@linutronix.de>, 
+	Uladzislau Rezki <urezki@gmail.com>, Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>, 
+	bpf@vger.kernel.org, linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org, 
+	linux-hexagon@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, 
+	linux-mm@kvack.org, linux-modules@vger.kernel.org, 
+	linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org, 
+	linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org, 
+	linux-snps-arc@lists.infradead.org, linux-trace-kernel@vger.kernel.org, 
+	linux-um@lists.infradead.org, linuxppc-dev@lists.ozlabs.org, 
+	loongarch@lists.linux.dev, sparclinux@vger.kernel.org, x86@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Oct 10, 2024 at 8:39=E2=80=AFAM Leon Hwang <leon.hwang@linux.dev> w=
-rote:
+On Wed, Oct 9, 2024 at 10:47=E2=80=AFPM Mike Rapoport <rppt@kernel.org> wro=
+te:
 >
-> -static int __bpf_trampoline_link_prog(struct bpf_tramp_link *link, struc=
-t bpf_trampoline *tr)
-> +static int __bpf_trampoline_link_prog(struct bpf_tramp_link *link,
-> +                                     struct bpf_trampoline *tr,
-> +                                     struct bpf_prog *tgt_prog)
->  {
->         enum bpf_tramp_prog_type kind;
->         struct bpf_tramp_link *link_exiting;
-> @@ -544,6 +546,17 @@ static int __bpf_trampoline_link_prog(struct bpf_tra=
-mp_link *link, struct bpf_tr
->                 /* Cannot attach extension if fentry/fexit are in use. */
->                 if (cnt)
->                         return -EBUSY;
-> +               guard(mutex)(&tgt_prog->aux->ext_mutex);
-> +               if (tgt_prog->aux->prog_array_member_cnt)
-> +                       /* Program extensions can not extend target prog =
-when
-> +                        * the target prog has been updated to any prog_a=
-rray
-> +                        * map as tail callee. It's to prevent a potentia=
-l
-> +                        * infinite loop like:
-> +                        * tgt prog entry -> tgt prog subprog -> freplace=
- prog
-> +                        * entry --tailcall-> tgt prog entry.
-> +                        */
-> +                       return -EBUSY;
-> +               tgt_prog->aux->is_extended =3D true;
->                 tr->extension_prog =3D link->link.prog;
->                 return bpf_arch_text_poke(tr->func.addr, BPF_MOD_JUMP, NU=
-LL,
->                                           link->link.prog->bpf_func);
+> On Wed, Oct 09, 2024 at 03:23:40PM -0700, Song Liu wrote:
+> > On Wed, Oct 9, 2024 at 11:10=E2=80=AFAM Mike Rapoport <rppt@kernel.org>=
+ wrote:
+> > [...]
+> > > diff --git a/include/linux/module.h b/include/linux/module.h
+> > > index 88ecc5e9f523..7039f609c6ef 100644
+> > > --- a/include/linux/module.h
+> > > +++ b/include/linux/module.h
+> > > @@ -367,6 +367,8 @@ enum mod_mem_type {
+> > >
+> > >  struct module_memory {
+> > >         void *base;
+> > > +       void *rw_copy;
+> > > +       bool is_rox;
+> > >         unsigned int size;
+> >
+> > Do we really need to hold the rw_copy all the time?
+>
+> We hold it only during module initialization, it's freed in
+> post_relocation.
 
-The suggestion to use guard(mutex) shouldn't be applied mindlessly.
-Here you extend the mutex holding range all the way through
-bpf_arch_text_poke().
-This is wrong.
+Ah, I missed this part. Sorry for the noise.
 
->         if (kind =3D=3D BPF_TRAMP_REPLACE) {
->                 WARN_ON_ONCE(!tr->extension_prog);
-> +               guard(mutex)(&tgt_prog->aux->ext_mutex);
->                 err =3D bpf_arch_text_poke(tr->func.addr, BPF_MOD_JUMP,
->                                          tr->extension_prog->bpf_func, NU=
-LL);
->                 tr->extension_prog =3D NULL;
-> +               tgt_prog->aux->is_extended =3D false;
->                 return err;
-
-Same here. Clearly wrong to grab the mutex for the duration of poke.
-
-Also Xu's suggestion makes sense to me.
-"extension prog should not be tailcalled independently"
-
-So I would disable such case as a part of this patch as well.
-
-pw-bot: cr
+Song
 
