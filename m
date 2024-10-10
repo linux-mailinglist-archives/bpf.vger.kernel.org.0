@@ -1,153 +1,141 @@
-Return-Path: <bpf+bounces-41652-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41653-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B10AE9994A1
-	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 23:50:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AA5889994DF
+	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2024 00:01:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 628EC282EE1
-	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 21:50:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C1CF28547D
+	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 22:01:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D78711E3DE6;
-	Thu, 10 Oct 2024 21:50:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 207CA1E47AA;
+	Thu, 10 Oct 2024 22:01:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LqNOIttf"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NfRIo8xV"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
+Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D1F619A2A3
-	for <bpf@vger.kernel.org>; Thu, 10 Oct 2024 21:50:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49E07188CAE;
+	Thu, 10 Oct 2024 22:01:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728597025; cv=none; b=HgCM4JkXHsk172h4OiaBT1JD2LZ5rPzBdESbXkiV0pyRkL+sAq1m4to4CL+8XEk30+eC7PucBapbm4pGznZ/XvHAWC9Rkmeqyd7TjAmBRR+ve9U9LJmQQF1dLJmKJ1ui+655MSeJ1tXpBwksXFLoNPixS5UFxx77O4E1clKrGJI=
+	t=1728597674; cv=none; b=B2vZ0H2bCQ801bqzerC63G+BJezt+2phfQIiC0Y+oGPSAounms/dx5BzniI7+OnJU3G1HBCuiRnHBgzr81KFYP/ikPlQfbx1mX16Ob0PPgebeQu/wTz0qTpihftIBU4jEk7Ni8RIkYMjmTBuYwvycWGMinYIAeXtInC7PKtHWwQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728597025; c=relaxed/simple;
-	bh=NjZmsuwJd18SYa/BxPpy3NIykaDVu2Fjq/wUEtIZm4k=;
+	s=arc-20240116; t=1728597674; c=relaxed/simple;
+	bh=IqrqVRAGWmUTngX9JyJMpYS2/1LzBtHqam0T8qPIgNM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=q55GEzDDYbHWeZgLG3KgfogKwWpz0CTKWPQro6/wbeyuFsGMZsXN+5leS9A8QsotwjapfvQEKwq0y2H39za20gcM1YWaP7LIzEygLmSrv3R0QLOWdPscjraPgnQB6EnG/mcvOaeug9LJmDgDPJOKq2W870LZmCEEbkkmfmdImfo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LqNOIttf; arc=none smtp.client-ip=209.85.216.42
+	 To:Cc:Content-Type; b=bW4xIOJHhnv340atmvUSRna1t4RMAFH79vxFQKG0WtzYkuV1KtbaJhv7Wq9JFpIbJCLCdelx37jAjlCkd74Z+gTAPrcqeGLu+Q9DlUSgUtvtlfuYHhxRmg0xEpxms9HX+Lqur7A/CmoBrnfJrcTDgYg6w3EXzbbnBIhiECO4F04=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NfRIo8xV; arc=none smtp.client-ip=209.85.215.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-2e2e8c8915eso480206a91.3
-        for <bpf@vger.kernel.org>; Thu, 10 Oct 2024 14:50:23 -0700 (PDT)
+Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-7e9e38dd5f1so1166331a12.0;
+        Thu, 10 Oct 2024 15:01:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1728597023; x=1729201823; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1728597672; x=1729202472; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=da6GUY+ELNd1DLQRkkLRERlZjccZ4wuj1CYEcOkL1W8=;
-        b=LqNOIttfos3FKENMubxJFrYeNhld08K2WtWz2L6hs8q+FFH7XpkVeD6gMjfMtwRePF
-         xxy9MtR4ZIgjFRaypBu0BE32N6ZKv2zsCq+14MKSTgrjQChGRrrCve+wNMTeN9RfeQU2
-         DO6tZr2pWS8MNcp56w37LOJfAwdpcMCsnp9LlnqBEzPUGMQk8XsqRLpQw2R130WlO166
-         ozD27rPTwFsBYKujQI/NfdGXqXZfyTNqvolnqOMBf0q6MBXpHBoTi+IQFFVMHexNRTIm
-         kXyARb3RYyfWzIjyf314fQbnTB4aAnc2+IBlEzNbU/lyJ6q510F3qsW8fB6Z6wEs5BpN
-         NjxQ==
+        bh=WLcwOUla2fi4WryQZC9pITLT3xq49m68i6L5ryo+y5s=;
+        b=NfRIo8xViwuO3JUVi7JjR9HDghFI8DjV6w7O5j6u0TzQwT7YikUD58F0A8rDhbnRqX
+         r1D1rR0FY+JLS7q3rzRJ1uo8Y7OQ3vQycnuscZ+AhtQfN13O5T6GgAPEugkja5KTFQdG
+         CNxs4qV2ffOWnVQ913ljVUdgfR8/P137uPIz6OfT4GMs/+wt1veg0O+17tMzLNemjxV/
+         +TigNCm6pAJ42ULcP1097oT6kY7LnReLbE6LIE3msbU4/2klZTrqghtmYWarqsT/QoQp
+         Gq6boDb8bl4cTvIZc6e2oW4gFcHII2bQcMDqo1/J+ercvCWjmQrP1n7umezbnCwGBrv7
+         K27Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728597023; x=1729201823;
+        d=1e100.net; s=20230601; t=1728597672; x=1729202472;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=da6GUY+ELNd1DLQRkkLRERlZjccZ4wuj1CYEcOkL1W8=;
-        b=f3fE/Qo8BXnpOxi8U53zXO9OdDOmYr364upKCtQIm6ngt/zEcetlF39tnW0PtbAQL1
-         upKxAEhhvZmwuDIXt+LlEYlfYyewj1xnj+A8jlJG2EMwHAJpmHiBypoPWOwDt9bAyrtz
-         a44VpaPZ7rh8NsE6INnCQ5yanRNtUEQUAHCxVkNfPy7WnHNq2Jj6/ncNoI9v1jB+f91m
-         y5RZoWbMSk6rD6g9dAlaLSWZRkgm3PtWJC40ouLNUG0Q+kujRuhzGvK+5r3xa2IM76rR
-         +PQg74CABZQ9SNWZR5KVX8iHbxiGcs56PfSGuirZC8wYtVfPtwE03tqcWKZjRc8OSp1q
-         4k1g==
-X-Gm-Message-State: AOJu0YwCwXEG55Js9KQkj9rKU3vGetTEaXIC54xb1W79UgX8EG/z55xq
-	N5DdgglOfy6RaBTK999+Sbbu/EQLPfANCm1U8d9lnBxnf7QYQDNxj0FU+lkH2MOkRQjq73t+v2l
-	NO0XnJWul4W6ICjheW2lA0qMIuxo=
-X-Google-Smtp-Source: AGHT+IEMKx7L34xqGIKvq75HdF9ayeGGB+Hu2Qt5mWBt0+ZPa/WYZAzWfblxXH3NOHbaU/7hFMHUxl27peFC7RivkDY=
-X-Received: by 2002:a17:90b:2304:b0:2e2:d181:6809 with SMTP id
- 98e67ed59e1d1-2e2f0ea9db9mr751838a91.39.1728597023363; Thu, 10 Oct 2024
- 14:50:23 -0700 (PDT)
+        bh=WLcwOUla2fi4WryQZC9pITLT3xq49m68i6L5ryo+y5s=;
+        b=vCGZz2rlbdqdBEKxX+LKiQMCoewnpfRHj5i63VIkWKFdLIeEZ0KHOWaQnX7P42y0s+
+         9d6tUTn/Uag7kOm19bTMR4gQ3zQH4MuMpv3kz3a0NsiF/rySaWpQPi5jkiE/HjKzz1gZ
+         OjzImM+rLcN2QUmt6oC62HrnLCDWggm00xc7rRdXfZVhI5P3e/8uAe7XzWpb/ASsDuEN
+         pJsdyBl8a/jE/yXbZjrvJMu6XPE+NFzvbFLBYWqnKlnplbyAEyiotrGblK3FQgoktbCK
+         1LG3qnAeeC8FJewYOSX0nsegnThMyaJAgByybF1cpYDCfmBpn7xJxQMRoTyZcQ8x3rgJ
+         FQ/w==
+X-Forwarded-Encrypted: i=1; AJvYcCVsdjBdQD5nkSzlXDhQlFz4rHKTGfuJGJNJrWi5hJ1PwPNbfFO6/fQO9bVJWRRlcnwUhVStAlIn5s/dTX++6XKs@vger.kernel.org, AJvYcCW2NyGSCtSXvwGFA0r6mRldoYyygod6h6vhIpzOoliQNbKyF85ChDnsxg2yuvIJxqpXudihQBjg6CRAV9k/eHLgXUWJ@vger.kernel.org, AJvYcCXd6cpMrRWL2QciEEf3m5nNn4HGHSTx9OmMGWbpLCYHK1H+ILTCX0+SbXlpWPD40w2cXjac4pvbvshXdVE=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywr0uTEQLzyn2ySlR/KaEeOVFZS0aeUZyCrJKULWv5XhQwBraVf
+	EUvy10LlX37eR7vU5XHl0L4B7/9pwmm8294VJFEBQXuForA06f3dKTNO5dLOVtwqyt8bbHKwIzm
+	pKtbxsvKS2ObbTS+T6il0vSSqmwBS9QjP
+X-Google-Smtp-Source: AGHT+IHWqBnwD9Qz9bUKjePD4Lcw9JynVMvCGdfFK2afXtJlMLe+UYYEUJ2v1N1JhWUHdofyf/tHHrKSHl0k8vTVypk=
+X-Received: by 2002:a17:90a:bc97:b0:2e2:cd22:b092 with SMTP id
+ 98e67ed59e1d1-2e2f0a6e9cdmr866900a91.16.1728597672490; Thu, 10 Oct 2024
+ 15:01:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241008091501.8302-1-houtao@huaweicloud.com> <20241008091501.8302-8-houtao@huaweicloud.com>
-In-Reply-To: <20241008091501.8302-8-houtao@huaweicloud.com>
+References: <20241009220638.333429-1-wudevelops@gmail.com> <20241009220638.333429-2-wudevelops@gmail.com>
+In-Reply-To: <20241009220638.333429-2-wudevelops@gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 10 Oct 2024 14:50:09 -0700
-Message-ID: <CAEf4BzafbA4S0soDpRp__biWXm5bwFa_BWfbPLO=JSa91rG9Qw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 07/16] libbpf: Add helpers for bpf_dynptr_user
-To: Hou Tao <houtao@huaweicloud.com>
-Cc: bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, 
-	Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>, 
-	Yonghong Song <yonghong.song@linux.dev>, Daniel Borkmann <daniel@iogearbox.net>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Jiri Olsa <jolsa@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, houtao1@huawei.com, xukuohai@huawei.com
+Date: Thu, 10 Oct 2024 15:01:00 -0700
+Message-ID: <CAEf4BzYo12vao0GPYPC=3SMTzc5c8kZSFCE+D63ACgtjs7QhVw@mail.gmail.com>
+Subject: Re: [PATCH bpf v1 2/2] selftests/bpf: assert link info uprobe_multi
+ count & path_size if unset
+To: Tyrone Wu <wudevelops@gmail.com>
+Cc: bpf@vger.kernel.org, kpsingh@kernel.org, mattbobrowski@google.com, 
+	song@kernel.org, jolsa@kernel.org, ast@kernel.org, daniel@iogearbox.net, 
+	andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, 
+	yonghong.song@linux.dev, john.fastabend@gmail.com, sdf@fomichev.me, 
+	haoluo@google.com, rostedt@goodmis.org, mhiramat@kernel.org, 
+	mathieu.desnoyers@efficios.com, mykolal@fb.com, shuah@kernel.org, 
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, kernel-patches-bot@fb.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Oct 8, 2024 at 2:02=E2=80=AFAM Hou Tao <houtao@huaweicloud.com> wro=
+On Wed, Oct 9, 2024 at 3:07=E2=80=AFPM Tyrone Wu <wudevelops@gmail.com> wro=
 te:
 >
-> From: Hou Tao <houtao1@huawei.com>
+> Add assertions in `bpf_link_info.uprobe_multi` test to verify that
+> `count` and `path_size` fields are correctly populated when the fields
+> are unset.
 >
-> Add bpf_dynptr_user_init() to initialize a bpf_dynptr_user object,
-> bpf_dynptr_user_{data,size}() to get the address and length of the
-> dynptr object, and bpf_dynptr_user_set_size() to set the its size.
+> This tests a previous bug where the `path_size` field was not populated
+> when `path` and `path_size` were unset.
 >
-> Instead of exporting these symbols, simply adding these helpers as
-> inline functions in bpf.h.
->
-> Signed-off-by: Hou Tao <houtao1@huawei.com>
+> Signed-off-by: Tyrone Wu <wudevelops@gmail.com>
 > ---
->  tools/lib/bpf/bpf.h | 27 +++++++++++++++++++++++++++
->  1 file changed, 27 insertions(+)
+>  tools/testing/selftests/bpf/prog_tests/fill_link_info.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
 >
-
-I don't think we need this patch and these APIs at all, let user work
-with bpf_udynptr directly
-
-
-> diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
-> index a4a7b1ad1b63..92b4afac5f5f 100644
-> --- a/tools/lib/bpf/bpf.h
-> +++ b/tools/lib/bpf/bpf.h
-> @@ -700,6 +700,33 @@ struct bpf_token_create_opts {
->  LIBBPF_API int bpf_token_create(int bpffs_fd,
->                                 struct bpf_token_create_opts *opts);
+> diff --git a/tools/testing/selftests/bpf/prog_tests/fill_link_info.c b/to=
+ols/testing/selftests/bpf/prog_tests/fill_link_info.c
+> index f3932941bbaa..a38cf2a999fe 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/fill_link_info.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/fill_link_info.c
+> @@ -417,6 +417,13 @@ verify_umulti_link_info(int fd, bool retprobe, __u64=
+ *offsets,
+>         if (!ASSERT_NEQ(err, -1, "readlink"))
+>                 return -1;
 >
-> +/* sys_bpf() will check the validity of data and size */
-> +static inline void bpf_dynptr_user_init(void *data, __u32 size,
-> +                                       struct bpf_dynptr_user *dynptr)
-> +{
-> +       dynptr->data =3D (__u64)(unsigned long)data;
-> +       dynptr->size =3D size;
-> +       dynptr->rsvd =3D 0;
-> +}
+> +       memset(&info, 0, sizeof(info));
+> +       err =3D bpf_link_get_info_by_fd(fd, &info, &len);
+
+if (!ASSERT_OK(err, "link_get_info"))
+    return -1;
+
+?
+
+Other than this, LGTM.
+
+pw-bot: cr
+
 > +
-> +static inline void bpf_dynptr_user_set_size(struct bpf_dynptr_user *dynp=
-tr,
-> +                                           __u32 new_size)
-> +{
-> +       dynptr->size =3D new_size;
-> +}
+> +       ASSERT_EQ(info.uprobe_multi.count, 3, "info.uprobe_multi.count");
+> +       ASSERT_EQ(info.uprobe_multi.path_size, strlen(path) + 1,
+> +                 "info.uprobe_multi.path_size");
 > +
-> +static inline __u32
-> +bpf_dynptr_user_size(const struct bpf_dynptr_user *dynptr)
-> +{
-> +       return dynptr->size;
-> +}
-> +
-> +static inline void *
-> +bpf_dynptr_user_data(const struct bpf_dynptr_user *dynptr)
-> +{
-> +       return (void *)(unsigned long)dynptr->data;
-> +}
-> +
->  #ifdef __cplusplus
->  } /* extern "C" */
->  #endif
+>         for (bit =3D 0; bit < 8; bit++) {
+>                 memset(&info, 0, sizeof(info));
+>                 info.uprobe_multi.path =3D ptr_to_u64(path_buf);
 > --
-> 2.44.0
+> 2.43.0
 >
 
