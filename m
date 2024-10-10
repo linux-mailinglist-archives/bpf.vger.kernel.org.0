@@ -1,253 +1,201 @@
-Return-Path: <bpf+bounces-41531-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41532-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05832997B8C
-	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 05:58:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9F88997C06
+	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 06:53:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 725AFB22FF4
-	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 03:58:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4A1D31F24C14
+	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 04:53:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44D91192D9C;
-	Thu, 10 Oct 2024 03:58:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="xGfegS1+"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CF5B19E82A;
+	Thu, 10 Oct 2024 04:53:33 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E5F0558B7;
-	Thu, 10 Oct 2024 03:58:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.99
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B3434A07;
+	Thu, 10 Oct 2024 04:53:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728532702; cv=none; b=T6WAVCSsDCErf3k1PlNmPQaqz5Mgivtw95PwwpeWybPGvq1HdSO4Gboce+BB2P2sQNjEnyvnreCfFzn9VWxV2QkwV+THTbim237rT8tEuGdwNIvfyO9BjCui+Qca9KkX5zF0Pij5+eWq34dRpMqfNE6sU1EaHmuP5wFGnveulos=
+	t=1728536012; cv=none; b=p7l1IIgY6R8AI1T8XUSWHwJUM/PArFv9ooidXrNiLLdVKo36lsymTKhV5KerZqOSIiDGt99mciyFmw1tMawzR6lAZ52szkBgYioMRF8rM2aT3YF9FuiJnPZ9BWe/HqgXrPxmQH64N17SXhyDPCeoF6PQ9+hJL+hSxbf5MbShYTE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728532702; c=relaxed/simple;
-	bh=FPqeY0G22nBxa9qVXWs1m5Mm6fT3IOVgxr8CX4tynmE=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=PF6WbzUkDHfpgaOVANYMYpXpwsaCnOqdRHtRSAG6S1c5F/AVcSlei67nLx4LLQk2deERoURcNJ5i9GXp3mq8UkCjYITi9oUyo0HvEq5naoPZciO27SpSdYsh6Uz5uMuvZ8udVhKzmKSVVDJvZDC2ci46H5vf/kLLJRvHXPS6Als=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=xGfegS1+; arc=none smtp.client-ip=115.124.30.99
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1728532696; h=From:To:Subject:Date:Message-Id;
-	bh=7kYNcKRHlS5yYQwqfh0s4ZfdVhzFEa9OJov7XbY1SeA=;
-	b=xGfegS1+K58pccqmYhiqTSKdjsd3M+3v0audUtnuTN3QI5N5Ij3TJv1oiEZMTh3czht6w5IeLumPa40fxr8U0ULEgtB3texyWeCo0Su8YSP90lbfzLDRg7tHmfGfti+ZGqYs4vYkKgPJNcON/ptT2HtdJp+HGwrY9byrsKboJl8=
-Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0WGksTns_1728532691)
-          by smtp.aliyun-inc.com;
-          Thu, 10 Oct 2024 11:58:16 +0800
-From: "D. Wythe" <alibuda@linux.alibaba.com>
-To: kgraul@linux.ibm.com,
-	wenjia@linux.ibm.com,
-	jaka@linux.ibm.com,
-	wintera@linux.ibm.com,
-	guwen@linux.alibaba.com,
-	ast@kernel.org
-Cc: kuba@kernel.org,
-	davem@davemloft.net,
-	netdev@vger.kernel.org,
-	linux-s390@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	tonylu@linux.alibaba.com,
-	pabeni@redhat.com,
-	edumazet@google.com,
-	bpf@vger.kernel.org
-Subject: [PATCH net-next] net/smc: Introduce a hook to modify syn_smc at runtime
-Date: Thu, 10 Oct 2024 11:58:11 +0800
-Message-Id: <1728532691-20044-1-git-send-email-alibuda@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+	s=arc-20240116; t=1728536012; c=relaxed/simple;
+	bh=BfipDDsqUnVOrPWkwh4bhHNxe6HlOv1kOOFu2CM6OAs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=HoKpSJM44d84/9rMuBEfJI+QSB2frXMC92CQ6+qYXd5J2tklYoKdLh2AG6YtSlFVIaR44Omhe9LiBZL0Fu2mUCM34fcOjDSfDaltUApfi+6jfBDOwfu6QZeEX9ZahsPQE1BZeDh6jY8xwfK+xQTWk4toBbPGsSVuDSmG/m6tbtE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4XPHSh1ZDWz4f3l26;
+	Thu, 10 Oct 2024 12:53:08 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id D00281A018D;
+	Thu, 10 Oct 2024 12:53:25 +0800 (CST)
+Received: from [10.67.110.36] (unknown [10.67.110.36])
+	by APP2 (Coremail) with SMTP id Syh0CgAHO2DEXQdn8XquDg--.17460S2;
+	Thu, 10 Oct 2024 12:53:25 +0800 (CST)
+Message-ID: <a98f599f-ea6e-4c7f-b39d-44e6cd2a9f20@huaweicloud.com>
+Date: Thu, 10 Oct 2024 12:53:23 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH -next v3 1/2] perf stat: Support inherit events during
+ fork() for bperf
+To: Namhyung Kim <namhyung@kernel.org>, Song Liu <song@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+ Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+ Adrian Hunter <adrian.hunter@intel.com>, kan.liang@linux.intel.com,
+ linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+ bpf@vger.kernel.org
+References: <20240916014318.267709-1-wutengda@huaweicloud.com>
+ <20240916014318.267709-2-wutengda@huaweicloud.com>
+ <CAPhsuW6wrwcMYLufVfu-R9OzPBfspJD0w-pZUr68UBRSZExc=A@mail.gmail.com>
+ <ZwcgZhOC_gq9kToT@google.com>
+Content-Language: en-US
+From: Tengda Wu <wutengda@huaweicloud.com>
+In-Reply-To: <ZwcgZhOC_gq9kToT@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:Syh0CgAHO2DEXQdn8XquDg--.17460S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxCF13Jr4fXFyrKw4UtFyxKrg_yoW5Zr4fpr
+	WIkasFk3ykXFyYkw12qw1DZrySyrZ5JrW3Xrn8KrWxtFyDK3sIgF17GrWY9asrXr1xGryr
+	X3yj9343ua98A3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
+	14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
+	ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
+	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1
+	7KsUUUUUU==
+X-CM-SenderInfo: pzxwv0hjgdqx5xdzvxpfor3voofrz/
 
-From: "D. Wythe" <alibuda@linux.alibaba.com>
 
-The introduction of IPPROTO_SMC enables eBPF programs to determine
-whether to use SMC based on the context of socket creation, such as
-network namespaces, PID and comm name, etc.
 
-As a subsequent enhancement, this patch introduces a new hook for eBPF
-programs that allows decisions on whether to use SMC or not at runtime,
-including but not limited to local/remote IP address or ports. In
-simpler words, this feature allows modifications to syn_smc through eBPF
-programs before the TCP three-way handshake got established.
+On 2024/10/10 8:31, Namhyung Kim wrote:
+> On Wed, Oct 09, 2024 at 10:18:44AM -0700, Song Liu wrote:
+>> On Sun, Sep 15, 2024 at 6:53 PM Tengda Wu <wutengda@huaweicloud.com> wrote:
+>>>
+>>> bperf has a nice ability to share PMUs, but it still does not support
+>>> inherit events during fork(), resulting in some deviations in its stat
+>>> results compared with perf.
+>>>
+>>> perf stat result:
+>>> $ ./perf stat -e cycles,instructions -- ./perf test -w sqrtloop
+>>>
+>>>    Performance counter stats for './perf test -w sqrtloop':
+>>>
+>>>        2,316,038,116      cycles
+>>>        2,859,350,725      instructions
+>>>
+>>>          1.009603637 seconds time elapsed
+>>>
+>>>          1.004196000 seconds user
+>>>          0.003950000 seconds sys
+>>>
+>>> bperf stat result:
+>>> $ ./perf stat --bpf-counters -e cycles,instructions -- \
+>>>       ./perf test -w sqrtloop
+>>>
+>>>    Performance counter stats for './perf test -w sqrtloop':
+>>>
+>>>           18,762,093      cycles
+>>>           23,487,766      instructions
+>>>
+>>>          1.008913769 seconds time elapsed
+>>>
+>>>          1.003248000 seconds user
+>>>          0.004069000 seconds sys
+>>>
+>>> In order to support event inheritance, two new bpf programs are added
+>>> to monitor the fork and exit of tasks respectively. When a task is
+>>> created, add it to the filter map to enable counting, and reuse the
+>>> `accum_key` of its parent task to count together with the parent task.
+>>> When a task exits, remove it from the filter map to disable counting.
+>>>
+>>> After support:
+>>> $ ./perf stat --bpf-counters -e cycles,instructions -- \
+>>>       ./perf test -w sqrtloop
+>>>
+>>>  Performance counter stats for './perf test -w sqrtloop':
+>>>
+>>>      2,316,252,189      cycles
+>>>      2,859,946,547      instructions
+>>>
+>>>        1.009422314 seconds time elapsed
+>>>
+>>>        1.003597000 seconds user
+>>>        0.004270000 seconds sys
+>>>
+>>> Signed-off-by: Tengda Wu <wutengda@huaweicloud.com>
+>>
+>> The solution looks good to me. Question on the UI: do we always
+>> want the inherit behavior from PID and TGID monitoring? If not,
+>> maybe we should add a flag for it. (I think we do need the flag).
+> 
+> I think it should depend on the value of attr.inherit.  Maybe we can
+> disable the autoload for !inherit.
+> 
 
-Thanks to kfunc for making it easier for us to implement this feature in
-SMC.
+Got it. The attr.inherit flag(related to --no-inherit in perf command)
+is suitable for controlling inherit behavior. I will fix it. Thanks!
 
-Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
----
- include/linux/tcp.h  |  4 ++-
- net/ipv4/tcp_input.c |  4 +--
- net/smc/af_smc.c     | 75 ++++++++++++++++++++++++++++++++++++++++++++++------
- 3 files changed, 72 insertions(+), 11 deletions(-)
+>>
+>> One nitpick below.
+>>
+>> Thanks,
+>> Song
+>>
+>> [...]
+>>>
+>>> +struct bperf_filter_value {
+>>> +       __u32 accum_key;
+>>> +       __u8 exited;
+>>> +};
+>> nit:
+>> Can we use a special value of accum_key to replace exited==1
+>> case?
+> 
+> I'm not sure.  I guess it still needs to use the accum_key to save the
+> final value when exited = 1.
 
-diff --git a/include/linux/tcp.h b/include/linux/tcp.h
-index 6a5e08b..d028d76 100644
---- a/include/linux/tcp.h
-+++ b/include/linux/tcp.h
-@@ -478,7 +478,9 @@ struct tcp_sock {
- #endif
- #if IS_ENABLED(CONFIG_SMC)
- 	bool	syn_smc;	/* SYN includes SMC */
--	bool	(*smc_hs_congested)(const struct sock *sk);
-+	void	(*smc_openreq_init)(struct request_sock *req,
-+			     const struct tcp_options_received *rx_opt,
-+			     struct sk_buff *skb, const struct sock *sk);
- #endif
- 
- #if defined(CONFIG_TCP_MD5SIG) || defined(CONFIG_TCP_AO)
-diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
-index cc05ec1..15fe8b9 100644
---- a/net/ipv4/tcp_input.c
-+++ b/net/ipv4/tcp_input.c
-@@ -7036,8 +7036,8 @@ static void tcp_openreq_init(struct request_sock *req,
- 	ireq->ir_num = ntohs(tcp_hdr(skb)->dest);
- 	ireq->ir_mark = inet_request_mark(sk, skb);
- #if IS_ENABLED(CONFIG_SMC)
--	ireq->smc_ok = rx_opt->smc_ok && !(tcp_sk(sk)->smc_hs_congested &&
--			tcp_sk(sk)->smc_hs_congested(sk));
-+	if (rx_opt->smc_ok && tcp_sk(sk)->smc_openreq_init)
-+		tcp_sk(sk)->smc_openreq_init(req, rx_opt, skb, sk);
- #endif
- }
- 
-diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
-index 0316217..550799c 100644
---- a/net/smc/af_smc.c
-+++ b/net/smc/af_smc.c
-@@ -70,6 +70,15 @@
- static void smc_tcp_listen_work(struct work_struct *);
- static void smc_connect_work(struct work_struct *);
- 
-+__bpf_hook_start();
-+
-+__weak noinline int select_syn_smc(const struct sock *sk, struct sockaddr *peer)
-+{
-+	return 1;
-+}
-+
-+__bpf_hook_end();
-+
- int smc_nl_dump_hs_limitation(struct sk_buff *skb, struct netlink_callback *cb)
- {
- 	struct smc_nl_dmp_ctx *cb_ctx = smc_nl_dmp_ctx(cb);
-@@ -156,19 +165,43 @@ static struct sock *smc_tcp_syn_recv_sock(const struct sock *sk,
- 	return NULL;
- }
- 
--static bool smc_hs_congested(const struct sock *sk)
-+static void smc_openreq_init(struct request_sock *req,
-+			     const struct tcp_options_received *rx_opt,
-+			     struct sk_buff *skb, const struct sock *sk)
- {
-+	struct inet_request_sock *ireq = inet_rsk(req);
-+	struct sockaddr_storage rmt_sockaddr = {};
- 	const struct smc_sock *smc;
- 
- 	smc = smc_clcsock_user_data(sk);
- 
- 	if (!smc)
--		return true;
-+		return;
- 
--	if (workqueue_congested(WORK_CPU_UNBOUND, smc_hs_wq))
--		return true;
-+	if (smc->limit_smc_hs && workqueue_congested(WORK_CPU_UNBOUND, smc_hs_wq))
-+		goto out_no_smc;
- 
--	return false;
-+	rmt_sockaddr.ss_family = sk->sk_family;
-+
-+	if (rmt_sockaddr.ss_family == AF_INET) {
-+		struct sockaddr_in *rmt4_sockaddr =  (struct sockaddr_in *)&rmt_sockaddr;
-+
-+		rmt4_sockaddr->sin_addr.s_addr = ireq->ir_rmt_addr;
-+		rmt4_sockaddr->sin_port	= ireq->ir_rmt_port;
-+#if IS_ENABLED(CONFIG_IPV6)
-+	} else {
-+		struct sockaddr_in6 *rmt6_sockaddr =  (struct sockaddr_in6 *)&rmt_sockaddr;
-+
-+		rmt6_sockaddr->sin6_addr = ireq->ir_v6_rmt_addr;
-+		rmt6_sockaddr->sin6_port = ireq->ir_rmt_port;
-+#endif /* CONFIG_IPV6 */
-+	}
-+
-+	ireq->smc_ok = select_syn_smc(sk, (struct sockaddr *)&rmt_sockaddr);
-+	return;
-+out_no_smc:
-+	ireq->smc_ok = 0;
-+	return;
- }
- 
- struct smc_hashinfo smc_v4_hashinfo = {
-@@ -1671,7 +1704,7 @@ int smc_connect(struct socket *sock, struct sockaddr *addr,
- 	}
- 
- 	smc_copy_sock_settings_to_clc(smc);
--	tcp_sk(smc->clcsock->sk)->syn_smc = 1;
-+	tcp_sk(smc->clcsock->sk)->syn_smc = select_syn_smc(sk, addr);
- 	if (smc->connect_nonblock) {
- 		rc = -EALREADY;
- 		goto out;
-@@ -2650,8 +2683,7 @@ int smc_listen(struct socket *sock, int backlog)
- 
- 	inet_csk(smc->clcsock->sk)->icsk_af_ops = &smc->af_ops;
- 
--	if (smc->limit_smc_hs)
--		tcp_sk(smc->clcsock->sk)->smc_hs_congested = smc_hs_congested;
-+	tcp_sk(smc->clcsock->sk)->smc_openreq_init = smc_openreq_init;
- 
- 	rc = kernel_listen(smc->clcsock, backlog);
- 	if (rc) {
-@@ -3475,6 +3507,24 @@ static void __net_exit smc_net_stat_exit(struct net *net)
- 	.exit = smc_net_stat_exit,
- };
- 
-+#if IS_ENABLED(CONFIG_BPF_SYSCALL)
-+BTF_SET8_START(bpf_smc_fmodret_ids)
-+BTF_ID_FLAGS(func, select_syn_smc)
-+BTF_SET8_END(bpf_smc_fmodret_ids)
-+
-+static const struct btf_kfunc_id_set bpf_smc_fmodret_set = {
-+	.owner = THIS_MODULE,
-+	.set   = &bpf_smc_fmodret_ids,
-+};
-+
-+static int bpf_smc_kfunc_init(void)
-+{
-+	return register_btf_fmodret_id_set(&bpf_smc_fmodret_set);
-+}
-+#else
-+static inline int bpf_smc_kfunc_init(void) { return 0; }
-+#endif /* CONFIG_BPF_SYSCALL */
-+
- static int __init smc_init(void)
- {
- 	int rc;
-@@ -3574,8 +3624,17 @@ static int __init smc_init(void)
- 		pr_err("%s: smc_inet_init fails with %d\n", __func__, rc);
- 		goto out_ulp;
- 	}
-+
-+	rc = bpf_smc_kfunc_init();
-+	if (rc) {
-+		pr_err("%s: bpf_smc_kfunc_init fails with %d\n", __func__, rc);
-+		goto out_inet;
-+	}
-+
- 	static_branch_enable(&tcp_have_smc);
- 	return 0;
-+out_inet:
-+	smc_inet_exit();
- out_ulp:
- 	tcp_unregister_ulp(&smc_ulp_ops);
- out_lo:
--- 
-1.8.3.1
+In theory, it is possible. The accum_key is currently only used to index value
+in accum_readings map, so if the task is not being counted, the accum_key can
+be set to an special value.
+
+Due to accum_key is of u32 type, there are two special values to choose from: 0
+or max_entries+1. I think the latter, max_entries+1, may be more suitable because
+it can avoid memory waste in the accum_readings map and does not require too
+many changes to bpf_counter.
+
+Thanks for your kindly review!
+Tengda
+
+> 
+> Thanks,
+> Namhyung
+> 
+>>
+>>> +
+>>>  #endif /* __BPERF_STAT_U_H */
+>>> --
+>>> 2.34.1
+>>>
 
 
