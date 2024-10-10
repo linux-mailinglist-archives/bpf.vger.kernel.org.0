@@ -1,168 +1,135 @@
-Return-Path: <bpf+bounces-41542-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41543-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71944998010
-	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 10:36:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EFCB998071
+	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 10:45:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 92E2F1C24115
-	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 08:36:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 529981C26024
+	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 08:45:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28A5A20697B;
-	Thu, 10 Oct 2024 08:04:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCC2D1CF282;
+	Thu, 10 Oct 2024 08:26:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="qUwWDZgm";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="YKVFY9ru"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="W8h74ZtX"
 X-Original-To: bpf@vger.kernel.org
-Received: from fhigh-a2-smtp.messagingengine.com (fhigh-a2-smtp.messagingengine.com [103.168.172.153])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AADC206972;
-	Thu, 10 Oct 2024 08:04:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.153
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1EB51CEEA2
+	for <bpf@vger.kernel.org>; Thu, 10 Oct 2024 08:26:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728547485; cv=none; b=EHyy9BYRpjToh3Qb59S5zew1d1qYdkRt/Ijr4LPgws+n5F8sMuKyekcCcg9rsKF/p74rz6WmmEpNluZOk1k0RngCH40jCt8nrTs7+ju59/TKDfYrYErRNYyvD+kk7asNoTMrDwU7hElHLPRjsjSk9gtgzE4F8lN7P7Qy4lRI9F8=
+	t=1728548764; cv=none; b=faomVMqbs5kB/5epGO/MzjfQaAcysMaH9MlHJEYFqWbqPA5ctcHfF066tD1hMCwQiXv1AHAKXFFwF2Ohp6w5Hs7UbVkXul40lBgeJdZHXm/2B8ue/hiH75IE+BcFQBR8QDfHLP3yr5/Ajos2vecz7apPjZVegnhXZR3Tgo0N/qA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728547485; c=relaxed/simple;
-	bh=NOnTXEDf/afk98+qld6jjp5+THx/CJ1WRioKL/FDWFo=;
-	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=MRVnYAoHoenjrfhIoAGrGBM4oe2ofBruaYZNILTXmFvBsEywcMgEFOa/y8zUJfT+69oYrdNLcgOAyZicwEOaCzvCWmeUMn1iB5lcx32GsGYs3G9xmiBwLrB8fIV9YxD5tSwqfBLUX908w7zzJ7jNGZWqxsDOqS+S1/6/lupc/F4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=qUwWDZgm; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=YKVFY9ru; arc=none smtp.client-ip=103.168.172.153
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from phl-compute-10.internal (phl-compute-10.phl.internal [10.202.2.50])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id 36D3E11401D9;
-	Thu, 10 Oct 2024 04:04:41 -0400 (EDT)
-Received: from phl-imap-11 ([10.202.2.101])
-  by phl-compute-10.internal (MEProxy); Thu, 10 Oct 2024 04:04:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm1; t=1728547481;
-	 x=1728633881; bh=NOnTXEDf/afk98+qld6jjp5+THx/CJ1WRioKL/FDWFo=; b=
-	qUwWDZgmoFSc2bvCLEkOL58hDVYZTrXcWqA1r8Cm2RvEFx5gUkRYopFuSPQ3amGK
-	A75AnB60O0tNSjpd6qb4sOHfavqwBuHErQVjVa8XNdYjdZheAewMWD81oqp5grVF
-	OMyHEJ3EtyhTGHXEhPd56/rpTE8Os9ZcKFpOiuCDpJ0WFjtvtQv24Ut5jJoTHnYd
-	aFsDvyOZRC8f1Zd8Ggv9tLbENlgXMnhXw4fjpTepep99VYTMAzRQ02ssu1RFUoY3
-	g2Q/l1BksGyyAC49oDIHgf037BwdnufA/EmmDjUOvMxnh4dx4RBbboyuyOd840NT
-	xuqFLD+Nws1CIVcuTITmHg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1728547481; x=
-	1728633881; bh=NOnTXEDf/afk98+qld6jjp5+THx/CJ1WRioKL/FDWFo=; b=Y
-	KVFY9ruZTwjCXaru75A1LYIRzB9hNonTtp+VnwOuUDc00DfM6Q58QBkP6xvTdp45
-	5KRX9ad0rBSJypNyLeRiaImyE0+6VyqMZel3jXqgaXrTtoIYd8as+0tpJgI4+Rwy
-	XFY3m+TuzIDj8+4xOE9H/ir6Bpc93KNZM9vqBvrYFGayrfXvHSClTBdE5Y51ymOD
-	CBmzaZCAlBE7NBw0EKGEjQ/m7G/CH5ceK628BoC5sGH6eY/a3dskoTF5R7ilaei7
-	0OZJ/HycrEwomf3gFDs9UzNX1vf9aG49RHy276/+i4YF/m+QWD5HGfVUe1MczrPH
-	EnyTMmojm4/cNsD1aIH0Q==
-X-ME-Sender: <xms:mIoHZ4klWhimXUj0T6QpcTwiYXJRsoU5LdDufDqDOomjiAXzPU1DeQ>
-    <xme:mIoHZ30tXQyn4xrtPUssnTi-kdfuHuz3J0caWpTGpMt2leGiFPK0R6BThxrSwX69m
-    nH-QCqJpajtXht5q6M>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvdefgedguddvkecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
-    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
-    hnthhsucdlqddutddtmdenucfjughrpefoggffhffvvefkjghfufgtgfesthejredtredt
-    tdenucfhrhhomhepfdetrhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusg
-    druggvqeenucggtffrrghtthgvrhhnpefhtdfhvddtfeehudekteeggffghfejgeegteef
-    gffgvedugeduveelvdekhfdvieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
-    epmhgrihhlfhhrohhmpegrrhhnugesrghrnhgusgdruggvpdhnsggprhgtphhtthhopedu
-    fedpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtohepsghpfhesvhhgvghrrdhkvghrnh
-    gvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdgrlhhphhgrsehvghgvrhdrkhgvrhhn
-    vghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqrghrtghhsehvghgvrhdrkhgvrhhnvg
-    hlrdhorhhgpdhrtghpthhtoheplhhinhhugidqtghskhihsehvghgvrhdrkhgvrhhnvghl
-    rdhorhhgpdhrtghpthhtoheplhhinhhugidqhhgvgigrghhonhesvhhgvghrrdhkvghrnh
-    gvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghr
-    nhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhmihhpshesvhhgvghrrdhkvghrnh
-    gvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhmohguuhhlvghssehvghgvrhdrkhgv
-    rhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqohhpvghnrhhishgtsehvghgvrh
-    drkhgvrhhnvghlrdhorhhg
-X-ME-Proxy: <xmx:mIoHZ2oEJ0fbuiaD8xkujPJKuAgfTVFVgkQ1MaKFzQJpFSIpGzfDAg>
-    <xmx:mIoHZ0mJL5zhDflICU5OnCxj5xD-lNh7hszg2y7w_jG0SosfB6v4TA>
-    <xmx:mIoHZ23OJE-QCT7HdDHaNJq2YoxMQsePqKr1PpcugeuoE58nHC1iew>
-    <xmx:mIoHZ7tuhBf_WSccVXoM3lkeeX0DDoNl6mMcyPN5JCQqsonWnM8tzw>
-    <xmx:mYoHZ8NM8dSyfUFOSROsLFZvsdyCyDiUWAXTgcQSDhI-SDaU9fYoh5C4>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id D17622220071; Thu, 10 Oct 2024 04:04:40 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
+	s=arc-20240116; t=1728548764; c=relaxed/simple;
+	bh=dqyQvgHvQL/aQd0lGWWhd3kBvQIxg+mwqM9znGxTZig=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=n/DQYWHvn1sP5TIetSsgUoBoI7dLOQzXnj6nrqbTrUrHbj/ZnN9QO1shda1VtfTyOQtznTqbHz4tY1HgpQhye/NYK4HzOaBQHD0s5fjtzCJU4YNDHmIeEkNisEBQBy6Ri1oUKLz5Cfvr3Vd8urMQoFywdRJbUCP1c3nqRHmFHPU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=W8h74ZtX; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1728548761;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=j1h1uJoRfos/O8AAaaZabotvNCrfCwdQaEKlDSIDITk=;
+	b=W8h74ZtXnke/TyNE0ePPskRGD6z9vEug8CFU112Kj6Ev8LYcfsoMwsTu+C13TvIL9ROYoA
+	kSvRhrjeJ2XKeWiIdSE6kfNEQSMOAgjCVFmpBL5zRkcsc+fjbZnYXaE6RHaLQ7FYG0kVRp
+	dKaZgkLSoSUY+fbapxvZgCbpZ6hwNOU=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-665-PLZI29rPOf-aA4iZZ_fHhQ-1; Thu, 10 Oct 2024 04:25:56 -0400
+X-MC-Unique: PLZI29rPOf-aA4iZZ_fHhQ-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-37d389ffddfso359988f8f.1
+        for <bpf@vger.kernel.org>; Thu, 10 Oct 2024 01:25:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1728548755; x=1729153555;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=j1h1uJoRfos/O8AAaaZabotvNCrfCwdQaEKlDSIDITk=;
+        b=Lcek5XQWQ77FjHZiBZkEb1M2mQ3IeBqggvpizHRn3ItZ0VQs5g/X/VTRLw5kM3zH71
+         lvyr9NRJP6HOQoG5+kHX14yKRdlP+qeRYhw0tskzIH/LjWHgidpEB9JfYnjEEow3sxLO
+         Z5Bn5dsrFj+syFHZ9wnxkdWtxMJglNjPRAZ+oWdtjOoKKo8BoroJAb8mA2pofje+ZqAK
+         lDDkb2exFSW8r4LPO00rbMh097eUa3pLxCDqFy8bim+FKQdJPso1Aq8psTbo5jTO3eUG
+         HASdnIyJYV5ItlpQ5wu6bAS/exlBAxSRQ1mBQUHz6bQ434ybP1cC5FBz5QjAg83hmDzV
+         VH0w==
+X-Forwarded-Encrypted: i=1; AJvYcCVAo0AuAA85JuTZq4bPHw5MLZB/Cr7VUjEJoT9/SW2S98NHiKmnEr5/Z4yZpv046Zw/PEw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxzwfKqSgegUdYcTe24BY+RdPnE0ryytr+l3Zdb3K2xaZhNkVkG
+	5heap5qWkUqufvgK3/4e1yM8NI1QQ1QSzpCz2k4W3i8e1NX2VHFssVYG62AUgUbPZCY3scSmhdu
+	NH6qfT7P7Pz1V4gCXrBUaQTZExCuxZNc5xHm5eJ16rz0YpPV5OlWYjqAt2efK
+X-Received: by 2002:a5d:4109:0:b0:37c:cfa4:d998 with SMTP id ffacd0b85a97d-37d3ab0118amr4315413f8f.49.1728548754918;
+        Thu, 10 Oct 2024 01:25:54 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFUzRA5DsZ8WcessaPKi5kUw1LuvxVNbo8hX2evZpBQA6p8oT+WfWiN1QuaiBkJBSm0JUYRPA==
+X-Received: by 2002:a5d:4109:0:b0:37c:cfa4:d998 with SMTP id ffacd0b85a97d-37d3ab0118amr4315373f8f.49.1728548754437;
+        Thu, 10 Oct 2024 01:25:54 -0700 (PDT)
+Received: from [192.168.88.248] (146-241-27-157.dyn.eolo.it. [146.241.27.157])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-37d4b6a8b80sm836160f8f.9.2024.10.10.01.25.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Oct 2024 01:25:54 -0700 (PDT)
+Message-ID: <7caf130c-56f0-4f78-a006-5323e237cef1@redhat.com>
+Date: Thu, 10 Oct 2024 10:25:51 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Date: Thu, 10 Oct 2024 08:04:19 +0000
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Mike Rapoport" <rppt@kernel.org>,
- "Andrew Morton" <akpm@linux-foundation.org>
-Cc: "Andreas Larsson" <andreas@gaisler.com>,
- "Andy Lutomirski" <luto@kernel.org>, "Ard Biesheuvel" <ardb@kernel.org>,
- "Borislav Petkov" <bp@alien8.de>, "Brian Cain" <bcain@quicinc.com>,
- "Catalin Marinas" <catalin.marinas@arm.com>,
- "Christoph Hellwig" <hch@infradead.org>,
- "Christophe Leroy" <christophe.leroy@csgroup.eu>,
- "Dave Hansen" <dave.hansen@linux.intel.com>,
- "Dinh Nguyen" <dinguyen@kernel.org>,
- "Geert Uytterhoeven" <geert@linux-m68k.org>, guoren <guoren@kernel.org>,
- "Helge Deller" <deller@gmx.de>, "Huacai Chen" <chenhuacai@kernel.org>,
- "Ingo Molnar" <mingo@redhat.com>,
- "Johannes Berg" <johannes@sipsolutions.net>,
- "John Paul Adrian Glaubitz" <glaubitz@physik.fu-berlin.de>,
- "Kent Overstreet" <kent.overstreet@linux.dev>,
- "Liam R. Howlett" <Liam.Howlett@oracle.com>,
- "Luis Chamberlain" <mcgrof@kernel.org>,
- "Mark Rutland" <mark.rutland@arm.com>,
- "Masami Hiramatsu" <mhiramat@kernel.org>,
- "Matt Turner" <mattst88@gmail.com>, "Max Filippov" <jcmvbkbc@gmail.com>,
- "Michael Ellerman" <mpe@ellerman.id.au>,
- "Michal Simek" <monstr@monstr.eu>, "Oleg Nesterov" <oleg@redhat.com>,
- "Palmer Dabbelt" <palmer@dabbelt.com>,
- "Peter Zijlstra" <peterz@infradead.org>,
- "Richard Weinberger" <richard@nod.at>,
- "Russell King" <linux@armlinux.org.uk>, "Song Liu" <song@kernel.org>,
- "Stafford Horne" <shorne@gmail.com>,
- "Steven Rostedt" <rostedt@goodmis.org>,
- "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
- "Thomas Gleixner" <tglx@linutronix.de>,
- "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
- "Vineet Gupta" <vgupta@kernel.org>, "Will Deacon" <will@kernel.org>,
- bpf@vger.kernel.org, linux-alpha@vger.kernel.org,
- Linux-Arch <linux-arch@vger.kernel.org>,
- linux-arm-kernel@lists.infradead.org,
- "linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>,
- linux-hexagon@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
- linux-mm@kvack.org, linux-modules@vger.kernel.org,
- "linux-openrisc@vger.kernel.org" <linux-openrisc@vger.kernel.org>,
- linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
- linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
- linux-trace-kernel@vger.kernel.org, linux-um@lists.infradead.org,
- linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
- sparclinux@vger.kernel.org, x86@kernel.org
-Message-Id: <e1ba5ab2-a7e2-4f2c-8e2d-4788656ef695@app.fastmail.com>
-In-Reply-To: <20241009180816.83591-4-rppt@kernel.org>
-References: <20241009180816.83591-1-rppt@kernel.org>
- <20241009180816.83591-4-rppt@kernel.org>
-Subject: Re: [PATCH v5 3/8] asm-generic: introduce text-patching.h
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v2 1/7] net: ip: make fib_validate_source()
+ return drop reason
+To: Menglong Dong <menglong8.dong@gmail.com>, edumazet@google.com,
+ kuba@kernel.org
+Cc: davem@davemloft.net, dsahern@kernel.org, steffen.klassert@secunet.com,
+ herbert@gondor.apana.org.au, dongml2@chinatelecom.cn, bigeasy@linutronix.de,
+ toke@redhat.com, idosch@nvidia.com, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+References: <20241007074702.249543-1-dongml2@chinatelecom.cn>
+ <20241007074702.249543-2-dongml2@chinatelecom.cn>
+Content-Language: en-US
+From: Paolo Abeni <pabeni@redhat.com>
+In-Reply-To: <20241007074702.249543-2-dongml2@chinatelecom.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On Wed, Oct 9, 2024, at 18:08, Mike Rapoport wrote:
-> From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
->
-> Several architectures support text patching, but they name the header
-> files that declare patching functions differently.
->
-> Make all such headers consistently named text-patching.h and add an empty
-> header in asm-generic for architectures that do not support text patching.
->
-> Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
 
-Acked-by: Arnd Bergmann <arnd@arndb.de>
+
+On 10/7/24 09:46, Menglong Dong wrote:
+> In this commit, we make fib_validate_source/__fib_validate_source return
+> -reason instead of errno on error. As the return value of them can be
+> -errno, 0, and 1, we can't make it return enum skb_drop_reason directly.
+> 
+> In the origin logic, if __fib_validate_source() return -EXDEV,
+> LINUX_MIB_IPRPFILTER will be counted. And now, we need to adjust it by
+> checking "reason == SKB_DROP_REASON_IP_RPFILTER". However, this will take
+> effect only after the patch "net: ip: make ip_route_input_noref() return
+> drop reasons", as we can't pass the drop reasons from
+> fib_validate_source() to ip_rcv_finish_core() in this patch.
+> 
+> We set the errno to -EINVAL when fib_validate_source() is called and the
+> validation fails, as the errno can be checked in the caller and now its
+> value is -reason, which can lead misunderstand.
+> 
+> Following new drop reasons are added in this patch:
+> 
+>    SKB_DROP_REASON_IP_LOCAL_SOURCE
+>    SKB_DROP_REASON_IP_INVALID_SOURCE
+> 
+> Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
+
+Looking at the next patches, I'm under the impression that the overall 
+code will be simpler if you let __fib_validate_source() return directly 
+a drop reason, and fib_validate_source(), too. Hard to be sure without 
+actually do the attempt... did you try such patch by any chance?
+
+Thanks!
+
+Paolo
+
 
