@@ -1,162 +1,143 @@
-Return-Path: <bpf+bounces-41583-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41585-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1ADAF998B69
-	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 17:24:56 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C364E998C3B
+	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 17:47:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 78AE61F25BFB
-	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 15:24:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 41A9DB2DC21
+	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 15:39:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 544AF1CC8A8;
-	Thu, 10 Oct 2024 15:24:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 641B91CC174;
+	Thu, 10 Oct 2024 15:38:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ekagPdIZ"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="HYVC/S+d"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BAC71CC146;
-	Thu, 10 Oct 2024 15:24:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EC771C9ED3
+	for <bpf@vger.kernel.org>; Thu, 10 Oct 2024 15:38:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728573883; cv=none; b=eGuiKwfNt5EeK2L+p3GpJvpvhjOCDQd8f2FvlFZK+oNh6Yyln98htJS7xhllkqSK96MDO4RVrPLnCQ3OODE0JJVEzvBzmprYJu0twqWeUnMj8pCVx13Gvwzcwiq1XVzh8w8FnvRojIvtjGcgpXVyMlNOh65ay4RZEsRP0EJPI2I=
+	t=1728574736; cv=none; b=iC4+C++dc340rXVnxkiKJG+qyrSrGqh9e/oI8u/F0SikqkLLmpr4CNfPsqMHAQpeLEeQPqYvwAS+q5+4OIyI4BVDIYIbNdKRYli1A7TCnMO8VQiFzFxj6uMBaVuNATApzhpTF8+kRUK1i0XDZM/qNF2KefUibb8hXpiA8uuxaiA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728573883; c=relaxed/simple;
-	bh=gnTehr7qrLMKw/pUpKhTMaCY3tpDIt6F6aFobT96HoY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jH4/QwYdMYSRHgNrkotABtQpbYoq36PP1zZrVAMHMH/BrigC0mQ3WPBRfCDGKC5uYCSHibLw6MWil3ENOwGHkkXp3Ab0iCgO/KFE4EQtoEUIjSS8aVxYFfcXRyklCG/w8YapZ65fM/iUqWy6hXh+0kxtuuILYCj6NtnWD0M86os=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ekagPdIZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94D86C4CEC5;
-	Thu, 10 Oct 2024 15:24:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728573883;
-	bh=gnTehr7qrLMKw/pUpKhTMaCY3tpDIt6F6aFobT96HoY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ekagPdIZxqT4SWWRuS6VjAHAzc6oWKEW/4hsSTRm4pLygcR/K/5nYo1MRhIB1W8Bi
-	 WhUInbNKfRaSZHzNuMbNo/gh/Dm11IzVkhHlBcuZvhkOJMQBELbJP+QR/GYDeVHSby
-	 +1ODj4I12HqiH5y8g34fzvrSEzf2u/HDRwYAX/nNnTn9iTEhJxcxooLVqAwIKD6FZv
-	 b3fbK7YHQj8tX05PEVkLu2GJn3pxXz8GTYW1p2sF1xOis1mXNPjG1oTG9dYByuOZVe
-	 q0nYNSfpcIxt1MrmJaX80Vmf5bsmJaexf7/nT75nIm1VGT6H7a1RxSwQLd/ELhYVan
-	 63H6TXss7XvhQ==
-Date: Thu, 10 Oct 2024 18:20:53 +0300
-From: Mike Rapoport <rppt@kernel.org>
-To: Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Andreas Larsson <andreas@gaisler.com>,
-	Andy Lutomirski <luto@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-	Brian Cain <bcain@quicinc.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Christoph Hellwig <hch@infradead.org>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
-	Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Michal Simek <monstr@monstr.eu>, Oleg Nesterov <oleg@redhat.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Richard Weinberger <richard@nod.at>,
-	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
-	Stafford Horne <shorne@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>,
-	bpf@vger.kernel.org, linux-alpha@vger.kernel.org,
-	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org, linux-mm@kvack.org,
-	linux-modules@vger.kernel.org, linux-openrisc@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-	linux-trace-kernel@vger.kernel.org, linux-um@lists.infradead.org,
-	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
-	sparclinux@vger.kernel.org, x86@kernel.org
-Subject: Re: Bisected: [PATCH v5 8/8] x86/module: enable ROX caches for
- module text
-Message-ID: <Zwfw1bC-muLe6I9-@kernel.org>
-References: <20241009180816.83591-1-rppt@kernel.org>
- <20241009180816.83591-9-rppt@kernel.org>
- <20241010083033.GA1279924@google.com>
+	s=arc-20240116; t=1728574736; c=relaxed/simple;
+	bh=vDlAQv06+XbDjGLCxE5lzGXAeR29j40K3mZDoArBoVw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Mk9jJSkaFAAu/y2mR48JqB/+5zKtPr2rYRb2Mx7sEWkpR1zd//8huwWYMd7+y+nJ+aLTt9+wtQaN8IclzwzeObzn7B72Ek8H3hC/KO82Wvne2WNdOjf0B9ugu4YyMMASR861pF2Oq93aPJ0CCb6v88ZNB7tPfOmPPKh3BVRpxB8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=HYVC/S+d; arc=none smtp.client-ip=91.218.175.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1728574732;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=n/cNE7saetwM3+fOOLuNQcdlw9PRulx3xvDxlmDbig4=;
+	b=HYVC/S+dkge+dyzFDnUZ1glP9zsTXITeqJoEMoZJcn7nrE1G4U1gDKxZ5DPfUz/OLiqtnG
+	2vZ9NsXU42pzueXm9diGYpxHe4i1N1pBnVRw8bITdXfA1LEv3esnYZTd1KQJg0TBkvdQqx
+	cwucoZsolnePFp5rkqipOFtNiQB2ILA=
+From: Leon Hwang <leon.hwang@linux.dev>
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	toke@redhat.com,
+	martin.lau@kernel.org,
+	yonghong.song@linux.dev,
+	puranjay@kernel.org,
+	xukuohai@huaweicloud.com,
+	eddyz87@gmail.com,
+	iii@linux.ibm.com,
+	leon.hwang@linux.dev,
+	kernel-patches-bot@fb.com
+Subject: [PATCH bpf-next v7 0/2] bpf: Fix tailcall infinite loop caused by freplace
+Date: Thu, 10 Oct 2024 23:38:33 +0800
+Message-ID: <20241010153835.26984-1-leon.hwang@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241010083033.GA1279924@google.com>
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Oct 10, 2024 at 05:30:33PM +0900, Sergey Senozhatsky wrote:
-> On (24/10/09 21:08), Mike Rapoport wrote:
-> > From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
-> > 
-> > Enable execmem's cache of PMD_SIZE'ed pages mapped as ROX for module
-> > text allocations.
-> > 
-> 
-> With this modprobe disappoints kmemleak
-> 
-> [   12.700128] kmemleak: Found object by alias at 0xffffffffa000a000
-> [   12.702179] CPU: 5 UID: 0 PID: 410 Comm: modprobe Tainted: G                 N 6.12.0-rc2+ #760
-> [   12.704656] Tainted: [N]=TEST
-> [   12.705526] Call Trace:
-> [   12.706250]  <TASK>
-> [   12.706888]  dump_stack_lvl+0x3e/0xdb
-> [   12.707961]  __find_and_get_object+0x100/0x110
-> [   12.709256]  kmemleak_no_scan+0x2e/0xb0
-> [   12.710354]  kmemleak_load_module+0xad/0xe0
-> [   12.711557]  load_module+0x2391/0x45a0
-> [   12.712507]  __se_sys_finit_module+0x4e0/0x7a0
-> [   12.713599]  do_syscall_64+0x54/0xf0
-> [   12.714477]  ? irqentry_exit_to_user_mode+0x33/0x100
-> [   12.715696]  entry_SYSCALL_64_after_hwframe+0x4b/0x53
-> [   12.716931] RIP: 0033:0x7fc7af51f059
-> [   12.717816] Code: 08 89 e8 5b 5d c3 66 2e 0f 1f 84 00 00 00 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 8f 1d 0d 00 f7 d8 64 89 01 48
-> [   12.722324] RSP: 002b:00007ffc1d0b0c18 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
-> [   12.724173] RAX: ffffffffffffffda RBX: 00005618a9439b20 RCX: 00007fc7af51f059
-> [   12.725884] RDX: 0000000000000000 RSI: 000056187aea098b RDI: 0000000000000003
-> [   12.727617] RBP: 0000000000000000 R08: 0000000000000060 R09: 00005618a943af60
-> [   12.729361] R10: 0000000000000038 R11: 0000000000000246 R12: 000056187aea098b
-> [   12.731101] R13: 0000000000040000 R14: 00005618a9439ac0 R15: 0000000000000000
-> [   12.732814]  </TASK>
+Previously, I addressed a tailcall infinite loop issue related to
+trampolines[0].
 
-Below is a quick fix, I'll revisit module - kmemleak interaction in v6
+In this patchset, I resolve a similar issue where a tailcall infinite loop
+can occur due to the combination of tailcalls and freplace programs. The
+fix prevents adding extended programs to the prog_array map and blocks the
+extension of a tail callee program with freplace.
 
+Key changes:
 
-diff --git a/kernel/module/debug_kmemleak.c b/kernel/module/debug_kmemleak.c
-index b4cc03842d70..df873dad049d 100644
---- a/kernel/module/debug_kmemleak.c
-+++ b/kernel/module/debug_kmemleak.c
-@@ -14,7 +14,8 @@ void kmemleak_load_module(const struct module *mod,
- {
- 	/* only scan writable, non-executable sections */
- 	for_each_mod_mem_type(type) {
--		if (type != MOD_DATA && type != MOD_INIT_DATA)
-+		if (type != MOD_DATA && type != MOD_INIT_DATA &&
-+		    !mod->mem[type].is_rox)
- 			kmemleak_no_scan(mod->mem[type].base);
- 	}
- }
+1. If a program or its subprogram has been extended by an freplace program,
+   it can no longer be updated to a prog_array map.
+2. If a program has been added to a prog_array map, neither it nor its
+   subprograms can be extended by an freplace program.
+
+Changes:
+v6 -> v7:
+  * Address comments from Alexei:
+    * Rewrite commit message more imperative and consice with AI.
+    * Extend bpf_trampoline_link_prog() and bpf_trampoline_unlink_prog()
+      to link and unlink target prog for freplace prog.
+    * Use guard(mutex)(&tgt_prog->aux->ext_mutex) instead of
+      mutex_lock()&mutex_unlock() pair.
+  * Address comment from Eduard:
+    * Remove misplaced "Reported-by" and "Closes" tags.
+
+v5 -> v6:
+  * Fix a build warning reported by kernel test robot.
+
+v4 -> v5:
+  * Move code of linking/unlinking target prog of freplace to trampoline.c.
+  * Address comments from Alexei:
+    * Change type of prog_array_member_cnt to u64.
+    * Combine two patches to one.
+
+v3 -> v4:
+  * Address comments from Eduard:
+    * Rename 'tail_callee_cnt' to 'prog_array_member_cnt'.
+    * Add comment to 'prog_array_member_cnt'.
+    * Use a mutex to protect 'is_extended' and 'prog_array_member_cnt'.
+
+v2 -> v3:
+  * Address comments from Alexei:
+    * Stop hacking JIT.
+    * Prevent the specific use case at attach/update time.
+
+v1 -> v2:
+  * Address comment from Eduard:
+    * Explain why nop5 and xor/nop3 are swapped at prologue.
+  * Address comment from Alexei:
+    * Disallow attaching tail_call_reachable freplace prog to
+      not-tail_call_reachable target in verifier.
+  * Update "bpf, arm64: Fix tailcall infinite loop caused by freplace" with
+    latest arm64 JIT code.
+
+Links:
+[0] https://lore.kernel.org/bpf/20230912150442.2009-1-hffilwlqm@gmail.com/
+
+Leon Hwang (2):
+  bpf: Prevent tailcall infinite loop caused by freplace
+  selftests/bpf: Add test to verify tailcall and freplace restrictions
+
+ include/linux/bpf.h                           | 17 +++-
+ kernel/bpf/arraymap.c                         | 23 ++++-
+ kernel/bpf/core.c                             |  1 +
+ kernel/bpf/syscall.c                          |  7 +-
+ kernel/bpf/trampoline.c                       | 37 +++++--
+ .../selftests/bpf/prog_tests/tailcalls.c      | 98 ++++++++++++++++++-
+ .../testing/selftests/bpf/progs/tc_bpf2bpf.c  |  5 +-
+ 7 files changed, 168 insertions(+), 20 deletions(-)
 
 -- 
-Sincerely yours,
-Mike.
+2.44.0
+
 
