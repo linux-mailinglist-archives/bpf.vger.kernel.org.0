@@ -1,41 +1,41 @@
-Return-Path: <bpf+bounces-41575-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41576-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92F8599898A
-	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 16:29:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F94699898B
+	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 16:30:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 31296287FC4
-	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 14:29:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 31B871F260A3
+	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 14:30:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D38AC1CF2BD;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEFA21CF5C9;
 	Thu, 10 Oct 2024 14:25:42 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FF081CF282;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 825A11CF285;
 	Thu, 10 Oct 2024 14:25:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728570342; cv=none; b=hNnWub+E3nwB/CSiid5zpe5r3oj817meS4NNy6YCtXgqN4VqpgqDVGPuG3ee98GxsJd+9ZI+X8UUE3hLc3vwGs4eXFDDj0IetQyNBHZHkq5HHYfX8P1/0y+1vPNCa0p3qpi5wOpyK1dnUktOVlGmLDuJijqEcCVOI0cDlyqsUdg=
+	t=1728570342; cv=none; b=oY4a2StqhRvTO0eZvU2Vo5677t74Hs9X0RFR4uVcxXLhyoN1zbaVgDV8QbSWapknmFeVkQoI8cA54nGblvCKZ3YKWMvbzmP9qGJsqKfSFfiEAheBhfEZlX+ioAql4faWugSbwOBjsecyeUg2cMTc3RL2ch0hSDEKvcHIcgMf8/M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1728570342; c=relaxed/simple;
-	bh=NC4I6ek9J7H1cYDQl3QKAbepulR6CCeoWaTqmNpxLpc=;
+	bh=eQHhke5k4i9JBpnAN/Ni0RSJhYVX9qXVOjWd7DhqfsI=;
 	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=iAG1Tzw9CpvJhUuPHllRNG8rQZQHxPvMTvp3Xs88qGtUiM5CSteqc3UM79EA4ehsbUcB0LCF6RWL8S9QXFjxV0WZmBSXePyxWuwPjAd2psho/BbVabDz4ZjWbx0ugvXtu3IVgdHw7BMYDuvA0rV4L4fVsQ4/IOOwBzRy9vs/Pxg=
+	 Content-Type; b=nbvkn+D/bpI6w0D8S6+Fp6oZ8DEwV5kaZpQAJ5RB18MtwJrmtzN1h8F9MMTO3kjX6MEI1jKknMafrjznXDpANdx68T1Mb2p3t+RIY3dOdKjapYbaCNlZB1JC+Ule48g2DAXjPDBQWgXU8ISweaUREdTBESBZ15xRaaCIDEJfDdk=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A3E1C4CED2;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 429B5C4CED5;
 	Thu, 10 Oct 2024 14:25:42 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.98)
 	(envelope-from <rostedt@goodmis.org>)
-	id 1syu6w-00000001HHM-023E;
+	id 1syu6w-00000001HHq-0hvW;
 	Thu, 10 Oct 2024 10:25:50 -0400
-Message-ID: <20241010142549.865215981@goodmis.org>
+Message-ID: <20241010142550.028515414@goodmis.org>
 User-Agent: quilt/0.68
-Date: Thu, 10 Oct 2024 10:25:39 -0400
+Date: Thu, 10 Oct 2024 10:25:40 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-kernel@vger.kernel.org
 Cc: Masami Hiramatsu <mhiramat@kernel.org>,
@@ -54,7 +54,7 @@ Cc: Masami Hiramatsu <mhiramat@kernel.org>,
  Andrii Nakryiko <andrii.nakryiko@gmail.com>,
  bpf@vger.kernel.org,
  Joel Fernandes <joel@joelfernandes.org>
-Subject: [for-next][PATCH 02/10] tracing/ftrace: disable preemption in syscall probe
+Subject: [for-next][PATCH 03/10] tracing/perf: disable preemption in syscall probe
 References: <20241010142537.255433162@goodmis.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -67,12 +67,11 @@ Content-Type: text/plain; charset=UTF-8
 From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 
 In preparation for allowing system call enter/exit instrumentation to
-handle page faults, make sure that ftrace can handle this change by
-explicitly disabling preemption within the ftrace system call tracepoint
-probes to respect the current expectations within ftrace ring buffer
-code.
+handle page faults, make sure that perf can handle this change by
+explicitly disabling preemption within the perf system call tracepoint
+probes to respect the current expectations within perf ring buffer code.
 
-This change does not yet allow ftrace to take page faults per se within
+This change does not yet allow perf to take page faults per se within
 its probe, but allows its existing probes to adapt to the upcoming
 change.
 
@@ -90,99 +89,87 @@ Cc: Namhyung Kim <namhyung@kernel.org>
 Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc: bpf@vger.kernel.org
 Cc: Joel Fernandes <joel@joelfernandes.org>
-Link: https://lore.kernel.org/20241009010718.2050182-3-mathieu.desnoyers@efficios.com
-Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Link: https://lore.kernel.org/20241009010718.2050182-4-mathieu.desnoyers@efficios.com
 Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- include/trace/trace_events.h  | 39 ++++++++++++++++++++++++++++-------
- kernel/trace/trace_syscalls.c | 12 +++++++++++
- 2 files changed, 44 insertions(+), 7 deletions(-)
+ include/trace/perf.h          | 42 +++++++++++++++++++++++++++++++----
+ kernel/trace/trace_syscalls.c | 12 ++++++++++
+ 2 files changed, 50 insertions(+), 4 deletions(-)
 
-diff --git a/include/trace/trace_events.h b/include/trace/trace_events.h
-index 8bcbb9ee44de..63071aa5923d 100644
---- a/include/trace/trace_events.h
-+++ b/include/trace/trace_events.h
-@@ -263,6 +263,9 @@ static struct trace_event_fields trace_event_fields_##call[] = {	\
- 	tstruct								\
- 	{} };
- 
-+#undef DECLARE_EVENT_SYSCALL_CLASS
-+#define DECLARE_EVENT_SYSCALL_CLASS DECLARE_EVENT_CLASS
-+
- #undef DEFINE_EVENT_PRINT
- #define DEFINE_EVENT_PRINT(template, name, proto, args, print)
- 
-@@ -396,11 +399,11 @@ static inline notrace int trace_event_get_offsets_##call(		\
- 
- #include "stages/stage6_event_callback.h"
+diff --git a/include/trace/perf.h b/include/trace/perf.h
+index ded997af481e..15cde7eac8b4 100644
+--- a/include/trace/perf.h
++++ b/include/trace/perf.h
+@@ -12,10 +12,10 @@
+ #undef __perf_task
+ #define __perf_task(t)	(__task = (t))
  
 -#undef DECLARE_EVENT_CLASS
 -#define DECLARE_EVENT_CLASS(call, proto, args, tstruct, assign, print)	\
--									\
-+
 +#undef __DECLARE_EVENT_CLASS
 +#define __DECLARE_EVENT_CLASS(call, proto, args, tstruct, assign, print) \
  static notrace void							\
--trace_event_raw_event_##call(void *__data, proto)			\
-+do_trace_event_raw_event_##call(void *__data, proto)			\
+-perf_trace_##call(void *__data, proto)					\
++do_perf_trace_##call(void *__data, proto)				\
  {									\
- 	struct trace_event_file *trace_file = __data;			\
+ 	struct trace_event_call *event_call = __data;			\
  	struct trace_event_data_offsets_##call __maybe_unused __data_offsets;\
-@@ -425,15 +428,35 @@ trace_event_raw_event_##call(void *__data, proto)			\
- 									\
- 	trace_event_buffer_commit(&fbuffer);				\
+@@ -55,8 +55,39 @@ perf_trace_##call(void *__data, proto)					\
+ 				  head, __task);			\
  }
-+
+ 
++/*
++ * Define unused __count and __task variables to use @args to pass
++ * arguments to do_perf_trace_##call. This is needed because the
++ * macros __perf_count and __perf_task introduce the side-effect to
++ * store copies into those local variables.
++ */
 +#undef DECLARE_EVENT_CLASS
 +#define DECLARE_EVENT_CLASS(call, proto, args, tstruct, assign, print)	\
 +__DECLARE_EVENT_CLASS(call, PARAMS(proto), PARAMS(args), PARAMS(tstruct), \
 +		      PARAMS(assign), PARAMS(print))			\
 +static notrace void							\
-+trace_event_raw_event_##call(void *__data, proto)			\
++perf_trace_##call(void *__data, proto)					\
 +{									\
-+	do_trace_event_raw_event_##call(__data, args);			\
++	u64 __count __attribute__((unused));				\
++	struct task_struct *__task __attribute__((unused));		\
++									\
++	do_perf_trace_##call(__data, args);				\
 +}
 +
-+#undef DECLARE_EVENT_SYSCALL_CLASS
+ #undef DECLARE_EVENT_SYSCALL_CLASS
+-#define DECLARE_EVENT_SYSCALL_CLASS DECLARE_EVENT_CLASS
 +#define DECLARE_EVENT_SYSCALL_CLASS(call, proto, args, tstruct, assign, print) \
 +__DECLARE_EVENT_CLASS(call, PARAMS(proto), PARAMS(args), PARAMS(tstruct), \
 +		      PARAMS(assign), PARAMS(print))			\
 +static notrace void							\
-+trace_event_raw_event_##call(void *__data, proto)			\
++perf_trace_##call(void *__data, proto)					\
 +{									\
++	u64 __count __attribute__((unused));				\
++	struct task_struct *__task __attribute__((unused));		\
++									\
 +	preempt_disable_notrace();					\
-+	do_trace_event_raw_event_##call(__data, args);			\
++	do_perf_trace_##call(__data, args);				\
 +	preempt_enable_notrace();					\
 +}
-+
- /*
-  * The ftrace_test_probe is compiled out, it is only here as a build time check
-  * to make sure that if the tracepoint handling changes, the ftrace probe will
-  * fail to compile unless it too is updated.
-  */
  
--#undef DECLARE_EVENT_SYSCALL_CLASS
--#define DECLARE_EVENT_SYSCALL_CLASS DECLARE_EVENT_CLASS
--
- #undef DEFINE_EVENT
- #define DEFINE_EVENT(template, call, proto, args)			\
- static inline void ftrace_test_probe_##call(void)			\
-@@ -443,6 +466,8 @@ static inline void ftrace_test_probe_##call(void)			\
+ /*
+  * This part is compiled out, it is only here as a build time check
+@@ -76,4 +107,7 @@ static inline void perf_test_probe_##call(void)				\
+ 	DEFINE_EVENT(template, name, PARAMS(proto), PARAMS(args))
  
  #include TRACE_INCLUDE(TRACE_INCLUDE_FILE)
- 
++
 +#undef __DECLARE_EVENT_CLASS
 +
- #include "stages/stage7_class_define.h"
- 
- #undef DECLARE_EVENT_CLASS
+ #endif /* CONFIG_PERF_EVENTS */
 diff --git a/kernel/trace/trace_syscalls.c b/kernel/trace/trace_syscalls.c
-index 785733245ead..f9b21bac9d45 100644
+index f9b21bac9d45..b1cc19806f3d 100644
 --- a/kernel/trace/trace_syscalls.c
 +++ b/kernel/trace/trace_syscalls.c
-@@ -299,6 +299,12 @@ static void ftrace_syscall_enter(void *data, struct pt_regs *regs, long id)
- 	int syscall_nr;
+@@ -596,6 +596,12 @@ static void perf_syscall_enter(void *ignore, struct pt_regs *regs, long id)
+ 	int rctx;
  	int size;
  
 +	/*
@@ -194,9 +181,9 @@ index 785733245ead..f9b21bac9d45 100644
  	syscall_nr = trace_get_syscall_nr(current, regs);
  	if (syscall_nr < 0 || syscall_nr >= NR_syscalls)
  		return;
-@@ -338,6 +344,12 @@ static void ftrace_syscall_exit(void *data, struct pt_regs *regs, long ret)
- 	struct trace_event_buffer fbuffer;
- 	int syscall_nr;
+@@ -698,6 +704,12 @@ static void perf_syscall_exit(void *ignore, struct pt_regs *regs, long ret)
+ 	int rctx;
+ 	int size;
  
 +	/*
 +	 * Syscall probe called with preemption enabled, but the ring
