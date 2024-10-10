@@ -1,170 +1,161 @@
-Return-Path: <bpf+bounces-41660-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41661-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E9B1999587
-	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2024 00:54:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C844D99958C
+	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2024 00:56:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6FB2FB240FD
-	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 22:54:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 042B01C21682
+	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 22:56:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31E661E884B;
-	Thu, 10 Oct 2024 22:54:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 725E51E7C00;
+	Thu, 10 Oct 2024 22:56:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QiUIOLSB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kRbt76lN"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7759814D6F9;
-	Thu, 10 Oct 2024 22:54:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECA941BCA0A;
+	Thu, 10 Oct 2024 22:56:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728600857; cv=none; b=edvVwIMv/uSuuTeYfXUaIvAQxtfCMJ6j9/azAupsStM9AC9v1ojywydz7gw54XdarbgXTEq6AoeI+e8QoW2PgsgRuS7KHuvQOrkdbZGapUPeHq8P+I8PXu3WZxTBTPAo9M2hhLRBuxlohx/35i1UieecMCblqbaoKcPuR1ksxAw=
+	t=1728601001; cv=none; b=md4ywhSCVJRErm4aisAfYNlNnwhGcoGQG9lRUGurYUGR8lbqIMBGL58i2IiIuxn2F9MIztKDnIg6Hf9tVC7DE6f/V06lSPjFvCZxXMJJPf/GvwfX8HhuktxMKBbC3EfEv83JNAjk2gs6MJuq+MoHDwWySHWOHaBhJ/OoPIX60Vg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728600857; c=relaxed/simple;
-	bh=dRFHj5mtH0xn8PBj2ZbOuI6o6u0ly0QH1iws5fctk8A=;
+	s=arc-20240116; t=1728601001; c=relaxed/simple;
+	bh=S0gsjnawtQCm9QTdFF7z0fX/jdedpHOu7Gvko5BM2YI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dlyrANTR49TIms1r6cbk02Vsc8uMP6JqFfBKZ0WmjqDyP6aQURMg8bNtMN3cBEPscbvVnvlF3NuqR8fPHCGQI1FmqkBWk6cbmcPE710QDExqjxoHuRHwBgvHQZw4fO0yH7bYV6UHfroaYjMzU7mfGf9+7S2tyUUf2RK9FlnPf2Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QiUIOLSB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E7BFC4CEC5;
-	Thu, 10 Oct 2024 22:54:13 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=C/ijUEdURBz7fPcANYvKczUJkhQSf4833Jw3Ad5SuMqQFHPYtdprW/2jbrmPDPtor2VE+2zavwFKF7SqTx66y+CGhntsP/S7RJU6tcmvn5sh4t2ulOc4Q/XhXdwmYUbbIkIkDm6Y+a5PX6vsbCT73KQai03vhFworemqTGRu/3Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kRbt76lN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94DDAC4CEC5;
+	Thu, 10 Oct 2024 22:56:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728600856;
-	bh=dRFHj5mtH0xn8PBj2ZbOuI6o6u0ly0QH1iws5fctk8A=;
+	s=k20201202; t=1728601000;
+	bh=S0gsjnawtQCm9QTdFF7z0fX/jdedpHOu7Gvko5BM2YI=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=QiUIOLSBcasoVYYND8KdWz7eQh/+0boOgNRGeOQlhf5jvA1/EBnMYKjn5VICJ3eAY
-	 cnnu9shlCLMfTHHTHra7MnZ0rLJlXd0Hph0c0PBZ21X9KTVg4eVdzFCTR7+dIRdltD
-	 hxCWp0qmt+fIbgTEcIZSFHp2Q6iE2wK9yyyZ4vyAJOkCE63MHkbL8C+vAlgxvUIB86
-	 jOXbNmyf7S3aQkYS+MyXLrzvy5GjYypHqnc1WER+qWs986tCcEJrL1436xfNVNVaY8
-	 SuEhjakzc9ZUyRU5YtUSasIp4EiqD3HrJhbPDpQFeVHrdwLEF3yFgOYnlD+BEfVYYI
-	 t/83JFWrskzLQ==
-Date: Thu, 10 Oct 2024 15:54:11 -0700
-From: Nathan Chancellor <nathan@kernel.org>
-To: Mike Rapoport <rppt@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Andreas Larsson <andreas@gaisler.com>,
-	Andy Lutomirski <luto@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-	Brian Cain <bcain@quicinc.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Christoph Hellwig <hch@infradead.org>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
-	Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Michal Simek <monstr@monstr.eu>, Oleg Nesterov <oleg@redhat.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Richard Weinberger <richard@nod.at>,
-	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
-	Stafford Horne <shorne@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>,
-	bpf@vger.kernel.org, linux-alpha@vger.kernel.org,
-	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org, linux-mm@kvack.org,
-	linux-modules@vger.kernel.org, linux-openrisc@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-	linux-trace-kernel@vger.kernel.org, linux-um@lists.infradead.org,
-	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
-	sparclinux@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v5 6/8] x86/module: perpare module loading for ROX
- allocations of text
-Message-ID: <20241010225411.GA922684@thelio-3990X>
-References: <20241009180816.83591-1-rppt@kernel.org>
- <20241009180816.83591-7-rppt@kernel.org>
+	b=kRbt76lNthqIjZaczXutLVF3+ryQvMPukms0RG7RvHK1oSsfHbSq0GOMcJR5aCqNh
+	 dpU+o0y13D/BLhiV7RCxbh99qlf05DB7aXXHYFmLdYJ0yDWvZ7Rk5ziWXkWKMcCroM
+	 IEs92G2llaOOarLsK1xbRPvTI7tKCdxy0XvEPdoDSqASvIV7GCc5fUWtBbZGM29wFQ
+	 JR9JpOBkRA4QdohJu5/rWBpqXgzafig0AhdQ2pyGlEsdwNf/oQsRjskwnlOKc3eaOf
+	 Iag8+sMv1B/CdlT+tNFV2oD1jGaIRcfPwqh4WyN8J5VH77DqlpL/DR2Zp7nXwhh/27
+	 /Aal1ZgZPnvxg==
+Date: Thu, 10 Oct 2024 15:56:38 -0700
+From: Namhyung Kim <namhyung@kernel.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Song Liu <song@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
+	David Rientjes <rientjes@google.com>,
+	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm <linux-mm@kvack.org>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Kees Cook <kees@kernel.org>
+Subject: Re: [PATCH v4 bpf-next 2/3] mm/bpf: Add bpf_get_kmem_cache() kfunc
+Message-ID: <ZwhbpuClULAFl6IL@google.com>
+References: <20241002180956.1781008-1-namhyung@kernel.org>
+ <20241002180956.1781008-3-namhyung@kernel.org>
+ <CAPhsuW7Bh-ZXfM2aYB=Yj8WaJHFc==AKmv6LDRgBq-TfdQ3s8A@mail.gmail.com>
+ <ZwBdS86yBtOWy3iD@google.com>
+ <37ca3072-4a0b-470f-b5b2-9828a2b708e5@suse.cz>
+ <ZwYt-GJfzMoozTOU@google.com>
+ <ZwgEykf_XmVpEE8_@google.com>
+ <CAADnVQLXrS0coJrk5RPxvik5Sz2yFko5z=+PXdGfju_7Lxj=mQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20241009180816.83591-7-rppt@kernel.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQLXrS0coJrk5RPxvik5Sz2yFko5z=+PXdGfju_7Lxj=mQ@mail.gmail.com>
 
-Hi Mike,
-
-On Wed, Oct 09, 2024 at 09:08:14PM +0300, Mike Rapoport wrote:
-> From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
+On Thu, Oct 10, 2024 at 10:04:24AM -0700, Alexei Starovoitov wrote:
+> On Thu, Oct 10, 2024 at 9:46 AM Namhyung Kim <namhyung@kernel.org> wrote:
+> >
+> > On Wed, Oct 09, 2024 at 12:17:12AM -0700, Namhyung Kim wrote:
+> > > On Mon, Oct 07, 2024 at 02:57:08PM +0200, Vlastimil Babka wrote:
+> > > > On 10/4/24 11:25 PM, Roman Gushchin wrote:
+> > > > > On Fri, Oct 04, 2024 at 01:10:58PM -0700, Song Liu wrote:
+> > > > >> On Wed, Oct 2, 2024 at 11:10 AM Namhyung Kim <namhyung@kernel.org> wrote:
+> > > > >>>
+> > > > >>> The bpf_get_kmem_cache() is to get a slab cache information from a
+> > > > >>> virtual address like virt_to_cache().  If the address is a pointer
+> > > > >>> to a slab object, it'd return a valid kmem_cache pointer, otherwise
+> > > > >>> NULL is returned.
+> > > > >>>
+> > > > >>> It doesn't grab a reference count of the kmem_cache so the caller is
+> > > > >>> responsible to manage the access.  The intended use case for now is to
+> > > > >>> symbolize locks in slab objects from the lock contention tracepoints.
+> > > > >>>
+> > > > >>> Suggested-by: Vlastimil Babka <vbabka@suse.cz>
+> > > > >>> Acked-by: Roman Gushchin <roman.gushchin@linux.dev> (mm/*)
+> > > > >>> Acked-by: Vlastimil Babka <vbabka@suse.cz> #mm/slab
+> > > > >>> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> > > >
+> > > >
+> > > > So IIRC from our discussions with Namhyung and Arnaldo at LSF/MM I
+> > > > thought the perf use case was:
+> > > >
+> > > > - at the beginning it iterates the kmem caches and stores anything of
+> > > > possible interest in bpf maps or somewhere - hence we have the iterator
+> > > > - during profiling, from object it gets to a cache, but doesn't need to
+> > > > access the cache - just store the kmem_cache address in the perf record
+> > > > - after profiling itself, use the information in the maps from the first
+> > > > step together with cache pointers from the second step to calculate
+> > > > whatever is necessary
+> > >
+> > > Correct.
+> > >
+> > > >
+> > > > So at no point it should be necessary to take refcount to a kmem_cache?
+> > > >
+> > > > But maybe "bpf_get_kmem_cache()" is implemented here as too generic
+> > > > given the above use case and it should be implemented in a way that the
+> > > > pointer it returns cannot be used to access anything (which could be
+> > > > unsafe), but only as a bpf map key - so it should return e.g. an
+> > > > unsigned long instead?
+> > >
+> > > Yep, this should work for my use case.  Maybe we don't need the
+> > > iterator when bpf_get_kmem_cache() kfunc returns the valid pointer as
+> > > we can get the necessary info at the moment.  But I think it'd be less
+> > > efficient as more work need to be done at the event (lock contention).
+> > > It'd better setting up necessary info in a map before monitoring (using
+> > > the iterator), and just looking up the map with the kfunc while
+> > > monitoring the lock contention.
+> >
+> > Maybe it's still better to return a non-refcounted pointer for future
+> > use.  I'll leave it for v5.
 > 
-> When module text memory will be allocated with ROX permissions, the
-> memory at the actual address where the module will live will contain
-> invalid instructions and there will be a writable copy that contains the
-> actual module code.
+> Pls keep it as:
+> __bpf_kfunc struct kmem_cache *bpf_get_kmem_cache(u64 addr)
 > 
-> Update relocations and alternatives patching to deal with it.
-> 
-> Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
+> just make sure it's PTR_UNTRUSTED.
 
-I bisected a boot failure that I see with CONFIG_CFI_CLANG enabled to
-this change as commit be712757cabd ("x86/module: perpare module loading
-for ROX allocations of text") in -next.
+Sure, will do.
 
-  $ echo CONFIG_CFI_CLANG=y >arch/x86/configs/cfi.config
+> No need to make it return long or void *.
+> The users can do:
+>   bpf_core_cast(any_value, struct kmem_cache);
+> anyway, but it would be an unnecessary step.
 
-  $ make -skj"$(nproc)" ARCH=x86_64 LLVM=1 mrproper defconfig cfi.config bzImage
+Yeah I thought there would be a way to do that.
 
-  $ curl -LSs https://github.com/ClangBuiltLinux/boot-utils/releases/download/20230707-182910/x86_64-rootfs.cpio.zst | zstd -d >rootfs.cpio
+Thanks,
+Namhyung
 
-  $ qemu-system-x86_64 \
-      -display none \
-      -nodefaults \
-      -M q35 \
-      -d unimp,guest_errors \
-      -append 'console=ttyS0 earlycon=uart8250,io,0x3f8' \
-      -kernel arch/x86/boot/bzImage \
-      -initrd rootfs.cpio \
-      -cpu host \
-      -enable-kvm \
-      -m 512m \
-      -smp 8 \
-      -serial mon:stdio
-  [    0.000000] Linux version 6.12.0-rc2-00140-gbe712757cabd (nathan@n3-xlarge-x86) (ClangBuiltLinux clang version 19.1.0 (https://github.com/llvm/llvm-project.git a4bf6cd7cfb1a1421ba92bca9d017b49936c55e4), ClangBuiltLinux LLD 19.1.0 (https://github.com/llvm/llvm-project.git a4bf6cd7cfb1a1421ba92bca9d017b49936c55e4)) #1 SMP PREEMPT_DYNAMIC Thu Oct 10 22:42:57 UTC 2024
-  ...
-  [    0.092204] Speculative Store Bypass: Mitigation: Speculative Store Bypass disabled via prctl
-  [    0.093207] TAA: Mitigation: TSX disabled
-  [    0.093711] MMIO Stale Data: Mitigation: Clear CPU buffers
-  [    0.094228] x86/fpu: Supporting XSAVE feature 0x001: 'x87 floating point registers'
-  [    0.095203] x86/fpu: Supporting XSAVE feature 0x002: 'SSE registers'
-  [    0.096203] x86/fpu: Supporting XSAVE feature 0x004: 'AVX registers'
-  [    0.097203] x86/fpu: Supporting XSAVE feature 0x020: 'AVX-512 opmask'
-  [    0.098003] x86/fpu: Supporting XSAVE feature 0x040: 'AVX-512 Hi256'
-  [    0.098203] x86/fpu: Supporting XSAVE feature 0x080: 'AVX-512 ZMM_Hi256'
-  [    0.099203] x86/fpu: Supporting XSAVE feature 0x200: 'Protection Keys User registers'
-  [    0.100204] x86/fpu: xstate_offset[2]:  576, xstate_sizes[2]:  256
-  [    0.101204] x86/fpu: xstate_offset[5]:  832, xstate_sizes[5]:   64
-  [    0.102203] x86/fpu: xstate_offset[6]:  896, xstate_sizes[6]:  512
-  [    0.103204] x86/fpu: xstate_offset[7]: 1408, xstate_sizes[7]: 1024
-  [    0.104051] x86/fpu: xstate_offset[9]: 2432, xstate_sizes[9]:    8
-  [    0.104204] x86/fpu: Enabled xstate features 0x2e7, context size is 2440 bytes, using 'compacted' format.
-
-then nothing after that. Boot is successful if CFI is not enabled (the
-initrd will just shutdown the machine after printing the version string).
-
-If there is any further information I can provide or patches I can test,
-I am more than happy to do so.
-
-Cheers,
-Nathan
 
