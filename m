@@ -1,98 +1,142 @@
-Return-Path: <bpf+bounces-41607-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41608-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCA44998F32
-	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 20:01:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9093998F39
+	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 20:02:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 60CD528C028
-	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 18:01:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 081151C202D5
+	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 18:02:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46BAA19B3EE;
-	Thu, 10 Oct 2024 18:00:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55EEF19D078;
+	Thu, 10 Oct 2024 18:02:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KVW3kRZe"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cgt+wmrk"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE2BC1CEEB9;
-	Thu, 10 Oct 2024 18:00:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B9AB18CBE5
+	for <bpf@vger.kernel.org>; Thu, 10 Oct 2024 18:02:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728583225; cv=none; b=tcRB3TzkOvppJL7vyjoOrKIiE5dOylt/GCUEdFHvc1avx/rwwhxYyEONONUfyqW3W1Zod2wvIStGwvaI+RVLb1OHq2j2ovLLQaskyMhpLoXKlb+nNJoyJf1UYh+S9AQfataeMUucmxWDqvJMGBVSgBBcFezdxvpyPIX5UqAAtQg=
+	t=1728583367; cv=none; b=FVg+8YMU0CCOE6pr1hHSE9o97wfaditlqpjEYcp6IRxQ2Gii4rYAH+57EFyvnD5lpES4cGhlH/0J1647O5CfAMMAOfkbytXD14k4WDvqSGMRuoCh+crycsY0GlCL8XsHz02SGFgYdKQ83aleiDiG7LNU7baPSZmYIGVg9B0cR2U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728583225; c=relaxed/simple;
-	bh=OMrWVEwG56phLjB3lXvtiLtZ/60G1Bl4ql3231HDQLM=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=rdmMLgSWMTENdh9aN8USns9Jz0LzIXN1ytR7W6a2giAmicrdU1kyHrhmaoqba3jGSQXwOoxvDzk4aRc+lOoQp1naF6xDL7mVRYAHGWvu0OpdoclHxA6xsjKGshLwXB/nNA3dmiIGzeDMQKn4KGF7zPGNBCS3mpFLy4D0/pX3cV8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KVW3kRZe; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 512EDC4CEC6;
-	Thu, 10 Oct 2024 18:00:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728583225;
-	bh=OMrWVEwG56phLjB3lXvtiLtZ/60G1Bl4ql3231HDQLM=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=KVW3kRZeD1kePYkc78Nr3zoWKzbCrhXldWdSEI7SLXeRNGy/mu1x2nLMG/NCa9mCE
-	 7bHMR6MGhR26JMCfuhgBd3r6xBrezlFZDrsC3JAwuDtttfh5jO32VuIjc4f9JxozwJ
-	 y6ryZSIvsxHTMO6VldIHpHgskMXqRGaARSL98vYPsJbTuDSI7x1gIgsJpZZ7d5z42Y
-	 iiMmwaw2ONq7YuEchFWmhoNyFNjmdHppl+th2zGO9qDz51H713QyhHuVy8qHD0Z9hi
-	 PHiPSuTslM8NZ0f2h8z1vpftpaodFYlHsSsIf2Jx3WNQNdNcBkDb0tR9U3NSL0Xiyd
-	 asYY+CVW7cGXg==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EB2E03803263;
-	Thu, 10 Oct 2024 18:00:30 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1728583367; c=relaxed/simple;
+	bh=aNjHGJt0r9PbQ+O/HzUZMt0ldOrUPq9HCJnYHfq5fM0=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=Y6p8Su//q0CNC5rPITy6ntf7yrliIbrBagzYYbTxyNPt78n+AjMMA1MB8DPt4cbhmtU6rYWpgbAgSo7jAjS4v0B0y/W7rcL7PRk0PNU3k7FjuggQrIpE7xMlI29AAJZScoT/6EDKHCzHQv+gc960W04+0ZkEBN9xjiy1ioPgbrI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cgt+wmrk; arc=none smtp.client-ip=209.85.210.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-71dfc250001so1075701b3a.2
+        for <bpf@vger.kernel.org>; Thu, 10 Oct 2024 11:02:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1728583366; x=1729188166; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=w0CNx4gQNplxPcLKHELfkILdyyUie1T8OUZ83SnxnX8=;
+        b=cgt+wmrkOoTRvB1QYfaU7BFb6qEK4AaoJoGRkeM3H04RW4SPwpeE0GLML2d2BywHoX
+         GM6K9W/gcOpHv81PECxdUGXE9EasAoMA4F58fhnubF4kSs/bWao5+5kx53W3+3Xtk5DI
+         LXoXkFNmPBVO1snMvdyADaf6ANuIE0lgWHojypAUZ89GiAS1q75C2iV7uMgsC2252B9f
+         PKYT/MYgF9qBZvU4ugIg144zIINDPAcsqynKqXbsB8Nek5GYuWfL1PgLunLqbHbpmHRL
+         cnqxbnLh8dX1D6XwFlbwHmn8iALQS++pkyaCJX0Oq/4+y82xX7dJ1UqCiIqYn0gCT0jp
+         gqqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1728583366; x=1729188166;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=w0CNx4gQNplxPcLKHELfkILdyyUie1T8OUZ83SnxnX8=;
+        b=fpCv+Ti2mj7OFQ2fOkOIP0Ytm3ELYnAeuY3zLuWGUjBPLA+ZYS4z1xHE6dqaUz6w4A
+         c6SJiJDvNmH3i1A46wiNm2LMa48VWjiuZveRV1wFv3JVc/BW5ZE3+mR38OrYWehXHnEJ
+         st1E/eizOn0VN96LryTKBYB/WeWPYDygg3+swvjHdhR5VX+wKWAXamVTn0fhtf5ja/mn
+         zRfV9XNyB7Y5VzlGdW/LLKGXSSHgQ1eyUig7KQpRg5ZC7N+Cl6/nApMKUjl7sYBfDVlq
+         RO54/YCklwv2rJD1JfL6IdmpR5Hq1qQvPrcPC/VMd5T+4vpjWmyblg5OqIGth9mTY7WQ
+         EwcA==
+X-Forwarded-Encrypted: i=1; AJvYcCVeIoN/dUEh4oZDvkbSW7YU1bV6dpFpuX+kvjwuevfKq2haTaTHt9aQV9BZtfBcs4v3Njc=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxYNFbM5N8LLDUgfuPMycn1qLLeFO5QmBbIXIMSkiPgiS3M47dX
+	588BhEbvIz0J9MPzxMDxqYq7nWglpeNNYcBuUJ8aYqdXa+Q69E7Y
+X-Google-Smtp-Source: AGHT+IGsp+iHTFpKbIYmG//42tyk3yUucm0Nu3RXNLUaQSoeu7drhAUhJVV6IIpvT1ZkfWJoSa3IvA==
+X-Received: by 2002:a05:6a21:6b0a:b0:1cf:2438:c9e3 with SMTP id adf61e73a8af0-1d8ad7c8b0emr6625857637.16.1728583365698;
+        Thu, 10 Oct 2024 11:02:45 -0700 (PDT)
+Received: from ?IPv6:2620:10d:c096:14a:193c:dda:1f58:b7b8? ([2620:10d:c090:600::1:1f0])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-71e2aa99a2dsm1298522b3a.106.2024.10.10.11.02.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Oct 2024 11:02:45 -0700 (PDT)
+Message-ID: <47dda61b85917e864eab5cde7e16723a5884ce69.camel@gmail.com>
+Subject: Re: [PATCH bpf-next 03/16] bpf: Parse bpf_dynptr in map key
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Hou Tao <houtao@huaweicloud.com>, bpf@vger.kernel.org
+Cc: Martin KaFai Lau <martin.lau@linux.dev>, Alexei Starovoitov
+ <ast@kernel.org>,  Andrii Nakryiko <andrii@kernel.org>, Song Liu
+ <song@kernel.org>, Hao Luo <haoluo@google.com>, Yonghong Song
+ <yonghong.song@linux.dev>, Daniel Borkmann <daniel@iogearbox.net>, KP Singh
+ <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Jiri Olsa
+ <jolsa@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
+ houtao1@huawei.com, xukuohai@huawei.com
+Date: Thu, 10 Oct 2024 11:02:37 -0700
+In-Reply-To: <20241008091501.8302-4-houtao@huaweicloud.com>
+References: <20241008091501.8302-1-houtao@huaweicloud.com>
+	 <20241008091501.8302-4-houtao@huaweicloud.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf v2 0/3] Fix caching of BTF for kfuncs in the verifier
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <172858322977.2114175.5921702022516465256.git-patchwork-notify@kernel.org>
-Date: Thu, 10 Oct 2024 18:00:29 +0000
-References: <20241010-fix-kfunc-btf-caching-for-modules-v2-0-745af6c1af98@redhat.com>
-In-Reply-To: <20241010-fix-kfunc-btf-caching-for-modules-v2-0-745af6c1af98@redhat.com>
-To: =?utf-8?b?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2VuIDx0b2tlQHJlZGhhdC5jb20+?=@codeaurora.org
-Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
- andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me,
- haoluo@google.com, jolsa@kernel.org, memxor@gmail.com, simon.sundberg@kau.se,
- bpf@vger.kernel.org, netdev@vger.kernel.org
 
-Hello:
+On Tue, 2024-10-08 at 17:14 +0800, Hou Tao wrote:
 
-This series was applied to bpf/bpf.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+[...]
 
-On Thu, 10 Oct 2024 15:27:06 +0200 you wrote:
-> When playing around with defining kfuncs in some custom modules, we
-> noticed that if a BPF program calls two functions with the same
-> signature in two different modules, the function from the wrong module
-> may sometimes end up being called. Whether this happens depends on the
-> order of the calls in the BPF program, which turns out to be due to the
-> use of sort() inside __find_kfunc_desc_btf() in the verifier code.
-> 
-> [...]
+> diff --git a/kernel/bpf/map_in_map.c b/kernel/bpf/map_in_map.c
+> index 645bd30bc9a9..a072835dc645 100644
+> --- a/kernel/bpf/map_in_map.c
+> +++ b/kernel/bpf/map_in_map.c
 
-Here is the summary with links:
-  - [bpf,v2,1/3] bpf: fix kfunc btf caching for modules
-    https://git.kernel.org/bpf/bpf/c/6cb86a0fdece
-  - [bpf,v2,2/3] selftests/bpf: Provide a generic [un]load_module helper
-    https://git.kernel.org/bpf/bpf/c/4192bb294f80
-  - [bpf,v2,3/3] selftests/bpf: Add test for kfunc module order
-    https://git.kernel.org/bpf/bpf/c/f91b256644ea
+[...]
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+> @@ -45,9 +45,13 @@ struct bpf_map *bpf_map_meta_alloc(int inner_map_ufd)
+>  		 * invalid/empty/valid, but ERR_PTR in case of errors. During
+>  		 * equality NULL or IS_ERR is equivalent.
+>  		 */
+> -		struct bpf_map *ret =3D ERR_CAST(inner_map_meta->record);
+> -		kfree(inner_map_meta);
+> -		return ret;
+> +		ret =3D ERR_CAST(inner_map_meta->record);
+> +		goto free;
+> +	}
+> +	inner_map_meta->key_record =3D btf_record_dup(inner_map->key_record);
+> +	if (IS_ERR(inner_map_meta->key_record)) {
+> +		ret =3D ERR_CAST(inner_map_meta->key_record);
+> +		goto free;
 
+The 'goto free' executes a call to bpf_map_meta_free() which does
+btf_put(map_meta->btf), but corresponding btf_get(inner_map->btf) only
+happens on the lines below =3D> in case when 'free' branch is taken we
+'put' BTF object that was not 'get' by us.
 
+>  	}
+>  	/* Note: We must use the same BTF, as we also used btf_record_dup above
+>  	 * which relies on BTF being same for both maps, as some members like
+> @@ -71,6 +75,10 @@ struct bpf_map *bpf_map_meta_alloc(int inner_map_ufd)
+>  		inner_map_meta->bypass_spec_v1 =3D inner_map->bypass_spec_v1;
+>  	}
+>  	return inner_map_meta;
+> +
+> +free:
+> +	bpf_map_meta_free(inner_map_meta);
+> +	return ret;
+>  }
+> =20
+>  void bpf_map_meta_free(struct bpf_map *map_meta)
+
+[...]
 
