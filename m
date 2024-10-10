@@ -1,484 +1,365 @@
-Return-Path: <bpf+bounces-41573-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41574-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3565A9988C4
-	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 16:07:27 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AC7F998989
+	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 16:29:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CFCF4284FD9
-	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 14:07:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1FD0D287A8C
+	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 14:29:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F24C1CB518;
-	Thu, 10 Oct 2024 14:07:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6DEC1CF29C;
+	Thu, 10 Oct 2024 14:25:42 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05AF41CB317
-	for <bpf@vger.kernel.org>; Thu, 10 Oct 2024 14:07:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 560EE1CEE94;
+	Thu, 10 Oct 2024 14:25:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728569226; cv=none; b=Pz6YsNuBeaKv/ANil94VmPSAYnGkYvtzh0JBl2tnk+v+ACHhlU/x5iBJ2GpGT700t7j+4QdxL1IFNqU1PFoCW2EV72e9gV4VgUxH4cH5ffyFi7fdx7B7RJ4QG7eku4S61ri+0XOczhWGCBJw/8C03d+IWa503B1IAerXvf6CcA4=
+	t=1728570342; cv=none; b=M2bGwrA5+rcbpDx0yR5oYN2gYqtSksMiSvb0bxgEL/iv5mxSUPzq5+l2ipD7Ahedh0Jm47gzgtu0q6o/RC8WiLszr6qqTMcgDoaSMFnd72HLqXpIq33iEuyn4fNyYrQrKhfE+4MWQZDdD1h1YHPKebyydqn9P5n8bXb1YjPwUOE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728569226; c=relaxed/simple;
-	bh=lTRehINJQk3NkjSL7RlczSm8LGGjpAOrC7feU9r/e48=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=eE/Tv+Ax5t8GEJVGqqbTpPA48JKaEYfkFX2gCgtX03psbYQqFPB+TMuD2cIw9IlbyZjRE11AFnJlG9dhrGGCCAisqGnSopRZriVamH3Spx96fbYZD8T9JaaprG0kw504e4VgIqLY8yUK1XxSl55vV5iwjqQP+p7ShVoyNFB6ITM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4XPWlP2Qp3z4f3jR7
-	for <bpf@vger.kernel.org>; Thu, 10 Oct 2024 22:06:41 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 3AC731A0568
-	for <bpf@vger.kernel.org>; Thu, 10 Oct 2024 22:06:58 +0800 (CST)
-Received: from [10.67.111.192] (unknown [10.67.111.192])
-	by APP4 (Coremail) with SMTP id gCh0CgCHu8d_3wdn3A7bDg--.36415S2;
-	Thu, 10 Oct 2024 22:06:56 +0800 (CST)
-Message-ID: <7ac49fa0-b1f1-4571-b95a-3ffd8f867735@huaweicloud.com>
-Date: Thu, 10 Oct 2024 22:06:55 +0800
+	s=arc-20240116; t=1728570342; c=relaxed/simple;
+	bh=ARbIdYWNyyi3WjLLaB1dd+pjZj6EzQVEfIFG0h5mWEI=;
+	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
+	 Content-Type; b=EG4yGe0IVbmiz+Sjt75Orpa7bzNzdDkJgu7QNlXJuIFii90jdsQP/+50u2knTY+69DuwO2CTo4NMINxi984u9jxnsCkJ3Y/uN5QYDSY059LysDfzbZ7Dij1k8taUonYEQB016UK1+ZjLaUPyJlDBXWba03iKii1tCA7bhXALYus=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3603C4CECE;
+	Thu, 10 Oct 2024 14:25:41 +0000 (UTC)
+Received: from rostedt by gandalf with local (Exim 4.98)
+	(envelope-from <rostedt@goodmis.org>)
+	id 1syu6v-00000001HGs-3XSC;
+	Thu, 10 Oct 2024 10:25:49 -0400
+Message-ID: <20241010142549.702988767@goodmis.org>
+User-Agent: quilt/0.68
+Date: Thu, 10 Oct 2024 10:25:38 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: linux-kernel@vger.kernel.org
+Cc: Masami Hiramatsu <mhiramat@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Michael Jeanson <mjeanson@efficios.com>,
+ Peter Zijlstra <peterz@infradead.org>,
+ Alexei Starovoitov <ast@kernel.org>,
+ Yonghong Song <yhs@fb.com>,
+ "Paul E. McKenney" <paulmck@kernel.org>,
+ Ingo Molnar <mingo@redhat.com>,
+ Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Namhyung Kim <namhyung@kernel.org>,
+ Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+ bpf@vger.kernel.org,
+ Joel Fernandes <joel@joelfernandes.org>
+Subject: [for-next][PATCH 01/10] tracing: Declare system call tracepoints with TRACE_EVENT_SYSCALL
+References: <20241010142537.255433162@goodmis.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v6 1/3] bpf: Prevent tailcall infinite loop
- caused by freplace
-Content-Language: en-US
-To: Leon Hwang <leon.hwang@linux.dev>, bpf@vger.kernel.org
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, toke@redhat.com,
- martin.lau@kernel.org, yonghong.song@linux.dev, puranjay@kernel.org,
- xukuohai@huaweicloud.com, eddyz87@gmail.com, iii@linux.ibm.com,
- kernel-patches-bot@fb.com, lkp@intel.com
-References: <20241008161333.33469-1-leon.hwang@linux.dev>
- <20241008161333.33469-2-leon.hwang@linux.dev>
-From: Xu Kuohai <xukuohai@huaweicloud.com>
-In-Reply-To: <20241008161333.33469-2-leon.hwang@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:gCh0CgCHu8d_3wdn3A7bDg--.36415S2
-X-Coremail-Antispam: 1UD129KBjvAXoWfGr1DCw13JFy8KryDAF4xZwb_yoW8XrW7Jo
-	WfJF1UAa18GryrtryUJ3WDJF9rZasrKFZrJr4rArsxWFyaqryFgr47JrZ5X3WYqw40qF47
-	u34vy39Iy3yUArZ5n29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
-	AaLaJ3UjIYCTnIWjp_UUUY67AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20EY4v20xva
-	j40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2
-	x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8
-	Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26r
-	xl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
-	6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
-	0_Gr1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxa
-	n2IY04v7MxkF7I0En4kS14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4
-	AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE
-	17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMI
-	IF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4l
-	IxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvf
-	C2KfnxnUUI43ZEXa7VUbGQ6JUUUUU==
-X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
+Content-Type: text/plain; charset=UTF-8
 
-On 10/9/2024 12:13 AM, Leon Hwang wrote:
-> This patch prevents an infinite loop issue caused by combination of tailcall
-> and freplace.
-> 
-> For example:
-> 
-> tc_bpf2bpf.c:
-> 
-> // SPDX-License-Identifier: GPL-2.0
-> 
-> \#include <linux/bpf.h>
-> \#include <bpf/bpf_helpers.h>
-> 
-> __noinline
-> int subprog_tc(struct __sk_buff *skb)
-> {
-> 	return skb->len * 2;
-> }
-> 
-> SEC("tc")
-> int entry_tc(struct __sk_buff *skb)
-> {
-> 	return subprog_tc(skb);
-> }
-> 
-> char __license[] SEC("license") = "GPL";
-> 
-> tailcall_freplace.c:
-> 
-> // SPDX-License-Identifier: GPL-2.0
-> 
-> \#include <linux/bpf.h>
-> \#include <bpf/bpf_helpers.h>
-> 
-> struct {
-> 	__uint(type, BPF_MAP_TYPE_PROG_ARRAY);
-> 	__uint(max_entries, 1);
-> 	__uint(key_size, sizeof(__u32));
-> 	__uint(value_size, sizeof(__u32));
-> } jmp_table SEC(".maps");
-> 
-> int count = 0;
-> 
-> SEC("freplace")
-> int entry_freplace(struct __sk_buff *skb)
-> {
-> 	count++;
-> 	bpf_tail_call_static(skb, &jmp_table, 0);
-> 	return count;
-> }
-> 
-> char __license[] SEC("license") = "GPL";
-> 
-> The attach target of entry_freplace is subprog_tc, and the tail callee
-> in entry_freplace is entry_tc.
-> 
-> Then, the infinite loop will be entry_tc -> subprog_tc -> entry_freplace
-> --tailcall-> entry_tc, because tail_call_cnt in entry_freplace will count
-> from zero for every time of entry_freplace execution. Kernel will panic,
-> like:
-> 
-> [   15.310490] BUG: TASK stack guard page was hit at (____ptrval____)
-> (stack is (____ptrval____)..(____ptrval____))
-> [   15.310490] Oops: stack guard page: 0000 [#1] PREEMPT SMP NOPTI
-> [   15.310490] CPU: 1 PID: 89 Comm: test_progs Tainted: G           OE
->     6.10.0-rc6-g026dcdae8d3e-dirty #72
-> [   15.310490] Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX,
-> 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
-> [   15.310490] RIP: 0010:bpf_prog_3a140cef239a4b4f_subprog_tail+0x14/0x53
-> [   15.310490] Code: cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc
-> cc cc cc cc cc f3 0f 1e fa 0f 1f 44 00 00 0f 1f 00 55 48 89 e5 f3 0f 1e
-> fa <50> 50 53 41 55 48 89 fb 49 bd 00 2a 46 82 98 9c ff ff 48 89 df 4c
-> [   15.310490] RSP: 0018:ffffb500c0aa0000 EFLAGS: 00000202
-> [   15.310490] RAX: ffffb500c0aa0028 RBX: ffff9c98808b7e00 RCX:
-> 0000000000008cb5
-> [   15.310490] RDX: 0000000000000000 RSI: ffff9c9882462a00 RDI:
-> ffff9c98808b7e00
-> [   15.310490] RBP: ffffb500c0aa0000 R08: 0000000000000000 R09:
-> 0000000000000000
-> [   15.310490] R10: 0000000000000001 R11: 0000000000000000 R12:
-> ffffb500c01af000
-> [   15.310490] R13: ffffb500c01cd000 R14: 0000000000000000 R15:
-> 0000000000000000
-> [   15.310490] FS:  00007f133b665140(0000) GS:ffff9c98bbd00000(0000)
-> knlGS:0000000000000000
-> [   15.310490] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [   15.310490] CR2: ffffb500c0a9fff8 CR3: 0000000102478000 CR4:
-> 00000000000006f0
-> [   15.310490] Call Trace:
-> [   15.310490]  <#DF>
-> [   15.310490]  ? die+0x36/0x90
-> [   15.310490]  ? handle_stack_overflow+0x4d/0x60
-> [   15.310490]  ? exc_double_fault+0x117/0x1a0
-> [   15.310490]  ? asm_exc_double_fault+0x23/0x30
-> [   15.310490]  ? bpf_prog_3a140cef239a4b4f_subprog_tail+0x14/0x53
-> [   15.310490]  </#DF>
-> [   15.310490]  <TASK>
-> [   15.310490]  bpf_prog_85781a698094722f_entry+0x4c/0x64
-> [   15.310490]  bpf_prog_1c515f389a9059b4_entry2+0x19/0x1b
-> [   15.310490]  ...
-> [   15.310490]  bpf_prog_85781a698094722f_entry+0x4c/0x64
-> [   15.310490]  bpf_prog_1c515f389a9059b4_entry2+0x19/0x1b
-> [   15.310490]  bpf_test_run+0x210/0x370
-> [   15.310490]  ? bpf_test_run+0x128/0x370
-> [   15.310490]  bpf_prog_test_run_skb+0x388/0x7a0
-> [   15.310490]  __sys_bpf+0xdbf/0x2c40
-> [   15.310490]  ? clockevents_program_event+0x52/0xf0
-> [   15.310490]  ? lock_release+0xbf/0x290
-> [   15.310490]  __x64_sys_bpf+0x1e/0x30
-> [   15.310490]  do_syscall_64+0x68/0x140
-> [   15.310490]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
-> [   15.310490] RIP: 0033:0x7f133b52725d
-> [   15.310490] Code: ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa
-> 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f
-> 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 8b bb 0d 00 f7 d8 64 89 01 48
-> [   15.310490] RSP: 002b:00007ffddbc10258 EFLAGS: 00000206 ORIG_RAX:
-> 0000000000000141
-> [   15.310490] RAX: ffffffffffffffda RBX: 00007ffddbc10828 RCX:
-> 00007f133b52725d
-> [   15.310490] RDX: 0000000000000050 RSI: 00007ffddbc102a0 RDI:
-> 000000000000000a
-> [   15.310490] RBP: 00007ffddbc10270 R08: 0000000000000000 R09:
-> 00007ffddbc102a0
-> [   15.310490] R10: 0000000000000064 R11: 0000000000000206 R12:
-> 0000000000000004
-> [   15.310490] R13: 0000000000000000 R14: 0000558ec4c24890 R15:
-> 00007f133b6ed000
-> [   15.310490]  </TASK>
-> [   15.310490] Modules linked in: bpf_testmod(OE)
-> [   15.310490] ---[ end trace 0000000000000000 ]---
-> [   15.310490] RIP: 0010:bpf_prog_3a140cef239a4b4f_subprog_tail+0x14/0x53
-> [   15.310490] Code: cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc
-> cc cc cc cc cc f3 0f 1e fa 0f 1f 44 00 00 0f 1f 00 55 48 89 e5 f3 0f 1e
-> fa <50> 50 53 41 55 48 89 fb 49 bd 00 2a 46 82 98 9c ff ff 48 89 df 4c
-> [   15.310490] RSP: 0018:ffffb500c0aa0000 EFLAGS: 00000202
-> [   15.310490] RAX: ffffb500c0aa0028 RBX: ffff9c98808b7e00 RCX:
-> 0000000000008cb5
-> [   15.310490] RDX: 0000000000000000 RSI: ffff9c9882462a00 RDI:
-> ffff9c98808b7e00
-> [   15.310490] RBP: ffffb500c0aa0000 R08: 0000000000000000 R09:
-> 0000000000000000
-> [   15.310490] R10: 0000000000000001 R11: 0000000000000000 R12:
-> ffffb500c01af000
-> [   15.310490] R13: ffffb500c01cd000 R14: 0000000000000000 R15:
-> 0000000000000000
-> [   15.310490] FS:  00007f133b665140(0000) GS:ffff9c98bbd00000(0000)
-> knlGS:0000000000000000
-> [   15.310490] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [   15.310490] CR2: ffffb500c0a9fff8 CR3: 0000000102478000 CR4:
-> 00000000000006f0
-> [   15.310490] Kernel panic - not syncing: Fatal exception in interrupt
-> [   15.310490] Kernel Offset: 0x30000000 from 0xffffffff81000000
-> (relocation range: 0xffffffff80000000-0xffffffffbfffffff)
-> 
-> This patch prevents this panic by preventing updating extended prog to
-> prog_array map and preventing extending a prog, which has been updated
-> to prog_array map, with freplace prog.
-> 
-> If a prog or its subprog has been extended by freplace prog, the prog
-> can not be updated to prog_array map.
-> 
-> If a prog has been updated to prog_array map, it or its subprog can not
-> be extended by freplace prog.
-> 
-> BTW, fix a minor code style issue by replacing 8 spaces with a tab.
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202410080455.vy5GT8Vz-lkp@intel.com/
-> Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
-> ---
->   include/linux/bpf.h     | 21 ++++++++++++++++++++
->   kernel/bpf/arraymap.c   | 23 +++++++++++++++++++++-
->   kernel/bpf/core.c       |  1 +
->   kernel/bpf/syscall.c    | 21 ++++++++++++++------
->   kernel/bpf/trampoline.c | 43 +++++++++++++++++++++++++++++++++++++++++
->   5 files changed, 102 insertions(+), 7 deletions(-)
-> 
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 19d8ca8ac960f..213a68c59bdf7 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -1294,6 +1294,12 @@ bool __bpf_dynptr_is_rdonly(const struct bpf_dynptr_kern *ptr);
->   #ifdef CONFIG_BPF_JIT
->   int bpf_trampoline_link_prog(struct bpf_tramp_link *link, struct bpf_trampoline *tr);
->   int bpf_trampoline_unlink_prog(struct bpf_tramp_link *link, struct bpf_trampoline *tr);
-> +int bpf_extension_link_prog(struct bpf_tramp_link *link,
-> +			    struct bpf_trampoline *tr,
-> +			    struct bpf_prog *tgt_prog);
-> +int bpf_extension_unlink_prog(struct bpf_tramp_link *link,
-> +			      struct bpf_trampoline *tr,
-> +			      struct bpf_prog *tgt_prog);
->   struct bpf_trampoline *bpf_trampoline_get(u64 key,
->   					  struct bpf_attach_target_info *tgt_info);
->   void bpf_trampoline_put(struct bpf_trampoline *tr);
-> @@ -1383,6 +1389,18 @@ static inline int bpf_trampoline_unlink_prog(struct bpf_tramp_link *link,
->   {
->   	return -ENOTSUPP;
->   }
-> +static inline int bpf_extension_link_prog(struct bpf_tramp_link *link,
-> +			    struct bpf_trampoline *tr,
-> +			    struct bpf_prog *tgt_prog)
-> +{
-> +	return -ENOTSUPP;
-> +}
-> +static inline int bpf_extension_unlink_prog(struct bpf_tramp_link *link,
-> +			      struct bpf_trampoline *tr,
-> +			      struct bpf_prog *tgt_prog)
-> +{
-> +	return -ENOTSUPP;
-> +}
->   static inline struct bpf_trampoline *bpf_trampoline_get(u64 key,
->   							struct bpf_attach_target_info *tgt_info)
->   {
-> @@ -1483,6 +1501,9 @@ struct bpf_prog_aux {
->   	bool xdp_has_frags;
->   	bool exception_cb;
->   	bool exception_boundary;
-> +	bool is_extended; /* true if extended by freplace program */
-> +	u64 prog_array_member_cnt; /* counts how many times as member of prog_array */
-> +	struct mutex ext_mutex; /* mutex for is_extended and prog_array_member_cnt */
->   	struct bpf_arena *arena;
->   	/* BTF_KIND_FUNC_PROTO for valid attach_btf_id */
->   	const struct btf_type *attach_func_proto;
-> diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
-> index 79660e3fca4c1..f9bd63a74eee7 100644
-> --- a/kernel/bpf/arraymap.c
-> +++ b/kernel/bpf/arraymap.c
-> @@ -947,6 +947,7 @@ static void *prog_fd_array_get_ptr(struct bpf_map *map,
->   				   struct file *map_file, int fd)
->   {
->   	struct bpf_prog *prog = bpf_prog_get(fd);
-> +	bool is_extended;
->   
->   	if (IS_ERR(prog))
->   		return prog;
-> @@ -956,13 +957,33 @@ static void *prog_fd_array_get_ptr(struct bpf_map *map,
->   		return ERR_PTR(-EINVAL);
->   	}
->   
-> +	mutex_lock(&prog->aux->ext_mutex);
-> +	is_extended = prog->aux->is_extended;
-> +	if (!is_extended)
-> +		prog->aux->prog_array_member_cnt++;
-> +	mutex_unlock(&prog->aux->ext_mutex);
-> +	if (is_extended) {
-> +		/* Extended prog can not be tail callee. It's to prevent a
-> +		 * potential infinite loop like:
-> +		 * tail callee prog entry -> tail callee prog subprog ->
-> +		 * freplace prog entry --tailcall-> tail callee prog entry.
-> +		 */
-> +		bpf_prog_put(prog);
-> +		return ERR_PTR(-EBUSY);
-> +	}
+From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 
-Sorry for the delay.
+In preparation for allowing system call tracepoints to handle page
+faults, introduce TRACE_EVENT_SYSCALL to declare the sys_enter/sys_exit
+tracepoints.
 
-IIUC, extension prog should not be tailcalled independently, so an error
-should also be returned if prog->type == BPF_PROG_TYPE_EXT
+Move the common code between __DECLARE_TRACE and __DECLARE_TRACE_SYSCALL
+into __DECLARE_TRACE_COMMON.
 
-> +
->   	return prog;
->   }
->   
->   static void prog_fd_array_put_ptr(struct bpf_map *map, void *ptr, bool need_defer)
->   {
-> +	struct bpf_prog *prog = ptr;
-> +
-> +	mutex_lock(&prog->aux->ext_mutex);
-> +	prog->aux->prog_array_member_cnt--;
-> +	mutex_unlock(&prog->aux->ext_mutex);
->   	/* bpf_prog is freed after one RCU or tasks trace grace period */
-> -	bpf_prog_put(ptr);
-> +	bpf_prog_put(prog);
->   }
->   
->   static u32 prog_fd_array_sys_lookup_elem(void *ptr)
-> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> index 5e77c58e06010..233ea78f8f1bd 100644
-> --- a/kernel/bpf/core.c
-> +++ b/kernel/bpf/core.c
-> @@ -131,6 +131,7 @@ struct bpf_prog *bpf_prog_alloc_no_stats(unsigned int size, gfp_t gfp_extra_flag
->   	INIT_LIST_HEAD_RCU(&fp->aux->ksym_prefix.lnode);
->   #endif
->   	mutex_init(&fp->aux->used_maps_mutex);
-> +	mutex_init(&fp->aux->ext_mutex);
->   	mutex_init(&fp->aux->dst_mutex);
->   
->   	return fp;
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index a8f1808a1ca54..4a5a44bbb5f50 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -3212,15 +3212,21 @@ static void bpf_tracing_link_release(struct bpf_link *link)
->   {
->   	struct bpf_tracing_link *tr_link =
->   		container_of(link, struct bpf_tracing_link, link.link);
-> +	struct bpf_prog *tgt_prog = tr_link->tgt_prog;
->   
-> -	WARN_ON_ONCE(bpf_trampoline_unlink_prog(&tr_link->link,
-> -						tr_link->trampoline));
-> +	if (link->prog->type == BPF_PROG_TYPE_EXT)
-> +		WARN_ON_ONCE(bpf_extension_unlink_prog(&tr_link->link,
-> +						       tr_link->trampoline,
-> +						       tgt_prog));
-> +	else
-> +		WARN_ON_ONCE(bpf_trampoline_unlink_prog(&tr_link->link,
-> +							tr_link->trampoline));
->   
->   	bpf_trampoline_put(tr_link->trampoline);
->   
->   	/* tgt_prog is NULL if target is a kernel function */
-> -	if (tr_link->tgt_prog)
-> -		bpf_prog_put(tr_link->tgt_prog);
-> +	if (tgt_prog)
-> +		bpf_prog_put(tgt_prog);
->   }
->   
->   static void bpf_tracing_link_dealloc(struct bpf_link *link)
-> @@ -3354,7 +3360,7 @@ static int bpf_tracing_prog_attach(struct bpf_prog *prog,
->   	 *   in prog->aux
->   	 *
->   	 * - if prog->aux->dst_trampoline is NULL, the program has already been
-> -         *   attached to a target and its initial target was cleared (below)
-> +	 *   attached to a target and its initial target was cleared (below)
->   	 *
->   	 * - if tgt_prog != NULL, the caller specified tgt_prog_fd +
->   	 *   target_btf_id using the link_create API.
-> @@ -3429,7 +3435,10 @@ static int bpf_tracing_prog_attach(struct bpf_prog *prog,
->   	if (err)
->   		goto out_unlock;
->   
-> -	err = bpf_trampoline_link_prog(&link->link, tr);
-> +	if (prog->type == BPF_PROG_TYPE_EXT)
-> +		err = bpf_extension_link_prog(&link->link, tr, tgt_prog);
-> +	else
-> +		err = bpf_trampoline_link_prog(&link->link, tr);
->   	if (err) {
->   		bpf_link_cleanup(&link_primer);
->   		link = NULL;
-> diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-> index f8302a5ca400d..b14f56046ad4e 100644
-> --- a/kernel/bpf/trampoline.c
-> +++ b/kernel/bpf/trampoline.c
-> @@ -580,6 +580,35 @@ int bpf_trampoline_link_prog(struct bpf_tramp_link *link, struct bpf_trampoline
->   	return err;
->   }
->   
-> +int bpf_extension_link_prog(struct bpf_tramp_link *link,
-> +			    struct bpf_trampoline *tr,
-> +			    struct bpf_prog *tgt_prog)
-> +{
-> +	struct bpf_prog_aux *aux = tgt_prog->aux;
-> +	int err;
-> +
-> +	mutex_lock(&aux->ext_mutex);
-> +	if (aux->prog_array_member_cnt) {
-> +		/* Program extensions can not extend target prog when the target
-> +		 * prog has been updated to any prog_array map as tail callee.
-> +		 * It's to prevent a potential infinite loop like:
-> +		 * tgt prog entry -> tgt prog subprog -> freplace prog entry
-> +		 * --tailcall-> tgt prog entry.
-> +		 */
-> +		err = -EBUSY;
-> +		goto out_unlock;
-> +	}
-> +
-> +	err = bpf_trampoline_link_prog(link, tr);
-> +	if (err)
-> +		goto out_unlock;
-> +
-> +	aux->is_extended = true;
-> +out_unlock:
-> +	mutex_unlock(&aux->ext_mutex);
-> +	return err;
-> +}
-> +
->   static int __bpf_trampoline_unlink_prog(struct bpf_tramp_link *link, struct bpf_trampoline *tr)
->   {
->   	enum bpf_tramp_prog_type kind;
-> @@ -609,6 +638,20 @@ int bpf_trampoline_unlink_prog(struct bpf_tramp_link *link, struct bpf_trampolin
->   	return err;
->   }
->   
-> +int bpf_extension_unlink_prog(struct bpf_tramp_link *link,
-> +			      struct bpf_trampoline *tr,
-> +			      struct bpf_prog *tgt_prog)
-> +{
-> +	struct bpf_prog_aux *aux = tgt_prog->aux;
-> +	int err;
-> +
-> +	mutex_lock(&aux->ext_mutex);
-> +	err = bpf_trampoline_unlink_prog(link, tr);
-> +	aux->is_extended = false;
-> +	mutex_unlock(&aux->ext_mutex);
-> +	return err;
-> +}
-> +
->   #if defined(CONFIG_CGROUP_BPF) && defined(CONFIG_BPF_LSM)
->   static void bpf_shim_tramp_link_release(struct bpf_link *link)
->   {
+This change is not meant to alter the generated code, and only prepares
+the following modifications.
+
+Cc: Michael Jeanson <mjeanson@efficios.com>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Yonghong Song <yhs@fb.com>
+Cc: Paul E. McKenney <paulmck@kernel.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bpf@vger.kernel.org
+Cc: Joel Fernandes <joel@joelfernandes.org>
+Link: https://lore.kernel.org/20241009010718.2050182-2-mathieu.desnoyers@efficios.com
+Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ include/linux/tracepoint.h      | 53 +++++++++++++++++++++++++--------
+ include/trace/bpf_probe.h       |  3 ++
+ include/trace/define_trace.h    |  5 ++++
+ include/trace/events/syscalls.h |  4 +--
+ include/trace/perf.h            |  3 ++
+ include/trace/trace_events.h    | 28 +++++++++++++++++
+ 6 files changed, 81 insertions(+), 15 deletions(-)
+
+diff --git a/include/linux/tracepoint.h b/include/linux/tracepoint.h
+index 3d33b9872cec..76e441b39a96 100644
+--- a/include/linux/tracepoint.h
++++ b/include/linux/tracepoint.h
+@@ -197,7 +197,7 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+  * it_func[0] is never NULL because there is at least one element in the array
+  * when the array itself is non NULL.
+  */
+-#define __DO_TRACE(name, args, cond)					\
++#define __DO_TRACE(name, args, cond, syscall)				\
+ 	do {								\
+ 		int __maybe_unused __idx = 0;				\
+ 									\
+@@ -222,21 +222,10 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+  * site if it is not watching, as it will need to be active when the
+  * tracepoint is enabled.
+  */
+-#define __DECLARE_TRACE(name, proto, args, cond, data_proto)		\
++#define __DECLARE_TRACE_COMMON(name, proto, args, cond, data_proto)	\
+ 	extern int __traceiter_##name(data_proto);			\
+ 	DECLARE_STATIC_CALL(tp_func_##name, __traceiter_##name);	\
+ 	extern struct tracepoint __tracepoint_##name;			\
+-	static inline void trace_##name(proto)				\
+-	{								\
+-		if (static_branch_unlikely(&__tracepoint_##name.key))	\
+-			__DO_TRACE(name,				\
+-				TP_ARGS(args),				\
+-				TP_CONDITION(cond));			\
+-		if (IS_ENABLED(CONFIG_LOCKDEP) && (cond)) {		\
+-			WARN_ONCE(!rcu_is_watching(),			\
+-				  "RCU not watching for tracepoint");	\
+-		}							\
+-	}								\
+ 	static inline int						\
+ 	register_trace_##name(void (*probe)(data_proto), void *data)	\
+ 	{								\
+@@ -266,6 +255,34 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+ 		return static_branch_unlikely(&__tracepoint_##name.key);\
+ 	}
+ 
++#define __DECLARE_TRACE(name, proto, args, cond, data_proto)		\
++	__DECLARE_TRACE_COMMON(name, PARAMS(proto), PARAMS(args), cond, PARAMS(data_proto)) \
++	static inline void trace_##name(proto)				\
++	{								\
++		if (static_branch_unlikely(&__tracepoint_##name.key))	\
++			__DO_TRACE(name,				\
++				TP_ARGS(args),				\
++				TP_CONDITION(cond), 0);			\
++		if (IS_ENABLED(CONFIG_LOCKDEP) && (cond)) {		\
++			WARN_ONCE(!rcu_is_watching(),			\
++				  "RCU not watching for tracepoint");	\
++		}							\
++	}
++
++#define __DECLARE_TRACE_SYSCALL(name, proto, args, cond, data_proto)	\
++	__DECLARE_TRACE_COMMON(name, PARAMS(proto), PARAMS(args), cond, PARAMS(data_proto)) \
++	static inline void trace_##name(proto)				\
++	{								\
++		if (static_branch_unlikely(&__tracepoint_##name.key))	\
++			__DO_TRACE(name,				\
++				TP_ARGS(args),				\
++				TP_CONDITION(cond), 1);			\
++		if (IS_ENABLED(CONFIG_LOCKDEP) && (cond)) {		\
++			WARN_ONCE(!rcu_is_watching(),			\
++				  "RCU not watching for tracepoint");	\
++		}							\
++	}
++
+ /*
+  * We have no guarantee that gcc and the linker won't up-align the tracepoint
+  * structures, so we create an array of pointers that will be used for iteration
+@@ -348,6 +365,8 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+ 		return false;						\
+ 	}
+ 
++#define __DECLARE_TRACE_SYSCALL	__DECLARE_TRACE
++
+ #define DEFINE_TRACE_FN(name, reg, unreg, proto, args)
+ #define DEFINE_TRACE(name, proto, args)
+ #define EXPORT_TRACEPOINT_SYMBOL_GPL(name)
+@@ -409,6 +428,11 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+ 			cpu_online(raw_smp_processor_id()) && (PARAMS(cond)), \
+ 			PARAMS(void *__data, proto))
+ 
++#define DECLARE_TRACE_SYSCALL(name, proto, args)			\
++	__DECLARE_TRACE_SYSCALL(name, PARAMS(proto), PARAMS(args),	\
++				cpu_online(raw_smp_processor_id()),	\
++				PARAMS(void *__data, proto))
++
+ #define TRACE_EVENT_FLAGS(event, flag)
+ 
+ #define TRACE_EVENT_PERF_PERM(event, expr...)
+@@ -546,6 +570,9 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+ 			      struct, assign, print)		\
+ 	DECLARE_TRACE_CONDITION(name, PARAMS(proto),		\
+ 				PARAMS(args), PARAMS(cond))
++#define TRACE_EVENT_SYSCALL(name, proto, args, struct, assign,	\
++			    print, reg, unreg)			\
++	DECLARE_TRACE_SYSCALL(name, PARAMS(proto), PARAMS(args))
+ 
+ #define TRACE_EVENT_FLAGS(event, flag)
+ 
+diff --git a/include/trace/bpf_probe.h b/include/trace/bpf_probe.h
+index a2ea11cc912e..c85bbce5aaa5 100644
+--- a/include/trace/bpf_probe.h
++++ b/include/trace/bpf_probe.h
+@@ -53,6 +53,9 @@ __bpf_trace_##call(void *__data, proto)					\
+ #define DECLARE_EVENT_CLASS(call, proto, args, tstruct, assign, print)	\
+ 	__BPF_DECLARE_TRACE(call, PARAMS(proto), PARAMS(args))
+ 
++#undef DECLARE_EVENT_SYSCALL_CLASS
++#define DECLARE_EVENT_SYSCALL_CLASS DECLARE_EVENT_CLASS
++
+ /*
+  * This part is compiled out, it is only here as a build time check
+  * to make sure that if the tracepoint handling changes, the
+diff --git a/include/trace/define_trace.h b/include/trace/define_trace.h
+index 00723935dcc7..ff5fa17a6259 100644
+--- a/include/trace/define_trace.h
++++ b/include/trace/define_trace.h
+@@ -46,6 +46,10 @@
+ 		assign, print, reg, unreg)			\
+ 	DEFINE_TRACE_FN(name, reg, unreg, PARAMS(proto), PARAMS(args))
+ 
++#undef TRACE_EVENT_SYSCALL
++#define TRACE_EVENT_SYSCALL(name, proto, args, struct, assign, print, reg, unreg) \
++	DEFINE_TRACE_FN(name, reg, unreg, PARAMS(proto), PARAMS(args))
++
+ #undef TRACE_EVENT_NOP
+ #define TRACE_EVENT_NOP(name, proto, args, struct, assign, print)
+ 
+@@ -107,6 +111,7 @@
+ #undef TRACE_EVENT
+ #undef TRACE_EVENT_FN
+ #undef TRACE_EVENT_FN_COND
++#undef TRACE_EVENT_SYSCALL
+ #undef TRACE_EVENT_CONDITION
+ #undef TRACE_EVENT_NOP
+ #undef DEFINE_EVENT_NOP
+diff --git a/include/trace/events/syscalls.h b/include/trace/events/syscalls.h
+index b6e0cbc2c71f..f31ff446b468 100644
+--- a/include/trace/events/syscalls.h
++++ b/include/trace/events/syscalls.h
+@@ -15,7 +15,7 @@
+ 
+ #ifdef CONFIG_HAVE_SYSCALL_TRACEPOINTS
+ 
+-TRACE_EVENT_FN(sys_enter,
++TRACE_EVENT_SYSCALL(sys_enter,
+ 
+ 	TP_PROTO(struct pt_regs *regs, long id),
+ 
+@@ -41,7 +41,7 @@ TRACE_EVENT_FN(sys_enter,
+ 
+ TRACE_EVENT_FLAGS(sys_enter, TRACE_EVENT_FL_CAP_ANY)
+ 
+-TRACE_EVENT_FN(sys_exit,
++TRACE_EVENT_SYSCALL(sys_exit,
+ 
+ 	TP_PROTO(struct pt_regs *regs, long ret),
+ 
+diff --git a/include/trace/perf.h b/include/trace/perf.h
+index 2c11181c82e0..ded997af481e 100644
+--- a/include/trace/perf.h
++++ b/include/trace/perf.h
+@@ -55,6 +55,9 @@ perf_trace_##call(void *__data, proto)					\
+ 				  head, __task);			\
+ }
+ 
++#undef DECLARE_EVENT_SYSCALL_CLASS
++#define DECLARE_EVENT_SYSCALL_CLASS DECLARE_EVENT_CLASS
++
+ /*
+  * This part is compiled out, it is only here as a build time check
+  * to make sure that if the tracepoint handling changes, the
+diff --git a/include/trace/trace_events.h b/include/trace/trace_events.h
+index c2f9cabf154d..8bcbb9ee44de 100644
+--- a/include/trace/trace_events.h
++++ b/include/trace/trace_events.h
+@@ -45,6 +45,16 @@
+ 			     PARAMS(print));		       \
+ 	DEFINE_EVENT(name, name, PARAMS(proto), PARAMS(args));
+ 
++#undef TRACE_EVENT_SYSCALL
++#define TRACE_EVENT_SYSCALL(name, proto, args, tstruct, assign, print, reg, unreg) \
++	DECLARE_EVENT_SYSCALL_CLASS(name,		       \
++			     PARAMS(proto),		       \
++			     PARAMS(args),		       \
++			     PARAMS(tstruct),		       \
++			     PARAMS(assign),		       \
++			     PARAMS(print));		       \
++	DEFINE_EVENT(name, name, PARAMS(proto), PARAMS(args));
++
+ #include "stages/stage1_struct_define.h"
+ 
+ #undef DECLARE_EVENT_CLASS
+@@ -57,6 +67,9 @@
+ 									\
+ 	static struct trace_event_class event_class_##name;
+ 
++#undef DECLARE_EVENT_SYSCALL_CLASS
++#define DECLARE_EVENT_SYSCALL_CLASS DECLARE_EVENT_CLASS
++
+ #undef DEFINE_EVENT
+ #define DEFINE_EVENT(template, name, proto, args)	\
+ 	static struct trace_event_call	__used		\
+@@ -117,6 +130,9 @@
+ 		tstruct;						\
+ 	};
+ 
++#undef DECLARE_EVENT_SYSCALL_CLASS
++#define DECLARE_EVENT_SYSCALL_CLASS DECLARE_EVENT_CLASS
++
+ #undef DEFINE_EVENT
+ #define DEFINE_EVENT(template, name, proto, args)
+ 
+@@ -208,6 +224,9 @@ static struct trace_event_functions trace_event_type_funcs_##call = {	\
+ 	.trace			= trace_raw_output_##call,		\
+ };
+ 
++#undef DECLARE_EVENT_SYSCALL_CLASS
++#define DECLARE_EVENT_SYSCALL_CLASS DECLARE_EVENT_CLASS
++
+ #undef DEFINE_EVENT_PRINT
+ #define DEFINE_EVENT_PRINT(template, call, proto, args, print)		\
+ static notrace enum print_line_t					\
+@@ -265,6 +284,9 @@ static inline notrace int trace_event_get_offsets_##call(		\
+ 	return __data_size;						\
+ }
+ 
++#undef DECLARE_EVENT_SYSCALL_CLASS
++#define DECLARE_EVENT_SYSCALL_CLASS DECLARE_EVENT_CLASS
++
+ #include TRACE_INCLUDE(TRACE_INCLUDE_FILE)
+ 
+ /*
+@@ -409,6 +431,9 @@ trace_event_raw_event_##call(void *__data, proto)			\
+  * fail to compile unless it too is updated.
+  */
+ 
++#undef DECLARE_EVENT_SYSCALL_CLASS
++#define DECLARE_EVENT_SYSCALL_CLASS DECLARE_EVENT_CLASS
++
+ #undef DEFINE_EVENT
+ #define DEFINE_EVENT(template, call, proto, args)			\
+ static inline void ftrace_test_probe_##call(void)			\
+@@ -434,6 +459,9 @@ static struct trace_event_class __used __refdata event_class_##call = { \
+ 	_TRACE_PERF_INIT(call)						\
+ };
+ 
++#undef DECLARE_EVENT_SYSCALL_CLASS
++#define DECLARE_EVENT_SYSCALL_CLASS DECLARE_EVENT_CLASS
++
+ #undef DEFINE_EVENT
+ #define DEFINE_EVENT(template, call, proto, args)			\
+ 									\
+-- 
+2.45.2
+
 
 
