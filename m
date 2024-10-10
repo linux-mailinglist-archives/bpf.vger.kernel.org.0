@@ -1,149 +1,159 @@
-Return-Path: <bpf+bounces-41650-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41651-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ABEB3999485
-	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 23:39:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0032E9994A0
+	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 23:50:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 90437B22DFD
-	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 21:39:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AFC6E282FC6
+	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 21:50:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B365C1E260B;
-	Thu, 10 Oct 2024 21:39:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDFA11E230A;
+	Thu, 10 Oct 2024 21:50:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gNpy7F1e"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nGgfCUBM"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90C1D18DF6B;
-	Thu, 10 Oct 2024 21:39:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E950E19A2A3
+	for <bpf@vger.kernel.org>; Thu, 10 Oct 2024 21:50:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728596366; cv=none; b=Gp117jyWQxxy5Oz2/MfA3E1qV2WEJoc6NvRU3afX0VWmIIV+knzu2+frnRXNiPVSDrJhqQtqji/ssqVk9XBqFZPX6m2e6xp1lTMlRFmHSmNhft/6mayG3aYznZYUtuJAz03JYqIkvguTqoYI1rnW7O5AYy3Cy9bvSH22rgMDC/Y=
+	t=1728597020; cv=none; b=iJKM2hw6J01t8p+oHoRR6By8QIFAemLiWMdQ6ZlGQHWWvc/xEqwI1cJyVnZfdFAXFZAvap5BDI+1Q9MfdcIaAMDwz5rCmN4BVTXBhsCg3LD/+swfPO3lKxUInxg85W52qaoCrsiZuW/8CB3E0+CIzAFCsvKWmqpxDx5AMc6Ktzs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728596366; c=relaxed/simple;
-	bh=XyYW6A6c8SZBEh5/bYJIXoKJoFg/MQvzLyWnhYNLSBU=;
+	s=arc-20240116; t=1728597020; c=relaxed/simple;
+	bh=4iBGMHpf8A1lRB/K7Yn+YmbsWzC7y+Vnp7CQZllrlNE=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XMeczTa4PsJWcnp02E8HIuuupTW11068DfrWRDpv3RMibhqkxYYScErGMdVuoNoewqokcqpSVKKAqrRsDnmvIVu3sVnlfzAW9OmtrsKVyui/5S3LBvEHCt7dy/N6Id2Fo77DaHoGEXXICFm7Mii293ZO+Z6VwYf6jx54U9UkQ/0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gNpy7F1e; arc=none smtp.client-ip=209.85.221.41
+	 To:Cc:Content-Type; b=cIrHBkPRuUsixRbEqFmMVSwLKDp4KqBc51uuosND6aTWo+ZA5cku0o1GwO9cxamHAEs4xvGWSdna/tHF/5N/Yb2Y0mjpJV0sxFSO2uGAHCOR5fJ3gQl8DKpDHmv02HXkOf7vwvN6UgGQxXLKmcvB5gjoAwXg/1Mc2Q17epFFnKs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nGgfCUBM; arc=none smtp.client-ip=209.85.215.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-37d533b5412so245159f8f.2;
-        Thu, 10 Oct 2024 14:39:24 -0700 (PDT)
+Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-7ea07610762so993021a12.0
+        for <bpf@vger.kernel.org>; Thu, 10 Oct 2024 14:50:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1728596363; x=1729201163; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1728597017; x=1729201817; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=iSmm3ujWM9Lc1PSwYMhMkjrX/ACOqoUCH/T2z1DTYLQ=;
-        b=gNpy7F1e9QB+NyqzBNKGN708FOhzSOmSBcDCAVtqzMt3eneBrn6800onf6dHtHDX12
-         alLw51GE+TCzgZdDibRh8TyV4PnI6DErMVqbYVnCPObK/oZgxpr5LT7JZC0JONwYgFNj
-         xLTmD2G3kHULpe6+7FZiQkW6zcFYFsNF1ei/0qy6VAgVhMOCtodiSGSz9gi5kMcC5XXh
-         QID7dE2RYgD9QFFG6VOXkGvLNok8vuZ49Rx5+M4dx5fGYrjObm2Nsmw4R03P/k0CFc/m
-         +Tld3mYAvz/wPi+jRbwrbuc9ddNDqxx9OT2/CLYXO5xLCSAfrurULhtXXlqqEQB4STvY
-         URRQ==
+        bh=nWV423oB00CF5O64J32/8MIZdh7IOVfdZCai6dQPsEE=;
+        b=nGgfCUBMfHt9f0dwzx+kwEjq65HPiJvex39sS1xvl5Z2t51+Ql9XqIMDo8AEM2Q0if
+         ycKDGdrukduLlx4rUktneAKOncw+dDuFFwbXYtEpzULPBbOgiKLHj0RAXufN/Or2AgEh
+         bfyDdYwlCgvoSF+OgKCtjoN4Xv4+TcemPTegr1GcGq8lqgIeUhhHrP4LbjaJeLXQGcwR
+         5UtCNnmNMsZ3zl0wkDtSobJ0V57j6MlJJ30miPUeYgtHKro49OOHHybIzmN2P+5HGxx5
+         Wd4w4p9Y6cv6VajaAAUhupAeN2IaUJawXgide/3P9duB5Ux2nghQ9hNm6b1VGsCoaLai
+         vj/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728596363; x=1729201163;
+        d=1e100.net; s=20230601; t=1728597017; x=1729201817;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=iSmm3ujWM9Lc1PSwYMhMkjrX/ACOqoUCH/T2z1DTYLQ=;
-        b=m+NhqrPgz5Xm+tzDlODYaq4S0aHK0HU2JVslW8e96PJ3dZdO20bqNcTtMtVS3GbCYW
-         C2sVZ1DMGxh3AxHQuzculXJyIRt1rtLrb6b7sEbB57ct/bkkF8iTeb/VtssDBLiQBAsG
-         DPMpXaHtV9HrM04bocCjt78lP6A5iA1KfNTHHHLeyMfzrLKUX9xGW5avubZdfFWCAxFB
-         ji7Y+3XqZkaQlxteeLuh5BfAKF4dD7EsKJbucdw3dSrVuX8fSgJl8yNmOozTk57dH98L
-         RhFLsYhlk5eIzfGHa2SGbfJKCP/vbBVVhouprqlOxFOMXTje3WH8q+0DAMhl9A9l62Wv
-         lwXQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUEP/kffFmVLdhbyBdTT1tHCi+REDvMNahOVApgLXHl3Afb0VkISKNsrfyNd1w7khiQpvjcGWRfRiFSlP4t@vger.kernel.org, AJvYcCUjScexdeeeEizGsGtcCgdGnAiZ7DQ2KUlNmqPzbMjPdvnT0iTX8Br2Apbf2zphUtZ4vG8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxDOYxTWz+Yr9kNpy+zpSwVfdyWmi+KCShOer1B/pRWOimeiMu4
-	Yj9icVBJQDdCZ9rSq8wC+ioTJiLHoS4tU3Pi+2c81sRjFWwsn6iyQByGvAr6i1aAWnRZNtdkhF9
-	KUAFmEJnP8ZV2cy0y0wJXjNUEIUY=
-X-Google-Smtp-Source: AGHT+IFMEBpaLju4jvCLHsZaAkZnakbHbO0bzSr1Lxhx4zkylvqs35dJaafFDVXRM129wI/Y/PIljSr8Ivm3T6d21+w=
-X-Received: by 2002:a05:6000:181a:b0:37d:50e1:b3d3 with SMTP id
- ffacd0b85a97d-37d551b76c9mr259081f8f.20.1728596362610; Thu, 10 Oct 2024
- 14:39:22 -0700 (PDT)
+        bh=nWV423oB00CF5O64J32/8MIZdh7IOVfdZCai6dQPsEE=;
+        b=cLlKEkNZRs1kbpR15PaQtbOECyA8T6EhH5+xllyhfX3IU+Ssq0plEDq0/UENyLU2ac
+         +0wgGATtasN9KS19E8++qETaa+zNRnzrEc2wWVXBfKlJZrL/5y8KEZzrcryqVWOsbstF
+         S4mKic4SeeaZ+1+YO1QPlO8vVVr5GFL/Z0glL49+kny7Hj/5Ln64659kRKyGjESheDtd
+         RzKhfjy2tb/mck7fuLjeLM/YQdxWazSJR0I7rcCzNlq3LsDaCDCXjRDpgsDR2vhgYuAr
+         TxA70ZHoDHiXsYttHfDvYUkuBup3eJjMZ22FVCB9IFriHVdPu3PI33mtqPrqzvvRYjks
+         tQlA==
+X-Gm-Message-State: AOJu0YwKfmhaWaGLSA32/KnYjSwXohK5tpSNY9Q03scPHD1gbW5B5jj+
+	5vT4gFaUMSglPbAdOd3S3GTA55wlum+AIJlT6G4utzDifhWgIQ7sxzxX8IMDRcOTZ7enUQPRdcL
+	uTe/jIbm2AZp8KrvuG1B2pS0jn5zjpQ==
+X-Google-Smtp-Source: AGHT+IEmuQzwUzjsW0E6AvpPfOOMExi+/nYQg6sRUiH0gpR1zdwmtqUnNfY2ZjPH5Dayn11e0PdPzMiAoaUxGRY0f+w=
+X-Received: by 2002:a17:90b:f16:b0:2e2:a850:6921 with SMTP id
+ 98e67ed59e1d1-2e2f0a49228mr877965a91.1.1728597017148; Thu, 10 Oct 2024
+ 14:50:17 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CANpmjNNPnEMBxF1-Lr_BACmPYxOTRa=k6Vwi=EFR=BED=G8akg@mail.gmail.com>
- <20241010131130.2903601-1-snovitoll@gmail.com>
-In-Reply-To: <20241010131130.2903601-1-snovitoll@gmail.com>
-From: Andrey Konovalov <andreyknvl@gmail.com>
-Date: Thu, 10 Oct 2024 23:39:11 +0200
-Message-ID: <CA+fCnZfs6bwdxkKPWWdNCjFH6H6hs0pFjaic12=HgB4b=Vv-xw@mail.gmail.com>
-Subject: Re: [PATCH v5] mm, kasan, kmsan: copy_from/to_kernel_nofault
-To: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
-Cc: elver@google.com, akpm@linux-foundation.org, bpf@vger.kernel.org, 
-	dvyukov@google.com, glider@google.com, kasan-dev@googlegroups.com, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, ryabinin.a.a@gmail.com, 
-	syzbot+61123a5daeb9f7454599@syzkaller.appspotmail.com, 
-	vincenzo.frascino@arm.com
+References: <20241008091501.8302-1-houtao@huaweicloud.com> <20241008091501.8302-7-houtao@huaweicloud.com>
+In-Reply-To: <20241008091501.8302-7-houtao@huaweicloud.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 10 Oct 2024 14:50:04 -0700
+Message-ID: <CAEf4BzaVNBaNULS3=9o6hwnruKBTcz-Z3c0DMf+q17G=RfPkEg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 06/16] bpf: Introduce bpf_dynptr_user
+To: Hou Tao <houtao@huaweicloud.com>
+Cc: bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, 
+	Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>, 
+	Yonghong Song <yonghong.song@linux.dev>, Daniel Borkmann <daniel@iogearbox.net>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Jiri Olsa <jolsa@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, houtao1@huawei.com, xukuohai@huawei.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Oct 10, 2024 at 3:10=E2=80=AFPM Sabyrzhan Tasbolatov
-<snovitoll@gmail.com> wrote:
+On Tue, Oct 8, 2024 at 2:02=E2=80=AFAM Hou Tao <houtao@huaweicloud.com> wro=
+te:
 >
-> diff --git a/mm/kasan/kasan_test_c.c b/mm/kasan/kasan_test_c.c
-> index a181e4780d9d..cb6ad84641ec 100644
-> --- a/mm/kasan/kasan_test_c.c
-> +++ b/mm/kasan/kasan_test_c.c
-> @@ -1954,6 +1954,42 @@ static void rust_uaf(struct kunit *test)
->         KUNIT_EXPECT_KASAN_FAIL(test, kasan_test_rust_uaf());
->  }
+> From: Hou Tao <houtao1@huawei.com>
 >
-> +static void copy_to_kernel_nofault_oob(struct kunit *test)
-> +{
-> +       char *ptr;
-> +       char buf[128];
-> +       size_t size =3D sizeof(buf);
+> For bpf map with dynptr key support, the userspace application will use
+> bpf_dynptr_user to represent the bpf_dynptr in the map key and pass it
+> to bpf syscall. The bpf syscall will copy from bpf_dynptr_user to
+> construct a corresponding bpf_dynptr_kern object when the map key is an
+> input argument, and copy to bpf_dynptr_user from a bpf_dynptr_kern
+> object when the map key is an output argument.
+>
+> For now the size of bpf_dynptr_user must be the same as bpf_dynptr, but
+> the last u32 field is not used, so make it a reserved field.
+>
+> Signed-off-by: Hou Tao <houtao1@huawei.com>
+> ---
+>  include/uapi/linux/bpf.h       | 6 ++++++
+>  tools/include/uapi/linux/bpf.h | 6 ++++++
+>  2 files changed, 12 insertions(+)
+>
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 07f7df308a01..72fe6a96b54c 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -7329,6 +7329,12 @@ struct bpf_dynptr {
+>         __u64 __opaque[2];
+>  } __attribute__((aligned(8)));
+>
+> +struct bpf_dynptr_user {
+
+bikeshedding: maybe just bpf_udynptr?
+
+> +       __u64 data;
+> +       __u32 size;
+> +       __u32 rsvd;
+> +} __attribute__((aligned(8)));
 > +
-> +       /* This test currently fails with the HW_TAGS mode.
-> +        * The reason is unknown and needs to be investigated. */
-> +       ptr =3D kmalloc(size - KASAN_GRANULE_SIZE, GFP_KERNEL);
-> +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
-> +       OPTIMIZER_HIDE_VAR(ptr);
+>  struct bpf_list_head {
+>         __u64 __opaque[2];
+>  } __attribute__((aligned(8)));
+> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bp=
+f.h
+> index 14f223282bfa..f12ce268e6be 100644
+> --- a/tools/include/uapi/linux/bpf.h
+> +++ b/tools/include/uapi/linux/bpf.h
+> @@ -7328,6 +7328,12 @@ struct bpf_dynptr {
+>         __u64 __opaque[2];
+>  } __attribute__((aligned(8)));
+>
+> +struct bpf_dynptr_user {
+> +       __u64 data;
+
+what if we use __bpf_md_ptr(void *, data), so users can just directly
+use this struct (and then the next patch won't be necessary at all)
+
+> +       __u32 size;
+> +       __u32 rsvd;
+
+please call it __reserved
+
+
+> +} __attribute__((aligned(8)));
 > +
-> +       if (IS_ENABLED(CONFIG_KASAN_SW_TAGS)) {
-> +               /* Check that the returned pointer is tagged. */
-> +               KUNIT_EXPECT_GE(test, (u8)get_tag(ptr), (u8)KASAN_TAG_MIN=
-);
-> +               KUNIT_EXPECT_LT(test, (u8)get_tag(ptr), (u8)KASAN_TAG_KER=
-NEL);
-> +       }
-
-It appears you deleted a wrong check. I meant the checks above, not
-the CONFIG_KASAN_HW_TAGS one.
-
-> +
-> +       /*
-> +       * We test copy_to_kernel_nofault() to detect corrupted memory tha=
-t is
-> +       * being written into the kernel. In contrast, copy_from_kernel_no=
-fault()
-> +       * is primarily used in kernel helper functions where the source a=
-ddress
-> +       * might be random or uninitialized. Applying KASAN instrumentatio=
-n to
-> +       * copy_from_kernel_nofault() could lead to false positives.
-> +       * By focusing KASAN checks only on copy_to_kernel_nofault(),
-> +       * we ensure that only valid memory is written to the kernel,
-> +       * minimizing the risk of kernel corruption while avoiding
-> +       * false positives in the reverse case.
-> +       */
-> +       KUNIT_EXPECT_KASAN_FAIL(test,
-> +               copy_to_kernel_nofault(&buf[0], ptr, size));
-> +       KUNIT_EXPECT_KASAN_FAIL(test,
-> +               copy_to_kernel_nofault(ptr, &buf[0], size));
-
-Nit: empty line before kfree.
-
-> +       kfree(ptr);
-> +}
+>  struct bpf_list_head {
+>         __u64 __opaque[2];
+>  } __attribute__((aligned(8)));
+> --
+> 2.44.0
+>
 
