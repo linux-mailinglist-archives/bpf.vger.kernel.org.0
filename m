@@ -1,93 +1,167 @@
-Return-Path: <bpf+bounces-41639-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41640-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F63E9993E8
-	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 22:50:32 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C08479993F7
+	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 22:53:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E86B31F21771
-	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 20:50:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B6061B21712
+	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 20:53:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8673F1E102C;
-	Thu, 10 Oct 2024 20:50:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADEB31E231B;
+	Thu, 10 Oct 2024 20:53:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bIFwQUC5"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mypdh8jA"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AC3C1991B8
-	for <bpf@vger.kernel.org>; Thu, 10 Oct 2024 20:50:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CD111CF7B8
+	for <bpf@vger.kernel.org>; Thu, 10 Oct 2024 20:53:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728593426; cv=none; b=B9QRwNeZwE0KKLXzPhNdPKaHSM24CBlo8G0HM2hiT8LDo1LThslXfj2hfk9bxLkpyF+/gFl6AL5SeM0LZUMPEnZmFeaUUyjQHt/YIRjLsbjl/pk/S4ioE/15Ou5mo5BXHNxuDF4RYzrVvkZjl6NKatF/pisXIxUwyx9iOog2bNI=
+	t=1728593624; cv=none; b=ULAoGpWGE0Pcd4XXOKpfme0rw/d1XJZaPF1tysY9sXRCol4AUL/nRTuG//HemeTWb7EiCdUoFrrP2exM9RSNzQi6KpJ8yRdNxiXDXxT8AouD8V7IiBxquQOSAsI9313Ej09F6g916ySf+0twq0OuMM/Kd2Zjg/3RaGpxKzSTMNU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728593426; c=relaxed/simple;
-	bh=yjd9wYyew6JqFu14EtIxlMNYGDp6nW+pEtn14fWg+EE=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=tI56gsDjCsVBIAVFpKAh4FMgS2mjA4rcYmii8L1zhB3nYAw3Ju8h/9071LBG8FCperBEVz+7boCA2wIat74ZRd8ud1TTwBGmQdYmvk3LlGkb/po0w5PBOGWzZTTcalBlTxIUs0Qh+R+GNyTyTXfFrcZ3vJyYY7P3moh8c7Wi0EU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bIFwQUC5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8CD21C4CEC5;
-	Thu, 10 Oct 2024 20:50:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728593425;
-	bh=yjd9wYyew6JqFu14EtIxlMNYGDp6nW+pEtn14fWg+EE=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=bIFwQUC5KBcziGv9aIIvaoHHLgVMVPHZsfuh8fvgDv78wq2nilC6w2iltYbT4WhJy
-	 UPUI1qpSZYgNwjDbQpwNvYeOQ1CikNMaR5UjwwtL38RtuolVqeoBM7wFqWKSXs5lne
-	 XMr55Ni5eHmwb3rou4M6KKE4qLydJo5oiK/2n2+PB36H1C0p7zJaxAAerqQVUfKq/e
-	 4uPKnoHgoCTAPtBYH+VQugy+igDKb3alQzfOcCyucJBdw77likvd8lmcIbdcral2tB
-	 0e3OZckAKdpY5dulDPcjKbLSwVBN2F0PC7eBF846a1td70oycdITBtRetlrn3UCIS4
-	 WeWRbzapGdrAQ==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 33D5B3803263;
-	Thu, 10 Oct 2024 20:50:31 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1728593624; c=relaxed/simple;
+	bh=JsSRODlK7S1ND9ukd/YfGfz9fsavUFpfoPruEzzWuXI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=eIJXWwyaNSRFcRFcZf99sK9rX6IEL/ttxUJdBkSY3LX1RN7Q2k3fnAopi6ppXRXeThz21MAPkBNsms8D8fg5OT6U3yiRwJQEBoRiXklBpbnNgTuDBslyTR8lghAHBZZehA7Z/5BngC9PQtFg04FQF1hsvKPsk/crOxBxadP9Y0Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mypdh8jA; arc=none smtp.client-ip=209.85.128.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-43117917eb9so9779615e9.0
+        for <bpf@vger.kernel.org>; Thu, 10 Oct 2024 13:53:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1728593621; x=1729198421; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CzmrApdpdkoe9FrT9uikSmfqtZzZllaO5/Kq0hq9nYU=;
+        b=mypdh8jAuY54QsLlJ9dvJdMUHoj4QcuXUBlV+XsMhOPealDUrijdK0kJt1/Ic4c2MS
+         8Gzt9yiYwyugT1f20w7pMYls5BRARJphYsZI6LmYkeLS69X7I3Fih6aORKj9ZISvN5gm
+         a+Ae2G7Ckgw6Tyx6n340ZgZ9h9lH1JVdGIPo5pjKQvWP8AHekBtkEi5dg1pzkRuUcq0s
+         fo28iJYE7CRdMV9tPkmF4vNX74vmtgSIVlJk6TqXKhpwVs6YnDivRC71RVH1Vl3ysxwR
+         JahJEawXC5o3MdZ0F9o31Udm7EWjaR18joLDDh4AGIkQs62aLIXpxaCGRaRmiux5Uons
+         e7Ow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1728593621; x=1729198421;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CzmrApdpdkoe9FrT9uikSmfqtZzZllaO5/Kq0hq9nYU=;
+        b=UTa+DcDpvylMyBPx7SxSDgUYScBMEjQ1o5akwybbf8tUuSesgf3BdgAz67mci/Qvl2
+         wQ2ryriePIoNBld9fxiIrhXy03sZSCfH0HaIX+P93OlRXaMrGMr6LfoqcPEUy2JfnvMQ
+         +bgVfwMBVZFeXBudqHb82qQ8BIhkI81BdZBglFBZU7urqXL6rOHmHv2qPEPl+/LoRi89
+         DoQDGidV1SkZo83jPciJldoIiGwhQZfR1Dzz2igGD6CLChZstX/wk+6jp2nm2V3GPLBA
+         uR5PPn82Yl3mvU7b5UjT4+tnHqzKoDv9dpugDcYTVJYa9IEYog5SWF/QXN7fHMEvZh4F
+         fOmQ==
+X-Gm-Message-State: AOJu0Yz3t3Urs2XhC3lX6odsICy5p485yM6D7RU2H9IuKaWeGDHk72PJ
+	iqBJ/4bCVpR1ZHxx1+zhTx1wNIl+oq4BTLxoxFHgBa0EgSQZcS9E22OwsZp31dl7K2/OlZ9DJlY
+	XJZqu3KaiIfroW3IrC0ZWE/LrPoBU3Ep4
+X-Google-Smtp-Source: AGHT+IHuMp7LSLCSwDhF5o5FEZ27rgiMYCCUhezw5fPHfHYztvp5z4+LdlzkC3GYrOvL+b4IPHKCi7/1c1k1uIxGBzE=
+X-Received: by 2002:a05:600c:45cd:b0:42c:b1a4:c3ef with SMTP id
+ 5b1f17b1804b1-4311df4205cmr1678215e9.33.1728593620764; Thu, 10 Oct 2024
+ 13:53:40 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v2] bpf: update docs on
- CONFIG_FUNCTION_ERROR_INJECTION
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <172859343001.2169193.17310912791191645823.git-patchwork-notify@kernel.org>
-Date: Thu, 10 Oct 2024 20:50:30 +0000
-References: <20241010193301.995909-1-martin.kelly@crowdstrike.com>
-In-Reply-To: <20241010193301.995909-1-martin.kelly@crowdstrike.com>
-To: Martin Kelly <martin.kelly@crowdstrike.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
- andrii@kernel.org, martin.lau@linux.dev
+References: <20241010175552.1895980-1-yonghong.song@linux.dev> <20241010175638.1899406-1-yonghong.song@linux.dev>
+In-Reply-To: <20241010175638.1899406-1-yonghong.song@linux.dev>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 10 Oct 2024 13:53:28 -0700
+Message-ID: <CAADnVQJmEkQvAhPs3q1oYGpdO48n2JE3MnMxXgYCMoUup=UOBg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 09/10] bpf, x86: Jit support for nested bpf_prog_call
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>, Tejun Heo <tj@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello:
+On Thu, Oct 10, 2024 at 10:59=E2=80=AFAM Yonghong Song <yonghong.song@linux=
+.dev> wrote:
+>
+>  static void emit_priv_frame_ptr(u8 **pprog, struct bpf_prog *bpf_prog,
+> -                               enum bpf_priv_stack_mode priv_stack_mode)
+> +                               enum bpf_priv_stack_mode priv_stack_mode,
+> +                               bool is_subprog, u8 *image, u8 *temp)
+>  {
+>         u32 orig_stack_depth =3D round_up(bpf_prog->aux->stack_depth, 8);
+>         u8 *prog =3D *pprog;
+>
+> -       if (priv_stack_mode =3D=3D PRIV_STACK_ROOT_PROG)
+> -               emit_root_priv_frame_ptr(&prog, bpf_prog, orig_stack_dept=
+h);
+> -       else if (priv_stack_mode =3D=3D PRIV_STACK_SUB_PROG && orig_stack=
+_depth)
+> +       if (priv_stack_mode =3D=3D PRIV_STACK_ROOT_PROG) {
+> +               int offs;
+> +               u8 *func;
+> +
+> +               if (!bpf_prog->aux->has_prog_call) {
+> +                       emit_root_priv_frame_ptr(&prog, bpf_prog, orig_st=
+ack_depth);
+> +               } else {
+> +                       EMIT1(0x57);            /* push rdi */
+> +                       if (is_subprog) {
+> +                               /* subprog may have up to 5 arguments */
+> +                               EMIT1(0x56);            /* push rsi */
+> +                               EMIT1(0x52);            /* push rdx */
+> +                               EMIT1(0x51);            /* push rcx */
+> +                               EMIT2(0x41, 0x50);      /* push r8 */
+> +                       }
+> +                       emit_mov_imm64(&prog, BPF_REG_1, (long) bpf_prog =
+>> 32,
+> +                                      (u32) (long) bpf_prog);
+> +                       func =3D (u8 *)__bpf_prog_enter_recur_limited;
+> +                       offs =3D prog - temp;
+> +                       offs +=3D x86_call_depth_emit_accounting(&prog, f=
+unc, image + offs);
+> +                       emit_call(&prog, func, image + offs);
+> +                       if (is_subprog) {
+> +                               EMIT2(0x41, 0x58);      /* pop r8 */
+> +                               EMIT1(0x59);            /* pop rcx */
+> +                               EMIT1(0x5a);            /* pop rdx */
+> +                               EMIT1(0x5e);            /* pop rsi */
+> +                       }
+> +                       EMIT1(0x5f);            /* pop rdi */
+> +
+> +                       EMIT4(0x48, 0x83, 0xf8, 0x0);   /* cmp rax,0x0 */
+> +                       EMIT2(X86_JNE, num_bytes_of_emit_return() + 1);
+> +
+> +                       /* return if stack recursion has been reached */
+> +                       EMIT1(0xC9);    /* leave */
+> +                       emit_return(&prog, image + (prog - temp));
+> +
+> +                       /* cnt -=3D 1 */
+> +                       emit_alu_helper_1(&prog, BPF_ALU64 | BPF_SUB | BP=
+F_K,
+> +                                         BPF_REG_0, 1);
+> +
+> +                       /* accum_stack_depth =3D cnt * subtree_stack_dept=
+h */
+> +                       emit_alu_helper_3(&prog, BPF_ALU64 | BPF_MUL | BP=
+F_K, BPF_REG_0,
+> +                                         bpf_prog->aux->subtree_stack_de=
+pth);
+> +
+> +                       emit_root_priv_frame_ptr(&prog, bpf_prog, orig_st=
+ack_depth);
+> +
+> +                       /* r9 +=3D accum_stack_depth */
+> +                       emit_alu_helper_2(&prog, BPF_ALU64 | BPF_ADD | BP=
+F_X, X86_REG_R9,
+> +                                         BPF_REG_0);
 
-This patch was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+That's way too much asm for logic that can stay in C.
 
-On Thu, 10 Oct 2024 12:33:01 -0700 you wrote:
-> The documentation says CONFIG_FUNCTION_ERROR_INJECTION is supported only
-> on x86. This was presumably true at the time of writing, but it's now
-> supported on many other architectures too. Drop this statement, since
-> it's not correct anymore and it fits better in other documentation
-> anyway.
-> 
-> Signed-off-by: Martin Kelly <martin.kelly@crowdstrike.com>
-> 
-> [...]
+bpf_trampoline_enter() should select __bpf_prog_enter_recur_limited()
+for appropriate prog_type/attach_type/etc.
 
-Here is the summary with links:
-  - [bpf-next,v2] bpf: update docs on CONFIG_FUNCTION_ERROR_INJECTION
-    https://git.kernel.org/bpf/bpf-next/c/c6ca31981b54
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+JITs don't need to change.
 
