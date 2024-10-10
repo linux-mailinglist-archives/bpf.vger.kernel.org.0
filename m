@@ -1,151 +1,133 @@
-Return-Path: <bpf+bounces-41615-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41616-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00857999209
-	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 21:17:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48FA2999265
+	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 21:34:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 41157B25892
-	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 19:11:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AE85C1F22D1E
+	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 19:34:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B3D41E571F;
-	Thu, 10 Oct 2024 19:07:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9381A1CDFC2;
+	Thu, 10 Oct 2024 19:34:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aUoXlEW7"
+	dkim=pass (2048-bit key) header.d=crowdstrike.com header.i=@crowdstrike.com header.b="s6TfXYZY"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-00206402.pphosted.com (mx0a-00206402.pphosted.com [148.163.148.77])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6858519CD17
-	for <bpf@vger.kernel.org>; Thu, 10 Oct 2024 19:07:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F23B19884C
+	for <bpf@vger.kernel.org>; Thu, 10 Oct 2024 19:34:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.148.77
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728587231; cv=none; b=hFuufwqr5wMtdeWEBMhJ8C9eR/87PDOdC7RHL4T0C204+6eV2qAL3nZb9VCPCngmAcVDpv4HmdY1hmTYAhikl07ozUJ3LVUADjG4lSlVwktiwyA8kexeyJFLkeXY6LbJVI/IwkXdT3Z2i5HvIaNhtPciJ8qkErcCKVToeTDdSxQ=
+	t=1728588878; cv=none; b=ivRDOYjUv3oXofHFJCmIbtlTrQP3LNbHhekruV2ckh/8QPxnqkX+j+EjKZTFcbfcskbRc4CBQs1BdLrgAnA/tZ5W1SQFoU2YkW3raR9pq2YfYKv7EDdCsDU190GF59S4UAHX0sPb0v0z9wx+qO6UYsXJSGvoWl0n094VJvQZ86g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728587231; c=relaxed/simple;
-	bh=NXd7sQnZtEq94MLibAaleM3FV0K9PSYeMrQHcIq+4P8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=RnQJg/i8xzYMgvZP58SteqQyLfiPGZ4RnPbaI5VhQYkDc2EacG36uDLGxc0hx40ZBhvlwZkwHFNgPK20gwbP0dWNVNJWZQ1gpl8G3GUimaflapdxJdr9D2ISJM7RdomkbOgAArdIOwLMSjgzFYpeFunQppxazgabvj+LTC0yDz8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aUoXlEW7; arc=none smtp.client-ip=209.85.221.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-37d538fe5f2so153069f8f.2
-        for <bpf@vger.kernel.org>; Thu, 10 Oct 2024 12:07:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1728587228; x=1729192028; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dLpoabgzjH1mlBMsr4qvsZjUI/I8ORn0DwqeGcEpdB0=;
-        b=aUoXlEW78t1ffvCjLGufhruk3SyVuqA7mllPpVPKpuy3x4WAO1d2puPtr/Nzu0Fovd
-         uxxVidoy3fSQ8XQdsDdAXNiDwUmWjlhvD+6mtr1Ik6Y+yGTgXDVuvbxRXFKksc56q8X6
-         XDyTYi0+//IjLXXHULuXgVNbyq1Qy0P7O6QKkxAxSVIWq96IWaN1xYEhkM5iDgy9/VO7
-         S1oAa7pIjSU4gMv1ZVSd/7yzn+0JDqnyeqUJWEyR8DP64EUFkPK93HEl0AJpdTrBP88P
-         213zroJnntqZ/mm+lVqgab38cQhXUJ0gQjvzTuIsyl+KoiKLEjPJIMjKG6fVRd9JNYkY
-         5VHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728587228; x=1729192028;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dLpoabgzjH1mlBMsr4qvsZjUI/I8ORn0DwqeGcEpdB0=;
-        b=xDLjMUUt2OgTXHhZpPg+U4WAVvEsu071pCzsBMSny4tV8DZu29jQvPrbaf6aiNIfh2
-         /Cyfv7ypPIBRJhFAypPVYRyj/GXwaQzhYHT3Zupb8evXyzMw8O6c+Ua/qFUU2MXYWPsW
-         oDstXaDEaQyPQqzWqtJO6htQjanDN+Kln4syBWmVn3uAT/aQdO3DaTPxCG0c1E6Nu7Ro
-         0ZqTubXgBZA2kMQSeDqnx/DZdtDovNXOWfwlGOvgqE8Bk453i/uBT2Nq6pJuKIsLUotS
-         fngD7rMXjEho6lAcFBBW/pKb8VnFvS1Hgbt/UL4gtVbgFSc0MOLb6aeE0rpBHvfTvKFV
-         LkgQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXn7hN7TzCnF03+wzj1mX6i2GBPgr/auGlmgcWm6Uj5okDEe2AvvGm7PsFL7kSiT2hRWjI=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzQtRekUfYEn5BqujbIeD4mp2M7K+Ar4ArAtU3GNnrfumjn1ckY
-	U+0CqxAtYylUpBBI1qCyjL9zQm7Ku5PVpkhq3pSHPgPC6wMdUg9zRExyosBof2woOU1S31tf3Bu
-	SiMRkyk8046gZQU2vdC5voXOeniE=
-X-Google-Smtp-Source: AGHT+IFCQd5rrd0TBfC07Hfjh2e39mXXP/b568HMLyy7vAgvxDN/mzzTzDjHMlX1+10ACxES1bGs/Xm4IZZKxED2K2I=
-X-Received: by 2002:adf:a1c9:0:b0:37d:498a:a237 with SMTP id
- ffacd0b85a97d-37d5519880cmr109736f8f.8.1728587227488; Thu, 10 Oct 2024
- 12:07:07 -0700 (PDT)
+	s=arc-20240116; t=1728588878; c=relaxed/simple;
+	bh=byVggxhtN22khWiyyHlABiQ0Cu5RRkqHhD8yOo+gJc4=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=iDVhz7a3otGrLb+83fvKQULsQiCaZV+uTETfDInZsvC/yCDd2KIxTm4t0rg+V+5bf64pzcoZ0bGMeaRkZFAZGzDNET+kFp1h5w2dfJ7pWrYxLRNZD8PHjv0tpY/vxn5K+ExVrGy0+wXlUd1qB3tpJuHhDAs01W4dPfMQfzhZjWQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=crowdstrike.com; spf=pass smtp.mailfrom=crowdstrike.com; dkim=pass (2048-bit key) header.d=crowdstrike.com header.i=@crowdstrike.com header.b=s6TfXYZY; arc=none smtp.client-ip=148.163.148.77
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=crowdstrike.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crowdstrike.com
+Received: from pps.filterd (m0354652.ppops.net [127.0.0.1])
+	by mx0a-00206402.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 49AI2SRn001423;
+	Thu, 10 Oct 2024 19:34:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crowdstrike.com;
+	 h=cc:content-transfer-encoding:content-type:date:from
+	:message-id:mime-version:subject:to; s=default; bh=wK0dMIP5N6pgu
+	bhjQZnFlMr83Xs/Zf5+YD35kuop3eI=; b=s6TfXYZY/go8+V/YU9KFrdpGRVA3Q
+	B1cCnHRc8Z1gtDEtbmcQ6IlYoSmXelCgytIRTjF7zTJ3PuKX2TkpFbYlFKwoWSw2
+	YHfXjltz8vOEYV+Jy3Ottw0Z//OCsHWcVvUYjUeyeYKhgwLdP/UXOV7vUBfc6PXD
+	fmQips+Zi2WgLWFzvoUceWYALx0Lh/8TIQzgsOId7AYFjZLTnEa1KPB5T/7gOKn3
+	KdjhYHbcrUudPlEIIIPEsC4Ku9r/NPDHjV9ppZ9tB9S/AYJBlJspNV7FrXqBD5Nk
+	BJOUL1MJBTgC6f80wu4b/ZwBA1bDKhij+26eiYbKTClixMDoHkbWSDaHQ==
+Received: from 04wpexch06.crowdstrike.sys (dragosx.crowdstrike.com [208.42.231.60] (may be forged))
+	by mx0a-00206402.pphosted.com (PPS) with ESMTPS id 426agesuqh-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 10 Oct 2024 19:34:01 +0000 (GMT)
+Received: from LL-J21Z134.crowdstrike.sys (10.100.11.122) by
+ 04wpexch06.crowdstrike.sys (10.100.11.99) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.9; Thu, 10 Oct 2024 19:33:59 +0000
+From: Martin Kelly <martin.kelly@crowdstrike.com>
+To: <bpf@vger.kernel.org>
+CC: Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann
+	<daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau
+	<martin.lau@linux.dev>
+Subject: [PATCH bpf-next v2] bpf: update docs on CONFIG_FUNCTION_ERROR_INJECTION
+Date: Thu, 10 Oct 2024 12:33:01 -0700
+Message-ID: <20241010193301.995909-1-martin.kelly@crowdstrike.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241010184556.985660-1-martin.kelly@crowdstrike.com>
- <CAADnVQ+=eb7V6EYYZXghOCqYHcuP4=uNL2DtVghK-7WOHJa0Jw@mail.gmail.com> <e4207aaa1cfbb00b3cb73d2a77c04623ca34a40b.camel@crowdstrike.com>
-In-Reply-To: <e4207aaa1cfbb00b3cb73d2a77c04623ca34a40b.camel@crowdstrike.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 10 Oct 2024 12:06:56 -0700
-Message-ID: <CAADnVQ+CkMuDx6oheKABR7esjeo-A=szAOLM-0MbaJnfTsqZ5A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: update docs on CONFIG_FUNCTION_ERROR_INJECTION
-To: Martin Kelly <martin.kelly@crowdstrike.com>
-Cc: "daniel@iogearbox.net" <daniel@iogearbox.net>, "martin.lau@linux.dev" <martin.lau@linux.dev>, 
-	"ast@kernel.org" <ast@kernel.org>, "andrii@kernel.org" <andrii@kernel.org>, 
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: 04wpexch13.crowdstrike.sys (10.100.11.103) To
+ 04wpexch06.crowdstrike.sys (10.100.11.99)
+X-Disclaimer: USA
+X-Authority-Analysis: v=2.4 cv=ObjKDQTY c=1 sm=1 tr=0 ts=67082c29 cx=c_pps a=1d8vc5iZWYKGYgMGCdbIRA==:117 a=1d8vc5iZWYKGYgMGCdbIRA==:17 a=EjBHVkixTFsA:10 a=DAUX931o1VcA:10 a=pl6vuDidAAAA:8 a=J7MqmPBVAoDNrPO7RfIA:9
+X-Proofpoint-ORIG-GUID: UvuOeWI2hSTThHxmVDJfrRGAtuMSBnFG
+X-Proofpoint-GUID: UvuOeWI2hSTThHxmVDJfrRGAtuMSBnFG
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
+ definitions=2024-09-06_09,2024-09-06_01,2024-09-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 malwarescore=0
+ bulkscore=0 priorityscore=1501 adultscore=0 suspectscore=0 mlxlogscore=711
+ clxscore=1015 mlxscore=0 lowpriorityscore=0 phishscore=0 impostorscore=0
+ classifier=spam authscore=0 adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2409260000 definitions=main-2410100128
 
-On Thu, Oct 10, 2024 at 11:57=E2=80=AFAM Martin Kelly
-<martin.kelly@crowdstrike.com> wrote:
->
-> On Thu, 2024-10-10 at 11:54 -0700, Alexei Starovoitov wrote:
-> > On Thu, Oct 10, 2024 at 11:47=E2=80=AFAM Martin Kelly
-> > <martin.kelly@crowdstrike.com> wrote:
-> > >
-> > > The documentation says CONFIG_FUNCTION_ERROR_INJECTION is supported
-> > > only
-> > > on x86. This was presumably true at the time of writing, but it's
-> > > now
-> > > supported on many other architectures too, so drop the part of the
-> > > statement mentioning x86.
-> > >
-> > > Signed-off-by: Martin Kelly <martin.kelly@crowdstrike.com>
-> > > ---
-> > >  include/uapi/linux/bpf.h       | 3 +--
-> > >  tools/include/uapi/linux/bpf.h | 3 +--
-> > >  2 files changed, 2 insertions(+), 4 deletions(-)
-> > >
-> > > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > > index 8ab4d8184b9d..a2ddfc8c8ed9 100644
-> > > --- a/include/uapi/linux/bpf.h
-> > > +++ b/include/uapi/linux/bpf.h
-> > > @@ -3105,8 +3105,7 @@ union bpf_attr {
-> > >   *             **ALLOW_ERROR_INJECTION** in the kernel code.
-> > >   *
-> > >   *             Also, the helper is only available for the
-> > > architectures having
-> > > - *             the CONFIG_FUNCTION_ERROR_INJECTION option. As of
-> > > this writing,
-> > > - *             x86 architecture is the only one to support this
-> > > feature.
-> > > + *             the CONFIG_FUNCTION_ERROR_INJECTION option.
-> >
-> > Something like this is good to add to
-> > Documentation/fault-injection/fault-injection.rst
-> > and may be a link to it somewhere in Documentation/bpf/.
-> >
-> > But uapi/bpf.h is not such place.
-> >
-> > pw-bot: cr
->
-> Would you prefer to just remove the sentence altogether? Currently,
-> this statement is already in the headers, so I think it's best to
-> either correct it or remove it, but not leave it the way it is (which
-> is not very accurate).
+The documentation says CONFIG_FUNCTION_ERROR_INJECTION is supported only
+on x86. This was presumably true at the time of writing, but it's now
+supported on many other architectures too. Drop this statement, since
+it's not correct anymore and it fits better in other documentation
+anyway.
 
-I say let's remove the whole paragraph then.
+Signed-off-by: Martin Kelly <martin.kelly@crowdstrike.com>
+---
+ include/uapi/linux/bpf.h       | 4 ----
+ tools/include/uapi/linux/bpf.h | 4 ----
+ 2 files changed, 8 deletions(-)
 
-.h already says
-"It is only available if the kernel was compiled
- with the **CONFIG_BPF_KPROBE_OVERRIDE** configuration
- option,"
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 8ab4d8184b9d..df664aaeb3f4 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -3103,10 +3103,6 @@ union bpf_attr {
+  * 		with the **CONFIG_BPF_KPROBE_OVERRIDE** configuration
+  * 		option, and in this case it only works on functions tagged with
+  * 		**ALLOW_ERROR_INJECTION** in the kernel code.
+- *
+- * 		Also, the helper is only available for the architectures having
+- * 		the CONFIG_FUNCTION_ERROR_INJECTION option. As of this writing,
+- * 		x86 architecture is the only one to support this feature.
+  * 	Return
+  * 		0
+  *
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 7610883c8191..de9c18bfcb00 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -3103,10 +3103,6 @@ union bpf_attr {
+  * 		with the **CONFIG_BPF_KPROBE_OVERRIDE** configuration
+  * 		option, and in this case it only works on functions tagged with
+  * 		**ALLOW_ERROR_INJECTION** in the kernel code.
+- *
+- * 		Also, the helper is only available for the architectures having
+- * 		the CONFIG_FUNCTION_ERROR_INJECTION option. As of this writing,
+- * 		x86 architecture is the only one to support this feature.
+  * 	Return
+  * 		0
+  *
+-- 
+2.34.1
 
-which in turn depends on:
-
-config BPF_KPROBE_OVERRIDE
-        bool "Enable BPF programs to override a kprobed function"
-        depends on BPF_EVENTS
-        depends on FUNCTION_ERROR_INJECTION
-
-No need to duplicate kconfig dependencies as a doc in .h
 
