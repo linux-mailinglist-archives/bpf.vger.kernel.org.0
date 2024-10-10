@@ -1,128 +1,147 @@
-Return-Path: <bpf+bounces-41550-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41551-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64E84998178
-	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 11:05:14 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E62C99821D
+	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 11:27:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0E4851F20F44
-	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 09:05:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 706ECB22462
+	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 09:20:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 846431C0DE1;
-	Thu, 10 Oct 2024 09:00:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB9C41A0BDC;
+	Thu, 10 Oct 2024 09:18:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gklgb7b3"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EYPEB+n0"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
+Received: from mail-yb1-f195.google.com (mail-yb1-f195.google.com [209.85.219.195])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7684A1BDABE;
-	Thu, 10 Oct 2024 09:00:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68A641BF336;
+	Thu, 10 Oct 2024 09:18:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728550836; cv=none; b=Fvp4KckjD+qyWidsVp5VzgxsPCMGAWJ6XnoBWEIAhpedLfJ8MZX2805f0UTibZaA2vuo9aYhqUzc+rTAfSa8ajgy+sKtgFgO2pEvZCNqDc7Ava1JaPpFU5O1lRsykV3Z7nyBCi9/soPyvQGp50SMCePQ3dPhy396Fim328WPoe4=
+	t=1728551887; cv=none; b=N0+O+TUf2/dm+iQkougjftdB7cSuOKDRXZbn8XceUjo97BAH/2Mek2ToyQw7zedwtubjBTAeFkMWxxF5HhlZ2EbzN7+MYzPkrWrbVNr9Kb9euEmL0qYaw5QPcdnHDO9RiRVi9DEyz7OXQnLyuLaGBOI2DD+6qSNLnP9eTFSrdeo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728550836; c=relaxed/simple;
-	bh=Fia6irOv3VDqu6NKzoWzAVMngAe0tifmHNg6sodLiE4=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TZSv08CuMgSjYb6xsm441lBpsXxNZwhcqdusuRP2bLgj9mZu/KWfFSDfg4rrWLA/lNdM2HY41gpOyRTFM2r7g4Cd+9TN56R6kFucCfRfN+9p82o73RSPl0u76S0z7HHpbFZ09gpKa+4Nqtc0LHxEVdyx9pV7iwhc4XpH/p/n1nM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gklgb7b3; arc=none smtp.client-ip=209.85.218.54
+	s=arc-20240116; t=1728551887; c=relaxed/simple;
+	bh=rUHHk8rgJHWQvI6g2briKgZOqZvbsnK5PdnEPkVLbfA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=mms4TWYDe6dZlGVV6NGpYXoekV9UYo4qNZQb143s+cHdQ+2+Fj5cTdmdi4Ew01FA8i8trVV4q7mpgAepYgCX2lPjSfU8GWwGy7zD6ud0HqffMSpL6YaRSduvnfiokCaZWmpdHSnzUozN3yYNzaxLY6CYswa2v8/wDVLJ1tjkR9U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EYPEB+n0; arc=none smtp.client-ip=209.85.219.195
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a9950d27234so98445766b.1;
-        Thu, 10 Oct 2024 02:00:34 -0700 (PDT)
+Received: by mail-yb1-f195.google.com with SMTP id 3f1490d57ef6-e25cc9e94eeso565293276.3;
+        Thu, 10 Oct 2024 02:18:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1728550833; x=1729155633; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=LR1M84LN52X4U6RwSoUyMMdQCDpU64S8085SG37H4l0=;
-        b=gklgb7b3bIW9ZcLdzlxtFhKfkoff361CW8EqZifsla6BwyuwMgUUqrJY5JmP/bmdts
-         9Bs0OZLe3NVF1bkU6HDDeq4mFt2pnTOSijDFKtLrIOy51HogKzHNM8u7r58h9JvdqPsp
-         IdxfuqFPzmxUiRrXNlkFiyTdPbgFPXfj40PtYMlh6jX/nevOU8C/w1otkcRRx26Cb3B8
-         tvtQ3I+ul2v7UQlkleFK3qu0jXgVXR1FVPpUK8uj16xz5u8+LzCMgJ3RU9D/dZvmOqE8
-         mVigClfpZSjbf5QdoGFfVkX6SklUt6KQ63jLqEI8N233CO7cA8y97yZ4oBisjrt/mXB9
-         o9Zw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728550833; x=1729155633;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1728551884; x=1729156684; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=LR1M84LN52X4U6RwSoUyMMdQCDpU64S8085SG37H4l0=;
-        b=TALk1RHEJX/Mf1oSUMHKfEt8hmgkYuqaA6fmRbImkekzFVYjOek1qbotdS5LHhYoUg
-         l5811RDrKSYP6+a9AAUi9wq2oGu0Q0y+iVEykMx4/9dGwDNzIkzPaAqUy1B8favZmGIB
-         QcNmg3Kv1rFC6SWeh1pe6DNjqUMD5qiYbjfwqU9SdLrCPZdU8nFxqRfT9LPloh0sCO39
-         DwtycCQjxDDqPYE70jMAl3Eciduz2sENOS/+F83xpsKh7xllB+m3rLvm5F+w8hwHYGNg
-         Ugm6iA2Xq+97QCb6wVgrB6JpBRBBRytRm1XsDzj5aYEgsJIiHmJ3dvCHUsWKK7dsZlsO
-         l7fQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWBCGoNCNH4MMzNA1i2qXRb2Ib4F18R+fDbqMITKTwXj6YUw+WxF6C0zHBJNp4qZq2VAbynrlcuVhsPhXPT@vger.kernel.org, AJvYcCXX5aEzE8eip2gE/ffaMfU3Z5/Sn+W1Qfpch7SG6JQ8/wCxoma8xOtNyuzYZ7LvwQ/PhFU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyE7CG6Om0F2E4K501ONagNxgiGYcuj0UoTfVYnuT47eTP6HEce
-	VwHgxV64xJsadA+3TYHyzmGtd5AMk3xGI1B6rRpvH2l8OCfGcHQbXTmRgnQ1
-X-Google-Smtp-Source: AGHT+IF62mHBJEn1yNrnGwuST05IG0cpzQ2jrDUA/Rm0x0nY9OWDv9BbdP/KHA+6UgUPaFphRnkm2g==
-X-Received: by 2002:a17:907:7da0:b0:a86:a481:248c with SMTP id a640c23a62f3a-a998d197379mr413059766b.19.1728550832509;
-        Thu, 10 Oct 2024 02:00:32 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a99a7f266e8sm58844466b.63.2024.10.10.02.00.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Oct 2024 02:00:32 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Thu, 10 Oct 2024 11:00:30 +0200
-To: Josh Poimboeuf <jpoimboe@kernel.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>, Jiri Olsa <olsajiri@gmail.com>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Juri Lelli <juri.lelli@redhat.com>, bpf <bpf@vger.kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	"Jose E. Marchesi" <jose.marchesi@oracle.com>,
-	Peter Zijlstra <peterz@infradead.org>
-Subject: Re: NULL pointer deref when running BPF monitor program (6.11.0-rc1)
-Message-ID: <ZweXrhopOmEb9rMx@krava>
-References: <ZsMwyO1Tv6BsOyc-@krava>
- <20240819113747.31d1ae79@gandalf.local.home>
- <ZsRtOzhicxAhkmoN@krava>
- <20240820110507.2ba3d541@gandalf.local.home>
- <Zv11JnaQIlV8BCnB@krava>
- <Zwbqhkd2Hneftw5F@krava>
- <20241010003331.gsanhvqyl5g2kgiq@treble.attlocal.net>
- <20241009205647.1be1d489@gandalf.local.home>
- <20241009205750.43be92ad@gandalf.local.home>
- <20241010031727.zizrnubjrb25w4ex@treble.attlocal.net>
+        bh=vgEoSDXOx4rxS6fo7C9XyhinmE5c4V0uc58RByhFdoc=;
+        b=EYPEB+n0+loOPbd0UwdgYJukPTa0LFbZLn6aVKTeleASBxwSkUdS9Pg7ngrk0v79hR
+         7dRkuMp1P6HezlcRXPYNB5p3SRzNepB6sbQB/syHuPxUGqyM+GnkBH2DwBShs5Y++gh/
+         vH4L8Ewf97SH1qzniu7xYc7Ue2JPIT5Wj0w3wj5dhd60Zqu41fgzYRYrtXknhvNwqLe7
+         K8Mrg/DU/mMIp2y0Ft/UF5H1O02Uspk7sA1stokp2DCK7DvSVbQDZDoADDTkCdRfsdxV
+         oT30khUH5dRNUDzfBNTcBB+xkB0WOAyaXc+w1nwc7zUfPu0B36ziZHDwDLPx10qrHyTl
+         Keuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1728551884; x=1729156684;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vgEoSDXOx4rxS6fo7C9XyhinmE5c4V0uc58RByhFdoc=;
+        b=dswf4zLfgX1dXz3Bjzy7yEv5X6pn9v/BKLOQxzOIflYmKCHA2ogKZfKtioS7IyNrGt
+         3CX5Qz5G2lPTtnKuaqWtTzEvMkzGT+H+Aq7NH3sB2tx39ODbSgSv0XK/FMtKh4Eo26Rl
+         xHmqovdn0QmstOfiAMcyfETM/svolSFfaRk/8KwOaLNffFp7m+2DvovY2iTtfn8pJE2D
+         VeW8+sEuC2M2dux1tSrCkEgiaWfaImb/Kw4BuK7TkXM/ZYDj7jWq3VeGPFBYjof8OvLP
+         Hi6X7zgzHdA0SrvEWkXgiXd/3aYcUrun8Wvr0Ftgo+rzKmj9Oip0Vrq/0wDlkgDheo62
+         Cd0w==
+X-Forwarded-Encrypted: i=1; AJvYcCUAgyJBcJoE6HUenWfAT9tNKdCV8hM9hhzFkONSkjZMIEIEqmliOt6Gi8TgFSLQmfRpU94=@vger.kernel.org, AJvYcCVlvY7omyqTKgOXhg9vKFU5oZGSvkxNisBnLbmVbFEaF+tJTl9aQbZ91+NfLvVkHttnqnupI7j3@vger.kernel.org, AJvYcCWLKm94mfm4MMsU+GnRNzFEjvfwRfAOl/3Hjp/sGa0ghJ616yRCP+WQAbzRPqE8ildy7cqzMqgERZc1z273@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywm6+mAMpny1Upx8SKN9VW1eLtgIREmzQQgC1jroLFVSWDmC6AA
+	zkYj0fV5UjSvJW2Lq83H/CL3VARSDlpk9xZpsrFkdgBxcAUNPgNniFcMbtgUvn69nUyLGUPFgrD
+	19dvAoLZ6Q/vT8A9/CqisjBkOsWU=
+X-Google-Smtp-Source: AGHT+IEs7eWnfTZKB14a5GrK0aqxuXs9/I7G3sqBW7ksOuF23qKYuOoSI9ITP1aD/hko3sqoVtCcuoKDNhAAzj2w4IM=
+X-Received: by 2002:a05:6902:240d:b0:e28:f558:ae4c with SMTP id
+ 3f1490d57ef6-e28fe32dddcmr4949218276.1.1728551884329; Thu, 10 Oct 2024
+ 02:18:04 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241010031727.zizrnubjrb25w4ex@treble.attlocal.net>
+References: <20241007074702.249543-1-dongml2@chinatelecom.cn>
+ <20241007074702.249543-2-dongml2@chinatelecom.cn> <7caf130c-56f0-4f78-a006-5323e237cef1@redhat.com>
+In-Reply-To: <7caf130c-56f0-4f78-a006-5323e237cef1@redhat.com>
+From: Menglong Dong <menglong8.dong@gmail.com>
+Date: Thu, 10 Oct 2024 17:18:45 +0800
+Message-ID: <CADxym3baw2nLvANd-D5D2kCNRRoDmdgexBeGmD-uCcYYqAf=EQ@mail.gmail.com>
+Subject: Re: [PATCH net-next v2 1/7] net: ip: make fib_validate_source()
+ return drop reason
+To: Paolo Abeni <pabeni@redhat.com>
+Cc: edumazet@google.com, kuba@kernel.org, davem@davemloft.net, 
+	dsahern@kernel.org, steffen.klassert@secunet.com, herbert@gondor.apana.org.au, 
+	dongml2@chinatelecom.cn, bigeasy@linutronix.de, toke@redhat.com, 
+	idosch@nvidia.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Oct 09, 2024 at 08:17:27PM -0700, Josh Poimboeuf wrote:
-> On Wed, Oct 09, 2024 at 08:57:50PM -0400, Steven Rostedt wrote:
-> > On Wed, 9 Oct 2024 20:56:47 -0400
-> > Steven Rostedt <rostedt@goodmis.org> wrote:
-> > 
-> > > I was thinking if something like objtool (could be something else that can
-> > > read the executable code) and know of where functions are. It could just
-> > > see if anything tests rdi, rsi, rdx, rcx, r8 or r9 (or their 32 bit
-> > > alternatives) for NULL before using or setting it.
-> > > 
-> > > If it does, then we know that one of the arguments could possibly be NULL.
-> > 
-> > Oh, and it only needs to look at functions that are named:
-> > 
-> >   trace_event_raw_event_*()
-> 
-> Unfortunately it's not that simple, the args could be moved around to
-> other registers.  And objtool doesn't have an emulator.
-> 
-> Also it's not clear how that would deal with >6 args, or IS_ERR() as
-> Jirka pointed out upthread.
+On Thu, Oct 10, 2024 at 4:25=E2=80=AFPM Paolo Abeni <pabeni@redhat.com> wro=
+te:
+>
+>
+>
+> On 10/7/24 09:46, Menglong Dong wrote:
+> > In this commit, we make fib_validate_source/__fib_validate_source retur=
+n
+> > -reason instead of errno on error. As the return value of them can be
+> > -errno, 0, and 1, we can't make it return enum skb_drop_reason directly=
+.
+> >
+> > In the origin logic, if __fib_validate_source() return -EXDEV,
+> > LINUX_MIB_IPRPFILTER will be counted. And now, we need to adjust it by
+> > checking "reason =3D=3D SKB_DROP_REASON_IP_RPFILTER". However, this wil=
+l take
+> > effect only after the patch "net: ip: make ip_route_input_noref() retur=
+n
+> > drop reasons", as we can't pass the drop reasons from
+> > fib_validate_source() to ip_rcv_finish_core() in this patch.
+> >
+> > We set the errno to -EINVAL when fib_validate_source() is called and th=
+e
+> > validation fails, as the errno can be checked in the caller and now its
+> > value is -reason, which can lead misunderstand.
+> >
+> > Following new drop reasons are added in this patch:
+> >
+> >    SKB_DROP_REASON_IP_LOCAL_SOURCE
+> >    SKB_DROP_REASON_IP_INVALID_SOURCE
+> >
+> > Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
+>
+> Looking at the next patches, I'm under the impression that the overall
+> code will be simpler if you let __fib_validate_source() return directly
+> a drop reason, and fib_validate_source(), too. Hard to be sure without
+> actually do the attempt... did you try such patch by any chance?
+>
 
-another complication might be that the code in tracepoint's fast assign
-can potentially call global function (?), that could do the argument NULL
-check and we won't have its code at objtool invocation time
+I analysed the usages of fib_validate_source() before. The
+return value of fib_validate_source() can be -errno, "0", and "1".
+And the value "1" can be used by the caller, such as
+__mkroute_input(). Making it return drop reasons can't cover this
+case.
 
-jirka
+It seems that __mkroute_input() is the only case that uses the
+positive returning value of fib_validate_source(). Let me think
+about it more in this case.
+
+Thanks!
+Menglong Dong
+
+> Thanks!
+>
+> Paolo
+>
 
