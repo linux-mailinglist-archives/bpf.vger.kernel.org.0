@@ -1,49 +1,49 @@
-Return-Path: <bpf+bounces-41519-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41520-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C059C997A2C
-	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 03:30:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B0E5997A2D
+	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 03:30:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3EF05B22B1F
-	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 01:30:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B97E282FD8
+	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 01:30:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EABA12D052;
-	Thu, 10 Oct 2024 01:30:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C9023E479;
+	Thu, 10 Oct 2024 01:30:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Hua9PJVt"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="swjW/1WO"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D4C34C6C;
-	Thu, 10 Oct 2024 01:30:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6221BE6F;
+	Thu, 10 Oct 2024 01:30:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728523826; cv=none; b=QEbYafIif94y1G629WusFwDZZ2fcfN5CtqLGMtiE8NjZCVARb5Lbyvql9HGi12CnDHZ49HV58rzR8XUgJmDFJQZbYERdonCftrSECAsLr8XNbGhLnmqzOcs2r/hxYqBiA8PDdP5WNLq5WlgQ1GMJNHIXHCUapWluNemrfefBP2w=
+	t=1728523828; cv=none; b=EPYQ+nVEfPUzd9KHHpcIu715TFMCVg/YVaTvzNTj20W67V9IXhgQAh8jjXEFHMg218Xm0VPSyg+sChCS/LocIU1JQtRwlj+4JDb0bSkL67KKT6zCRxMnYUe1bJjw7jBXZEdWDxADALM+1/wcwbMQykNhXFSPkMlLNZ11IBuW940=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728523826; c=relaxed/simple;
-	bh=QLp0IT+USLybtIEn9rosf67rYcbk9sKmf9oRcZt4NGA=;
+	s=arc-20240116; t=1728523828; c=relaxed/simple;
+	bh=iHaOHmLgzUn7hvUZtHAxMmHmT0EQ1LLdTnaX3AtArIc=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=tcyYL1YVbURDRgh+6UagxPVNribt04jIti+aq5CEPWV8ljigff9CSiRqygdqjnRPep0OMUzd8VNcZdwsHukKZ8zYxwgr4S5y/fB7pwjvJOek73byzh7tUWuw9H4S1zrwe2WsqwVsbTRdhi7PsJdb0gW98YBZIuwWRCzcMwHEam4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Hua9PJVt; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2EE64C4CECE;
-	Thu, 10 Oct 2024 01:30:25 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=sC9RMiC1x4TfKdSFfk8prg9VxfgFBDOf9OIqGSD1pmOQmy54JTU4FsrFtpeGYUm1aR8FiWjANGwE01WjwOwroXxrmkoqddrZBmgkQkZcYe94aetWLXzg0mVF0ufu+iCVWQiinetumR0D0hGJ/uEsKYqZSQb+Z47CpjffZLdAL0c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=swjW/1WO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33471C4CEC3;
+	Thu, 10 Oct 2024 01:30:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728523825;
-	bh=QLp0IT+USLybtIEn9rosf67rYcbk9sKmf9oRcZt4NGA=;
+	s=k20201202; t=1728523828;
+	bh=iHaOHmLgzUn7hvUZtHAxMmHmT0EQ1LLdTnaX3AtArIc=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=Hua9PJVtuJX/DNJFfBdnSZv+Hsf74Z0Fo42dgBwfETPvhiV4vfjDSVfvftOF+oJ2S
-	 13BEHeb9EDTrHDledEcub+1YY3oMQeuTGC81PvijgO5KJt/cKMQyarT30cjTw3M/TZ
-	 nLIXsrGNVhfamLgC6GMuSYUrZofz40J9WDXub7IGn4yXOH8nJDzKpxlb2buqAT0lf0
-	 a44m/jxo0NkASm0flaeptTL2lDXuDli05k5iohdJ7g/71WOLwmOIsikbdKzkQDeZSS
-	 mnRPC6IAk0OMH4AdNxZNuJi0HfUbEeXldn5m0B5SiQkvhQWr1jJCvuw4WcdgQBUmqd
-	 tTRZ8Bc4p9utw==
+	b=swjW/1WO59DEt5TwBvK9FmEX+UrtvJF8VoYMjh5K5HLNau/S2MKTmrWn6Pv+22HXJ
+	 Tn7LElQO7M6Fuw/vB/B35FGYbrccWxKcB6eaBL5WyH9/XOGTh32SyU1COR83mmzanV
+	 Fq0NUhtOYW3CrsWzhW8M3ioelYlPTsVN85+X4wAdq/Wd/5sx61+gFnKkjb8KG9cOsY
+	 K9QB6NIb9RItYTnIjhOuVHwuONwivN3NMuhiDn3ogli0+uBsY44OGwrLK6PQ0ZSjL9
+	 /Xr/ZZygPe3XztC8XexCUzrwCzZ1hh6Ah4dOwXXYW8x3HLIE1IP3RhMLF27BxDCKJa
+	 Cl4ikgSROJmrQ==
 Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id AE3473806644;
-	Thu, 10 Oct 2024 01:30:30 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id ADC513806644;
+	Thu, 10 Oct 2024 01:30:33 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -52,41 +52,36 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf] riscv,
- bpf: Fix possible infinite tailcall when CONFIG_CFI_CLANG is enabled
+Subject: Re: [PATCH] samples/bpf: Remove unused variables
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <172852382954.1532001.10566819180554959939.git-patchwork-notify@kernel.org>
-Date: Thu, 10 Oct 2024 01:30:29 +0000
-References: <20241008124544.171161-1-pulehui@huaweicloud.com>
-In-Reply-To: <20241008124544.171161-1-pulehui@huaweicloud.com>
-To: Pu Lehui <pulehui@huaweicloud.com>
-Cc: bpf@vger.kernel.org, linux-riscv@lists.infradead.org,
- netdev@vger.kernel.org, bjorn@kernel.org, puranjay@kernel.org,
- ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ <172852383248.1532001.6561409067944376157.git-patchwork-notify@kernel.org>
+Date: Thu, 10 Oct 2024 01:30:32 +0000
+References: <20241009082138.7971-1-zhujun2@cmss.chinamobile.com>
+In-Reply-To: <20241009082138.7971-1-zhujun2@cmss.chinamobile.com>
+To: Zhu Jun <zhujun2@cmss.chinamobile.com>
+Cc: martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
  yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, palmer@dabbelt.com,
- paul.walmsley@sifive.com, aou@eecs.berkeley.edu
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org, andrii@kernel.org, daniel@iogearbox.net,
+ ast@kernel.org
 
 Hello:
 
-This patch was applied to bpf/bpf.git (master)
+This patch was applied to bpf/bpf-next.git (master)
 by Alexei Starovoitov <ast@kernel.org>:
 
-On Tue,  8 Oct 2024 12:45:44 +0000 you wrote:
-> From: Pu Lehui <pulehui@huawei.com>
+On Wed,  9 Oct 2024 01:21:38 -0700 you wrote:
+> These variables are never referenced in the code, just remove them.
 > 
-> When CONFIG_CFI_CLANG is enabled, the number of prologue instructions
-> skipped by tailcall needs to include the kcfi instruction, otherwise the
-> TCC will be initialized every tailcall is called, which may result in
-> infinite tailcalls.
-> 
-> [...]
+> Signed-off-by: Zhu Jun <zhujun2@cmss.chinamobile.com>
+> ---
+>  samples/bpf/tc_l2_redirect_kern.c | 2 --
+>  1 file changed, 2 deletions(-)
 
 Here is the summary with links:
-  - [bpf] riscv, bpf: Fix possible infinite tailcall when CONFIG_CFI_CLANG is enabled
-    https://git.kernel.org/bpf/bpf/c/30a59cc79754
+  - samples/bpf: Remove unused variables
+    https://git.kernel.org/bpf/bpf-next/c/965fdf95a327
 
 You are awesome, thank you!
 -- 
