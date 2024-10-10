@@ -1,36 +1,36 @@
-Return-Path: <bpf+bounces-41603-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41602-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C83A998F02
-	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 19:57:04 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 21693998F22
+	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 20:00:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC7452868D0
-	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 17:57:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 530F3B242BC
+	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 17:57:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6AEB1CDA3C;
-	Thu, 10 Oct 2024 17:56:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FE951CBEA7;
+	Thu, 10 Oct 2024 17:56:34 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from 66-220-155-179.mail-mxout.facebook.com (66-220-155-179.mail-mxout.facebook.com [66.220.155.179])
+Received: from 66-220-155-178.mail-mxout.facebook.com (66-220-155-178.mail-mxout.facebook.com [66.220.155.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BE4019D084
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 479A619C540
 	for <bpf@vger.kernel.org>; Thu, 10 Oct 2024 17:56:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.220.155.179
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.220.155.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728582995; cv=none; b=dE1cDYVoIKxX1AzWz+xGGWy3Q8iPOP0PvVMP58nbxyymb6zgpzXbNDYaDX0zAeJRwYOBgDqk/8zmvwMYEoJPSsH7Qbibyzbymjim7gPmugfWILIMx/Flq1YRJM9hRA1oAaYzFPghVVjlQ6+j37Ee9zCBLXBPweAZD6M8AgwW0WI=
+	t=1728582994; cv=none; b=QChKZIfuUz0PXeHPXJU1sUAMPQKBYhkOl0ROFn794fod6MjXtagNKFSAmHsPgZqCkJBR/+Pjpwh45D4Yewnt+ga/ulur6JZdofHFyw1tiVJInZ1u3/FYKlLyX2wnazYUGTceIa1eWp3C4wV9//utBrYJQmA0owdaUHYNdCzhXJ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728582995; c=relaxed/simple;
-	bh=PVex4oQGYUtDO9nwOQiGRd76tefilsibaOCaDd1I45w=;
+	s=arc-20240116; t=1728582994; c=relaxed/simple;
+	bh=Yh4acin4Y9BX9gyYd6c5K1rXBzwvPRphABy4UlvlPoQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ex9WvITC3dkdVe0EZQ3Uc9uzHu7V0mVRRZ3gBWEducr8ivypx0lNzEFJWXTtGFMf6SMBLXkxXqwdutvpBxknreYpU4Ph040ATCZa1JyknDMKebiiOPCpwsxKu3ogMgG+0c3G+SBS7PUAv27ZzOgwuSPKheLzSAcoDkWsW/vj0kk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=66.220.155.179
+	 MIME-Version; b=Mc9mAoIGpKWVlNplnD5gcZrIMRXRm/wnaxjuRq12u6Y8IpQgIsS4PG/TV1Ig+4UtuuLZl9D5bQgtbWLSRP/96pB+V6j0xn7Hs4Q71jBBa/f6UVfRSaGAcemYaJKjZosl/WhTBU/6ONHD7xBbEGv66SBZyIvx2GqSy2tKtxdvrjo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=66.220.155.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
 Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-	id 42F369F27BED; Thu, 10 Oct 2024 10:56:23 -0700 (PDT)
+	id 5D8BB9F27C0F; Thu, 10 Oct 2024 10:56:28 -0700 (PDT)
 From: Yonghong Song <yonghong.song@linux.dev>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
@@ -39,9 +39,9 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	kernel-team@fb.com,
 	Martin KaFai Lau <martin.lau@kernel.org>,
 	Tejun Heo <tj@kernel.org>
-Subject: [PATCH bpf-next v4 06/10] selftests/bpf: Add private stack tests
-Date: Thu, 10 Oct 2024 10:56:23 -0700
-Message-ID: <20241010175623.1898269-1-yonghong.song@linux.dev>
+Subject: [PATCH bpf-next v4 07/10] bpf: Support calling non-tailcall bpf prog
+Date: Thu, 10 Oct 2024 10:56:28 -0700
+Message-ID: <20241010175628.1898648-1-yonghong.song@linux.dev>
 X-Mailer: git-send-email 2.43.5
 In-Reply-To: <20241010175552.1895980-1-yonghong.song@linux.dev>
 References: <20241010175552.1895980-1-yonghong.song@linux.dev>
@@ -53,274 +53,209 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Some private stack tests are added including:
-  - prog with stack size greater than BPF_PSTACK_MIN_SUBTREE_SIZE.
-  - prog with stack size less than BPF_PSTACK_MIN_SUBTREE_SIZE.
-  - prog with one subprog having MAX_BPF_STACK stack size and another
-    subprog having non-zero stack size.
-  - prog with callback function.
-  - prog with exception in main prog or subprog.
+A kfunc bpf_prog_call() is introduced such that it can call another bpf
+prog within a bpf prog. It has the same parameters as bpf_tail_call()
+but acts like a normal function call.
+
+But bpf_prog_call() could recurse to the caller prog itself. So if a bpf
+prog calls bpf_prog_call(), that bpf prog will use private stacks with
+maximum recursion level 4. The 4 level recursion should work for most
+cases.
+
+bpf_prog_call() cannot be used if tail_call exists in the same prog
+since tail_call does not use private stack. If both prog_call and
+tail_call in the same prog, verification will fail.
 
 Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
 ---
- .../selftests/bpf/prog_tests/verifier.c       |   2 +
- .../bpf/progs/verifier_private_stack.c        | 216 ++++++++++++++++++
- 2 files changed, 218 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/verifier_private_st=
-ack.c
+ include/linux/bpf.h   |  2 ++
+ kernel/bpf/core.c     |  7 +++++--
+ kernel/bpf/helpers.c  | 20 ++++++++++++++++++++
+ kernel/bpf/verifier.c | 30 ++++++++++++++++++++++++++----
+ 4 files changed, 53 insertions(+), 6 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/te=
-sting/selftests/bpf/prog_tests/verifier.c
-index e26b5150fc43..635ff3509403 100644
---- a/tools/testing/selftests/bpf/prog_tests/verifier.c
-+++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
-@@ -59,6 +59,7 @@
- #include "verifier_or_jmp32_k.skel.h"
- #include "verifier_precision.skel.h"
- #include "verifier_prevent_map_lookup.skel.h"
-+#include "verifier_private_stack.skel.h"
- #include "verifier_raw_stack.skel.h"
- #include "verifier_raw_tp_writable.skel.h"
- #include "verifier_reg_equal.skel.h"
-@@ -185,6 +186,7 @@ void test_verifier_bpf_fastcall(void)         { RUN(v=
-erifier_bpf_fastcall); }
- void test_verifier_or_jmp32_k(void)           { RUN(verifier_or_jmp32_k)=
-; }
- void test_verifier_precision(void)            { RUN(verifier_precision);=
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index f22ddb423fd0..952cb398eb30 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1493,6 +1493,7 @@ struct bpf_prog_aux {
+ 	bool exception_cb;
+ 	bool exception_boundary;
+ 	bool priv_stack_eligible;
++	bool has_prog_call;
+ 	struct bpf_arena *arena;
+ 	/* BTF_KIND_FUNC_PROTO for valid attach_btf_id */
+ 	const struct btf_type *attach_func_proto;
+@@ -1929,6 +1930,7 @@ struct bpf_array {
+=20
+ #define BPF_COMPLEXITY_LIMIT_INSNS      1000000 /* yes. 1M insns */
+ #define MAX_TAIL_CALL_CNT 33
++#define BPF_MAX_PRIV_STACK_NEST_LEVEL	4
+=20
+ /* Maximum number of loops for bpf_loop and bpf_iter_num.
+  * It's enum to expose it (and thus make it discoverable) through BTF.
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index f79d951a061f..0d2c97f63ecf 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -2426,10 +2426,13 @@ struct bpf_prog *bpf_prog_select_runtime(struct b=
+pf_prog *fp, int *err)
+ 				fp->aux->priv_stack_mode =3D NO_PRIV_STACK;
+ 			} else {
+ 				void __percpu *priv_stack_ptr;
++				int nest_level =3D 1;
+=20
++				if (fp->aux->has_prog_call)
++					nest_level =3D BPF_MAX_PRIV_STACK_NEST_LEVEL;
+ 				fp->aux->priv_stack_mode =3D PRIV_STACK_ROOT_PROG;
+-				priv_stack_ptr =3D
+-					__alloc_percpu_gfp(fp->aux->stack_depth, 8, GFP_KERNEL);
++				priv_stack_ptr =3D __alloc_percpu_gfp(
++					fp->aux->stack_depth * nest_level, 8, GFP_KERNEL);
+ 				if (!priv_stack_ptr) {
+ 					*err =3D -ENOMEM;
+ 					return fp;
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index 4053f279ed4c..9cc880dc213e 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -2749,6 +2749,25 @@ __bpf_kfunc void bpf_rcu_read_unlock(void)
+ 	rcu_read_unlock();
  }
- void test_verifier_prevent_map_lookup(void)   { RUN(verifier_prevent_map=
-_lookup); }
-+void test_verifier_private_stack(void)        { RUN(verifier_private_sta=
-ck); }
- void test_verifier_raw_stack(void)            { RUN(verifier_raw_stack);=
- }
- void test_verifier_raw_tp_writable(void)      { RUN(verifier_raw_tp_writ=
-able); }
- void test_verifier_reg_equal(void)            { RUN(verifier_reg_equal);=
- }
-diff --git a/tools/testing/selftests/bpf/progs/verifier_private_stack.c b=
-/tools/testing/selftests/bpf/progs/verifier_private_stack.c
-new file mode 100644
-index 000000000000..e8de565f8b34
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/verifier_private_stack.c
-@@ -0,0 +1,216 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <vmlinux.h>
-+#include <bpf/bpf_helpers.h>
-+#include "bpf_misc.h"
-+#include "bpf_experimental.h"
-+
-+/* From include/linux/filter.h */
-+#define MAX_BPF_STACK    512
-+
-+#if defined(__TARGET_ARCH_x86)
-+
-+SEC("kprobe")
-+__description("Private stack, single prog")
-+__success
-+__arch_x86_64
-+__jited("	movabsq	$0x{{.*}}, %r9")
-+__jited("	addq	%gs:0x{{.*}}, %r9")
-+__jited("	movl	$0x2a, %edi")
-+__jited("	movq	%rdi, -0x100(%r9)")
-+__naked void private_stack_single_prog(void)
+=20
++__bpf_kfunc int bpf_prog_call(void *ctx, struct bpf_map *p__map, u32 ind=
+ex)
 +{
-+	asm volatile (
-+	"r1 =3D 42;"
-+	"*(u64 *)(r10 - 256) =3D r1;"
-+	"r0 =3D 0;"
-+	"exit;"
-+	:
-+	:
-+	: __clobber_all);
++	struct bpf_array *array;
++	struct bpf_prog *prog;
++
++	if (p__map->map_type !=3D BPF_MAP_TYPE_PROG_ARRAY)
++		return -EINVAL;
++
++	array =3D container_of(p__map, struct bpf_array, map);
++	if (unlikely(index >=3D array->map.max_entries))
++		return -E2BIG;
++
++	prog =3D READ_ONCE(array->ptrs[index]);
++	if (!prog)
++		return -ENOENT;
++
++	return bpf_prog_run(prog, ctx);
 +}
 +
-+__used
-+__naked static void cumulative_stack_depth_subprog(void)
-+{
-+        asm volatile (
-+	"r1 =3D 41;"
-+        "*(u64 *)(r10 - 32) =3D r1;"
-+        "call %[bpf_get_smp_processor_id];"
-+        "exit;"
-+        :: __imm(bpf_get_smp_processor_id)
-+	: __clobber_all);
-+}
+ struct bpf_throw_ctx {
+ 	struct bpf_prog_aux *aux;
+ 	u64 sp;
+@@ -3035,6 +3054,7 @@ BTF_ID_FLAGS(func, bpf_task_get_cgroup1, KF_ACQUIRE=
+ | KF_RCU | KF_RET_NULL)
+ #endif
+ BTF_ID_FLAGS(func, bpf_task_from_pid, KF_ACQUIRE | KF_RET_NULL)
+ BTF_ID_FLAGS(func, bpf_throw)
++BTF_ID_FLAGS(func, bpf_prog_call)
+ BTF_KFUNCS_END(generic_btf_ids)
+=20
+ static const struct btf_kfunc_id_set generic_kfunc_set =3D {
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 46b0c277c6a8..e3d9820618a1 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -5986,6 +5986,9 @@ static int check_ptr_alignment(struct bpf_verifier_=
+env *env,
+=20
+ static bool bpf_enable_private_stack(struct bpf_prog *prog)
+ {
++	if (prog->aux->has_prog_call)
++		return true;
 +
-+SEC("kprobe")
-+__description("Private stack, subtree > MAX_BPF_STACK")
-+__success
-+__arch_x86_64
-+/* private stack fp for the main prog */
-+__jited("	movabsq	$0x{{.*}}, %r9")
-+__jited("	addq	%gs:0x{{.*}}, %r9")
-+__jited("	movl	$0x2a, %edi")
-+__jited("	movq	%rdi, -0x200(%r9)")
-+__jited("	pushq	%r9")
-+__jited("	callq	0x{{.*}}")
-+__jited("	popq	%r9")
-+__jited("	xorl	%eax, %eax")
-+__naked void private_stack_nested_1(void)
-+{
-+	asm volatile (
-+	"r1 =3D 42;"
-+	"*(u64 *)(r10 - %[max_bpf_stack]) =3D r1;"
-+	"call cumulative_stack_depth_subprog;"
-+	"r0 =3D 0;"
-+	"exit;"
-+	:
-+	: __imm_const(max_bpf_stack, MAX_BPF_STACK)
-+	: __clobber_all);
-+}
+ 	if (!bpf_jit_supports_private_stack())
+ 		return false;
+=20
+@@ -6092,7 +6095,9 @@ static int check_max_stack_depth_subprog(struct bpf=
+_verifier_env *env, int idx,
+ 			return -EACCES;
+ 		}
+=20
+-		if (!priv_stack_eligible && depth >=3D BPF_PRIV_STACK_MIN_SUBTREE_SIZE=
+) {
++		if (!priv_stack_eligible &&
++		    (depth >=3D BPF_PRIV_STACK_MIN_SUBTREE_SIZE ||
++		     env->prog->aux->has_prog_call)) {
+ 			subprog[orig_idx].priv_stack_eligible =3D true;
+ 			env->prog->aux->priv_stack_eligible =3D priv_stack_eligible =3D true;
+ 		}
+@@ -6181,8 +6186,13 @@ static int check_max_stack_depth_subprog(struct bp=
+f_verifier_env *env, int idx,
+ 			}
+ 			subprog[ret_prog[j]].tail_call_reachable =3D true;
+ 		}
+-	if (!check_priv_stack && subprog[0].tail_call_reachable)
++	if (!check_priv_stack && subprog[0].tail_call_reachable) {
++		if (env->prog->aux->has_prog_call) {
++			verbose(env, "cannot do prog call and tail call in the same prog\n");
++			return -EINVAL;
++		}
+ 		env->prog->aux->tail_call_reachable =3D true;
++	}
+=20
+ 	/* end of for() loop means the last insn of the 'subprog'
+ 	 * was reached. Doesn't matter whether it was JA or EXIT
+@@ -11322,6 +11332,7 @@ enum special_kfunc_type {
+ 	KF_bpf_preempt_enable,
+ 	KF_bpf_iter_css_task_new,
+ 	KF_bpf_session_cookie,
++	KF_bpf_prog_call,
+ };
+=20
+ BTF_SET_START(special_kfunc_set)
+@@ -11387,6 +11398,7 @@ BTF_ID(func, bpf_session_cookie)
+ #else
+ BTF_ID_UNUSED
+ #endif
++BTF_ID(func, bpf_prog_call)
+=20
+ static bool is_kfunc_ret_null(struct bpf_kfunc_call_arg_meta *meta)
+ {
+@@ -11433,6 +11445,11 @@ get_kfunc_ptr_arg_type(struct bpf_verifier_env *=
+env,
+ 	if (meta->func_id =3D=3D special_kfunc_list[KF_bpf_cast_to_kern_ctx])
+ 		return KF_ARG_PTR_TO_CTX;
+=20
++	if (meta->func_id =3D=3D special_kfunc_list[KF_bpf_prog_call] && argno =
+=3D=3D 0) {
++		env->prog->aux->has_prog_call =3D true;
++		return KF_ARG_PTR_TO_CTX;
++	}
 +
-+SEC("kprobe")
-+__description("Private stack, subtree > MAX_BPF_STACK")
-+__success
-+__arch_x86_64
-+/* private stack fp for the subprog */
-+__jited("	addq	$0x20, %r9")
-+__naked void private_stack_nested_2(void)
-+{
-+	asm volatile (
-+	"r1 =3D 42;"
-+	"*(u64 *)(r10 - %[max_bpf_stack]) =3D r1;"
-+	"call cumulative_stack_depth_subprog;"
-+	"r0 =3D 0;"
-+	"exit;"
-+	:
-+	: __imm_const(max_bpf_stack, MAX_BPF_STACK)
-+	: __clobber_all);
-+}
-+
-+SEC("raw_tp")
-+__description("No private stack, nested")
-+__success
-+__arch_x86_64
-+__jited("	subq	$0x8, %rsp")
-+__naked void no_private_stack_nested(void)
-+{
-+	asm volatile (
-+	"r1 =3D 42;"
-+	"*(u64 *)(r10 - 8) =3D r1;"
-+	"call cumulative_stack_depth_subprog;"
-+	"r0 =3D 0;"
-+	"exit;"
-+	:
-+	:
-+	: __clobber_all);
-+}
-+
-+__naked __noinline __used
-+static unsigned long loop_callback(void)
-+{
-+	asm volatile (
-+	"call %[bpf_get_prandom_u32];"
-+	"r1 =3D 42;"
-+	"*(u64 *)(r10 - 512) =3D r1;"
-+	"call cumulative_stack_depth_subprog;"
-+	"r0 =3D 0;"
-+	"exit;"
-+	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_common);
-+}
-+
-+SEC("raw_tp")
-+__description("Private stack, callback")
-+__success
-+__arch_x86_64
-+/* for func loop_callback */
-+__jited("func #1")
-+__jited("	endbr64")
-+__jited("	nopl	(%rax,%rax)")
-+__jited("	nopl	(%rax)")
-+__jited("	pushq	%rbp")
-+__jited("	movq	%rsp, %rbp")
-+__jited("	endbr64")
-+__jited("	movabsq	$0x{{.*}}, %r9")
-+__jited("	addq	%gs:0x{{.*}}, %r9")
-+__jited("	pushq	%r9")
-+__jited("	callq")
-+__jited("	popq	%r9")
-+__jited("	movl	$0x2a, %edi")
-+__jited("	movq	%rdi, -0x200(%r9)")
-+__jited("	pushq	%r9")
-+__jited("	callq")
-+__jited("	popq	%r9")
-+__naked void private_stack_callback(void)
-+{
-+	asm volatile (
-+	"r1 =3D 1;"
-+	"r2 =3D %[loop_callback];"
-+	"r3 =3D 0;"
-+	"r4 =3D 0;"
-+	"call %[bpf_loop];"
-+	"r0 =3D 0;"
-+	"exit;"
-+	:
-+	: __imm_ptr(loop_callback),
-+	  __imm(bpf_loop)
-+	: __clobber_common);
-+}
-+
-+SEC("fentry/bpf_fentry_test9")
-+__description("Private stack, exception in main prog")
-+__success __retval(0)
-+__arch_x86_64
-+__jited("	pushq	%r9")
-+__jited("	callq")
-+__jited("	popq	%r9")
-+int private_stack_exception_main_prog(void)
-+{
-+	asm volatile (
-+	"r1 =3D 42;"
-+	"*(u64 *)(r10 - 512) =3D r1;"
-+	::: __clobber_common);
-+
-+	bpf_throw(0);
-+	return 0;
-+}
-+
-+__used static int subprog_exception(void)
-+{
-+	bpf_throw(0);
-+	return 0;
-+}
-+
-+SEC("fentry/bpf_fentry_test9")
-+__description("Private stack, exception in subprog")
-+__success __retval(0)
-+__arch_x86_64
-+__jited("	movq	%rdi, -0x200(%r9)")
-+__jited("	pushq	%r9")
-+__jited("	callq")
-+__jited("	popq	%r9")
-+int private_stack_exception_sub_prog(void)
-+{
-+	asm volatile (
-+	"r1 =3D 42;"
-+	"*(u64 *)(r10 - 512) =3D r1;"
-+	"call subprog_exception;"
-+	::: __clobber_common);
-+
-+	return 0;
-+}
-+
-+#else
-+
-+SEC("kprobe")
-+__description("private stack is not supported, use a dummy test")
-+__success
-+int dummy_test(void)
-+{
-+        return 0;
-+}
-+
-+#endif
-+
-+char _license[] SEC("license") =3D "GPL";
+ 	/* In this function, we verify the kfunc's BTF as per the argument type=
+,
+ 	 * leaving the rest of the verification with respect to the register
+ 	 * type to our caller. When a set of conditions hold in the BTF type of
+@@ -20009,6 +20026,7 @@ static int jit_subprogs(struct bpf_verifier_env *=
+env)
+ 	struct bpf_insn *insn;
+ 	void *old_bpf_func;
+ 	int err, num_exentries;
++	int nest_level =3D 1;
+=20
+ 	if (env->subprog_cnt <=3D 1)
+ 		return 0;
+@@ -20099,9 +20117,13 @@ static int jit_subprogs(struct bpf_verifier_env =
+*env)
+ 			} else if (!subtree_stack_depth) {
+ 				func[i]->aux->priv_stack_mode =3D PRIV_STACK_ROOT_PROG;
+ 			} else {
++				if (env->prog->aux->has_prog_call) {
++					func[i]->aux->has_prog_call =3D true;
++					nest_level =3D BPF_MAX_PRIV_STACK_NEST_LEVEL;
++				}
+ 				func[i]->aux->priv_stack_mode =3D PRIV_STACK_ROOT_PROG;
+-				priv_stack_ptr =3D
+-					__alloc_percpu_gfp(subtree_stack_depth, 8, GFP_KERNEL);
++				priv_stack_ptr =3D __alloc_percpu_gfp(
++					subtree_stack_depth * nest_level, 8, GFP_KERNEL);
+ 				if (!priv_stack_ptr) {
+ 					err =3D -ENOMEM;
+ 					goto out_free;
 --=20
 2.43.5
 
