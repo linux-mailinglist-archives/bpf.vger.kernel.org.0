@@ -1,137 +1,371 @@
-Return-Path: <bpf+bounces-41613-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41614-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B9E49991C7
-	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 21:06:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9284F99924C
+	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 21:28:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9984AB2C2F5
-	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 19:05:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 48D54B2FC86
+	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 19:10:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D31B1CFEC4;
-	Thu, 10 Oct 2024 18:58:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD17F1E490B;
+	Thu, 10 Oct 2024 19:05:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=crowdstrike.com header.i=@crowdstrike.com header.b="hV583S13"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="tsRsgDOW"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-00206402.pphosted.com (mx0b-00206402.pphosted.com [148.163.152.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D66741CFEA4
-	for <bpf@vger.kernel.org>; Thu, 10 Oct 2024 18:58:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.152.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BBE91925B6
+	for <bpf@vger.kernel.org>; Thu, 10 Oct 2024 19:05:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728586691; cv=none; b=AOPoAak62LZ2OWLy/nJ/5h07gTsnzT3RQa+wajIyCPCGZLhGNU+/xmJPZFu99g/1HM5VN1vX1CLLhEOzh13LqPLp43PANcMFCsFTbn8I9PGEFF/V5Tt+1t2gXIRTla7OwDx0RWPPC4bX1dopCCS9GLqtZtgYddT1GzwGXQ/8Xnk=
+	t=1728587158; cv=none; b=kmRwGYXVQuYyVXIxnxrjoCbvX9d5x0CLISIEETwg/ww+hxt69OuRrG4rSorH8EvitgZXhvuBHnG9XFKviRFcrBI+PHNES0x8TthaDoEsJ0EjuaB0lAgA6YwPpBPvyzUP3AiSfalzmRoTjnKPI8KTMjse6tNE4U78UtblBuxQdTc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728586691; c=relaxed/simple;
-	bh=iwTxt2+tCUI7/GsuUxAwOfyjpa7Kg8YlsCGaqH4cHII=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=HQbi6CEBf+JBq+En6+EMoHQAmPDqRKvwOfGflFmyQJ1tM7tHZlMCzCuRThxOakh+xvJgbq4ktwQtaC9XYxVPAxGgtSw77nJPQN6AroRPY3tjtcL/hwldXwHdxVGKjoZ1GKICCBl2lddNpKd0XM/HPTQuG0XelHuok2Eeu3IlXlE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=crowdstrike.com; spf=pass smtp.mailfrom=crowdstrike.com; dkim=pass (2048-bit key) header.d=crowdstrike.com header.i=@crowdstrike.com header.b=hV583S13; arc=none smtp.client-ip=148.163.152.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=crowdstrike.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crowdstrike.com
-Received: from pps.filterd (m0354654.ppops.net [127.0.0.1])
-	by mx0b-00206402.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 49AHFvub026172;
-	Thu, 10 Oct 2024 18:57:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crowdstrike.com;
-	 h=cc:content-id:content-transfer-encoding:content-type:date
-	:from:in-reply-to:message-id:mime-version:references:subject:to;
-	 s=default; bh=iwTxt2+tCUI7/GsuUxAwOfyjpa7Kg8YlsCGaqH4cHII=; b=h
-	V583S13CqyxRM8ZefYtIFwcWXjSwD/CQfYLqGEkTFx1e0Jol4ZKQrxTdyo37jR26
-	kFJLSVwQlWWwxxRq6cUCNpcIWZbmuCGkHUNQWEqa1uqBBZz/QjfvsjF76OwcfA5/
-	Y0UOvH54VAwh/MAyfXSwXkhhI4BxIV0N7Jwztw7pf63ujhyY+qos3bNSGx2vX5X5
-	XaWe+q6AHSPLyjPMe8KmMNHEbj17v+0/Zx2s5bsMkdyz/UKex9vVr4LXSb3PX7XA
-	IuD7IwVPO1CbdU3zf+hc0qIf6Viyd+9Jtu0jAs4O87/izTq9xY5hBJRdjmdjA1NT
-	SfSGYD5IPL3lmXEPbXPVg==
-Received: from 04wpexch06.crowdstrike.sys (dragosx.crowdstrike.com [208.42.231.60] (may be forged))
-	by mx0b-00206402.pphosted.com (PPS) with ESMTPS id 426fuys1b7-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 10 Oct 2024 18:57:47 +0000 (GMT)
-Received: from 04wpexch06.crowdstrike.sys (10.100.11.99) by
- 04wpexch06.crowdstrike.sys (10.100.11.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Thu, 10 Oct 2024 18:57:46 +0000
-Received: from 04wpexch06.crowdstrike.sys ([fe80::d7a2:a8e9:1f62:58cc]) by
- 04wpexch06.crowdstrike.sys ([fe80::d7a2:a8e9:1f62:58cc%9]) with mapi id
- 15.02.1544.009; Thu, 10 Oct 2024 18:57:46 +0000
-From: Martin Kelly <martin.kelly@crowdstrike.com>
-To: "alexei.starovoitov@gmail.com" <alexei.starovoitov@gmail.com>
-CC: "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "martin.lau@linux.dev"
-	<martin.lau@linux.dev>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "bpf@vger.kernel.org"
-	<bpf@vger.kernel.org>
-Subject: Re: [PATCH bpf-next] bpf: update docs on
- CONFIG_FUNCTION_ERROR_INJECTION
-Thread-Topic: [PATCH bpf-next] bpf: update docs on
- CONFIG_FUNCTION_ERROR_INJECTION
-Thread-Index: AQHbG0ZL9Vj/p8x43EOLydJsAAj4vg==
-Date: Thu, 10 Oct 2024 18:57:46 +0000
-Message-ID: <e4207aaa1cfbb00b3cb73d2a77c04623ca34a40b.camel@crowdstrike.com>
-References: <20241010184556.985660-1-martin.kelly@crowdstrike.com>
-	 <CAADnVQ+=eb7V6EYYZXghOCqYHcuP4=uNL2DtVghK-7WOHJa0Jw@mail.gmail.com>
-In-Reply-To: <CAADnVQ+=eb7V6EYYZXghOCqYHcuP4=uNL2DtVghK-7WOHJa0Jw@mail.gmail.com>
-Accept-Language: en-US, en-GB
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-disclaimer: USA
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <13D11A956101DF4982EB03AC7548A711@crowdstrike.sys>
-Content-Transfer-Encoding: base64
+	s=arc-20240116; t=1728587158; c=relaxed/simple;
+	bh=5HPzgAdFormJXXqK8h/l25xPeBcHWohJ3hWfo3eavJc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ijKyr0cGQwfx3UXNO6fGeZAF7SdtJN6ZseQ0HUtIkKv+PbuVEaT2oJYsPd9DpxyKzHcc15Htp0rzyLpPez3sIa7szWOycRgtyroCDELCVU4nc1UsFZsToYdxqHizmB6c4rirmjgGFbHSgh3dvHwuiyCTFSAyudceAsJLv2NsJNw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=tsRsgDOW; arc=none smtp.client-ip=209.85.160.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-4601a471aecso45691cf.1
+        for <bpf@vger.kernel.org>; Thu, 10 Oct 2024 12:05:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1728587155; x=1729191955; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/SQIULv3PuhYrubi1b4Lzr/jGOZjc/yeQb9Fnkxqp1k=;
+        b=tsRsgDOW/sjg06zZ2bBhvlaCm6RSHu6yeLRTIpxD+6MYUfuu7D52ancrIYIpMAe0/7
+         KF477dV+o8U23/CDQxTgqkIMWWxXyZwpOGAQtIaVeln8X7TR1QwLAMB98oQbnjzrenFl
+         XOFOuHVequ5dfAcKv/OjKficJgoaiq4DacM9LIXO3zKYtnpX8Q6fbq15eWmSxg9HjA0s
+         r65EIK7d7/VvT7G09G1Ubx5b5iiXXn5mqiOEg6cxcZCJVwzQ5o3zXo3Ovou5rj9wb/8J
+         zwUGopBBlVaAW0BO2il/aR/YkkmV437+6jfnRerj46vGBooJQEeeFadzK/WOm7fZZq+6
+         h8fQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1728587155; x=1729191955;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/SQIULv3PuhYrubi1b4Lzr/jGOZjc/yeQb9Fnkxqp1k=;
+        b=PSCX4/Zan/6LCNUqRbEk1eyZ+COhLYEOxx7thDSoVReVvJ08Di0Z+4p9VE0zmK+Rsa
+         L/KpFtd0BdwUED5E0y64W7eBZtAbyDfHRQj3pZVRcA9uoUcfjH1EyxvbGUq6YXsA7UnP
+         FZK/q28dxzGuKsTs55A9qGWJtAr4RQCEKfEKoA9SXgFrvyeoLCSMsjBE11nubueN7suN
+         v2bauROzmv63rXedWDnKPj4crtuqk4BeE7j6mrVM4LOVh3tdjmBpoTr3zWEemmsRmOgy
+         IhRD+fr182ISaQ/tINmbxbQEo1f2GXRYkNPf153jYQ/dfhxJKLr87u7Miytj3eMejZIy
+         D91g==
+X-Forwarded-Encrypted: i=1; AJvYcCW5e+tbwG8oVQDz3XBr5le4yCv4DWVaC42TIt7tUco7qPChKmusqReqK4JC/L8f2y1O7lw=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx5vsZTfHzeE9NXLARYucZqdTJnegI9xZ73pGDbZvCILek9n/Wf
+	LWp6cF4JaFh4GwRuJJV4ZGmgtQ4CvZfRqzTlDoHPT0zixRoyzYfZiuBSKQhcLLCnJeicerm/+F1
+	I7Rd1yGTyJHEIDCPyUMt5Z+31R96fAQRjlq0e
+X-Google-Smtp-Source: AGHT+IFXW31rsZ9kFmf+FJMtckOgDblc8qAc7+JIkHyyX3UPQEOm0e8exkrBalRYLEuVTVB8uGfh8R0/wFj2yt5Uk7U=
+X-Received: by 2002:a05:622a:4f8c:b0:45f:5cd:a617 with SMTP id
+ d75a77b69052e-4604b127c4cmr368761cf.9.1728587152864; Thu, 10 Oct 2024
+ 12:05:52 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-GUID: n6Wg92mFb8yLMWTZHe7bwUJUEUmAVGX4
-X-Authority-Analysis: v=2.4 cv=I8o3R8gg c=1 sm=1 tr=0 ts=670823ab cx=c_pps a=1d8vc5iZWYKGYgMGCdbIRA==:117 a=1d8vc5iZWYKGYgMGCdbIRA==:17 a=xqWC_Br6kY4A:10 a=EjBHVkixTFsA:10 a=IkcTkHD0fZMA:10 a=DAUX931o1VcA:10 a=pl6vuDidAAAA:8 a=rSCPWcgRQ5dir6CnJzYA:9
- a=QEXdDO2ut3YA:10
-X-Proofpoint-ORIG-GUID: n6Wg92mFb8yLMWTZHe7bwUJUEUmAVGX4
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
- definitions=2024-09-06_09,2024-09-06_01,2024-09-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- priorityscore=1501 malwarescore=0 lowpriorityscore=0 mlxscore=0
- clxscore=1015 mlxlogscore=786 phishscore=0 bulkscore=0 spamscore=0
- adultscore=0 impostorscore=0 classifier=spam authscore=0 adjust=0
- reason=mlx scancount=1 engine=8.19.0-2409260000
- definitions=main-2410100125
+References: <20240909054318.1809580-1-almasrymina@google.com>
+ <20240909054318.1809580-11-almasrymina@google.com> <Zwe3lWTN36IUaIdd@ly-workstation>
+In-Reply-To: <Zwe3lWTN36IUaIdd@ly-workstation>
+From: Mina Almasry <almasrymina@google.com>
+Date: Thu, 10 Oct 2024 12:05:38 -0700
+Message-ID: <CAHS8izPuEUA20BDXvwq2vW-24ez36YFJFMQok-oBDbgk6bajSA@mail.gmail.com>
+Subject: Re: [PATCH net-next v25 10/13] net: add SO_DEVMEM_DONTNEED setsockopt
+ to release RX frags
+To: "Lai, Yi" <yi1.lai@linux.intel.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org, 
+	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
+	sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	linux-arch@vger.kernel.org, bpf@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, Donald Hunter <donald.hunter@gmail.com>, 
+	Jakub Kicinski <kuba@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, 
+	Jonathan Corbet <corbet@lwn.net>, Richard Henderson <richard.henderson@linaro.org>, 
+	Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, 
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
+	Andreas Larsson <andreas@gaisler.com>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Steven Rostedt <rostedt@goodmis.org>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Arnd Bergmann <arnd@arndb.de>, Steffen Klassert <steffen.klassert@secunet.com>, 
+	Herbert Xu <herbert@gondor.apana.org.au>, David Ahern <dsahern@kernel.org>, 
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
+	Magnus Karlsson <magnus.karlsson@intel.com>, 
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>, Jonathan Lemon <jonathan.lemon@gmail.com>, 
+	Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
+	Sumit Semwal <sumit.semwal@linaro.org>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
+	Pavel Begunkov <asml.silence@gmail.com>, David Wei <dw@davidwei.uk>, Jason Gunthorpe <jgg@ziepe.ca>, 
+	Yunsheng Lin <linyunsheng@huawei.com>, Shailend Chand <shailend@google.com>, 
+	Harshitha Ramamurthy <hramamurthy@google.com>, Shakeel Butt <shakeel.butt@linux.dev>, 
+	Jeroen de Borst <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>, 
+	Bagas Sanjaya <bagasdotme@gmail.com>, Christoph Hellwig <hch@infradead.org>, 
+	Nikolay Aleksandrov <razor@blackwall.org>, Taehee Yoo <ap420073@gmail.com>, 
+	Willem de Bruijn <willemb@google.com>, Kaiyuan Zhang <kaiyuanz@google.com>, yi1.lai@intel.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-T24gVGh1LCAyMDI0LTEwLTEwIGF0IDExOjU0IC0wNzAwLCBBbGV4ZWkgU3Rhcm92b2l0b3Ygd3Jv
-dGU6DQo+IE9uIFRodSwgT2N0IDEwLCAyMDI0IGF0IDExOjQ34oCvQU0gTWFydGluIEtlbGx5DQo+
-IDxtYXJ0aW4ua2VsbHlAY3Jvd2RzdHJpa2UuY29tPiB3cm90ZToNCj4gPiANCj4gPiBUaGUgZG9j
-dW1lbnRhdGlvbiBzYXlzIENPTkZJR19GVU5DVElPTl9FUlJPUl9JTkpFQ1RJT04gaXMgc3VwcG9y
-dGVkDQo+ID4gb25seQ0KPiA+IG9uIHg4Ni4gVGhpcyB3YXMgcHJlc3VtYWJseSB0cnVlIGF0IHRo
-ZSB0aW1lIG9mIHdyaXRpbmcsIGJ1dCBpdCdzDQo+ID4gbm93DQo+ID4gc3VwcG9ydGVkIG9uIG1h
-bnkgb3RoZXIgYXJjaGl0ZWN0dXJlcyB0b28sIHNvIGRyb3AgdGhlIHBhcnQgb2YgdGhlDQo+ID4g
-c3RhdGVtZW50IG1lbnRpb25pbmcgeDg2Lg0KPiA+IA0KPiA+IFNpZ25lZC1vZmYtYnk6IE1hcnRp
-biBLZWxseSA8bWFydGluLmtlbGx5QGNyb3dkc3RyaWtlLmNvbT4NCj4gPiAtLS0NCj4gPiDCoGlu
-Y2x1ZGUvdWFwaS9saW51eC9icGYuaMKgwqDCoMKgwqDCoCB8IDMgKy0tDQo+ID4gwqB0b29scy9p
-bmNsdWRlL3VhcGkvbGludXgvYnBmLmggfCAzICstLQ0KPiA+IMKgMiBmaWxlcyBjaGFuZ2VkLCAy
-IGluc2VydGlvbnMoKyksIDQgZGVsZXRpb25zKC0pDQo+ID4gDQo+ID4gZGlmZiAtLWdpdCBhL2lu
-Y2x1ZGUvdWFwaS9saW51eC9icGYuaCBiL2luY2x1ZGUvdWFwaS9saW51eC9icGYuaA0KPiA+IGlu
-ZGV4IDhhYjRkODE4NGI5ZC4uYTJkZGZjOGM4ZWQ5IDEwMDY0NA0KPiA+IC0tLSBhL2luY2x1ZGUv
-dWFwaS9saW51eC9icGYuaA0KPiA+ICsrKyBiL2luY2x1ZGUvdWFwaS9saW51eC9icGYuaA0KPiA+
-IEBAIC0zMTA1LDggKzMxMDUsNyBAQCB1bmlvbiBicGZfYXR0ciB7DQo+ID4gwqAgKsKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoCAqKkFMTE9XX0VSUk9SX0lOSkVDVElPTioqIGluIHRoZSBrZXJuZWwg
-Y29kZS4NCj4gPiDCoCAqDQo+ID4gwqAgKsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBBbHNvLCB0
-aGUgaGVscGVyIGlzIG9ubHkgYXZhaWxhYmxlIGZvciB0aGUNCj4gPiBhcmNoaXRlY3R1cmVzIGhh
-dmluZw0KPiA+IC0gKsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB0aGUgQ09ORklHX0ZVTkNUSU9O
-X0VSUk9SX0lOSkVDVElPTiBvcHRpb24uIEFzIG9mDQo+ID4gdGhpcyB3cml0aW5nLA0KPiA+IC0g
-KsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB4ODYgYXJjaGl0ZWN0dXJlIGlzIHRoZSBvbmx5IG9u
-ZSB0byBzdXBwb3J0IHRoaXMNCj4gPiBmZWF0dXJlLg0KPiA+ICsgKsKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoCB0aGUgQ09ORklHX0ZVTkNUSU9OX0VSUk9SX0lOSkVDVElPTiBvcHRpb24uDQo+IA0K
-PiBTb21ldGhpbmcgbGlrZSB0aGlzIGlzIGdvb2QgdG8gYWRkIHRvDQo+IERvY3VtZW50YXRpb24v
-ZmF1bHQtaW5qZWN0aW9uL2ZhdWx0LWluamVjdGlvbi5yc3QNCj4gYW5kIG1heSBiZSBhIGxpbmsg
-dG8gaXQgc29tZXdoZXJlIGluIERvY3VtZW50YXRpb24vYnBmLy4NCj4gDQo+IEJ1dCB1YXBpL2Jw
-Zi5oIGlzIG5vdCBzdWNoIHBsYWNlLg0KPiANCj4gcHctYm90OiBjcg0KDQpXb3VsZCB5b3UgcHJl
-ZmVyIHRvIGp1c3QgcmVtb3ZlIHRoZSBzZW50ZW5jZSBhbHRvZ2V0aGVyPyBDdXJyZW50bHksDQp0
-aGlzIHN0YXRlbWVudCBpcyBhbHJlYWR5IGluIHRoZSBoZWFkZXJzLCBzbyBJIHRoaW5rIGl0J3Mg
-YmVzdCB0bw0KZWl0aGVyIGNvcnJlY3QgaXQgb3IgcmVtb3ZlIGl0LCBidXQgbm90IGxlYXZlIGl0
-IHRoZSB3YXkgaXQgaXMgKHdoaWNoDQppcyBub3QgdmVyeSBhY2N1cmF0ZSkuDQo=
+On Thu, Oct 10, 2024 at 4:17=E2=80=AFAM Lai, Yi <yi1.lai@linux.intel.com> w=
+rote:
+>
+> Hi Mina Almasry,
+>
+> Greetings!
+>
+> I used Syzkaller and found that there is BUG: soft lockup inqt in linux-n=
+ext tree next-20241008
+>
+> After bisection and the first bad commit is:
+> "
+> 678f6e28b5f6 net: add SO_DEVMEM_DONTNEED setsockopt to release RX frags
+> "
+>
+> All detailed into can be found at:
+> https://github.com/laifryiee/syzkaller_logs/tree/main/241009_103423_do_so=
+ck_setsockopt
+> Syzkaller repro code:
+> https://github.com/laifryiee/syzkaller_logs/tree/main/241009_103423_do_so=
+ck_setsockopt/repro.c
+> Syzkaller repro syscall steps:
+> https://github.com/laifryiee/syzkaller_logs/tree/main/241009_103423_do_so=
+ck_setsockopt/repro.prog
+> Syzkaller report:
+> https://github.com/laifryiee/syzkaller_logs/tree/main/241009_103423_do_so=
+ck_setsockopt/repro.report
+> Kconfig(make olddefconfig):
+> https://github.com/laifryiee/syzkaller_logs/tree/main/241009_103423_do_so=
+ck_setsockopt/kconfig_origin
+> Bisect info:
+> https://github.com/laifryiee/syzkaller_logs/tree/main/241009_103423_do_so=
+ck_setsockopt/bisect_info.log
+> bzImage:
+> https://github.com/laifryiee/syzkaller_logs/raw/refs/heads/main/241009_10=
+3423_do_sock_setsockopt/bzImage_8cf0b93919e13d1e8d4466eb4080a4c4d9d66d7b
+> Issue dmesg:
+> https://github.com/laifryiee/syzkaller_logs/blob/main/241009_103423_do_so=
+ck_setsockopt/8cf0b93919e13d1e8d4466eb4080a4c4d9d66d7b_dmesg.log
+>
+> "
+> [   48.825073]  ? __lock_acquire+0x1b0f/0x5c90
+> [   48.825419]  ? __pfx___lock_acquire+0x10/0x10
+> [   48.825774]  sock_setsockopt+0x68/0x90
+> [   48.826117]  do_sock_setsockopt+0x3fb/0x480
+> [   48.826455]  ? __pfx_do_sock_setsockopt+0x10/0x10
+> [   48.826829]  ? lock_release+0x441/0x870
+> [   48.827140]  ? __sanitizer_cov_trace_const_cmp4+0x1a/0x20
+> [   48.827558]  ? fdget+0x188/0x230
+> [   48.827846]  __sys_setsockopt+0x131/0x200
+> [   48.828184]  ? __pfx___sys_setsockopt+0x10/0x10
+> [   48.828551]  ? seqcount_lockdep_reader_access.constprop.0+0xc0/0xd0
+> [   48.829042]  ? __sanitizer_cov_trace_cmp4+0x1a/0x20
+> [   48.829425]  ? ktime_get_coarse_real_ts64+0xbf/0xf0
+> [   48.829817]  __x64_sys_setsockopt+0xc6/0x160
+> [   48.830160]  ? syscall_trace_enter+0x14a/0x230
+> [   48.830520]  x64_sys_call+0x6cf/0x20d0
+> [   48.830825]  do_syscall_64+0x6d/0x140
+> [   48.831124]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
+> [   48.831517] RIP: 0033:0x7f26cdc3ee5d
+> [   48.831804] Code: ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 4=
+8 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <=
+48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 93 af 1b 00 f7 d8 64 89 01 48
+> [   48.833180] RSP: 002b:00007fff33f36278 EFLAGS: 00000213 ORIG_RAX: 0000=
+000000000036
+> [   48.833756] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f26c=
+dc3ee5d
+> [   48.834294] RDX: 0000000000000050 RSI: 0000000000000001 RDI: 000000000=
+0000003
+> [   48.834830] RBP: 00007fff33f36290 R08: 0000000000000010 R09: 00007fff3=
+3f36290
+> [   48.835368] R10: 0000000020000080 R11: 0000000000000213 R12: 00007fff3=
+3f363e8
+> [   48.835906] R13: 000000000040178f R14: 0000000000403e08 R15: 00007f26c=
+de51000
+> [   48.836466]  </TASK>
+> [   48.836648] Kernel panic - not syncing: softlockup: hung tasks
+> [   48.837096] CPU: 1 UID: 0 PID: 729 Comm: repro Tainted: G             =
+L     6.12.0-rc2-8cf0b93919e1 #1
+> [   48.837796] Tainted: [L]=3DSOFTLOCKUP
+> [   48.838071] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIO=
+S rel-1.16.0-0-gd239552ce722-prebuilt.qemu.org 04/01/2014
+> [   48.838916] Call Trace:
+> [   48.839113]  <IRQ>
+> [   48.839282]  dump_stack_lvl+0x42/0x150
+> [   48.839584]  dump_stack+0x19/0x20
+> [   48.839846]  panic+0x703/0x790
+> [   48.840100]  ? __pfx_panic+0x10/0x10
+> [   48.840394]  ? watchdog_timer_fn+0x599/0x6b0
+> [   48.840727]  ? watchdog_timer_fn+0x58c/0x6b0
+> [   48.841065]  watchdog_timer_fn+0x5aa/0x6b0
+> [   48.841382]  ? __pfx_watchdog_timer_fn+0x10/0x10
+> [   48.841743]  __hrtimer_run_queues+0x5d6/0xc30
+> [   48.842091]  ? __pfx___hrtimer_run_queues+0x10/0x10
+> [   48.842473]  hrtimer_interrupt+0x324/0x7a0
+> [   48.842802]  __sysvec_apic_timer_interrupt+0x10b/0x410
+> [   48.843198]  ? debug_smp_processor_id+0x20/0x30
+> [   48.843551]  sysvec_apic_timer_interrupt+0xaf/0xd0
+> [   48.843922]  </IRQ>
+> [   48.844101]  <TASK>
+> [   48.844275]  asm_sysvec_apic_timer_interrupt+0x1f/0x30
+> [   48.844711] RIP: 0010:__sanitizer_cov_trace_pc+0x45/0x70
+> [   48.845130] Code: a9 00 01 ff 00 74 1d f6 c4 01 74 43 a9 00 00 0f 00 7=
+5 3c a9 00 00 f0 00 75 35 8b 82 04 1e 00 00 85 c0 74 2b 8b 82 e0 1d 00 00 <=
+83> f8 02 75 20 48 8b 8a e8 1d 00 00 8b 92 e4 1d 00 00 48 8b 01 48
+> [   48.846480] RSP: 0018:ffff8880239cf790 EFLAGS: 00000246
+> [   48.846876] RAX: 0000000000000000 RBX: ffff8880239cf900 RCX: ffffffff8=
+581c19f
+> [   48.847407] RDX: ffff88801a818000 RSI: ffffffff8581c1d5 RDI: 000000000=
+0000007
+> [   48.847933] RBP: ffff8880239cf790 R08: 0000000000000001 R09: ffffed100=
+4739f23
+> [   48.848472] R10: 0000000077cc006e R11: 0000000000000001 R12: 000000000=
+0000000
+> [   48.849002] R13: 0000000077cc006e R14: ffff8880239cf918 R15: 000000000=
+0000000
+> [   48.849536]  ? xas_start+0x11f/0x730
+> [   48.849818]  ? xas_start+0x155/0x730
+> [   48.850101]  xas_start+0x155/0x730
+> [   48.850372]  xas_load+0x2f/0x520
+> [   48.850629]  ? irqentry_exit+0x3e/0xa0
+> [   48.850922]  ? sysvec_apic_timer_interrupt+0x6a/0xd0
+> [   48.851304]  xas_store+0x1165/0x1ad0
+> [   48.851588]  ? __this_cpu_preempt_check+0x21/0x30
+> [   48.851950]  ? irqentry_exit+0x3e/0xa0
+> [   48.852254]  __xa_erase+0xc6/0x180
+> [   48.852524]  ? __pfx___xa_erase+0x10/0x10
+> [   48.852842]  ? __xa_erase+0xf1/0x180
+> [   48.853123]  ? sock_devmem_dontneed+0x42c/0x6d0
+> [   48.853480]  sock_devmem_dontneed+0x3a8/0x6d0
+> [   48.853829]  ? __pfx_sock_devmem_dontneed+0x10/0x10
+> [   48.854205]  ? trace_lock_acquire+0x139/0x1b0
+> [   48.854548]  ? lock_acquire+0x80/0xb0
+> [   48.854833]  ? __might_fault+0xf1/0x1b0
+> [   48.855133]  ? __might_fault+0xf1/0x1b0
+> [   48.855437]  ? __sanitizer_cov_trace_const_cmp8+0x1c/0x30
+> [   48.855849]  sk_setsockopt+0x480/0x3c60
+> [   48.856158]  ? __pfx_sk_setsockopt+0x10/0x10
+> [   48.856491]  ? __kasan_check_read+0x15/0x20
+> [   48.856814]  ? __lock_acquire+0x1b0f/0x5c90
+> [   48.857144]  ? __pfx___lock_acquire+0x10/0x10
+> [   48.857488]  sock_setsockopt+0x68/0x90
+> [   48.857785]  do_sock_setsockopt+0x3fb/0x480
+> [   48.858110]  ? __pfx_do_sock_setsockopt+0x10/0x10
+> [   48.858474]  ? lock_release+0x441/0x870
+> [   48.858776]  ? __sanitizer_cov_trace_const_cmp4+0x1a/0x20
+> [   48.859184]  ? fdget+0x188/0x230
+> [   48.859448]  __sys_setsockopt+0x131/0x200
+> [   48.859764]  ? __pfx___sys_setsockopt+0x10/0x10
+> [   48.860123]  ? seqcount_lockdep_reader_access.constprop.0+0xc0/0xd0
+> [   48.860598]  ? __sanitizer_cov_trace_cmp4+0x1a/0x20
+> [   48.860982]  ? ktime_get_coarse_real_ts64+0xbf/0xf0
+> [   48.861370]  __x64_sys_setsockopt+0xc6/0x160
+> [   48.861710]  ? syscall_trace_enter+0x14a/0x230
+> [   48.862057]  x64_sys_call+0x6cf/0x20d0
+> [   48.862350]  do_syscall_64+0x6d/0x140
+> [   48.862639]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
+> [   48.863023] RIP: 0033:0x7f26cdc3ee5d
+> [   48.863301] Code: ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 4=
+8 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <=
+48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 93 af 1b 00 f7 d8 64 89 01 48
+> [   48.864659] RSP: 002b:00007fff33f36278 EFLAGS: 00000213 ORIG_RAX: 0000=
+000000000036
+> [   48.865223] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f26c=
+dc3ee5d
+> "
+>
+> I hope you find it useful.
+
+Thank you for the report. I think I see the issue and I commented on
+the fix in the code below.
+
+Only issue is that this is unlucky timing for me. I have a flight
+tomorrow for a vacation where I think I may have internet access and
+may not. I will try to follow up here, but in case I can't, what's the
+urgency for this issue? Can this wait 2 weeks when I get back?
+
+> > +     if (optlen % sizeof(struct dmabuf_token) ||
+> > +         optlen > sizeof(*tokens) * MAX_DONTNEED_TOKENS)
+> > +             return -EINVAL;
+> > +
+> > +     tokens =3D kvmalloc_array(optlen, sizeof(*tokens), GFP_KERNEL);
+> > +     if (!tokens)
+> > +             return -ENOMEM;
+> > +
+
+There is an unrelated bug here. The first argument for kvmalloc_array
+is the number of elements, I think, not the number of bytes. So this
+should be:
+
+num_tokens =3D optlen / sizeof(struct dmabuf_token);
+tokens =3D kvmalloc_array(num_tokens, sizeof(*tokens), GFP_KERNEL);
+if (!tokens)
+   return -ENOMEM;
+
+> > +
+> > +     if (copy_from_sockptr(tokens, optval, optlen)) {
+> > +             kvfree(tokens);
+> > +             return -EFAULT;
+> > +     }
+> > +
+> > +     xa_lock_bh(&sk->sk_user_frags);
+> > +     for (i =3D 0; i < num_tokens; i++) {
+> > +             for (j =3D 0; j < tokens[i].token_count; j++) {
+
+The bug should be here. tokens[i].token_count is a u32 provided by the
+user. The user can specify U32_MAX here, which will make the loop
+below spin for a very long time with the lock held, which should be
+the cause of the soft lockup.
+
+We should add a check that token_count is < MAX_DONTNEED_TOKENS or
+something like that, above this line.
+
+Please let me know of urgency. If this can't wait I'll try very hard
+to repro the issue/fix while I'm out. Untested fix I'm going to try
+out:
+
+diff --git a/net/core/sock.c b/net/core/sock.c
+index 083d438d8b6f..cb3d8b19de14 100644
+--- a/net/core/sock.c
++++ b/net/core/sock.c
+@@ -1071,11 +1071,11 @@ sock_devmem_dontneed(struct sock *sk,
+sockptr_t optval, unsigned int optlen)
+            optlen > sizeof(*tokens) * MAX_DONTNEED_TOKENS)
+                return -EINVAL;
+
+-       tokens =3D kvmalloc_array(optlen, sizeof(*tokens), GFP_KERNEL);
++       num_tokens =3D optlen / sizeof(struct dmabuf_token);
++       tokens =3D kvmalloc_array(num_tokens, sizeof(*tokens), GFP_KERNEL);
+        if (!tokens)
+                return -ENOMEM;
+
+-       num_tokens =3D optlen / sizeof(struct dmabuf_token);
+        if (copy_from_sockptr(tokens, optval, optlen)) {
+                kvfree(tokens);
+                return -EFAULT;
+@@ -1083,6 +1083,10 @@ sock_devmem_dontneed(struct sock *sk, sockptr_t
+optval, unsigned int optlen)
+
+        xa_lock_bh(&sk->sk_user_frags);
+        for (i =3D 0; i < num_tokens; i++) {
++
++               if (tokens[i].token_count > MAX_DONTNEED_TOKENS)
++                       continue;
++
+                for (j =3D 0; j < tokens[i].token_count; j++) {
+                        netmem_ref netmem =3D (__force netmem_ref)__xa_eras=
+e(
+                                &sk->sk_user_frags, tokens[i].token_start +=
+ j);
+
+--=20
+Thanks,
+Mina
 
