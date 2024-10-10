@@ -1,265 +1,153 @@
-Return-Path: <bpf+bounces-41567-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41569-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83FA5998739
-	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 15:10:49 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B3D719987AB
+	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 15:29:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C4673B21695
-	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 13:10:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 15207B2143F
+	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 13:29:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5670F1C9B8A;
-	Thu, 10 Oct 2024 13:10:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C31F1CB522;
+	Thu, 10 Oct 2024 13:28:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CGtN7zz1"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="A/zAYJXH"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A7E91BE245;
-	Thu, 10 Oct 2024 13:10:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 202771C9DCE
+	for <bpf@vger.kernel.org>; Thu, 10 Oct 2024 13:28:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728565837; cv=none; b=qqTUEgWZAKw0qhYl+vd6yk5Tb9z65aQo8JFwD8BCIQllqK+7ueyHO10EEYtz8mh8/zDC+SkamNtJA5IWit+PVG0Xh70yS6tBTQreSAWy0eIB502il1hqUzl28VheklrL5/ex1ZgcUtewLDbpab783dHPMzZ2cJevxnyvBoOsNyc=
+	t=1728566884; cv=none; b=HoXt99QfMDa5nnDmgZZ18ws2/mPfttfixVFvpvV8mX2YlRR6h6I+It1LxHUfrvJXWu5WzFAbTOJ4NE5qOZwIt0BXZRltWZr3gnqt6s4F0J7sm/qGHPKj0kQeUCvqEz4vd4pFTOJUOCApMKMJSHvjEAWApyPz3TyY/QqOfXaCAS4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728565837; c=relaxed/simple;
-	bh=V7rlYtEOSBJZbMLM+XCRqd3wjCVwsdK1hiCC9dC62wA=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=X5IYuOCaLuGy9Md6yoaDZwybXCvXXOS0yGsdkCsf2ug/uh2lgQR30KivD4bgbOo6WWtj+ooY5WcStjqH7JHcrAEz657qZaE+tNTt8zcYdLdnJiTqAWc0gAnc42D10c3ycO6NLLBoMbd+9N2R3SVcd6dzFbxh/KsgxMTacmpUyh4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CGtN7zz1; arc=none smtp.client-ip=209.85.167.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-5389fbb28f3so862506e87.1;
-        Thu, 10 Oct 2024 06:10:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1728565834; x=1729170634; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OuJiu2A9K3F7RxlNpRBbTBdPuLTp339ni2HcpWnX9u0=;
-        b=CGtN7zz13ib0fuZsB210eonPntFEM1EQe9hK8y09i7eU37FyH9p3g4xuRkXlomU4kT
-         jFB/vmzeXivJmepwdgL11vJmY5TcJLUHvCdjqX5ggma4Gkh0gcJTgpDXqVyhLVNTTrlP
-         EqomtInoYGfcrvmZx2qMtAFxYvaOq+L457ECrJpAz1HlVnizzJzFFz1FKy2YgZXf7ayD
-         HmZ/x4dVDKDv2aG5TMk6AduCM8ZmvBOJgRzpK7ncIvFaNXqeclibKPfvxUBf5hz+K3Uq
-         Kw5/CCrSlIpfWkKHcQJr8+FsISslikk+sgYC0wOX3X/GfB6b+cby9yylh8GcaAAzvkpD
-         1nTg==
+	s=arc-20240116; t=1728566884; c=relaxed/simple;
+	bh=QzXfylZ4JE8G1GBkjM1ir0PcS2nG6lhTP0K5aixrrz0=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=aevi5RcyiPdu7PQxYADeIrBhPKPZO0pnhu7d0dMWgKlWmFUzZ4hoopQbW817encoCrHP5tO6X3vgUjw6hy0jDl5TFoJL6GDLoJPgBVd1IVqhWAhdWTApQa2I3SyvXOkA3+CY/9Al1iAopaUwrUiPdQZDyZrTicHxdtxVea45BG8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=A/zAYJXH; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1728566882;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=anubq11vB/lo7n+tCLWsH5bZuedG/liPgNJBc/f01io=;
+	b=A/zAYJXHFvNUDdxVuUa8+BU+QU2KMZZ5xN+FfqsvUP2jNuA9Biq0rJpY1cxcz42HUWQKPC
+	WruUEsahnQkGhkj4g0k8q0XjRe2O97jU+g9gyO2Fc885ourjNxymf9kFCsx1Aa8xaDcg+w
+	7x55E0qW273/V4NUkEuoTxD+kpIzwRw=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-220-72N2og4WPy2yf9ziiVVrYQ-1; Thu, 10 Oct 2024 09:28:01 -0400
+X-MC-Unique: 72N2og4WPy2yf9ziiVVrYQ-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-37d34f5b140so348212f8f.1
+        for <bpf@vger.kernel.org>; Thu, 10 Oct 2024 06:28:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728565834; x=1729170634;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OuJiu2A9K3F7RxlNpRBbTBdPuLTp339ni2HcpWnX9u0=;
-        b=HTSgsq8JQl3Gjjz0puOWiYLtZHqIqZLlbHhG3/N8T3cmGo8Gc0tmvUhO0q4hl3j66x
-         ruveIe92yQukflYunhawOuWWzQDyyA3BaIIi9fxuLphPk57DkXaTyzGk9+INiEGEkTGN
-         7iWuHw4x6Y7c7Btg5Bd+R+tRktpsYb7IH/2jqlHq00qzJ4s8kplMPGPCQ+jiwIA6SPFS
-         DarpO0XnbLnB8NjVkIdvvPKrGJpZt2k6k8SWn/wPlHuJhx7dCo1m4eS8BSXH9zIoVWH6
-         NLpGcehL9k+pocLFgTk85HzUKlY3/Dl9LfTACRRI2JOKvTqqzO/ugBozutNu4SarQLDe
-         DZpQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVKuppuZFpjMefd6QCsP9+but1oJGJnB/TuUVlVR23AaMHNK1exiUDEHkkLq9ES5NppSVM=@vger.kernel.org, AJvYcCWKrj9wqKZsTiBPx85pZr30intrX5imO0V/mg/ybYnGV9m3i2osQOvVQH2nk/jes8OEKV5/KTdmq05AF0+C@vger.kernel.org
-X-Gm-Message-State: AOJu0YzdfuU3uA+ta5L7zcGDnUhc7mUnGl823b9FNWIU4aO3+Es4cHY9
-	O6ksBgkuPrR/Xo7GXfCyzUgHjk1OebieguVc/whLbZASw/y4NcdZ
-X-Google-Smtp-Source: AGHT+IHotmSx4lEVD7Vq09kHOuUrD8kLvlKE58bqQ/6ks9ovPPFH5W+V24e63oyTtG9WOJ6NWDRz/w==
-X-Received: by 2002:a05:6512:3d10:b0:539:933c:51c6 with SMTP id 2adb3069b0e04-539c9895961mr1182236e87.29.1728565833803;
-        Thu, 10 Oct 2024 06:10:33 -0700 (PDT)
-Received: from work.. (2.133.25.254.dynamic.telecom.kz. [2.133.25.254])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-539cb8d800esm248596e87.126.2024.10.10.06.10.31
+        d=1e100.net; s=20230601; t=1728566879; x=1729171679;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=anubq11vB/lo7n+tCLWsH5bZuedG/liPgNJBc/f01io=;
+        b=KRM2x5DFqts1R6hcErHt2AdxyNFQB9pnJagQ/hJGe81FCS7JudIrNaL/4JEbEPrNS3
+         OlWBDo1iKKi3igJ6WWeuEn3RCBED1YOuAvKmHMccvkmccD3IsMNuboQNIxb4vjqh0Vgl
+         aD+Eb65Dq4wRn8OcpNfwAYdE+qgXy8oSHOHPtymfSE5hoBd0Mjd8UhhIFuIeuH7Qq0XF
+         myxYxKnzMav+IK4Ju5Hd/slhgUqzyC+pnabdkuUzdci1dEd/CwLthzXduMCYNPikC3kG
+         MX5j7y8Gasjej3aGNUIEyrn7iYoz+MC3wOvDNRp1s1sKvihG9M/idmfXWcmRsMEQNRU9
+         jV7g==
+X-Forwarded-Encrypted: i=1; AJvYcCUWwmDQbtnrF/+9YAv6Z8QfZG6mRsg3t8SGNxAeCguleImXzeDTpvtvFpO2nTSq1joOLe8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxAgJqoQnuJn1z3mO2LfgorwkYfl4iFrAo0L8HhOgDahWKbWH5I
+	bdZrtu63/D7oTMRBISDKgLIzjJZR0A3HgEkejid1I/vJZPZvmj5NA3PzrDkdf5pAHqBSlXrJRZ9
+	GOYxjKYWTVj5+56FllR3dCFrAAaJ3E39vMzFNdGy/Ku3QyTVsSg==
+X-Received: by 2002:a5d:68d2:0:b0:37d:4cef:538e with SMTP id ffacd0b85a97d-37d4cef5431mr1352762f8f.55.1728566879164;
+        Thu, 10 Oct 2024 06:27:59 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IERkXSpoeTCMCSFJETVvt8b1b5EHViM7IaDu9yOPcwCmke2o5zf0SH75HMtnBh5pbFywAM5xg==
+X-Received: by 2002:a5d:68d2:0:b0:37d:4cef:538e with SMTP id ffacd0b85a97d-37d4cef5431mr1352745f8f.55.1728566878688;
+        Thu, 10 Oct 2024 06:27:58 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-37d4b9190f7sm1547399f8f.114.2024.10.10.06.27.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Oct 2024 06:10:33 -0700 (PDT)
-From: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
-To: elver@google.com
-Cc: akpm@linux-foundation.org,
-	andreyknvl@gmail.com,
-	bpf@vger.kernel.org,
-	dvyukov@google.com,
-	glider@google.com,
-	kasan-dev@googlegroups.com,
-	linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	ryabinin.a.a@gmail.com,
-	snovitoll@gmail.com,
-	syzbot+61123a5daeb9f7454599@syzkaller.appspotmail.com,
-	vincenzo.frascino@arm.com
-Subject: [PATCH v5] mm, kasan, kmsan: copy_from/to_kernel_nofault
-Date: Thu, 10 Oct 2024 18:11:30 +0500
-Message-Id: <20241010131130.2903601-1-snovitoll@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <CANpmjNNPnEMBxF1-Lr_BACmPYxOTRa=k6Vwi=EFR=BED=G8akg@mail.gmail.com>
-References: <CANpmjNNPnEMBxF1-Lr_BACmPYxOTRa=k6Vwi=EFR=BED=G8akg@mail.gmail.com>
+        Thu, 10 Oct 2024 06:27:58 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id 3D11415F3E9F; Thu, 10 Oct 2024 15:27:57 +0200 (CEST)
+From: =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Subject: [PATCH bpf v2 0/3] Fix caching of BTF for kfuncs in the verifier
+Date: Thu, 10 Oct 2024 15:27:06 +0200
+Message-Id: <20241010-fix-kfunc-btf-caching-for-modules-v2-0-745af6c1af98@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIACvWB2cC/5WNTQqDMBSEryJv3VeSGMR21XsUF/l7JrQmkqi0i
+ Hdv8AZdfjPMfDsUl4MrcG92yG4LJaRYQVwaMF7F0WGwlUEwITljPVL44IvWaFAvhEYZH+KIlDJ
+ Oya5vV1B3omOt7CWRhvozZ1dHp+MJeiYYauhDWVL+nt6Nn9Ufio0jQ0uO7E0p2fL+kZ31armaN
+ MFwHMcPlBNHC9gAAAA=
+X-Change-ID: 20241008-fix-kfunc-btf-caching-for-modules-b62603484ffb
+To: Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, 
+ John Fastabend <john.fastabend@gmail.com>, 
+ Andrii Nakryiko <andrii@kernel.org>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, 
+ Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+ Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+ Jiri Olsa <jolsa@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: Simon Sundberg <simon.sundberg@kau.se>, bpf@vger.kernel.org, 
+ netdev@vger.kernel.org, 
+ =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+X-Mailer: b4 0.14.2
 
-Instrument copy_from_kernel_nofault() with KMSAN for uninitialized kernel
-memory check and copy_to_kernel_nofault() with KASAN, KCSAN to detect
-the memory corruption.
+When playing around with defining kfuncs in some custom modules, we
+noticed that if a BPF program calls two functions with the same
+signature in two different modules, the function from the wrong module
+may sometimes end up being called. Whether this happens depends on the
+order of the calls in the BPF program, which turns out to be due to the
+use of sort() inside __find_kfunc_desc_btf() in the verifier code.
 
-syzbot reported that bpf_probe_read_kernel() kernel helper triggered
-KASAN report via kasan_check_range() which is not the expected behaviour
-as copy_from_kernel_nofault() is meant to be a non-faulting helper.
+This series contains a fix for the issue (first patch), and a selftest
+to trigger it (last patch). The middle commit is a small refactor to
+expose the module loading helper functions in testing_helpers.c. See the
+individual patch descriptions for more details.
 
-Solution is, suggested by Marco Elver, to replace KASAN, KCSAN check in
-copy_from_kernel_nofault() with KMSAN detection of copying uninitilaized
-kernel memory. In copy_to_kernel_nofault() we can retain
-instrument_write() explicitly for the memory corruption instrumentation.
-
-copy_to_kernel_nofault() is tested on x86_64 and arm64 with
-CONFIG_KASAN_SW_TAGS. On arm64 with CONFIG_KASAN_HW_TAGS,
-kunit test currently fails. Need more clarification on it.
-
-Link: https://lore.kernel.org/linux-mm/CANpmjNMAVFzqnCZhEity9cjiqQ9CVN1X7qeeeAp_6yKjwKo8iw@mail.gmail.com/
-Reviewed-by: Marco Elver <elver@google.com>
-Suggested-by: Marco Elver <elver@google.com>
-Reported-by: syzbot+61123a5daeb9f7454599@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=61123a5daeb9f7454599
-Reported-by: Andrey Konovalov <andreyknvl@gmail.com>
-Closes: https://bugzilla.kernel.org/show_bug.cgi?id=210505
-Signed-off-by: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
 ---
-v2:
-- squashed previous submitted in -mm tree 2 patches based on Linus tree
-v3:
-- moved checks to *_nofault_loop macros per Marco's comments
-- edited the commit message
-v4:
-- replaced Suggested-by with Reviewed-by
-v5:
-- addressed Andrey's comment on deleting CONFIG_KASAN_HW_TAGS check in
-  mm/kasan/kasan_test_c.c
-- added explanatory comment in kasan_test_c.c
-- added Suggested-by: Marco Elver back per Andrew's comment.
----
- mm/kasan/kasan_test_c.c | 37 +++++++++++++++++++++++++++++++++++++
- mm/kmsan/kmsan_test.c   | 17 +++++++++++++++++
- mm/maccess.c            | 10 ++++++++--
- 3 files changed, 62 insertions(+), 2 deletions(-)
+Changes in v2:
+- Drop patch that refactors module building in selftests (Alexei)
+- Get rid of expect_val function argument in selftest (Jiri)
+- Collect ACKs
+- Link to v1: https://lore.kernel.org/r/20241008-fix-kfunc-btf-caching-for-modules-v1-0-dfefd9aa4318@redhat.com
 
-diff --git a/mm/kasan/kasan_test_c.c b/mm/kasan/kasan_test_c.c
-index a181e4780d9d..cb6ad84641ec 100644
---- a/mm/kasan/kasan_test_c.c
-+++ b/mm/kasan/kasan_test_c.c
-@@ -1954,6 +1954,42 @@ static void rust_uaf(struct kunit *test)
- 	KUNIT_EXPECT_KASAN_FAIL(test, kasan_test_rust_uaf());
- }
- 
-+static void copy_to_kernel_nofault_oob(struct kunit *test)
-+{
-+	char *ptr;
-+	char buf[128];
-+	size_t size = sizeof(buf);
-+
-+	/* This test currently fails with the HW_TAGS mode.
-+	 * The reason is unknown and needs to be investigated. */
-+	ptr = kmalloc(size - KASAN_GRANULE_SIZE, GFP_KERNEL);
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
-+	OPTIMIZER_HIDE_VAR(ptr);
-+
-+	if (IS_ENABLED(CONFIG_KASAN_SW_TAGS)) {
-+		/* Check that the returned pointer is tagged. */
-+		KUNIT_EXPECT_GE(test, (u8)get_tag(ptr), (u8)KASAN_TAG_MIN);
-+		KUNIT_EXPECT_LT(test, (u8)get_tag(ptr), (u8)KASAN_TAG_KERNEL);
-+	}
-+
-+	/*
-+	* We test copy_to_kernel_nofault() to detect corrupted memory that is
-+	* being written into the kernel. In contrast, copy_from_kernel_nofault()
-+	* is primarily used in kernel helper functions where the source address
-+	* might be random or uninitialized. Applying KASAN instrumentation to
-+	* copy_from_kernel_nofault() could lead to false positives.
-+	* By focusing KASAN checks only on copy_to_kernel_nofault(),
-+	* we ensure that only valid memory is written to the kernel,
-+	* minimizing the risk of kernel corruption while avoiding
-+	* false positives in the reverse case.
-+	*/
-+	KUNIT_EXPECT_KASAN_FAIL(test,
-+		copy_to_kernel_nofault(&buf[0], ptr, size));
-+	KUNIT_EXPECT_KASAN_FAIL(test,
-+		copy_to_kernel_nofault(ptr, &buf[0], size));
-+	kfree(ptr);
-+}
-+
- static struct kunit_case kasan_kunit_test_cases[] = {
- 	KUNIT_CASE(kmalloc_oob_right),
- 	KUNIT_CASE(kmalloc_oob_left),
-@@ -2027,6 +2063,7 @@ static struct kunit_case kasan_kunit_test_cases[] = {
- 	KUNIT_CASE(match_all_not_assigned),
- 	KUNIT_CASE(match_all_ptr_tag),
- 	KUNIT_CASE(match_all_mem_tag),
-+	KUNIT_CASE(copy_to_kernel_nofault_oob),
- 	KUNIT_CASE(rust_uaf),
- 	{}
- };
-diff --git a/mm/kmsan/kmsan_test.c b/mm/kmsan/kmsan_test.c
-index 13236d579eba..9733a22c46c1 100644
---- a/mm/kmsan/kmsan_test.c
-+++ b/mm/kmsan/kmsan_test.c
-@@ -640,6 +640,22 @@ static void test_unpoison_memory(struct kunit *test)
- 	KUNIT_EXPECT_TRUE(test, report_matches(&expect));
- }
- 
-+static void test_copy_from_kernel_nofault(struct kunit *test)
-+{
-+	long ret;
-+	char buf[4], src[4];
-+	size_t size = sizeof(buf);
-+
-+	EXPECTATION_UNINIT_VALUE_FN(expect, "copy_from_kernel_nofault");
-+	kunit_info(
-+		test,
-+		"testing copy_from_kernel_nofault with uninitialized memory\n");
-+
-+	ret = copy_from_kernel_nofault((char *)&buf[0], (char *)&src[0], size);
-+	USE(ret);
-+	KUNIT_EXPECT_TRUE(test, report_matches(&expect));
-+}
-+
- static struct kunit_case kmsan_test_cases[] = {
- 	KUNIT_CASE(test_uninit_kmalloc),
- 	KUNIT_CASE(test_init_kmalloc),
-@@ -664,6 +680,7 @@ static struct kunit_case kmsan_test_cases[] = {
- 	KUNIT_CASE(test_long_origin_chain),
- 	KUNIT_CASE(test_stackdepot_roundtrip),
- 	KUNIT_CASE(test_unpoison_memory),
-+	KUNIT_CASE(test_copy_from_kernel_nofault),
- 	{},
- };
- 
-diff --git a/mm/maccess.c b/mm/maccess.c
-index 518a25667323..3ca55ec63a6a 100644
---- a/mm/maccess.c
-+++ b/mm/maccess.c
-@@ -13,9 +13,14 @@ bool __weak copy_from_kernel_nofault_allowed(const void *unsafe_src,
- 	return true;
- }
- 
-+/*
-+ * The below only uses kmsan_check_memory() to ensure uninitialized kernel
-+ * memory isn't leaked.
-+ */
- #define copy_from_kernel_nofault_loop(dst, src, len, type, err_label)	\
- 	while (len >= sizeof(type)) {					\
--		__get_kernel_nofault(dst, src, type, err_label);		\
-+		__get_kernel_nofault(dst, src, type, err_label);	\
-+		kmsan_check_memory(src, sizeof(type));			\
- 		dst += sizeof(type);					\
- 		src += sizeof(type);					\
- 		len -= sizeof(type);					\
-@@ -49,7 +54,8 @@ EXPORT_SYMBOL_GPL(copy_from_kernel_nofault);
- 
- #define copy_to_kernel_nofault_loop(dst, src, len, type, err_label)	\
- 	while (len >= sizeof(type)) {					\
--		__put_kernel_nofault(dst, src, type, err_label);		\
-+		__put_kernel_nofault(dst, src, type, err_label);	\
-+		instrument_write(dst, sizeof(type));			\
- 		dst += sizeof(type);					\
- 		src += sizeof(type);					\
- 		len -= sizeof(type);					\
+---
+Simon Sundberg (2):
+      selftests/bpf: Provide a generic [un]load_module helper
+      selftests/bpf: Add test for kfunc module order
+
+Toke Høiland-Jørgensen (1):
+      bpf: fix kfunc btf caching for modules
+
+ kernel/bpf/verifier.c                              |  8 +++-
+ tools/testing/selftests/bpf/Makefile               | 20 +++++++-
+ .../selftests/bpf/bpf_test_modorder_x/Makefile     | 19 ++++++++
+ .../bpf/bpf_test_modorder_x/bpf_test_modorder_x.c  | 39 +++++++++++++++
+ .../selftests/bpf/bpf_test_modorder_y/Makefile     | 19 ++++++++
+ .../bpf/bpf_test_modorder_y/bpf_test_modorder_y.c  | 39 +++++++++++++++
+ .../selftests/bpf/prog_tests/kfunc_module_order.c  | 55 ++++++++++++++++++++++
+ .../selftests/bpf/progs/kfunc_module_order.c       | 30 ++++++++++++
+ tools/testing/selftests/bpf/testing_helpers.c      | 34 ++++++++-----
+ tools/testing/selftests/bpf/testing_helpers.h      |  2 +
+ 10 files changed, 251 insertions(+), 14 deletions(-)
+---
+base-commit: 60f802e2d6e10df609a80962b13558b7455ab32b
+change-id: 20241008-fix-kfunc-btf-caching-for-modules-b62603484ffb
+
+Best regards,
 -- 
-2.34.1
+Toke Høiland-Jørgensen <toke@redhat.com>
 
 
