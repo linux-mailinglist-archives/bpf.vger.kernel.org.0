@@ -1,47 +1,46 @@
-Return-Path: <bpf+bounces-41515-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41516-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C99109979FE
-	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 03:10:06 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69E8B997A0B
+	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 03:19:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B55A2848F4
-	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 01:10:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A07E81F23BB1
+	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 01:19:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9C1B22EE5;
-	Thu, 10 Oct 2024 01:10:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25A0722338;
+	Thu, 10 Oct 2024 01:19:33 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B817817BA1
-	for <bpf@vger.kernel.org>; Thu, 10 Oct 2024 01:09:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 616D310A12
+	for <bpf@vger.kernel.org>; Thu, 10 Oct 2024 01:19:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728522600; cv=none; b=O7AbINMFUCfQVT1XiqWU4XWfNRsb54kVoowjSCfbYRGncSxY8VRInSIorYbGs/RNXfj1ox0pMq0CywHnt7hCJLq8s2ugBhYEOrsxfmrZrayPoCHy70Bhtg3pDBcpG1a1W/LN5d9r1JPT1Bu3C57SDQgUGk0mZ1Ko4P1Qz1kyZwk=
+	t=1728523172; cv=none; b=I2dizNWv1UZeeaeq8U+0Bs43xDRUJKLD6aWTj/4kHgHpgSB52hwlpx669NUIE1GNLVLZG/RueNnfB/E1mWYr8dLEQ3zOjAvWE9+VF7IjoTnRmhZ+oMr72H/yeRQBRkjRUffYw+eWI5kkb4FPPfBO/KWxAIrELRu7tVYxpnoOOns=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728522600; c=relaxed/simple;
-	bh=fc1V3nEGV/4hHvbQV6WiuS77wArIfMlP4gLJAj4sUwc=;
+	s=arc-20240116; t=1728523172; c=relaxed/simple;
+	bh=O4h2ghWSwLcvCEtJCd7bK5SMUoodysTF/QMvA75rjWE=;
 	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=iM5KZ02OnpB/mPH+QgON7i2p5cFcqEO/cNWlA33k8jpeWbX5NighUppD3mXlw/trH5vOjCmGz+FNQUTBJiTiw8cRq2zE972K/fJm9vgk1smSVIe5dVIl7V6QHb13rWbJsVW+lApLYAsmavirxCCJE/6wc3gzb/Xa4zP6+eOuU+A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+	 In-Reply-To:Content-Type; b=SQ0OsuCROWT6BvefJJhGie54ykG7+Kil1SRrxCQTBAvwQqBX3MuNmfpVYG+9RbehBLz7WPtnAA4mA21Bc34GMxpUbMaEhqBLw8wdqJvode2ZJSAeC9HFq3ppzwjaIdXerYkaQ/e/CSL47QY0Fi84C75aEK8cc36UTT+R/CmhGV8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4XPBVt1Gkfz4f3jkL
-	for <bpf@vger.kernel.org>; Thu, 10 Oct 2024 09:09:42 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id EDB2D1A08DC
-	for <bpf@vger.kernel.org>; Thu, 10 Oct 2024 09:09:53 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4XPBjh0P1pz4f3jsr
+	for <bpf@vger.kernel.org>; Thu, 10 Oct 2024 09:19:04 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.252])
+	by mail.maildlp.com (Postfix) with ESMTP id E3FF91A018D
+	for <bpf@vger.kernel.org>; Thu, 10 Oct 2024 09:19:20 +0800 (CST)
 Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP2 (Coremail) with SMTP id Syh0CgCHvGFdKQdnP52fDg--.48174S2;
-	Thu, 10 Oct 2024 09:09:53 +0800 (CST)
-Subject: Re: [PATCH bpf 3/7] bpf: Free dynamically allocated bits in
- bpf_iter_bits_destroy()
-To: Yafang Shao <laoar.shao@gmail.com>,
- Andrii Nakryiko <andrii.nakryiko@gmail.com>
+	by APP3 (Coremail) with SMTP id _Ch0CgAXa4eVKwdnCOUuDg--.63941S2;
+	Thu, 10 Oct 2024 09:19:20 +0800 (CST)
+Subject: Re: [PATCH bpf 5/7] bpf: Change the type of unsafe_ptr in
+ bpf_iter_bits_new()
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc: bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
  Alexei Starovoitov <alexei.starovoitov@gmail.com>,
  Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
@@ -49,15 +48,16 @@ Cc: bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
  Yonghong Song <yonghong.song@linux.dev>,
  Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>,
  Stanislav Fomichev <sdf@fomichev.me>, Jiri Olsa <jolsa@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>, houtao1@huawei.com,
- xukuohai@huawei.com
+ John Fastabend <john.fastabend@gmail.com>, Yafang Shao
+ <laoar.shao@gmail.com>, xukuohai@huawei.com,
+ "houtao1@huawei.com" <houtao1@huawei.com>
 References: <20241008091718.3797027-1-houtao@huaweicloud.com>
- <20241008091718.3797027-4-houtao@huaweicloud.com>
- <CAEf4BzaxYNZ=xc15O7ai5Fqd8XOON5t-Z25mFGGaSu=63j1T1A@mail.gmail.com>
- <CALOAHbASB9OXkmVnhirB217Ndf9RR4vOZqnJF142UyKaAvdkPw@mail.gmail.com>
+ <20241008091718.3797027-6-houtao@huaweicloud.com>
+ <CAEf4BzZ2J+Kd3wHNUM92ro1ikD3kqMF9zXEMPbG7u=GAVev3Xw@mail.gmail.com>
+ <bcb4adcf-0e02-2543-6cb4-ac237b11a061@huaweicloud.com>
 From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <a14be468-6792-1d24-f127-29fd96a2013d@huaweicloud.com>
-Date: Thu, 10 Oct 2024 09:09:49 +0800
+Message-ID: <7ec62167-462c-a7b8-a61e-7db6e56bed18@huaweicloud.com>
+Date: Thu, 10 Oct 2024 09:19:17 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.6.0
 Precedence: bulk
@@ -66,105 +66,134 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CALOAHbASB9OXkmVnhirB217Ndf9RR4vOZqnJF142UyKaAvdkPw@mail.gmail.com>
+In-Reply-To: <bcb4adcf-0e02-2543-6cb4-ac237b11a061@huaweicloud.com>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-X-CM-TRANSID:Syh0CgCHvGFdKQdnP52fDg--.48174S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxZrWkAw4kAF1rCF15GF1kGrg_yoW5WF4Upr
-	4fXF1qkr4ktFs2yw1Utr1DKFy5Jr1Yka4UWrs3tFn8CF4UWFyq9r1UWrWag3Z8trsYyF13
-	Zr1kC34SvrW5JaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9Ib4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+X-CM-TRANSID:_Ch0CgAXa4eVKwdnCOUuDg--.63941S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxAF15Xw1rWFWDArW8Zw1xGrg_yoWrCrW8pr
+	4fJ3WqyrW0qrsrKw1qqa40ka4xJ3srta48WrWxJr15KFs0qrnF9r1UWryYgasakrW8Ar1I
+	vryj9343ZFWDAa7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU92b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
 	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-	e2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_GFv_Wryl42xK82IYc2Ij64vIr41l4I8I3I0E4I
-	kC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWU
-	WwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr
-	0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWU
-	JVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJb
-	IYCTnIWIevJa73UjIFyTuYvjxUIa0PDUUUU
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
+	07AlzVAYIcxG8wCY1x0262kKe7AKxVW8ZVWrXwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4
+	IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1r
+	MI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJV
+	WUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j
+	6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYx
+	BIdaVFxhVjvjDU0xZFpf9x07j7l19UUUUU=
 X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-Hi,
 
-On 10/9/2024 7:37 PM, Yafang Shao wrote:
-> On Wed, Oct 9, 2024 at 2:26 AM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
+
+On 10/9/2024 10:45 AM, Hou Tao wrote:
+>
+> On 10/9/2024 2:30 AM, Andrii Nakryiko wrote:
 >> On Tue, Oct 8, 2024 at 2:05 AM Hou Tao <houtao@huaweicloud.com> wrote:
 >>> From: Hou Tao <houtao1@huawei.com>
 >>>
->>> bpf_iter_bits_destroy() uses "kit->nr_bits <= 64" to check whether the
->>> bits are dynamically allocated. However, the check is incorrect and may
->>> cause a kmemleak as shown below:
+>>> Under 32-bits host (e.g, arm32) , when a bpf program passes an u64 to
+>>> bpf_iter_bits_new(), bpf_iter_bits_new() will use bits_copy to save the
+>>> content of the u64, but the size of bits_copy is only 4-bytes, and there
+>>> will be stack corruption.
 >>>
->>> unreferenced object 0xffff88812628c8c0 (size 32):
->>>   comm "swapper/0", pid 1, jiffies 4294727320
->>>   hex dump (first 32 bytes):
->>>     b0 c1 55 f5 81 88 ff ff f0 f0 f0 f0 f0 f0 f0 f0  ..U.............
->>>     f0 f0 f0 f0 f0 f0 f0 f0 00 00 00 00 00 00 00 00  ................
->>>   backtrace (crc 781e32cc):
->>>     [<00000000c452b4ab>] kmemleak_alloc+0x4b/0x80
->>>     [<0000000004e09f80>] __kmalloc_node_noprof+0x480/0x5c0
->>>     [<00000000597124d6>] __alloc.isra.0+0x89/0xb0
->>>     [<000000004ebfffcd>] alloc_bulk+0x2af/0x720
->>>     [<00000000d9c10145>] prefill_mem_cache+0x7f/0xb0
->>>     [<00000000ff9738ff>] bpf_mem_alloc_init+0x3e2/0x610
->>>     [<000000008b616eac>] bpf_global_ma_init+0x19/0x30
->>>     [<00000000fc473efc>] do_one_initcall+0xd3/0x3c0
->>>     [<00000000ec81498c>] kernel_init_freeable+0x66a/0x940
->>>     [<00000000b119f72f>] kernel_init+0x20/0x160
->>>     [<00000000f11ac9a7>] ret_from_fork+0x3c/0x70
->>>     [<0000000004671da4>] ret_from_fork_asm+0x1a/0x30
+>>> Fix it by change the type of unsafe_ptr from u64 * to unsigned long *.
 >>>
->>> That is because nr_bits will be set as zero in bpf_iter_bits_next()
->>> after all bits have been iterated.
+>> This will be confusing as BPF-side long is always 64-bit. So why not
+>> instead make sure it's u64 throughout (i.e., bits_copy is u64
+>> explicitly), even on 32-bit architectures?
+> Just learn about the size of BPF-side long is always 64-bits. I had
+> considered to change bits_copy to u64. The main obstacle is that the
+> pointer type of find_next_bit is unsigned long *, if it is used on an
+> u64 under big-endian host, it may return invalid result.
+
+I think doing the following swap for big endian and 32-bits host will
+let find_next_bit return the correct result:
+
++static void swap_bits(u64 *bits, unsigned int nr)
++{
++#if defined(__BIG_ENDIAN) && !defined(CONFIG_64BIT)
++       unsigned int i;
++
++       for (i = 0; i < nr; i++)
++               bits[i] = (bits[i] >> 32) | ((u64)(u32)bits[i] << 32);
++#endif
++}
++
+
+Will try to get some test environment to test it.
+>>> Signed-off-by: Hou Tao <houtao1@huawei.com>
+>>> ---
+>>>  kernel/bpf/helpers.c | 18 ++++++++++--------
+>>>  1 file changed, 10 insertions(+), 8 deletions(-)
 >>>
->> so maybe don't touch nr_bits and just use `kit->bit >= kit->nr_bits`
->> condition to know when iterator is done?
-> No, we can't do that. The iterator may only process a few bits, which
-> would result in `kit->bit < kit->nr_bits`. Wouldn't it be better to
-> simply remove the line `kit->nr_bits = 0;`?
-
-I think that is Andrii wanted to say. And is it more reasonable to also
-change the check in the begin of bpf_iter_bits_next() to "bit >= nr_bits" ?
-
-@@ -2934,15 +2934,13 @@ __bpf_kfunc int *bpf_iter_bits_next(struct
-bpf_iter_bits *it)
-        const unsigned long *bits;
-        int bit;
-
--       if (nr_bits == 0)
-+       if (kit->bit >= nr_bits)
-                return NULL;
-
-
->
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index 1a43d06eab28..7fcd3163cf68 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -2939,10 +2939,8 @@ __bpf_kfunc int *bpf_iter_bits_next(struct
-> bpf_iter_bits *it)
->
->         bits = nr_bits == 64 ? &kit->bits_copy : kit->bits;
->         bit = find_next_bit(bits, nr_bits, kit->bit + 1);
-> -       if (bit >= nr_bits) {
-> -               kit->nr_bits = 0;
-> +       if (bit >= nr_bits)
->                 return NULL;
-> -       }
->
->         kit->bit = bit;
->         return &kit->bit;
->
-> --
-> Regards
->
-> Yafang
+>>> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+>>> index 6c0205d5018c..dee69c3904a0 100644
+>>> --- a/kernel/bpf/helpers.c
+>>> +++ b/kernel/bpf/helpers.c
+>>> @@ -2852,7 +2852,7 @@ struct bpf_iter_bits {
+>>>  } __aligned(8);
+>>>
+>>>  /* nr_bits only has 31 bits */
+>>> -#define BITS_ITER_NR_WORDS_MAX ((1U << 31) / BITS_PER_TYPE(u64))
+>>> +#define BITS_ITER_NR_WORDS_MAX ((1U << 31) / BITS_PER_TYPE(unsigned long))
+>>>
+>>>  struct bpf_iter_bits_kern {
+>>>         union {
+>>> @@ -2868,8 +2868,9 @@ struct bpf_iter_bits_kern {
+>>>   * bpf_iter_bits_new() - Initialize a new bits iterator for a given memory area
+>>>   * @it: The new bpf_iter_bits to be created
+>>>   * @unsafe_ptr__ign: A pointer pointing to a memory area to be iterated over
+>>> - * @nr_words: The size of the specified memory area, measured in 8-byte units.
+>>> - * Due to the limitation of memalloc, it can't be greater than 512.
+>>> + * @nr_words: The size of the specified memory area, measured in units of
+>>> + * sizeof(unsigned long). Due to the limitation of memalloc, it can't be
+>>> + * greater than 512.
+>>>   *
+>>>   * This function initializes a new bpf_iter_bits structure for iterating over
+>>>   * a memory area which is specified by the @unsafe_ptr__ign and @nr_words. It
+>>> @@ -2879,17 +2880,18 @@ struct bpf_iter_bits_kern {
+>>>   * On success, 0 is returned. On failure, ERR is returned.
+>>>   */
+>>>  __bpf_kfunc int
+>>> -bpf_iter_bits_new(struct bpf_iter_bits *it, const u64 *unsafe_ptr__ign, u32 nr_words)
+>>> +bpf_iter_bits_new(struct bpf_iter_bits *it, const unsigned long *unsafe_ptr__ign, u32 nr_words)
+>>>  {
+>>> -       struct bpf_iter_bits_kern *kit = (void *)it;
+>>> -       u32 nr_bytes = nr_words * sizeof(u64);
+>>> +       u32 nr_bytes = nr_words * sizeof(*unsafe_ptr__ign);
+>>>         u32 nr_bits = BYTES_TO_BITS(nr_bytes);
+>>> +       struct bpf_iter_bits_kern *kit;
+>>>         int err;
+>>>
+>>>         BUILD_BUG_ON(sizeof(struct bpf_iter_bits_kern) != sizeof(struct bpf_iter_bits));
+>>>         BUILD_BUG_ON(__alignof__(struct bpf_iter_bits_kern) !=
+>>>                      __alignof__(struct bpf_iter_bits));
+>>>
+>>> +       kit = (void *)it;
+>>>         kit->allocated = 0;
+>>>         kit->nr_bits = 0;
+>>>         kit->bits_copy = 0;
+>>> @@ -2900,8 +2902,8 @@ bpf_iter_bits_new(struct bpf_iter_bits *it, const u64 *unsafe_ptr__ign, u32 nr_w
+>>>         if (nr_words > BITS_ITER_NR_WORDS_MAX)
+>>>                 return -E2BIG;
+>>>
+>>> -       /* Optimization for u64 mask */
+>>> -       if (nr_bits == 64) {
+>>> +       /* Optimization for unsigned long mask */
+>>> +       if (nr_words == 1) {
+>>>                 err = bpf_probe_read_kernel_common(&kit->bits_copy, nr_bytes, unsafe_ptr__ign);
+>>>                 if (err)
+>>>                         return -EFAULT;
+>>> --
+>>> 2.29.2
+>>>
+>> .
 > .
 
 
