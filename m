@@ -1,346 +1,162 @@
-Return-Path: <bpf+bounces-41582-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41583-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C2FC998A84
-	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 16:56:18 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1ADAF998B69
+	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 17:24:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8A1EFB21694
-	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 14:33:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 78AE61F25BFB
+	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2024 15:24:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21A8420DD2;
-	Thu, 10 Oct 2024 14:28:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 544AF1CC8A8;
+	Thu, 10 Oct 2024 15:24:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="e7omrTBz"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ekagPdIZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA59A1C233D
-	for <bpf@vger.kernel.org>; Thu, 10 Oct 2024 14:28:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BAC71CC146;
+	Thu, 10 Oct 2024 15:24:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728570483; cv=none; b=c7i8mlQY0JqlFei62VtA0CEx4vxRF21NKw0X3k6tqRVfmwauggEVa9l3CMNZLA33glh277R+J2TfD8qCzFUWhe/CPjz2opeJAs7K9q69rDGsLB6ZMlm9dUPqNAX1R8/00B5OIJ621re0XdJY3k74n90WI7b/nj8eqozU9UbwXIk=
+	t=1728573883; cv=none; b=eGuiKwfNt5EeK2L+p3GpJvpvhjOCDQd8f2FvlFZK+oNh6Yyln98htJS7xhllkqSK96MDO4RVrPLnCQ3OODE0JJVEzvBzmprYJu0twqWeUnMj8pCVx13Gvwzcwiq1XVzh8w8FnvRojIvtjGcgpXVyMlNOh65ay4RZEsRP0EJPI2I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728570483; c=relaxed/simple;
-	bh=UkDubUacXNheQxfa7Zmf6aIzCn9OGPPaFFk7SK5ZkXw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CZ8l772ge1evTYub3mwkZBOxCklo7aLGzJ6BwGiZkyXB3IlTM1iqZYGUMaedxLok9Me5mG3k3/gj0qDf95Pn98O6g5XsSE0NACpFwYgFB8VyMOYXBa+h+pub/13qsk/QCiNoS21YAKWgyUNrQa3uEIWBXum9mi9uoFz2Bp1PShg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=e7omrTBz; arc=none smtp.client-ip=91.218.175.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <ba378d8f-aaff-47e8-9830-19e592465d31@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1728570478;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=otEzmxtfAyLb/kgW0Gf1O+xuLDD2u3xcggLu8CVNS44=;
-	b=e7omrTBzY1BIsqWpTt8VAnEOpTQwXylt3Z+S1eQgXpPgKTNH/1R4N58hth4MeLpKmsyxr+
-	8G+hYtCKhKz0CX+6J0pN8FhOYu+fMU0LZRRdi4G1Hm2TiXpDF4CQDKzIxutKY/ydDJJYIk
-	/BAiNyZeT2unNMuyR4qRbEzzqXwOIrY=
-Date: Thu, 10 Oct 2024 22:27:42 +0800
+	s=arc-20240116; t=1728573883; c=relaxed/simple;
+	bh=gnTehr7qrLMKw/pUpKhTMaCY3tpDIt6F6aFobT96HoY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jH4/QwYdMYSRHgNrkotABtQpbYoq36PP1zZrVAMHMH/BrigC0mQ3WPBRfCDGKC5uYCSHibLw6MWil3ENOwGHkkXp3Ab0iCgO/KFE4EQtoEUIjSS8aVxYFfcXRyklCG/w8YapZ65fM/iUqWy6hXh+0kxtuuILYCj6NtnWD0M86os=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ekagPdIZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94D86C4CEC5;
+	Thu, 10 Oct 2024 15:24:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1728573883;
+	bh=gnTehr7qrLMKw/pUpKhTMaCY3tpDIt6F6aFobT96HoY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ekagPdIZxqT4SWWRuS6VjAHAzc6oWKEW/4hsSTRm4pLygcR/K/5nYo1MRhIB1W8Bi
+	 WhUInbNKfRaSZHzNuMbNo/gh/Dm11IzVkhHlBcuZvhkOJMQBELbJP+QR/GYDeVHSby
+	 +1ODj4I12HqiH5y8g34fzvrSEzf2u/HDRwYAX/nNnTn9iTEhJxcxooLVqAwIKD6FZv
+	 b3fbK7YHQj8tX05PEVkLu2GJn3pxXz8GTYW1p2sF1xOis1mXNPjG1oTG9dYByuOZVe
+	 q0nYNSfpcIxt1MrmJaX80Vmf5bsmJaexf7/nT75nIm1VGT6H7a1RxSwQLd/ELhYVan
+	 63H6TXss7XvhQ==
+Date: Thu, 10 Oct 2024 18:20:53 +0300
+From: Mike Rapoport <rppt@kernel.org>
+To: Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Andy Lutomirski <luto@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+	Brian Cain <bcain@quicinc.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Christoph Hellwig <hch@infradead.org>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
+	Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Michal Simek <monstr@monstr.eu>, Oleg Nesterov <oleg@redhat.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Richard Weinberger <richard@nod.at>,
+	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
+	Stafford Horne <shorne@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>,
+	bpf@vger.kernel.org, linux-alpha@vger.kernel.org,
+	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+	linux-mips@vger.kernel.org, linux-mm@kvack.org,
+	linux-modules@vger.kernel.org, linux-openrisc@vger.kernel.org,
+	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+	linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+	linux-trace-kernel@vger.kernel.org, linux-um@lists.infradead.org,
+	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
+	sparclinux@vger.kernel.org, x86@kernel.org
+Subject: Re: Bisected: [PATCH v5 8/8] x86/module: enable ROX caches for
+ module text
+Message-ID: <Zwfw1bC-muLe6I9-@kernel.org>
+References: <20241009180816.83591-1-rppt@kernel.org>
+ <20241009180816.83591-9-rppt@kernel.org>
+ <20241010083033.GA1279924@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v6 1/3] bpf: Prevent tailcall infinite loop
- caused by freplace
-To: Xu Kuohai <xukuohai@huaweicloud.com>, bpf@vger.kernel.org
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, toke@redhat.com,
- martin.lau@kernel.org, yonghong.song@linux.dev, puranjay@kernel.org,
- eddyz87@gmail.com, iii@linux.ibm.com, kernel-patches-bot@fb.com,
- lkp@intel.com
-References: <20241008161333.33469-1-leon.hwang@linux.dev>
- <20241008161333.33469-2-leon.hwang@linux.dev>
- <7ac49fa0-b1f1-4571-b95a-3ffd8f867735@huaweicloud.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Leon Hwang <leon.hwang@linux.dev>
-In-Reply-To: <7ac49fa0-b1f1-4571-b95a-3ffd8f867735@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241010083033.GA1279924@google.com>
 
-
-
-On 2024/10/10 22:06, Xu Kuohai wrote:
-> On 10/9/2024 12:13 AM, Leon Hwang wrote:
->> This patch prevents an infinite loop issue caused by combination of
->> tailcall
->> and freplace.
->>
->> For example:
->>
->> tc_bpf2bpf.c:
->>
->> // SPDX-License-Identifier: GPL-2.0
->>
->> \#include <linux/bpf.h>
->> \#include <bpf/bpf_helpers.h>
->>
->> __noinline
->> int subprog_tc(struct __sk_buff *skb)
->> {
->>     return skb->len * 2;
->> }
->>
->> SEC("tc")
->> int entry_tc(struct __sk_buff *skb)
->> {
->>     return subprog_tc(skb);
->> }
->>
->> char __license[] SEC("license") = "GPL";
->>
->> tailcall_freplace.c:
->>
->> // SPDX-License-Identifier: GPL-2.0
->>
->> \#include <linux/bpf.h>
->> \#include <bpf/bpf_helpers.h>
->>
->> struct {
->>     __uint(type, BPF_MAP_TYPE_PROG_ARRAY);
->>     __uint(max_entries, 1);
->>     __uint(key_size, sizeof(__u32));
->>     __uint(value_size, sizeof(__u32));
->> } jmp_table SEC(".maps");
->>
->> int count = 0;
->>
->> SEC("freplace")
->> int entry_freplace(struct __sk_buff *skb)
->> {
->>     count++;
->>     bpf_tail_call_static(skb, &jmp_table, 0);
->>     return count;
->> }
->>
->> char __license[] SEC("license") = "GPL";
->>
->> The attach target of entry_freplace is subprog_tc, and the tail callee
->> in entry_freplace is entry_tc.
->>
->> Then, the infinite loop will be entry_tc -> subprog_tc -> entry_freplace
->> --tailcall-> entry_tc, because tail_call_cnt in entry_freplace will count
->> from zero for every time of entry_freplace execution. Kernel will panic,
->> like:
->>
->> [   15.310490] BUG: TASK stack guard page was hit at (____ptrval____)
->> (stack is (____ptrval____)..(____ptrval____))
->> [   15.310490] Oops: stack guard page: 0000 [#1] PREEMPT SMP NOPTI
->> [   15.310490] CPU: 1 PID: 89 Comm: test_progs Tainted: G           OE
->>     6.10.0-rc6-g026dcdae8d3e-dirty #72
->> [   15.310490] Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX,
->> 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
->> [   15.310490] RIP: 0010:bpf_prog_3a140cef239a4b4f_subprog_tail+0x14/0x53
->> [   15.310490] Code: cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc
->> cc cc cc cc cc f3 0f 1e fa 0f 1f 44 00 00 0f 1f 00 55 48 89 e5 f3 0f 1e
->> fa <50> 50 53 41 55 48 89 fb 49 bd 00 2a 46 82 98 9c ff ff 48 89 df 4c
->> [   15.310490] RSP: 0018:ffffb500c0aa0000 EFLAGS: 00000202
->> [   15.310490] RAX: ffffb500c0aa0028 RBX: ffff9c98808b7e00 RCX:
->> 0000000000008cb5
->> [   15.310490] RDX: 0000000000000000 RSI: ffff9c9882462a00 RDI:
->> ffff9c98808b7e00
->> [   15.310490] RBP: ffffb500c0aa0000 R08: 0000000000000000 R09:
->> 0000000000000000
->> [   15.310490] R10: 0000000000000001 R11: 0000000000000000 R12:
->> ffffb500c01af000
->> [   15.310490] R13: ffffb500c01cd000 R14: 0000000000000000 R15:
->> 0000000000000000
->> [   15.310490] FS:  00007f133b665140(0000) GS:ffff9c98bbd00000(0000)
->> knlGS:0000000000000000
->> [   15.310490] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->> [   15.310490] CR2: ffffb500c0a9fff8 CR3: 0000000102478000 CR4:
->> 00000000000006f0
->> [   15.310490] Call Trace:
->> [   15.310490]  <#DF>
->> [   15.310490]  ? die+0x36/0x90
->> [   15.310490]  ? handle_stack_overflow+0x4d/0x60
->> [   15.310490]  ? exc_double_fault+0x117/0x1a0
->> [   15.310490]  ? asm_exc_double_fault+0x23/0x30
->> [   15.310490]  ? bpf_prog_3a140cef239a4b4f_subprog_tail+0x14/0x53
->> [   15.310490]  </#DF>
->> [   15.310490]  <TASK>
->> [   15.310490]  bpf_prog_85781a698094722f_entry+0x4c/0x64
->> [   15.310490]  bpf_prog_1c515f389a9059b4_entry2+0x19/0x1b
->> [   15.310490]  ...
->> [   15.310490]  bpf_prog_85781a698094722f_entry+0x4c/0x64
->> [   15.310490]  bpf_prog_1c515f389a9059b4_entry2+0x19/0x1b
->> [   15.310490]  bpf_test_run+0x210/0x370
->> [   15.310490]  ? bpf_test_run+0x128/0x370
->> [   15.310490]  bpf_prog_test_run_skb+0x388/0x7a0
->> [   15.310490]  __sys_bpf+0xdbf/0x2c40
->> [   15.310490]  ? clockevents_program_event+0x52/0xf0
->> [   15.310490]  ? lock_release+0xbf/0x290
->> [   15.310490]  __x64_sys_bpf+0x1e/0x30
->> [   15.310490]  do_syscall_64+0x68/0x140
->> [   15.310490]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
->> [   15.310490] RIP: 0033:0x7f133b52725d
->> [   15.310490] Code: ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa
->> 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f
->> 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 8b bb 0d 00 f7 d8 64 89 01 48
->> [   15.310490] RSP: 002b:00007ffddbc10258 EFLAGS: 00000206 ORIG_RAX:
->> 0000000000000141
->> [   15.310490] RAX: ffffffffffffffda RBX: 00007ffddbc10828 RCX:
->> 00007f133b52725d
->> [   15.310490] RDX: 0000000000000050 RSI: 00007ffddbc102a0 RDI:
->> 000000000000000a
->> [   15.310490] RBP: 00007ffddbc10270 R08: 0000000000000000 R09:
->> 00007ffddbc102a0
->> [   15.310490] R10: 0000000000000064 R11: 0000000000000206 R12:
->> 0000000000000004
->> [   15.310490] R13: 0000000000000000 R14: 0000558ec4c24890 R15:
->> 00007f133b6ed000
->> [   15.310490]  </TASK>
->> [   15.310490] Modules linked in: bpf_testmod(OE)
->> [   15.310490] ---[ end trace 0000000000000000 ]---
->> [   15.310490] RIP: 0010:bpf_prog_3a140cef239a4b4f_subprog_tail+0x14/0x53
->> [   15.310490] Code: cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc
->> cc cc cc cc cc f3 0f 1e fa 0f 1f 44 00 00 0f 1f 00 55 48 89 e5 f3 0f 1e
->> fa <50> 50 53 41 55 48 89 fb 49 bd 00 2a 46 82 98 9c ff ff 48 89 df 4c
->> [   15.310490] RSP: 0018:ffffb500c0aa0000 EFLAGS: 00000202
->> [   15.310490] RAX: ffffb500c0aa0028 RBX: ffff9c98808b7e00 RCX:
->> 0000000000008cb5
->> [   15.310490] RDX: 0000000000000000 RSI: ffff9c9882462a00 RDI:
->> ffff9c98808b7e00
->> [   15.310490] RBP: ffffb500c0aa0000 R08: 0000000000000000 R09:
->> 0000000000000000
->> [   15.310490] R10: 0000000000000001 R11: 0000000000000000 R12:
->> ffffb500c01af000
->> [   15.310490] R13: ffffb500c01cd000 R14: 0000000000000000 R15:
->> 0000000000000000
->> [   15.310490] FS:  00007f133b665140(0000) GS:ffff9c98bbd00000(0000)
->> knlGS:0000000000000000
->> [   15.310490] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->> [   15.310490] CR2: ffffb500c0a9fff8 CR3: 0000000102478000 CR4:
->> 00000000000006f0
->> [   15.310490] Kernel panic - not syncing: Fatal exception in interrupt
->> [   15.310490] Kernel Offset: 0x30000000 from 0xffffffff81000000
->> (relocation range: 0xffffffff80000000-0xffffffffbfffffff)
->>
->> This patch prevents this panic by preventing updating extended prog to
->> prog_array map and preventing extending a prog, which has been updated
->> to prog_array map, with freplace prog.
->>
->> If a prog or its subprog has been extended by freplace prog, the prog
->> can not be updated to prog_array map.
->>
->> If a prog has been updated to prog_array map, it or its subprog can not
->> be extended by freplace prog.
->>
->> BTW, fix a minor code style issue by replacing 8 spaces with a tab.
->>
->> Reported-by: kernel test robot <lkp@intel.com>
->> Closes: https://lore.kernel.org/oe-kbuild-all/202410080455.vy5GT8Vz-
->> lkp@intel.com/
->> Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
->> ---
->>   include/linux/bpf.h     | 21 ++++++++++++++++++++
->>   kernel/bpf/arraymap.c   | 23 +++++++++++++++++++++-
->>   kernel/bpf/core.c       |  1 +
->>   kernel/bpf/syscall.c    | 21 ++++++++++++++------
->>   kernel/bpf/trampoline.c | 43 +++++++++++++++++++++++++++++++++++++++++
->>   5 files changed, 102 insertions(+), 7 deletions(-)
->>
->> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
->> index 19d8ca8ac960f..213a68c59bdf7 100644
->> --- a/include/linux/bpf.h
->> +++ b/include/linux/bpf.h
->> @@ -1294,6 +1294,12 @@ bool __bpf_dynptr_is_rdonly(const struct
->> bpf_dynptr_kern *ptr);
->>   #ifdef CONFIG_BPF_JIT
->>   int bpf_trampoline_link_prog(struct bpf_tramp_link *link, struct
->> bpf_trampoline *tr);
->>   int bpf_trampoline_unlink_prog(struct bpf_tramp_link *link, struct
->> bpf_trampoline *tr);
->> +int bpf_extension_link_prog(struct bpf_tramp_link *link,
->> +                struct bpf_trampoline *tr,
->> +                struct bpf_prog *tgt_prog);
->> +int bpf_extension_unlink_prog(struct bpf_tramp_link *link,
->> +                  struct bpf_trampoline *tr,
->> +                  struct bpf_prog *tgt_prog);
->>   struct bpf_trampoline *bpf_trampoline_get(u64 key,
->>                         struct bpf_attach_target_info *tgt_info);
->>   void bpf_trampoline_put(struct bpf_trampoline *tr);
->> @@ -1383,6 +1389,18 @@ static inline int
->> bpf_trampoline_unlink_prog(struct bpf_tramp_link *link,
->>   {
->>       return -ENOTSUPP;
->>   }
->> +static inline int bpf_extension_link_prog(struct bpf_tramp_link *link,
->> +                struct bpf_trampoline *tr,
->> +                struct bpf_prog *tgt_prog)
->> +{
->> +    return -ENOTSUPP;
->> +}
->> +static inline int bpf_extension_unlink_prog(struct bpf_tramp_link *link,
->> +                  struct bpf_trampoline *tr,
->> +                  struct bpf_prog *tgt_prog)
->> +{
->> +    return -ENOTSUPP;
->> +}
->>   static inline struct bpf_trampoline *bpf_trampoline_get(u64 key,
->>                               struct bpf_attach_target_info *tgt_info)
->>   {
->> @@ -1483,6 +1501,9 @@ struct bpf_prog_aux {
->>       bool xdp_has_frags;
->>       bool exception_cb;
->>       bool exception_boundary;
->> +    bool is_extended; /* true if extended by freplace program */
->> +    u64 prog_array_member_cnt; /* counts how many times as member of
->> prog_array */
->> +    struct mutex ext_mutex; /* mutex for is_extended and
->> prog_array_member_cnt */
->>       struct bpf_arena *arena;
->>       /* BTF_KIND_FUNC_PROTO for valid attach_btf_id */
->>       const struct btf_type *attach_func_proto;
->> diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
->> index 79660e3fca4c1..f9bd63a74eee7 100644
->> --- a/kernel/bpf/arraymap.c
->> +++ b/kernel/bpf/arraymap.c
->> @@ -947,6 +947,7 @@ static void *prog_fd_array_get_ptr(struct bpf_map
->> *map,
->>                      struct file *map_file, int fd)
->>   {
->>       struct bpf_prog *prog = bpf_prog_get(fd);
->> +    bool is_extended;
->>         if (IS_ERR(prog))
->>           return prog;
->> @@ -956,13 +957,33 @@ static void *prog_fd_array_get_ptr(struct
->> bpf_map *map,
->>           return ERR_PTR(-EINVAL);
->>       }
->>   +    mutex_lock(&prog->aux->ext_mutex);
->> +    is_extended = prog->aux->is_extended;
->> +    if (!is_extended)
->> +        prog->aux->prog_array_member_cnt++;
->> +    mutex_unlock(&prog->aux->ext_mutex);
->> +    if (is_extended) {
->> +        /* Extended prog can not be tail callee. It's to prevent a
->> +         * potential infinite loop like:
->> +         * tail callee prog entry -> tail callee prog subprog ->
->> +         * freplace prog entry --tailcall-> tail callee prog entry.
->> +         */
->> +        bpf_prog_put(prog);
->> +        return ERR_PTR(-EBUSY);
->> +    }
+On Thu, Oct 10, 2024 at 05:30:33PM +0900, Sergey Senozhatsky wrote:
+> On (24/10/09 21:08), Mike Rapoport wrote:
+> > From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
+> > 
+> > Enable execmem's cache of PMD_SIZE'ed pages mapped as ROX for module
+> > text allocations.
+> > 
 > 
-> Sorry for the delay.
+> With this modprobe disappoints kmemleak
 > 
-> IIUC, extension prog should not be tailcalled independently, so an error
-> should also be returned if prog->type == BPF_PROG_TYPE_EXT
-> 
+> [   12.700128] kmemleak: Found object by alias at 0xffffffffa000a000
+> [   12.702179] CPU: 5 UID: 0 PID: 410 Comm: modprobe Tainted: G                 N 6.12.0-rc2+ #760
+> [   12.704656] Tainted: [N]=TEST
+> [   12.705526] Call Trace:
+> [   12.706250]  <TASK>
+> [   12.706888]  dump_stack_lvl+0x3e/0xdb
+> [   12.707961]  __find_and_get_object+0x100/0x110
+> [   12.709256]  kmemleak_no_scan+0x2e/0xb0
+> [   12.710354]  kmemleak_load_module+0xad/0xe0
+> [   12.711557]  load_module+0x2391/0x45a0
+> [   12.712507]  __se_sys_finit_module+0x4e0/0x7a0
+> [   12.713599]  do_syscall_64+0x54/0xf0
+> [   12.714477]  ? irqentry_exit_to_user_mode+0x33/0x100
+> [   12.715696]  entry_SYSCALL_64_after_hwframe+0x4b/0x53
+> [   12.716931] RIP: 0033:0x7fc7af51f059
+> [   12.717816] Code: 08 89 e8 5b 5d c3 66 2e 0f 1f 84 00 00 00 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 8f 1d 0d 00 f7 d8 64 89 01 48
+> [   12.722324] RSP: 002b:00007ffc1d0b0c18 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
+> [   12.724173] RAX: ffffffffffffffda RBX: 00005618a9439b20 RCX: 00007fc7af51f059
+> [   12.725884] RDX: 0000000000000000 RSI: 000056187aea098b RDI: 0000000000000003
+> [   12.727617] RBP: 0000000000000000 R08: 0000000000000060 R09: 00005618a943af60
+> [   12.729361] R10: 0000000000000038 R11: 0000000000000246 R12: 000056187aea098b
+> [   12.731101] R13: 0000000000040000 R14: 00005618a9439ac0 R15: 0000000000000000
+> [   12.732814]  </TASK>
 
-I think it's OK that freplace prog tail calls itself, see patch #3.
+Below is a quick fix, I'll revisit module - kmemleak interaction in v6
 
-Thanks,
-Leon
 
+diff --git a/kernel/module/debug_kmemleak.c b/kernel/module/debug_kmemleak.c
+index b4cc03842d70..df873dad049d 100644
+--- a/kernel/module/debug_kmemleak.c
++++ b/kernel/module/debug_kmemleak.c
+@@ -14,7 +14,8 @@ void kmemleak_load_module(const struct module *mod,
+ {
+ 	/* only scan writable, non-executable sections */
+ 	for_each_mod_mem_type(type) {
+-		if (type != MOD_DATA && type != MOD_INIT_DATA)
++		if (type != MOD_DATA && type != MOD_INIT_DATA &&
++		    !mod->mem[type].is_rox)
+ 			kmemleak_no_scan(mod->mem[type].base);
+ 	}
+ }
+
+-- 
+Sincerely yours,
+Mike.
 
