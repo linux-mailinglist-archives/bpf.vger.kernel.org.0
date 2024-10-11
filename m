@@ -1,66 +1,77 @@
-Return-Path: <bpf+bounces-41736-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41737-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34B3599A2AE
-	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2024 13:28:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B18A99A2BC
+	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2024 13:33:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6DEAC1C22A1B
-	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2024 11:28:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7C0931C22584
+	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2024 11:33:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CC3B21642E;
-	Fri, 11 Oct 2024 11:28:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76BB621643E;
+	Fri, 11 Oct 2024 11:33:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dqWN39c2"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dntC6An9"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3287821502D
-	for <bpf@vger.kernel.org>; Fri, 11 Oct 2024 11:28:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68381215F75;
+	Fri, 11 Oct 2024 11:33:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728646103; cv=none; b=gbfzrg+EVPLqoz1+6E7CSmOg1iwmj5Ltpp5Lv/trfxRS/nEMRBu+cYXnkpzFZ+0SaJyUfIuk1e6rNruE1kHYf8AtIFI4D9O1CGUZD8xdUjwlDGUPPynuSdFWnPL94S2kWvs6cRBISsbSPRWVNkshV1hC+zijjS57Cbqer5aSZRE=
+	t=1728646392; cv=none; b=NqcooXqy/7g/obBVDIORJHIkJDGGsAbkw7MbKZCfwYu/zZC2OB6/gLCE9x18azbMjucE5PwdU38FwhxwJW2nf9xImntTFK4CIInMVjBF9odcZfaVEVH2DpdTXxz/0JfWWCMtUuOwS7UZg0XG3zQAN8O9WJ8eSQoUmKnzN03zxYE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728646103; c=relaxed/simple;
-	bh=BlfqTYePpkTIVLUZqLdbWQakAvYxLoLPft8IAiIF51I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=k8ZEEjDsE8Hhzhgp0zx7R1uibJ7S/L8PcLXXPRvpNuD5H6iAB19OxNVj4xmzdEld8aqV6Pz9puz9KbOwH8tEYBM8NPsWhskQKXKpb/t5uGRYT+0ht1lZvDH8cr00y+5tsWUXOU/DVLs8PZ1W8sLltx59IieP8E6DBzvnIYJKua0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=dqWN39c2; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1728646099;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4HAG/FNfY4USQmCWPTQgELr7Lx25qhoKxL0+773/Hho=;
-	b=dqWN39c2djddKG0BWhGGG/Qu8RmPdSeU27Bd3dylWQVfYt6eK2bS8XYh49zzSXlfI/1gkv
-	VNCANvB7BnhkpY5ALqXeellmK9jeAC2QEM74Z5LxmRn59BbkgLJmBggmMzdGqwl/uHaeLx
-	DGuZW9PLqAwwQQRDCXH50Oro/eYnAGk=
-Received: from mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-134-zU7HdmRxOICk-TfUnEvZQg-1; Fri,
- 11 Oct 2024 07:28:13 -0400
-X-MC-Unique: zU7HdmRxOICk-TfUnEvZQg-1
-Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 34FE219560B5;
-	Fri, 11 Oct 2024 11:28:10 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.109])
-	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 85BEE19560A2;
-	Fri, 11 Oct 2024 11:28:02 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Fri, 11 Oct 2024 13:27:56 +0200 (CEST)
-Date: Fri, 11 Oct 2024 13:27:47 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-To: Jiri Olsa <jolsa@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>,
+	s=arc-20240116; t=1728646392; c=relaxed/simple;
+	bh=joa4DPZm4oYmYiiqXqQkUjEeAqbS+xyOScktkS9yyKA=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bTiHt3Kc3TXbAIglRDBcBXXwrU1EJbNEBPe0VksofWl3E7/Ook216xhhlIKvd2lgj3Zv/9tSrNaoxwKWuoGPa6VZM2BLCdwxoymAjRwmPeX2yDlIRvmqr4C/lFJT8lUNn9cfVJYNiuWF3DIlbIkaF6j2TvWjPx1nofxIUiMoyq0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dntC6An9; arc=none smtp.client-ip=209.85.208.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-5c5bca6603aso2263621a12.1;
+        Fri, 11 Oct 2024 04:33:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1728646389; x=1729251189; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=TrhuYtBeh8+4YkK5ubACyNqV/urk743FUpHgiUS8MiY=;
+        b=dntC6An90PSCoX0oABAFCCbt/ogL9X8SbIeuC4gS1q5OwKjyr5XN03OEjqDTFmjeKh
+         15r0yjhMkuKIIL7b9gwb1uLaoe5bXxNOT1QfnISF5xlHvMaguRA6OkBs2WZF0+Jr+3zU
+         zhISsAMlBbty2SP0h1bT6SUliCrUab8w0bV9l1CCrHFcfiKi+WK/2sJAwcQU2JIs6Os/
+         2DSs8CCp3JF3ToMr+jFhOvgFMX9sQ9jCw/cg8Y/eRwZLi/ficF55FTmD+pEZjx4nwtVD
+         m4Sb1ZOVXQ3cka918Nvdqh7ME9PiADneRCu5X/FeEw2Tyf98OroESd17DLeX7x7dCRqR
+         bpog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1728646389; x=1729251189;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=TrhuYtBeh8+4YkK5ubACyNqV/urk743FUpHgiUS8MiY=;
+        b=lsACrtnzl1B63nLc0QVvIMKe3dKcBkfG5OcW7kn4NspwegV2EiUOF1VGbu1qS0MRJK
+         yx4mBKnxAU8nV4O32ymDj/pqQqp8r3NJVLh7urWJINk43bhsWJYLn64RIyEr6lLn1hAr
+         8goj1oQqziQU7ywdJhIyDKVpFhpTKEyqEzlwkgoGg/RKwNZr6piG/fIzA6pevMUYoD5T
+         EKvZqzH1GGN6IKkWRf89v2cY2Siayr6KhX/W9O15Imh6bT0DG8YUGqJ7/UzvWjzUQdmP
+         fNP3SVV/WM3jaG1qKjKXjDrzVYycySFyU5d+CAwzkAXWEILC3fGQxunfRWkR6r1yJqGX
+         4jIw==
+X-Forwarded-Encrypted: i=1; AJvYcCU7f70f0vhh6SEc2RxbsT88hnJn6xcC3DlijykOTdOY3dpi4itOU03orBlkq658j8SZIj8=@vger.kernel.org, AJvYcCW7ljT7T4+0cnGwVdeeJvxwTjUjYSfdJBX6MCGb8V2jbbJqMIj3OrY2wWCEnilTp1qqBTqs98CIfXJFeSy1@vger.kernel.org, AJvYcCWml9XZW8949qZJoIbOy4QGqaIlQO+UczgS65U3szkCrkJvEmKQWTpgFysydkHjEwutiL0fUAVTixPNOKNHrn9wsN8w@vger.kernel.org
+X-Gm-Message-State: AOJu0YyFyTAw1qO3/DAsqaGGPpUyNCafBoANWmgqDjJu84mNOiHknCMQ
+	RHBO8/xiu82wbKXvVBIH0FrmDImxcw6ePpCo8f3J3scecjQjABiM
+X-Google-Smtp-Source: AGHT+IEIO6w7uhABBoGQyTIuvh6e52MLg6vz8U0fGIyJ4C0CU8hwMls+NdZ6UmX4/YhT7ofO59/8bg==
+X-Received: by 2002:a05:6402:4410:b0:5c8:8668:e564 with SMTP id 4fb4d7f45d1cf-5c948d79b88mr1397773a12.30.1728646388513;
+        Fri, 11 Oct 2024 04:33:08 -0700 (PDT)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5c93729676dsm1838383a12.87.2024.10.11.04.33.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Oct 2024 04:33:07 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Fri, 11 Oct 2024 13:33:00 +0200
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
 	Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
@@ -72,29 +83,68 @@ Cc: Peter Zijlstra <peterz@infradead.org>,
 	Steven Rostedt <rostedt@goodmis.org>,
 	Masami Hiramatsu <mhiramat@kernel.org>,
 	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCHv6 perf/core 02/16] uprobe: Add support for session
- consumer
-Message-ID: <20241011112747.GA26310@redhat.com>
+Subject: Re: [PATCHv6 bpf-next 13/16] selftests/bpf: Add uprobe session
+ single consumer test
+Message-ID: <ZwkM7MJKnQUDX6nX@krava>
 References: <20241010200957.2750179-1-jolsa@kernel.org>
- <20241010200957.2750179-3-jolsa@kernel.org>
+ <20241010200957.2750179-14-jolsa@kernel.org>
+ <CAEf4BzY9pp2bQXBwxcS4qLoPRRHrsKjA1UWdpZi3inkuz0PCDQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20241010200957.2750179-3-jolsa@kernel.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzY9pp2bQXBwxcS4qLoPRRHrsKjA1UWdpZi3inkuz0PCDQ@mail.gmail.com>
 
-On 10/10, Jiri Olsa wrote:
->
->  include/linux/uprobes.h |  21 +++++-
->  kernel/events/uprobes.c | 148 ++++++++++++++++++++++++++++++++--------
->  2 files changed, 139 insertions(+), 30 deletions(-)
+On Thu, Oct 10, 2024 at 07:25:59PM -0700, Andrii Nakryiko wrote:
+> On Thu, Oct 10, 2024 at 1:12 PM Jiri Olsa <jolsa@kernel.org> wrote:
+> >
+> > Testing that the session ret_handler bypass works on single
+> > uprobe with multiple consumers, each with different session
+> > ignore return value.
+> >
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >  .../bpf/prog_tests/uprobe_multi_test.c        | 33 ++++++++++++++
+> >  .../bpf/progs/uprobe_multi_session_single.c   | 44 +++++++++++++++++++
+> >  2 files changed, 77 insertions(+)
+> >  create mode 100644 tools/testing/selftests/bpf/progs/uprobe_multi_session_single.c
+> >
+> 
+> see the nit, but regardless:
+> 
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> 
+> [...]
+> 
+> > diff --git a/tools/testing/selftests/bpf/progs/uprobe_multi_session_single.c b/tools/testing/selftests/bpf/progs/uprobe_multi_session_single.c
+> > new file mode 100644
+> > index 000000000000..1fa53d3785f6
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/progs/uprobe_multi_session_single.c
+> > @@ -0,0 +1,44 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +#include <linux/bpf.h>
+> > +#include <bpf/bpf_helpers.h>
+> > +#include <bpf/bpf_tracing.h>
+> > +#include <stdbool.h>
+> > +#include "bpf_kfuncs.h"
+> > +#include "bpf_misc.h"
+> > +
+> > +char _license[] SEC("license") = "GPL";
+> > +
+> > +__u64 uprobe_session_result[3] = {};
+> > +int pid = 0;
+> > +
+> > +static int uprobe_multi_check(void *ctx, bool is_return, int idx)
+> 
+> nit: you don't use is_return
 
-Reviewed-by: Oleg Nesterov <oleg@redhat.com>
+ugh true, thanks
 
+jirka
 
