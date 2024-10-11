@@ -1,138 +1,189 @@
-Return-Path: <bpf+bounces-41751-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41752-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 976D399A82C
-	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2024 17:45:44 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6198899A84E
+	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2024 17:51:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 330792833F6
-	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2024 15:45:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 839E31C23642
+	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2024 15:51:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54DE5197A9F;
-	Fri, 11 Oct 2024 15:45:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73887197A68;
+	Fri, 11 Oct 2024 15:50:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b="D+aNsUu9"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DquP1FY6"
 X-Original-To: bpf@vger.kernel.org
-Received: from sonic305-27.consmr.mail.ne1.yahoo.com (sonic305-27.consmr.mail.ne1.yahoo.com [66.163.185.153])
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2663B2E403
-	for <bpf@vger.kernel.org>; Fri, 11 Oct 2024 15:45:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.163.185.153
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4421D195FF1
+	for <bpf@vger.kernel.org>; Fri, 11 Oct 2024 15:50:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728661533; cv=none; b=GLywUZ/KRACEzLPPrwFa6LfV2DbkRzad+2SUZgY4aaGqSCgphsfF98Jl21lNWfnadZT0rnTFKbc+UR4wr3vYyk2LAmzDNTEtnc3ThgYmQvsRP9luaw4IJK7nZH1Ltqtc79wcJuaYEMfKQGexKlmuauMr+43diZWYCzU9vgOokMQ=
+	t=1728661857; cv=none; b=DGLl7vCw8QsCIDo6HNKzGtOGwd2xedr1yNG9aYh7fQ6H1WsR+Un+pILO4DtrY6/SOJRoUwJ2EFOC5j1gMfpkJ+T0AKdOUBDExN5dmhWH47zkMCho28wCF8orJmXYOL1prVJbm45ZoWORMt7K0qHTan7V73v6mr0Jr2rbeg3K7C4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728661533; c=relaxed/simple;
-	bh=ZZ67WxIVnB76P4GfmunoWfIO+zyCFe8qhuB0nefs8Go=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ejHLVZ907f3dGT7sJvmMzMvlea0jGEM7LGFgAromwGwY6Pd3irTvyPSRHLaqI1rh55f8DvTpMEaxhEJ0s3vPqNQZ5hUTUYRSOV1B1yLeLgVZTSZURBADg6hScYmk/2/fbklntNcQFqmjXcqLQxIXIqDm/CSt+YwqU4cG9jeAxbo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=schaufler-ca.com; spf=none smtp.mailfrom=schaufler-ca.com; dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b=D+aNsUu9; arc=none smtp.client-ip=66.163.185.153
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=schaufler-ca.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=schaufler-ca.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1728661524; bh=Zl3/D+6y7HI3TEg3CIvo46/vvwEgBKmvavaGc3sU/r4=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=D+aNsUu9+LdQcKiQUSa8x1gKTuzbYoTsV7xzwhK6uq4tYwO0CM38gN60CmUCmfAKWBRW785DP8BAOdKB3LCG7ixRKKZWjvct+obPKFS3aKJx5PmAZ0WrNYNkFXDPnjCLY01gRG5uYgxYyD0nY4POLx6LAwr+4lDcZtNtjX4NJPQHSMM6U2mfHcqiNH67LfaExIQ1gzEFu/r+cOtJ60ztSbX9diy/rkF4XJCNUQpExDJgqhKnb29PozhBD2NRw2gfeWTri0Hz8amHT0S3W/ElNA2z9EKCXRNjqJKc8DFa2z1MPPpGrNmzoHaVl0GDeAdYgiMcDXTMTPCSlItWOVJ8cA==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1728661524; bh=w9gCtYguL6n11vJQ4fVljGoD4rfigGM2plM52X///Q1=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=g+0yjnZA4pJNN9GYrAvMNfVsxE65pWTkQjy3qlL5+8hGeScm1/Fe/XboCcqH8vvcm0nmBuI8bW5FmUrmqWYoNFeuWmVBySu1VYd3HoI+6ypOfyvoVWjgBMqNZqbf40F8DiZJepSw+bZmgTErdCHANAxDHPFH6UsFJLzCo3WRu+PA1PLVOb11vMullXXHL6UiS0SE4kAGUAhCqobCueHS72JQGon9htW5rJpcYI1u3FL+G+OaHc6H8Kfjszkj8m55Bv2Nx+tNemkGwFxqgNEynwxD3nk0Ifg0kCOuCLhWj20pg0tzJdR7LC8x5thS0NsGFfXKhZ0xpZUTeCkcFy8UUQ==
-X-YMail-OSG: gU3cfakVM1mj7H_VcPpD_c8dGIS9CE5TsIQivt9C4nbWK7AXhTJg36J5FYn1Vdu
- P.hVVsOBkNc5_F7d8T_wGuaKECgbK33F0HBo7qWIyJ_vTGdBjGRlp02EGRQPyzYgfDRC0sKkTt4y
- xbKNngXtY5wXj4Xd9bZNHWXaJaMdoew206pAIbWKUAA0nm_.lAEFHMsz1RCPfMK4sCmk4NvX_gGJ
- zxgWoipxtYOPZse1be6omXXKMaSTUWxknPRhDg.yhpkU1iOgHcy3hHDofFodmSZNq9qYiUkIj7OM
- QIA1VdwnwpkWh8.j.GgBctj5bo8JZFDydm_P_W8A0Y.Hpf4llO8Zt4FGVa1_2QVnta0Ofidez.QF
- gn_9ZQZQxCr97WLo4xCLgd2Hg6NQaUX0WIzvpjGNq_9fpG8vuHEUd0X7Psxh0vdDa_xAWRLn4t75
- U9B.RyXfXUKwk03TLFsPAGhGKEqcqOB_IYE35mfSoNT6DYEazjVr_DNwJxnFWCDGNn8VeSroRQF0
- Gf0jAWrGRShuRvVGHWmoAK_z3tz8M.hsbz5soABnYV5wEwNcT0Y5LhDABg.cuq9hzgmEPHq6ClqW
- TDUp2cb63AkkyecIewznVtwSJ3t6gXzoB_gKsUX7n.rkQsCJZCLiHo.OV1wZ07ZFeEGrnuupWP1F
- QbGTnA58Z1e7nzXuE1dhKg25mnTJEys_MIk7e2lC3ttzShX2TyH8nQSKthVhUO8glfD.FCIoMMEL
- RxDW06HDYE4UVp3FSXSyrAZMnQdT8nNHNzWMYA_8zkDZg3ekhFLXpH1snvYyhdyk9prqK4xRNTUZ
- yX9T1B7MdNZPc3CTHnUI0U7KU6mox8CGN4.LPOrEoELtEmaqUcJTqqWRE4whNVeVn1b9LppOF7Xk
- giEJirxEbxfCi79ktYYYNViFdTkGR3at8yCEyY81b1owuse.rkAdL8D_Fz6VpN5V.j9vkaOVxrca
- XbVDqwlhXBmXz8_9uFyoENLVidoVHj8allgTkiTLDaaEuNbL2WlKoL8jSpscYVJjr.adV2qZAzsm
- 3ED5LhDQciz8QsPo1Ek.60d3bmSXv6pwIVsDRXEcuyX2YbYM49zUqyipJK16ZH7B7ip_bTVmwIWI
- 6Uoa_rwfuhIYC9AXCIdN_yupv9VGor3GnKSaFXzLaBEHgDw41flALqNDwhT8L5RgnttKmDxkjiYl
- Q1fYdkKJU2V4RVcjwVOkpDQsOjoMbUatFYxH4wdyBA_fDZSZVrUlxEPYZkMyXhY8JyxXyftpMXhM
- _MV_HLZoWIG9AQG33ZeB6qArjKSJeKBw6diOc2kmpChfyrQ2S7qaZRyCiziL2_dDeQulmzpFI0Sn
- smzaHjOoBr4hPXElr5bwvq6EC_IDg8uNmZb3P.y.sNmQ4Fxgrpd3Xhj3Qrxx5iQaoFn2SBrmi43P
- T8rLztBXJeYIoAXz.MsLYpbUp3sN0NxyC3FSqmMYsVY5Ct7d7vY9p4OiwO4idsZ9SEdF5LZF22Hu
- eLxRY6vu0qXsY.s1v_0Dj_q29CaD4SN2PUg2zwnVJHfMjgjX92Vi_TzcF.03_6LbiLPJernDKy.R
- dMafeJ9AX.QSf._ANjf93VGQTaGGZLRLqnsg.UpNlMC5HcQG3LhV15vDaOSJzU8CCbpoXT8iaV4V
- tGOMIoYPhLxP3EIX5tFYjAOiOyef_Z.FXZ4y1Eud6qhqyZBAcdQWJNc52bUfD6oL_9oargRVqzL4
- _OaW6It50BYG03ppxJ3T7uU4GWvqxAg3LYMYxebgKens88T.mS9k5j0M0krCmS1E0pBFMXS1.PUi
- iLGb.jmJ76DEwi87g1J6C1S1L.rWz2Fj.wSkQkOY60IenozZ8MgkYPBqXr2WBmVO3sgxQ1sVhHdO
- Gko6wAvMuly7FpErQqpN8KddZoPDvHBKFJrOXsE0v5lvUizA46B.vpQfdh7b3IY1MPkgJ7_iaxr.
- s0fMIxNnH5CL8AUR6mJm83DUB6qFkM6yyt61JPSfzBOndfkwYWzzyHWLp0G9eyfznUQHwraTjJX4
- fLBNfNXEXAyDBcdLoqZk.5EUEuf_n3LXahb.4AnUYKC73Er34se.sgvBQRCsj0FlWRjfQ03cWEZZ
- hKxsYOHPwifTLGacTRL7_lWKcncatdheN98TOzcoQCfYTRDn6gaRVpRxGaxG8GBFLvQaaqr.ANjp
- xtgTZRKx8nsfb8krZVKW0RuEBHMZe5f4DejrWehv1xusc4tFEtLNpNSkmGAGQ1GP94pOnsLcMFzA
- 6zVTkBGtaxUliA_jo0fXPlscOHyh8xVuGjvBpZgA1IKOuFyVSJgOI9x99l.dgoNdM3EKUXcRHxUO
- UuvblGQ6vHp_4.dozVjKhGJ7oI2c0qBMFgI4-
-X-Sonic-MF: <casey@schaufler-ca.com>
-X-Sonic-ID: 7ffac3f6-d9b3-4c13-aa62-50fffeef9c53
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic305.consmr.mail.ne1.yahoo.com with HTTP; Fri, 11 Oct 2024 15:45:24 +0000
-Received: by hermes--production-gq1-5d95dc458-24x88 (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 8eeba5143bfa479ac5e23185bad5640a;
-          Fri, 11 Oct 2024 15:45:18 +0000 (UTC)
-Message-ID: <c346f1a8-8edb-4736-ba78-998316ef611d@schaufler-ca.com>
-Date: Fri, 11 Oct 2024 08:45:16 -0700
+	s=arc-20240116; t=1728661857; c=relaxed/simple;
+	bh=cZUyyZjEbtnLUtiKMGzRHicAop6Xdfm57OOE5xlry6k=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=fMw7gFS4OIOMxk4ZqHYw2M/VNdj1W2+g8BjSVgHOpw1ogzCm7iFIpYEtMIk5/HKhEHE+8xZhpg0XzhsKLtsUnlkNrk3QKnXIT0wU+Dgf7K3Bn/UXbxyaqNbT4KK7ZCLlIA5vLTvFV2LuEfEKvGhoVtItKQKRP89qdvYc723ET6s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DquP1FY6; arc=none smtp.client-ip=209.85.221.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-37d4ba20075so1266454f8f.0
+        for <bpf@vger.kernel.org>; Fri, 11 Oct 2024 08:50:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1728661853; x=1729266653; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=s1NzCBNs7o916HxQNZWDvWr6MLhX3CT1kF8mVA+mJzc=;
+        b=DquP1FY6vg27PLQd7ubNhWo2En1Kj/0CefYNBRQojtX+zHuxm1eW9JXwAFDTvRROoC
+         4Am/Q4OZELZPksegRE7L6XYHLljPFgesRSGcX4naJWFm0LMFBIasvsupxxdYz3G/tG8u
+         ErM6i4YgFkHmdE7Kli50EwBznFyuW6t/dcDH2E/hX2jioKikz2xUGf3XWneiWNf82dz+
+         sdvT9O0kWdXrSVEjDrKpM7b3Jp6VALjYJufOYZshZHq73CtLgKkTArMRafLYsorjIRYL
+         0V5j+M2ZmQMmqFIvIEDrcvRR1msjlMElA7XZyclNXfLEk4NZXGSEHt3ZZf6ICbP6Neo/
+         lUoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1728661853; x=1729266653;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=s1NzCBNs7o916HxQNZWDvWr6MLhX3CT1kF8mVA+mJzc=;
+        b=bUN2p3sQsiCcWO8DD1o4kpYuB3LWUhjPvFN6fSPLghugHtuRUuFxh/XJpk4lBTaehC
+         iOEQBjIRLOJSgEkpEJifUj4PGi/zjcCeWtcqjSJ+OweL4hkEbYumOKE1tJRQFv5ZPnHb
+         9XpBTeadDSjIq93+Hf9xP0ewQxD2T1sMwvKkcZ29qdVEG0VnqtThAucU5DpjgHpdSUEe
+         4i/QgPrAv76RbtCoRFCI99kYPTxoRdrV6qDJsE0mvYU4Ye/tPGivH7Dhc1mXBjQtwcLt
+         CadaDIOjo/G/+8LtOPAdHmCH2gPWEraIETKlSMTJ7YHbQeNPpqu920Jp9vq3svTlHUj+
+         GYrw==
+X-Gm-Message-State: AOJu0YxuUsz8rFRq+XzC+ww3MSlcQXb5XTI4EIS+MROrmd/+CnJRC5+O
+	37y8MEjw7U1nkaxjsf5VzzahgCcBsYCts8aTVEiTKNnpEbQeInaqoH7Oh8FlAW83QHR5m9pQ0qx
+	ZrK3vsWFG2coNPZIYEZXUBsHabIo=
+X-Google-Smtp-Source: AGHT+IFBg5uXeHbb9hjgTg1DiiBRnd5aZQLzNw8Y9auuyE9B0bz+wrkTj0x9Qo7Jwx9FPB3+zFlfUpPNkVTFAL+drUM=
+X-Received: by 2002:adf:ee47:0:b0:37c:d11f:c591 with SMTP id
+ ffacd0b85a97d-37d551d5123mr2159708f8f.17.1728661853377; Fri, 11 Oct 2024
+ 08:50:53 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 1/13] LSM: Add the lsm_prop data structure.
-To: Paul Moore <paul@paul-moore.com>, linux-security-module@vger.kernel.org
-Cc: jmorris@namei.org, serge@hallyn.com, keescook@chromium.org,
- john.johansen@canonical.com, penguin-kernel@i-love.sakura.ne.jp,
- stephen.smalley.work@gmail.com, linux-kernel@vger.kernel.org,
- selinux@vger.kernel.org, mic@digikod.net, apparmor@lists.ubuntu.com,
- bpf@vger.kernel.org, Casey Schaufler <casey@schaufler-ca.com>
-References: <20241009173222.12219-2-casey@schaufler-ca.com>
- <1e6f94db91f0df07373ec1e0c8f3eced@paul-moore.com>
-Content-Language: en-US
-From: Casey Schaufler <casey@schaufler-ca.com>
-In-Reply-To: <1e6f94db91f0df07373ec1e0c8f3eced@paul-moore.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Mailer: WebService/1.1.22806 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
+References: <20241010153835.26984-1-leon.hwang@linux.dev> <20241010153835.26984-2-leon.hwang@linux.dev>
+ <CAADnVQL8ie=xxCXt7td=ZhQwyY_hKtig-y9kHwWYwBG9MdfRQA@mail.gmail.com> <c7e49c48-7644-40c3-a4a2-664cc16a702c@linux.dev>
+In-Reply-To: <c7e49c48-7644-40c3-a4a2-664cc16a702c@linux.dev>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 11 Oct 2024 08:50:41 -0700
+Message-ID: <CAADnVQLh9nBHvkS40gg+PynmfMmPvwuYrcdMh9j2DqoL=9dqqw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v7 1/2] bpf: Prevent tailcall infinite loop
+ caused by freplace
+To: Leon Hwang <leon.hwang@linux.dev>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	=?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
+	Puranjay Mohan <puranjay@kernel.org>, Xu Kuohai <xukuohai@huaweicloud.com>, 
+	Eddy Z <eddyz87@gmail.com>, Ilya Leoshkevich <iii@linux.ibm.com>, kernel-patches-bot@fb.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 10/10/2024 8:08 PM, Paul Moore wrote:
-> On Oct  9, 2024 Casey Schaufler <casey@schaufler-ca.com> wrote:
->> When more than one security module is exporting data to audit and
->> networking sub-systems a single 32 bit integer is no longer
->> sufficient to represent the data. Add a structure to be used instead.
->>
->> The lsm_prop structure definition is intended to keep the LSM
->> specific information private to the individual security modules.
->> The module specific information is included in a new set of
->> header files under include/lsm. Each security module is allowed
->> to define the information included for its use in the lsm_prop.
->> SELinux includes a u32 secid. Smack includes a pointer into its
->> global label list. The conditional compilation based on feature
->> inclusion is contained in the include/lsm files.
->>
->> Suggested-by: Paul Moore <paul@paul-moore.com>
->> Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
->> Cc: apparmor@lists.ubuntu.com
->> Cc: bpf@vger.kernel.org
->> Cc: selinux@vger.kernel.org
->> Cc: linux-security-module@vger.kernel.org
->> ---
->>  include/linux/lsm/apparmor.h | 17 +++++++++++++++++
->>  include/linux/lsm/bpf.h      | 16 ++++++++++++++++
->>  include/linux/lsm/selinux.h  | 16 ++++++++++++++++
->>  include/linux/lsm/smack.h    | 17 +++++++++++++++++
->>  include/linux/security.h     | 20 ++++++++++++++++++++
->>  5 files changed, 86 insertions(+)
->>  create mode 100644 include/linux/lsm/apparmor.h
->>  create mode 100644 include/linux/lsm/bpf.h
->>  create mode 100644 include/linux/lsm/selinux.h
->>  create mode 100644 include/linux/lsm/smack.h
-> Looks good to me, thanks for the lsm_prop rename.  As a FYI, I did add
-> a line to the MAINTAINERS entry for include/linux/lsm/.
-
-Thank you. 
-
+On Thu, Oct 10, 2024 at 8:27=E2=80=AFPM Leon Hwang <leon.hwang@linux.dev> w=
+rote:
 >
-> --
-> paul-moore.com
+>
+>
+> On 11/10/24 01:09, Alexei Starovoitov wrote:
+> > On Thu, Oct 10, 2024 at 8:39=E2=80=AFAM Leon Hwang <leon.hwang@linux.de=
+v> wrote:
+> >>
+> >> -static int __bpf_trampoline_link_prog(struct bpf_tramp_link *link, st=
+ruct bpf_trampoline *tr)
+> >> +static int __bpf_trampoline_link_prog(struct bpf_tramp_link *link,
+> >> +                                     struct bpf_trampoline *tr,
+> >> +                                     struct bpf_prog *tgt_prog)
+> >>  {
+> >>         enum bpf_tramp_prog_type kind;
+> >>         struct bpf_tramp_link *link_exiting;
+> >> @@ -544,6 +546,17 @@ static int __bpf_trampoline_link_prog(struct bpf_=
+tramp_link *link, struct bpf_tr
+> >>                 /* Cannot attach extension if fentry/fexit are in use.=
+ */
+> >>                 if (cnt)
+> >>                         return -EBUSY;
+> >> +               guard(mutex)(&tgt_prog->aux->ext_mutex);
+> >> +               if (tgt_prog->aux->prog_array_member_cnt)
+> >> +                       /* Program extensions can not extend target pr=
+og when
+> >> +                        * the target prog has been updated to any pro=
+g_array
+> >> +                        * map as tail callee. It's to prevent a poten=
+tial
+> >> +                        * infinite loop like:
+> >> +                        * tgt prog entry -> tgt prog subprog -> frepl=
+ace prog
+> >> +                        * entry --tailcall-> tgt prog entry.
+> >> +                        */
+> >> +                       return -EBUSY;
+> >> +               tgt_prog->aux->is_extended =3D true;
+> >>                 tr->extension_prog =3D link->link.prog;
+> >>                 return bpf_arch_text_poke(tr->func.addr, BPF_MOD_JUMP,=
+ NULL,
+> >>                                           link->link.prog->bpf_func);
+> >
+> > The suggestion to use guard(mutex) shouldn't be applied mindlessly.
+> > Here you extend the mutex holding range all the way through
+> > bpf_arch_text_poke().
+> > This is wrong.
+> >
+>
+> Understood. The guard(mutex) should indeed limit the mutex holding range
+> to as small as possible. I=E2=80=99ll adjust accordingly.
+>
+> >>         if (kind =3D=3D BPF_TRAMP_REPLACE) {
+> >>                 WARN_ON_ONCE(!tr->extension_prog);
+> >> +               guard(mutex)(&tgt_prog->aux->ext_mutex);
+> >>                 err =3D bpf_arch_text_poke(tr->func.addr, BPF_MOD_JUMP=
+,
+> >>                                          tr->extension_prog->bpf_func,=
+ NULL);
+> >>                 tr->extension_prog =3D NULL;
+> >> +               tgt_prog->aux->is_extended =3D false;
+> >>                 return err;
+> >
+> > Same here. Clearly wrong to grab the mutex for the duration of poke.
+> >
+>
+> Ack.
+>
+> > Also Xu's suggestion makes sense to me.
+> > "extension prog should not be tailcalled independently"
+> >
+> > So I would disable such case as a part of this patch as well.
+> >
+>
+> I=E2=80=99m fine with adding this restriction.
+>
+> However, it will break a use case that works on the 5.15 kernel:
+>
+> libxdp XDP dispatcher --> subprog --> freplace A --tailcall-> freplace B.
+>
+> With this limitation, the chain 'freplace A --tailcall-> freplace B'
+> will no longer work.
+>
+> To comply with the new restriction, the use case would need to be
+> updated to:
+>
+> libxdp XDP dispatcher --> subprog --> freplace A --tailcall-> XDP B.
+
+I don't believe libxdp is doing anything like this.
+It makes no sense to load PROG_TYPE_EXT that is supposed to freplace
+another subprog and _not_ proceed with the actual replacement.
+
+tail_call-ing into EXT prog directly is likely very broken.
+EXT prog doesn't have to have ctx.
+Its arguments match the target global subprog which may not have ctx at all=
+.
+
+So it's not about disabling, it's fixing the bug.
 
