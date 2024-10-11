@@ -1,176 +1,211 @@
-Return-Path: <bpf+bounces-41721-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41722-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67B6E999CD7
-	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2024 08:42:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86E94999CE4
+	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2024 08:44:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D7B4B1F21F80
-	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2024 06:42:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1FAD6285A41
+	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2024 06:44:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 378FA208997;
-	Fri, 11 Oct 2024 06:42:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45AAE209698;
+	Fri, 11 Oct 2024 06:44:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WykoIgtS"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="bGXSjAx+"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f193.google.com (mail-yw1-f193.google.com [209.85.128.193])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 398BE199FB9;
-	Fri, 11 Oct 2024 06:42:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03FAC209671;
+	Fri, 11 Oct 2024 06:44:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.132
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728628933; cv=none; b=i3LV+mJE1dg88Z3ykOCIyRNd/pyFp4DgakkajEWzCG1N/uyczwkhboaXzp/O8INvf70+NreS6X/equ25SLaAxe+H2yF53GENGOkD4VJG3W9BBVTgSNwNWnUgOW25Gz9qsu8RG5Tb4jJPux/vFuNRTqW8e4fyq3jDdZluCAEo1To=
+	t=1728629049; cv=none; b=ueheFwaWd6OHMOPYQuMKjYLHUsPjFr6PECOPwVPGrqPVEYayL45eQa8/Bhwe34ZtLhyOfxZsCym4Q4sQr8EB+QH87EM/lsH1DGaYWB3SQXyrU7NXXxl1ywKgRIOx5FuWDjkoHoKbxVhH4UPIH8Fow0uP9whIBEZXtRaErNxEk1w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728628933; c=relaxed/simple;
-	bh=rTU3z5nXZ0203U12sB1J6Lev02OVO6OGTj84QaOG73M=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=m8FIXMLgJYKS3SFbnGx6UuO/XmzXOpuEAcmr2XRpkoYZf6TWP1Dq0msWq2IV0HwBrn6wzXwP8Pp82O09+bj3X5gXbXVJ+qoCuZSMDQUWjYH04yNjpP8A7ziyBaYb7/tKn0TvYK+q40MbI1JTDutj+xoFytcsAJ44JVJO28PRxzE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WykoIgtS; arc=none smtp.client-ip=209.85.128.193
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f193.google.com with SMTP id 00721157ae682-6e34fa656a2so1880927b3.1;
-        Thu, 10 Oct 2024 23:42:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1728628931; x=1729233731; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kVhuLsogfUzSYpWHUkggflusdlhQlsEWtOFwPdr5aPY=;
-        b=WykoIgtSugMAgD8gJOoZyVWORCDf8X46OFEeFCFHpiwQm+lRDoz7TgdAIZtx25vbTO
-         skHg94ykXZJbNhJOZ5731YrTt7/irTfnIqEMadyRbMkwd2Y9zvDDouJtgpECtewCHZGp
-         iN71VckEk8PkTG8thuwA1rDs+E74AMBo3l7DbHBmMWtwg5wwOMxNHYm5rgjLaMEEFbxL
-         Q6l6sEouLH78jaGkhZcNkaadV2mrL+HdlfJ3Kd3rAIXEiiRVt0wKIRj1QtwX7S4KLTTF
-         hMIZoUgdwhLHnRNQPJY+/Th1wvgJip7oigRyIA1VpVJkSedf91yWw1QeLfYgpxclSgbN
-         OM1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728628931; x=1729233731;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kVhuLsogfUzSYpWHUkggflusdlhQlsEWtOFwPdr5aPY=;
-        b=wS36o6a55KXiEy28LJm3xKHxpB5tifvvhgoPoBnriZ/q/ayxoQvSPqH974t0ifukcg
-         V7YTgqhP0nIWxAn4gQEMd9PKeTVRJtZ5qpit6WTYXjaxTiAdQXc1lmFeZ76I82fSIsDj
-         9lD+rN9f03p0fmOPji8Ihqd6299r4mjvdLTj4tnGSYRKMOy0DU7pF2E4M0E2JIxmIFdZ
-         S6ZEuhdGueXswq5XHkIXcVV+1G7bz4+z0uM1EgDQpmMhYB5rp6oVnIs7xaxDyNss1xr9
-         w3KQuSJNBzONSWttN8yXdVvYOg5+Z6Ogx5LanIEiXI0utzVc/ADwuECdyxZXsQT3Rgu8
-         tn5w==
-X-Forwarded-Encrypted: i=1; AJvYcCUasYVsApHTe4bOjZNIipuxaEmd9EHJ147FMlI7dMdqDxq15rS2hc50WLaJIpR8qtN9WFg=@vger.kernel.org, AJvYcCVSVBPs2+bGuv+d78PxWTo7KfreVsJ5FstTfKzWArFUhKRE/FH9ktL6Iw0+5JG04feXU8aoUZ/c@vger.kernel.org, AJvYcCXep4mthh9uB4jg/jzZ5Z2nw3gjyV5dzSh3SKobVmLsw3Vfg1jjTv9rYbSenrRjdvyvkA7sxnJc+zTDZ1b4@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx2nHN4ujwh2TxNB5DxHjd36M6FBfjnjhdTbtXwrkt/zZQxTdRA
-	w+OfRuRrR8/D58gtc2TQ96BcqxMfxm9K9lH4iq9GEmEWYfEO7Z6L1eD2UuVo5aI4vwHAMbDzi4D
-	KuwxUP7xHXijNUyEPRA53iFS5C/c=
-X-Google-Smtp-Source: AGHT+IGsjrvTm/ajEWNecyoWQ9v/ap1xzqKOckWzZqAyHc6KxoFC3fryNMajDXN25+sd4N5fKXWl0LfWyL51t+GAZa8=
-X-Received: by 2002:a05:690c:670e:b0:699:7b60:d349 with SMTP id
- 00721157ae682-6e3479b94d3mr10877237b3.11.1728628931231; Thu, 10 Oct 2024
- 23:42:11 -0700 (PDT)
+	s=arc-20240116; t=1728629049; c=relaxed/simple;
+	bh=ZuHgz0dsu7sdMQJFjzwOQB+CvPV20/Daho6ghr0QFvE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gXVubuxK+H5xE+io1xQzyyNgUOqIteZxfEjAzMly19y/6Qjk7XhKUKHPSyJT11aY1D8LEZZuODSyBslE3et3iF0y83mr+4WetqdDkbjKtYrBzQleR+y+HpwIrwRnX7dWqoorxTwQzie+H/LN4UHVsODx6ClXIjcN18jnromxXak=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=bGXSjAx+; arc=none smtp.client-ip=115.124.30.132
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1728629037; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=e120bJ3NLhUF/QK78BG8TahQEd5Mu/BTj6zuxrOMDPQ=;
+	b=bGXSjAx+VxhpsAzeLbJ4INXwC2USHT4pG73ktmL6yLwpm12DS4cOEGwTrReRvF4EQb2VtBb3bEPpF//8HQm9wejBctjnDMIvCMWQ7xjdfhRJuEKxjwYX1FpSmBHoxOXAXKSA7CenmKL4PmDm2kIMwuR91K9sFCgCVbVsob3J/6U=
+Received: from 30.221.146.54(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0WGp9pg9_1728629036 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Fri, 11 Oct 2024 14:43:57 +0800
+Message-ID: <b5aa477d-a4b1-45cb-af44-bd737504734e@linux.alibaba.com>
+Date: Fri, 11 Oct 2024 14:43:56 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241007074702.249543-1-dongml2@chinatelecom.cn>
- <20241007074702.249543-2-dongml2@chinatelecom.cn> <7caf130c-56f0-4f78-a006-5323e237cef1@redhat.com>
- <CADxym3baw2nLvANd-D5D2kCNRRoDmdgexBeGmD-uCcYYqAf=EQ@mail.gmail.com>
-In-Reply-To: <CADxym3baw2nLvANd-D5D2kCNRRoDmdgexBeGmD-uCcYYqAf=EQ@mail.gmail.com>
-From: Menglong Dong <menglong8.dong@gmail.com>
-Date: Fri, 11 Oct 2024 14:42:53 +0800
-Message-ID: <CADxym3ZGR59ojS3HApT30G2bKzht1pbZG212t3E7ku61SX29kg@mail.gmail.com>
-Subject: Re: [PATCH net-next v2 1/7] net: ip: make fib_validate_source()
- return drop reason
-To: Paolo Abeni <pabeni@redhat.com>
-Cc: edumazet@google.com, kuba@kernel.org, davem@davemloft.net, 
-	dsahern@kernel.org, steffen.klassert@secunet.com, herbert@gondor.apana.org.au, 
-	dongml2@chinatelecom.cn, bigeasy@linutronix.de, toke@redhat.com, 
-	idosch@nvidia.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next] net/smc: Introduce a hook to modify syn_smc at
+ runtime
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com,
+ wintera@linux.ibm.com, guwen@linux.alibaba.com,
+ Alexei Starovoitov <ast@kernel.org>, Jakub Kicinski <kuba@kernel.org>,
+ "David S. Miller" <davem@davemloft.net>,
+ Network Development <netdev@vger.kernel.org>,
+ linux-s390 <linux-s390@vger.kernel.org>, linux-rdma@vger.kernel.org,
+ Tony Lu <tonylu@linux.alibaba.com>, Paolo Abeni <pabeni@redhat.com>,
+ Eric Dumazet <edumazet@google.com>, bpf <bpf@vger.kernel.org>
+References: <1728532691-20044-1-git-send-email-alibuda@linux.alibaba.com>
+ <CAADnVQLXyA__zdDSiTdhaw=dXyfgmkr--cH068JvNK=JAYvRDA@mail.gmail.com>
+Content-Language: en-US
+From: "D. Wythe" <alibuda@linux.alibaba.com>
+In-Reply-To: <CAADnVQLXyA__zdDSiTdhaw=dXyfgmkr--cH068JvNK=JAYvRDA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Thu, Oct 10, 2024 at 5:18=E2=80=AFPM Menglong Dong <menglong8.dong@gmail=
-.com> wrote:
->
-> On Thu, Oct 10, 2024 at 4:25=E2=80=AFPM Paolo Abeni <pabeni@redhat.com> w=
-rote:
-> >
-> >
-> >
-> > On 10/7/24 09:46, Menglong Dong wrote:
-> > > In this commit, we make fib_validate_source/__fib_validate_source ret=
-urn
-> > > -reason instead of errno on error. As the return value of them can be
-> > > -errno, 0, and 1, we can't make it return enum skb_drop_reason direct=
-ly.
-> > >
-> > > In the origin logic, if __fib_validate_source() return -EXDEV,
-> > > LINUX_MIB_IPRPFILTER will be counted. And now, we need to adjust it b=
-y
-> > > checking "reason =3D=3D SKB_DROP_REASON_IP_RPFILTER". However, this w=
-ill take
-> > > effect only after the patch "net: ip: make ip_route_input_noref() ret=
-urn
-> > > drop reasons", as we can't pass the drop reasons from
-> > > fib_validate_source() to ip_rcv_finish_core() in this patch.
-> > >
-> > > We set the errno to -EINVAL when fib_validate_source() is called and =
-the
-> > > validation fails, as the errno can be checked in the caller and now i=
-ts
-> > > value is -reason, which can lead misunderstand.
-> > >
-> > > Following new drop reasons are added in this patch:
-> > >
-> > >    SKB_DROP_REASON_IP_LOCAL_SOURCE
-> > >    SKB_DROP_REASON_IP_INVALID_SOURCE
-> > >
-> > > Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
-> >
-> > Looking at the next patches, I'm under the impression that the overall
-> > code will be simpler if you let __fib_validate_source() return directly
-> > a drop reason, and fib_validate_source(), too. Hard to be sure without
-> > actually do the attempt... did you try such patch by any chance?
-> >
->
-> I analysed the usages of fib_validate_source() before. The
-> return value of fib_validate_source() can be -errno, "0", and "1".
-> And the value "1" can be used by the caller, such as
-> __mkroute_input(). Making it return drop reasons can't cover this
-> case.
->
-> It seems that __mkroute_input() is the only case that uses the
-> positive returning value of fib_validate_source(). Let me think
-> about it more in this case.
 
-Hello,
 
-After digging into the code of __fib_validate_source() and __mkroute_input(=
-),
-I think it's hard to make __fib_validate_source() return drop reasons
-directly.
+On 10/11/24 12:21 AM, Alexei Starovoitov wrote:
+> On Wed, Oct 9, 2024 at 8:58 PM D. Wythe <alibuda@linux.alibaba.com> wrote:
+>>
+>>
+>> +__bpf_hook_start();
+>> +
+>> +__weak noinline int select_syn_smc(const struct sock *sk, struct sockaddr *peer)
+>> +{
+>> +       return 1;
+>> +}
+>> +
+>> +__bpf_hook_end();
+>> +
+>>   int smc_nl_dump_hs_limitation(struct sk_buff *skb, struct netlink_callback *cb)
+>>   {
+>>          struct smc_nl_dmp_ctx *cb_ctx = smc_nl_dmp_ctx(cb);
+>> @@ -156,19 +165,43 @@ static struct sock *smc_tcp_syn_recv_sock(const struct sock *sk,
+>>          return NULL;
+>>   }
+>>
+>> -static bool smc_hs_congested(const struct sock *sk)
+>> +static void smc_openreq_init(struct request_sock *req,
+>> +                            const struct tcp_options_received *rx_opt,
+>> +                            struct sk_buff *skb, const struct sock *sk)
+>>   {
+>> +       struct inet_request_sock *ireq = inet_rsk(req);
+>> +       struct sockaddr_storage rmt_sockaddr = {};
+>>          const struct smc_sock *smc;
+>>
+>>          smc = smc_clcsock_user_data(sk);
+>>
+>>          if (!smc)
+>> -               return true;
+>> +               return;
+>>
+>> -       if (workqueue_congested(WORK_CPU_UNBOUND, smc_hs_wq))
+>> -               return true;
+>> +       if (smc->limit_smc_hs && workqueue_congested(WORK_CPU_UNBOUND, smc_hs_wq))
+>> +               goto out_no_smc;
+>>
+>> -       return false;
+>> +       rmt_sockaddr.ss_family = sk->sk_family;
+>> +
+>> +       if (rmt_sockaddr.ss_family == AF_INET) {
+>> +               struct sockaddr_in *rmt4_sockaddr =  (struct sockaddr_in *)&rmt_sockaddr;
+>> +
+>> +               rmt4_sockaddr->sin_addr.s_addr = ireq->ir_rmt_addr;
+>> +               rmt4_sockaddr->sin_port = ireq->ir_rmt_port;
+>> +#if IS_ENABLED(CONFIG_IPV6)
+>> +       } else {
+>> +               struct sockaddr_in6 *rmt6_sockaddr =  (struct sockaddr_in6 *)&rmt_sockaddr;
+>> +
+>> +               rmt6_sockaddr->sin6_addr = ireq->ir_v6_rmt_addr;
+>> +               rmt6_sockaddr->sin6_port = ireq->ir_rmt_port;
+>> +#endif /* CONFIG_IPV6 */
+>> +       }
+>> +
+>> +       ireq->smc_ok = select_syn_smc(sk, (struct sockaddr *)&rmt_sockaddr);
+>> +       return;
+>> +out_no_smc:
+>> +       ireq->smc_ok = 0;
+>> +       return;
+>>   }
+>>
+>>   struct smc_hashinfo smc_v4_hashinfo = {
+>> @@ -1671,7 +1704,7 @@ int smc_connect(struct socket *sock, struct sockaddr *addr,
+>>          }
+>>
+>>          smc_copy_sock_settings_to_clc(smc);
+>> -       tcp_sk(smc->clcsock->sk)->syn_smc = 1;
+>> +       tcp_sk(smc->clcsock->sk)->syn_smc = select_syn_smc(sk, addr);
+>>          if (smc->connect_nonblock) {
+>>                  rc = -EALREADY;
+>>                  goto out;
+>> @@ -2650,8 +2683,7 @@ int smc_listen(struct socket *sock, int backlog)
+>>
+>>          inet_csk(smc->clcsock->sk)->icsk_af_ops = &smc->af_ops;
+>>
+>> -       if (smc->limit_smc_hs)
+>> -               tcp_sk(smc->clcsock->sk)->smc_hs_congested = smc_hs_congested;
+>> +       tcp_sk(smc->clcsock->sk)->smc_openreq_init = smc_openreq_init;
+>>
+>>          rc = kernel_listen(smc->clcsock, backlog);
+>>          if (rc) {
+>> @@ -3475,6 +3507,24 @@ static void __net_exit smc_net_stat_exit(struct net *net)
+>>          .exit = smc_net_stat_exit,
+>>   };
+>>
+>> +#if IS_ENABLED(CONFIG_BPF_SYSCALL)
+>> +BTF_SET8_START(bpf_smc_fmodret_ids)
+>> +BTF_ID_FLAGS(func, select_syn_smc)
+>> +BTF_SET8_END(bpf_smc_fmodret_ids)
+>> +
+>> +static const struct btf_kfunc_id_set bpf_smc_fmodret_set = {
+>> +       .owner = THIS_MODULE,
+>> +       .set   = &bpf_smc_fmodret_ids,
+>> +};
+>> +
+>> +static int bpf_smc_kfunc_init(void)
+>> +{
+>> +       return register_btf_fmodret_id_set(&bpf_smc_fmodret_set);
+>> +}
+> 
+> fmodret was an approach that hid-bpf took initially,
+> but eventually they removed it all and switched to struct-ops approach.
+> Please learn that lesson.
+> Use struct_ops from the beginning.
+> 
+> I did a presentation recently explaining the motivation behind
+> struct_ops and tips on how to extend the kernel.
+> TLDR: the step one is to design the extension _without_ bpf.
+> The interface should be usable for kernel modules.
+> And then when you have *_ops style api in place
+> the bpf progs will plug-in without extra work.
+> 
+> Slides:
+> https://github.com/4ast/docs/blob/main/BPF%20struct-ops.pdf
 
-The __fib_validate_source() will return 1 if the scope of the
-source(revert) route is HOST. And the __mkroute_input()
-will mark the skb with IPSKB_DOREDIRECT in this
-case (combine with some other conditions). And then, a REDIRECT
-ICMP will be sent in ip_forward() if this flag exists.
 
-I don't find a way to pass this information to __mkroute_input
-if we make __fib_validate_source() return drop reasons. Can we?
+Hi Alexei,
 
-An option is to add a wrapper for fib_validate_source(), such as
-fib_validate_source_reason(), which returns drop reasons. And in
-__mkroute_input(), we still call fib_validate_source().
+Thanks very much for your suggestion.
 
-What do you think?
+In fact, I tried struct_ops in SMC about a year ago. Unfortunately, at that time struct_ops did not 
+support registration from modules, and I had to move some smc dependencies into bpf, which met with 
+community opposition. However, I noticed that this feature is now supported, so perhaps this is an 
+opportunity.
 
-Thanks!
-Menglong Dong
+But on the other hand, given the current functionality, I wonder if struct_ops might be an overkill. 
+I haven't been able to come up with a suitable abstraction to define this ops, and in the future, 
+this ops might only contain the very one callback (select_syn_smc).
 
->
-> > Thanks!
-> >
-> > Paolo
-> >
+Looking forward for your advises.
+
+Thanks,
+D. Wythe
+
+
+
 
