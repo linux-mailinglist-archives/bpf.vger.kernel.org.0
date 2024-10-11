@@ -1,83 +1,82 @@
-Return-Path: <bpf+bounces-41692-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41693-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73EEC999A69
-	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2024 04:30:46 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 167CA999A7A
+	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2024 04:36:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 62C991F24482
-	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2024 02:30:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B4207B23699
+	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2024 02:36:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 039D01EF940;
-	Fri, 11 Oct 2024 02:30:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19A311F470C;
+	Fri, 11 Oct 2024 02:36:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iZY7CcCe"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WOOyHs16"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
+Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39F5C23BB;
-	Fri, 11 Oct 2024 02:30:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44A0C1F470D;
+	Fri, 11 Oct 2024 02:36:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728613833; cv=none; b=fwBj2XFa4DG3w0NtTk49PPR2IcESM5RvA/eExMV1COoKp+OCTqgHu4S6FCuGtVx9zcjrHmkw7m5EKFTi7nL4h2zSytH8eGl0HEqjm/rwTvclYlV080I06yBi6VJ55/8+r5noEDcLgO5qRBBXp/lbhdUFktu/qnJe78yQiKXrL/0=
+	t=1728614164; cv=none; b=sWavclZvj/zCFAwXlkX+ErrVq7Dx6rLnn242Y3gCkckW6K9ZQWvy/P1lQLfUaXs2G7g68TS6QAXn0x2mVkOWKrKL9IS0USJv5RPNpltZIalRoBOJ4aGVASfgDKgmpoQeJuX9V97hH42gQlx+Tbfbu3nXyFCjVAGJ+57jZ1jlmXw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728613833; c=relaxed/simple;
-	bh=IM+HtZSUYKnaPbgnWT66jPxOHNKmQlndka0ivP75k8c=;
+	s=arc-20240116; t=1728614164; c=relaxed/simple;
+	bh=+vMIA/cu/vkqBnx52a1ObvjTlLcczbHQCFo5mkm7/Uo=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=GRFqdXUiWJASEuo6xl4RScU2mZchlWVyxhT/ocXJ9YlOrp+VvAUI2q/oeER4HvkYR9FSOpHUx0/nEDscARioSTLxmh9szBIPRcoVNI30RDp6PIlQZhnlaq/19JqYL9cz/CwfzwvaZJ7lyznku5CeiGkGRZ8F6NE7TpeSNZjGueQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iZY7CcCe; arc=none smtp.client-ip=209.85.216.53
+	 To:Cc:Content-Type; b=O1/iiC3HVSGaobhcBKow9leF1mAsRICV7WGNn+ulIdNCLqCU+VlSOjpe517Y/rre32k5R5hn++vbUekBAd0ON4MxrWhO6AkyjDf1xoogpmb3veZs83NQDVMAjCw4ULaIlo2ToJalrvoH8fFL81gmEHoI5knJDAo6o0Kpxrx+lfQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WOOyHs16; arc=none smtp.client-ip=209.85.216.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2e221a7e7baso1134317a91.0;
-        Thu, 10 Oct 2024 19:30:32 -0700 (PDT)
+Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-2e2eba31d3aso412614a91.2;
+        Thu, 10 Oct 2024 19:36:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1728613831; x=1729218631; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1728614162; x=1729218962; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=C+rv2yGapHHL0pAzQCpkDvYvkJ5oH7bg79lxOk/DwIA=;
-        b=iZY7CcCePJ8hssyHvVw3GN3mYAXAhM87dZnGYbxfku8tic5+cmQhawtSTNP3fk6Yaz
-         ewOaXyUQiFBARTqnbJWGIBtjfICiBM0D5nSTQSOfksTzBxCWCE1zWj8CixylqT3zPjan
-         GP5BnL/4PFtONgIBRQkczLUIqEBla29Oy8KYUkun/t2mygHeFwrDd9pI1ohOfYe9zkvN
-         A3baN4AaQFheGrD0umPIfALJeH5Hd1RAwaGGoGt7wrmAqnRpaOuYzag9fxjysu76uYW9
-         91ivJtpteobYroHO3nFSfM+NqajfushveMdGCUYk2uggKUSswQJjBOEynVX4pJlTusQK
-         dA3Q==
+        bh=r1P7tuB4hLxbBXGAGgneey3fBMAOG19TvuBf4+nhAyo=;
+        b=WOOyHs16KnKev7cF6KgPHkfTlppG169uNS5OLbT7Cd8jA/YF73syjJi/qtETk+KDt7
+         7jmkUILjklna93UpLL1sZsGTU8b42b6FpZDmkdc37VW12WnRgA+vn3z1cG1G+GpWNUsC
+         9tPDutDP5brDpCby6ZlxxmU4NpGxN5ig0PEFtDMorFAZDxNaexLBvSELcbebBWlCuGc6
+         dSr07fkXS5VdUojZO3wW5es9X16rfJTDhrflg3H0o17h50EHReNOPePgJzsa2p4eJI2U
+         gUlFMK4B3XKsJBVJNXnAl5xYe+cenR/vgHtXkSl34+SOqS6Pv3JBgHhk986iSHq3419o
+         t1Bw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728613831; x=1729218631;
+        d=1e100.net; s=20230601; t=1728614162; x=1729218962;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=C+rv2yGapHHL0pAzQCpkDvYvkJ5oH7bg79lxOk/DwIA=;
-        b=gLXADk2YI4n4TM494GAmIlbgNEalUty355HSNEXViZVH/y4h5ACWf3DwpsEIKPMXgJ
-         si6GunOij5XzzFSZpRDpyf/2Q3yEbGduBOpb0RQ1fFSLhGAPtZnrcEjb0U+TSK8+7v6I
-         +A7uD+mFMrcAf2G62/gk8jOKVh3VIcc/7OmpQADPHWV0plmXsRC2VdIeu2WaxZt88upQ
-         DZmOs+DOo4vvGUONy05NDPjMyt0M2ENvxJBKb9NPWvOnMemU6WoNLge7sum/GopFm1S9
-         bjVgyYiSSafeWQHPm9KQm5D2uhybEnc3OZjWva0SNOKwzmvsxUHwVb6C1jaNzBn9Cl4g
-         4ynw==
-X-Forwarded-Encrypted: i=1; AJvYcCUOyKNrF0MkqXLIg7/Z449j0IyBsjnGZaqWEL2mGunTdLx/Ge0Q//NIX/EtbGnZJH4CV4g=@vger.kernel.org, AJvYcCUT0CYduDadwag3mZdhJfccSmqNK7z+tcuo5n2yUhVVUmajoaKkmEuj9283iaZx2gya6NFiNpG6nNKjLNUHNe4n8nLp@vger.kernel.org, AJvYcCXaqNRo4DA70c7R49+WSQ8d2Z+6YXiTekeX9sil4tNNszUO5YxiwZYU4yzI/+oXYqrVVVny9Chvt+gfSCFH@vger.kernel.org
-X-Gm-Message-State: AOJu0YwdGBbpIdjV7uggJhUBXMq8s5bXSEp/Xwxwvrr9/Ergj8I90QoR
-	WZ/yobNQDj7PPxlz8ZNZw2ThJTD7m2ln6PsqXPJJoVXAKNKAjJja1uPlcj3u+JkS/jVSSpKOA8k
-	H/sBvREHlDD+tKT8484HaaEg10lU=
-X-Google-Smtp-Source: AGHT+IFo7/gVkJ4Od+lqya4IS5vMNWEttRQMoQAZjbMJO+90QHbf6/O97lNsugzv+/kr2Vnd/E2wAzLHsh2/05rytwY=
-X-Received: by 2002:a17:90a:8cb:b0:2e2:d7db:41fc with SMTP id
- 98e67ed59e1d1-2e2f0a9d22dmr1764010a91.10.1728613831503; Thu, 10 Oct 2024
- 19:30:31 -0700 (PDT)
+        bh=r1P7tuB4hLxbBXGAGgneey3fBMAOG19TvuBf4+nhAyo=;
+        b=xEE5eO3reu+vUP2GGxMuKyqwSJNumURGGysA+CZW/PWWmJiAK3p6K9IktTA7xBKDCx
+         I0B1yn8M1ndA2fchBStAVgAmJasGy/FZfxz6effTinqvkBG5YG1fuTzbQPVHkGs9ZdCB
+         onZapmTAssKk18s2MPSIDC688dg1GGVg4w8zWJpKfhsfl7TY+rp3c5NRhHRBavc9kSUI
+         JDxo954AZAuu3QcqrMJrBRtua1E5T2dGXVsofpL7ycU4X0uRobBqhUjpCQEZlhumstIn
+         eegi/6KNZFnjMH3cRifWcfsE9fiFVqLzxiP8B/CFP3DvHmOi3pJ3xUlE/yXARIPl/cJy
+         LSPg==
+X-Forwarded-Encrypted: i=1; AJvYcCUIlz0oKHqcoisO+IkM4myuBa+CDWFuqSSHcFU5ow5sirsqq+TQYaOh5sngwV9/8+TcqKkeu4x8vitPewZkH/GjISk6@vger.kernel.org, AJvYcCW2UNH8gVLzo5RCqO8zU50ViGdR43oK8beLyKeh0/ayabd4ox66MiEy7U72B8sc29WCATY=@vger.kernel.org, AJvYcCXuHwAX2vJbh/R/E4iG1PnHyvoMBPCoaO2/hva4IULohoNdyYIiMYCo7l25BD0Ekg7XIUGl64CIpXqNVn26@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx874FDQkztmccpcRyqkvFlwRxpZEftdSLgjyijwpHsfK5RRZfR
+	1EaiXYLDE+0Tw1b6gWKBK6VGF16bDwDjRmrD2uZxxdGhw0Lu5NG/dP6p54SawEIZkPlmFBSfQMI
+	agWlh6UiGQVCvK8k/dOYWK0TgLoE=
+X-Google-Smtp-Source: AGHT+IHRvKwhvii4OLSB5Xz+gSEWFWZ4FyItMJy7oxRr642+ExeG6tjlZB9QRfciHtw4LLtVT8cZAjJNchEZFaU7eOs=
+X-Received: by 2002:a17:90b:3757:b0:2c9:9658:d704 with SMTP id
+ 98e67ed59e1d1-2e2f0df9cb7mr1370458a91.40.1728614162471; Thu, 10 Oct 2024
+ 19:36:02 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241010200957.2750179-1-jolsa@kernel.org> <20241010200957.2750179-16-jolsa@kernel.org>
-In-Reply-To: <20241010200957.2750179-16-jolsa@kernel.org>
+References: <20241010200957.2750179-1-jolsa@kernel.org> <20241010200957.2750179-17-jolsa@kernel.org>
+In-Reply-To: <20241010200957.2750179-17-jolsa@kernel.org>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 10 Oct 2024 19:30:19 -0700
-Message-ID: <CAEf4BzY5zgoYAgJG7tfa84F2Zzjq=YFjh3=OzWqA6h39FfXB4Q@mail.gmail.com>
-Subject: Re: [PATCHv6 bpf-next 15/16] selftests/bpf: Add uprobe sessions to
- consumer test
+Date: Thu, 10 Oct 2024 19:35:50 -0700
+Message-ID: <CAEf4Bza3VLNKSdRQJtODAwmb4jZ85wq46QHBnXwzu_M+um9d_g@mail.gmail.com>
+Subject: Re: [PATCHv6 bpf-next 16/16] selftests/bpf: Add threads to consumer test
 To: Jiri Olsa <jolsa@kernel.org>
 Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
 	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
@@ -92,36 +91,55 @@ Content-Transfer-Encoding: quoted-printable
 
 On Thu, Oct 10, 2024 at 1:13=E2=80=AFPM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> Adding uprobe session consumers to the consumer test,
-> so we get the session into the test mix.
+> With recent uprobe fix [1] the sync time after unregistering uprobe is
+> much longer and prolongs the consumer test which creates and destroys
+> hundreds of uprobes.
+>
+> This change adds 16 threads (which fits the test logic) and speeds up
+> the test.
+>
+> Before the change:
+>
+>   # perf stat --null ./test_progs -t uprobe_multi_test/consumers
+>   #421/9   uprobe_multi_test/consumers:OK
+>   #421     uprobe_multi_test:OK
+>   Summary: 1/1 PASSED, 0 SKIPPED, 0 FAILED
+>
+>    Performance counter stats for './test_progs -t uprobe_multi_test/consu=
+mers':
+>
+>         28.818778973 seconds time elapsed
+>
+>          0.745518000 seconds user
+>          0.919186000 seconds sys
+>
+> After the change:
+>
+>   # perf stat --null ./test_progs -t uprobe_multi_test/consumers 2>&1
+>   #421/9   uprobe_multi_test/consumers:OK
+>   #421     uprobe_multi_test:OK
+>   Summary: 1/1 PASSED, 0 SKIPPED, 0 FAILED
+>
+>    Performance counter stats for './test_progs -t uprobe_multi_test/consu=
+mers':
+>
+>          3.504790814 seconds time elapsed
+>
+>          0.012141000 seconds user
+>          0.751760000 seconds sys
+>
+> [1] commit 87195a1ee332 ("uprobes: switch to RCU Tasks Trace flavor for b=
+etter performance")
 >
 > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > ---
->  .../bpf/prog_tests/uprobe_multi_test.c        | 63 +++++++++++++++----
->  .../bpf/progs/uprobe_multi_consumers.c        | 16 ++++-
->  2 files changed, 66 insertions(+), 13 deletions(-)
+>  .../bpf/prog_tests/uprobe_multi_test.c        | 98 +++++++++++++++----
+>  1 file changed, 80 insertions(+), 18 deletions(-)
 >
 
-you are undoing most of the changes done in the previous patch... it
-seems like it would be better to just combine  both patches
+OK, LGTM
 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c b=
-/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-> index 2effe4d693b4..df9314309bc3 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-> @@ -761,6 +761,10 @@ get_program(struct uprobe_multi_consumers *skel, int=
- prog)
->                 return skel->progs.uprobe_0;
->         case 1:
->                 return skel->progs.uprobe_1;
-> +       case 2:
-> +               return skel->progs.uprobe_2;
-> +       case 3:
-> +               return skel->progs.uprobe_3;
->         default:
->                 ASSERT_FAIL("get_program");
->                 return NULL;
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
 [...]
 
