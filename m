@@ -1,285 +1,205 @@
-Return-Path: <bpf+bounces-41734-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41735-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4FA5999FEC
-	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2024 11:17:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C265199A2A2
+	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2024 13:22:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8C3FA1C21E3F
-	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2024 09:17:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C752B1C229D8
+	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2024 11:22:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12F3720CCE1;
-	Fri, 11 Oct 2024 09:17:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0513B216449;
+	Fri, 11 Oct 2024 11:22:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EQKSTmbh"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="Gd7Cgkv5"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f194.google.com (mail-yw1-f194.google.com [209.85.128.194])
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC9791F942E;
-	Fri, 11 Oct 2024 09:17:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E287215F78
+	for <bpf@vger.kernel.org>; Fri, 11 Oct 2024 11:22:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728638237; cv=none; b=pkawsxwbGv0mt9+1wlheTiZRfPuetLew2K5MKWW06PHzW6PcgISvm/iOWpBU6+ujyZIi8qZu5CQgQDYJPMrdvbp3UblDhP6LdRtRIzdqsypUuuZz2vZgLBdap7lN5SZl4LBISJKPtXPvaVNMQSgsV6XduXXpE8yOAlxkr8G/uPU=
+	t=1728645725; cv=none; b=kGbD5AGyaNvFWU8CaDrjxaAML2NyBBpwgQ0Zu/6AZZR+QFVoRNOjk7mJ25PZSVnt5seutImvnH78+tGgOMxBhU3Hrtk8ECZaXB9SwjZWw5Z4lElF/MkonjozdMwu6UqUhqjE+AeeUJJ8qOs9Z3grW6+2GPpsfCEtqTlLBkyAOgk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728638237; c=relaxed/simple;
-	bh=mSAzwM/8sS+JtnChrMTuA5DiAMd2DZhhFzYl91I4NrI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=EMMUM8b3aaOirdzuZaenZmM+mg3t8vQC9FRFuraHgZZkZvefktHCq8Cs76uSExebiImHx4Um1Ih5oJNzGE8RlMc9jn0sZXAsjynrC+Et6ZTUlCeqv+r1/kmHxmnpIrD/YQdfNXt5ULjr0S9nd2i4nuXNqj6DPABBGo6UJ8qyR8g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EQKSTmbh; arc=none smtp.client-ip=209.85.128.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f194.google.com with SMTP id 00721157ae682-6e2e3e4f65dso19324067b3.3;
-        Fri, 11 Oct 2024 02:17:15 -0700 (PDT)
+	s=arc-20240116; t=1728645725; c=relaxed/simple;
+	bh=V45rzpsGTA9eHbV3LCV3/C1FC/N9IgmTho1xah1POtE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XI9BwZRzcoBkdtXA45RfJ/wiDvmM4dWvFVEI8YC4xA0YWD+Ax/US4cQ3S3hadyLe6f06OoHGtm2NINx7wUE4Fjb46Y9kflMUhMWW8WO6E/OTpfnZDH5gfK97pI72HQVW8YECxb5V9+jdqhSwEAwLZYcgRqIu+xh42lav6XHY0oc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=Gd7Cgkv5; arc=none smtp.client-ip=209.85.128.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-43058268d91so17193555e9.0
+        for <bpf@vger.kernel.org>; Fri, 11 Oct 2024 04:22:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1728638235; x=1729243035; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=18Z9ZZFMKWTO+swtTiyyp/2jw2Tfm683OGb7o6rVXn0=;
-        b=EQKSTmbhBLcBCwESiJV5R8Dzztm6oGBaDwC41X1UWov4585OjRUXyK6ES57VYRhfu1
-         6YUy/tassktmGC2OUrIKip9Yv6ElVVD37TEdbG3nfJOu0FDhJ5E1WlXwN2PWn9+jck1l
-         lcc6YMmrLoNJihoaYLOWvZCJQymnA8D5qyO8bFnp6xSUjq432cy4FYijmZIIAD/a9an1
-         xCjgjjQwZQmROx0qlxG6prCouC9I7TP13RtQtgTuAskqv5xASZn33U24vXGUCBv3btpg
-         vl6E9KN4RkV3rYx3uKCnr/30Z3sKaZaUzRivxlUtADThX1RKBaQfZooH0cyYVQi54Ako
-         jc1A==
+        d=cloudflare.com; s=google09082023; t=1728645720; x=1729250520; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=TC0eCy66WVYHmCUE7Pa9O2g6Dm7ZbmBg1UnWKt/lClo=;
+        b=Gd7Cgkv5qXjChwhU5cyYM1RVbN0HhmtuJ8/fSI+HGgUbVsEYQQhs3XKbc6ElfP9SGy
+         lgW0NQ4L3z8LXZIIgpeblQUYjFb395uun8GCV4fP16pfcIq+MLZP0kSkB7MY8JbN6q4w
+         V0HTatMN+vUeh144w5pzW+wsjyov94UODH0Bw4/w4pnsJRbt7iigxuJWci2R9TuGo9rd
+         W10Mz9sDVx2bAtnUW4pIfqE733eoh9Z62kpzQ47iJw68jqVeHp8HhxyFoo9UlaKk/hVD
+         r8CtquLKCwRbd25Bi06pK+60Xwve1UBIOSWdX5/q/h9fDv5cn3dVh86JZVHKCLD1V6JW
+         lTTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728638235; x=1729243035;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=18Z9ZZFMKWTO+swtTiyyp/2jw2Tfm683OGb7o6rVXn0=;
-        b=d459u3524QJgDJ7Vg5Dd+PucwU2Ab+D7+3oBJVXyF6i7bQ2J/J7SojAyyP3ISJvcLQ
-         NvHvocof+O0cz+a4BxPCbqAfxOFmPGfc4Ojs81AU5lBRCtqtP+TiNfyJ5821HvKqttBJ
-         +bGBDIiuHMxlEorevGDyJ020tZiTc6t1dPnDCEh/uZm/CafukogojCa/2KZN9dakl2jg
-         NlQiuFYA54LoOT8ZSAdFoTggT9ClgU5zc9CtlJoMeNM2NhEFp8HKwbvC2Gh+DrkOk5zr
-         4bdvF6IyY7IVYJZPXJs+dHx8og2c/FICxDY+bZxwC68AmFKQSim8ruus3vZld7iX144N
-         38bg==
-X-Forwarded-Encrypted: i=1; AJvYcCUJhnEVf+NRJCKcUaltB5xT0ZT+GraB1il91YXfY9SuaG7tIhwRIKN/65QiW4TbOYjswf83/IA2@vger.kernel.org, AJvYcCWWVKfOU5Lb0tO3NjYr7q+uYdmo+YutDyHxBn17AO0cXwiSnFkphiMhxND8lxJ/jHXKLMQ=@vger.kernel.org, AJvYcCXFcJpvFL+BShLfCUotFEhFk0RIbiWZV7WfMt8NOiPWTO57z6wskdtdRiUWy3TpFJH2SWjAGkp8PlU2cqfL@vger.kernel.org
-X-Gm-Message-State: AOJu0YwNClJ+db1XGEfYCuwTIG1kdYKdeYfObYUw+GwUTXxeQ60JTN9A
-	HEpnX95LGJRRqkY+mKQmcEd6g555vJ//376aa+Bgm9lPeWV84ogSLCGs3rmYt2mqVnkc4Rgb5cS
-	Xk8gSoLQ7wg4tWZ1fatuevcyT2lt32Fdy2Rc=
-X-Google-Smtp-Source: AGHT+IEoANVtjt+0i61XgjrMl8C6Cvp4x/IScnsqx8O1GWHfLzoWL0U1jelD15+ZuI3He60EewD9Ttn2D5M9g/z/uBU=
-X-Received: by 2002:a05:690c:7446:b0:6e3:2b25:8972 with SMTP id
- 00721157ae682-6e3479ff869mr15040087b3.21.1728638234696; Fri, 11 Oct 2024
- 02:17:14 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1728645720; x=1729250520;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TC0eCy66WVYHmCUE7Pa9O2g6Dm7ZbmBg1UnWKt/lClo=;
+        b=Dc22AAPd2CAZViW8mYe1p4wZSynG0s3XYsnkX7m7CLJRl5+3X62Epm8UnF8XbYNy0G
+         X5Y6OKqCoayu9uKsoinDXjnMrWXPy3uKX+8/04v6ktnKqTzLtDsTeZL4UApfW0ZhNCad
+         EcgcuvRWVT9aEr5H4HJgIOnSFgfxCrRmYcU55u1Er8RkvBjzCfUVgMeBc0+XZbu/gURk
+         8CSQ1/1HaJ2Yf68spl+U5FEq8Rr1nGmzuhmJChzkVI3CicbiFjCVYhfxU6YSTzL4Bi1A
+         TD36WBh0zavfPpQAQtVpqw1gfIZ36bxN4vCkXrdd0SIL7rIZk7ijbJAwPs/UoFuT26+h
+         Wq+A==
+X-Forwarded-Encrypted: i=1; AJvYcCUcrArRjwSGeWh4D424eKC/h3WoBolxedAKNIhZdWqxRUbQ3QJyMdYvAto8YCa9MXUP50U=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwP5K1KwAjOVei6TUXU893bm2cSkjFDqHOM3aOBSizWKe845V/Q
+	B1wyd+NO733uvUDrG6MIhMy8lPJO4EXitYMTu/yNnxy/p7LGYeZAy1tAk3KdiBo=
+X-Google-Smtp-Source: AGHT+IHe/2C00Yyf4tq9hx4W59wKITX/FNedGd2qWnQF3QJIxXO0x3L5/Z88igAuTwdOWUK9NS6K6A==
+X-Received: by 2002:a05:600c:3b0d:b0:428:10d7:a4b1 with SMTP id 5b1f17b1804b1-4311df56e7bmr18603095e9.25.1728645720554;
+        Fri, 11 Oct 2024 04:22:00 -0700 (PDT)
+Received: from GHGHG14 ([2a09:bac5:37aa:1cdc::2e0:86])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-430d70b4331sm72995255e9.36.2024.10.11.04.21.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Oct 2024 04:22:00 -0700 (PDT)
+Date: Fri, 11 Oct 2024 12:21:49 +0100
+From: Tiago Lam <tiagolam@cloudflare.com>
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	David Ahern <dsahern@kernel.org>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	Jakub Sitnicki <jakub@cloudflare.com>, kernel-team@cloudflare.com
+Subject: Re: [RFC PATCH 2/3] ipv6: Run a reverse sk_lookup on sendmsg.
+Message-ID: <ZwkKTTFAdP7V8HJQ@GHGHG14>
+References: <20240913-reverse-sk-lookup-v1-0-e721ea003d4c@cloudflare.com>
+ <20240913-reverse-sk-lookup-v1-2-e721ea003d4c@cloudflare.com>
+ <d17da5b6-6273-4c2c-abd7-99378723866e@linux.dev>
+ <ZumrBKAkZX0RZrgm@GHGHG14>
+ <0288caf4-3c9b-4eae-a2b4-f8934badc270@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241007074702.249543-1-dongml2@chinatelecom.cn>
- <20241007074702.249543-2-dongml2@chinatelecom.cn> <7caf130c-56f0-4f78-a006-5323e237cef1@redhat.com>
- <CADxym3baw2nLvANd-D5D2kCNRRoDmdgexBeGmD-uCcYYqAf=EQ@mail.gmail.com>
- <CADxym3ZGR59ojS3HApT30G2bKzht1pbZG212t3E7ku61SX29kg@mail.gmail.com> <60a8fea1-e876-4174-bf32-9524204d63ed@redhat.com>
-In-Reply-To: <60a8fea1-e876-4174-bf32-9524204d63ed@redhat.com>
-From: Menglong Dong <menglong8.dong@gmail.com>
-Date: Fri, 11 Oct 2024 17:17:57 +0800
-Message-ID: <CADxym3ZRBK-7587uU5FXd6KpfyNyYzGe=+Z7Z0vfV-MntXx1hQ@mail.gmail.com>
-Subject: Re: [PATCH net-next v2 1/7] net: ip: make fib_validate_source()
- return drop reason
-To: Paolo Abeni <pabeni@redhat.com>
-Cc: edumazet@google.com, kuba@kernel.org, davem@davemloft.net, 
-	dsahern@kernel.org, steffen.klassert@secunet.com, herbert@gondor.apana.org.au, 
-	dongml2@chinatelecom.cn, bigeasy@linutronix.de, toke@redhat.com, 
-	idosch@nvidia.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0288caf4-3c9b-4eae-a2b4-f8934badc270@linux.dev>
 
-On Fri, Oct 11, 2024 at 4:49=E2=80=AFPM Paolo Abeni <pabeni@redhat.com> wro=
-te:
->
-> On 10/11/24 08:42, Menglong Dong wrote:
-> > On Thu, Oct 10, 2024 at 5:18=E2=80=AFPM Menglong Dong <menglong8.dong@g=
-mail.com> wrote:
-> >> On Thu, Oct 10, 2024 at 4:25=E2=80=AFPM Paolo Abeni <pabeni@redhat.com=
-> wrote:
-> >>> On 10/7/24 09:46, Menglong Dong wrote:
-> >>>> In this commit, we make fib_validate_source/__fib_validate_source re=
-turn
-> >>>> -reason instead of errno on error. As the return value of them can b=
-e
-> >>>> -errno, 0, and 1, we can't make it return enum skb_drop_reason direc=
-tly.
-> >>>>
-> >>>> In the origin logic, if __fib_validate_source() return -EXDEV,
-> >>>> LINUX_MIB_IPRPFILTER will be counted. And now, we need to adjust it =
-by
-> >>>> checking "reason =3D=3D SKB_DROP_REASON_IP_RPFILTER". However, this =
-will take
-> >>>> effect only after the patch "net: ip: make ip_route_input_noref() re=
-turn
-> >>>> drop reasons", as we can't pass the drop reasons from
-> >>>> fib_validate_source() to ip_rcv_finish_core() in this patch.
-> >>>>
-> >>>> We set the errno to -EINVAL when fib_validate_source() is called and=
- the
-> >>>> validation fails, as the errno can be checked in the caller and now =
-its
-> >>>> value is -reason, which can lead misunderstand.
-> >>>>
-> >>>> Following new drop reasons are added in this patch:
-> >>>>
-> >>>>     SKB_DROP_REASON_IP_LOCAL_SOURCE
-> >>>>     SKB_DROP_REASON_IP_INVALID_SOURCE
-> >>>>
-> >>>> Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
-> >>>
-> >>> Looking at the next patches, I'm under the impression that the overal=
-l
-> >>> code will be simpler if you let __fib_validate_source() return direct=
-ly
-> >>> a drop reason, and fib_validate_source(), too. Hard to be sure withou=
-t
-> >>> actually do the attempt... did you try such patch by any chance?
-> >>>
-> >>
-> >> I analysed the usages of fib_validate_source() before. The
-> >> return value of fib_validate_source() can be -errno, "0", and "1".
-> >> And the value "1" can be used by the caller, such as
-> >> __mkroute_input(). Making it return drop reasons can't cover this
-> >> case.
-> >>
-> >> It seems that __mkroute_input() is the only case that uses the
-> >> positive returning value of fib_validate_source(). Let me think
-> >> about it more in this case.
-> >
-> > Hello,
-> >
-> > After digging into the code of __fib_validate_source() and __mkroute_in=
-put(),
-> > I think it's hard to make __fib_validate_source() return drop reasons
-> > directly.
-> >
-> > The __fib_validate_source() will return 1 if the scope of the
-> > source(revert) route is HOST. And the __mkroute_input()
-> > will mark the skb with IPSKB_DOREDIRECT in this
-> > case (combine with some other conditions). And then, a REDIRECT
-> > ICMP will be sent in ip_forward() if this flag exists.
-> >
-> > I don't find a way to pass this information to __mkroute_input
-> > if we make __fib_validate_source() return drop reasons. Can we?
-> >
-> > An option is to add a wrapper for fib_validate_source(), such as
-> > fib_validate_source_reason(), which returns drop reasons. And in
-> > __mkroute_input(), we still call fib_validate_source().
-> >
-> > What do you think?
->
-> Thanks for the investigation. I see that let __fib_validate_source()
-> returning drop reasons does not look like a good design.
->
-> I think the additional helper will not help much, so I guess you can
-> retain the current implementation here, but please expand the commit
-> message with the above information.
+On Tue, Sep 24, 2024 at 04:58:19PM -0700, Martin KaFai Lau wrote:
+> On 9/17/24 6:15 PM, Tiago Lam wrote:
+> > On Fri, Sep 13, 2024 at 11:24:09AM -0700, Martin KaFai Lau wrote:
+> > > On 9/13/24 2:39 AM, Tiago Lam wrote:
+> > > > This follows the same rationale provided for the ipv4 counterpart, where
+> > > > it now runs a reverse socket lookup when source addresses and/or ports
+> > > > are changed, on sendmsg, to check whether egress traffic should be
+> > > > allowed to go through or not.
+> > > > 
+> > > > As with ipv4, the ipv6 sendmsg path is also extended here to support the
+> > > > IPV6_ORIGDSTADDR ancilliary message to be able to specify a source
+> > > > address/port.
+> > > > 
+> > > > Suggested-by: Jakub Sitnicki <jakub@cloudflare.com>
+> > > > Signed-off-by: Tiago Lam <tiagolam@cloudflare.com>
+> > > > ---
+> > > >    net/ipv6/datagram.c | 76 +++++++++++++++++++++++++++++++++++++++++++++++++++++
+> > > >    net/ipv6/udp.c      |  8 ++++--
+> > > >    2 files changed, 82 insertions(+), 2 deletions(-)
+> > > > 
+> > > > diff --git a/net/ipv6/datagram.c b/net/ipv6/datagram.c
+> > > > index fff78496803d..4214dda1c320 100644
+> > > > --- a/net/ipv6/datagram.c
+> > > > +++ b/net/ipv6/datagram.c
+> > > > @@ -756,6 +756,27 @@ void ip6_datagram_recv_ctl(struct sock *sk, struct msghdr *msg,
+> > > >    }
+> > > >    EXPORT_SYMBOL_GPL(ip6_datagram_recv_ctl);
+> > > > +static inline bool reverse_sk_lookup(struct flowi6 *fl6, struct sock *sk,
+> > > > +				     struct in6_addr *saddr, __be16 sport)
+> > > > +{
+> > > > +	if (static_branch_unlikely(&bpf_sk_lookup_enabled) &&
+> > > > +	    (saddr && sport) &&
+> > > > +	    (ipv6_addr_cmp(&sk->sk_v6_rcv_saddr, saddr) || inet_sk(sk)->inet_sport != sport)) {
+> > > > +		struct sock *sk_egress;
+> > > > +
+> > > > +		bpf_sk_lookup_run_v6(sock_net(sk), IPPROTO_UDP, &fl6->daddr, fl6->fl6_dport,
+> > > > +				     saddr, ntohs(sport), 0, &sk_egress);
+> > > 
+> > > iirc, in the ingress path, the sk could also be selected by a tc bpf prog
+> > > doing bpf_sk_assign. Then this re-run on sk_lookup may give an incorrect
+> > > result?
+> > > 
+> > 
+> > If it does give the incorrect result, we still fallback to the normal
+> > egress path.
+> > 
+> > > In general, is it necessary to rerun any bpf prog if the user space has
+> > > specified the IP[v6]_ORIGDSTADDR.
+> > > 
+> > 
+> > More generally, wouldn't that also be the case if someone calls
+> > bpf_sk_assign() in both TC and sk_lookup on ingress? It can lead to some
+> > interference between the two.
+> > 
+> > It seems like the interesting cases are:
+> > 1. Calling bpf_sk_assign() on both TC and sk_lookup ingress: if this
+> > happens sk_lookup on egress should match the correct socket when doing
+> > the reverse lookup;
+> > 2. Calling bpf_sk_assign() only on ingress TC: in this case it will
+> > depend if an sk_lookup program is attached or not:
+> >    a. If not, there's no reverse lookup on egress either;
+> >    b. But if yes, although the reverse sk_lookup here won't match the
+> >    initial socket assigned at ingress TC, the packets will still fallback
+> >    to the normal egress path;
+> > 
+> > You're right in that case 2b above will continue with the same
+> > restrictions as before.
+> 
+> imo, all these cases you described above is a good signal that neither the
+> TC nor the BPF_PROG_TYPE_SK_LOOKUP program type is the right bpf prog to run
+> here _if_ a bpf prog was indeed useful here.
+> 
+> I only followed some of the other discussion in v1 and v2. For now, I still
+> don't see running a bpf prog is useful here to process the
+> IP[V6]_ORIGDSTADDR. Jakub Sitnicki and I had discussed a similar point
+> during the LPC.
+> 
+> If a bpf prog was indeed needed to process a cmsg, this should work closer
+> to what Jakub Sitnicki had proposed for getting the meta data during LPC
+> (but I believe the verdict there is also that a bpf prog is not needed). It
+> should be a bpf prog that can work in a more generic way to process any BPF
+> specific cmsg and can do other operations in the future using kfunc (e.g.
+> route lookup or something). Saying yes/no to a particular local IP and port
+> could be one of things that the bpf prog can do when processing the cmsg.
 
-Hello,
+Thanks for the feeback here, Martin. And apologies for the delay in
+respoding to this.
 
-I have implemented a new version just now like this:
+I think you do have a point, and after syncing up some more with Jakub
+about your discussion during the LPC, the argument that applications can
+already bind to a specific address + port to send their traffic from
+makes sense to me. However, I think we could introduce a new cmsg in
+sendmsg to allow apps to set the source port to egress from, extending
+what they can already do with IP_PKTINFO, i.e. setting the source IP.
+We'd need to take care with priviledged and reserved ports, but this
+would avoid applications having to do an extra bind. Do you have any
+thoughts on this?
 
-The only caller of __fib_validate_source() is fib_validate_source(), so
-we can combine fib_validate_source() into __fib_validate_source(), and
-make fib_validate_source() an inline call to __fib_validate_source().
-
-Then, we can make fib_validate_source() return drop reasons. And
-we call __fib_validate_source() in __mkroute_input(), which makes
-the logic here remains unchanged.
-
-What do you think? Or do we retain the current implementation here?
-
-Following is the part patch that refactor
-fib_validate_source/__fib_validate_source:
-
-diff --git a/include/net/ip_fib.h b/include/net/ip_fib.h
-index 06130933542d..ea51cae24fad 100644
---- a/include/net/ip_fib.h
-+++ b/include/net/ip_fib.h
-@@ -448,9 +448,18 @@ int fib_gw_from_via(struct fib_config *cfg,
-struct nlattr *nla,
-             struct netlink_ext_ack *extack);
- __be32 fib_compute_spec_dst(struct sk_buff *skb);
- bool fib_info_nh_uses_dev(struct fib_info *fi, const struct net_device *de=
-v);
--int fib_validate_source(struct sk_buff *skb, __be32 src, __be32 dst,
--            dscp_t dscp, int oif, struct net_device *dev,
--            struct in_device *idev, u32 *itag);
-+int __fib_validate_source(struct sk_buff *skb, __be32 src, __be32 dst,
-+              dscp_t dscp, int oif, struct net_device *dev,
-+              struct in_device *idev, u32 *itag);
-+
-+static inline int
-+fib_validate_source(struct sk_buff *skb, __be32 src, __be32 dst,
-+            dscp_t dscp, int oif, struct net_device *dev,
-+            struct in_device *idev, u32 *itag)
-+{
-+    return __fib_validate_source(skb, src, dst, dscp, oif, dev, idev,
-+                     itag);
-+}
-
- #ifdef CONFIG_IP_ROUTE_CLASSID
- static inline int fib_num_tclassid_users(struct net *net)
-diff --git a/net/ipv4/fib_frontend.c b/net/ipv4/fib_frontend.c
-index 8353518b110a..f74138f4d748 100644
---- a/net/ipv4/fib_frontend.c
-+++ b/net/ipv4/fib_frontend.c
-@@ -341,10 +341,11 @@ EXPORT_SYMBOL_GPL(fib_info_nh_uses_dev);
-  * - check, that packet arrived from expected physical interface.
-  * called with rcu_read_lock()
-  */
--static int __fib_validate_source(struct sk_buff *skb, __be32 src, __be32 d=
-st,
--                 dscp_t dscp, int oif, struct net_device *dev,
--                 int rpf, struct in_device *idev, u32 *itag)
-+int __fib_validate_source(struct sk_buff *skb, __be32 src, __be32 dst,
-+              dscp_t dscp, int oif, struct net_device *dev,
-+              struct in_device *idev, u32 *itag)
- {
-+    int rpf =3D secpath_exists(skb) ? 0 : IN_DEV_RPFILTER(idev);
-     struct net *net =3D dev_net(dev);
-     struct flow_keys flkeys;
-     int ret, no_addr;
-@@ -352,6 +353,28 @@ static int __fib_validate_source(struct sk_buff
-*skb, __be32 src, __be32 dst,
-     struct flowi4 fl4;
-     bool dev_match;
-
-+    /* Ignore rp_filter for packets protected by IPsec. */
-+    if (!rpf && !fib_num_tclassid_users(net) &&
-+        (dev->ifindex !=3D oif || !IN_DEV_TX_REDIRECTS(idev))) {
-+        if (IN_DEV_ACCEPT_LOCAL(idev))
-+            goto last_resort;
-+        /* with custom local routes in place, checking local addresses
-+         * only will be too optimistic, with custom rules, checking
-+         * local addresses only can be too strict, e.g. due to vrf
-+         */
-+        if (net->ipv4.fib_has_custom_local_routes ||
-+            fib4_has_custom_rules(net))
-+            goto full_check;
-+        /* Within the same container, it is regarded as a martian source,
-+         * and the same host but different containers are not.
-+         */
-+        if (inet_lookup_ifaddr_rcu(net, src))
-+            return -EINVAL;
-+
-+        goto last_resort;
-+    }
-+
-+full_check:
-     fl4.flowi4_oif =3D 0;
-     fl4.flowi4_l3mdev =3D l3mdev_master_ifindex_rcu(dev);
-     fl4.flowi4_iif =3D oif ? : LOOPBACK_IFINDEX;
-
-
-Thanks!
-Menglong Dong
-
->
-> Thanks!
->
-> Paolo
->
+Tiago.
 
