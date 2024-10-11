@@ -1,134 +1,132 @@
-Return-Path: <bpf+bounces-41746-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41747-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 708FC99A792
-	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2024 17:27:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96CAA99A7BE
+	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2024 17:31:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 31C26283D6A
-	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2024 15:27:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 47268285177
+	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2024 15:31:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C5F01953B9;
-	Fri, 11 Oct 2024 15:27:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E746194C8F;
+	Fri, 11 Oct 2024 15:31:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I8L75zVt"
+	dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b="YZfKJeXM"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mail-40134.protonmail.ch (mail-40134.protonmail.ch [185.70.40.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B32CF178372;
-	Fri, 11 Oct 2024 15:27:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8A4A198857
+	for <bpf@vger.kernel.org>; Fri, 11 Oct 2024 15:31:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.134
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728660432; cv=none; b=PjIrseXp/GEemARWjszBYmEXkyHh2uKyTwJBBE8gVmAFP54qrRNfDG5mxsHu2nvNEiRu5zq7b9+czPjiQPXsfgluKd/o6tAdBD42ZEDN4qX0BbubHHtFzFP9h3KE+pki8EI/pk9/OjTd9l8VVguRDSnR1muLmli7wmg92ZN/rxs=
+	t=1728660676; cv=none; b=RUemHYbDbFUms8X8uAoqAmANGfVgJtij2s2Cmft5CH+OdzjKFKCQajQ1v4fXrrd/tOBIjHWuwYSOf8qB5weQGkmJmocnXiQtWIz2gCPJlSJQAMbtkMkrOh/nnr2Ifseo7FJUtdFNenX3MQpkvV9FxH1guhqdmAeCS8mcqNUYaVc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728660432; c=relaxed/simple;
-	bh=sGWntrz3wIyVB8alp9rpncuZ1V1KDuURy3H+JpEcM7M=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=CAa0u1VNwrXu4AWZKa13D8IITkTYNjEqaH/NVcKmmUp4I8fo5VYBtH0NIRHn8EulJiUcpFARmVHXVfHwDHiDR88PG4O+8ffdm77bO6mNkpm0Mvg3O88kRLeQp+F1jx60uFQgATfnAX4GBglRAvAZhLwNq+p6eV29V/43Jrk2lDw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I8L75zVt; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64E81C4CEC7;
-	Fri, 11 Oct 2024 15:27:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728660431;
-	bh=sGWntrz3wIyVB8alp9rpncuZ1V1KDuURy3H+JpEcM7M=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=I8L75zVtrZx7w5SpRULZ/piL2MAHcg+XRpGLvOSuuaq79SJWN4Fma1eeimZ3TTbVB
-	 s3Tj07SktC4NyMlxdWrHxkP9B09QxKjTACbn46Lcb7EZmhdJiFuU6u5LM0LB+VOnwB
-	 ipxmM/V1tJE/lNo+oR0h67Z16lt34GSW47dbcRsA2Rcnm7hvFzitsQaVu0tDTBL7I1
-	 XrWK27pP7SdJ/JUMi4LEQxyVwYXTQYUn1hmQM2ozZex/gG6pI4W/jWyE7zsMYDHYlF
-	 b7b0dB6+vFHNuxfWZal17srhcGgebXOevLR69yA//3wjEvgTu0P9zbH1pTrGNR4W9m
-	 VsL6bpzNsWhgg==
-Date: Fri, 11 Oct 2024 08:27:07 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Mina Almasry <almasrymina@google.com>
-Cc: "Lai, Yi" <yi1.lai@linux.intel.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
- linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
- bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org, Donald Hunter
- <donald.hunter@gmail.com>, "David S. Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Jonathan
- Corbet <corbet@lwn.net>, Richard Henderson <richard.henderson@linaro.org>,
- Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner
- <mattst88@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge
- Deller <deller@gmx.de>, Andreas Larsson <andreas@gaisler.com>, Jesper
- Dangaard Brouer <hawk@kernel.org>, Ilias Apalodimas
- <ilias.apalodimas@linaro.org>, Steven Rostedt <rostedt@goodmis.org>, Masami
- Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Arnd Bergmann <arnd@arndb.de>, Steffen
- Klassert <steffen.klassert@secunet.com>, Herbert Xu
- <herbert@gondor.apana.org.au>, David Ahern <dsahern@kernel.org>, Willem de
- Bruijn <willemdebruijn.kernel@gmail.com>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=
- <bjorn@kernel.org>, Magnus Karlsson <magnus.karlsson@intel.com>, Maciej
- Fijalkowski <maciej.fijalkowski@intel.com>, Jonathan Lemon
- <jonathan.lemon@gmail.com>, Shuah Khan <shuah@kernel.org>, Alexei
- Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, John
- Fastabend <john.fastabend@gmail.com>, Sumit Semwal
- <sumit.semwal@linaro.org>, Christian =?UTF-8?B?S8O2bmln?=
- <christian.koenig@amd.com>, Pavel Begunkov <asml.silence@gmail.com>, David
- Wei <dw@davidwei.uk>, Jason Gunthorpe <jgg@ziepe.ca>, Yunsheng Lin
- <linyunsheng@huawei.com>, Shailend Chand <shailend@google.com>, Harshitha
- Ramamurthy <hramamurthy@google.com>, Shakeel Butt <shakeel.butt@linux.dev>,
- Jeroen de Borst <jeroendb@google.com>, Praveen Kaligineedi
- <pkaligineedi@google.com>, Bagas Sanjaya <bagasdotme@gmail.com>, Christoph
- Hellwig <hch@infradead.org>, Nikolay Aleksandrov <razor@blackwall.org>,
- Taehee Yoo <ap420073@gmail.com>, Willem de Bruijn <willemb@google.com>,
- Kaiyuan Zhang <kaiyuanz@google.com>, yi1.lai@intel.com
-Subject: Re: [PATCH net-next v25 10/13] net: add SO_DEVMEM_DONTNEED
- setsockopt to release RX frags
-Message-ID: <20241011082707.5de66f15@kernel.org>
-In-Reply-To: <CAHS8izPuEUA20BDXvwq2vW-24ez36YFJFMQok-oBDbgk6bajSA@mail.gmail.com>
-References: <20240909054318.1809580-1-almasrymina@google.com>
-	<20240909054318.1809580-11-almasrymina@google.com>
-	<Zwe3lWTN36IUaIdd@ly-workstation>
-	<CAHS8izPuEUA20BDXvwq2vW-24ez36YFJFMQok-oBDbgk6bajSA@mail.gmail.com>
+	s=arc-20240116; t=1728660676; c=relaxed/simple;
+	bh=3r2pcaWaw9rJIV8l2A5MXQasSzCK+8nOmCvKdhGYHbI=;
+	h=Date:To:From:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=i2tdEON5SW0SB/mUYYasNQEhFnfR1gst0+qIsEDYhohEwn9rqptkc4JWp8PT8UxUatS0bC1fcRgW8nl6BYFx+pz4B2NVYSrGWe2htUh2OP3xdb7pf4fKvu1lJ0tQX/Oi93kW/9fRQt+lusCuKfz/oscLugoYRPMyO25/qqSP8To=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me; spf=pass smtp.mailfrom=pm.me; dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b=YZfKJeXM; arc=none smtp.client-ip=185.70.40.134
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pm.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me;
+	s=protonmail3; t=1728660672; x=1728919872;
+	bh=kCy9Q0bx6t2zL/dmk6em3rRF+ZXGhn61YEyPAYEjHuk=;
+	h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
+	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
+	b=YZfKJeXMsKJq6xnin3USUhyJT5gs+pVAsoZG1wmQKEu0CApwaf/0LFmk+24Lg/j3G
+	 QRbLLB47HNUg89zIXGmNtWrUfO9jt4Q03fRhrMQgKDZfVOveph7ozYC7PWlNcbBg8J
+	 MlkFDSMsRJ3Rxv9Dt+P5AHZgNDzQ2pOMivbL7QJOavmohNxei0zgEtOxE0oGuqUTwW
+	 L/XELUIAxWhtXn4x+PFVR6mojXosbzYh+K41qbLd+US07mWZvtXItoEOtGCEE2xYuC
+	 yfWZjHOWGG+/OP0L46VG2BrZVqqpsoyIWeagYa7fSF8gHt5ENNEYD1wCXXBD40ljf9
+	 mtFmJ7UpMMDJA==
+Date: Fri, 11 Oct 2024 15:31:07 +0000
+To: bpf@vger.kernel.org, andrii@kernel.org
+From: Ihor Solodrai <ihor.solodrai@pm.me>
+Cc: ast@kernel.org, daniel@iogearbox.net, eddyz87@gmail.com, mykolal@fb.com
+Subject: [PATCH v2 bpf-next] selftests/bpf: check for timeout in perf_link test
+Message-ID: <20241011153104.249800-1-ihor.solodrai@pm.me>
+Feedback-ID: 27520582:user:proton
+X-Pm-Message-ID: 84ebed1c8886c65295a768c07e42b920429d3a18
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 10 Oct 2024 12:05:38 -0700 Mina Almasry wrote:
-> diff --git a/net/core/sock.c b/net/core/sock.c
-> index 083d438d8b6f..cb3d8b19de14 100644
-> --- a/net/core/sock.c
-> +++ b/net/core/sock.c
-> @@ -1071,11 +1071,11 @@ sock_devmem_dontneed(struct sock *sk,
-> sockptr_t optval, unsigned int optlen)
->             optlen > sizeof(*tokens) * MAX_DONTNEED_TOKENS)
->                 return -EINVAL;
-> 
-> -       tokens = kvmalloc_array(optlen, sizeof(*tokens), GFP_KERNEL);
-> +       num_tokens = optlen / sizeof(struct dmabuf_token);
-> +       tokens = kvmalloc_array(num_tokens, sizeof(*tokens), GFP_KERNEL);
->         if (!tokens)
->                 return -ENOMEM;
-> 
-> -       num_tokens = optlen / sizeof(struct dmabuf_token);
->         if (copy_from_sockptr(tokens, optval, optlen)) {
->                 kvfree(tokens);
->                 return -EFAULT;
-> @@ -1083,6 +1083,10 @@ sock_devmem_dontneed(struct sock *sk, sockptr_t
-> optval, unsigned int optlen)
-> 
->         xa_lock_bh(&sk->sk_user_frags);
->         for (i = 0; i < num_tokens; i++) {
-> +
-> +               if (tokens[i].token_count > MAX_DONTNEED_TOKENS)
-> +                       continue;
+Recently perf_link test started unreliably failing on libbpf CI:
+  * https://github.com/libbpf/libbpf/actions/runs/11260672407/job/313124054=
+73
+  * https://github.com/libbpf/libbpf/actions/runs/11260992334/job/313155146=
+26
+  * https://github.com/libbpf/libbpf/actions/runs/11263162459/job/313204582=
+51
 
-For the real fix let's scan the tokens before we take the xa lock
-and return an error rather than silently skipping?
+Part of the test is running a dummy loop for a while and then checking
+for a counter incremented by the test program.
 
->                 for (j = 0; j < tokens[i].token_count; j++) {
+Instead of waiting for an arbitrary number of loop iterations once,
+check for the test counter in a loop and use get_time_ns() helper to
+enforce a 100ms timeout.
+
+v1: https://lore.kernel.org/bpf/zuRd072x9tumn2iN4wDNs5av0nu5nekMNV4PkR-YwCT=
+10eFFTrUtZBRkLWFbrcCe7guvLStGQlhibo8qWojCO7i2-NGajes5GYIyynexD-w=3D@pm.me/
+
+Signed-off-by: Ihor Solodrai <ihor.solodrai@pm.me>
+---
+ .../testing/selftests/bpf/prog_tests/perf_link.c  | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
+
+diff --git a/tools/testing/selftests/bpf/prog_tests/perf_link.c b/tools/tes=
+ting/selftests/bpf/prog_tests/perf_link.c
+index 3a25f1c743a1..d940ff87fa08 100644
+--- a/tools/testing/selftests/bpf/prog_tests/perf_link.c
++++ b/tools/testing/selftests/bpf/prog_tests/perf_link.c
+@@ -4,8 +4,12 @@
+ #include <pthread.h>
+ #include <sched.h>
+ #include <test_progs.h>
++#include "testing_helpers.h"
+ #include "test_perf_link.skel.h"
+=20
++#define BURN_TIMEOUT_MS 100
++#define BURN_TIMEOUT_NS BURN_TIMEOUT_MS * 1000000
++
+ static void burn_cpu(void)
+ {
+ =09volatile int j =3D 0;
+@@ -32,6 +36,7 @@ void serial_test_perf_link(void)
+ =09int run_cnt_before, run_cnt_after;
+ =09struct bpf_link_info info;
+ =09__u32 info_len =3D sizeof(info);
++=09__u64 timeout_time_ns;
+=20
+ =09/* create perf event */
+ =09memset(&attr, 0, sizeof(attr));
+@@ -63,8 +68,14 @@ void serial_test_perf_link(void)
+ =09ASSERT_GT(info.prog_id, 0, "link_prog_id");
+=20
+ =09/* ensure we get at least one perf_event prog execution */
+-=09burn_cpu();
+-=09ASSERT_GT(skel->bss->run_cnt, 0, "run_cnt");
++=09timeout_time_ns =3D get_time_ns() + BURN_TIMEOUT_NS;
++=09while (true) {
++=09=09burn_cpu();
++=09=09if (skel->bss->run_cnt > 0)
++=09=09=09break;
++=09        if (!ASSERT_LT(get_time_ns(), timeout_time_ns, "run_cnt_timeout=
+"))
++=09=09=09break;
++=09}
+=20
+ =09/* perf_event is still active, but we close link and BPF program
+ =09 * shouldn't be executed anymore
+--=20
+2.43.0
+
 
 
