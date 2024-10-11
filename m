@@ -1,50 +1,66 @@
-Return-Path: <bpf+bounces-41759-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41763-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DD8199A95B
-	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2024 19:00:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6843A99AA81
+	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2024 19:40:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9D153B24C0B
-	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2024 17:00:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8F35D1C20B5D
+	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2024 17:40:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B71A1BDAB5;
-	Fri, 11 Oct 2024 17:00:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AF041CF2A7;
+	Fri, 11 Oct 2024 17:39:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NF45aIGe"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T/DvKyih"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C925D81AD7;
-	Fri, 11 Oct 2024 17:00:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A6F01C2DA1;
+	Fri, 11 Oct 2024 17:39:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728666027; cv=none; b=Udb/RiLo2DwL+C9i29mas/FXda+VWZVbM4Co48M7JB4MHG7FPs+3O8DTK69wyt+psddF4y+9/2GwHSwvKZevyqE5Gb3v4VMkD6LvUVv/rTbtk/PDsYwuWmVFggTHZfJGSQZ/1OEMRthSeNG10mIdMO0rL70mflVmDkUnlEWmzP0=
+	t=1728668373; cv=none; b=kg8ApVqc6e4MpglpTSGTV9vxPePeNs7WwNa1p6RUyTihEUG+xpkLQy6X93jyDHZRyGdq6K4BDLiIr1ITwMqDip75U5JqdxBpYHy9UBPSQwnmUKDsu3MZGKmq2c/xfcNb2atKi5QxTzlaM1CCDzp9CE04e6zD+i4U8teINAnyYBA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728666027; c=relaxed/simple;
-	bh=3PrcDyvK+Un7G7EbXkk1aEcgGFJg7JMH2EyFA1Zd40s=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=asN/Ae2Ae0iRJzeBe+9mKzP5j5GdGOp8JablpFj/vvJW5IdqB5vEyVKXPcLNFEEEF0Kr5K8TelCkyuoQmEtx5rWBBKlUQBUSyDC9vzxv+6IJJeO74I82DR/DRfyQmRyJfNwdk1iQ2Fs9xj1GxVu7pEUUIjO/3bhIRCdJXiQ/hmY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NF45aIGe; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7F37C4CEC3;
-	Fri, 11 Oct 2024 17:00:27 +0000 (UTC)
+	s=arc-20240116; t=1728668373; c=relaxed/simple;
+	bh=YtrJn4vc+Mgz9wgw7+EugcgaEZCddJzBtXAuSeGGRxU=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=Td8mp8kWVmIWcuY1tuabB1oDG/KJJG5+/o4p3GT1hrvAv40MBXQPwBXGl96jfg+ZQ+DRcPKiHn0Av87mOoAwNVdoHnPrDIQKrSXoMHujhEXTS5S/N83enAhpKfSpVm+VVfehfO64yeILgmeZ49unCFrpdgKy7A15/x9qmElE57U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T/DvKyih; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E52A1C4CEC3;
+	Fri, 11 Oct 2024 17:39:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728666027;
-	bh=3PrcDyvK+Un7G7EbXkk1aEcgGFJg7JMH2EyFA1Zd40s=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=NF45aIGeUE3dN1DOwQdV4gwCURIqUz3HB0h9HKnzllIrTio0IJbMvxugq/gT6tZ47
-	 HFvA6ed4DKTDE0qjR3gsye1SsKdhf/4S3MJf928YysCIk6rHcRop0BFr1ei5HHxSm4
-	 uDCm05MWCiDQUuP4nkF4ZlQRuR5RoBVU6kuAEKSlfnVZu/mB9vKwGVoTYCxDmS8Ihg
-	 GPoS+E/JWYI91RgLYP3CG/pNIm678Q7ZgeprtNaQy3YD+r64x6JGPqwIcE0c7cSTM0
-	 n2F2rmUDqze23q2ZugE/YtSERsX39PCatAwYKv2dHL5/9w2eQX1CISPyZJBqJWMDVQ
-	 RtJgQn/fBLGbA==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 70E32380DBC0;
-	Fri, 11 Oct 2024 17:00:33 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1728668373;
+	bh=YtrJn4vc+Mgz9wgw7+EugcgaEZCddJzBtXAuSeGGRxU=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=T/DvKyihzpbz0F1UjqpYZmPGTveIK/9TCnBiQ5W3BJVe3uTau+kajEEG2W7tkfJHZ
+	 h1LaE1XUR1dgbsZfPI+CJv7Ax+r5wvBW1ekLSIQ/XO4NbEBlMSoYaccUf1w1h9YMON
+	 u2luxl/PZYPUQLTTDaPkIgWJAaLiRRVnDLQS8o3LLOh+BBaDUceRhJA8a90jLoexuy
+	 j/MCaX9f5ZglIJnnavL3Qml//0rTZ61f5UK7e3E7DXyI+sE8lYzwVnrG9+aNhPHhqX
+	 WzchLutmfhOlCMg5t54ZA0poLy0UjxtqMdOCeQCiYei1zN1cFSpShi0j1oBjnKvAcf
+	 LtT/wZIt7QeUg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 986CACE0BB1; Fri, 11 Oct 2024 10:39:32 -0700 (PDT)
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: frederic@kernel.org,
+	rcu@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	kernel-team@meta.com,
+	rostedt@goodmis.org,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	bpf@vger.kernel.org
+Subject: [PATCH v2 rcu 01/13] srcu: Rename srcu_might_be_idle() to srcu_should_expedite()
+Date: Fri, 11 Oct 2024 10:39:19 -0700
+Message-Id: <20241011173931.2050422-1-paulmck@kernel.org>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <3b82ac1a-8786-4a27-8eff-ecc67b50dfb6@paulmck-laptop>
+References: <3b82ac1a-8786-4a27-8eff-ecc67b50dfb6@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -52,57 +68,74 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH,bpf-next v3 0/4] selftests/bpf: migrate and remove
- cgroup/tracing related tests
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <172866603225.2881487.4648695674968561173.git-patchwork-notify@kernel.org>
-Date: Fri, 11 Oct 2024 17:00:32 +0000
-References: <20241011044847.51584-1-danieltimlee@gmail.com>
-In-Reply-To: <20241011044847.51584-1-danieltimlee@gmail.com>
-To: Daniel T. Lee <danieltimlee@gmail.com>
-Cc: daniel@iogearbox.net, ast@kernel.org, andrii.nakryiko@gmail.com,
- martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
- shuah@kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org,
- linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
 
-Hello:
+SRCU auto-expedites grace periods that follow a sufficiently long idle
+period, and the srcu_might_be_idle() function is used to make this
+decision.  However, the upcoming light-weight SRCU readers will not do
+auto-expediting because doing so would cause the grace-period machinery
+to invoke synchronize_rcu_expedited() twice, with IPIs all around.
+However, software-engineering considerations force this determination
+to remain in srcu_might_be_idle().
 
-This series was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+This commit therefore changes the name of srcu_might_be_idle() to
+srcu_should_expedite(), thus moving from what it currently does to why
+it does it, this latter being more future-proof.
 
-On Fri, 11 Oct 2024 04:48:43 +0000 you wrote:
-> The BPF testing framework has evolved significantly over time. However,
-> some legacy tests in the samples/bpf directory have not kept up with
-> these changes. These outdated tests can cause confusion and increase
-> maintenance efforts.
-> 
-> This patchset focuses on migrating outdated cgroup and tracing-related
-> tests from samples/bpf to selftests/bpf, ensuring the BPF test suite
-> remains current and efficient. Tests that are already covered by
-> selftests/bpf are removed, while those not yet covered are migrated.
-> This includes cgroup sock create tests for setting socket attributes
-> and blocking socket creation, as well as the removal of redundant
-> cgroup and tracing tests that have been replaced by newer tests.
-> 
-> [...]
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Andrii Nakryiko <andrii@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: <bpf@vger.kernel.org>
+---
+ kernel/rcu/srcutree.c | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
 
-Here is the summary with links:
-  - [bpf-next,v3,1/4] selftests/bpf: migrate cgroup sock create test for setting iface/mark/prio
-    https://git.kernel.org/bpf/bpf-next/c/ec6c4be07323
-  - [bpf-next,v3,2/4] selftests/bpf: migrate cgroup sock create test for prohibiting sockets
-    https://git.kernel.org/bpf/bpf-next/c/64a4658d6f76
-  - [bpf-next,v3,3/4] samples/bpf: remove obsolete cgroup related tests
-    https://git.kernel.org/bpf/bpf-next/c/5ea68f0493d1
-  - [bpf-next,v3,4/4] samples/bpf: remove obsolete tracing related tests
-    https://git.kernel.org/bpf/bpf-next/c/118740b87015
-
-You are awesome, thank you!
+diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+index 31706e3293bce..9ff4ded609ba5 100644
+--- a/kernel/rcu/srcutree.c
++++ b/kernel/rcu/srcutree.c
+@@ -1139,7 +1139,8 @@ static void srcu_flip(struct srcu_struct *ssp)
+ }
+ 
+ /*
+- * If SRCU is likely idle, return true, otherwise return false.
++ * If SRCU is likely idle, in other words, the next SRCU grace period
++ * should be expedited, return true, otherwise return false.
+  *
+  * Note that it is OK for several current from-idle requests for a new
+  * grace period from idle to specify expediting because they will all end
+@@ -1159,7 +1160,7 @@ static void srcu_flip(struct srcu_struct *ssp)
+  * negligible when amortized over that time period, and the extra latency
+  * of a needlessly non-expedited grace period is similarly negligible.
+  */
+-static bool srcu_might_be_idle(struct srcu_struct *ssp)
++static bool srcu_should_expedite(struct srcu_struct *ssp)
+ {
+ 	unsigned long curseq;
+ 	unsigned long flags;
+@@ -1469,14 +1470,15 @@ EXPORT_SYMBOL_GPL(synchronize_srcu_expedited);
+  * Implementation of these memory-ordering guarantees is similar to
+  * that of synchronize_rcu().
+  *
+- * If SRCU is likely idle, expedite the first request.  This semantic
+- * was provided by Classic SRCU, and is relied upon by its users, so TREE
+- * SRCU must also provide it.  Note that detecting idleness is heuristic
+- * and subject to both false positives and negatives.
++ * If SRCU is likely idle as determined by srcu_should_expedite(),
++ * expedite the first request.  This semantic was provided by Classic SRCU,
++ * and is relied upon by its users, so TREE SRCU must also provide it.
++ * Note that detecting idleness is heuristic and subject to both false
++ * positives and negatives.
+  */
+ void synchronize_srcu(struct srcu_struct *ssp)
+ {
+-	if (srcu_might_be_idle(ssp) || rcu_gp_is_expedited())
++	if (srcu_should_expedite(ssp) || rcu_gp_is_expedited())
+ 		synchronize_srcu_expedited(ssp);
+ 	else
+ 		__synchronize_srcu(ssp, true);
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.40.1
 
 
