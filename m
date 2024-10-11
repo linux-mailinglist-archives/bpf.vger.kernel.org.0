@@ -1,135 +1,137 @@
-Return-Path: <bpf+bounces-41724-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41725-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA11B999E45
-	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2024 09:47:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 97033999F2F
+	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2024 10:40:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F15AF1C20FBA
-	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2024 07:47:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C75B01C217F2
+	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2024 08:40:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 170DE20B1F8;
-	Fri, 11 Oct 2024 07:46:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C506C20B20B;
+	Fri, 11 Oct 2024 08:40:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="RNzRRI+j"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="aL+bEloF"
 X-Original-To: bpf@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A2CF20ADF7;
-	Fri, 11 Oct 2024 07:46:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFD5F3232
+	for <bpf@vger.kernel.org>; Fri, 11 Oct 2024 08:40:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728632817; cv=none; b=EwtJMNgEZXS7b3TkSK0ceUIqB7HqhaOWMA8VhsJD1ArT2feFxe7xbvxGgdQgZQOt3tP8HVGafP+biFA/lutrI+7sjaF1alR14IYl7t3F6OwI6UPQD/puTO7WR01dNVq55mkrhYvW4c0zGKm37ffodSUhCwTDz+EcUjsX3K9rHqk=
+	t=1728636030; cv=none; b=Weo37cZPYH4V8cKPVuN5cDQpo3kTb520tuWfzVvjc70b8ZXCcn4/7wSR+vTu6aTbVoT1Gen0sg2aOpQb+aQ5yZCBkAS22nexEomSX1dr8shxs8PEo14mYc5CP96xp8GqWWXiPKI7BSPX2iQtK48CnWYggWd/eSc8A2xYkCalW54=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728632817; c=relaxed/simple;
-	bh=HQSSCIywenQzOJiT5UPu5auwm7k09dThmwbWbEkcmME=;
+	s=arc-20240116; t=1728636030; c=relaxed/simple;
+	bh=BYzqfj+nqykqzZcx9YWW3ICcnNZWCRkYBkbU9Dq53Hs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LRVVmLHA6vlvg3GNNwU29K8s4zKY5o6vpQCX7BHujj6SixX8gEFBWHnkKCdYg1X7HDeFdJTjnftzCKfqFxVUvnenynNZLFTTY/Jj8C03I12Cc/AfuSCNvc13VW2jb5e269zErDTpESQl0IDKuxG5gXwNur1l6CYClUQtIvhNsgE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=RNzRRI+j; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=HlhUCBO2cgAocJ0jal2+odmhS3fEGMT9ApCG3YBalmk=; b=RNzRRI+jS+E41pEvv2tM/PBMQr
-	SQs+GEy9wRlJQS7LgwXIlsLPiOEfZ0lcfVl/LZAzCmJERr/wrGQx/6Jkm+z665nLQ1YxAvvKLbZgJ
-	K836flQdGWfRcahrgPWsGgbE2Kv46RlU2j9210RhGvDmBYmeahOdJixtpW4jFIpXAj2/1kuIqVUzm
-	9UeGFlwfEh13tOOBCEhTCdOmFs+NkVHulOmWBcYiyIrEdETWz96sC8sQ5hitRuikUOylqpHtAubjX
-	bIdwQSiSdX8D+zYfq6nK2YaptkNRLX5ebrdQ9hI/fijT9vdqmXxkPzbZ/e0uearFNRK9I5GNV8P5M
-	+7qkIbyw==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.98 #2 (Red Hat Linux))
-	id 1szALv-0000000Faln-258j;
-	Fri, 11 Oct 2024 07:46:23 +0000
-Date: Fri, 11 Oct 2024 00:46:23 -0700
-From: Christoph Hellwig <hch@infradead.org>
-To: Mike Rapoport <rppt@kernel.org>
-Cc: Christoph Hellwig <hch@infradead.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Andreas Larsson <andreas@gaisler.com>,
-	Andy Lutomirski <luto@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-	Brian Cain <bcain@quicinc.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
-	Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Michal Simek <monstr@monstr.eu>, Oleg Nesterov <oleg@redhat.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Richard Weinberger <richard@nod.at>,
-	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
-	Stafford Horne <shorne@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>,
-	bpf@vger.kernel.org, linux-alpha@vger.kernel.org,
-	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org, linux-mm@kvack.org,
-	linux-modules@vger.kernel.org, linux-openrisc@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-	linux-trace-kernel@vger.kernel.org, linux-um@lists.infradead.org,
-	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
-	sparclinux@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v5 7/8] execmem: add support for cache of large ROX pages
-Message-ID: <ZwjXz0dz-RldVNx0@infradead.org>
-References: <20241009180816.83591-1-rppt@kernel.org>
- <20241009180816.83591-8-rppt@kernel.org>
- <Zwd7GRyBtCwiAv1v@infradead.org>
- <ZwfPPZrxHzQgYfx7@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Edm/X16nwU4+7pVwnL7cnsBUEe7uBydGWknJpt4w+QmD/wZlwclNygiB93U78Y/b6I6pU6KMxkJ6VFEyyYtm9QgDyuuMJ8o+b2PKZ/fr7IZ8+bj036d83FwMrg8KhqlXZOmzJjWUVeGoapyaYlyMCJt5d+s9Pc4ZK7NkLXH+6ok=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=aL+bEloF; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1728636026;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=pWrJLHT9xuKB8ajCY4RtFhjfAoKg+wmBe1wyIb2nX+g=;
+	b=aL+bEloF+djaEpaaRPMvooC3TI/b8klipjr8n4pwQPJVn+I4R5useo/Ui64npDqAu5vAU1
+	nrypknD145SONWsv+NzPlY10P+WiE5AVPbsutavU2c6N9xlh0cAOubul2JHhP+kz1uAxQL
+	8SQivn3m1hWimo+3I1Jyo2tsvFW+slY=
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com
+ [209.85.166.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-329-DOTaSMChNWeL1RzvwbwwMA-1; Fri, 11 Oct 2024 04:40:25 -0400
+X-MC-Unique: DOTaSMChNWeL1RzvwbwwMA-1
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-3a3b483e30bso7950605ab.3
+        for <bpf@vger.kernel.org>; Fri, 11 Oct 2024 01:40:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1728636024; x=1729240824;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pWrJLHT9xuKB8ajCY4RtFhjfAoKg+wmBe1wyIb2nX+g=;
+        b=qqwFsZWHcWNSECID8HgJQ2mNxAicCgy9eRveSZrv4cOU9d2VlCQylX9YD3eGDnGt+z
+         sPhWySzrobL1ZW8VYXbbd0yF7S8Lexa8M8MlBHffAVtyItjb1H1PFxdcAhLA5YF8vtFD
+         XOSMKclmBKBNCFKQDzZKzj4HKpVXnPbSMQ6c9MqaGIKxBiWhbQ2kU0A+SAHUtJvw+C8t
+         em54M0Dob0KaPV10E+Dq3l0f/M1QRwa7Wx+Oqpxnm7QCbnFvjuhEoyzCvuwqfLTFjOwt
+         8gMS3TqSlFEjTcFK+EIhgO1qLOSfHZm2hJLMByFCZRIIYKXwJCvxHHwTiB4a8O0FE+IQ
+         RqmA==
+X-Forwarded-Encrypted: i=1; AJvYcCUEqmToq0T2Vv13Gy/wpvlKf1XiRk4PyzUO9aWG2PrPeiXVY9/UW7GZZn8q1JE+EhkHbWo=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzHUszl2Vezo59nbI0MtiMTrbk7oJTsAOOvNB3tNQSrvmhNG42n
+	NhR8mCC+X6TBmQ1DZ8s+6haqdOrCZfdVPTBg5gqHMZK+i+Q8amVYlKeUdXzPfhUrFMsH44Gftoo
+	Im9VEtYJD3EtxhLFC0LYiBjJiTZiAnHJ4vS1X1AEXfls/+FImKg==
+X-Received: by 2002:a05:6e02:1526:b0:3a0:979d:843 with SMTP id e9e14a558f8ab-3a3b5faadafmr12313245ab.9.1728636024546;
+        Fri, 11 Oct 2024 01:40:24 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHS6Ve9onGmJnas3m76tH/TZBslmvBdhGx+K87bNYzu3z8d684w4p942qqdciHUKtSyIioLAg==
+X-Received: by 2002:a05:6e02:1526:b0:3a0:979d:843 with SMTP id e9e14a558f8ab-3a3b5faadafmr12313045ab.9.1728636024129;
+        Fri, 11 Oct 2024 01:40:24 -0700 (PDT)
+Received: from sgarzare-redhat ([193.207.139.72])
+        by smtp.gmail.com with ESMTPSA id e9e14a558f8ab-3a3afdb35e0sm6334505ab.24.2024.10.11.01.40.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Oct 2024 01:40:23 -0700 (PDT)
+Date: Fri, 11 Oct 2024 10:40:12 +0200
+From: Stefano Garzarella <sgarzare@redhat.com>
+To: "Robert Eshleman ." <bobby.eshleman@bytedance.com>
+Cc: Michal Luczaj <mhal@rbox.co>, bobby.eshleman@gmail.com, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	John Fastabend <john.fastabend@gmail.com>, Jakub Sitnicki <jakub@cloudflare.com>, 
+	"Michael S. Tsirkin" <mst@redhat.com>, Stefan Hajnoczi <stefanha@redhat.com>, netdev@vger.kernel.org, 
+	bpf@vger.kernel.org
+Subject: Re: [External] Re: [PATCH bpf 2/4] vsock: Update rx_bytes on
+ read_skb()
+Message-ID: <cjhxc6sgmufeemnhgsv4prrf5uionxtgadsgwbxajwsljhqwao@3k4nrd2ivvtl>
+References: <20241009-vsock-fixes-for-redir-v1-0-e455416f6d78@rbox.co>
+ <20241009-vsock-fixes-for-redir-v1-2-e455416f6d78@rbox.co>
+ <mwemnay5bb7ft5zvlrh5emdtkilqvkj42xnxnatnh3hmmtkhce@fqe64sbx6b2z>
+ <CALa-AnBQAhpBn2cPG4wW9c-dMq0JXAbkd4NSJL+Vtv=r=+hn2w@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Disposition: inline
-In-Reply-To: <ZwfPPZrxHzQgYfx7@kernel.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CALa-AnBQAhpBn2cPG4wW9c-dMq0JXAbkd4NSJL+Vtv=r=+hn2w@mail.gmail.com>
 
-On Thu, Oct 10, 2024 at 03:57:33PM +0300, Mike Rapoport wrote:
-> On Wed, Oct 09, 2024 at 11:58:33PM -0700, Christoph Hellwig wrote:
-> > On Wed, Oct 09, 2024 at 09:08:15PM +0300, Mike Rapoport wrote:
-> > >  /**
-> > >   * struct execmem_info - architecture parameters for code allocations
-> > > + * @fill_trapping_insns: set memory to contain instructions that will trap
-> > >   * @ranges: array of parameter sets defining architecture specific
-> > >   * parameters for executable memory allocations. The ranges that are not
-> > >   * explicitly initialized by an architecture use parameters defined for
-> > >   * @EXECMEM_DEFAULT.
-> > >   */
-> > >  struct execmem_info {
-> > > +	void (*fill_trapping_insns)(void *ptr, size_t size, bool writable);
-> > >  	struct execmem_range	ranges[EXECMEM_TYPE_MAX];
-> > 
-> > Why is the filler an indirect function call and not an architecture
-> > hook?
-> 
-> The idea is to keep everything together and have execmem_info describe all
-> that architecture needs. 
+On Thu, Oct 10, 2024 at 05:09:17PM GMT, Robert Eshleman . wrote:
+>On Thu, Oct 10, 2024 at 1:49 AM Stefano Garzarella <sgarzare@redhat.com>
+>wrote:
+>
+>>
+>> The modification looks good to me, but now that I'm looking at it
+>> better, I don't understand why we don't also call
+>> virtio_transport_send_credit_update().
+>>
+>> This is to inform the peer that we've freed up space and it has more
+>> credit.
+>>
+>> @Bobby do you remember?
+>>
+>>
+>I do not remember, but I do think it seems wrong not to.
 
-But why?  That's pretty different from our normal style of arch hooks,
-and introduces an indirect call in a security sensitive area.
+Yeah, @Michal can you also add that call?
+
+For now just call it, without the optimization we did for stream 
+packets, in the future I'll try to unify the paths.
+
+Thanks,
+Stefano
+
+>
+>
+>> I think we should try to unify the receiving path used through BPF or
+>> not (not for this series of course).
+>>
+>> Thanks,
+>> Stefano
+>>
 
 
