@@ -1,46 +1,55 @@
-Return-Path: <bpf+bounces-41722-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41723-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86E94999CE4
-	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2024 08:44:26 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDCF3999E13
+	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2024 09:38:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1FAD6285A41
-	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2024 06:44:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4AF2FB212FD
+	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2024 07:38:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45AAE209698;
-	Fri, 11 Oct 2024 06:44:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C957320ADCC;
+	Fri, 11 Oct 2024 07:37:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="bGXSjAx+"
+	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="TDyRRgnH"
 X-Original-To: bpf@vger.kernel.org
-Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
+Received: from smtp-relay-canonical-0.canonical.com (smtp-relay-canonical-0.canonical.com [185.125.188.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03FAC209671;
-	Fri, 11 Oct 2024 06:44:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.132
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8A9C209F4D;
+	Fri, 11 Oct 2024 07:37:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.120
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728629049; cv=none; b=ueheFwaWd6OHMOPYQuMKjYLHUsPjFr6PECOPwVPGrqPVEYayL45eQa8/Bhwe34ZtLhyOfxZsCym4Q4sQr8EB+QH87EM/lsH1DGaYWB3SQXyrU7NXXxl1ywKgRIOx5FuWDjkoHoKbxVhH4UPIH8Fow0uP9whIBEZXtRaErNxEk1w=
+	t=1728632236; cv=none; b=LyaH2SFxk8Q+XqOOHTOrbHbvTSSg8WqgIirLGRRhL+QFz+gsivpXQYyigBVKuWV7SE6gYcUPqYGHDLThWDoG3cGLz3DbJWK6DfgeuxNOP7pEvHi4SrQdEPE4AhGfR8hKb8MJ9MwuX7cm4o5IjGMutb7AD090T8Ct5nUlEpwS+OI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728629049; c=relaxed/simple;
-	bh=ZuHgz0dsu7sdMQJFjzwOQB+CvPV20/Daho6ghr0QFvE=;
+	s=arc-20240116; t=1728632236; c=relaxed/simple;
+	bh=a7kbOY4bHJu1rLRmVz3SN2W1jQ5ky54AQ0Pja37EvPo=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gXVubuxK+H5xE+io1xQzyyNgUOqIteZxfEjAzMly19y/6Qjk7XhKUKHPSyJT11aY1D8LEZZuODSyBslE3et3iF0y83mr+4WetqdDkbjKtYrBzQleR+y+HpwIrwRnX7dWqoorxTwQzie+H/LN4UHVsODx6ClXIjcN18jnromxXak=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=bGXSjAx+; arc=none smtp.client-ip=115.124.30.132
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1728629037; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=e120bJ3NLhUF/QK78BG8TahQEd5Mu/BTj6zuxrOMDPQ=;
-	b=bGXSjAx+VxhpsAzeLbJ4INXwC2USHT4pG73ktmL6yLwpm12DS4cOEGwTrReRvF4EQb2VtBb3bEPpF//8HQm9wejBctjnDMIvCMWQ7xjdfhRJuEKxjwYX1FpSmBHoxOXAXKSA7CenmKL4PmDm2kIMwuR91K9sFCgCVbVsob3J/6U=
-Received: from 30.221.146.54(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0WGp9pg9_1728629036 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Fri, 11 Oct 2024 14:43:57 +0800
-Message-ID: <b5aa477d-a4b1-45cb-af44-bd737504734e@linux.alibaba.com>
-Date: Fri, 11 Oct 2024 14:43:56 +0800
+	 In-Reply-To:Content-Type; b=kQPevsXjBkVbgNeALmYBkDkuFK4w0v9Lh//jvblU2Uu82wSMQtsa5+v4UFYjGZ9VNWYg4jge3QovYIUz5XgkKp/ibP/upmzaWQOUrfGvvVxdnT4S+ACSf4/AVW7YCKB4DkSXgMV/zGYuy8X1Yp57MsTz+5xBIXY7SjiavwLImWM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=TDyRRgnH; arc=none smtp.client-ip=185.125.188.120
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
+Received: from [192.168.192.84] (unknown [50.39.103.33])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 967D53F1E8;
+	Fri, 11 Oct 2024 07:37:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20210705; t=1728632225;
+	bh=1UMhcgZbU9zce5GQB2psJSMAZetEYbDg+BFWhu9C/E4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type;
+	b=TDyRRgnHhYw6Kndbw6MRSaLwO0KnBkYm7px2OFE6R1z3W3faEla/sREV79n4QR/lo
+	 jMH88f/hd3kxZ0h8CxRMAdz7zHwxCRQH2wZJwUoP3aWP/x6EZMOCjsz+3vGO0mo0Bj
+	 LbrINP1DVukQprqjTzGWPXntpWpFb1Z7mYyvgdJpM0YBdAsw7KwSQ1sV92PWJZmN4u
+	 rjsf3Cpi7PGnmUT5MYgvShgw++nO2Ad5928Umc95y/efiBR5025hM3Lzp9IJUxeNde
+	 yeawGqeSq0NWT1KBtBy+oqiJiFNG6DFKliW/dxbk/GDitefrra8weDQQi3pPU9vbSj
+	 PFFxgrBX/NScw==
+Message-ID: <3ca7f932-df55-44c5-86c4-0785fd15c50f@canonical.com>
+Date: Fri, 11 Oct 2024 00:36:59 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -48,164 +57,226 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next] net/smc: Introduce a hook to modify syn_smc at
- runtime
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com,
- wintera@linux.ibm.com, guwen@linux.alibaba.com,
- Alexei Starovoitov <ast@kernel.org>, Jakub Kicinski <kuba@kernel.org>,
- "David S. Miller" <davem@davemloft.net>,
- Network Development <netdev@vger.kernel.org>,
- linux-s390 <linux-s390@vger.kernel.org>, linux-rdma@vger.kernel.org,
- Tony Lu <tonylu@linux.alibaba.com>, Paolo Abeni <pabeni@redhat.com>,
- Eric Dumazet <edumazet@google.com>, bpf <bpf@vger.kernel.org>
-References: <1728532691-20044-1-git-send-email-alibuda@linux.alibaba.com>
- <CAADnVQLXyA__zdDSiTdhaw=dXyfgmkr--cH068JvNK=JAYvRDA@mail.gmail.com>
+Subject: Re: [PATCH v4 01/13] LSM: Add the lsm_prop data structure.
+To: Casey Schaufler <casey@schaufler-ca.com>, paul@paul-moore.com,
+ linux-security-module@vger.kernel.org
+Cc: jmorris@namei.org, serge@hallyn.com, keescook@chromium.org,
+ penguin-kernel@i-love.sakura.ne.jp, stephen.smalley.work@gmail.com,
+ linux-kernel@vger.kernel.org, selinux@vger.kernel.org, mic@digikod.net,
+ apparmor@lists.ubuntu.com, bpf@vger.kernel.org
+References: <20241009173222.12219-1-casey@schaufler-ca.com>
+ <20241009173222.12219-2-casey@schaufler-ca.com>
 Content-Language: en-US
-From: "D. Wythe" <alibuda@linux.alibaba.com>
-In-Reply-To: <CAADnVQLXyA__zdDSiTdhaw=dXyfgmkr--cH068JvNK=JAYvRDA@mail.gmail.com>
+From: John Johansen <john.johansen@canonical.com>
+Autocrypt: addr=john.johansen@canonical.com; keydata=
+ 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 lT9Q
+Organization: Canonical
+In-Reply-To: <20241009173222.12219-2-casey@schaufler-ca.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-
-
-On 10/11/24 12:21 AM, Alexei Starovoitov wrote:
-> On Wed, Oct 9, 2024 at 8:58 PM D. Wythe <alibuda@linux.alibaba.com> wrote:
->>
->>
->> +__bpf_hook_start();
->> +
->> +__weak noinline int select_syn_smc(const struct sock *sk, struct sockaddr *peer)
->> +{
->> +       return 1;
->> +}
->> +
->> +__bpf_hook_end();
->> +
->>   int smc_nl_dump_hs_limitation(struct sk_buff *skb, struct netlink_callback *cb)
->>   {
->>          struct smc_nl_dmp_ctx *cb_ctx = smc_nl_dmp_ctx(cb);
->> @@ -156,19 +165,43 @@ static struct sock *smc_tcp_syn_recv_sock(const struct sock *sk,
->>          return NULL;
->>   }
->>
->> -static bool smc_hs_congested(const struct sock *sk)
->> +static void smc_openreq_init(struct request_sock *req,
->> +                            const struct tcp_options_received *rx_opt,
->> +                            struct sk_buff *skb, const struct sock *sk)
->>   {
->> +       struct inet_request_sock *ireq = inet_rsk(req);
->> +       struct sockaddr_storage rmt_sockaddr = {};
->>          const struct smc_sock *smc;
->>
->>          smc = smc_clcsock_user_data(sk);
->>
->>          if (!smc)
->> -               return true;
->> +               return;
->>
->> -       if (workqueue_congested(WORK_CPU_UNBOUND, smc_hs_wq))
->> -               return true;
->> +       if (smc->limit_smc_hs && workqueue_congested(WORK_CPU_UNBOUND, smc_hs_wq))
->> +               goto out_no_smc;
->>
->> -       return false;
->> +       rmt_sockaddr.ss_family = sk->sk_family;
->> +
->> +       if (rmt_sockaddr.ss_family == AF_INET) {
->> +               struct sockaddr_in *rmt4_sockaddr =  (struct sockaddr_in *)&rmt_sockaddr;
->> +
->> +               rmt4_sockaddr->sin_addr.s_addr = ireq->ir_rmt_addr;
->> +               rmt4_sockaddr->sin_port = ireq->ir_rmt_port;
->> +#if IS_ENABLED(CONFIG_IPV6)
->> +       } else {
->> +               struct sockaddr_in6 *rmt6_sockaddr =  (struct sockaddr_in6 *)&rmt_sockaddr;
->> +
->> +               rmt6_sockaddr->sin6_addr = ireq->ir_v6_rmt_addr;
->> +               rmt6_sockaddr->sin6_port = ireq->ir_rmt_port;
->> +#endif /* CONFIG_IPV6 */
->> +       }
->> +
->> +       ireq->smc_ok = select_syn_smc(sk, (struct sockaddr *)&rmt_sockaddr);
->> +       return;
->> +out_no_smc:
->> +       ireq->smc_ok = 0;
->> +       return;
->>   }
->>
->>   struct smc_hashinfo smc_v4_hashinfo = {
->> @@ -1671,7 +1704,7 @@ int smc_connect(struct socket *sock, struct sockaddr *addr,
->>          }
->>
->>          smc_copy_sock_settings_to_clc(smc);
->> -       tcp_sk(smc->clcsock->sk)->syn_smc = 1;
->> +       tcp_sk(smc->clcsock->sk)->syn_smc = select_syn_smc(sk, addr);
->>          if (smc->connect_nonblock) {
->>                  rc = -EALREADY;
->>                  goto out;
->> @@ -2650,8 +2683,7 @@ int smc_listen(struct socket *sock, int backlog)
->>
->>          inet_csk(smc->clcsock->sk)->icsk_af_ops = &smc->af_ops;
->>
->> -       if (smc->limit_smc_hs)
->> -               tcp_sk(smc->clcsock->sk)->smc_hs_congested = smc_hs_congested;
->> +       tcp_sk(smc->clcsock->sk)->smc_openreq_init = smc_openreq_init;
->>
->>          rc = kernel_listen(smc->clcsock, backlog);
->>          if (rc) {
->> @@ -3475,6 +3507,24 @@ static void __net_exit smc_net_stat_exit(struct net *net)
->>          .exit = smc_net_stat_exit,
->>   };
->>
->> +#if IS_ENABLED(CONFIG_BPF_SYSCALL)
->> +BTF_SET8_START(bpf_smc_fmodret_ids)
->> +BTF_ID_FLAGS(func, select_syn_smc)
->> +BTF_SET8_END(bpf_smc_fmodret_ids)
->> +
->> +static const struct btf_kfunc_id_set bpf_smc_fmodret_set = {
->> +       .owner = THIS_MODULE,
->> +       .set   = &bpf_smc_fmodret_ids,
->> +};
->> +
->> +static int bpf_smc_kfunc_init(void)
->> +{
->> +       return register_btf_fmodret_id_set(&bpf_smc_fmodret_set);
->> +}
+On 10/9/24 10:32, Casey Schaufler wrote:
+> When more than one security module is exporting data to audit and
+> networking sub-systems a single 32 bit integer is no longer
+> sufficient to represent the data. Add a structure to be used instead.
 > 
-> fmodret was an approach that hid-bpf took initially,
-> but eventually they removed it all and switched to struct-ops approach.
-> Please learn that lesson.
-> Use struct_ops from the beginning.
+> The lsm_prop structure definition is intended to keep the LSM
+> specific information private to the individual security modules.
+> The module specific information is included in a new set of
+> header files under include/lsm. Each security module is allowed
+> to define the information included for its use in the lsm_prop.
+> SELinux includes a u32 secid. Smack includes a pointer into its
+> global label list. The conditional compilation based on feature
+> inclusion is contained in the include/lsm files.
 > 
-> I did a presentation recently explaining the motivation behind
-> struct_ops and tips on how to extend the kernel.
-> TLDR: the step one is to design the extension _without_ bpf.
-> The interface should be usable for kernel modules.
-> And then when you have *_ops style api in place
-> the bpf progs will plug-in without extra work.
+> Suggested-by: Paul Moore <paul@paul-moore.com>
+> Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
+
+Acked-by: John Johansen <john.johansen@canonical.com>
+
+> Cc: apparmor@lists.ubuntu.com
+> Cc: bpf@vger.kernel.org
+> Cc: selinux@vger.kernel.org
+> Cc: linux-security-module@vger.kernel.org
+> ---
+>   include/linux/lsm/apparmor.h | 17 +++++++++++++++++
+>   include/linux/lsm/bpf.h      | 16 ++++++++++++++++
+>   include/linux/lsm/selinux.h  | 16 ++++++++++++++++
+>   include/linux/lsm/smack.h    | 17 +++++++++++++++++
+>   include/linux/security.h     | 20 ++++++++++++++++++++
+>   5 files changed, 86 insertions(+)
+>   create mode 100644 include/linux/lsm/apparmor.h
+>   create mode 100644 include/linux/lsm/bpf.h
+>   create mode 100644 include/linux/lsm/selinux.h
+>   create mode 100644 include/linux/lsm/smack.h
 > 
-> Slides:
-> https://github.com/4ast/docs/blob/main/BPF%20struct-ops.pdf
-
-
-Hi Alexei,
-
-Thanks very much for your suggestion.
-
-In fact, I tried struct_ops in SMC about a year ago. Unfortunately, at that time struct_ops did not 
-support registration from modules, and I had to move some smc dependencies into bpf, which met with 
-community opposition. However, I noticed that this feature is now supported, so perhaps this is an 
-opportunity.
-
-But on the other hand, given the current functionality, I wonder if struct_ops might be an overkill. 
-I haven't been able to come up with a suitable abstraction to define this ops, and in the future, 
-this ops might only contain the very one callback (select_syn_smc).
-
-Looking forward for your advises.
-
-Thanks,
-D. Wythe
-
-
+> diff --git a/include/linux/lsm/apparmor.h b/include/linux/lsm/apparmor.h
+> new file mode 100644
+> index 000000000000..612cbfacb072
+> --- /dev/null
+> +++ b/include/linux/lsm/apparmor.h
+> @@ -0,0 +1,17 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Linux Security Module interface to other subsystems.
+> + * AppArmor presents single pointer to an aa_label structure.
+> + */
+> +#ifndef __LINUX_LSM_APPARMOR_H
+> +#define __LINUX_LSM_APPARMOR_H
+> +
+> +struct aa_label;
+> +
+> +struct lsm_prop_apparmor {
+> +#ifdef CONFIG_SECURITY_APPARMOR
+> +	struct aa_label *label;
+> +#endif
+> +};
+> +
+> +#endif /* ! __LINUX_LSM_APPARMOR_H */
+> diff --git a/include/linux/lsm/bpf.h b/include/linux/lsm/bpf.h
+> new file mode 100644
+> index 000000000000..8106e206fcef
+> --- /dev/null
+> +++ b/include/linux/lsm/bpf.h
+> @@ -0,0 +1,16 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Linux Security Module interface to other subsystems.
+> + * BPF may present a single u32 value.
+> + */
+> +#ifndef __LINUX_LSM_BPF_H
+> +#define __LINUX_LSM_BPF_H
+> +#include <linux/types.h>
+> +
+> +struct lsm_prop_bpf {
+> +#ifdef CONFIG_BPF_LSM
+> +	u32 secid;
+> +#endif
+> +};
+> +
+> +#endif /* ! __LINUX_LSM_BPF_H */
+> diff --git a/include/linux/lsm/selinux.h b/include/linux/lsm/selinux.h
+> new file mode 100644
+> index 000000000000..9455a6b5b910
+> --- /dev/null
+> +++ b/include/linux/lsm/selinux.h
+> @@ -0,0 +1,16 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Linux Security Module interface to other subsystems.
+> + * SELinux presents a single u32 value which is known as a secid.
+> + */
+> +#ifndef __LINUX_LSM_SELINUX_H
+> +#define __LINUX_LSM_SELINUX_H
+> +#include <linux/types.h>
+> +
+> +struct lsm_prop_selinux {
+> +#ifdef CONFIG_SECURITY_SELINUX
+> +	u32 secid;
+> +#endif
+> +};
+> +
+> +#endif /* ! __LINUX_LSM_SELINUX_H */
+> diff --git a/include/linux/lsm/smack.h b/include/linux/lsm/smack.h
+> new file mode 100644
+> index 000000000000..ff730dd7a734
+> --- /dev/null
+> +++ b/include/linux/lsm/smack.h
+> @@ -0,0 +1,17 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Linux Security Module interface to other subsystems.
+> + * Smack presents a pointer into the global Smack label list.
+> + */
+> +#ifndef __LINUX_LSM_SMACK_H
+> +#define __LINUX_LSM_SMACK_H
+> +
+> +struct smack_known;
+> +
+> +struct lsm_prop_smack {
+> +#ifdef CONFIG_SECURITY_SMACK
+> +	struct smack_known *skp;
+> +#endif
+> +};
+> +
+> +#endif /* ! __LINUX_LSM_SMACK_H */
+> diff --git a/include/linux/security.h b/include/linux/security.h
+> index b86ec2afc691..555249a8d121 100644
+> --- a/include/linux/security.h
+> +++ b/include/linux/security.h
+> @@ -34,6 +34,10 @@
+>   #include <linux/sockptr.h>
+>   #include <linux/bpf.h>
+>   #include <uapi/linux/lsm.h>
+> +#include <linux/lsm/selinux.h>
+> +#include <linux/lsm/smack.h>
+> +#include <linux/lsm/apparmor.h>
+> +#include <linux/lsm/bpf.h>
+>   
+>   struct linux_binprm;
+>   struct cred;
+> @@ -152,6 +156,22 @@ enum lockdown_reason {
+>   	LOCKDOWN_CONFIDENTIALITY_MAX,
+>   };
+>   
+> +/* scaffolding */
+> +struct lsm_prop_scaffold {
+> +	u32 secid;
+> +};
+> +
+> +/*
+> + * Data exported by the security modules
+> + */
+> +struct lsm_prop {
+> +	struct lsm_prop_selinux selinux;
+> +	struct lsm_prop_smack smack;
+> +	struct lsm_prop_apparmor apparmor;
+> +	struct lsm_prop_bpf bpf;
+> +	struct lsm_prop_scaffold scaffold;
+> +};
+> +
+>   extern const char *const lockdown_reasons[LOCKDOWN_CONFIDENTIALITY_MAX+1];
+>   extern u32 lsm_active_cnt;
+>   extern const struct lsm_id *lsm_idlist[];
 
 
