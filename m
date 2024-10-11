@@ -1,178 +1,221 @@
-Return-Path: <bpf+bounces-41726-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41727-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3538999F48
-	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2024 10:50:11 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60089999F95
+	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2024 11:01:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E498A1C220FB
-	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2024 08:50:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7A78AB219ED
+	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2024 09:01:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6D5B20C490;
-	Fri, 11 Oct 2024 08:49:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 212A820C480;
+	Fri, 11 Oct 2024 09:01:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Q0UJkOeO"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ooNSTFEP";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="i1LeZAFi"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CF8420A5D3
-	for <bpf@vger.kernel.org>; Fri, 11 Oct 2024 08:49:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC6EF804;
+	Fri, 11 Oct 2024 09:01:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728636592; cv=none; b=lS4HCu2l7+5I7AczDtLSRZ+1FY6YlS5Gi5Lu2h2tWwUnjhkHeOBTpgpxGyNcQ0MMEeXnd5SS/JosnZ/IlHSZT5HXHPGpbi+Q0b0NMSx5HziDoT8ihY3NSpxkyE+J17JJ9rxjLaFQshjN/hIj6kH/fkk7iPb9jmggZdaCNxVhc7Y=
+	t=1728637273; cv=none; b=vCcH+wWSrXVHIdbstfXmY7Hw7v2kjyul9RVRw2CeOQRxnPFq5E8g+LYrB2hVc09ex3Iy1HWm3uD/aSAAewmyhYv1gdd7Fke3GUxeC/sCPY6wVNQqWyRxjuRPhqVEqnwtuOnCY2DR+FAWCRjn/WdnetkSyeghVKL5O4WqebFV5WQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728636592; c=relaxed/simple;
-	bh=W9xhJYell6X3xTMZnLLEOB7BcG/GnmwDX6moREFNgI4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LHUbdy38eefrhcCgc/xsY5RylQlkCtuewva22T3ff9D1q2fyHUWyA+3oMX51pMtepg0w3xiRaW1VWxpOWS8KNUbrf1pyZ85roMchPCH9NDaD2DrQASCS02i6yFEFl9vT2T5LzAeeK1wD4jF2UvRkl3p0pIlLg2KLuBLiFLVqQT8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Q0UJkOeO; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1728636586;
+	s=arc-20240116; t=1728637273; c=relaxed/simple;
+	bh=zRsBZmcR44mwRdEcxQ8uNtRRLKAB0Wf+n8rpm6sYX0Q=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=ptcEqjrMcmhZNyGTAlTg80naqkKskyZ4uEYaRnNHNvozA7S14McCmo4nzDDPHTfBMzOmTLKOmC54D5AzLGmfXFff9+yDIjeh+kF0qGD1gA7pc63sBN7xi/FJkY4Uym32aSrZUr2zsU72lsSf7BjT+ApgRq97FkXfBKlsRWl0f8c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ooNSTFEP; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=i1LeZAFi; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Kurt Kanzenbach <kurt@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1728637269;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tlK04rC90ckCmvgBVby2uJQqFmhQZdLdAq9X4rPawD0=;
-	b=Q0UJkOeOHTE44Et0eX+fAcVwdzDpKiF79lhoGpOiMltLHeUgvMERom7EAGs0bdE1A/ubxv
-	HqU0tJtX7UugZHuNEGFfQZxfWV5W3Criwk8RRfdG3rXpK2hdoUqfXajPMLWphfRKxBKDI3
-	DS9j3kQMld/KqPgs8T0wZlmSa7patxE=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-414-Eo4Beg9aMEqcfxBC5_TTrQ-1; Fri, 11 Oct 2024 04:49:44 -0400
-X-MC-Unique: Eo4Beg9aMEqcfxBC5_TTrQ-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-37d589138a9so149143f8f.1
-        for <bpf@vger.kernel.org>; Fri, 11 Oct 2024 01:49:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728636583; x=1729241383;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tlK04rC90ckCmvgBVby2uJQqFmhQZdLdAq9X4rPawD0=;
-        b=Ya+9oyhwSjWHW44UqtyRX30F9nKfY3T2Nal7tNWLqh1oQiOe2FM90Lw8Ro4eP6xFUG
-         6h9cMlwVrEVIA5tKYc68nvLsbt2cxfyaE8de7NqMz8B6q8axSgW4k4ZK7iIyv39O9kGs
-         ek5gJzbjB7k+H1lXRRFgR1JkAXQ0/1XEJR3YnbTyFYzHryA2hV6It6PjsvOVlBK8ERLz
-         LS18DwSusQ6mlen6gnYAim+buU8PUt+k23qLCsjW0n6/TyWlF2ccMvAS7lUSM33Q5Nj6
-         vErnl4rqBT42yEqBdemGOqAJXxBSNsYFFCqgznb3kFM5Jgjm9tjMWEmE3uSVoU7C9YC8
-         AFFg==
-X-Forwarded-Encrypted: i=1; AJvYcCXU4tgbFyZcuJSSCSUeS3P6UFbf487A6s1JWtWeoyIDpz/AyfR5iNPW5gSo2it7F2M66jc=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw012+I/+GFpWMWgN0gcAc9zaebSV/kM/fVACPwU/uNfeSaacSi
-	i/sfoYPom9iKa6DUUe3Rtdb8vHEN+io7yHUjQYwfSTLqZACdTmU0QBvYe8MydkxaEoj0gJqHcIf
-	S9aFCPVrFc6hV+jta8RBzBrv+ZeZSNnvog46V3QbmgEOpsR7sZg==
-X-Received: by 2002:a05:6000:100a:b0:37d:50a5:6cf0 with SMTP id ffacd0b85a97d-37d551aaad3mr1198771f8f.6.1728636583304;
-        Fri, 11 Oct 2024 01:49:43 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IH/pSBYKVExbOk6Qqwxls2kbf2KVOJ5g9IUliZH/Hn2JKE+1qei48NVv+9YwlgG+bMfY2K0cQ==
-X-Received: by 2002:a05:6000:100a:b0:37d:50a5:6cf0 with SMTP id ffacd0b85a97d-37d551aaad3mr1198759f8f.6.1728636582870;
-        Fri, 11 Oct 2024 01:49:42 -0700 (PDT)
-Received: from [192.168.88.248] (146-241-22-245.dyn.eolo.it. [146.241.22.245])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-37d4b6cf8dbsm3411142f8f.59.2024.10.11.01.49.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Oct 2024 01:49:42 -0700 (PDT)
-Message-ID: <60a8fea1-e876-4174-bf32-9524204d63ed@redhat.com>
-Date: Fri, 11 Oct 2024 10:49:40 +0200
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=SNoU83pdmMYp5IKr04g1xQTk3F9nU+Iqgxe0aJZi9iw=;
+	b=ooNSTFEP6Ppu0CV2vMF1T4rqCPDatCZV82WtOtEimdBd4Ce5B+FwmdH6AiWt0nSJ4MggKz
+	+WNE8czKRWGaCFISZ1Ay7sAIVLhVYwr/PDhBtczcH/XmIfXJqlNrQfB4Fw+4c5HiSiXlpk
+	MM1qO/PiOCVX3LpooC6mOq/E66iMMutUufmwXLQoxMM/F8d56KdzZgF7B8S/nSwPR+k7Qx
+	1qXefdUeTN99sSSSnPQmquxemsQBOGS5JySDz7c0GWwQvJ7pxmtKd74LKlSPtH5EJT1MeY
+	KPRy4ntfUuV3eZexBzpbU5AM0SgM2QNbDFXLdQMvlxZ2pqii0XKBZ7tMphpOzA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1728637269;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=SNoU83pdmMYp5IKr04g1xQTk3F9nU+Iqgxe0aJZi9iw=;
+	b=i1LeZAFiJQYCBjQcewW0IA/jA2nuHfkFZ/Om+K3Cx7lxV2/Bed3MRIYOwzhLSKwI0Z6NnR
+	UqjGcPCKZLM/AgCA==
+Subject: [PATCH iwl-next v8 0/6] igb: Add support for AF_XDP zero-copy
+Date: Fri, 11 Oct 2024 11:00:58 +0200
+Message-Id: <20241011-b4-igb_zero_copy-v8-0-83862f726a9e@linutronix.de>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v2 1/7] net: ip: make fib_validate_source()
- return drop reason
-To: Menglong Dong <menglong8.dong@gmail.com>
-Cc: edumazet@google.com, kuba@kernel.org, davem@davemloft.net,
- dsahern@kernel.org, steffen.klassert@secunet.com,
- herbert@gondor.apana.org.au, dongml2@chinatelecom.cn, bigeasy@linutronix.de,
- toke@redhat.com, idosch@nvidia.com, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-References: <20241007074702.249543-1-dongml2@chinatelecom.cn>
- <20241007074702.249543-2-dongml2@chinatelecom.cn>
- <7caf130c-56f0-4f78-a006-5323e237cef1@redhat.com>
- <CADxym3baw2nLvANd-D5D2kCNRRoDmdgexBeGmD-uCcYYqAf=EQ@mail.gmail.com>
- <CADxym3ZGR59ojS3HApT30G2bKzht1pbZG212t3E7ku61SX29kg@mail.gmail.com>
-Content-Language: en-US
-From: Paolo Abeni <pabeni@redhat.com>
-In-Reply-To: <CADxym3ZGR59ojS3HApT30G2bKzht1pbZG212t3E7ku61SX29kg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAErpCGcC/4XOwWrDMAwG4FcpPs/DTmI77NT3GKNYjtwIgl3sN
+ E1b8u4TOewwOnb8JfT9eoqKhbCKj8NTFFyoUk4c+reDCKNPZ5Q0cBaNajrltJbQSTrD6YEln0K
+ +3CWAU77VGEBFwWfgK0ooPoWRD9N1mnh4KRhp3Xs+Bd0mmXCdxRdvRqpzLvf9gcXs+7+7FiOVj
+ G3sjNG6Ba2PE6XrXHKi9X3AHVzsf4hlpIMItneOkf4V4n4QrZR7gThGmtYYa23vh2B/I9u2fQO
+ NyWupXQEAAA==
+To: Tony Nguyen <anthony.l.nguyen@intel.com>, 
+ Przemek Kitszel <przemyslaw.kitszel@intel.com>
+Cc: "David S. Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, 
+ Jesper Dangaard Brouer <hawk@kernel.org>, 
+ John Fastabend <john.fastabend@gmail.com>, 
+ Richard Cochran <richardcochran@gmail.com>, 
+ Sriram Yagnaraman <sriram.yagnaraman@ericsson.com>, 
+ Benjamin Steinke <benjamin.steinke@woks-audio.com>, 
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>, 
+ Maciej Fijalkowski <maciej.fijalkowski@intel.com>, 
+ intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org, 
+ bpf@vger.kernel.org, Sriram Yagnaraman <sriram.yagnaraman@est.tech>, 
+ Kurt Kanzenbach <kurt@linutronix.de>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4346; i=kurt@linutronix.de;
+ h=from:subject:message-id; bh=zRsBZmcR44mwRdEcxQ8uNtRRLKAB0Wf+n8rpm6sYX0Q=;
+ b=owEBbQKS/ZANAwAKAcGT0fKqRnOCAcsmYgBnCOlS3eky7C00qRl6tH9wz1qVg4PJXePyuWaMd
+ MUF7SjV9OOJAjMEAAEKAB0WIQS8ub+yyMN909/bWZLBk9HyqkZzggUCZwjpUgAKCRDBk9HyqkZz
+ gjJgD/9qenkSprkR07E3a9KWjoJg4Nli8NZaKH4dZPtW4a2pFkYcFLwGF3QXHqfNKzqyKmeLpNW
+ gKhQCEbkIay0f/qY1+P0FasHeie+gFvqUFHkHV60UTn4FtDpY5KvITidNnGr0jOlEcPXmzpbHCb
+ 9/O/sGav/A8zj+Wa9rrcWCs85QOKj2bodTNw4HyockPjzaKnzD4apuLi0ca+2cscRBjUkLgdWuh
+ PtnQS4rIJ5INJ+Y+lfzLYqYVQ853Q9mzs3jysmmRv++bH9CCSfImgzhxKyqwXk+fDXqhtRxzNlL
+ SG6o0iaa/gyLrOyX93qtiPhc2RnoXz83cdH64gq2Uj+JG/gT/ZtVlENFozODk3hiK4oMV5spsus
+ m+jNoDC9X47x8Ig9Q+xcntYvZH9d3cRs3BakQrWJv6Pw2plDKCYlp3IA+Pr8WsavSm1HPOqcGYc
+ pRneUcSdD05fNS6P6rkxlvhQ2TTZDTitVRDrUTwfMMcrhj3MuT5HoO1yp+x2Gdp14ZEx7hjb2hM
+ kM0/LwykJck8pezscrfiJ7QoXslCE/ug4NwpRNLUarTjG21Q0XF0AdxsjB0V895lAJ+IGiyGvPZ
+ MTlMw1FMxGoKoTqsQSXW9Qyk/qbbn0XPgU5xVLPH5Z2tV8l8FssYS9iuNvo1bTIBAkBydbEa5rS
+ dhJBsscAFVoCZqg==
+X-Developer-Key: i=kurt@linutronix.de; a=openpgp;
+ fpr=BCB9BFB2C8C37DD3DFDB5992C193D1F2AA467382
 
-On 10/11/24 08:42, Menglong Dong wrote:
-> On Thu, Oct 10, 2024 at 5:18 PM Menglong Dong <menglong8.dong@gmail.com> wrote:
->> On Thu, Oct 10, 2024 at 4:25 PM Paolo Abeni <pabeni@redhat.com> wrote:
->>> On 10/7/24 09:46, Menglong Dong wrote:
->>>> In this commit, we make fib_validate_source/__fib_validate_source return
->>>> -reason instead of errno on error. As the return value of them can be
->>>> -errno, 0, and 1, we can't make it return enum skb_drop_reason directly.
->>>>
->>>> In the origin logic, if __fib_validate_source() return -EXDEV,
->>>> LINUX_MIB_IPRPFILTER will be counted. And now, we need to adjust it by
->>>> checking "reason == SKB_DROP_REASON_IP_RPFILTER". However, this will take
->>>> effect only after the patch "net: ip: make ip_route_input_noref() return
->>>> drop reasons", as we can't pass the drop reasons from
->>>> fib_validate_source() to ip_rcv_finish_core() in this patch.
->>>>
->>>> We set the errno to -EINVAL when fib_validate_source() is called and the
->>>> validation fails, as the errno can be checked in the caller and now its
->>>> value is -reason, which can lead misunderstand.
->>>>
->>>> Following new drop reasons are added in this patch:
->>>>
->>>>     SKB_DROP_REASON_IP_LOCAL_SOURCE
->>>>     SKB_DROP_REASON_IP_INVALID_SOURCE
->>>>
->>>> Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
->>>
->>> Looking at the next patches, I'm under the impression that the overall
->>> code will be simpler if you let __fib_validate_source() return directly
->>> a drop reason, and fib_validate_source(), too. Hard to be sure without
->>> actually do the attempt... did you try such patch by any chance?
->>>
->>
->> I analysed the usages of fib_validate_source() before. The
->> return value of fib_validate_source() can be -errno, "0", and "1".
->> And the value "1" can be used by the caller, such as
->> __mkroute_input(). Making it return drop reasons can't cover this
->> case.
->>
->> It seems that __mkroute_input() is the only case that uses the
->> positive returning value of fib_validate_source(). Let me think
->> about it more in this case.
-> 
-> Hello,
-> 
-> After digging into the code of __fib_validate_source() and __mkroute_input(),
-> I think it's hard to make __fib_validate_source() return drop reasons
-> directly.
-> 
-> The __fib_validate_source() will return 1 if the scope of the
-> source(revert) route is HOST. And the __mkroute_input()
-> will mark the skb with IPSKB_DOREDIRECT in this
-> case (combine with some other conditions). And then, a REDIRECT
-> ICMP will be sent in ip_forward() if this flag exists.
-> 
-> I don't find a way to pass this information to __mkroute_input
-> if we make __fib_validate_source() return drop reasons. Can we?
-> 
-> An option is to add a wrapper for fib_validate_source(), such as
-> fib_validate_source_reason(), which returns drop reasons. And in
-> __mkroute_input(), we still call fib_validate_source().
-> 
-> What do you think?
+This is version v8 of the AF_XDP zero-copy support for igb. Since Sriram's
+duties changed I am sending this instead. Additionally, I've tested this on
+real hardware, Intel i210 [1].
 
-Thanks for the investigation. I see that let __fib_validate_source() 
-returning drop reasons does not look like a good design.
+Changes since v7:
 
-I think the additional helper will not help much, so I guess you can 
-retain the current implementation here, but please expand the commit 
-message with the above information.
+ - Collect tags
+ - Split patches (Maciej)
+ - Use read once xsk_pool pointer in igb_alloc_rx_buffers_zc() (Maciej)
+ - Add FIXME about RS bit in Tx path (Maciej)
+ - Link to v7: https://lore.kernel.org/r/20241007-b4-igb_zero_copy-v7-0-23556668adc6@linutronix.de
 
-Thanks!
+Changes since v6:
 
-Paolo
+ - Rebase to v6.12
+ - Collect tags
+ - Merged first patch via -net
+ - Inline small functions (Maciej)
+ - Read xdp_prog only once per NAPI cycle (Maciej)
+ - Use u32 for stack based variables (Maciej)
+ - Link to v6: https://lore.kernel.org/r/20240711-b4-igb_zero_copy-v6-0-4bfb68773b18@linutronix.de
+
+Changes since v5:
+
+ - Rebase to 6.11
+ - Fix set-but-unused variable warnings
+ - Split first patches (Maciej)
+ - Add READ/WRITE_ONCE() for xsk_pool and xdp_prog (Maciej)
+ - Add synchronize_net() (Maciej)
+ - Remove IGB_RING_FLAG_AF_XDP_ZC (Maciej)
+ - Add NETDEV_XDP_ACT_XSK_ZEROCOPY to last patch (Maciej)
+ - Update Rx ntc handling (Maciej)
+ - Move stats update and xdp finalize to common functions (Maciej)
+ - "Likelyfy" XDP_REDIRECT case (Maciej)
+ - Check Tx disabled and carrier in igb_xmit_zc() (Maciej)
+ - RCT (Maciej)
+ - Link to v5: https://lore.kernel.org/r/20240711-b4-igb_zero_copy-v5-0-f3f455113b11@linutronix.de
+
+Changes since v4:
+
+ - Rebase to v6.10
+ - Fix issue reported by kernel test robot
+ - Provide napi_id for xdp_rxq_info_reg() so that busy polling works
+ - Set olinfo_status in igb_xmit_zc() so that frames are transmitted
+
+Link to v4: https://lore.kernel.org/intel-wired-lan/20230804084051.14194-1-sriram.yagnaraman@est.tech/
+
+[1] - https://github.com/Linutronix/TSN-Testbench/tree/main/tests/busypolling_i210
+
+Original cover letter:
+
+The first couple of patches adds helper funcctions to prepare for AF_XDP
+zero-copy support which comes in the last couple of patches, one each
+for Rx and TX paths.
+
+As mentioned in v1 patchset [0], I don't have access to an actual IGB
+device to provide correct performance numbers. I have used Intel 82576EB
+emulator in QEMU [1] to test the changes to IGB driver.
+
+The tests use one isolated vCPU for RX/TX and one isolated vCPU for the
+xdp-sock application [2]. Hope these measurements provide at the least
+some indication on the increase in performance when using ZC, especially
+in the TX path. It would be awesome if someone with a real IGB NIC can
+test the patch.
+
+AF_XDP performance using 64 byte packets in Kpps.
+Benchmark:	XDP-SKB		XDP-DRV		XDP-DRV(ZC)
+rxdrop		220		235		350
+txpush		1.000		1.000		410
+l2fwd 		1.000		1.000		200
+
+AF_XDP performance using 1500 byte packets in Kpps.
+Benchmark:	XDP-SKB		XDP-DRV		XDP-DRV(ZC)
+rxdrop		200		210		310
+txpush		1.000		1.000		410
+l2fwd 		0.900		1.000		160
+
+[0]: https://lore.kernel.org/intel-wired-lan/20230704095915.9750-1-sriram.yagnaraman@est.tech/
+[1]: https://www.qemu.org/docs/master/system/devices/igb.html
+[2]: https://github.com/xdp-project/bpf-examples/tree/master/AF_XDP-example
+
+v3->v4:
+- NULL check buffer_info in igb_dump before dereferencing (Simon Horman)
+
+v2->v3:
+- Avoid TX unit hang when using AF_XDP zero-copy by setting time_stamp
+  on the tx_buffer_info
+- Fix uninitialized nb_buffs (Simon Horman)
+
+v1->v2:
+- Use batch XSK APIs (Maciej Fijalkowski)
+- Follow reverse xmas tree convention and remove the ternary operator
+  use (Simon Horman)
+
+---
+Kurt Kanzenbach (1):
+      igb: Add XDP finalize and stats update functions
+
+Sriram Yagnaraman (5):
+      igb: Remove static qualifiers
+      igb: Introduce igb_xdp_is_enabled()
+      igb: Introduce XSK data structures and helpers
+      igb: Add AF_XDP zero-copy Rx support
+      igb: Add AF_XDP zero-copy Tx support
+
+ drivers/net/ethernet/intel/igb/Makefile   |   2 +-
+ drivers/net/ethernet/intel/igb/igb.h      |  58 ++-
+ drivers/net/ethernet/intel/igb/igb_main.c | 248 ++++++++-----
+ drivers/net/ethernet/intel/igb/igb_xsk.c  | 567 ++++++++++++++++++++++++++++++
+ 4 files changed, 792 insertions(+), 83 deletions(-)
+---
+base-commit: f5cae3d7f24df1e8ebcc8b5890a655fa151f3461
+change-id: 20240711-b4-igb_zero_copy-bb70a31ecb0f
+
+Best regards,
+-- 
+Kurt Kanzenbach <kurt@linutronix.de>
 
 
