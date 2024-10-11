@@ -1,234 +1,189 @@
-Return-Path: <bpf+bounces-41781-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41782-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE9E699AC85
-	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2024 21:16:46 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 06C1C99ACA9
+	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2024 21:31:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C99651C23AA1
-	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2024 19:16:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A2BE7282869
+	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2024 19:31:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D29141CEAB0;
-	Fri, 11 Oct 2024 19:16:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21EC31CFEC8;
+	Fri, 11 Oct 2024 19:31:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="aCFVtVYh"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="FODmMc0x"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-io1-f49.google.com (mail-io1-f49.google.com [209.85.166.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48CA71BD519
-	for <bpf@vger.kernel.org>; Fri, 11 Oct 2024 19:16:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EE778BE5;
+	Fri, 11 Oct 2024 19:31:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728674198; cv=none; b=TjmZOv9wbYy1NOx+1IBd1AwTlt4CuCqrXB3afa9r2RERAr/1izKBgUGkZM6H5qOzPxkMtN8zXFlXJnQSU/0YkpIIYx/H0u0PGz7JJLyCSh+XRQ0R17AMnMY6qnZhLKi5/3y8gWJe7TnCK+/WB9exKEWD8OKID9yshmICDnjS6Tc=
+	t=1728675073; cv=none; b=fbPEv2zLCL2Xwy6g33TkjLpsAeIutSMV0nGakgtAg1nCX8e8aYNrq4xFAuglGo2IW5drK2lgUd1NETOO/mW/NCx+7gGxtgmjCaSETgdB6tJidrm3UttK5rjA4HbD1Nzc2tFfEajMq0B0deeswKd1DKMkenmEDw3v0wDsogQMBIk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728674198; c=relaxed/simple;
-	bh=rP9cPu/oOztn/WQITtMS9fqM05qZ6hsvtaFoR4OoOWQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=pPysJzO0+myL1CzQ52NCPzigLhyfrpLZMksZfhoKgPw0SEIH69hcHdTMdMIPlSY3jqUKeGk6jazar3rPQfz1VOiPA+pydZrHlUmWFoE6ji9B2OmseiVvTDQVZMNVWqDSZFT9jPAct/r2Lqj99oGUAQOiQpGzcgaT+/U4euVLXSY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=aCFVtVYh; arc=none smtp.client-ip=209.85.166.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-io1-f49.google.com with SMTP id ca18e2360f4ac-8354599fd8aso88369539f.1
-        for <bpf@vger.kernel.org>; Fri, 11 Oct 2024 12:16:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1728674195; x=1729278995; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=lyqOvaZH0m4jFFnShhbbodjqaw8lvoeGo8+pexKDSA8=;
-        b=aCFVtVYhvfRQDF6bYovarqtjk4EQXTgfNVaA0jMm9lrpIjgu2lno0xyOBkRs6DtPlo
-         uIB4hKBOTapcHhvw2bAu1e3VhnPeldkQ2kVbWQotfSuRBHFNnwY3rfAyEArhlVUOThQ3
-         hu3b/vmMIHXQwAH6EcGam+XMUJyyvOTRfivyxvvyDrH7H/C+3Ww9Kdk6A9fse5zRpLdX
-         H06GXwYuoIzh3QxzEx2sdSmPGVKbu6q4z3sblhQViB5xrKw6poUTlerpYDH/+prJb9ay
-         LbEs8Zf10zs+XF7CyCKjDrnTEY7QHh71zceFhLJOBcZYfccEOsxp+CC/SCUEL6L86gE0
-         i1NA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728674195; x=1729278995;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lyqOvaZH0m4jFFnShhbbodjqaw8lvoeGo8+pexKDSA8=;
-        b=ofu68mNs1i0kRT5fAz/BpRZpuy7X1r1WrCage2iC53ek86IV4oxAQI0+YBId5dx6ey
-         PMNMayqNg+Twg3PMxQsX6POtdqyT9SQp4BGkKpje4Foxev3+NnsifJa+rosecLF4rTao
-         +wFV3KZChDV8wH7b/0ayZU3kGJTZ2Mf6rzvefxqG+VnJL01dIdd1/jVpH2tktaasQzsI
-         UcA8SDkurCUwg70JWrv3gtdAubr6zZn+oOZwqB21dC1Ndq3i2U4Ccux+Bfak2QluvEHp
-         2KF0vL88WBj3oUUkl3hw7wQnp9k0O7qzOpVW7puLLYnK14FV8Y90l2LoZSpv7Lcly66K
-         qUpQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXO+pkEwlgC+Kdd1/KrcNsHUZASuwTbGxurA+Sy6HTVSmVFf8p2dYcvVI8tonSSe1kvW5A=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxhphIfDRBAJUxwgMW+LXAv2JMlDCDfik3r8dV7U2hyVHw4HhCp
-	ig3AfAPZ8JpSBFrRqgtrU7MA0jRyL9retU2bPZdnjK2pgcYZfi1XQVsAdOZX7/M=
-X-Google-Smtp-Source: AGHT+IGoHEMO/yD4yiGq9C78SGQjodBYNaaAnmYLZbcD9FMr222XQOM1sg3pV5sxxvJ2d3jPtQ6baQ==
-X-Received: by 2002:a05:6e02:13a8:b0:3a0:a385:911d with SMTP id e9e14a558f8ab-3a3b5c71f26mr33007445ab.0.1728674195021;
-        Fri, 11 Oct 2024 12:16:35 -0700 (PDT)
-Received: from [192.168.1.116] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id e9e14a558f8ab-3a3afdbcd2csm8323775ab.47.2024.10.11.12.16.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Oct 2024 12:16:34 -0700 (PDT)
-Message-ID: <9f2b6f35-e923-4bf7-96cf-e4774e41ebb3@kernel.dk>
-Date: Fri, 11 Oct 2024 13:16:33 -0600
+	s=arc-20240116; t=1728675073; c=relaxed/simple;
+	bh=IwlxQ2sJ1Qhcz7dsBEssEsmbqqW/oITaZu+mKURma8M=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=P5DbXkq+rVdkgSjtjk0NgVC/8WlOvYREInqdCeSLDS5l6YCM5XBPezZUzhnsA9WF2RNYu5SbIXFS/aGewUDMrq1aaMVHqo4aHyrQoCdnJpChx1ME44ob/HRUGRRJKKDsbyyGZOWOzmLQvjLon8PxWgR5m4JByYMGJxZ2f662pOM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=FODmMc0x; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 49BITfCd010597;
+	Fri, 11 Oct 2024 19:30:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=
+	message-id:subject:from:to:cc:date:in-reply-to:references
+	:content-type:content-transfer-encoding:mime-version; s=pp1; bh=
+	zQJWf5VdzOpF2EYAGjsfIFpAdx/RWd5wbhX21JW8MXE=; b=FODmMc0xS+voq/fK
+	meBquyIn0m69IwgC2GeULzgM22MQHFpM3aoS3kPrc2IRMQstUDHne4RUksEt3VnQ
+	vKZjhOPZyOPenBPJ/zKgMnZ0fUDbsErjV7F+Gwfc4CrBYweoYeMABKWwvOs3s13r
+	Y10gZOIQPtA3w+t/NQMITkZpxZ+wPWB4wJlHGrK6goAGQj6aoonb9TKiCH5EV5Sl
+	iKyy2UUEIhwJGT8siOjN3GaOr3euCmbyfuyjLMQXyYWvzoz/akl0ahO8XzUoriMA
+	+WU90vlcEjWUgX0hzg+KOgMimAi/+ztA2j+7VAG1dAqtpWDUaezJsfn2c+r31I3/
+	4+cPIg==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4279bm88jf-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 11 Oct 2024 19:30:42 +0000 (GMT)
+Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 49BJUffb006524;
+	Fri, 11 Oct 2024 19:30:42 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4279bm88j6-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 11 Oct 2024 19:30:41 +0000 (GMT)
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 49BHECnT011512;
+	Fri, 11 Oct 2024 19:30:40 GMT
+Received: from smtprelay07.wdc07v.mail.ibm.com ([172.16.1.74])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 423g5y7ehc-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 11 Oct 2024 19:30:40 +0000
+Received: from smtpav03.dal12v.mail.ibm.com (smtpav03.dal12v.mail.ibm.com [10.241.53.102])
+	by smtprelay07.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 49BJUeoj15401476
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 11 Oct 2024 19:30:40 GMT
+Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id E803158061;
+	Fri, 11 Oct 2024 19:30:39 +0000 (GMT)
+Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 276FA58056;
+	Fri, 11 Oct 2024 19:30:39 +0000 (GMT)
+Received: from li-43857255-d5e6-4659-90f1-fc5cee4750ad.ibm.com (unknown [9.61.41.228])
+	by smtpav03.dal12v.mail.ibm.com (Postfix) with ESMTP;
+	Fri, 11 Oct 2024 19:30:39 +0000 (GMT)
+Message-ID: <92c528d8848f78869888a746643e1cf2969df62a.camel@linux.ibm.com>
+Subject: Re: [PATCH 2/3] ima: Ensure lock is held when setting iint pointer
+ in inode security blob
+From: Mimi Zohar <zohar@linux.ibm.com>
+To: Roberto Sassu <roberto.sassu@huaweicloud.com>,
+        Paul Moore
+	 <paul@paul-moore.com>
+Cc: dmitry.kasatkin@gmail.com, eric.snowberg@oracle.com, jmorris@namei.org,
+        serge@hallyn.com, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, ebpqwerty472123@gmail.com,
+        Roberto Sassu
+	 <roberto.sassu@huawei.com>
+Date: Fri, 11 Oct 2024 15:30:38 -0400
+In-Reply-To: <69ed92fde951b20a9b976d48803fe9b5daaa9eea.camel@huaweicloud.com>
+References: <20241008165732.2603647-1-roberto.sassu@huaweicloud.com>
+	 <20241008165732.2603647-2-roberto.sassu@huaweicloud.com>
+	 <CAHC9VhRkMwLqVFfWMvMOJ6x4UNUK=C_cMVW7Op9icz28MMDYdQ@mail.gmail.com>
+	 <69ed92fde951b20a9b976d48803fe9b5daaa9eea.camel@huaweicloud.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.4 (3.52.4-1.fc40) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [syzbot] Monthly trace report (Oct 2024)
-To: Steven Rostedt <rostedt@goodmis.org>,
- syzbot <syzbot+list3bf21e6ac0139f8d008d@syzkaller.appspotmail.com>
-Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- mhiramat@kernel.org, syzkaller-bugs@googlegroups.com,
- linux-block@vger.kernel.org, bpf@vger.kernel.org
-References: <67094369.050a0220.4cbc0.000d.GAE@google.com>
- <20241011120028.1e4ed71c@gandalf.local.home>
-Content-Language: en-US
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <20241011120028.1e4ed71c@gandalf.local.home>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: DZxyYUTIR8LDQnwha_3KegIQQZdtiSaE
+X-Proofpoint-GUID: 1T-MaBMKiaPGlCnU0zovXnFAFQ1k5Ai9
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
+ definitions=2024-10-11_16,2024-10-11_01,2024-09-30_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ priorityscore=1501 impostorscore=0 phishscore=0 clxscore=1011 mlxscore=0
+ spamscore=0 mlxlogscore=518 bulkscore=0 suspectscore=0 adultscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2409260000 definitions=main-2410110132
 
-On 10/11/24 10:00 AM, Steven Rostedt wrote:
-> On Fri, 11 Oct 2024 08:25:29 -0700
-> syzbot <syzbot+list3bf21e6ac0139f8d008d@syzkaller.appspotmail.com> wrote:
-> 
->> Hello trace maintainers/developers,
->>
->> This is a 31-day syzbot report for the trace subsystem.
->> All related reports/information can be found at:
->> https://syzkaller.appspot.com/upstream/s/trace
->>
->> During the period, 1 new issues were detected and 0 were fixed.
->> In total, 10 issues are still open and 38 have been fixed so far.
->>
->> Some of the still happening issues:
->>
->> Ref Crashes Repro Title
->> <1> 34      Yes   INFO: task hung in blk_trace_ioctl (4)
->>                   https://syzkaller.appspot.com/bug?extid=ed812ed461471ab17a0c
-> 
-> If you check the maintainers file, blktrace.c has:
-> 
-> BLOCK LAYER
-> M:      Jens Axboe <axboe@kernel.dk>
-> L:      linux-block@vger.kernel.org
+On Wed, 2024-10-09 at 17:43 +0200, Roberto Sassu wrote:
+> On Wed, 2024-10-09 at 11:41 -0400, Paul Moore wrote:
+> > On Tue, Oct 8, 2024 at 12:57=E2=80=AFPM Roberto Sassu
+> > <roberto.sassu@huaweicloud.com> wrote:
+> > >=20
+> > > From: Roberto Sassu <roberto.sassu@huawei.com>
+> > >=20
+> > > IMA stores a pointer of the ima_iint_cache structure, containing inte=
+grity
+> > > metadata, in the inode security blob. However, check and assignment o=
+f this
+> > > pointer is not atomic, and it might happen that two tasks both see th=
+at the
+> > > iint pointer is NULL and try to set it, causing a memory leak.
+> > >=20
+> > > Ensure that the iint check and assignment is guarded, by adding a loc=
+kdep
+> > > assertion in ima_inode_get().
+> > >=20
+> > > Consequently, guard the remaining ima_inode_get() calls, in
+> > > ima_post_create_tmpfile() and ima_post_path_mknod(), to avoid the loc=
+kdep
+> > > warnings.
+> > >=20
+> > > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> > > ---
+> > >  security/integrity/ima/ima_iint.c |  5 +++++
+> > >  security/integrity/ima/ima_main.c | 14 ++++++++++++--
+> > >  2 files changed, 17 insertions(+), 2 deletions(-)
+> > >=20
+> > > diff --git a/security/integrity/ima/ima_iint.c b/security/integrity/i=
+ma/ima_iint.c
+> > > index c176fd0faae7..fe676ccec32f 100644
+> > > --- a/security/integrity/ima/ima_iint.c
+> > > +++ b/security/integrity/ima/ima_iint.c
+> > > @@ -87,8 +87,13 @@ static void ima_iint_free(struct ima_iint_cache *i=
+int)
+> > >   */
+> > >  struct ima_iint_cache *ima_inode_get(struct inode *inode)
+> > >  {
+> > > +       struct ima_iint_cache_lock *iint_lock;
+> > >         struct ima_iint_cache *iint;
+> > >=20
+> > > +       iint_lock =3D ima_inode_security(inode->i_security);
+> > > +       if (iint_lock)
+> > > +               lockdep_assert_held(&iint_lock->mutex);
+> > > +
+> > >         iint =3D ima_iint_find(inode);
+> > >         if (iint)
+> > >                 return iint;
+> >=20
+> > Can you avoid the ima_iint_find() call here and just do the following?
+> >=20
+> >   /* not sure if you need to check !iint_lock or not? */
+> >   if (!iint_lock)
+> >     return NULL;
+> >   iint =3D iint_lock->iint;
+> >   if (!iint)
+> >     return NULL;
+>=20
+> Yes, I also like it much more.
 
-If syzbot can test this one, that would be appreciated. Guess here is
-that we're stuck faulting under the debugfs_mutex. I took a look at the
-syzbot reproducer, and no not going to attempt to run that... I strongly
-suspect that the interesting bits there are:
+Yes, testing iint_lock and then iint_lock->iint should be fine, but the log=
+ic
+needs to be inverted.  ima_inode_get() should return the existing iint, if =
+it
+exists, or allocate the memory.
 
-1) Memory pressure/swap
-2) blktrace setup/teardown, obviously
-
-I do wish that once syzbot had a reproducer, it would continue
-condensing it down into the most basic reproducer. Once you get into
-"let's setup wifi, bluetooth, and tons of other things!" they become
-almost impossible to run. And like in this case, I highly doubt they are
-either related or useful.
+Mimi
 
 
-diff --git a/kernel/trace/blktrace.c b/kernel/trace/blktrace.c
-index 8fd292d34d89..cefcad120495 100644
---- a/kernel/trace/blktrace.c
-+++ b/kernel/trace/blktrace.c
-@@ -617,8 +617,8 @@ static int do_blk_trace_setup(struct request_queue *q, char *name, dev_t dev,
- 	return ret;
- }
- 
--static int __blk_trace_setup(struct request_queue *q, char *name, dev_t dev,
--			     struct block_device *bdev, char __user *arg)
-+int blk_trace_setup(struct request_queue *q, char *name, dev_t dev,
-+		    struct block_device *bdev, char __user *arg)
- {
- 	struct blk_user_trace_setup buts;
- 	int ret;
-@@ -627,28 +627,18 @@ static int __blk_trace_setup(struct request_queue *q, char *name, dev_t dev,
- 	if (ret)
- 		return -EFAULT;
- 
-+	mutex_lock(&q->debugfs_mutex);
- 	ret = do_blk_trace_setup(q, name, dev, bdev, &buts);
-+	mutex_unlock(&q->debugfs_mutex);
- 	if (ret)
- 		return ret;
- 
- 	if (copy_to_user(arg, &buts, sizeof(buts))) {
--		__blk_trace_remove(q);
-+		blk_trace_remove(q);
- 		return -EFAULT;
- 	}
--	return 0;
--}
- 
--int blk_trace_setup(struct request_queue *q, char *name, dev_t dev,
--		    struct block_device *bdev,
--		    char __user *arg)
--{
--	int ret;
--
--	mutex_lock(&q->debugfs_mutex);
--	ret = __blk_trace_setup(q, name, dev, bdev, arg);
--	mutex_unlock(&q->debugfs_mutex);
--
--	return ret;
-+	return 0;
- }
- EXPORT_SYMBOL_GPL(blk_trace_setup);
- 
-@@ -673,12 +663,14 @@ static int compat_blk_trace_setup(struct request_queue *q, char *name,
- 		.pid = cbuts.pid,
- 	};
- 
-+	mutex_lock(&q->debugfs_mutex);
- 	ret = do_blk_trace_setup(q, name, dev, bdev, &buts);
-+	mutex_unlock(&q->debugfs_mutex);
- 	if (ret)
- 		return ret;
- 
- 	if (copy_to_user(arg, &buts.name, ARRAY_SIZE(buts.name))) {
--		__blk_trace_remove(q);
-+		blk_trace_remove(q);
- 		return -EFAULT;
- 	}
- 
-@@ -732,12 +724,10 @@ int blk_trace_ioctl(struct block_device *bdev, unsigned cmd, char __user *arg)
- 	int ret, start = 0;
- 	char b[BDEVNAME_SIZE];
- 
--	mutex_lock(&q->debugfs_mutex);
--
- 	switch (cmd) {
- 	case BLKTRACESETUP:
- 		snprintf(b, sizeof(b), "%pg", bdev);
--		ret = __blk_trace_setup(q, b, bdev->bd_dev, bdev, arg);
-+		ret = blk_trace_setup(q, b, bdev->bd_dev, bdev, arg);
- 		break;
- #if defined(CONFIG_COMPAT) && defined(CONFIG_X86_64)
- 	case BLKTRACESETUP32:
-@@ -749,17 +739,16 @@ int blk_trace_ioctl(struct block_device *bdev, unsigned cmd, char __user *arg)
- 		start = 1;
- 		fallthrough;
- 	case BLKTRACESTOP:
--		ret = __blk_trace_startstop(q, start);
-+		ret = blk_trace_startstop(q, start);
- 		break;
- 	case BLKTRACETEARDOWN:
--		ret = __blk_trace_remove(q);
-+		ret = blk_trace_remove(q);
- 		break;
- 	default:
- 		ret = -ENOTTY;
- 		break;
- 	}
- 
--	mutex_unlock(&q->debugfs_mutex);
- 	return ret;
- }
- 
-
--- 
-Jens Axboe
 
