@@ -1,371 +1,196 @@
-Return-Path: <bpf+bounces-41742-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41743-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5BE3599A50F
-	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2024 15:31:05 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA61699A67F
+	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2024 16:39:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7A5041C250AB
-	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2024 13:31:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 32A37B22ED5
+	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2024 14:39:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A199A28E7;
-	Fri, 11 Oct 2024 13:30:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E532E193407;
+	Fri, 11 Oct 2024 14:38:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=nxp.com header.i=@nxp.com header.b="BG57y2Br"
 X-Original-To: bpf@vger.kernel.org
-Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2040.outbound.protection.outlook.com [40.107.20.40])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 084E8216454;
-	Fri, 11 Oct 2024 13:30:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.46
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728653441; cv=none; b=jvidT3BXLicvNn/Rp1is5qPKDJXEIlidHa4d/NzkOu5l0dTtWQclgGmZCt3ek92fgJQlnLDRJUz35uqd45YxLD2/wANL5XtdjtKWNuPOUcIbnnZ6VOAxnEZUFtUV79Q3RuyD6Rmi71LbTLsY2gsoJ0wAHhkBdJ+ApL1el525i1w=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728653441; c=relaxed/simple;
-	bh=hrMnzLtGR/sEKwEMepLZ3p1YVegojsR6BT7diEISVCs=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=oSiiko8J2pSkNenORtWlPVEwO/zYcal/09dxfQC7D2NiU00D0MCDZHAizscDJh9iDZbFe2TtXUog1oyOdU1xBNSHrSWGQAhf32sXI2byM2/E9OGTHY96n9wdjHcHkn7JOgqax60KrFJcn1SkZY/4GL4gf7HY6X3Z41cPTnG7hwQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.18.186.51])
-	by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4XQ6S6687Kz9v7JC;
-	Fri, 11 Oct 2024 21:10:30 +0800 (CST)
-Received: from mail02.huawei.com (unknown [7.182.16.27])
-	by mail.maildlp.com (Postfix) with ESMTP id 28371140B66;
-	Fri, 11 Oct 2024 21:30:26 +0800 (CST)
-Received: from [127.0.0.1] (unknown [10.204.63.22])
-	by APP2 (Coremail) with SMTP id GxC2BwC3ZsdpKAlnGPyqAg--.17159S2;
-	Fri, 11 Oct 2024 14:30:25 +0100 (CET)
-Message-ID: <15bb94a306d3432de55c0a12f29e7ed2b5fa3ba1.camel@huaweicloud.com>
-Subject: Re: [PATCH 1/3] ima: Remove inode lock
-From: Roberto Sassu <roberto.sassu@huaweicloud.com>
-To: Paul Moore <paul@paul-moore.com>
-Cc: zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
- eric.snowberg@oracle.com,  jmorris@namei.org, serge@hallyn.com,
- linux-integrity@vger.kernel.org,  linux-security-module@vger.kernel.org,
- linux-kernel@vger.kernel.org,  bpf@vger.kernel.org,
- ebpqwerty472123@gmail.com, Roberto Sassu <roberto.sassu@huawei.com>
-Date: Fri, 11 Oct 2024 15:30:13 +0200
-In-Reply-To: <593282dbc9f48673c8f3b8e0f28e100f34141115.camel@huaweicloud.com>
-References: <20241008165732.2603647-1-roberto.sassu@huaweicloud.com>
-	 <CAHC9VhSyWNKqustrTjA1uUaZa_jA-KjtzpKdJ4ikSUKoi7iV0Q@mail.gmail.com>
-	 <CAHC9VhQR2JbB7ni2yX_U8TWE0PcQQkm_pBCuG3nYN7qO15nNjg@mail.gmail.com>
-	 <7358f12d852964d9209492e337d33b8880234b74.camel@huaweicloud.com>
-	 <593282dbc9f48673c8f3b8e0f28e100f34141115.camel@huaweicloud.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A7FF82866;
+	Fri, 11 Oct 2024 14:38:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.20.40
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1728657533; cv=fail; b=qXJijBaompeUUkWimhfyp2al5mtc7tkdVbKdwpwPkXiY5ITrkjfXjF5bRjCxkvui1WMHVesIefDCA77ggKgpvSQQcAD4DBYADUZQyFSa0sVblxriC8e8mKDBWlTJLMIVVF5+Z33h66sY64OX4QF2n1U1rRymnJzw5LhjCvZGVzA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1728657533; c=relaxed/simple;
+	bh=vvS7kqB1IEMn+Bf6YHXRB2CwMyt0Jj+Vu6zNPmHibTg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=XZMnPM3yitjKv6s3WRUYNPWUFSt+f7vhp6JLBGr8HBNKs7yHWtzwMRtL9reIx3bsNdc7qiLjEf2hgWzlid+C1957LuUaqci5EhIbbVZ2sw5FvoBP+T53fCTkq6sU4rr4gwK3tFGxSqZC5pRUxyV/txXxhFe385/sKS4vh/inS7o=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (2048-bit key) header.d=nxp.com header.i=@nxp.com header.b=BG57y2Br; arc=fail smtp.client-ip=40.107.20.40
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=C/1zUeifphdFFWnx1F63Jo+Kn+BeKQO7gBpkDaEhvI66jMjGsLAGFH1CP01BAhvMgM4y6nCRfWqOYO/gjS3jQSNUVsnHfHh/TYlRJx73+J7yh5E5YO4tl959MKlEl7QFZBpPje6Pt8pOclWHJuh7hXSzryCa+PbQNmLsNuvYKsX+mIrmRfossFAWK+yFjJYTQNvH5xBYSnD1bR1URX/TIlh5mBZHeJsCT/ILzDHRdsPdz2+2Gi3/06NFJ9FEiNNiSuqaKJxwtRbalmlXecblZ8luaq790TIh4JZ2dcEHL3OtFKXfXG2f2hu/Z4ISX1maX/mCEHEjWeJA+ak9E99MmQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=U1IBjiBPIi8CHUJozZfWAmr8AAJKh0QARz1a4JYfWbo=;
+ b=Dgm7KlrIu+yK3fNKJ1U0CLe4q7v6SECJned0q0aXMiuMqCcJWGycLbL1O+LBYbVseGRM7S6tFFiyxOtoxd142uKE6i7SDvfVdlhKq1xGpa+XgN04Lq9EInLmIbcOWtFu6jHrw2o2sFb84xlVcFwMtY4y5w/3KdMTqjlmYv5mUdlPKW8+MgWAudkvYeZoIQlrkNNpwPTq4xP35NcweYfgDiOrzUYi3irN2MvNYgZZP9PGrFD7Btc6nA6Y2PHY6NXHyyT02mPNNIOPiOsttpVV5HBj2mfJTN1eToZ1SWLQobR+thJ7rslcULZ3fYk6lKjS/dpVORo4zg5gRMQN1tPK6g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=U1IBjiBPIi8CHUJozZfWAmr8AAJKh0QARz1a4JYfWbo=;
+ b=BG57y2Br7hU8sD3jyBWAEq3n4Y991bhbu6MBamrqVH3ZCezFwojM7838kjeEVMO8iSzkuet1Q46WHWfxXXGeNVy7mKDNQb6fuUWKcqbr0Pwp8WqBTne0+r9Gi3FyJF/7sAYMD7hskSL7xYmFjaDiipGUvqe8JVdisgyCey5Z4009ObLHbXH9i559GOR6YIBgL05LGLoXgrMloRiaW2uxobzuA70DEntimLcjRc1tFGmFigfsC7U/XJUqXgRXiuE8nUytTC3yaLbgl+ACtX5ibBs0Ujj34dpDqrX5spYHX1OWmW7Zq3JwEQdgxPvqVbMd5zlAVle1pnmGv41NW6agaA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from AM8PR04MB7779.eurprd04.prod.outlook.com (2603:10a6:20b:24b::14)
+ by AM9PR04MB8422.eurprd04.prod.outlook.com (2603:10a6:20b:3ea::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8048.16; Fri, 11 Oct
+ 2024 14:38:47 +0000
+Received: from AM8PR04MB7779.eurprd04.prod.outlook.com
+ ([fe80::7417:d17f:8d97:44d2]) by AM8PR04MB7779.eurprd04.prod.outlook.com
+ ([fe80::7417:d17f:8d97:44d2%3]) with mapi id 15.20.8048.013; Fri, 11 Oct 2024
+ 14:38:46 +0000
+Date: Fri, 11 Oct 2024 17:38:42 +0300
+From: Vladimir Oltean <vladimir.oltean@nxp.com>
+To: Wei Fang <wei.fang@nxp.com>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, claudiu.manoil@nxp.com, ast@kernel.org,
+	daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	bpf@vger.kernel.org, stable@vger.kernel.org, imx@lists.linux.dev,
+	rkannoth@marvell.com, maciej.fijalkowski@intel.com,
+	sbhatta@marvell.com
+Subject: Re: [PATCH v4 net 2/4] net: enetc: block concurrent XDP
+ transmissions during ring reconfiguration
+Message-ID: <20241011143842.zmbelkh57xuk4pnt@skbuf>
+References: <20241010092056.298128-1-wei.fang@nxp.com>
+ <20241010092056.298128-1-wei.fang@nxp.com>
+ <20241010092056.298128-3-wei.fang@nxp.com>
+ <20241010092056.298128-3-wei.fang@nxp.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241010092056.298128-3-wei.fang@nxp.com>
+ <20241010092056.298128-3-wei.fang@nxp.com>
+X-ClientProxiedBy: VI1PR04CA0116.eurprd04.prod.outlook.com
+ (2603:10a6:803:f0::14) To AM8PR04MB7779.eurprd04.prod.outlook.com
+ (2603:10a6:20b:24b::14)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-CM-TRANSID:GxC2BwC3ZsdpKAlnGPyqAg--.17159S2
-X-Coremail-Antispam: 1UD129KBjvAXoW3uFW3tFWxtry3Zw4fXF43KFg_yoW8JrykZo
-	WUZ3s3Aan8Cw15try8AwnxtrWrKa95Jr92yry09a1rGFy2k34Utw1rGr17JrW5Xws5AFWf
-	Cw17A397Xw1UtFn7n29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
-	AaLaJ3UjIYCTnIWjp_UUUY77kC6x804xWl14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK
-	8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4
-	AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF
-	7I0E14v26r4j6F4UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26r4j6r4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
-	ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
-	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1
-	7KsUUUUUU==
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgANBGcIif8JEAABsK
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM8PR04MB7779:EE_|AM9PR04MB8422:EE_
+X-MS-Office365-Filtering-Correlation-Id: fb0430ee-26ae-445b-a311-08dcea02697f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|7416014|366016|1800799024;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?SbX9GD+TF4zd8AGyNThDRjCkpjhDnvav0Q8VOL2HkxZDFDy/2CxoMVMK73lK?=
+ =?us-ascii?Q?KPkqk3uLlTGhsUwbIXXpHo10pn9BnBPa8Mwp03WIjD7sq6+THJA0K/aZQ+AE?=
+ =?us-ascii?Q?3oWddkMMaaI1GjD6Ixrgq0p0egPz7xGUGmzVBrNxxK+xr+eY3vzqHKRCS8x9?=
+ =?us-ascii?Q?vYxWylGtwnKKfNmJxNL/j7unBDaAnMjT3DnpDtoJIs9NKbCA8sFftKqa677/?=
+ =?us-ascii?Q?wWT+AZFDPFp1DYS8WKvHD86MeKTTy3pNC+FO0p5vQORCYBDz1/y0KiiOKDhx?=
+ =?us-ascii?Q?PsAkEg0rzzLBj1uIKlQ2wJdvP7cmNu4pbyD6zBNwitM37jWguFH26kS+IZzH?=
+ =?us-ascii?Q?Zbo1lKpxbMgZORU8WIMZqMSIpNOHY0ULEHRdy/mqh5zWGy1DJo2d/ekGaik4?=
+ =?us-ascii?Q?FtIX0yezJ+M//koJfHGceebrXxhjNsMcWKJz6uALZI6X60d59BlRDsqhtC9T?=
+ =?us-ascii?Q?F9iUQnj05D2hGCHeryqRITwpk8Kx0KnjxOLXJxyqqUPT5rDuvJzxQWr++LVp?=
+ =?us-ascii?Q?Ng7ehEasbIS7g5bFo+6TNnwhOi0n/d982ip/UVI4TMauAyxB+gxH72KbNesi?=
+ =?us-ascii?Q?fsRWz1kaWUR6ZmzNSabbVvFlIpOVTX3yskYZOP/LM62pxDKZmyYIlzgbDUDt?=
+ =?us-ascii?Q?+OKlOL+Ox99Ii5cjt8X1hRSYWuSVq7UiMoTX14irxPFHhMeKP/BeNTpvYbGO?=
+ =?us-ascii?Q?keF222PX8IARvS39I6QriUsMGbPA3upd0LS0Ari8XGp/LIlV4r77f60LFghx?=
+ =?us-ascii?Q?5tIES/NyfQ8tZdX7MV01o/jGnx4PCTzQNZS8D4Ze4ZWA4fxy/qSr4EIxkguj?=
+ =?us-ascii?Q?F2M9d/u6d9Dbwp5PaMPBsZy7vNltO6osDfSILFILSJAP/phR2MRbcRMmEOUa?=
+ =?us-ascii?Q?y0XXSpPMap8KfusjscqSBa/+o+xJ9yWt8vlkB/9G1j2ZftIjsKL4Ie+6cKNX?=
+ =?us-ascii?Q?Qm6+u91R9OS76VvSwHG0CAJweM+/Y9OSkigmfSTMhhR7czW7ZTioPD3n1Wjs?=
+ =?us-ascii?Q?kc172Fv4dg309oFM0nw+yvzmx1AmUbQShxyr4WwppHR54Ocp+yrRm2Phg1E+?=
+ =?us-ascii?Q?CrdGh0vXmE6MxUkTylRI6tbJ59gfKnTHIUiGy2uhHodee4256dhQvnEa9eCo?=
+ =?us-ascii?Q?cfu50PdR1tj+M/9qFcZ63fombQW4iu0Nhxz0C4Bs1oLhg/yibUstUMQhcQGK?=
+ =?us-ascii?Q?vDLnjqBeb/GGrrVBZZjveGaJHzuw+cGJUn7xzU4650rOISbJGTDtTRqyGNyc?=
+ =?us-ascii?Q?rFuarFalT7LRSScOI2M/jHYGrhni86hKqKU/ipzf/w=3D=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM8PR04MB7779.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(366016)(1800799024);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?XsbJexM1tXdpbVL7ulWL3nx13b2L0qabJRH80AVUzi20MUVwrWF7jCWslwjD?=
+ =?us-ascii?Q?Ri8791fLklsf/UvkMMf98T+70lqGKxyXVg+seeu6xprpnL3oUKhpR3RJ9iby?=
+ =?us-ascii?Q?w0eZp/M0UoCWq1TuLOvWZVSeL5VatSIuTEbckwoVeDHR2116chfrJgnGJSY9?=
+ =?us-ascii?Q?WOTTMpbZ0SnKg6jprBMDC5vx8j+Rfwtk9ienroHOAwE6AW1F7I9i2fKQ8tIc?=
+ =?us-ascii?Q?I+0tBvuloexlE8NezPZnBYXYAsqykNkYEsR7+qJ4Q9KFSsbMr5AuXs6JSLtj?=
+ =?us-ascii?Q?wvjwrTUpWlLPs0w62DofJb5UIrX0F6dxHwp/flcmvkRAkkF11JBSpvlWyHUX?=
+ =?us-ascii?Q?a4c76SuUfe1KN/mzKcagJvZy6/xqpvIRwiyQTrZjQrjUPlt1CDKsDrsjVnOH?=
+ =?us-ascii?Q?WOZpZxnGWyWkpC+xFNTdFXRRzbSkWi+Y0xxd7r+fTqC+picX13Ghvkg+bHNl?=
+ =?us-ascii?Q?IC2tYDdnK1h+6xOUy4e5TupwejqlmFPUnal+2FEthItEXhRCMoAYDhgf9DWX?=
+ =?us-ascii?Q?GcQgwyyoxBEr5Jppd8Xx+osOCofZxKGX6DJE9k+g40nbCTNmPznBGKKRPMjV?=
+ =?us-ascii?Q?rU/W4cjNBJfpgFwos0GXnP+WKyVTczKCssqAEpOoQ4HoBoWPy0D7AiGaA9TU?=
+ =?us-ascii?Q?3VhrPh8ZSaaDCKUQ6wDVOk0q5HpO9YcT4TyIstw0GkTAFFF+Slf0NoT+bgpb?=
+ =?us-ascii?Q?PDO/5s4NxTQn2HHOIurWKUuggasIIGySRCsWOgJY7dPqXEVV1SWi2ovbCUTr?=
+ =?us-ascii?Q?WIjAVtQSIwCDWnRMfzkTKXSH9tJIDzJL1ZXV0Ze0aiNnssGdm+KrCtn4TYlT?=
+ =?us-ascii?Q?C5fD107DneFTsqtB0nv4DQqCiUd/ZhCCSvwy5pSfOmIIN/Q23u6r6eSm8wcN?=
+ =?us-ascii?Q?UsFgHdbIsqFImp/Xo6v3UVb/Z5a4MciNr3uHoO16A3VibQP2VwldtZHrMyeI?=
+ =?us-ascii?Q?9M8ZP3Z4FGuNkvCH6ih/q7QOVBIFumogiDLJ/qhIL1N9KtLPoYlKp4jDdbUW?=
+ =?us-ascii?Q?DfFMl9suH44jlteh3ZZJLDk+Z74PBaTlk7QxKMlS8GCt4xyTlshpMhW/R4vY?=
+ =?us-ascii?Q?f4k43xgECBoC6jIrcacrYFFEOZ4/ytLhzM9rwOLTLNPekcE6gWtFPfXyXZc/?=
+ =?us-ascii?Q?unn8a2RsokqJI6tkNtLQ2hLAzsdopt4j+DUhzsv8MDQ875wKo+hw7673mJN+?=
+ =?us-ascii?Q?TY16lYzbu79Wi1fQ5V2oLQc1wlNY1sXYEXTtd+I3jZrHZsXtJwg8SdGaljby?=
+ =?us-ascii?Q?k8ZOscb0fvhp0BLdpG7EwxGtsPH1EPzsLpXLjeTQYJsK8nSL0zT4CwCkmd8D?=
+ =?us-ascii?Q?A3O9BBXbokXRb2F1mpRer8U3o7tqALwRrnxCOeS1niGMorSpCXNkXVFAkqyC?=
+ =?us-ascii?Q?jnfyhYa52yNSLBFlgL6SyusS/S938zOLCqlYxwyUYNIcYVIJ8H0+Nm9Rq6Lm?=
+ =?us-ascii?Q?hmQXoa/olTM1Cl0KMLwe48fzfD1ML8BGztEHfa7YSygXt2MZNIeUYPzkil77?=
+ =?us-ascii?Q?LWFcgojMpRJCiT+UhwDClIxEsrUya0xNV6WCo5sOq48U0TU9mDDFG3j9Mghc?=
+ =?us-ascii?Q?X+Kl9OIMV3uOGjx7pFG9SsIDOFnc4yNBSdC5GpxaQRQ4TcRbATvDKI6POOK+?=
+ =?us-ascii?Q?sA=3D=3D?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fb0430ee-26ae-445b-a311-08dcea02697f
+X-MS-Exchange-CrossTenant-AuthSource: AM8PR04MB7779.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Oct 2024 14:38:46.9198
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: hsaGURpO+pPhh1PD8PK5xPdeYSVB2p5GgsxqCIA/erVmJnh7usRmz7Lel/7cWaZTFZppTfqTeYdFexiewQqZJg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB8422
 
-On Wed, 2024-10-09 at 18:43 +0200, Roberto Sassu wrote:
-> On Wed, 2024-10-09 at 18:25 +0200, Roberto Sassu wrote:
-> > On Wed, 2024-10-09 at 11:37 -0400, Paul Moore wrote:
-> > > On Wed, Oct 9, 2024 at 11:36=E2=80=AFAM Paul Moore <paul@paul-moore.c=
-om> wrote:
-> > > > On Tue, Oct 8, 2024 at 12:57=E2=80=AFPM Roberto Sassu
-> > > > <roberto.sassu@huaweicloud.com> wrote:
-> > > > >=20
-> > > > > From: Roberto Sassu <roberto.sassu@huawei.com>
-> > > > >=20
-> > > > > Move out the mutex in the ima_iint_cache structure to a new struc=
-ture
-> > > > > called ima_iint_cache_lock, so that a lock can be taken regardles=
-s of
-> > > > > whether or not inode integrity metadata are stored in the inode.
-> > > > >=20
-> > > > > Introduce ima_inode_security() to simplify accessing the new stru=
-cture in
-> > > > > the inode security blob.
-> > > > >=20
-> > > > > Move the mutex initialization and annotation in the new function
-> > > > > ima_inode_alloc_security() and introduce ima_iint_lock() and
-> > > > > ima_iint_unlock() to respectively lock and unlock the mutex.
-> > > > >=20
-> > > > > Finally, expand the critical region in process_measurement() guar=
-ded by
-> > > > > iint->mutex up to where the inode was locked, use only one iint l=
-ock in
-> > > > > __ima_inode_hash(), since the mutex is now in the inode security =
-blob, and
-> > > > > replace the inode_lock()/inode_unlock() calls in ima_check_last_w=
-riter().
-> > > > >=20
-> > > > > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> > > > > ---
-> > > > >  security/integrity/ima/ima.h      | 26 ++++++++---
-> > > > >  security/integrity/ima/ima_api.c  |  4 +-
-> > > > >  security/integrity/ima/ima_iint.c | 77 +++++++++++++++++++++++++=
-+-----
-> > > > >  security/integrity/ima/ima_main.c | 39 +++++++---------
-> > > > >  4 files changed, 104 insertions(+), 42 deletions(-)
-> > > >=20
-> > > > I'm not an IMA expert, but it looks reasonable to me, although
-> > > > shouldn't this carry a stable CC in the patch metadata?
-> > > >=20
-> > > > Reviewed-by: Paul Moore <paul@paul-moore.com>
-> > >=20
-> > > Sorry, one more thing ... did you verify this patchset resolves the
-> > > syzbot problem?  I saw at least one reproducer.
-> >=20
-> > Uhm, could not reproduce the deadlock with the reproducer. However,
-> > without the patch I have a lockdep warning, and with I don't.
-> >=20
-> > I asked syzbot to try the patches. Let's see.
->=20
-> I actually got a different lockdep warning:
->=20
-> [  904.603365] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> [  904.604264] WARNING: possible circular locking dependency detected
-> [  904.605141] 6.12.0-rc2+ #20 Not tainted
-> [  904.605697] ------------------------------------------------------
+On Thu, Oct 10, 2024 at 05:20:54PM +0800, Wei Fang wrote:
+> When testing the XDP_REDIRECT function on the LS1028A platform, we
+> found a very reproducible issue that the Tx frames can no longer be
+> sent out even if XDP_REDIRECT is turned off. Specifically, if there
+> is a lot of traffic on Rx direction, when XDP_REDIRECT is turned on,
+> the console may display some warnings like "timeout for tx ring #6
+> clear", and all redirected frames will be dropped, the detailed log
+> is as follows.
+> 
+> root@ls1028ardb:~# ./xdp-bench redirect eno0 eno2
+> Redirecting from eno0 (ifindex 3; driver fsl_enetc) to eno2 (ifindex 4; driver fsl_enetc)
+> [203.849809] fsl_enetc 0000:00:00.2 eno2: timeout for tx ring #5 clear
+> [204.006051] fsl_enetc 0000:00:00.2 eno2: timeout for tx ring #6 clear
+> [204.161944] fsl_enetc 0000:00:00.2 eno2: timeout for tx ring #7 clear
+> eno0->eno2     1420505 rx/s       1420590 err,drop/s      0 xmit/s
+>   xmit eno0->eno2    0 xmit/s     1420590 drop/s     0 drv_err/s     15.71 bulk-avg
+> eno0->eno2     1420484 rx/s       1420485 err,drop/s      0 xmit/s
+>   xmit eno0->eno2    0 xmit/s     1420485 drop/s     0 drv_err/s     15.71 bulk-avg
+> 
+> By analyzing the XDP_REDIRECT implementation of enetc driver, the
+> driver will reconfigure Tx and Rx BD rings when a bpf program is
+> installed or uninstalled, but there is no mechanisms to block the
+> redirected frames when enetc driver reconfigures rings. Similarly,
+> XDP_TX verdicts on received frames can also lead to frames being
+> enqueued in the Tx rings. Because XDP ignores the state set by the
+> netif_tx_wake_queue() API, so introduce the ENETC_TX_DOWN flag to
+> suppress transmission of XDP frames.
+> 
+> Fixes: c33bfaf91c4c ("net: enetc: set up XDP program under enetc_reconfigure()")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Wei Fang <wei.fang@nxp.com>
+> ---
 
-I can reproduce by executing the syzbot reproducer and in another
-terminal by logging in with SSH (not all the times).
-
-If I understood what the lockdep warning means, this is the scenario.
-
-A task accesses a seq_file which is in the IMA policy, so we enter the
-critical region guarded by the iint lock. But before we get the chance
-to measure the file, a second task calls remap_file_pages() on the same
-seq_file.
-
-remap_file_pages() takes the mmap lock and, if the event matches the
-IMA policy too, the second task waits for the iint lock to be released.
-
-Now, the first task starts to measure the seq_file and takes the
-seq_file lock. I don't know if 3 processes must be involved, but I was
-thinking that reading the seq_file from the first task can trigger a
-page fault, which requires to take the mmap lock.
-
-At this point, we reach a deadlock. The first task waits for the mmap
-lock to be released, and the second waits for the iint lock to be
-released, which both cannot happen.
-
-Roberto
-
-> [  904.606577] systemd/1 is trying to acquire lock:
-> [  904.607227] ffff88810e5c2580 (&p->lock){+.+.}-{4:4}, at: seq_read_iter=
-+0x62/0x6b0
-> [  904.608290]=20
-> [  904.608290] but task is already holding lock:
-> [  904.609105] ffff88810f4abf20 (&ima_iint_lock_mutex_key[depth]){+.+.}-{=
-4:4}, at: ima_iint_lock+0x24/0x40
-> [  904.610429]=20
-> [  904.610429] which lock already depends on the new lock.
-> [  904.610429]=20
-> [  904.611574]=20
-> [  904.611574] the existing dependency chain (in reverse order) is:
-> [  904.612628]=20
-> [  904.612628] -> #2 (&ima_iint_lock_mutex_key[depth]){+.+.}-{4:4}:
-> [  904.613681]        __mutex_lock+0xaf/0x760
-> [  904.614266]        mutex_lock_nested+0x27/0x40
-> [  904.614897]        ima_iint_lock+0x24/0x40
-> [  904.615490]        process_measurement+0x176/0xef0
-> [  904.616168]        ima_file_mmap+0x98/0x120
-> [  904.616767]        security_mmap_file+0x408/0x560
-> [  904.617444]        __do_sys_remap_file_pages+0x2fa/0x4c0
-> [  904.618194]        __x64_sys_remap_file_pages+0x29/0x40
-> [  904.618937]        x64_sys_call+0x6e8/0x4550
-> [  904.619546]        do_syscall_64+0x71/0x180
-> [  904.620155]        entry_SYSCALL_64_after_hwframe+0x76/0x7e
-> [  904.620952]=20
-> [  904.620952] -> #1 (&mm->mmap_lock){++++}-{4:4}:
-> [  904.621813]        __might_fault+0x6f/0xb0
-> [  904.622400]        _copy_to_iter+0x12e/0xa80
-> [  904.623009]        seq_read_iter+0x593/0x6b0
-> [  904.623629]        proc_reg_read_iter+0x31/0xe0
-> [  904.624276]        vfs_read+0x256/0x3d0
-> [  904.624822]        ksys_read+0x6d/0x160
-> [  904.625372]        __x64_sys_read+0x1d/0x30
-> [  904.625964]        x64_sys_call+0x1068/0x4550
-> [  904.626594]        do_syscall_64+0x71/0x180
-> [  904.627188]        entry_SYSCALL_64_after_hwframe+0x76/0x7e
-> [  904.627975]=20
-> [  904.627975] -> #0 (&p->lock){+.+.}-{4:4}:
-> [  904.628787]        __lock_acquire+0x17f3/0x2320
-> [  904.629432]        lock_acquire+0xf2/0x420
-> [  904.630013]        __mutex_lock+0xaf/0x760
-> [  904.630596]        mutex_lock_nested+0x27/0x40
-> [  904.631225]        seq_read_iter+0x62/0x6b0
-> [  904.631831]        kernfs_fop_read_iter+0x1ef/0x2c0
-> [  904.632599]        __kernel_read+0x113/0x350
-> [  904.633206]        integrity_kernel_read+0x23/0x40
-> [  904.633902]        ima_calc_file_hash_tfm+0x14e/0x230
-> [  904.634621]        ima_calc_file_hash+0x97/0x250
-> [  904.635281]        ima_collect_measurement+0x4be/0x530
-> [  904.636008]        process_measurement+0x7c0/0xef0
-> [  904.636689]        ima_file_check+0x65/0x80
-> [  904.637295]        security_file_post_open+0xb1/0x1b0
-> [  904.638008]        path_openat+0x216/0x1280
-> [  904.638605]        do_filp_open+0xab/0x140
-> [  904.639185]        do_sys_openat2+0xba/0x120
-> [  904.639805]        do_sys_open+0x4c/0x80
-> [  904.640366]        __x64_sys_openat+0x23/0x30
-> [  904.640992]        x64_sys_call+0x2575/0x4550
-> [  904.641616]        do_syscall_64+0x71/0x180
-> [  904.642207]        entry_SYSCALL_64_after_hwframe+0x76/0x7e
-> [  904.643003]=20
-> [  904.643003] other info that might help us debug this:
-> [  904.643003]=20
-> [  904.644149] Chain exists of:
-> [  904.644149]   &p->lock --> &mm->mmap_lock --> &ima_iint_lock_mutex_key=
-[depth]
-> [  904.644149]=20
-> [  904.645763]  Possible unsafe locking scenario:
-> [  904.645763]=20
-> [  904.646614]        CPU0                    CPU1
-> [  904.647264]        ----                    ----
-> [  904.647909]   lock(&ima_iint_lock_mutex_key[depth]);
-> [  904.648617]                                lock(&mm->mmap_lock);
-> [  904.649479]                                lock(&ima_iint_lock_mutex_k=
-ey[depth]);
-> [  904.650543]   lock(&p->lock);
-> [  904.650974]=20
-> [  904.650974]  *** DEADLOCK ***
-> [  904.650974]=20
-> [  904.651826] 1 lock held by systemd/1:
-> [  904.652376]  #0: ffff88810f4abf20 (&ima_iint_lock_mutex_key[depth]){+.=
-+.}-{4:4}, at: ima_iint_lock+0x24/0x40
-> [  904.653759]=20
-> [  904.653759] stack backtrace:
-> [  904.654391] CPU: 2 UID: 0 PID: 1 Comm: systemd Not tainted 6.12.0-rc2+=
- #20
-> [  904.655360] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1=
-.15.0-1 04/01/2014
-> [  904.656497] Call Trace:
-> [  904.656856]  <TASK>
-> [  904.657166]  dump_stack_lvl+0x134/0x1a0
-> [  904.657728]  dump_stack+0x14/0x30
-> [  904.658206]  print_circular_bug+0x38d/0x450
-> [  904.658812]  check_noncircular+0xed/0x120
-> [  904.659396]  ? srso_return_thunk+0x5/0x5f
-> [  904.659972]  ? srso_return_thunk+0x5/0x5f
-> [  904.660569]  __lock_acquire+0x17f3/0x2320
-> [  904.661145]  lock_acquire+0xf2/0x420
-> [  904.661664]  ? seq_read_iter+0x62/0x6b0
-> [  904.662217]  ? srso_return_thunk+0x5/0x5f
-> [  904.662886]  __mutex_lock+0xaf/0x760
-> [  904.663408]  ? seq_read_iter+0x62/0x6b0
-> [  904.663961]  ? seq_read_iter+0x62/0x6b0
-> [  904.664525]  ? srso_return_thunk+0x5/0x5f
-> [  904.665098]  ? mark_lock+0x4e/0x750
-> [  904.665610]  ? mutex_lock_nested+0x27/0x40
-> [  904.666194]  ? find_held_lock+0x3a/0x100
-> [  904.666770]  mutex_lock_nested+0x27/0x40
-> [  904.667337]  seq_read_iter+0x62/0x6b0
-> [  904.667869]  kernfs_fop_read_iter+0x1ef/0x2c0
-> [  904.668536]  __kernel_read+0x113/0x350
-> [  904.669079]  integrity_kernel_read+0x23/0x40
-> [  904.669698]  ima_calc_file_hash_tfm+0x14e/0x230
-> [  904.670349]  ? __lock_acquire+0xc32/0x2320
-> [  904.670937]  ? srso_return_thunk+0x5/0x5f
-> [  904.671525]  ? __lock_acquire+0xfbb/0x2320
-> [  904.672113]  ? srso_return_thunk+0x5/0x5f
-> [  904.672693]  ? srso_return_thunk+0x5/0x5f
-> [  904.673280]  ? lock_acquire+0xf2/0x420
-> [  904.673818]  ? kernfs_iop_getattr+0x4a/0xb0
-> [  904.674424]  ? srso_return_thunk+0x5/0x5f
-> [  904.674997]  ? find_held_lock+0x3a/0x100
-> [  904.675564]  ? srso_return_thunk+0x5/0x5f
-> [  904.676156]  ? srso_return_thunk+0x5/0x5f
-> [  904.676740]  ? srso_return_thunk+0x5/0x5f
-> [  904.677322]  ? local_clock_noinstr+0x9/0xb0
-> [  904.677923]  ? srso_return_thunk+0x5/0x5f
-> [  904.678502]  ? srso_return_thunk+0x5/0x5f
-> [  904.679075]  ? lock_release+0x4e2/0x570
-> [  904.679639]  ima_calc_file_hash+0x97/0x250
-> [  904.680227]  ima_collect_measurement+0x4be/0x530
-> [  904.680901]  ? srso_return_thunk+0x5/0x5f
-> [  904.681496]  ? srso_return_thunk+0x5/0x5f
-> [  904.682070]  ? __kernfs_iattrs+0x4a/0x140
-> [  904.682658]  ? srso_return_thunk+0x5/0x5f
-> [  904.683242]  ? process_measurement+0x7c0/0xef0
-> [  904.683876]  ? srso_return_thunk+0x5/0x5f
-> [  904.684462]  process_measurement+0x7c0/0xef0
-> [  904.685078]  ? srso_return_thunk+0x5/0x5f
-> [  904.685654]  ? srso_return_thunk+0x5/0x5f
-> [  904.686228]  ? _raw_spin_unlock_irqrestore+0x5d/0xd0
-> [  904.686938]  ? srso_return_thunk+0x5/0x5f
-> [  904.687523]  ? srso_return_thunk+0x5/0x5f
-> [  904.688098]  ? srso_return_thunk+0x5/0x5f
-> [  904.688672]  ? local_clock_noinstr+0x9/0xb0
-> [  904.689273]  ? srso_return_thunk+0x5/0x5f
-> [  904.689846]  ? srso_return_thunk+0x5/0x5f
-> [  904.690430]  ? srso_return_thunk+0x5/0x5f
-> [  904.691005]  ? srso_return_thunk+0x5/0x5f
-> [  904.691583]  ? srso_return_thunk+0x5/0x5f
-> [  904.692180]  ? local_clock_noinstr+0x9/0xb0
-> [  904.692841]  ? srso_return_thunk+0x5/0x5f
-> [  904.693419]  ? srso_return_thunk+0x5/0x5f
-> [  904.693990]  ? lock_release+0x4e2/0x570
-> [  904.694544]  ? srso_return_thunk+0x5/0x5f
-> [  904.695115]  ? kernfs_put_active+0x5d/0xc0
-> [  904.695708]  ? srso_return_thunk+0x5/0x5f
-> [  904.696286]  ? kernfs_fop_open+0x376/0x6b0
-> [  904.696872]  ima_file_check+0x65/0x80
-> [  904.697409]  security_file_post_open+0xb1/0x1b0
-> [  904.698058]  path_openat+0x216/0x1280
-> [  904.698589]  do_filp_open+0xab/0x140
-> [  904.699106]  ? srso_return_thunk+0x5/0x5f
-> [  904.699693]  ? lock_release+0x554/0x570
-> [  904.700264]  ? srso_return_thunk+0x5/0x5f
-> [  904.700836]  ? do_raw_spin_unlock+0x76/0x140
-> [  904.701450]  ? srso_return_thunk+0x5/0x5f
-> [  904.702021]  ? _raw_spin_unlock+0x3f/0xa0
-> [  904.702606]  ? srso_return_thunk+0x5/0x5f
-> [  904.703178]  ? alloc_fd+0x1ca/0x3b0
-> [  904.703685]  do_sys_openat2+0xba/0x120
-> [  904.704223]  ? file_free+0x8d/0x110
-> [  904.704729]  do_sys_open+0x4c/0x80
-> [  904.705221]  __x64_sys_openat+0x23/0x30
-> [  904.705784]  x64_sys_call+0x2575/0x4550
-> [  904.706337]  do_syscall_64+0x71/0x180
-> [  904.706863]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
-> [  904.707587] RIP: 0033:0x7f3462123037
-> [  904.708120] Code: 55 9c 48 89 75 a0 89 7d a8 44 89 55 ac e8 a1 7a f8 f=
-f 44 8b 55 ac 8b 55 9c 41 89 c0 48 8b 75 a0 8b 7d a8 b8 01 01 00 00 0f 05 <=
-48> 3d 00 f0 ff ff 77 31 44 89 c7 89 45 ac e8 f6 7a f8 ff 8b 45 ac
-> [  904.710744] RSP: 002b:00007ffdd1a79370 EFLAGS: 00000293 ORIG_RAX: 0000=
-000000000101
-> [  904.711821] RAX: ffffffffffffffda RBX: ffffffffffffffff RCX: 00007f346=
-2123037
-> [  904.712829] RDX: 0000000000080100 RSI: 00007ffdd1a79420 RDI: 00000000f=
-fffff9c
-> [  904.713839] RBP: 00007ffdd1a793e0 R08: 0000000000000000 R09: 000000000=
-0000000
-> [  904.714848] R10: 0000000000000000 R11: 0000000000000293 R12: 00007ffdd=
-1a794c8
-> [  904.715855] R13: 00007ffdd1a794b8 R14: 00007ffdd1a79690 R15: 00007ffdd=
-1a79690
-> [  904.716877]  </TASK>
->=20
-> Roberto
-
+Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
 
