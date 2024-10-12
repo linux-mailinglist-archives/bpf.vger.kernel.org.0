@@ -1,72 +1,72 @@
-Return-Path: <bpf+bounces-41803-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41804-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3A7699B0B0
-	for <lists+bpf@lfdr.de>; Sat, 12 Oct 2024 06:07:58 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 59AD399B0B2
+	for <lists+bpf@lfdr.de>; Sat, 12 Oct 2024 06:08:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5370C1F23E35
-	for <lists+bpf@lfdr.de>; Sat, 12 Oct 2024 04:07:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7CF211C2152B
+	for <lists+bpf@lfdr.de>; Sat, 12 Oct 2024 04:08:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DFCF14286;
-	Sat, 12 Oct 2024 04:07:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AAF3137742;
+	Sat, 12 Oct 2024 04:07:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="njwc6BG+"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eQhHWWjf"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BABF0126C05;
-	Sat, 12 Oct 2024 04:07:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96B69126C05;
+	Sat, 12 Oct 2024 04:07:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728706052; cv=none; b=IIVeaqDjh8mt59/AlIF7JRnf0B5rpI3q63S2mQUrGjI/O/9b+VQZGWEDZ7bqU3q0Df9qZ3X3vJSamQmaYlDzvToSf30dRa+YKqxyU/eUm5UtajCOX963fjWHsthBiI23uNX9E+dJZ3n/Sgn/1Z5X4aT82Pp+JkihHqf3HXZtLj8=
+	t=1728706057; cv=none; b=c4MZh9b8RfbkkZDq8DKZpLgU0NWmnXjscp4uAQbNEJl5pqmoGuysJ+RpX/eJWZ1BeFQrgk58H4mghrH0tF9nAFLgtWlvIUYNkLg+KRDLJv0JQIPnSvR85n8B3v813Fw3dOaAYoFzO0rOUlK9gA2PXLlljw4Zhw3GXHgsTwMApMU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728706052; c=relaxed/simple;
-	bh=mRjovR8ntaoJYkJ37dbujZTNw4gAKlf5NfpDDO5l9Eo=;
+	s=arc-20240116; t=1728706057; c=relaxed/simple;
+	bh=XvZDLG++0JSemHMyBlIi72WhzAdijUjLEc8Kz8FdA5M=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Fvg24u5yH+021O2icvnsd6Gso9wVkxM2aB6Vrb9GdjLEQXQ67ShIANBOIbVFvQwG1TKpJ3pv/7p/GOWIdn2cuRa5YOmclgD1hja4W3JQXFZledxmyiXbrev7zC2FLaTnDqEmyBIBYY3kfFAoShBgFhIUbPY0AuMvOWbC4oBfDLE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=njwc6BG+; arc=none smtp.client-ip=209.85.214.174
+	 MIME-Version; b=k8bFT/2YsMAUuXwj8BZRP59u3PH7fCSTmBIqzLuB1wSJoOD/pLvWemxV5ly5ogXo+yxRSOKXe/XUakORYWRMXrVc2f1uyMKNf0/UKaF+6EtxNULgnctfSHK5ynoxHoDlt91XJcvPnbsdgnHymOZcbyM61wRqQJHWZzEI6qnld10=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eQhHWWjf; arc=none smtp.client-ip=209.85.214.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-20b5affde14so15896455ad.3;
-        Fri, 11 Oct 2024 21:07:30 -0700 (PDT)
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-20bc506347dso21532405ad.0;
+        Fri, 11 Oct 2024 21:07:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1728706050; x=1729310850; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1728706055; x=1729310855; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=DFTdxQiqpD6DA4ro2hHwuejKJqrt64jz2yhwwbkz8zI=;
-        b=njwc6BG+2yMx0bTqw8UnU3UtO6YXgXKL18XC5KTsfNQusK+C4FcmNoEhmc/7mf9JKZ
-         urRK1C5BY0VcQdpMDGO6lFacG1WbTamnGlX05mTI+tZIS2aSvNUm989RdxbfkQx3GjlF
-         fKnK2kU25u+TnUP1xp6QQniiO9Vjv/qW1jjJS2opwedvOoODFPZxl5CKrIgbLMqkMvmC
-         xoRlDOoHuUMzBHBHWeTdpmlR2D2q1HsOsT4lyZnyYXjVpFGM5U3AuxGhoLPlOu+8ghJO
-         oiVmXjVycZe5QXucHMXEpTXNksfIipIpBo90FICBGRWFguAp83KaYDF6N2s/cHCcr+nE
-         3h1g==
+        bh=j3HJwJztm2eU03TzuaP6k1xW94JEkVBvNu9WuqJK/Rk=;
+        b=eQhHWWjfouD4Zno3iJJ5LcfMCSL5tw158WDPFjg+IFK5sk5yCJ39kMrGlZC/pVsYYU
+         1pxAm5wxj5DqbHkArwZjaWPxTFI1l+AvJ9bnZyh3wzG7ntqppa6Zb0cR/I2DL2B+8XQm
+         1+tlKCNXMoJFwClShImiChXxUEfCK6VN9d8XdW/yeqNyg9ZWaSpRvboezB8i3wh5n6ro
+         113m4bcBbwajzQ7+N3N+DZugM9x/QagWW5QDEXv2tniYo7q/DKDy2JRYxGqdYTTb9urM
+         lTaMMZlAis8AUN9TX6ECLMKwQLBELh78zO9/BUvZQ4xfx9BcjbLwgiYISJr3YMQvgxvL
+         iA5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728706050; x=1729310850;
+        d=1e100.net; s=20230601; t=1728706055; x=1729310855;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=DFTdxQiqpD6DA4ro2hHwuejKJqrt64jz2yhwwbkz8zI=;
-        b=aA5yZ6X1Libr0Q8NKtIzSj/CNtL2fWWlcwB6/qrb8mjyzfEFuUTaGRdAUuqHLLTLFX
-         ELHyps9S6Iylst9nXLPZJHQ+FxS5bYfuiZCEx3gem1SMFzNW2w+lattw0DwWJk96Jqr6
-         WAlwT7+BYw0zaP+dq19tgfisWMN9O27p4hXpfYAnaUuKQG/KKrEWmFax1rPh4zYlj7nL
-         wve7ie/ybcOIf0hp09EqTRwnWI0F7RevQS+E0xfpvQB3oV4sCs621Dq0nNdXgeezVe5Y
-         zmgNMC6S+ibe4JGmzs24b4hx6Imz0Ujaj07T2Nvw2c7anmEfyyavwPe1RNvg03bM02i2
-         Pjvw==
-X-Forwarded-Encrypted: i=1; AJvYcCVTDlO7NedsId/FR8cp3pk0Cnn/EE/ofoKtuRrRyx2VmGyaHdaJ3ysSq647lPL6Qmx50lpGFek=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxS6+rayl9ESPJRlggsaadQzUrynI/3ZCOcV4XXOecZM1Hzk5Wr
-	IiSN91LmeR1VayTqmHZtfuClL/uQXssePMVomaeY8V76xmmTX+wU
-X-Google-Smtp-Source: AGHT+IFuGTd5fokqCVQPTgb9Xho914vTtq5dKo8iOrPse1q86SXIcu5RQpjb7XllQyWVYfiVpdVlxw==
-X-Received: by 2002:a17:902:e5ca:b0:20c:6f6f:afe5 with SMTP id d9443c01a7336-20ca16cad0dmr71115575ad.50.1728706049811;
-        Fri, 11 Oct 2024 21:07:29 -0700 (PDT)
+        bh=j3HJwJztm2eU03TzuaP6k1xW94JEkVBvNu9WuqJK/Rk=;
+        b=WTtZkCNa0RaNYJQUjsjh7e3c+jej9iQmbUH9g006Ulv1QNYbj6vITWE67/ui6/I9fQ
+         uyITwkrcD+WNWYh8NGUc5WS0YXut6zHHs0bB8bEOlDRY9IViVoOO+N86HouJ68vB2ih6
+         xD30a+Y07+vc7ahvabQf/4hhz5FURDDLE3ZcEYmM699SyXv7q2MebfucqJ1WA3lXDnUi
+         DetzCst+aYDrL+xr8DYXI2UqL8D2q5QzUGpgH7PePm0711LF7BEb13hPh4kRDwU29yeO
+         dcoh/jiRbAhKlkTd99CB2W3SLP6xducXZgaEhTELE571jP9IhCWVY6jR7bEdeV3x4ZxL
+         TxKg==
+X-Forwarded-Encrypted: i=1; AJvYcCXyVZt6eWTB65zJXkQqF1G4SO/hrFjgwZk6vhasUZjBULL3ejm/Ahm/O9Eeonwo9QFr3RXZRVI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyW2tqMMM4UUpb3ay9JRMY208OHytKODv1HsRGQ9yuF9ZYKcDEm
+	aMlHqUffUDAWSDOntKlO5z0TkJTP6/capTEMa8v0pP0f2Rq+xppM
+X-Google-Smtp-Source: AGHT+IHnd6+UieFd1ANMnkSoFi4BAvkPc5Phb7SB91p5A1CM/dmzEh6c8S9jmCKWMllv9dunVW+7VQ==
+X-Received: by 2002:a17:903:1c4:b0:20b:79cb:492f with SMTP id d9443c01a7336-20ca16b4aa0mr83283705ad.43.1728706054791;
+        Fri, 11 Oct 2024 21:07:34 -0700 (PDT)
 Received: from KERNELXING-MB0.tencent.com ([43.132.141.25])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20c8c21301dsm30939685ad.199.2024.10.11.21.07.25
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20c8c21301dsm30939685ad.199.2024.10.11.21.07.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Oct 2024 21:07:29 -0700 (PDT)
+        Fri, 11 Oct 2024 21:07:34 -0700 (PDT)
 From: Jason Xing <kerneljasonxing@gmail.com>
 To: davem@davemloft.net,
 	edumazet@google.com,
@@ -90,9 +90,9 @@ To: davem@davemloft.net,
 Cc: bpf@vger.kernel.org,
 	netdev@vger.kernel.org,
 	Jason Xing <kernelxing@tencent.com>
-Subject: [PATCH net-next v2 06/12] net-timestamp: introduce TS_SCHED_OPT_CB to generate dev xmit timestamp
-Date: Sat, 12 Oct 2024 12:06:45 +0800
-Message-Id: <20241012040651.95616-7-kerneljasonxing@gmail.com>
+Subject: [PATCH net-next v2 07/12] net-timestamp: introduce TS_SW_OPT_CB to generate driver timestamp
+Date: Sat, 12 Oct 2024 12:06:46 +0800
+Message-Id: <20241012040651.95616-8-kerneljasonxing@gmail.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20241012040651.95616-1-kerneljasonxing@gmail.com>
 References: <20241012040651.95616-1-kerneljasonxing@gmail.com>
@@ -106,26 +106,26 @@ Content-Transfer-Encoding: 8bit
 
 From: Jason Xing <kernelxing@tencent.com>
 
-Introduce BPF_SOCK_OPS_TS_SCHED_OPT_CB flag so that we can decide to
-print timestamps when the skb just passes the dev layer.
+When the skb is about to send from driver to nic, we can print timestamp
+by setting BPF_SOCK_OPS_TS_SW_OPT_CB in bpf program.
 
 Signed-off-by: Jason Xing <kernelxing@tencent.com>
 ---
  include/uapi/linux/bpf.h       |  5 +++++
- net/core/skbuff.c              | 17 +++++++++++++++--
+ net/core/skbuff.c              | 13 ++++++++++---
  tools/include/uapi/linux/bpf.h |  5 +++++
- 3 files changed, 25 insertions(+), 2 deletions(-)
+ 3 files changed, 20 insertions(+), 3 deletions(-)
 
 diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 157e139ed6fc..3cf3c9c896c7 100644
+index 3cf3c9c896c7..0d00539f247a 100644
 --- a/include/uapi/linux/bpf.h
 +++ b/include/uapi/linux/bpf.h
-@@ -7019,6 +7019,11 @@ enum {
- 					 * by the kernel or the
- 					 * earlier bpf-progs.
+@@ -7024,6 +7024,11 @@ enum {
+ 					 * feature is on. It indicates the
+ 					 * recorded timestamp.
  					 */
-+	BPF_SOCK_OPS_TS_SCHED_OPT_CB,	/* Called when skb is passing through
-+					 * dev layer when SO_TIMESTAMPING
++	BPF_SOCK_OPS_TS_SW_OPT_CB,	/* Called when skb is about to send
++					 * to the nic when SO_TIMESTAMPING
 +					 * feature is on. It indicates the
 +					 * recorded timestamp.
 +					 */
@@ -133,43 +133,57 @@ index 157e139ed6fc..3cf3c9c896c7 100644
  
  /* List of TCP states. There is a build check in net/ipv4/tcp.c to detect
 diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index 3a4110d0f983..16e7bdc1eacb 100644
+index 16e7bdc1eacb..832d53de9874 100644
 --- a/net/core/skbuff.c
 +++ b/net/core/skbuff.c
-@@ -5632,8 +5632,21 @@ static void bpf_skb_tstamp_tx_output(struct sock *sk, int tstype)
- 		return;
- 
- 	tp = tcp_sk(sk);
--	if (BPF_SOCK_OPS_TEST_FLAG(tp, BPF_SOCK_OPS_TX_TIMESTAMPING_OPT_CB_FLAG))
--		return;
-+	if (BPF_SOCK_OPS_TEST_FLAG(tp, BPF_SOCK_OPS_TX_TIMESTAMPING_OPT_CB_FLAG)) {
-+		struct timespec64 tstamp;
-+		u32 cb_flag;
-+
-+		switch (tstype) {
-+		case SCM_TSTAMP_SCHED:
-+			cb_flag = BPF_SOCK_OPS_TS_SCHED_OPT_CB;
-+			break;
-+		default:
-+			return;
-+		}
-+
-+		tstamp = ktime_to_timespec64(ktime_get_real());
-+		tcp_call_bpf_2arg(sk, cb_flag, tstamp.tv_sec, tstamp.tv_nsec);
-+	}
+@@ -5619,7 +5619,8 @@ static void skb_tstamp_tx_output(struct sk_buff *orig_skb,
+ 	__skb_complete_tx_timestamp(skb, sk, tstype, opt_stats);
  }
  
- void __skb_tstamp_tx(struct sk_buff *orig_skb,
+-static void bpf_skb_tstamp_tx_output(struct sock *sk, int tstype)
++static void bpf_skb_tstamp_tx_output(struct sock *sk, int tstype,
++				     struct skb_shared_hwtstamps *hwtstamps)
+ {
+ 	struct tcp_sock *tp;
+ 	u32 tsflags;
+@@ -5640,11 +5641,17 @@ static void bpf_skb_tstamp_tx_output(struct sock *sk, int tstype)
+ 		case SCM_TSTAMP_SCHED:
+ 			cb_flag = BPF_SOCK_OPS_TS_SCHED_OPT_CB;
+ 			break;
++		case SCM_TSTAMP_SND:
++			cb_flag = BPF_SOCK_OPS_TS_SW_OPT_CB;
++			break;
+ 		default:
+ 			return;
+ 		}
+ 
+-		tstamp = ktime_to_timespec64(ktime_get_real());
++		if (hwtstamps)
++			tstamp = ktime_to_timespec64(hwtstamps->hwtstamp);
++		else
++			tstamp = ktime_to_timespec64(ktime_get_real());
+ 		tcp_call_bpf_2arg(sk, cb_flag, tstamp.tv_sec, tstamp.tv_nsec);
+ 	}
+ }
+@@ -5658,7 +5665,7 @@ void __skb_tstamp_tx(struct sk_buff *orig_skb,
+ 		return;
+ 
+ 	if (static_branch_unlikely(&bpf_tstamp_control))
+-		bpf_skb_tstamp_tx_output(sk, tstype);
++		bpf_skb_tstamp_tx_output(sk, tstype, hwtstamps);
+ 
+ 	skb_tstamp_tx_output(orig_skb, ack_skb, hwtstamps, sk, tstype);
+ }
 diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 93853d9d4922..d60675e1a5a0 100644
+index d60675e1a5a0..020ec14ffae6 100644
 --- a/tools/include/uapi/linux/bpf.h
 +++ b/tools/include/uapi/linux/bpf.h
-@@ -7018,6 +7018,11 @@ enum {
- 					 * by the kernel or the
- 					 * earlier bpf-progs.
+@@ -7023,6 +7023,11 @@ enum {
+ 					 * feature is on. It indicates the
+ 					 * recorded timestamp.
  					 */
-+	BPF_SOCK_OPS_TS_SCHED_OPT_CB,	/* Called when skb is passing through
-+					 * dev layer when SO_TIMESTAMPING
++	BPF_SOCK_OPS_TS_SW_OPT_CB,	/* Called when skb is about to send
++					 * to the nic when SO_TIMESTAMPING
 +					 * feature is on. It indicates the
 +					 * recorded timestamp.
 +					 */
