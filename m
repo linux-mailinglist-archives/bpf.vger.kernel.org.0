@@ -1,70 +1,72 @@
-Return-Path: <bpf+bounces-41797-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41798-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 276FE99B09E
-	for <lists+bpf@lfdr.de>; Sat, 12 Oct 2024 06:07:20 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B4E999B0A0
+	for <lists+bpf@lfdr.de>; Sat, 12 Oct 2024 06:07:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB0B91F230A8
-	for <lists+bpf@lfdr.de>; Sat, 12 Oct 2024 04:07:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 60BC5B23350
+	for <lists+bpf@lfdr.de>; Sat, 12 Oct 2024 04:07:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A29E126BFA;
-	Sat, 12 Oct 2024 04:07:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 198AE129E9C;
+	Sat, 12 Oct 2024 04:07:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PUciom02"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VoY6tOEz"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DEA3A41;
-	Sat, 12 Oct 2024 04:07:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDCA7A41;
+	Sat, 12 Oct 2024 04:07:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728706022; cv=none; b=pZz0Y37yIXwq9vhoCZJ5tWgFqVg14xIyzE8ocLyITRN9kcpp9hCj7rW3XmPDV5pJbPtuViOIvjHXY1zjxz9xcQcp4jHbXbRKu5Mty2Cwyxrg9xGnCulWYVLF+FbuAhrz3qiTo24/8K3TpPZNL8KKJhNZOjF3WLu7578vJKwixw4=
+	t=1728706027; cv=none; b=KpZWQe0eTXSNz2Inm+cF64gnMXFsAzqYcA02VU9PjAmKRZqa/1kKEv4YaLqsEUzGghOz9bnoBYBCCbepiqqceSF16AAKIucqQAgNg3Lk+cWdpKcoWbaMEkNY6OVz+bq5/tsN8++iGqrxfwIJqQop7CGCXsroydjnjBROo2rqwis=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728706022; c=relaxed/simple;
-	bh=XES2tQiEJVE0YGyL1eqHh2iIj7S30J0+qAZk12OnD7w=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=JOAQyrBMmzzLG16M4WP+ZPHkjMr8OhiFgKW+3/n6kKSDpBYfZSf0mvyp6Ql7GInsoIKkS9MRq25knXqemqSFme3nkZZTDYMQLOmzDsON6tTJ0OmonJGUaMCtrbh6IHfHk32EusSW/H0mHuCYPZEbkGo+/JRrwyXvVpWUEzujI3k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PUciom02; arc=none smtp.client-ip=209.85.214.170
+	s=arc-20240116; t=1728706027; c=relaxed/simple;
+	bh=wJnv0tTqU0CMlRstJzGHN2WlH8u1NBlKQiQvV5YyzXk=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=VpDLQNnn5wrzQYrNw66WkoUBsxVx72PZZ38B1Arnxpg2AqDil0u8u2SlVGwYUSGg2dsyCphH5PRVnWU7g0LnHjak0qFMppguk9jiqZ6Mej8verbGhhM/MDpnQnITClMxUzsJzG5GXazJdMaVrAY8arVwsp9+NYHAN4UbOSzieWQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VoY6tOEz; arc=none smtp.client-ip=209.85.214.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-20cb7139d9dso6496595ad.1;
-        Fri, 11 Oct 2024 21:07:00 -0700 (PDT)
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-20ca1b6a80aso11020035ad.2;
+        Fri, 11 Oct 2024 21:07:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1728706020; x=1729310820; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=2D2DwO8yx75JDPfMkeKeAbJ6J97OrpGiGWU3haByJ5A=;
-        b=PUciom02zar54iGhjA4etCM725x9uv/hZC1AezCXitv7OwHy88KidlAmjcMDxoOKCQ
-         gn8yHkhkVZJsvi3hcx/awwV7OTYahO9En989LCq4dbeYwDCHUQPKWHVhxmMwvCdpr7oD
-         mWtY8TYlkHhOqLmn47wM7cbcJ3fxOxfcqINBtpHOeo2Ps2U8tG08Xir15OAP46wo13Bk
-         bT1T3pQsFmPcEFniyLLPRifXvv/Hn/CRVj5/WTU/hNzSW7N7srVTg9utlm+xSKyVXdIb
-         JW+lHvLZ10GPFk+z0Q7Mu+i9JsTyFkBXT7mEKvK6l/GSpMQl+novHbAi2Eb53sJczTLn
-         kjnw==
+        d=gmail.com; s=20230601; t=1728706025; x=1729310825; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uhkJToL5ye2pJS5PepNqyb+cP4g8tXstix29oTK5pK0=;
+        b=VoY6tOEzdcb8Qb8iQgMpuVPAc2RH5aOwDB9K57ru4xOI0w3gMCWM/5UxBAAkvYCfNw
+         +GeelSGptKt5tQ+4MJMYg7bmb1IVmd6BlX2n/R661pbUb11IKGXQBCJgqgYJEmL3PpSW
+         jDAFIvOdlVQ/wx+/nujMX0FaAGAAMw8jGp3gl/UynPYYh/6IEvDQH1z5KzR6RA+ecGVE
+         VU28TFuyD9uyYKS38ClJMPkYmY2JFDUtvEiP/25x0UpV7m99g6rdEimLUNzQfN3RtnTn
+         yT4Hkac8CsTGbdzJzsiVU6F12IpO6LpdmruXPkxMAsWmpwiMDPRI99IomiK7XKJAJSR4
+         oKcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728706020; x=1729310820;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=2D2DwO8yx75JDPfMkeKeAbJ6J97OrpGiGWU3haByJ5A=;
-        b=H1l69AUH8SSEYW7r2lIrdCCdVLW9RHOQrY9Jr97UaMswLVPBlJDDPJIXF53UZk0OAd
-         ZppKxIJDLvxrxeKbB0LIUrQnsVIxhnH2Zh5I58P/+y4LH87ZAj7o8la+WA4IXCrLTODZ
-         DfC0UkSbfEMe4VJx2nHKm84g3vSHt5Xb2enDZ8Ex8olyN+tmQJULbWts92Ig4vokYTCF
-         0SRUbiXbiOkIu4lKdIzd6D9Cwt1nQLpBf9SBqdncT8kIMvzTbmyFAXL7kxjRZnTyHAZs
-         tLjp0c8wwt0/+o7JV2t+oF8fCgg/EWbujrH0EgaLBcmXdkuMoaREsbF21fWVI2lptGl/
-         0U3Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXf++xEntu/DhsDXEQqT1cu0EvvslDrhSLUy0Ro6ViBRXrvuDDCt83rx6gv7Ur/4hxgWBVVltU=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz3FTAlinpwzsc6A8dkf4VaCVbAhPiMsQZcbemm/mfbteUGK9Zk
-	VSWB/g9oRGCCkTLV6BiPaNXBEbO5lgEuf+rOCdtFp/pXEolZRP01
-X-Google-Smtp-Source: AGHT+IFs3OuurBGk0RLgKWivdB3HrINh60GKl06DHROmgEo/Gs2cWgEma4gcgBgEtvqJNsaQTBDI5Q==
-X-Received: by 2002:a17:902:f681:b0:20c:8b88:8268 with SMTP id d9443c01a7336-20ca1425c22mr73116065ad.10.1728706019730;
-        Fri, 11 Oct 2024 21:06:59 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1728706025; x=1729310825;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=uhkJToL5ye2pJS5PepNqyb+cP4g8tXstix29oTK5pK0=;
+        b=IND1unF2XaLKB7zK/6PxdN+pBOmwRansWeb+qh+oJwlxelIYjK31ENO1r8fpfGcdBO
+         SDITb7eLlbrRfWa89iLnkpuBmjQDwPY+epPtdfVLbmrluQ6/H/yfoxsmb3f5sJXI6FZW
+         qeTXJx8qIbaa+gr9+Su1u2PNkzlvwHuqfy+bXN5rr2rUPAlkRZizdWmqmlmTLw6JQ/tD
+         Yr/e8WjZJrwzBw4EjnJ5Dvnt3aoJT9cK8/lYyEb19MlZclMaz6jeCu/w9+qCgJ83FfUJ
+         oDSL278ZVqCrridniLsjYuO4mpSWLaHECnkM6MFqevf+GEAzu8LJRmLRIlDCkDuaIL+S
+         7wfg==
+X-Forwarded-Encrypted: i=1; AJvYcCVHRO7AePR3Z8TF3ItxGX24xw+lSrjIp9ipn/bKGupNJrVRGh7Hwv+5icvJkVS1ZXfKjGsSDyc=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx08nGj78Nce3U8b8faHJCxjX1wOCn4a4P+S02owo0r7vhdq7Xn
+	5RvZ3R4u+ZfzQWUXUjL3spn1v6FXYGlqlpHQS70qUgdENBEM1AT4
+X-Google-Smtp-Source: AGHT+IHOLIcJ60eI2w8jPC3Z8ZS0BpXVxWlubAW59YeZgPgao9Z5i1/92kajeuVfEF93/Yq+L2qu7A==
+X-Received: by 2002:a17:903:22d1:b0:20c:79f1:fee9 with SMTP id d9443c01a7336-20cbb183470mr34035755ad.11.1728706024915;
+        Fri, 11 Oct 2024 21:07:04 -0700 (PDT)
 Received: from KERNELXING-MB0.tencent.com ([43.132.141.25])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20c8c21301dsm30939685ad.199.2024.10.11.21.06.54
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20c8c21301dsm30939685ad.199.2024.10.11.21.07.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Oct 2024 21:06:59 -0700 (PDT)
+        Fri, 11 Oct 2024 21:07:04 -0700 (PDT)
 From: Jason Xing <kerneljasonxing@gmail.com>
 To: davem@davemloft.net,
 	edumazet@google.com,
@@ -88,10 +90,12 @@ To: davem@davemloft.net,
 Cc: bpf@vger.kernel.org,
 	netdev@vger.kernel.org,
 	Jason Xing <kernelxing@tencent.com>
-Subject: [PATCH net-next v2 00/12] net-timestamp: bpf extension to equip applications transparently
-Date: Sat, 12 Oct 2024 12:06:39 +0800
-Message-Id: <20241012040651.95616-1-kerneljasonxing@gmail.com>
+Subject: [PATCH net-next v2 01/12] net-timestamp: introduce socket tsflag requestors
+Date: Sat, 12 Oct 2024 12:06:40 +0800
+Message-Id: <20241012040651.95616-2-kerneljasonxing@gmail.com>
 X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20241012040651.95616-1-kerneljasonxing@gmail.com>
+References: <20241012040651.95616-1-kerneljasonxing@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -102,141 +106,299 @@ Content-Transfer-Encoding: 8bit
 
 From: Jason Xing <kernelxing@tencent.com>
 
-A few weeks ago, I planned to extend SO_TIMESTMAMPING feature by using
-tracepoint to print information (say, tstamp) so that we can
-transparently equip applications with this feature and require no
-modification in user side.
+We need a separate tsflag to control bpf extension feature so that
+we will not affect the behaviors of existing applications.
 
-Later, we discussed at netconf and agreed that we can use bpf for better
-extension, which is mainly suggested by John Fastabend and Willem de
-Bruijn. Many thanks here! So I post this series to see if we have a
-better solution to extend. My feeling is BPF is a good place to provide
-a way to add timestamping by administrators, without having to rebuild
-applications. 
+The idea of introducing requestors for better extension (not only
+serving bpf extension) comes from Vadim Fedorenko.
 
-This approach mostly relies on existing SO_TIMESTAMPING feature, users
-only needs to pass certain flags through bpf_setsocktop() to a separate
-tsflags. For TX timestamps, they will be printed during generation
-phase. For RX timestamps, we will wait for the moment when recvmsg() is
-called.
-
-After this series, we could step by step implement more advanced
-functions/flags already in SO_TIMESTAMPING feature for bpf extension.
-
-In this series, I only support TCP protocol which is widely used in
-SO_TIMESTAMPING feature.
-
+Signed-off-by: Jason Xing <kernelxing@tencent.com>
 ---
-V2
-Link: https://lore.kernel.org/all/20241008095109.99918-1-kerneljasonxing@gmail.com/
-1. Introduce tsflag requestors so that we are able to extend more in the
-future. Besides, it enables TX flags for bpf extension feature separately
-without breaking users. It is suggested by Vadim Fedorenko.
-2. introduce a static key to control the whole feature. (Willem)
-3. Open the gate of bpf_setsockopt for the SO_TIMESTAMPING feature in
-some TX/RX cases, not all the cases.
+ include/net/ip.h       |  2 +-
+ include/net/sock.h     | 15 +++++++++++----
+ net/can/j1939/socket.c |  2 +-
+ net/core/skbuff.c      |  5 +++--
+ net/core/sock.c        |  8 ++++----
+ net/ipv4/ip_output.c   |  2 +-
+ net/ipv4/ip_sockglue.c |  2 +-
+ net/ipv4/tcp.c         |  2 +-
+ net/ipv6/ip6_output.c  |  2 +-
+ net/ipv6/ping.c        |  2 +-
+ net/ipv6/raw.c         |  2 +-
+ net/ipv6/udp.c         |  2 +-
+ net/sctp/socket.c      |  2 +-
+ net/socket.c           |  4 ++--
+ 14 files changed, 30 insertions(+), 22 deletions(-)
 
-Note:
-The main concern we've discussion in V1 thread is how to deal with the
-applications using SO_TIMESTAMPING feature? In this series, I allow both
-cases to happen at the same time, which indicates that even one
-applications setting SO_TIMESTAMPING can still be traced through BPF
-program. Please see patch [04/12].
-
-
-Here is the test output:
-1) receive path
-iperf3-987305  [008] ...11 179955.200990: bpf_trace_printk: rx: port: 5201:55192, swtimestamp: 1728167973,670426346, hwtimestamp: 0,0
-2) xmit path
-iperf3-19765   [013] ...11  2021.329602: bpf_trace_printk: tx: port: 47528:5201, key: 1036, timestamp: 1728357067,436678584
-iperf3-19765   [013] b..11  2021.329611: bpf_trace_printk: tx: port: 47528:5201, key: 1036, timestamp: 1728357067,436689976
-iperf3-19765   [013] ...11  2021.329622: bpf_trace_printk: tx: port: 47528:5201, key: 1036, timestamp: 1728357067,436700739
-
-Here is the full bpf program:
-#include <linux/bpf.h>
-
-#include <bpf/bpf_helpers.h>
-#include <bpf/bpf_endian.h>
-#include <uapi/linux/net_tstamp.h>
-
-int _version SEC("version") = 1;
-char _license[] SEC("license") = "GPL";
-
-# define SO_TIMESTAMPING         37
-
-__section("sockops")
-int set_initial_rto(struct bpf_sock_ops *skops)
-{
-	int op = (int) skops->op;
-	u32 sport = 0, dport = 0;
-	int flags;
-
-	switch (op) {
-	//case BPF_SOCK_OPS_ACTIVE_ESTABLISHED_CB:
-	case BPF_SOCK_OPS_TCP_CONNECT_CB:
-	case BPF_SOCK_OPS_PASSIVE_ESTABLISHED_CB:
-		flags = SOF_TIMESTAMPING_RX_SOFTWARE |
-			SOF_TIMESTAMPING_TX_SCHED | SOF_TIMESTAMPING_TX_ACK | SOF_TIMESTAMPING_TX_SOFTWARE |
-			SOF_TIMESTAMPING_OPT_ID | SOF_TIMESTAMPING_OPT_ID_TCP;
-		bpf_setsockopt(skops, SOL_SOCKET, SO_TIMESTAMPING, &flags, sizeof(flags));
-		bpf_sock_ops_cb_flags_set(skops, BPF_SOCK_OPS_TX_TIMESTAMPING_OPT_CB_FLAG|BPF_SOCK_OPS_RX_TIMESTAMPING_OPT_CB_FLAG);
-		break;
-	case BPF_SOCK_OPS_TS_SCHED_OPT_CB:
-	case BPF_SOCK_OPS_TS_SW_OPT_CB:
-	case BPF_SOCK_OPS_TS_ACK_OPT_CB:
-		dport = bpf_ntohl(skops->remote_port);
-		sport = skops->local_port;
-		bpf_printk("tx: port: %u:%u, key: %u, timestamp: %u,%u\n",
-			    sport, dport, skops->args[0], skops->args[1], skops->args[2]);
-		break;
-	case BPF_SOCK_OPS_TS_RX_OPT_CB:
-		dport = bpf_ntohl(skops->remote_port);
-		sport = skops->local_port;
-		bpf_printk("rx: port: %u:%u, swtimestamp: %u,%u, hwtimestamp: %u,%u\n",
-			   sport, dport, skops->args[0], skops->args[1], skops->args[2], skops->args[3]);
-		break;
-	}
-	return 1;
-}
-
-
-Jason Xing (12):
-  net-timestamp: introduce socket tsflag requestors
-  net-timestamp: open gate for bpf_setsockopt
-  net-timestamp: reorganize in skb_tstamp_tx_output()
-  net-timestamp: add static key to control the whole bpf extension
-  net-timestamp: add bpf infrastructure to allow exposing timestamp
-    later
-  net-timestamp: introduce TS_SCHED_OPT_CB to generate dev xmit
-    timestamp
-  net-timestamp: introduce TS_SW_OPT_CB to generate driver timestamp
-  net-timestamp: introduce TS_ACK_OPT_CB to generate tcp acked timestamp
-  net-timestamp: add tx OPT_ID_TCP support for bpf case
-  net-timestamp: make bpf for tx timestamp work
-  net-timestamp: add bpf framework for rx timestamps
-  net-timestamp: add bpf support for rx software/hardware timestamp
-
- include/linux/tcp.h            |   2 +-
- include/net/ip.h               |   2 +-
- include/net/sock.h             |  19 ++++--
- include/net/tcp.h              |  16 +++++-
- include/uapi/linux/bpf.h       |  28 ++++++++-
- net/can/j1939/socket.c         |   2 +-
- net/core/filter.c              |  39 +++++++++++++
- net/core/skbuff.c              | 102 ++++++++++++++++++++++++++++++---
- net/core/sock.c                |  68 +++++++++++++++-------
- net/ipv4/ip_output.c           |   2 +-
- net/ipv4/ip_sockglue.c         |   2 +-
- net/ipv4/tcp.c                 |  60 ++++++++++++++++++-
- net/ipv6/ip6_output.c          |   2 +-
- net/ipv6/ping.c                |   2 +-
- net/ipv6/raw.c                 |   2 +-
- net/ipv6/udp.c                 |   2 +-
- net/sctp/socket.c              |   2 +-
- net/socket.c                   |   4 +-
- tools/include/uapi/linux/bpf.h |  28 ++++++++-
- 19 files changed, 333 insertions(+), 51 deletions(-)
-
+diff --git a/include/net/ip.h b/include/net/ip.h
+index bab084df1567..b0a836aebc33 100644
+--- a/include/net/ip.h
++++ b/include/net/ip.h
+@@ -96,7 +96,7 @@ static inline void ipcm_init_sk(struct ipcm_cookie *ipcm,
+ 	ipcm_init(ipcm);
+ 
+ 	ipcm->sockc.mark = READ_ONCE(inet->sk.sk_mark);
+-	ipcm->sockc.tsflags = READ_ONCE(inet->sk.sk_tsflags);
++	ipcm->sockc.tsflags = READ_ONCE(inet->sk.sk_tsflags[SOCKETOPT_TS_REQUESTOR]);
+ 	ipcm->oif = READ_ONCE(inet->sk.sk_bound_dev_if);
+ 	ipcm->addr = inet->inet_saddr;
+ 	ipcm->protocol = inet->inet_num;
+diff --git a/include/net/sock.h b/include/net/sock.h
+index b32f1424ecc5..8cf278c957b3 100644
+--- a/include/net/sock.h
++++ b/include/net/sock.h
+@@ -234,6 +234,13 @@ struct sock_common {
+ struct bpf_local_storage;
+ struct sk_filter;
+ 
++enum {
++	SOCKETOPT_TS_REQUESTOR = 0,
++	BPFPROG_TS_REQUESTOR,
++
++	__MAX_TS_REQUESTOR,
++};
++
+ /**
+   *	struct sock - network layer representation of sockets
+   *	@__sk_common: shared layout with inet_timewait_sock
+@@ -444,7 +451,7 @@ struct sock {
+ 	socket_lock_t		sk_lock;
+ 	u32			sk_reserved_mem;
+ 	int			sk_forward_alloc;
+-	u32			sk_tsflags;
++	u32			sk_tsflags[__MAX_TS_REQUESTOR];
+ 	__cacheline_group_end(sock_write_rxtx);
+ 
+ 	__cacheline_group_begin(sock_write_tx);
+@@ -1809,7 +1816,7 @@ static inline void sockcm_init(struct sockcm_cookie *sockc,
+ 			       const struct sock *sk)
+ {
+ 	*sockc = (struct sockcm_cookie) {
+-		.tsflags = READ_ONCE(sk->sk_tsflags)
++		.tsflags = READ_ONCE(sk->sk_tsflags[SOCKETOPT_TS_REQUESTOR])
+ 	};
+ }
+ 
+@@ -2617,7 +2624,7 @@ static inline void
+ sock_recv_timestamp(struct msghdr *msg, struct sock *sk, struct sk_buff *skb)
+ {
+ 	struct skb_shared_hwtstamps *hwtstamps = skb_hwtstamps(skb);
+-	u32 tsflags = READ_ONCE(sk->sk_tsflags);
++	u32 tsflags = READ_ONCE(sk->sk_tsflags[SOCKETOPT_TS_REQUESTOR]);
+ 	ktime_t kt = skb->tstamp;
+ 	/*
+ 	 * generate control messages if
+@@ -2652,7 +2659,7 @@ static inline void sock_recv_cmsgs(struct msghdr *msg, struct sock *sk,
+ 			   SOF_TIMESTAMPING_RAW_HARDWARE)
+ 
+ 	if (sk->sk_flags & FLAGS_RECV_CMSGS ||
+-	    READ_ONCE(sk->sk_tsflags) & TSFLAGS_ANY)
++	    READ_ONCE(sk->sk_tsflags[SOCKETOPT_TS_REQUESTOR]) & TSFLAGS_ANY)
+ 		__sock_recv_cmsgs(msg, sk, skb);
+ 	else if (unlikely(sock_flag(sk, SOCK_TIMESTAMP)))
+ 		sock_write_timestamp(sk, skb->tstamp);
+diff --git a/net/can/j1939/socket.c b/net/can/j1939/socket.c
+index 305dd72c844c..8f5799930a93 100644
+--- a/net/can/j1939/socket.c
++++ b/net/can/j1939/socket.c
+@@ -996,7 +996,7 @@ static void __j1939_sk_errqueue(struct j1939_session *session, struct sock *sk,
+ 	if (!(jsk->state & J1939_SOCK_ERRQUEUE))
+ 		return;
+ 
+-	tsflags = READ_ONCE(sk->sk_tsflags);
++	tsflags = READ_ONCE(sk->sk_tsflags[SOCKETOPT_TS_REQUESTOR]);
+ 	switch (type) {
+ 	case J1939_ERRQUEUE_TX_ACK:
+ 		if (!(tsflags & SOF_TIMESTAMPING_TX_ACK))
+diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+index 00afeb90c23a..ab0a59f1e14d 100644
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -5490,7 +5490,8 @@ static void __skb_complete_tx_timestamp(struct sk_buff *skb,
+ 	serr->ee.ee_info = tstype;
+ 	serr->opt_stats = opt_stats;
+ 	serr->header.h4.iif = skb->dev ? skb->dev->ifindex : 0;
+-	if (READ_ONCE(sk->sk_tsflags) & SOF_TIMESTAMPING_OPT_ID) {
++	if (READ_ONCE(sk->sk_tsflags[SOCKETOPT_TS_REQUESTOR]) &
++	    SOF_TIMESTAMPING_OPT_ID) {
+ 		serr->ee.ee_data = skb_shinfo(skb)->tskey;
+ 		if (sk_is_tcp(sk))
+ 			serr->ee.ee_data -= atomic_read(&sk->sk_tskey);
+@@ -5551,7 +5552,7 @@ void __skb_tstamp_tx(struct sk_buff *orig_skb,
+ 	if (!sk)
+ 		return;
+ 
+-	tsflags = READ_ONCE(sk->sk_tsflags);
++	tsflags = READ_ONCE(sk->sk_tsflags[SOCKETOPT_TS_REQUESTOR]);
+ 	if (!hwtstamps && !(tsflags & SOF_TIMESTAMPING_OPT_TX_SWHW) &&
+ 	    skb_shinfo(orig_skb)->tx_flags & SKBTX_IN_PROGRESS)
+ 		return;
+diff --git a/net/core/sock.c b/net/core/sock.c
+index 083d438d8b6f..52c8c5a5ba27 100644
+--- a/net/core/sock.c
++++ b/net/core/sock.c
+@@ -908,7 +908,7 @@ int sock_set_timestamping(struct sock *sk, int optname,
+ 		return -EINVAL;
+ 
+ 	if (val & SOF_TIMESTAMPING_OPT_ID &&
+-	    !(sk->sk_tsflags & SOF_TIMESTAMPING_OPT_ID)) {
++	    !(sk->sk_tsflags[SOCKETOPT_TS_REQUESTOR] & SOF_TIMESTAMPING_OPT_ID)) {
+ 		if (sk_is_tcp(sk)) {
+ 			if ((1 << sk->sk_state) &
+ 			    (TCPF_CLOSE | TCPF_LISTEN))
+@@ -932,7 +932,7 @@ int sock_set_timestamping(struct sock *sk, int optname,
+ 			return ret;
+ 	}
+ 
+-	WRITE_ONCE(sk->sk_tsflags, val);
++	WRITE_ONCE(sk->sk_tsflags[SOCKETOPT_TS_REQUESTOR], val);
+ 	sock_valbool_flag(sk, SOCK_TSTAMP_NEW, optname == SO_TIMESTAMPING_NEW);
+ 
+ 	if (val & SOF_TIMESTAMPING_RX_SOFTWARE)
+@@ -1797,7 +1797,7 @@ int sk_getsockopt(struct sock *sk, int level, int optname,
+ 		 * Don't change the beviour for the old case SO_TIMESTAMPING_OLD.
+ 		 */
+ 		if (optname == SO_TIMESTAMPING_OLD || sock_flag(sk, SOCK_TSTAMP_NEW)) {
+-			v.timestamping.flags = READ_ONCE(sk->sk_tsflags);
++			v.timestamping.flags = READ_ONCE(sk->sk_tsflags[SOCKETOPT_TS_REQUESTOR]);
+ 			v.timestamping.bind_phc = READ_ONCE(sk->sk_bind_phc);
+ 		}
+ 		break;
+@@ -2930,7 +2930,7 @@ int __sock_cmsg_send(struct sock *sk, struct cmsghdr *cmsg,
+ 	case SCM_TS_OPT_ID:
+ 		if (sk_is_tcp(sk))
+ 			return -EINVAL;
+-		tsflags = READ_ONCE(sk->sk_tsflags);
++		tsflags = READ_ONCE(sk->sk_tsflags[SOCKETOPT_TS_REQUESTOR]);
+ 		if (!(tsflags & SOF_TIMESTAMPING_OPT_ID))
+ 			return -EINVAL;
+ 		if (cmsg->cmsg_len != CMSG_LEN(sizeof(u32)))
+diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
+index e5c55a95063d..ded504458d5d 100644
+--- a/net/ipv4/ip_output.c
++++ b/net/ipv4/ip_output.c
+@@ -1050,7 +1050,7 @@ static int __ip_append_data(struct sock *sk,
+ 	cork->length += length;
+ 
+ 	if (cork->tx_flags & SKBTX_ANY_TSTAMP &&
+-	    READ_ONCE(sk->sk_tsflags) & SOF_TIMESTAMPING_OPT_ID) {
++	    READ_ONCE(sk->sk_tsflags[SOCKETOPT_TS_REQUESTOR]) & SOF_TIMESTAMPING_OPT_ID) {
+ 		if (cork->flags & IPCORK_TS_OPT_ID) {
+ 			tskey = cork->ts_opt_id;
+ 		} else {
+diff --git a/net/ipv4/ip_sockglue.c b/net/ipv4/ip_sockglue.c
+index cf377377b52d..fac8f593c43a 100644
+--- a/net/ipv4/ip_sockglue.c
++++ b/net/ipv4/ip_sockglue.c
+@@ -509,7 +509,7 @@ static bool ipv4_datagram_support_cmsg(const struct sock *sk,
+ 	 * or without payload (SOF_TIMESTAMPING_OPT_TSONLY).
+ 	 */
+ 	info = PKTINFO_SKB_CB(skb);
+-	if (!(READ_ONCE(sk->sk_tsflags) & SOF_TIMESTAMPING_OPT_CMSG) ||
++	if (!(READ_ONCE(sk->sk_tsflags[SOCKETOPT_TS_REQUESTOR]) & SOF_TIMESTAMPING_OPT_CMSG) ||
+ 	    !info->ipi_ifindex)
+ 		return false;
+ 
+diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
+index 82cc4a5633ce..6c8968eb4427 100644
+--- a/net/ipv4/tcp.c
++++ b/net/ipv4/tcp.c
+@@ -2245,7 +2245,7 @@ void tcp_recv_timestamp(struct msghdr *msg, const struct sock *sk,
+ 			struct scm_timestamping_internal *tss)
+ {
+ 	int new_tstamp = sock_flag(sk, SOCK_TSTAMP_NEW);
+-	u32 tsflags = READ_ONCE(sk->sk_tsflags);
++	u32 tsflags = READ_ONCE(sk->sk_tsflags[SOCKETOPT_TS_REQUESTOR]);
+ 	bool has_timestamping = false;
+ 
+ 	if (tss->ts[0].tv_sec || tss->ts[0].tv_nsec) {
+diff --git a/net/ipv6/ip6_output.c b/net/ipv6/ip6_output.c
+index 205673179b3c..c983e0ca6f72 100644
+--- a/net/ipv6/ip6_output.c
++++ b/net/ipv6/ip6_output.c
+@@ -1547,7 +1547,7 @@ static int __ip6_append_data(struct sock *sk,
+ 	}
+ 
+ 	if (cork->tx_flags & SKBTX_ANY_TSTAMP &&
+-	    READ_ONCE(sk->sk_tsflags) & SOF_TIMESTAMPING_OPT_ID) {
++	    READ_ONCE(sk->sk_tsflags[SOCKETOPT_TS_REQUESTOR]) & SOF_TIMESTAMPING_OPT_ID) {
+ 		if (cork->flags & IPCORK_TS_OPT_ID) {
+ 			tskey = cork->ts_opt_id;
+ 		} else {
+diff --git a/net/ipv6/ping.c b/net/ipv6/ping.c
+index 88b3fcacd4f9..0080b7c3a475 100644
+--- a/net/ipv6/ping.c
++++ b/net/ipv6/ping.c
+@@ -119,7 +119,7 @@ static int ping_v6_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
+ 		return -EINVAL;
+ 
+ 	ipcm6_init_sk(&ipc6, sk);
+-	ipc6.sockc.tsflags = READ_ONCE(sk->sk_tsflags);
++	ipc6.sockc.tsflags = READ_ONCE(sk->sk_tsflags[SOCKETOPT_TS_REQUESTOR]);
+ 	ipc6.sockc.mark = READ_ONCE(sk->sk_mark);
+ 
+ 	fl6.flowi6_oif = oif;
+diff --git a/net/ipv6/raw.c b/net/ipv6/raw.c
+index 8476a3944a88..cd02aa02d813 100644
+--- a/net/ipv6/raw.c
++++ b/net/ipv6/raw.c
+@@ -778,7 +778,7 @@ static int rawv6_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
+ 	fl6.flowi6_uid = sk->sk_uid;
+ 
+ 	ipcm6_init(&ipc6);
+-	ipc6.sockc.tsflags = READ_ONCE(sk->sk_tsflags);
++	ipc6.sockc.tsflags = READ_ONCE(sk->sk_tsflags[SOCKETOPT_TS_REQUESTOR]);
+ 	ipc6.sockc.mark = fl6.flowi6_mark;
+ 
+ 	if (sin6) {
+diff --git a/net/ipv6/udp.c b/net/ipv6/udp.c
+index 52dfbb2ff1a8..008cc0282338 100644
+--- a/net/ipv6/udp.c
++++ b/net/ipv6/udp.c
+@@ -1349,7 +1349,7 @@ int udpv6_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
+ 
+ 	ipcm6_init(&ipc6);
+ 	ipc6.gso_size = READ_ONCE(up->gso_size);
+-	ipc6.sockc.tsflags = READ_ONCE(sk->sk_tsflags);
++	ipc6.sockc.tsflags = READ_ONCE(sk->sk_tsflags[SOCKETOPT_TS_REQUESTOR]);
+ 	ipc6.sockc.mark = READ_ONCE(sk->sk_mark);
+ 
+ 	/* destination address check */
+diff --git a/net/sctp/socket.c b/net/sctp/socket.c
+index 078bcb3858c7..f66f21d6363e 100644
+--- a/net/sctp/socket.c
++++ b/net/sctp/socket.c
+@@ -9463,7 +9463,7 @@ void sctp_copy_sock(struct sock *newsk, struct sock *sk,
+ 	newsk->sk_type = sk->sk_type;
+ 	newsk->sk_bound_dev_if = sk->sk_bound_dev_if;
+ 	newsk->sk_flags = sk->sk_flags;
+-	newsk->sk_tsflags = sk->sk_tsflags;
++	memcpy(newsk->sk_tsflags, sk->sk_tsflags, sizeof(u32) * __MAX_TS_REQUESTOR);
+ 	newsk->sk_no_check_tx = sk->sk_no_check_tx;
+ 	newsk->sk_no_check_rx = sk->sk_no_check_rx;
+ 	newsk->sk_reuse = sk->sk_reuse;
+diff --git a/net/socket.c b/net/socket.c
+index 3b1b65b9f471..24619a27909a 100644
+--- a/net/socket.c
++++ b/net/socket.c
+@@ -845,7 +845,7 @@ static bool skb_is_swtx_tstamp(const struct sk_buff *skb, int false_tstamp)
+ 
+ static ktime_t get_timestamp(struct sock *sk, struct sk_buff *skb, int *if_index)
+ {
+-	bool cycles = READ_ONCE(sk->sk_tsflags) & SOF_TIMESTAMPING_BIND_PHC;
++	bool cycles = READ_ONCE(sk->sk_tsflags[SOCKETOPT_TS_REQUESTOR]) & SOF_TIMESTAMPING_BIND_PHC;
+ 	struct skb_shared_hwtstamps *shhwtstamps = skb_hwtstamps(skb);
+ 	struct net_device *orig_dev;
+ 	ktime_t hwtstamp;
+@@ -944,7 +944,7 @@ void __sock_recv_timestamp(struct msghdr *msg, struct sock *sk,
+ 	}
+ 
+ 	memset(&tss, 0, sizeof(tss));
+-	tsflags = READ_ONCE(sk->sk_tsflags);
++	tsflags = READ_ONCE(sk->sk_tsflags[SOCKETOPT_TS_REQUESTOR]);
+ 	if ((tsflags & SOF_TIMESTAMPING_SOFTWARE &&
+ 	     (tsflags & SOF_TIMESTAMPING_RX_SOFTWARE ||
+ 	      skb_is_err_queue(skb) ||
 -- 
 2.37.3
 
