@@ -1,164 +1,140 @@
-Return-Path: <bpf+bounces-41815-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41816-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B41899B677
-	for <lists+bpf@lfdr.de>; Sat, 12 Oct 2024 19:48:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3712199B6FB
+	for <lists+bpf@lfdr.de>; Sat, 12 Oct 2024 22:37:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 22447B2222E
-	for <lists+bpf@lfdr.de>; Sat, 12 Oct 2024 17:48:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 95D06B21633
+	for <lists+bpf@lfdr.de>; Sat, 12 Oct 2024 20:37:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AA5683CD2;
-	Sat, 12 Oct 2024 17:48:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A361199936;
+	Sat, 12 Oct 2024 20:37:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RlmSeiLk"
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="HjCXNvdY"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qv1-f51.google.com (mail-qv1-f51.google.com [209.85.219.51])
+Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78DEE1B969;
-	Sat, 12 Oct 2024 17:48:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DC8F1946B
+	for <bpf@vger.kernel.org>; Sat, 12 Oct 2024 20:37:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728755325; cv=none; b=T5HlGwCh3N4e6M0X7+Ucr6JpXKRdqdqSHNxa6juTNu3S//aXjnPvAuFSLIW94nJLKyOlru8RS6CQR7P8gU9HhCplvQ3fcQmMpCmLhVIV0oR2hl2vPBhp0AYEHz0CObSjwybNWKDGT8xY+x9Jr9VPc/uBuq/9b13fej30ZttXL6k=
+	t=1728765472; cv=none; b=eW1fQWQM0U5iG7aCdybgBU/7dD81se90h4w+ZX4iwfywjSTJ/0rMio7+lgXWMLGE/aQtA0D/+n5xwPkZx8lKmxq2hGc6sIMpMbhE9w7BW1oFAuwO1W2WEx8/xx+HfTdMKiwvlef1iK9RE7uLuPBErIxYEmxAJGsfHgUv1pWMFS8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728755325; c=relaxed/simple;
-	bh=VTfx7Uk9PaF7UtcttPlgvvk1DYt1FLeAGPgqQXgkIxI=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=Ef92/GYszoywbP2zMdh3/Ym4508fFBhmLkXX68oEd3I/pQ/nZQmMr3hyyp5Ms06/wVA2cFfzs+ZTF3RfLKU2JaN6pHRcsdRSuIEHsVsxGyi80n/HUSQvqMPqHkCMRUHjiIDU+pIhFZLJn7SQzdMU7q8cONRNYB4xxkB1QeN31os=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RlmSeiLk; arc=none smtp.client-ip=209.85.219.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f51.google.com with SMTP id 6a1803df08f44-6cbd00dd21cso19518286d6.3;
-        Sat, 12 Oct 2024 10:48:43 -0700 (PDT)
+	s=arc-20240116; t=1728765472; c=relaxed/simple;
+	bh=OJDp/ElrNd5TUco4e6r3U67rfQ4f4yoey7hT0mMEFF0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=QvkhgqFUiOAZYwKRTiXQba1jGnsQjSS+PhcbYZ+9nylIIUJNGgk9hcTHX4MVc0WBtk2ZcOWgFN7K/4zZ12yJJyQUNjMEM5IVRlb5pYJthSVNnIMF+F+ztUgVCawaVCfLMmeJXIwqUFKOwxF21Tq/3oinewBtNcwSdBm1y8+vm0U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=HjCXNvdY; arc=none smtp.client-ip=209.85.160.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-4603d3e4552so34369531cf.1
+        for <bpf@vger.kernel.org>; Sat, 12 Oct 2024 13:37:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1728755322; x=1729360122; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lCemlVGHWxeIwUi+jORfMBc/BsMvf5hfU/geTs8i18c=;
-        b=RlmSeiLkcAb7xsb+mJVJoviXsgRF4qBGaLBcRnwGEiYMPZ1WzFH/yoR10UGvzWCqVs
-         9KJW/qlKuM1qVeuxD0EoUivC1NSBJGM77ueUV1Qk/GNi1TWM1taXmkbh3/26iKBgiHxT
-         oK9jcHhJ6BA9dQ1rJSqhlCbyX6Sx+oCp5mhgOkcQkiElUmIQEGXmW/0yKlmY2OlDWxUb
-         3dgJbUpjm+foHOTEZDL3Nc6nrhUC7avKwk+rjUcCRKPHOVR9DqX8/fl88NTkNWhfWK0V
-         DNNXzzprDEFCq3tFGporQLmYU8E2rp+kJxQWFp7NdKms4vmF+yR540vvqDALHG9niWHB
-         3Uhw==
+        d=bytedance.com; s=google; t=1728765469; x=1729370269; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ntaEw7Yozyg4T8OmZFfodtpgSQ8y96VMsKVsEBE/u3E=;
+        b=HjCXNvdY9kHwGCiC9kqFBqrf4+bDdkdFz1JimkXCcnoNgptPQspyzyoPHL3xBtCMwh
+         LrShZlxWGmgZtXjEedQ3nTsOpi2btGz0RnVsmLZlNPPj/VU7ELb+tbunXyuYmyrXqQHn
+         6mPTCKKOEgRsiY2mExwpJxuMUXJpwqlrYf6AkOfGrxINnhexvcZqUlJDdYh4xuuGsoGl
+         uA/4oHQYi934ji45OCrB9p2I/bVfJlFVaxk3Oakk+tuYESnm+KBM8YxkaoijRAwQmc+Q
+         lSMXMj9Ft57fa3daCD3kUuEPjZIE87ifA16UD8kWRwldUjXx9MrSG0eUPhpC87TMxJW4
+         7bnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728755322; x=1729360122;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=lCemlVGHWxeIwUi+jORfMBc/BsMvf5hfU/geTs8i18c=;
-        b=hqAruD+MevKWojHteSq8jvd5s7Ql/jZBZFjWMczB/imgPWTZG6fh+Yj4xxRXQlqKpi
-         4Q5kRiJw/RifXtMRkHfDFUCjnyYaDAagx6ve1Nb3qUwT0kwPBrfxYXTPiKffnc7nYWiw
-         f2Ygf5bCcQOBc/0kWY/dAlgkFx6qfGN4lkF/w7bvx0CO1vAnRN/lPCCa3vm+NItOYfS+
-         NOE6lbjTXWzUwWMbTtM8m5pp410Xj3K4oa1kHrVKUeUi5+BfZtArBN/jQvXggS+pUAKE
-         MmeHjTSUI4SpfB8qbeuNmZDENDxLG0fUnb/kgRQT/rSsmO5FUOdqYQ4Ds5MvGZUjz1cu
-         pdew==
-X-Forwarded-Encrypted: i=1; AJvYcCV3hmzN3p6T9m+BSMrXjfaK2vUVWNXzK+F1XuunWUj2M2rJNmeg44nPAZBjYT6Lkv+6mJy1EiY=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyge8uemGfdp+cgb3TipQX3UcxnRZ02sj12cwVz03EftowUY3LI
-	6gDtUtSgQE2JHjPN9b4pALOMnvS+elyh2OVfQO3BqyLqvF4v07LB
-X-Google-Smtp-Source: AGHT+IGACFl+mZBgLlxYveWQnVc0uH8W6TyWf2/bRKnBU4yLLVRsn6mmCbTTyhEf4n7IqDNgZq5GoA==
-X-Received: by 2002:a05:6214:3d8d:b0:6cb:f744:e3f1 with SMTP id 6a1803df08f44-6cbf744e729mr53158716d6.4.1728755322264;
-        Sat, 12 Oct 2024 10:48:42 -0700 (PDT)
-Received: from localhost (86.235.150.34.bc.googleusercontent.com. [34.150.235.86])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6cbe8608d68sm27045746d6.94.2024.10.12.10.48.41
+        d=1e100.net; s=20230601; t=1728765469; x=1729370269;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ntaEw7Yozyg4T8OmZFfodtpgSQ8y96VMsKVsEBE/u3E=;
+        b=T6uO0bmcbPlhyWgOOE3Gd2Finiqk0XlFVhL9KfJ3fKzP5ZsGfdeNnyuBrc81+klMhF
+         AWP6G+UBJ4IDGeYr8jczKIwjw2Ky3a6vRekR6Fw185DdU/1r4kUdN/qy+zv6h4/yH1ik
+         FmFrezKT51/WuBXQ4ZlbccsJXmkFJe3Pit48pltzdgxkJR8kqpFt/r25tP4Y7g5tLSOQ
+         uQ6Ohn3hFo6ebESPoFCdZFCSaH8bBFR5/046invQIHc27edDapQJyeMZOzWtA8VfrqcE
+         c0Sg561UnKabQFCJRs6zlldAc9d3Blhqf++C54bBIcTtWnN+es+Ye2NQuXR3HVbjyAe5
+         lrEg==
+X-Gm-Message-State: AOJu0YwwR2cVxRu8YZVJBkDY7L+wzfuOYhM0TUPA/cxOKI1ZiN5UXCFR
+	8ADSDr+jwmXYlnhCU1plTS4N4YWVMh+9et+cXYeRJxACfUGRhutRGcfqOIQ4wnnKj8GVnszS+dD
+	o
+X-Google-Smtp-Source: AGHT+IGQ5vzSuV1QHgpMWJEsx7dDTzwq5OL+PwTiBNS3Y4H0iCcSA8172odnvPOFJ/0DcJXgtJzlSg==
+X-Received: by 2002:a05:622a:53c5:b0:45d:aa0c:2e12 with SMTP id d75a77b69052e-460584b5010mr63614331cf.39.1728765469017;
+        Sat, 12 Oct 2024 13:37:49 -0700 (PDT)
+Received: from n191-036-066.byted.org ([130.44.212.101])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-460427895fdsm27803371cf.16.2024.10.12.13.37.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 12 Oct 2024 10:48:41 -0700 (PDT)
-Date: Sat, 12 Oct 2024 13:48:41 -0400
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: Jason Xing <kerneljasonxing@gmail.com>, 
- davem@davemloft.net, 
- edumazet@google.com, 
- kuba@kernel.org, 
- pabeni@redhat.com, 
- dsahern@kernel.org, 
- willemdebruijn.kernel@gmail.com, 
- willemb@google.com, 
- ast@kernel.org, 
- daniel@iogearbox.net, 
- andrii@kernel.org, 
- martin.lau@linux.dev, 
- eddyz87@gmail.com, 
- song@kernel.org, 
- yonghong.song@linux.dev, 
- john.fastabend@gmail.com, 
- kpsingh@kernel.org, 
- sdf@fomichev.me, 
- haoluo@google.com, 
- jolsa@kernel.org
-Cc: bpf@vger.kernel.org, 
- netdev@vger.kernel.org, 
- Jason Xing <kernelxing@tencent.com>
-Message-ID: <670ab67920184_2737bf29465@willemb.c.googlers.com.notmuch>
-In-Reply-To: <20241012040651.95616-1-kerneljasonxing@gmail.com>
-References: <20241012040651.95616-1-kerneljasonxing@gmail.com>
-Subject: Re: [PATCH net-next v2 00/12] net-timestamp: bpf extension to equip
- applications transparently
+        Sat, 12 Oct 2024 13:37:48 -0700 (PDT)
+From: zijianzhang@bytedance.com
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	mykolal@fb.com,
+	shuah@kernel.org,
+	bhole_prashant_q7@lab.ntt.co.jp,
+	jakub@cloudflare.com,
+	xiyou.wangcong@gmail.com,
+	zijianzhang@bytedance.com
+Subject: [PATCH bpf 0/2] Two fixes for test_sockmap
+Date: Sat, 12 Oct 2024 20:37:29 +0000
+Message-Id: <20241012203731.1248619-1-zijianzhang@bytedance.com>
+X-Mailer: git-send-email 2.20.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-Jason Xing wrote:
-> From: Jason Xing <kernelxing@tencent.com>
-> 
-> A few weeks ago, I planned to extend SO_TIMESTMAMPING feature by using
-> tracepoint to print information (say, tstamp) so that we can
-> transparently equip applications with this feature and require no
-> modification in user side.
-> 
-> Later, we discussed at netconf and agreed that we can use bpf for better
-> extension, which is mainly suggested by John Fastabend and Willem de
-> Bruijn. Many thanks here! So I post this series to see if we have a
-> better solution to extend. My feeling is BPF is a good place to provide
-> a way to add timestamping by administrators, without having to rebuild
-> applications. 
-> 
-> This approach mostly relies on existing SO_TIMESTAMPING feature, users
-> only needs to pass certain flags through bpf_setsocktop() to a separate
-> tsflags. For TX timestamps, they will be printed during generation
-> phase. For RX timestamps, we will wait for the moment when recvmsg() is
-> called.
-> 
-> After this series, we could step by step implement more advanced
-> functions/flags already in SO_TIMESTAMPING feature for bpf extension.
-> 
-> In this series, I only support TCP protocol which is widely used in
-> SO_TIMESTAMPING feature.
-> 
-> ---
-> V2
-> Link: https://lore.kernel.org/all/20241008095109.99918-1-kerneljasonxing@gmail.com/
-> 1. Introduce tsflag requestors so that we are able to extend more in the
-> future. Besides, it enables TX flags for bpf extension feature separately
-> without breaking users. It is suggested by Vadim Fedorenko.
-> 2. introduce a static key to control the whole feature. (Willem)
-> 3. Open the gate of bpf_setsockopt for the SO_TIMESTAMPING feature in
-> some TX/RX cases, not all the cases.
-> 
-> Note:
-> The main concern we've discussion in V1 thread is how to deal with the
-> applications using SO_TIMESTAMPING feature? In this series, I allow both
-> cases to happen at the same time, which indicates that even one
-> applications setting SO_TIMESTAMPING can still be traced through BPF
-> program. Please see patch [04/12].
+From: Zijian Zhang <zijianzhang@bytedance.com>
 
-This revision does not address the main concern.
+Function msg_verify_data should have context of bytes_cnt and k instead of
+assuming they are zero. Otherwise, test_sockmap with data integrity test
+will report some errors. I also fix the logic related to size and index j
 
-An administrator installed BPF program can affect results of a process
-using SO_TIMESTAMPING in ways that break it.
+1/ 6  sockmap::txmsg test passthrough:FAIL
+2/ 6  sockmap::txmsg test redirect:FAIL
+7/12  sockmap::txmsg test apply:FAIL
+10/11  sockmap::txmsg test push_data:FAIL
+11/17  sockmap::txmsg test pull-data:FAIL
+12/ 9  sockmap::txmsg test pop-data:FAIL
+13/ 1  sockmap::txmsg test push/pop data:FAIL
+...
+Pass: 24 Fail: 52
 
-My halfway suggestion was to only enable this if the process has not
-enabled timestamping on a socket, and to hard fail the application if
-it does enable it while BPF timestamping is active. You pushed back,
-entirely reasonably. But if anything we need a stronger method of
-isolation, not just ignore the issue.
+After fixing msg_verify_data, some of the errors are solved, but for push
+pull and pop, we may need more fixes to msg_verify_data, added a TODO
+
+10/11  sockmap::txmsg test push_data:FAIL
+11/17  sockmap::txmsg test pull-data:FAIL
+12/ 9  sockmap::txmsg test pop-data:FAIL
+...
+Pass: 37 Fail: 15
+
+Besides, added a custom errno EDATAINTEGRITY for msg_verify_data, we
+shall not ignore the error in txmsg_cork case, and fixed the txmsg_redir
+in test_txmsg_pull "Test pull + redirect" case.
+
+
+Zijian Zhang (2):
+  selftests/bpf: Fix msg_verify_data in test_sockmap
+  selftests/bpf: Fix txmsg_redir of test_txmsg_pull in test_sockmap
+
+ tools/testing/selftests/bpf/test_sockmap.c | 32 ++++++++++++++--------
+ 1 file changed, 21 insertions(+), 11 deletions(-)
+
+-- 
+2.20.1
+
 
