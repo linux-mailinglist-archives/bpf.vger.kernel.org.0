@@ -1,214 +1,162 @@
-Return-Path: <bpf+bounces-41858-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41859-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67CCF99C89E
-	for <lists+bpf@lfdr.de>; Mon, 14 Oct 2024 13:20:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B010399C938
+	for <lists+bpf@lfdr.de>; Mon, 14 Oct 2024 13:45:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E3A3289588
-	for <lists+bpf@lfdr.de>; Mon, 14 Oct 2024 11:20:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 578281F22B2F
+	for <lists+bpf@lfdr.de>; Mon, 14 Oct 2024 11:45:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5982419C548;
-	Mon, 14 Oct 2024 11:17:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SGg0rs/x"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4C9D19D09E;
+	Mon, 14 Oct 2024 11:45:34 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34085171671
-	for <bpf@vger.kernel.org>; Mon, 14 Oct 2024 11:17:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D4F58F64;
+	Mon, 14 Oct 2024 11:45:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.154
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728904649; cv=none; b=hJMCrj8KEwplU588naaJeA95N33qnw62bpyIH4krQZt3ZfLZmAb8SRp1FCJo4wDLiycVT/roeQ6HOjoOXtYmF+HiRHVUxZ2RHZkMuZ7gRCMCrMCV576GpCy+ZESAfQ/HO4UpLoSerAp0HLDEa6yh8Kv7XBJ1wSvYze2qmzcKPXo=
+	t=1728906334; cv=none; b=DB0z9SM7MGKTi+qdr7DVdmiHc4EYAKxDM7WLkF3NVT2ksb7vWQqS3OSRWreNt9V5ocsXKmjIEgfYncNeT10tDJHvJf+fvKxpEXyyxOjNwEe6i7Wu83aoNW2qPxtKyoFzlLZYvZMX+2JLlrAwmLLSq6NzrE1C6URzCibs4LCN2+o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728904649; c=relaxed/simple;
-	bh=AdrCz5TQyjL368SqkMsGbALovCURVew64GlLWY0THNk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NGfxSOzXdiGFQM6nEHRWeAsFrR+6tHWI7+cgTAScJKzz7VaW+GLrXvxXviq0FSgSmG443OB/TAIVn2GZfdE2L+JB/hL7/iZ0Gi1N/Wr5F3q7tmFYFmUwGbi8Q/ptoN91uoH8gDXuuCJxif1fF2RetZp84W3eKhZDfZC1s8ZNiLk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SGg0rs/x; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1728904645;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2Z20Hm7NvoaOPIqaaBV3dbvsrnKroLLcxG4BMXJ1Npk=;
-	b=SGg0rs/xuv4bpfW5FhvFW4XMzwsadAN7RKEuw6Ak5dYCSgML2IfPf/oalE4ZHokGs+OWIt
-	5WQsrtzQslwaZo5WZJ6N3ArpRWcPIgEKGQ4YYvqOlRxYXhjC6AKVw/pGMZ5+Xh3ViBqh07
-	jN6kEoHAiWPRiOD4+oeGBPJLzeHpPAo=
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
- [209.85.167.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-48-dPjWzQHKO2OqL68P2zs0zA-1; Mon, 14 Oct 2024 07:17:23 -0400
-X-MC-Unique: dPjWzQHKO2OqL68P2zs0zA-1
-Received: by mail-lf1-f72.google.com with SMTP id 2adb3069b0e04-539f7ed336bso501792e87.2
-        for <bpf@vger.kernel.org>; Mon, 14 Oct 2024 04:17:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728904642; x=1729509442;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2Z20Hm7NvoaOPIqaaBV3dbvsrnKroLLcxG4BMXJ1Npk=;
-        b=rSKJWncvar7agnHIthNYo7w+k/9ejWGWsb0aYtX8ee2iY2TMMiCxAd/Y0MIXpDJify
-         Qt0OaB6gwltYkTnjhZswXhjJHa50aqTDI3qMeJLYa2EPkKP5AiNQs4mC3ZnOsLUbMXoI
-         B/78pKnh+CnEIl+a8jmw6YxHzPY2FMU2oGaWZmCvxFkewSXeljHCFxSu5bMbIanaI/FT
-         tubLof7IRBL5flK4uKhWCjOCmqZAovOL/Pi2mFA/Zj5tGKllYpztt1PgVH6esaFbX45C
-         F+sggHgdiwDSz7Dgj1nmj9KowZIt33OA6EjmK1VK0Qy/J/s5y+Q7fBIEMjT+ssfzYQP/
-         wpRw==
-X-Forwarded-Encrypted: i=1; AJvYcCXw51YqcNhz3j0Sef8OwkE3PQ9bALfuh20cWwrce4mYQZlqLajr3/W8No+q9r5qw3quEK4=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzy1HjzZ1mud10gntcnT+WEKCrW+wlfxBff7/kV0ySJVk631Vvk
-	AAECW2Jy84x6Vqszl1+UIvTb+rfTDzn6u6aPiScP822t+Hprl/xzGdVD392zhbeffaTxB4ov0+R
-	3ZE+r/3hVdjHJutEQpsbHdcu+Y7ZbA7wZK6xDQZ/3uvUf9TbM
-X-Received: by 2002:a05:6512:3085:b0:539:f93d:eb3d with SMTP id 2adb3069b0e04-539f93dedf9mr949029e87.46.1728904641722;
-        Mon, 14 Oct 2024 04:17:21 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFbhkyTUng0BBXHiCbt8YBIXjwPpHNKvU13Nia1aMAMxSPrcXkzbeul0nRmdlFmP/GxEZkPHA==
-X-Received: by 2002:a05:6512:3085:b0:539:f93d:eb3d with SMTP id 2adb3069b0e04-539f93dedf9mr948994e87.46.1728904641255;
-        Mon, 14 Oct 2024 04:17:21 -0700 (PDT)
-Received: from [192.168.0.113] (185-219-167-205-static.vivo.cz. [185.219.167.205])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-430ccf1f797sm151207925e9.4.2024.10.14.04.17.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Oct 2024 04:17:20 -0700 (PDT)
-Message-ID: <ba11f117-3ac6-4747-92d5-65a3012e598c@redhat.com>
-Date: Mon, 14 Oct 2024 13:17:19 +0200
+	s=arc-20240116; t=1728906334; c=relaxed/simple;
+	bh=VoLnJvOlLRHecuqbnEsmCdzipd3c3Z0TDF+JCNNRUn8=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=ELtZ2XsxA/Tj7pqNWueYlOY4tKyqtAH9u13SG9wIrwU1KaoopvKiK2P6pogoTyabt2XN7dJ8/gDi6rLy+nPRco7FGdPAh5thQW1ffTYy/X9xetjaUm6+N7s4CXi7EYIPwV6Y8ShR/6MomX9co1ygRYmgcIOfmKw5mwPMKe3A8VE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.154
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.18.186.29])
+	by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4XRvrK36g8z9v7JM;
+	Mon, 14 Oct 2024 19:19:13 +0800 (CST)
+Received: from mail02.huawei.com (unknown [7.182.16.47])
+	by mail.maildlp.com (Postfix) with ESMTP id B168C1405A1;
+	Mon, 14 Oct 2024 19:45:15 +0800 (CST)
+Received: from [127.0.0.1] (unknown [10.204.63.22])
+	by APP1 (Coremail) with SMTP id LxC2BwDXZy9CBA1n8ArVAg--.16371S2;
+	Mon, 14 Oct 2024 12:45:15 +0100 (CET)
+Message-ID: <3ab95195af7db9d2bd482f46a69305f2f386cc32.camel@huaweicloud.com>
+Subject: Re: [PATCH 2/3] ima: Ensure lock is held when setting iint pointer
+ in inode security blob
+From: Roberto Sassu <roberto.sassu@huaweicloud.com>
+To: Mimi Zohar <zohar@linux.ibm.com>, Paul Moore <paul@paul-moore.com>
+Cc: dmitry.kasatkin@gmail.com, eric.snowberg@oracle.com, jmorris@namei.org, 
+	serge@hallyn.com, linux-integrity@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	bpf@vger.kernel.org, ebpqwerty472123@gmail.com, Roberto Sassu
+	 <roberto.sassu@huawei.com>
+Date: Mon, 14 Oct 2024 13:45:02 +0200
+In-Reply-To: <92c528d8848f78869888a746643e1cf2969df62a.camel@linux.ibm.com>
+References: <20241008165732.2603647-1-roberto.sassu@huaweicloud.com>
+	 <20241008165732.2603647-2-roberto.sassu@huaweicloud.com>
+	 <CAHC9VhRkMwLqVFfWMvMOJ6x4UNUK=C_cMVW7Op9icz28MMDYdQ@mail.gmail.com>
+	 <69ed92fde951b20a9b976d48803fe9b5daaa9eea.camel@huaweicloud.com>
+	 <92c528d8848f78869888a746643e1cf2969df62a.camel@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] tools/resolve_btfids: Fix 'variable' may be used
- uninitialized warnings
-To: Eder Zulian <ezulian@redhat.com>, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, acme@redhat.com,
- williams@redhat.com
-References: <20241011200005.1422103-1-ezulian@redhat.com>
-From: Viktor Malik <vmalik@redhat.com>
-Content-Language: en-US
-In-Reply-To: <20241011200005.1422103-1-ezulian@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:LxC2BwDXZy9CBA1n8ArVAg--.16371S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7CFWDuw4DJr1xur45XrWUArb_yoW5JrWfpF
+	Wvg3WUGayUXFW7ur4SqasxZFWSg3yfWFWkWw45Jw1qvFyqvF1jqr48Jr1Uury5Cr4xKw1I
+	vr42ga13uw1qyrJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvjb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
+	AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AF
+	wI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43
+	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+	0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
+	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUF1
+	v3UUUUU
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAQBGcMffgJKQADsY
 
-On 10/11/24 22:00, Eder Zulian wrote:
-> - tools/bpf/resolve_btfids/main.c: Initialize 'set' and 'set8' pointers
->   to NULL in to fix compiler warnings.
-> 
-> - tools/lib/bpf/btf_dump.c: Initialize 'new_off' and 'pad_bits' to 0 and
->   'pad_type' to  NULL to prevent compiler warnings.
-> 
-> - tools/lib/subcmd/parse-options.c: Initiazlide pointer 'o' to NULL
+On Fri, 2024-10-11 at 15:30 -0400, Mimi Zohar wrote:
+> On Wed, 2024-10-09 at 17:43 +0200, Roberto Sassu wrote:
+> > On Wed, 2024-10-09 at 11:41 -0400, Paul Moore wrote:
+> > > On Tue, Oct 8, 2024 at 12:57=E2=80=AFPM Roberto Sassu
+> > > <roberto.sassu@huaweicloud.com> wrote:
+> > > >=20
+> > > > From: Roberto Sassu <roberto.sassu@huawei.com>
+> > > >=20
+> > > > IMA stores a pointer of the ima_iint_cache structure, containing in=
+tegrity
+> > > > metadata, in the inode security blob. However, check and assignment=
+ of this
+> > > > pointer is not atomic, and it might happen that two tasks both see =
+that the
+> > > > iint pointer is NULL and try to set it, causing a memory leak.
+> > > >=20
+> > > > Ensure that the iint check and assignment is guarded, by adding a l=
+ockdep
+> > > > assertion in ima_inode_get().
+> > > >=20
+> > > > Consequently, guard the remaining ima_inode_get() calls, in
+> > > > ima_post_create_tmpfile() and ima_post_path_mknod(), to avoid the l=
+ockdep
+> > > > warnings.
+> > > >=20
+> > > > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> > > > ---
+> > > >  security/integrity/ima/ima_iint.c |  5 +++++
+> > > >  security/integrity/ima/ima_main.c | 14 ++++++++++++--
+> > > >  2 files changed, 17 insertions(+), 2 deletions(-)
+> > > >=20
+> > > > diff --git a/security/integrity/ima/ima_iint.c b/security/integrity=
+/ima/ima_iint.c
+> > > > index c176fd0faae7..fe676ccec32f 100644
+> > > > --- a/security/integrity/ima/ima_iint.c
+> > > > +++ b/security/integrity/ima/ima_iint.c
+> > > > @@ -87,8 +87,13 @@ static void ima_iint_free(struct ima_iint_cache =
+*iint)
+> > > >   */
+> > > >  struct ima_iint_cache *ima_inode_get(struct inode *inode)
+> > > >  {
+> > > > +       struct ima_iint_cache_lock *iint_lock;
+> > > >         struct ima_iint_cache *iint;
+> > > >=20
+> > > > +       iint_lock =3D ima_inode_security(inode->i_security);
+> > > > +       if (iint_lock)
+> > > > +               lockdep_assert_held(&iint_lock->mutex);
+> > > > +
+> > > >         iint =3D ima_iint_find(inode);
+> > > >         if (iint)
+> > > >                 return iint;
+> > >=20
+> > > Can you avoid the ima_iint_find() call here and just do the following=
+?
+> > >=20
+> > >   /* not sure if you need to check !iint_lock or not? */
+> > >   if (!iint_lock)
+> > >     return NULL;
+> > >   iint =3D iint_lock->iint;
+> > >   if (!iint)
+> > >     return NULL;
+> >=20
+> > Yes, I also like it much more.
+>=20
+> Yes, testing iint_lock and then iint_lock->iint should be fine, but the l=
+ogic
+> needs to be inverted.  ima_inode_get() should return the existing iint, i=
+f it
+> exists, or allocate the memory.
 
-Typo: "Initiazlide" -> "Initialize"
+Right, I checked the patches I'm about to send, they do that.
 
->   avoiding a compiler warning.
+Thanks
 
-I think that the three changes should be split into three patches so
-that we don't have one patch touching three different tools.
-
-Then, maintainers can also decide whether they prefer your patch of
-subcmd or the one mentioned in the other thread.
-
-Viktor
-
-> 
-> Tested on x86_64 with clang version 17.0.6 and gcc (GCC) 13.3.1.
-> 
-> $ cd tools/bpf/resolve_btfids
-> $ for c in gcc clang; do \
-> for o in fast g s z $(seq 0 3); do \
-> make clean && \
-> make HOST_CC=${c} "HOSTCFLAGS=-O${o} -Wall" 2>&1 | tee ${c}-O${o}.out; \
-> done; done && grep 'warning:\|error:' *.out
-> 
-> [...]
-> clang-O1.out:main.c:163:9: warning: ‘set8’ may be used uninitialized [-Wmaybe-uninitialized]
-> clang-O1.out:main.c:163:9: warning: ‘set’ may be used uninitialized [-Wmaybe-uninitialized]
-> clang-O2.out:main.c:163:9: warning: ‘set8’ may be used uninitialized [-Wmaybe-uninitialized]
-> clang-O2.out:main.c:163:9: warning: ‘set’ may be used uninitialized [-Wmaybe-uninitialized]
-> clang-O3.out:main.c:163:9: warning: ‘set8’ may be used uninitialized [-Wmaybe-uninitialized]
-> clang-O3.out:main.c:163:9: warning: ‘set’ may be used uninitialized [-Wmaybe-uninitialized]
-> clang-Ofast.out:main.c:163:9: warning: ‘set8’ may be used uninitialized [-Wmaybe-uninitialized]
-> clang-Ofast.out:main.c:163:9: warning: ‘set’ may be used uninitialized [-Wmaybe-uninitialized]
-> clang-Og.out:btf_dump.c:903:42: error: ‘new_off’ may be used uninitialized [-Werror=maybe-uninitialized]
-> clang-Og.out:btf_dump.c:917:25: error: ‘pad_type’ may be used uninitialized [-Werror=maybe-uninitialized]
-> clang-Og.out:btf_dump.c:930:20: error: ‘pad_bits’ may be used uninitialized [-Werror=maybe-uninitialized]
-> clang-Os.out:parse-options.c:832:9: error: ‘o’ may be used uninitialized [-Werror=maybe-uninitialized]
-> clang-Oz.out:parse-options.c:832:9: error: ‘o’ may be used uninitialized [-Werror=maybe-uninitialized]
-> gcc-O1.out:main.c:163:9: warning: ‘set8’ may be used uninitialized [-Wmaybe-uninitialized]
-> gcc-O1.out:main.c:163:9: warning: ‘set’ may be used uninitialized [-Wmaybe-uninitialized]
-> gcc-O2.out:main.c:163:9: warning: ‘set8’ may be used uninitialized [-Wmaybe-uninitialized]
-> gcc-O2.out:main.c:163:9: warning: ‘set’ may be used uninitialized [-Wmaybe-uninitialized]
-> gcc-O3.out:main.c:163:9: warning: ‘set8’ may be used uninitialized [-Wmaybe-uninitialized]
-> gcc-O3.out:main.c:163:9: warning: ‘set’ may be used uninitialized [-Wmaybe-uninitialized]
-> gcc-Ofast.out:main.c:163:9: warning: ‘set8’ may be used uninitialized [-Wmaybe-uninitialized]
-> gcc-Ofast.out:main.c:163:9: warning: ‘set’ may be used uninitialized [-Wmaybe-uninitialized]
-> gcc-Og.out:btf_dump.c:903:42: error: ‘new_off’ may be used uninitialized [-Werror=maybe-uninitialized]
-> gcc-Og.out:btf_dump.c:917:25: error: ‘pad_type’ may be used uninitialized [-Werror=maybe-uninitialized]
-> gcc-Og.out:btf_dump.c:930:20: error: ‘pad_bits’ may be used uninitialized [-Werror=maybe-uninitialized]
-> gcc-Os.out:parse-options.c:832:9: error: ‘o’ may be used uninitialized [-Werror=maybe-uninitialized]
-> gcc-Oz.out:parse-options.c:832:9: error: ‘o’ may be used uninitialized [-Werror=maybe-uninitialized]
-> 
-> The above warnings and/or errors are not observed after applying this
-> patch.
-> 
-> Signed-off-by: Eder Zulian <ezulian@redhat.com>
-> ---
->  tools/bpf/resolve_btfids/main.c  | 4 ++--
->  tools/lib/bpf/btf_dump.c         | 4 ++--
->  tools/lib/subcmd/parse-options.c | 2 +-
->  3 files changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
-> index d54aaa0619df..bd9f960bce3d 100644
-> --- a/tools/bpf/resolve_btfids/main.c
-> +++ b/tools/bpf/resolve_btfids/main.c
-> @@ -679,8 +679,8 @@ static int sets_patch(struct object *obj)
->  
->  	next = rb_first(&obj->sets);
->  	while (next) {
-> -		struct btf_id_set8 *set8;
-> -		struct btf_id_set *set;
-> +		struct btf_id_set8 *set8 = NULL;
-> +		struct btf_id_set *set = NULL;
->  		unsigned long addr, off;
->  		struct btf_id *id;
->  
-> diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
-> index 8440c2c5ad3e..468392f9882d 100644
-> --- a/tools/lib/bpf/btf_dump.c
-> +++ b/tools/lib/bpf/btf_dump.c
-> @@ -867,8 +867,8 @@ static void btf_dump_emit_bit_padding(const struct btf_dump *d,
->  	} pads[] = {
->  		{"long", d->ptr_sz * 8}, {"int", 32}, {"short", 16}, {"char", 8}
->  	};
-> -	int new_off, pad_bits, bits, i;
-> -	const char *pad_type;
-> +	int new_off = 0, pad_bits = 0, bits, i;
-> +	const char *pad_type = NULL;
->  
->  	if (cur_off >= next_off)
->  		return; /* no gap */
-> diff --git a/tools/lib/subcmd/parse-options.c b/tools/lib/subcmd/parse-options.c
-> index eb896d30545b..555d617c1f50 100644
-> --- a/tools/lib/subcmd/parse-options.c
-> +++ b/tools/lib/subcmd/parse-options.c
-> @@ -807,7 +807,7 @@ static int option__cmp(const void *va, const void *vb)
->  static struct option *options__order(const struct option *opts)
->  {
->  	int nr_opts = 0, nr_group = 0, nr_parent = 0, len;
-> -	const struct option *o, *p = opts;
-> +	const struct option *o = NULL, *p = opts;
->  	struct option *opt, *ordered = NULL, *group;
->  
->  	/* flatten the options that have parents */
+Roberto
 
 
