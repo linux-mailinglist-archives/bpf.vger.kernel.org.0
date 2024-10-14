@@ -1,155 +1,238 @@
-Return-Path: <bpf+bounces-41840-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41841-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEF9199BFC4
-	for <lists+bpf@lfdr.de>; Mon, 14 Oct 2024 08:07:36 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 32ECB99BFDE
+	for <lists+bpf@lfdr.de>; Mon, 14 Oct 2024 08:14:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7B66928334D
-	for <lists+bpf@lfdr.de>; Mon, 14 Oct 2024 06:07:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC5091C22299
+	for <lists+bpf@lfdr.de>; Mon, 14 Oct 2024 06:14:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96C2113D62F;
-	Mon, 14 Oct 2024 06:07:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B10213F435;
+	Mon, 14 Oct 2024 06:14:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="PvgrmUaJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA11E33998
-	for <bpf@vger.kernel.org>; Mon, 14 Oct 2024 06:07:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBC8113D52C;
+	Mon, 14 Oct 2024 06:14:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.111
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728886050; cv=none; b=q6vBvmkrlR5CwfYWvKUq45eY0OFS1C45F8V8QpP06hMoqEaLCrNA5tmbPOCoPImlyYTdU6vW3xtME2PhSv6CA2XTp0rfyZbDhghtPHvmvSGZQirvJWgzheNtr/t57eEk9Jh95Ptkno9yvbXaQpngj/6DypW02ZZ03YhwrLX7YLU=
+	t=1728886458; cv=none; b=hEb1dQZo8PdIc3ORl5afOQjoWk9d8GSh60HA1Mb0QH7+BN9k6mpaoYTXLB8klZ1qVmQoT9Dz2u9Ir5l7c8fM3ySPCYDI/fLTsMP1ofnF9N400O+uFRtlbLEKTesqrMRAGpZL8HHUdNcTaR7oq8ZFTnNkOGLjNRXHOSc67D7eLVc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728886050; c=relaxed/simple;
-	bh=rVM3f+e8DUAY/SAHTBIRHsqYfhj23ZEGnIPV6EVppA4=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=qWREtITm2kNzwPkimdBgTLGzF5jys5Eb2hqy5Rxfdn04BUMlM/TgGz9FldXGvloRoD2yZDsCakBWRJsjXdt5gc83Tb3+TkZSaLygbpNDklrNXdQXnS8szNSjw6n/bVhZXqo/ze7vfjGWA5PH+76vKyBAfomfaVsrwzupPQRVTjc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-837f97fcc95so213651439f.3
-        for <bpf@vger.kernel.org>; Sun, 13 Oct 2024 23:07:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728886048; x=1729490848;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=La2ZS7cTpq8ZFy5JLjmB577+h4tJu+TdVzV6UaYHKP4=;
-        b=WzxD8rBhzRf5vRjV92gqXYMexZiqUKTvpAdXDTbsbxbEkt4hWjA15dZtS5G2lFloEw
-         svA0FX2V64KiN6U19G1aHydeTVAa8IbiEmmsJcTn/7TPO+0gAgufDDmoOugS979wf7kt
-         tZ3MUqst9KnpMijSvWXpYOz5ASOLHQII/SvwHQMPWPwCqTZKuS/eseFlMueKRjxIs9yw
-         okB/zwy50Xf6uXdHZ0OTdOwZ1OZBDGN5eISVu2HLVm84qHauwHM7vNKykSaUstPCfgFT
-         i3xTALkTQm//o02HaCDxcFxCV7uqy+P65AfhkhrrloCAOMIRh9BIZfcY1Orv+c75ejHF
-         Rk/g==
-X-Forwarded-Encrypted: i=1; AJvYcCUKljFdXYRHDT0Ap5LVTJSw1+dS+F+55mkWtThCY57jI3ffX45WoutXK/vYgOREgkTdw48=@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywpcfv9NPZ+8ngP1tacjTtihTPieXAic5RPh2y3/mshSNZPshaN
-	Rcvujz/hIRfygwc015lTbiHph+/HjbQPQmw/vX/pYHmWXrhuEEXlaKHD30sit+SKcz6k9MiG5PA
-	9DewwiJynktpiBiyy0wbecWJeOi2PLpQvUxXYCL1qFwKxdnVE2+VBiVE=
-X-Google-Smtp-Source: AGHT+IHKBuQFlMiLYh11Hx/Rf7z8ZA3zD9cUDj0yeQ6Gq3rhH2SyoLWZ1w9INhjy81LWJEmDls/KmisD0xs5R7bwGXY+8JyFf2RW
+	s=arc-20240116; t=1728886458; c=relaxed/simple;
+	bh=0I6q0RXWYl3CfYeMQZG/RbQXhAbvyEqiQ6TLRtcvLgo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=F3wqxYxlWshFGTmXd/K/uX6mM5TOHX/XEnMVb58BvCseSS51ZJ0G9qcxW8fT09UNOmefMxWSn4JxjqRFuxZR4rcp8AfaKoETQWuPZR5F+a47OGtQk96DKI8XmZGGz4Iq1kELHzwEetnT6Ccj7X/xSUaU4mE9TQyhypMQdkMsBT0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=PvgrmUaJ; arc=none smtp.client-ip=115.124.30.111
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1728886447; h=From:To:Subject:Date:Message-ID:MIME-Version;
+	bh=kuOk6VNtCy1cil48KKKKPf011VAsMAlE57DQIEAV+zk=;
+	b=PvgrmUaJasTnObz3nNJytUKcIjJzPGpS8FH+amBVJ4X6hpV+ipzDifkOnz95JasTdw1b/+iRJlo93bL1gKEwQyW1lL7itB0ornTZ4TkdTs/sy1ik415zoW6Xcjo/M13P3yk3TFC168oQxrc9VdnDYlcXO/Es1oaTKjUPTdsbQFM=
+Received: from localhost(mailfrom:mqaio@linux.alibaba.com fp:SMTPD_---0WH10NNY_1728886446 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Mon, 14 Oct 2024 14:14:06 +0800
+From: Ma Qiao <mqaio@linux.alibaba.com>
+To: linux-trace-kernel@vger.kernel.org,
+	rostedt@goodmis.org,
+	mhiramat@kernel.org
+Cc: mathieu.desnoyers@efficios.com,
+	namhyung.kim@lge.com,
+	oleg@redhat.com,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: [PATCH] uprobe: avoid out-of-bounds memory access of fetching args
+Date: Mon, 14 Oct 2024 14:14:05 +0800
+Message-ID: <20241014061405.3139467-1-mqaio@linux.alibaba.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a92:c265:0:b0:3a3:76c3:fcb0 with SMTP id
- e9e14a558f8ab-3a3bce16c4fmr39353735ab.26.1728886048035; Sun, 13 Oct 2024
- 23:07:28 -0700 (PDT)
-Date: Sun, 13 Oct 2024 23:07:28 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <670cb520.050a0220.4cbc0.0041.GAE@google.com>
-Subject: [syzbot] [bpf?] KCSAN: data-race in __mod_timer / kvfree_call_rcu
-From: syzbot <syzbot+061d370693bdd99f9d34@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
-	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
-	linux-kernel@vger.kernel.org, martin.lau@linux.dev, sdf@fomichev.me, 
-	song@kernel.org, syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hello,
+From: Qiao Ma <mqaio@linux.alibaba.com>
 
-syzbot found the following issue on:
+Uprobe needs to fetch args into a percpu buffer, and then copy to ring
+buffer to avoid non-atomic context problem.
 
-HEAD commit:    5b7c893ed5ed Merge tag 'ntfs3_for_6.12' of https://github...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=148ae327980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a2f7ae2f221e9eae
-dashboard link: https://syzkaller.appspot.com/bug?extid=061d370693bdd99f9d34
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+Sometimes user-space strings, arrays can be very large, but the size of
+percpu buffer is only page size. And store_trace_args() won't check
+whether these data exceeds a single page or not, caused out-of-bounds
+memory access.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+It could be reproduced by following steps:
+1. build kernel with CONFIG_KASAN enabled
+2. save follow program as test.c
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/79bb9e82835a/disk-5b7c893e.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/5931997fd31c/vmlinux-5b7c893e.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/fc8cc3d97b18/bzImage-5b7c893e.xz
+```
+\#include <stdio.h>
+\#include <stdlib.h>
+\#include <string.h>
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+061d370693bdd99f9d34@syzkaller.appspotmail.com
+// If string length large than MAX_STRING_SIZE, the fetch_store_strlen()
+// will return 0, cause __get_data_size() return shorter size, and
+// store_trace_args() will not trigger out-of-bounds access.
+// So make string length less than 4096.
+\#define STRLEN 4093
 
+void generate_string(char *str, int n)
+{
+    int i;
+    for (i = 0; i < n; ++i)
+    {
+        char c = i % 26 + 'a';
+        str[i] = c;
+    }
+    str[n-1] = '\0';
+}
+
+void print_string(char *str)
+{
+    printf("%s\n", str);
+}
+
+int main()
+{
+    char tmp[STRLEN];
+
+    generate_string(tmp, STRLEN);
+    print_string(tmp);
+
+    return 0;
+}
+```
+3. compile program
+`gcc -o test test.c`
+
+4. get the offset of `print_string()`
+```
+objdump -t test | grep -w print_string
+0000000000401199 g     F .text  000000000000001b              print_string
+```
+
+5. configure uprobe with offset 0x1199
+```
+off=0x1199
+
+cd /sys/kernel/debug/tracing/
+echo "p /root/test:${off} arg1=+0(%di):ustring arg2=\$comm arg3=+0(%di):ustring"
+ > uprobe_events
+echo 1 > events/uprobes/enable
+echo 1 > tracing_on
+```
+
+6. run `test`, and kasan will report error.
 ==================================================================
-BUG: KCSAN: data-race in __mod_timer / kvfree_call_rcu
+BUG: KASAN: use-after-free in strncpy_from_user+0x1d6/0x1f0
+Write of size 8 at addr ffff88812311c004 by task test/499CPU: 0 UID: 0 PID: 499 Comm: test Not tainted 6.12.0-rc3+ #18
+Hardware name: Red Hat KVM, BIOS 1.16.0-4.al8 04/01/2014
+Call Trace:
+ <TASK>
+ dump_stack_lvl+0x55/0x70
+ print_address_description.constprop.0+0x27/0x310
+ kasan_report+0x10f/0x120
+ ? strncpy_from_user+0x1d6/0x1f0
+ strncpy_from_user+0x1d6/0x1f0
+ ? rmqueue.constprop.0+0x70d/0x2ad0
+ process_fetch_insn+0xb26/0x1470
+ ? __pfx_process_fetch_insn+0x10/0x10
+ ? _raw_spin_lock+0x85/0xe0
+ ? __pfx__raw_spin_lock+0x10/0x10
+ ? __pte_offset_map+0x1f/0x2d0
+ ? unwind_next_frame+0xc5f/0x1f80
+ ? arch_stack_walk+0x68/0xf0
+ ? is_bpf_text_address+0x23/0x30
+ ? kernel_text_address.part.0+0xbb/0xd0
+ ? __kernel_text_address+0x66/0xb0
+ ? unwind_get_return_address+0x5e/0xa0
+ ? __pfx_stack_trace_consume_entry+0x10/0x10
+ ? arch_stack_walk+0xa2/0xf0
+ ? _raw_spin_lock_irqsave+0x8b/0xf0
+ ? __pfx__raw_spin_lock_irqsave+0x10/0x10
+ ? depot_alloc_stack+0x4c/0x1f0
+ ? _raw_spin_unlock_irqrestore+0xe/0x30
+ ? stack_depot_save_flags+0x35d/0x4f0
+ ? kasan_save_stack+0x34/0x50
+ ? kasan_save_stack+0x24/0x50
+ ? mutex_lock+0x91/0xe0
+ ? __pfx_mutex_lock+0x10/0x10
+ prepare_uprobe_buffer.part.0+0x2cd/0x500
+ uprobe_dispatcher+0x2c3/0x6a0
+ ? __pfx_uprobe_dispatcher+0x10/0x10
+ ? __kasan_slab_alloc+0x4d/0x90
+ handler_chain+0xdd/0x3e0
+ handle_swbp+0x26e/0x3d0
+ ? __pfx_handle_swbp+0x10/0x10
+ ? uprobe_pre_sstep_notifier+0x151/0x1b0
+ irqentry_exit_to_user_mode+0xe2/0x1b0
+ asm_exc_int3+0x39/0x40
+RIP: 0033:0x401199
+Code: 01 c2 0f b6 45 fb 88 02 83 45 fc 01 8b 45 fc 3b 45 e4 7c b7 8b 45 e4 48 98 48 8d 50 ff 48 8b 45 e8 48 01 d0 ce
+RSP: 002b:00007ffdf00576a8 EFLAGS: 00000206
+RAX: 00007ffdf00576b0 RBX: 0000000000000000 RCX: 0000000000000ff2
+RDX: 0000000000000ffc RSI: 0000000000000ffd RDI: 00007ffdf00576b0
+RBP: 00007ffdf00586b0 R08: 00007feb2f9c0d20 R09: 00007feb2f9c0d20
+R10: 0000000000000001 R11: 0000000000000202 R12: 0000000000401040
+R13: 00007ffdf0058780 R14: 0000000000000000 R15: 0000000000000000
+ </TASK>
 
-read to 0xffff888237d1cce8 of 8 bytes by task 10149 on cpu 1:
- schedule_delayed_monitor_work kernel/rcu/tree.c:3520 [inline]
- kvfree_call_rcu+0x3b8/0x510 kernel/rcu/tree.c:3839
- trie_update_elem+0x47c/0x620 kernel/bpf/lpm_trie.c:441
- bpf_map_update_value+0x324/0x350 kernel/bpf/syscall.c:203
- generic_map_update_batch+0x401/0x520 kernel/bpf/syscall.c:1849
- bpf_map_do_batch+0x28c/0x3f0 kernel/bpf/syscall.c:5143
- __sys_bpf+0x2e5/0x7a0
- __do_sys_bpf kernel/bpf/syscall.c:5741 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:5739 [inline]
- __x64_sys_bpf+0x43/0x50 kernel/bpf/syscall.c:5739
- x64_sys_call+0x2625/0x2d60 arch/x86/include/generated/asm/syscalls_64.h:322
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xc9/0x1c0 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
+This commit enforces the buffer's maxlen less than a page-size to avoid
+store_trace_args() out-of-memory access.
 
-write to 0xffff888237d1cce8 of 8 bytes by task 56 on cpu 0:
- __mod_timer+0x578/0x7f0 kernel/time/timer.c:1173
- add_timer_global+0x51/0x70 kernel/time/timer.c:1330
- __queue_delayed_work+0x127/0x1a0 kernel/workqueue.c:2523
- queue_delayed_work_on+0xdf/0x190 kernel/workqueue.c:2552
- queue_delayed_work include/linux/workqueue.h:677 [inline]
- schedule_delayed_monitor_work kernel/rcu/tree.c:3525 [inline]
- kfree_rcu_monitor+0x5e8/0x660 kernel/rcu/tree.c:3643
- process_one_work kernel/workqueue.c:3229 [inline]
- process_scheduled_works+0x483/0x9a0 kernel/workqueue.c:3310
- worker_thread+0x51d/0x6f0 kernel/workqueue.c:3391
- kthread+0x1d1/0x210 kernel/kthread.c:389
- ret_from_fork+0x4b/0x60 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
-
-Reported by Kernel Concurrency Sanitizer on:
-CPU: 0 UID: 0 PID: 56 Comm: kworker/u8:4 Not tainted 6.12.0-rc2-syzkaller-00050-g5b7c893ed5ed #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/13/2024
-Workqueue: events_unbound kfree_rcu_monitor
-==================================================================
-bridge0: port 2(bridge_slave_1) entered blocking state
-bridge0: port 2(bridge_slave_1) entered forwarding state
-
-
+Fixes: dcad1a204f72 ("tracing/uprobes: Fetch args before reserving a ring buffer")
+Signed-off-by: Qiao Ma <mqaio@linux.alibaba.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ kernel/trace/trace_probe_tmpl.h | 2 +-
+ kernel/trace/trace_uprobe.c     | 6 ++++++
+ 2 files changed, 7 insertions(+), 1 deletion(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/kernel/trace/trace_probe_tmpl.h b/kernel/trace/trace_probe_tmpl.h
+index 2caf0d2afb322..0338d9468bb4d 100644
+--- a/kernel/trace/trace_probe_tmpl.h
++++ b/kernel/trace/trace_probe_tmpl.h
+@@ -269,7 +269,7 @@ store_trace_args(void *data, struct trace_probe *tp, void *rec, void *edata,
+ 		ret = process_fetch_insn(arg->code, rec, edata, dl, base);
+ 		if (arg->dynamic && likely(ret > 0)) {
+ 			dyndata += ret;
+-			maxlen -= ret;
++			maxlen = max(maxlen - ret, 0);
+ 		}
+ 	}
+ }
+diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
+index c40531d2cbadd..e972855a5a6bf 100644
+--- a/kernel/trace/trace_uprobe.c
++++ b/kernel/trace/trace_uprobe.c
+@@ -875,6 +875,7 @@ struct uprobe_cpu_buffer {
+ };
+ static struct uprobe_cpu_buffer __percpu *uprobe_cpu_buffer;
+ static int uprobe_buffer_refcnt;
++#define MAX_UCB_BUFFER_SIZE PAGE_SIZE
+ 
+ static int uprobe_buffer_init(void)
+ {
+@@ -979,6 +980,11 @@ static struct uprobe_cpu_buffer *prepare_uprobe_buffer(struct trace_uprobe *tu,
+ 	ucb = uprobe_buffer_get();
+ 	ucb->dsize = tu->tp.size + dsize;
+ 
++	if (WARN_ON_ONCE(ucb->dsize > MAX_UCB_BUFFER_SIZE)) {
++		ucb->dsize = MAX_UCB_BUFFER_SIZE;
++		dsize = MAX_UCB_BUFFER_SIZE - tu->tp.size;
++	}
++
+ 	store_trace_args(ucb->buf, &tu->tp, regs, NULL, esize, dsize);
+ 
+ 	*ucbp = ucb;
+-- 
+2.39.3
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
