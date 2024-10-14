@@ -1,68 +1,69 @@
-Return-Path: <bpf+bounces-41861-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41862-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8E5399C9C2
-	for <lists+bpf@lfdr.de>; Mon, 14 Oct 2024 14:12:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C83E899C9C3
+	for <lists+bpf@lfdr.de>; Mon, 14 Oct 2024 14:12:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CF5321C22663
-	for <lists+bpf@lfdr.de>; Mon, 14 Oct 2024 12:12:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EFDFB1C227DD
+	for <lists+bpf@lfdr.de>; Mon, 14 Oct 2024 12:12:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8BBF19F419;
-	Mon, 14 Oct 2024 12:12:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E80819F489;
+	Mon, 14 Oct 2024 12:12:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=siteground.com header.i=@siteground.com header.b="KwlBgHTV"
+	dkim=pass (1024-bit key) header.d=siteground.com header.i=@siteground.com header.b="MN7oRMhm"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C2DE19E806
-	for <bpf@vger.kernel.org>; Mon, 14 Oct 2024 12:12:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10E4819E806
+	for <bpf@vger.kernel.org>; Mon, 14 Oct 2024 12:12:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728907925; cv=none; b=P9m9spyg8A0L2bRgMHK/BEf/ue6oR2TK2CpdmSoTIxoKbuOEVq+cC3alAGoEIrMJ87bnjZmTZCNVMJI++xP/dsWFlErceehx9UUGjuDaI987WgEY267zqRKVZOVRPVTicGE4Nit274PXVCJpgGG47Q58f0noGh2Zj0+Uw4vZNRk=
+	t=1728907928; cv=none; b=mjJ5V+9qD/dN0yvFd4IMn0ekddyOcv2jkFYTxOCYn6L1wC2W5aq4IvrLXiaK79Y8c3zSd+RjUmW3HSN1NeG7/eT/VPDJVXwjZUsi+5DCPHiGOx6WBY7AHUnCPdIh0Ztb5OsrT9b3Ase3iTbfPTGeqToshmUGqr7nATtxZR97wCk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728907925; c=relaxed/simple;
-	bh=cdvsxftq6OoairQyR8FU6ISgKs5zkUCwikxwwQSU18M=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=YNF34Jo42WBQVJF92Tgnm+vvhVM8JFWG02tNgPdfk71XV9X/KitQ9JtVjIaZGH6G4NbCyQUkmgr6ONPjbZDo2AVQGBAms8tAM7lkAaZQUIKAh3N4HNLphv+zXtBg9YgPtgZUzgRwPwkJyJ9gB5s6YXB8gQYSM4gzaOrmydqQNwo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=siteground.com; spf=pass smtp.mailfrom=siteground.com; dkim=pass (1024-bit key) header.d=siteground.com header.i=@siteground.com header.b=KwlBgHTV; arc=none smtp.client-ip=209.85.208.54
+	s=arc-20240116; t=1728907928; c=relaxed/simple;
+	bh=0vUGj6VytI8U/VBlpkbY+tbgleotP7rda2Bbue0tPWg=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=dgNm448H4yWERGlolpEkNqCRz3Kgu375VIYSiyjNJm6CttqMtluMYWVTt+drmO49sOjenF/294nZJFEG/RAo5UhHkHRZYGAt2habc2JyG/kZvZmnzQ2juIgn8yw+ImgWVXF8ccozIfdMXHcNcNxCkQqa5Ni/90Z8SavOc0PFd2w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=siteground.com; spf=pass smtp.mailfrom=siteground.com; dkim=pass (1024-bit key) header.d=siteground.com header.i=@siteground.com header.b=MN7oRMhm; arc=none smtp.client-ip=209.85.218.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=siteground.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=siteground.com
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-5c97cc83832so1172048a12.0
-        for <bpf@vger.kernel.org>; Mon, 14 Oct 2024 05:12:02 -0700 (PDT)
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a99f1fd20c4so290693366b.0
+        for <bpf@vger.kernel.org>; Mon, 14 Oct 2024 05:12:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=siteground.com; s=google; t=1728907921; x=1729512721; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=YxaJynF0KylsOJUra+CY+ZXssRQQ/gaG7DTSIztuW44=;
-        b=KwlBgHTVBlyvOhZXwlHSy5b2hYgxrMLd0Zb8614+2dSF28fCaZ1R8HTl7GZK33mi1F
-         inPiYTfyy4uEMba/YSsjrA5uH9jy18wZpO7UF0G4b9RUQJIbIvyhXGgex6ybmyZylwoi
-         BJabBfUCZFuDgaCxbFS25kU6nQla/cmnanZ0Y=
+        d=siteground.com; s=google; t=1728907925; x=1729512725; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pqJqB6UsTIjcVrQdfvHzddz8jFNpy/xNoJsAQntNFjg=;
+        b=MN7oRMhmlETRU7whdyR4Pk/wiO4rHMeWDKptRZz8G0Ry1n5VB6+BVxiIFj7x9HSNKF
+         /lH02hf2OlR9yA7ojellDrsiywy/Kv5iSed0Vd2pSoCplq1f5A23uc+1YpyJUTcUQ0xe
+         NCqYNPTXdLxbpDozeTMrV63/MzZy3MULIbrL0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728907921; x=1729512721;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=YxaJynF0KylsOJUra+CY+ZXssRQQ/gaG7DTSIztuW44=;
-        b=QFH4jEJ1Phe1gzp3KEQKO/xfeQCd/ood9+8MznXcQxwuU459JJUlYI4WZeVKF68sVL
-         B6BTMXK8xEedc+/lIpoamtBboFFvmEFk+m6T8uDlUz99bdlIvMH9DfVj+UBgMX7dpS/3
-         U58AUfZQhXFWaxh5ysSsqfKDGhzUZ+vdvhrG19s2QAwYTnqH/ecPcTjt+W0HihVNT6RF
-         Gr730lROEyXLrIiXr2FN462ye3cQZ2oXcjA1LMBKGQE4xk3oJ0v75FqozG0cxtldw9Z2
-         1/BnsIJrb2QMBOhli0uz1kHOs2Kcy4gytCnFq8doa3o+1x53bNjxROvWtmXc/78PYRIz
-         Do7Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVjWjajAR5Glx6ALS7YbTjIoPr7UIhcREMBKj/h2N6mtZwZR9boYLWbwFRIQxS1YaN5oOQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YznlRlsuJHj9B2BJ3vu+G0iFWDF+foGte032UuK8x6FtBATxGP8
-	NKzWkEHGIdS22v9+zL6H2SvUrNbaZtyGNuWLVddcBnuUQnkMxQbZFs9oGloYUtxz8Ebjd2lJYEF
-	CZkKxgg==
-X-Google-Smtp-Source: AGHT+IFKdUgnHeMazq34ZQy72aigOnHga92imLShe3ApzcRRJgbrWUweyQCsn8PrNuTzzZ6m7QgWPQ==
-X-Received: by 2002:a17:907:7ea4:b0:a99:408c:6a16 with SMTP id a640c23a62f3a-a99b9315e79mr916863166b.12.1728907921400;
-        Mon, 14 Oct 2024 05:12:01 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1728907925; x=1729512725;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pqJqB6UsTIjcVrQdfvHzddz8jFNpy/xNoJsAQntNFjg=;
+        b=m99S3YG3JsPX8oO9q3VWRC/QAqdK1YcdTpRyOvNBl9D7Ua74ZgFea3hfNawp8/8jZH
+         4nHTKGd1aB3vUeyIc+Pv/eP4eIzXcb1ETIZK6hge9nduo1UaLPSCl8xclmJEvz5lEXYi
+         7Bj8Iw5ApuW0qmODePTTali5x5wYrWmhQ0rFiWAt39F7R6SC6VK6DEwFCPfsmgbdA7e2
+         WTW0UTRNswD4uI2vtNZPF5GI7fqebSzYkSiOXRsLjXvJlbGdkCuM5zkCfrGuPHIINy2B
+         rS1preM/pOTSJyRlthvFD1xUa7vpoHUFgNMPqoNUBA7FOChpX9OQHLoa8atfmEpDz4YO
+         yzxg==
+X-Forwarded-Encrypted: i=1; AJvYcCXJMMpzJfUIZHVMUHg8QlMOLG6S1u4iPXT2vKcEjTc2ABq2ie2lweML6SVmyfFVMDY5zbs=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyD/CN1WAwg18ffndHPRXMFZB7HFtnUtAJiT8mYYQh/bmqSCmEw
+	YwDVtOCYepde+DBznGN8WGF/74L/RjmUC7LdA5AdihrKkp8iVfx/fe0Qmp9XW/s=
+X-Google-Smtp-Source: AGHT+IGxwwqCJZC5I2uutjcPeuhl1UdJ0hOjYW8APhkUHIKeAM0uxNta4/CDJrWyziS95ykmDpBhmw==
+X-Received: by 2002:a17:907:3e96:b0:a99:6036:90a with SMTP id a640c23a62f3a-a99b93f9128mr940309166b.14.1728907925320;
+        Mon, 14 Oct 2024 05:12:05 -0700 (PDT)
 Received: from Dimitar_Kanaliev.sgnet.lan ([82.118.240.146])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a9a1ac71a7fsm55293666b.15.2024.10.14.05.12.00
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a9a1ac71a7fsm55293666b.15.2024.10.14.05.12.04
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Mon, 14 Oct 2024 05:12:01 -0700 (PDT)
+        Mon, 14 Oct 2024 05:12:05 -0700 (PDT)
 From: Dimitar Kanaliev <dimitar.kanaliev@siteground.com>
 To: Yonghong Song <yonghong.song@linux.dev>,
 	bpf@vger.kernel.org
@@ -78,11 +79,15 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Hao Luo <haoluo@google.com>,
 	Jiri Olsa <jolsa@kernel.org>,
 	Mykola Lysenko <mykolal@fb.com>,
-	Dimitar Kanaliev <dimitar.kanaliev@siteground.com>
-Subject: [PATCH v2 0/3] Fix truncation bug in coerce_reg_to_size_sx and extend selftests.
-Date: Mon, 14 Oct 2024 15:11:52 +0300
-Message-Id: <20241014121155.92887-1-dimitar.kanaliev@siteground.com>
+	Dimitar Kanaliev <dimitar.kanaliev@siteground.com>,
+	Shung-Hsi Yu <shung-hsi.yu@suse.com>,
+	Zac Ecob <zacecob@protonmail.com>
+Subject: [PATCH v2 1/3] bpf: Fix truncation bug in coerce_reg_to_size_sx()
+Date: Mon, 14 Oct 2024 15:11:53 +0300
+Message-Id: <20241014121155.92887-2-dimitar.kanaliev@siteground.com>
 X-Mailer: git-send-email 2.39.3 (Apple Git-146)
+In-Reply-To: <20241014121155.92887-1-dimitar.kanaliev@siteground.com>
+References: <20241014121155.92887-1-dimitar.kanaliev@siteground.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -91,33 +96,56 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This patch series addresses a truncation bug in the eBPF verifier function
-coerce_reg_to_size_sx(). The issue was caused by the incorrect ordering
-of assignments between 32-bit and 64-bit min/max values, leading to
-improper truncation when updating the register state. This issue has been
-reported previously by Zac Ecob[1] , but was not followed up on.
+coerce_reg_to_size_sx() updates the register state after a sign-extension
+operation. However, there's a bug in the assignment order of the unsigned
+min/max values, leading to incorrect truncation:
 
-The first patch fixes the assignment order in coerce_reg_to_size_sx()
-to ensure correct truncation. The subsequent patches add selftests for
-coerce_{reg,subreg}_to_size_sx.
+  0: (85) call bpf_get_prandom_u32#7    ; R0_w=scalar()
+  1: (57) r0 &= 1                       ; R0_w=scalar(smin=smin32=0,smax=umax=smax32=umax32=1,var_off=(0x0; 0x1))
+  2: (07) r0 += 254                     ; R0_w=scalar(smin=umin=smin32=umin32=254,smax=umax=smax32=umax32=255,var_off=(0xfe; 0x1))
+  3: (bf) r0 = (s8)r0                   ; R0_w=scalar(smin=smin32=-2,smax=smax32=-1,umin=umin32=0xfffffffe,umax=0xffffffff,var_off=(0xfffffffffffffffe; 0x1))
 
-Changelog:
-	v1 -> v2:
-	 - Moved selftests inside the conditional check for cpuv4
+In the current implementation, the unsigned 32-bit min/max values
+(u32_min_value and u32_max_value) are assigned directly from the 64-bit
+signed min/max values (s64_min and s64_max):
 
-[1] (https://lore.kernel.org/bpf/h3qKLDEO6m9nhif0eAQX4fVrqdO0D_OPb0y5HfMK9jBePEKK33wQ3K-bqSVnr0hiZdFZtSJOsbNkcEQGpv_yJk61PAAiO8fUkgMRSO-lB50=@protonmail.com/)
+  reg->umin_value = reg->u32_min_value = s64_min;
+  reg->umax_value = reg->u32_max_value = s64_max;
 
-Dimitar Kanaliev (3):
-  bpf: Fix truncation bug in coerce_reg_to_size_sx()
-  selftests/bpf: Add test for truncation after sign extension in
-    coerce_reg_to_size_sx()
-  selftests/bpf: Add test for sign extension in
-    coerce_subreg_to_size_sx()
+Due to the chain assigmnent, this is equivalent to:
 
- kernel/bpf/verifier.c                         |  8 ++--
- .../selftests/bpf/progs/verifier_movsx.c      | 40 +++++++++++++++++++
- 2 files changed, 44 insertions(+), 4 deletions(-)
+  reg->u32_min_value = s64_min;  // Unintended truncation
+  reg->umin_value = reg->u32_min_value;
+  reg->u32_max_value = s64_max;  // Unintended truncation
+  reg->umax_value = reg->u32_max_value;
 
+Fixes: 1f9a1ea821ff ("bpf: Support new sign-extension load insns")
+Reported-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+Reported-by: Zac Ecob <zacecob@protonmail.com>
+Signed-off-by: Dimitar Kanaliev <dimitar.kanaliev@siteground.com>
+---
+ kernel/bpf/verifier.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 7d9b38ffd220..70a0cf0f1569 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -6333,10 +6333,10 @@ static void coerce_reg_to_size_sx(struct bpf_reg_state *reg, int size)
+ 
+ 	/* both of s64_max/s64_min positive or negative */
+ 	if ((s64_max >= 0) == (s64_min >= 0)) {
+-		reg->smin_value = reg->s32_min_value = s64_min;
+-		reg->smax_value = reg->s32_max_value = s64_max;
+-		reg->umin_value = reg->u32_min_value = s64_min;
+-		reg->umax_value = reg->u32_max_value = s64_max;
++		reg->s32_min_value = reg->smin_value = s64_min;
++		reg->s32_max_value = reg->smax_value = s64_max;
++		reg->u32_min_value = reg->umin_value = s64_min;
++		reg->u32_max_value = reg->umax_value = s64_max;
+ 		reg->var_off = tnum_range(s64_min, s64_max);
+ 		return;
+ 	}
 -- 
 2.43.0
 
