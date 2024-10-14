@@ -1,136 +1,122 @@
-Return-Path: <bpf+bounces-41882-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41883-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5B6B99D725
-	for <lists+bpf@lfdr.de>; Mon, 14 Oct 2024 21:16:36 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5184499D828
+	for <lists+bpf@lfdr.de>; Mon, 14 Oct 2024 22:27:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6CEC91F23765
-	for <lists+bpf@lfdr.de>; Mon, 14 Oct 2024 19:16:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BF663B20D70
+	for <lists+bpf@lfdr.de>; Mon, 14 Oct 2024 20:27:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB0531CC171;
-	Mon, 14 Oct 2024 19:16:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB2AA1D0B9B;
+	Mon, 14 Oct 2024 20:27:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EjG/5WZA"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FkD6iDOw"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F6202F34;
-	Mon, 14 Oct 2024 19:16:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F2771D0490;
+	Mon, 14 Oct 2024 20:27:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728933384; cv=none; b=cegl1BPXxppRW+41dCHi4URIL/7h7UWCtx3dEusPGgu0lK5uOtYsd0vXEv3SYq196pZc5UYYUX35xTCZqi1loe6+uq5C973RpUhkwpidnsd7NpT+22gAbmg+NeWHv9SA81S+W3TJukmRz1uOwnJ3pEjJ00CgH+KEyX2H8hRQ7wY=
+	t=1728937645; cv=none; b=hAwF1jx79IjxeWL+uRht4ChYa/50R47GYEC8huUMhPoB9vWgG02eC7SQ9q6rC4GdeQPiJp+dCjlxZckLP0Fbot3GvslDbFgKvVc4/IO37XfN5MkznpCSXEJE8a8VOf4EKYdcUbOK7/xMap8YkXGszzDpKRghmxh/RXAFvNCDGek=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728933384; c=relaxed/simple;
-	bh=UuppSLaM0kOzMrDSh2RloHR9IgCcKKb57FBSLEkEUWY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FFCOuTgz8sD7Ed/Kud9QCetDjIUNalCJp7fx5uHw1Lmy9rz4nHQDEuyQ/Js8mUYGIu7NDMob76aKmnNJiOi2L4O9SXpk56EaNsy0we+WKWwieq1Sco/q44kKRl8QMxa9zBx62PKRSDUFlxYPAUQCHyOzRrL463Nm1OvZadSbpoI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EjG/5WZA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2DC60C4CEC3;
-	Mon, 14 Oct 2024 19:16:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728933383;
-	bh=UuppSLaM0kOzMrDSh2RloHR9IgCcKKb57FBSLEkEUWY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=EjG/5WZADaXhvwARHnqKg67eiuXX7gTWxPoitBNELLTxxDNviuMSsmlu/en6P6ED8
-	 zpJ52uHjqiz/g2IcIGwuziTngHnAXDzicRERzVAAIDP4l2L6y33KAuyIagMcpMXzl4
-	 9dBRK2tjgLlrX3Ons9R5vBST3i3yiewblKFLfAI64WB5+23Fn5KkJljDLeTWRKDZ84
-	 jnexNcW9vYFK3px9crwCiVYgH/8ctiyb/DdHjxU96pqWdOL1lwHrwqpz6qzLtvvsU8
-	 7pmIeyrMmskmV1mcXKss65BVVX6VBxafQdYx2gdNsA2KwzhcBEiTj2VcG0YSmjPMmN
-	 oCmkdGtrERExg==
-Date: Mon, 14 Oct 2024 12:16:20 -0700
-From: Luis Chamberlain <mcgrof@kernel.org>
-To: Andrew Morton <akpm@linux-foundation.org>,
-	Petr Pavlu <petr.pavlu@suse.com>,
-	Sami Tolvanen <samitolvanen@google.com>
-Cc: Mike Rapoport <rppt@kernel.org>, Christoph Hellwig <hch@infradead.org>,
-	Andreas Larsson <andreas@gaisler.com>,
-	Andy Lutomirski <luto@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-	Brian Cain <bcain@quicinc.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
-	Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Michal Simek <monstr@monstr.eu>, Oleg Nesterov <oleg@redhat.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Richard Weinberger <richard@nod.at>,
-	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
-	Stafford Horne <shorne@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>,
-	bpf@vger.kernel.org, linux-alpha@vger.kernel.org,
-	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org, linux-mm@kvack.org,
-	linux-modules@vger.kernel.org, linux-openrisc@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-	linux-trace-kernel@vger.kernel.org, linux-um@lists.infradead.org,
-	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
-	sparclinux@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v5 7/8] execmem: add support for cache of large ROX pages
-Message-ID: <Zw1uBBcG-jAgxF_t@bombadil.infradead.org>
-References: <20241009180816.83591-1-rppt@kernel.org>
- <20241009180816.83591-8-rppt@kernel.org>
- <Zwd7GRyBtCwiAv1v@infradead.org>
- <ZwfPPZrxHzQgYfx7@kernel.org>
- <ZwjXz0dz-RldVNx0@infradead.org>
- <ZwuIPZkjX0CfzhjS@kernel.org>
- <20241013202626.81f430a16750af0d2f40d683@linux-foundation.org>
+	s=arc-20240116; t=1728937645; c=relaxed/simple;
+	bh=T7hR8tJ06xrBOZxmj2ZoouJ4PMBncoMUs3f9JxO7pTk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=kkJE65HgZRwjdmhcurGRP//xD1o6Rh5a2jVaNkvp01DfisukrRhUaQsifhydQYKiwIDVfs00MgEcmhsoIDklFSWO6lmOsXCBR56o3u5QYL07YVlr4zqzbO/EuMDDXT/x6ta1p2IiD9bLmxIz+TVAoLeFY28Xe1TowG/QS30tiPs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FkD6iDOw; arc=none smtp.client-ip=209.85.210.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-71e6d988ecfso757063b3a.0;
+        Mon, 14 Oct 2024 13:27:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1728937643; x=1729542443; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=T7hR8tJ06xrBOZxmj2ZoouJ4PMBncoMUs3f9JxO7pTk=;
+        b=FkD6iDOwnmCyFYc41DhVMGuVK11pNPMDB8LuCWWmtKPtO3rYc6H/kjLpa14OAplFOo
+         CEOTIA6TBKUtMkYbcfgEOmAOfYyyY//yLW59gSYzQN4KsQVo4d1jYYQV1+8DEFpGorti
+         Qhb7k27LZ0jfxhW2189T4I+Q7U2cezo2VgXRMIaPDpOC3lMndOsrzIZIWx9fsRaGcFsn
+         mKd7nMyRgL8+0GIai3rWTE+Se4jZqijJhTHzi2cd89eBEp0grD7s9wJgYV/fdd9Xbh8a
+         9WeNVdEGqhd3TNrwquxQMeAQIbQFAqBPxl2TOPkSvsAAKuC6PDuOU7f3bJd81T+5VjnE
+         pQsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1728937643; x=1729542443;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=T7hR8tJ06xrBOZxmj2ZoouJ4PMBncoMUs3f9JxO7pTk=;
+        b=OBs2Sn5hJX/3ndukjg8YevntP6GIbQRtRrjzSKQQhlTi9HLdIRCRfyHFO0sQNyFdAK
+         1s1VO/dzt+44CmiWDWI9zcskQYtwYpX0eToQWlNT9R4uSIkgrx0mFoC23F7eiWcyywEL
+         wxwheSL5MbdjWo6Q65Z83/rwo7QYUrSG/axS9ltiC+XLxsALCsdizb4eEmqmNWkmmabB
+         dJnc5mVbSAlaAwVSkdo0DBWzHJThFtK+HCUhzUFhjz3BOryAgHhPAH+xxbVOFErLcO0Y
+         DHXdKYwE3dqtpzHaMDbyjGkA3TlKkFs8QZ9RbpVymRiKLAiOBg6AKsUCZ3Cn4dOC4WO+
+         Qe/g==
+X-Forwarded-Encrypted: i=1; AJvYcCUX5T9J6KrmjJk9MINDbRm+aAuxB4Xpk7rdZP73KKBrL6nFMgrvrReDRDuq249/rEgn0I3gX0h+NMxrJ2pt@vger.kernel.org, AJvYcCVuH5uVzFpwEJLkecg6xU6n5ZrxBF8mWWHFWNDbTs6iToc+LlvQgnO3mQg/s2WVUIaS0po=@vger.kernel.org, AJvYcCW343Jzh9g1e+TPUFm/2lr0fv3S+OWj4+I/oRpLSmKiP2BYAtFVuU8aFk1cB/4FRCmiWHslrdk10jVsbeMurEa55eaO@vger.kernel.org
+X-Gm-Message-State: AOJu0YwhCgxKT8iOKS1MBAFUAwNhfjFGVx34tdXBLfh7FeSYFJQVXV6N
+	Qpnnt+HqANsSwU9Z7XLckjBUw6sl4pukcsCzW/gWEtKq2Sc5ILtbN+U88kZ8u5VeMfK8Nd3dNre
+	0zuwkwxfs3/Z6pkMBsqK/YZlvS5anKQ==
+X-Google-Smtp-Source: AGHT+IFwGAVjPCdEfP0TFh0THmiQ2svUymXIDU62M+8OYi04yZko9TY8AU62qmmEpn/aJdwuEt6QmxmqOdM2SpHuNKk=
+X-Received: by 2002:a05:6a00:8d3:b0:71e:5a6a:94ca with SMTP id
+ d2e1a72fcca58-71e5a6a9589mr10680912b3a.19.1728937643345; Mon, 14 Oct 2024
+ 13:27:23 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241013202626.81f430a16750af0d2f40d683@linux-foundation.org>
+References: <20241010205644.3831427-1-andrii@kernel.org> <20241010205644.3831427-2-andrii@kernel.org>
+ <haivdc546utidpbb626qsmuwsa3f3aorurqn5khwsqqxflpu3w@xbdqwoty4blv>
+In-Reply-To: <haivdc546utidpbb626qsmuwsa3f3aorurqn5khwsqqxflpu3w@xbdqwoty4blv>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Mon, 14 Oct 2024 13:27:11 -0700
+Message-ID: <CAEf4BzYRiE9vYCRLmiRHD+fqb_ROwqrb0sX6sktqDNdfeH85DA@mail.gmail.com>
+Subject: Re: [PATCH v3 tip/perf/core 1/4] mm: introduce mmap_lock_speculation_{start|end}
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, peterz@infradead.org, oleg@redhat.com, 
+	rostedt@goodmis.org, mhiramat@kernel.org, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, jolsa@kernel.org, paulmck@kernel.org, 
+	willy@infradead.org, surenb@google.com, akpm@linux-foundation.org, 
+	mjguzik@gmail.com, brauner@kernel.org, jannh@google.com, mhocko@kernel.org, 
+	vbabka@suse.cz, hannes@cmpxchg.org, Liam.Howlett@oracle.com, 
+	lorenzo.stoakes@oracle.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, Oct 13, 2024 at 08:26:26PM -0700, Andrew Morton wrote:
-> On Sun, 13 Oct 2024 11:43:41 +0300 Mike Rapoport <rppt@kernel.org> wrote:
-> 
-> > > > The idea is to keep everything together and have execmem_info describe all
-> > > > that architecture needs. 
-> > > 
-> > > But why?  That's pretty different from our normal style of arch hooks,
-> > > and introduces an indirect call in a security sensitive area.
-> > 
-> > Will change to __weak hook. 
-> > 
-> 
-> Thanks, I'll drop the v1 series;
-> 
-> The todos which I collected are:
-> 
-> https://lkml.kernel.org/r/CAPhsuW66etfdU3Fvk0KsELXcgWD6_TkBFjJ-BTHQu5OejDsP2w@mail.gmail.com
-> https://lkml.kernel.org/r/Zwd6vH0rz0PVedLI@infradead.org
-> https://lkml.kernel.org/r/ZwjXz0dz-RldVNx0@infradead.org
-> https://lkml.kernel.org/r/202410111408.8fe6f604-lkp@intel.com
+On Sun, Oct 13, 2024 at 12:56=E2=80=AFAM Shakeel Butt <shakeel.butt@linux.d=
+ev> wrote:
+>
+> On Thu, Oct 10, 2024 at 01:56:41PM GMT, Andrii Nakryiko wrote:
+> > From: Suren Baghdasaryan <surenb@google.com>
+> >
+> > Add helper functions to speculatively perform operations without
+> > read-locking mmap_lock, expecting that mmap_lock will not be
+> > write-locked and mm is not modified from under us.
+> >
+> > Suggested-by: Peter Zijlstra <peterz@infradead.org>
+> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> > Link: https://lore.kernel.org/bpf/20240912210222.186542-1-surenb@google=
+.com
+>
+> Looks good to me. mmap_lock_speculation_* functions could use kerneldoc
+> but that can be added later.
 
-BTW Andrew I'd like to pick this up through the modules tree, and while
-at it, also beat it up with some more testing as we're expanding also
-with the modversions stuff for Rust modules.
+Yep, though probably best if Suren can do that in the follow up, as he
+knows all the right words to use :)
 
-  Luis
+>
+> Reviewed-by: Shakeel Butt <shakeel.butt@linux.dev>
+>
+
+Thanks!
+
+>
 
