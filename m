@@ -1,210 +1,171 @@
-Return-Path: <bpf+bounces-42002-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42003-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B80D99E35F
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 12:06:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9012E99E39D
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 12:18:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 02BBB1F23F41
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 10:06:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C2841F23641
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 10:18:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B5EC1E379E;
-	Tue, 15 Oct 2024 10:05:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 254651D5AC9;
+	Tue, 15 Oct 2024 10:18:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="V6lwJAi9"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="NSl08NuK"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD8F51B85DB
-	for <bpf@vger.kernel.org>; Tue, 15 Oct 2024 10:05:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDE881D14FF
+	for <bpf@vger.kernel.org>; Tue, 15 Oct 2024 10:18:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728986747; cv=none; b=kjuIMUnuTN8U1uvL48QmfSGIDXQVcOrRX7Os9BUUQzCW1GhF2bm2DIZv8yBfWDsf0NaJCIEr3h+E9YaBRTSrg28CEExuBWoFgFHocDvyl6N8zLdCAv1R06JITRgjkNobefKu6QJoU2QQnoFwXeVITGoByTvFVl+TKqfuqSOEP7Y=
+	t=1728987482; cv=none; b=g7U2u3rG4lmEW15Tt6lyCqH2rJiguWqLNz/AgyGrzMmr2RO1FJHwbu8xM35nJ6tdAFcHk5g3CN21Rh4QiHCppQeGX1zzeqN+OHUVmDGicvKy++v7toHJVj01Wy4MHROZzLEPC/qmNY78XWz2FJzpEK2B7IKhVr27aOXV4VI6xLA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728986747; c=relaxed/simple;
-	bh=BPsnlM4jiS7NsX7J2NdZKdPrFoWf/4f2HMA3nR+Yv3g=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UkHeXQxjtnTPas7OTUxbaPILdkJniZ9Q4inPcnFaScfaiLAzuyczOmDcshlSULGSm1+a7AIjXjf/hSbseWDfH3kr355dMJxo7JPhhd3UQoBnQ0nlo7BE/Mp58v+tWjN6OBiu8PgmgTEAdZznzJIWSoozpVagZShvAVKDNBR3wDA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=V6lwJAi9; arc=none smtp.client-ip=209.85.216.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-2e31af47681so2144611a91.2
-        for <bpf@vger.kernel.org>; Tue, 15 Oct 2024 03:05:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1728986743; x=1729591543; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5Qrkg/ZRV10IdU56/7mYKjiH6Upw8Qx1eT1zUM9r+QU=;
-        b=V6lwJAi9ATBprSXBlwBEAF/EGPX0fGKWZ5th8Gob+kRbtYG9mJs2uKI9PkK7Y0NN+H
-         mUhOao3UYL2oE5vUuQFyLVjiUeGDpPeeEKqiSioPCd8IqttXBZtZSjFlFvbO7wZ+Oati
-         NxNyw+6EhjvGJGDLKIN35YUJ6mQXyqkkmFlNAcszDk7mFsg3mLDB0ACbWEtav9EFsVik
-         XxN5Su2yG0Rvi//ID9/qiV+AAqgCl2H9BTAP7b5NXKALPLLJfjUmg4dHl9szGAJUl9pw
-         N/PcITj00ryexU6JjyWFleZzQYpxfQvcsx/9PlBcG1PgcB+LfV4ieboFg9rkyBAylrZV
-         VStA==
+	s=arc-20240116; t=1728987482; c=relaxed/simple;
+	bh=bdA1KB+IUuDLkKYjBaXg08SdqCgIeG/17o+iJ+fC120=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=lhxskNUwVm6PWqQgBMkLFuB8FqZNfjiCx4S3wxjjYuVmOdi/rLzS+JsDL3bQdakG1twHXq91rwPqu0bmBCzFGj/RluHat/MvcGFhDfI5rHMjl3obTGkPoRSFq/Us1tKzGM66VwvFUBw9zup+SYltig0v6PSgupxtR7pNl780f6U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=NSl08NuK; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1728987479;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=uRZFeFk0HaHVJ/nK2dwPD2a2Aff5qCtCDD2HPY5bW1s=;
+	b=NSl08NuKJpsyHQ7OoiCznkUaNV4uMyo/Z98MM5ZmHyBmuLS4GnwRI9HVeK7edfzn4PMxbH
+	j3QNRGlidtn3OAeflU87hiCTR8KR0VTnDr3hmrVLiXPK4MECPYSIEn4IIi4TPCv3tvcKGj
+	fbzbQl+K5mcRY1pbxWVPJ9JLcKFLbsk=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-10-hnM-Q0n-M2-FX4ez_5bbgg-1; Tue, 15 Oct 2024 06:17:58 -0400
+X-MC-Unique: hnM-Q0n-M2-FX4ez_5bbgg-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-43127097727so18666255e9.0
+        for <bpf@vger.kernel.org>; Tue, 15 Oct 2024 03:17:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728986743; x=1729591543;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5Qrkg/ZRV10IdU56/7mYKjiH6Upw8Qx1eT1zUM9r+QU=;
-        b=VhZ9bInbzcoFwl/jzP/QPQmbU50bszJ5NOo643Rx6HuFRiU0DMHAVToZYsDS93n/89
-         /JLLiiBjxbuY4LlQOpmZ6ZwGWDHLTW5rQKTwbAXErDb6DR0aTq9p+RO7fDp+5eXHH0SJ
-         6eOnmXzElNlZYJ2cN+PEoNgkhlRfvGABuhbYuh3lyNv3ge7nEPqAjmYTa8C/1NLgDOdN
-         mT0PvANXYOSaVYTWvqpR4dT0BGcnpsSHtSzSjvGBbRl9h9VoNNi0Zoy5NIFzoPHgxNCq
-         zHMXTF8omPYFXVBcC/Y8wkPm0FviL+5bNeEcUqGNHteD4vqDn15uRsCa6fRDsPnnwrGF
-         TaJw==
-X-Forwarded-Encrypted: i=1; AJvYcCWe2FNR8HYplVFBx5i+gy8YQxLtBkGTV8wZyfQrVKf2LvwcStUDfG+4dkmfouD3olJsEEg=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxhGjiBXIkXwZq6MIGoOYsVuVSjN5Cak3YZfS43daBrld3WTkP9
-	I+H92X74IxnieRmOxKpRZCwdKyGcVtAe5WcpVLaF2Iw9OSu70CxlLYDHoYYhV7r7B6oFDXeDTeT
-	08ZMTaf4Gk5A+YhCguNtrb0AONdYDd6VU/iaI
-X-Google-Smtp-Source: AGHT+IHbXOGzJCKOgpup02dkaO5xVaIhqtf9TGZtn/M5v/vKmEv8ALqVeLPqkRz25CJYOQrboeLU0AvZT7KH0o5zi68=
-X-Received: by 2002:a17:90a:ee85:b0:2e2:e8fc:e0dd with SMTP id
- 98e67ed59e1d1-2e2f0dc33f8mr15829263a91.35.1728986742588; Tue, 15 Oct 2024
- 03:05:42 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1728987477; x=1729592277;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=uRZFeFk0HaHVJ/nK2dwPD2a2Aff5qCtCDD2HPY5bW1s=;
+        b=Ch+Y+56jwCwCgqmgNlKWeGA1mEDjbk91srrTPATs8glW3Vv9c6fDk4NlFJwkF8IBaB
+         DRR031NySXoVAlBHprgm9ITY7zxP3sFyqUZ6o9gGe8n9xSw45TKdToKV7pnpbS55i5hr
+         2JjgKUblDnZEUlk/bOOUbJv97USya3fK6FSrz6y79pfAoMSa+bwWxBzWNQM8s1l2f3aO
+         1zPemQcgwEn+tXpxtqt41DuEptGBKnPHQXHNR9RiAnIGy6TfGP0iA0VhaIb0oaZpTKDD
+         FTDotY2qqT22Q/MDlyLsaBYB9QHbX11U6gSZfW7P75BHZj2fORpIwyONneazG8/fvfk1
+         bF4A==
+X-Forwarded-Encrypted: i=1; AJvYcCXmZF+EwS98LQgddfsNIUvYJkuZ2d8Ud1gj27DyenY+HXcV+rw84hnnrO2eZx9nfzWbYgg=@vger.kernel.org
+X-Gm-Message-State: AOJu0YybkEHAmKgl41805272Jt8F235qExvzAppkd1jLVa+/+gsMNrBi
+	7DIy9n09LgoAzqSqliEPmFLYMTIbVYedA7WWWKyQDmGT/mHq9CBT+Ql95A4HPH2WkZC5NE4QcfQ
+	bxVTpThGUDV9XF/fPuf8DdW5avFv1+llbc6MrGmk0azal9rfo
+X-Received: by 2002:a05:600c:3b83:b0:426:6710:223c with SMTP id 5b1f17b1804b1-4311ded1fdfmr128625325e9.9.1728987477540;
+        Tue, 15 Oct 2024 03:17:57 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IG+RR1oQUE3fqyHE44o9XfpYQA+FBcIHCjkuGHKCp3DN5dojze7G4ODUrweFaz/j/iz50CzWA==
+X-Received: by 2002:a05:600c:3b83:b0:426:6710:223c with SMTP id 5b1f17b1804b1-4311ded1fdfmr128625025e9.9.1728987476979;
+        Tue, 15 Oct 2024 03:17:56 -0700 (PDT)
+Received: from [10.202.145.128] (nat-pool-brq-u.redhat.com. [213.175.37.12])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4313f6c4cbcsm13233665e9.39.2024.10.15.03.17.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Oct 2024 03:17:56 -0700 (PDT)
+Message-ID: <636a7e45-ddf5-49f1-8013-96c8b6c9ca28@redhat.com>
+Date: Tue, 15 Oct 2024 12:17:54 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <67094369.050a0220.4cbc0.000d.GAE@google.com> <20241011120028.1e4ed71c@gandalf.local.home>
-In-Reply-To: <20241011120028.1e4ed71c@gandalf.local.home>
-From: Aleksandr Nogikh <nogikh@google.com>
-Date: Tue, 15 Oct 2024 12:05:29 +0200
-Message-ID: <CANp29Y4KERQxwOwMCW5a4+YahhA8gWyJ=btE=OxnNgrF6puFgw@mail.gmail.com>
-Subject: Re: [syzbot] Monthly trace report (Oct 2024)
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: syzbot <syzbot+list3bf21e6ac0139f8d008d@syzkaller.appspotmail.com>, 
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	mhiramat@kernel.org, syzkaller-bugs@googlegroups.com, 
-	Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next 2/3] bpftool: Prevent setting duplicate
+ _GNU_SOURCE in Makefile
+To: Quentin Monnet <qmo@kernel.org>, bpf@vger.kernel.org
+Cc: Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman
+ <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
+ Nathan Chancellor <nathan@kernel.org>,
+ Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling
+ <morbo@google.com>, Justin Stitt <justinstitt@google.com>
+References: <cover.1728975031.git.vmalik@redhat.com>
+ <507d699068777b78a5720e617c99fb19a9bb8a89.1728975031.git.vmalik@redhat.com>
+ <13c4f2dd-e315-4d0e-9481-b385946c33dc@kernel.org>
+From: Viktor Malik <vmalik@redhat.com>
+Content-Language: en-US
+In-Reply-To: <13c4f2dd-e315-4d0e-9481-b385946c33dc@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi Steven,
+On 10/15/24 12:03, Quentin Monnet wrote:
+> 2024-10-15 08:54 UTC+0200 ~ Viktor Malik <vmalik@redhat.com>
+>> When building selftests with CFLAGS set via env variable, the value of
+>> CFLAGS is propagated into bpftool Makefile (called from selftests
+>> Makefile). This makes the compilation fail as _GNU_SOURCE is defined two
+>> times - once from selftests Makefile (by including lib.mk) and once from
+>> bpftool Makefile (by calling `llvm-config --cflags`):
+>>
+>>      $ CFLAGS="" make -C tools/testing/selftests/bpf
+>>      [...]
+>>      CC      /bpf-next/tools/testing/selftests/bpf/tools/build/bpftool/btf.o
+>>      <command-line>: error: "_GNU_SOURCE" redefined [-Werror]
+>>      <command-line>: note: this is the location of the previous definition
+>>      cc1: all warnings being treated as errors
+>>      [...]
+>>
+>> Let bpftool Makefile check if _GNU_SOURCE is already defined and if so,
+>> do not let llvm-config add it again.
+>>
+>> Signed-off-by: Viktor Malik <vmalik@redhat.com>
+>> ---
+>>   tools/bpf/bpftool/Makefile | 8 +++++++-
+>>   1 file changed, 7 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
+>> index ba927379eb20..2b5a713d71d8 100644
+>> --- a/tools/bpf/bpftool/Makefile
+>> +++ b/tools/bpf/bpftool/Makefile
+>> @@ -147,7 +147,13 @@ ifeq ($(feature-llvm),1)
+>>     # If LLVM is available, use it for JIT disassembly
+>>     CFLAGS  += -DHAVE_LLVM_SUPPORT
+>>     LLVM_CONFIG_LIB_COMPONENTS := mcdisassembler all-targets
+>> -  CFLAGS  += $(shell $(LLVM_CONFIG) --cflags)
+>> +  # When bpftool build is called from another Makefile which already sets
+>> +  # -D_GNU_SOURCE, do not let llvm-config add it again as it will cause conflict.
+> 
+> 
+> Thanks! Can you please make your comment more explicit and mention the 
+> file tools/testing/selftests/lib.mk and/or the use case addressed 
+> (building bpftool from selftests), given that you match on the exact 
+> string "-D_GNU_SOURCE="? Your check won't skip adding the duplicate 
+> definition if someone passes "-D_GNU_SOURCE", without the "=", by 
+> calling the Makefile from another path; that's fine, but I don't want 
+> users to read the Makefile and expect it to remove the second definition 
+> in such a case.
 
-Thanks for the analysis!
+Right, that's a good point, I'll expand the comment.
 
-On Fri, Oct 11, 2024 at 6:00=E2=80=AFPM Steven Rostedt <rostedt@goodmis.org=
-> wrote:
->
-> On Fri, 11 Oct 2024 08:25:29 -0700
-> syzbot <syzbot+list3bf21e6ac0139f8d008d@syzkaller.appspotmail.com> wrote:
->
-> > Hello trace maintainers/developers,
-> >
-> > This is a 31-day syzbot report for the trace subsystem.
-> > All related reports/information can be found at:
-> > https://syzkaller.appspot.com/upstream/s/trace
-> >
-> > During the period, 1 new issues were detected and 0 were fixed.
-> > In total, 10 issues are still open and 38 have been fixed so far.
-> >
-> > Some of the still happening issues:
-> >
-> > Ref Crashes Repro Title
-> > <1> 34      Yes   INFO: task hung in blk_trace_ioctl (4)
-> >                   https://syzkaller.appspot.com/bug?extid=3Ded812ed4614=
-71ab17a0c
->
-> If you check the maintainers file, blktrace.c has:
->
-> BLOCK LAYER
-> M:      Jens Axboe <axboe@kernel.dk>
-> L:      linux-block@vger.kernel.org
+Thanks!
 
-Judging by MAINTAINERS and ./scripts/get_maintainer.pl,
-kernel/trace/blktrace.c belongs to both "BLOCK LAYER" and "TRACING".
+> 
+> 
+>> +  ifneq ($(filter -D_GNU_SOURCE=,$(CFLAGS)),)
+>> +    CFLAGS += $(filter-out -D_GNU_SOURCE,$(shell $(LLVM_CONFIG) --cflags))
+>> +  else
+>> +    CFLAGS += $(shell $(LLVM_CONFIG) --cflags)
+>> +  endif
+> 
+> Looks good otherwise:
+> 
+> Reviewed-by: Quentin Monnet <qmo@kernel.org>
+> 
 
-$ ./scripts/get_maintainer.pl kernel/trace/blktrace.c
-< ... >
-linux-block@vger.kernel.org (open list:BLOCK LAYER)
-linux-kernel@vger.kernel.org (open list:TRACING)
-
-
->
->
->
-> > <2> 32      Yes   WARNING in bpf_get_stack_raw_tp
-> >                   https://syzkaller.appspot.com/bug?extid=3Dce35de20ed6=
-652f60652
->
-> bpf_trace.c has:
->
-> M:      Alexei Starovoitov <ast@kernel.org>
-> M:      Daniel Borkmann <daniel@iogearbox.net>
-> M:      Andrii Nakryiko <andrii@kernel.org>
-> R:      Martin KaFai Lau <martin.lau@linux.dev>
-> R:      Eduard Zingerman <eddyz87@gmail.com>
-> R:      Song Liu <song@kernel.org>
-> R:      Yonghong Song <yonghong.song@linux.dev>
-> R:      John Fastabend <john.fastabend@gmail.com>
-> R:      KP Singh <kpsingh@kernel.org>
-> R:      Stanislav Fomichev <sdf@fomichev.me>
-> R:      Hao Luo <haoluo@google.com>
-> R:      Jiri Olsa <jolsa@kernel.org>
-> L:      bpf@vger.kernel.org
-
-Same for kernel/trace/bpf_trace.c:
-
-$ ./scripts/get_maintainer.pl kernel/trace/bpf_trace.c
-< ... >
-Matt Bobrowski <mattbobrowski@google.com> (maintainer:BPF [SECURITY &
-LSM] (Security Audit and Enforc...)
-Steven Rostedt <rostedt@goodmis.org> (maintainer:TRACING)
-
->
-> > <3> 13      Yes   WARNING in get_probe_ref
-> >                   https://syzkaller.appspot.com/bug?extid=3D8672dcb9d10=
-011c0a160
-> > <4> 6       Yes   INFO: task hung in blk_trace_remove (2)
-> >                   https://syzkaller.appspot.com/bug?extid=3D2373f6be3e6=
-de4f92562
-> > <5> 4       Yes   possible deadlock in __mod_timer (4)
-> >                   https://syzkaller.appspot.com/bug?extid=3D83a876aef81=
-c9a485ae8
->
-> None of these look like they are tracing infrastructure related.
-
-Like get_maintainer.pl, syzbot relies on the MAINTAINERS file to
-attribute bugs to the individual kernel subsystems. If several ones
-are suitable, the bug is assigned several labels at once. It's now
-actually the case for all open "trace" findings:
-
-https://syzkaller.appspot.com/upstream/s/trace
-
-(FWIW it's also possible to manually overwrite these labels and remove
-specific bugs from the monthly reports).
-
-I could make syzbot set "trace" only if there's no other good
-candidate, but I wonder if that could hide the findings in the trace
-infrastructure that manifested themselves in some specific traced
-subsystem.
-
---=20
-Aleksandr
-
->
-> -- Steve
->
->
-> >
-> > ---
-> > This report is generated by a bot. It may contain errors.
-> > See https://goo.gl/tpsmEJ for more information about syzbot.
-> > syzbot engineers can be reached at syzkaller@googlegroups.com.
-> >
-> > To disable reminders for individual bugs, reply with the following comm=
-and:
-> > #syz set <Ref> no-reminders
-> >
-> > To change bug's subsystems, reply with:
-> > #syz set <Ref> subsystems: new-subsystem
-> >
-> > You may send multiple commands in a single email message.
->
 
