@@ -1,101 +1,83 @@
-Return-Path: <bpf+bounces-42097-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42098-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA89099F904
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 23:24:26 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A52B99F90C
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 23:27:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 07C311C21D58
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 21:24:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 14B13283EB1
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 21:27:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3CD81FE0E0;
-	Tue, 15 Oct 2024 21:24:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9D251FBF77;
+	Tue, 15 Oct 2024 21:27:39 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5099F1FBF69;
-	Tue, 15 Oct 2024 21:24:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 679CC1FAEE9;
+	Tue, 15 Oct 2024 21:27:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729027445; cv=none; b=n6q4Ya+jgTpIFLCpGaeWdRoL9ZXguHta4373YN/JHJWN8pen8LZWy8dTUn/QzxugzmjyUOph0MsbAtui2LH4vp4VxB0lYnvSzdLkfpUdX6PaiDpOZrn9k7cQBOrqy+axTNMIkiK20OxY7ia8sP7IuXBRCoZHO4B9TbD3ALB9Ylc=
+	t=1729027659; cv=none; b=Pw0J5pVYFNxIZzcG7fxbHDSJCx2zWe47zSQeZXpJZwTdoH4zxgdymDBRwIaB/rIXCdEpm6fQH6FdgMmQQy08uuorukjOCIJ/kMNatpGBQL6Ce9WGIiervXKfJpgdBLbSk+0GylQqWtzeshs/cJ+Or3+z4XBokAxdMeGNvvqq62g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729027445; c=relaxed/simple;
-	bh=7CjrsLcdS425VLUPINBWwbx7Xhs+Zszb1auA7UaZTbg=;
-	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=fN+7kZMc5RMRTfQtwwdMkK+TZ4Pxjz2Giwz8veWxhE1hWCe+eyP2WivH2GRVx5QW6y65M/E+DUKXTPdAcObkzIW2bG5ewTEmAJ8deSbgKMKjBICY1h+OJvecfKgGfk4QDe59ZrkMPeyd31q2mL9YYtBYr07G09OOuS4AyLV+sZc=
+	s=arc-20240116; t=1729027659; c=relaxed/simple;
+	bh=rup4GFrxsOHklgK+IsExgW8KlfWT5TJ8md+p4KNZZ4I=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ncZyPAf9Mr7pd1Jrx+uX+xFqLmTjow4XshueKP8ZXR8lv19bWh9ipgKk5I+J5bra12f5sbuo1lZb57sGECBpdw9Mo0OpVejGAD7IrYERb5ZeqgcEf3P9oPkJUNTR+z6JATQ9iPdewJ9Qc0ghjPzuxl/210JwLzuN6MNLeouBs+U=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3E1BC4CED5;
-	Tue, 15 Oct 2024 21:24:04 +0000 (UTC)
-Received: from rostedt by gandalf with local (Exim 4.98)
-	(envelope-from <rostedt@goodmis.org>)
-	id 1t0p1k-00000003517-3sp9;
-	Tue, 15 Oct 2024 17:24:24 -0400
-Message-ID: <20241015212424.785004334@goodmis.org>
-User-Agent: quilt/0.68
-Date: Tue, 15 Oct 2024 17:24:11 -0400
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2618C4CEC6;
+	Tue, 15 Oct 2024 21:27:37 +0000 (UTC)
+Date: Tue, 15 Oct 2024 17:27:57 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
-To: linux-kernel@vger.kernel.org
-Cc: Masami Hiramatsu <mhiramat@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- Florent Revest <revest@chromium.org>,
- Martin KaFai Lau <martin.lau@linux.dev>,
- bpf <bpf@vger.kernel.org>,
- Alexei Starovoitov <ast@kernel.org>,
- Jiri Olsa <jolsa@kernel.org>,
- Alan Maguire <alan.maguire@oracle.com>
-Subject: [for-next][PATCH 3/3] ftrace: Rename ftrace_regs_return_value to
- ftrace_regs_get_return_value
-References: <20241015212408.300754469@goodmis.org>
+To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Florent Revest
+ <revest@chromium.org>, linux-trace-kernel@vger.kernel.org, LKML
+ <linux-kernel@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+ bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, Jiri Olsa
+ <jolsa@kernel.org>, Alan Maguire <alan.maguire@oracle.com>, Mark Rutland
+ <mark.rutland@arm.com>, linux-arch@vger.kernel.org
+Subject: Re: [PATCH v16 01/18] tracing: Use arch_ftrace_regs() for
+ ftrace_regs_*() macros
+Message-ID: <20241015172757.3221a96f@gandalf.local.home>
+In-Reply-To: <172895572290.107311.16057631001860177198.stgit@devnote2>
+References: <172895571278.107311.14000164546881236558.stgit@devnote2>
+	<172895572290.107311.16057631001860177198.stgit@devnote2>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-
-From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-
-Rename ftrace_regs_return_value to ftrace_regs_get_return_value as same as
-other ftrace_regs_get/set_* APIs. arm64 and riscv are already using this
-new name.
-
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Florent Revest <revest@chromium.org>
-Cc: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: bpf <bpf@vger.kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: Alan Maguire <alan.maguire@oracle.com>
-Link: https://lore.kernel.org/172895573350.107311.7564634260652361511.stgit@devnote2
-Acked-by: Mark Rutland <mark.rutland@arm.com>
-Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- include/linux/ftrace_regs.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/linux/ftrace_regs.h b/include/linux/ftrace_regs.h
-index b78a0a60515b..be1ed0c891d0 100644
---- a/include/linux/ftrace_regs.h
-+++ b/include/linux/ftrace_regs.h
-@@ -22,7 +22,7 @@ struct ftrace_regs;
- 	regs_get_kernel_argument(&arch_ftrace_regs(fregs)->regs, n)
- #define ftrace_regs_get_stack_pointer(fregs) \
- 	kernel_stack_pointer(&arch_ftrace_regs(fregs)->regs)
--#define ftrace_regs_return_value(fregs) \
-+#define ftrace_regs_get_return_value(fregs) \
- 	regs_return_value(&arch_ftrace_regs(fregs)->regs)
- #define ftrace_regs_set_return_value(fregs, ret) \
- 	regs_set_return_value(&arch_ftrace_regs(fregs)->regs, ret)
--- 
-2.45.2
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
 
+FYI, for anything to do with function hooks (fentry), the subject should be
+"ftrace:" not "tracing:".
+
+Tracing has to do with the tracing infrastructure, whereas ftrace is the
+function hook infrastructure.
+
+I just accepted the first two patches of this series and made the changes
+to the subjects.
+
+If a change is for function graph infrastructure specifically, you can use
+"fgraph:" instead.
+
+-- Steve
+
+
+On Tue, 15 Oct 2024 10:28:43 +0900
+"Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
+
+> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> 
+> Since the arch_ftrace_get_regs(fregs) is only valid when the
+> FL_SAVE_REGS is set, we need to use `&arch_ftrace_regs()->regs` for
+> ftrace_regs_*() APIs because those APIs are for ftrace_regs, not
+> complete pt_regs.
+> 
 
