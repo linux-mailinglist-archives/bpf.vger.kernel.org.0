@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-41985-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41986-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5451499E27F
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 11:13:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF9C399E284
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 11:13:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EE8A91F232C8
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 09:13:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B4A4F282D7B
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 09:13:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44A591E0DB0;
-	Tue, 15 Oct 2024 09:11:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 939DF1E3782;
+	Tue, 15 Oct 2024 09:11:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Iz9uYGXX"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n/9cjONp"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDCA41D9A45
-	for <bpf@vger.kernel.org>; Tue, 15 Oct 2024 09:11:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B58E1E32CF
+	for <bpf@vger.kernel.org>; Tue, 15 Oct 2024 09:11:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728983487; cv=none; b=UA+mwLzzURH2FM5yvDVqnn/7ElYVwgX6tDhuOyQ5Zc9nSm6B3Q856ByTlGU/Ct+/to7Ee0b7+YUD5cDYh7qFtCzeHnrC140HQb2ietqpsRDHabcfk/F4luHfKH7FeIhz3bSnPiweAiP8lSl7PG6qw6Gs3zjP2zrpGqGkZEOn9mc=
+	t=1728983498; cv=none; b=nO7uCueP5+S9ekXAuOnJfOfC8B61svjHsP9zHuJqx4zXIutZd9X2o8ahDveReJVct5p12xGaRmWJqeopiz891JPqlUVDskFyNWG3Dwa33JdYRwDrgFLHR1f8pceO9HPwol5fDgC4UuBGI+okXkIcEuJs5DLEbpzkO8SghVTVQag=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728983487; c=relaxed/simple;
-	bh=duof+l519DJRmJt0vEL9iIZDscSPcBGOX2moFFwv8XE=;
+	s=arc-20240116; t=1728983498; c=relaxed/simple;
+	bh=1HQNG9iWWO3wV8At9GP/jjQuJFQ7TICtEW1ksq9n0g0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ZLkDajXZ06rYH0CG+IvZDPWfRSbv6PBfcXZrm+v5iLIKuDtDPY67WAaAGIItIqC5psaWK7zTwDV1lYbOz5REZYm3J3hrifq28DkzGY3e5c7z6wFJcQBLrwu5iygimq+CH1ONK+rO8fmMR5BR6cWti9rJQXACarZfbG5dm5aoqIs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Iz9uYGXX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C76C6C4CECE;
-	Tue, 15 Oct 2024 09:11:24 +0000 (UTC)
+	 MIME-Version; b=HeGkoz/rAwY4f3HEtCQznnoA+6+jpITV+UPP/3O1eOIVzNqsJuWcvMtjL8lw7NXdTlMxd5ELIEdGUo8mZWsEcFbzhDT4UDqBZcF0rVud4cZuBQ7SoO/n8aGyId6AfVdZ6fCuicYxCgQ+nuCPfsMeClhAYBPe77v0It+HitET2Po=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n/9cjONp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2660FC4CED0;
+	Tue, 15 Oct 2024 09:11:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728983487;
-	bh=duof+l519DJRmJt0vEL9iIZDscSPcBGOX2moFFwv8XE=;
+	s=k20201202; t=1728983498;
+	bh=1HQNG9iWWO3wV8At9GP/jjQuJFQ7TICtEW1ksq9n0g0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Iz9uYGXX4P9tdPXJaUlqeqnMZIECehXoyvYgIo0xZHAD6xz1bx6DmLfCqCku9ds9x
-	 GtNAWQmX//uIjOf7yx6TB3Lx2nmX3G+3ZApDiJCjT0pm2ishuzO4qq2AlYL7xa8k5s
-	 blS4HM1XDhOxF0GuKGy8NCx4TJzNDukR4ePxfgxpJvVi2t29cYVMIHeYc70AFerNnW
-	 vAQv4dxrUYoarc2zsntzvqHwYF6wHPXmYPstRy/YCpNK9HVA8k59PD66y4RHQbCfMs
-	 rBj0UwnGp2XAdOF2bmG7O+Co0yoTpHFd9Ged5fQzVp5Exxhs7YG5acJz5k82lhEV9f
-	 lvQePrrxOjaDQ==
+	b=n/9cjONpPgCp6l6GMDakxRXTrSnEChphwND4TtNdB0BX4TjA0lf+zZAxHcxiZYFzJ
+	 YYaaxT+8SMsWJYzn3whw2gSnR39GRNTv3Gf5LsD+uz5MHAOw4MXqONTkV4/ECxqEyD
+	 XjHn5uWZ6icboTCtwZPuTal70kvzvkguWJryOP+Rsgmp8vmLM/gsxeW1VRpncSRhyk
+	 DJ1kBNWAJg6fiRuRZ6ZdiVZHswMywen6PF7eoC6MbxESLLZGVpebhLt2ThotIz5lmy
+	 HfMX2KVHmwAPoohymRrkpdtz7fOD9eC7MpPDtD06EwHglB3Dc8uQEne4iMuK0JJ+Hv
+	 k2OErQfWp3F/A==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
@@ -53,9 +53,9 @@ Cc: bpf@vger.kernel.org,
 	KP Singh <kpsingh@chromium.org>,
 	Stanislav Fomichev <sdf@fomichev.me>,
 	Hao Luo <haoluo@google.com>
-Subject: [PATCHv7 bpf-next 03/15] bpf: Allow return values 0 and 1 for kprobe session
-Date: Tue, 15 Oct 2024 11:10:38 +0200
-Message-ID: <20241015091050.3731669-4-jolsa@kernel.org>
+Subject: [PATCHv7 bpf-next 04/15] bpf: Force uprobe bpf program to always return 0
+Date: Tue, 15 Oct 2024 11:10:39 +0200
+Message-ID: <20241015091050.3731669-5-jolsa@kernel.org>
 X-Mailer: git-send-email 2.46.2
 In-Reply-To: <20241015091050.3731669-1-jolsa@kernel.org>
 References: <20241015091050.3731669-1-jolsa@kernel.org>
@@ -67,36 +67,50 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The kprobe session program can return only 0 or 1,
-instruct verifier to check for that.
+As suggested by Andrii make uprobe multi bpf programs to always return 0,
+so they can't force uprobe removal.
 
-Fixes: 535a3692ba72 ("bpf: Add support for kprobe session attach")
+Keeping the int return type for uprobe_prog_run, because it will be used
+in following session changes.
+
+Fixes: 89ae89f53d20 ("bpf: Add multi uprobe link")
+Suggested-by: Andrii Nakryiko <andrii@kernel.org>
 Acked-by: Andrii Nakryiko <andrii@kernel.org>
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- kernel/bpf/verifier.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ kernel/trace/bpf_trace.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index f514247ba8ba..5c941fd1b141 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -15915,6 +15915,15 @@ static int check_return_code(struct bpf_verifier_env *env, int regno, const char
- 			return -ENOTSUPP;
- 		}
- 		break;
-+	case BPF_PROG_TYPE_KPROBE:
-+		switch (env->prog->expected_attach_type) {
-+		case BPF_TRACE_KPROBE_SESSION:
-+			range = retval_range(0, 1);
-+			break;
-+		default:
-+			return 0;
-+		}
-+		break;
- 	case BPF_PROG_TYPE_SK_LOOKUP:
- 		range = retval_range(SK_DROP, SK_PASS);
- 		break;
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index fdab7ecd8dfa..3c1e5a561df4 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -3209,7 +3209,6 @@ static int uprobe_prog_run(struct bpf_uprobe *uprobe,
+ 	struct bpf_prog *prog = link->link.prog;
+ 	bool sleepable = prog->sleepable;
+ 	struct bpf_run_ctx *old_run_ctx;
+-	int err = 0;
+ 
+ 	if (link->task && !same_thread_group(current, link->task))
+ 		return 0;
+@@ -3222,7 +3221,7 @@ static int uprobe_prog_run(struct bpf_uprobe *uprobe,
+ 	migrate_disable();
+ 
+ 	old_run_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);
+-	err = bpf_prog_run(link->link.prog, regs);
++	bpf_prog_run(link->link.prog, regs);
+ 	bpf_reset_run_ctx(old_run_ctx);
+ 
+ 	migrate_enable();
+@@ -3231,7 +3230,7 @@ static int uprobe_prog_run(struct bpf_uprobe *uprobe,
+ 		rcu_read_unlock_trace();
+ 	else
+ 		rcu_read_unlock();
+-	return err;
++	return 0;
+ }
+ 
+ static bool
 -- 
 2.46.2
 
