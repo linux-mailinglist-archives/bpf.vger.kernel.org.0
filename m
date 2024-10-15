@@ -1,162 +1,132 @@
-Return-Path: <bpf+bounces-42082-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42083-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64ADB99F50B
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 20:19:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3702F99F512
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 20:20:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 11640284900
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 18:19:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F01442848A0
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 18:20:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEF081FC7DE;
-	Tue, 15 Oct 2024 18:18:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 749FB1FC7DD;
+	Tue, 15 Oct 2024 18:20:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="oXxMKnXw"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lpkD4qeu"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 961948614E;
-	Tue, 15 Oct 2024 18:18:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E88DD1C4A2C;
+	Tue, 15 Oct 2024 18:20:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729016334; cv=none; b=ClYzGB7L3QgnAdYGBsA+nJ0Ck5kTeSi+iSpaLHTMbU/c6Plh4f+HeqsxHLjXoQ9cnG7ZFvPGULrRe7EG3wky7l0HgnVOhnpcY4xXs51OcYjAwXq1s2CFUoQxqqGDs+a5E4EC1XZuyLC6/cPUbeikOwiJ/PVFmBz6OEJOrTuIjbw=
+	t=1729016401; cv=none; b=q6l+VkvkXDv5peJGaUywnsQW0NyNnTI2wcgmx7cm1Pv5HL1yMdBrfhkP0ZXHHv5JbZTL/4JR8MH0GtwbUKBRFmxtfXivqwF3yoiFb0PukmH4aH/SalTTUWzqiEkVzQ63uz2A1XFAuCMMEwrLdP6jGCGX1Dod6dbAe8wKbdU2n98=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729016334; c=relaxed/simple;
-	bh=JwHxPiXJuZclFdn5e8WGZJdc6o7BnirTKbw/DtMZwbY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=jnCDqJz2IW4CQdK+1Y4kjH8nrK4DWzoIRG/+Dh3iTU9R/yxBbdJUMt2+XkqeGZYY6FIq74PYq69S9sJfojbDNL72qlJhJA8gOHUMq3z8Y2m7/bAX5gHMlBcAjcMwGy0A7Mhwfva+ziAO73u5ZwLLR8L10ZXSy2G+rvWQToaNGE4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=oXxMKnXw; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 49FHODGH011739;
-	Tue, 15 Oct 2024 18:18:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=pp1; bh=z9jWvZ/gm8Qq74Tyw7fwZ62BiKpBEm
-	K2ZEvrNXAcRUM=; b=oXxMKnXwCx5amMohU6CS37GyuU4RSujbOh4wL35gbCULV4
-	5CL3IhUzyTQSj8wyoysAigLAAQb5hNbuUpsLp+iTUprbuPP9Vey2nOsrbfpBfQV6
-	gHxbXZWSIzuH8sOh/ubwMtW2dPyiWJengtaTtqy7Ybeew+I90ssjeQk0puSAp00e
-	O9Y1hyfNO3e61gFJEWN+bKlvawwS6LYe5FwRub3MLQCS+/cBeV2vGZ5/chHc/1hF
-	PSDpcbZBLYzrFchFF79/uAcSNuMsXx0Gzg/OCV+OQ2bbbIFQ8zQcvIr4e0jL6zbf
-	dIq546Aty20ccGqoNEVeoDCX4rMAbsUvsw9hVCqQ==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 429vrw87yj-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 15 Oct 2024 18:18:12 +0000 (GMT)
-Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 49FIIBeG030802;
-	Tue, 15 Oct 2024 18:18:11 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 429vrw87yb-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 15 Oct 2024 18:18:11 +0000 (GMT)
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 49FHoNUt001940;
-	Tue, 15 Oct 2024 18:18:09 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4284emnav9-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 15 Oct 2024 18:18:09 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 49FII6wd43254264
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 15 Oct 2024 18:18:06 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id D7DFA20043;
-	Tue, 15 Oct 2024 18:18:05 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 4881C20040;
-	Tue, 15 Oct 2024 18:18:04 +0000 (GMT)
-Received: from osiris (unknown [9.171.70.29])
-	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Tue, 15 Oct 2024 18:18:04 +0000 (GMT)
-Date: Tue, 15 Oct 2024 20:18:02 +0200
-From: Heiko Carstens <hca@linux.ibm.com>
-To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Florent Revest <revest@chromium.org>,
-        linux-trace-kernel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Mark Rutland <mark.rutland@arm.com>, linux-arch@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Naveen N Rao <naveen@kernel.org>,
-        Madhavan Srinivasan <maddy@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH v16 09/18] tracing: Add ftrace_fill_perf_regs() for perf
- event
-Message-ID: <20241015181802.19678-A-hca@linux.ibm.com>
-References: <172895571278.107311.14000164546881236558.stgit@devnote2>
- <172895581574.107311.17609909207681074574.stgit@devnote2>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <172895581574.107311.17609909207681074574.stgit@devnote2>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: bD2jHtvmSdCYlz0f55HyYodQIP0i2U6G
-X-Proofpoint-GUID: ZKaQmoX4Y2qQZa3eReUFKrNvHdqwfXne
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	s=arc-20240116; t=1729016401; c=relaxed/simple;
+	bh=/qveEz4oH0ioXwKnVP9i6T15T8fGe8hnk98Bruxgq4s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=u3ZXnlrywASd7UfnGm7Ks4MJMkkSnuiMKGzWX1GRt3FRSTK1uMkW0bQjpYuQUXWjMpf0tTp0NmrUUPwacoxsnBG4zsTf68ulMNVN8oxTrgvj+gb+rItJuXucnTmFHJB0t3vxN4UDyehruNI+3C4JO3+iIC97OWGTm/Q6rAKqerM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lpkD4qeu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C24CC4CEC6;
+	Tue, 15 Oct 2024 18:19:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1729016400;
+	bh=/qveEz4oH0ioXwKnVP9i6T15T8fGe8hnk98Bruxgq4s=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=lpkD4qeucXLibc1EBuv+su9vyzVuPHT3FT9j0xnD5ovdbZ9wANxdqAJ6GTLeIpsnv
+	 X0ROdsgGwWCNTNErBIxQzNf06eLRV/6ns9fnfi0P4TxPboxsbIzNboGnkVcQ2TY5Lf
+	 uLKb1pLbPK4fgZkuqRhbjKHxjnqm8rBmRyupxqJ2d/ldoNPOdd0czT7aQSHLcqf2/h
+	 tcE5ht3pGEigGaWiAfvekuA5mkzbHoA+uMWgKk3LEBzGH07LSOKe6MTXXm3/u0zwMx
+	 VPEpBA00r40JIwBrcTzdXJWmKwVEOgJ8QVEVNvcU5dnkaMHEHsG03UeSpkFp8wGUEb
+	 toasnJB80NBbA==
+Date: Tue, 15 Oct 2024 11:19:58 -0700
+From: Namhyung Kim <namhyung@kernel.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
+	David Rientjes <rientjes@google.com>,
+	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm <linux-mm@kvack.org>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Kees Cook <kees@kernel.org>,
+	"Paul E. McKenney" <paulmck@kernel.org>
+Subject: Re: [PATCH v5 bpf-next 2/3] mm/bpf: Add bpf_get_kmem_cache() kfunc
+Message-ID: <Zw6yToBbtOBPvUWx@google.com>
+References: <20241010232505.1339892-1-namhyung@kernel.org>
+ <20241010232505.1339892-3-namhyung@kernel.org>
+ <CAADnVQLN1De95WqUu2ESAdX-wNvaGhSNeboar1k-O+z_d7-dNA@mail.gmail.com>
+ <Zwl5BkB-SawgQ9KY@google.com>
+ <Zw1fN1WqjvoCeT_s@google.com>
+ <CAADnVQJ2M953da8_gnGgWR9x6_-ztqFO8xvRU=bKcwmsH4ewvg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
- definitions=2024-10-15_01,2024-10-11_01,2024-09-30_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- phishscore=0 bulkscore=0 malwarescore=0 mlxlogscore=559 suspectscore=0
- priorityscore=1501 mlxscore=0 clxscore=1015 spamscore=0 impostorscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2409260000 definitions=main-2410150122
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQJ2M953da8_gnGgWR9x6_-ztqFO8xvRU=bKcwmsH4ewvg@mail.gmail.com>
 
-On Tue, Oct 15, 2024 at 10:30:15AM +0900, Masami Hiramatsu (Google) wrote:
-> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+On Mon, Oct 14, 2024 at 06:50:49PM -0700, Alexei Starovoitov wrote:
+> On Mon, Oct 14, 2024 at 11:13 AM Namhyung Kim <namhyung@kernel.org> wrote:
+> >
+> > Hi Alexei,
+> >
+> > On Fri, Oct 11, 2024 at 12:14:14PM -0700, Namhyung Kim wrote:
+> > > On Fri, Oct 11, 2024 at 11:35:27AM -0700, Alexei Starovoitov wrote:
+> > > > On Thu, Oct 10, 2024 at 4:25 PM Namhyung Kim <namhyung@kernel.org> wrote:
+> > > > >
+> > > > > The bpf_get_kmem_cache() is to get a slab cache information from a
+> > > > > virtual address like virt_to_cache().  If the address is a pointer
+> > > > > to a slab object, it'd return a valid kmem_cache pointer, otherwise
+> > > > > NULL is returned.
+> > > > >
+> > > > > It doesn't grab a reference count of the kmem_cache so the caller is
+> > > > > responsible to manage the access.  The returned point is marked as
+> > > > > PTR_UNTRUSTED.  And the kfunc has KF_RCU_PROTECTED as the slab object
+> > > > > might be protected by RCU.
+> > > >
+> > > > ...
+> > > > > +BTF_ID_FLAGS(func, bpf_get_kmem_cache, KF_RCU_PROTECTED)
+> > > >
+> > > > This flag is unnecessary. PTR_UNTRUSTED can point to absolutely any memory.
+> > > > In this case it likely points to a valid kmem_cache, but
+> > > > the verifier will guard all accesses with probe_read anyway.
+> > > >
+> > > > I can remove this flag while applying.
+> > >
+> > > Ok, I'd be happy if you would remove it.
+> >
+> > You will need to update the bpf_rcu_read_lock/unlock() in the test code
+> > (patch 3).  I can send v6 with that and Vlastimil's Ack if you want.
 > 
-> Add ftrace_fill_perf_regs() which should be compatible with the
-> perf_fetch_caller_regs(). In other words, the pt_regs returned from the
-> ftrace_fill_perf_regs() must satisfy 'user_mode(regs) == false' and can be
-> used for stack tracing.
+> Fixed all that while applying.
 > 
-> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> ---
->   Changes from previous series: NOTHING, just forward ported.
-> ---
->  arch/s390/include/asm/ftrace.h    |    5 +++++
+> Could you please follow up with an open-coded iterator version
+> of the same slab iterator ?
+> So that progs can iterate slabs as a normal for/while loop ?
 
-...
+I'm not sure I'm following.  Do you want a new test program to iterate
+kmem_caches by reading list pointers manually?  How can I grab the
+slab_mutex then?
 
-> diff --git a/arch/s390/include/asm/ftrace.h b/arch/s390/include/asm/ftrace.h
-> index 5c94c1fc1bc1..f1c0e677a325 100644
-> --- a/arch/s390/include/asm/ftrace.h
-> +++ b/arch/s390/include/asm/ftrace.h
-> @@ -76,6 +76,11 @@ ftrace_regs_get_frame_pointer(struct ftrace_regs *fregs)
->  	return ftrace_regs_get_stack_pointer(fregs);
->  }
->  
-> +#define arch_ftrace_fill_perf_regs(fregs, _regs)	 do {		\
-> +		(_regs)->psw.addr = arch_ftrace_regs(fregs)->regs.psw.addr;		\
-> +		(_regs)->gprs[15] = arch_ftrace_regs(fregs)->regs.gprs[15];		\
-> +	} while (0)
-> +
+Thanks,
+Namhyung
 
-This misses the feedback I gave for v15:
-https://lore.kernel.org/all/20241009100502.8007-E-hca@linux.ibm.com
 
