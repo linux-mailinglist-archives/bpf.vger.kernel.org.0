@@ -1,64 +1,62 @@
-Return-Path: <bpf+bounces-42106-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42107-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6E7099FB6A
-	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 00:24:52 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77B5199FC73
+	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 01:25:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 661D5286433
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 22:24:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EE3B41F24E66
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 23:25:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A12A01D0F42;
-	Tue, 15 Oct 2024 22:24:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1F171F76B2;
+	Tue, 15 Oct 2024 23:25:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kMsoD6Ls"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AUY2J+zT"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B3301B0F0F;
-	Tue, 15 Oct 2024 22:24:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 147DB1DD880;
+	Tue, 15 Oct 2024 23:25:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729031073; cv=none; b=QEQUXblPnmXnO0QPnuP8U49aUIs7q95YKdXdynUUAroZ/GXZW/+LQ7hsDFMIoRtweo44tFibEYC+k+BHEXBcn2tCC4HSZt9aEZIOsqFuSYvVQwtRZ7Yw0SNipMKLV3tsQDupEGjPxq0/ia/075OY1Wc1ig6lcJZRVBLPID6AHP8=
+	t=1729034747; cv=none; b=B9gjVCAnHP3SVL2+zfV6jKHjwpA5N6Nz5IVXYFs6A7PiNaE3mCYvNHjzC+jHDgJgbugOh4bSzKpgmzbE6JTYNCI6iQh5+gDRNuYtl6c1G5DM458xPVah/ajzC4F5HL30bnOTPKQfi3+895y+qFsfWhtbIxrCGBoZlADsD7QdiUA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729031073; c=relaxed/simple;
-	bh=tSAPdkBdHjG9+KNs4Rn2ppfn4xpMBH1qHfM0L+k/jxg=;
+	s=arc-20240116; t=1729034747; c=relaxed/simple;
+	bh=jjCW4xAfQsZhSMNoelCTZkCqxoymOYhjGbyXkEbogLg=;
 	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=Bpnfu8ME1tTwbbih3l351o3D6s+fs0eZu7eBYpLxvONZ60tPGB2hE5qPSlztNiR89gX2OFUjuSl/yHZ13hKloaDh4eajJoysbdJjn4Bw9EcvgVnaraL6JTMBOEAiu/1BOnBzWrnLWIOShVpoL4i7J5h/PwP5VC2bG1Ps+9pyRzU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kMsoD6Ls; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A71F1C4CEC6;
-	Tue, 15 Oct 2024 22:24:28 +0000 (UTC)
+	 Mime-Version:Content-Type; b=UpRT8rnTZNVJOx+ghv7Ju2b3DfkHVLd5zaSTp5lrQTa47I66IpLmMylvpEUNWripXjDj6lYYMYWc3graLBlqJdy5eXEMmKRHPORFXz912lmZoN7rYAnQWACPBh6fHVFRL1jY22pKkQrD8nBnltzwGCbbJ1mtyZTgAwOQ/8+IQ/Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AUY2J+zT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7992FC4CECF;
+	Tue, 15 Oct 2024 23:25:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1729031072;
-	bh=tSAPdkBdHjG9+KNs4Rn2ppfn4xpMBH1qHfM0L+k/jxg=;
+	s=k20201202; t=1729034746;
+	bh=jjCW4xAfQsZhSMNoelCTZkCqxoymOYhjGbyXkEbogLg=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=kMsoD6LsW2VTgsUXW+U4SX1+lVzBhyR49NI7EQsGUIe868usg+6KwGhVCBdvdjXeu
-	 gEPsKwBEugHUaHtux2OFkYxlYfgCWMp+ycKmya54C5s38MmCMwW6qzItGv7W5+MZKQ
-	 Vkj14bWCBjfK60TgH0mfSfltjbJZUQR+hl8sCERRwXVkvlzR1Z0X3WRiELBynmrmEU
-	 LGnjeimQgbW/tNlfIchzX2v8Bh9cVSf/naKzAJIFfig92oWe4TgVnpTZzFg9Zap/sk
-	 XmTvPpPxweKg3qOk6h59ZLvpU+zHFJ98F7GBUVoZFjHQPYVZjx0lrftgkcFEhONwzX
-	 mP6rd82m59eZA==
-Date: Wed, 16 Oct 2024 07:24:26 +0900
+	b=AUY2J+zTtrPJzLiWRKXn/3cWoVbQtGhrABR52n24aRbhiPgS/uZedIRUzU5YV6Rog
+	 mMn13+aBguHS9u5C2h8Q9x3b0Zmy5lb9j2NjP4NBVvubNGKotl9FX/loPDfo3gVlWk
+	 LZvSWfJ1ZuMjuQbcWklKYMRUItDBf9qZSxJXLd1bY12NRSCDNnvS1G4Eb3/+9JDvxO
+	 oSIRHYtaB6fJB1bcIrIOEiDw0TcIfIIJQuv5MMixHA5ySdY6tQ8AjPzJyIvwqiPB8Q
+	 DyHwCRlKmVsIT8i380bN2t4lX2/EqekxCiFmUK7EoBbDRpzbvglZe7cLT6Uf83h7CH
+	 3m1t7c6p5/G+w==
+Date: Wed, 16 Oct 2024 08:25:41 +0900
 From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Jiri Olsa <jolsa@kernel.org>
-Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>, Song Liu
- <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, John Fastabend
- <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>, Stanislav
- Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Steven Rostedt
- <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>,
- linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCHv6 perf/core 01/16] uprobe: Add data pointer to consumer
- handlers
-Message-Id: <20241016072426.c6f7b9572b946dd31c0c1fb8@kernel.org>
-In-Reply-To: <20241010200957.2750179-2-jolsa@kernel.org>
-References: <20241010200957.2750179-1-jolsa@kernel.org>
-	<20241010200957.2750179-2-jolsa@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Florent Revest
+ <revest@chromium.org>, linux-trace-kernel@vger.kernel.org, LKML
+ <linux-kernel@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+ bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, Jiri Olsa
+ <jolsa@kernel.org>, Alan Maguire <alan.maguire@oracle.com>, Mark Rutland
+ <mark.rutland@arm.com>, linux-arch@vger.kernel.org
+Subject: Re: [PATCH v16 01/18] tracing: Use arch_ftrace_regs() for
+ ftrace_regs_*() macros
+Message-Id: <20241016082541.6d5d278d425e05b8295c0193@kernel.org>
+In-Reply-To: <20241015172757.3221a96f@gandalf.local.home>
+References: <172895571278.107311.14000164546881236558.stgit@devnote2>
+	<172895572290.107311.16057631001860177198.stgit@devnote2>
+	<20241015172757.3221a96f@gandalf.local.home>
 X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -69,150 +67,46 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Thu, 10 Oct 2024 22:09:42 +0200
-Jiri Olsa <jolsa@kernel.org> wrote:
+On Tue, 15 Oct 2024 17:27:57 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-> Adding data pointer to both entry and exit consumer handlers and all
-> its users. The functionality itself is coming in following change.
 > 
+> FYI, for anything to do with function hooks (fentry), the subject should be
+> "ftrace:" not "tracing:".
 
-Looks good to me.
+Ah, yes.
 
-Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> 
+> Tracing has to do with the tracing infrastructure, whereas ftrace is the
+> function hook infrastructure.
+> 
+> I just accepted the first two patches of this series and made the changes
+> to the subjects.
 
-Alexei, please merge this series via bpf tree, since most of the patches
-in this series are for bpf.
+OK, thanks!
+
+> 
+> If a change is for function graph infrastructure specifically, you can use
+> "fgraph:" instead.
+
+Just to confirm, is "function_graph:" for function graph tracer itself?
 
 Thank you,
 
-> Acked-by: Oleg Nesterov <oleg@redhat.com>
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  include/linux/uprobes.h                              |  4 ++--
->  kernel/events/uprobes.c                              |  4 ++--
->  kernel/trace/bpf_trace.c                             |  6 ++++--
->  kernel/trace/trace_uprobe.c                          | 12 ++++++++----
->  .../testing/selftests/bpf/bpf_testmod/bpf_testmod.c  |  2 +-
->  5 files changed, 17 insertions(+), 11 deletions(-)
 > 
-> diff --git a/include/linux/uprobes.h b/include/linux/uprobes.h
-> index 2b294bf1881f..bb265a632b91 100644
-> --- a/include/linux/uprobes.h
-> +++ b/include/linux/uprobes.h
-> @@ -37,10 +37,10 @@ struct uprobe_consumer {
->  	 * for the current process. If filter() is omitted or returns true,
->  	 * UPROBE_HANDLER_REMOVE is effectively ignored.
->  	 */
-> -	int (*handler)(struct uprobe_consumer *self, struct pt_regs *regs);
-> +	int (*handler)(struct uprobe_consumer *self, struct pt_regs *regs, __u64 *data);
->  	int (*ret_handler)(struct uprobe_consumer *self,
->  				unsigned long func,
-> -				struct pt_regs *regs);
-> +				struct pt_regs *regs, __u64 *data);
->  	bool (*filter)(struct uprobe_consumer *self, struct mm_struct *mm);
->  
->  	struct list_head cons_node;
-> diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-> index 2a0059464383..6b44c386a5df 100644
-> --- a/kernel/events/uprobes.c
-> +++ b/kernel/events/uprobes.c
-> @@ -2090,7 +2090,7 @@ static void handler_chain(struct uprobe *uprobe, struct pt_regs *regs)
->  		int rc = 0;
->  
->  		if (uc->handler) {
-> -			rc = uc->handler(uc, regs);
-> +			rc = uc->handler(uc, regs, NULL);
->  			WARN(rc & ~UPROBE_HANDLER_MASK,
->  				"bad rc=0x%x from %ps()\n", rc, uc->handler);
->  		}
-> @@ -2128,7 +2128,7 @@ handle_uretprobe_chain(struct return_instance *ri, struct pt_regs *regs)
->  	rcu_read_lock_trace();
->  	list_for_each_entry_rcu(uc, &uprobe->consumers, cons_node, rcu_read_lock_trace_held()) {
->  		if (uc->ret_handler)
-> -			uc->ret_handler(uc, ri->func, regs);
-> +			uc->ret_handler(uc, ri->func, regs, NULL);
->  	}
->  	rcu_read_unlock_trace();
->  }
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index a582cd25ca87..fdab7ecd8dfa 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -3244,7 +3244,8 @@ uprobe_multi_link_filter(struct uprobe_consumer *con, struct mm_struct *mm)
->  }
->  
->  static int
-> -uprobe_multi_link_handler(struct uprobe_consumer *con, struct pt_regs *regs)
-> +uprobe_multi_link_handler(struct uprobe_consumer *con, struct pt_regs *regs,
-> +			  __u64 *data)
->  {
->  	struct bpf_uprobe *uprobe;
->  
-> @@ -3253,7 +3254,8 @@ uprobe_multi_link_handler(struct uprobe_consumer *con, struct pt_regs *regs)
->  }
->  
->  static int
-> -uprobe_multi_link_ret_handler(struct uprobe_consumer *con, unsigned long func, struct pt_regs *regs)
-> +uprobe_multi_link_ret_handler(struct uprobe_consumer *con, unsigned long func, struct pt_regs *regs,
-> +			      __u64 *data)
->  {
->  	struct bpf_uprobe *uprobe;
->  
-> diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
-> index c40531d2cbad..5895eabe3581 100644
-> --- a/kernel/trace/trace_uprobe.c
-> +++ b/kernel/trace/trace_uprobe.c
-> @@ -89,9 +89,11 @@ static struct trace_uprobe *to_trace_uprobe(struct dyn_event *ev)
->  static int register_uprobe_event(struct trace_uprobe *tu);
->  static int unregister_uprobe_event(struct trace_uprobe *tu);
->  
-> -static int uprobe_dispatcher(struct uprobe_consumer *con, struct pt_regs *regs);
-> +static int uprobe_dispatcher(struct uprobe_consumer *con, struct pt_regs *regs,
-> +			     __u64 *data);
->  static int uretprobe_dispatcher(struct uprobe_consumer *con,
-> -				unsigned long func, struct pt_regs *regs);
-> +				unsigned long func, struct pt_regs *regs,
-> +				__u64 *data);
->  
->  #ifdef CONFIG_STACK_GROWSUP
->  static unsigned long adjust_stack_addr(unsigned long addr, unsigned int n)
-> @@ -1517,7 +1519,8 @@ trace_uprobe_register(struct trace_event_call *event, enum trace_reg type,
->  	}
->  }
->  
-> -static int uprobe_dispatcher(struct uprobe_consumer *con, struct pt_regs *regs)
-> +static int uprobe_dispatcher(struct uprobe_consumer *con, struct pt_regs *regs,
-> +			     __u64 *data)
->  {
->  	struct trace_uprobe *tu;
->  	struct uprobe_dispatch_data udd;
-> @@ -1548,7 +1551,8 @@ static int uprobe_dispatcher(struct uprobe_consumer *con, struct pt_regs *regs)
->  }
->  
->  static int uretprobe_dispatcher(struct uprobe_consumer *con,
-> -				unsigned long func, struct pt_regs *regs)
-> +				unsigned long func, struct pt_regs *regs,
-> +				__u64 *data)
->  {
->  	struct trace_uprobe *tu;
->  	struct uprobe_dispatch_data udd;
-> diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-> index 8835761d9a12..12005e3dc3e4 100644
-> --- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-> +++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-> @@ -461,7 +461,7 @@ static struct bin_attribute bin_attr_bpf_testmod_file __ro_after_init = {
->  
->  static int
->  uprobe_ret_handler(struct uprobe_consumer *self, unsigned long func,
-> -		   struct pt_regs *regs)
-> +		   struct pt_regs *regs, __u64 *data)
->  
->  {
->  	regs->ax  = 0x12345678deadbeef;
-> -- 
-> 2.46.2
+> -- Steve
 > 
+> 
+> On Tue, 15 Oct 2024 10:28:43 +0900
+> "Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
+> 
+> > From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > 
+> > Since the arch_ftrace_get_regs(fregs) is only valid when the
+> > FL_SAVE_REGS is set, we need to use `&arch_ftrace_regs()->regs` for
+> > ftrace_regs_*() APIs because those APIs are for ftrace_regs, not
+> > complete pt_regs.
+> > 
 
 
 -- 
