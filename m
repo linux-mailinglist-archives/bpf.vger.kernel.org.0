@@ -1,63 +1,63 @@
-Return-Path: <bpf+bounces-42057-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42058-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 661B599F072
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 17:00:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01C6299F075
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 17:00:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 894A51C231C8
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 15:00:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 249B31C23303
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 15:00:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5072E1F6662;
-	Tue, 15 Oct 2024 14:55:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 509F31F9ECB;
+	Tue, 15 Oct 2024 14:55:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gfMOZ6Dz"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="O6dfp6Ex"
 X-Original-To: bpf@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16E731F76DC;
-	Tue, 15 Oct 2024 14:55:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 419D81F9EB6;
+	Tue, 15 Oct 2024 14:55:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729004121; cv=none; b=SRlmawd6SQ8+9Ujmvv7F1KJ/ArM/Lt08YJYORnqaA4FMLkI7a23xnoqp8nkUzP8M4WNJNGvef+PVvERLnoi0s6O6dpZIwyalxuFXU9cfb/RBtPizCqiAiJZOZQMt2MBQD2kWUKzLCUQTnH+1nqzdwJIy4wfhAX++lsGTXYw+B1w=
+	t=1729004125; cv=none; b=cnblg3VLD9CUekhT1WE4jE2MZuKpQakkieojRjdE0jerg1fqO6MwV0VzrfEPK5FV9xe76Ys+vxBl8DGlJ2MVcQHQ4ykZe9igAZn7ZV4YVmzRYmqrGRJU9S6my7z1cV/oggxT/Uj9Y5CDFvVduy8awrJ3Ij3aAJ/FWJAiPfklbio=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729004121; c=relaxed/simple;
-	bh=scDHXmLzkHMPXBaoWH/JAie80ZGU/ppkrRSX1rG+ndc=;
+	s=arc-20240116; t=1729004125; c=relaxed/simple;
+	bh=xP1quQVTfqWZfVS34xQWuGTXpXHRrBU1xEG+XB6ACGk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=P6X/Xb2TyqwRrxpX/hgysTEhxywj0jsOFbXgjg5cG1/V38Nc1wk4/ZP2pxzS5j5YoJ7fSof6EXgKtVGbnF4ib4Xe6tDrYJnkZfW17gbvlKVUMwZ6vOqTLu4y9Q5bIAbkpXFRLEpgUXXNKtD5zMA3fToGlwaPbiw0w8yn/kPadik=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gfMOZ6Dz; arc=none smtp.client-ip=192.198.163.13
+	 MIME-Version; b=J+OxH0X0pO+lpp8M+4HvstzVoCjxXg8tnJ5zBUv3lk1D+XG5eG2NNWNsDFs8OpI6aUARo/2Bo/UodjZ8ycarNmDZsLIiylbtXm2cDOivfTaI5tVa5ul0AJ1fE1COuU3EmMLK54P5+7rnLYjWSiUPp0dNmBhojvSbJq1qcghzLQk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=O6dfp6Ex; arc=none smtp.client-ip=192.198.163.13
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1729004120; x=1760540120;
+  t=1729004124; x=1760540124;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=scDHXmLzkHMPXBaoWH/JAie80ZGU/ppkrRSX1rG+ndc=;
-  b=gfMOZ6DzCjzL/0WDZ67z90JqJxnE4s+ZoLTlM8E7qojvZsvG0Z6t/0xn
-   4M7WDYdDI3uImVBWW47vJNVzkKGkosS5zkCroORiq0EGo/sPP2PqojzEr
-   XUKenYnkizktuMA16FfZJCvvtOgxkRLSzKuV1t+e5w/JgZId5o7wrBx4k
-   PeInRVmx7UPIH3nYa9AP2z5uHTprLDBfObOpUX2g5GTAPF0+06CLOOwc4
-   cezRg8mfzX7bgshEeBf9KrUEvE3RUdaiZjL40owg3CIlJ0mav3AgTQ5wp
-   OG8dasiA8kAGFREXMWcVHF2bQnKab4aKskm+2+yMYtE49s3IYhRMfjJx2
+  bh=xP1quQVTfqWZfVS34xQWuGTXpXHRrBU1xEG+XB6ACGk=;
+  b=O6dfp6Exc7XH4fGuec2M9Yk2X3ravbRNrZIlgcyBluTYmIjyu6ZTVcZQ
+   Ma/+qvv3tc75k3ai5Gt8CX+nolfeFG9M91LX61pxe1ATrhpSUEHDb6H3r
+   3WxSUp2SNL4GhuwHAdU32XA4zUnPrNGBDFXsyRZ5O2rIExfkuPeqEZLYP
+   h/d3fNAgW+aVrq5C0UYBLWOxemwaVOkmlplA3+9S7qGt2HwjMDe7BeOdD
+   WliqpeT/tm5MtiZW30Chl0kvJI7Fvw7X+rmcyCnBAxcVx3AYTfZm1U7qM
+   /i3L3fsQDv8y1N/x8CRZgO+iQMII3DCMjqbrxetX5Hf+VXpl77XCMPbj9
    w==;
-X-CSE-ConnectionGUID: DcsSByA2T2qJqjgWkGla8g==
-X-CSE-MsgGUID: 2mrv3qA4QJKbSAuKjFItxg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11225"; a="31277688"
+X-CSE-ConnectionGUID: w+wMdz+KRvad1N/tZZF7dg==
+X-CSE-MsgGUID: G09jS29DR/ufNzPm8tKqtg==
+X-IronPort-AV: E=McAfee;i="6700,10204,11225"; a="31277701"
 X-IronPort-AV: E=Sophos;i="6.11,205,1725346800"; 
-   d="scan'208";a="31277688"
+   d="scan'208";a="31277701"
 Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2024 07:55:20 -0700
-X-CSE-ConnectionGUID: n0RyN6a5SsqUfCoBnvj0rQ==
-X-CSE-MsgGUID: GSKirPVJTq6yA+hgxKnFyA==
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2024 07:55:24 -0700
+X-CSE-ConnectionGUID: aDDjU2IBRiibY30jw8YqIA==
+X-CSE-MsgGUID: XhsdSnG/T4C82rj54RHsLQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.11,199,1725346800"; 
-   d="scan'208";a="82723163"
+   d="scan'208";a="82723172"
 Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by orviesa003.jf.intel.com with ESMTP; 15 Oct 2024 07:55:16 -0700
+  by orviesa003.jf.intel.com with ESMTP; 15 Oct 2024 07:55:20 -0700
 From: Alexander Lobakin <aleksander.lobakin@intel.com>
 To: "David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
@@ -75,9 +75,9 @@ Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
 	bpf@vger.kernel.org,
 	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v2 16/18] xsk: add helper to get &xdp_desc's DMA and meta pointer in one go
-Date: Tue, 15 Oct 2024 16:53:48 +0200
-Message-ID: <20241015145350.4077765-17-aleksander.lobakin@intel.com>
+Subject: [PATCH net-next v2 17/18] libeth: support native XDP and register memory model
+Date: Tue, 15 Oct 2024 16:53:49 +0200
+Message-ID: <20241015145350.4077765-18-aleksander.lobakin@intel.com>
 X-Mailer: git-send-email 2.46.2
 In-Reply-To: <20241015145350.4077765-1-aleksander.lobakin@intel.com>
 References: <20241015145350.4077765-1-aleksander.lobakin@intel.com>
@@ -89,148 +89,115 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Currently, when you send an XSk frame without metadata, you need to do
-the following:
-
-* call external xsk_buff_raw_get_dma();
-* call inline xsk_buff_get_metadata(), which calls external
-  xsk_buff_raw_get_data() and then do some inline checks.
-
-This effectively means that the following piece:
-
-addr = pool->unaligned ? xp_unaligned_add_offset_to_addr(addr) : addr;
-
-is done twice per frame, plus you have 2 external calls per frame, plus
-this:
-
-	meta = pool->addrs + addr - pool->tx_metadata_len;
-	if (unlikely(!xsk_buff_valid_tx_metadata(meta)))
-
-is always inlined, even if there's no meta or it's invalid.
-
-Add xsk_buff_raw_get_ctx() (xp_raw_get_ctx() to be precise) to do that
-in one go. It returns a small structure with 2 fields: DMA address,
-filled unconditionally, and metadata pointer, valid only if it's
-present. The address correction is performed only once and you also
-have only 1 external call per XSk frame, which does all the calculations
-and checks outside of your hotpath. You only need to check
-`if (ctx.meta)` for the metadata presence.
+Expand libeth's Page Pool functionality by adding native XDP support.
+This means picking the appropriate headroom and DMA direction.
+Also, register all the created &page_pools as XDP memory models.
+A driver then can call xdp_rxq_info_attach_page_pool() when registering
+its RxQ info.
 
 Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
 ---
- include/net/xdp_sock_drv.h  | 23 +++++++++++++++++++++
- include/net/xsk_buff_pool.h |  8 ++++++++
- net/xdp/xsk_buff_pool.c     | 40 +++++++++++++++++++++++++++++++++++++
- 3 files changed, 71 insertions(+)
+ include/net/libeth/rx.h                |  6 +++++-
+ drivers/net/ethernet/intel/libeth/rx.c | 20 +++++++++++++++-----
+ 2 files changed, 20 insertions(+), 6 deletions(-)
 
-diff --git a/include/net/xdp_sock_drv.h b/include/net/xdp_sock_drv.h
-index 6aae95b83645..324a4bb04431 100644
---- a/include/net/xdp_sock_drv.h
-+++ b/include/net/xdp_sock_drv.h
-@@ -205,6 +205,23 @@ static inline void *xsk_buff_raw_get_data(struct xsk_buff_pool *pool, u64 addr)
- 	return xp_raw_get_data(pool, addr);
- }
+diff --git a/include/net/libeth/rx.h b/include/net/libeth/rx.h
+index 43574bd6612f..148be5cd822e 100644
+--- a/include/net/libeth/rx.h
++++ b/include/net/libeth/rx.h
+@@ -13,8 +13,10 @@
  
-+/**
-+ * xsk_buff_raw_get_ctx - get &xdp_desc context
-+ * @pool: XSk buff pool desc address belongs to
-+ * @addr: desc address (from userspace)
-+ *
-+ * Wrapper for xp_raw_get_ctx() to be used in drivers, see its kdoc for
-+ * details.
-+ *
-+ * Return: new &xdp_desc_ctx struct containing desc's DMA address and metadata
-+ * pointer, if it is present and valid (initialized to %NULL otherwise).
-+ */
-+static inline struct xdp_desc_ctx
-+xsk_buff_raw_get_ctx(const struct xsk_buff_pool *pool, u64 addr)
-+{
-+	return xp_raw_get_ctx(pool, addr);
-+}
-+
- #define XDP_TXMD_FLAGS_VALID ( \
- 		XDP_TXMD_FLAGS_TIMESTAMP | \
- 		XDP_TXMD_FLAGS_CHECKSUM | \
-@@ -402,6 +419,12 @@ static inline void *xsk_buff_raw_get_data(struct xsk_buff_pool *pool, u64 addr)
- 	return NULL;
- }
+ /* Space reserved in front of each frame */
+ #define LIBETH_SKB_HEADROOM	(NET_SKB_PAD + NET_IP_ALIGN)
++#define LIBETH_XDP_HEADROOM	(ALIGN(XDP_PACKET_HEADROOM, NET_SKB_PAD) + \
++				 NET_IP_ALIGN)
+ /* Maximum headroom for worst-case calculations */
+-#define LIBETH_MAX_HEADROOM	LIBETH_SKB_HEADROOM
++#define LIBETH_MAX_HEADROOM	LIBETH_XDP_HEADROOM
+ /* Link layer / L2 overhead: Ethernet, 2 VLAN tags (C + S), FCS */
+ #define LIBETH_RX_LL_LEN	(ETH_HLEN + 2 * VLAN_HLEN + ETH_FCS_LEN)
+ /* Maximum supported L2-L4 header length */
+@@ -66,6 +68,7 @@ enum libeth_fqe_type {
+  * @count: number of descriptors/buffers the queue has
+  * @type: type of the buffers this queue has
+  * @hsplit: flag whether header split is enabled
++ * @xdp: flag indicating whether XDP is enabled
+  * @buf_len: HW-writeable length per each buffer
+  * @nid: ID of the closest NUMA node with memory
+  */
+@@ -81,6 +84,7 @@ struct libeth_fq {
+ 	/* Cold fields */
+ 	enum libeth_fqe_type	type:2;
+ 	bool			hsplit:1;
++	bool			xdp:1;
  
-+static inline struct xdp_desc_ctx
-+xsk_buff_raw_get_ctx(const struct xsk_buff_pool *pool, u64 addr)
-+{
-+	return (struct xdp_desc_ctx){ };
-+}
-+
- static inline bool xsk_buff_valid_tx_metadata(struct xsk_tx_metadata *meta)
+ 	u32			buf_len;
+ 	int			nid;
+diff --git a/drivers/net/ethernet/intel/libeth/rx.c b/drivers/net/ethernet/intel/libeth/rx.c
+index f20926669318..616426a2e363 100644
+--- a/drivers/net/ethernet/intel/libeth/rx.c
++++ b/drivers/net/ethernet/intel/libeth/rx.c
+@@ -68,7 +68,7 @@ static u32 libeth_rx_hw_len_truesize(const struct page_pool_params *pp,
+ static bool libeth_rx_page_pool_params(struct libeth_fq *fq,
+ 				       struct page_pool_params *pp)
  {
- 	return false;
-diff --git a/include/net/xsk_buff_pool.h b/include/net/xsk_buff_pool.h
-index 3832997cc605..6c540696a299 100644
---- a/include/net/xsk_buff_pool.h
-+++ b/include/net/xsk_buff_pool.h
-@@ -141,6 +141,14 @@ u32 xp_alloc_batch(struct xsk_buff_pool *pool, struct xdp_buff **xdp, u32 max);
- bool xp_can_alloc(struct xsk_buff_pool *pool, u32 count);
- void *xp_raw_get_data(struct xsk_buff_pool *pool, u64 addr);
- dma_addr_t xp_raw_get_dma(struct xsk_buff_pool *pool, u64 addr);
+-	pp->offset = LIBETH_SKB_HEADROOM;
++	pp->offset = fq->xdp ? LIBETH_XDP_HEADROOM : LIBETH_SKB_HEADROOM;
+ 	/* HW-writeable / syncable length per one page */
+ 	pp->max_len = LIBETH_RX_PAGE_LEN(pp->offset);
+ 
+@@ -155,11 +155,12 @@ int libeth_rx_fq_create(struct libeth_fq *fq, struct napi_struct *napi)
+ 		.dev		= napi->dev->dev.parent,
+ 		.netdev		= napi->dev,
+ 		.napi		= napi,
+-		.dma_dir	= DMA_FROM_DEVICE,
+ 	};
+ 	struct libeth_fqe *fqes;
+ 	struct page_pool *pool;
+-	bool ret;
++	int ret;
 +
-+struct xdp_desc_ctx {
-+	dma_addr_t dma;
-+	struct xsk_tx_metadata *meta;
-+};
++	pp.dma_dir = fq->xdp ? DMA_BIDIRECTIONAL : DMA_FROM_DEVICE;
+ 
+ 	if (!fq->hsplit)
+ 		ret = libeth_rx_page_pool_params(fq, &pp);
+@@ -173,18 +174,26 @@ int libeth_rx_fq_create(struct libeth_fq *fq, struct napi_struct *napi)
+ 		return PTR_ERR(pool);
+ 
+ 	fqes = kvcalloc_node(fq->count, sizeof(*fqes), GFP_KERNEL, fq->nid);
+-	if (!fqes)
++	if (!fqes) {
++		ret = -ENOMEM;
+ 		goto err_buf;
++	}
 +
-+struct xdp_desc_ctx xp_raw_get_ctx(const struct xsk_buff_pool *pool, u64 addr);
-+
- static inline dma_addr_t xp_get_dma(struct xdp_buff_xsk *xskb)
- {
- 	return xskb->dma;
-diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
-index ae71da7d2cd6..02c42caec9f4 100644
---- a/net/xdp/xsk_buff_pool.c
-+++ b/net/xdp/xsk_buff_pool.c
-@@ -715,3 +715,43 @@ dma_addr_t xp_raw_get_dma(struct xsk_buff_pool *pool, u64 addr)
- 		(addr & ~PAGE_MASK);
- }
- EXPORT_SYMBOL(xp_raw_get_dma);
-+
-+/**
-+ * xp_raw_get_ctx - get &xdp_desc context
-+ * @pool: XSk buff pool desc address belongs to
-+ * @addr: desc address (from userspace)
-+ *
-+ * Helper for getting desc's DMA address and metadata pointer, if present.
-+ * Saves one call on hotpath, double calculation of the actual address,
-+ * and inline checks for metadata presence and sanity.
-+ * Please use xsk_buff_raw_get_ctx() in drivers instead.
-+ *
-+ * Return: new &xdp_desc_ctx struct containing desc's DMA address and metadata
-+ * pointer, if it is present and valid (initialized to %NULL otherwise).
-+ */
-+struct xdp_desc_ctx xp_raw_get_ctx(const struct xsk_buff_pool *pool, u64 addr)
-+{
-+	struct xsk_tx_metadata *meta;
-+	struct xdp_desc_ctx ret;
-+
-+	addr = pool->unaligned ? xp_unaligned_add_offset_to_addr(addr) : addr;
-+	ret = (typeof(ret)){
-+		/* Same logic as in xp_raw_get_dma() */
-+		.dma	= (pool->dma_pages[addr >> PAGE_SHIFT] &
-+			   ~XSK_NEXT_PG_CONTIG_MASK) + (addr & ~PAGE_MASK),
-+	};
-+
-+	if (!pool->tx_metadata_len)
-+		goto out;
-+
-+	/* Same logic as in xp_raw_get_data() + xsk_buff_get_metadata() */
-+	meta = pool->addrs + addr - pool->tx_metadata_len;
-+	if (unlikely(!xsk_buff_valid_tx_metadata(meta)))
-+		goto out;
-+
-+	ret.meta = meta;
-+
-+out:
++	ret = xdp_reg_page_pool(pool);
++	if (ret)
++		goto err_mem;
+ 
+ 	fq->fqes = fqes;
+ 	fq->pp = pool;
+ 
+ 	return 0;
+ 
++err_mem:
++	kvfree(fqes);
+ err_buf:
+ 	page_pool_destroy(pool);
+ 
+-	return -ENOMEM;
 +	return ret;
-+}
-+EXPORT_SYMBOL(xp_raw_get_ctx);
+ }
+ EXPORT_SYMBOL_NS_GPL(libeth_rx_fq_create, LIBETH);
+ 
+@@ -194,6 +203,7 @@ EXPORT_SYMBOL_NS_GPL(libeth_rx_fq_create, LIBETH);
+  */
+ void libeth_rx_fq_destroy(struct libeth_fq *fq)
+ {
++	xdp_unreg_page_pool(fq->pp);
+ 	kvfree(fq->fqes);
+ 	page_pool_destroy(fq->pp);
+ }
 -- 
 2.46.2
 
