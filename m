@@ -1,144 +1,144 @@
-Return-Path: <bpf+bounces-42093-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42094-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57C7199F7F2
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 22:12:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C57099F84E
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 22:54:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1C409283C59
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 20:12:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2910F284434
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 20:54:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 709F21F819E;
-	Tue, 15 Oct 2024 20:12:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 989F81FBF4F;
+	Tue, 15 Oct 2024 20:54:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NeA6yj5h"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MaSX1VpI"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC27D1B3936;
-	Tue, 15 Oct 2024 20:11:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19FFC1FBF41;
+	Tue, 15 Oct 2024 20:54:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729023120; cv=none; b=flCsEz+TU8eycGVeQoWJkRTr17a7UmKJZislmuBLfNA6sjQytuSJx6B3nGQUtgkdN+hfwDAWid6sszyIMUBwUYClyMFrF42Fyhu1byCCiPDAHKSXeCWx+8G8kEdXu9tryTz0c6KxW+OLVzyyxWiiACa2569OXbdYWfVyZ+ywkfI=
+	t=1729025649; cv=none; b=i1ujXZSRBIPAKyQbUrXGcVhVPBmiGQW1hFrxetvnFwfRF3vzViyIoGYxnzm5dddugb9RHl7h4aF9+ydrDjpoDLKatArd9bJZc07Opmtd5uWd01pStordKru9h80eHSRDieuNgSOWYLAnG+ynW4mdSKml1fhjqrCAM1Wr+HfcFaE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729023120; c=relaxed/simple;
-	bh=Y6PhmBa/nN+iDUxTFqcR/Mb33RbOlJl9A4RsS6bV0b4=;
+	s=arc-20240116; t=1729025649; c=relaxed/simple;
+	bh=dxLe8pq5mSXA6ZyikQ6T09dXj2SPF/PaIf6/4RUjGlU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Vh7lmVVpJqvfT2SuyTn01QJQPSrNqOINo1fmqe0P++7LKpc+a7oe7d2sBQw0SCHjpZfwrGDP+Vqtlu6EVwfKHSZN3mGjoCyaqag5LelnjsPyKKzYBJcSPjHWwBpPiy/sZZb8tMw7v2E3jk9A0vxXbRHdO0Jjadx65pR0YDiQrNM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NeA6yj5h; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AAB4EC4CEC6;
-	Tue, 15 Oct 2024 20:11:56 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZjH1dKkhLImqZUBfvCk7BMcRlM1Hy6atYAcP5maLNrxLbbE538HYjH8ZEp+zkzv03RKUUFbqTYPCriUfmiViNICLPhXkWhjTzdx+4RbGDPNLjp0qgtop03REb6SqN/o2yEUJvNXuVjgwb+Q2uwxsNx01tfm4f2VXaJ8McFhTvBs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MaSX1VpI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9900CC4CED1;
+	Tue, 15 Oct 2024 20:54:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1729023118;
-	bh=Y6PhmBa/nN+iDUxTFqcR/Mb33RbOlJl9A4RsS6bV0b4=;
+	s=k20201202; t=1729025648;
+	bh=dxLe8pq5mSXA6ZyikQ6T09dXj2SPF/PaIf6/4RUjGlU=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=NeA6yj5hajfLYEdkGLWG8XB5N4aid73nUjDZb/ugsyZ3AQoALVnXt8x2U69teh7bp
-	 +Jxn6eME2rpnC6+5s7BU9sn0TueSyVekqQmYatz9jkvCTO794aSB0wivMugKOyBQcF
-	 f12fUI4D7cG8AqwuNBz90ooW8BLJGSzfYerkziVJS4gVWwzpr6llRoBCSoxKz8d+Fs
-	 0rPGTZgvQEw9IByGG03TdQUKWcviEE7gexwsotoi1Pu3fbgseCJrzYVZZZHzQHsDOS
-	 xg878mky4sIBNDtU8Y7CZD0UtD4jLkQQWx+cO7Oq3WKQ8DmXAZc3hC28g+NG7SbCgU
-	 uBbk2RUOwLABQ==
-Date: Tue, 15 Oct 2024 13:11:54 -0700
-From: Luis Chamberlain <mcgrof@kernel.org>
-To: Mike Rapoport <rppt@kernel.org>
-Cc: Christoph Hellwig <hch@infradead.org>, Petr Pavlu <petr.pavlu@suse.com>,
-	Sami Tolvanen <samitolvanen@google.com>,
+	b=MaSX1VpIDaWjr+PVKj8bGzgc9Ohnj1XK9heWLlIQmOFARXxwjtxyX3leqNijRdssf
+	 BC0+MQ8fYZa1L8/LFnZV5+COBaJYPuvg0RMjQ5QUxi2AXyCIvKBGpp1KuyEKuPQFKf
+	 O+l7DDHJDEJKZ13PMAD5JyJ62oiDx8ZWVHpdPihLhou+EXQSCflDUwhkkH2DSv6sNY
+	 EGcen9Zh7PIXGeBogdau9wUoLV4P8FrgRyfk7RYtNS1KTLxlwOO6OK36zraQ/0z/5P
+	 bgh3YBoRlRJ2Aoz4Ny7k3Uqpk42RAKaIY8S4eLKTZ3Latf5074NjD3vvDQ9UUUBtS7
+	 iHOctD3I9RoAg==
+Date: Tue, 15 Oct 2024 13:54:06 -0700
+From: Namhyung Kim <namhyung@kernel.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
 	Andrew Morton <akpm@linux-foundation.org>,
-	Andreas Larsson <andreas@gaisler.com>,
-	Andy Lutomirski <luto@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-	Brian Cain <bcain@quicinc.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
-	Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Michal Simek <monstr@monstr.eu>, Oleg Nesterov <oleg@redhat.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Richard Weinberger <richard@nod.at>,
-	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
-	Stafford Horne <shorne@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>,
-	bpf@vger.kernel.org, linux-alpha@vger.kernel.org,
-	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org, linux-mm@kvack.org,
-	linux-modules@vger.kernel.org, linux-openrisc@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-	linux-trace-kernel@vger.kernel.org, linux-um@lists.infradead.org,
-	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
-	sparclinux@vger.kernel.org, x86@kernel.org, kdevops@lists.linux.dev
-Subject: Re: [PATCH v5 7/8] execmem: add support for cache of large ROX pages
-Message-ID: <Zw7MirnsHnhRveBB@bombadil.infradead.org>
-References: <20241009180816.83591-1-rppt@kernel.org>
- <20241009180816.83591-8-rppt@kernel.org>
- <Zwd7GRyBtCwiAv1v@infradead.org>
- <ZwfPPZrxHzQgYfx7@kernel.org>
- <ZwjXz0dz-RldVNx0@infradead.org>
- <ZwuIPZkjX0CfzhjS@kernel.org>
- <20241013202626.81f430a16750af0d2f40d683@linux-foundation.org>
- <Zw1uBBcG-jAgxF_t@bombadil.infradead.org>
- <Zw3rDS3GRWZe4CBu@bombadil.infradead.org>
- <Zw4DlTTbz4QwhOvU@kernel.org>
+	Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
+	David Rientjes <rientjes@google.com>,
+	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm <linux-mm@kvack.org>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Kees Cook <kees@kernel.org>,
+	"Paul E. McKenney" <paulmck@kernel.org>
+Subject: Re: [PATCH v5 bpf-next 2/3] mm/bpf: Add bpf_get_kmem_cache() kfunc
+Message-ID: <Zw7WbhSXnOlUf1lD@google.com>
+References: <20241010232505.1339892-1-namhyung@kernel.org>
+ <20241010232505.1339892-3-namhyung@kernel.org>
+ <CAADnVQLN1De95WqUu2ESAdX-wNvaGhSNeboar1k-O+z_d7-dNA@mail.gmail.com>
+ <Zwl5BkB-SawgQ9KY@google.com>
+ <Zw1fN1WqjvoCeT_s@google.com>
+ <CAADnVQJ2M953da8_gnGgWR9x6_-ztqFO8xvRU=bKcwmsH4ewvg@mail.gmail.com>
+ <Zw6yToBbtOBPvUWx@google.com>
+ <CAADnVQ+Y8BG80=8vcipKVnOL0Htd7W60f4LOPB5shG4eSORVcg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <Zw4DlTTbz4QwhOvU@kernel.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQ+Y8BG80=8vcipKVnOL0Htd7W60f4LOPB5shG4eSORVcg@mail.gmail.com>
 
-On Tue, Oct 15, 2024 at 08:54:29AM +0300, Mike Rapoport wrote:
-> On Mon, Oct 14, 2024 at 09:09:49PM -0700, Luis Chamberlain wrote:
-> > Mike, please run this with kmemleak enabled and running, and also try to get
-> > tools/testing/selftests/kmod/kmod.sh to pass.
+On Tue, Oct 15, 2024 at 11:25:11AM -0700, Alexei Starovoitov wrote:
+> On Tue, Oct 15, 2024 at 11:20 AM Namhyung Kim <namhyung@kernel.org> wrote:
+> >
+> > On Mon, Oct 14, 2024 at 06:50:49PM -0700, Alexei Starovoitov wrote:
+> > > On Mon, Oct 14, 2024 at 11:13 AM Namhyung Kim <namhyung@kernel.org> wrote:
+> > > >
+> > > > Hi Alexei,
+> > > >
+> > > > On Fri, Oct 11, 2024 at 12:14:14PM -0700, Namhyung Kim wrote:
+> > > > > On Fri, Oct 11, 2024 at 11:35:27AM -0700, Alexei Starovoitov wrote:
+> > > > > > On Thu, Oct 10, 2024 at 4:25 PM Namhyung Kim <namhyung@kernel.org> wrote:
+> > > > > > >
+> > > > > > > The bpf_get_kmem_cache() is to get a slab cache information from a
+> > > > > > > virtual address like virt_to_cache().  If the address is a pointer
+> > > > > > > to a slab object, it'd return a valid kmem_cache pointer, otherwise
+> > > > > > > NULL is returned.
+> > > > > > >
+> > > > > > > It doesn't grab a reference count of the kmem_cache so the caller is
+> > > > > > > responsible to manage the access.  The returned point is marked as
+> > > > > > > PTR_UNTRUSTED.  And the kfunc has KF_RCU_PROTECTED as the slab object
+> > > > > > > might be protected by RCU.
+> > > > > >
+> > > > > > ...
+> > > > > > > +BTF_ID_FLAGS(func, bpf_get_kmem_cache, KF_RCU_PROTECTED)
+> > > > > >
+> > > > > > This flag is unnecessary. PTR_UNTRUSTED can point to absolutely any memory.
+> > > > > > In this case it likely points to a valid kmem_cache, but
+> > > > > > the verifier will guard all accesses with probe_read anyway.
+> > > > > >
+> > > > > > I can remove this flag while applying.
+> > > > >
+> > > > > Ok, I'd be happy if you would remove it.
+> > > >
+> > > > You will need to update the bpf_rcu_read_lock/unlock() in the test code
+> > > > (patch 3).  I can send v6 with that and Vlastimil's Ack if you want.
+> > >
+> > > Fixed all that while applying.
+> > >
+> > > Could you please follow up with an open-coded iterator version
+> > > of the same slab iterator ?
+> > > So that progs can iterate slabs as a normal for/while loop ?
+> >
+> > I'm not sure I'm following.  Do you want a new test program to iterate
+> > kmem_caches by reading list pointers manually?  How can I grab the
+> > slab_mutex then?
 > 
-> There was an issue with kmemleak, I fixed it here:
-> 
-> https://lore.kernel.org/linux-mm/20241009180816.83591-1-rppt@kernel.org/T/#m020884c1795218cc2be245e8091fead1cda3f3e4
+> No.
+> See bpf_iter_task_new/_next/_destroy kfuncs and
+> commit c68a78ffe2cb ("bpf: Introduce task open coded iterator kfuncs").
 
-Ah, so this was a side fix, not part of this series, thanks.
+Oh, ok.  Thanks for the pointer, I'll take a look and add the open code
+version.
 
-> > I run into silly boot issues with just a guest.
-> 
-> Was it kmemleak or something else?
+Thanks,
+Namhyung
 
-Both kmemleak and the kmod selftest failed, here is a run of the test
-with this patch series:
-
-https://github.com/linux-kdevops/linux-modules-kpd/actions/runs/11352286624/job/31574722735
-
-We now have automated tests generated when people post patches to
-linux-modules, but if you give me your github username you can push
-onto the linux-kdevops/linux-modules-kpd [0] repo a random branch once you
-have it ready, just cp -a the linux-ci-modules/.github [1] directory onto
-your branch before a push and that'll trigger a test run (you need to
-git add -f .github on your Linux branch) with our self-hosted runners.
-
-[0] https://github.com/linux-kdevops/linux-modules-kpd
-[1] https://github.com/linux-kdevops/kdevops-ci-modules
-
-  Luis
 
