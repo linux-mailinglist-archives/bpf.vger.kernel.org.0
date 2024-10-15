@@ -1,135 +1,324 @@
-Return-Path: <bpf+bounces-42008-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42009-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E08B699E4B5
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 12:56:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 345F999E4F9
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 13:04:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0E7391C24D71
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 10:56:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E90E2284820
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 11:04:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E29301EBA1F;
-	Tue, 15 Oct 2024 10:55:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A69711D5AA7;
+	Tue, 15 Oct 2024 11:04:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=blackwall-org.20230601.gappssmtp.com header.i=@blackwall-org.20230601.gappssmtp.com header.b="FN/6EoI3"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j3VvS4Uf"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D85701EABA8
-	for <bpf@vger.kernel.org>; Tue, 15 Oct 2024 10:55:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 487B5140E50;
+	Tue, 15 Oct 2024 11:04:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728989735; cv=none; b=dNZ1aZvuqIguKJEtnOezgcqEHOg+tPZT+REGAQquFUw3sRxyN+F6yx8ho6BASpcaqsNyKjV9ALjITGEjADutDfpl1qsfsdsMLCuv9qEtDL15sXJ6QPM73Ezru2fOUG2Z19ezfDPmFCsfTzB7dzI3sD2M/DMRB/Q59OBKlzPVinE=
+	t=1728990286; cv=none; b=Trx428itbKpG4lboFaI6HfPMGV8sgrgv4m35lYD00rHw+tHXNV8ObB2Fdiwv7l9WYcNC15ziq2ns2/eKEchcBSA2cMViIe75l++vp3WntgvlMRKHcFS7RxDOtisfB0tBLYnCXIApPbIpAQkGF8dJs2rcJm6QW6pMmTIkzFph2U4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728989735; c=relaxed/simple;
-	bh=dJZxNsHufyVnVkGZ7KBRcyWcePNegdl1XvkyiSwKVwI=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=g3lwYdko3IJAoz2/qYjHxTYMd1VGDqdpZP199kkZUBHRHj8g2gig82vO5wEq2czVsM++q3cDPGRhbh75VCWVh7sY6duGZDWMp/CBPvZtlptthikg+fEhgc1hL/ZEJhSIINkTq/iRWuW41BRT9JDEO5SMryjDzc6Ijpn73w0ipCc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=blackwall.org; spf=none smtp.mailfrom=blackwall.org; dkim=pass (2048-bit key) header.d=blackwall-org.20230601.gappssmtp.com header.i=@blackwall-org.20230601.gappssmtp.com header.b=FN/6EoI3; arc=none smtp.client-ip=209.85.218.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=blackwall.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=blackwall.org
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a99cc265e0aso545596666b.3
-        for <bpf@vger.kernel.org>; Tue, 15 Oct 2024 03:55:33 -0700 (PDT)
+	s=arc-20240116; t=1728990286; c=relaxed/simple;
+	bh=EHs9TNHyAZCmkepfPPiXFBa/6zhy+DQq43xy9DSyA7I=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=kc0+V7yO525XpiYkfC8d0GoVLs683o6uRRVbuJ95xqkfWsTBP7UR7u8C1Rt6uObyi5vEqxKAer7mhkbRV3p77DGJu97ovmeYjFnRqVAKBb6QEdHhQWUyPDdZxTY6Rb2l0BpysFgWTTozw7w59tqp8ls6aCDiV65ITANIPeRkUDM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=j3VvS4Uf; arc=none smtp.client-ip=209.85.208.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2fb59652cb9so11414821fa.3;
+        Tue, 15 Oct 2024 04:04:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=blackwall-org.20230601.gappssmtp.com; s=20230601; t=1728989732; x=1729594532; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:from:subject:user-agent:mime-version:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=qxWaIsUg6giBeZB/qFZgxvxYS8Q3WXg/pwadc9vI6U4=;
-        b=FN/6EoI3dCHV7bU1thwTZfY1F7axilseOO6PvuCCFqIViQo7ynHcdA50Q1Veb2YF3e
-         2SfW1VxpqGhfEvmUOwxhKlGDZJ/VoHa/hYEHIRvf0hQahpE6EsPY7V6alhxZSByTeucZ
-         zuKfbO16bFoc1oIDbkjKRrr+/gFvCGruvI3vWfvDdch9ixAMrY37lozB7gzMzEhpQntI
-         NP/0/vgQij5f0nbe6QfbHDa3+kmCnuOg8alnfmuBRKxd0Nkfnh0TWfzUb2xvmPjW9W1+
-         4bjUyQsGQzkCUHOrbs3N40LPyGy681QIpXlYG+epZgluLeja4Hbk6yEH5Q1UaZEfBi22
-         aXVQ==
+        d=gmail.com; s=20230601; t=1728990282; x=1729595082; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nWOPVDT6rjztxkkkBYeqnJi9hJ5pL7jdILVFzXtkOpE=;
+        b=j3VvS4UfAeqcadZZlBRa3gykwMT0vHUwV+ZGw4ihI8mMXLA32IrX0q52G56H0iH1ec
+         tZyD5AMiOt7bVPUfg66tcDQhdcspfVgtshtjgEJBXYBJQWxaxdks5fv9t8WqoPpW+nFQ
+         d/uQr6vTq8LOBt9V48oSwbuvMcgJcd15vqtEByebqFY47lNvP5zkxHRPOXGWBh7+Yukh
+         oT3VBdvpmrMs1YNaIQIK1XzxCruhaYrlOEBwmVhb/DtGD8jFsc2qBBn8k9uB6ndvReQV
+         mpPeEdU2vz9Fz5zhw/+D5dwM+Ez9AViC9FR6KK4yNpcxFD2xhuHS+LlXjihDEvE0rLEm
+         n4gQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728989732; x=1729594532;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:from:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qxWaIsUg6giBeZB/qFZgxvxYS8Q3WXg/pwadc9vI6U4=;
-        b=L9+cTKhk0+o6u46OPDaVVliCjQ+vSol6Ovy1yWWc7QkaeVjk+0TkcyTqrHxkL7Ft2j
-         wvCT3qiTio2rck2xzbZIG+ejLOq5tAh7D9zLhcX+3sUjpTErnVdRKPlsQY/ADnkUByLh
-         ahO1r+SqQEUXTmfSEerCJdIJAdTweSyDUMlMBDi/+Z/ulTJGIxj5smUKIKjWQrjTid56
-         0/Tfr0KqsX+JqDvDHgqBaYF0kHT/EXIcMhygs1O8Hq6voyWNffZPPNrIXrCmL6P7c9lw
-         Fl20+AtflOJntKZ65QgyKzQY3etc+hPX5V+cinpe5aublxq1I2XM3c4GLh8Rbux66ZMj
-         60rg==
-X-Forwarded-Encrypted: i=1; AJvYcCUf8mb+SYEcacqyGAi8gi7uu+B1QxcE3fPNstb96E0Fur5Mq0W0vY8VH50d/aFUua3Oxzw=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw+cPcU2Mhn5YG08zNqJTTSNKjKePICQ1pi0o89+iQrh/hRN8iK
-	1CyY1c0QZn29wFzk0M/QVwQIk7iVS3oJCtjtTx6yCkRJnn81EJPxg1Fxi9PCRCc=
-X-Google-Smtp-Source: AGHT+IENngL8kUtvdGqBvfWOeT0HU3Jz0wnco8VTc5j19kviovROQUzgBtOacG8vxlSE5QNA5vJkkA==
-X-Received: by 2002:a17:906:f59b:b0:a99:f7df:b20a with SMTP id a640c23a62f3a-a99f7dfb8ecmr782739366b.62.1728989731976;
-        Tue, 15 Oct 2024 03:55:31 -0700 (PDT)
-Received: from [192.168.0.245] ([62.73.69.208])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a9a298232f4sm56459066b.117.2024.10.15.03.55.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Oct 2024 03:55:31 -0700 (PDT)
-Message-ID: <7d4c49da-e071-4b74-85d8-f0b5efaa0cf3@blackwall.org>
-Date: Tue, 15 Oct 2024 13:55:30 +0300
+        d=1e100.net; s=20230601; t=1728990282; x=1729595082;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nWOPVDT6rjztxkkkBYeqnJi9hJ5pL7jdILVFzXtkOpE=;
+        b=VXnOw4sgZlwGsgnlFRw+PX8aKYMQytgYhFWFEskW9dI8OSH/PsJE/CUyUgdPv7vIMv
+         XHNkkFEKLgOBScvBhBR0xnDvn22MwD7qnFdqLqyBjR0fiQZbTjiax9v5gVC6lsZUhy50
+         Ckg225S4Z+AQV5yKq6N55VyimVKeTyoisYYWsG8B7czc4wIKUbeHtNto5vXonwcVCDCC
+         6VNKAElP2bstavs0/2aiO2c2f/rVZl3AZXf5G4HyZPTBOkI6qIxRt/wRZu1XOGslSV0K
+         gmhYPYn0ndtN7F6j1+A4X2kJv/UXO6ROSiFZM0W8JT2O5YwruIuMS+ekYX0VOux5NpFL
+         jkDA==
+X-Forwarded-Encrypted: i=1; AJvYcCUI8SSqoc+13ylPGY23G2jg2krHjUJ+1bwBd4AajYntdhjEriEyoUKCJobO4QnT0lcKC1dW0Wo9k0iGmNY=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyESg1BSTV0iVORQKYfTT3QeY++EtVBuUnhrINLlQ84cQckM5Lt
+	Et7sC9MkBYpuY7hroFV9HEECP1HkbyW411ivO6JUJanujt4rCLhMMv+MEfIiDgwUin91kSBUzO2
+	VklfLlt3sQINkwU+XtjWNifB/o68=
+X-Google-Smtp-Source: AGHT+IHECShA4tATBXPqyYtooksdYzBqgSf3Db+mvaXbo971SiRyVKAus92Oc8d2TyY05X7ncNh4AVpr2Hikniy6Nxs=
+X-Received: by 2002:a05:651c:220e:b0:2fb:51f3:9212 with SMTP id
+ 38308e7fff4ca-2fb51f39559mr31642441fa.6.1728990282008; Tue, 15 Oct 2024
+ 04:04:42 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net] bpf: xdp: fallback to SKB mode if DRV flag is absent.
-From: Nikolay Aleksandrov <razor@blackwall.org>
-To: Hangbin Liu <liuhangbin@gmail.com>
-Cc: Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Alexei Starovoitov <ast@kernel.org>, Jesper Dangaard Brouer
- <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>,
- Jiri Pirko <jiri@resnulli.us>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- Lorenzo Bianconi <lorenzo@kernel.org>, Andrii Nakryiko <andriin@fb.com>,
- Jussi Maki <joamaki@gmail.com>, Jay Vosburgh <jv@jvosburgh.net>,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
- Liang Li <liali@redhat.com>
-References: <20241015033632.12120-1-liuhangbin@gmail.com>
- <8ef07e79-4812-4e02-a5d1-03a05726dd07@iogearbox.net>
- <2cdcad89-2677-4526-8ab5-3624d0300b7f@blackwall.org>
- <Zw5GNHSjgut12LEV@fedora>
- <8088f2a7-3ab1-4a1e-996d-c15703da13cc@blackwall.org>
-Content-Language: en-US
-In-Reply-To: <8088f2a7-3ab1-4a1e-996d-c15703da13cc@blackwall.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <CA+fCnZfs6bwdxkKPWWdNCjFH6H6hs0pFjaic12=HgB4b=Vv-xw@mail.gmail.com>
+ <20241011035310.2982017-1-snovitoll@gmail.com> <CA+fCnZfznvJ-zaJg+Oeddt7OOPhnvkJ4z4N35rq5KXx2N=HBFw@mail.gmail.com>
+In-Reply-To: <CA+fCnZfznvJ-zaJg+Oeddt7OOPhnvkJ4z4N35rq5KXx2N=HBFw@mail.gmail.com>
+From: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
+Date: Tue, 15 Oct 2024 16:05:37 +0500
+Message-ID: <CACzwLxiAnGZaDMnKYU3+NKwuHVmk70OYTsBz=SZEYCV8zSn5GQ@mail.gmail.com>
+Subject: Re: [PATCH v6] mm, kasan, kmsan: copy_from/to_kernel_nofault
+To: akpm@linux-foundation.org
+Cc: bpf@vger.kernel.org, Andrey Konovalov <andreyknvl@gmail.com>, dvyukov@google.com, 
+	elver@google.com, glider@google.com, kasan-dev@googlegroups.com, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, ryabinin.a.a@gmail.com, 
+	syzbot+61123a5daeb9f7454599@syzkaller.appspotmail.com, 
+	vincenzo.frascino@arm.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 15/10/2024 13:46, Nikolay Aleksandrov wrote:
-> On 15/10/2024 13:38, Hangbin Liu wrote:
->> On Tue, Oct 15, 2024 at 12:53:08PM +0300, Nikolay Aleksandrov wrote:
->>> On 15/10/2024 11:17, Daniel Borkmann wrote:
->>>> On 10/15/24 5:36 AM, Hangbin Liu wrote:
->>>>> After commit c8a36f1945b2 ("bpf: xdp: Fix XDP mode when no mode flags
->>>>> specified"), the mode is automatically set to XDP_MODE_DRV if the driver
->>>>> implements the .ndo_bpf function. However, for drivers like bonding, which
->>>>> only support native XDP for specific modes, this may result in an
->>>>> "unsupported" response.
->>>>>
->>>>> In such cases, let's fall back to SKB mode if the user did not explicitly
->>>>> request DRV mode.
->>>>>
->>>
->>> So behaviour changed once, now it's changing again.. 
->>
->> This should not be a behaviour change, it just follow the fallback rules.
->>
-> 
-> hm, what fallback rules? I see dev_xdp_attach() exits on many errors
-> with proper codes and extack messages, am I missing something, where's the
-> fallback?
-> 
+On Sun, Oct 13, 2024 at 3:45=E2=80=AFAM Andrey Konovalov <andreyknvl@gmail.=
+com> wrote:
+>
+> On Fri, Oct 11, 2024 at 5:52=E2=80=AFAM Sabyrzhan Tasbolatov
+> <snovitoll@gmail.com> wrote:
+> >
+> > Instrument copy_from_kernel_nofault() with KMSAN for uninitialized kern=
+el
+> > memory check and copy_to_kernel_nofault() with KASAN, KCSAN to detect
+> > the memory corruption.
+> >
+> > syzbot reported that bpf_probe_read_kernel() kernel helper triggered
+> > KASAN report via kasan_check_range() which is not the expected behaviou=
+r
+> > as copy_from_kernel_nofault() is meant to be a non-faulting helper.
+> >
+> > Solution is, suggested by Marco Elver, to replace KASAN, KCSAN check in
+> > copy_from_kernel_nofault() with KMSAN detection of copying uninitilaize=
+d
+> > kernel memory. In copy_to_kernel_nofault() we can retain
+> > instrument_write() explicitly for the memory corruption instrumentation=
+.
+>
+> For future reference: please write commit messages in a way that is
+> readable standalone. I.e. without obscured references to the
+> discussions or problems in the previous versions of the patch. It's
+> fine to give such references in itself, but you need to give enough
+> context in the commit message to make it understandable without
+> looking up those discussions.
+>
+> > copy_to_kernel_nofault() is tested on x86_64 and arm64 with
+> > CONFIG_KASAN_SW_TAGS. On arm64 with CONFIG_KASAN_HW_TAGS,
+> > kunit test currently fails. Need more clarification on it.
+> >
+> > Link: https://lore.kernel.org/linux-mm/CANpmjNMAVFzqnCZhEity9cjiqQ9CVN1=
+X7qeeeAp_6yKjwKo8iw@mail.gmail.com/
+> > Reviewed-by: Marco Elver <elver@google.com>
+> > Reported-by: syzbot+61123a5daeb9f7454599@syzkaller.appspotmail.com
+> > Closes: https://syzkaller.appspot.com/bug?extid=3D61123a5daeb9f7454599
+> > Reported-by: Andrey Konovalov <andreyknvl@gmail.com>
+> > Closes: https://bugzilla.kernel.org/show_bug.cgi?id=3D210505
+> > Signed-off-by: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
+> > ---
+> > v2:
+> > - squashed previous submitted in -mm tree 2 patches based on Linus tree
+> > v3:
+> > - moved checks to *_nofault_loop macros per Marco's comments
+> > - edited the commit message
+> > v4:
+> > - replaced Suggested-by with Reviewed-by
+> > v5:
+> > - addressed Andrey's comment on deleting CONFIG_KASAN_HW_TAGS check in
+> >   mm/kasan/kasan_test_c.c
+> > - added explanatory comment in kasan_test_c.c
+> > - added Suggested-by: Marco Elver back per Andrew's comment.
+> > v6:
+> > - deleted checks KASAN_TAG_MIN, KASAN_TAG_KERNEL per Andrey's comment.
+> > - added empty line before kfree.
+> > ---
+> >  mm/kasan/kasan_test_c.c | 34 ++++++++++++++++++++++++++++++++++
+> >  mm/kmsan/kmsan_test.c   | 17 +++++++++++++++++
+> >  mm/maccess.c            | 10 ++++++++--
+> >  3 files changed, 59 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/mm/kasan/kasan_test_c.c b/mm/kasan/kasan_test_c.c
+> > index a181e4780d9d..716f2cac9708 100644
+> > --- a/mm/kasan/kasan_test_c.c
+> > +++ b/mm/kasan/kasan_test_c.c
+> > @@ -1954,6 +1954,39 @@ static void rust_uaf(struct kunit *test)
+> >         KUNIT_EXPECT_KASAN_FAIL(test, kasan_test_rust_uaf());
+> >  }
+> >
+> > +static void copy_to_kernel_nofault_oob(struct kunit *test)
+> > +{
+> > +       char *ptr;
+> > +       char buf[128];
+> > +       size_t size =3D sizeof(buf);
+> > +
+> > +       /* This test currently fails with the HW_TAGS mode.
+> > +        * The reason is unknown and needs to be investigated. */
+> > +       KASAN_TEST_NEEDS_CONFIG_OFF(test, CONFIG_KASAN_HW_TAGS);
+> > +
+> > +       ptr =3D kmalloc(size - KASAN_GRANULE_SIZE, GFP_KERNEL);
+> > +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
+> > +       OPTIMIZER_HIDE_VAR(ptr);
+> > +
+> > +       /*
+> > +       * We test copy_to_kernel_nofault() to detect corrupted memory t=
+hat is
+> > +       * being written into the kernel. In contrast, copy_from_kernel_=
+nofault()
+> > +       * is primarily used in kernel helper functions where the source=
+ address
+> > +       * might be random or uninitialized. Applying KASAN instrumentat=
+ion to
+> > +       * copy_from_kernel_nofault() could lead to false positives.
+> > +       * By focusing KASAN checks only on copy_to_kernel_nofault(),
+> > +       * we ensure that only valid memory is written to the kernel,
+> > +       * minimizing the risk of kernel corruption while avoiding
+> > +       * false positives in the reverse case.
+> > +       */
+> > +       KUNIT_EXPECT_KASAN_FAIL(test,
+> > +               copy_to_kernel_nofault(&buf[0], ptr, size));
+> > +       KUNIT_EXPECT_KASAN_FAIL(test,
+> > +               copy_to_kernel_nofault(ptr, &buf[0], size));
+> > +
+> > +       kfree(ptr);
+> > +}
+> > +
+> >  static struct kunit_case kasan_kunit_test_cases[] =3D {
+> >         KUNIT_CASE(kmalloc_oob_right),
+> >         KUNIT_CASE(kmalloc_oob_left),
+> > @@ -2027,6 +2060,7 @@ static struct kunit_case kasan_kunit_test_cases[]=
+ =3D {
+> >         KUNIT_CASE(match_all_not_assigned),
+> >         KUNIT_CASE(match_all_ptr_tag),
+> >         KUNIT_CASE(match_all_mem_tag),
+> > +       KUNIT_CASE(copy_to_kernel_nofault_oob),
+> >         KUNIT_CASE(rust_uaf),
+> >         {}
+> >  };
+> > diff --git a/mm/kmsan/kmsan_test.c b/mm/kmsan/kmsan_test.c
+> > index 13236d579eba..9733a22c46c1 100644
+> > --- a/mm/kmsan/kmsan_test.c
+> > +++ b/mm/kmsan/kmsan_test.c
+> > @@ -640,6 +640,22 @@ static void test_unpoison_memory(struct kunit *tes=
+t)
+> >         KUNIT_EXPECT_TRUE(test, report_matches(&expect));
+> >  }
+> >
+> > +static void test_copy_from_kernel_nofault(struct kunit *test)
+> > +{
+> > +       long ret;
+> > +       char buf[4], src[4];
+> > +       size_t size =3D sizeof(buf);
+> > +
+> > +       EXPECTATION_UNINIT_VALUE_FN(expect, "copy_from_kernel_nofault")=
+;
+> > +       kunit_info(
+> > +               test,
+> > +               "testing copy_from_kernel_nofault with uninitialized me=
+mory\n");
+> > +
+> > +       ret =3D copy_from_kernel_nofault((char *)&buf[0], (char *)&src[=
+0], size);
+> > +       USE(ret);
+> > +       KUNIT_EXPECT_TRUE(test, report_matches(&expect));
+> > +}
+> > +
+> >  static struct kunit_case kmsan_test_cases[] =3D {
+> >         KUNIT_CASE(test_uninit_kmalloc),
+> >         KUNIT_CASE(test_init_kmalloc),
+> > @@ -664,6 +680,7 @@ static struct kunit_case kmsan_test_cases[] =3D {
+> >         KUNIT_CASE(test_long_origin_chain),
+> >         KUNIT_CASE(test_stackdepot_roundtrip),
+> >         KUNIT_CASE(test_unpoison_memory),
+> > +       KUNIT_CASE(test_copy_from_kernel_nofault),
+> >         {},
+> >  };
+> >
+> > diff --git a/mm/maccess.c b/mm/maccess.c
+> > index 518a25667323..3ca55ec63a6a 100644
+> > --- a/mm/maccess.c
+> > +++ b/mm/maccess.c
+> > @@ -13,9 +13,14 @@ bool __weak copy_from_kernel_nofault_allowed(const v=
+oid *unsafe_src,
+> >         return true;
+> >  }
+> >
+> > +/*
+> > + * The below only uses kmsan_check_memory() to ensure uninitialized ke=
+rnel
+> > + * memory isn't leaked.
+> > + */
+> >  #define copy_from_kernel_nofault_loop(dst, src, len, type, err_label) =
+ \
+> >         while (len >=3D sizeof(type)) {                                =
+   \
+> > -               __get_kernel_nofault(dst, src, type, err_label);       =
+         \
+> > +               __get_kernel_nofault(dst, src, type, err_label);       =
+ \
+> > +               kmsan_check_memory(src, sizeof(type));                 =
+ \
+> >                 dst +=3D sizeof(type);                                 =
+   \
+> >                 src +=3D sizeof(type);                                 =
+   \
+> >                 len -=3D sizeof(type);                                 =
+   \
+> > @@ -49,7 +54,8 @@ EXPORT_SYMBOL_GPL(copy_from_kernel_nofault);
+> >
+> >  #define copy_to_kernel_nofault_loop(dst, src, len, type, err_label)   =
+ \
+> >         while (len >=3D sizeof(type)) {                                =
+   \
+> > -               __put_kernel_nofault(dst, src, type, err_label);       =
+         \
+> > +               __put_kernel_nofault(dst, src, type, err_label);       =
+ \
+> > +               instrument_write(dst, sizeof(type));                   =
+ \
+> >                 dst +=3D sizeof(type);                                 =
+   \
+> >                 src +=3D sizeof(type);                                 =
+   \
+> >                 len -=3D sizeof(type);                                 =
+   \
+> > --
+> > 2.34.1
+> >
+>
+> Reviewed-by: Andrey Konovalov <andreyknvl@gmail.com>
+> Tested-by: Andrey Konovalov <andreyknvl@gmail.com>
+>
+> For KASAN parts.
 
-Oh did you mean dev_xdp_mode()'s ndo_bpf check to decide which mode to use ?
+Andrew,
 
-So you'd like to do that for the unsupported bond modes as well, then I'd go
-with Daniel's suggestion in that case and keep it in the bonding until
-something else needs it.
+Please let me know if the last v6 is ready for -mm tree.
 
+Previous version was removed here:
+https://lore.kernel.org/mm-commits/20241010214955.DBEB7C4CEC5@smtp.kernel.o=
+rg/
 
+Hopefully, they won't conflict in mm/kasan/kasan_test_c.c per another patch=
+:
+https://lore.kernel.org/linux-mm/20241014025701.3096253-3-snovitoll@gmail.c=
+om/
+
+Thanks
+
+>
+> Thank you!
 
