@@ -1,63 +1,63 @@
-Return-Path: <bpf+bounces-42054-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42055-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2AF699F065
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 16:59:15 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 469FB99F069
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 16:59:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 002BD1C22E83
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 14:59:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 604251C22F78
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 14:59:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FB101DD0D2;
-	Tue, 15 Oct 2024 14:55:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1C711F667B;
+	Tue, 15 Oct 2024 14:55:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VM2claxF"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="f78NLDAv"
 X-Original-To: bpf@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67DBC1B394D;
-	Tue, 15 Oct 2024 14:55:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2CC51F6662;
+	Tue, 15 Oct 2024 14:55:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729004109; cv=none; b=oAnyDaTYG6o06CR93e+PCEejlx3ZIhYaJ69tg/g+2QKnYtU+jIPF9cMmes/Vfk/7SJawFeejimmEhmpTCj+syUZkMnKcPrOdQlKcPd4eZBIVsK7UGVoS/4lECVif500371sZrPBCiMkz9T0D60F3dtWN8FWEihsPoM/MxEyNplg=
+	t=1729004113; cv=none; b=IQu2cP/xPn9Mhf1IaceeGIHGgyPD4ocVbEDK7jxSO0BiDuW0vnxzHYrAnfw98IbXwNLLju9v0hmDHfkbo1oM8iBXeFXiCcrWN3LobsAXju57S1EqOP63fLjO82vSRt4xvoB7WON/ATJ51EYx8KDm5EVo4KPJWGKa1a2VDAvtfOQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729004109; c=relaxed/simple;
-	bh=XewhxpeVEIQDvvMf3/opnLigLAaIzO66eIal3rIOj0U=;
+	s=arc-20240116; t=1729004113; c=relaxed/simple;
+	bh=/gctQdUEewnRTVuJWXcDaAlDObqdn8l7tktFSa9j3Wk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ablHPR7fpHKznpLWcV8/aYxxtwlssoAEnLxCy9KdHt3a8lrQJZPW6AQTFh28Z/LhmgFk38/gJx34kVOh/Vax2jU5/U1lT1TBnxDKAfslItlnYlxZ9gXcxIweCOqFQ77lYgP35xILGPA/6tWeuAxmtVbzDRKbpyZsQyvt5WTbU6U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VM2claxF; arc=none smtp.client-ip=192.198.163.13
+	 MIME-Version; b=gT9oa6Km9CqS1TeNKaQkVG+tAbPPL+QHJhHqBqYnk2eRjLoDrAokOq6y2qVXpeeNo9fWENxufYKAUmc1zQr4wcq86szN73qVa9YRGFehXBK5DHNvw3zzQ2aSpHW/wcEyTHTkCw3kaS+/c0nszFlL+ReYbCtksZnCXj3YznH19Mg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=f78NLDAv; arc=none smtp.client-ip=192.198.163.13
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1729004109; x=1760540109;
+  t=1729004112; x=1760540112;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=XewhxpeVEIQDvvMf3/opnLigLAaIzO66eIal3rIOj0U=;
-  b=VM2claxFY2AqL7418g84GE0zB2CfTboaX7cXda6/I8KteKVV5QJHtDDO
-   KcKVwAVTeBkazREGPVb0FI0u8VKsqhYfq3CL2cKYHaWmuvjNvYf9l3Tqz
-   oNZTdDzLmnZXNCogHqDXHbD7vb442gsO8/ncIbnYM8QJ9i5jOvq6kO4NA
-   q4sCxakx0MLZ5w0ix+exLU44JS88ipQVxHVcTmyi2W3rorGNxJ6H6mQes
-   xgYBbBs5rOQ8plekNow5i/9qv2LprA/uwr5otVuRe1ka7L4mH3fB7ZXqa
-   lzd1kMlO9LBaBMpiZolcsjut5sclDMeqCgo2s61PoAwM+wqHcP2cMDYKx
-   w==;
-X-CSE-ConnectionGUID: aN0NVO+9S7aJ3D/hoGonFg==
-X-CSE-MsgGUID: H6zwoqSqQ8GEv+qxhu7B8Q==
-X-IronPort-AV: E=McAfee;i="6700,10204,11225"; a="31277626"
+  bh=/gctQdUEewnRTVuJWXcDaAlDObqdn8l7tktFSa9j3Wk=;
+  b=f78NLDAvTbmdlq8u2Y66eL03wqVCmNawtB4fbwvIWwknnRFSZyRh4WsO
+   fP6Njru4sGpmYCqyS0CSxkW9sJzRceqG5VVIi1+Pk8vXMHNfZv+6arYX2
+   QzJeVjXbByaqr4f8kiR5TuzBsza3NUH+6xhFWsSmJX7Y7yrdPolf6oyqa
+   xAZYidgZR9Hz1OYF/ZKzr+FyZcBg0fWidC9qeezuiJ4U+9mwGGXS0/6BY
+   9xS/X1foBwXu6JYjvwSiT3UOlLkS2FnyCtWJHdCVyCaUJxQysl0u1erI+
+   DzN4LM4aN8/b+LN1pNSuKDY6emBJXwN9FfJl57kpGVd90kVbw8K+o3fT2
+   A==;
+X-CSE-ConnectionGUID: mkoEHbN0SSuzuicZTf5nQg==
+X-CSE-MsgGUID: IidBYkM4S++fDsQ1Kbu8EQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11225"; a="31277661"
 X-IronPort-AV: E=Sophos;i="6.11,205,1725346800"; 
-   d="scan'208";a="31277626"
+   d="scan'208";a="31277661"
 Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2024 07:55:07 -0700
-X-CSE-ConnectionGUID: +lxCb1HJQMGoqml9dgcAsw==
-X-CSE-MsgGUID: L2R/tE0zSoOmrMjI2zr/6w==
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2024 07:55:11 -0700
+X-CSE-ConnectionGUID: jzk0pDF5Sba5iOrjSQ+Sag==
+X-CSE-MsgGUID: Gr7oNpzMRUGXae6zIH9Uhg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.11,199,1725346800"; 
-   d="scan'208";a="82723137"
+   d="scan'208";a="82723149"
 Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by orviesa003.jf.intel.com with ESMTP; 15 Oct 2024 07:55:04 -0700
+  by orviesa003.jf.intel.com with ESMTP; 15 Oct 2024 07:55:08 -0700
 From: Alexander Lobakin <aleksander.lobakin@intel.com>
 To: "David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
@@ -75,9 +75,9 @@ Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
 	bpf@vger.kernel.org,
 	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v2 13/18] xsk: allow attaching XSk pool via xdp_rxq_info_reg_mem_model()
-Date: Tue, 15 Oct 2024 16:53:45 +0200
-Message-ID: <20241015145350.4077765-14-aleksander.lobakin@intel.com>
+Subject: [PATCH net-next v2 14/18] xsk: make xsk_buff_add_frag really add a frag via __xdp_buff_add_frag()
+Date: Tue, 15 Oct 2024 16:53:46 +0200
+Message-ID: <20241015145350.4077765-15-aleksander.lobakin@intel.com>
 X-Mailer: git-send-email 2.46.2
 In-Reply-To: <20241015145350.4077765-1-aleksander.lobakin@intel.com>
 References: <20241015145350.4077765-1-aleksander.lobakin@intel.com>
@@ -89,32 +89,159 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-When you register an XSk pool as XDP Rxq info memory model, you then
-need to manually attach it after the registration.
-Let the user combine both actions into one by just passing a pointer
-to the pool directly to xdp_rxq_info_reg_mem_model(), which will take
-care of calling xsk_pool_set_rxq_info(). This looks similar to how a
-&page_pool gets registered and reduce repeating driver code.
+Currently, xsk_buff_add_frag() only adds a frag to the pool linked list,
+not doing anything with the &xdp_buff. The drivers do that manually and
+the logic is the same.
+Make it really add an skb frag, just like xdp_buff_add_frag() does that,
+and freeing frags on error if needed. This allows to remove repeating
+code from i40e and ice and not add the same code again and again.
 
 Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
 ---
- net/core/xdp.c | 3 +++
- 1 file changed, 3 insertions(+)
+ include/net/xdp_sock_drv.h                 | 18 ++++++++++--
+ drivers/net/ethernet/intel/i40e/i40e_xsk.c | 30 ++------------------
+ drivers/net/ethernet/intel/ice/ice_xsk.c   | 32 ++--------------------
+ 3 files changed, 20 insertions(+), 60 deletions(-)
 
-diff --git a/net/core/xdp.c b/net/core/xdp.c
-index 9dc103a09b5c..371c26c203b2 100644
---- a/net/core/xdp.c
-+++ b/net/core/xdp.c
-@@ -358,6 +358,9 @@ int xdp_rxq_info_reg_mem_model(struct xdp_rxq_info *xdp_rxq,
- 	if (IS_ERR(xdp_alloc))
- 		return PTR_ERR(xdp_alloc);
+diff --git a/include/net/xdp_sock_drv.h b/include/net/xdp_sock_drv.h
+index f3175a5d28f7..6aae95b83645 100644
+--- a/include/net/xdp_sock_drv.h
++++ b/include/net/xdp_sock_drv.h
+@@ -136,11 +136,21 @@ static inline void xsk_buff_free(struct xdp_buff *xdp)
+ 	xp_free(xskb);
+ }
  
-+	if (type == MEM_TYPE_XSK_BUFF_POOL && allocator)
-+		xsk_pool_set_rxq_info(allocator, xdp_rxq);
+-static inline void xsk_buff_add_frag(struct xdp_buff *xdp)
++static inline bool xsk_buff_add_frag(struct xdp_buff *head,
++				     struct xdp_buff *xdp)
+ {
+-	struct xdp_buff_xsk *frag = container_of(xdp, struct xdp_buff_xsk, xdp);
++	const void *data = xdp->data;
++	struct xdp_buff_xsk *frag;
 +
- 	if (trace_mem_connect_enabled() && xdp_alloc)
- 		trace_mem_connect(xdp_alloc, xdp_rxq);
- 	return 0;
++	if (!__xdp_buff_add_frag(head, virt_to_page(data),
++				 offset_in_page(data), xdp->data_end - data,
++				 xdp->frame_sz, false))
++		return false;
+ 
++	frag = container_of(xdp, struct xdp_buff_xsk, xdp);
+ 	list_add_tail(&frag->list_node, &frag->pool->xskb_list);
++
++	return true;
+ }
+ 
+ static inline struct xdp_buff *xsk_buff_get_frag(const struct xdp_buff *first)
+@@ -357,8 +367,10 @@ static inline void xsk_buff_free(struct xdp_buff *xdp)
+ {
+ }
+ 
+-static inline void xsk_buff_add_frag(struct xdp_buff *xdp)
++static inline bool xsk_buff_add_frag(struct xdp_buff *head,
++				     struct xdp_buff *xdp)
+ {
++	return false;
+ }
+ 
+ static inline struct xdp_buff *xsk_buff_get_frag(const struct xdp_buff *first)
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_xsk.c b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
+index 4e885df789ef..e28f1905a4a0 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_xsk.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
+@@ -395,32 +395,6 @@ static void i40e_handle_xdp_result_zc(struct i40e_ring *rx_ring,
+ 	WARN_ON_ONCE(1);
+ }
+ 
+-static int
+-i40e_add_xsk_frag(struct i40e_ring *rx_ring, struct xdp_buff *first,
+-		  struct xdp_buff *xdp, const unsigned int size)
+-{
+-	struct skb_shared_info *sinfo = xdp_get_shared_info_from_buff(first);
+-
+-	if (!xdp_buff_has_frags(first)) {
+-		sinfo->nr_frags = 0;
+-		sinfo->xdp_frags_size = 0;
+-		xdp_buff_set_frags_flag(first);
+-	}
+-
+-	if (unlikely(sinfo->nr_frags == MAX_SKB_FRAGS)) {
+-		xsk_buff_free(first);
+-		return -ENOMEM;
+-	}
+-
+-	__skb_fill_page_desc_noacc(sinfo, sinfo->nr_frags++,
+-				   virt_to_page(xdp->data_hard_start),
+-				   XDP_PACKET_HEADROOM, size);
+-	sinfo->xdp_frags_size += size;
+-	xsk_buff_add_frag(xdp);
+-
+-	return 0;
+-}
+-
+ /**
+  * i40e_clean_rx_irq_zc - Consumes Rx packets from the hardware ring
+  * @rx_ring: Rx ring
+@@ -486,8 +460,10 @@ int i40e_clean_rx_irq_zc(struct i40e_ring *rx_ring, int budget)
+ 
+ 		if (!first)
+ 			first = bi;
+-		else if (i40e_add_xsk_frag(rx_ring, first, bi, size))
++		else if (!xsk_buff_add_frag(first, bi)) {
++			xsk_buff_free(first);
+ 			break;
++		}
+ 
+ 		if (++next_to_process == count)
+ 			next_to_process = 0;
+diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.c b/drivers/net/ethernet/intel/ice/ice_xsk.c
+index 334ae945d640..8975d2971bc3 100644
+--- a/drivers/net/ethernet/intel/ice/ice_xsk.c
++++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
+@@ -801,35 +801,6 @@ ice_run_xdp_zc(struct ice_rx_ring *rx_ring, struct xdp_buff *xdp,
+ 	return result;
+ }
+ 
+-static int
+-ice_add_xsk_frag(struct ice_rx_ring *rx_ring, struct xdp_buff *first,
+-		 struct xdp_buff *xdp, const unsigned int size)
+-{
+-	struct skb_shared_info *sinfo = xdp_get_shared_info_from_buff(first);
+-
+-	if (!size)
+-		return 0;
+-
+-	if (!xdp_buff_has_frags(first)) {
+-		sinfo->nr_frags = 0;
+-		sinfo->xdp_frags_size = 0;
+-		xdp_buff_set_frags_flag(first);
+-	}
+-
+-	if (unlikely(sinfo->nr_frags == MAX_SKB_FRAGS)) {
+-		xsk_buff_free(first);
+-		return -ENOMEM;
+-	}
+-
+-	__skb_fill_page_desc_noacc(sinfo, sinfo->nr_frags++,
+-				   virt_to_page(xdp->data_hard_start),
+-				   XDP_PACKET_HEADROOM, size);
+-	sinfo->xdp_frags_size += size;
+-	xsk_buff_add_frag(xdp);
+-
+-	return 0;
+-}
+-
+ /**
+  * ice_clean_rx_irq_zc - consumes packets from the hardware ring
+  * @rx_ring: AF_XDP Rx ring
+@@ -895,7 +866,8 @@ int ice_clean_rx_irq_zc(struct ice_rx_ring *rx_ring,
+ 
+ 		if (!first) {
+ 			first = xdp;
+-		} else if (ice_add_xsk_frag(rx_ring, first, xdp, size)) {
++		} else if (likely(size) && !xsk_buff_add_frag(first, xdp)) {
++			xsk_buff_free(first);
+ 			break;
+ 		}
+ 
 -- 
 2.46.2
 
