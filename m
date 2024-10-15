@@ -1,84 +1,82 @@
-Return-Path: <bpf+bounces-42101-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42102-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DAFE99FA27
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 23:43:23 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E36A99FA75
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 23:48:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6850C1C2295D
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 21:43:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B0F7DB221F3
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 21:48:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A59D71D63D0;
-	Tue, 15 Oct 2024 21:35:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 723071DD87C;
+	Tue, 15 Oct 2024 21:40:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O8WGou7G"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lMk39xMJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B7A41D63C1
-	for <bpf@vger.kernel.org>; Tue, 15 Oct 2024 21:35:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40C971FDFBD
+	for <bpf@vger.kernel.org>; Tue, 15 Oct 2024 21:40:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729028116; cv=none; b=lJg+z41pxy4GRTN+pP8S9eHr7o/ICd3emnJWIi9DHFEMrPQ7MLlg6rOz8bwqzX6yih7s3/50nJxy+W8pma3Fi8M0K2ji8WQ9YzxS15i1XoY489grAoG7DSRn9CIU4Gt09in8SZYRDtxB5tiR5PAno9rcEcqcS5TnlDN6GXMhrmg=
+	t=1729028403; cv=none; b=YEkax7IFxtYruSiARdEgv+9SEfgaAY4/vTHIQQaex9rjW/grqr50+4JHLY8Ot0H8gBzzoRHHXW+qDL+1HpH/e2ZzAW/ssSPPhV/w5s8WgaQHQgUEk5n+GJBvb00OrNiaK3vwVXoKPbWvi8OtJ3y5/Rrf5TachznwKq6GRLqarzE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729028116; c=relaxed/simple;
-	bh=5RdE2giy8562Re85BOJOeN1jSHndB0nsjR+HuEWxMxc=;
+	s=arc-20240116; t=1729028403; c=relaxed/simple;
+	bh=om1LCMkHlsFrVT8QeQeKmnL1vATYlbV+Ov292ng3+TM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Sc17zlc1npHGyEoKWxmZ1nCR7yjYE2kKKV6M7+XV9ss/lGo4q+qGqngwn4aVjtVHf3yHqNWOTd+E6Nd0saY1nHDeUxK77vFYgYh7VgtzJqwQSTjBdbdPoMSreeqv/GSEc8VabEXXYWawPZNlusfwWbRFLIisI+BJAYdmjg0WJZ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=O8WGou7G; arc=none smtp.client-ip=209.85.128.43
+	 To:Cc:Content-Type; b=aJrGUoXRX7MkGkRc/9dlbm50TYDRua7KQtVGmYhp0CZf7Gh99RLG3oltr2/DKCDpbvRMpq0Toa9AEmIlMPCgDgW+PrNUbFRSMtIDMJFEpLqAg5YiQjnBWNCpOr0rriTxa8LixTol7wcvn4DrQAeANsRnBFiKEHIw+L68G0Lnh34=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lMk39xMJ; arc=none smtp.client-ip=209.85.221.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-43115887867so1826725e9.0
-        for <bpf@vger.kernel.org>; Tue, 15 Oct 2024 14:35:14 -0700 (PDT)
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-37d58377339so4634231f8f.1
+        for <bpf@vger.kernel.org>; Tue, 15 Oct 2024 14:40:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729028113; x=1729632913; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1729028399; x=1729633199; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=3cDEfr7iJlpKvtJVFohMO4qPIkLlNxE55wjSbGdWPJU=;
-        b=O8WGou7GLjMgdIdUdUomXivxyYp98pBwM1pyq0ytQL97K30tlrh+uwUBGYsYNdPCqL
-         rOUidrMsg6EZtFEjSIM8mnuljIbD6gWQ85YWuWRegaJAM7pdbA6A7xys2NCYjLIcRQVd
-         rr8cvMLAmG9JQhv1yys6GoPc/XOCmTuJeZKktJVffyHDel5+EQgEwbiEAQThmN+O+Wfy
-         5OymtG3Zf5jmMONn2ujSYMlLXFImTBawYv/vVbLqZaS/zFlhUHxzgoXcihkPiXvpRVty
-         WXGK0xtBSWRtDVRpZT7ZETdzdPZlgImCL6R8ITBV0HhpSSu1TKTohuPaVLyq9B9JX+hE
-         8NvA==
+        bh=yJ3z8199d5KhqXICiG009SEZu7DCq2Pt9o5Q4AkhuJM=;
+        b=lMk39xMJhXe3hKttjTIUWJMQD+3NrCXTnPkp/qkJquY11JgDyIMRZF7ppWPQ0VyKBs
+         LhULDjU7m813F+InGT0Vh+T4pVFV/bTsCyuA7THhRGpMvBJXcwYTICy594TQLFb/TgBy
+         qjMVtOQlzyo0PEPTfBKZQgyPTNXjoOGPtLOLc2GE5boPgXVWIXQkxDySRqQDk8x5v4xJ
+         uHSAZ8zgoUdzMbiqAKSTgIJHXTt9///zpIIz1Dh5mQ16QCyOyQ1QS0Oow0+vkLETEUBB
+         mFWlWEZCmUBtNR6u8oEV4PYRO2X8LjmQZgfHBuVLvqUXs4+Xl09IVs4us8RsyIPcx8y/
+         Gfyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729028113; x=1729632913;
+        d=1e100.net; s=20230601; t=1729028399; x=1729633199;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=3cDEfr7iJlpKvtJVFohMO4qPIkLlNxE55wjSbGdWPJU=;
-        b=rTSExxvUoEkmA6dkOaQyeEoaJrAd0FHjOd/U7AZIgqbEgtXkPlzAPgQNA4uE19A+Zp
-         o0MGpgzgbUnTG3SykcxGNeqH/FyUQLOc9gmqmG838O82ieZl1Yg+Fjyj7D4WaXKymwzO
-         izCOglu9fubdAmX2tNEbOGXs3Icj1wHLCtQxkpwAbAAJlambYS1RZGGejNKbhNOJ/eZL
-         oZRRKPq0xD3lDHox2SQm+E94n3/wa1gt3lZz4aY4kqgwDtglAcrLCMAz8bOI/us34oL7
-         4O/NSG4XeFrFLfte1smpyoyygUQVTuBYZ6uYj3b7Q4jSCd99wDagTrQc/N5Y6efcBV4X
-         tapg==
-X-Forwarded-Encrypted: i=1; AJvYcCVNEOcv11aPtFm2kzOBrjhz36mPVAFS+QhcgqZm42CXDjkxBk8K/RFmcXreQmr0SUTftUg=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz6JsNMzzRMJgf9A6o+CgkehywWs7XmMJ9va8dZyLgFPbGvpQZo
-	kjImpdX0qY5Ane2M6eAsjqUCcvHUOHnuPsjx8+qd7Lyh3QCLPvENYI3F9WcWHKD7EVGFhJT41bE
-	vI71mVOwuQNMBu6grg2zc4AaFFyk=
-X-Google-Smtp-Source: AGHT+IHLRUc1Ec23KLiUOkghWeXdlcRGPg6C+Rcu2iVcrsQ5Zn/gWAvnd8DS+MCf8jBT5xgXNq9Sb/QxJLFdemejXic=
-X-Received: by 2002:a05:600c:1991:b0:431:416e:2603 with SMTP id
- 5b1f17b1804b1-4314a29f55cmr16611555e9.3.1729028112580; Tue, 15 Oct 2024
- 14:35:12 -0700 (PDT)
+        bh=yJ3z8199d5KhqXICiG009SEZu7DCq2Pt9o5Q4AkhuJM=;
+        b=csLY4skNej4dGBkma2JcTY4j01J7ENMXBxBNZ2WljEt9ndoAvC1mY+GeedWSA9Kp1c
+         SPmaDtfR3srlKWHVDqX9ubyZqngFWsO620C4WM1/Pmpa8TSzNbZ7Zt1PIDa8Booxnrju
+         nb3NKmmKznuPQJ55U0JHKoW3vGdBoO7IKIvVPOhT9S1XAfpwp3rVQ5wM9rlkrv2hnxii
+         UKBY4KGTciDB64kdyrmpGWCKHmPmS5NBA50eIAeOPSghSGbIHSdzq8AZZvRXV+6415fh
+         WbS3Jr+oN6PLWvTA0PDoUPU5vLsMhRZF45k28SMERVkQxnVXXvX+CVgB6kPk5AGSH0cI
+         THQA==
+X-Forwarded-Encrypted: i=1; AJvYcCU4VCq0nOhC/tQpODT7R/AzNfpAElWqwsLn3OvYmAyotaD/eMNnQhI/+WXW4xwFreCQcUM=@vger.kernel.org
+X-Gm-Message-State: AOJu0YypcIfHHq0Ev1HB3GJfZX0UvpHut22uYkv1yRYsVaqVAaV1Ss5b
+	fg0OiOo0Lm/qnDSF3nvGTlYtfL8BfH6oGe5wcuJTB8g+9aoffbqTNmBlWOdIB1xkUfunDEPBy9c
+	NaChuNv/8eD3a+AYjeMBuGW0slPw=
+X-Google-Smtp-Source: AGHT+IGpPpAI07AoHH7OOzf0I/BjKDAQy0XK+XsFBbHq+5Y1BR2GPZ4xOlhDsApIb1Z9n+rbEfyCfGKBNJ2GDRFSJPE=
+X-Received: by 2002:a5d:5d84:0:b0:37d:7e71:67a0 with SMTP id
+ ffacd0b85a97d-37d7e7168e8mr3124779f8f.9.1729028399424; Tue, 15 Oct 2024
+ 14:39:59 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241010175552.1895980-1-yonghong.song@linux.dev>
- <20241010175628.1898648-1-yonghong.song@linux.dev> <CAADnVQJMuR_riNLghmr0ohrEZSj-8ngcFQRn3VkdDyJAFakqKQ@mail.gmail.com>
- <96556ec2-f98c-444b-b0aa-ddf71e185c7d@linux.dev> <Zw7cDCpYE_WyFPSM@slm.duckdns.org>
-In-Reply-To: <Zw7cDCpYE_WyFPSM@slm.duckdns.org>
+References: <20241010175552.1895980-1-yonghong.song@linux.dev> <Zw7eYb9XZYqhazlf@slm.duckdns.org>
+In-Reply-To: <Zw7eYb9XZYqhazlf@slm.duckdns.org>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 15 Oct 2024 14:35:00 -0700
-Message-ID: <CAADnVQK0eGi84RxnXNmi9MGDQFKLs4VJLFoWPxEbLZL=ZdejFg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 07/10] bpf: Support calling non-tailcall bpf prog
+Date: Tue, 15 Oct 2024 14:39:48 -0700
+Message-ID: <CAADnVQKegqpSbDjDUSZVz96z+d1SJP-4dfdCQ_2Qb_VHQYPfRA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 00/10] bpf: Support private stack for bpf progs
 To: Tejun Heo <tj@kernel.org>
 Cc: Yonghong Song <yonghong.song@linux.dev>, bpf <bpf@vger.kernel.org>, 
 	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
@@ -87,87 +85,62 @@ Cc: Yonghong Song <yonghong.song@linux.dev>, bpf <bpf@vger.kernel.org>,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Oct 15, 2024 at 2:18=E2=80=AFPM Tejun Heo <tj@kernel.org> wrote:
+On Tue, Oct 15, 2024 at 2:28=E2=80=AFPM Tejun Heo <tj@kernel.org> wrote:
 >
 > Hello,
 >
-> On Thu, Oct 10, 2024 at 09:12:19PM -0700, Yonghong Song wrote:
-> > > Let's get priv_stack in shape first (the first ~6 patches).
+> On Thu, Oct 10, 2024 at 10:55:52AM -0700, Yonghong Song wrote:
+> > The main motivation for private stack comes from nested scheduler in
+> > sched-ext from Tejun. The basic idea is that
+> >  - each cgroup will its own associated bpf program,
+> >  - bpf program with parent cgroup will call bpf programs
+> >    in immediate child cgroups.
 > >
-> > I am okay to focus on the first 6 patches. But I would like to get
-> > Tejun's comments about what is the best way to support hierarchical
-> > bpf based scheduler.
+> > Let us say we have the following cgroup hierarchy:
+> >   root_cg (prog0):
+> >     cg1 (prog1):
+> >       cg11 (prog11):
+> >         cg111 (prog111)
+> >         cg112 (prog112)
+> >       cg12 (prog12):
+> >         cg121 (prog121)
+> >         cg122 (prog122)
+> >     cg2 (prog2):
+> >       cg21 (prog21)
+> >       cg22 (prog22)
+> >       cg23 (prog23)
 >
-> There isn't a concrete design yet, so it's difficult to say anything
-> definitive but I was thinking more along the line of providing sched_ext
-> kfunc helpers that perform nesting calls rather than each BPF program
-> directly calling nested BPF programs.
+> Thank you so much for working on this. I have some basic and a bit
+> tangential questions around how stacks are allocated. So, for sched_ext,
+> each scheduler would be represented by struct_ops and I think the interfa=
+ce
+> to load them would be attaching a struct_ops to a cgroup.
 >
-> For example, let's say the scheduler hierarchy looks like this:
->
->   R + A + AA
->     |   + AB
->     + B
->
-> Let's say AB has a task waking up to it and is calling ops.select_cpu():
->
->  ops.select_cpu()
->  {
->         if (does AB already have the perfect CPU sitting around)
->                 direct dispatch and return the CPU;
->         if (scx_bpf_get_cpus(describe the perfect CPU))
->                 direct dispatch and return the CPU;
->         if (is there any eligible idle CPU that AB is holding)
->                 direct dispatch and return the CPU;
->         if (scx_bpf_get_cpus(any eligible CPUs))
->                 direct dispatch and return the CPU;
->         // no idle CPU, proceed to enqueue
->         return prev_cpu;
->  }
->
-> Note that the scheduler at AB doesn't have any knowledge of what's up the
-> tree. It's just describing what it wants through the kfunc which is then
-> responsible for nesting calls up the hierarhcy. Up a layer, this can be
-> implemented like:
->
->  ops.get_cpus(CPUs description)
->  {
->         if (has any CPUs matching the description)
->                 claim and return the CPUs;
->         modify CPUs description to enforce e.g. cache sharing policy;
->         and possibly to request more CPUs for batching;
->         if (scx_bpf_get_cpus(CPUs description)) {
->                 store extra CPUs;
->                 claim and return some of the CPUs;
->         }
->         return no CPUs available;
->  }
->
-> This way, the schedulers at different layers are isolated and each only h=
-as
-> to express what it wants.
+> - I suppose each operation in a struct_ops would count as a separate prog=
+ram
+>   and would thus allocate 512 * nr_cpus stacks, right?
 
-What we've been discussing is something like this:
+It's one stack per program.
+Its size will be ~512 * nr_cpus * max_allowed_recursion.
 
-ops.get_cpus -> bpf prog A -> kfunc
+We hope max_allowed_recursion =3D=3D 4 or something small.
 
-where kfunc will call one of struct_ops callback
-which may call bpf prog A again, since it's the only one attached
-to this get_cpus callback.
-So
-ops.get_cpus -> bpf prog A -> kfunc -> ops.get_cpus -> bpf prog A.
+> - If the same scheduler implementation is attached to more than one cgrou=
+ps,
+>   would each instance be treated as a separate set of programs or would t=
+hey
+>   share the stack?
 
-If kfunc calls a different struct_ops callback it will call
-a different bpf prog B and it will have its own private stack.
+I think there is only one sched_ext struct_ops with
+its set of progs. They are global and not "attached to a cgroup".
 
-During struct_ops registration one of bpf_verifier_ops() callbacks
-like bpf_scx_check_member (or a new callback) will indicate
-back to bpf trampoline that limited recursion for a specific
-ops.get_cpus is allowed.
-Then bpf trampoline's bpf_trampoline_enter() selector will
-pick an entry helper that allows limited recursion.
+> - Most struct_ops operations won't need to be nested and thus wouldn't ne=
+ed
+>   to use a private stack. Would it be possible to indicate which one shou=
+ld
+>   use a private stack?
 
-Currently bpf trampoline doesn't check recursion for struct_ops progs,
-so it needs to be tightened to allow limited recursion
-and to let bpf jit prologue know which part of priv stack to use.
+See my other reply. One of bpf_verifier_ops callbacks would need to
+indicate back to trampoline which callback is nested with limited recursion=
+.
 
