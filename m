@@ -1,65 +1,86 @@
-Return-Path: <bpf+bounces-41897-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41898-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7438499DAAC
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 02:29:12 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C251B99DAB2
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 02:35:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 02A881C216C1
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 00:29:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 84610282C97
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 00:35:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 560DFB67F;
-	Tue, 15 Oct 2024 00:29:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11392BA4B;
+	Tue, 15 Oct 2024 00:35:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kueQuqk4"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="YWqt0uyc"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8F9F6026A;
-	Tue, 15 Oct 2024 00:29:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67873AD55
+	for <bpf@vger.kernel.org>; Tue, 15 Oct 2024 00:35:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728952145; cv=none; b=VymenNNyXRTEUSQ2M1LHgjp6AQ/VsrWj7hiFRu/XaF7/y4yksOSiK3zxF/c3/eThYEPjtNnyu1IZbVE55I26QifPthBdHyfsfbuaQXPFxSvJxE6fGTiPK3/gw4hTYgRx0DSVu/FbGsduUZ2oEDBA+59f7Dep9z+/Tg08UmRIaiI=
+	t=1728952505; cv=none; b=s5e1E1/Ay1KOxtWEtyxQldwbM4n+HoWLsJ/evdp43rdBO+gDF+p1h1bpMl0bYUMrDTwD54vp73kJNPTBj7jFLV4t2tQhYYknQFwVAxH/J7yt48dTo8mUvChXf/7hDu68Bo0TSBp8uZSoTsBRcGfu11lE8fryd3GKKztliiYnIhg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728952145; c=relaxed/simple;
-	bh=PGvZ+Z9zuEMYWDJgD45dEug82hax6ae7wIiTgjNqmp4=;
+	s=arc-20240116; t=1728952505; c=relaxed/simple;
+	bh=imwk7K4u9VEsAPlUbTjjNXOk2G6W0JDAfWPyv+DKGFw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LN/obK4kfsSilKYKjb9guzro+F0r4Oiyauk/LsSsY4LFdqeFOUaBh/I/19mjB4o66wHBbT/HsMlsbP1PoJuj3JPOEDcvvnY87kVCIPzp+2hDalXHDmkU0hHBSgew5sjTbWPyYsQ40Sc/lwwG+R89wj+Pi3dYXoKBAszD1RGLXJk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kueQuqk4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90AF7C4CEC3;
-	Tue, 15 Oct 2024 00:29:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728952145;
-	bh=PGvZ+Z9zuEMYWDJgD45dEug82hax6ae7wIiTgjNqmp4=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=kueQuqk4Zotl+puWUiS53qzgmexSo2ZIbjz7RXa1Wn7OKIDLnKM7UfRC1OlSKd1jc
-	 i+x4fE4N+FuGbgOqXNYi0jTvroc8objd+IgvHwZB/u0eL5jy/vb+hfKIPM9MlthkK2
-	 YFBRAS5deInYtvuD0PJOEbl2vjQh47B+nyhpoSvEQRzh8EsUCZ6nHVWTokAk7jZCMz
-	 BPXql3izQTAieCrwsfG9CFpZlk3OEnbP453oqSpoJ+MCP1SHR5BBDeoBEpFVK83NU7
-	 ltjmTfQqqvsu2xG+JmqH1y2Ef+mJfZPLLFvI+0IbAEBsk4dOdt4DxQ0lIeByHe+ucv
-	 nklC9Lv9clNhw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 26B66CE125B; Mon, 14 Oct 2024 17:29:05 -0700 (PDT)
-Date: Mon, 14 Oct 2024 17:29:05 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
-Cc: frederic@kernel.org, rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-	kernel-team@meta.com, rostedt@goodmis.org,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Kent Overstreet <kent.overstreet@linux.dev>, bpf@vger.kernel.org
-Subject: Re: [PATCH rcu 05/12] srcu: Standardize srcu_data pointers to "sdp"
- and similar
-Message-ID: <e63311e5-4311-4b08-abcc-8298a22c52f4@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <ff986c31-9cd0-45e5-aa31-9aedf582325f@paulmck-laptop>
- <20241009180719.778285-5-paulmck@kernel.org>
- <d0ec401f-f857-4fbb-89f3-f2d13eb34b5d@amd.com>
- <25cd96f1-6d4d-4dba-b57b-da63d228ba97@paulmck-laptop>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZsIBvBROBaZvmAsy92D4CZNUcoZSMWihSovhteg+piixn1Fh7Y/IdDp3ur239LdiCUgkfMmkWONWvjyXcC+aVErjQZt3/8i7sttWnTYysWVW5nI+rLPpSFnMS63ww3Tvr/9dTE/gos/8qtdIKSoDAY2bey36SR8Lld24AaMvwEI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=YWqt0uyc; arc=none smtp.client-ip=209.85.208.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2fb5be4381dso2569061fa.2
+        for <bpf@vger.kernel.org>; Mon, 14 Oct 2024 17:35:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1728952501; x=1729557301; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=/YXh2Q41Ele1/0DVwSmnNKS/mkgQys39iWXGBdkL0FY=;
+        b=YWqt0uycfkupLSJmrWbLXc8I+/gpqVYA1+d4q1bSnbY3QO8deD51gPqVyaY+RqCblw
+         Ao9hNQfm3sfBuWp8puZMYos0ENm7DyAlBMoD1TT0njhY53+Zt5VlFbetX4QSrDw0WUSw
+         Tx8O+rOhdb7ck8hZZWB0dSrG0nm0PcMywVSX0+cfJuIywKTPZkxH16PhMgerAYQYeco2
+         7OdCe9lFipZWA44296FlSrQzYI65Yuk1Itj/AoHOTPmAjjFLKgvds6S2o9IjLby8O1Sn
+         nFEQZmtTgYR0X/m4jsNAces2TW0tHoeNeN41My+ujMk4elEv8FW0pQBbbfjJSdGD+0U3
+         0AYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1728952501; x=1729557301;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/YXh2Q41Ele1/0DVwSmnNKS/mkgQys39iWXGBdkL0FY=;
+        b=QsnmtNqBo9ZnyoZmV4vdFJLeeZLpmHaIrm/HjjAAHGnjFU3/4FlXxXz3AebSsGUZN+
+         URFXYSZPXttIrW16wEquMuPLoogf9RndMfV8nNkF2Mx2xnxSG4zNAuaC/pBMylQz3rlr
+         pEkunqRawwEF9UyBQZ/wvfsbDA16FC0zt4PRNB3ScdF7hrM0qPCAQy1mwLRss/7JTdRT
+         BriyfotPXYWt/eYSV0mkTbCIHGUL1noQpfQdGIpXREaKRwsfMaElbEq4otL+URxK+4YD
+         e0FjXwWItVNRYPhG3VYGQWvfWDy+IlZxvHD0pw6orKArzlJdmASMzm/9aCrb5beLxoTC
+         1Q3g==
+X-Forwarded-Encrypted: i=1; AJvYcCX/iVyBkyrrCAEbjroMdBJYNAdKTOohefogGZLImmo1AIxiq9omXgEN2YWtqFRiypGssrE=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx/kCBLouV5yXNOVyZO6HPTyCMDtDpyx87Pka5Xm2yvSkhBIdHb
+	hGtSqTpg5hG1FUf8OuDX9WUj4vtjOHmzeqvuIX9a/dROUJI3UCwHrLdB53LDy9VJ4/R7ECz3yNS
+	r7Tc=
+X-Google-Smtp-Source: AGHT+IFRreFzQ8h7VSU7UkasygGzLuLxMyHWaChq+LTbV4PmYDY+e4A7tsUv1j/7DdcrGvwB+Ei76Q==
+X-Received: by 2002:a05:651c:2121:b0:2fb:5d2c:7509 with SMTP id 38308e7fff4ca-2fb5d2c76ccmr1186601fa.14.1728952501449;
+        Mon, 14 Oct 2024 17:35:01 -0700 (PDT)
+Received: from u94a (39-9-37-148.adsl.fetnet.net. [39.9.37.148])
+        by smtp.gmail.com with ESMTPSA id e9e14a558f8ab-3a3d715e2aasm515315ab.82.2024.10.14.17.34.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Oct 2024 17:35:00 -0700 (PDT)
+Date: Tue, 15 Oct 2024 08:34:49 +0800
+From: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+To: Dimitar Kanaliev <dimitar.kanaliev@siteground.com>
+Cc: Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, 
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, 
+	Zac Ecob <zacecob@protonmail.com>
+Subject: Re: [PATCH v2 1/3] bpf: Fix truncation bug in coerce_reg_to_size_sx()
+Message-ID: <ywjkybsqgzzlahmh5qxjzownd747sojvwm45ukl7a2vq55ttjt@3wzyq5kapmq3>
+References: <20241014121155.92887-1-dimitar.kanaliev@siteground.com>
+ <20241014121155.92887-2-dimitar.kanaliev@siteground.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -68,263 +89,46 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <25cd96f1-6d4d-4dba-b57b-da63d228ba97@paulmck-laptop>
+In-Reply-To: <20241014121155.92887-2-dimitar.kanaliev@siteground.com>
 
-On Mon, Oct 14, 2024 at 09:49:52AM -0700, Paul E. McKenney wrote:
-> On Mon, Oct 14, 2024 at 02:45:50PM +0530, Neeraj Upadhyay wrote:
-> > On 10/9/2024 11:37 PM, Paul E. McKenney wrote:
-> > > This commit changes a few "cpuc" variables to "sdp" to align wiht usage
-> > > elsewhere.
-> > > 
-> > 
-> > s/wiht/with/
+On Mon, Oct 14, 2024 at 03:11:53PM GMT, Dimitar Kanaliev wrote:
+> coerce_reg_to_size_sx() updates the register state after a sign-extension
+> operation. However, there's a bug in the assignment order of the unsigned
+> min/max values, leading to incorrect truncation:
 > 
-> Good eyes!
-
-And fixed.
-
-> > This commit is doing a lot more than renaming "cpuc".
+>   0: (85) call bpf_get_prandom_u32#7    ; R0_w=scalar()
+>   1: (57) r0 &= 1                       ; R0_w=scalar(smin=smin32=0,smax=umax=smax32=umax32=1,var_off=(0x0; 0x1))
+>   2: (07) r0 += 254                     ; R0_w=scalar(smin=umin=smin32=umin32=254,smax=umax=smax32=umax32=255,var_off=(0xfe; 0x1))
+>   3: (bf) r0 = (s8)r0                   ; R0_w=scalar(smin=smin32=-2,smax=smax32=-1,umin=umin32=0xfffffffe,umax=0xffffffff,var_off=(0xfffffffffffffffe; 0x1))
 > 
-> Indeed, it does look like I forgot to commit between two changes.
+> In the current implementation, the unsigned 32-bit min/max values
+> (u32_min_value and u32_max_value) are assigned directly from the 64-bit
+> signed min/max values (s64_min and s64_max):
 > 
-> It looks like this commit log goes with the changes to the
-> functions srcu_readers_lock_idx(), srcu_readers_unlock_idx(), and
-> srcu_readers_active().  With the exception of the change from "NMI-safe"
-> to "reader flavors in the WARN_ONCE() string in srcu_readers_unlock_idx().
+>   reg->umin_value = reg->u32_min_value = s64_min;
+>   reg->umax_value = reg->u32_max_value = s64_max;
 > 
-> How would you suggest that I split up the non-s/cpuc/sdp/ changes?
+> Due to the chain assigmnent, this is equivalent to:
+> 
+>   reg->u32_min_value = s64_min;  // Unintended truncation
+>   reg->umin_value = reg->u32_min_value;
+>   reg->u32_max_value = s64_max;  // Unintended truncation
+>   reg->umax_value = reg->u32_max_value;
 
-As a first step, I split it three ways, as you can see on the updated "dev"
-branch in the -rcu tree.
+Nit: while I initially suggested the above fragment to Dimitar to use in
+commit message, perhaps saying that "reg->u32_min_value = s64_min" is an
+unintended truncation is not entirely correct; we do want truncation in
+"reg->u32_max_value = (u32)s64_max" to happen, just not
+"reg->umax_value = (u32)s64_max". Hopefully the maintainer knows a more
+elegant way to put it.
 
-Thoughts?
+Other than that,
 
-							Thanx, Paul
+Reviewed-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
 
-> > - Neeraj
-> > 
-> > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > > Cc: Alexei Starovoitov <ast@kernel.org>
-> > > Cc: Andrii Nakryiko <andrii@kernel.org>
-> > > Cc: Peter Zijlstra <peterz@infradead.org>
-> > > Cc: Kent Overstreet <kent.overstreet@linux.dev>
-> > > Cc: <bpf@vger.kernel.org>
-> > > ---
-> > >  include/linux/srcu.h     | 35 ++++++++++++++++++----------------
-> > >  include/linux/srcutree.h |  4 ++++
-> > >  kernel/rcu/srcutree.c    | 41 ++++++++++++++++++++--------------------
-> > >  3 files changed, 44 insertions(+), 36 deletions(-)
-> > > 
-> > > diff --git a/include/linux/srcu.h b/include/linux/srcu.h
-> > > index 06728ef6f32a4..84daaa33ea0ab 100644
-> > > --- a/include/linux/srcu.h
-> > > +++ b/include/linux/srcu.h
-> > > @@ -176,10 +176,6 @@ static inline int srcu_read_lock_held(const struct srcu_struct *ssp)
-> > >  
-> > >  #endif /* #else #ifdef CONFIG_DEBUG_LOCK_ALLOC */
-> > >  
-> > > -#define SRCU_NMI_UNKNOWN	0x0
-> > > -#define SRCU_NMI_UNSAFE		0x1
-> > > -#define SRCU_NMI_SAFE		0x2
-> > > -
-> > >  #if defined(CONFIG_PROVE_RCU) && defined(CONFIG_TREE_SRCU)
-> > >  void srcu_check_read_flavor(struct srcu_struct *ssp, int read_flavor);
-> > >  #else
-> > > @@ -235,16 +231,19 @@ static inline void srcu_check_read_flavor(struct srcu_struct *ssp, int read_flav
-> > >   * a mutex that is held elsewhere while calling synchronize_srcu() or
-> > >   * synchronize_srcu_expedited().
-> > >   *
-> > > - * Note that srcu_read_lock() and the matching srcu_read_unlock() must
-> > > - * occur in the same context, for example, it is illegal to invoke
-> > > - * srcu_read_unlock() in an irq handler if the matching srcu_read_lock()
-> > > - * was invoked in process context.
-> > > + * The return value from srcu_read_lock() must be passed unaltered
-> > > + * to the matching srcu_read_unlock().  Note that srcu_read_lock() and
-> > > + * the matching srcu_read_unlock() must occur in the same context, for
-> > > + * example, it is illegal to invoke srcu_read_unlock() in an irq handler
-> > > + * if the matching srcu_read_lock() was invoked in process context.  Or,
-> > > + * for that matter to invoke srcu_read_unlock() from one task and the
-> > > + * matching srcu_read_lock() from another.
-> > >   */
-> > >  static inline int srcu_read_lock(struct srcu_struct *ssp) __acquires(ssp)
-> > >  {
-> > >  	int retval;
-> > >  
-> > > -	srcu_check_read_flavor(ssp, false);
-> > > +	srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_NORMAL);
-> > >  	retval = __srcu_read_lock(ssp);
-> > >  	srcu_lock_acquire(&ssp->dep_map);
-> > >  	return retval;
-> > > @@ -256,12 +255,16 @@ static inline int srcu_read_lock(struct srcu_struct *ssp) __acquires(ssp)
-> > >   *
-> > >   * Enter an SRCU read-side critical section, but in an NMI-safe manner.
-> > >   * See srcu_read_lock() for more information.
-> > > + *
-> > > + * If srcu_read_lock_nmisafe() is ever used on an srcu_struct structure,
-> > > + * then none of the other flavors may be used, whether before, during,
-> > > + * or after.
-> > >   */
-> > >  static inline int srcu_read_lock_nmisafe(struct srcu_struct *ssp) __acquires(ssp)
-> > >  {
-> > >  	int retval;
-> > >  
-> > > -	srcu_check_read_flavor(ssp, true);
-> > > +	srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_NMI);
-> > >  	retval = __srcu_read_lock_nmisafe(ssp);
-> > >  	rcu_try_lock_acquire(&ssp->dep_map);
-> > >  	return retval;
-> > > @@ -273,7 +276,7 @@ srcu_read_lock_notrace(struct srcu_struct *ssp) __acquires(ssp)
-> > >  {
-> > >  	int retval;
-> > >  
-> > > -	srcu_check_read_flavor(ssp, false);
-> > > +	srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_NORMAL);
-> > >  	retval = __srcu_read_lock(ssp);
-> > >  	return retval;
-> > >  }
-> > > @@ -302,7 +305,7 @@ srcu_read_lock_notrace(struct srcu_struct *ssp) __acquires(ssp)
-> > >  static inline int srcu_down_read(struct srcu_struct *ssp) __acquires(ssp)
-> > >  {
-> > >  	WARN_ON_ONCE(in_nmi());
-> > > -	srcu_check_read_flavor(ssp, false);
-> > > +	srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_NORMAL);
-> > >  	return __srcu_read_lock(ssp);
-> > >  }
-> > >  
-> > > @@ -317,7 +320,7 @@ static inline void srcu_read_unlock(struct srcu_struct *ssp, int idx)
-> > >  	__releases(ssp)
-> > >  {
-> > >  	WARN_ON_ONCE(idx & ~0x1);
-> > > -	srcu_check_read_flavor(ssp, false);
-> > > +	srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_NORMAL);
-> > >  	srcu_lock_release(&ssp->dep_map);
-> > >  	__srcu_read_unlock(ssp, idx);
-> > >  }
-> > > @@ -333,7 +336,7 @@ static inline void srcu_read_unlock_nmisafe(struct srcu_struct *ssp, int idx)
-> > >  	__releases(ssp)
-> > >  {
-> > >  	WARN_ON_ONCE(idx & ~0x1);
-> > > -	srcu_check_read_flavor(ssp, true);
-> > > +	srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_NMI);
-> > >  	rcu_lock_release(&ssp->dep_map);
-> > >  	__srcu_read_unlock_nmisafe(ssp, idx);
-> > >  }
-> > > @@ -342,7 +345,7 @@ static inline void srcu_read_unlock_nmisafe(struct srcu_struct *ssp, int idx)
-> > >  static inline notrace void
-> > >  srcu_read_unlock_notrace(struct srcu_struct *ssp, int idx) __releases(ssp)
-> > >  {
-> > > -	srcu_check_read_flavor(ssp, false);
-> > > +	srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_NORMAL);
-> > >  	__srcu_read_unlock(ssp, idx);
-> > >  }
-> > >  
-> > > @@ -359,7 +362,7 @@ static inline void srcu_up_read(struct srcu_struct *ssp, int idx)
-> > >  {
-> > >  	WARN_ON_ONCE(idx & ~0x1);
-> > >  	WARN_ON_ONCE(in_nmi());
-> > > -	srcu_check_read_flavor(ssp, false);
-> > > +	srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_NORMAL);
-> > >  	__srcu_read_unlock(ssp, idx);
-> > >  }
-> > >  
-> > > diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
-> > > index ab7d8d215b84b..79ad809c7f035 100644
-> > > --- a/include/linux/srcutree.h
-> > > +++ b/include/linux/srcutree.h
-> > > @@ -43,6 +43,10 @@ struct srcu_data {
-> > >  	struct srcu_struct *ssp;
-> > >  };
-> > >  
-> > > +/* Values for ->srcu_reader_flavor. */
-> > > +#define SRCU_READ_FLAVOR_NORMAL	0x1		// srcu_read_lock().
-> > > +#define SRCU_READ_FLAVOR_NMI	0x2		// srcu_read_lock_nmisafe().
-> > > +
-> > >  /*
-> > >   * Node in SRCU combining tree, similar in function to rcu_data.
-> > >   */
-> > > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> > > index abe55777c4335..4c51be484b48a 100644
-> > > --- a/kernel/rcu/srcutree.c
-> > > +++ b/kernel/rcu/srcutree.c
-> > > @@ -438,9 +438,9 @@ static unsigned long srcu_readers_lock_idx(struct srcu_struct *ssp, int idx)
-> > >  	unsigned long sum = 0;
-> > >  
-> > >  	for_each_possible_cpu(cpu) {
-> > > -		struct srcu_data *cpuc = per_cpu_ptr(ssp->sda, cpu);
-> > > +		struct srcu_data *sdp = per_cpu_ptr(ssp->sda, cpu);
-> > >  
-> > > -		sum += atomic_long_read(&cpuc->srcu_lock_count[idx]);
-> > > +		sum += atomic_long_read(&sdp->srcu_lock_count[idx]);
-> > >  	}
-> > >  	return sum;
-> > >  }
-> > > @@ -456,14 +456,14 @@ static unsigned long srcu_readers_unlock_idx(struct srcu_struct *ssp, int idx)
-> > >  	unsigned long sum = 0;
-> > >  
-> > >  	for_each_possible_cpu(cpu) {
-> > > -		struct srcu_data *cpuc = per_cpu_ptr(ssp->sda, cpu);
-> > > +		struct srcu_data *sdp = per_cpu_ptr(ssp->sda, cpu);
-> > >  
-> > > -		sum += atomic_long_read(&cpuc->srcu_unlock_count[idx]);
-> > > +		sum += atomic_long_read(&sdp->srcu_unlock_count[idx]);
-> > >  		if (IS_ENABLED(CONFIG_PROVE_RCU))
-> > > -			mask = mask | READ_ONCE(cpuc->srcu_reader_flavor);
-> > > +			mask = mask | READ_ONCE(sdp->srcu_reader_flavor);
-> > >  	}
-> > >  	WARN_ONCE(IS_ENABLED(CONFIG_PROVE_RCU) && (mask & (mask - 1)),
-> > > -		  "Mixed NMI-safe readers for srcu_struct at %ps.\n", ssp);
-> > > +		  "Mixed reader flavors for srcu_struct at %ps.\n", ssp);
-> > >  	return sum;
-> > >  }
-> > >  
-> > > @@ -564,12 +564,12 @@ static bool srcu_readers_active(struct srcu_struct *ssp)
-> > >  	unsigned long sum = 0;
-> > >  
-> > >  	for_each_possible_cpu(cpu) {
-> > > -		struct srcu_data *cpuc = per_cpu_ptr(ssp->sda, cpu);
-> > > +		struct srcu_data *sdp = per_cpu_ptr(ssp->sda, cpu);
-> > >  
-> > > -		sum += atomic_long_read(&cpuc->srcu_lock_count[0]);
-> > > -		sum += atomic_long_read(&cpuc->srcu_lock_count[1]);
-> > > -		sum -= atomic_long_read(&cpuc->srcu_unlock_count[0]);
-> > > -		sum -= atomic_long_read(&cpuc->srcu_unlock_count[1]);
-> > > +		sum += atomic_long_read(&sdp->srcu_lock_count[0]);
-> > > +		sum += atomic_long_read(&sdp->srcu_lock_count[1]);
-> > > +		sum -= atomic_long_read(&sdp->srcu_unlock_count[0]);
-> > > +		sum -= atomic_long_read(&sdp->srcu_unlock_count[1]);
-> > >  	}
-> > >  	return sum;
-> > >  }
-> > > @@ -703,20 +703,21 @@ EXPORT_SYMBOL_GPL(cleanup_srcu_struct);
-> > >   */
-> > >  void srcu_check_read_flavor(struct srcu_struct *ssp, int read_flavor)
-> > >  {
-> > > -	int reader_flavor_mask = 1 << read_flavor;
-> > > -	int old_reader_flavor_mask;
-> > > +	int old_read_flavor;
-> > >  	struct srcu_data *sdp;
-> > >  
-> > > -	/* NMI-unsafe use in NMI is a bad sign */
-> > > -	WARN_ON_ONCE(!read_flavor && in_nmi());
-> > > +	/* NMI-unsafe use in NMI is a bad sign, as is multi-bit read_flavor values. */
-> > > +	WARN_ON_ONCE((read_flavor != SRCU_READ_FLAVOR_NMI) && in_nmi());
-> > > +	WARN_ON_ONCE(read_flavor & (read_flavor - 1));
-> > > +
-> > >  	sdp = raw_cpu_ptr(ssp->sda);
-> > > -	old_reader_flavor_mask = READ_ONCE(sdp->srcu_reader_flavor);
-> > > -	if (!old_reader_flavor_mask) {
-> > > -		old_reader_flavor_mask = cmpxchg(&sdp->srcu_reader_flavor, 0, reader_flavor_mask);
-> > > -		if (!old_reader_flavor_mask)
-> > > +	old_read_flavor = READ_ONCE(sdp->srcu_reader_flavor);
-> > > +	if (!old_read_flavor) {
-> > > +		old_read_flavor = cmpxchg(&sdp->srcu_reader_flavor, 0, read_flavor);
-> > > +		if (!old_read_flavor)
-> > >  			return;
-> > >  	}
-> > > -	WARN_ONCE(old_reader_flavor_mask != reader_flavor_mask, "CPU %d old state %d new state %d\n", sdp->cpu, old_reader_flavor_mask, reader_flavor_mask);
-> > > +	WARN_ONCE(old_read_flavor != read_flavor, "CPU %d old state %d new state %d\n", sdp->cpu, old_read_flavor, read_flavor);
-> > >  }
-> > >  EXPORT_SYMBOL_GPL(srcu_check_read_flavor);
-> > >  #endif /* CONFIG_PROVE_RCU */
-> > 
+> Fixes: 1f9a1ea821ff ("bpf: Support new sign-extension load insns")
+> Reported-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+> Reported-by: Zac Ecob <zacecob@protonmail.com>
+> Signed-off-by: Dimitar Kanaliev <dimitar.kanaliev@siteground.com>
+...
 
