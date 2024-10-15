@@ -1,327 +1,203 @@
-Return-Path: <bpf+bounces-41940-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41941-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DE6599DBE9
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 03:52:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3913699DBFB
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 04:00:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F1BB02834AB
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 01:52:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5C8701C21A57
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 02:00:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9754158A1F;
-	Tue, 15 Oct 2024 01:52:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D623515956C;
+	Tue, 15 Oct 2024 02:00:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="db+gF2aT"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fZgGmQw3"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DAFB17BD3;
-	Tue, 15 Oct 2024 01:51:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C317B8F5A
+	for <bpf@vger.kernel.org>; Tue, 15 Oct 2024 02:00:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728957121; cv=none; b=DbrjS6GqTU//bT58Nw8sTQkd+HtcjjXNjJmJ/AYVOB3HCjTIm7p2SJe8iH+/A+9Ame0kfnPnmb7xiayKDfTXoE1On3eNMZu9OXHFusYv1ll9qkEGDyC5exooewNMDYW5J89B98QCyZh2QodzYp3tkSO+oM8jd1MXgzF3gMa++dY=
+	t=1728957625; cv=none; b=ORWkXK1v4Ng1W42f8SBEdk9Ql4oZklWLp5wVmIlkvJA6R1nhlUfjhq6o10KzhsBugPzedguqmIHjDoiDwb+AWFTnS38zc9GvqlLm/+i/V7b0BnQqnvDn52kqMIygEjBbho+nZJXgAD8SAdbcUoI1t498EjdszpJoVG5vPH5t0d4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728957121; c=relaxed/simple;
-	bh=jRe3cvMMhFQXU5Qt3lmzcFa6sNreGfi9RKk2Rty5aS8=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=LNYIP9k1G1VlzBKlg4jS2yAReTxZ3ZOWe4XPgXMLLjk/MJdSRMCDvkqpUWDz8sSBcqexHRNoN6QHKVvTPpwOfvrDa383EpmHTgPNYo9lI0t92uVK6QzVjA8yd7j+eh+QfsRjzWOnL4u49zHeNZut0h4pS+wGmYL9gE3Oec/ZSPQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=db+gF2aT; arc=none smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1728957119; x=1760493119;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=jRe3cvMMhFQXU5Qt3lmzcFa6sNreGfi9RKk2Rty5aS8=;
-  b=db+gF2aT3Gxls+BQyb1VrUvk2XCXYZ+4LEz59f9gp103XFhsBcRjMFX6
-   IDtH2VMB67PAcx/EmHCCq/pcDCrCp5F42/NwliwTXTu4wCwAXW6qxVRvJ
-   t1ywB6QXTAEqxIbe+aquIloYjoYUe1wT4BPZ48snzc+la50UBckq/RQHv
-   eQTGzmMjBeSLKg9vd1DnNsEg14ZEDSPN+xCk53uNI98gk3pGz9RiWTGDR
-   AbTzLUS2RgW6A+zFLrGASnfmw02A72mqdsApof67A5EpjgWYBHZxV2mm+
-   ea8zuyVRiRTmwrP8mBdavVHy+NZJSqDeqZNfJJQoCjT3XKl538rzBJ9lu
-   g==;
-X-CSE-ConnectionGUID: CJYEp07ZQVe+clPX5hID8g==
-X-CSE-MsgGUID: y3aaeEvRRlSBDlYUeqkzYQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11225"; a="15948999"
-X-IronPort-AV: E=Sophos;i="6.11,204,1725346800"; 
-   d="scan'208";a="15948999"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2024 18:51:59 -0700
-X-CSE-ConnectionGUID: Xtxza0obQPi2lh2TP1yC5g==
-X-CSE-MsgGUID: pgSghFNdTh6Jrefj0IEGKg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.11,204,1725346800"; 
-   d="scan'208";a="78561331"
-Received: from jdoman-desk1.amr.corp.intel.com (HELO vcostago-mobl3) ([10.124.221.73])
-  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2024 18:51:58 -0700
-From: Vinicius Costa Gomes <vinicius.gomes@intel.com>
-To: Joe Damato <jdamato@fastly.com>, netdev@vger.kernel.org
-Cc: kurt@linutronix.de, Joe Damato <jdamato@fastly.com>, Tony Nguyen
- <anthony.l.nguyen@intel.com>, Przemek Kitszel
- <przemyslaw.kitszel@intel.com>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer
- <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, "moderated
- list:INTEL ETHERNET DRIVERS" <intel-wired-lan@lists.osuosl.org>, open list
- <linux-kernel@vger.kernel.org>, "open list:XDP (eXpress Data Path)"
- <bpf@vger.kernel.org>
-Subject: Re: [RFC net-next v2 2/2] igc: Link queues to NAPI instances
-In-Reply-To: <20241014213012.187976-3-jdamato@fastly.com>
-References: <20241014213012.187976-1-jdamato@fastly.com>
- <20241014213012.187976-3-jdamato@fastly.com>
-Date: Mon, 14 Oct 2024 18:51:57 -0700
-Message-ID: <87ldyqnneq.fsf@intel.com>
+	s=arc-20240116; t=1728957625; c=relaxed/simple;
+	bh=HsjRy8f2psGU09oBTJhjrRCcbAP7WPjbM/S9psz0UBc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=UtJA5bQjmasffZ9mTu6FL3eLtCdWvYvq37txjpK9ZKk9/wMZd3TcTSYzrx98XWOIr8rgSe+raPeQPb0O7YaV1daSJG8lYIBXWmSZu4bNlwqJI72GuJRQCIcOwkPigiNsdDCRLA3MolSQe36dOqerfdkp5ZAivQm2uWTj+2k+y30=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fZgGmQw3; arc=none smtp.client-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-4311ae6426aso31618235e9.2
+        for <bpf@vger.kernel.org>; Mon, 14 Oct 2024 19:00:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1728957622; x=1729562422; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=U8DB4RRMp54uvgptIY9NH81hTeep0a+5XznGmC0c07U=;
+        b=fZgGmQw31tXhxi3mKiqxwdSMahuZzRZ7T8VHm59GMmy4v16B96jghBe6LEHvEPcXj1
+         PlTBUh32lCmzygWIHU3YqMDpdI4vZaNU5pj6dwGvedPNlor/QlAJKxCh4JRZFJi5wxy6
+         X0RBe+5LyoyAsDx7LjV4Yn6v4RyXl/6+UvSRIA2ArtWtMQ0BfJqioMBrZlLU6R87SjAx
+         uZN4kyCtONOKa/W2Wvcww8eZBSjgKr/Yoff394wIIT+j5TEiFdUD503s19DT3bvCbgow
+         peJqSuunc1ojemvtfSfm+CLPeYFNoWSDdIkBaZLQtt8hRmE5g1/v8khtMI210q6y+YUM
+         yI4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1728957622; x=1729562422;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=U8DB4RRMp54uvgptIY9NH81hTeep0a+5XznGmC0c07U=;
+        b=ZJUP2t9UDBHD2I9Agy5e5wMS414H/Rjaqkl9U7mRqC167LICRTSDMUvMpI/1E0wsEW
+         0PDXad23oUwsrs4Is0Ce8fL9eYI/dIiZeW1rJCO/+co1wIP2vDnE0No1fdXPzaa9z5i/
+         GAN03buyvUWGwkiE24sPjZ9RvkISIsAsPfvDj8rUcpke0AWSNXo0uVu1vGKAVI+oC2jL
+         Rp5+hB3LuGfCVc3s1BhFRUHbaqMNtoicezdkHXTygRf36q0MTY8tEA2w+m71guEglpxf
+         SJjiv04LHbhxQ4OwEgvsjZ7j1KG4V4X833sTCfpUpx35yw5X2t24CVvC3gufxwCzwWyS
+         Zupw==
+X-Gm-Message-State: AOJu0YzD4nt72naysLHSzYO5gpCEuwJkoulFdmkd/82yh0J45y7JRgtk
+	FmQ0ry8x4dfyPRjpApD/AIoykBiVXAnusqN/ZHGs+KycH8x5QWIgoam0WhU51Nvuvq9/p/I4mwT
+	7Seyli4AFSAd59302HWPaDE9j9U4=
+X-Google-Smtp-Source: AGHT+IE3yVgJtTj6SSHckOQb+EULpsddKfy+ZEvhqmtKsRW0gUO1DE0MFIvx+T/zfNFTAheKpoDGJVG1GQtOAC+eqOw=
+X-Received: by 2002:a05:600c:3ba9:b0:426:593c:9361 with SMTP id
+ 5b1f17b1804b1-4311df47018mr110903015e9.26.1728957621844; Mon, 14 Oct 2024
+ 19:00:21 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20241010153835.26984-1-leon.hwang@linux.dev> <20241010153835.26984-2-leon.hwang@linux.dev>
+ <CAADnVQL8ie=xxCXt7td=ZhQwyY_hKtig-y9kHwWYwBG9MdfRQA@mail.gmail.com>
+ <c7e49c48-7644-40c3-a4a2-664cc16a702c@linux.dev> <CAADnVQLh9nBHvkS40gg+PynmfMmPvwuYrcdMh9j2DqoL=9dqqw@mail.gmail.com>
+ <0c7a9153-a04c-40c9-be86-878cb415b1c0@linux.dev>
+In-Reply-To: <0c7a9153-a04c-40c9-be86-878cb415b1c0@linux.dev>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 14 Oct 2024 19:00:10 -0700
+Message-ID: <CAADnVQ+wkUOP4Qz2BsSietr-_O57ErEL4q0s_PPfjJ1twGd17Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v7 1/2] bpf: Prevent tailcall infinite loop
+ caused by freplace
+To: Leon Hwang <leon.hwang@linux.dev>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	=?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
+	Puranjay Mohan <puranjay@kernel.org>, Xu Kuohai <xukuohai@huaweicloud.com>, 
+	Eddy Z <eddyz87@gmail.com>, Ilya Leoshkevich <iii@linux.ibm.com>, kernel-patches-bot@fb.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Joe Damato <jdamato@fastly.com> writes:
+On Mon, Oct 14, 2024 at 6:17=E2=80=AFAM Leon Hwang <leon.hwang@linux.dev> w=
+rote:
+>
+>
+>
+> On 2024/10/11 23:50, Alexei Starovoitov wrote:
+> > On Thu, Oct 10, 2024 at 8:27=E2=80=AFPM Leon Hwang <leon.hwang@linux.de=
+v> wrote:
+> >>
+> >>
+> >>
+> >> On 11/10/24 01:09, Alexei Starovoitov wrote:
+> >>> On Thu, Oct 10, 2024 at 8:39=E2=80=AFAM Leon Hwang <leon.hwang@linux.=
+dev> wrote:
+> >>>>
+> >>> Also Xu's suggestion makes sense to me.
+> >>> "extension prog should not be tailcalled independently"
+> >>>
+> >>> So I would disable such case as a part of this patch as well.
+> >>>
+> >>
+> >> I=E2=80=99m fine with adding this restriction.
+> >>
+> >> However, it will break a use case that works on the 5.15 kernel:
+> >>
+> >> libxdp XDP dispatcher --> subprog --> freplace A --tailcall-> freplace=
+ B.
+> >>
+> >> With this limitation, the chain 'freplace A --tailcall-> freplace B'
+> >> will no longer work.
+> >>
+> >> To comply with the new restriction, the use case would need to be
+> >> updated to:
+> >>
+> >> libxdp XDP dispatcher --> subprog --> freplace A --tailcall-> XDP B.
+> >
+> > I don't believe libxdp is doing anything like this.
+> > It makes no sense to load PROG_TYPE_EXT that is supposed to freplace
+> > another subprog and _not_ proceed with the actual replacement.
+> >
+>
+> Without the new restriction, it=E2=80=99s difficult to prevent such a use=
+ case,
+> even if it=E2=80=99s not aligned with the intended design of freplace.
+>
+> > tail_call-ing into EXT prog directly is likely very broken.
+> > EXT prog doesn't have to have ctx.
+> > Its arguments match the target global subprog which may not have ctx at=
+ all.
+> >
+>
+> Let me share a simple example of the use case in question:
+>
+> In the XDP program:
+>
+> __noinline int
+> int subprog_xdp(struct xdp_md *xdp)
+> {
+>         return xdp ? XDP_PASS : XDP_ABORTED;
+> }
+>
+> SEC("xdp")
+> int entry_xdp(struct xdp_md *xdp)
+> {
+>         return subprog_xdp(xdp);
+> }
+>
+> In the freplace entry:
+>
+> struct {
+>         __uint(type, BPF_MAP_TYPE_PROG_ARRAY);
+>         __uint(max_entries, 1);
+>         __uint(key_size, sizeof(__u32));
+>         __uint(value_size, sizeof(__u32));
+> } jmp_table SEC(".maps");
+>
+> SEC("freplace")
+> int entry_freplace(struct xdp_md *xdp)
+> {
+>         int ret =3D XDP_PASS;
+>
+>         bpf_tail_call_static(xdp, &jmp_table, 0);
+>         __sink(ret);
+>         return ret;
+> }
+>
+> In the freplace tail callee:
+>
+> SEC("freplace")
+> int entry_tailcallee(struct xdp_md *xdp)
+> {
+>         return XDP_PASS;
+> }
+>
+> In this case, the attach target of entry_freplace is subprog_xdp, and
+> the tail call target of entry_freplace is entry_tailcallee. The attach
+> target of entry_tailcallee is entry_xdp, but it doesn't proceed with the
+> actual replacement. As a result, the call chain becomes:
+>
+> entry_xdp -> subprog_xdp -> entry_freplace --tailcall-> entry_tailcallee.
 
-> Link queues to NAPI instances via netdev-genl API so that users can
-> query this information with netlink. Handle a few cases in the driver:
->   1. Link/unlink the NAPIs when XDP is enabled/disabled
->   2. Handle IGC_FLAG_QUEUE_PAIRS enabled and disabled
->
-> Example output when IGC_FLAG_QUEUE_PAIRS is enabled:
->
-> $ ./tools/net/ynl/cli.py --spec Documentation/netlink/specs/netdev.yaml \
->                          --dump queue-get --json='{"ifindex": 2}'
->
-> [{'id': 0, 'ifindex': 2, 'napi-id': 8193, 'type': 'rx'},
->  {'id': 1, 'ifindex': 2, 'napi-id': 8194, 'type': 'rx'},
->  {'id': 2, 'ifindex': 2, 'napi-id': 8195, 'type': 'rx'},
->  {'id': 3, 'ifindex': 2, 'napi-id': 8196, 'type': 'rx'},
->  {'id': 0, 'ifindex': 2, 'napi-id': 8193, 'type': 'tx'},
->  {'id': 1, 'ifindex': 2, 'napi-id': 8194, 'type': 'tx'},
->  {'id': 2, 'ifindex': 2, 'napi-id': 8195, 'type': 'tx'},
->  {'id': 3, 'ifindex': 2, 'napi-id': 8196, 'type': 'tx'}]
->
-> Since IGC_FLAG_QUEUE_PAIRS is enabled, you'll note that the same NAPI ID
-> is present for both rx and tx queues at the same index, for example
-> index 0:
->
-> {'id': 0, 'ifindex': 2, 'napi-id': 8193, 'type': 'rx'},
-> {'id': 0, 'ifindex': 2, 'napi-id': 8193, 'type': 'tx'},
->
-> To test IGC_FLAG_QUEUE_PAIRS disabled, a test system was booted using
-> the grub command line option "maxcpus=2" to force
-> igc_set_interrupt_capability to disable IGC_FLAG_QUEUE_PAIRS.
->
-> Example output when IGC_FLAG_QUEUE_PAIRS is disabled:
->
-> $ lscpu | grep "On-line CPU"
-> On-line CPU(s) list:      0,2
->
-> $ ethtool -l enp86s0  | tail -5
-> Current hardware settings:
-> RX:		n/a
-> TX:		n/a
-> Other:		1
-> Combined:	2
->
-> $ cat /proc/interrupts  | grep enp
->  144: [...] enp86s0
->  145: [...] enp86s0-rx-0
->  146: [...] enp86s0-rx-1
->  147: [...] enp86s0-tx-0
->  148: [...] enp86s0-tx-1
->
-> 1 "other" IRQ, and 2 IRQs for each of RX and Tx, so we expect netlink to
-> report 4 IRQs with unique NAPI IDs:
->
-> $ ./tools/net/ynl/cli.py --spec Documentation/netlink/specs/netdev.yaml \
->                          --dump napi-get --json='{"ifindex": 2}'
-> [{'id': 8196, 'ifindex': 2, 'irq': 148},
->  {'id': 8195, 'ifindex': 2, 'irq': 147},
->  {'id': 8194, 'ifindex': 2, 'irq': 146},
->  {'id': 8193, 'ifindex': 2, 'irq': 145}]
->
-> Now we examine which queues these NAPIs are associated with, expecting
-> that since IGC_FLAG_QUEUE_PAIRS is disabled each RX and TX queue will
-> have its own NAPI instance:
->
-> $ ./tools/net/ynl/cli.py --spec Documentation/netlink/specs/netdev.yaml \
->                          --dump queue-get --json='{"ifindex": 2}'
-> [{'id': 0, 'ifindex': 2, 'napi-id': 8193, 'type': 'rx'},
->  {'id': 1, 'ifindex': 2, 'napi-id': 8194, 'type': 'rx'},
->  {'id': 0, 'ifindex': 2, 'napi-id': 8195, 'type': 'tx'},
->  {'id': 1, 'ifindex': 2, 'napi-id': 8196, 'type': 'tx'}]
->
-> Signed-off-by: Joe Damato <jdamato@fastly.com>
-> ---
->  v2:
->    - Update commit message to include tests for IGC_FLAG_QUEUE_PAIRS
->      disabled
->    - Refactored code to move napi queue mapping and unmapping to helper
->      functions igc_set_queue_napi and igc_unset_queue_napi
->    - Adjust the code to handle IGC_FLAG_QUEUE_PAIRS disabled
->    - Call helpers to map/unmap queues to NAPIs in igc_up, __igc_open,
->      igc_xdp_enable_pool, and igc_xdp_disable_pool
->
->  drivers/net/ethernet/intel/igc/igc.h      |  3 ++
->  drivers/net/ethernet/intel/igc/igc_main.c | 58 +++++++++++++++++++++--
->  drivers/net/ethernet/intel/igc/igc_xdp.c  |  2 +
->  3 files changed, 59 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/net/ethernet/intel/igc/igc.h b/drivers/net/ethernet/intel/igc/igc.h
-> index eac0f966e0e4..7b1c9ea60056 100644
-> --- a/drivers/net/ethernet/intel/igc/igc.h
-> +++ b/drivers/net/ethernet/intel/igc/igc.h
-> @@ -337,6 +337,9 @@ struct igc_adapter {
->  	struct igc_led_classdev *leds;
->  };
->  
-> +void igc_set_queue_napi(struct igc_adapter *adapter, int q_idx,
-> +			struct napi_struct *napi);
-> +void igc_unset_queue_napi(struct igc_adapter *adapter, int q_idx);
->  void igc_up(struct igc_adapter *adapter);
->  void igc_down(struct igc_adapter *adapter);
->  int igc_open(struct net_device *netdev);
-> diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethernet/intel/igc/igc_main.c
-> index 7964bbedb16c..59c00acfa0ed 100644
-> --- a/drivers/net/ethernet/intel/igc/igc_main.c
-> +++ b/drivers/net/ethernet/intel/igc/igc_main.c
-> @@ -4948,6 +4948,47 @@ static int igc_sw_init(struct igc_adapter *adapter)
->  	return 0;
->  }
->  
-> +void igc_set_queue_napi(struct igc_adapter *adapter, int q_idx,
-> +			struct napi_struct *napi)
-> +{
-> +	if (adapter->flags & IGC_FLAG_QUEUE_PAIRS) {
-> +		netif_queue_set_napi(adapter->netdev, q_idx,
-> +				     NETDEV_QUEUE_TYPE_RX, napi);
-> +		netif_queue_set_napi(adapter->netdev, q_idx,
-> +				     NETDEV_QUEUE_TYPE_TX, napi);
-> +	} else {
-> +		if (q_idx < adapter->num_rx_queues) {
-> +			netif_queue_set_napi(adapter->netdev, q_idx,
-> +					     NETDEV_QUEUE_TYPE_RX, napi);
-> +		} else {
-> +			q_idx -= adapter->num_rx_queues;
-> +			netif_queue_set_napi(adapter->netdev, q_idx,
-> +					     NETDEV_QUEUE_TYPE_TX, napi);
-> +		}
-> +	}
-> +}
-> +
-> +void igc_unset_queue_napi(struct igc_adapter *adapter, int q_idx)
-> +{
-> +	struct net_device *netdev = adapter->netdev;
-> +
-> +	if (adapter->flags & IGC_FLAG_QUEUE_PAIRS) {
-> +		netif_queue_set_napi(netdev, q_idx, NETDEV_QUEUE_TYPE_RX,
-> +				     NULL);
-> +		netif_queue_set_napi(netdev, q_idx, NETDEV_QUEUE_TYPE_TX,
-> +				     NULL);
-> +	} else {
-> +		if (q_idx < adapter->num_rx_queues) {
-> +			netif_queue_set_napi(adapter->netdev, q_idx,
-> +					     NETDEV_QUEUE_TYPE_RX, NULL);
-> +		} else {
-> +			q_idx -= adapter->num_rx_queues;
-> +			netif_queue_set_napi(adapter->netdev, q_idx,
-> +					     NETDEV_QUEUE_TYPE_TX, NULL);
-> +		}
-> +	}
-> +}
+exactly. above makes no practical application.
+It's only a headache for the verifier and source of obscure bugs.
 
-It seems that igc_unset_queue_napi() is igc_set_queue_napi(x, y, NULL),
-so I would suggest either implementing "unset" in terms of "set", or
-using igc_set_queue_napi(x, y, NULL) directly in the "unlink" case (I
-have a slight preference for the second option).
-
-> +
->  /**
->   * igc_up - Open the interface and prepare it to handle traffic
->   * @adapter: board private structure
-> @@ -4955,6 +4996,7 @@ static int igc_sw_init(struct igc_adapter *adapter)
->  void igc_up(struct igc_adapter *adapter)
->  {
->  	struct igc_hw *hw = &adapter->hw;
-> +	struct napi_struct *napi;
->  	int i = 0;
->  
->  	/* hardware has been reset, we need to reload some things */
-> @@ -4962,8 +5004,11 @@ void igc_up(struct igc_adapter *adapter)
->  
->  	clear_bit(__IGC_DOWN, &adapter->state);
->  
-> -	for (i = 0; i < adapter->num_q_vectors; i++)
-> -		napi_enable(&adapter->q_vector[i]->napi);
-> +	for (i = 0; i < adapter->num_q_vectors; i++) {
-> +		napi = &adapter->q_vector[i]->napi;
-> +		napi_enable(napi);
-> +		igc_set_queue_napi(adapter, i, napi);
-> +	}
->  
->  	if (adapter->msix_entries)
->  		igc_configure_msix(adapter);
-> @@ -5192,6 +5237,7 @@ void igc_down(struct igc_adapter *adapter)
->  	for (i = 0; i < adapter->num_q_vectors; i++) {
->  		if (adapter->q_vector[i]) {
->  			napi_synchronize(&adapter->q_vector[i]->napi);
-> +			igc_unset_queue_napi(adapter, i);
->  			napi_disable(&adapter->q_vector[i]->napi);
->  		}
->  	}
-> @@ -6021,6 +6067,7 @@ static int __igc_open(struct net_device *netdev, bool resuming)
->  	struct igc_adapter *adapter = netdev_priv(netdev);
->  	struct pci_dev *pdev = adapter->pdev;
->  	struct igc_hw *hw = &adapter->hw;
-> +	struct napi_struct *napi;
->  	int err = 0;
->  	int i = 0;
->  
-> @@ -6056,8 +6103,11 @@ static int __igc_open(struct net_device *netdev, bool resuming)
->  
->  	clear_bit(__IGC_DOWN, &adapter->state);
->  
-> -	for (i = 0; i < adapter->num_q_vectors; i++)
-> -		napi_enable(&adapter->q_vector[i]->napi);
-> +	for (i = 0; i < adapter->num_q_vectors; i++) {
-> +		napi = &adapter->q_vector[i]->napi;
-> +		napi_enable(napi);
-> +		igc_set_queue_napi(adapter, i, napi);
-> +	}
->  
->  	/* Clear any pending interrupts. */
->  	rd32(IGC_ICR);
-> diff --git a/drivers/net/ethernet/intel/igc/igc_xdp.c b/drivers/net/ethernet/intel/igc/igc_xdp.c
-> index e27af72aada8..886f04b8c394 100644
-> --- a/drivers/net/ethernet/intel/igc/igc_xdp.c
-> +++ b/drivers/net/ethernet/intel/igc/igc_xdp.c
-> @@ -84,6 +84,7 @@ static int igc_xdp_enable_pool(struct igc_adapter *adapter,
->  		napi_disable(napi);
->  	}
->  
-> +	igc_unset_queue_napi(adapter, queue_id);
->  	set_bit(IGC_RING_FLAG_AF_XDP_ZC, &rx_ring->flags);
->  	set_bit(IGC_RING_FLAG_AF_XDP_ZC, &tx_ring->flags);
->  
-> @@ -133,6 +134,7 @@ static int igc_xdp_disable_pool(struct igc_adapter *adapter, u16 queue_id)
->  	xsk_pool_dma_unmap(pool, IGC_RX_DMA_ATTR);
->  	clear_bit(IGC_RING_FLAG_AF_XDP_ZC, &rx_ring->flags);
->  	clear_bit(IGC_RING_FLAG_AF_XDP_ZC, &tx_ring->flags);
-> +	igc_set_queue_napi(adapter, queue_id, napi);
->  
->  	if (needs_reset) {
->  		napi_enable(napi);
-> -- 
-> 2.25.1
 >
+> > So it's not about disabling, it's fixing the bug.
+>
+> Indeed, let us proceed with implementing the change.
 
-
-Cheers,
--- 
-Vinicius
+yep.
 
