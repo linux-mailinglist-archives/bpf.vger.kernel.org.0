@@ -1,134 +1,204 @@
-Return-Path: <bpf+bounces-41898-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41899-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C251B99DAB2
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 02:35:10 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E72BB99DAD1
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 02:50:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 84610282C97
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 00:35:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5E1F71F22AE9
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 00:50:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11392BA4B;
-	Tue, 15 Oct 2024 00:35:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C5531F931;
+	Tue, 15 Oct 2024 00:50:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="YWqt0uyc"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="tlcw6XFX"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67873AD55
-	for <bpf@vger.kernel.org>; Tue, 15 Oct 2024 00:35:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEF1B1CF96
+	for <bpf@vger.kernel.org>; Tue, 15 Oct 2024 00:50:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728952505; cv=none; b=s5e1E1/Ay1KOxtWEtyxQldwbM4n+HoWLsJ/evdp43rdBO+gDF+p1h1bpMl0bYUMrDTwD54vp73kJNPTBj7jFLV4t2tQhYYknQFwVAxH/J7yt48dTo8mUvChXf/7hDu68Bo0TSBp8uZSoTsBRcGfu11lE8fryd3GKKztliiYnIhg=
+	t=1728953422; cv=none; b=cjj/qD0W5+5ybhRcQwnMeKEgYlK49xELFwLviBA+2F5e5F9x3sYFT2TfQDliuZ6cxpRwNBM1uOh36NExmNCk1k8ZU1Y1kz8QH6NTS9ZGlT6zCt5pKNOQSO2uxMaFROlpSu6IeTH5Tvf3sBOUqaWx+SKmlRmAGveteUxJCcu3sqQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728952505; c=relaxed/simple;
-	bh=imwk7K4u9VEsAPlUbTjjNXOk2G6W0JDAfWPyv+DKGFw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZsIBvBROBaZvmAsy92D4CZNUcoZSMWihSovhteg+piixn1Fh7Y/IdDp3ur239LdiCUgkfMmkWONWvjyXcC+aVErjQZt3/8i7sttWnTYysWVW5nI+rLPpSFnMS63ww3Tvr/9dTE/gos/8qtdIKSoDAY2bey36SR8Lld24AaMvwEI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=YWqt0uyc; arc=none smtp.client-ip=209.85.208.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2fb5be4381dso2569061fa.2
-        for <bpf@vger.kernel.org>; Mon, 14 Oct 2024 17:35:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1728952501; x=1729557301; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=/YXh2Q41Ele1/0DVwSmnNKS/mkgQys39iWXGBdkL0FY=;
-        b=YWqt0uycfkupLSJmrWbLXc8I+/gpqVYA1+d4q1bSnbY3QO8deD51gPqVyaY+RqCblw
-         Ao9hNQfm3sfBuWp8puZMYos0ENm7DyAlBMoD1TT0njhY53+Zt5VlFbetX4QSrDw0WUSw
-         Tx8O+rOhdb7ck8hZZWB0dSrG0nm0PcMywVSX0+cfJuIywKTPZkxH16PhMgerAYQYeco2
-         7OdCe9lFipZWA44296FlSrQzYI65Yuk1Itj/AoHOTPmAjjFLKgvds6S2o9IjLby8O1Sn
-         nFEQZmtTgYR0X/m4jsNAces2TW0tHoeNeN41My+ujMk4elEv8FW0pQBbbfjJSdGD+0U3
-         0AYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728952501; x=1729557301;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/YXh2Q41Ele1/0DVwSmnNKS/mkgQys39iWXGBdkL0FY=;
-        b=QsnmtNqBo9ZnyoZmV4vdFJLeeZLpmHaIrm/HjjAAHGnjFU3/4FlXxXz3AebSsGUZN+
-         URFXYSZPXttIrW16wEquMuPLoogf9RndMfV8nNkF2Mx2xnxSG4zNAuaC/pBMylQz3rlr
-         pEkunqRawwEF9UyBQZ/wvfsbDA16FC0zt4PRNB3ScdF7hrM0qPCAQy1mwLRss/7JTdRT
-         BriyfotPXYWt/eYSV0mkTbCIHGUL1noQpfQdGIpXREaKRwsfMaElbEq4otL+URxK+4YD
-         e0FjXwWItVNRYPhG3VYGQWvfWDy+IlZxvHD0pw6orKArzlJdmASMzm/9aCrb5beLxoTC
-         1Q3g==
-X-Forwarded-Encrypted: i=1; AJvYcCX/iVyBkyrrCAEbjroMdBJYNAdKTOohefogGZLImmo1AIxiq9omXgEN2YWtqFRiypGssrE=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx/kCBLouV5yXNOVyZO6HPTyCMDtDpyx87Pka5Xm2yvSkhBIdHb
-	hGtSqTpg5hG1FUf8OuDX9WUj4vtjOHmzeqvuIX9a/dROUJI3UCwHrLdB53LDy9VJ4/R7ECz3yNS
-	r7Tc=
-X-Google-Smtp-Source: AGHT+IFRreFzQ8h7VSU7UkasygGzLuLxMyHWaChq+LTbV4PmYDY+e4A7tsUv1j/7DdcrGvwB+Ei76Q==
-X-Received: by 2002:a05:651c:2121:b0:2fb:5d2c:7509 with SMTP id 38308e7fff4ca-2fb5d2c76ccmr1186601fa.14.1728952501449;
-        Mon, 14 Oct 2024 17:35:01 -0700 (PDT)
-Received: from u94a (39-9-37-148.adsl.fetnet.net. [39.9.37.148])
-        by smtp.gmail.com with ESMTPSA id e9e14a558f8ab-3a3d715e2aasm515315ab.82.2024.10.14.17.34.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Oct 2024 17:35:00 -0700 (PDT)
-Date: Tue, 15 Oct 2024 08:34:49 +0800
-From: Shung-Hsi Yu <shung-hsi.yu@suse.com>
-To: Dimitar Kanaliev <dimitar.kanaliev@siteground.com>
-Cc: Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, 
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, 
-	Zac Ecob <zacecob@protonmail.com>
-Subject: Re: [PATCH v2 1/3] bpf: Fix truncation bug in coerce_reg_to_size_sx()
-Message-ID: <ywjkybsqgzzlahmh5qxjzownd747sojvwm45ukl7a2vq55ttjt@3wzyq5kapmq3>
-References: <20241014121155.92887-1-dimitar.kanaliev@siteground.com>
- <20241014121155.92887-2-dimitar.kanaliev@siteground.com>
+	s=arc-20240116; t=1728953422; c=relaxed/simple;
+	bh=uy4oSYMtbLquBsveXWUJNJb8ACMVpKAuI+TB/25eLWg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=F+HG33QA2+DMBYKZUyGkL8Yss1+q4TgskM656n85ymaZ/pOTMY847J6db0AcfhCztSTGtQetMHsJpVqy+tqbDEXtwlPXWSnkS1wgCIlwinkwRijLWzNU5fJ8sKSBzhyv5MAs1JSGqUZotmL3B2vkLKYn8qAtBK8vKSoziyFjmzo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=tlcw6XFX; arc=none smtp.client-ip=95.215.58.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1728953417;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=DUjqB5nvTxVDH3tgLlCXUELaNJgU5gbccBeU7BehdfY=;
+	b=tlcw6XFXo7Mn2+/BoDgh0rdRvpv+Nt1yFdZEjG2KXQuwfLdmdCLQirudVO1SzenhzPVT9c
+	hvwIlO0+dt6ZAaE62sPXAwP6Bk9NTnvDkr+cu2La7HIfYh2z28Hgy6f0N5ZM8SMi4CuR8a
+	5qYd51ydvITCDdXvVTdPgBr1Ka/ge2s=
+From: Martin KaFai Lau <martin.lau@linux.dev>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Kui-Feng Lee <thinker.li@gmail.com>,
+	kernel-team@meta.com
+Subject: [PATCH v5 bpf-next 00/12] Share user memory to BPF program through task storage map
+Date: Mon, 14 Oct 2024 17:49:50 -0700
+Message-ID: <20241015005008.767267-1-martin.lau@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241014121155.92887-2-dimitar.kanaliev@siteground.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, Oct 14, 2024 at 03:11:53PM GMT, Dimitar Kanaliev wrote:
-> coerce_reg_to_size_sx() updates the register state after a sign-extension
-> operation. However, there's a bug in the assignment order of the unsigned
-> min/max values, leading to incorrect truncation:
-> 
->   0: (85) call bpf_get_prandom_u32#7    ; R0_w=scalar()
->   1: (57) r0 &= 1                       ; R0_w=scalar(smin=smin32=0,smax=umax=smax32=umax32=1,var_off=(0x0; 0x1))
->   2: (07) r0 += 254                     ; R0_w=scalar(smin=umin=smin32=umin32=254,smax=umax=smax32=umax32=255,var_off=(0xfe; 0x1))
->   3: (bf) r0 = (s8)r0                   ; R0_w=scalar(smin=smin32=-2,smax=smax32=-1,umin=umin32=0xfffffffe,umax=0xffffffff,var_off=(0xfffffffffffffffe; 0x1))
-> 
-> In the current implementation, the unsigned 32-bit min/max values
-> (u32_min_value and u32_max_value) are assigned directly from the 64-bit
-> signed min/max values (s64_min and s64_max):
-> 
->   reg->umin_value = reg->u32_min_value = s64_min;
->   reg->umax_value = reg->u32_max_value = s64_max;
-> 
-> Due to the chain assigmnent, this is equivalent to:
-> 
->   reg->u32_min_value = s64_min;  // Unintended truncation
->   reg->umin_value = reg->u32_min_value;
->   reg->u32_max_value = s64_max;  // Unintended truncation
->   reg->umax_value = reg->u32_max_value;
+From: Martin KaFai Lau <martin.lau@kernel.org>
 
-Nit: while I initially suggested the above fragment to Dimitar to use in
-commit message, perhaps saying that "reg->u32_min_value = s64_min" is an
-unintended truncation is not entirely correct; we do want truncation in
-"reg->u32_max_value = (u32)s64_max" to happen, just not
-"reg->umax_value = (u32)s64_max". Hopefully the maintainer knows a more
-elegant way to put it.
+This v5 series is a continuation work of the RFC v4. Some major changes:
 
-Other than that,
+Changes in v5:
+1. The original patch 1 and patch 2 are combined.
+2. Patch 3, 4, and 5 are new. They get the bpf_local_storage
+   ready to handle the __uptr in the map_value.
+3. Patch 6 is mostly new, so I reset the sob.
+4. There are some changes in the carry over patch 1 and 2 also. They
+   are mentioned at the individual patch.
+5. More tests are added.
 
-Reviewed-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+The following is the original cover letter and the earlier change log.
+The bpf prog example has been removed. Please find a similar
+example in the selftests task_ls_uptr.c.
 
-> Fixes: 1f9a1ea821ff ("bpf: Support new sign-extension load insns")
-> Reported-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
-> Reported-by: Zac Ecob <zacecob@protonmail.com>
-> Signed-off-by: Dimitar Kanaliev <dimitar.kanaliev@siteground.com>
-...
+~~~~~~~~
+
+Some of BPF schedulers (sched_ext) need hints from user programs to do
+a better job. For example, a scheduler can handle a task in a
+different way if it knows a task is doing GC. So, we need an efficient
+way to share the information between user programs and BPF
+programs. Sharing memory between user programs and BPF programs is
+what this patchset does.
+
+== REQUIREMENT ==
+
+This patchset enables every task in every process to share a small
+chunk of memory of it's own with a BPF scheduler. So, they can update
+the hints without expensive overhead of syscalls. It also wants every
+task sees only the data/memory belong to the task/or the task's
+process.
+
+== DESIGN ==
+
+This patchset enables BPF prorams to embed __uptr; uptr in the values
+of task storage maps. A uptr field can only be set by user programs by
+updating map element value through a syscall. A uptr points to a block
+of memory allocated by the user program updating the element
+value. The memory will be pinned to ensure it staying in the core
+memory and to avoid a page fault when the BPF program accesses it.
+
+Please see the selftests task_ls_uptr.c for an example.
+
+== MEMORY ==
+
+In order to use memory efficiently, we don't want to pin a large
+number of pages. To archieve that, user programs should collect the
+memory blocks pointed by uptrs together to share memory pages if
+possible. It avoid the situation that pin one page for each thread in
+a process.  Instead, we can have several threads pointing their uptrs
+to the same page but with different offsets.
+
+Although it is not necessary, avoiding the memory pointed by an uptr
+crossing the boundary of a page can prevent an additional mapping in
+the kernel address space.
+
+== RESTRICT ==
+
+The memory pointed by a uptr should reside in one memory
+page. Crossing multi-pages is not supported at the moment.
+
+Only task storage map have been supported at the moment.
+
+The values of uptrs can only be updated by user programs through
+syscalls.
+
+bpf_map_lookup_elem() from userspace returns zeroed values for uptrs
+to prevent leaking information of the kernel.
+
+---
+
+Changes from v3:
+
+ - Merge part 4 and 5 as the new part 4 in order to cease the warning
+    of unused functions from CI.
+
+Changes from v1:
+
+ - Rename BPF_KPTR_USER to BPF_UPTR.
+
+ - Restrict uptr to one page.
+
+ - Mark uptr with PTR_TO_MEM | PTR_MAY_BE_NULL and with the size of
+    the target type.
+
+ - Move uptr away from bpf_obj_memcpy() by introducing
+    bpf_obj_uptrcpy() and copy_map_uptr_locked().
+
+ - Remove the BPF_FROM_USER flag.
+
+ - Align the meory pointed by an uptr in the test case. Remove the
+    uptr of mmapped memory.
+
+Kui-Feng Lee (4):
+  bpf: Support __uptr type tag in BTF
+  bpf: Handle BPF_UPTR in verifier
+  libbpf: define __uptr.
+  selftests/bpf: Some basic __uptr tests
+
+Martin KaFai Lau (8):
+  bpf: Add "bool swap_uptrs" arg to bpf_local_storage_update() and
+    bpf_selem_alloc()
+  bpf: Postpone bpf_selem_free() in bpf_selem_unlink_storage_nolock()
+  bpf: Postpone bpf_obj_free_fields to the rcu callback
+  bpf: Add uptr support in the map_value of the task local storage.
+  selftests/bpf: Test a uptr struct spanning across pages.
+  selftests/bpf: Add update_elem failure test for task storage uptr
+  selftests/bpf: Add uptr failure verifier tests
+  selftests/bpf: Create task_local_storage map with invalid uptr's
+    struct
+
+ include/linux/bpf.h                           |  25 ++
+ include/linux/bpf_local_storage.h             |  12 +-
+ kernel/bpf/bpf_cgrp_storage.c                 |   4 +-
+ kernel/bpf/bpf_inode_storage.c                |   4 +-
+ kernel/bpf/bpf_local_storage.c                |  79 +++--
+ kernel/bpf/bpf_task_storage.c                 |   7 +-
+ kernel/bpf/btf.c                              |  32 ++-
+ kernel/bpf/syscall.c                          | 101 ++++++-
+ kernel/bpf/verifier.c                         |  39 ++-
+ net/core/bpf_sk_storage.c                     |   6 +-
+ tools/lib/bpf/bpf_helpers.h                   |   1 +
+ .../bpf/prog_tests/task_local_storage.c       | 272 ++++++++++++++++++
+ .../selftests/bpf/progs/task_ls_uptr.c        |  69 +++++
+ .../selftests/bpf/progs/uptr_failure.c        | 121 ++++++++
+ .../selftests/bpf/progs/uptr_map_failure.c    |  49 ++++
+ .../selftests/bpf/progs/uptr_update_failure.c |  44 +++
+ tools/testing/selftests/bpf/test_progs.h      |   8 +
+ .../testing/selftests/bpf/uptr_test_common.h  |  53 ++++
+ 18 files changed, 883 insertions(+), 43 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/task_ls_uptr.c
+ create mode 100644 tools/testing/selftests/bpf/progs/uptr_failure.c
+ create mode 100644 tools/testing/selftests/bpf/progs/uptr_map_failure.c
+ create mode 100644 tools/testing/selftests/bpf/progs/uptr_update_failure.c
+ create mode 100644 tools/testing/selftests/bpf/uptr_test_common.h
+
+-- 
+2.43.5
+
 
