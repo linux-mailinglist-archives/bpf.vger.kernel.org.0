@@ -1,104 +1,118 @@
-Return-Path: <bpf+bounces-41969-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41970-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6307899DE9F
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 08:42:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A4C6599DECB
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 08:55:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E8B79B20ED6
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 06:42:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 60FE5283EDA
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 06:55:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC29A18A6CE;
-	Tue, 15 Oct 2024 06:42:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A64618A950;
+	Tue, 15 Oct 2024 06:55:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="aHOMS+zf"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="IZ2Tus1Y"
 X-Original-To: bpf@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD7C7189BBF;
-	Tue, 15 Oct 2024 06:42:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 555A64D8DA
+	for <bpf@vger.kernel.org>; Tue, 15 Oct 2024 06:54:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728974560; cv=none; b=Sw5C9sRdFPZO7cMnYFPrULHv4hqQJ7l33BYmqC+eCPtvYpPX3M5w5D+4b81ssFakovaGzHTwBdfwswW2A2hNDaQzqhqV562mELlEBVgMhNynEySqJH/LTOrumqPKyG/2mcBBulmRzoAsjTkOpX8RjpFENtNqD4Zo0n2XZbeMIDc=
+	t=1728975301; cv=none; b=SaEr3m40Y5dX0FcsF0xfWyJtiCTWxh/MOxViO2JpY2E9l//RVOkxB95M2DtWoZZ2iTergSdd1F7aoBN5enyg81dbkjx53TDbSc9QCIiJ2ywA9NCF7zzR73WxzQtaU8gnlKLc3MeFhp5V+BtgK9bzA1RXVBPBE200SwHpyMKWpxk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728974560; c=relaxed/simple;
-	bh=aiXNLSRhQN0z1MRO9ms2eURg5IDM20JVzKogOwDL9+o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=e5qdMDidjKt5KARuGeEnp7vyIFhomQDnQ16RplqZpI+j/I3BVbOHR0LNHzBfslXIdwftNXk8Sc7zcE1x2lmpaZoW3aQrrFYuh3VAvOU1FQ6jyYDOfbS/wNaSqjeGwuoZNc563zK9Jb0PM/O8sYCtypS8LN9P1U/xMK/p216TOSU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=aHOMS+zf; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=MQf6eU49nzCPx7wGCmxXqAfm87s3A8uKXv6OumyhoYM=; b=aHOMS+zf8Iz6zGFDFvEkw7RZrK
-	h3McXlcOlpgV4Ay57ILIK+BqQtcwyVMydca+eLBCkcjPFB4O2WzKik2NKswWrtmRvwKc/zPNq3Xep
-	VKutjVCFSUW1UPvtPtm2VkuMZgHNQs1ne8fvyI8+HCuzW/xBeP10XYyAxHsSGA86a21HyfG6EEZlV
-	387WcH3NCDww/fA0OTZt6+TW+RbDRzxhsBpUzX4hu/yIzndNUYTjSFsj6X5y21G7Cgn6VdRTuTVf4
-	vLV2h5ZDCscac2BbJIlAToVGeqL/Ffmk7Xv2KuuGiRSsflDYlR69TVWCY2ES5u4vr5b4BboZ/JWoE
-	Wy33STMg==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.98 #2 (Red Hat Linux))
-	id 1t0bGP-00000007F6f-3YZB;
-	Tue, 15 Oct 2024 06:42:37 +0000
-Date: Mon, 14 Oct 2024 23:42:37 -0700
-From: Christoph Hellwig <hch@infradead.org>
-To: Song Liu <songliubraving@meta.com>
-Cc: Christoph Hellwig <hch@infradead.org>, Song Liu <song@kernel.org>,
-	bpf <bpf@vger.kernel.org>,
-	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Kernel Team <kernel-team@meta.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
+	s=arc-20240116; t=1728975301; c=relaxed/simple;
+	bh=05aEsjUzVSqThserJ/OwvkL7j9F/o9vKgGoPcuX1dj0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=MmzAKM+f5ANtB0UsHZKSCtqNfDcz73Hed1gO9KojzS1z0VmrKbwLYluWKJHUww1819Hix7j2OlTwTATXjeOtQEzAE4cmsDjT9kKV2lmbS7taU9snEF47z0q3CHRhAF4YUf5k9fu0GR16cjgPVbLydMfAjputk1PVIBgPmzbAJK0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=IZ2Tus1Y; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1728975298;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=gaa6HMtM/sTuFuoZcMmAnlbhQ5/S8n5V2T+330pN/ug=;
+	b=IZ2Tus1Y3vnw2BSyR0GdT8nR1TnrY2HBWU5AiQFuBJkpRB7R8GFPQMS0TWZDkEDPyViS3/
+	BGK6nXLF/j0xQWYb1a69qvuwkyD8J+U4VJwNMzG1NzjMuN7dqiRqQXJH2GxDvmdKv7rka1
+	ukPVsJ5NzC6DNyW+ESwos5mMj1l14aA=
+Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-590-LAbmi3R3PoCIONEpdaPvDA-1; Tue,
+ 15 Oct 2024 02:54:55 -0400
+X-MC-Unique: LAbmi3R3PoCIONEpdaPvDA-1
+Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id BFFCD195608F;
+	Tue, 15 Oct 2024 06:54:51 +0000 (UTC)
+Received: from vmalik-fedora.brq.redhat.com (unknown [10.43.17.54])
+	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 96C101956056;
+	Tue, 15 Oct 2024 06:54:46 +0000 (UTC)
+From: Viktor Malik <vmalik@redhat.com>
+To: bpf@vger.kernel.org
+Cc: Andrii Nakryiko <andrii@kernel.org>,
 	Eduard Zingerman <eddyz87@gmail.com>,
+	Mykola Lysenko <mykolal@fb.com>,
 	Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	Martin KaFai Lau <martin.lau@linux.dev>,
-	Al Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
 	KP Singh <kpsingh@kernel.org>,
-	Matt Bobrowski <mattbobrowski@google.com>
-Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Extend test fs_kfuncs to
- cover security.bpf xattr names
-Message-ID: <Zw4O3cqC6tlr5Kty@infradead.org>
-References: <20241002214637.3625277-1-song@kernel.org>
- <20241002214637.3625277-3-song@kernel.org>
- <Zw34dAaqA5tR6mHN@infradead.org>
- <0DB83868-0049-40E3-8E62-0D8D913CB9CB@fb.com>
- <Zw384bed3yVgZpoc@infradead.org>
- <BF0CD913-B067-4105-88C2-B068431EE9E5@fb.com>
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Shuah Khan <shuah@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	Viktor Malik <vmalik@redhat.com>
+Subject: [PATCH bpf-next 0/3] selftests/bpf: Improve building with extra
+Date: Tue, 15 Oct 2024 08:54:39 +0200
+Message-ID: <cover.1728975031.git.vmalik@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BF0CD913-B067-4105-88C2-B068431EE9E5@fb.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
 
-On Tue, Oct 15, 2024 at 05:52:02AM +0000, Song Liu wrote:
-> >> Do you mean user.* xattrs are untrusted (any user can set it), so we 
-> >> should not allow BPF programs to read them? Or do you mean xattr 
-> >> name "user.kfuncs" might be taken by some use space?
-> > 
-> > All of the above.
-> 
-> This is a selftest, "user.kfunc" is picked for this test. The kfuncs
-> (bpf_get_[file|dentry]_xattr) can read any user.* xattrs. 
-> 
-> Reading untrusted xattrs from trust BPF LSM program can be useful. 
-> For example, we can sign a binary with private key, and save the
-> signature in the xattr. Then the kernel can verify the signature
-> and the binary matches the public key.
+When trying to build BPF selftests with additional compiler and linker
+flags, we're running into multiple problems. This series addresses all
+of them:
 
-I would expect that to be done through an actual privileged interface.
-Taking an arbitrary name that was available for use by user space
-programs for 20 years and now giving it a new meaning is not a good
-idea.
+- CFLAGS are not passed to sub-makes of bpftool and libbpf. This is a
+  problem when compiling with PIE as libbpf.a ends up being non-PIE and
+  cannot be linked with other binaries (patch #1).
+
+- bpftool Makefile runs `llvm-config --cflags` and appends the result to
+  CFLAGS. The result typically contains `-D_GNU_SOURCE` which may be
+  already set in CFLAGS. That causes a compilation error (patch #2).
+
+- Some GCC flags are not supported by Clang but there are binaries which
+  are always built with Clang but reuse user-defined CFLAGS. When CFLAGS
+  contain such flags, compilation fails (patch #3).
+
+Viktor Malik (3):
+  selftests/bpf: Allow building with extra flags
+  bpftool: Prevent setting duplicate _GNU_SOURCE in Makefile
+  selftests/bpf: Allow ignoring some flags for Clang builds
+
+ tools/bpf/bpftool/Makefile           |  8 ++++++-
+ tools/testing/selftests/bpf/Makefile | 31 +++++++++++++++++++---------
+ 2 files changed, 28 insertions(+), 11 deletions(-)
+
+-- 
+2.47.0
 
 
