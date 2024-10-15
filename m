@@ -1,744 +1,454 @@
-Return-Path: <bpf+bounces-42022-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42023-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20A5D99E955
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 14:16:12 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65F3699EA3C
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 14:47:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9208C1F2113F
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 12:16:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 78B72B2223A
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 12:47:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 161811EBA19;
-	Tue, 15 Oct 2024 12:16:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B83E41C07CD;
+	Tue, 15 Oct 2024 12:47:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="buS4uZBC"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="bH/PNQUG"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49D4E78276;
-	Tue, 15 Oct 2024 12:15:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.14
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728994560; cv=fail; b=QuTQzBkG7RsXZ1yn33zpXcP9a9DK5ug9JHJ72UTjVNqCmnyrOUlRvEM6yCZs9j9ek0jsRoUIvZVVi1U/u7kqQvaU6VNrrph7KJL7renl690pk9Dtvx7j8GdPXLsH3kP0DdS6JDLV8HLJ/7TAlWots2TLawmxCGwHOHWfRYqq/F0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728994560; c=relaxed/simple;
-	bh=gVf98CKHxwFqLFfCzVhYvQlg5AusEiQwHxmSrtOCKDI=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=AM1lW7FGhlYVUE9Oof9TdXSrijN2ItRmCCllVA3m55dF7JcqqbY4CYM1iv0diIsRGTw7lIJWNv1sT/Ei5NSnS5sgG1sF9kdbr6u7B1Wb6S6dARSZf4T7eHSVgwkxm47+gB7Y1SiFZknbYWv1Pi/q28AXL8kmnq98ZRU1TUpBpWQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=buS4uZBC; arc=fail smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1728994558; x=1760530558;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=gVf98CKHxwFqLFfCzVhYvQlg5AusEiQwHxmSrtOCKDI=;
-  b=buS4uZBCUIb74gwh4n+w3r4SKsvujw2SeHYpFs8Gl0qvB+5kMNYZjN6k
-   Rkb+kMvbzuv5rp4K4W7ERLx/VowaMphf5iB+l6RldB5I7ZDBTKkwJkedF
-   YZgY2XOJCD4Vyzp0YpCoF3kts7CPYs7HUQPQHw8PYp2MsXJfYK//fIFYJ
-   Gfqh+mP7btKaUb4Gh3LwtBpag7tr6bu4PQJYzUqCso97AmzBH9HN5dgCA
-   +//bsyYgIkaHIVny0CfW7Fv874we4UDcR7vIl95LDEEM6hg+NuZ66i9ie
-   4Q54P/IVSfMqHbABmECwzaa1DrdSGNNmO090Q2Oc/Q/NBUDeRuxrXsX+A
-   w==;
-X-CSE-ConnectionGUID: faFxgnF4QmePEPALkmHjDw==
-X-CSE-MsgGUID: LG2ALLr5ROGpjftyrqf19Q==
-X-IronPort-AV: E=McAfee;i="6700,10204,11225"; a="32182784"
-X-IronPort-AV: E=Sophos;i="6.11,205,1725346800"; 
-   d="scan'208";a="32182784"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2024 05:15:57 -0700
-X-CSE-ConnectionGUID: i9rENB4iSAme1zO/KGjm6Q==
-X-CSE-MsgGUID: QrbzLO60Rv6A261npTG28g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.11,205,1725346800"; 
-   d="scan'208";a="77544896"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by fmviesa007.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 15 Oct 2024 05:15:57 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39; Tue, 15 Oct 2024 05:15:56 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39; Tue, 15 Oct 2024 05:15:56 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39 via Frontend Transport; Tue, 15 Oct 2024 05:15:56 -0700
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.49) by
- edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.39; Tue, 15 Oct 2024 05:15:55 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=v0TqOFxdsRsi3BB/UuEYRNEokcCvc9WDa+i5/emHXSqjv4uIIXpw30rrfrLA4mywyE4F3ijosSCJcgvoGV/8twOOkH7rCSkl1frnT2KQiHa26y0cb2zeIIAxLrAFdZCvK1+GtF95dx3xxLMhFXUq7/CF1D4tBNXHlpkZwzNGJofWIiSpXKsYG13bN8XKBwF6xFkSovniSKSNTtOD4G9s/DHvlBFvL74YU7vej0WDQuDYA0KfMv02VwCudGW/77ZdVNMjQQDJbf+YrM8TRngWoWY2N61yxWDiSHUPABqHaBkFJRGoeZMOIKpXS0q3CBDzsI9RxNl5o8BiFTG2H4X6UA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Br5iTHXY6M6/pcus1JsP+xVdb+Ul981oh4NDY+XAFUM=;
- b=S+qM/RaDQE26zaODylmGsLaNUoG+Eaz9NenYw2SrrdgEOiXPxRbTv7xEa94rnzVID8AnW+e4eNKlJRrgMSAJeLXPP8RZfuf8hAKrmZfyRu2VRvGS/wirm/7wAIPCFZSbjlpAc3vCob7J14v4z+lhWmny3ACKbfVn23uJRe1lOUoNJd0vm76+Uxd1nPUc0TKjkmH0yOp569cGkK2ZtPzRyH1nwJsk1mpZ033ZRkOjFLegFApZ/a0MDK3SI+E3h1j5wuO4cjazAMu8WBx01ZIkoWV1cbiTrbz6C38s+6n223C10IFJrZo+YItlbhCJpyqc1KU8RA8afFtKMtxw7kzFJA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DM4PR11MB6117.namprd11.prod.outlook.com (2603:10b6:8:b3::19) by
- DS0PR11MB7481.namprd11.prod.outlook.com (2603:10b6:8:14b::16) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.8048.26; Tue, 15 Oct 2024 12:15:53 +0000
-Received: from DM4PR11MB6117.namprd11.prod.outlook.com
- ([fe80::d19:56fe:5841:77ca]) by DM4PR11MB6117.namprd11.prod.outlook.com
- ([fe80::d19:56fe:5841:77ca%5]) with mapi id 15.20.8048.020; Tue, 15 Oct 2024
- 12:15:53 +0000
-Date: Tue, 15 Oct 2024 14:15:39 +0200
-From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To: Kurt Kanzenbach <kurt@linutronix.de>
-CC: Tony Nguyen <anthony.l.nguyen@intel.com>, Przemek Kitszel
-	<przemyslaw.kitszel@intel.com>, "David S. Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, "Paolo
- Abeni" <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, "Daniel
- Borkmann" <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>, Richard Cochran
-	<richardcochran@gmail.com>, Sriram Yagnaraman
-	<sriram.yagnaraman@ericsson.com>, Benjamin Steinke
-	<benjamin.steinke@woks-audio.com>, Sebastian Andrzej Siewior
-	<bigeasy@linutronix.de>, <intel-wired-lan@lists.osuosl.org>,
-	<netdev@vger.kernel.org>, <bpf@vger.kernel.org>, Sriram Yagnaraman
-	<sriram.yagnaraman@est.tech>
-Subject: Re: [PATCH iwl-next v8 5/6] igb: Add AF_XDP zero-copy Rx support
-Message-ID: <Zw5c6/1bGuoJIy2S@boxer>
-References: <20241011-b4-igb_zero_copy-v8-0-83862f726a9e@linutronix.de>
- <20241011-b4-igb_zero_copy-v8-5-83862f726a9e@linutronix.de>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20241011-b4-igb_zero_copy-v8-5-83862f726a9e@linutronix.de>
-X-ClientProxiedBy: ZR2P278CA0079.CHEP278.PROD.OUTLOOK.COM
- (2603:10a6:910:65::18) To DM4PR11MB6117.namprd11.prod.outlook.com
- (2603:10b6:8:b3::19)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E60291C07CA
+	for <bpf@vger.kernel.org>; Tue, 15 Oct 2024 12:47:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1728996447; cv=none; b=ryz3+WHN/6KNkPWJ+LZzlzKJkrtYH/UwklCDXguthgwNqC13FNGcYj/PDqmduDwqdWp1CzmAKU6XRF56+bpjUCX9jtpMCJZjcRUvfYNO1cznXsJUoFagFE/E9+d3akMLS9UbaA5MFY+1YggTZ9MsQkqelcj9esguXGVi4qlEhuk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1728996447; c=relaxed/simple;
+	bh=jV6HNCeMQBCrWZVPu5Vn7GR2b5gSFEUza0fk8I+KIjQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YrV9LzHYcNUO6EPO0d7Ot2zksvo5Obc7baAjvAZrX95yFADP/bgbsh/MKtCpA/Tmj5QFVX6mMxD+daPYNT1zltIF3r8RzwjxM358q0xAfkT3baAnFvWNEbXAi0uuJGxeN2hB6hn7gMMzBgceA0lFWwhZU2LSZ67ZYxppQvXpa1A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=bH/PNQUG; arc=none smtp.client-ip=209.85.208.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2fb599aac99so13478711fa.1
+        for <bpf@vger.kernel.org>; Tue, 15 Oct 2024 05:47:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1728996442; x=1729601242; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=4GQRii7/hgRP5fMG4wIWbKS+mKhWdQtFD2oc1nXe9sY=;
+        b=bH/PNQUGAzCBMdikH29mGJ6Aa8sygieXvYBl1mv1uCleDYN3fi3K7ghVsMEx52NOxA
+         /bu/ABdkANNU8jZmvPUMPIcnHAPKiyLNDPMYxOlcETdUQCx0EcN1OGpJRi4A3rarZjxW
+         RMx+W/4JU/SOTgGQJUOVNNsY//yhONwQT6KoXFzknkon4qSaKAtmTelpFvjltj49mpuI
+         0oRPWoWAar9WUcXnXe4iPHtb3HloB7GsICM9jkfXmHe+80RBaZLeuUjtHQK7kpcTEYaI
+         hbcL4eBKgfIST/H6VDWWm2KettpNr1n2c8CEdeVK/rN59a7cpXhJhXlY4IcOAJBXV81F
+         js0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1728996442; x=1729601242;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4GQRii7/hgRP5fMG4wIWbKS+mKhWdQtFD2oc1nXe9sY=;
+        b=QPeuL3lHU76hKMSgE0ZbhT82Y0kM+Hz+ffmimEiXqDnQB0W82AU/NB2ThTd5e0aGu5
+         6PY2VWX+jw5q26B5xaTra9fqqYR7UetX7+M7lWkx1NYqXIz7JforRa5x9YOQjgGZfB8h
+         0TV3vEcDb6wNgdpJL7f6TnSBggf6Dz9vOcuHI63OBilj0K9YMvgP0lyGm+t0HkqdF7Wo
+         c5hKYbuVIslAZpg9Rhfz46kMkRZvmbPOx/S8ZMALDKRpSxirQRhfG5rdnbnGH4pvwhg3
+         Y0c39SR5rLDccKRhup8npTAq4GxDeRCg+8+/cErShR1A6b1MhSXjvFNPykmYJxUNlMDP
+         jlsg==
+X-Gm-Message-State: AOJu0YwY7HuG9w1qu/72n0w9y1I98BhtpFf/di7F5lPFcQ2pSCsetjpO
+	riqefpVgpFRTES/kd6Nw1+n6/y3CKeb6GdGNcWToNGDT3oV+iwQVa7/gG/aGaxo0lJAWKYSalG2
+	HLYk=
+X-Google-Smtp-Source: AGHT+IGJX5xRnXpOThYNzXzPAV+3287XVVkPfXD+R8AsdR28Ntpn7jdCGuV8Xh+3df0LuS91ANbEUg==
+X-Received: by 2002:a2e:4609:0:b0:2f7:64b9:ff90 with SMTP id 38308e7fff4ca-2fb3f16fad9mr38585791fa.9.1728996442196;
+        Tue, 15 Oct 2024 05:47:22 -0700 (PDT)
+Received: from u94a (61-227-64-56.dynamic-ip.hinet.net. [61.227.64.56])
+        by smtp.gmail.com with ESMTPSA id ca18e2360f4ac-83a8b28be7fsm28438039f.11.2024.10.15.05.47.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Oct 2024 05:47:20 -0700 (PDT)
+Date: Tue, 15 Oct 2024 20:47:12 +0800
+From: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+To: bpf@vger.kernel.org
+Cc: Dimitar Kanaliev <dimitar.kanaliev@siteground.com>, 
+	Yonghong Song <yonghong.song@linux.dev>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Mykola Lysenko <mykolal@fb.com>, Zac Ecob <zacecob@protonmail.com>
+Subject: Re: [PATCH v2 1/3] bpf: Fix truncation bug in coerce_reg_to_size_sx()
+Message-ID: <p2jblxfrextdynozuutpp722ipjklpidycpo43jwowfhuj2c3y@skfw5ttjrpp4>
+References: <20241014121155.92887-1-dimitar.kanaliev@siteground.com>
+ <20241014121155.92887-2-dimitar.kanaliev@siteground.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR11MB6117:EE_|DS0PR11MB7481:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5e35a289-fa8a-4d7c-dd72-08dced131d18
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|376014|7416014|1800799024;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?Rcf90oO+/zeESCmCoY1oUNZRMjbB4Y5Hr92KugaExk5ag3yJ2TnBc/fc7VK1?=
- =?us-ascii?Q?pZten+er8AOj+bgduxdX2IewvDlM2ErP5XhgEJ/5cqsc2PzybQcSQU2lsrKV?=
- =?us-ascii?Q?lGlUJ0J1gRDOWsuCjVBZRxYWpo+LUe0s3SkV2DojmbEwxHqnmLtSjv8AXHpo?=
- =?us-ascii?Q?FX0Os81jsHZ9BC7E/15fQjxyrmzSFfwS6J3B0NkIeoIPW1u8pI8WtSYB/Y0N?=
- =?us-ascii?Q?R/Cj+bo5b1rw4vLxJftfyYg5fSKwAwnhKrwk9MY7gW8LArf9SymMm0gZU6Dg?=
- =?us-ascii?Q?DfHQgLIR3Bz5e18wU7OnkLOSlHL1tCS3KnPVpaYhPbHob0CIzM1PLYnR813v?=
- =?us-ascii?Q?o0YQ3M22NcUGNvL0TXLI0c1s2bDL9Yn4t2WXllsh3ovFIzVoiXmXOrk+fruC?=
- =?us-ascii?Q?XXOr1Zca4jUKIfx0KIqQX2TohJ7skU0knPWwEf0UmuXC9bZTl8RoSZvW0+Zw?=
- =?us-ascii?Q?qiVGB9gW6Zw6Phyr1iqSRErI0acXcF/VXuvcPYi0sZhgxkx79yHPIeow5Dy6?=
- =?us-ascii?Q?LqwGzJxjc4pCc+5NXZkNHjv2qjNmUR/xupAcQncK5bJV4bHlfGdYStegiseR?=
- =?us-ascii?Q?CljgSdOPIijzez7Ij6wSlOalNy4LPD4yDVs7JBEzjaiEI78RetJnRzXnQeZC?=
- =?us-ascii?Q?14/I+FzNpBikrI8IvfqLfMKFDYqRozvuPztlIykDP5XQxyJN4rH120pgMIAj?=
- =?us-ascii?Q?gx0VVwMBbRm8sJlmzfsYMMyetneoIdKOr+wzl/XrfIB+I+pHiGUy/P7HAomr?=
- =?us-ascii?Q?iieSl/U58dHwhGbEnDQ92N5JdIwrWtVzP2YfxBPgxsvUxmP7cI+s2wKs/aDu?=
- =?us-ascii?Q?d2W056p0U/iwkcrAoy3GOtwzPFe2wAipY0ISN0ipoE3Wm7MzN1jQ9aAac7Oj?=
- =?us-ascii?Q?yx2WXWnfgU/aecmk1YOW/1f6MY1hyE4R6KEzRLNhCNZ09Xo24/DBqqfijBJ8?=
- =?us-ascii?Q?fVS+io9hfw1jX7n7RAinndr+sodzxxM9PhCM0AR+i+kbHgZ5a4D6EY2UyW+Z?=
- =?us-ascii?Q?VWPm02t5lv2dQoBDcLsFagGOEDirY/teWt0x5vI9RJF8dr7uVoJJCWPjG6Oc?=
- =?us-ascii?Q?4N/at+B3egTfKiz5oHgCQIpCup5DywCcHbEHVbGyQhfcEViMvz5cEKV7RZQw?=
- =?us-ascii?Q?XTqwo0eLo7rPI2jo/ZxdrbGlZ/TuYVBX9fVRrTdXkp1Tcr4qBup9q9nw5PC5?=
- =?us-ascii?Q?2qwGIWgxCvTw8V5Mj3FQNhgE0xq/2dn2KT/+E1qBrkZLZdOJAwI0HP4A4mDX?=
- =?us-ascii?Q?SRChCFIHz58FPJTUxTDFakUDeEsFEbVLx29Qg94LIQ=3D=3D?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6117.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(7416014)(1800799024);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?HhihpZqaovKzKWhYbjPTviMb1FoGtgvs0GGtCKi9Wu5VLfjlTOfP3jMz4lFj?=
- =?us-ascii?Q?7XzqlwPUtPNJ69QE1rbAF3iX1CNtaDYYxYNoemZudyrTPY+N5QcKEvOGJqAD?=
- =?us-ascii?Q?+UypSmpgXqXRHmDY43EhJe0UkUzu5BFgNJP+lRz8HQJgkLapbr7D64YbQ2Fz?=
- =?us-ascii?Q?jbxP4Us6yBVfC/tpZ0jxqbGfUk7Mdv/sugZZIvbzdjojNH4AFYXll5xIkXD3?=
- =?us-ascii?Q?clLRq7JBToGxG7NgB3+hVntohgSenc5RyLDK0roVIcmCW2so2Y5DW9CVGEFK?=
- =?us-ascii?Q?9KuZzWkMjeSDZ5hSVU/EDVA3WFX3xwc8mEVzH/j2wm6BpfAYFXX0mvSP20y8?=
- =?us-ascii?Q?SX2sen7fHT/r7qvIclURJlHfXcNN+Vx5FBmbIvPwxLVTywp7gYYvG0IMBmJ5?=
- =?us-ascii?Q?WhgcvQSsUl5756qJ0HW40D0s/qBAzD+mafmdgUGZLI8X1dDIi/yjoefQ51f+?=
- =?us-ascii?Q?G3SlPHgFhPUJIcnm+MkKrRLUwBTNjFIeWXVMrzCk+l2zNfdoHn9UIQjs1s4s?=
- =?us-ascii?Q?guqdVG3RUx6Jacv+DAJgmE34yVpE+MBUmhYRlXbhQ56u4uWQCT6GnThZO4KD?=
- =?us-ascii?Q?8QRN1UM8uHsB2PWmZL7fe4XNZ49jn7cO9LMrTLdfCE4K4IQHtSGyFkTuWCR5?=
- =?us-ascii?Q?L4KNc5jPHTWmcF3M2P0ScoahrDAvPMfcpPOVb2uN3A8Znfp3aj5SsxqZbXkd?=
- =?us-ascii?Q?ulXnfgBDlJpK7LNEagqRBCoCZHUTk9CE3sOMh+yPWWe0s80ZAs6RM6fbP4wF?=
- =?us-ascii?Q?VEF1nfAvWS6iOxoTsJihbXuH45SBpt8M5o4JFpEPs5PWlBIOCkHqZzztnEES?=
- =?us-ascii?Q?4QpX1av82xsZVTNPWP/MwCNNpGeF8f2sMqbQ2DQBDphgHnDDW0MhpHd495E+?=
- =?us-ascii?Q?pi+PsN5CbbL/4zTU5ou+MmPa+d0v4TClAa73MHZcGt8hSwEYHPDYPADFHApB?=
- =?us-ascii?Q?knWrwIHtfh7qG05F4gXWbXrNckxSgjKHW4l9tah5eW9q9cZ5xI++++k135Fe?=
- =?us-ascii?Q?6cRHM6VLxw1tlOz+dQ1aGM0ddh1+J9smkVz8F4u+W9ZZSeeSuESkLjyqtcr6?=
- =?us-ascii?Q?znOXTlOsJePASXe87cbVlle+Vubu/5mq8eh7iozyfmIVwmOoDz6HoXy6VCBY?=
- =?us-ascii?Q?NXS1DeMDSSJBHVCWqbCQY6tXEokd+PDwSaqYbp8C8GPKAXW7FYAqWyLuAIJC?=
- =?us-ascii?Q?M2fUlnwKNu94HYA1PP98aTWVQbNNt7I3fK1siQXY+FxppBLR811t9JkTS29Z?=
- =?us-ascii?Q?2tNlpbu66NPrvV75EdobJqQz/i1imcAtY7wMxn4i/DWi2x1337uLLt4ClYjB?=
- =?us-ascii?Q?7URcvC1rbnJaRarjc7CNDTngp/iBzp4WeMrsDewtxp6+6pmRlUEiilPJ463W?=
- =?us-ascii?Q?5No+04gM9zcpDjSIRcSkPlHXUpvrLX8rcvdWS/P3l0zJRxz8wq/zSxbPzG32?=
- =?us-ascii?Q?G7K/m7v+FyHXYJCCPahVEnIV7EfugrHIDHCjfip9kWILTd/z1GDe5q22fGbj?=
- =?us-ascii?Q?fBen49fl0Tdj4RP1z+Mr40XwQEHPIIOD2deofZxR1K8u/vfW+3+v3CfClvNQ?=
- =?us-ascii?Q?oe/tLnV2wOVrFvvg4CO8BAReQPQUCAS1jSdJUse0BeI0UyvSWdo7G95nxqty?=
- =?us-ascii?Q?yQ=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5e35a289-fa8a-4d7c-dd72-08dced131d18
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6117.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Oct 2024 12:15:53.0311
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: qj//Qr2wxrmiJoX3MKl4/4T2wTTIbXA2LFcHAKl3kXHRu42O/K/VBuFl9edJAs96XdEYQYbGNvlo+SG8k2BchnNoFiVu2gIptvUo0+zMLgg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB7481
-X-OriginatorOrg: intel.com
+Content-Type: multipart/mixed; boundary="ejxwytbovvp7o3ny"
+Content-Disposition: inline
+In-Reply-To: <20241014121155.92887-2-dimitar.kanaliev@siteground.com>
 
-On Fri, Oct 11, 2024 at 11:01:03AM +0200, Kurt Kanzenbach wrote:
-> From: Sriram Yagnaraman <sriram.yagnaraman@est.tech>
-> 
-> Add support for AF_XDP zero-copy receive path.
-> 
-> When AF_XDP zero-copy is enabled, the rx buffers are allocated from the
-> xsk buff pool using igb_alloc_rx_buffers_zc().
-> 
-> Use xsk_pool_get_rx_frame_size() to set SRRCTL rx buf size when zero-copy
-> is enabled.
-> 
-> Signed-off-by: Sriram Yagnaraman <sriram.yagnaraman@est.tech>
-> [Kurt: Port to v6.12 and provide napi_id for xdp_rxq_info_reg(),
->        RCT, remove NETDEV_XDP_ACT_XSK_ZEROCOPY, update NTC handling,
->        READ_ONCE() xsk_pool, likelyfy for XDP_REDIRECT case]
-> Signed-off-by: Kurt Kanzenbach <kurt@linutronix.de>
 
-Acked-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+--ejxwytbovvp7o3ny
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> ---
->  drivers/net/ethernet/intel/igb/igb.h      |   6 +
->  drivers/net/ethernet/intel/igb/igb_main.c |  79 ++++++--
->  drivers/net/ethernet/intel/igb/igb_xsk.c  | 298 +++++++++++++++++++++++++++++-
->  3 files changed, 364 insertions(+), 19 deletions(-)
+On Mon, Oct 14, 2024 at 03:11:53PM GMT, Dimitar Kanaliev wrote:
+> coerce_reg_to_size_sx() updates the register state after a sign-extension
+> operation. However, there's a bug in the assignment order of the unsigned
+> min/max values, leading to incorrect truncation:
 > 
-> diff --git a/drivers/net/ethernet/intel/igb/igb.h b/drivers/net/ethernet/intel/igb/igb.h
-> index 1e65b41a48d8..e4a85867aa18 100644
-> --- a/drivers/net/ethernet/intel/igb/igb.h
-> +++ b/drivers/net/ethernet/intel/igb/igb.h
-> @@ -88,6 +88,7 @@ struct igb_adapter;
->  #define IGB_XDP_CONSUMED	BIT(0)
->  #define IGB_XDP_TX		BIT(1)
->  #define IGB_XDP_REDIR		BIT(2)
-> +#define IGB_XDP_EXIT		BIT(3)
->  
->  struct vf_data_storage {
->  	unsigned char vf_mac_addresses[ETH_ALEN];
-> @@ -853,6 +854,11 @@ struct xsk_buff_pool *igb_xsk_pool(struct igb_adapter *adapter,
->  int igb_xsk_pool_setup(struct igb_adapter *adapter,
->  		       struct xsk_buff_pool *pool,
->  		       u16 qid);
-> +bool igb_alloc_rx_buffers_zc(struct igb_ring *rx_ring,
-> +			     struct xsk_buff_pool *xsk_pool, u16 count);
-> +void igb_clean_rx_ring_zc(struct igb_ring *rx_ring);
-> +int igb_clean_rx_irq_zc(struct igb_q_vector *q_vector,
-> +			struct xsk_buff_pool *xsk_pool, const int budget);
->  int igb_xsk_wakeup(struct net_device *dev, u32 qid, u32 flags);
->  
->  #endif /* _IGB_H_ */
-> diff --git a/drivers/net/ethernet/intel/igb/igb_main.c b/drivers/net/ethernet/intel/igb/igb_main.c
-> index 4d3aed6cd848..711b60cab594 100644
-> --- a/drivers/net/ethernet/intel/igb/igb_main.c
-> +++ b/drivers/net/ethernet/intel/igb/igb_main.c
-> @@ -472,12 +472,17 @@ static void igb_dump(struct igb_adapter *adapter)
->  
->  		for (i = 0; i < rx_ring->count; i++) {
->  			const char *next_desc;
-> -			struct igb_rx_buffer *buffer_info;
-> -			buffer_info = &rx_ring->rx_buffer_info[i];
-> +			dma_addr_t dma = (dma_addr_t)0;
-> +			struct igb_rx_buffer *buffer_info = NULL;
->  			rx_desc = IGB_RX_DESC(rx_ring, i);
->  			u0 = (struct my_u0 *)rx_desc;
->  			staterr = le32_to_cpu(rx_desc->wb.upper.status_error);
->  
-> +			if (!rx_ring->xsk_pool) {
-> +				buffer_info = &rx_ring->rx_buffer_info[i];
-> +				dma = buffer_info->dma;
-> +			}
-> +
->  			if (i == rx_ring->next_to_use)
->  				next_desc = " NTU";
->  			else if (i == rx_ring->next_to_clean)
-> @@ -497,11 +502,11 @@ static void igb_dump(struct igb_adapter *adapter)
->  					"R  ", i,
->  					le64_to_cpu(u0->a),
->  					le64_to_cpu(u0->b),
-> -					(u64)buffer_info->dma,
-> +					(u64)dma,
->  					next_desc);
->  
->  				if (netif_msg_pktdata(adapter) &&
-> -				    buffer_info->dma && buffer_info->page) {
-> +				    buffer_info && dma && buffer_info->page) {
->  					print_hex_dump(KERN_INFO, "",
->  					  DUMP_PREFIX_ADDRESS,
->  					  16, 1,
-> @@ -1983,7 +1988,11 @@ static void igb_configure(struct igb_adapter *adapter)
->  	 */
->  	for (i = 0; i < adapter->num_rx_queues; i++) {
->  		struct igb_ring *ring = adapter->rx_ring[i];
-> -		igb_alloc_rx_buffers(ring, igb_desc_unused(ring));
-> +		if (ring->xsk_pool)
-> +			igb_alloc_rx_buffers_zc(ring, ring->xsk_pool,
-> +						igb_desc_unused(ring));
-> +		else
-> +			igb_alloc_rx_buffers(ring, igb_desc_unused(ring));
->  	}
->  }
->  
-> @@ -4405,7 +4414,8 @@ int igb_setup_rx_resources(struct igb_ring *rx_ring)
->  	if (xdp_rxq_info_is_reg(&rx_ring->xdp_rxq))
->  		xdp_rxq_info_unreg(&rx_ring->xdp_rxq);
->  	res = xdp_rxq_info_reg(&rx_ring->xdp_rxq, rx_ring->netdev,
-> -			       rx_ring->queue_index, 0);
-> +			       rx_ring->queue_index,
-> +			       rx_ring->q_vector->napi.napi_id);
->  	if (res < 0) {
->  		dev_err(dev, "Failed to register xdp_rxq index %u\n",
->  			rx_ring->queue_index);
-> @@ -4701,12 +4711,17 @@ void igb_setup_srrctl(struct igb_adapter *adapter, struct igb_ring *ring)
->  	struct e1000_hw *hw = &adapter->hw;
->  	int reg_idx = ring->reg_idx;
->  	u32 srrctl = 0;
-> +	u32 buf_size;
->  
-> -	srrctl = IGB_RX_HDR_LEN << E1000_SRRCTL_BSIZEHDRSIZE_SHIFT;
-> -	if (ring_uses_large_buffer(ring))
-> -		srrctl |= IGB_RXBUFFER_3072 >> E1000_SRRCTL_BSIZEPKT_SHIFT;
-> +	if (ring->xsk_pool)
-> +		buf_size = xsk_pool_get_rx_frame_size(ring->xsk_pool);
-> +	else if (ring_uses_large_buffer(ring))
-> +		buf_size = IGB_RXBUFFER_3072;
->  	else
-> -		srrctl |= IGB_RXBUFFER_2048 >> E1000_SRRCTL_BSIZEPKT_SHIFT;
-> +		buf_size = IGB_RXBUFFER_2048;
-> +
-> +	srrctl = IGB_RX_HDR_LEN << E1000_SRRCTL_BSIZEHDRSIZE_SHIFT;
-> +	srrctl |= buf_size >> E1000_SRRCTL_BSIZEPKT_SHIFT;
->  	srrctl |= E1000_SRRCTL_DESCTYPE_ADV_ONEBUF;
->  	if (hw->mac.type >= e1000_82580)
->  		srrctl |= E1000_SRRCTL_TIMESTAMP;
-> @@ -4738,9 +4753,17 @@ void igb_configure_rx_ring(struct igb_adapter *adapter,
->  	u32 rxdctl = 0;
->  
->  	xdp_rxq_info_unreg_mem_model(&ring->xdp_rxq);
-> -	WARN_ON(xdp_rxq_info_reg_mem_model(&ring->xdp_rxq,
-> -					   MEM_TYPE_PAGE_SHARED, NULL));
->  	WRITE_ONCE(ring->xsk_pool, igb_xsk_pool(adapter, ring));
-> +	if (ring->xsk_pool) {
-> +		WARN_ON(xdp_rxq_info_reg_mem_model(&ring->xdp_rxq,
-> +						   MEM_TYPE_XSK_BUFF_POOL,
-> +						   NULL));
-> +		xsk_pool_set_rxq_info(ring->xsk_pool, &ring->xdp_rxq);
-> +	} else {
-> +		WARN_ON(xdp_rxq_info_reg_mem_model(&ring->xdp_rxq,
-> +						   MEM_TYPE_PAGE_SHARED,
-> +						   NULL));
-> +	}
->  
->  	/* disable the queue */
->  	wr32(E1000_RXDCTL(reg_idx), 0);
-> @@ -4767,9 +4790,12 @@ void igb_configure_rx_ring(struct igb_adapter *adapter,
->  	rxdctl |= IGB_RX_HTHRESH << 8;
->  	rxdctl |= IGB_RX_WTHRESH << 16;
->  
-> -	/* initialize rx_buffer_info */
-> -	memset(ring->rx_buffer_info, 0,
-> -	       sizeof(struct igb_rx_buffer) * ring->count);
-> +	if (ring->xsk_pool)
-> +		memset(ring->rx_buffer_info_zc, 0,
-> +		       sizeof(*ring->rx_buffer_info_zc) * ring->count);
-> +	else
-> +		memset(ring->rx_buffer_info, 0,
-> +		       sizeof(*ring->rx_buffer_info) * ring->count);
->  
->  	/* initialize Rx descriptor 0 */
->  	rx_desc = IGB_RX_DESC(ring, 0);
-> @@ -4957,8 +4983,13 @@ void igb_free_rx_resources(struct igb_ring *rx_ring)
->  
->  	rx_ring->xdp_prog = NULL;
->  	xdp_rxq_info_unreg(&rx_ring->xdp_rxq);
-> -	vfree(rx_ring->rx_buffer_info);
-> -	rx_ring->rx_buffer_info = NULL;
-> +	if (rx_ring->xsk_pool) {
-> +		vfree(rx_ring->rx_buffer_info_zc);
-> +		rx_ring->rx_buffer_info_zc = NULL;
-> +	} else {
-> +		vfree(rx_ring->rx_buffer_info);
-> +		rx_ring->rx_buffer_info = NULL;
-> +	}
->  
->  	/* if not set, then don't free */
->  	if (!rx_ring->desc)
-> @@ -4996,6 +5027,11 @@ void igb_clean_rx_ring(struct igb_ring *rx_ring)
->  	dev_kfree_skb(rx_ring->skb);
->  	rx_ring->skb = NULL;
->  
-> +	if (rx_ring->xsk_pool) {
-> +		igb_clean_rx_ring_zc(rx_ring);
-> +		goto skip_for_xsk;
-> +	}
-> +
->  	/* Free all the Rx ring sk_buffs */
->  	while (i != rx_ring->next_to_alloc) {
->  		struct igb_rx_buffer *buffer_info = &rx_ring->rx_buffer_info[i];
-> @@ -5023,6 +5059,7 @@ void igb_clean_rx_ring(struct igb_ring *rx_ring)
->  			i = 0;
->  	}
->  
-> +skip_for_xsk:
->  	rx_ring->next_to_alloc = 0;
->  	rx_ring->next_to_clean = 0;
->  	rx_ring->next_to_use = 0;
-> @@ -8177,6 +8214,7 @@ static int igb_poll(struct napi_struct *napi, int budget)
->  	struct igb_q_vector *q_vector = container_of(napi,
->  						     struct igb_q_vector,
->  						     napi);
-> +	struct xsk_buff_pool *xsk_pool;
->  	bool clean_complete = true;
->  	int work_done = 0;
->  
-> @@ -8188,7 +8226,12 @@ static int igb_poll(struct napi_struct *napi, int budget)
->  		clean_complete = igb_clean_tx_irq(q_vector, budget);
->  
->  	if (q_vector->rx.ring) {
-> -		int cleaned = igb_clean_rx_irq(q_vector, budget);
-> +		int cleaned;
-> +
-> +		xsk_pool = READ_ONCE(q_vector->rx.ring->xsk_pool);
-> +		cleaned = xsk_pool ?
-> +			igb_clean_rx_irq_zc(q_vector, xsk_pool, budget) :
-> +			igb_clean_rx_irq(q_vector, budget);
->  
->  		work_done += cleaned;
->  		if (cleaned >= budget)
-> diff --git a/drivers/net/ethernet/intel/igb/igb_xsk.c b/drivers/net/ethernet/intel/igb/igb_xsk.c
-> index 7b632be3e7e3..22d234db0fab 100644
-> --- a/drivers/net/ethernet/intel/igb/igb_xsk.c
-> +++ b/drivers/net/ethernet/intel/igb/igb_xsk.c
-> @@ -70,7 +70,11 @@ static void igb_txrx_ring_enable(struct igb_adapter *adapter, u16 qid)
->  	 * at least 1 descriptor unused to make sure
->  	 * next_to_use != next_to_clean
->  	 */
-> -	igb_alloc_rx_buffers(rx_ring, igb_desc_unused(rx_ring));
-> +	if (rx_ring->xsk_pool)
-> +		igb_alloc_rx_buffers_zc(rx_ring, rx_ring->xsk_pool,
-> +					igb_desc_unused(rx_ring));
-> +	else
-> +		igb_alloc_rx_buffers(rx_ring, igb_desc_unused(rx_ring));
->  
->  	/* Rx/Tx share the same napi context. */
->  	napi_enable(&rx_ring->q_vector->napi);
-> @@ -169,6 +173,298 @@ int igb_xsk_pool_setup(struct igb_adapter *adapter,
->  		igb_xsk_pool_disable(adapter, qid);
->  }
->  
-> +static u16 igb_fill_rx_descs(struct xsk_buff_pool *pool, struct xdp_buff **xdp,
-> +			     union e1000_adv_rx_desc *rx_desc, u16 count)
-> +{
-> +	dma_addr_t dma;
-> +	u16 buffs;
-> +	int i;
-> +
-> +	/* nothing to do */
-> +	if (!count)
-> +		return 0;
-> +
-> +	buffs = xsk_buff_alloc_batch(pool, xdp, count);
-> +	for (i = 0; i < buffs; i++) {
-> +		dma = xsk_buff_xdp_get_dma(*xdp);
-> +		rx_desc->read.pkt_addr = cpu_to_le64(dma);
-> +		rx_desc->wb.upper.length = 0;
-> +
-> +		rx_desc++;
-> +		xdp++;
-> +	}
-> +
-> +	return buffs;
-> +}
-> +
-> +bool igb_alloc_rx_buffers_zc(struct igb_ring *rx_ring,
-> +			     struct xsk_buff_pool *xsk_pool, u16 count)
-> +{
-> +	u32 nb_buffs_extra = 0, nb_buffs = 0;
-> +	union e1000_adv_rx_desc *rx_desc;
-> +	u16 ntu = rx_ring->next_to_use;
-> +	u16 total_count = count;
-> +	struct xdp_buff **xdp;
-> +
-> +	rx_desc = IGB_RX_DESC(rx_ring, ntu);
-> +	xdp = &rx_ring->rx_buffer_info_zc[ntu];
-> +
-> +	if (ntu + count >= rx_ring->count) {
-> +		nb_buffs_extra = igb_fill_rx_descs(xsk_pool, xdp, rx_desc,
-> +						   rx_ring->count - ntu);
-> +		if (nb_buffs_extra != rx_ring->count - ntu) {
-> +			ntu += nb_buffs_extra;
-> +			goto exit;
-> +		}
-> +		rx_desc = IGB_RX_DESC(rx_ring, 0);
-> +		xdp = rx_ring->rx_buffer_info_zc;
-> +		ntu = 0;
-> +		count -= nb_buffs_extra;
-> +	}
-> +
-> +	nb_buffs = igb_fill_rx_descs(xsk_pool, xdp, rx_desc, count);
-> +	ntu += nb_buffs;
-> +	if (ntu == rx_ring->count)
-> +		ntu = 0;
-> +
-> +	/* clear the length for the next_to_use descriptor */
-> +	rx_desc = IGB_RX_DESC(rx_ring, ntu);
-> +	rx_desc->wb.upper.length = 0;
-> +
-> +exit:
-> +	if (rx_ring->next_to_use != ntu) {
-> +		rx_ring->next_to_use = ntu;
-> +
-> +		/* Force memory writes to complete before letting h/w
-> +		 * know there are new descriptors to fetch.  (Only
-> +		 * applicable for weak-ordered memory model archs,
-> +		 * such as IA-64).
-> +		 */
-> +		wmb();
-> +		writel(ntu, rx_ring->tail);
-> +	}
-> +
-> +	return total_count == (nb_buffs + nb_buffs_extra);
-> +}
-> +
-> +void igb_clean_rx_ring_zc(struct igb_ring *rx_ring)
-> +{
-> +	u16 ntc = rx_ring->next_to_clean;
-> +	u16 ntu = rx_ring->next_to_use;
-> +
-> +	while (ntc != ntu) {
-> +		struct xdp_buff *xdp = rx_ring->rx_buffer_info_zc[ntc];
-> +
-> +		xsk_buff_free(xdp);
-> +		ntc++;
-> +		if (ntc >= rx_ring->count)
-> +			ntc = 0;
-> +	}
-> +}
-> +
-> +static struct sk_buff *igb_construct_skb_zc(struct igb_ring *rx_ring,
-> +					    struct xdp_buff *xdp,
-> +					    ktime_t timestamp)
-> +{
-> +	unsigned int totalsize = xdp->data_end - xdp->data_meta;
-> +	unsigned int metasize = xdp->data - xdp->data_meta;
-> +	struct sk_buff *skb;
-> +
-> +	net_prefetch(xdp->data_meta);
-> +
-> +	/* allocate a skb to store the frags */
-> +	skb = napi_alloc_skb(&rx_ring->q_vector->napi, totalsize);
-> +	if (unlikely(!skb))
-> +		return NULL;
-> +
-> +	if (timestamp)
-> +		skb_hwtstamps(skb)->hwtstamp = timestamp;
-> +
-> +	memcpy(__skb_put(skb, totalsize), xdp->data_meta,
-> +	       ALIGN(totalsize, sizeof(long)));
-> +
-> +	if (metasize) {
-> +		skb_metadata_set(skb, metasize);
-> +		__skb_pull(skb, metasize);
-> +	}
-> +
-> +	return skb;
-> +}
-> +
-> +static struct sk_buff *igb_run_xdp_zc(struct igb_adapter *adapter,
-> +				      struct igb_ring *rx_ring,
-> +				      struct xdp_buff *xdp,
-> +				      struct xsk_buff_pool *xsk_pool,
-> +				      struct bpf_prog *xdp_prog)
-> +{
-> +	int err, result = IGB_XDP_PASS;
-> +	u32 act;
-> +
-> +	prefetchw(xdp->data_hard_start); /* xdp_frame write */
-> +
-> +	act = bpf_prog_run_xdp(xdp_prog, xdp);
-> +
-> +	if (likely(act == XDP_REDIRECT)) {
-> +		err = xdp_do_redirect(adapter->netdev, xdp, xdp_prog);
-> +		if (!err) {
-> +			result = IGB_XDP_REDIR;
-> +			goto xdp_out;
-> +		}
-> +
-> +		if (xsk_uses_need_wakeup(xsk_pool) &&
-> +		    err == -ENOBUFS)
-> +			result = IGB_XDP_EXIT;
-> +		else
-> +			result = IGB_XDP_CONSUMED;
-> +		goto out_failure;
-> +	}
-> +
-> +	switch (act) {
-> +	case XDP_PASS:
-> +		break;
-> +	case XDP_TX:
-> +		result = igb_xdp_xmit_back(adapter, xdp);
-> +		if (result == IGB_XDP_CONSUMED)
-> +			goto out_failure;
-> +		break;
-> +	default:
-> +		bpf_warn_invalid_xdp_action(adapter->netdev, xdp_prog, act);
-> +		fallthrough;
-> +	case XDP_ABORTED:
-> +out_failure:
-> +		trace_xdp_exception(rx_ring->netdev, xdp_prog, act);
-> +		fallthrough;
-> +	case XDP_DROP:
-> +		result = IGB_XDP_CONSUMED;
-> +		break;
-> +	}
-> +xdp_out:
-> +	return ERR_PTR(-result);
-> +}
-> +
-> +int igb_clean_rx_irq_zc(struct igb_q_vector *q_vector,
-> +			struct xsk_buff_pool *xsk_pool, const int budget)
-> +{
-> +	struct igb_adapter *adapter = q_vector->adapter;
-> +	unsigned int total_bytes = 0, total_packets = 0;
-> +	struct igb_ring *rx_ring = q_vector->rx.ring;
-> +	u32 ntc = rx_ring->next_to_clean;
-> +	struct bpf_prog *xdp_prog;
-> +	unsigned int xdp_xmit = 0;
-> +	bool failure = false;
-> +	u16 entries_to_alloc;
-> +	struct sk_buff *skb;
-> +
-> +	/* xdp_prog cannot be NULL in the ZC path */
-> +	xdp_prog = READ_ONCE(rx_ring->xdp_prog);
-> +
-> +	while (likely(total_packets < budget)) {
-> +		union e1000_adv_rx_desc *rx_desc;
-> +		ktime_t timestamp = 0;
-> +		struct xdp_buff *xdp;
-> +		unsigned int size;
-> +
-> +		rx_desc = IGB_RX_DESC(rx_ring, ntc);
-> +		size = le16_to_cpu(rx_desc->wb.upper.length);
-> +		if (!size)
-> +			break;
-> +
-> +		/* This memory barrier is needed to keep us from reading
-> +		 * any other fields out of the rx_desc until we know the
-> +		 * descriptor has been written back
-> +		 */
-> +		dma_rmb();
-> +
-> +		xdp = rx_ring->rx_buffer_info_zc[ntc];
-> +		xsk_buff_set_size(xdp, size);
-> +		xsk_buff_dma_sync_for_cpu(xdp);
-> +
-> +		/* pull rx packet timestamp if available and valid */
-> +		if (igb_test_staterr(rx_desc, E1000_RXDADV_STAT_TSIP)) {
-> +			int ts_hdr_len;
-> +
-> +			ts_hdr_len = igb_ptp_rx_pktstamp(rx_ring->q_vector,
-> +							 xdp->data,
-> +							 &timestamp);
-> +
-> +			xdp->data += ts_hdr_len;
-> +			xdp->data_meta += ts_hdr_len;
-> +			size -= ts_hdr_len;
-> +		}
-> +
-> +		skb = igb_run_xdp_zc(adapter, rx_ring, xdp, xsk_pool, xdp_prog);
-> +
-> +		if (IS_ERR(skb)) {
-> +			unsigned int xdp_res = -PTR_ERR(skb);
-> +
-> +			if (likely(xdp_res & (IGB_XDP_TX | IGB_XDP_REDIR))) {
-> +				xdp_xmit |= xdp_res;
-> +			} else if (xdp_res == IGB_XDP_EXIT) {
-> +				failure = true;
-> +				break;
-> +			} else if (xdp_res == IGB_XDP_CONSUMED) {
-> +				xsk_buff_free(xdp);
-> +			}
-> +
-> +			total_packets++;
-> +			total_bytes += size;
-> +			ntc++;
-> +			if (ntc == rx_ring->count)
-> +				ntc = 0;
-> +			continue;
-> +		}
-> +
-> +		skb = igb_construct_skb_zc(rx_ring, xdp, timestamp);
-> +
-> +		/* exit if we failed to retrieve a buffer */
-> +		if (!skb) {
-> +			rx_ring->rx_stats.alloc_failed++;
-> +			break;
-> +		}
-> +
-> +		xsk_buff_free(xdp);
-> +		ntc++;
-> +		if (ntc == rx_ring->count)
-> +			ntc = 0;
-> +
-> +		if (eth_skb_pad(skb))
-> +			continue;
-> +
-> +		/* probably a little skewed due to removing CRC */
-> +		total_bytes += skb->len;
-> +
-> +		/* populate checksum, timestamp, VLAN, and protocol */
-> +		igb_process_skb_fields(rx_ring, rx_desc, skb);
-> +
-> +		napi_gro_receive(&q_vector->napi, skb);
-> +
-> +		/* update budget accounting */
-> +		total_packets++;
-> +	}
-> +
-> +	rx_ring->next_to_clean = ntc;
-> +
-> +	if (xdp_xmit)
-> +		igb_finalize_xdp(adapter, xdp_xmit);
-> +
-> +	igb_update_rx_stats(q_vector, total_packets, total_bytes);
-> +
-> +	entries_to_alloc = igb_desc_unused(rx_ring);
-> +	if (entries_to_alloc >= IGB_RX_BUFFER_WRITE)
-> +		failure |= !igb_alloc_rx_buffers_zc(rx_ring, xsk_pool,
-> +						    entries_to_alloc);
-> +
-> +	if (xsk_uses_need_wakeup(xsk_pool)) {
-> +		if (failure || rx_ring->next_to_clean == rx_ring->next_to_use)
-> +			xsk_set_rx_need_wakeup(xsk_pool);
-> +		else
-> +			xsk_clear_rx_need_wakeup(xsk_pool);
-> +
-> +		return (int)total_packets;
-> +	}
-> +	return failure ? budget : (int)total_packets;
-> +}
-> +
->  int igb_xsk_wakeup(struct net_device *dev, u32 qid, u32 flags)
->  {
->  	struct igb_adapter *adapter = netdev_priv(dev);
+>   0: (85) call bpf_get_prandom_u32#7    ; R0_w=scalar()
+>   1: (57) r0 &= 1                       ; R0_w=scalar(smin=smin32=0,smax=umax=smax32=umax32=1,var_off=(0x0; 0x1))
+>   2: (07) r0 += 254                     ; R0_w=scalar(smin=umin=smin32=umin32=254,smax=umax=smax32=umax32=255,var_off=(0xfe; 0x1))
+>   3: (bf) r0 = (s8)r0                   ; R0_w=scalar(smin=smin32=-2,smax=smax32=-1,umin=umin32=0xfffffffe,umax=0xffffffff,var_off=(0xfffffffffffffffe; 0x1))
 > 
-> -- 
-> 2.39.5
+> In the current implementation, the unsigned 32-bit min/max values
+> (u32_min_value and u32_max_value) are assigned directly from the 64-bit
+> signed min/max values (s64_min and s64_max):
 > 
+>   reg->umin_value = reg->u32_min_value = s64_min;
+>   reg->umax_value = reg->u32_max_value = s64_max;
+> 
+> Due to the chain assigmnent, this is equivalent to:
+> 
+>   reg->u32_min_value = s64_min;  // Unintended truncation
+>   reg->umin_value = reg->u32_min_value;
+>   reg->u32_max_value = s64_max;  // Unintended truncation
+>   reg->umax_value = reg->u32_max_value;
+> 
+> Fixes: 1f9a1ea821ff ("bpf: Support new sign-extension load insns")
+> Reported-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+> Reported-by: Zac Ecob <zacecob@protonmail.com>
+
+FWIW sharing the CMBC checking .c file that found this bug 2 weeks back
+(though Zac already discovered and debugged this back in July, which I
+realized quite late). The command I used is simply
+
+	cbmc --trace $ATTACHED_C_FILE
+
+Which rougly reporting that the assertation in following piece of
+(pseudo) code is failing:
+
+	u64 x; /* assume reg.umin <= x <= reg.umax initially */
+	struct bpf_reg_state reg, new_reg;
+	u64 new_x;
+	
+	coerce_reg_to_size_sx(&new_reg, size);
+	assert(new_reg.umin_value <= new_x);
+	assert(new_x <= new_reg.umax_value);
+
+It then takes some effort to dig through the CBMC traces backwards to
+find the relevant parts. First finding where umin and umax was set to
+locate the problematic code (CBMC points to line 140 and 141 in the
+attached file):
+
+	State 178 file tmp/coerce_reg_to_size_sx-verify.c function coerce_reg_to_size_sx line 140 thread 0
+	----------------------------------------------------
+	new_reg.umin_value=4294967294ul (00000000 00000000 00000000 00000000 11111111 11111111 11111111 11111110)
+	...
+	State 182 file tmp/coerce_reg_to_size_sx-verify.c function coerce_reg_to_size_sx line 141 thread 0
+	----------------------------------------------------
+	new_reg.umax_value=4294967295ul (00000000 00000000 00000000 00000000 11111111 11111111 11111111 11111111)
+
+Then get the used inital input by looking further back (note: I
+explicitly asked CBMC to find a case where coerce_reg_to_size_sx()
+doesn't work where var_off.mask==1 to make things simpler):
+
+	State 30 file tmp/coerce_reg_to_size_sx-verify.c function verify_coerce_reg_to_size_sx line 162 thread 0
+	----------------------------------------------------
+	reg.var_off.value=254ul (00000000 00000000 00000000 00000000 00000000 00000000 00000000 11111110)
+	
+	State 36 file tmp/coerce_reg_to_size_sx-verify.c function verify_coerce_reg_to_size_sx line 163 thread 0
+	----------------------------------------------------
+	reg.var_off.mask=1ul (00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000001)
+	
+	State 42 file tmp/coerce_reg_to_size_sx-verify.c function verify_coerce_reg_to_size_sx line 164 thread 0
+	----------------------------------------------------
+	reg.smin_value=254l (00000000 00000000 00000000 00000000 00000000 00000000 00000000 11111110)
+	
+	State 48 file tmp/coerce_reg_to_size_sx-verify.c function verify_coerce_reg_to_size_sx line 165 thread 0
+	----------------------------------------------------
+	reg.smax_value=255l (00000000 00000000 00000000 00000000 00000000 00000000 00000000 11111111)
+	
+	State 54 file tmp/coerce_reg_to_size_sx-verify.c function verify_coerce_reg_to_size_sx line 166 thread 0
+	----------------------------------------------------
+	reg.umin_value=254ul (00000000 00000000 00000000 00000000 00000000 00000000 00000000 11111110)
+	
+	State 60 file tmp/coerce_reg_to_size_sx-verify.c function verify_coerce_reg_to_size_sx line 167 thread 0
+	----------------------------------------------------
+	reg.umax_value=255ul (00000000 00000000 00000000 00000000 00000000 00000000 00000000 11111111)
+	...
+
+Which summarizes down to the input bpf_reg_state being
+
+	struct bpf_reg_state reg = {
+		.var_off = { mask=0x1, value=0xfe },
+		.smin_value = 254,
+		.smax_value = 255,
+		.umin_value = 254,
+		.umax_value = 255,
+		/* 32-bit ranges aren't used as input and I couldn't get them
+		 * generate right, so omitted here.
+		 */
+		...		 
+	}
+
+And from there things were largely straightforward to debug.
+
+[snip]
+
+--ejxwytbovvp7o3ny
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+#include <stdint.h>
+#include <limits.h>
+#include <stdbool.h>
+#include <assert.h>
+
+// Define Linux kernel types
+typedef uint64_t u64;
+typedef int64_t s64;
+typedef uint32_t u32;
+typedef int32_t s32;
+typedef uint8_t u8;
+typedef int8_t s8;
+typedef uint16_t u16;
+typedef int16_t s16;
+
+// Define limits
+#define S8_MIN  INT8_MIN
+#define S8_MAX  INT8_MAX
+#define S16_MIN INT16_MIN
+#define S16_MAX INT16_MAX
+#define S32_MIN INT32_MIN
+#define S32_MAX INT32_MAX
+#define U32_MAX UINT32_MAX
+#define S64_MIN INT64_MIN
+#define S64_MAX INT64_MAX
+#define U64_MAX UINT64_MAX
+
+struct tnum {
+	u64 value;
+	u64 mask;
+};
+
+// Simplified version of bpf_reg_state with only field needed by
+// coerce_reg_to_size_sx
+struct bpf_reg_state {
+	struct tnum var_off;
+	s64 smin_value;
+	s64 smax_value;
+	u64 umin_value;
+	u64 umax_value;
+	s32 s32_min_value;
+	s32 s32_max_value;
+	u32 u32_min_value;
+	u32 u32_max_value;
+};
+
+// Global variable for unknown tnum
+const struct tnum tnum_unknown = {.value = 0, .mask = U64_MAX};
+
+// Helper functions
+bool tnum_is_const(struct tnum t) {
+	return t.mask == 0;
+}
+
+struct tnum tnum_range(u64 min, u64 max) {
+	struct tnum t;
+	u64 chi = min ^ max;
+	u64 bits = 64 - __builtin_clzll(chi);
+	u64 mask = (1ULL << bits) - 1;
+
+	if (bits > 63)
+		return tnum_unknown;
+
+	t.value = min & ~mask;
+	t.mask = mask;
+	return t;
+}
+bool tnum_contains(struct tnum t, u64 v) {
+	return (v & ~t.mask) == t.value;
+}
+
+static void set_sext64_default_val(struct bpf_reg_state *reg, int size)
+{
+	if (size == 1) {
+		reg->smin_value = reg->s32_min_value = S8_MIN;
+		reg->smax_value = reg->s32_max_value = S8_MAX;
+	} else if (size == 2) {
+		reg->smin_value = reg->s32_min_value = S16_MIN;
+		reg->smax_value = reg->s32_max_value = S16_MAX;
+	} else {
+		/* size == 4 */
+		reg->smin_value = reg->s32_min_value = S32_MIN;
+		reg->smax_value = reg->s32_max_value = S32_MAX;
+	}
+	reg->umin_value = reg->u32_min_value = 0;
+	reg->umax_value = U64_MAX;
+	reg->u32_max_value = U32_MAX;
+	reg->var_off = tnum_unknown;
+}
+
+static void coerce_reg_to_size_sx(struct bpf_reg_state *reg, int size)
+{
+	s64 init_s64_max, init_s64_min, s64_max, s64_min, u64_cval;
+	u64 top_smax_value, top_smin_value;
+	u64 num_bits = size * 8;
+
+	if (tnum_is_const(reg->var_off)) {
+		u64_cval = reg->var_off.value;
+		if (size == 1)
+			reg->var_off = tnum_range((s8)u64_cval, (s8)u64_cval);
+		else if (size == 2)
+			reg->var_off = tnum_range((s16)u64_cval, (s16)u64_cval);
+		else
+			/* size == 4 */
+			reg->var_off = tnum_range((s32)u64_cval, (s32)u64_cval);
+
+		u64_cval = reg->var_off.value;
+		reg->smax_value = reg->smin_value = u64_cval;
+		reg->umax_value = reg->umin_value = u64_cval;
+		reg->s32_max_value = reg->s32_min_value = u64_cval;
+		reg->u32_max_value = reg->u32_min_value = u64_cval;
+		return;
+	}
+
+	top_smax_value = ((u64)reg->smax_value >> num_bits) << num_bits;
+	top_smin_value = ((u64)reg->smin_value >> num_bits) << num_bits;
+
+	if (top_smax_value != top_smin_value)
+		goto out;
+
+	/* find the s64_min and s64_min after sign extension */
+	if (size == 1) {
+		init_s64_max = (s8)reg->smax_value;
+		init_s64_min = (s8)reg->smin_value;
+	} else if (size == 2) {
+		init_s64_max = (s16)reg->smax_value;
+		init_s64_min = (s16)reg->smin_value;
+	} else {
+		init_s64_max = (s32)reg->smax_value;
+		init_s64_min = (s32)reg->smin_value;
+	}
+
+	s64_max = (init_s64_max > init_s64_min) ? init_s64_max : init_s64_min;
+	s64_min = (init_s64_max < init_s64_min) ? init_s64_max : init_s64_min;
+
+	/* both of s64_max/s64_min positive or negative */
+	if ((s64_max >= 0) == (s64_min >= 0)) {
+		reg->smin_value = reg->s32_min_value = s64_min;
+		reg->smax_value = reg->s32_max_value = s64_max;
+		reg->umin_value = reg->u32_min_value = s64_min;
+		reg->umax_value = reg->u32_max_value = s64_max;
+		reg->var_off = tnum_range(s64_min, s64_max);
+		return;
+	}
+
+out:
+	set_sext64_default_val(reg, size);
+}
+
+void verify_coerce_reg_to_size_sx()
+{
+	struct bpf_reg_state reg, new_reg;
+	u64 x, new_x;
+	int size;
+
+	// Assume valid argument given to coerce_reg_to_size_sx()
+	size = __CPROVER_int_input();
+	__CPROVER_assume(size == 1 || size == 2 || size == 4);
+
+	// Use CBMC's built-in nondeterministic functions to generate
+	// struct bpf_reg_state that we're using as input
+	reg.var_off.value = __CPROVER_unsigned_long_long_input();
+	reg.var_off.mask = __CPROVER_unsigned_long_long_input();
+	reg.smin_value = __CPROVER_long_long_input();
+	reg.smax_value = __CPROVER_long_long_input();
+	reg.umin_value = __CPROVER_unsigned_long_long_input();
+	reg.umax_value = __CPROVER_unsigned_long_long_input();
+	reg.s32_min_value = __CPROVER_int_input();
+	reg.s32_max_value = __CPROVER_int_input();
+	reg.u32_min_value = __CPROVER_unsigned_int_input();
+	reg.u32_max_value = __CPROVER_unsigned_int_input();
+
+	// Below are some assumption about how bounds in bpf_reg_state relates
+	// for a reasonable and conherent bound in bpf_reg_state, however I
+	// don't have any prove that this is a valid description of how bounds
+	// in bpf_reg_state related, anyhow:
+
+	// Assumptions about var_off and min/max values
+	__CPROVER_assume(reg.var_off.value <= reg.umin_value);
+	__CPROVER_assume(reg.var_off.value | reg.var_off.mask >= reg.umax_value);
+	// Ensure umin_value <= umax_value
+	__CPROVER_assume(reg.umin_value <= reg.umax_value);
+	// Ensure smin_value <= smax_value
+	__CPROVER_assume(reg.smin_value <= reg.smax_value);
+	// Ensure u32_min_value <= u32_max_value
+	__CPROVER_assume(reg.u32_min_value <= reg.u32_max_value);
+	// Ensure s32_min_value <= s32_max_value
+	__CPROVER_assume(reg.s32_min_value <= reg.s32_max_value);
+	// Ensure 64-bit bounds are consistent with 32-bit bounds
+	__CPROVER_assume(reg.umin_value <= (u64)reg.u32_max_value);
+	__CPROVER_assume(reg.umax_value >= (u64)reg.u32_min_value);
+	__CPROVER_assume((s64)reg.smin_value <= (s64)reg.s32_max_value);
+	__CPROVER_assume((s64)reg.smax_value >= (s64)reg.s32_min_value);
+	// Bound-crossing situations
+	if (reg.var_off.value <= (u64)S64_MAX && (u64)S64_MIN <= (reg.var_off.value | reg.var_off.mask)) {
+		__CPROVER_assume(reg.smin_value == S64_MIN && reg.smax_value == S64_MAX);
+	} else if (reg.smin_value < 0 && reg.smax_value >= 0) {
+		__CPROVER_assume(reg.var_off.value == 0 && reg.var_off.mask == U64_MAX);
+		__CPROVER_assume(reg.umin_value == 0 && reg.umax_value == U64_MAX);
+	} else {
+		__CPROVER_assume(reg.umin_value == (u64)reg.smin_value && reg.umax_value == (u64)reg.smax_value);
+	}
+	// Probably need more relation between 32-bit range bounds...
+
+
+	// Assuming we have some x
+	x = __CPROVER_unsigned_long_long_input();
+	// Mimick the sign-extension ourself
+	new_x = (s64)((s64)x << (64 - size*8)) >> (64 - size*8);
+	// Now say x could be ANY value that's bpf_reg_state represents
+	__CPROVER_assume((reg.var_off.value & reg.var_off.mask) == 0); // tnum wellformedness
+	__CPROVER_assume(tnum_contains(reg.var_off, x));
+	__CPROVER_assume(reg.umin_value <= x && x <= reg.umax_value);
+	__CPROVER_assume((s64)reg.smin_value <= (s64)x && (s64)x <= (s64)reg.smax_value);
+	__CPROVER_assume((u32)reg.u32_min_value <= (u32)x && (u32)x <= (u32)reg.u32_max_value);
+	__CPROVER_assume((s32)reg.s32_min_value <= (s32)x && (s32)x <= (s32)reg.s32_max_value);
+
+	/* Since we know this will fail, we can have some additional contraints
+	 * to "shrink" the input to something easier to consume for our human
+	 * mind.
+	 */
+	__CPROVER_assume(x == 255);
+	__CPROVER_assume(size == 1);
+	__CPROVER_assume(reg.var_off.mask == 1);
+	__CPROVER_assume(reg.umax_value - reg.umin_value == 1);
+	__CPROVER_assume(reg.smax_value - reg.smin_value == 1);
+
+	// Runs coerce_reg_to_size_sx()
+	new_reg = reg;
+	coerce_reg_to_size_sx(&new_reg, size);
+
+	// Now ask CBMC to check that the sign-extended value of x is still
+	// represented by bpf_reg_state after coerce_reg_to_size_sx()
+	assert(new_reg.umin_value <= new_x && new_x <= new_reg.umax_value);
+	assert(tnum_contains(new_reg.var_off, new_x));
+	assert((s64)new_reg.smin_value <= (s64)new_x && (s64)new_x <= (s64)new_reg.smax_value);
+	assert((u32)new_reg.u32_min_value <= (u32)new_x && (u32)new_x <= (u32)new_reg.u32_max_value);
+	assert((s32)new_reg.s32_min_value <= (s32)new_x && (s32)new_x <= (s32)new_reg.s32_max_value);
+}
+
+int main()
+{
+	verify_coerce_reg_to_size_sx();
+	return 0;
+}
+
+--ejxwytbovvp7o3ny--
 
