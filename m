@@ -1,233 +1,330 @@
-Return-Path: <bpf+bounces-41896-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41897-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE07B99DAA4
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 02:23:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7438499DAAC
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 02:29:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E014281229
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 00:23:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 02A881C216C1
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 00:29:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83CD8B67F;
-	Tue, 15 Oct 2024 00:23:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 560DFB67F;
+	Tue, 15 Oct 2024 00:29:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="JccNm6SA";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="hVn0E9s0"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kueQuqk4"
 X-Original-To: bpf@vger.kernel.org
-Received: from fout-a2-smtp.messagingengine.com (fout-a2-smtp.messagingengine.com [103.168.172.145])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3B894A23;
-	Tue, 15 Oct 2024 00:23:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.145
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8F9F6026A;
+	Tue, 15 Oct 2024 00:29:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728951813; cv=none; b=IcYgXRFk2zYT3R25NRW4kfi5zMbKmaLM7mn6J+sB6cTt60yJEGB7PiV57DODjXtJiY3daiO/7vy4v3k6obFghyexpcq44I29WZ06MWh4yKMS9gqOWi2Mt8QbrVRrijVofpmZtl/v/DBzmizu+H0Gv7UrcACSdxlha2+EVuOB3C4=
+	t=1728952145; cv=none; b=VymenNNyXRTEUSQ2M1LHgjp6AQ/VsrWj7hiFRu/XaF7/y4yksOSiK3zxF/c3/eThYEPjtNnyu1IZbVE55I26QifPthBdHyfsfbuaQXPFxSvJxE6fGTiPK3/gw4hTYgRx0DSVu/FbGsduUZ2oEDBA+59f7Dep9z+/Tg08UmRIaiI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728951813; c=relaxed/simple;
-	bh=PF0KkkK2Y6NVAaJwG+aFaCpP/xJFhm856cQjQhdpIHs=;
+	s=arc-20240116; t=1728952145; c=relaxed/simple;
+	bh=PGvZ+Z9zuEMYWDJgD45dEug82hax6ae7wIiTgjNqmp4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Zg7uuyHd8f0Mr80AZvLGyDJmnC24V2OHL5rui5BN7BcbdiUpgWnF2ybXjCh7hsi7751eb0Sa0D5YB4AUmlVz/UP/MB6PuGf29jKhYNBJ3Vq4NMMQB2uXT6dgoIFOKjRq0N96XXWFDkxCVa+xpB5Y4tFAlfMyn5sDuKxQEt5C9wg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=JccNm6SA; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=hVn0E9s0; arc=none smtp.client-ip=103.168.172.145
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
-Received: from phl-compute-01.internal (phl-compute-01.phl.internal [10.202.2.41])
-	by mailfout.phl.internal (Postfix) with ESMTP id D06DC1380A24;
-	Mon, 14 Oct 2024 20:23:29 -0400 (EDT)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-01.internal (MEProxy); Mon, 14 Oct 2024 20:23:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm1; t=1728951809;
-	 x=1729038209; bh=K9W7oqJeeKfbnZ6btzb5m3NnYSN+RzoG8W7iPIj6DY0=; b=
-	JccNm6SAPEc+aE0VymV2qgK4+K9z9jtbQTFdHZBixsQANoexLXQuymkbKvxCLUE+
-	53Ac4/ZOtjqTXFczpRA5SG8hqzg4GYnRVktWCkAxpmKIeo3x7d6R3lMmPgPAiHwq
-	RivK+/3/rfDxRXqAArKOdvVolmZ3whdfy9WMR7RTMzjegRgTurG+l9xco+qziB1w
-	Rt+em/zm10ok45un/Q6meYQUFDQotLb0uAcrZlzoBLYaJqnuJdN9a9Y+P52TuFp7
-	pszkfPa3Go30D43rLR9ovk5SUyqQNZlnS3WsmRlvmmTJf5hI/sXYKpqRRvWKpxD8
-	o6DYIHXcAGY+9C2pMYlkVQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1728951809; x=
-	1729038209; bh=K9W7oqJeeKfbnZ6btzb5m3NnYSN+RzoG8W7iPIj6DY0=; b=h
-	Vn0E9s0ov4tkRFfLkn1PK+uqaQSG4q+a+fnBo43W8pkdDRWpUDVmgdmrSe9tZrcD
-	GzTXTq4Ve+qCoabdoTeTwKqGWfUz0fpu5JXeIFGa0wj4JBq2Lx4XGenry60dvDZs
-	yZWWeMHd13V08HH80i/4tUKTWGWzP1w3pBFCSpfncYeWF/nfVhsvoyTT0mSg7zoL
-	ZKD7/md3Ium9nKFREgX+LXdwHtp7cdTVAhRcX8xlcDk42vkkYCXHdhFdPJopDMO/
-	K0k0vbvnyQLwIuG4WHXz1Ioq+ElUWp2Y2u3p2hXDnka+suvYwQ7oCEUWYvziYJkk
-	nnkpLbWhorQ+y10fC8msg==
-X-ME-Sender: <xms:AbYNZ-JlEo-z49KSg7-L0eRwD_8KPoKP0sHDUX0AS3V2PuNbfnmCGA>
-    <xme:AbYNZ2KJrKKG95ylRMMwzTModft8-n_9KBDGvaMBNN4v_CNrcSYLThZbdCxcLhVW3
-    940sLmKXbnBs2RHow>
-X-ME-Received: <xmr:AbYNZ-vinOAdFVfJVs2YiyzgH4DDA5J8siQZdCYmHYycFLUCtwSJ8nlIkLJRx448SXM6KdbJgmN2NMT1gi4k8I4yuIH2FMYO8W3CL0Ro9-OIPA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvdegiedgfeegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
-    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
-    htshculddquddttddmnegfrhhlucfvnfffucdlfeehmdenucfjughrpeffhffvvefukfhf
-    gggtugfgjgestheksfdttddtjeenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihuse
-    gugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpeffffeggeekjedvjeegheetkedu
-    hffgfeegveeklefhgeeuleejhfeljedtkeevffenucffohhmrghinhepghhithhhuhgsrd
-    gtohhmnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhep
-    ugiguhesugiguhhuuhdrgiihiidpnhgspghrtghpthhtohepudehpdhmohguvgepshhmth
-    hpohhuthdprhgtphhtthhopeihohhsrhihrghhmhgvugesghhoohhglhgvrdgtohhmpdhr
-    tghpthhtohepshhhrghkvggvlhdrsghuthhtsehlihhnuhigrdguvghvpdhrtghpthhtoh
-    eprhhoshhtvgguthesghhoohgumhhishdrohhrghdprhgtphhtthhopegrkhhpmheslhhi
-    nhhugidqfhhouhhnuggrthhiohhnrdhorhhgpdhrtghpthhtohephhgrnhhnvghssegtmh
-    hpgigthhhgrdhorhhgpdhrtghpthhtohepmhhhohgtkhhosehkvghrnhgvlhdrohhrghdp
-    rhgtphhtthhopehrohhmrghnrdhguhhshhgthhhinheslhhinhhugidruggvvhdprhgtph
-    htthhopehmuhgthhhunhdrshhonhhgsehlihhnuhigrdguvghvpdhrtghpthhtohepihhn
-    figrrhguvhgvshhsvghlsehgmhgrihhlrdgtohhm
-X-ME-Proxy: <xmx:AbYNZzYsM9ZqWHffBcKfA_66k7uRUE8wuPxpdJEP5QK-YO2byGB_1Q>
-    <xmx:AbYNZ1Ybjv-yWAHWnFwhJ3VEv-rri-yyPbjXsKhvhWK3132AYELBVQ>
-    <xmx:AbYNZ_CDP8S2_nYHZGUSZJTzgiByq9VbYdW-_jhTKFzbwyo3Uff23Q>
-    <xmx:AbYNZ7ZectNomQ4ne38VZ8IboUgN28JQgZd1ZJPP7HTcXJGsoRwpug>
-    <xmx:AbYNZ-LhL7l5Kl1jx6dl-Q0QXniSQTG5QxA_LcVhuhTrqE52QsP3bF7j>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 14 Oct 2024 20:23:27 -0400 (EDT)
-Date: Mon, 14 Oct 2024 18:23:26 -0600
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: Shakeel Butt <shakeel.butt@linux.dev>, 
-	Steven Rostedt <rostedt@goodmis.org>, Andrew Morton <akpm@linux-foundation.org>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
-	JP Kobryn <inwardvessel@gmail.com>, linux-mm@kvack.org, cgroups@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Meta kernel team <kernel-team@meta.com>, bpf@vger.kernel.org, 
-	Martin KaFai Lau <martin.lau@linux.dev>
-Subject: Re: [PATCH] memcg: add tracing for memcg stat updates
-Message-ID: <cwibnvqnbtfc7sgpkidh24dcnj2xdb462rf6hndgynqezbzbaf@qog4zl25sqry>
-References: <20241010003550.3695245-1-shakeel.butt@linux.dev>
- <CAJD7tkYq+dduc7+M=9TkR6ZAiBYrVyUsF_AuwPqaQNrsfH_qfg@mail.gmail.com>
- <20241009210848.43adb0c3@gandalf.local.home>
- <CAJD7tkaLQwVphoLiwh8-NTyav36_gAVdzB=gC_qXzv7ti9TzmA@mail.gmail.com>
- <mt474r4yn346in5akhyziwxrh4ip5wukh4fjbhwzfl26wq64nf@xgbv4dtfs3ak>
- <CAJD7tkYzo_K9uF7GOO3yoKzTSbFWuNTUG3O6w1VrGCQvgWhsoQ@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=LN/obK4kfsSilKYKjb9guzro+F0r4Oiyauk/LsSsY4LFdqeFOUaBh/I/19mjB4o66wHBbT/HsMlsbP1PoJuj3JPOEDcvvnY87kVCIPzp+2hDalXHDmkU0hHBSgew5sjTbWPyYsQ40Sc/lwwG+R89wj+Pi3dYXoKBAszD1RGLXJk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kueQuqk4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90AF7C4CEC3;
+	Tue, 15 Oct 2024 00:29:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1728952145;
+	bh=PGvZ+Z9zuEMYWDJgD45dEug82hax6ae7wIiTgjNqmp4=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=kueQuqk4Zotl+puWUiS53qzgmexSo2ZIbjz7RXa1Wn7OKIDLnKM7UfRC1OlSKd1jc
+	 i+x4fE4N+FuGbgOqXNYi0jTvroc8objd+IgvHwZB/u0eL5jy/vb+hfKIPM9MlthkK2
+	 YFBRAS5deInYtvuD0PJOEbl2vjQh47B+nyhpoSvEQRzh8EsUCZ6nHVWTokAk7jZCMz
+	 BPXql3izQTAieCrwsfG9CFpZlk3OEnbP453oqSpoJ+MCP1SHR5BBDeoBEpFVK83NU7
+	 ltjmTfQqqvsu2xG+JmqH1y2Ef+mJfZPLLFvI+0IbAEBsk4dOdt4DxQ0lIeByHe+ucv
+	 nklC9Lv9clNhw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 26B66CE125B; Mon, 14 Oct 2024 17:29:05 -0700 (PDT)
+Date: Mon, 14 Oct 2024 17:29:05 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
+Cc: frederic@kernel.org, rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+	kernel-team@meta.com, rostedt@goodmis.org,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Kent Overstreet <kent.overstreet@linux.dev>, bpf@vger.kernel.org
+Subject: Re: [PATCH rcu 05/12] srcu: Standardize srcu_data pointers to "sdp"
+ and similar
+Message-ID: <e63311e5-4311-4b08-abcc-8298a22c52f4@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <ff986c31-9cd0-45e5-aa31-9aedf582325f@paulmck-laptop>
+ <20241009180719.778285-5-paulmck@kernel.org>
+ <d0ec401f-f857-4fbb-89f3-f2d13eb34b5d@amd.com>
+ <25cd96f1-6d4d-4dba-b57b-da63d228ba97@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJD7tkYzo_K9uF7GOO3yoKzTSbFWuNTUG3O6w1VrGCQvgWhsoQ@mail.gmail.com>
+In-Reply-To: <25cd96f1-6d4d-4dba-b57b-da63d228ba97@paulmck-laptop>
 
-Hi Yosry,
-
-On Mon, Oct 14, 2024 at 05:15:39PM GMT, Yosry Ahmed wrote:
-> On Thu, Oct 10, 2024 at 10:26 AM Shakeel Butt <shakeel.butt@linux.dev> wrote:
-> >
-> > On Wed, Oct 09, 2024 at 06:24:55PM GMT, Yosry Ahmed wrote:
-> > > On Wed, Oct 9, 2024 at 6:08 PM Steven Rostedt <rostedt@goodmis.org> wrote:
-> > > >
-> > > > On Wed, 9 Oct 2024 17:46:22 -0700
-> > > > Yosry Ahmed <yosryahmed@google.com> wrote:
-> > > >
-> > > > > > +++ b/mm/memcontrol.c
-> > > > > > @@ -71,6 +71,10 @@
-> > > > > >
-> > > > > >  #include <linux/uaccess.h>
-> > > > > >
-> > > > > > +#define CREATE_TRACE_POINTS
-> > > > > > +#include <trace/events/memcg.h>
-> > > > > > +#undef CREATE_TRACE_POINTS
-> > > > > > +
-> > > > > >  #include <trace/events/vmscan.h>
-> > > > > >
-> > > > > >  struct cgroup_subsys memory_cgrp_subsys __read_mostly;
-> > > > > > @@ -682,7 +686,9 @@ void __mod_memcg_state(struct mem_cgroup *memcg, enum memcg_stat_item idx,
-> > > > > >                 return;
-> > > > > >
-> > > > > >         __this_cpu_add(memcg->vmstats_percpu->state[i], val);
-> > > > > > -       memcg_rstat_updated(memcg, memcg_state_val_in_pages(idx, val));
-> > > > > > +       val = memcg_state_val_in_pages(idx, val);
-> > > > > > +       memcg_rstat_updated(memcg, val);
-> > > > > > +       trace_mod_memcg_state(memcg, idx, val);
-> > > > >
-> > > > > Is it too unreasonable to include the stat name?
-> > > > >
-> > > > > The index has to be correlated with the kernel config and perhaps even
-> > > > > version. It's not a big deal, but if performance is not a concern when
-> > > > > tracing is enabled anyway, maybe we can lookup the name here (or in
-> > > > > TP_fast_assign()).
-> > > >
-> > > > What name? Is it looked up from idx? If so, you can do it on the reading of
-> >
-> > Does reading side mean the one reading /sys/kernel/tracing/trace will do
-> > the translation from enums to string?
-> >
-> > > > the trace event where performance is not an issue. See the __print_symbolic()
-> > > > and friends in samples/trace_events/trace-events-sample.h
-> > >
-> > > Yeah they can be found using idx. Thanks for referring us to
-> > > __print_symbolic(), I suppose for this to work we need to construct an
-> > > array of {idx, name}. I think we can replace the existing memory_stats
-> > > and memcg1_stats/memcg1_stat_names arrays with something that we can
-> > > reuse for tracing, so we wouldn't need to consume extra space.
-> > >
-> > > Shakeel, what do you think?
-> >
-> > Cc Daniel & Martin
-> >
-> > I was planning to use bpftrace which can use dwarf/btf to convert the
-> > raw int to its enum string. Martin provided the following command to
-> > extract the translation from the kernel.
-> >
-> > $ bpftool btf dump file /sys/kernel/btf/vmlinux | grep -A10 node_stat_item
-> > [2264] ENUM 'node_stat_item' encoding=UNSIGNED size=4 vlen=46
-> >         'NR_LRU_BASE' val=0
-> >         'NR_INACTIVE_ANON' val=0
-> >         'NR_ACTIVE_ANON' val=1
-> >         'NR_INACTIVE_FILE' val=2
-> >         'NR_ACTIVE_FILE' val=3
-> >         'NR_UNEVICTABLE' val=4
-> >         'NR_SLAB_RECLAIMABLE_B' val=5
-> >         'NR_SLAB_UNRECLAIMABLE_B' val=6
-> >         'NR_ISOLATED_ANON' val=7
-> >         'NR_ISOLATED_FILE' val=8
-> > ...
-> >
-> > My point is userspace tools can use existing infra to extract this
-> > information.
-> >
-> > However I am not against adding __print_symbolic() (but without any
-> > duplication), so users reading /sys/kernel/tracing/trace directly can
-> > see more useful information as well. Please post a follow up patch after
-> > this one.
+On Mon, Oct 14, 2024 at 09:49:52AM -0700, Paul E. McKenney wrote:
+> On Mon, Oct 14, 2024 at 02:45:50PM +0530, Neeraj Upadhyay wrote:
+> > On 10/9/2024 11:37 PM, Paul E. McKenney wrote:
+> > > This commit changes a few "cpuc" variables to "sdp" to align wiht usage
+> > > elsewhere.
+> > > 
+> > 
+> > s/wiht/with/
 > 
-> I briefly looked into this and I think it would be annoying to have
-> this, unfortunately. Even if we rework the existing arrays with memcg
-> stat names to be in a format conforming to tracing, we would need to
-> move them out to a separate header to avoid a circular dependency.
-> 
-> Additionally, for __count_memcg_events() things will be more
-> complicated because the names are not in an array in memcontrol.c, but
-> we use vm_event_name() and the relevant names are part of a larger
-> array, vmstat_text, which we would need to rework similarly.
-> 
-> I think this would be easier to implement if we can somehow provide a
-> callback that returns the name based on the index, rather than an
-> array. But even then, we would need to specify a different callback
-> for each event, so it won't be as simple as specifying the callback in
-> the event class.
-> 
-> All in all, unless we realize there is something that is fundamentally
-> more difficult to do in userspace, I think it's not worth adding this
-> unfortunately :/
+> Good eyes!
 
-Turned out to be quite straightforward to do in userspace:
-https://github.com/bpftrace/bpftrace/pull/3515 .
+And fixed.
 
-A nice property is the resolution occurs out of line and saves the
-kernel some cycles in the fast path.
+> > This commit is doing a lot more than renaming "cpuc".
+> 
+> Indeed, it does look like I forgot to commit between two changes.
+> 
+> It looks like this commit log goes with the changes to the
+> functions srcu_readers_lock_idx(), srcu_readers_unlock_idx(), and
+> srcu_readers_active().  With the exception of the change from "NMI-safe"
+> to "reader flavors in the WARN_ONCE() string in srcu_readers_unlock_idx().
+> 
+> How would you suggest that I split up the non-s/cpuc/sdp/ changes?
 
-Thanks,
-Daniel
+As a first step, I split it three ways, as you can see on the updated "dev"
+branch in the -rcu tree.
+
+Thoughts?
+
+							Thanx, Paul
+
+> > - Neeraj
+> > 
+> > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > > Cc: Alexei Starovoitov <ast@kernel.org>
+> > > Cc: Andrii Nakryiko <andrii@kernel.org>
+> > > Cc: Peter Zijlstra <peterz@infradead.org>
+> > > Cc: Kent Overstreet <kent.overstreet@linux.dev>
+> > > Cc: <bpf@vger.kernel.org>
+> > > ---
+> > >  include/linux/srcu.h     | 35 ++++++++++++++++++----------------
+> > >  include/linux/srcutree.h |  4 ++++
+> > >  kernel/rcu/srcutree.c    | 41 ++++++++++++++++++++--------------------
+> > >  3 files changed, 44 insertions(+), 36 deletions(-)
+> > > 
+> > > diff --git a/include/linux/srcu.h b/include/linux/srcu.h
+> > > index 06728ef6f32a4..84daaa33ea0ab 100644
+> > > --- a/include/linux/srcu.h
+> > > +++ b/include/linux/srcu.h
+> > > @@ -176,10 +176,6 @@ static inline int srcu_read_lock_held(const struct srcu_struct *ssp)
+> > >  
+> > >  #endif /* #else #ifdef CONFIG_DEBUG_LOCK_ALLOC */
+> > >  
+> > > -#define SRCU_NMI_UNKNOWN	0x0
+> > > -#define SRCU_NMI_UNSAFE		0x1
+> > > -#define SRCU_NMI_SAFE		0x2
+> > > -
+> > >  #if defined(CONFIG_PROVE_RCU) && defined(CONFIG_TREE_SRCU)
+> > >  void srcu_check_read_flavor(struct srcu_struct *ssp, int read_flavor);
+> > >  #else
+> > > @@ -235,16 +231,19 @@ static inline void srcu_check_read_flavor(struct srcu_struct *ssp, int read_flav
+> > >   * a mutex that is held elsewhere while calling synchronize_srcu() or
+> > >   * synchronize_srcu_expedited().
+> > >   *
+> > > - * Note that srcu_read_lock() and the matching srcu_read_unlock() must
+> > > - * occur in the same context, for example, it is illegal to invoke
+> > > - * srcu_read_unlock() in an irq handler if the matching srcu_read_lock()
+> > > - * was invoked in process context.
+> > > + * The return value from srcu_read_lock() must be passed unaltered
+> > > + * to the matching srcu_read_unlock().  Note that srcu_read_lock() and
+> > > + * the matching srcu_read_unlock() must occur in the same context, for
+> > > + * example, it is illegal to invoke srcu_read_unlock() in an irq handler
+> > > + * if the matching srcu_read_lock() was invoked in process context.  Or,
+> > > + * for that matter to invoke srcu_read_unlock() from one task and the
+> > > + * matching srcu_read_lock() from another.
+> > >   */
+> > >  static inline int srcu_read_lock(struct srcu_struct *ssp) __acquires(ssp)
+> > >  {
+> > >  	int retval;
+> > >  
+> > > -	srcu_check_read_flavor(ssp, false);
+> > > +	srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_NORMAL);
+> > >  	retval = __srcu_read_lock(ssp);
+> > >  	srcu_lock_acquire(&ssp->dep_map);
+> > >  	return retval;
+> > > @@ -256,12 +255,16 @@ static inline int srcu_read_lock(struct srcu_struct *ssp) __acquires(ssp)
+> > >   *
+> > >   * Enter an SRCU read-side critical section, but in an NMI-safe manner.
+> > >   * See srcu_read_lock() for more information.
+> > > + *
+> > > + * If srcu_read_lock_nmisafe() is ever used on an srcu_struct structure,
+> > > + * then none of the other flavors may be used, whether before, during,
+> > > + * or after.
+> > >   */
+> > >  static inline int srcu_read_lock_nmisafe(struct srcu_struct *ssp) __acquires(ssp)
+> > >  {
+> > >  	int retval;
+> > >  
+> > > -	srcu_check_read_flavor(ssp, true);
+> > > +	srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_NMI);
+> > >  	retval = __srcu_read_lock_nmisafe(ssp);
+> > >  	rcu_try_lock_acquire(&ssp->dep_map);
+> > >  	return retval;
+> > > @@ -273,7 +276,7 @@ srcu_read_lock_notrace(struct srcu_struct *ssp) __acquires(ssp)
+> > >  {
+> > >  	int retval;
+> > >  
+> > > -	srcu_check_read_flavor(ssp, false);
+> > > +	srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_NORMAL);
+> > >  	retval = __srcu_read_lock(ssp);
+> > >  	return retval;
+> > >  }
+> > > @@ -302,7 +305,7 @@ srcu_read_lock_notrace(struct srcu_struct *ssp) __acquires(ssp)
+> > >  static inline int srcu_down_read(struct srcu_struct *ssp) __acquires(ssp)
+> > >  {
+> > >  	WARN_ON_ONCE(in_nmi());
+> > > -	srcu_check_read_flavor(ssp, false);
+> > > +	srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_NORMAL);
+> > >  	return __srcu_read_lock(ssp);
+> > >  }
+> > >  
+> > > @@ -317,7 +320,7 @@ static inline void srcu_read_unlock(struct srcu_struct *ssp, int idx)
+> > >  	__releases(ssp)
+> > >  {
+> > >  	WARN_ON_ONCE(idx & ~0x1);
+> > > -	srcu_check_read_flavor(ssp, false);
+> > > +	srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_NORMAL);
+> > >  	srcu_lock_release(&ssp->dep_map);
+> > >  	__srcu_read_unlock(ssp, idx);
+> > >  }
+> > > @@ -333,7 +336,7 @@ static inline void srcu_read_unlock_nmisafe(struct srcu_struct *ssp, int idx)
+> > >  	__releases(ssp)
+> > >  {
+> > >  	WARN_ON_ONCE(idx & ~0x1);
+> > > -	srcu_check_read_flavor(ssp, true);
+> > > +	srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_NMI);
+> > >  	rcu_lock_release(&ssp->dep_map);
+> > >  	__srcu_read_unlock_nmisafe(ssp, idx);
+> > >  }
+> > > @@ -342,7 +345,7 @@ static inline void srcu_read_unlock_nmisafe(struct srcu_struct *ssp, int idx)
+> > >  static inline notrace void
+> > >  srcu_read_unlock_notrace(struct srcu_struct *ssp, int idx) __releases(ssp)
+> > >  {
+> > > -	srcu_check_read_flavor(ssp, false);
+> > > +	srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_NORMAL);
+> > >  	__srcu_read_unlock(ssp, idx);
+> > >  }
+> > >  
+> > > @@ -359,7 +362,7 @@ static inline void srcu_up_read(struct srcu_struct *ssp, int idx)
+> > >  {
+> > >  	WARN_ON_ONCE(idx & ~0x1);
+> > >  	WARN_ON_ONCE(in_nmi());
+> > > -	srcu_check_read_flavor(ssp, false);
+> > > +	srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_NORMAL);
+> > >  	__srcu_read_unlock(ssp, idx);
+> > >  }
+> > >  
+> > > diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
+> > > index ab7d8d215b84b..79ad809c7f035 100644
+> > > --- a/include/linux/srcutree.h
+> > > +++ b/include/linux/srcutree.h
+> > > @@ -43,6 +43,10 @@ struct srcu_data {
+> > >  	struct srcu_struct *ssp;
+> > >  };
+> > >  
+> > > +/* Values for ->srcu_reader_flavor. */
+> > > +#define SRCU_READ_FLAVOR_NORMAL	0x1		// srcu_read_lock().
+> > > +#define SRCU_READ_FLAVOR_NMI	0x2		// srcu_read_lock_nmisafe().
+> > > +
+> > >  /*
+> > >   * Node in SRCU combining tree, similar in function to rcu_data.
+> > >   */
+> > > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> > > index abe55777c4335..4c51be484b48a 100644
+> > > --- a/kernel/rcu/srcutree.c
+> > > +++ b/kernel/rcu/srcutree.c
+> > > @@ -438,9 +438,9 @@ static unsigned long srcu_readers_lock_idx(struct srcu_struct *ssp, int idx)
+> > >  	unsigned long sum = 0;
+> > >  
+> > >  	for_each_possible_cpu(cpu) {
+> > > -		struct srcu_data *cpuc = per_cpu_ptr(ssp->sda, cpu);
+> > > +		struct srcu_data *sdp = per_cpu_ptr(ssp->sda, cpu);
+> > >  
+> > > -		sum += atomic_long_read(&cpuc->srcu_lock_count[idx]);
+> > > +		sum += atomic_long_read(&sdp->srcu_lock_count[idx]);
+> > >  	}
+> > >  	return sum;
+> > >  }
+> > > @@ -456,14 +456,14 @@ static unsigned long srcu_readers_unlock_idx(struct srcu_struct *ssp, int idx)
+> > >  	unsigned long sum = 0;
+> > >  
+> > >  	for_each_possible_cpu(cpu) {
+> > > -		struct srcu_data *cpuc = per_cpu_ptr(ssp->sda, cpu);
+> > > +		struct srcu_data *sdp = per_cpu_ptr(ssp->sda, cpu);
+> > >  
+> > > -		sum += atomic_long_read(&cpuc->srcu_unlock_count[idx]);
+> > > +		sum += atomic_long_read(&sdp->srcu_unlock_count[idx]);
+> > >  		if (IS_ENABLED(CONFIG_PROVE_RCU))
+> > > -			mask = mask | READ_ONCE(cpuc->srcu_reader_flavor);
+> > > +			mask = mask | READ_ONCE(sdp->srcu_reader_flavor);
+> > >  	}
+> > >  	WARN_ONCE(IS_ENABLED(CONFIG_PROVE_RCU) && (mask & (mask - 1)),
+> > > -		  "Mixed NMI-safe readers for srcu_struct at %ps.\n", ssp);
+> > > +		  "Mixed reader flavors for srcu_struct at %ps.\n", ssp);
+> > >  	return sum;
+> > >  }
+> > >  
+> > > @@ -564,12 +564,12 @@ static bool srcu_readers_active(struct srcu_struct *ssp)
+> > >  	unsigned long sum = 0;
+> > >  
+> > >  	for_each_possible_cpu(cpu) {
+> > > -		struct srcu_data *cpuc = per_cpu_ptr(ssp->sda, cpu);
+> > > +		struct srcu_data *sdp = per_cpu_ptr(ssp->sda, cpu);
+> > >  
+> > > -		sum += atomic_long_read(&cpuc->srcu_lock_count[0]);
+> > > -		sum += atomic_long_read(&cpuc->srcu_lock_count[1]);
+> > > -		sum -= atomic_long_read(&cpuc->srcu_unlock_count[0]);
+> > > -		sum -= atomic_long_read(&cpuc->srcu_unlock_count[1]);
+> > > +		sum += atomic_long_read(&sdp->srcu_lock_count[0]);
+> > > +		sum += atomic_long_read(&sdp->srcu_lock_count[1]);
+> > > +		sum -= atomic_long_read(&sdp->srcu_unlock_count[0]);
+> > > +		sum -= atomic_long_read(&sdp->srcu_unlock_count[1]);
+> > >  	}
+> > >  	return sum;
+> > >  }
+> > > @@ -703,20 +703,21 @@ EXPORT_SYMBOL_GPL(cleanup_srcu_struct);
+> > >   */
+> > >  void srcu_check_read_flavor(struct srcu_struct *ssp, int read_flavor)
+> > >  {
+> > > -	int reader_flavor_mask = 1 << read_flavor;
+> > > -	int old_reader_flavor_mask;
+> > > +	int old_read_flavor;
+> > >  	struct srcu_data *sdp;
+> > >  
+> > > -	/* NMI-unsafe use in NMI is a bad sign */
+> > > -	WARN_ON_ONCE(!read_flavor && in_nmi());
+> > > +	/* NMI-unsafe use in NMI is a bad sign, as is multi-bit read_flavor values. */
+> > > +	WARN_ON_ONCE((read_flavor != SRCU_READ_FLAVOR_NMI) && in_nmi());
+> > > +	WARN_ON_ONCE(read_flavor & (read_flavor - 1));
+> > > +
+> > >  	sdp = raw_cpu_ptr(ssp->sda);
+> > > -	old_reader_flavor_mask = READ_ONCE(sdp->srcu_reader_flavor);
+> > > -	if (!old_reader_flavor_mask) {
+> > > -		old_reader_flavor_mask = cmpxchg(&sdp->srcu_reader_flavor, 0, reader_flavor_mask);
+> > > -		if (!old_reader_flavor_mask)
+> > > +	old_read_flavor = READ_ONCE(sdp->srcu_reader_flavor);
+> > > +	if (!old_read_flavor) {
+> > > +		old_read_flavor = cmpxchg(&sdp->srcu_reader_flavor, 0, read_flavor);
+> > > +		if (!old_read_flavor)
+> > >  			return;
+> > >  	}
+> > > -	WARN_ONCE(old_reader_flavor_mask != reader_flavor_mask, "CPU %d old state %d new state %d\n", sdp->cpu, old_reader_flavor_mask, reader_flavor_mask);
+> > > +	WARN_ONCE(old_read_flavor != read_flavor, "CPU %d old state %d new state %d\n", sdp->cpu, old_read_flavor, read_flavor);
+> > >  }
+> > >  EXPORT_SYMBOL_GPL(srcu_check_read_flavor);
+> > >  #endif /* CONFIG_PROVE_RCU */
+> > 
 
