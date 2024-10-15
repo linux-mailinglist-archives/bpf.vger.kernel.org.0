@@ -1,47 +1,47 @@
-Return-Path: <bpf+bounces-41900-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41901-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E173E99DAD2
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0333199DAD3
 	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 02:50:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2B62FB219C6
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 00:50:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7512282F52
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 00:50:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F94C2C18C;
-	Tue, 15 Oct 2024 00:50:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AE223DBB6;
+	Tue, 15 Oct 2024 00:50:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="a/zFA9ue"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="fNDurMsw"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
+Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 417CC33C9
-	for <bpf@vger.kernel.org>; Tue, 15 Oct 2024 00:50:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BB8629D0D
+	for <bpf@vger.kernel.org>; Tue, 15 Oct 2024 00:50:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728953424; cv=none; b=l8lQLcFigulMU3D1aTXCuhTHWfvQyUcspYrIy42FwUYE0d6yazdd1QHJWHSE8jgh1OzFgpbvaR8R+gdW+PoLQzW+lghuOT8ji6ZpJ66suk79ABCLSMHYU+/qzOr1D/SxwJUS2xr1WxdDc0pUBqrjAK20pK4nvOReufzCWAwZoyw=
+	t=1728953426; cv=none; b=UTgkup5DMPN7aFU08Fsps9sMCvMhtxjvehok6lj0Ocj3ZnSntJ2UmRfxEjcTNAweTzqzpiJuvnZDDGjgurfgmR3EsQTMB/yH66+1Wv+0r/qLdzy2rpGtIJ1wC+kOpXj2CczaPFZo5xx7H+ZWkKuGh5y9eQa/LaiCebYpUSB71d8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728953424; c=relaxed/simple;
-	bh=kQnYtQ7y941VN96pgnq7W/zNsGFgyRpWsyM068kURNY=;
+	s=arc-20240116; t=1728953426; c=relaxed/simple;
+	bh=9KMzxJz6MjRuZ5hiaWaCgDCerLbGWHQXA22TuS7/ukA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=NFPQvkUszB3ujJsoYNBeyeSfftLc012miyJtKguK0v7CVK55wWbIgZ5CUldCbMKMAiy5TnP95ul8NKR6hUahcrayQeW17owQwVXTQKV+l90MNy79zSP3ncJtlCQwlFgEJNfGNe3JrfKYC7lrI49C0IMpfZ40w2I3xbnS6i2hwHw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=a/zFA9ue; arc=none smtp.client-ip=95.215.58.170
+	 MIME-Version; b=FXbLgLCQxtmG/1tZfMDV/l8bKFXXJWe1sablvf2ZRTmqlAYzKHCwGMXpOPHp6n8dFOfFM6OhYLOxeMambSVgJnyWmD1qHUBmjn1mWu2b+jdenlRol4iDeMT3r5hz2xwylJ1yADJLtxbdXA9fTAoOBsrV5EAdZGfVXR9eCuz3pzQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=fNDurMsw; arc=none smtp.client-ip=95.215.58.189
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1728953420;
+	t=1728953422;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=IoJSzDKt3Sa1zekPWVmTYBH4olnC0i2ep9oSD3Rch18=;
-	b=a/zFA9uekZ26V/Qo/Whthf5c6vRzn1GJqd1FdTxGcpxYWesGmy2LZ2+b0M92z9GqQOOXPJ
-	+qaz0o3oFDurIhzEHI2+DPHtFvm1ws9uNggvpKCeV0dvIk2yEE8sVbfgY63zXjJ4NXYY5K
-	TxLrzeDAnSyARGZBT/0UBSf5UdS+N2c=
+	bh=HdP3r6sZ9L7aRNwA3Hsw/mUKD3EHCjg+C1klWISp7z0=;
+	b=fNDurMswZz1D8a2n+zcCX2R/O0LfU7T9Ii4+GBIaxmz0nKTRpkXFFmlx0e5yRivCPOPAQ5
+	JOmTgTJCK774JEiN9inYRvdSJXzXzN7HkClMtntkfAhKpNgxpSq1bttVzAATl9asqNRK4K
+	EbwBWklRVYD78TXGm0gX4QScHA7x9/w=
 From: Martin KaFai Lau <martin.lau@linux.dev>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
@@ -49,9 +49,9 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	Kui-Feng Lee <thinker.li@gmail.com>,
 	kernel-team@meta.com
-Subject: [PATCH v5 bpf-next 01/12] bpf: Support __uptr type tag in BTF
-Date: Mon, 14 Oct 2024 17:49:51 -0700
-Message-ID: <20241015005008.767267-2-martin.lau@linux.dev>
+Subject: [PATCH v5 bpf-next 02/12] bpf: Handle BPF_UPTR in verifier
+Date: Mon, 14 Oct 2024 17:49:52 -0700
+Message-ID: <20241015005008.767267-3-martin.lau@linux.dev>
 In-Reply-To: <20241015005008.767267-1-martin.lau@linux.dev>
 References: <20241015005008.767267-1-martin.lau@linux.dev>
 Precedence: bulk
@@ -60,202 +60,120 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
 From: Kui-Feng Lee <thinker.li@gmail.com>
 
-This patch introduces the "__uptr" type tag to BTF. It is to define
-a pointer pointing to the user space memory. This patch adds BTF
-logic to pass the "__uptr" type tag.
+This patch adds BPF_UPTR support to the verifier. Not that only the
+map_value will support the "__uptr" type tag.
 
-btf_find_kptr() is reused for the "__uptr" tag. The "__uptr" will only
-be supported in the map_value of the task storage map. However,
-btf_parse_struct_meta() also uses btf_find_kptr() but it is not
-interested in "__uptr". This patch adds a "field_mask" argument
-to btf_find_kptr() which will return BTF_FIELD_IGNORE if the
-caller is not interested in a “__uptr” field.
+This patch enforces only BPF_LDX is allowed to the value of an uptr.
+After BPF_LDX, it will mark the dst_reg as PTR_TO_MEM | PTR_MAYBE_NULL
+with size deduced from the field.kptr.btf_id. This will make the
+dst_reg pointed memory to be readable and writable as scalar.
 
-btf_parse_kptr() is also reused to parse the uptr.
-The btf_check_and_fixup_fields() is changed to do extra
-checks on the uptr to ensure that its struct size is not larger
-than PAGE_SIZE. It is not clear how a uptr pointing to a CO-RE
-supported kernel struct will be used, so it is also not allowed now.
+There is a redundant "val_reg = reg_state(env, value_regno);" statement
+in the check_map_kptr_access(). This patch takes this chance to remove
+it also.
 
 Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
 Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
 ---
 Changes in v5:
-  - A field_mask arg is added to btf_find_kptr
-  - Some uptr enforcement is added to btf_check_and_fixup_fields()
-  - The "case MAP_UPTR:" addition to bpf_obj_init_field()
-    is moved to the later patch together with other bpf_obj_*()
-    changes when BPF_UPTR is finally enabled in task storage map.
+  - The "if (kptr_field->type == BPF_UPTR)" addition in v4 in 
+    map_kptr_match_type() is removed. It will not be reached.
+    meta->kptr_field is for kptr only.
+  - Use btf_field_type_name() for the verbose() log in check_map_access().
+  - Directly use t->size in mark_uptr_ld_reg. "t" must be a struct.
 
- include/linux/bpf.h  |  5 +++++
- kernel/bpf/btf.c     | 32 +++++++++++++++++++++++++++-----
- kernel/bpf/syscall.c |  2 ++
- 3 files changed, 34 insertions(+), 5 deletions(-)
+ kernel/bpf/verifier.c | 39 +++++++++++++++++++++++++++++++++------
+ 1 file changed, 33 insertions(+), 6 deletions(-)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 19d8ca8ac960..cdd0a891ce55 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -203,6 +203,7 @@ enum btf_field_type {
- 	BPF_GRAPH_ROOT = BPF_RB_ROOT | BPF_LIST_HEAD,
- 	BPF_REFCOUNT   = (1 << 9),
- 	BPF_WORKQUEUE  = (1 << 10),
-+	BPF_UPTR       = (1 << 11),
- };
- 
- typedef void (*btf_dtor_kfunc_t)(void *);
-@@ -322,6 +323,8 @@ static inline const char *btf_field_type_name(enum btf_field_type type)
- 		return "kptr";
- 	case BPF_KPTR_PERCPU:
- 		return "percpu_kptr";
-+	case BPF_UPTR:
-+		return "uptr";
- 	case BPF_LIST_HEAD:
- 		return "bpf_list_head";
- 	case BPF_LIST_NODE:
-@@ -350,6 +353,7 @@ static inline u32 btf_field_type_size(enum btf_field_type type)
- 	case BPF_KPTR_UNREF:
- 	case BPF_KPTR_REF:
- 	case BPF_KPTR_PERCPU:
-+	case BPF_UPTR:
- 		return sizeof(u64);
- 	case BPF_LIST_HEAD:
- 		return sizeof(struct bpf_list_head);
-@@ -379,6 +383,7 @@ static inline u32 btf_field_type_align(enum btf_field_type type)
- 	case BPF_KPTR_UNREF:
- 	case BPF_KPTR_REF:
- 	case BPF_KPTR_PERCPU:
-+	case BPF_UPTR:
- 		return __alignof__(u64);
- 	case BPF_LIST_HEAD:
- 		return __alignof__(struct bpf_list_head);
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index 13dd1fa1d1b9..e15f41175f13 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -3334,7 +3334,7 @@ static int btf_find_struct(const struct btf *btf, const struct btf_type *t,
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index cfc62e0776bf..792154ee25cc 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -5485,6 +5485,22 @@ static u32 btf_ld_kptr_type(struct bpf_verifier_env *env, struct btf_field *kptr
+ 	return ret;
  }
  
- static int btf_find_kptr(const struct btf *btf, const struct btf_type *t,
--			 u32 off, int sz, struct btf_field_info *info)
-+			 u32 off, int sz, struct btf_field_info *info, u32 field_mask)
- {
- 	enum btf_field_type type;
- 	u32 res_id;
-@@ -3358,9 +3358,14 @@ static int btf_find_kptr(const struct btf *btf, const struct btf_type *t,
- 		type = BPF_KPTR_REF;
- 	else if (!strcmp("percpu_kptr", __btf_name_by_offset(btf, t->name_off)))
- 		type = BPF_KPTR_PERCPU;
-+	else if (!strcmp("uptr", __btf_name_by_offset(btf, t->name_off)))
-+		type = BPF_UPTR;
- 	else
- 		return -EINVAL;
- 
-+	if (!(type & field_mask))
-+		return BTF_FIELD_IGNORE;
++static int mark_uptr_ld_reg(struct bpf_verifier_env *env, u32 regno,
++			    struct btf_field *field)
++{
++	struct bpf_reg_state *reg;
++	const struct btf_type *t;
 +
- 	/* Get the base type */
- 	t = btf_type_skip_modifiers(btf, t->type, &res_id);
- 	/* Only pointer to struct is allowed */
-@@ -3502,7 +3507,7 @@ static int btf_get_field_type(const struct btf *btf, const struct btf_type *var_
- 	field_mask_test_name(BPF_REFCOUNT,  "bpf_refcount");
- 
- 	/* Only return BPF_KPTR when all other types with matchable names fail */
--	if (field_mask & BPF_KPTR && !__btf_type_is_struct(var_type)) {
-+	if (field_mask & (BPF_KPTR | BPF_UPTR) && !__btf_type_is_struct(var_type)) {
- 		type = BPF_KPTR_REF;
- 		goto end;
++	t = btf_type_by_id(field->kptr.btf, field->kptr.btf_id);
++	mark_reg_known_zero(env, cur_regs(env), regno);
++	reg = reg_state(env, regno);
++	reg->type = PTR_TO_MEM | PTR_MAYBE_NULL;
++	reg->mem_size = t->size;
++	reg->id = ++env->id_gen;
++
++	return 0;
++}
++
+ static int check_map_kptr_access(struct bpf_verifier_env *env, u32 regno,
+ 				 int value_regno, int insn_idx,
+ 				 struct btf_field *kptr_field)
+@@ -5513,9 +5529,15 @@ static int check_map_kptr_access(struct bpf_verifier_env *env, u32 regno,
+ 		verbose(env, "store to referenced kptr disallowed\n");
+ 		return -EACCES;
  	}
-@@ -3535,6 +3540,7 @@ static int btf_repeat_fields(struct btf_field_info *info,
- 		case BPF_KPTR_UNREF:
- 		case BPF_KPTR_REF:
- 		case BPF_KPTR_PERCPU:
-+		case BPF_UPTR:
- 		case BPF_LIST_HEAD:
- 		case BPF_RB_ROOT:
- 			break;
-@@ -3661,8 +3667,9 @@ static int btf_find_field_one(const struct btf *btf,
- 	case BPF_KPTR_UNREF:
- 	case BPF_KPTR_REF:
- 	case BPF_KPTR_PERCPU:
-+	case BPF_UPTR:
- 		ret = btf_find_kptr(btf, var_type, off, sz,
--				    info_cnt ? &info[0] : &tmp);
-+				    info_cnt ? &info[0] : &tmp, field_mask);
- 		if (ret < 0)
- 			return ret;
- 		break;
-@@ -3985,6 +3992,7 @@ struct btf_record *btf_parse_fields(const struct btf *btf, const struct btf_type
- 		case BPF_KPTR_UNREF:
- 		case BPF_KPTR_REF:
- 		case BPF_KPTR_PERCPU:
-+		case BPF_UPTR:
- 			ret = btf_parse_kptr(btf, &rec->fields[i], &info_arr[i]);
- 			if (ret < 0)
- 				goto end;
-@@ -4044,12 +4052,26 @@ int btf_check_and_fixup_fields(const struct btf *btf, struct btf_record *rec)
- 	 * Hence we only need to ensure that bpf_{list_head,rb_root} ownership
- 	 * does not form cycles.
- 	 */
--	if (IS_ERR_OR_NULL(rec) || !(rec->field_mask & BPF_GRAPH_ROOT))
-+	if (IS_ERR_OR_NULL(rec) || !(rec->field_mask & (BPF_GRAPH_ROOT | BPF_UPTR)))
- 		return 0;
- 	for (i = 0; i < rec->cnt; i++) {
- 		struct btf_struct_meta *meta;
-+		const struct btf_type *t;
- 		u32 btf_id;
++	if (class != BPF_LDX && kptr_field->type == BPF_UPTR) {
++		verbose(env, "store to uptr disallowed\n");
++		return -EACCES;
++	}
  
-+		if (rec->fields[i].type & BPF_UPTR) {
-+			/* The uptr only supports pinning one page and cannot
-+			 * point to a kernel struct
-+			 */
-+			if (btf_is_kernel(rec->fields[i].kptr.btf))
-+				return -EINVAL;
-+			t = btf_type_by_id(rec->fields[i].kptr.btf,
-+					   rec->fields[i].kptr.btf_id);
-+			if (t->size > PAGE_SIZE)
-+				return -E2BIG;
-+			continue;
-+		}
+ 	if (class == BPF_LDX) {
+-		val_reg = reg_state(env, value_regno);
++		if (kptr_field->type == BPF_UPTR)
++			return mark_uptr_ld_reg(env, value_regno, kptr_field);
 +
- 		if (!(rec->fields[i].type & BPF_GRAPH_ROOT))
- 			continue;
- 		btf_id = rec->fields[i].graph_root.value_btf_id;
-@@ -5560,7 +5582,7 @@ btf_parse_struct_metas(struct bpf_verifier_log *log, struct btf *btf)
- 			goto free_aof;
- 		}
- 
--		ret = btf_find_kptr(btf, t, 0, 0, &tmp);
-+		ret = btf_find_kptr(btf, t, 0, 0, &tmp, BPF_KPTR);
- 		if (ret != BTF_FIELD_FOUND)
- 			continue;
- 
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index a8f1808a1ca5..694dbbeb0eb5 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -548,6 +548,7 @@ void btf_record_free(struct btf_record *rec)
- 		case BPF_KPTR_UNREF:
- 		case BPF_KPTR_REF:
- 		case BPF_KPTR_PERCPU:
-+		case BPF_UPTR:
- 			if (rec->fields[i].kptr.module)
- 				module_put(rec->fields[i].kptr.module);
- 			if (btf_is_kernel(rec->fields[i].kptr.btf))
-@@ -597,6 +598,7 @@ struct btf_record *btf_record_dup(const struct btf_record *rec)
- 		case BPF_KPTR_UNREF:
- 		case BPF_KPTR_REF:
- 		case BPF_KPTR_PERCPU:
-+		case BPF_UPTR:
- 			if (btf_is_kernel(fields[i].kptr.btf))
- 				btf_get(fields[i].kptr.btf);
- 			if (fields[i].kptr.module && !try_module_get(fields[i].kptr.module)) {
+ 		/* We can simply mark the value_regno receiving the pointer
+ 		 * value from map as PTR_TO_BTF_ID, with the correct type.
+ 		 */
+@@ -5573,21 +5595,26 @@ static int check_map_access(struct bpf_verifier_env *env, u32 regno,
+ 			case BPF_KPTR_UNREF:
+ 			case BPF_KPTR_REF:
+ 			case BPF_KPTR_PERCPU:
++			case BPF_UPTR:
+ 				if (src != ACCESS_DIRECT) {
+-					verbose(env, "kptr cannot be accessed indirectly by helper\n");
++					verbose(env, "%s cannot be accessed indirectly by helper\n",
++						btf_field_type_name(field->type));
+ 					return -EACCES;
+ 				}
+ 				if (!tnum_is_const(reg->var_off)) {
+-					verbose(env, "kptr access cannot have variable offset\n");
++					verbose(env, "%s access cannot have variable offset\n",
++						btf_field_type_name(field->type));
+ 					return -EACCES;
+ 				}
+ 				if (p != off + reg->var_off.value) {
+-					verbose(env, "kptr access misaligned expected=%u off=%llu\n",
++					verbose(env, "%s access misaligned expected=%u off=%llu\n",
++						btf_field_type_name(field->type),
+ 						p, off + reg->var_off.value);
+ 					return -EACCES;
+ 				}
+ 				if (size != bpf_size_to_bytes(BPF_DW)) {
+-					verbose(env, "kptr access size must be BPF_DW\n");
++					verbose(env, "%s access size must be BPF_DW\n",
++						btf_field_type_name(field->type));
+ 					return -EACCES;
+ 				}
+ 				break;
+@@ -6953,7 +6980,7 @@ static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regn
+ 			return err;
+ 		if (tnum_is_const(reg->var_off))
+ 			kptr_field = btf_record_find(reg->map_ptr->record,
+-						     off + reg->var_off.value, BPF_KPTR);
++						     off + reg->var_off.value, BPF_KPTR | BPF_UPTR);
+ 		if (kptr_field) {
+ 			err = check_map_kptr_access(env, regno, value_regno, insn_idx, kptr_field);
+ 		} else if (t == BPF_READ && value_regno >= 0) {
 -- 
 2.43.5
 
