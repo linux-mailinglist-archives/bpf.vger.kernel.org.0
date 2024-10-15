@@ -1,137 +1,170 @@
-Return-Path: <bpf+bounces-41998-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41999-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE00199E2EB
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 11:37:03 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46D1499E326
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 11:53:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 833F92817F0
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 09:37:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6763B1C21D46
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 09:53:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 088B71DF970;
-	Tue, 15 Oct 2024 09:36:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 697C51E32AF;
+	Tue, 15 Oct 2024 09:53:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fjRuo6E/"
+	dkim=pass (2048-bit key) header.d=blackwall-org.20230601.gappssmtp.com header.i=@blackwall-org.20230601.gappssmtp.com header.b="RImCyTmH"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-io1-f48.google.com (mail-io1-f48.google.com [209.85.166.48])
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AEFD1DD9BD;
-	Tue, 15 Oct 2024 09:36:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E96D07F7FC
+	for <bpf@vger.kernel.org>; Tue, 15 Oct 2024 09:53:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728985015; cv=none; b=QDRBLLMJsmD55Uw3r2o9zQO02PFZnS7KDhOzkwO2f3zE4k6kbpWFLTMxNG0cF42LtMAJcYJGwhkKy/OPCjydHga/YDEwy42LcAZHHrljC5Yg9psVJiDUMEcZJ6dnUUuv6qXjlbPyJKIa1LZX2Rf/fupMqJqaoDQUtTcZj6ITvKw=
+	t=1728985996; cv=none; b=Fc+SYpZhOrc242VUhVKVojtTe6tPAjU+IxllcDWsIbjbzLua57j7LaX//CfabTy6+zm4cRsyPINXuhtDG+TNadjCPcrRXQvxAZy4FkXU9fxC1MEMUDMgWb7/wjLqaeZ2pttFVHPX7owmQgaHq62kxKSk8nJW9jGH2DRfGZ93mnw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728985015; c=relaxed/simple;
-	bh=EuHSVp0ma6AF7blC/RGH7eF4epMQJtOuLhIEBG/TvBI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=iaWIfYsXokkDoCyGSvFTXEwMjoJ9seEc0lVOV8N2b2onjkYUyBORUmVIMKm2uY+8rPu4+IUDNwrKHTPFHPqZlCEfQkMTO35gXG9HoDWJORwsmzvoPmiql4giB6vTL1xVt4+twFi5VYR1jbJ4O41O7KvmUTRO/Pr/YE6OehY4/6U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fjRuo6E/; arc=none smtp.client-ip=209.85.166.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f48.google.com with SMTP id ca18e2360f4ac-836f1b47cdfso246761139f.0;
-        Tue, 15 Oct 2024 02:36:53 -0700 (PDT)
+	s=arc-20240116; t=1728985996; c=relaxed/simple;
+	bh=+QiVpaJTqb9lGZxquQMPwOmszRdsIH3dWewjm4uDNPc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=bwmt0erKCCRyFRUbu/Lx9NW9Z90ZrH1ypLJPoNJNU1ghxUEzkOdgc0I0bIA9Ok9a8Fw+HhB/9vS1vsMPSEbKa+3XsN/8I72K1KmV1IQ7n+5aUw59X6EqXB8j0davMi/Uk8vSjZy38noq1mQgXUEtvh11Lt0EvFkuHmSDYxwuH4k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=blackwall.org; spf=none smtp.mailfrom=blackwall.org; dkim=pass (2048-bit key) header.d=blackwall-org.20230601.gappssmtp.com header.i=@blackwall-org.20230601.gappssmtp.com header.b=RImCyTmH; arc=none smtp.client-ip=209.85.208.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=blackwall.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=blackwall.org
+Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2fb5fa911aaso3390931fa.2
+        for <bpf@vger.kernel.org>; Tue, 15 Oct 2024 02:53:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1728985013; x=1729589813; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sOzlHPSBobGuPptS2qSZ1QwRtjfsUbv4gGiNiZWPFR4=;
-        b=fjRuo6E/zWt3bzaXCGjSudseT71qrAf6iR7/0H9fkehfBld/QRxuFrj+uJodWiVwkO
-         Seu5HyjN4f8cJzDVzO8EU97kCTWfaLuPDuAjGB1wTcbDJn15/QpfYMEaRmh2chM2DzxA
-         FOnNn0EtqaiSoLNTJGsJ+M53B+KRD4ihtuiIKJBck2qy133znh5+p3N1PL2Lzuy23xcP
-         N2wKHLuy6avm4XiGGCzgit1HF5+K4ZV54JFECmfFmZBzKyJtmETXeMorZou4tnZg6TJe
-         czN5dh+jKYjpTVJ5AX7fcpaLQ6hYAVKSQMdTDyz42LPSEY6eLAGRJ7cvgnAzXt4aJtmr
-         kAyg==
+        d=blackwall-org.20230601.gappssmtp.com; s=20230601; t=1728985991; x=1729590791; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=gXKHChHiIoQp0tWweCcNM5/x2glH+l2xRI6KeML9nf4=;
+        b=RImCyTmH1jUX12qXeNqCXjNwCcO4NA39rko4oHZBRSb6DVeBuumbE30kyNhSKCu1q0
+         5w9sugSt4W2ir2ZI9o7UBMO2J7r90zc74gbEOFw34jzNqMSK0pUFt/up2NxGWCG9cvt9
+         i8Z8RRZNcUpaqDRoIBurWfNdR0/JFBlzlA4nWvK6XlXJAnOI3RvdIjXOHhBlq5yxWePq
+         uWuJZFJa8qCIj3UC4FPkDL96SI+dxPv50wJyYdhfvwqMvrIxiQR/X33Y1D6bktoANvQi
+         8OqHcIAAnlL/x1aCYP1fItBel3syc6GggeEmpibh91EOb5s4JBX48Px3he5Mt26jd16S
+         XG5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728985013; x=1729589813;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sOzlHPSBobGuPptS2qSZ1QwRtjfsUbv4gGiNiZWPFR4=;
-        b=v7YF7wYf8j8fLOTY7ZUenAnj9LNekGRexY3URezCxEMUW0h6S7VN+6g/03OI6MLnDA
-         hyJLQ7dNL0vwUc/D8Z8KXTcCQM2Q/8pDoMDJC64Jwc1+7TJ4+9e77/ZVLpnBH42E2J4b
-         Gm92bOb/Qfa0UmQ1vXyypbYjOyPayI7yl4KKPHETOpMW4Y3LSC/5r5OLsTxVzANJmrjl
-         SJcM4BbSKHjitj2L81fmITChwlykBa6IeAymF7bxfwM0oaFXLtux55Rd4ClkVaD+HrUo
-         GlutQEfZAEzsMC7sv50F2dgL4pePNQGKnbuaVk2zH1FQrUBeLgOQQg3HShHlQ9uj+Yun
-         uDrQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUPXLr76b1f0YKaO+qNPBFPy9f4fR8kPDadjM/ieuvjvJTuv9Lowy3AzQYdotcFoL+J3Z8=@vger.kernel.org, AJvYcCUtu7RrrOiPRcDd24pbqc5ERqMEZzuTZEop+8PKX37AX0X6ei29j6zewD4lqSlnD0myyeugN9Od@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxq/lfHJMZdObrX63KYP7pJDMwmhJ8W9rXzvugMLDm3JId/HIC9
-	g5pt/tfP8n4i877sjYyRYr0tbQr1RAzJgYfXSxmPsGQ2jZ4t/5cKx8AosRAg6U5W8Uhj87BVzN4
-	XocIloNyM99yapNgzg7UlFqdZDNA=
-X-Google-Smtp-Source: AGHT+IHAUit3P2s0RoURPDSBc3P7BsQ0e7J7JlVGM9tYWDXEhA89gyrAqTmPloyMh7hBhGScnTLEFj/4VJVnn72WJvY=
-X-Received: by 2002:a05:6e02:1a0b:b0:3a3:b4dd:4db with SMTP id
- e9e14a558f8ab-3a3b5c73b7fmr147541985ab.0.1728985013202; Tue, 15 Oct 2024
- 02:36:53 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1728985991; x=1729590791;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gXKHChHiIoQp0tWweCcNM5/x2glH+l2xRI6KeML9nf4=;
+        b=TdOH4xv0UTuCgDp8cUPZR/JvMuPSLUyQTVNt0XY6BSCXdY5RT7gBUDwFLbjWBKQUDu
+         LneC6/xWWhpPOe2YgGt0XqnUCgjJxvoEVx7bzxJj5xErFV4cX/fEWRKeirqgJoiL74wB
+         +nm1H2vSf4jcXkavgx14TIJxiCwBcagLUaGFBDBXbhhvwINTC0dvdpvOeSFUOAuMLLZu
+         sAx/FtFi9MoJaSmfHyydWUUP/xBaSTEHP1C8QocG/U9KqF5oTqPlaN1N7G39iwW4/WOF
+         Vm7J8uF5A/yZMqFRfae/uhtWuDqw26VL2PNRAi7DPGxLc+p1rI9jn0ILwMrBlPIDbTCu
+         +Muw==
+X-Forwarded-Encrypted: i=1; AJvYcCXItGnflk5HVnYenb2m5fsHd6I9pyW1OUxevQyNQAl6u75/9HtCftuB5rn4uncTwbFT8/w=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyLvVvHEfrZuW8L5WXH88RNXKPfI8w5gvoYrr07TgoDplBYH2kI
+	0M4zOoWmmoGTX6xouwz+gOeiMf6m8i2eE8A0YC0qY1VwqUZeHUj1n3uP5VpGu0w=
+X-Google-Smtp-Source: AGHT+IEHVCGw5gneW8aiZsfe3uUHa9UQ89iqVPpiZ2h77v58WraREjoOic94ZLZj77yCdDgyfYbw+g==
+X-Received: by 2002:a05:651c:2220:b0:2fb:3881:35d5 with SMTP id 38308e7fff4ca-2fb3f2c725emr60984831fa.35.1728985990884;
+        Tue, 15 Oct 2024 02:53:10 -0700 (PDT)
+Received: from [192.168.0.245] ([62.73.69.208])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a9a2973fba2sm51027766b.47.2024.10.15.02.53.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Oct 2024 02:53:10 -0700 (PDT)
+Message-ID: <2cdcad89-2677-4526-8ab5-3624d0300b7f@blackwall.org>
+Date: Tue, 15 Oct 2024 12:53:08 +0300
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241012040651.95616-10-kerneljasonxing@gmail.com> <202410151628.hcAdeahi-lkp@intel.com>
-In-Reply-To: <202410151628.hcAdeahi-lkp@intel.com>
-From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Tue, 15 Oct 2024 17:36:16 +0800
-Message-ID: <CAL+tcoCsWdDKSfWfbAD2DtSFJRaCMJNVy4UbKqoLH8RfkPkBvA@mail.gmail.com>
-Subject: Re: [PATCH net-next v2 09/12] net-timestamp: add tx OPT_ID_TCP
- support for bpf case
-To: kernel test robot <lkp@intel.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
-	pabeni@redhat.com, dsahern@kernel.org, willemdebruijn.kernel@gmail.com, 
-	willemb@google.com, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
-	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
-	sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, llvm@lists.linux.dev, 
-	oe-kbuild-all@lists.linux.dev, bpf@vger.kernel.org, netdev@vger.kernel.org, 
-	Jason Xing <kernelxing@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net] bpf: xdp: fallback to SKB mode if DRV flag is absent.
+To: Daniel Borkmann <daniel@iogearbox.net>, Hangbin Liu
+ <liuhangbin@gmail.com>, netdev@vger.kernel.org
+Cc: "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, Jiri Pirko <jiri@resnulli.us>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ Lorenzo Bianconi <lorenzo@kernel.org>, Andrii Nakryiko <andriin@fb.com>,
+ Jussi Maki <joamaki@gmail.com>, Jay Vosburgh <jv@jvosburgh.net>,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ Liang Li <liali@redhat.com>
+References: <20241015033632.12120-1-liuhangbin@gmail.com>
+ <8ef07e79-4812-4e02-a5d1-03a05726dd07@iogearbox.net>
+Content-Language: en-US
+From: Nikolay Aleksandrov <razor@blackwall.org>
+In-Reply-To: <8ef07e79-4812-4e02-a5d1-03a05726dd07@iogearbox.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Tue, Oct 15, 2024 at 4:41=E2=80=AFPM kernel test robot <lkp@intel.com> w=
-rote:
->
-> Hi Jason,
->
-> kernel test robot noticed the following build warnings:
->
-> [auto build test WARNING on net-next/main]
->
-> url:    https://github.com/intel-lab-lkp/linux/commits/Jason-Xing/net-tim=
-estamp-introduce-socket-tsflag-requestors/20241012-121010
-> base:   net-next/main
-> patch link:    https://lore.kernel.org/r/20241012040651.95616-10-kernelja=
-sonxing%40gmail.com
-> patch subject: [PATCH net-next v2 09/12] net-timestamp: add tx OPT_ID_TCP=
- support for bpf case
-> config: x86_64-kexec (https://download.01.org/0day-ci/archive/20241015/20=
-2410151628.hcAdeahi-lkp@intel.com/config)
-> compiler: clang version 18.1.8 (https://github.com/llvm/llvm-project 3b5b=
-5c1ec4a3095ab096dd780e84d7ab81f3d7ff)
-> reproduce (this is a W=3D1 build): (https://download.01.org/0day-ci/archi=
-ve/20241015/202410151628.hcAdeahi-lkp@intel.com/reproduce)
->
-> If you fix the issue in a separate patch/commit (i.e. not just a new vers=
-ion of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202410151628.hcAdeahi-lkp=
-@intel.com/
->
-> All warnings (new ones prefixed by >>):
->
-> >> net/core/sock.c:926:2: warning: variable 'tsflags' is uninitialized wh=
-en used here [-Wuninitialized]
->      926 |         tsflags |=3D (sk->sk_tsflags[SOCKETOPT_TS_REQUESTOR] |
->          |         ^~~~~~~
->    net/core/sock.c:920:13: note: initialize the variable 'tsflags' to sil=
-ence this warning
->      920 |         u32 tsflags;
->          |                    ^
->          |                     =3D 0
->    1 warning generated.
+On 15/10/2024 11:17, Daniel Borkmann wrote:
+> On 10/15/24 5:36 AM, Hangbin Liu wrote:
+>> After commit c8a36f1945b2 ("bpf: xdp: Fix XDP mode when no mode flags
+>> specified"), the mode is automatically set to XDP_MODE_DRV if the driver
+>> implements the .ndo_bpf function. However, for drivers like bonding, which
+>> only support native XDP for specific modes, this may result in an
+>> "unsupported" response.
+>>
+>> In such cases, let's fall back to SKB mode if the user did not explicitly
+>> request DRV mode.
+>>
 
-Thanks! I will fix it!
+So behaviour changed once, now it's changing again.. IMO it's better to explicitly
+error out and let the user decide how to resolve the situation. The above commit
+is 4 years old, surely everyone is used to the behaviour by now. If you insist
+to do auto-fallback, then at least I'd go with Daniel's suggestion and do it
+in the bonding device. Maybe it can return -EFALLBACK, or some other way to
+signal the caller and change the mode, but you assume that's what the user
+would want, maybe it is and maybe it's not - that is why I'd prefer the
+explicit error so conscious action can be taken to resolve the situation.
+
+That being said, I don't have a strong preference, just my few cents. :)
+
+>> Fixes: c8a36f1945b2 ("bpf: xdp: Fix XDP mode when no mode flags specified")
+>> Reported-by: Liang Li <liali@redhat.com>
+>> Closes: https://issues.redhat.com/browse/RHEL-62339
+> 
+> nit: The link is not accessible to the public.
+> 
+> Also, this breaks BPF CI with regards to existing bonding selftest :
+> 
+>   https://github.com/kernel-patches/bpf/actions/runs/11340153361/job/31536275257
+> 
+> Given this issue is related to only bonding driver, could this be fixed
+> there instead?
+> 
+>> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+>> ---
+>>   net/core/dev.c | 12 +++++++++++-
+>>   1 file changed, 11 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/net/core/dev.c b/net/core/dev.c
+>> index ea5fbcd133ae..e32069d81cd7 100644
+>> --- a/net/core/dev.c
+>> +++ b/net/core/dev.c
+>> @@ -9579,6 +9579,7 @@ static int dev_xdp_attach(struct net_device *dev, struct netlink_ext_ack *extack
+>>         /* don't call drivers if the effective program didn't change */
+>>       if (new_prog != cur_prog) {
+>> +reinstall:
+>>           bpf_op = dev_xdp_bpf_op(dev, mode);
+>>           if (!bpf_op) {
+>>               NL_SET_ERR_MSG(extack, "Underlying driver does not support XDP in native mode");
+>> @@ -9586,8 +9587,17 @@ static int dev_xdp_attach(struct net_device *dev, struct netlink_ext_ack *extack
+>>           }
+>>             err = dev_xdp_install(dev, mode, bpf_op, extack, flags, new_prog);
+>> -        if (err)
+>> +        if (err) {
+>> +            /* The driver returns not supported even .ndo_bpf
+>> +             * implemented, fall back to SKB mode.
+>> +             */
+>> +            if (err == -EOPNOTSUPP && mode == XDP_MODE_DRV &&
+>> +                !(flags & XDP_FLAGS_DRV_MODE)) {
+>> +                mode = XDP_MODE_SKB;
+>> +                goto reinstall;
+>> +            }
+>>               return err;
+>> +        }
+>>       }
+>>         if (link)
+
 
