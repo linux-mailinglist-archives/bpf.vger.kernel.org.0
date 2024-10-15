@@ -1,37 +1,37 @@
-Return-Path: <bpf+bounces-42016-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42017-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3227E99E63E
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 13:40:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D256B99E641
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 13:40:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D3E611F24DFB
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 11:40:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 893F41F24C50
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 11:40:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 953AC1EF0B7;
-	Tue, 15 Oct 2024 11:39:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5540E1EF94F;
+	Tue, 15 Oct 2024 11:39:25 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 226101E7658;
-	Tue, 15 Oct 2024 11:39:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 923281E9080;
+	Tue, 15 Oct 2024 11:39:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728992364; cv=none; b=Yu9MWw5x4ou3xYWELgGvweUfINu0dRgZmoLQwC1ngkpvN0eNOdDdlJMZqTIR+V9mgAGVOHqMeCdJ5SJyyo5S+reXJK/oUimTPRLpDvekET69AuPVn1AU7WQU7WTNdgpKgBXY1KeeHhCip6/XUPYtneFSzA2rpE/CKfa7gZqa/Eg=
+	t=1728992364; cv=none; b=er2TnZBu9LpOOScJJbo6ohvEYvjWcNYk2scC9FDlRHa7MY4lvvEEzLL3FTyDjxISCS+6NcjhHLccUDkgLopuwVojBm6POu3/cGu//cNP0dwncA3KibUTkp82OVbUJrwNgfqZno9vJisZQJbaPwVKBE6kpMvqMa7JTS4xtPMyXsA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1728992364; c=relaxed/simple;
-	bh=SbfJr9+jdDKjyBPYTFn1HGRQF9YgV69BHlnKnAozTHU=;
+	bh=rqu0fWfmQu2kYrqp0OPfNmQup6sQp3MP6/e6QsJ8MWc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=cuRLV0KbT90tSAb/s8ZLZODjA10mcNBNYdXTPXmJxyTcYDcLYPXazdatwni0jWx2OXSUkuCX2z82izv8VOn/oZvMWUjNzCMtO7FB8FvTbcviVpgnkiyIp5L2X24cS5XyJ/LheERPAQ86kYE3pEaBADmUxy3c5qgASIHNk62P7WA=
+	 MIME-Version; b=GU6gguRw02MTGDVjbrNBRjYYsm4pHw/Z01uzjnEikg3Sc+6KTt4RyqScWeb47JIyna0+V/VJ85gqyosjz95eKn09ZSpJnrJ6rBRM2dsVDkP8v6PN519cvK9sC3vkPYDqYtONaKGbXV9dX1NGJHDf4OeyMkpx7hpEL45bT3SRlAI=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
 Received: from loongson.cn (unknown [113.200.148.30])
-	by gateway (Coremail) with SMTP id _____8DxyrFnVA5n8n8dAA--.42637S3;
-	Tue, 15 Oct 2024 19:39:19 +0800 (CST)
+	by gateway (Coremail) with SMTP id _____8Cx44hoVA5n938dAA--.42656S3;
+	Tue, 15 Oct 2024 19:39:20 +0800 (CST)
 Received: from linux.localdomain (unknown [113.200.148.30])
-	by front2 (Coremail) with SMTP id qciowMCxbcdkVA5n6E0uAA--.9583S5;
+	by front2 (Coremail) with SMTP id qciowMCxbcdkVA5n6E0uAA--.9583S6;
 	Tue, 15 Oct 2024 19:39:19 +0800 (CST)
 From: Tiezhu Yang <yangtiezhu@loongson.cn>
 To: Huacai Chen <chenhuacai@kernel.org>,
@@ -40,9 +40,9 @@ To: Huacai Chen <chenhuacai@kernel.org>,
 Cc: loongarch@lists.linux.dev,
 	bpf@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v1 3/6] LoongArch: Enable jump table for objtool
-Date: Tue, 15 Oct 2024 19:39:12 +0800
-Message-ID: <20241015113915.12623-4-yangtiezhu@loongson.cn>
+Subject: [PATCH v1 4/6] bpf, core: Add weak arch_prepare_goto()
+Date: Tue, 15 Oct 2024 19:39:13 +0800
+Message-ID: <20241015113915.12623-5-yangtiezhu@loongson.cn>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20241015113915.12623-1-yangtiezhu@loongson.cn>
 References: <20241015113915.12623-1-yangtiezhu@loongson.cn>
@@ -53,15 +53,15 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:qciowMCxbcdkVA5n6E0uAA--.9583S5
+X-CM-TRANSID:qciowMCxbcdkVA5n6E0uAA--.9583S6
 X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBj93XoW7tF47uFWrtr1xZw15Kw13Jrc_yoW8uF1kpr
-	Z7Zr1kGr4kXF4vqry3J3yFg398AFnrtr4fXF4xWa4rCrWSq3yavw40yrsrGa40k398J3yS
-	gFWfGa4ayF4UGwbCm3ZEXasCq-sJn29KB7ZKAUJUUUUr529EdanIXcx71UUUUU7KY7ZEXa
+X-Coremail-Antispam: 1Uk129KBj93XoWxCw4rWw1rKryfXF13uF17Jwc_yoW5AFW7pa
+	s5u3yFkr4rXw4S934UJw4vgrWakr48KrZ8G3s5J34xAw4Ygw18ta4vgFnIyFZ8CrnYkr4I
+	qw1UKryUKa4DAFgCm3ZEXasCq-sJn29KB7ZKAUJUUUUr529EdanIXcx71UUUUU7KY7ZEXa
 	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
 	0xBIdaVrnRJUUU9Fb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
 	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
 	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
 	xVW8Jr0_Cr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
 	AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
@@ -73,57 +73,79 @@ X-Coremail-Antispam: 1Uk129KBj93XoW7tF47uFWrtr1xZw15Kw13Jrc_yoW8uF1kpr
 	AIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2
 	KfnxnUUI43ZEXa7IU8EeHDUUUUU==
 
-For now, it can remove -fno-jump-tables and then enable jump table
-for objtool if the compiler has option -mannotate-tablejump.
+The objtool program needs to analysis the control flow of each
+object file generated by compiler toolchain, it needs to know
+all the locations that a branch instruction may jump into.
 
+In the past, objtool only works on x86, where objtool can find
+the relocation against the nearest instruction before the jump
+instruction, which points to the goto table, because there is
+only one table jump instruction even if there is more than one
+computed goto in a function such as ___bpf_prog_run().
+
+In fact, the compiler behaviors are different for various archs.
+On RISC machines (for example LoongArch) this approach does not
+work: with -fsection-anchors (often enabled at -O1 or above) the
+relocation entry may actually points to the section anchor instead
+of the table. Furthermore, objdump kernel/bpf/core.o shows that
+there are many table jump instructions in ___bpf_prog_run() with
+more than one computed gotos, but there are no relocations which
+actually points to the table for some table jump instructions on
+LoongArch.
+
+For the jump table of switch cases, a GCC patch "LoongArch: Add
+support to annotate tablejump" has been merged into the upstream
+mainline, it makes life much easier with the additional section
+".discard.tablejump_annotate" which stores the jump info as pairs
+of addresses, each pair contains the address of jump instruction
+and the address of jump table.
+
+For the jump table of computed gotos, it is indeed not so easy
+to implement in the compiler, especially if there is more than
+one computed goto in a function.
+
+Without the help of compiler, in order to figure out the address
+of goto table by interpreting the LoongArch machine code, add a
+function arch_prepare_goto() for goto table, it is an empty weak
+definition and is only overridden by archs that have special
+requirements.
+
+This is preparation for later patch on LoongArch, there is no any
+effect for the other archs with this patch.
+
+Suggested-by: Xi Ruoyao <xry111@xry111.site>
 Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 ---
- arch/loongarch/Kconfig  | 8 +++++++-
- arch/loongarch/Makefile | 5 +----
- 2 files changed, 8 insertions(+), 5 deletions(-)
+ kernel/bpf/core.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/arch/loongarch/Kconfig b/arch/loongarch/Kconfig
-index bb35c34f86d2..49ed776cb253 100644
---- a/arch/loongarch/Kconfig
-+++ b/arch/loongarch/Kconfig
-@@ -150,7 +150,7 @@ config LOONGARCH
- 	select HAVE_LIVEPATCH
- 	select HAVE_MOD_ARCH_SPECIFIC
- 	select HAVE_NMI
--	select HAVE_OBJTOOL if AS_HAS_EXPLICIT_RELOCS && AS_HAS_THIN_ADD_SUB
-+	select HAVE_OBJTOOL if TOOLCHAIN_SUPPORTS_OBJTOOL
- 	select HAVE_PCI
- 	select HAVE_PERF_EVENTS
- 	select HAVE_PERF_REGS
-@@ -284,6 +284,12 @@ config AS_HAS_LBT_EXTENSION
- config AS_HAS_LVZ_EXTENSION
- 	def_bool $(as-instr,hvcl 0)
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index 5e77c58e0601..81e5d42619d5 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -1706,6 +1706,14 @@ bool bpf_opcode_in_insntable(u8 code)
+ }
  
-+config CC_HAS_ANNOTATE_TABLEJUMP
-+	def_bool $(cc-option,-mannotate-tablejump)
+ #ifndef CONFIG_BPF_JIT_ALWAYS_ON
++/*
++ * This symbol is an empty weak definition and is only overridden
++ * by archs that have special requirements.
++ */
++#ifndef arch_prepare_goto
++#define arch_prepare_goto()
++#endif
 +
-+config TOOLCHAIN_SUPPORTS_OBJTOOL
-+	def_bool AS_HAS_EXPLICIT_RELOCS && AS_HAS_THIN_ADD_SUB && CC_HAS_ANNOTATE_TABLEJUMP
-+
- menu "Kernel type and options"
+ /**
+  *	___bpf_prog_run - run eBPF program on a given context
+  *	@regs: is the array of MAX_BPF_EXT_REG eBPF pseudo-registers
+@@ -1743,6 +1751,7 @@ static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn)
+ #define CONT_JMP ({ insn++; goto select_insn; })
  
- source "kernel/Kconfig.hz"
-diff --git a/arch/loongarch/Makefile b/arch/loongarch/Makefile
-index ae3f80622f4c..69a3b4ae6c60 100644
---- a/arch/loongarch/Makefile
-+++ b/arch/loongarch/Makefile
-@@ -99,10 +99,7 @@ KBUILD_AFLAGS			+= $(call cc-option,-mno-relax) $(call cc-option,-Wa$(comma)-mno
- KBUILD_CFLAGS			+= $(call cc-option,-mno-relax) $(call cc-option,-Wa$(comma)-mno-relax)
- KBUILD_AFLAGS			+= $(call cc-option,-mthin-add-sub) $(call cc-option,-Wa$(comma)-mthin-add-sub)
- KBUILD_CFLAGS			+= $(call cc-option,-mthin-add-sub) $(call cc-option,-Wa$(comma)-mthin-add-sub)
--
--ifdef CONFIG_OBJTOOL
--KBUILD_CFLAGS			+= -fno-jump-tables
--endif
-+KBUILD_CFLAGS			+= $(call cc-option,-mannotate-tablejump)
+ select_insn:
++	arch_prepare_goto();
+ 	goto *jumptable[insn->code];
  
- KBUILD_RUSTFLAGS		+= --target=loongarch64-unknown-none-softfloat
- KBUILD_RUSTFLAGS_KERNEL		+= -Zdirect-access-external-data=yes
+ 	/* Explicitly mask the register-based shift amounts with 63 or 31
 -- 
 2.42.0
 
