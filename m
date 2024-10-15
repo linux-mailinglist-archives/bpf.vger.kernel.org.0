@@ -1,219 +1,140 @@
-Return-Path: <bpf+bounces-42038-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42039-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 416FF99EEFA
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 16:12:38 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F1AF99EFE1
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 16:41:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F3582284C53
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 14:12:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C07A71C22BDA
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 14:41:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F26C227BAD;
-	Tue, 15 Oct 2024 14:09:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C4E91C4A1C;
+	Tue, 15 Oct 2024 14:41:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ncg+p762"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VDdxwMsZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f194.google.com (mail-pl1-f194.google.com [209.85.214.194])
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B6B81C4A2E;
-	Tue, 15 Oct 2024 14:09:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F38ED1C4A12
+	for <bpf@vger.kernel.org>; Tue, 15 Oct 2024 14:41:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729001367; cv=none; b=rnVKUfG2wCOXhwWMUL6+dDYR0KXfNa6ZwGRveVVrRItjXDlBfsLir2fGqRr5alZSIDn+WxB2y5uxaeUl7EV3N7OlsI85sVvtBjGGX4rCdGlDgDiZ88JUKZVQOMbyi+EOgTv91C0ZZGVlroMrh66PIpwQmF45WwXfkIQcRIWKPo8=
+	t=1729003275; cv=none; b=Gq+pZpXD0SWvG03FdHAMirWITyBzXlC8UMpBcsusevrT4xvI820ulVc5AaG3NHf5XJECFBqfiycMMn2Jse/Ivb0QnA4NmcSGWxIJx6ya/JEVJ9F/uEs6NxsKzONROftOq6pRlX351skpXWzdMXYy6673CWLAQs3Lqkhf43+y88s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729001367; c=relaxed/simple;
-	bh=J47DiM7it9UqLoIOTYLS3JMdWYRznJt9vbjuYFkxJkY=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=kPmkXvCr2Gtk4UMm6fOgiDkqMpsJe/F9toK5Q+9FmIRpHfuxj3urg7fmk+CHtCxgoJypBFJBA8L4Lm7+XJAB/+e3AwWAQke8qOcpZtLYh2ZAnkunuZIulFEKM2QaLNZrmxZ+s9r5kSdf6f/+rohprLBLuN/99uaNUqYP7kzQslc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ncg+p762; arc=none smtp.client-ip=209.85.214.194
+	s=arc-20240116; t=1729003275; c=relaxed/simple;
+	bh=8ow5wP/mn0ncThSfiHu3EB5HqwE9Dbay19JG2/LTK54=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 MIME-Version:Content-Type:Content-Disposition; b=gI7XUChUwJLihI0Ze4fqOUGm2eohGNuS8Q/869QFOX7fcXjnjwVVMcKf0utn9IkoWAdTlcsIplBBAwf6l1xhxFJQZeaPUZOHl/6PR9RhC3opyjZt1OLBmSmk3kAtGAwXqQKBM1gY8uwsfEYaJd7nP1sRv7ViG/1tjP4/kyQOdUI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VDdxwMsZ; arc=none smtp.client-ip=209.85.167.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f194.google.com with SMTP id d9443c01a7336-20c805a0753so44526025ad.0;
-        Tue, 15 Oct 2024 07:09:26 -0700 (PDT)
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-539e8607c2aso3421420e87.3
+        for <bpf@vger.kernel.org>; Tue, 15 Oct 2024 07:41:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729001366; x=1729606166; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Xu2WL8L9YsDBkU34XcEw9nzL+sIi7gQQkUV02cDwen8=;
-        b=ncg+p762iO+ME0Omj2KSQiDgTQ2alR8jywHug2sqGtokmR+iR0o9OJqCjUXwINoBu4
-         3pleluKzXNIbRbhzz57Hp1fcz7gOfNgyd13FwhpLMQWMTfvN0KlYJeprrOwwGT8S9cHE
-         uo2Bl0x95WnfVir8P08TsxZ9hHr5WiJ5j2UhEcot+Wvuyb/nm0QVCkujVUlXSBLW8qYF
-         U5gEHPgl1KFRp3uQtFg0f7mlkrHARyfWjeUOj0S7PwIdn0Ht5x5bs7WJibXAjuDFAKpd
-         WqKAOiUVk3b9IZ8wXK+Vm2giN7V+W8mpV3PWp0U+XQMCfZwEfE+7oR42QDHKN7Fxt5aK
-         ulhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729001366; x=1729606166;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=gmail.com; s=20230601; t=1729003272; x=1729608072; darn=vger.kernel.org;
+        h=content-disposition:content-transfer-encoding:mime-version:subject
+         :references:in-reply-to:message-id:cc:to:from:date:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Xu2WL8L9YsDBkU34XcEw9nzL+sIi7gQQkUV02cDwen8=;
-        b=vgL2YClR6jLAVa1Ry/Sa+Tf47OkKSSkXGMxZ/CHwxLj1Hd2tLvwWAoibnq5HDdWXqu
-         A6sXF8LNgBpBRp37mmPr2lnZybL9YHJAwH4UGjeTPEs38cwBI1uZ8d98Nl+3+71NLBEQ
-         pUSeFG45pEANgsVwci1MJZZpMLuFyxNqVemCuMYoUAwR6AEja60MBBQd2ZhsVpcDajDD
-         jeroDfgwkcSFLK0ifbPvxjHTHa5lS1KEibc3ECOAfqNP4o3QSQ56mCptLDxae25K+r54
-         qAHvhPiqQ8qhGE1k1IhVVwcrAp05bhMsuQHWtjVttJYKgX1QylfQYGMQhEfipEohT2Uo
-         7unA==
-X-Forwarded-Encrypted: i=1; AJvYcCUAv6LzlfdwMdBiy51IPdoXP1EqqtR409WabNRl9e9fjQFLplGCmc5hvoJKocHBZsN/bqD/Xsol@vger.kernel.org, AJvYcCUKQklcpf8pt8tww0HHjMu4tpmYMe88QuESN7NpwlRDw/B8zfQJT1IJeew4fn0oFJoAMB5XyxF5a6cuuZtqUFTB@vger.kernel.org, AJvYcCUUw3cpcRYkRKDOAMf1XGfAsfEz1WkwumYUaVJCEGhhWaaVxPud7XwqNo1mVoKGn5ta8GFAgFt0n9B5p1Vv@vger.kernel.org, AJvYcCWZAHHks3xlmqKNf54n9kidqoxs4bgraoZ3kI7F4gSW8gfEtjDeiyF9GPsNae+9l0/3DwY=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxSuNUzqZVeYaXLxMRXGCkwdsSWYqQbg5FDKDENlyjMdII+1h7o
-	6Y/F4XjxP3gy52pRWLRwRsxlrQDPcIYSC+9k/bZ+3m8sJSaoclJZ
-X-Google-Smtp-Source: AGHT+IEEdhkY93DkVnsHYKcg3Nn1LJ22CyQpWTu6lhDCBND8N0iZZ4Hbvrszipi9s+zu9OsPn3PgDw==
-X-Received: by 2002:a17:903:230b:b0:20c:e262:2580 with SMTP id d9443c01a7336-20d27f0d040mr5161505ad.44.1729001365587;
-        Tue, 15 Oct 2024 07:09:25 -0700 (PDT)
-Received: from localhost.localdomain ([43.129.25.208])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20d17f9d419sm12437625ad.93.2024.10.15.07.09.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Oct 2024 07:09:25 -0700 (PDT)
-From: Menglong Dong <menglong8.dong@gmail.com>
-X-Google-Original-From: Menglong Dong <dongml2@chinatelecom.cn>
-To: pabeni@redhat.com
-Cc: davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	dsahern@kernel.org,
-	pablo@netfilter.org,
-	kadlec@netfilter.org,
-	roopa@nvidia.com,
-	razor@blackwall.org,
-	gnault@redhat.com,
-	bigeasy@linutronix.de,
-	idosch@nvidia.com,
-	ast@kernel.org,
-	dongml2@chinatelecom.cn,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	netfilter-devel@vger.kernel.org,
-	coreteam@netfilter.org,
-	bridge@lists.linux.dev,
-	bpf@vger.kernel.org
-Subject: [PATCH net-next v3 10/10] net: ip: make ip_route_use_hint() return drop reasons
-Date: Tue, 15 Oct 2024 22:08:00 +0800
-Message-Id: <20241015140800.159466-11-dongml2@chinatelecom.cn>
-X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20241015140800.159466-1-dongml2@chinatelecom.cn>
-References: <20241015140800.159466-1-dongml2@chinatelecom.cn>
+        bh=E04Wt70gCPfdrbDDBhgqtHoh8UDQrtuOQDeWeuAc9JM=;
+        b=VDdxwMsZMfHAOYIKfi7VzUa7Atcl6Zz7bdZjYAqz52yWhF77dx8ZDighlMqVjEMA4S
+         wgLa0BmRSjvjcoMyf5MMwQdYAEJG1l/0Eb7hW7+XL1VQDnPg5FUP3Qw5oIPZZaS6fug2
+         Lgz4nof/CMzs8sAwCLgUH9+GofL4A++IfwpmtbiE9G/waTrxZZgx/+tTGNNm0sWvD0rU
+         BcEU6m5sAgFI9kT75dc5LBEFGDjRVZhPJPFv6i3SSIbnj2hrflO0x0L1nUUHmbWgp5Jq
+         TCR+YXkMdGKy+fZa0CSeASSX5DGsuZTHuvdGKhLOkR6WqybVQgVY8hhxgvIcfVsRF30r
+         gRlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1729003272; x=1729608072;
+        h=content-disposition:content-transfer-encoding:mime-version:subject
+         :references:in-reply-to:message-id:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=E04Wt70gCPfdrbDDBhgqtHoh8UDQrtuOQDeWeuAc9JM=;
+        b=YkoVVFlxYbswkF77/OqYNX8/e/8oYqBJeIGsyZQljbUW1+YpBPXu/AFFx+mt4xD8to
+         fYAg/oCnxV6j3EZnWcXKdK0t0wshy6NTCAQlb1Ztjp61gusQLOcXwBB05zJm5TBdvvqf
+         ftGEf6mmPGN//hlHirbmGF5I3nTlbVxHDDqD2A91hzSD0TPVHKVwz7QwTAJ1YG+u78mH
+         KmVz3RhldRtQqvjKbq97mOlUxIEezgMjSSveeQJjcj+yxZ2/IJ41pgl368v4vN1Dhk+6
+         T2PcFNhPMA2qX5xB13kQ2Ved7J2EX2T4NS27wdvGAsPE9xzvDX1QoptRGVn2Bp0dsS5n
+         Xc5Q==
+X-Gm-Message-State: AOJu0Ywt7k7mpaN3AAAMLlgJvwhDDk1Gb15YE0apClQSXCk7+GB+71ut
+	YM3PDMf5Iu1vlCncTq3aS1kaLYJcJ0GaypOoUcaZm1MOVFDSqaBMh3ikzw==
+X-Google-Smtp-Source: AGHT+IHYdylSCF/IAMJoW3S6xSFtozxEQcyzmvfQW6NaRAreDpB3SgEvbKPHLFoyKlOfcGjcPNjTWQ==
+X-Received: by 2002:a05:6512:220b:b0:539:f886:31da with SMTP id 2adb3069b0e04-53a03f826eemr483812e87.53.1729003271628;
+        Tue, 15 Oct 2024 07:41:11 -0700 (PDT)
+Received: from laptop ([2001:690:2100:1016:576:27d2:def3:e2df])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4314bf61016sm2962935e9.28.2024.10.15.07.41.10
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 15 Oct 2024 07:41:11 -0700 (PDT)
+Date: Tue, 15 Oct 2024 15:41:07 +0100
+From: =?utf-8?Q?Sebasti=C3=A3o_Amaro?= <sebassamaro97@gmail.com>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: "=?utf-8?Q?bpf=40vger.kernel.org?=" <bpf@vger.kernel.org>
+Message-ID: <E98EFBE1-4BBF-41DC-8EF2-E511B2695D4A@getmailspring.com>
+In-Reply-To: <CAEf4BzY0cG0xCOeGZxrDqiYMw==QCJMgWHyKK6eVO4y6vM-GPQ@mail.gmail.com>
+References: <CAEf4BzY0cG0xCOeGZxrDqiYMw==QCJMgWHyKK6eVO4y6vM-GPQ@mail.gmail.com>
+Subject: Re: Maximum amount of uprobes and uprobe and uprobe_ret
+ relation
+X-Mailer: Mailspring
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-In this commit, we make ip_route_use_hint() return drop reasons. The
-drop reasons that we return are similar to what we do in
-ip_route_input_slow(), and no drop reasons are added in this commit.
+Hi,
+Sorry for the late response, setting the rlimit worked.
+Hmm, that makes sense.
+Thank you for the reply=21
 
-Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
----
- include/net/route.h |  7 ++++---
- net/ipv4/ip_input.c |  9 ++++-----
- net/ipv4/route.c    | 26 ++++++++++++++++----------
- 3 files changed, 24 insertions(+), 18 deletions(-)
+On Oct 1 2024, at 9:13 pm, Andrii Nakryiko <andrii.nakryiko=40gmail.com> =
+wrote:
 
-diff --git a/include/net/route.h b/include/net/route.h
-index f4ab5412c9c9..4debc335d276 100644
---- a/include/net/route.h
-+++ b/include/net/route.h
-@@ -206,9 +206,10 @@ ip_mc_validate_source(struct sk_buff *skb, __be32 daddr, __be32 saddr,
- enum skb_drop_reason
- ip_route_input_noref(struct sk_buff *skb, __be32 daddr, __be32 saddr,
- 		     dscp_t dscp, struct net_device *dev);
--int ip_route_use_hint(struct sk_buff *skb, __be32 daddr, __be32 saddr,
--		      dscp_t dscp, struct net_device *dev,
--		      const struct sk_buff *hint);
-+enum skb_drop_reason
-+ip_route_use_hint(struct sk_buff *skb, __be32 daddr, __be32 saddr,
-+		  dscp_t dscp, struct net_device *dev,
-+		  const struct sk_buff *hint);
- 
- static inline enum skb_drop_reason
- ip_route_input(struct sk_buff *skb, __be32 dst, __be32 src, dscp_t dscp,
-diff --git a/net/ipv4/ip_input.c b/net/ipv4/ip_input.c
-index 513eb0c6435a..f0a4dda246ab 100644
---- a/net/ipv4/ip_input.c
-+++ b/net/ipv4/ip_input.c
-@@ -322,15 +322,14 @@ static int ip_rcv_finish_core(struct net *net, struct sock *sk,
- 	int err, drop_reason;
- 	struct rtable *rt;
- 
--	drop_reason = SKB_DROP_REASON_NOT_SPECIFIED;
--
- 	if (ip_can_use_hint(skb, iph, hint)) {
--		err = ip_route_use_hint(skb, iph->daddr, iph->saddr,
--					ip4h_dscp(iph), dev, hint);
--		if (unlikely(err))
-+		drop_reason = ip_route_use_hint(skb, iph->daddr, iph->saddr,
-+						ip4h_dscp(iph), dev, hint);
-+		if (unlikely(drop_reason))
- 			goto drop_error;
- 	}
- 
-+	drop_reason = SKB_DROP_REASON_NOT_SPECIFIED;
- 	if (READ_ONCE(net->ipv4.sysctl_ip_early_demux) &&
- 	    !skb_dst(skb) &&
- 	    !skb->sk &&
-diff --git a/net/ipv4/route.c b/net/ipv4/route.c
-index cb6beb270265..fe57f6abf53e 100644
---- a/net/ipv4/route.c
-+++ b/net/ipv4/route.c
-@@ -2142,28 +2142,34 @@ ip_mkroute_input(struct sk_buff *skb, struct fib_result *res,
-  * assuming daddr is valid and the destination is not a local broadcast one.
-  * Uses the provided hint instead of performing a route lookup.
-  */
--int ip_route_use_hint(struct sk_buff *skb, __be32 daddr, __be32 saddr,
--		      dscp_t dscp, struct net_device *dev,
--		      const struct sk_buff *hint)
-+enum skb_drop_reason
-+ip_route_use_hint(struct sk_buff *skb, __be32 daddr, __be32 saddr,
-+		  dscp_t dscp, struct net_device *dev,
-+		  const struct sk_buff *hint)
- {
-+	enum skb_drop_reason reason = SKB_DROP_REASON_NOT_SPECIFIED;
- 	struct in_device *in_dev = __in_dev_get_rcu(dev);
- 	struct rtable *rt = skb_rtable(hint);
- 	struct net *net = dev_net(dev);
--	enum skb_drop_reason reason;
--	int err = -EINVAL;
- 	u32 tag = 0;
- 
- 	if (!in_dev)
--		return -EINVAL;
-+		return reason;
- 
--	if (ipv4_is_multicast(saddr) || ipv4_is_lbcast(saddr))
-+	if (ipv4_is_multicast(saddr) || ipv4_is_lbcast(saddr)) {
-+		reason = SKB_DROP_REASON_IP_INVALID_SOURCE;
- 		goto martian_source;
-+	}
- 
--	if (ipv4_is_zeronet(saddr))
-+	if (ipv4_is_zeronet(saddr)) {
-+		reason = SKB_DROP_REASON_IP_INVALID_SOURCE;
- 		goto martian_source;
-+	}
- 
--	if (ipv4_is_loopback(saddr) && !IN_DEV_NET_ROUTE_LOCALNET(in_dev, net))
-+	if (ipv4_is_loopback(saddr) && !IN_DEV_NET_ROUTE_LOCALNET(in_dev, net)) {
-+		reason = SKB_DROP_REASON_IP_LOCALNET;
- 		goto martian_source;
-+	}
- 
- 	if (rt->rt_type != RTN_LOCAL)
- 		goto skip_validate_source;
-@@ -2179,7 +2185,7 @@ int ip_route_use_hint(struct sk_buff *skb, __be32 daddr, __be32 saddr,
- 
- martian_source:
- 	ip_handle_martian_source(dev, in_dev, skb, daddr, saddr);
--	return err;
-+	return reason;
- }
- 
- /* get device for dst_alloc with local routes */
--- 
-2.39.5
+> On Thu, Sep 19, 2024 at 5:13=E2=80=AFPM Sebasti=C3=A3o Amaro
+> <sebassamaro97=40gmail.com> wrote:
+>> =20
+>> Hi everyone=21
+>> I have two questions related to user function probes:
+>> =46irstly, I am trying to have a process attach more than 1024 uprobes=
+,
+>> however, I am getting the error: =22failed to create BP=46 link for
+>> perf=5Fevent =46D 1023: -24 (Too many open files)=22 even after changi=
+ng
+>> ulimit -n to 4096  github issue=5B1=5D.
+> =20
+> See =5B0=5D, it might be that =60ulimit -n=60 isn't really changing the=
+ limit
+> for your process or something. To be 100% sure I'd do
+> setrlimit(RLIMIT=5FNO=46ILE, ...) from inside the process to verify.
+> =20
+>  =5B0=5D https://unix.stackexchange.com/questions/8945/how-can-i-increa=
+se-open-files-limit-for-all-processes
+> =20
+>> Secondly, I am running some tests with uprobe and uprobe=5Fret in mult=
+iple
+>> functions in the redis binary, but I am noticing that when counting th=
+e
+>> times the uprobes and uprobes=5Fret are called, in the end they do not=
 
+>> match 1 to 1. Either individually (a uprobe/uprobe=5Fret in the same
+>> function), or the total sum. Is this a predictable behaviour=3F
+>> I am tracing several functions in such as =5B2=5D.
+> =20
+> Attachment is not atomic, so you might get some uprobes attached
+> before corresponding uretprobe is attached, and vice versa. So counts
+> might not match 1:1 during attachment and detachment.
+> =20
+>> =20
+>> =5B1=5Dhttps://github.com/libbpf/libbpf-rs/issues/942
+>> =5B2=5Dhttps://github.com/redis/redis/blob/3a3cacfefabf8ced79b44816931=
+9ce49cca2bfb7/src/rdb.c=23L1782
+>> =20
+>> Thank you, and Best Regards,
+>> Sebasti=C3=A3o Amaro
+>> =20
+> 
 
