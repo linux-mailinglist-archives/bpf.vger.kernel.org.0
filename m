@@ -1,144 +1,131 @@
-Return-Path: <bpf+bounces-42094-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42095-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C57099F84E
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 22:54:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B25899F8F4
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 23:18:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2910F284434
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 20:54:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC2502832B1
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 21:18:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 989F81FBF4F;
-	Tue, 15 Oct 2024 20:54:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37B4F1FBF69;
+	Tue, 15 Oct 2024 21:18:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MaSX1VpI"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S6PXr5i6"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19FFC1FBF41;
-	Tue, 15 Oct 2024 20:54:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0ACE1FBF42
+	for <bpf@vger.kernel.org>; Tue, 15 Oct 2024 21:18:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729025649; cv=none; b=i1ujXZSRBIPAKyQbUrXGcVhVPBmiGQW1hFrxetvnFwfRF3vzViyIoGYxnzm5dddugb9RHl7h4aF9+ydrDjpoDLKatArd9bJZc07Opmtd5uWd01pStordKru9h80eHSRDieuNgSOWYLAnG+ynW4mdSKml1fhjqrCAM1Wr+HfcFaE=
+	t=1729027085; cv=none; b=o6tkr6b10YjPvjhoNaFok26tLBGqUsSGxpLyPrsPUTK4oVej3WYjOjC0y2cu+IckTXDaFG61Y+oyhmcZwkU9oKEpnx2qpdp24puykUJ++mVV8cAQ4TfD2FT8HsNp3zG1BQ7pyUmjISjk+jP+y24DqyBjPbOGf3bP0/z6fLeEu8A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729025649; c=relaxed/simple;
-	bh=dxLe8pq5mSXA6ZyikQ6T09dXj2SPF/PaIf6/4RUjGlU=;
+	s=arc-20240116; t=1729027085; c=relaxed/simple;
+	bh=onm/JbO/nP1k0cTinwLB0u0pCxZGBRR/yU8LJf5WBZE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZjH1dKkhLImqZUBfvCk7BMcRlM1Hy6atYAcP5maLNrxLbbE538HYjH8ZEp+zkzv03RKUUFbqTYPCriUfmiViNICLPhXkWhjTzdx+4RbGDPNLjp0qgtop03REb6SqN/o2yEUJvNXuVjgwb+Q2uwxsNx01tfm4f2VXaJ8McFhTvBs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MaSX1VpI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9900CC4CED1;
-	Tue, 15 Oct 2024 20:54:07 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=qe6W6w/R8eN/3H/J5LgPTaQKyZ7LN4SASNlyZR0QkU2VuAN2VogPIP7vqfi0gQvZOBUEnaz6FaGRSyX0F5QC+1/5HeoepdgqF/uR4j84iSfq2fcjyNmEzDnwVfmRHW6HDczjybwFYmLugo12tHOR25UrdiA3YzomO95YO1Yw4Kk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S6PXr5i6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B62BC4CEC6;
+	Tue, 15 Oct 2024 21:18:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1729025648;
-	bh=dxLe8pq5mSXA6ZyikQ6T09dXj2SPF/PaIf6/4RUjGlU=;
+	s=k20201202; t=1729027085;
+	bh=onm/JbO/nP1k0cTinwLB0u0pCxZGBRR/yU8LJf5WBZE=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=MaSX1VpIDaWjr+PVKj8bGzgc9Ohnj1XK9heWLlIQmOFARXxwjtxyX3leqNijRdssf
-	 BC0+MQ8fYZa1L8/LFnZV5+COBaJYPuvg0RMjQ5QUxi2AXyCIvKBGpp1KuyEKuPQFKf
-	 O+l7DDHJDEJKZ13PMAD5JyJ62oiDx8ZWVHpdPihLhou+EXQSCflDUwhkkH2DSv6sNY
-	 EGcen9Zh7PIXGeBogdau9wUoLV4P8FrgRyfk7RYtNS1KTLxlwOO6OK36zraQ/0z/5P
-	 bgh3YBoRlRJ2Aoz4Ny7k3Uqpk42RAKaIY8S4eLKTZ3Latf5074NjD3vvDQ9UUUBtS7
-	 iHOctD3I9RoAg==
-Date: Tue, 15 Oct 2024 13:54:06 -0700
-From: Namhyung Kim <namhyung@kernel.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
+	b=S6PXr5i6899/dXOdUPLWO/Ltsv8SlttK8nufPZ8Ykcd75T2LbexZjbOZEKHykKDXP
+	 MC8FLnwPqHOJPa6EIUyBD3z8hk9qOK4Nhsuil2zOw2p+ZK07EWcKIdYNclm/V1zxO6
+	 GV7WR3shVUfb78KCZimk17dxA3YjS/f70BY4hpNsyi8DJPXZWAlpQy36L6V05OMWDm
+	 TquVWILsR24Jk1unRgwrNyKUxGVRqIPIKAqFpmVqunh6oIuxTpdnyJnXHgbc4a9huP
+	 STaq0q0R7IrrvNHfDF/o3b6nen8EcCQzR46Vq4cp2BcJr7cdmNFsn72kHAdk+49siE
+	 FlAEcEVU9lekA==
+Date: Tue, 15 Oct 2024 11:18:04 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
 	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
-	David Rientjes <rientjes@google.com>,
-	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm <linux-mm@kvack.org>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Kees Cook <kees@kernel.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>
-Subject: Re: [PATCH v5 bpf-next 2/3] mm/bpf: Add bpf_get_kmem_cache() kfunc
-Message-ID: <Zw7WbhSXnOlUf1lD@google.com>
-References: <20241010232505.1339892-1-namhyung@kernel.org>
- <20241010232505.1339892-3-namhyung@kernel.org>
- <CAADnVQLN1De95WqUu2ESAdX-wNvaGhSNeboar1k-O+z_d7-dNA@mail.gmail.com>
- <Zwl5BkB-SawgQ9KY@google.com>
- <Zw1fN1WqjvoCeT_s@google.com>
- <CAADnVQJ2M953da8_gnGgWR9x6_-ztqFO8xvRU=bKcwmsH4ewvg@mail.gmail.com>
- <Zw6yToBbtOBPvUWx@google.com>
- <CAADnVQ+Y8BG80=8vcipKVnOL0Htd7W60f4LOPB5shG4eSORVcg@mail.gmail.com>
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Kernel Team <kernel-team@fb.com>,
+	Martin KaFai Lau <martin.lau@kernel.org>
+Subject: Re: [PATCH bpf-next v4 07/10] bpf: Support calling non-tailcall bpf
+ prog
+Message-ID: <Zw7cDCpYE_WyFPSM@slm.duckdns.org>
+References: <20241010175552.1895980-1-yonghong.song@linux.dev>
+ <20241010175628.1898648-1-yonghong.song@linux.dev>
+ <CAADnVQJMuR_riNLghmr0ohrEZSj-8ngcFQRn3VkdDyJAFakqKQ@mail.gmail.com>
+ <96556ec2-f98c-444b-b0aa-ddf71e185c7d@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQ+Y8BG80=8vcipKVnOL0Htd7W60f4LOPB5shG4eSORVcg@mail.gmail.com>
+In-Reply-To: <96556ec2-f98c-444b-b0aa-ddf71e185c7d@linux.dev>
 
-On Tue, Oct 15, 2024 at 11:25:11AM -0700, Alexei Starovoitov wrote:
-> On Tue, Oct 15, 2024 at 11:20 AM Namhyung Kim <namhyung@kernel.org> wrote:
-> >
-> > On Mon, Oct 14, 2024 at 06:50:49PM -0700, Alexei Starovoitov wrote:
-> > > On Mon, Oct 14, 2024 at 11:13 AM Namhyung Kim <namhyung@kernel.org> wrote:
-> > > >
-> > > > Hi Alexei,
-> > > >
-> > > > On Fri, Oct 11, 2024 at 12:14:14PM -0700, Namhyung Kim wrote:
-> > > > > On Fri, Oct 11, 2024 at 11:35:27AM -0700, Alexei Starovoitov wrote:
-> > > > > > On Thu, Oct 10, 2024 at 4:25 PM Namhyung Kim <namhyung@kernel.org> wrote:
-> > > > > > >
-> > > > > > > The bpf_get_kmem_cache() is to get a slab cache information from a
-> > > > > > > virtual address like virt_to_cache().  If the address is a pointer
-> > > > > > > to a slab object, it'd return a valid kmem_cache pointer, otherwise
-> > > > > > > NULL is returned.
-> > > > > > >
-> > > > > > > It doesn't grab a reference count of the kmem_cache so the caller is
-> > > > > > > responsible to manage the access.  The returned point is marked as
-> > > > > > > PTR_UNTRUSTED.  And the kfunc has KF_RCU_PROTECTED as the slab object
-> > > > > > > might be protected by RCU.
-> > > > > >
-> > > > > > ...
-> > > > > > > +BTF_ID_FLAGS(func, bpf_get_kmem_cache, KF_RCU_PROTECTED)
-> > > > > >
-> > > > > > This flag is unnecessary. PTR_UNTRUSTED can point to absolutely any memory.
-> > > > > > In this case it likely points to a valid kmem_cache, but
-> > > > > > the verifier will guard all accesses with probe_read anyway.
-> > > > > >
-> > > > > > I can remove this flag while applying.
-> > > > >
-> > > > > Ok, I'd be happy if you would remove it.
-> > > >
-> > > > You will need to update the bpf_rcu_read_lock/unlock() in the test code
-> > > > (patch 3).  I can send v6 with that and Vlastimil's Ack if you want.
-> > >
-> > > Fixed all that while applying.
-> > >
-> > > Could you please follow up with an open-coded iterator version
-> > > of the same slab iterator ?
-> > > So that progs can iterate slabs as a normal for/while loop ?
-> >
-> > I'm not sure I'm following.  Do you want a new test program to iterate
-> > kmem_caches by reading list pointers manually?  How can I grab the
-> > slab_mutex then?
+Hello,
+
+On Thu, Oct 10, 2024 at 09:12:19PM -0700, Yonghong Song wrote:
+> > Let's get priv_stack in shape first (the first ~6 patches).
 > 
-> No.
-> See bpf_iter_task_new/_next/_destroy kfuncs and
-> commit c68a78ffe2cb ("bpf: Introduce task open coded iterator kfuncs").
+> I am okay to focus on the first 6 patches. But I would like to get
+> Tejun's comments about what is the best way to support hierarchical
+> bpf based scheduler.
 
-Oh, ok.  Thanks for the pointer, I'll take a look and add the open code
-version.
+There isn't a concrete design yet, so it's difficult to say anything
+definitive but I was thinking more along the line of providing sched_ext
+kfunc helpers that perform nesting calls rather than each BPF program
+directly calling nested BPF programs.
 
-Thanks,
-Namhyung
+For example, let's say the scheduler hierarchy looks like this:
 
+  R + A + AA
+    |   + AB
+    + B
+
+Let's say AB has a task waking up to it and is calling ops.select_cpu():
+
+ ops.select_cpu()
+ {
+	if (does AB already have the perfect CPU sitting around)
+		direct dispatch and return the CPU;
+	if (scx_bpf_get_cpus(describe the perfect CPU))
+		direct dispatch and return the CPU;
+	if (is there any eligible idle CPU that AB is holding)
+		direct dispatch and return the CPU;
+	if (scx_bpf_get_cpus(any eligible CPUs))
+		direct dispatch and return the CPU;
+	// no idle CPU, proceed to enqueue
+	return prev_cpu;
+ }
+
+Note that the scheduler at AB doesn't have any knowledge of what's up the
+tree. It's just describing what it wants through the kfunc which is then
+responsible for nesting calls up the hierarhcy. Up a layer, this can be
+implemented like:
+
+ ops.get_cpus(CPUs description)
+ {
+	if (has any CPUs matching the description)
+		claim and return the CPUs;
+	modify CPUs description to enforce e.g. cache sharing policy;
+	and possibly to request more CPUs for batching;
+	if (scx_bpf_get_cpus(CPUs description)) {
+		store extra CPUs;
+		claim and return some of the CPUs;
+	}
+	return no CPUs available;
+ }
+
+This way, the schedulers at different layers are isolated and each only has
+to express what it wants.
+
+Thanks.
+
+-- 
+tejun
 
