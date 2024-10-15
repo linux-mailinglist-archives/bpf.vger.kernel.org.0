@@ -1,296 +1,241 @@
-Return-Path: <bpf+bounces-41964-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41965-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F3ED99DD95
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 07:44:06 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB8EC99DDB1
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 07:52:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 82AC31C21499
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 05:44:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 510191F21BA0
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 05:52:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8EDC176AA1;
-	Tue, 15 Oct 2024 05:43:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDC5D1779BB;
+	Tue, 15 Oct 2024 05:52:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="u38bTrUp"
+	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="e8SL5Etm"
 X-Original-To: bpf@vger.kernel.org
-Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 185C63C3C;
-	Tue, 15 Oct 2024 05:43:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.111
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728971037; cv=none; b=Bd+aKucjyZw7wJpCMq2Cl3/DOxyi8N/TMM8Arh6zo9jnlfJlpJQfIfe9/mz56P+fhPKrees+hZe6kPIq8YZMbkCNAaMt+7NC47kWQMpG1PCD7tA97gRnEZijduC5VkNvPhB4CiutK0tOWc4WWWBpQ8Px6Hc1hHWwWomFKJzS8tU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728971037; c=relaxed/simple;
-	bh=moV4sxH55Ox3TTHD1hguVzsrAIYKDUV1NAlVGvqipLY=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=ZOLRYVp0OP13wZSQwgaf/4+/4eejyGuGFM0nQkdSw9kzm0ytoZxPLGB/gCZEOqlETJvDLvNRzzCvR++oJ/hYIASQ64jEJtj/gKgHMpxgBt25i3XAZdocIyanFX3qdzpRerfjfyJ6e8ny/CU46qb4EzE5BjuymxSoFCJi13uHNi8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=u38bTrUp; arc=none smtp.client-ip=115.124.30.111
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1728971031; h=Content-Type:Mime-Version:Subject:From:Date:Message-Id:To;
-	bh=eVk2nCe8WNju0eF7pl3D8RNXuWVV58ocJy3rDZxMFzY=;
-	b=u38bTrUpXyVtwHREucpJjyrIuAHmMEltKTb4YjJEaWnyGDlaxmB5ZPSPh5tRMR+4rIS84LQ7XyU+vOOI2pS4ZtkQL2z5dBv2p8x0l4Or8itf/w+rgEhz/XThqnBeE69uOd8IsViKXb21SUWrRPgX+90LSyle1rf7XaauMEJdPSQ=
-Received: from smtpclient.apple(mailfrom:mqaio@linux.alibaba.com fp:SMTPD_---0WHC93cj_1728971029 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Tue, 15 Oct 2024 13:43:51 +0800
-Content-Type: text/plain;
-	charset=utf-8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9591170A0B;
+	Tue, 15 Oct 2024 05:52:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=67.231.145.42
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1728971529; cv=fail; b=PW1gMIRS8DtIWR553QiteR1jt4rW6mNF9P6urZ+olma7U1HwGUrmrWtllrsGBn3qtWlQ+AbqU64fekEyXUaT+NevmP1g8VUe42XIJ7gSKIipSm4JJ3iilQKF1pip78Vc/F5vJipm8+56nnbLPRLZAyWBedBHDHKX4Y0dlZKk0IQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1728971529; c=relaxed/simple;
+	bh=SPTwy2B1cQThosOr2CycWXaA1+1IQMiCl6vFAeYS0dA=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=OkfVZ1rLrehNMeHjih3fnDj0fZvVXhJphDKby2pVJHHBFM8+CcI1dJmAQidflPmVo1upVpgf8705iK/70ruHapGzlO8rKS5sQGt2Mo5siQNQgdTGVTveuETQOtvSPNIDsk61z6HGSLkhAm1Z8ENe4btRSFBqboGYIfkJm+9tZUU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=e8SL5Etm; arc=fail smtp.client-ip=67.231.145.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 49F4qbNM008851;
+	Mon, 14 Oct 2024 22:52:07 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=cc
+	:content-id:content-transfer-encoding:content-type:date:from
+	:in-reply-to:message-id:mime-version:references:subject:to; s=
+	s2048-2021-q4; bh=SPTwy2B1cQThosOr2CycWXaA1+1IQMiCl6vFAeYS0dA=; b=
+	e8SL5EtmdYNWIWpMe/aMk01V1APpcJ9hsMaAPkaeZUUUVc61aiQLlghKKO5YVQAG
+	THQcpq2S4OniimYRglRRdob2MWE9aQMQXEtf3JMKf9LYF8Fv5sBDJ7YPfYszZ7yU
+	0LrLo0o0neOU3p2xYjMZALXqrWOcpeyIe0nl8BI1QUJ1jpAkh6B4pbZz/X4lU+AX
+	q670++NiuSfbgjLzlN7xMndVcAcBxDbQlW7fTaoF/kOrX4MiMN1TWL3y9diDUByv
+	Xjt6X+Y5AuC5Lx3DgYmKVE7+UFIywG1NCZRSzlG7v2KN+P3gsyRXounnsUHBnhBL
+	debpbdUWJzo5lYZeMDsrzA==
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2045.outbound.protection.outlook.com [104.47.70.45])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 429g070n95-2
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 14 Oct 2024 22:52:06 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=ZKmNu3tOJAfzh0UPLIm0Q1XDGIwmxRlqabzugoWN+Sfm0Bg0a0sJ+ouA5MIcgEZhxoNbIw8X/F4pDU9S9VHRFKbh4W3ym0MXvr68EFY4ViQjxSzpnYY7zHwwSwLCC0OCiPX7UAzTzLM/RjCZHuFI63U4WJkxwGiXzCoz4nBn+XyZeaA76p3y179D0a+JvigPwxf2Y66XQvHIDyF6vG+4suBoSWf/slA3QMaCt4B9C7+AQU688J0e4ESDtoMhDHSru5tlCIkD7D/21nJer0b6E2srzvhhi6W/LRbdqyAvZyzcekoF/i0biZqS36gYjkszDhiETUq+KzVld+sV81SqYA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=SPTwy2B1cQThosOr2CycWXaA1+1IQMiCl6vFAeYS0dA=;
+ b=dJff15d5keRP9G/jxeFaU5THSzgSUyGPDLo5H6YzAW02RmV9hygU6csKVnmnnpjT6bSOQtv/r2fFn3ZxfBEogXjJDR8VfMYHnTT3xef3S2sNXQ8HuTovef1tKmcVI3lqA1QWWrynBNv3QffI+BpAU69aux9cTQpgKouyBdYG0Q70q9vBzOd7X9TB7p7SO4OOIYAKQN8N4ankNOKbmPpmtg2KkFCob8yPVC/0hyXQYP6Wf4ZWMOyy8zY+OKQwtATtJM4ognI+kgGCAfhM423VgqwVpxX2BgitG9Bi0elN6LbliUrkUqoAQQLTBUUImTjw9Z49Q1Z3sHdErk/4/W6LEw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
+ dkim=pass header.d=meta.com; arc=none
+Received: from PH0PR15MB5117.namprd15.prod.outlook.com (2603:10b6:510:c4::8)
+ by SA1PR15MB6400.namprd15.prod.outlook.com (2603:10b6:806:3a8::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8048.26; Tue, 15 Oct
+ 2024 05:52:02 +0000
+Received: from PH0PR15MB5117.namprd15.prod.outlook.com
+ ([fe80::90bf:29eb:b07e:94d9]) by PH0PR15MB5117.namprd15.prod.outlook.com
+ ([fe80::90bf:29eb:b07e:94d9%6]) with mapi id 15.20.8048.029; Tue, 15 Oct 2024
+ 05:52:02 +0000
+From: Song Liu <songliubraving@meta.com>
+To: Christoph Hellwig <hch@infradead.org>
+CC: Song Liu <songliubraving@meta.com>, Song Liu <song@kernel.org>,
+        bpf
+	<bpf@vger.kernel.org>,
+        Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML
+	<linux-kernel@vger.kernel.org>,
+        Kernel Team <kernel-team@meta.com>,
+        Andrii
+ Nakryiko <andrii@kernel.org>,
+        Eduard Zingerman <eddyz87@gmail.com>,
+        Alexei
+ Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin
+ KaFai Lau <martin.lau@linux.dev>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+        KP Singh
+	<kpsingh@kernel.org>,
+        Matt Bobrowski <mattbobrowski@google.com>
+Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Extend test fs_kfuncs to
+ cover security.bpf xattr names
+Thread-Topic: [PATCH bpf-next 2/2] selftests/bpf: Extend test fs_kfuncs to
+ cover security.bpf xattr names
+Thread-Index: AQHbFRSqQ+6V3A7WhE2nOTZ+DtSM+rKHVfgAgAAEFACAAAEygIAAB0MA
+Date: Tue, 15 Oct 2024 05:52:02 +0000
+Message-ID: <BF0CD913-B067-4105-88C2-B068431EE9E5@fb.com>
+References: <20241002214637.3625277-1-song@kernel.org>
+ <20241002214637.3625277-3-song@kernel.org> <Zw34dAaqA5tR6mHN@infradead.org>
+ <0DB83868-0049-40E3-8E62-0D8D913CB9CB@fb.com>
+ <Zw384bed3yVgZpoc@infradead.org>
+In-Reply-To: <Zw384bed3yVgZpoc@infradead.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-mailer: Apple Mail (2.3776.700.51)
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH0PR15MB5117:EE_|SA1PR15MB6400:EE_
+x-ms-office365-filtering-correlation-id: 4f997544-8236-41a5-1596-08dcecdd7e13
+x-fb-source: Internal
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam:
+ BCL:0;ARA:13230040|366016|7416014|376014|1800799024|38070700018;
+x-microsoft-antispam-message-info:
+ =?utf-8?B?YVRud2pPWGoyMDRJVThaaG5qQmxnSWFNakFWRE9pZDI5V3Z4QVExdHEybDBl?=
+ =?utf-8?B?aVlyWExMdjdndVgwS2tYZXloVFNTU0FBV3JtNmF1NzFCajZQVE0rbG5iZzUx?=
+ =?utf-8?B?djkyUEc5aVdmUXZKNEVpYmRpckdDMzBSS1hHSXdaUVFNalFJdEw3TXJqeXJ0?=
+ =?utf-8?B?YUF6ZmV6ZVdKWG5VY1JiN1YzOUFOV0Q4cnBjdjkxMEV1STNSQTY4eVBWODR6?=
+ =?utf-8?B?T3dTTEoyenREWUFOallKVUZmSzEzSnU0b2pvM2c1WHNSZnZqbGdLcWYrVnFr?=
+ =?utf-8?B?OXIrRzA0bldwL1FvVDRVdEI1UWEweTFTYTZaWVdwaVc3SC9TV1Jic1lwZ1FT?=
+ =?utf-8?B?MFM1ZStmd3gxMWM1Z2pQd28yZlpwNEZUM3Q0Unl6dzVxSkpMNjdGbzVLWDZY?=
+ =?utf-8?B?OS83Z1J2MXNDdytlOWZiTm9ZY2JRVXhwVEJ5em9NWkdBUWNLMFBkbFpCU1BD?=
+ =?utf-8?B?SDN3SGhYR0hCNEU1Y0pzMlhESW5ERERGdHZxZmN1RWhEUUtUV2hmeEJFb1Ns?=
+ =?utf-8?B?Q2RMUFA3QWtmc2R0RittYjFnck9HVERnbmN2eDVEOWpEbmN5YUFYVm1RdVcx?=
+ =?utf-8?B?R1BzaW9rWGFoZUtVMUpob2ZFc0xYV0RPbVZIS0lKR0h6eU92allRUkV5aVJW?=
+ =?utf-8?B?QkMvZmVXNVhrWTBRMkxFcVpEVXF3MCt5YktnUm1peml0VlY2dWpPSHdYNG9l?=
+ =?utf-8?B?MkMwV3R4ZHkyYXlGNVc1ODhobTFKckVGVmE1cEppWnpHUFNOeUF3R29XOXA5?=
+ =?utf-8?B?ZDdSV0htVFEvd1dBOXNrKzJDZmsvZCtqTFVLM2RpU1RwRXBHbGJrMmx2U0JM?=
+ =?utf-8?B?K2M3OEpDQWdKcUQyN0FrN3VaRkhQa3VBY3BaQzMyUEZhei9JNlBjNUNuYStv?=
+ =?utf-8?B?TkJSSEpHWU1vRkFBODBHYVJoZ3gvWFFSN0xSSDFlaThjVzl1WlVwdkR5SXRB?=
+ =?utf-8?B?QXBDMEZLMWtMR2dqYVNBYi9MQ3F0V29hYzNWM2Y2bHJaK0Z4dUFYUEdjRG5R?=
+ =?utf-8?B?MlVNUVZRWTVUb05WeGhzb1Y3TnUwKzZZNG5WaVRhWGhKVVZmcU9mdWg2em5V?=
+ =?utf-8?B?cUl2TkZiL2pLd1lvS205RFk1UlBWQjE1Z2JNTG5BendOUWVkWllmZWc3M2dY?=
+ =?utf-8?B?VGEwUENyV0xhOHc1Tk5ZU2huRmxoQVgrSHhEY3ZjRWJodDRSQ2phNVFBZ2xk?=
+ =?utf-8?B?WlNvTUNBbm05eFVEWlY4YzdmTWlZN0JzaHZ6N01OK3BWRXozWCtyMTRCUzRJ?=
+ =?utf-8?B?ZU5hV0VsdC9hOHFiTVZzRTgyZjM5bXBJbW8yOVVDOUtWcXJCSlV3ZVlVeEFC?=
+ =?utf-8?B?c3lNSkU5Q0YrRHJEL3hRek9SZkEyQkJYaXNCSERwL2FrWURtN0dpSURvdU9r?=
+ =?utf-8?B?MDlWelJHcGVjM0FXaHV3aEpuSjduN2RGSVVseTRDT2F0VHg3M21yL01QbGh3?=
+ =?utf-8?B?MzR6SDQzbjBLQWtQdkVHSUdhSnpwSERUaU12R0VTY3Z5S3VEKzNsSkxSenZk?=
+ =?utf-8?B?ZXVjUnJhNHFGSUd6NzB3YmRuT245N2tFZk90ZU1yekdMMURkRU1qbnNEbVY3?=
+ =?utf-8?B?UVBON0drY0dLUW1hdXFSQ2RCZDhkVHYreU10NmxGSU5iSGYrOHBQaEc3T0NX?=
+ =?utf-8?B?MlZKRkY1cTh5QkE3b1FUUWtPS0dWa0E3c2FiRGRwOWtnMnpsZS9CY0NSZFIr?=
+ =?utf-8?B?ckZYbFhkU0o0NE1LRUlCWjlMdnQ3YXFEWWljSktsWVBFVHl5Z2MySmdtQVlY?=
+ =?utf-8?B?ZEwrNzZmYi8waDd1QUdzQUQ2SnpTUisvTFNRMHBlOTV1QnhsQlJjSWJJRi95?=
+ =?utf-8?B?UVhGbFN3UWZ6L0pqd3VpZz09?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR15MB5117.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(7416014)(376014)(1800799024)(38070700018);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?dnU1Z3pxakRhU3hnN21JZGVIem5KaWVFWWVYUVN0OVROeTZiMVJ0dUlnQXV2?=
+ =?utf-8?B?UE9tdDVxbFV2cHVwVzYyRUk2R3VMY0ZGakQrdXlTdy9XSWxySmM2RmlNYy9w?=
+ =?utf-8?B?Q1E2SVlVdW8ySWx0VlhCSTZoM291RHZ1OVNwNEgyS2RsM1hvQUhzSkdLK2lZ?=
+ =?utf-8?B?anI0V0lFMlBSNG56MzhpSHp1dzRsTGFvRGU5NnZqM3V3ckplWHpEUlZ3NWRY?=
+ =?utf-8?B?N1JDcHpLQ2VpNmJic3NOckJDNXhzMFFRTzRFcG53Qm05K0lqbDhHeGlRL2tN?=
+ =?utf-8?B?Y2R1eVk5QkxYa0hsckYyUjY5ZlR4VVhrWjNiOVNpRDV4R1M2cDlaRkxRWnlk?=
+ =?utf-8?B?Z0Y1bFo3Tys0WnRDbUk1cFgvRGVIU3NYcEhwQW5jUXJJOUY0ZEhqRWpQSlZv?=
+ =?utf-8?B?KzhiSjMvZGxleFZRNlhWMytnS1ZOcDd2YVNqQk1DaUtzOEJBYVhwK2xUOVFY?=
+ =?utf-8?B?bExzV3cvVDQ3QkNpNVJ5T3ZaMUhDU1o4L21VNjNEVE8wUEpERVFDSzBna0la?=
+ =?utf-8?B?OElmVnpkN3pHKzliNy80MFcvZC93QkkrZ3FFS3gxUXpiNTY5dzh1ZjNZYVg1?=
+ =?utf-8?B?RnVacVVYek9GRWpBUU53QVBlUVNsTThSck5XdHhISEdEQTNwWGNkNGNMbnlQ?=
+ =?utf-8?B?OHZvSDNZN1dPVEg1ZmhWTm9Ja0NHOW9neFlUTGZXM1hXeHhML1kveW5ONzls?=
+ =?utf-8?B?MGtnVisrUDBqbGQvd2lYMmdIMmw5NlJWRVVkR3lLZ0tYOThjT1BOa3JSSHhk?=
+ =?utf-8?B?MmN1amlvbkJYUUFIMU9hVWhMRVdHYnU2TmtPQjJtUzRQY0hSeUxZelJIb2lH?=
+ =?utf-8?B?b0JaMGliTEZNbDBzN0JPQXQvVXR3UkNkOURPUHp1QVZqVDZZTmN1NTF3R0dP?=
+ =?utf-8?B?OVY4MUVYanY0c3BtTGhDOFJFaEI0aFI3SjJWM29kVlpnNW5McUg1UVNLdnNq?=
+ =?utf-8?B?M281NEhZZDROeWNJdS91Ry9qbzZycDlTRlRWNHNEYzYrL1RVRHNaMFZWNElC?=
+ =?utf-8?B?Q2MxU21sSWVCZXBSdVhJdGR5UGxZTU5ZOXFjNHNLZlpucGpSbnJScVphdHky?=
+ =?utf-8?B?aDU4TU14RlNyOTJDdWphaXd1ZjRuWmNyTTlQMEhQY3QvenRNcUl2cXJRZW1D?=
+ =?utf-8?B?RnRCR0F6Ui9oeEZIWFY3c09jdmI3bXJISWF6SzVmc3ZGQnN4R0REeHByVE80?=
+ =?utf-8?B?b0d6TFRpZHpzcUFodCsrQ1owV3RaWDQ4Q0tkVDNxZlRUckY2Vkk3TzcvaUxj?=
+ =?utf-8?B?aStRL1JMdFpHanE0dndHYklWaVIzQWtTMThxdmkxWTBwYXk5UXJCNTZmTnN3?=
+ =?utf-8?B?N0VkcDRxNmJFVGR0YjY0a0ZtUytseU55UzB1UC9xMSthTXFHaG8vM0VHVUwx?=
+ =?utf-8?B?YWtDY3B2WGxJTEVvSXg0dWxGa1lvd3I2anJjZ2U2VmJmRUFnNXlMRDhBbmZP?=
+ =?utf-8?B?OUhsSk5RTEVtQlExU0RNb2JJL3hNckxLSnl2VnVhQ3JJYktKWC9RaVFkTWY2?=
+ =?utf-8?B?MmZqdlJhTVVqUWdnZGxKeTlzTUlQQTZDU2FaT2dKUFpSYkRmWVVRWSs0bzVq?=
+ =?utf-8?B?VDJIOEl0d2ZZQlNqQ0d2TThNTFlQMjBOVDNUbEx6ZWd5cFFUUjdoWXVZOHdI?=
+ =?utf-8?B?ZGd5c2cvdCs2TzBHdUNMWndkMTREck1zU3ZROERidno5alVBaldxRi9hVW05?=
+ =?utf-8?B?ZnVVVHg3cDNNUXNhenJPbmFVUS8yZG9OMklLZ2t2ZVdFRjdZeXRSUFZ3R0dC?=
+ =?utf-8?B?YnJLY25QNGV5NTA3Qlp6UmVQRWcrMThxU0U2MndXdVBHNEsxdEN3QmoxNEFW?=
+ =?utf-8?B?UitFM284MVh2UzA5RldtU2FWdUpGcmk3dWw1R1QwS2tYdFZod2RZL1dZMW5i?=
+ =?utf-8?B?UDl5ZzFBQ2RpMER6RlNUYUNrdURDRkQ3bDdoL0ZNRW5hL0lmZHVYSTRNeGZ4?=
+ =?utf-8?B?R3E2V0pPVTFXbGdLV2t0MDVzNU5MQUlTUGlNeHN1bmJCK0p1T0tIUFhVeFc5?=
+ =?utf-8?B?cXVaNWRDazI2czd2cURxeGliYWkvS0dUSklyWHZEUm5GYmR3SjBoUTF5Mmpv?=
+ =?utf-8?B?SzVRdTNQTzNqWnp0bzJWZWliTFAvWDRicE1zZURJV0hRSGVGRU5XcENuYTE2?=
+ =?utf-8?B?eldxaEw0SFhuTVZCamhHNUpLTVIyUlJHdzVVS2VGa3J3MDAxbUJsQU8wd21R?=
+ =?utf-8?B?K3c9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <9AD27FFC9A35E04292773F0F7A6D2D49@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.500.171.1.1\))
-Subject: Re: [PATCH] uprobe: avoid out-of-bounds memory access of fetching
- args
-From: "maqiao.mq" <mqaio@linux.alibaba.com>
-In-Reply-To: <20241014234028.6dc14fe26dce74f2b90a8a4f@kernel.org>
-Date: Tue, 15 Oct 2024 13:43:39 +0800
-Cc: "maqiao.mq" <mqaio@linux.alibaba.com>,
- Andrii Nakryiko <andrii@kernel.org>,
- linux-trace-kernel@vger.kernel.org,
- rostedt@goodmis.org,
- mathieu.desnoyers@efficios.com,
- namhyung.kim@lge.com,
- Oleg Nesterov <oleg@redhat.com>,
- linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <40197A50-CE74-4240-BBED-BE832A3905B6@linux.alibaba.com>
-References: <20241014061405.3139467-1-mqaio@linux.alibaba.com>
- <20241014234028.6dc14fe26dce74f2b90a8a4f@kernel.org>
-To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-X-Mailer: Apple Mail (2.3774.500.171.1.1)
+MIME-Version: 1.0
+X-OriginatorOrg: meta.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR15MB5117.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4f997544-8236-41a5-1596-08dcecdd7e13
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Oct 2024 05:52:02.6283
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: GYrAUz4Whukn4VrSAKaqqclIxYaUa0na+1I3g32PTp1Yd8nIbfvZJQ+OeMjXk5mkBgK4bmGMYQzqhIaK4Lp4tg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB6400
+X-Proofpoint-ORIG-GUID: suni9cf1s-BLNhpzzrjCUvXT3PKM6Ilb
+X-Proofpoint-GUID: suni9cf1s-BLNhpzzrjCUvXT3PKM6Ilb
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
+ definitions=2024-10-05_03,2024-10-04_01,2024-09-30_01
 
-
-
-> 2024=E5=B9=B410=E6=9C=8814=E6=97=A5 =E4=B8=8B=E5=8D=8810:40=EF=BC=8CMasa=
-mi Hiramatsu (Google) <mhiramat@kernel.org> =E5=86=99=E9=81=93=EF=BC=9A
->=20
-> On Mon, 14 Oct 2024 14:14:05 +0800
-> Ma Qiao <mqaio@linux.alibaba.com> wrote:
->=20
->> From: Qiao Ma <mqaio@linux.alibaba.com>
->>=20
->> Uprobe needs to fetch args into a percpu buffer, and then copy to =
-ring
->> buffer to avoid non-atomic context problem.
->>=20
->> Sometimes user-space strings, arrays can be very large, but the size =
-of
->> percpu buffer is only page size. And store_trace_args() won't check
->> whether these data exceeds a single page or not, caused out-of-bounds
->> memory access.
->>=20
->> It could be reproduced by following steps:
->> 1. build kernel with CONFIG_KASAN enabled
->> 2. save follow program as test.c
->>=20
->> ```
->> \#include <stdio.h>
->> \#include <stdlib.h>
->> \#include <string.h>
->>=20
->> // If string length large than MAX_STRING_SIZE, the =
-fetch_store_strlen()
->> // will return 0, cause __get_data_size() return shorter size, and
->> // store_trace_args() will not trigger out-of-bounds access.
->> // So make string length less than 4096.
->> \#define STRLEN 4093
->>=20
->> void generate_string(char *str, int n)
->> {
->>    int i;
->>    for (i =3D 0; i < n; ++i)
->>    {
->>        char c =3D i % 26 + 'a';
->>        str[i] =3D c;
->>    }
->>    str[n-1] =3D '\0';
->> }
->>=20
->> void print_string(char *str)
->> {
->>    printf("%s\n", str);
->> }
->>=20
->> int main()
->> {
->>    char tmp[STRLEN];
->>=20
->>    generate_string(tmp, STRLEN);
->>    print_string(tmp);
->>=20
->>    return 0;
->> }
->> ```
->> 3. compile program
->> `gcc -o test test.c`
->>=20
->> 4. get the offset of `print_string()`
->> ```
->> objdump -t test | grep -w print_string
->> 0000000000401199 g     F .text  000000000000001b              =
-print_string
->> ```
->>=20
->> 5. configure uprobe with offset 0x1199
->> ```
->> off=3D0x1199
->>=20
->> cd /sys/kernel/debug/tracing/
->> echo "p /root/test:${off} arg1=3D+0(%di):ustring arg2=3D\$comm =
-arg3=3D+0(%di):ustring"
->>> uprobe_events
->> echo 1 > events/uprobes/enable
->> echo 1 > tracing_on
->> ```
->>=20
->> 6. run `test`, and kasan will report error.
->> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->> BUG: KASAN: use-after-free in strncpy_from_user+0x1d6/0x1f0
->> Write of size 8 at addr ffff88812311c004 by task test/499CPU: 0 UID: =
-0 PID: 499 Comm: test Not tainted 6.12.0-rc3+ #18
->> Hardware name: Red Hat KVM, BIOS 1.16.0-4.al8 04/01/2014
->> Call Trace:
->> <TASK>
->> dump_stack_lvl+0x55/0x70
->> print_address_description.constprop.0+0x27/0x310
->> kasan_report+0x10f/0x120
->> ? strncpy_from_user+0x1d6/0x1f0
->> strncpy_from_user+0x1d6/0x1f0
->> ? rmqueue.constprop.0+0x70d/0x2ad0
->> process_fetch_insn+0xb26/0x1470
->> ? __pfx_process_fetch_insn+0x10/0x10
->> ? _raw_spin_lock+0x85/0xe0
->> ? __pfx__raw_spin_lock+0x10/0x10
->> ? __pte_offset_map+0x1f/0x2d0
->> ? unwind_next_frame+0xc5f/0x1f80
->> ? arch_stack_walk+0x68/0xf0
->> ? is_bpf_text_address+0x23/0x30
->> ? kernel_text_address.part.0+0xbb/0xd0
->> ? __kernel_text_address+0x66/0xb0
->> ? unwind_get_return_address+0x5e/0xa0
->> ? __pfx_stack_trace_consume_entry+0x10/0x10
->> ? arch_stack_walk+0xa2/0xf0
->> ? _raw_spin_lock_irqsave+0x8b/0xf0
->> ? __pfx__raw_spin_lock_irqsave+0x10/0x10
->> ? depot_alloc_stack+0x4c/0x1f0
->> ? _raw_spin_unlock_irqrestore+0xe/0x30
->> ? stack_depot_save_flags+0x35d/0x4f0
->> ? kasan_save_stack+0x34/0x50
->> ? kasan_save_stack+0x24/0x50
->> ? mutex_lock+0x91/0xe0
->> ? __pfx_mutex_lock+0x10/0x10
->> prepare_uprobe_buffer.part.0+0x2cd/0x500
->> uprobe_dispatcher+0x2c3/0x6a0
->> ? __pfx_uprobe_dispatcher+0x10/0x10
->> ? __kasan_slab_alloc+0x4d/0x90
->> handler_chain+0xdd/0x3e0
->> handle_swbp+0x26e/0x3d0
->> ? __pfx_handle_swbp+0x10/0x10
->> ? uprobe_pre_sstep_notifier+0x151/0x1b0
->> irqentry_exit_to_user_mode+0xe2/0x1b0
->> asm_exc_int3+0x39/0x40
->> RIP: 0033:0x401199
->> Code: 01 c2 0f b6 45 fb 88 02 83 45 fc 01 8b 45 fc 3b 45 e4 7c b7 8b =
-45 e4 48 98 48 8d 50 ff 48 8b 45 e8 48 01 d0 ce
->> RSP: 002b:00007ffdf00576a8 EFLAGS: 00000206
->> RAX: 00007ffdf00576b0 RBX: 0000000000000000 RCX: 0000000000000ff2
->> RDX: 0000000000000ffc RSI: 0000000000000ffd RDI: 00007ffdf00576b0
->> RBP: 00007ffdf00586b0 R08: 00007feb2f9c0d20 R09: 00007feb2f9c0d20
->> R10: 0000000000000001 R11: 0000000000000202 R12: 0000000000401040
->> R13: 00007ffdf0058780 R14: 0000000000000000 R15: 0000000000000000
->> </TASK>
->>=20
->> This commit enforces the buffer's maxlen less than a page-size to =
-avoid
->> store_trace_args() out-of-memory access.
->>=20
->> Fixes: dcad1a204f72 ("tracing/uprobes: Fetch args before reserving a =
-ring buffer")
->> Signed-off-by: Qiao Ma <mqaio@linux.alibaba.com>
->> ---
->> kernel/trace/trace_probe_tmpl.h | 2 +-
->> kernel/trace/trace_uprobe.c     | 6 ++++++
->> 2 files changed, 7 insertions(+), 1 deletion(-)
->>=20
->> diff --git a/kernel/trace/trace_probe_tmpl.h =
-b/kernel/trace/trace_probe_tmpl.h
->> index 2caf0d2afb322..0338d9468bb4d 100644
->> --- a/kernel/trace/trace_probe_tmpl.h
->> +++ b/kernel/trace/trace_probe_tmpl.h
->> @@ -269,7 +269,7 @@ store_trace_args(void *data, struct trace_probe =
-*tp, void *rec, void *edata,
->> ret =3D process_fetch_insn(arg->code, rec, edata, dl, base);
->> if (arg->dynamic && likely(ret > 0)) {
->> dyndata +=3D ret;
->> - maxlen -=3D ret;
->> + maxlen =3D max(maxlen - ret, 0);
->=20
-> Hmm, do you see this part does something wrong?
-> If this exceed maxlen here, that means a buffer overflow. Please make =
-it WARN_ON_ONCE().
-
-Hmmm, I was wrong, maxlen can never be negative, even this patch set =
-ucb->dsize less than the real size of args.
-
-And even if some weird bugs really cause maxlen to be negative, it is =
-too late here to WARN(),
-because out-of-memory access has been occured.
-
-So maybe the best way is not modify here?
-
->=20
->> }
->> }
->> }
->> diff --git a/kernel/trace/trace_uprobe.c =
-b/kernel/trace/trace_uprobe.c
->> index c40531d2cbadd..e972855a5a6bf 100644
->> --- a/kernel/trace/trace_uprobe.c
->> +++ b/kernel/trace/trace_uprobe.c
->> @@ -875,6 +875,7 @@ struct uprobe_cpu_buffer {
->> };
->> static struct uprobe_cpu_buffer __percpu *uprobe_cpu_buffer;
->> static int uprobe_buffer_refcnt;
->> +#define MAX_UCB_BUFFER_SIZE PAGE_SIZE
->>=20
->> static int uprobe_buffer_init(void)
->> {
->> @@ -979,6 +980,11 @@ static struct uprobe_cpu_buffer =
-*prepare_uprobe_buffer(struct trace_uprobe *tu,
->> ucb =3D uprobe_buffer_get();
->> ucb->dsize =3D tu->tp.size + dsize;
->>=20
->> + if (WARN_ON_ONCE(ucb->dsize > MAX_UCB_BUFFER_SIZE)) {
->> + ucb->dsize =3D MAX_UCB_BUFFER_SIZE;
->> + dsize =3D MAX_UCB_BUFFER_SIZE - tu->tp.size;
->> + }
->> +
->=20
-> This part looks good to me.
->=20
-> Thank you!
->=20
->> store_trace_args(ucb->buf, &tu->tp, regs, NULL, esize, dsize);
->>=20
->> *ucbp =3D ucb;
->> --=20
->> 2.39.3
->>=20
->=20
->=20
-> --=20
-> Masami Hiramatsu (Google) <mhiramat@kernel.org>
-
-
+DQoNCj4gT24gT2N0IDE0LCAyMDI0LCBhdCAxMDoyNeKAr1BNLCBDaHJpc3RvcGggSGVsbHdpZyA8
+aGNoQGluZnJhZGVhZC5vcmc+IHdyb3RlOg0KPiANCj4gT24gVHVlLCBPY3QgMTUsIDIwMjQgYXQg
+MDU6MjE6NDhBTSArMDAwMCwgU29uZyBMaXUgd3JvdGU6DQo+Pj4+IEV4dGVuZCB0ZXN0X3Byb2dz
+IGZzX2tmdW5jcyB0byBjb3ZlciBkaWZmZXJlbnQgeGF0dHIgbmFtZXMuIFNwZWNpZmljYWxseToN
+Cj4+Pj4geGF0dHIgbmFtZSAidXNlci5rZnVuY3MiLCAic2VjdXJpdHkuYnBmIiwgYW5kICJzZWN1
+cml0eS5icGYueHh4IiBjYW4gYmUNCj4+Pj4gcmVhZCBmcm9tIEJQRiBwcm9ncmFtIHdpdGgga2Z1
+bmNzIGJwZl9nZXRfW2ZpbGV8ZGVudHJ5XV94YXR0cigpOyB3aGlsZQ0KPj4+PiAic2VjdXJpdHku
+YnBmeHh4IiBhbmQgInNlY3VyaXR5LnNlbGludXgiIGNhbm5vdCBiZSByZWFkLg0KPj4+IA0KPj4+
+IFNvIHlvdSByZWFkIGNvZGUgZnJvbSB1bnRydXN0ZWQgdXNlci4qIHhhdHRycz8gIEhvdyBjYW4g
+eW91IGNhcnZlIG91dA0KPj4+IHRoYXQgc3BhY2UgYW5kIG5vdCBrbm93biBhbnkgcHJlLWV4aXN0
+aW5nIHVzZXJzcGFjZSBjb2QgdXNlcyBrZnVuY3MNCj4+PiBmb3IgaXQncyBvd24gcHVycG9zZT8N
+Cj4+IA0KPj4gSSBkb24ndCBxdWl0ZSBmb2xsb3cgdGhlIGNvbW1lbnQgaGVyZS4gDQo+PiANCj4+
+IERvIHlvdSBtZWFuIHVzZXIuKiB4YXR0cnMgYXJlIHVudHJ1c3RlZCAoYW55IHVzZXIgY2FuIHNl
+dCBpdCksIHNvIHdlIA0KPj4gc2hvdWxkIG5vdCBhbGxvdyBCUEYgcHJvZ3JhbXMgdG8gcmVhZCB0
+aGVtPyBPciBkbyB5b3UgbWVhbiB4YXR0ciANCj4+IG5hbWUgInVzZXIua2Z1bmNzIiBtaWdodCBi
+ZSB0YWtlbiBieSBzb21lIHVzZSBzcGFjZT8NCj4gDQo+IEFsbCBvZiB0aGUgYWJvdmUuDQoNClRo
+aXMgaXMgYSBzZWxmdGVzdCwgInVzZXIua2Z1bmMiIGlzIHBpY2tlZCBmb3IgdGhpcyB0ZXN0LiBU
+aGUga2Z1bmNzDQooYnBmX2dldF9bZmlsZXxkZW50cnldX3hhdHRyKSBjYW4gcmVhZCBhbnkgdXNl
+ci4qIHhhdHRycy4gDQoNClJlYWRpbmcgdW50cnVzdGVkIHhhdHRycyBmcm9tIHRydXN0IEJQRiBM
+U00gcHJvZ3JhbSBjYW4gYmUgdXNlZnVsLiANCkZvciBleGFtcGxlLCB3ZSBjYW4gc2lnbiBhIGJp
+bmFyeSB3aXRoIHByaXZhdGUga2V5LCBhbmQgc2F2ZSB0aGUNCnNpZ25hdHVyZSBpbiB0aGUgeGF0
+dHIuIFRoZW4gdGhlIGtlcm5lbCBjYW4gdmVyaWZ5IHRoZSBzaWduYXR1cmUNCmFuZCB0aGUgYmlu
+YXJ5IG1hdGNoZXMgdGhlIHB1YmxpYyBrZXkuIElmIHRoZSB4YXR0ciBpcyBtb2RpZmllZCBieQ0K
+dW50cnVzdGVkIHVzZXIgc3BhY2UsIHRoZSBCUEYgcHJvZ3JhbSB3aWxsIGp1c3QgZGVueSB0aGUg
+YWNjZXNzLiANCg0KRGlkIHRoZXNlIGFuc3dlciB5b3VyIHF1ZXN0aW9ucz8NCg0KU29uZw0KDQo=
 
