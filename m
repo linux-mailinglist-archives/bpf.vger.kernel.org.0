@@ -1,442 +1,230 @@
-Return-Path: <bpf+bounces-41960-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41961-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 920D499DD64
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 07:10:49 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 446C499DD71
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 07:22:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B52C01C21311
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 05:10:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A33C8B22AAB
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 05:22:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C404175568;
-	Tue, 15 Oct 2024 05:10:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E12E175D48;
+	Tue, 15 Oct 2024 05:21:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="LN5yela/"
+	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="YsdqUaKj"
 X-Original-To: bpf@vger.kernel.org
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2070.outbound.protection.outlook.com [40.107.236.70])
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86C79166F1B;
-	Tue, 15 Oct 2024 05:10:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.70
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E93F8158D9C;
+	Tue, 15 Oct 2024 05:21:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=67.231.145.42
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728969041; cv=fail; b=eUWq3UPqledMavNptH+EsjC5fnEcvUIo/u0oZyjZ+HsCMZtPoBscH89tBSTwlszBY4/Tt/MrrLuodzOQRdh0eMqjIxQD1e3rE++8RVezYkepTKU92/jdxphYcoWe1UlODF8p5P08srb/T1x0l2I4O4V4eLKH3snbklM/oti4FMI=
+	t=1728969717; cv=fail; b=aHDjgSST3kTnIwWcTu5vCYXNFnRfYZs0YVCCGBkA9pGkPm3FsjSNx7bH2S/j6FLDdznrNmRPSBtmgiIx570xgVHwpXVfhiQjmFWjPymrxdPFEcemttHBTWYTXjim1agoPJNm4rnG9jUcHerj8EFLBgpzgQbCob+NLLmeCRLzCFA=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728969041; c=relaxed/simple;
-	bh=V5c4R8bERyDGwVpK4NvkjUNFJ0AlQnLN6vjJyXdM4fo=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=SEy5jyrAizTg4vGK48MH/6OXQDCZ5ER2b/ZiN8pYSKqtRHmCz4CsOcKU4wg2cQVvhPVHnNfsTx0ISEL+oamEZCL99eNKHu7jGZLsAjy0r6FEPMoIVCBptOLX2qyZu0J/yxrfujUna2S6YZmI1S9/lihVkRk7nzzCTWjLDtXv1A4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=LN5yela/; arc=fail smtp.client-ip=40.107.236.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+	s=arc-20240116; t=1728969717; c=relaxed/simple;
+	bh=3K6d7wW1+TcH+lOWP3C4r8AYi7QrXV0M1rYpwiX3ILU=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=IRPMwBpJvyu+F/P9kDp2yMglCFv9gna0shAh5RcYynkb4Ts0j/zZvejbW/E/kMxIgXDAejcFIvVoQYbnvi3gzM84NkHS86s6RJeTPsB5KEIuDLxDcWlfsTooSkCEN3/f6i9iwQS84VbhvCsZZfbuV/ep8NnxNtZpQyqQzez+ouc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=YsdqUaKj; arc=fail smtp.client-ip=67.231.145.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 49F4rpYn029547;
+	Mon, 14 Oct 2024 22:21:54 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=cc
+	:content-id:content-transfer-encoding:content-type:date:from
+	:in-reply-to:message-id:mime-version:references:subject:to; s=
+	s2048-2021-q4; bh=3K6d7wW1+TcH+lOWP3C4r8AYi7QrXV0M1rYpwiX3ILU=; b=
+	YsdqUaKj3YAzz8uMD70dNB91PB6spdOwSZbP/lZtRIOu/zkN8Cne5CE16B8JxmRh
+	7JXCGWBzhYAJFUGNIHJKh+iHkn10j0R9qHLTnfPSukVRWWeOEKnlNXmTRTCuDm2B
+	FF13ivhprP7pLdQK/4yQF3BLjrzYu0yCCC8s2BVJ4dkHoZbt6touAxcn93qrld9E
+	3eCqNIphgAyZbhBYlk/HqdNTBgwdSlBBdlaA4kCqn1UQz0HkmDAbgicJmF0AUysM
+	sB97k7NVsRSbjYlQ0l+JTZLAF9fsMWOCygwz/c3qaT3rJsUnoXJFJ1myXPKVlmuJ
+	muRQQ8Cb5+oLyiMlHIXiUA==
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2169.outbound.protection.outlook.com [104.47.59.169])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 4291s3p930-2
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 14 Oct 2024 22:21:53 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=sflmn6yveUZ/dYqLb/mXbvArKG5QOCo3Ze+NnNQUPFoWlvgc+ZuCFhZs7E9ZDeTKCtiVv1Vvy5uQqR65nlE/PPxk8J7LTN2Qud7rXpw7TWQCkqhjnoik8MSIvdgYMxKWXEWHKBvqX0ndAgJ4+8dyS8prkRcjZjG3vkPE31swLbJmFmKJa10UxmL46KHmrN6meh2w3h9ZCyFBaciawXzi465AS66+QBHaRmAPnEtm+dkThQDdRtIrBJGfcheTtqBE11MX2E50WYVcgWvOJGlydyYfKuxs5YREFj31GA9ZcIF4Ghwkl8SDgQXx8P9pONwgBkK9nJwVGuPiHX0DCxe8dA==
+ b=fVDhFitDpyzpwmSgMlTFwltr5QzrulVdmSYyXChy07eViIJ3jaOiaTZBiqYzAu3lkrPdPrIaK7phzV39ygUZIPeFFejqHsTzMXHiGz40C/x/0IyorNGC2FfrwEvXaaSj05jSnnb+aoDjker1xMT/q51wyBJKO6VV2nQ+Nd4aFMLy1jS9VM49j/rtqtNi9nJY7tfbqjxqzuz0vNJcQb8rSjURYnkHoJ+7/Ch/pXTNXm6pg26obWIyeraTt8Bv3G5/F7iFOQ6ZkiRV6PGbzid2prQfLhjVgOBFq/PM+ojRavGKAr+9PYSncMkUKF9MSSZ3qmKoDWSHPdV63uLNW+k9Nw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5qmG3914WUeQLLwZ+RvvDbzk6pOSoFVlfIghD7K1zZQ=;
- b=glzNpZgUzH/Xpl+YDi8Nx6H9d4pnCu8zuJq1BPDzZtnSFp9UQSDofNtVEMKCP+4kbPdLF5jgkeDYAn+OmoDk6s6A/QVM4+Vw8sTPBlhRJyMiT0Pi9cAsF3/IUMUn5t8nVdhUDUeBsENx24Xzk0ec+WKh/vK5HFrvAsMfimbkF+0F3bSUNFrSuAbqm8vO22mKDBcQE4+lTDZy6TyV5hZxu9C7Z0P9TirAIJvTJweGj51gP+jGWVmATHmQgAhrv/hSpNjvoiOgu+a9ouyPyiK6hNv0AWIELb6iLhyZ7yS0VMT3dCi1zGka1AnoE8pWKcANl3el4K0Vaq0+pf4p0CEScQ==
+ bh=3K6d7wW1+TcH+lOWP3C4r8AYi7QrXV0M1rYpwiX3ILU=;
+ b=c6x3t85SmOd4rzs2D583cP6eK+A0QEImWw1cTcK95x+NDie1i7nZaPm0FSlTLI1Flf+s0refmyHwccoEH15cT1EedzPBZfq9KQ55QEZ5M+FH0TwmDzL5Xmm5/9p0wGrloxXaWV4q/EAMIKgEAS0yuDIuDnmVfwPNvHKhPZFeVL5xQcFRlxIa8Kusm9pkO31nZR/cDWj7sDGIIaxiaHpqTw4ByFvwSNSSogRavQ97DBpwth26w3HZY4EqNgJUUlXrWBP79mFm8u89KipIF0D7otS9hfDPW+69Ymm9HPIE8ltK/okvEJUtesvgpLcPeP8CUXz4NLEM8wDKqW/aYSYk1w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5qmG3914WUeQLLwZ+RvvDbzk6pOSoFVlfIghD7K1zZQ=;
- b=LN5yela/olZJL8Y/saGFEVKcGcaPrLw2aS6Bypl6jX711N5xOrauIe6XVF5khJeAuBiCJvfGqiDUz9623eFLBW2Ihptm8NQzVczelJXGD0ymLkiZRYDgdFsIqPOCJTly/lkOTx+yYMIRJDs2NvmgrF7uiJmG/44N4r8l71SJD2M=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from DS0PR12MB6608.namprd12.prod.outlook.com (2603:10b6:8:d0::10) by
- IA0PR12MB8973.namprd12.prod.outlook.com (2603:10b6:208:48e::18) with
+ smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
+ dkim=pass header.d=meta.com; arc=none
+Received: from PH0PR15MB5117.namprd15.prod.outlook.com (2603:10b6:510:c4::8)
+ by LV3PR15MB6744.namprd15.prod.outlook.com (2603:10b6:408:274::22) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8048.26; Tue, 15 Oct
- 2024 05:10:36 +0000
-Received: from DS0PR12MB6608.namprd12.prod.outlook.com
- ([fe80::b71d:8902:9ab3:f627]) by DS0PR12MB6608.namprd12.prod.outlook.com
- ([fe80::b71d:8902:9ab3:f627%3]) with mapi id 15.20.8048.020; Tue, 15 Oct 2024
- 05:10:36 +0000
-Message-ID: <72ab4701-3d40-42d3-a26a-a0d76fbe27ca@amd.com>
-Date: Tue, 15 Oct 2024 10:40:27 +0530
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH rcu 05/12] srcu: Standardize srcu_data pointers to "sdp"
- and similar
+ 2024 05:21:50 +0000
+Received: from PH0PR15MB5117.namprd15.prod.outlook.com
+ ([fe80::90bf:29eb:b07e:94d9]) by PH0PR15MB5117.namprd15.prod.outlook.com
+ ([fe80::90bf:29eb:b07e:94d9%6]) with mapi id 15.20.8048.029; Tue, 15 Oct 2024
+ 05:21:48 +0000
+From: Song Liu <songliubraving@meta.com>
+To: Christoph Hellwig <hch@infradead.org>
+CC: Song Liu <song@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Linux-Fsdevel
+	<linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Kernel
+ Team <kernel-team@meta.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Eduard
+ Zingerman <eddyz87@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel
+ Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Al
+ Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>, Jan
+ Kara <jack@suse.cz>,
+        KP Singh <kpsingh@kernel.org>,
+        Matt Bobrowski
+	<mattbobrowski@google.com>
+Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Extend test fs_kfuncs to
+ cover security.bpf xattr names
+Thread-Topic: [PATCH bpf-next 2/2] selftests/bpf: Extend test fs_kfuncs to
+ cover security.bpf xattr names
+Thread-Index: AQHbFRSqQ+6V3A7WhE2nOTZ+DtSM+rKHVfgAgAAEFAA=
+Date: Tue, 15 Oct 2024 05:21:48 +0000
+Message-ID: <0DB83868-0049-40E3-8E62-0D8D913CB9CB@fb.com>
+References: <20241002214637.3625277-1-song@kernel.org>
+ <20241002214637.3625277-3-song@kernel.org> <Zw34dAaqA5tR6mHN@infradead.org>
+In-Reply-To: <Zw34dAaqA5tR6mHN@infradead.org>
+Accept-Language: en-US
 Content-Language: en-US
-To: paulmck@kernel.org
-Cc: frederic@kernel.org, rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
- kernel-team@meta.com, rostedt@goodmis.org,
- Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Peter Zijlstra <peterz@infradead.org>,
- Kent Overstreet <kent.overstreet@linux.dev>, bpf@vger.kernel.org
-References: <ff986c31-9cd0-45e5-aa31-9aedf582325f@paulmck-laptop>
- <20241009180719.778285-5-paulmck@kernel.org>
- <d0ec401f-f857-4fbb-89f3-f2d13eb34b5d@amd.com>
- <25cd96f1-6d4d-4dba-b57b-da63d228ba97@paulmck-laptop>
- <e63311e5-4311-4b08-abcc-8298a22c52f4@paulmck-laptop>
-From: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
-In-Reply-To: <e63311e5-4311-4b08-abcc-8298a22c52f4@paulmck-laptop>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: PN2PR01CA0120.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:c01:27::35) To DS0PR12MB6608.namprd12.prod.outlook.com
- (2603:10b6:8:d0::10)
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-mailer: Apple Mail (2.3776.700.51)
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH0PR15MB5117:EE_|LV3PR15MB6744:EE_
+x-ms-office365-filtering-correlation-id: c44b6513-17c3-45c3-71cc-08dcecd944b5
+x-fb-source: Internal
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam:
+ BCL:0;ARA:13230040|376014|366016|7416014|1800799024|38070700018;
+x-microsoft-antispam-message-info:
+ =?utf-8?B?ZzhEakYrQWhmQXUvQS84YTBPL0dpemFHUEl4My92cFBpTmJvVnhoVGpIYUlF?=
+ =?utf-8?B?THNvUkVybGdyYU5ubWlEdzlIRHBZQkVlSHJnQWsyQWtIWXFiY01FVGVUaS81?=
+ =?utf-8?B?UkhGUitzeU56ODhwdWxNMFFKaHo2RmNLdXRHT2FhVU5ncThybGdRREpoUzNE?=
+ =?utf-8?B?RVhoTmcvQUVSbDhWS0FJUlh2aWVYd2NiTDFsbVZHVjVFT2o4M3hReFk0RGhK?=
+ =?utf-8?B?TTkrTWZUQ1NJd2VpcDJ0alF4bmV5N0J5ZWttNWtSdjJxTHk5ZlQ2VzJHRDVL?=
+ =?utf-8?B?Q21FSFBDNDV6MDRQQkY1UGc5TVNQZWxMK29vdjM5ek90SWt2OUpWQUk0dm00?=
+ =?utf-8?B?OTBSTVdRZmZBcFVmUDBOdkREMlFrNXc4Q2owVWdJN1FrU1MrYWF6ZHZ6K0M2?=
+ =?utf-8?B?OE9XYzdjZmxhb3ZXdnBRbEVLckl2MUhJRU1tQStNVXJkakkraGU5U0pSeHNy?=
+ =?utf-8?B?bFBDZ1NtQXpSaVl1UGw0cDg5aEhGdzhmV3lqZmphQmpJMVZ0OHVwSXVYZkxD?=
+ =?utf-8?B?QWlyNUFkVzhCenFVenZZY3ZPUXRSZTUrcVFlYnF5eWtrZW83R3h0aVh3UWJl?=
+ =?utf-8?B?N0U5TFlwaHJvV0E5UEdTdy9CT2RXTG8vRmpWbmRUR1Vkc3dxcTRwMzdjdnk3?=
+ =?utf-8?B?NDhYeWV0TnVyK3ZtbmFzZDdSOCs5MTc1U1FYRllvWWNlOFNnVFVUbzF6dm5U?=
+ =?utf-8?B?SGFISDBNbmNVQThJbWZtY1oxdWNLc1RXUnNPK09xTyszQ1BESkE2MSttUHFs?=
+ =?utf-8?B?dXBFY201MjVhdGFPcDk2REFxZitlNURoV3RNd1hyUUxhTVhzb1ZQR3hhUjhJ?=
+ =?utf-8?B?a1NSRUd3N3M5Y1MweWhkMk9KenpiOXhBVTZvbVdtZmtLVk1QUm1aL1V3eXFu?=
+ =?utf-8?B?bTMzOXJRczM0dEx6cmphR3Fva0pMVUhBV2Z3S3lUUzFrejZ1RE9aQkFDa1pM?=
+ =?utf-8?B?cmszY0cveVhCZ1cxbzhrRkxYemdMR0pMV2duNXF2VU1wc3o3OE5aL2dBMFdL?=
+ =?utf-8?B?UjEyYnFNSyt0T1RQRnAxYzFjdStLSVdEcDVQMDBnK3RMK1dXQUtkUTdDenBV?=
+ =?utf-8?B?WlpBZ1JLeVpkYkczc0ZIbTJSMFVCY2JkNEVVdFlYbEE5ZEZiNi9NRjNoTENo?=
+ =?utf-8?B?MWRqNERhQjVINVJHRzhIT2dqZnczMmJvSXozWlJJQUgvalI4UXlOWUlEc2tK?=
+ =?utf-8?B?NzBGZHBHVWk0ZGRwZ01zNTRNYkFFK3FEYkNDQ0N1V0ptTG10K0thVHdlQlFw?=
+ =?utf-8?B?d3lLbjlETHhReHhtVUN3d0tINWNEQkh5d2ZOanRQTmRjZlZrckgwQndSZXFC?=
+ =?utf-8?B?WUxhTjI2dmptUHlkV1didU1Dd01yc2QrdzBkSnFwWnViZU1vNS9IaGp1SFRi?=
+ =?utf-8?B?U2VDek1KNkpISzlEbVFZU3Jscm5wWUdJNUJsNE1uWHZWQ2hFdk5tL240dEZp?=
+ =?utf-8?B?Qnp2Y0RXaDlEemNITDlxZ2pxTWFoNEUvYXcrcVE1ZmFXVThYT01iY1h3K2NM?=
+ =?utf-8?B?VDlMWEdmMUVUcFhMYWJSekVkZHZCRldCbStkalhKdmNpMEtiYUNqVVhWWGtQ?=
+ =?utf-8?B?eWhZanc3RXFBRnREc1BkK0F3aHdlbi9DNDNsQzNuWmEzZmFzNytLQjhUeEFL?=
+ =?utf-8?B?bHh3OFM1Vyt3T1JybGc1VUEwaE5ZTHd5ejJCQkpqNDVvWXV5NWxra0h5czFk?=
+ =?utf-8?B?bXpvUmNCbzlBcXN2QVp3Z3dublpyQTZHOUNFVFp0SitzdjJmNmV6U1pFWG5M?=
+ =?utf-8?B?NGt1Vlo5WUlvaTFmOVJlZjBlSVpYaEx0c0tRSU1KNForRUY0RThZMVQrWkhw?=
+ =?utf-8?B?Rm50NW1zQmFpOUhicWtZQT09?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR15MB5117.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(366016)(7416014)(1800799024)(38070700018);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?RFdDU21nYnRkMUtaZFB6Z0lpcW5QMm42VllKa2pPdW1mSHluWGszaXZkTTRO?=
+ =?utf-8?B?QmVad01oN1ZDMUZGbXpLMWxaRVhWMlBYQy9zS20rUVpxWjNCZkQyTWRCeWFx?=
+ =?utf-8?B?c1o5ZXZxYSt4c0l3aWZjN3gvNTUxNFlqM1JEQ3NHL2dsanAzZkJZNE40S3cx?=
+ =?utf-8?B?ckJIWnM1bmZEK2xWVm0zV2o2RWJTcjY4Q0lrazNhNEtMSzlCcGRSWVdMVVdo?=
+ =?utf-8?B?VHZGYmdoT1oySWdlMTlQbWtLS2pHK0ZVMTBEd1VqR1AvdVdkNjFCeHIraS9s?=
+ =?utf-8?B?a1Fnd0RZRHExZnZtOVBiWTRrSUpIUzlYckRFYk5kMTBkWHhqUVZSMDZuWXhK?=
+ =?utf-8?B?eVdjU0dBL1NrOHdpOVQ0Sm90S1pDTEpEQkxyaE0xdGNBVUNsQmFsY0gxNS9T?=
+ =?utf-8?B?bjZ2ejh5MlltbDlRYjVPRjhWU1VGN0x1ZVpwTHlERXR3RUl0Y0NnakR4UkdC?=
+ =?utf-8?B?OVFDdGZra1FaV0wwQmIrK0F1Nm1ZOURXakFITWcyaGtzRjQvUjlKa3VmVmpQ?=
+ =?utf-8?B?elE5dS9qSGVTSjl5eHdsNlp1SXdid2JqcTEybWdlQnZQTjlyRnhPT2tMRTlR?=
+ =?utf-8?B?VGRXVGhMUzI3MitBVE0vOG1mNWt2V1dRNFhCNEVHOEdtejNpcks3NUNNKy9L?=
+ =?utf-8?B?c3FJelJCNHR1VDlSelNlcklTS25ZWjFHU2VJTCtCTVNhNklaTWdBSThnWE0r?=
+ =?utf-8?B?ZGZKNVFsd25POHhzVS8rVWwwZmdFUUdueHlIb1JSMkFHM0xYSXRLdThtdndS?=
+ =?utf-8?B?V05GMW9HMGlRY0dacHR5UndqemNhVTJvL1I5VXdybFpTbVJpbXJVNzBVWnhK?=
+ =?utf-8?B?eEhYUTBtMkFNSVFKVS9JSjIvVG5WL2R0czdHYWNycHlLaEJxU1lXdUMyNUY3?=
+ =?utf-8?B?bTJ2ZW1WbnhxZnNYajVGZEVvNHUvbVNFcFE4OUxIZVZGWnlvS3hVVG9WNEs3?=
+ =?utf-8?B?dit1bExSY2F0NzVjVmdVRVEyVXhucFN6MTkvR3hHTDN4azFITm5mamdWbjBl?=
+ =?utf-8?B?M0h6RVBNeDFoVDFtRDVtQjFROHI1SkVHQ3E5a3RZelpQNzFnYXRoNW9SczBH?=
+ =?utf-8?B?Ym8yZHJMY0x3M0EyRWx2Wk0zZE1vRXJCcXdKRE1wdThoZzRLa1FldnQ1WFg5?=
+ =?utf-8?B?cXBOZ0VLR0YxeG1ieHZzcm5hdG1JdytpWiswaEhBYnRGbnM3UjF2dVl1RDhV?=
+ =?utf-8?B?MFc1N3JRYzRnQVNLMGFrM1NjblJWSUxBcFhrVXp6S2VnSXlGU040Q0tTaTlO?=
+ =?utf-8?B?Z1FiL1RlcHdMTmpTUSszZWNBLzZjTC9XMEsyZ2hzZWJwekNIZXErbWpBc080?=
+ =?utf-8?B?NE4wbU9Pb0hsYTErTkpyWUxZUENiOTJXSmI3T1FQVHlNUlM5UjMyQ2xzS1kv?=
+ =?utf-8?B?QWhSUHlpTHFDS2l1ODlSeTdkOXRvU0ZOVTlpaTVjbVVsc3ROVXJ2Lzd0VGta?=
+ =?utf-8?B?YkF5dmpuYnhCUjAvQUpFdEJBc3ZtczFmeUZtdVhMQnY2a0NXSHRDK29aZFFJ?=
+ =?utf-8?B?anU5Mjd3M3g2YWtKK0k3ODdlak9qYWRaSHZTZ3BaVGg4NHh5c3FlOUlMbFZj?=
+ =?utf-8?B?NjlkMHBHMHZiRTB1eTZ0dWY1cFZxZTJ2K0s2MW5sRk43TXljK2FNdkUzUitz?=
+ =?utf-8?B?MHc1dVhxT3E3YUNXTnFPUG51c0h1SHVGa1B1aE0yYjk1OWdEeDRVbnBHeU9R?=
+ =?utf-8?B?Y0YxQTVGUlVZZUd5bXdkcjRwYWVHMmVtWTQ2Ykw1WlBtQ0VHK3c4dzZHTGhq?=
+ =?utf-8?B?RWlNSGFWWnQ3anVFTUNjTjcvMVF2Yk9qYU5wcnhFVzhqRjFjUGFpRGJGbzlq?=
+ =?utf-8?B?Tk9hbU1zcjN3VE5pS3loVVhmYVhia2J0RWVUR2duR05lZXlQU0I4TEJQYXlN?=
+ =?utf-8?B?NE9kUzRva3YzVk4wVWVxYzZVMW1ES1d5S3htdG9mQTNUT2hwc3R0SVVwZGho?=
+ =?utf-8?B?UHJNUU8zY1VWekRvRjkzL3dXTFBQTlpTTU5aUWRCQzBkaG00R09VeHBJbnQ0?=
+ =?utf-8?B?Z2RGRXRsVTJoSURzNEVDYXFUUm5QYWU2OUJEU3lFelRETDhCV083VlhlL1N0?=
+ =?utf-8?B?eGZZU0ViM2dGc0QzdElGcFJoYnRlRnJqQ2E2ZDBkSHBSNnpGanVyK09kN2Zm?=
+ =?utf-8?B?cUdkLzkvY2c4dlV6QUg3WkEwaUM1VENvMHVyQlpQaWN1OEJlWWJ4SlorUkp6?=
+ =?utf-8?B?N3c9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <48BCA484DEBDC14985077873204736B8@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR12MB6608:EE_|IA0PR12MB8973:EE_
-X-MS-Office365-Filtering-Correlation-Id: a19b3ad7-ecb6-497d-9176-08dcecd7b410
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|7416014|366016|1800799024;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?SCtiUkh1OVB5MHcrTnl5ZHdSUFptZWhnRjE1dDdqMFZJb2RMYnd0T1U2SUdr?=
- =?utf-8?B?aVNjNm5WT2o3WVFtZEZJNnFST2lGeW5NUG1kTW84b0Z1WlN4WTErdWM0bFJ2?=
- =?utf-8?B?U2RPQVVobXZnTlJaaE5KS0tyVDRqRXdUY3h1N0VRNEdhVWxlL2VhbllmbCtv?=
- =?utf-8?B?SXl5SWUwSE5YZjZMQXRjT05HTWJvaHZGVVk1bEhmRmh5MlIyWWUwaWdBc1di?=
- =?utf-8?B?cEtJRkU2WmhQb2dVWUl0N2RDOXFxVXlYdXRGOTBzY3FyTU03TjNERDRUdXd0?=
- =?utf-8?B?TVQyNlFNZXhmdTcwaW9yZDFEeml4ZUhUTHJUSXpOMXFaTGppdldmQU1FSzk4?=
- =?utf-8?B?aVVET2NJMFB2emE1bTdWYkhFM1BrQkJHNlVXVFFnbE5zdG1RdUtpUjRwNnpU?=
- =?utf-8?B?TElidlc1R1pTWXdlSzNQVFVJS2l0VEh1WVVFT2YzbjBabC9UdldaQTkzMnVD?=
- =?utf-8?B?NEtKMDhZYXRvVllYczcrYmlIYnBoTXJkY3g5dlZhMU5mT0tuSlptOUdHOUpH?=
- =?utf-8?B?NERGc2J2TElLaUtDTms1Q1VSeCtFVTV6c1huNWo4MkNQbFk2MDRhMHZMUDA0?=
- =?utf-8?B?Rlg1QnphQks3TlloeG5ZK0RSMFo4YXNMY1dNRXNRWkRTY1VRVU1IRy9sQTdt?=
- =?utf-8?B?eXBGdzlRcVN4N1NsZm43dUFvMFdGT25TMmoyVEJSOWpDTWdmQXpxV3pZVUVF?=
- =?utf-8?B?eDBaT01xeGlNenFhcTY0UnBGZnA1bExtRmVqMS9BcTdaencxV0lXUTVkbkVB?=
- =?utf-8?B?L0N6Wnl2bWN3TnZ3RU41UTBsRlNjZHIwNElQMFc3SEFhSk5KQjF2cVJ4aUtB?=
- =?utf-8?B?eHcyaUd1NFpBVktPazV6cHRncXFyN3J1bndDWlJLdXd1d2hmSm1jaDRUaEhM?=
- =?utf-8?B?NnFWQ3pEeUY0bC9jNFMxUFY1YlVZNlhQNlE2b245WTNNb2U4dWpJR0IxQ1E4?=
- =?utf-8?B?UjdzQlZmdlgzWmJCamdXSHpoNHdjRUlSOWRQbHk0WjJHZTdhZllkcjdiemxm?=
- =?utf-8?B?VjF2dG9YQWViQWpNN1BkR0IxUTZFeGVXWVBqeisvWU9pN1p5SXRSc1BQUG5j?=
- =?utf-8?B?bHhBSnZabDVoa3RpVTFMOHEySnRycU0wWUlYMlBpc3JMSEFGWEdXUjkxTG5C?=
- =?utf-8?B?d3F5d3VZVDdrb0txOTJKbFhPNVd2V0ZCWDl1SW0rZ0s0czUzTkJLdEFtUWg2?=
- =?utf-8?B?RU9Ja2xPZ0RWQVFRVkxLRUNqYXMwTTduMVhMc1VVS014MUszclhBeEJGVHU5?=
- =?utf-8?B?TmRoc1dDSlM2M3NNR0J5RVgwU3dMaHZCdEdlLzhkaXVXNy9LQkF1U0lGTHk4?=
- =?utf-8?B?NHlhOG9BVkh0V0tHcnQ4Y1VxcGVKdjhZNXFHeEJZbDNpQUlKZFZkTndvZDlS?=
- =?utf-8?B?L3p3YThORDFFa2I2c2dCYlRFZjV5NUtGVUxJQjJWMWFkcDdJcnJoczFQUEZM?=
- =?utf-8?B?SElFOVh0eG85RWdSd1RaRU84TFhSMjJzbG1PdEsvOWhLNE5ZUEk0N3g4bkRa?=
- =?utf-8?B?OXdldXJpK1N5ejhSY2Evd3N2dW42R004UmpXV09xT1JHdWF4aE94STdKRE12?=
- =?utf-8?B?RXRvM3R3Si9uckh1L2QwT2xqT04vSWVjY1FZU1BpWmFSdS82b2IrTjJQMGdP?=
- =?utf-8?B?NzFxNHc3NDdlZWZCRUJUWDA4YVZlQjgyS0VXby9YTXpTTkJ3TUZ4L0ZvU1Bt?=
- =?utf-8?B?dFlGVUpKUVliUVNYTGprZE9FY0NPbWhybWJjZ2syQmR4WnJzY1UxVWtnPT0=?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB6608.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(366016)(1800799024);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?Tkc1VzJhZW5tbUFTRGhVQU9uMm1STWIwYzhBNWJ2bVFjMVRnTEhVQ3FzaHJP?=
- =?utf-8?B?Z2tKNXpWaFozZ1RQdzBPUis2ZmJlRE9UZW5pMEJwdUtheml3NXN0dnZENWND?=
- =?utf-8?B?TWlhb2pYUk0zSXdmVzE1Ny9XZ3Jwd1pVRWFpYmhyY3V6SmR0c1hOZmN2N2Nq?=
- =?utf-8?B?ZEp3UDVYT0hjYStxNzV1OG9XblY3ZGlNbnVpclhPTGlRRmxkTjNTaml4NE5t?=
- =?utf-8?B?MStiOG1EUm5SRm16clBMYzFOb0V2dlZjRmU0YUlpMUJTOEdENjVIWkNSTmlh?=
- =?utf-8?B?a0ZJd2JHa0lWOEd5UFJvZkd6cUZNbWNZRWxwaHpqYW5PK3BEWHpMZ3lBQ2gz?=
- =?utf-8?B?T3NNcCtjVEY4VGVMcnAvUGgraUxJbHF0SURvVUU2MElPK1pEN2JWMXZzbkVw?=
- =?utf-8?B?Mk8ybHlFNHIzVXdVcWxjMy9kc3ErdjZZSmQ0U1VhZGNNWm9KM0xNMjBBSHJm?=
- =?utf-8?B?TytCQzN2VVFiQXpZMkkvU0d1TWJjSWpZNGtzbE8vNGRXcS9YTkRTa2YrS0NR?=
- =?utf-8?B?ZC9JcERobWFtNTFUbmdNMWZHc1M4KzN2QllxcGFjT3BmZk83YWhMSEdRSk1q?=
- =?utf-8?B?U3hDNjNHTGszQnpuQU96eDZ5aXlBQStVUDAybGJkbWtmTFBjMzBENi9BQnNt?=
- =?utf-8?B?bHdsNGVhanJCeTd0YXRZMXlvVktFN09YOGNjeVgvYlp6eWgybzhZRmV0QUdZ?=
- =?utf-8?B?eklhNG9zVXQzdFM4ZXkrMW9QQlYxOTVHMDVYMFZFU05DZENDdzdhakRob3Zn?=
- =?utf-8?B?c2Z5b3lKa1Zibi9xWW9IZFZnTy9JajhLTVF0d0lEN2NnclVrTDV6QXNjYmRy?=
- =?utf-8?B?cDFPTE56SHpYVS9PT0NsMjlUK1V6TTBjYm5vNW1pSTFob09CQUlGenJnYTA0?=
- =?utf-8?B?U3lrT1RUYU8wM3FNSWhLbXFhMU9sOHVtbjhLWGh1U3k1N1d3d2dHakhKTXUr?=
- =?utf-8?B?cm0vVU5LYWRjM0pQN1ZiUzl5MkVSdEdwQVBrbXQ0WC9WY09ZWWpBOUIxTjVl?=
- =?utf-8?B?RW52QUVaNkNKWjRUZHI2UzJRR29xZldUem8rSTdYcGpJMExQVENaYkdYMUpk?=
- =?utf-8?B?OUMyVW03eGlvUWV6S05EcDgyeDh0dVh4VitxWkpUOVduRkNwbHlnSWZSN0tZ?=
- =?utf-8?B?VjlyU1QvSnA3TG5qMEpqMTZlaXFDZU1KRHFRY1hOUkVraHJSRmlUWk9pWTZT?=
- =?utf-8?B?d3E2N1h3QndKblE2RjdGYWQ3REk3UHF3L0FzamsxTlhGWnRDSHZScCs1WWZj?=
- =?utf-8?B?WUoxcUJ0YUlOSzBEU0ZoVnpSaGNYbjVJZllibTdsbEd1dVhHTFVFWUpVSDN2?=
- =?utf-8?B?Q0UxeURCbFZtcXZYOHFLTG1jTUw4Z003TnJsdHdsanhjbFhOcUZ0QjIvU2d6?=
- =?utf-8?B?amRWQ2dOVHk3WHkrZGgySG5neGdNRm9LVTRqaW5RRGUzMFQ1ckdVZmpIVEZo?=
- =?utf-8?B?K3VIdFhUV20rL1hGWTdWdzVtTjJ1Zkp5bjR6ZWZqUzRBbHBVTEtaS3VqK3NC?=
- =?utf-8?B?UHBoVThodThKK0UwQjNFR2ZPQVJpdWlaS1huSTZ4NCs1VnM1L0F5eUhBR2lY?=
- =?utf-8?B?V0lhL1hYS0t4b2MyWVZPRGU0S3o3UEg0M1B5bWVzZkpZbHc5ZzhFcFl5MWNS?=
- =?utf-8?B?b3Bhd1VUSS9UaUJweDJoRU9raEpYdWpwOWZ6bGs1b3hqdWduMi9ZT0VhcVkr?=
- =?utf-8?B?TlZadTcyVk40czJ4bCtjbGNkTTNzdVdFb3pEVU4vbW1kdSttdTdKWXhIeTk0?=
- =?utf-8?B?R0pCOEh2TTJTT2IwK3R0QWJyY01xSllndHF0bWQxTUdMQzV1UGRBT3lheWUv?=
- =?utf-8?B?dW5uWW9xUWQ4WG1MenIza3ZUVEdOanF5NlRsdWRtck5IUUFaUkJCTk04MzQx?=
- =?utf-8?B?TTZub2Q2WnpmNnk5bG9Va0xjN0lvV2RVR3oxMysvWmNzZUU0WU9oY1BtSW5H?=
- =?utf-8?B?cEl6L0NBbG5xRENWVEhRdzdZTWQydGthT3NqVkMzNCt6VXhYd3NBaDZVbUZk?=
- =?utf-8?B?N1hyTkNJSVE5dExDeFdTc3NaelB1NWlnRzYydmxEbDRRNzgvL2VVKzJ0eDM1?=
- =?utf-8?B?M3NRUFZRTy9mZzk2SFZxVExtZ2pWRU5XbEdZajdXODNIRGJJVEpoL1BlbzhI?=
- =?utf-8?Q?NwKV+ivHATx8NmUTQ4kzt0HvZ?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a19b3ad7-ecb6-497d-9176-08dcecd7b410
-X-MS-Exchange-CrossTenant-AuthSource: DS0PR12MB6608.namprd12.prod.outlook.com
+X-OriginatorOrg: meta.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Oct 2024 05:10:36.5996
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR15MB5117.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c44b6513-17c3-45c3-71cc-08dcecd944b5
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Oct 2024 05:21:48.4396
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: phQHmXrYi5+GyunkcqCsJGU78Pxqvh2IjDLO7XgS+WkajTSoxLgNDIhfE2kgkcl8fYZGAj3B/8kySe6nTzqZ9w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB8973
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Z/jgKtX0p3d4Quf6ouKv6BxWZc/BrH5B2pBDAbxAA9I/35EHuoLaed7aEeFh1kkcuNMyTxLjvD8YsdJbrHmu/Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR15MB6744
+X-Proofpoint-ORIG-GUID: ST8OPep4GNM2MlD-4IA78lPJ6HAJuXTD
+X-Proofpoint-GUID: ST8OPep4GNM2MlD-4IA78lPJ6HAJuXTD
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
+ definitions=2024-10-05_03,2024-10-04_01,2024-09-30_01
 
-
-
-On 10/15/2024 5:59 AM, Paul E. McKenney wrote:
-> On Mon, Oct 14, 2024 at 09:49:52AM -0700, Paul E. McKenney wrote:
->> On Mon, Oct 14, 2024 at 02:45:50PM +0530, Neeraj Upadhyay wrote:
->>> On 10/9/2024 11:37 PM, Paul E. McKenney wrote:
->>>> This commit changes a few "cpuc" variables to "sdp" to align wiht usage
->>>> elsewhere.
->>>>
->>>
->>> s/wiht/with/
->>
->> Good eyes!
-> 
-> And fixed.
-> >>> This commit is doing a lot more than renaming "cpuc".
->>
->> Indeed, it does look like I forgot to commit between two changes.
->>
->> It looks like this commit log goes with the changes to the
->> functions srcu_readers_lock_idx(), srcu_readers_unlock_idx(), and
->> srcu_readers_active().  With the exception of the change from "NMI-safe"
->> to "reader flavors in the WARN_ONCE() string in srcu_readers_unlock_idx().
->>
->> How would you suggest that I split up the non-s/cpuc/sdp/ changes?
-> 
-> As a first step, I split it three ways, as you can see on the updated "dev"
-> branch in the -rcu tree.
-> 
-> Thoughts?
-> 
-
-Split looks good to me!
-
-
-- Neeraj
-
-> 							Thanx, Paul
-> 
->>> - Neeraj
->>>
->>>> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
->>>> Cc: Alexei Starovoitov <ast@kernel.org>
->>>> Cc: Andrii Nakryiko <andrii@kernel.org>
->>>> Cc: Peter Zijlstra <peterz@infradead.org>
->>>> Cc: Kent Overstreet <kent.overstreet@linux.dev>
->>>> Cc: <bpf@vger.kernel.org>
->>>> ---
->>>>  include/linux/srcu.h     | 35 ++++++++++++++++++----------------
->>>>  include/linux/srcutree.h |  4 ++++
->>>>  kernel/rcu/srcutree.c    | 41 ++++++++++++++++++++--------------------
->>>>  3 files changed, 44 insertions(+), 36 deletions(-)
->>>>
->>>> diff --git a/include/linux/srcu.h b/include/linux/srcu.h
->>>> index 06728ef6f32a4..84daaa33ea0ab 100644
->>>> --- a/include/linux/srcu.h
->>>> +++ b/include/linux/srcu.h
->>>> @@ -176,10 +176,6 @@ static inline int srcu_read_lock_held(const struct srcu_struct *ssp)
->>>>  
->>>>  #endif /* #else #ifdef CONFIG_DEBUG_LOCK_ALLOC */
->>>>  
->>>> -#define SRCU_NMI_UNKNOWN	0x0
->>>> -#define SRCU_NMI_UNSAFE		0x1
->>>> -#define SRCU_NMI_SAFE		0x2
->>>> -
->>>>  #if defined(CONFIG_PROVE_RCU) && defined(CONFIG_TREE_SRCU)
->>>>  void srcu_check_read_flavor(struct srcu_struct *ssp, int read_flavor);
->>>>  #else
->>>> @@ -235,16 +231,19 @@ static inline void srcu_check_read_flavor(struct srcu_struct *ssp, int read_flav
->>>>   * a mutex that is held elsewhere while calling synchronize_srcu() or
->>>>   * synchronize_srcu_expedited().
->>>>   *
->>>> - * Note that srcu_read_lock() and the matching srcu_read_unlock() must
->>>> - * occur in the same context, for example, it is illegal to invoke
->>>> - * srcu_read_unlock() in an irq handler if the matching srcu_read_lock()
->>>> - * was invoked in process context.
->>>> + * The return value from srcu_read_lock() must be passed unaltered
->>>> + * to the matching srcu_read_unlock().  Note that srcu_read_lock() and
->>>> + * the matching srcu_read_unlock() must occur in the same context, for
->>>> + * example, it is illegal to invoke srcu_read_unlock() in an irq handler
->>>> + * if the matching srcu_read_lock() was invoked in process context.  Or,
->>>> + * for that matter to invoke srcu_read_unlock() from one task and the
->>>> + * matching srcu_read_lock() from another.
->>>>   */
->>>>  static inline int srcu_read_lock(struct srcu_struct *ssp) __acquires(ssp)
->>>>  {
->>>>  	int retval;
->>>>  
->>>> -	srcu_check_read_flavor(ssp, false);
->>>> +	srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_NORMAL);
->>>>  	retval = __srcu_read_lock(ssp);
->>>>  	srcu_lock_acquire(&ssp->dep_map);
->>>>  	return retval;
->>>> @@ -256,12 +255,16 @@ static inline int srcu_read_lock(struct srcu_struct *ssp) __acquires(ssp)
->>>>   *
->>>>   * Enter an SRCU read-side critical section, but in an NMI-safe manner.
->>>>   * See srcu_read_lock() for more information.
->>>> + *
->>>> + * If srcu_read_lock_nmisafe() is ever used on an srcu_struct structure,
->>>> + * then none of the other flavors may be used, whether before, during,
->>>> + * or after.
->>>>   */
->>>>  static inline int srcu_read_lock_nmisafe(struct srcu_struct *ssp) __acquires(ssp)
->>>>  {
->>>>  	int retval;
->>>>  
->>>> -	srcu_check_read_flavor(ssp, true);
->>>> +	srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_NMI);
->>>>  	retval = __srcu_read_lock_nmisafe(ssp);
->>>>  	rcu_try_lock_acquire(&ssp->dep_map);
->>>>  	return retval;
->>>> @@ -273,7 +276,7 @@ srcu_read_lock_notrace(struct srcu_struct *ssp) __acquires(ssp)
->>>>  {
->>>>  	int retval;
->>>>  
->>>> -	srcu_check_read_flavor(ssp, false);
->>>> +	srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_NORMAL);
->>>>  	retval = __srcu_read_lock(ssp);
->>>>  	return retval;
->>>>  }
->>>> @@ -302,7 +305,7 @@ srcu_read_lock_notrace(struct srcu_struct *ssp) __acquires(ssp)
->>>>  static inline int srcu_down_read(struct srcu_struct *ssp) __acquires(ssp)
->>>>  {
->>>>  	WARN_ON_ONCE(in_nmi());
->>>> -	srcu_check_read_flavor(ssp, false);
->>>> +	srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_NORMAL);
->>>>  	return __srcu_read_lock(ssp);
->>>>  }
->>>>  
->>>> @@ -317,7 +320,7 @@ static inline void srcu_read_unlock(struct srcu_struct *ssp, int idx)
->>>>  	__releases(ssp)
->>>>  {
->>>>  	WARN_ON_ONCE(idx & ~0x1);
->>>> -	srcu_check_read_flavor(ssp, false);
->>>> +	srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_NORMAL);
->>>>  	srcu_lock_release(&ssp->dep_map);
->>>>  	__srcu_read_unlock(ssp, idx);
->>>>  }
->>>> @@ -333,7 +336,7 @@ static inline void srcu_read_unlock_nmisafe(struct srcu_struct *ssp, int idx)
->>>>  	__releases(ssp)
->>>>  {
->>>>  	WARN_ON_ONCE(idx & ~0x1);
->>>> -	srcu_check_read_flavor(ssp, true);
->>>> +	srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_NMI);
->>>>  	rcu_lock_release(&ssp->dep_map);
->>>>  	__srcu_read_unlock_nmisafe(ssp, idx);
->>>>  }
->>>> @@ -342,7 +345,7 @@ static inline void srcu_read_unlock_nmisafe(struct srcu_struct *ssp, int idx)
->>>>  static inline notrace void
->>>>  srcu_read_unlock_notrace(struct srcu_struct *ssp, int idx) __releases(ssp)
->>>>  {
->>>> -	srcu_check_read_flavor(ssp, false);
->>>> +	srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_NORMAL);
->>>>  	__srcu_read_unlock(ssp, idx);
->>>>  }
->>>>  
->>>> @@ -359,7 +362,7 @@ static inline void srcu_up_read(struct srcu_struct *ssp, int idx)
->>>>  {
->>>>  	WARN_ON_ONCE(idx & ~0x1);
->>>>  	WARN_ON_ONCE(in_nmi());
->>>> -	srcu_check_read_flavor(ssp, false);
->>>> +	srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_NORMAL);
->>>>  	__srcu_read_unlock(ssp, idx);
->>>>  }
->>>>  
->>>> diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
->>>> index ab7d8d215b84b..79ad809c7f035 100644
->>>> --- a/include/linux/srcutree.h
->>>> +++ b/include/linux/srcutree.h
->>>> @@ -43,6 +43,10 @@ struct srcu_data {
->>>>  	struct srcu_struct *ssp;
->>>>  };
->>>>  
->>>> +/* Values for ->srcu_reader_flavor. */
->>>> +#define SRCU_READ_FLAVOR_NORMAL	0x1		// srcu_read_lock().
->>>> +#define SRCU_READ_FLAVOR_NMI	0x2		// srcu_read_lock_nmisafe().
->>>> +
->>>>  /*
->>>>   * Node in SRCU combining tree, similar in function to rcu_data.
->>>>   */
->>>> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
->>>> index abe55777c4335..4c51be484b48a 100644
->>>> --- a/kernel/rcu/srcutree.c
->>>> +++ b/kernel/rcu/srcutree.c
->>>> @@ -438,9 +438,9 @@ static unsigned long srcu_readers_lock_idx(struct srcu_struct *ssp, int idx)
->>>>  	unsigned long sum = 0;
->>>>  
->>>>  	for_each_possible_cpu(cpu) {
->>>> -		struct srcu_data *cpuc = per_cpu_ptr(ssp->sda, cpu);
->>>> +		struct srcu_data *sdp = per_cpu_ptr(ssp->sda, cpu);
->>>>  
->>>> -		sum += atomic_long_read(&cpuc->srcu_lock_count[idx]);
->>>> +		sum += atomic_long_read(&sdp->srcu_lock_count[idx]);
->>>>  	}
->>>>  	return sum;
->>>>  }
->>>> @@ -456,14 +456,14 @@ static unsigned long srcu_readers_unlock_idx(struct srcu_struct *ssp, int idx)
->>>>  	unsigned long sum = 0;
->>>>  
->>>>  	for_each_possible_cpu(cpu) {
->>>> -		struct srcu_data *cpuc = per_cpu_ptr(ssp->sda, cpu);
->>>> +		struct srcu_data *sdp = per_cpu_ptr(ssp->sda, cpu);
->>>>  
->>>> -		sum += atomic_long_read(&cpuc->srcu_unlock_count[idx]);
->>>> +		sum += atomic_long_read(&sdp->srcu_unlock_count[idx]);
->>>>  		if (IS_ENABLED(CONFIG_PROVE_RCU))
->>>> -			mask = mask | READ_ONCE(cpuc->srcu_reader_flavor);
->>>> +			mask = mask | READ_ONCE(sdp->srcu_reader_flavor);
->>>>  	}
->>>>  	WARN_ONCE(IS_ENABLED(CONFIG_PROVE_RCU) && (mask & (mask - 1)),
->>>> -		  "Mixed NMI-safe readers for srcu_struct at %ps.\n", ssp);
->>>> +		  "Mixed reader flavors for srcu_struct at %ps.\n", ssp);
->>>>  	return sum;
->>>>  }
->>>>  
->>>> @@ -564,12 +564,12 @@ static bool srcu_readers_active(struct srcu_struct *ssp)
->>>>  	unsigned long sum = 0;
->>>>  
->>>>  	for_each_possible_cpu(cpu) {
->>>> -		struct srcu_data *cpuc = per_cpu_ptr(ssp->sda, cpu);
->>>> +		struct srcu_data *sdp = per_cpu_ptr(ssp->sda, cpu);
->>>>  
->>>> -		sum += atomic_long_read(&cpuc->srcu_lock_count[0]);
->>>> -		sum += atomic_long_read(&cpuc->srcu_lock_count[1]);
->>>> -		sum -= atomic_long_read(&cpuc->srcu_unlock_count[0]);
->>>> -		sum -= atomic_long_read(&cpuc->srcu_unlock_count[1]);
->>>> +		sum += atomic_long_read(&sdp->srcu_lock_count[0]);
->>>> +		sum += atomic_long_read(&sdp->srcu_lock_count[1]);
->>>> +		sum -= atomic_long_read(&sdp->srcu_unlock_count[0]);
->>>> +		sum -= atomic_long_read(&sdp->srcu_unlock_count[1]);
->>>>  	}
->>>>  	return sum;
->>>>  }
->>>> @@ -703,20 +703,21 @@ EXPORT_SYMBOL_GPL(cleanup_srcu_struct);
->>>>   */
->>>>  void srcu_check_read_flavor(struct srcu_struct *ssp, int read_flavor)
->>>>  {
->>>> -	int reader_flavor_mask = 1 << read_flavor;
->>>> -	int old_reader_flavor_mask;
->>>> +	int old_read_flavor;
->>>>  	struct srcu_data *sdp;
->>>>  
->>>> -	/* NMI-unsafe use in NMI is a bad sign */
->>>> -	WARN_ON_ONCE(!read_flavor && in_nmi());
->>>> +	/* NMI-unsafe use in NMI is a bad sign, as is multi-bit read_flavor values. */
->>>> +	WARN_ON_ONCE((read_flavor != SRCU_READ_FLAVOR_NMI) && in_nmi());
->>>> +	WARN_ON_ONCE(read_flavor & (read_flavor - 1));
->>>> +
->>>>  	sdp = raw_cpu_ptr(ssp->sda);
->>>> -	old_reader_flavor_mask = READ_ONCE(sdp->srcu_reader_flavor);
->>>> -	if (!old_reader_flavor_mask) {
->>>> -		old_reader_flavor_mask = cmpxchg(&sdp->srcu_reader_flavor, 0, reader_flavor_mask);
->>>> -		if (!old_reader_flavor_mask)
->>>> +	old_read_flavor = READ_ONCE(sdp->srcu_reader_flavor);
->>>> +	if (!old_read_flavor) {
->>>> +		old_read_flavor = cmpxchg(&sdp->srcu_reader_flavor, 0, read_flavor);
->>>> +		if (!old_read_flavor)
->>>>  			return;
->>>>  	}
->>>> -	WARN_ONCE(old_reader_flavor_mask != reader_flavor_mask, "CPU %d old state %d new state %d\n", sdp->cpu, old_reader_flavor_mask, reader_flavor_mask);
->>>> +	WARN_ONCE(old_read_flavor != read_flavor, "CPU %d old state %d new state %d\n", sdp->cpu, old_read_flavor, read_flavor);
->>>>  }
->>>>  EXPORT_SYMBOL_GPL(srcu_check_read_flavor);
->>>>  #endif /* CONFIG_PROVE_RCU */
->>>
+SGkgQ2hyaXN0b3BoLCAgDQoNCj4gT24gT2N0IDE0LCAyMDI0LCBhdCAxMDowN+KAr1BNLCBDaHJp
+c3RvcGggSGVsbHdpZyA8aGNoQGluZnJhZGVhZC5vcmc+IHdyb3RlOg0KPiANCj4gT24gV2VkLCBP
+Y3QgMDIsIDIwMjQgYXQgMDI6NDY6MzdQTSAtMDcwMCwgU29uZyBMaXUgd3JvdGU6DQo+PiBFeHRl
+bmQgdGVzdF9wcm9ncyBmc19rZnVuY3MgdG8gY292ZXIgZGlmZmVyZW50IHhhdHRyIG5hbWVzLiBT
+cGVjaWZpY2FsbHk6DQo+PiB4YXR0ciBuYW1lICJ1c2VyLmtmdW5jcyIsICJzZWN1cml0eS5icGYi
+LCBhbmQgInNlY3VyaXR5LmJwZi54eHgiIGNhbiBiZQ0KPj4gcmVhZCBmcm9tIEJQRiBwcm9ncmFt
+IHdpdGgga2Z1bmNzIGJwZl9nZXRfW2ZpbGV8ZGVudHJ5XV94YXR0cigpOyB3aGlsZQ0KPj4gInNl
+Y3VyaXR5LmJwZnh4eCIgYW5kICJzZWN1cml0eS5zZWxpbnV4IiBjYW5ub3QgYmUgcmVhZC4NCj4g
+DQo+IFNvIHlvdSByZWFkIGNvZGUgZnJvbSB1bnRydXN0ZWQgdXNlci4qIHhhdHRycz8gIEhvdyBj
+YW4geW91IGNhcnZlIG91dA0KPiB0aGF0IHNwYWNlIGFuZCBub3Qga25vd24gYW55IHByZS1leGlz
+dGluZyB1c2Vyc3BhY2UgY29kIHVzZXMga2Z1bmNzDQo+IGZvciBpdCdzIG93biBwdXJwb3NlPw0K
+DQpJIGRvbid0IHF1aXRlIGZvbGxvdyB0aGUgY29tbWVudCBoZXJlLiANCg0KRG8geW91IG1lYW4g
+dXNlci4qIHhhdHRycyBhcmUgdW50cnVzdGVkIChhbnkgdXNlciBjYW4gc2V0IGl0KSwgc28gd2Ug
+DQpzaG91bGQgbm90IGFsbG93IEJQRiBwcm9ncmFtcyB0byByZWFkIHRoZW0/IE9yIGRvIHlvdSBt
+ZWFuIHhhdHRyIA0KbmFtZSAidXNlci5rZnVuY3MiIG1pZ2h0IGJlIHRha2VuIGJ5IHNvbWUgdXNl
+IHNwYWNlPw0KDQpUaGFua3MsDQpTb25nDQoNCg==
 
