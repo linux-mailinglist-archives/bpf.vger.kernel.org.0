@@ -1,172 +1,177 @@
-Return-Path: <bpf+bounces-42088-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42089-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77E8E99F5B5
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 20:37:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9AC5899F5CB
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 20:39:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 378D328144A
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 18:37:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 29DAD1F24FD7
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 18:39:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA9781B6D1D;
-	Tue, 15 Oct 2024 18:36:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B6A52036F5;
+	Tue, 15 Oct 2024 18:39:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Kvz6ElOU"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="XyI0MA00"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E7AF1B6D11;
-	Tue, 15 Oct 2024 18:36:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 182892036E3;
+	Tue, 15 Oct 2024 18:39:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729017378; cv=none; b=PvEbV3leoBE/rV5RJmkRs8FTsCKDowgjHS2bdC0O6R4m9qdvjEuuJls6B45eTbVHP62SiZAHMWd6nIAzMrdW/sjD7pv3f6K+OFyIwl2teLTo8GYgs6WY/0Vg9Dpm0rMgUhFbmWVhGIX6WBjcYEyhXHyyNOCiWFdvFpkEkg5foH4=
+	t=1729017590; cv=none; b=BkE/ohC8iUPe2VGNnmZTEAVFfhUIYb+D3C1mHvyunJjOkdKdppPAisWuFqz6ypxO55k4m3bauPxnXRxfQp0M15KbW5wSL9IEctkWKRyLwwwSA1Sb+7x6v8RGuDq3IK++U6r4v8KU3G7S0sDT8g4l36l33uXhUY/rUNoHS/uqkog=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729017378; c=relaxed/simple;
-	bh=yNKksyNGQRjEC8ytyREQ7iMJkDnpET9UN4Qt41xw7dI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=m1OlvlR3wiLWQI1YPVEQdPEYEmJlqYM0acubDkKpYMWIggMIgHDNAcahiiBCMBKjkEQmC1dBeB39CCeVHXrKTSN04cD3wG9gGCFsRYBunS3DIcw49mi0hdV8EkYJWqx8aU4yrrAQM0pX01hWXK7NrYcKnvmnzi8K4KYVVx8NrC4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Kvz6ElOU; arc=none smtp.client-ip=209.85.221.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-37d51055097so3431444f8f.3;
-        Tue, 15 Oct 2024 11:36:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729017374; x=1729622174; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7q5eEEdHL0dWI89V6py6cPKMvtj8RQmT2g6+quRNSkY=;
-        b=Kvz6ElOUI2FedJlTpW8cmWRSby/O6Ykzvp1NyI0v+ORPoS+ZLORIof2TEUdhggMZ9P
-         gVeqiEULsRYV56rwxuiOFX9LMVR6iK58V0h6eQkaDnaF3/zzZE+oPH0S5mYeUFsWTNJq
-         LuUd1OcSVEgKpByP/7NcwIGM6Ad+cV/9yWRlH0R6Ph+9G+dle32p0Z5bkeDJCORfkp5f
-         Og1F7uZTSHf4LK9zHO+u72XHd53xwS0Ht73KEgYYHvMYojNWLz+WRloez545+vVcvmAl
-         TUSu7jr8VHHl3Y0J8GzyQfDMjUuXgHCb0TBDTjnG+qlph51Sy/9dM9xDIEfIERvvdFYR
-         3egQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729017374; x=1729622174;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7q5eEEdHL0dWI89V6py6cPKMvtj8RQmT2g6+quRNSkY=;
-        b=QJ2536u7tBP4v1d8nnoZA01pETsRAHIpGEq/KwEHTqi75jIBqBWgzTu49Fnl6rZBw1
-         zCEDrCAs7rtOiftEfkqjE2ykzadcsApNe49+IpqwVM92OeLoRgnIj9Ne0AZbT62v22Dc
-         ABmqLoB65grHPEhYly9hA068IZP6lg7XHvsRpFv99/VV9fhLRdDuRSTZW5bk0XAbK6YI
-         Mo6L7JOdTNx6odBptaq7JwjUgyViVQTrrl/B/UM4PT9K2WE3Bs6AlnTuvGBMg5v9OtOS
-         i+BNy0vSTMBr5opmEvysHrM5cVYsIu07vwEIiNn3VtJCZuuUXAPBJRMGoyGGDVeTRKEK
-         zccw==
-X-Forwarded-Encrypted: i=1; AJvYcCUzFfL/VZO25RXcppMLm7P9YU9h7e3BtG1+pe7q1MRvwNG7aWOBqOM2eM4r7EOhEvxi49g=@vger.kernel.org, AJvYcCWvib9DiDbqeSoq4dqbeM1lQ+bRqR/vTFrSzj2E/0BidqHvHaC9gMU9ZyJ4AkVkYuAFHohRjeA3u0z8xjeY@vger.kernel.org
-X-Gm-Message-State: AOJu0YyMGKz9Nm23F1XDINAvoiOWPWU1ILbiyIg3aPD12XntuVzolp/s
-	78W3QbVLj1nLSsrYs1sHiN6SFzGuakfMr20Rqey4UIdQE6mcMD2+0CftYB4B3Uu91BjUQ44yTrY
-	nSesyf4st3ugcP5/vlfcZNhXpxOI=
-X-Google-Smtp-Source: AGHT+IE4tZcwjlIK0ZjoV3mK8y4/qf2Rvzx5itXTUvqKcrWs9eCIHm3hSbg6OoA8/znTqDqElp2h5eztY73UyfpqyFY=
-X-Received: by 2002:a5d:4d8c:0:b0:37d:33ab:de30 with SMTP id
- ffacd0b85a97d-37d5fec99e4mr8386614f8f.8.1729017373640; Tue, 15 Oct 2024
- 11:36:13 -0700 (PDT)
+	s=arc-20240116; t=1729017590; c=relaxed/simple;
+	bh=WMMPQa5nz5uL37eLh4HB6ilkOBqJrEE/WBB+kf3KXjQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=Oh6SBobCdvaphX0iKbl01/z3L2kyhh87Id63u14+hbR896G5QvtFIhAATeSfwGVxG1yGxOeny8F8Jk6RdDxn377oR5Wo8KGh6Hd1BEl+Pt1+ohm7r5WGzHnWB1xeoUKN/ZkSRBK4fFU90PnOxsHWL8ecLzR75JyFUJrGeFX+kds=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=XyI0MA00; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 49FIPV6N007905;
+	Tue, 15 Oct 2024 18:39:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-type:date:from:in-reply-to:message-id:mime-version
+	:references:subject:to; s=pp1; bh=Ss7iI6bkPoaS+Y+L8y+5qkCxYznDSP
+	pd817IDjqbwYo=; b=XyI0MA00kTyqok4qAWlHaEIUQRmdKlb93lIjXp0Sn8rI91
+	+l0yxe24Gq+aBHH6tOFskudaQjNdrTCAmULM03pTIdub2mi65s4soT8xoUm1uxEw
+	bbi+u7sLAskNl2IohMUHugtClZKgx/suz/ND7Mydqe+ZugkX8PbYoEZmsxPE/slR
+	cc7RI7FiYPswK1JAeKB+FJ1U6n5gCFxtA77dg51V21HpSUMO+ZFWDikFm3nAttqj
+	Fq+THFSZRTpL94XWGg4MUuA8zimgIBycx8Hn/sCobDx+G9Mam+pfVfkOGpf0pmjq
+	6IVqEzNg2D5wtCClUvavSz4QzpjV2knZKAfuy14A==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 429wng82fx-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 15 Oct 2024 18:39:15 +0000 (GMT)
+Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 49FIdELe007012;
+	Tue, 15 Oct 2024 18:39:14 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 429wng82fk-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 15 Oct 2024 18:39:14 +0000 (GMT)
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 49FH1m8v027452;
+	Tue, 15 Oct 2024 18:39:12 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4283txnfs6-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 15 Oct 2024 18:39:12 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 49FId8Q952035914
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 15 Oct 2024 18:39:08 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id B5F6020043;
+	Tue, 15 Oct 2024 18:39:08 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 9394C20040;
+	Tue, 15 Oct 2024 18:39:07 +0000 (GMT)
+Received: from osiris (unknown [9.171.70.29])
+	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Tue, 15 Oct 2024 18:39:07 +0000 (GMT)
+Date: Tue, 15 Oct 2024 20:39:06 +0200
+From: Heiko Carstens <hca@linux.ibm.com>
+To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Florent Revest <revest@chromium.org>,
+        linux-trace-kernel@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Mark Rutland <mark.rutland@arm.com>, linux-arch@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: Re: [PATCH v16 04/18] function_graph: Replace fgraph_ret_regs with
+ ftrace_regs
+Message-ID: <20241015183906.19678-B-hca@linux.ibm.com>
+References: <172895571278.107311.14000164546881236558.stgit@devnote2>
+ <172895575716.107311.6784997045170009035.stgit@devnote2>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <172895575716.107311.6784997045170009035.stgit@devnote2>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: Us35ezRVuJAVPgZnL8yf-hXVmLe3f8Pi
+X-Proofpoint-ORIG-GUID: I6MloaO0jd-bMySZ7vuHW5gMDDRmrOF9
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241015113915.12623-1-yangtiezhu@loongson.cn> <20241015113915.12623-5-yangtiezhu@loongson.cn>
-In-Reply-To: <20241015113915.12623-5-yangtiezhu@loongson.cn>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 15 Oct 2024 11:36:02 -0700
-Message-ID: <CAADnVQK6wgy0e5nW220sSDXzxkKcga8zpCDqKmDd=8xdooP37g@mail.gmail.com>
-Subject: Re: [PATCH v1 4/6] bpf, core: Add weak arch_prepare_goto()
-To: Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc: Huacai Chen <chenhuacai@kernel.org>, Josh Poimboeuf <jpoimboe@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, loongarch@lists.linux.dev, bpf <bpf@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
+ definitions=2024-10-15_01,2024-10-11_01,2024-09-30_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=351 phishscore=0
+ malwarescore=0 lowpriorityscore=0 bulkscore=0 mlxscore=0 impostorscore=0
+ adultscore=0 suspectscore=0 priorityscore=1501 spamscore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2409260000
+ definitions=main-2410150126
 
-On Tue, Oct 15, 2024 at 4:50=E2=80=AFAM Tiezhu Yang <yangtiezhu@loongson.cn=
-> wrote:
->
-> The objtool program needs to analysis the control flow of each
-> object file generated by compiler toolchain, it needs to know
-> all the locations that a branch instruction may jump into.
->
-> In the past, objtool only works on x86, where objtool can find
-> the relocation against the nearest instruction before the jump
-> instruction, which points to the goto table, because there is
-> only one table jump instruction even if there is more than one
-> computed goto in a function such as ___bpf_prog_run().
->
-> In fact, the compiler behaviors are different for various archs.
-> On RISC machines (for example LoongArch) this approach does not
-> work: with -fsection-anchors (often enabled at -O1 or above) the
-> relocation entry may actually points to the section anchor instead
-> of the table. Furthermore, objdump kernel/bpf/core.o shows that
-> there are many table jump instructions in ___bpf_prog_run() with
-> more than one computed gotos, but there are no relocations which
-> actually points to the table for some table jump instructions on
-> LoongArch.
->
-> For the jump table of switch cases, a GCC patch "LoongArch: Add
-> support to annotate tablejump" has been merged into the upstream
-> mainline, it makes life much easier with the additional section
-> ".discard.tablejump_annotate" which stores the jump info as pairs
-> of addresses, each pair contains the address of jump instruction
-> and the address of jump table.
->
-> For the jump table of computed gotos, it is indeed not so easy
-> to implement in the compiler, especially if there is more than
-> one computed goto in a function.
->
-> Without the help of compiler, in order to figure out the address
-> of goto table by interpreting the LoongArch machine code, add a
-> function arch_prepare_goto() for goto table, it is an empty weak
-> definition and is only overridden by archs that have special
-> requirements.
->
-> This is preparation for later patch on LoongArch, there is no any
-> effect for the other archs with this patch.
->
-> Suggested-by: Xi Ruoyao <xry111@xry111.site>
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> ---
->  kernel/bpf/core.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
->
-> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> index 5e77c58e0601..81e5d42619d5 100644
-> --- a/kernel/bpf/core.c
-> +++ b/kernel/bpf/core.c
-> @@ -1706,6 +1706,14 @@ bool bpf_opcode_in_insntable(u8 code)
->  }
->
->  #ifndef CONFIG_BPF_JIT_ALWAYS_ON
-> +/*
-> + * This symbol is an empty weak definition and is only overridden
-> + * by archs that have special requirements.
-> + */
-> +#ifndef arch_prepare_goto
-> +#define arch_prepare_goto()
-> +#endif
-> +
->  /**
->   *     ___bpf_prog_run - run eBPF program on a given context
->   *     @regs: is the array of MAX_BPF_EXT_REG eBPF pseudo-registers
-> @@ -1743,6 +1751,7 @@ static u64 ___bpf_prog_run(u64 *regs, const struct =
-bpf_insn *insn)
->  #define CONT_JMP ({ insn++; goto select_insn; })
->
->  select_insn:
-> +       arch_prepare_goto();
->         goto *jumptable[insn->code];
+On Tue, Oct 15, 2024 at 10:29:17AM +0900, Masami Hiramatsu (Google) wrote:
+> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> 
+> Use ftrace_regs instead of fgraph_ret_regs for tracing return value
+> on function_graph tracer because of simplifying the callback interface.
+> 
+> The CONFIG_HAVE_FUNCTION_GRAPH_RETVAL is also replaced by
+> CONFIG_HAVE_FUNCTION_GRAPH_FREGS.
+> 
+> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-That looks fragile. There is no guarantee that compiler will keep
-asm statement next to indirect goto.
-It has all rights to move/copy such goto around.
-There are other parts in the kernel which are not annotated either:
-drm_exec_retry_on_contention(),
-drivers/misc/lkdtm/cfi.c
+...
 
-You're arguing that it's hard to properly in the compiler,
-but that's the only option. It has to be done by the compiler.
+> diff --git a/arch/s390/kernel/mcount.S b/arch/s390/kernel/mcount.S
+> index 7e267ef63a7f..a9ca56ea0858 100644
+> --- a/arch/s390/kernel/mcount.S
+> +++ b/arch/s390/kernel/mcount.S
+> @@ -134,14 +134,15 @@ SYM_CODE_END(ftrace_common)
+>  SYM_FUNC_START(return_to_handler)
+>  	stmg	%r2,%r5,32(%r15)
+>  	lgr	%r1,%r15
+> -	aghi	%r15,-(STACK_FRAME_OVERHEAD+__FGRAPH_RET_SIZE)
+> +	aghi	%r15,-(STACK_FRAME_OVERHEAD+STACK_FRAME_SIZE_FREGS)
+>  	stg	%r1,__SF_BACKCHAIN(%r15)
+> -	la	%r3,STACK_FRAME_OVERHEAD(%r15)
+> -	stg	%r1,__FGRAPH_RET_FP(%r3)
+> -	stg	%r2,__FGRAPH_RET_GPR2(%r3)
+> -	lgr	%r2,%r3
+> +	la	%r4,STACK_FRAME_OVERHEAD(%r15)
+> +	stg	%r2,__PT_R2(%r4)
+> +	stg	%r3,__PT_R3(%r4)
+> +	stg	%r1,__PT_R15(%r4)
+> +	lgr	%r2,%r4
+>  	brasl	%r14,ftrace_return_to_handler
+> -	aghi	%r15,STACK_FRAME_OVERHEAD+__FGRAPH_RET_SIZE
+> +	aghi	%r15,STACK_FRAME_SIZE_FREGS
+>  	lgr	%r14,%r2
+>  	lmg	%r2,%r5,32(%r15)
+>  	BR_EX	%r14
+
+Why didn't you simply merge the addon patch which I provided, and
+which I tested?
+https://lore.kernel.org/all/20240916121656.20933-B-hca@linux.ibm.com
+
+That would make things much simpler... e.g. your new patch is also
+writing r3 to fregs, why? The stackframe allocation is also wrong.
+I didn't try, but I guess the above code would crash instantly.
 
