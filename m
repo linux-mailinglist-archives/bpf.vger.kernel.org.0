@@ -1,210 +1,125 @@
-Return-Path: <bpf+bounces-41927-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41926-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AE8599DB75
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 03:32:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11FF299DB73
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 03:32:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2A5D8286A11
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 01:32:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 43B841C21786
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 01:32:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A1FF1741D9;
-	Tue, 15 Oct 2024 01:30:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC5B016BE0B;
+	Tue, 15 Oct 2024 01:30:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JRJHdo+R"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D+J/hCpq"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f52.google.com (mail-qv1-f52.google.com [209.85.219.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D75D515531B;
-	Tue, 15 Oct 2024 01:30:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D448A15531B;
+	Tue, 15 Oct 2024 01:30:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728955858; cv=none; b=VUbm2/6fWGHBFiHJZ4wybMlkCFhFV/b66tgcqlk0OOEVTaJG2GJ+mV2BQRemcCCNsnju5HBo+5lPOvVdO8DN5OQpl8EA4VWcNAXh5nSg7K9hwAgFRu5rBsGZK7gdVVv9X8HX562pp/5feqWy531mx8gW39sg+I9Dj4R9vjQR1YQ=
+	t=1728955854; cv=none; b=tSQT+SO8yTfVKngC6or5vPvKDZCJVM71C670yR4Mv9xmkBa7WHkwQ8RVRhlIdYOscAkgJ7QdCt+3EJB8R5mjNrdry1BZplVU20YLAeTUV/ALsBoIO7dPpqvrHWcta2RIuJ8O7UdKziB3bANJ7hfhjltNM+XTQNs4swBITqiOOs4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728955858; c=relaxed/simple;
-	bh=KdYbmsoSUbCNl+CmIGlKxxBZZT6J27cNs7+f9ey+TQk=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ohBQzF2Vd57eoDiphlB2wCAMFwfqR0L5BjHCpXi7reVuD2llD3d8wFcsNfhRNpOChIhLid4YUD1/vtbWWLBf1ZuWdRzktMiJHTwSBStb2TrsHvxl7dG7gGyuugNMV8oEVlO8mzDHo7lUzXOkftYtj8BltJ7ytEKW4gWcwfN6gJU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JRJHdo+R; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 319DBC4CEC3;
-	Tue, 15 Oct 2024 01:30:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728955857;
-	bh=KdYbmsoSUbCNl+CmIGlKxxBZZT6J27cNs7+f9ey+TQk=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=JRJHdo+RNf9DzakUgfJkiKJ2QlZ9h4wyjutQcq+66nPFNyvT+CEzmGrCB1rVSGXC5
-	 LEAormNV6WkRLekYi1vZGV8K/iFalXYDpEIwph69xM9Yzxcmi3PKJuXSMsie8tL+Gu
-	 OYelC3MtGiHfq2s66hxwmTMNFghN+84pLhV0U0/44Ep7iNP3EnZnnw8wzF2v+Y0Lyv
-	 jHfTtBm7z8zMRalgpAkyGqVuHKTnZ4Zgmv9T7ubfZacZA0mU/S5Y0nNA+/oqVIS9T0
-	 RiEF0Xpu9AZrcK+6s7fRYaXbRqbvnDIeCZIWsjrDK+79aUwSGZtU9gEsaU1USX9ks7
-	 eBy78H+80OY6A==
-From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Florent Revest <revest@chromium.org>
-Cc: linux-trace-kernel@vger.kernel.org,
-	LKML <linux-kernel@vger.kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	bpf <bpf@vger.kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Alan Maguire <alan.maguire@oracle.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	linux-arch@vger.kernel.org,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	WANG Xuerui <kernel@xen0n.name>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Naveen N Rao <naveen@kernel.org>,
-	Madhavan Srinivasan <maddy@linux.ibm.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: [PATCH v16 12/18] ftrace: Add CONFIG_HAVE_FTRACE_GRAPH_FUNC
-Date: Tue, 15 Oct 2024 10:30:49 +0900
-Message-ID: <172895584902.107311.3380092446403564097.stgit@devnote2>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <172895571278.107311.14000164546881236558.stgit@devnote2>
-References: <172895571278.107311.14000164546881236558.stgit@devnote2>
-User-Agent: StGit/0.19
+	s=arc-20240116; t=1728955854; c=relaxed/simple;
+	bh=ONwEt1qF2gnrKk8AYHsw2vANXqRWmSlSBZHZSf2w5NU=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=o3yUnONvOC3hm2XqxAGz/kfvycMc8KKjg6t96goSBjTIgQc64JKotbiAKc9leJGhQJJ4GRv8GYiudgo2inC/hPulho5ERohTxSq2pUYNyuxP+JJe1aDJRmmbtE564uNHFZbKzDuKwvnamG0S56IGALAPypLYHWoGYzMLdQHNZ+o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=D+J/hCpq; arc=none smtp.client-ip=209.85.219.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f52.google.com with SMTP id 6a1803df08f44-6cbe700dcc3so37899506d6.3;
+        Mon, 14 Oct 2024 18:30:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1728955852; x=1729560652; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LMGHn90jdK1Apdx6ox+0iliPpJbyfHmeOMFwrILCXrk=;
+        b=D+J/hCpqBla4okiweOPXHqw2pZr4zJiqKyFLadML8NSmrBv+P7BjsvK2EW+JvDJzxh
+         PqDHjqf3KyUHhiPlnNppNV/qxDXzdlVBeO9dZWNceiXyke2OaRN9TC/BWM/uwjdLh/pF
+         8919+cP9/C3yQUa/dfWZa60Gqn403u/jfUaxXHeX+iBEgxJD6KMhibuIKx5yRrpBM8Fs
+         YHMLPR5wSPLAJCWkCxQmQEIJeHuKtyXwJe2kWqcGuQbwhYW6YPnJ3jH8XWb5RxYuWjiB
+         RigAns1sdslnbP3buWO5e4+MdEoPmJo9q1vkzdIAbxcfqeENCJ9G6B6hQByZ17A0CDRT
+         XtKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1728955852; x=1729560652;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=LMGHn90jdK1Apdx6ox+0iliPpJbyfHmeOMFwrILCXrk=;
+        b=CsWhuQFofx0uu2PXxGwGV93FeYGzm474jurIWZkvzZZlN/N8aixU5qfH9pKBLnJYUK
+         5ghUywHpsgmn6X2KrThDpF6xsZkkWtDEZ6lapXhp0SnF6Wv8hVMMiW7+Lu6HZkciOv8v
+         9n6RySOI9k5mrxq6i3NbVCjDvPCSvPGuUxT02qyu48n0wMhigGSIxLWLSZyV+1NPG97C
+         ldNw8pr2IYWU3O+Pt89bW/UQ05wCze3XMkozSowO4qHSwXYfl4mVtppL2jAFjho3PkJd
+         LAF/2hoeOC0uNfD8Ycju8Eu63Nt3CYmPzkfs7TO5RwB497s35bvAF1WhHpu5I+YvXgaB
+         gnaw==
+X-Forwarded-Encrypted: i=1; AJvYcCXXhR8OYXnaBOapOoLXgXIMQx4whIC1n+OIJrAO6YjOEhKP4kUzLM8m1BHxbv//Z/CQtCdwB5M=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzFxmQoMl8N+vTHAXm7Slzu0WLuI9anutTy+nmEBg4b43cubIYV
+	Ilyx7HReRfyd/MOIKrM8guPxJIbATlvugoqFKgZDSo2eckZB4FfD
+X-Google-Smtp-Source: AGHT+IGWNmu38/JGic1tS6JUWwL04UT03YEF6hrgrIMa7SB5gYtRN5ap+Uf6ck786HKewFOn2jWHEw==
+X-Received: by 2002:a05:6214:43c1:b0:6cb:98d3:3e67 with SMTP id 6a1803df08f44-6cbf007c225mr212672146d6.53.1728955851681;
+        Mon, 14 Oct 2024 18:30:51 -0700 (PDT)
+Received: from localhost (86.235.150.34.bc.googleusercontent.com. [34.150.235.86])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6cc2292e964sm1403136d6.59.2024.10.14.18.30.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Oct 2024 18:30:51 -0700 (PDT)
+Date: Mon, 14 Oct 2024 21:30:50 -0400
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: Jason Xing <kerneljasonxing@gmail.com>, 
+ davem@davemloft.net, 
+ edumazet@google.com, 
+ kuba@kernel.org, 
+ pabeni@redhat.com, 
+ dsahern@kernel.org, 
+ willemdebruijn.kernel@gmail.com, 
+ willemb@google.com, 
+ ast@kernel.org, 
+ daniel@iogearbox.net, 
+ andrii@kernel.org, 
+ martin.lau@linux.dev, 
+ eddyz87@gmail.com, 
+ song@kernel.org, 
+ yonghong.song@linux.dev, 
+ john.fastabend@gmail.com, 
+ kpsingh@kernel.org, 
+ sdf@fomichev.me, 
+ haoluo@google.com, 
+ jolsa@kernel.org
+Cc: bpf@vger.kernel.org, 
+ netdev@vger.kernel.org, 
+ Jason Xing <kernelxing@tencent.com>
+Message-ID: <670dc5cab30f5_2e1742294bc@willemb.c.googlers.com.notmuch>
+In-Reply-To: <20241012040651.95616-2-kerneljasonxing@gmail.com>
+References: <20241012040651.95616-1-kerneljasonxing@gmail.com>
+ <20241012040651.95616-2-kerneljasonxing@gmail.com>
+Subject: Re: [PATCH net-next v2 01/12] net-timestamp: introduce socket tsflag
+ requestors
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Jason Xing wrote:
+> From: Jason Xing <kernelxing@tencent.com>
+> 
+> We need a separate tsflag to control bpf extension feature so that
+> we will not affect the behaviors of existing applications.
+> 
+> The idea of introducing requestors for better extension (not only
+> serving bpf extension) comes from Vadim Fedorenko.
 
-Add CONFIG_HAVE_FTRACE_GRAPH_FUNC kconfig in addition to ftrace_graph_func
-macro check. This is for the other feature (e.g. FPROBE) which requires to
-access ftrace_regs from fgraph_ops::entryfunc() can avoid compiling if
-the fgraph can not pass the valid ftrace_regs.
+As also said in the cover letter: I prefer sk_tstflags_bpf.
 
-Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Huacai Chen <chenhuacai@kernel.org>
-Cc: WANG Xuerui <kernel@xen0n.name>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Nicholas Piggin <npiggin@gmail.com>
-Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: Naveen N Rao <naveen@kernel.org>
-Cc: Madhavan Srinivasan <maddy@linux.ibm.com>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>
-Cc: Albert Ou <aou@eecs.berkeley.edu>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: x86@kernel.org
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-
----
- Changes in v8:
-  - Newly added.
----
- arch/arm64/Kconfig     |    1 +
- arch/loongarch/Kconfig |    1 +
- arch/powerpc/Kconfig   |    1 +
- arch/riscv/Kconfig     |    1 +
- arch/x86/Kconfig       |    1 +
- kernel/trace/Kconfig   |    5 +++++
- 6 files changed, 10 insertions(+)
-
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index 012bb9dcb631..ef8f2807790d 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -213,6 +213,7 @@ config ARM64
- 	select HAVE_SAMPLE_FTRACE_DIRECT_MULTI
- 	select HAVE_EFFICIENT_UNALIGNED_ACCESS
- 	select HAVE_GUP_FAST
-+	select HAVE_FTRACE_GRAPH_FUNC
- 	select HAVE_FTRACE_MCOUNT_RECORD
- 	select HAVE_FUNCTION_TRACER
- 	select HAVE_FUNCTION_ERROR_INJECTION
-diff --git a/arch/loongarch/Kconfig b/arch/loongarch/Kconfig
-index 2b0dc9830ec1..5e15c8ed7faf 100644
---- a/arch/loongarch/Kconfig
-+++ b/arch/loongarch/Kconfig
-@@ -133,6 +133,7 @@ config LOONGARCH
- 	select HAVE_EFFICIENT_UNALIGNED_ACCESS if !ARCH_STRICT_ALIGN
- 	select HAVE_EXIT_THREAD
- 	select HAVE_GUP_FAST
-+	select HAVE_FTRACE_GRAPH_FUNC
- 	select HAVE_FTRACE_MCOUNT_RECORD
- 	select HAVE_FUNCTION_ARG_ACCESS_API
- 	select HAVE_FUNCTION_ERROR_INJECTION
-diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index 8094a01974cc..0888aabff071 100644
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -238,6 +238,7 @@ config PPC
- 	select HAVE_EBPF_JIT
- 	select HAVE_EFFICIENT_UNALIGNED_ACCESS
- 	select HAVE_GUP_FAST
-+	select HAVE_FTRACE_GRAPH_FUNC
- 	select HAVE_FTRACE_MCOUNT_RECORD
- 	select HAVE_FUNCTION_ARG_ACCESS_API
- 	select HAVE_FUNCTION_DESCRIPTORS	if PPC64_ELF_ABI_V1
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index 8afe0f0436d4..cd3f7d2e55ca 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -142,6 +142,7 @@ config RISCV
- 	select HAVE_DYNAMIC_FTRACE if !XIP_KERNEL && MMU && (CLANG_SUPPORTS_DYNAMIC_FTRACE || GCC_SUPPORTS_DYNAMIC_FTRACE)
- 	select HAVE_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
- 	select HAVE_DYNAMIC_FTRACE_WITH_ARGS if HAVE_DYNAMIC_FTRACE
-+	select HAVE_FTRACE_GRAPH_FUNC
- 	select HAVE_FTRACE_MCOUNT_RECORD if !XIP_KERNEL
- 	select HAVE_FUNCTION_GRAPH_TRACER
- 	select HAVE_FUNCTION_GRAPH_FREGS
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 22cb0d181552..b42f9e7f1b87 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -232,6 +232,7 @@ config X86
- 	select HAVE_EXIT_THREAD
- 	select HAVE_GUP_FAST
- 	select HAVE_FENTRY			if X86_64 || DYNAMIC_FTRACE
-+	select HAVE_FTRACE_GRAPH_FUNC		if HAVE_FUNCTION_GRAPH_TRACER
- 	select HAVE_FTRACE_MCOUNT_RECORD
- 	select HAVE_FUNCTION_GRAPH_FREGS	if HAVE_FUNCTION_GRAPH_TRACER
- 	select HAVE_FUNCTION_GRAPH_TRACER	if X86_32 || (X86_64 && DYNAMIC_FTRACE)
-diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
-index 82654bbfad9a..2fc55a1a88aa 100644
---- a/kernel/trace/Kconfig
-+++ b/kernel/trace/Kconfig
-@@ -34,6 +34,11 @@ config HAVE_FUNCTION_GRAPH_TRACER
- config HAVE_FUNCTION_GRAPH_FREGS
- 	bool
- 
-+config HAVE_FTRACE_GRAPH_FUNC
-+	bool
-+	help
-+	  True if ftrace_graph_func() is defined.
-+
- config HAVE_DYNAMIC_FTRACE
- 	bool
- 	help
-
+This array approach adds code churn, may have cacheline effects by
+moving other fields and anticipates I don't see a third requestor
+happening. And if it does, we'll deal with it then.
 
