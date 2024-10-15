@@ -1,56 +1,62 @@
-Return-Path: <bpf+bounces-41967-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41968-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 278AD99DDE3
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 08:02:06 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 437ED99DE2B
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 08:23:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DBFA2285650
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 06:02:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D6850B22727
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 06:23:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD3C9185920;
-	Tue, 15 Oct 2024 06:01:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CFFE18A6DB;
+	Tue, 15 Oct 2024 06:23:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="B8hyAb9S"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="dJPBkla0"
 X-Original-To: bpf@vger.kernel.org
-Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
+Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0675816B75C;
-	Tue, 15 Oct 2024 06:01:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.97
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36A36189BB9
+	for <bpf@vger.kernel.org>; Tue, 15 Oct 2024 06:22:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728972118; cv=none; b=AVprnENSkGXIb+Jl7YGfzAfVkR0wYLwY3s/l4btxFK03b6C1uM8jycs3vgBFD67bTBbYsSNH2nPzY9F0vH+uDWwhfS3TXyG4L+OYGbOTk1N4TXYx1oqe8sKhiugXOFCEEQVN9c1iPt7d1HnkL/Hfy9h95ZT0GrZM8M486mjTf8Y=
+	t=1728973381; cv=none; b=meX39ytLKX49A80qg9Gn1Bwwwd0qaQrwa35o69UYEPm33LXUMF5EUKnIZC644tPVP0X6h+xNvbWWnRR+4nnAiFbUux9E3f5sbaCiT38E4HJF7aGaKjJU66ve8QnlezlU0e9F/23sH0hkKooorOwTkOsRKKumxTAD/EP/onFBoWU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728972118; c=relaxed/simple;
-	bh=KrWbdS94PufFPbY55NpG5muUz3WCsR7A2OJn/AbXUUo=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ENmaUnfLJqIm5k5uYyMAXdDGq1cA/9srVi/NYd1hY/Or4catouC341agDQckUIWUoc/EtStQCbQ98PmanENefvypRHoMf7WwWQ5co4lBchIGbWeoi7Gs/aLYDTRbtXshvsUELl9fSkBhm4sIjjYBFsoexEXuIo/IECWjY43hqnE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=B8hyAb9S; arc=none smtp.client-ip=115.124.30.97
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1728972111; h=From:To:Subject:Date:Message-ID:MIME-Version;
-	bh=0znhD1Yg3CYkj0go/qbgyRSHmUouwLj2A48RQR6Tvm8=;
-	b=B8hyAb9S/Qm3W8YRqY9It27kDgFSym4h7Kldb7lVBtflQ/PCf0ZsXoYFtLTIKKwS0sI4zFVtyZxhqy96ToXcs2d7GKizNSFdMJPpHA2HmGRPn/VGf5qbpJZGKdFkFWNd6Gfi8NZ9U9Eg6m8Vl9MwngPFHqrsqzPSd5GwfLuDNWc=
-Received: from localhost(mailfrom:mqaio@linux.alibaba.com fp:SMTPD_---0WHCIOcG_1728972110 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Tue, 15 Oct 2024 14:01:51 +0800
-From: Ma Qiao <mqaio@linux.alibaba.com>
-To: linux-trace-kernel@vger.kernel.org,
-	rostedt@goodmis.org,
-	mhiramat@kernel.org
-Cc: mathieu.desnoyers@efficios.com,
-	namhyung.kim@lge.com,
-	oleg@redhat.com,
+	s=arc-20240116; t=1728973381; c=relaxed/simple;
+	bh=WhJWhAbq0UVdVTbBtMSmvTKOy1yBEbfuRj6REU2MJ5A=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=oz8oFIUhdoKCvN2Wa8w1Op7dTIwU8jq6fMqBMXEhmZsJtjYwhEKEGRX/jxvMsmG+HopreE2d3i4/bqw80x8miHi3wrKAk2dywi9iU4g2ppy8HGioAwzIX+BJspTSkSErL+FOwacUL5flT7L2zYmUy9VfmdqVbcTRFX0pXszSZGw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=dJPBkla0; arc=none smtp.client-ip=91.218.175.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1728973374;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=xV2Yn9Bz9oRhnkXtJemv6T7ztjEHIIDMEfp++wcVRdY=;
+	b=dJPBkla0CzIQt1/oCLTl+pyBwsupuDADTe3AMaNaRjSbkYP42m30f4ofdFd5LRYo9NRlmI
+	AiJiV7ef9EpEWCpe55/OYaVyye+0s06QQXtww2oGxuAR5qko658/weME0PXIKGBiuJnJLz
+	FpJN01awZym+VFUgSI0s7Tvjo4WOxIU=
+From: Andrea Righi <andrea.righi@linux.dev>
+To: Tejun Heo <tj@kernel.org>,
+	David Vernet <void@manifault.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>
+Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>,
+	Mel Gorman <mgorman@suse.de>,
+	Valentin Schneider <vschneid@redhat.com>,
 	linux-kernel@vger.kernel.org,
 	bpf@vger.kernel.org
-Subject: [PATCH v2] uprobe: avoid out-of-bounds memory access of fetching args
-Date: Tue, 15 Oct 2024 14:01:48 +0800
-Message-ID: <20241015060148.1108331-1-mqaio@linux.alibaba.com>
-X-Mailer: git-send-email 2.43.5
+Subject: [PATCH v3] sched_ext: Trigger ops.update_idle() from pick_task_idle()
+Date: Tue, 15 Oct 2024 08:22:50 +0200
+Message-ID: <20241015062250.55350-1-andrea.righi@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -58,177 +64,95 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-From: Qiao Ma <mqaio@linux.alibaba.com>
+With the consolidation of put_prev_task/set_next_task(), see
+commit 436f3eed5c69 ("sched: Combine the last put_prev_task() and the
+first set_next_task()"), we are now skipping the transition between
+these two functions when the previous and the next tasks are the same.
 
-Uprobe needs to fetch args into a percpu buffer, and then copy to ring
-buffer to avoid non-atomic context problem.
+As a result, ops.update_idle() is now called only once when the CPU
+transitions to the idle class. If the CPU stays active (e.g., through a
+call to scx_bpf_kick_cpu()), ops.update_idle() will not be triggered
+again since the task remains unchanged (rq->idle).
 
-Sometimes user-space strings, arrays can be very large, but the size of
-percpu buffer is only page size. And store_trace_args() won't check
-whether these data exceeds a single page or not, caused out-of-bounds
-memory access.
+While this behavior seems generally correct, it can cause issues in
+certain sched_ext scenarios.
 
-It could be reproduced by following steps:
-1. build kernel with CONFIG_KASAN enabled
-2. save follow program as test.c
+For example, a BPF scheduler might use logic like the following to keep
+the CPU active under specific conditions:
 
-```
-\#include <stdio.h>
-\#include <stdlib.h>
-\#include <string.h>
-
-// If string length large than MAX_STRING_SIZE, the fetch_store_strlen()
-// will return 0, cause __get_data_size() return shorter size, and
-// store_trace_args() will not trigger out-of-bounds access.
-// So make string length less than 4096.
-\#define STRLEN 4093
-
-void generate_string(char *str, int n)
+void BPF_STRUCT_OPS(sched_update_idle, s32 cpu, bool idle)
 {
-    int i;
-    for (i = 0; i < n; ++i)
-    {
-        char c = i % 26 + 'a';
-        str[i] = c;
-    }
-    str[n-1] = '\0';
+	if (!idle)
+		return;
+	if (condition)
+		scx_bpf_kick_cpu(cpu, 0);
 }
 
-void print_string(char *str)
-{
-    printf("%s\n", str);
-}
+A call to scx_bpf_kick_cpu() wakes up the CPU, so in theory,
+ops.update_idle() should be triggered again until the condition becomes
+false. However, this doesn't happen, and scx_bpf_kick_cpu() doesn't
+produce the expected effect.
 
-int main()
-{
-    char tmp[STRLEN];
+In practice, this change badly impacts performance in user-space
+schedulers that rely on ops.update_idle() to activate user-space
+components.
 
-    generate_string(tmp, STRLEN);
-    print_string(tmp);
+For instance, in the case of scx_rustland, performance drops
+significantly (e.g., gaming benchmarks fall from ~60fps to ~10fps).
 
-    return 0;
-}
-```
-3. compile program
-`gcc -o test test.c`
+To address this, trigger ops.update_idle() from pick_task_idle() rather
+than set_next_task_idle(). This restores the correct behavior of
+ops.update_idle() and it allows to fix the performance regression in
+scx_rustland.
 
-4. get the offset of `print_string()`
-```
-objdump -t test | grep -w print_string
-0000000000401199 g     F .text  000000000000001b              print_string
-```
-
-5. configure uprobe with offset 0x1199
-```
-off=0x1199
-
-cd /sys/kernel/debug/tracing/
-echo "p /root/test:${off} arg1=+0(%di):ustring arg2=\$comm arg3=+0(%di):ustring"
- > uprobe_events
-echo 1 > events/uprobes/enable
-echo 1 > tracing_on
-```
-
-6. run `test`, and kasan will report error.
-==================================================================
-BUG: KASAN: use-after-free in strncpy_from_user+0x1d6/0x1f0
-Write of size 8 at addr ffff88812311c004 by task test/499CPU: 0 UID: 0 PID: 499 Comm: test Not tainted 6.12.0-rc3+ #18
-Hardware name: Red Hat KVM, BIOS 1.16.0-4.al8 04/01/2014
-Call Trace:
- <TASK>
- dump_stack_lvl+0x55/0x70
- print_address_description.constprop.0+0x27/0x310
- kasan_report+0x10f/0x120
- ? strncpy_from_user+0x1d6/0x1f0
- strncpy_from_user+0x1d6/0x1f0
- ? rmqueue.constprop.0+0x70d/0x2ad0
- process_fetch_insn+0xb26/0x1470
- ? __pfx_process_fetch_insn+0x10/0x10
- ? _raw_spin_lock+0x85/0xe0
- ? __pfx__raw_spin_lock+0x10/0x10
- ? __pte_offset_map+0x1f/0x2d0
- ? unwind_next_frame+0xc5f/0x1f80
- ? arch_stack_walk+0x68/0xf0
- ? is_bpf_text_address+0x23/0x30
- ? kernel_text_address.part.0+0xbb/0xd0
- ? __kernel_text_address+0x66/0xb0
- ? unwind_get_return_address+0x5e/0xa0
- ? __pfx_stack_trace_consume_entry+0x10/0x10
- ? arch_stack_walk+0xa2/0xf0
- ? _raw_spin_lock_irqsave+0x8b/0xf0
- ? __pfx__raw_spin_lock_irqsave+0x10/0x10
- ? depot_alloc_stack+0x4c/0x1f0
- ? _raw_spin_unlock_irqrestore+0xe/0x30
- ? stack_depot_save_flags+0x35d/0x4f0
- ? kasan_save_stack+0x34/0x50
- ? kasan_save_stack+0x24/0x50
- ? mutex_lock+0x91/0xe0
- ? __pfx_mutex_lock+0x10/0x10
- prepare_uprobe_buffer.part.0+0x2cd/0x500
- uprobe_dispatcher+0x2c3/0x6a0
- ? __pfx_uprobe_dispatcher+0x10/0x10
- ? __kasan_slab_alloc+0x4d/0x90
- handler_chain+0xdd/0x3e0
- handle_swbp+0x26e/0x3d0
- ? __pfx_handle_swbp+0x10/0x10
- ? uprobe_pre_sstep_notifier+0x151/0x1b0
- irqentry_exit_to_user_mode+0xe2/0x1b0
- asm_exc_int3+0x39/0x40
-RIP: 0033:0x401199
-Code: 01 c2 0f b6 45 fb 88 02 83 45 fc 01 8b 45 fc 3b 45 e4 7c b7 8b 45 e4 48 98 48 8d 50 ff 48 8b 45 e8 48 01 d0 ce
-RSP: 002b:00007ffdf00576a8 EFLAGS: 00000206
-RAX: 00007ffdf00576b0 RBX: 0000000000000000 RCX: 0000000000000ff2
-RDX: 0000000000000ffc RSI: 0000000000000ffd RDI: 00007ffdf00576b0
-RBP: 00007ffdf00586b0 R08: 00007feb2f9c0d20 R09: 00007feb2f9c0d20
-R10: 0000000000000001 R11: 0000000000000202 R12: 0000000000401040
-R13: 00007ffdf0058780 R14: 0000000000000000 R15: 0000000000000000
- </TASK>
-
-This commit enforces the buffer's maxlen less than a page-size to avoid
-store_trace_args() out-of-memory access.
-
-Fixes: dcad1a204f72 ("tracing/uprobes: Fetch args before reserving a ring buffer")
-Signed-off-by: Qiao Ma <mqaio@linux.alibaba.com>
+Fixes: 7c65ae81ea86 ("sched_ext: Don't call put_prev_task_scx() before picking the next task")
+Signed-off-by: Andrea Righi <andrea.righi@linux.dev>
 ---
- kernel/trace/trace_uprobe.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ kernel/sched/idle.c | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
-index c40531d2cbadd..13f9270ed5ab4 100644
---- a/kernel/trace/trace_uprobe.c
-+++ b/kernel/trace/trace_uprobe.c
-@@ -875,6 +875,7 @@ struct uprobe_cpu_buffer {
- };
- static struct uprobe_cpu_buffer __percpu *uprobe_cpu_buffer;
- static int uprobe_buffer_refcnt;
-+#define MAX_UCB_BUFFER_SIZE PAGE_SIZE
- 
- static int uprobe_buffer_init(void)
+ChangeLog v2 -> v3:
+  - add a comment to clarify why we need to update the scx idle state in
+    pick_task()
+
+ChangeLog v1 -> v2:
+  - move the logic from put_prev_set_next_task() to scx_update_idle()
+
+diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
+index d2f096bb274c..d336a05a6006 100644
+--- a/kernel/sched/idle.c
++++ b/kernel/sched/idle.c
+@@ -459,13 +459,26 @@ static void put_prev_task_idle(struct rq *rq, struct task_struct *prev, struct t
+ static void set_next_task_idle(struct rq *rq, struct task_struct *next, bool first)
  {
-@@ -979,6 +980,11 @@ static struct uprobe_cpu_buffer *prepare_uprobe_buffer(struct trace_uprobe *tu,
- 	ucb = uprobe_buffer_get();
- 	ucb->dsize = tu->tp.size + dsize;
+ 	update_idle_core(rq);
+-	scx_update_idle(rq, true);
+ 	schedstat_inc(rq->sched_goidle);
+ 	next->se.exec_start = rq_clock_task(rq);
+ }
  
-+	if (WARN_ON_ONCE(ucb->dsize > MAX_UCB_BUFFER_SIZE)) {
-+		ucb->dsize = MAX_UCB_BUFFER_SIZE;
-+		dsize = MAX_UCB_BUFFER_SIZE - tu->tp.size;
-+	}
-+
- 	store_trace_args(ucb->buf, &tu->tp, regs, NULL, esize, dsize);
- 
- 	*ucbp = ucb;
-@@ -998,9 +1004,6 @@ static void __uprobe_trace_func(struct trace_uprobe *tu,
- 
- 	WARN_ON(call != trace_file->event_call);
- 
--	if (WARN_ON_ONCE(ucb->dsize > PAGE_SIZE))
--		return;
--
- 	if (trace_trigger_soft_disabled(trace_file))
- 		return;
+ struct task_struct *pick_task_idle(struct rq *rq)
+ {
++	/*
++	 * When switching from a non-idle to the idle class, .set_next_task()
++	 * is called only once during the transition.
++	 *
++	 * However, the CPU may remain active for multiple rounds (e.g., by
++	 * calling scx_bpf_kick_cpu() from the ops.update_idle() callback).
++	 *
++	 * In such cases, we need to keep updating the scx idle state to
++	 * properly re-trigger the ops.update_idle() callback.
++	 *
++	 * Updating the state in .pick_task(), instead of .set_next_task(),
++	 * ensures correct handling of scx idle state transitions.
++	 */
++	scx_update_idle(rq, true);
+ 	return rq->idle;
+ }
  
 -- 
-2.43.5
+2.47.0
 
 
