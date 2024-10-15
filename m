@@ -1,235 +1,355 @@
-Return-Path: <bpf+bounces-41952-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-41953-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A96F299DC86
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 05:03:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E8D899DCB3
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 05:26:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6859A282A76
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 03:03:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 33F4F1C2161A
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 03:26:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85B7016E86F;
-	Tue, 15 Oct 2024 03:03:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0D4A16FF4E;
+	Tue, 15 Oct 2024 03:26:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZIAAGJI9"
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="dJ6fSiCa"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-io1-f46.google.com (mail-io1-f46.google.com [209.85.166.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2086.outbound.protection.outlook.com [40.107.93.86])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E2FE20EB;
-	Tue, 15 Oct 2024 03:02:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.46
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728961380; cv=none; b=lRXKKYRSLBBkm5wRAdbBZpjXOzNMDpmjVbWbnQ4ZF+ILmFfPlEDSnBhmd0p3UznVXYInyRxdMaDBoIoP+pFs16wO56WObz1oKbMVkjv5ZLo+Z5ThcctoO5bMDsueo9ihwKyjwHuPo2zlSxTTTi7780/C+ass9z+FTBBHDnInbr8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728961380; c=relaxed/simple;
-	bh=0X2cfRdeK/ryDcAiBkQTDP3ngJXQNSwzhR2QZ0hAcMM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PlXmOw7zVUKTMMj3Bo3J/QynDkehAVJ1GbUsaq0MeeHy4XFOGMZvIs+tQ7X/2Nca5PPARs9saEkf6MiFlI+Nt4yKp+5iJrmWR1F+TUv6CeKG1EPy6JclgAmEIE23712qL+NPQOE1ky3pR6WC4yPvwf9sQXBS5Zr2a6JaAwyt3KI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZIAAGJI9; arc=none smtp.client-ip=209.85.166.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f46.google.com with SMTP id ca18e2360f4ac-83795fbfe4cso131414139f.2;
-        Mon, 14 Oct 2024 20:02:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1728961377; x=1729566177; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+6UU5ooZFAdRUkTAnuPd5XbFtIHBzKaMWkWSQZvnE/E=;
-        b=ZIAAGJI9mdR8VGOKcU/aIjZuLKvscAHHlcXVjUJWUd3mtmn2LqX2ELo77r2UarqvSL
-         zJ2jVfn+vbwSQHC7RVDowlh2EfqnrmTcz89/Sr7OmDdqzw+vGMAFDwOfOc6K2JGCMNk8
-         BMODuOCG+4lcy6pfN4ugNlMO6eh04zWnlwVKl27Z/rMg4Yb7+F6IDuiNfl8qJlwikNLl
-         oN5Kk/0LTw6PD917qp0cCGdC9v8Gsnuvk8oIfw1oyLs1erFx6exDeL+Je28iujgeUS+V
-         GpNlmTG2iY1x4CxJjZrkChSKpCWwUA6VBAA33c8RXw1LE2p31sWGMdrUg4Xm6Knr1ddP
-         sb2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728961377; x=1729566177;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+6UU5ooZFAdRUkTAnuPd5XbFtIHBzKaMWkWSQZvnE/E=;
-        b=b5RcJbjuR19Bl9qeppAroV2IHnAfzh3g0ZVLKf4Oi5yNgbUmiFUtMMIA94/bPAtlJT
-         shCiKsaxeFVtVEuvPPheCUoKibOc1QJk+GiK9piz9qiKvzquB0uIHO/qUpHjptu0aKKm
-         AlSdydCvVQ/jLGUl26Clbsmhertkz2QsUkykMZH/TcfVe4Qiu94Ya9SurDRAtdmGpbTk
-         1cXV1K1D4WreK2WJaLcEFvCCJKD94rxAAoRDatw1gFFMw3j3OFM9s4urhkKJrDh+WGKS
-         BAY0nCCE5PoF+jtoKSPUL3WvkQAUKyGgHxXrAug9zmPqKroxz4oY9ooVnoqD0YK/mV1M
-         Hciw==
-X-Forwarded-Encrypted: i=1; AJvYcCUSbUfzeXvruLeIY6s/G6ms8RdiXhkd/NnVWEQcQjIvSgmhADmZdC+sc19/XLCcdqQwC6U=@vger.kernel.org, AJvYcCV71QJapE5FUReewhhLIm7+u4aeV3xJny3Qq17cA+uRnNKmvZmpzqEB2NVBJmMbnVBFS+zjF3X9@vger.kernel.org
-X-Gm-Message-State: AOJu0YzsAZPDZP5TIkNXXInK7WCmOuZ/PpndXikA5KNnveaxpD5ySO7I
-	4RsM6r6fYpA8gcC1zbfzP0doZtNhIr44QdoytQ5ui48bM/qILGRyz+21vTyBz/MIuqQ3IfjZ3KZ
-	tnB9KGt3+q0vB6BeA68dt6uTGwh8=
-X-Google-Smtp-Source: AGHT+IGtoZastAPk4ELZ2j9CFlEuecBjRwEzLTDpMVEii0Xv1pBvxgtk/YWB1JbY84N0Tm0qk944D1eH1p8AsusxBEw=
-X-Received: by 2002:a05:6e02:1446:b0:3a3:67b1:3080 with SMTP id
- e9e14a558f8ab-3a3bcdbb5acmr85098445ab.7.1728961377546; Mon, 14 Oct 2024
- 20:02:57 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50C482BD19;
+	Tue, 15 Oct 2024 03:25:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.86
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1728962761; cv=fail; b=tQELBbFRzAdB3SA0E7YB1iedY5v2MOjQP0FSDXqcKvEV8mYzGdO/KmfJ9Oi6pRaC4jkHRsydaNT78IwqaDiFByf/JopjlILlj9nklvbJkHtc5MyrbEbPXk7wi6XGUs61niskisQlY9O7A/ruUplUSPMXF3I2E/EDzKJitGuNipw=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1728962761; c=relaxed/simple;
+	bh=SwVPbpaJHRyv0DpRnG6X/Bl5mqB2O3tbGcK2Y9Wwvts=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=cbN0R0V28+lHXrlysKJBqXhmPn9zCvxj49/86WSSY+YUYSx6k3/ZJuADCue/usgU+frLnk9d4PANMbU1/exLcPATsuQiFPqiqTAMvaLHLTGr0n4c7lS8TGy4PfVPvYDDdV4fkxmAAbc3l8oLOgzEBBgZuUywC13A02tr6ghAIeg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=dJ6fSiCa; arc=fail smtp.client-ip=40.107.93.86
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=WfADRauKQbwMHPa7EcAPREsjzib88s2Al6ZLONjmHgC8msRJtqdpRtzzsOlm2Aq62lrnB/YAKaCS9y7YTe2jd0YpCJVGMo5M0/ZGY1G4xmYBLhMUWcPho7dSlHFWp5zVmdDLe1W97m8kF0RNCR95+iyU9iBSleDLhDJY7vcohqmtgOaEFaOVs8FoDi7Fu+7lPXn0BgsjyHOb1zz65NGUtrcejmuCAd8D5gBDU4CWh1TnBOuoI5Yny28vlh76mCzvSXuIK4RuL2hl21FpyVJhY/Lpxh7B4oGn9tOlRBqRuBwLbL6MqYDJmd7GzqSSla1fhnv9fID4XFZWxoeG/1hOvg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=A7o8IKUURrAtW7ATKpEDBVycOw3tZqygA4dtlwDHh6Q=;
+ b=VgSU/wygnivKrP8cDQ2DPdDmMWAVJCWT3Bfm+qKf1tybk+2Da5MHe2y/NjjJJYTrrZ4cEVAYI0+ydJWy0fI7YnoVZ79YmdTMFjFEVdpM8V6Y0aM/9D5P4Go7Cb4pnNbWG019gj2gAB5aGZ25rCowobbBw3/Z/ndb4OidticZfGxbfbKAeHZ7Hgv5L3RRwjoQIZycc7gESuHCGdvFeowQtmM/7I6MTc9UWQyBpfOQPpWN6w5JirANILTuz50DKjjySC1rK8jYzgN6sJTOzaF5TLX21qZmxAcDKNGJKe20kT4prSwFUhOCM0ozXvE5Tyhh9VjS0n6TDlwVR0LxwFj3Sw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=A7o8IKUURrAtW7ATKpEDBVycOw3tZqygA4dtlwDHh6Q=;
+ b=dJ6fSiCasHW2BEFG2O2RxuB9MCz3fW+Uy3pVhuy3hVUMmKC9UUrwerqr8Da7F3cl3O1qpwhACp10FGincBSSej5biFiecf2aFp2YNf4FTB63QtYeXFFRa0LOWrkFTFhOcNPraAwupRVs1tEuzVAyj9iIRVp49XBCTA0h44bJI0k=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from DS0PR12MB6608.namprd12.prod.outlook.com (2603:10b6:8:d0::10) by
+ SJ2PR12MB8009.namprd12.prod.outlook.com (2603:10b6:a03:4c7::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8026.22; Tue, 15 Oct
+ 2024 03:25:56 +0000
+Received: from DS0PR12MB6608.namprd12.prod.outlook.com
+ ([fe80::b71d:8902:9ab3:f627]) by DS0PR12MB6608.namprd12.prod.outlook.com
+ ([fe80::b71d:8902:9ab3:f627%3]) with mapi id 15.20.8048.020; Tue, 15 Oct 2024
+ 03:25:56 +0000
+Message-ID: <f623f471-e874-4271-8469-8754a87c154e@amd.com>
+Date: Tue, 15 Oct 2024 08:55:47 +0530
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH rcu 03/12] srcu: Renaming in preparation for additional
+ reader flavor
+Content-Language: en-US
+To: paulmck@kernel.org
+Cc: frederic@kernel.org, rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+ kernel-team@meta.com, rostedt@goodmis.org,
+ Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>,
+ Kent Overstreet <kent.overstreet@linux.dev>, bpf@vger.kernel.org
+References: <ff986c31-9cd0-45e5-aa31-9aedf582325f@paulmck-laptop>
+ <20241009180719.778285-3-paulmck@kernel.org>
+ <6853d494-0262-4a6a-b538-338695677f57@amd.com>
+ <36076d14-6732-4bbc-b96e-9bab1212c9dd@paulmck-laptop>
+From: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
+In-Reply-To: <36076d14-6732-4bbc-b96e-9bab1212c9dd@paulmck-laptop>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: PN2PR01CA0186.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:e8::13) To DS0PR12MB6608.namprd12.prod.outlook.com
+ (2603:10b6:8:d0::10)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241012040651.95616-1-kerneljasonxing@gmail.com>
- <670ab67920184_2737bf29465@willemb.c.googlers.com.notmuch>
- <CAL+tcoAv+QPUcNs6nV=TNjSZ69+GfaRgRROJ-LMEtpOC562-jA@mail.gmail.com>
- <670dc531710c_2e1742294b4@willemb.c.googlers.com.notmuch> <CAL+tcoA-pMZniF2wmYJBR+PKCWThT+i+h5K-cRs3P5yqe3x-PQ@mail.gmail.com>
- <670dda9437147_2e6c4029461@willemb.c.googlers.com.notmuch>
-In-Reply-To: <670dda9437147_2e6c4029461@willemb.c.googlers.com.notmuch>
-From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Tue, 15 Oct 2024 11:02:21 +0800
-Message-ID: <CAL+tcoCvqkY4=XPLkwKguhPCH0Dduc4Xk4GO2ymySo9Nv2sh3A@mail.gmail.com>
-Subject: Re: [PATCH net-next v2 00/12] net-timestamp: bpf extension to equip
- applications transparently
-To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
-	pabeni@redhat.com, dsahern@kernel.org, willemb@google.com, ast@kernel.org, 
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev, 
-	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev, 
-	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
-	haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org, 
-	netdev@vger.kernel.org, Jason Xing <kernelxing@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS0PR12MB6608:EE_|SJ2PR12MB8009:EE_
+X-MS-Office365-Filtering-Correlation-Id: d5bff13e-ea50-4059-b6ae-08dcecc914e8
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|7416014|366016|376014;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?Qks4SVl3NDczUGNwa28wR0NGT01PSWVrVEt6T0VxN0ZOb0t6djZOYlBwV0kw?=
+ =?utf-8?B?WjBSeW56cFNaREpkUnp1OVh5K1N4NThlVGhuUjhoa1VsTHVLOTZBWFU3Y2xQ?=
+ =?utf-8?B?Q3lkY21rUjh1aVdkNXdjWURQeWpnR2Exa0lBZlM3eGo5L254MTdJQXdMck80?=
+ =?utf-8?B?ZEs2aEZrSlBuQTFVT1BFYlVnRG5kaXZlUmdsb2FQYVhaZ1hDOHdtdldSVUtG?=
+ =?utf-8?B?cnZJU212elpQa2tsREtRVVVkWUsyaGxaRE10T2pmd1V6cTlUM2FpbjFqMnhU?=
+ =?utf-8?B?eEFhUE9aUDVMZ0VINUg0ZG03aEdKS0EwWVN5MDNJdGRqZm44SzNSQktBY0Zj?=
+ =?utf-8?B?ZUdRNlhEZFBNejVKWjREcXZnbHQrWXhLQklTUHB1TG9tcVE2Um1hekxRRTBn?=
+ =?utf-8?B?MXZlekpDUS96Qytta2lDMEpWd3g1eVNpY0s0NFVoczRRcVA1VFNuT3NrVlFW?=
+ =?utf-8?B?OHI5ckFDVFJBUWxoRnEyRkZ4U1NUdFFvUXpQNFVkcERMOS9uNnV1LzBMeXpt?=
+ =?utf-8?B?eURjYk8reFo3NGhzWTdpWEkva09lZjNlTWs3akM5S3VYNnBWRk5yM1pPc2U0?=
+ =?utf-8?B?VVRmRUQxemdJWlRXeEFYREtDdHFTUC9NTzR2bXBjRTdaYm1RZVppYUF6UFRt?=
+ =?utf-8?B?RjNSMkdkOXAxRCtjT2k3STYxL0VrRGpjanZhZEMvOG9pRmdvdW5UTnRZTEJY?=
+ =?utf-8?B?cElnZXlPci9hMm1NYTRDekZ5eTBQMW1rR1VHRFRiS3BFTnUrSHY0Rm00UERY?=
+ =?utf-8?B?cm5mL29Cb0x6M1p6ZXhmWXhhNFpYdnVvblhVZzJZYU50OU5oOUZtVG96aGNl?=
+ =?utf-8?B?WHhDc2dqN0pVTkpZYzFnTUdzTzkyN0ZJdVgzazBjK2N0ZC9ZY011UVdnMTVO?=
+ =?utf-8?B?VW1CaXZlS2xhRVp4N1NyZFI4dXhnZ2xxZ2wrWjVhaWNmNXR1SjZQQUx2TVpx?=
+ =?utf-8?B?ZXNac2UyS2k0YlhPWE1oaG5aVXFkZkpIb0dKZ0VIbVpUV2dZOEFsOURCbDZU?=
+ =?utf-8?B?eUxJMjYyU3pvc00wbGl2QVVBUThsR04vVGRWaytuSlR1UThabVA0OHErbSt4?=
+ =?utf-8?B?SmNRYnVEaGUyQkk2d3dld082ZEtJS2FMWUQ1Um5COW1LNVlIY2pyRy9ZSFl0?=
+ =?utf-8?B?MFBUM1Q5QTNPV0kvRDlwZFNuSDdwcUtveVBiK2NpUXhtUS9GdW5OTmFjVjZW?=
+ =?utf-8?B?NzFWRTYvSlEzUWdVVGRvbWowREhHV0xQOEpMWnZoRXBnZUJ1dGVFSGRzaTVn?=
+ =?utf-8?B?cm1sMzlWTHZHMHVpMWJQaVJBblM1dHZBV3JRQnMySlBlSVdJYjNzcUJPRzZu?=
+ =?utf-8?B?OStTZXV5NDEyRnUwTHJYQkJYVGNlSlkwRGFrZEozUllONDdjaCsvT1RWS3I3?=
+ =?utf-8?B?WERBbzdGNWVsNkxQUmdRTG1UcmNxYjRYZjBPN0Z5dGpza2s5RU42bk5HbnlH?=
+ =?utf-8?B?L1B4TmxGam11QWpHME5yb2pBV3czWjlxbFRMbC9pZVc4TVQzdnpENFZ0eGpx?=
+ =?utf-8?B?aU1ZZk5sMUlFejNNbGdBTHloOGFoNE80enRHcmgvT2VIdTB2TzZNNU5LakRV?=
+ =?utf-8?B?WGN0dVVUUnU3YWdNZzEyeTBFZDJSN0dMMkZYWW96bGxCMGp2Sm9XQTl4ZzBx?=
+ =?utf-8?B?c3lyOS9IRkVUTjZYWTNRZ2pHa1RFOVJyQnhLMGZrMjkrVmhnbUFNNzhCY3N3?=
+ =?utf-8?B?b3FhQVdxOUFNWnJONUdaZGJsWWhvUmFXU1czK0dqWm05eklLazBlL1dBPT0=?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB6608.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(7416014)(366016)(376014);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?d0Vqa0N2TzVUUFBMQTFYbFlHc1gyaTNHVFpGRWk3bnQ5aGlWQzlxY2w0cVl3?=
+ =?utf-8?B?cHBZMkJpczlOSkRVVnpwYnVHcGpsQTE2eGdjUkdlemxFM0NlOG5GZjJnclRx?=
+ =?utf-8?B?SmxnNGVUVEQ3ZDZWOGgzeFNJZU95L2RmY1hrLzhZemJDcXMxL0ZXdlFQNUUw?=
+ =?utf-8?B?YjN4MDBwT2VZdXVISzlFNWVMYXBUZjZKeDZUT0xRcDNhRUxvaklqRFliTFk0?=
+ =?utf-8?B?bFJrVGRZcTFBZUNpcVdtMUV4Q3p5ZWxSUE9MUjlob001VGdSR0VDQWJsMEcz?=
+ =?utf-8?B?MXZWMUR2dFZvZ1BZekNCRUpvSTJyeTB1MVVJeUFSbk93TkY5MGN2Z2tMbWRi?=
+ =?utf-8?B?bUdwYU9aVUlsNnRFS2NwQ3pvUlZrSVlwMTRodjlUYXJPWmc5MmJUOVZyT21C?=
+ =?utf-8?B?cEZiRlpQd2ZTWXByOUp1Vm9xRU1MVTdEVXArbDViMGJqSXVPcjRKVEt2NlRH?=
+ =?utf-8?B?WE51eTFiNVU0NjdPYkkrVTY2VDdzbFI5N1RYYzhMOFV3WEVQcGJFNDZsMzI0?=
+ =?utf-8?B?b1E3aytnMXVUSEE4c2hodnQ1VUgzVHpIVFV6UU9pYVVheWpxdndmdzcwMStN?=
+ =?utf-8?B?Zi9GZlhncWdLVFdYaXdJRHhpQjY1d2JlVUJaRDgwNUFkanRZeHhYSWQwOGZt?=
+ =?utf-8?B?dDNhdUJENWN1SFNFZ1g4dlpNSFg2eGtjS0d0dTB0Ym5UVFFobVZOYWh3clA1?=
+ =?utf-8?B?WXhmM1hjSGFkeEZpMjV2Uk5seE5MN1BKSVVxTFIvVCtKL0VjQjJvUFEyaE1u?=
+ =?utf-8?B?dVNXaVE0LzYxYitSUXE3dGU0WWtFOVVKSG95eVVmNHlxa3lOQmNMWE5OcGI1?=
+ =?utf-8?B?biszeml4Q1MrYXRzdHFnRWdJOGVTd0kyMEg0bG1MbDFvL1g1cy82N2JGeWpH?=
+ =?utf-8?B?NkNURS9RSDBDL0FwRm1VQkdINzBIWHNrKzA1eEphUE1XYUl2OVdXWEhUZUNS?=
+ =?utf-8?B?RFU1OGRLNVErZDExWDRWYW5qcGRYR3dLbVBiVktRUjRTOUZnY0NRY2FlTndi?=
+ =?utf-8?B?bitUTjQ2WUxUK2M2ODdTb3VaWU9zZURJOGtTMW5xTjdSTE1IMmcxVWZEVldX?=
+ =?utf-8?B?VUtSc3lhemNKbmVSbkVMSlNmQjREc2JjRW9qaWwxaExLS24rNTkzUHB0VGhL?=
+ =?utf-8?B?U1FJcDBFdE1DVGJjVkNUQXRjd2c5Zmpyd09UQlphVXhnenltYm1FcVkyNWJJ?=
+ =?utf-8?B?UWRWNlpHREFGTDNLeUtmUjVETnR5NmxpeklFTFFWdFJzOXpzZkI3Z0xHWFc1?=
+ =?utf-8?B?T1J1V3YrM0FaTThpSW1MMldiU0JBdXdWWktzVGwxSU1vVzd0cjFhV0gxZEth?=
+ =?utf-8?B?SmNrMjIwYTRuQVF1Qzl1U1N4dEhRU0syNHBmSDdZekhuaHZhNzQ3TjNxRDBN?=
+ =?utf-8?B?NTR3NldSTWR2bHF0WHh3Zi8wcHB3bGhndnMyckFDd1hCM1gxQWJ0ZXowZ0t3?=
+ =?utf-8?B?eDFBZnhZK3FKd25jTmxkY1lWN1l2WVNSNlFjbU94UDdhc1NQeEdJVEFkYyt0?=
+ =?utf-8?B?M29FNzhOOHU2cU4rMUIxVU1xbnBGNk1zUDlUREdDZmR1Z3RxWEJjM3VFenM4?=
+ =?utf-8?B?TUhSdmlHYmJ2c1RQZm5TNFQ2d0RySkxWc1ArOHhKZFh4WHlDclpIbExvQnAx?=
+ =?utf-8?B?NjhVN0J2dSs2a1Y5UHRzazhtOTY0aGpGOExIVDdBdVU2dGFuZGJaY1VqT3FZ?=
+ =?utf-8?B?cjc5dldVQzB6Z2I2THJmWXJkWlMyMTNpKzBNQ28rRnhSQVh1aDJYWVJZNEJq?=
+ =?utf-8?B?SGRrdDJydmpVaHFXM1FKaXVyTFVzb2crVjJDZXFXWnRJMGpjb1lNc3Z1WWs4?=
+ =?utf-8?B?cUZkejVIV0lvaml1WitRemsvRDZHMTlHRDJWNXBBdXVVSVN5QnpqaHZicGsz?=
+ =?utf-8?B?eUtSSDhvamxlRTlJeHBMRzd3NDZzK3djMVlzNVU0SFN5VXZyekZqSDZTdUE4?=
+ =?utf-8?B?bGkvdHc2UGxmTVE3RmVnWHQ4RFd5aHlHVTQ2cllEQ25IVDNoUHdPM1RIYnVY?=
+ =?utf-8?B?MXFnUWwvRENKTGl2dUxQWHRjRThYVml1STFxa2dXZjRxZmVMQUxqYWtrY21j?=
+ =?utf-8?B?azhLVUE5TTEzeG84UkRrVXllR0xwYXlEazkySWhaN1JoTCtZQjBIOUtBM2sr?=
+ =?utf-8?Q?1of0LQGDWMZD3BquFcAtyXyr8?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d5bff13e-ea50-4059-b6ae-08dcecc914e8
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR12MB6608.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Oct 2024 03:25:56.6302
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: zve4MGdfb9TOyGSKkMjjlb4p8UMWvNj5iFIG+DLfIvQ8DLdGlLnHMK6XHvPez+qzsMC0UZ5rB+mW3wohut4ZgA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB8009
 
-On Tue, Oct 15, 2024 at 10:59=E2=80=AFAM Willem de Bruijn
-<willemdebruijn.kernel@gmail.com> wrote:
->
-> Jason Xing wrote:
-> > On Tue, Oct 15, 2024 at 9:28=E2=80=AFAM Willem de Bruijn
-> > <willemdebruijn.kernel@gmail.com> wrote:
-> > >
-> > > Jason Xing wrote:
-> > > > On Sun, Oct 13, 2024 at 1:48=E2=80=AFAM Willem de Bruijn
-> > > > <willemdebruijn.kernel@gmail.com> wrote:
-> > > > >
-> > > > > Jason Xing wrote:
-> > > > > > From: Jason Xing <kernelxing@tencent.com>
-> > > > > >
-> > > > > > A few weeks ago, I planned to extend SO_TIMESTMAMPING feature b=
-y using
-> > > > > > tracepoint to print information (say, tstamp) so that we can
-> > > > > > transparently equip applications with this feature and require =
-no
-> > > > > > modification in user side.
-> > > > > >
-> > > > > > Later, we discussed at netconf and agreed that we can use bpf f=
-or better
-> > > > > > extension, which is mainly suggested by John Fastabend and Will=
-em de
-> > > > > > Bruijn. Many thanks here! So I post this series to see if we ha=
-ve a
-> > > > > > better solution to extend. My feeling is BPF is a good place to=
- provide
-> > > > > > a way to add timestamping by administrators, without having to =
-rebuild
-> > > > > > applications.
-> > > > > >
-> > > > > > This approach mostly relies on existing SO_TIMESTAMPING feature=
-, users
-> > > > > > only needs to pass certain flags through bpf_setsocktop() to a =
-separate
-> > > > > > tsflags. For TX timestamps, they will be printed during generat=
-ion
-> > > > > > phase. For RX timestamps, we will wait for the moment when recv=
-msg() is
-> > > > > > called.
-> > > > > >
-> > > > > > After this series, we could step by step implement more advance=
-d
-> > > > > > functions/flags already in SO_TIMESTAMPING feature for bpf exte=
-nsion.
-> > > > > >
-> > > > > > In this series, I only support TCP protocol which is widely use=
-d in
-> > > > > > SO_TIMESTAMPING feature.
-> > > > > >
-> > > > > > ---
-> > > > > > V2
-> > > > > > Link: https://lore.kernel.org/all/20241008095109.99918-1-kernel=
-jasonxing@gmail.com/
-> > > > > > 1. Introduce tsflag requestors so that we are able to extend mo=
-re in the
-> > > > > > future. Besides, it enables TX flags for bpf extension feature =
-separately
-> > > > > > without breaking users. It is suggested by Vadim Fedorenko.
-> > > > > > 2. introduce a static key to control the whole feature. (Willem=
-)
-> > > > > > 3. Open the gate of bpf_setsockopt for the SO_TIMESTAMPING feat=
-ure in
-> > > > > > some TX/RX cases, not all the cases.
-> > > > > >
-> > > > > > Note:
-> > > > > > The main concern we've discussion in V1 thread is how to deal w=
-ith the
-> > > > > > applications using SO_TIMESTAMPING feature? In this series, I a=
-llow both
-> > > > > > cases to happen at the same time, which indicates that even one
-> > > > > > applications setting SO_TIMESTAMPING can still be traced throug=
-h BPF
-> > > > > > program. Please see patch [04/12].
-> > > > >
-> > > > > This revision does not address the main concern.
-> > > > >
-> > > > > An administrator installed BPF program can affect results of a pr=
-ocess
-> > > > > using SO_TIMESTAMPING in ways that break it.
-> > > >
-> > > > Sorry, I didn't get it. How the following code snippet would break =
-users?
-> > >
-> > > The state between user and bpf timestamping needs to be separate to
-> > > avoid interference.
-> >
-> > Do you agree that we will use this method as following, only allow
-> > either of them to work?
-> >
-> > void __skb_tstamp_tx(struct sk_buff *orig_skb,
-> >                      const struct sk_buff *ack_skb,
-> >                      struct skb_shared_hwtstamps *hwtstamps,
-> >                      struct sock *sk, int tstype)
-> > {
-> >         if (!sk)
-> >                 return;
-> >
-> >        ret =3D skb_tstamp_tx_output(orig_skb, ack_skb, hwtstamps, sk, t=
-stype);
-> >        if (ret)
-> >                /* Apps does set the SO_TIMESTAMPING flag, return direct=
-ly */
-> >                return;
-> >
-> >        if (static_branch_unlikely(&bpf_tstamp_control))
-> >                 bpf_skb_tstamp_tx_output(sk, orig_skb, tstype, hwtstamp=
-s);
-> > }
-> >
-> > which means if the apps using non-bpf method, we will not see the
-> > output even if we load bpf program.
->
-> Could the bpf setsockopt fail hard in that case?
 
-We can do this. I think I will add some if test statements to see if
-sk_tsflags is initialized before.
 
->
-> Your current patch tries to make them work at the same time. It mostly
-> does work. There are just a few concerning edge cases that may result
-> in hard to understand bugs.
+On 10/14/2024 10:22 PM, Paul E. McKenney wrote:
+> On Mon, Oct 14, 2024 at 02:40:35PM +0530, Neeraj Upadhyay wrote:
+>> On 10/9/2024 11:37 PM, Paul E. McKenney wrote:
+>>> Currently, there are only two flavors of readers, normal and NMI-safe.
+>>> A number of fields, functions, and types reflect this restriction.
+>>> This renaming-only commit prepares for the addition of light-weight
+>>> (as in memory-barrier-free) readers.  OK, OK, there is also a drive-by
+>>> white-space fixeup!
+>>>
+>>> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+>>> Cc: Alexei Starovoitov <ast@kernel.org>
+>>> Cc: Andrii Nakryiko <andrii@kernel.org>
+>>> Cc: Peter Zijlstra <peterz@infradead.org>
+>>> Cc: Kent Overstreet <kent.overstreet@linux.dev>
+>>> Cc: <bpf@vger.kernel.org>
+>>> ---
+>>>  include/linux/srcu.h     | 21 ++++++++++-----------
+>>>  include/linux/srcutree.h |  2 +-
+>>>  kernel/rcu/srcutree.c    | 22 +++++++++++-----------
+>>>  3 files changed, 22 insertions(+), 23 deletions(-)
+>>>
+>>> diff --git a/include/linux/srcu.h b/include/linux/srcu.h
+>>> index 835bbb2d1f88a..06728ef6f32a4 100644
+>>> --- a/include/linux/srcu.h
+>>> +++ b/include/linux/srcu.h
+>>> @@ -181,10 +181,9 @@ static inline int srcu_read_lock_held(const struct srcu_struct *ssp)
+>>>  #define SRCU_NMI_SAFE		0x2
+>>>  
+>>>  #if defined(CONFIG_PROVE_RCU) && defined(CONFIG_TREE_SRCU)
+>>> -void srcu_check_nmi_safety(struct srcu_struct *ssp, bool nmi_safe);
+>>> +void srcu_check_read_flavor(struct srcu_struct *ssp, int read_flavor);
+>>>  #else
+>>> -static inline void srcu_check_nmi_safety(struct srcu_struct *ssp,
+>>> -					 bool nmi_safe) { }
+>>> +static inline void srcu_check_read_flavor(struct srcu_struct *ssp, int read_flavor) { }
+>>>  #endif
+>>>  
+>>>  
+>>> @@ -245,7 +244,7 @@ static inline int srcu_read_lock(struct srcu_struct *ssp) __acquires(ssp)
+>>>  {
+>>>  	int retval;
+>>>  
+>>> -	srcu_check_nmi_safety(ssp, false);
+>>> +	srcu_check_read_flavor(ssp, false);
+>>
+>> As srcu_check_read_flavor() takes an "int" now, passing a macro for the type of reader would
+>> be better here?
+> 
+> Agreed, and a later commit does introduce macros.
+> 
+>>>  	retval = __srcu_read_lock(ssp);
+>>>  	srcu_lock_acquire(&ssp->dep_map);
+>>>  	return retval;
+>>> @@ -262,7 +261,7 @@ static inline int srcu_read_lock_nmisafe(struct srcu_struct *ssp) __acquires(ssp
+>>>  {
+>>>  	int retval;
+>>>  
+>>> -	srcu_check_nmi_safety(ssp, true);
+>>> +	srcu_check_read_flavor(ssp, true);
+>>>  	retval = __srcu_read_lock_nmisafe(ssp);
+>>>  	rcu_try_lock_acquire(&ssp->dep_map);
+>>>  	return retval;
+>>> @@ -274,7 +273,7 @@ srcu_read_lock_notrace(struct srcu_struct *ssp) __acquires(ssp)
+>>>  {
+>>>  	int retval;
+>>>  
+>>> -	srcu_check_nmi_safety(ssp, false);
+>>> +	srcu_check_read_flavor(ssp, false);
+>>>  	retval = __srcu_read_lock(ssp);
+>>>  	return retval;
+>>>  }
+>>> @@ -303,7 +302,7 @@ srcu_read_lock_notrace(struct srcu_struct *ssp) __acquires(ssp)
+>>>  static inline int srcu_down_read(struct srcu_struct *ssp) __acquires(ssp)
+>>>  {
+>>>  	WARN_ON_ONCE(in_nmi());
+>>> -	srcu_check_nmi_safety(ssp, false);
+>>> +	srcu_check_read_flavor(ssp, false);
+>>>  	return __srcu_read_lock(ssp);
+>>>  }
+>>>  
+>>> @@ -318,7 +317,7 @@ static inline void srcu_read_unlock(struct srcu_struct *ssp, int idx)
+>>>  	__releases(ssp)
+>>>  {
+>>>  	WARN_ON_ONCE(idx & ~0x1);
+>>> -	srcu_check_nmi_safety(ssp, false);
+>>> +	srcu_check_read_flavor(ssp, false);
+>>>  	srcu_lock_release(&ssp->dep_map);
+>>>  	__srcu_read_unlock(ssp, idx);
+>>>  }
+>>> @@ -334,7 +333,7 @@ static inline void srcu_read_unlock_nmisafe(struct srcu_struct *ssp, int idx)
+>>>  	__releases(ssp)
+>>>  {
+>>>  	WARN_ON_ONCE(idx & ~0x1);
+>>> -	srcu_check_nmi_safety(ssp, true);
+>>> +	srcu_check_read_flavor(ssp, true);
+>>>  	rcu_lock_release(&ssp->dep_map);
+>>>  	__srcu_read_unlock_nmisafe(ssp, idx);
+>>>  }
+>>> @@ -343,7 +342,7 @@ static inline void srcu_read_unlock_nmisafe(struct srcu_struct *ssp, int idx)
+>>>  static inline notrace void
+>>>  srcu_read_unlock_notrace(struct srcu_struct *ssp, int idx) __releases(ssp)
+>>>  {
+>>> -	srcu_check_nmi_safety(ssp, false);
+>>> +	srcu_check_read_flavor(ssp, false);
+>>>  	__srcu_read_unlock(ssp, idx);
+>>>  }
+>>>  
+>>> @@ -360,7 +359,7 @@ static inline void srcu_up_read(struct srcu_struct *ssp, int idx)
+>>>  {
+>>>  	WARN_ON_ONCE(idx & ~0x1);
+>>>  	WARN_ON_ONCE(in_nmi());
+>>> -	srcu_check_nmi_safety(ssp, false);
+>>> +	srcu_check_read_flavor(ssp, false);
+>>>  	__srcu_read_unlock(ssp, idx);
+>>>  }
+>>>  
+>>> diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
+>>> index ed57598394de3..ab7d8d215b84b 100644
+>>> --- a/include/linux/srcutree.h
+>>> +++ b/include/linux/srcutree.h
+>>> @@ -25,7 +25,7 @@ struct srcu_data {
+>>>  	/* Read-side state. */
+>>>  	atomic_long_t srcu_lock_count[2];	/* Locks per CPU. */
+>>>  	atomic_long_t srcu_unlock_count[2];	/* Unlocks per CPU. */
+>>> -	int srcu_nmi_safety;			/* NMI-safe srcu_struct structure? */
+>>> +	int srcu_reader_flavor;			/* Reader flavor for srcu_struct structure? */
+>>
+>> This is a mask for the reader flavor, so s/srcu_reader_flavor/srcu_reader_flavor_mask ?
+> 
+> Yes, it is a mask, but one that should only ever have a single bit set.
+> So calling it a mask might or might not be a service to the reader.
+> 
 
-Agree.
+Ok. The usage of reader_flavor as a shifted val here and without
+shift as arg of srcu_check_read_flavor() was a bit confusing.
 
->
-> Making only one method work per socket and fail hard if both try it is
-> crude, but at least the failure will be clear: the setsockopt fails.
->
-> I think that's safer. And in practice, the use cases for BPF
-> timestamping probably are exactly when application timestamping is
-> missing?
 
-Fair enough. Let me try this way:)
+- Neeraj
 
-Thanks,
-Jason
+...
+
+>>>  
+>>>  #ifdef CONFIG_PROVE_RCU
+>>>  /*
+>>> - * Check for consistent NMI safety.
+>>> + * Check for consistent reader flavor.
+>>>   */
+>>> -void srcu_check_nmi_safety(struct srcu_struct *ssp, bool nmi_safe)
+>>> +void srcu_check_read_flavor(struct srcu_struct *ssp, int read_flavor)
+>>>  {
+>>> -	int nmi_safe_mask = 1 << nmi_safe;
+>>> -	int old_nmi_safe_mask;
+>>> +	int reader_flavor_mask = 1 << read_flavor;
+>>> +	int old_reader_flavor_mask;
+>>>  	struct srcu_data *sdp;
+>>>  
+>>>  	/* NMI-unsafe use in NMI is a bad sign */
+>>> -	WARN_ON_ONCE(!nmi_safe && in_nmi());
+>>> +	WARN_ON_ONCE(!read_flavor && in_nmi());
+>>>  	sdp = raw_cpu_ptr(ssp->sda);
+>>> -	old_nmi_safe_mask = READ_ONCE(sdp->srcu_nmi_safety);
+>>> -	if (!old_nmi_safe_mask) {
+>>> -		WRITE_ONCE(sdp->srcu_nmi_safety, nmi_safe_mask);
+>>> +	old_reader_flavor_mask = READ_ONCE(sdp->srcu_reader_flavor);
+>>> +	if (!old_reader_flavor_mask) {
+>>> +		WRITE_ONCE(sdp->srcu_reader_flavor, reader_flavor_mask);
+>>>  		return;
+>>>  	}
+>>> -	WARN_ONCE(old_nmi_safe_mask != nmi_safe_mask, "CPU %d old state %d new state %d\n", sdp->cpu, old_nmi_safe_mask, nmi_safe_mask);
+>>> +	WARN_ONCE(old_reader_flavor_mask != reader_flavor_mask, "CPU %d old state %d new state %d\n", sdp->cpu, old_reader_flavor_mask, reader_flavor_mask);
+>>>  }
+>>> -EXPORT_SYMBOL_GPL(srcu_check_nmi_safety);
+>>> +EXPORT_SYMBOL_GPL(srcu_check_read_flavor);
+>>>  #endif /* CONFIG_PROVE_RCU */
+>>>  
+>>>  /*
+>>
 
