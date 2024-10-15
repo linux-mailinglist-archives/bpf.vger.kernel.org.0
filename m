@@ -1,47 +1,47 @@
-Return-Path: <bpf+bounces-42062-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42061-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9110C99F099
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 17:03:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E93C499F098
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 17:03:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 148941F27969
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 15:03:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0EC9E1C235E2
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 15:03:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41FC71B3936;
-	Tue, 15 Oct 2024 15:02:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F7271B392F;
+	Tue, 15 Oct 2024 15:02:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="XvWfI/rX"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Md4dD1k/"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
+Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2C0A1CB9F5
-	for <bpf@vger.kernel.org>; Tue, 15 Oct 2024 15:02:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3925E1B2193
+	for <bpf@vger.kernel.org>; Tue, 15 Oct 2024 15:02:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729004551; cv=none; b=P7FFwd82mFqS6mUxDy9x/XVpkUlXz3U8JxfozmbsG20OrgfizvxEBrpacajgjRM+/aKGDMWvLNnHFL3cNwayG9A+FUK1jEEMyJ0oqlQyYmBtqft48y4Bs1CSpls/podvSmcT8QyKcZmeWHj6NPcoWitP9r8E/kBPrjnh8VyuzZU=
+	t=1729004551; cv=none; b=FtDbEahpqyphq8wbHtAO4j7r8PVppFWaEHp5GtFDYgw9ax7q/pUdkNv1bJsJpFOsBI+Hux4NXBlZsJlf9B4YqidbwAsU5qQqWKkZ/Yx5O3pQWo3lsNpUdgRNuCaNHz3LlvHjNbQmgWfel1QB38iiR/+/60pQ4zIqrcrnGOaJUbs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1729004551; c=relaxed/simple;
-	bh=AI5iDG8/oSZWTISouQVr5dOe2A6Ps5NKKxwuuG0ow5w=;
+	bh=9PrDa982r+DsNlO6nRq9JY+wHoWvVDCtxstRrxhrh28=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=OBJ4I5NtcVXmxig2rvhs09gEUFEEII2iLkL47FmN3Ii99oSiGkJyXz3JH4l7YS0MVV5hPzlOmznS7kHHcOCzMd9fIm5pe2nqHHex/YHIDUcwXF7pXK9iiWClWZqBkfnN2l0bSaFPPJ4BdjTUnhqD+uSKawfE1jp8k9LUWjIn208=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=XvWfI/rX; arc=none smtp.client-ip=95.215.58.178
+	 MIME-Version; b=n0BUeyMHyx0Hf4r6jnFlaI9fDX181xB/H3JvClZ7wud3TNjlH1KoY8rPmgW9vz2m6IMHJMo0+DEkVJgD+Y/RK3LCZC/FwEfguyZqNgJHfzNmIu1A0sbA5HaGpq5pk/A16Oh4M1w4fcNFRuU4gyqFKcXX8tFO7kkm1ATU73GOwKQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Md4dD1k/; arc=none smtp.client-ip=95.215.58.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1729004542;
+	t=1729004546;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=k4XJypsELEuBreM3jENIs3zOOqJw0Xomzh5IamblAs8=;
-	b=XvWfI/rXpcH/aJk0Qr8nwbZeIdUk675ljGtURd6Dm+qXnR1EEZm6JnWG9jqY74tlvYjYhX
-	CwH9S4VcueVRhWc9ORncAcD1AstYWuW0CpohZoou8YFY+cTfWiOhB9gJjp4GnX2/7IoHK8
-	UBmbVEnFu1jaabNG53kdhhMjU9sZsnc=
+	bh=xm7vD+ot9hV0jmvDOnv/maUvrHWU6TJadixg8YRieMo=;
+	b=Md4dD1k/thU5fhoFoKMusInIUOSRXuCcFSi5BkAHFyCOyV+oAvt3PeeKtXh+ppvinr+dL3
+	FDx3Ln90vFso6pP9D+1VjeXB9wNA9BsQ0JQ9xMfKLofSJo6vaf55sZxp5ZmJZ64WBpdmg2
+	p69SsCgdmN6sjXDR4W459k9gKfzlKbY=
 From: Leon Hwang <leon.hwang@linux.dev>
 To: bpf@vger.kernel.org
 Cc: ast@kernel.org,
@@ -56,9 +56,9 @@ Cc: ast@kernel.org,
 	iii@linux.ibm.com,
 	leon.hwang@linux.dev,
 	kernel-patches-bot@fb.com
-Subject: [PATCH bpf-next v8 1/2] bpf: Prevent tailcall infinite loop caused by freplace
-Date: Tue, 15 Oct 2024 23:02:06 +0800
-Message-ID: <20241015150207.70264-2-leon.hwang@linux.dev>
+Subject: [PATCH bpf-next v8 2/2] selftests/bpf: Add test to verify tailcall and freplace restrictions
+Date: Tue, 15 Oct 2024 23:02:07 +0800
+Message-ID: <20241015150207.70264-3-leon.hwang@linux.dev>
 In-Reply-To: <20241015150207.70264-1-leon.hwang@linux.dev>
 References: <20241015150207.70264-1-leon.hwang@linux.dev>
 Precedence: bulk
@@ -70,303 +70,226 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-There is a potential infinite loop issue that can occur when using a
-combination of tail calls and freplace.
+Add a test case to ensure that attaching a tail callee program with an
+freplace program fails, and that updating an extended program to a
+prog_array map is also prohibited.
 
-In an upcoming selftest, the attach target for entry_freplace of
-tailcall_freplace.c is subprog_tc of tc_bpf2bpf.c, while the tail call in
-entry_freplace leads to entry_tc. This results in an infinite loop:
+This test is designed to prevent the potential infinite loop issue caused
+by the combination of tail calls and freplace, ensuring the correct
+behavior and stability of the system.
 
-entry_tc -> subprog_tc -> entry_freplace --tailcall-> entry_tc.
+Additionally, fix the broken tailcalls/tailcall_freplace selftest
+because an extension prog should not be tailcalled.
 
-The problem arises because the tail_call_cnt in entry_freplace resets to
-zero each time entry_freplace is executed, causing the tail call mechanism
-to never terminate, eventually leading to a kernel panic.
+cd tools/testing/selftests/bpf; ./test_progs -t tailcalls
+337/25  tailcalls/tailcall_freplace:OK
+337/26  tailcalls/tailcall_bpf2bpf_freplace:OK
+337     tailcalls:OK
+Summary: 1/26 PASSED, 0 SKIPPED, 0 FAILED
 
-To fix this issue, the solution is twofold:
-
-1. Prevent updating a program extended by an freplace program to a
-   prog_array map.
-2. Prevent extending a program that is already part of a prog_array map
-   with an freplace program.
-
-This ensures that:
-
-* If a program or its subprogram has been extended by an freplace program,
-  it can no longer be updated to a prog_array map.
-* If a program has been added to a prog_array map, neither it nor its
-  subprograms can be extended by an freplace program.
-
-Moreover, an extension program should not be tailcalled. As such, return
--EINVAL if the program has a type of BPF_PROG_TYPE_EXT when adding it to a
-prog_array map.
-
-Additionally, fix a minor code style issue by replacing eight spaces with a
-tab for proper formatting.
-
-Reviewed-by: Eduard Zingerman <eddyz87@gmail.com>
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
 ---
- include/linux/bpf.h     | 17 +++++++++++----
- kernel/bpf/arraymap.c   | 26 +++++++++++++++++++++--
- kernel/bpf/core.c       |  1 +
- kernel/bpf/syscall.c    |  7 +++---
- kernel/bpf/trampoline.c | 47 ++++++++++++++++++++++++++++++++++-------
- 5 files changed, 81 insertions(+), 17 deletions(-)
+ .../selftests/bpf/prog_tests/tailcalls.c      | 120 ++++++++++++++++--
+ .../testing/selftests/bpf/progs/tc_bpf2bpf.c  |   5 +-
+ 2 files changed, 109 insertions(+), 16 deletions(-)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 19d8ca8ac960f..0c216e71cec76 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1292,8 +1292,12 @@ void *__bpf_dynptr_data_rw(const struct bpf_dynptr_kern *ptr, u32 len);
- bool __bpf_dynptr_is_rdonly(const struct bpf_dynptr_kern *ptr);
+diff --git a/tools/testing/selftests/bpf/prog_tests/tailcalls.c b/tools/testing/selftests/bpf/prog_tests/tailcalls.c
+index 21c5a37846ade..40f22454cf05b 100644
+--- a/tools/testing/selftests/bpf/prog_tests/tailcalls.c
++++ b/tools/testing/selftests/bpf/prog_tests/tailcalls.c
+@@ -1496,8 +1496,8 @@ static void test_tailcall_bpf2bpf_hierarchy_3(void)
+ 	RUN_TESTS(tailcall_bpf2bpf_hierarchy3);
+ }
  
- #ifdef CONFIG_BPF_JIT
--int bpf_trampoline_link_prog(struct bpf_tramp_link *link, struct bpf_trampoline *tr);
--int bpf_trampoline_unlink_prog(struct bpf_tramp_link *link, struct bpf_trampoline *tr);
-+int bpf_trampoline_link_prog(struct bpf_tramp_link *link,
-+			     struct bpf_trampoline *tr,
-+			     struct bpf_prog *tgt_prog);
-+int bpf_trampoline_unlink_prog(struct bpf_tramp_link *link,
-+			       struct bpf_trampoline *tr,
-+			       struct bpf_prog *tgt_prog);
- struct bpf_trampoline *bpf_trampoline_get(u64 key,
- 					  struct bpf_attach_target_info *tgt_info);
- void bpf_trampoline_put(struct bpf_trampoline *tr);
-@@ -1374,12 +1378,14 @@ void bpf_jit_uncharge_modmem(u32 size);
- bool bpf_prog_has_trampoline(const struct bpf_prog *prog);
- #else
- static inline int bpf_trampoline_link_prog(struct bpf_tramp_link *link,
--					   struct bpf_trampoline *tr)
-+					   struct bpf_trampoline *tr,
-+					   struct bpf_prog *tgt_prog)
+-/* test_tailcall_freplace checks that the attached freplace prog is OK to
+- * update the prog_array map.
++/* test_tailcall_freplace checks that the freplace prog fails to update the
++ * prog_array map, no matter whether the freplace prog attaches to its target.
+  */
+ static void test_tailcall_freplace(void)
  {
- 	return -ENOTSUPP;
- }
- static inline int bpf_trampoline_unlink_prog(struct bpf_tramp_link *link,
--					     struct bpf_trampoline *tr)
-+					     struct bpf_trampoline *tr,
-+					     struct bpf_prog *tgt_prog)
- {
- 	return -ENOTSUPP;
- }
-@@ -1483,6 +1489,9 @@ struct bpf_prog_aux {
- 	bool xdp_has_frags;
- 	bool exception_cb;
- 	bool exception_boundary;
-+	bool is_extended; /* true if extended by freplace program */
-+	u64 prog_array_member_cnt; /* counts how many times as member of prog_array */
-+	struct mutex ext_mutex; /* mutex for is_extended and prog_array_member_cnt */
- 	struct bpf_arena *arena;
- 	/* BTF_KIND_FUNC_PROTO for valid attach_btf_id */
- 	const struct btf_type *attach_func_proto;
-diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
-index 79660e3fca4c1..6cdbb4c33d31d 100644
---- a/kernel/bpf/arraymap.c
-+++ b/kernel/bpf/arraymap.c
-@@ -947,22 +947,44 @@ static void *prog_fd_array_get_ptr(struct bpf_map *map,
- 				   struct file *map_file, int fd)
- {
- 	struct bpf_prog *prog = bpf_prog_get(fd);
-+	bool is_extended;
+@@ -1505,7 +1505,7 @@ static void test_tailcall_freplace(void)
+ 	struct bpf_link *freplace_link = NULL;
+ 	struct bpf_program *freplace_prog;
+ 	struct tc_bpf2bpf *tc_skel = NULL;
+-	int prog_fd, map_fd;
++	int prog_fd, tc_prog_fd, map_fd;
+ 	char buff[128] = {};
+ 	int err, key;
  
- 	if (IS_ERR(prog))
- 		return prog;
+@@ -1523,9 +1523,10 @@ static void test_tailcall_freplace(void)
+ 	if (!ASSERT_OK_PTR(tc_skel, "tc_bpf2bpf__open_and_load"))
+ 		goto out;
  
--	if (!bpf_prog_map_compatible(map, prog)) {
-+	if (prog->type == BPF_PROG_TYPE_EXT ||
-+	    !bpf_prog_map_compatible(map, prog)) {
- 		bpf_prog_put(prog);
- 		return ERR_PTR(-EINVAL);
- 	}
+-	prog_fd = bpf_program__fd(tc_skel->progs.entry_tc);
++	tc_prog_fd = bpf_program__fd(tc_skel->progs.entry_tc);
+ 	freplace_prog = freplace_skel->progs.entry_freplace;
+-	err = bpf_program__set_attach_target(freplace_prog, prog_fd, "subprog");
++	err = bpf_program__set_attach_target(freplace_prog, tc_prog_fd,
++					     "subprog_tc");
+ 	if (!ASSERT_OK(err, "set_attach_target"))
+ 		goto out;
  
-+	mutex_lock(&prog->aux->ext_mutex);
-+	is_extended = prog->aux->is_extended;
-+	if (!is_extended)
-+		prog->aux->prog_array_member_cnt++;
-+	mutex_unlock(&prog->aux->ext_mutex);
-+	if (is_extended) {
-+		/* Extended prog can not be tail callee. It's to prevent a
-+		 * potential infinite loop like:
-+		 * tail callee prog entry -> tail callee prog subprog ->
-+		 * freplace prog entry --tailcall-> tail callee prog entry.
-+		 */
-+		bpf_prog_put(prog);
-+		return ERR_PTR(-EBUSY);
-+	}
+@@ -1533,27 +1534,116 @@ static void test_tailcall_freplace(void)
+ 	if (!ASSERT_OK(err, "tailcall_freplace__load"))
+ 		goto out;
+ 
+-	freplace_link = bpf_program__attach_freplace(freplace_prog, prog_fd,
+-						     "subprog");
++	map_fd = bpf_map__fd(freplace_skel->maps.jmp_table);
++	prog_fd = bpf_program__fd(freplace_prog);
++	key = 0;
++	err = bpf_map_update_elem(map_fd, &key, &prog_fd, BPF_ANY);
++	ASSERT_ERR(err, "update jmp_table failure");
 +
- 	return prog;
- }
++	freplace_link = bpf_program__attach_freplace(freplace_prog, tc_prog_fd,
++						     "subprog_tc");
+ 	if (!ASSERT_OK_PTR(freplace_link, "attach_freplace"))
+ 		goto out;
  
- static void prog_fd_array_put_ptr(struct bpf_map *map, void *ptr, bool need_defer)
- {
-+	struct bpf_prog *prog = ptr;
+-	map_fd = bpf_map__fd(freplace_skel->maps.jmp_table);
+-	prog_fd = bpf_program__fd(freplace_prog);
++	err = bpf_map_update_elem(map_fd, &key, &prog_fd, BPF_ANY);
++	ASSERT_ERR(err, "update jmp_table failure");
 +
-+	mutex_lock(&prog->aux->ext_mutex);
-+	prog->aux->prog_array_member_cnt--;
-+	mutex_unlock(&prog->aux->ext_mutex);
- 	/* bpf_prog is freed after one RCU or tasks trace grace period */
--	bpf_prog_put(ptr);
-+	bpf_prog_put(prog);
- }
- 
- static u32 prog_fd_array_sys_lookup_elem(void *ptr)
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 5e77c58e06010..233ea78f8f1bd 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -131,6 +131,7 @@ struct bpf_prog *bpf_prog_alloc_no_stats(unsigned int size, gfp_t gfp_extra_flag
- 	INIT_LIST_HEAD_RCU(&fp->aux->ksym_prefix.lnode);
- #endif
- 	mutex_init(&fp->aux->used_maps_mutex);
-+	mutex_init(&fp->aux->ext_mutex);
- 	mutex_init(&fp->aux->dst_mutex);
- 
- 	return fp;
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index a8f1808a1ca54..4d04d4d9c1f30 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -3214,7 +3214,8 @@ static void bpf_tracing_link_release(struct bpf_link *link)
- 		container_of(link, struct bpf_tracing_link, link.link);
- 
- 	WARN_ON_ONCE(bpf_trampoline_unlink_prog(&tr_link->link,
--						tr_link->trampoline));
-+						tr_link->trampoline,
-+						tr_link->tgt_prog));
- 
- 	bpf_trampoline_put(tr_link->trampoline);
- 
-@@ -3354,7 +3355,7 @@ static int bpf_tracing_prog_attach(struct bpf_prog *prog,
- 	 *   in prog->aux
- 	 *
- 	 * - if prog->aux->dst_trampoline is NULL, the program has already been
--         *   attached to a target and its initial target was cleared (below)
-+	 *   attached to a target and its initial target was cleared (below)
- 	 *
- 	 * - if tgt_prog != NULL, the caller specified tgt_prog_fd +
- 	 *   target_btf_id using the link_create API.
-@@ -3429,7 +3430,7 @@ static int bpf_tracing_prog_attach(struct bpf_prog *prog,
- 	if (err)
- 		goto out_unlock;
- 
--	err = bpf_trampoline_link_prog(&link->link, tr);
-+	err = bpf_trampoline_link_prog(&link->link, tr, tgt_prog);
- 	if (err) {
- 		bpf_link_cleanup(&link_primer);
- 		link = NULL;
-diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-index f8302a5ca400d..9f36c049f4c28 100644
---- a/kernel/bpf/trampoline.c
-+++ b/kernel/bpf/trampoline.c
-@@ -523,7 +523,27 @@ static enum bpf_tramp_prog_type bpf_attach_type_to_tramp(struct bpf_prog *prog)
- 	}
- }
- 
--static int __bpf_trampoline_link_prog(struct bpf_tramp_link *link, struct bpf_trampoline *tr)
-+static int bpf_freplace_check_tgt_prog(struct bpf_prog *tgt_prog)
-+{
-+	struct bpf_prog_aux *aux = tgt_prog->aux;
-+
-+	guard(mutex)(&aux->ext_mutex);
-+	if (aux->prog_array_member_cnt)
-+		/* Program extensions can not extend target prog when the target
-+		 * prog has been updated to any prog_array map as tail callee.
-+		 * It's to prevent a potential infinite loop like:
-+		 * tgt prog entry -> tgt prog subprog -> freplace prog entry
-+		 * --tailcall-> tgt prog entry.
-+		 */
-+		return -EBUSY;
-+
-+	aux->is_extended = true;
-+	return 0;
++out:
++	bpf_link__destroy(freplace_link);
++	tailcall_freplace__destroy(freplace_skel);
++	tc_bpf2bpf__destroy(tc_skel);
 +}
 +
-+static int __bpf_trampoline_link_prog(struct bpf_tramp_link *link,
-+				      struct bpf_trampoline *tr,
-+				      struct bpf_prog *tgt_prog)
++/* test_tailcall_bpf2bpf_freplace checks the failure that fails to attach a tail
++ * callee prog with freplace prog or fails to update an extended prog to
++ * prog_array map.
++ */
++static void test_tailcall_bpf2bpf_freplace(void)
++{
++	struct tailcall_freplace *freplace_skel = NULL;
++	struct bpf_link *freplace_link = NULL;
++	struct tc_bpf2bpf *tc_skel = NULL;
++	char buff[128] = {};
++	int prog_fd, map_fd;
++	int err, key;
++
++	LIBBPF_OPTS(bpf_test_run_opts, topts,
++		    .data_in = buff,
++		    .data_size_in = sizeof(buff),
++		    .repeat = 1,
++	);
++
++	tc_skel = tc_bpf2bpf__open_and_load();
++	if (!ASSERT_OK_PTR(tc_skel, "tc_bpf2bpf__open_and_load"))
++		goto out;
++
++	prog_fd = bpf_program__fd(tc_skel->progs.entry_tc);
++	freplace_skel = tailcall_freplace__open();
++	if (!ASSERT_OK_PTR(freplace_skel, "tailcall_freplace__open"))
++		goto out;
++
++	err = bpf_program__set_attach_target(freplace_skel->progs.entry_freplace,
++					     prog_fd, "subprog_tc");
++	if (!ASSERT_OK(err, "set_attach_target"))
++		goto out;
++
++	err = tailcall_freplace__load(freplace_skel);
++	if (!ASSERT_OK(err, "tailcall_freplace__load"))
++		goto out;
++
++	/* OK to attach then detach freplace prog. */
++
++	freplace_link = bpf_program__attach_freplace(freplace_skel->progs.entry_freplace,
++						     prog_fd, "subprog_tc");
++	if (!ASSERT_OK_PTR(freplace_link, "attach_freplace"))
++		goto out;
++
++	err = bpf_link__destroy(freplace_link);
++	if (!ASSERT_OK(err, "destroy link"))
++		goto out;
++
++	/* OK to update prog_array map then delete element from the map. */
++
+ 	key = 0;
++	map_fd = bpf_map__fd(freplace_skel->maps.jmp_table);
+ 	err = bpf_map_update_elem(map_fd, &key, &prog_fd, BPF_ANY);
+ 	if (!ASSERT_OK(err, "update jmp_table"))
+ 		goto out;
+ 
+-	prog_fd = bpf_program__fd(tc_skel->progs.entry_tc);
+-	err = bpf_prog_test_run_opts(prog_fd, &topts);
+-	ASSERT_OK(err, "test_run");
+-	ASSERT_EQ(topts.retval, 34, "test_run retval");
++	err = bpf_map_delete_elem(map_fd, &key);
++	if (!ASSERT_OK(err, "delete_elem from jmp_table"))
++		goto out;
++
++	/* Fail to attach a tail callee prog with freplace prog. */
++
++	err = bpf_map_update_elem(map_fd, &key, &prog_fd, BPF_ANY);
++	if (!ASSERT_OK(err, "update jmp_table"))
++		goto out;
++
++	freplace_link = bpf_program__attach_freplace(freplace_skel->progs.entry_freplace,
++						     prog_fd, "subprog_tc");
++	if (!ASSERT_ERR_PTR(freplace_link, "attach_freplace failure"))
++		goto out;
++
++	err = bpf_map_delete_elem(map_fd, &key);
++	if (!ASSERT_OK(err, "delete_elem from jmp_table"))
++		goto out;
++
++	/* Fail to update an extended prog to prog_array map. */
++
++	freplace_link = bpf_program__attach_freplace(freplace_skel->progs.entry_freplace,
++						     prog_fd, "subprog_tc");
++	if (!ASSERT_OK_PTR(freplace_link, "attach_freplace"))
++		goto out;
++
++	err = bpf_map_update_elem(map_fd, &key, &prog_fd, BPF_ANY);
++	if (!ASSERT_ERR(err, "update jmp_table failure"))
++		goto out;
+ 
+ out:
+ 	bpf_link__destroy(freplace_link);
+-	tc_bpf2bpf__destroy(tc_skel);
+ 	tailcall_freplace__destroy(freplace_skel);
++	tc_bpf2bpf__destroy(tc_skel);
+ }
+ 
+ void test_tailcalls(void)
+@@ -1606,4 +1696,6 @@ void test_tailcalls(void)
+ 	test_tailcall_bpf2bpf_hierarchy_3();
+ 	if (test__start_subtest("tailcall_freplace"))
+ 		test_tailcall_freplace();
++	if (test__start_subtest("tailcall_bpf2bpf_freplace"))
++		test_tailcall_bpf2bpf_freplace();
+ }
+diff --git a/tools/testing/selftests/bpf/progs/tc_bpf2bpf.c b/tools/testing/selftests/bpf/progs/tc_bpf2bpf.c
+index 8a0632c37839a..d1a57f7d09bd8 100644
+--- a/tools/testing/selftests/bpf/progs/tc_bpf2bpf.c
++++ b/tools/testing/selftests/bpf/progs/tc_bpf2bpf.c
+@@ -5,10 +5,11 @@
+ #include "bpf_misc.h"
+ 
+ __noinline
+-int subprog(struct __sk_buff *skb)
++int subprog_tc(struct __sk_buff *skb)
  {
- 	enum bpf_tramp_prog_type kind;
- 	struct bpf_tramp_link *link_exiting;
-@@ -544,6 +564,9 @@ static int __bpf_trampoline_link_prog(struct bpf_tramp_link *link, struct bpf_tr
- 		/* Cannot attach extension if fentry/fexit are in use. */
- 		if (cnt)
- 			return -EBUSY;
-+		err = bpf_freplace_check_tgt_prog(tgt_prog);
-+		if (err)
-+			return err;
- 		tr->extension_prog = link->link.prog;
- 		return bpf_arch_text_poke(tr->func.addr, BPF_MOD_JUMP, NULL,
- 					  link->link.prog->bpf_func);
-@@ -570,17 +593,21 @@ static int __bpf_trampoline_link_prog(struct bpf_tramp_link *link, struct bpf_tr
- 	return err;
- }
+ 	int ret = 1;
  
--int bpf_trampoline_link_prog(struct bpf_tramp_link *link, struct bpf_trampoline *tr)
-+int bpf_trampoline_link_prog(struct bpf_tramp_link *link,
-+			     struct bpf_trampoline *tr,
-+			     struct bpf_prog *tgt_prog)
++	__sink(skb);
+ 	__sink(ret);
+ 	return ret;
+ }
+@@ -16,7 +17,7 @@ int subprog(struct __sk_buff *skb)
+ SEC("tc")
+ int entry_tc(struct __sk_buff *skb)
  {
- 	int err;
- 
- 	mutex_lock(&tr->mutex);
--	err = __bpf_trampoline_link_prog(link, tr);
-+	err = __bpf_trampoline_link_prog(link, tr, tgt_prog);
- 	mutex_unlock(&tr->mutex);
- 	return err;
+-	return subprog(skb);
++	return subprog_tc(skb);
  }
  
--static int __bpf_trampoline_unlink_prog(struct bpf_tramp_link *link, struct bpf_trampoline *tr)
-+static int __bpf_trampoline_unlink_prog(struct bpf_tramp_link *link,
-+					struct bpf_trampoline *tr,
-+					struct bpf_prog *tgt_prog)
- {
- 	enum bpf_tramp_prog_type kind;
- 	int err;
-@@ -591,6 +618,8 @@ static int __bpf_trampoline_unlink_prog(struct bpf_tramp_link *link, struct bpf_
- 		err = bpf_arch_text_poke(tr->func.addr, BPF_MOD_JUMP,
- 					 tr->extension_prog->bpf_func, NULL);
- 		tr->extension_prog = NULL;
-+		guard(mutex)(&tgt_prog->aux->ext_mutex);
-+		tgt_prog->aux->is_extended = false;
- 		return err;
- 	}
- 	hlist_del_init(&link->tramp_hlist);
-@@ -599,12 +628,14 @@ static int __bpf_trampoline_unlink_prog(struct bpf_tramp_link *link, struct bpf_
- }
- 
- /* bpf_trampoline_unlink_prog() should never fail. */
--int bpf_trampoline_unlink_prog(struct bpf_tramp_link *link, struct bpf_trampoline *tr)
-+int bpf_trampoline_unlink_prog(struct bpf_tramp_link *link,
-+			       struct bpf_trampoline *tr,
-+			       struct bpf_prog *tgt_prog)
- {
- 	int err;
- 
- 	mutex_lock(&tr->mutex);
--	err = __bpf_trampoline_unlink_prog(link, tr);
-+	err = __bpf_trampoline_unlink_prog(link, tr, tgt_prog);
- 	mutex_unlock(&tr->mutex);
- 	return err;
- }
-@@ -619,7 +650,7 @@ static void bpf_shim_tramp_link_release(struct bpf_link *link)
- 	if (!shim_link->trampoline)
- 		return;
- 
--	WARN_ON_ONCE(bpf_trampoline_unlink_prog(&shim_link->link, shim_link->trampoline));
-+	WARN_ON_ONCE(bpf_trampoline_unlink_prog(&shim_link->link, shim_link->trampoline, NULL));
- 	bpf_trampoline_put(shim_link->trampoline);
- }
- 
-@@ -733,7 +764,7 @@ int bpf_trampoline_link_cgroup_shim(struct bpf_prog *prog,
- 		goto err;
- 	}
- 
--	err = __bpf_trampoline_link_prog(&shim_link->link, tr);
-+	err = __bpf_trampoline_link_prog(&shim_link->link, tr, NULL);
- 	if (err)
- 		goto err;
- 
+ char __license[] SEC("license") = "GPL";
 -- 
 2.44.0
 
