@@ -1,48 +1,48 @@
-Return-Path: <bpf+bounces-42075-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42078-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E65999F26C
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 18:12:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C9F199F26F
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 18:12:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2AECD1F23301
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 16:12:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D63CE1F2311B
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2024 16:12:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8F731FAF04;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDDA81FAF0E;
 	Tue, 15 Oct 2024 16:11:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g53+DCaY"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VluLbv0D"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBD9E1F76C8;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E94491F76D9;
 	Tue, 15 Oct 2024 16:11:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729008674; cv=none; b=Ujjz2UznQsCHE64HqP70tbNk+vjnf7YZ4qJCWew2FI0IzmIP+rtukRwJSkyCxFLuMqKwQ9AjyYt78kG4SjN1hmI08wQibzxOc1xa4vcYB5COY5DL6j5loCRe/1qfP9hkeRGSBLafdy8sEGe0ksbkcopue982nXTo4AX73uL1LYI=
+	t=1729008675; cv=none; b=oWd1GegFrMEitlPMFmfNom/67P3sAiWAetkAQvAleXQNJbs62q9p8a7vZYeTuM9NwaKXIK6SmstkJureM+qQEoLe0StAb96zD/8JjCu+BlitDPxER70swJlL+PHwpjld0DIeWAtDKHovc06O0Z6AwthMBF1S+EyzeSoE4G71m7g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729008674; c=relaxed/simple;
-	bh=455xAJUPKkl1YHsvTg2vxb9TRAoSDc2shVSbJO8e+tM=;
+	s=arc-20240116; t=1729008675; c=relaxed/simple;
+	bh=USWy1f2+MRE4E6Ag+HiaCUvOKEVnE9SJTDypoSyYrTo=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=CeTyWw2s2Qf7mTiawIKo9CFNrNhyJ9rug6VeofpNudpNFOo2l/C+GMhKwhyJS7IMvqEKmnCY3qjQNepuWIEBLEh/pX+c1jRxyT6EKtwRX1AQVAIBTVmeKzzIn26IZPLefXk4M1x+Xvn27jDhqCApvtChFCejasDamyW3XVbEsrs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g53+DCaY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7CB5DC4CEE0;
+	 MIME-Version; b=t8zmlbRPLWDW94Ci6OuDHBoiuFEjVeOJT1dso/IK5x1TkWYw8JxfCRkLrFUqK8UWJigpWy3LJAm1vgJyu7gCHcqMhgyiCXnQqOfUM27vTqOp9P0EJLqUK5Tb8IPdvPd8R4Bq8pFaG3hoYt9It39T2rQ+HCZdX83PligwSMgP1iw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VluLbv0D; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85DAFC4CEE4;
 	Tue, 15 Oct 2024 16:11:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1729008674;
-	bh=455xAJUPKkl1YHsvTg2vxb9TRAoSDc2shVSbJO8e+tM=;
+	bh=USWy1f2+MRE4E6Ag+HiaCUvOKEVnE9SJTDypoSyYrTo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=g53+DCaYtXNr3LB/5c24f8gsm5/pr3vCPBGvUlasCxPyKawrgCNRlXmGKVz5adxyw
-	 imbbqGmd2udmTpIRKK3euVfXxgKsQDGCFkGcP66MdzeBqse/ifG55yLtzMIc69ll0q
-	 FzbJY+caaNE2/5g3fF7/GeFzBoXY+O4BbSK1eFweGeOIVpHO+tsdTcCUrZzZtvCD+3
-	 o5zt0rfCtR7hbg3fvGxVwD79PjBgkb5IyoGlCutwpJV4MXVxEy0anc4ZIHy4clOq/F
-	 ZDqHEnP4s5caGfSzH35FjhYSGPygHo03PYna9UeYcSexNZZGbP4P7SMGOkK+HuDMka
-	 oiqo3D73rD1pA==
+	b=VluLbv0DeB/aePpRB2If4lR9PZW2xAiiLjEKlpvhbZYRhtKBvek4K8DIwRWS7DVKv
+	 wNQidWf2fSt5/42jtGoFKqZCWU6JHqAWBx6eB+jmwMLHIWjlD6K/zy0wonIGVBA3Rc
+	 SJVSamA/SawXue+wuT8PGVj5w1yyDZDiAUfKraWI9ElF4SDWQQXtRyH0ckXL+9B/Zl
+	 uzCKheq7oTkLWOiwo/PdDCvuNZhEpPCAIzpaXxi393dPJ7DxDgX3DI1LggSxyTbpHO
+	 m/B14GCYJwLH/3dh9/kfExnjwz/lQQ/AYq+TBS3v/aKzQmyO7263Cn1wwq++it6bQ1
+	 sNHIDtV1kX26A==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id CC702CE15C3; Tue, 15 Oct 2024 09:11:13 -0700 (PDT)
+	id CF578CE16F0; Tue, 15 Oct 2024 09:11:13 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
@@ -54,9 +54,9 @@ Cc: linux-kernel@vger.kernel.org,
 	Peter Zijlstra <peterz@infradead.org>,
 	Kent Overstreet <kent.overstreet@linux.dev>,
 	bpf@vger.kernel.org
-Subject: [PATCH rcu 10/15] rcutorture: Expand RCUTORTURE_RDR_MASK_[12] to eight bits
-Date: Tue, 15 Oct 2024 09:11:07 -0700
-Message-Id: <20241015161112.442758-10-paulmck@kernel.org>
+Subject: [PATCH rcu 11/15] rcutorture: Add reader_flavor parameter for SRCU readers
+Date: Tue, 15 Oct 2024 09:11:08 -0700
+Message-Id: <20241015161112.442758-11-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <ddf64299-de71-41a2-b575-56ec173faf75@paulmck-laptop>
 References: <ddf64299-de71-41a2-b575-56ec173faf75@paulmck-laptop>
@@ -68,12 +68,9 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This commit prepares for testing of multiple SRCU reader flavors by
-expanding RCUTORTURE_RDR_MASK_1 and RCUTORTURE_RDR_MASK_2 from a single
-bit to eight bits, allowing them to accommodate the return values from
-multiple calls to srcu_read_lock*().  This will in turn permit better
-testing coverage for these SRCU reader flavors, including testing of
-the diagnostics for inproper use of mixed reader flavors.
+This commit adds an rcutorture.reader_flavor parameter whose bits
+correspond to reader flavors.  For example, SRCU's readers are 0x1 for
+normal and 0x2 for NMI-safe.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Cc: Alexei Starovoitov <ast@kernel.org>
@@ -82,103 +79,98 @@ Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: Kent Overstreet <kent.overstreet@linux.dev>
 Cc: <bpf@vger.kernel.org>
 ---
- kernel/rcu/rcutorture.c | 28 ++++++++++++++--------------
- 1 file changed, 14 insertions(+), 14 deletions(-)
+ .../admin-guide/kernel-parameters.txt         |  8 +++++
+ kernel/rcu/rcutorture.c                       | 30 ++++++++++++++-----
+ 2 files changed, 30 insertions(+), 8 deletions(-)
 
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 1518343bbe223..52922727006fc 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -5426,6 +5426,14 @@
+ 			The delay, in seconds, between successive
+ 			read-then-exit testing episodes.
+ 
++	rcutorture.reader_flavor= [KNL]
++			A bit mask indicating which readers to use.
++			If there is more than one bit set, the readers
++			are entered from low-order bit up, and are
++			exited in the opposite order.  For SRCU, the
++			0x1 bit is normal readers and the 0x2 bit is
++			for NMI-safe readers.
++
+ 	rcutorture.shuffle_interval= [KNL]
+ 			Set task-shuffle interval (s).  Shuffling tasks
+ 			allows some CPUs to go into dyntick-idle mode
 diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index bb75dbf5c800c..f96ab98f8182f 100644
+index f96ab98f8182f..405decec33677 100644
 --- a/kernel/rcu/rcutorture.c
 +++ b/kernel/rcu/rcutorture.c
-@@ -57,9 +57,9 @@ MODULE_AUTHOR("Paul E. McKenney <paulmck@linux.ibm.com> and Josh Triplett <josh@
+@@ -111,6 +111,7 @@ torture_param(int, nocbs_nthreads, 0, "Number of NOCB toggle threads, 0 to disab
+ torture_param(int, nocbs_toggle, 1000, "Time between toggling nocb state (ms)");
+ torture_param(int, read_exit_delay, 13, "Delay between read-then-exit episodes (s)");
+ torture_param(int, read_exit_burst, 16, "# of read-then-exit bursts per episode, zero to disable");
++torture_param(int, reader_flavor, 0x1, "Reader flavors to use, one per bit.");
+ torture_param(int, shuffle_interval, 3, "Number of seconds between shuffles");
+ torture_param(int, shutdown_secs, 0, "Shutdown time (s), <= zero to disable.");
+ torture_param(int, stall_cpu, 0, "Stall duration (s), zero to disable.");
+@@ -644,10 +645,20 @@ static void srcu_get_gp_data(int *flags, unsigned long *gp_seq)
  
- /* Bits for ->extendables field, extendables param, and related definitions. */
- #define RCUTORTURE_RDR_SHIFT_1	 8	/* Put SRCU index in upper bits. */
--#define RCUTORTURE_RDR_MASK_1	 (1 << RCUTORTURE_RDR_SHIFT_1)
--#define RCUTORTURE_RDR_SHIFT_2	 9	/* Put SRCU index in upper bits. */
--#define RCUTORTURE_RDR_MASK_2	 (1 << RCUTORTURE_RDR_SHIFT_2)
-+#define RCUTORTURE_RDR_MASK_1	 (0xff << RCUTORTURE_RDR_SHIFT_1)
-+#define RCUTORTURE_RDR_SHIFT_2	 16	/* Put SRCU index in upper bits. */
-+#define RCUTORTURE_RDR_MASK_2	 (0xff << RCUTORTURE_RDR_SHIFT_2)
- #define RCUTORTURE_RDR_BH	 0x01	/* Extend readers by disabling bh. */
- #define RCUTORTURE_RDR_IRQ	 0x02	/*  ... disabling interrupts. */
- #define RCUTORTURE_RDR_PREEMPT	 0x04	/*  ... disabling preemption. */
-@@ -71,6 +71,9 @@ MODULE_AUTHOR("Paul E. McKenney <paulmck@linux.ibm.com> and Josh Triplett <josh@
- #define RCUTORTURE_MAX_EXTEND	 \
- 	(RCUTORTURE_RDR_BH | RCUTORTURE_RDR_IRQ | RCUTORTURE_RDR_PREEMPT | \
- 	 RCUTORTURE_RDR_RBH | RCUTORTURE_RDR_SCHED)
-+#define RCUTORTURE_RDR_ALLBITS	\
-+	(RCUTORTURE_MAX_EXTEND | RCUTORTURE_RDR_RCU_1 | RCUTORTURE_RDR_RCU_2 | \
-+	 RCUTORTURE_RDR_MASK_1 | RCUTORTURE_RDR_MASK_2)
- #define RCUTORTURE_RDR_MAX_LOOPS 0x7	/* Maximum reader extensions. */
- 					/* Must be power of two minus one. */
- #define RCUTORTURE_RDR_MAX_SEGS (RCUTORTURE_RDR_MAX_LOOPS + 3)
-@@ -1820,7 +1823,7 @@ static void rcutorture_one_extend(int *readstate, int newstate,
- 	int statesold = *readstate & ~newstate;
- 
- 	WARN_ON_ONCE(idxold2 < 0);
--	WARN_ON_ONCE((idxold2 >> RCUTORTURE_RDR_SHIFT_2) > 1);
-+	WARN_ON_ONCE(idxold2 & ~RCUTORTURE_RDR_ALLBITS);
- 	rtrsp->rt_readstate = newstate;
- 
- 	/* First, put new protection in place to avoid critical-section gap. */
-@@ -1835,9 +1838,9 @@ static void rcutorture_one_extend(int *readstate, int newstate,
- 	if (statesnew & RCUTORTURE_RDR_SCHED)
- 		rcu_read_lock_sched();
- 	if (statesnew & RCUTORTURE_RDR_RCU_1)
--		idxnew1 = (cur_ops->readlock() & 0x1) << RCUTORTURE_RDR_SHIFT_1;
-+		idxnew1 = (cur_ops->readlock() << RCUTORTURE_RDR_SHIFT_1) & RCUTORTURE_RDR_MASK_1;
- 	if (statesnew & RCUTORTURE_RDR_RCU_2)
--		idxnew2 = (cur_ops->readlock() & 0x1) << RCUTORTURE_RDR_SHIFT_2;
-+		idxnew2 = (cur_ops->readlock() << RCUTORTURE_RDR_SHIFT_2) & RCUTORTURE_RDR_MASK_2;
- 
- 	/*
- 	 * Next, remove old protection, in decreasing order of strength
-@@ -1857,7 +1860,7 @@ static void rcutorture_one_extend(int *readstate, int newstate,
- 	if (statesold & RCUTORTURE_RDR_RBH)
- 		rcu_read_unlock_bh();
- 	if (statesold & RCUTORTURE_RDR_RCU_2) {
--		cur_ops->readunlock((idxold2 >> RCUTORTURE_RDR_SHIFT_2) & 0x1);
-+		cur_ops->readunlock((idxold2 & RCUTORTURE_RDR_MASK_2) >> RCUTORTURE_RDR_SHIFT_2);
- 		WARN_ON_ONCE(idxnew2 != -1);
- 		idxold2 = 0;
- 	}
-@@ -1867,7 +1870,7 @@ static void rcutorture_one_extend(int *readstate, int newstate,
- 		lockit = !cur_ops->no_pi_lock && !statesnew && !(torture_random(trsp) & 0xffff);
- 		if (lockit)
- 			raw_spin_lock_irqsave(&current->pi_lock, flags);
--		cur_ops->readunlock((idxold1 >> RCUTORTURE_RDR_SHIFT_1) & 0x1);
-+		cur_ops->readunlock((idxold1 & RCUTORTURE_RDR_MASK_1) >> RCUTORTURE_RDR_SHIFT_1);
- 		WARN_ON_ONCE(idxnew1 != -1);
- 		idxold1 = 0;
- 		if (lockit)
-@@ -1882,16 +1885,13 @@ static void rcutorture_one_extend(int *readstate, int newstate,
- 	if (idxnew1 == -1)
- 		idxnew1 = idxold1 & RCUTORTURE_RDR_MASK_1;
- 	WARN_ON_ONCE(idxnew1 < 0);
--	if (WARN_ON_ONCE((idxnew1 >> RCUTORTURE_RDR_SHIFT_1) > 1))
--		pr_info("Unexpected idxnew1 value of %#x\n", idxnew1);
- 	if (idxnew2 == -1)
- 		idxnew2 = idxold2 & RCUTORTURE_RDR_MASK_2;
- 	WARN_ON_ONCE(idxnew2 < 0);
--	WARN_ON_ONCE((idxnew2 >> RCUTORTURE_RDR_SHIFT_2) > 1);
- 	*readstate = idxnew1 | idxnew2 | newstate;
- 	WARN_ON_ONCE(*readstate < 0);
--	if (WARN_ON_ONCE((*readstate >> RCUTORTURE_RDR_SHIFT_2) > 1))
--		pr_info("Unexpected idxnew2 value of %#x\n", idxnew2);
-+	if (WARN_ON_ONCE(*readstate & ~RCUTORTURE_RDR_ALLBITS))
-+		pr_info("Unexpected readstate value of %#x\n", *readstate);
+ static int srcu_torture_read_lock(void)
+ {
+-	if (cur_ops == &srcud_ops)
+-		return srcu_read_lock_nmisafe(srcu_ctlp);
+-	else
+-		return srcu_read_lock(srcu_ctlp);
++	int idx;
++	int ret = 0;
++
++	if ((reader_flavor & 0x1) || !(reader_flavor & 0x7)) {
++		idx = srcu_read_lock(srcu_ctlp);
++		WARN_ON_ONCE(idx & ~0x1);
++		ret += idx;
++	}
++	if (reader_flavor & 0x2) {
++		idx = srcu_read_lock_nmisafe(srcu_ctlp);
++		WARN_ON_ONCE(idx & ~0x1);
++		ret += idx << 1;
++	}
++	return ret;
  }
  
- /* Return the biggest extendables mask given current RCU and boot parameters. */
-@@ -1916,7 +1916,7 @@ rcutorture_extend_mask(int oldmask, struct torture_random_state *trsp)
- 	unsigned long preempts_irq = preempts | RCUTORTURE_RDR_IRQ;
- 	unsigned long bhs = RCUTORTURE_RDR_BH | RCUTORTURE_RDR_RBH;
+ static void
+@@ -671,10 +682,11 @@ srcu_read_delay(struct torture_random_state *rrsp, struct rt_read_seg *rtrsp)
  
--	WARN_ON_ONCE(mask >> RCUTORTURE_RDR_SHIFT_1);
-+	WARN_ON_ONCE(mask >> RCUTORTURE_RDR_SHIFT_1);  // Can't have reader idx bits.
- 	/* Mostly only one bit (need preemption!), sometimes lots of bits. */
- 	if (!(randmask1 & 0x7))
- 		mask = mask & randmask2;
+ static void srcu_torture_read_unlock(int idx)
+ {
+-	if (cur_ops == &srcud_ops)
+-		srcu_read_unlock_nmisafe(srcu_ctlp, idx);
+-	else
+-		srcu_read_unlock(srcu_ctlp, idx);
++	WARN_ON_ONCE((reader_flavor && (idx & ~reader_flavor)) || (!reader_flavor && (idx & ~0x1)));
++	if (reader_flavor & 0x2)
++		srcu_read_unlock_nmisafe(srcu_ctlp, (idx & 0x2) >> 1);
++	if ((reader_flavor & 0x1) || !(reader_flavor & 0x7))
++		srcu_read_unlock(srcu_ctlp, idx & 0x1);
+ }
+ 
+ static int torture_srcu_read_lock_held(void)
+@@ -2389,6 +2401,7 @@ rcu_torture_print_module_parms(struct rcu_torture_ops *cur_ops, const char *tag)
+ 		 "n_barrier_cbs=%d "
+ 		 "onoff_interval=%d onoff_holdoff=%d "
+ 		 "read_exit_delay=%d read_exit_burst=%d "
++		 "reader_flavor=%x "
+ 		 "nocbs_nthreads=%d nocbs_toggle=%d "
+ 		 "test_nmis=%d\n",
+ 		 torture_type, tag, nrealreaders, nfakewriters,
+@@ -2401,6 +2414,7 @@ rcu_torture_print_module_parms(struct rcu_torture_ops *cur_ops, const char *tag)
+ 		 n_barrier_cbs,
+ 		 onoff_interval, onoff_holdoff,
+ 		 read_exit_delay, read_exit_burst,
++		 reader_flavor,
+ 		 nocbs_nthreads, nocbs_toggle,
+ 		 test_nmis);
+ }
 -- 
 2.40.1
 
