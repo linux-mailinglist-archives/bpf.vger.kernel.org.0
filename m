@@ -1,166 +1,171 @@
-Return-Path: <bpf+bounces-42190-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42191-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E6699A0B07
-	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 15:08:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB1B79A0B1B
+	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 15:13:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C45841F26723
-	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 13:08:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F20AA1C2287A
+	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 13:13:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05368209687;
-	Wed, 16 Oct 2024 13:08:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1187220968C;
+	Wed, 16 Oct 2024 13:13:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eJz/rz7p"
 X-Original-To: bpf@vger.kernel.org
-Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com [209.85.160.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7192E208D88;
-	Wed, 16 Oct 2024 13:08:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F0C812E75;
+	Wed, 16 Oct 2024 13:13:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729084125; cv=none; b=ARI3kgF1HEjryEw8Q7bqZjhC6h3gEnyBLt3DwE05ODcuVk4dEHfI1g/MNvs+xLJ36H4edEMFINgRsU9ua3yVDJhlJh8xxRhUiPmNYgKuSzQtOTsGKaBCx8MGohAYbMOZV7qFTSCJzyBynObE3hadW1s7c+P3wWo2odJltO+UDNo=
+	t=1729084409; cv=none; b=aRz+9hqWTgO0xt2DbyBSGmQCBy8Oz4kR9ZWfR4hvQ8imWc7kUFaPKuOYZQS1+ARE5nd0teKNL9ESTXQj0kiLBsQLcTDRQW0Fr+rkuddWBw2ugvaSseWNS4u9975g/4/wDyHq/IXI9zFVoNmP/PO4sez3wSN8R7gBrELmIS5Tc4M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729084125; c=relaxed/simple;
-	bh=p6qrzMsv92J2BKqZn/+oJpMYE2tiMW03Q9j+yCiO0f4=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=Uudo1FJj+8nnIAX83xXlROHxK1NmOxDcEcBqNbx18i/VA/CPqsDqyYcHz8saq6MMXyHTSKeSkKOYXuHAvrzM/tuMt/ukne15fQkicFv9Q2FVeMtGgbcQWp0Xm7q2lumT5hcysH9ww481bvFmMLq4Kqc+Nm6/eZOi/2u7B4BaaZk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.18.186.29])
-	by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4XT9kL507yz9v7NL;
-	Wed, 16 Oct 2024 20:48:26 +0800 (CST)
-Received: from mail02.huawei.com (unknown [7.182.16.27])
-	by mail.maildlp.com (Postfix) with ESMTP id 4A5EA14075E;
-	Wed, 16 Oct 2024 21:08:28 +0800 (CST)
-Received: from [127.0.0.1] (unknown [10.204.63.22])
-	by APP2 (Coremail) with SMTP id GxC2BwAniMjDug9nyd39Ag--.38782S2;
-	Wed, 16 Oct 2024 14:08:27 +0100 (CET)
-Message-ID: <33fefedfbdc44ea9c58a14030d58bff20b2c7d86.camel@huaweicloud.com>
-Subject: Re: [PATCH 2/3] ima: Ensure lock is held when setting iint pointer
- in inode security blob
-From: Roberto Sassu <roberto.sassu@huaweicloud.com>
-To: Mimi Zohar <zohar@linux.ibm.com>, Paul Moore <paul@paul-moore.com>
-Cc: dmitry.kasatkin@gmail.com, eric.snowberg@oracle.com, jmorris@namei.org, 
-	serge@hallyn.com, linux-integrity@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org, ebpqwerty472123@gmail.com, Roberto Sassu
-	 <roberto.sassu@huawei.com>
-Date: Wed, 16 Oct 2024 15:08:16 +0200
-In-Reply-To: <3ab95195af7db9d2bd482f46a69305f2f386cc32.camel@huaweicloud.com>
-References: <20241008165732.2603647-1-roberto.sassu@huaweicloud.com>
-	 <20241008165732.2603647-2-roberto.sassu@huaweicloud.com>
-	 <CAHC9VhRkMwLqVFfWMvMOJ6x4UNUK=C_cMVW7Op9icz28MMDYdQ@mail.gmail.com>
-	 <69ed92fde951b20a9b976d48803fe9b5daaa9eea.camel@huaweicloud.com>
-	 <92c528d8848f78869888a746643e1cf2969df62a.camel@linux.ibm.com>
-	 <3ab95195af7db9d2bd482f46a69305f2f386cc32.camel@huaweicloud.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	s=arc-20240116; t=1729084409; c=relaxed/simple;
+	bh=VnDt1UOnhj8zNfRK9i/Oehu6fV0+ILXu0M8qbbDrq5Y=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=Te5jdEVBUaOKWPH2mrS6+Q75xGXTVP2RZ4//npM//agHISuntkfuHbVa7YiqYC+jSpm7U3gOT89zF388eVhnyyb8EpkaSKMW6LxrsM/b8ssHZppcB+anWvNbU6EIhfYp8mOkMgC0aRG5UywngJZ+mzgwLU8s4/h2CBf9sbAl2n0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eJz/rz7p; arc=none smtp.client-ip=209.85.160.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qt1-f174.google.com with SMTP id d75a77b69052e-4607d5932aaso7277221cf.1;
+        Wed, 16 Oct 2024 06:13:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1729084407; x=1729689207; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VnDt1UOnhj8zNfRK9i/Oehu6fV0+ILXu0M8qbbDrq5Y=;
+        b=eJz/rz7pkMInjCCqROS2TIFn6IEMTdxMABKiWiKFuvwY9SaVKAzfOcYLqTZWgoGoU1
+         AXAYdcrGeeslexA7yrbS7hSJ3n9sau3nmWg0UtA71XLhxRIk7a6iIBgWU+5XP3hpjQ5f
+         2Vsruv5+e07zFwohemhZFNfIfMZjRvB+oS8D43Lc1MWJ2JCCvJNk32WD0Xb3hJ7zGcol
+         ed1Z57JMleQviwEB/bzQXCRndlWOTht1GClOTEYDr7wsY6jTE/qME2JOFArh/gnl37/A
+         R+pyozsIaaRZgLuYQgSGFq483FWtjfhbUTOf2c7ArqZH+dYmkFwUJvRxQG9w9qqmu/Ly
+         YgbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1729084407; x=1729689207;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=VnDt1UOnhj8zNfRK9i/Oehu6fV0+ILXu0M8qbbDrq5Y=;
+        b=v8jd5CJSvm9YGffVQ2SAK7w2BteJnl77Mzivil3lCYuaLv/FspuxM2XElyrJcQDl4F
+         0WjlpGjJa1z9vhkiyPQwpLdBwc5bIoV6XjEpa3OfkVMic8KaP9bCwHDn33zjDz2LsmVi
+         QSr+cdaaTORuPAvmkmlF9mQalNulkwALR704mzgsj/04dBC3jnWyMeeFn0OHDvHQ4eMx
+         zOIPsb2AzEJzIJQKprLitLi3Scvz3HB7FriR169HiMztRhv4zDa1EqxB3jnYPwtMtTwY
+         vSutaqjd4+3Nor6w3Oqd9vHGGagTt+1CdikEzdZ3FtQhgC8R0vT2PJGYHaH2BybwB2fq
+         seXg==
+X-Forwarded-Encrypted: i=1; AJvYcCUCTw3AiRmXPuLXFHkqG2Wt/sqbo/j0kqeCorFb2Vc1uDTzadvoZIXKj9oLnFPHKSLIP+E=@vger.kernel.org, AJvYcCX3GTa4TpMLhvtiKt8bK8xlLPXHq95/6O+CoIvL6aJO3G3sNShb6Bombvi0YcxZxYQIywKFKAu+@vger.kernel.org
+X-Gm-Message-State: AOJu0YyKP2FLHzmNlK+E0dpSjmjHEn1Zueb2+JVzMYOqlMrzlloDl2+c
+	hQHkI7IR3xycWRGz8ziJpA+3PB9CR1ChnDsVHT7TahSkJOkGFy9J
+X-Google-Smtp-Source: AGHT+IGaaxwDRU1FGDsd8SG40DOmhY4b0wTE+rvTGrN27iCrHN/IlTzgNhENAFKAocTTafi0Zy5GlA==
+X-Received: by 2002:a05:622a:4d92:b0:45d:7eba:af80 with SMTP id d75a77b69052e-4604b32099fmr298188201cf.25.1729084406841;
+        Wed, 16 Oct 2024 06:13:26 -0700 (PDT)
+Received: from localhost (86.235.150.34.bc.googleusercontent.com. [34.150.235.86])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-460850c82acsm14375281cf.61.2024.10.16.06.13.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Oct 2024 06:13:25 -0700 (PDT)
+Date: Wed, 16 Oct 2024 09:13:25 -0400
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: Jason Xing <kerneljasonxing@gmail.com>, 
+ Martin KaFai Lau <martin.lau@linux.dev>
+Cc: davem@davemloft.net, 
+ edumazet@google.com, 
+ kuba@kernel.org, 
+ pabeni@redhat.com, 
+ dsahern@kernel.org, 
+ willemdebruijn.kernel@gmail.com, 
+ willemb@google.com, 
+ ast@kernel.org, 
+ daniel@iogearbox.net, 
+ andrii@kernel.org, 
+ eddyz87@gmail.com, 
+ song@kernel.org, 
+ yonghong.song@linux.dev, 
+ john.fastabend@gmail.com, 
+ kpsingh@kernel.org, 
+ sdf@fomichev.me, 
+ haoluo@google.com, 
+ jolsa@kernel.org, 
+ bpf@vger.kernel.org, 
+ netdev@vger.kernel.org, 
+ Jason Xing <kernelxing@tencent.com>
+Message-ID: <670fbbf57b606_3422be294a9@willemb.c.googlers.com.notmuch>
+In-Reply-To: <CAL+tcoC5QLfpAuJrZxUPbaaK68pGKD31vuohi=NcXghe+uRpZA@mail.gmail.com>
+References: <20241012040651.95616-1-kerneljasonxing@gmail.com>
+ <20241012040651.95616-5-kerneljasonxing@gmail.com>
+ <dbddb085-183e-47bf-8bc7-ec6eac4d877f@linux.dev>
+ <CAL+tcoBieZ3_ZX3PRY8k7-C6Rv2g=Mr1U1NAQkQpbHYYvtWpTQ@mail.gmail.com>
+ <49a87125-d5bd-4b8d-964e-0d745e9e669b@linux.dev>
+ <CAL+tcoC5QLfpAuJrZxUPbaaK68pGKD31vuohi=NcXghe+uRpZA@mail.gmail.com>
+Subject: Re: [PATCH net-next v2 04/12] net-timestamp: add static key to
+ control the whole bpf extension
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-CM-TRANSID:GxC2BwAniMjDug9nyd39Ag--.38782S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxGFW3Zr13Zr1fuw4UKF1ftFb_yoW5XF4fpF
-	Wvg3WUAayUXFW7urs0qasIvrWfK3yfGFWkWw15Jw1DZFyvvr1Yqr48Jr1Uury5Gr4xJw10
-	vr47Ka13uw1qyrJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvjb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
-	AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AF
-	wI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
-	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43
-	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
-	0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
-	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUF1
-	v3UUUUU
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQASBGcPIPkKdAAAsY
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2024-10-14 at 13:45 +0200, Roberto Sassu wrote:
-> On Fri, 2024-10-11 at 15:30 -0400, Mimi Zohar wrote:
-> > On Wed, 2024-10-09 at 17:43 +0200, Roberto Sassu wrote:
-> > > On Wed, 2024-10-09 at 11:41 -0400, Paul Moore wrote:
-> > > > On Tue, Oct 8, 2024 at 12:57=E2=80=AFPM Roberto Sassu
-> > > > <roberto.sassu@huaweicloud.com> wrote:
-> > > > >=20
-> > > > > From: Roberto Sassu <roberto.sassu@huawei.com>
-> > > > >=20
-> > > > > IMA stores a pointer of the ima_iint_cache structure, containing =
-integrity
-> > > > > metadata, in the inode security blob. However, check and assignme=
-nt of this
-> > > > > pointer is not atomic, and it might happen that two tasks both se=
-e that the
-> > > > > iint pointer is NULL and try to set it, causing a memory leak.
-> > > > >=20
-> > > > > Ensure that the iint check and assignment is guarded, by adding a=
- lockdep
-> > > > > assertion in ima_inode_get().
-> > > > >=20
-> > > > > Consequently, guard the remaining ima_inode_get() calls, in
-> > > > > ima_post_create_tmpfile() and ima_post_path_mknod(), to avoid the=
- lockdep
-> > > > > warnings.
-> > > > >=20
-> > > > > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> > > > > ---
-> > > > >  security/integrity/ima/ima_iint.c |  5 +++++
-> > > > >  security/integrity/ima/ima_main.c | 14 ++++++++++++--
-> > > > >  2 files changed, 17 insertions(+), 2 deletions(-)
-> > > > >=20
-> > > > > diff --git a/security/integrity/ima/ima_iint.c b/security/integri=
-ty/ima/ima_iint.c
-> > > > > index c176fd0faae7..fe676ccec32f 100644
-> > > > > --- a/security/integrity/ima/ima_iint.c
-> > > > > +++ b/security/integrity/ima/ima_iint.c
-> > > > > @@ -87,8 +87,13 @@ static void ima_iint_free(struct ima_iint_cach=
-e *iint)
-> > > > >   */
-> > > > >  struct ima_iint_cache *ima_inode_get(struct inode *inode)
-> > > > >  {
-> > > > > +       struct ima_iint_cache_lock *iint_lock;
-> > > > >         struct ima_iint_cache *iint;
-> > > > >=20
-> > > > > +       iint_lock =3D ima_inode_security(inode->i_security);
-> > > > > +       if (iint_lock)
-> > > > > +               lockdep_assert_held(&iint_lock->mutex);
-> > > > > +
-> > > > >         iint =3D ima_iint_find(inode);
-> > > > >         if (iint)
-> > > > >                 return iint;
-> > > >=20
-> > > > Can you avoid the ima_iint_find() call here and just do the followi=
-ng?
-> > > >=20
-> > > >   /* not sure if you need to check !iint_lock or not? */
-> > > >   if (!iint_lock)
-> > > >     return NULL;
-> > > >   iint =3D iint_lock->iint;
-> > > >   if (!iint)
-> > > >     return NULL;
-> > >=20
-> > > Yes, I also like it much more.
-> >=20
-> > Yes, testing iint_lock and then iint_lock->iint should be fine, but the=
- logic
-> > needs to be inverted.  ima_inode_get() should return the existing iint,=
- if it
-> > exists, or allocate the memory.
->=20
-> Right, I checked the patches I'm about to send, they do that.
+Jason Xing wrote:
+> On Wed, Oct 16, 2024 at 2:31=E2=80=AFPM Martin KaFai Lau <martin.lau@li=
+nux.dev> wrote:
+> >
+> > On 10/15/24 6:04 PM, Jason Xing wrote:
+> > > To be honest, I considered how to disable the static key. Like you
+> > > said, I failed to find a good chance that I can accurately disable =
+it.
+> >
+> > It at least needs to be disabled whenever that bpf prog got detached.=
 
-I think Paul's point was that we should not create a iint anyway, if
-the inode does not have a security blob. That check I think it is fine
-to keep.
+> >
+> > >
+> > >> The bpf prog may be detached also. (IF) it ends up staying with th=
+e
+> > >> cgroup/sockops interface, it should depend on the existing static =
+key in
+> > >> cgroup_bpf_enabled(CGROUP_SOCK_OPS) instead of adding another one.=
 
-Roberto
+> >
+> > > Are you suggesting that we need to remove the current static key? I=
+n
+> > > the previous thread, the reason why Willem came up with this idea i=
+s,
+> > > I think, to avoid affect the non-bpf timestamping feature.
+> >
+> > Take a look at cgroup_bpf_enabled(CGROUP_SOCK_OPS). There is a static=
+ key. I am
+> > saying to use that existing key. afaict, the newly added bpf_tstamp_c=
+ontrol key
+> > is mainly an optimization. Yes, cgroup_bpf_enabled(CGROUP_SOCK_OPS) i=
+s less
+> > granular but it has the needed accounting to disable whenever the bpf=
+ prog got
+> > detached, so better just reuse the cgroup_bpf_enabled(CGROUP_SOCK_OPS=
+).
+> =
 
+> Good suggestion. Good thing is that I don't need to figure out a
+> proper place to disable it any more. I can directly use
+> cgroup_bpf_enabled(CGROUP_SOCK_OPS) to test if the timestamp should be
+> printed with BPF program loaded.
+> =
+
+> BTW, I found that we don't implement how to disable the ip4_min_ttl
+> static key. Sometimes, I'm confused whether we have to disable it at a
+> certain time.
+
+In this case it would be fine to not disable it at all.
+
+The crux is that it is disabled on the vast majority of machines not
+using the feature. If a socket uses the feature, adding the small cost
+of the branches on the rest of the system is fine.
+
+Disabling requires refcounting usage. Sometimes the complexity and
+cost of that outweights the benefit.
 
