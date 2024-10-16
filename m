@@ -1,140 +1,106 @@
-Return-Path: <bpf+bounces-42210-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42211-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C38089A1031
-	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 18:57:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48A479A1049
+	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 19:04:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 890EE281120
-	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 16:57:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EF31E1F22266
+	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 17:04:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45D6C20FA8B;
-	Wed, 16 Oct 2024 16:57:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4DD120FAAA;
+	Wed, 16 Oct 2024 17:04:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Hw/rlcnt"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g364JahB"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 460631DA26;
-	Wed, 16 Oct 2024 16:57:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40A8E136358;
+	Wed, 16 Oct 2024 17:04:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729097842; cv=none; b=NyTpkS+H5RI7k1WSJU7EWpDCosaOjn14FRhbPhnBY5W3MgdRltM0jO2jT3BPdH/XA98NFoXlRySS2H8W3x+Ac0J6JiVdPOyVfdxbXijLB10GCNV163xmbMU0tRDDXtVNSSL+pbnQweLbqchlcPivgzrgBl/3x5If+uAdOC3OwhI=
+	t=1729098270; cv=none; b=B6ZFNKIgfvmzJBTuBUtsQBWIBhNDD+mcZHrq/HWcsxKAl9SOvaeXOV8xtbRtd8aHzabeYBL160i+Wg407W0W82IJahP2oKcTfqlx+CxlWyhNEsqGfHvjW8g1a0ow5tUgrG9czMUi0sFYNzM7/h81L1dqxYjneCLcMTFYD/K6LWI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729097842; c=relaxed/simple;
-	bh=1pLBOPVtd3wAwlT8/eeZLm5s5+/gi8fPENNYqrloduk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fI3XEmuJqvjRbny+t3YBTHrs+og3jzcc07r3fGXYE2Kv08v3nSXdgOSqTqmvkv2Ug/KbFU/KPtambswN1hGRRso6dYoVj7hY4inmzV3BG5ujZfVzuROA1Gi3qNq/OJHGlLcVukifD1W9sqqhw9ldP42w1auHK/yZeYc6/pdLOT8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Hw/rlcnt; arc=none smtp.client-ip=209.85.221.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-37d3ecad390so832106f8f.1;
-        Wed, 16 Oct 2024 09:57:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729097839; x=1729702639; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nKPLX1dcY2XtDrqW6+v78Ilvqk1xQVBH75n5ZmCvJXg=;
-        b=Hw/rlcntXwurJoFigqUKdXfm59SQE/c85GIHXLhlEbISlT7HvdNzVjR/irVc0A9zdl
-         ByracNQinmJu7NGFp2UG7Ig5fC22YjNw2qNRNFqi+/IJBK6ry1w1mk/DeO8zY5luC+a4
-         EynRzTu/XJy3KjmXHkFTa9xXroWADowUfwzKKTqHZe874jfat+rJ012hTMxSCB+43h8t
-         zyoz1vX3pezrN6btrHnIIOOvisL7rJmXK4+GCHXG8xxDTqDlpSeyT9LqQRJzobyz5LeS
-         hfHSfxYx+sPlSmFCEX6a5sbvgR/vKdR4LfoCpg3zCYLuG6KVSTEJ46BbxD8GcI70Pvj8
-         RGPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729097839; x=1729702639;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nKPLX1dcY2XtDrqW6+v78Ilvqk1xQVBH75n5ZmCvJXg=;
-        b=OCCAQipXnRFX77amc3rqz0TCgGpq5kLBuYhMDXwMCVjHJsqTjEq+bN3On3OyY2bEL5
-         IXD5XGGPRrsbZrouZz0nD0h32CQEM5htriHfNQ+fTltHzksm7gf1E6rWd1EwgUsmez8V
-         MBohPkmYzzeiilVV3r9jrnhhqI5lbEk9/eDCEI8dTZtXmEZ7Tprv4tsLsOpUjp2WziWZ
-         S/aWRBWrQ/WMq9sKQBulUzSmSsD60gnBrOQ/lOIeYMWnVlaUyx5Ykv7Dlw5zWP0JwUJ2
-         aDIfHDYsfhXHCJsfIFLl9KMXxFXbRbV84Man9BR/sBYuU0nze9c3M/LblnzvSYo1+HRq
-         j2rA==
-X-Forwarded-Encrypted: i=1; AJvYcCUfIXoP9rnWyBe2wlLZv5wV7bLng9wptZDv8gxa+zqB3c2n3Uv68u/7CwNRSHKYTVtsa5k=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwqGJd1ORVQ/hJmKzpJUPlIhGiZmGKBJEXm8dQRTSi9k3MjWnZU
-	CkIo5SU+UOoN0Go40rfLp+24VgmFffq3kJFAyI92lJbAwvQ03DkHhAbopTLwq/jZ/HqXiDLqumo
-	8m3Q7z0IeOV/ywMB5XvMqZcX1obF1RPb4
-X-Google-Smtp-Source: AGHT+IGVfl6Bh8udrquNYv4mNu/UPkw/vYmp9soRD2vGFse0TwD/OfqyJgeDi9a3rmvQG2SaSfkIHsgQA5TQJR3UAuM=
-X-Received: by 2002:a5d:58d2:0:b0:374:adf1:9232 with SMTP id
- ffacd0b85a97d-37d93e19efcmr159965f8f.19.1729097839278; Wed, 16 Oct 2024
- 09:57:19 -0700 (PDT)
+	s=arc-20240116; t=1729098270; c=relaxed/simple;
+	bh=CX9Vtd5JRZ6CUj4QoB0EX1rOR78R+P7OGs4cTTtUhI0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bKcCrWZXMKuKgWWwJIPI3OhQd1ig9wIF4Sz4T4f5E4P3N+JsnHzcaLO5doJXGCmwLGwFehU2Jgr8ur98aCjPBUxqpWnHEV8CqS7OZGj55JKPI2hyB8AcOr19MTw3Uf3Ke1aGPSAyGxvimQX+6p2QbA56wPDv24U78M60uwK+SMk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g364JahB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 826E8C4CEC5;
+	Wed, 16 Oct 2024 17:04:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1729098269;
+	bh=CX9Vtd5JRZ6CUj4QoB0EX1rOR78R+P7OGs4cTTtUhI0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=g364JahB/sCv2dpwVHTq9xHoZ3GytonbE9O0BaXmDiLo/QDpsa5qKPYXo+Uo2TDSH
+	 PMzNjkVvUd1vMkoaNtUzzqObCBJRnT4znktf4E2O6rloekXsbyZ/qRvSG9HZhvbTwu
+	 0hTLGfQr7rUcXFiMMd9vmdWvHYZ39rnCwOobBYlns2FysIv8rA5YeRd9oeDG6kXUzx
+	 spmXwBOF4LCxaMQQ4RPhUHlp/P5I6dYW0Ghun6DpyXanxFgzD/2aScpKdAjEfZIziC
+	 4BJS2Z/DrhaCLuZJGbscXnDBUp13ppXL6YkU4Tf6RxqyBDjE5fx8ayCqrd769NqR3g
+	 xNI2WUsMin+Jg==
+Date: Wed, 16 Oct 2024 07:04:28 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Cc: Chen Ridong <chenridong@huaweicloud.com>, lizefan.x@bytedance.com,
+	hannes@cmpxchg.org, longman@redhat.com, john.fastabend@gmail.com,
+	roman.gushchin@linux.dev, quanyang.wang@windriver.com,
+	ast@kernel.org, cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	chenridong@huawei.com, wangweiyang2@huawei.com
+Subject: Re: [PATCH] cgroup/bpf: fix NULL pointer dereference at
+ cgroup_bpf_offline
+Message-ID: <Zw_yHEJCBwtYFJoR@slm.duckdns.org>
+References: <20241016093633.670555-1-chenridong@huaweicloud.com>
+ <bidpqhgxflkaj6wzhkqj5fqoc2zumf3vcyidspz4mqm4erq3bu@r4mzs45sbe7g>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241016024100.7409-1-dtcccc@linux.alibaba.com>
-In-Reply-To: <20241016024100.7409-1-dtcccc@linux.alibaba.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 16 Oct 2024 09:57:07 -0700
-Message-ID: <CAADnVQ+gL48HGcs0JyLfq17D-qXyeZEoBJwGgGTO1JcJ3Ykqtw@mail.gmail.com>
-Subject: Re: [PATCH] sched_ext: Use BTF_ID to resolve task_struct
-To: Tianchen Ding <dtcccc@linux.alibaba.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, Tejun Heo <tj@kernel.org>, 
-	David Vernet <void@manifault.com>, Peter Zijlstra <peterz@infradead.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <bidpqhgxflkaj6wzhkqj5fqoc2zumf3vcyidspz4mqm4erq3bu@r4mzs45sbe7g>
 
-On Tue, Oct 15, 2024 at 7:42=E2=80=AFPM Tianchen Ding <dtcccc@linux.alibaba=
-.com> wrote:
->
-> Save the searching time during bpf_scx_init.
->
-> Signed-off-by: Tianchen Ding <dtcccc@linux.alibaba.com>
-> ---
->  kernel/sched/ext.c | 12 +++---------
->  1 file changed, 3 insertions(+), 9 deletions(-)
->
-> diff --git a/kernel/sched/ext.c b/kernel/sched/ext.c
-> index 609b9fb00d6f..1d11a96eefb8 100644
-> --- a/kernel/sched/ext.c
-> +++ b/kernel/sched/ext.c
-> @@ -5343,7 +5343,7 @@ static int scx_ops_enable(struct sched_ext_ops *ops=
-, struct bpf_link *link)
->
->  extern struct btf *btf_vmlinux;
->  static const struct btf_type *task_struct_type;
-> -static u32 task_struct_type_id;
-> +BTF_ID_LIST_SINGLE(task_struct_btf_ids, struct, task_struct);
->
->  static bool set_arg_maybe_null(const char *op, int arg_n, int off, int s=
-ize,
->                                enum bpf_access_type type,
-> @@ -5395,7 +5395,7 @@ static bool set_arg_maybe_null(const char *op, int =
-arg_n, int off, int size,
->                  */
->                 info->reg_type =3D PTR_MAYBE_NULL | PTR_TO_BTF_ID | PTR_T=
-RUSTED;
->                 info->btf =3D btf_vmlinux;
-> -               info->btf_id =3D task_struct_type_id;
-> +               info->btf_id =3D task_struct_btf_ids[0];
->
->                 return true;
->         }
-> @@ -5547,13 +5547,7 @@ static void bpf_scx_unreg(void *kdata, struct bpf_=
-link *link)
->
->  static int bpf_scx_init(struct btf *btf)
->  {
-> -       s32 type_id;
-> -
-> -       type_id =3D btf_find_by_name_kind(btf, "task_struct", BTF_KIND_ST=
-RUCT);
-> -       if (type_id < 0)
-> -               return -EINVAL;
-> -       task_struct_type =3D btf_type_by_id(btf, type_id);
-> -       task_struct_type_id =3D type_id;
-> +       task_struct_type =3D btf_type_by_id(btf, task_struct_btf_ids[0]);
+On Wed, Oct 16, 2024 at 03:13:52PM +0200, Michal Koutný wrote:
+> Hello.
+> 
+> On Wed, Oct 16, 2024 at 09:36:33AM GMT, Chen Ridong <chenridong@huaweicloud.com> wrote:
+> > As mentioned above, when cgroup_bpf_inherit returns an error in
+> > cgroup_setup_root, cgrp->bpf.refcnt has been exited. If cgrp->bpf.refcnt is
+> > killed again in the cgroup_kill_sb function, the data of cgrp->bpf.refcnt
+> > may have become NULL, leading to NULL pointer dereference.
+> > 
+> > To fix this issue, goto err when cgroup_bpf_inherit returns an error.
+> > Additionally, if cgroup_bpf_inherit returns an error after rebinding
+> > subsystems, the root_cgrp->self.refcnt is exited, which leads to
+> > cgroup1_root_to_use return 1 (restart) when subsystems is  mounted next.
+> > This is due to a failure trying to get the refcnt(the root is root_cgrp,
+> > without rebinding back to cgrp_dfl_root). So move the call to
+> > cgroup_bpf_inherit above rebind_subsystems in the cgroup_setup_root.
+> > 
+> > Fixes: 04f8ef5643bc ("cgroup: Fix memory leak caused by missing cgroup_bpf_offline")
+> > Signed-off-by: Chen Ridong <chenridong@huawei.com>
+> 
+> Hm, I always thought that BPF progs can only be attached to the default
+> hierarchy (cgroup_bpf_prog_attach/cgroup_get_from_fd should prevent
+> that).
+> 
+> Thus I wonder whether cgroup_bpf_inherit (which is more like
+> cgroup_bpf_init in this case) needs to be called no v1 roots at all (and
+> with such a change, 04f8ef5643bc could be effectively reverted too).
+> 
+> Or can bpf data be used on v1 hierarchies somehow?
 
-Good optimization, but it's also unnecessary.
+We relaxed some of the usages (see cgroup_v1v2_get_from_fd()) but cgroup BPF
+progs can only be attached to v2.
 
-btf_id is already in btf_tracing_ids[BTF_TRACING_TYPE_TASK].
+Thanks.
+
+-- 
+tejun
 
