@@ -1,217 +1,166 @@
-Return-Path: <bpf+bounces-42186-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42190-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4AE389A099E
-	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 14:27:11 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E6699A0B07
+	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 15:08:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E73D1C22D9D
-	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 12:27:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C45841F26723
+	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 13:08:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B44DC20B1ED;
-	Wed, 16 Oct 2024 12:26:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="A+on9mNZ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05368209687;
+	Wed, 16 Oct 2024 13:08:46 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DC09209F50;
-	Wed, 16 Oct 2024 12:26:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7192E208D88;
+	Wed, 16 Oct 2024 13:08:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729081581; cv=none; b=NeP2/tGPUqGla7/rVsQN2r/x6pO/ibRG6UBpf32+yAtET3M/Wt8h27RcT3D4z4vhLQ0metuWpTDQg8mH7c0t8pElbkM09+kH/Ar3xIuU8yQm8jiq/ucMTnXmc9hghHKQsOLNQaqIbmQv6HRKfB1nuX2kErE1jq1u2EEbmK2OAxU=
+	t=1729084125; cv=none; b=ARI3kgF1HEjryEw8Q7bqZjhC6h3gEnyBLt3DwE05ODcuVk4dEHfI1g/MNvs+xLJ36H4edEMFINgRsU9ua3yVDJhlJh8xxRhUiPmNYgKuSzQtOTsGKaBCx8MGohAYbMOZV7qFTSCJzyBynObE3hadW1s7c+P3wWo2odJltO+UDNo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729081581; c=relaxed/simple;
-	bh=hAG4Aq/HVk5v5L3NiTsWWHcxwaGleX3poinTXxCQO3c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EagyL184qUcaFcojTzDBdcjiRIlKtAAveib3muFKwa/CGRn7piAFWCd08FiiPu4YMfNUarvvV/XhoUx4GMA+RG2yr3wU8f1gelkCNnyrb7sqMSRynYFBiQoj+IJ9a6icFaQxQ6kOfqZyJD+PudN1S7MaiPUgBHwqCwKj2YYwR14=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=A+on9mNZ; arc=none smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1729081579; x=1760617579;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=hAG4Aq/HVk5v5L3NiTsWWHcxwaGleX3poinTXxCQO3c=;
-  b=A+on9mNZ9thTCstIlAkc2UHRf927/RWVVbnUoM3j1frSQ4qcbXRA3zhV
-   /dBWAfj953nmTWFXBL0A+M8f1Du/810TvAKnxj/a9cw6X+sIHunMwFB77
-   1ykcps/okZK32JhodWDiZkqnw05Kd5wETGg26W3H3GNIxYgE2UyOqrdXe
-   rFRqgXx3R1kFD/t40DuWa4DpYatu1lY5sYjMHtRTHkCMTEwWyByMxaZ14
-   Rd0kd82wvGdpGl7LiQvHQS5qrDYaX+w/ejiMlc1EbRt3tNYEqvMx/U2rc
-   nuJM0vkAbsxdZ3tEIJ2UFxpgxLruNRFXW7BpC/v7PX0OdPY9RDJ5oHdQT
-   g==;
-X-CSE-ConnectionGUID: woP6nVXRQEibEbFL9ccCtg==
-X-CSE-MsgGUID: etapYRR/TUGSx8dadGg+jw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11222"; a="28670564"
-X-IronPort-AV: E=Sophos;i="6.11,199,1725346800"; 
-   d="scan'208";a="28670564"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2024 05:26:18 -0700
-X-CSE-ConnectionGUID: fSV+sNEET7Or5OyD7VKQ2A==
-X-CSE-MsgGUID: obcVvpc7T4+Y0lv3l/wd4Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.11,208,1725346800"; 
-   d="scan'208";a="83288733"
-Received: from lkp-server01.sh.intel.com (HELO a48cf1aa22e8) ([10.239.97.150])
-  by orviesa004.jf.intel.com with ESMTP; 16 Oct 2024 05:26:14 -0700
-Received: from kbuild by a48cf1aa22e8 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1t136S-000KtL-1E;
-	Wed, 16 Oct 2024 12:26:12 +0000
-Date: Wed, 16 Oct 2024 20:26:07 +0800
-From: kernel test robot <lkp@intel.com>
-To: Andrea Righi <andrea.righi@linux.dev>, Tejun Heo <tj@kernel.org>,
-	David Vernet <void@manifault.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>
-Cc: oe-kbuild-all@lists.linux.dev,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-	Valentin Schneider <vschneid@redhat.com>,
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH v4] sched_ext: Trigger ops.update_idle() from
- pick_task_idle()
-Message-ID: <202410161955.CsmEsAy8-lkp@intel.com>
-References: <20241015111539.12136-1-andrea.righi@linux.dev>
+	s=arc-20240116; t=1729084125; c=relaxed/simple;
+	bh=p6qrzMsv92J2BKqZn/+oJpMYE2tiMW03Q9j+yCiO0f4=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=Uudo1FJj+8nnIAX83xXlROHxK1NmOxDcEcBqNbx18i/VA/CPqsDqyYcHz8saq6MMXyHTSKeSkKOYXuHAvrzM/tuMt/ukne15fQkicFv9Q2FVeMtGgbcQWp0Xm7q2lumT5hcysH9ww481bvFmMLq4Kqc+Nm6/eZOi/2u7B4BaaZk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.18.186.29])
+	by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4XT9kL507yz9v7NL;
+	Wed, 16 Oct 2024 20:48:26 +0800 (CST)
+Received: from mail02.huawei.com (unknown [7.182.16.27])
+	by mail.maildlp.com (Postfix) with ESMTP id 4A5EA14075E;
+	Wed, 16 Oct 2024 21:08:28 +0800 (CST)
+Received: from [127.0.0.1] (unknown [10.204.63.22])
+	by APP2 (Coremail) with SMTP id GxC2BwAniMjDug9nyd39Ag--.38782S2;
+	Wed, 16 Oct 2024 14:08:27 +0100 (CET)
+Message-ID: <33fefedfbdc44ea9c58a14030d58bff20b2c7d86.camel@huaweicloud.com>
+Subject: Re: [PATCH 2/3] ima: Ensure lock is held when setting iint pointer
+ in inode security blob
+From: Roberto Sassu <roberto.sassu@huaweicloud.com>
+To: Mimi Zohar <zohar@linux.ibm.com>, Paul Moore <paul@paul-moore.com>
+Cc: dmitry.kasatkin@gmail.com, eric.snowberg@oracle.com, jmorris@namei.org, 
+	serge@hallyn.com, linux-integrity@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	bpf@vger.kernel.org, ebpqwerty472123@gmail.com, Roberto Sassu
+	 <roberto.sassu@huawei.com>
+Date: Wed, 16 Oct 2024 15:08:16 +0200
+In-Reply-To: <3ab95195af7db9d2bd482f46a69305f2f386cc32.camel@huaweicloud.com>
+References: <20241008165732.2603647-1-roberto.sassu@huaweicloud.com>
+	 <20241008165732.2603647-2-roberto.sassu@huaweicloud.com>
+	 <CAHC9VhRkMwLqVFfWMvMOJ6x4UNUK=C_cMVW7Op9icz28MMDYdQ@mail.gmail.com>
+	 <69ed92fde951b20a9b976d48803fe9b5daaa9eea.camel@huaweicloud.com>
+	 <92c528d8848f78869888a746643e1cf2969df62a.camel@linux.ibm.com>
+	 <3ab95195af7db9d2bd482f46a69305f2f386cc32.camel@huaweicloud.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241015111539.12136-1-andrea.righi@linux.dev>
+X-CM-TRANSID:GxC2BwAniMjDug9nyd39Ag--.38782S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxGFW3Zr13Zr1fuw4UKF1ftFb_yoW5XF4fpF
+	Wvg3WUAayUXFW7urs0qasIvrWfK3yfGFWkWw15Jw1DZFyvvr1Yqr48Jr1Uury5Gr4xJw10
+	vr47Ka13uw1qyrJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvjb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
+	AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AF
+	wI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43
+	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+	0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
+	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUF1
+	v3UUUUU
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQASBGcPIPkKdAAAsY
 
-Hi Andrea,
+On Mon, 2024-10-14 at 13:45 +0200, Roberto Sassu wrote:
+> On Fri, 2024-10-11 at 15:30 -0400, Mimi Zohar wrote:
+> > On Wed, 2024-10-09 at 17:43 +0200, Roberto Sassu wrote:
+> > > On Wed, 2024-10-09 at 11:41 -0400, Paul Moore wrote:
+> > > > On Tue, Oct 8, 2024 at 12:57=E2=80=AFPM Roberto Sassu
+> > > > <roberto.sassu@huaweicloud.com> wrote:
+> > > > >=20
+> > > > > From: Roberto Sassu <roberto.sassu@huawei.com>
+> > > > >=20
+> > > > > IMA stores a pointer of the ima_iint_cache structure, containing =
+integrity
+> > > > > metadata, in the inode security blob. However, check and assignme=
+nt of this
+> > > > > pointer is not atomic, and it might happen that two tasks both se=
+e that the
+> > > > > iint pointer is NULL and try to set it, causing a memory leak.
+> > > > >=20
+> > > > > Ensure that the iint check and assignment is guarded, by adding a=
+ lockdep
+> > > > > assertion in ima_inode_get().
+> > > > >=20
+> > > > > Consequently, guard the remaining ima_inode_get() calls, in
+> > > > > ima_post_create_tmpfile() and ima_post_path_mknod(), to avoid the=
+ lockdep
+> > > > > warnings.
+> > > > >=20
+> > > > > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> > > > > ---
+> > > > >  security/integrity/ima/ima_iint.c |  5 +++++
+> > > > >  security/integrity/ima/ima_main.c | 14 ++++++++++++--
+> > > > >  2 files changed, 17 insertions(+), 2 deletions(-)
+> > > > >=20
+> > > > > diff --git a/security/integrity/ima/ima_iint.c b/security/integri=
+ty/ima/ima_iint.c
+> > > > > index c176fd0faae7..fe676ccec32f 100644
+> > > > > --- a/security/integrity/ima/ima_iint.c
+> > > > > +++ b/security/integrity/ima/ima_iint.c
+> > > > > @@ -87,8 +87,13 @@ static void ima_iint_free(struct ima_iint_cach=
+e *iint)
+> > > > >   */
+> > > > >  struct ima_iint_cache *ima_inode_get(struct inode *inode)
+> > > > >  {
+> > > > > +       struct ima_iint_cache_lock *iint_lock;
+> > > > >         struct ima_iint_cache *iint;
+> > > > >=20
+> > > > > +       iint_lock =3D ima_inode_security(inode->i_security);
+> > > > > +       if (iint_lock)
+> > > > > +               lockdep_assert_held(&iint_lock->mutex);
+> > > > > +
+> > > > >         iint =3D ima_iint_find(inode);
+> > > > >         if (iint)
+> > > > >                 return iint;
+> > > >=20
+> > > > Can you avoid the ima_iint_find() call here and just do the followi=
+ng?
+> > > >=20
+> > > >   /* not sure if you need to check !iint_lock or not? */
+> > > >   if (!iint_lock)
+> > > >     return NULL;
+> > > >   iint =3D iint_lock->iint;
+> > > >   if (!iint)
+> > > >     return NULL;
+> > >=20
+> > > Yes, I also like it much more.
+> >=20
+> > Yes, testing iint_lock and then iint_lock->iint should be fine, but the=
+ logic
+> > needs to be inverted.  ima_inode_get() should return the existing iint,=
+ if it
+> > exists, or allocate the memory.
+>=20
+> Right, I checked the patches I'm about to send, they do that.
 
-kernel test robot noticed the following build warnings:
+I think Paul's point was that we should not create a iint anyway, if
+the inode does not have a security blob. That check I think it is fine
+to keep.
 
-[auto build test WARNING on tip/sched/core]
-[also build test WARNING on linus/master v6.12-rc3 next-20241016]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Roberto
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Andrea-Righi/sched_ext-Trigger-ops-update_idle-from-pick_task_idle/20241015-191701
-base:   tip/sched/core
-patch link:    https://lore.kernel.org/r/20241015111539.12136-1-andrea.righi%40linux.dev
-patch subject: [PATCH v4] sched_ext: Trigger ops.update_idle() from pick_task_idle()
-config: x86_64-randconfig-122-20241016 (https://download.01.org/0day-ci/archive/20241016/202410161955.CsmEsAy8-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20241016/202410161955.CsmEsAy8-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202410161955.CsmEsAy8-lkp@intel.com/
-
-sparse warnings: (new ones prefixed by >>)
-   kernel/sched/build_policy.c: note: in included file:
->> kernel/sched/idle.c:481:22: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/idle.c:481:22: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/idle.c:481:22: sparse:    struct task_struct *
-   kernel/sched/build_policy.c: note: in included file:
-   kernel/sched/rt.c:991:38: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct task_struct *curr @@     got struct task_struct [noderef] __rcu *curr @@
-   kernel/sched/rt.c:991:38: sparse:     expected struct task_struct *curr
-   kernel/sched/rt.c:991:38: sparse:     got struct task_struct [noderef] __rcu *curr
-   kernel/sched/rt.c:1529:31: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected struct task_struct *p @@     got struct task_struct [noderef] __rcu *curr @@
-   kernel/sched/rt.c:1529:31: sparse:     expected struct task_struct *p
-   kernel/sched/rt.c:1529:31: sparse:     got struct task_struct [noderef] __rcu *curr
-   kernel/sched/build_policy.c: note: in included file:
-   kernel/sched/deadline.c:2341:42: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected struct sched_dl_entity const *b @@     got struct sched_dl_entity [noderef] __rcu * @@
-   kernel/sched/deadline.c:2341:42: sparse:     expected struct sched_dl_entity const *b
-   kernel/sched/deadline.c:2341:42: sparse:     got struct sched_dl_entity [noderef] __rcu *
-   kernel/sched/deadline.c:1242:39: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct task_struct *p @@     got struct task_struct [noderef] __rcu *curr @@
-   kernel/sched/deadline.c:1242:39: sparse:     expected struct task_struct *p
-   kernel/sched/deadline.c:1242:39: sparse:     got struct task_struct [noderef] __rcu *curr
-   kernel/sched/deadline.c:1242:85: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected struct sched_dl_entity const *b @@     got struct sched_dl_entity [noderef] __rcu * @@
-   kernel/sched/deadline.c:1242:85: sparse:     expected struct sched_dl_entity const *b
-   kernel/sched/deadline.c:1242:85: sparse:     got struct sched_dl_entity [noderef] __rcu *
-   kernel/sched/deadline.c:1342:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct task_struct *p @@     got struct task_struct [noderef] __rcu *curr @@
-   kernel/sched/deadline.c:1342:23: sparse:     expected struct task_struct *p
-   kernel/sched/deadline.c:1342:23: sparse:     got struct task_struct [noderef] __rcu *curr
-   kernel/sched/deadline.c:1651:31: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct task_struct *p @@     got struct task_struct [noderef] __rcu *curr @@
-   kernel/sched/deadline.c:1651:31: sparse:     expected struct task_struct *p
-   kernel/sched/deadline.c:1651:31: sparse:     got struct task_struct [noderef] __rcu *curr
-   kernel/sched/deadline.c:1651:70: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected struct sched_dl_entity const *b @@     got struct sched_dl_entity [noderef] __rcu * @@
-   kernel/sched/deadline.c:1651:70: sparse:     expected struct sched_dl_entity const *b
-   kernel/sched/deadline.c:1651:70: sparse:     got struct sched_dl_entity [noderef] __rcu *
-   kernel/sched/deadline.c:1739:38: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct task_struct *curr @@     got struct task_struct [noderef] __rcu *curr @@
-   kernel/sched/deadline.c:1739:38: sparse:     expected struct task_struct *curr
-   kernel/sched/deadline.c:1739:38: sparse:     got struct task_struct [noderef] __rcu *curr
-   kernel/sched/deadline.c:3054:22: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/deadline.c:3054:22: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/deadline.c:3054:22: sparse:    struct task_struct *
-   kernel/sched/build_policy.c: note: in included file:
-   kernel/sched/syscalls.c:206:22: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/syscalls.c:206:22: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/syscalls.c:206:22: sparse:    struct task_struct *
-   kernel/sched/build_policy.c: note: in included file (through include/linux/smp.h, include/linux/sched/clock.h):
-   include/linux/list.h:83:21: sparse: sparse: self-comparison always evaluates to true
-   include/linux/list.h:83:21: sparse: sparse: self-comparison always evaluates to true
-   kernel/sched/build_policy.c: note: in included file:
-   kernel/sched/sched.h:2265:25: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2265:25: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2265:25: sparse:    struct task_struct *
-   kernel/sched/sched.h:2265:25: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2265:25: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2265:25: sparse:    struct task_struct *
-   kernel/sched/sched.h:2265:25: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2265:25: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2265:25: sparse:    struct task_struct *
-   kernel/sched/sched.h:2265:25: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2265:25: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2265:25: sparse:    struct task_struct *
-   kernel/sched/sched.h:2265:25: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2265:25: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2265:25: sparse:    struct task_struct *
-   kernel/sched/sched.h:2451:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2451:9: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2451:9: sparse:    struct task_struct *
-   kernel/sched/sched.h:2265:25: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2265:25: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2265:25: sparse:    struct task_struct *
-   kernel/sched/sched.h:2451:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2451:9: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2451:9: sparse:    struct task_struct *
-   kernel/sched/build_policy.c: note: in included file:
-   kernel/sched/syscalls.c:1331:6: sparse: sparse: context imbalance in 'sched_getaffinity' - different lock contexts for basic block
-   kernel/sched/build_policy.c: note: in included file:
-   kernel/sched/sched.h:2265:25: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2265:25: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2265:25: sparse:    struct task_struct *
-
-vim +481 kernel/sched/idle.c
-
-   466	
-   467	struct task_struct *pick_task_idle(struct rq *rq)
-   468	{
-   469		/*
-   470		 * When switching from a non-idle to the idle class, .set_next_task()
-   471		 * is called only once during the transition.
-   472		 *
-   473		 * However, the CPU may remain active for multiple rounds running the
-   474		 * idle task (e.g., by calling scx_bpf_kick_cpu() from the
-   475		 * ops.update_idle() callback).
-   476		 *
-   477		 * In such cases, we need to keep updating the scx idle state to
-   478		 * properly re-trigger the ops.update_idle() callback and ensure
-   479		 * correct handling of scx idle state transitions.
-   480		 */
- > 481		if (rq->curr == rq->idle)
-   482			scx_update_idle(rq, true);
-   483		return rq->idle;
-   484	}
-   485	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
