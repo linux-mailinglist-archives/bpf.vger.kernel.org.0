@@ -1,141 +1,93 @@
-Return-Path: <bpf+bounces-42178-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42176-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0A529A07B4
-	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 12:45:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 211C89A0780
+	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 12:36:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5E66C282DEB
-	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 10:45:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 49B7A1C2106C
+	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 10:36:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1100E2071F9;
-	Wed, 16 Oct 2024 10:44:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tu7R+TE5"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B517D206E7E;
+	Wed, 16 Oct 2024 10:36:05 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C2C41C9DC8;
-	Wed, 16 Oct 2024 10:44:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF566B67E;
+	Wed, 16 Oct 2024 10:36:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729075491; cv=none; b=aVJRpJeeuCfA088n8apUXU0J5NhbVjFC9mVuT2HJGHLyYg6mnblpCpdRvSAw9GhAd1joR7jWlTKI+mvLjXF30seoUMpqAT5CzOpijDDdcDSoYMOi2005uf17czDoaIAmSBs0ZVkaabazWsQ/eSy86ou5vq3CnfZOg5JlQ7MuPq4=
+	t=1729074965; cv=none; b=boZUs3XVczc3ZdsFl4gqdN2ct8OKSO8zVVO4yr+fR66ro/7Cv9b0uPX9NPf6v+iW9CV0NvJQziRuC9PM0HyQUYBnRAzGn/A7GFOLXDyS1CaNlLHhht0kWbcRamWQ+CkFXBYhp+jv2T1pvR0PMeUWGjwKKDthl1YhDRINzQg9wFw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729075491; c=relaxed/simple;
-	bh=REY0yUs/eb8jGqS7iPmNLu0O7M3zjCPm2K1uOQnlIfY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YfWqYCZ0cda3DGVYPs/1s0FKMi5bcMzksfVhVb4m9JqnkyLoKypMooWDasO+QH4lkeuomcSO3EsCGRhsBuK76A/7ZWyq3+1BRSR4FxRaGOAZQKiK4RJSp3s/O4dcYZhMj5IIAIvpfwBHMQ5W/pJ1MHu50HBhB8mFYDHZZsHrQl8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tu7R+TE5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A439EC4CEC5;
-	Wed, 16 Oct 2024 10:44:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1729075491;
-	bh=REY0yUs/eb8jGqS7iPmNLu0O7M3zjCPm2K1uOQnlIfY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=tu7R+TE5l4rMjxEyzDDIH6fpt5ZNmC1c7xJx7SQDlI9CzDxMt5yOQnVYNAW9hdV8J
-	 OeaDo9Hr12xvhUKQgId1tm4/CewmMpWCLOk3wgiUJwXyvWq4QlFB+Uh/pOgd95q0F1
-	 zyNekZpzro5oJZ2JEUpyorUNUZLep/wgUFWwzFdkGHL+BF7JNIRifDS33KF/5qGC2v
-	 jYrUvBLfr/xZZ4LfL7bWflm1YPeuIUzgGbLP+eWNj7AbuOUcsPGdhrgXCl4uUGrO38
-	 j9PqqivnqqmoYQsjfU9edkgWUJ3Ic8/MVLUiY8xlv+pKvbZQmwKQdokHEcp8hCdCUB
-	 nLnfE4mx3UK6g==
-Date: Wed, 16 Oct 2024 13:40:55 +0300
-From: Mike Rapoport <rppt@kernel.org>
-To: Luis Chamberlain <mcgrof@kernel.org>
-Cc: Christoph Hellwig <hch@infradead.org>, Petr Pavlu <petr.pavlu@suse.com>,
-	Sami Tolvanen <samitolvanen@google.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Andreas Larsson <andreas@gaisler.com>,
-	Andy Lutomirski <luto@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-	Brian Cain <bcain@quicinc.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
-	Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Michal Simek <monstr@monstr.eu>, Oleg Nesterov <oleg@redhat.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Richard Weinberger <richard@nod.at>,
-	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
-	Stafford Horne <shorne@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>,
-	bpf@vger.kernel.org, linux-alpha@vger.kernel.org,
-	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org, linux-mm@kvack.org,
-	linux-modules@vger.kernel.org, linux-openrisc@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-	linux-trace-kernel@vger.kernel.org, linux-um@lists.infradead.org,
-	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
-	sparclinux@vger.kernel.org, x86@kernel.org, kdevops@lists.linux.dev
-Subject: Re: [PATCH v5 7/8] execmem: add support for cache of large ROX pages
-Message-ID: <Zw-YN4JIltntY52Y@kernel.org>
-References: <20241009180816.83591-8-rppt@kernel.org>
- <Zwd7GRyBtCwiAv1v@infradead.org>
- <ZwfPPZrxHzQgYfx7@kernel.org>
- <ZwjXz0dz-RldVNx0@infradead.org>
- <ZwuIPZkjX0CfzhjS@kernel.org>
- <20241013202626.81f430a16750af0d2f40d683@linux-foundation.org>
- <Zw1uBBcG-jAgxF_t@bombadil.infradead.org>
- <Zw3rDS3GRWZe4CBu@bombadil.infradead.org>
- <Zw4DlTTbz4QwhOvU@kernel.org>
- <Zw7MirnsHnhRveBB@bombadil.infradead.org>
+	s=arc-20240116; t=1729074965; c=relaxed/simple;
+	bh=hMs4Nlp5piHlMNWS23qtbOCe57gcJPPLsN2HQm/Rv5o=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=VsorNBRAKejbNEsvVfZxD1yyGpCfZ8C1yjmt2NTKyuIJjp9zqkmIwR3JPljU62tld6aTCbQfQ6lFSoRDDOl8t2MB0IvaF6NbSjnEfp+uEA6xhOfpgu9lzkIGXaT1OKLM8LfBv3xmeuTZwR2w1uvW52959In72zFoFX6nBErsXLs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.163])
+	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4XT6nX4DXrz1xxB0;
+	Wed, 16 Oct 2024 18:36:00 +0800 (CST)
+Received: from dggpemf500002.china.huawei.com (unknown [7.185.36.57])
+	by mail.maildlp.com (Postfix) with ESMTPS id B4F6D180043;
+	Wed, 16 Oct 2024 18:35:54 +0800 (CST)
+Received: from huawei.com (10.175.101.6) by dggpemf500002.china.huawei.com
+ (7.185.36.57) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Wed, 16 Oct
+ 2024 18:35:53 +0800
+From: Yue Haibing <yuehaibing@huawei.com>
+To: <anthony.l.nguyen@intel.com>, <przemyslaw.kitszel@intel.com>,
+	<davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+	<pabeni@redhat.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
+	<hawk@kernel.org>, <john.fastabend@gmail.com>, <vedang.patel@intel.com>,
+	<andre.guedes@intel.com>, <maciej.fijalkowski@intel.com>,
+	<jithu.joseph@intel.com>
+CC: <intel-wired-lan@lists.osuosl.org>, <netdev@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
+	<yuehaibing@huawei.com>
+Subject: [PATCH net] igc: Fix passing 0 to ERR_PTR in igc_xdp_run_prog()
+Date: Wed, 16 Oct 2024 18:53:10 +0800
+Message-ID: <20241016105310.3500279-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zw7MirnsHnhRveBB@bombadil.infradead.org>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemf500002.china.huawei.com (7.185.36.57)
 
-On Tue, Oct 15, 2024 at 01:11:54PM -0700, Luis Chamberlain wrote:
-> On Tue, Oct 15, 2024 at 08:54:29AM +0300, Mike Rapoport wrote:
-> > On Mon, Oct 14, 2024 at 09:09:49PM -0700, Luis Chamberlain wrote:
-> > > Mike, please run this with kmemleak enabled and running, and also try to get
-> > > tools/testing/selftests/kmod/kmod.sh to pass.
-> > 
-> > There was an issue with kmemleak, I fixed it here:
-> > 
-> > https://lore.kernel.org/linux-mm/20241009180816.83591-1-rppt@kernel.org/T/#m020884c1795218cc2be245e8091fead1cda3f3e4
-> 
-> Ah, so this was a side fix, not part of this series, thanks.
-> 
-> > > I run into silly boot issues with just a guest.
-> > 
-> > Was it kmemleak or something else?
-> 
-> Both kmemleak and the kmod selftest failed, here is a run of the test
-> with this patch series:
-> 
-> https://github.com/linux-kdevops/linux-modules-kpd/actions/runs/11352286624/job/31574722735
+Return NULL instead of passing to ERR_PTR while res is IGC_XDP_PASS,
+which is zero, this fix smatch warnings:
+drivers/net/ethernet/intel/igc/igc_main.c:2533
+ igc_xdp_run_prog() warn: passing zero to 'ERR_PTR'
 
-Is there a kernel log to look at? Could not find it in the run report
+Fixes: 26575105d6ed ("igc: Add initial XDP support")
+Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
+---
+ drivers/net/ethernet/intel/igc/igc_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethernet/intel/igc/igc_main.c
+index 6e70bca15db1..c3d6e20c0be0 100644
+--- a/drivers/net/ethernet/intel/igc/igc_main.c
++++ b/drivers/net/ethernet/intel/igc/igc_main.c
+@@ -2530,7 +2530,7 @@ static struct sk_buff *igc_xdp_run_prog(struct igc_adapter *adapter,
+ 	res = __igc_xdp_run_prog(adapter, prog, xdp);
  
->   Luis
-
+ out:
+-	return ERR_PTR(-res);
++	return res ? ERR_PTR(-res) : NULL;
+ }
+ 
+ /* This function assumes __netif_tx_lock is held by the caller. */
 -- 
-Sincerely yours,
-Mike.
+2.34.1
+
 
