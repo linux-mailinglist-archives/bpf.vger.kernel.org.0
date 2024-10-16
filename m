@@ -1,307 +1,260 @@
-Return-Path: <bpf+bounces-42200-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42201-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB7A19A0CE5
-	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 16:38:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50C4E9A0CFA
+	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 16:41:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6AE42283FDD
-	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 14:38:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6589F1C238D3
+	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 14:41:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CD0F20C00B;
-	Wed, 16 Oct 2024 14:38:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF61C20C49F;
+	Wed, 16 Oct 2024 14:41:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Q1ZtLk0o"
 X-Original-To: bpf@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FFCE156225;
-	Wed, 16 Oct 2024 14:38:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64EA220C017;
+	Wed, 16 Oct 2024 14:41:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729089527; cv=none; b=u6nNRya4x+qjghLMd/5RuPG5V+t+C2hmc6D5mPZwIRFJtlb6q3Sv8VEg7UaCFiTD4Dz2uuoJMA/m0zbqYUCIkVkJWGUzGBWdCSV15ig1zLNUClUzApM1GvyFjm91uvUCVTskJky8Xx1nD07PxTT8+/W/hUK0bId7QVrd7XFkuDI=
+	t=1729089674; cv=none; b=Y5i4baapvky7507OzbV7S/ZGoY6pFI2qX4Y9vtvqU66Q8+GSU0MsxaqnD/pZljBNkr/DQub+6G74al1wCkMXwfxKTqmTrvSQk2RUcVTskWBrOGEELjlA90zIdgHT99urYtN613vqK5xCqyqW0KTbLV71GsiP3lctn8EUlVNNos8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729089527; c=relaxed/simple;
-	bh=oz6Od5/ci5WzOfHrstjNf8YgzQMhcAz1OMVv1+MmwJE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ggKj61IT0Edzc7vMgUzhBbNyj+cnsNVwsqU+tyEXgEsJAhvOEYm3s3x7aFy+MB0O4CdTJ+Z8THHKWx8z7SrBpEk/jhgZ50j6t6Ixqv/Zk+7sN9EGCYGC/Rk4lxKsZVkQkSjbPIw16QVUeZagEM7yICKxH6zRrHjrsAp+HszSiRw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6FE33FEC;
-	Wed, 16 Oct 2024 07:39:14 -0700 (PDT)
-Received: from [10.1.28.177] (XHFQ2J9959.cambridge.arm.com [10.1.28.177])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 09A253F71E;
-	Wed, 16 Oct 2024 07:38:41 -0700 (PDT)
-Message-ID: <e977c32e-d1a9-499d-8833-576c09747a48@arm.com>
-Date: Wed, 16 Oct 2024 15:38:40 +0100
+	s=arc-20240116; t=1729089674; c=relaxed/simple;
+	bh=cFm6C9yHF4d5EJsvTt2L486kzgO4ydnk8peQ4k2qH0U=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TY6UrDtyeS62HjTASn+ZxnQkmJcYqzFRcIrZsejRpLek75v5hd/TWwxrQlssvh0/ABHHdjLE4d8dr++/UAV/Mv7tl/byyNXrxnQ1iP3dVI0Jc7txVdFDigD2627LiV4kA77qTeIrwzrnf2pjLxWsW4aKvcsTlV09RmQyhg2WQF8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Q1ZtLk0o; arc=none smtp.client-ip=209.85.208.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2fb50e84ec7so24767651fa.1;
+        Wed, 16 Oct 2024 07:41:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1729089669; x=1729694469; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=xNOEBHIW89c1j/jhsHn9BJm63iz+XQaKnsI8oRx93vU=;
+        b=Q1ZtLk0oeCSMYe6D5RRe1+xn3EdzrFZmrLdWKuP4jwtn3Rn2ZHAZGh4qFtBtI4vFnB
+         2Fr/5Z+DlsiEjb/Gn0w55+QZf5UHLEB2xyky4dvL37GEluYSP31Sv62+g/LJENbZQ7H4
+         m2fU5+dqgC4gmkz3pCF8dJKOH6vVB8zTB8/zQh0IAK0E05ZP/szOUVhqXForzaElQvz5
+         2pP9wiNOycLjNkx0fyhA1s0cS9atS5Z1qZRIv9I8l3oWJB5bsuh3rRjwTsB7gcRSbAfd
+         6A7qaAUgXcUjOtTtJRg+p9Nzp3MbgNtMpbSl4+MXIJZByttBRKAWUgfBEKSNN7dJUa35
+         SYBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1729089669; x=1729694469;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xNOEBHIW89c1j/jhsHn9BJm63iz+XQaKnsI8oRx93vU=;
+        b=JY6DVHFslzP/AkNIB38FBSEwG4wS4Z/EZ5ScbJ+RJyeoH7ePZo9xfqx2/PwM3Mp6CF
+         8MadJYm2Xyx+bk96PvLXvtB8YqJ/KwzEUdpnMhkaOZ/gspC26k7Xn/C0V5FYUGQIzRk8
+         c9y2I4COo8RMapmrQxd7Kr9VgRO7jBM5zcDmyAJDtBQjPToQnLILczCG25RoU2pb+4iv
+         8oDZpysP2ZabDwQ4zCsWqpYvNANsLe3dZy9bkkHKF757Hm08mtrpVTUeH/Na+ZDSKh+6
+         t12PgS6T7kJM8M1UTDdFe/ySdVsoiGy9gP3tD9KmWqlI9x0knHQoXJN9bdUs2Y+uRPR/
+         TFNw==
+X-Forwarded-Encrypted: i=1; AJvYcCUCIChCbnfViWEF8DQOTPLY3Hsx+h53h+E1XBpbo3jgT4GkjK144pvSMSxCjS8qmWvM7CXREdb+jEAlLw==@vger.kernel.org, AJvYcCUSEQoioM8/+qJLlEmLtYI/wZev5lpLIjUhUMOZFJUpAYI+4bLNBxZyScoubsMZlr8xaB1/BRnPByo+rg==@vger.kernel.org, AJvYcCUkZofM2BZFrmPAZLgrk4Iw1oo40u44zsYokk9ZDV5nOvWe5EiKP7l3ZzFDixyJErYQWpXDCHoPQJXUacJ1@vger.kernel.org, AJvYcCV+AhRbtyI3l3GPDJpWot+1le1fBEhIPOylobahwCDhbJrz56XPs4ArOo4a7VwLg5w9y2R4JtCqbvw5ux5ekzY=@vger.kernel.org, AJvYcCV+sdj0cB/Ouidqe+xg+V8oDkGwlfPXIgK+CAWnu9VduksFyPX8D3XrJaR7HKnFumelQXaKv2nIZF4d4Q==@vger.kernel.org, AJvYcCVgAMxwaaVa3C5n2A0WCk6CTDV92zV5r+jp+7HawkSsvD+wPZ3Sl2+F8wWRedB+eB4l3JnpqT306gS+RQ0KFtQ4YnNx@vger.kernel.org, AJvYcCVsOtt1B+pFndOuyF8b85QpPRXrrBOG+HrPdZSWm+PtYYW6VVwBUlc2r0agRactLlf25uyU4ptrOhxa2Y+b@vger.kernel.org, AJvYcCVyYggDQub9YXbBdbWbX2B5uWhqDpJm683IqYbEEWAFnP/2uBjitvDZKUeo5xsGoiv19Fn+vfpcAtV9/yEzig==@vger.kernel.org, AJvYcCWNYvx0pXeyHgZ1FPjZVsURvyqLoXcFIUpzBnnoCeugpXvME6QrNSIjDJP7tO3NJLSxz4di9Q4D24fHPCb4Cg==@vger.kernel.o
+ rg, AJvYcCXNOd7Z9J6sg043BHAx6NRvz2DstqoP64RRKkL+WcInVyTHzL4dVg/shQy+zTlsQBK5mlw=@vger.kernel.org, AJvYcCXV8W2xqRZFTGwhDm8RuXKoS9fePuPGBpE64EYcfMDnyjaLtGxtQGKt2UIZTm7axjpkoVDjWf7vDU4=@vger.kernel.org, AJvYcCXgO0LRIbXjHSbT3A1/2QZxhI0pAAkPU42r3EnLvdAauFuxbR3RTqCvCr8OSZQOuqEIR4nX9jGjXeZfaA==@vger.kernel.org, AJvYcCXmywYtcfGWUPHEr0DCGb6h1b9sXLNTrLIx+HQ2mL/6lWcY/CvaopGnn4YebzDXBDpFZD+jp9zQmaFIOAY=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxyxaoxOA/wjAqa7C9mRQ2R91bUQlTztDFQhgAKp+oN0jzxAgOG
+	EwZ7wWGCKSPs51GdBMxkQBYGj7KRPIocIJHbGj73qYka67E9Geul
+X-Google-Smtp-Source: AGHT+IEQ2b77do+Ei5H+uRLYrEtNQq0NK3oK0wCc+2cFtuWRuK/aQBOOdJJvL1LeKTNOBzUMcJr/yQ==
+X-Received: by 2002:a05:651c:1989:b0:2fb:6181:8ca1 with SMTP id 38308e7fff4ca-2fb61b37a76mr33036831fa.6.1729089669341;
+        Wed, 16 Oct 2024 07:41:09 -0700 (PDT)
+Received: from pc636 (host-95-203-1-67.mobileonline.telia.com. [95.203.1.67])
+        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-2fb5d1d0244sm4327361fa.139.2024.10.16.07.41.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Oct 2024 07:41:08 -0700 (PDT)
+From: Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date: Wed, 16 Oct 2024 16:41:03 +0200
+To: Mike Rapoport <rppt@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Andy Lutomirski <luto@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+	Brian Cain <bcain@quicinc.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Christoph Hellwig <hch@infradead.org>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
+	Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Michal Simek <monstr@monstr.eu>, Oleg Nesterov <oleg@redhat.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Richard Weinberger <richard@nod.at>,
+	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
+	Stafford Horne <shorne@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>,
+	bpf@vger.kernel.org, linux-alpha@vger.kernel.org,
+	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+	linux-mips@vger.kernel.org, linux-mm@kvack.org,
+	linux-modules@vger.kernel.org, linux-openrisc@vger.kernel.org,
+	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+	linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+	linux-trace-kernel@vger.kernel.org, linux-um@lists.infradead.org,
+	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
+	sparclinux@vger.kernel.org, x86@kernel.org,
+	Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v6 1/8] mm: vmalloc: group declarations depending on
+ CONFIG_MMU together
+Message-ID: <Zw_QfzopOv7pCZc_@pc636>
+References: <20241016122424.1655560-1-rppt@kernel.org>
+ <20241016122424.1655560-2-rppt@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v1 13/57] bpf: Remove PAGE_SIZE compile-time constant
- assumption
-Content-Language: en-GB
-To: Alexei Starovoitov <ast@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>,
- Anshuman Khandual <anshuman.khandual@arm.com>,
- Ard Biesheuvel <ardb@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>,
- Daniel Borkmann <daniel@iogearbox.net>, David Hildenbrand
- <david@redhat.com>, Greg Marsden <greg.marsden@oracle.com>,
- Ivan Ivanov <ivan.ivanov@suse.com>, Kalesh Singh <kaleshsingh@google.com>,
- Marc Zyngier <maz@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Matthias Brugger <mbrugger@suse.com>, Miroslav Benes <mbenes@suse.cz>,
- Will Deacon <will@kernel.org>, Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-mm@kvack.org
-References: <20241014105514.3206191-1-ryan.roberts@arm.com>
- <20241014105912.3207374-1-ryan.roberts@arm.com>
- <20241014105912.3207374-13-ryan.roberts@arm.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <20241014105912.3207374-13-ryan.roberts@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241016122424.1655560-2-rppt@kernel.org>
 
-+ Andrii Nakryiko
-
-This was a rather tricky series to get the recipients correct for and my script
-did not realize that "supporter" was a pseudonym for "maintainer" so you were
-missed off the original post. Appologies!
-
-More context in cover letter:
-https://lore.kernel.org/all/20241014105514.3206191-1-ryan.roberts@arm.com/
-
-
-On 14/10/2024 11:58, Ryan Roberts wrote:
-> To prepare for supporting boot-time page size selection, refactor code
-> to remove assumptions about PAGE_SIZE being compile-time constant. Code
-> intended to be equivalent when compile-time page size is active.
+On Wed, Oct 16, 2024 at 03:24:17PM +0300, Mike Rapoport wrote:
+> From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
 > 
-> Refactor "struct bpf_ringbuf" so that consumer_pos, producer_pos,
-> pending_pos and data are no longer embedded at (static) page offsets
-> within the struct. This can't work for boot-time page size because the
-> page size isn't known at compile-time. Instead, only define the meta
-> data in the struct, along with pointers to those values. At "struct
-> bpf_ringbuf" allocation time, the extra pages are allocated at the end
-> and the pointers are initialized to point to the correct locations.
+> There are a couple of declarations that depend on CONFIG_MMU in
+> include/linux/vmalloc.h spread all over the file.
 > 
-> Additionally, only expose the __PAGE_SIZE enum to BTF for compile-time
-> page size builds. We don't know the page size at compile-time for
-> boot-time builds. NOTE: This may need some extra thought; perhaps
-> __PAGE_SIZE should be exposed as 0 in this case? And/or perhaps
-> __PAGE_SIZE_MIN/__PAGE_SIZE_MAX should be exposed? And there would need
-> to be a runtime mechanism for querying the page size (e.g.
-> getpagesize()).
+> Group them all together to improve code readability.
 > 
-> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+> No functional changes.
+> 
+> Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
 > ---
+>  include/linux/vmalloc.h | 60 +++++++++++++++++------------------------
+>  1 file changed, 24 insertions(+), 36 deletions(-)
 > 
-> ***NOTE***
-> Any confused maintainers may want to read the cover note here for context:
-> https://lore.kernel.org/all/20241014105514.3206191-1-ryan.roberts@arm.com/
-> 
->  kernel/bpf/core.c    |  9 ++++++--
->  kernel/bpf/ringbuf.c | 54 ++++++++++++++++++++++++--------------------
->  2 files changed, 37 insertions(+), 26 deletions(-)
-> 
-> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> index 7ee62e38faf0e..485875aa78e63 100644
-> --- a/kernel/bpf/core.c
-> +++ b/kernel/bpf/core.c
-> @@ -89,10 +89,15 @@ void *bpf_internal_load_pointer_neg_helper(const struct sk_buff *skb, int k, uns
+> diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
+> index ad2ce7a6ab7a..27408f21e501 100644
+> --- a/include/linux/vmalloc.h
+> +++ b/include/linux/vmalloc.h
+> @@ -134,12 +134,6 @@ extern void vm_unmap_ram(const void *mem, unsigned int count);
+>  extern void *vm_map_ram(struct page **pages, unsigned int count, int node);
+>  extern void vm_unmap_aliases(void);
+>  
+> -#ifdef CONFIG_MMU
+> -extern unsigned long vmalloc_nr_pages(void);
+> -#else
+> -static inline unsigned long vmalloc_nr_pages(void) { return 0; }
+> -#endif
+> -
+>  extern void *vmalloc_noprof(unsigned long size) __alloc_size(1);
+>  #define vmalloc(...)		alloc_hooks(vmalloc_noprof(__VA_ARGS__))
+>  
+> @@ -266,12 +260,29 @@ static inline bool is_vm_area_hugepages(const void *addr)
+>  #endif
+>  }
+>  
+> +/* for /proc/kcore */
+> +long vread_iter(struct iov_iter *iter, const char *addr, size_t count);
+> +
+> +/*
+> + *	Internals.  Don't use..
+> + */
+> +__init void vm_area_add_early(struct vm_struct *vm);
+> +__init void vm_area_register_early(struct vm_struct *vm, size_t align);
+> +
+> +int register_vmap_purge_notifier(struct notifier_block *nb);
+> +int unregister_vmap_purge_notifier(struct notifier_block *nb);
+> +
+>  #ifdef CONFIG_MMU
+> +#define VMALLOC_TOTAL (VMALLOC_END - VMALLOC_START)
+> +
+> +unsigned long vmalloc_nr_pages(void);
+> +
+>  int vm_area_map_pages(struct vm_struct *area, unsigned long start,
+>  		      unsigned long end, struct page **pages);
+>  void vm_area_unmap_pages(struct vm_struct *area, unsigned long start,
+>  			 unsigned long end);
+>  void vunmap_range(unsigned long addr, unsigned long end);
+> +
+>  static inline void set_vm_flush_reset_perms(void *addr)
+>  {
+>  	struct vm_struct *vm = find_vm_area(addr);
+> @@ -279,24 +290,14 @@ static inline void set_vm_flush_reset_perms(void *addr)
+>  	if (vm)
+>  		vm->flags |= VM_FLUSH_RESET_PERMS;
+>  }
+> +#else  /* !CONFIG_MMU */
+> +#define VMALLOC_TOTAL 0UL
+>  
+> -#else
+> -static inline void set_vm_flush_reset_perms(void *addr)
+> -{
+> -}
+> -#endif
+> -
+> -/* for /proc/kcore */
+> -extern long vread_iter(struct iov_iter *iter, const char *addr, size_t count);
+> -
+> -/*
+> - *	Internals.  Don't use..
+> - */
+> -extern __init void vm_area_add_early(struct vm_struct *vm);
+> -extern __init void vm_area_register_early(struct vm_struct *vm, size_t align);
+> +static inline unsigned long vmalloc_nr_pages(void) { return 0; }
+> +static inline void set_vm_flush_reset_perms(void *addr) {}
+> +#endif /* CONFIG_MMU */
+>  
+> -#ifdef CONFIG_SMP
+> -# ifdef CONFIG_MMU
+> +#if defined(CONFIG_MMU) && defined(CONFIG_SMP)
+>  struct vm_struct **pcpu_get_vm_areas(const unsigned long *offsets,
+>  				     const size_t *sizes, int nr_vms,
+>  				     size_t align);
+> @@ -311,22 +312,9 @@ pcpu_get_vm_areas(const unsigned long *offsets,
 >  	return NULL;
 >  }
 >  
-> -/* tell bpf programs that include vmlinux.h kernel's PAGE_SIZE */
-> +/*
-> + * tell bpf programs that include vmlinux.h kernel's PAGE_SIZE. We can only do
-> + * this for compile-time PAGE_SIZE builds.
-> + */
-> +#if PAGE_SIZE_MIN == PAGE_SIZE_MAX
->  enum page_size_enum {
->  	__PAGE_SIZE = PAGE_SIZE
->  };
-> +#endif
+> -static inline void
+> -pcpu_free_vm_areas(struct vm_struct **vms, int nr_vms)
+> -{
+> -}
+> -# endif
+> -#endif
+> -
+> -#ifdef CONFIG_MMU
+> -#define VMALLOC_TOTAL (VMALLOC_END - VMALLOC_START)
+> -#else
+> -#define VMALLOC_TOTAL 0UL
+> +static inline void pcpu_free_vm_areas(struct vm_struct **vms, int nr_vms) {}
+>  #endif
 >  
->  struct bpf_prog *bpf_prog_alloc_no_stats(unsigned int size, gfp_t gfp_extra_flags)
->  {
-> @@ -100,7 +105,7 @@ struct bpf_prog *bpf_prog_alloc_no_stats(unsigned int size, gfp_t gfp_extra_flag
->  	struct bpf_prog_aux *aux;
->  	struct bpf_prog *fp;
->  
-> -	size = round_up(size, __PAGE_SIZE);
-> +	size = round_up(size, PAGE_SIZE);
->  	fp = __vmalloc(size, gfp_flags);
->  	if (fp == NULL)
->  		return NULL;
-> diff --git a/kernel/bpf/ringbuf.c b/kernel/bpf/ringbuf.c
-> index e20b90c361316..8e4093ddbc638 100644
-> --- a/kernel/bpf/ringbuf.c
-> +++ b/kernel/bpf/ringbuf.c
-> @@ -14,9 +14,9 @@
->  
->  #define RINGBUF_CREATE_FLAG_MASK (BPF_F_NUMA_NODE)
->  
-> -/* non-mmap()'able part of bpf_ringbuf (everything up to consumer page) */
-> +/* non-mmap()'able part of bpf_ringbuf (everything defined in struct) */
->  #define RINGBUF_PGOFF \
-> -	(offsetof(struct bpf_ringbuf, consumer_pos) >> PAGE_SHIFT)
-> +	(PAGE_ALIGN(sizeof(struct bpf_ringbuf)) >> PAGE_SHIFT)
->  /* consumer page and producer page */
->  #define RINGBUF_POS_PAGES 2
->  #define RINGBUF_NR_META_PAGES (RINGBUF_PGOFF + RINGBUF_POS_PAGES)
-> @@ -69,10 +69,10 @@ struct bpf_ringbuf {
->  	 * validate each sample to ensure that they're correctly formatted, and
->  	 * fully contained within the ring buffer.
->  	 */
-> -	unsigned long consumer_pos __aligned(PAGE_SIZE);
-> -	unsigned long producer_pos __aligned(PAGE_SIZE);
-> -	unsigned long pending_pos;
-> -	char data[] __aligned(PAGE_SIZE);
-> +	unsigned long *consumer_pos;
-> +	unsigned long *producer_pos;
-> +	unsigned long *pending_pos;
-> +	char *data;
->  };
->  
->  struct bpf_ringbuf_map {
-> @@ -134,9 +134,15 @@ static struct bpf_ringbuf *bpf_ringbuf_area_alloc(size_t data_sz, int numa_node)
->  	rb = vmap(pages, nr_meta_pages + 2 * nr_data_pages,
->  		  VM_MAP | VM_USERMAP, PAGE_KERNEL);
->  	if (rb) {
-> +		void *base = rb;
-> +
->  		kmemleak_not_leak(pages);
->  		rb->pages = pages;
->  		rb->nr_pages = nr_pages;
-> +		rb->consumer_pos = (unsigned long *)(base + PAGE_SIZE * RINGBUF_PGOFF);
-> +		rb->producer_pos = (unsigned long *)(base + PAGE_SIZE * (RINGBUF_PGOFF + 1));
-> +		rb->pending_pos = rb->producer_pos + 1;
-> +		rb->data = base + PAGE_SIZE * nr_meta_pages;
->  		return rb;
->  	}
->  
-> @@ -179,9 +185,9 @@ static struct bpf_ringbuf *bpf_ringbuf_alloc(size_t data_sz, int numa_node)
->  	init_irq_work(&rb->work, bpf_ringbuf_notify);
->  
->  	rb->mask = data_sz - 1;
-> -	rb->consumer_pos = 0;
-> -	rb->producer_pos = 0;
-> -	rb->pending_pos = 0;
-> +	*rb->consumer_pos = 0;
-> +	*rb->producer_pos = 0;
-> +	*rb->pending_pos = 0;
->  
->  	return rb;
->  }
-> @@ -300,8 +306,8 @@ static unsigned long ringbuf_avail_data_sz(struct bpf_ringbuf *rb)
->  {
->  	unsigned long cons_pos, prod_pos;
->  
-> -	cons_pos = smp_load_acquire(&rb->consumer_pos);
-> -	prod_pos = smp_load_acquire(&rb->producer_pos);
-> +	cons_pos = smp_load_acquire(rb->consumer_pos);
-> +	prod_pos = smp_load_acquire(rb->producer_pos);
->  	return prod_pos - cons_pos;
->  }
->  
-> @@ -418,7 +424,7 @@ static void *__bpf_ringbuf_reserve(struct bpf_ringbuf *rb, u64 size)
->  	if (len > ringbuf_total_data_sz(rb))
->  		return NULL;
->  
-> -	cons_pos = smp_load_acquire(&rb->consumer_pos);
-> +	cons_pos = smp_load_acquire(rb->consumer_pos);
->  
->  	if (in_nmi()) {
->  		if (!spin_trylock_irqsave(&rb->spinlock, flags))
-> @@ -427,8 +433,8 @@ static void *__bpf_ringbuf_reserve(struct bpf_ringbuf *rb, u64 size)
->  		spin_lock_irqsave(&rb->spinlock, flags);
->  	}
->  
-> -	pend_pos = rb->pending_pos;
-> -	prod_pos = rb->producer_pos;
-> +	pend_pos = *rb->pending_pos;
-> +	prod_pos = *rb->producer_pos;
->  	new_prod_pos = prod_pos + len;
->  
->  	while (pend_pos < prod_pos) {
-> @@ -440,7 +446,7 @@ static void *__bpf_ringbuf_reserve(struct bpf_ringbuf *rb, u64 size)
->  		tmp_size = round_up(tmp_size + BPF_RINGBUF_HDR_SZ, 8);
->  		pend_pos += tmp_size;
->  	}
-> -	rb->pending_pos = pend_pos;
-> +	*rb->pending_pos = pend_pos;
->  
->  	/* check for out of ringbuf space:
->  	 * - by ensuring producer position doesn't advance more than
-> @@ -460,7 +466,7 @@ static void *__bpf_ringbuf_reserve(struct bpf_ringbuf *rb, u64 size)
->  	hdr->pg_off = pg_off;
->  
->  	/* pairs with consumer's smp_load_acquire() */
-> -	smp_store_release(&rb->producer_pos, new_prod_pos);
-> +	smp_store_release(rb->producer_pos, new_prod_pos);
->  
->  	spin_unlock_irqrestore(&rb->spinlock, flags);
->  
-> @@ -506,7 +512,7 @@ static void bpf_ringbuf_commit(void *sample, u64 flags, bool discard)
->  	 * new data availability
->  	 */
->  	rec_pos = (void *)hdr - (void *)rb->data;
-> -	cons_pos = smp_load_acquire(&rb->consumer_pos) & rb->mask;
-> +	cons_pos = smp_load_acquire(rb->consumer_pos) & rb->mask;
->  
->  	if (flags & BPF_RB_FORCE_WAKEUP)
->  		irq_work_queue(&rb->work);
-> @@ -580,9 +586,9 @@ BPF_CALL_2(bpf_ringbuf_query, struct bpf_map *, map, u64, flags)
->  	case BPF_RB_RING_SIZE:
->  		return ringbuf_total_data_sz(rb);
->  	case BPF_RB_CONS_POS:
-> -		return smp_load_acquire(&rb->consumer_pos);
-> +		return smp_load_acquire(rb->consumer_pos);
->  	case BPF_RB_PROD_POS:
-> -		return smp_load_acquire(&rb->producer_pos);
-> +		return smp_load_acquire(rb->producer_pos);
->  	default:
->  		return 0;
->  	}
-> @@ -680,12 +686,12 @@ static int __bpf_user_ringbuf_peek(struct bpf_ringbuf *rb, void **sample, u32 *s
->  	u64 cons_pos, prod_pos;
->  
->  	/* Synchronizes with smp_store_release() in user-space producer. */
-> -	prod_pos = smp_load_acquire(&rb->producer_pos);
-> +	prod_pos = smp_load_acquire(rb->producer_pos);
->  	if (prod_pos % 8)
->  		return -EINVAL;
->  
->  	/* Synchronizes with smp_store_release() in __bpf_user_ringbuf_sample_release() */
-> -	cons_pos = smp_load_acquire(&rb->consumer_pos);
-> +	cons_pos = smp_load_acquire(rb->consumer_pos);
->  	if (cons_pos >= prod_pos)
->  		return -ENODATA;
->  
-> @@ -715,7 +721,7 @@ static int __bpf_user_ringbuf_peek(struct bpf_ringbuf *rb, void **sample, u32 *s
->  		 * Update the consumer pos, and return -EAGAIN so the caller
->  		 * knows to skip this sample and try to read the next one.
->  		 */
-> -		smp_store_release(&rb->consumer_pos, cons_pos + total_len);
-> +		smp_store_release(rb->consumer_pos, cons_pos + total_len);
->  		return -EAGAIN;
->  	}
->  
-> @@ -737,9 +743,9 @@ static void __bpf_user_ringbuf_sample_release(struct bpf_ringbuf *rb, size_t siz
->  	 * prevents another task from writing to consumer_pos after it was read
->  	 * by this task with smp_load_acquire() in __bpf_user_ringbuf_peek().
->  	 */
-> -	consumer_pos = rb->consumer_pos;
-> +	consumer_pos = *rb->consumer_pos;
->  	 /* Synchronizes with smp_load_acquire() in user-space producer. */
-> -	smp_store_release(&rb->consumer_pos, consumer_pos + rounded_size);
-> +	smp_store_release(rb->consumer_pos, consumer_pos + rounded_size);
->  }
->  
->  BPF_CALL_4(bpf_user_ringbuf_drain, struct bpf_map *, map,
+> -int register_vmap_purge_notifier(struct notifier_block *nb);
+> -int unregister_vmap_purge_notifier(struct notifier_block *nb);
+> -
+>  #if defined(CONFIG_MMU) && defined(CONFIG_PRINTK)
+>  bool vmalloc_dump_obj(void *object);
+>  #else
+> -- 
+> 2.43.0
+> 
+Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 
+--
+Uladzislau Rezki
 
