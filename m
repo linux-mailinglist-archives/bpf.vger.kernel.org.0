@@ -1,177 +1,190 @@
-Return-Path: <bpf+bounces-42231-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42232-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 584F39A12F4
-	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 21:53:44 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8221B9A130D
+	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 22:00:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D1CEC1F260B5
-	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 19:53:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AE54E1C2213B
+	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 20:00:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C04D2144D2;
-	Wed, 16 Oct 2024 19:53:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9CED215F52;
+	Wed, 16 Oct 2024 19:59:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AGJb5wVc"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ADUoIMa2"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83ECB125B9;
-	Wed, 16 Oct 2024 19:53:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9037220605A
+	for <bpf@vger.kernel.org>; Wed, 16 Oct 2024 19:59:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729108417; cv=none; b=AXpjAYjNmQm7vrD6KEHkJcgj4+6cUovnYdzl1uWNl83Ukmv1y0AumzAkYTbFPMuduuMuadPjeFCJf9EpmU5RDN0OzhRiIj1nRy2j2yLPLKCOt8XW1wPV89lb7NJIZKHIU8cwvH4r+fmNvPkGk3wh80ZiznsIHnTZ9c1Ef6UnoM4=
+	t=1729108795; cv=none; b=C4EytE44gHanoIEeS6jk5DAIXH5s8C5nWrgP69wO7uxv37qZgQGeaTysh7kvHR3fN+YFJg7l/MVkSJCftZ6PS7O31r9NIft18rGhs6eSiJOoyf8nbuzw2S1fJy92NKYEZcC7eF4GyDr7YeWI8c37oRug+h7GGzWBzLCv6NoC5m0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729108417; c=relaxed/simple;
-	bh=2+LdI34hBdYlXaQ3acoyHsBvL7UYd0RqfsteMAH5VTI=;
+	s=arc-20240116; t=1729108795; c=relaxed/simple;
+	bh=/ZtkV779/ytLCI0J/cbkxqqXWmY0bXLd/xN+SO3bDw0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=aompUwGaV288LSREj4qRDiZVMRiiDwUPnYoFDPpYCuWG15qRzfHuKyyhJvTzAbQ7wAlBK8ZDvcamZGJFUHs0QjH73S0XmFDQXrqO7kkB/1fwPxVCdHLefNDHRvYMpi7HI3bzRikTt8nMLn2FHi5XYqlJEKmrpD3v8FeuXnoeT7k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AGJb5wVc; arc=none smtp.client-ip=209.85.210.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-71e3fce4a60so116943b3a.0;
-        Wed, 16 Oct 2024 12:53:36 -0700 (PDT)
+	 To:Cc:Content-Type; b=UdoBANkHwKWiXOoM5cFFbnN0NhwKVp2DrZRfVY5v1+t7XIhNGgApohzU2RBernfSufKM2R0dG9x3wg4twQkUGySU0anK/vDNm1b4ZlxjezKGNf5YdouwIT3onBFGKDamAajmNp4PDkXJu0wsW9GWDQDuN4amQnrJsVI/yMxYP54=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ADUoIMa2; arc=none smtp.client-ip=209.85.218.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a9a156513a1so26301366b.0
+        for <bpf@vger.kernel.org>; Wed, 16 Oct 2024 12:59:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729108416; x=1729713216; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1729108792; x=1729713592; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=j3jo1qjlqrmtPNv7P6ZuR6I8CHs+OVI/opjK1poh7Wk=;
-        b=AGJb5wVcqxBqzZP9K8vZJuNT/j1x/mVY7NCVluE6Cf0tlhtcGXIG6RxRift5LeqNpZ
-         FzM+qBHeIwglZmFVV8op/NPZBaUgTHnUb4zF2viGMop4zsNtl7a6zNyXUljpJ2m4pXD0
-         ivI3QMGCK3znugzALRTbXqjw9RhLCtpPtZxE03MuNrBKkWNRHxz8QAQHoWuOEV7RrzlV
-         G+jmuraPvCyxld20H3SOVpo7tG50SuYw434xEAoYJb/ee9X/n2tQ+iF/PVO67wAL3d1M
-         NE60r0pTDNWQBh9LOIcC6l6tn8d6+UZFCWqQY2xo9awxeOCAzqRZ+HeGY1Nw+UtE/tjV
-         W3kA==
+        bh=y+lPf3FNOmE8pMU/2Iycp1XnYxIydARXrVQNA1uL0No=;
+        b=ADUoIMa2s+9DQ2EaNc3U00HPIBmyZ/dqzWJMR/kUt4DqIP7kmBNylM5/QFVQXGGdpg
+         IREOqLlR0FwQzeJOLuDDoCPzvlve0VsUOVPecl1g2rYx30d9Fxls0ka09Yl+AQ9T+3u9
+         y6cmnc7OZKXVxVlz/J9HWJ6TyBzfbPjQ/MkLc1KI57qDiG3+goIiB35KH6mLhOpObZ0f
+         UNce0sZrpwsvrs3Vf18bnu/gOboa1fwO2clAbtyF6AIdzgoyKfJ0+Qi6tbBbMWOkv6mI
+         1f53l0l3vPaxqlRr9uootXR8YQUHWNL7VVO3/P/RHyFx6Tb1DyirgFL4cmZ+qlKx5pea
+         OIZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729108416; x=1729713216;
+        d=1e100.net; s=20230601; t=1729108792; x=1729713592;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=j3jo1qjlqrmtPNv7P6ZuR6I8CHs+OVI/opjK1poh7Wk=;
-        b=xP++3fK5v2aUnjwjmyGZrVLSBwjD4LicCo+RJY2jfhoMGTyP78xP97h3kFSoxSTR3c
-         vi5H8dDKXyP71VOUriOgeXeuZsacSRk7CPURLWd+7kFhnPch0cv6aiZTRGOyfZNu2G/d
-         ZHMVBXZq2aYj5lrOG+ccT9SlMmiGiNFZoABvtP7vS+gZBSOLRGDLbK4bsmvjK77sCLrt
-         KQuYEjFI1BoQHH5RR34UoioylP/48SK3Wxe9S9hchNPxwMYfu7erzh6rNswmeVgjREEK
-         8W85par4nZSrD+CP5WHoSxqnEb6cRCFgdvYlkRkXxAlda64Bj2gS/W+yVf1BMAGt8kYT
-         5MEQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVf+40mLBaUv8/4s57kASVnUMirvgI/uZsPXobda8Ga2Hk2M3ZaFe/cuYBCB47UosfxBJ8=@vger.kernel.org, AJvYcCXYks1qGU4zvz6LJJ98U6sJ98tI0lOW5d1pQ98wfxlOjDqzgTzHuYQj72B3hFZqi6gF3looOl4DwQRi8GWxe2WHshnY@vger.kernel.org
-X-Gm-Message-State: AOJu0YwRSenp1nbtad6CENmF2Ufyw8m9CHqpsfxmvXTKVbJUzmDKbBAL
-	Wac4pGhkyPTP1ley7NzP0w9nuvH+Vvs55LyYaleeeJeAJGmMEkT8Ok1CaWookwZTk8vvKhY4D/5
-	xOOoDo5bMpxSmYe9IFRXcB+vAb/GgCQ==
-X-Google-Smtp-Source: AGHT+IHYhzGBu+iHmgEu/gy3l3AsayNdvFNZsusa1SUdCo+0trKIr3bJ7xJ9XAhfan03ZGNCMb3PJqlisAVsYE/5grM=
-X-Received: by 2002:aa7:88d6:0:b0:71e:786c:3fa9 with SMTP id
- d2e1a72fcca58-71e7d8b6477mr7199001b3a.0.1729108415809; Wed, 16 Oct 2024
- 12:53:35 -0700 (PDT)
+        bh=y+lPf3FNOmE8pMU/2Iycp1XnYxIydARXrVQNA1uL0No=;
+        b=OHULvKqhf7TA+lIYaHDT6XaA1BjXFqn6WN0+uiDl8ClAy/QrJJASGzQw9d5xO+AfMJ
+         14zpSJnCt75mGOEHx86y4O6dkxYiEh5fCY5LHOc71F7JiqH9fEagG1CeNupLWYkz4u/5
+         oLqO9RDrupFekenY+OTU9zuopeIJxu5cqVmYw3OLMTQeIoqEzJNYGpqtcQ7gO/zMakwP
+         y15x405sQYM6ZRYPXjO6YvURSu3ORDSjbfohLvfFthDwFpofr/tR0vwfygaf+3F00xbZ
+         swqK8a01xF4XeYFTmAip1b9Y6NtCXoX4SsyOH2a9JXkpV8f4X188HuQOCtXmztMFI6zM
+         z0eg==
+X-Forwarded-Encrypted: i=1; AJvYcCUQwCWMsrCG7ybk9RO3Thu3E2bAhB9gE/ZNAWoDVrCMDjtiNdy6I8wyUYDNblzEWP5DVzY=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwNxs06MGRKFagEE9QIb6uOhKBvWzDEmmgy7LB8Qae+EYMm6kAo
+	QmjdXkFcHm1Mg5ORLqvSAApKDLLDIC+BzUvVd9QGfqXjOtg/aPaMc2IpeZsGeh0mWCoVJ1RxPlm
+	vU8x0ZcsaJ9d2+5iInkxq2NGWNCy/BDvjHXaJ
+X-Google-Smtp-Source: AGHT+IHeHGSJGST3y7pnbjWTe7yANkgiRQ1Q+ewN/4YgOGby4P6amBbfCGy33IqgOgmGsE0A8OhBdeVemB3UzdU3xTM=
+X-Received: by 2002:a17:907:9815:b0:a99:5d4c:7177 with SMTP id
+ a640c23a62f3a-a9a34c80793mr404655566b.6.1729108791587; Wed, 16 Oct 2024
+ 12:59:51 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240425000211.708557-1-andrii@kernel.org> <CAEf4Bza9X_yp84ujDMwGengK1wTPjwZhtH7aXtPfXj6eT1M5Eg@mail.gmail.com>
- <20241016095324.6277c64a744af80c704c3636@kernel.org>
-In-Reply-To: <20241016095324.6277c64a744af80c704c3636@kernel.org>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 16 Oct 2024 12:53:23 -0700
-Message-ID: <CAEf4Bzb+bTzcRpJVQC4o-hOG5BSavvdfTiQjg1YhfqA7spr7cQ@mail.gmail.com>
-Subject: Re: [PATCH RFC] rethook: inline arch_rethook_trampoline_callback() in
- assembly code
-To: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org, 
-	rostedt@goodmis.org, bpf@vger.kernel.org
+References: <20241014235631.1229438-1-andrii@kernel.org> <2rweiiittlxcio6kknwy45wez742mlgjnfdg3tq3xdkmyoq5nn@g7bfoqy4vdwt>
+In-Reply-To: <2rweiiittlxcio6kknwy45wez742mlgjnfdg3tq3xdkmyoq5nn@g7bfoqy4vdwt>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Wed, 16 Oct 2024 12:59:13 -0700
+Message-ID: <CAJD7tkbpEMx-eC4A-z8Jm1ikrY_KJVjWO+mhhz1_fni4x+COKw@mail.gmail.com>
+Subject: Re: [PATCH bpf] lib/buildid: handle memfd_secret() files in build_id_parse()
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, ast@kernel.org, 
+	daniel@iogearbox.net, martin.lau@kernel.org, linux-mm@kvack.org, 
+	linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	Yi Lai <yi1.lai@intel.com>, pbonzini@redhat.com, seanjc@google.com, 
+	tabba@google.com, david@redhat.com, jackmanb@google.com, jannh@google.com, 
+	rppt@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Oct 15, 2024 at 5:53=E2=80=AFPM Masami Hiramatsu <mhiramat@kernel.o=
-rg> wrote:
+On Wed, Oct 16, 2024 at 11:39=E2=80=AFAM Shakeel Butt <shakeel.butt@linux.d=
+ev> wrote:
 >
-> Hi Andrii,
+> Ccing couple more folks who are doing similar work (ASI, guest_memfd)
 >
-> Sorry I excavated this from patchwork.
->
-> On Mon, 29 Apr 2024 15:38:08 -0700
-> Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
->
-> > On Wed, Apr 24, 2024 at 5:02=E2=80=AFPM Andrii Nakryiko <andrii@kernel.=
-org> wrote:
-> > >
-> > > At the lowest level, rethook-based kretprobes on x86-64 architecture =
-go
-> > > through arch_rethoook_trampoline() function, manually written in
-> > > assembly, which calls into a simple arch_rethook_trampoline_callback(=
-)
-> > > function, written in C, and only doing a few straightforward field
-> > > assignments, before calling further into rethook_trampoline_handler()=
-,
-> > > which handles kretprobe callbacks generically.
-> > >
-> > > Looking at simplicity of arch_rethook_trampoline_callback(), it seems
-> > > not really worthwhile to spend an extra function call just to do 4 or
-> > > 5 assignments. As such, this patch proposes to "inline"
-> > > arch_rethook_trampoline_callback() into arch_rethook_trampoline() by
-> > > manually implementing it in an assembly code.
->
-> Yeah, I think it is possible, but this makes code ugly, that is
-> trade-off. As you say, we should move this with other ugly inline
-> assembly code into kprobe.S or something like it. With my current
-> fprobe-on-fgraph, rethook is only required for kretprobes, so it
-> is natual and simple to have kprobe.S.
->
+> Folks, what is the generic way to check if a given mapping has folios
+> unmapped from kernel address space?
 
-Alright, I'll wait for fprobe-on-fgraph work to land, and will look at
-the LBR "wastage" and see what can be done to minimize it. If at that
-point something like this is still needed, I'll follow up separately.
-Thanks.
+I suppose you mean specifically if a folio is not mapped in the direct
+map, because a folio can also be mapped in other regions of the kernel
+address space (e.g. vmalloc).
 
-> Thank you,
+From my perspective of working on ASI on the x86 side, I think
+lookup_address() is
+the right API to use. It returns a PTE and you can check if it is
+present.
+
+Based on that, I would say that the generic way is perhaps
+kernel_page_present(), which does the above on x86, not sure about
+other architectures. It seems like kernel_page_present() always
+returns true with !CONFIG_ARCH_HAS_SET_DIRECT_MAP, which assumes that
+unmapping folios from the direct map uses set_direct_map_*().
+
+For secretmem, it seems like set_direct_map_*() is indeed the method
+used to unmap folios. I am not sure if the same stands for
+guest_memfd, but I don't see why not.
+
+ASI does not use set_direct_map_*(), but it doesn't matter in this
+context, read below if you care about the reasoning.
+
+ASI does not unmap folios from the direct map in the kernel address
+space, but it creates a new "restricted" address space that has the
+folios unmapped from the direct map by default. However, I don't think
+this is relevant here. IIUC, the purpose of this patch is to check if
+the folio is accessible by the kernel, which should be true even in
+the ASI restricted address space, because ASI will just transparently
+switch to the unrestricted kernel address space where the folio is
+mapped if needed.
+
+I hope this helps.
+
+
 >
-> > >
-> > > This has two motivations. First, we do get a bit of runtime speed up =
-by
-> > > avoiding function calls. Using BPF selftests's bench tool, we see
-> > > 0.6%-0.8% throughput improvement for kretprobe/multi-kretprobe
-> > > triggering code path:
-> > >
-> > > BEFORE (latest probes/for-next)
-> > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D
-> > > kretprobe      :   10.455 =C2=B1 0.024M/s
-> > > kretprobe-multi:   11.150 =C2=B1 0.012M/s
-> > >
-> > > AFTER (probes/for-next + this patch)
-> > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > > kretprobe      :   10.540 =C2=B1 0.009M/s (+0.8%)
-> > > kretprobe-multi:   11.219 =C2=B1 0.042M/s (+0.6%)
-> > >
-> > > Second, and no less importantly for some specialized use cases, this
-> > > avoids unnecessarily "polluting" LBR records with an extra function c=
-all
-> > > (recorded as a jump by CPU). This is the case for the retsnoop ([0])
-> > > tool, which relies havily on capturing LBR records to provide users w=
-ith
-> > > lots of insight into kernel internals.
-> > >
-> > > This RFC patch is only inlining this function for x86-64, but it's
-> > > possible to do that for 32-bit x86 arch as well and then remove
-> > > arch_rethook_trampoline_callback() implementation altogether. Please =
-let
-> > > me know if this change is acceptable and whether I should complete it
-> > > with 32-bit "inlining" as well. Thanks!
-> > >
-> > >   [0] https://nakryiko.com/posts/retsnoop-intro/#peering-deep-into-fu=
-nctions-with-lbr
-> > >
-> > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > > ---
-> > >  arch/x86/kernel/asm-offsets_64.c |  4 ++++
-> > >  arch/x86/kernel/rethook.c        | 37 +++++++++++++++++++++++++++---=
---
-> > >  2 files changed, 36 insertions(+), 5 deletions(-)
-> > >
-
-[...]
+> On Mon, Oct 14, 2024 at 04:56:31PM GMT, Andrii Nakryiko wrote:
+> > From memfd_secret(2) manpage:
+> >
+> >   The memory areas backing the file created with memfd_secret(2) are
+> >   visible only to the processes that have access to the file descriptor=
+.
+> >   The memory region is removed from the kernel page tables and only the
+> >   page tables of the processes holding the file descriptor map the
+> >   corresponding physical memory. (Thus, the pages in the region can't b=
+e
+> >   accessed by the kernel itself, so that, for example, pointers to the
+> >   region can't be passed to system calls.)
+> >
+> > We need to handle this special case gracefully in build ID fetching
+> > code. Return -EACCESS whenever secretmem file is passed to build_id_par=
+se()
+> > family of APIs. Original report and repro can be found in [0].
+> >
+> >   [0] https://lore.kernel.org/bpf/ZwyG8Uro%2FSyTXAni@ly-workstation/
+> >
+> > Reported-by: Yi Lai <yi1.lai@intel.com>
+> > Suggested-by: Shakeel Butt <shakeel.butt@linux.dev>
+> > Fixes: de3ec364c3c3 ("lib/buildid: add single folio-based file reader a=
+bstraction")
+> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> > ---
+> >  lib/buildid.c | 5 +++++
+> >  1 file changed, 5 insertions(+)
+> >
+> > diff --git a/lib/buildid.c b/lib/buildid.c
+> > index 290641d92ac1..f0e6facf61c5 100644
+> > --- a/lib/buildid.c
+> > +++ b/lib/buildid.c
+> > @@ -5,6 +5,7 @@
+> >  #include <linux/elf.h>
+> >  #include <linux/kernel.h>
+> >  #include <linux/pagemap.h>
+> > +#include <linux/secretmem.h>
+> >
+> >  #define BUILD_ID 3
+> >
+> > @@ -64,6 +65,10 @@ static int freader_get_folio(struct freader *r, loff=
+_t file_off)
+> >
+> >       freader_put_folio(r);
+> >
+> > +     /* reject secretmem folios created with memfd_secret() */
+> > +     if (secretmem_mapping(r->file->f_mapping))
+> > +             return -EACCES;
+> > +
+> >       r->folio =3D filemap_get_folio(r->file->f_mapping, file_off >> PA=
+GE_SHIFT);
+> >
+> >       /* if sleeping is allowed, wait for the page, if necessary */
+> > --
+> > 2.43.5
+> >
 
