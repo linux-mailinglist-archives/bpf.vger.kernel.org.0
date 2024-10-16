@@ -1,166 +1,200 @@
-Return-Path: <bpf+bounces-42241-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42239-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECB0F9A148E
-	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 23:01:48 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0466D9A148B
+	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 23:01:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B2C332842B1
-	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 21:01:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 64B1DB2448C
+	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 21:01:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE9191D2F46;
-	Wed, 16 Oct 2024 21:01:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=jordanrome.com header.i=linux@jordanrome.com header.b="j9V4jSIQ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29B8C1D2B1C;
+	Wed, 16 Oct 2024 21:01:15 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mout.perfora.net (mout.perfora.net [74.208.4.197])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B18A1D175F
-	for <bpf@vger.kernel.org>; Wed, 16 Oct 2024 21:01:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.208.4.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 969A94409;
+	Wed, 16 Oct 2024 21:01:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729112494; cv=none; b=MLEVS7N0OXIDxGPXF3rIfaGJlaSTGc8B98bJSNUzMi4Q14F86niTIBsWI0ESow9WOh53XxwOR42fgLPERXHJe9vbT+ZnLdOWhJpwPRxYC+tugo0rv97JrwXWWCqZCwFcZWrGTwAemDlhscG6XU/S2WuBpdBEsYRnOC93FOTf45o=
+	t=1729112474; cv=none; b=J8Rg8wu5SSEo+fuMdV1I1MgSncStWregB9qzlUe3OH6+C2m93jwILQ7f53AvsSfUFIHYeOXpDRvnJ6PoluGEioahxcj0HBqmEq7fMbXgfb3SH/sscaoLwY9DqNGG07E8TAB8cQapBs+BbAK+sjZ2YLMeZ8VQBzv3brncZ1MPbxs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729112494; c=relaxed/simple;
-	bh=egoEILchqN2+nW14V8v2e8QWemsaQvSxH+eKjOfE3B0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=CzQuB3289TPcHUAhfSWKtyfhohLqYhPgczz2h7vwEUFqm8toQBtKwj/z/h5cRL4lMwPP2pZY8OU8+ncv6VOU+b3j8M9szedPjq5WFU1LTqdjtqgvOtb+svBjFr05VQ2D28CNmrNFYPGajWWNs4FvYbJup0p6J0urfr8UVebibLk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jordanrome.com; spf=pass smtp.mailfrom=jordanrome.com; dkim=pass (2048-bit key) header.d=jordanrome.com header.i=linux@jordanrome.com header.b=j9V4jSIQ; arc=none smtp.client-ip=74.208.4.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jordanrome.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jordanrome.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jordanrome.com;
-	s=s1-ionos; t=1729112466; x=1729717266; i=linux@jordanrome.com;
-	bh=L0jvzN5FIznqHtYde8BnFrwdWYUFqZZtLXEJXLSXtCU=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:Message-ID:In-Reply-To:
-	 References:MIME-Version:Content-Transfer-Encoding:cc:
-	 content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=j9V4jSIQdjLyFkLN5yUkCEt6HKAKZUVfuTwffPK1c1xMNSSkoJKkRkl9Dj9m3GlC
-	 0nh/rKBhtw/ZI/Dl6cW2tXHrVAhjftkCW2Lze+7WmyM5AmbV9USxuhs1NwseMVUTy
-	 kVeRKJWzbyEyd6WAyfkuB35hUOfqKhzgmIucG9TrgFv++meTeWK1SJSd+W3QcBnEV
-	 bhg8GvmGlaZhL2cG218+J2HZJMJZDR6B48L1PrTIvVQv6uxFrVmc7H6hF3pM8qlME
-	 4alKRkAf5l6By1OuVVHW8vM0fXhDRZ/QeLwP93EA1W8orMG1ySKidIWIpULcAes+n
-	 GtT36cIq6iR4Zrdctw==
-X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
-Received: from localhost ([69.171.251.113]) by mrelay.perfora.net (mreueus003
- [74.208.5.2]) with ESMTPSA (Nemesis) id 0LufPq-1u0wk53lwm-00xxze; Wed, 16 Oct
- 2024 23:01:06 +0200
-From: Jordan Rome <linux@jordanrome.com>
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@kernel.org>,
-	Kernel Team <kernel-team@fb.com>
-Subject: [PATCH bpf v2 2/2] bpf: properly test iter/task tid filtering
-Date: Wed, 16 Oct 2024 14:00:48 -0700
-Message-ID: <20241016210048.1213935-2-linux@jordanrome.com>
-X-Mailer: git-send-email 2.43.5
-In-Reply-To: <20241016210048.1213935-1-linux@jordanrome.com>
-References: <20241016210048.1213935-1-linux@jordanrome.com>
+	s=arc-20240116; t=1729112474; c=relaxed/simple;
+	bh=k1HVXdWEl9r8b7TWbb3PEMrECBBSUgCGgBCTB9XVEhk=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=PDvAwy44qOXyIlxo2VEJZMmt/uf1OoV/oqh3lVQECuGpwf1OjZUj1xX+5Q0WJNY9tCSMFRbUbonmF5e+BWDwEfjb8wXCj14LaTMHKDYiKIzGtAVXMoR4qesJzACFJt/8TkhX5H7K4a54o5D5v+G3vReN5nQsXJHdrmmFdxB8Lwo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 368BFC4CEC5;
+	Wed, 16 Oct 2024 21:01:07 +0000 (UTC)
+Date: Wed, 16 Oct 2024 17:01:28 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Mike Rapoport <rppt@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Luis Chamberlain
+ <mcgrof@kernel.org>, Andreas Larsson <andreas@gaisler.com>, Andy Lutomirski
+ <luto@kernel.org>, Ard Biesheuvel <ardb@kernel.org>, Arnd Bergmann
+ <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>, Brian Cain
+ <bcain@quicinc.com>, Catalin Marinas <catalin.marinas@arm.com>, Christoph
+ Hellwig <hch@infradead.org>, Christophe Leroy
+ <christophe.leroy@csgroup.eu>, Dave Hansen <dave.hansen@linux.intel.com>,
+ Dinh Nguyen <dinguyen@kernel.org>, Geert Uytterhoeven
+ <geert@linux-m68k.org>, Guo Ren <guoren@kernel.org>, Helge Deller
+ <deller@gmx.de>, Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar
+ <mingo@redhat.com>, Johannes Berg <johannes@sipsolutions.net>, John Paul
+ Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Kent Overstreet
+ <kent.overstreet@linux.dev>, "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+ Mark Rutland <mark.rutland@arm.com>, Masami Hiramatsu
+ <mhiramat@kernel.org>, Matt Turner <mattst88@gmail.com>, Max Filippov
+ <jcmvbkbc@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Simek
+ <monstr@monstr.eu>, Oleg Nesterov <oleg@redhat.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Peter Zijlstra <peterz@infradead.org>, Richard
+ Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>, Song Liu
+ <song@kernel.org>, Stafford Horne <shorne@gmail.com>, Suren Baghdasaryan
+ <surenb@google.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Thomas Gleixner <tglx@linutronix.de>, Uladzislau Rezki <urezki@gmail.com>,
+ Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>,
+ bpf@vger.kernel.org, linux-alpha@vger.kernel.org,
+ linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+ linux-mips@vger.kernel.org, linux-mm@kvack.org,
+ linux-modules@vger.kernel.org, linux-openrisc@vger.kernel.org,
+ linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+ linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+ linux-trace-kernel@vger.kernel.org, linux-um@lists.infradead.org,
+ linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
+ sparclinux@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH v6 6/8] x86/module: prepare module loading for ROX
+ allocations of text
+Message-ID: <20241016170128.7afeb8b0@gandalf.local.home>
+In-Reply-To: <20241016122424.1655560-7-rppt@kernel.org>
+References: <20241016122424.1655560-1-rppt@kernel.org>
+	<20241016122424.1655560-7-rppt@kernel.org>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:oKqS+1ZFkNNoHdnGlUo2rmSsPrM2zb0Kpmr5+l8wwpcM/JIiz7e
- iGk+LpIWChDtdrK0K1HXmRBGwk9SUGSoXXi+hiv4HY3yjmWxLfk79dMOKqjQS6hZRtRbvWs
- rPHmAhNTDQmYfc3xREI2Q4I8ZK4eS8uAVThlgVDCtlhmR4SLcliUpzYDMoBUYUu0/TrBuad
- RV8vsrrJhyqffOIf35D+g==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:F9J7QFOxcew=;R4qY2IPVyX4MLSZytMyOugZU/Rw
- 3ehcmzT11ma4swSO5LO+RzeD0EV9NaCiQqKYbknkRSBQuTcXu2mrFPMW3ynsYLe8OhxJJSm+U
- 2dhkb69xg22nKsbXHtFalXLjMsf9fbg2XiAs8xa7dIgiZSlHAbPcFncmyr1pdB5yZJGp/qfDW
- XNcUlR7nrxaKSBaVY74JqlSZG2oqtgx5XUSzYoobH5x02+y96yZUhYm8CldAx3m1EJ34ye/Wd
- SISeZWLAZjFpsVLlLSGrZUBlzeJqu0hdDnKDE730dPbWuJKoo7wU6pPLQxNPQi+0AWXEQs3ZE
- FlZLIaDZZ0QjnKpbzzx++IXWgl14Fk0jrv409tLzLiRSGnBsE8+I+b9B7FYSeuqIAhdBtHPb0
- O26c0aIums0T/tcVyYrvbvCUBuvoJclcnzLYN90J6HS/KNt3Hou4Lc/C4kng3HlNRpcKcKKvM
- WQgeRqit11Ofooc9KWppSGj7HzHLYgO/RP1II9giQE/vg4p1hAtFSARMXDTyeGKqEYLchlt0N
- UT2JjITcTiN2B5jEde5AIH3LNGtu1EI9j7Zg0oszoz6g9ZrqhthJjJxLfxI3picRBWiRpGRan
- uTcnY5osVdqtkAuDDsCKkjg4//8z9pT6iump8aReXOk5LS8cAUzsjzt6Dq3c6z3hAhJtwjz0L
- 4G+XT6RkYlsYOLwsdizwF2IQJnMkykSNHfqPkESQZj/N/Nhycx/w7LDY6ebXNJTcMRFTZJ/fv
- 6dHgD+F5N70ph+qblZw55feYtOr1CpOnQ==
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Previously test_task_tid was setting `linfo.task.tid`
-to `getpid()` which is the same as `gettid()` for the
-parent process. Instead create a new child thread
-and set `linfo.task.tid` to `gettid()` to make sure
-the tid filtering logic is working as expected.
+On Wed, 16 Oct 2024 15:24:22 +0300
+Mike Rapoport <rppt@kernel.org> wrote:
 
-Signed-off-by: Jordan Rome <linux@jordanrome.com>
-=2D--
- .../selftests/bpf/prog_tests/bpf_iter.c       | 27 +++++++++++++++----
- 1 file changed, 22 insertions(+), 5 deletions(-)
+> diff --git a/arch/x86/kernel/ftrace.c b/arch/x86/kernel/ftrace.c
+> index 8da0e66ca22d..b498897b213c 100644
+> --- a/arch/x86/kernel/ftrace.c
+> +++ b/arch/x86/kernel/ftrace.c
+> @@ -118,10 +118,13 @@ ftrace_modify_code_direct(unsigned long ip, const char *old_code,
+>  		return ret;
+>  
+>  	/* replace the text with the new text */
+> -	if (ftrace_poke_late)
+> +	if (ftrace_poke_late) {
+>  		text_poke_queue((void *)ip, new_code, MCOUNT_INSN_SIZE, NULL);
+> -	else
+> -		text_poke_early((void *)ip, new_code, MCOUNT_INSN_SIZE);
+> +	} else {
+> +		mutex_lock(&text_mutex);
+> +		text_poke((void *)ip, new_code, MCOUNT_INSN_SIZE);
+> +		mutex_unlock(&text_mutex);
+> +	}
+>  	return 0;
+>  }
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/tes=
-ting/selftests/bpf/prog_tests/bpf_iter.c
-index 52e6f7570475..f0a3a9c18e9e 100644
-=2D-- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-@@ -226,7 +226,7 @@ static void test_task_common_nocheck(struct bpf_iter_a=
-ttach_opts *opts,
- 	ASSERT_OK(pthread_create(&thread_id, NULL, &do_nothing_wait, NULL),
- 		  "pthread_create");
+So this slows down the boot by over 30ms. That may not sound like much, but
+we care very much about boot times. This code is serialized with boot and
+runs whenever ftrace is configured in the kernel. The way I measured this,
+was that I added:
 
--	skel->bss->tid =3D getpid();
-+	skel->bss->tid =3D gettid();
-
- 	do_dummy_read_opts(skel->progs.dump_task, opts);
-
-@@ -249,25 +249,42 @@ static void test_task_common(struct bpf_iter_attach_=
-opts *opts, int num_unknown,
- 	ASSERT_EQ(num_known_tid, num_known, "check_num_known_tid");
+diff --git a/arch/x86/kernel/ftrace.c b/arch/x86/kernel/ftrace.c
+index 4dd0ad6c94d6..b72bb9943140 100644
+--- a/arch/x86/kernel/ftrace.c
++++ b/arch/x86/kernel/ftrace.c
+@@ -104,6 +104,8 @@ static int ftrace_verify_code(unsigned long ip, const char *old_code)
+ 	return 0;
  }
-
--static void test_task_tid(void)
-+static void *run_test_task_tid(void *arg)
+ 
++u64 sdr_total;
++
+ /*
+  * Marked __ref because it calls text_poke_early() which is .init.text. That is
+  * ok because that call will happen early, during boot, when .init sections are
+@@ -114,6 +116,8 @@ ftrace_modify_code_direct(unsigned long ip, const char *old_code,
+ 			  const char *new_code)
  {
- 	LIBBPF_OPTS(bpf_iter_attach_opts, opts);
- 	union bpf_iter_link_info linfo;
- 	int num_unknown_tid, num_known_tid;
-
-+	ASSERT_NEQ(getpid(), gettid(), "check_new_thread_id");
+ 	int ret = ftrace_verify_code(ip, old_code);
++	u64 start, stop;
 +
- 	memset(&linfo, 0, sizeof(linfo));
--	linfo.task.tid =3D getpid();
-+	linfo.task.tid =3D gettid();
- 	opts.link_info =3D &linfo;
- 	opts.link_info_len =3D sizeof(linfo);
- 	test_task_common(&opts, 0, 1);
-
- 	linfo.task.tid =3D 0;
- 	linfo.task.pid =3D getpid();
--	test_task_common(&opts, 1, 1);
-+	/* This includes the parent thread, this thread,
-+	 * and the do_nothing_wait thread
-+	 */
-+	test_task_common(&opts, 2, 1);
-
- 	test_task_common_nocheck(NULL, &num_unknown_tid, &num_known_tid);
--	ASSERT_GT(num_unknown_tid, 1, "check_num_unknown_tid");
-+	ASSERT_GT(num_unknown_tid, 2, "check_num_unknown_tid");
- 	ASSERT_EQ(num_known_tid, 1, "check_num_known_tid");
-+
-+	return NULL;
-+}
-+
-+static void test_task_tid(void)
-+{
-+	pthread_t thread_id;
-+
-+	/* Create a new thread so pid and tid aren't the same */
-+	ASSERT_OK(pthread_create(&thread_id, NULL, &run_test_task_tid, NULL),
-+		  "pthread_create");
-+	ASSERT_FALSE(pthread_join(thread_id, NULL), "pthread_join");
+ 	if (ret)
+ 		return ret;
+ 
+@@ -121,9 +125,12 @@ ftrace_modify_code_direct(unsigned long ip, const char *old_code,
+ 	if (ftrace_poke_late) {
+ 		text_poke_queue((void *)ip, new_code, MCOUNT_INSN_SIZE, NULL);
+ 	} else {
++		start = trace_clock_local();
+ 		mutex_lock(&text_mutex);
+ 		text_poke((void *)ip, new_code, MCOUNT_INSN_SIZE);
+ 		mutex_unlock(&text_mutex);
++		stop = trace_clock_local();
++		sdr_total += stop - start;
+ 	}
+ 	return 0;
  }
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index c01375adc471..93284557144d 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -10738,6 +10738,11 @@ __init static int tracer_alloc_buffers(void)
+ 
+ 	register_snapshot_cmd();
+ 
++	{
++		extern u64 sdr_total;
++		printk("SDR TOTAL: %lld\n", sdr_total);
++	}
++
+ 	test_can_verify();
+ 
+ 	return 0;
 
- static void test_task_pid(void)
-=2D-
-2.43.5
 
+And did the same before this patch. I ran it three times and have the
+following numbers (all in nanoseconds):
+
+before: 11356637	11863526	11507750
+ after: 43978750	41293162	42741067
+
+Before this patch, the total updates took 11ms. After the patch it takes
+around 42ms. This is because we are patching 59 thousand sites with this.
+
+# dmesg |grep ftrace
+[    1.620569] ftrace: allocating 59475 entries in 233 pages
+[    1.667178] ftrace: allocated 233 pages with 5 groups
+
+
+If this is only needed for module load, can we at least still use the
+text_poke_early() at boot up?
+
+ 	if (ftrace_poke_late) {
+ 		text_poke_queue((void *)ip, new_code, MCOUNT_INSN_SIZE, NULL);
+	} else if (system_state == SYSTEM_BOOTING) {
+		text_poke_early((void *)ip, new_code, MCOUNT_INSN_SIZE);
+ 	} else {
+ 		mutex_lock(&text_mutex);
+ 		text_poke((void *)ip, new_code, MCOUNT_INSN_SIZE);
+ 		mutex_unlock(&text_mutex);
+ 	}
+
+?
+
+The above if statement looks to slow things down just slightly, but only by
+2ms, which is more reasonable.
+
+-- Steve
 
