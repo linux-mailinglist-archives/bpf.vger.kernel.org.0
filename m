@@ -1,190 +1,196 @@
-Return-Path: <bpf+bounces-42232-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42233-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8221B9A130D
-	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 22:00:03 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3110C9A1374
+	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 22:10:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AE54E1C2213B
-	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 20:00:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ACA101F22276
+	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 20:10:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9CED215F52;
-	Wed, 16 Oct 2024 19:59:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 058551C2324;
+	Wed, 16 Oct 2024 20:09:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ADUoIMa2"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fHM69OIO"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9037220605A
-	for <bpf@vger.kernel.org>; Wed, 16 Oct 2024 19:59:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28CC218CBFB
+	for <bpf@vger.kernel.org>; Wed, 16 Oct 2024 20:09:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729108795; cv=none; b=C4EytE44gHanoIEeS6jk5DAIXH5s8C5nWrgP69wO7uxv37qZgQGeaTysh7kvHR3fN+YFJg7l/MVkSJCftZ6PS7O31r9NIft18rGhs6eSiJOoyf8nbuzw2S1fJy92NKYEZcC7eF4GyDr7YeWI8c37oRug+h7GGzWBzLCv6NoC5m0=
+	t=1729109346; cv=none; b=TbnkjoTFXPaBFXss23BvsEPDIytVHdwbW0ijfezrbmzJkhix5Mhq0bdlQCYVKH0F3gFGX9xPQ68K2DQzoDpOAgbZ5iwJknuZfbz9JpqOoW3R1+DF/IxTJVTA2SJ9KiNTOYxjuZtlVpmI96QeOFmoCXjZtu+ITeN9NeTpDOGQAqo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729108795; c=relaxed/simple;
-	bh=/ZtkV779/ytLCI0J/cbkxqqXWmY0bXLd/xN+SO3bDw0=;
+	s=arc-20240116; t=1729109346; c=relaxed/simple;
+	bh=Jym2imMaE6ts6zco9lw1NQocetvhk8vd7mDH17SSsCU=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UdoBANkHwKWiXOoM5cFFbnN0NhwKVp2DrZRfVY5v1+t7XIhNGgApohzU2RBernfSufKM2R0dG9x3wg4twQkUGySU0anK/vDNm1b4ZlxjezKGNf5YdouwIT3onBFGKDamAajmNp4PDkXJu0wsW9GWDQDuN4amQnrJsVI/yMxYP54=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ADUoIMa2; arc=none smtp.client-ip=209.85.218.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a9a156513a1so26301366b.0
-        for <bpf@vger.kernel.org>; Wed, 16 Oct 2024 12:59:53 -0700 (PDT)
+	 To:Cc:Content-Type; b=lekf9WcusHTrincu/wyrIVaqRBHCmc7ZtwESGZOwzw7v6qwirBquxGjuw9rYd/xVyBmNR+hKoWh1Eh0rQxQmxAAmBP6HcWe9+kRuOYZIwiD9KFf/lcHBw6xTG0RNdO84bcGmK0JWHUEEvNDQsxZp/WjF2M+JzDwZuXrwe2css6o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fHM69OIO; arc=none smtp.client-ip=209.85.210.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-71e5a62031aso117408b3a.1
+        for <bpf@vger.kernel.org>; Wed, 16 Oct 2024 13:09:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1729108792; x=1729713592; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1729109344; x=1729714144; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=y+lPf3FNOmE8pMU/2Iycp1XnYxIydARXrVQNA1uL0No=;
-        b=ADUoIMa2s+9DQ2EaNc3U00HPIBmyZ/dqzWJMR/kUt4DqIP7kmBNylM5/QFVQXGGdpg
-         IREOqLlR0FwQzeJOLuDDoCPzvlve0VsUOVPecl1g2rYx30d9Fxls0ka09Yl+AQ9T+3u9
-         y6cmnc7OZKXVxVlz/J9HWJ6TyBzfbPjQ/MkLc1KI57qDiG3+goIiB35KH6mLhOpObZ0f
-         UNce0sZrpwsvrs3Vf18bnu/gOboa1fwO2clAbtyF6AIdzgoyKfJ0+Qi6tbBbMWOkv6mI
-         1f53l0l3vPaxqlRr9uootXR8YQUHWNL7VVO3/P/RHyFx6Tb1DyirgFL4cmZ+qlKx5pea
-         OIZg==
+        bh=zh0wK/sKSvjxzG9F0DDDCwNHwzLzBY3TL8FBiQcl4bo=;
+        b=fHM69OIOuP4n7LCOrPFfakcUaJfi0yHpbTvv61Wy9umtQtI0Nav2ImDu99RWAbkqnS
+         itquKaI8AGx86dRdWgXiZ4ETo4Jpa7iq+OneIRhv3UZJggs94a8WxqqfVTEduGFYVwrL
+         OUB2CDu1tJAClLgz7yKvW1uKdFwIOwO976VdtaQfgAD8qgJDHFTHvlyj/DF+iTFZVqdV
+         ZOe2jDQFLh5ColBOXFASKYvm8tnGrVjodaEsEWL6JR6qNULfz6oR3r+OQ67OQR5FJPYd
+         IgJZb4KV6UIjPCVWTR13O+/6e7Z1rWXQcypbHGYk1FAWKFpPxo/ZGUXymX5MDUovm+5W
+         e6yg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729108792; x=1729713592;
+        d=1e100.net; s=20230601; t=1729109344; x=1729714144;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=y+lPf3FNOmE8pMU/2Iycp1XnYxIydARXrVQNA1uL0No=;
-        b=OHULvKqhf7TA+lIYaHDT6XaA1BjXFqn6WN0+uiDl8ClAy/QrJJASGzQw9d5xO+AfMJ
-         14zpSJnCt75mGOEHx86y4O6dkxYiEh5fCY5LHOc71F7JiqH9fEagG1CeNupLWYkz4u/5
-         oLqO9RDrupFekenY+OTU9zuopeIJxu5cqVmYw3OLMTQeIoqEzJNYGpqtcQ7gO/zMakwP
-         y15x405sQYM6ZRYPXjO6YvURSu3ORDSjbfohLvfFthDwFpofr/tR0vwfygaf+3F00xbZ
-         swqK8a01xF4XeYFTmAip1b9Y6NtCXoX4SsyOH2a9JXkpV8f4X188HuQOCtXmztMFI6zM
-         z0eg==
-X-Forwarded-Encrypted: i=1; AJvYcCUQwCWMsrCG7ybk9RO3Thu3E2bAhB9gE/ZNAWoDVrCMDjtiNdy6I8wyUYDNblzEWP5DVzY=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwNxs06MGRKFagEE9QIb6uOhKBvWzDEmmgy7LB8Qae+EYMm6kAo
-	QmjdXkFcHm1Mg5ORLqvSAApKDLLDIC+BzUvVd9QGfqXjOtg/aPaMc2IpeZsGeh0mWCoVJ1RxPlm
-	vU8x0ZcsaJ9d2+5iInkxq2NGWNCy/BDvjHXaJ
-X-Google-Smtp-Source: AGHT+IHeHGSJGST3y7pnbjWTe7yANkgiRQ1Q+ewN/4YgOGby4P6amBbfCGy33IqgOgmGsE0A8OhBdeVemB3UzdU3xTM=
-X-Received: by 2002:a17:907:9815:b0:a99:5d4c:7177 with SMTP id
- a640c23a62f3a-a9a34c80793mr404655566b.6.1729108791587; Wed, 16 Oct 2024
- 12:59:51 -0700 (PDT)
+        bh=zh0wK/sKSvjxzG9F0DDDCwNHwzLzBY3TL8FBiQcl4bo=;
+        b=ih0JWRm4hbRA2kEv0NBAGfwsgPb10tju4zyzBMYBKyh4jJjECetPbW7w9bAViLaDrd
+         1PJbmp9XxJeWNj9UpV+GzHt1+OBJ5KV/d/D2sXaSqqKoFzgSNZDhKTLPxceHKoUSZe8c
+         sOBqPo8NTtXuktRj+ke7H3b8XZdxWrqQAJZzObw2SCgyMG4ralajMq71+vkndkCmoTGv
+         tAc6rePnmnhwZbeANa827b2yls8tyT02ICS/HwNacKHoGABSTS217fHj7UgTOUiZWmnO
+         bo9Ps+smaI3/4nZ3cJ1vhNRFsqj2IMC/Y5qgVifsp/LITWL8ootIuyJnilKMOpY3L942
+         OiHQ==
+X-Gm-Message-State: AOJu0YxVs40HaRpz+JZPxvjHhtHJZihEmN0jRY4/1WGQn7oKPo3u2J37
+	XOJw4zr4FVNNzSYhAm4eVyyubpLbocdsjAElxeSKqvF2KFsYhBP26wrWk2SPqzCUsdp9aMTBSW9
+	xd/of8WcltmapBSA/oh6o3q5xCylLlDQg
+X-Google-Smtp-Source: AGHT+IFtkrljreWVsIiw/SOy2GN1TRhUzmma1ju5nqTrQxeX6RhX4a4m9tfD5qIVNKkrf7Z30Qu76o2CUrp9ykZ+hEk=
+X-Received: by 2002:a05:6a00:3e03:b0:71e:cb:e7bf with SMTP id
+ d2e1a72fcca58-71e4c1bfb45mr22812051b3a.18.1729109344401; Wed, 16 Oct 2024
+ 13:09:04 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241014235631.1229438-1-andrii@kernel.org> <2rweiiittlxcio6kknwy45wez742mlgjnfdg3tq3xdkmyoq5nn@g7bfoqy4vdwt>
-In-Reply-To: <2rweiiittlxcio6kknwy45wez742mlgjnfdg3tq3xdkmyoq5nn@g7bfoqy4vdwt>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Wed, 16 Oct 2024 12:59:13 -0700
-Message-ID: <CAJD7tkbpEMx-eC4A-z8Jm1ikrY_KJVjWO+mhhz1_fni4x+COKw@mail.gmail.com>
-Subject: Re: [PATCH bpf] lib/buildid: handle memfd_secret() files in build_id_parse()
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, ast@kernel.org, 
-	daniel@iogearbox.net, martin.lau@kernel.org, linux-mm@kvack.org, 
-	linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	Yi Lai <yi1.lai@intel.com>, pbonzini@redhat.com, seanjc@google.com, 
-	tabba@google.com, david@redhat.com, jackmanb@google.com, jannh@google.com, 
-	rppt@kernel.org
+References: <20241015182707.1746074-1-linux@jordanrome.com> <20241015182707.1746074-2-linux@jordanrome.com>
+In-Reply-To: <20241015182707.1746074-2-linux@jordanrome.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Wed, 16 Oct 2024 13:08:51 -0700
+Message-ID: <CAEf4Bza9Y9Qjym4Vf-_ifQ83WQNQaQ9M4wD=LhYiiXX1TBO5Dw@mail.gmail.com>
+Subject: Re: [bpf-next v1 2/2] bpf: properly test iter/task tid filtering
+To: Jordan Rome <linux@jordanrome.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Oct 16, 2024 at 11:39=E2=80=AFAM Shakeel Butt <shakeel.butt@linux.d=
-ev> wrote:
+On Tue, Oct 15, 2024 at 11:41=E2=80=AFAM Jordan Rome <linux@jordanrome.com>=
+ wrote:
 >
-> Ccing couple more folks who are doing similar work (ASI, guest_memfd)
+> Previously test_task_tid was setting `linfo.task.tid`
+> to `getpid()` which is the same as `gettid()` for the
+> parent process. Instead create a new child thread
+> and set `linfo.task.tid` to `gettid()` to make sure
+> the tid filtering logic is working as expected.
 >
-> Folks, what is the generic way to check if a given mapping has folios
-> unmapped from kernel address space?
-
-I suppose you mean specifically if a folio is not mapped in the direct
-map, because a folio can also be mapped in other regions of the kernel
-address space (e.g. vmalloc).
-
-From my perspective of working on ASI on the x86 side, I think
-lookup_address() is
-the right API to use. It returns a PTE and you can check if it is
-present.
-
-Based on that, I would say that the generic way is perhaps
-kernel_page_present(), which does the above on x86, not sure about
-other architectures. It seems like kernel_page_present() always
-returns true with !CONFIG_ARCH_HAS_SET_DIRECT_MAP, which assumes that
-unmapping folios from the direct map uses set_direct_map_*().
-
-For secretmem, it seems like set_direct_map_*() is indeed the method
-used to unmap folios. I am not sure if the same stands for
-guest_memfd, but I don't see why not.
-
-ASI does not use set_direct_map_*(), but it doesn't matter in this
-context, read below if you care about the reasoning.
-
-ASI does not unmap folios from the direct map in the kernel address
-space, but it creates a new "restricted" address space that has the
-folios unmapped from the direct map by default. However, I don't think
-this is relevant here. IIUC, the purpose of this patch is to check if
-the folio is accessible by the kernel, which should be true even in
-the ASI restricted address space, because ASI will just transparently
-switch to the unrestricted kernel address space where the folio is
-mapped if needed.
-
-I hope this helps.
-
-
+> Signed-off-by: Jordan Rome <linux@jordanrome.com>
+> ---
+>  .../selftests/bpf/prog_tests/bpf_iter.c       | 26 +++++++++++++++----
+>  1 file changed, 21 insertions(+), 5 deletions(-)
 >
-> On Mon, Oct 14, 2024 at 04:56:31PM GMT, Andrii Nakryiko wrote:
-> > From memfd_secret(2) manpage:
-> >
-> >   The memory areas backing the file created with memfd_secret(2) are
-> >   visible only to the processes that have access to the file descriptor=
-.
-> >   The memory region is removed from the kernel page tables and only the
-> >   page tables of the processes holding the file descriptor map the
-> >   corresponding physical memory. (Thus, the pages in the region can't b=
-e
-> >   accessed by the kernel itself, so that, for example, pointers to the
-> >   region can't be passed to system calls.)
-> >
-> > We need to handle this special case gracefully in build ID fetching
-> > code. Return -EACCESS whenever secretmem file is passed to build_id_par=
-se()
-> > family of APIs. Original report and repro can be found in [0].
-> >
-> >   [0] https://lore.kernel.org/bpf/ZwyG8Uro%2FSyTXAni@ly-workstation/
-> >
-> > Reported-by: Yi Lai <yi1.lai@intel.com>
-> > Suggested-by: Shakeel Butt <shakeel.butt@linux.dev>
-> > Fixes: de3ec364c3c3 ("lib/buildid: add single folio-based file reader a=
-bstraction")
-> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > ---
-> >  lib/buildid.c | 5 +++++
-> >  1 file changed, 5 insertions(+)
-> >
-> > diff --git a/lib/buildid.c b/lib/buildid.c
-> > index 290641d92ac1..f0e6facf61c5 100644
-> > --- a/lib/buildid.c
-> > +++ b/lib/buildid.c
-> > @@ -5,6 +5,7 @@
-> >  #include <linux/elf.h>
-> >  #include <linux/kernel.h>
-> >  #include <linux/pagemap.h>
-> > +#include <linux/secretmem.h>
-> >
-> >  #define BUILD_ID 3
-> >
-> > @@ -64,6 +65,10 @@ static int freader_get_folio(struct freader *r, loff=
-_t file_off)
-> >
-> >       freader_put_folio(r);
-> >
-> > +     /* reject secretmem folios created with memfd_secret() */
-> > +     if (secretmem_mapping(r->file->f_mapping))
-> > +             return -EACCES;
-> > +
-> >       r->folio =3D filemap_get_folio(r->file->f_mapping, file_off >> PA=
-GE_SHIFT);
-> >
-> >       /* if sleeping is allowed, wait for the page, if necessary */
-> > --
-> > 2.43.5
-> >
+> diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/te=
+sting/selftests/bpf/prog_tests/bpf_iter.c
+> index 52e6f7570475..5b056eb5d166 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
+> @@ -226,7 +226,7 @@ static void test_task_common_nocheck(struct bpf_iter_=
+attach_opts *opts,
+>         ASSERT_OK(pthread_create(&thread_id, NULL, &do_nothing_wait, NULL=
+),
+>                   "pthread_create");
+>
+> -       skel->bss->tid =3D getpid();
+> +       skel->bss->tid =3D gettid();
+>
+>         do_dummy_read_opts(skel->progs.dump_task, opts);
+>
+> @@ -249,25 +249,41 @@ static void test_task_common(struct bpf_iter_attach=
+_opts *opts, int num_unknown,
+>         ASSERT_EQ(num_known_tid, num_known, "check_num_known_tid");
+>  }
+>
+> -static void test_task_tid(void)
+> +static void *run_test_task_tid(void *arg)
+>  {
+> +       ASSERT_NEQ(getpid(), gettid(), "check_new_thread_id");
+
+this is variable declaration block, move assertion after it (and empty line=
+)
+
+>         LIBBPF_OPTS(bpf_iter_attach_opts, opts);
+>         union bpf_iter_link_info linfo;
+>         int num_unknown_tid, num_known_tid;
+>
+
+here
+
+>         memset(&linfo, 0, sizeof(linfo));
+> -       linfo.task.tid =3D getpid();
+> +       linfo.task.tid =3D gettid();
+>         opts.link_info =3D &linfo;
+>         opts.link_info_len =3D sizeof(linfo);
+>         test_task_common(&opts, 0, 1);
+>
+>         linfo.task.tid =3D 0;
+>         linfo.task.pid =3D getpid();
+> -       test_task_common(&opts, 1, 1);
+> +       // This includes the parent thread, this thread, and the do_nothi=
+ng_wait thread
+
+we don't use C++-style comments in C code base, please use /* */
+
+> +       test_task_common(&opts, 2, 1);
+>
+>         test_task_common_nocheck(NULL, &num_unknown_tid, &num_known_tid);
+> -       ASSERT_GT(num_unknown_tid, 1, "check_num_unknown_tid");
+> +       ASSERT_GT(num_unknown_tid, 2, "check_num_unknown_tid");
+>         ASSERT_EQ(num_known_tid, 1, "check_num_known_tid");
+> +
+> +       pthread_exit(arg);
+
+nit: wouldn't `return arg;` do the same?
+
+> +}
+> +
+> +static void test_task_tid(void)
+> +{
+> +       pthread_t thread_id;
+> +       void *ret;
+> +
+> +       // Create a new thread so pid and tid aren't the same
+
+C++ comment
+
+> +       ASSERT_OK(pthread_create(&thread_id, NULL, &run_test_task_tid, NU=
+LL),
+> +                 "pthread_create");
+> +       ASSERT_FALSE(pthread_join(thread_id, &ret) || ret !=3D NULL,
+
+it's best to avoid combining two check in single ASSERT_*(), so
+
+ASSERT_OK(pthread_join(...), ...);
+ASSERT_NULL(ret, ...);
+
+is way easier to follow and debug, if something breaks
+
+But also, why do we check ret? Do we ever return non-NULL?
+
+pw-bot: cr
+
+> +                    "pthread_join");
+>  }
+>
+>  static void test_task_pid(void)
+> --
+> 2.43.5
+>
 
