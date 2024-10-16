@@ -1,72 +1,72 @@
-Return-Path: <bpf+bounces-42143-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42144-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEBAC99FF40
-	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 05:17:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 027FA99FF44
+	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 05:18:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A5AAF1F22602
-	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 03:17:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B542D285FEB
+	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 03:18:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7692E187FFE;
-	Wed, 16 Oct 2024 03:17:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 573D917BEC7;
+	Wed, 16 Oct 2024 03:17:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kiYL/9DK"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GsQNWSoh"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A20AD4204D;
-	Wed, 16 Oct 2024 03:17:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84BBB4204D;
+	Wed, 16 Oct 2024 03:17:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729048635; cv=none; b=XeRKVMjg4Yr4imBEFqHH3dtxlSStXwkwoHk2gLGGD/emdfDDWnfinSSqqQix1h6jtXdmF1pGLgZLBr8/obpwI/bKZJ0fA/Tgh2psxBaDH5b32PG3S8mDnwvLUTz0CmiefdsSqNc+2iamCn5K3zk6HPZDBF6URaGXkSjQ7OvwVus=
+	t=1729048640; cv=none; b=FVKODkvKTTrguMhU+TU7XPF+dQdc/2cq7Ntxr1TH3SvdZzjYldqSgduUE9P2KJz+mfT3NLj5Fu5A8BN61YRNWpae1XVypnAVc6NoiEwcwsqm4OTRGnWKZHBVdmLvQLWRF28QbHvWaouWjXhq4udG7IkjALKjglnpolq46JpoH4Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729048635; c=relaxed/simple;
-	bh=thdANUtqaaKiyMVhV/djgOt5d4lw4emq9W/Om171bsw=;
+	s=arc-20240116; t=1729048640; c=relaxed/simple;
+	bh=vh1dFbc7x6vrVDPy+BjwaS0MMNLkaIVZv8Aou7KgSgQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tBDq5zJr9zW8vZrPtPdmGqlc9SOiPHhokKrheTXeUOCsEKPr3tk5hESJLV13qrWKJNolB/UUfXp/1yLx28PKWyWeAAIj7V6dm83NFRpLZ8sVNJHrFflGW1s43UQgjgpYIBa23ljGw9NhlfmytbeRiq5HTZnnCotqj20hPJUPv6g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kiYL/9DK; arc=none smtp.client-ip=209.85.215.177
+	 MIME-Version; b=mnNjFikOMBvJVEvaQQ4siyWD8Np0BkZ4kU/IK6SLatiJ8Hx0nHUev1Yfz1ej5g9xnnhBKuPAU07TcOQnBq09j/MFfwSeVF1gf1IuQJiLpG41VM7YicUT5CcuaYL68ilNKQbiQtj1XJMQP5ciwaEEkItAySvLdWvaU22WjfVEwNo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GsQNWSoh; arc=none smtp.client-ip=209.85.214.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-7db238d07b3so5298461a12.2;
-        Tue, 15 Oct 2024 20:17:13 -0700 (PDT)
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-207115e3056so49506305ad.2;
+        Tue, 15 Oct 2024 20:17:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729048633; x=1729653433; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1729048638; x=1729653438; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=07dGghuwhdp7zbjQZqkHSTauXgxJT3fLEpvu2LI9bFw=;
-        b=kiYL/9DKx5jkDx2L1fU9EfkGa47Qt+UYj2BG2+SER+wz0hHNEe3+EJovZLh1gdEMr2
-         J79Nui4soOuQCF0ItqjKD5VprzmBsalEUDWmExGOe+P9T7omHJ0BZ64z/fkYQntWPIfi
-         vPqxAsIuD5lApNhrpeULYTnsLVh4wNXj1hquZjyD597mGyz86UTqYgxIHPd/zyOQdAHR
-         eBv7P7O/YPHn3G9/HqTnXgBkjkreJDXkzsPEMkZ3JmSOgiKzAqGl020KtOCVvgC0w4Jh
-         +vTwiuo25PyoBsssx9aWoJwsGU/PX3MXW9As4ViX8iZo3/NmfDFlGb6HyeVlRSZrrCI8
-         3MGA==
+        bh=vpYzvDQhnwNP9kxmh9fTljbaZysRMd8pIZ9gwHK1rBQ=;
+        b=GsQNWSohGGpubP1LkLE04Qf7SBH+IXZHKbfYW+39iglbXWT1QQsIHtw7nR8Gcv6iVJ
+         33jR7rPI4impN65kPiaUsxv0KnzW13oyygPoH0Qze9Pcj1b9eY0zasNsSCE2C2KgIHJp
+         HrH4Ga9nQIC/Wn/4EkqSY23Teg+/FC/IwZoO9/28ORtNy9jCDY1upNRyenmWxWdRPzVC
+         8+SX6ZS6LGR2YDadQSCLipCGyFjAknGfroSOrV/AO7PJJbBRF8O3fpWkOmUnpdorPJLT
+         JsEAO9I1aJlwAzDzvDP/VeYjESYj5yZHg1uaT7mICiFQzsGH90rjx4JsT0d0wyeOFMWm
+         Rf5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729048633; x=1729653433;
+        d=1e100.net; s=20230601; t=1729048639; x=1729653439;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=07dGghuwhdp7zbjQZqkHSTauXgxJT3fLEpvu2LI9bFw=;
-        b=D6LTZjWWax6/LMZY0+OAbKZrpyC2+VtBzyeAJ4Xk36a3B0L9TJW/qDcdBMoPtlDBHW
-         BiV1oNgzxS6PSPUkQIkNMw5XDgoo/UZ7YVe+nFSuVGRHfHMvJhkjV4WviPv6FRklmNeU
-         YlZBDMczg65yqRMi1Sv+UrKqCvZ0n/gQmEb8LboXO+HpJLcefUTdGWHjYk7qKL/ywh3w
-         DERx4kiLTZElXhUi3/ZnAyGCHBgYgS21+agKqDoQEI7aq2pT8SVWPebEHPZyn1ZS7Bv3
-         T+2gyTIwZ5970OFDQ7V3zzpP5iAYuE0yeCLylCzgouZ4czk9j7blCHCDo1j5t7u3cfvA
-         Wx3A==
-X-Forwarded-Encrypted: i=1; AJvYcCU9GRLv9Lp30Tlvq4fpusul7t46CduwG14v+TWrvyK5ywmU/MyZbWlr/f5qysybcicViIv6YV/ULCeF@vger.kernel.org, AJvYcCUSww4KTOoMYEsOh+9yLSU4aY4x/Ksk0TpuRDMbQO77kRLYF17CYaVlJSWCrSfFwcCCahzI0jJSJh+8HuTd@vger.kernel.org, AJvYcCW0PBVbLan9XnDbP1pPCbXjhfDqxT/kA5fW7eunzPDW4PCfJTnoqSIA5xL81MPh58ws0do=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwgFcNP3hUO7p+V9YqS2Qv1ceE6T7ZxtF2Vu5H8ao4Wljsfh4Df
-	gQy8LdjZgJ2eebwScpqMeQhpjXJlOyIM95OTfUyeShxtMyZo+J9hR0q5Z+VfGhA=
-X-Google-Smtp-Source: AGHT+IENF5jzncVEfg2fyzO5DWpCAtXM8I9x2aGfawiLEuC+qVe4mG07VWCBDZDe5GUkVDm5qWKErA==
-X-Received: by 2002:a05:6a21:a24c:b0:1d8:a267:b06c with SMTP id adf61e73a8af0-1d905ec024fmr3198736637.18.1729048632721;
-        Tue, 15 Oct 2024 20:17:12 -0700 (PDT)
+        bh=vpYzvDQhnwNP9kxmh9fTljbaZysRMd8pIZ9gwHK1rBQ=;
+        b=Y74pLqMP2Jr79ugY92mvBzlzHlAL+ef4Pro+w/6pEzEXj1BFoQWwK3Fuqy4ke9eTbD
+         8GfpogD3WiqJk6h2cGYXLQSNJkZDuNwl6AE6mXWzw66z2DyW3Ze0IxKY9E3eZWWvGzVJ
+         QZ4QXh3aS8dx1aQBKp1yVSGEMdi2vfrvCXlsPSSoVbIbFmAi/rxYFyQqQ/ZI+kbx5BXD
+         FHsT8nEMo9cYIseHH71BgMuwdOdTPK7LKimSJJe2LW4lNSGNY1hJVbofutaUF6wYw+uP
+         d/R2h9GquKnn6QjGcU0rHfq52dT/H/M6nHoYQyV+I7v8ksJq163+heCBbE5onFkthsll
+         c8RA==
+X-Forwarded-Encrypted: i=1; AJvYcCW87RIE7mRMUW+2izYcSmmJw+q2Kv7GwVbIQbua/ZyI14aJe0cJOoHlEbUw4ZmgzyIsxtkJhEmnIHaIAvuV@vger.kernel.org, AJvYcCXFX/1H9AcQ2rK1sS6vYsNQAITn05gAw0NgnSaqMYoJHm92sf+GqGSfr5mv4QpXBVwQWd1lEz3E36Zc@vger.kernel.org, AJvYcCXH90sP8wAaQ721PvjoqQP540n6iQHcM4uEinEN2zJCdkmcq4bqv+Rghab3VdIRRjPdQNQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw4cruOzbKUYSBJGh6PfinaYn/EtvdpO4ekUyA8sw3nZwIGVjn5
+	DVjWveifU0cpScYCuBXBgscOBWLIgp4aybOVoz7bavs5E+zh8DYdkGzETRAm/to=
+X-Google-Smtp-Source: AGHT+IEokm1iHPDGyXWKqqEwK7RxI2yY7ngJrnA/gnkvoxeLeXpbXd4wOfO3EMdtDJ/5zCFQAyokKg==
+X-Received: by 2002:a17:902:dace:b0:20b:a5b5:b89 with SMTP id d9443c01a7336-20d27eeaba2mr32278775ad.35.1729048638520;
+        Tue, 15 Oct 2024 20:17:18 -0700 (PDT)
 Received: from fedora.dns.podman ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7ea9c6d38efsm2252069a12.46.2024.10.15.20.17.06
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7ea9c6d38efsm2252069a12.46.2024.10.15.20.17.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Oct 2024 20:17:12 -0700 (PDT)
+        Tue, 15 Oct 2024 20:17:18 -0700 (PDT)
 From: Hangbin Liu <liuhangbin@gmail.com>
 To: netdev@vger.kernel.org
 Cc: "David S. Miller" <davem@davemloft.net>,
@@ -90,9 +90,9 @@ Cc: "David S. Miller" <davem@davemloft.net>,
 	linux-kernel@vger.kernel.org,
 	bpf@vger.kernel.org,
 	Hangbin Liu <liuhangbin@gmail.com>
-Subject: [PATCH net-next 2/3] bonding: use correct return value
-Date: Wed, 16 Oct 2024 03:16:48 +0000
-Message-ID: <20241016031649.880-3-liuhangbin@gmail.com>
+Subject: [PATCH net-next 3/3] Documentation: bonding: add XDP support explanation
+Date: Wed, 16 Oct 2024 03:16:49 +0000
+Message-ID: <20241016031649.880-4-liuhangbin@gmail.com>
 X-Mailer: git-send-email 2.46.0
 In-Reply-To: <20241016031649.880-1-liuhangbin@gmail.com>
 References: <20241016031649.880-1-liuhangbin@gmail.com>
@@ -104,27 +104,35 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-When a slave already has an XDP program loaded, the correct return value
-should be -EEXIST instead of -EOPNOTSUPP.
+Add document about which modes have native XDP support.
 
-Fixes: 9e2ee5c7e7c3 ("net, bonding: Add XDP support to the bonding driver")
 Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
 ---
- drivers/net/bonding/bond_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Documentation/networking/bonding.rst | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
-index f0f76b6ac8be..6887a867fe8b 100644
---- a/drivers/net/bonding/bond_main.c
-+++ b/drivers/net/bonding/bond_main.c
-@@ -5699,7 +5699,7 @@ static int bond_xdp_set(struct net_device *dev, struct bpf_prog *prog,
- 		if (dev_xdp_prog_count(slave_dev) > 0) {
- 			SLAVE_NL_ERR(dev, slave_dev, extack,
- 				     "Slave has XDP program loaded, please unload before enslaving");
--			err = -EOPNOTSUPP;
-+			err = -EEXIST;
- 			goto err;
- 		}
+diff --git a/Documentation/networking/bonding.rst b/Documentation/networking/bonding.rst
+index e774b48de9f5..6a1a6293dd3a 100644
+--- a/Documentation/networking/bonding.rst
++++ b/Documentation/networking/bonding.rst
+@@ -2916,6 +2916,18 @@ from the bond (``ifenslave -d bond0 eth0``). The bonding driver will
+ then restore the MAC addresses that the slaves had before they were
+ enslaved.
+ 
++9.  What modes does bonding have native XDP support?
++----------------------------------------------------
++
++Currently, native XDP is supported only in the following bonding modes:
++  * balance-rr (0)
++  * active-backup (1)
++  * balance-xor (2)
++  * 802.3ad (4)
++
++Note that the vlan+srcmac hash policy is not supported with native XDP.
++For other bonding modes, the XDP program must be loaded in generic mode.
++
+ 16. Resources and Links
+ =======================
  
 -- 
 2.46.0
