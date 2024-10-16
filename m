@@ -1,154 +1,188 @@
-Return-Path: <bpf+bounces-42229-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42230-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3FB59A1292
-	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 21:32:42 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66E3C9A12B3
+	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 21:36:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A08A1C20CC5
-	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 19:32:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E29D01F23E78
+	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 19:36:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5DCA2144C5;
-	Wed, 16 Oct 2024 19:32:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82044215F5B;
+	Wed, 16 Oct 2024 19:35:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VHMNNeOI"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HLtq5enn"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B1291885BB;
-	Wed, 16 Oct 2024 19:32:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 842E92144D6;
+	Wed, 16 Oct 2024 19:35:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729107153; cv=none; b=naSrDiPWOnxsGD6Ih/u/vNszpmd1G1+cvMSV6meYYkhmLfcYHd6aYWR9iaw784lMcJpr0U8GXjr9ODVk3BuGvCB9t8G5aIkQZ9d8fU7q7pTi7iPvZdujYfHAD+jX9LuP0dGTvaE3IX0Abw3BdiOt67aS0ED5ZXEaIa2ynh4sklY=
+	t=1729107336; cv=none; b=JesjPsRE5y4JoJk0j1WjzMJ0Vs5rNncZni3wzIQMI2GOy1ZvpldCjDx4GDg08QUPkMA+n3a0TikqUqML0JCmUzeFpXc6kBhmZ9dW7LUFlbRjm9dohRoQnQuspIDGNALeoePgksLKnZU3yZwyKrxcnnyo5X0EcKDoYAkMHNUYtQE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729107153; c=relaxed/simple;
-	bh=DCiowFr9Pu71dlJI3fY1tp1MwHO28XH9VSc6g+FaQw8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=B/hD8L5T0w8D9aLmOo82AeHX5X6REvCz92Cd0GaOYAkNNJOYw7LwoJJY+Hsjy1FDxYEua5NeO7nDmQto1CI1jd1jWuxPeNz5iu8Eu6HnoVs0z2wH4NXUghg+vyeiBXIEr1HAkft57w1540yAJYdbxNMvqYCfB4uQG9DhpdCuJCM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VHMNNeOI; arc=none smtp.client-ip=209.85.128.46
+	s=arc-20240116; t=1729107336; c=relaxed/simple;
+	bh=NNrE3qOWb+EtP1SO1axezSvQxQFBxRZOewvdPogIiNY=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=cgOfup+EwBPQmnRArmfTfZKjWE/D3N5HOwWvaUKRxLv3Td7Z10J0++qacDPc1H2aIO2iI7Rnn7yt7cqx/gJzZ92zUdp99iz7s3nu7jnmJmQC6O9ofDLDy5OP69vna/Xp5aGyx0wWPRQXo9WCCj6OokbF0KX/HvZXzqrPQ2eDdBI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HLtq5enn; arc=none smtp.client-ip=209.85.210.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-42f6bec84b5so1986755e9.1;
-        Wed, 16 Oct 2024 12:32:31 -0700 (PDT)
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-71e5130832aso118005b3a.0;
+        Wed, 16 Oct 2024 12:35:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729107150; x=1729711950; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=i4rl0B3DN7zWi36BodccOQQbkpQljW1anHrXwo5pjFI=;
-        b=VHMNNeOIDd596EWfUn+4m84HYfQ0Ti01xEnxaB3yjukheZm+DtMQqrhBhIMOLfobpI
-         +IFvou7KIRwaQsBCZrhLKgQrwmtGCkwgESpV/K2S9SNPiAe+A+uUluKfjBcTFCJVCFPY
-         JfMaLNC02PkQci0oVkCt+30oHneK0H/ez5ZC8dhlyBiUO3HhBIXSqGOS+cm+pPUU5ZcK
-         y2dZqhJw/E1V7aJFY94+NFkZ+uD8bh5wHhrwjWQCwoHZFXi2el8kV3hnCPtDKbUSPZxb
-         uAaCV5LcBbeOquZyH+Y/HQSLGVEkthjfOqSYjT5mF4Q9d2r3PHiAx07nbwIfLcU83fvw
-         LIGQ==
+        d=gmail.com; s=20230601; t=1729107334; x=1729712134; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=COadM9mdsklFEqY/AYc1kTUqOtiuxLFYkQWjQblcUb8=;
+        b=HLtq5enn+P7wkznoglSsUZSekjpbt17gufFZdVQ9s7qT+aXeQZ3MeSr8xY+yTLEZpX
+         U4wzUYwV8oeqqGa9TjiKAaxQUuliyTYY1bu/V41jvEm04a3AbsRYtzvpwMbUeC3W54bB
+         ABY71juL3H1fFfN9C5IY80DJOZOtCwhQ+NT+1l324/acgP++8PWTfAHNAVo4rpsz95WX
+         S/vI5wmwV0o05dWku3EBC6JxMihyAxwErdGuz5vQavXVEUDDK+0kUX7AXYIeGxxSFyal
+         V4SatUVc5zQTmD1ORstit0X08/BSVLYO6tvzBprMP6TbYEwnyGI5prBIGHxy9b6UU7LR
+         pvJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729107150; x=1729711950;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=i4rl0B3DN7zWi36BodccOQQbkpQljW1anHrXwo5pjFI=;
-        b=MpWkRtaRWd5JM4mNQePrPZaMhpvQAw5OcnfYmmbOgiJzfEHkDuh1ecDEHE6a7qgU60
-         pek14ohtNWiHkUchktYy363qoTiwWB5wOEJSXOxoAEOzZttZG8ID4EoPMBe5vXTh1MLJ
-         simvGXS6eMrvcpP/js1KUvBtDpya2w9TtNzR3bsX7R+saY03HAudlTjgiyos0LpkbrY1
-         U6ovfon00hALLcNiGb16epX3pfxUij1bSxwrFJiL/KxMRqpBJL7O2meMhcSlnS5c3MTV
-         /8JKMyCHGSnwU+Z0R5zwMsnw2WyoTeohKNGVHeYFvbMCuB2yF8wUtiC1ImG+qOrKVHL/
-         y0uA==
-X-Forwarded-Encrypted: i=1; AJvYcCUAPT7Tf+jEop/nrcozTit+thWy8ETxqwum+zRxoXY/Lzx5Ej5Mj+hXgfT/djOVfN1wGOeOCAyGGhyhD0DN@vger.kernel.org, AJvYcCUYB98P9EpemNYWOp9YjoMRUruFDPoSh3GI3KrDvq9jmRSp8lU5ezUiN+9RLeH1MkM2KCM=@vger.kernel.org, AJvYcCVpV2mcv1hwH4idZ67GWWNdRuJ7e4wPQGG8ap77eheoR7TLLAqk9SlRrU4I320z/a51RV0K8hqHxznrnA==@vger.kernel.org, AJvYcCVrgwHwevFAgmfVU8lt67rs8aI0SVOQShqZjZ+KILP9M0OPDwLX7b/obNnwqfyCMbFkI5iX0H2s@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzjkxe5n0JcKuB5UHvK2QY7YXsw/d6HUTueCR9W4PJsip0KruZu
-	/5YOUFxxSn4n+Yw8eV6iHn0xPAgAAIDsTaWaBSdK/Iv3vJJ+NUxukC1uVkTwht4mnafX2EC+1cp
-	Midi9klCUuRTY60+JUauza3dTfh+CDAcQ
-X-Google-Smtp-Source: AGHT+IF7c2QXjgydXkv+1KGDqbxKGaOuyA03qWTWeiTtkOuAqHwKxV2uYSiiYHoCvtn1g7OFJLr0iNzp8cEzepZNy0E=
-X-Received: by 2002:adf:cd03:0:b0:37d:4ab2:9cdc with SMTP id
- ffacd0b85a97d-37d86bb47aemr3273075f8f.13.1729107149760; Wed, 16 Oct 2024
- 12:32:29 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1729107334; x=1729712134;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=COadM9mdsklFEqY/AYc1kTUqOtiuxLFYkQWjQblcUb8=;
+        b=V9jU8WqZTakG7hEKTio8q5LfTthTExlMq7HPlg5g0oVhsYzE9l2PEuCrF8vM41zuh/
+         JaMjffM3E3nvM7lTkLt3zupb23FZCjDYHF1aUEMa5RLVzUNEHzEN8PgCnFqcFAC10sYU
+         iJw/43cvQsl7W7ZhqlIH/dS3384yzL9fHOFwrHv/0PABE9Waw6WX5pkDJOi04pBRhMjU
+         6bNGDvQZl6n/0Ioln/2eAQIHjl+vZwTZyPFKViUA4W0YC4n9HnIK4e/8u2wSn2R95QvQ
+         vpl+LpYLW4GAgX7P+WsUftnbqXY+pzOEsq+18uWtjNBSRTmUD3/8vqVABY4gB70uqnKA
+         UJQw==
+X-Forwarded-Encrypted: i=1; AJvYcCUM7/p+rcfmCEQ46Fm3+SUs82OKzvl7QPqwuyhftNOHW5qAQrqGy3WK9STPzDh5hraohTbJwwKiOAt6ES3eilrd6g==@vger.kernel.org, AJvYcCWztfmMYTj6nYdXME8svb730k3z1m2g8UDoZuo/CkPJcIqyyk8HgWoFLXoTv383pcwKrwo=@vger.kernel.org, AJvYcCXu5QuclPf2rw/n3Y94GVw0xQWLEwhq6LRbO2GTVflsCQFRNW4xYhxK/+T/kq1xlBac8RO/mbeLhuwObA3t@vger.kernel.org
+X-Gm-Message-State: AOJu0YyLig/mAq3CLW6/k1PxdMaCGvKzFmatimIF9GLvDM/078TSv+6E
+	OoKekkkGEXHJIezZof0bvpS5dXfyICfAY+kI0FeJxnpf40huLAb07S2BPIr9DrpHU4y3G0kcJGM
+	JLhpbMG1M5kIc9UZkWPguf1Ohv8k=
+X-Google-Smtp-Source: AGHT+IFoR2J8QArYG4GdvA2ZTWym2yAF0bf4yapmxEQIyk6yGf8CBIPNs9eBCYoDoGXIUYd1KvkSmPfdgVyJgfl2iMU=
+X-Received: by 2002:a05:6a00:2e11:b0:71e:6ed:9108 with SMTP id
+ d2e1a72fcca58-71e4c13db67mr24548702b3a.2.1729107333688; Wed, 16 Oct 2024
+ 12:35:33 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241016170542.7e22b03c@canb.auug.org.au> <CAADnVQJ=Woq=82EDvMT1YRLLTvNgFVSbnZDiR5HUgEhcyBLW4Q@mail.gmail.com>
- <ZxAHZt8pFjxeOx-U@google.com>
-In-Reply-To: <ZxAHZt8pFjxeOx-U@google.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 16 Oct 2024 12:32:18 -0700
-Message-ID: <CAADnVQLpFZsRbMndY6nHqSWiAh3SfmN8S6KbJ9p9T_WC3x0i_g@mail.gmail.com>
-Subject: Re: linux-next: build failure after merge of the bpf-next tree
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Networking <netdev@vger.kernel.org>, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
-	Linux Next Mailing List <linux-next@vger.kernel.org>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Wed, 16 Oct 2024 12:35:21 -0700
+Message-ID: <CAEf4BzarhiBHAQXECJzP5e-z0fbSaTpfQNPaSXwdgErz2f0vUA@mail.gmail.com>
+Subject: The state of uprobes work and logistics
+To: Peter Ziljstra <peterz@infradead.org>, Will Deacon <will@kernel.org>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Mark Rutland <mark.rutland@arm.com>
+Cc: Linux trace kernel <linux-trace-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Jiri Olsa <jolsa@kernel.org>, Oleg Nesterov <oleg@redhat.com>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Liao Chang <liaochang1@huawei.com>, 
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, 
+	open list <linux-kernel@vger.kernel.org>, 
+	"linux-perf-use." <linux-perf-users@vger.kernel.org>, Kernel Team <kernel-team@meta.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Oct 16, 2024 at 11:35=E2=80=AFAM Namhyung Kim <namhyung@kernel.org>=
- wrote:
->
-> On Wed, Oct 16, 2024 at 09:25:41AM -0700, Alexei Starovoitov wrote:
-> > On Tue, Oct 15, 2024 at 11:05=E2=80=AFPM Stephen Rothwell <sfr@canb.auu=
-g.org.au> wrote:
-> > >
-> > > Hi all,
-> > >
-> > > After merging the bpf-next tree, today's linux-next build (arm64
-> > > defconfig) failed like this:
-> > >
-> > > Building: arm64 defconfig
-> > > In file included from arch/arm64/include/asm/thread_info.h:17,
-> > >                  from include/linux/thread_info.h:60,
-> > >                  from arch/arm64/include/asm/preempt.h:6,
-> > >                  from include/linux/preempt.h:79,
-> > >                  from include/linux/spinlock.h:56,
-> > >                  from include/linux/mmzone.h:8,
-> > >                  from include/linux/gfp.h:7,
-> > >                  from include/linux/slab.h:16,
-> > >                  from mm/slab_common.c:7:
-> > > mm/slab_common.c: In function 'bpf_get_kmem_cache':
-> > > arch/arm64/include/asm/memory.h:427:66: error: passing argument 1 of =
-'virt_to_pfn' makes pointer from integer without a cast [-Wint-conversion]
-> > >   427 |         __is_lm_address(__addr) && pfn_is_map_memory(virt_to_=
-pfn(__addr));      \
-> > >       |                                                              =
-    ^~~~~~
-> > >       |                                                              =
-    |
-> > >       |                                                              =
-    u64 {aka long long unsigned int}
-> > > mm/slab_common.c:1260:14: note: in expansion of macro 'virt_addr_vali=
-d'
-> > >  1260 |         if (!virt_addr_valid(addr))
-> > >       |              ^~~~~~~~~~~~~~~
-> > > arch/arm64/include/asm/memory.h:382:53: note: expected 'const void *'=
- but argument is of type 'u64' {aka 'long long unsigned int'}
-> > >   382 | static inline unsigned long virt_to_pfn(const void *kaddr)
-> > >       |                                         ~~~~~~~~~~~~^~~~~
-> > >
-> > > Caused by commit
-> > >
-> > >   04b069ff0181 ("mm/bpf: Add bpf_get_kmem_cache() kfunc")
-> > >
-> > > I have reverted commit
-> > >
-> > >   08c837461891 ("Merge branch 'bpf-add-kmem_cache-iterator-and-kfunc'=
-")
-> > >
-> > > for today.
-> >
-> > Thanks for flagging.
-> > Fixed and force pushed.
->
-> Oops, thanks for fixing this.  The virt_addr_valid() was confusing
-> whether it takes unsigned long or a pointer.  It seems each arch has
-> different expectation.
+Hello,
 
-        if (!virt_addr_valid((void *)(long)addr))
+I wanted to provide a bit of a context about and tie together a few
+separate work streams (across a few separate kernel trees) all
+revolving around uprobe improvements, as there are a bunch of them and
+I'm sure it's hard to keep track of all of them. And hopefully I can
+also get Peter and ARM maintainer's input on some specific questions I
+asked below. Thank you in advance!
 
-did the trick for me and that's what I pushed.
-Odd that our bpf CI on arm64 didn't catch it.
+In short, in the last few months there was a high activity around
+fixing and improving uprobes. All this is the result of increased and
+more varied use of uprobes/uretprobe in production settings. Uprobe
+performance is **very** important, and yes, we do have real use cases
+that go to millions per second uprobe/uretprobe triggering throughput,
+unfortunately. So any small bit of performance and scalability
+improvement is helpful. No, this isn't just some nerdy perf
+optimization work (I've been asked this a few times, so I thought I'd
+emphasize this again).
+
+So, we've already landed a bunch of work, mainly (not an exhaustive list):
+
+  - various clean ups, API improvements, and bug fixes from Oleg
+Nesterov ([0], [1]). This simplified internal APIs and was a
+prerequisite of the rest of the work;
+  - changes to refcounting and RCU-ifying of uprobe lifetime from me
+([2]). This improved single-threaded performance somewhat, but mainly
+significantly improved scalability in the presence of multiple CPUs
+triggering lots of uprobes;
+  - ARM64-specific optimization of uprobe emulation of NOP instruction
+by Liao Chang ([3]). This change alone gives 2x (!) speed up for a
+USDT tracing use cases *on ARM64* (we already have this optimization
+in x86-64);
+  - there was a bit earlier work by Jiri Olsa ([4]) to add uretprobe()
+syscall, giving +30% speed ups.
+
+And there are a few more outstanding changes:
+
+  - Jiri Olsa's uprobe "session" support ([5]). This is less
+performance focused, but important functionality by itself. But I'm
+calling this out here because the first two patches are pure uprobe
+internal changes, and I believe they should go into tip/perf/core to
+avoid conflicts with the rest of pending uprobe changes.
+
+Peter, do you mind applying those two and creating a stable tag for
+bpf-next to pull? We'll apply the rest of Jiri's series to
+bpf-next/master.
+
+  - Liao Chang's ARM64-specific STP instruction emulation support
+([6]). This one will give 2x (!) improvement for a common case of
+having STP instruction being a first instruction in traced user
+function (similar to NOP for USDTs).
+
+ARM64 maintainers (cc'ed Catalin, Will, and Mark), can you guys please
+take another look? This one was a bit more controversial, but
+hopefully there is a way to massage it to be acceptable and not
+introduce unnecessary slowdowns (there were some concerns about memory
+ordering/visibility, which hopefully don't apply to uprobe cases).
+It's an important improvement, I'd really appreciate it if we can make
+progress here, thank you!
+
+  - my speculative VMA-to-uprobe lookup series ([7]). This makes entry
+uprobe scalability scale linearly with the number of CPUs (the
+ultimate goal of uprobe scalability work).
+
+I think it's ready to go in. It has **implicit** dependency on
+Christian Brauner's recent change for FMODE_BACKING, for which he
+provided a stable tag. Peter, do you have any remaining concerns or
+this can be also merged soon?
+
+  - another patch set of mine, switching uretprobe fast path to SRCU
+(with timeout) ([8]). This makes return uprobes (uretprobes) linearly
+scalable in the common case (again, the ultimate scalability goal).
+
+I haven't gotten much feedback here, would love to get some objective
+review here. This is an important counterpart to the speculative
+VMA-to-uprobe lookup series. Both are needed in practice.
+
+  - patch set dropping unnecessary siglock usage in uprobe by Liao
+Chang ([9]). This one removes yet another lock, for a less common case
+(at least on x86-64) of single-stepped uprobe (where the probed
+instruction can't be emulated).
+
+This one needs a rebase, but it was already acked by Oleg. Liao,
+please prioritize the rebase and send v4 ASAP, so this is not lost.
+
+
+As you can see, lots of stuff needs to be landed and most of it is in
+good shape already. I'd love to hear thoughts of relevant people
+called out above, thank you!
+
+
+  [0] https://lore.kernel.org/linux-trace-kernel/20240729134444.GA12293@redhat.com/
+  [1] https://lore.kernel.org/linux-trace-kernel/20240929144201.GA9429@redhat.com/
+  [2] https://lore.kernel.org/linux-trace-kernel/20240903174603.3554182-1-andrii@kernel.org/
+  [3] https://lore.kernel.org/linux-trace-kernel/20240909071114.1150053-1-liaochang1@huawei.com/
+  [4] https://lore.kernel.org/linux-trace-kernel/20240523121149.575616-1-jolsa@kernel.org/
+  [5] https://lore.kernel.org/bpf/20241015091050.3731669-1-jolsa@kernel.org/
+  [6] https://lore.kernel.org/linux-trace-kernel/20240910060407.1427716-1-liaochang1@huawei.com/
+  [7] https://lore.kernel.org/linux-trace-kernel/20241010205644.3831427-1-andrii@kernel.org/
+  [8] https://lore.kernel.org/linux-trace-kernel/20241008002556.2332835-1-andrii@kernel.org/
+  [9] https://lore.kernel.org/linux-trace-kernel/20240815014629.2685155-1-liaochang1@huawei.com/
+
+-- Andrii
 
