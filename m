@@ -1,174 +1,115 @@
-Return-Path: <bpf+bounces-42216-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42217-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F33B19A115D
-	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 20:16:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF6CE9A1174
+	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 20:25:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BABB7281F76
-	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 18:16:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E7CF61C217AA
+	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 18:25:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3156210C3E;
-	Wed, 16 Oct 2024 18:15:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D095D212630;
+	Wed, 16 Oct 2024 18:25:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="XWzifagy"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kmzcvaQg"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD81F185939;
-	Wed, 16 Oct 2024 18:15:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05815206941;
+	Wed, 16 Oct 2024 18:25:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729102553; cv=none; b=BZWctEm+bIw1gHTSZ+XHHglx2Bl368yu5S3COnRkQxTMc0OW1xKCasfTumgwVUcwLp3u1IXirrlCXdmxsIDML9Xqn0bRliha3XAaacj1erQX8JIY8AH5PmAJHvL6fxDSEnUJKbmLVXsQ9SSDDayadLejLaj+NMy8P29QmD7gvvw=
+	t=1729103144; cv=none; b=KnKn8192035sy6x17FYaKoQiKoXgOzeQK1aqWac+4wGeQspoNJRKLSG1uUJh/E22g/MQlzbbulJTJEFBoErh+Xtnvi+Yzs4BjCILZdjy6PvP/e/5MyILJYwT3sfB6BM7in25IfA+KUMaz28HT7z+nbDMwhn5OZoFnnWQYrKaiBM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729102553; c=relaxed/simple;
-	bh=JufLHtMSuGaTzBKJg/6VeV666klq+gVXM9Gg7iqlmoo=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 Content-Type:MIME-Version; b=odzQT4IsD+bKrRtyD4DOrFU0ifoszAvECB2Tbx0bYFPYWntP0N/g/62UWQ/MpyiE3mATiZ5E2Pulna9ByMZkOWGtf5M9KWh2s7QyRsjTIrdbP6xlOABLCtDtUChEkDGIll6iu7w5MMZjkw7oFBwS17yGjoZI7UEADjj7mbNNBmA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=XWzifagy; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 49GHxvak008364;
-	Wed, 16 Oct 2024 18:15:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=pp1; bh=JufLHtMSuGaTzBKJg/6VeV666klq+g
-	VXM9Gg7iqlmoo=; b=XWzifagydH7B4bw0tHvnm/lB+4FgXIAfy4lEglWfPwncrU
-	oQx+wYIUVZ+woEv/bEUzosB+AxFswJ4X9hpV3Kkr6vv78PrPMlCHi6DPzOxqBoty
-	0GaKfAfyWDs4W7Gwp/M1wFkoFlqTJd7jdnvamjthyu71uiJtq0vhnhGSUomlD1Fi
-	mNsQf8XowSQZIgLorYX0dEdmUN4QEJQNjKxJ9+tKAS6JOdZTTs1E3iJ7SDzhgg6n
-	7NmP//l8vUjm41MgZiw1wQWYvV7SgyIl5Fx9PY6ZuKxcEy875PW0fxUxJUmo3vSQ
-	i16jW4/xPBmFKhq/ppxlkSf1uLAD6ZB2bGMeEVIA==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 42ajcjr1tv-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 16 Oct 2024 18:15:01 +0000 (GMT)
-Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 49GIF1EK005111;
-	Wed, 16 Oct 2024 18:15:01 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 42ajcjr1tq-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 16 Oct 2024 18:15:01 +0000 (GMT)
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 49GF0iJY005946;
-	Wed, 16 Oct 2024 18:14:59 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 4286512f5v-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 16 Oct 2024 18:14:59 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 49GIEuOR27001366
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 16 Oct 2024 18:14:56 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 02FBE20043;
-	Wed, 16 Oct 2024 18:14:56 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 32E4320040;
-	Wed, 16 Oct 2024 18:14:55 +0000 (GMT)
-Received: from tuxmaker.linux.ibm.com (unknown [9.152.85.9])
-	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Wed, 16 Oct 2024 18:14:55 +0000 (GMT)
-From: Sven Schnelle <svens@linux.ibm.com>
-To: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Steven Rostedt
- <rostedt@goodmis.org>,
-        Florent Revest <revest@chromium.org>,
-        linux-trace-kernel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        Alan
- Maguire <alan.maguire@oracle.com>,
-        Mark Rutland <mark.rutland@arm.com>, linux-arch@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>, Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy
- <christophe.leroy@csgroup.eu>,
-        Naveen N Rao <naveen@kernel.org>,
-        Madhavan Srinivasan <maddy@linux.ibm.com>,
-        Paul Walmsley
- <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert
- Ou <aou@eecs.berkeley.edu>, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily
- Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Thomas Gleixner
- <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov
- <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>,
-        Andrew Morton
- <akpm@linux-foundation.org>
-Subject: Re: [PATCH v17 11/16] fprobe: Rewrite fprobe on function-graph tracer
-In-Reply-To: <20241016234628.b7eba1db0db39d2197a2ea4f@kernel.org> (Masami
-	Hiramatsu's message of "Wed, 16 Oct 2024 23:46:28 +0900")
-References: <172904026427.36809.516716204730117800.stgit@devnote2>
-	<172904040206.36809.2263909331707439743.stgit@devnote2>
-	<yt9ded4gfdz0.fsf@linux.ibm.com>
-	<20241016234628.b7eba1db0db39d2197a2ea4f@kernel.org>
-Date: Wed, 16 Oct 2024 20:14:54 +0200
-Message-ID: <yt9d5xprgbj5.fsf@linux.ibm.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: aVgmt4uBhiNvRvAHxsRA41t7dXjhThcz
-X-Proofpoint-ORIG-GUID: BHPv_kPDWrWmiNA2N_cY_1A-wk1t9MVb
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	s=arc-20240116; t=1729103144; c=relaxed/simple;
+	bh=KdLT6OiWDNsYaTn5HBxfIcJwfevixBGDXkyERUEdlIs=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=RcFNC0RqeOz4oPmo5egBAls0IWm27IJCvKL728yI/Z4SvN1Eb0pJMhvh+wMTuO0INYMIyurtziB5dRe74Ams7wusWI2uWnSYKPBw2ySModNJFJv76kQHx/M10v+yPeiO9xd023MK/bu3mssavT/EFgOKEYw24qQ45BAumJrJnMo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kmzcvaQg; arc=none smtp.client-ip=209.85.215.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-7ea79711fd4so78203a12.0;
+        Wed, 16 Oct 2024 11:25:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1729103142; x=1729707942; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rz8lBIkmJRx5GezBntyVCFYa/3Ve+MLj4cqQjzAsqig=;
+        b=kmzcvaQgeKwB8wSlWbreMQHtfywV5l60YvssytR5476Ib91QjjHQprm0Q0Xk1Urxpo
+         S4dNdp254IL7pOP2iWiaE9Iuj6cOcE409JuGhiZDengVPNuhLXMdg4eSiCRIGHoFnJ/V
+         ChJwcdMl7DCF7KbdAPN0hvjBu7wj3HPUUm2EknVdXM6M1ewnfDWjcEMGGgkMjbiS77DX
+         iAPfLi390+g4lPTa5cDiXudj7NGiQZahMC5X8wLKrlcG0533mHw6kyT+I7obg5GgSXyC
+         vLviXzMBd/JqEH+vOpbUHcWWGrAzpJcih+WheHR1O0YeI+NATZ/4MyQjM2gxFALPxMjN
+         FZyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1729103142; x=1729707942;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=rz8lBIkmJRx5GezBntyVCFYa/3Ve+MLj4cqQjzAsqig=;
+        b=Hj60lmqUI/tovGZqQRw+eoGC6XDo2WBEaHv9TtnxuWqCMpj3/nhxWHiYOcEklQHCh9
+         p17EplGD3xcom9eUCvSQzmCSK0Afc8h0kYl4xp9kQn2xJgZLr26JXgDPZj7DDm1tGGE1
+         tZ3EfeoUEzKQaQcqxJMgxKMtQaBnnTLTUfladS5mXyIpWPOztJ7MydZNJTt68VSp8kij
+         Hl1HJ/IBAdo1jPgOhsO24/lou4Y5+6vTCYJ22r0G59Fl4FVFw52Xy+O5v6/XN2pIGp75
+         oJ53SyflU7EaB2Rl2rl5GIcXCnKwFf87GotPAyWXD1o0A9WTkPrIcrCzeTXD90coC0OY
+         pT5w==
+X-Forwarded-Encrypted: i=1; AJvYcCUrkP3lTXwQSx1eG0ztRJgYCjAui2v8YD1hdoF1/xawYsEUtLXGQ1YSiIvnHvpHLItLbcY=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyJKT+ZC417aZIXGvrV1KOq0WiF9HHSCgF5SLtqFhwwicYxAfYm
+	VE+f4Df/WwIE1S3BD2cfTFgHQkx1MvSStqh8V/m3V8pJ26XlhbeN
+X-Google-Smtp-Source: AGHT+IEfeiUiSaNaGm5/3wnhaxQBcFRoQZ1ZBTobKm8Z/aQw/UcoBcNyPKVvzcf3cjE12+ns+66bEQ==
+X-Received: by 2002:a05:6a21:1585:b0:1d9:575:6654 with SMTP id adf61e73a8af0-1d905f7904dmr6951046637.49.1729103142264;
+        Wed, 16 Oct 2024 11:25:42 -0700 (PDT)
+Received: from localhost ([98.97.44.107])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-71e775089bbsm3386628b3a.190.2024.10.16.11.25.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Oct 2024 11:25:41 -0700 (PDT)
+Date: Wed, 16 Oct 2024 11:25:41 -0700
+From: John Fastabend <john.fastabend@gmail.com>
+To: Michal Luczaj <mhal@rbox.co>, 
+ "David S. Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, 
+ John Fastabend <john.fastabend@gmail.com>, 
+ Jakub Sitnicki <jakub@cloudflare.com>, 
+ "Michael S. Tsirkin" <mst@redhat.com>, 
+ Stefano Garzarella <sgarzare@redhat.com>, 
+ Bobby Eshleman <bobby.eshleman@bytedance.com>, 
+ Stefan Hajnoczi <stefanha@redhat.com>
+Cc: netdev@vger.kernel.org, 
+ bpf@vger.kernel.org, 
+ Michal Luczaj <mhal@rbox.co>
+Message-ID: <6710052533354_2071208aa@john.notmuch>
+In-Reply-To: <20241013-vsock-fixes-for-redir-v2-0-d6577bbfe742@rbox.co>
+References: <20241013-vsock-fixes-for-redir-v2-0-d6577bbfe742@rbox.co>
+Subject: RE: [PATCH bpf v2 0/4] bpf, vsock: Fixes related to sockmap/sockhash
+ redirection
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
- definitions=2024-10-15_01,2024-10-11_01,2024-09-30_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
- impostorscore=0 mlxlogscore=626 mlxscore=0 priorityscore=1501 spamscore=0
- phishscore=0 adultscore=0 suspectscore=0 clxscore=1015 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2409260000
- definitions=main-2410160115
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-Masami Hiramatsu (Google) <mhiramat@kernel.org> writes:
+Michal Luczaj wrote:
+> Series consists of few fixes for issues uncovered while working on a BPF
+> sockmap/sockhash redirection selftest.
+> 
+> The last patch is more of a RFC clean up attempt. Patch claims that there's
+> no functional change, but effectively it removes (never touched?) reference
+> to sock_map_unhash().
+> 
+> Signed-off-by: Michal Luczaj <mhal@rbox.co>
+> ---
 
-> On Wed, 16 Oct 2024 14:07:31 +0200
-> Sven Schnelle <svens@linux.ibm.com> wrote:
->> "Masami Hiramatsu (Google)" <mhiramat@kernel.org> writes:
->> I think that still has the issue that the size is encoded in the
->> leftmost fields of the pointer, which doesn't work on all
->> architectures. I reported this already in v15
->> (https://lore.kernel.org/all/yt9dmsjyx067.fsf@linux.ibm.com/)
->
-> Oops, thanks for reporting. I should missed that.
->
->> I haven't yet fully understood why this logic is needed, but the
->> WARN_ON_ONCE triggers on s390. I'm assuming this fails because fp always
->> has the upper bits of the address set on x86 (and likely others). As an
->> example, in my test setup, fp is 0x8feec218 on s390, while it is
->> 0xffff888100add118 in x86-kvm.
->
-> Ah, so s390 kernel/user memory layout is something like 4G/4G?
-> Hmm, this encode expects the leftmost 4bit is filled. For the
-> architecture which has 32bit address space, we may be possible to
-> use "unsigned long long" for 'val' on shadow stack (and use the
-> first 32bit for fp and another 32bit for size).
->
-> Anyway, I need to redesign it depending on architecture.
+For the series LGTM, ack.
 
-Could you explain a bit more what redesign means? Thanks!
+Acked-by: John Fastabend <john.fastabend@gmail.com>
 
