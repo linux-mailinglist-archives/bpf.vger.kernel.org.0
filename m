@@ -1,106 +1,115 @@
-Return-Path: <bpf+bounces-42238-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42240-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C62FC9A1464
-	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 22:50:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A9119A148C
+	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 23:01:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8A078283363
-	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 20:50:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC9001F2376B
+	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 21:01:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B45B1CC893;
-	Wed, 16 Oct 2024 20:50:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 233991D1E71;
+	Wed, 16 Oct 2024 21:01:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I9VHbr0t"
+	dkim=pass (2048-bit key) header.d=jordanrome.com header.i=linux@jordanrome.com header.b="2qIJKGXz"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mout.perfora.net (mout.perfora.net [74.208.4.196])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A835E4409
-	for <bpf@vger.kernel.org>; Wed, 16 Oct 2024 20:50:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB30318F2F9
+	for <bpf@vger.kernel.org>; Wed, 16 Oct 2024 21:01:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.208.4.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729111826; cv=none; b=SkUWCvYFl1JWZC1ixu+3r5KOR3zIJ4aBIVnku3U6NocF7j5eEYgyhlRNqO44k6WeyZichndqx9kzWWNfqyBzWG1x7ynv8ZO9Kl/i0p7v+/VKgb1emdwETU8iEcFvVe08cgpN5oksfdJao8VZkHqT/0pqSXZGUga7gc56t/n+3sM=
+	t=1729112491; cv=none; b=ZKPlbG6RdJf4aDiFDeznNiWrtt/jCKlSgRf2WUaptQ+ca1ap5CrwLuzb35m1ZZD6rrZXTdEkUuNFTs0Gfmo10to9I9/QefsnRqAIKQik2+8Y+UtnlA0GDk+ar6/5OirYHqVx0RshaW6p1MJMp8yyImc812kmezHinZA941xpiDw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729111826; c=relaxed/simple;
-	bh=y18M/JQjTegEKUTQXtq5RzabjTpYSpDaYW83Web1GiI=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=SJqSw9wnP+ZJj6a1wxrYXnz7HHSI5aPQ9pn1nUir98LhsC0n26mINAf3dqt2McbsZ3sLNwf2DfoJJjnvRLUepnexs5VvKkFNTfabdMU8n3W42xW6EXxj17GnxRIwJhFKyUg8NqACLXpP0APGgGFLgGCT61wqhmbT6SXam9ormA4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I9VHbr0t; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A7B8C4CEC5;
-	Wed, 16 Oct 2024 20:50:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1729111826;
-	bh=y18M/JQjTegEKUTQXtq5RzabjTpYSpDaYW83Web1GiI=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=I9VHbr0tFgvQdnjRUsiBycwbkbXGVWgKYvTIANrz8yGh6CcgHiSBAE9ubYwPxB+nw
-	 2YN9m18guHJkaLcGEPlDmjpsDCrcebUXqz2iqlXSbkV+RCwaU/47S6l1Vf1zAprzMm
-	 T6R7Ex4sN8UOp9sbThl/tEIu1wYZYAXUyBuq62Sjm4tddasA9sfm9lIbT4XJIUsFiF
-	 9j0Zi/uFhArw0YNYxUTrHUMr99g7yU7BSshnFtvWhy547lDbYqKqNRhUesi/vV6L+/
-	 +f/E2HESTayEPxCF0gKBGMW/ZTkZfS+plW6iHehXLV4nd19QHLQqNNCk8eKhqGI/67
-	 hI449MZ++4gbg==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id AE1A03822D30;
-	Wed, 16 Oct 2024 20:50:32 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1729112491; c=relaxed/simple;
+	bh=J7VJOvb3+gWByufi8DxEEV+PP5uGJmU9rw04YU01O0E=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=QS7eiTz/TsVOFKk2KMKqIYW7hWcgP8ViwRSkHmuAHQQEc4KSHht50CHhci1Lgv6NhYqK+vj2F0igoi5KCnOblVoRpuyrWgKFLqLnPdn/PR55LfdkXXnUR7iyJiDGCkA/1R54NuxY+bQ1KQxjS8P+1yAblAGQi+DoIG/WC8naYwo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jordanrome.com; spf=pass smtp.mailfrom=jordanrome.com; dkim=pass (2048-bit key) header.d=jordanrome.com header.i=linux@jordanrome.com header.b=2qIJKGXz; arc=none smtp.client-ip=74.208.4.196
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jordanrome.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jordanrome.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jordanrome.com;
+	s=s1-ionos; t=1729112461; x=1729717261; i=linux@jordanrome.com;
+	bh=nPyyMqaCnki3SYCO0WYRERMoEpoqneiuZUKl3/N/e88=;
+	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:Message-ID:
+	 MIME-Version:Content-Transfer-Encoding:cc:
+	 content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=2qIJKGXz6927Vkd3gsJxTWiYScZS4Lcj9z/Jd1D8SF/q/dtpVJppmKBK8eeldf76
+	 FZf+3IxtkPPx2AWbGBL0+4RVZg4WaXPsJayA+3w3JseiKb2b1AQgHQQwshgOs9xKC
+	 f8+Btl+HRaeMycdhf8t7uLaBfP6QzWpFjqf1ggb+5lfI7oipRvtt/g+iEgjpOxCtx
+	 uMe5fdWUcNPhxqMhJ0MFHHBi32gqAr8Ngb4p4YLawWRHmuEsq+Puw+Khg1ObZSXtY
+	 d0fN9SK8xvVcuBGqxaGjJ6BvetLWVpHnO9k5dLiJsn0g/X4sYFJGg085zCwAFiKwh
+	 tP6iBYKnwhq7HabKcQ==
+X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
+Received: from localhost ([69.171.251.113]) by mrelay.perfora.net (mreueus003
+ [74.208.5.2]) with ESMTPSA (Nemesis) id 0Md2qC-1tJOmN1j6Y-00XBek; Wed, 16 Oct
+ 2024 23:01:01 +0200
+From: Jordan Rome <linux@jordanrome.com>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Kernel Team <kernel-team@fb.com>
+Subject: [PATCH bpf v2 1/2] bpf: Fix iter/task tid filtering
+Date: Wed, 16 Oct 2024 14:00:47 -0700
+Message-ID: <20241016210048.1213935-1-linux@jordanrome.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf 0/2] Two fixes for test_sockmap
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <172911183123.1953970.3889586443573064355.git-patchwork-notify@kernel.org>
-Date: Wed, 16 Oct 2024 20:50:31 +0000
-References: <20241012203731.1248619-1-zijianzhang@bytedance.com>
-In-Reply-To: <20241012203731.1248619-1-zijianzhang@bytedance.com>
-To: Zijian Zhang <zijianzhang@bytedance.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
- andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
- shuah@kernel.org, bhole_prashant_q7@lab.ntt.co.jp, jakub@cloudflare.com,
- xiyou.wangcong@gmail.com
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:7ydAY+kefB0T78wt6G9KaGayILWBCjAICKnImjAEgIOJz+OFaxW
+ rIqZSc/zDr6LeJAzyQ2xtH/yak9Af0vQIRUa2DfA/D+uOMHqDqJoIxJGGY3izK2+HezKNgH
+ OuF7IKylIfd2ZPxB7tqMMp2lYix+jQkGM7wCkAK6rOiyAICDJExuAKVQtSLllbAnB7kGwrZ
+ 1KAQPquVHh1gEtlX44P6Q==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:y9Kwv+fVS+I=;LH1PW+uDlFBk2qzQpcjYLRZK/Gv
+ Z2qdhzLxi7nqnOb6uDwWMFYFNJuCoyaCc6Msy9O5AbZuxo6poa9dVsiY/ojUa6/Ib4E2xE39c
+ yBxpz5dMhJanwxDnsCxW1cc9r2b6WVFte2DNWElRm/DqDeWWkHqQUy2012MiHfYoL1aDKjBBe
+ KS1mPYLIGEZYKgaOdDi7YRAFh8qH3X11nvr6sz3Y8yiY1UEVGe/CtJrHZ6rYgJWVeiA0vg5kt
+ 5jHRZzyXs2rqruQaENoRZ70Fq7xxZrrC4ql7ovZsS2M7mKWTOTGQqWSTf/g6rlYAMVFDSPukK
+ 6ntPDYqQ166UPW2qDZsPaV3glJUU63SMiTPzoO9Tx8ECBgzzWQdF1YTL60D0Yoahxl6eT+oYN
+ WkSMSs/85eWy/vcEp4UZIt4SOBPN8W4BDuRU0cAxbZi0pWKyPnurVvuySB7NIJIspAt4VI5xS
+ Hek5t9XIrI7czZaqGpBhobP0AMHi857nKuPT+NlTEPekEMLlyieo9Py7+sLaeSOFEPPCu0oPw
+ hRysRJc7JiDcsUr/hL8TZ2skkHqRKyWHJjoXFdhxRWRiGXFn/l48EYDh9VEiSSLNcAxOx7j5N
+ HI8VTITrRvrMhbKuR4WrZLa1WIi53xPeQoEUL8877TEjxsp5kmN3Vl8ei1jKgq0CAZHziMiMq
+ OffnTdcDy14kvhslGCchLyRK8gPHVy0lfCGBk2lJqdc5qEbxHpnp0aArKcb9jvSEfJZtrw4eJ
+ E8tqF8hQXWb3LMiJnUySW5UQf8xeHQpnw==
 
-Hello:
+In userspace, you can add a tid filter by setting
+the "task.tid" field for "bpf_iter_link_info".
+However, `get_pid_task` when called for the
+`BPF_TASK_ITER_TID` type should have been using
+`PIDTYPE_PID` (tid) instead of `PIDTYPE_TGID` (pid).
 
-This series was applied to bpf/bpf-next.git (net)
-by Martin KaFai Lau <martin.lau@kernel.org>:
+Fixes: f0d74c4da1f0 ("bpf: Parameterize task iterators.")
+Signed-off-by: Jordan Rome <linux@jordanrome.com>
+=2D--
+ kernel/bpf/task_iter.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On Sat, 12 Oct 2024 20:37:29 +0000 you wrote:
-> From: Zijian Zhang <zijianzhang@bytedance.com>
-> 
-> Function msg_verify_data should have context of bytes_cnt and k instead of
-> assuming they are zero. Otherwise, test_sockmap with data integrity test
-> will report some errors. I also fix the logic related to size and index j
-> 
-> 1/ 6  sockmap::txmsg test passthrough:FAIL
-> 2/ 6  sockmap::txmsg test redirect:FAIL
-> 7/12  sockmap::txmsg test apply:FAIL
-> 10/11  sockmap::txmsg test push_data:FAIL
-> 11/17  sockmap::txmsg test pull-data:FAIL
-> 12/ 9  sockmap::txmsg test pop-data:FAIL
-> 13/ 1  sockmap::txmsg test push/pop data:FAIL
-> ...
-> Pass: 24 Fail: 52
-> 
-> [...]
-
-Here is the summary with links:
-  - [bpf,1/2] selftests/bpf: Fix msg_verify_data in test_sockmap
-    https://git.kernel.org/bpf/bpf-next/c/ee9b352ce465
-  - [bpf,2/2] selftests/bpf: Fix txmsg_redir of test_txmsg_pull in test_sockmap
-    https://git.kernel.org/bpf/bpf-next/c/b29e231d6630
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
+index 02aa9db8d796..5af9e130e500 100644
+=2D-- a/kernel/bpf/task_iter.c
++++ b/kernel/bpf/task_iter.c
+@@ -99,7 +99,7 @@ static struct task_struct *task_seq_get_next(struct bpf_=
+iter_seq_task_common *co
+ 		rcu_read_lock();
+ 		pid =3D find_pid_ns(common->pid, common->ns);
+ 		if (pid) {
+-			task =3D get_pid_task(pid, PIDTYPE_TGID);
++			task =3D get_pid_task(pid, PIDTYPE_PID);
+ 			*tid =3D common->pid;
+ 		}
+ 		rcu_read_unlock();
+=2D-
+2.43.5
 
 
