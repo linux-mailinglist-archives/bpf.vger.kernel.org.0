@@ -1,201 +1,79 @@
-Return-Path: <bpf+bounces-42197-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42198-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 213EF9A0BEA
-	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 15:52:09 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E99BA9A0BFA
+	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 15:53:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D4012286673
-	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 13:52:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 958681F215F1
+	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 13:53:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32B9120C004;
-	Wed, 16 Oct 2024 13:52:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="AsiOM4mf";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="qBghvIRd";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="AsiOM4mf";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="qBghvIRd"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01E4220C00F;
+	Wed, 16 Oct 2024 13:53:09 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A110720820A;
-	Wed, 16 Oct 2024 13:51:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E743208218;
+	Wed, 16 Oct 2024 13:53:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729086719; cv=none; b=PejVbARBgVWlbS1V3/PRLBsgX0aiXiStVc8lLAprlVqYYSnhyJSiKQcMbkNqh84ohl4CRbCUTFKX9SrM2lIDdDAXjgkI7ZBvvcJfmlqZJMtbXz3dGZsTQ/p5UQEuNocmMbYPCsCF8IERgQdgaPN/sJP1N6KMI7j5yqcYaNFGfic=
+	t=1729086788; cv=none; b=fDi1Q4sWfwDIvoTSG7GBkR/48j4Iajr2Wn3rYAIOz/qCp49DjgQRxMSQZyXKBr13PAYg68DgwhLt/1TKkROdymnShgY0zc+Jck3K4KtqAhSrOiXhPvrqXwR/BbVDSll7SASGhl5fkAFgFz8axyVluwWAd0ZtJ6i01N4G0wqpPgQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729086719; c=relaxed/simple;
-	bh=DWQ7RdvxMh79BGxRz+YxrTb7/Lx9P6586w9IrLq2x8o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qW4IO2bV0rMsHGaxBpw/Q9anPvRYFcRXyaVf0Bery4Ob+y206024MVYbcWHSFGGXjYSu1NKSKfiR0pxJPi/BF7EX2YjD9P/uf4EPFfZXXzdU8i4a/PzJig9cKD9XpjyStZgQdTxBc5PcbjEy4XpRm4HA9QfmJ29o/kXofIa/9Y0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=AsiOM4mf; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=qBghvIRd; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=AsiOM4mf; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=qBghvIRd; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id B2A5321EAA;
-	Wed, 16 Oct 2024 13:51:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1729086715; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=B3wv4yqacmb75aYc5wEkO0vOWfKEn8YYdrxO0bffVo8=;
-	b=AsiOM4mfG3BL6xi564bu83wyPjpSB8RATC3GouGs4STKw9tQIm+0FI6suKceGWDSTFRmjC
-	hV2e2ZORH0O4nAUGtmq+LWtrUuMC1HkqPCXDHVQAzyznRHS//5IGXA4/s/kIDn4DWiIal0
-	Pnrh9YenuWQyFqnSuCSuFQt2Aq19E7c=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1729086715;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=B3wv4yqacmb75aYc5wEkO0vOWfKEn8YYdrxO0bffVo8=;
-	b=qBghvIRdzWmWKMrGwmhkVKanR2h0VTiXyM0ydZXrcIDyjYaSLaCVnkO2wSS0PAx0kCIyKD
-	y3uAfnOUHKa7laCQ==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1729086715; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=B3wv4yqacmb75aYc5wEkO0vOWfKEn8YYdrxO0bffVo8=;
-	b=AsiOM4mfG3BL6xi564bu83wyPjpSB8RATC3GouGs4STKw9tQIm+0FI6suKceGWDSTFRmjC
-	hV2e2ZORH0O4nAUGtmq+LWtrUuMC1HkqPCXDHVQAzyznRHS//5IGXA4/s/kIDn4DWiIal0
-	Pnrh9YenuWQyFqnSuCSuFQt2Aq19E7c=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1729086715;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=B3wv4yqacmb75aYc5wEkO0vOWfKEn8YYdrxO0bffVo8=;
-	b=qBghvIRdzWmWKMrGwmhkVKanR2h0VTiXyM0ydZXrcIDyjYaSLaCVnkO2wSS0PAx0kCIyKD
-	y3uAfnOUHKa7laCQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A10801376C;
-	Wed, 16 Oct 2024 13:51:55 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id w6hGJ/vED2f8EQAAD6G6ig
-	(envelope-from <jack@suse.cz>); Wed, 16 Oct 2024 13:51:55 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 4A177A083E; Wed, 16 Oct 2024 15:51:55 +0200 (CEST)
-Date: Wed, 16 Oct 2024 15:51:55 +0200
-From: Jan Kara <jack@suse.cz>
-To: Song Liu <songliubraving@meta.com>
-Cc: Christoph Hellwig <hch@infradead.org>, Song Liu <song@kernel.org>,
-	bpf <bpf@vger.kernel.org>,
-	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Kernel Team <kernel-team@meta.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Al Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
-	KP Singh <kpsingh@kernel.org>,
-	Matt Bobrowski <mattbobrowski@google.com>
-Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Extend test fs_kfuncs to
- cover security.bpf xattr names
-Message-ID: <20241016135155.otibqwcyqczxt26f@quack3>
-References: <20241002214637.3625277-1-song@kernel.org>
- <20241002214637.3625277-3-song@kernel.org>
- <Zw34dAaqA5tR6mHN@infradead.org>
- <0DB83868-0049-40E3-8E62-0D8D913CB9CB@fb.com>
- <Zw384bed3yVgZpoc@infradead.org>
- <BF0CD913-B067-4105-88C2-B068431EE9E5@fb.com>
+	s=arc-20240116; t=1729086788; c=relaxed/simple;
+	bh=llRM8LXgQjs7u3YzkvDWIV3qro+G7it7abwfexDEsFY=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=lU9pf+UmAI7C3JwiGEObDchL+awe9u41YcVX8AXkLfGXIirLk9YZSt97HLarg3xyTs3WkqujpaUaGnEEPENGf9vxKYOKc+Ja9mCho6fLiRjJV+jevFcDgIbstPpSUUa1odYIj0zYgZEDcQvwlP+ZTMiEYM1G+UPvuCNyDjRfWus=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4154C4CEC5;
+	Wed, 16 Oct 2024 13:53:04 +0000 (UTC)
+Date: Wed, 16 Oct 2024 09:53:25 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Florent Revest
+ <revest@chromium.org>, linux-trace-kernel@vger.kernel.org, LKML
+ <linux-kernel@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+ bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, Jiri Olsa
+ <jolsa@kernel.org>, Alan Maguire <alan.maguire@oracle.com>, Mark Rutland
+ <mark.rutland@arm.com>, linux-arch@vger.kernel.org, Catalin Marinas
+ <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Huacai Chen
+ <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, Michael Ellerman
+ <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy
+ <christophe.leroy@csgroup.eu>, Naveen N Rao <naveen@kernel.org>, Madhavan
+ Srinivasan <maddy@linux.ibm.com>, Paul Walmsley <paul.walmsley@sifive.com>,
+ Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>
+Subject: Re: [PATCH v17 01/16] function_graph: Pass ftrace_regs to entryfunc
+Message-ID: <20241016095325.34176fc9@gandalf.local.home>
+In-Reply-To: <172904027515.36809.1961937054923520469.stgit@devnote2>
+References: <172904026427.36809.516716204730117800.stgit@devnote2>
+	<172904027515.36809.1961937054923520469.stgit@devnote2>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <BF0CD913-B067-4105-88C2-B068431EE9E5@fb.com>
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_TWELVE(0.00)[17];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[infradead.org,kernel.org,vger.kernel.org,meta.com,gmail.com,iogearbox.net,linux.dev,zeniv.linux.org.uk,suse.cz,google.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_DN_ALL(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email]
-X-Spam-Score: -3.80
-X-Spam-Flag: NO
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Tue 15-10-24 05:52:02, Song Liu wrote:
-> > On Oct 14, 2024, at 10:25 PM, Christoph Hellwig <hch@infradead.org> wrote:
-> > On Tue, Oct 15, 2024 at 05:21:48AM +0000, Song Liu wrote:
-> >>>> Extend test_progs fs_kfuncs to cover different xattr names. Specifically:
-> >>>> xattr name "user.kfuncs", "security.bpf", and "security.bpf.xxx" can be
-> >>>> read from BPF program with kfuncs bpf_get_[file|dentry]_xattr(); while
-> >>>> "security.bpfxxx" and "security.selinux" cannot be read.
-> >>> 
-> >>> So you read code from untrusted user.* xattrs?  How can you carve out
-> >>> that space and not known any pre-existing userspace cod uses kfuncs
-> >>> for it's own purpose?
-> >> 
-> >> I don't quite follow the comment here. 
-> >> 
-> >> Do you mean user.* xattrs are untrusted (any user can set it), so we 
-> >> should not allow BPF programs to read them? Or do you mean xattr 
-> >> name "user.kfuncs" might be taken by some use space?
-> > 
-> > All of the above.
+On Wed, 16 Oct 2024 09:57:55 +0900
+"Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
+
+> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 > 
-> This is a selftest, "user.kfunc" is picked for this test. The kfuncs
-> (bpf_get_[file|dentry]_xattr) can read any user.* xattrs. 
-> 
-> Reading untrusted xattrs from trust BPF LSM program can be useful. 
-> For example, we can sign a binary with private key, and save the
-> signature in the xattr. Then the kernel can verify the signature
-> and the binary matches the public key. If the xattr is modified by
-> untrusted user space, the BPF program will just deny the access. 
+> Pass ftrace_regs to the fgraph_ops::entryfunc(). If ftrace_regs is not
+> available, it passes a NULL instead. User callback function can access
+> some registers (including return address) via this ftrace_regs.
 
-So I tend to agree with Christoph that e.g. for the above LSM usecase you
-mention, using user. xattr space is a poor design choice because you have
-to very carefully validate any xattr contents (anybody can provide
-malicious content) and more importantly as different similar usecases
-proliferate the chances of name collisions and resulting funcionality
-issues increase. It is similar as if you decided to store some information
-in a specially named file in each directory. If you choose special enough
-name, it will likely work but long-term someone is going to break you :)
+BTW, you can use "fgraph:" for short. It makes the subject easier to read.
+I've been using that instead of "function_graph:" lately.
 
-I think that getting user.* xattrs from bpf hooks can still be useful for
-introspection and other tasks so I'm not convinced we should revert that
-functionality but maybe it is too easy to misuse? I'm not really decided.
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+-- Steve
 
