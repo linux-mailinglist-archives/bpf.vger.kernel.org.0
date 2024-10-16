@@ -1,58 +1,60 @@
-Return-Path: <bpf+bounces-42226-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42227-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0B949A11D0
-	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 20:39:40 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20B059A1206
+	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 20:55:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 95498287E95
-	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 18:39:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A01E2B21A00
+	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 18:55:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8E902141A6;
-	Wed, 16 Oct 2024 18:39:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34A4C2144AB;
+	Wed, 16 Oct 2024 18:53:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="couV03Du"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aWmGtJLB"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24EA420E03C;
-	Wed, 16 Oct 2024 18:39:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A75B618DF97;
+	Wed, 16 Oct 2024 18:53:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729103976; cv=none; b=b5/CErj/iiWDW7YHNeFu358/hr3SmqvCQxzmQpS0HZESCd0ZdjoaG4QSw6MLA8RPQXDVNOVggSO8A4TQw/vpSc/NMQQN33YaLQVj7HgiEJb/glxPmK/W6C3YHtWcY6q1aAYn+Dc+wYn/xzw6V7SR20FGFZWGZNMsjlJGBYz/5mY=
+	t=1729104819; cv=none; b=TMR4FgjM45W1NXkf8qf2Bp8kIBKz5ER8MoKFLNmXe7pDu9PwTzK0szyd8uBGTaGEnJvWxNQXm66XJ5WtymecJQ3l2Vi4jzsFhSM9fWksGAeKXCCqRfS50VEkI4/VNjOEU5e578EMtg3t0FM9+rfSaix8dwBgFJ+qqZvlpC56K3k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729103976; c=relaxed/simple;
-	bh=f3cX0LErTWMJtR6W4TB/7BximEUwUAQwQqNu+HucVIw=;
+	s=arc-20240116; t=1729104819; c=relaxed/simple;
+	bh=Y/Vqjn7AS4QmH95MO8AvZCxoQ6XG93780zk6JPh7v0o=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nZF5LGjAB2lKaksDzDvF8uYyXGSw971QJfNdAyWnc32I4nO+c1N1FDuFs3Lmp+RvILjsNyS/CpkwEp3Gbax1GlIu3WrngGlhfuvriHzYqPcBNPdaUJL/XmNijXYth/hw5MF9eX47F99uNoHPG1CK+yvhXzphc+uScqYxKLhHMCo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=couV03Du; arc=none smtp.client-ip=95.215.58.183
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Wed, 16 Oct 2024 11:39:19 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1729103967;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OkGfnCJC40BXTXZ4ezhnm9p+y9W4JJIUfai7cW4RZ2I=;
-	b=couV03Du4sIlAoaWoVxoUUiovpfGfwbMASMQ0cOtuREiDGX8HNFj88TBDIspJEn1Q3epTb
-	KGtGXH26jFctcgbBa71xVWNK9MQwE7hzCnZkWQLw5Qi7dLzGNfJvy6G/Uqe7JKoZH6KPVb
-	QEKZ5CZiXiiIg3ufMaZTalPj8J0WKQM=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
-	martin.lau@kernel.org, linux-mm@kvack.org, linux-perf-users@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, Yi Lai <yi1.lai@intel.com>, pbonzini@redhat.com, 
-	seanjc@google.com, tabba@google.com, david@redhat.com, jackmanb@google.com, 
-	yosryahmed@google.com, jannh@google.com, rppt@kernel.org
-Subject: Re: [PATCH bpf] lib/buildid: handle memfd_secret() files in
- build_id_parse()
-Message-ID: <2rweiiittlxcio6kknwy45wez742mlgjnfdg3tq3xdkmyoq5nn@g7bfoqy4vdwt>
-References: <20241014235631.1229438-1-andrii@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=sjo6SV5QwZXd0OmOwH8AK68Uf/0PsZm8nVJr2kWPNCYREGP6hOkJFNWlQiBarr4tVI+mzzogyv2GTsB5Cn+8olXgsICyDnHNAhmS0s6p0EaD3QlcpxLm4+k7+p+0DT6kMV3cC7gA+ISVEuPgHGqLPh7qt5UwTuzcmpd0Bi8kpDE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aWmGtJLB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97651C4CEC5;
+	Wed, 16 Oct 2024 18:53:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1729104819;
+	bh=Y/Vqjn7AS4QmH95MO8AvZCxoQ6XG93780zk6JPh7v0o=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=aWmGtJLBhHBuC2eGL/nM5trZ/bmISrffOYX6BavdrXMmlINXDYuD7mD1Tc6pesfvQ
+	 dsATNy1gjXju1TWzmTfXDRxjUHZCBmo2c8I2CrNi1KwaA6Awlzvbdl8MXH1iHoPPEX
+	 BBaZOkz0l6JoFNo24aP9x5NjSLK8NirkDhEboWCIMzDgam8Hby11CTM4OYB/00+bp3
+	 L4K4o6ibNgOA8v40bJYnnZJi5mJoZ6hjL20Uv6vboGNcBA+J1CNiU/E12sVnejkNKC
+	 1mox9Ytacs1U8LlFVAcPtAF1qEfUReXUV42WYuqkRIxugf0FoC1nScQToQ2jrZT48i
+	 aHEuW0W9yHvFQ==
+Date: Wed, 16 Oct 2024 19:53:33 +0100
+From: Simon Horman <horms@kernel.org>
+To: Yue Haibing <yuehaibing@huawei.com>
+Cc: anthony.l.nguyen@intel.com, przemyslaw.kitszel@intel.com,
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net,
+	hawk@kernel.org, john.fastabend@gmail.com, vedang.patel@intel.com,
+	andre.guedes@intel.com, maciej.fijalkowski@intel.com,
+	jithu.joseph@intel.com, intel-wired-lan@lists.osuosl.org,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH net] igc: Fix passing 0 to ERR_PTR in igc_xdp_run_prog()
+Message-ID: <20241016185333.GL2162@kernel.org>
+References: <20241016105310.3500279-1-yuehaibing@huawei.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -61,63 +63,30 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20241014235631.1229438-1-andrii@kernel.org>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <20241016105310.3500279-1-yuehaibing@huawei.com>
 
-Ccing couple more folks who are doing similar work (ASI, guest_memfd)
-
-Folks, what is the generic way to check if a given mapping has folios
-unmapped from kernel address space?
-
-On Mon, Oct 14, 2024 at 04:56:31PM GMT, Andrii Nakryiko wrote:
-> From memfd_secret(2) manpage:
+On Wed, Oct 16, 2024 at 06:53:10PM +0800, Yue Haibing wrote:
+> Return NULL instead of passing to ERR_PTR while res is IGC_XDP_PASS,
+> which is zero, this fix smatch warnings:
+> drivers/net/ethernet/intel/igc/igc_main.c:2533
+>  igc_xdp_run_prog() warn: passing zero to 'ERR_PTR'
 > 
->   The memory areas backing the file created with memfd_secret(2) are
->   visible only to the processes that have access to the file descriptor.
->   The memory region is removed from the kernel page tables and only the
->   page tables of the processes holding the file descriptor map the
->   corresponding physical memory. (Thus, the pages in the region can't be
->   accessed by the kernel itself, so that, for example, pointers to the
->   region can't be passed to system calls.)
-> 
-> We need to handle this special case gracefully in build ID fetching
-> code. Return -EACCESS whenever secretmem file is passed to build_id_parse()
-> family of APIs. Original report and repro can be found in [0].
-> 
->   [0] https://lore.kernel.org/bpf/ZwyG8Uro%2FSyTXAni@ly-workstation/
-> 
-> Reported-by: Yi Lai <yi1.lai@intel.com>
-> Suggested-by: Shakeel Butt <shakeel.butt@linux.dev>
-> Fixes: de3ec364c3c3 ("lib/buildid: add single folio-based file reader abstraction")
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> Fixes: 26575105d6ed ("igc: Add initial XDP support")
+> Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
 > ---
->  lib/buildid.c | 5 +++++
->  1 file changed, 5 insertions(+)
+>  drivers/net/ethernet/intel/igc/igc_main.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/lib/buildid.c b/lib/buildid.c
-> index 290641d92ac1..f0e6facf61c5 100644
-> --- a/lib/buildid.c
-> +++ b/lib/buildid.c
-> @@ -5,6 +5,7 @@
->  #include <linux/elf.h>
->  #include <linux/kernel.h>
->  #include <linux/pagemap.h>
-> +#include <linux/secretmem.h>
+> diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethernet/intel/igc/igc_main.c
+> index 6e70bca15db1..c3d6e20c0be0 100644
+> --- a/drivers/net/ethernet/intel/igc/igc_main.c
+> +++ b/drivers/net/ethernet/intel/igc/igc_main.c
+> @@ -2530,7 +2530,7 @@ static struct sk_buff *igc_xdp_run_prog(struct igc_adapter *adapter,
+>  	res = __igc_xdp_run_prog(adapter, prog, xdp);
 >  
->  #define BUILD_ID 3
->  
-> @@ -64,6 +65,10 @@ static int freader_get_folio(struct freader *r, loff_t file_off)
->  
->  	freader_put_folio(r);
->  
-> +	/* reject secretmem folios created with memfd_secret() */
-> +	if (secretmem_mapping(r->file->f_mapping))
-> +		return -EACCES;
-> +
->  	r->folio = filemap_get_folio(r->file->f_mapping, file_off >> PAGE_SHIFT);
->  
->  	/* if sleeping is allowed, wait for the page, if necessary */
-> -- 
-> 2.43.5
-> 
+>  out:
+> -	return ERR_PTR(-res);
+> +	return res ? ERR_PTR(-res) : NULL;
+
+I think this is what PTR_ERR_OR_ZERO() is for.
 
