@@ -1,120 +1,145 @@
-Return-Path: <bpf+bounces-42218-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42219-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F304A9A11A4
-	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 20:35:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A5449A11A8
+	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 20:35:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B45B3286979
-	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 18:35:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3ABE2283D8E
+	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 18:35:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 458C52141A1;
-	Wed, 16 Oct 2024 18:35:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE1F92141A7;
+	Wed, 16 Oct 2024 18:35:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T46ZaHFZ"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="hu5Dw3sZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AECA118C33E;
-	Wed, 16 Oct 2024 18:35:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41D112139AF;
+	Wed, 16 Oct 2024 18:35:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729103720; cv=none; b=Gct+xvq91Xz9EoG/XC2gYO2J27cuQvHhJ0vey3A+uUS4+cC1mejagGzBGhcvoJhy+p925SuGiCpfdgqMS1/1c8ecoBWAe+rye9auch/4nC90Weckn3mi0QzJtMxj4iVvmHxiUWSZegVpg2eOgH3YCoy/Umg/hrSLL8LSz9O6Pzs=
+	t=1729103749; cv=none; b=IwHU1JUKfVLLEnToBXPmJLMRORHIFhpM+1rBbeFpncMkTJZYZkqqZASFfkdlyWhg/A1+dHJWj+7JyVaIfrjGgSPL35pCsjwTr32sGnvqeKe25WlO6vMKo7ozMztsk9hEnxOftbL3bWS7hPBkmWdF/03t9eGqNg+45GMNmpK/oIo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729103720; c=relaxed/simple;
-	bh=Wbzx8WQNkx2LfwF5/9Fel6fTjsfrcYca5cm8SsQhTXM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YkNGYjEPESvVsmW4jy+E2MGcm65uow+B5ExA1kA7qs6xazKq9mXoAp4EqD10LCEvaElfQaohEeLPi6U0kbmtGuB124nC5QipEkGLqJyOEZ5M1M4OFrLI17/m55e/gfx57v2yEL5YD3gHoE0gqhHLDkc7tRQQN6RksQYB8oTnG5E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T46ZaHFZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC86EC4CEC5;
-	Wed, 16 Oct 2024 18:35:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1729103720;
-	bh=Wbzx8WQNkx2LfwF5/9Fel6fTjsfrcYca5cm8SsQhTXM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=T46ZaHFZPG8Y8J2eE5/mNSEyJWM+ipCnlZ1Fy/sZzxRhW1z/ybed5qvDEB14LbAfH
-	 iAMepQqhxQ9RePBIs11NLkMzD0oai4SAa25TAfvk63W5hnk5Se3rkDq6XOm5LAqgxY
-	 9KEAyPi8VjW0zvkRA132pYG7ngtotf/7r0IggB0vtd+gs+ZPyXuAMYqvC00X/XtbuF
-	 Riw0cALxO2a8aL9qBTMvmbTpU4+BP70ZOf+dJZOKmNf6jG7AfzZTCS5q3tFdjv+zOh
-	 8/Z+1QR3rGVKK9Hvz6menRdqzGue9K+wCjdOqem3m92jY1a9vqoXB4XssgPRKq1Aul
-	 34IOb030opWnw==
-Date: Wed, 16 Oct 2024 11:35:18 -0700
-From: Namhyung Kim <namhyung@kernel.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-	Networking <netdev@vger.kernel.org>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the bpf-next tree
-Message-ID: <ZxAHZt8pFjxeOx-U@google.com>
-References: <20241016170542.7e22b03c@canb.auug.org.au>
- <CAADnVQJ=Woq=82EDvMT1YRLLTvNgFVSbnZDiR5HUgEhcyBLW4Q@mail.gmail.com>
+	s=arc-20240116; t=1729103749; c=relaxed/simple;
+	bh=gtrF4zPM5AFeLktgKFVWiAGJ8CilTELDXnQpcLMtl5s=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=R40F/Vt1aQSOraq1YAXAnRCXegbTdChQvIGmCtkojshyhg9TAZVJq/99Fl7TRURxn5aWFNsG3PCf0w+NahqPQ3RHc9RucabXfwwRmajDJEEs1VPmEIU2nGY2OIS3Km/q+z5UkrCrTMLzNBurnaTlgLqOnJgSZ3CrWddxLuUa0hQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=hu5Dw3sZ; arc=none smtp.client-ip=217.70.183.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id BFE33C0005;
+	Wed, 16 Oct 2024 18:35:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1729103744;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=TGnXEDRtylOFzUTpibw7jOg90yuA3FnAohBNNwRGYyI=;
+	b=hu5Dw3sZlaEpyIv8j6YpZKvFzFQlxJzh9OXWSVk1HkbWR1Vna8rV4uv4f6+o1mY+l5lrKH
+	26Eo3L4YYkPvEZFPhjnQSz1YBG78pUv7lHzDp8bT6VnrSmYRVZWySxs75qOtrwjLmeMb+P
+	ngesfvahsVJFExtjvAoaHs8Jsx1OKOj2DnVxJpVPe2D0LvhHMDHf9vK2suLQKX2O7GbOUp
+	BAVmkiCmaPfOPYla8ED/7xkvK8t8pvI7M2i7qHjBIpuqfo93kwfygTZ3osCawJigcEuUQN
+	4tfjVtk15cu4JSU7EvCcCmER2tZNvuDaeqtLV1rq9PALW8Zru9D+vBzGpFUyeQ==
+From: =?utf-8?q?Alexis_Lothor=C3=A9_=28eBPF_Foundation=29?= <alexis.lothore@bootlin.com>
+Subject: [PATCH bpf-next 0/6] selftests/bpf: integrate
+ test_tcp_check_syncookie.sh into test_progs
+Date: Wed, 16 Oct 2024 20:35:21 +0200
+Message-Id: <20241016-syncookie-v1-0-3b7a0de12153@bootlin.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQJ=Woq=82EDvMT1YRLLTvNgFVSbnZDiR5HUgEhcyBLW4Q@mail.gmail.com>
+X-B4-Tracking: v=1; b=H4sIAGkHEGcC/x3MQQqAIBBA0avIrBNU1KKrRIuyqYZAQyOM8O5Jy
+ wef/0LCSJigZy9EvClR8BWyYeD2yW/IaakGJZSWQhqeHu9COAg5Tq3trLLadBZqf0ZcKf+vAeZ
+ z5R7zBWMpH0xSA6NlAAAA
+X-Change-ID: 20241015-syncookie-ea7686264586
+To: Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, 
+ Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+ Yonghong Song <yonghong.song@linux.dev>, 
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+ Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, 
+ Shuah Khan <shuah@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
+ Jakub Kicinski <kuba@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>
+Cc: ebpf@linuxfoundation.org, 
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ Lorenz Bauer <lmb@cloudflare.com>, bpf@vger.kernel.org, 
+ linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ netdev@vger.kernel.org, 
+ =?utf-8?q?Alexis_Lothor=C3=A9_=28eBPF_Foundation=29?= <alexis.lothore@bootlin.com>
+X-Mailer: b4 0.14.2
+X-GND-Sasl: alexis.lothore@bootlin.com
 
-On Wed, Oct 16, 2024 at 09:25:41AM -0700, Alexei Starovoitov wrote:
-> On Tue, Oct 15, 2024 at 11:05 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> >
-> > Hi all,
-> >
-> > After merging the bpf-next tree, today's linux-next build (arm64
-> > defconfig) failed like this:
-> >
-> > Building: arm64 defconfig
-> > In file included from arch/arm64/include/asm/thread_info.h:17,
-> >                  from include/linux/thread_info.h:60,
-> >                  from arch/arm64/include/asm/preempt.h:6,
-> >                  from include/linux/preempt.h:79,
-> >                  from include/linux/spinlock.h:56,
-> >                  from include/linux/mmzone.h:8,
-> >                  from include/linux/gfp.h:7,
-> >                  from include/linux/slab.h:16,
-> >                  from mm/slab_common.c:7:
-> > mm/slab_common.c: In function 'bpf_get_kmem_cache':
-> > arch/arm64/include/asm/memory.h:427:66: error: passing argument 1 of 'virt_to_pfn' makes pointer from integer without a cast [-Wint-conversion]
-> >   427 |         __is_lm_address(__addr) && pfn_is_map_memory(virt_to_pfn(__addr));      \
-> >       |                                                                  ^~~~~~
-> >       |                                                                  |
-> >       |                                                                  u64 {aka long long unsigned int}
-> > mm/slab_common.c:1260:14: note: in expansion of macro 'virt_addr_valid'
-> >  1260 |         if (!virt_addr_valid(addr))
-> >       |              ^~~~~~~~~~~~~~~
-> > arch/arm64/include/asm/memory.h:382:53: note: expected 'const void *' but argument is of type 'u64' {aka 'long long unsigned int'}
-> >   382 | static inline unsigned long virt_to_pfn(const void *kaddr)
-> >       |                                         ~~~~~~~~~~~~^~~~~
-> >
-> > Caused by commit
-> >
-> >   04b069ff0181 ("mm/bpf: Add bpf_get_kmem_cache() kfunc")
-> >
-> > I have reverted commit
-> >
-> >   08c837461891 ("Merge branch 'bpf-add-kmem_cache-iterator-and-kfunc'")
-> >
-> > for today.
-> 
-> Thanks for flagging.
-> Fixed and force pushed.
+Hello,
+this series aims to bring test_tcp_check_syncookie.sh scope into
+test_progs to make sure that the corresponding tests are also run
+automatically in CI. This script tests for bpf_tcp_{gen,check}_syncookie
+and bpf_skc_lookup_tcp, in different contexts (ipv4, v6 or dual, and
+with tc and xdp programs).
+Some other tests like btf_skc_cls_ingress have some overlapping tests with
+test_tcp_check_syncookie.sh, so this series moves the missing bits from
+test_tcp_check_syncookie.sh into btf_skc_cls_ingress, which is already
+integrated into test_progs.
+- the first three commits bring some minor improvements to
+  btf_skc_cls_ingress without changing its testing scope
+- fourth and fifth commits bring test_tcp_check_syncookie.sh features
+  into btf_skc_cls_ingress
+- last commit removes test_tcp_check_syncookie.sh
 
-Oops, thanks for fixing this.  The virt_addr_valid() was confusing
-whether it takes unsigned long or a pointer.  It seems each arch has
-different expectation.
+The only topic for which I am not sure for this integration is the
+necessity or not to run the tests with different program types:
+test_tcp_check_syncookie.sh runs tests with both tc and xdp programs, but
+btf_skc_cls_ingress currently tests those helpers only with a tc
+program. Would it make sense to also make sure that btf_skc_cls_ingress
+is tested with all the programs types supported by those helpers ?
 
-Thanks,
-Namhyung
+The series has been tested both in CI and in a local x86_64 qemu
+environment:
+  # ./test_progs -a btf_skc_cls_ingress
+  #38/1    btf_skc_cls_ingress/conn_ipv4:OK
+  #38/2    btf_skc_cls_ingress/conn_ipv6:OK
+  #38/3    btf_skc_cls_ingress/conn_dual:OK
+  #38/4    btf_skc_cls_ingress/syncookie_ipv4:OK
+  #38/5    btf_skc_cls_ingress/syncookie_ipv6:OK
+  #38/6    btf_skc_cls_ingress/syncookie_dual:OK
+  #38      btf_skc_cls_ingress:OK
+  Summary: 1/6 PASSED, 0 SKIPPED, 0 FAILED
+
+Signed-off-by: Alexis Lothoré (eBPF Foundation) <alexis.lothore@bootlin.com>
+---
+Alexis Lothoré (eBPF Foundation) (6):
+      selftests/bpf: factorize conn and syncookies tests in a single runner
+      selftests/bpf: add missing ns cleanups in btf_skc_cls_ingress
+      selftests/bpf: get rid of global vars in btf_skc_cls_ingress
+      selftests/bpf: add ipv4 and dual ipv4/ipv6 support in btf_skc_cls_ingress
+      selftests/bpf: test MSS value returned with bpf_tcp_gen_syncookie
+      selftests/bpf: remove test_tcp_check_syncookie
+
+ tools/testing/selftests/bpf/.gitignore             |   1 -
+ tools/testing/selftests/bpf/Makefile               |   9 +-
+ .../selftests/bpf/prog_tests/btf_skc_cls_ingress.c | 265 +++++++++++++--------
+ .../selftests/bpf/progs/test_btf_skc_cls_ingress.c |  83 +++++--
+ .../bpf/progs/test_tcp_check_syncookie_kern.c      | 167 -------------
+ .../selftests/bpf/test_tcp_check_syncookie.sh      |  85 -------
+ .../selftests/bpf/test_tcp_check_syncookie_user.c  | 213 -----------------
+ 7 files changed, 222 insertions(+), 601 deletions(-)
+---
+base-commit: 030207b7fce8bad6827615cfc2c6592916e2c336
+change-id: 20241015-syncookie-ea7686264586
+
+Best regards,
+-- 
+Alexis Lothoré, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
 
