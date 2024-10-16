@@ -1,458 +1,186 @@
-Return-Path: <bpf+bounces-42202-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42203-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43C639A0D1E
-	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 16:45:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C93C9A0D26
+	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 16:46:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BF0D71F269B8
-	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 14:45:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A0A851C24D0E
+	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 14:46:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92F0120E018;
-	Wed, 16 Oct 2024 14:45:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEA7620C49A;
+	Wed, 16 Oct 2024 14:46:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qIdv5kx5"
 X-Original-To: bpf@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79252207A11;
-	Wed, 16 Oct 2024 14:45:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C809107A0;
+	Wed, 16 Oct 2024 14:46:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729089923; cv=none; b=YjV/cGhbwbHfV9MkNibZcnXSoKfNO7oIV/YoMMwg0q0knjWUex4NJwmYZh/Zji3+J8g1im3oKR0ShMWnsn/5zs2UxtUohdDxiku/bkJbU3Voq9B8sZ+ov/kDY022fQoOKVMfZjaQnxOC0JFzmCUnUlu7++sTc2i7crdtOY4jW3o=
+	t=1729089998; cv=none; b=sLNmRzZ1Fs643vT33+rXWbmWP97aL6Ox+/7/JZ3NpqwbTqqtB+DSwtTayt4giuMHIlyxLw0aQw7GAxjDDP1JfkTjrj0VCq36V8+P2OVXm6rM9BYZhuG9+0HapGxeWINVg8EQUSpUB/m5rCyJUQb8n4c2PVAWA26zUV6pubBLvHU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729089923; c=relaxed/simple;
-	bh=7QhotJwclg4FVK2tyLwn9wAT4xZLTFGqnTO0p3vq8yg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tfmzAxK9Q4oeYIPVdV9EPV2FY2T3XE9u2nXu7IaPBXVksIHMS0J6fHFIdVD9cxPIvy8VidT+9EwX/p1FnmGg70lB4tpsjZfCx/XFzIO8doMYixVGI4HvTKmh7RuqazTG57lX0BF0W+VuFSEJ/L7LKdGjvO2eekbFkBdsawu9+PY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 801AE1007;
-	Wed, 16 Oct 2024 07:45:50 -0700 (PDT)
-Received: from [10.1.28.177] (XHFQ2J9959.cambridge.arm.com [10.1.28.177])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E9B523F71E;
-	Wed, 16 Oct 2024 07:45:16 -0700 (PDT)
-Message-ID: <83025f39-808a-41fc-911e-1cf40e76662a@arm.com>
-Date: Wed, 16 Oct 2024 15:45:15 +0100
+	s=arc-20240116; t=1729089998; c=relaxed/simple;
+	bh=mljYCOrfn5VQtElax+itf5albGe4NataoyAA9ei5XS0=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=oUTZRCOJ2IVtylNk2rEGMScadddQxgx09X8eWVEIA5nD1Tf6Z3bVpqOWUY3ZIk8Komcaah3iDAkQHMhs4xu/5FqwDaYguCqLB6kN/lZvhpv45eX10ffrlVhkhlhnMbDLqr7joulDAOjBu/pA2mdCGpcncfhWrgQvsy0YF+Y9qdA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qIdv5kx5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6CEA2C4CEC5;
+	Wed, 16 Oct 2024 14:46:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1729089997;
+	bh=mljYCOrfn5VQtElax+itf5albGe4NataoyAA9ei5XS0=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=qIdv5kx5nL1uiUMFTWI4/g1kr2RmcIUz2PWR2nPj5ad9+BcYPT7FFYjgrplSiTegr
+	 uDlQmEFKE4fB0/2dM1exBAkFhNxEFqJuefV5ak9q9//SjvXC71Ftc47f255bdLeaFI
+	 /FDhrTCCXPJNtt6sWam8Ub0lknZDrpWmt9inpfqypdT4kcQZvdmmdtqhO7Qs/n/2Sl
+	 3c0OvvYyTp8VFqN6PdbwWzjgIuNkRLaxD+RlpVULp+uCtmWU6o0eO6pFe6OEoXATtz
+	 vhc2500888Fsi//9NZI/NyNGDrlyfZjtIhFS9jm6xdruRLUqXTTWuzX6EEjfg7jpNl
+	 9gx958sT8Jqig==
+Date: Wed, 16 Oct 2024 23:46:28 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Sven Schnelle <svens@linux.ibm.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Steven Rostedt
+ <rostedt@goodmis.org>, Florent Revest <revest@chromium.org>,
+ linux-trace-kernel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, Alexei
+ Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Alan Maguire
+ <alan.maguire@oracle.com>, Mark Rutland <mark.rutland@arm.com>,
+ linux-arch@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>, Will
+ Deacon <will@kernel.org>, Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui
+ <kernel@xen0n.name>, Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin
+ <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, Naveen
+ N Rao <naveen@kernel.org>, Madhavan Srinivasan <maddy@linux.ibm.com>, Paul
+ Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>,
+ Albert Ou <aou@eecs.berkeley.edu>, Heiko Carstens <hca@linux.ibm.com>,
+ Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev
+ <agordeev@linux.ibm.com>, Christian Borntraeger
+ <borntraeger@linux.ibm.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo
+ Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
+ <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin"
+ <hpa@zytor.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Andrew
+ Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v17 11/16] fprobe: Rewrite fprobe on function-graph
+ tracer
+Message-Id: <20241016234628.b7eba1db0db39d2197a2ea4f@kernel.org>
+In-Reply-To: <yt9ded4gfdz0.fsf@linux.ibm.com>
+References: <172904026427.36809.516716204730117800.stgit@devnote2>
+	<172904040206.36809.2263909331707439743.stgit@devnote2>
+	<yt9ded4gfdz0.fsf@linux.ibm.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v1 29/57] net: igb: Remove PAGE_SIZE compile-time
- constant assumption
-Content-Language: en-GB
-To: "David S. Miller" <davem@davemloft.net>,
- Andrew Morton <akpm@linux-foundation.org>,
- Anshuman Khandual <anshuman.khandual@arm.com>,
- Ard Biesheuvel <ardb@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>,
- David Hildenbrand <david@redhat.com>, Eric Dumazet <edumazet@google.com>,
- Greg Marsden <greg.marsden@oracle.com>, Ivan Ivanov <ivan.ivanov@suse.com>,
- Jakub Kicinski <kuba@kernel.org>, Kalesh Singh <kaleshsingh@google.com>,
- Marc Zyngier <maz@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Matthias Brugger <mbrugger@suse.com>, Miroslav Benes <mbenes@suse.cz>,
- Paolo Abeni <pabeni@redhat.com>, Will Deacon <will@kernel.org>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- Przemek Kitszel <przemyslaw.kitszel@intel.com>,
- Tony Nguyen <anthony.l.nguyen@intel.com>
-Cc: bpf@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-mm@kvack.org, netdev@vger.kernel.org
-References: <20241014105514.3206191-1-ryan.roberts@arm.com>
- <20241014105912.3207374-1-ryan.roberts@arm.com>
- <20241014105912.3207374-29-ryan.roberts@arm.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <20241014105912.3207374-29-ryan.roberts@arm.com>
-Content-Type: text/plain; charset=UTF-8
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-+ Alexei Starovoitov, Daniel Borkmann, Jesper Dangaard Brouer, John Fastabend,
-Przemek Kitszel, Tony Nguyen
+On Wed, 16 Oct 2024 14:07:31 +0200
+Sven Schnelle <svens@linux.ibm.com> wrote:
 
-This was a rather tricky series to get the recipients correct for and my script
-did not realize that "supporter" was a pseudonym for "maintainer" so you were
-missed off the original post. Appologies!
+> "Masami Hiramatsu (Google)" <mhiramat@kernel.org> writes:
+> 
+> > From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> >
+> > Rewrite fprobe implementation on function-graph tracer.
+> > Major API changes are:
+> >  -  'nr_maxactive' field is deprecated.
+> >  -  This depends on CONFIG_DYNAMIC_FTRACE_WITH_ARGS or
+> >     !CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS, and
+> >     CONFIG_HAVE_FUNCTION_GRAPH_FREGS. So currently works only
+> >     on x86_64.
+> >  -  Currently the entry size is limited in 15 * sizeof(long).
+> >  -  If there is too many fprobe exit handler set on the same
+> >     function, it will fail to probe.
+> >
+> > Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > Cc: Steven Rostedt <rostedt@goodmis.org>
+> > Cc: Mark Rutland <mark.rutland@arm.com>
+> > Cc: Catalin Marinas <catalin.marinas@arm.com>
+> > Cc: Will Deacon <will@kernel.org>
+> > Cc: Huacai Chen <chenhuacai@kernel.org>
+> > Cc: WANG Xuerui <kernel@xen0n.name>
+> > Cc: Michael Ellerman <mpe@ellerman.id.au>
+> > Cc: Nicholas Piggin <npiggin@gmail.com>
+> > Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+> > Cc: Naveen N Rao <naveen@kernel.org>
+> > Cc: Madhavan Srinivasan <maddy@linux.ibm.com>
+> > Cc: Paul Walmsley <paul.walmsley@sifive.com>
+> > Cc: Palmer Dabbelt <palmer@dabbelt.com>
+> > Cc: Albert Ou <aou@eecs.berkeley.edu>
+> > Cc: Heiko Carstens <hca@linux.ibm.com>
+> > Cc: Vasily Gorbik <gor@linux.ibm.com>
+> > Cc: Alexander Gordeev <agordeev@linux.ibm.com>
+> > Cc: Christian Borntraeger <borntraeger@linux.ibm.com>
+> > Cc: Sven Schnelle <svens@linux.ibm.com>
+> > Cc: Thomas Gleixner <tglx@linutronix.de>
+> > Cc: Ingo Molnar <mingo@redhat.com>
+> > Cc: Borislav Petkov <bp@alien8.de>
+> > Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> > Cc: x86@kernel.org
+> > Cc: "H. Peter Anvin" <hpa@zytor.com>
+> > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> > Cc: Andrew Morton <akpm@linux-foundation.org>
+> >
+> [..]
+> 
+> > diff --git a/include/linux/fprobe.h b/include/linux/fprobe.h
+> > index ef609bcca0f9..2d06bbd99601 100644
+> > --- a/include/linux/fprobe.h
+> > +++ b/include/linux/fprobe.h
+> > @@ -5,10 +5,11 @@
+> [..]
+> > +static inline unsigned long encode_fprobe_header(struct fprobe *fp, int size_words)
+> > +{
+> > +	if (WARN_ON_ONCE(size_words > MAX_FPROBE_DATA_SIZE_WORD ||
+> > +	    ((unsigned long)fp & ~FPROBE_HEADER_PTR_MASK) !=
+> > +	    ~FPROBE_HEADER_PTR_MASK)) {
+> > +		return 0;
+> >  	}
+> > +	return ((unsigned long)size_words << FPROBE_HEADER_PTR_BITS) |
+> > +		((unsigned long)fp & FPROBE_HEADER_PTR_MASK);
+> > +}
+> > +
+> > +/* Return reserved data size in words */
+> > +static inline int decode_fprobe_header(unsigned long val, struct fprobe **fp)
+> > +{
+> > +	unsigned long ptr;
+> > +
+> > +	ptr = (val & FPROBE_HEADER_PTR_MASK) | ~FPROBE_HEADER_PTR_MASK;
+> > +	if (fp)
+> > +		*fp = (struct fprobe *)ptr;
+> > +	return val >> FPROBE_HEADER_PTR_BITS;
+> > +}
+> 
+> I think that still has the issue that the size is encoded in the
+> leftmost fields of the pointer, which doesn't work on all
+> architectures. I reported this already in v15
+> (https://lore.kernel.org/all/yt9dmsjyx067.fsf@linux.ibm.com/)
 
-More context in cover letter:
-https://lore.kernel.org/all/20241014105514.3206191-1-ryan.roberts@arm.com/
+Oops, thanks for reporting. I should missed that.
 
+> I haven't yet fully understood why this logic is needed, but the
+> WARN_ON_ONCE triggers on s390. I'm assuming this fails because fp always
+> has the upper bits of the address set on x86 (and likely others). As an
+> example, in my test setup, fp is 0x8feec218 on s390, while it is
+> 0xffff888100add118 in x86-kvm.
 
-On 14/10/2024 11:58, Ryan Roberts wrote:
-> To prepare for supporting boot-time page size selection, refactor code
-> to remove assumptions about PAGE_SIZE being compile-time constant. Code
-> intended to be equivalent when compile-time page size is active.
-> 
-> Convert CPP conditionals to C conditionals. The compiler will dead code
-> strip when doing a compile-time page size build, for the same end
-> effect. But this will also work with boot-time page size builds.
-> 
-> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
-> ---
-> 
-> ***NOTE***
-> Any confused maintainers may want to read the cover note here for context:
-> https://lore.kernel.org/all/20241014105514.3206191-1-ryan.roberts@arm.com/
-> 
->  drivers/net/ethernet/intel/igb/igb.h      |  25 ++--
->  drivers/net/ethernet/intel/igb/igb_main.c | 149 +++++++++++-----------
->  2 files changed, 82 insertions(+), 92 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/intel/igb/igb.h b/drivers/net/ethernet/intel/igb/igb.h
-> index 3c2dc7bdebb50..04aeebcd363b3 100644
-> --- a/drivers/net/ethernet/intel/igb/igb.h
-> +++ b/drivers/net/ethernet/intel/igb/igb.h
-> @@ -158,7 +158,6 @@ struct vf_mac_filter {
->   *	 up negative.  In these cases we should fall back to the 3K
->   *	 buffers.
->   */
-> -#if (PAGE_SIZE < 8192)
->  #define IGB_MAX_FRAME_BUILD_SKB (IGB_RXBUFFER_1536 - NET_IP_ALIGN)
->  #define IGB_2K_TOO_SMALL_WITH_PADDING \
->  ((NET_SKB_PAD + IGB_TS_HDR_LEN + IGB_RXBUFFER_1536) > SKB_WITH_OVERHEAD(IGB_RXBUFFER_2048))
-> @@ -177,6 +176,9 @@ static inline int igb_skb_pad(void)
->  {
->  	int rx_buf_len;
->  
-> +	if (PAGE_SIZE >= 8192)
-> +		return NET_SKB_PAD + NET_IP_ALIGN;
-> +
->  	/* If a 2K buffer cannot handle a standard Ethernet frame then
->  	 * optimize padding for a 3K buffer instead of a 1.5K buffer.
->  	 *
-> @@ -196,9 +198,6 @@ static inline int igb_skb_pad(void)
->  }
->  
->  #define IGB_SKB_PAD	igb_skb_pad()
-> -#else
-> -#define IGB_SKB_PAD	(NET_SKB_PAD + NET_IP_ALIGN)
-> -#endif
->  
->  /* How many Rx Buffers do we bundle into one write to the hardware ? */
->  #define IGB_RX_BUFFER_WRITE	16 /* Must be power of 2 */
-> @@ -280,7 +279,7 @@ struct igb_tx_buffer {
->  struct igb_rx_buffer {
->  	dma_addr_t dma;
->  	struct page *page;
-> -#if (BITS_PER_LONG > 32) || (PAGE_SIZE >= 65536)
-> +#if (BITS_PER_LONG > 32) || (PAGE_SIZE_MAX >= 65536)
->  	__u32 page_offset;
->  #else
->  	__u16 page_offset;
-> @@ -403,22 +402,20 @@ enum e1000_ring_flags_t {
->  
->  static inline unsigned int igb_rx_bufsz(struct igb_ring *ring)
->  {
-> -#if (PAGE_SIZE < 8192)
-> -	if (ring_uses_large_buffer(ring))
-> -		return IGB_RXBUFFER_3072;
-> +	if (PAGE_SIZE < 8192) {
-> +		if (ring_uses_large_buffer(ring))
-> +			return IGB_RXBUFFER_3072;
->  
-> -	if (ring_uses_build_skb(ring))
-> -		return IGB_MAX_FRAME_BUILD_SKB;
-> -#endif
-> +		if (ring_uses_build_skb(ring))
-> +			return IGB_MAX_FRAME_BUILD_SKB;
-> +	}
->  	return IGB_RXBUFFER_2048;
->  }
->  
->  static inline unsigned int igb_rx_pg_order(struct igb_ring *ring)
->  {
-> -#if (PAGE_SIZE < 8192)
-> -	if (ring_uses_large_buffer(ring))
-> +	if (PAGE_SIZE < 8192 && ring_uses_large_buffer(ring))
->  		return 1;
-> -#endif
->  	return 0;
->  }
->  
-> diff --git a/drivers/net/ethernet/intel/igb/igb_main.c b/drivers/net/ethernet/intel/igb/igb_main.c
-> index 1ef4cb871452a..4f2c53dece1a2 100644
-> --- a/drivers/net/ethernet/intel/igb/igb_main.c
-> +++ b/drivers/net/ethernet/intel/igb/igb_main.c
-> @@ -4797,9 +4797,7 @@ void igb_configure_rx_ring(struct igb_adapter *adapter,
->  static void igb_set_rx_buffer_len(struct igb_adapter *adapter,
->  				  struct igb_ring *rx_ring)
->  {
-> -#if (PAGE_SIZE < 8192)
->  	struct e1000_hw *hw = &adapter->hw;
-> -#endif
->  
->  	/* set build_skb and buffer size flags */
->  	clear_ring_build_skb_enabled(rx_ring);
-> @@ -4810,12 +4808,11 @@ static void igb_set_rx_buffer_len(struct igb_adapter *adapter,
->  
->  	set_ring_build_skb_enabled(rx_ring);
->  
-> -#if (PAGE_SIZE < 8192)
-> -	if (adapter->max_frame_size > IGB_MAX_FRAME_BUILD_SKB ||
-> +	if (PAGE_SIZE < 8192 &&
-> +	    (adapter->max_frame_size > IGB_MAX_FRAME_BUILD_SKB ||
->  	    IGB_2K_TOO_SMALL_WITH_PADDING ||
-> -	    rd32(E1000_RCTL) & E1000_RCTL_SBP)
-> +	    rd32(E1000_RCTL) & E1000_RCTL_SBP))
->  		set_ring_uses_large_buffer(rx_ring);
-> -#endif
->  }
->  
->  /**
-> @@ -5314,12 +5311,10 @@ static void igb_set_rx_mode(struct net_device *netdev)
->  				     E1000_RCTL_VFE);
->  	wr32(E1000_RCTL, rctl);
->  
-> -#if (PAGE_SIZE < 8192)
-> -	if (!adapter->vfs_allocated_count) {
-> +	if (PAGE_SIZE < 8192 && !adapter->vfs_allocated_count) {
->  		if (adapter->max_frame_size <= IGB_MAX_FRAME_BUILD_SKB)
->  			rlpml = IGB_MAX_FRAME_BUILD_SKB;
->  	}
-> -#endif
->  	wr32(E1000_RLPML, rlpml);
->  
->  	/* In order to support SR-IOV and eventually VMDq it is necessary to set
-> @@ -5338,11 +5333,10 @@ static void igb_set_rx_mode(struct net_device *netdev)
->  
->  	/* enable Rx jumbo frames, restrict as needed to support build_skb */
->  	vmolr &= ~E1000_VMOLR_RLPML_MASK;
-> -#if (PAGE_SIZE < 8192)
-> -	if (adapter->max_frame_size <= IGB_MAX_FRAME_BUILD_SKB)
-> +	if (PAGE_SIZE < 8192 &&
-> +	    adapter->max_frame_size <= IGB_MAX_FRAME_BUILD_SKB)
->  		vmolr |= IGB_MAX_FRAME_BUILD_SKB;
->  	else
-> -#endif
->  		vmolr |= MAX_JUMBO_FRAME_SIZE;
->  	vmolr |= E1000_VMOLR_LPE;
->  
-> @@ -8435,17 +8429,17 @@ static bool igb_can_reuse_rx_page(struct igb_rx_buffer *rx_buffer,
->  	if (!dev_page_is_reusable(page))
->  		return false;
->  
-> -#if (PAGE_SIZE < 8192)
-> -	/* if we are only owner of page we can reuse it */
-> -	if (unlikely((rx_buf_pgcnt - pagecnt_bias) > 1))
-> -		return false;
-> -#else
-> +	if (PAGE_SIZE < 8192) {
-> +		/* if we are only owner of page we can reuse it */
-> +		if (unlikely((rx_buf_pgcnt - pagecnt_bias) > 1))
-> +			return false;
-> +	} else {
->  #define IGB_LAST_OFFSET \
->  	(SKB_WITH_OVERHEAD(PAGE_SIZE) - IGB_RXBUFFER_2048)
->  
-> -	if (rx_buffer->page_offset > IGB_LAST_OFFSET)
-> -		return false;
-> -#endif
-> +		if (rx_buffer->page_offset > IGB_LAST_OFFSET)
-> +			return false;
-> +	}
->  
->  	/* If we have drained the page fragment pool we need to update
->  	 * the pagecnt_bias and page count so that we fully restock the
-> @@ -8473,20 +8467,22 @@ static void igb_add_rx_frag(struct igb_ring *rx_ring,
->  			    struct sk_buff *skb,
->  			    unsigned int size)
->  {
-> -#if (PAGE_SIZE < 8192)
-> -	unsigned int truesize = igb_rx_pg_size(rx_ring) / 2;
-> -#else
-> -	unsigned int truesize = ring_uses_build_skb(rx_ring) ?
-> +	unsigned int truesize;
-> +
-> +	if (PAGE_SIZE < 8192)
-> +		truesize = igb_rx_pg_size(rx_ring) / 2;
-> +	else
-> +		truesize = ring_uses_build_skb(rx_ring) ?
->  				SKB_DATA_ALIGN(IGB_SKB_PAD + size) :
->  				SKB_DATA_ALIGN(size);
-> -#endif
-> +
->  	skb_add_rx_frag(skb, skb_shinfo(skb)->nr_frags, rx_buffer->page,
->  			rx_buffer->page_offset, size, truesize);
-> -#if (PAGE_SIZE < 8192)
-> -	rx_buffer->page_offset ^= truesize;
-> -#else
-> -	rx_buffer->page_offset += truesize;
-> -#endif
-> +
-> +	if (PAGE_SIZE < 8192)
-> +		rx_buffer->page_offset ^= truesize;
-> +	else
-> +		rx_buffer->page_offset += truesize;
->  }
->  
->  static struct sk_buff *igb_construct_skb(struct igb_ring *rx_ring,
-> @@ -8494,16 +8490,16 @@ static struct sk_buff *igb_construct_skb(struct igb_ring *rx_ring,
->  					 struct xdp_buff *xdp,
->  					 ktime_t timestamp)
->  {
-> -#if (PAGE_SIZE < 8192)
-> -	unsigned int truesize = igb_rx_pg_size(rx_ring) / 2;
-> -#else
-> -	unsigned int truesize = SKB_DATA_ALIGN(xdp->data_end -
-> -					       xdp->data_hard_start);
-> -#endif
->  	unsigned int size = xdp->data_end - xdp->data;
-> +	unsigned int truesize;
->  	unsigned int headlen;
->  	struct sk_buff *skb;
->  
-> +	if (PAGE_SIZE < 8192)
-> +		truesize = igb_rx_pg_size(rx_ring) / 2;
-> +	else
-> +		truesize = SKB_DATA_ALIGN(xdp->data_end - xdp->data_hard_start);
-> +
->  	/* prefetch first cache line of first page */
->  	net_prefetch(xdp->data);
->  
-> @@ -8529,11 +8525,10 @@ static struct sk_buff *igb_construct_skb(struct igb_ring *rx_ring,
->  		skb_add_rx_frag(skb, 0, rx_buffer->page,
->  				(xdp->data + headlen) - page_address(rx_buffer->page),
->  				size, truesize);
-> -#if (PAGE_SIZE < 8192)
-> -		rx_buffer->page_offset ^= truesize;
-> -#else
-> -		rx_buffer->page_offset += truesize;
-> -#endif
-> +		if (PAGE_SIZE < 8192)
-> +			rx_buffer->page_offset ^= truesize;
-> +		else
-> +			rx_buffer->page_offset += truesize;
->  	} else {
->  		rx_buffer->pagecnt_bias++;
->  	}
-> @@ -8546,16 +8541,17 @@ static struct sk_buff *igb_build_skb(struct igb_ring *rx_ring,
->  				     struct xdp_buff *xdp,
->  				     ktime_t timestamp)
->  {
-> -#if (PAGE_SIZE < 8192)
-> -	unsigned int truesize = igb_rx_pg_size(rx_ring) / 2;
-> -#else
-> -	unsigned int truesize = SKB_DATA_ALIGN(sizeof(struct skb_shared_info)) +
-> -				SKB_DATA_ALIGN(xdp->data_end -
-> -					       xdp->data_hard_start);
-> -#endif
->  	unsigned int metasize = xdp->data - xdp->data_meta;
-> +	unsigned int truesize;
->  	struct sk_buff *skb;
->  
-> +	if (PAGE_SIZE < 8192)
-> +		truesize = igb_rx_pg_size(rx_ring) / 2;
-> +	else
-> +		truesize = SKB_DATA_ALIGN(sizeof(struct skb_shared_info)) +
-> +			   SKB_DATA_ALIGN(xdp->data_end -
-> +					  xdp->data_hard_start);
-> +
->  	/* prefetch first cache line of first page */
->  	net_prefetch(xdp->data_meta);
->  
-> @@ -8575,11 +8571,10 @@ static struct sk_buff *igb_build_skb(struct igb_ring *rx_ring,
->  		skb_hwtstamps(skb)->hwtstamp = timestamp;
->  
->  	/* update buffer offset */
-> -#if (PAGE_SIZE < 8192)
-> -	rx_buffer->page_offset ^= truesize;
-> -#else
-> -	rx_buffer->page_offset += truesize;
-> -#endif
-> +	if (PAGE_SIZE < 8192)
-> +		rx_buffer->page_offset ^= truesize;
-> +	else
-> +		rx_buffer->page_offset += truesize;
->  
->  	return skb;
->  }
-> @@ -8634,14 +8629,14 @@ static unsigned int igb_rx_frame_truesize(struct igb_ring *rx_ring,
->  {
->  	unsigned int truesize;
->  
-> -#if (PAGE_SIZE < 8192)
-> -	truesize = igb_rx_pg_size(rx_ring) / 2; /* Must be power-of-2 */
-> -#else
-> -	truesize = ring_uses_build_skb(rx_ring) ?
-> -		SKB_DATA_ALIGN(IGB_SKB_PAD + size) +
-> -		SKB_DATA_ALIGN(sizeof(struct skb_shared_info)) :
-> -		SKB_DATA_ALIGN(size);
-> -#endif
-> +	if (PAGE_SIZE < 8192)
-> +		truesize = igb_rx_pg_size(rx_ring) / 2; /* Must be power-of-2 */
-> +	else
-> +		truesize = ring_uses_build_skb(rx_ring) ?
-> +			SKB_DATA_ALIGN(IGB_SKB_PAD + size) +
-> +			SKB_DATA_ALIGN(sizeof(struct skb_shared_info)) :
-> +			SKB_DATA_ALIGN(size);
-> +
->  	return truesize;
->  }
->  
-> @@ -8650,11 +8645,11 @@ static void igb_rx_buffer_flip(struct igb_ring *rx_ring,
->  			       unsigned int size)
->  {
->  	unsigned int truesize = igb_rx_frame_truesize(rx_ring, size);
-> -#if (PAGE_SIZE < 8192)
-> -	rx_buffer->page_offset ^= truesize;
-> -#else
-> -	rx_buffer->page_offset += truesize;
-> -#endif
-> +
-> +	if (PAGE_SIZE < 8192)
-> +		rx_buffer->page_offset ^= truesize;
-> +	else
-> +		rx_buffer->page_offset += truesize;
->  }
->  
->  static inline void igb_rx_checksum(struct igb_ring *ring,
-> @@ -8825,12 +8820,12 @@ static struct igb_rx_buffer *igb_get_rx_buffer(struct igb_ring *rx_ring,
->  	struct igb_rx_buffer *rx_buffer;
->  
->  	rx_buffer = &rx_ring->rx_buffer_info[rx_ring->next_to_clean];
-> -	*rx_buf_pgcnt =
-> -#if (PAGE_SIZE < 8192)
-> -		page_count(rx_buffer->page);
-> -#else
-> -		0;
-> -#endif
-> +
-> +	if (PAGE_SIZE < 8192)
-> +		*rx_buf_pgcnt = page_count(rx_buffer->page);
-> +	else
-> +		*rx_buf_pgcnt = 0;
-> +
->  	prefetchw(rx_buffer->page);
->  
->  	/* we are reusing so sync this buffer for CPU use */
-> @@ -8881,9 +8876,8 @@ static int igb_clean_rx_irq(struct igb_q_vector *q_vector, const int budget)
->  	int rx_buf_pgcnt;
->  
->  	/* Frame size depend on rx_ring setup when PAGE_SIZE=4K */
-> -#if (PAGE_SIZE < 8192)
-> -	frame_sz = igb_rx_frame_truesize(rx_ring, 0);
-> -#endif
-> +	if (PAGE_SIZE < 8192)
-> +		frame_sz = igb_rx_frame_truesize(rx_ring, 0);
->  	xdp_init_buff(&xdp, frame_sz, &rx_ring->xdp_rxq);
->  
->  	while (likely(total_packets < budget)) {
-> @@ -8932,10 +8926,9 @@ static int igb_clean_rx_irq(struct igb_q_vector *q_vector, const int budget)
->  
->  			xdp_prepare_buff(&xdp, hard_start, offset, size, true);
->  			xdp_buff_clear_frags_flag(&xdp);
-> -#if (PAGE_SIZE > 4096)
->  			/* At larger PAGE_SIZE, frame_sz depend on len size */
-> -			xdp.frame_sz = igb_rx_frame_truesize(rx_ring, size);
-> -#endif
-> +			if (PAGE_SIZE > 4096)
-> +				xdp.frame_sz = igb_rx_frame_truesize(rx_ring, size);
->  			skb = igb_run_xdp(adapter, rx_ring, &xdp);
->  		}
->  
+Ah, so s390 kernel/user memory layout is something like 4G/4G?
+Hmm, this encode expects the leftmost 4bit is filled. For the
+architecture which has 32bit address space, we may be possible to
+use "unsigned long long" for 'val' on shadow stack (and use the
+first 32bit for fp and another 32bit for size).
 
+Anyway, I need to redesign it depending on architecture.
+
+Thank you!
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
