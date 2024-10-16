@@ -1,106 +1,97 @@
-Return-Path: <bpf+bounces-42211-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42212-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48A479A1049
-	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 19:04:39 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0BCF9A1063
+	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 19:12:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EF31E1F22266
-	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 17:04:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9128A1F22B77
+	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 17:12:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4DD120FAAA;
-	Wed, 16 Oct 2024 17:04:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D817E2101B7;
+	Wed, 16 Oct 2024 17:12:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g364JahB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="isWgfLIY"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40A8E136358;
-	Wed, 16 Oct 2024 17:04:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58CFE18660A;
+	Wed, 16 Oct 2024 17:12:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729098270; cv=none; b=B6ZFNKIgfvmzJBTuBUtsQBWIBhNDD+mcZHrq/HWcsxKAl9SOvaeXOV8xtbRtd8aHzabeYBL160i+Wg407W0W82IJahP2oKcTfqlx+CxlWyhNEsqGfHvjW8g1a0ow5tUgrG9czMUi0sFYNzM7/h81L1dqxYjneCLcMTFYD/K6LWI=
+	t=1729098762; cv=none; b=Udpt0YsrBFk+eUKiNCpFY+HqGCG3F6MoWVxjBCJrm97NUGWDlKivIVFxUcJtSJt4kg9ZDEaJswiNqrP1MHx1dLa60cW/YeHLN5uog76K9vVCas/3kVV7+TBP/iQDBbRwgznlRA7idPG2deqnmhTWN7One3IyVwQnIBYsnxkILFk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729098270; c=relaxed/simple;
-	bh=CX9Vtd5JRZ6CUj4QoB0EX1rOR78R+P7OGs4cTTtUhI0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bKcCrWZXMKuKgWWwJIPI3OhQd1ig9wIF4Sz4T4f5E4P3N+JsnHzcaLO5doJXGCmwLGwFehU2Jgr8ur98aCjPBUxqpWnHEV8CqS7OZGj55JKPI2hyB8AcOr19MTw3Uf3Ke1aGPSAyGxvimQX+6p2QbA56wPDv24U78M60uwK+SMk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g364JahB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 826E8C4CEC5;
-	Wed, 16 Oct 2024 17:04:29 +0000 (UTC)
+	s=arc-20240116; t=1729098762; c=relaxed/simple;
+	bh=Rl3gy5Vl2zrK+bfmn5LbLCvFikHLNss6GUqX9LuMmFY=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=q3v7FfPTkYBnhglmUJszZAyX18mirLmmRJoi7gkxC8Zqs89NPmg+Pm6o+jphJ7+Sg90ofOKo30qe+vYUqGu9S8JupJ5Ymi0dSKCONypjHTpsm+2w9JO3/rvZIVQHe51XWpAKlueBHg5ZClNViK3iuFdL8rfavd4NnRGVul5qtO8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=isWgfLIY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84D57C4CEC5;
+	Wed, 16 Oct 2024 17:12:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1729098269;
-	bh=CX9Vtd5JRZ6CUj4QoB0EX1rOR78R+P7OGs4cTTtUhI0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=g364JahB/sCv2dpwVHTq9xHoZ3GytonbE9O0BaXmDiLo/QDpsa5qKPYXo+Uo2TDSH
-	 PMzNjkVvUd1vMkoaNtUzzqObCBJRnT4znktf4E2O6rloekXsbyZ/qRvSG9HZhvbTwu
-	 0hTLGfQr7rUcXFiMMd9vmdWvHYZ39rnCwOobBYlns2FysIv8rA5YeRd9oeDG6kXUzx
-	 spmXwBOF4LCxaMQQ4RPhUHlp/P5I6dYW0Ghun6DpyXanxFgzD/2aScpKdAjEfZIziC
-	 4BJS2Z/DrhaCLuZJGbscXnDBUp13ppXL6YkU4Tf6RxqyBDjE5fx8ayCqrd769NqR3g
-	 xNI2WUsMin+Jg==
-Date: Wed, 16 Oct 2024 07:04:28 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Cc: Chen Ridong <chenridong@huaweicloud.com>, lizefan.x@bytedance.com,
-	hannes@cmpxchg.org, longman@redhat.com, john.fastabend@gmail.com,
-	roman.gushchin@linux.dev, quanyang.wang@windriver.com,
-	ast@kernel.org, cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	chenridong@huawei.com, wangweiyang2@huawei.com
-Subject: Re: [PATCH] cgroup/bpf: fix NULL pointer dereference at
- cgroup_bpf_offline
-Message-ID: <Zw_yHEJCBwtYFJoR@slm.duckdns.org>
-References: <20241016093633.670555-1-chenridong@huaweicloud.com>
- <bidpqhgxflkaj6wzhkqj5fqoc2zumf3vcyidspz4mqm4erq3bu@r4mzs45sbe7g>
+	s=k20201202; t=1729098761;
+	bh=Rl3gy5Vl2zrK+bfmn5LbLCvFikHLNss6GUqX9LuMmFY=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=isWgfLIYBS1wHJOsuT8iupAnds4s+m2FhP5XUjSZIgPyugkLuoESsVre6qiaFnytu
+	 XmnHzppFtxS5JqD3uidzobZpaGi82BNXgSpKP10OJUHDjbYOlEqSP8vuLFJOfYhYvr
+	 sVt62RuRA3lBVW5jU+P9jKiV2U8DBTwMsV+tQXGItkg9WxrBNV47MmeGoSdJB7YuQD
+	 ni6b55mG8zKV5JrxPhjfHr6/U54097F0xpWdjrojfVhYgvhHAYAt58taC80GCtNVgt
+	 UneK7ymNYnyb/9EI7vJRxPObyV5taLyQF9AIloJ3C4RDqJUs/u3UJoygupRbbgTrI1
+	 FrVFrtz8bjZCA==
+From: Namhyung Kim <namhyung@kernel.org>
+To: Arnaldo Carvalho de Melo <acme@kernel.org>, 
+ Ian Rogers <irogers@google.com>, Kan Liang <kan.liang@linux.intel.com>, 
+ Namhyung Kim <namhyung@kernel.org>
+Cc: Jiri Olsa <jolsa@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>, 
+ Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, 
+ LKML <linux-kernel@vger.kernel.org>, linux-perf-users@vger.kernel.org, 
+ bpf@vger.kernel.org
+In-Reply-To: <20241009202009.884884-1-namhyung@kernel.org>
+References: <20241009202009.884884-1-namhyung@kernel.org>
+Subject: Re: [PATCH 1/2] perf tools: Fix possible compiler warnings in
+ hashmap
+Message-Id: <172909876148.288721.10451526265503632803.b4-ty@kernel.org>
+Date: Wed, 16 Oct 2024 10:12:41 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <bidpqhgxflkaj6wzhkqj5fqoc2zumf3vcyidspz4mqm4erq3bu@r4mzs45sbe7g>
+X-Mailer: b4 0.14-dev-d4707
 
-On Wed, Oct 16, 2024 at 03:13:52PM +0200, Michal Koutn� wrote:
-> Hello.
-> 
-> On Wed, Oct 16, 2024 at 09:36:33AM GMT, Chen Ridong <chenridong@huaweicloud.com> wrote:
-> > As mentioned above, when cgroup_bpf_inherit returns an error in
-> > cgroup_setup_root, cgrp->bpf.refcnt has been exited. If cgrp->bpf.refcnt is
-> > killed again in the cgroup_kill_sb function, the data of cgrp->bpf.refcnt
-> > may have become NULL, leading to NULL pointer dereference.
-> > 
-> > To fix this issue, goto err when cgroup_bpf_inherit returns an error.
-> > Additionally, if cgroup_bpf_inherit returns an error after rebinding
-> > subsystems, the root_cgrp->self.refcnt is exited, which leads to
-> > cgroup1_root_to_use return 1 (restart) when subsystems is  mounted next.
-> > This is due to a failure trying to get the refcnt(the root is root_cgrp,
-> > without rebinding back to cgrp_dfl_root). So move the call to
-> > cgroup_bpf_inherit above rebind_subsystems in the cgroup_setup_root.
-> > 
-> > Fixes: 04f8ef5643bc ("cgroup: Fix memory leak caused by missing cgroup_bpf_offline")
-> > Signed-off-by: Chen Ridong <chenridong@huawei.com>
-> 
-> Hm, I always thought that BPF progs can only be attached to the default
-> hierarchy (cgroup_bpf_prog_attach/cgroup_get_from_fd should prevent
-> that).
-> 
-> Thus I wonder whether cgroup_bpf_inherit (which is more like
-> cgroup_bpf_init in this case) needs to be called no v1 roots at all (and
-> with such a change, 04f8ef5643bc could be effectively reverted too).
-> 
-> Or can bpf data be used on v1 hierarchies somehow?
+On Wed, 09 Oct 2024 13:20:08 -0700, Namhyung Kim wrote:
 
-We relaxed some of the usages (see cgroup_v1v2_get_from_fd()) but cgroup BPF
-progs can only be attached to v2.
+> The hashmap__for_each_entry[_safe] is accessing 'map' as if it's a
+> pointer.  But it does without parentheses so passing a static hash map
+> with an ampersand (like &slab_hash below) caused compiler warnings due
+> to unmatched types.
+> 
+>   In file included from util/bpf_lock_contention.c:5:
+>   util/bpf_lock_contention.c: In function ‘exit_slab_cache_iter’:
+>   linux/tools/perf/util/hashmap.h:169:32: error: invalid type argument of ‘->’ (have ‘struct hashmap’)
+>     169 |         for (bkt = 0; bkt < map->cap; bkt++)                                \
+>         |                                ^~
+>   util/bpf_lock_contention.c:105:9: note: in expansion of macro ‘hashmap__for_each_entry’
+>     105 |         hashmap__for_each_entry(&slab_hash, cur, bkt)
+>         |         ^~~~~~~~~~~~~~~~~~~~~~~
+>   /home/namhyung/project/linux/tools/perf/util/hashmap.h:170:31: error: invalid type argument of ‘->’ (have ‘struct hashmap’)
+>     170 |                 for (cur = map->buckets[bkt]; cur; cur = cur->next)
+>         |                               ^~
+>   util/bpf_lock_contention.c:105:9: note: in expansion of macro ‘hashmap__for_each_entry’
+>     105 |         hashmap__for_each_entry(&slab_hash, cur, bkt)
+>         |         ^~~~~~~~~~~~~~~~~~~~~~~
+> 
+> [...]
 
-Thanks.
+Applied to perf-tools-next, thanks!
 
--- 
-tejun
+Best regards,
+Namhyung
+
 
