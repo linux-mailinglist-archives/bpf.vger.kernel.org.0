@@ -1,104 +1,127 @@
-Return-Path: <bpf+bounces-42246-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42247-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97BE69A15B3
-	for <lists+bpf@lfdr.de>; Thu, 17 Oct 2024 00:15:35 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 232C39A15B8
+	for <lists+bpf@lfdr.de>; Thu, 17 Oct 2024 00:16:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 361191F2271D
-	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 22:15:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C00D8B21B17
+	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 22:16:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67E661D4332;
-	Wed, 16 Oct 2024 22:15:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 869CA1D434E;
+	Wed, 16 Oct 2024 22:16:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oZ7EFYQG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r4XP/+kR"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D15B845008;
-	Wed, 16 Oct 2024 22:15:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0664318BBBE;
+	Wed, 16 Oct 2024 22:16:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729116926; cv=none; b=u62JrtF+zgUcMOjQBPumMIvKTqEiErFPdDY929Y8c2HLyaXjwGoewnuCeFpXSCATNn5dQ0wgLT+zzfrlDPjkIxq0BfmAgCXeLPpDO/PaZNT4GbZh3tTB15HSO9e839MgoB+xI6rNmOVaO8FRvktN8yYQJMiHgP4cdPSae2O8Bq8=
+	t=1729116997; cv=none; b=n8ZLiaTTA/cHv6ooXlAoyR9IBRqJbsOuaBeR7ORLwTLeXc2xtol6U0Qv2udTKH1npCCNL4iVqJGVfTif94Hvc+CEAVgMh4TGGKUjjTASJyC3M67nqoV04w44Ti0Q5hOLR4KzMjhL1QMQdPtZH62UWfc9FqCesQvZD8OgByNVlkA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729116926; c=relaxed/simple;
-	bh=kTS3L4lI/mgAWvx8mcJRAk114PqILHt4bMeyJslU/4o=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=SowXgZYRbfHXlERJteAy0gC6+PXRf3V2P+QzNfLAYb4JEfl1vRk931wrBTY8KAwbAj7GjcFNMIa9Y2u2NSF8wxFIjTXhqiExzuWJJ5y7992rmYRXqEHvJPbW7/SDGwVvgipsuFp4btIoIBlJo3E+5ksHepckIehh6y86hT/bXYc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oZ7EFYQG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8FDCC4CEC5;
-	Wed, 16 Oct 2024 22:15:18 +0000 (UTC)
+	s=arc-20240116; t=1729116997; c=relaxed/simple;
+	bh=mIZnrqKm6DZOGB75fmkZXzLmh3/McYTdxYBRYOABlQ4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=X9+gOaUGypVqsQFsbVGhU6z8wibvS/cVkD2QaZL8Cr8jbX5p111JAmI859RTRufzUgs+FFev+fxQxq9NlAGw3XT0sXn9OQZAKn6a6QeM9br8+ZCxLcPAAerH2QQZgqOxYcVcoX1wgInJiF8TQyRmsEQmhc7JgyUq6eH26jHPJOw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=r4XP/+kR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6FEC0C4CEC5;
+	Wed, 16 Oct 2024 22:16:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1729116925;
-	bh=kTS3L4lI/mgAWvx8mcJRAk114PqILHt4bMeyJslU/4o=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=oZ7EFYQGKJwCD1UnwDRHAzfkYRWKUr6T3xWM4xAxq5UMLPLziit8tzepdK7RQE8le
-	 NnDb7RtAIl1Fq/uiX2rvNdb38dfuFsaM1A1C8yVwNBtjyuMbo6QryYta2MzqVe55LK
-	 mXtfxAwLZHx+Bp5TUduVGGsgZRYKQVATA4Y1gXNe7eOs+DdWPErXodiMVx09oCG1Ko
-	 c4E9yTD0ksPDbY3YY3Cbkklgg7o8edV9+iJ8G0WkDyZuPh3tntPDWfy2P4p98APcVL
-	 Nv1447Is9HSU19y04eSTaerhVGN89TlnITW7fmN0yVzYe0innvCvkNywzGodmw9SXC
-	 eNCSX7rWRcfTA==
-Date: Thu, 17 Oct 2024 07:15:16 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Florent Revest
- <revest@chromium.org>, linux-trace-kernel@vger.kernel.org, LKML
- <linux-kernel@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
- bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, Jiri Olsa
- <jolsa@kernel.org>, Alan Maguire <alan.maguire@oracle.com>, Mark Rutland
- <mark.rutland@arm.com>, linux-arch@vger.kernel.org, Catalin Marinas
- <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Huacai Chen
- <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, Michael Ellerman
- <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy
- <christophe.leroy@csgroup.eu>, Naveen N Rao <naveen@kernel.org>, Madhavan
- Srinivasan <maddy@linux.ibm.com>, Paul Walmsley <paul.walmsley@sifive.com>,
- Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>
-Subject: Re: [PATCH v17 01/16] function_graph: Pass ftrace_regs to entryfunc
-Message-Id: <20241017071516.684c8cf6490f26a42065994d@kernel.org>
-In-Reply-To: <20241016095325.34176fc9@gandalf.local.home>
-References: <172904026427.36809.516716204730117800.stgit@devnote2>
-	<172904027515.36809.1961937054923520469.stgit@devnote2>
-	<20241016095325.34176fc9@gandalf.local.home>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=k20201202; t=1729116996;
+	bh=mIZnrqKm6DZOGB75fmkZXzLmh3/McYTdxYBRYOABlQ4=;
+	h=From:To:Cc:Subject:Date:From;
+	b=r4XP/+kR4l4ZnSbFOsJQVy6T1wlV3pn1GU//zOndpV7DNj+ZdjkHWrO+YwqarleIl
+	 LprIwZQwPOyIgMMSp9Z0kXgk54qbCf6WD2KyOm7HTy5YkhW7spuHN5NycAyCjB/ebJ
+	 RqXOHEFb/wGImRBbCKob9bWiUyaffB5RA1LRH7T7mLV9aFQzdbfHzwV+2YzzmwZJ0G
+	 iOyahT74rqFYCP/YMYph5fQtdrOwwlf0UqK/lHc22FWX0j1N90l31MJspfufW0RoKy
+	 2BFUtl7IJYN6DIOrFf/QWYPHNfs3rVjfjezw38pCWU9kNXyVcEuEsILCRFPHjJEhkz
+	 yGzGQlxdCL1EA==
+From: Andrii Nakryiko <andrii@kernel.org>
+To: bpf@vger.kernel.org,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	martin.lau@kernel.org
+Cc: linux-mm@kvack.org,
+	linux-perf-users@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	rppt@kernel.org,
+	david@redhat.com,
+	yosryahmed@google.com,
+	shakeel.butt@linux.dev,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Yi Lai <yi1.lai@intel.com>
+Subject: [PATCH v2 bpf] lib/buildid: handle memfd_secret() files in build_id_parse()
+Date: Wed, 16 Oct 2024 15:16:29 -0700
+Message-ID: <20241016221629.1043883-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Wed, 16 Oct 2024 09:53:25 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+From memfd_secret(2) manpage:
 
-> On Wed, 16 Oct 2024 09:57:55 +0900
-> "Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
-> 
-> > From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > 
-> > Pass ftrace_regs to the fgraph_ops::entryfunc(). If ftrace_regs is not
-> > available, it passes a NULL instead. User callback function can access
-> > some registers (including return address) via this ftrace_regs.
-> 
-> BTW, you can use "fgraph:" for short. It makes the subject easier to read.
-> I've been using that instead of "function_graph:" lately.
+  The memory areas backing the file created with memfd_secret(2) are
+  visible only to the processes that have access to the file descriptor.
+  The memory region is removed from the kernel page tables and only the
+  page tables of the processes holding the file descriptor map the
+  corresponding physical memory. (Thus, the pages in the region can't be
+  accessed by the kernel itself, so that, for example, pointers to the
+  region can't be passed to system calls.)
 
-OK, I'll use it in the next version.
+So folios backed by such secretmem files are not mapped into kernel
+address space and shouldn't be accessed, in general.
 
-Thank you,
+To make this a bit more generic of a fix and prevent regression in the
+future for similar special mappings, do a generic check of whether the
+folio we got is mapped with kernel_page_present(), as suggested in [1].
+This will handle secretmem, and any future special cases that use
+a similar approach.
 
-> 
-> -- Steve
+Original report and repro can be found in [0].
 
+  [0] https://lore.kernel.org/bpf/ZwyG8Uro%2FSyTXAni@ly-workstation/
+  [1] https://lore.kernel.org/bpf/CAJD7tkbpEMx-eC4A-z8Jm1ikrY_KJVjWO+mhhz1_fni4x+COKw@mail.gmail.com/
 
+Reported-by: Yi Lai <yi1.lai@intel.com>
+Suggested-by: Yosry Ahmed <yosryahmed@google.com>
+Fixes: de3ec364c3c3 ("lib/buildid: add single folio-based file reader abstraction")
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+---
+ lib/buildid.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/lib/buildid.c b/lib/buildid.c
+index 290641d92ac1..90df64fd64c1 100644
+--- a/lib/buildid.c
++++ b/lib/buildid.c
+@@ -5,6 +5,7 @@
+ #include <linux/elf.h>
+ #include <linux/kernel.h>
+ #include <linux/pagemap.h>
++#include <linux/set_memory.h>
+ 
+ #define BUILD_ID 3
+ 
+@@ -74,7 +75,9 @@ static int freader_get_folio(struct freader *r, loff_t file_off)
+ 		filemap_invalidate_unlock_shared(r->file->f_mapping);
+ 	}
+ 
+-	if (IS_ERR(r->folio) || !folio_test_uptodate(r->folio)) {
++	if (IS_ERR(r->folio) ||
++	    !kernel_page_present(&r->folio->page) ||
++	    !folio_test_uptodate(r->folio)) {
+ 		if (!IS_ERR(r->folio))
+ 			folio_put(r->folio);
+ 		r->folio = NULL;
 -- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+2.43.5
+
 
