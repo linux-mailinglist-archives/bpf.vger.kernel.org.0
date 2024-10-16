@@ -1,231 +1,135 @@
-Return-Path: <bpf+bounces-42156-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42157-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13D459A022F
-	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 09:11:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A6E839A029C
+	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 09:31:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7DE331F24746
-	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 07:11:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D878B1C22D0E
+	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2024 07:31:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B0181C4A14;
-	Wed, 16 Oct 2024 07:10:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5153F1B85EC;
+	Wed, 16 Oct 2024 07:31:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="As0Rb8I6"
+	dkim=pass (2048-bit key) header.d=blackwall-org.20230601.gappssmtp.com header.i=@blackwall-org.20230601.gappssmtp.com header.b="dlnk1jIu"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FF82433CE;
-	Wed, 16 Oct 2024 07:10:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32C4018FC61
+	for <bpf@vger.kernel.org>; Wed, 16 Oct 2024 07:31:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729062620; cv=none; b=jwgtKJ4pVJXf9DnFaXEWqCN0nZx97EU8aVlKirEubFaMUAGqnY8rPuV461naKhKp10WbGtJaZK6/W5XIgeDrip6oJ97lOFolgWwPEXc49uQU2WRVvB1Qzoq7CZFJ/3bvrRnuo1Bt2PNctpzXseo/vuaYbv9+D2AXlG9J7QlHFQI=
+	t=1729063864; cv=none; b=I+yqQSJ3YFnOVkl7vT5oddlEC455w+GMqVjGLbB9j7/axT8sLII9zgN9xyZO53OvU0if8DooZhqzOQeF0CAufSBXMb6dt0zBGb4dlJv115dJCDwvOaFZMEIH4OtkFMbfIV0Mp2CTVkDoLLwxUb8bw0UOjQKw1jLHuITgbWyl+p8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729062620; c=relaxed/simple;
-	bh=nxakek7sL8xSsKVj/KOi6ZNyLMe9MbAwDA2OugPeeVU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=cpEv9nt2EcptwgpxKiHItNJFld75vblqxkcZmLfH+1ZPxnn0RKYXoFFwOdeB9B2UqCZ1hlT4JaGTQif64c3xYm2ON+TWr5AZmiuB1ON58+dNxchlFkyGh4f6vGE1RIftHOtjA8RR0QFfpQURwn7USrnttDK/XwK14iEbNfykbBI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=As0Rb8I6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 278EDC4CEC5;
-	Wed, 16 Oct 2024 07:10:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1729062618;
-	bh=nxakek7sL8xSsKVj/KOi6ZNyLMe9MbAwDA2OugPeeVU=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=As0Rb8I6dDb0Stxb/0N2Fifxx+geVc2xE9QI4GcQnZI7XYmJOT8IJPnNjsgUmLlI3
-	 1Anw74eII70lJoBIyQkC22lEkh6rm/yqQ2ZPPd+6LTMmOyqTHhrXg/I3/gGsGoHYqC
-	 ODAvfYB7n/pz3tBQPLIIq5+MmuYEuohAAk5cXaKlP+EFem2QdoMQOq2XHvqRBte+GW
-	 PCEOqZv1Piex9sw7XXU73fGXjRtM+xfKUt6GrBzS0CUMf05c1mTHutDiKL79oBKT5n
-	 4KG+eu5G1nfFpc5IBLef0e9BilgXk0vHYGe6G8OZJABJ7iAmy0m41ah2N+mIYbVsAe
-	 eaPYMk0F8jUxQ==
-From: Song Liu <song@kernel.org>
-To: bpf@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: kernel-team@meta.com,
-	andrii@kernel.org,
-	eddyz87@gmail.com,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	martin.lau@linux.dev,
-	viro@zeniv.linux.org.uk,
-	brauner@kernel.org,
-	jack@suse.cz,
-	kpsingh@kernel.org,
-	mattbobrowski@google.com,
-	Song Liu <song@kernel.org>
-Subject: [PATCH v2 bpf-next 2/2] selftests/bpf: Extend test fs_kfuncs to cover security.bpf xattr names
-Date: Wed, 16 Oct 2024 00:09:55 -0700
-Message-ID: <20241016070955.375923-3-song@kernel.org>
-X-Mailer: git-send-email 2.43.5
-In-Reply-To: <20241016070955.375923-1-song@kernel.org>
-References: <20241016070955.375923-1-song@kernel.org>
+	s=arc-20240116; t=1729063864; c=relaxed/simple;
+	bh=qDCAzGXoZ0pOdnIynMDnFsAu40UrMUBUAHTC2okKCYw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=HEyarv35Jx3ZDuNYFPzkdg1LHUMOZiwSudgZ/YgRFOyS1WckDwBgBXIE7cq+6dVRIKkq2pPjUm58dJb2xOYyrcwqj9yJLicPvjZaqSST+JSKTOfYf2MGNCmzXvHxBd3HlpM3VUZNux9qscqHou62Gdqg87fIoSONQGNjH+LAVK4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=blackwall.org; spf=none smtp.mailfrom=blackwall.org; dkim=pass (2048-bit key) header.d=blackwall-org.20230601.gappssmtp.com header.i=@blackwall-org.20230601.gappssmtp.com header.b=dlnk1jIu; arc=none smtp.client-ip=209.85.208.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=blackwall.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=blackwall.org
+Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2fb5be4381dso18379421fa.2
+        for <bpf@vger.kernel.org>; Wed, 16 Oct 2024 00:31:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=blackwall-org.20230601.gappssmtp.com; s=20230601; t=1729063860; x=1729668660; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=R34hHdvFIYMq9ZmXSvfE0IG+MHVNqzXq4FOqKZ22TY0=;
+        b=dlnk1jIu7SWMpQ6rcxAqfJ1nYIna9+tQWxqn95djO6cBBQrLq0g9HrCrytWgE6odtU
+         QrSAab/DXF6QZWalAFREBBN7dCsARv5iM4gJrpDZCzxVWE58lx4hEs4A4ZKWhj4zOpi9
+         PYMCthmhSVLTnLa76G2dP7k2gkwBIiJKAIZFB8n05urZm7G4dUbrsYDsTjl0P3QekLqs
+         6thQ1lQ0ExdmC8Cmdc7vAkRgBDqKjmDeL7KjlU4YDegWvqBopLl/24+pIq4CQILHNi4A
+         7yryG6AqiQLkKxEyZPU4ZBFP2nTadHaP0h44CFXUiaVEAiI1jAYQV165TgEjLh/KJpnQ
+         yQrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1729063860; x=1729668660;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=R34hHdvFIYMq9ZmXSvfE0IG+MHVNqzXq4FOqKZ22TY0=;
+        b=gqb7iquKk/7i0Z98LDhXCMuqvHxLRU7N36HoasZZ3adMZf684Vr4Orp1cr96XqvDyR
+         s8tJhwshJAoJ2juxOtRP55oABusMGby8820R2nKL0WKsdYMnVuoagPV8OA5WcOCLZStU
+         O6W+XJbnwVcPlq2N5AEfpnTvILeEbl+7hYcm7xgz41qKT0KPaXHAToTnbPoSzxnK2W79
+         c21U8xRqA3iMjRSqsMOUSwQwUQRt8z6q/bizY4HYy5Pyj+rCoOFIpdMO29mp2uVdtWgH
+         g/eafg2hQLF+ZKEt5Q5clV3SRMgaHsLI4s+Zb0aNa7x4t39E4oaJb+eVVJr4NVdBbYqZ
+         m+sw==
+X-Forwarded-Encrypted: i=1; AJvYcCWDLRT0hGIc3Nj5UyCvBd2TBD5QmeHAPrZhZaA/kQIDO2GkSqj9ofeKeHE5CW1EGnz+/wQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzSFJjzDPGQqJn7oo1vOShG8DATMLygxzyozbJ2wEHVvlgj+hyK
+	0ALwo7P9pHO+g59PA/0yg1Ba88G2LoyY40UarvY3wCDiBajpDRzC5my/bD+cWLY=
+X-Google-Smtp-Source: AGHT+IHldw33jGlDpRijQvlYNzDaS979Wd9CwKdwa32VsF108XYz7aKToHH+pl4TTjCUxVNH7ilcrA==
+X-Received: by 2002:a05:651c:154b:b0:2fb:65c8:b4ca with SMTP id 38308e7fff4ca-2fb65c8b665mr6122741fa.40.1729063860180;
+        Wed, 16 Oct 2024 00:31:00 -0700 (PDT)
+Received: from [192.168.0.245] ([62.73.69.208])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5c98d7b73bdsm1416283a12.85.2024.10.16.00.30.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Oct 2024 00:30:59 -0700 (PDT)
+Message-ID: <4accc34d-77f2-46d4-bf66-c10fe5e8f372@blackwall.org>
+Date: Wed, 16 Oct 2024 10:30:57 +0300
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 1/3] bonding: return detailed error when loading
+ native XDP fails
+To: Hangbin Liu <liuhangbin@gmail.com>, netdev@vger.kernel.org
+Cc: "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, Jiri Pirko <jiri@resnulli.us>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ Lorenzo Bianconi <lorenzo@kernel.org>, Andrii Nakryiko <andriin@fb.com>,
+ Jussi Maki <joamaki@gmail.com>, Jay Vosburgh <jv@jvosburgh.net>,
+ Andy Gospodarek <andy@greyhouse.net>, Jonathan Corbet <corbet@lwn.net>,
+ Andrew Lunn <andrew+netdev@lunn.ch>, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+References: <20241016031649.880-1-liuhangbin@gmail.com>
+ <20241016031649.880-2-liuhangbin@gmail.com>
+Content-Language: en-US
+From: Nikolay Aleksandrov <razor@blackwall.org>
+In-Reply-To: <20241016031649.880-2-liuhangbin@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Extend test_progs fs_kfuncs to cover different xattr names. Specifically:
-xattr name "user.kfuncs", "security.bpf", and "security.bpf.xxx" can be
-read from BPF program with kfuncs bpf_get_[file|dentry]_xattr(); while
-"security.bpfxxx" and "security.selinux" cannot be read.
+On 16/10/2024 06:16, Hangbin Liu wrote:
+> Bonding only supports native XDP for specific modes, which can lead to
+> confusion for users regarding why XDP loads successfully at times and
+> fails at others. This patch enhances error handling by returning detailed
+> error messages, providing users with clearer insights into the specific
+> reasons for the failure when loading native XDP.
+> 
+> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+> ---
+>  drivers/net/bonding/bond_main.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
+> index b1bffd8e9a95..f0f76b6ac8be 100644
+> --- a/drivers/net/bonding/bond_main.c
+> +++ b/drivers/net/bonding/bond_main.c
+> @@ -5676,8 +5676,11 @@ static int bond_xdp_set(struct net_device *dev, struct bpf_prog *prog,
+>  
+>  	ASSERT_RTNL();
+>  
+> -	if (!bond_xdp_check(bond))
+> +	if (!bond_xdp_check(bond)) {
+> +		BOND_NL_ERR(dev, extack,
+> +			    "No native XDP support for the current bonding mode");
+>  		return -EOPNOTSUPP;
+> +	}
+>  
+>  	old_prog = bond->xdp_prog;
+>  	bond->xdp_prog = prog;
 
-Signed-off-by: Song Liu <song@kernel.org>
----
- .../selftests/bpf/prog_tests/fs_kfuncs.c      | 40 ++++++++++++++-----
- .../selftests/bpf/progs/test_get_xattr.c      | 30 ++++++++++++--
- 2 files changed, 56 insertions(+), 14 deletions(-)
+I guess this is based on our discussion earlier?
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/fs_kfuncs.c b/tools/testing/selftests/bpf/prog_tests/fs_kfuncs.c
-index 5a0b51157451..986dd5eabaa6 100644
---- a/tools/testing/selftests/bpf/prog_tests/fs_kfuncs.c
-+++ b/tools/testing/selftests/bpf/prog_tests/fs_kfuncs.c
-@@ -12,7 +12,7 @@
- 
- static const char testfile[] = "/tmp/test_progs_fs_kfuncs";
- 
--static void test_xattr(void)
-+static void test_get_xattr(const char *name, const char *value, bool allow_access)
- {
- 	struct test_get_xattr *skel = NULL;
- 	int fd = -1, err;
-@@ -25,7 +25,7 @@ static void test_xattr(void)
- 	close(fd);
- 	fd = -1;
- 
--	err = setxattr(testfile, "user.kfuncs", "hello", sizeof("hello"), 0);
-+	err = setxattr(testfile, name, value, strlen(value) + 1, 0);
- 	if (err && errno == EOPNOTSUPP) {
- 		printf("%s:SKIP:local fs doesn't support xattr (%d)\n"
- 		       "To run this test, make sure /tmp filesystem supports xattr.\n",
-@@ -48,16 +48,23 @@ static void test_xattr(void)
- 		goto out;
- 
- 	fd = open(testfile, O_RDONLY, 0644);
-+
- 	if (!ASSERT_GE(fd, 0, "open_file"))
- 		goto out;
- 
--	ASSERT_EQ(skel->bss->found_xattr_from_file, 1, "found_xattr_from_file");
--
- 	/* Trigger security_inode_getxattr */
--	err = getxattr(testfile, "user.kfuncs", v, sizeof(v));
--	ASSERT_EQ(err, -1, "getxattr_return");
--	ASSERT_EQ(errno, EINVAL, "getxattr_errno");
--	ASSERT_EQ(skel->bss->found_xattr_from_dentry, 1, "found_xattr_from_dentry");
-+	err = getxattr(testfile, name, v, sizeof(v));
-+
-+	if (allow_access) {
-+		ASSERT_EQ(err, -1, "getxattr_return");
-+		ASSERT_EQ(errno, EINVAL, "getxattr_errno");
-+		ASSERT_EQ(skel->bss->found_xattr_from_file, 1, "found_xattr_from_file");
-+		ASSERT_EQ(skel->bss->found_xattr_from_dentry, 1, "found_xattr_from_dentry");
-+	} else {
-+		ASSERT_EQ(err, strlen(value) + 1, "getxattr_return");
-+		ASSERT_EQ(skel->bss->found_xattr_from_file, 0, "found_xattr_from_file");
-+		ASSERT_EQ(skel->bss->found_xattr_from_dentry, 0, "found_xattr_from_dentry");
-+	}
- 
- out:
- 	close(fd);
-@@ -141,8 +148,21 @@ static void test_fsverity(void)
- 
- void test_fs_kfuncs(void)
- {
--	if (test__start_subtest("xattr"))
--		test_xattr();
-+	/* Matches xattr_names in progs/test_get_xattr.c */
-+	if (test__start_subtest("user_xattr"))
-+		test_get_xattr("user.kfuncs", "hello", true);
-+
-+	if (test__start_subtest("security_bpf_xattr_1"))
-+		test_get_xattr("security.bpf", "hello", true);
-+
-+	if (test__start_subtest("security_bpf_xattr_2"))
-+		test_get_xattr("security.bpf.xxx", "hello", true);
-+
-+	if (test__start_subtest("security_bpfxxx_xattr_error"))
-+		test_get_xattr("security.bpfxxx", "hello", false);
-+
-+	if (test__start_subtest("security_selinux_xattr_error"))
-+		test_get_xattr("security.selinux", "hello", false);
- 
- 	if (test__start_subtest("fsverity"))
- 		test_fsverity();
-diff --git a/tools/testing/selftests/bpf/progs/test_get_xattr.c b/tools/testing/selftests/bpf/progs/test_get_xattr.c
-index 66e737720f7c..0be8120683cd 100644
---- a/tools/testing/selftests/bpf/progs/test_get_xattr.c
-+++ b/tools/testing/selftests/bpf/progs/test_get_xattr.c
-@@ -17,12 +17,26 @@ static const char expected_value[] = "hello";
- char value1[32];
- char value2[32];
- 
-+#define NUM_OF_XATTR_NAME 5
-+
-+/* Matches caller of test_get_xattr() in prog_tests/fs_kfuncs.c */
-+static const char *xattr_names[NUM_OF_XATTR_NAME] = {
-+	/* The following work. */
-+	"user.kfuncs",
-+	"security.bpf",
-+	"security.bpf.xxx",
-+
-+	/* The following do not work. */
-+	"security.bpfxxx",
-+	"security.selinux"
-+};
-+
- SEC("lsm.s/file_open")
- int BPF_PROG(test_file_open, struct file *f)
- {
- 	struct bpf_dynptr value_ptr;
- 	__u32 pid;
--	int ret;
-+	int ret, i;
- 
- 	pid = bpf_get_current_pid_tgid() >> 32;
- 	if (pid != monitored_pid)
-@@ -30,7 +44,11 @@ int BPF_PROG(test_file_open, struct file *f)
- 
- 	bpf_dynptr_from_mem(value1, sizeof(value1), 0, &value_ptr);
- 
--	ret = bpf_get_file_xattr(f, "user.kfuncs", &value_ptr);
-+	for (i = 0; i < NUM_OF_XATTR_NAME; i++) {
-+		ret = bpf_get_file_xattr(f, xattr_names[i], &value_ptr);
-+		if (ret == sizeof(expected_value))
-+			break;
-+	}
- 	if (ret != sizeof(expected_value))
- 		return 0;
- 	if (bpf_strncmp(value1, ret, expected_value))
-@@ -44,7 +62,7 @@ int BPF_PROG(test_inode_getxattr, struct dentry *dentry, char *name)
- {
- 	struct bpf_dynptr value_ptr;
- 	__u32 pid;
--	int ret;
-+	int ret, i;
- 
- 	pid = bpf_get_current_pid_tgid() >> 32;
- 	if (pid != monitored_pid)
-@@ -52,7 +70,11 @@ int BPF_PROG(test_inode_getxattr, struct dentry *dentry, char *name)
- 
- 	bpf_dynptr_from_mem(value2, sizeof(value2), 0, &value_ptr);
- 
--	ret = bpf_get_dentry_xattr(dentry, "user.kfuncs", &value_ptr);
-+	for (i = 0; i < NUM_OF_XATTR_NAME; i++) {
-+		ret = bpf_get_dentry_xattr(dentry, xattr_names[i], &value_ptr);
-+		if (ret == sizeof(expected_value))
-+			break;
-+	}
- 	if (ret != sizeof(expected_value))
- 		return 0;
- 	if (bpf_strncmp(value2, ret, expected_value))
--- 
-2.43.5
-
+Reviewed-by: Nikolay Aleksandrov <razor@blackwall.org>
 
