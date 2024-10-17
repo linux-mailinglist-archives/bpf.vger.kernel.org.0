@@ -1,80 +1,81 @@
-Return-Path: <bpf+bounces-42284-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42285-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D3339A1E03
-	for <lists+bpf@lfdr.de>; Thu, 17 Oct 2024 11:17:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3041D9A1E13
+	for <lists+bpf@lfdr.de>; Thu, 17 Oct 2024 11:18:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 74FF6284048
-	for <lists+bpf@lfdr.de>; Thu, 17 Oct 2024 09:17:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 541BF1C20C0E
+	for <lists+bpf@lfdr.de>; Thu, 17 Oct 2024 09:18:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDF5B1D90DF;
-	Thu, 17 Oct 2024 09:17:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1481C1D8DE4;
+	Thu, 17 Oct 2024 09:18:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hRpWs82L"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="g8JeIqse"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27EA71D7996
-	for <bpf@vger.kernel.org>; Thu, 17 Oct 2024 09:17:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48119161326
+	for <bpf@vger.kernel.org>; Thu, 17 Oct 2024 09:18:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729156648; cv=none; b=jn3wipCQehXtPh5NcfqLeE6wf/deu7sKLUZgkTcSySOlEofJ+9eDT4yJSRmH0LZP1NHTgG2KnaluyxmZv1XJaHgv+0J1GIPA5ho8MfyWaHy1D5d2JNIER4V4GuMCAFNsY3zgI2X8wgEaaHyEpgVs0jdS5drg0giZ5RgnWscYSq0=
+	t=1729156723; cv=none; b=qfWSsV+NPY4Rdgf7NYWCLeZdbXbepKRkoIgFcRjD5ka1pab9rjhHjXVh+azj8e+upm+++L6xly8QJ2BZGVTdiH7DKpZlYzXX4c3yIH1ub7LNyF1Ry00iwca9wJ1XOwQgWKPV9WwN7ECiOU4AKiuMXKgvCX0YAyA+0yW8Bbv62hQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729156648; c=relaxed/simple;
-	bh=oKjrXzkgRahBm9YgYsm12a15J1buLoTHkOyYj9ZLKg4=;
+	s=arc-20240116; t=1729156723; c=relaxed/simple;
+	bh=2qF1ldFWsqVFSPNYs5VBBdhYqwIvTUw95INW5GBXTYI=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NZ/1QhyeIfCN1fQ4vlEn9I02SDrb+0p0mLq+RMI//6IG0nqCoEs1fIuXtD7g7vvjAntC4tcO6JOBQ/eWB0gPz2FO8wlmPhK0KY+0S8heg/Kd03Y00XVVM90wZajkoXM9v/xEbiFHLGl0odYC84WyRchj6gEuLlHHJK/qxHCxFH8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hRpWs82L; arc=none smtp.client-ip=170.10.129.124
+	 In-Reply-To:Content-Type; b=h8PBhon9PJRq9B+l8YzmchecHnhQzfKLoCLKh8mhgOkgS3mUiy3D7//CfJ0W5kA14K0h9TJfueggYqaNM6ZevgrDQUUxzCUxXFgYWaWSFYOSd0Yxu/iUrfpcsGvKjWneIr9/KkLO7fOEx/3qrlo3IBAq5/7OfCWRZ1reP72CQmo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=g8JeIqse; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1729156645;
+	s=mimecast20190719; t=1729156719;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=Z2iv1vGKh4wlxyI1d63A6+aJrtUaUDwoToyYZfv5Jh8=;
-	b=hRpWs82LO4jKM8/JMiHXFe37TBDlltAWO3H39WDOYYj0muaIy4QFoSQcbfk/9HNsHgwC5a
-	qMCC9AaemqoJX/B2pIcO5fTTIa6Vpy38BFUqQwAuiRJI4DCuxMUwxmPaQeNzMEF+cBqHdn
-	aIyC0MpzIzUVlj4zW8S2qoj+ZWRaFCw=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=1cq4VAwbJYsp5619a/bS6cywsteQlYzK3685TSvl+Ec=;
+	b=g8JeIqseNA+xrtEPuuQFJL1ha0R/n2mEwylCxjN87swFpUZxuuJe6freCxTBiReKBKNEZj
+	KG2zv6iQHC4a2sactPzTYxa/7NqUHwgUkUVpmdoZQyr+dXETWz3XiC8hIOEvKr5ok+FGJu
+	/Dj25n8jnLEovDNfKeQhhbUkE0thg+Q=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-245-u_-n8mBEOROjnfOmXpQQMw-1; Thu, 17 Oct 2024 05:17:23 -0400
-X-MC-Unique: u_-n8mBEOROjnfOmXpQQMw-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-37d67fe93c6so307610f8f.0
-        for <bpf@vger.kernel.org>; Thu, 17 Oct 2024 02:17:22 -0700 (PDT)
+ us-mta-552-p0OCOZChP165bg9KxTgjDw-1; Thu, 17 Oct 2024 05:18:37 -0400
+X-MC-Unique: p0OCOZChP165bg9KxTgjDw-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-43152cd2843so5543575e9.3
+        for <bpf@vger.kernel.org>; Thu, 17 Oct 2024 02:18:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729156642; x=1729761442;
+        d=1e100.net; s=20230601; t=1729156716; x=1729761516;
         h=content-transfer-encoding:in-reply-to:organization:autocrypt
          :content-language:from:references:cc:to:subject:user-agent
          :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=Z2iv1vGKh4wlxyI1d63A6+aJrtUaUDwoToyYZfv5Jh8=;
-        b=iQ8GnkJOFol1Hxd+qgZJ20HIaA/HhbTHgkRdaDeEgSCUxSV4k4WTfxhc/VN4tiOR/j
-         TD1CjRsJKcH7XwR0nBWE9Lg1625NgAR/+2qte49N0awNjaavkw/S/n6Vm7zed+ZvciFG
-         nwaAleA4yQiHzAe+m2LWBBU/ukYS2GPCN65Rnm76QLBEwm2uMvt9dUcuGuTpyHUveGPT
-         wqZkoC1TBaeO3nbNrx8tE9MkCJw4pPu9UX1TXr6dYmVOm1gYCUSH7aP8ysc6A11ZyYQM
-         PBMrvQCwtGgbXoOrWH5iEfNuZtyvZEAx1NSxq4vAUZ5ChOD+iRg5OhJ61KEusDxzqnS8
-         YJPA==
-X-Gm-Message-State: AOJu0Yy+g91YK3DD93dq9hMYcV2Xso67jaz1ULFT7E6LqTChEN+yZ4DG
-	mQk4JIFp/Fccidzo2xiJOxa3tMrc5wD4seMrd5/9H+I8FbBMxLf0KUW26ceZqh54niVvP2wL6TZ
-	18kySWUddCkfsfHL5QzT8pEZraJut0ydHYEeKRT+JG12aa4pmqjdSBN90Dw==
-X-Received: by 2002:adf:a11a:0:b0:37d:47b3:7b82 with SMTP id ffacd0b85a97d-37d5530a1a0mr12523367f8f.57.1729156641948;
-        Thu, 17 Oct 2024 02:17:21 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFS62OhpSmQrgQCHpmVEc58+cHKX80vkIdArfgkQ3soXoC3Eohssh228PxnXny58LvmYnqYpA==
-X-Received: by 2002:adf:a11a:0:b0:37d:47b3:7b82 with SMTP id ffacd0b85a97d-37d5530a1a0mr12523354f8f.57.1729156641499;
-        Thu, 17 Oct 2024 02:17:21 -0700 (PDT)
+        bh=1cq4VAwbJYsp5619a/bS6cywsteQlYzK3685TSvl+Ec=;
+        b=DbKBbE5slRY+LVV6TeLvU/5kOKktpTfOp0aY0zWPZ8LfgolXXhVvC7kroI143rJQj8
+         3v1WlXZXNLusm2vmyzNtY40ZvC6ctr6sGXr/I6jyoaIVoel9TyRjZWOjXNrrd38yoAEX
+         62BAGb5ZR0l+6f+D2ml8WVizkN5psnmpOaDwEq/tdguHCpOOzakuBtIaHG8Nnj6jbKoF
+         lqweOm/rYCa8f3H68tnuhw1PuYCXoC+WwTgRd+aOUnzlAvaEnDTHWFJsRleo63PGuqGm
+         j1Z1ej2sAe1Eh0auPOgvepoAUK8mPp/zumJplCk4q8JNt0dJEaw1h1vR9qf+kF6nsUvy
+         JcvA==
+X-Forwarded-Encrypted: i=1; AJvYcCX2rfKjR7ymRiD6rt4DFmNxOUMgUeTgDO/CyBGKiTbwiRxlJvc3rr1BFYWsyS0V02o4mS0=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx3/9WdA3s7+YrNJQC7f4y1FFL6JWy2p1CpIDz2DgInD/0O8KLi
+	QrE/9bdHMBXlpgtav8YD7/3IQCqbNw6Czhj+U3/W4eWbsfIrIRSrIcq4WZazdn6kUVj9pSriwoq
+	iZCjA3AwzTvR7QWNdYiOc5LaWfSXM/CWieq+54HDOzTpeRZlT0Trqa2Hw2Q==
+X-Received: by 2002:a05:600c:1ca4:b0:42c:b63e:fe91 with SMTP id 5b1f17b1804b1-4311df42ce5mr207075025e9.24.1729156716272;
+        Thu, 17 Oct 2024 02:18:36 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGyvskbYB3iLHdqhTBMWr6OcacaJ+LM+/c1icuN9n7aep9ir4TKAlvTHBqa3EZchJOUTDfyFw==
+X-Received: by 2002:a05:600c:1ca4:b0:42c:b63e:fe91 with SMTP id 5b1f17b1804b1-4311df42ce5mr207074835e9.24.1729156715832;
+        Thu, 17 Oct 2024 02:18:35 -0700 (PDT)
 Received: from ?IPV6:2003:cb:c705:7600:62cc:24c1:9dbe:a2f5? (p200300cbc705760062cc24c19dbea2f5.dip0.t-ipconnect.de. [2003:cb:c705:7600:62cc:24c1:9dbe:a2f5])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-37d7fbf814esm6615837f8f.68.2024.10.17.02.17.20
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43158c406a8sm19604475e9.28.2024.10.17.02.18.35
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Oct 2024 02:17:20 -0700 (PDT)
-Message-ID: <d62bd511-13ac-4030-a4f3-ff81025170c1@redhat.com>
-Date: Thu, 17 Oct 2024 11:17:19 +0200
+        Thu, 17 Oct 2024 02:18:35 -0700 (PDT)
+Message-ID: <a1501f7a-80b3-4623-ab7b-5f5e0c3f7008@redhat.com>
+Date: Thu, 17 Oct 2024 11:18:34 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -82,16 +83,14 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf] lib/buildid: handle memfd_secret() files in
+Subject: Re: [PATCH v2 bpf] lib/buildid: handle memfd_secret() files in
  build_id_parse()
-To: Shakeel Butt <shakeel.butt@linux.dev>, Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
- martin.lau@kernel.org, linux-mm@kvack.org, linux-perf-users@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, Yi Lai <yi1.lai@intel.com>,
- pbonzini@redhat.com, seanjc@google.com, tabba@google.com,
- jackmanb@google.com, yosryahmed@google.com, jannh@google.com, rppt@kernel.org
-References: <20241014235631.1229438-1-andrii@kernel.org>
- <2rweiiittlxcio6kknwy45wez742mlgjnfdg3tq3xdkmyoq5nn@g7bfoqy4vdwt>
+To: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, ast@kernel.org,
+ daniel@iogearbox.net, martin.lau@kernel.org
+Cc: linux-mm@kvack.org, linux-perf-users@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, rppt@kernel.org, yosryahmed@google.com,
+ shakeel.butt@linux.dev, Yi Lai <yi1.lai@intel.com>
+References: <20241016221629.1043883-1-andrii@kernel.org>
 From: David Hildenbrand <david@redhat.com>
 Content-Language: en-US
 Autocrypt: addr=david@redhat.com; keydata=
@@ -139,21 +138,71 @@ Autocrypt: addr=david@redhat.com; keydata=
  jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
  WNyWQQ==
 Organization: Red Hat
-In-Reply-To: <2rweiiittlxcio6kknwy45wez742mlgjnfdg3tq3xdkmyoq5nn@g7bfoqy4vdwt>
+In-Reply-To: <20241016221629.1043883-1-andrii@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 16.10.24 20:39, Shakeel Butt wrote:
-> Ccing couple more folks who are doing similar work (ASI, guest_memfd)
+On 17.10.24 00:16, Andrii Nakryiko wrote:
+>  From memfd_secret(2) manpage:
 > 
-> Folks, what is the generic way to check if a given mapping has folios
-> unmapped from kernel address space?
+>    The memory areas backing the file created with memfd_secret(2) are
+>    visible only to the processes that have access to the file descriptor.
+>    The memory region is removed from the kernel page tables and only the
+>    page tables of the processes holding the file descriptor map the
+>    corresponding physical memory. (Thus, the pages in the region can't be
+>    accessed by the kernel itself, so that, for example, pointers to the
+>    region can't be passed to system calls.)
+> 
+> So folios backed by such secretmem files are not mapped into kernel
+> address space and shouldn't be accessed, in general.
+> 
+> To make this a bit more generic of a fix and prevent regression in the
+> future for similar special mappings, do a generic check of whether the
+> folio we got is mapped with kernel_page_present(), as suggested in [1].
+> This will handle secretmem, and any future special cases that use
+> a similar approach.
+> 
+> Original report and repro can be found in [0].
+> 
+>    [0] https://lore.kernel.org/bpf/ZwyG8Uro%2FSyTXAni@ly-workstation/
+>    [1] https://lore.kernel.org/bpf/CAJD7tkbpEMx-eC4A-z8Jm1ikrY_KJVjWO+mhhz1_fni4x+COKw@mail.gmail.com/
+> 
+> Reported-by: Yi Lai <yi1.lai@intel.com>
+> Suggested-by: Yosry Ahmed <yosryahmed@google.com>
+> Fixes: de3ec364c3c3 ("lib/buildid: add single folio-based file reader abstraction")
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> ---
+>   lib/buildid.c | 5 ++++-
+>   1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/lib/buildid.c b/lib/buildid.c
+> index 290641d92ac1..90df64fd64c1 100644
+> --- a/lib/buildid.c
+> +++ b/lib/buildid.c
+> @@ -5,6 +5,7 @@
+>   #include <linux/elf.h>
+>   #include <linux/kernel.h>
+>   #include <linux/pagemap.h>
+> +#include <linux/set_memory.h>
+>   
+>   #define BUILD_ID 3
+>   
+> @@ -74,7 +75,9 @@ static int freader_get_folio(struct freader *r, loff_t file_off)
+>   		filemap_invalidate_unlock_shared(r->file->f_mapping);
+>   	}
+>   
+> -	if (IS_ERR(r->folio) || !folio_test_uptodate(r->folio)) {
+> +	if (IS_ERR(r->folio) ||
+> +	    !kernel_page_present(&r->folio->page) ||
+> +	    !folio_test_uptodate(r->folio)) {
+>   		if (!IS_ERR(r->folio))
+>   			folio_put(r->folio);
+>   		r->folio = NULL;
 
+As replied elsewhere, can't we take a look at the mapping?
 
-Can't we just lookup the mapping and refuse these folios that really 
-shouldn't be looked at?
-
-See gup_fast_folio_allowed() where we refuse secretmem_mapping().
+We do the same thing in gup_fast_folio_allowed() where we check 
+secretmem_mapping().
 
 
 -- 
