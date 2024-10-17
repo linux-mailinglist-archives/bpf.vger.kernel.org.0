@@ -1,36 +1,36 @@
-Return-Path: <bpf+bounces-42345-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42339-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FC889A30CF
-	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 00:35:06 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E6BA9A30C2
+	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 00:32:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 543DF285FEA
-	for <lists+bpf@lfdr.de>; Thu, 17 Oct 2024 22:35:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 608B81C219A7
+	for <lists+bpf@lfdr.de>; Thu, 17 Oct 2024 22:32:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 172801D7E52;
-	Thu, 17 Oct 2024 22:35:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48A1A1D9686;
+	Thu, 17 Oct 2024 22:32:16 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from 69-171-232-181.mail-mxout.facebook.com (69-171-232-181.mail-mxout.facebook.com [69.171.232.181])
+Received: from 66-220-155-179.mail-mxout.facebook.com (66-220-155-179.mail-mxout.facebook.com [66.220.155.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C0FD1D79A7
-	for <bpf@vger.kernel.org>; Thu, 17 Oct 2024 22:34:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=69.171.232.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E68C11C1AC4
+	for <bpf@vger.kernel.org>; Thu, 17 Oct 2024 22:32:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.220.155.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729204500; cv=none; b=fJSW2T+RW/8xuM7kFsmVOUsTu9J26LL5eki6WF3K4HCGsXBJh4FqDpC5L0NPnRLKNaaDlzq87fxQqIqD5KN8XqpK2RRIlrvCQAEmd98mjqeM+X2Ps9ilQ0w9etp2so/czfFdiALoTep5rsGWl3XC/4t9pp02kLs6Ht69Xn9p7aQ=
+	t=1729204336; cv=none; b=hmQCMj6EdywimIYRPYfvjfD9fEm2vQ6w0WOqat6z0BSlSqfjcs7eJNR9NKaWlrwMj0Kc1byxTmu/wKkywrQTsf8Hmka3VztmI9YNpA4mmUVtuo1fv/HiDaPI9+uVg/0LH+w2wLrbS7i5OTKTfhuUzEx17HNUOdM0wOSz0GCjqG4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729204500; c=relaxed/simple;
-	bh=fFyIp6W/9niIhq5mtAeHflCjRRSGawqx/UouEdV8bYA=;
+	s=arc-20240116; t=1729204336; c=relaxed/simple;
+	bh=AVlJGCavZcBDeFTlfE68iKAkJp67pPuhJa9n1LH2ZDA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ZjJpHjfu/Po1q7lNI94GMyKZ2lNaamIzAZtRTHtsPGMSwgvVOiISgNK3T2yhz1uEh1H9xLAFG0d5vPgoUvQHYXuc0R6igaQ96p57Unh712fT2YQAkcqYUm+LUBcRZNjdb6mdCw+8llzVlXsIPqqBIijQKzZte1AyVzsK5J27qeg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=69.171.232.181
+	 MIME-Version; b=MJdqTQjKd+hOeETj0HlEvSUOfGGcnZ77PwDSayib0SmGkhUfzlnV8SlFkGcdHgC1mCJzBINkLoty6V9AP1jZcxVy5FYNwE7NI4uexwjDsTYGMfRRr9WyciH9GLL2CfmnW+5MRIe7sIZ9DHb1IUcrDS9UGTO7SnARwd4C3tWOxHI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=66.220.155.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
 Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-	id 23595A2F07D2; Thu, 17 Oct 2024 15:31:54 -0700 (PDT)
+	id 3E091A2F07EF; Thu, 17 Oct 2024 15:31:59 -0700 (PDT)
 From: Yonghong Song <yonghong.song@linux.dev>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
@@ -39,9 +39,9 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	kernel-team@fb.com,
 	Martin KaFai Lau <martin.lau@kernel.org>,
 	Tejun Heo <tj@kernel.org>
-Subject: [PATCH bpf-next v5 3/9] sched-ext: Allow sched-ext progs to use private stack
-Date: Thu, 17 Oct 2024 15:31:54 -0700
-Message-ID: <20241017223154.3176602-1-yonghong.song@linux.dev>
+Subject: [PATCH bpf-next v5 4/9] bpf: Mark each subprog with proper private stack modes
+Date: Thu, 17 Oct 2024 15:31:59 -0700
+Message-ID: <20241017223159.3176904-1-yonghong.song@linux.dev>
 X-Mailer: git-send-email 2.43.5
 In-Reply-To: <20241017223138.3175885-1-yonghong.song@linux.dev>
 References: <20241017223138.3175885-1-yonghong.song@linux.dev>
@@ -53,38 +53,140 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Allow sched-ext struct_ops bpf progs to use private stack. In later
-jit, there will be some recursion checking if private stack is used
-such that if the same prog is run again in the same cpu, then
-that second prog run will be skipped.
+Three private stack modes are used to direct jit action:
+  NO_PRIV_STACK:        do not use private stack
+  PRIV_STACK_SUB_PROG:  adjust frame pointer address (similar to normal s=
+tack)
+  PRIV_STACK_ROOT_PROG: set the frame pointer
+
+Note that for subtree root prog (main prog or callback fn), even if the
+bpf_prog stack size is 0, PRIV_STACK_ROOT_PROG mode is still used.
+This is for bpf exception handling. More details can be found in
+subsequent jit support and selftest patches.
 
 Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
 ---
- kernel/sched/ext.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ include/linux/bpf.h   |  9 +++++++++
+ kernel/bpf/core.c     | 19 +++++++++++++++++++
+ kernel/bpf/verifier.c | 29 +++++++++++++++++++++++++++++
+ 3 files changed, 57 insertions(+)
 
-diff --git a/kernel/sched/ext.c b/kernel/sched/ext.c
-index 3cd7c50a51c5..f186cf7cac90 100644
---- a/kernel/sched/ext.c
-+++ b/kernel/sched/ext.c
-@@ -5370,10 +5370,16 @@ bpf_scx_get_func_proto(enum bpf_func_id func_id, =
-const struct bpf_prog *prog)
- 	}
- }
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index a789cd2f5d6a..2c07a2e311f4 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1457,6 +1457,12 @@ struct btf_mod_pair {
 =20
-+static bool bpf_scx_priv_stack_allowed(void)
-+{
-+	return true;
-+}
+ struct bpf_kfunc_desc_tab;
+=20
++enum bpf_priv_stack_mode {
++	NO_PRIV_STACK,
++	PRIV_STACK_SUB_PROG,
++	PRIV_STACK_ROOT_PROG,
++};
 +
- static const struct bpf_verifier_ops bpf_scx_verifier_ops =3D {
- 	.get_func_proto =3D bpf_scx_get_func_proto,
- 	.is_valid_access =3D bpf_scx_is_valid_access,
- 	.btf_struct_access =3D bpf_scx_btf_struct_access,
-+	.priv_stack_allowed =3D bpf_scx_priv_stack_allowed,
- };
+ struct bpf_prog_aux {
+ 	atomic64_t refcnt;
+ 	u32 used_map_cnt;
+@@ -1473,6 +1479,9 @@ struct bpf_prog_aux {
+ 	u32 ctx_arg_info_size;
+ 	u32 max_rdonly_access;
+ 	u32 max_rdwr_access;
++	enum bpf_priv_stack_mode priv_stack_mode;
++	u16 subtree_stack_depth; /* Subtree stack depth if PRIV_STACK_ROOT_PROG=
+, 0 otherwise */
++	void __percpu *priv_stack_ptr;
+ 	struct btf *attach_btf;
+ 	const struct bpf_ctx_arg_aux *ctx_arg_info;
+ 	struct mutex dst_mutex; /* protects dst_* pointers below, *after* prog =
+becomes visible */
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index 14d9288441f2..aee0055def4f 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -1240,6 +1240,7 @@ void __weak bpf_jit_free(struct bpf_prog *fp)
+ 		struct bpf_binary_header *hdr =3D bpf_jit_binary_hdr(fp);
 =20
- static int bpf_scx_init_member(const struct btf_type *t,
+ 		bpf_jit_binary_free(hdr);
++		free_percpu(fp->aux->priv_stack_ptr);
+ 		WARN_ON_ONCE(!bpf_prog_kallsyms_verify_off(fp));
+ 	}
+=20
+@@ -2421,6 +2422,24 @@ struct bpf_prog *bpf_prog_select_runtime(struct bp=
+f_prog *fp, int *err)
+ 		if (*err)
+ 			return fp;
+=20
++		if (fp->aux->priv_stack_eligible) {
++			if (!fp->aux->stack_depth) {
++				fp->aux->priv_stack_mode =3D NO_PRIV_STACK;
++			} else {
++				void __percpu *priv_stack_ptr;
++
++				fp->aux->priv_stack_mode =3D PRIV_STACK_ROOT_PROG;
++				priv_stack_ptr =3D
++					__alloc_percpu_gfp(fp->aux->stack_depth, 8, GFP_KERNEL);
++				if (!priv_stack_ptr) {
++					*err =3D -ENOMEM;
++					return fp;
++				}
++				fp->aux->subtree_stack_depth =3D fp->aux->stack_depth;
++				fp->aux->priv_stack_ptr =3D priv_stack_ptr;
++			}
++		}
++
+ 		fp =3D bpf_int_jit_compile(fp);
+ 		bpf_prog_jit_attempt_done(fp);
+ 		if (!fp->jited && jit_needed) {
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index a14857015ad4..274b0b92177d 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -20010,6 +20010,8 @@ static int jit_subprogs(struct bpf_verifier_env *=
+env)
+ {
+ 	struct bpf_prog *prog =3D env->prog, **func, *tmp;
+ 	int i, j, subprog_start, subprog_end =3D 0, len, subprog;
++	int subtree_top_idx, subtree_stack_depth;
++	void __percpu *priv_stack_ptr;
+ 	struct bpf_map *map_ptr;
+ 	struct bpf_insn *insn;
+ 	void *old_bpf_func;
+@@ -20088,6 +20090,33 @@ static int jit_subprogs(struct bpf_verifier_env =
+*env)
+ 		func[i]->is_func =3D 1;
+ 		func[i]->sleepable =3D prog->sleepable;
+ 		func[i]->aux->func_idx =3D i;
++
++		subtree_top_idx =3D env->subprog_info[i].subtree_top_idx;
++		if (env->subprog_info[subtree_top_idx].priv_stack_eligible) {
++			if (subtree_top_idx =3D=3D i)
++				func[i]->aux->subtree_stack_depth =3D
++					env->subprog_info[i].subtree_stack_depth;
++
++			subtree_stack_depth =3D func[i]->aux->subtree_stack_depth;
++			if (subtree_top_idx !=3D i) {
++				if (env->subprog_info[subtree_top_idx].subtree_stack_depth)
++					func[i]->aux->priv_stack_mode =3D PRIV_STACK_SUB_PROG;
++				else
++					func[i]->aux->priv_stack_mode =3D NO_PRIV_STACK;
++			} else if (!subtree_stack_depth) {
++				func[i]->aux->priv_stack_mode =3D PRIV_STACK_ROOT_PROG;
++			} else {
++				func[i]->aux->priv_stack_mode =3D PRIV_STACK_ROOT_PROG;
++				priv_stack_ptr =3D
++					__alloc_percpu_gfp(subtree_stack_depth, 8, GFP_KERNEL);
++				if (!priv_stack_ptr) {
++					err =3D -ENOMEM;
++					goto out_free;
++				}
++				func[i]->aux->priv_stack_ptr =3D priv_stack_ptr;
++			}
++		}
++
+ 		/* Below members will be freed only at prog->aux */
+ 		func[i]->aux->btf =3D prog->aux->btf;
+ 		func[i]->aux->func_info =3D prog->aux->func_info;
 --=20
 2.43.5
 
