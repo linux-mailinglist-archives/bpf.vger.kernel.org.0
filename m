@@ -1,166 +1,170 @@
-Return-Path: <bpf+bounces-42274-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42275-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 02C1F9A1A78
-	for <lists+bpf@lfdr.de>; Thu, 17 Oct 2024 08:08:16 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 231E39A1B6E
+	for <lists+bpf@lfdr.de>; Thu, 17 Oct 2024 09:11:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B2A6B281BD0
-	for <lists+bpf@lfdr.de>; Thu, 17 Oct 2024 06:08:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5518FB22EC7
+	for <lists+bpf@lfdr.de>; Thu, 17 Oct 2024 07:11:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D587D15ADA6;
-	Thu, 17 Oct 2024 06:08:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F0BE1CCB33;
+	Thu, 17 Oct 2024 07:11:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="FTh3EjRb"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="LvaDN6y4"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f68.google.com (mail-wr1-f68.google.com [209.85.221.68])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2D54174EFA
-	for <bpf@vger.kernel.org>; Thu, 17 Oct 2024 06:08:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D99391C233C
+	for <bpf@vger.kernel.org>; Thu, 17 Oct 2024 07:11:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.68
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729145289; cv=none; b=qeflarltSoIa9brQ/8KbwP67IYZmhr1+ae/ZFfQkiLw7/n2NVnwemGMRQqg8OBu4Nfhuq1twMaljZIBSKprUx5MO0tz+rIw1Ekmed/6yUF3GnlnHIffhKR80xsHWsOgy+FbuUdKSulMIvQGLxOxHHPpEX1Ha3MWuNXuLAc8yKGw=
+	t=1729149067; cv=none; b=jB0izdAh+8BImMFtZX5AOeCDNTYU1+Q9zJcLnIGXlGlMFwqXdaWMTGWWt2HNst1/ketyHkhLtz1k9jlmRH4TXdhutQvyFlaNjCd6NWMAkEtqo9cBGlStwcP11pLcVVTmUTYEGtHm2eFjqBjXKat+yT8RroDIYKKpBVAuU+YC29w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729145289; c=relaxed/simple;
-	bh=0l9ywL2mSSIqQ5VTTEHTmomUG2Z4+58aiIU2W0dG+mw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=G8Ns6Xb06Xz2nAgucQBIimzbWWV+n+mS0PHWjnBpvZ1imcVwTF4iBMN1LdAKvt4SSvG/AH6BNfw0u+NsjoGLnxPSmhBKV9JMxcsomHAR9GWGJJ0ferJ5pdIiFiX2JLre9VCU2oSh/Q6+AjvzjhYSnr+34Jp6XDFnrXn7fiLfmZA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=FTh3EjRb; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1729145286;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SMcDlBeVVknQpX1Q2UU7bZYEFTSRp3jjaHAleBRFfRw=;
-	b=FTh3EjRbZZtOO5sp0p9ALtS9ccLCs4K0adVJO89FF/x5VV9fuP2fpVFt899JZpL8A7drXh
-	oMUxugVK9/LYZw3L4cb7rbfhupCHcKL92d0A9wGCtJqpJJr2PS6BDaV21lVWOtv+WGsivb
-	+BudXAec4uLjHKhlwn7Xvl4NjyDRZRw=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-596-kxTa8gG9OYGsB3IZZS2z6g-1; Thu, 17 Oct 2024 02:08:05 -0400
-X-MC-Unique: kxTa8gG9OYGsB3IZZS2z6g-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-43057c9b32bso4083835e9.0
-        for <bpf@vger.kernel.org>; Wed, 16 Oct 2024 23:08:05 -0700 (PDT)
+	s=arc-20240116; t=1729149067; c=relaxed/simple;
+	bh=l3Uydk7duhpi48eTsX3h/4LpvTxOP5SMHvfOvswHse8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=N2ECnYxxnjAxT7IWvafk4VCM26V5VBbX40VLYHZVGdIfz1bLnDVRljADiMssXNfnodUJoIJsZfutKNdU5yeSxPilqyRskf0Ft8W4D2m86zvt92vKSleAgZSXINY4itoWnSMjpKkd2QiBp/b303jt46IX+i/nqGb54O4UddCPEbE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=LvaDN6y4; arc=none smtp.client-ip=209.85.221.68
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f68.google.com with SMTP id ffacd0b85a97d-37d55f0cf85so372014f8f.3
+        for <bpf@vger.kernel.org>; Thu, 17 Oct 2024 00:11:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1729149064; x=1729753864; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=0KdVXBGhFi7dGB+P4f8qZ3lXk3mjBstSPC2oOpH8z5Y=;
+        b=LvaDN6y4PNxtGDTKh51s54VGqaNcPrACs8sAhpUh7dfPbTp/CTgBLPFuXVCbZtYzCG
+         WGBUC0DWE0Ug1X5DfuwUIiqg4YUgeHu+Hjpsc+kLzNsWOc62PqAL/Vv3YaL5ylqOTmh+
+         cCkCKHQocEB0emmSTcE6AOheEPn1nO81855RfeW1vxGsLnjM6P2yFg77oiIOucqzcTIH
+         XDsFytXxwk7sqDSzy13UX71bcczLPUjeiQfiGAobIJ4W5Xi3IWyeWC4+XR7miJr905kV
+         SKJMI85dFEfq4k0h8WgzdYXb/1C9srgrsFj0h1xvkrdlyjSW3mcF/7yaFu7rDXWvzJxG
+         c3rg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729145284; x=1729750084;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SMcDlBeVVknQpX1Q2UU7bZYEFTSRp3jjaHAleBRFfRw=;
-        b=pO966lj1hhtUKnflZ2bsOZwtRPaOqpz2QHkNUctj+ybZxwMkDmmeAnQuZL6noou0it
-         APtBQnyCiS1LkqFoIETNVeIPlEStCNEqOMUa/FK35XGfGX0uB7TLr7tgt8XZVdyAWdZe
-         vlXEAAtsxUjCJZU2V5K4VsmOXKGpO9S7n7c/aRqlRx34v0mg9pynDumV29YeRnCxkAvq
-         LejXl0Dz4zf63twycG6Zj9yf9beSNtRKa1Lnh2BIl91L5DpXtWH11cdQEMrYI6Jh0ewL
-         bAVi18FjwaKm/cnarTNKFuNOvcNmOXrv3aHlMPrAjBsLmDCIcXax9h0sI9xRRngwRyOd
-         QP9g==
-X-Gm-Message-State: AOJu0YzBwNfyLjOp+OFRmyEP29yuGUocikb7icSzV9Ud7EIuvauOqYaq
-	ylVHJNHfOBa2PoIdAYiDwh89S+r5t5EkFYNLdSoUING9hvCAHIUkOjdOs9ZRzBKMsDK4cCjpfxt
-	KIgZkRvmGOTu43BH6CH4EVU2bExyIQjqQwgcZrSRrr0muVtah
-X-Received: by 2002:a05:600c:3328:b0:431:5970:806f with SMTP id 5b1f17b1804b1-43159708617mr9097125e9.34.1729145283942;
-        Wed, 16 Oct 2024 23:08:03 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFjVgrkMSnfEiBuTUCuuOs+weX14ctE+KZLJBgECpUuaTte1zE2PcaPn216eyLi5LEXr9v0DQ==
-X-Received: by 2002:a05:600c:3328:b0:431:5970:806f with SMTP id 5b1f17b1804b1-43159708617mr9096875e9.34.1729145283502;
-        Wed, 16 Oct 2024 23:08:03 -0700 (PDT)
-Received: from [192.168.0.113] (185-219-167-205-static.vivo.cz. [185.219.167.205])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43158c516b0sm14425565e9.46.2024.10.16.23.08.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Oct 2024 23:08:02 -0700 (PDT)
-Message-ID: <e54824cb-06b8-43ed-955b-5077c70cf902@redhat.com>
-Date: Thu, 17 Oct 2024 08:08:00 +0200
+        d=1e100.net; s=20230601; t=1729149064; x=1729753864;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0KdVXBGhFi7dGB+P4f8qZ3lXk3mjBstSPC2oOpH8z5Y=;
+        b=VTNSKxkKWqlD6iU5r2/Orfeg6aZk6s8VBJFj7rceH1lRFWGQ2lrz23oNxEYGBqiRvA
+         JhRr7ZYEVle1P5NFTRBxlan19M531OwVfc7u1UmlILw8oGTGvpaYlHNwD5TT/P5gWQ5K
+         J958hHobkJW4SvgaqY4pW59z7nJASPPDKgQA/3lqXHsoPq471lG09xKpmARp9uaFIL+j
+         DFo7lG5AXAD5/qoKLItGRwg/NJqZGEszufYxdP7h2G2ndThha2ddzFqizn7xj5Yh9pfT
+         X1xJdD/IQ4al9HqrsjLvJOUIXII6DsmKYDvTPLcdiWLg5IdxUe58xSk/aW+parjLG6wA
+         Ph1A==
+X-Forwarded-Encrypted: i=1; AJvYcCXyMwx4vINl5ROIJqqAIkbtPsgBTzWk3eJOIsH86FQefC9aiGz4EvjN3sOvWPMIC1Ezuyo=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz6HB1qqvSoefVvMntPdotd1n1ckdHTIBYw5gsK6RKH9KeVHE5V
+	O7P7ysNUOBAk2MsWhOeMXoAHQfatBQDSOBZ9q6duR9ljPOD/xr9M1bzkzKzUwPw=
+X-Google-Smtp-Source: AGHT+IHS9c0AQj2cx/Fpyoxeg7T4HwlSFDWY1656nHRQ5XO23p1Tr4JtGzw0IsCtZe1nsYz0oAXgTw==
+X-Received: by 2002:a05:6000:1092:b0:375:c4c7:c7ac with SMTP id ffacd0b85a97d-37d552cb121mr14038233f8f.49.1729149064050;
+        Thu, 17 Oct 2024 00:11:04 -0700 (PDT)
+Received: from u94a (27-242-4-121.adsl.fetnet.net. [27.242.4.121])
+        by smtp.gmail.com with ESMTPSA id e9e14a558f8ab-3a3d714f027sm12231535ab.62.2024.10.17.00.10.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Oct 2024 00:11:02 -0700 (PDT)
+Date: Thu, 17 Oct 2024 15:10:50 +0800
+From: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+To: Kuan-Wei Chiu <visitorckw@gmail.com>, bpf@vger.kernel.org, 
+	Eduard Zingerman <eddyz87@gmail.com>
+Cc: Tejun Heo <tj@kernel.org>, xavier_qy@163.com, longman@redhat.com, 
+	lizefan.x@bytedance.com, hannes@cmpxchg.org, mkoutny@suse.com, akpm@linux-foundation.org, 
+	jserv@ccns.ncku.edu.tw, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
+	Christoph Hellwig <hch@infradead.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>
+Subject: Using union-find in BPF verifier (was: Enhance union-find with KUnit
+ tests and optimization improvements)
+Message-ID: <aci6pn57bqjfcshbak7ekxb7zr5zz72u3rxyu4zbp5w3mvljx2@b4rn2e4rb4rl>
+References: <20241007152833.2282199-1-visitorckw@gmail.com>
+ <ZwQJ_hQENEE7uj0q@slm.duckdns.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next 2/3] bpftool: Prevent setting duplicate
- _GNU_SOURCE in Makefile
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
- Eduard Zingerman <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
- Nathan Chancellor <nathan@kernel.org>,
- Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling
- <morbo@google.com>, Justin Stitt <justinstitt@google.com>
-References: <cover.1728975031.git.vmalik@redhat.com>
- <507d699068777b78a5720e617c99fb19a9bb8a89.1728975031.git.vmalik@redhat.com>
- <CAEf4BzYJQMFv=BaB0=foVyAPVazhPreVx7c0PVWK28cLuELbtg@mail.gmail.com>
-From: Viktor Malik <vmalik@redhat.com>
-Content-Language: en-US
-In-Reply-To: <CAEf4BzYJQMFv=BaB0=foVyAPVazhPreVx7c0PVWK28cLuELbtg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZwQJ_hQENEE7uj0q@slm.duckdns.org>
 
-On 10/16/24 22:34, Andrii Nakryiko wrote:
-> On Mon, Oct 14, 2024 at 11:55 PM Viktor Malik <vmalik@redhat.com> wrote:
->>
->> When building selftests with CFLAGS set via env variable, the value of
->> CFLAGS is propagated into bpftool Makefile (called from selftests
->> Makefile). This makes the compilation fail as _GNU_SOURCE is defined two
->> times - once from selftests Makefile (by including lib.mk) and once from
->> bpftool Makefile (by calling `llvm-config --cflags`):
->>
->>     $ CFLAGS="" make -C tools/testing/selftests/bpf
->>     [...]
->>     CC      /bpf-next/tools/testing/selftests/bpf/tools/build/bpftool/btf.o
->>     <command-line>: error: "_GNU_SOURCE" redefined [-Werror]
->>     <command-line>: note: this is the location of the previous definition
->>     cc1: all warnings being treated as errors
->>     [...]
->>
->> Let bpftool Makefile check if _GNU_SOURCE is already defined and if so,
->> do not let llvm-config add it again.
->>
->> Signed-off-by: Viktor Malik <vmalik@redhat.com>
->> ---
->>  tools/bpf/bpftool/Makefile | 8 +++++++-
->>  1 file changed, 7 insertions(+), 1 deletion(-)
->>
->> diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
->> index ba927379eb20..2b5a713d71d8 100644
->> --- a/tools/bpf/bpftool/Makefile
->> +++ b/tools/bpf/bpftool/Makefile
->> @@ -147,7 +147,13 @@ ifeq ($(feature-llvm),1)
->>    # If LLVM is available, use it for JIT disassembly
->>    CFLAGS  += -DHAVE_LLVM_SUPPORT
->>    LLVM_CONFIG_LIB_COMPONENTS := mcdisassembler all-targets
->> -  CFLAGS  += $(shell $(LLVM_CONFIG) --cflags)
->> +  # When bpftool build is called from another Makefile which already sets
->> +  # -D_GNU_SOURCE, do not let llvm-config add it again as it will cause conflict.
->> +  ifneq ($(filter -D_GNU_SOURCE=,$(CFLAGS)),)
->> +    CFLAGS += $(filter-out -D_GNU_SOURCE,$(shell $(LLVM_CONFIG) --cflags))
+Michal mentioned lib/union_find.c during a discussion. I think we may
+have a use for in BPF verifier (kernel/bpf/verifier.c) that could
+further simplify the code. Eduard (who wrote the code shown below)
+probably would have a better idea.
+
+On Mon, Oct 07, 2024 at 06:19:10AM GMT, Tejun Heo wrote:
+> On Mon, Oct 07, 2024 at 11:28:27PM +0800, Kuan-Wei Chiu wrote:
+> > This patch series adds KUnit tests for the union-find implementation
+> > and optimizes the path compression in the uf_find() function to achieve
+> > a lower tree height and improved efficiency. Additionally, it modifies
+> > uf_union() to return a boolean value indicating whether a merge
+> > occurred, enhancing the process of calculating the number of groups in
+> > the cgroup cpuset.
 > 
-> why not always do filter-out and avoid this ugly ifneq?
+> I'm not necessarily against the patchset but this probably is becoming too
+> much polishing for something which is only used by cpuset in a pretty cold
+> path. It probably would be a good idea to concentrate on finding more use
+> cases.
 
-Because in that case, _GNU_SOURCE would not be defined for some builds
-(e.g. plain bpftool build). I'm not entirely sure what the implications
-are so I wanted to stay on the safe side. Anyways, I gave it a try and
-bpftool builds without _GNU_SOURCE just fine so I think that we can drop
-the ifneq.
+In BPF verifier we do the following to identify the outermost loop in a
+BPF program.
 
-> 
->> +  else
->> +    CFLAGS += $(shell $(LLVM_CONFIG) --cflags)
->> +  endif
->>    LIBS    += $(shell $(LLVM_CONFIG) --libs $(LLVM_CONFIG_LIB_COMPONENTS))
->>    ifeq ($(shell $(LLVM_CONFIG) --shared-mode),static)
->>      LIBS += $(shell $(LLVM_CONFIG) --system-libs $(LLVM_CONFIG_LIB_COMPONENTS))
->> --
->> 2.47.0
->>
-> 
+	static struct bpf_verifier_state *get_loop_entry(struct bpf_verifier_state *st)
+	{
+		struct bpf_verifier_state *topmost = st->loop_entry, *old;
+	
+		while (topmost && topmost->loop_entry && topmost != topmost->loop_entry)
+			topmost = topmost->loop_entry;
 
+		while (st && st->loop_entry != topmost) {
+			old = st->loop_entry;
+			st->loop_entry = topmost;
+			st = old;
+		}
+		return topmost;
+	}
+	
+	static void update_loop_entry(struct bpf_verifier_state *cur, struct bpf_verifier_state *hdr)
+	{
+		struct bpf_verifier_state *cur1, *hdr1;
+	
+		cur1 = get_loop_entry(cur) ?: cur;
+		hdr1 = get_loop_entry(hdr) ?: hdr;
+
+		if (hdr1->branches && hdr1->dfs_depth <= cur1->dfs_depth) {
+			cur->loop_entry = hdr;
+			hdr->used_as_loop_entry = true;
+		}
+	}
+
+Squinting a bit get_loop_entry() looks quite like uf_find() and
+update_loop_entry() looks quite link uf_union(). So perhaps we could get
+a straight-forward conversion here.
+
+---
+
+Another (comparatively worst) idea is to use it for tracking whether two
+register has the same content (this is currently done with struct
+bpf_reg_state.id).
+
+	r0 = random();
+	r1 = r0; /* r1 is the same as r0 */
+
+However it doesn't seem like union-find would be as useful here, because
+1. registers might later be reassigned
+2. in addition to equivalence, BPF verifier also track whether content
+of two register differs by some value (see sync_linked_regs()).
+
+	r0 = random();
+	r1 = r0 + 1; /* r1 differs r0 by 1 */
+
+So maybe not here, at least I don't see how union-find can make things
+simpler. But data structure and algorithm really isn't my strength and
+I'm happy to be proven wrong.
+
+
+Shung-Hsi
 
