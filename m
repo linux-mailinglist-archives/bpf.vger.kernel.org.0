@@ -1,147 +1,166 @@
-Return-Path: <bpf+bounces-42273-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42274-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA51B9A198A
-	for <lists+bpf@lfdr.de>; Thu, 17 Oct 2024 05:55:26 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 02C1F9A1A78
+	for <lists+bpf@lfdr.de>; Thu, 17 Oct 2024 08:08:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DA43A1C219BA
-	for <lists+bpf@lfdr.de>; Thu, 17 Oct 2024 03:55:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B2A6B281BD0
+	for <lists+bpf@lfdr.de>; Thu, 17 Oct 2024 06:08:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 808B013B2B8;
-	Thu, 17 Oct 2024 03:55:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D587D15ADA6;
+	Thu, 17 Oct 2024 06:08:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="FTh3EjRb"
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E533A25776;
-	Thu, 17 Oct 2024 03:55:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2D54174EFA
+	for <bpf@vger.kernel.org>; Thu, 17 Oct 2024 06:08:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729137319; cv=none; b=WsSXxDw6ec9NFyQwcxVM35qh2hw99tiYjiJlZfM46+XNIhUzotgVEpAC26DSnqx/w/y8stsLVEhO1RV4Zvb3zkj6B57ZOYxwWW4ILVxIjFOZ/H0TAEsSY5LyYt+evkM3+IodmdWAu6M/BbxVIQ92wGDmZzZ+HBp81+bZUiXNkoA=
+	t=1729145289; cv=none; b=qeflarltSoIa9brQ/8KbwP67IYZmhr1+ae/ZFfQkiLw7/n2NVnwemGMRQqg8OBu4Nfhuq1twMaljZIBSKprUx5MO0tz+rIw1Ekmed/6yUF3GnlnHIffhKR80xsHWsOgy+FbuUdKSulMIvQGLxOxHHPpEX1Ha3MWuNXuLAc8yKGw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729137319; c=relaxed/simple;
-	bh=i30bdzC0Bo+H5ag6jocBGrL1o6fX5L0Ua8W4osd85yM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=kRXS494StWs4PbzsA1FsVLbhJrjjXarb4Fze8lr4oIwKovI4YE89S/P1f5U5Cae/XhZuMOuGqcDm4YFof6fd3UnBcVpBocNhxBGASWYubH+09Y0RSRseHxwrT7mvD3d9Zy2L5oEWHfpaT3GalCvat2nLIlkzOeSdpjjnyVmOVEk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4XTYqf2y2Lz20qSw;
-	Thu, 17 Oct 2024 11:54:22 +0800 (CST)
-Received: from dggpemf500002.china.huawei.com (unknown [7.185.36.57])
-	by mail.maildlp.com (Postfix) with ESMTPS id 56AF41400CF;
-	Thu, 17 Oct 2024 11:55:07 +0800 (CST)
-Received: from [10.174.179.113] (10.174.179.113) by
- dggpemf500002.china.huawei.com (7.185.36.57) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Thu, 17 Oct 2024 11:55:06 +0800
-Message-ID: <672730fc-2224-d5fe-87d0-7dc9b00bf207@huawei.com>
-Date: Thu, 17 Oct 2024 11:55:05 +0800
+	s=arc-20240116; t=1729145289; c=relaxed/simple;
+	bh=0l9ywL2mSSIqQ5VTTEHTmomUG2Z4+58aiIU2W0dG+mw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=G8Ns6Xb06Xz2nAgucQBIimzbWWV+n+mS0PHWjnBpvZ1imcVwTF4iBMN1LdAKvt4SSvG/AH6BNfw0u+NsjoGLnxPSmhBKV9JMxcsomHAR9GWGJJ0ferJ5pdIiFiX2JLre9VCU2oSh/Q6+AjvzjhYSnr+34Jp6XDFnrXn7fiLfmZA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=FTh3EjRb; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1729145286;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SMcDlBeVVknQpX1Q2UU7bZYEFTSRp3jjaHAleBRFfRw=;
+	b=FTh3EjRbZZtOO5sp0p9ALtS9ccLCs4K0adVJO89FF/x5VV9fuP2fpVFt899JZpL8A7drXh
+	oMUxugVK9/LYZw3L4cb7rbfhupCHcKL92d0A9wGCtJqpJJr2PS6BDaV21lVWOtv+WGsivb
+	+BudXAec4uLjHKhlwn7Xvl4NjyDRZRw=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-596-kxTa8gG9OYGsB3IZZS2z6g-1; Thu, 17 Oct 2024 02:08:05 -0400
+X-MC-Unique: kxTa8gG9OYGsB3IZZS2z6g-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-43057c9b32bso4083835e9.0
+        for <bpf@vger.kernel.org>; Wed, 16 Oct 2024 23:08:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1729145284; x=1729750084;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=SMcDlBeVVknQpX1Q2UU7bZYEFTSRp3jjaHAleBRFfRw=;
+        b=pO966lj1hhtUKnflZ2bsOZwtRPaOqpz2QHkNUctj+ybZxwMkDmmeAnQuZL6noou0it
+         APtBQnyCiS1LkqFoIETNVeIPlEStCNEqOMUa/FK35XGfGX0uB7TLr7tgt8XZVdyAWdZe
+         vlXEAAtsxUjCJZU2V5K4VsmOXKGpO9S7n7c/aRqlRx34v0mg9pynDumV29YeRnCxkAvq
+         LejXl0Dz4zf63twycG6Zj9yf9beSNtRKa1Lnh2BIl91L5DpXtWH11cdQEMrYI6Jh0ewL
+         bAVi18FjwaKm/cnarTNKFuNOvcNmOXrv3aHlMPrAjBsLmDCIcXax9h0sI9xRRngwRyOd
+         QP9g==
+X-Gm-Message-State: AOJu0YzBwNfyLjOp+OFRmyEP29yuGUocikb7icSzV9Ud7EIuvauOqYaq
+	ylVHJNHfOBa2PoIdAYiDwh89S+r5t5EkFYNLdSoUING9hvCAHIUkOjdOs9ZRzBKMsDK4cCjpfxt
+	KIgZkRvmGOTu43BH6CH4EVU2bExyIQjqQwgcZrSRrr0muVtah
+X-Received: by 2002:a05:600c:3328:b0:431:5970:806f with SMTP id 5b1f17b1804b1-43159708617mr9097125e9.34.1729145283942;
+        Wed, 16 Oct 2024 23:08:03 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFjVgrkMSnfEiBuTUCuuOs+weX14ctE+KZLJBgECpUuaTte1zE2PcaPn216eyLi5LEXr9v0DQ==
+X-Received: by 2002:a05:600c:3328:b0:431:5970:806f with SMTP id 5b1f17b1804b1-43159708617mr9096875e9.34.1729145283502;
+        Wed, 16 Oct 2024 23:08:03 -0700 (PDT)
+Received: from [192.168.0.113] (185-219-167-205-static.vivo.cz. [185.219.167.205])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43158c516b0sm14425565e9.46.2024.10.16.23.08.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Oct 2024 23:08:02 -0700 (PDT)
+Message-ID: <e54824cb-06b8-43ed-955b-5077c70cf902@redhat.com>
+Date: Thu, 17 Oct 2024 08:08:00 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.13.1
-Subject: Re: [Intel-wired-lan] [PATCH net] igc: Fix passing 0 to ERR_PTR in
- igc_xdp_run_prog()
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next 2/3] bpftool: Prevent setting duplicate
+ _GNU_SOURCE in Makefile
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
+ Eduard Zingerman <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
+ Nathan Chancellor <nathan@kernel.org>,
+ Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling
+ <morbo@google.com>, Justin Stitt <justinstitt@google.com>
+References: <cover.1728975031.git.vmalik@redhat.com>
+ <507d699068777b78a5720e617c99fb19a9bb8a89.1728975031.git.vmalik@redhat.com>
+ <CAEf4BzYJQMFv=BaB0=foVyAPVazhPreVx7c0PVWK28cLuELbtg@mail.gmail.com>
+From: Viktor Malik <vmalik@redhat.com>
 Content-Language: en-US
-To: Jacob Keller <jacob.e.keller@intel.com>, Simon Horman <horms@kernel.org>
-CC: <anthony.l.nguyen@intel.com>, <przemyslaw.kitszel@intel.com>,
-	<davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-	<pabeni@redhat.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
-	<hawk@kernel.org>, <john.fastabend@gmail.com>, <vedang.patel@intel.com>,
-	<andre.guedes@intel.com>, <maciej.fijalkowski@intel.com>,
-	<jithu.joseph@intel.com>, <intel-wired-lan@lists.osuosl.org>,
-	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<bpf@vger.kernel.org>
-References: <20241016105310.3500279-1-yuehaibing@huawei.com>
- <20241016185333.GL2162@kernel.org>
- <8e4ef7f6-1d7d-45dc-b26e-4d9bc37269de@intel.com>
- <f8bcde08-b526-4b2e-8098-88402107c8ee@intel.com>
-From: Yue Haibing <yuehaibing@huawei.com>
-In-Reply-To: <f8bcde08-b526-4b2e-8098-88402107c8ee@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAEf4BzYJQMFv=BaB0=foVyAPVazhPreVx7c0PVWK28cLuELbtg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemf500002.china.huawei.com (7.185.36.57)
 
-On 2024/10/17 7:12, Jacob Keller wrote:
+On 10/16/24 22:34, Andrii Nakryiko wrote:
+> On Mon, Oct 14, 2024 at 11:55 PM Viktor Malik <vmalik@redhat.com> wrote:
+>>
+>> When building selftests with CFLAGS set via env variable, the value of
+>> CFLAGS is propagated into bpftool Makefile (called from selftests
+>> Makefile). This makes the compilation fail as _GNU_SOURCE is defined two
+>> times - once from selftests Makefile (by including lib.mk) and once from
+>> bpftool Makefile (by calling `llvm-config --cflags`):
+>>
+>>     $ CFLAGS="" make -C tools/testing/selftests/bpf
+>>     [...]
+>>     CC      /bpf-next/tools/testing/selftests/bpf/tools/build/bpftool/btf.o
+>>     <command-line>: error: "_GNU_SOURCE" redefined [-Werror]
+>>     <command-line>: note: this is the location of the previous definition
+>>     cc1: all warnings being treated as errors
+>>     [...]
+>>
+>> Let bpftool Makefile check if _GNU_SOURCE is already defined and if so,
+>> do not let llvm-config add it again.
+>>
+>> Signed-off-by: Viktor Malik <vmalik@redhat.com>
+>> ---
+>>  tools/bpf/bpftool/Makefile | 8 +++++++-
+>>  1 file changed, 7 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
+>> index ba927379eb20..2b5a713d71d8 100644
+>> --- a/tools/bpf/bpftool/Makefile
+>> +++ b/tools/bpf/bpftool/Makefile
+>> @@ -147,7 +147,13 @@ ifeq ($(feature-llvm),1)
+>>    # If LLVM is available, use it for JIT disassembly
+>>    CFLAGS  += -DHAVE_LLVM_SUPPORT
+>>    LLVM_CONFIG_LIB_COMPONENTS := mcdisassembler all-targets
+>> -  CFLAGS  += $(shell $(LLVM_CONFIG) --cflags)
+>> +  # When bpftool build is called from another Makefile which already sets
+>> +  # -D_GNU_SOURCE, do not let llvm-config add it again as it will cause conflict.
+>> +  ifneq ($(filter -D_GNU_SOURCE=,$(CFLAGS)),)
+>> +    CFLAGS += $(filter-out -D_GNU_SOURCE,$(shell $(LLVM_CONFIG) --cflags))
 > 
+> why not always do filter-out and avoid this ugly ifneq?
+
+Because in that case, _GNU_SOURCE would not be defined for some builds
+(e.g. plain bpftool build). I'm not entirely sure what the implications
+are so I wanted to stay on the safe side. Anyways, I gave it a try and
+bpftool builds without _GNU_SOURCE just fine so I think that we can drop
+the ifneq.
+
 > 
-> On 10/16/2024 4:06 PM, Jacob Keller wrote:
+>> +  else
+>> +    CFLAGS += $(shell $(LLVM_CONFIG) --cflags)
+>> +  endif
+>>    LIBS    += $(shell $(LLVM_CONFIG) --libs $(LLVM_CONFIG_LIB_COMPONENTS))
+>>    ifeq ($(shell $(LLVM_CONFIG) --shared-mode),static)
+>>      LIBS += $(shell $(LLVM_CONFIG) --system-libs $(LLVM_CONFIG_LIB_COMPONENTS))
+>> --
+>> 2.47.0
 >>
->>
->> On 10/16/2024 11:53 AM, Simon Horman wrote:
->>> On Wed, Oct 16, 2024 at 06:53:10PM +0800, Yue Haibing wrote:
->>>> Return NULL instead of passing to ERR_PTR while res is IGC_XDP_PASS,
->>>> which is zero, this fix smatch warnings:
->>>> drivers/net/ethernet/intel/igc/igc_main.c:2533
->>>>  igc_xdp_run_prog() warn: passing zero to 'ERR_PTR'
->>>>
->>>> Fixes: 26575105d6ed ("igc: Add initial XDP support")
->>>> Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
->>>> ---
->>>>  drivers/net/ethernet/intel/igc/igc_main.c | 2 +-
->>>>  1 file changed, 1 insertion(+), 1 deletion(-)
->>>>
->>>> diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethernet/intel/igc/igc_main.c
->>>> index 6e70bca15db1..c3d6e20c0be0 100644
->>>> --- a/drivers/net/ethernet/intel/igc/igc_main.c
->>>> +++ b/drivers/net/ethernet/intel/igc/igc_main.c
->>>> @@ -2530,7 +2530,7 @@ static struct sk_buff *igc_xdp_run_prog(struct igc_adapter *adapter,
->>>>  	res = __igc_xdp_run_prog(adapter, prog, xdp);
->>>>  
->>>>  out:
->>>> -	return ERR_PTR(-res);
->>>> +	return res ? ERR_PTR(-res) : NULL;
->>>
->>> I think this is what PTR_ERR_OR_ZERO() is for.
->>
->> Not quite. PTR_ERR_OR_ZERO is intended for the case where you are
->> extracting an error from a pointer. This is converting an error into a
->> pointer.
->>
->> I am not sure what is really expected here. If res is zero, shouldn't we
->> be returning an skb pointer and not NULL?
->>
->> Why does igc_xdp_run_prog even return a sk_buff pointer at all? It never
->> actually returns an skb...
->>
->> This feels like the wrong fix entirely.
->>
->> __igc_xdp_run_prog returns a custom value for the action, between
->> IGC_XDP_PASS, IGC_XDP_TX, IGC_XDP_REDIRECT, or IGC_XDP_CONSUMED.
->>
->> This function is called by igc_xdp_run_prog which converts this to a
->> negative error code with the sk_buff pointer type.
->>
->> All so that we can assign a value to the skb pointer in
->> ice_clean_rx_irq, and check it with IS_ERR
->>
->> I don't like this fix, I think we could drop the igc_xdp_run_prog
->> wrapper, call __igc_xdp_run_prog directly and check its return value
->> instead of this method of using an error pointer.
-> 
-> Indeed, this SKB error stuff was added by 26575105d6ed ("igc: Add
-> initial XDP support") which claims to be aligning with other Intel drivers.
 > 
 
-Thanks for review，maybe can fix this as commit 12738ac4754e ("i40e: Fix sparse errors in i40e_txrx.c")?
-
-> But the other Intel drivers just have a function that returns the xdp
-> result and checks it directly.
-> 
-> Perhaps this is due to the way that the igc driver shares rings between
-> XDP and the regular path?
-> 
-> Its not clear to me, but I think this fix is not what I would do.
-> 
-> .
 
