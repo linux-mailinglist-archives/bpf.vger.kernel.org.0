@@ -1,156 +1,133 @@
-Return-Path: <bpf+bounces-42297-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42298-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 416C69A21B1
-	for <lists+bpf@lfdr.de>; Thu, 17 Oct 2024 14:00:36 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75B639A2202
+	for <lists+bpf@lfdr.de>; Thu, 17 Oct 2024 14:18:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0499E28957B
-	for <lists+bpf@lfdr.de>; Thu, 17 Oct 2024 12:00:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A570E1C2209D
+	for <lists+bpf@lfdr.de>; Thu, 17 Oct 2024 12:18:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FEE61DD0D4;
-	Thu, 17 Oct 2024 12:00:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lI5Oh6J6"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCFB11DD0EF;
+	Thu, 17 Oct 2024 12:18:14 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5A7A1DA0E3;
-	Thu, 17 Oct 2024 12:00:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4A1E1C695;
+	Thu, 17 Oct 2024 12:18:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729166429; cv=none; b=hLmlVWKVtk4gq3hmDpJG1co9wF/GTWEzjyztPrh4uGrLx4bX+S3Y5Zs2jg3BOSh9eW1SzKFQ/yZV7wumCguLOH3dj1dzhdA+wO0rAtK4gvuV0RYr4tCF0VlKZdbwl+m6ijrnq3g8hbYVNIu1HUQdEMtvhdGE7O3HXMoZM/3BVTw=
+	t=1729167494; cv=none; b=IwvPUTpAmgY9a3ioxLoYEcVwEpfUc/M5ujMeFPbXGPYzQqeq8/1Sjj1iznZRatg94zhLx+xG0pAbW6jt6Ceoe79H316IoviHdKSjkpGLODNFKr71M4qO+l6UKfkupFFnUs3uDnCcMjE0fOJtanTsXKRchEWEt3g0y3D2Yn47aUc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729166429; c=relaxed/simple;
-	bh=Byl5BuzrsLEDMbFApadNHqtbjze3qn3c4G+v9EMZddk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ms1HiGYarqmXMHgcUzP03388dbSwVKXxcU8zxXfZjGK3dxag5hPCJK6xjMoLhYrvdZPhWRcHnH+lbkPWh0eQSRs+O2Gvol3rf7NVpI+/hsXiTBgYZ6NV6e87UX6YUkAf/ooDGCXSCPonSXpbIgrBjAsm7zQ/hpO3TVsCrLwny34=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lI5Oh6J6; arc=none smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1729166425; x=1760702425;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Byl5BuzrsLEDMbFApadNHqtbjze3qn3c4G+v9EMZddk=;
-  b=lI5Oh6J6fsbwQmNS9Hj6FnAlBzg3I2VRQq0xT7piqrY1E3HP/pfmJ3SQ
-   EbFKOmEVuL/w0Cjo0BvIIY3kCp/JJmQHOPlCNh421TeIxPOZ8u6FFzZcj
-   5R4t7EkC2Qq56ge2MIEiIjH6D1cjosEG+JCjCm+i6r4Olmi/rlzfSENh6
-   cRvlGWGsDV369vHFAD/QHEFcPcR7yWBEeyg62SU9qI4ElBQ7qTAxnSfVt
-   L03RjIvtmzxn+HzeU+hF+s9h6cCAjPZ0TAbSmW+QJqGDN+PPaFtO/gz67
-   mI74o/8/jcK5s77NLvlx/fhKxqJP7zjxKV1N7JpSh6pDR0lVIY7EjLI8Z
-   g==;
-X-CSE-ConnectionGUID: bl8ClyXTSx+o0a67AJSOBw==
-X-CSE-MsgGUID: 0JmAJAomSYS6FtmhijuNOw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11227"; a="28853871"
-X-IronPort-AV: E=Sophos;i="6.11,210,1725346800"; 
-   d="scan'208";a="28853871"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2024 05:00:24 -0700
-X-CSE-ConnectionGUID: OV+igYayRjasrtRoX/cySQ==
-X-CSE-MsgGUID: +qOg4easS32xwZ0iwjns4Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.11,210,1725346800"; 
-   d="scan'208";a="79354503"
-Received: from lkp-server01.sh.intel.com (HELO a48cf1aa22e8) ([10.239.97.150])
-  by orviesa008.jf.intel.com with ESMTP; 17 Oct 2024 05:00:21 -0700
-Received: from kbuild by a48cf1aa22e8 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1t1PAw-000MH1-1R;
-	Thu, 17 Oct 2024 12:00:18 +0000
-Date: Thu, 17 Oct 2024 19:59:31 +0800
-From: kernel test robot <lkp@intel.com>
-To: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-	ast@kernel.org, daniel@iogearbox.net, martin.lau@kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, linux-mm@kvack.org,
-	linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	rppt@kernel.org, david@redhat.com, yosryahmed@google.com,
-	shakeel.butt@linux.dev, Andrii Nakryiko <andrii@kernel.org>,
-	Yi Lai <yi1.lai@intel.com>
-Subject: Re: [PATCH v2 bpf] lib/buildid: handle memfd_secret() files in
- build_id_parse()
-Message-ID: <202410171938.aMzLRpxM-lkp@intel.com>
-References: <20241016221629.1043883-1-andrii@kernel.org>
+	s=arc-20240116; t=1729167494; c=relaxed/simple;
+	bh=8xOP+fyn8S9TsJvLes6SdW4DK+kDiUgc2CPyz+uilZc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qN3QgLrnzhRGXCDmihUhFlCkITz1y9SxdIKlbuziLIx2e9hiwOp/Yl0RCUtHmlnCHjyWGzbai14qr5NktjVR4mhJlY2ehfhSM9oD8ZioYA34ScRKoPiuY52DTEQTRiY7QAaeVd3A6DW7EfhZeBnK5bqhOmY27FJSgVFJr+gRZFI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4XTn0X3WzBz4f3lXV;
+	Thu, 17 Oct 2024 20:17:48 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 901B81A08DC;
+	Thu, 17 Oct 2024 20:18:00 +0800 (CST)
+Received: from [10.67.109.79] (unknown [10.67.109.79])
+	by APP4 (Coremail) with SMTP id gCh0CgB3q8d3ABFnPJpjEQ--.54302S2;
+	Thu, 17 Oct 2024 20:18:00 +0800 (CST)
+Message-ID: <12f57831-6b88-49db-bfb6-eabfc5e1d40c@huaweicloud.com>
+Date: Thu, 17 Oct 2024 20:17:58 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241016221629.1043883-1-andrii@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] cgroup/bpf: fix NULL pointer dereference at
+ cgroup_bpf_offline
+To: Tejun Heo <tj@kernel.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
+ <mkoutny@suse.com>
+Cc: Chen Ridong <chenridong@huaweicloud.com>, lizefan.x@bytedance.com,
+ hannes@cmpxchg.org, longman@redhat.com, john.fastabend@gmail.com,
+ roman.gushchin@linux.dev, quanyang.wang@windriver.com, ast@kernel.org,
+ cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ wangweiyang2@huawei.com
+References: <20241016093633.670555-1-chenridong@huaweicloud.com>
+ <bidpqhgxflkaj6wzhkqj5fqoc2zumf3vcyidspz4mqm4erq3bu@r4mzs45sbe7g>
+ <Zw_yHEJCBwtYFJoR@slm.duckdns.org>
+Content-Language: en-US
+From: Chen Ridong <chenridong@huaweicloud.com>
+In-Reply-To: <Zw_yHEJCBwtYFJoR@slm.duckdns.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgB3q8d3ABFnPJpjEQ--.54302S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7KFWrGr1DurWrJw4UJw4kXrb_yoW8ZF15pr
+	savFnFk3Z5GrZ0yryvva4FvF15CF4Iq34UXrWUJry3AFnrWrWUtry2kFy5CF98AFn7Kr13
+	JrWYvrySk3yq93DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvK14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4U
+	JVW0owA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kI
+	c2xKxwCY1x0262kKe7AKxVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbV
+	WUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF
+	67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42
+	IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF
+	0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxh
+	VjvjDU0xZFpf9x0JUd-B_UUUUU=
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
-Hi Andrii,
-
-kernel test robot noticed the following build errors:
-
-[auto build test ERROR on bpf/master]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Andrii-Nakryiko/lib-buildid-handle-memfd_secret-files-in-build_id_parse/20241017-061747
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git master
-patch link:    https://lore.kernel.org/r/20241016221629.1043883-1-andrii%40kernel.org
-patch subject: [PATCH v2 bpf] lib/buildid: handle memfd_secret() files in build_id_parse()
-config: s390-allyesconfig (https://download.01.org/0day-ci/archive/20241017/202410171938.aMzLRpxM-lkp@intel.com/config)
-compiler: s390-linux-gcc (GCC) 14.1.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20241017/202410171938.aMzLRpxM-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202410171938.aMzLRpxM-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   lib/buildid.c: In function 'freader_get_folio':
->> lib/buildid.c:79:14: error: implicit declaration of function 'kernel_page_present' [-Wimplicit-function-declaration]
-      79 |             !kernel_page_present(&r->folio->page) ||
-         |              ^~~~~~~~~~~~~~~~~~~
 
 
-vim +/kernel_page_present +79 lib/buildid.c
+On 2024/10/17 1:04, Tejun Heo wrote:
+> On Wed, Oct 16, 2024 at 03:13:52PM +0200, Michal Koutný wrote:
+>> Hello.
+>>
+>> On Wed, Oct 16, 2024 at 09:36:33AM GMT, Chen Ridong <chenridong@huaweicloud.com> wrote:
+>>> As mentioned above, when cgroup_bpf_inherit returns an error in
+>>> cgroup_setup_root, cgrp->bpf.refcnt has been exited. If cgrp->bpf.refcnt is
+>>> killed again in the cgroup_kill_sb function, the data of cgrp->bpf.refcnt
+>>> may have become NULL, leading to NULL pointer dereference.
+>>>
+>>> To fix this issue, goto err when cgroup_bpf_inherit returns an error.
+>>> Additionally, if cgroup_bpf_inherit returns an error after rebinding
+>>> subsystems, the root_cgrp->self.refcnt is exited, which leads to
+>>> cgroup1_root_to_use return 1 (restart) when subsystems is  mounted next.
+>>> This is due to a failure trying to get the refcnt(the root is root_cgrp,
+>>> without rebinding back to cgrp_dfl_root). So move the call to
+>>> cgroup_bpf_inherit above rebind_subsystems in the cgroup_setup_root.
+>>>
+>>> Fixes: 04f8ef5643bc ("cgroup: Fix memory leak caused by missing cgroup_bpf_offline")
+>>> Signed-off-by: Chen Ridong <chenridong@huawei.com>
+>>
+>> Hm, I always thought that BPF progs can only be attached to the default
+>> hierarchy (cgroup_bpf_prog_attach/cgroup_get_from_fd should prevent
+>> that).
+>>
+>> Thus I wonder whether cgroup_bpf_inherit (which is more like
+>> cgroup_bpf_init in this case) needs to be called no v1 roots at all (and
+>> with such a change, 04f8ef5643bc could be effectively reverted too).
+>>
+>> Or can bpf data be used on v1 hierarchies somehow?
+> 
+> We relaxed some of the usages (see cgroup_v1v2_get_from_fd()) but cgroup BPF
+> progs can only be attached to v2.
+> 
+> Thanks.
+> 
 
-    58	
-    59	static int freader_get_folio(struct freader *r, loff_t file_off)
-    60	{
-    61		/* check if we can just reuse current folio */
-    62		if (r->folio && file_off >= r->folio_off &&
-    63		    file_off < r->folio_off + folio_size(r->folio))
-    64			return 0;
-    65	
-    66		freader_put_folio(r);
-    67	
-    68		r->folio = filemap_get_folio(r->file->f_mapping, file_off >> PAGE_SHIFT);
-    69	
-    70		/* if sleeping is allowed, wait for the page, if necessary */
-    71		if (r->may_fault && (IS_ERR(r->folio) || !folio_test_uptodate(r->folio))) {
-    72			filemap_invalidate_lock_shared(r->file->f_mapping);
-    73			r->folio = read_cache_folio(r->file->f_mapping, file_off >> PAGE_SHIFT,
-    74						    NULL, r->file);
-    75			filemap_invalidate_unlock_shared(r->file->f_mapping);
-    76		}
-    77	
-    78		if (IS_ERR(r->folio) ||
-  > 79		    !kernel_page_present(&r->folio->page) ||
-    80		    !folio_test_uptodate(r->folio)) {
-    81			if (!IS_ERR(r->folio))
-    82				folio_put(r->folio);
-    83			r->folio = NULL;
-    84			return -EFAULT;
-    85		}
-    86	
-    87		r->folio_off = folio_pos(r->folio);
-    88		r->addr = kmap_local_folio(r->folio, 0);
-    89	
-    90		return 0;
-    91	}
-    92	
+So, should commit 04f8ef5643bc ("cgroup: Fix memory leak caused by 
+missing cgroup_bpf_offline") be reverted, and should cgroup_bpf_inherit 
+be only called in v2?
+Have I understood this correctly?
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Best regards,
+Ridong
+
 
