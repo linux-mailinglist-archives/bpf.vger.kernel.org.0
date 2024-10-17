@@ -1,165 +1,100 @@
-Return-Path: <bpf+bounces-42290-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42291-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD5BB9A20AB
-	for <lists+bpf@lfdr.de>; Thu, 17 Oct 2024 13:07:34 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE5639A20B4
+	for <lists+bpf@lfdr.de>; Thu, 17 Oct 2024 13:10:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 72284288BF2
-	for <lists+bpf@lfdr.de>; Thu, 17 Oct 2024 11:07:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 344B0B21A1B
+	for <lists+bpf@lfdr.de>; Thu, 17 Oct 2024 11:10:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40D571DBB38;
-	Thu, 17 Oct 2024 11:07:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB7931DBB21;
+	Thu, 17 Oct 2024 11:10:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MOcOCskp"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZyZZ8BRX"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 569BE1D5CC2;
-	Thu, 17 Oct 2024 11:07:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B627259C;
+	Thu, 17 Oct 2024 11:10:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729163245; cv=none; b=mtzImNv5to9vwlBxc6fMcwyZKvjUvthTZJ3kCk+vnoud47rdeQOsmqUmXbBYF7+uQjnjzK1UR8GpPcv3MW5wyJZmYq/pOHbmbeXw+SLneJNWGmyGSebt4zIQ9M03I8SEPPyU9rlitUp7KHZs7hy1oas5xOVEv6VDG7jDbQpXt9A=
+	t=1729163424; cv=none; b=Z8lhMBi9yNodA+CcYLCpC8I0H5Rvzwcs/xnrMeNj+rzQCYiPbN71OodEVOt+mzQQBVC06zxGHDcP/J/CavQR5OzuCYzs/58BcAK4oxGBUk9JhAdNSq8Z5gmaGgKdvSilokSXnYJwYwNQzqa2Pt/ni8c4i6pG03thVUmFydmpS2c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729163245; c=relaxed/simple;
-	bh=FC0Lxn6ChxB9i3JUJTg/0kuxPgCMromX4ji/2uy2t5A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AbkmtrZWH9hOMTL+loTUSDfNUDSnWfdWpuQiGsNBvj6rtoZ8vWuLZGnXUxa2mHCvZR3pXqcmleqQNS1k86QjMBKFMDZ526z9b7qc4wXxmgexJoVSTFUSJQV7QYDQxnTR/qt2zm0CUbulsblBM90Puq3wPatslK/BvwyT34J5xcA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=MOcOCskp; arc=none smtp.client-ip=192.198.163.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1729163242; x=1760699242;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=FC0Lxn6ChxB9i3JUJTg/0kuxPgCMromX4ji/2uy2t5A=;
-  b=MOcOCskpxDmtsJs14Asv0wKqDo8/cUORFk4ugE1Uul2sxdTAq/sLL+bH
-   +moFco3I+7HeDdaPsHHMfbTKABkxdDFfbRue9OsfDqPA5hqpARczwEmT3
-   ji+cTd3Ooc3c05RoflfT/20doX3sWStZbLTC1y10or+WUl3JkSuUrAFCQ
-   /WpsFNxdTbM0V8TvwBWTAV+YD1tzZhHLBc1J9vEtWWjfUG2ANWP3KX57B
-   gl2THDlMZSpGKNcZQ83p3+UjdR4Kd9QFy70FTjAS5ehRnN75R/Cs5I1eT
-   fjU9uGKmQF7RKZ/Q3RnyseXR9cjbHElLJic+LzkNeJ8gdr2Mdhhs2YqtK
-   g==;
-X-CSE-ConnectionGUID: 8ls4BSpyQReIS5zd2OCUKQ==
-X-CSE-MsgGUID: Tx9nqYc7QxOoKQBp8avIFg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11227"; a="31511700"
-X-IronPort-AV: E=Sophos;i="6.11,210,1725346800"; 
-   d="scan'208";a="31511700"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2024 04:07:21 -0700
-X-CSE-ConnectionGUID: lnCM6PewTuiAapcXonE70g==
-X-CSE-MsgGUID: 9BgmUhdnQ0aqJ9sGXdEq3g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.11,210,1725346800"; 
-   d="scan'208";a="109328173"
-Received: from lkp-server01.sh.intel.com (HELO a48cf1aa22e8) ([10.239.97.150])
-  by orviesa002.jf.intel.com with ESMTP; 17 Oct 2024 04:07:17 -0700
-Received: from kbuild by a48cf1aa22e8 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1t1OLa-000MDz-0o;
-	Thu, 17 Oct 2024 11:07:14 +0000
-Date: Thu, 17 Oct 2024 19:07:05 +0800
-From: kernel test robot <lkp@intel.com>
-To: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-	ast@kernel.org, daniel@iogearbox.net, martin.lau@kernel.org
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev, linux-mm@kvack.org,
-	linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	rppt@kernel.org, david@redhat.com, yosryahmed@google.com,
-	shakeel.butt@linux.dev, Andrii Nakryiko <andrii@kernel.org>,
-	Yi Lai <yi1.lai@intel.com>
-Subject: Re: [PATCH v2 bpf] lib/buildid: handle memfd_secret() files in
- build_id_parse()
-Message-ID: <202410171803.RRmMX9xL-lkp@intel.com>
-References: <20241016221629.1043883-1-andrii@kernel.org>
+	s=arc-20240116; t=1729163424; c=relaxed/simple;
+	bh=Si6MFxX2jn+dWiwkC5WpwNC76Ip6ddo9O69GxNZlU40=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=iyHUUDXukRz1QrO/mEVCH6hj3tefrs8Gt4eW+VqvsTCSPZJZVr3Yx/CaKt1nrr6rXth7RUEr8L7TuUOJSYDx8cnb2dA0EhZixgylwpfRFDw2URiS1hWUNapCA2tsFD5xy2+C55WBcAB5IKR95/NqtBmhiOB8YpFjr0LnBgGVgxs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZyZZ8BRX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8066C4CEC3;
+	Thu, 17 Oct 2024 11:10:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1729163423;
+	bh=Si6MFxX2jn+dWiwkC5WpwNC76Ip6ddo9O69GxNZlU40=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=ZyZZ8BRXx9i2Dko6CXOZzSZMIeDVpq58B8XEiKSFmX1KgnwUjqaKgGepmhePeLFp7
+	 3oO6DSZYB3qYQZqoKvTT5O9bPtVI95z9IGB7waPUEjnonC6UT7pVsfawxQRdydtMOz
+	 4U7RHqTr4afQhD0pXv3DmfihJ5iQevnwrBOLzlCTVM0vExs/dSe1yHzRk6PEitP62o
+	 niDTZMOm/ZiomUGeg8+TTaTDfJvBTxlEbdeZPbPZrPftuCdYQmV5of2LpJPzUC8bn/
+	 /D9MFRHT9cHWONu2xhUKMYkZpJakyYeGEaFXTMq7oOtxsWOtwt35ldQRtGaQbGi3/c
+	 AcMSUAcQPjjWA==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 70BF83805CC0;
+	Thu, 17 Oct 2024 11:10:30 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241016221629.1043883-1-andrii@kernel.org>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf v2 0/4] bpf, vsock: Fixes related to sockmap/sockhash
+ redirection
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <172916342925.2436315.7418332964701655166.git-patchwork-notify@kernel.org>
+Date: Thu, 17 Oct 2024 11:10:29 +0000
+References: <20241013-vsock-fixes-for-redir-v2-0-d6577bbfe742@rbox.co>
+In-Reply-To: <20241013-vsock-fixes-for-redir-v2-0-d6577bbfe742@rbox.co>
+To: Michal Luczaj <mhal@rbox.co>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, john.fastabend@gmail.com, jakub@cloudflare.com,
+ mst@redhat.com, sgarzare@redhat.com, bobby.eshleman@bytedance.com,
+ stefanha@redhat.com, netdev@vger.kernel.org, bpf@vger.kernel.org
 
-Hi Andrii,
+Hello:
 
-kernel test robot noticed the following build errors:
+This series was applied to bpf/bpf.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
 
-[auto build test ERROR on bpf/master]
+On Sun, 13 Oct 2024 18:26:38 +0200 you wrote:
+> Series consists of few fixes for issues uncovered while working on a BPF
+> sockmap/sockhash redirection selftest.
+> 
+> The last patch is more of a RFC clean up attempt. Patch claims that there's
+> no functional change, but effectively it removes (never touched?) reference
+> to sock_map_unhash().
+> 
+> [...]
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Andrii-Nakryiko/lib-buildid-handle-memfd_secret-files-in-build_id_parse/20241017-061747
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git master
-patch link:    https://lore.kernel.org/r/20241016221629.1043883-1-andrii%40kernel.org
-patch subject: [PATCH v2 bpf] lib/buildid: handle memfd_secret() files in build_id_parse()
-config: s390-allnoconfig (https://download.01.org/0day-ci/archive/20241017/202410171803.RRmMX9xL-lkp@intel.com/config)
-compiler: clang version 20.0.0git (https://github.com/llvm/llvm-project bfe84f7085d82d06d61c632a7bad1e692fd159e4)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20241017/202410171803.RRmMX9xL-lkp@intel.com/reproduce)
+Here is the summary with links:
+  - [bpf,v2,1/4] bpf, sockmap: SK_DROP on attempted redirects of unsupported af_vsock
+    https://git.kernel.org/bpf/bpf/c/9c5bd93edf7b
+  - [bpf,v2,2/4] vsock: Update rx_bytes on read_skb()
+    https://git.kernel.org/bpf/bpf/c/3543152f2d33
+  - [bpf,v2,3/4] vsock: Update msg_count on read_skb()
+    https://git.kernel.org/bpf/bpf/c/6dafde852df8
+  - [bpf,v2,4/4] bpf, vsock: Drop static vsock_bpf_prot initialization
+    https://git.kernel.org/bpf/bpf/c/19039f279797
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202410171803.RRmMX9xL-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   In file included from lib/buildid.c:5:
-   In file included from include/linux/elf.h:6:
-   In file included from arch/s390/include/asm/elf.h:181:
-   In file included from arch/s390/include/asm/mmu_context.h:11:
-   In file included from arch/s390/include/asm/pgalloc.h:18:
-   In file included from include/linux/mm.h:2213:
-   include/linux/vmstat.h:518:36: warning: arithmetic between different enumeration types ('enum node_stat_item' and 'enum lru_list') [-Wenum-enum-conversion]
-     518 |         return node_stat_name(NR_LRU_BASE + lru) + 3; // skip "nr_"
-         |                               ~~~~~~~~~~~ ^ ~~~
->> lib/buildid.c:79:7: error: call to undeclared function 'kernel_page_present'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-      79 |             !kernel_page_present(&r->folio->page) ||
-         |              ^
-   1 warning and 1 error generated.
-
-
-vim +/kernel_page_present +79 lib/buildid.c
-
-    58	
-    59	static int freader_get_folio(struct freader *r, loff_t file_off)
-    60	{
-    61		/* check if we can just reuse current folio */
-    62		if (r->folio && file_off >= r->folio_off &&
-    63		    file_off < r->folio_off + folio_size(r->folio))
-    64			return 0;
-    65	
-    66		freader_put_folio(r);
-    67	
-    68		r->folio = filemap_get_folio(r->file->f_mapping, file_off >> PAGE_SHIFT);
-    69	
-    70		/* if sleeping is allowed, wait for the page, if necessary */
-    71		if (r->may_fault && (IS_ERR(r->folio) || !folio_test_uptodate(r->folio))) {
-    72			filemap_invalidate_lock_shared(r->file->f_mapping);
-    73			r->folio = read_cache_folio(r->file->f_mapping, file_off >> PAGE_SHIFT,
-    74						    NULL, r->file);
-    75			filemap_invalidate_unlock_shared(r->file->f_mapping);
-    76		}
-    77	
-    78		if (IS_ERR(r->folio) ||
-  > 79		    !kernel_page_present(&r->folio->page) ||
-    80		    !folio_test_uptodate(r->folio)) {
-    81			if (!IS_ERR(r->folio))
-    82				folio_put(r->folio);
-    83			r->folio = NULL;
-    84			return -EFAULT;
-    85		}
-    86	
-    87		r->folio_off = folio_pos(r->folio);
-    88		r->addr = kmap_local_folio(r->folio, 0);
-    89	
-    90		return 0;
-    91	}
-    92	
-
+You are awesome, thank you!
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
