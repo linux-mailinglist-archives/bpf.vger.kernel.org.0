@@ -1,95 +1,105 @@
-Return-Path: <bpf+bounces-42286-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42287-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FB319A1E4A
-	for <lists+bpf@lfdr.de>; Thu, 17 Oct 2024 11:27:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 37F159A1E89
+	for <lists+bpf@lfdr.de>; Thu, 17 Oct 2024 11:35:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3CC1B1F23040
-	for <lists+bpf@lfdr.de>; Thu, 17 Oct 2024 09:27:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E20761F24077
+	for <lists+bpf@lfdr.de>; Thu, 17 Oct 2024 09:35:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B037A1D958E;
-	Thu, 17 Oct 2024 09:26:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67D8F1D9587;
+	Thu, 17 Oct 2024 09:35:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ql0WwyGY"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="XiFI8B0o"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E91951D90C5;
-	Thu, 17 Oct 2024 09:26:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B117B12DD8A;
+	Thu, 17 Oct 2024 09:35:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729157208; cv=none; b=FXbT3iyIv4vifQYKKh36v3z7Q3qs/+fXw3/XsHyFan1zsrOJk53uoM2rvvCJTNZRc+0NiNnfdBWpharlFxs2k2VnpkfuBJoMzs8xQ8mYWP4bwIOWZsfKb1MHkHu7zKmzbny/QAzF6p14Wxi6gRicpjfqqYZM4S2ZjnwXy0MWnos=
+	t=1729157722; cv=none; b=UpUiOJbtw8iZ3OKHSVxebF+uGWLS8vNm2NCm+hvjhRvzS2cSuF5i2BybNOXgS1e/q+R9OGC+eO0ah6MfCRnpLzk/zuGv45PoEU/Zp1N9Jc0xyA48Ep4am3M+4T/Hg5H16vBQPCu6DnlPnCIg/EOdSROTCR9MDx3Ji3ywBIqg9Kg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729157208; c=relaxed/simple;
-	bh=nJJW0IqlEidUPTYRziXp8zEdXwJwaiZA85X7aRPrG4c=;
+	s=arc-20240116; t=1729157722; c=relaxed/simple;
+	bh=ped3950d54S9hAnLeEAj3X1RF7de8yQC2eJe9g2KexQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gie3NPCxCsqyiMlin6+z+KSzAEOk/t1t9RgkkHtPJtwzMy9ibV0AmbHXiLj5px5grEXS+JFlMkigasAoXTWkpwUrQ2gUsfD8vQSB08FcOnHEK0ohjE5uVgfGpiMPz/ftVBG9kXVuJJWiWudFTL3uxuJBPk2mo+CXPx5v0kemaaI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ql0WwyGY; arc=none smtp.client-ip=209.85.215.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-7eab7622b61so636749a12.1;
-        Thu, 17 Oct 2024 02:26:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729157206; x=1729762006; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=nJJW0IqlEidUPTYRziXp8zEdXwJwaiZA85X7aRPrG4c=;
-        b=Ql0WwyGY2fJarPQPddHa2mV6FVMnEJ57/Pk6UN6dDfkFmokTshPgmQQv0wkcodqNBy
-         ob3FRdmAWnMdMdKJL71Ai5Z11QPsxG3CML0R0AUskyDrm6E025fCAHtLGKKy9aC6jJIE
-         Nc/s/7WFsQmfTUcm3jmalccJ1K9UrtbdFAlr1JxqNDfsVl/E0Y+EOSQVW0JMnX/T0V4i
-         fIw7WhfLBiC10tSraVYp5YQIvjVdartySKFA1cnx3oJaD4Mb+ZPFmpEGbAe5YwLjGpDw
-         QEcxlvEelbz06X71CUR3CFf5TLpiBTn7lZEvrbwiD8RK80hH4nPllX6TPV/krmEhlAdD
-         cuMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729157206; x=1729762006;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nJJW0IqlEidUPTYRziXp8zEdXwJwaiZA85X7aRPrG4c=;
-        b=aIWzEcPGO4RFwWKl4kjSeBNPGPXNdshK9iRl2y2NWl2Fv7/pv1+YPQl8h/+0NolEJ0
-         RQdVjddIpjoZooW4tWnPN5z2qT94nUVjRKR/lS+5ncLahFPvVlDh3jTvvlld65Pftlhf
-         vv/JV9aVl5yitLuMm23R/AUYW/d1B+KU+gE8wjMLGalkTk6o9X6+O8RG99DMgsgeUcOU
-         1zf2EjXeNaZUFz0fuKXbaaTWulzRAlalVRfo9JwVIRrEY5iY/ItaM+aZTIBaLZP+ey0r
-         8oi2lW5JmXB0vMxubT9IG9SnUo7qojmdWmHZqMshpGDNMXaB/C6DWSHljWAoqcKDe0uh
-         KE5A==
-X-Forwarded-Encrypted: i=1; AJvYcCUPk/w1l+qlaEMiHXowBzp6U1X3KE3/C1TY5l61CcCrFQBDvd6JzpLzXsyxFWJyUePQ9eKTqHCZHnYeomk8@vger.kernel.org, AJvYcCW0bU0CRytgYxiusDfezrXntoXCZO1Y+aoWq/U7Ekj21dA3fVe64MMu70ci3AGRG8d5o4rOvIFzdyST@vger.kernel.org, AJvYcCXZfVHDfFxgWhwUlqoM8uV7eYWxU0reC3MGsrfzqzAoMxkxN5eBPgwQNwL0WIUgGwP0n1w=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwxgzJfulSlk7IjUwxbNLjTo3nsQbYGqhQe+ZQ44gvQdamhaLeG
-	6udAKl7V4rhZL6JlrmE1wX7Zy9QYr7NlDDw6i0Ny6ZOlwHVvNUZM
-X-Google-Smtp-Source: AGHT+IE96loXrbUlaPAyE8WtyM8lDq1SaDZ9pKic4cShYAdR3fRclLcPo6MZKte8otQzE6KoCHpjSQ==
-X-Received: by 2002:a05:6a20:d504:b0:1cf:3d14:6921 with SMTP id adf61e73a8af0-1d905f4f902mr10429378637.35.1729157206080;
-        Thu, 17 Oct 2024 02:26:46 -0700 (PDT)
-Received: from fedora ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-71e774a2b20sm4335243b3a.122.2024.10.17.02.26.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Oct 2024 02:26:45 -0700 (PDT)
-Date: Thu, 17 Oct 2024 09:26:37 +0000
-From: Hangbin Liu <liuhangbin@gmail.com>
-To: Nikolay Aleksandrov <razor@blackwall.org>
-Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Jiri Pirko <jiri@resnulli.us>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Lorenzo Bianconi <lorenzo@kernel.org>,
-	Andrii Nakryiko <andriin@fb.com>, Jussi Maki <joamaki@gmail.com>,
-	Jay Vosburgh <jv@jvosburgh.net>,
-	Andy Gospodarek <andy@greyhouse.net>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Andrew Lunn <andrew+netdev@lunn.ch>, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCHv2 net-next 0/3] Bonding: returns detailed error about XDP
- failures
-Message-ID: <ZxDYTTIgV2tE3tWw@fedora>
-References: <20241017020638.6905-1-liuhangbin@gmail.com>
- <54164763-b635-4ff6-be88-56aeb461b494@blackwall.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=sv8MyB8pyytV987E6kqqqbg5g6m9STWTSaQnrT5pgPr5TxCrkicKeIMX69tWBC7ej3UzeOdtxQQw+sespwseuMEdqKv9krABRrG1s6oIFQEi8RksbUHoPXDRQHjNM4Grc+2QyIkS9yxMiEEipChXZtYelJcxlisohlhB27DhJaQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=XiFI8B0o; arc=none smtp.client-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=VVu7cX1SI2+XfnYlKmwbrDG3+CJWOAmt2jAl9wbUo9k=; b=XiFI8B0ovduSIe40JjuY242meO
+	1tWdoXPB8Y4u6FvdJlkOh0pr/b+ptTLEARYM4Fz0YcPpgeZ6S8vIFL3pv7C67je495kkW38x9jgPx
+	kZcvMosNEICP21MaeTfL4OcNrqj3D/g6hBzGdP9sE2b36zBWvYJp4QWDybwMxKdlcL3ZpeYi7ki7+
+	suQtk2YIywEtSE8+GUQPkWxddDo9J2uY+LZoII7Oa4V1WDt8U55u9QC4d2zaOtcNPZVh6JsT6n2VV
+	yz3mabQVBKOF3bVpb3D/1s3d5tFfjBLa1mZAU7RdfOnmovvB/POi51RCfYsgOa7ik7FCs2q+EK5D6
+	fjlJqizw==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
+	id 1t1Mua-000000075pF-1RkI;
+	Thu, 17 Oct 2024 09:35:17 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id EF73A3005AF; Thu, 17 Oct 2024 11:35:15 +0200 (CEST)
+Date: Thu, 17 Oct 2024 11:35:15 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Mike Rapoport <rppt@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Andy Lutomirski <luto@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+	Brian Cain <bcain@quicinc.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Christoph Hellwig <hch@infradead.org>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
+	Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Michal Simek <monstr@monstr.eu>, Oleg Nesterov <oleg@redhat.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Richard Weinberger <richard@nod.at>,
+	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
+	Stafford Horne <shorne@gmail.com>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>,
+	bpf@vger.kernel.org, linux-alpha@vger.kernel.org,
+	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+	linux-mips@vger.kernel.org, linux-mm@kvack.org,
+	linux-modules@vger.kernel.org, linux-openrisc@vger.kernel.org,
+	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+	linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+	linux-trace-kernel@vger.kernel.org, linux-um@lists.infradead.org,
+	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
+	sparclinux@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH v6 6/8] x86/module: prepare module loading for ROX
+ allocations of text
+Message-ID: <20241017093515.GU16066@noisy.programming.kicks-ass.net>
+References: <20241016122424.1655560-1-rppt@kernel.org>
+ <20241016122424.1655560-7-rppt@kernel.org>
+ <20241016170128.7afeb8b0@gandalf.local.home>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -98,15 +108,49 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <54164763-b635-4ff6-be88-56aeb461b494@blackwall.org>
+In-Reply-To: <20241016170128.7afeb8b0@gandalf.local.home>
 
-On Thu, Oct 17, 2024 at 11:40:34AM +0300, Nikolay Aleksandrov wrote:
-> Please CC reviewers when sending new versions. I was CCed on patches 1 and 2
-> probably due to the tag, but wasn't on patch 3 and had to search for
-> the series.
+On Wed, Oct 16, 2024 at 05:01:28PM -0400, Steven Rostedt wrote:
+> On Wed, 16 Oct 2024 15:24:22 +0300
+> Mike Rapoport <rppt@kernel.org> wrote:
+> 
+> > diff --git a/arch/x86/kernel/ftrace.c b/arch/x86/kernel/ftrace.c
+> > index 8da0e66ca22d..b498897b213c 100644
+> > --- a/arch/x86/kernel/ftrace.c
+> > +++ b/arch/x86/kernel/ftrace.c
+> > @@ -118,10 +118,13 @@ ftrace_modify_code_direct(unsigned long ip, const char *old_code,
+> >  		return ret;
+> >  
+> >  	/* replace the text with the new text */
+> > -	if (ftrace_poke_late)
+> > +	if (ftrace_poke_late) {
+> >  		text_poke_queue((void *)ip, new_code, MCOUNT_INSN_SIZE, NULL);
+> > -	else
+> > -		text_poke_early((void *)ip, new_code, MCOUNT_INSN_SIZE);
+> > +	} else {
+> > +		mutex_lock(&text_mutex);
+> > +		text_poke((void *)ip, new_code, MCOUNT_INSN_SIZE);
+> > +		mutex_unlock(&text_mutex);
+> > +	}
+> >  	return 0;
+> >  }
+> 
+> So this slows down the boot by over 30ms. That may not sound like much, but
+> we care very much about boot times. This code is serialized with boot and
+> runs whenever ftrace is configured in the kernel. The way I measured this,
+> was that I added:
+> 
 
-Oh, sorry for the inconvenient. I thought you are in the cc list. Next time I
-will do double check.
+> If this is only needed for module load, can we at least still use the
+> text_poke_early() at boot up?
 
-Hangbin
+Right, so I don't understand why this is needed at all.
+ftrace_module_init() runs before complete_formation() which normally
+switches to ROX, as such ftrace should be able to continue to do direct
+modifications here.
+
+Which reminds me, at some point I did patches adding a
+MODULE_STATE_UNFORMED callback in order for static_call / jump_label to
+be able to avoid the expensive patching on module load as well (arguably
+ftrace should be using that too, instead of a custom callback).
 
