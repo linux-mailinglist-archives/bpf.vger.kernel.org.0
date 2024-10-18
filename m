@@ -1,181 +1,219 @@
-Return-Path: <bpf+bounces-42420-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42421-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A72B29A3ED8
-	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 14:52:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 572D89A3F99
+	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 15:29:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 35BB61F25850
-	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 12:52:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 77FB01C22DA6
+	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 13:29:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 297931D27BE;
-	Fri, 18 Oct 2024 12:50:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="gyaRwtGS"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC61C1D86CD;
+	Fri, 18 Oct 2024 13:29:34 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71E172032A;
-	Fri, 18 Oct 2024 12:50:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C9D01CABA;
+	Fri, 18 Oct 2024 13:29:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.154
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729255849; cv=none; b=RsGm3fSrQyafPi9GMK7o1PkLu+nxUCB6hJ03jkPlJ2LFQ5hczyQnAITe5a2zgQqQGVJmgeQgTmuUNdTIsOpG12FyV2CmLA5ur5Zz2lmusMg+qxnfje2XEP7hgi5IZ2dDZJYK5DK5vYVqKHSMoIn7M5CWsG4xDu0OgSRTqHJOLB0=
+	t=1729258174; cv=none; b=V1bk2tDIph3vGjtYnCCwlBxWYPvp7XNWmrj8rQDfaSwUqEZM+kIfeY0ULD05trhEBD8QvaG1m+no7XIobWbgTd65Dz4I54vxo9dt3KzrD/gwkTuviD+iTblfT2H93733sPZtolqG/TIhd5I1/aPe1Gai99MjPESvh38J5ngqvEo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729255849; c=relaxed/simple;
-	bh=UiEODK30WMf6c99as8tczI3ce9+36ip9+CEDUbshnfI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hKUtXmvkorPFgGREtm7TqOaTyqynmPrA/61w8XVMrsCvO6SFTTV5s8Wv2kd+PeumDxmHOp8hQ/3Bekad8HMoWnuXI7Lz2p2f9lH6yyRlLF1aUsUOLKyqs932RQ9BUVK2KSXSC7e11hPgJafGBpDF/Yq3UlNc1i9x7fS4g9ZN7kI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=gyaRwtGS; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 49I5ZBjP011784;
-	Fri, 18 Oct 2024 12:50:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=pp1; bh=XSncqozF5VzTrwK4gClpEKpFn30dbM
-	DgMlseiEjUKOw=; b=gyaRwtGS8IXzLTpHXi1MIwbH2HRW0uhbOjq6lah7+Vgwrj
-	JXmSH45vch0H7zx3Vt/t8kk1jeAGl/MZUSxUxEO/ks9Q8U0jEJi9PXhwuHJK6LgU
-	/QTOTzvtFAk8mfKAghAsj8VoDoFaq2KVcB8yTBq3B+Q7KcVDCIhi8F9ETP/7O4G9
-	fmgr047Z2/63WLno4XVb2NMil6PbGOVVtyv7UyAzo4Jrolf6pAA8aUaNnhU1bf6N
-	nm/LT1j1xhSm5aSLFJMCMn11izW5Q2J25nS5klYNjp9BUEt0dstfx5Do0qxADcvW
-	sTA0oCAB+0SOolzPb18747QthL8XeuqoKgUCcfPA==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 42bhnfa77a-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 18 Oct 2024 12:50:02 +0000 (GMT)
-Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 49ICn7pa023203;
-	Fri, 18 Oct 2024 12:50:01 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 42bhnfa776-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 18 Oct 2024 12:50:01 +0000 (GMT)
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 49IBnIhL006415;
-	Fri, 18 Oct 2024 12:50:00 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4284xkmfcx-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 18 Oct 2024 12:49:59 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
-	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 49ICnu1B17105376
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 18 Oct 2024 12:49:56 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id EA0782004B;
-	Fri, 18 Oct 2024 12:49:55 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 5EAC920043;
-	Fri, 18 Oct 2024 12:49:54 +0000 (GMT)
-Received: from osiris (unknown [9.171.52.217])
-	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Fri, 18 Oct 2024 12:49:54 +0000 (GMT)
-Date: Fri, 18 Oct 2024 14:49:52 +0200
-From: Heiko Carstens <hca@linux.ibm.com>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Sven Schnelle <svens@linux.ibm.com>,
-        "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Florent Revest <revest@chromium.org>,
-        linux-trace-kernel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Mark Rutland <mark.rutland@arm.com>, linux-arch@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>, Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Naveen N Rao <naveen@kernel.org>,
-        Madhavan Srinivasan <maddy@linux.ibm.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v17 11/16] fprobe: Rewrite fprobe on function-graph tracer
-Message-ID: <20241018124952.17670-E-hca@linux.ibm.com>
-References: <172904026427.36809.516716204730117800.stgit@devnote2>
- <172904040206.36809.2263909331707439743.stgit@devnote2>
- <yt9ded4gfdz0.fsf@linux.ibm.com>
- <20241016101022.185f741b@gandalf.local.home>
+	s=arc-20240116; t=1729258174; c=relaxed/simple;
+	bh=RZ6dj9vRCUkiAFZKjQ6w5AG7jaUlhyYdQDcOPRxtjwM=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=gj7kLeqhL/jy1OJBqc8oR2ORwl3X+tP5ehRieoZNoR8RDoswCaH3UOKkuoWF8TEPL/Qz7MiXzz6o+6G/nBhNqMEwEHMUb55LxeYc73obir40DVPEOz4QiuTL+usjgBMWdjx1wjQKTklIHkmMcqCfTy6zIz3snAZF8GZvGCkL3JU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.154
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.18.186.51])
+	by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4XVPyL33wPz9v7JP;
+	Fri, 18 Oct 2024 21:03:06 +0800 (CST)
+Received: from mail02.huawei.com (unknown [7.182.16.47])
+	by mail.maildlp.com (Postfix) with ESMTP id 3249A1402A5;
+	Fri, 18 Oct 2024 21:29:22 +0800 (CST)
+Received: from [127.0.0.1] (unknown [10.204.63.22])
+	by APP1 (Coremail) with SMTP id LxC2BwDHWDClYhJnwGEYAw--.52096S2;
+	Fri, 18 Oct 2024 14:29:21 +0100 (CET)
+Message-ID: <e6d5e3b0b35db5d569b418b73395574f8b63e445.camel@huaweicloud.com>
+Subject: Re: [PATCH 1/3] ima: Remove inode lock
+From: Roberto Sassu <roberto.sassu@huaweicloud.com>
+To: "Kirill A. Shutemov" <kirill@shutemov.name>, Lorenzo Stoakes
+	 <lorenzo.stoakes@oracle.com>
+Cc: Paul Moore <paul@paul-moore.com>, ebpqwerty472123@gmail.com, 
+ kirill.shutemov@linux.intel.com, zohar@linux.ibm.com,
+ dmitry.kasatkin@gmail.com,  eric.snowberg@oracle.com, jmorris@namei.org,
+ serge@hallyn.com,  linux-integrity@vger.kernel.org,
+ linux-security-module@vger.kernel.org,  linux-kernel@vger.kernel.org,
+ bpf@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
+ linux-mm@kvack.org, akpm@linux-foundation.org,  vbabka@suse.cz,
+ linux-fsdevel@vger.kernel.org, Liam Howlett <liam.howlett@oracle.com>, Jann
+ Horn <jannh@google.com>
+Date: Fri, 18 Oct 2024 15:29:05 +0200
+In-Reply-To: <gl4pf7gezpjtvnbp4lzyb65wqaiw3xzjjrs3476j5odxsfzvsj@oouue73v3cgr>
+References: <20241008165732.2603647-1-roberto.sassu@huaweicloud.com>
+	 <CAHC9VhSyWNKqustrTjA1uUaZa_jA-KjtzpKdJ4ikSUKoi7iV0Q@mail.gmail.com>
+	 <CAHC9VhQR2JbB7ni2yX_U8TWE0PcQQkm_pBCuG3nYN7qO15nNjg@mail.gmail.com>
+	 <7358f12d852964d9209492e337d33b8880234b74.camel@huaweicloud.com>
+	 <593282dbc9f48673c8f3b8e0f28e100f34141115.camel@huaweicloud.com>
+	 <15bb94a306d3432de55c0a12f29e7ed2b5fa3ba1.camel@huaweicloud.com>
+	 <c1e47882720fe45aa9d04d663f5a6fd39a046bcb.camel@huaweicloud.com>
+	 <b498e3b004bedc460991e167c154cc88d568f587.camel@huaweicloud.com>
+	 <ggvucjixgiuelt6vjz6oawgyobmzrhifaozqqvupwfso65ia7c@bauvfqtvq6lv>
+	 <e89f6b61-a57f-4848-87f1-8e2282bc5aea@lucifer.local>
+	 <gl4pf7gezpjtvnbp4lzyb65wqaiw3xzjjrs3476j5odxsfzvsj@oouue73v3cgr>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241016101022.185f741b@gandalf.local.home>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: UUW38Z9rXO76MvRYA0XJsM_S28KlnPP_
-X-Proofpoint-ORIG-GUID: VuHSGxc_ruZFY61dIrF2n3tsSHHcNP1E
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
- definitions=2024-10-15_01,2024-10-11_01,2024-09-30_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- suspectscore=0 lowpriorityscore=0 impostorscore=0 mlxlogscore=610
- malwarescore=0 bulkscore=0 adultscore=0 spamscore=0 phishscore=0
- clxscore=1011 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2409260000 definitions=main-2410180080
+X-CM-TRANSID:LxC2BwDHWDClYhJnwGEYAw--.52096S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxuF13JFWrJw1fuF43Jw4Utwb_yoW5Crykpr
+	yrJa4qgFWYqFyxXrn2q3Z0gFn0yayUKFy7urWrXry8AwnrtFnxCr4rGFy5urs8Ar1kAFyF
+	vF4UCFZakFW7JFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvjb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
+	AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AF
+	wI0_GFv_Wryl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5
+	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+	0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
+	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUIa
+	0PDUUUU
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAABGcRxH8JsgAAsw
 
-On Wed, Oct 16, 2024 at 10:10:22AM -0400, Steven Rostedt wrote:
-> On Wed, 16 Oct 2024 14:07:31 +0200
-> Sven Schnelle <svens@linux.ibm.com> wrote:
-> > I haven't yet fully understood why this logic is needed, but the
-> > WARN_ON_ONCE triggers on s390. I'm assuming this fails because fp always
-> > has the upper bits of the address set on x86 (and likely others). As an
-> > example, in my test setup, fp is 0x8feec218 on s390, while it is
-> > 0xffff888100add118 in x86-kvm.
-> 
-> Since we only need to save 4 bits for size, we could have what it is
-> replacing always be zero or always be f, depending on the arch. The
-> question then is, is s390's 4 MSBs always zero?
-> 
-> Thus we could make it be:
-> 
-> static inline int decode_fprobe_header(unsigned long val, struct fprobe **fp)
-> {
-> 	unsigned long ptr;
-> 
-> 	ptr = (val & FPROBE_HEADER_PTR_MASK) | FPROBE_HEADER_MSB_MASK;
-> 	if (fp)
-> 		*fp = (struct fprobe *)ptr;
-> 	return val >> FPROBE_HEADER_PTR_BITS;
-> }
-> 
-> And define FPROBE_HEADER_MSB_MASK to be either:
-> 
-> For most archs:
-> 
-> #define FPROBE_HEADER_MSB_MASK	(0xf << FPROBE_HEADER_PTR_BITS)
-> 
-> or on s390:
-> 
-> #define FPROBE_HEADER_MSB_MASK	(0x0)
-> 
-> Would this work?
+On Fri, 2024-10-18 at 14:05 +0300, Kirill A. Shutemov wrote:
+> On Fri, Oct 18, 2024 at 12:00:22PM +0100, Lorenzo Stoakes wrote:
+> > + Liam, Jann
+> >=20
+> > On Fri, Oct 18, 2024 at 01:49:06PM +0300, Kirill A. Shutemov wrote:
+> > > On Fri, Oct 18, 2024 at 11:24:06AM +0200, Roberto Sassu wrote:
+> > > > Probably it is hard, @Kirill would there be any way to safely move
+> > > > security_mmap_file() out of the mmap_lock lock?
+> > >=20
+> > > What about something like this (untested):
+> > >=20
+> > > diff --git a/mm/mmap.c b/mm/mmap.c
+> > > index dd4b35a25aeb..03473e77d356 100644
+> > > --- a/mm/mmap.c
+> > > +++ b/mm/mmap.c
+> > > @@ -1646,6 +1646,26 @@ SYSCALL_DEFINE5(remap_file_pages, unsigned lon=
+g, start, unsigned long, size,
+> > >  	if (pgoff + (size >> PAGE_SHIFT) < pgoff)
+> > >  		return ret;
+> > >=20
+> > > +	if (mmap_read_lock_killable(mm))
+> > > +		return -EINTR;
+> > > +
+> > > +	vma =3D vma_lookup(mm, start);
+> > > +
+> > > +	if (!vma || !(vma->vm_flags & VM_SHARED)) {
+> > > +		mmap_read_unlock(mm);
+> > > +		return -EINVAL;
+> > > +	}
+> > > +
+> > > +	file =3D get_file(vma->vm_file);
+> > > +
+> > > +	mmap_read_unlock(mm);
+> > > +
+> > > +	ret =3D security_mmap_file(vma->vm_file, prot, flags);
+> >=20
+> > Accessing VMA fields without any kind of lock is... very much not advis=
+ed.
+> >=20
+> > I'm guessing you meant to say:
+> >=20
+> > 	ret =3D security_mmap_file(file, prot, flags);
+> >=20
+> > Here? :)
+>=20
+> Sure. My bad.
+>=20
+> Patch with all fixups:
+>=20
+> diff --git a/mm/mmap.c b/mm/mmap.c
+> index dd4b35a25aeb..541787d526b6 100644
+> --- a/mm/mmap.c
+> +++ b/mm/mmap.c
+> @@ -1646,14 +1646,41 @@ SYSCALL_DEFINE5(remap_file_pages, unsigned long, =
+start, unsigned long, size,
+>  	if (pgoff + (size >> PAGE_SHIFT) < pgoff)
+>  		return ret;
+> =20
+> -	if (mmap_write_lock_killable(mm))
+> +	if (mmap_read_lock_killable(mm))
+>  		return -EINTR;
+> =20
+>  	vma =3D vma_lookup(mm, start);
+> =20
+> +	if (!vma || !(vma->vm_flags & VM_SHARED)) {
+> +		mmap_read_unlock(mm);
+> +		return -EINVAL;
+> +	}
+> +
+> +	file =3D get_file(vma->vm_file);
+> +
+> +	mmap_read_unlock(mm);
+> +
+> +	ret =3D security_mmap_file(file, prot, flags);
 
-This would work for s390. Right now we don't make any use of the four
-MSBs, and they are always zero. If for some reason this would ever
-change, we would need to come up with a different solution.
+Uhm, I have to calculate prot and flags before. I can check if what I
+used here changed in the next lock, and refuse.
 
-Please note that this only works for addresses in the kernel address
-space. For user space the full 64 bit address range (minus the top
-page) can be used for user space applications. I'm just writing this
-here, just in case something like this comes up for uprobes or
-something similar as well.
+Roberto
+
+> +	if (ret) {
+> +		fput(file);
+> +		return ret;
+> +	}
+> +
+> +	ret =3D -EINVAL;
+> +
+> +	if (mmap_write_lock_killable(mm)) {
+> +		fput(file);
+> +		return -EINTR;
+> +	}
+> +
+> +	vma =3D vma_lookup(mm, start);
+> +
+>  	if (!vma || !(vma->vm_flags & VM_SHARED))
+>  		goto out;
+> =20
+> +	if (vma->vm_file !=3D file)
+> +		goto out;
+> +
+>  	if (start + size > vma->vm_end) {
+>  		VMA_ITERATOR(vmi, mm, vma->vm_end);
+>  		struct vm_area_struct *next, *prev =3D vma;
+> @@ -1688,16 +1715,11 @@ SYSCALL_DEFINE5(remap_file_pages, unsigned long, =
+start, unsigned long, size,
+>  	if (vma->vm_flags & VM_LOCKED)
+>  		flags |=3D MAP_LOCKED;
+> =20
+> -	file =3D get_file(vma->vm_file);
+> -	ret =3D security_mmap_file(vma->vm_file, prot, flags);
+> -	if (ret)
+> -		goto out_fput;
+>  	ret =3D do_mmap(vma->vm_file, start, size,
+>  			prot, flags, 0, pgoff, &populate, NULL);
+> -out_fput:
+> -	fput(file);
+>  out:
+>  	mmap_write_unlock(mm);
+> +	fput(file);
+>  	if (populate)
+>  		mm_populate(ret, populate);
+>  	if (!IS_ERR_VALUE(ret))
+
 
