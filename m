@@ -1,61 +1,61 @@
-Return-Path: <bpf+bounces-42370-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42371-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDCD89A3617
-	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 08:52:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B3529A361C
+	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 08:52:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EC1311C22CB3
-	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 06:52:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC7992851DC
+	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 06:52:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CEED18BBAE;
-	Fri, 18 Oct 2024 06:49:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E36418CC0D;
+	Fri, 18 Oct 2024 06:49:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Bw38EFa3"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MKJydtIw"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5984418B482
-	for <bpf@vger.kernel.org>; Fri, 18 Oct 2024 06:49:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7484718CBF9
+	for <bpf@vger.kernel.org>; Fri, 18 Oct 2024 06:49:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729234174; cv=none; b=Di8EiM+UhFScIjzcqwC2CJAH3oDnFq53qyC8h15adp6O6++nq6ofjRtik9eTncQoycfFB9BcnMX0uIo2vCFdzp7ZCcvqxZRbDf53Jw9YyVqBg8fGoOtnqNe0DYhuuU9DHX8ZhRAF+rrBAMHcDO3XF+vOIUEIry/TovtZGLRLlMM=
+	t=1729234185; cv=none; b=NZvudUqPryvyeM+X4zX8xaypbJ8Ee4v++4n7Wx06NsJ8f9V4DfTe7sub08W3oAZmJRk84qWUKVPBUVbphjiR8WqeNiq+oHWXT0e0ALBLATPvVG7916AOd5Xxd8GBNYaYpCA6gWf4cJoqvc/8fYRff8UiXqApRKaKPSMmjeVH3I8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729234174; c=relaxed/simple;
-	bh=Ock5Glzg6zoE58YWkCbPBbP0QkoyZgBAPNa45WkTjbY=;
+	s=arc-20240116; t=1729234185; c=relaxed/simple;
+	bh=s6Nnyvpb0DbTv0SZIYTdRqunvQ5rPe9g6uXAZ6zOWAM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=FvTSDV4eL2Zk32hjphYra3y98fdjoHM6S7m1G6PcrdZ7om2LxKQWoCTWNc1vVGpQKLwBzNlQIRk7Ax0CVyLB8MUC7n8MbPHHxn42aJiq2V/RJjPl6RZShyLDc4GpLcMq/hgCr7nHl9GSDpJC/oiwSSA5B13HYYZkpY6Vx9UJsIw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Bw38EFa3; arc=none smtp.client-ip=170.10.129.124
+	 MIME-Version; b=W7S2vRWG1QIXj0C1w1+e0MSca8pTLNredrdHJl+mOuUQRvMZI5qmLDrAdIYHST28PsAnU2DZNxkoBk1azbrJJySmUBED3o2tGum5DK+MR1N9x+p5QDfKrUpxkbeMhr5obPDRrtzJ2IVez2LtTa6xdB85XU6WB81sdS+k4OnxCGE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=MKJydtIw; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1729234172;
+	s=mimecast20190719; t=1729234182;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=tayFtF0AfxCqFqoTKPczR3luDHUBefcdnlT0+nLuGyA=;
-	b=Bw38EFa31Uccm74BhuDZoujlS4sIF2YIfQ8+ohHwvD9+gbvNYfDWE6Jfb0AqRYrViF36pK
-	/xr9fgTxbAid6wxEpJkW1zSkldZj+Xy0p5krN9BYrOaLNZIIgjnInJDwmiK7nw79wfFd8B
-	VVI1qV+I1J/zHQeuhBfMQpBuQV97HiI=
+	bh=UnIFObe/0lSyr94O7X0ThKJj2A52k6v0sthYbBfvdcc=;
+	b=MKJydtIw/q0+hlUJzFKVoeOrIaUyLVwHE4qh70OSMbTuTlEq2Bd5tw+hfi5xnjH4/x1vk1
+	oncmnULeF8jMU+NiZF5gBFv2KUe+xAtBYUJzwxa6/JAh3ZvrFqTPlXAlxhx2sWR57nMUPl
+	dxAuRL6w8iiIa3WdnDXhKv5nfFuGN7Y=
 Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
  (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-139-8tudAKsRO2CjkR4zTzFzTA-1; Fri,
- 18 Oct 2024 02:49:28 -0400
-X-MC-Unique: 8tudAKsRO2CjkR4zTzFzTA-1
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-204-P28HxvajOQa8DqPjkfHtWg-1; Fri,
+ 18 Oct 2024 02:49:35 -0400
+X-MC-Unique: P28HxvajOQa8DqPjkfHtWg-1
 Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 795ED1955D42;
-	Fri, 18 Oct 2024 06:49:26 +0000 (UTC)
+	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id CDFC51955F3E;
+	Fri, 18 Oct 2024 06:49:32 +0000 (UTC)
 Received: from vmalik-fedora.redhat.com (unknown [10.45.224.232])
-	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 38BF719560A3;
-	Fri, 18 Oct 2024 06:49:19 +0000 (UTC)
+	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 16F3519560A3;
+	Fri, 18 Oct 2024 06:49:26 +0000 (UTC)
 From: Viktor Malik <vmalik@redhat.com>
 To: bpf@vger.kernel.org
 Cc: Andrii Nakryiko <andrii@kernel.org>,
@@ -77,9 +77,9 @@ Cc: Andrii Nakryiko <andrii@kernel.org>,
 	Bill Wendling <morbo@google.com>,
 	Justin Stitt <justinstitt@google.com>,
 	Viktor Malik <vmalik@redhat.com>
-Subject: [PATCH bpf-next v2 2/3] bpftool: Prevent setting duplicate _GNU_SOURCE in Makefile
-Date: Fri, 18 Oct 2024 08:49:00 +0200
-Message-ID: <820bd20ea460548828ae9a50f5bdbad0700591e5.1729233447.git.vmalik@redhat.com>
+Subject: [PATCH bpf-next v2 3/3] selftests/bpf: Disable warnings on unused flags for Clang builds
+Date: Fri, 18 Oct 2024 08:49:01 +0200
+Message-ID: <370c84ee3a0e8627a09d89fff12f7a285565fb46.1729233447.git.vmalik@redhat.com>
 In-Reply-To: <cover.1729233447.git.vmalik@redhat.com>
 References: <cover.1729233447.git.vmalik@redhat.com>
 Precedence: bulk
@@ -91,45 +91,52 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
 
-When building selftests with CFLAGS set via env variable, the value of
-CFLAGS is propagated into bpftool Makefile (called from selftests
-Makefile). This makes the compilation fail as _GNU_SOURCE is defined two
-times - once from selftests Makefile (by including lib.mk) and once from
-bpftool Makefile (by calling `llvm-config --cflags`):
+There exist compiler flags supported by GCC but not supported by Clang
+(e.g. -specs=...). Currently, these cannot be passed to BPF selftests
+builds, even when building with GCC, as some binaries (urandom_read and
+liburandom_read.so) are always built with Clang and the unsupported
+flags make the compilation fail (as -Werror is turned on).
 
-    $ CFLAGS="" make -C tools/testing/selftests/bpf
-    [...]
-    CC      /bpf-next/tools/testing/selftests/bpf/tools/build/bpftool/btf.o
-    <command-line>: error: "_GNU_SOURCE" redefined [-Werror]
-    <command-line>: note: this is the location of the previous definition
-    cc1: all warnings being treated as errors
-    [...]
+Add -Wno-unused-command-line-argument to these rules to suppress such
+errors.
 
-Filter out -D_GNU_SOURCE from the result of `llvm-config --cflags` in
-bpftool Makefile to prevent this error.
+This allows to do things like:
+
+    $ CFLAGS="-specs=/usr/lib/rpm/redhat/redhat-hardened-cc1" \
+      make -C tools/testing/selftests/bpf
+
+Without this patch, the compilation would fail with:
+
+    [...]
+    clang: error: argument unused during compilation: '-specs=/usr/lib/rpm/redhat/redhat-hardened-cc1' [-Werror,-Wunused-command-line-argument]
+    make: *** [Makefile:273: /bpf-next/tools/testing/selftests/bpf/liburandom_read.so] Error 1
+    [...]
 
 Signed-off-by: Viktor Malik <vmalik@redhat.com>
 ---
- tools/bpf/bpftool/Makefile | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ tools/testing/selftests/bpf/Makefile | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
-index ba927379eb20..a4263dfb5e03 100644
---- a/tools/bpf/bpftool/Makefile
-+++ b/tools/bpf/bpftool/Makefile
-@@ -147,7 +147,11 @@ ifeq ($(feature-llvm),1)
-   # If LLVM is available, use it for JIT disassembly
-   CFLAGS  += -DHAVE_LLVM_SUPPORT
-   LLVM_CONFIG_LIB_COMPONENTS := mcdisassembler all-targets
--  CFLAGS  += $(shell $(LLVM_CONFIG) --cflags)
-+  # llvm-config always adds -D_GNU_SOURCE, however, it may already be in CFLAGS
-+  # (e.g. when bpftool build is called from selftests build as selftests
-+  # Makefile includes lib.mk which sets -D_GNU_SOURCE) which would cause
-+  # compilation error due to redefinition. Let's filter it out here.
-+  CFLAGS  += $(filter-out -D_GNU_SOURCE,$(shell $(LLVM_CONFIG) --cflags))
-   LIBS    += $(shell $(LLVM_CONFIG) --libs $(LLVM_CONFIG_LIB_COMPONENTS))
-   ifeq ($(shell $(LLVM_CONFIG) --shared-mode),static)
-     LIBS += $(shell $(LLVM_CONFIG) --system-libs $(LLVM_CONFIG_LIB_COMPONENTS))
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index 1fc7c38e56b5..3da1a61968b7 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -273,6 +273,7 @@ $(OUTPUT)/liburandom_read.so: urandom_read_lib1.c urandom_read_lib2.c liburandom
+ 	$(Q)$(CLANG) $(CLANG_TARGET_ARCH) \
+ 		     $(filter-out -static,$(CFLAGS) $(LDFLAGS)) \
+ 		     $(filter %.c,$^) $(filter-out -static,$(LDLIBS)) \
++		     -Wno-unused-command-line-argument \
+ 		     -fuse-ld=$(LLD) -Wl,-znoseparate-code -Wl,--build-id=sha1 \
+ 		     -Wl,--version-script=liburandom_read.map \
+ 		     -fPIC -shared -o $@
+@@ -281,6 +282,7 @@ $(OUTPUT)/urandom_read: urandom_read.c urandom_read_aux.c $(OUTPUT)/liburandom_r
+ 	$(call msg,BINARY,,$@)
+ 	$(Q)$(CLANG) $(CLANG_TARGET_ARCH) \
+ 		     $(filter-out -static,$(CFLAGS) $(LDFLAGS)) $(filter %.c,$^) \
++		     -Wno-unused-command-line-argument \
+ 		     -lurandom_read $(filter-out -static,$(LDLIBS)) -L$(OUTPUT) \
+ 		     -fuse-ld=$(LLD) -Wl,-znoseparate-code -Wl,--build-id=sha1 \
+ 		     -Wl,-rpath=. -o $@
 -- 
 2.47.0
 
