@@ -1,306 +1,239 @@
-Return-Path: <bpf+bounces-42438-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42440-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 394779A4467
-	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 19:14:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F37E9A44DA
+	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 19:37:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 96E25B2347D
-	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 17:14:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A5F141F220E0
+	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 17:37:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5827A2040A8;
-	Fri, 18 Oct 2024 17:14:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C881C204096;
+	Fri, 18 Oct 2024 17:37:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="w8cy4SGv"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="VuUXXhUz"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD7E7204030
-	for <bpf@vger.kernel.org>; Fri, 18 Oct 2024 17:14:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DD5720262E;
+	Fri, 18 Oct 2024 17:37:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729271651; cv=none; b=VG4uleb6NH/BV6nuXVI+uulQ2znN/nV+qBTTDPZbpZVNkBBBg52swyU7wcHdfcV4ZexW7IVd7U+wcpn/EroqrO1jJTJlWd9G2N/+aMclGV//HMovYGPtsEbIgjK5QUKgbe1Cr56RSaHQwJ+JWgx/jamyjU37EwTzF7/L0G471fE=
+	t=1729273034; cv=none; b=DX/WMvFQKeDJLRhzMAwHS2HU+vGMEfPHCpsF+mSPBZSeOmIfBNq2JmmKGDAFjx/fEhIQD5blJmOP9Qs93eorBflp9xVJM3izUlV1YuvGfbojsNCZoj6XgSOrQ2Q3ETeK/HlrXqtiUb/kxmOLfYAb1vDvQhOtJy+d5P9eiGCiTuE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729271651; c=relaxed/simple;
-	bh=S1Gv+rk5OMZjIy8w9tc/hHLobo9asJPPPuXLuuF/Oek=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=fcEFCCBLwfNBgMc/xPWnMcpI7+jrJW2OTYVy8Cb4Pgk62dEe92FM1zWhS70JXxIA45tsnN78/9ys2VLcofX4CVD4gj8AoSZ4GlyeIpJ8UmBcMuqrKO3xrqkaa8ijXofrUR6MO42tonOpZ/QSAt7y+gcSu04CwgQN2DmMCj2LT4c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=w8cy4SGv; arc=none smtp.client-ip=209.85.214.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-20c7ee8fe6bso22902975ad.2
-        for <bpf@vger.kernel.org>; Fri, 18 Oct 2024 10:14:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fastly.com; s=google; t=1729271649; x=1729876449; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UoQ9bUJkSmK6/RGq4OX+PcLT68fp0+DWsECoKle6AwQ=;
-        b=w8cy4SGvoXKg/AzJylc2TLXtVflsxtiw+V6bkkRnk1GtNfjkxJwLlXUUQcpoTBa0/Z
-         jPoSGlqSltXzp8X9704qRiab9rn5TL1Vb3/UQ1kMoFNap1bG2dSVaIzaI657RSXJBi8B
-         XviBoOBx7aY5Bkr632qhwWQbDDWzeo4+ecUM4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729271649; x=1729876449;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UoQ9bUJkSmK6/RGq4OX+PcLT68fp0+DWsECoKle6AwQ=;
-        b=JgyVJd3lJIU7cx14RauGmJMI7MNZT5/yrnrs4yswSUmSOP/BNKlkNUnYAn+OxqSBOU
-         Wk5jLOb256tdBFVDUVT/UPH8dMio7+DAlalE7P8XEDzM7YQpFlmaZ++StEo0Za76DRTR
-         0HJfDOciUjsc5uGQyp8/PzfSWvPI1SLcK19IcMV/XVLpVs+LdMW4AuMJ4eOqoB5HWIUN
-         RRpPTi8ShHiJCZw/4wkVCIHroqFamnT/FLZWkTnOIbM4BeRC+9PF7h7yNdIPyESmV2eL
-         lRy9Ff29S2Og6YrgL4hA5hIe6p6HNw4dFFD4iaXmIS/9OFN2C+fBI7AcsDxcgCjXsZr6
-         qFng==
-X-Forwarded-Encrypted: i=1; AJvYcCVLL52PoWlhCMcykl8eu24t5M4GH84fYPFyOSumP5jJ8OdSgunOvqwt8M9N8oIm9HUZ2z0=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyfrg04IYq8tgdGza/RRzrTcl4WS7fRddmS1H9BUik9YFlp9UEr
-	7U05VHWHJ/8DsiSSUqEgkOneLZ+HcjUjVscG0JFvVihRuVRJKPxE6k+DarFxQL8=
-X-Google-Smtp-Source: AGHT+IHEwb5+PY/1lW1EQSVV9TJ91giJ8W22+L0YQoZqb5lwDEqb12kb07vrXGOHn6hNiJ09tEZFcg==
-X-Received: by 2002:a17:902:da90:b0:20b:951f:6dff with SMTP id d9443c01a7336-20e59aa0261mr46928475ad.0.1729271649042;
-        Fri, 18 Oct 2024 10:14:09 -0700 (PDT)
-Received: from localhost.localdomain ([2620:11a:c019:0:65e:3115:2f58:c5fd])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20e5a71ecd2sm15000255ad.29.2024.10.18.10.14.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Oct 2024 10:14:08 -0700 (PDT)
-From: Joe Damato <jdamato@fastly.com>
-To: netdev@vger.kernel.org
-Cc: kurt@linutronix.de,
-	vinicius.gomes@intel.com,
-	Joe Damato <jdamato@fastly.com>,
-	Tony Nguyen <anthony.l.nguyen@intel.com>,
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	intel-wired-lan@lists.osuosl.org (moderated list:INTEL ETHERNET DRIVERS),
-	linux-kernel@vger.kernel.org (open list),
-	bpf@vger.kernel.org (open list:XDP (eXpress Data Path))
-Subject: [net-next v3 2/2] igc: Link queues to NAPI instances
-Date: Fri, 18 Oct 2024 17:13:43 +0000
-Message-Id: <20241018171343.314835-3-jdamato@fastly.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20241018171343.314835-1-jdamato@fastly.com>
-References: <20241018171343.314835-1-jdamato@fastly.com>
+	s=arc-20240116; t=1729273034; c=relaxed/simple;
+	bh=iOZMvcVnDBVbpAM85kWQ6KeTpaL0RU76M2aSxwMuw1k=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=FrcS8BT9FpvkRyX6/VChId2DCCIMF372Wj4p7jLGE3q23TSmO89yM4I1ezhVt35fXZiD6LagIgzeSuts6kFQ8eQfSCXRpsV0ofDpVWeg2XyyPNlEZsHofSpIHmzlYHe7noi9uJU001Iak7jtQG9WpzIoCp8Z1hqRDQYVu4TzBxo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=VuUXXhUz; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 49IFaYMU013012;
+	Fri, 18 Oct 2024 17:36:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:date:from:message-id:mime-version
+	:subject:to; s=pp1; bh=qb6hmdzFJkB6y5etVfIkb+1xBOv97PK3wNYGkVn3v
+	gk=; b=VuUXXhUz/DLPEasB2hOCEvE30tnhRObA4WLekAODUtTwk76DLirGb2nCH
+	xuIuH/lWc3zOKHTwgR/1nk3nHa/KlI7guGofFCdDMu9AdptRGW6YKsWYIWMZfw58
+	f5kyryBWZG3CfQXsCmNapD2+VUddpPQh7vP8MkddtTOhykteZbg0pz61g4AtxHI9
+	flUdwt2k3cj9D8XWoaxWn9Puj0YnDreHvqYqRV/+Qk4vPZCH7fgs6Q4z6fKdlXr4
+	y7tfz2MU9OM7ejZmr15WfQsMH+ynFXl/3MrTJr0yzuTR74f3p+vqY8SuvZuD5u5Q
+	BbsJvU+asVcl7pl0jXi/Y3AwrIZpw==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 42as8aa25c-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 18 Oct 2024 17:36:43 +0000 (GMT)
+Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 49IHXBG2002400;
+	Fri, 18 Oct 2024 17:36:42 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 42as8aa259-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 18 Oct 2024 17:36:42 +0000 (GMT)
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 49IH8WaS006714;
+	Fri, 18 Oct 2024 17:36:41 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 4283ese5rp-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 18 Oct 2024 17:36:41 +0000
+Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
+	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 49IHabV120316468
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 18 Oct 2024 17:36:37 GMT
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id B3EDA20040;
+	Fri, 18 Oct 2024 17:36:37 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 995EB20043;
+	Fri, 18 Oct 2024 17:36:33 +0000 (GMT)
+Received: from li-bd3f974c-2712-11b2-a85c-df1cec4d728e.ibm.com.com (unknown [9.43.99.188])
+	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Fri, 18 Oct 2024 17:36:33 +0000 (GMT)
+From: Hari Bathini <hbathini@linux.ibm.com>
+To: linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, bpf@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc: Michael Ellerman <mpe@ellerman.id.au>, "Naveen N. Rao" <naveen@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Vishal Chourasia <vishalc@linux.ibm.com>,
+        Mahesh J Salgaonkar <mahesh@linux.ibm.com>
+Subject: [PATCH v6 00/17] powerpc: Core ftrace rework, support for ftrace direct and bpf trampolines
+Date: Fri, 18 Oct 2024 23:06:15 +0530
+Message-ID: <20241018173632.277333-1-hbathini@linux.ibm.com>
+X-Mailer: git-send-email 2.47.0
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: GMZ5e88hdlV7DCcBtQVYBzq-bWod4Feq
+X-Proofpoint-ORIG-GUID: WPZR9q0DxJoOZzDaB0tuOadOfVtxgjVw
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
+ definitions=2024-10-15_01,2024-10-11_01,2024-09-30_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 mlxscore=0
+ lowpriorityscore=0 suspectscore=0 mlxlogscore=999 phishscore=0
+ adultscore=0 impostorscore=0 priorityscore=1501 spamscore=0 malwarescore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2409260000 definitions=main-2410180111
 
-Link queues to NAPI instances via netdev-genl API so that users can
-query this information with netlink. Handle a few cases in the driver:
-  1. Link/unlink the NAPIs when XDP is enabled/disabled
-  2. Handle IGC_FLAG_QUEUE_PAIRS enabled and disabled
+This is v6 of the series posted here:
+https://lore.kernel.org/all/20240915205648.830121-1-hbathini@linux.ibm.com/
 
-Example output when IGC_FLAG_QUEUE_PAIRS is enabled:
+This series reworks core ftrace support on powerpc to have the function
+profiling sequence moved out of line. This enables us to have a single
+nop at kernel function entry virtually eliminating effect of the
+function tracer when it is not enabled. The function profile sequence is
+moved out of line and is allocated at two separate places depending on a
+new config option.
 
-$ ./tools/net/ynl/cli.py --spec Documentation/netlink/specs/netdev.yaml \
-                         --dump queue-get --json='{"ifindex": 2}'
+For 64-bit powerpc, the function profiling sequence is also updated to
+include an additional instruction 'mtlr r0' after the usual
+two-instruction sequence to fix link stack imbalance (return address
+predictor) when ftrace is enabled. This showed an improvement of ~10%
+in null_syscall benchmark (NR_LOOPS=10000000) on a Power 10 system
+with ftrace enabled.
 
-[{'id': 0, 'ifindex': 2, 'napi-id': 8193, 'type': 'rx'},
- {'id': 1, 'ifindex': 2, 'napi-id': 8194, 'type': 'rx'},
- {'id': 2, 'ifindex': 2, 'napi-id': 8195, 'type': 'rx'},
- {'id': 3, 'ifindex': 2, 'napi-id': 8196, 'type': 'rx'},
- {'id': 0, 'ifindex': 2, 'napi-id': 8193, 'type': 'tx'},
- {'id': 1, 'ifindex': 2, 'napi-id': 8194, 'type': 'tx'},
- {'id': 2, 'ifindex': 2, 'napi-id': 8195, 'type': 'tx'},
- {'id': 3, 'ifindex': 2, 'napi-id': 8196, 'type': 'tx'}]
+Finally, support for ftrace direct calls is added based on support for
+DYNAMIC_FTRACE_WITH_CALL_OPS. BPF Trampoline support is added atop this.
 
-Since IGC_FLAG_QUEUE_PAIRS is enabled, you'll note that the same NAPI ID
-is present for both rx and tx queues at the same index, for example
-index 0:
+Support for ftrace direct calls is added for 32-bit powerpc. There is
+some code to enable bpf trampolines for 32-bit powerpc, but it is not
+complete and will need to be pursued separately.
 
-{'id': 0, 'ifindex': 2, 'napi-id': 8193, 'type': 'rx'},
-{'id': 0, 'ifindex': 2, 'napi-id': 8193, 'type': 'tx'},
+Patches 1 to 10 are independent of this series and can go in separately
+though. Rest of the patches depend on the series from Benjamin Gray
+adding support for patch_uint() and patch_ulong():
+https://lore.kernel.org/all/172474280311.31690.1489687786264785049.b4-ty@ellerman.id.au/
 
-To test IGC_FLAG_QUEUE_PAIRS disabled, a test system was booted using
-the grub command line option "maxcpus=2" to force
-igc_set_interrupt_capability to disable IGC_FLAG_QUEUE_PAIRS.
+Changelog v6:
+* Shellcheck warnings fixed for arch/powerpc/tools/ftrace_check.sh
+* Masahiro's suggestions incorporated in appropriate patches:
+    - https://lore.kernel.org/all/CAK7LNATzqVAJHFg6OyVR1+YgNKo7S=nN1M7w5GJVG1Ygn0QhUA@mail.gmail.com/
+* Shellcheck warnings fixed for arch/powerpc/tools/ftrace-gen-ool-stubs.sh
+* Fixed https://lore.kernel.org/all/202409170544.6d1odaN2-lkp@intel.com/
+* Updated the stale comment describing redzone usage in ppc64 BPF JIT
 
-Example output when IGC_FLAG_QUEUE_PAIRS is disabled:
+Changelog v5:
+* Intermediate files named .vmlinux.arch.* instead of .arch.vmlinux.*
+* Fixed ftrace stack tracer failure due to inadvertent use of
+  'add r7, r3, MCOUNT_INSN_SIZE' instruction instead of
+  'addi r7, r3, MCOUNT_INSN_SIZE'
+* Fixed build error for !CONFIG_MODULES case.
+* .vmlinux.arch.* files compiled under arch/powerpc/tools
+* Resolved checkpatch.pl warnings.
+* Dropped RFC tag.
 
-$ lscpu | grep "On-line CPU"
-On-line CPU(s) list:      0,2
+Changelog v4:
+- Patches 1, 10 and 13 are new.
+- Address review comments from Nick. Numerous changes throughout the 
+  patch series.
+- Extend support for ftrace ool to vmlinux text up to 64MB (patch 13).
+- Address remaining TODOs in support for BPF Trampolines.
+- Update synchronization when patching instructions during trampoline 
+  attach/detach.
 
-$ ethtool -l enp86s0  | tail -5
-Current hardware settings:
-RX:		n/a
-TX:		n/a
-Other:		1
-Combined:	2
 
-$ cat /proc/interrupts  | grep enp
- 144: [...] enp86s0
- 145: [...] enp86s0-rx-0
- 146: [...] enp86s0-rx-1
- 147: [...] enp86s0-tx-0
- 148: [...] enp86s0-tx-1
+Naveen N Rao (17):
+  powerpc/trace: Account for -fpatchable-function-entry support by
+    toolchain
+  powerpc/kprobes: Use ftrace to determine if a probe is at function
+    entry
+  powerpc64/ftrace: Nop out additional 'std' instruction emitted by gcc
+    v5.x
+  powerpc32/ftrace: Unify 32-bit and 64-bit ftrace entry code
+  powerpc/module_64: Convert #ifdef to IS_ENABLED()
+  powerpc/ftrace: Remove pointer to struct module from dyn_arch_ftrace
+  powerpc/ftrace: Skip instruction patching if the instructions are the
+    same
+  powerpc/ftrace: Move ftrace stub used for init text before _einittext
+  powerpc64/bpf: Fold bpf_jit_emit_func_call_hlp() into
+    bpf_jit_emit_func_call_rel()
+  powerpc/ftrace: Add a postlink script to validate function tracer
+  kbuild: Add generic hook for architectures to use before the final
+    vmlinux link
+  powerpc64/ftrace: Move ftrace sequence out of line
+  powerpc64/ftrace: Support .text larger than 32MB with out-of-line
+    stubs
+  powerpc/ftrace: Add support for DYNAMIC_FTRACE_WITH_CALL_OPS
+  powerpc/ftrace: Add support for DYNAMIC_FTRACE_WITH_DIRECT_CALLS
+  samples/ftrace: Add support for ftrace direct samples on powerpc
+  powerpc64/bpf: Add support for bpf trampolines
 
-1 "other" IRQ, and 2 IRQs for each of RX and Tx, so we expect netlink to
-report 4 IRQs with unique NAPI IDs:
+ arch/Kconfig                                |   6 +
+ arch/powerpc/Kbuild                         |   2 +-
+ arch/powerpc/Kconfig                        |  22 +-
+ arch/powerpc/Makefile                       |   8 +
+ arch/powerpc/Makefile.postlink              |   8 +
+ arch/powerpc/include/asm/ftrace.h           |  33 +-
+ arch/powerpc/include/asm/module.h           |   5 +
+ arch/powerpc/include/asm/ppc-opcode.h       |  14 +
+ arch/powerpc/kernel/asm-offsets.c           |  11 +
+ arch/powerpc/kernel/kprobes.c               |  18 +-
+ arch/powerpc/kernel/module_64.c             |  66 +-
+ arch/powerpc/kernel/trace/Makefile          |  11 +-
+ arch/powerpc/kernel/trace/ftrace.c          | 298 ++++++-
+ arch/powerpc/kernel/trace/ftrace_64_pg.c    |  69 +-
+ arch/powerpc/kernel/trace/ftrace_entry.S    | 244 ++++--
+ arch/powerpc/kernel/vmlinux.lds.S           |   3 +-
+ arch/powerpc/net/bpf_jit.h                  |  12 +
+ arch/powerpc/net/bpf_jit_comp.c             | 847 +++++++++++++++++++-
+ arch/powerpc/net/bpf_jit_comp32.c           |   7 +-
+ arch/powerpc/net/bpf_jit_comp64.c           |  72 +-
+ arch/powerpc/tools/.gitignore               |   2 +
+ arch/powerpc/tools/Makefile                 |  10 +
+ arch/powerpc/tools/ftrace-gen-ool-stubs.sh  |  49 ++
+ arch/powerpc/tools/ftrace_check.sh          |  50 ++
+ samples/ftrace/ftrace-direct-modify.c       |  85 +-
+ samples/ftrace/ftrace-direct-multi-modify.c | 101 ++-
+ samples/ftrace/ftrace-direct-multi.c        |  79 +-
+ samples/ftrace/ftrace-direct-too.c          |  83 +-
+ samples/ftrace/ftrace-direct.c              |  69 +-
+ scripts/Makefile.vmlinux                    |   7 +
+ scripts/link-vmlinux.sh                     |   7 +-
+ 31 files changed, 2096 insertions(+), 202 deletions(-)
+ create mode 100644 arch/powerpc/tools/.gitignore
+ create mode 100644 arch/powerpc/tools/Makefile
+ create mode 100755 arch/powerpc/tools/ftrace-gen-ool-stubs.sh
+ create mode 100755 arch/powerpc/tools/ftrace_check.sh
 
-$ ./tools/net/ynl/cli.py --spec Documentation/netlink/specs/netdev.yaml \
-                         --dump napi-get --json='{"ifindex": 2}'
-[{'id': 8196, 'ifindex': 2, 'irq': 148},
- {'id': 8195, 'ifindex': 2, 'irq': 147},
- {'id': 8194, 'ifindex': 2, 'irq': 146},
- {'id': 8193, 'ifindex': 2, 'irq': 145}]
-
-Now we examine which queues these NAPIs are associated with, expecting
-that since IGC_FLAG_QUEUE_PAIRS is disabled each RX and TX queue will
-have its own NAPI instance:
-
-$ ./tools/net/ynl/cli.py --spec Documentation/netlink/specs/netdev.yaml \
-                         --dump queue-get --json='{"ifindex": 2}'
-[{'id': 0, 'ifindex': 2, 'napi-id': 8193, 'type': 'rx'},
- {'id': 1, 'ifindex': 2, 'napi-id': 8194, 'type': 'rx'},
- {'id': 0, 'ifindex': 2, 'napi-id': 8195, 'type': 'tx'},
- {'id': 1, 'ifindex': 2, 'napi-id': 8196, 'type': 'tx'}]
-
-Signed-off-by: Joe Damato <jdamato@fastly.com>
----
- v3:
-   - Replace igc_unset_queue_napi with igc_set_queue_napi(adapater, i,
-     NULL), as suggested by Vinicius Costa Gomes
-   - Simplify implemention of igc_set_queue_napi as suggested by Kurt
-     Kanzenbach, with a tweak to use ring->queue_index
-
- v2:
-   - Update commit message to include tests for IGC_FLAG_QUEUE_PAIRS
-     disabled
-   - Refactored code to move napi queue mapping and unmapping to helper
-     functions igc_set_queue_napi and igc_unset_queue_napi
-   - Adjust the code to handle IGC_FLAG_QUEUE_PAIRS disabled
-   - Call helpers to map/unmap queues to NAPIs in igc_up, __igc_open,
-     igc_xdp_enable_pool, and igc_xdp_disable_pool
-
- drivers/net/ethernet/intel/igc/igc.h      |  2 ++
- drivers/net/ethernet/intel/igc/igc_main.c | 33 ++++++++++++++++++++---
- drivers/net/ethernet/intel/igc/igc_xdp.c  |  2 ++
- 3 files changed, 33 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/ethernet/intel/igc/igc.h b/drivers/net/ethernet/intel/igc/igc.h
-index eac0f966e0e4..b8111ad9a9a8 100644
---- a/drivers/net/ethernet/intel/igc/igc.h
-+++ b/drivers/net/ethernet/intel/igc/igc.h
-@@ -337,6 +337,8 @@ struct igc_adapter {
- 	struct igc_led_classdev *leds;
- };
- 
-+void igc_set_queue_napi(struct igc_adapter *adapter, int q_idx,
-+			struct napi_struct *napi);
- void igc_up(struct igc_adapter *adapter);
- void igc_down(struct igc_adapter *adapter);
- int igc_open(struct net_device *netdev);
-diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethernet/intel/igc/igc_main.c
-index 7964bbedb16c..783fc8e12ba1 100644
---- a/drivers/net/ethernet/intel/igc/igc_main.c
-+++ b/drivers/net/ethernet/intel/igc/igc_main.c
-@@ -4948,6 +4948,22 @@ static int igc_sw_init(struct igc_adapter *adapter)
- 	return 0;
- }
- 
-+void igc_set_queue_napi(struct igc_adapter *adapter, int vector,
-+			struct napi_struct *napi)
-+{
-+	struct igc_q_vector *q_vector = adapter->q_vector[vector];
-+
-+	if (q_vector->rx.ring)
-+		netif_queue_set_napi(adapter->netdev,
-+				     q_vector->rx.ring->queue_index,
-+				     NETDEV_QUEUE_TYPE_RX, napi);
-+
-+	if (q_vector->tx.ring)
-+		netif_queue_set_napi(adapter->netdev,
-+				     q_vector->tx.ring->queue_index,
-+				     NETDEV_QUEUE_TYPE_TX, napi);
-+}
-+
- /**
-  * igc_up - Open the interface and prepare it to handle traffic
-  * @adapter: board private structure
-@@ -4955,6 +4971,7 @@ static int igc_sw_init(struct igc_adapter *adapter)
- void igc_up(struct igc_adapter *adapter)
- {
- 	struct igc_hw *hw = &adapter->hw;
-+	struct napi_struct *napi;
- 	int i = 0;
- 
- 	/* hardware has been reset, we need to reload some things */
-@@ -4962,8 +4979,11 @@ void igc_up(struct igc_adapter *adapter)
- 
- 	clear_bit(__IGC_DOWN, &adapter->state);
- 
--	for (i = 0; i < adapter->num_q_vectors; i++)
--		napi_enable(&adapter->q_vector[i]->napi);
-+	for (i = 0; i < adapter->num_q_vectors; i++) {
-+		napi = &adapter->q_vector[i]->napi;
-+		napi_enable(napi);
-+		igc_set_queue_napi(adapter, i, napi);
-+	}
- 
- 	if (adapter->msix_entries)
- 		igc_configure_msix(adapter);
-@@ -5192,6 +5212,7 @@ void igc_down(struct igc_adapter *adapter)
- 	for (i = 0; i < adapter->num_q_vectors; i++) {
- 		if (adapter->q_vector[i]) {
- 			napi_synchronize(&adapter->q_vector[i]->napi);
-+			igc_set_queue_napi(adapter, i, NULL);
- 			napi_disable(&adapter->q_vector[i]->napi);
- 		}
- 	}
-@@ -6021,6 +6042,7 @@ static int __igc_open(struct net_device *netdev, bool resuming)
- 	struct igc_adapter *adapter = netdev_priv(netdev);
- 	struct pci_dev *pdev = adapter->pdev;
- 	struct igc_hw *hw = &adapter->hw;
-+	struct napi_struct *napi;
- 	int err = 0;
- 	int i = 0;
- 
-@@ -6056,8 +6078,11 @@ static int __igc_open(struct net_device *netdev, bool resuming)
- 
- 	clear_bit(__IGC_DOWN, &adapter->state);
- 
--	for (i = 0; i < adapter->num_q_vectors; i++)
--		napi_enable(&adapter->q_vector[i]->napi);
-+	for (i = 0; i < adapter->num_q_vectors; i++) {
-+		napi = &adapter->q_vector[i]->napi;
-+		napi_enable(napi);
-+		igc_set_queue_napi(adapter, i, napi);
-+	}
- 
- 	/* Clear any pending interrupts. */
- 	rd32(IGC_ICR);
-diff --git a/drivers/net/ethernet/intel/igc/igc_xdp.c b/drivers/net/ethernet/intel/igc/igc_xdp.c
-index e27af72aada8..4da633430b80 100644
---- a/drivers/net/ethernet/intel/igc/igc_xdp.c
-+++ b/drivers/net/ethernet/intel/igc/igc_xdp.c
-@@ -84,6 +84,7 @@ static int igc_xdp_enable_pool(struct igc_adapter *adapter,
- 		napi_disable(napi);
- 	}
- 
-+	igc_set_queue_napi(adapter, queue_id, NULL);
- 	set_bit(IGC_RING_FLAG_AF_XDP_ZC, &rx_ring->flags);
- 	set_bit(IGC_RING_FLAG_AF_XDP_ZC, &tx_ring->flags);
- 
-@@ -133,6 +134,7 @@ static int igc_xdp_disable_pool(struct igc_adapter *adapter, u16 queue_id)
- 	xsk_pool_dma_unmap(pool, IGC_RX_DMA_ATTR);
- 	clear_bit(IGC_RING_FLAG_AF_XDP_ZC, &rx_ring->flags);
- 	clear_bit(IGC_RING_FLAG_AF_XDP_ZC, &tx_ring->flags);
-+	igc_set_queue_napi(adapter, queue_id, napi);
- 
- 	if (needs_reset) {
- 		napi_enable(napi);
 -- 
-2.25.1
+2.47.0
 
 
