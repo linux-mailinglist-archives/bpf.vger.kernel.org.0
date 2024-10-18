@@ -1,440 +1,279 @@
-Return-Path: <bpf+bounces-42465-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42466-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99A529A47D6
-	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 22:24:09 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11D559A47DB
+	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 22:24:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CDC2BB2249E
-	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 20:24:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 18E5B1C21F7F
+	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 20:24:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C8EA206E85;
-	Fri, 18 Oct 2024 20:23:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8464A206066;
+	Fri, 18 Oct 2024 20:24:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IOy4Ddgk"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="aW1LQD5I"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF74B20513E;
-	Fri, 18 Oct 2024 20:23:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9814185B48;
+	Fri, 18 Oct 2024 20:24:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729283009; cv=none; b=vD8QFLGiSqxGlt5KLjwQS7wr57dG6AzHbzEftzmOGc9S2+MpwMOldST5VOg1GsQEnPwQfoKEUpEYrbDQxvEyVC5Ie1HjqiOEytYInM8SW6nes0ALXVte0dFxmPA1S68s73ATP695MbtSbefeFpsNqIf2lEuPxbaocWxnEQOLwyw=
+	t=1729283067; cv=none; b=JxkysoPY3LW1cxg+LfUYTlU8CseG/qwJVei3O7KhcgByLswmmP+ZLwNm1Rf437LbmYm/sK93sq34Mwkj2oBwQwoQbBjYVYYzHa1stEWdz8M3UdmL6zmUwKa1yb/rLGEuG55BZ/y14awvuiPSrm8xPvsmF5qoii5XBGqySoc/s6U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729283009; c=relaxed/simple;
-	bh=2r4Z7WDoBqjbZI4hXz3ZPK1ZfMY9qBJgCipHO+zEPEo=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ObtttVbjOy+VEMxcP4SLGfJ8VbbYlMwYxanoQ6YFnT/fEQXqOFhNZWS//kVXPlaEwGXXVppyEzNKyEyKYCYoKzrsmPJymm0N1hznGfY4HggN3pFjYmEOU9D/Pfq+38PBrquU3LUxp5hEEp3WMOGQlGEi+JCK3ow2SKZUqTVn1Q0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IOy4Ddgk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52FE9C4CEC3;
-	Fri, 18 Oct 2024 20:23:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1729283008;
-	bh=2r4Z7WDoBqjbZI4hXz3ZPK1ZfMY9qBJgCipHO+zEPEo=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=IOy4Ddgk0PHjaAqU4H59FafFJCBMlXMO2DBYFefJGDHQT2vMyji5sQASM2Hnlit7q
-	 qsTzngpq1J7AOX53e5H4Pc3Y1+VTZ9PTN2XBc+9epmtbwfC8lQM+oAbrIivHG9VkTr
-	 E2GrkJMe2bz2fAdvKHhQNgoOKodeuTFaPQM/7DJ3xYMI8hAhknR3toYABUEmSMMaKz
-	 IOfVEP6gK5jinLjzPmJtViV0hhuM32fBb/Z9KYc/Cgb7kdn9t7uOVEE2giJtIJXWgy
-	 RyydwSuieecYWVWqlOj5X+lIfcSc1sWUQt9Ji+YhOvISzlGx2aXjaJ01pBHllSo8iB
-	 duRyRiUNBnKow==
-From: Jiri Olsa <jolsa@kernel.org>
-To: Oleg Nesterov <oleg@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>
+	s=arc-20240116; t=1729283067; c=relaxed/simple;
+	bh=QQ0vgp33pjvkKRw9Etds7wOGrOISNeMYBwteSE9sZfY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=rNBO5hcP58xIaOKIeAzT0UUby9YNn59pToVR9KvpMdF5VGEP/5j7tWf01dwRRKZyTNyqVf4ZLNrU2NGKGSiWjYXJDwzJ9PtR76Hcn7jlXeBBGj7r5t+yBysoiYJ3zfuDRco0NAYfzIAn/rOIZWa1FnJHAihQT7ngCNOKcbDj4Gc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=aW1LQD5I; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References;
+	bh=WW+i2Ne2jyWvYltfeCFb87hSWbJ/wKPQQYuetGtHt6A=; b=aW1LQD5IHpcQUtE0WyDrk41bbi
+	LVI7AB3YeGxieQt6PWb1B0dLQQb5phQlvj/S9oAkzWMhR444J7IYAOB0MmJCLTZK57guiRmLXNdPs
+	m1FZ4aLPIrOOwY/5AN4B5+m9pdIxx/zUtKtk2yugU2dl8qXH3j196kdpmxqf73ooqZB+/1hjKqQoi
+	WKKaio26KP0JRz1VV2MRIpOy/+c0g69pz99K16cjEgGa1HtVguiAqgnouIwSFuR9p/GV6kxYQONuu
+	LNZKdriALFYIAmWvNxg0QsHf9tvf12q/EPQjVQyd/wB8acStgdeHhfVJkeFa8PVcrkOiuOEFI8Os0
+	du54M8iQ==;
+Received: from 12.248.197.178.dynamic.cust.swisscom.net ([178.197.248.12] helo=localhost)
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1t1tWH-000MS8-3i; Fri, 18 Oct 2024 22:24:21 +0200
+From: Daniel Borkmann <daniel@iogearbox.net>
+To: torvalds@linux-foundation.org
 Cc: bpf@vger.kernel.org,
-	Martin KaFai Lau <kafai@fb.com>,
-	Song Liu <songliubraving@fb.com>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@chromium.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
+	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org
-Subject: [PATCHv8 perf/core 2/2] uprobe: Add support for session consumer
-Date: Fri, 18 Oct 2024 22:22:52 +0200
-Message-ID: <20241018202252.693462-3-jolsa@kernel.org>
-X-Mailer: git-send-email 2.46.2
-In-Reply-To: <20241018202252.693462-1-jolsa@kernel.org>
-References: <20241018202252.693462-1-jolsa@kernel.org>
+	alexei.starovoitov@gmail.com,
+	andrii@kernel.org,
+	martin.lau@kernel.org
+Subject: [GIT PULL] bpf for v6.12-rc4
+Date: Fri, 18 Oct 2024 22:24:20 +0200
+Message-Id: <20241018202420.17746-1-daniel@iogearbox.net>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27431/Fri Oct 18 10:53:06 2024)
 
-This change allows the uprobe consumer to behave as session which
-means that 'handler' and 'ret_handler' callbacks are connected in
-a way that allows to:
+Hi Linus,
 
-  - control execution of 'ret_handler' from 'handler' callback
-  - share data between 'handler' and 'ret_handler' callbacks
+The following changes since commit 684a64bf32b6e488004e0ad7f0d7e922798f65b6:
 
-The session concept fits to our common use case where we do filtering
-on entry uprobe and based on the result we decide to run the return
-uprobe (or not).
+  Merge tag 'nfs-for-6.12-1' of git://git.linux-nfs.org/projects/anna/linux-nfs (2024-09-24 15:44:18 -0700)
 
-It's also convenient to share the data between session callbacks.
+are available in the Git repository at:
 
-To achive this we are adding new return value the uprobe consumer
-can return from 'handler' callback:
+  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git tags/bpf-fixes
 
-  UPROBE_HANDLER_IGNORE
-  - Ignore 'ret_handler' callback for this consumer.
+for you to fetch changes up to 5ac9b4e935dfc6af41eee2ddc21deb5c36507a9f:
 
-And store cookie and pass it to 'ret_handler' when consumer has both
-'handler' and 'ret_handler' callbacks defined.
+  lib/buildid: Handle memfd_secret() files in build_id_parse() (2024-10-17 21:30:32 +0200)
 
-We store shared data in the return_consumer object array as part of
-the return_instance object. This way the handle_uretprobe_chain can
-find related return_consumer and its shared data.
+----------------------------------------------------------------
+BPF fixes:
 
-We also store entry handler return value, for cases when there are
-multiple consumers on single uprobe and some of them are ignored and
-some of them not, in which case the return probe gets installed and
-we need to have a way to find out which consumer needs to be ignored.
+- Fix BPF verifier to not affect subreg_def marks in its range
+  propagation, from Eduard Zingerman.
 
-The tricky part is when consumer is registered 'after' the uprobe
-entry handler is hit. In such case this consumer's 'ret_handler' gets
-executed as well, but it won't have the proper data pointer set,
-so we can filter it out.
+- Fix a truncation bug in the BPF verifier's handling of
+  coerce_reg_to_size_sx, from Dimitar Kanaliev.
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-Suggested-by: Oleg Nesterov <oleg@redhat.com>
-Reviewed-by: Oleg Nesterov <oleg@redhat.com>
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- include/linux/uprobes.h |  21 +++++-
- kernel/events/uprobes.c | 148 ++++++++++++++++++++++++++++++++--------
- 2 files changed, 139 insertions(+), 30 deletions(-)
+- Fix the BPF verifier's delta propagation between linked
+  registers under 32-bit addition, from Daniel Borkmann.
 
-diff --git a/include/linux/uprobes.h b/include/linux/uprobes.h
-index bb265a632b91..dbaf04189548 100644
---- a/include/linux/uprobes.h
-+++ b/include/linux/uprobes.h
-@@ -23,8 +23,17 @@ struct inode;
- struct notifier_block;
- struct page;
- 
-+/*
-+ * Allowed return values from uprobe consumer's handler callback
-+ * with following meaning:
-+ *
-+ * UPROBE_HANDLER_REMOVE
-+ * - Remove the uprobe breakpoint from current->mm.
-+ * UPROBE_HANDLER_IGNORE
-+ * - Ignore ret_handler callback for this consumer.
-+ */
- #define UPROBE_HANDLER_REMOVE		1
--#define UPROBE_HANDLER_MASK		1
-+#define UPROBE_HANDLER_IGNORE		2
- 
- #define MAX_URETPROBE_DEPTH		64
- 
-@@ -44,6 +53,8 @@ struct uprobe_consumer {
- 	bool (*filter)(struct uprobe_consumer *self, struct mm_struct *mm);
- 
- 	struct list_head cons_node;
-+
-+	__u64 id;	/* set when uprobe_consumer is registered */
- };
- 
- #ifdef CONFIG_UPROBES
-@@ -83,14 +94,22 @@ struct uprobe_task {
- 	unsigned int			depth;
- };
- 
-+struct return_consumer {
-+	__u64	cookie;
-+	__u64	id;
-+};
-+
- struct return_instance {
- 	struct uprobe		*uprobe;
- 	unsigned long		func;
- 	unsigned long		stack;		/* stack pointer */
- 	unsigned long		orig_ret_vaddr; /* original return address */
- 	bool			chained;	/* true, if instance is nested */
-+	int			consumers_cnt;
- 
- 	struct return_instance	*next;		/* keep as stack */
-+
-+	struct return_consumer	consumers[] __counted_by(consumers_cnt);
- };
- 
- enum rp_check {
-diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-index 6b44c386a5df..4ef4b51776eb 100644
---- a/kernel/events/uprobes.c
-+++ b/kernel/events/uprobes.c
-@@ -64,7 +64,7 @@ struct uprobe {
- 	struct rcu_head		rcu;
- 	loff_t			offset;
- 	loff_t			ref_ctr_offset;
--	unsigned long		flags;
-+	unsigned long		flags;		/* "unsigned long" so bitops work */
- 
- 	/*
- 	 * The generic code assumes that it has two members of unknown type
-@@ -823,8 +823,11 @@ static struct uprobe *alloc_uprobe(struct inode *inode, loff_t offset,
- 
- static void consumer_add(struct uprobe *uprobe, struct uprobe_consumer *uc)
- {
-+	static atomic64_t id;
-+
- 	down_write(&uprobe->consumer_rwsem);
- 	list_add_rcu(&uc->cons_node, &uprobe->consumers);
-+	uc->id = (__u64) atomic64_inc_return(&id);
- 	up_write(&uprobe->consumer_rwsem);
- }
- 
-@@ -1761,6 +1764,34 @@ static struct uprobe_task *get_utask(void)
- 	return current->utask;
- }
- 
-+static size_t ri_size(int consumers_cnt)
-+{
-+	struct return_instance *ri;
-+
-+	return sizeof(*ri) + sizeof(ri->consumers[0]) * consumers_cnt;
-+}
-+
-+#define DEF_CNT 4
-+
-+static struct return_instance *alloc_return_instance(void)
-+{
-+	struct return_instance *ri;
-+
-+	ri = kzalloc(ri_size(DEF_CNT), GFP_KERNEL);
-+	if (!ri)
-+		return ZERO_SIZE_PTR;
-+
-+	ri->consumers_cnt = DEF_CNT;
-+	return ri;
-+}
-+
-+static struct return_instance *dup_return_instance(struct return_instance *old)
-+{
-+	size_t size = ri_size(old->consumers_cnt);
-+
-+	return kmemdup(old, size, GFP_KERNEL);
-+}
-+
- static int dup_utask(struct task_struct *t, struct uprobe_task *o_utask)
- {
- 	struct uprobe_task *n_utask;
-@@ -1773,11 +1804,10 @@ static int dup_utask(struct task_struct *t, struct uprobe_task *o_utask)
- 
- 	p = &n_utask->return_instances;
- 	for (o = o_utask->return_instances; o; o = o->next) {
--		n = kmalloc(sizeof(struct return_instance), GFP_KERNEL);
-+		n = dup_return_instance(o);
- 		if (!n)
- 			return -ENOMEM;
- 
--		*n = *o;
- 		/*
- 		 * uprobe's refcnt has to be positive at this point, kept by
- 		 * utask->return_instances items; return_instances can't be
-@@ -1870,35 +1900,31 @@ static void cleanup_return_instances(struct uprobe_task *utask, bool chained,
- 	utask->return_instances = ri;
- }
- 
--static void prepare_uretprobe(struct uprobe *uprobe, struct pt_regs *regs)
-+static void prepare_uretprobe(struct uprobe *uprobe, struct pt_regs *regs,
-+			      struct return_instance *ri)
- {
- 	struct uprobe_task *utask = current->utask;
- 	unsigned long orig_ret_vaddr, trampoline_vaddr;
--	struct return_instance *ri;
- 	bool chained;
- 
- 	if (!get_xol_area())
--		return;
-+		goto free;
- 
- 	if (utask->depth >= MAX_URETPROBE_DEPTH) {
- 		printk_ratelimited(KERN_INFO "uprobe: omit uretprobe due to"
- 				" nestedness limit pid/tgid=%d/%d\n",
- 				current->pid, current->tgid);
--		return;
-+		goto free;
- 	}
- 
- 	/* we need to bump refcount to store uprobe in utask */
- 	if (!try_get_uprobe(uprobe))
--		return;
--
--	ri = kmalloc(sizeof(struct return_instance), GFP_KERNEL);
--	if (!ri)
--		goto fail;
-+		goto free;
- 
- 	trampoline_vaddr = uprobe_get_trampoline_vaddr();
- 	orig_ret_vaddr = arch_uretprobe_hijack_return_addr(trampoline_vaddr, regs);
- 	if (orig_ret_vaddr == -1)
--		goto fail;
-+		goto put;
- 
- 	/* drop the entries invalidated by longjmp() */
- 	chained = (orig_ret_vaddr == trampoline_vaddr);
-@@ -1916,7 +1942,7 @@ static void prepare_uretprobe(struct uprobe *uprobe, struct pt_regs *regs)
- 			 * attack from user-space.
- 			 */
- 			uprobe_warn(current, "handle tail call");
--			goto fail;
-+			goto put;
- 		}
- 		orig_ret_vaddr = utask->return_instances->orig_ret_vaddr;
- 	}
-@@ -1931,9 +1957,10 @@ static void prepare_uretprobe(struct uprobe *uprobe, struct pt_regs *regs)
- 	utask->return_instances = ri;
- 
- 	return;
--fail:
--	kfree(ri);
-+put:
- 	put_uprobe(uprobe);
-+free:
-+	kfree(ri);
- }
- 
- /* Prepare to single-step probed instruction out of line. */
-@@ -2077,34 +2104,90 @@ static struct uprobe *find_active_uprobe_rcu(unsigned long bp_vaddr, int *is_swb
- 	return uprobe;
- }
- 
-+static struct return_instance*
-+push_consumer(struct return_instance *ri, int idx, __u64 id, __u64 cookie)
-+{
-+	if (unlikely(ri == ZERO_SIZE_PTR))
-+		return ri;
-+
-+	if (unlikely(idx >= ri->consumers_cnt)) {
-+		struct return_instance *old_ri = ri;
-+
-+		ri->consumers_cnt += DEF_CNT;
-+		ri = krealloc(old_ri, ri_size(old_ri->consumers_cnt), GFP_KERNEL);
-+		if (!ri) {
-+			kfree(old_ri);
-+			return ZERO_SIZE_PTR;
-+		}
-+	}
-+
-+	ri->consumers[idx].id = id;
-+	ri->consumers[idx].cookie = cookie;
-+	return ri;
-+}
-+
-+static struct return_consumer *
-+return_consumer_find(struct return_instance *ri, int *iter, int id)
-+{
-+	struct return_consumer *ric;
-+	int idx = *iter;
-+
-+	for (ric = &ri->consumers[idx]; idx < ri->consumers_cnt; idx++, ric++) {
-+		if (ric->id == id) {
-+			*iter = idx + 1;
-+			return ric;
-+		}
-+	}
-+	return NULL;
-+}
-+
-+static bool ignore_ret_handler(int rc)
-+{
-+	return rc == UPROBE_HANDLER_REMOVE || rc == UPROBE_HANDLER_IGNORE;
-+}
-+
- static void handler_chain(struct uprobe *uprobe, struct pt_regs *regs)
- {
- 	struct uprobe_consumer *uc;
--	int remove = UPROBE_HANDLER_REMOVE;
--	bool need_prep = false; /* prepare return uprobe, when needed */
--	bool has_consumers = false;
-+	bool has_consumers = false, remove = true;
-+	struct return_instance *ri = NULL;
-+	int push_idx = 0;
- 
- 	current->utask->auprobe = &uprobe->arch;
- 
- 	list_for_each_entry_rcu(uc, &uprobe->consumers, cons_node, rcu_read_lock_trace_held()) {
-+		bool session = uc->handler && uc->ret_handler;
-+		__u64 cookie = 0;
- 		int rc = 0;
- 
- 		if (uc->handler) {
--			rc = uc->handler(uc, regs, NULL);
--			WARN(rc & ~UPROBE_HANDLER_MASK,
-+			rc = uc->handler(uc, regs, &cookie);
-+			WARN(rc < 0 || rc > 2,
- 				"bad rc=0x%x from %ps()\n", rc, uc->handler);
- 		}
- 
--		if (uc->ret_handler)
--			need_prep = true;
--
--		remove &= rc;
-+		remove &= rc == UPROBE_HANDLER_REMOVE;
- 		has_consumers = true;
-+
-+		if (!uc->ret_handler || ignore_ret_handler(rc))
-+			continue;
-+
-+		if (!ri)
-+			ri = alloc_return_instance();
-+
-+		if (session)
-+			ri = push_consumer(ri, push_idx++, uc->id, cookie);
- 	}
- 	current->utask->auprobe = NULL;
- 
--	if (need_prep && !remove)
--		prepare_uretprobe(uprobe, regs); /* put bp at return */
-+	if (!ZERO_OR_NULL_PTR(ri)) {
-+		/*
-+		 * The push_idx value has the final number of return consumers,
-+		 * and ri->consumers_cnt has number of allocated consumers.
-+		 */
-+		ri->consumers_cnt = push_idx;
-+		prepare_uretprobe(uprobe, regs, ri);
-+	}
- 
- 	if (remove && has_consumers) {
- 		down_read(&uprobe->register_rwsem);
-@@ -2123,12 +2206,19 @@ static void
- handle_uretprobe_chain(struct return_instance *ri, struct pt_regs *regs)
- {
- 	struct uprobe *uprobe = ri->uprobe;
-+	struct return_consumer *ric;
- 	struct uprobe_consumer *uc;
-+	int ric_idx = 0;
- 
- 	rcu_read_lock_trace();
- 	list_for_each_entry_rcu(uc, &uprobe->consumers, cons_node, rcu_read_lock_trace_held()) {
--		if (uc->ret_handler)
--			uc->ret_handler(uc, ri->func, regs, NULL);
-+		bool session = uc->handler && uc->ret_handler;
-+
-+		if (uc->ret_handler) {
-+			ric = return_consumer_find(ri, &ric_idx, uc->id);
-+			if (!session || ric)
-+				uc->ret_handler(uc, ri->func, regs, ric ? &ric->cookie : NULL);
-+		}
- 	}
- 	rcu_read_unlock_trace();
- }
--- 
-2.46.2
+- Fix a NULL pointer dereference in BPF devmap due to missing
+  rxq information, from Florian Kauer.
 
+- Fix a memory leak in bpf_core_apply, from Jiri Olsa.
+
+- Fix an UBSAN-reported array-index-out-of-bounds in BTF
+  parsing for arrays of nested structs, from Hou Tao.
+
+- Fix build ID fetching where memory areas backing the file
+  were created with memfd_secret, from Andrii Nakryiko.
+
+- Fix BPF task iterator tid filtering which was incorrectly
+  using pid instead of tid, from Jordan Rome.
+
+- Several fixes for BPF sockmap and BPF sockhash redirection
+  in combination with vsocks, from Michal Luczaj.
+
+- Fix riscv BPF JIT and make BPF_CMPXCHG fully ordered,
+  from Andrea Parri.
+
+- Fix riscv BPF JIT under CONFIG_CFI_CLANG to prevent the
+  possibility of an infinite BPF tailcall, from Pu Lehui.
+
+- Fix a build warning from resolve_btfids that bpf_lsm_key_free
+  cannot be resolved, from Thomas Weißschuh.
+
+- Fix a bug in kfunc BTF caching for modules where the wrong
+  BTF object was returned, from Toke Høiland-Jørgensen.
+
+- Fix a BPF selftest compilation error in cgroup-related tests
+  with musl libc, from Tony Ambardar.
+
+- Several fixes to BPF link info dumps to fill missing fields,
+  from Tyrone Wu.
+
+- Add BPF selftests for kfuncs from multiple modules, checking
+  that the correct kfuncs are called, from Simon Sundberg.
+
+- Ensure that internal and user-facing bpf_redirect flags
+  don't overlap, also from Toke Høiland-Jørgensen.
+
+- Switch to use kvzmalloc to allocate BPF verifier environment,
+  from Rik van Riel.
+
+- Use raw_spinlock_t in BPF ringbuf to fix a sleep in atomic
+  splat under RT, from Wander Lairson Costa.
+
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+----------------------------------------------------------------
+Alexei Starovoitov (3):
+      Merge branch 'check-the-remaining-info_cnt-before-repeating-btf-fields'
+      Merge branch 'fix-caching-of-btf-for-kfuncs-in-the-verifier'
+      Merge branch 'fix-truncation-bug-in-coerce_reg_to_size_sx-and-extend-selftests'
+
+Andrea Parri (1):
+      riscv, bpf: Make BPF_CMPXCHG fully ordered
+
+Andrii Nakryiko (1):
+      lib/buildid: Handle memfd_secret() files in build_id_parse()
+
+Daniel Borkmann (4):
+      bpf: Sync uapi bpf.h header to tools directory
+      bpf: Fix incorrect delta propagation between linked registers
+      bpf: Fix print_reg_state's constant scalar dump
+      selftests/bpf: Add test case for delta propagation
+
+Dimitar Kanaliev (3):
+      bpf: Fix truncation bug in coerce_reg_to_size_sx()
+      selftests/bpf: Add test for truncation after sign extension in coerce_reg_to_size_sx()
+      selftests/bpf: Add test for sign extension in coerce_subreg_to_size_sx()
+
+Eduard Zingerman (2):
+      bpf: sync_linked_regs() must preserve subreg_def
+      selftests/bpf: Verify that sync_linked_regs preserves subreg_def
+
+Florian Kauer (2):
+      bpf: devmap: provide rxq after redirect
+      bpf: selftests: send packet to devmap redirect XDP
+
+Hou Tao (2):
+      bpf: Check the remaining info_cnt before repeating btf fields
+      selftests/bpf: Add more test case for field flattening
+
+Jiri Olsa (1):
+      bpf: Fix memory leak in bpf_core_apply
+
+Jordan Rome (2):
+      bpf: Fix iter/task tid filtering
+      bpf: Properly test iter/task tid filtering
+
+Martin KaFai Lau (1):
+      Merge branch 'bpf: devmap: provide rxq after redirect'
+
+Michal Luczaj (4):
+      bpf, sockmap: SK_DROP on attempted redirects of unsupported af_vsock
+      vsock: Update rx_bytes on read_skb()
+      vsock: Update msg_count on read_skb()
+      bpf, vsock: Drop static vsock_bpf_prot initialization
+
+Pu Lehui (1):
+      riscv, bpf: Fix possible infinite tailcall when CONFIG_CFI_CLANG is enabled
+
+Rik van Riel (1):
+      bpf: use kvzmalloc to allocate BPF verifier environment
+
+Simon Sundberg (2):
+      selftests/bpf: Provide a generic [un]load_module helper
+      selftests/bpf: Add test for kfunc module order
+
+Thomas Weißschuh (1):
+      bpf, lsm: Remove bpf_lsm_key_free hook
+
+Toke Høiland-Jørgensen (2):
+      bpf: Make sure internal and UAPI bpf_redirect flags don't overlap
+      bpf: fix kfunc btf caching for modules
+
+Tony Ambardar (2):
+      selftests/bpf: Fix error compiling cgroup_ancestor.c with musl libc
+      selftests/bpf: Fix cross-compiling urandom_read
+
+Tyrone Wu (6):
+      bpf: fix unpopulated name_len field in perf_event link info
+      selftests/bpf: fix perf_event link info name_len assertion
+      bpf: Fix unpopulated path_size when uprobe_multi fields unset
+      selftests/bpf: Assert link info uprobe_multi count & path_size if unset
+      bpf: Fix link info netfilter flags to populate defrag flag
+      selftests/bpf: Add asserts for netfilter link info
+
+Wander Lairson Costa (1):
+      bpf: Use raw_spinlock_t in ringbuf
+
+ arch/riscv/net/bpf_jit_comp64.c                    |   8 +-
+ include/net/sock.h                                 |   5 +
+ include/uapi/linux/bpf.h                           |  13 +--
+ kernel/bpf/bpf_lsm.c                               |   4 -
+ kernel/bpf/btf.c                                   |  15 ++-
+ kernel/bpf/devmap.c                                |  11 +-
+ kernel/bpf/log.c                                   |   3 +-
+ kernel/bpf/ringbuf.c                               |  12 +-
+ kernel/bpf/syscall.c                               |  29 +++--
+ kernel/bpf/task_iter.c                             |   2 +-
+ kernel/bpf/verifier.c                              |  36 ++++--
+ kernel/trace/bpf_trace.c                           |  36 +++---
+ lib/buildid.c                                      |   5 +
+ net/core/filter.c                                  |   8 +-
+ net/core/sock_map.c                                |   8 ++
+ net/netfilter/nf_bpf_link.c                        |   3 +-
+ net/vmw_vsock/virtio_transport_common.c            |  14 ++-
+ net/vmw_vsock/vsock_bpf.c                          |   8 --
+ tools/include/uapi/linux/bpf.h                     |  22 ++--
+ tools/testing/selftests/bpf/Makefile               |  22 +++-
+ .../selftests/bpf/bpf_test_modorder_x/Makefile     |  19 ++++
+ .../bpf/bpf_test_modorder_x/bpf_test_modorder_x.c  |  39 +++++++
+ .../selftests/bpf/bpf_test_modorder_y/Makefile     |  19 ++++
+ .../bpf/bpf_test_modorder_y/bpf_test_modorder_y.c  |  39 +++++++
+ tools/testing/selftests/bpf/prog_tests/bpf_iter.c  |  27 ++++-
+ .../selftests/bpf/prog_tests/cgroup_ancestor.c     |   2 +-
+ tools/testing/selftests/bpf/prog_tests/cpumask.c   |   1 +
+ .../selftests/bpf/prog_tests/fill_link_info.c      |  18 ++-
+ .../selftests/bpf/prog_tests/kfunc_module_order.c  |  55 +++++++++
+ .../bpf/prog_tests/netfilter_link_attach.c         |  42 ++++++-
+ tools/testing/selftests/bpf/prog_tests/verifier.c  |   2 +
+ .../selftests/bpf/prog_tests/xdp_devmap_attach.c   | 125 +++++++++++++++++++--
+ tools/testing/selftests/bpf/progs/cpumask_common.h |   5 +
+ .../testing/selftests/bpf/progs/cpumask_failure.c  |  35 ++++++
+ .../testing/selftests/bpf/progs/cpumask_success.c  |  78 ++++++++++++-
+ .../selftests/bpf/progs/kfunc_module_order.c       |  30 +++++
+ .../bpf/progs/test_xdp_with_devmap_helpers.c       |   2 +-
+ .../selftests/bpf/progs/verifier_linked_scalars.c  |  34 ++++++
+ tools/testing/selftests/bpf/progs/verifier_movsx.c |  40 +++++++
+ .../selftests/bpf/progs/verifier_scalar_ids.c      |  67 +++++++++++
+ tools/testing/selftests/bpf/testing_helpers.c      |  34 ++++--
+ tools/testing/selftests/bpf/testing_helpers.h      |   2 +
+ 42 files changed, 847 insertions(+), 132 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/bpf_test_modorder_x/Makefile
+ create mode 100644 tools/testing/selftests/bpf/bpf_test_modorder_x/bpf_test_modorder_x.c
+ create mode 100644 tools/testing/selftests/bpf/bpf_test_modorder_y/Makefile
+ create mode 100644 tools/testing/selftests/bpf/bpf_test_modorder_y/bpf_test_modorder_y.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/kfunc_module_order.c
+ create mode 100644 tools/testing/selftests/bpf/progs/kfunc_module_order.c
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_linked_scalars.c
 
