@@ -1,237 +1,234 @@
-Return-Path: <bpf+bounces-42460-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42461-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 017869A4642
-	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 20:48:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D92129A4679
+	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 21:05:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6ACE01F2487D
-	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 18:48:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 74869286471
+	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 19:05:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 288FC20604B;
-	Fri, 18 Oct 2024 18:46:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFA67204958;
+	Fri, 18 Oct 2024 19:05:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="qDW83nvb"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q5uvTqpE"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EFDD20409D
-	for <bpf@vger.kernel.org>; Fri, 18 Oct 2024 18:46:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 045E1185B48;
+	Fri, 18 Oct 2024 19:05:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729277211; cv=none; b=NTmyFZBrhaNR4aqGI3Y3Ia75GvuRO10YU19wY/kQ51xWRKPf2U5PEm5eA2h+0uUQn9d8KC81uv7leXKUjeNg39oka9tdcwcptSyucACw48Zq1DqCdlhKDBWXfscQFb68Nryv3Pil6aQHU8AwEmX1HYwBS8aslFqIU2ZBLFfDyhw=
+	t=1729278302; cv=none; b=qZbchbqTRHckq7z0Fez8GeqyT65fRy3DCKnH4xgDM54K17t3TcuiPMGIr0zeGCxQIfND6ne0msO4ZbCdwaghBeVBjMSz64hwOWteijB3+pnw3W83lruwCB+bNLlyexwSokzQIjS//bO+h06JeGVOqnCXjru8njD2tWcNWtrVRbc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729277211; c=relaxed/simple;
-	bh=h8TYANH/Rm3VFpXirJ+fPVzaqM04U3Ots8fYgrPYztA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=AeyQ8ifRKug/P7doorGahiot5aZFEDvik/GfbReg8cUpq0lPJlw6GLnPWOQryqG84mFopM/Ye4qT7xLYE7V/+vZfVbRxhNnmNH/s6i1MxyuvJXwNktdw4hSMLGiAMMPUQTlMLcUzIlJCfIkVdWVeXbpLQhrI3onQtlmUlbC5LSM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=qDW83nvb; arc=none smtp.client-ip=95.215.58.183
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <7b19ad7f-163b-44ed-bc70-f973a7a6f303@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1729277202;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+qWqLaFRsovCSA73a8GFikArTFdEXCAPGRK8EgBnsBI=;
-	b=qDW83nvbu1D1nHDB9IU/Lb4Oq1RVpDDQgbBui4S6YZZh795i4+Og3uj3SyMb+WEFtTzKdq
-	6DEKsEGo1walFPw61yxeCpWlRQBOqhGwkHE87ESRhNYg8nZmu6FmzFvnD4Psf71Vcer0FU
-	MaTjIHY/Sw8DuOnBmH//5Qy0VJMEcbE=
-Date: Fri, 18 Oct 2024 11:46:31 -0700
+	s=arc-20240116; t=1729278302; c=relaxed/simple;
+	bh=FPm25//FWOl+CC1MWzk9hQUI9w5QiPt15s8anu8dklE=;
+	h=Mime-Version:Content-Type:Date:Message-Id:From:To:Cc:Subject:
+	 References:In-Reply-To; b=PtZZpCKiUiDW2GhcM3rSnXGO+n3vLYmwIbeNOpdHWDW4UGAsKxjEcvET+Rx0RbnJBsXqNafBIXdi6bzpWzdyM3oaji9cuGWK60bC02mrT0ZOKhLR3JnhA+zgmm77vC2Kzj/KCK7JUTJNM6/Kt9m0Hw82ehDRPoBHsm9LEjUcWcU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q5uvTqpE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12FA0C4CEC3;
+	Fri, 18 Oct 2024 19:05:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1729278301;
+	bh=FPm25//FWOl+CC1MWzk9hQUI9w5QiPt15s8anu8dklE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Q5uvTqpERQM/xf087llem64Geo2ZtGqg+DGlihon2UFTSlgjhC5vcPMah+RtPR5jM
+	 V9+ZHf5VFZjTmcJKtPceJvVyS89pTxSHtXENhw0ugAcvlBG6zaDYCdpiePQ9T4NkJw
+	 yYakgWahYaH/gaXTAb0ZaK9Vl26Y4TZHqqw28s36BYO6YrF6GxaiOZZWpK4raV87ID
+	 0ysPDESKTrAl8uBRXz//pA6XT++5p9W6jOADfciBCpAsxs9lJEyR+z9SP5o3THMssx
+	 tyXLYLe23fAQn89EO4XXbpUekwhntYEad85YicmT7GWnJqiLCAR0TKmHOIvH3/pNMO
+	 E7PgKiSEfhCCw==
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Add a test for open coded
- kmem_cache iter
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
- bpf@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
- Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
- David Rientjes <rientjes@google.com>, Joonsoo Kim <iamjoonsoo.kim@lge.com>,
- Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <roman.gushchin@linux.dev>,
- Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm@kvack.org,
- Arnaldo Carvalho de Melo <acme@kernel.org>, Kees Cook <kees@kernel.org>
-References: <20241017080604.541872-1-namhyung@kernel.org>
- <20241017080604.541872-2-namhyung@kernel.org>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20241017080604.541872-2-namhyung@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Fri, 18 Oct 2024 22:04:56 +0300
+Message-Id: <D4Z5ZUHK76A8.18SJLAWKCZ5IX@kernel.org>
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Roberto Sassu" <roberto.sassu@huaweicloud.com>,
+ <akpm@linux-foundation.org>, <Liam.Howlett@oracle.com>,
+ <lorenzo.stoakes@oracle.com>, <vbabka@suse.cz>, <jannh@google.com>
+Cc: <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+ <ebpqwerty472123@gmail.com>, <paul@paul-moore.com>, <zohar@linux.ibm.com>,
+ <dmitry.kasatkin@gmail.com>, <eric.snowberg@oracle.com>,
+ <jmorris@namei.org>, <serge@hallyn.com>, <linux-integrity@vger.kernel.org>,
+ <linux-security-module@vger.kernel.org>, <bpf@vger.kernel.org>,
+ <linux-fsdevel@vger.kernel.org>, "Kirill A. Shutemov"
+ <kirill.shutemov@linux.intel.com>, <stable@vger.kernel.org>,
+ <syzbot+1cd571a672400ef3a930@syzkaller.appspotmail.com>, "Roberto Sassu"
+ <roberto.sassu@huawei.com>
+Subject: Re: [PATCH v2] mm: Split critical region in remap_file_pages() and
+ invoke LSMs in between
+X-Mailer: aerc 0.18.2
+References: <20241018161415.3845146-1-roberto.sassu@huaweicloud.com>
+In-Reply-To: <20241018161415.3845146-1-roberto.sassu@huaweicloud.com>
 
-On 10/17/24 1:06 AM, Namhyung Kim wrote:
-> The new subtest is attached to sleepable fentry of syncfs() syscall.
-> It iterates the kmem_cache using bpf_for_each loop and count the number
-> of entries.  Finally it checks it with the number of entries from the
-> regular iterator.
-> 
->    $ ./vmtest.sh -- ./test_progs -t kmem_cache_iter
->    ...
->    #130/1   kmem_cache_iter/check_task_struct:OK
->    #130/2   kmem_cache_iter/check_slabinfo:OK
->    #130/3   kmem_cache_iter/open_coded_iter:OK
->    #130     kmem_cache_iter:OK
->    Summary: 1/3 PASSED, 0 SKIPPED, 0 FAILED
-> 
-> Also simplify the code by using attach routine of the skeleton.
-> 
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+On Fri Oct 18, 2024 at 7:14 PM EEST, Roberto Sassu wrote:
+> From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+>
+> Commit ea7e2d5e49c0 ("mm: call the security_mmap_file() LSM hook in
+> remap_file_pages()") fixed a security issue, it added an LSM check when
+> trying to remap file pages, so that LSMs have the opportunity to evaluate
+> such action like for other memory operations such as mmap() and mprotect(=
+).
+>
+> However, that commit called security_mmap_file() inside the mmap_lock loc=
+k,
+> while the other calls do it before taking the lock, after commit
+> 8b3ec6814c83 ("take security_mmap_file() outside of ->mmap_sem").
+>
+> This caused lock inversion issue with IMA which was taking the mmap_lock
+> and i_mutex lock in the opposite way when the remap_file_pages() system
+> call was called.
+>
+> Solve the issue by splitting the critical region in remap_file_pages() in
+> two regions: the first takes a read lock of mmap_lock, retrieves the VMA
+> and the file descriptor associated, and calculates the 'prot' and 'flags'
+> variables; the second takes a write lock on mmap_lock, checks that the VM=
+A
+> flags and the VMA file descriptor are the same as the ones obtained in th=
+e
+> first critical region (otherwise the system call fails), and calls
+> do_mmap().
+>
+> In between, after releasing the read lock and before taking the write loc=
+k,
+> call security_mmap_file(), and solve the lock inversion issue.
+>
+> Cc: stable@vger.kernel.org # v6.12-rcx
+> Fixes: ea7e2d5e49c0 ("mm: call the security_mmap_file() LSM hook in remap=
+_file_pages()")
+> Reported-by: syzbot+1cd571a672400ef3a930@syzkaller.appspotmail.com
+> Closes: https://lore.kernel.org/linux-security-module/66f7b10e.050a0220.4=
+6d20.0036.GAE@google.com/
+> Reviewed-by: Roberto Sassu <roberto.sassu@huawei.com>
+> Reviewed-by: Jann Horn <jannh@google.com>
+> Reviewed-by: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
+> Tested-by: Roberto Sassu <roberto.sassu@huawei.com>
+> Tested-by: syzbot+1cd571a672400ef3a930@syzkaller.appspotmail.com
+> Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 > ---
->   .../testing/selftests/bpf/bpf_experimental.h  |  6 ++++
->   .../bpf/prog_tests/kmem_cache_iter.c          | 28 +++++++++++--------
->   .../selftests/bpf/progs/kmem_cache_iter.c     | 24 ++++++++++++++++
->   3 files changed, 46 insertions(+), 12 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/bpf_experimental.h b/tools/testing/selftests/bpf/bpf_experimental.h
-> index b0668f29f7b394eb..cd8ecd39c3f3c68d 100644
-> --- a/tools/testing/selftests/bpf/bpf_experimental.h
-> +++ b/tools/testing/selftests/bpf/bpf_experimental.h
-> @@ -582,4 +582,10 @@ extern int bpf_wq_set_callback_impl(struct bpf_wq *wq,
->   		unsigned int flags__k, void *aux__ign) __ksym;
->   #define bpf_wq_set_callback(timer, cb, flags) \
->   	bpf_wq_set_callback_impl(timer, cb, flags, NULL)
-> +
-> +struct bpf_iter_kmem_cache;
-> +extern int bpf_iter_kmem_cache_new(struct bpf_iter_kmem_cache *it) __weak __ksym;
-> +extern struct kmem_cache *bpf_iter_kmem_cache_next(struct bpf_iter_kmem_cache *it) __weak __ksym;
-> +extern void bpf_iter_kmem_cache_destroy(struct bpf_iter_kmem_cache *it) __weak __ksym;
-> +
->   #endif
-> diff --git a/tools/testing/selftests/bpf/prog_tests/kmem_cache_iter.c b/tools/testing/selftests/bpf/prog_tests/kmem_cache_iter.c
-> index 848d8fc9171fae45..a1fd3bc57c0b21bb 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/kmem_cache_iter.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/kmem_cache_iter.c
-> @@ -68,12 +68,18 @@ static void subtest_kmem_cache_iter_check_slabinfo(struct kmem_cache_iter *skel)
->   	fclose(fp);
->   }
->   
-> +static void subtest_kmem_cache_iter_open_coded(struct kmem_cache_iter *skel)
-> +{
-> +	/* To trigger the open coded iterator attached to the syscall */
-> +	syncfs(0);
-> +
-> +	/* It should be same as we've seen from the explicit iterator */
-> +	ASSERT_EQ(skel->bss->open_coded_seen, skel->bss->kmem_cache_seen, "open_code_seen_eq");
-> +}
-> +
->   void test_kmem_cache_iter(void)
->   {
-> -	DECLARE_LIBBPF_OPTS(bpf_iter_attach_opts, opts);
->   	struct kmem_cache_iter *skel = NULL;
-> -	union bpf_iter_link_info linfo = {};
-> -	struct bpf_link *link;
->   	char buf[256];
->   	int iter_fd;
->   
-> @@ -81,16 +87,12 @@ void test_kmem_cache_iter(void)
->   	if (!ASSERT_OK_PTR(skel, "kmem_cache_iter__open_and_load"))
->   		return;
->   
-> -	opts.link_info = &linfo;
-> -	opts.link_info_len = sizeof(linfo);
-> -
-> -	link = bpf_program__attach_iter(skel->progs.slab_info_collector, &opts);
-> -	if (!ASSERT_OK_PTR(link, "attach_iter"))
-> +	if (!ASSERT_OK(kmem_cache_iter__attach(skel), "skel_attach"))
-
-with this change.
-
->   		goto destroy;
->   
-> -	iter_fd = bpf_iter_create(bpf_link__fd(link));
-> +	iter_fd = bpf_iter_create(bpf_link__fd(skel->links.slab_info_collector));
->   	if (!ASSERT_GE(iter_fd, 0, "iter_create"))
-> -		goto free_link;
-> +		goto detach;
->   
->   	memset(buf, 0, sizeof(buf));
->   	while (read(iter_fd, buf, sizeof(buf) > 0)) {
-> @@ -105,11 +107,13 @@ void test_kmem_cache_iter(void)
->   		subtest_kmem_cache_iter_check_task_struct(skel);
->   	if (test__start_subtest("check_slabinfo"))
->   		subtest_kmem_cache_iter_check_slabinfo(skel);
-> +	if (test__start_subtest("open_coded_iter"))
-> +		subtest_kmem_cache_iter_open_coded(skel);
->   
->   	close(iter_fd);
->   
-> -free_link:
-> -	bpf_link__destroy(link);
-> +detach:
-> +	kmem_cache_iter__detach(skel);
-
-nit. I think the kmem_cache_iter__destroy() below will also detach, so no need 
-to explicit kmem_cache_iter__detach().
-
->   destroy:
->   	kmem_cache_iter__destroy(skel);
->   }
-> diff --git a/tools/testing/selftests/bpf/progs/kmem_cache_iter.c b/tools/testing/selftests/bpf/progs/kmem_cache_iter.c
-> index 72c9dafecd98406b..4c44aa279a5328fe 100644
-> --- a/tools/testing/selftests/bpf/progs/kmem_cache_iter.c
-> +++ b/tools/testing/selftests/bpf/progs/kmem_cache_iter.c
-> @@ -2,6 +2,8 @@
->   /* Copyright (c) 2024 Google */
->   
->   #include "bpf_iter.h"
-> +#include "bpf_experimental.h"
-> +#include "bpf_misc.h"
->   #include <bpf/bpf_helpers.h>
->   #include <bpf/bpf_tracing.h>
->   
-> @@ -33,6 +35,7 @@ extern struct kmem_cache *bpf_get_kmem_cache(u64 addr) __ksym;
->   /* Result, will be checked by userspace */
->   int task_struct_found;
->   int kmem_cache_seen;
-> +int open_coded_seen;
->   
->   SEC("iter/kmem_cache")
->   int slab_info_collector(struct bpf_iter__kmem_cache *ctx)
-> @@ -85,3 +88,24 @@ int BPF_PROG(check_task_struct)
->   		task_struct_found = -2;
->   	return 0;
->   }
-> +
-> +SEC("fentry.s/" SYS_PREFIX "sys_syncfs")
-> +int open_coded_iter(const void *ctx)
-> +{
-> +	struct kmem_cache *s;
-> +
-> +	bpf_for_each(kmem_cache, s) {
-> +		struct kmem_cache_result *r;
-> +		int idx = open_coded_seen;
-> +
-> +		r = bpf_map_lookup_elem(&slab_result, &idx);
-> +		if (r == NULL)
-> +			break;
-> +
-> +		open_coded_seen++;
-
-I am not sure if this will work well if the testing system somehow has another 
-process calling syncfs. It is probably a good idea to guard this by checking the 
-tid of the test_progs at the beginning of this bpf prog.
-
-> +
-> +		if (r->obj_size != s->size)
-> +			break;
+>  mm/mmap.c | 69 +++++++++++++++++++++++++++++++++++++++++--------------
+>  1 file changed, 52 insertions(+), 17 deletions(-)
+>
+> diff --git a/mm/mmap.c b/mm/mmap.c
+> index 9c0fb43064b5..f731dd69e162 100644
+> --- a/mm/mmap.c
+> +++ b/mm/mmap.c
+> @@ -1640,6 +1640,7 @@ SYSCALL_DEFINE5(remap_file_pages, unsigned long, st=
+art, unsigned long, size,
+>  	unsigned long populate =3D 0;
+>  	unsigned long ret =3D -EINVAL;
+>  	struct file *file;
+> +	vm_flags_t vm_flags;
+> =20
+>  	pr_warn_once("%s (%d) uses deprecated remap_file_pages() syscall. See D=
+ocumentation/mm/remap_file_pages.rst.\n",
+>  		     current->comm, current->pid);
+> @@ -1656,12 +1657,60 @@ SYSCALL_DEFINE5(remap_file_pages, unsigned long, =
+start, unsigned long, size,
+>  	if (pgoff + (size >> PAGE_SHIFT) < pgoff)
+>  		return ret;
+> =20
+> -	if (mmap_write_lock_killable(mm))
+> +	if (mmap_read_lock_killable(mm))
+>  		return -EINTR;
+> =20
+> +	/*
+> +	 * Look up VMA under read lock first so we can perform the security
+> +	 * without holding locks (which can be problematic). We reacquire a
+> +	 * write lock later and check nothing changed underneath us.
+> +	 */
+>  	vma =3D vma_lookup(mm, start);
+> =20
+> -	if (!vma || !(vma->vm_flags & VM_SHARED))
+> +	if (!vma || !(vma->vm_flags & VM_SHARED)) {
+> +		mmap_read_unlock(mm);
+> +		return -EINVAL;
 > +	}
-> +	return 0;
-> +}
+> +
+> +	prot |=3D vma->vm_flags & VM_READ ? PROT_READ : 0;
+> +	prot |=3D vma->vm_flags & VM_WRITE ? PROT_WRITE : 0;
+> +	prot |=3D vma->vm_flags & VM_EXEC ? PROT_EXEC : 0;
 
+Not an actual review comment but we don't have a conversion macro and/or
+inline for this, do we (and opposite direction)?
+
+> +
+> +	flags &=3D MAP_NONBLOCK;
+> +	flags |=3D MAP_SHARED | MAP_FIXED | MAP_POPULATE;
+> +	if (vma->vm_flags & VM_LOCKED)
+> +		flags |=3D MAP_LOCKED;
+> +
+> +	/* Save vm_flags used to calculate prot and flags, and recheck later. *=
+/
+> +	vm_flags =3D vma->vm_flags;
+> +	file =3D get_file(vma->vm_file);
+> +
+> +	mmap_read_unlock(mm);
+> +
+> +	/* Call outside mmap_lock to be consistent with other callers. */
+> +	ret =3D security_mmap_file(file, prot, flags);
+> +	if (ret) {
+> +		fput(file);
+> +		return ret;
+> +	}
+> +
+> +	ret =3D -EINVAL;
+> +
+> +	/* OK security check passed, take write lock + let it rip. */
+> +	if (mmap_write_lock_killable(mm)) {
+> +		fput(file);
+> +		return -EINTR;
+> +	}
+> +
+> +	vma =3D vma_lookup(mm, start);
+> +
+> +	if (!vma)
+> +		goto out;
+> +
+> +	/* Make sure things didn't change under us. */
+> +	if (vma->vm_flags !=3D vm_flags)
+> +		goto out;
+> +	if (vma->vm_file !=3D file)
+>  		goto out;
+> =20
+>  	if (start + size > vma->vm_end) {
+> @@ -1689,25 +1738,11 @@ SYSCALL_DEFINE5(remap_file_pages, unsigned long, =
+start, unsigned long, size,
+>  			goto out;
+>  	}
+> =20
+> -	prot |=3D vma->vm_flags & VM_READ ? PROT_READ : 0;
+> -	prot |=3D vma->vm_flags & VM_WRITE ? PROT_WRITE : 0;
+> -	prot |=3D vma->vm_flags & VM_EXEC ? PROT_EXEC : 0;
+> -
+> -	flags &=3D MAP_NONBLOCK;
+> -	flags |=3D MAP_SHARED | MAP_FIXED | MAP_POPULATE;
+> -	if (vma->vm_flags & VM_LOCKED)
+> -		flags |=3D MAP_LOCKED;
+> -
+> -	file =3D get_file(vma->vm_file);
+> -	ret =3D security_mmap_file(vma->vm_file, prot, flags);
+> -	if (ret)
+> -		goto out_fput;
+>  	ret =3D do_mmap(vma->vm_file, start, size,
+>  			prot, flags, 0, pgoff, &populate, NULL);
+> -out_fput:
+> -	fput(file);
+>  out:
+>  	mmap_write_unlock(mm);
+> +	fput(file);
+>  	if (populate)
+>  		mm_populate(ret, populate);
+>  	if (!IS_ERR_VALUE(ret))
+
+BR, Jarkko
 
