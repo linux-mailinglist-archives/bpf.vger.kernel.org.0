@@ -1,292 +1,229 @@
-Return-Path: <bpf+bounces-42405-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42406-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0E1F9A3CBF
-	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 13:07:58 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 97EA99A3CCD
+	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 13:09:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0DA041C25D1C
-	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 11:07:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 54699287BE2
+	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 11:09:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1281F215020;
-	Fri, 18 Oct 2024 11:01:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B34A20370A;
+	Fri, 18 Oct 2024 11:04:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="i7U6nu6l";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="wqFUvqGX"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="dEWaRnUZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D06C1204019;
-	Fri, 18 Oct 2024 11:01:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729249266; cv=fail; b=IcVtHrXRpavQPJqvRBxMvrki8vuLe7SFnHAke86ZAJdIimU9x0+ouAMCddTqmN91198SP6bvlzvdhUl3fUTb1LoXcpi2B9LcIQfQ007wdJ+UCYKi2/9Nx457HIzXbUnqIqrNYLvCRbgGusLWhJwofFHHaijMQEXxDD9FxPQOR/o=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729249266; c=relaxed/simple;
-	bh=bMQn7Q/uiZT5tq7aXSGXF5FR8jnpB9TWeiF24nxZeLk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=fO4prpZEGhqoNkdFDbYUKJSIBMZOKhzZodnAs2mm6+6ygQHgx5Wuhisz3DOHRRu5u9mhXM+cNQWh9WWX88wDzmIAlDLhJa9Dtj9Pnqk1TD9Val4gfYIlN+1VO46W3YKFhHyLuQVAwsKGUM78vWeWro59O06BsUJOtD/aSgIjeEg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=i7U6nu6l; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=wqFUvqGX; arc=fail smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 49I9ipeq008536;
-	Fri, 18 Oct 2024 11:00:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=corp-2023-11-20; bh=aN8MsLzdiQHU6y1OEe
-	zilCRmoFPQly4jQMnSitMORuY=; b=i7U6nu6lIZGVnYKA5pzxCJhae2UfxUK26P
-	egqgOeAm502wTJmMaglZpi3LxMEv6P7haqs4aXMa3T7ceL+f6sBxdMCcDFjuG02a
-	wgeSNQbpRvZv+T0EOYRL2SPJZtjgK+O9WLlZgcrV3BaVpvqSnbHkb6Bm+9AC6mkC
-	e1Hc8qv4gKFtgvbh4dW6tuiPQzZy8xwL0OHE9y10ubbdberRUWfwr2HqHsBTHbN9
-	PCHBOpVJK/mWZWLIatE+ZXi68QBuafscOF65pNgCC87o5aIzwFpnxil3uKfRPAmM
-	hb4qGRYvx1+nDtTALGoylm4JVHY25TO4L2eGVDoEz2KM8ygo2Ebw==
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 427h5crx0d-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 18 Oct 2024 11:00:28 +0000 (GMT)
-Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 49I8d5UX019899;
-	Fri, 18 Oct 2024 11:00:27 GMT
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2047.outbound.protection.outlook.com [104.47.58.47])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 427fjbf8vy-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 18 Oct 2024 11:00:27 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=DMctPKnPby94yOwQC9kZlhmyFbeLpw9fHs0JCHntDZbosuyKlPIwAFtSJiJNPNloHjI54VTgKDoKXudsRJ5y/UhgNLtCE3vA9i6qbZ8amL9pdPDQICLcM2PNalp6AOnYwRRR7Rw1A6T7ka6HmvmOQOSQaY0cl05zam747Lg6I7z7PWiLarrYcKHu5JcNlbMzyBtQ3pGLl+8Oz8VVni0Soe1tc7kSAlajpEgzaElS4mxG7UalAVaoA1kzvM7xCYpecFNqMV/P+pdLBdQZeVZ2gwPtdISfSl5P6/U33NjWtbsSzo0JcNPYXMKhFmJlGD2zuMAEBGoAFUAM585HVxXV3Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=aN8MsLzdiQHU6y1OEezilCRmoFPQly4jQMnSitMORuY=;
- b=JmFpeiGvlPiSiXuU8b+3w5piJLh8ri+rhwXbAn5N23oyhh9sMSkTX1I4LDKewQ3ZDP4ogfDEuD/BhS96HxYk0Yu0rpAzRcUm4Hi0tTLooAR+/h9gGecatCyRnCjqeQcf6Uw+TlzqbpuokujJkHOZ/dz/z7DMSP88DDxD5yGrS+hr5bMB2qoAdpCUG7kY8Qgp2dEJlYhFHK2NOD84THwYctPZZax5NSDB2nF7+dC27wOPIrVo1wbN+V5hrc2DfO1ULuVYallQQHxh/Rn2pDE5VQGNdAKf+TK747aAfnCoy9K8lo1un67mStjjqd19gAdb+sqp6KYXLcmnPmby1/JFuQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aN8MsLzdiQHU6y1OEezilCRmoFPQly4jQMnSitMORuY=;
- b=wqFUvqGX6+WQSXgojCYrmQT3qZUxgdHsyGiHS+rvHaQN94vUrR1jUgJWF40erJzC5/wCHlhAL4Q7TCwWbOFV+COMRMW87/q25I/s2jABbmMi9WInhKAy6HQMq6rqD+wKlHha1PIzH+IxPqh1xH4NLx0FGX44DJSMciznFSN6ynk=
-Received: from SJ0PR10MB5613.namprd10.prod.outlook.com (2603:10b6:a03:3d0::5)
- by CY8PR10MB6907.namprd10.prod.outlook.com (2603:10b6:930:86::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8069.18; Fri, 18 Oct
- 2024 11:00:24 +0000
-Received: from SJ0PR10MB5613.namprd10.prod.outlook.com
- ([fe80::4239:cf6f:9caa:940e]) by SJ0PR10MB5613.namprd10.prod.outlook.com
- ([fe80::4239:cf6f:9caa:940e%5]) with mapi id 15.20.8069.016; Fri, 18 Oct 2024
- 11:00:24 +0000
-Date: Fri, 18 Oct 2024 12:00:22 +0100
-From: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
-To: "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc: Roberto Sassu <roberto.sassu@huaweicloud.com>,
-        Paul Moore <paul@paul-moore.com>, ebpqwerty472123@gmail.com,
-        kirill.shutemov@linux.intel.com, zohar@linux.ibm.com,
-        dmitry.kasatkin@gmail.com, eric.snowberg@oracle.com, jmorris@namei.org,
-        serge@hallyn.com, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
-        linux-mm@kvack.org, akpm@linux-foundation.org, vbabka@suse.cz,
-        linux-fsdevel@vger.kernel.org, Liam Howlett <liam.howlett@oracle.com>,
-        Jann Horn <jannh@google.com>
-Subject: Re: [PATCH 1/3] ima: Remove inode lock
-Message-ID: <e89f6b61-a57f-4848-87f1-8e2282bc5aea@lucifer.local>
-References: <20241008165732.2603647-1-roberto.sassu@huaweicloud.com>
- <CAHC9VhSyWNKqustrTjA1uUaZa_jA-KjtzpKdJ4ikSUKoi7iV0Q@mail.gmail.com>
- <CAHC9VhQR2JbB7ni2yX_U8TWE0PcQQkm_pBCuG3nYN7qO15nNjg@mail.gmail.com>
- <7358f12d852964d9209492e337d33b8880234b74.camel@huaweicloud.com>
- <593282dbc9f48673c8f3b8e0f28e100f34141115.camel@huaweicloud.com>
- <15bb94a306d3432de55c0a12f29e7ed2b5fa3ba1.camel@huaweicloud.com>
- <c1e47882720fe45aa9d04d663f5a6fd39a046bcb.camel@huaweicloud.com>
- <b498e3b004bedc460991e167c154cc88d568f587.camel@huaweicloud.com>
- <ggvucjixgiuelt6vjz6oawgyobmzrhifaozqqvupwfso65ia7c@bauvfqtvq6lv>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ggvucjixgiuelt6vjz6oawgyobmzrhifaozqqvupwfso65ia7c@bauvfqtvq6lv>
-X-ClientProxiedBy: LO2P265CA0052.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:60::16) To SJ0PR10MB5613.namprd10.prod.outlook.com
- (2603:10b6:a03:3d0::5)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A261318C938
+	for <bpf@vger.kernel.org>; Fri, 18 Oct 2024 11:04:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1729249444; cv=none; b=ZFPa4nMNK/UDuxFmgpYJNrHH66U2q3LTePGsrimcmFMRNJxo2TjadBsHIPrSTzALkpVO8+B0QTRsVo6Nk2YodxpcmHAGfNBT16tcnt9xOX8RR1PaWIUQnGLW/z+/3tXP7O5Fgy3InfrB4bgtJfFbDdpqv7H3FwgdGTyGRZvGGCY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1729249444; c=relaxed/simple;
+	bh=8BlWI7US2omrq6rSX95HX1nFsnpDbimPn6ya3FSoyGs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=k9dRuNg7m9PGzG/U2acMqx+jEjEdy9X816MswJH8mmrPkdf6XqhlxbwLKkP+7hvGonaBFqAtxo8ZZyM6a/XTojsI8Qycjq7zHUPTAFs/ZaWpqN0C/mrpZ5yA6b9TZYUM9nPtdjkVBRcIf54bw9nyNziJIj7KlESlMgIIkLAqGyY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=dEWaRnUZ; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=SasQRu9F/Fyk3Lxd7reWioJ7ZOAPeJs53T5JPNsrGEw=; b=dEWaRnUZvBGKSGkLWiAe38cALg
+	yob+0YE1N0QfKzuYVC5tdJzPdyx0dvTx8Q91VGe1Mw2awj8eVeKDz+SchyuXqgDEI2NJcrISkelIK
+	ZPu26YwcYpDjbTyLpH7e1KLMCgneu/WwxSH2pAXy0/RBOmMRb86HkjW+v7yhRzKY5lkkitMFGA1D7
+	UYs6f49gsaJeeBPlE3yhAYK/AhpMC+vLg4qQyOOd6o89gvvfYlzafU+Mx1DKVfYmrsXIa8cJAPi/P
+	qvkuVCBYa6Jr1PCkrElWM/OjaOcuXLAbbGJrk6jmGbhy3JjsVdfeqBuewkfHJqDCgbr50TkyE/+GO
+	R1WAFldA==;
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1t1kll-000Nzd-M9; Fri, 18 Oct 2024 13:03:45 +0200
+Received: from [178.197.248.12] (helo=[192.168.1.114])
+	by sslproxy03.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1t1kll-000BsF-1r;
+	Fri, 18 Oct 2024 13:03:45 +0200
+Message-ID: <0fd927cd-7fd2-4b15-8a17-15b907771356@iogearbox.net>
+Date: Fri, 18 Oct 2024 13:03:44 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ0PR10MB5613:EE_|CY8PR10MB6907:EE_
-X-MS-Office365-Filtering-Correlation-Id: f2297461-69a7-4e63-4156-08dcef641143
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|7416014|376014|1800799024;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?i5GQ3YvlRRG0ivhDbpQ9sXt9Mw+mzqpfcK0O9UtkT7rFC6VqhfXeyOeIpnPO?=
- =?us-ascii?Q?Phe0IFf20+gCjkd+MEqhVpNYV5F8SbKJ6UrUgdwimfSOtanhV83O7W9xigP2?=
- =?us-ascii?Q?7Hsnt3dLrMmpespQUGqIR8o6Vze32qmphSO5yn9YNxIbgSXzVBqmkv/tD2SX?=
- =?us-ascii?Q?Gm7INxbt7qLydenpf34W3ecv0DCQsaxmAbGF9GUnJf8kCVAMY6+pRVfizDL2?=
- =?us-ascii?Q?xfdIHN345WWwaSrXnxVMazS4mjZz+DFMP+UYJk5VgrjBKetAL3liVTTkyAAW?=
- =?us-ascii?Q?GYEVqwl1Tge+rIFYVMadGsNmPFYZxJFoQejGvj86f4YCVIKscqVlCOszqLgO?=
- =?us-ascii?Q?rO/zL4P+znnjZtaNul29L1AHb+OhJh2C3yhPiQnARsYWicBU0qnR1zMbrtEb?=
- =?us-ascii?Q?Iyks+dAfGT4RpoOAnllU4GNHbpcfmWm3PDIKPuQehHac7VsRDwInkRwihox0?=
- =?us-ascii?Q?mKF7rD87K6svMlhumJvod6fCQpDznjS4555s9AtkDiSrS/0fK4owrAMCIsil?=
- =?us-ascii?Q?INdtHCuhyYyEfYoA7AbBEQ5ViD+XlDlbsfSXX0UpxvUxBdKFMS2LkFB5wviz?=
- =?us-ascii?Q?G3rWEJp+bfdluLWmtkdWacky6v5U78VmLLncs/COxkwqXGHBGyBC2E5Rsdyb?=
- =?us-ascii?Q?G3Gx6/tpfFWHRCXrowxtkwDki1DWAP+6V/lhgW22HRPaYE9Dt/ByWVmIjYza?=
- =?us-ascii?Q?iU7yaonSunMf5dFqEk9ai+DlsOszECmqWK8AqCbIFnHv4xC80qvmMO8/VUZW?=
- =?us-ascii?Q?pig59y4n7/8yhVoZqMludj5RJGO5IC4tTOiYQ4BPI96yBRzk3ArA/xo9RTRX?=
- =?us-ascii?Q?wjBE+ubTzjl6NCQ77IArutE1LkmskL20r3JESx6bXwFSzfvn69GbzJ1jkHwO?=
- =?us-ascii?Q?KJVaePPu4Lf4W8t7CHd3GZMHY9PzRGx0j6Jk7fSvvLVIyw2JnQgCE9JH9rfF?=
- =?us-ascii?Q?SZdXcCtorDP9/ZB/yKXRYPgLD3N56avvQNSmzKF0T8tb9mmMFholO2OyQZU1?=
- =?us-ascii?Q?q52aP895KlibAkaFpx3YNU5ViOqu7uaeqBsCng57h4k70onxSX8o3B2IEMdz?=
- =?us-ascii?Q?5DBpvqKRLjYpL4YN8ESfNk8R9SabmZwH9pMOowzTigdlOagSRYagutdLyr0e?=
- =?us-ascii?Q?OnP28ANpeAaODHdluFeDFeTx2YKT5QU22MEzQ24l2cb15Q+hXWo/lPc0tU1F?=
- =?us-ascii?Q?rCxK4bIsUcmXUMOI5Bgk5GP+dan8rwhdRImasYgIYtnYXImCrFoDZ8Ouv65O?=
- =?us-ascii?Q?iDVlKAqNimxVv1+J2dsrPJD7d/NPCjapNI391U9LuA++jB6QUnXJNux/kntW?=
- =?us-ascii?Q?AucsnLddPh2YxKJiMACnKehZ?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR10MB5613.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(7416014)(376014)(1800799024);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?0Fya/xuOV59yx/8omllOno1vCY5S8sEvAFCR+5SYMnVfMdK3l8D0/G2MGzAq?=
- =?us-ascii?Q?C9qUBsJU+lpjbBDL6livQjP+kdbVpf+D1Z45L4pnJd3ieIsYNax8gSOCEb2H?=
- =?us-ascii?Q?gY3ZlGKe+mmcFjL6aZXOt4sWAr/9bgdhthShr/R9EUXB6LZ7zRVuI7U2FXrI?=
- =?us-ascii?Q?n1Msy2QlXvQIXr+8tcPU6DOYxw29dVw2odfkP+Uak2bEorKgDkpQfeLgl5lB?=
- =?us-ascii?Q?jnIQ5oAr69QEMfhnLaip0hxXz9HiWSQH/ym6pgkLHAVukBLjFQfi0Z5y+pCN?=
- =?us-ascii?Q?qhnxeYYrBuANmQu17WVGFWhZNywVQ+oamDkS0osSrnM/ms3fzkVMPPAX/M49?=
- =?us-ascii?Q?58W1XgYY2/quNUd7p+ElM0Wvsav67G5EWCCI8jwQLeVRCohO7Z7M0qIk3MhN?=
- =?us-ascii?Q?0Xt3dFQnHwozhOnNmfpUWMIzJ94CIO7kS+vbPTqJOFzHNpBFXIeZs0G38Gsh?=
- =?us-ascii?Q?gQ9ktbV/oTxVHUTKGyUh3glMd/dY0gYI+Lbk8V8km9Ri7vIN915NHLbeWD7y?=
- =?us-ascii?Q?muakiAffRgMcD/dlRot0eShfUs+pEc2Z6h91ZfEq+FcV9kYPYr+XmQR/UQ1C?=
- =?us-ascii?Q?CLt0krI52grwU8zxIEKhadoEQvzJgP9XUxXqTLWs9iaTpClW9xxvyMlshJB4?=
- =?us-ascii?Q?2MHdp++4KeG+jpUOklzdatkOU4z55lqOdVdeg0z9ULryKC+NcD3Jwml71I4X?=
- =?us-ascii?Q?C/GF1TjebOpDStx78G7M0F0vLP5akXwpSNvPHUibbT1D+7vK4MP+cMPMX5OY?=
- =?us-ascii?Q?c+hjy9yHhPyGLqKsn6u79V8gS3ad33twtV0YOrP7qROwdi37jrRqfHHJJlKZ?=
- =?us-ascii?Q?IhWN4E4Tez+RL9r0ds155oK7r1yj7dJ2HmELEruqxxAFcLZkUw7cIeovEUYl?=
- =?us-ascii?Q?2SL5YvJmrihcqI9Mw4s6JfslVH8/DV46Ptz/GYh0XtjfkQ6NfulnyhZR6z2B?=
- =?us-ascii?Q?mSjnXlYZv5/aje1WX+PoIXkUGcKC8GvMl17viooymHo1DOLrElS/L3kB3Z4P?=
- =?us-ascii?Q?wltDiDjIiOOEXNeW9nOom751ZPM+FL9sf4Jzfgj9aSBSW6rY63avkiHftRth?=
- =?us-ascii?Q?cxD/hAlPcdxCu9ZpU9fYMj74gyXy7vh+GrlnD68whv/DYrJlGSaYg/gbZ4hu?=
- =?us-ascii?Q?HsNRpYtfI2rI7KYeib8ac4PXL2cGQ8IGkNQSQPjY5xkX+vxDyB1l7vhl/ypP?=
- =?us-ascii?Q?Bmw9MZGHkEGgCit0VM/3xXkWvSE5yT+K/ifbGiIiGnOc96D4XmelvMuUOu4t?=
- =?us-ascii?Q?Vi4Q3o2d8AetmeaU7o9rTsdDQKlo9cYJ0jCK9LYoOegTnVcCHOd5ZJCSN8WY?=
- =?us-ascii?Q?OlB5VpOfVZBscdI7DrbtBAp6dgoddEGU3pjquOKWdLQ8Koli0vXbF4udKfBn?=
- =?us-ascii?Q?4c6jwsnmx/ZhdIdcEQFP4Ib7gJt7wyfWheh7YnUjbgdGxTDNBMvEY/0ly0WL?=
- =?us-ascii?Q?AOBtdjMTIQJxOHGQX6GU+RG5gN2CsLUtj7hYlVfXNadQh5QcCiLcxMX0ROKm?=
- =?us-ascii?Q?eyiDq0NLGahValKbh/f/o/xxIX62PozBJKsA8ngm173/kMyvb6Sc5VF46AQq?=
- =?us-ascii?Q?PJzFyvl4O5y1ECldOvLMS5xyxr4VuCoWOjdHY1pjxZ0mxAIGRRW/laUYgKa0?=
- =?us-ascii?Q?MQ=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	qAzoEFybE7j2s5FZ2c6CM39xpcSOII4sB6SBDJyU2sMBlB4r9BOqOov/VPLXrVfQrmD2F8gu4iIZDvDWVczgpWq68jWVtlH3gTxAkA1lOogg1UqmDr4uYhrxtvrx7AksaqXMCzIUweHiQbQ1Wkb5UuIphbnOi16E/4HLmUaqbfW/b0Sd+BvAtjX/8JIXxKWPoBlLn3C8cUVGFOJ/XWaEwfllzClv/kLHhk/9ROvPqBsQAjcQPWBR+KTuntmqMgrecgK6Emylr/MlM/2lAWYdCrfmPVTkxVJoeYPHL7UnoIJQ8/EcBElw7Q346FBX1XiUQ0+OI4q652os0oXoziBqte4OPlmQrLW6NeYgGD3v5bsmisQHs0CuOGJlJciBUQT6o3OcuBW2I129YsjTCf0FRys2qZcAqm1mFwbYe2UelzRFoz6N1ASOOu8vRoMDxKQdh7Z48n690cPZktXAbPH+SogRSDj6VWIOQBgTznNIEVf/yekbL4CfcuiB7+L1krci3YmHl1OM38FOmwA4nvUAFaDEdJf8s0XlJWjSa2bxaU681nDSbr0O0yhwei0f8XbDatnfBcanOtbBNeSA+SD8UP+Aa0l6axUp1ncZSnRsOmg=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f2297461-69a7-4e63-4156-08dcef641143
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR10MB5613.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Oct 2024 11:00:24.6777
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ChK/qQfqDV6plgo6l2qDMbi+iigM8qHZ7fVq4yz0HTMH5cV9xFOvymTUCap4v5F2XziERWv3aVatx8Ty6bhCYhDz2/yN8pLIfoube1TQL1E=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR10MB6907
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
- definitions=2024-10-18_06,2024-10-17_01,2024-09-30_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 mlxscore=0 phishscore=0
- adultscore=0 bulkscore=0 suspectscore=0 spamscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2409260000
- definitions=main-2410180070
-X-Proofpoint-ORIG-GUID: 5qrdI7BYbkcIGDpRmezheuBXk_g-D7e_
-X-Proofpoint-GUID: 5qrdI7BYbkcIGDpRmezheuBXk_g-D7e_
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v1 1/2] bpf: force checkpoint when jmp history is
+ too long
+To: Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org, ast@kernel.org
+Cc: andrii@kernel.org, martin.lau@linux.dev, kernel-team@fb.com,
+ yonghong.song@linux.dev
+References: <20241018020307.1766906-1-eddyz87@gmail.com>
+Content-Language: en-US
+From: Daniel Borkmann <daniel@iogearbox.net>
+Autocrypt: addr=daniel@iogearbox.net; keydata=
+ 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
+In-Reply-To: <20241018020307.1766906-1-eddyz87@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27431/Fri Oct 18 10:53:06 2024)
 
-+ Liam, Jann
+On 10/18/24 4:03 AM, Eduard Zingerman wrote:
+> A specifically crafted program might trick verifier into growing very
+> long jump history within a single bpf_verifier_state instance.
+> Very long jump history makes mark_chain_precision() unreasonably slow,
+> especially in case if verifier processes a loop.
+> 
+> Mitigate this by forcing new state in is_state_visited() in case if
+> current state's jump history is too long.
+> 
+> Use same constant as in `skip_inf_loop_check`, but multiply it by
+> arbitrarily chosen value 2 to account for jump history containing not
+> only information about jumps, but also information about stack access.
+[...]
+> 
+> The log output shows that checkpoint at label (1) is never created,
+> because it is suppressed by `skip_inf_loop_check` logic:
+> a. When 'if' at (2) is processed it pushes a state with insn_idx (1)
+>     onto stack and proceeds to (3);
+> b. At (5) checkpoint is created, and this resets
+>     env->{jmps,insns}_processed.
+> c. Verification proceeds and reaches `exit`;
+> d. State saved at step (a) is popped from stack and is_state_visited()
+>     considers if checkpoint needs to be added, but because
+>     env->{jmps,insns}_processed had been just reset at step (b)
+>     the `skip_inf_loop_check` logic forces `add_new_state` to false.
+> e. Verifier proceeds with current state, which slowly accumulates
+>     more and more entries in the jump history.
+> 
+> The accumulation of entries in the jump history is a problem because
+> of two factors:
+> - it eventually exhausts memory available for kmalloc() allocation;
+> - mark_chain_precision() traverses the jump history of a state,
+>    meaning that if `r7` is marked precise, verifier would iterate
+>    ever growing jump history until parent state boundary is reached.
+> 
+> (note: the log also shows a REG INVARIANTS VIOLATION warning
+>         upon jset processing, but that's another bug to fix).
+> 
+> With this patch applied, the example above is rejected by verifier
+> under 1s of time, reaching 1M instructions limit.
+> 
+> The program is a simplified reproducer from syzbot report [1].
+> Previous discussion could be found at [2].
+> The patch does not cause any changes in verification performance,
+> when tested on selftests from veristat.cfg and cilium programs taken
+> from [3].
+> 
+> [1] https://lore.kernel.org/bpf/670429f6.050a0220.49194.0517.GAE@google.com/
+> [2] https://lore.kernel.org/bpf/20241009021254.2805446-1-eddyz87@gmail.com/
+> [3] https://github.com/anakryiko/cilium
 
-On Fri, Oct 18, 2024 at 01:49:06PM +0300, Kirill A. Shutemov wrote:
-> On Fri, Oct 18, 2024 at 11:24:06AM +0200, Roberto Sassu wrote:
-> > Probably it is hard, @Kirill would there be any way to safely move
-> > security_mmap_file() out of the mmap_lock lock?
->
-> What about something like this (untested):
->
-> diff --git a/mm/mmap.c b/mm/mmap.c
-> index dd4b35a25aeb..03473e77d356 100644
-> --- a/mm/mmap.c
-> +++ b/mm/mmap.c
-> @@ -1646,6 +1646,26 @@ SYSCALL_DEFINE5(remap_file_pages, unsigned long, start, unsigned long, size,
->  	if (pgoff + (size >> PAGE_SHIFT) < pgoff)
->  		return ret;
->
-> +	if (mmap_read_lock_killable(mm))
-> +		return -EINTR;
+Impressive that syzbot was able to generate this, and awesome analysis
+as well as fix.
+
+I guess we should also add :
+
+Reported-by: syzbot+7e46cdef14bf496a3ab4@syzkaller.appspotmail.com
+
+Can we also add a Fixes tag so that this can eventually be picked up
+by stable? bpf tree would be the appropriate target, no?
+
+> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+
+Acked-by: Daniel Borkmann <daniel@iogearbox.net>
+
+> ---
+>   kernel/bpf/verifier.c | 14 ++++++++++++--
+>   1 file changed, 12 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index f514247ba8ba..f64c831a9278 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -17873,13 +17873,23 @@ static bool iter_active_depths_differ(struct bpf_verifier_state *old, struct bpf
+>   	return false;
+>   }
+>   
+> +#define MAX_JMPS_PER_STATE 20
 > +
-> +	vma = vma_lookup(mm, start);
-> +
-> +	if (!vma || !(vma->vm_flags & VM_SHARED)) {
-> +		mmap_read_unlock(mm);
-> +		return -EINVAL;
-> +	}
-> +
-> +	file = get_file(vma->vm_file);
-> +
-> +	mmap_read_unlock(mm);
-> +
-> +	ret = security_mmap_file(vma->vm_file, prot, flags);
-
-Accessing VMA fields without any kind of lock is... very much not advised.
-
-I'm guessing you meant to say:
-
-	ret = security_mmap_file(file, prot, flags);
-
-Here? :)
-
-I see the original code did this, but obviously was under an mmap lock.
-
-I guess given you check that the file is the same below this.... should be
-fine? Assuming nothing can come in and invalidate the security_mmap_file()
-check in the mean time somehow?
-
-Jann any thoughts?
-
-
-> +	if (ret) {
-> +		fput(file);
-> +		return ret;
-> +	}
-> +
->  	if (mmap_write_lock_killable(mm))
->  		return -EINTR;
->
-> @@ -1654,6 +1674,9 @@ SYSCALL_DEFINE5(remap_file_pages, unsigned long, start, unsigned long, size,
->  	if (!vma || !(vma->vm_flags & VM_SHARED))
->  		goto out;
->
-> +	if (vma->vm_file != file)
-> +		goto out;
-> +
->  	if (start + size > vma->vm_end) {
->  		VMA_ITERATOR(vmi, mm, vma->vm_end);
->  		struct vm_area_struct *next, *prev = vma;
-> @@ -1688,16 +1711,11 @@ SYSCALL_DEFINE5(remap_file_pages, unsigned long, start, unsigned long, size,
->  	if (vma->vm_flags & VM_LOCKED)
->  		flags |= MAP_LOCKED;
->
-> -	file = get_file(vma->vm_file);
-> -	ret = security_mmap_file(vma->vm_file, prot, flags);
-> -	if (ret)
-> -		goto out_fput;
->  	ret = do_mmap(vma->vm_file, start, size,
->  			prot, flags, 0, pgoff, &populate, NULL);
-> -out_fput:
-> -	fput(file);
->  out:
->  	mmap_write_unlock(mm);
-> +	fput(file);
->  	if (populate)
->  		mm_populate(ret, populate);
->  	if (!IS_ERR_VALUE(ret))
-> --
->   Kiryl Shutsemau / Kirill A. Shutemov
+>   static int is_state_visited(struct bpf_verifier_env *env, int insn_idx)
+>   {
+>   	struct bpf_verifier_state_list *new_sl;
+>   	struct bpf_verifier_state_list *sl, **pprev;
+>   	struct bpf_verifier_state *cur = env->cur_state, *new, *loop_entry;
+>   	int i, j, n, err, states_cnt = 0;
+> -	bool force_new_state = env->test_state_freq || is_force_checkpoint(env, insn_idx);
+> +	bool force_new_state = env->test_state_freq || is_force_checkpoint(env, insn_idx) ||
+> +			       /* - Long jmp history hinders mark_chain_precision performance,
+> +				*   so force new state if jmp history of current state exceeds
+> +				*   a threshold.
+> +				* - Jmp history records not only jumps, but also stack access,
+> +				*   so keep this constant 2x times the limit imposed on
+> +				*   env->jmps_processed for loop cases (see skip_inf_loop_check).
+> +				*/
+> +			       cur->jmp_history_cnt > MAX_JMPS_PER_STATE * 2;
+>   	bool add_new_state = force_new_state;
+>   	bool force_exact;
+>   
+> @@ -18023,7 +18033,7 @@ static int is_state_visited(struct bpf_verifier_env *env, int insn_idx)
+>   			 */
+>   skip_inf_loop_check:
+>   			if (!force_new_state &&
+> -			    env->jmps_processed - env->prev_jmps_processed < 20 &&
+> +			    env->jmps_processed - env->prev_jmps_processed < MAX_JMPS_PER_STATE &&
+>   			    env->insn_processed - env->prev_insn_processed < 100)
+>   				add_new_state = false;
+>   			goto miss;
 
