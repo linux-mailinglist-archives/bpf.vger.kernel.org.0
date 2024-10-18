@@ -1,219 +1,139 @@
-Return-Path: <bpf+bounces-42421-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42422-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 572D89A3F99
-	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 15:29:45 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0C6F9A4100
+	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 16:21:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 77FB01C22DA6
-	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 13:29:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 61A24289795
+	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 14:21:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC61C1D86CD;
-	Fri, 18 Oct 2024 13:29:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7662C1EE002;
+	Fri, 18 Oct 2024 14:21:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DzgiulS2"
 X-Original-To: bpf@vger.kernel.org
-Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C9D01CABA;
-	Fri, 18 Oct 2024 13:29:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.154
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C85386BFCA;
+	Fri, 18 Oct 2024 14:21:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729258174; cv=none; b=V1bk2tDIph3vGjtYnCCwlBxWYPvp7XNWmrj8rQDfaSwUqEZM+kIfeY0ULD05trhEBD8QvaG1m+no7XIobWbgTd65Dz4I54vxo9dt3KzrD/gwkTuviD+iTblfT2H93733sPZtolqG/TIhd5I1/aPe1Gai99MjPESvh38J5ngqvEo=
+	t=1729261272; cv=none; b=jo/qCOJ9aUUuWeyCFHK0EGI4qnVfTTA4F/6VGnMIHqqFnQcgXDNSwCBoIeKRpzzE4q1oWhyYkRQqA576i49GbS0oO1ey4CZ9PXkJ6Irz+JorQUn47JcP1njxikoYw98wGUBeuXyFW/q5gMMGYw4JtA1yOEQbnJ7JPQtqg9Jswsc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729258174; c=relaxed/simple;
-	bh=RZ6dj9vRCUkiAFZKjQ6w5AG7jaUlhyYdQDcOPRxtjwM=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=gj7kLeqhL/jy1OJBqc8oR2ORwl3X+tP5ehRieoZNoR8RDoswCaH3UOKkuoWF8TEPL/Qz7MiXzz6o+6G/nBhNqMEwEHMUb55LxeYc73obir40DVPEOz4QiuTL+usjgBMWdjx1wjQKTklIHkmMcqCfTy6zIz3snAZF8GZvGCkL3JU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.154
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.18.186.51])
-	by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4XVPyL33wPz9v7JP;
-	Fri, 18 Oct 2024 21:03:06 +0800 (CST)
-Received: from mail02.huawei.com (unknown [7.182.16.47])
-	by mail.maildlp.com (Postfix) with ESMTP id 3249A1402A5;
-	Fri, 18 Oct 2024 21:29:22 +0800 (CST)
-Received: from [127.0.0.1] (unknown [10.204.63.22])
-	by APP1 (Coremail) with SMTP id LxC2BwDHWDClYhJnwGEYAw--.52096S2;
-	Fri, 18 Oct 2024 14:29:21 +0100 (CET)
-Message-ID: <e6d5e3b0b35db5d569b418b73395574f8b63e445.camel@huaweicloud.com>
-Subject: Re: [PATCH 1/3] ima: Remove inode lock
-From: Roberto Sassu <roberto.sassu@huaweicloud.com>
-To: "Kirill A. Shutemov" <kirill@shutemov.name>, Lorenzo Stoakes
-	 <lorenzo.stoakes@oracle.com>
-Cc: Paul Moore <paul@paul-moore.com>, ebpqwerty472123@gmail.com, 
- kirill.shutemov@linux.intel.com, zohar@linux.ibm.com,
- dmitry.kasatkin@gmail.com,  eric.snowberg@oracle.com, jmorris@namei.org,
- serge@hallyn.com,  linux-integrity@vger.kernel.org,
- linux-security-module@vger.kernel.org,  linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
- linux-mm@kvack.org, akpm@linux-foundation.org,  vbabka@suse.cz,
- linux-fsdevel@vger.kernel.org, Liam Howlett <liam.howlett@oracle.com>, Jann
- Horn <jannh@google.com>
-Date: Fri, 18 Oct 2024 15:29:05 +0200
-In-Reply-To: <gl4pf7gezpjtvnbp4lzyb65wqaiw3xzjjrs3476j5odxsfzvsj@oouue73v3cgr>
-References: <20241008165732.2603647-1-roberto.sassu@huaweicloud.com>
-	 <CAHC9VhSyWNKqustrTjA1uUaZa_jA-KjtzpKdJ4ikSUKoi7iV0Q@mail.gmail.com>
-	 <CAHC9VhQR2JbB7ni2yX_U8TWE0PcQQkm_pBCuG3nYN7qO15nNjg@mail.gmail.com>
-	 <7358f12d852964d9209492e337d33b8880234b74.camel@huaweicloud.com>
-	 <593282dbc9f48673c8f3b8e0f28e100f34141115.camel@huaweicloud.com>
-	 <15bb94a306d3432de55c0a12f29e7ed2b5fa3ba1.camel@huaweicloud.com>
-	 <c1e47882720fe45aa9d04d663f5a6fd39a046bcb.camel@huaweicloud.com>
-	 <b498e3b004bedc460991e167c154cc88d568f587.camel@huaweicloud.com>
-	 <ggvucjixgiuelt6vjz6oawgyobmzrhifaozqqvupwfso65ia7c@bauvfqtvq6lv>
-	 <e89f6b61-a57f-4848-87f1-8e2282bc5aea@lucifer.local>
-	 <gl4pf7gezpjtvnbp4lzyb65wqaiw3xzjjrs3476j5odxsfzvsj@oouue73v3cgr>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	s=arc-20240116; t=1729261272; c=relaxed/simple;
+	bh=ECioSBta/T4Mm2R7F7k6DzVa2u7XNruvIlcI8+i/QpQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jZMqT4bjXYd/2DH41AO0E0C+zdQoLA9u/ScUKEcTs5EUyn92sJgZRSA4aGktj6D3JNNqCQrVuiutB0w1UUReG4JVT2+0NBIzkfTDOe5pqGn4vI50MtwbTfxAOeQxvoMcXf3/SeIFKNez/zWBFi1MO5c4QMCaDE5nZ3ZtoRX2EgI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DzgiulS2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13439C4CEC3;
+	Fri, 18 Oct 2024 14:21:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1729261271;
+	bh=ECioSBta/T4Mm2R7F7k6DzVa2u7XNruvIlcI8+i/QpQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=DzgiulS2sJiiET79pCk8UL6iUrgtZJKNk5FGkDO/3047qLeVO2618KzPRpD6KtVb5
+	 J0XNeo/tcmc6lvSkyRWzfa4w3KGfY7vn/Wn/lncrbFK1Kx/en1kHTQ9TmevfTqOI7l
+	 2MT4zu/Omkc06EzF2Z628YPpCiLUdcczFXr+stzg/QoUTMsBtHpCpUmTeua5sM1gRP
+	 X9FgZuhtQ8twS2+B+KCEEBDc0pHhO3knrJtUPVkkSliMcfdwCH05Jp7sIbktyFrCN2
+	 kbkaPfJnmgPAx/8qjKsBd1CTye84JBGP3HgMyQbm/0+P1iASjnEO8RMkc2XsjxEELD
+	 Xip+3Zsd1kVqA==
+Date: Fri, 18 Oct 2024 15:21:04 +0100
+From: Simon Horman <horms@kernel.org>
+To: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Cc: Hangbin Liu <liuhangbin@gmail.com>, netdev@vger.kernel.org,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Jiri Pirko <jiri@resnulli.us>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Lorenzo Bianconi <lorenzo@kernel.org>,
+	Andrii Nakryiko <andriin@fb.com>, Jussi Maki <joamaki@gmail.com>,
+	Jay Vosburgh <jv@jvosburgh.net>,
+	Andy Gospodarek <andy@greyhouse.net>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Andrew Lunn <andrew+netdev@lunn.ch>, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	Nikolay Aleksandrov <razor@blackwall.org>
+Subject: Re: [PATCHv2 net-next 2/3] bonding: use correct return value
+Message-ID: <20241018142104.GP1697@kernel.org>
+References: <20241017020638.6905-1-liuhangbin@gmail.com>
+ <20241017020638.6905-3-liuhangbin@gmail.com>
+ <878qumzszs.fsf@toke.dk>
+ <ZxGv2s4bl5VQV4g-@fedora>
+ <20241018094139.GD1697@kernel.org>
+ <87o73hy7hh.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-CM-TRANSID:LxC2BwDHWDClYhJnwGEYAw--.52096S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxuF13JFWrJw1fuF43Jw4Utwb_yoW5Crykpr
-	yrJa4qgFWYqFyxXrn2q3Z0gFn0yayUKFy7urWrXry8AwnrtFnxCr4rGFy5urs8Ar1kAFyF
-	vF4UCFZakFW7JFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvjb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
-	AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AF
-	wI0_GFv_Wryl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
-	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5
-	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
-	0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
-	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUIa
-	0PDUUUU
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAABGcRxH8JsgAAsw
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87o73hy7hh.fsf@toke.dk>
 
-On Fri, 2024-10-18 at 14:05 +0300, Kirill A. Shutemov wrote:
-> On Fri, Oct 18, 2024 at 12:00:22PM +0100, Lorenzo Stoakes wrote:
-> > + Liam, Jann
-> >=20
-> > On Fri, Oct 18, 2024 at 01:49:06PM +0300, Kirill A. Shutemov wrote:
-> > > On Fri, Oct 18, 2024 at 11:24:06AM +0200, Roberto Sassu wrote:
-> > > > Probably it is hard, @Kirill would there be any way to safely move
-> > > > security_mmap_file() out of the mmap_lock lock?
-> > >=20
-> > > What about something like this (untested):
-> > >=20
-> > > diff --git a/mm/mmap.c b/mm/mmap.c
-> > > index dd4b35a25aeb..03473e77d356 100644
-> > > --- a/mm/mmap.c
-> > > +++ b/mm/mmap.c
-> > > @@ -1646,6 +1646,26 @@ SYSCALL_DEFINE5(remap_file_pages, unsigned lon=
-g, start, unsigned long, size,
-> > >  	if (pgoff + (size >> PAGE_SHIFT) < pgoff)
-> > >  		return ret;
-> > >=20
-> > > +	if (mmap_read_lock_killable(mm))
-> > > +		return -EINTR;
-> > > +
-> > > +	vma =3D vma_lookup(mm, start);
-> > > +
-> > > +	if (!vma || !(vma->vm_flags & VM_SHARED)) {
-> > > +		mmap_read_unlock(mm);
-> > > +		return -EINVAL;
-> > > +	}
-> > > +
-> > > +	file =3D get_file(vma->vm_file);
-> > > +
-> > > +	mmap_read_unlock(mm);
-> > > +
-> > > +	ret =3D security_mmap_file(vma->vm_file, prot, flags);
-> >=20
-> > Accessing VMA fields without any kind of lock is... very much not advis=
-ed.
-> >=20
-> > I'm guessing you meant to say:
-> >=20
-> > 	ret =3D security_mmap_file(file, prot, flags);
-> >=20
-> > Here? :)
->=20
-> Sure. My bad.
->=20
-> Patch with all fixups:
->=20
-> diff --git a/mm/mmap.c b/mm/mmap.c
-> index dd4b35a25aeb..541787d526b6 100644
-> --- a/mm/mmap.c
-> +++ b/mm/mmap.c
-> @@ -1646,14 +1646,41 @@ SYSCALL_DEFINE5(remap_file_pages, unsigned long, =
-start, unsigned long, size,
->  	if (pgoff + (size >> PAGE_SHIFT) < pgoff)
->  		return ret;
-> =20
-> -	if (mmap_write_lock_killable(mm))
-> +	if (mmap_read_lock_killable(mm))
->  		return -EINTR;
-> =20
->  	vma =3D vma_lookup(mm, start);
-> =20
-> +	if (!vma || !(vma->vm_flags & VM_SHARED)) {
-> +		mmap_read_unlock(mm);
-> +		return -EINVAL;
-> +	}
-> +
-> +	file =3D get_file(vma->vm_file);
-> +
-> +	mmap_read_unlock(mm);
-> +
-> +	ret =3D security_mmap_file(file, prot, flags);
+On Fri, Oct 18, 2024 at 01:29:30PM +0200, Toke Høiland-Jørgensen wrote:
+> Simon Horman <horms@kernel.org> writes:
+> 
+> > On Fri, Oct 18, 2024 at 12:46:18AM +0000, Hangbin Liu wrote:
+> >> On Thu, Oct 17, 2024 at 04:47:19PM +0200, Toke Høiland-Jørgensen wrote:
+> >> > > diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
+> >> > > index f0f76b6ac8be..6887a867fe8b 100644
+> >> > > --- a/drivers/net/bonding/bond_main.c
+> >> > > +++ b/drivers/net/bonding/bond_main.c
+> >> > > @@ -5699,7 +5699,7 @@ static int bond_xdp_set(struct net_device *dev, struct bpf_prog *prog,
+> >> > >  		if (dev_xdp_prog_count(slave_dev) > 0) {
+> >> > >  			SLAVE_NL_ERR(dev, slave_dev, extack,
+> >> > >  				     "Slave has XDP program loaded, please unload before enslaving");
+> >> > > -			err = -EOPNOTSUPP;
+> >> > > +			err = -EEXIST;
+> >> > 
+> >> > Hmm, this has been UAPI since kernel 5.15, so can we really change it
+> >> > now? What's the purpose of changing it, anyway?
+> >> 
+> >> I just think it should return EXIST when the error is "Slave has XDP program
+> >> loaded". No special reason. If all others think we should not change it, I
+> >> can drop this patch.
+> >
+> > Hi Toke,
+> >
+> > Could you add some colour to what extent user's might rely on this error code?
+> >
+> > Basically I think that if they do then we shouldn't change this.
+> 
+> Well, that's the trouble with UAPI, we don't really know. In libxdp and
+> xdp-tools we look at the return code to provide a nicer error message,
+> like:
+> 
+> https://github.com/xdp-project/xdp-tools/blob/master/lib/libxdp/libxdp.c#L615
+> 
+> and as a signal to fall back to loading the programme without a dispatcher:
+> 
+> https://github.com/xdp-project/xdp-tools/blob/master/lib/libxdp/libxdp.c#L1824
+> 
+> Both of these cases would be unaffected (or even improved) by this
+> patch, so in that sense I don't have a concrete objection, just a
+> general "userspace may react to this". In other words, my concern is
+> more of a general "we don't know, so this seems risky". If any of you
+> have more information about how bonding XDP is generally used, that may
+> help get a better idea of this?
 
-Uhm, I have to calculate prot and flags before. I can check if what I
-used here changed in the next lock, and refuse.
+Yes, that is the trouble with the UAPI. I was hoping you might be able to
+provide the clarity you ask for above. But alas, things are as clear as
+mud.
 
-Roberto
+In lieu of more information I suggest caution and dropping this change for
+now.
 
-> +	if (ret) {
-> +		fput(file);
-> +		return ret;
-> +	}
-> +
-> +	ret =3D -EINVAL;
-> +
-> +	if (mmap_write_lock_killable(mm)) {
-> +		fput(file);
-> +		return -EINTR;
-> +	}
-> +
-> +	vma =3D vma_lookup(mm, start);
-> +
->  	if (!vma || !(vma->vm_flags & VM_SHARED))
->  		goto out;
-> =20
-> +	if (vma->vm_file !=3D file)
-> +		goto out;
-> +
->  	if (start + size > vma->vm_end) {
->  		VMA_ITERATOR(vmi, mm, vma->vm_end);
->  		struct vm_area_struct *next, *prev =3D vma;
-> @@ -1688,16 +1715,11 @@ SYSCALL_DEFINE5(remap_file_pages, unsigned long, =
-start, unsigned long, size,
->  	if (vma->vm_flags & VM_LOCKED)
->  		flags |=3D MAP_LOCKED;
-> =20
-> -	file =3D get_file(vma->vm_file);
-> -	ret =3D security_mmap_file(vma->vm_file, prot, flags);
-> -	if (ret)
-> -		goto out_fput;
->  	ret =3D do_mmap(vma->vm_file, start, size,
->  			prot, flags, 0, pgoff, &populate, NULL);
-> -out_fput:
-> -	fput(file);
->  out:
->  	mmap_write_unlock(mm);
-> +	fput(file);
->  	if (populate)
->  		mm_populate(ret, populate);
->  	if (!IS_ERR_VALUE(ret))
-
+-- 
+pw-bot: cr
 
