@@ -1,147 +1,189 @@
-Return-Path: <bpf+bounces-42400-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42401-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B40079A3BE2
-	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 12:45:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CACA9A3C0C
+	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 12:50:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E2CB41C22FFF
-	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 10:45:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 446BB1C21E82
+	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 10:50:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 731F9201033;
-	Fri, 18 Oct 2024 10:45:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3117B2038C4;
+	Fri, 18 Oct 2024 10:49:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="4yxB3N6T";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="8opP18O8"
+	dkim=pass (2048-bit key) header.d=shutemov.name header.i=@shutemov.name header.b="i/xJbZrg";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="TS8cyIt8"
 X-Original-To: bpf@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from fout-a5-smtp.messagingengine.com (fout-a5-smtp.messagingengine.com [103.168.172.148])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B40518C908;
-	Fri, 18 Oct 2024 10:45:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1142F2036F9;
+	Fri, 18 Oct 2024 10:49:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.148
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729248341; cv=none; b=FqijxnDMAuek9QKKGtK70X06GUV8xMQeRJpPkTtCYRLuXQr9LpJXZlFomFeAiI5qKwCM7WnjFdERtJGmfZsuObRn5oKjlLpdW/UjSswLE/z+GXSxwmvje+aMMQY89FRFS+IoaE+DSiIzz1X6nTjdD4QBbzpzvbNvLv0fSGALoGw=
+	t=1729248564; cv=none; b=aK2g3NBoHVES/XwZh4cN05WjGPrLmQJblbVA9nlXtpS+jwZ74uXmVmbIaJ7OnIZGYq17UDY2a2aXpRDGpZL7oVok+HlgLxYgFfr9y7RHaxWFJsBzxq01o6uG87FNyL+R3YjHzMQEvIPFtm2Xfd600E8P88+Tch9jo4Om3Weoc0g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729248341; c=relaxed/simple;
-	bh=0Jmisw2cLggoK/DDYMrJ+rdowAmrCBTj5NyHjQngiIA=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=TczwQOBmuQ3hSbrso3MMstAI/Lb/GcFg8rfcocYhia/NptGPyc+0mmuDX/b6bFLErfud+n0et/9aQvmP8YWwr4iJOSJdaEubAIWE+P1ICuKTMwAmsjosvCkT5heVrpcWb7KbdZlBB5tb/cDjlw1bkm+9VmtqWBTbcd0x7SFKTAs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=4yxB3N6T; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=8opP18O8; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Kurt Kanzenbach <kurt@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1729248336;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Kskf9UDezxVGJ4aXQTni8no/qq21DITWsZfuuEZ1kwQ=;
-	b=4yxB3N6TbaZy71+8aqvd7ML7qf907GLVntdilhKlZZRann1yDSITkz7a8HQyjxZDcUxCmG
-	Y2QoiIsnJhI8B6fPz/8jyykIDsdN8cdX17R7U9z1ZAq5Ce/Mx+SOoLxaEbYdCenJVu4t/L
-	GPDlORusEl4P4F4zotOUcVOb27GjhrAVj9wjTJ3/2aoYkUFvovmaftSdSHTrB4RxSrYcYh
-	BSrLFTeF/4AICBdADIQC5LDU5tmmzwEUiERNQG6LRRxMi3oqaT1YI73JBotXeLVrVBquUz
-	uQlQeUPDsNZp3xZh670VfcXv+gNYwSBJLwAz1SouGKwrydgE4rCZboi2szJwQQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1729248336;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Kskf9UDezxVGJ4aXQTni8no/qq21DITWsZfuuEZ1kwQ=;
-	b=8opP18O8dIu248QLLC9BECp9981hLdkusjOEtW96d8ONnz112eSzAKk2u4wbu/iGyyqmul
-	ifmA7I0scCzrSUBA==
-To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc: Tony Nguyen <anthony.l.nguyen@intel.com>, Przemek Kitszel
- <przemyslaw.kitszel@intel.com>, "David S. Miller" <davem@davemloft.net>,
- Eric
- Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo
- Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>, Richard Cochran
- <richardcochran@gmail.com>, Sriram Yagnaraman
- <sriram.yagnaraman@ericsson.com>, Benjamin Steinke
- <benjamin.steinke@woks-audio.com>, Sebastian Andrzej Siewior
- <bigeasy@linutronix.de>, intel-wired-lan@lists.osuosl.org,
- netdev@vger.kernel.org, bpf@vger.kernel.org, Sriram Yagnaraman
- <sriram.yagnaraman@est.tech>
-Subject: Re: [PATCH iwl-next v9 6/6] igb: Add AF_XDP zero-copy Tx support
-In-Reply-To: <ZxIzRJlXA91Bapwt@boxer>
-References: <20241018-b4-igb_zero_copy-v9-0-da139d78d796@linutronix.de>
- <20241018-b4-igb_zero_copy-v9-6-da139d78d796@linutronix.de>
- <ZxIzRJlXA91Bapwt@boxer>
-Date: Fri, 18 Oct 2024 12:45:34 +0200
-Message-ID: <87frot8zap.fsf@kurt.kurt.home>
+	s=arc-20240116; t=1729248564; c=relaxed/simple;
+	bh=cERpOJNcFUtahnaQux82n4tPWU1j9Z1ogqBHffq0xVs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=g1JOrWhacBn9arpLhI/Cri3cx5GET29dBkyGm+tCybv9qJyDPn9SETlTIvXi2DFxP/ECBNLt3IoetR3poi4n+KA3tSN4vDVhkRTJz36yIkYTIrp3lHrT0Vnz/Yx5j1lb8fWs1in983RWOU/fSVMDYr5A8JWWDFyp+INR9Escfws=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=shutemov.name; spf=pass smtp.mailfrom=shutemov.name; dkim=pass (2048-bit key) header.d=shutemov.name header.i=@shutemov.name header.b=i/xJbZrg; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=TS8cyIt8; arc=none smtp.client-ip=103.168.172.148
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=shutemov.name
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shutemov.name
+Received: from phl-compute-03.internal (phl-compute-03.phl.internal [10.202.2.43])
+	by mailfout.phl.internal (Postfix) with ESMTP id 1D8BB1380499;
+	Fri, 18 Oct 2024 06:49:21 -0400 (EDT)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-03.internal (MEProxy); Fri, 18 Oct 2024 06:49:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=shutemov.name;
+	 h=cc:cc:content-type:content-type:date:date:from:from
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to; s=fm1; t=1729248561; x=
+	1729334961; bh=mvvVjoh3e6ihasKm0bBvrghicZuE833642Mybcjr34U=; b=i
+	/xJbZrgcdFQZSmjOWvK/cUQ+9Bhug/+Jr0N7UXHpOQSUZg191jpCnxxa+VgDRtOi
+	ippa4VUGV4jIYKRcMrhUnauix2a6TX4jBdEXgfFK7pNRjuKgIt5U9POgYGiAbwU1
+	b6z4V982jZZZIKzbmbOPz5SskZTZQfWl/3SCEIm7xiwiv8HhbThejeQiNOHXaRlc
+	S+xZtwFCPisqUf7YNqwO3ODL0WmnHeE24KsjPpqITI4kMEaUi5GAUd/SZkYJXwdu
+	/LgULR8RP5ECvGyubNfP7HitfaniaCgDg5wEkON8XweHw0nnJHKT7AyKYHVYCNZF
+	z94Bsed1AgXl7JomIflLA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1729248561; x=1729334961; bh=mvvVjoh3e6ihasKm0bBvrghicZuE
+	833642Mybcjr34U=; b=TS8cyIt8RghdTeQHg9i1O2IWahrzy7CN5Xyj6eVTFOn8
+	ZXWcdjQR3+YQQvwLxnakVlTXbxY951v8YAfGHnGFggZECp3m5oOS101Si1RUwsrU
+	J88O8MDBPz9Da7HIlzLb2OGNlhDc+kNHqtW/bbJ+GRA5ush94ZBu3ZKyTFetRPPW
+	/rEDWjFpFG13xaNf1NfFK64WauuqHo0o2XBJnNA6HQAS+PvaTlq100by+SnQciaA
+	ajrztvBkApxEVKqbGDVlEws4sWTzLxF/lqHr/a10xjU516RP2WLpO1c4zII1hzKx
+	gedYKa8x0jKYCDLHATkSIk++kQT7uMRR84Hy/v8UiA==
+X-ME-Sender: <xms:LT0SZx5AYByC2-Kwzd1igZjoPH6zU8bTJdNEGXzdHEq0XdevF0fqMg>
+    <xme:LT0SZ-5cNPb6udtg5tyByiLsZ0sN_IfGJYy1IKTczOJIaqODYWBCr9cDHkqXbk9mn
+    em50ui1BWPaMUsj4sk>
+X-ME-Received: <xmr:LT0SZ4e9keYCZoxZXmC4G4WuzHt3xwct9GXr7E4X_j4E0v3QALduIyc0zkCqN6s6d7Oqaw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvdehfedgfedtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
+    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
+    htshculddquddttddmnecujfgurhepfffhvfevuffkfhggtggujgesthdtsfdttddtvden
+    ucfhrhhomhepfdfmihhrihhllhcutedrucfuhhhuthgvmhhovhdfuceokhhirhhilhhlse
+    hshhhuthgvmhhovhdrnhgrmhgvqeenucggtffrrghtthgvrhhnpeffvdevueetudfhhfff
+    veelhfetfeevveekleevjeduudevvdduvdelteduvefhkeenucevlhhushhtvghrufhiii
+    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehkihhrihhllhesshhhuhhtvghmohhv
+    rdhnrghmvgdpnhgspghrtghpthhtohepudelpdhmohguvgepshhmthhpohhuthdprhgtph
+    htthhopehrohgsvghrthhordhsrghsshhusehhuhgrfigvihgtlhhouhgurdgtohhmpdhr
+    tghpthhtohepphgruhhlsehprghulhdqmhhoohhrvgdrtghomhdprhgtphhtthhopegvsg
+    hpqhifvghrthihgeejvdduvdefsehgmhgrihhlrdgtohhmpdhrtghpthhtohepkhhirhhi
+    lhhlrdhshhhuthgvmhhovheslhhinhhugidrihhnthgvlhdrtghomhdprhgtphhtthhope
+    iiohhhrghrsehlihhnuhigrdhisghmrdgtohhmpdhrtghpthhtohepughmihhtrhihrdhk
+    rghsrghtkhhinhesghhmrghilhdrtghomhdprhgtphhtthhopegvrhhitgdrshhnohifsg
+    gvrhhgsehorhgrtghlvgdrtghomhdprhgtphhtthhopehjmhhorhhrihhssehnrghmvghi
+    rdhorhhgpdhrtghpthhtohepshgvrhhgvgeshhgrlhhlhihnrdgtohhm
+X-ME-Proxy: <xmx:LT0SZ6JorCvf9kFFrHrvBx1UJOtOMruMaNBR2Pbu7IE-_H4OVpqkEA>
+    <xmx:LT0SZ1LdBazL3EHmJx-AXaqv9AO2jRnX7pNQPWvt_eXemrfYHVb0gQ>
+    <xmx:LT0SZzyE1ScJT0Pj8Il-L0aagNuQOpr1bOPeGLTMkW_qkcpjTOc3Pw>
+    <xmx:LT0SZxLHpCxlCPbMN5FxvGWgWf8rsmuxJFg7K1f9L1TFJpj-WzTlWQ>
+    <xmx:MT0SZ98yDcnInQ9q8Z58C75Rk4vCMWaEfSHTbB1xfkXGauBTCt9qo-kO>
+Feedback-ID: ie3994620:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 18 Oct 2024 06:49:11 -0400 (EDT)
+Date: Fri, 18 Oct 2024 13:49:06 +0300
+From: "Kirill A. Shutemov" <kirill@shutemov.name>
+To: Roberto Sassu <roberto.sassu@huaweicloud.com>
+Cc: Paul Moore <paul@paul-moore.com>, ebpqwerty472123@gmail.com, 
+	kirill.shutemov@linux.intel.com, zohar@linux.ibm.com, dmitry.kasatkin@gmail.com, 
+	eric.snowberg@oracle.com, jmorris@namei.org, serge@hallyn.com, 
+	linux-integrity@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>, 
+	linux-mm@kvack.org, akpm@linux-foundation.org, vbabka@suse.cz, 
+	lorenzo.stoakes@oracle.com, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 1/3] ima: Remove inode lock
+Message-ID: <ggvucjixgiuelt6vjz6oawgyobmzrhifaozqqvupwfso65ia7c@bauvfqtvq6lv>
+References: <20241008165732.2603647-1-roberto.sassu@huaweicloud.com>
+ <CAHC9VhSyWNKqustrTjA1uUaZa_jA-KjtzpKdJ4ikSUKoi7iV0Q@mail.gmail.com>
+ <CAHC9VhQR2JbB7ni2yX_U8TWE0PcQQkm_pBCuG3nYN7qO15nNjg@mail.gmail.com>
+ <7358f12d852964d9209492e337d33b8880234b74.camel@huaweicloud.com>
+ <593282dbc9f48673c8f3b8e0f28e100f34141115.camel@huaweicloud.com>
+ <15bb94a306d3432de55c0a12f29e7ed2b5fa3ba1.camel@huaweicloud.com>
+ <c1e47882720fe45aa9d04d663f5a6fd39a046bcb.camel@huaweicloud.com>
+ <b498e3b004bedc460991e167c154cc88d568f587.camel@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-	micalg=pgp-sha512; protocol="application/pgp-signature"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b498e3b004bedc460991e167c154cc88d568f587.camel@huaweicloud.com>
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+On Fri, Oct 18, 2024 at 11:24:06AM +0200, Roberto Sassu wrote:
+> Probably it is hard, @Kirill would there be any way to safely move
+> security_mmap_file() out of the mmap_lock lock?
 
-On Fri Oct 18 2024, Maciej Fijalkowski wrote:
-> On Fri, Oct 18, 2024 at 10:40:02AM +0200, Kurt Kanzenbach wrote:
->> From: Sriram Yagnaraman <sriram.yagnaraman@est.tech>
->>=20
->> Add support for AF_XDP zero-copy transmit path.
->>=20
->> A new TX buffer type IGB_TYPE_XSK is introduced to indicate that the Tx
->> frame was allocated from the xsk buff pool, so igb_clean_tx_ring() and
->> igb_clean_tx_irq() can clean the buffers correctly based on type.
->>=20
->> igb_xmit_zc() performs the actual packet transmit when AF_XDP zero-copy =
-is
->> enabled. We share the TX ring between slow path, XDP and AF_XDP
->> zero-copy, so we use the netdev queue lock to ensure mutual exclusion.
->>=20
->> Signed-off-by: Sriram Yagnaraman <sriram.yagnaraman@est.tech>
->> [Kurt: Set olinfo_status in igb_xmit_zc() so that frames are transmitted,
->>        Use READ_ONCE() for xsk_pool and check Tx disabled and carrier in
->>        igb_xmit_zc(), Add FIXME for RS bit]
->> Signed-off-by: Kurt Kanzenbach <kurt@linutronix.de>
->> Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
->
-> I didn't give you my tag on this patch in previous revision, but from what
-> I can see now it can stay here:)
+What about something like this (untested):
 
-At some point you did [1]. And I didn't remove it, because it felt like
-only small changes like adding the FIXME and re-using the xsk pool
-pointer were made.
-
->
-> Finally, thanks!
->
-
-Yay :). Thanks for your review and time spent.
-
-[1] - https://lore.kernel.org/intel-wired-lan/ZsNzLvH38p%2FcWwI0@boxer/
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQJHBAEBCgAxFiEEvLm/ssjDfdPf21mSwZPR8qpGc4IFAmcSPE4THGt1cnRAbGlu
-dXRyb25peC5kZQAKCRDBk9HyqkZzgmxjD/4x2gifNl9lijcJL5SfPTDKL1Tmkr61
-/shaBi4j9ucmzG23CT9xIgbCS004WltMximufeVHSpJPwWFc0IYgejOrsr3MTAcJ
-pXgveA/s6aJjondxglSWv3RAr11lmyl/qI2EtXNtVV2xFaURti0ygJZ+HTUh2POu
-8vDMWqCVFyRMpsQPt2N6WdeLRLEpDKxWPkPZWu0pR7tTWC5pfv51tbAEv63iED2P
-Md+IgOolqJkC3YKJL61KPg/XK/ztK7ttrLYG+3OiQp19MTj8FVshmR1QGmYsS8mx
-2Z/462emgRJGLynRTbRPA1zsy/Qr90V4ox7YeF4BNgCEUtCo3WP2bx7Ib5whi5P/
-c7FaqKDmgA0rFsHgdxwgTB13qNJGPjS5I7zHt5+JMZH4rUmGipp0E8/+PfZgyHI3
-FPLpJJV+6E6WxOtUBkEMfW+7cuFHrp+OCuXkG7UikVBNbALvNYMXFJw7bGKNHT7S
-4RsnxipOMA05ORwnzyHf2G1HGS+kqZl09k5X9vh4vzH+5YuvdfPByVF8ieX3/HP/
-qWS7TwaBWoKJdSU0G8EpjKwym18iXm1dWOIVjdU19q1Y6FukuNYkDUwK54iohaRh
-2Tp9NYv1iK3E6g311O9krYMTWDE9O+aYYHx2/L0xHEZgH/gmtirnkfFia1vDlBk1
-+bVdqz00q5I+eQ==
-=iCBf
------END PGP SIGNATURE-----
---=-=-=--
+diff --git a/mm/mmap.c b/mm/mmap.c
+index dd4b35a25aeb..03473e77d356 100644
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -1646,6 +1646,26 @@ SYSCALL_DEFINE5(remap_file_pages, unsigned long, start, unsigned long, size,
+ 	if (pgoff + (size >> PAGE_SHIFT) < pgoff)
+ 		return ret;
+ 
++	if (mmap_read_lock_killable(mm))
++		return -EINTR;
++
++	vma = vma_lookup(mm, start);
++
++	if (!vma || !(vma->vm_flags & VM_SHARED)) {
++		mmap_read_unlock(mm);
++		return -EINVAL;
++	}
++
++	file = get_file(vma->vm_file);
++
++	mmap_read_unlock(mm);
++
++	ret = security_mmap_file(vma->vm_file, prot, flags);
++	if (ret) {
++		fput(file);
++		return ret;
++	}
++
+ 	if (mmap_write_lock_killable(mm))
+ 		return -EINTR;
+ 
+@@ -1654,6 +1674,9 @@ SYSCALL_DEFINE5(remap_file_pages, unsigned long, start, unsigned long, size,
+ 	if (!vma || !(vma->vm_flags & VM_SHARED))
+ 		goto out;
+ 
++	if (vma->vm_file != file)
++		goto out;
++
+ 	if (start + size > vma->vm_end) {
+ 		VMA_ITERATOR(vmi, mm, vma->vm_end);
+ 		struct vm_area_struct *next, *prev = vma;
+@@ -1688,16 +1711,11 @@ SYSCALL_DEFINE5(remap_file_pages, unsigned long, start, unsigned long, size,
+ 	if (vma->vm_flags & VM_LOCKED)
+ 		flags |= MAP_LOCKED;
+ 
+-	file = get_file(vma->vm_file);
+-	ret = security_mmap_file(vma->vm_file, prot, flags);
+-	if (ret)
+-		goto out_fput;
+ 	ret = do_mmap(vma->vm_file, start, size,
+ 			prot, flags, 0, pgoff, &populate, NULL);
+-out_fput:
+-	fput(file);
+ out:
+ 	mmap_write_unlock(mm);
++	fput(file);
+ 	if (populate)
+ 		mm_populate(ret, populate);
+ 	if (!IS_ERR_VALUE(ret))
+-- 
+  Kiryl Shutsemau / Kirill A. Shutemov
 
