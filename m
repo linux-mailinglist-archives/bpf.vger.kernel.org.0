@@ -1,361 +1,237 @@
-Return-Path: <bpf+bounces-42459-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42460-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1A199A45CC
-	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 20:25:08 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 017869A4642
+	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 20:48:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6CA4628253B
-	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 18:25:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6ACE01F2487D
+	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 18:48:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2D9E212D2F;
-	Fri, 18 Oct 2024 18:22:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 288FC20604B;
+	Fri, 18 Oct 2024 18:46:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QD8anW5K"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="qDW83nvb"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B490205AC5;
-	Fri, 18 Oct 2024 18:22:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EFDD20409D
+	for <bpf@vger.kernel.org>; Fri, 18 Oct 2024 18:46:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729275744; cv=none; b=MkCKti9GDlP7F+nCJS4h+gMdUPAijpRH+nmqL5AICwqSD+/rG/c6V4avhTLtQcNiLHJz/XzTAn1w6Me1FQeh0OwuHwbiU+HCDZKbUllCTZAdOjXi3CNmNDaRiUryJK42UtpI72+ZZSEZdtGbVRsQKyux+d8RfITOAyfhw6zB7YI=
+	t=1729277211; cv=none; b=NTmyFZBrhaNR4aqGI3Y3Ia75GvuRO10YU19wY/kQ51xWRKPf2U5PEm5eA2h+0uUQn9d8KC81uv7leXKUjeNg39oka9tdcwcptSyucACw48Zq1DqCdlhKDBWXfscQFb68Nryv3Pil6aQHU8AwEmX1HYwBS8aslFqIU2ZBLFfDyhw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729275744; c=relaxed/simple;
-	bh=Kn3q0G4yy+okseMcYvBth/+B4AOC5SrWaIHgjZ7H2Yo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=H15fg2d1To4XHlNZOi+Un5t18wsBU/MmQsZGJUqbJ2x0vCC0X7KK4R9SBrMxY1WPIdUsxeA5fExUafC1lPrFHixtYCHhn9VuNJKU5xCPjlaYJy8EqRwk+BOJUqY02ePMIC4CAsySrAvl61fBdTlNrKVhZWa97iePdTC7cpTtA4U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QD8anW5K; arc=none smtp.client-ip=209.85.210.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-71e580256c2so1822973b3a.3;
-        Fri, 18 Oct 2024 11:22:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729275742; x=1729880542; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mnT9l2FzL2zeIgdsXhHjT897jOS1j1fl9uDS6ZwUPb8=;
-        b=QD8anW5KYNAFDNljv97IqfgUJtttpfKjMRWEzsF9PGcIWfFJc3IdyBpN67/SUnbhwP
-         /JEHJYT/NOjEjr7kwbW/N82qCn7gmSolekWq34fouvNYtKhjOeU8KqbRCQk8MMzFInnH
-         85mP+mlS9+bX7siCBPdtKdCVMP2OsS8kBYkZzM6MtrE13/noae51lifnE4n9PDs26osZ
-         HaKfYvFcfh+k/GS1CpGJ486+i6A6S91+XxlHAwoI/6/WrIcJrpfsne1imFhPS7CxnaxD
-         SP1dXw0hRbXNTfMcgaR/ZtPapgWIQAZRESwtg2HhjuXoeGATU5QXeDtHF6FQhCkeJMm2
-         7Egg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729275742; x=1729880542;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mnT9l2FzL2zeIgdsXhHjT897jOS1j1fl9uDS6ZwUPb8=;
-        b=sf4ain+5m7AY6QvtpQwJ4Igw8y0inqYvxrnecd5NqIc1ilyCoV/ex3ZdfMv2p5zlGy
-         4TPZRwUab84relLx6KrB0NNS142ndNoHmRIDM2Eoyb8H/O1fqlhLUqb44tSCNLuo0SFP
-         QvZQirKXBks4qLqt9bNG5IyaIRjWUYerWXD6E84Qx9oFeljjZilOC+UNIXLU1cSOj8tQ
-         SyGbraZ02fTLRkB/w+cYuUEGogOciKtcatyI8WthPrCMVUX8e/Bh1HlhxeDPOXZ8fIOh
-         s32cjgC4XTKhKxjfM3JGSqGtfc2XrWtPyeK4ZF4O/pKGpN7PGoDu01coYbdcDV20eMIb
-         QyrQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV0xKAxR57aHxTOTvgXHKpPv5VSbP2oXWsevpdraT7HfWvs5nTO1SjJr6OHnDU6AnvxipN7uHMFeR3fUKDR@vger.kernel.org, AJvYcCVw4FmdjBO7xJoTTe2eHLy8SpqL0BSueAy3I6qtUZhuHCWVHw4AGZxpS13m2DSH3Xfv5pjLLgt5j91omdIB6k5SANzH@vger.kernel.org, AJvYcCXjJAycfbJf4Ek4mFJOIGLXF4IsNyr1VwgCnv6f4dVAeb8Nehq1xtm/AIOJqjwVcBRn2dQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwbdCCJG1NYG5WcpY9JMYanaSM7Jn89kAwa9KC/ou3Ljep4U7k4
-	yqeozMTt6YwIzf7GkIZaxIzMzS6mMKECfP0yTn3hUXJiYVuCBbXaL9AzzHFzfI4DPeGiiFvZUnf
-	qQmxIlKdKVBEFCcsBrowfSZG7rnc=
-X-Google-Smtp-Source: AGHT+IHBZV0r+vu4DnrjR2kQzoW5WBuT8+Z+xXMQMMGrHSP0gEmDa1QAIFYM7JiejV5QqoHW+Hx38NDx9Sa8ZdZL9Yg=
-X-Received: by 2002:aa7:8896:0:b0:71e:587d:f268 with SMTP id
- d2e1a72fcca58-71ea31d7a52mr4521678b3a.4.1729275741548; Fri, 18 Oct 2024
- 11:22:21 -0700 (PDT)
+	s=arc-20240116; t=1729277211; c=relaxed/simple;
+	bh=h8TYANH/Rm3VFpXirJ+fPVzaqM04U3Ots8fYgrPYztA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=AeyQ8ifRKug/P7doorGahiot5aZFEDvik/GfbReg8cUpq0lPJlw6GLnPWOQryqG84mFopM/Ye4qT7xLYE7V/+vZfVbRxhNnmNH/s6i1MxyuvJXwNktdw4hSMLGiAMMPUQTlMLcUzIlJCfIkVdWVeXbpLQhrI3onQtlmUlbC5LSM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=qDW83nvb; arc=none smtp.client-ip=95.215.58.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <7b19ad7f-163b-44ed-bc70-f973a7a6f303@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1729277202;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+qWqLaFRsovCSA73a8GFikArTFdEXCAPGRK8EgBnsBI=;
+	b=qDW83nvbu1D1nHDB9IU/Lb4Oq1RVpDDQgbBui4S6YZZh795i4+Og3uj3SyMb+WEFtTzKdq
+	6DEKsEGo1walFPw61yxeCpWlRQBOqhGwkHE87ESRhNYg8nZmu6FmzFvnD4Psf71Vcer0FU
+	MaTjIHY/Sw8DuOnBmH//5Qy0VJMEcbE=
+Date: Fri, 18 Oct 2024 11:46:31 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241008002556.2332835-1-andrii@kernel.org> <20241008002556.2332835-3-andrii@kernel.org>
- <20241018101647.GA36494@noisy.programming.kicks-ass.net>
-In-Reply-To: <20241018101647.GA36494@noisy.programming.kicks-ass.net>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 18 Oct 2024 11:22:09 -0700
-Message-ID: <CAEf4BzZaZGE7Kb+AZkN0eTH+0ny-_0WUxKT7ydDzAfEwP8cKVg@mail.gmail.com>
-Subject: Re: [PATCH v2 tip/perf/core 2/2] uprobes: SRCU-protect uretprobe
- lifetime (with timeout)
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org, oleg@redhat.com, 
-	rostedt@goodmis.org, mhiramat@kernel.org, mingo@kernel.org, 
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, jolsa@kernel.org, 
-	paulmck@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Add a test for open coded
+ kmem_cache iter
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+ bpf@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+ Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
+ David Rientjes <rientjes@google.com>, Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+ Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <roman.gushchin@linux.dev>,
+ Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm@kvack.org,
+ Arnaldo Carvalho de Melo <acme@kernel.org>, Kees Cook <kees@kernel.org>
+References: <20241017080604.541872-1-namhyung@kernel.org>
+ <20241017080604.541872-2-namhyung@kernel.org>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20241017080604.541872-2-namhyung@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Fri, Oct 18, 2024 at 3:16=E2=80=AFAM Peter Zijlstra <peterz@infradead.or=
-g> wrote:
->
-> On Mon, Oct 07, 2024 at 05:25:56PM -0700, Andrii Nakryiko wrote:
->
-
-[...]
-
-> > +
-> > +             /* We lost the race, undo refcount bump (if it ever happe=
-ned) */
-> > +             if (uprobe)
-> > +                     put_uprobe(uprobe);
-> > +             /*
-> > +              * Even if hprobe_consume() or another hprobe_expire() wi=
-ns
-> > +              * the state update race and unlocks SRCU from under us, =
-we
-> > +              * still have a guarantee that underyling uprobe won't be
-> > +              * freed due to ongoing caller's SRCU lock region, so we =
-can
-> > +              * return it regardless. The caller then can attempt its =
-own
-> > +              * try_get_uprobe() to preserve the instance, if necessar=
-y.
-> > +              * This is used in dup_utask().
-> > +              */
-> > +             return uprobe;
-> > +     }
-> > +     default:
-> > +             WARN(1, "unknown hprobe state %d", hstate);
-> > +             return NULL;
-> > +     }
-> > +}
->
-> So... after a few readings I think I'm mostly okay with this. But I got
-> annoyed by the whole HPROBE_STABLE with uprobe=3DNULL weirdness. Also,
-> that data_race() usage is weird, what is that about?
-
-People keep saying that evil KCSAN will come after me if I don't add
-data_race() for values that can change under me, so I add it to make
-it explicit that it's fine. But I can of course just drop data_race(),
-as it has no bearing on correctness.
-
->
-> And then there's the case where we end up doing:
->
->   try_get_uprobe()
->   put_uprobe()
->   try_get_uprobe()
->
-> in the dup path. Yes, it's unlikely, but gah.
->
->
-> So how about something like this?
-
-Yep, it makes sense to start with HPROBE_GONE if it's already NULL, no
-problem. I'll roll those changes in.
-
-I'm fine with the `bool get` flag as well. Will incorporate all that
-into the next revision, thanks!
-
-The only problem I can see is in the assumption that `srcu_idx < 0` is
-never going to be returned by srcu_read_lock(). Paul says that it can
-only be 0 or 1, but it's not codified as part of a contract. So until
-we change that, probably safer to pass an extra bool specifying
-whether srcu_idx is valid or not, is that OK?
-
-(and I assume you want me to drop verbose comments for various states, righ=
-t?)
-
-
-
->
+On 10/17/24 1:06 AM, Namhyung Kim wrote:
+> The new subtest is attached to sleepable fentry of syncfs() syscall.
+> It iterates the kmem_cache using bpf_for_each loop and count the number
+> of entries.  Finally it checks it with the number of entries from the
+> regular iterator.
+> 
+>    $ ./vmtest.sh -- ./test_progs -t kmem_cache_iter
+>    ...
+>    #130/1   kmem_cache_iter/check_task_struct:OK
+>    #130/2   kmem_cache_iter/check_slabinfo:OK
+>    #130/3   kmem_cache_iter/open_coded_iter:OK
+>    #130     kmem_cache_iter:OK
+>    Summary: 1/3 PASSED, 0 SKIPPED, 0 FAILED
+> 
+> Also simplify the code by using attach routine of the skeleton.
+> 
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 > ---
-> diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-> index 06ec41c75c45..efb4f5ee6212 100644
-> --- a/kernel/events/uprobes.c
-> +++ b/kernel/events/uprobes.c
-> @@ -657,20 +657,19 @@ static void put_uprobe(struct uprobe *uprobe)
->         call_srcu(&uretprobes_srcu, &uprobe->rcu, uprobe_free_srcu);
->  }
->
-> -/* Initialize hprobe as SRCU-protected "leased" uprobe */
-> -static void hprobe_init_leased(struct hprobe *hprobe, struct uprobe *upr=
-obe, int srcu_idx)
-> +static void hprobe_init(struct hprobe *hprobe, struct uprobe *uprobe, in=
-t srcu_idx)
->  {
-> -       hprobe->state =3D HPROBE_LEASED;
-> -       hprobe->uprobe =3D uprobe;
-> -       hprobe->srcu_idx =3D srcu_idx;
-> -}
-> +       enum hprobe_state state =3D HPROBE_GONE;
->
-> -/* Initialize hprobe as refcounted ("stable") uprobe (uprobe can be NULL=
-). */
-> -static void hprobe_init_stable(struct hprobe *hprobe, struct uprobe *upr=
-obe)
-> -{
-> -       hprobe->state =3D HPROBE_STABLE;
-> +       if (uprobe) {
-> +               state =3D HPROBE_LEASED;
-> +               if (srcu_idx < 0)
-> +                       state =3D HPROBE_STABLE;
-> +       }
+>   .../testing/selftests/bpf/bpf_experimental.h  |  6 ++++
+>   .../bpf/prog_tests/kmem_cache_iter.c          | 28 +++++++++++--------
+>   .../selftests/bpf/progs/kmem_cache_iter.c     | 24 ++++++++++++++++
+>   3 files changed, 46 insertions(+), 12 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/bpf/bpf_experimental.h b/tools/testing/selftests/bpf/bpf_experimental.h
+> index b0668f29f7b394eb..cd8ecd39c3f3c68d 100644
+> --- a/tools/testing/selftests/bpf/bpf_experimental.h
+> +++ b/tools/testing/selftests/bpf/bpf_experimental.h
+> @@ -582,4 +582,10 @@ extern int bpf_wq_set_callback_impl(struct bpf_wq *wq,
+>   		unsigned int flags__k, void *aux__ign) __ksym;
+>   #define bpf_wq_set_callback(timer, cb, flags) \
+>   	bpf_wq_set_callback_impl(timer, cb, flags, NULL)
 > +
-> +       hprobe->state =3D state;
->         hprobe->uprobe =3D uprobe;
-> -       hprobe->srcu_idx =3D -1;
-> +       hprobe->srcu_idx =3D srcu_idx;
->  }
->
->  /*
-> @@ -713,8 +712,7 @@ static void hprobe_finalize(struct hprobe *hprobe, en=
-um hprobe_state hstate)
->                 __srcu_read_unlock(&uretprobes_srcu, hprobe->srcu_idx);
->                 break;
->         case HPROBE_STABLE:
-> -               if (hprobe->uprobe)
-> -                       put_uprobe(hprobe->uprobe);
-> +               put_uprobe(hprobe->uprobe);
->                 break;
->         case HPROBE_GONE:
->         case HPROBE_CONSUMED:
-> @@ -739,8 +737,9 @@ static void hprobe_finalize(struct hprobe *hprobe, en=
-um hprobe_state hstate)
->   * refcount, so caller has to attempt try_get_uprobe(), if it needs to
->   * preserve uprobe beyond current SRCU lock region. See dup_utask().
->   */
-> -static struct uprobe* hprobe_expire(struct hprobe *hprobe)
-> +static struct uprobe *hprobe_expire(struct hprobe *hprobe, bool get)
->  {
-> +       struct uprobe *uprobe =3D NULL;
->         enum hprobe_state hstate;
->
->         /*
-> @@ -749,25 +748,18 @@ static struct uprobe* hprobe_expire(struct hprobe *=
-hprobe)
->          */
->         lockdep_assert(rcu_read_lock_held() && srcu_read_lock_held(&uretp=
-robes_srcu));
->
-> -       hstate =3D data_race(READ_ONCE(hprobe->state));
-> +       hstate =3D READ_ONCE(hprobe->state);
->         switch (hstate) {
->         case HPROBE_STABLE:
-> -               /* uprobe is properly refcounted, return it */
-> -               return hprobe->uprobe;
-> +               uprobe =3D hprobe->uprobe;
-> +               break;
+> +struct bpf_iter_kmem_cache;
+> +extern int bpf_iter_kmem_cache_new(struct bpf_iter_kmem_cache *it) __weak __ksym;
+> +extern struct kmem_cache *bpf_iter_kmem_cache_next(struct bpf_iter_kmem_cache *it) __weak __ksym;
+> +extern void bpf_iter_kmem_cache_destroy(struct bpf_iter_kmem_cache *it) __weak __ksym;
 > +
->         case HPROBE_GONE:
-> -               /*
-> -                * SRCU was unlocked earlier and we didn't manage to take
-> -                * uprobe refcnt, so it's effectively NULL
-> -                */
-> -               return NULL;
->         case HPROBE_CONSUMED:
-> -               /*
-> -                * uprobe was consumed, so it's effectively NULL as far a=
-s
-> -                * uretprobe processing logic is concerned
-> -                */
-> -               return NULL;
-> -       case HPROBE_LEASED: {
-> -               struct uprobe *uprobe =3D try_get_uprobe(hprobe->uprobe);
-> +               break;
+>   #endif
+> diff --git a/tools/testing/selftests/bpf/prog_tests/kmem_cache_iter.c b/tools/testing/selftests/bpf/prog_tests/kmem_cache_iter.c
+> index 848d8fc9171fae45..a1fd3bc57c0b21bb 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/kmem_cache_iter.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/kmem_cache_iter.c
+> @@ -68,12 +68,18 @@ static void subtest_kmem_cache_iter_check_slabinfo(struct kmem_cache_iter *skel)
+>   	fclose(fp);
+>   }
+>   
+> +static void subtest_kmem_cache_iter_open_coded(struct kmem_cache_iter *skel)
+> +{
+> +	/* To trigger the open coded iterator attached to the syscall */
+> +	syncfs(0);
 > +
-> +       case HPROBE_LEASED:
-> +               uprobe =3D try_get_uprobe(hprobe->uprobe);
->                 /*
->                  * Try to switch hprobe state, guarding against
->                  * hprobe_consume() or another hprobe_expire() racing wit=
-h us.
-> @@ -778,27 +770,26 @@ static struct uprobe* hprobe_expire(struct hprobe *=
-hprobe)
->                 if (try_cmpxchg(&hprobe->state, &hstate, uprobe ? HPROBE_=
-STABLE : HPROBE_GONE)) {
->                         /* We won the race, we are the ones to unlock SRC=
-U */
->                         __srcu_read_unlock(&uretprobes_srcu, hprobe->srcu=
-_idx);
-> -                       return uprobe;
-> +                       break;
->                 }
->
->                 /* We lost the race, undo refcount bump (if it ever happe=
-ned) */
-> -               if (uprobe)
-> +               if (uprobe && !get) {
->                         put_uprobe(uprobe);
-> -               /*
-> -                * Even if hprobe_consume() or another hprobe_expire() wi=
-ns
-> -                * the state update race and unlocks SRCU from under us, =
-we
-> -                * still have a guarantee that underyling uprobe won't be
-> -                * freed due to ongoing caller's SRCU lock region, so we =
-can
-> -                * return it regardless. The caller then can attempt its =
-own
-> -                * try_get_uprobe() to preserve the instance, if necessar=
-y.
-> -                * This is used in dup_utask().
-> -                */
-> +                       uprobe =3D NULL;
-> +               }
+> +	/* It should be same as we've seen from the explicit iterator */
+> +	ASSERT_EQ(skel->bss->open_coded_seen, skel->bss->kmem_cache_seen, "open_code_seen_eq");
+> +}
 > +
->                 return uprobe;
-> -       }
+>   void test_kmem_cache_iter(void)
+>   {
+> -	DECLARE_LIBBPF_OPTS(bpf_iter_attach_opts, opts);
+>   	struct kmem_cache_iter *skel = NULL;
+> -	union bpf_iter_link_info linfo = {};
+> -	struct bpf_link *link;
+>   	char buf[256];
+>   	int iter_fd;
+>   
+> @@ -81,16 +87,12 @@ void test_kmem_cache_iter(void)
+>   	if (!ASSERT_OK_PTR(skel, "kmem_cache_iter__open_and_load"))
+>   		return;
+>   
+> -	opts.link_info = &linfo;
+> -	opts.link_info_len = sizeof(linfo);
+> -
+> -	link = bpf_program__attach_iter(skel->progs.slab_info_collector, &opts);
+> -	if (!ASSERT_OK_PTR(link, "attach_iter"))
+> +	if (!ASSERT_OK(kmem_cache_iter__attach(skel), "skel_attach"))
+
+with this change.
+
+>   		goto destroy;
+>   
+> -	iter_fd = bpf_iter_create(bpf_link__fd(link));
+> +	iter_fd = bpf_iter_create(bpf_link__fd(skel->links.slab_info_collector));
+>   	if (!ASSERT_GE(iter_fd, 0, "iter_create"))
+> -		goto free_link;
+> +		goto detach;
+>   
+>   	memset(buf, 0, sizeof(buf));
+>   	while (read(iter_fd, buf, sizeof(buf) > 0)) {
+> @@ -105,11 +107,13 @@ void test_kmem_cache_iter(void)
+>   		subtest_kmem_cache_iter_check_task_struct(skel);
+>   	if (test__start_subtest("check_slabinfo"))
+>   		subtest_kmem_cache_iter_check_slabinfo(skel);
+> +	if (test__start_subtest("open_coded_iter"))
+> +		subtest_kmem_cache_iter_open_coded(skel);
+>   
+>   	close(iter_fd);
+>   
+> -free_link:
+> -	bpf_link__destroy(link);
+> +detach:
+> +	kmem_cache_iter__detach(skel);
+
+nit. I think the kmem_cache_iter__destroy() below will also detach, so no need 
+to explicit kmem_cache_iter__detach().
+
+>   destroy:
+>   	kmem_cache_iter__destroy(skel);
+>   }
+> diff --git a/tools/testing/selftests/bpf/progs/kmem_cache_iter.c b/tools/testing/selftests/bpf/progs/kmem_cache_iter.c
+> index 72c9dafecd98406b..4c44aa279a5328fe 100644
+> --- a/tools/testing/selftests/bpf/progs/kmem_cache_iter.c
+> +++ b/tools/testing/selftests/bpf/progs/kmem_cache_iter.c
+> @@ -2,6 +2,8 @@
+>   /* Copyright (c) 2024 Google */
+>   
+>   #include "bpf_iter.h"
+> +#include "bpf_experimental.h"
+> +#include "bpf_misc.h"
+>   #include <bpf/bpf_helpers.h>
+>   #include <bpf/bpf_tracing.h>
+>   
+> @@ -33,6 +35,7 @@ extern struct kmem_cache *bpf_get_kmem_cache(u64 addr) __ksym;
+>   /* Result, will be checked by userspace */
+>   int task_struct_found;
+>   int kmem_cache_seen;
+> +int open_coded_seen;
+>   
+>   SEC("iter/kmem_cache")
+>   int slab_info_collector(struct bpf_iter__kmem_cache *ctx)
+> @@ -85,3 +88,24 @@ int BPF_PROG(check_task_struct)
+>   		task_struct_found = -2;
+>   	return 0;
+>   }
 > +
->         default:
->                 WARN(1, "unknown hprobe state %d", hstate);
->                 return NULL;
->         }
+> +SEC("fentry.s/" SYS_PREFIX "sys_syncfs")
+> +int open_coded_iter(const void *ctx)
+> +{
+> +	struct kmem_cache *s;
 > +
-> +       if (uprobe && get)
-> +               return try_get_uprobe(uprobe);
+> +	bpf_for_each(kmem_cache, s) {
+> +		struct kmem_cache_result *r;
+> +		int idx = open_coded_seen;
 > +
-> +       return uprobe;
->  }
->
->  static __always_inline
-> @@ -1920,9 +1911,8 @@ static void ri_timer(struct timer_list *timer)
->         /* RCU protects return_instance from freeing. */
->         guard(rcu)();
->
-> -       for_each_ret_instance_rcu(ri, utask->return_instances) {
-> -               hprobe_expire(&ri->hprobe);
-> -       }
-> +       for_each_ret_instance_rcu(ri, utask->return_instances)
-> +               hprobe_expire(&ri->hprobe, false);
->  }
->
->  static struct uprobe_task *alloc_utask(void)
-> @@ -1975,10 +1965,7 @@ static int dup_utask(struct task_struct *t, struct=
- uprobe_task *o_utask)
->
->                 *n =3D *o;
->
-> -               /* see hprobe_expire() comments */
-> -               uprobe =3D hprobe_expire(&o->hprobe);
-> -               if (uprobe) /* refcount bump for new utask */
-> -                       uprobe =3D try_get_uprobe(uprobe);
-> +               uprobe =3D hprobe_expire(&o->hprobe, true);
->
->                 /*
->                  * New utask will have stable properly refcounted uprobe =
-or
-> @@ -1986,7 +1973,7 @@ static int dup_utask(struct task_struct *t, struct =
-uprobe_task *o_utask)
->                  * need to preserve full set of return_instances for prop=
-er
->                  * uretprobe handling and nesting in forked task.
->                  */
-> -               hprobe_init_stable(&n->hprobe, uprobe);
-> +               hprobe_init(&n->hprobe, uprobe, -1);
->
->                 n->next =3D NULL;
->                 rcu_assign_pointer(*p, n);
-> @@ -2131,7 +2118,7 @@ static void prepare_uretprobe(struct uprobe *uprobe=
-, struct pt_regs *regs)
->
->         utask->depth++;
->
-> -       hprobe_init_leased(&ri->hprobe, uprobe, srcu_idx);
-> +       hprobe_init(&ri->hprobe, uprobe, srcu_idx);
->         ri->next =3D utask->return_instances;
->         rcu_assign_pointer(utask->return_instances, ri);
->
+> +		r = bpf_map_lookup_elem(&slab_result, &idx);
+> +		if (r == NULL)
+> +			break;
+> +
+> +		open_coded_seen++;
+
+I am not sure if this will work well if the testing system somehow has another 
+process calling syncfs. It is probably a good idea to guard this by checking the 
+tid of the test_progs at the beginning of this bpf prog.
+
+> +
+> +		if (r->obj_size != s->size)
+> +			break;
+> +	}
+> +	return 0;
+> +}
+
 
