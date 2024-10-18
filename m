@@ -1,260 +1,114 @@
-Return-Path: <bpf+bounces-42389-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42392-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56B6F9A39AE
-	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 11:15:44 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D37B79A39F3
+	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 11:26:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EBF16283433
-	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 09:15:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8A1A01F2520F
+	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 09:26:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 547241E32B2;
-	Fri, 18 Oct 2024 09:14:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AC8B1E4929;
+	Fri, 18 Oct 2024 09:26:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=qmon.net header.i=@qmon.net header.b="q8W7Yhkm"
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from outbound.soverin.net (outbound.soverin.net [185.233.34.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEC481E2303;
-	Fri, 18 Oct 2024 09:14:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38E7615666D
+	for <bpf@vger.kernel.org>; Fri, 18 Oct 2024 09:26:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.233.34.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729242865; cv=none; b=sLo2w8Bnyus+qpcMvBYPwn2/++x+ykSO77/L9/NIzu4vmqviZtqZF+vNslR1L8jePSOm9qiiST84CD6tVNOwnmGAintE8yeqZ5QPK5+gfBWNUMGf6cvraL3TJpTU3+qU2Re3hqMO+mZ68oQtB67Gu7cg4CejPkN1Xt+0x/TDZfA=
+	t=1729243585; cv=none; b=iZD/PceWWzVHowCVNEAiSJzalTQn5KceUvKmm1t0PpPeZdebJAl/nFNP2gfV7Z0IsvAdfN4AoIY75Td2m2zeyMcLygTfIPlG4NuftDT3fqBPfWxBKAmdr8x6+BwVN/GCarYCfrmuSBibr0wHO9EU0s7HQjQLOSyW7cFsafTfurw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729242865; c=relaxed/simple;
-	bh=ObmZm9SWgwAXOCoJix+m53ErQSZCmmvZ/mzHD2RA8gU=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=CA3tgiq1vLGvO8UDpTNgByD8lXG9bcIoEYOdQpDqMhOyUtCXDwLXj9NuZuBa+lv5+uYfAT8gO5Cu8IeEuY/94kQKjqOvT32TrZlQx5m28i/oP2hUl2k2lzZNDFIb70Wx2zgqtMRTRSS71plgf2yRF+oUDpKxCHnk5w8B1kIw1OY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4XVJrt42MKz1SC9k;
-	Fri, 18 Oct 2024 17:13:02 +0800 (CST)
-Received: from dggpemf500014.china.huawei.com (unknown [7.185.36.43])
-	by mail.maildlp.com (Postfix) with ESMTPS id D1D621A016C;
-	Fri, 18 Oct 2024 17:14:19 +0800 (CST)
-Received: from huawei.com (10.175.101.6) by dggpemf500014.china.huawei.com
- (7.185.36.43) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Fri, 18 Oct
- 2024 17:14:18 +0800
-From: Muyang Tian <tianmuyang@huawei.com>
-To: <bpf@vger.kernel.org>
-CC: "David S . Miller" <davem@davemloft.net>, Eric Dumazet
-	<edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
-	<pabeni@redhat.com>, Donald Hunter <donald.hunter@gmail.com>,
-	=?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>, Magnus Karlsson
-	<magnus.karlsson@intel.com>, Maciej Fijalkowski
-	<maciej.fijalkowski@intel.com>, Jonathan Lemon <jonathan.lemon@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend
-	<john.fastabend@gmail.com>, <netdev@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-	<yanan@huawei.com>, <xiesongyang@huawei.com>, <wuchangye@huawei.com>,
-	<liuxin350@huawei.com>, <zhangmingyi5@huawei.com>, <liwei883@huawei.com>,
-	<tianmuyang@huawei.com>
-Subject: [PATCH bpf-next v2 3/3] xsk: Add Tx GSO type and size offload support
-Date: Fri, 18 Oct 2024 17:15:02 +0800
-Message-ID: <20241018091502.411513-4-tianmuyang@huawei.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20241018091502.411513-1-tianmuyang@huawei.com>
-References: <20241018091502.411513-1-tianmuyang@huawei.com>
+	s=arc-20240116; t=1729243585; c=relaxed/simple;
+	bh=2yX1lm0JYjYVXiUqlaYCdC0HijCE78w6eJElY9PLoro=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=M8eW4XSk5ACJZslbBkHt3KLx4eXOvieHk9fnAkQZI3SNl3as5sVjBY29gLDx/xIoZp3BAhBz7CZBoO4ghM8TqnmgpFPpRXp229iAXvNUc7sELe+x46YGc+Nm1YmkvRCA0hlqxYVNZv+HR2TY45OMSTnjKwR38BwyfgTtyKlurNQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=qmon.net; spf=pass smtp.mailfrom=qmon.net; dkim=pass (2048-bit key) header.d=qmon.net header.i=@qmon.net header.b=q8W7Yhkm; arc=none smtp.client-ip=185.233.34.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=qmon.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qmon.net
+Received: from smtp.soverin.net (unknown [10.10.4.99])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	(No client certificate requested)
+	by outbound.soverin.net (Postfix) with ESMTPS id 4XVJy00GvGz4R;
+	Fri, 18 Oct 2024 09:17:28 +0000 (UTC)
+Received: from smtp.soverin.net (smtp.soverin.net [10.10.4.99]) by soverin.net (Postfix) with ESMTPSA id 4XVJxy6ww6z5r;
+	Fri, 18 Oct 2024 09:17:26 +0000 (UTC)
+Authentication-Results: smtp.soverin.net;
+	dkim=pass (2048-bit key; unprotected) header.d=qmon.net header.i=@qmon.net header.a=rsa-sha256 header.s=soverin1 header.b=q8W7Yhkm;
+	dkim-atps=neutral
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qmon.net; s=soverin1;
+	t=1729243047;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0o1sDQ0CXar23qbhsbLkS5of90qvzdckiER1AtNWjAY=;
+	b=q8W7YhkmeREahtSSzugE7vJU4kFrZM85xXqg6fc26D8Huz92UOzjA+QrvL/EiajZyu3Lr5
+	3WSF4TaFoNlxtWwoustuj9YivSnVB2ZqjWXzPr67PTmKnWwW8Omjwj7arvFc++nH5L3joz
+	1Dj0Fb9Vj4YYyRWWAvUPcKbY/WAh/DihGxkFV2AI+nIfhrGr27RB0f03Zu1CaSQakUhEMF
+	WwMSCZhJhuUJjYQ+Ftsy29XnWeGOgdmQ7XBkGOMuXFqCBDaCPg3LyVjyZ65xS8fTloRuj0
+	6dz80s1OzeJX2yNuAZl3e2D9i8RePppIaEp+DooZbAzvWHEos6lJmiKck2H9Ig==
+Message-ID: <2bef35eb-a8a7-4569-a814-40ad60851d73@qmon.net>
+Date: Fri, 18 Oct 2024 10:17:25 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemf500014.china.huawei.com (7.185.36.43)
+Subject: Re: [PATCH bpf-next v2 2/3] bpftool: Prevent setting duplicate
+ _GNU_SOURCE in Makefile
+To: Viktor Malik <vmalik@redhat.com>, bpf@vger.kernel.org
+Cc: Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman
+ <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
+ Nathan Chancellor <nathan@kernel.org>,
+ Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling
+ <morbo@google.com>, Justin Stitt <justinstitt@google.com>
+References: <cover.1729233447.git.vmalik@redhat.com>
+ <820bd20ea460548828ae9a50f5bdbad0700591e5.1729233447.git.vmalik@redhat.com>
+From: Quentin Monnet <qmo@qmon.net>
+Content-Language: en-GB
+In-Reply-To: <820bd20ea460548828ae9a50f5bdbad0700591e5.1729233447.git.vmalik@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spampanel-Class: ham
 
-This change extends the xsk_tx_metadata struct with
-GSO type and size fields.
-A new offload XDP_TX_METADATA_GSO is defined, which
-offloads gso_type and gso_size in skb_shared_info to XDP.
+2024-10-18 08:49 UTC+0200 ~ Viktor Malik <vmalik@redhat.com>
+> When building selftests with CFLAGS set via env variable, the value of
+> CFLAGS is propagated into bpftool Makefile (called from selftests
+> Makefile). This makes the compilation fail as _GNU_SOURCE is defined two
+> times - once from selftests Makefile (by including lib.mk) and once from
+> bpftool Makefile (by calling `llvm-config --cflags`):
+> 
+>     $ CFLAGS="" make -C tools/testing/selftests/bpf
+>     [...]
+>     CC      /bpf-next/tools/testing/selftests/bpf/tools/build/bpftool/btf.o
+>     <command-line>: error: "_GNU_SOURCE" redefined [-Werror]
+>     <command-line>: note: this is the location of the previous definition
+>     cc1: all warnings being treated as errors
+>     [...]
+> 
+> Filter out -D_GNU_SOURCE from the result of `llvm-config --cflags` in
+> bpftool Makefile to prevent this error.
+> 
+> Signed-off-by: Viktor Malik <vmalik@redhat.com>
 
-Signed-off-by: Muyang Tian <tianmuyang@huawei.com>
----
- Documentation/netlink/specs/netdev.yaml |  4 ++++
- include/net/xdp_sock.h                  |  8 ++++++++
- include/net/xdp_sock_drv.h              |  1 +
- include/uapi/linux/if_xdp.h             | 11 +++++++++++
- include/uapi/linux/netdev.h             |  2 ++
- net/xdp/xsk.c                           |  5 +++++
- tools/include/uapi/linux/if_xdp.h       | 11 +++++++++++
- tools/include/uapi/linux/netdev.h       |  2 ++
- 8 files changed, 44 insertions(+)
+I am not aware of any extension in use in bpftool that would require the
+use of -D_GNU_SOURCE, so I suppose it's fine to remove it
+unconditionally, even when it's not in CFLAGS before we append the flags
+from llvm-config. Thanks!
 
-diff --git a/Documentation/netlink/specs/netdev.yaml b/Documentation/netlink/specs/netdev.yaml
-index 5beee7c8e7cf..f4aa04eba54c 100644
---- a/Documentation/netlink/specs/netdev.yaml
-+++ b/Documentation/netlink/specs/netdev.yaml
-@@ -78,6 +78,10 @@ definitions:
-         name: tx-checksum
-         doc:
-           L3 checksum HW offload is supported by the driver.
-+      -
-+        name: tx-gso
-+        doc:
-+          GSO type and size is supported by the driver.
-   -
-     name: queue-type
-     type: enum
-diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
-index bfe625b55d55..e5acb27c3e07 100644
---- a/include/net/xdp_sock.h
-+++ b/include/net/xdp_sock.h
-@@ -110,11 +110,14 @@ struct xdp_sock {
-  *     indicates position where checksumming should start.
-  *     csum_offset indicates position where checksum should be stored.
-  *
-+ * void (*tmo_request_gso)(u32 gso_type, u16 gso_size, void *priv)
-+ *     Called when AF_XDP frame requested GSO info.
-  */
- struct xsk_tx_metadata_ops {
- 	void	(*tmo_request_timestamp)(void *priv);
- 	u64	(*tmo_fill_timestamp)(void *priv);
- 	void	(*tmo_request_checksum)(u16 csum_start, u16 csum_offset, void *priv);
-+	void	(*tmo_request_gso)(u32 gso_type, u16 gso_size, void *priv);
- };
- 
- #ifdef CONFIG_XDP_SOCKETS
-@@ -170,6 +173,11 @@ static inline void xsk_tx_metadata_request(const struct xsk_tx_metadata *meta,
- 		if (meta->flags & XDP_TXMD_FLAGS_CHECKSUM)
- 			ops->tmo_request_checksum(meta->request.csum_start,
- 						  meta->request.csum_offset, priv);
-+
-+	if (ops->tmo_request_gso)
-+		if (meta->flags & XDP_TXMD_FLAGS_GSO)
-+			ops->tmo_request_gso(meta->request.gso_type,
-+						  meta->request.gso_size, priv);
- }
- 
- /**
-diff --git a/include/net/xdp_sock_drv.h b/include/net/xdp_sock_drv.h
-index 0a5dca2b2b3f..b192dab2b835 100644
---- a/include/net/xdp_sock_drv.h
-+++ b/include/net/xdp_sock_drv.h
-@@ -198,6 +198,7 @@ static inline void *xsk_buff_raw_get_data(struct xsk_buff_pool *pool, u64 addr)
- #define XDP_TXMD_FLAGS_VALID ( \
- 		XDP_TXMD_FLAGS_TIMESTAMP | \
- 		XDP_TXMD_FLAGS_CHECKSUM | \
-+		XDP_TXMD_FLAGS_GSO | \
- 	0)
- 
- static inline bool xsk_buff_valid_tx_metadata(struct xsk_tx_metadata *meta)
-diff --git a/include/uapi/linux/if_xdp.h b/include/uapi/linux/if_xdp.h
-index 42ec5ddaab8d..c3ea368bf613 100644
---- a/include/uapi/linux/if_xdp.h
-+++ b/include/uapi/linux/if_xdp.h
-@@ -127,6 +127,11 @@ struct xdp_options {
-  */
- #define XDP_TXMD_FLAGS_CHECKSUM			(1 << 1)
- 
-+/* Request transmit GSO info. GSO type and size are communicated via
-+ * csum_start and csum_offset fields of struct xsk_tx_metadata.
-+ */
-+#define XDP_TXMD_FLAGS_GSO				(1 << 2)
-+
- /* AF_XDP offloads request. 'request' union member is consumed by the driver
-  * when the packet is being transmitted. 'completion' union member is
-  * filled by the driver when the transmit completion arrives.
-@@ -142,6 +147,12 @@ struct xsk_tx_metadata {
- 			__u16 csum_start;
- 			/* Offset from csum_start where checksum should be stored. */
- 			__u16 csum_offset;
-+
-+			/* XDP_TXMD_FLAGS_GSO */
-+			/* Identical to skb_shared_info.gso_type*/
-+			__u32 gso_type;
-+			/* Identical to skb_shared_info.gso_size*/
-+			__u16 gso_size;
- 		} request;
- 
- 		struct {
-diff --git a/include/uapi/linux/netdev.h b/include/uapi/linux/netdev.h
-index 1e711d6a4c6b..bd175afb3c6b 100644
---- a/include/uapi/linux/netdev.h
-+++ b/include/uapi/linux/netdev.h
-@@ -65,10 +65,12 @@ enum netdev_xdp_rx_metadata {
-  *   by the driver.
-  * @NETDEV_XSK_FLAGS_TX_CHECKSUM: L3 checksum HW offload is supported by the
-  *   driver.
-+ * @NETDEV_XSK_FLAGS_TX_GSO: GSO type and size is supported by the driver.
-  */
- enum netdev_xsk_flags {
- 	NETDEV_XSK_FLAGS_TX_TIMESTAMP = 1,
- 	NETDEV_XSK_FLAGS_TX_CHECKSUM = 2,
-+	NETDEV_XSK_FLAGS_TX_GSO = 4,
- };
- 
- enum netdev_queue_type {
-diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-index 1140b2a120ca..5a19edfce16c 100644
---- a/net/xdp/xsk.c
-+++ b/net/xdp/xsk.c
-@@ -745,6 +745,11 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
- 						goto free_err;
- 				}
- 			}
-+
-+			if (meta->flags & XDP_TXMD_FLAGS_GSO) {
-+				skb_shinfo(skb)->gso_type = meta->request.gso_type;
-+				skb_shinfo(skb)->gso_size = meta->request.gso_size;
-+			}
- 		}
- 	}
- 
-diff --git a/tools/include/uapi/linux/if_xdp.h b/tools/include/uapi/linux/if_xdp.h
-index 2f082b01ff22..5714d0be8c53 100644
---- a/tools/include/uapi/linux/if_xdp.h
-+++ b/tools/include/uapi/linux/if_xdp.h
-@@ -127,6 +127,11 @@ struct xdp_options {
-  */
- #define XDP_TXMD_FLAGS_CHECKSUM			(1 << 1)
- 
-+/* Request transmit GSO info. GSO type and size are communicated via
-+ * csum_start and csum_offset fields of struct xsk_tx_metadata.
-+ */
-+#define XDP_TXMD_FLAGS_GSO				(1 << 2)
-+
- /* AF_XDP offloads request. 'request' union member is consumed by the driver
-  * when the packet is being transmitted. 'completion' union member is
-  * filled by the driver when the transmit completion arrives.
-@@ -142,6 +147,12 @@ struct xsk_tx_metadata {
- 			__u16 csum_start;
- 			/* Offset from csum_start where checksum should be stored. */
- 			__u16 csum_offset;
-+
-+			/* XDP_TXMD_FLAGS_GSO */
-+			/* Identical to skb_shared_info.gso_type*/
-+			__u32 gso_type;
-+			/* Identical to skb_shared_info.gso_size*/
-+			__u16 gso_size;
- 		} request;
- 
- 		struct {
-diff --git a/tools/include/uapi/linux/netdev.h b/tools/include/uapi/linux/netdev.h
-index 1e711d6a4c6b..bd175afb3c6b 100644
---- a/tools/include/uapi/linux/netdev.h
-+++ b/tools/include/uapi/linux/netdev.h
-@@ -65,10 +65,12 @@ enum netdev_xdp_rx_metadata {
-  *   by the driver.
-  * @NETDEV_XSK_FLAGS_TX_CHECKSUM: L3 checksum HW offload is supported by the
-  *   driver.
-+ * @NETDEV_XSK_FLAGS_TX_GSO: GSO type and size is supported by the driver.
-  */
- enum netdev_xsk_flags {
- 	NETDEV_XSK_FLAGS_TX_TIMESTAMP = 1,
- 	NETDEV_XSK_FLAGS_TX_CHECKSUM = 2,
-+	NETDEV_XSK_FLAGS_TX_GSO = 4,
- };
- 
- enum netdev_queue_type {
--- 
-2.41.0
-
+Acked-by: Quentin Monnet <qmo@kernel.org>
 
