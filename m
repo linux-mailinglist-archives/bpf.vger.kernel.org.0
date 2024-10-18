@@ -1,79 +1,79 @@
-Return-Path: <bpf+bounces-42449-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42450-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF60D9A4505
-	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 19:39:59 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B2D09A4508
+	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 19:40:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 24DC6B21D98
-	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 17:39:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0090F1F2155B
+	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 17:40:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6A3120493F;
-	Fri, 18 Oct 2024 17:37:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B717320969E;
+	Fri, 18 Oct 2024 17:37:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="L6Xfqctd"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="ZHr4oqh8"
 X-Original-To: bpf@vger.kernel.org
 Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 591482076DF;
-	Fri, 18 Oct 2024 17:37:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 672F1208991;
+	Fri, 18 Oct 2024 17:37:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729273074; cv=none; b=jj1SoTGeL0qC69mi/3jLqvs0rJffDD+wCFyokTNnvGqaapSxT5M00BBE/Zb045s5fT6YWx/bwK6ltiMitqHyaQZAdEDexv8M0jycdig22d0RQ/mQJkYioO/WvggMMPDSNTiftbRPzqp0G74HvGgJaO7ROQwSRnBWUB/G8Df3/90=
+	t=1729273077; cv=none; b=DMdMfov28l02ep/Rg/723wQMdmJuUtuhVp8CQgdy1goX6f3TXOXWNJkXvCjF5OohjCPQQNdqgUcr9kLzyIHSEO3cHONgUpb+Cp8E8GjuHtkFUWB6h0fuzSe8MUrLYn2kigBfLsWnbn8Z0u0/xwrP77rx/bk43S4eAOJSKVIbECk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729273074; c=relaxed/simple;
-	bh=mzQaSKiFIvV1Ou/1SmtfbzngqaZMGo7HvE5vORtP2b8=;
+	s=arc-20240116; t=1729273077; c=relaxed/simple;
+	bh=Mf5rF/eIeY4XknG5rmel/U+YRkrCOlfG7MleRx/0G5Y=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=nA8SrhBHzv9nVgcq1n32B6qAdhdem801DK8z0jO/x6IcT/b18/+2SYX6vdJ4+PjyUA7oU0OlSuPBnfQedishwZ+kIhGppYASfXN+5vOaXWGyl4I454FgtewlO7geijTlxsdHLznjTNSKk3hZ3WESBKWrsgz6DbuxZUdybienO6w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=L6Xfqctd; arc=none smtp.client-ip=148.163.158.5
+	 MIME-Version; b=KcApZh2g2N2pJqMkM9qmM2gT3iSJYLYyQXr2mEgwl+qHI/273TNLpkBx3E6HGS56eobr2M9zv8KwbT/Vcm2r3rEhswBHGFFCvApyxZnd16A2q7eJVpm4QX/iiJ6UypUFcn0DIXMjR66H+Do/5T+6exgXNM0Eu2Ha8F8gAqPD0Hs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=ZHr4oqh8; arc=none smtp.client-ip=148.163.158.5
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
 Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 49ICZmv1023701;
-	Fri, 18 Oct 2024 17:37:28 GMT
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 49ICZmv3023701;
+	Fri, 18 Oct 2024 17:37:32 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
 	:content-transfer-encoding:date:from:in-reply-to:message-id
-	:mime-version:references:subject:to; s=pp1; bh=JGYWfrPfzXzPdrdn1
-	nMdFcY4hYimZxb7JncZtcrP9U4=; b=L6XfqctdAdQTQ5X3FHgkOm4NWoENrXw8u
-	7kCWChAL5LHLeNoz+IeJCjlLoYNLsLgdMU6Ex4J4eR0M1Z6K4YFT7EFziLuxx1vu
-	P3HDlxgwwJVlqFbOufrgMO2ebNgYMtIdzhGh/J1LNlv/7w8XSa+UHZTlh0ybQCpR
-	wzrsKk73suHj4GKR/4qLEvEuRQ95/3kbwRDS0pOvCRHgUd8+eH2t8/jF31ct2sZj
-	TZS9I1sGSo/OIlD0/XQidXxIBP5/n1YUyuv+2+BOrc4VDEWCvu2DwTVBmUuBKZZs
-	zaPRDhyvuHLKLnB9SbnX/EI0dnn+XYyBvMogz9K3jvoFdyvU4/j3w==
+	:mime-version:references:subject:to; s=pp1; bh=AVtaaKl0jM+tjrPFq
+	NyLwdiM2YM1RYXONNwrIPYlQdE=; b=ZHr4oqh8HBz1ejuoBktsmUs++ukn8w2XG
+	ZoZWw9lplAmUwGyLiLjYNYCAYHKQrWD9yjGZxaLrNd9Y4M//F81tQE7vNUX+s35o
+	zOKpLqtM4gxIqXgkp+lTkWB5oeMNRX9u3t8ipDlEtCpzTjXdy0ktUQEhRAG73/gK
+	HmacUV6kqMigEufurmsSNhFawzmPUiLu10lpXUnA5UumR5FmNKMUCRc+VAXXrDgx
+	0dc8Kk5n1K0MxXjk1TOLLtSFcmXV26nE0C22arNQ2y61FNebcy8KdKK8j7xXe6iR
+	Evyjj1sTW2ebzCE1aufoDcNbbC94+EwitigfJgERTdMhcrcWQTFOQ==
 Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 42ar0ua92d-1
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 42ar0ua933-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 18 Oct 2024 17:37:27 +0000 (GMT)
+	Fri, 18 Oct 2024 17:37:31 +0000 (GMT)
 Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 49IHbRgl019214;
-	Fri, 18 Oct 2024 17:37:27 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 42ar0ua927-1
+	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 49IHbV3E019314;
+	Fri, 18 Oct 2024 17:37:31 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 42ar0ua92v-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 18 Oct 2024 17:37:27 +0000 (GMT)
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 49IHMVgR001982;
-	Fri, 18 Oct 2024 17:37:26 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4284en600t-1
+	Fri, 18 Oct 2024 17:37:31 +0000 (GMT)
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 49IGAo4C005937;
+	Fri, 18 Oct 2024 17:37:30 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 428651dkdr-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 18 Oct 2024 17:37:26 +0000
+	Fri, 18 Oct 2024 17:37:30 +0000
 Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 49IHbM1852691360
+	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 49IHbQG718022712
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 18 Oct 2024 17:37:22 GMT
+	Fri, 18 Oct 2024 17:37:27 GMT
 Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 5ACE820040;
+	by IMSVA (Postfix) with ESMTP id DC73520043;
+	Fri, 18 Oct 2024 17:37:26 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id BE3E820040;
 	Fri, 18 Oct 2024 17:37:22 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 5159620043;
-	Fri, 18 Oct 2024 17:37:18 +0000 (GMT)
 Received: from li-bd3f974c-2712-11b2-a85c-df1cec4d728e.ibm.com.com (unknown [9.43.99.188])
 	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Fri, 18 Oct 2024 17:37:18 +0000 (GMT)
+	Fri, 18 Oct 2024 17:37:22 +0000 (GMT)
 From: Hari Bathini <hbathini@linux.ibm.com>
 To: linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, bpf@vger.kernel.org,
         linux-trace-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
@@ -90,9 +90,9 @@ Cc: Michael Ellerman <mpe@ellerman.id.au>, "Naveen N. Rao" <naveen@kernel.org>,
         Christophe Leroy <christophe.leroy@csgroup.eu>,
         Vishal Chourasia <vishalc@linux.ibm.com>,
         Mahesh J Salgaonkar <mahesh@linux.ibm.com>
-Subject: [PATCH v6 10/17] powerpc/ftrace: Add a postlink script to validate function tracer
-Date: Fri, 18 Oct 2024 23:06:25 +0530
-Message-ID: <20241018173632.277333-11-hbathini@linux.ibm.com>
+Subject: [PATCH v6 11/17] kbuild: Add generic hook for architectures to use before the final vmlinux link
+Date: Fri, 18 Oct 2024 23:06:26 +0530
+Message-ID: <20241018173632.277333-12-hbathini@linux.ibm.com>
 X-Mailer: git-send-email 2.47.0
 In-Reply-To: <20241018173632.277333-1-hbathini@linux.ibm.com>
 References: <20241018173632.277333-1-hbathini@linux.ibm.com>
@@ -104,8 +104,8 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: rbcGewJQCxkyPEldCazRbreCxL64LPWi
-X-Proofpoint-ORIG-GUID: wFfpNO7IdFXcKyC-6o_aqKlHsqbWKkfj
+X-Proofpoint-GUID: nBXMvXz7wrIX63la6i4oOD2m3uiRJ6Dw
+X-Proofpoint-ORIG-GUID: 3XaY1Kp85eNFubEexUjYDyr_wrD3sunt
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
  definitions=2024-10-15_01,2024-10-11_01,2024-09-30_01
@@ -117,126 +117,87 @@ X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowprio
 
 From: Naveen N Rao <naveen@kernel.org>
 
-Function tracer on powerpc can only work with vmlinux having a .text
-size of up to ~64MB due to powerpc branch instruction having a limited
-relative branch range of 32MB. Today, this is only detected on kernel
-boot when ftrace is init'ed. Add a post-link script to check the size of
-.text so that we can detect this at build time, and break the build if
-necessary.
+On powerpc, we would like to be able to make a pass on vmlinux.o and
+generate a new object file to be linked into vmlinux. Add a generic pass
+in Makefile.vmlinux that architectures can use for this purpose.
 
-We add a dependency on !COMPILE_TEST for CONFIG_HAVE_FUNCTION_TRACER so
-that allyesconfig and other test builds can continue to work without
-enabling ftrace.
+Architectures need to select CONFIG_ARCH_WANTS_PRE_LINK_VMLINUX and must
+provide arch/<arch>/tools/Makefile with .arch.vmlinux.o target, which
+will be invoked prior to the final vmlinux link step.
 
 Signed-off-by: Naveen N Rao <naveen@kernel.org>
 Signed-off-by: Hari Bathini <hbathini@linux.ibm.com>
 ---
 
 Changes in v6:
-* Shellcheck warnings fixed for arch/powerpc/tools/ftrace_check.sh
+* Intermediate files named vmlinux.arch.* instead of .vmlinux.arch.*
+* Used 'bool' instead of 'def_bool n'
+* Missing FORCE added for vmlinux.arch.o
 
 
- arch/powerpc/Kconfig               |  2 +-
- arch/powerpc/Makefile.postlink     |  8 +++++
- arch/powerpc/tools/ftrace_check.sh | 50 ++++++++++++++++++++++++++++++
- 3 files changed, 59 insertions(+), 1 deletion(-)
- create mode 100755 arch/powerpc/tools/ftrace_check.sh
+ arch/Kconfig             | 6 ++++++
+ scripts/Makefile.vmlinux | 7 +++++++
+ scripts/link-vmlinux.sh  | 7 ++++++-
+ 3 files changed, 19 insertions(+), 1 deletion(-)
 
-diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index 8094a01974cc..bd1ca813e71c 100644
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -243,7 +243,7 @@ config PPC
- 	select HAVE_FUNCTION_DESCRIPTORS	if PPC64_ELF_ABI_V1
- 	select HAVE_FUNCTION_ERROR_INJECTION
- 	select HAVE_FUNCTION_GRAPH_TRACER
--	select HAVE_FUNCTION_TRACER		if PPC64 || (PPC32 && CC_IS_GCC)
-+	select HAVE_FUNCTION_TRACER		if !COMPILE_TEST && (PPC64 || (PPC32 && CC_IS_GCC))
- 	select HAVE_GCC_PLUGINS			if GCC_VERSION >= 50200   # plugin support on gcc <= 5.1 is buggy on PPC
- 	select HAVE_GENERIC_VDSO
- 	select HAVE_HARDLOCKUP_DETECTOR_ARCH	if PPC_BOOK3S_64 && SMP
-diff --git a/arch/powerpc/Makefile.postlink b/arch/powerpc/Makefile.postlink
-index ae5a4256b03d..bb601be36173 100644
---- a/arch/powerpc/Makefile.postlink
-+++ b/arch/powerpc/Makefile.postlink
-@@ -24,6 +24,9 @@ else
- 	$(CONFIG_SHELL) $(srctree)/arch/powerpc/tools/relocs_check.sh "$(OBJDUMP)" "$(NM)" "$@"
+diff --git a/arch/Kconfig b/arch/Kconfig
+index 8af374ea1adc..a1538927c8c1 100644
+--- a/arch/Kconfig
++++ b/arch/Kconfig
+@@ -1684,4 +1684,10 @@ config CC_HAS_SANE_FUNCTION_ALIGNMENT
+ config ARCH_NEED_CMPXCHG_1_EMU
+ 	bool
+ 
++config ARCH_WANTS_PRE_LINK_VMLINUX
++	bool
++	help
++	  An architecture can select this if it provides arch/<arch>/tools/Makefile
++	  with .arch.vmlinux.o target to be linked into vmlinux.
++
+ endmenu
+diff --git a/scripts/Makefile.vmlinux b/scripts/Makefile.vmlinux
+index 1284f05555b9..dddad554e912 100644
+--- a/scripts/Makefile.vmlinux
++++ b/scripts/Makefile.vmlinux
+@@ -22,6 +22,13 @@ targets += .vmlinux.export.o
+ vmlinux: .vmlinux.export.o
  endif
  
-+quiet_cmd_ftrace_check = CHKFTRC $@
-+      cmd_ftrace_check = $(CONFIG_SHELL) $(srctree)/arch/powerpc/tools/ftrace_check.sh "$(NM)" "$@"
++ifdef CONFIG_ARCH_WANTS_PRE_LINK_VMLINUX
++vmlinux: arch/$(SRCARCH)/tools/vmlinux.arch.o
 +
- # `@true` prevents complaint when there is nothing to be done
- 
- vmlinux: FORCE
-@@ -34,6 +37,11 @@ endif
- ifdef CONFIG_RELOCATABLE
- 	$(call if_changed,relocs_check)
- endif
-+ifdef CONFIG_FUNCTION_TRACER
-+ifndef CONFIG_PPC64_ELF_ABI_V1
-+	$(call cmd,ftrace_check)
++arch/$(SRCARCH)/tools/vmlinux.arch.o: vmlinux.o FORCE
++	$(Q)$(MAKE) $(build)=arch/$(SRCARCH)/tools $@
 +endif
-+endif
++
+ ARCH_POSTLINK := $(wildcard $(srctree)/arch/$(SRCARCH)/Makefile.postlink)
  
- clean:
- 	rm -f .tmp_symbols.txt
-diff --git a/arch/powerpc/tools/ftrace_check.sh b/arch/powerpc/tools/ftrace_check.sh
-new file mode 100755
-index 000000000000..405e7e306617
---- /dev/null
-+++ b/arch/powerpc/tools/ftrace_check.sh
-@@ -0,0 +1,50 @@
-+#!/bin/bash
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+#
-+# This script checks vmlinux to ensure that all functions can call ftrace_caller() either directly,
-+# or through the stub, ftrace_tramp_text, at the end of kernel text.
-+
-+# Error out if any command fails
-+set -e
-+
-+# Allow for verbose output
-+if [ "$V" = "1" ]; then
-+	set -x
+ # Final link of vmlinux with optional arch pass after final link
+diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
+index a9b3f34a78d2..7acf4e31e51c 100755
+--- a/scripts/link-vmlinux.sh
++++ b/scripts/link-vmlinux.sh
+@@ -100,7 +100,7 @@ vmlinux_link()
+ 	${ld} ${ldflags} -o ${output}					\
+ 		${wl}--whole-archive ${objs} ${wl}--no-whole-archive	\
+ 		${wl}--start-group ${libs} ${wl}--end-group		\
+-		${kallsymso} ${btf_vmlinux_bin_o} ${ldlibs}
++		${kallsymso} ${btf_vmlinux_bin_o} ${arch_vmlinux_o} ${ldlibs}
+ }
+ 
+ # generate .BTF typeinfo from DWARF debuginfo
+@@ -198,6 +198,11 @@ fi
+ 
+ ${MAKE} -f "${srctree}/scripts/Makefile.build" obj=init init/version-timestamp.o
+ 
++arch_vmlinux_o=""
++if is_enabled CONFIG_ARCH_WANTS_PRE_LINK_VMLINUX; then
++	arch_vmlinux_o=arch/${SRCARCH}/tools/vmlinux.arch.o
 +fi
 +
-+if [ $# -lt 2 ]; then
-+	echo "$0 [path to nm] [path to vmlinux]" 1>&2
-+	exit 1
-+fi
-+
-+# Have Kbuild supply the path to nm so we handle cross compilation.
-+nm="$1"
-+vmlinux="$2"
-+
-+stext_addr=$($nm "$vmlinux" | grep -e " [TA] _stext$" | \
-+	cut -d' ' -f1 | tr '[:lower:]' '[:upper:]')
-+ftrace_caller_addr=$($nm "$vmlinux" | grep -e " T ftrace_caller$" | \
-+	cut -d' ' -f1 | tr '[:lower:]' '[:upper:]')
-+ftrace_tramp_addr=$($nm "$vmlinux" | grep -e " T ftrace_tramp_text$" | \
-+	cut -d' ' -f1 | tr '[:lower:]' '[:upper:]')
-+
-+ftrace_caller_offset=$(echo "ibase=16;$ftrace_caller_addr - $stext_addr" | bc)
-+ftrace_tramp_offset=$(echo "ibase=16;$ftrace_tramp_addr - $ftrace_caller_addr" | bc)
-+sz_32m=$(printf "%d" 0x2000000)
-+sz_64m=$(printf "%d" 0x4000000)
-+
-+# ftrace_caller - _stext < 32M
-+if [ "$ftrace_caller_offset" -ge "$sz_32m" ]; then
-+	echo "ERROR: ftrace_caller (0x$ftrace_caller_addr) is beyond 32MiB of _stext" 1>&2
-+	echo "ERROR: consider disabling CONFIG_FUNCTION_TRACER, or reducing the size \
-+		of kernel text" 1>&2
-+	exit 1
-+fi
-+
-+# ftrace_tramp_text - ftrace_caller < 64M
-+if [ "$ftrace_tramp_offset" -ge "$sz_64m" ]; then
-+	echo "ERROR: kernel text extends beyond 64MiB from ftrace_caller" 1>&2
-+	echo "ERROR: consider disabling CONFIG_FUNCTION_TRACER, or reducing the size \
-+		of kernel text" 1>&2
-+	exit 1
-+fi
+ btf_vmlinux_bin_o=
+ kallsymso=
+ strip_debug=
 -- 
 2.47.0
 
