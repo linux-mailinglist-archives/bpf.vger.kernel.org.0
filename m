@@ -1,127 +1,276 @@
-Return-Path: <bpf+bounces-42353-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42355-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC0AC9A31C6
-	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 02:46:38 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4EA939A3261
+	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 04:03:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A04C91F249CC
-	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 00:46:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F30A4282C60
+	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 02:03:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CB89481A3;
-	Fri, 18 Oct 2024 00:46:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 266C8126C0F;
+	Fri, 18 Oct 2024 02:03:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Bn4GOA3b"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UFhY/NeF"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
+Received: from mail-vk1-f179.google.com (mail-vk1-f179.google.com [209.85.221.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 857B62A1D1;
-	Fri, 18 Oct 2024 00:46:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0763F77102
+	for <bpf@vger.kernel.org>; Fri, 18 Oct 2024 02:03:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729212388; cv=none; b=uUNmRdeppmVorp0ZHwJskEutWqCyK+ts7WWSG2DyOSgXkhIshQNT8xDggsrzlRZ+tQ689Xm2CfaeWZrD6E/e0Q1XXURSHOQFkET39tC37l6J/2elLxLYpUSN+D22Z4PaERpKwfWVNsPwTffSDeJe6OgqkqrhDasY3KQSAfrMWPY=
+	t=1729217019; cv=none; b=psB6s4oIlwSYVd8IO4tvD+xDgJNOWwRfcHfYvVDBXE/sDxe8RsaaKUI9YyNpCCtNplbLe0fHpZWb2/oNUmDZY3iiGyJTptjSg1oVaRo3JYV3ZftmE0vaUxs9Ddrp1O2HR5MtNGKLvNAzosn25Rxs11MKz84U7xYrG7rACS5xPpE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729212388; c=relaxed/simple;
-	bh=A9W5BXqJLzSc6wqaDftNTLmM/XjPL1T+K9gE4lzY9eg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=O8gtDiOliKKlFQXAg+lqVPz6xLDxev1IGy5lI6j6bUTKrzCZ2zV/4+cGChbiTS64NU6Rl99eE6mQdHk3ExBjftYdaSKWampbL/RQaxhU9adHLGxj8YTjW/UKzR5Jjauto8N1AgLH6U5HD8oTbdzmpqhgxFJgTott00kk0/NpGm4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Bn4GOA3b; arc=none smtp.client-ip=209.85.215.172
+	s=arc-20240116; t=1729217019; c=relaxed/simple;
+	bh=9ZKr7571ou1ALsL1SkO1LyXU+FSr2HZ0/pQWGz73Rak=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=gzQBYrR42+3B9S+Dx9UGYXmjHQbqr2TBcx3mh3ACeaZHf9R9fscL0DC0tFPLe6ODdCX/0x4jPULSIaInvyd0D0k94VnWifA4LHb2dJCIxDbFLh6NbSZ/Zb4O87y1dgAcWJtSUTfLp8TX5IvQLeg1e7VZZFizDAL+dhnbXcTYKM0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UFhY/NeF; arc=none smtp.client-ip=209.85.221.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-7ea784aea63so909546a12.3;
-        Thu, 17 Oct 2024 17:46:27 -0700 (PDT)
+Received: by mail-vk1-f179.google.com with SMTP id 71dfb90a1353d-50d431b0ae2so1510597e0c.1
+        for <bpf@vger.kernel.org>; Thu, 17 Oct 2024 19:03:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729212387; x=1729817187; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=RVunuq3gbvj+AkSw28J9IAD2E6K6krV4ZjRY2oiq+QY=;
-        b=Bn4GOA3bJHOvp7OuqZK5yyXMrwE37cypyWQ06BXwWvKRfSKaX6Xe8ag9CjjucE2Ylx
-         HLfQ297Wz/3BknAkP/T7dqM9qUVDafjvf/x/KvWUUWbm2QckRl/NZG0f2OYMMhlTjDWp
-         3qYy3lacBBarJmg295j/BwOVPi4ujOtnx6qPwR/tffSDJYYg+hhUzYlUwBqXNVJhlmsB
-         +ZNY8/884aM1Zi3YSEJ463Z9SBLGWYNwJfnXS0q5pO4wMH/bwGa0Br8mdmdx7hKLxJvC
-         Ri/5qJq5Vo1ZihR/AANC7vp/ABB72H2A22/GF9owJZF06q+u6lO4kEpYRQKuU7pTu6Hu
-         w+nA==
+        d=gmail.com; s=20230601; t=1729217016; x=1729821816; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=qadj/PoxGY9jPkk3rNveWX3RfIa4v+WszePvR5KBCSw=;
+        b=UFhY/NeFJ3j3qGvDiK9kZNAeWEOtx/KLHQgzh06veauzZJog52kWOj97Wwd2R+9WXk
+         NTqLum7NZc3etKDDC/snAsn6qDwYD9guU41tJhG9Rm2fQYUTwu364+AZ8y1WC+NnQi+p
+         bKl14tn16js2SsS6y+Ss3J79OSrq5fHmS6JMn1wlCUsmbhM1qF4bfjimK5khNUcD7g46
+         HdKpckz3O0oaZ7HwE+3RiCRahlNGvxQuZIYEBh0X9AzfSmlMsWDwczJdL3mPn/YHSWcY
+         kjKIwe8QGvs5q2694/MFlKOQnNtffY1kXIufpICHqBAYeb2QkthlcvlkKyPnjMnbebHp
+         PnyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729212387; x=1729817187;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RVunuq3gbvj+AkSw28J9IAD2E6K6krV4ZjRY2oiq+QY=;
-        b=mk3voFCHNBqCD+aAHjzDWz/PmatIQhzvxSrIexw340aKB+yeF4e1740f7qsSR2WIoG
-         V+76wsgU/L0qI+Nq/WadnpCVe5p9OpKcKX2t8nH9zkD3ZHBpJ4hZNIPDwF8zZSX0R1+n
-         ke0pBOSFATE+hQaauU8uJvaOGN+ppxL+4kt2TaIFI1K1OVIFGio6KQ+1AjbGFhkPq9MG
-         DsC11UyjbxZK7atsHObWI9BnJTExJyVuYN9jaVHy8vunBoVvSynSyBL4JmsjaL4St04Y
-         Ugv59bUkz59QVpAkU39sFcjCFqy86uoHKLM8s3VttQedQ4pSCf3g0izY8OFuq7ySRocr
-         5VPw==
-X-Forwarded-Encrypted: i=1; AJvYcCUGrNUD7dYrsJ1ATSFlgvG549GSWMr0RLNYHUxSzl6iagvhUrt5RN5mJTyWp41e9FdzNjrOEJNBa+r0@vger.kernel.org, AJvYcCVSZFVc4N7kkWkyc+CHHU43yAV1quyfFIeOyou8o2cBJzWpWVYuWortRmpaXWB0VZMwt7zr5UQ/THAXMZ8/@vger.kernel.org, AJvYcCWdLBdoKQHPyE/Er52MyRYT2GrLlrjs7Ijbb5qdDu6FruhmNZ3B7arR9rJPw4FJp86tX14=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw1+7TkMMeHKPztVjA52i8gLxi8Nb4TQ4AJHDlwY4OZCgCB638x
-	lxS46uzz1uuROGWbp2XtD9QgVp4b97yzueoixDnS5pk57eIwaDJJLeF6zWWUCzo=
-X-Google-Smtp-Source: AGHT+IHPg8DRZc4blkJt6M4jB9p7QkQPgZeoQK6vx6eapZG8GWX01nJC76zgSI/PBpyyXXHR6o9AUA==
-X-Received: by 2002:a05:6a21:1693:b0:1cf:4ad8:83b9 with SMTP id adf61e73a8af0-1d92c5abf0dmr1004985637.43.1729212386730;
-        Thu, 17 Oct 2024 17:46:26 -0700 (PDT)
-Received: from fedora ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-71ea3459abesm271817b3a.168.2024.10.17.17.46.20
+        d=1e100.net; s=20230601; t=1729217016; x=1729821816;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qadj/PoxGY9jPkk3rNveWX3RfIa4v+WszePvR5KBCSw=;
+        b=wkurSlPuDNhLDJT985HATTe8cKxOLNsqsr1VkElhHOCwnM6O1cUaepU0e3Yx+FEBgS
+         dosCgDMAzRtytA9KKfPq9ffjuzITv4C+EIKGXwFdjJgt8/iNd/PPiEJGHvU54YIaLJiI
+         tdDz6zE4oyrZq2DBHLgn5Z/BubI8LOdZYgdb8O/AVidDTA5N6lVfFrm7dP7OoWv5+3lS
+         Lqxv1aUSRsRhpBUQ9cHBvm8kl9OivQWaw2Ief70SSaqeVvrwL5dbdz5d+5GD1LxCNa+K
+         dQoEQeZZhc3H0uFPr+ucl0TVCia3w+bsVIhN+4sNRjWQpCCug411+9+vndPai4BPfVlm
+         Szbw==
+X-Gm-Message-State: AOJu0YxXmlPqW/61vCHb675qMeMBC0rgBakP9meJ9xlZ1PgWaCrPH9aM
+	kKZsm3ILf4zlk3tcJGkneM7WAbEyHtlEKYcPG+jF9wCflKWxQRdrArwb9w==
+X-Google-Smtp-Source: AGHT+IHClEgOjdEDFnkni3lBrfkoFkl2cNd4pWlmbhpEgSG5N3yb+TJvcbvq2+hVAfIaeVyIVE1hmQ==
+X-Received: by 2002:a17:903:185:b0:20b:831f:e8f7 with SMTP id d9443c01a7336-20d474225f4mr83025235ad.11.1729217001065;
+        Thu, 17 Oct 2024 19:03:21 -0700 (PDT)
+Received: from honey-badger.. ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20e5a915348sm2781285ad.283.2024.10.17.19.03.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Oct 2024 17:46:26 -0700 (PDT)
-Date: Fri, 18 Oct 2024 00:46:18 +0000
-From: Hangbin Liu <liuhangbin@gmail.com>
-To: Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
-Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Jiri Pirko <jiri@resnulli.us>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Lorenzo Bianconi <lorenzo@kernel.org>,
-	Andrii Nakryiko <andriin@fb.com>, Jussi Maki <joamaki@gmail.com>,
-	Jay Vosburgh <jv@jvosburgh.net>,
-	Andy Gospodarek <andy@greyhouse.net>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Andrew Lunn <andrew+netdev@lunn.ch>, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	Nikolay Aleksandrov <razor@blackwall.org>
-Subject: Re: [PATCHv2 net-next 2/3] bonding: use correct return value
-Message-ID: <ZxGv2s4bl5VQV4g-@fedora>
-References: <20241017020638.6905-1-liuhangbin@gmail.com>
- <20241017020638.6905-3-liuhangbin@gmail.com>
- <878qumzszs.fsf@toke.dk>
+        Thu, 17 Oct 2024 19:03:20 -0700 (PDT)
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: bpf@vger.kernel.org,
+	ast@kernel.org
+Cc: andrii@kernel.org,
+	daniel@iogearbox.net,
+	martin.lau@linux.dev,
+	kernel-team@fb.com,
+	yonghong.song@linux.dev,
+	Eduard Zingerman <eddyz87@gmail.com>
+Subject: [PATCH bpf-next v1 1/2] bpf: force checkpoint when jmp history is too long
+Date: Thu, 17 Oct 2024 19:03:06 -0700
+Message-ID: <20241018020307.1766906-1-eddyz87@gmail.com>
+X-Mailer: git-send-email 2.46.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <878qumzszs.fsf@toke.dk>
 
-On Thu, Oct 17, 2024 at 04:47:19PM +0200, Toke Høiland-Jørgensen wrote:
-> > diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
-> > index f0f76b6ac8be..6887a867fe8b 100644
-> > --- a/drivers/net/bonding/bond_main.c
-> > +++ b/drivers/net/bonding/bond_main.c
-> > @@ -5699,7 +5699,7 @@ static int bond_xdp_set(struct net_device *dev, struct bpf_prog *prog,
-> >  		if (dev_xdp_prog_count(slave_dev) > 0) {
-> >  			SLAVE_NL_ERR(dev, slave_dev, extack,
-> >  				     "Slave has XDP program loaded, please unload before enslaving");
-> > -			err = -EOPNOTSUPP;
-> > +			err = -EEXIST;
-> 
-> Hmm, this has been UAPI since kernel 5.15, so can we really change it
-> now? What's the purpose of changing it, anyway?
+A specifically crafted program might trick verifier into growing very
+long jump history within a single bpf_verifier_state instance.
+Very long jump history makes mark_chain_precision() unreasonably slow,
+especially in case if verifier processes a loop.
 
-I just think it should return EXIST when the error is "Slave has XDP program
-loaded". No special reason. If all others think we should not change it, I
-can drop this patch.
+Mitigate this by forcing new state in is_state_visited() in case if
+current state's jump history is too long.
 
-Thanks
-Hangbin
+Use same constant as in `skip_inf_loop_check`, but multiply it by
+arbitrarily chosen value 2 to account for jump history containing not
+only information about jumps, but also information about stack access.
+
+For an example of problematic program consider the code below,
+w/o this patch the example is processed by verifier for ~15 minutes,
+before failing to allocate big-enough chunk for jmp_history.
+
+    0: r7 = *(u16 *)(r1 +0);"
+    1: r7 += 0x1ab064b9;"
+    2: if r7 & 0x702000 goto 1b;
+    3: r7 &= 0x1ee60e;"
+    4: r7 += r1;"
+    5: if r7 s> 0x37d2 goto +0;"
+    6: r0 = 0;"
+    7: exit;"
+
+Perf profiling shows that most of the time is spent in
+mark_chain_precision() ~95%.
+
+The easiest way to explain why this program causes problems is to
+apply the following patch:
+
+    diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+    index 0c216e71cec7..4b4823961abe 100644
+    \--- a/include/linux/bpf.h
+    \+++ b/include/linux/bpf.h
+    \@@ -1926,7 +1926,7 @@ struct bpf_array {
+            };
+     };
+
+    -#define BPF_COMPLEXITY_LIMIT_INSNS      1000000 /* yes. 1M insns */
+    +#define BPF_COMPLEXITY_LIMIT_INSNS      256 /* yes. 1M insns */
+     #define MAX_TAIL_CALL_CNT 33
+
+     /* Maximum number of loops for bpf_loop and bpf_iter_num.
+    diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+    index f514247ba8ba..75e88be3bb3e 100644
+    \--- a/kernel/bpf/verifier.c
+    \+++ b/kernel/bpf/verifier.c
+    \@@ -18024,8 +18024,13 @@ static int is_state_visited(struct bpf_verifier_env *env, int insn_idx)
+     skip_inf_loop_check:
+                            if (!force_new_state &&
+                                env->jmps_processed - env->prev_jmps_processed < 20 &&
+    -                           env->insn_processed - env->prev_insn_processed < 100)
+    +                           env->insn_processed - env->prev_insn_processed < 100) {
+    +                               verbose(env, "is_state_visited: suppressing checkpoint at %d, %d jmps processed, cur->jmp_history_cnt is %d\n",
+    +                                       env->insn_idx,
+    +                                       env->jmps_processed - env->prev_jmps_processed,
+    +                                       cur->jmp_history_cnt);
+                                    add_new_state = false;
+    +                       }
+                            goto miss;
+                    }
+                    /* If sl->state is a part of a loop and this loop's entry is a part of
+    \@@ -18142,6 +18147,9 @@ static int is_state_visited(struct bpf_verifier_env *env, int insn_idx)
+            if (!add_new_state)
+                    return 0;
+
+    +       verbose(env, "is_state_visited: new checkpoint at %d, resetting env->jmps_processed\n",
+    +               env->insn_idx);
+    +
+            /* There were no equivalent states, remember the current one.
+             * Technically the current state is not proven to be safe yet,
+             * but it will either reach outer most bpf_exit (which means it's safe)
+
+And observe verification log:
+
+    ...
+    is_state_visited: new checkpoint at 5, resetting env->jmps_processed
+    5: R1=ctx() R7=ctx(...)
+    5: (65) if r7 s> 0x37d2 goto pc+0     ; R7=ctx(...)
+    6: (b7) r0 = 0                        ; R0_w=0
+    7: (95) exit
+
+    from 5 to 6: R1=ctx() R7=ctx(...) R10=fp0
+    6: R1=ctx() R7=ctx(...) R10=fp0
+    6: (b7) r0 = 0                        ; R0_w=0
+    7: (95) exit
+    is_state_visited: suppressing checkpoint at 1, 3 jmps processed, cur->jmp_history_cnt is 74
+
+    from 2 to 1: R1=ctx() R7_w=scalar(...) R10=fp0
+    1: R1=ctx() R7_w=scalar(...) R10=fp0
+    1: (07) r7 += 447767737
+    is_state_visited: suppressing checkpoint at 2, 3 jmps processed, cur->jmp_history_cnt is 75
+    2: R7_w=scalar(...)
+    2: (45) if r7 & 0x702000 goto pc-2
+    ... mark_precise 152 steps for r7 ...
+    2: R7_w=scalar(...)
+    is_state_visited: suppressing checkpoint at 1, 4 jmps processed, cur->jmp_history_cnt is 75
+    1: (07) r7 += 447767737
+    is_state_visited: suppressing checkpoint at 2, 4 jmps processed, cur->jmp_history_cnt is 76
+    2: R7_w=scalar(...)
+    2: (45) if r7 & 0x702000 goto pc-2
+    ...
+    BPF program is too large. Processed 257 insn
+
+The log output shows that checkpoint at label (1) is never created,
+because it is suppressed by `skip_inf_loop_check` logic:
+a. When 'if' at (2) is processed it pushes a state with insn_idx (1)
+   onto stack and proceeds to (3);
+b. At (5) checkpoint is created, and this resets
+   env->{jmps,insns}_processed.
+c. Verification proceeds and reaches `exit`;
+d. State saved at step (a) is popped from stack and is_state_visited()
+   considers if checkpoint needs to be added, but because
+   env->{jmps,insns}_processed had been just reset at step (b)
+   the `skip_inf_loop_check` logic forces `add_new_state` to false.
+e. Verifier proceeds with current state, which slowly accumulates
+   more and more entries in the jump history.
+
+The accumulation of entries in the jump history is a problem because
+of two factors:
+- it eventually exhausts memory available for kmalloc() allocation;
+- mark_chain_precision() traverses the jump history of a state,
+  meaning that if `r7` is marked precise, verifier would iterate
+  ever growing jump history until parent state boundary is reached.
+
+(note: the log also shows a REG INVARIANTS VIOLATION warning
+       upon jset processing, but that's another bug to fix).
+
+With this patch applied, the example above is rejected by verifier
+under 1s of time, reaching 1M instructions limit.
+
+The program is a simplified reproducer from syzbot report [1].
+Previous discussion could be found at [2].
+The patch does not cause any changes in verification performance,
+when tested on selftests from veristat.cfg and cilium programs taken
+from [3].
+
+[1] https://lore.kernel.org/bpf/670429f6.050a0220.49194.0517.GAE@google.com/
+[2] https://lore.kernel.org/bpf/20241009021254.2805446-1-eddyz87@gmail.com/
+[3] https://github.com/anakryiko/cilium
+
+Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+---
+ kernel/bpf/verifier.c | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index f514247ba8ba..f64c831a9278 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -17873,13 +17873,23 @@ static bool iter_active_depths_differ(struct bpf_verifier_state *old, struct bpf
+ 	return false;
+ }
+ 
++#define MAX_JMPS_PER_STATE 20
++
+ static int is_state_visited(struct bpf_verifier_env *env, int insn_idx)
+ {
+ 	struct bpf_verifier_state_list *new_sl;
+ 	struct bpf_verifier_state_list *sl, **pprev;
+ 	struct bpf_verifier_state *cur = env->cur_state, *new, *loop_entry;
+ 	int i, j, n, err, states_cnt = 0;
+-	bool force_new_state = env->test_state_freq || is_force_checkpoint(env, insn_idx);
++	bool force_new_state = env->test_state_freq || is_force_checkpoint(env, insn_idx) ||
++			       /* - Long jmp history hinders mark_chain_precision performance,
++				*   so force new state if jmp history of current state exceeds
++				*   a threshold.
++				* - Jmp history records not only jumps, but also stack access,
++				*   so keep this constant 2x times the limit imposed on
++				*   env->jmps_processed for loop cases (see skip_inf_loop_check).
++				*/
++			       cur->jmp_history_cnt > MAX_JMPS_PER_STATE * 2;
+ 	bool add_new_state = force_new_state;
+ 	bool force_exact;
+ 
+@@ -18023,7 +18033,7 @@ static int is_state_visited(struct bpf_verifier_env *env, int insn_idx)
+ 			 */
+ skip_inf_loop_check:
+ 			if (!force_new_state &&
+-			    env->jmps_processed - env->prev_jmps_processed < 20 &&
++			    env->jmps_processed - env->prev_jmps_processed < MAX_JMPS_PER_STATE &&
+ 			    env->insn_processed - env->prev_insn_processed < 100)
+ 				add_new_state = false;
+ 			goto miss;
+-- 
+2.46.2
+
 
