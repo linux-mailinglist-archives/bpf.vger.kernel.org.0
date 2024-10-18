@@ -1,223 +1,262 @@
-Return-Path: <bpf+bounces-42458-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42457-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C57C09A45C9
-	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 20:24:43 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 489E19A45C8
+	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 20:24:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E70C41C23DF7
-	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 18:24:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC4D91F24BE5
+	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 18:24:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D631209687;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F86C208D9E;
 	Fri, 18 Oct 2024 18:22:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ISWYdl7x"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W+5AuMFE"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F804208967
-	for <bpf@vger.kernel.org>; Fri, 18 Oct 2024 18:22:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E049208983;
+	Fri, 18 Oct 2024 18:22:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729275737; cv=none; b=Vpc0Rf5NNQzD5mve4CSXGdYtjJrqL++LVO5ju0izSrTtUOmNmPMB6k0CCUCqWkW+Dpx+13wpzBzGVbST0PZnYzep2azveFjEz0y1V+wPVXmOgBYx6xUXc6FJOsMI67Nj6n/w895F0XFNgZz2azN4BdVhOzCwxPgqlwGtoaSNerY=
+	t=1729275737; cv=none; b=MStIJ9iVnTBImbAWjt4kWdJLn17d6X/0mIy0AwjYd21elRMF+xi4q+mp02SPsuDG2oGdw5aUz1emalYUE88xOWtSCISM11idg61u+U6boCkEfItGKqGbl3I7kySx26h7+TyVZ+lgGiLpYL4POIsaCTJa90BPdf5+7ItjDs3M0uk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1729275737; c=relaxed/simple;
-	bh=fsaUa9G1opCeUihrjrdTRgCV45Ou5JI4JRd24hmNsBg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=A6damkJtowbVLreTyE627M+Y7Blq/KXcWEg9vaA5ICc8dWSeMl5MNw2jsJApKwutvdfIjVuuCcBPLYmyGWuvhSXz6JDxnAg3GYmbYF+EFCp+ZF/C1E5FVo5LUexxGckFhiKBxTlza9ngnfytEFN+SgZS9FgNNOl9uk1vzByOj6o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ISWYdl7x; arc=none smtp.client-ip=91.218.175.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <b3655d46-5c42-407e-adc1-b17865432e45@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1729275733;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=aX3NnUn3UeH6nxlGLDibU44GfunoKuAgfBARM5Nx6YQ=;
-	b=ISWYdl7xe2RCvWWdBZlzAuQHys34NaB91RlKHoJSftbAhIcBUgKd3W1Au95yy4fSCqFl56
-	K51phyfbeZytnF7akWTGEJj2x2Nap8e4ON+XOBd1ZPhR+9Jgtj+RkSC4ZcRnI+vedNFPgD
-	HT+31mMysD4cFpNox6amsUooFVTqBKI=
-Date: Fri, 18 Oct 2024 11:22:00 -0700
+	bh=xEsQ6C7sDwT1xSNrzTyJArqfAtWkDfrhY9mcFXWxDOU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=AOgfwOuCv5ksF4zuh2z4hju30ZhABJQ0jPHtdRTk4TLXJ6YFbCDbk7S84PQU56N8JUxo9atHnf9gh8+gvNN+SEc869cb783hYYKcIW30KZInN0buR+5oIEAEPFfPxEsApsi73JRTC0moMflvpnm06qRMrbfkI+r2MiUctVPyHbU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=W+5AuMFE; arc=none smtp.client-ip=209.85.215.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-7ea8c4ce232so2224719a12.0;
+        Fri, 18 Oct 2024 11:22:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1729275734; x=1729880534; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=szlpOYbQpLKnuUX8XB/uf3D+PzZu7s18p1D68tVqpeI=;
+        b=W+5AuMFE+XIeoeukkIsduuVratUi7PsiEploXXSvqoVTC9QChukd0ne1KMo4t9Wg+E
+         Vq29I2Bh/Gh+XPyZQMWo2QZ0T7CT0qcNg1py1b2UczE39TgZvAW9+5DzYbt88TgEPJ1K
+         8tC3HHpdB3zbebQ4qUvFxsQfGkRrb01+0GHMXV5jfiJMCrdEAs3+0ACmJ2RJzjbVH2CL
+         Gzl/7X4Cd7WUltGqa2ZMvmtuO5s8u9EyAcXAQ8VPO0WUsNr7rqEq4NNEETnI6dSlpt4+
+         AlpDNb4HopSvAxxAHAs1JnfBFAEtyXeELSt0CpJCUueL+jRRgwckQ/Mse43C7zlbeYyX
+         Rbig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1729275734; x=1729880534;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=szlpOYbQpLKnuUX8XB/uf3D+PzZu7s18p1D68tVqpeI=;
+        b=EDE+oZn7G9wRF3OEe9cHummlrMB8ZI+a1YlsC8LFKbNi56lzE8Q4dGUtlOAv5Mt7x3
+         f/1CLg/WCFYcpXZrVe3r2mUMp1VlwuDyI93eLHE3J5Dt97ZvjuT6Kg0XexMqxKdQhWJ7
+         8O7YjZXZSnQrGl/8Vty75u0tn5rahUEHWmbVt2f3+sGEunGXazyLRLULNEGT9uDZhUPz
+         ydRxqAgG3fA7X57BuE5MN8wGah+3hyukzVG4vfndoEx81ZALS9vjwmtcUdibDSKHP13m
+         o10axk2CqifufQAvAw+ts6tb68Y/VDZjdDywhyQczibM5zBsPWapGbX/5KPg1JUzd18J
+         a4WQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWLiKo63geon7kubSGbqCcUCfrEVREJaE06nxJLqenP9tiZFV9VW8HWN9PHHoeQ8K7/caM=@vger.kernel.org, AJvYcCWUQ0GALApiqZ9U+whFB0ESy0GCZvd7XcGewKdBHPrgzWKOJXeAjVqxL2DkZnN5QAN/1tOA7L+Ilnf74jvB@vger.kernel.org, AJvYcCWd5UI+7FM/qh9mp1uW+oqkYa1J3GOoSuow2XTA5iznJdwK7tZD5Z1305qMJPFkUCNksp9V/ZBPiXoQMUrzkOH1QKZd@vger.kernel.org
+X-Gm-Message-State: AOJu0YxM1rY/o14u7UnXvT5flYkGHizBGvFXdjJw0W0KezwUvdp7hklb
+	xgeRrJOb1k56+V0dTFBHqImTn6u9+AI1T1yydUJMU+dQ1RlKOBvc61GEf/fpkhHoUMzNr0RN5nF
+	yr8v3iq/vZ1qq/BiWV/HqmBAa7T/rs42j
+X-Google-Smtp-Source: AGHT+IFq+r8vQIWblVMtI2Uzay+Y6h/gUXSeCY1ZG4DppGwL3dp5HBc3n2goO/ortNvz18nkx8sM4k+tCyvLE+El3jY=
+X-Received: by 2002:a05:6a21:31c8:b0:1d4:becc:6eeb with SMTP id
+ adf61e73a8af0-1d92c5990femr4311881637.31.1729275733967; Fri, 18 Oct 2024
+ 11:22:13 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next 1/2] bpf: Add open coded version of kmem_cache
- iterator
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
- bpf@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
- Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
- David Rientjes <rientjes@google.com>, Joonsoo Kim <iamjoonsoo.kim@lge.com>,
- Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <roman.gushchin@linux.dev>,
- Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm@kvack.org,
- Arnaldo Carvalho de Melo <acme@kernel.org>, Kees Cook <kees@kernel.org>
-References: <20241017080604.541872-1-namhyung@kernel.org>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-Content-Language: en-US
-In-Reply-To: <20241017080604.541872-1-namhyung@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <20241008002556.2332835-1-andrii@kernel.org> <20241008002556.2332835-2-andrii@kernel.org>
+ <20241018082605.GD17263@noisy.programming.kicks-ass.net>
+In-Reply-To: <20241018082605.GD17263@noisy.programming.kicks-ass.net>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Fri, 18 Oct 2024 11:22:00 -0700
+Message-ID: <CAEf4Bzb3xjTH7Qh8c_j95jEr4fNxBgG11a0sCe4hoF9chwUtYg@mail.gmail.com>
+Subject: Re: [PATCH v2 tip/perf/core 1/2] uprobes: allow put_uprobe() from
+ non-sleepable softirq context
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org, oleg@redhat.com, 
+	rostedt@goodmis.org, mhiramat@kernel.org, mingo@kernel.org, 
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, jolsa@kernel.org, 
+	paulmck@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 10/17/24 1:06 AM, Namhyung Kim wrote:
-> Add a new open coded iterator for kmem_cache which can be called from a
-> BPF program like below.  It doesn't take any argument and traverses all
-> kmem_cache entries.
-> 
->    struct kmem_cache *pos;
-> 
->    bpf_for_each(kmem_cache, pos) {
->        ...
->    }
-> 
-> As it needs to grab slab_mutex, it should be called from sleepable BPF
-> programs only.
-> 
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+On Fri, Oct 18, 2024 at 1:26=E2=80=AFAM Peter Zijlstra <peterz@infradead.or=
+g> wrote:
+>
+> On Mon, Oct 07, 2024 at 05:25:55PM -0700, Andrii Nakryiko wrote:
+> > Currently put_uprobe() might trigger mutex_lock()/mutex_unlock(), which
+> > makes it unsuitable to be called from more restricted context like soft=
+irq.
+>
+> This is delayed_uprobe_lock, right?
+
+Not just delated_uprobe_lock, there is also uprobes_treelock (I forgot
+to update the commit message to mention that). Oleg had concerns (see
+[0]) with that being taken from the timer thread, so I just moved all
+of the locking into deferred work callback.
+
+  [0] https://lore.kernel.org/linux-trace-kernel/20240915144910.GA27726@red=
+hat.com/
+
+>
+> So can't we do something like so instead?
+
+I'll need to look at this more thoroughly (and hopefully Oleg will get
+a chance as well), dropping lock from delayed_ref_ctr_inc() is a bit
+scary, but might be ok.
+
+But generally speaking, what's your concern with doing deferred work
+in put_uprobe()? It's not a hot path by any means, worst case we'll
+have maybe thousands of uprobes attached/detached.
+
+>
 > ---
->   kernel/bpf/helpers.c         |  3 ++
->   kernel/bpf/kmem_cache_iter.c | 87 ++++++++++++++++++++++++++++++++++++
->   2 files changed, 90 insertions(+)
-> 
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index 073e6f04f4d765ff..d1dfa4f335577914 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -3111,6 +3111,9 @@ BTF_ID_FLAGS(func, bpf_iter_bits_next, KF_ITER_NEXT | KF_RET_NULL)
->   BTF_ID_FLAGS(func, bpf_iter_bits_destroy, KF_ITER_DESTROY)
->   BTF_ID_FLAGS(func, bpf_copy_from_user_str, KF_SLEEPABLE)
->   BTF_ID_FLAGS(func, bpf_get_kmem_cache)
-> +BTF_ID_FLAGS(func, bpf_iter_kmem_cache_new, KF_ITER_NEW | KF_SLEEPABLE)
-> +BTF_ID_FLAGS(func, bpf_iter_kmem_cache_next, KF_ITER_NEXT | KF_RET_NULL | KF_SLEEPABLE)
-> +BTF_ID_FLAGS(func, bpf_iter_kmem_cache_destroy, KF_ITER_DESTROY | KF_SLEEPABLE)
->   BTF_KFUNCS_END(common_btf_ids)
->   
->   static const struct btf_kfunc_id_set common_kfunc_set = {
-> diff --git a/kernel/bpf/kmem_cache_iter.c b/kernel/bpf/kmem_cache_iter.c
-> index ebc101d7da51b57c..31ddaf452b20a458 100644
-> --- a/kernel/bpf/kmem_cache_iter.c
-> +++ b/kernel/bpf/kmem_cache_iter.c
-> @@ -145,6 +145,93 @@ static const struct bpf_iter_seq_info kmem_cache_iter_seq_info = {
->   	.seq_ops		= &kmem_cache_iter_seq_ops,
->   };
->   
-> +/* open-coded version */
-> +struct bpf_iter_kmem_cache {
-> +	__u64 __opaque[1];
-> +} __attribute__((aligned(8)));
+>  kernel/events/uprobes.c | 40 +++++++++++++++++++++++-----------------
+>  1 file changed, 23 insertions(+), 17 deletions(-)
+>
+> diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+> index 2a0059464383..d17a9046de35 100644
+> --- a/kernel/events/uprobes.c
+> +++ b/kernel/events/uprobes.c
+> @@ -83,9 +83,11 @@ struct delayed_uprobe {
+>         struct list_head list;
+>         struct uprobe *uprobe;
+>         struct mm_struct *mm;
+> +       struct rcu_head rcu;
+>  };
+>
+> -static DEFINE_MUTEX(delayed_uprobe_lock);
+> +/* XXX global state; use per mm list instead ? */
+> +static DEFINE_SPINLOCK(delayed_uprobe_lock);
+>  static LIST_HEAD(delayed_uprobe_list);
+>
+>  /*
+> @@ -289,9 +291,11 @@ delayed_uprobe_check(struct uprobe *uprobe, struct m=
+m_struct *mm)
+>  {
+>         struct delayed_uprobe *du;
+>
+> -       list_for_each_entry(du, &delayed_uprobe_list, list)
+> +       guard(rcu)();
+> +       list_for_each_entry_rcu(du, &delayed_uprobe_list, list) {
+>                 if (du->uprobe =3D=3D uprobe && du->mm =3D=3D mm)
+>                         return du;
+> +       }
+>         return NULL;
+>  }
+>
+> @@ -308,7 +312,8 @@ static int delayed_uprobe_add(struct uprobe *uprobe, =
+struct mm_struct *mm)
+>
+>         du->uprobe =3D uprobe;
+>         du->mm =3D mm;
+> -       list_add(&du->list, &delayed_uprobe_list);
+> +       scoped_guard(spinlock, &delayed_uprobe_lock)
+> +               list_add_rcu(&du->list, &delayed_uprobe_list);
+>         return 0;
+>  }
+>
+> @@ -316,19 +321,21 @@ static void delayed_uprobe_delete(struct delayed_up=
+robe *du)
+>  {
+>         if (WARN_ON(!du))
+>                 return;
+> -       list_del(&du->list);
+> -       kfree(du);
+> +       scoped_guard(spinlock, &delayed_uprobe_lock)
+> +               list_del(&du->list);
+> +       kfree_rcu(du, rcu);
+>  }
+>
+>  static void delayed_uprobe_remove(struct uprobe *uprobe, struct mm_struc=
+t *mm)
+>  {
+> -       struct list_head *pos, *q;
+>         struct delayed_uprobe *du;
+> +       struct list_head *pos;
+>
+>         if (!uprobe && !mm)
+>                 return;
+>
+> -       list_for_each_safe(pos, q, &delayed_uprobe_list) {
+> +       guard(rcu)();
+> +       list_for_each_rcu(pos, &delayed_uprobe_list) {
+>                 du =3D list_entry(pos, struct delayed_uprobe, list);
+>
+>                 if (uprobe && du->uprobe !=3D uprobe)
+> @@ -434,12 +441,10 @@ static int update_ref_ctr(struct uprobe *uprobe, st=
+ruct mm_struct *mm,
+>                         return ret;
+>         }
+>
+> -       mutex_lock(&delayed_uprobe_lock);
+>         if (d > 0)
+>                 ret =3D delayed_uprobe_add(uprobe, mm);
+>         else
+>                 delayed_uprobe_remove(uprobe, mm);
+> -       mutex_unlock(&delayed_uprobe_lock);
+>
+>         return ret;
+>  }
+> @@ -645,9 +650,7 @@ static void put_uprobe(struct uprobe *uprobe)
+>          * gets called, we don't get a chance to remove uprobe from
+>          * delayed_uprobe_list from remove_breakpoint(). Do it here.
+>          */
+> -       mutex_lock(&delayed_uprobe_lock);
+>         delayed_uprobe_remove(uprobe, NULL);
+> -       mutex_unlock(&delayed_uprobe_lock);
+>
+>         call_rcu_tasks_trace(&uprobe->rcu, uprobe_free_rcu);
+>  }
+> @@ -1350,13 +1353,18 @@ static void build_probe_list(struct inode *inode,
+>  /* @vma contains reference counter, not the probed instruction. */
+>  static int delayed_ref_ctr_inc(struct vm_area_struct *vma)
+>  {
+> -       struct list_head *pos, *q;
+>         struct delayed_uprobe *du;
+> +       struct list_head *pos;
+>         unsigned long vaddr;
+>         int ret =3D 0, err =3D 0;
+>
+> -       mutex_lock(&delayed_uprobe_lock);
+> -       list_for_each_safe(pos, q, &delayed_uprobe_list) {
+> +       /*
+> +        * delayed_uprobe_list is added to when the ref_ctr is not mapped
+> +        * and is consulted (this function) when adding maps. And since
+> +        * mmap_lock serializes these, it is not possible miss an entry.
+> +        */
+> +       guard(rcu)();
+> +       list_for_each_rcu(pos, &delayed_uprobe_list) {
+>                 du =3D list_entry(pos, struct delayed_uprobe, list);
+>
+>                 if (du->mm !=3D vma->vm_mm ||
+> @@ -1370,9 +1378,9 @@ static int delayed_ref_ctr_inc(struct vm_area_struc=
+t *vma)
+>                         if (!err)
+>                                 err =3D ret;
+>                 }
 > +
-> +struct bpf_iter_kmem_cache_kern {
-> +	struct kmem_cache *pos;
-> +} __attribute__((aligned(8)));
-> +
-> +__bpf_kfunc_start_defs();
-> +
-> +__bpf_kfunc int bpf_iter_kmem_cache_new(struct bpf_iter_kmem_cache *it)
-> +{
-> +	struct bpf_iter_kmem_cache_kern *kit = (void *)it;
-> +
-> +	BUILD_BUG_ON(sizeof(*kit) > sizeof(*it));
-> +	BUILD_BUG_ON(__alignof__(*kit) != __alignof__(*it));
-> +
-> +	kit->pos = NULL;
-> +	return 0;
-> +}
-> +
-> +__bpf_kfunc struct kmem_cache *bpf_iter_kmem_cache_next(struct bpf_iter_kmem_cache *it)
-> +{
-> +	struct bpf_iter_kmem_cache_kern *kit = (void *)it;
-> +	struct kmem_cache *prev = kit->pos;
-> +	struct kmem_cache *next;
-> +	bool destroy = false;
-> +
-> +	mutex_lock(&slab_mutex);
-
-I think taking mutex_lock here should be fine since sleepable tracing prog 
-should be limited to the error injection whitelist. Those functions should not 
-have held the mutex afaict.
-
-> +
-> +	if (list_empty(&slab_caches)) {
-> +		mutex_unlock(&slab_mutex);
-> +		return NULL;
-> +	}
-> +
-> +	if (prev == NULL)
-> +		next = list_first_entry(&slab_caches, struct kmem_cache, list);
-> +	else if (list_last_entry(&slab_caches, struct kmem_cache, list) == prev)
-> +		next = NULL;
-
-At the last entry, next is NULL.
-
-> +	else
-> +		next = list_next_entry(prev, list);
-> +
-> +	/* boot_caches have negative refcount, don't touch them */
-> +	if (next && next->refcount > 0)
-> +		next->refcount++;
-> +
-> +	/* Skip kmem_cache_destroy() for active entries */
-> +	if (prev && prev->refcount > 1)
-> +		prev->refcount--;
-> +	else if (prev && prev->refcount == 1)
-> +		destroy = true;
-> +
-> +	mutex_unlock(&slab_mutex);
-> +
-> +	if (destroy)
-> +		kmem_cache_destroy(prev);
-> +
-> +	kit->pos = next;
-
-so kit->pos will be NULL also. Does it mean the bpf prog will be able to call 
-bpf_iter_kmem_cache_next() again and re-loop from the beginning of the 
-slab_caches list?
-
-> +	return next;
-> +}
-> +
-> +__bpf_kfunc void bpf_iter_kmem_cache_destroy(struct bpf_iter_kmem_cache *it)
-> +{
-> +	struct bpf_iter_kmem_cache_kern *kit = (void *)it;
-> +	struct kmem_cache *s = kit->pos;
-> +	bool destroy = false;
-> +
-> +	if (s == NULL)
-> +		return;
-> +
-> +	mutex_lock(&slab_mutex);
-> +
-> +	/* Skip kmem_cache_destroy() for active entries */
-> +	if (s->refcount > 1)
-> +		s->refcount--;
-> +	else if (s->refcount == 1)
-> +		destroy = true;
-> +
-> +	mutex_unlock(&slab_mutex);
-> +
-> +	if (destroy)
-> +		kmem_cache_destroy(s);
-> +}
-> +
-> +__bpf_kfunc_end_defs();
-> +
->   static void bpf_iter_kmem_cache_show_fdinfo(const struct bpf_iter_aux_info *aux,
->   					    struct seq_file *seq)
->   {
-
+>                 delayed_uprobe_delete(du);
+>         }
+> -       mutex_unlock(&delayed_uprobe_lock);
+>         return err;
+>  }
+>
+> @@ -1596,9 +1604,7 @@ void uprobe_clear_state(struct mm_struct *mm)
+>  {
+>         struct xol_area *area =3D mm->uprobes_state.xol_area;
+>
+> -       mutex_lock(&delayed_uprobe_lock);
+>         delayed_uprobe_remove(NULL, mm);
+> -       mutex_unlock(&delayed_uprobe_lock);
+>
+>         if (!area)
+>                 return;
 
