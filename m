@@ -1,229 +1,239 @@
-Return-Path: <bpf+bounces-42406-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42407-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97EA99A3CCD
-	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 13:09:14 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38F3D9A3CD1
+	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 13:09:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 54699287BE2
-	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 11:09:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5AD511C25C20
+	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 11:09:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B34A20370A;
-	Fri, 18 Oct 2024 11:04:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5DAF2040A8;
+	Fri, 18 Oct 2024 11:05:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="dEWaRnUZ"
+	dkim=pass (2048-bit key) header.d=shutemov.name header.i=@shutemov.name header.b="dcoCiM31";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="nNFsDOP2"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+Received: from flow-a8-smtp.messagingengine.com (flow-a8-smtp.messagingengine.com [103.168.172.143])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A261318C938
-	for <bpf@vger.kernel.org>; Fri, 18 Oct 2024 11:04:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EEC7204084;
+	Fri, 18 Oct 2024 11:05:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.143
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729249444; cv=none; b=ZFPa4nMNK/UDuxFmgpYJNrHH66U2q3LTePGsrimcmFMRNJxo2TjadBsHIPrSTzALkpVO8+B0QTRsVo6Nk2YodxpcmHAGfNBT16tcnt9xOX8RR1PaWIUQnGLW/z+/3tXP7O5Fgy3InfrB4bgtJfFbDdpqv7H3FwgdGTyGRZvGGCY=
+	t=1729249543; cv=none; b=nGdmw8qYrg1nIHkHirMokpaoFTT7WC6K2Vsr1nJuHwFIYdl+yXOzzJXDjzcBHlltf++FKU2QhC3eVjaIDfDUEB/YohL23YPAVNYg7XOXsmKFaILO0BgMxSzMKZnN/uO1wccpuVLUQTSu1+EOorfzlbEl9bsguK3vXiSStL1d0L4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729249444; c=relaxed/simple;
-	bh=8BlWI7US2omrq6rSX95HX1nFsnpDbimPn6ya3FSoyGs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=k9dRuNg7m9PGzG/U2acMqx+jEjEdy9X816MswJH8mmrPkdf6XqhlxbwLKkP+7hvGonaBFqAtxo8ZZyM6a/XTojsI8Qycjq7zHUPTAFs/ZaWpqN0C/mrpZ5yA6b9TZYUM9nPtdjkVBRcIf54bw9nyNziJIj7KlESlMgIIkLAqGyY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=dEWaRnUZ; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=SasQRu9F/Fyk3Lxd7reWioJ7ZOAPeJs53T5JPNsrGEw=; b=dEWaRnUZvBGKSGkLWiAe38cALg
-	yob+0YE1N0QfKzuYVC5tdJzPdyx0dvTx8Q91VGe1Mw2awj8eVeKDz+SchyuXqgDEI2NJcrISkelIK
-	ZPu26YwcYpDjbTyLpH7e1KLMCgneu/WwxSH2pAXy0/RBOmMRb86HkjW+v7yhRzKY5lkkitMFGA1D7
-	UYs6f49gsaJeeBPlE3yhAYK/AhpMC+vLg4qQyOOd6o89gvvfYlzafU+Mx1DKVfYmrsXIa8cJAPi/P
-	qvkuVCBYa6Jr1PCkrElWM/OjaOcuXLAbbGJrk6jmGbhy3JjsVdfeqBuewkfHJqDCgbr50TkyE/+GO
-	R1WAFldA==;
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1t1kll-000Nzd-M9; Fri, 18 Oct 2024 13:03:45 +0200
-Received: from [178.197.248.12] (helo=[192.168.1.114])
-	by sslproxy03.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1t1kll-000BsF-1r;
-	Fri, 18 Oct 2024 13:03:45 +0200
-Message-ID: <0fd927cd-7fd2-4b15-8a17-15b907771356@iogearbox.net>
-Date: Fri, 18 Oct 2024 13:03:44 +0200
+	s=arc-20240116; t=1729249543; c=relaxed/simple;
+	bh=P5PdRsacF474EbWgmhc3hiD7lELGK1tzJ9hufbt3rB0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IJmLRfCaucm/o+pMk9VbC/cR87VyC6T/7RakujpLAy3rQdRdVGqpUNN/Syz0sO1HUjl0Nu9a+0P61tgSq8pEXaLYhYuXCLSOx8qNtQpIK3id+99UjBonnnpVE7vSRXWekmZDfop7dTmFn7sVugwnl3J8OQ1acSE+smodGL6bCUU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=shutemov.name; spf=pass smtp.mailfrom=shutemov.name; dkim=pass (2048-bit key) header.d=shutemov.name header.i=@shutemov.name header.b=dcoCiM31; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=nNFsDOP2; arc=none smtp.client-ip=103.168.172.143
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=shutemov.name
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shutemov.name
+Received: from phl-compute-03.internal (phl-compute-03.phl.internal [10.202.2.43])
+	by mailflow.phl.internal (Postfix) with ESMTP id 555442008EE;
+	Fri, 18 Oct 2024 07:05:40 -0400 (EDT)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-03.internal (MEProxy); Fri, 18 Oct 2024 07:05:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=shutemov.name;
+	 h=cc:cc:content-type:content-type:date:date:from:from
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to; s=fm1; t=1729249540; x=
+	1729256740; bh=DfrWUeI7jSkiKLl3DUG7tVnejbJ3jmsGwSHJKF/avYA=; b=d
+	coCiM31/zabNDU6R4RnsDb/1plhuAHiEF0Q80vQuqfE+bJSr2l8hUqp4h4bOEo+0
+	siqhlildBZ9aRwdUXkP6bKYWCQI4CUtI4ESFeMNHjOMGCSOjwNTBGvf95/xvOHaE
+	BuKDQivrJVwpUxoLOX3DjHJzctOno4J2XL3gcNAVfIqUpsk1VhXEX2P3qjwAuDRK
+	qPTeHrXencJNxxnQ63tOmM+V/fOGDdREAUtvXBvyIFUEr68si/HG3iHgmm1mJIJk
+	7x3KvB90ssS+3AuH5PewlgYZGkWK6EgoUlnR9naCY/GULiCqc3SMIbmwlPnox9K0
+	JdvYhq9eCBaWWfuG33/xA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1729249540; x=1729256740; bh=DfrWUeI7jSkiKLl3DUG7tVnejbJ3
+	jmsGwSHJKF/avYA=; b=nNFsDOP2Xp/fxhjCB/9xkSy4rU/Js1j6E0JYnmEbjGdt
+	oeqVqGwYRsXYWJBbm+M3/P4CnRyNzH2MJPMEBU8E2WqhAHTvkwDVGyWJK7EKWxJN
+	NU1NYytz+PukYpVWsKe25tu5cXr+fpKUuyLZ8hA4UIbyBpmVww109MbhUGVWJpID
+	pdCoL9e+CVTYUxZqpBdHOdYWdMOlY7YpGRRESqWkzJqQnKm+dlkqqWWF3uQitH6u
+	xiAxU1NkRZ/XhlGXpsh/wfySGQr9uhFGC03nM/cmu2OsMZD0YE+Ua+yYZuS21dzV
+	+0JXqpuohBLWNzXMDryuGiPGJc3iOMDKiPluxytD/A==
+X-ME-Sender: <xms:A0ESZ75jRzXbRLvvZQfDNzFob9LTd9-0p7m0LdT63zCDKO1jyMGLfg>
+    <xme:A0ESZw5IINJO66CzsiZwtEP8HHf9A1Igue9O41ZlgzhZsZ_jMV0zfv2iesWL4othb
+    hgyEdVev_w1-iM6BzU>
+X-ME-Received: <xmr:A0ESZyeawwBfJ-CWrs2bYgQn6iEAuis3v-Ud2y7hqlpnmVudvoCBnZ-Leo9oXMSb2Q1kxQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvdehfedgfeefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
+    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
+    htshculddquddttddmnecujfgurhepfffhvfevuffkfhggtggujgesthdtsfdttddtvden
+    ucfhrhhomhepfdfmihhrihhllhcutedrucfuhhhuthgvmhhovhdfuceokhhirhhilhhlse
+    hshhhuthgvmhhovhdrnhgrmhgvqeenucggtffrrghtthgvrhhnpeffvdevueetudfhhfff
+    veelhfetfeevveekleevjeduudevvdduvdelteduvefhkeenucevlhhushhtvghrufhiii
+    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehkihhrihhllhesshhhuhhtvghmohhv
+    rdhnrghmvgdpnhgspghrtghpthhtohepvddupdhmohguvgepshhmthhpohhuthdprhgtph
+    htthhopehlohhrvghniihordhsthhorghkvghssehorhgrtghlvgdrtghomhdprhgtphht
+    thhopehrohgsvghrthhordhsrghsshhusehhuhgrfigvihgtlhhouhgurdgtohhmpdhrtg
+    hpthhtohepphgruhhlsehprghulhdqmhhoohhrvgdrtghomhdprhgtphhtthhopegvsghp
+    qhifvghrthihgeejvdduvdefsehgmhgrihhlrdgtohhmpdhrtghpthhtohepkhhirhhilh
+    hlrdhshhhuthgvmhhovheslhhinhhugidrihhnthgvlhdrtghomhdprhgtphhtthhopeii
+    ohhhrghrsehlihhnuhigrdhisghmrdgtohhmpdhrtghpthhtohepughmihhtrhihrdhkrg
+    hsrghtkhhinhesghhmrghilhdrtghomhdprhgtphhtthhopegvrhhitgdrshhnohifsggv
+    rhhgsehorhgrtghlvgdrtghomhdprhgtphhtthhopehjmhhorhhrihhssehnrghmvghird
+    horhhg
+X-ME-Proxy: <xmx:A0ESZ8IYn0K0oMAIMHEMPAGeChgFhXRKE1MXmz5TFTySYvy1S-wrVA>
+    <xmx:A0ESZ_KaF5l77BShpny3V7R5x3_-4BaJmGhSybClo6FKEKsTb1fEYw>
+    <xmx:A0ESZ1wBQZgu77wJW-LApmzqL7gM8ugNX-BZ1ICA9Ka0fXNN_yK_VA>
+    <xmx:A0ESZ7LNU7aXGheO5AGArP71cuQUcqDpPIgPbk4U7jJV9sL4NJ8a9w>
+    <xmx:BEESZ0C36_eKafwilCyEkSRmOul-aD1SXQltohfGtkB8zkdqg6NX8KQ6>
+Feedback-ID: ie3994620:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 18 Oct 2024 07:05:32 -0400 (EDT)
+Date: Fri, 18 Oct 2024 14:05:27 +0300
+From: "Kirill A. Shutemov" <kirill@shutemov.name>
+To: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
+Cc: Roberto Sassu <roberto.sassu@huaweicloud.com>, 
+	Paul Moore <paul@paul-moore.com>, ebpqwerty472123@gmail.com, kirill.shutemov@linux.intel.com, 
+	zohar@linux.ibm.com, dmitry.kasatkin@gmail.com, eric.snowberg@oracle.com, 
+	jmorris@namei.org, serge@hallyn.com, linux-integrity@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
+	Roberto Sassu <roberto.sassu@huawei.com>, linux-mm@kvack.org, akpm@linux-foundation.org, vbabka@suse.cz, 
+	linux-fsdevel@vger.kernel.org, Liam Howlett <liam.howlett@oracle.com>, 
+	Jann Horn <jannh@google.com>
+Subject: Re: [PATCH 1/3] ima: Remove inode lock
+Message-ID: <gl4pf7gezpjtvnbp4lzyb65wqaiw3xzjjrs3476j5odxsfzvsj@oouue73v3cgr>
+References: <20241008165732.2603647-1-roberto.sassu@huaweicloud.com>
+ <CAHC9VhSyWNKqustrTjA1uUaZa_jA-KjtzpKdJ4ikSUKoi7iV0Q@mail.gmail.com>
+ <CAHC9VhQR2JbB7ni2yX_U8TWE0PcQQkm_pBCuG3nYN7qO15nNjg@mail.gmail.com>
+ <7358f12d852964d9209492e337d33b8880234b74.camel@huaweicloud.com>
+ <593282dbc9f48673c8f3b8e0f28e100f34141115.camel@huaweicloud.com>
+ <15bb94a306d3432de55c0a12f29e7ed2b5fa3ba1.camel@huaweicloud.com>
+ <c1e47882720fe45aa9d04d663f5a6fd39a046bcb.camel@huaweicloud.com>
+ <b498e3b004bedc460991e167c154cc88d568f587.camel@huaweicloud.com>
+ <ggvucjixgiuelt6vjz6oawgyobmzrhifaozqqvupwfso65ia7c@bauvfqtvq6lv>
+ <e89f6b61-a57f-4848-87f1-8e2282bc5aea@lucifer.local>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v1 1/2] bpf: force checkpoint when jmp history is
- too long
-To: Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org, ast@kernel.org
-Cc: andrii@kernel.org, martin.lau@linux.dev, kernel-team@fb.com,
- yonghong.song@linux.dev
-References: <20241018020307.1766906-1-eddyz87@gmail.com>
-Content-Language: en-US
-From: Daniel Borkmann <daniel@iogearbox.net>
-Autocrypt: addr=daniel@iogearbox.net; keydata=
- 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
-In-Reply-To: <20241018020307.1766906-1-eddyz87@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27431/Fri Oct 18 10:53:06 2024)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e89f6b61-a57f-4848-87f1-8e2282bc5aea@lucifer.local>
 
-On 10/18/24 4:03 AM, Eduard Zingerman wrote:
-> A specifically crafted program might trick verifier into growing very
-> long jump history within a single bpf_verifier_state instance.
-> Very long jump history makes mark_chain_precision() unreasonably slow,
-> especially in case if verifier processes a loop.
+On Fri, Oct 18, 2024 at 12:00:22PM +0100, Lorenzo Stoakes wrote:
+> + Liam, Jann
 > 
-> Mitigate this by forcing new state in is_state_visited() in case if
-> current state's jump history is too long.
+> On Fri, Oct 18, 2024 at 01:49:06PM +0300, Kirill A. Shutemov wrote:
+> > On Fri, Oct 18, 2024 at 11:24:06AM +0200, Roberto Sassu wrote:
+> > > Probably it is hard, @Kirill would there be any way to safely move
+> > > security_mmap_file() out of the mmap_lock lock?
+> >
+> > What about something like this (untested):
+> >
+> > diff --git a/mm/mmap.c b/mm/mmap.c
+> > index dd4b35a25aeb..03473e77d356 100644
+> > --- a/mm/mmap.c
+> > +++ b/mm/mmap.c
+> > @@ -1646,6 +1646,26 @@ SYSCALL_DEFINE5(remap_file_pages, unsigned long, start, unsigned long, size,
+> >  	if (pgoff + (size >> PAGE_SHIFT) < pgoff)
+> >  		return ret;
+> >
+> > +	if (mmap_read_lock_killable(mm))
+> > +		return -EINTR;
+> > +
+> > +	vma = vma_lookup(mm, start);
+> > +
+> > +	if (!vma || !(vma->vm_flags & VM_SHARED)) {
+> > +		mmap_read_unlock(mm);
+> > +		return -EINVAL;
+> > +	}
+> > +
+> > +	file = get_file(vma->vm_file);
+> > +
+> > +	mmap_read_unlock(mm);
+> > +
+> > +	ret = security_mmap_file(vma->vm_file, prot, flags);
 > 
-> Use same constant as in `skip_inf_loop_check`, but multiply it by
-> arbitrarily chosen value 2 to account for jump history containing not
-> only information about jumps, but also information about stack access.
-[...]
+> Accessing VMA fields without any kind of lock is... very much not advised.
 > 
-> The log output shows that checkpoint at label (1) is never created,
-> because it is suppressed by `skip_inf_loop_check` logic:
-> a. When 'if' at (2) is processed it pushes a state with insn_idx (1)
->     onto stack and proceeds to (3);
-> b. At (5) checkpoint is created, and this resets
->     env->{jmps,insns}_processed.
-> c. Verification proceeds and reaches `exit`;
-> d. State saved at step (a) is popped from stack and is_state_visited()
->     considers if checkpoint needs to be added, but because
->     env->{jmps,insns}_processed had been just reset at step (b)
->     the `skip_inf_loop_check` logic forces `add_new_state` to false.
-> e. Verifier proceeds with current state, which slowly accumulates
->     more and more entries in the jump history.
+> I'm guessing you meant to say:
 > 
-> The accumulation of entries in the jump history is a problem because
-> of two factors:
-> - it eventually exhausts memory available for kmalloc() allocation;
-> - mark_chain_precision() traverses the jump history of a state,
->    meaning that if `r7` is marked precise, verifier would iterate
->    ever growing jump history until parent state boundary is reached.
+> 	ret = security_mmap_file(file, prot, flags);
 > 
-> (note: the log also shows a REG INVARIANTS VIOLATION warning
->         upon jset processing, but that's another bug to fix).
-> 
-> With this patch applied, the example above is rejected by verifier
-> under 1s of time, reaching 1M instructions limit.
-> 
-> The program is a simplified reproducer from syzbot report [1].
-> Previous discussion could be found at [2].
-> The patch does not cause any changes in verification performance,
-> when tested on selftests from veristat.cfg and cilium programs taken
-> from [3].
-> 
-> [1] https://lore.kernel.org/bpf/670429f6.050a0220.49194.0517.GAE@google.com/
-> [2] https://lore.kernel.org/bpf/20241009021254.2805446-1-eddyz87@gmail.com/
-> [3] https://github.com/anakryiko/cilium
+> Here? :)
 
-Impressive that syzbot was able to generate this, and awesome analysis
-as well as fix.
+Sure. My bad.
 
-I guess we should also add :
+Patch with all fixups:
 
-Reported-by: syzbot+7e46cdef14bf496a3ab4@syzkaller.appspotmail.com
-
-Can we also add a Fixes tag so that this can eventually be picked up
-by stable? bpf tree would be the appropriate target, no?
-
-> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
-
-Acked-by: Daniel Borkmann <daniel@iogearbox.net>
-
-> ---
->   kernel/bpf/verifier.c | 14 ++++++++++++--
->   1 file changed, 12 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index f514247ba8ba..f64c831a9278 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -17873,13 +17873,23 @@ static bool iter_active_depths_differ(struct bpf_verifier_state *old, struct bpf
->   	return false;
->   }
->   
-> +#define MAX_JMPS_PER_STATE 20
-> +
->   static int is_state_visited(struct bpf_verifier_env *env, int insn_idx)
->   {
->   	struct bpf_verifier_state_list *new_sl;
->   	struct bpf_verifier_state_list *sl, **pprev;
->   	struct bpf_verifier_state *cur = env->cur_state, *new, *loop_entry;
->   	int i, j, n, err, states_cnt = 0;
-> -	bool force_new_state = env->test_state_freq || is_force_checkpoint(env, insn_idx);
-> +	bool force_new_state = env->test_state_freq || is_force_checkpoint(env, insn_idx) ||
-> +			       /* - Long jmp history hinders mark_chain_precision performance,
-> +				*   so force new state if jmp history of current state exceeds
-> +				*   a threshold.
-> +				* - Jmp history records not only jumps, but also stack access,
-> +				*   so keep this constant 2x times the limit imposed on
-> +				*   env->jmps_processed for loop cases (see skip_inf_loop_check).
-> +				*/
-> +			       cur->jmp_history_cnt > MAX_JMPS_PER_STATE * 2;
->   	bool add_new_state = force_new_state;
->   	bool force_exact;
->   
-> @@ -18023,7 +18033,7 @@ static int is_state_visited(struct bpf_verifier_env *env, int insn_idx)
->   			 */
->   skip_inf_loop_check:
->   			if (!force_new_state &&
-> -			    env->jmps_processed - env->prev_jmps_processed < 20 &&
-> +			    env->jmps_processed - env->prev_jmps_processed < MAX_JMPS_PER_STATE &&
->   			    env->insn_processed - env->prev_insn_processed < 100)
->   				add_new_state = false;
->   			goto miss;
+diff --git a/mm/mmap.c b/mm/mmap.c
+index dd4b35a25aeb..541787d526b6 100644
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -1646,14 +1646,41 @@ SYSCALL_DEFINE5(remap_file_pages, unsigned long, start, unsigned long, size,
+ 	if (pgoff + (size >> PAGE_SHIFT) < pgoff)
+ 		return ret;
+ 
+-	if (mmap_write_lock_killable(mm))
++	if (mmap_read_lock_killable(mm))
+ 		return -EINTR;
+ 
+ 	vma = vma_lookup(mm, start);
+ 
++	if (!vma || !(vma->vm_flags & VM_SHARED)) {
++		mmap_read_unlock(mm);
++		return -EINVAL;
++	}
++
++	file = get_file(vma->vm_file);
++
++	mmap_read_unlock(mm);
++
++	ret = security_mmap_file(file, prot, flags);
++	if (ret) {
++		fput(file);
++		return ret;
++	}
++
++	ret = -EINVAL;
++
++	if (mmap_write_lock_killable(mm)) {
++		fput(file);
++		return -EINTR;
++	}
++
++	vma = vma_lookup(mm, start);
++
+ 	if (!vma || !(vma->vm_flags & VM_SHARED))
+ 		goto out;
+ 
++	if (vma->vm_file != file)
++		goto out;
++
+ 	if (start + size > vma->vm_end) {
+ 		VMA_ITERATOR(vmi, mm, vma->vm_end);
+ 		struct vm_area_struct *next, *prev = vma;
+@@ -1688,16 +1715,11 @@ SYSCALL_DEFINE5(remap_file_pages, unsigned long, start, unsigned long, size,
+ 	if (vma->vm_flags & VM_LOCKED)
+ 		flags |= MAP_LOCKED;
+ 
+-	file = get_file(vma->vm_file);
+-	ret = security_mmap_file(vma->vm_file, prot, flags);
+-	if (ret)
+-		goto out_fput;
+ 	ret = do_mmap(vma->vm_file, start, size,
+ 			prot, flags, 0, pgoff, &populate, NULL);
+-out_fput:
+-	fput(file);
+ out:
+ 	mmap_write_unlock(mm);
++	fput(file);
+ 	if (populate)
+ 		mm_populate(ret, populate);
+ 	if (!IS_ERR_VALUE(ret))
+-- 
+  Kiryl Shutsemau / Kirill A. Shutemov
 
