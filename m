@@ -1,135 +1,127 @@
-Return-Path: <bpf+bounces-42352-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42353-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD7D09A31C2
-	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 02:46:11 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC0AC9A31C6
+	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 02:46:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3DEA12818EB
-	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 00:46:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A04C91F249CC
+	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2024 00:46:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F6A33D0D5;
-	Fri, 18 Oct 2024 00:46:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CB89481A3;
+	Fri, 18 Oct 2024 00:46:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SZgSZEye"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Bn4GOA3b"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6FB920E313;
-	Fri, 18 Oct 2024 00:46:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 857B62A1D1;
+	Fri, 18 Oct 2024 00:46:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729212362; cv=none; b=pNillFMMcAtGnlFGir8UxUmKJjF4BoO1bre0BRdfCO3ScM3v+8zyly8kFVNATJiMRJJexpN8neReMrHgVn3iYwDCfN3NVMw1VZgnjCALgFao/QHcrcYpMJj+0DTqOhSE7afyxpqS2sCXtnMXO+wLGfGJXob8z7Mg9xgAR2C+ZpI=
+	t=1729212388; cv=none; b=uUNmRdeppmVorp0ZHwJskEutWqCyK+ts7WWSG2DyOSgXkhIshQNT8xDggsrzlRZ+tQ689Xm2CfaeWZrD6E/e0Q1XXURSHOQFkET39tC37l6J/2elLxLYpUSN+D22Z4PaERpKwfWVNsPwTffSDeJe6OgqkqrhDasY3KQSAfrMWPY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729212362; c=relaxed/simple;
-	bh=UuU1D4ZoMYwCo3FaOUKYe9aNpKCvXsi0ygQ+g1tksnw=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=S8V0ya1z3mb4GKa7lAyI2hUtDIhxvGJW4nEWnsBex7kJnjf4s8P817j+L32KePRZJFf0yyfyDpQf0WGwKm5Uybq266YfMra66DG2/ka6DfamttQu066WRHN6YKygNpIsCAKewO34WepKP1fuAEKVU5yDoRcTLcgf4ocmvq/NxjU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SZgSZEye; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DB77C4CEC3;
-	Fri, 18 Oct 2024 00:45:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1729212361;
-	bh=UuU1D4ZoMYwCo3FaOUKYe9aNpKCvXsi0ygQ+g1tksnw=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=SZgSZEyeLeDjdg+a3yDy4ijjwEMTCURbIgWJjUahT1DsKQ6Q5LgHxuo1vt2qEfMRT
-	 SmnTjEetvqT/hIDqBPfjHuJNOlvYMtfv13cBsMGouBUGePOoT9E2WdfJJiGJXGWxJ2
-	 y1zP01dkxAykdBPGUho2gD7sMLc3fAghEFzegeBtqss7Mpd2+n1W2Rup8slKnESU6L
-	 n/AyawZhiA/OZ92Z3Ux6rq8KkgC/PKIHnjeujCP6DJjZK3t7S6xg8++DjwJogSKzca
-	 JqQrPbomenBEeM/5PFpA/kQHVR9Y3To5WHMLGLO9HI5v/xjIYvsuYDdE4TdL2WVulj
-	 pnirejbBXWrjA==
-Date: Fri, 18 Oct 2024 09:45:51 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Sven Schnelle <svens@linux.ibm.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Steven Rostedt
- <rostedt@goodmis.org>, Florent Revest <revest@chromium.org>,
- linux-trace-kernel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, Alexei
- Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Alan Maguire
- <alan.maguire@oracle.com>, Mark Rutland <mark.rutland@arm.com>,
- linux-arch@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>, Will
- Deacon <will@kernel.org>, Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui
- <kernel@xen0n.name>, Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin
- <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, Naveen
- N Rao <naveen@kernel.org>, Madhavan Srinivasan <maddy@linux.ibm.com>, Paul
- Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>,
- Albert Ou <aou@eecs.berkeley.edu>, Heiko Carstens <hca@linux.ibm.com>,
- Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev
- <agordeev@linux.ibm.com>, Christian Borntraeger
- <borntraeger@linux.ibm.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo
- Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
- <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin"
- <hpa@zytor.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Andrew
- Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v17 11/16] fprobe: Rewrite fprobe on function-graph
- tracer
-Message-Id: <20241018094551.b7fd8a75964545bf72eb335c@kernel.org>
-In-Reply-To: <yt9d5xprgbj5.fsf@linux.ibm.com>
-References: <172904026427.36809.516716204730117800.stgit@devnote2>
-	<172904040206.36809.2263909331707439743.stgit@devnote2>
-	<yt9ded4gfdz0.fsf@linux.ibm.com>
-	<20241016234628.b7eba1db0db39d2197a2ea4f@kernel.org>
-	<yt9d5xprgbj5.fsf@linux.ibm.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1729212388; c=relaxed/simple;
+	bh=A9W5BXqJLzSc6wqaDftNTLmM/XjPL1T+K9gE4lzY9eg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=O8gtDiOliKKlFQXAg+lqVPz6xLDxev1IGy5lI6j6bUTKrzCZ2zV/4+cGChbiTS64NU6Rl99eE6mQdHk3ExBjftYdaSKWampbL/RQaxhU9adHLGxj8YTjW/UKzR5Jjauto8N1AgLH6U5HD8oTbdzmpqhgxFJgTott00kk0/NpGm4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Bn4GOA3b; arc=none smtp.client-ip=209.85.215.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-7ea784aea63so909546a12.3;
+        Thu, 17 Oct 2024 17:46:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1729212387; x=1729817187; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=RVunuq3gbvj+AkSw28J9IAD2E6K6krV4ZjRY2oiq+QY=;
+        b=Bn4GOA3bJHOvp7OuqZK5yyXMrwE37cypyWQ06BXwWvKRfSKaX6Xe8ag9CjjucE2Ylx
+         HLfQ297Wz/3BknAkP/T7dqM9qUVDafjvf/x/KvWUUWbm2QckRl/NZG0f2OYMMhlTjDWp
+         3qYy3lacBBarJmg295j/BwOVPi4ujOtnx6qPwR/tffSDJYYg+hhUzYlUwBqXNVJhlmsB
+         +ZNY8/884aM1Zi3YSEJ463Z9SBLGWYNwJfnXS0q5pO4wMH/bwGa0Br8mdmdx7hKLxJvC
+         Ri/5qJq5Vo1ZihR/AANC7vp/ABB72H2A22/GF9owJZF06q+u6lO4kEpYRQKuU7pTu6Hu
+         w+nA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1729212387; x=1729817187;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RVunuq3gbvj+AkSw28J9IAD2E6K6krV4ZjRY2oiq+QY=;
+        b=mk3voFCHNBqCD+aAHjzDWz/PmatIQhzvxSrIexw340aKB+yeF4e1740f7qsSR2WIoG
+         V+76wsgU/L0qI+Nq/WadnpCVe5p9OpKcKX2t8nH9zkD3ZHBpJ4hZNIPDwF8zZSX0R1+n
+         ke0pBOSFATE+hQaauU8uJvaOGN+ppxL+4kt2TaIFI1K1OVIFGio6KQ+1AjbGFhkPq9MG
+         DsC11UyjbxZK7atsHObWI9BnJTExJyVuYN9jaVHy8vunBoVvSynSyBL4JmsjaL4St04Y
+         Ugv59bUkz59QVpAkU39sFcjCFqy86uoHKLM8s3VttQedQ4pSCf3g0izY8OFuq7ySRocr
+         5VPw==
+X-Forwarded-Encrypted: i=1; AJvYcCUGrNUD7dYrsJ1ATSFlgvG549GSWMr0RLNYHUxSzl6iagvhUrt5RN5mJTyWp41e9FdzNjrOEJNBa+r0@vger.kernel.org, AJvYcCVSZFVc4N7kkWkyc+CHHU43yAV1quyfFIeOyou8o2cBJzWpWVYuWortRmpaXWB0VZMwt7zr5UQ/THAXMZ8/@vger.kernel.org, AJvYcCWdLBdoKQHPyE/Er52MyRYT2GrLlrjs7Ijbb5qdDu6FruhmNZ3B7arR9rJPw4FJp86tX14=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw1+7TkMMeHKPztVjA52i8gLxi8Nb4TQ4AJHDlwY4OZCgCB638x
+	lxS46uzz1uuROGWbp2XtD9QgVp4b97yzueoixDnS5pk57eIwaDJJLeF6zWWUCzo=
+X-Google-Smtp-Source: AGHT+IHPg8DRZc4blkJt6M4jB9p7QkQPgZeoQK6vx6eapZG8GWX01nJC76zgSI/PBpyyXXHR6o9AUA==
+X-Received: by 2002:a05:6a21:1693:b0:1cf:4ad8:83b9 with SMTP id adf61e73a8af0-1d92c5abf0dmr1004985637.43.1729212386730;
+        Thu, 17 Oct 2024 17:46:26 -0700 (PDT)
+Received: from fedora ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-71ea3459abesm271817b3a.168.2024.10.17.17.46.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Oct 2024 17:46:26 -0700 (PDT)
+Date: Fri, 18 Oct 2024 00:46:18 +0000
+From: Hangbin Liu <liuhangbin@gmail.com>
+To: Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
+Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Jiri Pirko <jiri@resnulli.us>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Lorenzo Bianconi <lorenzo@kernel.org>,
+	Andrii Nakryiko <andriin@fb.com>, Jussi Maki <joamaki@gmail.com>,
+	Jay Vosburgh <jv@jvosburgh.net>,
+	Andy Gospodarek <andy@greyhouse.net>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Andrew Lunn <andrew+netdev@lunn.ch>, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	Nikolay Aleksandrov <razor@blackwall.org>
+Subject: Re: [PATCHv2 net-next 2/3] bonding: use correct return value
+Message-ID: <ZxGv2s4bl5VQV4g-@fedora>
+References: <20241017020638.6905-1-liuhangbin@gmail.com>
+ <20241017020638.6905-3-liuhangbin@gmail.com>
+ <878qumzszs.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <878qumzszs.fsf@toke.dk>
 
-On Wed, 16 Oct 2024 20:14:54 +0200
-Sven Schnelle <svens@linux.ibm.com> wrote:
-
-> Masami Hiramatsu (Google) <mhiramat@kernel.org> writes:
+On Thu, Oct 17, 2024 at 04:47:19PM +0200, Toke Høiland-Jørgensen wrote:
+> > diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
+> > index f0f76b6ac8be..6887a867fe8b 100644
+> > --- a/drivers/net/bonding/bond_main.c
+> > +++ b/drivers/net/bonding/bond_main.c
+> > @@ -5699,7 +5699,7 @@ static int bond_xdp_set(struct net_device *dev, struct bpf_prog *prog,
+> >  		if (dev_xdp_prog_count(slave_dev) > 0) {
+> >  			SLAVE_NL_ERR(dev, slave_dev, extack,
+> >  				     "Slave has XDP program loaded, please unload before enslaving");
+> > -			err = -EOPNOTSUPP;
+> > +			err = -EEXIST;
 > 
-> > On Wed, 16 Oct 2024 14:07:31 +0200
-> > Sven Schnelle <svens@linux.ibm.com> wrote:
-> >> "Masami Hiramatsu (Google)" <mhiramat@kernel.org> writes:
-> >> I think that still has the issue that the size is encoded in the
-> >> leftmost fields of the pointer, which doesn't work on all
-> >> architectures. I reported this already in v15
-> >> (https://lore.kernel.org/all/yt9dmsjyx067.fsf@linux.ibm.com/)
-> >
-> > Oops, thanks for reporting. I should missed that.
-> >
-> >> I haven't yet fully understood why this logic is needed, but the
-> >> WARN_ON_ONCE triggers on s390. I'm assuming this fails because fp always
-> >> has the upper bits of the address set on x86 (and likely others). As an
-> >> example, in my test setup, fp is 0x8feec218 on s390, while it is
-> >> 0xffff888100add118 in x86-kvm.
-> >
-> > Ah, so s390 kernel/user memory layout is something like 4G/4G?
-> > Hmm, this encode expects the leftmost 4bit is filled. For the
-> > architecture which has 32bit address space, we may be possible to
-> > use "unsigned long long" for 'val' on shadow stack (and use the
-> > first 32bit for fp and another 32bit for size).
-> >
-> > Anyway, I need to redesign it depending on architecture.
-> 
-> Could you explain a bit more what redesign means? Thanks!
+> Hmm, this has been UAPI since kernel 5.15, so can we really change it
+> now? What's the purpose of changing it, anyway?
 
-This "encoded" data is for recording the *fp (the address of fprobe)
-and its data size into one value and storing it on the shadow stack.
+I just think it should return EXIST when the error is "Slave has XDP program
+loaded". No special reason. If all others think we should not change it, I
+can drop this patch.
 
-On x86-64, the kernel objects are puts on the highest memory address,
-thus the highest bits are always same. So it uses 4bits for recording
-the data size. Most of other 64bit architecture are similar memory
-layout, so we can use the highest bits. Note that the data size must
-be a multiplier of u64 (== 8byte), so 4bits is enough since shadow
-stack size is limited.
-
-The s390 and other 32bit address space architectures need special
-care for it. Thus I think we can use 2 slots (= 2 * u32) for saving
-data in this case.
-
-Thank you,
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Thanks
+Hangbin
 
