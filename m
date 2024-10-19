@@ -1,201 +1,126 @@
-Return-Path: <bpf+bounces-42504-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42505-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCE689A4DBB
-	for <lists+bpf@lfdr.de>; Sat, 19 Oct 2024 14:11:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 816899A4DC0
+	for <lists+bpf@lfdr.de>; Sat, 19 Oct 2024 14:14:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4AB421F268E5
-	for <lists+bpf@lfdr.de>; Sat, 19 Oct 2024 12:11:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4006F283844
+	for <lists+bpf@lfdr.de>; Sat, 19 Oct 2024 12:14:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A9CF1E0B7E;
-	Sat, 19 Oct 2024 12:11:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7683B1E0B71;
+	Sat, 19 Oct 2024 12:14:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ji+u5mIf"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="FjNrm0cd"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E5B91E0495;
-	Sat, 19 Oct 2024 12:11:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B9AF1DE2AE;
+	Sat, 19 Oct 2024 12:13:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729339862; cv=none; b=CgUq0NlakXJjLmJQWF+3GgyodcqHmQ3X3iyntOtSBYqgYQC7Err53cQBaSWR2kHJo6Z2lmKxd6JZkoM9hmzIHRNs0+BG+WqgCDDbWcNBp1hPKkdT8DcQEXc9+gfdudl/e0fXB3A6SsPk89NxrtpHNEyh9aWCOoKfwTkF0KrTWFc=
+	t=1729340043; cv=none; b=EKXH6AjkpdXxbQ3hNqvpj6K9lAqwejt6QBS4urfFW4Oe7Tmu/uJgpwjORM0Z3QhJWhJTL41gwzDWoRKGjQ8NAT9dEI+glr3PpaGGzzciU1uc0hN8ICONYkx1Kwwqawk7M6HKYAcmXshGg+UVw9sDMF3fzhQVnUV1UUvgRqAlHTw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729339862; c=relaxed/simple;
-	bh=FSuVpxp8ZC8+I9iOSenx9AlHNi52QSz7zz+w4xwBZFU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KryTlx4mafgLlC1YKfp/w1oQ98hpeR/aM7v3aBYXQN59lXBaS6wFv3O8haz+YLJq9zqgiHAoWJgTZ8EzumQvhHd5BA9yWOIIzxn+tX1JPgV6rczZ2q51pnLbsbqco51xipOXItaYd6Xg1ABwAUiKEd8uZj0YBa6jN+Q7CXD9zlo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ji+u5mIf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C444C4CEC5;
-	Sat, 19 Oct 2024 12:10:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1729339862;
-	bh=FSuVpxp8ZC8+I9iOSenx9AlHNi52QSz7zz+w4xwBZFU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ji+u5mIf1nBg2Nj6gLisAF5MRqi/wx3vBw5aJxxyqXCZq6i3mNEIjudfG3JajAqFI
-	 WJRVPOIUQSQMsfw+JO35XVRk0koV9Zi9I3YAvvjqBLsmrQOq5ay1ac5pdb0lvGGzR1
-	 j08uXL+V5r/xzvXwZInMDzkCPiTd8EFrbVzmdTCt/13Ip6ENRmE+El1EXUc14T5/hg
-	 fuuSACJI10Sa/jG2tlc11AxV3tkbudw+OnnTaatlKtiS8TlF8dKP0jJBWpV4zxhOjz
-	 kxntgxyzd/tCBOSTcO89LQ6Xv/hweCp+LHVMbTjkYPRC9v5XPDgpwR4Gn2FpyhtFiC
-	 QsF+azFAwnoMg==
-Date: Sat, 19 Oct 2024 15:07:00 +0300
-From: Mike Rapoport <rppt@kernel.org>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Andreas Larsson <andreas@gaisler.com>,
-	Andy Lutomirski <luto@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-	Brian Cain <bcain@quicinc.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Christoph Hellwig <hch@infradead.org>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
-	Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Michal Simek <monstr@monstr.eu>, Oleg Nesterov <oleg@redhat.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Richard Weinberger <richard@nod.at>,
-	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
-	Stafford Horne <shorne@gmail.com>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>,
-	bpf@vger.kernel.org, linux-alpha@vger.kernel.org,
-	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org, linux-mm@kvack.org,
-	linux-modules@vger.kernel.org, linux-openrisc@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-	linux-trace-kernel@vger.kernel.org, linux-um@lists.infradead.org,
-	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
-	sparclinux@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v6 6/8] x86/module: prepare module loading for ROX
- allocations of text
-Message-ID: <ZxOg5MEXzH4qPq-s@kernel.org>
-References: <20241016122424.1655560-1-rppt@kernel.org>
- <20241016122424.1655560-7-rppt@kernel.org>
- <20241016170128.7afeb8b0@gandalf.local.home>
- <20241017101712.5a052712@gandalf.local.home>
+	s=arc-20240116; t=1729340043; c=relaxed/simple;
+	bh=Zh3CNlvJGgEu6+hGG/XSE58JLkiLtoLZGdNKNVgf8xw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=S4aXxeA9h6nFHaPErO7pwBW8uvbJiOb6v8bgVfsj6GHEDjNZf+cRuJ/S+qlDEGpmUCk+EOykhPZW/gedg62uoOzYbEo3zs6qCBuEltf+F/+UtSZS5E5vG6IAso37FhjqJpxMuzHQUsvgCOUCrtTVrEf8wGJQ+Hu0fwntqyqbxyY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=FjNrm0cd; arc=none smtp.client-ip=217.70.183.196
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id D9759E0002;
+	Sat, 19 Oct 2024 12:13:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1729340037;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=J3svayMFxw0v0m0oN6qpWeSzMSDxNCpu8Ituu40pyy0=;
+	b=FjNrm0cdmER2Z/qwTmF1DxYAsGtb+6BspLseSNudntV/cu8KhLEs+8bTYfC0kPh7ABgjBZ
+	OUKy6XJXA4+itlgqghRr2nrVRNgQYMELkeI/ESsddtihHMkQA5fVEwE4G9iVRy/JXeFpiR
+	1InCfl6J4Ww6fpqkpg68H5saJKLUhcRc0iGNb968J39GFDlPhMXwzdeYVm2izTlTCkWRq1
+	KKEiNe10mcKf+fpLBvWO27+ZuKQEvcKjV8Sb/C2XgMQwaMRWqOcj2UqEYpeQdMYeMNYqWK
+	E6LP7wJq8ekZ5QA+UJkqs1yUtP88lNYYgUcmMPWmKFzc6kTxyI8GzQ09oeSd/Q==
+Message-ID: <4d438cdf-7e16-4a75-b2ca-d3dea6f1c045@bootlin.com>
+Date: Sat, 19 Oct 2024 14:13:54 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241017101712.5a052712@gandalf.local.home>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next 2/6] selftests/bpf: add missing ns cleanups in
+ btf_skc_cls_ingress
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
+ Shuah Khan <shuah@kernel.org>, "David S. Miller" <davem@davemloft.net>,
+ Jakub Kicinski <kuba@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>,
+ ebpf@linuxfoundation.org, Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Lorenz Bauer <lmb@cloudflare.com>, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org
+References: <20241016-syncookie-v1-0-3b7a0de12153@bootlin.com>
+ <20241016-syncookie-v1-2-3b7a0de12153@bootlin.com>
+ <18cb274a-a214-42c0-bcec-cbda34703893@linux.dev>
+From: =?UTF-8?Q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
+Content-Language: en-US
+In-Reply-To: <18cb274a-a214-42c0-bcec-cbda34703893@linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: alexis.lothore@bootlin.com
 
-On Thu, Oct 17, 2024 at 10:17:12AM -0400, Steven Rostedt wrote:
-> On Wed, 16 Oct 2024 17:01:28 -0400
-> Steven Rostedt <rostedt@goodmis.org> wrote:
-> 
-> > If this is only needed for module load, can we at least still use the
-> > text_poke_early() at boot up?
-> > 
-> >  	if (ftrace_poke_late) {
-> >  		text_poke_queue((void *)ip, new_code, MCOUNT_INSN_SIZE, NULL);
-> > 	} else if (system_state == SYSTEM_BOOTING) {
-> > 		text_poke_early((void *)ip, new_code, MCOUNT_INSN_SIZE);
-> >  	} else {
-> >  		mutex_lock(&text_mutex);
-> >  		text_poke((void *)ip, new_code, MCOUNT_INSN_SIZE);
-> >  		mutex_unlock(&text_mutex);
-> >  	}
-> > 
-> > ?
-> > 
-> > The above if statement looks to slow things down just slightly, but only by
-> > 2ms, which is more reasonable.
-> 
-> I changed the above to this (yes it's a little hacky) and got my 2ms back!
-> 
-> -- Steve
-> 
-> DEFINE_STATIC_KEY_TRUE(ftrace_modify_boot);
-> 
-> static int __init ftrace_boot_init_done(void)
-> {
-> 	static_branch_disable(&ftrace_modify_boot);
-> 	return 0;
-> }
-> /* Ftrace updates happen before core init */
-> core_initcall(ftrace_boot_init_done);
+Hi Martin, thanks for the review !
 
-We can also pass mod to ftrace_modify_code_direct() and use that to
-distinguish early boot and ftrace_module_init.
-With this I get very similar numbers like with the static branch
+On 10/19/24 01:57, Martin KaFai Lau wrote:
+> On 10/16/24 11:35 AM, Alexis Lothoré (eBPF Foundation) wrote:
+>> btf_skc_cls_ingress.c currently runs two subtests, and create a
+>> dedicated network namespace for each, but never cleans up the created
+>> namespace once the test has ended.
+>>
+>> Add missing namespace cleanup after each namespace to avoid accumulating
+>> namespaces for each new subtest. While at it, switch namespace
+>> management to netns_{new,free}
+>>
+>> Signed-off-by: Alexis Lothoré (eBPF Foundation) <alexis.lothore@bootlin.com>
 
-diff --git a/arch/x86/kernel/ftrace.c b/arch/x86/kernel/ftrace.c
-index 8da0e66ca22d..859902dd06fc 100644
---- a/arch/x86/kernel/ftrace.c
-+++ b/arch/x86/kernel/ftrace.c
-@@ -111,17 +111,22 @@ static int ftrace_verify_code(unsigned long ip, const char *old_code)
-  */
- static int __ref
- ftrace_modify_code_direct(unsigned long ip, const char *old_code,
--			  const char *new_code)
-+			  const char *new_code, struct module *mod)
- {
- 	int ret = ftrace_verify_code(ip, old_code);
- 	if (ret)
- 		return ret;
- 
- 	/* replace the text with the new text */
--	if (ftrace_poke_late)
-+	if (ftrace_poke_late) {
- 		text_poke_queue((void *)ip, new_code, MCOUNT_INSN_SIZE, NULL);
--	else
-+	} else if (!mod) {
- 		text_poke_early((void *)ip, new_code, MCOUNT_INSN_SIZE);
-+	} else {
-+		mutex_lock(&text_mutex);
-+		text_poke((void *)ip, new_code, MCOUNT_INSN_SIZE);
-+		mutex_unlock(&text_mutex);
-+	}
- 	return 0;
- }
- 
-@@ -142,7 +147,7 @@ int ftrace_make_nop(struct module *mod, struct dyn_ftrace *rec, unsigned long ad
- 	 * just modify the code directly.
- 	 */
- 	if (addr == MCOUNT_ADDR)
--		return ftrace_modify_code_direct(ip, old, new);
-+		return ftrace_modify_code_direct(ip, old, new, mod);
- 
- 	/*
- 	 * x86 overrides ftrace_replace_code -- this function will never be used
-@@ -161,7 +166,7 @@ int ftrace_make_call(struct dyn_ftrace *rec, unsigned long addr)
- 	new = ftrace_call_replace(ip, addr);
- 
- 	/* Should only be called when module is loaded */
--	return ftrace_modify_code_direct(rec->ip, old, new);
-+	return ftrace_modify_code_direct(rec->ip, old, new, NULL);
- }
- 
- /*
- 
+[...]
+
+>>   -    if (CHECK(unshare(CLONE_NEWNET), "create netns",
+>> -          "unshare(CLONE_NEWNET): %s (%d)",
+>> -          strerror(errno), errno))
+>> -        return -1;
+>> +    ns = netns_new(TEST_NS, true);
+>> +    if (!ASSERT_OK_PTR(ns, "create and join netns"))
+>> +        return ns;
+>>         if (CHECK(system("ip link set dev lo up"),
+>>             "ip link set dev lo up", "failed\n"))
+> 
+> nit. netns_new() takes care of "lo up" also, so the above can be removed.
+
+Ah, indeed, I missed it in make_netns. Thanks, I'll remove this part from the
+test then.
+> 
+> test_progs.c has restore_netns() after each test, so the netns was not cleaned
+> up. The second unshare should have freed the earlier netns also.
+> 
+> Using netns_new() removed the boiler plate codes. It is nice to see this change
+> here regardless.
+
+
 
 -- 
-Sincerely yours,
-Mike.
+Alexis Lothoré, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
