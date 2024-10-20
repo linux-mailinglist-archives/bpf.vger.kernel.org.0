@@ -1,129 +1,132 @@
-Return-Path: <bpf+bounces-42516-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42517-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20BE29A51B0
-	for <lists+bpf@lfdr.de>; Sun, 20 Oct 2024 00:51:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CC869A5209
+	for <lists+bpf@lfdr.de>; Sun, 20 Oct 2024 05:14:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 462E81C21B0F
-	for <lists+bpf@lfdr.de>; Sat, 19 Oct 2024 22:51:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA8A11F22B52
+	for <lists+bpf@lfdr.de>; Sun, 20 Oct 2024 03:14:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DFE6193094;
-	Sat, 19 Oct 2024 22:51:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4487F4431;
+	Sun, 20 Oct 2024 03:14:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PWWcwFHR"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FyI+m2Gd"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 710121922CC;
-	Sat, 19 Oct 2024 22:51:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 172ABBE40;
+	Sun, 20 Oct 2024 03:14:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729378307; cv=none; b=bFRRvAdCM9oIbcpz+ux12sdIRzBu3awh13uxbp4CNELJYz28gE5GYBfGkxyyekI+sJs6YYIgvujDUE73V8yi1XsQXRtMvRCtkH1m0kZBWQZi1q1mGZQAweRQCtlsFEyUKfPfGHVtQbcGH338Gih/VztW5FNNyRO6H9UlW8RVHYw=
+	t=1729394079; cv=none; b=b0xuYgwE5rkCqNqf8TjRcU52yLcuYK2L3p3DceihsUDCk7IkMBAnRQb66A9zF9cIvFAZcZOp37gErMZMkdGDv4yVVz7xGseH9wZ51eB2uMVvl6Gi5ONBus1TMImK4jHuHMx3UTPfBR9UxMvRtwXZbQRfdGJcgYXib5lO9hz9A08=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729378307; c=relaxed/simple;
-	bh=iaKyJYsgDj5oq6LrolQ8TT/cIGmsXYFI9lXbWUpr55Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QjYH+MgPahDCMPiM+C+9mamJ/P15+LTbeAuU9sw5ZLdV3jqDjHTm1xXdtLYA5HDLZYs22/1T/xALK5D4UQ5PKlImXnOOqHzEaHWtTBZoDC3vv9poTtTEfjjSr+fCk6zUJOfmLRCSHtEChVh5B5E21lYRWXzx91yzQNB+bN3bXjE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PWWcwFHR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A509C4CEC5;
-	Sat, 19 Oct 2024 22:51:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1729378307;
-	bh=iaKyJYsgDj5oq6LrolQ8TT/cIGmsXYFI9lXbWUpr55Y=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=PWWcwFHRKAv10UFeMWidR+oArwiG2+r721GO7uSmTpQx0pOBJf1X5cPUKD4gQg0+v
-	 evgCS5YusRtKfCXFwytoJRX7ZRENJRAMHCt8HvG03nMPWzjaJDvjdrgLKvwNx81i5w
-	 NIzDOiB7M0V+Ul7Gwqxo7hFP4wjCIx8CdeY/s0mZyLShSAGZB3TOEh3ca9PA+vMo3W
-	 q8+DRfeiSbEMT2pfBoZx2+ts1c/ZoMbSDOpbvF1L4SRM4K2S0rC8EknH09OaDU5jzH
-	 5NBzulTpDRDsAwrp/w7GYCrOs4CtagANrNUd5w9SX4IoQrxyUxMdI/Mnop054oa6hH
-	 EFlkfWan9WOpw==
-Date: Sat, 19 Oct 2024 15:51:43 -0700
-From: Luis Chamberlain <mcgrof@kernel.org>
-To: Mike Rapoport <rppt@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Andreas Larsson <andreas@gaisler.com>,
-	Andy Lutomirski <luto@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-	Brian Cain <bcain@quicinc.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Christoph Hellwig <hch@infradead.org>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
-	Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Michal Simek <monstr@monstr.eu>, Oleg Nesterov <oleg@redhat.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Richard Weinberger <richard@nod.at>,
-	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
-	Stafford Horne <shorne@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>,
-	bpf@vger.kernel.org, linux-alpha@vger.kernel.org,
-	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org, linux-mm@kvack.org,
-	linux-modules@vger.kernel.org, linux-openrisc@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-	linux-trace-kernel@vger.kernel.org, linux-um@lists.infradead.org,
-	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
-	sparclinux@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v6 0/8] x86/module: use large ROX pages for text
- allocations
-Message-ID: <ZxQ3_8xNPYsQA5GH@bombadil.infradead.org>
-References: <20241016122424.1655560-1-rppt@kernel.org>
+	s=arc-20240116; t=1729394079; c=relaxed/simple;
+	bh=qaPYNCZLDShnpAsUhIsPM324e6qSDcpIi4sUEwnS/PI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=eALZuARrytD8OYAXOIDMr5FS7FfhICTI9bvoR3Z74YKHTxRNzI80KUYvIWzyDhtzP2U6E+bTSNe82FsWfgd4j7rZ6evkItGImAxEDRJCux2z3d9xKaVQZd32r7AI+FDSnOulXXjuJ1c4Fmir1UjsCwA1aqPFkLaFT9LskvNZXcY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FyI+m2Gd; arc=none smtp.client-ip=209.85.210.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-71e585ef0b3so2685408b3a.1;
+        Sat, 19 Oct 2024 20:14:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1729394077; x=1729998877; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=a3KhY9DlhPOzQxVu6Ypnl189jFpbkIDSyUOnSOJA8JM=;
+        b=FyI+m2GdtjweFLjXQKELMTIeACpZ5kn/h4ppK/X+zE3yvcmYApNJiojpsx+RbLsoMU
+         UeA7+c9qMd0wHrKdi3WENaT5MVn3eiECd1DpXNbRNAZ2mxYxWsYQb0gZo0c9oLgfylDo
+         D2uZhgHp7PfZPUuQZ3MQkWhfHRgfd/BUZOiIp/xfvNo1QQOvGsYURC/qIDL7qwdHAHM1
+         j9i4sgT7rp5CYfaPT5/acrokOtygqFySOKJ+OomijX9UiaV86pGTusuSTkVaeqP9a3cb
+         W0NqX4YU+dLj6LgPUdlLCggPqBQanBEnjPuMSHaGrsTcG5A8FTzCgig0s5Wc+8P1sxOA
+         opCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1729394077; x=1729998877;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=a3KhY9DlhPOzQxVu6Ypnl189jFpbkIDSyUOnSOJA8JM=;
+        b=dPuGyQlXoh/X02Ha7+2yH6ylrxEJF6fvewdQepZth1QJmiFdm6kMhD9Sbxkj61D6DO
+         4GSytXGO2gyVm0VRpRFST88nrKQVXQG+1YbjJLfZcxjZn+cS6GY4rBzeGzy4q15yhHqv
+         2TfiQzjYFn/xrsUAyPIczIMj2D8aJpQnGTlVJ8H0/HVqLQNXkA2PeGWpRxusEjYr5oCd
+         nsnsYP71Xj4KJjJLn3KMkOfEIYlfjDcoBc2hhwkZQWL3DPZ8wO5RpBrWSkDaPqqiuZFR
+         LIZQ9Td1KaIjHQbrMTNYxOOobNAVieCEJWKlE3J4KpVlFleZgDGpdp6rsByIv/CbJUsh
+         QVzA==
+X-Forwarded-Encrypted: i=1; AJvYcCViljpBSppAWNqI5tIu536WCitedrfJ7BdRGZF+EA2r2hFFJBlyR+zPfN/fS5kOYkrDNwOmLN2D/0DeQ9t87ME=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwoIK7zecPd+2Qk3ue5C58ZEQFdvgzknbco5LgMkkg2PbKdw3OJ
+	gNBddFNS8OvPj6usn88NnhYfrbpxqpcbHd1i6xhyP7kYqybVQPPR
+X-Google-Smtp-Source: AGHT+IFNWC/DixKyJO10qn9DABG/XpiA7F1Kh2Ua2/z+g3A5U9knER8TF9pO2I6ciEQ/FIVZlqwJrA==
+X-Received: by 2002:a05:6a21:6711:b0:1d9:9a9:7dcf with SMTP id adf61e73a8af0-1d92c4a30f0mr9569964637.4.1729394077011;
+        Sat, 19 Oct 2024 20:14:37 -0700 (PDT)
+Received: from KERNELXING-MC1.tencent.com ([114.253.33.190])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-71ec1407801sm432372b3a.196.2024.10.19.20.14.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 19 Oct 2024 20:14:36 -0700 (PDT)
+From: Jason Xing <kerneljasonxing@gmail.com>
+To: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	eddyz87@gmail.com,
+	mykolal@fb.com,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	shuah@kernel.org
+Cc: bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	Jason Xing <kernelxing@tencent.com>
+Subject: [PATCH bpf-next] bpf: handle MADV_PAGEOUT error in uprobe_multi.c
+Date: Sun, 20 Oct 2024 11:14:22 +0800
+Message-Id: <20241020031422.46894-1-kerneljasonxing@gmail.com>
+X-Mailer: git-send-email 2.33.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241016122424.1655560-1-rppt@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Wed, Oct 16, 2024 at 03:24:16PM +0300, Mike Rapoport wrote:
-> From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
-> 
-> Hi,
-> 
-> This is an updated version of execmem ROX caches.
-> 
-> Andrew, Luis, there is a conflict with Suren's "page allocation tag
-> compression" patches:
-> 
-> https://lore.kernel.org/all/20241014203646.1952505-1-surenb@google.com
-> 
-> Probably taking this via mmotm would be more convenient.
+From: Jason Xing <kernelxing@tencent.com>
 
-Yeah, it's already there on Andrew's tree, fine with me to go through there.
+When I compiled the tools/testing/selftests/bpf, the following error
+pops out:
+uprobe_multi.c: In function ‘trigger_uprobe’:
+uprobe_multi.c:109:26: error: ‘MADV_PAGEOUT’ undeclared (first use in this function); did you mean ‘MADV_RANDOM’?
+   madvise(addr, page_sz, MADV_PAGEOUT);
+                          ^~~~~~~~~~~~
+                          MADV_RANDOM
 
-The linux modules KPD [0] has picked this up from the mailing list and
-tested with kdevops, and this series passes our modules test now [1], and so:
+We can see MADV_PAGEOUT existing in mman-common.h on x86 arch, so
+including this header file solves this compilation error.
 
-Tested-by: kdevops <kdevops@lists.linux.dev> [1]
+Signed-off-by: Jason Xing <kernelxing@tencent.com>
+---
+ tools/testing/selftests/bpf/uprobe_multi.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Link https://github.com/linux-kdevops/linux-modules-kpd/actions/runs/11420097546 # [0]
+diff --git a/tools/testing/selftests/bpf/uprobe_multi.c b/tools/testing/selftests/bpf/uprobe_multi.c
+index c7828b13e5ff..b0e11ffe0e1c 100644
+--- a/tools/testing/selftests/bpf/uprobe_multi.c
++++ b/tools/testing/selftests/bpf/uprobe_multi.c
+@@ -5,6 +5,7 @@
+ #include <stdbool.h>
+ #include <stdint.h>
+ #include <sys/mman.h>
++#include <mman-common.h>
+ #include <unistd.h>
+ #include <sdt.h>
+ 
+-- 
+2.37.3
 
-  Luis
 
