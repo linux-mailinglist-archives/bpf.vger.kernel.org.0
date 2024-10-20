@@ -1,137 +1,145 @@
-Return-Path: <bpf+bounces-42547-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42548-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9799D9A568C
-	for <lists+bpf@lfdr.de>; Sun, 20 Oct 2024 21:53:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2ACD9A56C3
+	for <lists+bpf@lfdr.de>; Sun, 20 Oct 2024 22:51:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1EC44B27BA6
-	for <lists+bpf@lfdr.de>; Sun, 20 Oct 2024 19:53:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 645DF282649
+	for <lists+bpf@lfdr.de>; Sun, 20 Oct 2024 20:51:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF97119538D;
-	Sun, 20 Oct 2024 19:53:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43D39198A0C;
+	Sun, 20 Oct 2024 20:51:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="f3wHWiBr"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HSu03c3n"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BBB6193078
-	for <bpf@vger.kernel.org>; Sun, 20 Oct 2024 19:53:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00883192B71;
+	Sun, 20 Oct 2024 20:51:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729453998; cv=none; b=sbcGCuQbMP728f3ZkCLajMDLzFeovYus98+6K3CpLlBMONxHeRm86J846+SwbqcgsAn7lvmI961N9QwzXwoMmcRFV/xZ0PAvSXShBnI3o8Aw7qY11Svc0sELGmfoDaJjxdnn94kCE6fdMp5ujuC6t6SvclZyB852dlEmXugu8bI=
+	t=1729457464; cv=none; b=btecp9mCnb62k4txDxUYjz9wDgokN/lxta/SbN6Mj4OiDIPEYSHE+GyO2M9Mh4XukFyWlJuBnnNZDs7p/TOJdygzCyrcHUXJvjSpVIV5jjKv6V5bL4fLW3pphWY5gP5CUAroNq3pqdwx97YQTjKyPD28rsKIJgedoE+w62JIb9w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729453998; c=relaxed/simple;
-	bh=J6E3qOlIPfmy+KzOM0qIYC0vVNBGa+kCznmafIO9OY0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mrp3Y7snBbw9uMUCKzx9cZaXWmAHwdZDCgvuNUJ+ZAQC4gvAWGNQapWKqjSo9Il8brWbZz9q1k4N4q9ddpMh4nKsv/uL6VURm653M5fB3KZ9zD+pEDMmire7OaIs0P1tf3XhlCTyULTaEvUQL105LN7onIgRNgQZdd08tXDHDYg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=f3wHWiBr; arc=none smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1729453995; x=1760989995;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=J6E3qOlIPfmy+KzOM0qIYC0vVNBGa+kCznmafIO9OY0=;
-  b=f3wHWiBrJkmBSCt+DuW0qFr+GvfF3wkHWsH3CVzo5qdViurN1IAAC/kv
-   3kYXUPDLAMj3RWbZMQl47qAq/2jR171WddO8Guo9F4aBRx9DqU6SZ5uzD
-   FS6w3qEMX9QVbdQaRljKd8oECYFrbZQKoS+BoyZn4XnfQ476d03sbJISo
-   T0AcdRs9cEKwFyrxgSnGGLQJzyoqFKOBO5YGAhKQ2YFjrv1cMGRculySh
-   ZvGqhjTjh7Ejzn9gZiOJ5+EY8B4X0z4/fc9P3Gwk626xnEOk3T0bhPVv5
-   gslofWYdcMcVfQfkJ/fTU5ELvbV6vkUvUyWnytbnB65KPRgB0XSM4unf3
-   g==;
-X-CSE-ConnectionGUID: ZvZOftbGQimLGCUnhmxoDw==
-X-CSE-MsgGUID: Qq+1Nr5aQRi82HP2FixxLg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11231"; a="16557540"
-X-IronPort-AV: E=Sophos;i="6.11,219,1725346800"; 
-   d="scan'208";a="16557540"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2024 12:53:14 -0700
-X-CSE-ConnectionGUID: yFDUaOssRtWYrHNbgiCIFw==
-X-CSE-MsgGUID: sPLuMLrSSIms6gOVGDUQBA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.11,219,1725346800"; 
-   d="scan'208";a="78989801"
-Received: from lkp-server01.sh.intel.com (HELO a48cf1aa22e8) ([10.239.97.150])
-  by fmviesa007.fm.intel.com with ESMTP; 20 Oct 2024 12:53:12 -0700
-Received: from kbuild by a48cf1aa22e8 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1t2bzC-000Qkx-06;
-	Sun, 20 Oct 2024 19:53:10 +0000
-Date: Mon, 21 Oct 2024 03:52:24 +0800
-From: kernel test robot <lkp@intel.com>
-To: Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
-	Martin KaFai Lau <martin.lau@kernel.org>, Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH bpf-next v5 7/9] bpf, x86: Add jit support for private
- stack
-Message-ID: <202410210358.dvPfsO1C-lkp@intel.com>
-References: <20241017223214.3177977-1-yonghong.song@linux.dev>
+	s=arc-20240116; t=1729457464; c=relaxed/simple;
+	bh=pxsVXRvz3IKNxmDRqwavGkoI451JYkwuFGBrJTRUQLQ=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=GOTSLFaThs0eG+QZbSPvYyb0UwY+3LVULaWEaf+KokNvGAD5fFzjTGo2vXQiRHCZCs8qTMJPGhk+RtRh2/9h63ej8gPW47+1OPaatxPvbKqLB+urfMRpFqEX7VSTMIsYjj8nzFIyryDHpbmXN1jMT5P0lXTAJaGTYYXtqZb3Aao=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HSu03c3n; arc=none smtp.client-ip=209.85.222.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f176.google.com with SMTP id af79cd13be357-7b1457ba751so325654585a.3;
+        Sun, 20 Oct 2024 13:51:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1729457462; x=1730062262; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xSKDAWmB7QjNwJwvIjfmgBhbrPMBh10crall/g7rNVc=;
+        b=HSu03c3nm/Alt8xedecg6HpqgSFSKDI9x7BQcrThpxE97V38/pPt+1ub0Onw2fjf8F
+         y/zIoszRafMCLm4+vTzDoQxBzTZq8bq/JWVmB1QDl4NXUXsNZhBn2fjgUuetk197EnYi
+         BPcP+LJmmSwQ5Nw7L+/2lg2/zcAGtnYhn1JBtJPjRvOsLXYO015flEnM+TWjSu8tx3ig
+         rvGoONTWxR+kWAZhnoOS287CJYIynRpdhDLVhG2tWwxgKOmizXEcHenp0zhsVBTdJEV6
+         GyNpaCXY3q/CquVWUhESyJtFEld8LBpv+NmJ3MA/ZIYYRCGhGimppHIQsgIbFtgS6jju
+         K/Jg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1729457462; x=1730062262;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=xSKDAWmB7QjNwJwvIjfmgBhbrPMBh10crall/g7rNVc=;
+        b=XQ1Rc8Xx6K7W+uR8Ie46god4LfkD10pvtC3qLGbJFdnl4386efIt8UvhBf+9BlPPBE
+         Pye7PKgD+7v/TLhxnU6+RZIzoEb6ryFkEHeam5y/Cf4qvjs5XQRqddpvSC7nZy7bdte/
+         QGrMfm1i3FzlOBKi16Z6Umemj3WCL3UF+Mv17rGM5rHiWbcSX7UrzK+s1kmunxFYQwSg
+         edGDx8oqClldGmMCuvrbwId0ywPLpQU3y9FFQ3JuoYIs6lnhAppklEi3HZaLo4wHuRJb
+         b2H7KAqolQo4YHpwgkQUwGsBeC6Mfk1tduoBVYpPsuis4Xw3lyMPWR/5wdP87ZVnEmze
+         WCsg==
+X-Forwarded-Encrypted: i=1; AJvYcCV+GDuchRLJpBzkV0G6WJ8TM0Q7QJmw5B3T8OXrTU0qcKxUYJ7JVsiQuXvfNcXVo1p/IUMsP4cxclyOk3vw@vger.kernel.org, AJvYcCW+q+vQzF04xcFndk8bJAOiTDSdC/MF3M+6CHCqeoGgVaRlU7mHKEuZDnl6OsBbz+53tYQ+oWh8nGw=@vger.kernel.org, AJvYcCWtFop14mOAINOUkDj2iJ44GRicKe8C5xQuOaqaHw947bHHDhh4kiTK18/SxQh0hJt4hnxiFGmd@vger.kernel.org
+X-Gm-Message-State: AOJu0YwJafQSR/KZnHkmmcl+H4iyO9siwxGJA2O+lsIUiIWyQRg+RPAu
+	4S0Rw9JQcGJeMhzGFVZKcFroHBxkiefaT3PjIUZVmYyxAektfvy/
+X-Google-Smtp-Source: AGHT+IHqwAnwB//1Bh8QwdKdNxC5bfoFOAhk9GP2k1phgymhhCvnCu1QgZ5V4ISV4t4bmaVlSREPuw==
+X-Received: by 2002:a05:620a:31a1:b0:7b1:557c:666f with SMTP id af79cd13be357-7b157b6aa2dmr1394819985a.25.1729457461764;
+        Sun, 20 Oct 2024 13:51:01 -0700 (PDT)
+Received: from localhost (86.235.150.34.bc.googleusercontent.com. [34.150.235.86])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7b165a892cbsm107325885a.136.2024.10.20.13.51.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 20 Oct 2024 13:51:00 -0700 (PDT)
+Date: Sun, 20 Oct 2024 16:51:00 -0400
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: Stanislav Fomichev <stfomichev@gmail.com>, 
+ Muyang Tian <tianmuyang@huawei.com>
+Cc: bpf@vger.kernel.org, 
+ "David S . Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, 
+ Donald Hunter <donald.hunter@gmail.com>, 
+ =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
+ Magnus Karlsson <magnus.karlsson@intel.com>, 
+ Maciej Fijalkowski <maciej.fijalkowski@intel.com>, 
+ Jonathan Lemon <jonathan.lemon@gmail.com>, 
+ Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, 
+ Jesper Dangaard Brouer <hawk@kernel.org>, 
+ John Fastabend <john.fastabend@gmail.com>, 
+ netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ linux-doc@vger.kernel.org, 
+ yanan@huawei.com, 
+ xiesongyang@huawei.com, 
+ wuchangye@huawei.com, 
+ liuxin350@huawei.com, 
+ zhangmingyi5@huawei.com, 
+ liwei883@huawei.com, 
+ willemb@google.com
+Message-ID: <67156d3447444_14e182944b@willemb.c.googlers.com.notmuch>
+In-Reply-To: <ZxKPXdYjwPnpq95V@mini-arch>
+References: <20241018091502.411513-1-tianmuyang@huawei.com>
+ <ZxKPXdYjwPnpq95V@mini-arch>
+Subject: Re: [PATCH bpf-next v2 0/3] XDP metadata: Rx checksum/GSO hint; Tx
+ GSO offload
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241017223214.3177977-1-yonghong.song@linux.dev>
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-Hi Yonghong,
+Stanislav Fomichev wrote:
+> On 10/18, Muyang Tian wrote:
+> > This series introduce XDP metadata functionality, including Rx checksum/GSO hint
+> > and Tx GSO offload. This is aimed to transfer control fields when processing jumbo
+> > frames between VMs.
+> 
+> Ideally, the series should also have the implementation of these hints
+> for a couple of devices and appropriate selftest updates to exercise
+> them.
 
-kernel test robot noticed the following build warnings:
++1
 
-[auto build test WARNING on bpf-next/master]
+> For GSO, CC Willem going forward (I don't think I understand why
+> we want to have gso_type in the TX hint; something like header_len
+> seems like a better fit).
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Yonghong-Song/bpf-Allow-each-subprog-having-stack-size-of-512-bytes/20241018-063530
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/20241017223214.3177977-1-yonghong.song%40linux.dev
-patch subject: [PATCH bpf-next v5 7/9] bpf, x86: Add jit support for private stack
-config: x86_64-randconfig-122-20241021 (https://download.01.org/0day-ci/archive/20241021/202410210358.dvPfsO1C-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20241021/202410210358.dvPfsO1C-lkp@intel.com/reproduce)
+GSO on Tx makes sense. To be able to program hardware USO, say.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202410210358.dvPfsO1C-lkp@intel.com/
+GSO on Rx is less obvious. Is this for HW-GRO? In general, some usage
+context will be helpful.
 
-sparse warnings: (new ones prefixed by >>)
->> arch/x86/net/bpf_jit_comp.c:1487:44: sparse: sparse: cast removes address space '__percpu' of expression
-   arch/x86/net/bpf_jit_comp.c:1488:31: sparse: sparse: cast removes address space '__percpu' of expression
-   arch/x86/net/bpf_jit_comp.c:2073:54: sparse: sparse: cast truncates bits from constant value (800000a00000 becomes a00000)
+Two implementation questions:
 
-vim +/__percpu +1487 arch/x86/net/bpf_jit_comp.c
+- why define an XDP specific type for checksum types, but reuse the
+  netdev type for gso_type?
+- why u32 gso_type, when it is a u8 in skb_shared_info?
 
-  1477	
-  1478	static void emit_root_priv_frame_ptr(u8 **pprog, struct bpf_prog *bpf_prog,
-  1479					     u32 orig_stack_depth)
-  1480	{
-  1481		void __percpu *priv_frame_ptr;
-  1482		u8 *prog = *pprog;
-  1483	
-  1484		priv_frame_ptr = bpf_prog->aux->priv_stack_ptr + orig_stack_depth;
-  1485	
-  1486		/* movabs r9, priv_frame_ptr */
-> 1487		emit_mov_imm64(&prog, X86_REG_R9, (long) priv_frame_ptr >> 32,
-  1488			       (u32) (long) priv_frame_ptr);
-  1489	#ifdef CONFIG_SMP
-  1490		/* add <r9>, gs:[<off>] */
-  1491		EMIT2(0x65, 0x4c);
-  1492		EMIT3(0x03, 0x0c, 0x25);
-  1493		EMIT((u32)(unsigned long)&this_cpu_off, 4);
-  1494	#endif
-  1495		*pprog = prog;
-  1496	}
-  1497	
+> Please also don't post v3 yet and allow at least a week for the initial
+> reviewers to catch up..
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+
 
