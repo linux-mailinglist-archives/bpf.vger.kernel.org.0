@@ -1,106 +1,103 @@
-Return-Path: <bpf+bounces-42548-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42549-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A2ACD9A56C3
-	for <lists+bpf@lfdr.de>; Sun, 20 Oct 2024 22:51:13 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 21AF29A56FD
+	for <lists+bpf@lfdr.de>; Sun, 20 Oct 2024 23:52:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 645DF282649
-	for <lists+bpf@lfdr.de>; Sun, 20 Oct 2024 20:51:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A14FE1F21FBF
+	for <lists+bpf@lfdr.de>; Sun, 20 Oct 2024 21:52:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43D39198A0C;
-	Sun, 20 Oct 2024 20:51:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AC7D197A8F;
+	Sun, 20 Oct 2024 21:52:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HSu03c3n"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mst6jLhq"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
+Received: from mail-qk1-f170.google.com (mail-qk1-f170.google.com [209.85.222.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00883192B71;
-	Sun, 20 Oct 2024 20:51:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9D0A1DFD1;
+	Sun, 20 Oct 2024 21:52:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729457464; cv=none; b=btecp9mCnb62k4txDxUYjz9wDgokN/lxta/SbN6Mj4OiDIPEYSHE+GyO2M9Mh4XukFyWlJuBnnNZDs7p/TOJdygzCyrcHUXJvjSpVIV5jjKv6V5bL4fLW3pphWY5gP5CUAroNq3pqdwx97YQTjKyPD28rsKIJgedoE+w62JIb9w=
+	t=1729461122; cv=none; b=UQiSQQX1NvshpG8MxZk0Mt/CkLhgXjSmrBavIBmHsXfVWA1D8/9e+yq4y43jdI8qEy5mKsbYGoxKzSsmsDEnA5bWwTiCrbqiIq3AT3h9sPNteXtNQDc92dwkY8GXy3xNAIIRG1/1eLwMoXvFZue9VC4VUjiybtM0iIDb2jenbPw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729457464; c=relaxed/simple;
-	bh=pxsVXRvz3IKNxmDRqwavGkoI451JYkwuFGBrJTRUQLQ=;
+	s=arc-20240116; t=1729461122; c=relaxed/simple;
+	bh=H4Epv6qeC4bRPwHm76HkKbmSd6YH2E32YywZ/bmqKN0=;
 	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=GOTSLFaThs0eG+QZbSPvYyb0UwY+3LVULaWEaf+KokNvGAD5fFzjTGo2vXQiRHCZCs8qTMJPGhk+RtRh2/9h63ej8gPW47+1OPaatxPvbKqLB+urfMRpFqEX7VSTMIsYjj8nzFIyryDHpbmXN1jMT5P0lXTAJaGTYYXtqZb3Aao=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HSu03c3n; arc=none smtp.client-ip=209.85.222.176
+	 Mime-Version:Content-Type; b=G8vbqkTlIPoa9yDJgaa9oKxtb//44xTe9rO2wG/8La6dg3recPORgFgVEzP3Pq+H/x6fNK1pxSBz3HMEHyglH3IYQlst4wWJsYCsHLix2XV1ccrshspwrnRwWABrSyLYswIQqYSI1hLJO0WtlZuMjnS1PbvnwrpWByMaGU/MoNw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mst6jLhq; arc=none smtp.client-ip=209.85.222.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f176.google.com with SMTP id af79cd13be357-7b1457ba751so325654585a.3;
-        Sun, 20 Oct 2024 13:51:02 -0700 (PDT)
+Received: by mail-qk1-f170.google.com with SMTP id af79cd13be357-7b15495f04dso262071185a.0;
+        Sun, 20 Oct 2024 14:52:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729457462; x=1730062262; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1729461119; x=1730065919; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=xSKDAWmB7QjNwJwvIjfmgBhbrPMBh10crall/g7rNVc=;
-        b=HSu03c3nm/Alt8xedecg6HpqgSFSKDI9x7BQcrThpxE97V38/pPt+1ub0Onw2fjf8F
-         y/zIoszRafMCLm4+vTzDoQxBzTZq8bq/JWVmB1QDl4NXUXsNZhBn2fjgUuetk197EnYi
-         BPcP+LJmmSwQ5Nw7L+/2lg2/zcAGtnYhn1JBtJPjRvOsLXYO015flEnM+TWjSu8tx3ig
-         rvGoONTWxR+kWAZhnoOS287CJYIynRpdhDLVhG2tWwxgKOmizXEcHenp0zhsVBTdJEV6
-         GyNpaCXY3q/CquVWUhESyJtFEld8LBpv+NmJ3MA/ZIYYRCGhGimppHIQsgIbFtgS6jju
-         K/Jg==
+        bh=7dT9fmaMlUxJBUvQq9OqSg/LZuS+O6J4fJBYqHhKxA0=;
+        b=mst6jLhqugAIzyjpm9AcCs4ljd06CBE/7y2uKIV9p6wxmq89a1baLM9JuLOKIoi3fg
+         m/oWg02wHQCsKJ0cwU147w72NY3wWIArsHERkpOGTqCSH7BsPjyiCz8eQrtJRM6MSyoK
+         zTNGSxN/YC38YE/NEtL8U0/xEz4yiWwtyZnZUNvkSadcLxdEiWYpcSf38DKO1bCxl3Et
+         yYDpb4i/KNdmO8frXUkEA83u+eomG2gEEtUHVQbFK7HGGSxHQwa/V9bkiNBwjaP2IT5H
+         bzfgwU6y2XRyUVD82/CHLXL1ScxOE7lgrOpS+mkB9AbfWY+LUS1deeQnX2dZYynCMz6l
+         TglQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729457462; x=1730062262;
+        d=1e100.net; s=20230601; t=1729461119; x=1730065919;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=xSKDAWmB7QjNwJwvIjfmgBhbrPMBh10crall/g7rNVc=;
-        b=XQ1Rc8Xx6K7W+uR8Ie46god4LfkD10pvtC3qLGbJFdnl4386efIt8UvhBf+9BlPPBE
-         Pye7PKgD+7v/TLhxnU6+RZIzoEb6ryFkEHeam5y/Cf4qvjs5XQRqddpvSC7nZy7bdte/
-         QGrMfm1i3FzlOBKi16Z6Umemj3WCL3UF+Mv17rGM5rHiWbcSX7UrzK+s1kmunxFYQwSg
-         edGDx8oqClldGmMCuvrbwId0ywPLpQU3y9FFQ3JuoYIs6lnhAppklEi3HZaLo4wHuRJb
-         b2H7KAqolQo4YHpwgkQUwGsBeC6Mfk1tduoBVYpPsuis4Xw3lyMPWR/5wdP87ZVnEmze
-         WCsg==
-X-Forwarded-Encrypted: i=1; AJvYcCV+GDuchRLJpBzkV0G6WJ8TM0Q7QJmw5B3T8OXrTU0qcKxUYJ7JVsiQuXvfNcXVo1p/IUMsP4cxclyOk3vw@vger.kernel.org, AJvYcCW+q+vQzF04xcFndk8bJAOiTDSdC/MF3M+6CHCqeoGgVaRlU7mHKEuZDnl6OsBbz+53tYQ+oWh8nGw=@vger.kernel.org, AJvYcCWtFop14mOAINOUkDj2iJ44GRicKe8C5xQuOaqaHw947bHHDhh4kiTK18/SxQh0hJt4hnxiFGmd@vger.kernel.org
-X-Gm-Message-State: AOJu0YwJafQSR/KZnHkmmcl+H4iyO9siwxGJA2O+lsIUiIWyQRg+RPAu
-	4S0Rw9JQcGJeMhzGFVZKcFroHBxkiefaT3PjIUZVmYyxAektfvy/
-X-Google-Smtp-Source: AGHT+IHqwAnwB//1Bh8QwdKdNxC5bfoFOAhk9GP2k1phgymhhCvnCu1QgZ5V4ISV4t4bmaVlSREPuw==
-X-Received: by 2002:a05:620a:31a1:b0:7b1:557c:666f with SMTP id af79cd13be357-7b157b6aa2dmr1394819985a.25.1729457461764;
-        Sun, 20 Oct 2024 13:51:01 -0700 (PDT)
+        bh=7dT9fmaMlUxJBUvQq9OqSg/LZuS+O6J4fJBYqHhKxA0=;
+        b=VzFhUXvS95E0FZt4FbSHTCKVO5u9FT7FUhEgOt1mu6fZb4Z8VaINFsnOeytJ1kanGz
+         n+5CXljUMiqFr9j62XadggAY47Lwxmw0zV+niKPhROED+K6PESYcrTO65QYjbLomRp6T
+         BqCR3nxc1XdWc83BvUBqEpZpgB6O5LUM9A5SXYusRHxx++gqnUWugY7tmlunpQHRXgO6
+         p4ZZL0T695Eace5qsGKb+3v/09W2N1/X4AhQGYmT+sUHN0HWCrMldQAkoPHztUxHJUm5
+         JQJUrmil7L0mvgLm9vpWYkqrUMupcBaziMVfphJxGm+5d9ljAKhGbnqjpCiH6UevkirW
+         GYtA==
+X-Forwarded-Encrypted: i=1; AJvYcCW6rOcWvI8HZC9uwy2TIV0tjONMK49J2GnNX9VLdOMsbep73x2TwLn+pUI/wXHTffBKenLzLO4=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyujFtwsDW8sG1WZLXSuoy3wwNI8sVI2MOitgPObeOltCIf4v9j
+	zzs+CBQYqEoa2pFxPBBE3aiYS/WngiOo7dvy9RsWZZDcBsYscHqq
+X-Google-Smtp-Source: AGHT+IGbwOV8kSjVLDhmhM4sj+aUrszygkOPhQFp/ESQ7rLN+vDrzfZswEHY6uQRve6LE4COzL3GCA==
+X-Received: by 2002:a05:620a:2990:b0:7b1:4fcc:5483 with SMTP id af79cd13be357-7b157b65c99mr1462452585a.27.1729461119418;
+        Sun, 20 Oct 2024 14:51:59 -0700 (PDT)
 Received: from localhost (86.235.150.34.bc.googleusercontent.com. [34.150.235.86])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7b165a892cbsm107325885a.136.2024.10.20.13.51.00
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7b165a88814sm110911885a.132.2024.10.20.14.51.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Oct 2024 13:51:00 -0700 (PDT)
-Date: Sun, 20 Oct 2024 16:51:00 -0400
+        Sun, 20 Oct 2024 14:51:58 -0700 (PDT)
+Date: Sun, 20 Oct 2024 17:51:58 -0400
 From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: Stanislav Fomichev <stfomichev@gmail.com>, 
- Muyang Tian <tianmuyang@huawei.com>
+To: Jason Xing <kerneljasonxing@gmail.com>, 
+ davem@davemloft.net, 
+ edumazet@google.com, 
+ kuba@kernel.org, 
+ pabeni@redhat.com, 
+ dsahern@kernel.org, 
+ willemdebruijn.kernel@gmail.com, 
+ willemb@google.com, 
+ ast@kernel.org, 
+ daniel@iogearbox.net, 
+ andrii@kernel.org, 
+ martin.lau@linux.dev, 
+ eddyz87@gmail.com, 
+ song@kernel.org, 
+ yonghong.song@linux.dev, 
+ john.fastabend@gmail.com, 
+ kpsingh@kernel.org, 
+ sdf@fomichev.me, 
+ haoluo@google.com, 
+ jolsa@kernel.org
 Cc: bpf@vger.kernel.org, 
- "David S . Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, 
- Donald Hunter <donald.hunter@gmail.com>, 
- =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
- Magnus Karlsson <magnus.karlsson@intel.com>, 
- Maciej Fijalkowski <maciej.fijalkowski@intel.com>, 
- Jonathan Lemon <jonathan.lemon@gmail.com>, 
- Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, 
- Jesper Dangaard Brouer <hawk@kernel.org>, 
- John Fastabend <john.fastabend@gmail.com>, 
  netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, 
- linux-doc@vger.kernel.org, 
- yanan@huawei.com, 
- xiesongyang@huawei.com, 
- wuchangye@huawei.com, 
- liuxin350@huawei.com, 
- zhangmingyi5@huawei.com, 
- liwei883@huawei.com, 
- willemb@google.com
-Message-ID: <67156d3447444_14e182944b@willemb.c.googlers.com.notmuch>
-In-Reply-To: <ZxKPXdYjwPnpq95V@mini-arch>
-References: <20241018091502.411513-1-tianmuyang@huawei.com>
- <ZxKPXdYjwPnpq95V@mini-arch>
-Subject: Re: [PATCH bpf-next v2 0/3] XDP metadata: Rx checksum/GSO hint; Tx
- GSO offload
+ Jason Xing <kernelxing@tencent.com>
+Message-ID: <67157b7ec615_14e1829490@willemb.c.googlers.com.notmuch>
+In-Reply-To: <20241012040651.95616-5-kerneljasonxing@gmail.com>
+References: <20241012040651.95616-1-kerneljasonxing@gmail.com>
+ <20241012040651.95616-5-kerneljasonxing@gmail.com>
+Subject: Re: [PATCH net-next v2 04/12] net-timestamp: add static key to
+ control the whole bpf extension
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -111,35 +108,110 @@ Content-Type: text/plain;
  charset=utf-8
 Content-Transfer-Encoding: 7bit
 
-Stanislav Fomichev wrote:
-> On 10/18, Muyang Tian wrote:
-> > This series introduce XDP metadata functionality, including Rx checksum/GSO hint
-> > and Tx GSO offload. This is aimed to transfer control fields when processing jumbo
-> > frames between VMs.
+Jason Xing wrote:
+> From: Jason Xing <kernelxing@tencent.com>
 > 
-> Ideally, the series should also have the implementation of these hints
-> for a couple of devices and appropriate selftest updates to exercise
-> them.
+> Willem suggested that we use a static key to control. The advantage
+> is that we will not affect the existing applications at all if we
+> don't load BPF program.
+> 
+> In this patch, except the static key, I also add one logic that is
+> used to test if the socket has enabled its tsflags in order to
+> support bpf logic to allow both cases to happen at the same time.
+> Or else, the skb carring related timestamp flag doesn't know which
+> way of printing is desirable.
+> 
+> One thing important is this patch allows print from both applications
+> and bpf program at the same time. Now we have three kinds of print:
+> 1) only BPF program prints
+> 2) only application program prints
+> 3) both can print without side effect
+> 
+> Signed-off-by: Jason Xing <kernelxing@tencent.com>
 
-+1
+Getting back to this thread. It is long, instead of responding to
+multiple messages, let me combine them in a single response.
 
-> For GSO, CC Willem going forward (I don't think I understand why
-> we want to have gso_type in the TX hint; something like header_len
-> seems like a better fit).
 
-GSO on Tx makes sense. To be able to program hardware USO, say.
+* On future extensions:
 
-GSO on Rx is less obvious. Is this for HW-GRO? In general, some usage
-context will be helpful.
++1 that the UDP case, and datagrams more broadly, must have a clear
+development path, before we can merge TCP.
 
-Two implementation questions:
+Similarly, hardware timestamps need not be supported from the start,
+but must clearly be supportable.
 
-- why define an XDP specific type for checksum types, but reuse the
-  netdev type for gso_type?
-- why u32 gso_type, when it is a u8 in skb_shared_info?
 
-> Please also don't post v3 yet and allow at least a week for the initial
-> reviewers to catch up..
+* On queueing packets to userspace:
 
+> > the current behavior is to just queue to the sk_error_queue as long
+> > as there is "SOF_TIMESTAMPING_TX_*" set in the skb's tx_flags and it
+> > is regardless of the sk_tsflags. "
+
+> Totally correct. SOF_TIMESTAMPING_SOFTWARE is a report flag while
+> SOF_TIMESTAMPING_TX_* are generation flags. Without former, users can
+> read the skb from the errqueue but are not able to parse the
+> timestamps
+
+Before queuing a packet to userspace on the error queue, the relevant
+reporting flag is always tested. sock_recv_timestamp has:
+
+        /*
+         * generate control messages if
+         * - receive time stamping in software requested
+         * - software time stamp available and wanted
+         * - hardware time stamps available and wanted
+         */
+        if (sock_flag(sk, SOCK_RCVTSTAMP) ||
+            (tsflags & SOF_TIMESTAMPING_RX_SOFTWARE) ||
+            (kt && tsflags & SOF_TIMESTAMPING_SOFTWARE) ||
+            (hwtstamps->hwtstamp &&
+             (tsflags & SOF_TIMESTAMPING_RAW_HARDWARE)))
+                __sock_recv_timestamp(msg, sk, skb);
+
+Otherwise applications could get error messages queued, and
+epoll/poll/select would unexpectedly behave differently.
+
+> SOF_TIMESTAMPING_SOFTWARE is only used in traditional SO_TIMESTAMPING
+> features including cmsg mode. But it will not be used in bpf mode. 
+
+For simplicity, the two uses of the API are best kept identical. If
+there is a technical reason why BPF has to diverge from established
+behavior, this needs to be explicitly called out in the commit
+message.
+
+Also, if you want to extend the API for BPF in the future, good to
+call this out now and ideally extensions will apply to both, to
+maintain a uniform API.
+
+
+* On extra measurement points, at sendmsg or tcp_write_xmit:
+
+The first is interesting. For application timestamping, this was
+never needed, as the application can just call clock_gettime before
+sendmsg.
+
+In general, additional measurement points are not only useful if the
+interval between is not constant. So far, we have seen no need for
+any additional points.
+
+
+* On skb state:
+
+> > For now, is there thing we can explore to share in the skb_shared_info?
+
+skb_shinfo space is at a premium. I don't think we can justify two
+extra fields just for this use case.
+
+> My initial thought is just to reuse these fields in skb. It can work
+> without interfering one another.
+
+I'm skeptical that two methods can work at the same time. If they are
+started at different times, their sk_tskey will be different, for one.
+
+There may be workarounds. Maybe BPF can store its state in some BPF
+specific field, indeed. Or perhaps it can store per-sk shadow state
+that resolves the conflict. For instance, the offset between sk_tskey
+and bpf_tskey.
 
 
