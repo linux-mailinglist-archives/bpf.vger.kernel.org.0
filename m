@@ -1,555 +1,155 @@
-Return-Path: <bpf+bounces-42539-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42540-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FE909A5608
-	for <lists+bpf@lfdr.de>; Sun, 20 Oct 2024 21:17:59 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A1DD9A560F
+	for <lists+bpf@lfdr.de>; Sun, 20 Oct 2024 21:23:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD9BB2817BE
-	for <lists+bpf@lfdr.de>; Sun, 20 Oct 2024 19:17:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D6A901F21D5A
+	for <lists+bpf@lfdr.de>; Sun, 20 Oct 2024 19:23:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E71A5196C7B;
-	Sun, 20 Oct 2024 19:17:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5612198841;
+	Sun, 20 Oct 2024 19:23:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="n1n6IHGX"
 X-Original-To: bpf@vger.kernel.org
-Received: from 66-220-155-179.mail-mxout.facebook.com (66-220-155-179.mail-mxout.facebook.com [66.220.155.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BC9117591
-	for <bpf@vger.kernel.org>; Sun, 20 Oct 2024 19:17:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.220.155.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00790C2C6;
+	Sun, 20 Oct 2024 19:23:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729451868; cv=none; b=ajDJIaGw+7OJxcqKh5zh/SA7HMTVTmwG0pEuSCQV/sGP7T8p5P04ysYxqfI4gSKVpwpUmkkMGvQioYFMP/UQnAroZThxry8tFqgRydB62jMZMa94CHy8ssG8le94cHvcgqCDgQYrNquCCGJRH162fhGG3YM/iDmMMrLsJLVNNqs=
+	t=1729452197; cv=none; b=DbQyd+fwLkKzj+sTfp1wi1jLcGSmDIGoTwS3MdvIN8LBRMLtwm0y434wc8LCAcGO6hcMnSgN5VOhjo4ojzd8ZyE+HebWCvNsdw6HRruk1ceGobQ5Cmhy3mVQmeI3C9BNscva08eGR/1PJD+EsYAmVJB/FcmSpcalKuywIvVX4cY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729451868; c=relaxed/simple;
-	bh=0wm4fV3aJQGWZ28x4z6qmr90pmig+9/QSkr6Y+W2hYs=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=pXNu+dLBG7nK202j0NKTTcyKlf3QpDc6E3SyF2rzQ+nvgNdDkI7g1J0XZZITxiosfMKnI26iD316TqkqxoeKu7D7wpR6it/BZL4KasnzKwatvrgV2uHJKccb1zQp8VaOyrTcJhmd4EpQkngDvBrFH778AWKs0CU6sZfpTjH9u7E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=66.220.155.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
-Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-	id 7014DA465F2E; Sun, 20 Oct 2024 12:14:36 -0700 (PDT)
-From: Yonghong Song <yonghong.song@linux.dev>
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	kernel-team@fb.com,
-	Martin KaFai Lau <martin.lau@kernel.org>,
-	Tejun Heo <tj@kernel.org>
-Subject: [PATCH bpf-next v6 9/9] selftests/bpf: Add struct_ops prog private stack tests
-Date: Sun, 20 Oct 2024 12:14:36 -0700
-Message-ID: <20241020191436.2108675-1-yonghong.song@linux.dev>
-X-Mailer: git-send-email 2.43.5
-In-Reply-To: <20241020191341.2104841-1-yonghong.song@linux.dev>
-References: <20241020191341.2104841-1-yonghong.song@linux.dev>
+	s=arc-20240116; t=1729452197; c=relaxed/simple;
+	bh=c2HWT4gCvfaBx0f4vU+MqomfioLzCAn/zhpHtgH8vfU=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=QxuVdBYOxKl0JMGPlLYv2X5o4bdLdmDuTZFX47VBRsxmiOIm6x1hAlwhAMVLTUekLAfTI6mYiP5lx7UWFERT2ZoJL1D/NWeJh3oej4rrDv/kWr9d+2VhsY3vdOX0rPR9Sq5U0qDcuErZiAyMGK9pLJb4ww4xCwVTLJ1RDzVJtHM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=n1n6IHGX; arc=none smtp.client-ip=217.70.183.193
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 26B52240005;
+	Sun, 20 Oct 2024 19:23:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1729452185;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=66oWL8FFyWQvIReQm+bsye/p0smamRZi1ITOxDVWHvw=;
+	b=n1n6IHGX0MZUv/0Thc8P85HlCTlIDg+8uQGITHIP9FXaGJdKBBQVGs+JLwwCkjh7BHrI9r
+	rc399i1CSq3ZZD8iqmhMYJiYMtnQc7+43yCBRaoFUg8KWJ0CVPkn/BcVPH2QmtX/xrtZHC
+	QQpdwao+UGMM64wg+0ooj1y+cz1Ylh9H1QvOASTiwCX1PbkBbGW4ZsOMWFPAKRCP3y3FZ4
+	IowuCXoPGRZbZn8ERDgx3NkgaBfQ/v4vNUyFT8a482cVft7bubN1qIIa7D12fyYOLzF65k
+	mVkco8vWhCRKHwlyFxki5bDRHU3U8fFzlEKhE5qNeQoYY3usNcUSKDd7uvpYGQ==
+From: =?utf-8?q?Alexis_Lothor=C3=A9_=28eBPF_Foundation=29?= <alexis.lothore@bootlin.com>
+Subject: [PATCH bpf-next v2 0/6] selftests/bpf: integrate
+ test_tcp_check_syncookie.sh into test_progs
+Date: Sun, 20 Oct 2024 21:22:52 +0200
+Message-Id: <20241020-syncookie-v2-0-2db240225fed@bootlin.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAIxYFWcC/02NywqDMBBFf0Vm3ZQkapSu+h/FhY+xDm0zkoSgS
+ P69Qbro8nAu5x7g0RF6uBUHOIzkiW0GfSlgXHr7REFTZtBSV0qqWvjdjswvQoF9Y1qjTVW3BvJ
+ +dTjTdrYeMKyzsLgF6LJZyAd2+3kS1el/PfPXi0pIUQ5NLydUWtXlfWAOb7LXkT/QpZS+QV3uS
+ q4AAAA=
+X-Change-ID: 20241015-syncookie-ea7686264586
+To: Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, 
+ Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+ Yonghong Song <yonghong.song@linux.dev>, 
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+ Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, 
+ Shuah Khan <shuah@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
+ Jakub Kicinski <kuba@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>
+Cc: ebpf@linuxfoundation.org, 
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ Lorenz Bauer <lorenz.bauer@isovalent.com>, bpf@vger.kernel.org, 
+ linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ netdev@vger.kernel.org, 
+ =?utf-8?q?Alexis_Lothor=C3=A9_=28eBPF_Foundation=29?= <alexis.lothore@bootlin.com>
+X-Mailer: b4 0.14.2
+X-GND-Sasl: alexis.lothore@bootlin.com
 
-Add three tests for struct_ops using private stack.
-  ./test_progs -t struct_ops_private_stack
-  #333/1   struct_ops_private_stack/private_stack:OK
-  #333/2   struct_ops_private_stack/private_stack_fail:OK
-  #333/3   struct_ops_private_stack/private_stack_recur:OK
-  #333     struct_ops_private_stack:OK
+Hello,
+this series aims to bring test_tcp_check_syncookie.sh scope into
+test_progs to make sure that the corresponding tests are also run
+automatically in CI. This script tests for bpf_tcp_{gen,check}_syncookie
+and bpf_skc_lookup_tcp, in different contexts (ipv4, v6 or dual, and
+with tc and xdp programs).
+Some other tests like btf_skc_cls_ingress have some overlapping tests with
+test_tcp_check_syncookie.sh, so this series moves the missing bits from
+test_tcp_check_syncookie.sh into btf_skc_cls_ingress, which is already
+integrated into test_progs.
+- the first three commits bring some minor improvements to
+  btf_skc_cls_ingress without changing its testing scope
+- fourth and fifth commits bring test_tcp_check_syncookie.sh features
+  into btf_skc_cls_ingress
+- last commit removes test_tcp_check_syncookie.sh
 
-The first one is with nested two different callback functions where the
-first prog has more than 512 byte stack size (including subprogs) with
-private stack enabled.
+The only topic for which I am not sure for this integration is the
+necessity or not to run the tests with different program types:
+test_tcp_check_syncookie.sh runs tests with both tc and xdp programs, but
+btf_skc_cls_ingress currently tests those helpers only with a tc
+program. Would it make sense to also make sure that btf_skc_cls_ingress
+is tested with all the programs types supported by those helpers ?
 
-The second one is a negative test where the second prog has more than 512
-byte stack size without private stack enabled.
+The series has been tested both in CI and in a local x86_64 qemu
+environment:
+  # ./test_progs -a btf_skc_cls_ingress
+  #38/1    btf_skc_cls_ingress/conn_ipv4:OK
+  #38/2    btf_skc_cls_ingress/conn_ipv6:OK
+  #38/3    btf_skc_cls_ingress/conn_dual:OK
+  #38/4    btf_skc_cls_ingress/syncookie_ipv4:OK
+  #38/5    btf_skc_cls_ingress/syncookie_ipv6:OK
+  #38/6    btf_skc_cls_ingress/syncookie_dual:OK
+  #38      btf_skc_cls_ingress:OK
+  Summary: 1/6 PASSED, 0 SKIPPED, 0 FAILED
 
-The third one is the same callback function recursing itself. At run time=
-,
-the jit trampoline recursion check kicks in to prevent the recursion.
-
-Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+Signed-off-by: Alexis Lothoré (eBPF Foundation) <alexis.lothore@bootlin.com>
 ---
- .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  77 +++++++++++++
- .../selftests/bpf/bpf_testmod/bpf_testmod.h   |   6 +
- .../bpf/prog_tests/struct_ops_private_stack.c | 106 ++++++++++++++++++
- .../bpf/progs/struct_ops_private_stack.c      |  62 ++++++++++
- .../bpf/progs/struct_ops_private_stack_fail.c |  62 ++++++++++
- .../progs/struct_ops_private_stack_recur.c    |  50 +++++++++
- 6 files changed, 363 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/struct_ops_pri=
-vate_stack.c
- create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_private_=
-stack.c
- create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_private_=
-stack_fail.c
- create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_private_=
-stack_recur.c
+Changes in v2:
+- fix initial test author mail in Cc
+- Fix default cases in switches: indent, action
+- remove unneeded initializer
+- remove duplicate interface bring-up
+- remove unnecessary check and return in bpf program
+- Link to v1: https://lore.kernel.org/r/20241016-syncookie-v1-0-3b7a0de12153@bootlin.com
 
-diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tool=
-s/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-index 8835761d9a12..00bb23cfa66e 100644
---- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-+++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-@@ -245,6 +245,39 @@ __bpf_kfunc void bpf_testmod_ctx_release(struct bpf_=
-testmod_ctx *ctx)
- 		call_rcu(&ctx->rcu, testmod_free_cb);
- }
-=20
-+static struct bpf_testmod_ops3 *st_ops3;
-+
-+static int bpf_testmod_ops3__test_1__priv_stack(void)
-+{
-+	return 0;
-+}
-+
-+static int bpf_testmod_test_4(void)
-+{
-+	return 0;
-+}
-+
-+static struct bpf_testmod_ops3 __bpf_testmod_ops3 =3D {
-+	.test_1 =3D bpf_testmod_ops3__test_1__priv_stack,
-+	.test_2 =3D bpf_testmod_test_4,
-+};
-+
-+static void bpf_testmod_test_struct_ops3(void)
-+{
-+	if (st_ops3)
-+		st_ops3->test_1();
-+}
-+
-+__bpf_kfunc void bpf_testmod_ops3_call_test_1(void)
-+{
-+	st_ops3->test_1();
-+}
-+
-+__bpf_kfunc void bpf_testmod_ops3_call_test_2(void)
-+{
-+	st_ops3->test_2();
-+}
-+
- struct bpf_testmod_btf_type_tag_1 {
- 	int a;
- };
-@@ -380,6 +413,8 @@ bpf_testmod_test_read(struct file *file, struct kobje=
-ct *kobj,
-=20
- 	(void)bpf_testmod_test_arg_ptr_to_struct(&struct_arg1_2);
-=20
-+	bpf_testmod_test_struct_ops3();
-+
- 	struct_arg3 =3D kmalloc((sizeof(struct bpf_testmod_struct_arg_3) +
- 				sizeof(int)), GFP_KERNEL);
- 	if (struct_arg3 !=3D NULL) {
-@@ -584,6 +619,8 @@ BTF_ID_FLAGS(func, bpf_kfunc_trusted_num_test, KF_TRU=
-STED_ARGS)
- BTF_ID_FLAGS(func, bpf_kfunc_rcu_task_test, KF_RCU)
- BTF_ID_FLAGS(func, bpf_testmod_ctx_create, KF_ACQUIRE | KF_RET_NULL)
- BTF_ID_FLAGS(func, bpf_testmod_ctx_release, KF_RELEASE)
-+BTF_ID_FLAGS(func, bpf_testmod_ops3_call_test_1)
-+BTF_ID_FLAGS(func, bpf_testmod_ops3_call_test_2)
- BTF_KFUNCS_END(bpf_testmod_common_kfunc_ids)
-=20
- BTF_ID_LIST(bpf_testmod_dtor_ids)
-@@ -1094,6 +1131,10 @@ static const struct bpf_verifier_ops bpf_testmod_v=
-erifier_ops =3D {
- 	.is_valid_access =3D bpf_testmod_ops_is_valid_access,
- };
-=20
-+static const struct bpf_verifier_ops bpf_testmod_verifier_ops3 =3D {
-+	.is_valid_access =3D bpf_testmod_ops_is_valid_access,
-+};
-+
- static int bpf_dummy_reg(void *kdata, struct bpf_link *link)
- {
- 	struct bpf_testmod_ops *ops =3D kdata;
-@@ -1173,6 +1214,41 @@ struct bpf_struct_ops bpf_testmod_ops2 =3D {
- 	.owner =3D THIS_MODULE,
- };
-=20
-+static int st_ops3_reg(void *kdata, struct bpf_link *link)
-+{
-+	int err =3D 0;
-+
-+	mutex_lock(&st_ops_mutex);
-+	if (st_ops3) {
-+		pr_err("st_ops has already been registered\n");
-+		err =3D -EEXIST;
-+		goto unlock;
-+	}
-+	st_ops3 =3D kdata;
-+
-+unlock:
-+	mutex_unlock(&st_ops_mutex);
-+	return err;
-+}
-+
-+static void st_ops3_unreg(void *kdata, struct bpf_link *link)
-+{
-+	mutex_lock(&st_ops_mutex);
-+	st_ops3 =3D NULL;
-+	mutex_unlock(&st_ops_mutex);
-+}
-+
-+struct bpf_struct_ops bpf_testmod_ops3 =3D {
-+	.verifier_ops =3D &bpf_testmod_verifier_ops3,
-+	.init =3D bpf_testmod_ops_init,
-+	.init_member =3D bpf_testmod_ops_init_member,
-+	.reg =3D st_ops3_reg,
-+	.unreg =3D st_ops3_unreg,
-+	.cfi_stubs =3D &__bpf_testmod_ops3,
-+	.name =3D "bpf_testmod_ops3",
-+	.owner =3D THIS_MODULE,
-+};
-+
- static int bpf_test_mod_st_ops__test_prologue(struct st_ops_args *args)
- {
- 	return 0;
-@@ -1331,6 +1407,7 @@ static int bpf_testmod_init(void)
- 	ret =3D ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_STRUCT_OPS, &bpf=
-_testmod_kfunc_set);
- 	ret =3D ret ?: register_bpf_struct_ops(&bpf_bpf_testmod_ops, bpf_testmo=
-d_ops);
- 	ret =3D ret ?: register_bpf_struct_ops(&bpf_testmod_ops2, bpf_testmod_o=
-ps2);
-+	ret =3D ret ?: register_bpf_struct_ops(&bpf_testmod_ops3, bpf_testmod_o=
-ps3);
- 	ret =3D ret ?: register_bpf_struct_ops(&testmod_st_ops, bpf_testmod_st_=
-ops);
- 	ret =3D ret ?: register_btf_id_dtor_kfuncs(bpf_testmod_dtors,
- 						 ARRAY_SIZE(bpf_testmod_dtors),
-diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h b/tool=
-s/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
-index fb7dff47597a..59c600074eea 100644
---- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
-+++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
-@@ -92,6 +92,12 @@ struct bpf_testmod_ops {
-=20
- struct bpf_testmod_ops2 {
- 	int (*test_1)(void);
-+	int (*test_2)(void);
-+};
-+
-+struct bpf_testmod_ops3 {
-+	int (*test_1)(void);
-+	int (*test_2)(void);
- };
-=20
- struct st_ops_args {
-diff --git a/tools/testing/selftests/bpf/prog_tests/struct_ops_private_st=
-ack.c b/tools/testing/selftests/bpf/prog_tests/struct_ops_private_stack.c
-new file mode 100644
-index 000000000000..4006879ca3fe
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/struct_ops_private_stack.c
-@@ -0,0 +1,106 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <test_progs.h>
-+#include "struct_ops_private_stack.skel.h"
-+#include "struct_ops_private_stack_fail.skel.h"
-+#include "struct_ops_private_stack_recur.skel.h"
-+
-+static void test_private_stack(void)
-+{
-+	struct struct_ops_private_stack *skel;
-+	struct bpf_link *link;
-+	int err;
-+
-+	skel =3D struct_ops_private_stack__open();
-+	if (!ASSERT_OK_PTR(skel, "struct_ops_private_stack__open"))
-+		return;
-+
-+	if (skel->data->skip) {
-+		test__skip();
-+		goto cleanup;
-+	}
-+
-+	err =3D struct_ops_private_stack__load(skel);
-+	if (!ASSERT_OK(err, "struct_ops_private_stack__load"))
-+		goto cleanup;
-+
-+	link =3D bpf_map__attach_struct_ops(skel->maps.testmod_1);
-+	if (!ASSERT_OK_PTR(link, "attach_struct_ops"))
-+		goto cleanup;
-+
-+	ASSERT_OK(trigger_module_test_read(256), "trigger_read");
-+
-+	ASSERT_EQ(skel->bss->val_i, 3, "val_i");
-+	ASSERT_EQ(skel->bss->val_j, 8, "val_j");
-+
-+	bpf_link__destroy(link);
-+
-+cleanup:
-+	struct_ops_private_stack__destroy(skel);
-+}
-+
-+static void test_private_stack_fail(void)
-+{
-+	struct struct_ops_private_stack_fail *skel;
-+	int err;
-+
-+	skel =3D struct_ops_private_stack_fail__open();
-+	if (!ASSERT_OK_PTR(skel, "struct_ops_private_stack_fail__open"))
-+		return;
-+
-+	if (skel->data->skip) {
-+		test__skip();
-+		goto cleanup;
-+	}
-+
-+	err =3D struct_ops_private_stack_fail__load(skel);
-+	if (!ASSERT_ERR(err, "struct_ops_private_stack_fail__load"))
-+		goto cleanup;
-+	return;
-+
-+cleanup:
-+	struct_ops_private_stack_fail__destroy(skel);
-+}
-+
-+static void test_private_stack_recur(void)
-+{
-+	struct struct_ops_private_stack_recur *skel;
-+	struct bpf_link *link;
-+	int err;
-+
-+	skel =3D struct_ops_private_stack_recur__open();
-+	if (!ASSERT_OK_PTR(skel, "struct_ops_private_stack_recur__open"))
-+		return;
-+
-+	if (skel->data->skip) {
-+		test__skip();
-+		goto cleanup;
-+	}
-+
-+	err =3D struct_ops_private_stack_recur__load(skel);
-+	if (!ASSERT_OK(err, "struct_ops_private_stack_recur__load"))
-+		goto cleanup;
-+
-+	link =3D bpf_map__attach_struct_ops(skel->maps.testmod_1);
-+	if (!ASSERT_OK_PTR(link, "attach_struct_ops"))
-+		goto cleanup;
-+
-+	ASSERT_OK(trigger_module_test_read(256), "trigger_read");
-+
-+	ASSERT_EQ(skel->bss->val_j, 3, "val_j");
-+
-+	bpf_link__destroy(link);
-+
-+cleanup:
-+	struct_ops_private_stack_recur__destroy(skel);
-+}
-+
-+void test_struct_ops_private_stack(void)
-+{
-+	if (test__start_subtest("private_stack"))
-+		test_private_stack();
-+	if (test__start_subtest("private_stack_fail"))
-+		test_private_stack_fail();
-+	if (test__start_subtest("private_stack_recur"))
-+		test_private_stack_recur();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/struct_ops_private_stack.c=
- b/tools/testing/selftests/bpf/progs/struct_ops_private_stack.c
-new file mode 100644
-index 000000000000..8ea57e5348ab
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/struct_ops_private_stack.c
-@@ -0,0 +1,62 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <vmlinux.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include "../bpf_testmod/bpf_testmod.h"
-+
-+char _license[] SEC("license") =3D "GPL";
-+
-+#if defined(__TARGET_ARCH_x86)
-+bool skip __attribute((__section__(".data"))) =3D false;
-+#else
-+bool skip =3D true;
-+#endif
-+
-+void bpf_testmod_ops3_call_test_2(void) __ksym;
-+
-+int val_i, val_j;
-+
-+__noinline static int subprog2(int *a, int *b)
-+{
-+	return val_i + a[10] + b[20];
-+}
-+
-+__noinline static int subprog1(int *a)
-+{
-+	/* stack size 200 bytes */
-+	int b[50] =3D {};
-+
-+	b[20] =3D 2;
-+	return subprog2(a, b);
-+}
-+
-+
-+SEC("struct_ops")
-+int BPF_PROG(test_1)
-+{
-+	/* stack size 400 bytes */
-+	int a[100] =3D {};
-+
-+	a[10] =3D 1;
-+	val_i =3D subprog1(a);
-+	bpf_testmod_ops3_call_test_2();
-+	return 0;
-+}
-+
-+SEC("struct_ops")
-+int BPF_PROG(test_2)
-+{
-+	/* stack size 200 bytes */
-+	int a[50] =3D {};
-+
-+	a[10] =3D 3;
-+	val_j =3D subprog1(a);
-+	return 0;
-+}
-+
-+SEC(".struct_ops")
-+struct bpf_testmod_ops3 testmod_1 =3D {
-+	.test_1 =3D (void *)test_1,
-+	.test_2 =3D (void *)test_2,
-+};
-diff --git a/tools/testing/selftests/bpf/progs/struct_ops_private_stack_f=
-ail.c b/tools/testing/selftests/bpf/progs/struct_ops_private_stack_fail.c
-new file mode 100644
-index 000000000000..1f55ec4cee37
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/struct_ops_private_stack_fail.c
-@@ -0,0 +1,62 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <vmlinux.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include "../bpf_testmod/bpf_testmod.h"
-+
-+char _license[] SEC("license") =3D "GPL";
-+
-+#if defined(__TARGET_ARCH_x86)
-+bool skip __attribute((__section__(".data"))) =3D false;
-+#else
-+bool skip =3D true;
-+#endif
-+
-+void bpf_testmod_ops3_call_test_2(void) __ksym;
-+
-+int val_i, val_j;
-+
-+__noinline static int subprog2(int *a, int *b)
-+{
-+	return val_i + a[10] + b[20];
-+}
-+
-+__noinline static int subprog1(int *a)
-+{
-+	/* stack size 200 bytes */
-+	int b[50] =3D {};
-+
-+	b[20] =3D 2;
-+	return subprog2(a, b);
-+}
-+
-+
-+SEC("struct_ops")
-+int BPF_PROG(test_1)
-+{
-+	/* stack size 100 bytes */
-+	int a[25] =3D {};
-+
-+	a[10] =3D 1;
-+	val_i =3D subprog1(a);
-+	bpf_testmod_ops3_call_test_2();
-+	return 0;
-+}
-+
-+SEC("struct_ops")
-+int BPF_PROG(test_2)
-+{
-+	/* stack size 400 bytes */
-+	int a[100] =3D {};
-+
-+	a[10] =3D 3;
-+	val_j =3D subprog1(a);
-+	return 0;
-+}
-+
-+SEC(".struct_ops")
-+struct bpf_testmod_ops3 testmod_1 =3D {
-+	.test_1 =3D (void *)test_1,
-+	.test_2 =3D (void *)test_2,
-+};
-diff --git a/tools/testing/selftests/bpf/progs/struct_ops_private_stack_r=
-ecur.c b/tools/testing/selftests/bpf/progs/struct_ops_private_stack_recur=
-.c
-new file mode 100644
-index 000000000000..15d4e914dc92
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/struct_ops_private_stack_recur.c
-@@ -0,0 +1,50 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <vmlinux.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include "../bpf_testmod/bpf_testmod.h"
-+
-+char _license[] SEC("license") =3D "GPL";
-+
-+#if defined(__TARGET_ARCH_x86)
-+bool skip __attribute((__section__(".data"))) =3D false;
-+#else
-+bool skip =3D true;
-+#endif
-+
-+void bpf_testmod_ops3_call_test_1(void) __ksym;
-+
-+int val_i, val_j;
-+
-+__noinline static int subprog2(int *a, int *b)
-+{
-+	return val_i + a[10] + b[20];
-+}
-+
-+__noinline static int subprog1(int *a)
-+{
-+	/* stack size 400 bytes */
-+	int b[100] =3D {};
-+
-+	b[20] =3D 2;
-+	return subprog2(a, b);
-+}
-+
-+
-+SEC("struct_ops")
-+int BPF_PROG(test_1)
-+{
-+	/* stack size 400 bytes */
-+	int a[100] =3D {};
-+
-+	a[10] =3D 1;
-+	val_j +=3D subprog1(a);
-+	bpf_testmod_ops3_call_test_1();
-+	return 0;
-+}
-+
-+SEC(".struct_ops")
-+struct bpf_testmod_ops3 testmod_1 =3D {
-+	.test_1 =3D (void *)test_1,
-+};
---=20
-2.43.5
+---
+Alexis Lothoré (eBPF Foundation) (6):
+      selftests/bpf: factorize conn and syncookies tests in a single runner
+      selftests/bpf: add missing ns cleanups in btf_skc_cls_ingress
+      selftests/bpf: get rid of global vars in btf_skc_cls_ingress
+      selftests/bpf: add ipv4 and dual ipv4/ipv6 support in btf_skc_cls_ingress
+      selftests/bpf: test MSS value returned with bpf_tcp_gen_syncookie
+      selftests/bpf: remove test_tcp_check_syncookie
+
+ tools/testing/selftests/bpf/.gitignore             |   1 -
+ tools/testing/selftests/bpf/Makefile               |   9 +-
+ .../selftests/bpf/prog_tests/btf_skc_cls_ingress.c | 264 +++++++++++++--------
+ .../selftests/bpf/progs/test_btf_skc_cls_ingress.c |  82 ++++---
+ .../bpf/progs/test_tcp_check_syncookie_kern.c      | 167 -------------
+ .../selftests/bpf/test_tcp_check_syncookie.sh      |  85 -------
+ .../selftests/bpf/test_tcp_check_syncookie_user.c  | 213 -----------------
+ 7 files changed, 217 insertions(+), 604 deletions(-)
+---
+base-commit: 030207b7fce8bad6827615cfc2c6592916e2c336
+change-id: 20241015-syncookie-ea7686264586
+
+Best regards,
+-- 
+Alexis Lothoré, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
 
