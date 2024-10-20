@@ -1,164 +1,183 @@
-Return-Path: <bpf+bounces-42529-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42530-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E6BC9A5554
-	for <lists+bpf@lfdr.de>; Sun, 20 Oct 2024 19:25:14 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6060E9A55FE
+	for <lists+bpf@lfdr.de>; Sun, 20 Oct 2024 21:14:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5B461B21E9E
-	for <lists+bpf@lfdr.de>; Sun, 20 Oct 2024 17:25:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 781A01C20B98
+	for <lists+bpf@lfdr.de>; Sun, 20 Oct 2024 19:14:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1A291946C7;
-	Sun, 20 Oct 2024 17:25:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QEy7vy7Z"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C305C1953A1;
+	Sun, 20 Oct 2024 19:14:00 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+Received: from 66-220-155-178.mail-mxout.facebook.com (66-220-155-178.mail-mxout.facebook.com [66.220.155.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72AC8173
-	for <bpf@vger.kernel.org>; Sun, 20 Oct 2024 17:25:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D951F15E90
+	for <bpf@vger.kernel.org>; Sun, 20 Oct 2024 19:13:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.220.155.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729445104; cv=none; b=UyxikinTHujF3N05FMZ7nZAa89jxdNgi2yGnY5OJkbYi0BRkOV2jPVHD/N7NT45wsxR/VsjpecKDQHiu3RkczloG92lkB3n0TV2bMv8TZTylvvzpQs+is4ikFDpnxF7qqGBT8KlfuUB6CKU3iR3A7H4IFYNCwL7NFdFoHr0Mgds=
+	t=1729451640; cv=none; b=DHk/C5VconwwWrRzf0TcMlcj5a4hKl0JreYWG1hKpacgzUcHsU1ZZ3peSDeLJrPs+FAIYOO5U7nLC9EwLQW2ImX3qRZTytulGiFs6O0ZlEzYWB2tR9V0BCrhNoz+7GzifVfCpvlEhhTHDnXn+hb5T8FUIDfelaAAyeURUmTJM68=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729445104; c=relaxed/simple;
-	bh=1s/1ngEpSxvYLHhRMqbNOnmtcZPdfXfw573cltQDWzk=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=k3QwcXlIU++817pDQ514g/4Mm1VUB+L8ekkBaNETN2TYJ9S95kjwpyHaErQCTlcXeHkjDpTkZjlAvHgXaqPIEelnDnNFM4YLblweCOv8iKM9j0/H3qb0mk8z7yaBjcyYhjXCKrl8XLZIis/ot85mp4CV+O/WbbfdgQRmzrQBkFM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QEy7vy7Z; arc=none smtp.client-ip=209.85.221.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-37d4d1b48f3so2682944f8f.1
-        for <bpf@vger.kernel.org>; Sun, 20 Oct 2024 10:25:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729445101; x=1730049901; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=HfhvtwqfwubBefSjd8MUuAJm0YTqbkM2rch4ueVN9+w=;
-        b=QEy7vy7ZFCJyOpCPObbIYnoVuTWB05sEMFD9tjouA02Ey1NykxAX5JXNgNp9e9m7rz
-         hDqOJNz0oXa0trt76s+WI4Mgfnyid9ExsRE1drv18Qtgsqg9g2m8NXDaY6xHfrTZTLW5
-         mFruy5Mlndr9vvKtRWhT2dqY/63yQceOdHr2OOwkmOzwpyx5Rl69Flyvl5i/eRLaBOjc
-         ADRccCH8/8XGLtHKrsye7l3kZAqWGOtXtcKE1Sgdb065HR3tyunnI/Ko35SCvFOzY7n1
-         JLy0RGavgCyCYdbAyWQH+nIWNqM97Ydd32z1vcw/74PdVH6jMqz/nBb7rl7vEyytIwPt
-         owfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729445101; x=1730049901;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HfhvtwqfwubBefSjd8MUuAJm0YTqbkM2rch4ueVN9+w=;
-        b=sYZJXVnZKs0sI6f6Y1yRQ3/n0Na7bgW1P8WL2l9Ou8ypDb0OxI17qyEZB0/3LcK8JZ
-         Fi8AiAScQF8G5unkYWQ/BRlaKQq5UgklHD+xv7Gh21KwJsNWYGKEN1E69occyySgPKq8
-         vkpmgL3DL24q5PjQnbVdWc8tpfl/OWfnGFEgzEAxSTcQDC8Xd4trDhGH2RJHPFxHt09n
-         M1DZcXBZ7xnXpaATj2iKRO3XM+r7vk1pVdyiD76vrz6DUeJeiKb4I2rwBL11f6H2WuCZ
-         C6UiBONf4IC+CWuPE1yMqehDGA85KCKUY1JzMpJ9+SrqRKBmU90EjC5vfYHwo8GLQxfv
-         m/3g==
-X-Gm-Message-State: AOJu0Yw/VHnlLeuTobTT6bZODUI/WtlCyLQVR+sVdBg0N74fHhqSfmzG
-	2ldSaI29CMHb9/NiqhnOYTNqx1yNQNT30MxsUXs6G3dOwsUDmF47
-X-Google-Smtp-Source: AGHT+IH22vMBqi5RqO8fk46yWCyhxDYcNBHcC7/LCn3FRfgCoHplICH7lK3bTCRiozwF9WQTrIpRdA==
-X-Received: by 2002:a5d:4d03:0:b0:374:b35e:ea6c with SMTP id ffacd0b85a97d-37eb487a49amr6344017f8f.40.1729445100401;
-        Sun, 20 Oct 2024 10:25:00 -0700 (PDT)
-Received: from krava (85-193-35-5.rib.o2.cz. [85.193.35.5])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-37ee0a5b813sm2157201f8f.58.2024.10.20.10.24.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Oct 2024 10:24:59 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Sun, 20 Oct 2024 19:24:57 +0200
-To: Viktor Malik <vmalik@redhat.com>
-Cc: bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Alexei Starovoitov <ast@kernel.org>,
+	s=arc-20240116; t=1729451640; c=relaxed/simple;
+	bh=TS56ocutgZMKmtmRUru2BIrgPIQrdxABhbLqm9Llrhk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ExszPHppqpOBfanlFqn6+4CcYqMbXquC+q1UABTEULZGEfGj4CMf5O4Un9msksowgD5or5oSpt2WpDuBXC2YV9ri8H22elwvXQRKRY+fTqj6g1hat/g0esWdjbdbdTRapGSHJUOS24YoYg8Ap6THlzAQIDUGd8vZrrpwwS4NrX0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=66.220.155.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
+Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
+	id 1CE40A465DC5; Sun, 20 Oct 2024 12:13:41 -0700 (PDT)
+From: Yonghong Song <yonghong.song@linux.dev>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Shuah Khan <shuah@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>
-Subject: Re: [PATCH bpf-next v2 3/3] selftests/bpf: Disable warnings on
- unused flags for Clang builds
-Message-ID: <ZxU86eN6kMrgmuaV@krava>
-References: <cover.1729233447.git.vmalik@redhat.com>
- <370c84ee3a0e8627a09d89fff12f7a285565fb46.1729233447.git.vmalik@redhat.com>
+	kernel-team@fb.com,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Tejun Heo <tj@kernel.org>
+Subject: [PATCH bpf-next v6 0/9] bpf: Support private stack for bpf progs
+Date: Sun, 20 Oct 2024 12:13:41 -0700
+Message-ID: <20241020191341.2104841-1-yonghong.song@linux.dev>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <370c84ee3a0e8627a09d89fff12f7a285565fb46.1729233447.git.vmalik@redhat.com>
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Oct 18, 2024 at 08:49:01AM +0200, Viktor Malik wrote:
-> There exist compiler flags supported by GCC but not supported by Clang
-> (e.g. -specs=...). Currently, these cannot be passed to BPF selftests
-> builds, even when building with GCC, as some binaries (urandom_read and
-> liburandom_read.so) are always built with Clang and the unsupported
-> flags make the compilation fail (as -Werror is turned on).
-> 
-> Add -Wno-unused-command-line-argument to these rules to suppress such
-> errors.
-> 
-> This allows to do things like:
-> 
->     $ CFLAGS="-specs=/usr/lib/rpm/redhat/redhat-hardened-cc1" \
->       make -C tools/testing/selftests/bpf
+The main motivation for private stack comes from nested scheduler in
+sched-ext from Tejun. The basic idea is that
+ - each cgroup will its own associated bpf program,
+ - bpf program with parent cgroup will call bpf programs
+   in immediate child cgroups.
 
-hi,
-might be my fedora setup, but this example gives me compile error below
-even with the patch applied:
+Let us say we have the following cgroup hierarchy:
+  root_cg (prog0):
+    cg1 (prog1):
+      cg11 (prog11):
+        cg111 (prog111)
+        cg112 (prog112)
+      cg12 (prog12):
+        cg121 (prog121)
+        cg122 (prog122)
+    cg2 (prog2):
+      cg21 (prog21)
+      cg22 (prog22)
+      cg23 (prog23)
 
-  EXT-OBJ  [test_progs] testing_helpers.o
-In file included from testing_helpers.c:10:
-disasm.h:11:10: fatal error: linux/stringify.h: No such file or directory
-   11 | #include <linux/stringify.h>
-      |          ^~~~~~~~~~~~~~~~~~~
+In the above example, prog0 will call a kfunc which will call prog1 and
+prog2 to get sched info for cg1 and cg2 and then the information is
+summarized and sent back to prog0. Similarly, prog11 and prog12 will be
+invoked in the kfunc and the result will be summarized and sent back to
+prog1, etc. The following illustrates a possible call sequence:
+   ... -> bpf prog A -> kfunc -> ops.<callback_fn> (bpf prog B) ...
 
-jirka
+Currently, for each thread, the x86 kernel allocate 16KB stack. Each
+bpf program (including its subprograms) has maximum 512B stack size to
+avoid potential stack overflow. Nested bpf programs further increase the
+risk of stack overflow. To avoid potential stack overflow caused by bpf
+programs, this patch set supported private stack and bpf program stack
+space is allocated during verification time. Such private stack is applie=
+d
+to tracing programs like kprobe/uprobe, perf_event, tracepoint, raw
+tracepoint and struct_ops progs. For struct_ops progs, if the callback
+stub function name has format like
+  <st_ops_name>__<member_name>__priv_stack
+that callback func prog will use the private stack. For other tracing
+programs, if the prog (including subprogs, but not including callback
+functions) stack depth is greater than or equals to 128 bytes, private
+stack will be used.
 
-> 
-> Without this patch, the compilation would fail with:
-> 
->     [...]
->     clang: error: argument unused during compilation: '-specs=/usr/lib/rpm/redhat/redhat-hardened-cc1' [-Werror,-Wunused-command-line-argument]
->     make: *** [Makefile:273: /bpf-next/tools/testing/selftests/bpf/liburandom_read.so] Error 1
->     [...]
-> 
-> Signed-off-by: Viktor Malik <vmalik@redhat.com>
-> ---
->  tools/testing/selftests/bpf/Makefile | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-> index 1fc7c38e56b5..3da1a61968b7 100644
-> --- a/tools/testing/selftests/bpf/Makefile
-> +++ b/tools/testing/selftests/bpf/Makefile
-> @@ -273,6 +273,7 @@ $(OUTPUT)/liburandom_read.so: urandom_read_lib1.c urandom_read_lib2.c liburandom
->  	$(Q)$(CLANG) $(CLANG_TARGET_ARCH) \
->  		     $(filter-out -static,$(CFLAGS) $(LDFLAGS)) \
->  		     $(filter %.c,$^) $(filter-out -static,$(LDLIBS)) \
-> +		     -Wno-unused-command-line-argument \
->  		     -fuse-ld=$(LLD) -Wl,-znoseparate-code -Wl,--build-id=sha1 \
->  		     -Wl,--version-script=liburandom_read.map \
->  		     -fPIC -shared -o $@
-> @@ -281,6 +282,7 @@ $(OUTPUT)/urandom_read: urandom_read.c urandom_read_aux.c $(OUTPUT)/liburandom_r
->  	$(call msg,BINARY,,$@)
->  	$(Q)$(CLANG) $(CLANG_TARGET_ARCH) \
->  		     $(filter-out -static,$(CFLAGS) $(LDFLAGS)) $(filter %.c,$^) \
-> +		     -Wno-unused-command-line-argument \
->  		     -lurandom_read $(filter-out -static,$(LDLIBS)) -L$(OUTPUT) \
->  		     -fuse-ld=$(LLD) -Wl,-znoseparate-code -Wl,--build-id=sha1 \
->  		     -Wl,-rpath=. -o $@
-> -- 
-> 2.47.0
-> 
+But more than one instance of the same bpf program may run in the system.
+To make things simple, percpu private stack is allocated for each program=
+,
+so if the same program is running on different cpus concurrently, we won'=
+t
+have any issue. Note that the kernel already have logic to prevent the
+recursion for the same bpf program on the same cpu (kprobe, fentry, etc.)=
+.
+
+This patch set implemented a percpu private stack based approach for x86
+arch. Please see each individual patch for details.
+
+Change logs:
+  v5 -> v6:
+    - v5 link: https://lore.kernel.org/bpf/20241017223138.3175885-1-yongh=
+ong.song@linux.dev/
+    - Instead of using (or not using) private stack at struct_ops level,
+      each prog in struct_ops can decide whether to use private stack or =
+not.
+  v4 -> v5:
+    - v4 link: https://lore.kernel.org/bpf/20241010175552.1895980-1-yongh=
+ong.song@linux.dev/
+    - Remove bpf_prog_call() related implementation.
+    - Allow (opt-in) private stack for sched-ext progs.
+  v3 -> v4:
+    - v3 link: https://lore.kernel.org/bpf/20240926234506.1769256-1-yongh=
+ong.song@linux.dev/
+      There is a long discussion in the above v3 link trying to allow pri=
+vate
+      stack to be used by kernel functions in order to simplify implement=
+ation.
+      But unfortunately we didn't find a workable solution yet, so we ret=
+urn
+      to the approach where private stack is only used by bpf programs.
+    - Add bpf_prog_call() kfunc.
+  v2 -> v3:
+    - Instead of per-subprog private stack allocation, allocate private
+      stacks at main prog or callback entry prog. Subprogs not main or ca=
+llback
+      progs will increment the inherited stack pointer to be their
+      frame pointer.
+    - Private stack allows each prog max stack size to be 512 bytes, inte=
+ad
+      of the whole prog hierarchy to be 512 bytes.
+    - Add some tests.
+
+Yonghong Song (9):
+  bpf: Allow each subprog having stack size of 512 bytes
+  bpf: Rename bpf_struct_ops_arg_info to bpf_struct_ops_func_info
+  bpf: Support private stack for struct ops programs
+  bpf: Mark each subprog with proper private stack modes
+  bpf, x86: Refactor func emit_prologue
+  bpf, x86: Create a helper for certain "reg <op>=3D imm" operations
+  bpf, x86: Add jit support for private stack
+  selftests/bpf: Add tracing prog private stack tests
+  selftests/bpf: Add struct_ops prog private stack tests
+
+ arch/x86/net/bpf_jit_comp.c                   | 187 +++++++++++----
+ include/linux/bpf.h                           |  16 +-
+ include/linux/bpf_verifier.h                  |   4 +
+ include/linux/filter.h                        |   1 +
+ kernel/bpf/bpf_struct_ops.c                   |  71 +++---
+ kernel/bpf/core.c                             |  24 ++
+ kernel/bpf/verifier.c                         | 139 +++++++++--
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  77 +++++++
+ .../selftests/bpf/bpf_testmod/bpf_testmod.h   |   6 +
+ .../bpf/prog_tests/struct_ops_private_stack.c | 106 +++++++++
+ .../selftests/bpf/prog_tests/verifier.c       |   2 +
+ .../bpf/progs/struct_ops_private_stack.c      |  62 +++++
+ .../bpf/progs/struct_ops_private_stack_fail.c |  62 +++++
+ .../progs/struct_ops_private_stack_recur.c    |  50 ++++
+ .../bpf/progs/verifier_private_stack.c        | 216 ++++++++++++++++++
+ 15 files changed, 933 insertions(+), 90 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/struct_ops_pri=
+vate_stack.c
+ create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_private_=
+stack.c
+ create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_private_=
+stack_fail.c
+ create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_private_=
+stack_recur.c
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_private_st=
+ack.c
+
+--=20
+2.43.5
+
 
