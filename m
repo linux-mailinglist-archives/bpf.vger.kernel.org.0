@@ -1,36 +1,36 @@
-Return-Path: <bpf+bounces-42537-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42539-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7AB929A5606
-	for <lists+bpf@lfdr.de>; Sun, 20 Oct 2024 21:17:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FE909A5608
+	for <lists+bpf@lfdr.de>; Sun, 20 Oct 2024 21:17:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 03A1E1F2237F
-	for <lists+bpf@lfdr.de>; Sun, 20 Oct 2024 19:17:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD9BB2817BE
+	for <lists+bpf@lfdr.de>; Sun, 20 Oct 2024 19:17:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D996219580B;
-	Sun, 20 Oct 2024 19:17:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E71A5196C7B;
+	Sun, 20 Oct 2024 19:17:48 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from 66-220-155-178.mail-mxout.facebook.com (66-220-155-178.mail-mxout.facebook.com [66.220.155.178])
+Received: from 66-220-155-179.mail-mxout.facebook.com (66-220-155-179.mail-mxout.facebook.com [66.220.155.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43AC479D2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BC9117591
 	for <bpf@vger.kernel.org>; Sun, 20 Oct 2024 19:17:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.220.155.178
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.220.155.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729451867; cv=none; b=kCkxyMzGdeFT4XMbNcHvz5NVB3CRXy39YyrU65NG5MPGdQru3paN8PWjv6axphttpvk3XmJaBQsPV6KgXObWQEiD4y72EFsDLfcbfTnvT6wc/dSEvPG+LEH9ITovLfV0He4OF1IlA/oHgrK89Zkrvw0VK2fx1qIPM/Z8fxSkFm4=
+	t=1729451868; cv=none; b=ajDJIaGw+7OJxcqKh5zh/SA7HMTVTmwG0pEuSCQV/sGP7T8p5P04ysYxqfI4gSKVpwpUmkkMGvQioYFMP/UQnAroZThxry8tFqgRydB62jMZMa94CHy8ssG8le94cHvcgqCDgQYrNquCCGJRH162fhGG3YM/iDmMMrLsJLVNNqs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729451867; c=relaxed/simple;
-	bh=PVex4oQGYUtDO9nwOQiGRd76tefilsibaOCaDd1I45w=;
+	s=arc-20240116; t=1729451868; c=relaxed/simple;
+	bh=0wm4fV3aJQGWZ28x4z6qmr90pmig+9/QSkr6Y+W2hYs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=INwri0Q+po0aR7WMNFKpwRBEFIWqllQprRiefIFbGHKuKqt0ggUb0Rr607bj6KDlx0JTx1e178EUeZ6euJ/gJ9qy4YPBZ+FoT9iA1lWnA7U4hlP2WBGmjh9RRBjHnNG52i9DPV8q/GTN83qyvEDXWG8CnxMTI6tzH/rKEhASBjM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=66.220.155.178
+	 MIME-Version; b=pXNu+dLBG7nK202j0NKTTcyKlf3QpDc6E3SyF2rzQ+nvgNdDkI7g1J0XZZITxiosfMKnI26iD316TqkqxoeKu7D7wpR6it/BZL4KasnzKwatvrgV2uHJKccb1zQp8VaOyrTcJhmd4EpQkngDvBrFH778AWKs0CU6sZfpTjH9u7E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=66.220.155.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
 Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-	id CF958A465F09; Sun, 20 Oct 2024 12:14:31 -0700 (PDT)
+	id 7014DA465F2E; Sun, 20 Oct 2024 12:14:36 -0700 (PDT)
 From: Yonghong Song <yonghong.song@linux.dev>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
@@ -39,9 +39,9 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	kernel-team@fb.com,
 	Martin KaFai Lau <martin.lau@kernel.org>,
 	Tejun Heo <tj@kernel.org>
-Subject: [PATCH bpf-next v6 8/9] selftests/bpf: Add tracing prog private stack tests
-Date: Sun, 20 Oct 2024 12:14:31 -0700
-Message-ID: <20241020191431.2108197-1-yonghong.song@linux.dev>
+Subject: [PATCH bpf-next v6 9/9] selftests/bpf: Add struct_ops prog private stack tests
+Date: Sun, 20 Oct 2024 12:14:36 -0700
+Message-ID: <20241020191436.2108675-1-yonghong.song@linux.dev>
 X-Mailer: git-send-email 2.43.5
 In-Reply-To: <20241020191341.2104841-1-yonghong.song@linux.dev>
 References: <20241020191341.2104841-1-yonghong.song@linux.dev>
@@ -53,274 +53,502 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Some private stack tests are added including:
-  - prog with stack size greater than BPF_PSTACK_MIN_SUBTREE_SIZE.
-  - prog with stack size less than BPF_PSTACK_MIN_SUBTREE_SIZE.
-  - prog with one subprog having MAX_BPF_STACK stack size and another
-    subprog having non-zero stack size.
-  - prog with callback function.
-  - prog with exception in main prog or subprog.
+Add three tests for struct_ops using private stack.
+  ./test_progs -t struct_ops_private_stack
+  #333/1   struct_ops_private_stack/private_stack:OK
+  #333/2   struct_ops_private_stack/private_stack_fail:OK
+  #333/3   struct_ops_private_stack/private_stack_recur:OK
+  #333     struct_ops_private_stack:OK
+
+The first one is with nested two different callback functions where the
+first prog has more than 512 byte stack size (including subprogs) with
+private stack enabled.
+
+The second one is a negative test where the second prog has more than 512
+byte stack size without private stack enabled.
+
+The third one is the same callback function recursing itself. At run time=
+,
+the jit trampoline recursion check kicks in to prevent the recursion.
 
 Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
 ---
- .../selftests/bpf/prog_tests/verifier.c       |   2 +
- .../bpf/progs/verifier_private_stack.c        | 216 ++++++++++++++++++
- 2 files changed, 218 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/verifier_private_st=
-ack.c
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  77 +++++++++++++
+ .../selftests/bpf/bpf_testmod/bpf_testmod.h   |   6 +
+ .../bpf/prog_tests/struct_ops_private_stack.c | 106 ++++++++++++++++++
+ .../bpf/progs/struct_ops_private_stack.c      |  62 ++++++++++
+ .../bpf/progs/struct_ops_private_stack_fail.c |  62 ++++++++++
+ .../progs/struct_ops_private_stack_recur.c    |  50 +++++++++
+ 6 files changed, 363 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/struct_ops_pri=
+vate_stack.c
+ create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_private_=
+stack.c
+ create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_private_=
+stack_fail.c
+ create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_private_=
+stack_recur.c
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/te=
-sting/selftests/bpf/prog_tests/verifier.c
-index e26b5150fc43..635ff3509403 100644
---- a/tools/testing/selftests/bpf/prog_tests/verifier.c
-+++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
-@@ -59,6 +59,7 @@
- #include "verifier_or_jmp32_k.skel.h"
- #include "verifier_precision.skel.h"
- #include "verifier_prevent_map_lookup.skel.h"
-+#include "verifier_private_stack.skel.h"
- #include "verifier_raw_stack.skel.h"
- #include "verifier_raw_tp_writable.skel.h"
- #include "verifier_reg_equal.skel.h"
-@@ -185,6 +186,7 @@ void test_verifier_bpf_fastcall(void)         { RUN(v=
-erifier_bpf_fastcall); }
- void test_verifier_or_jmp32_k(void)           { RUN(verifier_or_jmp32_k)=
-; }
- void test_verifier_precision(void)            { RUN(verifier_precision);=
+diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tool=
+s/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+index 8835761d9a12..00bb23cfa66e 100644
+--- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
++++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+@@ -245,6 +245,39 @@ __bpf_kfunc void bpf_testmod_ctx_release(struct bpf_=
+testmod_ctx *ctx)
+ 		call_rcu(&ctx->rcu, testmod_free_cb);
  }
- void test_verifier_prevent_map_lookup(void)   { RUN(verifier_prevent_map=
-_lookup); }
-+void test_verifier_private_stack(void)        { RUN(verifier_private_sta=
-ck); }
- void test_verifier_raw_stack(void)            { RUN(verifier_raw_stack);=
- }
- void test_verifier_raw_tp_writable(void)      { RUN(verifier_raw_tp_writ=
-able); }
- void test_verifier_reg_equal(void)            { RUN(verifier_reg_equal);=
- }
-diff --git a/tools/testing/selftests/bpf/progs/verifier_private_stack.c b=
-/tools/testing/selftests/bpf/progs/verifier_private_stack.c
+=20
++static struct bpf_testmod_ops3 *st_ops3;
++
++static int bpf_testmod_ops3__test_1__priv_stack(void)
++{
++	return 0;
++}
++
++static int bpf_testmod_test_4(void)
++{
++	return 0;
++}
++
++static struct bpf_testmod_ops3 __bpf_testmod_ops3 =3D {
++	.test_1 =3D bpf_testmod_ops3__test_1__priv_stack,
++	.test_2 =3D bpf_testmod_test_4,
++};
++
++static void bpf_testmod_test_struct_ops3(void)
++{
++	if (st_ops3)
++		st_ops3->test_1();
++}
++
++__bpf_kfunc void bpf_testmod_ops3_call_test_1(void)
++{
++	st_ops3->test_1();
++}
++
++__bpf_kfunc void bpf_testmod_ops3_call_test_2(void)
++{
++	st_ops3->test_2();
++}
++
+ struct bpf_testmod_btf_type_tag_1 {
+ 	int a;
+ };
+@@ -380,6 +413,8 @@ bpf_testmod_test_read(struct file *file, struct kobje=
+ct *kobj,
+=20
+ 	(void)bpf_testmod_test_arg_ptr_to_struct(&struct_arg1_2);
+=20
++	bpf_testmod_test_struct_ops3();
++
+ 	struct_arg3 =3D kmalloc((sizeof(struct bpf_testmod_struct_arg_3) +
+ 				sizeof(int)), GFP_KERNEL);
+ 	if (struct_arg3 !=3D NULL) {
+@@ -584,6 +619,8 @@ BTF_ID_FLAGS(func, bpf_kfunc_trusted_num_test, KF_TRU=
+STED_ARGS)
+ BTF_ID_FLAGS(func, bpf_kfunc_rcu_task_test, KF_RCU)
+ BTF_ID_FLAGS(func, bpf_testmod_ctx_create, KF_ACQUIRE | KF_RET_NULL)
+ BTF_ID_FLAGS(func, bpf_testmod_ctx_release, KF_RELEASE)
++BTF_ID_FLAGS(func, bpf_testmod_ops3_call_test_1)
++BTF_ID_FLAGS(func, bpf_testmod_ops3_call_test_2)
+ BTF_KFUNCS_END(bpf_testmod_common_kfunc_ids)
+=20
+ BTF_ID_LIST(bpf_testmod_dtor_ids)
+@@ -1094,6 +1131,10 @@ static const struct bpf_verifier_ops bpf_testmod_v=
+erifier_ops =3D {
+ 	.is_valid_access =3D bpf_testmod_ops_is_valid_access,
+ };
+=20
++static const struct bpf_verifier_ops bpf_testmod_verifier_ops3 =3D {
++	.is_valid_access =3D bpf_testmod_ops_is_valid_access,
++};
++
+ static int bpf_dummy_reg(void *kdata, struct bpf_link *link)
+ {
+ 	struct bpf_testmod_ops *ops =3D kdata;
+@@ -1173,6 +1214,41 @@ struct bpf_struct_ops bpf_testmod_ops2 =3D {
+ 	.owner =3D THIS_MODULE,
+ };
+=20
++static int st_ops3_reg(void *kdata, struct bpf_link *link)
++{
++	int err =3D 0;
++
++	mutex_lock(&st_ops_mutex);
++	if (st_ops3) {
++		pr_err("st_ops has already been registered\n");
++		err =3D -EEXIST;
++		goto unlock;
++	}
++	st_ops3 =3D kdata;
++
++unlock:
++	mutex_unlock(&st_ops_mutex);
++	return err;
++}
++
++static void st_ops3_unreg(void *kdata, struct bpf_link *link)
++{
++	mutex_lock(&st_ops_mutex);
++	st_ops3 =3D NULL;
++	mutex_unlock(&st_ops_mutex);
++}
++
++struct bpf_struct_ops bpf_testmod_ops3 =3D {
++	.verifier_ops =3D &bpf_testmod_verifier_ops3,
++	.init =3D bpf_testmod_ops_init,
++	.init_member =3D bpf_testmod_ops_init_member,
++	.reg =3D st_ops3_reg,
++	.unreg =3D st_ops3_unreg,
++	.cfi_stubs =3D &__bpf_testmod_ops3,
++	.name =3D "bpf_testmod_ops3",
++	.owner =3D THIS_MODULE,
++};
++
+ static int bpf_test_mod_st_ops__test_prologue(struct st_ops_args *args)
+ {
+ 	return 0;
+@@ -1331,6 +1407,7 @@ static int bpf_testmod_init(void)
+ 	ret =3D ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_STRUCT_OPS, &bpf=
+_testmod_kfunc_set);
+ 	ret =3D ret ?: register_bpf_struct_ops(&bpf_bpf_testmod_ops, bpf_testmo=
+d_ops);
+ 	ret =3D ret ?: register_bpf_struct_ops(&bpf_testmod_ops2, bpf_testmod_o=
+ps2);
++	ret =3D ret ?: register_bpf_struct_ops(&bpf_testmod_ops3, bpf_testmod_o=
+ps3);
+ 	ret =3D ret ?: register_bpf_struct_ops(&testmod_st_ops, bpf_testmod_st_=
+ops);
+ 	ret =3D ret ?: register_btf_id_dtor_kfuncs(bpf_testmod_dtors,
+ 						 ARRAY_SIZE(bpf_testmod_dtors),
+diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h b/tool=
+s/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
+index fb7dff47597a..59c600074eea 100644
+--- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
++++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
+@@ -92,6 +92,12 @@ struct bpf_testmod_ops {
+=20
+ struct bpf_testmod_ops2 {
+ 	int (*test_1)(void);
++	int (*test_2)(void);
++};
++
++struct bpf_testmod_ops3 {
++	int (*test_1)(void);
++	int (*test_2)(void);
+ };
+=20
+ struct st_ops_args {
+diff --git a/tools/testing/selftests/bpf/prog_tests/struct_ops_private_st=
+ack.c b/tools/testing/selftests/bpf/prog_tests/struct_ops_private_stack.c
 new file mode 100644
-index 000000000000..e8de565f8b34
+index 000000000000..4006879ca3fe
 --- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/verifier_private_stack.c
-@@ -0,0 +1,216 @@
++++ b/tools/testing/selftests/bpf/prog_tests/struct_ops_private_stack.c
+@@ -0,0 +1,106 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <test_progs.h>
++#include "struct_ops_private_stack.skel.h"
++#include "struct_ops_private_stack_fail.skel.h"
++#include "struct_ops_private_stack_recur.skel.h"
++
++static void test_private_stack(void)
++{
++	struct struct_ops_private_stack *skel;
++	struct bpf_link *link;
++	int err;
++
++	skel =3D struct_ops_private_stack__open();
++	if (!ASSERT_OK_PTR(skel, "struct_ops_private_stack__open"))
++		return;
++
++	if (skel->data->skip) {
++		test__skip();
++		goto cleanup;
++	}
++
++	err =3D struct_ops_private_stack__load(skel);
++	if (!ASSERT_OK(err, "struct_ops_private_stack__load"))
++		goto cleanup;
++
++	link =3D bpf_map__attach_struct_ops(skel->maps.testmod_1);
++	if (!ASSERT_OK_PTR(link, "attach_struct_ops"))
++		goto cleanup;
++
++	ASSERT_OK(trigger_module_test_read(256), "trigger_read");
++
++	ASSERT_EQ(skel->bss->val_i, 3, "val_i");
++	ASSERT_EQ(skel->bss->val_j, 8, "val_j");
++
++	bpf_link__destroy(link);
++
++cleanup:
++	struct_ops_private_stack__destroy(skel);
++}
++
++static void test_private_stack_fail(void)
++{
++	struct struct_ops_private_stack_fail *skel;
++	int err;
++
++	skel =3D struct_ops_private_stack_fail__open();
++	if (!ASSERT_OK_PTR(skel, "struct_ops_private_stack_fail__open"))
++		return;
++
++	if (skel->data->skip) {
++		test__skip();
++		goto cleanup;
++	}
++
++	err =3D struct_ops_private_stack_fail__load(skel);
++	if (!ASSERT_ERR(err, "struct_ops_private_stack_fail__load"))
++		goto cleanup;
++	return;
++
++cleanup:
++	struct_ops_private_stack_fail__destroy(skel);
++}
++
++static void test_private_stack_recur(void)
++{
++	struct struct_ops_private_stack_recur *skel;
++	struct bpf_link *link;
++	int err;
++
++	skel =3D struct_ops_private_stack_recur__open();
++	if (!ASSERT_OK_PTR(skel, "struct_ops_private_stack_recur__open"))
++		return;
++
++	if (skel->data->skip) {
++		test__skip();
++		goto cleanup;
++	}
++
++	err =3D struct_ops_private_stack_recur__load(skel);
++	if (!ASSERT_OK(err, "struct_ops_private_stack_recur__load"))
++		goto cleanup;
++
++	link =3D bpf_map__attach_struct_ops(skel->maps.testmod_1);
++	if (!ASSERT_OK_PTR(link, "attach_struct_ops"))
++		goto cleanup;
++
++	ASSERT_OK(trigger_module_test_read(256), "trigger_read");
++
++	ASSERT_EQ(skel->bss->val_j, 3, "val_j");
++
++	bpf_link__destroy(link);
++
++cleanup:
++	struct_ops_private_stack_recur__destroy(skel);
++}
++
++void test_struct_ops_private_stack(void)
++{
++	if (test__start_subtest("private_stack"))
++		test_private_stack();
++	if (test__start_subtest("private_stack_fail"))
++		test_private_stack_fail();
++	if (test__start_subtest("private_stack_recur"))
++		test_private_stack_recur();
++}
+diff --git a/tools/testing/selftests/bpf/progs/struct_ops_private_stack.c=
+ b/tools/testing/selftests/bpf/progs/struct_ops_private_stack.c
+new file mode 100644
+index 000000000000..8ea57e5348ab
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/struct_ops_private_stack.c
+@@ -0,0 +1,62 @@
 +// SPDX-License-Identifier: GPL-2.0
 +
 +#include <vmlinux.h>
 +#include <bpf/bpf_helpers.h>
-+#include "bpf_misc.h"
-+#include "bpf_experimental.h"
-+
-+/* From include/linux/filter.h */
-+#define MAX_BPF_STACK    512
-+
-+#if defined(__TARGET_ARCH_x86)
-+
-+SEC("kprobe")
-+__description("Private stack, single prog")
-+__success
-+__arch_x86_64
-+__jited("	movabsq	$0x{{.*}}, %r9")
-+__jited("	addq	%gs:0x{{.*}}, %r9")
-+__jited("	movl	$0x2a, %edi")
-+__jited("	movq	%rdi, -0x100(%r9)")
-+__naked void private_stack_single_prog(void)
-+{
-+	asm volatile (
-+	"r1 =3D 42;"
-+	"*(u64 *)(r10 - 256) =3D r1;"
-+	"r0 =3D 0;"
-+	"exit;"
-+	:
-+	:
-+	: __clobber_all);
-+}
-+
-+__used
-+__naked static void cumulative_stack_depth_subprog(void)
-+{
-+        asm volatile (
-+	"r1 =3D 41;"
-+        "*(u64 *)(r10 - 32) =3D r1;"
-+        "call %[bpf_get_smp_processor_id];"
-+        "exit;"
-+        :: __imm(bpf_get_smp_processor_id)
-+	: __clobber_all);
-+}
-+
-+SEC("kprobe")
-+__description("Private stack, subtree > MAX_BPF_STACK")
-+__success
-+__arch_x86_64
-+/* private stack fp for the main prog */
-+__jited("	movabsq	$0x{{.*}}, %r9")
-+__jited("	addq	%gs:0x{{.*}}, %r9")
-+__jited("	movl	$0x2a, %edi")
-+__jited("	movq	%rdi, -0x200(%r9)")
-+__jited("	pushq	%r9")
-+__jited("	callq	0x{{.*}}")
-+__jited("	popq	%r9")
-+__jited("	xorl	%eax, %eax")
-+__naked void private_stack_nested_1(void)
-+{
-+	asm volatile (
-+	"r1 =3D 42;"
-+	"*(u64 *)(r10 - %[max_bpf_stack]) =3D r1;"
-+	"call cumulative_stack_depth_subprog;"
-+	"r0 =3D 0;"
-+	"exit;"
-+	:
-+	: __imm_const(max_bpf_stack, MAX_BPF_STACK)
-+	: __clobber_all);
-+}
-+
-+SEC("kprobe")
-+__description("Private stack, subtree > MAX_BPF_STACK")
-+__success
-+__arch_x86_64
-+/* private stack fp for the subprog */
-+__jited("	addq	$0x20, %r9")
-+__naked void private_stack_nested_2(void)
-+{
-+	asm volatile (
-+	"r1 =3D 42;"
-+	"*(u64 *)(r10 - %[max_bpf_stack]) =3D r1;"
-+	"call cumulative_stack_depth_subprog;"
-+	"r0 =3D 0;"
-+	"exit;"
-+	:
-+	: __imm_const(max_bpf_stack, MAX_BPF_STACK)
-+	: __clobber_all);
-+}
-+
-+SEC("raw_tp")
-+__description("No private stack, nested")
-+__success
-+__arch_x86_64
-+__jited("	subq	$0x8, %rsp")
-+__naked void no_private_stack_nested(void)
-+{
-+	asm volatile (
-+	"r1 =3D 42;"
-+	"*(u64 *)(r10 - 8) =3D r1;"
-+	"call cumulative_stack_depth_subprog;"
-+	"r0 =3D 0;"
-+	"exit;"
-+	:
-+	:
-+	: __clobber_all);
-+}
-+
-+__naked __noinline __used
-+static unsigned long loop_callback(void)
-+{
-+	asm volatile (
-+	"call %[bpf_get_prandom_u32];"
-+	"r1 =3D 42;"
-+	"*(u64 *)(r10 - 512) =3D r1;"
-+	"call cumulative_stack_depth_subprog;"
-+	"r0 =3D 0;"
-+	"exit;"
-+	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_common);
-+}
-+
-+SEC("raw_tp")
-+__description("Private stack, callback")
-+__success
-+__arch_x86_64
-+/* for func loop_callback */
-+__jited("func #1")
-+__jited("	endbr64")
-+__jited("	nopl	(%rax,%rax)")
-+__jited("	nopl	(%rax)")
-+__jited("	pushq	%rbp")
-+__jited("	movq	%rsp, %rbp")
-+__jited("	endbr64")
-+__jited("	movabsq	$0x{{.*}}, %r9")
-+__jited("	addq	%gs:0x{{.*}}, %r9")
-+__jited("	pushq	%r9")
-+__jited("	callq")
-+__jited("	popq	%r9")
-+__jited("	movl	$0x2a, %edi")
-+__jited("	movq	%rdi, -0x200(%r9)")
-+__jited("	pushq	%r9")
-+__jited("	callq")
-+__jited("	popq	%r9")
-+__naked void private_stack_callback(void)
-+{
-+	asm volatile (
-+	"r1 =3D 1;"
-+	"r2 =3D %[loop_callback];"
-+	"r3 =3D 0;"
-+	"r4 =3D 0;"
-+	"call %[bpf_loop];"
-+	"r0 =3D 0;"
-+	"exit;"
-+	:
-+	: __imm_ptr(loop_callback),
-+	  __imm(bpf_loop)
-+	: __clobber_common);
-+}
-+
-+SEC("fentry/bpf_fentry_test9")
-+__description("Private stack, exception in main prog")
-+__success __retval(0)
-+__arch_x86_64
-+__jited("	pushq	%r9")
-+__jited("	callq")
-+__jited("	popq	%r9")
-+int private_stack_exception_main_prog(void)
-+{
-+	asm volatile (
-+	"r1 =3D 42;"
-+	"*(u64 *)(r10 - 512) =3D r1;"
-+	::: __clobber_common);
-+
-+	bpf_throw(0);
-+	return 0;
-+}
-+
-+__used static int subprog_exception(void)
-+{
-+	bpf_throw(0);
-+	return 0;
-+}
-+
-+SEC("fentry/bpf_fentry_test9")
-+__description("Private stack, exception in subprog")
-+__success __retval(0)
-+__arch_x86_64
-+__jited("	movq	%rdi, -0x200(%r9)")
-+__jited("	pushq	%r9")
-+__jited("	callq")
-+__jited("	popq	%r9")
-+int private_stack_exception_sub_prog(void)
-+{
-+	asm volatile (
-+	"r1 =3D 42;"
-+	"*(u64 *)(r10 - 512) =3D r1;"
-+	"call subprog_exception;"
-+	::: __clobber_common);
-+
-+	return 0;
-+}
-+
-+#else
-+
-+SEC("kprobe")
-+__description("private stack is not supported, use a dummy test")
-+__success
-+int dummy_test(void)
-+{
-+        return 0;
-+}
-+
-+#endif
++#include <bpf/bpf_tracing.h>
++#include "../bpf_testmod/bpf_testmod.h"
 +
 +char _license[] SEC("license") =3D "GPL";
++
++#if defined(__TARGET_ARCH_x86)
++bool skip __attribute((__section__(".data"))) =3D false;
++#else
++bool skip =3D true;
++#endif
++
++void bpf_testmod_ops3_call_test_2(void) __ksym;
++
++int val_i, val_j;
++
++__noinline static int subprog2(int *a, int *b)
++{
++	return val_i + a[10] + b[20];
++}
++
++__noinline static int subprog1(int *a)
++{
++	/* stack size 200 bytes */
++	int b[50] =3D {};
++
++	b[20] =3D 2;
++	return subprog2(a, b);
++}
++
++
++SEC("struct_ops")
++int BPF_PROG(test_1)
++{
++	/* stack size 400 bytes */
++	int a[100] =3D {};
++
++	a[10] =3D 1;
++	val_i =3D subprog1(a);
++	bpf_testmod_ops3_call_test_2();
++	return 0;
++}
++
++SEC("struct_ops")
++int BPF_PROG(test_2)
++{
++	/* stack size 200 bytes */
++	int a[50] =3D {};
++
++	a[10] =3D 3;
++	val_j =3D subprog1(a);
++	return 0;
++}
++
++SEC(".struct_ops")
++struct bpf_testmod_ops3 testmod_1 =3D {
++	.test_1 =3D (void *)test_1,
++	.test_2 =3D (void *)test_2,
++};
+diff --git a/tools/testing/selftests/bpf/progs/struct_ops_private_stack_f=
+ail.c b/tools/testing/selftests/bpf/progs/struct_ops_private_stack_fail.c
+new file mode 100644
+index 000000000000..1f55ec4cee37
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/struct_ops_private_stack_fail.c
+@@ -0,0 +1,62 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <vmlinux.h>
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++#include "../bpf_testmod/bpf_testmod.h"
++
++char _license[] SEC("license") =3D "GPL";
++
++#if defined(__TARGET_ARCH_x86)
++bool skip __attribute((__section__(".data"))) =3D false;
++#else
++bool skip =3D true;
++#endif
++
++void bpf_testmod_ops3_call_test_2(void) __ksym;
++
++int val_i, val_j;
++
++__noinline static int subprog2(int *a, int *b)
++{
++	return val_i + a[10] + b[20];
++}
++
++__noinline static int subprog1(int *a)
++{
++	/* stack size 200 bytes */
++	int b[50] =3D {};
++
++	b[20] =3D 2;
++	return subprog2(a, b);
++}
++
++
++SEC("struct_ops")
++int BPF_PROG(test_1)
++{
++	/* stack size 100 bytes */
++	int a[25] =3D {};
++
++	a[10] =3D 1;
++	val_i =3D subprog1(a);
++	bpf_testmod_ops3_call_test_2();
++	return 0;
++}
++
++SEC("struct_ops")
++int BPF_PROG(test_2)
++{
++	/* stack size 400 bytes */
++	int a[100] =3D {};
++
++	a[10] =3D 3;
++	val_j =3D subprog1(a);
++	return 0;
++}
++
++SEC(".struct_ops")
++struct bpf_testmod_ops3 testmod_1 =3D {
++	.test_1 =3D (void *)test_1,
++	.test_2 =3D (void *)test_2,
++};
+diff --git a/tools/testing/selftests/bpf/progs/struct_ops_private_stack_r=
+ecur.c b/tools/testing/selftests/bpf/progs/struct_ops_private_stack_recur=
+.c
+new file mode 100644
+index 000000000000..15d4e914dc92
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/struct_ops_private_stack_recur.c
+@@ -0,0 +1,50 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <vmlinux.h>
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++#include "../bpf_testmod/bpf_testmod.h"
++
++char _license[] SEC("license") =3D "GPL";
++
++#if defined(__TARGET_ARCH_x86)
++bool skip __attribute((__section__(".data"))) =3D false;
++#else
++bool skip =3D true;
++#endif
++
++void bpf_testmod_ops3_call_test_1(void) __ksym;
++
++int val_i, val_j;
++
++__noinline static int subprog2(int *a, int *b)
++{
++	return val_i + a[10] + b[20];
++}
++
++__noinline static int subprog1(int *a)
++{
++	/* stack size 400 bytes */
++	int b[100] =3D {};
++
++	b[20] =3D 2;
++	return subprog2(a, b);
++}
++
++
++SEC("struct_ops")
++int BPF_PROG(test_1)
++{
++	/* stack size 400 bytes */
++	int a[100] =3D {};
++
++	a[10] =3D 1;
++	val_j +=3D subprog1(a);
++	bpf_testmod_ops3_call_test_1();
++	return 0;
++}
++
++SEC(".struct_ops")
++struct bpf_testmod_ops3 testmod_1 =3D {
++	.test_1 =3D (void *)test_1,
++};
 --=20
 2.43.5
 
