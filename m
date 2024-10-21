@@ -1,159 +1,145 @@
-Return-Path: <bpf+bounces-42587-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42588-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DF579A5FB8
-	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 11:09:49 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 97AD59A6033
+	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 11:35:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D2FB3B21062
-	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 09:09:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4F68B1F2237F
+	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 09:35:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBBBF1E25FE;
-	Mon, 21 Oct 2024 09:09:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC6581E3778;
+	Mon, 21 Oct 2024 09:34:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aS1keIz7"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lI3iwcA+"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36B9B1E0DDA
-	for <bpf@vger.kernel.org>; Mon, 21 Oct 2024 09:09:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5263E194C79;
+	Mon, 21 Oct 2024 09:34:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729501781; cv=none; b=fITjDYn5gTe0WC5lnN5tI/vyH+qTV18zV6GjOSKS4EiKcB0V3KIKzTxUDoRDtiPkjNREQ9W/kOgHjdJR5N0WqZEF6IMVp/C5sc/L363nMY24xXzyERHRCVqpwdD7rnnWIGFJxiHjlksrGux6xcrM6TQuMYuxjLK9EFzIGVmP2tw=
+	t=1729503290; cv=none; b=dEtPHgeENv23bHC3TvElMrNPByxU2eUYhCbIS0Jv0xiIRGubefUkTckNB0QsDS10bJZPC7oAdStKIYeN8jght/rluRCZe0O451pbVh1Cv8s56y0mG+oErzV7GtJ+iPL/aJgcW7AIInL1oizhyoBj7BeAYHTcnXSZR4PXcNcQTTM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729501781; c=relaxed/simple;
-	bh=bqe0tuY1ihBF1ZiYXFX9kAewNJsG/o9RxJVoULD/Pug=;
+	s=arc-20240116; t=1729503290; c=relaxed/simple;
+	bh=5WqFv76qM4ugyABO6dLP+kIwg9Lncdqs6yKVuy54srA=;
 	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XSrtl88eUANtiWNEFOJAOgKRE1Zz58VjEQJW6AgLyNimI5ttbCTmrDTqUJ2u6h11LlJs4Q53fvT/Uth9cFeuADVbp1LgQMyLZY8vaRTYjzgi8ThwrCHpPfFXHHMakBkpTMjMR4Fod7Su3ZfHS41gUSvWCMiJmF4EcF0oT71VLKw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aS1keIz7; arc=none smtp.client-ip=209.85.167.49
+	 Content-Type:Content-Disposition:In-Reply-To; b=UBQsB68ZZYzlHL/p7UDOLBs01M2/jKOzOzhU+mJxN57cihYJd2FS+kNz7BKcgZ7v6JU8W6ud5panPWi1Rh8pa4TybaHyq5Bk0i2OCwWLHPsOu3ylZvN9QGcY19n9a02vE6x2faYCGOTENA7lTebfh+cY9yUIvB82KCnyzJKJEVo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lI3iwcA+; arc=none smtp.client-ip=209.85.218.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-53a097aa3daso3898996e87.1
-        for <bpf@vger.kernel.org>; Mon, 21 Oct 2024 02:09:38 -0700 (PDT)
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a9a977d6cc7so75576266b.3;
+        Mon, 21 Oct 2024 02:34:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729501777; x=1730106577; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=tDr0rt3YkD89Dr1mGI3trYknpe9GWmBs4jGzO5dLeX8=;
-        b=aS1keIz7G3nZ4ma9+0OYvbQwqRzumywiaULmVJx7EKdJLKsUqNJq7ZsBJ26VF/ceMa
-         OL5Dz1TxM+hp8lz9CMPxup1YcoQIXR5jFBQVFTzgPAJpiV9jE9k4Iqxe8bttk10sC4iH
-         8ycCpvyLm6XO58eJR79KuxB9T3DOntgKYCZ/yDHb/wJwuI72sSAKxSFX9wdSqyUov6g3
-         NWzwWTga6u+/QPgkbgvNkxXo8WnhLssnsBk7wF0FDn2SLwko0mIl5moqCJP0Amy/MMYY
-         p780O3f66fwpNv5Kd1B8rwtayl+yl/lROR5Zmnr72by1Koecmpbmbmp3RKF7pa5VpZ2X
-         c6Eg==
+        d=gmail.com; s=20230601; t=1729503286; x=1730108086; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=/FjAzIQJ4B6zcRlVKwNhNL1pS7sRl/wzKTSA8WVDbOM=;
+        b=lI3iwcA+ksAkaontZQamJYYG4MwTOoqQkqXgKAYiZw2nKgJJ0BM17T82lrYYDpjVUH
+         tZUl3tlV8J5N1mTCfhdmzWojg/2LEIIw9dMzQoaxZJcSY+qaJXsUjpWHZTL4vYVPe8xL
+         zyicAnZAqO9JS1M9VKd2+Atg23mvrnQr3x2748HpjTI+6a3NWPJrIln1JwXk6Q6NE19y
+         5P8M7gKclcj0bjnFYsFohrHGD6N4kshRjxSkwxP0eP2U/ntZgRINymHhMX/QS6yU3ICi
+         gh0VEYApZtBR3OmQl25B6/Y7vwn00YRpA+yP0F/EOkf2229dvhxm1Srd+20jExNO96RZ
+         7lWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729501777; x=1730106577;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tDr0rt3YkD89Dr1mGI3trYknpe9GWmBs4jGzO5dLeX8=;
-        b=qgb8MrG1PX+nCNKHF6RoT/rIvRvpGEJ7fPVJ7hao5l73e2QeomMvqLUNEbfxIkmiD5
-         MjFwHu7pXMT4u3dnkqEIoS73kpoWmiWMf8jU8GEMdIDe1XbFPva3STvPCYLgT1oYatlf
-         6kPTprHAcn+Bt8urD7M4guHdzzisgib06DfuJC0cni0m3qG7G+fr2yy7XErETkxOg5WI
-         CXwlU3Rdzv3X0uojONs30Pllc6LaWQM7hM6iHcSncQG+O57z/xfW2OJGyx+Ywe44k2JL
-         jwJuIKrA1lU0QBsCh9mpyXOr62grZ9yZzTvHXJWsUQ0Z8U+F0FjQWTH+j0lGkMu9MZsv
-         RGHA==
-X-Gm-Message-State: AOJu0YwNwzjB3qOpuod0M8sjs86h09vY/1k8a6kToI4D13ut1i2fUlCg
-	t1o8YSh6yA9Q5i0NHL287MyQy+8ZT11JXIcct+ux15OX8qoIjDMQ
-X-Google-Smtp-Source: AGHT+IEOK/hKN5uJDLBNego36YBnBCJ8o3NnV9gwA21Chk3LZuRzN/8bdyfiwTI6bmDBfc1BfIYPNw==
-X-Received: by 2002:a05:6512:4017:b0:539:a924:74ba with SMTP id 2adb3069b0e04-53a154a2c0bmr4683024e87.56.1729501776863;
-        Mon, 21 Oct 2024 02:09:36 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1729503286; x=1730108086;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/FjAzIQJ4B6zcRlVKwNhNL1pS7sRl/wzKTSA8WVDbOM=;
+        b=MGuJewrfs8JWsFnHA3R/HJpBZpywVeTABIsaXhMLvQgY+ID53I7yeHVbVhcC/dbfKA
+         GcxkySYZIn85PhKB5wJ3fXYef6X+KfV/HKuElLwM6UhucMGZYBdf0QTDk1dA0NpCQ0Sn
+         sW2j1+rgzQp63vCFx/T3ks/LI8JHnluRez1RdDH5cJDAcsbc/5vC/+Yr0f7zz6aBW/rA
+         3hzjhsC6a7xX5pDaW1XGsShdgY2/s3htnhKPciYViFwTfgnyBCB/JMaf7ooFiC2SR/JP
+         uq2XfMge/Wq4vk/3UrRojuQw+vxc7MRwGupQvWC7NTY21aIwMXscc4xDTlr5s7kWJgO+
+         sASA==
+X-Forwarded-Encrypted: i=1; AJvYcCWe/IDZTMp/hTC9qQV/6pMvjmK4I+WWqnM0lIHF7dwTPJ4tukcbrwyFEfvOTaHaVLnnT0Q=@vger.kernel.org, AJvYcCXdgRR2TQJDPLJd+l4DPlDJW14kBMlFpICekRDLzUBGQkLW7dLJc8OkJcOu/4W1RhCMAfTv2TR2kvBV+W5cFY3y@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz++EGISlRkt99Be+SW48mq8ukewFerItVDc7soVgbmtGdZm2SR
+	JmtXwrpBiVzZx5i57G8MuluZUPMguBqf+GSTSUNIOcHz3uSWnkwu
+X-Google-Smtp-Source: AGHT+IE0z9obeTqvXwKkLsAd3V+WleFbeXL7J0i0qYvl1lDxIyr/ZNYs+wK+DqQLpurrCKOjo+8JTA==
+X-Received: by 2002:a05:6402:13c8:b0:5cb:728e:926b with SMTP id 4fb4d7f45d1cf-5cb728e9311mr2146008a12.17.1729503286215;
+        Mon, 21 Oct 2024 02:34:46 -0700 (PDT)
 Received: from krava (85-193-35-184.rib.o2.cz. [85.193.35.184])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a9a91559b33sm178224666b.116.2024.10.21.02.09.35
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5cb66c7255esm1812592a12.80.2024.10.21.02.34.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Oct 2024 02:09:36 -0700 (PDT)
+        Mon, 21 Oct 2024 02:34:45 -0700 (PDT)
 From: Jiri Olsa <olsajiri@gmail.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Mon, 21 Oct 2024 11:09:33 +0200
-To: Hou Tao <houtao@huaweicloud.com>
-Cc: bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Hao Luo <haoluo@google.com>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Yafang Shao <laoar.shao@gmail.com>, houtao1@huawei.com,
-	xukuohai@huawei.com
-Subject: Re: [PATCH bpf v2 3/7] bpf: Preserve param->string when parsing
- mount options
-Message-ID: <ZxYaTSRE1N59vscc@krava>
-References: <20241021014004.1647816-1-houtao@huaweicloud.com>
- <20241021014004.1647816-4-houtao@huaweicloud.com>
+Date: Mon, 21 Oct 2024 11:34:43 +0200
+To: Jason Xing <kerneljasonxing@gmail.com>,
+	Alan Maguire <alan.maguire@oracle.com>
+Cc: Jiri Olsa <olsajiri@gmail.com>, ast@kernel.org, daniel@iogearbox.net,
+	andrii@kernel.org, eddyz87@gmail.com, mykolal@fb.com,
+	martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
+	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
+	haoluo@google.com, shuah@kernel.org, bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	Jason Xing <kernelxing@tencent.com>
+Subject: Re: [PATCH bpf-next v2] bpf: handle MADV_PAGEOUT error in
+ uprobe_multi.c
+Message-ID: <ZxYgM_YDoSJO1TxL@krava>
+References: <20241021050706.29403-1-kerneljasonxing@gmail.com>
+ <ZxYFn7fko5C9BnHe@krava>
+ <CAL+tcoB-tHf5kW6Hq0TtsnqFLU3nWZEuZ+L7roDyJ0q_qW=WxA@mail.gmail.com>
+ <CAL+tcoAw1WGnJs2DQjEyzsh_rNXKA44oYX5RvQi8nCvt4+ynLQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20241021014004.1647816-4-houtao@huaweicloud.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAL+tcoAw1WGnJs2DQjEyzsh_rNXKA44oYX5RvQi8nCvt4+ynLQ@mail.gmail.com>
 
-On Mon, Oct 21, 2024 at 09:40:00AM +0800, Hou Tao wrote:
-> From: Hou Tao <houtao1@huawei.com>
+On Mon, Oct 21, 2024 at 04:07:15PM +0800, Jason Xing wrote:
+> On Mon, Oct 21, 2024 at 3:51 PM Jason Xing <kerneljasonxing@gmail.com> wrote:
+> >
+> > On Mon, Oct 21, 2024 at 3:41 PM Jiri Olsa <olsajiri@gmail.com> wrote:
+> > >
+> > > On Mon, Oct 21, 2024 at 01:07:06PM +0800, Jason Xing wrote:
+> > > > From: Jason Xing <kernelxing@tencent.com>
+> > > >
+> > > > When I compiled the tools/testing/selftests/bpf, the following error
+> > > > pops out:
+> > > > uprobe_multi.c: In function ‘trigger_uprobe’:
+> > > > uprobe_multi.c:109:26: error: ‘MADV_PAGEOUT’ undeclared (first use in this function); did you mean ‘MADV_RANDOM’?
+> > > >    madvise(addr, page_sz, MADV_PAGEOUT);
+> > > >                           ^~~~~~~~~~~~
+> > > >                           MADV_RANDOM
+> > > >
+> > > > Including the <linux/linux/mman.h> header file solves this compilation error.
+> > >
+> > > hi,
+> > > strange, uprobe_multi.c even has:
+> > >
+> > > #ifndef MADV_PAGEOUT
+> > > #define MADV_PAGEOUT 21
+> > > #endif
+> > >
+> > > and '#include <sys/mman.h>' should be all that's needed
+> > >
+> > > could you please share more details (extra flags) on how you compile?
+> >
+> > OMG, thanks for reminding me. The net-next branch that I compiled
+> > doesn't have those three lines. Now I can see them in bpf-next. So I
+> > think the issue has been fixed already :)
 > 
-> In bpf_parse_param(), keep the value of param->string intact so it can
-> be freed later. Otherwise, the kmalloc area pointed to by param->string
-> will be leaked as shown below:
+> Link is https://lore.kernel.org/bpf/d9846ceb-b758-4c17-82d1-e5504122a50a@oracle.com/
 > 
-> unreferenced object 0xffff888118c46d20 (size 8):
->   comm "new_name", pid 12109, jiffies 4295580214
->   hex dump (first 8 bytes):
->     61 6e 79 00 38 c9 5c 7e                          any.8.\~
->   backtrace (crc e1b7f876):
->     [<00000000c6848ac7>] kmemleak_alloc+0x4b/0x80
->     [<00000000de9f7d00>] __kmalloc_node_track_caller_noprof+0x36e/0x4a0
->     [<000000003e29b886>] memdup_user+0x32/0xa0
->     [<0000000007248326>] strndup_user+0x46/0x60
->     [<0000000035b3dd29>] __x64_sys_fsconfig+0x368/0x3d0
->     [<0000000018657927>] x64_sys_call+0xff/0x9f0
->     [<00000000c0cabc95>] do_syscall_64+0x3b/0xc0
->     [<000000002f331597>] entry_SYSCALL_64_after_hwframe+0x4b/0x53
-> 
-> Fixes: 6c1752e0b6ca ("bpf: Support symbolic BPF FS delegation mount options")
-> Signed-off-by: Hou Tao <houtao1@huawei.com>
+> The previous comment is not that right. Making sure to include
+> <sys/mman.h> first solves the issue so there are no complaints when
+> compiling. No need to define MADV_PAGEOUT, I think.
 
-nice, I saw that memleak report recently and couldn't make sense of it ;-)
+right, but looks like it was not enough on Alan's setup [1]
 
-Acked-by: Jiri Olsa <jolsa@kernel.org>
-
-thanks,
 jirka
 
-> ---
->  kernel/bpf/inode.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel/bpf/inode.c b/kernel/bpf/inode.c
-> index d8fc5eba529d..9aaf5124648b 100644
-> --- a/kernel/bpf/inode.c
-> +++ b/kernel/bpf/inode.c
-> @@ -880,7 +880,7 @@ static int bpf_parse_param(struct fs_context *fc, struct fs_parameter *param)
->  		const struct btf_type *enum_t;
->  		const char *enum_pfx;
->  		u64 *delegate_msk, msk = 0;
-> -		char *p;
-> +		char *p, *str;
->  		int val;
->  
->  		/* ignore errors, fallback to hex */
-> @@ -911,7 +911,8 @@ static int bpf_parse_param(struct fs_context *fc, struct fs_parameter *param)
->  			return -EINVAL;
->  		}
->  
-> -		while ((p = strsep(&param->string, ":"))) {
-> +		str = param->string;
-> +		while ((p = strsep(&str, ":"))) {
->  			if (strcmp(p, "any") == 0) {
->  				msk |= ~0ULL;
->  			} else if (find_btf_enum_const(info.btf, enum_t, enum_pfx, p, &val)) {
-> -- 
-> 2.29.2
-> 
+
+[1] c27d8235ba97 selftests/bpf: Fix uprobe_multi compilation error
 
