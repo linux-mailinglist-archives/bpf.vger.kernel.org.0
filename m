@@ -1,145 +1,147 @@
-Return-Path: <bpf+bounces-42588-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42589-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97AD59A6033
-	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 11:35:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9DD89A60B2
+	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 11:52:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4F68B1F2237F
-	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 09:35:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AAF4028470E
+	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 09:52:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC6581E3778;
-	Mon, 21 Oct 2024 09:34:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8F5A1E3DCD;
+	Mon, 21 Oct 2024 09:51:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lI3iwcA+"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dGYPKztB"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5263E194C79;
-	Mon, 21 Oct 2024 09:34:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 886B4194AD9
+	for <bpf@vger.kernel.org>; Mon, 21 Oct 2024 09:51:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729503290; cv=none; b=dEtPHgeENv23bHC3TvElMrNPByxU2eUYhCbIS0Jv0xiIRGubefUkTckNB0QsDS10bJZPC7oAdStKIYeN8jght/rluRCZe0O451pbVh1Cv8s56y0mG+oErzV7GtJ+iPL/aJgcW7AIInL1oizhyoBj7BeAYHTcnXSZR4PXcNcQTTM=
+	t=1729504318; cv=none; b=NBGRYwK2WRFqvbqLoEihge/D5ltD3wsF+we6mxOAosSDxxBY+M0jfk0+xfm0x6KjJum7Q8GSHeVpVa9gjBPZrP2dbCOv5vX5ocCMRJpTh0uVyLhfRdLsJQOLSctARKeIgHETutuS+6XLPytlyx2NFT9P8QpsC59YH0T3fM936Xs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729503290; c=relaxed/simple;
-	bh=5WqFv76qM4ugyABO6dLP+kIwg9Lncdqs6yKVuy54srA=;
+	s=arc-20240116; t=1729504318; c=relaxed/simple;
+	bh=LYOTXesdWAlz1nVCf1dFPhqWzaHyp5lD8qXLj8Tn++o=;
 	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UBQsB68ZZYzlHL/p7UDOLBs01M2/jKOzOzhU+mJxN57cihYJd2FS+kNz7BKcgZ7v6JU8W6ud5panPWi1Rh8pa4TybaHyq5Bk0i2OCwWLHPsOu3ylZvN9QGcY19n9a02vE6x2faYCGOTENA7lTebfh+cY9yUIvB82KCnyzJKJEVo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lI3iwcA+; arc=none smtp.client-ip=209.85.218.44
+	 Content-Type:Content-Disposition:In-Reply-To; b=KxlfylLEaxpLDUozXSdQOLYihtM1fNzT39QFLhWjrIod+ifhzqdMy/OMLhCUHfitrplTkntM7EUuf49q3M8bGqJXbhUco1W3bCG2HKgELgDsU5hxM0jWnMUthpt2kz9CA6Ft9Kc+zklbz1K0ukMgQt30lBK0y+E51rQVYOe7t6c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dGYPKztB; arc=none smtp.client-ip=209.85.167.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a9a977d6cc7so75576266b.3;
-        Mon, 21 Oct 2024 02:34:48 -0700 (PDT)
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-539fb49c64aso5810671e87.0
+        for <bpf@vger.kernel.org>; Mon, 21 Oct 2024 02:51:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729503286; x=1730108086; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=/FjAzIQJ4B6zcRlVKwNhNL1pS7sRl/wzKTSA8WVDbOM=;
-        b=lI3iwcA+ksAkaontZQamJYYG4MwTOoqQkqXgKAYiZw2nKgJJ0BM17T82lrYYDpjVUH
-         tZUl3tlV8J5N1mTCfhdmzWojg/2LEIIw9dMzQoaxZJcSY+qaJXsUjpWHZTL4vYVPe8xL
-         zyicAnZAqO9JS1M9VKd2+Atg23mvrnQr3x2748HpjTI+6a3NWPJrIln1JwXk6Q6NE19y
-         5P8M7gKclcj0bjnFYsFohrHGD6N4kshRjxSkwxP0eP2U/ntZgRINymHhMX/QS6yU3ICi
-         gh0VEYApZtBR3OmQl25B6/Y7vwn00YRpA+yP0F/EOkf2229dvhxm1Srd+20jExNO96RZ
-         7lWA==
+        d=gmail.com; s=20230601; t=1729504314; x=1730109114; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Zhwvd6d8EPufcA2MpFYYz2Del6b4DAd1NauntSkCSco=;
+        b=dGYPKztBXRSJVSjC8amvk5/iQsWauzUElYuR8swLnF/0dDj21Pry1DtLI6dvA6nUgf
+         rvdARZZ1nFLUdX4N/OudriuqK6XAO2DchX8mVn0s2DzswXozSn4Gd/2Dx0tye9Ql+3rC
+         UwUSPBPm72mh3nPL6xjXCxTQnyOyO1ySMuosF34bq+8tWBt6XkY9zxh7XkVfplISck/G
+         gPSXfudWfIRMKYcdQZncoGsiX7ZcimkBLfywreUR5YDd0WD/b6A+bPUi3Eimq25u/Gzf
+         1EWWj4NTQl7GE2THfPpphLb5h1mO1eDEQscAHNkDI3a83Cuhm4wBmT2Q1NTMkZnKYC4k
+         t8Ag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729503286; x=1730108086;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/FjAzIQJ4B6zcRlVKwNhNL1pS7sRl/wzKTSA8WVDbOM=;
-        b=MGuJewrfs8JWsFnHA3R/HJpBZpywVeTABIsaXhMLvQgY+ID53I7yeHVbVhcC/dbfKA
-         GcxkySYZIn85PhKB5wJ3fXYef6X+KfV/HKuElLwM6UhucMGZYBdf0QTDk1dA0NpCQ0Sn
-         sW2j1+rgzQp63vCFx/T3ks/LI8JHnluRez1RdDH5cJDAcsbc/5vC/+Yr0f7zz6aBW/rA
-         3hzjhsC6a7xX5pDaW1XGsShdgY2/s3htnhKPciYViFwTfgnyBCB/JMaf7ooFiC2SR/JP
-         uq2XfMge/Wq4vk/3UrRojuQw+vxc7MRwGupQvWC7NTY21aIwMXscc4xDTlr5s7kWJgO+
-         sASA==
-X-Forwarded-Encrypted: i=1; AJvYcCWe/IDZTMp/hTC9qQV/6pMvjmK4I+WWqnM0lIHF7dwTPJ4tukcbrwyFEfvOTaHaVLnnT0Q=@vger.kernel.org, AJvYcCXdgRR2TQJDPLJd+l4DPlDJW14kBMlFpICekRDLzUBGQkLW7dLJc8OkJcOu/4W1RhCMAfTv2TR2kvBV+W5cFY3y@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz++EGISlRkt99Be+SW48mq8ukewFerItVDc7soVgbmtGdZm2SR
-	JmtXwrpBiVzZx5i57G8MuluZUPMguBqf+GSTSUNIOcHz3uSWnkwu
-X-Google-Smtp-Source: AGHT+IE0z9obeTqvXwKkLsAd3V+WleFbeXL7J0i0qYvl1lDxIyr/ZNYs+wK+DqQLpurrCKOjo+8JTA==
-X-Received: by 2002:a05:6402:13c8:b0:5cb:728e:926b with SMTP id 4fb4d7f45d1cf-5cb728e9311mr2146008a12.17.1729503286215;
-        Mon, 21 Oct 2024 02:34:46 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1729504314; x=1730109114;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Zhwvd6d8EPufcA2MpFYYz2Del6b4DAd1NauntSkCSco=;
+        b=SqDlxKxPS+8Vbuob8Z164DC2Eu59gwYakXfwY04CqRLlR0NgGTICowH4MoXplVIGuC
+         BtAWv2CVhVfLyHu0eIxDFXF2+qXyFmetzgikO8GmAtZRB8rev9rtpEXPAcW3YAuoPf7D
+         SrRzQVfWNsO4PKJTXaEvnTZ+GaTKpo8P30KxD6FOSemXvboeGz3msajCJb/+q75aU8Tb
+         kkt6xWnMzNJnpfrUBVX8ioSPPGNIXm2duLOgA7v13swwyVhkVZxUkREa67Y5BtQxqSO/
+         0wJepzQnJpa+xVlg1Q0450KaubtDapKfT06O41zL+3XReAapFMDETMuJC6S2mtZCoIQp
+         iDqw==
+X-Gm-Message-State: AOJu0Yzup7mp/qJ6HRZ6wU0Zvlnpw3zSslE+u8GY99eHKuIiGP/8ai2L
+	+C1zvLYmdkCpoO/+sw+vZLZZAXcpuLn8AhFa8nYGhdl3d0RiQ7yO
+X-Google-Smtp-Source: AGHT+IEBvnl6jqSBoDenEFqDYkC8FwvJlVNYxeCwB8NMQnQW7s7Cl64l3wbXkcSn5Hy8jAh0J0mCbw==
+X-Received: by 2002:a05:6512:3b89:b0:52c:cd77:fe03 with SMTP id 2adb3069b0e04-53a1544481emr8627411e87.14.1729504314350;
+        Mon, 21 Oct 2024 02:51:54 -0700 (PDT)
 Received: from krava (85-193-35-184.rib.o2.cz. [85.193.35.184])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5cb66c7255esm1812592a12.80.2024.10.21.02.34.44
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a9a912ed80fsm183743966b.46.2024.10.21.02.51.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Oct 2024 02:34:45 -0700 (PDT)
+        Mon, 21 Oct 2024 02:51:54 -0700 (PDT)
 From: Jiri Olsa <olsajiri@gmail.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Mon, 21 Oct 2024 11:34:43 +0200
-To: Jason Xing <kerneljasonxing@gmail.com>,
-	Alan Maguire <alan.maguire@oracle.com>
-Cc: Jiri Olsa <olsajiri@gmail.com>, ast@kernel.org, daniel@iogearbox.net,
-	andrii@kernel.org, eddyz87@gmail.com, mykolal@fb.com,
-	martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
-	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
-	haoluo@google.com, shuah@kernel.org, bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	Jason Xing <kernelxing@tencent.com>
-Subject: Re: [PATCH bpf-next v2] bpf: handle MADV_PAGEOUT error in
- uprobe_multi.c
-Message-ID: <ZxYgM_YDoSJO1TxL@krava>
-References: <20241021050706.29403-1-kerneljasonxing@gmail.com>
- <ZxYFn7fko5C9BnHe@krava>
- <CAL+tcoB-tHf5kW6Hq0TtsnqFLU3nWZEuZ+L7roDyJ0q_qW=WxA@mail.gmail.com>
- <CAL+tcoAw1WGnJs2DQjEyzsh_rNXKA44oYX5RvQi8nCvt4+ynLQ@mail.gmail.com>
+Date: Mon, 21 Oct 2024 11:51:52 +0200
+To: Hou Tao <houtao@huaweicloud.com>
+Cc: bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Hao Luo <haoluo@google.com>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Yafang Shao <laoar.shao@gmail.com>, houtao1@huawei.com,
+	xukuohai@huawei.com
+Subject: Re: [PATCH bpf v2 5/7] bpf: Check the validity of nr_words in
+ bpf_iter_bits_new()
+Message-ID: <ZxYkOKC0xNBWbG95@krava>
+References: <20241021014004.1647816-1-houtao@huaweicloud.com>
+ <20241021014004.1647816-6-houtao@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAL+tcoAw1WGnJs2DQjEyzsh_rNXKA44oYX5RvQi8nCvt4+ynLQ@mail.gmail.com>
+In-Reply-To: <20241021014004.1647816-6-houtao@huaweicloud.com>
 
-On Mon, Oct 21, 2024 at 04:07:15PM +0800, Jason Xing wrote:
-> On Mon, Oct 21, 2024 at 3:51 PM Jason Xing <kerneljasonxing@gmail.com> wrote:
-> >
-> > On Mon, Oct 21, 2024 at 3:41 PM Jiri Olsa <olsajiri@gmail.com> wrote:
-> > >
-> > > On Mon, Oct 21, 2024 at 01:07:06PM +0800, Jason Xing wrote:
-> > > > From: Jason Xing <kernelxing@tencent.com>
-> > > >
-> > > > When I compiled the tools/testing/selftests/bpf, the following error
-> > > > pops out:
-> > > > uprobe_multi.c: In function ‘trigger_uprobe’:
-> > > > uprobe_multi.c:109:26: error: ‘MADV_PAGEOUT’ undeclared (first use in this function); did you mean ‘MADV_RANDOM’?
-> > > >    madvise(addr, page_sz, MADV_PAGEOUT);
-> > > >                           ^~~~~~~~~~~~
-> > > >                           MADV_RANDOM
-> > > >
-> > > > Including the <linux/linux/mman.h> header file solves this compilation error.
-> > >
-> > > hi,
-> > > strange, uprobe_multi.c even has:
-> > >
-> > > #ifndef MADV_PAGEOUT
-> > > #define MADV_PAGEOUT 21
-> > > #endif
-> > >
-> > > and '#include <sys/mman.h>' should be all that's needed
-> > >
-> > > could you please share more details (extra flags) on how you compile?
-> >
-> > OMG, thanks for reminding me. The net-next branch that I compiled
-> > doesn't have those three lines. Now I can see them in bpf-next. So I
-> > think the issue has been fixed already :)
+On Mon, Oct 21, 2024 at 09:40:02AM +0800, Hou Tao wrote:
+> From: Hou Tao <houtao1@huawei.com>
 > 
-> Link is https://lore.kernel.org/bpf/d9846ceb-b758-4c17-82d1-e5504122a50a@oracle.com/
+> Check the validity of nr_words in bpf_iter_bits_new(). Without this
+> check, when multiplication overflow occurs for nr_bits (e.g., when
+> nr_words = 0x0400-0001, nr_bits becomes 64), stack corruption may occur
+> due to bpf_probe_read_kernel_common(..., nr_bytes = 0x2000-0008).
 > 
-> The previous comment is not that right. Making sure to include
-> <sys/mman.h> first solves the issue so there are no complaints when
-> compiling. No need to define MADV_PAGEOUT, I think.
+> Fix it by limiting the max value of nr_words to 512.
 
-right, but looks like it was not enough on Alan's setup [1]
+lgtm, nice catch .. it's actually stated in the comment,
+but we did not force it
+
+Acked-by: Jiri Olsa <jolsa@kernel.org>
 
 jirka
 
-
-[1] c27d8235ba97 selftests/bpf: Fix uprobe_multi compilation error
+> 
+> Fixes: 4665415975b0 ("bpf: Add bits iterator")
+> Signed-off-by: Hou Tao <houtao1@huawei.com>
+> ---
+>  kernel/bpf/helpers.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> index 62349e206a29..c147f75e1b48 100644
+> --- a/kernel/bpf/helpers.c
+> +++ b/kernel/bpf/helpers.c
+> @@ -2851,6 +2851,8 @@ struct bpf_iter_bits {
+>  	__u64 __opaque[2];
+>  } __aligned(8);
+>  
+> +#define BITS_ITER_NR_WORDS_MAX 512
+> +
+>  struct bpf_iter_bits_kern {
+>  	union {
+>  		unsigned long *bits;
+> @@ -2892,6 +2894,8 @@ bpf_iter_bits_new(struct bpf_iter_bits *it, const u64 *unsafe_ptr__ign, u32 nr_w
+>  
+>  	if (!unsafe_ptr__ign || !nr_words)
+>  		return -EINVAL;
+> +	if (nr_words > BITS_ITER_NR_WORDS_MAX)
+> +		return -E2BIG;
+>  
+>  	/* Optimization for u64 mask */
+>  	if (nr_bits == 64) {
+> -- 
+> 2.29.2
+> 
 
